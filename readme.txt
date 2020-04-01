@@ -304,3 +304,8 @@ Bug :
     => 035783 - disabled subseller login when parent in-active.
     => 035786 - admin> manage shop> social link> if url is long then name (title) is wrapping
     => 035777 - advertiser> promotion detail page> getting horizontal scroll
+    => 035760 - Removed top products link on shop page when review turned off.
+    => 035781 - S.no issue with pagination for commission history listing page.
+    => 035780 - Set validation for commmission setting in percaentage uop to 100 .
+    => 035779 - On commission settings set validation when admin tried to save without selecting category & user & product.
+    => 035765 - Activve subscription blog stats issue.
