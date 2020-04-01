@@ -296,8 +296,10 @@ Bug :
     => 035719 - Message read count issue with subuser and parent user
 ===================TV-9.1.6.20200401===================
 Bug :
-    => 035768 - Fixed undefined variable issue when tax type and values changed.
-    => 035739 - Displayed shop image and shop name when message from seller.
+    => 035768 Fixed undefined variable issue when tax type and values changed.
+    => 035739 Displayed shop image and shop name when message from seller.
     => 035443 - Incorrect error message while entering wrong phone number or password while login.
     => 035766 - Remove all "Action Butttons" and "Select All" table heading from listing pages.
     => 035784 - if package having different plans then smaller one is getting listed as heading instead of first one
+    => 035783 - disabled subseller login when parent in-active.
+    => 035786 - admin> manage shop> social link> if url is long then name (title) is wrapping
