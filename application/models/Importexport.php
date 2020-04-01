@@ -1108,7 +1108,7 @@ class Importexport extends ImportexportCommon
         $srch->joinTable(AttachedFile::DB_TBL, 'INNER JOIN', 'brand_id = afile_record_id');
         $srch->doNotCalculateRecords();
         $srch->doNotLimitRecords();
-        $srch->addMultipleFields(array('brand_id', 'brand_identifier', 'afile_record_id', 'afile_record_subid', 'afile_lang_id', 'afile_screen', 'afile_physical_path', 'afile_name', 'afile_display_order', 'afile_type', 'afile_aspect_ratio'));
+        $srch->addMultipleFields(array('brand_id', 'brand_identifier', 'afile_record_id', 'afile_record_subid', 'afile_lang_id', 'afile_screen', 'afile_physical_path', 'afile_name', 'afile_display_order', 'afile_type'));
         $srch->addCondition('brand_status', '=', applicationConstants::ACTIVE);
         $rs = $srch->getResultSet();
 
@@ -1147,10 +1147,6 @@ class Importexport extends ImportexportCommon
                             $colValue = array_key_exists($row['afile_screen'], $displayArr) ? $displayArr[ $row['afile_screen'] ] : '';
                         }
                         break;
-                    case 'afile_aspect_ratio':
-                        /* Space added before value because it convert this column to date field to restrict this space added. Handle this in import or wherever you need this exported file. */
-                        $colValue = array_key_exists($row['afile_aspect_ratio'], $ratioArr) ? ' '. $ratioArr[ $row['afile_aspect_ratio'] ] : '';
-                        break;
                 }
 
                 $sheetData[] = $this->parseContentForExport($colValue); 
@@ -1172,9 +1168,6 @@ class Importexport extends ImportexportCommon
 
         $displayArr = applicationConstants::getDisplaysArr($langId);
         $displayIdArr = array_flip($displayArr);
-
-        $ratioArr = AttachedFile::getRatioTypeArray($langId);
-        $ratioIdArr = array_flip($ratioArr);
 
         $coloumArr = $this->getBrandMediaColoumArr($langId);
         $this->validateCSVHeaders($csvFilePointer, $coloumArr, $langId);
@@ -1229,33 +1222,15 @@ class Importexport extends ImportexportCommon
                                 CommonHelper::writeToCSVFile($this->CSVfileObj, $err);
                                 continue 2;
                             }
-
-                            $ratioIndex = isset($this->headingIndexArr[$coloumArr['afile_aspect_ratio']]) ? $this->headingIndexArr[$coloumArr['afile_aspect_ratio']] : '';
-                            $ratio = !empty($ratioIndex) ? $this->getCell($row, $ratioIndex, '') : '';
-                            $ratioInputRequired = AttachedFile::FILETYPE_BRAND_LOGO == $colValue ? true : false;
-                            if (AttachedFile::FILETYPE_BRAND_LOGO == $colValue && (empty($ratio) || !array_key_exists(trim($ratio), $ratioIdArr))) {
-                                $errorInRow = true;
-                                $errMsg = Labels::getLabel('LBL_INVALID_ASPECT_RATIO', $langId);
-                                $err = array($rowIndex, ($ratioIndex + 1), $errMsg);
-                                CommonHelper::writeToCSVFile($this->CSVfileObj, $err);
-                                continue 2;
-                            }
                             break;
                         case 'afile_screen':
                             $colValue = array_key_exists($colValue, $displayIdArr) ? $displayIdArr[$colValue] : 0;
-                            break;
-                        case 'afile_aspect_ratio':
-                            $colValue = array_key_exists(trim($colValue), $ratioIdArr) ? $ratioIdArr[trim($colValue)] : 0 ;
                             break;
                     }
 
                     $brandsMediaArr[$columnKey] = $colValue;
                     if (false === $screenInputRequired) {
                         unset($brandsMediaArr['afile_screen']);
-                    }
-
-                    if (false === $ratioInputRequired) {
-                        unset($brandsMediaArr['afile_aspect_ratio']);
                     }
                 }
             }

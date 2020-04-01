@@ -2,7 +2,7 @@
 $arr_flds = array(
         'dragdrop' => '',
         'optionvalue_identifier' => Labels::getLabel('LBL_OPTION_VALUE_NAME', $langId),
-        'action'  =>  Labels::getLabel('LBL_ACTION', $langId),
+        'action'  =>  '',
     );
 $tbl = new HtmlElement('table', array('width' => '100%', 'class' => 'table sortable--js', 'id' => 'optionvalues'));
 $th = $tbl->appendElement('thead')->appendElement('tr');

@@ -325,7 +325,7 @@ if (!$print) {
                                     <th><?php echo Labels::getLabel('LBL_Downloaded_count', $siteLangId);?></th>
                                     <th><?php echo Labels::getLabel('LBL_Expired_on', $siteLangId);?></th>
                                     <?php if ($canEdit) { ?>
-                                        <th><?php echo Labels::getLabel('LBL_Action', $siteLangId);?></th>
+                                        <th></th>
                                     <?php }?>
                                 </tr>
                                 <?php $sr_no = 1;

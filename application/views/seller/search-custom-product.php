@@ -8,7 +8,7 @@ $arr_flds = array(
     $arr_flds['product_approved'] = Labels::getLabel('LBL_Admin_Approval', $siteLangId);
 /* } */
 $arr_flds['product_active'] = Labels::getLabel('LBL_Status', $siteLangId);
-$arr_flds['action'] = Labels::getLabel('LBL_Action', $siteLangId);
+$arr_flds['action'] = '';
 
 $tbl = new HtmlElement('table', array('width'=>'100%', 'class'=>'table'));
 $th = $tbl->appendElement('thead')->appendElement('tr');

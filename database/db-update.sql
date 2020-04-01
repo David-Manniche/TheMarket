@@ -1217,3 +1217,4 @@ ALTER TABLE `tbl_states` ADD `state_updated_on` DATETIME NOT NULL DEFAULT CURREN
 DELETE FROM `tbl_language_labels` WHERE `label_key` LIKE 'LBL_Escalate_to';
 -- --------------------------TV-9.1.6.20200327--------------------------
 DELETE FROM `tbl_language_labels` WHERE `label_key` LIKE 'MSG_SETTINGS_NOT_UPDATED';
+-- ------------------------TV-9.1.6.20200401-----------------------------
