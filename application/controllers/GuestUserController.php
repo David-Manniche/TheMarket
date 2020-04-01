@@ -348,7 +348,7 @@ class GuestUserController extends MyAppController
 
         $dialCode = FatApp::getPostedData('user_dial_code', FatUtility::VAR_STRING, '');
         $countryIso = FatApp::getPostedData('user_country_iso', FatUtility::VAR_STRING, '');
-        $phoneNumber = FatUtility::int($post['user_phone']);
+        $phoneNumber = isset($post['user_phone']) ? FatUtility::int($post['user_phone']) : '';
         if ((0 < $signUpWithPhone && empty($phoneNumber)) || (!empty($phoneNumber) && (empty($dialCode) || empty($countryIso)))) {
             $message = Labels::getLabel("MSG_INVALID_PHONE_NUMBER", $this->siteLangId);
             LibHelper::exitWithError($message, false, true);
