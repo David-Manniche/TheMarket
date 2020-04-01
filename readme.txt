@@ -295,3 +295,5 @@ Bug :
     => 035715 - Product request page displayed sub username with shop.
     => 035719 - Message read count issue with subuser and parent user
 ===================TV-9.1.6.20200401===================
+Bug :
+    => 035768 Fixed undefined variable issue when tax type and values changed.

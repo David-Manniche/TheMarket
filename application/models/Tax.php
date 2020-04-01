@@ -266,19 +266,20 @@ class Tax extends MyAppModel
             $taxStructure = new TaxStructure(FatApp::getConfig('CONF_TAX_STRUCTURE', FatUtility::VAR_FLOAT, 0));
             $options = $taxStructure->getOptions($langId);
             foreach ($options as $optionVal) {
+                $taxOptionVal = isset($taxOptions[$optionVal['taxstro_id']]) ? $taxOptions[$optionVal['taxstro_id']] : 0;
                 if ($shipFromStateId != $shipToStateId && $optionVal['taxstro_interstate'] == applicationConstants::YES) {
                     $data['options'][$optionVal['taxstro_id']]['name'] = $optionVal['taxstro_name'];
                     if ($res['taxval_is_percent'] == static::TYPE_PERCENTAGE) {
-                        $data['options'][$optionVal['taxstro_id']]['value'] = round((($prodPrice * $qty) * $taxOptions[$optionVal['taxstro_id']]) / 100, 2);
+                        $data['options'][$optionVal['taxstro_id']]['value'] = round((($prodPrice * $qty) * $taxOptionVal) / 100, 2);
                     } else {
-                        $data['options'][$optionVal['taxstro_id']][$optionVal['taxstro_name']] = $taxOptions[$optionVal['taxstro_id']] * $qty;
+                        $data['options'][$optionVal['taxstro_id']][$optionVal['taxstro_name']] = $taxOptionVal * $qty;
                     }
                 } elseif ($shipFromStateId == $shipToStateId && $optionVal['taxstro_interstate'] == applicationConstants::NO) {
                     $data['options'][$optionVal['taxstro_id']]['name'] = $optionVal['taxstro_name'];
                     if ($res['taxval_is_percent'] == static::TYPE_PERCENTAGE) {
-                        $data['options'][$optionVal['taxstro_id']]['value'] = round((($prodPrice * $qty) * $taxOptions[$optionVal['taxstro_id']]) / 100, 2);
+                        $data['options'][$optionVal['taxstro_id']]['value'] = round((($prodPrice * $qty) * $taxOptionVal) / 100, 2);
                     } else {
-                        $data['options'][$optionVal['taxstro_id']]['value'] = $taxOptions[$optionVal['taxstro_id']] * $qty;
+                        $data['options'][$optionVal['taxstro_id']]['value'] = $taxOptionVal * $qty;
                     }
                 }
             }
