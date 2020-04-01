@@ -21,7 +21,7 @@
 <div class="col-lg-12 col-md-12">
     <?php
     $arr_flds = array(
-        'listserial'=>Labels::getLabel('LBL_Sr._no.', $siteLangId),
+        'listserial'=>'#',
         'scollection_identifier'=>Labels::getLabel('LBL_Collection_Name', $siteLangId),
         'scollection_active'=>Labels::getLabel('LBL_Status', $siteLangId),
         'action' => '',
