@@ -296,6 +296,7 @@ Bug :
     => 035719 - Message read count issue with subuser and parent user
 ===================TV-9.1.6.20200401===================
 Bug :
-    => 035768 Fixed undefined variable issue when tax type and values changed.
-    => 035739 Displayed shop image and shop name when message from seller.
+    => 035768 - Fixed undefined variable issue when tax type and values changed.
+    => 035739 - Displayed shop image and shop name when message from seller.
     => 035443 - Incorrect error message while entering wrong phone number or password while login.
+    => 035766 - Remove all "Action Butttons" and "Select All" table heading from listing pages.

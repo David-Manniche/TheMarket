@@ -24,11 +24,11 @@
         'listserial'=>Labels::getLabel('LBL_Sr._no.', $siteLangId),
         'scollection_identifier'=>Labels::getLabel('LBL_Collection_Name', $siteLangId),
         'scollection_active'=>Labels::getLabel('LBL_Status', $siteLangId),
-        'action' => Labels::getLabel('LBL_Action', $siteLangId),
+        'action' => '',
     );
     if (count($arr_listing) > 0) {
         $arr_flds = array_merge(
-            array('select_all'=>Labels::getLabel('LBL_Select_all', $siteLangId)),
+            array('select_all'=>''),
             $arr_flds
         );
     }

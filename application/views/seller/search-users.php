@@ -1,13 +1,13 @@
 <?php defined('SYSTEM_INIT') or die('Invalid Usage.');
 $arr_flds = array();
 if (count($arrListing) > 0) {
-    $arr_flds['select_all'] = Labels::getLabel('LBL_Select_all', $siteLangId);
+    $arr_flds['select_all'] = '';
 }
 $arr_flds['listserial'] = Labels::getLabel('LBL_Sr', $siteLangId);
 $arr_flds['credential_username'] = Labels::getLabel('LBL_Username', $siteLangId);
 $arr_flds['credential_email'] = Labels::getLabel('LBL_Email', $siteLangId);
 $arr_flds['credential_active'] = Labels::getLabel('LBL_Status', $siteLangId);
-$arr_flds['action'] = Labels::getLabel('LBL_Action', $siteLangId);
+$arr_flds['action'] = '';
 
 $tbl = new HtmlElement('table', array('width' => '100%', 'class' => 'table table--orders'));
 $th = $tbl->appendElement('thead')->appendElement('tr', array('class' => ''));

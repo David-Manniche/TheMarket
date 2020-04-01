@@ -114,7 +114,7 @@ $this->includeTemplate('_partial/buyerDashboardNavigation.php'); ?>
                                     <tr class="">
                                         <th colspan="2" width="70%"><?php echo Labels::getLabel('LBL_Order_Particulars', $siteLangId);?></th>
                                         <th width="20%"><?php echo Labels::getLabel('LBL_Payment_Info', $siteLangId);?></th>
-                                        <th width="10%"><?php echo Labels::getLabel('LBL_Action', $siteLangId);?></th>
+                                        <th width="10%"></th>
                                     </tr> <?php if (count($orders)>0) {
                                         $canCancelOrder = true;
                                         $canReturnRefund = true;
@@ -243,7 +243,7 @@ $this->includeTemplate('_partial/buyerDashboardNavigation.php'); ?>
                                         <th width="60%"><?php echo Labels::getLabel('LBL_Order_Particulars', $siteLangId);?></th>
                                         <th width="10%"><?php echo Labels::getLabel('LBL_Qty', $siteLangId);?></th>
                                         <th width="20%"><?php echo Labels::getLabel('LBL_Status', $siteLangId);?></th>
-                                        <th width="10%"><?php echo Labels::getLabel('LBL_Action', $siteLangId);?></th>
+                                        <th width="10%"></th>
                                     </tr> <?php if (count($returnRequests) > 0) {
                                         foreach ($returnRequests as $row) {
                                             $orderDetailUrl = CommonHelper::generateUrl('buyer', 'viewOrder', array($row['order_id'],$row['op_id']));

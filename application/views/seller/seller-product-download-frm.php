@@ -64,7 +64,7 @@ $selprodDownloadFrm->developerTags['fld_default_col'] = 4; ?>
                             'listserial'=>Labels::getLabel('LBL_Sr_No.', $siteLangId),
                             'afile_name' => Labels::getLabel('LBL_File', $siteLangId),
                             'afile_lang_id' => Labels::getLabel('LBL_Language', $siteLangId),
-                            'action' => Labels::getLabel('LBL_Action', $siteLangId),
+                            'action' => '',
                         );
 
                         $tbl = new HtmlElement('table', array('width'=>'100%', 'class'=>'table'));

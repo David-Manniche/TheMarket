@@ -7,7 +7,7 @@ $arr_flds = array(
     'preq_status' => Labels::getLabel('LBL_Status', $siteLangId)
 );
 if ($canEdit) {
-    $arr_flds['action'] = Labels::getLabel('LBL_Action', $siteLangId);
+    $arr_flds['action'] = '';
 }
 $tbl = new HtmlElement('table', array('width'=>'100%', 'class'=>'table'));
 $th = $tbl->appendElement('thead')->appendElement('tr', array('class' => ''));

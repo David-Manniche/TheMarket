@@ -23,7 +23,7 @@ if (count($productSpecifications) > 0) {
                     'prod_spec_name' => Labels::getLabel('LBL_Specification_Name', $siteLangId),
                     'prod_spec_value' => Labels::getLabel('LBL_Specification_Value', $siteLangId),
                     'prod_spec_group' => Labels::getLabel('LBL_Specification_Group', $siteLangId),
-                    'action' => Labels::getLabel('LBL_Action', $siteLangId)
+                    'action' => ''
                 );
 
                 $tbl = new HtmlElement('table', array('width' => '100%', 'class' => 'table'));
