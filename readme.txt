@@ -302,3 +302,4 @@ Bug :
     => 035783 - disabled subseller login when parent in-active.
     => 035766 - Remove all "Action Butttons" and "Select All" table heading from listing pages.
     => 035760 - Removed top products link on shop page when review turned off.
+    => 035781 - S.no issue with pagination for commission history listing page.

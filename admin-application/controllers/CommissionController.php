@@ -147,7 +147,6 @@ class CommissionController extends AdminBaseController
         }
 
         $pagesize = FatApp::getConfig('CONF_ADMIN_PAGESIZE', FatUtility::VAR_INT, 10);
-
         $post = FatApp::getPostedData();
         $page = (empty($post['page']) || $post['page'] <= 0) ? 1 : $post['page'];
         $page = (empty($page) || $page <= 0) ? 1 : FatUtility::int($page);
