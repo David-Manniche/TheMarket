@@ -145,11 +145,11 @@ $this->includeTemplate('_partial/seller/sellerDashboardNavigation.php'); ?>
                                             <ul>
                                                 <?php if ($pendingDaysForCurrentPlan >= 0) { ?>
                                                     <li>
-                                                        <span class="total"><?php echo Labels::getLabel('LBL_Products', $siteLangId);?></span>
+                                                        <span class="total"><?php echo Labels::getLabel('LBL_Remaining', $siteLangId);?></span>
                                                         <span class="total-numbers"><?php echo $pendingDaysForCurrentPlan; ?> <?php echo Labels::getLabel('LBL_Days', $siteLangId); ?></span>
                                                     </li>
                                                     <li>
-                                                        <span class="total"><?php echo Labels::getLabel('LBL_Remaining', $siteLangId);?></span>
+                                                        <span class="total"><?php echo Labels::getLabel('LBL_Allowed_Products', $siteLangId);?></span>
                                                         <span class="total-numbers"><?php echo ($remainingAllowedProducts > 0)? $remainingAllowedProducts:0 ; ?></span>
                                                     </li>
                                                 <?php } else { ?>
