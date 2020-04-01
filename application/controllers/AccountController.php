@@ -2738,8 +2738,8 @@ class AccountController extends LoggedUserController
             $zipFld->requirements()->setRegularExpressionToValidate(ValidateElement::ZIP_REGEX);
             $zipFld->requirements()->setCustomErrorMessage(Labels::getLabel('LBL_Only_alphanumeric_value_is_allowed.', $this->siteLangId));
         }
-
-        if (User::isAdvertiser()) {
+		$parent = User::getAttributesById(UserAuthentication::getLoggedUserId(true), 'user_parent');
+        if (User::isAdvertiser() && $parent == 0) {
             $fld = $frm->addTextBox(Labels::getLabel('L_Company', $this->siteLangId), 'user_company');
             $fld = $frm->addTextArea(Labels::getLabel('L_Brief_Profile', $this->siteLangId), 'user_profile_info');
             $fld->html_after_field = '<small>' . Labels::getLabel('L_Please_tell_us_something_about_yourself', $this->siteLangId) . '</small>';
