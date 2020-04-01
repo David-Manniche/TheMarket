@@ -106,8 +106,8 @@ class CommissionController extends AdminBaseController
         if ($data = Commission::getAttributesById($commissionId, array('commsetting_is_mandatory'))) {
             $isMandatory = $data['commsetting_is_mandatory'];
         }
-
-        if (false === $isMandatory && 1 > $commissionId && (empty($post['commsetting_prodcat_id']) && empty($post['commsetting_user_id']) && empty($post['commsetting_product_id']))) {
+        
+        if (false == $isMandatory && 1 < $commissionId && (empty($post['commsetting_prodcat_id']) && empty($post['commsetting_user_id']) && empty($post['commsetting_product_id']))) {
             Message::addErrorMessage(Labels::getLabel('LBL_Please_add_commission_corresponding_to_product,_category_or_user', $this->adminLangId));
             FatUtility::dieJsonError(Message::getHtml());
         }

@@ -304,3 +304,4 @@ Bug :
     => 035760 - Removed top products link on shop page when review turned off.
     => 035781 - S.no issue with pagination for commission history listing page.
     => 035780 - Set validation for commmission setting in percaentage uop to 100 .
+    => 035779 - On commission settings set validation when admin tried to save without selecting category & user & product.
