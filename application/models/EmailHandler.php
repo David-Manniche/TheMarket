@@ -244,7 +244,7 @@ class EmailHandler extends FatModel
 
         if (!empty($bcc)) {
             $bccEmails = implode(", ", array_keys($bcc));
-            $headers .= 'Cc: ' . $bccEmails;
+			$headers .= "\r\nCc: " . $bccEmails;
         }
 
         if (!$db->insertFromArray(
