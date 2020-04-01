@@ -303,7 +303,8 @@ class CommissionController extends AdminBaseController
             $frm->addHiddenField('', 'commsetting_product_id', 0);
         }
 
-        $frm->addFloatField(Labels::getLabel('LBL_Commission_fees_(%)', $this->adminLangId), 'commsetting_fees');
+        $fld = $frm->addFloatField(Labels::getLabel('LBL_Commission_fees_(%)', $this->adminLangId), 'commsetting_fees');
+        $fld->requirements()->setRange('0', '100');
         $frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_Save_Changes', $this->adminLangId));
         return $frm;
     }
