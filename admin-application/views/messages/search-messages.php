@@ -25,7 +25,7 @@ foreach ($arr_listing as $sn => $row) {
                 if ($row['message_from_shop_name'] != '' && $row['message_from_shop_id'] > 0) {
                     $userImgUpdatedOn = Shop::getAttributesById($row['message_from_shop_id'], 'shop_updated_on');
                     $uploadedTime = AttachedFile::setTimeParam($userImgUpdatedOn);
-                    $div_about_me->appendElement('img', array('src'=>FatCache::getCachedUrl(CommonHelper::generateUrl('Image', 'shopLogo', array($row['message_from_shop_id'],$siteLangId, 'MINI'), CONF_WEBROOT_FRONT_URL)).$uploadedTime, CONF_IMG_CACHE_TIME, '.jpg'));
+                    $div_about_me->appendElement('img', array('src'=>FatCache::getCachedUrl(CommonHelper::generateUrl('Image', 'shopLogo', array($row['message_from_shop_id'],$adminLangId, 'MINI'), CONF_WEBROOT_FRONT_URL)).$uploadedTime, CONF_IMG_CACHE_TIME, '.jpg'));
                  } else {
                     $userImgUpdatedOn = User::getAttributesById($row['message_sent_by'], 'user_updated_on');
                     $uploadedTime = AttachedFile::setTimeParam($userImgUpdatedOn);

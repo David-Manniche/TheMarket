@@ -123,7 +123,7 @@ class MessagesController extends AdminBaseController
         $srch->addMultipleFields(array('tth.*', 'ttm.*', 
         'tfr.user_id as message_sent_by', 'tfr.user_name as message_sent_by_username', 'tfto.user_id as message_sent_to',
          'tfto.user_name as message_sent_to_name', 'tfto_c.credential_email as message_sent_to_email', 
-         'tfrs.shop_id as message_from_shop_id', 'tftos.shop_id as message_to_shop_id',
+         'tfrs.shop_id as message_from_shop_id',
          'tfto.user_name as message_sent_to_name', 'IFNULL(tfrs_l.shop_name, tfrs.shop_identifier) as message_from_shop_name'));
         $srch->addCondition('message_deleted', '=', applicationConstants::NO);
         if (!empty($post['thread_id'])) {
