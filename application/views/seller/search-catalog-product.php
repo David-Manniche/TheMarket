@@ -64,7 +64,7 @@ foreach ($arr_listing as $sn => $row) {
                 if ($row['product_approved'] == applicationConstants::NO) {
                     $canAddToStore = false;
                 }
-                $available = Product::availableForAddToStore($row['product_id'], UserAuthentication::getLoggedUserId());
+                $available = Product::availableForAddToStore($row['product_id'], $userParentId);
                 $ul = $td->appendElement("ul", array('class' => 'actions'), '', true);
                 if ($canEdit) {
                     if ($available) {

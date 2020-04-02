@@ -320,3 +320,5 @@ Bug :
     => 035804 - admin> import/export> add media to server> buttons are merging with each other
     => 035805 - admin> import/export> adding category media getting fatal
 ===================TV-9.1.7.20200402===================
+Bug :
+    => 035809 Subseller >> if he has permission for products then "add inventory" icon gets display instead of view inventory
