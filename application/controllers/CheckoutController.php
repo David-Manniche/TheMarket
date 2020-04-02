@@ -1192,14 +1192,20 @@ class CheckoutController extends MyAppController
                         if (FatApp::getConfig('CONF_TAX_STRUCTURE', FatUtility::VAR_FLOAT, 0) == TaxStructure::TYPE_COMBINED) {
                             $taxLangData = $taxStructure->getOptionData($taxStroId);
                             // CommonHelper::printArray($taxLangData, true);
-                            $op_product_tax_options[$taxLangData['taxstro_name'][$lang_id]] = $taxStroName['value'];
+                            $op_product_tax_options[$taxLangData['taxstro_name'][$lang_id]]['value'] = $taxStroName['value'];
+                            $op_product_tax_options[$taxLangData['taxstro_name'][$lang_id]]['name'] = $taxLangData['taxstro_name'][$lang_id];
+                            $op_product_tax_options[$taxLangData['taxstro_name'][$lang_id]]['percentageValue'] = $taxStroName['percentageValue'];
+                            $op_product_tax_options[$taxLangData['taxstro_name'][$lang_id]]['inPercentage'] = $taxStroName['inPercentage'];
                         } else {
                             $structureName = $taxStructure->getName($lang_id);
                             $label = Labels::getLabel('LBL_Tax', $lang_id);
                             if (array_key_exists('taxstr_name', $structureName) && $structureName['taxstr_name'] != '') {
                                 $label = $structureName['taxstr_name'];
                             }
-                            $op_product_tax_options[$label] = $taxStroName['value'];
+                            $op_product_tax_options[$label]['name'] = $label;
+                            $op_product_tax_options[$label]['value'] = $taxStroName['value'];
+                            $op_product_tax_options[$label]['percentageValue'] = $taxStroName['percentageValue'];
+                            $op_product_tax_options[$label]['inPercentage'] = $taxStroName['inPercentage'];
                         }
                     }
 

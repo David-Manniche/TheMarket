@@ -1222,6 +1222,7 @@ class SellerController extends SellerBaseController
         $this->set('pageSize', $pagesize);
         $this->set('postedData', $post);
         $this->set('siteLangId', $this->siteLangId);
+        $this->set('userParentId', $this->userParentId);
         $this->set('canEdit', $this->userPrivilege->canEditProducts(UserAuthentication::getLoggedUserId(), true));
         unset($post['page']);
         $frmSearchCatalogProduct->fill($post);

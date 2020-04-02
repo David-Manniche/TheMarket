@@ -33,6 +33,9 @@ class SellerProduct extends MyAppModel
     public function __construct($id = 0)
     {
         parent::__construct(static::DB_TBL, static::DB_TBL_PREFIX . 'id', $id);
+        $this->objMainTableRecord->setSensitiveFields(
+            array('selprod_id')
+        );
     }
 
     public static function getSearchObject($langId = 0, $joinSpecifics = false)
