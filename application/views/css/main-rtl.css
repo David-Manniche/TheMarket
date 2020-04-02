@@ -15742,7 +15742,7 @@ img.mfp-img {
     border-bottom: none; }
   .table tr td {
     position: relative;
-    word-break: break-word; }
+    /* word-break:break-word;*/ }
     .table tr td:first-child {
       padding-left: 0; }
     .table tr td:last-child {
