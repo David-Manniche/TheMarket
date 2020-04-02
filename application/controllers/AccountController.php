@@ -2261,12 +2261,8 @@ class AccountController extends LoggedUserController
 
         $page = (empty($post['page']) || $post['page'] <= 0) ? 1 : FatUtility::int($post['page']);
         $pagesize = FatApp::getConfig('conf_page_size', FatUtility::VAR_INT, 10);
-
-        $subUsers = User::getSubUsers($this->userParentId, 'user_id');
-        foreach ($subUsers as $key => $value) {
-            $users[] = $value['user_id'];
-        }
-        $users[] = $this->userParentId;
+        
+        $parentAndTheirChildIds = User::getParentAndTheirChildIds($userId);
 
         $srch = new MessageSearch();
         $srch->joinThreadLastMessage();
@@ -2279,8 +2275,8 @@ class AccountController extends LoggedUserController
          'tfrs.shop_id as message_from_shop_id', 'tftos.shop_id as message_to_shop_id',
          'IFNULL(tftos_l.shop_name, tftos.shop_identifier) as message_to_shop_name'));
         $srch->addCondition('ttm.message_deleted', '=', 0);
-        $cnd = $srch->addCondition('ttm.message_from', 'IN', $users);
-        $cnd->attachCondition('ttm.message_to', 'IN', $users, 'OR');
+        $cnd = $srch->addCondition('ttm.message_from', 'IN', $parentAndTheirChildIds);
+        $cnd->attachCondition('ttm.message_to', 'IN', $parentAndTheirChildIds, 'OR');
         $srch->addOrder('message_id', 'DESC');
         $srch->addGroupBy('ttm.message_thread_id');
 
@@ -2316,6 +2312,7 @@ class AccountController extends LoggedUserController
         $this->set('loggedUserId', $userId);
         $this->set('page', $page);
         $this->set('pageSize', $pagesize);
+        $this->set('parentAndTheirChildIds', $parentAndTheirChildIds);        
         $this->set('postedData', $post);
 
         if (true === MOBILE_APP_API_CALL) {
