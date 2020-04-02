@@ -118,9 +118,9 @@ $(document).on('change','.selprodoption_optionvalue_id',function(){
 		});
 	};
 
-	sellerProductDownloadFrm = function( product_id, selprod_id, type ) {
+	sellerProductDownloadFrm = function( product_id, selprod_id ) {
 		$("#tabs_002").html(fcom.getLoader());
-		fcom.ajax(fcom.makeUrl('Seller', 'sellerProductDownloadFrm', [ product_id, selprod_id, type ]), '', function(t) {
+		fcom.ajax(fcom.makeUrl('Seller', 'sellerProductDownloadFrm', [ product_id, selprod_id ]), '', function(t) {
 			$(".tabs_panel").html('');
             $(".tabs_panel").hide();
             $(".tabs_nav-js  > li").removeClass('is-active');
@@ -134,12 +134,11 @@ $(document).on('change','.selprodoption_optionvalue_id',function(){
 	};
 
 	setUpSellerProductDownloads = function (type, product_id, selprod_id){
-		download_type = $("select[name='download_type"+selprod_id+"']").val();
 		var data = new FormData();
 		$inputs = $('#frmDownload input[type=text],#frmDownload input[type=textarea],#frmDownload select,#frmDownload input[type=hidden]');
 		$inputs.each(function() { data.append( this.name,$(this).val());});
 		data.append( 'selprod_id', selprod_id);
-		if(download_type == type) {
+		if(DIGITAL_DOWNLOAD_FILE == type) {
 			$.each( $('#downloadable_file'+selprod_id)[0].files, function(i, file) {
 				$(dv).html(fcom.getLoader());
 				data.append('downloadable_file', file);
@@ -153,10 +152,10 @@ $(document).on('change','.selprodoption_optionvalue_id',function(){
 						var ans = $.parseJSON(t);
 						if( ans.status == 0 ){
 							$.mbsmessage( ans.msg,true,'alert--danger' );
-							sellerProductDownloadFrm(product_id, selprod_id, download_type);
+							sellerProductDownloadFrm(product_id, selprod_id);
 							return;
 						}
-						sellerProductDownloadFrm(product_id, selprod_id, download_type);
+						sellerProductDownloadFrm(product_id, selprod_id);
 					},
 					error: function(jqXHR, textStatus, errorThrown){
 						alert("Error Occurred.");
@@ -175,7 +174,7 @@ $(document).on('change','.selprodoption_optionvalue_id',function(){
 					return;
 				}
 				$.systemMessage( ans.msg,'alert--success' );
-				sellerProductDownloadFrm(product_id, selprod_id, download_type);
+				sellerProductDownloadFrm(product_id, selprod_id);
 			});
 		}
 	};
