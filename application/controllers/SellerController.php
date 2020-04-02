@@ -91,13 +91,13 @@ class SellerController extends SellerBaseController
         if (FatApp::getConfig('CONF_ENABLE_SELLER_SUBSCRIPTION_MODULE')) {
             $products = new Product();
 
-            $latestOrder = OrderSubscription::getUserCurrentActivePlanDetails($this->siteLangId, $userId, array('ossubs_till_date', 'ossubs_id', 'ossubs_products_allowed', 'ossubs_subscription_name'));
+            $latestOrder = OrderSubscription::getUserCurrentActivePlanDetails($this->siteLangId, $userId, array('ossubs_till_date', 'ossubs_id', 'ossubs_inventory_allowed', 'ossubs_subscription_name'));
             $pendingDaysForCurrentPlan = 0;
             $remainingAllowedProducts = 0;
             if ($latestOrder) {
                 $pendingDaysForCurrentPlan = FatDate::diff(date("Y-m-d"), $latestOrder['ossubs_till_date']);
                 $totalProducts = $products->getTotalProductsAddedByUser($userId);
-                $remainingAllowedProducts = $latestOrder['ossubs_products_allowed'] - $totalProducts;
+                $remainingAllowedProducts = $latestOrder['ossubs_inventory_allowed'] - $totalProducts;
                 $this->set('subscriptionTillDate', $latestOrder['ossubs_till_date']);
                 $this->set('subscriptionName', $latestOrder['ossubs_subscription_name']);
             }
