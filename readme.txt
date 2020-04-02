@@ -312,3 +312,4 @@ Bug :
 ===================TV-9.1.6.20200402===================
 Bug :
     => 035797 - when review is submitted from product detail page then after submitting review it redirects to order listing instead of staying on same page.
+    => 035812 - Error occured!! While adding new inventory from catalog.
