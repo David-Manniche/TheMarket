@@ -313,3 +313,4 @@ Bug :
 Bug :
     => 035797 - when review is submitted from product detail page then after submitting review it redirects to order listing instead of staying on same page.
     => 035812 - Error occured!! While adding new inventory from catalog.
+    => 035800 - admin> catalog list> filters> user filter is not accessible if catalog product is selected and then filters are reset
