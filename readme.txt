@@ -310,3 +310,5 @@ Bug :
     => 035779 - On commission settings set validation when admin tried to save without selecting category & user & product.
     => 035765 - Activve subscription blog stats issue.
 ===================TV-9.1.6.20200402===================
+Bug :
+    => 035807 - Subseller also displaying in admin users listing when search by type for seller.
