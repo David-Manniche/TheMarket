@@ -1,9 +1,9 @@
 <?php defined('SYSTEM_INIT') or die('Invalid Usage.'); ?> <?php
 $arr_flds = array(
-    'listserial'=> Labels::getLabel('LBL_S.No.', $adminLangId),
+    'listserial'=> '#',
     'user'=>Labels::getLabel('LBL_User', $adminLangId),
     'afile_physical_path'=>Labels::getLabel('LBL_Location', $adminLangId),
-    'files'    => Labels::getLabel('LBL_Files_Inside', $adminLangId),
+    'files'    => Labels::getLabel('LBL_Files', $adminLangId),
     'action'    => '',
 );
 if (!$canEdit) {
@@ -13,7 +13,17 @@ if (!$canEdit) {
 $tbl = new HtmlElement('table', array('width'=>'100%', 'class'=>'table table-responsive'));
 $th = $tbl->appendElement('thead')->appendElement('tr');
 foreach ($arr_flds as $key => $val) {
-    $th->appendElement('th', array(), $val);
+    if ($key == 'listserial') {
+        $e = $th->appendElement('th', array('width' => '5%'), $val);
+    } elseif ($key == 'user') {
+        $e = $th->appendElement('th', array('width' => '15%'), $val);
+    } elseif ($key == 'afile_physical_path') {
+        $e = $th->appendElement('th', array('width' => '55%'), $val);
+    } elseif ($key == 'files') {
+        $e = $th->appendElement('th', array('width' => '5%'), $val);
+    }  elseif ($key == 'action') {
+        $e = $th->appendElement('th', array('width' => '20%'), $val);
+    }
 }
 
 $sr_no = 0;
