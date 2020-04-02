@@ -1031,7 +1031,7 @@ class Product extends MyAppModel
         $srch->joinTable(Product::DB_TBL_LANG, 'LEFT OUTER JOIN', 'p.product_id = p_l.productlang_product_id AND p_l.productlang_lang_id = ' . CommonHelper::getLangId(), 'p_l');
         $srch->addOrder('product_name');
         $srch->addCondition('selprod_user_id', '=', $user_id);
-        $srch->addCondition('selprod_deleted', '=', 0);
+        /* $srch->addCondition('selprod_deleted', '=', 0); */
         $srch->addMultipleFields(
             array(
             'count(selprod_id) as totProducts')
