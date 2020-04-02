@@ -5,7 +5,7 @@ $arr_flds = array(
     'afile_physical_path'=>Labels::getLabel('LBL_Location', $siteLangId),
     'afile_name'    => Labels::getLabel('LBL_File_Name', $siteLangId),
     'files'    => Labels::getLabel('LBL_Files_Inside', $siteLangId),
-    'action'    => Labels::getLabel('LBL_Action', $siteLangId),
+    'action'    => '',
 );
 $tbl = new HtmlElement('table', array('width'=>'100%', 'class'=>'table'));
 $th = $tbl->appendElement('thead')->appendElement('tr');

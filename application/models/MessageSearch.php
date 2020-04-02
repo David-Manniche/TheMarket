@@ -35,26 +35,38 @@ class MessageSearch extends SearchBase
         /* $this->joinTable(Thread::DB_TBL_THREAD_MESSAGES, 'LEFT OUTER JOIN', 'tth.thread_id = ttm.message_thread_id', 'ttm'); */
     }
 
-    public function joinMessagePostedFromUser()
+    public function joinMessagePostedFromUser($joinShop = false, $langId = 0)
     {
         if (!$this->joinThreadMessage) {
             trigger_error(Labels::getLabel('MSG_You_have_not_joined_joinThreadMessage.', $this->commonLangId), E_USER_ERROR);
         }
 
+        $fields = array('tfr.user_id as message_from_user_id', 'tfr.user_name as message_from_name', 'tfr_c.credential_email as message_from_email', 'tfr_c.credential_username as message_from_username');
         $this->joinTable(User::DB_TBL, 'LEFT OUTER JOIN', 'ttm.message_from = tfr.user_id', 'tfr');
         $this->joinTable(User::DB_TBL_CRED, 'LEFT OUTER JOIN', 'tfr_c.credential_user_id = tfr.user_id', 'tfr_c');
-        $this->addMultipleFields(array('tfr.user_id as message_from_user_id', 'tfr.user_name as message_from_name', 'tfr_c.credential_email as message_from_email', 'tfr_c.credential_username as message_from_username'));
+        if (true == $joinShop && $langId > 0) {
+            $this->joinTable(Shop::DB_TBL, 'LEFT OUTER JOIN', 'tfrs.shop_user_id = if(tfr.user_parent > 0, tfr.user_parent, tfr.user_id)', 'tfrs');
+            $this->joinTable(Shop::DB_TBL_LANG, 'LEFT OUTER JOIN', 'tfrs_l.shoplang_shop_id = tfrs.shop_id and tfrs_l.shoplang_lang_id = ' . $langId, 'tfrs_l');
+            $fields = $fields + array('IFNULL(tfrs_l.shop_name, tfrs.shop_identifier) as message_from_shop_name', 'tfrs.shop_id as message_from_shop_id');
+        }
+        $this->addMultipleFields($fields);
     }
 
-    public function joinMessagePostedToUser()
+    public function joinMessagePostedToUser($joinShop = false, $langId = 0)
     {
         if (!$this->joinThreadMessage) {
             trigger_error(Labels::getLabel('MSG_You_have_not_joined_joinThreadMessage.', $this->commonLangId), E_USER_ERROR);
         }
 
+        $fields = array('tfto.user_id as message_to_user_id', 'tfto.user_name as message_to_name', 'tfto_c.credential_email as message_to_email', 'tfto_c.credential_username as message_to_username');
         $this->joinTable(User::DB_TBL, 'LEFT OUTER JOIN', 'ttm.message_to = tfto.user_id', 'tfto');
-        $this->joinTable(User::DB_TBL_CRED, 'LEFT OUTER JOIN', 'tfto_c.credential_user_id = tfto.user_id', 'tfto_c');
-        $this->addMultipleFields(array('tfto.user_id as message_to_user_id', 'tfto.user_name as message_to_name', 'tfto_c.credential_email as message_to_email', 'tfto_c.credential_username as message_to_username'));
+        $this->joinTable(User::DB_TBL_CRED, 'LEFT OUTER JOIN', 'tfto_c.credential_user_id = tfto.user_id', 'tfto_c');       
+        if (true == $joinShop && $langId > 0) {
+            $this->joinTable(Shop::DB_TBL, 'LEFT OUTER JOIN', 'tftos.shop_user_id = if(tfto.user_parent > 0, tfto.user_parent, tfto.user_id)', 'tftos');
+            $this->joinTable(Shop::DB_TBL_LANG, 'LEFT OUTER JOIN', 'tftos_l.shoplang_shop_id = tftos.shop_id and tftos_l.shoplang_lang_id = ' . $langId, 'tftos_l');
+            $fields = $fields + array('IFNULL(tftos_l.shop_name, tftos.shop_identifier) as message_to_shop_name', 'tftos.shop_id as message_to_shop_id');
+        }
+        $this->addMultipleFields($fields);
     }
 
     public function joinShops($langId = 0)

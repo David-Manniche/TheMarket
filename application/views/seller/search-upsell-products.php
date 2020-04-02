@@ -1,6 +1,6 @@
 <?php defined('SYSTEM_INIT') or die('Invalid Usage.');
 $arr_flds = array(
-    // 'select_all'=>Labels::getLabel('LBL_Select_all', $siteLangId),
+    // 'select_all'=>'',
     'product_name' => Labels::getLabel('LBL_Product_Name', $siteLangId),
     'upsell_products' => Labels::getLabel('LBL_Buy_Together_Products', $siteLangId)
 );

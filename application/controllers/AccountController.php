@@ -2261,22 +2261,22 @@ class AccountController extends LoggedUserController
 
         $page = (empty($post['page']) || $post['page'] <= 0) ? 1 : FatUtility::int($post['page']);
         $pagesize = FatApp::getConfig('conf_page_size', FatUtility::VAR_INT, 10);
-
-        $subUsers = User::getSubUsers($this->userParentId, 'user_id');
-        foreach ($subUsers as $key => $value) {
-            $users[] = $value['user_id'];
-        }
-        $users[] = $this->userParentId;
+        
+        $parentAndTheirChildIds = User::getParentAndTheirChildIds($this->userParentId, false, true);
 
         $srch = new MessageSearch();
         $srch->joinThreadLastMessage();
-        $srch->joinMessagePostedFromUser();
-        $srch->joinMessagePostedToUser();
+        $srch->joinMessagePostedFromUser(true, $this->siteLangId);
+        $srch->joinMessagePostedToUser(true, $this->siteLangId);
         $srch->joinThreadStartedByUser();
-        $srch->addMultipleFields(array('tth.*', 'ttm.message_id', 'ttm.message_text', 'ttm.message_date', 'ttm.message_is_unread', 'ttm.message_to'));
+        $srch->addMultipleFields(array('tth.*',
+         'ttm.message_id', 'ttm.message_text', 'ttm.message_date', 'ttm.message_is_unread', 
+         'ttm.message_to', 'IFNULL(tfrs_l.shop_name, tfrs.shop_identifier) as message_from_shop_name', 
+         'tfrs.shop_id as message_from_shop_id', 'tftos.shop_id as message_to_shop_id',
+         'IFNULL(tftos_l.shop_name, tftos.shop_identifier) as message_to_shop_name'));
         $srch->addCondition('ttm.message_deleted', '=', 0);
-        $cnd = $srch->addCondition('ttm.message_from', 'IN', $users);
-        $cnd->attachCondition('ttm.message_to', 'IN', $users, 'OR');
+        $cnd = $srch->addCondition('ttm.message_from', 'IN', $parentAndTheirChildIds);
+        $cnd->attachCondition('ttm.message_to', 'IN', $parentAndTheirChildIds, 'OR');
         $srch->addOrder('message_id', 'DESC');
         $srch->addGroupBy('ttm.message_thread_id');
 
@@ -2312,6 +2312,7 @@ class AccountController extends LoggedUserController
         $this->set('loggedUserId', $userId);
         $this->set('page', $page);
         $this->set('pageSize', $pagesize);
+        $this->set('parentAndTheirChildIds', $parentAndTheirChildIds);        
         $this->set('postedData', $post);
 
         if (true === MOBILE_APP_API_CALL) {
@@ -2357,7 +2358,7 @@ class AccountController extends LoggedUserController
             $srch->joinProducts($this->siteLangId);
         }
 
-        $parentAndThierChildIds = User::getParentAndTheirChildIds($this->userParentId);
+        $parentAndThierChildIds = User::getParentAndTheirChildIds($this->userParentId, false, true);
 
         $srch->joinOrderProducts();
         $srch->joinOrderProductStatus();
@@ -2389,7 +2390,7 @@ class AccountController extends LoggedUserController
             $frm->fill(array('message_thread_id' => $threadId, 'message_id' => $messageId));
         }
 
-        $threadObj = new Thread($threadId);
+        $threadObj = new Thread($threadId);        
         if (!$threadObj->markMessageReadFromUserArr($threadId, $parentAndThierChildIds)) {
             if (true === MOBILE_APP_API_CALL) {
                 Message::addErrorMessage(strip_tags(current($threadObj->getError())));
@@ -2432,16 +2433,19 @@ class AccountController extends LoggedUserController
             }
         }
 
-        $allowedUserIds = User::getParentAndTheirChildIds($this->userParentId);
+        $allowedUserIds = User::getParentAndTheirChildIds($this->userParentId, false, true);
         $page = (empty($post['page']) || $post['page'] <= 0) ? 1 : FatUtility::int($post['page']);
         $pagesize = FatApp::getConfig('conf_page_size', FatUtility::VAR_INT, 10);
 
         $srch = new MessageSearch();
         $srch->joinThreadMessage();
-        $srch->joinMessagePostedFromUser();
-        $srch->joinMessagePostedToUser();
+        $srch->joinMessagePostedFromUser(true, $this->siteLangId);
+        $srch->joinMessagePostedToUser(true, $this->siteLangId);
         $srch->joinThreadStartedByUser();
-        $srch->addMultipleFields(array('tth.*', 'ttm.message_id', 'ttm.message_text', 'ttm.message_date', 'ttm.message_is_unread'));
+        $srch->addMultipleFields(array(
+            'tth.*','ttm.message_id', 'ttm.message_text', 'ttm.message_date', 'ttm.message_is_unread' , 
+            'IFNULL(tfrs_l.shop_name, tfrs.shop_identifier) as message_from_shop_name' , 'tfrs.shop_id as message_from_shop_id',
+            'tftos.shop_id as message_to_shop_id', 'IFNULL(tftos_l.shop_name, tftos.shop_identifier) as message_to_shop_name'));
         $srch->addCondition('ttm.message_deleted', '=', 0);
         $srch->addCondition('tth.thread_id', '=', $threadId);
         $cnd = $srch->addCondition('ttm.message_from', 'in', $allowedUserIds);
@@ -2451,6 +2455,7 @@ class AccountController extends LoggedUserController
         $srch->setPageSize($pagesize);
         $rs = $srch->getResultSet();
         $records = FatApp::getDb()->fetchAll($rs, 'message_id');
+        
         ksort($records);
 
         $this->set("arrListing", $records);
@@ -2507,7 +2512,7 @@ class AccountController extends LoggedUserController
             FatUtility::dieWithError(Message::getHtml());
         }
 
-        $allowedUserIds = User::getParentAndTheirChildIds($this->userParentId);
+        $allowedUserIds = User::getParentAndTheirChildIds($this->userParentId, false, true);
 
         $srch = new MessageSearch();
         $srch->joinThreadMessage();
@@ -2738,8 +2743,8 @@ class AccountController extends LoggedUserController
             $zipFld->requirements()->setRegularExpressionToValidate(ValidateElement::ZIP_REGEX);
             $zipFld->requirements()->setCustomErrorMessage(Labels::getLabel('LBL_Only_alphanumeric_value_is_allowed.', $this->siteLangId));
         }
-
-        if (User::isAdvertiser()) {
+		$parent = User::getAttributesById(UserAuthentication::getLoggedUserId(true), 'user_parent');
+        if (User::isAdvertiser() && $parent == 0) {
             $fld = $frm->addTextBox(Labels::getLabel('L_Company', $this->siteLangId), 'user_company');
             $fld = $frm->addTextArea(Labels::getLabel('L_Brief_Profile', $this->siteLangId), 'user_profile_info');
             $fld->html_after_field = '<small>' . Labels::getLabel('L_Please_tell_us_something_about_yourself', $this->siteLangId) . '</small>';

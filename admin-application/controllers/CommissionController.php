@@ -106,8 +106,8 @@ class CommissionController extends AdminBaseController
         if ($data = Commission::getAttributesById($commissionId, array('commsetting_is_mandatory'))) {
             $isMandatory = $data['commsetting_is_mandatory'];
         }
-
-        if (false === $isMandatory && 1 > $commissionId && (empty($post['commsetting_prodcat_id']) && empty($post['commsetting_user_id']) && empty($post['commsetting_product_id']))) {
+        
+        if (false == $isMandatory && 1 < $commissionId && (empty($post['commsetting_prodcat_id']) && empty($post['commsetting_user_id']) && empty($post['commsetting_product_id']))) {
             Message::addErrorMessage(Labels::getLabel('LBL_Please_add_commission_corresponding_to_product,_category_or_user', $this->adminLangId));
             FatUtility::dieJsonError(Message::getHtml());
         }
@@ -147,7 +147,6 @@ class CommissionController extends AdminBaseController
         }
 
         $pagesize = FatApp::getConfig('CONF_ADMIN_PAGESIZE', FatUtility::VAR_INT, 10);
-
         $post = FatApp::getPostedData();
         $page = (empty($post['page']) || $post['page'] <= 0) ? 1 : $post['page'];
         $page = (empty($page) || $page <= 0) ? 1 : FatUtility::int($page);
@@ -304,7 +303,8 @@ class CommissionController extends AdminBaseController
             $frm->addHiddenField('', 'commsetting_product_id', 0);
         }
 
-        $frm->addFloatField(Labels::getLabel('LBL_Commission_fees_(%)', $this->adminLangId), 'commsetting_fees');
+        $fld = $frm->addFloatField(Labels::getLabel('LBL_Commission_fees_(%)', $this->adminLangId), 'commsetting_fees');
+        $fld->requirements()->setRange('0', '100');
         $frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_Save_Changes', $this->adminLangId));
         return $frm;
     }

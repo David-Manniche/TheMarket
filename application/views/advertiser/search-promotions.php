@@ -10,7 +10,7 @@ $arr_flds = array(
         'promotion_end_date'=>Labels::getLabel('LBL_Promotion_Status', $siteLangId),
         'promotion_approved'=>Labels::getLabel('LBL_Approved', $siteLangId),
         'promotion_active'=>Labels::getLabel('LBL_Status', $siteLangId),
-        'action' => Labels::getLabel('LBL_Action', $siteLangId),
+        'action' => '',
     );
 $tbl = new HtmlElement(
     'table',

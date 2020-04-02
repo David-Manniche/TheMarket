@@ -122,7 +122,7 @@ class Thread extends MyAppModel
             $srch->addCondition('message_thread_id', '=', $this->mainTableRecordId);
         }
 
-        $parentAndThierChildIds = User::getParentAndTheirChildIds($userId, false, false);
+        $parentAndThierChildIds = User::getParentAndTheirChildIds($userId);
        
         $cnd = $srch->addCondition('ttm.message_to', 'in', $parentAndThierChildIds);
         /* $cnd->attachCondition('ttm.message_to','=',$userId,'OR'); */

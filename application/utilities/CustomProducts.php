@@ -2213,7 +2213,7 @@ trait CustomProducts
             FatUtility::dieWithError(Message::getHtml());
         }
         if ($productId < 1 || $tagId < 1) {
-            Message::addErrorMessage($this->str_invalid_request);
+            Message::addErrorMessage(Labels::getLabel('LBL_INVALID_REQUEST', $this->siteLangId));
             FatUtility::dieWithError(Message::getHtml());
         }
 

@@ -3,7 +3,7 @@
 $arr_flds = array(
 		'listserial'=>Labels::getLabel('LBL_Sr._no.',$siteLangId),
 		'ppoint_title'=>Labels::getLabel('LBL_Policy',$siteLangId),
-		'action' => Labels::getLabel('LBL_Action',$siteLangId),
+		'action' => '',
 	);
 $tbl = new HtmlElement('table', array('width'=>'100%', 'class'=>'table'));
 

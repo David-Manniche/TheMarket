@@ -233,12 +233,18 @@ class MyAppController extends FatController
         $this->totalFavouriteItems = UserFavorite::getUserFavouriteItemCount($user_id);
         $this->set('totalFavouriteItems', $this->totalFavouriteItems);
 
-        $threadObj = new Thread();
-        $this->totalUnreadMessageCount = $threadObj->getMessageCount($user_id);
+        $this->totalUnreadMessageCount = 0;
+        if (0 < $user_id) {
+            $threadObj = new Thread();
+            $this->totalUnreadMessageCount = $threadObj->getMessageCount($user_id);
+        }
         $this->set('totalUnreadMessageCount', $this->totalUnreadMessageCount);
 
-        $notificationObj = new Notifications();
-        $this->totalUnreadNotificationCount = $notificationObj->getUnreadNotificationCount($user_id);
+        $this->totalUnreadNotificationCount = 0;
+        if (0 < $user_id) {
+            $notificationObj = new Notifications();
+            $this->totalUnreadNotificationCount = $notificationObj->getUnreadNotificationCount($user_id);
+        }
         $this->set('totalUnreadNotificationCount', $this->totalUnreadNotificationCount);
     }
 

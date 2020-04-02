@@ -91,13 +91,13 @@ class SellerController extends SellerBaseController
         if (FatApp::getConfig('CONF_ENABLE_SELLER_SUBSCRIPTION_MODULE')) {
             $products = new Product();
 
-            $latestOrder = OrderSubscription::getUserCurrentActivePlanDetails($this->siteLangId, $userId, array('ossubs_till_date', 'ossubs_id', 'ossubs_products_allowed', 'ossubs_subscription_name'));
+            $latestOrder = OrderSubscription::getUserCurrentActivePlanDetails($this->siteLangId, $userId, array('ossubs_till_date', 'ossubs_id', 'ossubs_inventory_allowed', 'ossubs_subscription_name'));
             $pendingDaysForCurrentPlan = 0;
             $remainingAllowedProducts = 0;
             if ($latestOrder) {
                 $pendingDaysForCurrentPlan = FatDate::diff(date("Y-m-d"), $latestOrder['ossubs_till_date']);
                 $totalProducts = $products->getTotalProductsAddedByUser($userId);
-                $remainingAllowedProducts = $latestOrder['ossubs_products_allowed'] - $totalProducts;
+                $remainingAllowedProducts = $latestOrder['ossubs_inventory_allowed'] - $totalProducts;
                 $this->set('subscriptionTillDate', $latestOrder['ossubs_till_date']);
                 $this->set('subscriptionName', $latestOrder['ossubs_subscription_name']);
             }
@@ -1434,7 +1434,7 @@ class SellerController extends SellerBaseController
         $taxStructure = new TaxStructure(FatApp::getConfig('CONF_TAX_STRUCTURE', FatUtility::VAR_FLOAT, 0));
         $options = $taxStructure->getOptions($this->siteLangId);
         foreach ($options as $optionVal) {
-            $data[$optionVal['taxstro_id']] = $taxOptions[$optionVal['taxstro_id']];
+            $data[$optionVal['taxstro_id']] = isset($taxOptions[$optionVal['taxstro_id']]) ? $taxOptions[$optionVal['taxstro_id']] : '';
         }
         $frm->fill($data);
         // $frm->fill($taxValues+array('taxcat_id'=>$taxcat_id));
@@ -4411,7 +4411,7 @@ class SellerController extends SellerBaseController
             $srchFrm->addHiddenField('', 'selprod_id', $selProd_id);
             $srchFrm->fill(array('keyword' => $productsTitle[$selProd_id]));
         }
-
+		$this->set("canEdit", $this->userPrivilege->canEditSpecialPrice(UserAuthentication::getLoggedUserId(), true));
         $this->set("dataToEdit", $dataToEdit);
         $this->set("frmSearch", $srchFrm);
         $this->set("selProd_id", $selProd_id);

@@ -1,12 +1,12 @@
 <?php defined('SYSTEM_INIT') or die('Invalid Usage.');
 $arr_flds = [
-    'select_all' => Labels::getLabel('LBL_Select_all', $siteLangId),
+    'select_all' => '',
     'selprod_title' => Labels::getLabel('LBL_PRODUCT', $siteLangId),
     'abprod_item_group_identifier' => Labels::getLabel('LBL_ITEM_GROUP_IDENTIFIER', $siteLangId),
     'abprod_cat_id' => Labels::getLabel('LBL_CATEGORY', $siteLangId),
     'abprod_age_group' => Labels::getLabel('LBL_AGE_GROUP', $siteLangId),
     'adsbatch_name' => Labels::getLabel('LBL_BATCH', $siteLangId),
-    'action' => Labels::getLabel('LBL_Action', $siteLangId),
+    'action' => '',
 ];
 if (1 > count($arrListing)) {
     unset($arr_flds['select_all']);

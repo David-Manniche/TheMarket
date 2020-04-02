@@ -24,15 +24,29 @@ foreach ($arr_listing as $sn => $row) {
         switch ($key) {
             case 'message_sent_by_username':
                 $div_about_me = $td->appendElement('div', array('class'=>'avtar avtar--small'));
-                $div_about_me->appendElement('img', array('src'=>CommonHelper::generateUrl('Image', 'user', array($row['message_sent_by'],'MINI',true), CONF_WEBROOT_FRONT_URL)));
-                $span = $td->appendElement('span', array('class'=>'avtar__name'), $row['message_sent_by_username']);
+                
+                if ($row['message_from_shop_name'] != '') {
+                    $name =  $row['message_from_shop_name'] . ' (' . $row['message_sent_by_username'] . ')';
+                    $div_about_me->appendElement('img', array('src'=>CommonHelper::generateUrl('Image', 'shopLogo', array($row['message_from_shop_id'], $adminLangId,'MINI'), CONF_WEBROOT_FRONT_URL)));
+                } else {
+                    $name =  $row['message_sent_by_username'];
+                    $div_about_me->appendElement('img', array('src'=>CommonHelper::generateUrl('Image', 'user', array($row['message_sent_by'],'MINI',true), CONF_WEBROOT_FRONT_URL)));
+                }
+                $span = $td->appendElement('span', array('class'=>'avtar__name'), $name);
 
                 break;
             case 'message_sent_to_name':
                 //$td->setAttribute(array('width'=>'55%'));
                 $figure = $td->appendElement('figure', array('class'=>'avtar bgm-purple'));
-                $figure->appendElement('img', array('src'=>CommonHelper::generateUrl('Image', 'user', array($row['message_sent_to'],'MINI',true), CONF_WEBROOT_FRONT_URL)));
-                $span = $td->appendElement('span', array('class'=>'avtar__name'), $row['message_sent_to_name']);
+                
+                if ($row['message_to_shop_name'] != '') {
+                    $figure->appendElement('img', array('src'=>CommonHelper::generateUrl('Image', 'shopLogo', array($row['message_to_shop_id'], $adminLangId,'MINI'), CONF_WEBROOT_FRONT_URL)));
+                    $name =  $row['message_to_shop_name'] . ' (' . $row['message_sent_to_name'] . ')';
+                } else {
+                    $figure->appendElement('img', array('src'=>CommonHelper::generateUrl('Image', 'user', array($row['message_sent_to'],'MINI',true), CONF_WEBROOT_FRONT_URL)));
+                    $name =  $row['message_sent_to_name'];
+                }
+                $span = $td->appendElement('span', array('class'=>'avtar__name'), $name);
 
                 break;
             case 'message_text':
