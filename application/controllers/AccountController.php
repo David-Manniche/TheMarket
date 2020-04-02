@@ -2262,7 +2262,7 @@ class AccountController extends LoggedUserController
         $page = (empty($post['page']) || $post['page'] <= 0) ? 1 : FatUtility::int($post['page']);
         $pagesize = FatApp::getConfig('conf_page_size', FatUtility::VAR_INT, 10);
         
-        $parentAndTheirChildIds = User::getParentAndTheirChildIds($userId);
+        $parentAndTheirChildIds = User::getParentAndTheirChildIds($this->userParentId, false, true);
 
         $srch = new MessageSearch();
         $srch->joinThreadLastMessage();
@@ -2358,7 +2358,7 @@ class AccountController extends LoggedUserController
             $srch->joinProducts($this->siteLangId);
         }
 
-        $parentAndThierChildIds = User::getParentAndTheirChildIds($this->userParentId);
+        $parentAndThierChildIds = User::getParentAndTheirChildIds($this->userParentId, false, true);
 
         $srch->joinOrderProducts();
         $srch->joinOrderProductStatus();
@@ -2433,7 +2433,7 @@ class AccountController extends LoggedUserController
             }
         }
 
-        $allowedUserIds = User::getParentAndTheirChildIds($this->userParentId);
+        $allowedUserIds = User::getParentAndTheirChildIds($this->userParentId, false, true);
         $page = (empty($post['page']) || $post['page'] <= 0) ? 1 : FatUtility::int($post['page']);
         $pagesize = FatApp::getConfig('conf_page_size', FatUtility::VAR_INT, 10);
 
@@ -2512,7 +2512,7 @@ class AccountController extends LoggedUserController
             FatUtility::dieWithError(Message::getHtml());
         }
 
-        $allowedUserIds = User::getParentAndTheirChildIds($this->userParentId);
+        $allowedUserIds = User::getParentAndTheirChildIds($this->userParentId, false, true);
 
         $srch = new MessageSearch();
         $srch->joinThreadMessage();
