@@ -314,3 +314,8 @@ Bug :
     => 035807 - Subseller also displaying in admin users listing when search by type for seller.
     => 035803 - In case of read permission title should't display edit for related and upsell products.
     => 035810 - Displayed percentage with tax combinations.
+    => 035797 - when review is submitted from product detail page then after submitting review it redirects to order listing instead of staying on same page.
+    => 035812 - Error occured!! While adding new inventory from catalog.
+    => 035800 - admin> catalog list> filters> user filter is not accessible if catalog product is selected and then filters are reset
+    => 035804 - admin> import/export> add media to server> buttons are merging with each other
+    => 035805 - admin> import/export> adding category media getting fatal
