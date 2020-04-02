@@ -309,3 +309,4 @@ Bug :
     => 035780 - Set validation for commmission setting in percaentage uop to 100 .
     => 035779 - On commission settings set validation when admin tried to save without selecting category & user & product.
     => 035765 - Activve subscription blog stats issue.
+    => 035797 - when review is submitted from product detail page then after submitting review it redirects to order listing instead of staying on same page.

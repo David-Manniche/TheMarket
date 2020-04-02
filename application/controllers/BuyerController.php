@@ -1615,7 +1615,11 @@ class BuyerController extends BuyerBaseController
             $this->_template->render();
         }
         Message::addMessage(Labels::getLabel('MSG_Feedback_Submitted_Successfully', $this->siteLangId));
-        FatApp::redirectUser(CommonHelper::generateUrl('Buyer', 'Orders'));
+        if (isset($post['referrer']) && !empty($post['referrer'])) {
+            FatApp::redirectUser($post['referrer']);
+        } else {
+            FatApp::redirectUser(CommonHelper::generateUrl('Buyer', 'Orders'));
+        }
     }
 
     public function orderReturnRequest($op_id)
@@ -2399,6 +2403,7 @@ class BuyerController extends BuyerBaseController
         $frm->addRequiredField(Labels::getLabel('LBL_Title', $langId), 'spreview_title');
         $frm->addTextArea(Labels::getLabel('LBL_Description', $langId), 'spreview_description')->requirements()->setRequired();
         $frm->addHiddenField('', 'op_id', $op_id);
+        $frm->addHiddenField('', 'referrer', CommonHelper::redirectUserReferer(true));
         $frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_Send_Review', $langId));
         return $frm;
     }
