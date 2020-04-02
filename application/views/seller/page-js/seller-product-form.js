@@ -134,8 +134,6 @@ $(document).on('change','.selprodoption_optionvalue_id',function(){
 	};
 
 	setUpSellerProductDownloads = function (type, product_id, selprod_id){
-		alert(type);
-		alert(DIGITAL_DOWNLOAD_FILE);
 		var data = new FormData();
 		$inputs = $('#frmDownload input[type=text],#frmDownload input[type=textarea],#frmDownload select,#frmDownload input[type=hidden]');
 		$inputs.each(function() { data.append( this.name,$(this).val());});
@@ -165,7 +163,6 @@ $(document).on('change','.selprodoption_optionvalue_id',function(){
 				});
 			});
 		}else{
-			alert('hi');
 			var data = fcom.frmData(document.frmDownload);
 			data = data + '&' + 'selprod_id' + "=" + selprod_id;
 			/*if (!$('#frmDownload').validate()) return;*/
