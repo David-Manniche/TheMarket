@@ -312,3 +312,4 @@ Bug :
 ===================TV-9.1.6.20200402===================
 Bug :
     => 035807 - Subseller also displaying in admin users listing when search by type for seller.
+    => 035803 - In case of read permission title should't display edit for related and upsell products.
