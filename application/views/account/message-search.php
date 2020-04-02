@@ -1,5 +1,4 @@
 <?php defined('SYSTEM_INIT') or die('Invalid Usage.');
-
 if (!empty($arr_listing) && is_array($arr_listing)) { ?>
     <div class="messages-list">
         <ul>
@@ -8,29 +7,46 @@ if (!empty($arr_listing) && is_array($arr_listing)) { ?>
                 
                 $liClass = 'is-read';
 
-                if($row['message_to_shop_id'] == '' && $row['message_to'] != $loggedUserId){
+                if(!in_array($row['message_to'], $parentAndTheirChildIds)){
                     $toUserId = $row['message_to_user_id'];
                     $toName = $row['message_to_name'];
-
-                    $userImgUpdatedOn = User::getAttributesById($toUserId, 'user_updated_on');
-                    $uploadedTime = AttachedFile::setTimeParam($userImgUpdatedOn);
-                    $toImage = FatCache::getCachedUrl(CommonHelper::generateUrl('Image', 'user', array($toUserId,'thumb',true)).$uploadedTime, CONF_IMG_CACHE_TIME, '.jpg');
-                } else {
-                    $toUserId = $row['message_from_user_id'];
-                    $toName = $row['message_from_name'];
-                    if ($row['message_from_shop_name'] != ''){
-                        $toName = $row['message_from_shop_name'] . ' (' . $row['message_from_name'] . ')';
+                    if ($row['message_to_shop_name'] != ''){
+                        $toName = $row['message_to_shop_name'] . ' (' . $row['message_to_name'] . ')';
                     } 
-                    
-                    if ($row['message_from_shop_name'] != '' && $row['message_from_shop_id'] > 0) {
-                        $userImgUpdatedOn = Shop::getAttributesById($row['message_from_shop_id'], 'shop_updated_on');
+
+                    if ($row['message_to_shop_name'] != '' && $row['message_to_shop_id'] > 0) {
+                        $userImgUpdatedOn = Shop::getAttributesById($row['message_to_shop_id'], 'shop_updated_on');
                         $uploadedTime = AttachedFile::setTimeParam($userImgUpdatedOn);
-                        $toImage = FatCache::getCachedUrl(CommonHelper::generateUrl('Image', 'shopLogo', array($row['message_from_shop_id'], $siteLangId, 'thumb')).$uploadedTime, CONF_IMG_CACHE_TIME, '.jpg');
+                        $toImage = FatCache::getCachedUrl(CommonHelper::generateUrl('Image', 'shopLogo', array($row['message_to_shop_id'], $siteLangId, 'thumb')).$uploadedTime, CONF_IMG_CACHE_TIME, '.jpg');
                     } else {
                         $userImgUpdatedOn = User::getAttributesById($toUserId, 'user_updated_on');
                         $uploadedTime = AttachedFile::setTimeParam($userImgUpdatedOn);
                         $toImage = FatCache::getCachedUrl(CommonHelper::generateUrl('Image', 'user', array($toUserId,'thumb',true)).$uploadedTime, CONF_IMG_CACHE_TIME, '.jpg');
                     } 
+                    
+                } else {
+                    if(in_array($row['message_from_user_id'], $parentAndTheirChildIds)){
+                        $toUserId = $row['thread_started_by'];
+                        $toName = $row['thread_started_by_name'];
+                        $userImgUpdatedOn = User::getAttributesById($toUserId, 'user_updated_on');
+                        $uploadedTime = AttachedFile::setTimeParam($userImgUpdatedOn);
+                        $toImage = FatCache::getCachedUrl(CommonHelper::generateUrl('Image', 'user', array($toUserId,'thumb',true)).$uploadedTime, CONF_IMG_CACHE_TIME, '.jpg');
+                    } else {
+                        $toUserId = $row['message_from_user_id'];
+                        $toName = $row['message_from_name'];
+                        if ($row['message_from_shop_name'] != ''){
+                            $toName = $row['message_from_shop_name'] . ' (' . $row['message_from_name'] . ')';
+                        }
+                        if ($row['message_from_shop_name'] != '' && $row['message_from_shop_id'] > 0) {
+                            $userImgUpdatedOn = Shop::getAttributesById($row['message_from_shop_id'], 'shop_updated_on');
+                            $uploadedTime = AttachedFile::setTimeParam($userImgUpdatedOn);
+                            $toImage = FatCache::getCachedUrl(CommonHelper::generateUrl('Image', 'shopLogo', array($row['message_from_shop_id'], $siteLangId, 'thumb')).$uploadedTime, CONF_IMG_CACHE_TIME, '.jpg');
+                        } else {
+                            $userImgUpdatedOn = User::getAttributesById($toUserId, 'user_updated_on');
+                            $uploadedTime = AttachedFile::setTimeParam($userImgUpdatedOn);
+                            $toImage = FatCache::getCachedUrl(CommonHelper::generateUrl('Image', 'user', array($toUserId,'thumb',true)).$uploadedTime, CONF_IMG_CACHE_TIME, '.jpg');
+                        } 
+                    }
                 }
                 
                 if ($row['message_to'] == $loggedUserId) {

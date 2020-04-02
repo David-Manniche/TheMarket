@@ -2876,7 +2876,7 @@ class User extends MyAppModel
         return array_keys($record);
     }
 
-    public static function getParentAndTheirChildIds($userId, $active = false, $isParentId = true){
+    public static function getParentAndTheirChildIds($userId, $active = false, $isParentId = false){
         $userId = FatUtility::int($userId);
         if (false == $isParentId) {
             $parent = User::getAttributesById($userId, 'user_parent');
