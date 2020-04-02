@@ -2393,7 +2393,7 @@ class AccountController extends LoggedUserController
             $frm->fill(array('message_thread_id' => $threadId, 'message_id' => $messageId));
         }
 
-        $threadObj = new Thread($threadId);
+        $threadObj = new Thread($threadId);        
         if (!$threadObj->markMessageReadFromUserArr($threadId, $parentAndThierChildIds)) {
             if (true === MOBILE_APP_API_CALL) {
                 Message::addErrorMessage(strip_tags(current($threadObj->getError())));
