@@ -22,7 +22,8 @@ foreach ($arrListing as $selProdId => $relatedProds) {
     foreach ($arr_flds as $key => $val) {
         $tr->setAttribute('id', 'row-'.$selProdId);
         if($key == 'product_name'){
-            $td = $tr->appendElement('td', array('class' => 'js-product-edit cursor-pointer', 'row-id' => $selProdId, 'title' => Labels::getLabel('LBL_Click_Here_For_Edit', $siteLangId)));
+            $title = ($canEdit) ? Labels::getLabel('LBL_Click_Here_For_Edit', $siteLangId) : '';
+            $td = $tr->appendElement('td', array('class' => 'js-product-edit cursor-pointer', 'row-id' => $selProdId, 'title' => $title));
         }else{
             $td = $tr->appendElement('td');
         }

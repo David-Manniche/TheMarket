@@ -51,10 +51,11 @@ $str='<table cellspacing="0" cellpadding="0" border="0" width="100%" style="bord
         } else {
             foreach ($val['taxOptions'] as $key => $value) {
                 $productTaxChargedTxt .= '<p><strong>'.$key.':</strong> '.CommonHelper::displayMoneyFormat($value).'</p>';
-                if (!isset($taxOptionsTotal[$key])) {
-                    $taxOptionsTotal[$key] = 0;
+                if (!isset($taxOptionsTotal[$key]['value'])) {
+                    $taxOptionsTotal[$key]['value'] = 0;
                 }
-                $taxOptionsTotal[$key] += $value;
+                $taxOptionsTotal[$key]['value'] += $value['value'];
+                $taxOptionsTotal[$key]['title'] = CommonHelper::displayTaxPercantage($value);
             }
         }
 
@@ -96,8 +97,8 @@ $str='<table cellspacing="0" cellpadding="0" border="0" width="100%" style="bord
         } else {
             foreach ($taxOptionsTotal as $key => $val) {
                 $str.='<tr>
-                <td colspan="6" style="padding:10px;font-size:13px; color:#333;border:1px solid #ddd;" align="right">'.$key.'</td>
-                <td style="padding:10px;font-size:13px; color:#333;border:1px solid #ddd;" align="right">'.CommonHelper::displayMoneyFormat($val).'</td>
+                <td colspan="6" style="padding:10px;font-size:13px; color:#333;border:1px solid #ddd;" align="right">'.CommonHelper::displayTaxPercantage($val).'</td>
+                <td style="padding:10px;font-size:13px; color:#333;border:1px solid #ddd;" align="right">'.CommonHelper::displayMoneyFormat($val['value']).'</td>
                 </tr>';
             }
         }

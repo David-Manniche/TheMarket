@@ -79,6 +79,7 @@ class UsersController extends AdminBaseController
         switch ($type) {
             case User::USER_TYPE_SELLER:
                 $srch->addCondition('u.user_is_supplier', '=', applicationConstants::YES);
+                $srch->addCondition('u.user_parent', '=', 0);
                 break;
             case User::USER_TYPE_BUYER:
                 $srch->addCondition('u.user_is_buyer', '=', applicationConstants::YES);
