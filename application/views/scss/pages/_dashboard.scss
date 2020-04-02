@@ -1056,7 +1056,7 @@
             fill: $brand-color !important;
         }
 
-       
+
 
         .cards,
         .box--share {
@@ -1243,17 +1243,19 @@
 
     }
 
-
     .msg_db {
         width: 70px;
         height: 70px;
-        border-radius: 50%;
+        border-radius: 4px;
         overflow: hidden;
-
         margin-#{$end-direction}: 30px;
         -webkit-box-flex: 0;
         -ms-flex: 0 0 70px;
         flex: 0 0 70px;
+        background: $gray-color;
+        display: flex;
+        align-items: center;
+        justify-content: center;
     }
 
     .msg__desc {

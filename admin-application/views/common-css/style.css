@@ -871,7 +871,7 @@ BUTTON SIZING
     line-height: normal;
     padding: 7px 10px 7px;
     min-height: 1%;
-    margin: 0 2px;
+    margin:2px;
 }
 
 .btn-sm.themebtn.btn-default {
