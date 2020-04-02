@@ -2879,7 +2879,10 @@ class User extends MyAppModel
     public static function getParentAndTheirChildIds($userId, $active = false, $isParentId = true){
         $userId = FatUtility::int($userId);
         if (false == $isParentId) {
-            $userId = User::getAttributesById($userId, 'user_parent');
+            $parent = User::getAttributesById($userId, 'user_parent');
+            if (0 < $parent) {
+                $userId = $parent;
+            }
         }
         $srch = new SearchBase(User::DB_TBL, 'u');
         $srch->joinTable(Shop::DB_TBL, 'LEFT OUTER JOIN', 'shop_user_id = if(u.user_parent > 0, user_parent, u.user_id)', 'shop');
