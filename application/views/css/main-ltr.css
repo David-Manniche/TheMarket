@@ -31918,12 +31918,16 @@ max-height: 408px;*/ }
 .messages-list .msg_db {
   width: 70px;
   height: 70px;
-  border-radius: 50%;
+  border-radius: 4px;
   overflow: hidden;
   margin-right: 30px;
   -webkit-box-flex: 0;
   -ms-flex: 0 0 70px;
-  flex: 0 0 70px; }
+  flex: 0 0 70px;
+  background: var(--gray-color);
+  display: flex;
+  align-items: center;
+  justify-content: center; }
 .messages-list .msg__desc {
   width: calc(100% - 60px); }
 .messages-list .msg__date {
