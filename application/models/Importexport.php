@@ -915,8 +915,8 @@ class Importexport extends ImportexportCommon
                     $physical_path = explode('/', $categoryMediaArr['afile_physical_path']);
                     if (AttachedFile::FILETYPE_BULK_IMAGES_PATH == $physical_path[0] . '/') {
                         $afileObj = new AttachedFile();
-
-                        $moved = $afileObj->moveAttachment($categoryMediaArr['afile_physical_path'], $categoryMediaArr['afile_type'], $categoryMediaArr['afile_record_id'], 0, $categoryMediaArr['afile_name'], $categoryMediaArr['afile_display_order'], true, $categoryMediaArr['afile_lang_id']);
+                        $screen = isset($categoryMediaArr['afile_screen']) ? $categoryMediaArr['afile_screen'] : 0;
+                        $moved = $afileObj->moveAttachment($categoryMediaArr['afile_physical_path'], $categoryMediaArr['afile_type'], $categoryMediaArr['afile_record_id'], 0, $categoryMediaArr['afile_name'], $categoryMediaArr['afile_display_order'], true, $categoryMediaArr['afile_lang_id'], $screen);
 
                         if (false === $moved) {
                             $errMsg = Labels::getLabel("MSG_Invalid_File.", $langId);
@@ -1271,8 +1271,8 @@ class Importexport extends ImportexportCommon
                     $physical_path = explode('/', $brandsMediaArr['afile_physical_path']);
                     if (AttachedFile::FILETYPE_BULK_IMAGES_PATH == $physical_path[0] . '/') {
                         $afileObj = new AttachedFile();
-
-                        $moved = $afileObj->moveAttachment($brandsMediaArr['afile_physical_path'], $fileType, $dataToSaveArr['afile_record_id'], 0, $brandsMediaArr['afile_name'], $brandsMediaArr['afile_display_order'], true, $brandsMediaArr['afile_lang_id']);
+                        $screen = isset($brandsMediaArr['afile_screen']) ? $brandsMediaArr['afile_screen'] : 0;
+                        $moved = $afileObj->moveAttachment($brandsMediaArr['afile_physical_path'], $fileType, $dataToSaveArr['afile_record_id'], 0, $brandsMediaArr['afile_name'], $brandsMediaArr['afile_display_order'], true, $brandsMediaArr['afile_lang_id'], $screen);
 
                         if (false === $moved) {
                             $errMsg = Labels::getLabel("MSG_Invalid_File.", $langId);
