@@ -149,10 +149,11 @@ if ($order['order_reward_point_used'] > 0) {
                                 $k++;
                                 if (!empty($op['taxOptions'])) {
                                     foreach ($op['taxOptions'] as $key => $val) {
-                                        if (!isset($taxOptionsTotal[$key])) {
-                                            $taxOptionsTotal[$key] = 0;
+                                        if (!isset($taxOptionsTotal[$key]['value'])) {
+                                            $taxOptionsTotal[$key]['value'] = 0;
                                         }
-                                        $taxOptionsTotal[$key] += $val;
+                                        $taxOptionsTotal[$key]['value'] += $val['value'];
+                                        $taxOptionsTotal[$key]['title'] = CommonHelper::displayTaxPercantage($val);
                                     }
                                 }
                             } ?>
@@ -172,8 +173,8 @@ if ($order['order_reward_point_used'] > 0) {
                             <?php } else {
                                 foreach ($taxOptionsTotal as $key => $val) { ?>
                                   <tr>
-                                    <td colspan="8" class="text-right"><?php echo $key ?></td>
-                                    <td class="text-right" colspan="2"><?php echo CommonHelper::displayMoneyFormat($val); ?></td>
+                                    <td colspan="8" class="text-right"><?php echo $val['title'] ?></td>
+                                    <td class="text-right" colspan="2"><?php echo CommonHelper::displayMoneyFormat($val['value']); ?></td>
                                   </tr>
                                 <?php }
                             } ?>
