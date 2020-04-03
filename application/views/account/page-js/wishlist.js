@@ -137,7 +137,8 @@ $("document").ready(function(){
 		$("form[name='frmProductSearchPaging']").remove(); */
 		var uwlist_id = $("input[name='uwlist_id']").val();
         searchWishListItems( uwlist_id, 0, page );
-        $(".selectAll-js").click();
+		$(".selectAll-js").prop("checked", false);
+		$(".formActionBtn-js").addClass('formActions-css');
 	}
 
 	goToFavouriteListingSearchPage = function(page){
