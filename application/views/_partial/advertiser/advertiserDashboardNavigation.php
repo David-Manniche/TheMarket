@@ -47,12 +47,14 @@ $action = strtolower($action);
                                 </svg>
                             </i><span class="menu-item__title"><?php echo Labels::getLabel("LBL_Promotion_Charges", $siteLangId); ?></span></a></div>
                 </li>
+				<?php if ($userParentId == UserAuthentication::getLoggedUserId()) { ?>
                 <li class="menu__item <?php echo ($controller == 'account' && $action == 'credits') ? 'is-active' : ''; ?>">
                     <div class="menu__item__inner"><a title="<?php echo Labels::getLabel("LBL_My_Credits", $siteLangId); ?>" href="<?php echo CommonHelper::generateUrl('Account', 'credits'); ?>"><i class="icn shop"><svg class="svg">
                                     <use xlink:href="<?php echo CONF_WEBROOT_URL; ?>images/retina/sprite.svg#dash-credits" href="<?php echo CONF_WEBROOT_URL; ?>images/retina/sprite.svg#dash-credits"></use>
                                 </svg>
                             </i><span class="menu-item__title"><?php echo Labels::getLabel('LBL_My_Credits', $siteLangId); ?></span></a></div>
                 </li>
+				<?php }?>
                 <li class="divider"></li>
                 <?php } ?>
                 <li class="menu__item">
