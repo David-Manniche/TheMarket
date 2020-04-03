@@ -323,3 +323,4 @@ Bug :
 Bug :
     => 035809 Subseller >> if he has permission for products then "add inventory" icon gets display instead of view inventory
     => 035801 - text is not wrapping in promotions tab in advertiser
+    => 035609 - Getting error while changing email.
