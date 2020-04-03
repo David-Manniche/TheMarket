@@ -892,14 +892,16 @@ class Importexport extends ImportexportCommon
                     $saveToTempTable = true;
                 }
 
+                $screen = isset($categoryMediaArr['afile_screen']) ? $categoryMediaArr['afile_screen'] : 0;
+
                 if ($saveToTempTable) {
                     $categoryMediaArr['afile_downloaded'] = applicationConstants::NO;
                     $categoryMediaArr['afile_unique'] = applicationConstants::YES;
                     $this->db->deleteRecords(
                         AttachedFile::DB_TBL_TEMP,
                         array(
-                        'smt' => 'afile_type = ? AND afile_record_id = ? AND afile_record_subid = ? AND afile_lang_id = ?',
-                        'vals' => array($categoryMediaArr['afile_type'], $categoryMediaArr['afile_record_id'], 0, $categoryMediaArr['afile_lang_id'])
+                        'smt' => 'afile_type = ? AND afile_record_id = ? AND afile_record_subid = ? AND afile_lang_id = ? AND afile_screen = ?',
+                        'vals' => array($categoryMediaArr['afile_type'], $categoryMediaArr['afile_record_id'], 0, $categoryMediaArr['afile_lang_id'], $screen)
                         )
                     );
                     $this->db->insertFromArray(AttachedFile::DB_TBL_TEMP, $categoryMediaArr, false, array(), $categoryMediaArr);
@@ -907,15 +909,14 @@ class Importexport extends ImportexportCommon
                     $this->db->deleteRecords(
                         AttachedFile::DB_TBL,
                         array(
-                        'smt' => 'afile_type = ? AND afile_record_id = ? AND afile_record_subid = ? AND afile_lang_id = ?',
-                        'vals' => array($categoryMediaArr['afile_type'], $categoryMediaArr['afile_record_id'], 0, $categoryMediaArr['afile_lang_id'])
+                        'smt' => 'afile_type = ? AND afile_record_id = ? AND afile_record_subid = ? AND afile_lang_id = ? AND afile_screen = ?',
+                        'vals' => array($categoryMediaArr['afile_type'], $categoryMediaArr['afile_record_id'], 0, $categoryMediaArr['afile_lang_id'], $screen)
                         )
                     );
 
                     $physical_path = explode('/', $categoryMediaArr['afile_physical_path']);
                     if (AttachedFile::FILETYPE_BULK_IMAGES_PATH == $physical_path[0] . '/') {
                         $afileObj = new AttachedFile();
-                        $screen = isset($categoryMediaArr['afile_screen']) ? $categoryMediaArr['afile_screen'] : 0;
                         $moved = $afileObj->moveAttachment($categoryMediaArr['afile_physical_path'], $categoryMediaArr['afile_type'], $categoryMediaArr['afile_record_id'], 0, $categoryMediaArr['afile_name'], $categoryMediaArr['afile_display_order'], true, $categoryMediaArr['afile_lang_id'], $screen);
 
                         if (false === $moved) {
@@ -1248,14 +1249,16 @@ class Importexport extends ImportexportCommon
                     $saveToTempTable = true;
                 }
 
+                $screen = isset($brandsMediaArr['afile_screen']) ? $brandsMediaArr['afile_screen'] : 0;
+
                 if ($saveToTempTable) {
                     $dataToSaveArr['afile_downloaded'] = applicationConstants::NO;
                     $dataToSaveArr['afile_unique'] = applicationConstants::YES;
                     $this->db->deleteRecords(
                         AttachedFile::DB_TBL_TEMP,
                         array(
-                        'smt' => 'afile_type = ? AND afile_record_id = ? AND afile_record_subid = ? AND afile_lang_id = ?',
-                        'vals' => array( $fileType, $dataToSaveArr['afile_record_id'], 0, $dataToSaveArr['afile_lang_id'] )
+                        'smt' => 'afile_type = ? AND afile_record_id = ? AND afile_record_subid = ? AND afile_lang_id = ? AND afile_screen = ?',
+                        'vals' => array( $fileType, $dataToSaveArr['afile_record_id'], 0, $dataToSaveArr['afile_lang_id'], $screen )
                         )
                     );
                     $this->db->insertFromArray(AttachedFile::DB_TBL_TEMP, $dataToSaveArr, false, array(), $dataToSaveArr);
@@ -1263,15 +1266,14 @@ class Importexport extends ImportexportCommon
                     $this->db->deleteRecords(
                         AttachedFile::DB_TBL,
                         array(
-                        'smt' => 'afile_type = ? AND afile_record_id = ? AND afile_record_subid = ? AND afile_lang_id = ?',
-                        'vals' => array( $fileType, $dataToSaveArr['afile_record_id'], 0, $dataToSaveArr['afile_lang_id'] )
+                        'smt' => 'afile_type = ? AND afile_record_id = ? AND afile_record_subid = ? AND afile_lang_id = ? AND afile_screen = ?',
+                        'vals' => array( $fileType, $dataToSaveArr['afile_record_id'], 0, $dataToSaveArr['afile_lang_id'], $screen )
                         )
                     );
 
                     $physical_path = explode('/', $brandsMediaArr['afile_physical_path']);
                     if (AttachedFile::FILETYPE_BULK_IMAGES_PATH == $physical_path[0] . '/') {
                         $afileObj = new AttachedFile();
-                        $screen = isset($brandsMediaArr['afile_screen']) ? $brandsMediaArr['afile_screen'] : 0;
                         $moved = $afileObj->moveAttachment($brandsMediaArr['afile_physical_path'], $fileType, $dataToSaveArr['afile_record_id'], 0, $brandsMediaArr['afile_name'], $brandsMediaArr['afile_display_order'], true, $brandsMediaArr['afile_lang_id'], $screen);
 
                         if (false === $moved) {
