@@ -71,7 +71,7 @@ $str='<table cellspacing="0" cellpadding="0" border="0" width="100%" style="bord
         } else {
             $taxChargedTxt = '';
             foreach ($taxOptions as $key => $val) {
-                $taxChargedTxt .= '<p style="color:#333"><strong>'.CommonHelper::displayTaxPercantage($val).': </strong>'.CommonHelper::displayMoneyFormat($val['value']).'</p>';
+                $taxChargedTxt .= '<p style="color:#333"><strong>'.CommonHelper::displayTaxPercantage($val, true).': </strong>'.CommonHelper::displayMoneyFormat($val['value']).'</p>';
             }
             $str .= '<td style="padding:10px;font-size:13px; color:#333;border:1px solid #ddd;" align="right">'.$taxChargedTxt.'</td>';
         }

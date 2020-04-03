@@ -259,8 +259,8 @@ case 'signups': ?>
 			$userTypeStr .= $arr[User::USER_TYPE_SELLER].'<br/>';
 		}
 
-		if (0 < $user['user_parent']) {
-			$userTypeStr .= Labels::getLabel('LBL_Sub_User', $adminLangId);
+		if (0 < $user['user_parent'] && $user['user_is_supplier'] ) {
+			$userTypeStr = Labels::getLabel('LBL_Sub_Seller', $adminLangId);
 		}
 		?>
 		<tr>

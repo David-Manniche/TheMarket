@@ -86,6 +86,9 @@ class CommonHelper extends FatUtility
 
     public static function getLangId()
     {
+        if (1 > self::$_lang_id) {
+            return FatApp::getConfig('CONF_DEFAULT_SITE_LANG', FatUtility::VAR_INT, 1);
+        }
         return self::$_lang_id;
     }
 
@@ -1885,8 +1888,12 @@ class CommonHelper extends FatUtility
         return $totalCount;
     }
 
-    public static function displayTaxPercantage($taxVal)
-    {
+    public static function displayTaxPercantage($taxVal, $displayPercentage = false)
+    {        
+        if (false == $displayPercentage) {
+            return $taxVal['name'];
+        }
+
         if ($taxVal['inPercentage'] == Tax::TYPE_PERCENTAGE) {
             return $taxVal['name'] . ' (' . $taxVal['percentageValue'] . '%)';
         }
