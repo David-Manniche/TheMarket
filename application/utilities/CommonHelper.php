@@ -1888,8 +1888,12 @@ class CommonHelper extends FatUtility
         return $totalCount;
     }
 
-    public static function displayTaxPercantage($taxVal)
-    {
+    public static function displayTaxPercantage($taxVal, $displayPercentage = false)
+    {        
+        if (false == $displayPercentage) {
+            return $taxVal['name'];
+        }
+
         if ($taxVal['inPercentage'] == Tax::TYPE_PERCENTAGE) {
             return $taxVal['name'] . ' (' . $taxVal['percentageValue'] . '%)';
         }
