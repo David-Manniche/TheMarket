@@ -325,4 +325,4 @@ Bug :
     => 035801 - text is not wrapping in promotions tab in advertiser
 ================TV-9.1.7.20200403=========================    
     => 035609 - Getting error while changing email.
-
+===================TV-9.1.8.20200403===================
