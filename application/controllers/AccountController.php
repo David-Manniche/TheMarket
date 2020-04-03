@@ -3454,6 +3454,21 @@ class AccountController extends LoggedUserController
         $this->_template->render();
     }
 
+    public function readAllNotifications()
+    {
+        $userId = UserAuthentication::getLoggedUserId();
+        $smt = array(
+            'smt' => Notifications::DB_TBL_PREFIX . 'is_read = ? AND ' . Notifications::DB_TBL_PREFIX . 'user_id = ?',
+            'vals' => array(applicationConstants::NO, (int)$userId)
+        );
+        $db = FatApp::getDb();
+        if (!$db->updateFromArray(Notifications::DB_TBL, array(Notifications::DB_TBL_PREFIX . 'is_read' => 1), $smt)) {
+            FatUtility::dieJsonError($db->getError());
+        }
+        $this->set('msg', Labels::getLabel('Msg_Successfully_Updated', $this->siteLangId));
+        $this->_template->render();
+    }
+
     public function markNotificationRead($notificationId)
     {
         $notificationId = FatUtility::int($notificationId);
