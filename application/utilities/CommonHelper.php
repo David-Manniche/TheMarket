@@ -86,6 +86,9 @@ class CommonHelper extends FatUtility
 
     public static function getLangId()
     {
+        if (1 > self::$_lang_id) {
+            return FatApp::getConfig('CONF_DEFAULT_SITE_LANG', FatUtility::VAR_INT, 1);
+        }
         return self::$_lang_id;
     }
 
