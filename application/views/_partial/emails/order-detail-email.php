@@ -50,7 +50,7 @@ $str='<table cellspacing="0" cellpadding="0" border="0" width="100%" style="bord
             $productTaxChargedTxt = CommonHelper::displayMoneyFormat(CommonHelper::orderProductAmount($val, 'TAX'));
         } else {
             foreach ($val['taxOptions'] as $key => $value) {
-                $productTaxChargedTxt .= '<p><strong>'.CommonHelper::displayTaxPercantage($val).':</strong> '.CommonHelper::displayMoneyFormat($value['value']).'</p>';
+                $productTaxChargedTxt .= '<p><strong>'.CommonHelper::displayTaxPercantage($value).':</strong> '.CommonHelper::displayMoneyFormat($value['value']).'</p>';
                 if (!isset($taxOptionsTotal[$key]['value'])) {
                     $taxOptionsTotal[$key]['value'] = 0;
                 }
