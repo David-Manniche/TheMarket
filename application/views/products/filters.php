@@ -19,7 +19,7 @@ if (isset($prodcat_code)) {
     $keywordFld->htmlAfterField = '<input name="btnSrchSubmit" value="" type="submit" class="input-submit">';
     /*$keywordFld = $frmProductSearch->getField('keyword');
     $keywordFld->overrideFldType("hidden");*/ ?>
-<div class="product-search">
+<div class="product-search">    
     <!--<form>
         <input placeholder="Search" class="input-field nofocus" value="" type="text">
         <input name="btnSrchSubmit" value="" class="input-submit" type="submit">
@@ -39,6 +39,9 @@ if (isset($prodcat_code)) {
 <!--Filters[ -->
 <div class="widgets-head">
     <div class="widgets__heading filter-head-js"><h6 class="m-0"><?php echo Labels::getLabel('LBL_FILTERS', $siteLangId);?></h6>
+        <a href="javascript:void(0)" class="resetAll link" id="clearSearch" onClick="clearSearch()" style="display:none;">
+            <?php echo Labels::getLabel('LBL_Clear_Search', $siteLangId);?>
+        </a>
         <a href="javascript:void(0)" class="resetAll link" id="resetAll" onClick="resetListingFilter()" style="display:none;">
             <?php echo Labels::getLabel('LBL_Reset_All', $siteLangId);?>
         </a>
