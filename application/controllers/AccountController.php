@@ -3611,9 +3611,11 @@ class AccountController extends LoggedUserController
         $page = FatApp::getPostedData('page', FatUtility::VAR_INT, 1);
         $defaultPageSize = FatApp::getConfig('conf_page_size', FatUtility::VAR_INT, 10);
         $pageSize = FatApp::getPostedData('pagesize', FatUtility::VAR_INT, $defaultPageSize);
+        
         $srch = new SearchBase(UserAuthentication::DB_TBL_USER_AUTH);
         $srch->addFld('uauth_device_os');
         $srch->addCondition('uauth_user_id', '=', $userId);
+        $srch->setPageSize(1);
         $rs = $srch->getResultSet();
         $uData = FatApp::getDb()->fetch($rs);
 
@@ -3633,6 +3635,8 @@ class AccountController extends LoggedUserController
         $cond->attachCondition('pnotification_device_os', '=', $uData['uauth_device_os'], 'OR');
         $srch->setPageNumber($page);
         $srch->setPageSize($pageSize);
+        $srch->addOrder('pnotification_added_on', 'DESC');
+        $srch->addOrder('pnotification_id', 'DESC');
         $rs = $srch->getResultSet();
         $pnotificationsArr = FatApp::getDb()->fetchAll($rs);
 
