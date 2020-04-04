@@ -3436,6 +3436,7 @@ class AccountController extends LoggedUserController
     public function notifications()
     {
         $userId = UserAuthentication::getLoggedUserId();
+
         $page = FatApp::getPostedData('page', FatUtility::VAR_INT, 1);
         $defaultPageSize = FatApp::getConfig('conf_page_size', FatUtility::VAR_INT, 10);
         $pageSize = FatApp::getPostedData('pagesize', FatUtility::VAR_INT, $defaultPageSize);
@@ -3602,5 +3603,46 @@ class AccountController extends LoggedUserController
             $this->_template->render();
         }
         $this->_template->render(false, false, 'json-success.php');
+    }
+
+    public function pushNotifications()
+    {
+        $userId = UserAuthentication::getLoggedUserId();
+        $page = FatApp::getPostedData('page', FatUtility::VAR_INT, 1);
+        $defaultPageSize = FatApp::getConfig('conf_page_size', FatUtility::VAR_INT, 10);
+        $pageSize = FatApp::getPostedData('pagesize', FatUtility::VAR_INT, $defaultPageSize);
+        
+        $srch = new SearchBase(UserAuthentication::DB_TBL_USER_AUTH);
+        $srch->addFld('uauth_device_os');
+        $srch->addCondition('uauth_user_id', '=', $userId);
+        $srch->setPageSize(1);
+        $rs = $srch->getResultSet();
+        $uData = FatApp::getDb()->fetch($rs);
+
+        $srch = PushNotification::getSearchObject(true);
+        $srch->addMultipleFields([
+            'pnotification_id',
+            'pnotification_title',
+            'pnotification_description',
+            'pnotification_url',
+            'pntu_user_id'
+        ]);
+        $srch->addCondition('pnotification_status', '=', PushNotification::STATUS_COMPLETED);
+        $srch->addCondition('pnotification_user_auth_type', '=', User::AUTH_TYPE_REGISTERED);
+        $cond = $srch->addCondition('pntu_user_id', 'IS', 'mysql_func_NULL', 'AND', true);
+        $cond->attachCondition('pntu_user_id', '=', $userId, 'OR');
+        $cond = $srch->addCondition('pnotification_device_os', '=', User::DEVICE_OS_BOTH, 'AND');
+        $cond->attachCondition('pnotification_device_os', '=', $uData['uauth_device_os'], 'OR');
+        $srch->setPageNumber($page);
+        $srch->setPageSize($pageSize);
+        $srch->addOrder('pnotification_added_on', 'DESC');
+        $srch->addOrder('pnotification_id', 'DESC');
+        $rs = $srch->getResultSet();
+        $pnotificationsArr = FatApp::getDb()->fetchAll($rs);
+
+        $this->set('pnotifications', $pnotificationsArr);
+        $this->set('total_pages', $srch->pages());
+        $this->set('total_records', $srch->recordCount());
+        $this->_template->render();
     }
 }
