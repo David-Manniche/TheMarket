@@ -3619,7 +3619,7 @@ class AccountController extends LoggedUserController
         $srch->setPageSize(1);
         $rs = $srch->getResultSet();
         $uData = FatApp::getDb()->fetch($rs);
-        
+
         $srch = PushNotification::getSearchObject(true);
         $srch->addMultipleFields([
             'pnotification_id',
@@ -3628,7 +3628,8 @@ class AccountController extends LoggedUserController
             'pnotification_url',
             'pntu_user_id'
         ]);
-        $srch->addCondition('pnotification_status', '=', PushNotification::STATUS_COMPLETED);
+        $cond = $srch->addCondition('pnotification_status', '=', PushNotification::STATUS_COMPLETED, 'AND');
+        $cond->attachCondition('pnotification_status', '=', PushNotification::STATUS_PROCESSING, 'OR');
         $srch->addCondition('pnotification_user_auth_type', '=', User::AUTH_TYPE_REGISTERED);
         $srch->addCondition('pnotification_added_on', '>=', $uData['user_regdate']);
         $cond = $srch->addCondition('pntu_user_id', 'IS', 'mysql_func_NULL', 'AND', true);
