@@ -3612,13 +3612,14 @@ class AccountController extends LoggedUserController
         $defaultPageSize = FatApp::getConfig('conf_page_size', FatUtility::VAR_INT, 10);
         $pageSize = FatApp::getPostedData('pagesize', FatUtility::VAR_INT, $defaultPageSize);
         
-        $srch = new SearchBase(UserAuthentication::DB_TBL_USER_AUTH);
-        $srch->addFld('uauth_device_os');
+        $srch = User::getSearchObject();
+        $srch->joinTable(UserAuthentication::DB_TBL_USER_AUTH, 'INNER JOIN', 'ua.uauth_user_id = u.user_id', 'ua');
+        $srch->addMultipleFields(['uauth_device_os', 'user_regdate']);
         $srch->addCondition('uauth_user_id', '=', $userId);
         $srch->setPageSize(1);
         $rs = $srch->getResultSet();
         $uData = FatApp::getDb()->fetch($rs);
-
+        
         $srch = PushNotification::getSearchObject(true);
         $srch->addMultipleFields([
             'pnotification_id',
@@ -3629,6 +3630,7 @@ class AccountController extends LoggedUserController
         ]);
         $srch->addCondition('pnotification_status', '=', PushNotification::STATUS_COMPLETED);
         $srch->addCondition('pnotification_user_auth_type', '=', User::AUTH_TYPE_REGISTERED);
+        $srch->addCondition('pnotification_added_on', '>=', $uData['user_regdate']);
         $cond = $srch->addCondition('pntu_user_id', 'IS', 'mysql_func_NULL', 'AND', true);
         $cond->attachCondition('pntu_user_id', '=', $userId, 'OR');
         $cond = $srch->addCondition('pnotification_device_os', '=', User::DEVICE_OS_BOTH, 'AND');
