@@ -55,7 +55,7 @@ $str='<table cellspacing="0" cellpadding="0" border="0" width="100%" style="bord
                     $taxOptionsTotal[$key]['value'] = 0;
                 }
                 $taxOptionsTotal[$key]['value'] += $value['value'];
-                $taxOptionsTotal[$key]['title'] = CommonHelper::displayTaxPercantage($value);
+                $taxOptionsTotal[$key]['name'] = CommonHelper::displayTaxPercantage($value);
             }
         }
 
