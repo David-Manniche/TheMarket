@@ -3000,7 +3000,7 @@ class AccountController extends LoggedUserController
         $parentAndTheirChildIds = User::getParentAndTheirChildIds($this->userParentId, false, true);
         $srch = new OrderReturnRequestMessageSearch($this->siteLangId);
         $srch->joinOrderReturnRequests();
-        $srch->joinMessageUser();
+        $srch->joinMessageUser($this->siteLangId);
         $srch->joinMessageAdmin();
         $srch->joinOrderProducts();
         $srch->addCondition('orrmsg_orrequest_id', '=', $orrequest_id);
@@ -3015,7 +3015,7 @@ class AccountController extends LoggedUserController
         $srch->addMultipleFields(
             array( 'orrmsg_id', 'orrmsg_from_user_id', 'orrmsg_msg',
             'orrmsg_date', 'msg_user.user_name as msg_user_name', 'orrequest_status',
-            'orrmsg_from_admin_id', 'admin_name', 'shop_identifier', 'op_selprod_user_id' )
+            'orrmsg_from_admin_id', 'admin_name', 'ifnull(s_l.shop_name, s.shop_identifier) as shop_name', 's.shop_id','op_selprod_user_id' )
         );
 
         $rs = $srch->getResultSet();
@@ -3036,6 +3036,7 @@ class AccountController extends LoggedUserController
         $this->set('totalRecords', $totalRecords);
         $this->set('startRecord', $startRecord);
         $this->set('endRecord', $endRecord);
+        $this->set('parentAndTheirChildIds', $parentAndTheirChildIds);
 
         if (true === MOBILE_APP_API_CALL) {
             $this->_template->render();
