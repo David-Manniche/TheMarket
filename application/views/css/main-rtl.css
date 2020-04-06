@@ -35245,11 +35245,13 @@ body {
   background: rgba(0, 0, 0, 0.1); }
 
 .banner {
-  background-repeat: no-repeat;
-  background-position: center top;
+  background-repeat: repeat;
+  background-position: center;
   position: relative;
   background-attachment: fixed;
-  background-size: cover; }
+  background-size: 25%;
+  background-color: var(--brand-color);
+  color: var(--brand-color-inverse); }
   .banner:after {
     position: absolute;
     top: 0;
@@ -35258,7 +35260,7 @@ body {
     bottom: 0;
     z-index: 0;
     content: "";
-    opacity: 0.5;
+    opacity: 0.3;
     background: #232526;
     /* fallback for old browsers */
     /* Chrome 10-25, Safari 5.1-6 */
@@ -35271,7 +35273,6 @@ body {
 
 .seller-slogan {
   position: relative;
-  color: #fff;
   height: 100%;
   display: -webkit-box;
   display: -ms-flexbox;
@@ -35282,11 +35283,9 @@ body {
   padding: 1rem 0; }
   .seller-slogan .seller-slogan-txt {
     position: static;
-    bottom: 0;
-    color: #fff; }
+    bottom: 0; }
     .seller-slogan .seller-slogan-txt h3 {
       font-size: 3rem;
-      color: inherit;
       font-weight: 600; }
       .seller-slogan .seller-slogan-txt h3 span {
         display: block;
