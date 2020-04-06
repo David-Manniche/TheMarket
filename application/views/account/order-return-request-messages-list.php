@@ -2,7 +2,7 @@
     <?php if(!empty($messagesList)){ ?>
         <?php foreach($messagesList as $message){
         $shop_name = '';
-        if(in_array($message['orrmsg_from_user_id'], $parentAndTheirChildIds) && $message['shop_name']!='')
+        if($message['shop_id'] > 0)
         {
             $shop_name =' - '.$message['shop_name'];
             $userImgUpdatedOn = Shop::getAttributesById($message['shop_id'], 'shop_updated_on');
@@ -12,6 +12,7 @@
             if($message['orrmsg_from_admin_id']) {
                 $toImage = CommonHelper::generateUrl('Image', 'siteLogo', array( $siteLangId, 'THUMB' ));
             } else {
+
                 $userImgUpdatedOn = User::getAttributesById($message['orrmsg_from_user_id'], 'user_updated_on');
                 $uploadedTime = AttachedFile::setTimeParam($userImgUpdatedOn);
                 $toImage = FatCache::getCachedUrl(CommonHelper::generateUrl('Image', 'user', array($message['orrmsg_from_user_id'],'thumb',true)).$uploadedTime, CONF_IMG_CACHE_TIME, '.jpg');
