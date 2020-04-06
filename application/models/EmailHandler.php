@@ -2831,4 +2831,18 @@ class EmailHandler extends FatModel
             'data_request_notification_to_admin' => AdminPrivilege::SECTION_USERS,
         );
     }
+
+    /**
+    * This function returns the path of file from where it calls
+    *
+    * @param string $fileName
+    * @return integer $directory
+    */
+    public static function getTemplatePath($fileName = '', $directory = '_partial/emails')
+    {
+        if (empty($fileName)) {
+            $fileName = current(debug_backtrace())['file'];
+        }
+        return CONF_VIEW_DIR_PATH . $directory . '/' . basename($fileName);
+    }
 }

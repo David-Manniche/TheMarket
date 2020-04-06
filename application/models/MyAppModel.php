@@ -101,7 +101,6 @@ class MyAppModel extends FatModel
     public function updateModifiedTime()
     {
         if (!($this->mainTableRecordId > 0)) {
-            $this->error = 'ERR_INVALID_REQUEST_ID';
             return false;
         }
 

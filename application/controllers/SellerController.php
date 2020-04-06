@@ -2768,17 +2768,17 @@ class SellerController extends SellerBaseController
         }
 
         $orrmsg_orrequest_id = FatUtility::int($orrmsg_orrequest_id);
-        $user_id = $this->userParentId;
+        $parentAndTheirChildIds = User::getParentAndTheirChildIds($this->userParentId, false, true);
 
         $srch = new OrderReturnRequestSearch($this->siteLangId);
         $srch->addCondition('orrequest_id', '=', $orrmsg_orrequest_id);
-        $srch->addCondition('op_selprod_user_id', '=', $user_id);
+        $srch->addCondition('op_selprod_user_id', 'in', $parentAndTheirChildIds);
         $srch->joinOrderProducts();
         $srch->joinSellerProducts();
         $srch->joinOrderReturnReasons();
         $srch->doNotCalculateRecords();
         $srch->doNotLimitRecords();
-        $srch->addMultipleFields(array('orrequest_id', 'orrequest_status', ));
+        $srch->addMultipleFields(array('orrequest_id', 'orrequest_status'));
         $rs = $srch->getResultSet();
         $requestRow = FatApp::getDb()->fetch($rs);
         if (!$requestRow) {
@@ -2794,7 +2794,7 @@ class SellerController extends SellerBaseController
         /* save return request message[ */
         $returnRequestMsgDataToSave = array(
             'orrmsg_orrequest_id' => $requestRow['orrequest_id'],
-            'orrmsg_from_user_id' => $user_id,
+            'orrmsg_from_user_id' => UserAuthentication::getLoggedUserId(),
             'orrmsg_msg' => $post['orrmsg_msg'],
             'orrmsg_date' => date('Y-m-d H:i:s'),
         );

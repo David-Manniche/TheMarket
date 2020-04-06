@@ -22,11 +22,14 @@ class OrderReturnRequestMessageSearch extends SearchBase
         }
     }
 
-    public function joinMessageUser()
+    public function joinMessageUser($langId = 0)
     {
         $this->joinTable(User::DB_TBL, 'LEFT OUTER JOIN', 'orrequestmsg.orrmsg_from_user_id = msg_user.user_id', 'msg_user');
         $this->joinTable(User::DB_TBL_CRED, 'LEFt OUTER JOIN', 'msg_user.user_id = msg_user_cred.credential_user_id', 'msg_user_cred');
-        $this->joinTable('tbl_shops', 'LEFT OUTER JOIN', 'msg_user.user_id = s.shop_user_id', 's');
+        $this->joinTable('tbl_shops', 'LEFT OUTER JOIN', 'if(msg_user.user_parent > 0 , msg_user.user_parent, msg_user.user_id) = s.shop_user_id', 's');
+        if (0 < $langId) {
+            $this->joinTable(Shop::DB_TBL_LANG, 'LEFT OUTER JOIN', 's_l.shoplang_shop_id = s.shop_id and s_l.shoplang_lang_id = ' . $langId, 's_l');
+        }
     }
 
     public function joinMessageAdmin()

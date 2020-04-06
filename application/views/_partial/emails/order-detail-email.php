@@ -50,12 +50,12 @@ $str='<table cellspacing="0" cellpadding="0" border="0" width="100%" style="bord
             $productTaxChargedTxt = CommonHelper::displayMoneyFormat(CommonHelper::orderProductAmount($val, 'TAX'));
         } else {
             foreach ($val['taxOptions'] as $key => $value) {
-                $productTaxChargedTxt .= '<p><strong>'.CommonHelper::displayTaxPercantage($val).':</strong> '.CommonHelper::displayMoneyFormat($value['value']).'</p>';
+                $productTaxChargedTxt .= '<p><strong>'.CommonHelper::displayTaxPercantage($value).':</strong> '.CommonHelper::displayMoneyFormat($value['value']).'</p>';
                 if (!isset($taxOptionsTotal[$key]['value'])) {
                     $taxOptionsTotal[$key]['value'] = 0;
                 }
                 $taxOptionsTotal[$key]['value'] += $value['value'];
-                $taxOptionsTotal[$key]['title'] = CommonHelper::displayTaxPercantage($value);
+                $taxOptionsTotal[$key]['name'] = CommonHelper::displayTaxPercantage($value);
             }
         }
 
@@ -71,7 +71,7 @@ $str='<table cellspacing="0" cellpadding="0" border="0" width="100%" style="bord
             <td style="padding:10px;font-size:13px; color:#333;border:1px solid #ddd;" align="right">'.CommonHelper::displayMoneyFormat($val["op_unit_price"]).'</td>
             <td style="padding:10px;font-size:13px; color:#333;border:1px solid #ddd;" align="right">'.CommonHelper::displayMoneyFormat($shippingPrice).'</td>
             <td style="padding:10px;font-size:13px; color:#333;border:1px solid #ddd;" align="right">'.CommonHelper::displayMoneyFormat($volumeDiscount).'</td>
-            <td style="padding:10px;font-size:13px; color:#333;border:1px solid #ddd;" align="right">'.CommonHelper::displayMoneyFormat($productTaxChargedTxt).'</td>
+            <td style="padding:10px;font-size:13px; color:#333;border:1px solid #ddd;" align="right">'.$productTaxChargedTxt.'</td>
 
             <td style="padding:10px;font-size:13px; color:#333;border:1px solid #ddd;" align="right">'.CommonHelper::displayMoneyFormat($opCustomerBuyingPrice + $shippingPrice +$productTaxCharged - abs($volumeDiscount)).'</td>
         </tr>';
