@@ -7,7 +7,11 @@ foreach ($pnotifications as &$pvalue) {
         $image = FatCache::getCachedUrl(CommonHelper::generateFullUrl('Image', 'pushNotificationImage', [$pvalue['pnotification_id']], CONF_WEBROOT_FRONT_URL) . $uploadedTime, CONF_IMG_CACHE_TIME, '.jpg');
     }
     $pvalue['image'] = $image;
-    $pvalue['urlDetail'] = !empty($pvalue['pnotification_url']) ? CommonHelper::getUrlTypeData($pvalue['pnotification_url']) : (object)array();
+    $pvalue['urlDetail'] = (object)array();
+    if (!empty($pvalue['pnotification_url'])) {
+        $urlDetail = CommonHelper::getUrlTypeData($pvalue['pnotification_url']);
+        $pvalue['urlDetail'] = false !== $urlDetail ? $urlDetail : (object)array();
+    }
 }
 
 $data = array(
