@@ -317,7 +317,11 @@ function resetListingFilter(){
 	/* $("input:checkbox[name=brands]").each(function(){
 		$(this).prop( "checked", false );	
 	}); */
-
+	var shop_id = parseInt($("input[name=shop_id]").val());
+	if (shop_id > 0){
+		document.frmSearch.reset();
+		$("input[id=keyword]").val('');
+	}
 	document.frmProductSearch.reset();
     document.frmProductSearchPaging.reset();
     var frm = document.frmProductSearch;
@@ -590,6 +594,7 @@ function updatePriceFilter(minPrice,maxPrice,addPriceFilter){
         }
 		$("input[id=keyword]").val(keyword);
 		reloadProductListing(frm);
+		$('#resetAll').css('display','block');
 	};
 
 	loadProductListingfilters = function(frm) {		

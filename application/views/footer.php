@@ -180,7 +180,8 @@ echo FatUtility::generateUrl('JsCss', 'js', array(), '', false). '&f=' . rawurle
         $this->includeTemplate('restore-system/page-content.php');
     }
 }?>
-<script>/* 
+<?php if (FatApp::getConfig('CONF_PWA_SERVICE_WORKER', FatUtility::VAR_INT, 1)) {?>
+<script> 
 $(document).ready(function(){
  if ('serviceWorker' in navigator) {
  window.addEventListener('load', function() {
@@ -188,8 +189,9 @@ $(document).ready(function(){
  });
  });
  }
-}); */
+});
 </script>
+<?php }?>
 </div>
 </div>
 </body>
