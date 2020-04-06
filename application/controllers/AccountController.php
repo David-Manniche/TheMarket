@@ -2997,6 +2997,7 @@ class AccountController extends LoggedUserController
         $orrequest_id = isset($post['orrequest_id']) ? FatUtility::int($post['orrequest_id']) : 0;
         $isSeller = isset($postedData['isSeller']) ? FatUtility::int($postedData['isSeller']) : 0;
 
+        $parentAndTheirChildIds = User::getParentAndTheirChildIds($this->userParentId, false, true);
         $srch = new OrderReturnRequestMessageSearch($this->siteLangId);
         $srch->joinOrderReturnRequests();
         $srch->joinMessageUser();
@@ -3004,9 +3005,9 @@ class AccountController extends LoggedUserController
         $srch->joinOrderProducts();
         $srch->addCondition('orrmsg_orrequest_id', '=', $orrequest_id);
         if (0 < $isSeller) {
-            $srch->addCondition('op_selprod_user_id', '=', $user_id);
+            $srch->addCondition('op_selprod_user_id', 'in', $parentAndTheirChildIds);
         } else {
-            $srch->addCondition('orrequest_user_id', '=', $user_id);
+            $srch->addCondition('orrequest_user_id', 'in', $parentAndTheirChildIds);
         }
         $srch->setPageNumber($page);
         $srch->setPageSize($pageSize);
