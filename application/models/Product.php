@@ -1449,8 +1449,9 @@ END,   special_price_found ) as special_price_found'
             $minPriceRange = floor($criteria['min_price_range']);
         }
         //currency_id
-        if (!empty($minPriceRange) && isset($criteria['currency_id'])) {
-            $min_price_range_default_currency = CommonHelper::convertExistingToOtherCurrency($criteria['currency_id'], $minPriceRange, FatApp::getConfig('CONF_CURRENCY', FatUtility::VAR_INT, 1), false);
+        if (!empty($minPriceRange)) {
+            $currCurrencyId = isset($criteria['currency_id']) ? $criteria['currency_id'] : FatApp::getConfig('CONF_CURRENCY', FatUtility::VAR_INT, 1);
+            $min_price_range_default_currency = CommonHelper::convertExistingToOtherCurrency($currCurrencyId, $minPriceRange, FatApp::getConfig('CONF_CURRENCY', FatUtility::VAR_INT, 1), false);
             //$min_price_range_default_currency =  CommonHelper::getDefaultCurrencyValue($minPriceRange, false, false);
             $srch->addHaving('theprice', '>=', $min_price_range_default_currency);
         }
@@ -1462,8 +1463,9 @@ END,   special_price_found ) as special_price_found'
             $maxPriceRange = ceil($criteria['max_price_range']);
         }
 
-        if (!empty($maxPriceRange) && isset($criteria['currency_id'])) {
-            $max_price_range_default_currency = CommonHelper::convertExistingToOtherCurrency($criteria['currency_id'], $maxPriceRange, FatApp::getConfig('CONF_CURRENCY', FatUtility::VAR_INT, 1), false);
+        if (!empty($maxPriceRange)) {
+            $currCurrencyId = isset($criteria['currency_id']) ? $criteria['currency_id'] : FatApp::getConfig('CONF_CURRENCY', FatUtility::VAR_INT, 1);
+            $max_price_range_default_currency = CommonHelper::convertExistingToOtherCurrency( $currCurrencyId, $maxPriceRange, FatApp::getConfig('CONF_CURRENCY', FatUtility::VAR_INT, 1), false);
             //$max_price_range_default_currency =  CommonHelper::getDefaultCurrencyValue($maxPriceRange, false, false);
             $srch->addHaving('theprice', '<=', $max_price_range_default_currency);
         }
