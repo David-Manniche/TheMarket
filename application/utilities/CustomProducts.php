@@ -2190,8 +2190,8 @@ trait CustomProducts
             Message::addErrorMessage($this->str_invalid_request);
             FatUtility::dieWithError(Message::getHtml());
         }
-        $prod = new Product();
-        if (!$prod->addUpdateProductTag($productId, $tagId)) {
+        $prod = new Product($productId);
+        if (!$prod->addUpdateProductTag($tagId)) {
             Message::addErrorMessage(Labels::getLabel($prod->getError(), $this->siteLangId));
             FatUtility::dieWithError(Message::getHtml());
         }
@@ -2217,8 +2217,8 @@ trait CustomProducts
             FatUtility::dieWithError(Message::getHtml());
         }
 
-        $prod = new Product();
-        if (!$prod->removeProductTag($productId, $tagId)) {
+        $prod = new Product($productId);
+        if (!$prod->removeProductTag($tagId)) {
             Message::addErrorMessage(Labels::getLabel($prod->getError(), $this->siteLangId));
             FatUtility::dieWithError(Message::getHtml());
         }

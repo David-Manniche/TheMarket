@@ -172,8 +172,8 @@ class ProductsController extends AdminBaseController
             FatUtility::dieJsonError(Labels::getLabel('LBL_you_have_already_added_option_having_separate_image', $this->adminLangId));
         }
 
-        $prodObj = new Product();
-        if (!$prodObj->addUpdateProductOption($product_id, $option_id)) {
+        $prodObj = new Product($product_id);
+        if (!$prodObj->addUpdateProductOption($option_id)) {
             FatUtility::dieJsonError($prodObj->getError());
         }
         Product::updateMinPrices($product_id);
@@ -211,8 +211,8 @@ class ProductsController extends AdminBaseController
         }
         /* ] */
 
-        $prodObj = new Product();
-        if (!$prodObj->removeProductOption($product_id, $option_id)) {
+        $prodObj = new Product($product_id);
+        if (!$prodObj->removeProductOption($option_id)) {
             Message::addErrorMessage(Labels::getLabel($prodObj->getError(), $this->adminLangId));
             FatUtility::dieWithError(Message::getHtml());
         }
@@ -229,8 +229,8 @@ class ProductsController extends AdminBaseController
             Message::addErrorMessage($this->str_invalid_request);
             FatUtility::dieWithError(Message::getHtml());
         }
-        $prod = new Product();
-        if (!$prod->addUpdateProductTag($productId, $tagId)) {
+        $prod = new Product($productId);
+        if (!$prod->addUpdateProductTag($tagId)) {
             Message::addErrorMessage(Labels::getLabel($prod->getError(), $this->adminLangId));
             FatUtility::dieWithError(Message::getHtml());
         }
@@ -251,8 +251,8 @@ class ProductsController extends AdminBaseController
             FatUtility::dieWithError(Message::getHtml());
         }
 
-        $prod = new Product();
-        if (!$prod->removeProductTag($productId, $tagId)) {
+        $prod = new Product($productId);
+        if (!$prod->removeProductTag($tagId)) {
             Message::addErrorMessage(Labels::getLabel($prod->getError(), $this->adminLangId));
             FatUtility::dieWithError(Message::getHtml());
         }

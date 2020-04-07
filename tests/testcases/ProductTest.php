@@ -185,8 +185,8 @@ class ProductTest extends TestCase
      */
     public function testAddUpdateProductOption( $productId, $optionId, $expected )
     {
-        $prod = new Product();
-        $result = $prod->addUpdateProductOption($productId, $optionId);
+        $prod = new Product($productId);
+        $result = $prod->addUpdateProductOption($optionId);
         $this->assertEquals($expected, $result);
     }
     
@@ -204,8 +204,8 @@ class ProductTest extends TestCase
      */
     public function testRemoveProductOption( $productId, $optionId, $expected )
     {
-        $prod = new Product();
-        $result = $prod->removeProductOption($productId, $optionId);
+        $prod = new Product($productId);
+        $result = $prod->removeProductOption($optionId);
         $this->assertEquals($expected, $result);
     }
     
@@ -223,8 +223,8 @@ class ProductTest extends TestCase
      */
     public function testAddUpdateProductTag( $productId, $tagId, $expected )
     {
-        $prod = new Product();
-        $result = $prod->addUpdateProductTag($productId, $tagId);
+        $prod = new Product($productId);
+        $result = $prod->addUpdateProductTag($tagId);
         $this->assertEquals($expected, $result);
     }
     
@@ -242,8 +242,8 @@ class ProductTest extends TestCase
      */
     public function testRemoveProductTag( $productId, $tagId, $expected )
     { 
-        $prod = new Product();
-        $result = $prod->removeProductTag($productId, $tagId);
+        $prod = new Product($productId);
+        $result = $prod->removeProductTag($tagId);
         $this->assertEquals($expected, $result);
     }
     

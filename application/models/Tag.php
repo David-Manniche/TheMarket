@@ -179,8 +179,9 @@ class Tag extends MyAppModel
         if (!$tagId) {
             return;
         }
-
+        
         $rows = Product::getProductIdsByTagId($tagId);
+        
         if (!empty($rows)) {
             foreach ($rows as $row) {
                 static::updateProductTagString($row['ptt_product_id']);
