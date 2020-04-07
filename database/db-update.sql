@@ -1218,3 +1218,5 @@ DELETE FROM `tbl_language_labels` WHERE `label_key` LIKE 'LBL_Escalate_to';
 -- --------------------------TV-9.1.6.20200327--------------------------
 DELETE FROM `tbl_language_labels` WHERE `label_key` LIKE 'MSG_SETTINGS_NOT_UPDATED';
 -- ------------------------TV-9.1.6.20200401-----------------------------
+
+INSERT INTO `tbl_plugins` (`plugin_identifier`, `plugin_type`, `plugin_code`, `plugin_active`, `plugin_display_order`) VALUES ('Ship Station', '8', 'ShipStationDelivery', '0', '1');

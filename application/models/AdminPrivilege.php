@@ -112,6 +112,7 @@ class AdminPrivilege
     public const SECTION_APP_THEME_SETTINGS = 107;
     public const SECTION_PATCH_UPDATE = 109;
     public const SECTION_SMS_TEMPLATE = 108;
+    public const SECTION_SHIPPING_SOFTWARES = 109;
 
     public const PRIVILEGE_NONE = 0;
     public const PRIVILEGE_READ = 1;
@@ -257,6 +258,7 @@ class AdminPrivilege
         
         static::SECTION_ABUSIVE_WORDS => Labels::getLabel('MSG_Abusive_Words',CommonHelper::getLangId()),
         static::SECTION_SUBSCRIPTION_ORDERS => Labels::getLabel('MSG_Subscription_Orders',CommonHelper::getLangId()),
+        static::SECTION_SHIPPING_SOFTWARES => Labels::getLabel('MSG_SHIPPING_SOFTWARES',CommonHelper::getLangId()),
             
         /* static::SECTION_Languages => Labels::getLabel('MSG_Languages',CommonHelper::getLangId()),
         static::SECTION_Languages => Labels::getLabel('MSG_Order_Status',CommonHelper::getLangId()), */
@@ -1467,6 +1469,7 @@ class AdminPrivilege
     {
         return $this->checkPermission($adminId, static::SECTION_PATCH_UPDATE, static::PRIVILEGE_WRITE, $returnResult);
     }
+    
     public function canEditSmsTemplate($adminId = 0, $returnResult = false)
     {
         return $this->checkPermission($adminId, static::SECTION_SMS_TEMPLATE, static::PRIVILEGE_WRITE, $returnResult);
@@ -1475,5 +1478,15 @@ class AdminPrivilege
     public function canViewSmsTemplate($adminId = 0, $returnResult = false)
     {
         return $this->checkPermission($adminId, static::SECTION_SMS_TEMPLATE, static::PRIVILEGE_READ, $returnResult);
+    }
+
+    public function canEditShippingSoftware($adminId = 0, $returnResult = false)
+    {
+        return $this->checkPermission($adminId, static::SECTION_SHIPPING_SOFTWARES, static::PRIVILEGE_WRITE, $returnResult);
+    }
+    
+    public function canViewShippingSoftware($adminId = 0, $returnResult = false)
+    {
+        return $this->checkPermission($adminId, static::SECTION_SHIPPING_SOFTWARES, static::PRIVILEGE_READ, $returnResult);
     }
 }
