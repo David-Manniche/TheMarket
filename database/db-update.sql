@@ -1218,3 +1218,34 @@ DELETE FROM `tbl_language_labels` WHERE `label_key` LIKE 'LBL_Escalate_to';
 -- --------------------------TV-9.1.6.20200327--------------------------
 DELETE FROM `tbl_language_labels` WHERE `label_key` LIKE 'MSG_SETTINGS_NOT_UPDATED';
 -- ------------------------TV-9.1.6.20200401-----------------------------
+INSERT INTO `tbl_language_labels`(`label_key`, `label_lang_id`, `label_caption`, `label_type`) VALUES ('APP_BROWSE',1,'Browse',2);
+INSERT INTO `tbl_language_labels`(`label_key`, `label_lang_id`, `label_caption`, `label_type`) VALUES ('APP_SHOPS',1,'Shops',2);
+INSERT INTO `tbl_language_labels`(`label_key`, `label_lang_id`, `label_caption`, `label_type`) VALUES ('APP_CATEGORIES',1,'Categories',2);
+INSERT INTO `tbl_language_labels`(`label_key`, `label_lang_id`, `label_caption`, `label_type`) VALUES ('APP_BLOG',1,'Blogs',2);
+INSERT INTO `tbl_language_labels`(`label_key`, `label_lang_id`, `label_caption`, `label_type`) VALUES ('APP_BY',1,'By',2);
+INSERT INTO `tbl_language_labels`(`label_key`, `label_lang_id`, `label_caption`, `label_type`) VALUES ('APP_ON',1,'On',2);
+INSERT INTO `tbl_language_labels`(`label_key`, `label_lang_id`, `label_caption`, `label_type`) VALUES ('APP_WITH_PHN_NO',1,'With phone number?',2);
+INSERT INTO `tbl_language_labels`(`label_key`, `label_lang_id`, `label_caption`, `label_type`) VALUES ('APP_WITH_EMAIL',1,'With Email?',2);
+INSERT INTO `tbl_language_labels`(`label_key`, `label_lang_id`, `label_caption`, `label_type`) VALUES ('APP_MOBILE_VERIFICATION',1,'Mobile Verification',2);
+INSERT INTO `tbl_language_labels`(`label_key`, `label_lang_id`, `label_caption`, `label_type`) VALUES ('APP_VERIFICATION',1,'Verification',2);
+INSERT INTO `tbl_language_labels`(`label_key`, `label_lang_id`, `label_caption`, `label_type`) VALUES ('APP_VERIFICATION_TEXT',1,'Please enter the verification code sent to',2);
+INSERT INTO `tbl_language_labels`(`label_key`, `label_lang_id`, `label_caption`, `label_type`) VALUES ('APP_SENDOTP_THEN_VERIFY_OLD_NUMBER',1,'Please get otp and then verify old phone number',2);
+INSERT INTO `tbl_language_labels`(`label_key`, `label_lang_id`, `label_caption`, `label_type`) VALUES ('APP_SENDOTP_THEN_VERIFY_NEW_NUMBER',1,'Please get otp and then verify old phone number',2);
+INSERT INTO `tbl_language_labels`(`label_key`, `label_lang_id`, `label_caption`, `label_type`) VALUES ('APP_VERIFY',1,'Verify',2);
+INSERT INTO `tbl_language_labels`(`label_key`, `label_lang_id`, `label_caption`, `label_type`) VALUES ('APP_CHANGE_PHONE',1,'Change Phone Number',2);
+INSERT INTO `tbl_language_labels`(`label_key`, `label_lang_id`, `label_caption`, `label_type`) VALUES ('APP_UPDATE_PHONE',1,'Update Phone Number',2);
+INSERT INTO `tbl_language_labels`(`label_key`, `label_lang_id`, `label_caption`, `label_type`) VALUES ('APP_GET_OTP',1,'Get Otp',2);
+INSERT INTO `tbl_language_labels`(`label_key`, `label_lang_id`, `label_caption`, `label_type`) VALUES ('APP_RESEND',1,'Resend',2);
+INSERT INTO `tbl_language_labels`(`label_key`, `label_lang_id`, `label_caption`, `label_type`) VALUES ('APP_NOT_RECEIVE_VERIFICATION_CODE',1,'If you didn\'t receive verification code',2);
+INSERT INTO `tbl_language_labels`(`label_key`, `label_lang_id`, `label_caption`, `label_type`) VALUES ('APP_UPDATE_EMAIL',1,'Update Email',2);
+INSERT INTO `tbl_language_labels`(`label_key`, `label_lang_id`, `label_caption`, `label_type`) VALUES ('APP_CONFIGURE_DETAIL',1,'Configure Detail',2);
+INSERT INTO `tbl_language_labels`(`label_key`, `label_lang_id`, `label_caption`, `label_type`) VALUES ('APP_SEND_OTP_IN',1,'Send Otp In',2);
+INSERT INTO `tbl_language_labels`(`label_key`, `label_lang_id`, `label_caption`, `label_type`) VALUES ('APP_ALERTS',1,'Alerts',2);
+INSERT INTO `tbl_language_labels`(`label_key`, `label_lang_id`, `label_caption`, `label_type`) VALUES ('APP_OFFERS',1,'Offers',2);
+INSERT INTO `tbl_language_labels`(`label_key`, `label_lang_id`, `label_caption`, `label_type`) VALUES ('APP_USE_PHONE_NUMBER_INSTEAD',1,'Use Phone Number Instead',2);
+INSERT INTO `tbl_language_labels`(`label_key`, `label_lang_id`, `label_caption`, `label_type`) VALUES ('APP_USE_EMAIL_INSTEAD',1,'Use Email Instead',2);
+INSERT INTO `tbl_language_labels`(`label_key`, `label_lang_id`, `label_caption`, `label_type`) VALUES ('APP_READ_NOTIFICATION',1,'Read All',2);
+INSERT INTO `tbl_language_labels`(`label_key`, `label_lang_id`, `label_caption`, `label_type`) VALUES ('APP_PLEASE_ENTER_YOUR_NEW_PHONE_NUMBER_A_VERIFICATION_CODE_WILL_BE_SENT_TO_THE_NEW_NUMBER',1,'Please enter your new Phone number. A verification code will be sent to the new number',2);
+INSERT INTO `tbl_language_labels`(`label_key`, `label_lang_id`, `label_caption`, `label_type`) VALUES ('APP_PLEASE_CHECK_YOUR_CURRENT_PHONE_NUMBER_AND_GET_OTP',1,'Please check your current phone number and Get Otp',2);
+
+
