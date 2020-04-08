@@ -46,8 +46,8 @@
         if (distance < 0) {
             clearInterval(x);
             $('#restoreCounter').html("Process...");
-            //showRestorePopup();
-           // restoreSystem();
+            showRestorePopup();
+            restoreSystem();
         }
     }, 1000);
 
