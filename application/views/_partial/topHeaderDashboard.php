@@ -1,9 +1,11 @@
 <?php if (FatApp::getConfig('CONF_AUTO_RESTORE_ON', FatUtility::VAR_INT, 1) && CommonHelper::demoUrl()) {
-    $this->includeTemplate('restore-system/top-header.php');
-} ?>
+			$this->includeTemplate('restore-system/top-header.php');
+		} ?>
+		
 <div class="wrapper">
     <?php if ($controllerName != 'SubscriptionCheckout') {?>
     <header id="header-dashboard" class="header-dashboard no-print" role="header-dashboard">
+		
         <?php if ((User::canViewSupplierTab() && User::canViewBuyerTab()) || (User::canViewSupplierTab() && User::canViewAdvertiserTab() && $userPrivilege->canViewPromotions(0, true)) || (User::canViewBuyerTab() && User::canViewAdvertiserTab())) { ?>
         <div class="dropdown dashboard-user">
           <button class="btn btn-outline-primary dropdown-toggle" type="button" id="dashboardDropdown" data-toggle="dropdown"  data-display="static"  aria-haspopup="true" aria-expanded="false" >

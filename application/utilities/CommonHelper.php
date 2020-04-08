@@ -1830,11 +1830,11 @@ class CommonHelper extends FatUtility
     }
 
     public static function demoUrl()
-    {
+    { 
         if (strpos($_SERVER ['SERVER_NAME'], 'demo.yo-kart.com') !== false) {
             return true;
         }
-        return false;
+        return true;
     }
 
     public static function jsonEncodeUnicode($data, $convertToType = false)
