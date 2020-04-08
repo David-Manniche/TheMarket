@@ -23360,7 +23360,7 @@ CREATE TABLE `tbl_user_favourite_shops` (
 
 CREATE TABLE `tbl_user_meta` (
   `usermeta_user_id` int(11) NOT NULL,
-  `usermeta_key` varchar(255) NOT NULL,
+  `usermeta_key` varchar(180) NOT NULL,
   `usermeta_value` text CHARACTER SET latin1 NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
@@ -23976,7 +23976,7 @@ CREATE TABLE `tbl_user_withdrawal_requests` (
 
 CREATE TABLE `tbl_user_withdrawal_requests_specifics` (
   `uwrs_withdrawal_id` int(11) NOT NULL,
-  `uwrs_key` varchar(255) NOT NULL,
+  `uwrs_key` varchar(180) NOT NULL,
   `uwrs_value` varchar(255) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
