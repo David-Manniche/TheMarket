@@ -38,17 +38,20 @@ if ($order['order_reward_point_used'] > 0) {
                                             'title' => Labels::getLabel('LBL_BACK', $adminLangId)
                                         ],
                                         'label' => '<i class="fas fa-arrow-left"></i>'
-                                    ],
-                                    [
-                                        'attr' => [
-                                            'href' => 'javascript:void(0)',
-                                            'onclick' => 'generateLabel("' . $order["order_id"] . '")',
-                                            'title' => Labels::getLabel('LBL_GENERATE_LABEL', $adminLangId)
-                                        ],
-                                        'label' => '<i class="fas fa-image"></i>'
-                                    ],
+                                    ]
                                 ]
                             ];
+
+                            if ('CashOnDelivery' == $order['pmethod_code'] || Orders::ORDER_IS_PAID == $order['order_is_paid']) {
+                                $data['otherButtons'][] = [
+                                    'attr' => [
+                                        'href' => 'javascript:void(0)',
+                                        'onclick' => 'generateLabel("' . $order["order_id"] . '")',
+                                        'title' => Labels::getLabel('LBL_GENERATE_LABEL', $adminLangId)
+                                    ],
+                                    'label' => '<i class="fas fa-image"></i>'
+                                ];
+                            }
                             $this->includeTemplate('_partial/action-buttons.php', $data, false);
                         ?>
                     </div>
