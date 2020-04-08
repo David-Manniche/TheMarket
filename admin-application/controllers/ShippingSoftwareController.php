@@ -19,25 +19,12 @@ class ShippingSoftwareController extends AdminBaseController
         $this->shipStation = new ShipStationDelivery();
     }
 
-    public function orders()
+    public function generateLabel($orderId)
     {
-        $orders = $this->shipStation->getOrders();
-        CommonHelper::printArray($orders, true);
+        $order = $this->addOrder($orderId);
     }
 
-    public function getWarehouses()
-    {
-        $orders = $this->shipStation->getWarehouses();
-        CommonHelper::printArray($orders, true);
-    }
-
-    public function getOrder($orderId)
-    {
-        $order = $this->shipStation->getOrder($orderId);
-        CommonHelper::printArray($order, true);
-    }
-
-    public function addOrder()
+    public function addOrder($orderId)
     {
         $order 		= $this->shipStation->addOrder();
         CommonHelper::printArray($order, true);

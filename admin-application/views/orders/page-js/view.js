@@ -11,4 +11,10 @@ $(document).ready(function(){
 			window.location.reload();
 		});
 	};
+
+	generateLabel = function (orderId) {
+		fcom.updateWithAjax(fcom.makeUrl('ShippingSoftware', 'updatePayment'), data, function(t) {			
+			window.location.reload();
+		});
+	}
 })();

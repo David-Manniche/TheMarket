@@ -39,6 +39,14 @@ if ($order['order_reward_point_used'] > 0) {
                                         ],
                                         'label' => '<i class="fas fa-arrow-left"></i>'
                                     ],
+                                    [
+                                        'attr' => [
+                                            'href' => 'javascript:void(0)',
+                                            'onclick' => 'generateLabel("' . $order["order_id"] . '")',
+                                            'title' => Labels::getLabel('LBL_GENERATE_LABEL', $adminLangId)
+                                        ],
+                                        'label' => '<i class="fas fa-image"></i>'
+                                    ],
                                 ]
                             ];
                             $this->includeTemplate('_partial/action-buttons.php', $data, false);
