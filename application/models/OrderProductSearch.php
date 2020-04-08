@@ -255,12 +255,20 @@ class OrderProductSearch extends SearchBase
         $subSrch = Stats::getSalesStatsObj($startDate, $endDate, $alias . '_t', $type);
 
         $subSrch->joinTable(OrderProduct::DB_TBL_CHARGES, 'LEFT OUTER JOIN', $alias . '_tc.opcharge_op_id = ' . $alias . '_t.op_id', $alias . '_tc');
+		$subSrch->joinTable(OrderProduct::DB_TBL_SETTINGS, 'LEFT OUTER JOIN', $alias . '_ts.opsetting_op_id = ' . $alias . '_t.op_id', $alias . '_ts');
+		$subSrch->joinTable(Orders::DB_TBL_ORDER_PRODUCTS_SHIPPING, 'LEFT OUTER JOIN', $alias . '_tops.opshipping_op_id = ' . $alias . '_t.op_id', $alias . '_tops');
         /* $cnd = $subSrch->addCondition($alias.'_tc.opcharge_type','=',OrderProduct::CHARGE_TYPE_SHIPPING);
         $cnd->attachCondition($alias.'_tc.opcharge_type','=',OrderProduct::CHARGE_TYPE_TAX,'OR'); */
         $subSrch->addFld($alias . '_tc.opcharge_op_id,SUM(' . $alias . '_tc.opcharge_amount) as opcharge_amount');
         $subSrch->addGroupBy($alias . '_tc.opcharge_op_id');
-
-        $srch->joinTable('(' . $subSrch->getQuery() . ')', 'LEFT OUTER JOIN', $alias . 'c.opcharge_op_id = ' . $alias . '.op_id', $alias . 'c');
+		
+		$cnd = $subSrch->addCondition($alias.'_tc.opcharge_type','=',OrderProduct::CHARGE_TYPE_SHIPPING);
+        $cnd->attachCondition('opshipping_by_seller_user_id', '>', 0, 'AND');
+		$cnd = $subSrch->addCondition($alias.'_tc.opcharge_type','=',OrderProduct::CHARGE_TYPE_TAX, 'OR');
+        $cnd->attachCondition('op_tax_collected_by_seller', '>', 0, 'AND');
+		$subSrch->addCondition($alias.'_tc.opcharge_type','IN',array(OrderProduct::CHARGE_TYPE_VOLUME_DISCOUNT, OrderProduct::CHARGE_TYPE_DISCOUNT, OrderProduct::CHARGE_TYPE_REWARD_POINT_DISCOUNT), 'OR');
+        
+		$srch->joinTable('(' . $subSrch->getQuery() . ')', 'LEFT OUTER JOIN', $alias . 'c.opcharge_op_id = ' . $alias . '.op_id', $alias . 'c');
 
         switch ($type) {
             case Stats::REFUNDED_SALES:
