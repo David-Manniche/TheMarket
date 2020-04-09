@@ -12,8 +12,8 @@ $(document).ready(function(){
 		});
 	};
 
-	generateLabel = function (orderId) {
-		fcom.updateWithAjax(fcom.makeUrl('ShippingSoftware', 'updatePayment'), data, function(t) {			
+	generateLabel = function (orderId, opId) {
+		fcom.updateWithAjax(fcom.makeUrl('ShippingModule', 'generateLabel', [orderId, opId]), '', function(t) {			
 			window.location.reload();
 		});
 	}

@@ -48,33 +48,19 @@ trait PluginHelper
     }
 
     /**
-    * This function is used for kingPin plugins only.
+    * This function is used for KingPin plugins only.
      */
-    public static function includePlugin(int $type, string $directory, int $langId = 0, &$error = '')
+    public static function includePlugin(string $keyName, string $directory, int $langId = 0, &$error = '')
     {
         if (1 > $langId) {
             $langId = CommonHelper::getLangId();
         }
 
-        if (empty($type) || 1 > $type || empty($directory)) {
+        if (empty($directory)) {
             $error = Labels::getLabel('MSG_INVALID_REQUEST', $langId);
             return false;
         }
 
-        $pluginsTypeArr = Plugin::getTypeArr($langId);
-        if (!isset($pluginsTypeArr[$type])) {
-            $error = Labels::getLabel('MSG_INVALID_PLUGIN_TYPE.', $langId);
-            return false;
-        }
-
-        $defaultPushNotiAPI = FatApp::getConfig('CONF_DEFAULT_PLUGIN_' . $type, FatUtility::VAR_INT, 0);
-        if (empty($defaultPushNotiAPI)) {
-            $msg =  Labels::getLabel('MSG_NO_DEFAULT_PLUGIN_SET_FOR_THIS_TYPE_{TYPE}.', $langId);
-            $error = CommonHelper::replaceStringData($msg, ['{TYPE}' => $pluginsTypeArr[$type]]);
-            return false;
-        }
-
-        $keyName = Plugin::getAttributesById($defaultPushNotiAPI, 'plugin_code');
         if (1 > Plugin::isActive($keyName)) {
             $error =  Labels::getLabel('MSG_PLUGIN_IS_NOT_ACTIVE', $langId);
             return false;

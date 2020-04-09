@@ -2346,8 +2346,10 @@ class Orders extends MyAppModel
         return true;
     }
 
-    public function getOrder($orderId, $langId)
+    public function getOrder($orderId, $langId, $opId = 0)
     {
+        $opId = FatUtility::int($opId);
+        
         $srch = new OrderSearch($langId);
         $srch->joinOrderPaymentMethod();
         $srch->doNotCalculateRecords();
@@ -2362,26 +2364,34 @@ class Orders extends MyAppModel
         $rs = $srch->getResultSet();
         $order = FatApp::getDb()->fetch($rs);
         if (!$order) {
-            Message::addErrorMessage(Labels::getLabel('MSG_Order_Data_Not_Found', $langId));
-            FatApp::redirectUser(CommonHelper::generateUrl("Orders"));
+            $this->error = Labels::getLabel('MSG_Order_Data_Not_Found', $langId);
+            return false;
         }
 
-
+        $attr = array('op_id', 'op_invoice_number', 'op_selprod_title', 'op_product_name',
+        'op_qty', 'op_brand_name', 'op_selprod_options', 'op_selprod_sku', 'op_product_model',
+        'op_shop_name', 'op_shop_owner_name', 'op_shop_owner_email', 'op_shop_owner_phone', 'op_unit_price',
+        'totCombinedOrders as totOrders', 'op_shipping_duration_name', 'op_shipping_durations',  'IFNULL(orderstatus_name, orderstatus_identifier) as orderstatus_name', 'op_other_charges', 'op_product_tax_options');
+        
         $opSrch = new OrderProductSearch($langId, false, true, true);
         $opSrch->addCountsOfOrderedProducts();
         $opSrch->addOrderProductCharges();
+        
+        if (0 < $opId) {
+            $opSrch->joinSellerProducts();
+            $opSrch->joinTable(Orders::DB_TBL_ORDER_PRODUCTS_SHIPPING, 'LEFT OUTER JOIN', 'ops.opshipping_op_id = op.op_id', 'ops');
+            $opSrch->addCondition('op.op_id', '=', $opId);
+            $extraAttr = [
+                'selprod_product_id', 'op_selprod_id', 'opshipping_method_id', 'op_product_length', 'op_product_width', 'op_product_height', 'op_product_dimension_unit', 'op_product_weight', 'op_product_weight_unit'
+            ];
+            $attr = array_merge($attr, $extraAttr);
+        }
+        $opSrch->addCondition('op.op_order_id', '=', $order['order_id']);
+        $opSrch->addMultipleFields($attr);
         $opSrch->doNotCalculateRecords();
         $opSrch->doNotLimitRecords();
-        $opSrch->addCondition('op.op_order_id', '=', $order['order_id']);
-
-        $opSrch->addMultipleFields(
-            array('op_id', 'op_invoice_number', 'op_selprod_title', 'op_product_name',
-            'op_qty', 'op_brand_name', 'op_selprod_options', 'op_selprod_sku', 'op_product_model',
-            'op_shop_name', 'op_shop_owner_name', 'op_shop_owner_email', 'op_shop_owner_phone', 'op_unit_price',
-            'totCombinedOrders as totOrders', 'op_shipping_duration_name', 'op_shipping_durations',  'IFNULL(orderstatus_name, orderstatus_identifier) as orderstatus_name', 'op_other_charges', 'op_product_tax_options')
-        );
-
         $opRs = $opSrch->getResultSet();
+        echo $opSrch->getError();
         $order['products'] = FatApp::getDb()->fetchAll($opRs, 'op_id');
 
         $orderObj = new Orders($order['order_id']);

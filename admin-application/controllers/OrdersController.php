@@ -132,12 +132,15 @@ class OrdersController extends AdminBaseController
         $this->objPrivilege->canViewOrders();
 
         $orderObj = new Orders();
-        $order = $orderObj->getOrder($orderId, $this->adminLangId);
-
-        $frm = $this->getPaymentForm($this->adminLangId, $order['order_id']);
+        $orderDetail = $orderObj->getOrder($orderId, $this->adminLangId);
+        if (false == $orderDetail) {
+            Message::addErrorMessage($orderObj->getError());
+            FatApp::redirectUser(CommonHelper::generateUrl("Orders"));
+        }
+        $frm = $this->getPaymentForm($this->adminLangId, $orderDetail['order_id']);
         $this->set('frm', $frm);
         $this->set('yesNoArr', applicationConstants::getYesNoArr($this->adminLangId));
-        $this->set('order', $order);
+        $this->set('order', $orderDetail);
 
         $this->_template->render();
     }

@@ -42,16 +42,6 @@ if ($order['order_reward_point_used'] > 0) {
                                 ]
                             ];
 
-                            if ('CashOnDelivery' == $order['pmethod_code'] || Orders::ORDER_IS_PAID == $order['order_is_paid']) {
-                                $data['otherButtons'][] = [
-                                    'attr' => [
-                                        'href' => 'javascript:void(0)',
-                                        'onclick' => 'generateLabel("' . $order["order_id"] . '")',
-                                        'title' => Labels::getLabel('LBL_GENERATE_LABEL', $adminLangId)
-                                    ],
-                                    'label' => '<i class="fas fa-image"></i>'
-                                ];
-                            }
                             $this->includeTemplate('_partial/action-buttons.php', $data, false);
                         ?>
                     </div>
@@ -100,6 +90,9 @@ if ($order['order_reward_point_used'] > 0) {
                                 <th class="text-right"><?php echo Labels::getLabel('LBL_Shipping', $adminLangId); ?></th>
                                 <th><?php echo Labels::getLabel('LBL_Volume/Loyalty_Discount', $adminLangId);?></th>
                                 <th class="text-right"><?php echo Labels::getLabel('LBL_Total', $adminLangId); ?></th>
+                                <?php if ('CashOnDelivery' == $order['pmethod_code'] || Orders::ORDER_IS_PAID == $order['order_is_paid']) { ?>
+                                    <th class="text-right"></th>
+                                <?php } ?>
                             </tr>
                             <?php
                             $k = 1;
@@ -111,10 +104,13 @@ if ($order['order_reward_point_used'] > 0) {
                                 $volumeDiscount = CommonHelper::orderProductAmount($op, 'VOLUME_DISCOUNT');
                                 $total = CommonHelper::orderProductAmount($op, 'cart_total') + $shippingCost+$volumeDiscount;
                                 $cartTotal = $cartTotal + CommonHelper::orderProductAmount($op, 'cart_total');
-                                $shippingTotal = $shippingTotal + CommonHelper::orderProductAmount($op, 'shipping'); ?>
+                                $shippingTotal = $shippingTotal + CommonHelper::orderProductAmount($op, 'shipping'); 
+                                $invoiceNumber = $op['op_invoice_number']; 
+                                $opId = $op['op_id']; 
+                            ?>
                             <tr>
                                 <td><?php echo $k; ?></td>
-                                <td><?php echo $op['op_invoice_number']; ?></td>
+                                <td><?php echo $invoiceNumber; ?></td>
                                 <td><?php echo $op['orderstatus_name']; ?></td>
                                 <td><?php
                                 $txt = '';
@@ -155,6 +151,13 @@ if ($order['order_reward_point_used'] > 0) {
                                  <td><?php echo CommonHelper::displayMoneyFormat(CommonHelper::orderProductAmount($op, 'VOLUME_DISCOUNT')); ?></td>
 
                                  <td class="text-right"><?php echo CommonHelper::displayMoneyFormat($total, true, true); ?></td>
+                                 <?php if ('CashOnDelivery' == $order['pmethod_code'] || Orders::ORDER_IS_PAID == $order['order_is_paid']) { 
+                                        $orderId = $order["order_id"];
+                                     ?>
+                                    <td class="text-right">
+                                        <a href="javascript:void(0)" onclick="generateLabel('<?php echo $orderId; ?>', <?php echo $opId; ?>)" title="<?php echo Labels::getLabel('LBL_GENERATE_LABEL', $adminLangId); ?>" class="btn-clean btn-sm btn-icon btn-secondary "><i class="fas fa-image"></i></a>
+                                    </td>
+                                 <?php } ?>
                             </tr>
                                 <?php
                                 $k++;

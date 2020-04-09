@@ -14,7 +14,7 @@ class Plugin extends MyAppModel
     public const TYPE_ADVERTISEMENT_FEED = 5;
     public const TYPE_SMS_NOTIFICATION = 6;
     public const TYPE_FULL_TEXT_SEARCH = 7;
-    public const TYPE_SHIPPING_SOFTWARE = 8;
+    public const TYPE_SHIPPING_MODULE = 8;
 
     /* Define here :  if system can not activate multiple plugins for a same feature*/
     public const HAVING_KINGPIN = [
@@ -23,7 +23,7 @@ class Plugin extends MyAppModel
         self::TYPE_ADVERTISEMENT_FEED,
         self::TYPE_SMS_NOTIFICATION,
         self::TYPE_FULL_TEXT_SEARCH,
-        self::TYPE_SHIPPING_SOFTWARE,
+        self::TYPE_SHIPPING_MODULE,
     ];
 
     public const ATTRS = [
@@ -118,7 +118,7 @@ class Plugin extends MyAppModel
             static::TYPE_ADVERTISEMENT_FEED => Labels::getLabel('LBL_ADVERTISEMENT_FEED', $langId),
             static::TYPE_SMS_NOTIFICATION => Labels::getLabel('LBL_SMS_NOTIFICATION', $langId),
             static::TYPE_FULL_TEXT_SEARCH => Labels::getLabel('LBL_Full_TEXT_SEARCH', $langId),
-            static::TYPE_SHIPPING_SOFTWARE => Labels::getLabel('LBL_SHIPPING_SOFTWARE', $langId)
+            static::TYPE_SHIPPING_MODULE => Labels::getLabel('LBL_SHIPPING_MODULE', $langId)
         ];
     }
 

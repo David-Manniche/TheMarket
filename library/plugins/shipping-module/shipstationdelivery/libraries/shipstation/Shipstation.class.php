@@ -844,35 +844,22 @@ class ShipStation
 
     private function processReply($response)
     {
-     
+        if (is_object($response) && $response->code == 400) {
+            $this->setLastError($response);
+            return $this->getLastError();
+        }
 
         // API cap handling + error handling //
-        if(is_object($response))
+        if(is_object($response) && isset($response->headers['X-Rate-Limit-Remaining']) && isset($response->headers['X-Rate-Limit-Reset']))
         {
-
             $this->remainingRequests    = $response->headers['X-Rate-Limit-Remaining'];
             $this->resetTime            = $response->headers['X-Rate-Limit-Reset'];
             $this->lastRequestTime      = time();
 
-        }
-        else
-        {
-            // Something went really wrong...
-            return false;
-        }
-
-
-        if($response->code == 200)
-        {
+        } else if($response->code == 200) {
             return $response->body;
         }
-        else
-        {
-            $this->setLastError($response);
-
-            return false;
-        }
-
+        return false;
     }
 
     // Internal Methods [END] ==================================== //
