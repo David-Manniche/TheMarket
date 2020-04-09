@@ -1247,5 +1247,35 @@ INSERT INTO `tbl_language_labels`(`label_key`, `label_lang_id`, `label_caption`,
 INSERT INTO `tbl_language_labels`(`label_key`, `label_lang_id`, `label_caption`, `label_type`) VALUES ('APP_READ_NOTIFICATION',1,'Read All',2);
 INSERT INTO `tbl_language_labels`(`label_key`, `label_lang_id`, `label_caption`, `label_type`) VALUES ('APP_PLEASE_ENTER_YOUR_NEW_PHONE_NUMBER_A_VERIFICATION_CODE_WILL_BE_SENT_TO_THE_NEW_NUMBER',1,'Please enter your new Phone number. A verification code will be sent to the new number',2);
 INSERT INTO `tbl_language_labels`(`label_key`, `label_lang_id`, `label_caption`, `label_type`) VALUES ('APP_PLEASE_CHECK_YOUR_CURRENT_PHONE_NUMBER_AND_GET_OTP',1,'Please check your current phone number and Get Otp',2);
+INSERT INTO `tbl_language_labels`(`label_key`, `label_lang_id`, `label_caption`, `label_type`) VALUES ('APP_BROWSE',2,'تصفح',2);
+INSERT INTO `tbl_language_labels`(`label_key`, `label_lang_id`, `label_caption`, `label_type`) VALUES ('APP_SHOPS',2,'محلات',2);
+INSERT INTO `tbl_language_labels`(`label_key`, `label_lang_id`, `label_caption`, `label_type`) VALUES ('APP_CATEGORIES',2,'التصنيفات',2);
+INSERT INTO `tbl_language_labels`(`label_key`, `label_lang_id`, `label_caption`, `label_type`) VALUES ('APP_BLOG',2,'المدونات',2);
+INSERT INTO `tbl_language_labels`(`label_key`, `label_lang_id`, `label_caption`, `label_type`) VALUES ('APP_BY',2,'بواسطة',2);
+INSERT INTO `tbl_language_labels`(`label_key`, `label_lang_id`, `label_caption`, `label_type`) VALUES ('APP_ON',2,'على',2);
+INSERT INTO `tbl_language_labels`(`label_key`, `label_lang_id`, `label_caption`, `label_type`) VALUES ('APP_WITH_PHN_NO',2,'برقم الهاتف؟',2);
+INSERT INTO `tbl_language_labels`(`label_key`, `label_lang_id`, `label_caption`, `label_type`) VALUES ('APP_WITH_EMAIL',2,'مع البريد الإلكتروني؟',2);
+INSERT INTO `tbl_language_labels`(`label_key`, `label_lang_id`, `label_caption`, `label_type`) VALUES ('APP_MOBILE_VERIFICATION',2,'التحقق من الجوال',2);
+INSERT INTO `tbl_language_labels`(`label_key`, `label_lang_id`, `label_caption`, `label_type`) VALUES ('APP_VERIFICATION',2,'التحقق',2);
+INSERT INTO `tbl_language_labels`(`label_key`, `label_lang_id`, `label_caption`, `label_type`) VALUES ('APP_VERIFICATION_TEXT',2,'يرجى إدخال رمز التحقق المرسل إليه',2);
+INSERT INTO `tbl_language_labels`(`label_key`, `label_lang_id`, `label_caption`, `label_type`) VALUES ('APP_SENDOTP_THEN_VERIFY_OLD_NUMBER',2,'يرجى الحصول على otp ثم التحقق من رقم الهاتف القديم',2);
+INSERT INTO `tbl_language_labels`(`label_key`, `label_lang_id`, `label_caption`, `label_type`) VALUES ('APP_SENDOTP_THEN_VERIFY_NEW_NUMBER',2,'يرجى الحصول على otp ثم التحقق من رقم الهاتف القديم',2);
+INSERT INTO `tbl_language_labels`(`label_key`, `label_lang_id`, `label_caption`, `label_type`) VALUES ('APP_VERIFY',2,'تحقق',2);
+INSERT INTO `tbl_language_labels`(`label_key`, `label_lang_id`, `label_caption`, `label_type`) VALUES ('APP_CHANGE_PHONE',2,'غير رقم الهاتف',2);
+INSERT INTO `tbl_language_labels`(`label_key`, `label_lang_id`, `label_caption`, `label_type`) VALUES ('APP_UPDATE_PHONE',2,'تحديث رقم الهاتف',2);
+INSERT INTO `tbl_language_labels`(`label_key`, `label_lang_id`, `label_caption`, `label_type`) VALUES ('APP_GET_OTP',2,'احصل على Otp',2);
+INSERT INTO `tbl_language_labels`(`label_key`, `label_lang_id`, `label_caption`, `label_type`) VALUES ('APP_RESEND',2,'إعادة إرسال',2);
+INSERT INTO `tbl_language_labels`(`label_key`, `label_lang_id`, `label_caption`, `label_type`) VALUES ('APP_NOT_RECEIVE_VERIFICATION_CODE',2,'إذا لم تستلم رمز التحقق',2);
+INSERT INTO `tbl_language_labels`(`label_key`, `label_lang_id`, `label_caption`, `label_type`) VALUES ('APP_UPDATE_EMAIL',2,'تحديث البريد الإلكتروني',2);
+INSERT INTO `tbl_language_labels`(`label_key`, `label_lang_id`, `label_caption`, `label_type`) VALUES ('APP_CONFIGURE_DETAIL',2,'تكوين التفاصيل',2);
+INSERT INTO `tbl_language_labels`(`label_key`, `label_lang_id`, `label_caption`, `label_type`) VALUES ('APP_SEND_OTP_IN',2,'إرسال Otp In',2);
+INSERT INTO `tbl_language_labels`(`label_key`, `label_lang_id`, `label_caption`, `label_type`) VALUES ('APP_ALERTS',2,'التنبيهات',2);
+INSERT INTO `tbl_language_labels`(`label_key`, `label_lang_id`, `label_caption`, `label_type`) VALUES ('APP_OFFERS',2,'عروض',2);
+INSERT INTO `tbl_language_labels`(`label_key`, `label_lang_id`, `label_caption`, `label_type`) VALUES ('APP_USE_PHONE_NUMBER_INSTEAD',2,'استخدم رقم الهاتف بدلاً من ذلك',2);
+INSERT INTO `tbl_language_labels`(`label_key`, `label_lang_id`, `label_caption`, `label_type`) VALUES ('APP_USE_EMAIL_INSTEAD',2,'استخدم البريد الإلكتروني بدلاً من ذلك',2);
+INSERT INTO `tbl_language_labels`(`label_key`, `label_lang_id`, `label_caption`, `label_type`) VALUES ('APP_READ_NOTIFICATION',2,'اقرأ كل شيء',2);
+INSERT INTO `tbl_language_labels`(`label_key`, `label_lang_id`, `label_caption`, `label_type`) VALUES ('APP_PLEASE_ENTER_YOUR_NEW_PHONE_NUMBER_A_VERIFICATION_CODE_WILL_BE_SENT_TO_THE_NEW_NUMBER',2,'يرجى إدخال رقم هاتفك الجديد. سيتم إرسال رمز التحقق إلى الرقم الجديد',2);
+INSERT INTO `tbl_language_labels`(`label_key`, `label_lang_id`, `label_caption`, `label_type`) VALUES ('APP_PLEASE_CHECK_YOUR_CURRENT_PHONE_NUMBER_AND_GET_OTP',2,'يرجى التحقق من رقم هاتفك الحالي والحصول على Otp',2);
 -- --------------------TV-9.2.0----------------------------
+
 
