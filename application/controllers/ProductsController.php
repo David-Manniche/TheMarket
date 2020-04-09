@@ -1775,7 +1775,7 @@ class ProductsController extends MyAppController
         $post = FatApp::getPostedData();       
         $srch = Tax::getSearchObject($this->siteLangId,true);
         $srch->addCondition('taxcat_deleted', '=', 0);
-        $defaultTaxApi = FatApp::getConfig('CONF_DEFAULT_PLUGIN_' . Plugin::TYPE_TAX, FatUtility::VAR_INT, 0);
+        $defaultTaxApi = FatApp::getConfig('CONF_DEFAULT_PLUGIN_' . Plugin::TYPE_TAX_SERVICES, FatUtility::VAR_INT, 0);
         $defaultTaxApiIsActive = Plugin::getAttributesById($defaultTaxApi, 'plugin_active'); 
         
         $srch->addFld('taxcat_id'); 

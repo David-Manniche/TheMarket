@@ -82,8 +82,11 @@ class Tax extends MyAppModel
         $srch->doNotCalculateRecords();
         $srch->doNotLimitRecords();
         
-        $defaultTaxApi = FatApp::getConfig('CONF_DEFAULT_PLUGIN_' . Plugin::TYPE_TAX, FatUtility::VAR_INT, 0);
-        $defaultTaxApiIsActive = Plugin::getAttributesById($defaultTaxApi, 'plugin_active'); 
+        $defaultTaxApi = FatApp::getConfig('CONF_DEFAULT_PLUGIN_' . Plugin::TYPE_TAX_SERVICES, FatUtility::VAR_INT, 0);
+        $defaultTaxApiIsActive = 0;
+        if (0 < $defaultTaxApi){
+            $defaultTaxApiIsActive = Plugin::getAttributesById($defaultTaxApi, 'plugin_active');
+        }        
         
         $srch->addFld('taxcat_id'); 
         if ($defaultTaxApiIsActive) {

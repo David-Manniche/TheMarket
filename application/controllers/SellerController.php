@@ -1347,7 +1347,7 @@ class SellerController extends SellerBaseController
         }
         
         
-        $defaultTaxApi = FatApp::getConfig('CONF_DEFAULT_PLUGIN_' . Plugin::TYPE_TAX, FatUtility::VAR_INT, 0);       
+        $defaultTaxApi = FatApp::getConfig('CONF_DEFAULT_PLUGIN_' . Plugin::TYPE_TAX_SERVICES, FatUtility::VAR_INT, 0);       
         $defaultTaxApiIsActive = Plugin::getAttributesById($defaultTaxApi, 'plugin_active'); 
         
         if ($defaultTaxApiIsActive) {
@@ -1398,7 +1398,7 @@ class SellerController extends SellerBaseController
 
     public function changeTaxRates($taxcat_id)
     {
-        $defaultTaxApi = FatApp::getConfig('CONF_DEFAULT_PLUGIN_' . Plugin::TYPE_TAX, FatUtility::VAR_INT, 0);       
+        $defaultTaxApi = FatApp::getConfig('CONF_DEFAULT_PLUGIN_' . Plugin::TYPE_TAX_SERVICES, FatUtility::VAR_INT, 0);       
         $defaultTaxApiIsActive = Plugin::getAttributesById($defaultTaxApi, 'plugin_active');
         
         if ($defaultTaxApiIsActive) {
@@ -1445,7 +1445,7 @@ class SellerController extends SellerBaseController
     public function setUpTaxRates()
     {
         
-        $defaultTaxApi = FatApp::getConfig('CONF_DEFAULT_PLUGIN_' . Plugin::TYPE_TAX, FatUtility::VAR_INT, 0);       
+        $defaultTaxApi = FatApp::getConfig('CONF_DEFAULT_PLUGIN_' . Plugin::TYPE_TAX_SERVICES, FatUtility::VAR_INT, 0);       
         $defaultTaxApiIsActive = Plugin::getAttributesById($defaultTaxApi, 'plugin_active');
         
         if ($defaultTaxApiIsActive) {

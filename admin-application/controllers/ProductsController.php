@@ -916,7 +916,7 @@ class ProductsController extends AdminBaseController
                 $tax->addCondition('ptt_seller_user_id', '=', 0);
             }
             
-            $defaultTaxApi = FatApp::getConfig('CONF_DEFAULT_PLUGIN_' . Plugin::TYPE_TAX, FatUtility::VAR_INT, 0);
+            $defaultTaxApi = FatApp::getConfig('CONF_DEFAULT_PLUGIN_' . Plugin::TYPE_TAX_SERVICES, FatUtility::VAR_INT, 0);
             $defaultTaxApiIsActive = Plugin::getAttributesById($defaultTaxApi, 'plugin_active'); 
 
             $tax->addFld('ptt_taxcat_id');

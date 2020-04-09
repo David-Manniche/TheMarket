@@ -52,7 +52,7 @@ class TaxController extends AdminBaseController
         $srch = $taxObj->getSearchObject($this->adminLangId, false);
         $srch->addCondition('taxcat_deleted', '=', 0);
         
-        $defaultTaxApi = FatApp::getConfig('CONF_DEFAULT_PLUGIN_' . Plugin::TYPE_TAX, FatUtility::VAR_INT, 0);
+        $defaultTaxApi = FatApp::getConfig('CONF_DEFAULT_PLUGIN_' . Plugin::TYPE_TAX_SERVICES, FatUtility::VAR_INT, 0);
         $defaultTaxApiIsActive = Plugin::getAttributesById($defaultTaxApi, 'plugin_active');
         
         if ($defaultTaxApiIsActive) {
@@ -109,7 +109,7 @@ class TaxController extends AdminBaseController
             FatUtility::dieJsonError(Message::getHtml());
         }
         
-        $defaultTaxApi = FatApp::getConfig('CONF_DEFAULT_PLUGIN_' . Plugin::TYPE_TAX, FatUtility::VAR_INT, 0);
+        $defaultTaxApi = FatApp::getConfig('CONF_DEFAULT_PLUGIN_' . Plugin::TYPE_TAX_SERVICES, FatUtility::VAR_INT, 0);
         $defaultTaxApiIsActive = Plugin::getAttributesById($defaultTaxApi, 'plugin_active');
         
         if (!$defaultTaxApiIsActive) {
@@ -459,7 +459,7 @@ class TaxController extends AdminBaseController
         $frm->addHiddenField('', 'taxcat_id', $taxcat_id);
         $frm->addRequiredField(Labels::getLabel('LBL_Tax_Category_Identifier', $this->adminLangId), 'taxcat_identifier');
         
-        $defaultTaxApi = FatApp::getConfig('CONF_DEFAULT_PLUGIN_' . Plugin::TYPE_TAX, FatUtility::VAR_INT, 0);
+        $defaultTaxApi = FatApp::getConfig('CONF_DEFAULT_PLUGIN_' . Plugin::TYPE_TAX_SERVICES, FatUtility::VAR_INT, 0);
         $defaultTaxApiIsActive = Plugin::getAttributesById($defaultTaxApi, 'plugin_active');
         
         if ($defaultTaxApiIsActive) {
@@ -496,7 +496,7 @@ class TaxController extends AdminBaseController
         $this->objPrivilege->canViewTax();
         $srch = Tax::getSearchObject($this->adminLangId,true);
         $srch->addCondition('taxcat_deleted', '=', 0);
-        $defaultTaxApi = FatApp::getConfig('CONF_DEFAULT_PLUGIN_' . Plugin::TYPE_TAX, FatUtility::VAR_INT, 0);
+        $defaultTaxApi = FatApp::getConfig('CONF_DEFAULT_PLUGIN_' . Plugin::TYPE_TAX_SERVICES, FatUtility::VAR_INT, 0);
         $defaultTaxApiIsActive = Plugin::getAttributesById($defaultTaxApi, 'plugin_active'); 
         
         $srch->addFld('taxcat_id'); 
