@@ -2,13 +2,19 @@
 $arr_flds = array(
     'listserial' => '#',
     'product_identifier' => Labels::getLabel('LBL_Product', $adminLangId),
-    'tags' => ''
+    'tags' => Labels::getLabel('LBL_Tags', $adminLangId)
 );
 
 $tbl = new HtmlElement('table', array('width' => '100%', 'class' => 'table table--orders'));
 $th = $tbl->appendElement('thead')->appendElement('tr', array('class' => ''));
-foreach ($arr_flds as $val) {
-    $e = $th->appendElement('th', array(), $val);
+foreach ($arr_flds as $key => $val) {
+    if ($key == 'listserial') {
+        $e = $th->appendElement('th', array('width' => '5%'), $val);
+    } elseif ($key == 'product_identifier') {
+        $e = $th->appendElement('th', array('width' => '30%'), $val);
+    } else {
+        $e = $th->appendElement('th', array('width' => '65%'), $val);
+    }
 }
 $productsArr = array();
 $sr_no = ($page == 1) ? 0 : ($pageSize * ($page - 1));

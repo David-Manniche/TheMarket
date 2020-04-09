@@ -56,6 +56,7 @@
 <script type="text/javascript">
  $(function() {
      var optionsPlus = {
+         insertZone: 0,
          insertZonePlus: true,
          placeholderCss: {
              'background-color': '#e5f5ff',
@@ -77,14 +78,27 @@
          },
          onChange: function(cEl)
          {
-            var catId =  $( cEl ).attr('id');
-            var parentCatId = $( cEl ).parent('ul').parent('li').attr('id');   
+            $("#js-cat-section").addClass('overlay-blur');
+            var catId =  $( cEl ).attr('id'); 
+            var parentCatId = $( cEl ).parent('ul').parent('li').attr('id');
             var catOrder = [] ;               
             $($( cEl ).parent().children()).each(function(i){               
                 catOrder[i+1] = $(this).attr('id');
-            })       
+            });
             var data = "catId="+catId+"&parentCatId="+parentCatId+"&catOrder="+JSON.stringify(catOrder);
-            fcom.updateWithAjax(fcom.makeUrl('productCategories','updateOrder'), data, function(res){ });
+
+            if(typeof parentCatId != 'undefined') {
+                displaySubCategories(cEl, parentCatId, data);
+                $(cEl).parents('li').each(function() {                    
+                    var rootCat = $(this).attr('id');
+                    $("#"+rootCat).children( 'div' ).children( '.sortableListsOpener' ).remove();
+                    $("#"+rootCat).removeClass('sortableListsClosed').addClass('sortableListsOpen');
+                    $("#"+rootCat).children( 'div' ).append('<span class="sortableListsOpener" ><i class="fa fa-minus clickable sort-icon" onClick="hideItems(this)"></i></span>');  
+                });
+                $("#"+catId).parent('ul').addClass('append-ul');
+            }else{
+                updateCatOrder(data);
+            }            
          },
          opener: {
              active: true,

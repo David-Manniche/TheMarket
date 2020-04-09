@@ -1,5 +1,5 @@
 <?php defined('SYSTEM_INIT') or die('Invalid Usage.'); ?>
-<div class="tabs tabs--small tabs--scroll clearfix">
+<div class="tabs ">
     <?php require_once('sellerCatalogProductTop.php');?>
 </div>
 <div class="cards">

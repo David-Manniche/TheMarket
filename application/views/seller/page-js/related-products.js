@@ -4,6 +4,7 @@ $(document).ready(function(){
     $('#related-products').delegate('.remove_related', 'click', function() {
         $(this).parents('li').remove();
     });
+    $("input[name='product_name']").trigger('click');
 });
 $(document).on('mouseover', "ul.list-tags li span i", function(){
     $(this).parents('li').addClass("hover");
@@ -20,15 +21,20 @@ $(document).on('click', ".dvFocus-js", function(){
     $('.dvFocus-js').hide();
     $(this).html('');
 });
-$(document).on('keyup', "input[name='product_name']", function(){
+$(document).on('click', "input[name='product_name']", function(){
     var currObj = $(this);
     var parentForm = currObj.closest('form').attr('id');
-    if('' != currObj.val()){
-        if(currObj.val().length < 2){
+    /*if('' != currObj.val()){
+         if(currObj.val().length < 2){
             return;
-        }
+        } */
         currObj.siblings('ul.dropdown-menu').remove();
-        currObj.autocomplete({'source': function(request, response) {
+        currObj.autocomplete({
+                minLength : 0,
+                'classes': {
+                    "ui-autocomplete": "custom-ui-autocomplete"
+                },
+                'source': function(request, response) {
         		$.ajax({
         			url: fcom.makeUrl('Seller', 'autoCompleteProducts'),
         			data: {keyword: request['term'],fIsAjax:1,keyword:currObj.val()},
@@ -49,20 +55,24 @@ $(document).on('keyup', "input[name='product_name']", function(){
                     $('#related-products').empty();
                     for (var key in ans.relatedProducts) {
                         $('#related-products').append(
-                            "<li id=productRelated"+ans.relatedProducts[key]['selprod_id']+"><span>"+ans.relatedProducts[key]['selprod_title']+" ["+ans.relatedProducts[key]['product_identifier']+"]<i class=\"remove_related remove_param fal fa-times\"></i></span><input type=\"hidden\" name=\"selected_products[]\" value="+ans.relatedProducts[key]['selprod_id']+" /></li>"
+                            "<li id=productRelated"+ans.relatedProducts[key]['selprod_id']+"><span>"+ans.relatedProducts[key]['selprod_title']+" ["+ans.relatedProducts[key]['product_identifier']+"]<i class=\"remove_related remove_param fas fa-times\"></i><input type=\"hidden\" name=\"selected_products[]\" value="+ans.relatedProducts[key]['selprod_id']+" /></span></li>"
                         );
                     }
                 });
                 $('.dvFocus-js').html(ui.item.label).show();
                 currObj.hide();
+                $("input[name='products_related']").trigger('click');
+                $("input[name='products_related']").focus();
         	}
+        }).focus(function() {
+            currObj.autocomplete("search", currObj.val());
         });
-    }else{
+    /*}else{
         $("#"+parentForm+" input[name='selprod_id']").val('');
-    }
+    }*/
 });
 
-$(document).on('keyup', "input[name='products_related']", function(){
+$(document).on('click', "input[name='products_related']", function(){
     var currObj = $(this);
     var parentForm = currObj.closest('form').attr('id');
     var selprod_id = $("#"+parentForm+" input[name='selprod_id']").val();
@@ -73,7 +83,11 @@ $(document).on('keyup', "input[name='products_related']", function(){
     if(selprod_id != 0) {
         currObj.siblings('ul.dropdown-menu').remove();
         currObj.autocomplete({
+            minLength : 0,
             autoFocus: true,
+            'classes': {
+                "ui-autocomplete": "custom-ui-autocomplete"
+            },
             'source': function(request, response) {
                 $.ajax({
                     url: fcom.makeUrl('seller', 'autoCompleteProducts'),
@@ -95,11 +109,13 @@ $(document).on('keyup', "input[name='products_related']", function(){
             select: function (event, ui) {
                 $('input[name=\'products_related\']').val('');
                 $('#productRelated' + ui.item.id).remove();
-                $('#related-products').append('<li id="productRelated' + ui.item.id + '"><span> ' + ui.item.label + '<i class="remove_related remove_param fal fa-times"></i></span><input type="hidden" name="selected_products[]" value="' +
-                    ui.item.id + '" /></li>');
+                $('#related-products').append('<li id="productRelated' + ui.item.id + '"><span> ' + ui.item.label + '<i class="remove_related remove_param fas fa-times"></i><input type="hidden" name="selected_products[]" value="' +
+                    ui.item.id + '" /></span></li>');
                 // currObj.focus();
                 return false;
             }
+        }).focus(function() {
+            currObj.autocomplete("search", currObj.val());
         });
     }
 });
@@ -168,9 +184,28 @@ $(document).on('keyup', "input[name='products_related']", function(){
 		var data = fcom.frmData(frm);
 		fcom.updateWithAjax(fcom.makeUrl('Seller', 'setupRelatedProduct'), data, function(t) {
             document.frmRelatedSellerProduct.reset();
+            $("input[name='selprod_id']").val(''); 
             $('#related-products').empty();
             $(".dvFocus-js").trigger('click');
             searchRelatedProducts(document.frmRelatedSellerProduct);
 		});
 	};
 })();
+
+$(document).on('click', ".js-product-edit", function(){
+    var selProdId = $(this).attr('row-id');
+    var prodHtml = $(this).children('.js-prod-name').html(); 
+    var prodName = prodHtml.split('<br>');
+    
+    fcom.ajax(fcom.makeUrl('Seller', 'getRelatedProductsList', [selProdId]), '', function(t) {
+        var ans = $.parseJSON(t);
+        $("input[name='selprod_id']").val(selProdId); 
+        $("input[name='product_name']").val(prodName[0]); 
+        $('#related-products').empty();
+        for (var key in ans.relatedProducts) {
+            $('#related-products').append(
+                "<li id=productRelated"+ans.relatedProducts[key]['selprod_id']+"><span>"+ans.relatedProducts[key]['selprod_title']+" ["+ans.relatedProducts[key]['product_identifier']+"]<i class=\"remove_related remove_param fas fa-times\"></i><input type=\"hidden\" name=\"selected_products[]\" value="+ans.relatedProducts[key]['selprod_id']+" /></span></li>"
+            );
+        }
+    });
+});

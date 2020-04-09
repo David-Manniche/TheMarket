@@ -122,7 +122,8 @@ $(document).on('change','.language-js',function(){
 	};
 
 	customProductImages = function( productId ){
-		fcom.ajax(fcom.makeUrl('Seller', 'customProductImages', [productId]), '', function(t) {
+        var data = "hideButtons=1";
+		fcom.ajax(fcom.makeUrl('Seller', 'customProductImages', [productId]), data, function(t) {
 			productImages(productId);
 			$.facebox(t, 'faceboxWidth');
 			fcom.resetFaceboxHeight();
@@ -219,6 +220,7 @@ $(document).on('change','.language-js',function(){
 			    setTimeout(function(){ $('.suggestions').hide(); }, 500);
 		});
 		$('input[name="product_shipping[' + shipping_row + '][country_name]"]').autocomplete({
+            minLength: 0,
             'classes': {
                 "ui-autocomplete": "custom-ui-autocomplete"
             },
@@ -239,10 +241,13 @@ $(document).on('change','.language-js',function(){
                 $('input[name="product_shipping[' + shipping_row + '][country_name]"]').val(ui.item.label);
 				$('input[name="product_shipping[' + shipping_row + '][country_id]"]').val(ui.item.id);
             }
-		});
+		}).focus(function() {
+            $(this).autocomplete("search", $(this).val());
+        });
 
 
 		$('input[name="product_shipping[' + shipping_row + '][company_name]"]').autocomplete({
+                minLength: 0,
                 'classes': {
                     "ui-autocomplete": "custom-ui-autocomplete"
                 },
@@ -263,9 +268,12 @@ $(document).on('change','.language-js',function(){
                 $('input[name="product_shipping[' + shipping_row + '][company_name]"]').val(ui.item.label);
                 $('input[name="product_shipping[' + shipping_row + '][company_id]"]').val(ui.item.id);
             }
-		});
+		}).focus(function() {
+            $(this).autocomplete("search", $(this).val());
+        });
 
 		$('input[name="product_shipping[' + shipping_row + '][processing_time]"]').autocomplete({
+                minLength: 0,
                 'classes': {
                     "ui-autocomplete": "custom-ui-autocomplete"
                 },
@@ -287,6 +295,78 @@ $(document).on('change','.language-js',function(){
                 $('input[name="product_shipping[' + shipping_row + '][processing_time]"]').val(ui.item.label);
                 $('input[name="product_shipping[' + shipping_row + '][processing_time_id]"]').val(ui.item.id);
             }
-		});
+		}).focus(function() {
+            $(this).autocomplete("search", $(this).val());
+        });
 	}
+    
+    
+    popupImage = function(inputBtn){
+		if (inputBtn.files && inputBtn.files[0]) {
+	        fcom.ajax(fcom.makeUrl('Seller', 'imgCropper'), '', function(t) {
+				//$.facebox(t,'faceboxWidth');
+                $('#cropperBox-js').html(t);
+                $('#cropperBox-js').css("display", "block");
+				$("#mediaForm-js").css("display", "none");
+                var file = inputBtn.files[0];
+	            var minWidth = document.imageFrm.min_width.value;
+	            var minHeight = document.imageFrm.min_height.value;
+	    		var options = {
+	                aspectRatio: 1 / 1,
+	                data: {
+	                    width: minWidth,
+	                    height: minHeight,
+	                },
+	                minCropBoxWidth: minWidth,
+	                minCropBoxHeight: minHeight,
+	                toggleDragModeOnDblclick: false,
+		        };
+				$(inputBtn).val('');
+		    	return cropImage(file, options, 'uploadImages', inputBtn);
+	    	});
+		}
+	};
+
+    uploadImages = function(formData){
+		var product_id = document.imageFrm.product_id.value;
+        var option_id = document.imageFrm.option_id.value;
+        var lang_id = document.imageFrm.lang_id.value;
+        formData.append('product_id', product_id);
+        formData.append('option_id', option_id);
+        formData.append('lang_id', lang_id);
+        $.ajax({
+            url : fcom.makeUrl('Seller', 'setupCustomProductImages'),
+            type: 'post',
+            dataType: 'json',
+            data: formData,
+            cache: false,
+            contentType: false,
+            processData: false,
+            beforeSend: function() {
+                $('#loader-js').html(fcom.getLoader());
+            },
+            complete: function() {
+                $('#loader-js').html(fcom.getLoader());
+            },
+			success: function(ans) {
+                if(ans.status == 1){
+					$.mbsmessage(ans.msg, true, 'alert--success');
+				} else {
+					$.mbsmessage(ans.msg, true, 'alert--danger');
+				}
+				productImages( $('#frmCustomProductImage input[name=product_id]').val(), $('.option').val(), $('.language').val() );
+				$('#prod_image').val('');
+				//$(document).trigger('close.facebox');
+                $('#cropperBox-js').css("display", "none");
+				$("#mediaForm-js").css("display", "block");
+			},
+			error: function(xhr, ajaxOptions, thrownError) {
+				alert(thrownError + "\r\n" + xhr.statusText + "\r\n" + xhr.responseText);
+			}
+        });
+	}
+    
+    
+    
+    
 })();

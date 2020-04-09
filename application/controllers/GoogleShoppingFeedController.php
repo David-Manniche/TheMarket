@@ -23,13 +23,22 @@ class GoogleShoppingFeedController extends AdvertisementFeedBaseController
     {
         $settings = $this->getSettings();
         if (!isset($settings['client_id']) || !isset($settings['client_secret']) || !isset($settings['developer_key'])) {
-            $message = Labels::getLabel('MSG_SETTINGS_NOT_UPDATED', $this->siteLangId);
+            $message = Labels::getLabel('MSG_PLUGIN_SETTINGS_NOT_CONFIGURED', $this->siteLangId);
             Message::addErrorMessage($message);
             $this->redirectBack();
         }
         $this->clientId = $settings['client_id'];
         $this->clientSecret = $settings['client_secret'];
         $this->developerKey = $settings['developer_key'];
+    }
+
+    public function index()
+    {
+        $settings = $this->getSettings();
+        $this->set('userData', $this->getUserMeta());
+        $this->set('keyName', self::KEY_NAME);
+        $this->set('pluginName', $this->getPluginData('plugin_name'));
+        $this->_template->render();
     }
 
     private function setupConfiguration()
@@ -56,7 +65,7 @@ class GoogleShoppingFeedController extends AdvertisementFeedBaseController
             $this->client->authenticate($get['code']);
             $accessToken = $this->client->getAccessToken();
             $merchantId = $this->getUserMeta(self::KEY_NAME . '_merchantId');
-            if (empty($setupMerchant)) {
+            if (!empty($accessToken)) {
                 $this->setupMerchantDetail($accessToken);
             }
             CommonHelper::redirectUserReferer();
@@ -101,7 +110,6 @@ class GoogleShoppingFeedController extends AdvertisementFeedBaseController
         $this->_template->render(false, false);
     }
 
-    
     public function setupServiceAccountForm()
     {
         $frm = $this->getServiceAccountForm();
@@ -158,14 +166,6 @@ class GoogleShoppingFeedController extends AdvertisementFeedBaseController
         $frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_SAVE', $this->siteLangId));
         $frm->addButton("", "btn_clear", Labels::getLabel('LBL_Clear', $this->siteLangId));
         return $frm;
-    }
-
-    public function index()
-    {
-        $this->set('userData', $this->getUserMeta());
-        $this->set('keyName', self::KEY_NAME);
-        $this->set('pluginName', $this->getPluginData('plugin_name'));
-        $this->_template->render();
     }
     
     public function batchForm($adsBatchId = 0)

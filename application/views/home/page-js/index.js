@@ -174,18 +174,13 @@ $(".tabs--flat-js li").click(function () {
 resendOtp = function (userId, getOtpOnly = 0){
     $.mbsmessage(langLbl.processing, false, 'alert--process');
     fcom.ajax(fcom.makeUrl( 'GuestUser', 'resendOtp', [userId, getOtpOnly]), '', function(t) {
-        try{
-            t = $.parseJSON(t);
-            if(typeof t.status != 'undefined' &&  1 > t.status){
-                $.mbsmessage(t.msg, false, 'alert--danger');
-            } else {
-                $.mbsmessage(t.msg, true, 'alert--success');
-            }
+        t = $.parseJSON(t);
+        if(1 > t.status){
+            $.mbsmessage(t.msg, false, 'alert--danger');
             return false;
         }
-        catch(exc){
-            $.mbsmessage.close();
-        }
+        $.mbsmessage(t.msg, true, 'alert--success');
+        startOtpInterval();
     });
     return false;
 };
@@ -193,9 +188,12 @@ resendOtp = function (userId, getOtpOnly = 0){
 validateOtp = function (frm){
     if (!$(frm).validate()) return;	
     var data = fcom.frmData(frm);
-    fcom.updateWithAjax(fcom.makeUrl('GuestUser', 'validateOtp'), data, function(t) {						
+    fcom.ajax(fcom.makeUrl('GuestUser', 'validateOtp'), data, function(t) {						
+        t = $.parseJSON(t);
         if (1 == t.status) {
             window.location.href = t.redirectUrl;
+        } else {
+            invalidOtpField();
         }
     });	
     return false;

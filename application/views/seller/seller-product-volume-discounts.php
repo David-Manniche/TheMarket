@@ -1,5 +1,5 @@
 <?php defined('SYSTEM_INIT') or die('Invalid Usage.');?>
-<div class="tabs tabs--small tabs--scroll clearfix">
+<div class="tabs ">
     <?php require_once('sellerCatalogProductTop.php');?>
 </div>
 <div class="cards">
@@ -21,9 +21,9 @@
                         'listserial'=> Labels::getLabel('LBL_Sr.', $siteLangId),
                         'voldiscount_min_qty' => Labels::getLabel('LBL_Minimum_Quantity', $siteLangId),
                         'voldiscount_percentage' => Labels::getLabel('LBL_Discount', $siteLangId).' (%)',
-                        'action' => Labels::getLabel('LBL_Action', $siteLangId),
+                        'action' => '',
                         );
-                        $tbl = new HtmlElement('table', array('width'=>'100%', 'class'=>'table table--orders'));
+                        $tbl = new HtmlElement('table', array('width'=>'100%', 'class'=>'table'));
                         $th = $tbl->appendElement('thead')->appendElement('tr', array('class' => ''));
                         foreach ($arr_flds as $val) {
                             $e = $th->appendElement('th', array(), $val);

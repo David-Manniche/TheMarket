@@ -9,12 +9,21 @@
         .logo {
             margin: 0;
 
+            img {
+                &[data-ratio="16:9"] {
+                    max-width: 120px;
+                }
+
+                &[data-ratio="1:1"] {
+                    max-width: 60px;
+                }
+            }
+
         }
     }
 
     .seller-login {
         display: flex;
-
         padding: 0.5rem 0;
 
 
@@ -58,7 +67,8 @@
 
 
         .forgot {
-            margin-top: 5px;
+            display: inline-block;
+            margin-top: 14px;
             margin-#{$start-direction}: 10px;
         }
     }
@@ -156,11 +166,13 @@
 }
 
 .banner {
-    background-repeat: no-repeat;
-    background-position: center top;
+    background-repeat: repeat;
+    background-position: center;
     position: relative;
     background-attachment: fixed;
-    background-size: cover;
+    background-size: 25%;
+    background-color: var(--brand-color);
+    color: var(--brand-color-inverse);
 
     &:after {
         position: absolute;
@@ -170,7 +182,7 @@
         bottom: 0;
         z-index: 0;
         content: "";
-        opacity: 0.5;
+        opacity: 0.3;
         background: #232526;
         /* fallback for old browsers */
         /* Chrome 10-25, Safari 5.1-6 */
@@ -187,7 +199,7 @@
 
 .seller-slogan {
     position: relative;
-    color: #fff;
+     
     height: 100%;
     display: -webkit-box;
     display: -ms-flexbox;
@@ -200,11 +212,11 @@
     .seller-slogan-txt {
         position: static;
         bottom: 0;
-        color: #fff;
+
 
         h3 {
             font-size: 3rem;
-            color: inherit;
+            
             font-weight: 600;
 
             span {
@@ -233,6 +245,7 @@
     margin: 3.125rem 0;
     padding: 20px;
     background: rgba(255, 255, 255, 0.95);
+    color: $body-color;
     width: 100%;
     border-radius: 4px;
 }
@@ -305,9 +318,10 @@
 }
 
 .simple-price {
-    background: $secondary-color; color:$secondary-color-inverse;
+    background: $secondary-color;
+    color: $secondary-color-inverse;
     text-align: center;
-    
+
 }
 
 .pricing-structure {
@@ -411,7 +425,8 @@
                 &:after {
                     content: "";
                     bottom: 0;
-                    background: $brand-color; color:$brand-color-inverse;
+                    background: $brand-color;
+                    color: $brand-color-inverse;
                     height: 2px;
                     width: 0;
                     position: absolute;

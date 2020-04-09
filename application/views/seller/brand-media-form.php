@@ -2,12 +2,13 @@
 $brandReqMediaFrm->setFormTagAttribute('class', 'form form_horizontal');
 $brandReqMediaFrm->developerTags['colClassPrefix'] = 'col-lg-12 col-md-12 col-sm-';
 $brandReqMediaFrm->developerTags['fld_default_col'] = 12;
-
+$ratioFld = $brandReqMediaFrm->getField('ratio_type');
+$ratioFld->addFieldTagAttribute('class', 'prefRatio-js');
 $fld = $brandReqMediaFrm->getField('logo');
 $fld->addFieldTagAttribute('class', 'btn btn--primary btn--sm');
 $fld->addFieldTagAttribute('onChange', 'brandPopupImage(this)');
 
-$preferredDimensionsStr = ' <small class="form-text text-muted">'. sprintf(Labels::getLabel('LBL_Preferred_Dimensions', $siteLangId), '500*500').'</small>';
+$preferredDimensionsStr = ' <small class="form-text text-muted preferredDimensions-js">'. sprintf(Labels::getLabel('LBL_Preferred_Dimensions', $siteLangId), '500 x 500').'</small>';
 
 $htmlAfterField = $preferredDimensionsStr;
 if (!empty($brandImages)) {
@@ -30,7 +31,7 @@ $fld->htmlAfterField = $htmlAfterField;
       <h4><?php echo Labels::getLabel('LBL_Request_New_Brand', $siteLangId); ?></h4>
     </div>
     <div class="box__body">
-      <div class="tabs tabs--small tabs--scroll clearfix">
+      <div class="tabs ">
         <ul>
             <li><a href="javascript:void(0)" onclick="addBrandReqForm(<?php echo $brandReqId ?>);"><?php echo Labels::getLabel('LBL_Basic', $siteLangId);?></a></li>
             <li class="<?php echo (0 == $brandReqId) ? 'fat-inactive' : ''; ?>">
@@ -65,3 +66,14 @@ $fld->htmlAfterField = $htmlAfterField;
         <?php } ?>
     </div>
 </div>
+<script>
+var ratioTypeSquare = <?php echo AttachedFile::RATIO_TYPE_SQUARE; ?>;
+$(document).on('change','.prefRatio-js',function(){
+    if($(this).val() == ratioTypeSquare)
+    {
+		$('.preferredDimensions-js').html((langLbl.preferredDimensions).replace(/%s/g, '500 x 500'));
+    } else {
+		$('.preferredDimensions-js').html((langLbl.preferredDimensions).replace(/%s/g, '500 x 280'));
+    }
+});
+</script>

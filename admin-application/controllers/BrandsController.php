@@ -291,14 +291,14 @@ class BrandsController extends AdminBaseController
             'brandlang_lang_id' => $lang_id,
             'brandlang_brand_id' => $brand_id,
             'brand_name' => $post['brand_name'],
-            'brand_short_description' => $post['brand_short_description'],
+            //'brand_short_description' => $post['brand_short_description'],
         );
         $prodBrandObj = new Brand($brand_id);
         if (!$prodBrandObj->updateLangData($lang_id, $data)) {
             Message::addErrorMessage($prodBrandObj->getError());
             FatUtility::dieWithError(Message::getHtml());
         }
-        
+
         $autoUpdateOtherLangsData = FatApp::getPostedData('auto_update_other_langs_data', FatUtility::VAR_INT, 0);
         if (0 < $autoUpdateOtherLangsData) {
             $updateLangDataobj = new TranslateLangData(Brand::DB_TBL_LANG);
@@ -456,6 +456,8 @@ class BrandsController extends AdminBaseController
         $lang_id = FatApp::getPostedData('lang_id', FatUtility::VAR_INT, 0);
         $file_type = FatApp::getPostedData('file_type', FatUtility::VAR_INT, 0);
         $slide_screen = FatApp::getPostedData('slide_screen', FatUtility::VAR_INT, 0);
+        $aspectRatio = FatApp::getPostedData('ratio_type', FatUtility::VAR_INT, 0);
+
         if (!$brand_id) {
             Message::addErrorMessage($this->str_invalid_request_id);
             FatUtility::dieJsonError(Message::getHtml());
@@ -478,7 +480,8 @@ class BrandsController extends AdminBaseController
             -1,
             $unique_record = false,
             $lang_id,
-            $slide_screen
+            $slide_screen,
+            $aspectRatio
         )
         ) {
             Message::addErrorMessage($fileHandlerObj->getError());
@@ -690,9 +693,9 @@ class BrandsController extends AdminBaseController
         $frm->addHiddenField('', 'brand_id', $brand_id);
         $frm->addSelectBox(Labels::getLabel('LBL_LANGUAGE', $this->adminLangId), 'lang_id', Language::getAllNames(), $lang_id, array(), '');
         $frm->addRequiredField(Labels::getLabel('LBL_Brand_Name', $this->adminLangId), 'brand_name');
-        $fld = $frm->addTextarea(Labels::getLabel('LBL_Short_Description', $this->adminLangId), 'brand_short_description');
+        //$fld = $frm->addTextarea(Labels::getLabel('LBL_Short_Description', $this->adminLangId), 'brand_short_description');
         /* $fld->requirements()->setLength(0,250); */
-        $fld->htmlAfterField = '<small>' . Labels::getLabel('LBL_First_100_characters_will_be_shown_at_Product_detail_page', $this->adminLangId) . '</small>';
+        //$fld->htmlAfterField = '<small>' . Labels::getLabel('LBL_First_100_characters_will_be_shown_at_Product_detail_page', $this->adminLangId) . '</small>';
 
         /* $fld = $frm->addButton('Logo','logo','Upload File',array('class'=>'uploadFile-Js','id'=>'','data-brand_id'=>$brand_id)
         );
@@ -835,11 +838,14 @@ class BrandsController extends AdminBaseController
         $data = FatApp::getPostedData();
         $page = (empty($data['page']) || $data['page'] <= 0) ? 1 : $data['page'];
         $post = $searchForm->getFormDataFromArray($data);
-
+        
         $prodBrandObj = new Brand();
+        
         $srch = $prodBrandObj->getSearchObject();
         $srch->joinTable(User::DB_TBL, 'LEFT OUTER JOIN', 'u.user_id = brand_seller_id', 'u');
-        $srch->addMultipleFields(array('b.*', 'user_name'));
+        $srch->joinTable(Shop::DB_TBL, 'LEFT OUTER JOIN', 'shop_user_id = if(u.user_parent > 0, user_parent, u.user_id)', 'shop');
+        $srch->joinTable(Shop::DB_TBL_LANG, 'LEFT OUTER JOIN', 'shop.shop_id = s_l.shoplang_shop_id AND shoplang_lang_id = ' . $this->adminLangId, 's_l');
+        $srch->addMultipleFields(array('b.*','u.user_name', 'ifnull(shop_name, shop_identifier) as shop_name'));
         $srch->addCondition('brand_status', '=', applicationConstants::NO);
         $srch->addCondition('brand_seller_id', '>', 0);
         $srch->addOrder('b.brand_id', 'desc');
@@ -985,7 +991,7 @@ class BrandsController extends AdminBaseController
             }
             $sheetArr[] = $row['brand_identifier'];
             $sheetArr[] = $row['brand_name'];
-            $sheetArr[] = $row['brand_short_description'];
+            //$sheetArr[] = $row['brand_short_description'];
 
             if ($obj->isDefaultSheetData($langId)) {
                 if (FatApp::getConfig('CONF_USE_O_OR_1', FatUtility::VAR_INT, 0)) {
@@ -1097,7 +1103,7 @@ class BrandsController extends AdminBaseController
 
             $identifier = $line[$colCount++];
             $name = $line[$colCount++];
-            $description = $line[$colCount++];
+            //$description = $line[$colCount++];
 
             if ($obj->isDefaultSheetData($langId)) {
                 $seoUrl = $line[$colCount++];
@@ -1165,7 +1171,7 @@ class BrandsController extends AdminBaseController
                         'brandlang_brand_id' => $brandId,
                         'brandlang_lang_id' => $langId,
                         'brand_name' => $name,
-                        'brand_short_description' => $description,
+                       // 'brand_short_description' => $description,
                     );
                     $db->insertFromArray(Brand::DB_TBL_LANG, $langData, false, array(), $langData);
                     /* ]*/

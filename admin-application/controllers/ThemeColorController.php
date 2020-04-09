@@ -36,7 +36,7 @@ class ThemeColorController extends AdminBaseController
 
         $srch = ThemeColor::getSearchObject(true);
         $srch->addMultipleFields(array('theme_id , theme_name', 'theme_added_by', 'tcolor_key', 'tcolor_value'));
-        $srch->addCondition('tcolor_key', 'like', ThemeColor::DB_TBL_COLORS_PREFIX.'brand_color');
+        $srch->addCondition('tcolor_key', '=', ThemeColor::TYPE_BRAND);
         if (!empty($post['keyword'])) {
             $srch->addCondition('theme_name', 'like', '%' . $post['keyword'] . '%');
         }
@@ -97,7 +97,7 @@ class ThemeColorController extends AdminBaseController
             if ($data === false) {
                 FatUtility::dieWithError($this->str_invalid_request);
             }
-            $themeColors = ThemeColor::getThemeColorsById($themeId);
+            $themeColors = ThemeColor::getById($themeId, $this->adminLangId, true);
             foreach ($themeColors as $tColor) {
                 $data[$tColor['tcolor_key']] = $tColor['tcolor_value'];
             }
@@ -127,7 +127,7 @@ class ThemeColorController extends AdminBaseController
             $data['parent_theme_id'] = $themeId;
             $data['theme_name'] = 'Copy of ' . $data['theme_name'];
 
-            $themeColors = ThemeColor::getThemeColorsById($themeId);
+            $themeColors = ThemeColor::getById($themeId, $this->adminLangId);
             foreach ($themeColors as $tColor) {
                 $data[$tColor['tcolor_key']] = $tColor['tcolor_value'];
             }
@@ -163,14 +163,14 @@ class ThemeColorController extends AdminBaseController
             FatUtility::dieJsonError(Message::getHtml());
         }
         $parentThemeId = ($post['parent_theme_id'] > 0) ? $post['parent_theme_id'] : $themeId;
-        $themeColors = ThemeColor::getThemeColorsById($parentThemeId);
+        $themeColors = ThemeColor::getById($parentThemeId, $this->adminLangId);
         $newThemeId = $record->getMainTableRecordId();
         foreach ($themeColors as $tColor) {
             $dataToSave = array(
             'tcolor_theme_id' => $newThemeId,
             'tcolor_key' => $tColor['tcolor_key'],
-            'tcolor_value' => $post[$tColor['tcolor_key']],
-            );
+            'tcolor_value' => isset($post[$tColor['tcolor_key']]) ? $post[$tColor['tcolor_key']] : $tColor['tcolor_value'],
+            ); 
             $dataToUpdateOnDuplicate = $dataToSave;
             unset($dataToUpdateOnDuplicate['uextra_user_id']);
             if (!FatApp::getDb()->insertFromArray(ThemeColor::DB_TBL_COLORS, $dataToSave, false, array(), $dataToUpdateOnDuplicate)) {
@@ -205,9 +205,10 @@ class ThemeColorController extends AdminBaseController
         $frm->addHiddenField('', 'parent_theme_id');
 
         $frm->addRequiredField(Labels::getLabel('LBL_Theme_Name', $this->adminLangId), 'theme_name');
-        $themeColors = ThemeColor::getThemeColorsById($themeId);
+        $themeColors = ThemeColor::getById($themeId, $this->adminLangId, true);
+        $colorTypes = ThemeColor::getTypeArr($this->adminLangId);
         foreach ($themeColors as $tColor) {
-            $frm->addRequiredField(Labels::getLabel($tColor['tcolor_key'], $this->adminLangId), $tColor['tcolor_key']);
+            $frm->addRequiredField($colorTypes[$tColor['tcolor_key']], $tColor['tcolor_key'])->addFieldTagAttribute('class', 'jscolor');
         }
         $frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_Save_Changes', $this->adminLangId));
         return $frm;
@@ -281,9 +282,9 @@ class ThemeColorController extends AdminBaseController
         $this->_template->render(false, false, 'json-success.php');
     }
 
-    public function updateCssFiles()
+    /* public function updateCssFiles()
     {
-        $theme_detail = ThemeColor::getAttributesById(FatApp::getConfig('CONF_FRONT_THEME'));
+        $themeDetail = ThemeColor::getAttributesById(FatApp::getConfig('CONF_FRONT_THEME'));
 
 
         if (!$theme_detail) {
@@ -311,23 +312,22 @@ class ThemeColorController extends AdminBaseController
             $newFile = fopen($newFileName, 'w');
             $replace_arr = array(
 
-            "var(--first-color)" => $theme_detail['tcolor_first_color'],
-
-            "var(--second-color)" => $theme_detail['tcolor_second_color'],
-
-            "var(--third-color)" => $theme_detail['tcolor_third_color'],
-
-            "var(--txt-color)" => $theme_detail['tcolor_text_color'],
-
-            "var(--txt-color-light)" => $theme_detail['tcolor_text_light_color'],
-
-            "var(--border-color)" => $theme_detail['tcolor_border_first_color'],
-
-            "var(--border-color-second)" => $theme_detail['tcolor_border_second_color'],
-
-            "var(--second-btn-color)" => $theme_detail['tcolor_second_btn_color'],
-
-            "var(--header-txt-color)" => $theme_detail['tcolor_header_text_color'],
+            "var(--brand-color)" => $themeDetail[ThemeColor::TYPE_BRAND],
+            "var(--brand-color-inverse)" => $themeDetail[ThemeColor::TYPE_BRAND_INVERSE],
+            "var(--primary-color)" => $themeDetail[ThemeColor::TYPE_PRIMARY],
+            "var(--primary-color-inverse)" => $themeDetail[ThemeColor::TYPE_PRIMARY_INVERSE],
+            "var(--secondary-color)" => $themeDetail[ThemeColor::TYPE_SECONDARY],
+            "var(--secondary-color-inverse)" => $themeDetail[ThemeColor::TYPE_SECONDARY_INVERSE],
+            "var(--third-color)" => $themeDetail[ThemeColor::TYPE_THIRD],
+            "var(--third-color-inverse)" => $themeDetail[ThemeColor::TYPE_THIRD_INVERSE],
+            "var(--body-color)" => $themeDetail[ThemeColor::TYPE_BODY],
+            "var(--gray-color)" => $themeDetail[ThemeColor::TYPE_GREY],
+            "var(--gray-light)" => $themeDetail[ThemeColor::TYPE_GREY_LIGHT],
+            "var(--border-color)" => $themeDetail[ThemeColor::TYPE_BORDER],
+            "var(--border-dark-color)" => $themeDetail[ThemeColor::TYPE_BORDER_DARK],
+            "var(--border-light-color)" => $themeDetail[ThemeColor::TYPE_BORDER_LIGHT],
+            "var(--font-color)" => $themeDetail[ThemeColor::TYPE_FONT],
+            "var(--font-color2)" => $themeDetail[ThemeColor::TYPE_FONT_SECONDARY],
 
             );
 
@@ -336,7 +336,7 @@ class ThemeColorController extends AdminBaseController
             }
             fwrite($newFile, $str);
         }
-    }
+    } */
 
     public function preview($themeId)
     {

@@ -4,10 +4,10 @@ $arr_flds = array(
     'product'    =>    Labels::getLabel('LBL_Details', $siteLangId),
     'total'        =>    Labels::getLabel('LBL_Total', $siteLangId),
     'status'    =>    Labels::getLabel('LBL_Status', $siteLangId),
-    'action'    =>    Labels::getLabel('LBL_Action', $siteLangId),
+    'action'    =>    '',
 );
 
-$tbl = new HtmlElement('table', array('class'=>'table table--orders'));
+$tbl = new HtmlElement('table', array('class'=>'table'));
 $th = $tbl->appendElement('thead')->appendElement('tr', array('class' => ''));
 foreach ($arr_flds as $val) {
     $e = $th->appendElement('th', array(), $val);
@@ -51,9 +51,15 @@ foreach ($orders as $sn => $order) {
                     $txt .= '<div class="item__title">' . $order['op_selprod_title'] . '</div>';
                 }
                 $txt .= '<div class="item__sub_title">' . $order['op_product_name'] . ' (' . Labels::getLabel('LBL_Qty', $siteLangId) . ': ' . $order['op_qty'] . ')</div>';
-                $txt .= '<div class="item__brand">' . Labels::getLabel('LBL_Brand', $siteLangId) . ': ' . $order['op_brand_name'];
+                $txt .= '<div class="item__brand">' ;
+                if( !empty($order['op_brand_name']) ){
+                   $txt .=  Labels::getLabel('LBL_Brand', $siteLangId).': '.$order['op_brand_name'];
+                }
+                if( !empty($order['op_brand_name']) && !empty($order['op_selprod_options']) ){
+                    $txt .= ' | ' ;
+                }
                 if ($order['op_selprod_options'] != '') {
-                    $txt .= ' | ' . $order['op_selprod_options'];
+                    $txt .= $order['op_selprod_options'];
                 }
                 $txt .='</div>';
                 if ($order['totOrders'] > 1) {
@@ -109,7 +115,7 @@ foreach ($orders as $sn => $order) {
                         'a',
                         array('href'=> $opCancelUrl, 'class'=>'',
                         'title'=>Labels::getLabel('LBL_Cancel_Order', $siteLangId)),
-                        '<i class="fa fa-close"></i>',
+                        '<i class="fas fa-times"></i>',
                         true
                     );
                 }
@@ -133,7 +139,7 @@ foreach ($orders as $sn => $order) {
                         'a',
                         array('href'=> $opRefundRequestUrl, 'class'=>'',
                         'title'=>Labels::getLabel('LBL_Refund', $siteLangId)),
-                        '<i class="fa fa-dollar"></i>',
+                        '<i class="fas fa-dollar-sign"></i>',
                         true
                     );
                 }

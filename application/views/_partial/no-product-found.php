@@ -39,7 +39,7 @@
                 <?php $inc = 0; foreach ($top_searched_keywords as $record) {
                     $inc++;
                     if ($inc >1) {
-                        echo "|";
+                        echo "";
                     } ?>
                     <li><a href="<?php echo CommonHelper::generateUrl('products', 'search', array( 'keyword-'.$record['searchitem_keyword'])); ?>"><?php echo $record['searchitem_keyword']?> </a> </li>
                 <?php } ?>

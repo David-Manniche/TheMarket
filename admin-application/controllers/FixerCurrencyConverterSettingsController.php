@@ -6,7 +6,7 @@ class FixerCurrencyConverterSettingsController extends CurrencyApiSettingsContro
     {
         return [
                 'access_key' => [
-                    'type' => 'string',
+                    'type' => PluginSetting::TYPE_STRING,
                     'required' => true,
                     'label' => "Access Key",
                 ]

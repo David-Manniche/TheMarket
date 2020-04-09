@@ -45,8 +45,7 @@ body {
     padding: 15px;
 }
 
-.payment-from .siteForm label {
-    text-align: left;
+.payment-from .siteForm label {    
     display: block;
 }
 
@@ -56,7 +55,7 @@ body {
 
 .payment-from .field {
     margin-bottom: 15px;
-    text-align: left;
+    
 }
 
 .cvv {
@@ -152,7 +151,7 @@ body {
 .make-payment-wrapper .payment_methods_list ul li a {
     padding: 15px 15px 15px 50px;
     display: block;
-    text-align: left;
+    
 }
 
 .make-payment-wrapper .payment_methods_list ul li.is-active:after {

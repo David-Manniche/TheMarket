@@ -83,6 +83,7 @@ $(document).ready(function(){
         document.frmSearch.product_seller_id.value = '';
         document.frmSearch.product_id.value = '';
         document.frmSearch.prodcat_id.value = -1;
+        $("input[name='product_seller']").removeAttr('disabled');
         searchProducts(document.frmSearch);
     };
     
@@ -136,14 +137,6 @@ $(document).ready(function(){
                 fcom.displayErrorMessage(ans.msg);
             }
         });
-    };
-
-    toggleBulkStatues = function(status){
-        if(!confirm(langLbl.confirmUpdateStatus)){
-            return false;
-        }
-        $("#frmProdListing input[name='status']").val(status);
-        $("#frmProdListing").submit();
     };
 
     deleteSelected = function(){

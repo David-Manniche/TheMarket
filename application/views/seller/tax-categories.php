@@ -39,7 +39,7 @@
             <div class="row mb-4">
                 <div class="col-lg-12">
                     <div class="cards">
-                        <div class="cards-content pb-0">
+                        <div class="cards-content">
                             <div class="replaced">
                                 <div class="row">
                                     <div class="col-lg-8">

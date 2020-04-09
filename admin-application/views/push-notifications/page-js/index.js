@@ -184,22 +184,23 @@ $(document).on("click", "ul#selectedUsersList-js .ion-close-round", function(){
 	        fcom.ajax(fcom.makeUrl('Shops', 'imgCropper'), '', function(t) {
 				$('#cropperBox-js').html(t);
 				$("#mediaForm-js").css("display", "none");
-				var container = document.querySelector('.img-container');
 				var file = inputBtn.files[0];
-				$('#new-img').attr('src', URL.createObjectURL(file));
-	    		var image = container.getElementsByTagName('img').item(0);
-	    		var options = {
-	                aspectRatio: 4 / 1,
-	                data: {
-	                    width: 1000,
-	                    height: 250,
-	                },
-	                minCropBoxWidth: 1000,
-	                minCropBoxHeight: 250,
-	                toggleDragModeOnDblclick: false,
-		        };
-				$(inputBtn).val('');
-    	  		return cropImage(image, options, 'uploadImage', inputBtn);
+				if ("undefined" !== typeof file) {
+					var options = {
+						aspectRatio: 4 / 1,
+						data: {
+							width: 1000,
+							height: 250,
+						},
+						minCropBoxWidth: 1000,
+						minCropBoxHeight: 250,
+						toggleDragModeOnDblclick: false,
+					};
+					$(inputBtn).val('');
+					return cropImage(file, options, 'uploadImage', inputBtn);
+				} else {
+					return false;
+				}
 	    	});
 		}
 	};

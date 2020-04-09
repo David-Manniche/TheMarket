@@ -30,9 +30,20 @@ class CheckoutController extends MyAppController
             $userObj = new User(UserAuthentication::getLoggedUserId());
             $userInfo = $userObj->getUserInfo(array(), false, false);
             if (empty($userInfo['user_phone']) && empty($userInfo['credential_email'])) {
-                $message = Labels::getLabel('MSG_Please_Configure_Your_Email', $this->siteLangId);
+                if (true == SmsArchive::canSendSms()) {
+                    $message = Labels::getLabel('MSG_PLEASE_CONFIGURE_YOUR_EMAIL_OR_PHONE', $this->siteLangId);
+                } else {
+                    $message = Labels::getLabel('MSG_PLEASE_CONFIGURE_YOUR_EMAIL', $this->siteLangId);
+                }
                 if (true === MOBILE_APP_API_CALL) {
                     LibHelper::dieJsonError($message);
+                }
+
+                if (FatUtility::isAjaxCall()) {
+                    $json['status'] = applicationConstants::NO;
+                    $json['msg'] = $message;
+                    $json['url'] = CommonHelper::generateUrl('GuestUser', 'configureEmail');
+                    LibHelper::dieJsonError($json);
                 }
                 Message::addErrorMessage($message);
                 FatApp::redirectUser(CommonHelper::generateUrl('GuestUser', 'configureEmail'));
@@ -1181,14 +1192,20 @@ class CheckoutController extends MyAppController
                         if (FatApp::getConfig('CONF_TAX_STRUCTURE', FatUtility::VAR_FLOAT, 0) == TaxStructure::TYPE_COMBINED) {
                             $taxLangData = $taxStructure->getOptionData($taxStroId);
                             // CommonHelper::printArray($taxLangData, true);
-                            $op_product_tax_options[$taxLangData['taxstro_name'][$lang_id]] = $taxStroName['value'];
+                            $op_product_tax_options[$taxLangData['taxstro_name'][$lang_id]]['value'] = $taxStroName['value'];
+                            $op_product_tax_options[$taxLangData['taxstro_name'][$lang_id]]['name'] = $taxLangData['taxstro_name'][$lang_id];
+                            $op_product_tax_options[$taxLangData['taxstro_name'][$lang_id]]['percentageValue'] = $taxStroName['percentageValue'];
+                            $op_product_tax_options[$taxLangData['taxstro_name'][$lang_id]]['inPercentage'] = $taxStroName['inPercentage'];
                         } else {
                             $structureName = $taxStructure->getName($lang_id);
                             $label = Labels::getLabel('LBL_Tax', $lang_id);
                             if (array_key_exists('taxstr_name', $structureName) && $structureName['taxstr_name'] != '') {
                                 $label = $structureName['taxstr_name'];
                             }
-                            $op_product_tax_options[$label] = $taxStroName['value'];
+                            $op_product_tax_options[$label]['name'] = $label;
+                            $op_product_tax_options[$label]['value'] = $taxStroName['value'];
+                            $op_product_tax_options[$label]['percentageValue'] = $taxStroName['percentageValue'];
+                            $op_product_tax_options[$label]['inPercentage'] = $taxStroName['inPercentage'];
                         }
                     }
 
@@ -1197,7 +1214,7 @@ class CheckoutController extends MyAppController
                     'op_product_name' => $langSpecificProductInfo['product_name'],
                     'op_selprod_title' => $op_selprod_title,
                     'op_selprod_options' => $op_selprod_options,
-                    'op_brand_name' => $langSpecificProductInfo['brand_name'],
+                    'op_brand_name' => !empty($langSpecificProductInfo['brand_name']) ? $langSpecificProductInfo['brand_name'] : '',
                     'op_shop_name' => $langSpecificProductInfo['shop_name'],
                     'op_shipping_duration_name' => $sduration_name,
                     'op_shipping_durations' => $shippingDurationTitle,

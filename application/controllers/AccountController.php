@@ -266,7 +266,7 @@ class AccountController extends LoggedUserController
     public function changeEmailPassword()
     {
         $this->set('siteLangId', $this->siteLangId);
-        $this->set('canSendSms', Plugin::canSendSms(SmsTemplate::LOGIN));
+        $this->set('canSendSms', SmsArchive::canSendSms(SmsTemplate::LOGIN));
         $this->_template->render();
     }
 
@@ -392,7 +392,7 @@ class AccountController extends LoggedUserController
             }
         }
         $txnObj = new Transactions();
-		
+
 		$payoutPlugins = Plugin::getNamesWithCode(Plugin::TYPE_PAYOUTS, $this->siteLangId);
         $accountSummary = $txnObj->getTransactionSummary($userId);
 		$payouts = [-1 => Labels::getLabel("LBL_BANK_PAYOUT", $this->siteLangId)] + $payoutPlugins;
@@ -794,8 +794,8 @@ class AccountController extends LoggedUserController
         }
 
         $this->set('msg', Labels::getLabel('MSG_Profile_Image_Removed_Successfully', $this->siteLangId));
-        if (true === MOBILE_APP_API_CALL) {
-            $userImgUpdatedOn = User::getAttributesById($userId, 'user_img_updated_on');
+        if (true ===  MOBILE_APP_API_CALL) {
+            $userImgUpdatedOn = User::getAttributesById($userId, 'user_updated_on');
             $uploadedTime = AttachedFile::setTimeParam($userImgUpdatedOn);
             $userImage = FatCache::getCachedUrl(CommonHelper::generateFullUrl('Image', 'user', array($userId, 'thumb', true)) . $uploadedTime, CONF_IMG_CACHE_TIME, '.jpg');
 
@@ -840,11 +840,11 @@ class AccountController extends LoggedUserController
     {
         if (true === MOBILE_APP_API_CALL) {
             $userId = UserAuthentication::getLoggedUserId(true);
-            $userImgUpdatedOn = User::getAttributesById($userId, 'user_img_updated_on');
+            $userImgUpdatedOn = User::getAttributesById($userId, 'user_updated_on');
             $uploadedTime = AttachedFile::setTimeParam($userImgUpdatedOn);
 
             $hasDigitalProducts = 0;
-            
+
             $srch = Product::getSearchObject();
             $srch->addMultipleFields(['product_id']);
             $srch->addCondition('product_type', '=', Product::PRODUCT_TYPE_DIGITAL);
@@ -864,7 +864,7 @@ class AccountController extends LoggedUserController
             $this->set('hasDigitalProducts', $hasDigitalProducts);
             $this->_template->render();
         }
-        
+
         $this->_template->addJs('js/jquery.form.js');
         $this->_template->addJs('js/cropper.js');
         $this->_template->addJs('js/cropper-main.js');
@@ -875,7 +875,7 @@ class AccountController extends LoggedUserController
 
         $userId = UserAuthentication::getLoggedUserId();
 
-        $data = User::getAttributesById($userId, array('user_preferred_dashboard', 'user_registered_initially_for'));
+        $data = User::getAttributesById($userId, array('user_preferred_dashboard', 'user_registered_initially_for', 'user_parent'));
         if ($data === false) {
             FatUtility::dieWithError(Labels::getLabel('MSG_Invalid_Access', $this->siteLangId));
         }
@@ -887,8 +887,8 @@ class AccountController extends LoggedUserController
 
         $payoutPlugins = Plugin::getNamesWithCode(Plugin::TYPE_PAYOUTS, $this->siteLangId);
 
+        $this->set('userParentId', $data['user_parent']);
         $this->set('payouts', $payoutPlugins);
-
         $this->set('showSellerActivateButton', $showSellerActivateButton);
         $this->set('userPreferredDashboard', $data['user_preferred_dashboard']);
         $this->_template->render();
@@ -936,9 +936,7 @@ class AccountController extends LoggedUserController
         $srch->addMultipleFields(array('u.*'));
         $rs = $srch->getResultSet();
         $data = FatApp::getDb()->fetch($rs, 'user_id');
-        if (empty($data['user_phone'])) {
-            $data['user_phone'] = '';
-        }
+
         if (User::isAffiliate()) {
             $userExtraData = User::getUserExtraData($userId, array('uextra_company_name', 'uextra_website'));
             $userExtraData = ($userExtraData) ? $userExtraData : array();
@@ -958,6 +956,7 @@ class AccountController extends LoggedUserController
         if ($file_row != false) {
             $mode = 'Edit';
         }
+        $this->set('countryIso', User::getUserMeta($userId, 'user_country_iso'));
         $this->set('data', $data);
         $this->set('frm', $frm);
         $this->set('imgFrm', $imgFrm);
@@ -970,7 +969,7 @@ class AccountController extends LoggedUserController
     public function imgCropper()
     {
         $userId = UserAuthentication::getLoggedUserId(true);
-        $userImgUpdatedOn = User::getAttributesById($userId, 'user_img_updated_on');
+        $userImgUpdatedOn = User::getAttributesById($userId, 'user_updated_on');
         $uploadedTime = AttachedFile::setTimeParam($userImgUpdatedOn);
         $userImage = FatCache::getCachedUrl(CommonHelper::generateFullUrl('image', 'user', array($userId)) . $uploadedTime, CONF_IMG_CACHE_TIME, '.jpg');
 
@@ -1054,7 +1053,7 @@ class AccountController extends LoggedUserController
         $frm = $this->getProfileInfoForm();
 
         $post = FatApp::getPostedData();
-        
+
         if (1 > count($post) && true === MOBILE_APP_API_CALL) {
             LibHelper::dieJsonError(Labels::getLabel("MSG_INVALID_REQUEST", $this->siteLangId));
         }
@@ -1079,11 +1078,15 @@ class AccountController extends LoggedUserController
             unset($post['user_id']);
         }
 
+        if (isset($post['user_phone']) && true == SmsArchive::canSendSms()) {
+            unset($post['user_phone']);
+        }
+
         if ($post['user_dob'] == "0000-00-00" || $post['user_dob'] == "" || strtotime($post['user_dob']) == 0) {
             unset($post['user_dob']);
         }
 
-        unset($post['credential_username'], $post['credential_email'], $post['user_phone']);
+        unset($post['credential_username'], $post['credential_email']);
 
         /* saving user extras[ */
         if (User::isAffiliate()) {
@@ -1109,6 +1112,10 @@ class AccountController extends LoggedUserController
         }
         /* ] */
 
+        if (false == SmsArchive::canSendSms()) {
+            $post['user_dial_code'] = FatApp::getPostedData('user_dial_code', FatUtility::VAR_STRING, '');
+            $countryIso = FatApp::getPostedData('user_country_iso', FatUtility::VAR_STRING, '');
+        }
 
         $userObj = new User($userId);
         $userObj->assignValues($post);
@@ -1116,6 +1123,14 @@ class AccountController extends LoggedUserController
             $message = Labels::getLabel($userObj->getError(), $this->siteLangId);
             FatUtility::dieJsonError($message);
         }
+
+        if (false == SmsArchive::canSendSms()) {
+            $user = clone $userObj;
+            if (false === $user->updateUserMeta('user_country_iso', $countryIso)) {
+                LibHelper::dieJsonError($user->getError());
+            }
+        }
+
         $this->set('msg', Labels::getLabel('MSG_Updated_Successfully', $this->siteLangId));
         if (true === MOBILE_APP_API_CALL) {
             $this->_template->render();
@@ -1252,7 +1267,7 @@ class AccountController extends LoggedUserController
         }
 
         $userObj = new User(UserAuthentication::getLoggedUserId());
-        $srch = $userObj->getUserSearchObj(array('user_id', 'credential_password', 'credential_email', 'user_name'));
+        $srch = $userObj->getUserSearchObj(array('user_id', 'credential_password', 'credential_email', 'user_name', 'user_dial_code', 'user_phone'));
         $rs = $srch->getResultSet();
 
         if (!$rs) {
@@ -1271,9 +1286,10 @@ class AccountController extends LoggedUserController
             $message = Labels::getLabel('MSG_YOUR_CURRENT_PASSWORD_MIS_MATCHED', $this->siteLangId);
             FatUtility::dieJsonError($message);
         }
-
+        $phone = !empty($data['user_phone']) ? $data['user_dial_code'] . $data['user_phone'] : '';
         $arr = array(
         'user_name' => $data['user_name'],
+        'user_phone' => $phone,
         'user_email' => $data['credential_email'],
         'user_new_email' => $post['new_email']
         );
@@ -1717,11 +1733,11 @@ class AccountController extends LoggedUserController
         /* ] */
 
         $srch->addMultipleFields(
-            array('selprod_id', 'IFNULL(selprod_title  ,IFNULL(product_name, product_identifier)) as selprod_title',
-            'product_id', 'prodcat_id', 'IFNULL(ufp_id, 0) as ufp_id', 'IFNULL(product_name, product_identifier) as product_name', 'IFNULL(prodcat_name, prodcat_identifier) as prodcat_name', 'product_image_updated_on',
+            array( 'selprod_id', 'IFNULL(selprod_title  ,IFNULL(product_name, product_identifier)) as selprod_title',
+            'product_id', 'prodcat_id', 'ufp_id', 'IFNULL(product_name, product_identifier) as product_name', 'IFNULL(prodcat_name, prodcat_identifier) as prodcat_name','product_updated_on',
             'IF(selprod_stock > 0, 1, 0) AS in_stock', 'brand.brand_id', 'product_model',
             'IFNULL(brand_name, brand_identifier) as brand_name', 'IFNULL(splprice_price, selprod_price) AS theprice', 'splprice_display_list_price', 'splprice_display_dis_val', 'splprice_display_dis_type',
-            'CASE WHEN splprice_selprod_id IS NULL THEN 0 ELSE 1 END AS special_price_found', 'selprod_price', 'selprod_user_id', 'selprod_code', 'selprod_sold_count', 'selprod_condition', 'IFNULL(uwlp.uwlp_selprod_id, 0) as is_in_any_wishlist', 'IFNULL(uwlp.uwlp_uwlist_id, 0) as uwlp_uwlist_id', 'ifnull(prod_rating,0) prod_rating', 'selprod_min_order_qty')
+            'CASE WHEN splprice_selprod_id IS NULL THEN 0 ELSE 1 END AS special_price_found', 'selprod_price', 'selprod_user_id', 'selprod_code', 'selprod_sold_count', 'selprod_condition', 'IFNULL(uwlp.uwlp_selprod_id, 0) as is_in_any_wishlist', 'IFNULL(uwlp.uwlp_uwlist_id, 0) as uwlp_uwlist_id', 'ifnull(prod_rating,0) prod_rating', 'selprod_min_order_qty', 'selprod_available_from')
         );
         $srch->addOrder('uwlp_added_on', 'DESC');
         $rs = $srch->getResultSet();
@@ -1764,6 +1780,7 @@ class AccountController extends LoggedUserController
         $this->set('startRecord', $startRecord);
         $this->set('endRecord', $endRecord);
         $this->set('showActionBtns', true);
+        $this->set('isWishList', true);
 
         if (true === MOBILE_APP_API_CALL) {
             $this->_template->render();
@@ -1838,10 +1855,10 @@ class AccountController extends LoggedUserController
 
         $srch->addMultipleFields(
             array( 'selprod_id', 'IFNULL(selprod_title  ,IFNULL(product_name, product_identifier)) as selprod_title',
-            'product_id', 'prodcat_id', 'IFNULL(ufp_id, 0) as ufp_id', 'IFNULL(product_name, product_identifier) as product_name', 'IFNULL(prodcat_name, prodcat_identifier) as prodcat_name', 'product_image_updated_on',
+            'product_id', 'prodcat_id', 'ufp_id', 'IFNULL(product_name, product_identifier) as product_name', 'IFNULL(prodcat_name, prodcat_identifier) as prodcat_name','product_updated_on',
             'IF(selprod_stock > 0, 1, 0) AS in_stock', 'brand.brand_id', 'product_model',
             'IFNULL(brand_name, brand_identifier) as brand_name', 'IFNULL(splprice_price, selprod_price) AS theprice', 'splprice_display_list_price', 'splprice_display_dis_val', 'splprice_display_dis_type',
-            'CASE WHEN splprice_selprod_id IS NULL THEN 0 ELSE 1 END AS special_price_found', 'selprod_price', 'selprod_user_id', 'selprod_code', 'selprod_condition', 'IFNULL(uwlp.uwlp_selprod_id, 0) as is_in_any_wishlist', 'ifnull(prod_rating,0) prod_rating', 'selprod_sold_count', 'selprod_min_order_qty')
+            'CASE WHEN splprice_selprod_id IS NULL THEN 0 ELSE 1 END AS special_price_found', 'selprod_price', 'selprod_user_id', 'selprod_code', 'selprod_condition', 'IFNULL(uwlp.uwlp_selprod_id, 0) as is_in_any_wishlist', 'ifnull(prod_rating,0) prod_rating', 'selprod_sold_count', 'selprod_min_order_qty', 'selprod_available_from')
         );
 
         $srch->addOrder('ufp_id', 'desc');
@@ -1862,7 +1879,6 @@ class AccountController extends LoggedUserController
         $product['moreSellerData'] =  ($moreSellerRow) ? $moreSellerRow : array();
         }
         } */
-
         $this->set('products', $products);
         $this->set('showProductShortDescription', false);
         $this->set('showProductReturnPolicy', false);
@@ -2165,7 +2181,7 @@ class AccountController extends LoggedUserController
         }
 
         $this->set('msg', Labels::getLabel('LBL_Product_has_been_marked_as_favourite_successfully', $this->siteLangId));
-        
+
         if (true === MOBILE_APP_API_CALL) {
             $this->_template->render();
         }
@@ -2227,6 +2243,7 @@ class AccountController extends LoggedUserController
 
     public function messages()
     {
+        $this->userPrivilege->canViewMessages(UserAuthentication::getLoggedUserId());
         $frm = $this->getMessageSearchForm($this->siteLangId);
         $this->set('frmSrch', $frm);
         $this->_template->render();
@@ -2235,7 +2252,7 @@ class AccountController extends LoggedUserController
     public function messageSearch()
     {
         $userId = UserAuthentication::getLoggedUserId();
-        $userImgUpdatedOn = User::getAttributesById($userId, 'user_img_updated_on');
+        $userImgUpdatedOn = User::getAttributesById($userId, 'user_updated_on');
         $uploadedTime = AttachedFile::setTimeParam($userImgUpdatedOn);
 
         $frm = $this->getMessageSearchForm($this->siteLangId);
@@ -2244,19 +2261,25 @@ class AccountController extends LoggedUserController
 
         $page = (empty($post['page']) || $post['page'] <= 0) ? 1 : FatUtility::int($post['page']);
         $pagesize = FatApp::getConfig('conf_page_size', FatUtility::VAR_INT, 10);
+        
+        $parentAndTheirChildIds = User::getParentAndTheirChildIds($this->userParentId, false, true);
 
         $srch = new MessageSearch();
         $srch->joinThreadLastMessage();
-        $srch->joinMessagePostedFromUser();
-        $srch->joinMessagePostedToUser();
+        $srch->joinMessagePostedFromUser(true, $this->siteLangId);
+        $srch->joinMessagePostedToUser(true, $this->siteLangId);
         $srch->joinThreadStartedByUser();
-        $srch->addMultipleFields(array('tth.*', 'ttm.message_id', 'ttm.message_text', 'ttm.message_date', 'ttm.message_is_unread', 'ttm.message_to'));
+        $srch->addMultipleFields(array('tth.*',
+         'ttm.message_id', 'ttm.message_text', 'ttm.message_date', 'ttm.message_is_unread', 
+         'ttm.message_to', 'IFNULL(tfrs_l.shop_name, tfrs.shop_identifier) as message_from_shop_name', 
+         'tfrs.shop_id as message_from_shop_id', 'tftos.shop_id as message_to_shop_id',
+         'IFNULL(tftos_l.shop_name, tftos.shop_identifier) as message_to_shop_name'));
         $srch->addCondition('ttm.message_deleted', '=', 0);
-        $cnd = $srch->addCondition('ttm.message_from', '=', $userId);
-        $cnd->attachCondition('ttm.message_to', '=', $userId, 'OR');
+        $cnd = $srch->addCondition('ttm.message_from', 'IN', $parentAndTheirChildIds);
+        $cnd->attachCondition('ttm.message_to', 'IN', $parentAndTheirChildIds, 'OR');
         $srch->addOrder('message_id', 'DESC');
         $srch->addGroupBy('ttm.message_thread_id');
-        /* die($srch->getQuery()); */
+
         if ($post['keyword'] != '') {
             $cnd = $srch->addCondition('tth.thread_subject', 'like', "%" . $post['keyword'] . "%");
             $cnd->attachCondition('tfr.user_name', 'like', "%" . $post['keyword'] . "%", 'OR');
@@ -2276,19 +2299,20 @@ class AccountController extends LoggedUserController
                  "message_from_profile_url" => FatCache::getCachedUrl(CommonHelper::generateFullUrl('image', 'user', array($mval['message_from_user_id'], 'thumb', 1)) . $uploadedTime, CONF_IMG_CACHE_TIME, '.jpg'),
                  "message_to_profile_url" => FatCache::getCachedUrl(CommonHelper::generateFullUrl('image', 'user', array($mval['message_to_user_id'], 'thumb', 1)) . $uploadedTime, CONF_IMG_CACHE_TIME, '.jpg'),
                  "message_timestamp" => strtotime($mval['message_date'])
-                                            );
+                );
                 $message_records[] = array_merge($mval, $profile_images_arr);
             }
             $records = $message_records;
         }
 
-        /* CommonHelper::printArray($records); die; */
+        /*CommonHelper::printArray($records); die;*/
         $this->set("arr_listing", $records);
         $this->set('pageCount', $srch->pages());
         $this->set('recordCount', $srch->recordCount());
-        $this->set('loggedUserId', UserAuthentication::getLoggedUserId());
+        $this->set('loggedUserId', $userId);
         $this->set('page', $page);
         $this->set('pageSize', $pagesize);
+        $this->set('parentAndTheirChildIds', $parentAndTheirChildIds);        
         $this->set('postedData', $post);
 
         if (true === MOBILE_APP_API_CALL) {
@@ -2299,6 +2323,7 @@ class AccountController extends LoggedUserController
 
     public function viewMessages($threadId, $messageId = 0)
     {
+        $this->userPrivilege->canViewMessages(UserAuthentication::getLoggedUserId());
         $threadId = FatUtility::int($threadId);
         $messageId = FatUtility::int($messageId);
         $userId = UserAuthentication::getLoggedUserId();
@@ -2333,21 +2358,22 @@ class AccountController extends LoggedUserController
             $srch->joinProducts($this->siteLangId);
         }
 
+        $parentAndThierChildIds = User::getParentAndTheirChildIds($this->userParentId, false, true);
+
         $srch->joinOrderProducts();
         $srch->joinOrderProductStatus();
         $srch->addMultipleFields(array('tth.*', 'top.op_invoice_number'));
-        /* die($srch->getQuery()); */
         $srch->addCondition('ttm.message_deleted', '=', 0);
         $srch->addCondition('tth.thread_id', '=', $threadId);
         if ($messageId) {
             $srch->addCondition('ttm.message_id', '=', $messageId);
         }
-        $cnd = $srch->addCondition('ttm.message_from', '=', $userId);
-        $cnd->attachCondition('ttm.message_to', '=', $userId, 'OR');
-
+        
+        $cnd = $srch->addCondition('ttm.message_from', 'IN', $parentAndThierChildIds);
+        $cnd->attachCondition('ttm.message_to', 'IN', $parentAndThierChildIds, 'OR');
         $rs = $srch->getResultSet();
         $threadDetails = FatApp::getDb()->fetch($rs);
-        /* CommonHelper::printArray($threadDetails);die; */
+       
         if ($threadDetails == false) {
             $message = Labels::getLabel('MSG_INVALID_ACCESS', $this->siteLangId);
             if (true === MOBILE_APP_API_CALL) {
@@ -2364,8 +2390,8 @@ class AccountController extends LoggedUserController
             $frm->fill(array('message_thread_id' => $threadId, 'message_id' => $messageId));
         }
 
-        $threadObj = new Thread($threadId);
-        if (!$threadObj->markUserMessageRead($threadId, $userId)) {
+        $threadObj = new Thread($threadId);        
+        if (!$threadObj->markMessageReadFromUserArr($threadId, $parentAndThierChildIds)) {
             if (true === MOBILE_APP_API_CALL) {
                 Message::addErrorMessage(strip_tags(current($threadObj->getError())));
             }
@@ -2377,7 +2403,7 @@ class AccountController extends LoggedUserController
             $this->set('frmSrch', $frmSrch);
             $this->set('frm', $frm);
         }
-
+        $this->set('canEditMessages', $this->userPrivilege->canEditMessages(UserAuthentication::getLoggedUserId(), true));
         $this->set('threadDetails', $threadDetails);
         $this->set('threadTypeArr', Thread::getThreadTypeArr($this->siteLangId));
         $this->set('loggedUserId', $userId);
@@ -2390,7 +2416,7 @@ class AccountController extends LoggedUserController
 
     public function threadMessageSearch()
     {
-        $userId = UserAuthentication::getLoggedUserId();
+        $this->userPrivilege->canViewMessages(UserAuthentication::getLoggedUserId());
         $post = FatApp::getPostedData();
         $threadId = empty($post['thread_id']) ? 0 : FatUtility::int($post['thread_id']);
 
@@ -2401,33 +2427,35 @@ class AccountController extends LoggedUserController
 
         if (true === MOBILE_APP_API_CALL) {
             $threadObj = new Thread($threadId);
-            if (!$threadObj->markUserMessageRead($threadId, $userId)) {
+            if (!$threadObj->markUserMessageRead($threadId, UserAuthentication::getLoggedUserId())) {
                 $msg = is_string($threadObj->getError()) ? $threadObj->getError() : current($threadObj->getError());
                 LibHelper::dieJsonError(strip_tags($msg));
             }
         }
 
+        $allowedUserIds = User::getParentAndTheirChildIds($this->userParentId, false, true);
         $page = (empty($post['page']) || $post['page'] <= 0) ? 1 : FatUtility::int($post['page']);
         $pagesize = FatApp::getConfig('conf_page_size', FatUtility::VAR_INT, 10);
 
         $srch = new MessageSearch();
         $srch->joinThreadMessage();
-        $srch->joinMessagePostedFromUser();
-        $srch->joinMessagePostedToUser();
+        $srch->joinMessagePostedFromUser(true, $this->siteLangId);
+        $srch->joinMessagePostedToUser(true, $this->siteLangId);
         $srch->joinThreadStartedByUser();
-        $srch->addMultipleFields(array('tth.*', 'ttm.message_id', 'ttm.message_text', 'ttm.message_date', 'ttm.message_is_unread'));
+        $srch->addMultipleFields(array(
+            'tth.*','ttm.message_id', 'ttm.message_text', 'ttm.message_date', 'ttm.message_is_unread' , 
+            'IFNULL(tfrs_l.shop_name, tfrs.shop_identifier) as message_from_shop_name' , 'tfrs.shop_id as message_from_shop_id',
+            'tftos.shop_id as message_to_shop_id', 'IFNULL(tftos_l.shop_name, tftos.shop_identifier) as message_to_shop_name'));
         $srch->addCondition('ttm.message_deleted', '=', 0);
         $srch->addCondition('tth.thread_id', '=', $threadId);
-        $cnd = $srch->addCondition('ttm.message_from', '=', $userId);
-        $cnd->attachCondition('ttm.message_to', '=', $userId, 'OR');
+        $cnd = $srch->addCondition('ttm.message_from', 'in', $allowedUserIds);
+        $cnd->attachCondition('ttm.message_to', 'in', $allowedUserIds, 'OR');
         $srch->addOrder('message_id', 'DESC');
-
         $srch->setPageNumber($page);
         $srch->setPageSize($pagesize);
-        //echo $srch->getQuery();
         $rs = $srch->getResultSet();
         $records = FatApp::getDb()->fetchAll($rs, 'message_id');
-        //commonHelper::printArray($records);
+        
         ksort($records);
 
         $this->set("arrListing", $records);
@@ -2461,6 +2489,7 @@ class AccountController extends LoggedUserController
     public function sendMessage()
     {
         $userId = UserAuthentication::getLoggedUserId();
+
         $frm = $this->sendMessageForm($this->siteLangId);
         $post = $frm->getFormDataFromArray(FatApp::getPostedData());
         if (false === $post) {
@@ -2483,21 +2512,19 @@ class AccountController extends LoggedUserController
             FatUtility::dieWithError(Message::getHtml());
         }
 
-        $srch = new MessageSearch();
+        $allowedUserIds = User::getParentAndTheirChildIds($this->userParentId, false, true);
 
+        $srch = new MessageSearch();
         $srch->joinThreadMessage();
         $srch->joinMessagePostedFromUser();
         $srch->joinMessagePostedToUser();
         $srch->joinThreadStartedByUser();
-        //$srch->joinShops();
-        //$srch->joinOrderProducts();
-        //$srch->joinOrderProductStatus();
         $srch->addMultipleFields(array('tth.*'));
         $srch->addCondition('ttm.message_deleted', '=', 0);
         $srch->addCondition('tth.thread_id', '=', $threadId);
         $srch->addCondition('ttm.message_id', '=', $messageId);
-        $cnd = $srch->addCondition('ttm.message_from', '=', $userId);
-        $cnd->attachCondition('ttm.message_to', '=', $userId, 'OR');
+        $cnd = $srch->addCondition('ttm.message_from', 'in', $allowedUserIds);
+        $cnd->attachCondition('ttm.message_to', 'in', $allowedUserIds, 'OR');
         $rs = $srch->getResultSet();
 
         $threadDetails = FatApp::getDb()->fetch($rs);
@@ -2510,7 +2537,7 @@ class AccountController extends LoggedUserController
             FatUtility::dieWithError(Message::getHtml());
         }
 
-        $messageSendTo = ($threadDetails['message_from_user_id'] == $userId) ? $threadDetails['message_to_user_id'] : $threadDetails['message_from_user_id'];
+        $messageSendTo = ($threadDetails['message_from_user_id'] == $userId || $threadDetails['message_from_user_id'] == $this->userParentId) ? $threadDetails['message_to_user_id'] : $threadDetails['message_from_user_id'];
 
         $data = array(
         'message_thread_id' => $threadId,
@@ -2668,7 +2695,7 @@ class AccountController extends LoggedUserController
             $frm->addTextArea(Labels::getLabel('LBL_Bank_Address', $langId), 'ub_bank_address');
         }
         $frm->addTextArea(Labels::getLabel('LBL_Other_Info_Instructions', $langId), 'withdrawal_comments');
-        $frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_Send_Request', $langId));
+        $frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_Request', $langId));
         $frm->addButton("", "btn_cancel", Labels::getLabel("LBL_Cancel", $langId));
         return $frm;
     }
@@ -2691,9 +2718,9 @@ class AccountController extends LoggedUserController
         $frm->addTextBox(Labels::getLabel('LBL_Email', $this->siteLangId), 'credential_email', '');
         $frm->addRequiredField(Labels::getLabel('LBL_Customer_Name', $this->siteLangId), 'user_name');
         $frm->addDateField(Labels::getLabel('LBL_Date_Of_Birth', $this->siteLangId), 'user_dob', '', array('readonly' => 'readonly'));
-        $phoneFld = $frm->addRequiredField(Labels::getLabel('LBL_Phone', $this->siteLangId), 'user_phone', '', array('class' => 'phone-js ltr-right', 'placeholder' => ValidateElement::PHONE_NO_FORMAT, 'maxlength' => ValidateElement::PHONE_NO_LENGTH));
-        // $phoneFld->requirements()->setRegularExpressionToValidate(ValidateElement::PHONE_REGEX);
-        // $phoneFld->requirements()->setCustomErrorMessage(Labels::getLabel('LBL_Please_enter_valid_phone_number_format.', $this->siteLangId));
+        $phoneFld = $frm->addTextBox(Labels::getLabel('LBL_Phone', $this->siteLangId), 'user_phone', '', array('class' => 'phone-js ltr-right', 'placeholder' => ValidateElement::PHONE_NO_FORMAT, 'maxlength' => ValidateElement::PHONE_NO_LENGTH));
+        $phoneFld->requirements()->setRegularExpressionToValidate(ValidateElement::PHONE_REGEX);
+        $phoneFld->requirements()->setCustomErrorMessage(Labels::getLabel('LBL_Please_enter_valid_phone_number_format.', $this->siteLangId));
         // $phoneFld->htmlAfterField='<small class="text--small">'.Labels::getLabel('LBL_e.g.', $this->siteLangId).': '.implode(', ', ValidateElement::PHONE_FORMATS).'</small>';
 
         if (User::isAffiliate()) {
@@ -2716,8 +2743,8 @@ class AccountController extends LoggedUserController
             $zipFld->requirements()->setRegularExpressionToValidate(ValidateElement::ZIP_REGEX);
             $zipFld->requirements()->setCustomErrorMessage(Labels::getLabel('LBL_Only_alphanumeric_value_is_allowed.', $this->siteLangId));
         }
-
-        if (User::isAdvertiser()) {
+		$parent = User::getAttributesById(UserAuthentication::getLoggedUserId(true), 'user_parent');
+        if (User::isAdvertiser() && $parent == 0) {
             $fld = $frm->addTextBox(Labels::getLabel('L_Company', $this->siteLangId), 'user_company');
             $fld = $frm->addTextArea(Labels::getLabel('L_Brief_Profile', $this->siteLangId), 'user_profile_info');
             $fld->html_after_field = '<small>' . Labels::getLabel('L_Please_tell_us_something_about_yourself', $this->siteLangId) . '</small>';
@@ -2794,8 +2821,8 @@ class AccountController extends LoggedUserController
         $data = array(
             'user_name' => $userData['user_name'],
             'username' => $userData['credential_username'],
-        'user_email' => $userData['credential_email'],
-        'reference_number' => $data['reference'],
+            'user_email' => $userData['credential_email'],
+            'reference_number' => $data['reference'],
         );
 
         $email = new EmailHandler();
@@ -2970,16 +2997,17 @@ class AccountController extends LoggedUserController
         $orrequest_id = isset($post['orrequest_id']) ? FatUtility::int($post['orrequest_id']) : 0;
         $isSeller = isset($postedData['isSeller']) ? FatUtility::int($postedData['isSeller']) : 0;
 
+        $parentAndTheirChildIds = User::getParentAndTheirChildIds($this->userParentId, false, true);
         $srch = new OrderReturnRequestMessageSearch($this->siteLangId);
         $srch->joinOrderReturnRequests();
-        $srch->joinMessageUser();
+        $srch->joinMessageUser($this->siteLangId);
         $srch->joinMessageAdmin();
         $srch->joinOrderProducts();
         $srch->addCondition('orrmsg_orrequest_id', '=', $orrequest_id);
         if (0 < $isSeller) {
-            $srch->addCondition('op_selprod_user_id', '=', $user_id);
+            $srch->addCondition('op_selprod_user_id', 'in', $parentAndTheirChildIds);
         } else {
-            $srch->addCondition('orrequest_user_id', '=', $user_id);
+            $srch->addCondition('orrequest_user_id', 'in', $parentAndTheirChildIds);
         }
         $srch->setPageNumber($page);
         $srch->setPageSize($pageSize);
@@ -2987,7 +3015,7 @@ class AccountController extends LoggedUserController
         $srch->addMultipleFields(
             array( 'orrmsg_id', 'orrmsg_from_user_id', 'orrmsg_msg',
             'orrmsg_date', 'msg_user.user_name as msg_user_name', 'orrequest_status',
-            'orrmsg_from_admin_id', 'admin_name', 'shop_identifier', 'op_selprod_user_id' )
+            'orrmsg_from_admin_id', 'admin_name', 'ifnull(s_l.shop_name, s.shop_identifier) as shop_name', 's.shop_id','op_selprod_user_id' )
         );
 
         $rs = $srch->getResultSet();
@@ -3008,6 +3036,7 @@ class AccountController extends LoggedUserController
         $this->set('totalRecords', $totalRecords);
         $this->set('startRecord', $startRecord);
         $this->set('endRecord', $endRecord);
+        $this->set('parentAndTheirChildIds', $parentAndTheirChildIds);
 
         if (true === MOBILE_APP_API_CALL) {
             $this->_template->render();
@@ -3409,6 +3438,7 @@ class AccountController extends LoggedUserController
     public function notifications()
     {
         $userId = UserAuthentication::getLoggedUserId();
+
         $page = FatApp::getPostedData('page', FatUtility::VAR_INT, 1);
         $defaultPageSize = FatApp::getConfig('conf_page_size', FatUtility::VAR_INT, 10);
         $pageSize = FatApp::getPostedData('pagesize', FatUtility::VAR_INT, $defaultPageSize);
@@ -3424,6 +3454,21 @@ class AccountController extends LoggedUserController
         $this->set('notifications', $records);
         $this->set('total_pages', $srch->pages());
         $this->set('total_records', $srch->recordCount());
+        $this->_template->render();
+    }
+
+    public function readAllNotifications()
+    {
+        $userId = UserAuthentication::getLoggedUserId();
+        $smt = array(
+            'smt' => Notifications::DB_TBL_PREFIX . 'is_read = ? AND ' . Notifications::DB_TBL_PREFIX . 'user_id = ?',
+            'vals' => array(applicationConstants::NO, (int)$userId)
+        );
+        $db = FatApp::getDb();
+        if (!$db->updateFromArray(Notifications::DB_TBL, array(Notifications::DB_TBL_PREFIX . 'is_read' => 1), $smt)) {
+            FatUtility::dieJsonError($db->getError());
+        }
+        $this->set('msg', Labels::getLabel('Msg_Successfully_Updated', $this->siteLangId));
         $this->_template->render();
     }
 
@@ -3454,32 +3499,37 @@ class AccountController extends LoggedUserController
 
     public function changePhoneForm($updatePhnFrm = 0)
     {
-        $phoneNumber = User::getAttributesById(UserAuthentication::getLoggedUserId(), 'user_phone');
-        $updatePhnFrm = empty($updatePhnFrm) ? empty($phoneNumber) ? 1 : 0 : $updatePhnFrm;
+        $userId = UserAuthentication::getLoggedUserId();
+        $phData = User::getAttributesById($userId, ['user_dial_code', 'user_phone']);
+        $updatePhnFrm = empty($updatePhnFrm) ? empty($phData['user_phone']) ? 1 : 0 : $updatePhnFrm;
 
         $frm = $this->getPhoneNumberForm();
-        if (1 > $updatePhnFrm && !empty($phoneNumber)) {
-            $frm->fill(['user_phone' => $phoneNumber]);
+        if (1 > $updatePhnFrm && !empty($phData['user_phone'])) {
+            $frm->fill(['user_phone' => $phData['user_phone']]);
             $phnFld = $frm->getField('user_phone');
             $phnFld->setFieldTagAttribute('readonly', 'readonly');
         }
-
+        $dialCode = isset($phData['user_dial_code']) && !empty($phData['user_dial_code']) ? $phData['user_dial_code'] : '';
+        $this->set('dialCode', $dialCode);
+        $this->set('countryIso', User::getUserMeta($userId, 'user_country_iso'));
         $this->set('frm', $frm);
         $this->set('updatePhnFrm', $updatePhnFrm);
         $this->set('siteLangId', $this->siteLangId);
-        $this->_template->render(false, false, 'account/change-phone-form.php');
+        $json['html'] = $this->_template->render(false, false, 'account/change-phone-form.php', true, false);
+        FatUtility::dieJsonSuccess($json);
     }
 
-    private function sendOtp(int $userId, string $phone)
+    private function sendOtp(int $userId, string $countryIso, string $dialCode, int $phone)
     {
         $userObj = new User($userId);
-        $otp = $userObj->prepareUserPhoneOtp(true, $phone);
+        $dialCode = !empty($dialCode) & '+' != $dialCode[0] ? '+' . $dialCode : $dialCode;
+        $otp = $userObj->prepareUserPhoneOtp($countryIso, $dialCode, $phone);
         if (false == $otp) {
             LibHelper::dieJsonError($userObj->getError());
         }
 
         $userData = $userObj->getUserInfo('user_name', false, false);
-
+        $phone = $dialCode . $phone;
         $obj = clone $userObj;
         if (false === $obj->sendOtp($phone, $userData['user_name'], $otp, $this->siteLangId)) {
             LibHelper::dieJsonError($obj->getError());
@@ -3489,27 +3539,36 @@ class AccountController extends LoggedUserController
     public function getOtp($updatePhnFrm = 0)
     {
         $frm = $this->getPhoneNumberForm();
+
         $post = $frm->getFormDataFromArray(FatApp::getPostedData());
         if (false === $post) {
             LibHelper::dieJsonError(current($frm->getValidationErrors()));
         }
 
-        $userId = UserAuthentication::getLoggedUserId();
-        $phone = $post['user_phone'];
-        if (1 > $updatePhnFrm && false === UserAuthentication::validateUserPhone($userId, $phone)) {
-            LibHelper::dieJsonError(Labels::getLabel('MSG_INVALID_PHONE_NUMBER', $this->siteLangId));
+        $dialCode = FatApp::getPostedData('user_dial_code', FatUtility::VAR_STRING, '');
+        $countryIso = FatApp::getPostedData('user_country_iso', FatUtility::VAR_STRING, '');
+        $phoneNumber = FatUtility::int($post['user_phone']);
+        if (empty($phoneNumber) || (!empty($phoneNumber) && empty($dialCode))) {
+            $message = Labels::getLabel("MSG_INVALID_PHONE_NUMBER_FORMAT", $this->siteLangId);
+            LibHelper::dieJsonError($message);
         }
 
-        $this->sendOtp($userId, $phone);
+        $userId = UserAuthentication::getLoggedUserId();
+        if (1 > $updatePhnFrm && false === UserAuthentication::validateUserPhone($userId, $phoneNumber)) {
+            LibHelper::dieJsonError(Labels::getLabel('MSG_INVALID_PHONE_NUMBER', $this->siteLangId));
+        }
+        $this->sendOtp($userId, trim($countryIso), trim($dialCode), $phoneNumber);
 
         $this->set('msg', Labels::getLabel('MSG_OTP_SENT!_PLEASE_CHECK_YOUR_PHONE.', $this->siteLangId));
         if (true === MOBILE_APP_API_CALL) {
             $this->_template->render();
         }
+
         $otpFrm = $this->getOtpForm();
         $otpFrm->fill(['user_id' => $userId]);
         $this->set('frm', $otpFrm);
-        $this->_template->render(false, false, 'guest-user/otp-form.php');
+        $json['html'] = $this->_template->render(false, false, 'guest-user/otp-form.php', true, false);
+        FatUtility::dieJsonSuccess($json);
     }
 
     public function validateOtp($updatePhnFrm = 0)
@@ -3521,18 +3580,19 @@ class AccountController extends LoggedUserController
             $this->changePhoneForm($updatePhnFrm);
             exit;
         }
-        
+
         $this->_template->render(false, false, 'json-success.php');
     }
-    
+
     public function resendOtp()
     {
         $userId = UserAuthentication::getLoggedUserId();
-        $phone = FatApp::getPostedData('user_phone', FatUtility::VAR_STRING, '');
-        $phone = (!empty($phone) && '+' != $phone[0] ? '+' . $phone : $phone);
+        $dialCode = FatApp::getPostedData('user_dial_code', FatUtility::VAR_STRING, '');
+        $countryIso = FatApp::getPostedData('user_country_iso', FatUtility::VAR_STRING, '');
+        $phone = FatApp::getPostedData('user_phone', FatUtility::VAR_INT, 0);
 
         if (!empty($phone)) {
-            $this->sendOtp($userId, $phone);
+            $this->sendOtp($userId, $countryIso, $dialCode, $phone);
         } else {
             $userObj = new User($userId);
             if (false == $userObj->resendOtp()) {
@@ -3545,5 +3605,49 @@ class AccountController extends LoggedUserController
             $this->_template->render();
         }
         $this->_template->render(false, false, 'json-success.php');
+    }
+
+    public function pushNotifications()
+    {
+        $userId = UserAuthentication::getLoggedUserId();
+        $page = FatApp::getPostedData('page', FatUtility::VAR_INT, 1);
+        $defaultPageSize = FatApp::getConfig('conf_page_size', FatUtility::VAR_INT, 10);
+        $pageSize = FatApp::getPostedData('pagesize', FatUtility::VAR_INT, $defaultPageSize);
+        
+        $srch = User::getSearchObject();
+        $srch->joinTable(UserAuthentication::DB_TBL_USER_AUTH, 'INNER JOIN', 'ua.uauth_user_id = u.user_id', 'ua');
+        $srch->addMultipleFields(['uauth_device_os', 'user_regdate']);
+        $srch->addCondition('uauth_user_id', '=', $userId);
+        $srch->setPageSize(1);
+        $rs = $srch->getResultSet();
+        $uData = FatApp::getDb()->fetch($rs);
+
+        $srch = PushNotification::getSearchObject(true);
+        $srch->addMultipleFields([
+            'pnotification_id',
+            'pnotification_title',
+            'pnotification_description',
+            'pnotification_url',
+            'pntu_user_id'
+        ]);
+        $cond = $srch->addCondition('pnotification_status', '=', PushNotification::STATUS_COMPLETED, 'AND');
+        $cond->attachCondition('pnotification_status', '=', PushNotification::STATUS_PROCESSING, 'OR');
+        $srch->addCondition('pnotification_user_auth_type', '=', User::AUTH_TYPE_REGISTERED);
+        $srch->addCondition('pnotification_added_on', '>=', $uData['user_regdate']);
+        $cond = $srch->addCondition('pntu_user_id', 'IS', 'mysql_func_NULL', 'AND', true);
+        $cond->attachCondition('pntu_user_id', '=', $userId, 'OR');
+        $cond = $srch->addCondition('pnotification_device_os', '=', User::DEVICE_OS_BOTH, 'AND');
+        $cond->attachCondition('pnotification_device_os', '=', $uData['uauth_device_os'], 'OR');
+        $srch->setPageNumber($page);
+        $srch->setPageSize($pageSize);
+        $srch->addOrder('pnotification_added_on', 'DESC');
+        $srch->addOrder('pnotification_id', 'DESC');
+        $rs = $srch->getResultSet();
+        $pnotificationsArr = FatApp::getDb()->fetchAll($rs);
+
+        $this->set('pnotifications', $pnotificationsArr);
+        $this->set('total_pages', $srch->pages());
+        $this->set('total_records', $srch->recordCount());
+        $this->_template->render();
     }
 }

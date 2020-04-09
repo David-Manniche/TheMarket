@@ -16,25 +16,19 @@
                 <section class="section" id="packageDetail">
                     <div class="sectionhead">
                         <h4><?php echo Labels::getLabel('LBL_Seller_Packages_Listings', $adminLangId); ?> </h4>
-                        <?php
-                            $ul = new HtmlElement("ul", array("class"=>"actions actions--centered"));
-                            $li = $ul->appendElement("li", array('class'=>'droplink'));
-                            $li->appendElement('a', array('href'=>'javascript:void(0)', 'class'=>'button small green','title'=>Labels::getLabel('LBL_Add_New', $adminLangId)), '<i class="ion-android-more-horizontal icon"></i>', true);
-                            $innerDiv=$li->appendElement('div', array('class'=>'dropwrap'));
-                            $innerUl=$innerDiv->appendElement('ul', array('class'=>'linksvertical'));
-                            $innerLi=$innerUl->appendElement('li');
-                            $innerLi->appendElement('a', array('href'=>'javascript:void(0)','class'=>'button small green','title'=>Labels::getLabel('LBL_Add_New', $adminLangId),"onclick"=>"PackageForm(0)"), Labels::getLabel('LBL_Add_New', $adminLangId), true);
-
-                        if ($canEdit) {
-                            $innerLi=$innerUl->appendElement('li');
-                            $innerLi->appendElement('a', array('href'=>'javascript:void(0)','class'=>'button small green','title'=>Labels::getLabel('LBL_Activate', $adminLangId),"onclick"=>"toggleBulkStatues(1)"), Labels::getLabel('LBL_Activate', $adminLangId), true);
-
-                            $innerLi=$innerUl->appendElement('li');
-                            $innerLi->appendElement('a', array('href'=>'javascript:void(0)','class'=>'button small green','title'=>Labels::getLabel('LBL_Deactivate', $adminLangId),"onclick"=>"toggleBulkStatues(0)"), Labels::getLabel('LBL_Deactivate', $adminLangId), true);
-                        }
-
-                            echo $ul->getHtml();
-                        ?>
+                        <?php if ($canEdit) {
+                            $otherButtons = [
+                                [
+                                    'attr' => [
+                                        'href' => 'javascript:void(0)',
+                                        'onclick' => 'PackageForm(0)',
+                                        'title' => Labels::getLabel('LBL_Add_New', $adminLangId)
+                                    ],
+                                    'label' => '<i class="fas fa-plus"></i>'
+                                ]
+                            ];
+                            $this->includeTemplate('_partial/action-buttons.php', ['deleteButton' => false, 'otherButtons' => $otherButtons, 'adminLangId' => $adminLangId], false);
+                        } ?>
                     </div>
                     <div class="sectionbody">
                         <div class="tablewrap">

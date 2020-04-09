@@ -5,7 +5,6 @@ $mediaFrm->developerTags['fld_default_col'] = 12;
 $mediaFrm->setFormTagAttribute('onsubmit', 'setupPromotionMedia(this); return(false);');
 
 $uploadfld = $mediaFrm->getField('banner_image');
-$uploadfld->addFieldTagAttribute('class', 'btn btn--primary btn--sm');
 $uploadfld->addFieldTagAttribute('onChange', 'popupImage(this)');
 
 $langFld = $mediaFrm->getField('lang_id');
@@ -14,11 +13,11 @@ $langFld->addFieldTagAttribute('class', 'banner-language-js');
 $screenFld = $mediaFrm->getField('banner_screen');
 $screenFld->addFieldTagAttribute('class', 'banner-screen-js');
 
-$preferredDimensionsStr = '<span class="uploadimage--info" > '.sprintf(Labels::getLabel('LBL_Preferred_Dimensions', $siteLangId), $bannerWidth . ' * ' . $bannerHeight).'</span>';
+$preferredDimensionsStr = '<span class="form-text text-muted uploadimage--info" > '.sprintf(Labels::getLabel('LBL_Preferred_Dimensions', $siteLangId), $bannerWidth . ' * ' . $bannerHeight).'</span>';
 
 $htmlAfterField = $preferredDimensionsStr;
 $htmlAfterField.='<div id="image-listing-js"></div>';
-/* $fld1->htmlAfterField = $htmlAfterField; */
+$uploadfld->htmlAfterField = $htmlAfterField;
 
 ?>
 <div class="tabs tabs--small   tabs--scroll clearfix setactive-js">
@@ -41,7 +40,6 @@ $htmlAfterField.='<div id="image-listing-js"></div>';
     <div class="row">
         <div class="col-md-8">
         <?php echo $mediaFrm->getFormHtml(); ?>
-        <?php echo $htmlAfterField; ?>
         </div>
     </div>
 </div>

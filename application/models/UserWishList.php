@@ -94,7 +94,7 @@ class UserWishList extends MyAppModel
         $srch = static::getSearchObject($userId);
         $srch->joinTable('(' . $selWishlistProductSubQuery . ')', 'LEFT OUTER JOIN', 'uwlist_id = uw_items.uwlp_uwlist_id', 'uw_items');
         if (0 < $excludeWishList) {
-            $srch->addCondition('uwlp_uwlist_id', '!=', $excludeWishList);
+            $srch->addCondition('uwlist_id', '!=', $excludeWishList);
         }
         $srch->doNotCalculateRecords();
         $srch->doNotLimitRecords();

@@ -5,13 +5,14 @@ class ImportExportController extends SellerBaseController
     public function __construct($action)
     {
         parent::__construct($action);
-        if (!Shop::isShopActive(UserAuthentication::getLoggedUserId(), 0, true)) {
+        if (!Shop::isShopActive($this->userParentId, 0, true)) {
             FatApp::redirectUser(CommonHelper::generateUrl('Seller', 'shop'));
         }
-        if (!UserPrivilege::isUserHasValidSubsription(UserAuthentication::getLoggedUserId())) {
+        if (!UserPrivilege::isUserHasValidSubsription($this->userParentId)) {
             Message::addInfo(Labels::getLabel("MSG_Please_buy_subscription", $this->siteLangId));
             FatApp::redirectUser(CommonHelper::generateUrl('Seller', 'Packages'));
         }
+        $this->userPrivilege->canViewImportExport();
     }
 
     public function index()
@@ -21,6 +22,7 @@ class ImportExportController extends SellerBaseController
 
     public function exportData($actionType)
     {
+        $this->userPrivilege->canViewImportExport();
         $langId = FatApp::getPostedData('lang_id', FatUtility::VAR_INT, 0);
         $exportDataRange = FatApp::getPostedData('export_data_range', FatUtility::VAR_INT, 0);
         $startId = FatApp::getPostedData('start_id', FatUtility::VAR_INT, 0);
@@ -28,7 +30,7 @@ class ImportExportController extends SellerBaseController
         $batchCount = FatApp::getPostedData('batch_count', FatUtility::VAR_INT, 0);
         $batchNumber = FatApp::getPostedData('batch_number', FatUtility::VAR_INT, 1);
         $sheetType = FatApp::getPostedData('sheet_type', FatUtility::VAR_INT, 0);
-        $userId = UserAuthentication::getLoggedUserId();
+        $userId = $this->userParentId;
 
         if (1 > $langId) {
             $langId = CommonHelper::getLangId();
@@ -69,6 +71,7 @@ class ImportExportController extends SellerBaseController
 
     public function importData($actionType)
     {
+        $this->userPrivilege->canEditImportExport();
         if (!is_uploaded_file($_FILES['import_file']['tmp_name'])) {
             Message::addErrorMessage(Labels::getLabel('LBL_Please_Select_A_CSV_File', $this->siteLangId));
             FatUtility::dieJsonError(Message::getHtml());
@@ -82,13 +85,14 @@ class ImportExportController extends SellerBaseController
         }
 
         $sheetType = FatApp::getPostedData('sheet_type', FatUtility::VAR_INT, 0);
-        $userId = UserAuthentication::getLoggedUserId();
+        $userId = $this->userParentId;
 
         $obj->import($actionType, $langId, $sheetType, $userId);
     }
 
     public function exportMedia($actionType)
     {
+        $this->userPrivilege->canViewImportExport();
         $post = FatApp::getPostedData();
         $langId = FatApp::getPostedData('lang_id', FatUtility::VAR_INT, 0);
         $exportDataRange = FatApp::getPostedData('export_data_range', FatUtility::VAR_INT, 0);
@@ -96,7 +100,7 @@ class ImportExportController extends SellerBaseController
         $endId = FatApp::getPostedData('end_id', FatUtility::VAR_INT, 0);
         $batchCount = FatApp::getPostedData('batch_count', FatUtility::VAR_INT, 0);
         $batchNumber = FatApp::getPostedData('batch_number', FatUtility::VAR_INT, 1);
-        $userId = UserAuthentication::getLoggedUserId();
+        $userId = $this->userParentId;
 
         $obj = new Importexport();
 
@@ -136,8 +140,9 @@ class ImportExportController extends SellerBaseController
 
     public function importMedia($actionType)
     {
+        $this->userPrivilege->canEditImportExport();
         $post = FatApp::getPostedData();
-        $userId = UserAuthentication::getLoggedUserId();
+        $userId = $this->userParentId;
         $langId = FatApp::getPostedData('lang_id', FatUtility::VAR_INT, 0);
 
         if (!is_uploaded_file($_FILES['import_file']['tmp_name'])) {
@@ -168,6 +173,9 @@ class ImportExportController extends SellerBaseController
                 break;
             case 'SETTINGS':
                 $this->settings();
+                break;
+            case 'INVENTORYUPDATE':
+                $this->inventoryUpdate();
                 break;
             case 'BULK_MEDIA':
                 $this->bulkMedia();
@@ -288,8 +296,10 @@ class ImportExportController extends SellerBaseController
 
     public function import()
     {
+        $this->userPrivilege->canEditImportExport();
         $frm = $this->getImportForm($this->siteLangId);
-
+        $this->set('canEditImportExport', $this->userPrivilege->canEditImportExport(0, true));
+        $this->set('canUploadBulkImages', $this->userPrivilege->canUploadBulkImages(0, true));
         $this->set('action', 'import');
         $this->set('frm', $frm);
         $this->set('sitelangId', $this->siteLangId);
@@ -298,8 +308,10 @@ class ImportExportController extends SellerBaseController
 
     public function export()
     {
+        $this->userPrivilege->canViewImportExport();
         $frm = $this->getExportForm($this->siteLangId);
-
+        $this->set('canEditImportExport', $this->userPrivilege->canEditImportExport(0, true));
+        $this->set('canUploadBulkImages', $this->userPrivilege->canUploadBulkImages(0, true));
         $this->set('action', 'export');
         $this->set('frm', $frm);
         $this->_template->render(false, false, 'import-export/export.php');
@@ -310,14 +322,18 @@ class ImportExportController extends SellerBaseController
         $langId = $this->siteLangId;
         $obj = new Extrapage();
         $pageData = $obj->getContentByPageType(Extrapage::SELLER_GENERAL_SETTINGS_INSTRUCTIONS, $langId);
+        $this->set('canEditImportExport', $this->userPrivilege->canEditImportExport(0, true));
+        $this->set('canUploadBulkImages', $this->userPrivilege->canUploadBulkImages(0, true));
         $this->set('pageData', $pageData);
         $this->set('action', 'generalInstructions');
         $this->_template->render(false, false, 'import-export/general-instructions.php');
     }
     public function bulkMedia()
     {
+        $this->userPrivilege->canUploadBulkImages();
         $frm = $this->getBulkMediaUploadForm($this->siteLangId);
-
+        $this->set('canEditImportExport', $this->userPrivilege->canEditImportExport(0, true));
+        $this->set('canUploadBulkImages', $this->userPrivilege->canUploadBulkImages(0, true));
         $this->set('action', 'bulkMedia');
         $this->set('frm', $frm);
         $this->_template->render(false, false, 'import-export/bulk-media.php');
@@ -327,7 +343,7 @@ class ImportExportController extends SellerBaseController
     {
         $frm = new Form('uploadBulkImages', array('id' => 'uploadBulkImages'));
 
-        $fldImg = $frm->addFileUpload(Labels::getLabel('LBL_File_to_be_uploaded:', $langId), 'bulk_images', array('id' => 'bulk_images', 'accept' => '.zip' ));
+        $fldImg = $frm->addFileUpload(Labels::getLabel('LBL_File_to_be_uploaded:', $langId), 'bulk_images', array('id' => 'bulk_images', 'accept' => '.zip'));
         $fldImg->requirement->setRequired(true);
         $fldImg->setFieldTagAttribute('onChange', '$("#uploadFileName").html(this.value)');
         $fldImg->htmlBeforeField = '<div class="filefield">';
@@ -339,6 +355,7 @@ class ImportExportController extends SellerBaseController
 
     public function updateSettings()
     {
+        $this->userPrivilege->canEditImportExport();
         $frm = $this->getSettingForm($this->siteLangId);
         $post = $frm->getFormDataFromArray(FatApp::getPostedData());
 
@@ -347,7 +364,7 @@ class ImportExportController extends SellerBaseController
             FatUtility::dieJsonError(Message::getHtml());
         }
 
-        $userId = UserAuthentication::getLoggedUserId();
+        $userId = $this->userParentId;
         $obj = new Importexport();
         $settingArr = $obj->getSettingsArr();
 
@@ -366,14 +383,16 @@ class ImportExportController extends SellerBaseController
 
     public function settings()
     {
+        $this->userPrivilege->canViewImportExport();
         $frm = $this->getSettingForm($this->siteLangId);
-        $userId = UserAuthentication::getLoggedUserId();
+        $userId = $this->userParentId;
 
         $obj = new Importexport();
         $settingArr = $obj->getSettings($userId);
 
         $frm->fill($settingArr);
-
+        $this->set('canEditImportExport', $this->userPrivilege->canEditImportExport(0, true));
+        $this->set('canUploadBulkImages', $this->userPrivilege->canUploadBulkImages(0, true));
         $this->set('frm', $frm);
         $this->set('action', 'settings');
         $this->_template->render(false, false, 'import-export/settings.php');
@@ -543,7 +562,7 @@ class ImportExportController extends SellerBaseController
                 }
                 $fldImg = $frm->addFileUpload(Labels::getLabel('LBL_File_to_be_uploaded:', $langId), 'import_file', array('id' => 'import_file'));
                 $fldImg->setFieldTagAttribute('onChange', '$(\'#importFileName\').html(this.value)');
-                $fldImg->htmlBeforeField = '<div class="filefield"><span class="filename" id="importFileName"></span>';
+                $fldImg->htmlBeforeField = '<div class="filefield">';
                 $fldImg->htmlAfterField = "<label class='filelabel'>" . Labels::getLabel('LBL_Browse_File', $this->siteLangId) . "</label></div><small>" . Labels::getLabel('MSG_Invalid_data_will_not_be_processed', $langId) . "</small>";
                 /*$fldImg->htmlBeforeField = '<div class="filefield"><span class="filename" id="importFileName"></span>';
                 $fldImg->htmlAfterField = '</div>'; */
@@ -551,7 +570,7 @@ class ImportExportController extends SellerBaseController
             case 'IMPORT_MEDIA':
                 $fldImg = $frm->addFileUpload(Labels::getLabel('LBL_File_to_be_uploaded:', $langId), 'import_file', array('id' => 'import_file'));
                 $fldImg->setFieldTagAttribute('onChange', '$(\'#importFileName\').html(this.value)');
-                $fldImg->htmlBeforeField = '<div class="filefield"><span class="filename" id="importFileName"></span>';
+                $fldImg->htmlBeforeField = '<div class="filefield">';
                 $fldImg->htmlAfterField = "<label class='filelabel'>" . Labels::getLabel('LBL_Browse_File', $this->siteLangId) . "</label></div><small>" . Labels::getLabel('MSG_Invalid_data_will_not_be_processed', $langId) . "</small>";
                 /* $fldImg->htmlBeforeField = '<div class="filefield"><span class="filename" id="importFileName"></span>';
                 $fldImg->htmlAfterField = '</div>'; */
@@ -622,20 +641,19 @@ class ImportExportController extends SellerBaseController
 
     public function uploadBulkMedia()
     {
+        $this->userPrivilege->canUploadBulkImages();
         if ($_FILES['bulk_images']['error'] !== UPLOAD_ERR_OK) {
             $message = AttachedFile::uploadErrorMessage($_FILES['bulk_images']['error'], $this->siteLangId);
-            Message::addErrorMessage($message);
-            FatUtility::dieJsonError(Message::getHtml());
+            FatUtility::dieJsonError($message);
         }
-        
+
         $fileName = $_FILES['bulk_images']['name'];
         $tmpName = $_FILES['bulk_images']['tmp_name'];
 
         $uploadBulkImgobj = new UploadBulkImages();
-        $savedFile = $uploadBulkImgobj->upload($fileName, $tmpName, UserAuthentication::getLoggedUserId());
+        $savedFile = $uploadBulkImgobj->upload($fileName, $tmpName, $this->userParentId);
         if (false === $savedFile) {
-            Message::addErrorMessage($uploadBulkImgobj->getError());
-            FatUtility::dieJsonError(Message::getHtml());
+            FatUtility::dieJsonError($uploadBulkImgobj->getError());
         }
 
         $path = CONF_UPLOADS_PATH . AttachedFile::FILETYPE_BULK_IMAGES_PATH;
@@ -653,6 +671,7 @@ class ImportExportController extends SellerBaseController
 
     public function uploadedBulkMediaList()
     {
+        $this->userPrivilege->canUploadBulkImages();
         $db = FatApp::getDb();
         $post = FatApp::getPostedData();
         $page = (empty($post['page']) || $post['page'] <= 0) ? 1 : intval($post['page']);
@@ -660,7 +679,7 @@ class ImportExportController extends SellerBaseController
         $pagesize = FatApp::getConfig('CONF_ADMIN_PAGESIZE', FatUtility::VAR_INT, 10);
 
         $obj = new UploadBulkImages();
-        $srch = $obj->bulkMediaFileObject(UserAuthentication::getLoggedUserId());
+        $srch = $obj->bulkMediaFileObject($this->userParentId);
 
         $srch->setPageNumber($page);
         $srch->setPageSize($pagesize);
@@ -682,7 +701,7 @@ class ImportExportController extends SellerBaseController
     {
         $db = FatApp::getDb();
         $obj = new UploadBulkImages();
-        $srch = $obj->bulkMediaFileObject(UserAuthentication::getLoggedUserId());
+        $srch = $obj->bulkMediaFileObject($this->userParentId);
         $srch->addCondition('afile_physical_path', '=', base64_decode($directory));
         $srch->setPageSize(1);
         $rs = $srch->getResultSet();
@@ -701,6 +720,7 @@ class ImportExportController extends SellerBaseController
 
     public function downloadPathsFile($path)
     {
+        $this->userPrivilege->canViewImportExport();
         if (empty($path)) {
             Message::addErrorMessage(Labels::getLabel('MSG_INVALID_REQUEST', $this->siteLangId));
         }
@@ -713,5 +733,167 @@ class ImportExportController extends SellerBaseController
         }
         Message::addErrorMessage(Labels::getLabel('MSG_No_File_Found', $this->siteLangId));
         CommonHelper::redirectUserReferer();
+    }
+
+    public function inventoryUpdate()
+    {
+        $this->userPrivilege->canViewImportExport();
+        $extraPage = new Extrapage();
+        $pageData = $extraPage->getContentByPageType(Extrapage::PRODUCT_INVENTORY_UPDATE_INSTRUCTIONS, $this->siteLangId);
+        $frm = $this->getInventoryUpdateForm($this->siteLangId);
+        $this->set('frm', $frm);
+        $this->set('pageData', $pageData);
+        $this->set('canEditImportExport', $this->userPrivilege->canEditImportExport(0, true));
+        $this->set('canUploadBulkImages', $this->userPrivilege->canUploadBulkImages(0, true));
+        $this->set('action', 'inventoryUpdate');
+        $this->_template->render(false, false, 'seller/inventory-update.php');
+    }
+
+    private function getInventoryUpdateForm($langId = 0)
+    {
+        $frm = new Form('frmInventoryUpdate');
+        $frm->addHiddenField('', 'lang_id', $langId);
+
+        $fld = $frm->addButton('', 'csvfile', Labels::getLabel('Lbl_Upload_Csv_File', $this->siteLangId), array('class' => 'csvFile-Js', 'id' => 'csvFile-Js'));
+        return $frm;
+    }
+
+    public function updateInventory()
+    {
+        if (!$this->userPrivilege->canEditImportExport(0, true)) {
+            Message::addErrorMessage(Labels::getLabel('LBL_Unauthorized_Access!', $this->siteLangId));
+            FatUtility::dieJsonError(Message::getHtml());
+        }
+        $frm = $this->getInventoryUpdateForm($this->siteLangId);
+        $post = FatApp::getPostedData();
+        $loggedUserId = $this->userParentId;
+        $lang_id = FatApp::getPostedData('lang_id', FatUtility::VAR_INT, 0);
+        if (!isset($_FILES['file'])) {
+            /* Message::addErrorMessage(Labels::getLabel('MSG_Invalid_File_Upload',$this->siteLangId)); */
+            FatUtility::dieJsonError(Labels::getLabel('MSG_Invalid_File_Upload', $this->siteLangId));
+        }
+
+        if (!is_uploaded_file($_FILES['file']['tmp_name'])) {
+            /* Message::addErrorMessage(Labels::getLabel('MSG_Please_select_a_file',$this->siteLangId)); */
+            FatUtility::dieJsonError(Labels::getLabel('MSG_Please_select_a_file', $this->siteLangId));
+        }
+
+        $uploadedFile = $_FILES['file']['tmp_name'];
+        $fileHandle = fopen($uploadedFile, 'r');
+        if ($fileHandle == false) {
+            /* Message::addErrorMessage(Labels::getLabel('MSG_Invalid_File_Upload',$this->siteLangId)); */
+            FatUtility::dieJsonError(Labels::getLabel('MSG_Invalid_File_Upload', $this->siteLangId));
+        }
+
+        /* validate file extension[ */
+        $mimes = array('application/vnd.ms-excel', 'text/plain', 'text/csv', 'text/tsv', 'application/octet-stream');
+        if (!in_array($_FILES['file']['type'], $mimes)) {
+            /* Message::addErrorMessage(Labels::getLabel('MSG_Invalid_File_Upload',$this->siteLangId)); */
+            FatUtility::dieJsonError(Labels::getLabel('MSG_Invalid_File_Upload', $this->siteLangId));
+        }
+        /* ] */
+
+        $firstLine = fgetcsv($fileHandle);
+        $defaultColArr = $this->getInventorySheetColoum($this->siteLangId);
+        if ($firstLine != $defaultColArr) {
+            /* Message::addErrorMessage(Labels::getLabel('LBL_Sheet_seems_to_be_empty', $this->siteLangId )); */
+            FatUtility::dieJsonError(Labels::getLabel('MSG_Invalid_Coloum_CSV_File', $this->siteLangId));
+        }
+        $processFile = false;
+        $db = FatApp::getDb();
+
+        while (($dataArray = fgetcsv($fileHandle)) !== false) {
+            //
+            $selprod_id = FatUtility::int($dataArray[0]);
+            $selprod_sku = $dataArray[1];
+            $selprod_cost_price = FatUtility::float($dataArray[3]);
+            $selprod_price = FatUtility::float($dataArray[4]);
+            $selprod_stock = FatUtility::int($dataArray[5]);
+
+            $productId = SellerProduct::getAttributesById($selprod_id, 'selprod_product_id', false);
+            $prodData = Product::getAttributesById($productId, array('product_min_selling_price'));
+            if ($selprod_price < $prodData['product_min_selling_price']) {
+                $selprod_price = $prodData['product_min_selling_price'];
+            }
+
+            $assignValues = array();
+            if ($selprod_price != '') {
+                $assignValues['selprod_price'] = $selprod_price;
+            }
+            if ($selprod_stock < 0 || $selprod_price < 0 || $selprod_cost_price <= 0) {
+                continue;
+            }
+            $assignValues['selprod_cost'] = $selprod_cost_price;
+            $assignValues['selprod_stock'] = $selprod_stock;
+            if ($selprod_id > 0) {
+                $whereSmt = array('smt' => 'selprod_user_id = ? and selprod_id = ?', 'vals' => array($loggedUserId, $selprod_id));
+                $db->updateFromArray(SellerProduct::DB_TBL, $assignValues, $whereSmt);
+            }
+            $processFile = true;
+        }
+
+        if (!$processFile) {
+            /* Message::addErrorMessage(Labels::getLabel('MSG_Uploaded_file_seems_to_be_empty,_please_upload_a_valid_file_or_records_skipped',$this->siteLangId)); */
+            FatUtility::dieJsonError(Labels::getLabel('MSG_Uploaded_file_seems_to_be_empty,_please_upload_a_valid_file_or_records_skipped', $this->siteLangId));
+        }
+
+        Product::updateMinPrices();
+        /* Message::addMessage(  Labels::getLabel('MSG_Inventory_has_been_updated_successfully',$this->siteLangId) ); */
+        FatUtility::dieJsonSuccess(Labels::getLabel('MSG_Inventory_has_been_updated_successfully', $this->siteLangId));
+    }
+
+    public function exportInventory()
+    {
+        $this->userPrivilege->canViewImportExport();
+        $srch = SellerProduct::getSearchObject($this->siteLangId);
+        $srch->joinTable(Product::DB_TBL, 'INNER JOIN', 'p.product_id = sp.selprod_product_id', 'p');
+        $srch->joinTable(Product::DB_TBL_LANG, 'LEFT OUTER JOIN', 'p.product_id = p_l.productlang_product_id AND p_l.productlang_lang_id = ' . $this->siteLangId, 'p_l');
+        $srch->addCondition('selprod_user_id', '=', $this->userParentId);
+        $srch->addCondition('selprod_deleted', '=', applicationConstants::NO);
+        $srch->addCondition('selprod_active', '=', applicationConstants::ACTIVE);
+        $srch->addOrder('product_name');
+        $srch->addOrder('selprod_active', 'DESC');
+        $srch->addMultipleFields(array('selprod_id', 'selprod_sku', 'selprod_price', 'selprod_cost', 'selprod_stock', 'IFNULL(product_name, product_identifier) as product_name', 'selprod_title'));
+        $srch->doNotCalculateRecords();
+        $srch->doNotLimitRecords();
+        $rs = $srch->getResultSet();
+        $inventoryData = FatApp::getDb()->fetchAll($rs, 'selprod_id');
+
+        /* if( count($data) ){
+          //$data['options'] = SellerProduct::getSellerProductOptions(0,true,$this->siteLangId);
+          foreach( $data as & $arr ){
+          $options = SellerProduct::getSellerProductOptions( $arr['selprod_id'], true, $this->siteLangId );
+          }
+          } */
+
+        $sheetData = array();
+        /* $arr = array('selprod_id','selprod_sku','selprod_title', 'selprod_price','selprod_stock'); */
+        $arr = $this->getInventorySheetColoum($this->siteLangId);
+        array_push($sheetData, $arr);
+
+        foreach ($inventoryData as $key => $val) {
+            $title = $val['product_name'];
+            if ($val['selprod_title'] != "") {
+                $title .= "-[" . $val['selprod_title'] . "]";
+            }
+            $arr = array($val['selprod_id'], $val['selprod_sku'], $title, $val['selprod_cost'], $val['selprod_price'], $val['selprod_stock']);
+            array_push($sheetData, $arr);
+        }
+
+        CommonHelper::convertToCsv($sheetData, str_replace(' ', '_', Labels::getLabel('LBL_Inventory_Report', $this->siteLangId)) . '_' . date("Y-m-d") . '.csv', ',');
+        exit;
+    }
+
+    private function getInventorySheetColoum($langId)
+    {
+        $arr = array(
+            Labels::getLabel("LBL_Seller_Product_Id", $langId),
+            Labels::getLabel("LBL_SKU", $langId),
+            Labels::getLabel("LBL_Product", $langId),
+            Labels::getLabel('LBL_Cost_Price', $langId),
+            Labels::getLabel("LBL_Price", $langId),
+            Labels::getLabel("LBL_Stock/Quantity", $langId)
+        );
+        return $arr;
     }
 }

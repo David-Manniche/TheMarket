@@ -23,11 +23,17 @@ $(document).on('keyup', "input[name='product_name']", function(){
         	select: function(event, ui) {
                 $("#"+parentForm+" input[name='splprice_selprod_id']").val(ui.item.id);
                 currObj.val( (ui.item.label).replace(/<[^>]+>/g, ''));
+                $("input[name='splprice_start_date']").removeAttr('disabled');
+                $("input[name='splprice_end_date']").removeAttr('disabled');
+                $("input[name='splprice_price']").removeAttr('disabled');
                 return false;
         	}
         });
     }else{
         $("#"+parentForm+" input[name='splprice_selprod_id']").val('');
+        $("input[name='splprice_start_date']").attr('disabled', 'disabled').val('');
+        $("input[name='splprice_end_date']").attr('disabled', 'disabled').val('');
+        $("input[name='splprice_price']").attr('disabled', 'disabled').val('');
     }
 });
 
@@ -155,6 +161,7 @@ $(document).on('blur', ".js--splPriceCol:not(.date_js)", function(){
         });
 	};
     updateSpecialPriceRow = function(frm, selProd_id){
+        if (!$(frm).validate()) return;
 		var data = fcom.frmData(frm);
 		fcom.updateWithAjax(fcom.makeUrl('SellerProducts', 'updateSpecialPriceRow'), data, function(t) {
             if(t.status == true){

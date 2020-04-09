@@ -2,7 +2,7 @@
 $frm->setFormTagAttribute('id', 'profileInfoFrm');
 $frm->setFormTagAttribute('class', 'form');
 $frm->developerTags['colClassPrefix'] = 'col-md-';
-$frm->developerTags['fld_default_col'] = 4;
+$frm->developerTags['fld_default_col'] = 6;
 
 $fld = $frm->getField('user_profile_info');
 $fld->developerTags['col'] = 6;
@@ -19,8 +19,10 @@ $frm->setFormTagAttribute('onsubmit', 'updateProfileInfo(this); return(false);')
 $usernameFld = $frm->getField('credential_username');
 $usernameFld->setFieldTagAttribute('disabled', 'disabled');
 
-$phoneFld = $frm->getField('user_phone');
-$phoneFld->setFieldTagAttribute('disabled', 'disabled');
+if (true == SmsArchive::canSendSms()) {
+    $phoneFld = $frm->getField('user_phone');
+    $phoneFld->setFieldTagAttribute('disabled', 'disabled');
+}
 
 $userDobFld = $frm->getField('user_dob');
 if (!empty($data['user_dob']) && $data['user_dob'] != '0000-00-00') {
@@ -34,10 +36,13 @@ $emailFld->setFieldTagAttribute('disabled', 'disabled');
 
 $countryFld = $frm->getField('user_country_id');
 $countryFld->setFieldTagAttribute('id', 'user_country_id');
-$countryFld->setFieldTagAttribute('onChange', 'getCountryStates(this.value,'.$stateId.',\'#user_state_id\')');
+$countryFld->setFieldTagAttribute('onChange', 'getCountryStates(this.value,' . $stateId . ',\'#user_state_id\')');
 
 $stateFld = $frm->getField('user_state_id');
 $stateFld->setFieldTagAttribute('id', 'user_state_id');
+
+$userCompFld = $frm->getField('user_company');
+$userCompFld->developerTags['col'] = 12;
 
 
 $imgFrm->setFormTagAttribute('action', CommonHelper::generateUrl('Account', 'uploadProfileImage'));
@@ -53,7 +58,7 @@ $fld->addFieldTagAttribute('class','btn btn--primary btn--sm'); */
                         <div class="avtar avtar--large mb-4 ">
                             <?php
                                 $userId = UserAuthentication::getLoggedUserId();
-                                $userImgUpdatedOn = User::getAttributesById($userId, 'user_img_updated_on');
+                                $userImgUpdatedOn = User::getAttributesById($userId, 'user_updated_on');
                                 $uploadedTime = AttachedFile::setTimeParam($userImgUpdatedOn);
 
                                 $profileImg = FatCache::getCachedUrl(CommonHelper::generateUrl('Image', 'user', array($userId,'thumb',true)).$uploadedTime, CONF_IMG_CACHE_TIME, '.jpg');
@@ -86,7 +91,7 @@ $fld->addFieldTagAttribute('class','btn btn--primary btn--sm'); */
 				    </div>
             </div>
             <div class="col-xl-12 col-lg-6 mb-4">
-                <?php if (User::canViewBuyerTab() && User::canViewSupplierTab()) { ?>
+                <?php if (User::isBuyer() && User::isSeller()) { ?>
                <div class=" bg-gray rounded p-4"> <div class="align-items-center">
                     <h5><?php echo Labels::getLabel('LBL_Preferred_Dashboard', $siteLangId);?> </h5>
                     <div class="switch-group">
@@ -119,3 +124,9 @@ $fld->addFieldTagAttribute('class','btn btn--primary btn--sm'); */
         });
     });
 </script>
+<?php 
+if (isset($countryIso) && !empty($countryIso)) { ?>
+    <script>
+        langLbl.defaultCountryCode = '<?php echo $countryIso; ?>';
+    </script>
+<?php } ?>

@@ -27,13 +27,13 @@
     <div class="content-wrapper content-space">
         <div class="content-header row">
             <?php $this->includeTemplate('_partial/dashboardTop.php'); ?>
-            <?php $this->includeTemplate('_partial/productPagesTabs.php', array('siteLangId'=>$siteLangId,'controllerName'=>$controllerName,'action'=>$action), false); ?>
+            <?php $this->includeTemplate('_partial/productPagesTabs.php', array('siteLangId'=>$siteLangId, 'controllerName'=>$controllerName, 'action'=>$action, 'canEdit'=>$canEdit), false); ?>
         </div>
         <div class="content-body">
             <div class="row mb-4">
                 <div class="col-lg-12">
                     <div class="cards">
-                        <div class="cards-content pb-0">
+                        <div class="cards-content">
                             <div class="replaced">
                                 <div class="row">
                                     <div class="col-lg-8">
@@ -67,8 +67,10 @@
                                         <a class="btn btn-outline-primary btn--sm formActionBtn-js formActions-css" title="<?php echo Labels::getLabel('LBL_Activate', $siteLangId); ?>" onclick="toggleBulkStatues(1)" href="javascript:void(0)"><?php echo Labels::getLabel('LBL_Activate', $siteLangId); ?></a>
                                         <a class="btn btn-outline-primary btn--sm formActionBtn-js formActions-css" title="<?php echo Labels::getLabel('LBL_Deactivate', $siteLangId); ?>" onclick="toggleBulkStatues(0)" href="javascript:void(0)"><?php echo Labels::getLabel('LBL_Deactivate', $siteLangId); ?></a>
                                         <a class="btn btn-outline-primary btn--sm formActionBtn-js formActions-css" title="<?php echo Labels::getLabel('LBL_Delete', $siteLangId); ?>" onclick="deleteBulkSellerProducts()" href="javascript:void(0)"><?php echo Labels::getLabel('LBL_Delete', $siteLangId); ?></a>
-                                        <a class="btn btn-outline-primary btn--sm formActionBtn-js formActions-css" title="<?php echo Labels::getLabel('LBL_Add_Special_Price', $siteLangId); ?>" onclick="addSpecialPrice()" href="javascript:void(0)"><?php echo Labels::getLabel('LBL_Add_Special_Price', $siteLangId); ?></a>                                        
+                                        <?php /*
+                                        <a class="btn btn-outline-primary btn--sm formActionBtn-js formActions-css" title="<?php echo Labels::getLabel('LBL_Add_Special_Price', $siteLangId); ?>" onclick="addSpecialPrice()" href="javascript:void(0)"><?php echo Labels::getLabel('LBL_Add_Special_Price', $siteLangId); ?></a>
                                         <a class="btn btn-outline-primary btn--sm formActionBtn-js formActions-css" title="<?php echo Labels::getLabel('LBL_Add_Volume_Discount', $siteLangId); ?>" onclick="addVolumeDiscount()" href="javascript:void(0)"><?php echo Labels::getLabel('LBL_Add_Volume_Discount', $siteLangId); ?></a>
+                                         * */ ?>
                                     </div>
                                 </div>
                             </div>

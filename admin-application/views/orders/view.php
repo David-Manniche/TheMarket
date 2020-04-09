@@ -27,15 +27,21 @@ if ($order['order_reward_point_used'] > 0) {
                     <div class="sectionhead">
                         <h4><?php echo Labels::getLabel('LBL_Customer_Order_Detail', $adminLangId); ?></h4>
                         <?php
-                            $ul = new HtmlElement("ul", array("class"=>"actions actions--centered"));
-                            $li = $ul->appendElement("li", array('class'=>'droplink'));
-                            $li->appendElement('a', array('href'=>'javascript:void(0)', 'class'=>'button small green','title'=>Labels::getLabel('LBL_Edit', $adminLangId)), '<i class="ion-android-more-horizontal icon"></i>', true);
-                            $innerDiv=$li->appendElement('div', array('class'=>'dropwrap'));
-                            $innerUl=$innerDiv->appendElement('ul', array('class'=>'linksvertical'));
-                            $innerLi=$innerUl->appendElement('li');
-
-                            $innerLi->appendElement('a', array('href'=>CommonHelper::generateUrl('Orders'),'class'=>'button small green redirect--js','title'=>Labels::getLabel('LBL_Back_To_Orders', $adminLangId)), Labels::getLabel('LBL_Back_To_Orders', $adminLangId), true);
-                            echo $ul->getHtml();
+                            $data = [
+                                'adminLangId' => $adminLangId,
+                                'statusButtons' => false,
+                                'deleteButton' => false,
+                                'otherButtons' => [
+                                    [
+                                        'attr' => [
+                                            'href' => CommonHelper::generateUrl('Orders'),
+                                            'title' => Labels::getLabel('LBL_BACK', $adminLangId)
+                                        ],
+                                        'label' => '<i class="fas fa-arrow-left"></i>'
+                                    ],
+                                ]
+                            ];
+                            $this->includeTemplate('_partial/action-buttons.php', $data, false);
                         ?>
                     </div>
                     <div class="sectionbody">
@@ -105,9 +111,15 @@ if ($order['order_reward_point_used'] > 0) {
                                     $txt .= $op['op_selprod_title'].'<br/>';
                                 }
                                 $txt .= $op['op_product_name'];
-                                $txt .= '<br/>'.Labels::getLabel('LBL_Brand', $adminLangId).': '.$op['op_brand_name'];
+                                $txt .= '<br/>';
+                                if( !empty($op['op_brand_name']) ){
+                                   $txt .=  Labels::getLabel('LBL_Brand', $adminLangId).': '.$op['op_brand_name'];
+                                }
+                                if( !empty($op['op_brand_name']) && !empty($op['op_selprod_options']) ){
+                                    $txt .= ' | ' ;
+                                }
                                 if ($op['op_selprod_options'] != '') {
-                                    $txt .= ' | ' . $op['op_selprod_options'];
+                                    $txt .= $op['op_selprod_options'];
                                 }
                                 if ($op['op_selprod_sku'] != '') {
                                     $txt .= '<br/>'.Labels::getLabel('LBL_SKU', $adminLangId).': ' . $op['op_selprod_sku'];
@@ -137,10 +149,11 @@ if ($order['order_reward_point_used'] > 0) {
                                 $k++;
                                 if (!empty($op['taxOptions'])) {
                                     foreach ($op['taxOptions'] as $key => $val) {
-                                        if (!isset($taxOptionsTotal[$key])) {
-                                            $taxOptionsTotal[$key] = 0;
+                                        if (!isset($taxOptionsTotal[$key]['value'])) {
+                                            $taxOptionsTotal[$key]['value'] = 0;
                                         }
-                                        $taxOptionsTotal[$key] += $val;
+                                        $taxOptionsTotal[$key]['value'] += $val['value'];
+                                        $taxOptionsTotal[$key]['title'] = CommonHelper::displayTaxPercantage($val);
                                     }
                                 }
                             } ?>
@@ -160,8 +173,8 @@ if ($order['order_reward_point_used'] > 0) {
                             <?php } else {
                                 foreach ($taxOptionsTotal as $key => $val) { ?>
                                   <tr>
-                                    <td colspan="8" class="text-right"><?php echo $key ?></td>
-                                    <td class="text-right" colspan="2"><?php echo CommonHelper::displayMoneyFormat($val); ?></td>
+                                    <td colspan="8" class="text-right"><?php echo $val['title'] ?></td>
+                                    <td class="text-right" colspan="2"><?php echo CommonHelper::displayMoneyFormat($val['value']); ?></td>
                                   </tr>
                                 <?php }
                             } ?>

@@ -1,6 +1,6 @@
 <?php
 
-class SubscriptionCheckoutController extends MyAppController
+class SubscriptionCheckoutController extends LoggedUserController
 {
     private $cartObj;
     public function __construct($action)
@@ -19,7 +19,7 @@ class SubscriptionCheckoutController extends MyAppController
             }
             FatApp::redirectUser(CommonHelper::generateUrl('GuestUser', 'loginForm'));
         }
-        $user_id = UserAuthentication::getLoggedUserId();
+        $user_id = $this->userParentId;
         $this->scartObj = new SubscriptionCart($user_id, $this->siteLangId);
         $this->set('exculdeMainHeaderDiv', true);
     }
@@ -52,6 +52,11 @@ class SubscriptionCheckoutController extends MyAppController
 
     public function index()
     {
+        if (!$this->userPrivilege->canEditSubscription(UserAuthentication::getLoggedUserId(), true)) {
+            Message::addErrorMessage(Labels::getLabel('MSG_YOU_DO_NOT_HAVE_A_SUFFICIENT_PERMISSION_TO_CHANGE_PLAN', $this->siteLangId));
+            FatApp::redirectUser(CommonHelper::generateUrl('seller', 'packages'));
+        }
+
         $criteria = array('hasSubscription' => true);
         if (!$this->isEligibleForNextStep($criteria)) {
             FatApp::redirectUser(CommonHelper::generateUrl('seller', 'packages'));
@@ -102,7 +107,7 @@ class SubscriptionCheckoutController extends MyAppController
 
     public function loginDetails()
     {
-        $userId = UserAuthentication::getLoggedUserId();
+        $userId = $this->userParentId;
         $user_email = UserAuthentication::getLoggedUserAttribute('user_email');
         $this->set('user_email', $user_email);
         $this->_template->render(false, false);
@@ -110,6 +115,7 @@ class SubscriptionCheckoutController extends MyAppController
 
     public function reviewScart()
     {
+        $this->userPrivilege->canEditSubscription(UserAuthentication::getLoggedUserId());
         $criteria = array( 'isUserLogged' => true, 'hasSubscription' => true);
 
         if (!$this->isEligibleForNextStep($criteria)) {
@@ -154,8 +160,9 @@ class SubscriptionCheckoutController extends MyAppController
         return $langSpecificsubscriptionInfo = FatApp::getDb()->fetch($langProdRs);
     }
 
-    public function PaymentSummary()
+    public function paymentSummary()
     {
+        $this->userPrivilege->canEditSubscription(UserAuthentication::getLoggedUserId());
         $criteria = array( 'isUserLogged' => true, 'hasSubscription' => true );
 
         if (!$this->isEligibleForNextStep($criteria)) {
@@ -182,7 +189,7 @@ class SubscriptionCheckoutController extends MyAppController
         /* add Order Data[ */
         $order_id = isset($_SESSION['subscription_shopping_cart']["order_id"]) ? $_SESSION['subscription_shopping_cart']["order_id"] : false;
 
-        $userId = UserAuthentication::getLoggedUserId();
+        $userId = $this->userParentId;
         $orderData['order_id'] = $order_id;
         $orderData['order_user_id'] = $userId;
         /* $orderData['order_user_name'] = $userDataArr['user_name'];
@@ -395,8 +402,9 @@ class SubscriptionCheckoutController extends MyAppController
         $this->set('cartSummary', $cartSummary);
         $this->_template->render(false, false);
     }
-    public function PaymentTab($order_id, $pmethod_id)
+    public function paymentTab($order_id, $pmethod_id)
     {
+        $this->userPrivilege->canEditSubscription(UserAuthentication::getLoggedUserId());
         $pmethod_id = FatUtility::int($pmethod_id);
         if (!$pmethod_id) {
             FatUtility::dieWithError(Labels::getLabel("MSG_Invalid_Request!", $this->siteLangId));
@@ -454,6 +462,7 @@ class SubscriptionCheckoutController extends MyAppController
 
     public function walletSelection()
     {
+        $this->userPrivilege->canEditSubscription(UserAuthentication::getLoggedUserId());
         $post = FatApp::getPostedData();
         $payFromWallet = $post['payFromWallet'];
         //$this->cartObj = new Cart();
@@ -463,6 +472,7 @@ class SubscriptionCheckoutController extends MyAppController
 
     public function useRewardPoints()
     {
+        $this->userPrivilege->canEditSubscription(UserAuthentication::getLoggedUserId());
         $post = FatApp::getPostedData();
 
         if (false == $post) {
@@ -476,7 +486,7 @@ class SubscriptionCheckoutController extends MyAppController
         }
 
         $rewardPoints = $post['redeem_rewards'];
-        $totalBalance = UserRewardBreakup::rewardPointBalance(UserAuthentication::getLoggedUserId());
+        $totalBalance = UserRewardBreakup::rewardPointBalance($this->userParentId);
         /* var_dump($totalBalance);exit; */
         if ($totalBalance == 0 || $totalBalance < $rewardPoints) {
             Message::addErrorMessage(Labels::getLabel('ERR_Insufficient_reward_point_balance', $this->siteLangId));
@@ -507,6 +517,7 @@ class SubscriptionCheckoutController extends MyAppController
 
     public function removeRewardPoints()
     {
+        $this->userPrivilege->canEditSubscription(UserAuthentication::getLoggedUserId());
         $scartObj = new SubscriptionCart();
         if (!$scartObj->removeUsedRewardPoints()) {
             Message::addErrorMessage(Labels::getLabel('LBL_Action_Trying_Perform_Not_Valid', $this->siteLangId));
@@ -517,8 +528,9 @@ class SubscriptionCheckoutController extends MyAppController
         $this->_template->render(false, false, 'json-success.php');
     }
 
-    public function ConfirmOrder()
+    public function confirmOrder()
     {
+        $this->userPrivilege->canEditSubscription(UserAuthentication::getLoggedUserId());
         /* ConfirmOrder function is called for both wallet payments and for paymentgateway selection as well. */
         $criteria = array( 'isUserLogged' => true, 'hasSubscription' => true );
 
@@ -531,7 +543,7 @@ class SubscriptionCheckoutController extends MyAppController
             }
             FatUtility::dieWithError($errMsg);
         }
-        $user_id = UserAuthentication::getLoggedUserId();
+        $user_id = $this->userParentId;
         $cartSummary = $this->scartObj->getSubscriptionCartFinancialSummary($this->siteLangId);
 
         $userWalletBalance = User::getUserBalance($user_id);
@@ -670,7 +682,7 @@ class SubscriptionCheckoutController extends MyAppController
     {
         $currDate = date('Y-m-d');
         $interval = date('Y-m-d H:i:s', strtotime(date('Y-m-d H:i:s') . ' - 15 minute'));
-        $loggedUserId = UserAuthentication::getLoggedUserId();
+        $loggedUserId = $this->userParentId;
 
         $cartObj = new SubscriptionCart();
         $cartSubTotal = $cartObj->getSubTotal($this->siteLangId);
@@ -772,6 +784,7 @@ class SubscriptionCheckoutController extends MyAppController
 
     public function applyPromoCode()
     {
+        $this->userPrivilege->canEditSubscription(UserAuthentication::getLoggedUserId());
         UserAuthentication::checkLogin();
 
         $post = FatApp::getPostedData();
@@ -803,7 +816,7 @@ class SubscriptionCheckoutController extends MyAppController
 
         $holdCouponData = array(
         'couponhold_coupon_id' => $couponInfo['coupon_id'],
-        'couponhold_user_id' => UserAuthentication::getLoggedUserId(),
+        'couponhold_user_id' => $this->userParentId,
         'couponhold_added_on' => date('Y-m-d H:i:s'),
         );
 
@@ -817,6 +830,7 @@ class SubscriptionCheckoutController extends MyAppController
 
     public function removePromoCode()
     {
+        $this->userPrivilege->canEditSubscription(UserAuthentication::getLoggedUserId());
         $scartObj = new SubscriptionCart();
         if (!$scartObj->removeCartDiscountCoupon()) {
             Message::addErrorMessage(Labels::getLabel('LBL_Action_Trying_Perform_Not_Valid', $this->siteLangId));
@@ -826,12 +840,17 @@ class SubscriptionCheckoutController extends MyAppController
         $this->set('msg', Labels::getLabel("MSG_cart_discount_coupon_removed", $this->siteLangId));
         $this->_template->render(false, false, 'json-success.php');
     }
-    public function PaymentBlankDiv()
+    public function paymentBlankDiv()
     {
+        $this->userPrivilege->canEditSubscription(UserAuthentication::getLoggedUserId());
         $this->_template->render(false, false);
     }
     public function renewSubscriptionOrder($ossubs_id = 0)
     {
+        if (!$this->userPrivilege->canEditSubscription(UserAuthentication::getLoggedUserId(), true)) {
+            Message::addErrorMessage(Labels::getLabel('LBL_Unauthorized_Access!', $this->siteLangId));
+            FatApp::redirectUser(CommonHelper::generateUrl('Seller', 'subscriptions'));
+        }
         $statusArr = Orders::getActiveSubscriptionStatusArr();
         $endDate = date("Y-m-d");
         $srch = new OrderSubscriptionSearch();
@@ -841,7 +860,7 @@ class SubscriptionCheckoutController extends MyAppController
         $srch->addCondition('ossubs_status_id', 'in', $statusArr);
         $srch->addCondition('ossubs_id', '=', $ossubs_id);
         $srch->addCondition('ossubs_type', '=', SellerPackages::PAID_TYPE);
-        $srch->addCondition('order_user_id', '=', UserAuthentication::getLoggedUserId());
+        $srch->addCondition('order_user_id', '=', $this->userParentId);
         $srch->addCondition('ossubs_till_date', '<=', $endDate);
         $srch->addCondition('ossubs_till_date', '!=', '0000-00-00');
         $srch->addCondition('user_autorenew_subscription', '!=', 1);

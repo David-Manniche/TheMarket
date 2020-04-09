@@ -1,13 +1,17 @@
 <?php defined('SYSTEM_INIT') or die('Invalid Usage.');
 $arr_flds = array(
-    'select_all' => Labels::getLabel('LBL_Select_all', $siteLangId),
+    'select_all' => '',
     'product_name' => Labels::getLabel('LBL_Name', $siteLangId),
     'splprice_start_date' => Labels::getLabel('LBL_Start_Date', $siteLangId),
     'splprice_end_date' => Labels::getLabel('LBL_End_Date', $siteLangId),
-    'splprice_price' => Labels::getLabel('LBL_Special_Price', $siteLangId),
-    'action' => Labels::getLabel('LBL_Action', $siteLangId),
+    'splprice_price' => Labels::getLabel('LBL_Special_Price', $siteLangId)
 );
-
+if ($canEdit) {
+    $arr_flds['action']    = '';
+}
+if (!$canEdit || 1 > count($arrListing)) {
+    unset($arr_flds['select_all']);
+}
 $tbl = new HtmlElement('table', array('width' => '100%', 'class' => 'table splPriceList-js'));
 $th = $tbl->appendElement('thead')->appendElement('tr', array('class' => ''));
 foreach ($arr_flds as $column => $lblTitle) {
@@ -79,7 +83,7 @@ foreach ($arrListing as $sn => $row) {
 $frm = new Form('frmSplPriceListing', array('id' => 'frmSplPriceListing'));
 $frm->setFormTagAttribute('class', 'form');
 
-echo $frm->getFormTag(); 
+echo $frm->getFormTag();
 echo $tbl->getHtml();
 ?>
 </form>

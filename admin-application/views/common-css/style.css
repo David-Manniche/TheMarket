@@ -871,7 +871,7 @@ BUTTON SIZING
     line-height: normal;
     padding: 7px 10px 7px;
     min-height: 1%;
-    margin: 0 2px;
+    margin:2px;
 }
 
 .btn-sm.themebtn.btn-default {
@@ -3309,9 +3309,7 @@ body.toggled-right .rightoverlay {
     vertical-align: middle;
     padding: 0 0 0 20px;
     height: 20px;
-    -webkit-margin-end: 5px;
-    -moz-margin-end: 5px;
-    margin-inline-end: 5px;
+    margin-right: 5px;
 }
 
 .checkbox input,
@@ -3690,11 +3688,13 @@ blockquote small:before {
     list-style: none;
     margin: 2px 0 0;
     width: 100%;
-    display: inline-block;
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
     color: #aaa;
     padding: 0 0;
     background: none;
-    border-radius: none;
+    border-radius: 0;
 }
 
 .breadcrumb li {
@@ -3702,8 +3702,8 @@ blockquote small:before {
     position: relative;
     font-size: 13px;
     color: #999;
-    padding: 0 0 0 15px;
-    margin: 0 0 0 12px;
+    padding-left: 15px;
+    margin-left: 12px;
 }
 
 .breadcrumb li a:after {
@@ -4048,13 +4048,13 @@ select {
 }
 
 .field_label {
-	position: relative;
-	font-weight: 400;
-	/*pointer-events: none;*/
-	/* IE 9 */
-	-webkit-transition: all 200ms ease 0s;
-	/* Chrome, Safari, Opera */
-	transition: all 200ms ease 0s;
+    position: relative;
+    font-weight: 400;
+    /*pointer-events: none;*/
+    /* IE 9 */
+    -webkit-transition: all 200ms ease 0s;
+    /* Chrome, Safari, Opera */
+    transition: all 200ms ease 0s;
 
 }
 
@@ -4205,9 +4205,7 @@ fieldset[disabled] .field_control.disabled {
     vertical-align: middle;
     border: none;
     color: #fff;
-    -webkit-margin-end: 10px;
-    -moz-margin-end: 10px;
-    margin-inline-end: 10px;
+    margin-right: 10px;
     line-height: normal;
     background: rgb(45, 200, 239);
     background: -webkit-gradient(linear, left top, left bottom, from(rgba(45, 200, 239, 1)), to(rgba(84, 209, 241, 1)));
@@ -4216,9 +4214,17 @@ fieldset[disabled] .field_control.disabled {
     box-shadow: 0 4px 4px rgba(84, 209, 241, 0.5);
 }
 
-.web_form input[type="submit"]:hover {
+.web_form input[type="submit"]:hover,
+.web_form input[type="submit"]:active,
+.web_form input[type="submit"]:focus {
     -webkit-box-shadow: 0 0 8px rgba(84, 209, 241, 0.40), 0 8px 16px rgba(84, 209, 241, 0.66);
     box-shadow: 0 0 8px rgba(84, 209, 241, 0.40), 0 8px 16px rgba(84, 209, 241, 0.66);
+    background: rgb(45, 200, 239);
+    background: -webkit-gradient(linear, left top, left bottom, from(rgba(45, 200, 239, 1)), to(rgba(84, 209, 241, 1)));
+    background: linear-gradient(to bottom, rgba(45, 200, 239, 1) 0%, rgba(84, 209, 241, 1) 100%);
+    background-image: -webkit-gradient(linear, left top, left bottom, from(rgba(45, 200, 239, 1)), to(rgba(84, 209, 241, 1))) !important;
+    background-image: linear-gradient(to bottom, rgba(45, 200, 239, 1) 0%, rgba(84, 209, 241, 1) 100%) !important;
+
 }
 
 .web_form input[type="button"]:hover {
@@ -7750,6 +7756,11 @@ body.switchtoggled .color_pallete .pallete_control {
     text-align: right !important;
 }
 
+.layout--rtl .accordian_title:before {
+    right: auto;
+    left: 15px;
+}
+
 .layout--rtl .field-set {
     text-align: right;
 }
@@ -9191,12 +9202,7 @@ body.page--front .page__cell #footer {
     display: inline-block;
     background: #fff;
     vertical-align: top;
-
-    -webkit-margin-end: 20px;
-
-    -moz-margin-end: 20px;
-
-    margin-inline-end: 20px;
+    margin-right: 20px;
     -webkit-transition: 0.5s all ease-in-out;
     transition: 0.5s all ease-in-out;
 }

@@ -69,7 +69,7 @@ class Labels extends MyAppModel
 
         $langId = FatUtility::int($langId);
         if ($langId == 0) {
-            return;
+            $langId = CommonHelper::getLangId();
         }
 
         $cacheAvailable = static::isAPCUcacheAvailable();

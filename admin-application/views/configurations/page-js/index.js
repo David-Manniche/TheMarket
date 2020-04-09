@@ -251,10 +251,7 @@ $(document).ready(function() {
 		if (inputBtn.files && inputBtn.files[0]) {
 	        fcom.ajax(fcom.makeUrl('Configurations', 'imgCropper'), '', function(t) {
 				$.facebox(t,'faceboxWidth medium-fb-width');
-				var container = document.querySelector('.img-container');
                 var file = inputBtn.files[0];
-                $('#new-img').attr('src', URL.createObjectURL(file));
-	    		var image = container.getElementsByTagName('img').item(0);
                 var minWidth = $(inputBtn).attr('data-min_width');
                 var minHeight = $(inputBtn).attr('data-min_height');
                 /*if(minWidth == minHeight){
@@ -273,7 +270,7 @@ $(document).ready(function() {
 	                toggleDragModeOnDblclick: false,
 		        };
 				$(inputBtn).val('');
-    	  		return cropImage(image, options, 'uploadConfImages', inputBtn);
+    	  		return cropImage(file, options, 'uploadConfImages', inputBtn);
 	    	});
 		}
 	};
@@ -281,9 +278,12 @@ $(document).ready(function() {
 	uploadConfImages = function(formData){
         var langId = document.frmConfiguration.lang_id.value;
         var formType = document.frmConfiguration.form_type.value;
+        var fldName = "ratio_type_"+formData.get('file_type');
+        var ratio_type = $('input[name="'+fldName+'"]:checked').val();
 
         formData.append('lang_id', langId);
         formData.append('form_type', formType);
+        formData.append('ratio_type', ratio_type);
         $.ajax({
             url: fcom.makeUrl('Configurations', 'uploadMedia'),
             type: 'post',
@@ -373,57 +373,3 @@ getCountryStates = function(countryId, stateId, dv) {
     });
     $.systemMessage.close();
 };
-
-$(document).on('click', '.logoFiles-Js', function() {
-    var node = this;
-    $('#form-upload').remove();
-    var fileType = $(node).attr('data-file_type');
-    var lang_id = document.frmConfiguration.lang_id.value;
-    var form_type = document.frmConfiguration.form_type.value;
-    var frm = '<form enctype="multipart/form-data" id="form-upload" style="position:absolute; top:-100px;" >';
-    frm = frm.concat('<input type="file" name="file" />');
-    frm = frm.concat('<input type="hidden" name="file_type" value="' + fileType + '">');
-    frm = frm.concat('<input type="hidden" name="lang_id" value="' + lang_id + '">');
-    frm = frm.concat('</form>');
-    $('body').prepend(frm);
-    $('#form-upload input[name=\'file\']').trigger('click');
-    if (typeof timer != 'undefined') {
-        clearInterval(timer);
-    }
-    timer = setInterval(function() {
-        if ($('#form-upload input[name=\'file\']').val() != '') {
-            clearInterval(timer);
-            $val = $(node).val();
-            $.ajax({
-                url: fcom.makeUrl('Configurations', 'uploadMedia'),
-                type: 'post',
-                dataType: 'json',
-                data: new FormData($('#form-upload')[0]),
-                cache: false,
-                contentType: false,
-                processData: false,
-                beforeSend: function() {
-                    $(node).val('Loading');
-                },
-                complete: function() {
-                    $(node).val($val);
-                },
-                success: function(ans) {
-                    if (!ans.status) {
-                        $.systemMessage(ans.msg, 'alert--danger');
-                        return;
-                    }
-                    $.systemMessage(ans.msg, 'alert--success');
-                    getLangForm(form_type, lang_id);
-                },
-                error: function(xhr, ajaxOptions, thrownError) {
-                    if (xhr.responseText) {
-                        $.systemMessage(xhr.responseText, 'alert--danger');
-                        return;
-                    }
-                    alert(thrownError + "\r\n" + xhr.statusText + "\r\n" + xhr.responseText);
-                }
-            });
-        }
-    }, 500);
-});

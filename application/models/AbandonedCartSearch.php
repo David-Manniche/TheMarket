@@ -37,4 +37,5 @@ class AbandonedCartSearch extends SearchBase
     {
         $this->addDirectCondition(AbandonedCart::DB_TBL_PREFIX . 'id IN(select max(' . AbandonedCart::DB_TBL_PREFIX . 'id) from ' . AbandonedCart::DB_TBL . ' GROUP BY ' . AbandonedCart::DB_TBL_PREFIX . 'user_id, ' . AbandonedCart::DB_TBL_PREFIX . 'selprod_id)');
     }
+    
 }

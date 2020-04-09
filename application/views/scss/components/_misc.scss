@@ -20,12 +20,18 @@ html {
         }
     }
 
+    &.pop-on {
+        overflow: hidden;
+    }
+
+
+
 }
+
+
 
 body {
     font-family: $family-secondary;
-    overflow-x: hidden;
-
 }
 
 h1,
@@ -50,6 +56,14 @@ img {
 
 a:hover {
     text-decoration: none;
+}
+
+.text-left {
+    text-align: #{$start-direction} !important;
+}
+
+.text-right {
+    text-align: #{$end-direction} !important;
 }
 
 .-color-light {
@@ -93,12 +107,14 @@ hr {}
 /*Bg*/
 .bg--primary-color,
 .bg-primary {
-    
-    background: $brand-color; color:$brand-color-inverse;
+
+    background: $brand-color;
+    color: $brand-color-inverse;
 }
 
-.bg-second {     
-    background: $secondary-color; color:$secondary-color-inverse;
+.bg-second {
+    background: $secondary-color;
+    color: $secondary-color-inverse;
 }
 
 .bg-white {
@@ -248,13 +264,56 @@ hr {}
 
 .docs-buttons {
     display: flex;
-
-    justify-content: center;
+    justify-content: center;    
+    .btn-group{ margin: 0 2px;}
 }
 
 .custom-ui-autocomplete {
-    max-height: 300px;
-    overflow: auto;
+    max-height: 200px;
+    overflow: hidden;
+    overflow-y: auto;
+    box-shadow: 0 0 35px 10px rgba(0, 0, 0, 0.1);
+    border-radius: 4px;
+    font-size: 0.8rem !important;
+    border: $border;
+
+    .ui-menu-item {
+        border-bottom: $border;
+
+        .ui-menu-item-wrapper {
+            padding: 0.5rem;
+            border: none !important;
+
+            &.ui-state-active {}
+        }
+
+        &:last-child {
+            border-bottom: none;
+        }
+    }
+
+    strong {
+        font-weight: 600;
+    }
 }
-.container-fluid{ max-width: none;}
-.strikethrough{ text-decoration: line-through;}
+
+.container-fluid {
+    max-width: none;
+}
+
+.strikethrough {
+    text-decoration: line-through;
+}
+
+
+.cursor-pointer {
+    cursor: pointer;
+}
+
+.alert-aligned {
+    height: 100%;
+    display: flex;
+    align-items: center;
+}
+
+

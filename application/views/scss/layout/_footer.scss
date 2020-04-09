@@ -104,7 +104,8 @@
                 }
 
                 &:before {
-                    background: $brand-color; color:$brand-color-inverse;
+                    background: $brand-color;
+                    color: $brand-color-inverse;
                     bottom: 0px;
                     content: "";
                     height: 1px;
@@ -123,7 +124,7 @@
     }
 
     .payment {
-        text-align: right;
+        text-align: #{$end-direction};
 
         @include media-breakpoint-down(lg) {
             & {
@@ -138,10 +139,18 @@
 
     .bottom-footer {
         padding-top: 1rem;
+
+
     }
 
 }
 
+.captcha {
+    .wrapper {
+        padding-bottom: 80px;
+
+    }
+}
 
 
 .upperContent-footer {
@@ -296,14 +305,15 @@
 
 .sub-form input[type="submit"] {
     font-size: 1em;
-    background: $brand-color; color:$brand-color-inverse;
+    background: $brand-color;
+    color: $brand-color-inverse;
     height: 2.5rem;
     width: 100%;
     max-width: 136px;
     line-height: 1.2;
     padding: 5px 15px;
     margin: 0;
-    border: none;    
+    border: none;
     vertical-align: top;
     font-weight: 300;
     border-radius: 0px 2px 2px 0px;
@@ -312,42 +322,72 @@
 
 .social {
     margin: 0;
+
+    ul {
+        padding: 0;
+        display: flex;
+
+
+        @include media-breakpoint-down(md) {
+            & {
+                justify-content: center;
+
+            }
+        }
+
+
+        li {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-#{$end-direction}: 8px;
+            vertical-align: top;
+            background: $gray-color;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            overflow: hidden;
+
+            svg {
+                path {
+                    fill: #b3b3b3;
+                }
+            }
+
+            .svg,
+            img {
+                width: 30px;
+                height: 30px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+
+            .svg {
+
+                .fa {
+                    font-size: 1.4em;
+                }
+
+                svg {
+                    width: 20px;
+                    height: 20px;
+                    max-width: 100%;
+                }
+            }
+        }
+
+    }
+
+    a {
+        color: $primary-color;
+    }
+
 }
 
-.social ul {
-    padding: 0;
-}
 
-.social li {
-    display: inline-block;
 
-    margin-#{$end-direction}: 8px;
-    vertical-align: top;
-}
 
-.social li svg path {
-    fill: #b3b3b3;
-}
-
-.social li .svg,
-.social li img {
-    width: 30px;
-    height: auto;
-}
-
-.social li .svg .fa {
-    font-size: 1.4em;
-}
-
-.social li .svg svg {
-    width: 20px;
-    height: 20px;
-    max-width: 100%;
-}
-
-.social li a:hover svg path {
-    fill: $brand-color;
-}
 
 .bottom-footer .fixed-container {
     padding: 0 15%;
@@ -426,7 +466,7 @@
 .copyright {
     text-align: center;
     font-size: 0.875em;
-    padding: 0px 10px;
+    padding: 10px 10px;
     color: #545454;
 }
 

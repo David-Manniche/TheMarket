@@ -187,7 +187,7 @@ AND couponlang_lang_id = ' . $langId,
         $srch->addCondition('ctu_coupon_id', '=', $coupon_id);
         $srch->joinTable(User::DB_TBL, 'LEFT OUTER JOIN', 'user_id = ctu_user_id', 'u');
         $srch->joinTable(User::DB_TBL_CRED, 'LEFT OUTER JOIN', 'credential_user_id = user_id', 'c');
-        $srch->addMultipleFields(array("user_id", "user_name", "credential_username"));
+        $srch->addMultipleFields(array("user_id", "user_name", "user_dial_code", "user_phone", "credential_username"));
         $rs = $srch->getResultSet();
         $row = FatApp::getDb()->fetchAll($rs, 'user_id');
         return $row;

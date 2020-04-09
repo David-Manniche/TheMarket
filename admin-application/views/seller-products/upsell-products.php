@@ -15,7 +15,7 @@
                 <section class="section">
                     <div class="sectionbody space">
                         <?php $relProdFrm->setFormTagAttribute('onsubmit', 'setUpSellerProductLinks(this); return(false);');
-                        $relProdFrm->setFormTagAttribute('class', 'form form--horizontal');
+                        $relProdFrm->setFormTagAttribute('class', 'web_form form form--horizontal');
                         $prodFld = $relProdFrm->getField('product_name');
                         $prodFld->setFieldTagAttribute('placeholder', Labels::getLabel('LBL_Select_Product', $adminLangId));
 
@@ -64,7 +64,7 @@
                 <!--<div class="col-sm-12">-->
                 <section class="section">
                     <div class="sectionhead">
-                        <h4><?php echo Labels::getLabel('LBL_Related_Products_List', $adminLangId); ?> </h4>
+                        <h4><?php echo Labels::getLabel('LBL_Buy_Together_Products_List', $adminLangId); ?> </h4>
                     </div>
                     <div class="sectionbody">
                         <div class="tablewrap" >

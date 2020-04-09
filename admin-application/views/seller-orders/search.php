@@ -7,7 +7,7 @@ $arr_flds = array(
 	'order_date_added'=>Labels::getLabel('LBL_Date',$adminLangId),
 	'order_net_amount'=>Labels::getLabel('LBL_Amount',$adminLangId),
 	'op_status_id'=>Labels::getLabel('LBL_Status',$adminLangId),
-	'action' => Labels::getLabel('LBL_Action',$adminLangId),
+	'action' => '',
 );
 $tbl = new HtmlElement('table', array('width'=>'100%', 'class'=>'table table--hovered table-responsive'));
 $th = $tbl->appendElement('thead')->appendElement('tr');
@@ -51,8 +51,8 @@ foreach ($vendorOrdersList as $sn=>$row){  /* CommonHelper::printArray($row); */
 				$td->appendElement('plaintext', array(), $txt, true);
 			break;
 			case 'order_net_amount':
-				$amt = CommonHelper::orderProductAmount($row,'netamount',false,USER::USER_TYPE_SELLER);
-				$td->appendElement('plaintext', array(), CommonHelper::displayMoneyFormat($amt, true, true) );
+				$amt = CommonHelper::orderProductAmount($row,'netamount',false,User::USER_TYPE_SELLER);
+				$td->appendElement('plaintext', array(), CommonHelper::displayMoneyFormat($amt, true, true), true );
 			break;
 			case 'op_status_id':
 				$td->appendElement('plaintext', array(), $row['orderstatus_name'], true);
@@ -62,21 +62,12 @@ foreach ($vendorOrdersList as $sn=>$row){  /* CommonHelper::printArray($row); */
 				FatApp::getConfig('CONF_TIMEZONE', FatUtility::VAR_STRING, date_default_timezone_get())));
 			break;
 			case 'action':
-				$ul = $td->appendElement("ul",array("class"=>"actions actions--centered"));
-
-				$li = $ul->appendElement("li",array('class'=>'droplink'));
-				$li->appendElement('a', array('href'=>'javascript:void(0)', 'class'=>'button small green','title'=>Labels::getLabel('LBL_Edit',$adminLangId)),'<i class="ion-android-more-horizontal icon"></i>', true);
-				$innerDiv=$li->appendElement('div',array('class'=>'dropwrap'));
-				$innerUl=$innerDiv->appendElement('ul',array('class'=>'linksvertical'));
-
-				$innerLi=$innerUl->appendElement('li');
-				$innerLi->appendElement('a', array('href'=>CommonHelper::generateUrl('SellerOrders','view',array($row['op_id'])),'class'=>'button small green redirect--js','title'=>Labels::getLabel('LBL_View_Order_Detail',$adminLangId)),Labels::getLabel('LBL_View_Order_Detail',$adminLangId), true);
+				$td->appendElement('a', array('href'=>CommonHelper::generateUrl('SellerOrders','view',array($row['op_id'])),'class'=>'btn btn-clean btn-sm btn-icon','title'=>Labels::getLabel('LBL_View_Order_Detail',$adminLangId)),"<i class='far fa-eye icon'></i>", true);
     
                 $orderObj = new Orders($row['order_id']);
                 $notAllowedStatues = $orderObj->getNotAllowedOrderCancellationStatuses();
 				if(!in_array($row["op_status_id"], $notAllowedStatues) && $canEdit){
-					$innerLi=$innerUl->appendElement('li');
-					$innerLi->appendElement('a', array('href'=>CommonHelper::generateUrl('SellerOrders','CancelOrder',array($row['op_id'])),'class'=>'button small green redirect--js','title'=>Labels::getLabel('LBL_Cancel_Order',$adminLangId)),Labels::getLabel('LBL_Cancel_Order',$adminLangId), true);
+					$td->appendElement('a', array('href'=>CommonHelper::generateUrl('SellerOrders','CancelOrder',array($row['op_id'])),'class'=>'btn btn-clean btn-sm btn-icon','title'=>Labels::getLabel('LBL_Cancel_Order',$adminLangId)),"<i class='fas fa-times'></i>", true);
 
 					//$innerLi=$innerUl->appendElement('li');
 					//$innerLi->appendElement('a', array('href'=>'javascript:void(0)','onclick' => "cancelOrder('".$row['op_id']."')",'class'=>'button small green','title'=>Labels::getLabel('LBL_Cancel_Order',$adminLangId),'target'=>'_new'),Labels::getLabel('LBL_Cancel_Order',$adminLangId), true);

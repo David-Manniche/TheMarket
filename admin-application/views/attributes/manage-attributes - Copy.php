@@ -13,7 +13,7 @@
 								<?php echo ($attr['attr_name']!='') ? $attr['attr_name'].'<br/>' : '';
 								echo '<small>('.$attr['attr_identifier'].')</small>'; ?>
 								<ul class="actions">
-									<li><a href="javascript:void(0);" onClick="langForm(<?php echo $attr['attr_id'];?>,'<?php echo $admin_default_lang; ?>');" class=""><i class="ion-edit icon"></i></a></li>
+									<li><a href="javascript:void(0);" onClick="langForm(<?php echo $attr['attr_id'];?>,'<?php echo $admin_default_lang; ?>');" class=""><i class="far fa-edit icon"></i></a></li>
 								</ul>
 								<?php //CommonHelper::printArray($attr); ?>
 							</div>

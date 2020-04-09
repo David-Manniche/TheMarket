@@ -5,21 +5,23 @@ $arr_flds = array(
     'original' => Labels::getLabel('LBL_Original_URL', $siteLangId),
     'custom' => Labels::getLabel('LBL_Custom_URL', $siteLangId),
 );
-
-$tbl = new HtmlElement('table', array('width'=>'100%', 'class'=>'table table--hovered volDiscountList-js'));
+if (1 > count($arrListing)) {
+    unset($arr_flds['select_all']);
+}
+$tbl = new HtmlElement('table', array('width'=>'100%', 'class'=>'table volDiscountList-js'));
 $thead = $tbl->appendElement('thead');
 $th = $thead->appendElement('tr', array('class' => ''));
 
 foreach ($arr_flds as $key => $val) {
     if ('select_all' == $key) {
         $th->appendElement('th')->appendElement('plaintext', array(), '<label class="checkbox"><input title="'.$val.'" type="checkbox" onclick="selectAll($(this))" class="selectAll-js"><i class="input-helper"></i></label>', true);
-    } else if('listserial' == $key){
+    } elseif ('listserial' == $key) {
         $th->appendElement('th', array('width' => '5%'), $val);
-    } else if('product_name' == $key){
+    } elseif ('product_name' == $key) {
         $th->appendElement('th', array('width' => '25%'), $val);
-    } else if('original' == $key){
+    } elseif ('original' == $key) {
         $th->appendElement('th', array('width' => '30%'), $val);
-    } else if('custom' == $key){
+    } elseif ('custom' == $key) {
         $th->appendElement('th', array('width' => '40%'), $val);
     }
 }
@@ -48,11 +50,12 @@ foreach ($arrListing as $sn => $row) {
                 $td->appendElement('plaintext', array(), $productName, true);
                 break;
             case 'original':
-                $td->appendElement('plaintext', array(), "<input type='text' disabled name='original_url' value='products/view/".$selProdId."' data-selprod_id='".$selProdId."'>", true);
+                $td->appendElement('plaintext', array(), "<input style='min-width:200px' type='text' disabled name='original_url' value='products/view/".$selProdId."' data-selprod_id='".$selProdId."'>", true);
                 break;
             case 'custom':
                 $post = "post";
-                $td->appendElement('plaintext', array(), '<input type="text" name="custom_url" onkeyup = "getSlugUrl(this,this.value, '.$selProdId.', \''.$post.'\')" value="'.$row['urlrewrite_custom'].'" data-selprod_id="'.$selProdId.'" data-url_rewriting_id="'.$row['urlrewrite_id'].'"><span class="form-text text-muted ">'.CommonHelper::generateFullUrl('Products', 'View', array($selProdId), '/').'</span>', true);
+                $disabled =  (!$canEditUrlRewrite) ? "disabled" : "";
+                $td->appendElement('plaintext', array(), '<input '.$disabled.' type="text" name="custom_url" onkeyup = "getSlugUrl(this,this.value, '.$selProdId.', \''.$post.'\')" value="'.$row['urlrewrite_custom'].'" data-selprod_id="'.$selProdId.'" data-url_rewriting_id="'.$row['urlrewrite_id'].'"><span class="form-text text-muted ">'.CommonHelper::generateFullUrl('Products', 'View', array($selProdId), '/').'</span>', true);
                 break;
             default:
                 $td->appendElement('plaintext', array(), $row[$key], true);
@@ -62,8 +65,8 @@ foreach ($arrListing as $sn => $row) {
 }
 echo $tbl->getHtml();
 if (count($arrListing) == 0) {
-    $message = Labels::getLabel('LBL_No_Records_Found', $siteLangId);
-    $this->includeTemplate('_partial/no-record-found.php', array('siteLangId'=>$siteLangId,'message'=>$message));
+    $message = Labels::getLabel('LBL_You_need_to_create_products_in_order_to_add_custom_URLs', $siteLangId);
+    $this->includeTemplate('_partial/no-record-found-with-info.php', array('siteLangId'=>$siteLangId,'message'=>$message));
 }
 
 $frm = new Form('frmSeoListing', array('id'=>'frmSeoListing'));

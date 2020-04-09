@@ -139,8 +139,8 @@ class AttachedFile extends MyAppModel
     public static function getRatioTypeArray($langId)
     {
         return $arr = array(
-        static::RATIO_TYPE_SQUARE => Labels::getLabel('LBL_1*1', $langId),
-        static::RATIO_TYPE_RECTANGULAR => Labels::getLabel('LBL_16*5', $langId)
+        static::RATIO_TYPE_SQUARE => Labels::getLabel('LBL_1:1', $langId),
+        static::RATIO_TYPE_RECTANGULAR => Labels::getLabel('LBL_16:9', $langId)
         );
         return $arr;
     }
@@ -256,7 +256,7 @@ class AttachedFile extends MyAppModel
         }
     }
 
-    public function saveAttachment($fl, $fileType, $recordId, $recordSubid, $name, $displayOrder = 0, $uniqueRecord = false, $langId = 0, $screen = 0)
+    public function saveAttachment($fl, $fileType, $recordId, $recordSubid, $name, $displayOrder = 0, $uniqueRecord = false, $langId = 0, $screen = 0, $aspectRatio = 0)
     {
         $defaultLangIdForErrors = ($langId == 0) ? $this->commonLangId : $langId;
 
@@ -290,7 +290,7 @@ class AttachedFile extends MyAppModel
 
         $fileLoc = $date_wise_path . $saveName;
 
-        return $this->updateFileToDb($fileType, $recordId, $recordSubid, $fileLoc, $name, $langId, $screen, $displayOrder, $uniqueRecord);
+        return $this->updateFileToDb($fileType, $recordId, $recordSubid, $fileLoc, $name, $langId, $screen, $displayOrder, $uniqueRecord, $aspectRatio);
     }
 
     public function moveAttachment($filePath, $fileType, $recordId, $recordSubid, $name, $displayOrder = 0, $uniqueRecord = false, $langId = 0, $screen = 0)
@@ -331,7 +331,7 @@ class AttachedFile extends MyAppModel
         return $this->updateFileToDb($fileType, $recordId, $recordSubid, $fileLoc, $name, $langId, $screen, $displayOrder, $uniqueRecord);
     }
 
-    private function updateFileToDb($fileType, $recordId, $recordSubid, $fileLoc, $name, $langId, $screen, $displayOrder, $uniqueRecord)
+    private function updateFileToDb($fileType, $recordId, $recordSubid, $fileLoc, $name, $langId, $screen, $displayOrder, $uniqueRecord, $aspectRatio = 0)
     {
         $this->assignValues(
             array(
@@ -341,7 +341,8 @@ class AttachedFile extends MyAppModel
             'afile_physical_path' => $fileLoc,
             'afile_name' => $name,
             'afile_lang_id' => $langId,
-            'afile_screen' => $screen
+            'afile_screen' => $screen,
+            'afile_aspect_ratio' => $aspectRatio
             )
         );
 
@@ -403,13 +404,13 @@ class AttachedFile extends MyAppModel
         return $path;
     }
 
-    public function saveImage($fl, $fileType, $recordId, $recordSubid, $name, $displayOrder = 0, $uniqueRecord = false, $lang_id = 0, $mimeType = '', $screen = 0)
+    public function saveImage($fl, $fileType, $recordId, $recordSubid, $name, $displayOrder = 0, $uniqueRecord = false, $lang_id = 0, $mimeType = '', $screen = 0, $aspectRatio = 0)
     {
         if (getimagesize($fl) === false && $mimeType != 'image/svg+xml') {
             $this->error = Labels::getLabel('MSG_UNRECOGNISED_IMAGE_FILE', $this->commonLangId);
             return false;
         }
-        return $this->saveAttachment($fl, $fileType, $recordId, $recordSubid, $name, $displayOrder, $uniqueRecord, $lang_id, $screen);
+        return $this->saveAttachment($fl, $fileType, $recordId, $recordSubid, $name, $displayOrder, $uniqueRecord, $lang_id, $screen, $aspectRatio);
     }
 
     /* public function checkExtension($file,

@@ -19,7 +19,7 @@ class FixerCurrencyConverterController extends CurrencyConverterBaseController
     {
         $settings = $this->getSettings();
         if (!isset($settings['access_key'])) {
-            $message = Labels::getLabel('MSG_SETTINGS_NOT_UPDATED', $this->adminLangId);
+            $message = Labels::getLabel('MSG_PLUGIN_SETTINGS_NOT_CONFIGURED', $this->adminLangId);
             LibHelper::dieJsonError($message);
         }
         $this->accessKey = $settings['access_key'];

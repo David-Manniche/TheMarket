@@ -4,13 +4,14 @@ $shopLogoFrm->developerTags['colClassPrefix'] = 'col-md-';
 $shopLogoFrm->developerTags['fld_default_col'] = 12;
 $ratioFld = $shopLogoFrm->getField('ratio_type');
 $ratioFld->addFieldTagAttribute('class', 'prefRatio-js');
+$ratioFld->addOptionListTagAttribute('class', 'list-inline');
 $fld = $shopLogoFrm->getField('shop_logo');
 $fld->addFieldTagAttribute('class', 'btn btn--primary btn--sm');
 $fld->addFieldTagAttribute('onChange', 'logoPopupImage(this)');
 $langFld = $shopLogoFrm->getField('lang_id');
 $langFld->addFieldTagAttribute('class', 'logo-language-js');
 
-$preferredDimensionsStr = '<span class="gap"></span><small class="text--small">' . sprintf(Labels::getLabel('MSG_Upload_shop_logo_text', $adminLangId), '150*150'). '</small>';
+$preferredDimensionsStr = '<span class="gap"></span><small class="text--small logoPreferredDimensions-js">' . sprintf(Labels::getLabel('LBL_Preferred_Dimensions_%s', $adminLangId), '150 x 150'). '</small>';
 
 $htmlAfterField = $preferredDimensionsStr;
 $htmlAfterField .= '<div id="logo-image-listing"></div>';
@@ -133,9 +134,11 @@ $(document).on('change','.prefRatio-js',function(){
     {
         $('input[name=logo_min_width]').val(150);
         $('input[name=logo_min_height]').val(150);
+		$('.logoPreferredDimensions-js').html((langLbl.preferredDimensions).replace(/%s/g, '150 x 150'));
     } else {
         $('input[name=logo_min_width]').val(150);
         $('input[name=logo_min_height]').val(85);
+		$('.logoPreferredDimensions-js').html((langLbl.preferredDimensions).replace(/%s/g, '150 x 85'));
     }
 });
 </script>

@@ -50,6 +50,7 @@ $(document).ready(function() {
                             $(document).trigger('close.facebox');
                             fcom.displaySuccessMessage(ans.msg, 'alert--success', false);      
                             loadForm('bulk_media');
+                            location.href = fcom.makeUrl('UploadBulkImages', 'downloadPathsFile',[ans.path]);
                         } else {
                             $(document).trigger('close.mbsmessage');
                             fcom.displayErrorMessage(ans.msg);

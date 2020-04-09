@@ -20,7 +20,6 @@
 @import 'components/button';
 @import 'components/cart';
 @import 'components/catalog-popup';
-@import 'components/certified-bar';
 @import 'components/checkbox';
 @import 'components/cms';
 @import 'components/cookies';
@@ -78,7 +77,9 @@
 @import 'vendors/simplebar';
 @import 'vendors/slick';
 @import 'vendors/xzoom';
-@import 'vendors/_tagify';
+@import 'vendors/tagify';
+@import 'vendors/intlTelInput.min';
+@import 'vendors/nouislider.min';
 
 
 @import 'pages/offline';

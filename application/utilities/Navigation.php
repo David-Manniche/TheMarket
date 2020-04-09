@@ -68,6 +68,8 @@ class Navigation
 
     public static function topHeaderDashboard($template)
     {
+        /* $userData = User::getAttributesById(UserAuthentication::getLoggedUserId());
+        $userId = (0 < $userData['user_parent']) ? $userData['user_parent'] : UserAuthentication::getLoggedUserId(); */
         $userId = UserAuthentication::getLoggedUserId();
         /* Unread Message Count [*/
         $threadObj = new Thread();
@@ -91,7 +93,7 @@ class Navigation
         } elseif (isset($_SESSION[UserAuthentication::SESSION_ELEMENT_NAME]['activeTab'])) {
             $activeTab = $_SESSION[UserAuthentication::SESSION_ELEMENT_NAME]['activeTab'];
         }
-
+        $template->set('userPrivilege', UserPrivilege::getInstance());
         $template->set('activeTab', $activeTab);
         $template->set('shop_id', $shop_id);
         $template->set('isShopActive', Shop::isShopActive($userId));
@@ -103,7 +105,10 @@ class Navigation
         $siteLangId = CommonHelper::getLangId();
         $controller = str_replace('Controller', '', FatApp::getController());
         $action = FatApp::getAction();
-
+        $userData = User::getAttributesById(UserAuthentication::getLoggedUserId());
+        $userParentId = (0 < $userData['user_parent']) ? $userData['user_parent'] : UserAuthentication::getLoggedUserId();
+        $template->set('userParentId', $userParentId);
+        $template->set('userPrivilege', UserPrivilege::getInstance());
         $template->set('siteLangId', $siteLangId);
         $template->set('controller', $controller);
         $template->set('action', $action);
@@ -112,10 +117,11 @@ class Navigation
     public static function sellerDashboardNavigation($template)
     {
         $siteLangId = CommonHelper::getLangId();
-        $userId = UserAuthentication::getLoggedUserId();
+        $userData = User::getAttributesById(UserAuthentication::getLoggedUserId());
+        $userId = (0 < $userData['user_parent']) ? $userData['user_parent'] : UserAuthentication::getLoggedUserId();
         /* Unread Message Count [*/
         $threadObj = new Thread();
-        $todayUnreadMessageCount = $threadObj->getMessageCount($userId, Thread::MESSAGE_IS_UNREAD, date('Y-m-d'));
+        $todayUnreadMessageCount = $threadObj->getMessageCount(UserAuthentication::getLoggedUserId(), Thread::MESSAGE_IS_UNREAD, date('Y-m-d'));
         /*]*/
         $controller = str_replace('Controller', '', FatApp::getController());
         $action = FatApp::getAction();
@@ -126,7 +132,8 @@ class Navigation
         if (!false == $shopDetails) {
             $shop_id = $shopDetails['shop_id'];
         }
-
+        $template->set('userParentId', $userId);
+        $template->set('userPrivilege', UserPrivilege::getInstance());
         $template->set('shop_id', $shop_id);
         $template->set('isShopActive', Shop::isShopActive($userId));
         $template->set('siteLangId', $siteLangId);

@@ -1,11 +1,11 @@
 <?php defined('SYSTEM_INIT') or die('Invalid Usage.');
 $arr_flds = array(
-    // 'select_all'=>Labels::getLabel('LBL_Select_all', $siteLangId),
+    // 'select_all'=>'',
     'product_name' => Labels::getLabel('LBL_Product_Name', $siteLangId),
     'related_products' => Labels::getLabel('LBL_Related_Products', $siteLangId)
 );
 
-$tbl = new HtmlElement('table', array('width'=>'100%', 'class'=>'table table--hovered volDiscountList-js'));
+$tbl = new HtmlElement('table', array('width'=>'100%', 'class'=>'table volDiscountList-js'));
 $thead = $tbl->appendElement('thead');
 $th = $thead->appendElement('tr', array('class' => ''));
 
@@ -21,21 +21,31 @@ foreach ($arrListing as $selProdId => $relatedProds) {
     $tr = $tbl->appendElement('tr', array());
     foreach ($arr_flds as $key => $val) {
         $tr->setAttribute('id', 'row-'.$selProdId);
-        $td = $tr->appendElement('td');
+        if($key == 'product_name'){
+            $title = ($canEdit) ? Labels::getLabel('LBL_Click_Here_For_Edit', $siteLangId) : '';
+            $td = $tr->appendElement('td', array('class' => 'js-product-edit cursor-pointer', 'row-id' => $selProdId, 'title' => $title));
+        }else{
+            $td = $tr->appendElement('td');
+        }
         switch ($key) {
             case 'select_all':
                 $td->appendElement('plaintext', array(), '<label class="checkbox"><input class="selectItem--js" type="checkbox" name="selprod_ids['.$selProdId.']" value='.$selProdId.'><i class="input-helper"></i></label>', true);
                 break;
             case 'product_name':
                 // last Param of getProductDisplayTitle function used to get title in html form.
-                $productName = SellerProduct::getProductDisplayTitle($selProdId, $siteLangId, true);
+                $productName = "<span class='js-prod-name'>".SellerProduct::getProductDisplayTitle($selProdId, $siteLangId, true)."</span>";
                 $td->appendElement('plaintext', array(), $productName, true);
                 break;
             case 'related_products':
-                $ul = $td->appendElement("ul", array("class"=>"list-tags"));
+                $div = $td->appendElement('div', array("class"=>"list-tag-wrapper", "data-scroll-height"=>"150", "data-simplebar" => ""));
+                $ul = $div->appendElement("ul", array("class"=>"list-tags"));
                 foreach ($relatedProds as $relatedProd) {
                     $li = $ul->appendElement("li");
-                    $li->appendElement('plaintext', array(), '<span>'.$relatedProd['selprod_title'].' <i class="remove_buyTogether remove_param fa fa-times" onClick="deleteSelprodRelatedProduct('.$selProdId.', '.$relatedProd['selprod_id'].')"></i></span>', true);
+                    $removeIcon = '';
+                    if ($canEdit) {
+                        $removeIcon = '<i class="remove_buyTogether remove_param fa fa-times" onClick="deleteSelprodRelatedProduct('.$selProdId.', '.$relatedProd['selprod_id'].')"></i>';
+                    }
+                    $li->appendElement('plaintext', array(), '<span>'.$relatedProd['selprod_title'].' '.$removeIcon.'</span>', true);
                     $li->appendElement('plaintext', array(), '<input type="hidden" name="product_related[]" value="'.$relatedProd['selprod_id'].'">', true);
                 }
                 break;

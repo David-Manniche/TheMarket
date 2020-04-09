@@ -25,8 +25,15 @@
     <div class="login-wrapper">
         <div class="form-side">
             <div class="section-head  section--head--center">
-                <div class="section__heading">
-                    <h2><?php echo Labels::getLabel('LBL_Login', $siteLangId);?></h2>
+                <div class="section__heading otp-heading">
+                    <h2>
+                        <?php echo Labels::getLabel('LBL_Login', $siteLangId);?>
+                    </h2>
+                    <?php if (isset($smsPluginStatus) && true === $smsPluginStatus) { ?>
+                        <a class="otp-link" href="javaScript:void(0)" data-form="formLoginPage" onClick="signInWithPhone(this, true)">
+                            <?php echo Labels::getLabel('LBL_USE_PHONE_NUMBER_INSTEAD', $siteLangId); ?>
+                        </a>
+                    <?php } ?>
                 </div>
             </div>
             <?php echo $loginFrm->getFormTag(); ?>
@@ -81,11 +88,13 @@
             <?php if ($showSignUpLink) { ?>
                 <div class="row justify-content-center">
                     <div class="col-auto text-center">
-                        <a class="link" href="<?php echo CommonHelper::generateUrl('GuestUser', 'loginForm', array(applicationConstants::YES)); ?>"><?php echo sprintf(Labels::getLabel('LBL_Not_Register_Yet?', $siteLangId), FatApp::getConfig('CONF_WEBSITE_NAME_'.$siteLangId));?></a>
+                        <a class="link" href="<?php echo CommonHelper::generateUrl('GuestUser', 'loginForm', array(applicationConstants::YES)); ?>">
+                            <?php echo sprintf(Labels::getLabel('LBL_Not_Registered_Yet?', $siteLangId), FatApp::getConfig('CONF_WEBSITE_NAME_' . $siteLangId));?>
+                        </a>
                     </div>
                     <?php if (isset($includeGuestLogin) && 'true' == $includeGuestLogin) {?>
                     <div class="col-auto text-center">
-                        <a class="link" href="javascript:void(0)" onclick="guestUserFrm()"><?php echo sprintf(Labels::getLabel('LBL_Guest_Checkout?', $siteLangId), FatApp::getConfig('CONF_WEBSITE_NAME_'.$siteLangId));?></a>
+                        <a class="link" href="javascript:void(0)" onclick="guestUserFrm()"><?php echo sprintf(Labels::getLabel('LBL_Guest_Checkout?', $siteLangId), FatApp::getConfig('CONF_WEBSITE_NAME_' . $siteLangId));?></a>
                     </div>
                     <?php }?>
                 </div>

@@ -209,21 +209,4 @@ class WithdrawalRequestsController extends AdminBaseController
         $fld_submit->attachField($fld_cancel);
         return $frm;
     }
-
-    public static function getConfDataByCode($keyName)
-    {
-        $settingsData = Plugin::getAttributesByCode($keyName);
-        if (!$settingsData) {
-            return false;
-        }
-        $pluginSettings = PluginSetting::getConfDataById($settingsData["plugin_id"]);
-
-        $pluginSettingArr = [];
-
-        foreach ($pluginSettings as $val) {
-            $pluginSettingArr[$val[ static::DB_TBL_PREFIX . "key"]] = $val[ static::DB_TBL_PREFIX . "value"];
-        }
-        $pluginSettingArr['plugin_name'] = $settingsData['plugin_identifier'];
-        return array_merge($pluginSettingArr, $settingsData);
-    }
 }

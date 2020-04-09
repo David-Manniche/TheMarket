@@ -1,7 +1,7 @@
 <?php  defined('SYSTEM_INIT') or die('Invalid Usage.'); 
 $inactive = (0 == $shop_id) ? 'fat-inactive' : '';
 ?>
-<div class="tabs tabs--small tabs--scroll clearfix">
+<div class="tabs ">
     <ul class="arrowTabs">
         <li
             class="<?php echo !empty($action) && $action == 'shopForm' ? 'is-active' : '';?>">
@@ -32,6 +32,14 @@ $inactive = (0 == $shop_id) ? 'fat-inactive' : '';
                 onClick="shopCollections(this)"
                 <?php
         } ?>><?php echo Labels::getLabel('LBL_COLLECTIONS', $siteLangId); ?></a>
+        </li>
+        <li
+            class="<?php echo !empty($action) && ($action == 'socialPlatforms') ? 'is-active' : ''; ?>">
+            <a href="javascript:void(0)" <?php if ($shop_id > 0) {
+            ?>
+                onClick="socialPlatforms(this)"
+                <?php
+        } ?>><?php echo Labels::getLabel('LBL_SOCIAL_PLATFORMS', $siteLangId); ?></a>
         </li>
     </ul>
 </div>

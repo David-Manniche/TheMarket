@@ -28,7 +28,7 @@
           <?php } ?>
         </div></td>
       <td><span class="hide--desktop mobile-thead"><?php echo Labels::getLabel('LBL_SubTotal',$siteLangId); ?></span>
-        <div class="product_price"><?php echo CommonHelper::displayMoneyFormat($subscription[SellerPackagePlans::DB_TBL_PREFIX.'price']); ?></div></td>
+        <div class="product_price"><?php echo CommonHelper::displayMoneyFormat($subscription[SellerPackagePlans::DB_TBL_PREFIX.'price'], true, false, true, false, true); ?></div></td>
     </tr>
     <?php
 		
@@ -45,11 +45,11 @@
       <tbody>
         <tr>
           <td><?php echo Labels::getLabel('LBL_Total', $siteLangId); ?></td>
-          <td><?php echo CommonHelper::displayMoneyFormat($cartSummary['cartTotal']); ?></td>
+          <td><?php echo CommonHelper::displayMoneyFormat($cartSummary['cartTotal'], true, false, true, false, true); ?></td>
         </tr>
         <tr>
           <td class="hightlighted"><?php echo Labels::getLabel('LBL_You_Pay', $siteLangId); ?></td>
-          <td class="hightlighted"><?php echo CommonHelper::displayMoneyFormat($cartSummary['cartTotal']); ?></td>
+          <td class="hightlighted"><?php echo CommonHelper::displayMoneyFormat($cartSummary['cartTotal'], true, false, true, false, true); ?></td>
         </tr>
         <tr>
           <td colspan="2"><a href="<?php echo CommonHelper::generateUrl('SubscriptionCheckout'); ?>" class="btn btn-outline-primary ripplelink"><?php echo Labels::getLabel('LBL_Proceed_to_Pay', $siteLangId); ?> </a></td>

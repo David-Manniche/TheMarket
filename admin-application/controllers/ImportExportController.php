@@ -862,6 +862,7 @@ class ImportExportController extends AdminBaseController
         $rs = $srch->getResultSet();
         $records = FatApp::getDb()->fetchAll($rs);
         $this->set("records", $records);
+        $this->set("canEdit", $this->objPrivilege->canEditImportExport(0, true));
         $this->_template->render(false, false);
     }
     

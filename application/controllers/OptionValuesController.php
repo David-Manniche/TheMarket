@@ -52,7 +52,7 @@ class OptionValuesController extends LoggedUserController
 
         $option_id = FatUtility::int($post['optionvalue_option_id']);
         if ($option_id > 0) {
-            UserPrivilege::canSellerEditOption($option_id, $this->siteLangId);
+            UserPrivilege::canSellerEditOption($this->userParentId, $option_id, $this->siteLangId);
         }
         $optionvalue_id = FatUtility::int($post['optionvalue_id']);
         unset($post['optionvalue_id']);
@@ -175,7 +175,7 @@ class OptionValuesController extends LoggedUserController
             array('onclick' => 'optionForm(' . $option_id . ');')
         );
 
-        $fld->attachField($fld_cancel);
+        //$fld->attachField($fld_cancel);
         return $frm;
     }
 
@@ -190,7 +190,7 @@ class OptionValuesController extends LoggedUserController
             );
             FatUtility::dieJsonError(Message::getHtml());
         } else {
-            UserPrivilege::canSellerEditOption($option_id, $this->siteLangId);
+            UserPrivilege::canSellerEditOption($this->userParentId, $option_id, $this->siteLangId);
         }
         $optionValueObj = new OptionValue($optionvalue_id);
         if (!$optionValueObj->canEditRecord($option_id)) {

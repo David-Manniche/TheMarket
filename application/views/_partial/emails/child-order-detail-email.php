@@ -36,14 +36,18 @@ if (empty($taxOptions)) {
 } else {
     $taxChargedTxt = '';
     foreach ($taxOptions as $key => $val) {
-        $taxChargedTxt .= '<p style="color:#333"><strong>'.$key.': </strong>'.CommonHelper::displayMoneyFormat($val).'</p>';
+        $taxChargedTxt .= '<p style="color:#333"><strong>'.CommonHelper::displayTaxPercantage($val).': </strong>'.CommonHelper::displayMoneyFormat($val['value']).'</p>';
     }
 }
 
 $str .= '<tr>
     <td style="padding:10px;font-size:13px; color:#333;border:1px solid #ddd;">
         <a href="'.$prodOrBatchUrl.'"
-            style="font-size:13px; color:#333;">'.$orderProducts["op_product_name"].'</a><br />'.Labels::getLabel('Lbl_Brand', $siteLangId).':'.$orderProducts["op_brand_name"].'<br />'.Labels::getLabel('Lbl_Sold_By', $siteLangId).':'.$orderProducts["op_shop_name"].'<br />'.$options.'        </td>
+            style="font-size:13px; color:#333;">'.$orderProducts["op_product_name"].'</a>';
+            if(!empty($orderProducts["op_brand_name"])){
+                $str .= '<br />'.Labels::getLabel('Lbl_Brand', $siteLangId).':'.$orderProducts["op_brand_name"];
+            }
+            $str .='<br />'.Labels::getLabel('Lbl_Sold_By', $siteLangId).':'.$orderProducts["op_shop_name"].'<br />'.$options.'        </td>
             <td style="padding:10px;font-size:13px; color:#333;border:1px solid #ddd;">'.$orderProducts['op_qty'].'</td>
             <td style="padding:10px;font-size:13px; color:#333;border:1px solid #ddd;" align="right">'.CommonHelper::displayMoneyFormat($orderProducts["op_unit_price"]).'</td>
             <td style="padding:10px;font-size:13px; color:#333;border:1px solid #ddd;" align="right">'.CommonHelper::displayMoneyFormat($shippingPrice).'</td>    <td style="padding:10px;font-size:13px; color:#333;border:1px solid #ddd;" align="right">'.CommonHelper::displayMoneyFormat($volumeDiscount).'</td>
@@ -73,8 +77,8 @@ if ($taxCharged > 0) {
     } else {
         foreach ($taxOptions as $key => $val) {
             $str.='<tr>
-            <td colspan="6" style="padding:10px;font-size:13px; color:#333;border:1px solid #ddd;" align="right">'.$key.'</td>
-            <td style="padding:10px;font-size:13px; color:#333;border:1px solid #ddd;" align="right">'.CommonHelper::displayMoneyFormat($val).'</td>
+            <td colspan="6" style="padding:10px;font-size:13px; color:#333;border:1px solid #ddd;" align="right">'.CommonHelper::displayTaxPercantage($val, true).'</td>
+            <td style="padding:10px;font-size:13px; color:#333;border:1px solid #ddd;" align="right">'.CommonHelper::displayMoneyFormat($val['value']).'</td>
             </tr>';
         }
     }

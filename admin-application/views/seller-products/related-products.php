@@ -15,7 +15,7 @@
                 <section class="section">
                     <div class="sectionbody space togglewrap">
                         <?php $relProdFrm->setFormTagAttribute('onsubmit', 'setUpSellerProductLinks(this); return(false);');
-                        $relProdFrm->setFormTagAttribute('class', 'form form--horizontal');
+                        $relProdFrm->setFormTagAttribute('class', 'web_form  form form--horizontal');
                         $prodFld = $relProdFrm->getField('product_name');
                         $prodFld->setFieldTagAttribute('placeholder', Labels::getLabel('LBL_Select_Product', $adminLangId));
 

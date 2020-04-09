@@ -1,4 +1,4 @@
-<?php defined('SYSTEM_INIT') or die('Invalid Usage.'); 
+<?php defined('SYSTEM_INIT') or die('Invalid Usage.');
 $imagesFrm->setFormTagAttribute('id', 'frmCustomCatalogProductImage');
 $imagesFrm->setFormTagAttribute('class', 'form form-horizontal');
 $imagesFrm->developerTags['colClassPrefix'] = 'col-md-';
@@ -11,26 +11,30 @@ $langFld = $imagesFrm->getField('lang_id');
 $langFld->addFieldTagAttribute('class', 'language-js');
 
 $img_fld = $imagesFrm->getField('prod_image');
-$img_fld->setFieldTagAttribute('onchange', 'setupCustomCatalogProductImages(); return false;'); 
+$img_fld->addFieldTagAttribute('onChange', 'popupImage(this)');
 ?>
-
 <div class="tabs_data">
-    <div class="tabs_body">     
+    <div class="tabs_body">
         <?php echo $imagesFrm->getFormHtml(); ?>
         <div id="imageupload_div"></div>
     </div>
     <div class="row tabs_footer">
-        <div class="col-md-6">
+        <div class="col-6">
             <div class="field-set">
                 <div class="caption-wraper"><label class="field_label"></label></div>
                 <div class="field-wraper">
                     <div class="field_cover">
-                        <input onclick="<?php if($productType == Product::PRODUCT_TYPE_PHYSICAL) { ?>productShipping(<?php echo $preqId; ?>); <?php }else{ ?> productOptionsAndTag(<?php echo $preqId; ?>); <?php }?>" class="btn btn-outline-primary" type="button" name="btn_back" value="<?php echo Labels::getLabel('LBL_Back', $siteLangId); ?>">
+                        <input onclick="
+                        <?php if ($productType == Product::PRODUCT_TYPE_PHYSICAL) { ?>
+                            productShipping(<?php echo $preqId; ?>);
+                        <?php } else { ?>
+                            productOptionsAndTag(<?php echo $preqId; ?>);
+                        <?php }?>" class="btn btn-outline-primary" type="button" name="btn_back" value="<?php echo Labels::getLabel('LBL_Back', $siteLangId); ?>">
                     </div>
                 </div>
             </div>
         </div>
-        <div class="col-md-6 text-right">
+        <div class="col-6 text-right">
             <div class="field-set">
                 <div class="caption-wraper"><label class="field_label"></label></div>
                 <div class="field-wraper">
@@ -42,4 +46,3 @@ $img_fld->setFieldTagAttribute('onchange', 'setupCustomCatalogProductImages(); r
         </div>
     </div>
 </div>
-

@@ -14,7 +14,7 @@
                 </div>
                 <section class="section">
                     <div class="sectionhead">
-                        <h4><?php echo Labels::getLabel('LBL_Content_Blocks', $adminLangId); ?> </h4>
+                        <h4><?php echo Labels::getLabel('LBL_IMPORT_INSTRUCTIONS', $adminLangId); ?> </h4>
                     </div>
                     <div class="sectionbody">
                         <div class="tablewrap" >

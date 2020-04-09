@@ -5,7 +5,7 @@ $frm->developerTags['colClassPrefix'] = 'col-md-';
 $frm->developerTags['fld_default_col'] = 4;
 $frm->setFormTagAttribute('onSubmit', 'uploadZip(); return false;');
 
-$variables = array('siteLangId'=>$siteLangId,'action'=>$action);
+$variables = array('siteLangId'=>$siteLangId,'action'=>$action, 'canEditImportExport'=>$canEditImportExport, 'canUploadBulkImages'=>$canUploadBulkImages);
 $this->includeTemplate('import-export/_partial/top-navigation.php', $variables, false); ?>
 <div class="cards">
     <div class="cards-content">

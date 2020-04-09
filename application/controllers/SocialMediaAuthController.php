@@ -16,7 +16,7 @@ class SocialMediaAuthController extends PluginBaseController
         Message::addErrorMessage($message);
         FatApp::redirectUser(CommonHelper::generateUrl('GuestUser', 'loginForm'));
     }
-      
+
     protected function redirectToDashboard($preferredDashboard = 0, $referredRedirection = true)
     {
         $referredUrl = User::getPreferedDashbordRedirectUrl($preferredDashboard);
@@ -42,19 +42,19 @@ class SocialMediaAuthController extends PluginBaseController
         }
         FatApp::redirectUser($referredUrl);
     }
-   
+
     protected function doLogin($email, $userName, $socialAccountID, $userType)
     {
         try {
             $keyName = get_called_class()::KEY_NAME;
         } catch (\Error $e) {
-            $this->setErrorMessage($e->getMessage());
+            $this->setErrorAndRedirect($e->getMessage(), (!MOBILE_APP_API_CALL));
         }
 
         $userObj = new User();
         $userInfo = $userObj->validateUser($email, $userName, $socialAccountID, $keyName, $userType);
         if (false === $userInfo) {
-            $this->setErrorMessage($userObj->getError());
+            $this->setErrorAndRedirect($userObj->getError(), (!MOBILE_APP_API_CALL));
         }
 
         if (true === MOBILE_APP_API_CALL) {
@@ -68,8 +68,12 @@ class SocialMediaAuthController extends PluginBaseController
             $this->_template->render(true, true, 'guest-user/login.php');
         }
         
-        if (empty($email)) {
-            $message = Labels::getLabel('MSG_Please_Configure_Your_Email', $this->siteLangId);
+        if (empty($email) && empty($userInfo['user_phone'])) {
+            if (true == SmsArchive::canSendSms()) {
+                $message = Labels::getLabel('MSG_PLEASE_CONFIGURE_YOUR_EMAIL_OR_PHONE', $this->siteLangId);
+            } else {
+                $message = Labels::getLabel('MSG_PLEASE_CONFIGURE_YOUR_EMAIL', $this->siteLangId);
+            }
             if (true === MOBILE_APP_API_CALL) {
                 LibHelper::dieJsonError($message);
             }

@@ -9,12 +9,6 @@
     font-weight: normal;
     border-radius: 4px;
 
-    .list-tag-wrapper {
-        max-height: 133px;
-        overflow-x: auto;
-    }
-
-
     input {
         &[type="text"] {
             border: none;
@@ -31,7 +25,7 @@
     li {
         display: inline-block;
         margin-#{$end-direction}: 5px;
-         
+
 
         span {
             background-color: $gray-light;
@@ -89,4 +83,15 @@
 
 .tagify {
     font-size: 0.8rem;
+
+    .tagify__tag {
+        margin: 5px;
+    }
 }
+
+.list-tag-wrapper {
+    max-height: 133px;
+    overflow-x: auto;
+}
+
+ 

@@ -4,8 +4,11 @@ $arr_flds = array(
 		'listserial'=> Labels::getLabel('LBL_Sr_no.',$adminLangId),
 		'bpcategory_name' => Labels::getLabel('LBL_Category_Name',$adminLangId),
 		'meta_title'=>Labels::getLabel('LBL_Title',$adminLangId),
-		'action' => Labels::getLabel('LBL_Action',$adminLangId),
+		'action' => '',
 	);
+if (!$canEdit) {
+    unset($arr_flds['action']);
+}
 $tbl = new HtmlElement('table', array('width'=>'100%', 'class'=>'table table-responsive'));
 $th = $tbl->appendElement('thead')->appendElement('tr');
 foreach ($arr_flds as $val) {
@@ -27,11 +30,9 @@ foreach ($arr_listing as $sn=>$row){
 				$td->appendElement('plaintext', array(), $sr_no);
 			break;
 			case 'action':
-				$ul = $td->appendElement("ul",array("class"=>"actions"));
 				if($canEdit){
-					$li = $ul->appendElement("li");
-					$li->appendElement('a', array('href'=>'javascript:void(0)', 'class'=>'button small green', 
-					'title'=>'Edit',"onclick"=>"editMetaTagForm($metaId,'$metaType',$recordId)"),'<i class="ion-edit icon"></i>', 
+					$td->appendElement('a', array('href'=>'javascript:void(0)', 'class'=>'btn btn-clean btn-sm btn-icon', 
+					'title'=>'Edit',"onclick"=>"editMetaTagForm($metaId,'$metaType',$recordId)"),'<i class="far fa-edit icon"></i>', 
 					true);
 				}
 			break;

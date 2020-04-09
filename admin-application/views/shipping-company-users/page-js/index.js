@@ -145,14 +145,6 @@ $(document).ready(function(){
 		$.systemMessage.close();
 	};
 
-	toggleBulkStatues = function(status){
-        if(!confirm(langLbl.confirmUpdateStatus)){
-            return false;
-        }
-        $("#frmShpCompUsrListing input[name='status']").val(status);
-        $("#frmShpCompUsrListing").submit();
-    };
-
 	clearUserSearch = function(){
 		document.frmUserSearch.reset();
 		searchUsers(document.frmUserSearch);

@@ -7,9 +7,12 @@
 
     $minQty = $frm->getField('voldiscount_min_qty');
     $minQty->setFieldTagAttribute('placeholder', Labels::getLabel('LBL_Add_Minimum_Quantity', $siteLangId));
+    $minQty->setFieldTagAttribute('disabled', 'disabled');
+    $minQty->setFieldTagAttribute('class', 'js-voldiscount_min_qty');
 
     $disPerc = $frm->getField('voldiscount_percentage');
     $disPerc->setFieldTagAttribute('placeholder', Labels::getLabel('LBL_Add_Discount_Percentage', $siteLangId));
+    $disPerc->setFieldTagAttribute('disabled', 'disabled');
 
     $frm->setFormTagAttribute('class', 'form');
     $frm->setFormTagAttribute('id', 'frmAddVolumeDiscount-'.$selProdId);
@@ -21,11 +24,12 @@
     $frm->addSubmitButton('', 'btn_update', Labels::getLabel('LBL_Save', $siteLangId), array('class'=>'btn--block btn btn--primary'));
 
 if (!empty($data) && 0 < count($data)) {
+    $data['product_name'] = isset($data['product_name']) ? html_entity_decode($data['product_name'], ENT_QUOTES, 'UTF-8') : '';
     $prodName->setFieldTagAttribute('readonly', 'readonly');
     $frm->fill($data);
 }
 ?>
-<div class="cards-content pb-0">
+<div class="cards-content">
     <div class="replaced">
         <?php
         echo $frm->getFormTag();

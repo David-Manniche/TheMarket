@@ -16,7 +16,7 @@ if (0 < $withPhone) {
                     </div>
                 </div>
                 <div class="col-md-auto col-sm-auto">
-                    <a href="<?php echo CommonHelper::generateUrl('GuestUser', 'loginForm'); ?>" class="btn btn-outline-white btn-sm d-block">
+                    <a href="<?php echo CommonHelper::generateUrl('GuestUser', 'loginForm'); ?>" class="btn btn-outline-white btn-sm">
                         <?php echo Labels::getLabel('LBL_Back_to_Login', $siteLangId);?>
                     </a>
                 </div>
@@ -40,57 +40,55 @@ if (0 < $withPhone) {
                                         <?php if (isset($smsPluginStatus) && true === $smsPluginStatus) {
                                                 if (isset($withPhone) && 1 > $withPhone) { ?>
                                                     <a href="javaScript:void(0)" onClick="forgotPwdForm(<?php echo applicationConstants::YES; ?>)">
-                                                        <?php echo Labels::getLabel('LBL_WITH_PHONE_NUMBER_?', $siteLangId); ?>
+                                                        <?php echo Labels::getLabel('LBL_USE_PHONE_NUMBER_INSTEAD', $siteLangId); ?>
                                                     </a>
                                                 <?php } else { ?>
                                                     <a href="javaScript:void(0)" onClick="forgotPwdForm(<?php echo applicationConstants::NO; ?>)">
-                                                        <?php echo Labels::getLabel('LBL_WITH_EMAIL_?', $siteLangId); ?>
+                                                        <?php echo Labels::getLabel('LBL_USE_EMAIL_INSTEAD', $siteLangId); ?>
                                                     </a>
                                                 <?php } ?>
                                         <?php } ?>
                                     </p>
                                 </div>
                             </div>
-							<div class="row justify-content-center">
-							<div class="col-md-6">
-                            <?php
-                            $frm->setFormTagAttribute('class', 'form form--normal');
-                            $frm->developerTags['colClassPrefix'] = 'col-lg-12 col-md-12 col-sm-';
-                            $frm->developerTags['fld_default_col'] = 12;
-                            
-                            $frm->setFormTagAttribute('id', 'frmPwdForgot');
-                            $frm->setFormTagAttribute('autocomplete', 'off');
-                            $frm->setValidatorJsObjectName('forgotValObj');
-                            $frm->setFormTagAttribute('action', CommonHelper::generateUrl('GuestUser', 'forgotPassword'));
-                            $btnFld = $frm->getField('btn_submit');
-                            $btnFld->setFieldTagAttribute('class', 'btn--block');
-                            if (1 > $withPhone) {
-                                $frmFld = $frm->getField('user_email_username');
-                                $frmFld->setFieldTagAttribute('placeholder', Labels::getLabel('LBL_EMAIL_ADDRESS', $siteLangId));
-                            } else {
-                                $frmFld = $frm->getField('user_phone');
-                            }
-                            $frmFld->developerTags['noCaptionTag'] = true;
-                            
-                            $frmFld = $frm->getField('btn_submit');
-                            $frmFld->developerTags['noCaptionTag'] = true;
-                            echo $frm->getFormHtml(); ?>
-                        </div>
-                        
-                    </div><p class="text--dark"><?php echo Labels::getLabel('LBL_Back_to_login', $siteLangId);?>
-                            <a href="<?php echo CommonHelper::generateUrl('GuestUser', 'loginForm'); ?>" class="link">
-                                <?php echo Labels::getLabel('LBL_Click_Here', $siteLangId);?>
-                            </a>
-                        </p>
-                   
-                </div>				
-            </div>			
-        </div>
-        
+                            <div class="row justify-content-center">
+                                <div class="col-md-6">
+                                    <?php
+                                    $frm->setFormTagAttribute('class', 'form form--normal');
+                                    $frm->developerTags['colClassPrefix'] = 'col-lg-12 col-md-12 col-sm-';
+                                    $frm->developerTags['fld_default_col'] = 12;
+                                    
+                                    $frm->setFormTagAttribute('id', 'frmPwdForgot');
+                                    $frm->setFormTagAttribute('autocomplete', 'off');
+                                    $frm->setValidatorJsObjectName('forgotValObj');
+                                    $frm->setFormTagAttribute('action', CommonHelper::generateUrl('GuestUser', 'forgotPassword'));
+                                    $btnFld = $frm->getField('btn_submit');
+                                    $btnFld->setFieldTagAttribute('class', 'btn--block');
+                                    if (1 > $withPhone) {
+                                        $frmFld = $frm->getField('user_email_username');
+                                        $frmFld->setFieldTagAttribute('placeholder', Labels::getLabel('LBL_EMAIL_ADDRESS', $siteLangId));
+                                    } else {
+                                        $frmFld = $frm->getField('user_phone');
+                                    }
+                                    $frmFld->developerTags['noCaptionTag'] = true;
+                                    
+                                    $frmFld = $frm->getField('btn_submit');
+                                    $frmFld->developerTags['noCaptionTag'] = true;
+                                    echo $frm->getFormHtml(); ?>
+                                </div>
+                            </div>
+                            <p class="text--dark"><?php echo Labels::getLabel('LBL_Back_to_login', $siteLangId);?>
+                                <a href="<?php echo CommonHelper::generateUrl('GuestUser', 'loginForm'); ?>" class="link">
+                                    <?php echo Labels::getLabel('LBL_Click_Here', $siteLangId);?>
+                                </a>
+                            </p>
+                        </div>				
+                    </div>			
+                </div>
             </div>
-             <?php if (!empty($pageData)) {
-                        $this->includeTemplate('_partial/GuestUserRightPanel.php', $pageData, false);
-                    } ?>
+                <?php if (!empty($pageData)) {
+                    $this->includeTemplate('_partial/GuestUserRightPanel.php', $pageData, false);
+                } ?>
         </div>
     </section>
 </div>
@@ -100,6 +98,6 @@ $secretKey = FatApp::getConfig('CONF_RECAPTCHA_SECRETKEY', FatUtility::VAR_STRIN
 if (!empty($siteKey) && !empty($secretKey)) {?>
     <script src='https://www.google.com/recaptcha/api.js?render=<?php echo $siteKey; ?>'></script>
     <script>
-        googleCaptcha('<?php echo $siteKey; ?>');
+        googleCaptcha();
     </script>
 <?php } ?>

@@ -12,15 +12,18 @@ class Plugin extends MyAppModel
     public const TYPE_PUSH_NOTIFICATION = 3;
     public const TYPE_PAYOUTS = 4;
     public const TYPE_ADVERTISEMENT_FEED = 5;
-    public const TYPE_SMS_NOTIFICATION = 6;
+    public const TYPE_SMS_NOTIFICATION = 6;    
+    public const TYPE_FULL_TEXT_SEARCH = 7;
     public const TYPE_TAX_SERVICES  = 10;
 
+    /* Define here :  if system can not activate multiple plugins for a same feature*/
     public const HAVING_KINGPIN = [
         self::TYPE_CURRENCY,
         self::TYPE_PUSH_NOTIFICATION,
         self::TYPE_ADVERTISEMENT_FEED,
         self::TYPE_SMS_NOTIFICATION,
-        self::TYPE_TAX_SERVICES    
+        self::TYPE_TAX_SERVICES ,   
+        self::TYPE_FULL_TEXT_SEARCH
     ];
 
     public const ATTRS = [
@@ -32,7 +35,7 @@ class Plugin extends MyAppModel
     ];
 
     private $db;
-    
+
     public function __construct($id = 0)
     {
         parent::__construct(static::DB_TBL, static::DB_TBL_PREFIX . 'id', $id);
@@ -66,7 +69,6 @@ class Plugin extends MyAppModel
                 'plgs'
             );
         }
-        $srch->addOrder('plg.' . static::DB_TBL_PREFIX . 'active', 'DESC');
         $srch->addOrder('plg.' . static::DB_TBL_PREFIX . 'display_order', 'ASC');
         return $srch;
     }
@@ -81,7 +83,7 @@ class Plugin extends MyAppModel
     {
         $srch = new SearchBase(static::DB_TBL, 'plg');
         $srch->addCondition('plg.' . static::DB_TBL_PREFIX . 'code', '=', $code);
-        
+
         if (0 < $langId) {
             $srch->joinTable(self::DB_TBL_LANG, 'LEFT JOIN', self::DB_TBL_LANG_PREFIX . static::DB_TBL_PREFIX . 'id = ' . static::DB_TBL_PREFIX . 'id and ' . self::DB_TBL_LANG_PREFIX . 'lang_id = ' . $langId, 'plg_l');
         }
@@ -116,6 +118,7 @@ class Plugin extends MyAppModel
             static::TYPE_ADVERTISEMENT_FEED => Labels::getLabel('LBL_ADVERTISEMENT_FEED', $langId),
             static::TYPE_SMS_NOTIFICATION => Labels::getLabel('LBL_SMS_NOTIFICATION', $langId),
             static::TYPE_TAX_SERVICES => Labels::getLabel('LBL_Tax_Services', $langId),
+            static::TYPE_FULL_TEXT_SEARCH => Labels::getLabel('LBL_Full_TEXT_SEARCH', $langId)
         ];
     }
 
@@ -149,7 +152,7 @@ class Plugin extends MyAppModel
         }
 
         $rs = $srch->getResultSet();
-        
+
         $db = FatApp::getDb();
         if (true == $assoc) {
             return $db->fetchAllAssoc($rs);
@@ -193,7 +196,7 @@ class Plugin extends MyAppModel
             ]
         );
         $rs = $srch->getResultSet();
-        
+
         return FatApp::getDb()->fetchAllAssoc($rs);
     }
 
@@ -248,5 +251,33 @@ class Plugin extends MyAppModel
         $active = (new self())->getDefaultPluginData(Plugin::TYPE_SMS_NOTIFICATION, 'plugin_active');
         $status = empty($tpl) ? 1 : SmsTemplate::getTpl($tpl, 0, 'stpl_status');
         return (false != $active && !empty($active) && 0 < $status);
+    }
+
+    public static function updateStatus(int $type, int $status, int $id = null, string &$error = ''): bool
+    {
+        $db = FatApp::getDb();
+        $max = in_array($type, Plugin::HAVING_KINGPIN) && applicationConstants::ACTIVE == $status ? 2 : 1;
+        for ($i = 0; $i < $max; $i++) {
+            $condition = ['smt' => self::DB_TBL_PREFIX . 'type = ?', 'vals' => [$type]];
+            if (null != $id) {
+                $operator = (0 < $i ? '!=' : '=');
+                $condition = ['smt' => self::DB_TBL_PREFIX . 'type = ? AND ' . self::DB_TBL_PREFIX . 'id ' . $operator . ' ?', 'vals' => [$type, $id]];
+            }
+            if (!$db->updateFromArray(self::DB_TBL, [self::DB_TBL_PREFIX . 'active' => (0 < $i ? applicationConstants::INACTIVE : $status)], $condition)) {
+                $error = $db->getError();
+                return false;
+            }
+        }
+
+        if (in_array($type, Plugin::HAVING_KINGPIN)) {
+            $kingPin = (applicationConstants::INACTIVE == $status) ? applicationConstants::NO : $id;
+
+            $confRecord = new Configurations();
+            if (!$confRecord->update(['CONF_DEFAULT_PLUGIN_' . $type => $kingPin])) {
+                $error = $confRecord->getError();
+                return false;
+            }
+        }
+        return true;
     }
 }

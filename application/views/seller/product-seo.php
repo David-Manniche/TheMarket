@@ -9,6 +9,13 @@ $keywordFld->setWrapperAttribute('class', 'col-lg-4');
 $keywordFld->addFieldTagAttribute('placeholder', Labels::getLabel('LBL_Search_Product', $siteLangId));
 $keywordFld->developerTags['col'] = 4;
 $keywordFld->developerTags['noCaptionTag'] = true;
+
+$submitFld = $frmSearch->getField('btn_submit');
+$submitFld->setFieldTagAttribute('class', 'btn btn-primary btn-block');
+
+$clearFld = $frmSearch->getField('btn_clear');
+$clearFld->setFieldTagAttribute('onclick', 'clearSearch()');
+$clearFld->setFieldTagAttribute('class', 'btn btn-outline-primary btn-block');
 ?>
 <?php $this->includeTemplate('_partial/seller/sellerDashboardNavigation.php'); ?>
 <main id="main-area" class="main" role="main">
@@ -26,20 +33,20 @@ $keywordFld->developerTags['noCaptionTag'] = true;
                         <div class="cards-content">
                             <div>
                                 <?php echo $frmSearch->getFormTag(); ?>
-                                <div class="row">
-                                    <div class="col-md-12">
-                                        <div class="field-set">
-                                            <div class="field-wraper">
-                                                <div class="field_cover">
-                                                    <?php echo $frmSearch->getFieldHTML('keyword');?>
-                                                    <div class='dvFocus-js'></div>
-                                                </div>
-                                            </div>
+                                    <div class="row">
+                                        <div class="col-12 col-md-6">
+                                            <div class="field-set"><?php echo $frmSearch->getFieldHTML('keyword');?></div>
+                                        </div>
+                                        <div class="col-6 col-md-3">
+                                            <div class="field-set"><?php echo $frmSearch->getFieldHTML('btn_submit'); ?></div>
+                                        </div>
+                                        <div class="col-6 col-md-3">
+                                            <div class="field-set"><?php echo $frmSearch->getFieldHTML('btn_clear');?></div>
                                         </div>
                                     </div>
-                                </div>
+                                    <div class='dvFocus-js'></div>
                                 </form>
-                                <?php echo $frmSearch->getExternalJS();?>
+                                <?php echo $frmSearch->getExternalJS(); ?>
                             </div>
                             <div id="listing">
                                 <?php echo Labels::getLabel('LBL_Loading..', $siteLangId); ?>
@@ -49,9 +56,9 @@ $keywordFld->developerTags['noCaptionTag'] = true;
                 </div>
                 <div class="col-md-6">
                     <div class="cards">
-                        <div class="cards-content">
+                        <div class="cards-content h-100">
                             <div id="dvForm"></div>
-                            <div id="dvAlert">
+                            <div class="alert-aligned" id="dvAlert">
                                 <div class="cards-message" role="alert">
                                     <div class="cards-message-icon"><i class="fas fa-exclamation-triangle"></i></div>
                                     <div class="cards-message-text"><?php echo Labels::getLabel('LBL_Select_a_product_to_add_/_edit_meta_tags_data', $siteLangId); ?></div>

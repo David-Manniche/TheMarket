@@ -15,7 +15,7 @@ $langFld->setfieldTagAttribute('onChange', "addCategoryReqLangForm(" . $category
 </div>
 
 <div class="box__body">		
-	<div class="tabs tabs--small clearfix">
+	<div class="tabs">
 		<ul>
 			<li><a href="javascript:void(0)" onclick="addCategoryReqForm(<?php echo $categoryReqId ?>);"><?php echo Labels::getLabel('LBL_Basic', $siteLangId);?></a></li>
             <?php $inactive = ($categoryReqId == 0) ? ' fat-inactive' : ''; ?>

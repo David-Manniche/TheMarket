@@ -4,22 +4,24 @@ trait SellerCollections
 {
     public function shopCollections()
     {
+        $this->userPrivilege->canViewShop(UserAuthentication::getLoggedUserId());
         $this->commonShopCollection();
         $this->_template->render(false, false);
     }
 
     public function searchShopCollections()
     {
-        $userId = UserAuthentication::getLoggedUserId();
+        $userId = $this->userParentId;
         $shopDetails = Shop::getAttributesByUserId($userId, null, false);
         $records = ShopCollection::getCollectionGeneralDetail($shopDetails['shop_id']);
+        $this->set('canEdit', $this->userPrivilege->canEditShop(UserAuthentication::getLoggedUserId(), true));
         $this->set("arr_listing", $records);
         $this->_template->render(false, false);
     }
 
     public function commonShopCollection()
     {
-        $userId = UserAuthentication::getLoggedUserId();
+        $userId = $this->userParentId;
         $shopDetails = Shop::getAttributesByUserId($userId, null, false);
 
         if (!false == $shopDetails && $shopDetails['shop_active'] != applicationConstants::ACTIVE) {
@@ -38,7 +40,7 @@ trait SellerCollections
 
     public function shopCollection()
     {
-        $userId = UserAuthentication::getLoggedUserId();
+        $userId = $this->userParentId;
         if (!UserPrivilege::canEditSellerCollection($userId)) {
             Message::addErrorMessage(Labels::getLabel("MSG_INVALID_ACCESS", $this->siteLangId));
             FatUtility::dieJsonError(Message::getHtml());
@@ -52,7 +54,7 @@ trait SellerCollections
     public function shopCollectionGeneralForm($scollection_id = 0)
     {
         $scollection_id = FatUtility::int($scollection_id);
-        $userId = UserAuthentication::getLoggedUserId();
+        $userId = $this->userParentId;
         $shop_id = $this->commonShopCollection();
         $colectionForm = $this->getCollectionGeneralForm('', $shop_id);
         $shopcolDetails = ShopCollection::getCollectionGeneralDetail($shop_id, $scollection_id);
@@ -149,6 +151,7 @@ trait SellerCollections
 
     public function setupShopCollection()
     {
+        $this->userPrivilege->canEditShop(UserAuthentication::getLoggedUserId());
         $post = FatApp::getPostedData();
         $shop_id = FatUtility::int($post['scollection_shop_id']);
         $scollection_id = FatUtility::int($post['scollection_id']);
@@ -203,6 +206,7 @@ trait SellerCollections
 
     public function changeShopCollectionStatus()
     {
+        $this->userPrivilege->canEditShop(UserAuthentication::getLoggedUserId());
         $scollectionId = FatApp::getPostedData('scollection_id', FatUtility::VAR_INT, 0);
         $shopId = $this->commonShopCollection();
         $shopcolDetails = ShopCollection::getCollectionGeneralDetail($shopId, $scollectionId);
@@ -216,6 +220,7 @@ trait SellerCollections
 
     public function toggleBulkCollectionStatuses()
     {
+        $this->userPrivilege->canEditShop(UserAuthentication::getLoggedUserId());
         $this->commonShopCollection();
         $status = FatApp::getPostedData('collection_status', FatUtility::VAR_INT, -1);
         $scollectionIdsArr = FatUtility::int(FatApp::getPostedData('scollection_ids'));
@@ -238,6 +243,7 @@ trait SellerCollections
 
     private function updateShopCollectionStatus($scollectionId, $status)
     {
+        $this->userPrivilege->canEditShop(UserAuthentication::getLoggedUserId());
         $scollectionId = FatUtility::int($scollectionId);
         $status = FatUtility::int($status);
         if (1 > $scollectionId || -1 == $status) {
@@ -283,7 +289,7 @@ trait SellerCollections
         $this->set('languages', Language::getAllNames());
         $this->set('shopColLangFrm', $shopColLangFrm);
         $this->set('formLayout', Language::getLayoutDirection($langId));
-        $this->set('userId', UserAuthentication::getLoggedUserId());
+        $this->set('userId', $this->userParentId);
         $this->set('scollection_id', $scollection_id);
         $this->set('langId', $langId);
         $this->commonShopCollection();
@@ -296,7 +302,7 @@ trait SellerCollections
         $frm->addHiddenField('', 'scollection_id', $scollection_id);
         $frm->addSelectBox(Labels::getLabel('LBL_LANGUAGE', $this->siteLangId), 'lang_id', Language::getAllNames(), $lang_id, array(), '');
         $frm->addRequiredField(Labels::getLabel('LBL_Collection_Name', $this->siteLangId), 'name');
-        
+
         $siteLangId = FatApp::getConfig('conf_default_site_lang', FatUtility::VAR_INT, 1);
         $translatorSubscriptionKey = FatApp::getConfig('CONF_TRANSLATOR_SUBSCRIPTION_KEY', FatUtility::VAR_STRING, '');
 
@@ -310,6 +316,7 @@ trait SellerCollections
 
     public function setupShopCollectionLang()
     {
+        $this->userPrivilege->canEditShop(UserAuthentication::getLoggedUserId());
         $post = FatApp::getPostedData();
         $scollection_id = FatUtility::int($post['scollection_id']);
         if (!UserPrivilege::canEditSellerCollection($scollection_id)) {
@@ -414,6 +421,7 @@ trait SellerCollections
 
     public function setupSellerCollectionProductLinks()
     {
+        $this->userPrivilege->canEditShop(UserAuthentication::getLoggedUserId());
         $post = FatApp::getPostedData();
         //print_r($post); die();
         $scollection_id = FatUtility::int($post['scp_scollection_id']);
@@ -478,6 +486,10 @@ trait SellerCollections
 
     public function uploadCollectionImage()
     {
+        if (!$this->userPrivilege->canEditShop(UserAuthentication::getLoggedUserId(), true)) {
+            Message::addErrorMessage(Labels::getLabel('LBL_Unauthorized_Access!', $this->siteLangId));
+            FatUtility::dieJsonError(Message::getHtml());
+        }
         $post = FatApp::getPostedData();
         if (empty($post)) {
             Message::addErrorMessage(Labels::getLabel('LBL_Invalid_Request_Or_File_not_supported', $this->siteLangId));
@@ -512,6 +524,7 @@ trait SellerCollections
 
     public function removeCollectionImage($scollection_id, $lang_id = 0)
     {
+        $this->userPrivilege->canEditShop(UserAuthentication::getLoggedUserId());
         $scollection_id = FatUtility::int($scollection_id);
         $lang_id = FatUtility::int($lang_id);
 

@@ -4,9 +4,9 @@ $arr_flds = array(
 	'listserial'=>'Sr.',
 	'prodcat_name' => Labels::getLabel('LBL_Category', $siteLangId),
 	'banner' => Labels::getLabel('LBL_Banner', $siteLangId),
-	'action' => Labels::getLabel('LBL_Action', $siteLangId)
+	'action' => ''
 );
-$tbl = new HtmlElement('table', array('width'=>'100%', 'class'=>'table table--orders'));
+$tbl = new HtmlElement('table', array('width'=>'100%', 'class'=>'table'));
 $th = $tbl->appendElement('thead')->appendElement('tr',array('class' => ''));
 foreach ($arr_flds as $val) {
 	$e = $th->appendElement('th', array(), $val);

@@ -44,11 +44,11 @@ echo $this->getJsCssIncludeHtml(!CONF_DEVELOPMENT_MODE);
 
 $this->includeTemplate( '_partial/header/commonHeadBottom.php', $commonHeadData,false);
 ?>
-<?php if (FatApp::getConfig('CONF_AUTO_RESTORE_ON', FatUtility::VAR_INT, 1) && CommonHelper::demoUrl()) { 
-	$this->includeTemplate('restore-system/top-header.php');    
-} ?>
 <div class="wrapper">
 	<div id="header" class="header header-advertiser" role="header-advertiser" >
+	<?php if (FatApp::getConfig('CONF_AUTO_RESTORE_ON', FatUtility::VAR_INT, 1) && CommonHelper::demoUrl()) { 
+		$this->includeTemplate('restore-system/top-header.php');    
+	} ?>
 		<div class="top-bar">
 		  <div class="container">
 			<div class="row">
@@ -70,7 +70,14 @@ $this->includeTemplate( '_partial/header/commonHeadBottom.php', $commonHeadData,
 		  <div class="container">
 				<div class="logo-bar">      	 
 				<div class="logo logo-advertiser">
-					<a href="<?php echo CommonHelper::generateUrl(); ?>"><img src="<?php echo CommonHelper::generateFullUrl('Image','siteLogo',array($siteLangId), CONF_WEBROOT_FRONT_URL); ?>" alt="<?php echo FatApp::getConfig('CONF_WEBSITE_NAME_'.$siteLangId) ?>" title="<?php echo FatApp::getConfig('CONF_WEBSITE_NAME_'.$siteLangId) ?>"></a>
+				    <?php
+                    $fileData = AttachedFile::getAttachment(AttachedFile::FILETYPE_FRONT_LOGO, 0, 0, $siteLangId, false);
+                    $aspectRatioArr = AttachedFile::getRatioTypeArray($siteLangId);
+                    ?>
+					<a href="<?php echo CommonHelper::generateUrl(); ?>">
+					<img <?php if ($fileData['afile_aspect_ratio'] > 0) { ?>
+                            data-ratio= "<?php echo $aspectRatioArr[$fileData['afile_aspect_ratio']]; ?>"
+                            <?php } ?> src="<?php echo CommonHelper::generateFullUrl('Image','siteLogo',array($siteLangId), CONF_WEBROOT_FRONT_URL); ?>" alt="<?php echo FatApp::getConfig('CONF_WEBSITE_NAME_'.$siteLangId) ?>" title="<?php echo FatApp::getConfig('CONF_WEBSITE_NAME_'.$siteLangId) ?>"></a>
 				</div>
 				<div class="d-flex"><a class="seller_login_toggle" href="javascript:void(0)" data-trigger="yk-login--wrapper"><i class="fa fa-user-circle"></i></a> 
 			</div>

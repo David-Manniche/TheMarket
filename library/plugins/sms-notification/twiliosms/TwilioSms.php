@@ -25,7 +25,7 @@ class TwilioSms extends SmsNotificationBase
         $requiredKeyArr = ['account_sid', 'auth_token', 'sender_id'];
         foreach ($requiredKeyArr as $key) {
             if (!array_key_exists($key, $this->settings)) {
-                $this->error = Labels::getLabel('MSG_SETTINGS_NOT_UPDATED', $this->langId);
+                $this->error = Labels::getLabel('MSG_PLUGIN_SETTINGS_NOT_CONFIGURED', $this->langId);
                 return false;
             }
         }

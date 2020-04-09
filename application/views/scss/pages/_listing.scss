@@ -25,8 +25,8 @@
             padding: 0;
             #{$start-direction}: 0;
             visibility: visible;
-            box-shadow: 0px 0px 28px rgba(0, 0, 0, 0.1);
-            z-index: 1050;
+            box-shadow: 0px 0px 0 1500px rgba(0, 0, 0, 0.2);
+            z-index: 10;
         }
     }
 }
@@ -42,13 +42,14 @@
             position: fixed;
             bottom: 10px;
             #{$end-direction}: 10px;
-            z-index: 10;
+            z-index: 1051;
             border-radius: 50%;
             border: none;
             box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.26);
             padding: 0;
-            background: $secondary-color; color:$secondary-color-inverse;
-            
+            background: $secondary-color;
+            color: $secondary-color-inverse;
+
             fill: $secondary-color-inverse;
             cursor: pointer;
 
@@ -112,6 +113,10 @@
             }
         }
     }
+
+    .btn {
+        line-height: 1.5;
+    }
 }
 
 .filters__ele {
@@ -163,7 +168,8 @@
 }
 
 .divider--filters:after {
-    background: $brand-color; color:$brand-color-inverse;
+    background: $brand-color;
+    color: $brand-color-inverse;
     width: 30px;
     height: 2px;
     content: "";
@@ -224,7 +230,8 @@
 
 .scroll__handle {
     width: 4px;
-    background: $brand-color; color:$brand-color-inverse;
+    background: $brand-color;
+    color: $brand-color-inverse;
     margin: 0 0 0 3px;
     border-radius: 4px;
     -webkit-transition: width 250ms;
@@ -332,7 +339,7 @@
 
 .filter-content {
     margin: 0;
-    overflow: hidden;
+
     -webkit-transition: height 0.3s ease 0s;
     transition: height 0.3s ease 0s;
 }
@@ -342,7 +349,6 @@
     height: 2px;
     margin: 21px 2px 16px;
     position: relative;
-    text-align: left;
     padding: 0 10px;
     width: 100%;
 }
@@ -379,11 +385,12 @@
 
 .to-price-text {
     float: right;
-    text-align: right;
+    text-align: #{$end-direction};
 }
 
 .prices {
-    padding-bottom: 10px;
+    padding-bottom: 60px;
+    font-size: 0.8rem;
 }
 
 .slide__fields {
@@ -678,10 +685,9 @@
         background: rgba(255, 255, 255, 0.8);
         border-radius: 2px;
         position: absolute;
-        bottom: 10px;         
+        bottom: 10px;
         #{$end-direction}: 10px;
         padding: 1rem;
-        text-align: left;
         /*max-width: 210px;*/
         font-weight: 400;
 
@@ -690,4 +696,11 @@
 
         }
     }
+}
+
+.social-icons {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    li{ margin: 0 5px;}
 }

@@ -42,54 +42,49 @@ $(document).ready(function(){
     getOtp = function (frm, updateToDbFrm = 0){
 		if (!$(frm).validate()) return;
         var data = fcom.frmData(frm);
+        $(frm.btn_submit).attr('disabled', 'disabled');
         $.systemMessage(langLbl.processing,'alert--process', false);
 		fcom.ajax(fcom.makeUrl( 'Account', 'getOtp', [updateToDbFrm]), data, function(t) {
-            try{
-				t = $.parseJSON(t);
-				if(typeof t.status != 'undefined' &&  1 > t.status){
-                    $.systemMessage(t.msg,'alert--danger', false);
-                }
+            $.systemMessage.close();
+            t = $.parseJSON(t);
+            if(typeof t.status != 'undefined' &&  1 > t.status){
+                $.systemMessage(t.msg,'alert--danger', false);
+                $(frm.btn_submit).removeAttr('disabled');
                 return false;
-			}
-			catch(exc){
-                $.systemMessage.close();
-                var lastFormElement = phoneNumberdv + ' form:last';
+            }
+            var lastFormElement = phoneNumberdv + ' form:last';
+            var resendOtpElement = lastFormElement + " .resendOtp-js";
+            $(lastFormElement + ' [name="btn_submit"]').closest("div.row").remove();
+            var countryIso = $(lastFormElement + " input[name='user_country_iso']").val();
+            var dialCode = $(lastFormElement + " input[name='user_dial_code']").val();
+            var phoneNumber = $(lastFormElement + " input[name='user_phone']").val();
+
+            $(lastFormElement).after(t.html);
+            $('.formTitle-js').remove();
+
+            var resendFunction = 'resendOtp()';
+            if (0 < updateToDbFrm) {
+                $(phoneNumberdv + " form").attr('onsubmit', 'return validateOtp(this, 0);');
                 var resendOtpElement = lastFormElement + " .resendOtp-js";
-                $(lastFormElement + ' [name="btn_submit"]').closest("div.row").remove();
-                var phoneNumber = $(lastFormElement + " input[name='user_phone']").val();
-
-                $(lastFormElement).after(t);
-                $('.formTitle').remove();
-
-                var userId = $(lastFormElement + " input[name='user_id']").val();
-                var resendFunction = 'resendOtp(' + userId + ')';
-                if (0 < updateToDbFrm) {
-                    $(phoneNumberdv + " form").attr('onsubmit', 'return validateOtp(this, 0);');
-                    var resendOtpElement = lastFormElement + " .resendOtp-js";
-                    resendFunction = 'resendOtp(' + userId + ', "' + phoneNumber + '")';
-                }
-                $(resendOtpElement).removeAttr('onclick').attr('onclick', resendFunction);
-			}
+                resendFunction = 'resendOtp("' + countryIso + '", "' + dialCode + '","' + phoneNumber + '")';
+            }
+            $(resendOtpElement).removeAttr('onclick').attr('onclick', resendFunction);
+            startOtpInterval();
         });
         return false;
     };
     
-    resendOtp = function (userId, phone = ''){
-        var postparam = (1 == phone) ? '' : "user_phone=" + phone;
+    resendOtp = function (countryIso = '', dialCode = '',phone = ''){
+        var postparam = (1 == phone) ? '' : "user_country_iso="+countryIso+"&user_dial_code="+dialCode+"&user_phone=" + phone;
         $.systemMessage(langLbl.processing, 'alert--process', false);
-		fcom.ajax(fcom.makeUrl('Account', 'resendOtp', [userId]), postparam, function(t) {
-            try{
-				t = $.parseJSON(t);
-				if(typeof t.status != 'undefined' &&  1 > t.status){
-                    $.systemMessage(t.msg,'alert--danger', false);
-                } else {
-                    $.systemMessage(t.msg,'alert--success', false);
-                }
+		fcom.ajax(fcom.makeUrl('Account', 'resendOtp'), postparam, function(t) {
+            t = $.parseJSON(t);
+            if(1 > t.status){
+                $.systemMessage(t.msg,'alert--danger', false);
                 return false;
-			}
-			catch(exc){
-                $.systemMessage.close();
-			}
+            }
+            $.systemMessage(t.msg,'alert--success', false);
+            startOtpInterval();
         });
         return false;
     };
@@ -99,20 +94,14 @@ $(document).ready(function(){
         var data = fcom.frmData(frm);
         $.systemMessage(langLbl.processing,'alert--process', false);
 		fcom.ajax(fcom.makeUrl( 'Account', 'validateOtp', [updateToDbFrm]), data, function(t) {
-            try{
-				t = $.parseJSON(t);
-				if(typeof t.status != 'undefined' &&  1 > t.status){
-                    $.systemMessage(t.msg,'alert--danger', false);
-                } else {
-                    $.systemMessage(t.msg,'alert--success', false);
-                    changePhoneNumberForm();
-                }
+            t = $.parseJSON(t);
+            if(1 > t.status){
+                $.systemMessage(t.msg,'alert--danger', false);
+                invalidOtpField();
                 return false;
-			}
-			catch(exc){
-                $.systemMessage.close();
-                location.href = fcom.makeUrl();
-			}
+            }
+            $.systemMessage.close();
+            location.href = fcom.makeUrl();
         });
         return false;
     };

@@ -95,6 +95,12 @@
          border-color: #fff;
          color: #fff;
      }
+     
+     &.btn-outline-gray {
+         background: none;
+         border-color:$border-color;
+         color: $body-color;
+     }
 
      &.btn--block {
          display: block;
@@ -138,6 +144,7 @@
      color: $brand-color;
      position: relative;
      font-size: 0.875rem;
+	 white-space:nowrap;
 
      &:after {
          content: "";

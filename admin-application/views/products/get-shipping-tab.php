@@ -6,9 +6,9 @@
 		<tr>
 		<th width="20%"><?php echo Labels::getLabel('LBL_Destination_Country',$adminLangId)?></th>
 		<th width="25%"><?php echo Labels::getLabel('LBL_Company',$adminLangId)?></th>
-		<th width="39%"><?php echo Labels::getLabel('LBL_Service_Type',$adminLangId)?></th>
-		<th width="8%"><?php echo Labels::getLabel('LBL_Rate',$adminLangId) .' ['.CommonHelper::getCurrencySymbol(true).']';?></th>
-		<th width="8%"><?php echo Labels::getLabel('LBL_Additional_Per_Item',$adminLangId).' ['.CommonHelper::getCurrencySymbol(true).']';?> </th>
+		<th width="30%"><?php echo Labels::getLabel('LBL_Service_Type',$adminLangId)?></th>
+		<th width="15%"><?php echo Labels::getLabel('LBL_Rate',$adminLangId) .' ['.CommonHelper::getCurrencySymbol(true).']';?></th>
+		<th width="10%"><?php echo Labels::getLabel('LBL_Additional_Per_Item',$adminLangId).' ['.CommonHelper::getCurrencySymbol(true).']';?> </th>
 		<th></th>
 		</tr>
 		</thead>

@@ -110,6 +110,7 @@ class AdminPrivilege
     public const SECTION_PRODUCT_ADVERTISEMENT = 105;
     public const SECTION_IMPORT_EXPORT = 106;
     public const SECTION_APP_THEME_SETTINGS = 107;
+    public const SECTION_PATCH_UPDATE = 109;
     public const SECTION_SMS_TEMPLATE = 108;
 
     public const PRIVILEGE_NONE = 0;
@@ -236,7 +237,7 @@ class AdminPrivilege
         static::SECTION_ADMIN_USERS => Labels::getLabel('MSG_Admin_Users', CommonHelper::getLangId()),
         static::SECTION_ADMIN_PERMISSIONS => Labels::getLabel('MSG_Admin_Roles', CommonHelper::getLangId()),
 
-        static::SECTION_TOOLS => Labels::getLabel('MSG_Tools', CommonHelper::getLangId()),
+        //static::SECTION_TOOLS => Labels::getLabel('MSG_Tools', CommonHelper::getLangId()),
         static::SECTION_MESSAGES => Labels::getLabel('MSG_Messages', CommonHelper::getLangId()),
         // static::SECTION_NOTIFICATION => Labels::getLabel('MSG_Notifications',CommonHelper::getLangId()),
         static::SECTION_DATABASE_BACKUP => Labels::getLabel('MSG_Database_Backup', CommonHelper::getLangId()),
@@ -253,13 +254,17 @@ class AdminPrivilege
         static::SECTION_ABANDONED_CART => Labels::getLabel('MSG_ABANDONED_CART', CommonHelper::getLangId()),
         static::SECTION_IMPORT_EXPORT => Labels::getLabel('MSG_IMPORT_EXPORT', CommonHelper::getLangId()),
         static::SECTION_SMS_TEMPLATE => Labels::getLabel('MSG_SMS_TEMPLATE', CommonHelper::getLangId()),
+        
+        static::SECTION_ABUSIVE_WORDS => Labels::getLabel('MSG_Abusive_Words',CommonHelper::getLangId()),
+        static::SECTION_SUBSCRIPTION_ORDERS => Labels::getLabel('MSG_Subscription_Orders',CommonHelper::getLangId()),
+            
         /* static::SECTION_Languages => Labels::getLabel('MSG_Languages',CommonHelper::getLangId()),
         static::SECTION_Languages => Labels::getLabel('MSG_Order_Status',CommonHelper::getLangId()), */
 
         /*static::SECTION_SUCCESS_STORIES => Labels::getLabel('MSG_Success_stories',CommonHelper::getLangId()),
         static::SECTION_HOME_PAGE_ELEMENTS => Labels::getLabel('MSG_Home_Page_Elements',CommonHelper::getLangId()),
         static::SECTION_QUESTION_BANKS => Labels::getLabel('MSG_Question_Banks',CommonHelper::getLangId()),
-        static::SECTION_ABUSIVE_WORDS => Labels::getLabel('MSG_Abusive_Words',CommonHelper::getLangId()),
+        
         static::SECTION_QUESTIONS => Labels::getLabel('MSG_Questions',CommonHelper::getLangId()),
         static::SECTION_QUESTIONNAIRES => Labels::getLabel('MSG_Questionnaires',CommonHelper::getLangId()), */
 
@@ -1417,6 +1422,11 @@ class AdminPrivilege
     {
         return $this->checkPermission($adminId, static::SECTION_ABANDONED_CART, static::PRIVILEGE_READ, $returnResult);
     }
+    
+    public function canEditAbandonedCart($adminId = 0, $returnResult = false)
+    {
+        return $this->checkPermission($adminId, static::SECTION_ABANDONED_CART, static::PRIVILEGE_WRITE, $returnResult);
+    }
 
     public function canViewAdvertisements($adminId = 0, $returnResult = false)
     {
@@ -1447,7 +1457,16 @@ class AdminPrivilege
     {
         return $this->checkPermission($adminId, static::SECTION_IMPORT_EXPORT, static::PRIVILEGE_WRITE, $returnResult);
     }
+
+    public function canViewPatch($adminId = 0, $returnResult = false)
+    {
+        return $this->checkPermission($adminId, static::SECTION_PATCH_UPDATE, static::PRIVILEGE_READ, $returnResult);
+    }
     
+    public function canEditPatch($adminId = 0, $returnResult = false)
+    {
+        return $this->checkPermission($adminId, static::SECTION_PATCH_UPDATE, static::PRIVILEGE_WRITE, $returnResult);
+    }
     public function canEditSmsTemplate($adminId = 0, $returnResult = false)
     {
         return $this->checkPermission($adminId, static::SECTION_SMS_TEMPLATE, static::PRIVILEGE_WRITE, $returnResult);

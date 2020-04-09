@@ -1,6 +1,6 @@
 <?php defined('SYSTEM_INIT') or die('Invalid Usage.'); ?>
 <?php if (!empty($images)) { ?>
-<ul class="grids--onehalf mt-0" id="<?php if ($canEdit) { ?>sortable<?php } ?>">
+<ul class="mt-0" id="<?php if ($canEdit) { ?>sortable<?php } ?>">
     <li id="<?php echo $images['afile_id']; ?>">
         <div class="logoWrap">
             <div class="logothumb"> <img src="<?php echo CommonHelper::generateUrl('Category', $imageFunction, array($images['afile_record_id'], $images['afile_lang_id'], "THUMB", $images['afile_screen']), CONF_WEBROOT_FRONT_URL); ?>"

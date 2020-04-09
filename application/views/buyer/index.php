@@ -109,12 +109,12 @@ $this->includeTemplate('_partial/buyerDashboardNavigation.php'); ?>
                             <?php } ?> </div>
                         </div>
                         <div class="cards-content ">
-                            <table class="table table--orders js-scrollable ">
+                            <table class="table ">
                                 <tbody>
                                     <tr class="">
                                         <th colspan="2" width="70%"><?php echo Labels::getLabel('LBL_Order_Particulars', $siteLangId);?></th>
                                         <th width="20%"><?php echo Labels::getLabel('LBL_Payment_Info', $siteLangId);?></th>
-                                        <th width="10%"><?php echo Labels::getLabel('LBL_Action', $siteLangId);?></th>
+                                        <th width="10%"></th>
                                     </tr> <?php if (count($orders)>0) {
                                         $canCancelOrder = true;
                                         $canReturnRefund = true;
@@ -172,10 +172,10 @@ $this->includeTemplate('_partial/buyerDashboardNavigation.php'); ?>
                                             <ul class="actions">
                                                 <li><a title="<?php echo Labels::getLabel('LBL_View_Order', $siteLangId); ?>" href="<?php echo $orderDetailUrl; ?>"><i class="fa fa-eye"></i></a></li> <?php if ($canCancelOrder) { ?> <li><a
                                                         href="<?php echo CommonHelper::generateUrl('buyer', 'orderCancellationRequest', array($row['op_id']));?>" title="<?php echo Labels::getLabel('LBL_Cancel_Order', $siteLangId);?>"><i
-                                                            class="fa fa-close"></i></a></li> <?php } ?> <?php if ($canSubmitFeedback && $isValidForReview) {?> <li><a
+                                                            class="fas fa-times"></i></a></li> <?php } ?> <?php if ($canSubmitFeedback && $isValidForReview) {?> <li><a
                                                         href="<?php echo CommonHelper::generateUrl('Buyer', 'orderFeedback', array($row['op_id']));?>" title="<?php echo Labels::getLabel('LBL_Feedback', $siteLangId);?>"><i class="fa fa-star"></i></a>
                                                 </li> <?php } ?> <?php if ($canReturnRefund) { ?> <li><a href="<?php echo CommonHelper::generateUrl('Buyer', 'orderReturnRequest', array($row['op_id']));?>"
-                                                        title="<?php echo Labels::getLabel('LBL_Refund', $siteLangId);?>"><i class="fa fa-dollar"></i></a></li> <?php } ?>
+                                                        title="<?php echo Labels::getLabel('LBL_Refund', $siteLangId);?>"><i class="fas fa-dollar-sign"></i></a></li> <?php } ?>
                                             </ul>
                                         </td>
                                     </tr> <?php }
@@ -183,11 +183,7 @@ $this->includeTemplate('_partial/buyerDashboardNavigation.php'); ?>
                                         <td colspan="4"> <?php $this->includeTemplate('_partial/no-record-found.php', array('siteLangId'=>$siteLangId), false); ?> </td>
                                     </tr> <?php } ?>
                                 </tbody>
-                                <div class="scroll-hint-icon-wrap" data-target="scrollable-icon">
-                                    <span class="scroll-hint-icon">
-                                        <div class="scroll-hint-text"><?php echo Labels::getLabel('LBL_Scrollable', $siteLangId);?></div>
-                                    </span>
-                                </div>
+                                
                             </table>
                         </div>
                     </div>
@@ -199,7 +195,7 @@ $this->includeTemplate('_partial/buyerDashboardNavigation.php'); ?>
                             <div class="action"> <?php if (count($offers)>0) { ?> <a href="<?php echo CommonHelper::generateUrl('buyer', 'offers');?>" class="link"><?php echo Labels::getLabel('Lbl_View_All', $siteLangId);?></a> <?php }?> </div>
                         </div>
                         <div class="cards-content ">
-                            <table class="table table--orders js-scrollable ">
+                            <table class="table ">
                                 <tbody>
                                     <tr class="">
                                         <th colspan="2" width="60%"><?php echo Labels::getLabel('LBL_Offer_Particulars', $siteLangId);?></th>
@@ -226,11 +222,7 @@ $this->includeTemplate('_partial/buyerDashboardNavigation.php'); ?>
                                         <td colspan="4"> <?php $this->includeTemplate('_partial/no-record-found.php', array('siteLangId'=>$siteLangId), false); ?> </td>
                                     </tr> <?php } ?>
                                 </tbody>
-                                <div class="scroll-hint-icon-wrap" data-target="scrollable-icon">
-                                    <span class="scroll-hint-icon">
-                                        <div class="scroll-hint-text"><?php echo Labels::getLabel('LBL_Scrollable', $siteLangId);?></div>
-                                    </span>
-                                </div>
+                               
                             </table>
                         </div> <?php // $this->includeTemplate('_partial/userDashboardMessages.php');?>
                     </div>
@@ -245,13 +237,13 @@ $this->includeTemplate('_partial/buyerDashboardNavigation.php'); ?>
                             </div> <?php } ?>
                         </div>
                         <div class="cards-content ">
-                            <table class="table table--orders js-scrollable ">
+                            <table class="table ">
                                 <tbody>
                                     <tr class="">
                                         <th width="60%"><?php echo Labels::getLabel('LBL_Order_Particulars', $siteLangId);?></th>
                                         <th width="10%"><?php echo Labels::getLabel('LBL_Qty', $siteLangId);?></th>
                                         <th width="20%"><?php echo Labels::getLabel('LBL_Status', $siteLangId);?></th>
-                                        <th width="10%"><?php echo Labels::getLabel('LBL_Action', $siteLangId);?></th>
+                                        <th width="10%"></th>
                                     </tr> <?php if (count($returnRequests) > 0) {
                                         foreach ($returnRequests as $row) {
                                             $orderDetailUrl = CommonHelper::generateUrl('buyer', 'viewOrder', array($row['order_id'],$row['op_id']));
@@ -294,11 +286,7 @@ $this->includeTemplate('_partial/buyerDashboardNavigation.php'); ?>
                                         <td colspan="4"> <?php $this->includeTemplate('_partial/no-record-found.php', array('siteLangId'=>$siteLangId), false); ?> </td>
                                     </tr> <?php } ?>
                                 </tbody>
-                                <div class="scroll-hint-icon-wrap" data-target="scrollable-icon">
-                                    <span class="scroll-hint-icon">
-                                        <div class="scroll-hint-text"><?php echo Labels::getLabel('LBL_Scrollable', $siteLangId);?></div>
-                                    </span>
-                                </div>
+                                 
                             </table>
                         </div>
                     </div>
@@ -314,7 +302,7 @@ $this->includeTemplate('_partial/buyerDashboardNavigation.php'); ?>
                             </div> <?php } ?>
                         </div>
                         <div class="cards-content ">
-                            <table class="table table--orders js-scrollable ">
+                            <table class="table ">
                                 <tbody>
                                     <tr class="">
                                         <th width="40%"><?php echo Labels::getLabel('LBL_Order_Particulars', $siteLangId);?></th>
@@ -353,11 +341,7 @@ $this->includeTemplate('_partial/buyerDashboardNavigation.php'); ?>
                                         <td colspan="3"> <?php $this->includeTemplate('_partial/no-record-found.php', array('siteLangId'=>$siteLangId), false); ?> </td>
                                     </tr> <?php } ?>
                                 </tbody>
-                                <div class="scroll-hint-icon-wrap" data-target="scrollable-icon">
-                                    <span class="scroll-hint-icon">
-                                        <div class="scroll-hint-text"><?php echo Labels::getLabel('LBL_Scrollable', $siteLangId);?></div>
-                                    </span>
-                                </div>
+                                 
                             </table>
                         </div>
                     </div>

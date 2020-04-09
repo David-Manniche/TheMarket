@@ -52,7 +52,7 @@ if (User::isSeller()) {
     /* $bannerTargetUrlFld = $frm->getField('banner_target');Request Products Which Is Availble To All Sellers
     $bannerTargetUrlFld->setWrapperAttribute( 'class' , 'banner_url_fld'); */
 ?>
-<div class="tabs tabs--small tabs--scroll clearfix setactive-js">
+<div class="tabs">
     <ul>
         <li class="is-active"><a href="javascript:void(0);" onClick="promotionForm(<?php echo $promotionId;?>)"><?php echo Labels::getLabel('LBL_General', $siteLangId);?></a></li>
         <li class="<?php echo (0 == $promotionId) ? 'fat-inactive' : ''; ?>">

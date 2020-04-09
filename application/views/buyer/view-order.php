@@ -1,4 +1,4 @@
-<?php defined('SYSTEM_INIT') or die('Invalid Usage . ');
+<?php defined('SYSTEM_INIT') or die('Invalid Usage . '); 
     $canCancelOrder = true;
     $canReturnRefund = true;
     $canReviewOrders = false;
@@ -38,7 +38,7 @@ if (true == $primaryOrder) {
                         <?php if ($canCancelOrder) { ?>
                         <li>
                             <a href="<?php echo CommonHelper::generateUrl('Buyer', 'orderCancellationRequest', array($childOrderDetail['op_id'])); ?>" class="icn-highlighted" title="<?php echo Labels::getLabel('LBL_Cancel_Order', $siteLangId); ?>"><i
-                                    class="fa fa-close"></i></a>
+                                    class="fas fa-times"></i></a>
                         </li>
                         <?php }
                             if (FatApp::getConfig("CONF_ALLOW_REVIEWS", FatUtility::VAR_INT, 0) && $canReviewOrders && $canSubmitFeedback) {
@@ -50,7 +50,7 @@ if (true == $primaryOrder) {
                             if ($canReturnRefund) { ?>
                         <li>
                             <a href="<?php echo CommonHelper::generateUrl('Buyer', 'orderReturnRequest', array($childOrderDetail['op_id'])); ?>" class="icn-highlighted" title="<?php echo Labels::getLabel('LBL_Refund', $siteLangId); ?>"><i
-                                    class="fa fa-dollar"></i></a>
+                                    class="fas fa-dollar-sign"></i></a>
                         </li>
                         <?php } ?>
                     </ul>
@@ -93,23 +93,23 @@ if (true == $primaryOrder) {
                                     echo ' (' . $childOrderDetail['pmethod_name'] . ' )';
                                 } ?>
                                 <?php /*echo $orderStatuses[$childOrderDetail['op_status_id']];*/ ?></p>
-                                <p><strong><?php echo Labels::getLabel('LBL_Cart_Total', $siteLangId); ?>: </strong><?php echo CommonHelper::displayMoneyFormat(CommonHelper::orderProductAmount($childOrderDetail, 'CART_TOTAL')); ?></p>
-                                <p><strong><?php echo Labels::getLabel('LBL_Delivery', $siteLangId); ?>: </strong><?php echo CommonHelper::displayMoneyFormat(CommonHelper::orderProductAmount($childOrderDetail, 'SHIPPING')); ?></p>
+                                <p><strong><?php echo Labels::getLabel('LBL_Cart_Total', $siteLangId); ?>: </strong><?php echo CommonHelper::displayMoneyFormat(CommonHelper::orderProductAmount($childOrderDetail, 'CART_TOTAL'), true, false, true, false, true); ?></p>
+                                <p><strong><?php echo Labels::getLabel('LBL_Delivery', $siteLangId); ?>: </strong><?php echo CommonHelper::displayMoneyFormat(CommonHelper::orderProductAmount($childOrderDetail, 'SHIPPING'), true, false, true, false, true); ?></p>
                                 <?php if (empty($childOrderDetail['taxOptions'])) { ?>
-                                <p><strong><?php echo Labels::getLabel('LBL_Tax', $siteLangId); ?>:</strong> <?php echo CommonHelper::displayMoneyFormat(CommonHelper::orderProductAmount($childOrderDetail, 'TAX')); ?></p>
+                                <p><strong><?php echo Labels::getLabel('LBL_Tax', $siteLangId); ?>:</strong> <?php echo CommonHelper::displayMoneyFormat(CommonHelper::orderProductAmount($childOrderDetail, 'TAX'), true, false, true, false, true); ?></p>
                                 <?php } else { ?>
                                     <?php foreach ($childOrderDetail['taxOptions'] as $key => $val) { ?>
-                                        <p><strong><?php echo $key ?>:</strong> <?php echo CommonHelper::displayMoneyFormat($val); ?></p>
+                                        <p><strong><?php echo CommonHelper::displayTaxPercantage($val, true) ?>:</strong> <?php echo CommonHelper::displayMoneyFormat($val['value'], true, false, true, false, true); ?></p>
                                     <?php }
                                 } ?>
-                                <p><strong><?php echo Labels::getLabel('LBL_Discount', $siteLangId); ?>:</strong> <?php echo CommonHelper::displayMoneyFormat(CommonHelper::orderProductAmount($childOrderDetail, 'DISCOUNT')); ?></p> <?php $volumeDiscount = CommonHelper::orderProductAmount($childOrderDetail, 'VOLUME_DISCOUNT');
+                                <p><strong><?php echo Labels::getLabel('LBL_Discount', $siteLangId); ?>:</strong> <?php echo CommonHelper::displayMoneyFormat(CommonHelper::orderProductAmount($childOrderDetail, 'DISCOUNT'), true, false, true, false, true); ?></p> <?php $volumeDiscount = CommonHelper::orderProductAmount($childOrderDetail, 'VOLUME_DISCOUNT');
                                 if ($volumeDiscount) {
-                                    ?> <p><strong><?php echo Labels::getLabel('LBL_Volume/Loyalty_Discount', $siteLangId); ?>:</strong> <?php echo CommonHelper::displayMoneyFormat($volumeDiscount); ?></p> <?php
+                                    ?> <p><strong><?php echo Labels::getLabel('LBL_Volume/Loyalty_Discount', $siteLangId); ?>:</strong> <?php echo CommonHelper::displayMoneyFormat($volumeDiscount, true, false, true, false, true); ?></p> <?php
                                 } ?> <?php $rewardPointDiscount = CommonHelper::orderProductAmount($childOrderDetail, 'REWARDPOINT');
                                 if ($rewardPointDiscount != 0) { ?>
-                                    <p><strong><?php echo Labels::getLabel('LBL_Reward_Point_Discount', $siteLangId); ?>:</strong> <?php echo CommonHelper::displayMoneyFormat($rewardPointDiscount); ?></p>
+                                    <p><strong><?php echo Labels::getLabel('LBL_Reward_Point_Discount', $siteLangId); ?>:</strong> <?php echo CommonHelper::displayMoneyFormat($rewardPointDiscount, true, false, true, false, true); ?></p>
                                 <?php } ?>
-                                <p><strong><?php echo Labels::getLabel('LBL_Order_Total', $siteLangId); ?>: </strong><?php echo CommonHelper::displayMoneyFormat(CommonHelper::orderProductAmount($childOrderDetail)); ?></p>
+                                <p><strong><?php echo Labels::getLabel('LBL_Order_Total', $siteLangId); ?>: </strong><?php echo CommonHelper::displayMoneyFormat(CommonHelper::orderProductAmount($childOrderDetail), true, false, true, false, true); ?></p>
                             </div>
                         </div>
                         <div class="col-lg-6 col-md-6 mb-4">
@@ -201,37 +201,38 @@ if (true == $primaryOrder) {
                                     </td>
                                     <!--<td style="width:20%;" ><?php echo $childOrder['op_shipping_durations'] . '-' . $childOrder['op_shipping_duration_name']; ?></td>-->
                                     <td><?php echo $childOrder['op_qty']; ?></td>
-                                    <td><?php echo CommonHelper::displayMoneyFormat($childOrder['op_unit_price']); ?></td>
-                                    <td><?php echo CommonHelper::displayMoneyFormat(CommonHelper::orderProductAmount($childOrder, 'shipping')); ?></td>
-                                    <td><?php echo CommonHelper::displayMoneyFormat($volumeDiscount); ?></td>
+                                    <td><?php echo CommonHelper::displayMoneyFormat($childOrder['op_unit_price'], true, false, true, false, true); ?></td>
+                                    <td><?php echo CommonHelper::displayMoneyFormat(CommonHelper::orderProductAmount($childOrder, 'shipping'), true, false, true, false, true); ?></td>
+                                    <td><?php echo CommonHelper::displayMoneyFormat($volumeDiscount, true, false, true, false, true); ?></td>
                                     <td>
                                         <?php
                                         if (empty($childOrder['taxOptions'])) {
-                                            echo CommonHelper::displayMoneyFormat(CommonHelper::orderProductAmount($childOrder, 'TAX'));
+                                            echo CommonHelper::displayMoneyFormat(CommonHelper::orderProductAmount($childOrder, 'TAX'), true, false, true, false, true);
                                         } else {
                                             foreach ($childOrder['taxOptions'] as $key => $val) { ?>
-                                                <p><strong><?php echo $key ?>:</strong> <?php echo CommonHelper::displayMoneyFormat($val); ?></p>
-                                                <?php if (!isset($taxOptionsTotal[$key])) {
-                                                    $taxOptionsTotal[$key] = 0;
-                                                }
-                                                $taxOptionsTotal[$key] += $val;
+                                                <p><strong><?php echo CommonHelper::displayTaxPercantage($val, true) ?> :</strong> <?php echo CommonHelper::displayMoneyFormat($val['value'], true, false, true, false, true); ?></p>
+                                                <?php if (!isset($taxOptionsTotal[$key]['value'])) {
+                                                            $taxOptionsTotal[$key]['value'] = 0;
+                                                        }
+                                                        $taxOptionsTotal[$key]['value'] += $val['value'];
+                                                        $taxOptionsTotal[$key]['title'] = CommonHelper::displayTaxPercantage($val);
                                             }
                                         } ?>
                                     </td>
-                                    <!-- <td><?php echo CommonHelper::displayMoneyFormat(CommonHelper::orderProductAmount($childOrder, 'tax')); ?></td> -->
+                                    <!-- <td><?php echo CommonHelper::displayMoneyFormat(CommonHelper::orderProductAmount($childOrder, 'tax'), true, false, true, false, true); ?></td> -->
 
-                                    <td><?php echo CommonHelper::displayMoneyFormat($rewardPointDiscount); ?></td>
-                                    <td><?php echo CommonHelper::displayMoneyFormat(CommonHelper::orderProductAmount($childOrder)); ?></td>
+                                    <td><?php echo CommonHelper::displayMoneyFormat($rewardPointDiscount, true, false, true, false, true); ?></td>
+                                    <td><?php echo CommonHelper::displayMoneyFormat(CommonHelper::orderProductAmount($childOrder), true, false, true, false, true); ?></td>
                                 </tr>
                             <?php }
                             if (!$primaryOrder) { ?>
                                 <tr>
                                     <td colspan="8"><?php echo Labels::getLabel('Lbl_Cart_Total', $siteLangId)?></td>
-                                    <td><?php echo CommonHelper::displayMoneyFormat($cartTotal); ?></td>
+                                    <td><?php echo CommonHelper::displayMoneyFormat($cartTotal, true, false, true, false, true); ?></td>
                                 </tr>
                                 <tr>
                                     <td colspan="8"><?php echo Labels::getLabel('LBL_Shipping_Charges', $siteLangId)?></td>
-                                    <td><?php echo CommonHelper::displayMoneyFormat($shippingCharges); ?></td>
+                                    <td><?php echo CommonHelper::displayMoneyFormat($shippingCharges, true, false, true, false, true); ?></td>
                                 </tr>
                                 <?php
                                 if (empty($taxOptionsTotal)) { ?>
@@ -240,32 +241,32 @@ if (true == $primaryOrder) {
                                         <?php echo Labels::getLabel('LBL_Tax_Charges', $siteLangId)?>
                                     </td>
                                     <td>
-                                        <?php echo CommonHelper::displayMoneyFormat($orderDetail['order_tax_charged']); ?>
+                                        <?php echo CommonHelper::displayMoneyFormat($orderDetail['order_tax_charged'], true, false, true, false, true); ?>
                                     </td>
                                 </tr>
                                 <?php } else {
                                     foreach ($taxOptionsTotal as $key => $val) { ?>
                                         <tr>
-                                            <td colspan="8"><?php echo $key ?></td>
-                                            <td><?php echo CommonHelper::displayMoneyFormat($val); ?></td>
+                                            <td colspan="8"><?php echo $val['title']; ?></td>
+                                            <td><?php echo CommonHelper::displayMoneyFormat($val['value'], true, false, true, false, true); ?></td>
                                         </tr>
                                     <?php }
                                 } ?>
                                 <?php if ($orderDetail['order_discount_total']) { ?>
                                 <tr>
                                     <td colspan="8"><?php echo Labels::getLabel('LBL_Discount', $siteLangId)?></td>
-                                    <td>-<?php echo CommonHelper::displayMoneyFormat($orderDetail['order_discount_total']); ?></td>
+                                    <td>-<?php echo CommonHelper::displayMoneyFormat($orderDetail['order_discount_total'], true, false, true, false, true); ?></td>
                                 </tr>
                                 <?php } ?>
                                 <?php if ($orderDetail['order_volume_discount_total']) { ?>
                                 <tr>
                                     <td colspan="8"><?php echo Labels::getLabel('LBL_Volume/Loyalty_Discount', $siteLangId)?></td>
-                                    <td>-<?php echo CommonHelper::displayMoneyFormat($orderDetail['order_volume_discount_total']); ?></td>
+                                    <td>-<?php echo CommonHelper::displayMoneyFormat($orderDetail['order_volume_discount_total'], true, false, true, false, true); ?></td>
                                 </tr>
                                 <?php } ?>
                                 <tr>
                                     <td colspan="8"><?php echo Labels::getLabel('LBL_Total', $siteLangId)?></td>
-                                    <td><?php echo CommonHelper::displayMoneyFormat($orderDetail['order_net_amount']); ?></td>
+                                    <td><?php echo CommonHelper::displayMoneyFormat($orderDetail['order_net_amount'], true, false, true, false, true); ?></td>
                                 </tr>
                             <?php } ?>
                         </tbody>
@@ -362,7 +363,7 @@ if (true == $primaryOrder) {
                                     ?> <span class="gap"></span>
                     <div class="section--repeated">
                         <h5><?php echo Labels::getLabel('LBL_Payment_History', $siteLangId); ?></h5>
-                        <table class="table table--orders">
+                        <table class="table">
                             <tbody>
                                 <tr class="">
                                     <th><?php echo Labels::getLabel('LBL_Date_Added', $siteLangId); ?></th>
@@ -375,7 +376,7 @@ if (true == $primaryOrder) {
                                     <td><?php echo FatDate::format($row['opayment_date']); ?></td>
                                     <td><?php echo $row['opayment_gateway_txn_id']; ?></td>
                                     <td><?php echo $row['opayment_method']; ?></td>
-                                    <td><?php echo CommonHelper::displayMoneyFormat($row['opayment_amount']); ?></td>
+                                    <td><?php echo CommonHelper::displayMoneyFormat($row['opayment_amount'], true, false, true, false, true); ?></td>
                                     <td><?php echo nl2br($row['opayment_comments']); ?></td>
                                 </tr> <?php
                                     } ?>
@@ -395,7 +396,7 @@ if (true == $primaryOrder) {
                                     <th><?php echo Labels::getLabel('LBL_Download_times', $siteLangId); ?></th>
                                     <th><?php echo Labels::getLabel('LBL_Downloaded_count', $siteLangId); ?></th>
                                     <th><?php echo Labels::getLabel('LBL_Expired_on', $siteLangId); ?></th>
-                                    <th><?php echo Labels::getLabel('LBL_Action', $siteLangId); ?></th>
+                                    <th></th>
                                 </tr>
                                 <?php $sr_no = 1;
                                 foreach ($digitalDownloads as $key => $row) {

@@ -12,8 +12,12 @@ $arr_flds = array(
         'account_details' => Labels::getLabel('LBL_Account_Details', $adminLangId),
         'withdrawal_request_date' => Labels::getLabel('LBL_Date', $adminLangId),
         'withdrawal_status' => Labels::getLabel('LBL_Status', $adminLangId),
-        'action' => Labels::getLabel('LBL_Action', $adminLangId),
+        'action' => '',
     );
+if (!$canEdit) {
+    unset($arr_flds['action']);
+}
+        
 $tbl = new HtmlElement('table', array('width' => '100%', 'class' => 'table table--hovered table-responsive'));
 $th = $tbl->appendElement('thead')->appendElement('tr');
 foreach ($arr_flds as $val) {
@@ -110,21 +114,10 @@ foreach ($arr_listing as $sn => $row) {
                 $td->appendElement('plaintext', array(), $statusArr[$row['withdrawal_status']], true);
                 break;
             case 'action':
-                $ul = $td->appendElement("ul", array("class" => "actions actions--centered"));
-                
                 if ($canEdit && $row['withdrawal_status'] == Transactions::STATUS_PENDING) {
-                    $li = $ul->appendElement("li", array('class' => 'droplink'));
-                    $li->appendElement('a', array('href' => 'javascript:void(0)', 'class' => 'button small green', 'title' => Labels::getLabel('LBL_Edit', $adminLangId)), '<i class="ion-android-more-horizontal icon"></i>', true);
-                    $innerDiv = $li->appendElement('div', array('class' => 'dropwrap'));
-                    $innerUl = $innerDiv->appendElement('ul', array('class' => 'linksvertical'));
-
                     $approveAction = empty($pluginKeyName) ? 'updateStatus' : 'requestOutside';
-
-                    $innerLi = $innerUl->appendElement('li');
-                    $innerLi->appendElement('a', array('href' => 'javascript:void(0)','class' => 'button small green', 'title' => Labels::getLabel('LBL_Approve', $adminLangId),"onclick" => $approveAction . "(" . $pluginKeyName . $row['withdrawal_id'] . "," . Transactions::WITHDRAWL_STATUS_APPROVED . " , 'approve' )"), Labels::getLabel('LBL_Approve', $adminLangId), true);
-                    
-                    $innerLi = $innerUl->appendElement('li');
-                    $innerLi->appendElement('a', array('href' => 'javascript:void(0)','class' => 'button small green', 'title' => Labels::getLabel('LBL_Decline', $adminLangId),"onclick" => "updateStatus(" . $row['withdrawal_id'] . "," . Transactions::WITHDRAWL_STATUS_DECLINED . " , 'decline' )"), Labels::getLabel('LBL_Decline', $adminLangId), true);
+                    $td->appendElement('a', array('href' => 'javascript:void(0)','class' => 'btn btn-clean btn-sm btn-icon', 'title' => Labels::getLabel('LBL_Approve', $adminLangId),"onclick" => $approveAction . "(" . $pluginKeyName . $row['withdrawal_id'] . "," . Transactions::WITHDRAWL_STATUS_APPROVED . " , 'approve' )"), "<i class='far fa-thumbs-up'></i>", true);                    
+                    $td->appendElement('a', array('href' => 'javascript:void(0)','class' => 'btn btn-clean btn-sm btn-icon', 'title' => Labels::getLabel('LBL_Decline', $adminLangId),"onclick" => "updateStatus(" . $row['withdrawal_id'] . "," . Transactions::WITHDRAWL_STATUS_DECLINED . " , 'decline' )"), "<i class='far fa-thumbs-down'></i>", true);
                 }
                 break;
             default:

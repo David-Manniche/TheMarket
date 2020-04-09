@@ -23,11 +23,13 @@ class PluginsController extends AdminBaseController
     {
         $post = FatApp::getPostedData();
         $srch = Plugin::getSearchObject($this->adminLangId, false);
+        $srch->joinTable(Configurations::DB_TBL, 'LEFT JOIN', "conf_val = plugin_id AND conf_name = 'CONF_DEFAULT_PLUGIN_" . $type . "'");
         $srch->addCondition('plugin_type', '=', $type);
         $srch->doNotCalculateRecords();
         $srch->doNotLimitRecords();
         $rs = $srch->getResultSet();
         $records = FatApp::getDb()->fetchAll($rs);
+
         $this->canEdit = $this->objPrivilege->canEditPlugins($this->admin_id, true);
         $pluginTypes = Plugin::getTypeArr($this->adminLangId);
         
@@ -113,13 +115,15 @@ class PluginsController extends AdminBaseController
             $newTabLangId = FatApp::getConfig('CONF_ADMIN_DEFAULT_LANG', FatUtility::VAR_INT, 1);
         }
         
-        $defaultCurrConvAPI = FatApp::getConfig('CONF_DEFAULT_PLUGIN_' . $pluginType, FatUtility::VAR_INT, 0);
-        if (!empty($post['CONF_DEFAULT_PLUGIN_' . $pluginType]) || empty($defaultCurrConvAPI)) {
-            $confVal = empty($defaultCurrConvAPI) ? $pluginId : $post['CONF_DEFAULT_PLUGIN_' . $pluginType];
-            $confRecord = new Configurations();
-            if (!$confRecord->update(['CONF_DEFAULT_PLUGIN_' . $pluginType => $confVal])) {
-                Message::addErrorMessage($confRecord->getError());
-                FatUtility::dieJsonError(Message::getHtml());
+        if (in_array($pluginType, Plugin::HAVING_KINGPIN)) {
+            $defaultCurrConvAPI = FatApp::getConfig('CONF_DEFAULT_PLUGIN_' . $pluginType, FatUtility::VAR_INT, 0);
+            if (!empty($post['CONF_DEFAULT_PLUGIN_' . $pluginType]) || empty($defaultCurrConvAPI)) {
+                $confVal = empty($defaultCurrConvAPI) ? $pluginId : $post['CONF_DEFAULT_PLUGIN_' . $pluginType];
+                $confRecord = new Configurations();
+                if (!$confRecord->update(['CONF_DEFAULT_PLUGIN_' . $pluginType => $confVal])) {
+                    Message::addErrorMessage($confRecord->getError());
+                    FatUtility::dieJsonError(Message::getHtml());
+                }
             }
         }
 
@@ -276,20 +280,20 @@ class PluginsController extends AdminBaseController
         $this->objPrivilege->canEditPlugins();
         $pluginId = FatApp::getPostedData('pluginId', FatUtility::VAR_INT, 0);
         if (0 >= $pluginId) {
-            Message::addErrorMessage($this->str_invalid_request_id);
-            FatUtility::dieWithError(Message::getHtml());
+            FatUtility::dieJsonError($this->str_invalid_request_id);
         }
 
-        $data = Plugin::getAttributesById($pluginId, array('plugin_id', 'plugin_active'));
+        $data = Plugin::getAttributesById($pluginId, array('plugin_id', 'plugin_active', 'plugin_type'));
 
         if ($data == false) {
-            Message::addErrorMessage($this->str_invalid_request);
-            FatUtility::dieWithError(Message::getHtml());
+            FatUtility::dieJsonError($this->str_invalid_request);
         }
 
         $status = ($data['plugin_active'] == applicationConstants::ACTIVE) ? applicationConstants::INACTIVE : applicationConstants::ACTIVE;
-
-        $this->updatePluginStatus($pluginId, $status);
+        $error = '';
+        if (false == Plugin::updateStatus($data['plugin_type'], $status, $pluginId, $error)) {
+            FatUtility::dieJsonError($error);
+        }
 
         $this->set('msg', $this->str_update_record);
         $this->_template->render(false, false, 'json-success.php');
@@ -343,41 +347,22 @@ class PluginsController extends AdminBaseController
         return $frm;
     }
 
-    private function updatePluginStatus($pluginId, $status)
-    {
-        $status = FatUtility::int($status);
-        $pluginId = FatUtility::int($pluginId);
-        if (1 > $pluginId || -1 == $status) {
-            FatUtility::dieWithError(
-                Labels::getLabel('MSG_INVALID_REQUEST', $this->adminLangId)
-            );
-        }
-
-        $obj = new Plugin($pluginId);
-        if (!$obj->changeStatus($status)) {
-            Message::addErrorMessage($obj->getError());
-            FatUtility::dieWithError(Message::getHtml());
-        }
-    }
-
     public function toggleBulkStatuses()
     {
         $this->objPrivilege->canEditPlugins();
 
         $status = FatApp::getPostedData('status', FatUtility::VAR_INT, -1);
+        $pluginType = FatApp::getPostedData('plugin_type', FatUtility::VAR_INT, 0);
         $pluginIdsArr = FatUtility::int(FatApp::getPostedData('plugin_ids'));
-        if (empty($pluginIdsArr) || -1 == $status) {
-            FatUtility::dieWithError(
-                Labels::getLabel('MSG_INVALID_REQUEST', $this->adminLangId)
-            );
+        if (empty($pluginIdsArr) || -1 == $status || 1 > $pluginType) {
+            FatUtility::dieJsonError(Labels::getLabel('MSG_INVALID_REQUEST', $this->adminLangId));
         }
 
         foreach ($pluginIdsArr as $pluginId) {
             if (1 > $pluginId) {
                 continue;
             }
-
-            $this->updatePluginStatus($pluginId, $status);
+            Plugin::updateStatus($pluginType, $status, $pluginId);
         }
         $this->set('msg', $this->str_update_record);
         $this->_template->render(false, false, 'json-success.php');

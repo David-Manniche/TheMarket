@@ -7,7 +7,7 @@
 <div class="box box--white box--radius p-4">
     <div class="review-wrapper">
         <div class="short-detail">
-            <table class="table cart--full js-scrollable">
+            <table class="table cart--full">
                 <tbody>
                 <?php if (count($subscriptions)) {
                     foreach ($subscriptions as $subscription) { ?>
@@ -40,24 +40,24 @@
             <table class="table--justify">
                 <tr>
                     <td><?php echo Labels::getLabel('LBL_Sub_Total', $siteLangId);?></td>
-                    <td><?php echo CommonHelper::displayMoneyFormat($scartSummary['cartTotal']);?></td>
+                    <td><?php echo CommonHelper::displayMoneyFormat($scartSummary['cartTotal'], true, false, true, false, true);?></td>
                 </tr>
                 <?php  if (!empty($scartSummary['cartAdjustableAmount'])) { ?>
                 <tr>
                     <td><?php echo Labels::getLabel('LBL_Adjusted_Amount', $siteLangId); ?> </td>
-                    <td><?php echo CommonHelper::displayMoneyFormat($scartSummary['cartAdjustableAmount']); ?></td>
+                    <td><?php echo CommonHelper::displayMoneyFormat($scartSummary['cartAdjustableAmount'], true, false, true, false, true); ?></td>
                 </tr>
                 <?php } ?>
                 <?php if (!empty($scartSummary['cartDiscounts'])) { ?>
                 <tr>
                     <td><?php echo Labels::getLabel('LBL_Discount', $siteLangId); ?></td>
-                    <td><?php echo CommonHelper::displayMoneyFormat($scartSummary['cartDiscounts']['coupon_discount_total']); ?></td>
+                    <td><?php echo CommonHelper::displayMoneyFormat($scartSummary['cartDiscounts']['coupon_discount_total'], true, false, true, false, true); ?></td>
                 </tr>
                 <?php } ?>
                 <tr>
                     <td class="hightlighted"><?php echo Labels::getLabel('LBL_You_Pay', $siteLangId);?></td>
                     <td class="hightlighted">
-                        <?php echo $amount = CommonHelper::displayMoneyFormat($scartSummary['cartTotal']-$scartSummary['cartAdjustableAmount']-$scartSummary['cartDiscounts']['coupon_discount_total']);?></td>
+                        <?php echo $amount = CommonHelper::displayMoneyFormat($scartSummary['cartTotal']-$scartSummary['cartAdjustableAmount']-$scartSummary['cartDiscounts']['coupon_discount_total'], true, false, true, false, true);?></td>
 
 
                 </tr>

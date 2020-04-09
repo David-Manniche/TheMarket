@@ -11,10 +11,31 @@ $("document").ready(function(){
         $.magnificPopup.open({items: images, type:'image', gallery: {enabled: true}});
         event.preventDefault();
     });
-
+    var tabsReferences = [];
+    $(document).ready(function(){
+        if (0 < $('a.nav-scroll-js').length) {
+            $('a.nav-scroll-js').each(function(){
+                tabsReferences.push($(this).attr('href'));
+            });
+        }
+    });
+    
 	/* Product Main image to be static on scroll par a particular window scroll range[ */
-
 	$(window).scroll(function(){
+        var scrollTop = $(window).scrollTop();
+        	
+        $.each(tabsReferences, function( index, value ) {
+            var tabDist = ($('.nav-detail-js a[href="' + value + '"]').offset().top) - scrollTop;
+            var contentDist = (($(value).offset().top) - scrollTop) - tabDist;
+            var headerHeight = $("#header").height();
+            
+            if ((headerHeight + 20) > tabDist && 130 > contentDist) {
+                $(".nav-scroll-js").removeClass('is-active');
+                $('a[href="' + value + '"]').addClass('is-active');
+            } else if ((headerHeight + 20) < tabDist) {
+                $(".nav-scroll-js").removeClass('is-active');
+            }
+        });
 
 	/*		var prodDetailHeight = $('.product-detail').height();
 			var dv = $("#img-static");

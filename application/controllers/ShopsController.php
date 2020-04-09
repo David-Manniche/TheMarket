@@ -116,7 +116,7 @@ class ShopsController extends MyAppController
 
         $productSrchObj->addCondition('selprod_deleted', '=', applicationConstants::NO);
         $productSrchObj->addMultipleFields(
-            array('product_id', 'selprod_id', 'IFNULL(product_name, product_identifier) as product_name', 'IFNULL(selprod_title  ,IFNULL(product_name, product_identifier)) as selprod_title', 'product_image_updated_on',
+            array('product_id', 'selprod_id', 'IFNULL(product_name, product_identifier) as product_name', 'IFNULL(selprod_title  ,IFNULL(product_name, product_identifier)) as selprod_title', 'product_updated_on',
             'special_price_found', 'splprice_display_list_price', 'splprice_display_dis_val', 'splprice_display_dis_type',
             'theprice', 'selprod_price', 'selprod_stock', 'selprod_condition', 'prodcat_id', 'IFNULL(prodcat_name, prodcat_identifier) as prodcat_name', 'selprod_sold_count', 'IF(selprod_stock > 0, 1, 0) AS in_stock')
         );
@@ -203,7 +203,7 @@ class ShopsController extends MyAppController
 
         $data = $this->getListingData($get, $includeShopData);
         if (false === MOBILE_APP_API_CALL) {
-            $frm = $this->getProductSearchForm(); 
+            $frm = $this->getProductSearchForm();
             $frm->fill($get);
 
             $arr = array(
@@ -214,6 +214,12 @@ class ShopsController extends MyAppController
                 'bannerListigUrl' => CommonHelper::generateFullUrl('Banner', 'categories'),
             );
             $data = array_merge($data, $arr);
+
+            if (UserAuthentication::isUserLogged()) {
+                $userData = User::getAttributesById(UserAuthentication::getLoggedUserId());
+                $userParentId = (0 < $userData['user_parent']) ? $userData['user_parent'] : UserAuthentication::getLoggedUserId();
+                $this->set('userParentId', $userParentId);
+            }
 
             if (FatUtility::isAjaxCall()) {
                 $this->set('products', $data['products']);
@@ -246,7 +252,7 @@ class ShopsController extends MyAppController
 
         if (false === MOBILE_APP_API_CALL) {
             $this->includeProductPageJsCss();
-            $this->_template->addJs(array('js/slick.min.js', 'js/responsive-img.min.js', 'js/shop-nav.js', 'js/jquery.colourbrightness.min.js'));
+            $this->_template->addJs(array('js/slick.min.js', 'js/shop-nav.js', 'js/jquery.colourbrightness.min.js'));
         }
 
         $this->_template->render();
@@ -332,7 +338,7 @@ class ShopsController extends MyAppController
                 $this->_template->addCss('shops/templates/page-css/'.SHOP::TEMPLATE_ONE.'.css');
             break;
         } */
-        $this->_template->addCss('shops/templates/page-css/' . SHOP::TEMPLATE_ONE . '.css');
+        /* $this->_template->addCss('shops/templates/page-css/' . SHOP::TEMPLATE_ONE . '.css'); */
         $this->set('shop', $this->shopPoliciesData($shop));
         $this->set('shopRating', SelProdRating::getSellerRating($shop['shop_user_id']));
         $this->set('shopTotalReviews', SelProdReview::getSellerTotalReviews($shop['shop_user_id']));

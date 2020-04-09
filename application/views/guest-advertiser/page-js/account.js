@@ -20,7 +20,7 @@ $(document).ready(function(){
 			var ans = $.parseJSON(t);
 			if(ans.status==0) {
 				$.mbsmessage(ans.msg, true, 'alert--danger');
-				return;
+				return false;
 			}
 			companyDetailsForm(data);
 		});	

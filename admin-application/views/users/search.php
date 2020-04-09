@@ -8,8 +8,11 @@ $arr_flds = array(
     'user_regdate'=>Labels::getLabel('LBL_Reg._Date', $adminLangId),
     'credential_active'=>Labels::getLabel('LBL_Status', $adminLangId),
     'credential_verified'=>Labels::getLabel('LBL_verified', $adminLangId),
-    'action' => Labels::getLabel('LBL_Action', $adminLangId),
+    'action' => '',
 );
+if (!$canEdit) {
+    unset($arr_flds['select_all']);
+}
 $tbl = new HtmlElement('table', array('width'=>'100%', 'class'=>'table table-responsive'));
 $th = $tbl->appendElement('thead')->appendElement('tr');
 
@@ -93,6 +96,10 @@ foreach ($arr_listing as $sn => $row) {
                     $str = '<span class="label label-danger">Signing Up For: '. User::getUserTypesArr($adminLangId)[$row['user_registered_initially_for']] .'</span>';
                 }
 
+                if (0 < $row['user_parent']) {
+                    $str = Labels::getLabel('LBL_Sub_User', $adminLangId);
+                }
+
                 $td->appendElement('plaintext', array(), $str, true);
 
                 break;
@@ -112,13 +119,14 @@ foreach ($arr_listing as $sn => $row) {
                     $innerLi=$innerUl->appendElement('li');
                     $innerLi->appendElement('a', array('href'=>'javascript:void(0)','class'=>'button small green','title'=>Labels::getLabel('LBL_Edit', $adminLangId),"onclick"=>"addUserForm(".$row['user_id'].")"), Labels::getLabel('LBL_Edit', $adminLangId), true);
 
-                    $innerLi=$innerUl->appendElement('li');
-                    $innerLi->appendElement('a', array('href'=>'javascript:void(0)','class'=>'button small green','title'=>Labels::getLabel('LBL_Rewards', $adminLangId),"onclick"=>"rewards(".$row['user_id'].")"), Labels::getLabel('LBL_Rewards', $adminLangId), true);
+                    if (0 == $row['user_parent']) {
+                        $innerLi=$innerUl->appendElement('li');
+                        $innerLi->appendElement('a', array('href'=>'javascript:void(0)','class'=>'button small green','title'=>Labels::getLabel('LBL_Rewards', $adminLangId),"onclick"=>"rewards(".$row['user_id'].")"), Labels::getLabel('LBL_Rewards', $adminLangId), true);
 
-                    $innerLi=$innerUl->appendElement("li");
-                    $innerLi->appendElement('a', array('href'=>'javascript:void(0)', 'class'=>'button small green',
-                    'title'=>Labels::getLabel('LBL_Transactions', $adminLangId),"onclick"=>"transactions(".$row['user_id'].")"), Labels::getLabel('LBL_Transactions', $adminLangId), true);
-
+                        $innerLi=$innerUl->appendElement("li");
+                        $innerLi->appendElement('a', array('href'=>'javascript:void(0)', 'class'=>'button small green',
+                        'title'=>Labels::getLabel('LBL_Transactions', $adminLangId),"onclick"=>"transactions(".$row['user_id'].")"), Labels::getLabel('LBL_Transactions', $adminLangId), true);
+                    }
                     $innerLi=$innerUl->appendElement('li');
                     $innerLi->appendElement('a', array('href'=>'javascript:void(0)','class'=>'button small green','title'=>Labels::getLabel('LBL_Change_Password', $adminLangId),"onclick"=>"changePasswordForm(".$row['user_id'].")"), Labels::getLabel('LBL_Change_Password', $adminLangId), true);
 
@@ -142,7 +150,7 @@ if (count($arr_listing) == 0) {
     $tbl->appendElement('tr')->appendElement('td', array('colspan'=>count($arr_flds)), Labels::getLabel('LBL_No_Records_Found', $adminLangId));
 }
 $frm = new Form('frmUsersListing', array('id'=>'frmUsersListing'));
-$frm->setFormTagAttribute('class', 'web_form last_td_nowrap');
+$frm->setFormTagAttribute('class', 'web_form last_td_nowrap actionButtons-js');
 $frm->setFormTagAttribute('onsubmit', 'formAction(this, reloadUserList ); return(false);');
 $frm->setFormTagAttribute('action', CommonHelper::generateUrl('Users', 'toggleBulkStatuses'));
 $frm->addHiddenField('', 'status');

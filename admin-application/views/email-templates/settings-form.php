@@ -13,13 +13,20 @@ $edFld = $settingFrm->getField('CONF_EMAIL_TEMPLATE_FOOTER_HTML'.$lang_id);
 $edFld->htmlBeforeField = '<br/><a class="themebtn btn-primary" onClick="resetToDefaultContent();" href="javascript:void(0)">Reset Editor Content to default</a>';
 $edFld->developerTags['col'] = 12;
 
+$ratioFld = $settingFrm->getField('CONF_EMAIL_TEMPLATE_LOGO_RATIO');
+$ratioFld->addFieldTagAttribute('class', 'prefRatio-js');
+$ratioFld->addOptionListTagAttribute('class', 'list-inline');
+
 $fld = $settingFrm->getField('email_logo');
 $fld->addFieldTagAttribute('class', 'btn btn--primary btn--sm');
+$fld->addFieldTagAttribute('onChange', 'popupImage(this)');
+$langFld = $settingFrm->getField('lang_id');
+$langFld->addFieldTagAttribute('class', 'logo-language-js');
 
 $htmlAfterField = '';
 if (!empty($logoImage)) {
     $htmlAfterField .= '<ul class="image-listing grids--onethird">';
-    $htmlAfterField .= '<li><div class="uploaded--image"><img src="' . CommonHelper::generateFullUrl('image', 'emailLogo', array($logoImage['afile_lang_id']), CONF_WEBROOT_FRONT_URL) . '"> <a  class="remove--img" href="javascript:void(0);" onclick="removeEmailLogo('.$logoImage['afile_lang_id'].')" ><i class="ion-close-round"></i></a></div>';
+    $htmlAfterField .= '<li><div class="uploaded--image"><img src="' . CommonHelper::generateFullUrl('image', 'emailLogo', array($logoImage['afile_lang_id'], time()), CONF_WEBROOT_FRONT_URL) . '"> <a  class="remove--img" href="javascript:void(0);" onclick="removeEmailLogo('.$logoImage['afile_lang_id'].')" ><i class="ion-close-round"></i></a></div>';
     $htmlAfterField .= '</li></ul>';
 } else {
     $htmlAfterField .= '<div class="temp-hide"><ul class="image-listing grids--onethird"><li><div class="uploaded--image"></div></li></ul></div>';
@@ -27,9 +34,10 @@ if (!empty($logoImage)) {
 $fld->htmlAfterField = $htmlAfterField;
 ?>
 <div id="editor_default_content" style="display:none;">
-    <?php $this->includeTemplate('_partial/emails/email-footer.php'); ?>
+    <?php $this->includeTemplate('_partial/emails/email-footer.php', array('langId' => $adminLangId , 'defaultContent' => true )); ?>
 </div>
-<section class="section">
+<div id="cropperBox-js"></div>
+<section class="section" id="mediaForm-js">
     <div class="sectionhead">
         <h4><?php echo Labels::getLabel('LBL_Email_Template_Setup', $adminLangId); ?></h4>
     </div>
@@ -60,3 +68,19 @@ $fld->htmlAfterField = $htmlAfterField;
         </div>
     </div>
 </section>
+<script>
+    $('input[name=logo_min_width]').val(150);
+    $('input[name=logo_min_height]').val(150);
+    var ratioTypeSquare = <?php echo AttachedFile::RATIO_TYPE_SQUARE; ?>;
+    var aspectRatio = 16 / 9;
+    $(document).on('change','.prefRatio-js',function(){
+        if($(this).val() == ratioTypeSquare)
+        {
+            $('input[name=logo_min_width]').val(150);
+            $('input[name=logo_min_height]').val(150);
+        } else {
+            $('input[name=logo_min_width]').val(150);
+            $('input[name=logo_min_height]').val(85);
+        }
+    });
+</script>

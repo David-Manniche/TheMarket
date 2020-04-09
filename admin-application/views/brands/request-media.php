@@ -9,7 +9,7 @@ $logoFld->addFieldTagAttribute('class', 'btn btn--primary btn--sm');
 $logoFld->addFieldTagAttribute('onChange', 'logoPopupImage(this)');
 $logoLangFld = $brandLogoFrm->getField('lang_id');
 $logoLangFld->addFieldTagAttribute('class', 'logo-language-js');
-$logoPreferredDimensions = '<small class="text--small">'.sprintf(Labels::getLabel('LBL_Preferred_Dimensions', $adminLangId), '500*500').'</small>';
+$logoPreferredDimensions = '<small class="text--small logoPreferredDimensions-js">'.sprintf(Labels::getLabel('LBL_Preferred_Dimensions_%s', $adminLangId), '500 x 500').'</small>';
 $htmlAfterField = $logoPreferredDimensions;
 $htmlAfterField .= '<div id="logo-listing"></div>';
 $logoFld->htmlAfterField = $htmlAfterField;
@@ -106,9 +106,11 @@ $(document).on('change','.prefRatio-js',function(){
     {
         $('input[name=logo_min_width]').val(150);
         $('input[name=logo_min_height]').val(150);
+		$('.logoPreferredDimensions-js').html((langLbl.preferredDimensions).replace(/%s/g, '500 x 500'));
     } else {
         $('input[name=logo_min_width]').val(150);
         $('input[name=logo_min_height]').val(85);
+		$('.logoPreferredDimensions-js').html((langLbl.preferredDimensions).replace(/%s/g, '500 x 280'));
     }
 });
 </script>

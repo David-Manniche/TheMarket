@@ -1,5 +1,5 @@
 $(document).ready(function(){
-	searchListing(document.frmCustomProdReqSrch);	
+	searchListing(document.frmCustomProdReqSrch);
 });
 $(document).on('change', '.option-js',function(){
 /* $(document).delegate('.option-js','change',function(){ */
@@ -17,66 +17,66 @@ $(document).on('change', '.language-js',function(){
 });
 (function() {
 	var currentPage = 1;
-	goToSearchPage = function(page) {	
+	goToSearchPage = function(page) {
 		if(typeof page==undefined || page == null){
 			page = 1;
-		}		
-		var frm = document.frmCustomProdReqSrch;				
+		}
+		var frm = document.frmCustomProdReqSrch;
 		searchListing(frm,page);
 	};
-	
+
 	reloadList = function() {
 		searchListing(document.frmCustomProdReqSrchPaging, currentPage);
 	};
-	
+
 	searchListing = function(form,page){
 		if (!page) {
 			page = currentPage;
 		}
-		currentPage = page;	
-		var dv = $('#listing');		
+		currentPage = page;
+		var dv = $('#listing');
 		var data = '';
 		if (form) {
 			data = fcom.frmData(form);
 		}
-		$(dv).html( fcom.getLoader() );	
+		$(dv).html( fcom.getLoader() );
 		data = data+'&page='+currentPage;
 		fcom.ajax(fcom.makeUrl('CustomProducts','search'),data,function(t){
 			dv.html(t);
 		});
 	};
-	
+
 	goToCustomCatalogProductSearchPage = function(page) {
 		if(typeof page == undefined || page == null){
 			page = 1;
 		}
-		var frm = document.frmCustomProdReqSrchPaging;		
+		var frm = document.frmCustomProdReqSrchPaging;
 		$(frm.page).val(page);
 		searchListing(frm, page);
 	};
-	
+
 	clearSearch = function(){
 		document.frmCustomProdReqSrch.reset();
 		searchListing(document.frmCustomProdReqSrch);
 	};
-	
+
 	addProductForm = function(preqId){
 		$.facebox(function() {productForm(preqId );});
 	}
-	
+
 	productForm =  function(preqId){
-		fcom.displayProcessing();		
+		fcom.displayProcessing();
 		fcom.resetEditorInstance();
 		fcom.ajax(fcom.makeUrl('CustomProducts', 'form', [ preqId]), '', function(t) {
 				fcom.updateFaceboxContent(t,'faceboxWidth product-setup-width');
-		});		
+		});
 	};
-	
+
 	setupProduct = function(frm){
-		if ( !$(frm).validate() ) return;		
-		var data = fcom.frmData(frm);		
-		fcom.updateWithAjax(fcom.makeUrl('CustomProducts', 'setup'), data, function(t) {				
-			reloadList();				
+		if ( !$(frm).validate() ) return;
+		var data = fcom.frmData(frm);
+		fcom.updateWithAjax(fcom.makeUrl('CustomProducts', 'setup'), data, function(t) {
+			reloadList();
 			if (t.preq_id > 0) {
 				//sellerProductForm(t.preq_id);
                 customCatalogSpecifications(t.preq_id);
@@ -87,18 +87,18 @@ $(document).on('change', '.language-js',function(){
 		});
 		return;
 	};
-	
-	sellerProductForm = function(preqId){		
+
+	sellerProductForm = function(preqId){
 		fcom.ajax(fcom.makeUrl('CustomProducts', 'sellerProductForm', [preqId]), '', function(t) {
-			fcom.updateFaceboxContent(t, 'faceboxWidth');		
+			fcom.updateFaceboxContent(t, 'faceboxWidth');
 		});
 	};
-		
+
 	setupSellerProduct = function(frm){
-		if ( !$(frm).validate() ) return;		
-		var data = fcom.frmData(frm);		
-		fcom.updateWithAjax(fcom.makeUrl('CustomProducts', 'setupSellerProduct'), data, function(t) {				
-			reloadList();				
+		if ( !$(frm).validate() ) return;
+		var data = fcom.frmData(frm);
+		fcom.updateWithAjax(fcom.makeUrl('CustomProducts', 'setupSellerProduct'), data, function(t) {
+			reloadList();
 			/* if (t.lang_id > 0) {
 				productLangForm(t.preq_id, t.lang_id);
 				return ;
@@ -109,17 +109,17 @@ $(document).on('change', '.language-js',function(){
 		});
 		return;
 	};
-	
-	
+
+
 	/*............CUSTOM CATALOG SPECIFICATION [............*/
-	
+
 	customCatalogSpecifications = function(preq_id){
 		var buttonClick = 0;
 		fcom.ajax(fcom.makeUrl('CustomProducts', 'specificationForm', [ preq_id ]), '', function(t) {
 			fcom.updateFaceboxContent(t, 'faceboxWidth');
 		});
 	};
-	
+
 	getCustomCatalogSpecificationForm = function(preqId,prodSpecId=0){
 		buttonClick++;
 		var SpecDiv = "#addSpecFields";
@@ -127,7 +127,7 @@ $(document).on('change', '.language-js',function(){
 			$(SpecDiv).append(t);
 		});
 	};
-	
+
 	setupCustomCatalogSpecification = function(frm, preq_id, prodSpecId=0){
 		var data = fcom.frmData(frm);
 		fcom.updateWithAjax(fcom.makeUrl('CustomProducts', 'setupSpecification',[preq_id, prodSpecId]), data , function(t){
@@ -139,67 +139,67 @@ $(document).on('change', '.language-js',function(){
 			}else{
 				customEanUpcForm(t.preqId);
 			}
-			fcom.scrollToTop(dv);					
+			fcom.scrollToTop(dv);
 			return ;
 		});
 	};
-	
+
 	removeSpecDiv = function( currentDiv ){
 		$('#specification'+currentDiv).remove();
 		buttonClick--;
 	};
-	
+
 	/* ] */
-	
-	
+
+
 	customEanUpcForm = function(preq_id){
 		fcom.ajax(fcom.makeUrl('CustomProducts', 'customEanUpcForm', [ preq_id ]), '', function(t) {
-			fcom.updateFaceboxContent(t, 'faceboxWidth');			
+			fcom.updateFaceboxContent(t, 'faceboxWidth');
 		});
 	};
-	
+
 	validateEanUpcCode = function(upccode){
 		var data = {code:upccode};
 		fcom.updateWithAjax(fcom.makeUrl('CustomProducts', 'validateUpcCode'),(data), function(t) {
 			runningAjaxReq = false;
-			$.mbsmessage.close();								
+			$.mbsmessage.close();
 			return ;
 		});
 	};
-	
+
 	setupEanUpcCode = function(preq_id, frm){
 		var data = fcom.frmData(frm);
 		fcom.updateWithAjax(fcom.makeUrl('CustomProducts', 'setupEanUpcCode',[preq_id]), (data), function(t) {
 			runningAjaxReq = false;
-			$.mbsmessage.close();			
+			$.mbsmessage.close();
 			if (t.preq_id > 0) {
 				updateStatusForm(t.preq_id);
 				return ;
-			}		
+			}
 			return ;
-		});	
+		});
 	};
-	
+
 	productLangForm = function(preq_id, lang_id, autoFillLangData = 0) {
-		fcom.displayProcessing();		
+		fcom.displayProcessing();
 		fcom.resetEditorInstance();
 		/* $.facebox(function() { */
 			fcom.ajax(fcom.makeUrl('CustomProducts', 'langForm', [preq_id, lang_id, autoFillLangData]), '', function(t) {
 				fcom.updateFaceboxContent(t);
-				fcom.setEditorLayout(lang_id);					
+				fcom.setEditorLayout(lang_id);
 				var frm = $('#facebox form')[0];
 				var validator = $(frm).validation({errordisplay: 3});
 				$(frm).submit(function(e) {
 					e.preventDefault();
-					
+
 					validator.validate();
-					if (!validator.isValid()) return;					
+					if (!validator.isValid()) return;
 					var data = fcom.frmData(frm);
 					fcom.updateWithAjax(fcom.makeUrl('CustomProducts', 'langSetup'), data, function(t) {
 						fcom.resetEditorInstance();
 						reloadList();
 						if (t.lang_id>0) {
-							productLangForm(t.preq_id, t.lang_id);					
+							productLangForm(t.preq_id, t.lang_id);
 							return ;
 						}
 						if (t.productOptions != null && t.productOptions != '') {
@@ -213,15 +213,15 @@ $(document).on('change', '.language-js',function(){
 			});
 		/* }); */
 	};
-	
-	
+
+
 	productImagesForm = function( preq_id ){
 		fcom.ajax(fcom.makeUrl('CustomProducts', 'imagesForm', [ preq_id ]), '', function(t) {
 			productImages(preq_id);
 			$.facebox(t, 'faceboxWidth');
 		});
 	};
-	
+
 	productImages = function(  preq_id ,option_id,lang_id ){
 		if(typeof option_id == 'undefined'){
 			option_id = 0;
@@ -229,17 +229,76 @@ $(document).on('change', '.language-js',function(){
 		if(typeof lang_id == 'undefined'){
 			lang_id = 0;
 		}
-		
+
 		fcom.ajax(fcom.makeUrl('CustomProducts', 'images', [ preq_id ,option_id,lang_id]), '', function(t) {
 			$('#imageupload_div').html(t);
 			fcom.resetFaceboxHeight();
 		});
-	};	
-	
-	submitImageUploadForm = function ( ){		
+	};
+
+	popupImage = function(inputBtn){
+		if (inputBtn.files && inputBtn.files[0]) {
+	        fcom.ajax(fcom.makeUrl('Products', 'imgCropper'), '', function(t) {
+				$('#cropperBox-js').html(t);
+				$("#mediaForm-js").css("display", "none");
+                var file = inputBtn.files[0];
+	            var minWidth = document.imageFrm.min_width.value;
+	            var minHeight = document.imageFrm.min_height.value;
+	    		var options = {
+	                aspectRatio: 1 / 1,
+	                data: {
+	                    width: minWidth,
+	                    height: minHeight,
+	                },
+	                minCropBoxWidth: minWidth,
+	                minCropBoxHeight: minHeight,
+	                toggleDragModeOnDblclick: false,
+		        };
+				$(inputBtn).val('');
+		    	return cropImage(file, options, 'uploadImages', inputBtn);
+	    	});
+		}
+	};
+
+    uploadImages = function(formData){
+		var preq_id = document.imageFrm.preq_id.value;
+        var option_id = document.imageFrm.option_id.value;
+        var lang_id = document.imageFrm.lang_id.value;
+        formData.append('preq_id', preq_id);
+        formData.append('option_id', option_id);
+        formData.append('lang_id', lang_id);
+        $.ajax({
+            url : fcom.makeUrl('CustomProducts', 'uploadProductImages'),
+            type: 'post',
+            dataType: 'json',
+            data: formData,
+            cache: false,
+            contentType: false,
+            processData: false,
+            beforeSend: function() {
+                $('#loader-js').html(fcom.getLoader());
+            },
+            complete: function() {
+                $('#loader-js').html(fcom.getLoader());
+            },
+			success: function(ans) {
+                if(ans.status == 1){
+					fcom.displaySuccessMessage(ans.msg);
+					productImagesForm(preq_id);
+				} else {
+					fcom.displayErrorMessage(ans.msg);
+				}
+			},
+			error: function(xhr, ajaxOptions, thrownError) {
+				alert(thrownError + "\r\n" + xhr.statusText + "\r\n" + xhr.responseText);
+			}
+        });
+	}
+
+	submitImageUploadForm = function ( ){
 		var data = new FormData(  );
 		$inputs = $('#imageFrm input[type=text],#imageFrm select,#imageFrm input[type=hidden]');
-		$inputs.each(function() { data.append( this.name,$(this).val());});		
+		$inputs.each(function() { data.append( this.name,$(this).val());});
 		var preq_id = $('#imageFrm input[name="preq_id"]').val();
 		$.each( $('#prod_image')[0].files, function(i, file) {
 				$('#imageupload_div').html(fcom.getLoader());
@@ -271,7 +330,7 @@ $(document).on('change', '.language-js',function(){
 				});
 			});
 	};
-	
+
 	deleteImage = function( preq_id, image_id ){
 		var agree = confirm(langLbl.confirmDelete);
 		if( !agree ){ return false; }
@@ -286,36 +345,36 @@ $(document).on('change', '.language-js',function(){
 			productImages( preq_id, $('.option-js').val(), $('.language-js').val() );
 		});
 	}
-	
+
 	updateStatusForm = function(id){
 		fcom.resetEditorInstance();
 		fcom.ajax(fcom.makeUrl('CustomProducts', 'updateStatusForm', [id]), '', function(t) {
 			$.facebox(t, 'faceboxWidth');
 		});
 	};
-	
+
 	updateStatus = function(frm){
-		if ( !$(frm).validate() ) return;		
-		var data = fcom.frmData(frm);		
-		fcom.updateWithAjax(fcom.makeUrl('CustomProducts', 'updateStatus'), data, function(t) {		
-			reloadList();							
+		if ( !$(frm).validate() ) return;
+		var data = fcom.frmData(frm);
+		fcom.updateWithAjax(fcom.makeUrl('CustomProducts', 'updateStatus'), data, function(t) {
+			reloadList();
 			$(document).trigger('close.facebox');
 			return ;
 		});
 		return;
 	};
-	
+
 	showHideCommentBox = function(val){
 		if(val == 2){
-			$('#div_comments_box').removeClass('hide');			
+			$('#div_comments_box').removeClass('hide');
 		}else{
-			$('#div_comments_box').addClass('hide');			
-		}		
+			$('#div_comments_box').addClass('hide');
+		}
 	};
-	
-	
+
+
 	/* Product shipping  */
-	addShippingTab = function(id,prodTypeDigital){ 
+	/* addShippingTab = function(id,prodTypeDigital){
 		var ShipDiv = "#tab_shipping";
 		var e = document.getElementById("product_type");
 		var type = e.options[e.selectedIndex].value;
@@ -332,24 +391,25 @@ $(document).on('change', '.language-js',function(){
 			//	$.facebox(res.msg,'faceboxWidth');
 			}catch (e){
 				$(ShipDiv).html(t);
-			}			
+			}
 		});
-	}
-	
+	} */
+
 	shippingautocomplete = function(shipping_row) {
 		$('input[name=\'product_shipping[' + shipping_row + '][country_name]\']').focusout(function() {
-			setTimeout(function(){ $('.suggestions').hide(); }, 500); 
+			setTimeout(function(){ $('.suggestions').hide(); }, 500);
 		});
-		
+
 		$('input[name=\'product_shipping[' + shipping_row + '][company_name]\']').focusout(function() {
 			setTimeout(function(){ $('.suggestions').hide(); }, 500);
 		});
-		
+
 		$('input[name=\'product_shipping[' + shipping_row + '][processing_time]\']').focusout(function() {
 			setTimeout(function(){ $('.suggestions').hide(); }, 500);
 		});
-		
+
 		$('input[name=\'product_shipping[' + shipping_row + '][country_name]\']').autocomplete({
+            minLength: 0,
             'classes': {
                 "ui-autocomplete": "custom-ui-autocomplete"
             },
@@ -361,7 +421,7 @@ $(document).on('change', '.language-js',function(){
 					type: 'post',
 					success: function(json) {
 						response($.map(json, function(item) {
-							return { 
+							return {
 								label: item['name'] ,
 								value: item['name'],
                                 id: item['id']
@@ -373,9 +433,12 @@ $(document).on('change', '.language-js',function(){
             select: function(event, ui) {
                 $('input[name=\'product_shipping[' + shipping_row + '][country_id]\']').val(ui.item.id);
             }
-		});
-		
+		}).focus(function() {
+            $(this).autocomplete("search", $(this).val());
+        });
+
 		$('input[name=\'product_shipping[' + shipping_row + '][company_name]\']').autocomplete({
+            minLength: 0,
             'classes': {
                 "ui-autocomplete": "custom-ui-autocomplete"
             },
@@ -387,7 +450,7 @@ $(document).on('change', '.language-js',function(){
 					type: 'post',
 					success: function(json) {
 						response($.map(json, function(item) {
-							return { 
+							return {
 								label: item['name'] ,
 								value: item['name'],
                                 id: item['id']
@@ -399,9 +462,12 @@ $(document).on('change', '.language-js',function(){
             select: function(event, ui) {
                 $('input[name=\'product_shipping[' + shipping_row + '][company_id]\']').val(ui.item.id);
             }
-		});
-		
+		}).focus(function() {
+            $(this).autocomplete("search", $(this).val());
+        });
+
 		$('input[name=\'product_shipping[' + shipping_row + '][processing_time]\']').autocomplete({
+                minLength: 0,
                 'classes': {
                     "ui-autocomplete": "custom-ui-autocomplete"
                 },
@@ -413,7 +479,7 @@ $(document).on('change', '.language-js',function(){
 					type: 'post',
 					success: function(json) {
 						response($.map(json, function(item) {
-							return { 
+							return {
 								label: item['name']+'['+ item['duraion']+']',
 								value: item['name']+'['+ item['duraion']+']',
                                 id: item['id']
@@ -425,7 +491,9 @@ $(document).on('change', '.language-js',function(){
             select: function(event, ui) {
                 $('input[name=\'product_shipping[' + shipping_row + '][processing_time_id]\']').val(ui.item.id);
             }
-		});
+		}).focus(function() {
+            $(this).autocomplete("search", $(this).val());
+        });
 	}
 	/*  End of  Product shipping  */
-})();	
+})();

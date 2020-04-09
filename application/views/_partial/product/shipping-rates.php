@@ -92,7 +92,7 @@
                 <p><?php echo Labels::getLabel('LBL_Shipping_Rates', $siteLangId);?>
                     <a href="#shipRates" rel="facebox"><i class="fa fa-question-circle"></i></a></p>
                 <div id="shipRates" style="display:none">
-                    <div class="delivery-term-data-inner">
+                    <div>
                         <?php
                                 $arr_flds = array(
                                     'country_name'=> Labels::getLabel('LBL_Ship_to', $siteLangId),
@@ -142,7 +142,7 @@
                     </svg>
                 </i>
                 <p><?php echo Labels::getLabel('LBL_Cash_on_delivery_is_available', $siteLangId);?>
-                    <i class="fa fa-info-circle" data-toggle="tooltip" data-placement="top" title="<?php echo Labels::getLabel('MSG_Cash_on_delivery_available._Choose_from_payment_options', $siteLangId);?>
+                    <i class="fa fa-info-circle" data-toggle="tooltip" data-placement="right" data-container="body" title="<?php echo Labels::getLabel('MSG_Cash_on_delivery_available._Choose_from_payment_options', $siteLangId);?>
                         "></i></p>
             </div>
         </li>

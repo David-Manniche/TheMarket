@@ -3,7 +3,7 @@
 class ImportexportCommon extends FatModel
 {
     protected $db;
-    protected $CSVfileName;
+    public $CSVfileName;
 
     public const IMPORT_ERROR_LOG_PATH = CONF_UPLOADS_PATH . 'import-error-log/';
 
@@ -88,7 +88,7 @@ class ImportexportCommon extends FatModel
     {
         $arr = array_diff($headingsArr, $coloumArr);
 
-        if (count($arr)) {
+        if (count($arr) || count($headingsArr) != count($coloumArr)) {
             return false;
         }
         return true;
@@ -243,6 +243,7 @@ class ImportexportCommon extends FatModel
         }
 
         $arr['afile_type'] = Labels::getLabel('LBL_Image_Type', $langId);
+        $arr['afile_screen'] = Labels::getLabel('LBL_DISPLAY_SCREEN', $langId);
         $arr['afile_physical_path'] = Labels::getLabel('LBL_File_Path', $langId);
         $arr['afile_name'] = Labels::getLabel('LBL_File_Name', $langId);
         $arr['afile_display_order'] = Labels::getLabel('LBL_Display_Order', $langId);
@@ -292,6 +293,7 @@ class ImportexportCommon extends FatModel
         }
 
         $arr['afile_type'] = Labels::getLabel('LBL_File_Type', $langId);
+        $arr['afile_screen'] = Labels::getLabel('LBL_DISPLAY_SCREEN', $langId);
         $arr['afile_physical_path'] = Labels::getLabel('LBL_File_Path', $langId);
         $arr['afile_name'] = Labels::getLabel('LBL_File_Name', $langId);
         $arr['afile_display_order'] = Labels::getLabel('LBL_Display_Order', $langId);
@@ -452,8 +454,9 @@ class ImportexportCommon extends FatModel
             $arr['prodspeclang_lang_code'] = Labels::getLabel('LBL_Lang_code', $langId);
         }
 
-        $arr['prodspec_name'] = Labels::getLabel('LBL_specification_name', $langId);
-        $arr['prodspec_value'] = Labels::getLabel('LBL_specification_value', $langId);
+        $arr['prodspec_name'] = Labels::getLabel('LBL_specification_Name', $langId);
+        $arr['prodspec_value'] = Labels::getLabel('LBL_specification_Value', $langId);
+        $arr['prodspec_group'] = Labels::getLabel('LBL_specification_Group', $langId);
 
         return $arr;
     }

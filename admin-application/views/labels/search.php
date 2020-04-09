@@ -4,8 +4,11 @@ $arr_flds = array(
         'label_key'=> Labels::getLabel('LBL_Key', $adminLangId),
         'label_caption'=> Labels::getLabel('LBL_Caption', $adminLangId),
 		'label_type'=> Labels::getLabel('LBL_Type', $adminLangId),
-        'action' => Labels::getLabel('LBL_Action', $adminLangId),
+        'action' => '',
     );
+if (!$canEdit) {
+    unset($arr_flds['action']);
+}
 $tbl = new HtmlElement('table', array('width'=>'100%', 'class'=>'table table-responsive table--hovered'));
 
 $th = $tbl->appendElement('thead')->appendElement('tr');
@@ -35,20 +38,14 @@ foreach ($arr_listing as $sn => $row) {
                 $td->appendElement('plaintext', array(), $typeArr[$row[$key]], true);
             break;
             case 'action':
-                $ul = $td->appendElement("ul", array("class"=>"actions actions--centered"));
                 if ($canEdit) {
-                    $li = $ul->appendElement("li", array('class'=>'droplink'));
-                    $li->appendElement('a', array('href'=>'javascript:void(0)', 'class'=>'button small green','title'=>Labels::getLabel('LBL_Edit', $adminLangId)), '<i class="ion-android-more-horizontal icon"></i>', true);
-                    $innerDiv=$li->appendElement('div', array('class'=>'dropwrap'));
-                    $innerUl=$innerDiv->appendElement('ul', array('class'=>'linksvertical'));
-                    $innerLiEdit=$innerUl->appendElement('li');
-                    $innerLiEdit->appendElement(
+                    $td->appendElement(
                         'a',
                         array(
                         'href'=>'javascript:void(0)',
-                        'class'=>'button small green', 'title'=>Labels::getLabel('LBL_Edit', $adminLangId),
+                        'class'=>'btn btn-clean btn-sm btn-icon', 'title'=>Labels::getLabel('LBL_Edit', $adminLangId),
                         "onclick"=>"labelsForm('".$row['label_id']."', '".$row['label_type']."')"),
-                        Labels::getLabel('LBL_Edit', $adminLangId),
+                        "<i class='far fa-edit icon'></i>",
                         true
                     );
                 }

@@ -21,7 +21,7 @@ class CustomRouter
                 }
             } else {
                 if (!array_key_exists(0, $queryString)) {
-                    $arr = array('status'=>-1,'msg'=>"Invalid Request");
+                    $arr = array('status' => -1, 'msg' => "Invalid Request");
                     die(json_encode($arr));
                 }
 
@@ -51,10 +51,10 @@ class CustomRouter
         }
         define('MOBILE_APP_USER_TYPE', $userType);
 
-        if (defined('SYSTEM_FRONT') && SYSTEM_FRONT === true/*  && !FatUtility::isAjaxCall() */) { 
+        if (defined('SYSTEM_FRONT') && SYSTEM_FRONT === true/*  && !FatUtility::isAjaxCall() */) {  
             $url = urldecode($_SERVER['REQUEST_URI']);
             
-            if (strpos($url, "index.php?url=") !== false) {
+            if (strpos($url, "index.php?url=") !== false || UrlRewrite::staticContentProvider($controller, $action) == true) {
                 return ;
             }
 
@@ -67,13 +67,16 @@ class CustomRouter
             $customUrl = explode('/?', $customUrl);
      
             /* [ Check url rewritten by the system or system url with query parameter*/
-            $srch = UrlRewrite::getSearchObject();
-            $srch->doNotCalculateRecords();
-            $srch->addMultipleFields(array('urlrewrite_custom','urlrewrite_original'));
-            $srch->setPageSize(1);
-            $srch->addCondition(UrlRewrite::DB_TBL_PREFIX . 'custom', '=', $customUrl[0]);
-            $rs = $srch->getResultSet(); 
-            $row = FatApp::getDb()->fetch($rs);            
+            $row = false;
+            if (!empty($customUrl[0])) {
+                $srch = UrlRewrite::getSearchObject();
+                $srch->doNotCalculateRecords();
+                $srch->addMultipleFields(array('urlrewrite_custom','urlrewrite_original'));
+                $srch->setPageSize(1);
+                $srch->addCondition(UrlRewrite::DB_TBL_PREFIX . 'custom', '=', $customUrl[0]); 
+                $rs = $srch->getResultSet();
+                $row = FatApp::getDb()->fetch($rs);
+            }
             if (!$row && (!isset($customUrl[1]) || (isset($customUrl[1]) && strpos($customUrl[1], 'pagesize') === false))) {
                 return;
             }

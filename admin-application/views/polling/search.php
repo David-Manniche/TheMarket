@@ -37,7 +37,7 @@ foreach ($arr_listing as $sn=>$row){
 				$ul = $td->appendElement("ul",array("class"=>"actions"));
 				if( $canEdit ){
 					$li = $ul->appendElement("li");
-					$li->appendElement('a', array('href'=>'javascript:void(0)', 'class'=>'button small green', 'title'=>Labels::getLabel('LBL_Edit',$adminLangId),"onclick"=>"pollingForm(".$row['polling_id'].")"),'<i class="ion-edit icon"></i>', true);
+					$li->appendElement('a', array('href'=>'javascript:void(0)', 'class'=>'button small green', 'title'=>Labels::getLabel('LBL_Edit',$adminLangId),"onclick"=>"pollingForm(".$row['polling_id'].")"),'<i class="far fa-edit icon"></i>', true);
 				}
 			break;
 			default:

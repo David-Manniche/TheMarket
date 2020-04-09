@@ -8,7 +8,7 @@
     </div>
     <?php $this->includeTemplate('account/wishListItemsActions.php', array('isWishList' => true, 'siteLangId' => $siteLangId, 'wishListRow' => $wishListRow)); ?>
 </div>
-<form method="post" name="favtlistForm" id="favtlistForm">
+<form method="post" name="wishlistForm" id="wishlistForm">
     <input type="hidden" name="uwlist_id" value="<?php echo $wishListRow['uwlist_id']; ?>" />
     <div id="favListItems" class="row"></div>
 </form>

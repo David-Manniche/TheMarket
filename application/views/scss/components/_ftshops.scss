@@ -216,7 +216,7 @@
     display: grid;
     grid-gap: 1px;
     grid-template-columns: repeat(5, 1fr);
-    border: $border;
+    /*border: $border;*/
     border-radius: 4px;
     background-color: $border-color;
     color: #fff;
@@ -229,6 +229,7 @@
             grid-template-columns: 50% 50%;
             grid-gap: 1px;
             border: none;
+			background-color:none;
         }
     }
 
@@ -325,7 +326,7 @@
         .products__footer {
             padding: 20px;
             width: calc(100% - 150px);
-            text-align: left;
+            text-align: #{$start-direction};
 
             .products__title {
                 -webkit-padding-start: 0;

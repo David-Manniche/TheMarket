@@ -9,8 +9,8 @@ if ($user_is_buyer > 0 || (!UserAuthentication::isUserLogged())) { ?>
         <svg class="svg">
          <use xlink:href="<?php echo CONF_WEBROOT_URL; ?>images/retina/sprite.svg#main-cart" href="<?php echo CONF_WEBROOT_URL; ?>images/retina/sprite.svg#main-cart"></use>
         </svg></span>
+		<span class="cartQuantity"><?php echo (Cart::CART_MAX_DISPLAY_QTY < $totalCartItems) ? Cart::CART_MAX_DISPLAY_QTY . '+' : $totalCartItems; ?></span>
         <span class="icn-txt"><strong><?php echo Labels::getLabel("LBL_Cart", $siteLangId); ?></strong>
-            <span class="cartQuantity"><?php echo $totalCartItems.' '; ?></span>
             <?php /* if (0 < $cartSummary['cartTotal']) { */ ?>
                 <span class="cartValue"><?php echo CommonHelper::displayMoneyFormat($cartSummary['cartTotal']); ?></span>
             <?php /* } */ ?>
@@ -86,8 +86,8 @@ if ($user_is_buyer > 0 || (!UserAuthentication::isUserLogged())) { ?>
                 <?php if (isset($cartSummary['taxOptions'])){ 
                         foreach($cartSummary['taxOptions'] as $taxName => $taxVal){ ?>
                         <tr>
-                            <td><?php echo $taxName; ?></td>
-                            <td><?php echo CommonHelper::displayMoneyFormat($taxVal); ?></td>
+                            <td><?php echo $taxVal['title']; ?></td>
+                            <td><?php echo CommonHelper::displayMoneyFormat($taxVal['value']); ?></td>
                         </tr>
                       <?php   }
                      }?> 

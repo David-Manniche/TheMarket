@@ -8,9 +8,9 @@
     $keywordFld->developerTags['col'] = 8;
     $keywordFld->developerTags['noCaptionTag'] = true;
 
-if (0 < $selProd_id) {
-    $keywordFld->setFieldTagAttribute('readonly', 'readonly');
-}
+	if (0 < $selProd_id) {
+		$keywordFld->setFieldTagAttribute('readonly', 'readonly');
+	}
     $submitBtnFld = $frmSearch->getField('btn_submit');
     $submitBtnFld->setFieldTagAttribute('class', 'btn--block btn btn--primary');
     $submitBtnFld->setWrapperAttribute('class', (0 < $selProd_id ? ' d-none' : ''));
@@ -19,12 +19,11 @@ if (0 < $selProd_id) {
     $submitBtnFld->developerTags['noCaptionTag'] = true;
 
     $cancelBtnFld = $frmSearch->getField('btn_clear');
-    $cancelBtnFld->setFieldTagAttribute('onclick', 'clearSearch('.$selProd_id.');');
+    $cancelBtnFld->setFieldTagAttribute('onclick', 'clearSearch(' . $selProd_id . ');');
     $cancelBtnFld->setFieldTagAttribute('class', 'btn--block btn btn-outline-primary');
     $cancelBtnFld->setWrapperAttribute('class', 'col-6');
     $cancelBtnFld->developerTags['col'] = 2;
     $cancelBtnFld->developerTags['noCaptionTag'] = true;
-
 ?>
 <?php $this->includeTemplate('_partial/seller/sellerDashboardNavigation.php'); ?>
 <main id="main-area" class="main" role="main">
@@ -51,27 +50,31 @@ if (0 < $selProd_id) {
                 <div class="col-lg-12">
                     <div class="cards">
                         <?php
-                        foreach ($dataToEdit as $data) {
-                            $data['addMultiple'] = (1 > $selProd_id) ? 1 : 0;
-                            $this->includeTemplate('seller/add-special-price-form.php', array('siteLangId' => $siteLangId, 'data' => $data), false);
-                        }
-                        if (1 > $selProd_id) {
-                            $this->includeTemplate('seller/add-special-price-form.php', array('siteLangId' => $siteLangId), false);
-                        }
+						if($canEdit){
+							foreach ($dataToEdit as $data) {
+								$data['addMultiple'] = (1 > $selProd_id) ? 1 : 0;
+								$this->includeTemplate('seller/add-special-price-form.php', array('siteLangId' => $siteLangId, 'data' => $data), false);
+							}
+							if (1 > $selProd_id) {
+								$this->includeTemplate('seller/add-special-price-form.php', array('siteLangId' => $siteLangId), false);
+							}
+						}                        
                         ?>
                         <div class="cards-content">
                             <div class="row justify-content-between">
                                 <div class="col-auto"></div>
                                  <div class="col-auto">
-                                    <div class="action">
-                                        <a class="btn btn-outline-primary btn--sm formActionBtn-js formActions-css" title="<?php echo Labels::getLabel('LBL_Delete_Special_Price', $siteLangId); ?>" onclick="deleteSpecialPriceRows()" href="javascript:void(0)"><?php echo Labels::getLabel('LBL_Delete_Special_Price', $siteLangId); ?></a>
+                                    <div class="btn-group">
+                                        <a class="btn btn--primary btn--sm formActionBtn-js formActions-css" title="<?php echo Labels::getLabel('LBL_Delete_Special_Price', $siteLangId); ?>" onclick="deleteSpecialPriceRows()" href="javascript:void(0)">							
+										<i class="fa fa-trash"></i>
+										</a>
                                     </div>
                                 </div>
                             </div>
                             <div id="listing">
                                 <?php echo Labels::getLabel('LBL_Loading..', $siteLangId); ?>
                             </div>
-                            <span class="gap"></span>
+                             
                         </div>
                     </div>
                 </div>

@@ -9,7 +9,7 @@ $frmTag->setFormTagAttribute('onsubmit', 'setupTag(this); return(false);');
   <h4><?php echo Labels::getLabel('LBL_Add_Tags',$langId); ?></h4>
 </div>
 <div class="box__body">
-  <div class="tabs tabs--small tabs--scroll clearfix">
+  <div class="tabs ">
     <ul>
       <li class="is-active"><a  href="javascript:void(0)" onclick="addTagForm(<?php echo $tag_id ?>);"><?php echo Labels::getLabel('LBL_Basic', $siteLangId);?></a></li>
         <li class="<?php echo (0 == $tag_id) ? 'fat-inactive' : ''; ?>">

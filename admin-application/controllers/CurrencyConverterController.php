@@ -19,7 +19,7 @@ class CurrencyConverterController extends CurrencyConverterBaseController
     {
         $settings = $this->getSettings();
         if (!isset($settings['api_key'])) {
-            $message = Labels::getLabel('MSG_SETTINGS_NOT_UPDATED', $this->adminLangId);
+            $message = Labels::getLabel('MSG_PLUGIN_SETTINGS_NOT_CONFIGURED', $this->adminLangId);
             LibHelper::dieJsonError($message);
         }
         $this->apiKey = $settings['api_key'];

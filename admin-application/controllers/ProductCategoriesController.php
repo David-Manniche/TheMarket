@@ -112,7 +112,7 @@ class ProductCategoriesController extends AdminBaseController
         $siteDefaultLangId = FatApp::getConfig('conf_default_site_lang', FatUtility::VAR_INT, 1);
         $frm = new Form('frmProdCategory');
         $frm->addHiddenField('', 'prodcat_id', $prodCatId);
-        $frm->addRequiredField(Labels::getLabel('LBL_Name', $this->adminLangId), 'prodcat_name[' . $siteDefaultLangId . ']');
+        $frm->addRequiredField(Labels::getLabel('LBL_Category_Name', $this->adminLangId), 'prodcat_name[' . $siteDefaultLangId . ']');
 
         $prodCat = new ProductCategory();
         $categoriesArr = $prodCat->getCategoriesForSelectBox($this->adminLangId, $prodCatId);
@@ -129,7 +129,7 @@ class ProductCategoriesController extends AdminBaseController
             $frm->addCheckBox(Labels::getLabel('LBL_Translate_To_Other_Languages', $this->adminLangId), 'auto_update_other_langs_data', 1, array(), false, 0);
         }
         foreach ($langData as $langId => $data) {
-            $frm->addTextBox(Labels::getLabel('LBL_Name', $this->adminLangId), 'prodcat_name[' . $langId . ']');
+            $frm->addTextBox(Labels::getLabel('LBL_Category_Name', $this->adminLangId), 'prodcat_name[' . $langId . ']');
         }
 
         $mediaLanguages = applicationConstants::bannerTypeArr();
@@ -171,6 +171,7 @@ class ProductCategoriesController extends AdminBaseController
         }
 
         $prodCatId = FatUtility::int($post['prodcat_id']);
+        
         $productCategory = new ProductCategory($prodCatId);
         if (!$productCategory->saveCategoryData($post)) {
             Message::addErrorMessage($productCategory->getError());
@@ -332,20 +333,10 @@ class ProductCategoriesController extends AdminBaseController
             Message::addErrorMessage($this->str_invalid_request_id);
             FatUtility::dieJsonError(Message::getHtml());
         }
-
+        
         /* Sub-Categories have products[ */
-        $categoriesHaveProducts = $prodCateObj->categoriesHaveProducts($this->adminLangId);
-
-        $srch = ProductCategory::getSearchObject(true, $this->adminLangId, false);
-        $srch->addCondition('m.prodcat_parent', '=', $prodcat_id);
-        $srch->addCondition('m.prodcat_deleted', '=', 0);
-        $srch->addMultipleFields(array("m.prodcat_id"));
-        if ($categoriesHaveProducts) {
-            $srch->addCondition('m.prodcat_id', 'in', $categoriesHaveProducts);
-        }
-        $rs = $srch->getResultSet();
-        if ($srch->recordCount() > 0) {
-            FatUtility::dieJsonError(Labels::getLabel('LBL_Products_are_associated_with_its_sub-categories_so_we_are_not_able_to_delete_this_category', $this->adminLangId));
+        if (true === $prodCateObj->haveProducts()) {
+            FatUtility::dieJsonError(Labels::getLabel('LBL_Products_are_associated_with_its_category/sub-categories_so_we_are_not_able_to_delete_this_category', $this->adminLangId));
         }
         /* ] */
 

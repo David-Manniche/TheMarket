@@ -8,9 +8,7 @@ if (count($arr_listing) == 0) {
         'product_identifier'=>Labels::getLabel('LBL_Name', $adminLangId)
     );
 
-    $arr_flds2 = array();
-
-    $arr_flds3 = array(
+    $arr_flds2 = array(
         'user_name'=>Labels::getLabel('LBL_User', $adminLangId),
         //'attrgrp_name'=>Labels::getLabel('LBL_Attribute_Group',$adminLangId),
         'product_added_on'=>Labels::getLabel('LBL_Date', $adminLangId),
@@ -18,8 +16,10 @@ if (count($arr_listing) == 0) {
         'product_active'=>Labels::getLabel('LBL_Publish', $adminLangId),
         'action'=>Labels::getLabel('', $adminLangId)
     );
-    $arr_flds = $arr_flds1 + $arr_flds2 + $arr_flds3;
-
+    $arr_flds = $arr_flds1 + $arr_flds2;
+    if (!$canEdit) {
+        unset($arr_flds['select_all']);
+    }
     $tbl = new HtmlElement('table', array('width'=>'100%', 'class'=>'table table-responsive table--hovered'));
     $th = $tbl->appendElement('thead')->appendElement('tr');
     foreach ($arr_flds as $key => $val) {
@@ -82,9 +82,9 @@ if (count($arr_listing) == 0) {
                     break;
                 case 'action':
                         if($canEdit){
-                            $td->appendElement('a', array('href'=> CommonHelper::generateUrl('Products','form',array($row['product_id'])), 'class'=>'btn btn-clean  btn-icon', 'title'=> Labels::getLabel('LBL_Edit',$adminLangId)),'<i class="ion-edit icon"></i>', true);
+                            $td->appendElement('a', array('href'=> CommonHelper::generateUrl('Products','form',array($row['product_id'])), 'class'=>'btn btn-clean btn-sm btn-icon', 'title'=> Labels::getLabel('LBL_Edit',$adminLangId)),'<i class="far fa-edit icon"></i>', true);
                             
-                            $td->appendElement('a', array('href'=>"javascript:;", 'class'=>'btn btn-clean  btn-icon', 'title'=>Labels::getLabel('LBL_Delete',$adminLangId),"onclick"=>"deleteProduct(".$row['product_id'].")"),'<i class="ion-android-delete icon"></i>', true);
+                            $td->appendElement('a', array('href'=>"javascript:;", 'class'=>'btn btn-clean btn-sm btn-icon', 'title'=>Labels::getLabel('LBL_Delete',$adminLangId),"onclick"=>"deleteProduct(".$row['product_id'].")"),'<i class="fa fa-trash  icon"></i>', true);
                         }
                     break;
                 default:
@@ -96,7 +96,7 @@ if (count($arr_listing) == 0) {
 
 
     $frm = new Form('frmProdListing', array('id'=>'frmProdListing'));
-    $frm->setFormTagAttribute('class', 'web_form last_td_nowrap');
+    $frm->setFormTagAttribute('class', 'web_form last_td_nowrap actionButtons-js');
     $frm->setFormTagAttribute('onsubmit', 'formAction(this, reloadList ); return(false);');
     $frm->setFormTagAttribute('action', CommonHelper::generateUrl('Products', 'toggleBulkStatuses'));
     $frm->addHiddenField('', 'status');

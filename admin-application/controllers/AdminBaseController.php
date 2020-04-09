@@ -143,6 +143,9 @@ class AdminBaseController extends FatController
         'cloneNotification' => Labels::getLabel('LBL_DO_YOU_REALLY_WANT_TO_CLONE?', $this->adminLangId),
         'clonedNotification' => Labels::getLabel('LBL_NOTIFICATION_CLONED_SUCCESSFULLY', $this->adminLangId),
         'confirmRemoveBlog' => Labels::getLabel('LBL_Do_you_want_to_remove_this_blog', $this->adminLangId),
+        'actionButtonsClass' => Labels::getLabel('LBL_PLEASE_ADD_"actionButtons-js"_CLASS_TO_FORM_TO_PERFORM_ACTION', $this->adminLangId),
+        'allowedFileSize' => LibHelper::getMaximumFileUploadSize(),
+        'fileSizeExceeded' => Labels::getLabel("MSG_FILE_SIZE_SHOULD_BE_LESSER_THAN_{SIZE-LIMIT}", $this->adminLangId),
         );
 
         $languages = Language::getAllNames(false);
@@ -236,7 +239,8 @@ class AdminBaseController extends FatController
 
         $arr_options2 = array('-1' => Labels::getLabel('LBL_Does_Not_Matter', $this->adminLangId)) + User::getUserTypesArr($this->adminLangId);
         $arr_options2 = $arr_options2 + array(User::USER_TYPE_BUYER_SELLER => Labels::getLabel('LBL_Buyer', $this->adminLangId) . '+' . Labels::getLabel('LBL_Seller', $this->adminLangId));
-
+        $arr_options2 = $arr_options2 + array(User::USER_TYPE_SUB_USER => Labels::getLabel('LBL_Sub_User', $this->adminLangId));
+        
         $frm->addSelectBox(Labels::getLabel('LBL_Active_Users', $this->adminLangId), 'user_active', $arr_options, -1, array(), '');
         $frm->addSelectBox(Labels::getLabel('LBL_Email_Verified', $this->adminLangId), 'user_verified', $arr_options1, -1, array(), '');
         $frm->addSelectBox(Labels::getLabel('LBL_User_Type', $this->adminLangId), 'type', $arr_options2, -1, array(), '');
@@ -332,7 +336,11 @@ class AdminBaseController extends FatController
         $pTypeFld = $frm->addSelectBox(Labels::getLabel('LBL_Product_Type', $this->adminLangId), 'product_type', Product::getProductTypes($langId), Product::PRODUCT_TYPE_PHYSICAL, array('id' => 'product_type'), '');
 
         if ($type == 'REQUESTED_CATALOG_PRODUCT') {
-            $fld = $frm->addRequiredField(Labels::getLabel('LBL_Brand/Manfacturer', $this->adminLangId), 'brand_name');
+            $brandFld = $frm->addTextBox(Labels::getLabel('LBL_Brand/Manfacturer', $this->adminLangId), 'brand_name');
+            if (FatApp::getConfig("CONF_PRODUCT_BRAND_MANDATORY", FatUtility::VAR_INT, 1)) {
+                $brandFld->requirements()->setRequired();
+            }
+            
             //$fld1 = $frm->addTextBox(Labels::getLabel('LBL_Category',$this->adminLangId),'category_name');
 
             $frm->addHiddenField('', 'product_brand_id');
@@ -474,11 +482,12 @@ class AdminBaseController extends FatController
             $frm->addTextBox(Labels::getLabel('LBL_EAN/UPC/GTIN_code', $this->adminLangId), 'product_upc');
         }
         
-        $fld = $frm->addTextBox(Labels::getLabel('LBL_Shipping_country', $langId), 'shipping_country');
-
-        $fld = $frm->addCheckBox(Labels::getLabel('LBL_Free_Shipping', $langId), 'ps_free', 1);
-        $frm->addHtml('', '', '<table id="tab_shipping" width="100%"></table><div class="gap"></div>');
-
+        if ($type != 'REQUESTED_CATALOG_PRODUCT') {
+            $fld = $frm->addTextBox(Labels::getLabel('LBL_Country_Of_Origin', $langId), 'shipping_country');
+            $fld = $frm->addCheckBox(Labels::getLabel('LBL_Free_Shipping', $langId), 'ps_free', 1);
+            $frm->addHtml('', '', '<table id="tab_shipping" width="100%"></table><div class="gap"></div>');
+        }
+        
         $frm->addHiddenField('', 'ps_from_country_id');
         $frm->addHiddenField('', 'product_id');
         $frm->addHiddenField('', 'product_options');

@@ -116,7 +116,7 @@ class CategoryController extends MyAppController
         $this->set('data', $data);
         if (false === MOBILE_APP_API_CALL) {
             $this->includeProductPageJsCss();
-            $this->_template->addJs(array('js/slick.min.js', 'js/responsive-img.min.js'));
+            $this->_template->addJs('js/slick.min.js');
         }
         $this->_template->render();
     }

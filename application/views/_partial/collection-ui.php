@@ -1,5 +1,6 @@
 <?php
 $showActionBtns = !empty($showActionBtns) ? $showActionBtns : false;
+$isWishList = isset($isWishList) ? $isWishList : 0;
 $staticCollectionClass = '';
 if ($controllerName = 'Products' && isset($action) && $action == 'view') {
     $staticCollectionClass = 'static--collection';
@@ -15,7 +16,7 @@ if ($showAddToFavorite) { ?>
     <?php if (true ==  $showActionBtns) { ?>
         <div class="actions_wishlist">
             <ul class="actions">
-                <?php if ($product['in_stock']) { ?>
+                <?php if ($product['in_stock'] &&  time() >= strtotime($product['selprod_available_from'])) { ?>
                 <li>
                      <label class="checkbox">
                             <input type="checkbox" name='selprod_id[]' class="selectItem--js" value="<?php echo $product['selprod_id']; ?>"/>
@@ -23,7 +24,7 @@ if ($showAddToFavorite) { ?>
                         </label>
                 </li>
                 <li>
-                    <a onClick="addToCart( $(this), event );" href="javascript:void(0)" class="" title="<?php echo Labels::getLabel('LBL_Move_to_cart', $siteLangId); ?>" data-id='<?php echo $product['selprod_id']; ?>'><i class="fa fa-shopping-cart"></i></a>
+                    <a onClick="addToCart( $(this), event , <?php echo $isWishList; ?>);" href="javascript:void(0)" class="" title="<?php echo Labels::getLabel('LBL_Move_to_cart', $siteLangId); ?>" data-id='<?php echo $product['selprod_id']; ?>'><i class="fa fa-shopping-cart"></i></a>
                 </li>
                 <?php } ?>
                 <li>

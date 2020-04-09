@@ -182,10 +182,7 @@ $(document).on('change','.prefDimensions-js',function(){
 	        fcom.ajax(fcom.makeUrl('Brands', 'imgCropper'), '', function(t) {
 				$('#cropperBox-js').html(t);
 				$("#mediaForm-js").css("display", "none");
-				var container = document.querySelector('.img-container');
                 var file = inputBtn.files[0];
-                $('#new-img').attr('src', URL.createObjectURL(file));
-	    		var image = container.getElementsByTagName('img').item(0);
 	            var minWidth = document.frmBrandImage.banner_min_width.value;
 	            var minHeight = document.frmBrandImage.banner_min_height.value;
 	    		var options = {
@@ -199,7 +196,7 @@ $(document).on('change','.prefDimensions-js',function(){
 	                toggleDragModeOnDblclick: false,
 		        };
 				$(inputBtn).val('');
-    	  		return cropImage(image, options, 'uploadBrandImages', inputBtn);
+    	  		return cropImage(file, options, 'uploadBrandImages', inputBtn);
 	    	});
 		}
 	};
@@ -209,10 +206,7 @@ $(document).on('change','.prefDimensions-js',function(){
 	        fcom.ajax(fcom.makeUrl('Brands', 'imgCropper'), '', function(t) {
 				$('#cropperBox-js').html(t);
 				$("#mediaForm-js").css("display", "none");
-				var container = document.querySelector('.img-container');
                 var file = inputBtn.files[0];
-                $('#new-img').attr('src', URL.createObjectURL(file));
-	    		var image = container.getElementsByTagName('img').item(0);
 	            var minWidth = document.frmBrandLogo.logo_min_width.value;
 	            var minHeight = document.frmBrandLogo.logo_min_height.value;
 				if(minWidth == minHeight){
@@ -231,7 +225,7 @@ $(document).on('change','.prefDimensions-js',function(){
 	                toggleDragModeOnDblclick: false,
 		        };
 				$(inputBtn).val('');
-    	  		return cropImage(image, options, 'uploadBrandImages', inputBtn);
+    	  		return cropImage(file, options, 'uploadBrandImages', inputBtn);
 	    	});
 		}
 	};

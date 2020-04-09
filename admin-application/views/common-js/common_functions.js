@@ -678,17 +678,20 @@ $(document).ready(function() {
     });
 
     $(document).on("click", ".selectItem--js", function() {
+        var parentForm = $(this.form).attr("id");
         if ($(this).prop("checked") == false) {
-            $(".selectAll-js").prop("checked", false);
-        }
-        if ($(".selectItem--js").length == $(".selectItem--js:checked").length) {
-            $(".selectAll-js").prop("checked", true);
+            $("#" + parentForm + " .selectAll-js").prop("checked", false);
         }
         
-        if ($(".selectItem--js:checked").length == 0) {
-            $(".toolbar-btn-js").addClass('d-none');
+        if ($("#" + parentForm + " .selectItem--js").length == $("#" + parentForm + " .selectItem--js:checked").length) {
+            $("#" + parentForm + " .selectAll-js").prop("checked", true);
+        }
+        
+        var faceboxActionBtns = (0 < $("#facebox").length && $("#facebox").is(":visible")) ? "#facebox " : '';
+        if ($("#" + parentForm + " .selectItem--js:checked").length == 0) {
+            $(faceboxActionBtns + " .toolbar-btn-js").addClass('d-none');
         }else{
-            $(".toolbar-btn-js").removeClass('d-none');
+            $(faceboxActionBtns + " .toolbar-btn-js").removeClass('d-none');
         }                
     });
 
@@ -722,8 +725,9 @@ function getNotifications() {
     });
 }
 
-function selectAll(obj) {   
-    $(".selectItem--js").each(function() {
+function selectAll(obj) {
+    var parentForm = obj.closest('form').attr('id');
+    $("#" + parentForm + " .selectItem--js").each(function() {
         if (obj.prop("checked") == false) {
             $(this).prop("checked", false);
         } else {
@@ -731,10 +735,12 @@ function selectAll(obj) {
         }
     });
     
+    var faceboxActionBtns = (0 < $("#facebox").length && $("#facebox").is(":visible")) ? "#facebox " : '';
+
     if ($(obj).prop("checked") == false) { 
-        $(".toolbar-btn-js").addClass('d-none');
+        $(faceboxActionBtns + ".toolbar-btn-js").addClass('d-none');
     }else{  
-        $(".toolbar-btn-js").removeClass('d-none');
+        $(faceboxActionBtns + ".toolbar-btn-js").removeClass('d-none');
     }
 }
 
@@ -749,7 +755,33 @@ function formAction(frm, callback) {
 
     fcom.updateWithAjax(frm.action, data, function(resp) {
         callback();
+        showActionsBtns();
     });
+}
+
+
+function toggleBulkStatues(status) {
+    var element = 0 < $("#facebox").length ? "#facebox " : '';
+    element = element + 'form.actionButtons-js';
+    
+    if (1 > $(element).length) {
+        $.systemMessage(langLbl.actionButtonsClass, 'alert--danger', true);
+        return false;
+    }
+
+    if(!confirm(langLbl.confirmUpdateStatus)){
+        return false;
+    }
+    $(element + " input[name='status']").val(status);
+    $(element).submit();
+};
+
+function showActionsBtns() {
+    if (typeof $(".selectItem--js:checked").val() === 'undefined') {
+        $(".toolbar-btn-js").addClass('d-none');
+    } else {
+        $(".toolbar-btn-js").removeClass('d-none');
+    }
 }
 
 

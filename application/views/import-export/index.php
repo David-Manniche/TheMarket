@@ -15,3 +15,6 @@
         </div>
     </div>
 </main>
+<script>
+    var inventoryUpdate = '<?php echo Importexport::TYPE_INVENTORY_UPDATE?>';
+</script>

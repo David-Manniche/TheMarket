@@ -86,6 +86,9 @@ class CommonHelper extends FatUtility
 
     public static function getLangId()
     {
+        if (1 > self::$_lang_id) {
+            return FatApp::getConfig('CONF_DEFAULT_SITE_LANG', FatUtility::VAR_INT, 1);
+        }
         return self::$_lang_id;
     }
 
@@ -587,7 +590,7 @@ class CommonHelper extends FatUtility
         return $val;
     }
 
-    public static function displayMoneyFormat($val, $numberFormat = true, $showInConfiguredDefaultCurrency = false, $displaySymbol = true, $stringFormat = false)
+    public static function displayMoneyFormat($val, $numberFormat = true, $showInConfiguredDefaultCurrency = false, $displaySymbol = true, $stringFormat = false, $withHtml = false)
     {
         $val = FatUtility::convertToType($val, FatUtility::VAR_FLOAT);
         $currencyValue = self::getCurrencyValue();
@@ -626,40 +629,17 @@ class CommonHelper extends FatUtility
 
         if ($displaySymbol) {
             $sign .= ' ';
-            $val = $sign . $currencySymbolLeft . $val . $currencySymbolRight;
-        } else {
-            $val = $sign . $val;
+            
+            if (true === MOBILE_APP_API_CALL || false === $withHtml) {
+                return trim($sign . $currencySymbolLeft . $val . $currencySymbolRight);
+            }
+            
+            $currencySymbolLeft = !empty($currencySymbolLeft) ? "<span class='currency-symbol'>" . $currencySymbolLeft . "</span>" : $currencySymbolLeft;
+            $currencySymbolRight = !empty($currencySymbolRight) ? "<span class='currency-symbol'>" . $currencySymbolRight . "</span>" : $currencySymbolRight;
+            return "<span class='currency-value' dir='ltr'>" . trim($sign . $currencySymbolLeft . $val . $currencySymbolRight) . "</span>";
         }
 
-        return trim($val);
-        /* if($displaySymbol){
-            if($val < 0){
-
-                if ( $numberFormat ){
-                    $val = number_format( abs($val), 2 );
-                }
-                if($customHtml){
-                    return '<sup>- '.$currencySymbolLeft.' </sup><span> '.$val.' </span>'.$currencySymbolRight;
-
-                }else{
-
-                return '- '.$currencySymbolLeft.$val.$currencySymbolRight;
-                }
-            }else{
-                if ( $numberFormat ){
-                    $val = number_format( $val, 2 );
-                }
-                if($customHtml){
-
-                    return '<sup>'.$currencySymbolLeft.'</sup><span>'.$val.$currencySymbolRight.'</span>';
-
-                }else{
-
-                    return $currencySymbolLeft.$val.$currencySymbolRight;
-                }
-
-            }
-        } */
+        return trim($sign . $val);
     }
     public static function convertCurrencyToRewardPoint($currencyValue)
     {
@@ -1850,7 +1830,7 @@ class CommonHelper extends FatUtility
     }
 
     public static function demoUrl()
-    {
+    { 
         if (strpos($_SERVER ['SERVER_NAME'], 'demo.yo-kart.com') !== false) {
             return true;
         }
@@ -1906,6 +1886,18 @@ class CommonHelper extends FatUtility
             return $maxValue . '+';
         }
         return $totalCount;
+    }
+
+    public static function displayTaxPercantage($taxVal, $displayPercentage = false)
+    {        
+        if (false == $displayPercentage) {
+            return $taxVal['name'];
+        }
+
+        if ($taxVal['inPercentage'] == Tax::TYPE_PERCENTAGE) {
+            return $taxVal['name'] . ' (' . $taxVal['percentageValue'] . '%)';
+        }
+        return $taxVal['name'] . ' (' . $taxVal['percentageValue'] . ')';
     }
 
     public static function replaceStringData($str, $replacements = array(), $replaceTags = false)
@@ -1972,7 +1964,7 @@ class CommonHelper extends FatUtility
         $recordId = isset($queryString[0]) ? $queryString[0] : 0;
         $extra = (object)[];
         switch ($controller . '/' . $action) {
-            case 'category/view' :
+            case 'category/view':
                 $urlType = applicationConstants::URL_TYPE_CATEGORY;
                 break;
             case 'brands/view':
@@ -1999,6 +1991,9 @@ class CommonHelper extends FatUtility
                 break;
             case 'custom/contact-us':
                 $urlType = applicationConstants::URL_TYPE_CONTACT_US;
+                break;
+            case 'blog/post-detail':
+                $urlType = applicationConstants::URL_TYPE_BLOG;
                 break;
             default:
                 $recordId = applicationConstants::NO;

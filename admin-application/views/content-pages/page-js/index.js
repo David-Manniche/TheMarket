@@ -171,10 +171,7 @@ $(document).ready(function() {
 				$('#cropperBox-js').html(t);
                 $('#cropperBox-js').css("display", "block");
 				$("#mediaForm-js").css("display", "none");
-				var container = document.querySelector('.img-container');
                 var file = inputBtn.files[0];
-                $('#new-img').attr('src', URL.createObjectURL(file));
-	    		var image = container.getElementsByTagName('img').item(0);
 	            var minWidth = document.frmBlockLang.min_width.value;
 	            var minHeight = document.frmBlockLang.min_height.value;
 	    		var options = {
@@ -188,7 +185,7 @@ $(document).ready(function() {
 	                toggleDragModeOnDblclick: false,
 		        };
 				$(inputBtn).val('');
-	    		return cropImage(image, options, 'uploadBgImage', inputBtn);
+	    		return cropImage(file, options, 'uploadBgImage', inputBtn);
 	    	});
 		}
 	};

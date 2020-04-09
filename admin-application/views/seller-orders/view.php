@@ -28,18 +28,30 @@ if ($order['order_reward_point_used'] > 0) {
                     <div class="sectionhead">
                         <h4><?php echo Labels::getLabel('LBL_Seller_Order_Details', $adminLangId); ?></h4>
                         <?php if (!$print) {
-                            $ul = new HtmlElement("ul", array("class"=>"actions actions--centered"));
-                            $li = $ul->appendElement("li", array('class'=>'droplink'));
+                            $data = [
+                                'adminLangId' => $adminLangId,
+                                'statusButtons' => false,
+                                'deleteButton' => false,
+                                'otherButtons' => [
+                                    [
+                                        'attr' => [
+                                            'href' => CommonHelper::generateUrl('SellerOrders'),
+                                            'title' => Labels::getLabel('LBL_BACK', $adminLangId)
+                                        ],
+                                        'label' => '<i class="fas fa-arrow-left"></i>'
+                                    ],
+                                ]
+                            ];
+                            
+                             $data['otherButtons'][] = [
+                                'attr' => [
+                                    'href' => Fatutility::generateUrl('sellerOrders', 'view', $urlParts) . '/print',
+                                    'title' => Labels::getLabel('LBL_Print', $adminLangId)
+                                ],
+                                'label' => '<i class="fas fa-print"></i>'
+                            ];
 
-                            $li->appendElement('a', array('href'=>'javascript:void(0)', 'class'=>'button small green no-print','title'=>Labels::getLabel('LBL_Back_to_Orders', $adminLangId)), '<i class="ion-android-more-horizontal icon"></i>', true);
-                            $innerDiv=$li->appendElement('div', array('class'=>'dropwrap'));
-                            $innerUl=$innerDiv->appendElement('ul', array('class'=>'linksvertical'));
-                            $innerLi=$innerUl->appendElement('li');
-
-                            $innerLi->appendElement('a', array('href'=>CommonHelper::generateUrl('SellerOrders'),'class'=>'button small green redirect--js no-print','title'=>Labels::getLabel('LBL_Back_to_Orders', $adminLangId)), Labels::getLabel('LBL_Back_to_Orders', $adminLangId), true);
-                            $innerLi->appendElement('a', array('href'=> Fatutility::generateUrl('sellerOrders', 'view', $urlParts) . '/print','class'=>'button small green redirect--js no-print','title'=>Labels::getLabel('LBL_Print', $adminLangId)), Labels::getLabel('LBL_Print', $adminLangId), true);
-
-                            echo $ul->getHtml();
+                            $this->includeTemplate('_partial/action-buttons.php', $data, false);
                         } ?>
                     </div>
                     <div class="sectionbody">
@@ -79,12 +91,12 @@ if ($order['order_reward_point_used'] > 0) {
                                         <?php  echo '+'.CommonHelper::displayMoneyFormat(CommonHelper::orderProductAmount($order, 'TAX'), true, true);
                                     } else {
                                         foreach ($order['taxOptions'] as $key => $val) { ?>
-                                            <p><strong><?php echo $key ?>:</strong> <?php echo CommonHelper::displayMoneyFormat($val); ?></p>
+                                            <p><strong><?php echo CommonHelper::displayTaxPercantage($val, true) ?>:</strong> <?php echo CommonHelper::displayMoneyFormat($val['value']); ?></p>
                                         <?php }
                                     } ?></td>
                                 <?php } ?>
                                 <td><strong><?php echo Labels::getLabel('LBL_Volume_Discount', $adminLangId); ?></strong><?php echo CommonHelper::displayMoneyFormat(CommonHelper::orderProductAmount($order, 'VOLUME_DISCOUNT'), true, true);?> </td>
-                                <td><strong><?php echo Labels::getLabel('LBL_Total_Paid', $adminLangId); ?>:</strong><?php echo CommonHelper::displayMoneyFormat(CommonHelper::orderProductAmount($order, 'netamount', false, USER::USER_TYPE_SELLER), true, true);?>
+                                <td><strong><?php echo Labels::getLabel('LBL_Total_Paid', $adminLangId); ?>:</strong><?php echo CommonHelper::displayMoneyFormat(CommonHelper::orderProductAmount($order, 'netamount', false, User::USER_TYPE_SELLER), true, true);?>
                                 </td>
                             </tr>
                         </table>
@@ -217,9 +229,15 @@ if ($order['order_reward_point_used'] > 0) {
                                     $txt .= $order['op_selprod_title'].'<br/>';
                                 }
                                 $txt .= $order['op_product_name'];
-                                $txt .= '<br/>'.Labels::getLabel('LBL_Brand', $adminLangId).': '.$order['op_brand_name'];
+                                $txt .= '<br/>';
+                                if( !empty($order['op_brand_name']) ){
+                                   $txt .=  Labels::getLabel('LBL_Brand', $adminLangId).': '.$order['op_brand_name'];
+                                }
+                                if( !empty($order['op_brand_name']) && !empty($order['op_selprod_options']) ){
+                                    $txt .= ' | ' ;
+                                }
                                 if ($order['op_selprod_options'] != '') {
-                                    $txt .= ' | ' . $order['op_selprod_options'];
+                                    $txt .= $order['op_selprod_options'];
                                 }
                                 if ($order['op_selprod_sku'] != '') {
                                     $txt .= '<br/>'.Labels::getLabel('LBL_SKU', $adminLangId).':  ' . $order['op_selprod_sku'];
@@ -242,12 +260,12 @@ if ($order['order_reward_point_used'] > 0) {
                                         echo CommonHelper::displayMoneyFormat(CommonHelper::orderProductAmount($order, 'TAX'), true, true);
                                     } else {
                                         foreach ($order['taxOptions'] as $key => $val) { ?>
-                                            <p><strong><?php echo $key ?>:</strong> <?php echo CommonHelper::displayMoneyFormat($val); ?></p>
+                                            <p><strong><?php echo CommonHelper::displayTaxPercantage($val, true) ?>:</strong> <?php echo CommonHelper::displayMoneyFormat($val['value']); ?></p>
                                         <?php }
                                     } ?></td>
                                     <?php }?> <td>
                                     <?php echo CommonHelper::displayMoneyFormat(CommonHelper::orderProductAmount($order, 'VOLUME_DISCOUNT'), true, true);?></td>
-                                <td><?php echo CommonHelper::displayMoneyFormat(CommonHelper::orderProductAmount($order, 'netamount', false, USER::USER_TYPE_SELLER), true, true);?></td>
+                                <td><?php echo CommonHelper::displayMoneyFormat(CommonHelper::orderProductAmount($order, 'netamount', false, User::USER_TYPE_SELLER), true, true);?></td>
                             </tr>
                         </table>
                     </div>

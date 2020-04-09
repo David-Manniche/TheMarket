@@ -13,7 +13,7 @@
 </div>
 
 <div class="tabs__content">
-	<div class="form__subcontent">
+	 
 		<?php
 		$themeColorFrm->setFormTagAttribute('onsubmit','setUpThemeColor(this); return(false);');
 		$themeColorFrm->setFormTagAttribute('class','form form--horizontal');
@@ -31,5 +31,5 @@
 		$submitFld->attachField($resetFld);
 
 	echo $themeColorFrm->getFormHtml(); ?>
-	</div>
+	 
 </div>

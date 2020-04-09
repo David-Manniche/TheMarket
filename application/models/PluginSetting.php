@@ -3,31 +3,42 @@
 class PluginSetting
 {
     private $error;
+    private $pluginId;
+    private $pluginKey;
 
     public const DB_TBL = 'tbl_plugin_settings';
     public const DB_TBL_PREFIX = 'pluginsetting_';
-
+    
     public const TYPE_STRING = 1;
     public const TYPE_INT = 2;
     public const TYPE_FLOAT = 3;
+
+    public function __construct($id, $pluginKey = '')
+    {
+        $this->pluginId = empty($pluginKey) ? $id : Plugin::getAttributesByCode($pluginKey, 'plugin_id');
+        $this->pluginKey = $pluginKey;
+        if (1 > $this->pluginId) {
+            $this->error = 'MSG_INVALID_REQUEST';
+            return false;
+        }
+    }
 
     public function getError()
     {
         return $this->error;
     }
 
-    private function delete($pluginId)
+    private function delete(): bool
     {
-        $pluginId = FatUtility::int($pluginId);
-        if (1 > $pluginId) {
-            $this->error = Labels::getLabel('MSG_INVALID_REQUEST', CommonHelper::getLangId());
+        if (1 > $this->pluginId) {
+            $this->error = 'MSG_INVALID_REQUEST';
             return false;
         }
         $statement = [
             'smt' => static::DB_TBL_PREFIX . 'plugin_id = ?',
             'vals' => [
-                    $pluginId
-                ]
+                $this->pluginId
+            ]
         ];
         if (!FatApp::getDb()->deleteRecords(static::DB_TBL, $statement)) {
             $this->error = FatApp::getDb()->getError();
@@ -36,80 +47,45 @@ class PluginSetting
         return true;
     }
 
-    private static function getFieldType($type)
+    public function get(int $langId = 0, string $column = '')
     {
-        $type = strtolower($type);
-        switch ($type) {
-            case 'int':
-                return static::TYPE_INT;
-                break;
-            case 'float':
-                return static::TYPE_FLOAT;
-                break;
-            default:
-                return static::TYPE_STRING;
-                break;
-        }
-    }
-
-    public static function getConfDataById($pluginId, $column = '')
-    {
-        $pluginId = FatUtility::int($pluginId);
-        if (1 > $pluginId) {
+        if (empty($this->pluginKey)) {
+            $this->error = 'MSG_PLUGIN_KEY_NOT_FOUND';
             return false;
         }
+
         $srch = new SearchBase(static::DB_TBL, 'tps');
-        $srch->addCondition('tps.' . static::DB_TBL_PREFIX . 'plugin_id', '=', (int) $pluginId);
-        
-        $singleColumn = false;
-        if (!empty($column) && is_string($column)) {
-            $srch->addCondition('tps.' . static::DB_TBL_PREFIX . 'key', '=', $column);
-            $singleColumn = true;
-        }
+        $srch->addCondition('tps.' . static::DB_TBL_PREFIX . 'plugin_id', '=', $this->pluginId);
+        $srch->addMultipleFields(array('tps.' . static::DB_TBL_PREFIX . 'key', 'tps.' . static::DB_TBL_PREFIX . 'value'));
         $rs = $srch->getResultSet();
-        if ($singleColumn) {
-            $result = FatApp::getDb()->fetch($rs);
-            return $result[static::DB_TBL_PREFIX . 'value'];
-        }
-        return FatApp::getDb()->fetchAll($rs);
-    }
-
-    public static function getConfDataByCode($keyName, $column = '', $langId = 0)
-    {
-        $settingsData = Plugin::getAttributesByCode($keyName, '', $langId);
-        if (!$settingsData) {
+        if (!$rs) {
+            $this->error = $srch->getError();
             return false;
         }
-        $pluginSettings = PluginSetting::getConfDataById($settingsData["plugin_id"], $column);
-        if (!empty($column) && is_string($column)) {
-            return $pluginSettings;
-        }
+        $row =  FatApp::getDb()->fetchAllAssoc($rs);
 
-        $pluginSettingArr = [];
-
-        foreach ($pluginSettings as $val) {
-            $pluginSettingArr[$val[ static::DB_TBL_PREFIX . "key"]] = $val[ static::DB_TBL_PREFIX . "value"];
+        $settingsData = Plugin::getAttributesByCode($this->pluginKey, '', $langId);
+        if (0 < $langId) {
+            $settingsData['plugin_name'] = !empty($settingsData['plugin_name']) ? $settingsData['plugin_name'] : $settingsData['plugin_identifier'];
         }
-        $pluginSettingArr['plugin_name'] = !empty($settingsData['plugin_name']) ? $settingsData['plugin_name'] : $settingsData['plugin_identifier'];
-        return array_merge($pluginSettingArr, $settingsData);
+        $settings = array_merge($row, $settingsData);
+        return (!empty($column) && is_string($column) && isset($settings[$column])) ? $settings[$column] : $settings;
     }
 
-    public function save($data)
+    public function save(array $data): bool
     {
         if (empty($data) || !is_array($data)) {
-            $this->error = Labels::getLabel('MSG_PLEASE_PROVIDE_DATA_TO_SAVE_SETTINGS', CommonHelper::getLangId());
+            $this->error = 'MSG_PLEASE_PROVIDE_DATA_TO_SAVE_SETTINGS';
             return false;
         }
-        unset($data['keyName'], $data['btn_submit']);
+        unset($data['keyName'], $data['btn_submit'], $data["plugin_id"]);
 
-        $pluginId = $data["plugin_id"];
-
-        if (!$this->delete($pluginId)) {
+        if (!$this->delete()) {
             return false;
         }
         foreach ($data as $key => $val) {
             $updateData = [
-                'pluginsetting_plugin_id' => $pluginId,
+                'pluginsetting_plugin_id' => $this->pluginId,
                 'pluginsetting_key' => $key,
                 'pluginsetting_value' => is_array($val) ? serialize($val) : $val,
             ];
@@ -131,9 +107,8 @@ class PluginSetting
         foreach ($requirements as $fieldName => $attributes) {
             $label = 'LBL_' . str_replace(' ', '_', strtoupper($attributes['label']));
             $label = Labels::getLabel($label, $langId);
-            $fieldType = static::getFieldType($attributes['type']);
 
-            switch ($fieldType) {
+            switch ($attributes['type']) {
                 case static::TYPE_INT:
                     $fld = $frm->addIntegerField($label, $fieldName);
                     break;
@@ -153,7 +128,7 @@ class PluginSetting
         return $frm;
     }
 
-    public static function setupForm($frm, $langId)
+    public static function addKeyFields($frm)
     {
         $frm->addHiddenField('', 'keyName');
         $frm->addHiddenField('', 'plugin_id');

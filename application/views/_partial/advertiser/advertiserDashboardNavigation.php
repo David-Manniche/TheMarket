@@ -1,18 +1,26 @@
 <?php
 $controller = strtolower($controller);
 $action = strtolower($action);
-?> <div class="sidebar no-print">
+?> <sidebar class="sidebar no-print">
     <div class="logo-wrapper"> <?php
         if (CommonHelper::isThemePreview() && isset($_SESSION['preview_theme'])) {
             $logoUrl = CommonHelper::generateUrl('home', 'index');
         } else {
             $logoUrl = CommonHelper::generateUrl();
         }
-        ?> <div class="logo-dashboard"><a href="<?php echo $logoUrl; ?>"><img src="<?php echo CommonHelper::generateFullUrl('Image', 'siteLogo', array($siteLangId), CONF_WEBROOT_FRONT_URL); ?>"
-                    alt="<?php echo FatApp::getConfig('CONF_WEBSITE_NAME_'.$siteLangId) ?>" title="<?php echo FatApp::getConfig('CONF_WEBSITE_NAME_'.$siteLangId) ?>"></a></div>
-        <?php 
+        ?>
+        <?php
+        $fileData = AttachedFile::getAttachment(AttachedFile::FILETYPE_FRONT_LOGO, 0, 0, $siteLangId, false);
+        $aspectRatioArr = AttachedFile::getRatioTypeArray($siteLangId);
+        ?>
+        <div class="logo-dashboard">
+            <a href="<?php echo $logoUrl; ?>">
+                <img <?php if ($fileData['afile_aspect_ratio'] > 0) { ?> data-ratio= "<?php echo $aspectRatioArr[$fileData['afile_aspect_ratio']]; ?>" <?php } ?> src="<?php echo CommonHelper::generateFullUrl('Image', 'siteLogo', array($siteLangId), CONF_WEBROOT_FRONT_URL); ?>" alt="<?php echo FatApp::getConfig('CONF_WEBSITE_NAME_' . $siteLangId) ?>" title="<?php echo FatApp::getConfig('CONF_WEBSITE_NAME_' . $siteLangId) ?>">
+            </a>
+        </div>
+        <?php
             $isOpened = '';
-            if (!empty(FatUtility::int($_COOKIE['openSidebar'])) && array_key_exists('screenWidth', $_COOKIE) && applicationConstants::MOBILE_SCREEN_WIDTH < FatUtility::int($_COOKIE['screenWidth'])){
+            if (isset($_COOKIE['openSidebar']) && !empty(FatUtility::int($_COOKIE['openSidebar'])) && array_key_exists('screenWidth', $_COOKIE) && applicationConstants::MOBILE_SCREEN_WIDTH < FatUtility::int($_COOKIE['screenWidth'])) {
                 $isOpened = 'is-opened';
             }
         ?>
@@ -20,8 +28,8 @@ $action = strtolower($action);
     </div>
     <div class="sidebar__content custom-scrollbar" data-simplebar>
         <nav class="dashboard-menu">
-            <ul> <?php if (User::canViewAdvertiserTab()) {
-            ?>
+            <ul>
+                <?php if (User::canViewAdvertiserTab() && $userPrivilege->canViewPromotions(0, true)) { ?>
                 <li class="menu__item">
                     <div class="menu__item__inner"> <span class="menu-head"><?php echo Labels::getLabel("LBL_Promotions", $siteLangId); ?></span></div>
                 </li>
@@ -39,14 +47,17 @@ $action = strtolower($action);
                                 </svg>
                             </i><span class="menu-item__title"><?php echo Labels::getLabel("LBL_Promotion_Charges", $siteLangId); ?></span></a></div>
                 </li>
+				<?php if ($userParentId == UserAuthentication::getLoggedUserId()) { ?>
                 <li class="menu__item <?php echo ($controller == 'account' && $action == 'credits') ? 'is-active' : ''; ?>">
                     <div class="menu__item__inner"><a title="<?php echo Labels::getLabel("LBL_My_Credits", $siteLangId); ?>" href="<?php echo CommonHelper::generateUrl('Account', 'credits'); ?>"><i class="icn shop"><svg class="svg">
                                     <use xlink:href="<?php echo CONF_WEBROOT_URL; ?>images/retina/sprite.svg#dash-credits" href="<?php echo CONF_WEBROOT_URL; ?>images/retina/sprite.svg#dash-credits"></use>
                                 </svg>
                             </i><span class="menu-item__title"><?php echo Labels::getLabel('LBL_My_Credits', $siteLangId); ?></span></a></div>
                 </li>
-                <li class="divider"></li> <?php
-        } ?> <li class="menu__item">
+				<?php }?>
+                <li class="divider"></li>
+                <?php } ?>
+                <li class="menu__item">
                     <div class="menu__item__inner"> <span class="menu-head"><?php echo Labels::getLabel('LBL_Profile', $siteLangId);?></span></div>
                 </li>
                 <li class="menu__item <?php echo ($controller == 'account' && $action == 'profileinfo') ? 'is-active' : ''; ?>">
@@ -67,4 +78,4 @@ $action = strtolower($action);
             </ul>
         </nav>
     </div>
-</div>
+</sidebar>

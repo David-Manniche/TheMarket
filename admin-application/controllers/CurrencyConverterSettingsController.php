@@ -6,7 +6,7 @@ class CurrencyConverterSettingsController extends CurrencyApiSettingsController
     {
         return [
                 'api_key' => [
-                    'type' => 'string',
+                    'type' => PluginSetting::TYPE_STRING,
                     'required' => true,
                     'label' => "Api Key",
                 ]

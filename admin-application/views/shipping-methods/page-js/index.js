@@ -112,12 +112,4 @@ $(document).ready(function() {
         $.systemMessage.close();
     };
 
-	toggleBulkStatues = function(status){
-        if(!confirm(langLbl.confirmUpdateStatus)){
-            return false;
-        }
-        $("#frmShpApiListing input[name='status']").val(status);
-        $("#frmShpApiListing").submit();
-    };
-
 })();

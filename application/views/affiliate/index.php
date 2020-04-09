@@ -86,27 +86,36 @@ $sharingFrm->developerTags['fld_default_col'] = 12;
                 </div> <?php 
 				if (!empty(FatApp::getConfig("CONF_FACEBOOK_APP_ID")) && !empty(FatApp::getConfig("CONF_FACEBOOK_APP_SECRET"))) {
     ?> <div class="widget widget-stats">
-                    <a id="facebook_btn" href="javascript:void(0);" class="box--share box--share-fb"> <i class="fa fa-facebook"></i>
-                        <h5><?php echo Labels::getLabel('L_Share_on', $siteLangId)?></h5>
-                        <h2><?php echo Labels::getLabel('L_Facebook', $siteLangId)?></h2>
-                        <p> <?php echo sprintf(Labels::getLabel('L_Post_your_wall_facebook', $siteLangId), '<strong>'.Labels::getLabel('L_Facebook', $siteLangId).'</strong>')?> </p>
+                    <a id="facebook_btn" href="javascript:void(0);" class="box--share box--share-fb">
+                        <i class="icon fab fa-facebook-f"></i>
+                        <div class="detail">
+                            <h5><?php echo Labels::getLabel('L_Share_on', $siteLangId)?></h5>
+                            <h2><?php echo Labels::getLabel('L_Facebook', $siteLangId)?></h2>
+                            <p> <?php echo sprintf(Labels::getLabel('L_Post_your_wall_facebook', $siteLangId), '<strong>'.Labels::getLabel('L_Facebook', $siteLangId).'</strong>')?> </p>
+                        </div>
                         <span class="ajax_message thanks-msg" id="fb_ajax"></span>
                     </a>
                 </div> <?php
 } ?> <?php if (false !== $twitterUrl) {
         ?> <div class="widget widget-stats">
-                    <a class="box--share box--share-tw" id="twitter_btn" href="javascript:void(0);"> <i class="fa fa-twitter"></i>
-                        <h5><?php echo Labels::getLabel('L_Share_on', $siteLangId)?></h5>
-                        <h2><?php echo Labels::getLabel('L_Twitter', $siteLangId)?></h2>
-                        <p> <?php echo sprintf(Labels::getLabel('L_Send_a_tweet_followers', $siteLangId), '<strong>'.Labels::getLabel('L_Tweet', $siteLangId).'</strong>')?> </p>
+                    <a class="box--share box--share-tw" id="twitter_btn" href="javascript:void(0);">
+                        <i class="icon fa fa-twitter"></i>
+                        <div class="detail">
+                            <h5><?php echo Labels::getLabel('L_Share_on', $siteLangId)?></h5>
+                            <h2><?php echo Labels::getLabel('L_Twitter', $siteLangId)?></h2>
+                            <p> <?php echo sprintf(Labels::getLabel('L_Send_a_tweet_followers', $siteLangId), '<strong>'.Labels::getLabel('L_Tweet', $siteLangId).'</strong>')?> </p>
+                        </div>
                         <span class="ajax_message thanks-msg" id="twitter_ajax"></span>
                     </a>
                 </div> <?php
     } ?> <div class="widget widget-stats">
-                    <a class="showbutton box--share box--share-mail" href="javascript:void(0);"> <i class="fa fa-envelope"></i>
-                        <h5><?php echo Labels::getLabel('L_Share_on', $siteLangId)?></h5>
-                        <h2><?php echo Labels::getLabel('L_Email', $siteLangId)?></h2>
-                        <p> <?php echo Labels::getLabel('L_Email', $siteLangId)?> <?php echo Labels::getLabel('L_Your_friend_tell_them_about_yourself', $siteLangId)?> </p>
+                    <a class="showbutton box--share box--share-mail" href="javascript:void(0);">
+                        <i class="fa fa-envelope"></i>
+                        <div class="detail">
+                            <h5><?php echo Labels::getLabel('L_Share_on', $siteLangId)?></h5>
+                            <h2><?php echo Labels::getLabel('L_Email', $siteLangId)?></h2>
+                            <p> <?php echo Labels::getLabel('L_Email', $siteLangId)?> <?php echo Labels::getLabel('L_Your_friend_tell_them_about_yourself', $siteLangId)?> </p>
+                        </div>
                         <span class="ajax_message thanks-msg"></span>
                     </a>
                 </div>
@@ -138,8 +147,8 @@ $sharingFrm->developerTags['fld_default_col'] = 12;
                         <div class="cards-header">
                             <h4><?php echo Labels::getLabel('L_Invite_friends_through_email', $siteLangId)?></h4>
                         </div>
-						<div class="cards-content"> <?php echo $sharingFrm->getFormHtml(); ?> <span class="ajax_message" id="custom_ajax"></span></div>
-						
+                        <div class="cards-content"> <?php echo $sharingFrm->getFormHtml(); ?> <span class="ajax_message" id="custom_ajax"></span></div>
+
                     </div>
                 </div>
             </div>
@@ -154,7 +163,7 @@ $sharingFrm->developerTags['fld_default_col'] = 12;
     } ?>
                         </div>
                         <div class="cards-content ">
-                            <table class="table table--orders js-scrollable">
+                            <table class="table">
                                 <tbody>
                                     <tr class="">
                                         <th width="40%"><?php echo Labels::getLabel('LBL_User_Detail', $siteLangId);?></th>
@@ -193,11 +202,7 @@ $sharingFrm->developerTags['fld_default_col'] = 12;
                                     </tr> <?php
     } ?>
                                 </tbody>
-                                <div class="scroll-hint-icon-wrap" data-target="scrollable-icon">
-                                    <span class="scroll-hint-icon">
-                                        <div class="scroll-hint-text"><?php echo Labels::getLabel('LBL_Scrollable', $siteLangId);?></div>
-                                    </span>
-                                </div>
+                                
                             </table>
                         </div>
                     </div>
@@ -212,7 +217,7 @@ $sharingFrm->developerTags['fld_default_col'] = 12;
     } ?>
                         </div>
                         <div class="cards-content ">
-                            <table class="table table--orders js-scrollable ">
+                            <table class="table ">
                                 <tbody>
                                     <tr class="">
                                         <th width="30%"><?php echo Labels::getLabel('LBL_Txn._Detail', $siteLangId);?></th>
@@ -248,11 +253,7 @@ $sharingFrm->developerTags['fld_default_col'] = 12;
                                     </tr> <?php
     } ?>
                                 </tbody>
-                                <div class="scroll-hint-icon-wrap" data-target="scrollable-icon">
-                                    <span class="scroll-hint-icon">
-                                        <div class="scroll-hint-text"><?php echo Labels::getLabel('LBL_Scrollable', $siteLangId);?></div>
-                                    </span>
-                                </div>
+                                
                             </table>
                         </div>
                     </div>

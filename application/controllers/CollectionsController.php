@@ -109,7 +109,7 @@ class CollectionsController extends MyAppController
         $productSrchObj->addMultipleFields(
             array('product_id', 'selprod_id', 'IFNULL(product_name, product_identifier) as product_name', 'IFNULL(selprod_title  ,IFNULL(product_name, product_identifier)) as selprod_title',
             'special_price_found', 'splprice_display_list_price', 'splprice_display_dis_val', 'splprice_display_dis_type',
-            'theprice', 'selprod_price', 'selprod_stock', 'IF(selprod_stock > 0, 1, 0) AS in_stock', 'selprod_condition', 'prodcat_id', 'IFNULL(prodcat_name, prodcat_identifier) as prodcat_name', 'selprod_sold_count', 'product_image_updated_on')
+            'theprice', 'selprod_price','selprod_stock', 'IF(selprod_stock > 0, 1, 0) AS in_stock', 'selprod_condition','prodcat_id','IFNULL(prodcat_name, prodcat_identifier) as prodcat_name','selprod_sold_count', 'product_updated_on')
         );
 
 
@@ -196,8 +196,8 @@ class CollectionsController extends MyAppController
 
                 if ($collections) {
                     foreach ($collections as &$cat) {
-                        if (true === MOBILE_APP_API_CALL) {
-                            $imgUpdatedOn = ProductCategory::getAttributesById($cat['prodcat_id'], 'prodcat_img_updated_on');
+                        if (true ===  MOBILE_APP_API_CALL) {
+                            $imgUpdatedOn = ProductCategory::getAttributesById($cat['prodcat_id'], 'prodcat_updated_on');
                             $uploadedTime = AttachedFile::setTimeParam($imgUpdatedOn);
                             $cat['image'] = FatCache::getCachedUrl(CommonHelper::generateFullUrl('Category', 'banner', array($cat['prodcat_id'], $this->siteLangId, 'MOBILE', applicationConstants::SCREEN_MOBILE)) . $uploadedTime, CONF_IMG_CACHE_TIME, '.jpg');
                         } else {
@@ -252,7 +252,7 @@ class CollectionsController extends MyAppController
                         $collections[$val['shop_id']]['shop_logo'] = CommonHelper::generateFullUrl('image', 'shopLogo', array($val['shop_id'], $this->siteLangId));
                         $collections[$val['shop_id']]['shop_banner'] = CommonHelper::generateFullUrl('image', 'shopBanner', array($val['shop_id'], $this->siteLangId));
                         array_walk($products, function (&$value, &$key) {
-                            $uploadedTime = AttachedFile::setTimeParam($value['product_image_updated_on']);
+                            $uploadedTime = AttachedFile::setTimeParam($value['product_updated_on']);
                             $value['product_image_url'] = FatCache::getCachedUrl(CommonHelper::generateFullUrl('image', 'product', array($value['product_id'], "THUMB", $value['selprod_id'], 0, $this->siteLangId)) . $uploadedTime, CONF_IMG_CACHE_TIME, '.jpg');
                         });
                     }

@@ -5,7 +5,7 @@ $arr_flds = array(
         'thread_subject' => Labels::getLabel('LBL_Subject', $adminLangId),
         'message_text' => Labels::getLabel('LBL_Message', $adminLangId),
         'message_date' => Labels::getLabel('LBL_Date', $adminLangId),
-        'action' => Labels::getLabel('LBL_Action', $adminLangId),
+        'action' => '',
     );
 
 $tbl = new HtmlElement('table', array('class'=>'table table-responsive table--hovered','id'=>'post'));
@@ -24,36 +24,42 @@ foreach ($arr_listing as $sn => $row) {
         switch ($key) {
             case 'message_sent_by_username':
                 $div_about_me = $td->appendElement('div', array('class'=>'avtar avtar--small'));
-                $div_about_me->appendElement('img', array('src'=>CommonHelper::generateUrl('Image', 'user', array($row['message_sent_by'],'MINI',true), CONF_WEBROOT_FRONT_URL)));
-                $span = $td->appendElement('span', array('class'=>'avtar__name'), $row['message_sent_by_username']);
+                
+                if ($row['message_from_shop_name'] != '') {
+                    $name =  $row['message_from_shop_name'] . ' (' . $row['message_sent_by_username'] . ')';
+                    $div_about_me->appendElement('img', array('src'=>CommonHelper::generateUrl('Image', 'shopLogo', array($row['message_from_shop_id'], $adminLangId,'MINI'), CONF_WEBROOT_FRONT_URL)));
+                } else {
+                    $name =  $row['message_sent_by_username'];
+                    $div_about_me->appendElement('img', array('src'=>CommonHelper::generateUrl('Image', 'user', array($row['message_sent_by'],'MINI',true), CONF_WEBROOT_FRONT_URL)));
+                }
+                $span = $td->appendElement('span', array('class'=>'avtar__name'), $name);
 
                 break;
             case 'message_sent_to_name':
                 //$td->setAttribute(array('width'=>'55%'));
                 $figure = $td->appendElement('figure', array('class'=>'avtar bgm-purple'));
-                $figure->appendElement('img', array('src'=>CommonHelper::generateUrl('Image', 'user', array($row['message_sent_to'],'MINI',true), CONF_WEBROOT_FRONT_URL)));
-                $span = $td->appendElement('span', array('class'=>'avtar__name'), $row['message_sent_to_name']);
+                
+                if ($row['message_to_shop_name'] != '') {
+                    $figure->appendElement('img', array('src'=>CommonHelper::generateUrl('Image', 'shopLogo', array($row['message_to_shop_id'], $adminLangId,'MINI'), CONF_WEBROOT_FRONT_URL)));
+                    $name =  $row['message_to_shop_name'] . ' (' . $row['message_sent_to_name'] . ')';
+                } else {
+                    $figure->appendElement('img', array('src'=>CommonHelper::generateUrl('Image', 'user', array($row['message_sent_to'],'MINI',true), CONF_WEBROOT_FRONT_URL)));
+                    $name =  $row['message_sent_to_name'];
+                }
+                $span = $td->appendElement('span', array('class'=>'avtar__name'), $name);
 
                 break;
             case 'message_text':
                 $div = $td->appendElement('div', array('class'=>'listing__desc'));
-                $anchor = $div->appendElement('a', array('href'=>'#'));
-                $anchor->appendElement('plaintext', array(), $row['message_text']);
+                // $anchor = $div->appendElement('a', array('href'=>'#'));
+                $div->appendElement('plaintext', array(), $row['message_text']);
                 //$td->appendElement('plaintext', array(), FatDate::format($row['message_text'] , true));
                 break;
             case 'message_date':
                 $td->appendElement('span', array('class'=>'date'), FatDate::format($row['message_date'], true));
                 break;
             case 'action':
-                $ul = $td->appendElement("ul", array("class"=>"actions actions--centered"));
-
-                $li = $ul->appendElement("li", array('class'=>'droplink'));
-                $li->appendElement('a', array('href'=>'javascript:void(0)', 'class'=>'button small green','title'=>Labels::getLabel('LBL_View', $adminLangId)), '<i class="ion-android-more-horizontal icon"></i>', true);
-                $innerDiv=$li->appendElement('div', array('class'=>'dropwrap'));
-                $innerUl=$innerDiv->appendElement('ul', array('class'=>'linksvertical'));
-
-                $innerLi=$innerUl->appendElement('li');
-                $innerLi->appendElement('a', array('href'=>CommonHelper::generateUrl('Messages', 'view', array($row['thread_id'])),'class'=>'button small green redirect--js','title'=>Labels::getLabel('LBL_View', $adminLangId)), Labels::getLabel('LBL_View', $adminLangId), true);
+                $td->appendElement('a', array('href'=>CommonHelper::generateUrl('Messages', 'view', array($row['thread_id'])),'class'=>'btn btn-clean btn-sm btn-icon','title'=>Labels::getLabel('LBL_View', $adminLangId)), "<i class='ion-eye'></i>", true);
 
                 break;
             default:

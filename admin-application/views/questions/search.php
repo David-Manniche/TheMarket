@@ -39,10 +39,10 @@ foreach ($arr_listing as $sn=>$row){
 				if($canEdit){
 					$li = $ul->appendElement("li");
 					$li->appendElement('a', array('href'=>'javascript:void(0)','class'=>'button small green', 'title'=>Labels::getLabel('LBL_Edit',$adminLangId),
-						"onclick"=>"questionForm(".$row['question_qbank_id'].",".$row['question_id'].")"),'<i class="ion-edit icon"></i>', true);
+						"onclick"=>"questionForm(".$row['question_qbank_id'].",".$row['question_id'].")"),'<i class="far fa-edit icon"></i>', true);
 					$li = $ul->appendElement("li");
 					$li->appendElement('a', array(
-						'href'=>"javascript:void(0)", 'class'=>'button small green','title'=>Labels::getLabel('LBL_Delete',$adminLangId),"onclick"=>"deleteRecord(".$row['question_id'].")"),'<i class="ion-android-delete icon"></i>', true);
+						'href'=>"javascript:void(0)", 'class'=>'button small green','title'=>Labels::getLabel('LBL_Delete',$adminLangId),"onclick"=>"deleteRecord(".$row['question_id'].")"),'<i class="fa fa-trash  icon"></i>', true);
 				}
 			break;
 			default:

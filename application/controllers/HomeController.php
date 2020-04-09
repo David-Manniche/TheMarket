@@ -46,7 +46,7 @@ class HomeController extends MyAppController
             $this->set('layoutType', Collections::getLayoutTypeArr($this->siteLangId));
             $this->set('orderProducts', $orderProducts);
         } else {
-            $this->_template->addJs(array('js/slick.min.js', 'js/responsive-img.min.js'));
+            $this->_template->addJs('js/slick.min.js');
             $cacheKey = $this->siteLangId . '-' . $this->siteCurrencyId;
 
             /*[ As all layout in sequence so added in one cache]*/
@@ -165,7 +165,7 @@ class HomeController extends MyAppController
         }
 
         $productSrchObj->addCondition('selprod_deleted', '=', applicationConstants::NO);
-        $productSrchObj->addMultipleFields(array('product_id', 'selprod_id', 'IFNULL(product_name, product_identifier) as product_name', 'IFNULL(selprod_title  ,IFNULL(product_name, product_identifier)) as selprod_title', 'product_image_updated_on', 'special_price_found', 'splprice_display_list_price', 'splprice_display_dis_val', 'splprice_display_dis_type', 'theprice', 'selprod_price', 'selprod_stock', 'selprod_condition', 'prodcat_id', 'IFNULL(prodcat_name, prodcat_identifier) as prodcat_name', 'selprod_sold_count', 'IF(selprod_stock > 0, 1, 0) AS in_stock'));
+        $productSrchObj->addMultipleFields(array('product_id','selprod_id','IFNULL(product_name, product_identifier) as product_name','IFNULL(selprod_title  ,IFNULL(product_name, product_identifier)) as selprod_title','product_updated_on','special_price_found', 'splprice_display_list_price','splprice_display_dis_val','splprice_display_dis_type','theprice','selprod_price','selprod_stock','selprod_condition','prodcat_id','IFNULL(prodcat_name, prodcat_identifier) as prodcat_name','selprod_sold_count','IF(selprod_stock > 0, 1, 0) AS in_stock'));
         return $productSrchObj;
     }
 
@@ -975,7 +975,8 @@ class HomeController extends MyAppController
         ];
 
         $data['isWishlistEnable'] = FatApp::getConfig('CONF_ADD_FAVORITES_TO_WISHLIST', FatUtility::VAR_INT, 1);
-
+        $data['canSendSms'] = SmsArchive::canSendSms() ? 1 : 0;
+        $data['canAddReview'] = FatApp::getConfig('CONF_ALLOW_REVIEWS', FatUtility::VAR_INT, 1);
         $this->set('data', $data);
         $this->_template->render();
     }
@@ -1021,9 +1022,10 @@ class HomeController extends MyAppController
                 "lang" => $this->siteLangCode,
                 "start_url" => CONF_WEBROOT_URL,
                 "display" => "standalone",
-                "background_color" => isset($this->themeDetail['tcolor_first_color']) ? '#' . $this->themeDetail['tcolor_first_color'] : '',
-                "theme_color" => isset($this->themeDetail['tcolor_first_color']) ? '#' . $this->themeDetail['tcolor_first_color'] : '',
+                "background_color" => isset($this->themeDetail[ThemeColor::TYPE_BODY]) ? '#' . $this->themeDetail[ThemeColor::TYPE_BODY] : '',
+                "theme_color" => isset($this->themeDetail[ThemeColor::TYPE_BRAND]) ? '#' . $this->themeDetail[ThemeColor::TYPE_BRAND] : '',
             );
+            
             foreach ($iconsArr as $key => $val) {
                 $iconUrl = FatCache::getCachedUrl(CommonHelper::generateUrl('Image', 'appleTouchIcon', array($this->siteLangId, $val . '-' . $val)), CONF_IMG_CACHE_TIME, '.png');
                 $icons = [

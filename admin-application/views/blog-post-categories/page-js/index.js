@@ -137,15 +137,7 @@ $(document).ready(function() {
             }
         });
     };
-
-	toggleBulkStatues = function(status){
-        if(!confirm(langLbl.confirmUpdateStatus)){
-            return false;
-        }
-        $("#frmBlogPostCatListing input[name='status']").val(status);
-        $("#frmBlogPostCatListing").submit();
-    };
-
+    
     deleteSelected = function(){
         if(!confirm(langLbl.confirmDelete)){
             return false;

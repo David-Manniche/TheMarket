@@ -10,8 +10,12 @@ $keywordFld->addFieldTagAttribute('placeholder', Labels::getLabel('LBL_Search_Pr
 $keywordFld->developerTags['col'] = 4;
 $keywordFld->developerTags['noCaptionTag'] = true;
 
+$submitFld = $frmSearch->getField('btn_submit');
+$submitFld->setFieldTagAttribute('class', 'btn btn-primary btn-block');
+
 $clearFld = $frmSearch->getField('btn_clear');
 $clearFld->setFieldTagAttribute('onclick', 'clearSearch()');
+$clearFld->setFieldTagAttribute('class', 'btn btn-outline-primary btn-block');
 ?>
 <?php $this->includeTemplate('_partial/seller/sellerDashboardNavigation.php'); ?>
 <main id="main-area" class="main" role="main">
@@ -19,7 +23,7 @@ $clearFld->setFieldTagAttribute('onclick', 'clearSearch()');
         <div class="content-header  row justify-content-between mb-3">
             <div class="col-md-auto">
                 <?php $this->includeTemplate('_partial/dashboardTop.php'); ?>
-                <h2 class="content-header-title"><?php echo Labels::getLabel('LBL_Product_Tags', $siteLangId); ?><i class="fa fa-info-circle" data-toggle="tooltip" data-placement="top" title="<?php echo Labels::getLabel('LBL_Tags_can_only_be_added_for_private_products', $siteLangId); ?>"></i></h2>
+                <h2 class="content-header-title"><?php echo Labels::getLabel('LBL_Product_Tags', $siteLangId); ?><i class="fa fa-info-circle" data-toggle="tooltip" data-placement="right" title="<?php echo Labels::getLabel('LBL_Tags_can_only_be_added_for_private_products', $siteLangId); ?>"></i></h2>
             </div>
         </div>
         <div class="content-body">
@@ -29,20 +33,18 @@ $clearFld->setFieldTagAttribute('onclick', 'clearSearch()');
                         <div class="cards-content">
                             <div>
                                 <?php echo $frmSearch->getFormTag(); ?>
-                                <div class="field-set">
                                     <div class="row">
-                                        <div class="col-md-10">
-                                            <?php echo $frmSearch->getFieldHTML('keyword');?>
+                                        <div class="col-12 col-md-8">
+                                            <div class="field-set"><?php echo $frmSearch->getFieldHTML('keyword');?></div>
                                         </div>
-                                        <div class="col-md-2">
-                                            <?php 
-                                                echo $frmSearch->getFieldHTML('btn_submit');
-                                                echo $frmSearch->getFieldHTML('btn_clear');
-                                            ?>
+                                        <div class="col-6 col-md-2">
+                                            <div class="field-set"><?php echo $frmSearch->getFieldHTML('btn_submit'); ?></div>
+                                        </div>
+                                        <div class="col-6 col-md-2">
+                                            <div class="field-set"><?php echo $frmSearch->getFieldHTML('btn_clear');?></div>
                                         </div>
                                     </div>
                                     <div class='dvFocus-js'></div>
-                                </div>
                                 </form>
                                 <?php echo $frmSearch->getExternalJS(); ?>
                             </div>

@@ -33,7 +33,7 @@ $serviceAccInfo = isset($userData['service_account']) ? $userData['service_accou
                 <div class="row mb-4">
                     <div class="col-lg-12">
                         <div class="cards">
-                            <div class="cards-content pb-0">
+                            <div class="cards-content">
                                 <h5 class="cards-title mb-3">
                                     <?php echo Labels::getLabel('LBL_BATCH_SETUP', $siteLangId); ?>
                                 </h5>

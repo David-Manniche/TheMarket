@@ -30,10 +30,8 @@ foreach ($arr_listing as $sn=>$row){
 				$td->appendElement('plaintext', array(), $sr_no);
 			break;
 			case 'action':
-				$ul = $td->appendElement("ul",array("class"=>"actions"));
 				if($canEdit){
-					$li = $ul->appendElement("li");
-					$li->appendElement('a', array('href'=>'javascript:void(0)', 'class'=>'button small green', 
+					$td->appendElement('a', array('href'=>'javascript:void(0)', 'class'=>'btn btn-clean btn-sm btn-icon', 
 					'title'=>Labels::getLabel('LBL_Email_Seller',$adminLangId),"onclick"=>"sendMailForm(".$row['selprod_user_id'].",".$row['selprod_id'].")"),'<i class="ion-email icon"></i>', true);
 				}
 			break;

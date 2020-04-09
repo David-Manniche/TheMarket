@@ -6,12 +6,12 @@ class FacebookLoginSettingsController extends SocialLoginSettingsController
     {
         return [
                 'app_id' => [
-                    'type' => 'string',
+                    'type' => PluginSetting::TYPE_STRING,
                     'required' => true,
                     'label' => "App Id",
                 ],
                 'app_secret' => [
-                    'type' => 'string',
+                    'type' => PluginSetting::TYPE_STRING,
                     'required' => true,
                     'label' => "App Secret",
                 ],

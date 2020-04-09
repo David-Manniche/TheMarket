@@ -1,6 +1,6 @@
 $(document).ready(function(){
 	searchCustomProducts(document.frmSearchCustomProduct);
-	var productOptions=[] ;	
+	var productOptions=[] ;
 });
 $(document).on('change','.option',function(){
 	var option_id = $(this).val();
@@ -16,7 +16,7 @@ $(document).on('change','.language',function(){
 });
 (function() {
 	var runningAjaxReq = false;
-	
+
 		var productId =0;
 	checkRunningAjax = function(){
 		if( runningAjaxReq == true ){
@@ -25,7 +25,7 @@ $(document).on('change','.language',function(){
 		}
 		runningAjaxReq = true;
 	};
-	
+
 	searchCustomProducts = function(frm){
 		var dv = '#listing';
 		checkRunningAjax();
@@ -36,28 +36,28 @@ $(document).on('change','.language',function(){
 			$(dv).html(res);
 		});
 	};
-	
+
 	goToCustomProductSearchPage = function(page) {
 		if(typeof page==undefined || page == null){
 			page = 1;
 		}
-		var frm = document.frmCustomProductSearchPaging;		
+		var frm = document.frmCustomProductSearchPaging;
 		$(frm.page).val(page);
 		searchCustomProducts(frm);
 	};
-	
+
 	reloadCustomProductList = function(){
 		var frm = document.frmSearchCatalogProduct;
 		searchCustomProducts(frm);
 	};
-	
+
 	customProductImages = function( productId ){
 		fcom.ajax(fcom.makeUrl('Seller', 'customProductImages', [productId]), '', function(t) {
 			productImages(productId);
 			$.facebox(t, 'faceboxWidth');
 		});
 	};
-	
+
 	productImages = function( product_id,option_id,lang_id ){
 		fcom.ajax(fcom.makeUrl('Seller', 'images', [product_id,option_id,lang_id]), '', function(t) {
 			$('#imageupload_div').html(t);
@@ -66,13 +66,13 @@ $(document).on('change','.language',function(){
 	
 	setupCustomProductImages = function ( ){
 		/* if ($.browser.msie && parseInt($.browser.version, 10) === 8 || $.browser.msie && parseInt($.browser.version, 10) === 9) {
-			$('#frmCustomProductImage').removeAttr('onsubmit')	 
-			$('#frmCustomProductImage').submit(); return true; 
+			$('#frmCustomProductImage').removeAttr('onsubmit')
+			$('#frmCustomProductImage').submit(); return true;
 		} */
 		var data = new FormData(  );
 		$inputs = $('#frmCustomProductImage input[type=text],#frmCustomProductImage select,#frmCustomProductImage input[type=hidden]');
-		$inputs.each(function() { data.append( this.name,$(this).val());});		
-		
+		$inputs.each(function() { data.append( this.name,$(this).val());});
+
 		$.each( $('#prod_image')[0].files, function(i, file) {
 				$('#imageupload_div').html(fcom.getLoader());
 				data.append('prod_image', file);
@@ -97,7 +97,7 @@ $(document).on('change','.language',function(){
 				});
 			});
 	};
-	
+
 	deleteCustomProductImage = function( productId, image_id ){
 		var agree = confirm(langLbl.confirmDelete);
 		if( !agree ){ return false; }
@@ -110,12 +110,10 @@ $(document).on('change','.language',function(){
 			productImages( productId, $('.option').val(), $('.language').val() );
 		});
 	}
-	
+
 	clearSearch = function(){
 		document.frmSearchCustomProduct.reset();
 		searchCustomProducts(document.frmSearchCustomProduct);
 	};
-	
+
 })();
-    
-	

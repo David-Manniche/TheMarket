@@ -41,7 +41,7 @@ if (0 < $selProd_id) {
             <div class="row mb-4">
                 <div class="col-lg-12">
                     <div class="cards">
-                        <div class="cards-content pb-0">
+                        <div class="cards-content">
                             <div class="replaced">
                                 <?php echo $frmSearch->getFormHtml(); ?>
                             </div>
@@ -53,13 +53,15 @@ if (0 < $selProd_id) {
                 <div class="col-lg-12">
                     <div class="cards">
                         <?php
-                        foreach ($dataToEdit as $data) {
-                            $data['addMultiple'] = (1 > $selProd_id) ? 1 : 0;
-                            $this->includeTemplate('seller/add-volume-discount-form.php', array('siteLangId' => $siteLangId, 'data' => $data), false);
-                        }
-                        if (1 > $selProd_id) {
-                            $this->includeTemplate('seller/add-volume-discount-form.php', array('siteLangId' => $siteLangId), false);
-                        }
+						if($canEdit){
+							foreach ($dataToEdit as $data) {
+								$data['addMultiple'] = (1 > $selProd_id) ? 1 : 0;
+								$this->includeTemplate('seller/add-volume-discount-form.php', array('siteLangId' => $siteLangId, 'data' => $data), false);
+							}
+							if (1 > $selProd_id) {
+								$this->includeTemplate('seller/add-volume-discount-form.php', array('siteLangId' => $siteLangId), false);
+							}
+						}
                         ?>
                         <div class="cards-content">
                             <div class="row justify-content-between">
@@ -73,7 +75,7 @@ if (0 < $selProd_id) {
                             <div id="listing">
                                 <?php echo Labels::getLabel('LBL_Loading..', $siteLangId); ?>
                             </div>
-                            <span class="gap"></span>
+                            
                         </div>
                     </div>
                 </div>

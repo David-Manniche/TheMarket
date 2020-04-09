@@ -25,7 +25,7 @@
     </div>
 <?php } ?>
 <?php if (!UserAuthentication::isUserLogged()) { ?>
-<div class="comment box p-4">
+<div class="comment box p-4 commentBox-js">
     <span class=""><a href="<?php echo CommonHelper::generateUrl('GuestUser', 'loginForm'); ?>"><?php echo Labels::getLabel('Lbl_Login', $siteLangId); ?> </a> <?php echo Labels::getLabel('Lbl_Login_required_to_post_comment', $siteLangId); ?></span>
 </div>
 <?php } ?>

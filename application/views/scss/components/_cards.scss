@@ -25,6 +25,7 @@
         -ms-flex-align: center;
         align-items: center;
         padding: 1.5rem;
+		color: $body-color;
 
         .cards-title {
             margin-bottom: 0;
@@ -42,6 +43,7 @@
     }
 
     .cards-content {
-        padding: 1.5rem;
+        padding:1rem 1.5rem;
+        /*height: inherit;*/
     }
 }

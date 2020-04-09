@@ -7,9 +7,9 @@ $featuredFld = $productFrm->getField('product_featured');
 $featuredFld->developerTags['cbLabelAttributes'] = array('class' => 'checkbox');
 $featuredFld->developerTags['cbHtmlAfterCheckbox'] = '<i class="input-helper"></i>';
 
-$freeShopFld = $productFrm->getField('ps_free');
+/* $freeShopFld = $productFrm->getField('ps_free');
 $freeShopFld->developerTags['cbLabelAttributes'] = array('class' => 'checkbox');
-$freeShopFld->developerTags['cbHtmlAfterCheckbox'] = '<i class="input-helper"></i>';
+$freeShopFld->developerTags['cbHtmlAfterCheckbox'] = '<i class="input-helper"></i>'; */
 
 $codFld = $productFrm->getField('product_cod_enabled');
 $codFld->developerTags['cbLabelAttributes'] = array('class' => 'checkbox');
@@ -74,6 +74,7 @@ $btnBackFld->value = Labels::getLabel('LBL_Back', $siteLangId);
                 </div>
             </div>
                 <?php if ($productType == Product::PRODUCT_TYPE_PHYSICAL) { ?>
+                <?php /* 
                 <div class="col-md-4">
                     <div class="field-set">
                         <div class="caption-wraper"></div>
@@ -83,7 +84,7 @@ $btnBackFld->value = Labels::getLabel('LBL_Back', $siteLangId);
                             </div>
                         </div>
                     </div>
-                </div>
+                </div> */ ?>
                 <div class="col-md-4">
                     <div class="field-set">
                         <div class="caption-wraper"></div>
@@ -103,15 +104,15 @@ $btnBackFld->value = Labels::getLabel('LBL_Back', $siteLangId);
         if (!empty($otherLanguages)) {
             foreach ($otherLanguages as $langId => $data) {
                 ?>
-                <div class="accordion" id="specification-accordion">
+                <div class="accordion my-4" id="specification-accordion-<?php echo $langId; ?>">
                    
-                            <h6 class="dropdown-toggle" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                            <h6 class="dropdown-toggle" data-toggle="collapse" data-target="#collapse-<?php echo $langId; ?>" aria-expanded="true" aria-controls="collapse-<?php echo $langId; ?>">
                                 <span onClick="displayOtherLangProdSpec(this,<?php echo $langId; ?>)">
         <?php echo $data . " ";
         echo Labels::getLabel('LBL_Language_Specification', $siteLangId); ?>
                                 </span>
                             </h6>
-                            <div id="collapseOne" class="collapse collapse-js-<?php echo $langId; ?>" aria-labelledby="headingOne" data-parent="#specification-accordion">
+                            <div id="collapse-<?php echo $langId; ?>" class="collapse collapse-js-<?php echo $langId; ?>" aria-labelledby="headingOne" data-parent="#specification-accordion-<?php echo $langId; ?>">
                                 <div class="specifications-form-<?php echo $langId; ?>"></div>
                                 <div class="specifications-list-<?php echo $langId; ?>"></div>
                             </div>
@@ -124,7 +125,7 @@ $btnBackFld->value = Labels::getLabel('LBL_Back', $siteLangId);
         ?>
 
         <div class="row">
-            <div class="col-md-6">
+            <div class="col-6">
                 <div class="field-set">
                     <div class="caption-wraper"><label class="field_label"></label></div>
                     <div class="field-wraper">
@@ -134,7 +135,7 @@ $btnBackFld->value = Labels::getLabel('LBL_Back', $siteLangId);
                     </div>
                 </div>
             </div>
-            <div class="col-md-6 text-right">
+            <div class="col-6 text-right">
                 <div class="field-set">
                     <div class="caption-wraper"><label class="field_label"></label></div>
                     <div class="field-wraper">

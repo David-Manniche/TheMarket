@@ -23,7 +23,7 @@ class FcmPushNotification extends PushNotificationBase
     {
         $settings = $this->getSettings();
         if (!isset($settings['server_api_key'])) {
-            $this->error = Labels::getLabel('MSG_SETTINGS_NOT_UPDATED', CommonHelper::getLangId());
+            $this->error = Labels::getLabel('MSG_PLUGIN_SETTINGS_NOT_CONFIGURED', CommonHelper::getLangId());
             return false;
         }
         $this->serverApiKey = $settings['server_api_key'];

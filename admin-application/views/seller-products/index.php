@@ -59,24 +59,30 @@
                             class="themebtn btn-default btn-sm"><?php echo Labels::getLabel('LBL_Add_New_Product', $adminLangId); ?></a>
                         <?php
                         }
-
+                        
                         if ($canEdit) {
-                            $innerLi=$innerUl->appendElement('li');
-                            $innerLi->appendElement('a', array('href'=>'javascript:void(0)','class'=>'button small green','title'=>Labels::getLabel('LBL_Delete', $adminLangId),"onclick"=>"deleteSelected()"), Labels::getLabel('LBL_Delete', $adminLangId), true);
-                            
-                            $innerLi=$innerUl->appendElement('li');
-                            $innerLi->appendElement('a', array('href'=>'javascript:void(0)','class'=>'button small green','title'=>Labels::getLabel('LBL_Activate', $adminLangId),"onclick"=>"toggleBulkStatues(1)"), Labels::getLabel('LBL_Activate', $adminLangId), true);
-
-                            $innerLi=$innerUl->appendElement('li');
-                            $innerLi->appendElement('a', array('href'=>'javascript:void(0)','class'=>'button small green','title'=>Labels::getLabel('LBL_Deactivate', $adminLangId),"onclick"=>"toggleBulkStatues(0)"), Labels::getLabel('LBL_Deactivate', $adminLangId), true);
-
-                            $innerLi=$innerUl->appendElement('li');
-                            $innerLi->appendElement('a', array('href'=>'javascript:void(0)','class'=>'button small green','title'=>Labels::getLabel('LBL_Add_Special_Price', $adminLangId),"onclick"=>"addSpecialPrice()"), Labels::getLabel('LBL_Add_Special_Price', $adminLangId), true);
-
-                            $innerLi=$innerUl->appendElement('li');
-                            $innerLi->appendElement('a', array('href'=>'javascript:void(0)','class'=>'button small green','title'=>Labels::getLabel('LBL_Add_Volume_Discount', $adminLangId),"onclick"=>"addVolumeDiscount()"), Labels::getLabel('LBL_Add_Volume_Discount', $adminLangId), true);
+                            $otherButtons = [
+                                [
+                                    'attr' => [
+                                        'href' => 'javascript:void(0)',
+                                        'onclick' => 'addSpecialPrice(0)',
+                                        'title' => Labels::getLabel('LBL_Add_Special_Price', $adminLangId),
+                                        'class' => 'toolbar-btn-js d-none'
+                                    ],
+                                    'label' => '<i class="fas fa-dollar-sign"></i>'
+                                ],
+                                [
+                                    'attr' => [
+                                        'href' => 'javascript:void(0)',
+                                        'onclick' => 'addVolumeDiscount(0)',
+                                        'title' => Labels::getLabel('LBL_Add_Volume_Discount', $adminLangId),
+                                        'class' => 'toolbar-btn-js d-none'
+                                    ],
+                                    'label' => '<i class="fas fa-percent"></i>'
+                                ],
+                            ];
+                            $this->includeTemplate('_partial/action-buttons.php', ['otherButtons' => $otherButtons, 'adminLangId' => $adminLangId], false);
                         }
-                            echo $ul->getHtml();
                         ?>
                     </div>
                     <div class="sectionbody">

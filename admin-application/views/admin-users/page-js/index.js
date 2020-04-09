@@ -97,14 +97,6 @@ $(document).ready(function() {
         });
     };
 
-	toggleBulkStatues = function(status){
-        if(!confirm(langLbl.confirmUpdateStatus)){
-            return false;
-        }
-        $("#frmAdmUsersListing input[name='status']").val(status);
-        $("#frmAdmUsersListing").submit();
-    };
-
 
     /* deleteRecord = function(id){
     	if(!confirm(langLbl.confirmDelete)){return;}

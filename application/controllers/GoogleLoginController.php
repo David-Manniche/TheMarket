@@ -20,7 +20,7 @@ class GoogleLoginController extends SocialMediaAuthController
     {
         $settings = $this->getSettings();
         if (!isset($settings['client_id']) || !isset($settings['client_secret']) || !isset($settings['developer_key'])) {
-            $message = Labels::getLabel('MSG_SETTINGS_NOT_UPDATED', $this->siteLangId);
+            $message = Labels::getLabel('MSG_PLUGIN_SETTINGS_NOT_CONFIGURED', $this->siteLangId);
             $this->setErrorAndRedirect($message, true);
         }
         $this->clientId = $settings['client_id'];
@@ -60,6 +60,10 @@ class GoogleLoginController extends SocialMediaAuthController
             if (empty($accessToken)) {
                 $this->client->authenticate($get['code']);
                 $accessToken = $this->client->getAccessToken();
+                if (null == $accessToken) {
+					$message = Labels::getLabel('MSG_UNABLE_TO_ACCESS_THIS_ACCOUNT', $this->siteLangId);
+					$this->setErrorAndRedirect($message, true);
+				}
             }
 
             $this->client->setAccessToken($accessToken);

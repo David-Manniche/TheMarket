@@ -125,15 +125,7 @@ $(document).ready(function() {
             }
         });
     };
-
-    toggleBulkStatues = function(status){
-        if(!confirm(langLbl.confirmUpdateStatus)){
-            return false;
-        }
-        $("#frmCountryListing input[name='status']").val(status);
-        $("#frmCountryListing").submit();
-    };
-
+    
     clearSearch = function() {
         document.frmSearch.reset();
         searchCountry(document.frmSearch);

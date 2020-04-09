@@ -2471,7 +2471,7 @@ class SellerProductsController extends AdminBaseController
             );
         }
 
-        $sellerProdObj = new SellerProduct($selprodId);
+        $sellerProdObj = new SellerProduct($selprodId);        
         if (!$sellerProdObj->changeStatus($status)) {
             Message::addErrorMessage($sellerProdObj->getError());
             FatUtility::dieWithError(Message::getHtml());
@@ -2803,12 +2803,12 @@ class SellerProductsController extends AdminBaseController
         );
         FatUtility::dieJsonSuccess($json);
     }
-    
-    
-    
-    
-    
-    
+
+
+
+
+
+
     public function getRelatedProductsList($selprod_id)
     {
         $selprod_id = FatUtility::int($selprod_id);
@@ -2904,7 +2904,8 @@ class SellerProductsController extends AdminBaseController
             $cnd = $prodSrch->addCondition('product_name', 'like', "%$keyword%");
             $cnd->attachCondition('product_identifier', 'LIKE', '%' . $keyword . '%', 'OR');
         }
-
+        $prodSrch->joinTable(User::DB_TBL_CRED, 'LEFT OUTER JOIN', 'tuc.credential_user_id = selprod_user_id', 'tuc');
+        $prodSrch->addFld('credential_username');
         $prodSrch->setPageNumber($page);
         $prodSrch->setPageSize($pagesize);
         $prodSrch->addGroupBy('related_sellerproduct_id');
@@ -2922,6 +2923,7 @@ class SellerProductsController extends AdminBaseController
             $srch->doNotLimitRecords();
             $rs = $srch->getResultSet();
             $arrListing[$productId] = $db->fetchAll($rs);
+            $arrListing[$productId]['credential_username'] = $relatedProd['credential_username'];
         }
 
         $this->set("arrListing", $arrListing);
@@ -2949,20 +2951,18 @@ class SellerProductsController extends AdminBaseController
         $post = FatApp::getPostedData();
         $selprod_id = FatUtility::int($post['selprod_id']);
         if ($selprod_id <= 0) {
-            Message::addErrorMessage(Labels::getLabel('MSG_Invalid_Request', $this->adminLangId));
-            FatApp::redirectUser($_SESSION['referer_page_url']);
+            FatUtility::dieJsonError(Labels::getLabel("MSG_Please_Select_A_Valid_Product", $this->adminLangId));
         }
 
         if (!isset($post['selected_products']) || !is_array($post['selected_products']) || 1 > count($post['selected_products'])) {
-            FatUtility::dieJsonError(Labels::getLabel("MSG_MUST_SELECT_ATLEAST_ONE_PRODUCT_TO_BUY_TOGETHER", $this->adminLangId));
+            FatUtility::dieJsonError(Labels::getLabel("MSG_MUST_SELECT_ATLEAST_ONE_PRODUCT_TO_RELATED_PRODUCTS", $this->adminLangId));
         }
-        
+
         $relatedProducts = $post['selected_products'];
         unset($post['selprod_id']);
         $sellerProdObj = new SellerProduct();
         if (!$sellerProdObj->addUpdateSellerRelatedProdcts($selprod_id, $relatedProducts)) {
-            Message::addErrorMessage($sellerProdObj->getError());
-            FatApp::redirectUser($_SESSION['referer_page_url']);
+            FatUtility::dieJsonError($sellerProdObj->getError());
         }
 
         $this->set('msg', Labels::getLabel('LBL_Related_Product_Setup_Successful', $this->adminLangId));
@@ -2994,6 +2994,8 @@ class SellerProductsController extends AdminBaseController
         $selprod_id = FatUtility::int($selprod_id);
         $srch = SellerProduct::searchUpsellProducts($this->adminLangId);
         $srch->addCondition(SellerProduct::DB_TBL_UPSELL_PRODUCTS_PREFIX . 'sellerproduct_id', '=', $selprod_id);
+        $srch->addGroupBy('selprod_id');
+        $srch->addGroupBy('upsell_sellerproduct_id'); 
         $srch->addOrder('selprod_id', 'DESC');
         $rs = $srch->getResultSet();
         $upsellProds = FatApp::getDb()->fetchAll($rs);
@@ -3081,7 +3083,8 @@ class SellerProductsController extends AdminBaseController
             $cnd = $prodSrch->addCondition('product_name', 'like', "%$keyword%");
             $cnd->attachCondition('product_identifier', 'LIKE', '%' . $keyword . '%', 'OR');
         }
-        
+        $prodSrch->joinTable(User::DB_TBL_CRED, 'LEFT OUTER JOIN', 'tuc.credential_user_id = selprod_user_id', 'tuc');
+        $prodSrch->addFld('credential_username');
         $prodSrch->setPageNumber($page);
         $prodSrch->setPageSize($pagesize);
         $prodSrch->addGroupBy('upsell_sellerproduct_id');
@@ -3095,12 +3098,14 @@ class SellerProductsController extends AdminBaseController
             $srch->addFld('if(upsell_sellerproduct_id = ' . $selProdId . ', 1 , 0) as priority');
             $srch->addOrder('priority', 'DESC');
             $srch->addCondition('upsell_sellerproduct_id', '=', $productId);
+            $srch->addGroupBy('selprod_id');
+            $srch->addGroupBy('upsell_sellerproduct_id'); 
             $srch->doNotCalculateRecords();
             $srch->doNotLimitRecords();
             $rs = $srch->getResultSet();
             $arrListing[$productId] = $db->fetchAll($rs);
+            $arrListing[$productId]['credential_username'] = $upsellProd['credential_username'];
         }
-
         $this->set("arrListing", $arrListing);
 
         $this->set('page', $page);
@@ -3126,8 +3131,7 @@ class SellerProductsController extends AdminBaseController
         $post = FatApp::getPostedData();
         $selprod_id = FatUtility::int($post['selprod_id']);
         if ($selprod_id <= 0) {
-            Message::addErrorMessage(Labels::getLabel('MSG_Invalid_Request', $this->adminLangId));
-            FatApp::redirectUser($_SESSION['referer_page_url']);
+            FatUtility::dieJsonError(Labels::getLabel("MSG_Please_Select_A_Valid_Product", $this->adminLangId));
         }
         if (!isset($post['selected_products']) || !is_array($post['selected_products']) || 1 > count($post['selected_products'])) {
             FatUtility::dieJsonError(Labels::getLabel("MSG_MUST_SELECT_ATLEAST_ONE_PRODUCT_TO_BUY_TOGETHER", $this->adminLangId));
@@ -3138,12 +3142,11 @@ class SellerProductsController extends AdminBaseController
         $sellerProdObj = new SellerProduct();
         /* saving of product Upsell Product[ */
         if (!$sellerProdObj->addUpdateSellerUpsellProducts($selprod_id, $upsellProducts)) {
-            Message::addErrorMessage($sellerProdObj->getError());
-            FatApp::redirectUser($_SESSION['referer_page_url']);
+            FatUtility::dieJsonError($sellerProdObj->getError());
         }
         /* ] */
 
-        $this->set('msg', Labels::getLabel('LBL_Upsell_Product_Setup_Successful', $this->adminLangId));
+        $this->set('msg', Labels::getLabel('LBL_Buy_Together_Product_Setup_Successful', $this->adminLangId));
         $this->_template->render(false, false, 'json-success.php');
     }
 

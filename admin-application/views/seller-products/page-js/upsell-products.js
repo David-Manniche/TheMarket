@@ -25,7 +25,11 @@ $(document).on('keyup', "input[name='product_name']", function(){
     var parentForm = currObj.closest('form').attr('id');
     if('' != currObj.val()){
         currObj.siblings('ul.dropdown-menu').remove();
-        currObj.autocomplete({'source': function(request, response) {
+        currObj.autocomplete({
+            'classes': {
+                "ui-autocomplete": "custom-ui-autocomplete"
+            },
+            'source': function(request, response) {
         		$.ajax({
         			url: fcom.makeUrl('SellerProducts', 'autoCompleteProducts'),
         			data: {fIsAjax:1,keyword:currObj.val()},
@@ -45,7 +49,7 @@ $(document).on('keyup', "input[name='product_name']", function(){
                     $('#upsell-products').empty();
                     for (var key in ans.upsellProducts) {
                         $("#upsell-products").append(
-                            "<li id=productUpsell"+ans.upsellProducts[key]['selprod_id']+"><span>"+ans.upsellProducts[key]['selprod_title']+" ["+ans.upsellProducts[key]['product_identifier']+"]<i class=\"remove_upsell remove_param fal fa-times\"></i></span><input type=\"hidden\" name=\"selected_products[]\" value="+ans.upsellProducts[key]['selprod_id']+" /></li>"
+                            "<li id=productUpsell"+ans.upsellProducts[key]['selprod_id']+"><span>"+ans.upsellProducts[key]['selprod_title']+" ["+ans.upsellProducts[key]['product_identifier']+"]<i class=\"remove_upsell remove_param fas fa-times\"></i><input type=\"hidden\" name=\"selected_products[]\" value="+ans.upsellProducts[key]['selprod_id']+" /></span></li>"
                         );
                     }
                 });
@@ -69,6 +73,9 @@ $(document).on('keyup', "input[name='products_upsell']", function(){
     if(selprod_id != 0) {
         currObj.siblings('ul.dropdown-menu').remove();
         currObj.autocomplete({
+            'classes': {
+                "ui-autocomplete": "custom-ui-autocomplete"
+            },
             'source': function(request, response) {
                 $.ajax({
                     url: fcom.makeUrl('SellerProducts', 'autoCompleteProducts'),
@@ -97,7 +104,7 @@ $(document).on('keyup', "input[name='products_upsell']", function(){
                 }
                 $('input[name=\'products_upsell\']').val('');
                 $('#productUpsell' + ui.item.id).remove();
-                $('#upsell-products').append('<li id="productUpsell' + ui.item.id + '"><span> ' + ui.item.label + '<i class="remove_upsell remove_param fal fa-times"></i></span><input type="hidden" name="selected_products[]" value="' + ui.item.id + '" /></li>');
+                $('#upsell-products').append('<li id="productUpsell' + ui.item.id + '"><span> ' + ui.item.label + '<i class="remove_upsell remove_param fas fa-times"></i><input type="hidden" name="selected_products[]" value="' + ui.item.id + '" /></span></li>');
                 return false;
             }
         });
@@ -235,9 +242,30 @@ $(document).on('blur', ".js--volDiscountCol", function(){
 		var data = fcom.frmData(frm);
 		fcom.updateWithAjax(fcom.makeUrl('SellerProducts', 'setupUpsellProduct'), data, function(t) {
             document.frmUpsellSellerProduct.reset();
+            $("input[name='selprod_id']").val(''); 
             $('#upsell-products').empty();
             $(".dvFocus-js").trigger('click');
             searchUpsellProducts(document.frmUpsellSellerProduct);
 		});
 	};
 })();
+
+$(document).on('click', ".js-product-edit", function(){
+    var selProdId = $(this).attr('row-id');
+    var prodHtml = $(this).children('.js-prod-name').html(); 
+    var prodName = prodHtml.split('<br>');
+    var sellerName = $(this).children('.js-seller-name').html(); 
+    var selectName = prodName[0]+" | "+sellerName;
+    
+    fcom.ajax(fcom.makeUrl('SellerProducts', 'getUpsellProductsList', [selProdId]), '', function(t) {
+        var ans = $.parseJSON(t);
+        $("input[name='selprod_id']").val(selProdId); 
+        $("input[name='product_name']").val(selectName); 
+        $('#upsell-products').empty();
+        for (var key in ans.upsellProducts) {
+            $("#upsell-products").append(
+                "<li id=productUpsell"+ans.upsellProducts[key]['selprod_id']+"><span>"+ans.upsellProducts[key]['selprod_title']+" ["+ans.upsellProducts[key]['product_identifier']+"]<i class=\"remove_upsell remove_param fas fa-times\"></i><input type=\"hidden\" name=\"selected_products[]\" value="+ans.upsellProducts[key]['selprod_id']+" /></span></li>"
+            );
+        }
+    });
+});

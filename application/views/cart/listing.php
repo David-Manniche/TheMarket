@@ -24,21 +24,19 @@ defined('SYSTEM_INIT') or die('Invalid Usage.'); ?>
                                     <div class="item__title"><a title="<?php echo ($product['selprod_title']) ? $product['selprod_title'] : $product['product_name']; ?>" href="<?php echo $productUrl; ?>"><?php echo ($product['selprod_title']) ? $product['selprod_title'] : $product['product_name']; ?></a></div>
                                     <div class="item__specification">
                                         <?php 
-                                if (isset($product['options']) && count($product['options'])) {
-                                    foreach ($product['options'] as $key => $option) {
-                                        if (0 < $key){
-                                            echo ' | ';
-                                        }
-                                        echo $option['option_name'].':'; ?> <span class="text--dark"><?php echo $option['optionvalue_name']; ?></span>
-                                        <?php }
-                                }
-								?>
-
+                                        if (isset($product['options']) && count($product['options'])) {
+                                            foreach ($product['options'] as $key => $option) {
+                                                if (0 < $key){
+                                                    echo ' | ';
+                                                }
+                                                echo $option['option_name'].':'; ?> <span class="text--dark"><?php echo $option['optionvalue_name']; ?></span>
+                                                <?php }
+                                        } ?>
                                     </div>
                                 </div>
                                 <div class="qty-wrapper qty-wrapper-sm">
                                     <div class="quantity" data-stock="<?php echo $product['selprod_stock']; ?>">
-                                        <span class="decrease decrease-js <?php echo ($product['quantity']==1) ? 'not-allowed' : '' ;?>">-</span>
+                                        <span class="decrease decrease-js <?php echo ($product['quantity']<=$product['selprod_min_order_qty']) ? 'not-allowed' : '' ;?>">-</span>
                                         <div class="qty-input-wrapper" data-stock="<?php echo $product['selprod_stock']; ?>">
                                             <input name="qty_<?php echo md5($product['key']); ?>" data-key="<?php echo md5($product['key']); ?>" class="qty-input cartQtyTextBox productQty-js" value="<?php echo $product['quantity']; ?>" type="text" />
                                         </div>
@@ -97,13 +95,19 @@ defined('SYSTEM_INIT') or die('Invalid Usage.'); ?>
     <div class="col-xl-3 col-lg-4">
         <div class="box box--white box--radius box--space cart-footer">
             <?php if (!empty($cartSummary['cartDiscounts']['coupon_code'])) { ?>
-            <div class="applied-coupon">
-                <span><?php echo Labels::getLabel("LBL_Coupon", $siteLangId); ?> "<strong><?php echo $cartSummary['cartDiscounts']['coupon_code']; ?></strong>" <?php echo Labels::getLabel("LBL_Applied", $siteLangId); ?></span> <a href="javascript:void(0)" onClick="removePromoCode()" class="btn btn--primary btn--sm"><?php echo Labels::getLabel("LBL_Remove", $siteLangId); ?></a></div>
-            <?php } else { ?>
-            <div class="coupon">
-                <a class="coupon-input btn btn--primary btn--block" href="javascript:void(0)" onclick="getPromoCode()"><?php echo Labels::getLabel('LBL_I_have_a_coupon', $siteLangId); ?></a>
-            </div>
-            <?php }?>
+                <div class="applied-coupon">
+                    <span>
+                        <?php echo Labels::getLabel("LBL_Coupon", $siteLangId); ?> "<strong><?php echo $cartSummary['cartDiscounts']['coupon_code']; ?></strong>" <?php echo Labels::getLabel("LBL_Applied", $siteLangId); ?>
+                    </span>
+                    <a href="javascript:void(0)" onClick="removePromoCode()" class="btn btn--primary btn--sm">
+                        <?php echo Labels::getLabel("LBL_Remove", $siteLangId); ?>
+                    </a>
+                </div>
+                <?php } else { ?>
+                    <div class="coupon">
+                        <a class="coupon-input btn btn--primary btn--block" href="javascript:void(0)" onclick="getPromoCode()"><?php echo Labels::getLabel('LBL_I_have_a_coupon', $siteLangId); ?></a>
+                    </div>
+                <?php } ?>
 
             <div class="cartdetail__footer">
                 <table class="table--justify">
@@ -129,8 +133,8 @@ defined('SYSTEM_INIT') or die('Invalid Usage.'); ?>
                         <?php if ($cartSummary['taxOptions'] ) { 
                         foreach($cartSummary['taxOptions'] as $taxName => $taxVal){ ?>
                         <tr>
-                            <td><?php echo $taxName; ?></td>
-                            <td><?php echo CommonHelper::displayMoneyFormat($taxVal); ?></td>
+                            <td><?php echo $taxVal['title']; ?></td>
+                            <td><?php echo CommonHelper::displayMoneyFormat($taxVal['value']); ?></td>
                         </tr>
                         <?php   }
                      }?>

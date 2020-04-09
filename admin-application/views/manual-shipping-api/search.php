@@ -45,13 +45,13 @@ foreach ($arr_listing as $sn=>$row){
 						'href'=>'javascript:void(0)', 
 						'class'=>'button small green', 'title'=>Labels::getLabel('LBL_Edit',$adminLangId),
 						"onclick"=>"manualShippingForm(".$row['mshipapi_id'].")"),
-						'<i class="ion-edit icon"></i>', true);
+						'<i class="far fa-edit icon"></i>', true);
 
 					$li = $ul->appendElement("li");
 					$li->appendElement('a', array(
 						'href'=>"javascript:void(0)", 'class'=>'button small green', 
 						'title'=>Labels::getLabel('LBL_Delete',$adminLangId),"onclick"=>"deleteRecord(".$row['mshipapi_id'].")"),
-						'<i class="ion-android-delete icon"></i>', true);
+						'<i class="fa fa-trash  icon"></i>', true);
 				}
 			break;
 			default:

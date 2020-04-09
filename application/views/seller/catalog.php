@@ -4,13 +4,13 @@ $this->includeTemplate('_partial/seller/sellerDashboardNavigation.php'); ?>
     <div class="content-wrapper content-space">
         <div class="content-header row">
             <?php $this->includeTemplate('_partial/dashboardTop.php'); ?>
-            <?php $this->includeTemplate('_partial/productPagesTabs.php', array('siteLangId'=>$siteLangId,'controllerName'=>$controllerName,'action'=>$action), false); ?>
+            <?php $this->includeTemplate('_partial/productPagesTabs.php', array('siteLangId'=>$siteLangId, 'controllerName'=>$controllerName, 'action'=>$action, 'canEdit'=>$canEdit), false); ?>
         </div>
         <div class="content-body">
             <div class="row mb-4">
                 <div class="col-lg-12">
                     <div class="cards">
-                        <div class="cards-content pb-0">
+                        <div class="cards-content">
                             <div class="replaced">
                                 <?php
                                 $frmSearchCatalogProduct->setFormTagAttribute('id', 'frmSearchCatalogProduct');

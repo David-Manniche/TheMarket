@@ -38,7 +38,7 @@ $btnSubmitFld->setWrapperAttribute('class','text-right');
 </div>
 
 <script type="text/javascript">
-$(document).ready(function(){
+/* $(document).ready(function(){
     $('input[name=\'shipping_country\']').autocomplete({
         'classes': {
             "ui-autocomplete": "custom-ui-autocomplete"
@@ -69,5 +69,5 @@ $(document).ready(function(){
     $('input[name=\'shipping_country\']').keyup(function(){
         $('input[name=\'ps_from_country_id\']').val('');
     });
-});
+}); */
 </script>

@@ -78,7 +78,7 @@ class AffiliatesReportController extends AdminBaseController
         /* ] */
 
         /* Referred users counts[ */
-        $srch = User::getSearchObject(true, false);
+        $srch = User::getSearchObject(true, 0, false);
         $srch->doNotCalculateRecords();
         $srch->doNotLimitRecords();
         $srch->addGroupBy('u.user_affiliate_referrer_user_id');
@@ -86,7 +86,7 @@ class AffiliatesReportController extends AdminBaseController
         $qryUserReffered = $srch->getQuery();
         /* ] */
 
-        $srch = User::getSearchObject(true, false);
+        $srch = User::getSearchObject(true, 0, false);
         $srch->joinTable('(' . $qryUserBalance . ')', 'LEFT OUTER JOIN', 'u.user_id = tqub.utxn_user_id', 'tqub');
         $srch->joinTable('(' . $qryUserRevenue . ')', 'LEFT OUTER JOIN', 'u.user_id = tqur.utxn_user_id', 'tqur');
         $srch->joinTable('(' . $qryUserSignUpRevenue . ')', 'LEFT OUTER JOIN', 'u.user_id = tqusr.utxn_user_id', 'tqusr');

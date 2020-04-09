@@ -125,8 +125,8 @@
                     <?php if ($cartSummary['taxOptions']){
                         foreach($cartSummary['taxOptions'] as $taxName => $taxVal){ ?>
                         <tr>
-                            <td><?php echo $taxName; ?></td>
-                            <td><?php echo CommonHelper::displayMoneyFormat($taxVal); ?></td>
+                            <td><?php echo $taxVal['title']; ?></td>
+                            <td><?php echo CommonHelper::displayMoneyFormat($taxVal['value']); ?></td>
                         </tr>
                       <?php }
                     }?>

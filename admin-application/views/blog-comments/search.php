@@ -7,9 +7,13 @@ $arr_flds = array(
         'bpcomment_approved' => Labels::getLabel('LBL_Status', $adminLangId),
         'post_title' => Labels::getLabel('LBL_Post_Title', $adminLangId),
         'bpcomment_added_on' => Labels::getLabel('LBL_Posted_On', $adminLangId),
-        'action' => Labels::getLabel('LBL_Action', $adminLangId),
+        'action' => '',
     );
 
+if (!$canEdit) {
+    unset($arr_flds['select_all'], $arr_flds['action']);
+}
+    
 $tbl = new HtmlElement('table', array('width'=>'100%', 'class'=>'table table-responsive table--hovered','id'=>'post'));
 $th = $tbl->appendElement('thead')->appendElement('tr');
 foreach ($arr_flds as $key => $val) {
@@ -48,18 +52,9 @@ foreach ($arr_listing as $sn => $row) {
                 $td->appendElement('plaintext', array(), CommonHelper::displayName($row[$key]), true);
                 break;
             case 'action':
-                $ul = $td->appendElement("ul", array("class"=>"actions actions--centered"));
                 if ($canEdit) {
-                    $li = $ul->appendElement("li", array('class'=>'droplink'));
-                    $li->appendElement('a', array('href'=>'javascript:void(0)', 'class'=>'button small green','title'=>Labels::getLabel('LBL_Edit', $adminLangId)), '<i class="ion-android-more-horizontal icon"></i>', true);
-                    $innerDiv=$li->appendElement('div', array('class'=>'dropwrap'));
-                    $innerUl=$innerDiv->appendElement('ul', array('class'=>'linksvertical'));
-                    $innerLiEdit=$innerUl->appendElement('li');
-
-                    $innerLiEdit->appendElement('a', array('href'=>'javascript:void(0)', 'class'=>'button small green', 'title'=>Labels::getLabel('LBL_Edit', $adminLangId),"onclick"=>"view(".$row['bpcomment_id'].")"), Labels::getLabel('LBL_Edit', $adminLangId), true);
-
-                    $innerLiDelete=$innerUl->appendElement('li');
-                    $innerLiDelete->appendElement('a', array('href'=>"javascript:void(0)", 'class'=>'button small green', 'title'=>Labels::getLabel('LBL_Delete', $adminLangId),"onclick"=>"deleteRecord(".$row['bpcomment_id'].")"), Labels::getLabel('LBL_Delete', $adminLangId), true);
+                    $td->appendElement('a', array('href'=>'javascript:void(0)', 'class'=>'btn btn-clean btn-sm btn-icon', 'title'=>Labels::getLabel('LBL_Edit', $adminLangId),"onclick"=>"view(".$row['bpcomment_id'].")"), "<i class='far fa-edit icon'></i>", true);
+                    $td->appendElement('a', array('href'=>"javascript:void(0)", 'class'=>'btn btn-clean btn-sm btn-icon', 'title'=>Labels::getLabel('LBL_Delete', $adminLangId),"onclick"=>"deleteRecord(".$row['bpcomment_id'].")"), "<i class='fa fa-trash  icon'></i>", true);
                 }
                 break;
             default:
@@ -73,7 +68,7 @@ if (count($arr_listing) == 0) {
 }
 
 $frm = new Form('frmBlogCmtsListing', array('id'=>'frmBlogCmtsListing'));
-$frm->setFormTagAttribute('class', 'web_form last_td_nowrap');
+$frm->setFormTagAttribute('class', 'web_form last_td_nowrap actionButtons-js');
 $frm->setFormTagAttribute('onsubmit', 'formAction(this, reloadList ); return(false);');
 $frm->addHiddenField('', 'status');
 

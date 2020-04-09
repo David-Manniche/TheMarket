@@ -13,12 +13,7 @@ $(document).ready(function () {
         showFormActionsBtns();
     });
     if (0 < $('.js-widget-scroll').length) {
-        $('.js-widget-scroll').slick(getSlickSliderSettings(3, 1, langLbl.layoutDirection, false, {
-            1199: 3,
-            1023: 2,
-            767: 1,
-            480: 1
-        }));
+        slickWidgetScroll();
     }
 
     /*$(document).on('change', 'input.phone-js', function(e) {
@@ -78,9 +73,13 @@ $(document).ready(function () {
     }
 });
 
-$(document).on('keyup', 'input.otpVal', function(e){
+$(document).on('keyup', 'input.otpVal', function (e) {
+    if ('' != $(this).val()) {
+        $(this).removeClass('is-invalid');
+    }
+
     var element = '';
-   
+
     /* 
     # e.which = 8(Backspace)
     */
@@ -92,27 +91,70 @@ $(document).on('keyup', 'input.otpVal', function(e){
     element.children("input.otpVal").eq(0).focus();
 });
 
-loginPopupOtp = function (userId, getOtpOnly = 0){
+unlinkSlick = function () {
+    $('.js-widget-scroll').slick('unslick');
+}
+
+slickWidgetScroll = function () {
+	var slides = ($('.widget-stats').length > 2) ? 3 : 2 ;
+    $('.js-widget-scroll').slick(getSlickSliderSettings(slides, 1, langLbl.layoutDirection, false, {
+        1199: 3,
+        1023: 2,
+        767: 1,
+        480: 1
+    }));
+}
+
+invalidOtpField = function () {
+    $("input.otpVal").val('').addClass('is-invalid').attr('onkeyup', 'checkEmpty($(this))');
+}
+
+checkEmpty = function (element) {
+    if ('' == element.val()) {
+        element.addClass('is-invalid');
+    }
+}
+
+var otpIntervalObj;
+startOtpInterval = function (parent = '') {
+    if ('undefined' != typeof otpIntervalObj) {
+        clearInterval(otpIntervalObj);
+    }
+
+    var parent = '' != parent ? parent + ' ' : '';
+    var element = $(parent + ".intervalTimer-js");
+    var counter = langLbl.otpInterval;
+    element.parent().parent().show();
+    element.text(counter);
+    $(parent + '.resendOtp-js').addClass('d-none');
+    otpIntervalObj = setInterval(function () {
+        counter--;
+        if (counter === 0) {
+            clearInterval(otpIntervalObj);
+            $(parent + '.resendOtp-js').removeClass('d-none');
+            element.parent().parent().hide();
+        }
+        element.text(counter);
+    }, 1000);
+}
+
+loginPopupOtp = function (userId, getOtpOnly = 0) {
     $.mbsmessage(langLbl.processing, false, 'alert--process');
-    fcom.ajax(fcom.makeUrl( 'GuestUser', 'resendOtp', [userId, getOtpOnly]), '', function(t) {
-        try{
-            t = $.parseJSON(t);
-            if(typeof t.status != 'undefined' &&  1 > t.status){
-                $.mbsmessage(t.msg, false, 'alert--danger');
-            } else {
-                $.mbsmessage(t.msg, true, 'alert--success');
-            }
+    fcom.ajax(fcom.makeUrl('GuestUser', 'resendOtp', [userId, getOtpOnly]), '', function (t) {
+        t = $.parseJSON(t);
+        if (1 > t.status) {
+            $.mbsmessage(t.msg, false, 'alert--danger');
             return false;
         }
-        catch(exc){
-            if (0 < $('#facebox .loginpopup').length) {
-                fcom.updateFaceboxContent(t, 'faceboxWidth loginpopup');
-            } else {
-                $('#sign-in').html(t);
-            }
-
-            $.mbsmessage.close();
+        $.mbsmessage.close();
+        var parent = '';
+        if (0 < $('#facebox .loginpopup').length) {
+            fcom.updateFaceboxContent(t.html, 'faceboxWidth loginpopup');
+            var parent = '.loginpopup';
+        } else {
+            $('#sign-in').html(t.html);
         }
+        startOtpInterval(parent);
     });
     return false;
 };
@@ -332,6 +374,7 @@ addRemoveWishListProduct = function (selprod_id, wish_list_id, event) {
 
     fcom.updateWithAjax(fcom.makeUrl('Account', action, [selprod_id, wish_list_id]), alternateData, function (ans) {
         if (ans.status == 1) {
+            $(document).trigger('close.facebox')
             if (ans.productIsInAnyList) {
                 $("[data-id=" + selprod_id + "]").addClass("is-active");
             } else {
@@ -417,30 +460,30 @@ function getSlickGallerySettings(imagesForNav, layoutDirection, slidesToShow = 4
             vertical: true,
             verticalSwiping: true,
             responsive: [{
-                    breakpoint: 1499,
-                    settings: {
-                        slidesToShow: 3,
+                breakpoint: 1499,
+                settings: {
+                    slidesToShow: 3,
 
-                    }
-				},
-                {
-                    breakpoint: 1199,
-                    settings: {
-                        slidesToShow: 4,
-                        vertical: false,
-                        verticalSwiping: false
-                    }
-				},
+                }
+            },
+            {
+                breakpoint: 1199,
+                settings: {
+                    slidesToShow: 4,
+                    vertical: false,
+                    verticalSwiping: false
+                }
+            },
 
-                {
-                    breakpoint: 767,
-                    settings: {
-                        slidesToShow: 2,
-                        vertical: false,
-                        verticalSwiping: false
-                    }
-				}
-			]
+            {
+                breakpoint: 767,
+                settings: {
+                    slidesToShow: 2,
+                    vertical: false,
+                    verticalSwiping: false
+                }
+            }
+            ]
         };
         if ($(window).width() < 1025 && layoutDirection == 'rtl') {
             sliderSettings['rtl'] = true;
@@ -489,40 +532,40 @@ function getSlickSliderSettings(slidesToShow, slidesToScroll, layoutDirection, a
         autoplay: autoInfinitePlay,
         arrows: true,
         responsive: [{
-                breakpoint: 1199,
-                settings: {
-                    slidesToShow: slidesToShowForDiffResolution[1199],
-                }
-                                },
-            {
-                breakpoint: 1023,
-                settings: {
-                    slidesToShow: slidesToShowForDiffResolution[1023],
-                }
-                                },
-            {
-                breakpoint: 767,
-                settings: {
-                    slidesToShow: slidesToShowForDiffResolution[767],
-                }
-                                },
-            {
-                breakpoint: 480,
-                settings: {
-                    slidesToShow: slidesToShowForDiffResolution[480],
-                    arrows: false,
-                    dots: true
-                }
-                                },
-            {
-                breakpoint: 375,
-                settings: {
-                    slidesToShow: slidesToShowForDiffResolution[375],
-                    arrows: false,
-                    dots: true
-                }
-                                }
-                            ]
+            breakpoint: 1199,
+            settings: {
+                slidesToShow: slidesToShowForDiffResolution[1199],
+            }
+        },
+        {
+            breakpoint: 1023,
+            settings: {
+                slidesToShow: slidesToShowForDiffResolution[1023],
+            }
+        },
+        {
+            breakpoint: 767,
+            settings: {
+                slidesToShow: slidesToShowForDiffResolution[767],
+            }
+        },
+        {
+            breakpoint: 480,
+            settings: {
+                slidesToShow: slidesToShowForDiffResolution[480],
+                arrows: false,
+                dots: true
+            }
+        },
+        {
+            breakpoint: 375,
+            settings: {
+                slidesToShow: slidesToShowForDiffResolution[375],
+                arrows: false,
+                dots: true
+            }
+        }
+        ]
     };
 
     if (layoutDirection == 'rtl') {
@@ -624,6 +667,16 @@ function defaultSetUpLogin(frm, v) {
                 oUtil.arrEditor = [];
             }
         },
+
+        resetEditorWidth: function (width = "100%") {
+            if (typeof oUtil != 'undefined') {
+                (oUtil.arrEditor).forEach(function (input) {
+                    var oEdit1 = eval(input);
+                    $("#idArea" + oEdit1.oName).attr("width", width);
+                });
+            }
+        },
+
         setEditorLayout: function (lang_id) {
             if (extendEditorJs == true) {
                 var editors = oUtil.arrEditor;
@@ -758,33 +811,126 @@ function defaultSetUpLogin(frm, v) {
 
 
 $(document).ready(function () {
-    /*if (typeof $.fn.autocomplete_advanced !== typeof undefined) {
-    	$('#header_search_keyword').autocomplete_advanced({
-    		appendTo: ".main-search__field",
-    		minChars: 2,
-    		autoSelectFirst: false,
-    		lookup: function (query, done) {
-    			$.ajax({
-    				url: fcom.makeUrl('Products', 'searchProductTagsAutocomplete'),
-    				data: {
-    					keyword: encodeURIComponent(query)
-    				},
-    				dataType: 'json',
-    				type: 'post',
-    				success: function (json) {
-    					done(json);
-    					// $('.autocomplete-suggestions').appendTo('.form__cover');
-    					// $('.autocomplete-suggestions').insertAfter( "#header_search_keyword" );
-    				}
-    			});
-    		},
-    		triggerSelectOnValidInput: false,
-    		onSelect: function (suggestion) {
-    			submitSiteSearch(document.frmSiteSearch);
-    			//alert('You selected: ' + suggestion.value + ', ' + suggestion.data);
-    		}
-    	});
-    }*/
+    /* $('#header_search_keyword').autocomplete({
+        'classes': {
+            "ui-autocomplete": "custom-ui-autocomplete"
+        },
+		'source': function(request, response) {
+			$.ajax({
+				url: fcom.makeUrl('Products', 'searchProductTagsAutocomplete'),
+				data: {keyword: encodeURIComponent(request['term']), fIsAjax:1},
+				dataType: 'json',
+				type: 'post',
+				success: function(json) {
+					response($.map(json, function(item) {
+						return { label: item['value'], value: item['value'], name: item['value'] };
+					}));
+				},
+			});
+		},
+		select: function (event, ui) {
+			submitSiteSearch(document.frmSiteSearch);
+		}
+	}); */
+
+
+    var $elem = $('#header_search_keyword').autocomplete({
+        'classes': {
+            "ui-autocomplete": "custom-ui-autocomplete"
+        },
+        'source': function (request, response) {
+            $.ajax({
+                url: fcom.makeUrl('Products', 'searchProductTagsAutocomplete'),
+                data: { keyword: encodeURIComponent(request['term']), fIsAjax: 1 },
+                dataType: 'json',
+                type: 'post',
+                success: function (json) {
+                    response($.map(json, function (item) {
+                        return { label: item['value'], value: item['value'] };
+                    }));
+                },
+            });
+        },
+        select: function (event, ui) {
+            $(document.frmSiteSearch.keyword).val(ui.item.label);
+            submitSiteSearch(document.frmSiteSearch);
+        }
+    }),
+        elemAutocomplete = $elem.data("ui-autocomplete") || $elem.data("autocomplete");
+    if (elemAutocomplete) {
+        elemAutocomplete._renderItem = function (ul, item) {
+            var newText = String(item.value).replace(
+                new RegExp(this.term, "gi"),
+                "<strong>$&</strong>");
+
+            return $("<li></li>")
+                .data("item.autocomplete", item)
+                .append("<div>" + newText + "</div>")
+                .appendTo(ul);
+        };
+    }
+
+
+    /* $('#header_search_keyword').autocomplete({
+        'classes': {
+            "ui-autocomplete": "custom-ui-autocomplete"
+        },
+		'source': function(request, response) {
+			$.ajax({
+				url: fcom.makeUrl('Products', 'searchProductTagsAutocomplete'),
+				data: {keyword: encodeURIComponent(request['term']), fIsAjax:1},
+				dataType: 'json',
+				type: 'post',
+				success: function(json) {
+					response($.map(json, function(item) {
+						return { label: item['value'], value: item['value'], name: item['value'] };
+					}));
+				},
+			});
+		},
+		select: function (event, ui) {
+			submitSiteSearch(document.frmSiteSearch);
+		}
+	})
+    .data("autocomplete")._renderItem = function (ul, item) {
+        var newText = String(item.value).replace(
+                new RegExp(this.term, "gi"),
+                "<span class='ui-state-highlight'>$&</span>");
+
+        return $("<li></li>")
+            .data("item.autocomplete", item)
+            .append("<div>" + newText + "</div>")
+            .appendTo(ul);
+    }; */
+
+
+    /* if (typeof $.fn.autocomplete_advanced !== typeof undefined) {
+		$('#header_search_keyword').autocomplete_advanced({
+			appendTo: ".main-search__field",
+			minChars: 2,
+			autoSelectFirst: false,
+			lookup: function (query, done) {
+				$.ajax({
+					url: fcom.makeUrl('Products', 'searchProductTagsAutocomplete'),
+					data: {
+						keyword: encodeURIComponent(query)
+					},
+					dataType: 'json',
+					type: 'post',
+					success: function (json) {
+						done(json);
+						// $('.autocomplete-suggestions').appendTo('.form__cover');
+						// $('.autocomplete-suggestions').insertAfter( "#header_search_keyword" );
+					}
+				});
+			},
+			triggerSelectOnValidInput: false,
+			onSelect: function (suggestion) {
+				submitSiteSearch(document.frmSiteSearch);
+				//alert('You selected: ' + suggestion.value + ', ' + suggestion.data);
+			}
+		});
+	} */
 
     if ($('.system_message').find('.div_error').length > 0 || $('.system_message').find('.div_msg').length > 0 || $('.system_message').find('.div_info').length > 0 || $('.system_message').find('.div_msg_dialog').length > 0) {
         $('.system_message').show();
@@ -904,9 +1050,20 @@ $(document).ready(function () {
         }
     }
 
+    signInWithPhone = function (obj, flag) {
+        var form = $(obj).data('form');
+        var formElement = ('undefined' != typeof form) ? 'form[name="' + form + '"]' : 'form';
+        var inputElement = $(formElement + " input[name='username']");
+        var altPlaceHolder = inputElement.attr('data-alt-placeholder');
+        var placeHolder = inputElement.attr('placeholder')
+        inputElement.val("").attr({ 'placeholder': altPlaceHolder, 'data-alt-placeholder': placeHolder });
+        var objLbl = 0 < flag ? langLbl.withUsernameOrEmail : langLbl.withPhoneNumber;
+        $(obj).attr('onclick', 'signInWithPhone(this, ' + (!flag) + ')').text(objLbl)
+        stylePhoneNumberFld(formElement + " input[name='username']", (!flag));
+    };
+
     $(".sign-in-popup-js").click(function () {
         openSignInForm();
-
     });
 
     $(".cc-cookie-accept-js").click(function () {
@@ -944,8 +1101,8 @@ $(document).ready(function () {
     $(document).on("keyup", '.productQty-js', function () {
         if ($(this).val() > $(this).parent().data('stock')) {
             val = $(this).parent().data('stock');
-			var message = langLbl.quantityAdjusted.replace(/{qty}/g, val);
-			$.mbsmessage( message, '', 'alert--success');
+            var message = langLbl.quantityAdjusted.replace(/{qty}/g, val);
+            $.mbsmessage(message, '', 'alert--success');
             $(this).parent().parent('div').find('.increase-js').addClass('not-allowed');
             $(this).parent().parent('div').find('.decrease-js').removeClass('not-allowed');
         } else if ($(this).val() <= 0) {
@@ -965,6 +1122,9 @@ $(document).ready(function () {
     });
 
     $(document).on("click", '.decrease-js', function () {
+        if ($(this).hasClass('not-allowed')) {
+            return false;
+        }
         $(this).siblings('.not-allowed').removeClass('not-allowed');
         var rval = $(this).parent().parent('div').find('input').val();
         if (isNaN(rval)) {
@@ -973,13 +1133,14 @@ $(document).ready(function () {
         }
         var key = $(this).parent().parent('div').find('input').attr('data-key');
         var page = $(this).parent().parent('div').find('input').attr('data-page');
-
+        var minQty = $(this).parent().parent('div').find('input').attr('data-min-qty');
+        var minVal = (minQty > 1) ? minQty : 1;
         val = parseInt(rval) - 1;
-        if (val <= 1) {
-            val = 1;
+        if (val <= minVal) {
+            val = minVal;
             $(this).addClass('not-allowed');
         }
-        if ($(this).hasClass('not-allowed') && rval <= 1) {
+        if ($(this).hasClass('not-allowed') && rval <= minVal) {
             return false;
         }
         $(this).parent().parent('div').find('input').val(val);
@@ -1005,7 +1166,20 @@ $(document).ready(function () {
         this.value = this.value.replace(/\s/g, "");
     });
 
+    $(document).on("submit", "form", function () {
+        moveErrorAfterIti()
+    });
+
+    $(document).on("keyup", "form .iti input[data-intl-tel-input-id]", function () {
+        moveErrorAfterIti();
+    });
 });
+
+function moveErrorAfterIti() {
+    if (0 < $(".iti .errorlist").length) {
+        $(".iti .errorlist").detach().insertAfter('.iti');
+    }
+}
 
 function isUserLogged() {
     var isUserLogged = 0;
@@ -1060,25 +1234,45 @@ function quickDetail(selprod_id) {
     });
 }
 
-function stylePhoneNumberFld() {
-    var inputList = document.querySelectorAll("input[name='user_phone']");
-
+function stylePhoneNumberFld(element = "input[name='user_phone']", destroy = false) {
+    var inputList = document.querySelectorAll(element);
+    var country = '' == langLbl.defaultCountryCode ? 'in' : langLbl.defaultCountryCode;
     inputList.forEach(function (input) {
-        var country = langLbl.defaultCountryCode;
-        if ('' == country) {
-            country = 'in';
+        if (true == destroy) {
+            $('.iti').replaceWith(input);
+            $(input).removeAttr('style');
+        } else {
+            var iti = window.intlTelInput(input, {
+                separateDialCode: true,
+                initialCountry: country,
+                // utilsScript: "/intlTelInput/intlTelInput-utils.js"
+            });
+            $('<input>').attr({
+                type: 'hidden',
+                name: 'user_dial_code',
+                value: "+" + iti.getSelectedCountryData().dialCode
+            }).insertAfter(input);
+
+            $('<input>').attr({
+                type: 'hidden',
+                name: 'user_country_iso',
+                value: iti.getSelectedCountryData().iso2
+            }).insertAfter(input);
+
+            input.addEventListener('countrychange', function (e) {
+                if (typeof iti.getSelectedCountryData().dialCode !== 'undefined') {
+                    input.closest('form').user_dial_code.value = "+" + iti.getSelectedCountryData().dialCode;
+                    input.closest('form').user_country_iso.value = iti.getSelectedCountryData().iso2;
+                }
+            });
         }
-        var iti = window.intlTelInput(input, {
-            initialCountry: country,
-            // utilsScript: "/intlTelInput/intlTelInput-utils.js"
-        });
-        input.value = ('' != input.value ? input.value : "+" + iti.getSelectedCountryData().dialCode);
-        input.addEventListener('countrychange', function (e) {
-            if (typeof iti.getSelectedCountryData().dialCode !== 'undefined') {
-                input.value = "+" + iti.getSelectedCountryData().dialCode;
-            }
-        });
     });
+}
+
+function getCountryIso2CodeFromDialCode(dialCode) {
+    var countriesData = window.intlTelInputGlobals.getCountryData();
+    var countryData = countriesData.filter(function (country) { return country.dialCode == dialCode });
+    return countryData[0].iso2;
 }
 
 
@@ -1282,6 +1476,9 @@ $("document").ready(function () {
             if ($btn.hasClass("quickView") == true) {
                 $(document).trigger('close.facebox');
             }
+            if (9 < ans.total) {
+                ans.total = '9+';
+            }
             $('span.cartQuantity').html(ans.total);
             $('#cartSummary').load(fcom.makeUrl('cart', 'getCartSummary'));
         });
@@ -1300,21 +1497,21 @@ $(document).ready(function () {
 /* Scroll Hint */
 $(document).ready(function () {
     new ScrollHint('.table', {
-	  i18n: {
-		scrollable: langLbl.scrollable
-	  }
-	});
+        i18n: {
+            scrollable: langLbl.scrollable
+        }
+    });
 });
 $(document).ajaxComplete(function () {
     new ScrollHint('.table:not(.scroll-hint)', {
-	  i18n: {
-		scrollable: langLbl.scrollable
-	  }
-	});
+        i18n: {
+            scrollable: langLbl.scrollable
+        }
+    });
 
     //Remove scrolling on table with hand icon
     if (0 < $('div.block--empty').length && 0 < $('div.scroll-hint-icon-wrap').length) {
-        $('div.block--empty').siblings('table.table.scroll-hint').children('div.scroll-hint-icon-wrap').remove();
+        $('div.block--empty').siblings('.table.scroll-hint').children('div.scroll-hint-icon-wrap').remove();
     }
 
     //Remove Scrolling When Facebox Popup opened
@@ -1328,6 +1525,12 @@ $(document).ajaxComplete(function () {
             $("html").removeClass('pop-on');
         });
     }
+
+    $('body').click(function () {
+        if ($('html').hasClass('pop-on')) {
+            $('html').removeClass('pop-on');
+        }
+    });
 });
 
 $(document).ready(function () {
@@ -1372,11 +1575,27 @@ $(document).ready(function () {
 
     /*
     ] ENDS triggers & toggles
+	
     */
-
-		$('[data-toggle="tooltip"]').tooltip({
-		   container: 'body'
-		});
-
-
+    $("body").tooltip({ selector: '[data-toggle=tooltip]' });
 });
+
+$(document).on("change", "input[type='file']", fileSizeValidation);
+
+function fileSizeValidation() {
+    const fsize = this.files[0].size;
+    if (fsize > langLbl.allowedFileSize) {
+        var msg = langLbl.fileSizeExceeded;
+        var msg = msg.replace("{size-limit}", bytesToSize(langLbl.allowedFileSize));
+        $.mbsmessage(msg, true, 'alert--danger');
+        $(this).val("");
+        return false;
+    }
+}
+
+function bytesToSize(bytes) {
+    var sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB'];
+    if (bytes == 0) return '0 Byte';
+    var i = parseInt(Math.floor(Math.log(bytes) / Math.log(1024)));
+    return Math.round(bytes / Math.pow(1024, i), 2) + ' ' + sizes[i];
+}

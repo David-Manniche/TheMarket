@@ -476,10 +476,7 @@ class CustomController extends MyAppController
         if (!$orderId) {
             FatUtility::exitWithErrorCode(404);
         }
-        $cartObj = new Cart(UserAuthentication::getLoggedUserId(), $this->siteLangId, $this->app_user['temp_user_id']);
-        $cartObj->clear();
-        $cartObj->updateUserCart();
-
+        
         $orderObj = new Orders();
         $orderInfo = $orderObj->getOrderById($orderId, $this->siteLangId);
         
@@ -490,6 +487,10 @@ class CustomController extends MyAppController
                 AbandonedCart::saveAbandonedCart($orderInfo['order_user_id'], $data['op_selprod_id'], $data['op_qty'], AbandonedCart::ACTION_PURCHASED, $amount);
             }
         }
+        
+        $cartObj = new Cart(UserAuthentication::getLoggedUserId(), $this->siteLangId, $this->app_user['temp_user_id']);
+        $cartObj->clear();
+        $cartObj->updateUserCart();
         
         if ($orderInfo['order_type'] == Orders::ORDER_PRODUCT) {
             $searchReplaceArray = array(

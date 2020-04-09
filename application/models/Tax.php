@@ -12,7 +12,7 @@ class Tax extends MyAppModel
     public const DB_TBL_VALUES_PREFIX = 'taxval_';
 
     public const DB_TBL_PRODUCT_TO_TAX = 'tbl_product_to_tax';
-    public const DB_TBL_PRODUCT_TO_TAX_PREFIX = 'ptt__';
+    public const DB_TBL_PRODUCT_TO_TAX_PREFIX = 'ptt_';
 
     private $db;
 
@@ -252,7 +252,9 @@ class Tax extends MyAppModel
         $tax = 0;
         $res = $this->getTaxRates($productId, $sellerId, $langId);
         if (empty($res)) {
-            return $tax;
+            return $data = [
+                'tax' => $tax
+            ];
         }
 
         if ($res['taxval_is_percent'] == static::TYPE_PERCENTAGE) {
@@ -274,19 +276,24 @@ class Tax extends MyAppModel
             $taxStructure = new TaxStructure(FatApp::getConfig('CONF_TAX_STRUCTURE', FatUtility::VAR_FLOAT, 0));
             $options = $taxStructure->getOptions($langId);
             foreach ($options as $optionVal) {
+                $taxOptionVal = isset($taxOptions[$optionVal['taxstro_id']]) ? $taxOptions[$optionVal['taxstro_id']] : 0;
                 if ($shipFromStateId != $shipToStateId && $optionVal['taxstro_interstate'] == applicationConstants::YES) {
                     $data['options'][$optionVal['taxstro_id']]['name'] = $optionVal['taxstro_name'];
+                    $data['options'][$optionVal['taxstro_id']]['percentageValue'] = $taxOptionVal ;
+                    $data['options'][$optionVal['taxstro_id']]['inPercentage'] = $res['taxval_is_percent'];
                     if ($res['taxval_is_percent'] == static::TYPE_PERCENTAGE) {
-                        $data['options'][$optionVal['taxstro_id']]['value'] = round((($prodPrice * $qty) * $taxOptions[$optionVal['taxstro_id']]) / 100, 2);
+                        $data['options'][$optionVal['taxstro_id']]['value'] = round((($prodPrice * $qty) * $taxOptionVal) / 100, 2);
                     } else {
-                        $data['options'][$optionVal['taxstro_id']][$optionVal['taxstro_name']] = $taxOptions[$optionVal['taxstro_id']] * $qty;
+                        $data['options'][$optionVal['taxstro_id']][$optionVal['taxstro_name']] = $taxOptionVal * $qty;
                     }
                 } elseif ($shipFromStateId == $shipToStateId && $optionVal['taxstro_interstate'] == applicationConstants::NO) {
                     $data['options'][$optionVal['taxstro_id']]['name'] = $optionVal['taxstro_name'];
+                    $data['options'][$optionVal['taxstro_id']]['percentageValue'] = $taxOptionVal ;
+                    $data['options'][$optionVal['taxstro_id']]['inPercentage'] = $res['taxval_is_percent'];                    
                     if ($res['taxval_is_percent'] == static::TYPE_PERCENTAGE) {
-                        $data['options'][$optionVal['taxstro_id']]['value'] = round((($prodPrice * $qty) * $taxOptions[$optionVal['taxstro_id']]) / 100, 2);
+                        $data['options'][$optionVal['taxstro_id']]['value'] = round((($prodPrice * $qty) * $taxOptionVal) / 100, 2);
                     } else {
-                        $data['options'][$optionVal['taxstro_id']]['value'] = $taxOptions[$optionVal['taxstro_id']] * $qty;
+                        $data['options'][$optionVal['taxstro_id']]['value'] = $taxOptionVal * $qty;
                     }
                 }
             }
@@ -294,6 +301,8 @@ class Tax extends MyAppModel
             $taxStructure = new TaxStructure(FatApp::getConfig('CONF_TAX_STRUCTURE', FatUtility::VAR_FLOAT, 0));
             $structureName = $taxStructure->getName($langId);
             $data['options'][-1]['name'] = Labels::getLabel('LBL_Tax', $langId);
+            $data['options'][-1]['inPercentage'] = $res['taxval_is_percent'];
+            $data['options'][-1]['percentageValue'] = $res['taxval_value'] ;
             if (array_key_exists('taxstr_name', $structureName) && $structureName['taxstr_name'] != '') {
                 $data['options'][-1]['name'] = $structureName['taxstr_name'];
             }

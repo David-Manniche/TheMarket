@@ -22,7 +22,7 @@
 		<?php echo $headerSrchFrm->getFormTag(); ?>
 			<div class="dropdown dropdown-select">
 			
-			<span class="select__value dropdown-toggle " id="selected__value-js"   data-toggle="dropdown"> <?php echo Labels::getLabel('LBL_All',$siteLangId); ?></span>			
+			<span class="select__value dropdown-toggle " id="selected__value-js"  data-display="static" data-toggle="dropdown"> <?php echo Labels::getLabel('LBL_All',$siteLangId); ?></span>			
 				<div class="dropdown-menu dropdown-menu-fit dropdown-menu-anim">					 
 						<div class="scroll-y" data-simplebar>							
 							<ul class="nav nav-block">
@@ -35,7 +35,7 @@
 						</div>					 
 				</div>				
 			</div>
-			<div class="main-search__field"><?php echo $headerSrchFrm->getFieldHTML('keyword'); ?></div>
+			<div class="main-search__field ui-front"><?php echo $headerSrchFrm->getFieldHTML('keyword'); ?></div>
 			<?php echo $headerSrchFrm->getFieldHTML('category'); ?>
 			<?php echo $headerSrchFrm->getFieldHTML('btnSiteSrchSubmit'); ?>
 		</form>

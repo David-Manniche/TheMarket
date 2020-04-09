@@ -7,10 +7,10 @@ $arr_flds = array(
     /* 'orrequest_type'        =>    Labels::getLabel( 'LBL_Request_Type', $siteLangId ), */
     'orrequest_qty'        =>    Labels::getLabel('LBL_Return_Qty', $siteLangId),
     'orrequest_status'    =>    Labels::getLabel('LBL_Status', $siteLangId),
-    'action'            =>    Labels::getLabel('LBL_Action', $siteLangId),
+    'action'            =>    '',
 );
 
-$tbl = new HtmlElement('table', array('class'=>'table table--orders'));
+$tbl = new HtmlElement('table', array('class'=>'table'));
 $th = $tbl->appendElement('thead')->appendElement('tr', array('class' => ''));
 foreach ($arr_flds as $val) {
     $e = $th->appendElement('th', array(), $val);
@@ -40,9 +40,14 @@ foreach ($requests as $sn => $row) {
                     $txt .= '<div class="item__title">'.$row['op_selprod_title'].'</div>';
                 }
                 $txt .= '<div class="item__sub_title">'.$row['op_product_name'].'</div>';
-                $txt .= '<div class="item__brand">'.Labels::getLabel('LBL_Brand', $siteLangId).': '.$row['op_brand_name'];
+                if(!empty($row['op_brand_name'])){
+                    $txt .= '<div class="item__brand">'.Labels::getLabel('LBL_Brand', $siteLangId).': '.$row['op_brand_name'];
+                }
+                if( !empty($row['op_brand_name']) && !empty($row['op_selprod_options']) ){
+                    $txt .= ' | ' ;
+                }
                 if ($row['op_selprod_options'] != '') {
-                    $txt .= ' | ' . $row['op_selprod_options'];
+                    $txt .= $row['op_selprod_options'];
                 }
                 $txt .='</div>';
                 if ($row['op_selprod_sku'] != '') {

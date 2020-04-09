@@ -8,8 +8,11 @@ $arr_flds = array(
 		'sprating_rating'=>Labels::getLabel('LBL_Rating',$adminLangId),
 		'spreview_posted_on'=>Labels::getLabel('LBL_Date',$adminLangId),
 		'spreview_status'=>Labels::getLabel('LBL_Status',$adminLangId),
-		'action' => Labels::getLabel('LBL_Action',$adminLangId),
+		'action' => '',
 	);
+if (!$canEdit) {
+    unset($arr_flds['action']);
+}
 $tbl = new HtmlElement('table', array('width'=>'100%', 'class'=>'table table-responsive table--hovered'));
 $th = $tbl->appendElement('thead')->appendElement('tr');
 foreach ($arr_flds as $val) {
@@ -72,21 +75,9 @@ foreach ($arr_listing as $sn=>$row){
 			break;
 
 			case 'action':
-				$ul = $td->appendElement("ul",array("class"=>"actions actions--centered"));
-				if($canEdit){
-					$li = $ul->appendElement("li",array('class'=>'droplink'));
-
-					$li->appendElement('a', array('href'=>'javascript:void(0)', 'class'=>'button small green','title'=>Labels::getLabel('LBL_Edit',$adminLangId)),'<i class="ion-android-more-horizontal icon"></i>', true);
-              		$innerDiv=$li->appendElement('div',array('class'=>'dropwrap'));
-              		$innerUl=$innerDiv->appendElement('ul',array('class'=>'linksvertical'));
-              		$innerLiEdit=$innerUl->appendElement('li');
-					$innerLiEdit->appendElement('a', array('href'=>'javascript:void(0)', 'class'=>'button small green', 'title'=>Labels::getLabel('LBL_Edit',$adminLangId),"onclick"=>"viewReview(".$row['spreview_id'].")"),Labels::getLabel('LBL_Edit',$adminLangId), true);
-					/* $li = $ul->appendElement("li");
-					$li->appendElement('a', array('href'=>'javascript:void(0)', 'class'=>'button small green', 'title'=>'Edit',"onclick"=>"brandForm(".$row['brand_id'].")"),'<i class="ion-eye icon"></i>', true);
-
-					$li = $ul->appendElement("li");
-					$li->appendElement('a', array('href'=>"javascript:void(0)", 'class'=>'button small green', 'title'=>'Delete',"onclick"=>"deleteRecord(".$row['brand_id'].")"),'<i class="ion-android-delete icon"></i>', true); */
-				}
+                if($canEdit){
+                    $td->appendElement('a', array('href'=>'javascript:void(0)', 'class'=>'btn btn-clean btn-sm btn-icon', 'title'=>Labels::getLabel('LBL_Edit',$adminLangId),"onclick"=>"viewReview(".$row['spreview_id'].")"),"<i class='far fa-edit icon'></i>", true);
+                }
 			break;
 			default:
 				$td->appendElement('plaintext', array(), $row[$key], true);

@@ -4,12 +4,13 @@ $brandLogoFrm->developerTags['colClassPrefix'] = 'col-md-';
 $brandLogoFrm->developerTags['fld_default_col'] = 12;
 $ratioFld = $brandLogoFrm->getField('ratio_type');
 $ratioFld->addFieldTagAttribute('class', 'prefRatio-js');
+$ratioFld->addOptionListTagAttribute('class', 'list-inline');
 $logoFld = $brandLogoFrm->getField('logo');
 $logoFld->addFieldTagAttribute('class', 'btn btn--primary btn--sm');
 $logoFld->addFieldTagAttribute('onChange', 'logoPopupImage(this)');
 $logoLangFld = $brandLogoFrm->getField('lang_id');
 $logoLangFld->addFieldTagAttribute('class', 'logo-language-js');
-$logoPreferredDimensions = '<small class="text--small">'.sprintf(Labels::getLabel('LBL_Preferred_Dimensions', $adminLangId), '500*500').'</small>';
+$logoPreferredDimensions = '<small class="text--small logoPreferredDimensions-js">'.sprintf(Labels::getLabel('LBL_Preferred_Dimensions_%s', $adminLangId), '500 x 500').'</small>';
 $htmlAfterField = $logoPreferredDimensions;
 $htmlAfterField .= '<div id="logo-listing"></div>';
 $logoFld->htmlAfterField = $htmlAfterField;
@@ -112,11 +113,13 @@ $(document).on('change','.prefDimensions-js',function(){
 $(document).on('change','.prefRatio-js',function(){
     if($(this).val() == ratioTypeSquare)
     {
-        $('input[name=logo_min_width]').val(150);
-        $('input[name=logo_min_height]').val(150);
+        $('input[name=logo_min_width]').val(500);
+        $('input[name=logo_min_height]').val(500);
+		$('.logoPreferredDimensions-js').html((langLbl.preferredDimensions).replace(/%s/g, '500 x 500'));
     } else {
-        $('input[name=logo_min_width]').val(150);
-        $('input[name=logo_min_height]').val(85);
+        $('input[name=logo_min_width]').val(500);
+        $('input[name=logo_min_height]').val(280);
+		$('.logoPreferredDimensions-js').html((langLbl.preferredDimensions).replace(/%s/g, '500 x 280'));
     }
 });
 </script>

@@ -7,7 +7,6 @@ $(document).ready(function() {
     var dv = '#listing';
 
     reloadList = function() {
-
         searchPackages();
     };
 
@@ -63,13 +62,15 @@ $(document).ready(function() {
         fcom.ajax(fcom.makeUrl('SellerPackages', 'search'), '', function(res) {
             $(dv).html(res);
             $(".new-plan").addClass('hide');
+            $("#packageDetail .sectionhead:first").show();
         });
     };
 
     searchPlans = function(spackageId) {
         $(dv).html(fcom.getLoader());
         fcom.ajax(fcom.makeUrl('SellerPackages', 'searchPlans'), 'spackageId=' + spackageId, function(t) {
-            $("#packageDetail").html(t);
+            $(dv).html(t);
+            $("#packageDetail .sectionhead:first").hide();
             $(".new-plan").removeClass('hide');
 
         });
@@ -138,14 +139,6 @@ $(document).ready(function() {
                 fcom.displayErrorMessage(ans.msg);
             }
         });
-    };
-
-	toggleBulkStatues = function(status){
-        if(!confirm(langLbl.confirmUpdateStatus)){
-            return false;
-        }
-        $("#frmSellerPkgListing input[name='status']").val(status);
-        $("#frmSellerPkgListing").submit();
     };
 
 })();

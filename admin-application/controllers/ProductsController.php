@@ -18,10 +18,10 @@ class ProductsController extends AdminBaseController
             $srchFrm->fill($data);
         }
         $prodCatId = FatUtility::int($prodCatId);
-        if($prodCatId > 0){
+        if ($prodCatId > 0) {
             $srchFrm->fill(array('prodcat_id' => $prodCatId));
         }
-                
+
         $this->set("frmSearch", $srchFrm);
         $this->set('canEdit', $this->objPrivilege->canEditProducts(0, true));
         $this->_template->render();
@@ -165,15 +165,15 @@ class ProductsController extends AdminBaseController
         if (!$product_id || !$option_id) {
             FatUtility::dieJsonError($this->str_invalid_request);
         }
-        
+
         $productOptions = Product::getProductOptions($product_id, $this->adminLangId, false, 1);
         $optionSeparateImage = Option::getAttributesById($option_id, 'option_is_separate_images');
-        if(count($productOptions) > 0 && $optionSeparateImage == 1){
+        if (count($productOptions) > 0 && $optionSeparateImage == 1) {
             FatUtility::dieJsonError(Labels::getLabel('LBL_you_have_already_added_option_having_separate_image', $this->adminLangId));
         }
-        
-        $prodObj = new Product();
-        if (!$prodObj->addUpdateProductOption($product_id, $option_id)) {
+
+        $prodObj = new Product($product_id);
+        if (!$prodObj->addUpdateProductOption($option_id)) {
             FatUtility::dieJsonError($prodObj->getError());
         }
         Product::updateMinPrices($product_id);
@@ -211,8 +211,8 @@ class ProductsController extends AdminBaseController
         }
         /* ] */
 
-        $prodObj = new Product();
-        if (!$prodObj->removeProductOption($product_id, $option_id)) {
+        $prodObj = new Product($product_id);
+        if (!$prodObj->removeProductOption($option_id)) {
             Message::addErrorMessage(Labels::getLabel($prodObj->getError(), $this->adminLangId));
             FatUtility::dieWithError(Message::getHtml());
         }
@@ -229,8 +229,8 @@ class ProductsController extends AdminBaseController
             Message::addErrorMessage($this->str_invalid_request);
             FatUtility::dieWithError(Message::getHtml());
         }
-        $prod = new Product();
-        if (!$prod->addUpdateProductTag($productId, $tagId)) {
+        $prod = new Product($productId);
+        if (!$prod->addUpdateProductTag($tagId)) {
             Message::addErrorMessage(Labels::getLabel($prod->getError(), $this->adminLangId));
             FatUtility::dieWithError(Message::getHtml());
         }
@@ -251,8 +251,8 @@ class ProductsController extends AdminBaseController
             FatUtility::dieWithError(Message::getHtml());
         }
 
-        $prod = new Product();
-        if (!$prod->removeProductTag($productId, $tagId)) {
+        $prod = new Product($productId);
+        if (!$prod->removeProductTag($tagId)) {
             Message::addErrorMessage(Labels::getLabel($prod->getError(), $this->adminLangId));
             FatUtility::dieWithError(Message::getHtml());
         }
@@ -977,15 +977,18 @@ class ProductsController extends AdminBaseController
         $frm = new Form('frmProductIntialSetUp');
         $frm->addRequiredField(Labels::getLabel('LBL_Product_Identifier', $this->adminLangId), 'product_identifier');
         $frm->addSelectBox(Labels::getLabel('LBL_Product_Type', $this->adminLangId), 'product_type', Product::getProductTypes($this->adminLangId), Product::PRODUCT_TYPE_PHYSICAL, array(), '');
-        $frm->addRequiredField(Labels::getLabel('LBL_Brand', $this->adminLangId), 'brand_name');
-        if($prodCatId > 0){
+        $brandFld = $frm->addTextBox(Labels::getLabel('LBL_Brand', $this->adminLangId), 'brand_name');
+        if (FatApp::getConfig("CONF_PRODUCT_BRAND_MANDATORY", FatUtility::VAR_INT, 1)) {
+            $brandFld->requirements()->setRequired();
+        }
+        if ($prodCatId > 0) {
             $prodCat = new ProductCategory();
             $selectedCatName = $prodCat->getParentTreeStructure($prodCatId, 0, '', $this->adminLangId);
             $prodCatName = html_entity_decode($selectedCatName);
             $frm->addRequiredField(Labels::getLabel('LBL_Category', $this->adminLangId), 'category_name', $prodCatName);
-        }else{
+        } else {
             $frm->addRequiredField(Labels::getLabel('LBL_Category', $this->adminLangId), 'category_name');
-        }        
+        }
         $siteDefaultLangId = FatApp::getConfig('conf_default_site_lang', FatUtility::VAR_INT, 1);
         $languages = Language::getAllNames();
         foreach ($languages as $langId => $lang) {
@@ -1019,7 +1022,7 @@ class ProductsController extends AdminBaseController
         $frm->addHiddenField('', 'product_brand_id');
         $frm->addHiddenField('', 'ptt_taxcat_id');
         $frm->addHiddenField('', 'ptc_prodcat_id', $prodCatId);
-        $frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_Save_And_Next', $this->adminLangId));        
+        $frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_Save_And_Next', $this->adminLangId));
         $frm->addButton("", "btn_discard", Labels::getLabel('LBL_Discard', $this->adminLangId));
         return $frm;
     }
@@ -1034,12 +1037,12 @@ class ProductsController extends AdminBaseController
             Message::addErrorMessage(current($frm->getValidationErrors()));
             FatUtility::dieWithError(Message::getHtml());
         }
-        if($post['product_brand_id'] < 1){
-            Message::addErrorMessage(Labels::getLabel('MSG_Please_Choose_Brand_From_List', $this->adminLangId)); 
+        if ($post['product_brand_id'] < 1 && FatApp::getConfig("CONF_PRODUCT_BRAND_MANDATORY", FatUtility::VAR_INT, 1)) {
+            Message::addErrorMessage(Labels::getLabel('MSG_Please_Choose_Brand_From_List', $this->adminLangId));
             FatUtility::dieWithError(Message::getHtml());
         }
-        if($post['ptc_prodcat_id'] < 1){
-            Message::addErrorMessage(Labels::getLabel('MSG_Please_Choose_Category_From_List', $this->adminLangId)); 
+        if ($post['ptc_prodcat_id'] < 1) {
+            Message::addErrorMessage(Labels::getLabel('MSG_Please_Choose_Category_From_List', $this->adminLangId));
             FatUtility::dieWithError(Message::getHtml());
         }
 
@@ -1356,7 +1359,7 @@ class ProductsController extends AdminBaseController
         $frm->addHtml('', '', '<table id="tab_shipping" width="100%" class="table table-bordered"></table><div class="gap"></div>');
 
         $frm->addHiddenField('', 'ps_from_country_id');
-        $frm->addHiddenField('', 'product_id', $productId);        
+        $frm->addHiddenField('', 'product_id', $productId);
         $frm->addButton("", "btn_back", Labels::getLabel('LBL_Back', $this->adminLangId), array('onclick' => 'productOptionsAndTag('.$productId.');'));
         $frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_Save_And_Next', $this->adminLangId));
         return $frm;

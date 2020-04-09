@@ -47,7 +47,7 @@ class UsersController extends AdminBaseController
 
         $userObj = new User();
         $srch = $userObj->getUserSearchObj(null, true);
-        $srch->joinTable(Shop::DB_TBL, 'LEFT OUTER JOIN', 'user_id = shop.shop_user_id', 'shop');
+        $srch->joinTable(Shop::DB_TBL, 'LEFT OUTER JOIN', 'user_id = shop.shop_user_id OR user_parent = shop.shop_user_id', 'shop');
         $srch->joinTable(Shop::DB_TBL_LANG, 'LEFT OUTER JOIN', 'shop.shop_id = s_l.shoplang_shop_id AND shoplang_lang_id = ' . $this->adminLangId, 's_l');
         $srch->addOrder('u.user_id', 'DESC');
         $srch->addOrder('credential_active', 'DESC');
@@ -79,15 +79,20 @@ class UsersController extends AdminBaseController
         switch ($type) {
             case User::USER_TYPE_SELLER:
                 $srch->addCondition('u.user_is_supplier', '=', applicationConstants::YES);
+                $srch->addCondition('u.user_parent', '=', 0);
                 break;
             case User::USER_TYPE_BUYER:
                 $srch->addCondition('u.user_is_buyer', '=', applicationConstants::YES);
                 break;
             case User::USER_TYPE_ADVERTISER:
                 $srch->addCondition('u.user_is_advertiser', '=', applicationConstants::YES);
+                $srch->addCondition('u.user_parent', '=', 0);
                 break;
             case User::USER_TYPE_AFFILIATE:
-                $srch->addCondition('u.user_is_affiliate', '=', applicationConstants::YES);
+                $srch->addCondition('u.user_is_affiliate', '=', applicationConstants::YES);               
+                break;
+            case User::USER_TYPE_SUB_USER:
+                $srch->addCondition('u.user_parent', '>', 0);               
                 break;
             case User::USER_TYPE_BUYER_SELLER:
                 $srch->addCondition('u.user_is_supplier', '=', applicationConstants::YES);
@@ -109,7 +114,7 @@ class UsersController extends AdminBaseController
 
         $srch->addFld(array('user_is_buyer', 'user_is_supplier', 'user_is_advertiser', 'user_is_affiliate', 'user_registered_initially_for'));
 
-        $srch->addMultipleFields(array('user_id', 'user_name', 'user_phone', 'user_profile_info', 'user_regdate', 'user_is_buyer', 'credential_username', 'credential_email', 'credential_active', 'credential_verified', 'shop_id', 'shop_user_id', 'IFNULL(shop_name, shop_identifier) as shop_name'));
+        $srch->addMultipleFields(array('user_id', 'user_name', 'user_phone', 'user_profile_info', 'user_regdate', 'user_is_buyer', 'user_parent', 'credential_username', 'credential_email', 'credential_active', 'credential_verified', 'shop_id', 'shop_user_id', 'IFNULL(shop_name, shop_identifier) as shop_name'));
 
         $srch->setPageNumber($page);
         $srch->setPageSize($pagesize);
@@ -182,7 +187,7 @@ class UsersController extends AdminBaseController
         $this->objPrivilege->canEditUsers();
         $user_id = FatUtility::int($user_id);
         $frmUser = $this->getForm($user_id);
-
+		$userParent = 0;
         $stateId = 0;
         if (0 < $user_id) {
             $userObj = new User($user_id);
@@ -205,8 +210,9 @@ class UsersController extends AdminBaseController
             } */
             $stateId = $data['user_state_id'];
             $frmUser->fill($data);
+			$userParent = $data['user_parent'];
         }
-
+		$this->set('userParent', $userParent);
         $this->set('user_id', $user_id);
         $this->set('stateId', $stateId);
         $this->set('frmUser', $frmUser);
@@ -285,6 +291,13 @@ class UsersController extends AdminBaseController
         $userId = FatUtility::int($post['urp_user_id']);
         if (1 > $userId) {
             Message::addErrorMessage($this->str_invalid_request_id);
+            FatUtility::dieJsonError(Message::getHtml());
+        }
+
+        $userObj = new User($userId);
+        $user = $userObj->getUserInfo(array('user_parent'), false, false);
+        if (!$user || 0 < $user['user_parent']) {
+            Message::addErrorMessage($this->str_invalid_request);
             FatUtility::dieJsonError(Message::getHtml());
         }
 
@@ -397,6 +410,13 @@ class UsersController extends AdminBaseController
             FatUtility::dieJsonError(Message::getHtml());
         }
 
+        $userObj = new User($userId);
+        $user = $userObj->getUserInfo(array('user_parent'), false, false);
+
+        if (!$user || 0 < $user['user_parent']) {
+            Message::addErrorMessage($this->str_invalid_request);
+            FatUtility::dieJsonError(Message::getHtml());
+        }
         $tObj = new Transactions();
         $data = array(
         'utxn_user_id' => $userId,
@@ -474,7 +494,16 @@ class UsersController extends AdminBaseController
         }
 
         $userObj = new User($user_id);
-        if (!$userObj->updateBankInfo($post)) {
+        $srch = $userObj->getUserSearchObj(array('user_parent'));
+        $rs = $srch->getResultSet();
+		$data = FatApp::getDb()->fetch($rs, 'user_id');
+
+        if ($data === false || 0 < $data['user_parent']) {
+            Message::addErrorMessage($this->str_invalid_request);
+            FatUtility::dieJsonError(Message::getHtml());
+        }
+		
+		if (!$userObj->updateBankInfo($post)) {
             Message::addErrorMessage($userObj->getError());
             FatUtility::dieJsonError(Message::getHtml());
         }
@@ -555,6 +584,16 @@ class UsersController extends AdminBaseController
         if (1 > $user_id) {
             Message::addErrorMessage($this->str_invalid_request_id);
             FatUtility::dieWithError(Message::getHtml());
+        }
+		
+		$userObj = new User($user_id);
+		$srch = $userObj->getUserSearchObj(array('user_parent'));
+        $rs = $srch->getResultSet();
+		$data = FatApp::getDb()->fetch($rs, 'user_id');
+
+        if ($data === false || 0 < $data['user_parent']) {
+            Message::addErrorMessage($this->str_invalid_request);
+            FatUtility::dieJsonError(Message::getHtml());
         }
 
         $addressObj = new UserAddress($ua_id);
@@ -1454,6 +1493,8 @@ class UsersController extends AdminBaseController
 
         $userObj = new User();
         $srch = $userObj->getUserCatalogRequestsObj($scatrequest_id);
+        $srch->joinTable(Shop::DB_TBL, 'LEFT OUTER JOIN', Shop::DB_TBL_PREFIX . 'user_id = tucr.' . User::DB_TBL_USR_CATALOG_REQ_PREFIX . 'user_id', 'shop');
+        $srch->joinTable(Shop::DB_TBL_LANG, 'LEFT OUTER JOIN', 'shop.shop_id = s_l.shoplang_shop_id AND shoplang_lang_id = ' . $this->adminLangId, 's_l');
         $srch->addFld('tucr.*');
         $srch->doNotCalculateRecords();
         $srch->setPageSize(1);
@@ -1778,17 +1819,20 @@ class UsersController extends AdminBaseController
             Message::addErrorMessage($this->str_invalid_request);
             FatUtility::dieJsonError(Message::getHtml());
         }
-        EmailHandler::sendMailTpl(
-            $user['credential_email'],
-            'user_send_email',
-            $this->adminLangId,
-            array(
-            '{full_name}' => trim($user['user_name']),
-            '{admin_subject}' => trim($post['mail_subject']),
-            '{admin_message}' => nl2br($post["mail_message"])
-            )
+        $data = array(
+            'user_name' => trim($user['user_name']),
+            'mail_subject' => trim($post['mail_subject']),
+            'mail_message' => nl2br($post["mail_message"]),
+			'credential_email' => $user['credential_email'],
+			'user_phone' => $user['user_phone']
         );
-
+		
+		$email = new EmailHandler();
+		if(!$email->sendEmailToUser($this->adminLangId, $data)){
+			Message::addErrorMessage($email->getError());
+            FatUtility::dieWithError(Message::getHtml());
+		}
+        
         $this->set('msg', Labels::getLabel('LBL_Your_Message_Sent_To', $this->adminLangId) . ' - ' . $user["credential_email"]);
         $this->_template->render(false, false, 'json-success.php');
     }

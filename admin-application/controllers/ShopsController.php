@@ -380,7 +380,7 @@ class ShopsController extends AdminBaseController
         $file_type = $post['file_type'];
         $slide_screen = $post['slide_screen'];
         $allowedFileTypeArr = array( AttachedFile::FILETYPE_SHOP_LOGO, AttachedFile::FILETYPE_SHOP_BANNER, AttachedFile::FILETYPE_SHOP_BACKGROUND_IMAGE);
-
+        $aspectRatio = FatApp::getPostedData('ratio_type', FatUtility::VAR_INT, 0);
         if (!in_array($file_type, $allowedFileTypeArr)) {
             Message::addErrorMessage($this->str_invalid_request);
             FatUtility::dieJsonError(Message::getHtml());
@@ -405,7 +405,8 @@ class ShopsController extends AdminBaseController
             -1,
             $unique_record,
             $lang_id,
-            $slide_screen
+            $slide_screen,
+            $aspectRatio
         )
         ) {
             Message::addErrorMessage($fileHandlerObj->getError());
@@ -1354,7 +1355,7 @@ class ShopsController extends AdminBaseController
     public function toggleBulkCollectionStatuses()
     {
         $this->objPrivilege->canEditShops();
-        $status = FatApp::getPostedData('collection_status', FatUtility::VAR_INT, -1);
+        $status = FatApp::getPostedData('status', FatUtility::VAR_INT, -1);
         $scollectionIdsArr = FatUtility::int(FatApp::getPostedData('scollection_ids'));
 
         if (empty($scollectionIdsArr) || -1 == $status) {

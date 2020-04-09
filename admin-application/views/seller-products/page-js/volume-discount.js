@@ -22,11 +22,15 @@ $(document).on('keyup', "input[name='product_name']", function(){
         	select: function(event, ui) {
         		$("#"+parentForm+" input[name='voldiscount_selprod_id']").val(ui.item.id);
                 currObj.val((ui.item.label).replace(/<[^>]+>/g, ''));
+                $("input[name='voldiscount_min_qty']").removeAttr('disabled');
+                $("input[name='voldiscount_percentage']").removeAttr('disabled');
                 return false;
         	}
         });
     }else{
         $("#"+parentForm+" input[name='voldiscount_selprod_id']").val('');
+        $("input[name='voldiscount_min_qty']").attr('disabled', 'disabled').val('');
+        $("input[name='voldiscount_percentage']").attr('disabled', 'disabled').val('');
     }
 });
 

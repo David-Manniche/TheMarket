@@ -91,6 +91,19 @@ class SearchItem extends MyAppModel
                         $arr_url_params['out_of_stock'] = $id;
                         break;
                     case 'brand':
+                        $dashPosition = strpos($valueString, '-');
+                        if ($dashPosition == 0) {
+                            $dashPosition = strpos(substr($valueString, 1), '-') + 1;
+                        }
+                        $id = substr($valueString, 0, $dashPosition);
+                        $valueString = substr($valueString, $dashPosition + 1);
+                        if (!array_key_exists($keyString, $arr_url_params)) {
+                            $arr_url_params[$keyString] = array();
+                        }
+                        if (!in_array($id, $arr_url_params[$keyString])) {
+                            array_push($arr_url_params[$keyString], $id);
+                        }
+                        break;
                     case 'prodcat':
                     case 'optionvalue':
                     case 'condition':
@@ -113,4 +126,5 @@ class SearchItem extends MyAppModel
 
         return $arr_url_params;
     }
+    
 }

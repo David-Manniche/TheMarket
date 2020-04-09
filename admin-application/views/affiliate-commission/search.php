@@ -7,6 +7,11 @@ $arr_flds = array(
         'afcommsetting_fees'=>Labels::getLabel('LBL_Fees_[%]', $adminLangId),
         'action' => Labels::getLabel('LBL_Action', $adminLangId),
     );
+
+if (!$canEdit || empty($arr_listing)) {
+    unset($arr_flds['select_all']);
+}
+
 $tbl = new HtmlElement('table', array('width'=>'100%', 'class'=>'table table-responsive'));
 $th = $tbl->appendElement('thead')->appendElement('tr');
 foreach ($arr_flds as $key => $val) {
@@ -71,7 +76,7 @@ if (count($arr_listing) == 0) {
 }
 
 $frm = new Form('frmAffCommListing', array('id'=>'frmAffCommListing'));
-$frm->setFormTagAttribute('class', 'web_form last_td_nowrap');
+$frm->setFormTagAttribute('class', 'web_form last_td_nowrap actionButtons-js');
 $frm->setFormTagAttribute('onsubmit', 'formAction(this, reloadList ); return(false);');
 $frm->setFormTagAttribute('action', CommonHelper::generateUrl('AffiliateCommission', 'deleteSelected'));
 $frm->addHiddenField('', 'status');

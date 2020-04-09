@@ -76,7 +76,7 @@ $(document).ready(function(){
 	
 	clearSearch = function(){
 		document.frmSearch.reset();
-		$('input[name="reviewed_by_id"]').val('');
+        $('input[name="reviewed_for_id"]').val('');
 		searchProductReviews(document.frmSearch);
 	};	
 

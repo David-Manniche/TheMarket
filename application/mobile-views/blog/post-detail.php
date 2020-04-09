@@ -6,8 +6,9 @@ if (isset($post_images) && !empty($post_images)) {
         $postImages[] = FatUtility::generateFullUrl('image', 'blogPostFront', array($value['afile_record_id'], $value['afile_lang_id'], "LAYOUT1", 0, $value['afile_id']), CONF_WEBROOT_FRONT_URL);
     });
 }
-if (isset($blogPostData['categoryIds']) && !empty($blogPostData['categoryIds'])) {
-    $blogPostData['categoryIds'] = explode(',', $blogPostData['categoryIds']);
+
+if (isset($blogPostData['categoryNames']) && !empty($blogPostData['categoryNames'])) {
+    $blogPostData['categoryNames'] = str_replace('~', ' | ', $blogPostData['categoryNames']);
 }
 
 $data = array(

@@ -19,7 +19,8 @@ class Importexport extends ImportexportCommon
     public const TYPE_USERS = 11;
     public const TYPE_TAX_CATEGORY = 12;
     public const TYPE_LANGUAGE_LABELS = 13;
-    
+    public const TYPE_INVENTORY_UPDATE = 14;
+
 
     public const MAX_LIMIT = 1000;
 
@@ -54,6 +55,7 @@ class Importexport extends ImportexportCommon
                 $arr[static::TYPE_CATEGORIES] = Labels::getLabel('LBL_Categories', $langId);
                 $arr[static::TYPE_PRODUCTS] = Labels::getLabel('LBL_Catalogs', $langId);
                 $arr[static::TYPE_SELLER_PRODUCTS] = Labels::getLabel('LBL_Seller_Products', $langId);
+                $arr[static::TYPE_INVENTORY_UPDATE] = Labels::getLabel('LBL_INVENTORY_UPDATE', $langId);
                 $arr[static::TYPE_BRANDS] = Labels::getLabel('LBL_Brands', $langId);
                 $arr[static::TYPE_OPTIONS] = Labels::getLabel('LBL_Options', $langId);
                 $arr[static::TYPE_OPTION_VALUES] = Labels::getLabel('LBL_Option_Values', $langId);
@@ -70,6 +72,7 @@ class Importexport extends ImportexportCommon
             case 'IMPORT':
                 $arr[static::TYPE_PRODUCTS] = Labels::getLabel('LBL_Catalogs', $langId);
                 $arr[static::TYPE_SELLER_PRODUCTS] = Labels::getLabel('LBL_Seller_Products', $langId);
+                $arr[static::TYPE_INVENTORY_UPDATE] = Labels::getLabel('LBL_INVENTORY_UPDATE', $langId);
                 if (!$sellerDashboard) {
                     $arr[static::TYPE_CATEGORIES] = Labels::getLabel('LBL_Categories', $langId);
                     $arr[static::TYPE_BRANDS] = Labels::getLabel('LBL_Brands', $langId);
@@ -145,10 +148,15 @@ class Importexport extends ImportexportCommon
     public function getCell($arr = array(), $index, $defaultValue = '')
     {
         if (array_key_exists($index, $arr) && trim($arr[$index]) != '') {
-            $str = str_replace("\xc2\xa0", '', trim($arr[$index]));
-            return str_replace("\xa0", '', $str);
+            return $str = str_replace("\xc2\xa0", '', trim($arr[$index]));
+            /*  return str_replace("\xa0", '', $str); */
         }
         return $defaultValue;
+    }
+
+    public function parseContentForExport($colValue)
+    {
+        return html_entity_decode($colValue, ENT_QUOTES, 'utf-8');
     }
 
     private function validateCSVHeaders($csvFilePointer, $coloumArr, $langId)
@@ -602,7 +610,7 @@ class Importexport extends ImportexportCommon
                 if ('prodcat_parent_identifier' == $columnKey) {
                     $colValue = array_key_exists($row['prodcat_parent'], $categoriesIdentifiers) ? $categoriesIdentifiers[$row['prodcat_parent']] : '';
                 }
-                $sheetData[] = $colValue;
+                $sheetData[] = $this->parseContentForExport($colValue); 
             }
             CommonHelper::writeExportDataToCSV($this->CSVfileObj, $sheetData);
         }
@@ -626,6 +634,7 @@ class Importexport extends ImportexportCommon
 
         $languageCodes = Language::getAllCodesAssoc(true);
         $fileTypeArr = AttachedFile::getFileTypeArray($langId);
+        $displayArr = applicationConstants::getDisplaysArr($langId);
 
         while ($row = $this->db->fetch($rs)) {
             $sheetData = array();
@@ -640,7 +649,11 @@ class Importexport extends ImportexportCommon
                     $colValue = array_key_exists($row['afile_type'], $fileTypeArr) ? $fileTypeArr[ $row['afile_type'] ] : '';
                 }
 
-                $sheetData[] = $colValue;
+                if ('afile_screen' == $columnKey) {
+                    $colValue = array_key_exists($row['afile_screen'], $displayArr) ? $displayArr[ $row['afile_screen'] ] : '';
+                }
+
+                $sheetData[] = $this->parseContentForExport($colValue); 
             }
             CommonHelper::writeExportDataToCSV($this->CSVfileObj, $sheetData);
         }
@@ -725,6 +738,10 @@ class Importexport extends ImportexportCommon
                     unset($prodCatDataArr['prodcat_parent']);
                     unset($prodCatDataArr['prodcat_identifier']);
                     unset($prodCatDataArr['prodcat_display_order']);
+                } else {
+                    if ($categoryId == $prodCatDataArr['prodcat_parent']) {
+                        $prodCatDataArr['prodcat_parent'] = 0;
+                    }
                 }
 
                 if (!empty($categoryData) && $categoryData['prodcat_id']) {
@@ -792,6 +809,9 @@ class Importexport extends ImportexportCommon
         $fileTypeArr = AttachedFile::getFileTypeArray($langId);
         $fileTypeIdArr = array_flip($fileTypeArr);
 
+        $displayArr = applicationConstants::getDisplaysArr($langId);
+        $displayIdArr = array_flip($displayArr);
+
         $languageCodes = Language::getAllCodesAssoc(true);
         $languageIds = array_flip($languageCodes);
 
@@ -808,6 +828,7 @@ class Importexport extends ImportexportCommon
 
         $errInSheet = false;
         while (($row = $this->getFileRow($csvFilePointer)) !== false) {
+            $screenInputRequired = false;
             $rowIndex++;
 
             $categoryMediaArr = array();
@@ -826,6 +847,20 @@ class Importexport extends ImportexportCommon
                 } else {
                     if ('afile_type' == $columnKey) {
                         $colValue = array_key_exists($colValue, $fileTypeIdArr) ? $fileTypeIdArr[$colValue] : 0;
+                        $screenIndex = isset($this->headingIndexArr[$coloumArr['afile_screen']]) ? $this->headingIndexArr[$coloumArr['afile_screen']] : '';
+                        $screen = !empty($screenIndex) ? $this->getCell($row, $screenIndex, '') : '';
+                        $screenInputRequired = AttachedFile::FILETYPE_CATEGORY_BANNER == $colValue ? true : false;
+                        if (AttachedFile::FILETYPE_CATEGORY_BANNER == $colValue && (empty($screen) || !in_array($screen, $displayArr))) {
+                            $errorInRow = true;
+                            $errMsg = Labels::getLabel('LBL_INVALID_SCREEN_VALUE', $langId);
+                            $err = array($rowIndex, ($screenIndex + 1), $errMsg);
+                            CommonHelper::writeToCSVFile($this->CSVfileObj, $err);
+                            continue;
+                        }
+                    }
+
+                    if ('afile_screen' == $columnKey) {
+                        $colValue = array_key_exists($colValue, $displayIdArr) ? $displayIdArr[$colValue] : 0;
                     }
 
                     if ('prodcat_id' == $columnKey) {
@@ -840,8 +875,11 @@ class Importexport extends ImportexportCommon
                         $columnKey = 'afile_lang_id';
                         $colValue = array_key_exists($colValue, $languageIds) ? $languageIds[$colValue] : 0;
                     }
-
+                    
                     $categoryMediaArr[$columnKey] = $colValue;
+                    if (false === $screenInputRequired) {
+                        unset($categoryMediaArr['afile_screen']);
+                    }
                 }
             }
             if (false === $errorInRow && count($categoryMediaArr)) {
@@ -854,14 +892,16 @@ class Importexport extends ImportexportCommon
                     $saveToTempTable = true;
                 }
 
+                $screen = isset($categoryMediaArr['afile_screen']) ? $categoryMediaArr['afile_screen'] : 0;
+
                 if ($saveToTempTable) {
                     $categoryMediaArr['afile_downloaded'] = applicationConstants::NO;
                     $categoryMediaArr['afile_unique'] = applicationConstants::YES;
                     $this->db->deleteRecords(
                         AttachedFile::DB_TBL_TEMP,
                         array(
-                        'smt' => 'afile_type = ? AND afile_record_id = ? AND afile_record_subid = ? AND afile_lang_id = ?',
-                        'vals' => array($categoryMediaArr['afile_type'], $categoryMediaArr['afile_record_id'], 0, $categoryMediaArr['afile_lang_id'])
+                        'smt' => 'afile_type = ? AND afile_record_id = ? AND afile_record_subid = ? AND afile_lang_id = ? AND afile_screen = ?',
+                        'vals' => array($categoryMediaArr['afile_type'], $categoryMediaArr['afile_record_id'], 0, $categoryMediaArr['afile_lang_id'], $screen)
                         )
                     );
                     $this->db->insertFromArray(AttachedFile::DB_TBL_TEMP, $categoryMediaArr, false, array(), $categoryMediaArr);
@@ -869,16 +909,15 @@ class Importexport extends ImportexportCommon
                     $this->db->deleteRecords(
                         AttachedFile::DB_TBL,
                         array(
-                        'smt' => 'afile_type = ? AND afile_record_id = ? AND afile_record_subid = ? AND afile_lang_id = ?',
-                        'vals' => array($categoryMediaArr['afile_type'], $categoryMediaArr['afile_record_id'], 0, $categoryMediaArr['afile_lang_id'])
+                        'smt' => 'afile_type = ? AND afile_record_id = ? AND afile_record_subid = ? AND afile_lang_id = ? AND afile_screen = ?',
+                        'vals' => array($categoryMediaArr['afile_type'], $categoryMediaArr['afile_record_id'], 0, $categoryMediaArr['afile_lang_id'], $screen)
                         )
                     );
 
                     $physical_path = explode('/', $categoryMediaArr['afile_physical_path']);
                     if (AttachedFile::FILETYPE_BULK_IMAGES_PATH == $physical_path[0] . '/') {
                         $afileObj = new AttachedFile();
-
-                        $moved = $afileObj->moveAttachment($categoryMediaArr['afile_physical_path'], $categoryMediaArr['afile_type'], $categoryMediaArr['afile_record_id'], 0, $categoryMediaArr['afile_name'], $categoryMediaArr['afile_display_order'], true, $categoryMediaArr['afile_lang_id']);
+                        $moved = $afileObj->moveAttachment($categoryMediaArr['afile_physical_path'], $categoryMediaArr['afile_type'], $categoryMediaArr['afile_record_id'], 0, $categoryMediaArr['afile_name'], $categoryMediaArr['afile_display_order'], true, $categoryMediaArr['afile_lang_id'], $screen);
 
                         if (false === $moved) {
                             $errMsg = Labels::getLabel("MSG_Invalid_File.", $langId);
@@ -894,9 +933,6 @@ class Importexport extends ImportexportCommon
         }
         // Close File
         CommonHelper::writeToCSVFile($this->CSVfileObj, array(), true);
-
-        $success['status'] = 1;
-
 
         if (CommonHelper::checkCSVFile($this->CSVfileName)) {
             $success['CSVfileUrl'] = FatUtility::generateFullUrl('custom', 'downloadLogFile', array($this->CSVfileName), CONF_WEBROOT_FRONTEND);
@@ -954,7 +990,7 @@ class Importexport extends ImportexportCommon
                         break;
                 }
 
-                $sheetData[] = $colValue;
+                $sheetData[] = $this->parseContentForExport($colValue); 
             }
             CommonHelper::writeExportDataToCSV($this->CSVfileObj, $sheetData);
         }
@@ -1082,8 +1118,10 @@ class Importexport extends ImportexportCommon
         $headingsArr = $this->getBrandMediaColoumArr($langId);
         CommonHelper::writeExportDataToCSV($this->CSVfileObj, $headingsArr);
         /* ] */
-
+        
         $languageCodes = Language::getAllCodesAssoc(true);
+        $displayArr = applicationConstants::getDisplaysArr($langId);
+        $ratioArr = AttachedFile::getRatioTypeArray($langId);
 
         while ($row = $this->db->fetch($rs)) {
             $sheetData = array();
@@ -1104,9 +1142,15 @@ class Importexport extends ImportexportCommon
                             $colValue = 'image';
                         }
                         break;
+                    case 'afile_screen':
+                        $colValue = '';
+                        if ($row['afile_type'] == AttachedFile::FILETYPE_BRAND_IMAGE) {
+                            $colValue = array_key_exists($row['afile_screen'], $displayArr) ? $displayArr[ $row['afile_screen'] ] : '';
+                        }
+                        break;
                 }
 
-                $sheetData[] = $colValue;
+                $sheetData[] = $this->parseContentForExport($colValue); 
             }
             CommonHelper::writeExportDataToCSV($this->CSVfileObj, $sheetData);
         }
@@ -1123,11 +1167,15 @@ class Importexport extends ImportexportCommon
         $brandIdentifiers = Brand::getAllIdentifierAssoc();
         $brandIds = array_flip($brandIdentifiers);
 
+        $displayArr = applicationConstants::getDisplaysArr($langId);
+        $displayIdArr = array_flip($displayArr);
+
         $coloumArr = $this->getBrandMediaColoumArr($langId);
         $this->validateCSVHeaders($csvFilePointer, $coloumArr, $langId);
 
         $errInSheet = false;
         while (($row = $this->getFileRow($csvFilePointer)) !== false) {
+            $screenInputRequired = $ratioInputRequired = false;
             $rowIndex++;
 
             $brandsMediaArr = array();
@@ -1164,10 +1212,27 @@ class Importexport extends ImportexportCommon
                                 $fileType = AttachedFile::FILETYPE_BRAND_IMAGE;
                             }
                             $colValue = $fileType;
+
+                            $screenIndex = isset($this->headingIndexArr[$coloumArr['afile_screen']]) ? $this->headingIndexArr[$coloumArr['afile_screen']] : '';
+                            $screen = !empty($screenIndex) ? $this->getCell($row, $screenIndex, '') : '';
+                            $screenInputRequired = AttachedFile::FILETYPE_BRAND_IMAGE == $colValue ? true : false;
+                            if (AttachedFile::FILETYPE_BRAND_IMAGE == $colValue && (empty($screen) || !in_array($screen, $displayArr))) {
+                                $errorInRow = true;
+                                $errMsg = Labels::getLabel('LBL_INVALID_SCREEN_VALUE', $langId);
+                                $err = array($rowIndex, ($screenIndex + 1), $errMsg);
+                                CommonHelper::writeToCSVFile($this->CSVfileObj, $err);
+                                continue 2;
+                            }
+                            break;
+                        case 'afile_screen':
+                            $colValue = array_key_exists($colValue, $displayIdArr) ? $displayIdArr[$colValue] : 0;
                             break;
                     }
 
                     $brandsMediaArr[$columnKey] = $colValue;
+                    if (false === $screenInputRequired) {
+                        unset($brandsMediaArr['afile_screen']);
+                    }
                 }
             }
 
@@ -1184,14 +1249,16 @@ class Importexport extends ImportexportCommon
                     $saveToTempTable = true;
                 }
 
+                $screen = isset($brandsMediaArr['afile_screen']) ? $brandsMediaArr['afile_screen'] : 0;
+
                 if ($saveToTempTable) {
                     $dataToSaveArr['afile_downloaded'] = applicationConstants::NO;
                     $dataToSaveArr['afile_unique'] = applicationConstants::YES;
                     $this->db->deleteRecords(
                         AttachedFile::DB_TBL_TEMP,
                         array(
-                        'smt' => 'afile_type = ? AND afile_record_id = ? AND afile_record_subid = ? AND afile_lang_id = ?',
-                        'vals' => array( $fileType, $dataToSaveArr['afile_record_id'], 0, $dataToSaveArr['afile_lang_id'] )
+                        'smt' => 'afile_type = ? AND afile_record_id = ? AND afile_record_subid = ? AND afile_lang_id = ? AND afile_screen = ?',
+                        'vals' => array( $fileType, $dataToSaveArr['afile_record_id'], 0, $dataToSaveArr['afile_lang_id'], $screen )
                         )
                     );
                     $this->db->insertFromArray(AttachedFile::DB_TBL_TEMP, $dataToSaveArr, false, array(), $dataToSaveArr);
@@ -1199,16 +1266,15 @@ class Importexport extends ImportexportCommon
                     $this->db->deleteRecords(
                         AttachedFile::DB_TBL,
                         array(
-                        'smt' => 'afile_type = ? AND afile_record_id = ? AND afile_record_subid = ? AND afile_lang_id = ?',
-                        'vals' => array( $fileType, $dataToSaveArr['afile_record_id'], 0, $dataToSaveArr['afile_lang_id'] )
+                        'smt' => 'afile_type = ? AND afile_record_id = ? AND afile_record_subid = ? AND afile_lang_id = ? AND afile_screen = ?',
+                        'vals' => array( $fileType, $dataToSaveArr['afile_record_id'], 0, $dataToSaveArr['afile_lang_id'], $screen )
                         )
                     );
 
                     $physical_path = explode('/', $brandsMediaArr['afile_physical_path']);
                     if (AttachedFile::FILETYPE_BULK_IMAGES_PATH == $physical_path[0] . '/') {
                         $afileObj = new AttachedFile();
-
-                        $moved = $afileObj->moveAttachment($brandsMediaArr['afile_physical_path'], $fileType, $dataToSaveArr['afile_record_id'], 0, $brandsMediaArr['afile_name'], $brandsMediaArr['afile_display_order'], true, $brandsMediaArr['afile_lang_id']);
+                        $moved = $afileObj->moveAttachment($brandsMediaArr['afile_physical_path'], $fileType, $dataToSaveArr['afile_record_id'], 0, $brandsMediaArr['afile_name'], $brandsMediaArr['afile_display_order'], true, $brandsMediaArr['afile_lang_id'], $screen);
 
                         if (false === $moved) {
                             $errMsg = Labels::getLabel("MSG_Invalid_File.", $langId);
@@ -1349,7 +1415,7 @@ class Importexport extends ImportexportCommon
                 if (in_array($columnKey, array( 'ps_free', 'product_cod_enabled', 'product_featured', 'product_approved', 'product_active', 'product_deleted' )) && !$this->settings['CONF_USE_O_OR_1']) {
                     $colValue = (FatUtility::int($colValue) == 1) ? 'YES' : 'NO';
                 }
-                $sheetData[] = $colValue;
+                $sheetData[] = $this->parseContentForExport($colValue);
             }
             CommonHelper::writeExportDataToCSV($this->CSVfileObj, $sheetData);
         }
@@ -1368,7 +1434,7 @@ class Importexport extends ImportexportCommon
         $taxCategoryArr = array();
         $countryArr = array();
         $userProdUploadLimit = $usersCrossedUploadLimit = array();
-        $userId = 0; 
+        $userId = 0;
         if (!$this->settings['CONF_USE_PRODUCT_TYPE_ID']) {
             $prodTypeIdentifierArr = Product::getProductTypes($langId);
             $prodTypeIdentifierArr = array_flip($prodTypeIdentifierArr);
@@ -1817,7 +1883,7 @@ class Importexport extends ImportexportCommon
             $sheetData = array();
             foreach ($headingsArr as $columnKey => $heading) {
                 $colValue = array_key_exists($columnKey, $row) ? $row[$columnKey] : '';
-                $sheetData[] = $colValue;
+                $sheetData[] = $this->parseContentForExport($colValue); 
             }
             CommonHelper::writeExportDataToCSV($this->CSVfileObj, $sheetData);
         }
@@ -1963,7 +2029,7 @@ class Importexport extends ImportexportCommon
             $sheetData = array();
             foreach ($headingsArr as $columnKey => $heading) {
                 $colValue = array_key_exists($columnKey, $row) ? $row[$columnKey] : '';
-                $sheetData[] = $colValue;
+                $sheetData[] = $this->parseContentForExport($colValue); 
             }
             CommonHelper::writeExportDataToCSV($this->CSVfileObj, $sheetData);
         }
@@ -2080,7 +2146,7 @@ class Importexport extends ImportexportCommon
         $srch = Product::getSearchObject();
         $srch->joinTable(Product::DB_PRODUCT_SPECIFICATION, 'INNER JOIN', Product::DB_TBL_PREFIX . 'id = ' . Product::DB_PRODUCT_SPECIFICATION_PREFIX . 'product_id');
         $srch->joinTable(Product::DB_PRODUCT_LANG_SPECIFICATION, 'LEFT OUTER JOIN', Product::DB_PRODUCT_SPECIFICATION_PREFIX . 'id = ' . Product::DB_PRODUCT_LANG_SPECIFICATION_PREFIX . 'prodspec_id');
-        $srch->addMultipleFields(array('prodspec_id', 'prodspeclang_lang_id', 'prodspec_name', 'prodspec_value', 'product_id', 'product_identifier'));
+        $srch->addMultipleFields(array('prodspec_id', 'prodspeclang_lang_id', 'prodspec_name', 'prodspec_value', 'prodspec_group', 'product_id', 'product_identifier'));
         $srch->joinTable(Language::DB_TBL, 'INNER JOIN', 'language_id = prodspeclang_lang_id');
         $srch->doNotCalculateRecords();
         if ($userId) {
@@ -2121,7 +2187,7 @@ class Importexport extends ImportexportCommon
                 if ('prodspeclang_lang_code' == $columnKey) {
                     $colValue = $languageCodes[ $row['prodspeclang_lang_id'] ];
                 }
-                $sheetData[] = $colValue;
+                $sheetData[] = $this->parseContentForExport($colValue); 
             }
             CommonHelper::writeExportDataToCSV($this->CSVfileObj, $sheetData);
         }
@@ -2202,7 +2268,7 @@ class Importexport extends ImportexportCommon
                         $errMsg = str_replace('{column-name}', $columnTitle, Labels::getLabel("MSG_Invalid_{column-name}.", $langId));
                         CommonHelper::writeToCSVFile($this->CSVfileObj, array( $rowIndex, ($colIndex + 1), $errMsg ));
                     } else {
-                        if (in_array($columnKey, array( 'prodspeclang_lang_id', 'prodspec_name', 'prodspec_value' ))) {
+                        if (in_array($columnKey, array( 'prodspeclang_lang_id', 'prodspec_name', 'prodspec_value', 'prodspec_group' ))) {
                             $prodSpecLangArr[$columnKey] = $colValue;
                         } else {
                             $prodSpecArr[$columnKey] = $colValue;
@@ -2312,7 +2378,7 @@ class Importexport extends ImportexportCommon
                     $colValue = !empty($row['credential_username']) ? $row['credential_username'] : Labels::getLabel('LBL_Admin', $langId);
                 }
 
-                $sheetData[] = $colValue;
+                $sheetData[] = $this->parseContentForExport($colValue); 
             }
             CommonHelper::writeExportDataToCSV($this->CSVfileObj, $sheetData);
         }
@@ -2550,7 +2616,7 @@ class Importexport extends ImportexportCommon
                     $colValue = $languageCodes[ $row['afile_lang_id'] ];
                 }
 
-                $sheetData[] = $colValue;
+                $sheetData[] = $this->parseContentForExport($colValue); 
             }
             CommonHelper::writeExportDataToCSV($this->CSVfileObj, $sheetData);
         }
@@ -2821,7 +2887,7 @@ class Importexport extends ImportexportCommon
                     $colValue = $languageCodes[ $row['afile_lang_id'] ];
                 }
 
-                $sheetData[] = $colValue;
+                $sheetData[] = $this->parseContentForExport($colValue); 
             }
             CommonHelper::writeExportDataToCSV($this->CSVfileObj, $sheetData);
         }
@@ -2883,7 +2949,7 @@ class Importexport extends ImportexportCommon
                     $colValue = (FatUtility::int($colValue) == 1) ? 'YES' : 'NO';
                 }
 
-                $sheetData[] = $colValue;
+                $sheetData[] = $this->parseContentForExport($colValue); 
             }
             CommonHelper::writeExportDataToCSV($this->CSVfileObj, $sheetData);
         }
@@ -3175,7 +3241,7 @@ class Importexport extends ImportexportCommon
             $sheetData = array();
             foreach ($headingsArr as $columnKey => $heading) {
                 $colValue = array_key_exists($columnKey, $row) ? $row[$columnKey] : '';
-                $sheetData[] = $colValue;
+                $sheetData[] = $this->parseContentForExport($colValue); 
             }
             CommonHelper::writeExportDataToCSV($this->CSVfileObj, $sheetData);
         }
@@ -3389,7 +3455,7 @@ class Importexport extends ImportexportCommon
             $sheetData = array();
             foreach ($headingsArr as $columnKey => $heading) {
                 $colValue = array_key_exists($columnKey, $row) ? $row[$columnKey] : '';
-                $sheetData[] = $colValue;
+                $sheetData[] = $this->parseContentForExport($colValue); 
             }
             CommonHelper::writeExportDataToCSV($this->CSVfileObj, $sheetData);
         }
@@ -3536,7 +3602,7 @@ class Importexport extends ImportexportCommon
                 if (in_array($columnKey, array( 'splprice_start_date', 'splprice_end_date' ))) {
                     $colValue = $this->displayDate($colValue);
                 }
-                $sheetData[] = $colValue;
+                $sheetData[] = $this->parseContentForExport($colValue); 
             }
             CommonHelper::writeExportDataToCSV($this->CSVfileObj, $sheetData);
         }
@@ -3663,7 +3729,7 @@ class Importexport extends ImportexportCommon
             $sheetData = array();
             foreach ($headingsArr as $columnKey => $heading) {
                 $colValue = array_key_exists($columnKey, $row) ? $row[$columnKey] : '';
-                $sheetData[] = $colValue;
+                $sheetData[] = $this->parseContentForExport($colValue); 
             }
             CommonHelper::writeExportDataToCSV($this->CSVfileObj, $sheetData);
         }
@@ -3782,7 +3848,7 @@ class Importexport extends ImportexportCommon
             $sheetData = array();
             foreach ($headingsArr as $columnKey => $heading) {
                 $colValue = array_key_exists($columnKey, $row) ? $row[$columnKey] : '';
-                $sheetData[] = $colValue;
+                $sheetData[] = $this->parseContentForExport($colValue); 
             }
             CommonHelper::writeExportDataToCSV($this->CSVfileObj, $sheetData);
         }
@@ -3930,7 +3996,7 @@ class Importexport extends ImportexportCommon
             $sheetData = array();
             foreach ($headingsArr as $columnKey => $heading) {
                 $colValue = array_key_exists($columnKey, $row) ? $row[$columnKey] : '';
-                $sheetData[] = $colValue;
+                $sheetData[] = $this->parseContentForExport($colValue); 
             }
             CommonHelper::writeExportDataToCSV($this->CSVfileObj, $sheetData);
         }
@@ -4045,7 +4111,7 @@ class Importexport extends ImportexportCommon
             $sheetData = array();
             foreach ($headingsArr as $columnKey => $heading) {
                 $colValue = array_key_exists($columnKey, $row) ? $row[$columnKey] : '';
-                $sheetData[] = $colValue;
+                $sheetData[] = $this->parseContentForExport($colValue); 
             }
             CommonHelper::writeExportDataToCSV($this->CSVfileObj, $sheetData);
         }
@@ -4194,7 +4260,7 @@ class Importexport extends ImportexportCommon
                     $colValue = (FatUtility::int($colValue) == 1) ? 'YES' : 'NO';
                 }
 
-                $sheetData[] = $colValue;
+                $sheetData[] = $this->parseContentForExport($colValue); 
             }
             CommonHelper::writeExportDataToCSV($this->CSVfileObj, $sheetData);
         }
@@ -4347,7 +4413,7 @@ class Importexport extends ImportexportCommon
             $sheetData = array();
             foreach ($headingsArr as $columnKey => $heading) {
                 $colValue = array_key_exists($columnKey, $row) ? $row[$columnKey] : '';
-                $sheetData[] = $colValue;
+                $sheetData[] = $this->parseContentForExport($colValue); 
             }
             CommonHelper::writeExportDataToCSV($this->CSVfileObj, $sheetData);
         }
@@ -4511,7 +4577,7 @@ class Importexport extends ImportexportCommon
                     $colValue = (!empty($colValue) ? $colValue : Labels::getLabel('LBL_Admin', $langId));
                 }
 
-                $sheetData[] = $colValue;
+                $sheetData[] = $this->parseContentForExport($colValue); 
             }
             CommonHelper::writeExportDataToCSV($this->CSVfileObj, $sheetData);
         }
@@ -4685,7 +4751,7 @@ class Importexport extends ImportexportCommon
                     }
                 }
 
-                $sheetData[] = $colValue;
+                $sheetData[] = $this->parseContentForExport($colValue); 
             }
             CommonHelper::writeExportDataToCSV($this->CSVfileObj, $sheetData);
         }
@@ -4851,7 +4917,7 @@ class Importexport extends ImportexportCommon
                 if ('state_active' == $columnKey && !$this->settings['CONF_USE_O_OR_1']) {
                     $colValue = (FatUtility::int($colValue) == 1) ? 'YES' : 'NO';
                 }
-                $sheetData[] = $colValue;
+                $sheetData[] = $this->parseContentForExport($colValue); 
             }
             CommonHelper::writeExportDataToCSV($this->CSVfileObj, $sheetData);
         }
@@ -4920,6 +4986,7 @@ class Importexport extends ImportexportCommon
                     }
 
                     if (true === $invalid) {
+                        $errorInRow = true;
                         $errMsg = str_replace('{column-name}', $columnTitle, Labels::getLabel("MSG_Invalid_{column-name}.", $langId));
                         CommonHelper::writeToCSVFile($this->CSVfileObj, array( $rowIndex, ($colIndex + 1), $errMsg ));
                     } else {
@@ -5016,7 +5083,7 @@ class Importexport extends ImportexportCommon
                         $colValue = isset($policyPointTypeArr[$row['ppoint_type']]) ? $policyPointTypeArr[$row['ppoint_type']] : '';
                         break;
                 }
-                $sheetData[] = $colValue;
+                $sheetData[] = $this->parseContentForExport($colValue); 
             }
             CommonHelper::writeExportDataToCSV($this->CSVfileObj, $sheetData);
         }
@@ -5179,7 +5246,7 @@ class Importexport extends ImportexportCommon
                     $colValue = array_key_exists($row['prodcat_parent'], $categoriesIdentifiers) ? $categoriesIdentifiers[$row['prodcat_parent']] : '';
                 }
 
-                $sheetData[] = $colValue;
+                $sheetData[] = $this->parseContentForExport($colValue); 
             }
             CommonHelper::writeExportDataToCSV($this->CSVfileObj, $sheetData);
         }
@@ -5219,7 +5286,7 @@ class Importexport extends ImportexportCommon
                     $colValue = $this->displayDateTime($colValue);
                 }
 
-                $sheetData[] = $colValue;
+                $sheetData[] = $this->parseContentForExport($colValue); 
             }
             CommonHelper::writeExportDataToCSV($this->CSVfileObj, $sheetData);
         }

@@ -5,10 +5,12 @@ $arr_flds = array(
         'listserial'=>Labels::getLabel('LBL_Sr._NO', $adminLangId),
         'shippingapi_identifier'=>Labels::getLabel('LBL_Shipping_Method', $adminLangId),
         'shippingapi_active'=>Labels::getLabel('LBL_Status', $adminLangId),
-        'action' => Labels::getLabel('LBL_Action', $adminLangId),
+        'action' => '',
     );
 if (!$canEdit) {
     unset($arr_flds['dragdrop']);
+    unset($arr_flds['select_all']);
+    unset($arr_flds['action']);
 }
 $tbl = new HtmlElement('table', array('width'=>'100%', 'class'=>'table table--hovered table-responsive ','id'=>'shippingMethod'));
 $th = $tbl->appendElement('thead')->appendElement('tr');
@@ -63,19 +65,10 @@ foreach ($arr_listing as $sn => $row) {
                 }
                 break;
             case 'action':
-                $ul = $td->appendElement("ul", array("class"=>"actions actions--centered"));
                 if ($canEdit) {
-                    $li = $ul->appendElement("li", array('class'=>'droplink'));
-                    $li->appendElement('a', array('href'=>'javascript:void(0)', 'class'=>'button small green','title'=>Labels::getLabel('LBL_Edit', $adminLangId)), '<i class="ion-android-more-horizontal icon"></i>', true);
-                    $innerDiv=$li->appendElement('div', array('class'=>'dropwrap'));
-                    $innerUl=$innerDiv->appendElement('ul', array('class'=>'linksvertical'));
-
-                    $innerLi=$innerUl->appendElement('li');
-                    $innerLi->appendElement('a', array('href'=>'javascript:void(0)','class'=>'button small green','title'=>Labels::getLabel('LBL_Edit', $adminLangId),"onclick"=>"editForm(".$row['shippingapi_id'].")"), Labels::getLabel('LBL_Edit', $adminLangId), true);
-
+                    $td->appendElement('a', array('href'=>'javascript:void(0)','class'=>'btn btn-clean btn-sm btn-icon','title'=>Labels::getLabel('LBL_Edit', $adminLangId),"onclick"=>"editForm(".$row['shippingapi_id'].")"), "<i class='far fa-edit icon'></i>", true);
                     if ($row['shippingapi_id'] > 1) {
-                        $innerLi=$innerUl->appendElement('li');
-                        $innerLi->appendElement('a', array('href'=>'javascript:void(0)','class'=>'button small green','title'=>Labels::getLabel('LBL_Settings', $adminLangId),"onclick"=>"settingsForm(".$row['shippingapi_id'].")"), Labels::getLabel('LBL_Settings', $adminLangId), true);
+                        $td->appendElement('a', array('href'=>'javascript:void(0)','class'=>'btn btn-clean btn-sm btn-icon','title'=>Labels::getLabel('LBL_Settings', $adminLangId),"onclick"=>"settingsForm(".$row['shippingapi_id'].")"), "<i class='ion-settings icon'></i>", true);
                     }
                 }
                 break;
@@ -90,7 +83,7 @@ if (count($arr_listing) == 0) {
 }
 
 $frm = new Form('frmShpApiListing', array('id'=>'frmShpApiListing'));
-$frm->setFormTagAttribute('class', 'web_form last_td_nowrap');
+$frm->setFormTagAttribute('class', 'web_form last_td_nowrap actionButtons-js');
 $frm->setFormTagAttribute('onsubmit', 'formAction(this, reloadList ); return(false);');
 $frm->setFormTagAttribute('action', CommonHelper::generateUrl('ShippingMethods', 'toggleBulkStatuses'));
 $frm->addHiddenField('', 'status');

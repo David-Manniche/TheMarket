@@ -48,8 +48,7 @@ class TaxController extends AdminBaseController
         $page = (empty($data['page']) || $data['page'] <= 0) ? 1 : $data['page'];
         $post = $searchForm->getFormDataFromArray($data);
 
-        $taxObj = new Tax();
-        $srch = $taxObj->getSearchObject($this->adminLangId, false);
+        $srch = Tax::getSearchObject($this->adminLangId, false);
         $srch->addCondition('taxcat_deleted', '=', 0);
         
         $defaultTaxApi = FatApp::getConfig('CONF_DEFAULT_PLUGIN_' . Plugin::TYPE_TAX_SERVICES, FatUtility::VAR_INT, 0);
@@ -261,7 +260,7 @@ class TaxController extends AdminBaseController
             $taxStructure = new TaxStructure(FatApp::getConfig('CONF_TAX_STRUCTURE', FatUtility::VAR_FLOAT, 0));
             $options = $taxStructure->getOptions($this->adminLangId);
             foreach ($options as $optionVal) {
-                $data[$optionVal['taxstro_id']] = $taxOptions[$optionVal['taxstro_id']];
+                $data[$optionVal['taxstro_id']] = isset($taxOptions[$optionVal['taxstro_id']]) ? $taxOptions[$optionVal['taxstro_id']] : '';
             }
             /* if (FatApp::getConfig('CONF_TAX_STRUCTURE', FatUtility::VAR_FLOAT, 0) == Tax::STRUCTURE_GST) {
                 $taxValues = Tax::getCombinedValues($data['taxval_value']);

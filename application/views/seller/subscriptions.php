@@ -1,49 +1,50 @@
 <?php
 defined('SYSTEM_INIT') or die('Invalid Usage.');
 
-$frmOrderSrch->setFormTagAttribute('onSubmit','searchOrders(this); return false;');
+$frmOrderSrch->setFormTagAttribute('onSubmit', 'searchOrders(this); return false;');
 $frmOrderSrch->setFormTagAttribute('class', 'form');
+$frmOrderSrch->developerTags['colClassPrefix'] = 'col-lg-';
+$frmOrderSrch->developerTags['fld_default_col'] = 4;
 
 $keywordFld = $frmOrderSrch->getField('keyword');
-$keywordFld->setWrapperAttribute('class','col-lg-4');
 $keywordFld->developerTags['col'] = 4;
+$keywordFld->developerTags['noCaptionTag'] = true;
 /* $keywordFld->htmlAfterField = '<small class="form-text text-muted">'.Labels::getLabel('LBL_Buyer_account_orders_listing_search_form_keyword_help_txt', $siteLangId).'</small>'; */
 
 /* $statusFld = $frmOrderSrch->getField('status');
-$statusFld->setWrapperAttribute('class','col-sm-6');
 $statusFld->developerTags['col'] = 4; */
 
 $dateFromFld = $frmOrderSrch->getField('date_from');
-$dateFromFld->setFieldTagAttribute('class','field--calender');
-$dateFromFld->setWrapperAttribute('class','col-lg-2');
+$dateFromFld->setFieldTagAttribute('class', 'field--calender');
 $dateFromFld->developerTags['col'] = 2;
+$dateFromFld->developerTags['noCaptionTag'] = true;
 
 $dateToFld = $frmOrderSrch->getField('date_to');
-$dateToFld->setFieldTagAttribute('class','field--calender');
-$dateToFld->setWrapperAttribute('class','col-lg-2');
+$dateToFld->setFieldTagAttribute('class', 'field--calender');
 $dateToFld->developerTags['col'] = 2;
+$dateToFld->developerTags['noCaptionTag'] = true;
 
 /* $priceFromFld = $frmOrderSrch->getField('price_from');
-$priceFromFld->setWrapperAttribute('class','col-sm-6');
 $priceFromFld->developerTags['col'] = 2;
 
 $priceToFld = $frmOrderSrch->getField('price_to');
-$priceToFld->setWrapperAttribute('class','col-sm-6');
 $priceToFld->developerTags['col'] = 2; */
 
 $submitBtnFld = $frmOrderSrch->getField('btn_submit');
-$submitBtnFld->setFieldTagAttribute('class','btn--block');
-$submitBtnFld->setWrapperAttribute('class','col-lg-2 ');
+$submitBtnFld->setFieldTagAttribute('class', 'btn--block');
 $submitBtnFld->developerTags['col'] = 2;
+$submitBtnFld->setWrapperAttribute('class', 'col-6');
+$submitBtnFld->developerTags['noCaptionTag'] = true;
 
 $cancelBtnFld = $frmOrderSrch->getField('btn_clear');
-$cancelBtnFld->setFieldTagAttribute('class','btn btn-outline-primary btn--block');
-$cancelBtnFld->setWrapperAttribute('class','col-lg-2 ');
+$cancelBtnFld->setFieldTagAttribute('class', 'btn btn-outline-primary btn--block');
 $cancelBtnFld->developerTags['col'] = 2;
+$cancelBtnFld->setWrapperAttribute('class', 'col-6');
+$cancelBtnFld->developerTags['noCaptionTag'] = true;
 ?> <?php $this->includeTemplate('_partial/dashboardNavigation.php'); ?> <main id="main-area" class="main" role="main">
     <div class="content-wrapper content-space">
         <div class="content-header row">
-            <div class="col"> <?php $this->includeTemplate('_partial/dashboardTop.php'); ?> <h2 class="content-header-title"><?php echo Labels::getLabel('LBL_My_Subscriptions',$siteLangId);?></h2>
+            <div class="col"> <?php $this->includeTemplate('_partial/dashboardTop.php'); ?> <h2 class="content-header-title"><?php echo Labels::getLabel('LBL_My_Subscriptions', $siteLangId);?></h2>
             </div>
         </div>
         <div class="content-body">
@@ -51,47 +52,47 @@ $cancelBtnFld->developerTags['col'] = 2;
                 <div class="col-lg-12">
                     <div class="cards">
                         <div class="cards-header">
-                            <h5 class="cards-title"><?php echo Labels::getLabel('LBL_Search_Subscriptions',$siteLangId);?></h5> <?php if($currentActivePlan) {
-                                            if(strtotime(date("Y-m-d"))>=strtotime('-3 day',strtotime($currentActivePlan[OrderSubscription::DB_TBL_PREFIX.'till_date'])) ){
-                                                if($currentActivePlan[OrderSubscription::DB_TBL_PREFIX.'type']==SellerPackages::PAID_TYPE && FatDate::diff(date("Y-m-d"),$currentActivePlan[OrderSubscription::DB_TBL_PREFIX.'till_date'])>0 ){
-                                                    $message = sprintf(Labels::getLabel('MSG_Your_Subscription_is_going_to_expire_in_%s_day(s),Please_maintain_your_wallet_to_continue_your_subscription,_Amount_required_%s',$siteLangId),FatDate::diff(date("Y-m-d"),$currentActivePlan[OrderSubscription::DB_TBL_PREFIX.'till_date']),CommonHelper::displayMoneyFormat($currentActivePlan[OrderSubscription::DB_TBL_PREFIX.'price']));
-                                                }else if($currentActivePlan[OrderSubscription::DB_TBL_PREFIX.'type']==SellerPackages::PAID_TYPE && FatDate::diff(date("Y-m-d"),$currentActivePlan[OrderSubscription::DB_TBL_PREFIX.'till_date'])==0 ){
-                                                    $message = sprintf(Labels::getLabel('MSG_Your_Subscription_is_going_to_expire_today,_Please_maintain_your_wallet_to_continue_your_subscription,_Amount_required_%s',$siteLangId),CommonHelper::displayMoneyFormat($currentActivePlan[OrderSubscription::DB_TBL_PREFIX.'price']));
-                                                }else if($currentActivePlan[OrderSubscription::DB_TBL_PREFIX.'type']==SellerPackages::PAID_TYPE && FatDate::diff(date("Y-m-d"),$currentActivePlan[OrderSubscription::DB_TBL_PREFIX.'till_date'])<0 && $autoRenew ){
-                                                    $message = sprintf(Labels::getLabel('MSG_Your_Subscription_has_been_expired,Please_purchase_new_plan_or_maintain_your_wallet_to_continue_your_subscription,_Amount_required_%s',$siteLangId),CommonHelper::displayMoneyFormat($currentActivePlan[OrderSubscription::DB_TBL_PREFIX.'price']));
-                                                }else if($currentActivePlan[OrderSubscription::DB_TBL_PREFIX.'type']==SellerPackages::PAID_TYPE && FatDate::diff(date("Y-m-d"),$currentActivePlan[OrderSubscription::DB_TBL_PREFIX.'till_date'])<0  && !$autoRenew){
-                                                    $message = sprintf(Labels::getLabel('MSG_Your_Subscription_has_been_expired,Please_purchase_new_plan_or_add_%s_in_your_wallet_before_renewing_your_subscription',$siteLangId),CommonHelper::displayMoneyFormat($currentActivePlan[OrderSubscription::DB_TBL_PREFIX.'price']));
-                                                }elseif($currentActivePlan[OrderSubscription::DB_TBL_PREFIX.'type']==SellerPackages::FREE_TYPE && FatDate::diff(date("Y-m-d"),$currentActivePlan[OrderSubscription::DB_TBL_PREFIX.'till_date'])>0 ){
-                                                    $message = sprintf(Labels::getLabel('MSG_Your_Free_Subscription_is_going_to_expire_in_%s_day(s),Please_Purchase_new_Subscription_to_continue_services',$siteLangId),FatDate::diff(date("Y-m-d"),$currentActivePlan[OrderSubscription::DB_TBL_PREFIX.'till_date']));
-                                                }elseif($currentActivePlan[OrderSubscription::DB_TBL_PREFIX.'type']==SellerPackages::FREE_TYPE && FatDate::diff(date("Y-m-d"),$currentActivePlan[OrderSubscription::DB_TBL_PREFIX.'till_date'])==0 ){
-                                                    $message = sprintf(Labels::getLabel('MSG_Your_Free_Subscription_is_going_to_expire_today,_Please_Purchase_new_Subscription_to_continue_services',$siteLangId));
-                                                }elseif($currentActivePlan[OrderSubscription::DB_TBL_PREFIX.'type']==SellerPackages::FREE_TYPE && FatDate::diff(date("Y-m-d"),$currentActivePlan[OrderSubscription::DB_TBL_PREFIX.'till_date'])<0 ){
-                                                    $message = Labels::getLabel('MSG_Your_Free_Subscription_has_been_expired,Please_Purchase_new_Subscription_to_continue_services',$siteLangId);
-                                                }
-                                            ?> <?php
+                            <h5 class="cards-title"><?php echo Labels::getLabel('LBL_Search_Subscriptions', $siteLangId);?></h5>
+                            <?php if ($currentActivePlan) {
+                                if (strtotime(date("Y-m-d"))>=strtotime('-3 day', strtotime($currentActivePlan[OrderSubscription::DB_TBL_PREFIX.'till_date']))) {
+                                    if ($currentActivePlan[OrderSubscription::DB_TBL_PREFIX.'type']==SellerPackages::PAID_TYPE && FatDate::diff(date("Y-m-d"), $currentActivePlan[OrderSubscription::DB_TBL_PREFIX.'till_date'])>0) {
+                                        $message = sprintf(Labels::getLabel('MSG_Your_Subscription_is_going_to_expire_in_%s_day(s),Please_maintain_your_wallet_to_continue_your_subscription,_Amount_required_%s', $siteLangId), FatDate::diff(date("Y-m-d"), $currentActivePlan[OrderSubscription::DB_TBL_PREFIX.'till_date']), CommonHelper::displayMoneyFormat($currentActivePlan[OrderSubscription::DB_TBL_PREFIX.'price']));
+                                    } elseif ($currentActivePlan[OrderSubscription::DB_TBL_PREFIX.'type']==SellerPackages::PAID_TYPE && FatDate::diff(date("Y-m-d"), $currentActivePlan[OrderSubscription::DB_TBL_PREFIX.'till_date'])==0) {
+                                        $message = sprintf(Labels::getLabel('MSG_Your_Subscription_is_going_to_expire_today,_Please_maintain_your_wallet_to_continue_your_subscription,_Amount_required_%s', $siteLangId), CommonHelper::displayMoneyFormat($currentActivePlan[OrderSubscription::DB_TBL_PREFIX.'price']));
+                                    } elseif ($currentActivePlan[OrderSubscription::DB_TBL_PREFIX.'type']==SellerPackages::PAID_TYPE && FatDate::diff(date("Y-m-d"), $currentActivePlan[OrderSubscription::DB_TBL_PREFIX.'till_date'])<0 && $autoRenew) {
+                                        $message = sprintf(Labels::getLabel('MSG_Your_Subscription_has_been_expired,Please_purchase_new_plan_or_maintain_your_wallet_to_continue_your_subscription,_Amount_required_%s', $siteLangId), CommonHelper::displayMoneyFormat($currentActivePlan[OrderSubscription::DB_TBL_PREFIX.'price']));
+                                    } elseif ($currentActivePlan[OrderSubscription::DB_TBL_PREFIX.'type']==SellerPackages::PAID_TYPE && FatDate::diff(date("Y-m-d"), $currentActivePlan[OrderSubscription::DB_TBL_PREFIX.'till_date'])<0  && !$autoRenew) {
+                                        $message = sprintf(Labels::getLabel('MSG_Your_Subscription_has_been_expired,Please_purchase_new_plan_or_add_%s_in_your_wallet_before_renewing_your_subscription', $siteLangId), CommonHelper::displayMoneyFormat($currentActivePlan[OrderSubscription::DB_TBL_PREFIX.'price']));
+                                    } elseif ($currentActivePlan[OrderSubscription::DB_TBL_PREFIX.'type']==SellerPackages::FREE_TYPE && FatDate::diff(date("Y-m-d"), $currentActivePlan[OrderSubscription::DB_TBL_PREFIX.'till_date'])>0) {
+                                        $message = sprintf(Labels::getLabel('MSG_Your_Free_Subscription_is_going_to_expire_in_%s_day(s),Please_Purchase_new_Subscription_to_continue_services', $siteLangId), FatDate::diff(date("Y-m-d"), $currentActivePlan[OrderSubscription::DB_TBL_PREFIX.'till_date']));
+                                    } elseif ($currentActivePlan[OrderSubscription::DB_TBL_PREFIX.'type']==SellerPackages::FREE_TYPE && FatDate::diff(date("Y-m-d"), $currentActivePlan[OrderSubscription::DB_TBL_PREFIX.'till_date'])==0) {
+                                        $message = sprintf(Labels::getLabel('MSG_Your_Free_Subscription_is_going_to_expire_today,_Please_Purchase_new_Subscription_to_continue_services', $siteLangId));
+                                    } elseif ($currentActivePlan[OrderSubscription::DB_TBL_PREFIX.'type']==SellerPackages::FREE_TYPE && FatDate::diff(date("Y-m-d"), $currentActivePlan[OrderSubscription::DB_TBL_PREFIX.'till_date'])<0) {
+                                        $message = Labels::getLabel('MSG_Your_Free_Subscription_has_been_expired,Please_Purchase_new_Subscription_to_continue_services', $siteLangId);
+                                    } ?> <?php
                                 }
-                                        }
-                                    ?> <div class="auto-renew">
+                            } ?>
+                            <?php if($canEdit) {?>
+                            <div class="auto-renew text-right">
                                 <p><?php echo Labels::getLabel('LBL_AutoRenew_Subscription', $siteLangId); ?></p>
-                                    <?php
-                                     $active = "";
-                                     if ($autoRenew) {
-                                        $active = 'checked';
-                                     }
-                                     $onOffArr = applicationConstants::getOnOffArr($siteLangId);
-                                     ?>
-                                     <label class="toggle-switch mb-0">
-                                         <input <?php echo $active; ?> type="checkbox" onclick="toggleAutoRenewal()">
-                                         <div class="slider round"></div>
-                                     </label>
+                                <?php
+                                $active = "";
+                                if ($autoRenew) {
+                                    $active = 'checked';
+                                }
+                                $onOffArr = applicationConstants::getOnOffArr($siteLangId); ?>
+                                <label class="toggle-switch mb-0">
+                                    <input <?php echo $active; ?> type="checkbox" onclick="toggleAutoRenewal()">
+                                    <div class="slider round"></div>
+                                </label>
                             </div>
+                            <?php } ?>
                         </div>
-                        <?php if(isset($message)){ ?>
+                        <?php if (isset($message)) { ?>
                             <p class="highlighted-note"> <?php  echo $message;?> </p>
                         <?php }?>
                         <div class="cards-content ">
-                            <div class="replaced"> <?php echo $frmOrderSrch->getFormHtml(); ?> </div>
-                            <span class="gap"></span>
+                            <?php echo $frmOrderSrch->getFormHtml(); ?>
                         </div>
                     </div>
                 </div>

@@ -2225,6 +2225,9 @@ class MobileAppApiController extends MyAppController
         }
         $row['link'] = FatUtility::generateFullUrl('GuestUser', 'resetPassword', array($row['user_id'], $token));
         $email = new EmailHandler();
+        
+        $uData = User::getAttributesById($row['user_id'], ['user_dial_code', 'user_phone']);
+        $row = array_merge($row, $uData);
         if (!$email->sendForgotPasswordLinkEmail($this->siteLangId, $row)) {
             $db->rollbackTransaction();
             FatUtility::dieJsonError(Labels::getLabel("MSG_ERROR_IN_SENDING_PASSWORD_RESET_LINK_EMAIL", $this->siteLangId));
@@ -5448,7 +5451,7 @@ class MobileAppApiController extends MyAppController
             $order['currency_order_net_amount'] = CommonHelper::displayMoneyFormat($order['order_net_amount'], true, false, false);
             $order['currency_op_other_charges'] = CommonHelper::displayMoneyFormat($order['op_other_charges'], true, false, false);
             $order['currency_op_unit_price'] = CommonHelper::displayMoneyFormat($order['op_unit_price'], true, false, false);
-            $order['currency_amount'] = CommonHelper::displayMoneyFormat(CommonHelper::orderProductAmount($order, 'netamount', false, USER::USER_TYPE_SELLER), true, false, false);
+            $order['currency_amount'] = CommonHelper::displayMoneyFormat(CommonHelper::orderProductAmount($order, 'netamount', false, User::USER_TYPE_SELLER), true, false, false);
         }
 
         $orderStatuses = Orders::getOrderProductStatusArr($this->siteLangId);
@@ -5588,7 +5591,7 @@ class MobileAppApiController extends MyAppController
         $orderDetail['currency_tax'] = CommonHelper::displayMoneyFormat($orderDetail['tax'], true, false, false);
         $orderDetail['volume_discount'] = $orderDetail['op_tax_collected_by_seller'] ? CommonHelper::orderProductAmount($orderDetail, 'VOLUME_DISCOUNT') : 0;
         $orderDetail['currency_volume_discount'] = CommonHelper::displayMoneyFormat($orderDetail['volume_discount'], true, false, false);
-        $orderDetail['net_amount'] = CommonHelper::orderProductAmount($orderDetail, 'netamount', false, USER::USER_TYPE_SELLER);
+        $orderDetail['net_amount'] = CommonHelper::orderProductAmount($orderDetail, 'netamount', false, User::USER_TYPE_SELLER);
         $orderDetail['currency_net_amount'] = CommonHelper::displayMoneyFormat($orderDetail['net_amount'], true, false, false);
         $orderDetail['order_date_updated'] = ($orderDetail['order_date_updated'] == '0000-00-00 00:00:00') ? $orderDetail['order_date_added'] : $orderDetail['order_date_updated'];
 

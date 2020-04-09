@@ -1,12 +1,16 @@
 <?php defined('SYSTEM_INIT') or die('Invalid Usage.');
 $arr_flds = array(
-    'select_all' => Labels::getLabel('LBL_Select_all', $siteLangId),
+    'select_all' => '',
     'product_name' => Labels::getLabel('LBL_Name', $siteLangId),
     'voldiscount_min_qty' => Labels::getLabel('LBL_Minimum_Quantity', $siteLangId),
-    'voldiscount_percentage' => Labels::getLabel('LBL_Discount', $siteLangId) . ' (%)',
-    'action' => Labels::getLabel('LBL_Action', $siteLangId),
+    'voldiscount_percentage' => Labels::getLabel('LBL_Discount', $siteLangId) . ' (%)'
 );
-
+if ($canEdit) {
+    $arr_flds['action'] = '';
+}
+if (!$canEdit || 1 > count($arrListing)) {
+    unset($arr_flds['select_all']);
+}
 $tbl = new HtmlElement('table', array('width' => '100%', 'class' => 'table table--hovered volDiscountList-js'));
 $thead = $tbl->appendElement('thead');
 $th = $thead->appendElement('tr', array('class' => ''));

@@ -9,7 +9,7 @@
             </div>
             <div class="col-auto">
                 <div class="content-header-right btn-group">
-                 <a href="javascript:void(0);" onClick="addAddressForm(0)" class="btn btn--secondary btn--sm"><?php echo Labels::getLabel('LBL_Add_new_address', $siteLangId);?> </a>
+                 <a href="javascript:void(0);" onClick="addAddressForm(0)" class="btn btn-outline-primary btn--sm"><?php echo Labels::getLabel('LBL_Add_new_address', $siteLangId);?> </a>
                 </div>
             </div>
             

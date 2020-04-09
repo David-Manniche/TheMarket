@@ -225,6 +225,13 @@
         }
     }
 
+    .demo-header {
+        max-width: 1530px;
+        margin: 0 auto;
+        margin-bottom: 1rem;
+        border-radius: 10px;
+    }
+
     .wrapper {
         position: relative;
         z-index: 1;
@@ -1056,13 +1063,11 @@
             fill: $brand-color !important;
         }
 
-        a {
-            color: inherit;
-        }
+
 
         .cards,
         .box--share {
-            min-height: 170px;
+            min-height: 188px;
         }
     }
 
@@ -1245,17 +1250,19 @@
 
     }
 
-
     .msg_db {
         width: 70px;
         height: 70px;
-        border-radius: 50%;
+        border-radius: 4px;
         overflow: hidden;
-
         margin-#{$end-direction}: 30px;
         -webkit-box-flex: 0;
         -ms-flex: 0 0 70px;
         flex: 0 0 70px;
+        background: $gray-color;
+        display: flex;
+        align-items: center;
+        justify-content: center;
     }
 
     .msg__desc {
@@ -1732,7 +1739,7 @@
             background: #fff;
 
             &:before {
-                font-family: 'FontAwesome';
+                font-family: 'Font Awesome 5 Free';
                 font-size: 1.3em;
                 color: rgba(0, 0, 0, 0.1);
                 content: "\f111";

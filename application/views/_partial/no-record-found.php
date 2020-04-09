@@ -1,12 +1,12 @@
 <?php defined('SYSTEM_INIT') or die('Invalid Usage.'); ?>
-<div class="block--empty m-auto text-center">
+<div class="block--empty text-center">
     <img class="block__img" src="<?php echo CONF_WEBROOT_URL; ?>images/empty_item.svg" alt="<?php echo Labels::getLabel('LBL_No_record_found', $siteLangId); ?>" width="80">
-    <h4><?php
+    <h5><?php
     if (isset($message)) {
         echo $message;
     } else {
         echo Labels::getLabel('LBL_No_record_found', $siteLangId);
-    } ?></h4>
+    } ?></h5>
     <?php if (!empty($linkArr)) {
         foreach ($linkArr as $link) {
             $onClick = isset($link['onClick']) ? "onClick='".$link['onClick']."'" : "";

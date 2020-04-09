@@ -756,7 +756,7 @@ class Cronjob extends FatModel
         $srch = new SearchBase('tbl_user_cart', 'uc');
         $srch->joinTable(User::DB_TBL, 'LEFT OUTER JOIN', 'u.user_id = usercart_user_id', 'u');
         $srch->joinTable(Credential::DB_TBL, 'LEFT OUTER JOIN', 'ucr.' . Credential::DB_TBL_PREFIX . 'user_id = u.user_id', 'ucr');
-        $srch->addMultipleFields(array('uc.*', 'user_name', 'credential_email'));
+        $srch->addMultipleFields(array('uc.*', 'user_name', 'user_dial_code', 'user_phone', 'credential_email'));
         $srch->addCondition('ucr.credential_active', '=', applicationConstants::YES);
         $srch->addCondition('ucr.credential_verified', '=', applicationConstants::YES);
         $srch->addCondition('u.user_is_buyer', '=', applicationConstants::YES);
@@ -776,8 +776,8 @@ class Cronjob extends FatModel
             if (count($cartDetails) == 0) {
                 continue;
             }
-
-            $data = array("user_id" => $val['usercart_user_id'], "user_name" => $val['user_name'], "user_email" => $val['credential_email'], "link" => CommonHelper::generateFullUrl('Checkout'));
+            $phone = !empty($val['user_phone']) ? $val['user_dial_code'] . $val['user_phone'] : '';
+            $data = array("user_id" => $val['usercart_user_id'], "user_name" => $val['user_name'], "user_email" => $val['credential_email'], "link" => CommonHelper::generateFullUrl('Checkout'), 'user_phone' => $phone);
 
             $email = new EmailHandler();
             if (!$email->remindBuyerForCartItems(FatApp::getConfig('CONF_DEFAULT_SITE_LANG', FatUtility::VAR_INT, 1), $data)) {
@@ -807,7 +807,7 @@ class Cronjob extends FatModel
         $srch->joinProductToCategory();
         $srch->joinSellerSubscription(FatApp::getConfig('CONF_DEFAULT_SITE_LANG', FatUtility::VAR_INT, 1), true);
         $srch->addSubscriptionValidCondition();
-        $srch->addMultipleFields(array('uwlp.*', 'u.user_id', 'u.user_name', 'ucr.credential_email'));
+        $srch->addMultipleFields(array('uwlp.*', 'u.user_id', 'u.user_name', 'u.user_dial_code', 'u.user_phone', 'ucr.credential_email'));
         $srch->addCondition('ucr.credential_active', '=', applicationConstants::ACTIVE);
         $srch->addCondition('ucr.credential_verified', '=', applicationConstants::YES);
         $srch->addCondition('u.user_is_buyer', '=', applicationConstants::YES);
@@ -822,7 +822,8 @@ class Cronjob extends FatModel
         }
 
         foreach ($row as $val) {
-            $data = array("user_id" => $val['user_id'], "user_name" => $val['user_name'], "user_email" => $val['credential_email'], "link" => CommonHelper::generateFullUrl('Account', 'wishlist'));
+            $phone = !empty($row['user_phone']) ? $row['user_dial_code'] . $row['user_phone'] : '';
+            $data = array("user_id" => $val['user_id'], "user_name" => $val['user_name'], "user_email" => $val['credential_email'], "link" => CommonHelper::generateFullUrl('Account', 'wishlist'), 'user_phone' => $phone);
 
             $email = new EmailHandler();
             if (!$email->remindBuyerForWishlistItems(FatApp::getConfig('CONF_DEFAULT_SITE_LANG', FatUtility::VAR_INT, 1), $data)) {

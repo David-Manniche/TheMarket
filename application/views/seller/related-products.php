@@ -9,10 +9,11 @@ $this->includeTemplate('_partial/seller/sellerDashboardNavigation.php'); ?>
             </div>
         </div>
         <div class="content-body">
+			<?php if($canEdit){ ?>
             <div class="row mb-4">
                 <div class="col-lg-12">
                     <div class="cards">
-                        <div class="cards-content pb-0">
+                        <div class="cards-content">
                             <?php $relProdFrm->setFormTagAttribute('onsubmit', 'setUpSellerProductLinks(this); return(false);');
                             $relProdFrm->setFormTagAttribute('class', 'form form--horizontal');
                             $prodFld = $relProdFrm->getField('product_name');
@@ -40,7 +41,7 @@ $this->includeTemplate('_partial/seller/sellerDashboardNavigation.php'); ?>
                                         <div class="field-wraper">
                                             <div class="field_cover custom-tagify">
                                                 <?php echo $relProdFrm->getFieldHTML('products_related');?>
-                                                <div class="list-tag-wrapper"><ul class="list-tags" id="related-products"></ul></div>
+                                                <div class="list-tag-wrapper" data-scroll-height="150" data-simplebar><ul class="list-tags" id="related-products"></ul></div>
                                             </div>
                                         </div>
                                     </div>
@@ -62,6 +63,7 @@ $this->includeTemplate('_partial/seller/sellerDashboardNavigation.php'); ?>
                     </div>
                 </div>
             </div>
+			<?php }?>
             <div class="row">
                 <div class="col-lg-12">
                     <div class="cards">

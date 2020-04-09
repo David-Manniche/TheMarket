@@ -46,4 +46,70 @@ class LibHelper extends FatUtility
             '{SITE_URL}' => CommonHelper::generateFullUrl(),
         );
     }
+
+    /**
+    * This function returns the maximum files size that can be uploaded
+    * in PHP
+    * @returns int File size in bytes
+    **/
+    public static function getMaximumFileUploadSize()
+    {
+        return min(static::convertPHPSizeToBytes(ini_get('post_max_size')), static::convertPHPSizeToBytes(ini_get('upload_max_filesize')));
+    }
+
+    /**
+    * This function transforms the php.ini notation for numbers (like '2M') to an integer (2*1024*1024 in this case)
+    *
+    * @param string $sSize
+    * @return integer The value in bytes
+    */
+    public static function convertPHPSizeToBytes($sSize)
+    {
+        $sSuffix = strtoupper(substr($sSize, -1));
+        if (!in_array($sSuffix, array('P','T','G','M','K'))) {
+            return (int)$sSize;
+        }
+        $iValue = substr($sSize, 0, -1);
+        switch ($sSuffix) {
+            case 'P':
+                $iValue *= 1024;
+                // Fallthrough intended
+                // no break
+            case 'T':
+                $iValue *= 1024;
+                // Fallthrough intended
+                // no break
+            case 'G':
+                $iValue *= 1024;
+                // Fallthrough intended
+                // no break
+            case 'M':
+                $iValue *= 1024;
+                // Fallthrough intended
+                // no break
+            case 'K':
+                $iValue *= 1024;
+                break;
+        }
+        return (int)$iValue;
+    }
+
+    public static function bytesToSize($bytes)
+    {
+        if ($bytes >= 1073741824) {
+            $bytes = number_format($bytes / 1073741824, 2) . ' GB';
+        } elseif ($bytes >= 1048576) {
+            $bytes = number_format($bytes / 1048576, 2) . ' MB';
+        } elseif ($bytes >= 1024) {
+            $bytes = number_format($bytes / 1024, 2) . ' KB';
+        } elseif ($bytes > 1) {
+            $bytes = $bytes . ' bytes';
+        } elseif ($bytes == 1) {
+            $bytes = $bytes . ' byte';
+        } else {
+            $bytes = '0 bytes';
+        }
+
+        return $bytes;
+    }
 }

@@ -23,7 +23,7 @@ if (FatApp::getConfig("CONF_PRODUCT_DIMENSIONS_ENABLE", FatUtility::VAR_INT, 1))
         
     $heightFld = $customProductFrm->getField('product_height');
     $heightFld->setWrapperAttribute('class', 'product_height_fld');
-    $heightFld->htmlAfterField = '<small>' . Labels::getLabel('LBL_Note:_Used_for_Shipping_Calculation.', $adminLangId) . '<small>';
+    $heightFld->htmlAfterField = '<small>' . Labels::getLabel('LBL_Note:_Used_for_Shipping_Calculation.', $adminLangId) . '</small>';
 
     $dimensionUnitFld = $customProductFrm->getField('product_dimension_unit');
     $dimensionUnitFld->setWrapperAttribute('class', 'product_dimension_unit_fld');
@@ -40,11 +40,11 @@ $productCodEnabledFld->setWrapperAttribute('class', 'product_cod_enabled_fld');
 $productTypeFld = $customProductFrm->getField('product_type');
 $productTypeFld->setfieldTagAttribute('onchange', "showHideExtraFields();");
 
-$shippingCountryFld = $customProductFrm->getField('shipping_country');
+/* $shippingCountryFld = $customProductFrm->getField('shipping_country');
 $shippingCountryFld->setWrapperAttribute('class', 'not-digital-js ui-front');
 
 $shippFreeFld = $customProductFrm->getField('ps_free');
-$shippFreeFld->setWrapperAttribute('class', 'not-digital-js');
+$shippFreeFld->setWrapperAttribute('class', 'not-digital-js'); */
     
 /* $productEanUpcFld = $customProductFrm->getField('product_upc');
 $productEanUpcFld->addFieldTagAttribute( 'onBlur', 'validateEanUpcCode(this.value)'); */
@@ -316,9 +316,8 @@ $productEanUpcFld->addFieldTagAttribute( 'onBlur', 'validateEanUpcCode(this.valu
 
     var productOptions = [];
     var dv = $("#listing");
-
+    /*
     $(document).ready(function() {
-        /* Shipping Information */
         $('input[name=\'shipping_country\']').autocomplete({
             'classes': {
                 "ui-autocomplete": "custom-ui-autocomplete"
@@ -358,5 +357,5 @@ $productEanUpcFld->addFieldTagAttribute( 'onBlur', 'validateEanUpcCode(this.valu
             addShippingTab(productId, prodTypeDigital);
         });
         addShippingTab(productId, prodTypeDigital);
-    });
+    }); */
 </script>

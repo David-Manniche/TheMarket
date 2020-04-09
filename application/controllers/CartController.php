@@ -150,6 +150,7 @@ class CartController extends MyAppController
         $selprod_id_arr = FatApp::getPostedData('selprod_id');
         $selprod_id_arr = !empty($selprod_id_arr) ? array_filter($selprod_id_arr) : array();
         if (!empty($selprod_id_arr) && is_array($selprod_id_arr)) {
+            $successCount = 0;
             foreach ($selprod_id_arr as $selprod_id) {
                 $srch = SellerProduct::getSearchObject();
                 $srch->addCondition('selprod_id', '=', $selprod_id);
@@ -171,8 +172,16 @@ class CartController extends MyAppController
                 $minQty = $sellerProductRow['selprod_min_order_qty'];
 
                 $productsToAdd = [$selprod_id => $minQty];
-                $this->addProductToCart($productsToAdd, $selprod_id);
+                $this->addProductToCart($productsToAdd, $selprod_id, false);
+                $successCount++;
             }
+
+            if (0 < $successCount) {
+                $msg = Labels::getLabel('MSG_{ITEMS}_ITEMS_ADDED_TO_CART', $this->siteLangId);
+                $msg = CommonHelper::replaceStringData($msg, ['{ITEMS}' => $successCount]);
+                Message::addMessage($msg);
+            }
+
             if (true === MOBILE_APP_API_CALL) {
                 $this->_template->render();
             }
@@ -187,7 +196,7 @@ class CartController extends MyAppController
         }
     }
 
-    private function addProductToCart($productsToAdd, $selprod_id)
+    private function addProductToCart($productsToAdd, $selprod_id, $logMessage = true)
     {
         $selprod_id = FatUtility::int($selprod_id);
         if ($selprod_id < 1) {
@@ -306,7 +315,9 @@ class CartController extends MyAppController
         } else {
             $strProduct = '<a href="' . CommonHelper::generateUrl('Products', 'view', array($selprod_id)) . '">' . strip_tags(html_entity_decode($sellerProductRow['product_name'], ENT_QUOTES, 'UTF-8')) . '</a>';
             $strCart = '<a href="' . CommonHelper::generateUrl('Cart') . '">' . Labels::getLabel('Lbl_Shopping_Cart', $this->siteLangId) . '</a>';
-            Message::addMessage(sprintf(Labels::getLabel('MSG_Success_cart_add', $this->siteLangId), $strProduct, $strCart));
+            if ($logMessage) {
+                Message::addMessage(sprintf(Labels::getLabel('MSG_Success_cart_add', $this->siteLangId), $strProduct, $strCart));
+            }
             $this->set('msg', Labels::getLabel("MSG_Added_to_cart", $this->siteLangId));
         }
         $this->set('total', $cartObj->countProducts());
@@ -337,7 +348,7 @@ class CartController extends MyAppController
         $key = $post['key'];
 
         if ('all' == $key) {
-            $cartObj->clear();
+            $cartObj->clear(true);
             $cartObj->updateUserCart();
         } else {
             if (true === MOBILE_APP_API_CALL) {

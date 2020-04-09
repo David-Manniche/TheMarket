@@ -13,7 +13,9 @@ if ($defaultTaxApiIsActive) {
 
 $arr_flds['taxcat_active'] = Labels::getLabel('LBL_Status', $adminLangId);
 $arr_flds['action'] = Labels::getLabel('LBL_Action', $adminLangId);
-
+if (!$canEdit) {
+    unset($arr_flds['select_all']);
+}
 
 $tbl = new HtmlElement('table', array('width'=>'100%', 'class'=>'table table--hovered table-responsive'));
 $th = $tbl->appendElement('thead')->appendElement('tr');
@@ -94,7 +96,7 @@ if (count($arr_listing) == 0) {
 
 
 $frm = new Form('frmTaxListing', array('id'=>'frmTaxListing'));
-$frm->setFormTagAttribute('class', 'web_form last_td_nowrap');
+$frm->setFormTagAttribute('class', 'web_form last_td_nowrap actionButtons-js');
 $frm->setFormTagAttribute('onsubmit', 'formAction(this, reloadList ); return(false);');
 $frm->setFormTagAttribute('action', CommonHelper::generateUrl('Tax', 'toggleBulkStatuses'));
 $frm->addHiddenField('', 'status');

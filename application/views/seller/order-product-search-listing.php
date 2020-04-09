@@ -5,10 +5,10 @@ $arr_flds = array(
     'op_qty'    =>    Labels::getLabel('LBL_Qty', $siteLangId),
     'total'     =>    Labels::getLabel('LBL_Total', $siteLangId),
     'status'    =>    Labels::getLabel('LBL_Status', $siteLangId),
-    'action'    =>    Labels::getLabel('LBL_Action', $siteLangId),
+    'action'    =>    '',
 );
 
-$tbl = new HtmlElement('table', array('class'=>'table table--orders'));
+$tbl = new HtmlElement('table', array('class'=>'table'));
 $th = $tbl->appendElement('thead')->appendElement('tr', array('class' => ''));
 foreach ($arr_flds as $val) {
     $e = $th->appendElement('th', array(), $val);
@@ -38,9 +38,15 @@ foreach ($orders as $sn => $order) {
                 }
                 $txt .= '<div class="item__sub_title">'.$order['op_product_name'].'</div>';
 
-                $txt .= '<div class="item__brand">'.Labels::getLabel('LBL_Brand', $siteLangId).': '.$order['op_brand_name'];
+                $txt .= '<div class="item__brand">';
+                if (!empty($order['op_brand_name'])) {
+                    $txt .=  Labels::getLabel('LBL_Brand', $siteLangId).': '.$order['op_brand_name'];
+                }
+                if (!empty($order['op_brand_name']) && !empty($order['op_selprod_options'])) {
+                    $txt .= ' | ' ;
+                }
                 if ($order['op_selprod_options'] != '') {
-                    $txt .= ' | ' . $order['op_selprod_options'];
+                    $txt .= $order['op_selprod_options'];
                 }
                 $txt .= '</div>';
                  $txt .= '</div>';
@@ -49,7 +55,7 @@ foreach ($orders as $sn => $order) {
             case 'total':
                 $txt = '';
                 // $txt .= CommonHelper::displayMoneyFormat($order['order_net_amount']);
-                $txt .= CommonHelper::displayMoneyFormat(CommonHelper::orderProductAmount($order, 'netamount', false, USER::USER_TYPE_SELLER));
+                $txt .= CommonHelper::displayMoneyFormat(CommonHelper::orderProductAmount($order, 'netamount', false, User::USER_TYPE_SELLER));
                 $td->appendElement('plaintext', array(), $txt, true);
                 break;
             case 'status':
@@ -68,13 +74,13 @@ foreach ($orders as $sn => $order) {
                     true
                 );
 
-                if (in_array($order['orderstatus_id'], $processingStatuses)) {
+                if (in_array($order['orderstatus_id'], $processingStatuses) && $canEdit) {
                     $li = $ul->appendElement("li");
                     $li->appendElement(
                         'a',
                         array('href'=> CommonHelper::generateUrl('seller', 'cancelOrder', array($order['op_id'])), 'class'=>'',
                         'title'=>Labels::getLabel('LBL_Cancel_Order', $siteLangId)),
-                        '<i class="fa fa-close"></i>',
+                        '<i class="fas fa-times"></i>',
                         true
                     );
                 }

@@ -41,10 +41,10 @@ $arr_flds = array(
     'downloadable_count'        =>    Labels::getLabel('LBL_Download_times', $siteLangId),
     'afile_downloaded_times'        =>    Labels::getLabel('LBL_Downloaded_Count', $siteLangId),
     'expiry_date'    =>    Labels::getLabel('LBL_Expired_on', $siteLangId),
-    'action'    =>    Labels::getLabel('LBL_Action', $siteLangId),
+    'action'    =>    '',
 );
 
-$tbl = new HtmlElement('table', array('class'=>'table table--orders'));
+$tbl = new HtmlElement('table', array('class'=>'table'));
 $th = $tbl->appendElement('thead')->appendElement('tr', array('class' => ''));
 foreach ($arr_flds as $val) {
     $e = $th->appendElement('th', array(), $val);

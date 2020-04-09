@@ -67,25 +67,29 @@
     padding: 80px 0;
     color: #fff;
     margin-bottom: 2.5rem;
+
+    h2,
+    p {
+        color: inherit;
+    }
+
+
+    &-even {
+        background-repeat: no-repeat;
+        background-size: cover;
+        color: #000;
+        padding: 60px 0 80px;
+        margin: 2.5rem 0;
+
+        h2 {
+            color: inherit;
+            padding-bottom: 20px;
+        }
+    }
+
 }
 
-.section--bg h2,
-.section--bg p {
-    color: inherit;
-}
 
-.section--bg-even {
-    background-repeat: no-repeat;
-    background-size: cover;
-    color: #000;
-    padding: 60px 0 80px;
-    margin: 2.5rem 0;
-}
-
-.section--bg-even h2 {
-    color: inherit;
-    padding-bottom: 20px;
-}
 
 .section-head {
     width: 100%;
@@ -99,39 +103,49 @@
     -webkit-box-pack: justify;
     -ms-flex-pack: justify;
     justify-content: space-between;
+
+
+    &.section--head--center {
+        -webkit-box-pack: center;
+        -ms-flex-pack: center;
+        justify-content: center;
+        text-align: center;
+    }
+
+    .section__heading {
+        font-size: 2rem;
+        color: $body-color;
+        display: inline-block;
+        font-family: $family-primary;
+        font-weight: 300;
+
+        h2,
+        h3,
+        h4 {
+            font-weight: inherit;
+        }
+
+        h2 {
+            > span {
+                display: block;
+                font-size: 0.875rem;
+                text-align: center;
+
+            }
+
+            .search-results {
+                font-size: 2rem;
+                display: inline-block;
+            }
+        }
+
+        p {
+            font-size: 1rem;
+            font-weight: 300;
+        }
+    }
 }
 
-.section-head.section--head--center {
-    -webkit-box-pack: center;
-    -ms-flex-pack: center;
-    justify-content: center;
-    text-align: center;
-}
-
-.section-head .section__heading {
-    font-size: 2em;
-    color: $body-color;
-    display: inline-block;
-    font-family: $family-primary;
-    font-weight: 300;
-}
-
-.section-head .section__heading h2,
-.section-head .section__heading h3,
-.section-head .section__heading h4 {
-    font-weight: inherit;
-}
-
-.section-head .section__heading p {
-    font-size: 1rem;
-    font-weight: 300;
-}
-
-.section-head .section__heading h2 > span {
-    display: block;
-    font-size: 0.875rem;
-    text-align: center;
-}
 
 .section-head .section__action {
     -webkit-margin-start: 1rem;
@@ -311,8 +325,6 @@
     }
 
     .remove_buyTogether {
-
-
         margin-#{$end-direction}: 10px;
         cursor: pointer;
 
@@ -326,7 +338,6 @@
         display: block;
         overflow: hidden;
         position: relative;
-        text-align: left;
         font-size: 0.9em;
         font-weight: 400;
         display: -webkit-box;
@@ -344,8 +355,6 @@
     img {
         display: inline-block;
         vertical-align: middle;
-
-
         margin-#{$end-direction}: 5px;
     }
 
@@ -404,7 +413,8 @@
         &.is-active {
             a {
                 &:before {
-                    background: $brand-color; color:$brand-color-inverse;
+                    background: $brand-color;
+                    color: $brand-color-inverse;
                     border-color: $brand-color;
                 }
 
@@ -417,7 +427,7 @@
                     font-size: 16px;
                     text-align: center;
                     line-height: 16px;
-                    border-#{$end-direction}: 2px solid #fff;
+                    border-right: 2px solid #fff;
                     border-bottom: 2px solid #fff;
                     -webkit-transform: rotate(45deg);
                     transform: rotate(45deg);
@@ -551,30 +561,30 @@
 
 
 .links--inline {
-    color: #999999;
-    display: inline-block;
+    color: $body-color;
+    display: flex;
     width: 100%;
+
+    li {
+        font-size: 0.875rem;
+        padding-bottom: 5px;
+        padding-#{$end-direction}: 1rem; 
+
+        a {
+            color: inherit;
+
+            &:hover {
+                color: inherit;
+                text-decoration: underline;
+            }
+        }
+
+        .fa {
+            margin: 0 5px 0 0;
+        }
+    }
 }
 
-.links--inline li {
-    display: inline-block;
-    font-size: 1em;
-    padding: 0 5px 4px 0;
-    vertical-align: top;
-}
-
-.links--inline li a {
-    color: inherit;
-}
-
-.links--inline li a:hover {
-    color: #000;
-    text-decoration: underline;
-}
-
-.links--inline li .fa {
-    margin: 0 5px 0 0;
-}
 
 .heading1 {
     color: $body-color;

@@ -2,6 +2,8 @@
 
 class PluginBaseController extends MyAppController
 {
+    use PluginHelper;
+    
     private $keyName;
     private $plugin;
 
@@ -28,36 +30,22 @@ class PluginBaseController extends MyAppController
         FatUtility::dieJsonSuccess(Message::getHtml());
     }
 
-    private function getKeyName()
-    {
-        $this->plugin = get_called_class();
-        try {
-            return ($this->plugin)::KEY_NAME;
-        } catch (\Error $e) {
-            $message = $e->getMessage();
-            if (true === MOBILE_APP_API_CALL) {
-                LibHelper::dieJsonError($message);
-            }
-            Message::addErrorMessage($message);
-            CommonHelper::redirectUserReferer();
-        }
-    }
-
-    public function getSettings()
-    {
-        return PluginSetting::getConfDataByCode($this->getKeyName());
-    }
-
     public function getFormObj($fields)
     {
         if (!is_array($fields)) {
             FatUtility::dieJsonError(Labels::getLabel('LBL_INVALID_FORM_FIELDS', $this->siteLangId));
         }
-        $keyName = $this->getKeyName();
         $frm = PluginSetting::getForm($fields, $this->siteLangId);
-        $pluginSetting = PluginSetting::getConfDataByCode($keyName, ['plugin_identifier']);
-        $this->identifier = isset($pluginSetting['plugin_identifier']) ? $pluginSetting['plugin_identifier'] : '';
-        $frm->fill(['plugin_id' => $pluginSetting['plugin_id'], 'keyName' => $keyName]);
+        $keyName = (get_called_class())::KEY_NAME;
+        $pluginSetting = new PluginSetting(0, $keyName);
+        $settings = $pluginSetting->get($this->siteLangId);
+
+        if (false === $settings) {
+            LibHelper::dieJsonError($pluginSetting->getError());
+        }
+
+        $this->identifier = $settings['plugin_identifier'];
+        $frm->fill(['plugin_id' => $settings['plugin_id'], 'keyName' => $keyName]);
         return $frm;
     }
 

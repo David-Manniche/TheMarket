@@ -10,6 +10,7 @@
         </div>
         <div class="content-body">
             <div class="js-widget-scroll widget-scroll">
+                <?php if ($userParentId == UserAuthentication::getLoggedUserId()) { ?>
                 <div class="widget widget-stats">
                     <a href="<?php echo CommonHelper::generateUrl('Account', 'credits'); ?>">
                         <div class="cards">
@@ -39,6 +40,7 @@
                         </div>
                     </a>
                 </div>
+                <?php }?>
                 <div class="widget widget-stats">
                     <a href="javascript:void(0)" onClick="redirectToPromotions('<?php echo CommonHelper::generateUrl('advertiser', 'promotions');?>')">
                         <div class="cards">
@@ -111,7 +113,7 @@
                             <?php } ?>
                         </div>
                         <div class="cards-content ">
-                            <table class="table table--orders js-scrollable">
+                            <table class="table">
                                 <tbody>
                                     <tr class="">
                                         <th colspan="2"><?php echo Labels::getLabel('LBL_Promotions', $siteLangId);?></th>
@@ -121,7 +123,7 @@
                                         <th><?php echo Labels::getLabel('LBL_Clicks', $siteLangId);?></th>
                                         <th><?php echo Labels::getLabel('LBL_Duration', $siteLangId);?></th>
                                         <th><?php echo Labels::getLabel('LBL_Approved', $siteLangId);?></th>
-                                        <th><?php echo Labels::getLabel('LBL_Action', $siteLangId);?></th>
+                                        <th></th>
                                     </tr>
                                     <?php if (count($activePromotions) > 0) {
                                         $arrYesNo = applicationConstants::getYesNoArr($siteLangId);
@@ -165,16 +167,13 @@
                                     </tr>
                                     <?php } ?>
                                 </tbody>
-                                <div class="scroll-hint-icon-wrap" data-target="scrollable-icon">
-                                    <span class="scroll-hint-icon">
-                                        <div class="scroll-hint-text"><?php echo Labels::getLabel('LBL_Scrollable', $siteLangId);?></div>
-                                    </span>
-                                </div>
+                                
                             </table>
                         </div>
                     </div>
                 </div>
             </div>
+            <?php if ($userParentId == UserAuthentication::getLoggedUserId()) { ?>
             <div class="row">
                 <div class="col-lg-12 col-md-12 mb-4">
                     <div class="cards">
@@ -187,7 +186,7 @@
                             <?php } ?>
                         </div>
                         <div class="cards-content ">
-                            <table class="table table--orders js-scrollable">
+                            <table class="table">
                                 <tbody>
                                     <tr class="">
                                         <th><?php echo Labels::getLabel('LBL_Txn._Id', $siteLangId);?></th>
@@ -246,16 +245,13 @@
                                     </tr>
                                     <?php } ?>
                                 </tbody>
-                                <div class="scroll-hint-icon-wrap" data-target="scrollable-icon">
-                                    <span class="scroll-hint-icon">
-                                        <div class="scroll-hint-text"><?php echo Labels::getLabel('LBL_Scrollable', $siteLangId);?></div>
-                                    </span>
-                                </div>
+                                
                             </table>
                         </div>
                     </div>
                 </div>
             </div>
+            <?php }?>
         </div>
     </div>
 </main>

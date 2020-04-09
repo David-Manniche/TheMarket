@@ -22,13 +22,24 @@ foreach ($arr_listing as $sn => $row) {
                 $td->appendElement('plaintext', array(), $img ,true); */
 
                 $div_about_me = $td->appendElement('div', array('class'=>'avtar avtar--small'));
-                $div_about_me->appendElement('img', array('src'=>CommonHelper::generateUrl('Image', 'user', array($row['message_sent_by'],'MINI',true), CONF_WEBROOT_FRONT_URL)));
-
+                if ($row['message_from_shop_name'] != '' && $row['message_from_shop_id'] > 0) {
+                    $userImgUpdatedOn = Shop::getAttributesById($row['message_from_shop_id'], 'shop_updated_on');
+                    $uploadedTime = AttachedFile::setTimeParam($userImgUpdatedOn);
+                    $div_about_me->appendElement('img', array('src'=>FatCache::getCachedUrl(CommonHelper::generateUrl('Image', 'shopLogo', array($row['message_from_shop_id'],$adminLangId, 'MINI'), CONF_WEBROOT_FRONT_URL)).$uploadedTime, CONF_IMG_CACHE_TIME, '.jpg'));
+                 } else {
+                    $userImgUpdatedOn = User::getAttributesById($row['message_sent_by'], 'user_updated_on');
+                    $uploadedTime = AttachedFile::setTimeParam($userImgUpdatedOn);
+                    $div_about_me->appendElement('img', array('src'=>FatCache::getCachedUrl(CommonHelper::generateUrl('Image', 'user', array($row['message_sent_by'],'MINI',true), CONF_WEBROOT_FRONT_URL)).$uploadedTime, CONF_IMG_CACHE_TIME, '.jpg'));
+                 }  
                 break;
             case 'message_text':
                     $td->appendElement('plaintext', array(), '<span>'.$row["message_date"].'</span>', true);
                     $td->appendElement('br', array());
-                    $td->appendElement('plaintext', array(), '<p>'.$row["message_sent_by_username"].'</p>', true);
+                    $name =  $row['message_sent_by_username'];
+                    if ($row['message_from_shop_name'] != '') {
+                        $name =  $row['message_from_shop_name'] . ' (' . $row['message_sent_by_username'] . ')';
+                    }
+                    $td->appendElement('plaintext', array(), '<p>'.$name.'</p>', true);
                     $td->appendElement('plaintext', array(), '<p id="'.$row["message_id"].'">'.nl2br($row["message_text"]).'</p>', true);
 
                 break;

@@ -4,7 +4,7 @@
         <div class="col"><h5 class="cards-title"><?php echo Labels::getLabel('LBL_Shop_Collections', $siteLangId); ?></h5></div>
         <div class="content-header-right col-auto">
             <div class="btn-group">
-                <a href="javascript:void(0)" onClick="shopCollections(this)" class="btn btn--primary btn--sm"><?php echo Labels::getLabel('LBL_Back_to_Collections', $siteLangId);?></a>
+                <a href="javascript:void(0)" onClick="shopCollections(this)" class="btn btn-outline-primary btn--sm"><?php echo Labels::getLabel('LBL_Back_to_Collections', $siteLangId);?></a>
             </div>
         </div>
     </div>
@@ -35,12 +35,12 @@
                     </div>
                 </div>
                 <div class="row form__subcontent">
-                    <div class="col-lg-6 col-md-6">
+                    <div class="col-lg-12 col-md-12">
                         <?php
                         $colectionForm->setFormTagAttribute('class', 'form form--horizontal');
                         $colectionForm->setFormTagAttribute('onsubmit', 'setupShopCollection(this); return(false);');
-                        $colectionForm->developerTags['colClassPrefix'] = 'col-lg-12 col-md-';
-                        $colectionForm->developerTags['fld_default_col'] = 12;
+                        $colectionForm->developerTags['colClassPrefix'] = 'col-lg-4 col-md-';
+                        $colectionForm->developerTags['fld_default_col'] = 4;
                         $urlFld = $colectionForm->getField('urlrewrite_custom');
                         $urlFld->setFieldTagAttribute('id', "urlrewrite_custom");
                         $urlFld->setFieldTagAttribute('onkeyup', "getSlugUrl(this,this.value,'".$baseUrl."','post')");

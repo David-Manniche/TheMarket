@@ -49,7 +49,7 @@
 												$li = $ul->appendElement("li");
 												$li->appendElement('a', array('href'=>'javascript:void(0)', 'class'=>'',
 												'title'=>Labels::getLabel('LBL_Edit',$adminLangId),"onclick"=>"changeTaxCategory(".$selprod_id.")"),
-												'<i class="icon ion-edit"></i>', true);
+												'<i class="icon far fa-edit"></i>', true);
 												$li = $ul->appendElement("li");
 												$li->appendElement('a', array('href'=>'javascript:void(0)', 'class'=>'',
 												'title'=>Labels::getLabel('LBL_Reset_to_Default',$adminLangId),"onclick"=>"resetTaxRates(".$selprod_id.")"),

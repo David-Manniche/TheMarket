@@ -9,8 +9,10 @@ $arr_flds = [
     'adsbatch_status' => Labels::getLabel('LBL_STATUS', $siteLangId),
     'action' => '',
 ];
-
-$tbl = new HtmlElement('table', array('width' => '100%', 'class' => 'table table--hovered table-responsive js-scrollable scroll-hint','id' => 'plugin'));
+if (1 > count($arrListing)) {
+    unset($arr_flds['select_all']);
+}
+$tbl = new HtmlElement('table', array('width' => '100%', 'class' => 'table','id' => 'plugin'));
 $th = $tbl->appendElement('thead')->appendElement('tr');
 foreach ($arr_flds as $key => $val) {
     if ('select_all' == $key) {

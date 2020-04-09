@@ -40,6 +40,7 @@ $(document).on('change','.selprodoption_optionvalue_id',function(){
 			var frm = document.frmSearch;
 			$(frm.page).val(page);
 		}
+		
 		$('#listing').html(fcom.getLoader());
 		/* if product id is not passed, then it will become or will fetch custom products of that seller. */
 		if( typeof product_id == undefined || product_id == null ){
@@ -47,6 +48,7 @@ $(document).on('change','.selprodoption_optionvalue_id',function(){
 		}
 		var data = fcom.frmData(document.frmSearch);
 		fcom.ajax(fcom.makeUrl('Seller', 'sellerProducts', [ product_id ]), data, function(t) {
+			showFormActionsBtns();
 			$('#listing').html(t);
 		});
 	}
@@ -114,7 +116,7 @@ $(document).on('change','.selprodoption_optionvalue_id',function(){
 		var frm = document.frmSearch;
 		loadSellerProducts(frm);
 	};
-
+	
 	toggleBulkStatues = function(status){
         if(!confirm(langLbl.confirmUpdateStatus)){
             return false;
@@ -122,7 +124,7 @@ $(document).on('change','.selprodoption_optionvalue_id',function(){
         $("#frmSellerProductsListing input[name='status']").val(status);
         $("#frmSellerProductsListing").submit();
     };
-
+	
 	toggleSellerProductStatus = function(e,obj){
 		if(!confirm(langLbl.confirmUpdateStatus)){
 			e.preventDefault();
@@ -152,7 +154,7 @@ $(document).on('change','.selprodoption_optionvalue_id',function(){
 	};
 	addSpecialPrice = function(){
 		if (typeof $(".selectItem--js:checked").val() === 'undefined') {
-	        $.mbsmessage(langLbl.atleastOneRecord, 'alert--danger');
+	        $.mbsmessage(langLbl.atleastOneRecord, true,'alert--danger');
 	        return false;
 	    }
 		$("#frmSellerProductsListing").attr({'action': fcom.makeUrl('Seller','specialPrice'), 'target':"_blank"}).removeAttr('onsubmit').submit();

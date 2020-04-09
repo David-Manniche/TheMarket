@@ -2,6 +2,7 @@
 
 class LoggedUserController extends MyAppController
 {
+    public $userParentId = 0 ;
     public function __construct($action)
     {
         parent::__construct($action);
@@ -9,14 +10,26 @@ class LoggedUserController extends MyAppController
         UserAuthentication::checkLogin();
 
         $userObj = new User(UserAuthentication::getLoggedUserId());
-
         $userInfo = $userObj->getUserInfo(array(), false, false);
+
         if (false == $userInfo || (!UserAuthentication::isGuestUserLogged() && $userInfo['credential_active'] != applicationConstants::ACTIVE)) {
             if (FatUtility::isAjaxCall()) {
                 Message::addErrorMessage(Labels::getLabel('MSG_Session_seems_to_be_expired', CommonHelper::getLangId()));
                 FatUtility::dieWithError(Message::getHtml());
             }
             FatApp::redirectUser(CommonHelper::generateUrl('GuestUser', 'logout'));
+        }
+
+        if (0 < $userInfo['user_parent']){
+            $parentUser = new User($userInfo['user_parent']);
+            $parentUserInfo = $parentUser->getUserInfo(array(), true, true);
+            if (false == $parentUserInfo || $parentUserInfo['credential_active'] != applicationConstants::ACTIVE) {
+                if (FatUtility::isAjaxCall()) {
+                    Message::addErrorMessage(Labels::getLabel('MSG_Session_seems_to_be_expired', CommonHelper::getLangId()));
+                    FatUtility::dieWithError(Message::getHtml());
+                }
+                FatApp::redirectUser(CommonHelper::generateUrl('GuestUser', 'logout'));
+            }
         }
 
         if (!isset($_SESSION[UserAuthentication::SESSION_ELEMENT_NAME]['activeTab'])) {
@@ -38,22 +51,35 @@ class LoggedUserController extends MyAppController
             }
         }
 
-        if ((!UserAuthentication::isGuestUserLogged() && $userInfo['credential_verified'] != 1) && !($_SESSION[USER::ADMIN_SESSION_ELEMENT_NAME] && $_SESSION[USER::ADMIN_SESSION_ELEMENT_NAME] > 0)) {
+        if ((!UserAuthentication::isGuestUserLogged() && $userInfo['credential_verified'] != 1) && !($_SESSION[User::ADMIN_SESSION_ELEMENT_NAME] && $_SESSION[User::ADMIN_SESSION_ELEMENT_NAME] > 0)) {
             FatApp::redirectUser(CommonHelper::generateUrl('GuestUser', 'logout'));
         }
 
         if (UserAuthentication::getLoggedUserId() < 1) {
             FatApp::redirectUser(CommonHelper::generateUrl('GuestUser', 'logout'));
         }
-        
-        if ((empty($userInfo['user_phone']) || false === Plugin::canSendSms()) && empty($userInfo['credential_email'])) {
-            $message = Labels::getLabel('MSG_Please_Configure_Your_Email', $this->siteLangId);
+
+        /* Thease actions are used while configuring Phone from "Configure Email/Phone Page". */
+        $allowedActions = ['getotp', 'resendotp', 'validateotp'];
+        $addPhoneValidaion = true;
+        if (true == SmsArchive::canSendSms()) {
+            $addPhoneValidaion = empty($userInfo['user_phone']) ? true : false;
+        }
+        if (!in_array(strtolower($action), $allowedActions) && empty($userInfo['user_phone']) && empty($userInfo['credential_email'])) {
+            if (true == SmsArchive::canSendSms()) {
+                $message = Labels::getLabel('MSG_PLEASE_CONFIGURE_YOUR_EMAIL_OR_PHONE', $this->siteLangId);
+            } else {
+                $message = Labels::getLabel('MSG_PLEASE_CONFIGURE_YOUR_EMAIL', $this->siteLangId);
+            }
+
             if (true === MOBILE_APP_API_CALL) {
                 LibHelper::dieJsonError($message);
             }
             Message::addErrorMessage($message);
             FatApp::redirectUser(CommonHelper::generateUrl('GuestUser', 'configureEmail'));
         }
+        
+        $this->userParentId = (0 < $userInfo['user_parent']) ? $userInfo['user_parent'] : UserAuthentication::getLoggedUserId();
 
         $this->initCommonValues();
     }
@@ -61,6 +87,8 @@ class LoggedUserController extends MyAppController
     private function initCommonValues()
     {
         $this->set('isUserDashboard', true);
+        $this->userPrivilege = UserPrivilege::getInstance();
+        $this->set('userPrivilege', $this->userPrivilege);
     }
 
     protected function getOrderCancellationRequestsSearchForm($langId)

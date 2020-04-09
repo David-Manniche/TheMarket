@@ -17,7 +17,19 @@ $(document).ready(function(){
 
 		$.facebox(function() {
 			fcom.ajax(fcom.makeUrl('Checkout','getCouponForm'), '', function(t){
-				$.facebox(t,'faceboxWidth medium-fb-width');
+                try{
+                    t = $.parseJSON(t);
+                    if(typeof t.status != 'undefined' &&  1 > t.status){
+                        $.systemMessage(t.msg,'alert--danger', false);
+                        $("#facebox .close").trigger('click');
+                        if (typeof t.url != 'undefined') {
+                            setTimeout(function(){ document.location.href = t.url; }, 1000);
+                        }
+                        return false;
+                    }
+                }
+                catch(exc){}
+                $.facebox(t,'faceboxWidth medium-fb-width');
 				$("input[name='coupon_code']").focus();
 			});
 		});

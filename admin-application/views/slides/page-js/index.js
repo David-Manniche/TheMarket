@@ -155,14 +155,6 @@ $(document).on('change','.prefDimensions-js',function(){
 		});
 	};
 
-	toggleBulkStatues = function(status){
-        if(!confirm(langLbl.confirmUpdateStatus)){
-            return false;
-        }
-        $("#frmSlidesListing input[name='status']").val(status);
-        $("#frmSlidesListing").submit();
-    };
-
     deleteSelected = function(){
         if(!confirm(langLbl.confirmDelete)){
             return false;
@@ -175,10 +167,7 @@ $(document).on('change','.prefDimensions-js',function(){
 	        fcom.ajax(fcom.makeUrl('Shops', 'imgCropper'), '', function(t) {
 				$('#cropperBox-js').html(t);
 				$("#mediaForm-js").css("display", "none");
-				var container = document.querySelector('.img-container');
                 var file = inputBtn.files[0];
-                $('#new-img').attr('src', URL.createObjectURL(file));
-	    		var image = container.getElementsByTagName('img').item(0);
 	            var minWidth = document.frmSlideMedia.banner_min_width.value;
 	            var minHeight = document.frmSlideMedia.banner_min_height.value;
 	    		var options = {
@@ -192,7 +181,7 @@ $(document).on('change','.prefDimensions-js',function(){
 	                toggleDragModeOnDblclick: false,
 		        };
 				$(inputBtn).val('');
-				return cropImage(image, options, 'uploadImages', inputBtn);
+				return cropImage(file, options, 'uploadImages', inputBtn);
 	    	});
 		}
 	};

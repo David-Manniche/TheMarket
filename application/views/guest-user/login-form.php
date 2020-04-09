@@ -38,8 +38,15 @@
             <div id="sign-in" class="form-item sign-in">
                 <div class="form-side-inner">
                     <div class="section-head">
-                        <div class="section__heading">
-                            <h2><?php echo Labels::getLabel('LBL_Sign_In_to_your_account', $siteLangId);?></h2>
+                        <div class="section__heading otp-heading">
+                            <h2>
+                                <?php echo Labels::getLabel('LBL_Sign_In', $siteLangId);?>                                
+                            </h2>
+                            <?php if (isset($smsPluginStatus) && true === $smsPluginStatus) { ?>                                     
+                                        <a class="otp-link" href="javaScript:void(0)"  data-form="frmLogin" onClick="signInWithPhone(this, true)">
+                                            <?php echo Labels::getLabel('LBL_USE_PHONE_NUMBER_INSTEAD', $siteLangId); ?>
+                                        </a>
+                             <?php } ?>
                         </div>
                     </div>
                     <?php $this->includeTemplate('guest-user/loginPageTemplate.php', $loginData, false); ?>

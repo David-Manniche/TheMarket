@@ -5,12 +5,13 @@ if (getCookie("screenWidth") != screen.width) {
 }
 
 var Dashboard = function() {
-	var menuChangeActive = function menuChangeActive(el) {
+	var menuChangeActive = function(el) {
 		var hasSubmenu = $(el).hasClass("has-submenu");
 		$(global.menuClass + " .is-active").removeClass("is-active");
 		$(el).addClass("is-active");
 	};
-	var sidebarChangeWidth = function sidebarChangeWidth() {
+	var sidebarChangeWidth = function () {
+        
 		var $menuItemsTitle = $("li .menu-item__title");
 		if ($("body").hasClass('sidebar-is-reduced')) {
 			$("body").removeClass('sidebar-is-reduced').addClass('sidebar-is-expanded');
@@ -23,7 +24,11 @@ var Dashboard = function() {
 		}
 		$.ajax({url: fcom.makeUrl('Custom', 'setupSidebarVisibility', [visibility])});
 		// $("body").toggleClass("sidebar-is-reduced sidebar-is-expanded");
-		$(".hamburger-toggle").toggleClass("is-opened");
+        $(".hamburger-toggle").toggleClass("is-opened");
+        setTimeout(function(){
+            unlinkSlick();
+            slickWidgetScroll();
+        }, 500);
 	};
 	return {
 		init: function init() {
@@ -95,11 +100,15 @@ $(document).ready(function () {
 });
 
 /* for search form */
- $(document).on('click','.toggle--search-js',function() {
+$(document).on('click','.toggle--search-js',function() {
 	$(this).toggleClass("is--active");
 	$('html').toggleClass("is--form-visible");
-	/* $('.search--keyword--js').focus(); */
 });
+
+$(document).on('click','.toggle--search',function() {
+    setTimeout(function(){ $(".search--keyword--js").focus(); }, 500);
+});
+
 $("document").ready(function(){
 
  $('.parents--link').click(function() {
@@ -544,17 +553,32 @@ function getCookie(cname) {
   return "";
 }
 
-function googleCaptcha(captchaSiteKey)
+var gCaptcha = false;
+function googleCaptcha()
 {
+    $("body").addClass("captcha");
     var inputObj = $("form input[name='g-recaptcha-response']");
+    var submitBtn = inputObj.parent("form").find('input[type="submit"]');
+    submitBtn.attr("disabled", "disabled");
+
+    var checkToken = setInterval(function(){
+        if (true === gCaptcha) {
+            submitBtn.removeAttr("disabled");
+            clearInterval(checkToken);
+        }
+    }, 500);
+
     /*Google reCaptcha V3  */
     setTimeout(function(){
-        if (0 < inputObj.length) {
+        if (0 < inputObj.length && 'undefined' !== typeof grecaptcha) {
             grecaptcha.ready(function() {
-                grecaptcha.execute(captchaSiteKey, {action: inputObj.data('action')}).then(function(token) {
+                grecaptcha.execute(langLbl.captchaSiteKey, {action: inputObj.data('action')}).then(function(token) {
                     inputObj.val(token);
+                    gCaptcha = true;
                 });
-            });
-        }
+			});
+        } else if ('undefined' === typeof grecaptcha) {
+			$.mbsmessage(langLbl.invalidGRecaptchaKeys,true,'alert--danger');
+		}
     }, 200);
 }

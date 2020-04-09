@@ -165,27 +165,27 @@ class PushNotification extends MyAppModel
         $dataToUpdateOnDuplicate = $dataToSave;
         unset($dataToUpdateOnDuplicate['pnotification_id']);
         if (!FatApp::getDb()->insertFromArray(static::DB_TBL, $dataToSave, false, array(), $dataToUpdateOnDuplicate)) {
-            // $this->error = Labels::getLabel("MSG_UNABLE_TO_UPDATE!", CommonHelper::getLangId());
+            $error = Labels::getLabel("MSG_UNABLE_TO_UPDATE!", CommonHelper::getLangId());
             return false;
         }
         return true;
     }
 
-    public static function send()
+    public static function send(&$error = '')
     {
         $defaultPushNotiAPI = FatApp::getConfig('CONF_DEFAULT_PLUGIN_' . Plugin::TYPE_PUSH_NOTIFICATION, FatUtility::VAR_INT, 0);
         if (empty($defaultPushNotiAPI)) {
-            // $this->error =  Labels::getLabel('MSG_DEFAULT_PUSH_NOTIFICATION_API_NOT_SET', CommonHelper::getLangId());
+            $error =  Labels::getLabel('MSG_DEFAULT_PUSH_NOTIFICATION_API_NOT_SET', CommonHelper::getLangId());
             return false;
         }
 
         $keyName = Plugin::getAttributesById($defaultPushNotiAPI, 'plugin_code');
         if (1 > Plugin::isActive($keyName)) {
-            // $this->error =  Labels::getLabel('MSG_PLUGIN_IS_NOT_ACTIVE', CommonHelper::getLangId());
+            $error =  Labels::getLabel('MSG_PLUGIN_IS_NOT_ACTIVE', CommonHelper::getLangId());
             return false;
         }
         require_once CONF_PLUGIN_DIR . '/push-notification/' . $keyName . '.php';
-
+        
         $limit = $keyName::LIMIT;
 
         $srchU = new SearchBase(static::DB_TBL_NOTIFICATION_TO_USER, 'pnu');
@@ -202,8 +202,9 @@ class PushNotification extends MyAppModel
         $srch->doNotLimitRecords();
         $rs = $srch->getResultSet();
         $notificationList = FatApp::getDb()->fetchAll($rs);
+        
         if (1 > count($notificationList)) {
-            // $this->error = Labels::getLabel('MSG_NO_RECORD_FOUND', CommonHelper::getLangId());
+            $error = Labels::getLabel('MSG_NO_RECORD_FOUND', CommonHelper::getLangId());
             return false;
         }
 
@@ -216,15 +217,13 @@ class PushNotification extends MyAppModel
             $joinNotificationUsers = (0 < $notificationDetail['pnotification_user_linked']) ? true : false;
             
             $data = static::getDeviceTokensData($recordId, $buyers, $sellers, $userAuthType, $joinNotificationUsers);
-            
             $deviceTokens = $data['deviceTokens'];
             $lastUserAccessTime = $data['lastUserAccessTime'];
             
             if (empty($deviceTokens) || 1 > count($deviceTokens)) {
-                static::updateDetail($recordId, static::STATUS_COMPLETED);
+                static::updateDetail($recordId, static::STATUS_COMPLETED, $error);
                 continue;
             }
-
             try {
                 $imageUrl = '';
                 if ($imgData = AttachedFile::getAttachment(AttachedFile::FILETYPE_PUSH_NOTIFICATION_IMAGE, $recordId)) {
@@ -246,11 +245,11 @@ class PushNotification extends MyAppModel
                     $obj = new $keyName($dtokens);
                     $response = $obj->notify($notificationDetail['pnotification_title'], $notificationDetail['pnotification_description'], $os, $data);
                     if (false === $response) {
-                        /* $this->error =  $obj->getError(); */
+                        $error = $obj->getError();
                     }
                 }
             } catch (\Error $e) {
-                /* $this->error =  $e->getMessage(); */
+                $error = $e->getMessage();
             }
 
             if (true === $joinNotificationUsers) {

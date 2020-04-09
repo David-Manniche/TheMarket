@@ -11,10 +11,9 @@ $langFld = $imagesFrm->getField('lang_id');
 $langFld->addFieldTagAttribute('class', 'language-js');
 
 $imgFld = $imagesFrm->getField('prod_image');
-$imgFld->addFieldTagAttribute('class', 'btn btn--primary btn--sm');
 $imgFld->addFieldTagAttribute('onChange', 'popupImage(this)');
 $imgFld->htmlBeforeField='<span class="filename"></span>';
-$imgFld->htmlAfterField='<br/><small>'.Labels::getLabel('LBL_Please_keep_image_dimensions_greater_than_500_x_500._You_can_upload_multiple_photos_from_here.', $adminLangId).'</small>';
+$imgFld->htmlAfterField='<br/><small>'.Labels::getLabel('LBL_Please_keep_image_dimensions_greater_than_500_x_500', $adminLangId).'</small>';
 
 /*$btnbackFld = $imagesFrm->getField('btn_back');
 $btnbackFld->developerTags['col'] = 6;

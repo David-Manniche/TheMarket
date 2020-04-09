@@ -962,13 +962,13 @@ class Orders extends MyAppModel
         if (isset($criteria['seller_id'])) {
             $srch->joinTable('tbl_users', 'LEFT OUTER JOIN', 's.user_id = torp.op_selprod_user_id', 's');
             $srch->joinTable('tbl_user_credentials', 'LEFT OUTER JOIN', 'sc.credential_user_id = s.user_id', 'sc');
-            $srch->addMultipleFields(array('s.user_name as seller_name', 'sc.credential_email as seller_email'));
+            $srch->addMultipleFields(array('s.user_name as seller_name', 'sc.credential_email as seller_email', 'CONCAT(s.user_dial_code, s.user_phone) as seller_phone',));
         }
 
         if (isset($criteria['buyer_id'])) {
             $srch->joinTable('tbl_users', 'LEFT OUTER JOIN', 'b.user_id = tor.order_user_id', 'b');
             $srch->joinTable('tbl_user_credentials', 'LEFT OUTER JOIN', 'bc.credential_user_id = b.user_id', 'bc');
-            $srch->addMultipleFields(array('b.user_name as buyer_name', 'bc.credential_email as buyer_email'));
+            $srch->addMultipleFields(array('b.user_name as buyer_name', 'CONCAT(b.user_dial_code, b.user_phone) as buyer_phone', 'bc.credential_email as buyer_email'));
         }
 
         $srch->addMultipleFields(array('tosh.*', 'tor.order_is_paid', 'order_language_id', 'torp.*', 'torp.op_id' ));
@@ -1191,6 +1191,7 @@ class Orders extends MyAppModel
             $emailNotify = $emailObj->orderPaymentUpdateBuyerAdmin($orderId);
         } elseif ($orderInfo['order_pmethod_id'] == PaymentSettings::CASH_ON_DELIVERY) {
             $emailNotify = $emailObj->cashOnDeliveryOrderUpdateBuyerAdmin($orderId);
+            $emailObj->newOrderVendor($orderId, 0, 1);
         }
 
         // If order Payment status is 0 then becomes greater than 0 mail to Vendors and Update Child Order Status to Paid & Give Referral Reward Points
@@ -1326,6 +1327,11 @@ class Orders extends MyAppModel
             return false;
         }
         $commentId = $db->getInsertId();
+        
+        // If order status is in buyer order statuses then send update email
+        if (in_array($opStatusId, unserialize(FatApp::getConfig("CONF_BUYER_ORDER_STATUS"))) && $notify) {
+            $emailNotificationObj->orderStatusUpdateBuyer($commentId, $childOrderInfo['order_language_id'], $childOrderInfo['order_user_id']);
+        }
 
         // If current order status is not paid up but new status is paid then commence updating the product's weightage
         if (!in_array($childOrderInfo['op_status_id'], (array)FatApp::getConfig("CONF_DEFAULT_PAID_ORDER_STATUS")) && in_array($opStatusId, (array)FatApp::getConfig("CONF_DEFAULT_PAID_ORDER_STATUS")) && strtolower($childOrderInfo['pmethod_code']) != "cashondelivery") {
@@ -1742,10 +1748,7 @@ class Orders extends MyAppModel
             Cronjob::firstTimeBuyerDiscount($childOrderInfo['order_user_id'], $childOrderInfo['op_order_id']);
         }
 
-        // If order status is in buyer order statuses then send update email
-        if (in_array($opStatusId, unserialize(FatApp::getConfig("CONF_BUYER_ORDER_STATUS"))) && $notify) {
-            $emailNotificationObj->orderStatusUpdateBuyer($commentId, $childOrderInfo['order_language_id'], $childOrderInfo['order_user_id']);
-        }
+        
         return true;
     }
 

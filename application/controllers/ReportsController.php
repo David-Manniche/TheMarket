@@ -1,6 +1,6 @@
 <?php
 
-class ReportsController extends LoggedUserController
+class ReportsController extends SellerBaseController
 {
     public function __construct($action)
     {
@@ -25,7 +25,8 @@ class ReportsController extends LoggedUserController
 
     public function productsPerformance()
     {
-        if (!User::canAccessSupplierDashboard() || !User::isSellerVerified(UserAuthentication::getLoggedUserId())) {
+        $this->userPrivilege->canViewPerformanceReport(UserAuthentication::getLoggedUserId());
+        if (!User::canAccessSupplierDashboard() || !User::isSellerVerified($this->userParentId)) {
             FatApp::redirectUser(CommonHelper::generateUrl('Account', 'supplierApprovalForm'));
         }
         $srchFrm = $this->getProdPerformanceSrchForm();
@@ -46,7 +47,7 @@ class ReportsController extends LoggedUserController
             $page = 1;
         }
         $pageSize = FatApp::getConfig('conf_page_size', FatUtility::VAR_INT, 10);
-        $userId = UserAuthentication::getLoggedUserId();
+        $userId = $this->userParentId;
         $shopDetails = Shop::getAttributesByUserId($userId, array('shop_id'), false);
 
         if (!$shopDetails) {
@@ -141,7 +142,7 @@ class ReportsController extends LoggedUserController
             $page = 1;
         }
         $pageSize = FatApp::getConfig('conf_page_size', FatUtility::VAR_INT, 10);
-        $userId = UserAuthentication::getLoggedUserId();
+        $userId = $this->userParentId;
         $shopDetails = Shop::getAttributesByUserId($userId, array('shop_id'), false);
 
         if (!$shopDetails) {
@@ -215,6 +216,7 @@ class ReportsController extends LoggedUserController
 
     public function productsInventory()
     {
+        $this->userPrivilege->canViewInventoryReport(UserAuthentication::getLoggedUserId());
         if (!User::canAccessSupplierDashboard()) {
             FatApp::redirectUser(CommonHelper::generateUrl('Account', 'supplierApprovalForm'));
         }
@@ -235,13 +237,13 @@ class ReportsController extends LoggedUserController
         if ($page < 2) {
             $page = 1;
         }
-        $loggedUserId = UserAuthentication::getLoggedUserId();
+        $userId = $this->userParentId;
         $srch = SellerProduct::getSearchObject($this->siteLangId);
         $srch->joinTable(Product::DB_TBL, 'INNER JOIN', 'p.product_id = sp.selprod_product_id', 'p');
         $srch->joinTable(Product::DB_TBL_LANG, 'LEFT OUTER JOIN', 'p.product_id = p_l.productlang_product_id AND p_l.productlang_lang_id = ' . $this->siteLangId, 'p_l');
         $srch->joinTable(Brand::DB_TBL, 'INNER JOIN', 'p.product_brand_id = b.brand_id', 'b');
         $srch->joinTable(Brand::DB_TBL_LANG, 'LEFT OUTER JOIN', 'b.brand_id = b_l.brandlang_brand_id  AND brandlang_lang_id = ' . $this->siteLangId, 'b_l');
-        $srch->addCondition('selprod_user_id', '=', $loggedUserId);
+        $srch->addCondition('selprod_user_id', '=', $userId);
         $srch->addCondition('selprod_active', '=', applicationConstants::ACTIVE);
         $srch->addCondition('selprod_deleted', '=', applicationConstants::NO);
         $srch->addOrder('selprod_active', 'DESC');
@@ -293,6 +295,7 @@ class ReportsController extends LoggedUserController
 
     public function productsInventoryStockStatus()
     {
+        $this->userPrivilege->canViewInventoryReport(UserAuthentication::getLoggedUserId());
         if (!User::canAccessSupplierDashboard()) {
             FatApp::redirectUser(CommonHelper::generateUrl('Account', 'supplierApprovalForm'));
         }
@@ -314,7 +317,7 @@ class ReportsController extends LoggedUserController
             $page = 1;
         }
 
-        $loggedUserId = UserAuthentication::getLoggedUserId();
+        $userId = $this->userParentId;
 
         /* [ */
         $orderProductSrch = new OrderProductSearch($this->siteLangId, true);
@@ -335,7 +338,7 @@ class ReportsController extends LoggedUserController
         $srch->joinTable(Product::DB_TBL_LANG, 'LEFT OUTER JOIN', 'p.product_id = p_l.productlang_product_id AND p_l.productlang_lang_id = ' . $this->siteLangId, 'p_l');
         $srch->joinTable(Brand::DB_TBL, 'INNER JOIN', 'p.product_brand_id = b.brand_id', 'b');
         $srch->joinTable(Brand::DB_TBL_LANG, 'LEFT OUTER JOIN', 'b.brand_id = b_l.brandlang_brand_id  AND brandlang_lang_id = ' . $this->siteLangId, 'b_l');
-        $srch->addCondition('selprod_user_id', '=', $loggedUserId);
+        $srch->addCondition('selprod_user_id', '=', $userId);
         $srch->addOrder('selprod_active', 'DESC');
         $srch->addOrder('product_name');
         $srch->addMultipleFields(
@@ -414,10 +417,12 @@ class ReportsController extends LoggedUserController
 
     public function salesReport($orderDate = '')
     {
+        $this->userPrivilege->canViewSalesReport(UserAuthentication::getLoggedUserId());
         if (!User::canAccessSupplierDashboard()) {
             FatApp::redirectUser(CommonHelper::generateUrl('Account', 'supplierApprovalForm'));
         }
         $frmSrch = $this->getSalesReportSearchForm($orderDate);
+        $this->set('frmSrch', $frmSrch);
         $this->set('frmSrch', $frmSrch);
         $this->set('orderDate', $orderDate);
         $this->_template->render(true, true);
@@ -439,7 +444,7 @@ class ReportsController extends LoggedUserController
         if ($page < 2) {
             $page = 1;
         }
-        $loggedUserId = UserAuthentication::getLoggedUserId();
+        $userId = UserAuthentication::getLoggedUserId();
 
         $srch = Report::salesReportObject();
         if (empty($orderDate)) {
@@ -460,7 +465,7 @@ class ReportsController extends LoggedUserController
             $srch->addCondition('o.order_date_added', '<=', $orderDate . ' 23:59:59');
             $srch->addFld(array('op_invoice_number'));
         }
-        $srch->addCondition('op_selprod_user_id', '=', $loggedUserId);
+        $srch->addCondition('op_selprod_user_id', '=', $userId);
 
         $srch->addOrder('order_date', 'desc');
 

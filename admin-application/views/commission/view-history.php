@@ -19,7 +19,7 @@
 					$e = $th->appendElement('th', array(), $val);
 				}
 
-				$sr_no = 0;
+				$sr_no = ($page > 1) ? ($page -1 ) * $pageSize : 0;
 				foreach ($arr_listing as $sn=>$row){
 					$sr_no++;
 					$tr = $tbl->appendElement('tr');
