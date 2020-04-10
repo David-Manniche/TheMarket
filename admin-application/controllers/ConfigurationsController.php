@@ -642,6 +642,10 @@ class ConfigurationsController extends AdminBaseController
 
                 $fld = $frm->addTextarea(Labels::getLabel("LBL_Body_Script", $this->adminLangId), 'CONF_GOOGLE_TAG_MANAGER_BODY_SCRIPT');
                 $fld->htmlAfterField = "<small>" . Labels::getLabel("LBL_This_is_the_code_provided_by_google_tag_manager_for_integration.", $this->adminLangId) . "</small>";
+				
+				$frm->addHtml('', 'Analytics', '<h3>' . Labels::getLabel("LBL_Hotjar", $this->adminLangId) . '</h3>');
+				$fld = $frm->addTextarea(Labels::getLabel("LBL_Head_Script", $this->adminLangId), 'CONF_HOTJAR_HEAD_SCRIPT');
+				$fld->htmlAfterField = "<small>" . Labels::getLabel("LBL_This_is_the_code_provided_by_hotjar_for_integration.", $this->adminLangId) . "</small>";
                 break;
 
             case Configurations::FORM_PRODUCT:
