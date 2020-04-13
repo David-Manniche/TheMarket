@@ -22,21 +22,15 @@
                             <div class="row">
                                 <div class="col-md-12">
                                     <div class="field-set">
-                                        <div class="field_cover field_cover--mail"><?php echo $frmForgot->getFieldHTML('admin_email'); ?></div>
-                                    </div>
-                                </div>
-                            </div>
-							<?php if(FatApp::getConfig('CONF_RECAPTCHA_SITEKEY',FatUtility::VAR_STRING,'') != '' ){?>
-                            <div class="row">
-                                <div class="col-md-12">
-                                    <div class="field-set">
-                                        <div class="field_cover">
-                                            <div class="captcha-wrap"><?php echo $frmForgot->getFieldHTML('security_code'); ?></div>
+                                        <div class="field_cover field_cover--mail">
+                                            <?php 
+                                                echo $frmForgot->getFieldHTML('admin_email'); 
+                                                echo $frmForgot->getFieldHTML('g-recaptcha-response');
+                                            ?>
                                         </div>
                                     </div>
                                 </div>
-                            </div> 
-							<?php }?>							
+                            </div>							
                             <div class="row">
                                 <div class="col-md-12">
                                     <div class="field-set">
@@ -61,4 +55,12 @@
 	 </div>
 	</div>
             
-         
+<?php 
+$siteKey = FatApp::getConfig('CONF_RECAPTCHA_SITEKEY', FatUtility::VAR_STRING, '');
+$secretKey = FatApp::getConfig('CONF_RECAPTCHA_SECRETKEY', FatUtility::VAR_STRING, '');
+if (!empty($siteKey) && !empty($secretKey)) { ?>
+    <script>
+        langLbl.captchaSiteKey = "<?php echo FatApp::getConfig('CONF_RECAPTCHA_SITEKEY', FatUtility::VAR_STRING, ''); ?>";
+    </script>
+    <script src='https://www.google.com/recaptcha/api.js?onload=googleCaptcha&render=<?php echo $siteKey; ?>'></script>
+<?php } ?>
