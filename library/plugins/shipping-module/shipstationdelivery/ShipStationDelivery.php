@@ -116,6 +116,7 @@ class ShipStationDelivery extends ShippingModuleBase
     public function addOrder(string $orderId, int $langId, int $opId)
     {
         $orderDetail = $this->getSystemOrder($orderId, $langId, $opId);
+        CommonHelper::printArray($orderDetail, true);
         if (false === $orderDetail) {
             return false;
         }
@@ -154,8 +155,8 @@ class ShipStationDelivery extends ShippingModuleBase
             $this->order->internalNotes     = "Express Shipping Please";
             $this->order->requestedShippingService     = "Priority Mail"; */
             $this->order->paymentMethod = $orderDetail['pmethod_name'];
-            /* $this->order->carrierCode       = "fedex";
-            $this->order->serviceCode       = "fedex_2day"; */
+            /* $this->order->carrierCode       = "fedex"; */
+            $this->order->serviceCode       = $op['opshipping_carrier'];
             $this->order->packageCode = "package";
             /* $this->order->confirmation      = null;
             $this->order->shipDate          = null; */

@@ -683,6 +683,7 @@ class CheckoutController extends MyAppController
                           'mshipapi_key' => $post['data'][$productKey]["shipping_services"],
                           'mshipapi_label' => str_replace("_", " ", $post['data'][$productKey]["shipping_services"]),
                           'shipped_by_seller' => Product::isShippedBySeller($cartval['selprod_user_id'], $product['product_seller_id'], $product['shippedBySellerId']),
+                          'shipping_carrier' => $post['data'][$productKey]["shipping_carrier"],
                                             );
                         continue;
                     } else {
@@ -1078,7 +1079,6 @@ class CheckoutController extends MyAppController
 
         $allLanguages = Language::getAllNames();
         $productSelectedShippingMethodsArr = $this->cartObj->getProductShippingMethod();
-
         $orderLangData = array();
         foreach ($allLanguages as $lang_id => $language_name) {
             $order_shippingapi_name = '';
@@ -1130,7 +1130,10 @@ class CheckoutController extends MyAppController
                         'opshipping_duration_id' => $shippingDurationRow['sduration_id'],
                         );
                     } elseif ($shippingDurationRow['mshipapi_id'] == ShippingMethods::SHIPSTATION_SHIPPING) {
-                        $productShippingData = array( 'opshipping_method_id' => $shippingDurationRow['mshipapi_id'] );
+                        $productShippingData = array(
+						'opshipping_method_id' => $shippingDurationRow['mshipapi_id'],
+						// 'opshipping_company_id' => $shippingDurationRow['shipping_carrier'],
+						);
                     }
                     $productShippingData['opshipping_by_seller_user_id'] = $shippingDurationRow['shipped_by_seller'];
                 }

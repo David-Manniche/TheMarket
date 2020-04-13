@@ -2380,9 +2380,12 @@ class Orders extends MyAppModel
         if (0 < $opId) {
             $opSrch->joinSellerProducts();
             $opSrch->joinTable(Orders::DB_TBL_ORDER_PRODUCTS_SHIPPING, 'LEFT OUTER JOIN', 'ops.opshipping_op_id = op.op_id', 'ops');
+            $opSrch->joinTable(Orders::DB_TBL_ORDER_PRODUCTS_SHIPPING_LANG, 'LEFT OUTER JOIN', 'opsl.opshippinglang_op_id = op.op_id AND opsl.opshippinglang_lang_id = ' . $langId, 'opsl');
+            $opSrch->joinTable(ShippingCompanies::DB_TBL, 'LEFT OUTER JOIN', 'ops.opshipping_company_id = opsc.scompany_id', 'opsc');
+            $opSrch->joinTable(ShippingCompanies::DB_TBL_LANG, 'LEFT OUTER JOIN', 'opscl.scompanylang_scompany_id = opsc.scompany_id AND opscl.scompanylang_lang_id = ' . $langId, 'opscl');
             $opSrch->addCondition('op.op_id', '=', $opId);
             $extraAttr = [
-                'selprod_product_id', 'op_selprod_id', 'opshipping_method_id', 'op_product_length', 'op_product_width', 'op_product_height', 'op_product_dimension_unit', 'op_product_weight', 'op_product_weight_unit'
+                'selprod_product_id', 'op_selprod_id', 'opshipping_method_id', 'opshipping_company_id', 'op_product_length', 'op_product_width', 'op_product_height', 'op_product_dimension_unit', 'op_product_weight', 'op_product_weight_unit', 'opshipping_carrier', 'IFNULL(scompany_name, scompany_identifier) as carrier_code'
             ];
             $attr = array_merge($attr, $extraAttr);
         }
@@ -2391,7 +2394,6 @@ class Orders extends MyAppModel
         $opSrch->doNotCalculateRecords();
         $opSrch->doNotLimitRecords();
         $opRs = $opSrch->getResultSet();
-        echo $opSrch->getError();
         $order['products'] = FatApp::getDb()->fetchAll($opRs, 'op_id');
 
         $orderObj = new Orders($order['order_id']);
