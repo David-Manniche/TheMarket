@@ -25,22 +25,21 @@ class ShippingModuleController extends AdminBaseController
     public function generateLabel($orderId, $opId)
     {
         $order = $this->shipping->addOrder($orderId, $this->adminLangId, $opId);
-        if (400 == $order->code) {
-            $error = json_decode($order->message, true);
-            Message::addErrorMessage($error['Message']);
-            foreach($error['ModelState'] as $errMsg) {
-                Message::addErrorMessage(current($errMsg));
-            }
-            FatUtility::dieJsonError(Message::getHtml());
-            CommonHelper::printArray($error, true);
+        if (false === $order) {
+            $this->shipping->setSystemError($this->adminLangId);
         }
         CommonHelper::printArray($order, true);
     }
-
 
     public function createLabel()
     {
         $response = $this->shipping->createLabel();
         CommonHelper::printArray($response);
+    }
+
+    public function getCarriers()
+    {
+        $response = $this->shipping->getCarriers();
+        CommonHelper::printArray($response, true);
     }
 }
