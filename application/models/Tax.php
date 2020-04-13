@@ -82,19 +82,15 @@ class Tax extends MyAppModel
         $srch->doNotCalculateRecords();
         $srch->doNotLimitRecords();
         
-        $defaultTaxApi = FatApp::getConfig('CONF_DEFAULT_PLUGIN_' . Plugin::TYPE_TAX_SERVICES, FatUtility::VAR_INT, 0);
-        $defaultTaxApiIsActive = 0;
-        if (0 < $defaultTaxApi){
-            $defaultTaxApiIsActive = Plugin::getAttributesById($defaultTaxApi, 'plugin_active');
-        }        
+        $activatedTaxServiceId = Tax::getActivatedServiceId();    
         
         $srch->addFld('taxcat_id'); 
-        if ($defaultTaxApiIsActive) {
+        if ($activatedTaxServiceId) {
             $srch->addFld('concat(IFNULL(taxcat_name,taxcat_identifier), " (",taxcat_code,")")as taxcat_name');
-            $srch->addCondition('taxcat_plugin_id', '=', $defaultTaxApi);
         }else{
             $srch->addFld('IFNULL(taxcat_name,taxcat_identifier)as taxcat_name'); 
-        }       
+        }
+        $srch->addCondition('taxcat_plugin_id', '=', $activatedTaxServiceId);       
 
         $rs = $srch->getResultSet();
         $row = FatApp::getDb()->fetchAllAssoc($rs);
@@ -225,7 +221,7 @@ class Tax extends MyAppModel
 
         $taxRates = array();
         $taxObj = self::getTaxCatObjByProductId($productId, $langId);
-        $taxObj->addMultipleFields(array('IFNULL(taxcat_name,taxcat_identifier) as taxcat_name', 'ptt_seller_user_id', 'ptt_taxcat_id', 'ptt_product_id', 'taxval_is_percent', 'taxval_value', 'taxval_options'));
+        $taxObj->addMultipleFields(array('IFNULL(taxcat_name,taxcat_identifier) as taxcat_name', 'taxcat_code', 'ptt_seller_user_id', 'ptt_taxcat_id', 'ptt_product_id', 'taxval_is_percent', 'taxval_value', 'taxval_options'));
         $taxObj->doNotCalculateRecords();
 
         $cnd = $taxObj->addCondition('ptt_seller_user_id', '=', 0);
@@ -247,32 +243,159 @@ class Tax extends MyAppModel
         return FatApp::getDb()->fetch($rs);
     }
 
-    public function calculateTaxRates($productId, $prodPrice, $sellerId, $langId, $qty = 1, $extraDiscounts = array(), $shipFromStateId = 0, $shipToStateId = 0)
+    private function formatAddress($address, $shop = false){
+
+        $postalCode = '';    
+        $line1 = '';
+        $line2 = '';
+        $city = '';
+        $state = '';
+
+        if (true == $shop) {
+          
+            if (array_key_exists('shop_postalcode', $address)){
+                $postalCode = $address['shop_postalcode'];
+            }
+
+            if (array_key_exists('shop_address_line_1', $address)){
+                $line1 = $address['shop_address_line_1'];
+            }
+
+            if (array_key_exists('shop_address_line_2', $address)){
+                $line2 = $address['shop_address_line_2'];
+            }
+
+            if (array_key_exists('shop_city', $address)){
+                $city = $address['shop_city'];
+            }
+            
+            if (array_key_exists('state_name', $address)){
+                $state = $address['state_name'];
+            }
+
+        } else{
+            if (array_key_exists('ua_zip', $address)){
+                $postalCode = $address['ua_zip'];
+            }
+    
+            if (array_key_exists('ua_address1', $address)){
+                $line1 = $address['ua_address1'];
+            }
+    
+            if (array_key_exists('ua_address2', $address)){
+                $line2 = $address['ua_address2'];
+            }
+    
+            if (array_key_exists('city', $address)){
+                $city = $address['city'];
+            }
+
+            if (array_key_exists('state', $address)){
+                $state = $address['state'];
+            }
+        }
+
+        return [
+            'line1' => $line1,
+            'line2' => $line2,
+            'city' => $city,
+            'state' => $state,
+            'postalCode' => $postalCode,
+            'country' => $address['country_code'],
+        ];
+    }
+    
+    public function calculateTaxRates($productId, $prodPrice, $sellerId, $langId, $qty = 1, $extraInfo = array())
     {
         $tax = 0;
-        $res = $this->getTaxRates($productId, $sellerId, $langId);
-        if (empty($res)) {
+        $taxCategoryRow = $this->getTaxRates($productId, $sellerId, $langId);
+        if (empty($taxCategoryRow)) {
             return $data = [
-                'tax' => $tax
+                'tax' => $tax,
+                'options' => []
             ];
         }
 
-        if ($res['taxval_is_percent'] == static::TYPE_PERCENTAGE) {
-            $tax = round((($prodPrice * $qty) * $res['taxval_value']) / 100, 2);
+        $activatedTaxServiceId = static::getActivatedServiceId();
+               
+        if (0 < $activatedTaxServiceId && !empty($extraInfo)) {
+            $pluginKey = Plugin::getAttributesById($activatedTaxServiceId, 'plugin_code');
+
+            require_once CONF_PLUGIN_DIR . '/tax/' . strtolower($pluginKey) . '/' . $pluginKey . '.php';
+
+            $toAddress = $this->formatAddress($extraInfo['shippingAddress']);
+            
+            if ($extraInfo['shippedBySeller']) {
+                /* @todo check to get with seller_address */
+               $shopId = Shop::getAttributesByUserId($sellerId, 'shop_id');
+               $address =  Shop::getShopAddress($shopId, true, $langId);
+               $fromAddress = $this->formatAddress($extraInfo['shippingAddress'], true);
+            } else {               
+                $fromAddress = CommonHelper::getAdminAddress($langId);
+            }
+           
+            $toAddress = $this->formatAddress($extraInfo['shippingAddress']);
+
+            $itemsArr = [];
+            $item = [
+                'amount' => $prodPrice,
+                'quantity' => $qty,
+                'itemCode' => $productId,
+                'taxCode' => $taxCategoryRow['taxcat_code'], 
+            ];
+            array_push($itemsArr, $item);
+
+            $shippingItems = [];
+            $shippingItem = [
+                'amount' => $extraInfo['shippingCost'],
+                'quantity' => $qty,
+                'itemCode' => $productId,
+                'taxCode' => $taxCategoryRow['taxcat_code'], 
+            ];
+            array_push($shippingItems, $shippingItem);    
+
+            $taxApi = new $pluginKey($langId);
+            $taxRates = $taxApi->getRates($fromAddress , $toAddress, $itemsArr, $shippingItems, $extraInfo['buyerId']);
+           
+            if (false == $taxRates['status']){
+                //@todo Log Errors
+                return $data = [
+                    'tax' => $tax,
+                    'options' => []
+                ];
+            }
+
+        }
+      
+
+        if ($taxCategoryRow['taxval_is_percent'] == static::TYPE_PERCENTAGE) {
+            $tax = round((($prodPrice * $qty) * $taxCategoryRow['taxval_value']) / 100, 2);
         } else {
-            $tax = $res['taxval_value'] * $qty;
+            $tax = $taxCategoryRow['taxval_value'] * $qty;
         }
         $data = [
             'tax' => $tax
         ];
 
+
+        $shipFromStateId = 0;
+        $shipToStateId = 0;
+        if (isset($extraInfo['shipping_address']['ua_state_id'])) {
+            $shipToStateId = $extraInfo['shipping_address']['ua_state_id'];
+        }
+
+        if (array_key_exists('shippingAddress', $extraInfo)) {
+            $shipFromStateId = Shop::getAttributesByUserId($sellerId, 'shop_state_id');
+        }
+
+        $confTaxStructure = FatApp::getConfig('CONF_TAX_STRUCTURE', FatUtility::VAR_FLOAT, 0);
         if (FatApp::getConfig('CONF_TAX_STRUCTURE', FatUtility::VAR_FLOAT, 0) == TaxStructure::TYPE_COMBINED) {
             $shipFromStateId = FatUtility::int($shipFromStateId);
             $shipToStateId = FatUtility::int($shipToStateId);
 
             $shipFromStateId = (1 > $shipFromStateId) ? FatApp::getConfig('CONF_STATE', FatUtility::VAR_INT, 0) : $shipFromStateId;
 
-            $taxOptions = json_decode($res['taxval_options'], true);
+            $taxOptions = json_decode($taxCategoryRow['taxval_options'], true);
             $taxStructure = new TaxStructure(FatApp::getConfig('CONF_TAX_STRUCTURE', FatUtility::VAR_FLOAT, 0));
             $options = $taxStructure->getOptions($langId);
             foreach ($options as $optionVal) {
@@ -280,8 +403,8 @@ class Tax extends MyAppModel
                 if ($shipFromStateId != $shipToStateId && $optionVal['taxstro_interstate'] == applicationConstants::YES) {
                     $data['options'][$optionVal['taxstro_id']]['name'] = $optionVal['taxstro_name'];
                     $data['options'][$optionVal['taxstro_id']]['percentageValue'] = $taxOptionVal ;
-                    $data['options'][$optionVal['taxstro_id']]['inPercentage'] = $res['taxval_is_percent'];
-                    if ($res['taxval_is_percent'] == static::TYPE_PERCENTAGE) {
+                    $data['options'][$optionVal['taxstro_id']]['inPercentage'] = $taxCategoryRow['taxval_is_percent'];
+                    if ($taxCategoryRow['taxval_is_percent'] == static::TYPE_PERCENTAGE) {
                         $data['options'][$optionVal['taxstro_id']]['value'] = round((($prodPrice * $qty) * $taxOptionVal) / 100, 2);
                     } else {
                         $data['options'][$optionVal['taxstro_id']][$optionVal['taxstro_name']] = $taxOptionVal * $qty;
@@ -289,8 +412,8 @@ class Tax extends MyAppModel
                 } elseif ($shipFromStateId == $shipToStateId && $optionVal['taxstro_interstate'] == applicationConstants::NO) {
                     $data['options'][$optionVal['taxstro_id']]['name'] = $optionVal['taxstro_name'];
                     $data['options'][$optionVal['taxstro_id']]['percentageValue'] = $taxOptionVal ;
-                    $data['options'][$optionVal['taxstro_id']]['inPercentage'] = $res['taxval_is_percent'];                    
-                    if ($res['taxval_is_percent'] == static::TYPE_PERCENTAGE) {
+                    $data['options'][$optionVal['taxstro_id']]['inPercentage'] = $taxCategoryRow['taxval_is_percent'];                    
+                    if ($taxCategoryRow['taxval_is_percent'] == static::TYPE_PERCENTAGE) {
                         $data['options'][$optionVal['taxstro_id']]['value'] = round((($prodPrice * $qty) * $taxOptionVal) / 100, 2);
                     } else {
                         $data['options'][$optionVal['taxstro_id']]['value'] = $taxOptionVal * $qty;
@@ -301,8 +424,8 @@ class Tax extends MyAppModel
             $taxStructure = new TaxStructure(FatApp::getConfig('CONF_TAX_STRUCTURE', FatUtility::VAR_FLOAT, 0));
             $structureName = $taxStructure->getName($langId);
             $data['options'][-1]['name'] = Labels::getLabel('LBL_Tax', $langId);
-            $data['options'][-1]['inPercentage'] = $res['taxval_is_percent'];
-            $data['options'][-1]['percentageValue'] = $res['taxval_value'] ;
+            $data['options'][-1]['inPercentage'] = $taxCategoryRow['taxval_is_percent'];
+            $data['options'][-1]['percentageValue'] = $taxCategoryRow['taxval_value'] ;
             if (array_key_exists('taxstr_name', $structureName) && $structureName['taxstr_name'] != '') {
                 $data['options'][-1]['name'] = $structureName['taxstr_name'];
             }
@@ -366,5 +489,47 @@ class Tax extends MyAppModel
         }
 
         return true;
+    }
+
+    public static function getActivatedServiceId() {
+        $defaultTaxApi = FatApp::getConfig('CONF_DEFAULT_PLUGIN_' . Plugin::TYPE_TAX_SERVICES, FatUtility::VAR_INT, 0);
+        $defaultTaxApiIsActive = 0;
+        if (0 < $defaultTaxApi){
+            $defaultTaxApiIsActive = Plugin::getAttributesById($defaultTaxApi, 'plugin_active');
+        }
+        return  $defaultTaxApi;
+    }
+
+    public static function getAttributesByCode($code, $attr = null, $plugInId = 0){
+        $code = FatUtility::convertToType($code, FatUtility::VAR_STRING);
+        $plugInId = FatUtility::convertToType($plugInId, FatUtility::VAR_INT);
+        $db = FatApp::getDb();
+
+        $srch = new SearchBase(static::DB_TBL);
+        $srch->doNotCalculateRecords();
+        $srch->setPageSize(1);
+        $srch->addCondition(static::tblFld('code'), '=', $code);
+        $srch->addCondition(static::tblFld('plugin_id'), '=', $plugInId);
+
+        if (null != $attr) {
+            if (is_array($attr)) {
+                $srch->addMultipleFields($attr);
+            } elseif (is_string($attr)) {
+                $srch->addFld($attr);
+            }
+        }
+
+        $rs = $srch->getResultSet();
+        $row = $db->fetch($rs);
+
+        if (!is_array($row)) {
+            return false;
+        }
+
+        if (is_string($attr)) {
+            return $row[$attr];
+        }
+
+        return $row;
     }
 }

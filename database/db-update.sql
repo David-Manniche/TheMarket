@@ -10,3 +10,4 @@ ALTER TABLE `tbl_tax_categories` ADD `taxcat_plugin_id` INT NOT NULL AFTER `taxc
 ALTER TABLE `tbl_tax_categories` DROP INDEX `saletaxcat_identifier`;
 ALTER TABLE `tbl_tax_categories` DROP INDEX `taxcat_identifier`;
 ALTER TABLE `tbl_tax_categories` ADD UNIQUE( `taxcat_identifier`, `taxcat_plugin_id`);
+ALTER TABLE `tbl_tax_categories` ADD `taxcat_parent` INT(11) NOT NULL AFTER `taxcat_code`;

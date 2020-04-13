@@ -5,7 +5,7 @@ $arr_flds = array(
     'taxcat_identifier' => Labels::getLabel('LBL_Tax_Category_Name', $adminLangId),
 );
 
-if ($defaultTaxApiIsActive) {
+if ($activatedTaxServiceId) {
     $arr_flds['taxcat_code'] = Labels::getLabel('LBL_Tax_Code', $adminLangId);
 } else {
     $arr_flds['taxval_value'] = Labels::getLabel('LBL_Value', $adminLangId);

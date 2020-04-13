@@ -396,18 +396,15 @@ class Cart extends FatModel
                         $taxableProdPrice = $taxableProdPrice - ($cartDiscounts['discountedSelProdIds'][$sellerProductRow['selprod_id']]) / $quantity;
                     }
 
-                    $shipFromStateId = 0;
-                    $shipToStateId = 0;
-                    if (isset($this->products[$key]['shipping_address']['ua_state_id'])) {
-                        $shipToStateId = $this->products[$key]['shipping_address']['ua_state_id'];
-                    }
-
-                    if ($isProductShippedBySeller) {
-                        $shipFromStateId = Shop::getAttributesByUserId($sellerProductRow['selprod_user_id'], 'shop_state_id');
-                    }
-
                     $taxObj = new Tax();
-                    $taxData = $taxObj->calculateTaxRates($sellerProductRow['product_id'], $taxableProdPrice, $sellerProductRow['selprod_user_id'], $siteLangId, $quantity, array(), $shipFromStateId, $shipToStateId);
+                    $extraData = array(
+                        'billingAddress' => isset($this->products[$key]['billing_address']) ? $this->products[$key]['billing_address'] : $this->products[$key]['shipping_address'],
+                        'shippingAddress' => $this->products[$key]['shipping_address'],
+                        'shippedBySeller' => $isProductShippedBySeller,
+                        'shippingCost' => $shippingCost,
+                        'buyerId' => $this->cart_user_id
+                    );
+                    $taxData = $taxObj->calculateTaxRates($sellerProductRow['product_id'], $taxableProdPrice, $sellerProductRow['selprod_user_id'], $siteLangId, $quantity, $extraData);
 
                     $taxOptions = [];
                     if (array_key_exists('options', $taxData)) {
@@ -606,19 +603,16 @@ class Cart extends FatModel
                     /*]*/
 
                     /*[ Product Tax */
-                    $shipFromStateId = 0;
-                    $shipToStateId = 0;
-                    if (isset($this->products[$key]['shipping_address']['ua_state_id'])) {
-                        $shipToStateId = $this->products[$key]['shipping_address']['ua_state_id'];
-                    }
-
-                    if ($isProductShippedBySeller) {
-                        $shipFromStateId = Shop::getAttributesByUserId($sellerProductRow['selprod_user_id'], 'shop_state_id');
-                    }
-
                     $taxableProdPrice = $sellerProductRow['theprice'] - $sellerProductRow['volume_discount'];
                     $taxObj = new Tax();
-                    $taxData = $taxObj->calculateTaxRates($sellerProductRow['product_id'], $taxableProdPrice, $sellerProductRow['selprod_user_id'], $siteLangId, $quantity, array(), $shipFromStateId, $shipToStateId);
+                    $extraData = array(
+                        'billingAddress' => isset($this->products[$key]['billing_address']) ? $this->products[$key]['billing_address'] : $this->products[$key]['shipping_address'],
+                        'shippingAddress' => $this->products[$key]['shipping_address'],
+                        'shippedBySeller' => $isProductShippedBySeller,
+                        'shippingCost' => $shippingCost,
+                        'buyerId' => $this->cart_user_id
+                    );
+                    $taxData = $taxObj->calculateTaxRates($sellerProductRow['product_id'], $taxableProdPrice, $sellerProductRow['selprod_user_id'], $siteLangId, $quantity, $extraData);
 
                     $taxOptions = [];
                     if (array_key_exists('options', $taxData)) {
@@ -795,7 +789,7 @@ class Cart extends FatModel
         $totalPrice = $sellerProductRow['theprice'] * $quantity;
         $taxableProdPrice = $sellerProductRow['theprice'] - $sellerProductRow['volume_discount'];
 
-        $taxObj = new Tax();
+        $taxObj = new Tax();        
         $taxData = $taxObj->calculateTaxRates($sellerProductRow['product_id'], $taxableProdPrice, $sellerProductRow['selprod_user_id'], $siteLangId, $quantity);
         $tax = $taxData['tax'];
         $sellerProductRow['tax'] = $tax;
@@ -1161,6 +1155,8 @@ class Cart extends FatModel
         $isCodEnabled = true;
         $taxOptions = [];
         $prodTaxOptions = [];
+        $productSelectedShippingMethodsArr = $this->getProductShippingMethod();
+
         if (is_array($products) && count($products)) {
             foreach ($products as $product) {
                 $codEnabled = false;
@@ -1187,18 +1183,23 @@ class Cart extends FatModel
                     }
                 }
 
-                $shipFromStateId = 0;
-                $shipToStateId = 0;
-                if (isset($product['shipping_address']['ua_state_id'])) {
-                    $shipToStateId = $product['shipping_address']['ua_state_id'];
-                }
-
-                if (Product::isProductShippedBySeller($product['product_id'], $product['product_seller_id'], $product['selprod_user_id'])) {
-                    $shipFromStateId = Shop::getAttributesByUserId($product['selprod_user_id'], 'shop_state_id');
+                $isProductShippedBySeller = Product::isProductShippedBySeller($product['product_id'], $product['product_seller_id'], $product['selprod_user_id']);
+                
+                $shippingCost = 0;
+                if (!empty($productSelectedShippingMethodsArr['product']) && isset($productSelectedShippingMethodsArr['product'][$product['selprod_id']])) {
+                    $shippingDurationRow = $productSelectedShippingMethodsArr['product'][$product['selprod_id']];
+                    $shippingCost = ROUND(($shippingDurationRow['mshipapi_cost']), 2);                   
                 }
 
                 $taxObj = new Tax();
-                $taxData = $taxObj->calculateTaxRates($product['product_id'], $taxableProdPrice, $product['selprod_user_id'], $langId, $product['quantity'], array(), $shipFromStateId, $shipToStateId);
+                $extraData = array(
+                    'billingAddress' => isset($product['billing_address']) ? $product['billing_address'] : $product['shipping_address'],
+                    'shippingAddress' => $product['shipping_address'],
+                    'shippedBySeller' => $isProductShippedBySeller,
+                    'shippingCost' => $shippingCost,
+                    'buyerId' => $this->cart_user_id
+                );
+                $taxData = $taxObj->calculateTaxRates($product['product_id'], $taxableProdPrice, $product['selprod_user_id'], $langId, $product['quantity'], $extraData);
 
                 if (array_key_exists('options', $taxData)) {
                     foreach ($taxData['options'] as $optionId => $optionval) {

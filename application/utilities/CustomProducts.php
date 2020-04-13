@@ -1803,11 +1803,10 @@ trait CustomProducts
                 $tax->addCondition('ptt_seller_user_id', '=', 0);
             }
             
-            $defaultTaxApi = FatApp::getConfig('CONF_DEFAULT_PLUGIN_' . Plugin::TYPE_TAX_SERVICES, FatUtility::VAR_INT, 0);
-            $defaultTaxApiIsActive = Plugin::getAttributesById($defaultTaxApi, 'plugin_active'); 
+            $activatedTaxServiceId = Tax::getActivatedServiceId();
 
             $tax->addFld('ptt_taxcat_id');            
-            if ($defaultTaxApiIsActive) {
+            if ($activatedTaxServiceId) {
                 $tax->addFld('concat(IFNULL(taxcat_name,taxcat_identifier), " (",taxcat_code,")")as taxcat_name');               
             }else{
                 $tax->addFld('IFNULL(taxcat_name,taxcat_identifier)as taxcat_name'); 

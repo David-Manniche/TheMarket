@@ -1365,14 +1365,9 @@ class SellerController extends SellerBaseController
             $cnd = $srch->addCondition('t.taxcat_identifier', 'like', '%' . $post['keyword'] . '%');
             $cnd->attachCondition('t_l.taxcat_name', 'like', '%' . $post['keyword'] . '%');
         }
-        
-        
-        $defaultTaxApi = FatApp::getConfig('CONF_DEFAULT_PLUGIN_' . Plugin::TYPE_TAX_SERVICES, FatUtility::VAR_INT, 0);       
-        $defaultTaxApiIsActive = Plugin::getAttributesById($defaultTaxApi, 'plugin_active'); 
-        
-        if ($defaultTaxApiIsActive) {
-            $srch->addCondition('taxcat_plugin_id', '=', $defaultTaxApi); 
-        }
+                
+        $activatedTaxServiceId = Tax::getActivatedServiceId();
+        $srch->addCondition('taxcat_plugin_id', '=', $activatedTaxServiceId);
 
         $srch->addMultipleFields(array('taxcat_id', 'IFNULL(taxcat_name,taxcat_identifier) as taxcat_name','taxcat_code'));
         $srch->addCondition('taxcat_deleted', '=', 0);
@@ -1412,16 +1407,15 @@ class SellerController extends SellerBaseController
         $this->set('pageSize', $pagesize);
         $this->set('postedData', $post);
         $this->set('userId', $userId);
-        $this->set('defaultTaxApiIsActive', $defaultTaxApiIsActive);
+        $this->set('activatedTaxServiceId', $activatedTaxServiceId);
         $this->_template->render(false, false);
     }
 
     public function changeTaxRates($taxcat_id)
     {
-        $defaultTaxApi = FatApp::getConfig('CONF_DEFAULT_PLUGIN_' . Plugin::TYPE_TAX_SERVICES, FatUtility::VAR_INT, 0);       
-        $defaultTaxApiIsActive = Plugin::getAttributesById($defaultTaxApi, 'plugin_active');
+        $activatedTaxServiceId = Tax::getActivatedServiceId();
         
-        if ($defaultTaxApiIsActive) {
+        if ($activatedTaxServiceId) {
             FatUtility::dieWithError($this->str_invalid_request);
         }
         
@@ -1465,10 +1459,9 @@ class SellerController extends SellerBaseController
     public function setUpTaxRates()
     {
         $this->userPrivilege->canEditTaxCategory(UserAuthentication::getLoggedUserId());
-        $defaultTaxApi = FatApp::getConfig('CONF_DEFAULT_PLUGIN_' . Plugin::TYPE_TAX_SERVICES, FatUtility::VAR_INT, 0);       
-        $defaultTaxApiIsActive = Plugin::getAttributesById($defaultTaxApi, 'plugin_active');
+        $activatedTaxServiceId = Tax::getActivatedServiceId();
         
-        if ($defaultTaxApiIsActive) {
+        if ($activatedTaxServiceId) {
             FatUtility::dieWithError($this->str_invalid_request);
         }
         

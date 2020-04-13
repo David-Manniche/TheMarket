@@ -1765,16 +1765,15 @@ class ProductsController extends MyAppController
         $post = FatApp::getPostedData();       
         $srch = Tax::getSearchObject($this->siteLangId,true);
         $srch->addCondition('taxcat_deleted', '=', 0);
-        $defaultTaxApi = FatApp::getConfig('CONF_DEFAULT_PLUGIN_' . Plugin::TYPE_TAX_SERVICES, FatUtility::VAR_INT, 0);
-        $defaultTaxApiIsActive = Plugin::getAttributesById($defaultTaxApi, 'plugin_active'); 
+        $activatedTaxServiceId = Tax::getActivatedServiceId();
         
         $srch->addFld('taxcat_id'); 
-        if ($defaultTaxApiIsActive) {
+        if ($activatedTaxServiceId) {
             $srch->addFld('concat(IFNULL(taxcat_name,taxcat_identifier), " (",taxcat_code,")")as taxcat_name');
-            $srch->addCondition('taxcat_plugin_id', '=', $defaultTaxApi);
         }else{
             $srch->addFld('IFNULL(taxcat_name,taxcat_identifier)as taxcat_name'); 
-        }       
+        }
+        $srch->addCondition('taxcat_plugin_id', '=', $activatedTaxServiceId);       
 
         if (!empty($post['keyword'])) {
             $srch->addCondition('taxcat_name', 'LIKE', '%' . $post['keyword'] . '%')

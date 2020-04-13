@@ -102,10 +102,16 @@ class Avalaratax extends TaxBase
      * @param string $orderBy A comma separated list of sort statements in the format `(fieldname) [ASC|DESC]`, for example `id ASC`.
      */
 
-    public function getCodes($filter = null, $pageSize = null, $pageNumber = null, $orderBy = null)
+    public function getCodes($filter = null, $pageSize = null, $pageNumber = null, $orderBy = null, $formatted = true)
     {
         if (!empty($filter)) {
             $filter = "description contains '$filter' or taxCode contains '$filter'";
+        }
+
+        $recordCount = 0;
+       
+        if (false == $formatted){
+            return $this->_client->listTaxCodes($filter, $pageSize, $pageNumber, $orderBy);
         }
 
         $codesArr = $this->_client->listTaxCodes($filter, $pageSize, $pageNumber, $orderBy);

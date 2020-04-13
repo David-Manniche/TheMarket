@@ -51,18 +51,15 @@ class TaxController extends AdminBaseController
         $srch = Tax::getSearchObject($this->adminLangId, false);
         $srch->addCondition('taxcat_deleted', '=', 0);
         
-        $defaultTaxApi = FatApp::getConfig('CONF_DEFAULT_PLUGIN_' . Plugin::TYPE_TAX_SERVICES, FatUtility::VAR_INT, 0);
-        $defaultTaxApiIsActive = Plugin::getAttributesById($defaultTaxApi, 'plugin_active');
-        
-        if ($defaultTaxApiIsActive) {
-            $srch->addCondition('taxcat_plugin_id', '=', $defaultTaxApi);
-        }
+        $activatedTaxServiceId = Tax::getActivatedServiceId();
+        $srch->addCondition('taxcat_plugin_id', '=', $activatedTaxServiceId);
         
         $srch->addFld('t.*');
 
         if (!empty($post['keyword'])) {
             $cnd = $srch->addCondition('t.taxcat_identifier', 'like', '%' . $post['keyword'] . '%');
             $cnd->attachCondition('t_l.taxcat_name', 'like', '%' . $post['keyword'] . '%', 'OR');
+            $cnd->attachCondition('t.taxcat_code', 'like', '%' . $post['keyword'] . '%', 'OR');
         }
 
         $page = (empty($page) || $page <= 0) ? 1 : $page;
@@ -92,7 +89,7 @@ class TaxController extends AdminBaseController
         $this->set('postedData', $post);
         $this->set('yesNoArr', applicationConstants::getYesNoArr($this->adminLangId));
         $this->set('activeInactiveArr', applicationConstants::getActiveInactiveArr($this->adminLangId));
-        $this->set('defaultTaxApiIsActive', $defaultTaxApiIsActive);
+        $this->set('activatedTaxServiceId', $activatedTaxServiceId);
         $this->_template->render(false, false);
     }
 
@@ -108,10 +105,8 @@ class TaxController extends AdminBaseController
             FatUtility::dieJsonError(Message::getHtml());
         }
         
-        $defaultTaxApi = FatApp::getConfig('CONF_DEFAULT_PLUGIN_' . Plugin::TYPE_TAX_SERVICES, FatUtility::VAR_INT, 0);
-        $defaultTaxApiIsActive = Plugin::getAttributesById($defaultTaxApi, 'plugin_active');
-        
-        if (!$defaultTaxApiIsActive) {
+        $activatedTaxServiceId = Tax::getActivatedServiceId();
+        if (!$activatedTaxServiceId) {
             if (Tax::validatePostOptions($this->adminLangId) == false) {
                 Message::addErrorMessage(Labels::getLabel('LBL_Invalid_Tax_Option_Rate', $this->adminLangId));
                 FatUtility::dieJsonError(Message::getHtml());
@@ -132,7 +127,7 @@ class TaxController extends AdminBaseController
         }
       
         
-        if (!$defaultTaxApiIsActive) {
+        if (!$activatedTaxServiceId) {
             $taxvalOptions = array();
             $taxStructure = new TaxStructure(FatApp::getConfig('CONF_TAX_STRUCTURE', FatUtility::VAR_FLOAT, 0));
             $options = $taxStructure->getOptions($this->adminLangId);
@@ -458,11 +453,10 @@ class TaxController extends AdminBaseController
         $frm->addHiddenField('', 'taxcat_id', $taxcat_id);
         $frm->addRequiredField(Labels::getLabel('LBL_Tax_Category_Identifier', $this->adminLangId), 'taxcat_identifier');
         
-        $defaultTaxApi = FatApp::getConfig('CONF_DEFAULT_PLUGIN_' . Plugin::TYPE_TAX_SERVICES, FatUtility::VAR_INT, 0);
-        $defaultTaxApiIsActive = Plugin::getAttributesById($defaultTaxApi, 'plugin_active');
+        $activatedTaxServiceId = Tax::getActivatedServiceId();
         
-        if ($defaultTaxApiIsActive) {
-            $frm->addHiddenField('', 'taxcat_plugin_id', $defaultTaxApi)->requirements()->setRequired();
+        if ($activatedTaxServiceId) {
+            $frm->addHiddenField('', 'taxcat_plugin_id', $activatedTaxServiceId)->requirements()->setRequired();
             $frm->addRequiredField(Labels::getLabel('LBL_Tax_Code', $this->adminLangId), 'taxcat_code');
         } else {
             $typeArr = applicationConstants::getYesNoArr($this->adminLangId);
@@ -495,16 +489,15 @@ class TaxController extends AdminBaseController
         $this->objPrivilege->canViewTax();
         $srch = Tax::getSearchObject($this->adminLangId,true);
         $srch->addCondition('taxcat_deleted', '=', 0);
-        $defaultTaxApi = FatApp::getConfig('CONF_DEFAULT_PLUGIN_' . Plugin::TYPE_TAX_SERVICES, FatUtility::VAR_INT, 0);
-        $defaultTaxApiIsActive = Plugin::getAttributesById($defaultTaxApi, 'plugin_active'); 
+        $activatedTaxServiceId = Tax::getActivatedServiceId();
         
         $srch->addFld('taxcat_id'); 
-        if ($defaultTaxApiIsActive) {
+        if ($activatedTaxServiceId) {
             $srch->addFld('concat(IFNULL(taxcat_name,taxcat_identifier), " (",taxcat_code,")")as taxcat_name');
-            $srch->addCondition('taxcat_plugin_id', '=', $defaultTaxApi);
         }else{
             $srch->addFld('IFNULL(taxcat_name,taxcat_identifier)as taxcat_name'); 
-        }       
+        }
+        $srch->addCondition('taxcat_plugin_id', '=', $activatedTaxServiceId);       
 
         if (!empty($post['keyword'])) {
             $srch->addCondition('taxcat_name', 'LIKE', '%' . $post['keyword'] . '%')
