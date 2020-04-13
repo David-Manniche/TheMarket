@@ -317,12 +317,11 @@ $(document).ready(function() {
         });
 	}
 	
-	deleteVerificationFile = function() {
-		alert('hi');
+	deleteVerificationFile = function(fileType) {
 		if (!confirm(langLbl.confirmDelete)) {
 			return;
 		}
-		fcom.updateWithAjax(fcom.makeUrl('Configurations', 'deleteVerificationFile'), '', function(t) {
+		fcom.updateWithAjax(fcom.makeUrl('Configurations', 'deleteVerificationFile', [fileType]), '', function(t) {
 			getForm(document.frmConfiguration.form_type.value);
 		});
 	};

@@ -646,8 +646,11 @@ class ConfigurationsController extends AdminBaseController
 				$frm->addHtml('', 'Analytics', '<h3>' . Labels::getLabel("LBL_Google_Webmaster", $this->adminLangId) . '</h3>');
 				$fld = $frm->addFileUpload(Labels::getLabel('LBL_HTML_file_Verification', $this->adminLangId), 'google_file_verification', array('accept' => '.html', 'onChange' => 'updateVerificationFile(this, "google")'));
 				$htmlAfterField = '';
-				if (file_exists(CONF_INSTALLATION_PATH.'public/BingSiteAuth.xml')) {
-					$htmlAfterField .= $fld->htmlAfterField = '<a href="'.CommonHelper::generateFullUrl('', '', array(), CONF_WEBROOT_FRONT_URL).'BingSiteAuth.xml'.'" target="_blank" class="btn btn-clean btn-sm btn-icon" title="' . Labels::getLabel("LBL_View_File", $this->adminLangId) . '"><i class="fas fa-eye icon"></i></a><a href="javascript:void();" class="btn btn-clean btn-sm btn-icon" title="' . Labels::getLabel("LBL_Delete_File", $this->adminLangId) . '" onclick="deleteVerificationFile(\'google\')"><i class="fa fa-trash  icon"></i></a>';
+				$target_dir = CONF_INSTALLATION_PATH.'public/';
+				$files = preg_grep('~^google.*\.html$~', scandir($target_dir));
+				$file = current($files);
+				if ($file!='') {
+					$htmlAfterField .= $fld->htmlAfterField = '<a href="'.CommonHelper::generateFullUrl('', '', array(), CONF_WEBROOT_FRONT_URL).$file.'" target="_blank" class="btn btn-clean btn-sm btn-icon" title="' . Labels::getLabel("LBL_View_File", $this->adminLangId) . '"><i class="fas fa-eye icon"></i></a><a href="javascript:void();" class="btn btn-clean btn-sm btn-icon" title="' . Labels::getLabel("LBL_Delete_File", $this->adminLangId) . '" onclick="deleteVerificationFile(\'google\')"><i class="fa fa-trash  icon"></i></a>';
                 }
 				$htmlAfterField .= "<small>" . Labels::getLabel("LBL_Upload_HTML_file_provided_by_Google_webmaster_tool.", $this->adminLangId) . "</small>";
 				$fld->htmlAfterField = $htmlAfterField;
@@ -1862,19 +1865,19 @@ class ConfigurationsController extends AdminBaseController
         $this->_template->render(false, false, 'json-success.php');
 	}
 	
-	public function deleteVerificationFile()
+	public function deleteVerificationFile($fileType)
 	{
-		$post = FatApp::getPostedData();
-        if (empty($post)) {
-            Message::addErrorMessage(Labels::getLabel('LBL_Invalid_Request_Or_File_not_supported', $this->adminLangId));
+        if ($fileType == '') {
+            Message::addErrorMessage(Labels::getLabel('LBL_Invalid_Request', $this->adminLangId));
             FatUtility::dieJsonError(Message::getHtml());
         }
-        $fileType = FatApp::getPostedData('fileType', FatUtility::VAR_STRING, '');
 		$target_dir = CONF_INSTALLATION_PATH.'public/';
 		if ($fileType == 'bing') {
 			$path_filename = $target_dir.'BingSiteAuth.xml';
 		} else {
-			$path_filename = $target_dir.'google647ceaff9d8aceef.html';
+			$files = preg_grep('~^google.*\.html$~', scandir($target_dir));
+			$file = current($files);
+			$path_filename = $target_dir.$file;
 		}
 		if (file_exists($path_filename)) {
 			unlink($path_filename);
