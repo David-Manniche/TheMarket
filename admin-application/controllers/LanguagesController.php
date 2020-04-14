@@ -102,11 +102,15 @@ class LanguagesController extends AdminBaseController
         $this->objPrivilege->canEditLanguage();
         $frm = $this->getForm();
         $post = $frm->getFormDataFromArray(FatApp::getPostedData());
-        $languageId = FatApp::getPostedData('language_id', FatUtility::VAR_INT, 0);
+        
         if (false === $post) {
             Message::addErrorMessage(current($frm->getValidationErrors()));
             FatUtility::dieJsonError(Message::getHtml());
         }
+		
+		$languageId = FatApp::getPostedData('language_id', FatUtility::VAR_INT, 0);
+		unset($post['language_id']);
+
         $record = new Language($languageId);
         $record->assignValues($post);
 
@@ -114,7 +118,7 @@ class LanguagesController extends AdminBaseController
             Message::addErrorMessage(Labels::getLabel('MSG_This_language_code_is_not_available', $this->adminLangId));
             FatUtility::dieJsonError(Message::getHtml());
         }
-        $this->set('msg', Labels::getLabel('LBL_Keyword', $this->adminLangId));
+        $this->set('msg', Labels::getLabel('LBL_Setup_Successful', $this->adminLangId));
         $this->_template->render(false, false, 'json-success.php');
     }
 
