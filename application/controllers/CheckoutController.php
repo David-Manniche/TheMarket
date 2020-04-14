@@ -523,7 +523,7 @@ class CheckoutController extends MyAppController
             $free_shipping_options = Product::getProductFreeShippingAvailabilty($cartval['product_id'], $this->siteLangId, $ua_country_id, $shipBy);
 
             $cart_products[$cartkey]['is_shipping_selected'] = isset($productSelectedShippingMethodsArr['product'][$cartval['selprod_id']]) ? $productSelectedShippingMethodsArr['product'][$cartval['selprod_id']]['mshipapi_id'] : false;
-            if ($cart_products[$cartkey]['is_shipping_selected'] && $productSelectedShippingMethodsArr['product'][$cartval['selprod_id']]['mshipapi_id'] == SHIPPINGMETHODS::SHIPSTATION_SHIPPING) {
+            if ($cart_products[$cartkey]['is_shipping_selected'] && $productSelectedShippingMethodsArr['product'][$cartval['selprod_id']]['mshipapi_id'] == SHIPPINGMETHODS::SHIPPING_SERVICES) {
                 $cart_products[$cartkey]['selected_shipping_option'] = $productSelectedShippingMethodsArr['product'][$cartval['selprod_id']];
             } elseif ($cart_products[$cartkey]['is_shipping_selected'] && $productSelectedShippingMethodsArr['product'][$cartval['selprod_id']]['mshipapi_id'] == SHIPPINGMETHODS::MANUAL_SHIPPING) {
                 $cart_products[$cartkey]['pship_id'] = $productSelectedShippingMethodsArr['product'][$cartval['selprod_id']]['pship_id'];
@@ -554,8 +554,28 @@ class CheckoutController extends MyAppController
             $this->cartObj->unsetCartShippingAddress();
         }
 
+        $plugin = new Plugin();
+        $shippingServiceName = $plugin->getDefaultPluginKeyName(Plugin::TYPE_SHIPPING_SERVICES);
+        $carriers = [];
+        if (false !== $shippingServiceName) {
+            $error = '';
+            if (false === PluginHelper::includePlugin($shippingServiceName, 'shipping-services', $this->siteLangId, $error)) {
+                if (true === MOBILE_APP_API_CALL) {
+                    FatUtility::dieJsonError($error);
+                }
+                Message::addErrorMessage($error);
+                FatUtility::dieWithError(Message::getHtml());
+            }
+            $shippingService = new $shippingServiceName();
+            $carriers = $shippingService->getCarriers(true, $this->siteLangId);
+        } else {
+            unset($shippingMethods[ShippingMethods::SHIPPING_SERVICES]);
+        }
+
+        
         $this->set('productSelectedShippingMethodsArr', $productSelectedShippingMethodsArr);
-        $this->set('shipStationCarrierList', $this->cartObj->shipStationCarrierList());
+        // $this->set('shipStationCarrierList', $this->cartObj->shipStationCarrierList());
+        $this->set('shipStationCarrierList', $carriers);
         $this->set('shippingMethods', $shippingMethods);
         $this->set('products', $cart_products);
         $this->set('cartSummary', $this->cartObj->getCartFinancialSummary($this->siteLangId));
@@ -673,7 +693,7 @@ class CheckoutController extends MyAppController
                                 continue;
                             }
                         }
-                    } elseif (isset($post['data'][$productKey]["shipping_type"]) && ($post['data'][$productKey]["shipping_type"] == ShippingCompanies::SHIPSTATION_SHIPPING) && !empty($post['data'][$productKey]["shipping_services"])) {
+                    } elseif (isset($post['data'][$productKey]["shipping_type"]) && ($post['data'][$productKey]["shipping_type"] == ShippingCompanies::SHIPPING_SERVICES) && !empty($post['data'][$productKey]["shipping_services"])) {
                         list($carrier_name, $carrier_price) = explode("-", $post['data'][$productKey]["shipping_services"]);
                         $productToShippingMethods['product'][$cartval['selprod_id']] = array(
                           'selprod_id' => $cartval['selprod_id'],
@@ -1129,7 +1149,7 @@ class CheckoutController extends MyAppController
                         'opshipping_max_duration' => $shippingDurationRow['sduration_to'],
                         'opshipping_duration_id' => $shippingDurationRow['sduration_id'],
                         );
-                    } elseif ($shippingDurationRow['mshipapi_id'] == ShippingMethods::SHIPSTATION_SHIPPING) {
+                    } elseif ($shippingDurationRow['mshipapi_id'] == ShippingMethods::SHIPPING_SERVICES) {
                         $productShippingData = array(
 						'opshipping_method_id' => $shippingDurationRow['mshipapi_id'],
 						// 'opshipping_company_id' => $shippingDurationRow['shipping_carrier'],
@@ -1154,7 +1174,7 @@ class CheckoutController extends MyAppController
                             'opshipping_duration_name' => $shippingDurationRow['mshipcompany_name'],
                             'opshippinglang_lang_id' => $lang_id
                             );
-                        } elseif ($shippingDurationRow['mshipapi_id'] == ShippingMethods::SHIPSTATION_SHIPPING) {
+                        } elseif ($shippingDurationRow['mshipapi_id'] == ShippingMethods::SHIPPING_SERVICES) {
                             $sduration_name = $shippingDurationRow['mshipapi_label'];
                             $productShippingLangData[$lang_id] = array(
                             'opshipping_carrier' => $shippingDurationRow['mshipcompany_name'],

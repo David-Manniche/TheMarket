@@ -111,15 +111,15 @@ $shippingapi_idFld->developerTags['col'] = 6;
                             $servicesList = array();
                             $cartObj = new Cart();
 
-                            if (array_key_exists(ShippingMethods::SHIPSTATION_SHIPPING, $shippingMethods)) {
+                            if (array_key_exists(ShippingMethods::SHIPPING_SERVICES, $shippingMethods)) {
                                 $carrierCode = "";
                                 $selectedService ='';
-                                if ($product['is_shipping_selected'] == ShippingMethods::SHIPSTATION_SHIPPING) {
+                                if ($product['is_shipping_selected'] == ShippingMethods::SHIPPING_SERVICES) {
                                     $service_code = str_replace("_", " ", $product['selected_shipping_option']['mshipapi_key']);
                                     $shippingCodes = explode(" ", $service_code);
                                     $carrierCode = $shippingCodes[0];
                                     $servicesList = $cartObj->getCarrierShipmentServicesList(md5($product['key']), $carrierCode, $siteLangId);
-                                    $selectedShippingType = ShippingMethods::SHIPSTATION_SHIPPING;
+                                    $selectedShippingType = ShippingMethods::SHIPPING_SERVICES;
                                     $displayShipStationOption = "style='display:block'";
                                     foreach ($servicesList as $key => $value) {
                                         if ($key == $product['selected_shipping_option']['mshipapi_key']) {
@@ -154,14 +154,14 @@ $shippingapi_idFld->developerTags['col'] = 6;
                                         <?php echo $select_shipping_options ?>
                                     </li>
 
-                                    <?php if (array_key_exists(ShippingMethods::SHIPSTATION_SHIPPING, $shippingMethods)) { ?>
+                                    <?php if (array_key_exists(ShippingMethods::SHIPPING_SERVICES, $shippingMethods)) { ?>
 
 
-                                    <li class='shipstation_selectbox' <?php echo $displayShipStationOption;?>>
+                                    <li class='shipservices_selectbox-js' <?php echo $displayShipStationOption;?>>
                                         <p><?php echo Labels::getLabel('M_Select_Shipping_Provider', $siteLangId) ?></p>
                                         <?php echo $courierProviders ?>
                                     </li>
-                                    <li class='shipstation_selectbox' <?php echo $displayShipStationOption; ?>>
+                                    <li class='shipservices_selectbox-js' <?php echo $displayShipStationOption; ?>>
                                         <div class="services_loader"></div>
                                         <div class="api_shipping_rates_not_found-html-div-js"></div>
                                         <div class="api_shipping_rates_found-js">
@@ -215,15 +215,15 @@ $shippingapi_idFld->developerTags['col'] = 6;
     $('.shipping_method').on("change", function() {
 
         if ($(this).val() == "0") {
-            $(this).parent().parent().find('.shipstation_selectbox').hide();
+            $(this).parent().parent().find('.shipservices_selectbox-js').hide();
             $(this).parent().parent().find('.manual_shipping').hide();
         } else if ($(this).val() == "1") {
 
-            $(this).parent().parent().find('.shipstation_selectbox').hide();
+            $(this).parent().parent().find('.shipservices_selectbox-js').hide();
             $(this).parent().parent().find('.manual_shipping').show();
         } else if ($(this).val() == "2") {
             /*      resetShipstationSelectBox(this); */
-            $(this).parent().parent().find('.shipstation_selectbox').show();
+            $(this).parent().parent().find('.shipservices_selectbox-js').first().show();
             $(this).parent().parent().find('.manual_shipping').hide();
         }
     });
@@ -239,26 +239,34 @@ $shippingapi_idFld->developerTags['col'] = 6;
         $(obj).parent().next().find('.courier_services ').hide();
         $(obj).parent().next().find('.api_shipping_rates_found-js').hide();
         $(obj).parent().next().find('.api_shipping_rates_not_found-html-div-js').html('');
-        /* $(".shipstation_selectbox").LoadingOverlay("show",{'image':''}); */
+        /* $(".shipservices_selectbox-js").LoadingOverlay("show",{'image':''}); */
         var carrier_id = $(obj).val();
-        var product_key = $(obj).attr('data-product-key');
+        if (0 != carrier_id) {        
+            var product_key = $(obj).attr('data-product-key');
 
-        var href = fcom.makeUrl('checkout', 'getCarrierServicesList', [product_key, carrier_id]);
+            var href = fcom.makeUrl('checkout', 'getCarrierServicesList', [product_key, carrier_id]);
 
-        fcom.updateWithAjax(href, '', function(res) {
-            $.mbsmessage.close();
+            fcom.updateWithAjax(href, '', function(res) {
+                $.mbsmessage.close();
+                $(obj).parent().next().find('.services_loader').html('');
+                if (res.isCarriersFound == 1) {
+                    $(obj).parent().next().find('.courier_services ').show();
+                    $(obj).parent().next().find('.courier_services').html(res.html);
+
+                    $(obj).parent().next().find('.api_shipping_rates_found-js').show();
+                    $(obj).parent().next().find('.api_shipping_rates_not_found-html-div-js').html('');
+                    $(obj).parent().parent().find('.shipservices_selectbox-js').show();
+                } else {
+                    $(obj).parent().next().find('.api_shipping_rates_found-js').hide();
+                    $(obj).parent().next().find('.api_shipping_rates_not_found-html-div-js').html(res.html);
+                }
+            });
+        } else {
             $(obj).parent().next().find('.services_loader').html('');
-            if (res.isCarriersFound == 1) {
-                $(obj).parent().next().find('.courier_services ').show();
-                $(obj).parent().next().find('.courier_services').html(res.html);
-
-                $(obj).parent().next().find('.api_shipping_rates_found-js').show();
-                $(obj).parent().next().find('.api_shipping_rates_not_found-html-div-js').html('');
-
-            } else {
-                $(obj).parent().next().find('.api_shipping_rates_found-js').hide();
-                $(obj).parent().next().find('.api_shipping_rates_not_found-html-div-js').html(res.html);
-            }
-        });
+            $(obj).parent().next().find('.courier_services ').hide();
+            $(obj).parent().next().find('.courier_services').html('');
+            $(obj).parent().next().find('.api_shipping_rates_found-js').hide();
+            $(obj).parent().next().find('.api_shipping_rates_not_found-html-div-js').html('');
+        }
     }
 </script>

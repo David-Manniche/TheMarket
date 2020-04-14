@@ -1,6 +1,6 @@
 <?php
 
-class ShipStationDelivery extends ShippingModuleBase
+class ShipStationShipping extends ShippingModuleBase
 {
     public const KEY_NAME = __CLASS__;
     public $shipStation;
@@ -116,7 +116,6 @@ class ShipStationDelivery extends ShippingModuleBase
     public function addOrder(string $orderId, int $langId, int $opId)
     {
         $orderDetail = $this->getSystemOrder($orderId, $langId, $opId);
-        CommonHelper::printArray($orderDetail, true);
         if (false === $orderDetail) {
             return false;
         }
@@ -163,16 +162,27 @@ class ShipStationDelivery extends ShippingModuleBase
 
 
             // Define billing address //
-            $this->setAddress($this->order->billTo, $billingAddress);
+            $this->order->billTo = $this->formatAddress($billingAddress['oua_name'], $billingAddress['oua_address1'], $billingAddress['oua_address2'], $billingAddress['oua_city'], $billingAddress['oua_state'], $billingAddress['oua_zip'], $billingAddress['oua_country_code'], $billingAddress['oua_phone']);
 
             // Define shipping address //
-            $this->setAddress($this->order->shipTo, $shippingAddress);
+            $this->order->shipTo = $this->formatAddress($shippingAddress['oua_name'], $shippingAddress['oua_address1'], $shippingAddress['oua_address2'], $shippingAddress['oua_city'], $shippingAddress['oua_state'], $shippingAddress['oua_zip'], $shippingAddress['oua_country_code'], $shippingAddress['oua_phone']);
 
             // Order weight //
-            $this->setWeight($this->order->weight, $op, $langId);
+            $weightUnitsArr = applicationConstants::getWeightUnitsArr($langId);
+            $weightUnitName = ($op['op_product_weight_unit']) ? $weightUnitsArr[$op['op_product_weight_unit']] : '';
+            $productWeightInOunce = $this->convertWeightInOunce($op['op_product_weight'], $weightUnitName);
+
+            $this->order->weight = $this->formatWeight($productWeightInOunce);
 
             // Extra order data //
-            $this->setDimensions($this->order->dimensions, $op, $langId);
+            $lengthUnitsArr = applicationConstants::getLengthUnitsArr($langId);
+            $dimUnitName = ($op['op_product_dimension_unit']) ? $lengthUnitsArr[$op['op_product_dimension_unit']] : '';
+
+            $lengthInCenti = $this->convertLengthInCenti($op['op_product_length'], $dimUnitName);
+            $widthInCenti = $this->convertLengthInCenti($op['op_product_width'], $dimUnitName);
+            $heightInCenti = $this->convertLengthInCenti($op['op_product_height'], $dimUnitName);
+
+            $this->order->dimensions = $this->formatDimensions($lengthInCenti, $widthInCenti, $heightInCenti);
 
 
             // Add items to order [START] ================================= //
@@ -235,18 +245,18 @@ class ShipStationDelivery extends ShippingModuleBase
         
         return base64_decode($label->labelData);
     }
-    
+        
     /**
      * getShippingRates
      *
      * @param  mixed $carrier_code
      * @param  mixed $from_pin_code
-     * @param  mixed $productWeight
      * @param  mixed $deliveryAddress
      * @param  mixed $productDim
+     * @param  mixed $productWeight
      * @return void
      */
-    public function getShippingRates($carrier_code, $from_pin_code, stdClass $productWeight, stdClass $deliveryAddress, stdClass $productDim)
+    public function getShippingRates($carrier_code, $from_pin_code, stdClass $deliveryAddress, stdClass $productDim, stdClass $productWeight)
     {
         $order = new stdClass();
         $order->carrierCode = $carrier_code;
@@ -255,7 +265,7 @@ class ShipStationDelivery extends ShippingModuleBase
         $order->fromPostalCode = $from_pin_code;
         $order->toState = $deliveryAddress->state;
         $order->toCountry = $deliveryAddress->country;
-        $order->toPostalCode = $deliveryAddress->pincode;
+        $order->toPostalCode = $deliveryAddress->postalCode;
         $order->toCity = $deliveryAddress->city;
         $order->weight = $productWeight;
         if (!empty($order->dimensions)) {
@@ -269,91 +279,103 @@ class ShipStationDelivery extends ShippingModuleBase
 
         return $response;
     }
-    
+            
     /**
      * getCarriers
      *
+     * @param  mixed $assoc
+     * @param  mixed $langId
      * @return void
      */
-    public function getCarriers()
+    public function getCarriers(bool $assoc = false, int $langId = 0)
     {
         if (!$list = $this->shipStation->getCarriers()) {
             $error = $this->shipStation->getLastError();
             throw new Exception($error->message);
         }
+
+        if (true === $assoc) {
+            $langId = 1 > $langId ? commonHelper::getLangId() : $langId;
+            $list = array_reduce($list, function ($result, $item) {
+                $name = $item->name;
+                if (!empty($item->nickname) && strtolower($item->name) !== strtolower($item->nickname)) {
+                    $name .= ' - ' . $item->nickname;
+                }
+                $result[$item->code] = $name;
+                return $result;
+            });
+            array_unshift($list, Labels::getLabel('MSG_Select_Services', $langId));
+        }
+
         return $list;
     }
-    
+        
     /**
-     * setAddress
+     * formatAddress
      *
-     * @param  mixed $obj - Where you want to store address values.
-     * @param  mixed $addressArr
+     * @param  mixed $name
+     * @param  mixed $stt1
+     * @param  mixed $stt2
+     * @param  mixed $city
+     * @param  mixed $state
+     * @param  mixed $zip
+     * @param  mixed $countryCode
+     * @param  mixed $phone
      * @return void
      */
-    public function setAddress(&$obj, $addressArr)
+    public function formatAddress($name, $stt1, $stt2, $city, $state, $zip, $countryCode, $phone)
     {
         $address = new stdClass();
 
-        $address->name = $addressArr['oua_name']; // This has to be a String... If you put NULL the API cries...
+        $address->name = $name; // This has to be a String... If you put NULL the API cries...
         // $address->company       = null;
-        $address->street1 = $addressArr['oua_address1'];
-        $address->street2 = $addressArr['oua_address2'];
+        $address->street1 = $stt1;
+        $address->street2 = $stt2;
         // $address->street3       = null;
-        $address->city = $addressArr['oua_city'];
-        $address->state = $addressArr['oua_state'];
-        $address->postalCode = $addressArr['oua_zip'];
-        $address->country = $addressArr['oua_country_code'];
-        $address->phone = $addressArr['oua_phone'];
+        $address->city = $city;
+        $address->state = $state;
+        $address->postalCode = $zip;
+        $address->country = $countryCode;
+        $address->phone = $phone;
         // $address->residential   = null;
-        $obj = $address;
-        return true;
+        return $address;
     }
-      
+         
     /**
-     * setWeight
+     * formatWeight
      *
-     * @param  mixed $obj - Where you want to store wight values.
-     * @param  mixed $op
-     * @param  mixed $langId
+     * @param  mixed $weight
+     * @param  mixed $unit
      * @return void
      */
-    public function setWeight(&$obj, $op, $langId)
+    public function formatWeight($weight, $unit = 'ounces')
     {
-        $weightUnitsArr = applicationConstants::getWeightUnitsArr($langId);
-        $weight_unit_name = ($op['op_product_weight_unit']) ? $weightUnitsArr[$op['op_product_weight_unit']] : '';
+        $weightObj = new stdClass();
+        $weightObj->value = floatval($weight);
+        $weightObj->units = trim($unit);
 
-        $weight = new stdClass();
-        $weight->value = floatval($op['op_product_weight']);
-        $weight->units = trim($weight_unit_name);
-
-        $obj = $weight;
-
-        return true;
+        return $weightObj;
     }
-       
+           
     /**
-     * setDimensions
+     * formatDimensions
      *
-     * @param  mixed $obj - Where you want to store dimension values.
-     * @param  mixed $op
-     * @param  mixed $langId
+     * @param  mixed $length
+     * @param  mixed $width
+     * @param  mixed $height
+     * @param  mixed $unit
      * @return void
      */
-    public function setDimensions(&$obj, $op, $langId)
+    public function formatDimensions($length, $width, $height, $unit = 'centimeters')
     {
-        $lengthUnitsArr = applicationConstants::getLengthUnitsArr($langId);
-        $dim_unit_name = ($op['op_product_dimension_unit']) ? $lengthUnitsArr[$op['op_product_dimension_unit']] : '';
-
         $dimensions = new stdClass();
 
-        $dimensions->units = $dim_unit_name;
-        $dimensions->length = $op['op_product_length'];
-        $dimensions->width = $op['op_product_width'];
-        $dimensions->height = $op['op_product_height'];
+        $dimensions->units = $unit;
+        $dimensions->length = $length;
+        $dimensions->width = $width;
+        $dimensions->height = $height;
 
-        $obj = $dimensions;
-        return true;
+        return $dimensions;
     }
 
     

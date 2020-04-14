@@ -1219,4 +1219,7 @@ DELETE FROM `tbl_language_labels` WHERE `label_key` LIKE 'LBL_Escalate_to';
 DELETE FROM `tbl_language_labels` WHERE `label_key` LIKE 'MSG_SETTINGS_NOT_UPDATED';
 -- ------------------------TV-9.1.6.20200401-----------------------------
 
-INSERT INTO `tbl_plugins` (`plugin_identifier`, `plugin_type`, `plugin_code`, `plugin_active`, `plugin_display_order`) VALUES ('Ship Station', '8', 'ShipStationDelivery', '0', '1');
+INSERT INTO `tbl_plugins` (`plugin_identifier`, `plugin_type`, `plugin_code`, `plugin_active`, `plugin_display_order`) VALUES ('Ship Station', '8', 'ShipStationShipping', '0', '1');
+UPDATE `tbl_shipping_apis` SET `shippingapi_identifier` = 'Shipping Services' WHERE `tbl_shipping_apis`.`shippingapi_id` = 2;
+UPDATE `tbl_shipping_apis_lang` SET `shippingapi_name` = 'Shipping Services' WHERE `tbl_shipping_apis_lang`.`shippingapilang_shippingapi_id` = 2 AND `tbl_shipping_apis_lang`.`shippingapilang_lang_id` = 1;
+UPDATE `tbl_shipping_apis_lang` SET `shippingapi_name` = 'خدمات الشحن' WHERE `tbl_shipping_apis_lang`.`shippingapilang_shippingapi_id` = 2 AND `tbl_shipping_apis_lang`.`shippingapilang_lang_id` = 2;

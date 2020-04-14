@@ -1,6 +1,6 @@
 <?php
 
-class ShippingModuleController extends AdminBaseController
+class ShippingServicesController extends AdminBaseController
 {
     private $shipping;
     private $keyName;
@@ -14,9 +14,9 @@ class ShippingModuleController extends AdminBaseController
         $this->set("canEdit", $this->canEdit);
 
         $plugin = new Plugin();
-        $this->keyName = $plugin->getDefaultPluginKeyName(Plugin::TYPE_SHIPPING_MODULE);
+        $this->keyName = $plugin->getDefaultPluginKeyName(Plugin::TYPE_SHIPPING_SERVICES);
         $error = '';
-        if (false === PluginHelper::includePlugin($this->keyName, 'shipping-module', $this->adminLangId, $error)) {
+        if (false === PluginHelper::includePlugin($this->keyName, 'shipping-services', $this->adminLangId, $error)) {
             FatUtility::dieJsonError($error);
         }
         $this->shipping = new $this->keyName();

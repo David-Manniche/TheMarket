@@ -1,6 +1,6 @@
 <?php
 
-class ShipStationDeliverySettingsController extends ShippingModuleSettingsController
+class ShipStationShippingSettingsController extends ShippingModuleSettingsController
 {
     public static function getConfigurationKeys()
     {
