@@ -340,11 +340,12 @@ class Avalaratax extends TaxBase
         foreach ($taxes->lines as $line) {
             $taxDetails = [];
             foreach ($line->details as $lineTaxdetail) {
-                $taxName = $lineTaxdetail->taxName;
+                $taxName = $lineTaxdetail->taxName;                
                 if (isset($taxDetails[$taxName])) {
-                    $taxDetails[$taxName] += $lineTaxdetail->tax;
+                    $taxDetails[$taxName]['value'] += $lineTaxdetail->tax;
                 } else {
-                    $taxDetails[$taxName] = $lineTaxdetail->tax;
+                    $taxDetails[$taxName]['value'] = $lineTaxdetail->tax;
+                    $taxDetails[$taxName]['name'] = $taxName;
                 }
             }
             $formatedTax[$line->itemCode] = array(

@@ -1,10 +1,10 @@
 <?php
-
 class Cart extends FatModel
 {
     private $products = array();
     private $SYSTEM_ARR = array();
     private $warning;
+    private $cartCache;
 
     public const CART_KEY_PREFIX_PRODUCT = 'SP_'; /* SP stands for Seller Product */
     public const CART_KEY_PREFIX_BATCH = 'SB_'; /* SB stands for Seller Batch/Combo Product */
@@ -70,6 +70,7 @@ class Cart extends FatModel
         if (!isset($this->SYSTEM_ARR['shopping_cart']) || !is_array($this->SYSTEM_ARR['shopping_cart'])) {
             $this->SYSTEM_ARR['shopping_cart'] = array();
         }
+        $this->cartCache = true;
     }
 
     public static function getCartKeyPrefixArr()
@@ -398,14 +399,18 @@ class Cart extends FatModel
 
                     $taxObj = new Tax();
                     $extraData = array(
-                        'billingAddress' => isset($this->products[$key]['billing_address']) ? $this->products[$key]['billing_address'] : $this->products[$key]['shipping_address'],
-                        'shippingAddress' => $this->products[$key]['shipping_address'],
+                        'billingAddress' => isset($this->products[$key]['billing_address']) ? $this->products[$key]['billing_address'] : '',
+                        'shippingAddress' => isset($this->products[$key]['shipping_address']) ? $this->products[$key]['shipping_address'] : '',
                         'shippedBySeller' => $isProductShippedBySeller,
                         'shippingCost' => $shippingCost,
                         'buyerId' => $this->cart_user_id
                     );
-                    $taxData = $taxObj->calculateTaxRates($sellerProductRow['product_id'], $taxableProdPrice, $sellerProductRow['selprod_user_id'], $siteLangId, $quantity, $extraData);
-
+                    
+                    $taxData = $taxObj->calculateTaxRates($sellerProductRow['product_id'], $taxableProdPrice, $sellerProductRow['selprod_user_id'], $siteLangId, $quantity, $extraData, $this->cartCache);
+                    if (false == $taxData['status'] && $taxData['msg'] != ''){
+                        $this->error = $taxData['msg'];
+                    }
+                    
                     $taxOptions = [];
                     if (array_key_exists('options', $taxData)) {
                         foreach ($taxData['options'] as $optionId => $optionval) {
@@ -606,13 +611,17 @@ class Cart extends FatModel
                     $taxableProdPrice = $sellerProductRow['theprice'] - $sellerProductRow['volume_discount'];
                     $taxObj = new Tax();
                     $extraData = array(
-                        'billingAddress' => isset($this->products[$key]['billing_address']) ? $this->products[$key]['billing_address'] : $this->products[$key]['shipping_address'],
-                        'shippingAddress' => $this->products[$key]['shipping_address'],
+                        'billingAddress' => isset($this->products[$key]['billing_address']) ? $this->products[$key]['billing_address'] : '',
+                        'shippingAddress' => isset($this->products[$key]['shipping_address']) ? $this->products[$key]['shipping_address'] : '',
                         'shippedBySeller' => $isProductShippedBySeller,
                         'shippingCost' => $shippingCost,
                         'buyerId' => $this->cart_user_id
                     );
-                    $taxData = $taxObj->calculateTaxRates($sellerProductRow['product_id'], $taxableProdPrice, $sellerProductRow['selprod_user_id'], $siteLangId, $quantity, $extraData);
+                    $taxData = $taxObj->calculateTaxRates($sellerProductRow['product_id'], $taxableProdPrice, $sellerProductRow['selprod_user_id'], $siteLangId, $quantity, $extraData, $this->cartCache);
+                    
+                    if (false == $taxData['status'] && $taxData['msg'] != ''){
+                        $this->error = $taxData['msg'];
+                    }
 
                     $taxOptions = [];
                     if (array_key_exists('options', $taxData)) {
@@ -791,6 +800,9 @@ class Cart extends FatModel
 
         $taxObj = new Tax();        
         $taxData = $taxObj->calculateTaxRates($sellerProductRow['product_id'], $taxableProdPrice, $sellerProductRow['selprod_user_id'], $siteLangId, $quantity);
+        if (false == $taxData['status'] && $taxData['msg'] != ''){
+            $this->error = $taxData['msg'];
+        }
         $tax = $taxData['tax'];
         $sellerProductRow['tax'] = $tax;
         /* ] */
@@ -1192,15 +1204,17 @@ class Cart extends FatModel
                 }
 
                 $taxObj = new Tax();
-                $extraData = array(
-                    'billingAddress' => isset($product['billing_address']) ? $product['billing_address'] : $product['shipping_address'],
-                    'shippingAddress' => $product['shipping_address'],
+                $extraData = array(                    
+                    'billingAddress' => isset($product['billing_address']) ? $product['billing_address'] : '',
+                    'shippingAddress' => isset($product['shipping_address']) ? $product['shipping_address'] : '',
                     'shippedBySeller' => $isProductShippedBySeller,
                     'shippingCost' => $shippingCost,
                     'buyerId' => $this->cart_user_id
                 );
-                $taxData = $taxObj->calculateTaxRates($product['product_id'], $taxableProdPrice, $product['selprod_user_id'], $langId, $product['quantity'], $extraData);
-
+                $taxData = $taxObj->calculateTaxRates($product['product_id'], $taxableProdPrice, $product['selprod_user_id'], $langId, $product['quantity'], $extraData, $this->cartCache);
+                if (false == $taxData['status'] && $taxData['msg'] != ''){
+                    $this->error = $taxData['msg'];
+                }
                 if (array_key_exists('options', $taxData)) {
                     foreach ($taxData['options'] as $optionId => $optionval) {
                         $prodTaxOptions[$product['selprod_id']][$optionId] = $optionval;
@@ -1897,5 +1911,17 @@ class Cart extends FatModel
         $deleteQuery = "DELETE FROM tbl_product_stock_hold WHERE pshold_added_on < DATE_SUB(NOW(), INTERVAL " . $intervalInMinutes . " MINUTE)";
         FatApp::getDb()->query($deleteQuery);
         return true;
+    }
+
+    public function getError(){
+        return $this->error;
+    }
+
+    public function enableCache() {
+        $this->cartCache = true;
+    }
+
+    public function disableCache() {
+        $this->cartCache = false;
     }
 }

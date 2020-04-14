@@ -234,6 +234,11 @@ class CheckoutController extends MyAppController
         $this->set('cartHasPhysicalProduct', $cartHasPhysicalProduct);
         // $this->set('cartSummary', $this->cartObj->getCartFinancialSummary($this->siteLangId));
 
+        if ($this->cartObj->getError() != '') {
+            Message::addErrorMessage($this->cartObj->getError());
+            FatApp::redirectUser(CommonHelper::generateUrl('cart'));
+        }
+
         $obj = new Extrapage();
         $pageData = $obj->getContentByPageType(Extrapage::CHECKOUT_PAGE_RIGHT_BLOCK, $this->siteLangId);
         $this->set('pageData', $pageData);
@@ -2027,6 +2032,7 @@ class CheckoutController extends MyAppController
 
     public function getFinancialSummary()
     {
+        $this->cartObj->disableCache();
         $cartSummary = $this->cartObj->getCartFinancialSummary($this->siteLangId);
         $products = $this->cartObj->getProducts($this->siteLangId);
 

@@ -593,28 +593,28 @@ class DummyController extends MyAppController
         
        
         $fromAddress = array(
-            'line1' => '424 E vasvPavsvslm vvCavvnyon Dr',
+            'line1' => '123 Main Street',
             'line2' => '',
-            'city' => 'Palasvm Springs',
+            'city' => 'CA',
             'state' => 'CA',
-            'postalCode' => '92264-8806',
+            'postalCode' => '92615',
             'country' => 'US',
         );
 
         $toAddress = array(
-            'line1' => '5711 W Century Blvd',
+            'line1' => '1500 Broadway',
             'line2' => '',
-            'city' =>'Los Angeles',
-            'state' => 'CA',
-            'postalCode' => '90045',
+            'city' =>'New York',
+            'state' => 'NY',
+            'postalCode' => '10019',
             'country' => 'US',
         );    
         
         
         $avalaraObj = new Avalaratax(1); 
-        //$txRates = $avalaraObj->getRates($fromAddress , $toAddress,$itemsArr ,$shippingItems,1);
+        $txRates = $avalaraObj->getRates($fromAddress , $toAddress,$itemsArr ,$shippingItems,1);
         //print_r($avalaraObj->getTaxApiActualResponse());
-      print_r($avalaraObj->getCodes());
+      CommonHelper::printArray($txRates);
 //        die();
         
         //$taxRates1 = $avalaraObj->createInvoice($fromAddress , $toAddress,$itemsArr ,$shippingItems,100,'2019-10-11','S-1000');

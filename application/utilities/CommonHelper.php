@@ -1915,9 +1915,9 @@ class CommonHelper extends FatUtility
        return $adminAddress = [
             'line1' => FatApp::getConfig('CONF_ADDRESS_' . $langId, FatUtility::VAR_STRING, ''),
             'line2' => '',
-            'city' => '',
+            'city' =>FatApp::getConfig('CONF_CITY_' . $langId, FatUtility::VAR_STRING, ''),
             'state' => $stateName,
-            'postalCode' => '',
+            'postalCode' => FatApp::getConfig('CONF_ZIP_CODE', FatUtility::VAR_STRING, ''),
             'country' => $countryCode,
         ];
     }

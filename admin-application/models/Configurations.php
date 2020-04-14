@@ -39,6 +39,7 @@ class Configurations extends FatModel
     {
         return  array(
             Configurations::FORM_GENERAL,
+            Configurations::FORM_LOCAL,
             Configurations::FORM_EMAIL,
             Configurations::FORM_SHARING,
             Configurations::FORM_MEDIA,
