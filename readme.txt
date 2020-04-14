@@ -16,7 +16,7 @@ New Features
     => MSN Azure Language Translation API
         - https://azure.microsoft.com/en-in/services/cognitive-services/translator-text-api/
 
-    => Added 'Facebook Pixel' under 3 rd party API settings
+    => Added 'Facebook Pixel' under 3rd party API settings
         Following events are configured in the system
         - addToCart
         - addToWishList
