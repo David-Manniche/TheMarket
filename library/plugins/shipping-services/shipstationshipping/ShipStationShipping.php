@@ -1,31 +1,28 @@
 <?php
 
-class ShipStationShipping extends ShippingModuleBase
+class ShipStationShipping extends ShippingServicesBase
 {
     public const KEY_NAME = __CLASS__;
     public $shipStation;
     
     private $order;
     private $orderResponse;
+    public $address;
+    public $weight;
+    public $dimensions;
 
     public $requiredKeys = [
         'api_key',
         'api_secret_key'
     ];
-    
+        
     /**
      * __construct
      *
-     * @param  mixed $langId
      * @return void
      */
-    public function __construct($langId = 0)
+    public function __construct()
     {
-        $this->langId = FatUtility::int($langId);
-        if (1 > $this->langId) {
-            $this->langId = CommonHelper::getLangId();
-        }
-
         if (false == $this->validateSettings()) {
             return false;
         }
@@ -47,70 +44,16 @@ class ShipStationShipping extends ShippingModuleBase
         $this->shipStation = new Shipstation();
         $this->shipStation->setSsApiKey($apiKey);
         $this->shipStation->setSsApiSecret($apiSecret);
+        $this->address = $this->weight = $this->dimensions = (object)array();
         return true;
     }
-        
-    /**
-     * getOrders
-     *
-     * @return void
-     */
-    public function getOrders()
-    {
-        $filters = array(
-            'orderNumber' => "",
-            'orderStatus' => "", // {awaiting_shipment, on_hold, shipped, cancelled}
-            'storeid' => "",
-            'customerName' => "",
-            'itemKeyword' => "", // Searchs on Sku, Description, and Options
-            'paymentDateStart' => "", // e.g. 2014-01-01
-            'paymentdateend' => "", // e.g. 2014-01-04 (there is no typo, camel case isn't applied)
-            'orderDateStart' => "", // e.g. 2014-01-01
-            'orderDateEnd' => "", // e.g. 2014-01-04
-            'modifyDateStart' => "", // e.g. 2014-01-01
-            'modifyDateEnd' => "", // e.g. 2014-01-04
-            'page' => "",
-            'pageSize' => "", // Max: 500, Default: 100
-        );
 
-        $searchResult = $this->shipStation->getOrders($filters);
-
-        $orders = $searchResult->orders;
-        $totalResults = $searchResult->total;
-        $currentPage = $searchResult->page;
-
-        // WARNING: if there is only 1 page this value returns 0...
-
-        $totalPages = $searchResult->pages;
-        return $orders;
-    }
-    
-    /**
-     * getWarehouses
-     *
-     * @return void
-     */
-    public function getWarehouses()
-    {
-        return $this->shipStation->getWarehouses();
-    }
-    
-    /**
-     * getOrder
-     *
-     * @param  mixed $orderId
-     * @return void
-     */
-    public function getOrder($orderId)
-    {
-        return $this->shipStation->getOrder($orderId);
-    }
-    
     /**
      * addOrder
      *
-     * @param  mixed $orderId
-     * @param  mixed $langId
+     * @param  string $orderId
+     * @param  int $langId
+     * @param  int $opId
      * @return void
      */
     public function addOrder(string $orderId, int $langId, int $opId)
@@ -162,17 +105,20 @@ class ShipStationShipping extends ShippingModuleBase
 
 
             // Define billing address //
-            $this->order->billTo = $this->formatAddress($billingAddress['oua_name'], $billingAddress['oua_address1'], $billingAddress['oua_address2'], $billingAddress['oua_city'], $billingAddress['oua_state'], $billingAddress['oua_zip'], $billingAddress['oua_country_code'], $billingAddress['oua_phone']);
+            $this->setAddress($billingAddress['oua_name'], $billingAddress['oua_address1'], $billingAddress['oua_address2'], $billingAddress['oua_city'], $billingAddress['oua_state'], $billingAddress['oua_zip'], $billingAddress['oua_country_code'], $billingAddress['oua_phone']);
+            $this->order->billTo = $this->address;
 
             // Define shipping address //
-            $this->order->shipTo = $this->formatAddress($shippingAddress['oua_name'], $shippingAddress['oua_address1'], $shippingAddress['oua_address2'], $shippingAddress['oua_city'], $shippingAddress['oua_state'], $shippingAddress['oua_zip'], $shippingAddress['oua_country_code'], $shippingAddress['oua_phone']);
+            $this->setAddress($shippingAddress['oua_name'], $shippingAddress['oua_address1'], $shippingAddress['oua_address2'], $shippingAddress['oua_city'], $shippingAddress['oua_state'], $shippingAddress['oua_zip'], $shippingAddress['oua_country_code'], $shippingAddress['oua_phone']);
+            $this->order->shipTo = $this->address;
 
             // Order weight //
             $weightUnitsArr = applicationConstants::getWeightUnitsArr($langId);
             $weightUnitName = ($op['op_product_weight_unit']) ? $weightUnitsArr[$op['op_product_weight_unit']] : '';
             $productWeightInOunce = $this->convertWeightInOunce($op['op_product_weight'], $weightUnitName);
 
-            $this->order->weight = $this->formatWeight($productWeightInOunce);
+            $this->setWeight($productWeightInOunce);
+            $this->order->weight = $this->weight;
 
             // Extra order data //
             $lengthUnitsArr = applicationConstants::getLengthUnitsArr($langId);
@@ -182,8 +128,8 @@ class ShipStationShipping extends ShippingModuleBase
             $widthInCenti = $this->convertLengthInCenti($op['op_product_width'], $dimUnitName);
             $heightInCenti = $this->convertLengthInCenti($op['op_product_height'], $dimUnitName);
 
-            $this->order->dimensions = $this->formatDimensions($lengthInCenti, $widthInCenti, $heightInCenti);
-
+            $this->setDimensions($lengthInCenti, $widthInCenti, $heightInCenti);
+            $this->order->dimensions = $this->dimensions;
 
             // Add items to order [START] ================================= //
             
@@ -249,32 +195,30 @@ class ShipStationShipping extends ShippingModuleBase
     /**
      * getShippingRates
      *
-     * @param  mixed $carrier_code
-     * @param  mixed $from_pin_code
-     * @param  mixed $deliveryAddress
-     * @param  mixed $productDim
-     * @param  mixed $productWeight
+     * @param  string $carrier_code
+     * @param  string $from_pin_code
+     * @param  int $langId
      * @return void
      */
-    public function getShippingRates($carrier_code, $from_pin_code, stdClass $deliveryAddress, stdClass $productDim, stdClass $productWeight)
+    public function getShippingRates(string $carrier_code, string $from_pin_code, int $langId)
     {
         $order = new stdClass();
         $order->carrierCode = $carrier_code;
         $order->serviceCode = null;
         $order->packageCode = null;
         $order->fromPostalCode = $from_pin_code;
-        $order->toState = $deliveryAddress->state;
-        $order->toCountry = $deliveryAddress->country;
-        $order->toPostalCode = $deliveryAddress->postalCode;
-        $order->toCity = $deliveryAddress->city;
-        $order->weight = $productWeight;
+        $order->toState = $this->address->state;
+        $order->toCountry = $this->address->country;
+        $order->toPostalCode = $this->address->postalCode;
+        $order->toCity = $this->address->city;
+        $order->weight = $this->weight;
         if (!empty($order->dimensions)) {
-            $order->dimensions = $productDim;
+            $order->dimensions = $this->dimensions;
         }
         if (!$response = $this->shipStation->getRates((array) $order)) {
-            $error = $this->shipStation->getLastError();
-           
-            throw new Exception($error->message);
+            $langId = 1 > $langId ? commonHelper::getLangId() : $langId;
+            $this->setSystemError($langId);
+            return false;
         }
 
         return $response;
@@ -283,8 +227,8 @@ class ShipStationShipping extends ShippingModuleBase
     /**
      * getCarriers
      *
-     * @param  mixed $assoc
-     * @param  mixed $langId
+     * @param  bool $assoc
+     * @param  int $langId
      * @return void
      */
     public function getCarriers(bool $assoc = false, int $langId = 0)
@@ -304,78 +248,110 @@ class ShipStationShipping extends ShippingModuleBase
                 $result[$item->code] = $name;
                 return $result;
             });
-            array_unshift($list, Labels::getLabel('MSG_Select_Services', $langId));
+            array_unshift($list, Labels::getLabel('MSG_SELECT_CARRIER', $langId));
         }
 
         return $list;
     }
-        
+    
     /**
-     * formatAddress
+     * formatCarrierOptions
      *
-     * @param  mixed $name
-     * @param  mixed $stt1
-     * @param  mixed $stt2
-     * @param  mixed $city
-     * @param  mixed $state
-     * @param  mixed $zip
-     * @param  mixed $countryCode
-     * @param  mixed $phone
+     * @param  array $services
+     * @param  int $freeShipping
+     * @param  int $userId
+     * @param  int $langId
      * @return void
      */
-    public function formatAddress($name, $stt1, $stt2, $city, $state, $zip, $countryCode, $phone)
+    public function formatCarrierOptions(array $services, int $freeShipping, int $userId, int $langId)
     {
-        $address = new stdClass();
+        $langId = 1 > $langId ? commonHelper::getLangId() : $langId;
+        $servicesList = [];
+        if (!empty($services)) {
+            $servicesList[] = Labels::getLabel('MSG_Select_Service', $langId);
+            foreach ($services as $key => $value) {
+                $code = $value->serviceCode;
+                $price = $value->shipmentCost + $value->otherCost;
+                $name = $value->serviceName;
+                if ($freeShipping > 0 && $userId > 0) {
+                    $displayPrice = Labels::getLabel('LBL_Free_Shipping', $langId);
+                } else {
+                    $displayPrice = CommonHelper::displayMoneyFormat($price);
+                }
+                $label = $name . " (" . $displayPrice . " )";
+                $servicesList[$code . "-" . $price] = $label;
+            }
+        }
 
-        $address->name = $name; // This has to be a String... If you put NULL the API cries...
-        // $address->company       = null;
-        $address->street1 = $stt1;
-        $address->street2 = $stt2;
-        // $address->street3       = null;
-        $address->city = $city;
-        $address->state = $state;
-        $address->postalCode = $zip;
-        $address->country = $countryCode;
-        $address->phone = $phone;
-        // $address->residential   = null;
-        return $address;
+        return $servicesList;
+    }
+        
+    /**
+     * setAddress
+     *
+     * @param  string $name
+     * @param  string $stt1
+     * @param  string $stt2
+     * @param  string $city
+     * @param  string $state
+     * @param  string $zip
+     * @param  string $countryCode
+     * @param  string $phone
+     * @return void
+     */
+    public function setAddress(string $name, string $stt1, string $stt2, string $city, string $state, string $zip, string $countryCode, string $phone)
+    {
+        $this->address = new stdClass();
+
+        $this->address->name = $name; // This has to be a String... If you put NULL the API cries...
+        // $this->address->company       = null;
+        $this->address->street1 = $stt1;
+        $this->address->street2 = $stt2;
+        // $this->address->street3       = null;
+        $this->address->city = $city;
+        $this->address->state = $state;
+        $this->address->postalCode = $zip;
+        $this->address->country = $countryCode;
+        $this->address->phone = $phone;
+        // $this->address->residential   = null;
+        return true;
+    }
+          
+    /**
+     * setWeight
+     *
+     * @param  float $weight
+     * @param  string $unit
+     * @return void
+     */
+    public function setWeight($weight, $unit = 'ounces')
+    {
+        $this->weight = new stdClass();
+        $this->weight->value = floatval($weight);
+        $this->weight->units = trim($unit);
+
+        return true;
     }
          
     /**
-     * formatWeight
+     * setDimensions
      *
-     * @param  mixed $weight
-     * @param  mixed $unit
+     * @param  int $length
+     * @param  int $width
+     * @param  int $height
+     * @param  string $unit
      * @return void
      */
-    public function formatWeight($weight, $unit = 'ounces')
+    public function setDimensions($length, $width, $height, $unit = 'centimeters')
     {
-        $weightObj = new stdClass();
-        $weightObj->value = floatval($weight);
-        $weightObj->units = trim($unit);
+        $this->dimensions = new stdClass();
 
-        return $weightObj;
-    }
-           
-    /**
-     * formatDimensions
-     *
-     * @param  mixed $length
-     * @param  mixed $width
-     * @param  mixed $height
-     * @param  mixed $unit
-     * @return void
-     */
-    public function formatDimensions($length, $width, $height, $unit = 'centimeters')
-    {
-        $dimensions = new stdClass();
+        $this->dimensions->units = $unit;
+        $this->dimensions->length = $length;
+        $this->dimensions->width = $width;
+        $this->dimensions->height = $height;
 
-        $dimensions->units = $unit;
-        $dimensions->length = $length;
-        $dimensions->width = $width;
-        $dimensions->height = $height;
-
-        return $dimensions;
+        return true;
     }
 
     
@@ -383,8 +359,8 @@ class ShipStationShipping extends ShippingModuleBase
      * addItem
      *
      * @param  mixed $obj
-     * @param  mixed $op
-     * @param  mixed $langId
+     * @param  array $op
+     * @param  int $langId
      * @return void
      */
     public function addItem(&$obj, $op, $langId)
@@ -412,8 +388,8 @@ class ShipStationShipping extends ShippingModuleBase
     /**
      * validateShipstationAccount
      *
-     * @param  mixed $api_key
-     * @param  mixed $api_secret
+     * @param  string $api_key
+     * @param  string $api_secret
      * @return void
      */
     public function validateShipstationAccount($api_key, $api_secret)
@@ -433,24 +409,14 @@ class ShipStationShipping extends ShippingModuleBase
     }
     
     /**
-     * getError
-     *
-     * @return void
-     */
-    public function getError()
-    {
-        return $this->shipStation->getLastError();
-    }
-    
-    /**
      * setSystemError
      *
-     * @param  mixed $langId
+     * @param  int $langId
      * @return void
      */
     public function setSystemError($langId)
     {
-        $error = $this->getError();
+        $error = $this->shipStation->getLastError();
         $errorDetail = json_decode($error->message, true);
         
         // CommonHelper::printArray($error);

@@ -1,5 +1,5 @@
 <?php
-class ShippingModuleBase extends pluginBase
+class ShippingServicesBase extends pluginBase
 {
     public function getSystemOrder(string $orderId, int $langId, int $opId)
     {

@@ -45,6 +45,20 @@ class Plugin extends MyAppModel
         );
     }
 
+    public static function getTypeArr($langId)
+    {
+        return [
+            static::TYPE_CURRENCY => Labels::getLabel('LBL_CURRENCY', $langId),
+            static::TYPE_SOCIAL_LOGIN => Labels::getLabel('LBL_SOCIAL_LOGIN', $langId),
+            static::TYPE_PUSH_NOTIFICATION => Labels::getLabel('LBL_PUSH_NOTIFICATION', $langId),
+            static::TYPE_PAYOUTS => Labels::getLabel('LBL_PAYOUT', $langId),
+            static::TYPE_ADVERTISEMENT_FEED => Labels::getLabel('LBL_ADVERTISEMENT_FEED', $langId),
+            static::TYPE_SMS_NOTIFICATION => Labels::getLabel('LBL_SMS_NOTIFICATION', $langId),
+            static::TYPE_FULL_TEXT_SEARCH => Labels::getLabel('LBL_Full_TEXT_SEARCH', $langId),
+            static::TYPE_SHIPPING_SERVICES => Labels::getLabel('LBL_SHIPPING_SERVICES', $langId)
+        ];
+    }
+
     public static function getSearchObject($langId = 0, $isActive = true, $joinSettings = false)
     {
         $langId = FatUtility::int($langId);
@@ -106,20 +120,6 @@ class Plugin extends MyAppModel
             return $row[$attr];
         }
         return $row;
-    }
-
-    public static function getTypeArr($langId)
-    {
-        return [
-            static::TYPE_CURRENCY => Labels::getLabel('LBL_CURRENCY', $langId),
-            static::TYPE_SOCIAL_LOGIN => Labels::getLabel('LBL_SOCIAL_LOGIN', $langId),
-            static::TYPE_PUSH_NOTIFICATION => Labels::getLabel('LBL_PUSH_NOTIFICATION', $langId),
-            static::TYPE_PAYOUTS => Labels::getLabel('LBL_PAYOUT', $langId),
-            static::TYPE_ADVERTISEMENT_FEED => Labels::getLabel('LBL_ADVERTISEMENT_FEED', $langId),
-            static::TYPE_SMS_NOTIFICATION => Labels::getLabel('LBL_SMS_NOTIFICATION', $langId),
-            static::TYPE_FULL_TEXT_SEARCH => Labels::getLabel('LBL_Full_TEXT_SEARCH', $langId),
-            static::TYPE_SHIPPING_SERVICES => Labels::getLabel('LBL_SHIPPING_SERVICES', $langId)
-        ];
     }
 
     private static function pluginTypeSrchObj($typeId, $langId, $customCols = true, $active = false)

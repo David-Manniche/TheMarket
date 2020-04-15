@@ -149,23 +149,18 @@ $shippingapi_idFld->developerTags['col'] = 6;
                                 } ?>
 
                                     <li class='manual_shipping' <?php echo $displayManualOptions ?>>
-                                        <p><?php  Labels::getLabel('M_Select_Shipping_Provider', $siteLangId) ?></p>
-
                                         <?php echo $select_shipping_options ?>
                                     </li>
 
                                     <?php if (array_key_exists(ShippingMethods::SHIPPING_SERVICES, $shippingMethods)) { ?>
 
-
                                     <li class='shipservices_selectbox-js' <?php echo $displayShipStationOption;?>>
-                                        <p><?php echo Labels::getLabel('M_Select_Shipping_Provider', $siteLangId) ?></p>
                                         <?php echo $courierProviders ?>
                                     </li>
                                     <li class='shipservices_selectbox-js' <?php echo $displayShipStationOption; ?>>
                                         <div class="services_loader"></div>
                                         <div class="api_shipping_rates_not_found-html-div-js"></div>
                                         <div class="api_shipping_rates_found-js">
-                                            <p><?php echo Labels::getLabel('M_Select_Shipping_Carrier', $siteLangId) ?></p>
 											<?php echo $serviceProviders ?>
                                         </div>
                                     </li>
@@ -235,7 +230,7 @@ $shippingapi_idFld->developerTags['col'] = 6;
     }
 
     function loadShippingCarriers(obj) {
-        $(obj).parent().next().find('.services_loader').html(fcom.getLoader());
+        // $(obj).parent().next().find('.services_loader').html(fcom.getLoader());
         $(obj).parent().next().find('.courier_services ').hide();
         $(obj).parent().next().find('.api_shipping_rates_found-js').hide();
         $(obj).parent().next().find('.api_shipping_rates_not_found-html-div-js').html('');
@@ -262,11 +257,10 @@ $shippingapi_idFld->developerTags['col'] = 6;
                 }
             });
         } else {
-            $(obj).parent().next().find('.services_loader').html('');
-            $(obj).parent().next().find('.courier_services ').hide();
-            $(obj).parent().next().find('.courier_services').html('');
+            $(obj).parent().next().find('.courier_services').hide().html('');
             $(obj).parent().next().find('.api_shipping_rates_found-js').hide();
             $(obj).parent().next().find('.api_shipping_rates_not_found-html-div-js').html('');
         }
+        // $(obj).parent().next().find('.services_loader').html('');
     }
 </script>

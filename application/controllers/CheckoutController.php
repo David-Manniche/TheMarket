@@ -1150,9 +1150,11 @@ class CheckoutController extends MyAppController
                         'opshipping_duration_id' => $shippingDurationRow['sduration_id'],
                         );
                     } elseif ($shippingDurationRow['mshipapi_id'] == ShippingMethods::SHIPPING_SERVICES) {
+                        $plugin = new Plugin();
+                        $shippingService = $plugin->getDefaultPluginData(Plugin::TYPE_SHIPPING_SERVICES);
                         $productShippingData = array(
 						'opshipping_method_id' => $shippingDurationRow['mshipapi_id'],
-						// 'opshipping_company_id' => $shippingDurationRow['shipping_carrier'],
+						'opshipping_company_id' => $shippingService['plugin_id'],
 						);
                     }
                     $productShippingData['opshipping_by_seller_user_id'] = $shippingDurationRow['shipped_by_seller'];

@@ -5,6 +5,7 @@ class Cart extends FatModel
     private $products = array();
     private $SYSTEM_ARR = array();
     private $warning;
+    private $shippingService;
 
     public const CART_KEY_PREFIX_PRODUCT = 'SP_'; /* SP stands for Seller Product */
     public const CART_KEY_PREFIX_BATCH = 'SB_'; /* SB stands for Seller Batch/Combo Product */
@@ -1727,22 +1728,13 @@ class Cart extends FatModel
         $prodKey = $this->getProductByKey($cartKey);
 
         $services = $this->getCarrierShipmentServices($cartKey, $carrier_id, $lang_id);
+        if (false === $services) {
+            return false;
+        }
 
         if (!empty($carrier_id)) {
-            $servicesList[0] = Labels::getLabel('MSG_Select_Service', $lang_id);
-            foreach ($services as $key => $value) {
-                $code = $value->serviceCode;
-                $price = $value->shipmentCost + $value->otherCost;
-                $name = $value->serviceName;
-                if ($products[$prodKey]['shop_eligible_for_free_shipping'] > 0 && $products[$prodKey]['psbs_user_id'] > 0) {
-                    /* $displayPrice = CommonHelper::displayMoneyFormat(0); */
-                    $displayPrice = Labels::getLabel('LBL_Free_Shipping', $lang_id);
-                } else {
-                    $displayPrice = CommonHelper::displayMoneyFormat($price);
-                }
-                $label = $name . " (" . $displayPrice . " )";
-                $servicesList[$code . "-" . $price] = $label;
-            }
+            $shippingObj = clone $this->shippingService;
+            $servicesList = $shippingObj->formatCarrierOptions($services, $products[$prodKey]['shop_eligible_for_free_shipping'], $products[$prodKey]['psbs_user_id'], $lang_id);
         }
 
         return $servicesList;
@@ -1787,8 +1779,6 @@ class Cart extends FatModel
 
         $productLengthUnit = ($product['product_weight_unit']) ? $weightUnitsArr[$product['product_weight_unit']] : '';
 
-
-
         $productWeightInOunce = $this->convertWeightInOunce($productWeight, $productWeightClass);
         $productLengthInCenti = $this->convertLengthInCenti($productLength, $productLengthUnit);
         $productWidthInCenti = $this->convertLengthInCenti($productWidth, $productLengthUnit);
@@ -1808,18 +1798,20 @@ class Cart extends FatModel
                 FatUtility::dieWithError(Message::getHtml());
             }
 
-            $shippingService = new $shippingServiceName();
+            $this->shippingService = new $shippingServiceName();
 
-            $deliveryAddress = $shippingService->formatAddress($productShippingAddress['ua_name'], $productShippingAddress['ua_address1'], $productShippingAddress['ua_address2'], $productShippingAddress['ua_city'], $productShippingAddress['state_code'], $productShippingAddress['ua_zip'], $productShippingAddress['country_code'], $productShippingAddress['ua_phone']);
+            $this->shippingService->setAddress($productShippingAddress['ua_name'], $productShippingAddress['ua_address1'], $productShippingAddress['ua_address2'], $productShippingAddress['ua_city'], $productShippingAddress['state_code'], $productShippingAddress['ua_zip'], $productShippingAddress['country_code'], $productShippingAddress['ua_phone']);
             
-            $weight = $shippingService->formatWeight($productWeightInOunce);
+            $this->shippingService->setWeight($productWeightInOunce);
 
-            $dimensions = (object)array();
             if ($productLengthInCenti > 0 && $productWidthInCenti > 0 && $productHeightInCenti > 0) {
-                $dimensions = $shippingService->formatDimensions($productLengthInCenti, $productWidthInCenti, $productHeightInCenti);
+                $this->shippingService->setDimensions($productLengthInCenti, $productWidthInCenti, $productHeightInCenti);
             }
 
-            $product_rates = (array) $shippingService->getShippingRates($carrier_id, $sellerPinCode, $deliveryAddress, $dimensions, $weight);
+            $product_rates = (array) $this->shippingService->getShippingRates($carrier_id, $sellerPinCode, $lang_id);
+            if (false === $product_rates) {
+                return false;
+            }
         }
 
         return $product_rates;
