@@ -612,7 +612,7 @@ class ConfigurationsController extends AdminBaseController
                 $fld = $frm->addSelectBox(Labels::getLabel('LBL_Country', $this->adminLangId), 'CONF_COUNTRY', $countriesArr);
 
                 $frm->addSelectBox(Labels::getLabel('LBL_State', $this->adminLangId), 'CONF_STATE', array());
-
+                $frm->addTextBox(Labels::getLabel("LBL_Postal_Code", $this->adminLangId), 'CONF_ZIP_CODE');  
                 $frm->addSelectBox(Labels::getLabel('LBL_date_Format', $this->adminLangId), 'CONF_DATE_FORMAT', Configurations::dateFormatPhpArr(), false, array(), '');
 
                 $currencyArr = Currency::getCurrencyNameWithCode($this->adminLangId);
@@ -1566,7 +1566,9 @@ class ConfigurationsController extends AdminBaseController
                 $frm->addTextarea(Labels::getLabel("LBL_ADDRESS", $this->adminLangId), 'CONF_ADDRESS_' . $langId);
                 $frm->addTextarea(Labels::getLabel('LBL_Cookies_Policies_Text', $this->adminLangId), 'CONF_COOKIES_TEXT_' . $langId);
                 break;
-
+            case Configurations::FORM_LOCAL:  
+                $frm->addTextBox(Labels::getLabel("LBL_City", $this->adminLangId), 'CONF_CITY_' . $langId);  
+                break;
             case Configurations::FORM_EMAIL:
                 $frm->addTextBox(Labels::getLabel("LBL_From_Name", $this->adminLangId), 'CONF_FROM_NAME_' . $langId);
                 break;

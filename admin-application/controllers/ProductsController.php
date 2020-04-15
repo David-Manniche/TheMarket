@@ -915,7 +915,15 @@ class ProductsController extends AdminBaseController
             } else {
                 $tax->addCondition('ptt_seller_user_id', '=', 0);
             }
-            $tax->addMultipleFields(array('ptt_taxcat_id'));
+            
+            $tax->addFld('ptt_taxcat_id');
+            
+            if (Tax::getActivatedServiceId()) {
+                $tax->addFld('concat(IFNULL(taxcat_name,taxcat_identifier), " (",taxcat_code,")")as taxcat_name');               
+            }else{
+                $tax->addFld('IFNULL(taxcat_name,taxcat_identifier)as taxcat_name'); 
+            } 
+       
             $tax->doNotCalculateRecords();
             $tax->setPageSize(1);
             $tax->addOrder('ptt_seller_user_id', 'ASC');
@@ -923,6 +931,7 @@ class ProductsController extends AdminBaseController
             $taxData = FatApp::getDb()->fetch($rs);
             if (!empty($taxData)) {
                 $prodData['ptt_taxcat_id'] = $taxData['ptt_taxcat_id'];
+                $prodData['taxcat_name'] = $taxData['taxcat_name'];
             }
 
             $srch = Product::getSearchObject($this->adminLangId);
@@ -995,9 +1004,8 @@ class ProductsController extends AdminBaseController
         if (!empty($translatorSubscriptionKey) && count($languages) > 0) {
             $frm->addCheckBox(Labels::getLabel('LBL_Translate_To_Other_Languages', $this->adminLangId), 'auto_update_other_langs_data', 1, array(), false, 0);
         }
-
-        $taxCategories = Tax::getSaleTaxCatArr($this->adminLangId);
-        $frm->addSelectBox(Labels::getLabel('LBL_Tax_Category', $this->adminLangId), 'ptt_taxcat_id', $taxCategories, '', array(), Labels::getLabel('LBL_Select', $this->adminLangId))->requirements()->setRequired(true);
+        
+        $frm->addRequiredField(Labels::getLabel('LBL_Tax_Category', $this->adminLangId), 'taxcat_name');        
 
         $fldMinSelPrice = $frm->addFloatField(Labels::getLabel('LBL_Minimum_Selling_Price', $this->adminLangId) . ' [' . CommonHelper::getCurrencySymbol(true) . ']', 'product_min_selling_price', '');
         $fldMinSelPrice->requirements()->setPositive();
@@ -1009,6 +1017,7 @@ class ProductsController extends AdminBaseController
         $frm->addSelectBox(Labels::getLabel('LBL_Status', $this->adminLangId), 'product_active', $activeInactiveArr, applicationConstants::YES, array(), '');
         $frm->addHiddenField('', 'product_id', $productId);
         $frm->addHiddenField('', 'product_brand_id');
+        $frm->addHiddenField('', 'ptt_taxcat_id');
         $frm->addHiddenField('', 'ptc_prodcat_id', $prodCatId);
         $frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_Save_And_Next', $this->adminLangId));
         $frm->addButton("", "btn_discard", Labels::getLabel('LBL_Discard', $this->adminLangId));

@@ -566,6 +566,71 @@ class DummyController extends MyAppController
     {
         AbandonedCart::sendReminderAbandonedCart();
     }
+    
+    public function testavalaratax(){
+     
+        require_once CONF_PLUGIN_DIR . '/tax/avalaratax/Avalaratax.php';
+        
+        $itemsArr = [];
+        
+        $item = [
+              'amount' => 100,
+              'quantity' => 2,
+              'itemCode' => 100,
+              'taxCode' => 'P0000000',                
+        ];
+        array_push($itemsArr, $item);
+        
+        $shippingItems = [];
+      
+        $shippingItem = [
+            'amount' => 12,
+            'quantity' => 1,
+            'itemCode' => 'S-100', 
+            'taxCode' => 'FR',
+        ];
+        array_push($shippingItems, $shippingItem);      
+        
+       
+        $fromAddress = array(
+            'line1' => '123 Main Street',
+            'line2' => '',
+            'city' => 'CA',
+            'state' => 'CA',
+            'postalCode' => '92615',
+            'country' => 'US',
+        );
+
+        $toAddress = array(
+            'line1' => '1500 Broadway',
+            'line2' => '',
+            'city' =>'New York',
+            'state' => 'NY',
+            'postalCode' => '10019',
+            'country' => 'US',
+        );    
+        
+        
+        $avalaraObj = new Avalaratax(1); 
+        $txRates = $avalaraObj->getRates($fromAddress , $toAddress,$itemsArr ,$shippingItems,1);
+        //print_r($avalaraObj->getTaxApiActualResponse());
+      CommonHelper::printArray($txRates);
+//        die();
+        
+        //$taxRates1 = $avalaraObj->createInvoice($fromAddress , $toAddress,$itemsArr ,$shippingItems,100,'2019-10-11','S-1000');
+     
+       // echo('<pre>' . json_encode($txRates, JSON_PRETTY_PRINT) . '</pre>');
+      // echo('<pre>' . json_encode($taxRates1, JSON_PRETTY_PRINT) . '</pre>');
+        die(); 
+        
+//        CA STATE TAX
+//        CA COUNTY TAX
+//        CA CITY TAX
+//        CA SPECIAL TAX
+        
+    }
+    
+    
 
     public function send()
     {

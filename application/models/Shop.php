@@ -211,6 +211,11 @@ class Shop extends MyAppModel
         $srch->addCondition(static::tblFld('id'), '=', $shop_id);
         $srch->joinTable(States::DB_TBL, 'LEFT JOIN', 's.shop_state_id=ss.state_id and ss.state_active=' . applicationConstants::ACTIVE, 'ss');
         $srch->joinTable(Countries::DB_TBL, 'LEFT JOIN', 's.shop_country_id=sc.country_id and sc.country_active=' . applicationConstants::ACTIVE, 'sc');
+        
+        if (0 < $langId) {
+            $srch->joinTable(States::DB_TBL_LANG, 'LEFT JOIN', 'ss_l.statelang_state_id=ss.state_id and ss_l.statelang_lang_id=' . $langId, 'ss_l');
+        }
+       
         if ($isActive) {
             $srch->addCondition('s.shop_active', '=', $isActive);
         }
