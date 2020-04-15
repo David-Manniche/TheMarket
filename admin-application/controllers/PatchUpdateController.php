@@ -127,11 +127,11 @@ class PatchUpdateController extends AdminBaseController
     public function updateCharset()
     {
         $database = CONF_DB_NAME;
-        FatApp::getDb()->query("ALTER DATABASE ".$database." CHARACTER SET utf8 COLLATE utf8_general_ci");
+        FatApp::getDb()->query("ALTER DATABASE ".$database." CHARACTER SET utf8 COLLATE utf8mb4_unicode_ci");
         $qry = FatApp::getDb()->query("show tables");
         $res = FatApp::getDb()->fetchAll($qry);
         foreach ($res as $val) {
-            FatApp::getDb()->query("ALTER TABLE ".$val['Tables_in_'.$database]." CONVERT TO CHARACTER SET utf8 COLLATE utf8_general_ci");
+            FatApp::getDb()->query("ALTER TABLE ".$val['Tables_in_'.$database]." CONVERT TO CHARACTER SET utf8 COLLATE utf8mb4_unicode_ci");
             echo 'Done:- '.$val['Tables_in_'.$database].'<br>';
         }
         // ALTER TABLE tbl_affiliate_commission_settings MODIFY COLUMN afcommsetting_fees decimal(12,4)
