@@ -5,33 +5,26 @@ class AppleLoginController extends SocialMediaAuthController
     private const PRODUCTION_URL = 'https://appleid.apple.com/auth/';
     public const KEY_NAME = 'AppleLogin';
 
-    private $clientId;
+    public $requiredKeys = ['client_id'];
 
     public function __construct($action)
     {
         parent::__construct($action);
     }
-
-    private function validateSettings()
-    {
-        $settings = $this->getSettings();
-        if (!isset($settings['client_id'])) {
-            $message = Labels::getLabel('MSG_PLUGIN_SETTINGS_NOT_CONFIGURED', $this->siteLangId);
-            $this->setErrorAndRedirect($message, true);
-        }
-        $this->clientId = $settings['client_id'];
-    }
-
     
     private function getRequestUri()
     {
-        $this->validateSettings();
+        if (false == $this->validateSettings($this->siteLangId)) {
+            $this->setErrorAndRedirect($this->error, true);
+            return false;
+        }
+        
         $redirectUri = CommonHelper::generateFullUrl(static::KEY_NAME, 'index', array(), '', false);
         $_SESSION['appleSignIn']['state'] = bin2hex(random_bytes(5));
         return static::PRODUCTION_URL . 'authorize?' . http_build_query([
             'response_type' => 'code id_token',
             'response_mode' => 'form_post',
-            'client_id' => $this->clientId,
+            'client_id' => $this->settings['client_id'],
             'redirect_uri' => $redirectUri,
             'state' => $_SESSION['appleSignIn']['state'],
             'scope' => 'name email',

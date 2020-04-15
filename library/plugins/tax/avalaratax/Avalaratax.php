@@ -18,6 +18,14 @@ class Avalaratax extends TaxBase
     private $_invoiceId;
     private $_taxApiResponse;
     private $_invoiceDate;
+	
+	public $requiredKeys = [
+        'account_number',
+		'commit_transaction',
+		'company_code',
+		'environment',
+		'license_key'
+    ];
 
     public function __construct($langId)
     {
@@ -26,9 +34,9 @@ class Avalaratax extends TaxBase
             $this->langId = CommonHelper::getLangId();
         }
 
-        $this->settings = $this->getSettings();
-
-        $this->validateSettings();
+        if (false == $this->validateSettings($langId)) {
+            return false;
+        }
 
         $environment = FatUtility::int($this->settings['environment']) == 1 ? 'production' : 'sandbox';
 
@@ -143,16 +151,6 @@ class Avalaratax extends TaxBase
     public function getTaxApiActualResponse()
     {
         return $this->_taxApiResponse;
-    }
-
-    private function validateSettings()
-    {
-        $requiredKeyArr = ['account_number', 'commit_transaction', 'company_code', 'environment', 'license_key'];
-        foreach ($requiredKeyArr as $key) {
-            if (!array_key_exists($key, $this->settings)) {
-                throw new Exception(Labels::getLabel('MSG_SETTINGS_NOT_UPDATED', $this->langId));
-            }
-        }
     }
 
     private function setFromAddress($address)

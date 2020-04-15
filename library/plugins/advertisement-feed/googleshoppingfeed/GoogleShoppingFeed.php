@@ -42,6 +42,10 @@ class GoogleShoppingFeed extends AdvertisementFeedBase
         $service = new Google_Service_ShoppingContent($client);
         $batch = $service->createBatch();
 
+		$channel = $this->getSettings('channel');
+		if (false === $channel) {
+			return false;
+		}
         foreach ($data['data'] as $prodDetail) {
             $colorOption = array_filter($prodDetail['optionsData'], function ($v) {
                 return 1 == $v['option_is_color'];
@@ -60,7 +64,7 @@ class GoogleShoppingFeed extends AdvertisementFeedBase
             $product->setImageLink(CommonHelper::generateFullUrl('image', 'product', array($prodDetail['product_id'], "MEDIUM", $prodDetail['selprod_id'], 0, CommonHelper::getLangId())));
             $product->setContentLanguage(strtolower($prodDetail['language_code']));
             $product->setTargetCountry(strtoupper($prodDetail['country_code']));
-            $product->setChannel($this->getSettings('channel'));
+            $product->setChannel($channel);
             $product->setAvailability($prodDetail['selprod_stock']);
             $product->setAvailabilityDate(date('Y-m-d', strtotime($prodDetail['selprod_available_from'])));
             

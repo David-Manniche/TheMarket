@@ -10,7 +10,10 @@ class PatchUpdateController extends AdminBaseController
     }
 
     public function updateAvalarataxCat(){
-        require_once CONF_PLUGIN_DIR . '/tax/avalaratax/Avalaratax.php';
+		$error = '';
+		if (false === PluginHelper::includePlugin('Avalaratax', 'tax', $this->adminLangId, $error)) {
+            FatUtility::dieWithError($error);
+		}
         $avalaraObj = new Avalaratax($this->adminLangId); 
         $codesArr = $avalaraObj->getCodes(null, null, null, array('id ASC'), false);
         

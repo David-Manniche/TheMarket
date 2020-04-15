@@ -1,15 +1,19 @@
 <?php
 class FcmPushNotification extends PushNotificationBase
 {
+    public const KEY_NAME = __CLASS__;
     private const PRODUCTION_URL = 'https://fcm.googleapis.com/fcm/send';
-    public const KEY_NAME = 'FcmPushNotification';
     public const LIMIT = 1000;
 
     private $deviceTokens;
 
+    public $requiredKeys = ['server_api_key'];
+
     public function __construct($deviceTokens)
     {
-        $this->validateSettings();
+        if (false == $this->validateSettings(CommonHelper::getLangId())) {
+            return false;
+        }
         
         if (!is_array($deviceTokens) || empty($deviceTokens) || 1000 < count($deviceTokens)) {
             $this->error = Labels::getLabel('LBL_ARRAY_MUST_CONTAIN_AT_LEAST_1_AND_AT_MOST_1000_REGISTRATION_TOKENS', CommonHelper::getLangId());
@@ -19,16 +23,6 @@ class FcmPushNotification extends PushNotificationBase
         $this->deviceTokens = $deviceTokens;
     }
 
-    private function validateSettings()
-    {
-        $settings = $this->getSettings();
-        if (!isset($settings['server_api_key'])) {
-            $this->error = Labels::getLabel('MSG_PLUGIN_SETTINGS_NOT_CONFIGURED', CommonHelper::getLangId());
-            return false;
-        }
-        $this->serverApiKey = $settings['server_api_key'];
-    }
-    
     public function notify($title, $message, $os, $data = [])
     {
         if (empty($title) || empty($message)) {
@@ -55,7 +49,7 @@ class FcmPushNotification extends PushNotificationBase
         }
         
         $headers = [
-            'Authorization: key=' . $this->serverApiKey,
+            'Authorization: key=' . $this->settings['server_api_key'],
             'Content-Type: application/json'
         ];
 

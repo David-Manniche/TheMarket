@@ -14,8 +14,14 @@ class ElasticSearch extends FullTextSearchBase
     private $groupByFields;
     public $error = false;
 
-    const KEY_NAME = "ElasticSearch";
+    const KEY_NAME = __CLASS__;
     const INDEX_PREFIX = "yk-products-";
+	
+	public $requiredKeys = [
+        'host',
+		'username',
+		'password'
+    ];
 
     /* Creating ElasticSearch Connection
     *
@@ -24,20 +30,15 @@ class ElasticSearch extends FullTextSearchBase
     public function __construct($langId)
     {
         $this->indexName = self::INDEX_PREFIX . $langId;
-        $settings = $this->getSettings();
         $this->langId = $langId;
-        
-        $reqKeys = array('host', 'username', 'password');
-        
-        foreach ($reqKeys as $key) {
-            if (!array_key_exists($key, $settings)) {
-                trigger_error(Labels::getLabel('MSG_PLUGIN_SETTINGS_NOT_CONFIGURED', $this->langId), E_USER_ERROR);
-            }
+		
+        if (false == $this->validateSettings($langId)) {
+            return false;
         }
        
         $this->client = ClientBuilder::create()
-             ->setElasticCloudId($settings['host'])
-             ->setBasicAuthentication($settings['username'], $settings['password'])
+             ->setElasticCloudId($this->settings['host'])
+             ->setBasicAuthentication($this->settings['username'], $this->settings['password'])
              ->build();
 
         $this->pageSize = FatApp::getConfig('conf_page_size', FatUtility::VAR_INT, 10);
