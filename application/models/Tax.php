@@ -447,6 +447,7 @@ class Tax extends MyAppModel
             $tax = $taxCategoryRow['taxval_value'] * $qty;
         }
         
+
         if (0 < $activatedTaxServiceId) {
             return $data = [
                 'status' => true,
@@ -463,6 +464,7 @@ class Tax extends MyAppModel
         }
         
         $data['tax'] = $tax;
+             
         if ($confTaxStructure == TaxStructure::TYPE_COMBINED) {
             $shipFromStateId = FatUtility::int($shipFromStateId);
            
