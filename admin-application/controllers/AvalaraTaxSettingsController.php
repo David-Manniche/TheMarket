@@ -2,15 +2,35 @@
 
 class AvalaraTaxSettingsController extends TaxSettingsController
 {
-    public static function form($langId)
+
+    public static function getConfigurationKeys()
     {
-        $frm = new Form('frmAvalaraTax');
-        $frm->addTextBox(Labels::getLabel('LBL_Account_Number', $langId), 'account_number')->requirements()->setRequired(true);
-        $frm->addTextBox(Labels::getLabel('LBL_License_Key', $langId), 'license_key')->requirements()->setRequired(true);
-        $frm->addTextBox(Labels::getLabel('LBL_Company_Code', $langId), 'company_code')->requirements()->setRequired(true);
-        $frm->addCheckBox(Labels::getLabel('LBL_Commit_Transaction', $langId), 'commit_transaction',applicationConstants::YES);
-        $frm->addCheckBox(Labels::getLabel('LBL_Production_Mode', $langId), 'environment',applicationConstants::YES);    
-        $frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_Save_Changes', $langId));
-        return $frm;
+        return [
+            'account_number' => [
+                'type' => PluginSetting::TYPE_STRING,
+                'required' => true,
+                'label' => "Account Number",
+            ],
+            'license_key' => [
+                'type' => PluginSetting::TYPE_STRING,
+                'required' => false,
+                'label' => "License Key",
+            ],
+            'company_code' => [
+                'type' => PluginSetting::TYPE_STRING,
+                'required' => false,
+                'label' => "Company Code",
+            ],
+            'commit_transaction' => [
+                'type' => PluginSetting::TYPE_BOOL,
+                'required' => true,
+                'label' => "Commit Transaction",
+            ],
+            'environment' => [
+                'type' => PluginSetting::TYPE_BOOL,
+                'required' => true,
+                'label' => "Production Mode",
+            ]
+        ];
     }
 }
