@@ -1,2 +1,2 @@
 New Features:
-    => Avalara Tax API
+    => Avalara Tax API [Execute {domainame}/admin/patch-update/update-avalaratax-cat]
