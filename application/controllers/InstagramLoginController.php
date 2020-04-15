@@ -6,34 +6,28 @@ class InstagramLoginController extends SocialMediaAuthController
     private const PRODUCTION_URL = 'https://api.instagram.com/oauth/';
     public const KEY_NAME = 'InstagramLogin';
 
-    private $clientId;
-    private $clientSecret;
     private $redirectUri;
+
+    public $requiredKeys = [
+        'client_id',
+        'client_secret'
+    ];
 
     public function __construct($action)
     {
         parent::__construct($action);
-        $this->validateSettings();
-    }
-
-    private function validateSettings()
-    {
-        $settings = $this->getSettings();
-        if (!isset($settings['client_id']) || !isset($settings['client_secret'])) {
-            $message = Labels::getLabel('MSG_PLUGIN_SETTINGS_NOT_CONFIGURED', $this->siteLangId);
-            $this->setErrorAndRedirect($message, true);
+        if (false == $this->validateSettings($this->siteLangId)) {
+            $this->setErrorAndRedirect($this->error, true);
+            return false;
         }
-        $this->clientId = $settings['client_id'];
-        $this->clientSecret = $settings['client_secret'];
         $this->redirectUri = CommonHelper::generateFullUrl(static::KEY_NAME, 'index', [], '', false);
     }
-
     
     private function getRequestUri()
     {
         return static::PRODUCTION_URL . 'authorize?' . http_build_query([
             'response_type' => 'code',
-            'client_id' => $this->clientId,
+            'client_id' => $this->settings['client_id'],
             'redirect_uri' => $this->redirectUri,
             'scope' => 'basic',
         ]);
@@ -50,7 +44,7 @@ class InstagramLoginController extends SocialMediaAuthController
         if (empty($accessToken)) {
             if (isset($get['code'])) {
                 try {
-                    $accessToken = $instaAuthObj->GetAccessToken($this->clientId, $this->redirectUri, $this->clientSecret, $get['code']);
+                    $accessToken = $instaAuthObj->GetAccessToken($this->settings['client_id'], $this->redirectUri, $this->settings['client_secret'], $get['code']);
                 } catch (\Error $e) {
                     $this->setErrorAndRedirect($e->getMessage());
                 }

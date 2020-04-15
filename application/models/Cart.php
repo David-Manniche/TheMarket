@@ -798,11 +798,12 @@ class Cart extends FatModel
         $totalPrice = $sellerProductRow['theprice'] * $quantity;
         $taxableProdPrice = $sellerProductRow['theprice'] - $sellerProductRow['volume_discount'];
 
-        $taxObj = new Tax();        
+        $taxObj = new Tax();
         $taxData = $taxObj->calculateTaxRates($sellerProductRow['product_id'], $taxableProdPrice, $sellerProductRow['selprod_user_id'], $siteLangId, $quantity);
-        if (false == $taxData['status'] && $taxData['msg'] != ''){
+        if (false == $taxData['status'] && $taxData['msg'] != '') {
             $this->error = $taxData['msg'];
         }
+        
         $tax = $taxData['tax'];
         $sellerProductRow['tax'] = $tax;
         /* ] */

@@ -48,12 +48,12 @@ class SmsArchive extends MyAppModel
         }
 
         $pluginKey = Plugin::getAttributesById($smsGateway, 'plugin_code');
-        if (1 > Plugin::isActive($pluginKey)) {
-            $this->error = Labels::getLabel('MSG_PLUGIN_NOT_ACTIVE', $this->langId);
-            return false;
-        }
         
-        require_once CONF_PLUGIN_DIR . '/sms-notification/' . strtolower($pluginKey) . '/' . $pluginKey . '.php';
+		$error = '';
+		if (false === PluginHelper::includePlugin($pluginKey, 'sms-notification', $this->langId, $error)) {
+			$this->error = $error;
+			return false;
+		}
 
         $smsGateway = new $pluginKey($this->langId);
         $response = $smsGateway->send($this->toNumber, $this->body);
