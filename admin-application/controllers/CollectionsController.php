@@ -628,12 +628,11 @@ class CollectionsController extends AdminBaseController
     {
         $this->objPrivilege->canEditCollections();
         $frm = $this->getCollectionBrandsForm();
-        $post = $frm->getFormDataFromArray(FatApp::getPostedData());
+        $post = FatApp::getPostedData();
         if (false === $post) {
             Message::addErrorMessage(current($frm->getValidationErrors()));
             FatUtility::dieWithError(Message::getHtml());
         }
-
         $collectionId = FatUtility::int($post['collection_id']);
         $brandId = FatUtility::int($post['brand_id']);
         if (!$collectionId || !$brandId) {
@@ -653,7 +652,7 @@ class CollectionsController extends AdminBaseController
     {
         $this->objPrivilege->canEditCollections();
         $frm = $this->getCollectionBlogsForm();
-        $post = $frm->getFormDataFromArray(FatApp::getPostedData());
+        $post = FatApp::getPostedData();
         if (false === $post) {
             FatUtility::dieWithError(current($frm->getValidationErrors()));
         }
