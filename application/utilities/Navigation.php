@@ -289,6 +289,8 @@ class Navigation
             $cnd = $srch->addCondition('nlink_login_protected', '=', NavigationLinks::NAVLINK_LOGIN_BOTH);
             $cnd->attachCondition('nlink_login_protected', '=', NavigationLinks::NAVLINK_LOGIN_NO, 'OR');
         }
+        $srch->addGroupBy('nav_id');
+        $srch->addGroupBy('nlink_id');
 
         $rs = $srch->getResultSet();
         $rows = FatApp::getDb()->fetchAll($rs);
