@@ -12,9 +12,10 @@ class Plugin extends MyAppModel
     public const TYPE_PUSH_NOTIFICATION = 3;
     public const TYPE_PAYOUTS = 4;
     public const TYPE_ADVERTISEMENT_FEED = 5;
-    public const TYPE_SMS_NOTIFICATION = 6;    
+    public const TYPE_SMS_NOTIFICATION = 6;
     public const TYPE_FULL_TEXT_SEARCH = 7;
     public const TYPE_TAX_SERVICES  = 10;
+    public const TYPE_PAYMENT_METHOD  = 11;
 
     /* Define here :  if system can not activate multiple plugins for a same feature*/
     public const HAVING_KINGPIN = [
@@ -22,7 +23,7 @@ class Plugin extends MyAppModel
         self::TYPE_PUSH_NOTIFICATION,
         self::TYPE_ADVERTISEMENT_FEED,
         self::TYPE_SMS_NOTIFICATION,
-        self::TYPE_TAX_SERVICES ,   
+        self::TYPE_TAX_SERVICES ,
         self::TYPE_FULL_TEXT_SEARCH
     ];
 
@@ -36,7 +37,7 @@ class Plugin extends MyAppModel
 
     private $db;
 
-    public function __construct($id = 0)
+    public function __construct(int $id = 0)
     {
         parent::__construct(static::DB_TBL, static::DB_TBL_PREFIX . 'id', $id);
         $this->db = FatApp::getDb();
@@ -44,8 +45,37 @@ class Plugin extends MyAppModel
             array('plugin_code')
         );
     }
-
-    public static function getSearchObject($langId = 0, $isActive = true, $joinSettings = false)
+    
+    /**
+     * getTypeArr
+     *
+     * @param  int $langId
+     * @return array
+     */
+    public static function getTypeArr(int $langId)
+    {
+        return [
+            static::TYPE_CURRENCY => Labels::getLabel('LBL_CURRENCY', $langId),
+            static::TYPE_SOCIAL_LOGIN => Labels::getLabel('LBL_SOCIAL_LOGIN', $langId),
+            static::TYPE_PUSH_NOTIFICATION => Labels::getLabel('LBL_PUSH_NOTIFICATION', $langId),
+            static::TYPE_PAYOUTS => Labels::getLabel('LBL_PAYOUT', $langId),
+            static::TYPE_ADVERTISEMENT_FEED => Labels::getLabel('LBL_ADVERTISEMENT_FEED', $langId),
+            static::TYPE_SMS_NOTIFICATION => Labels::getLabel('LBL_SMS_NOTIFICATION', $langId),
+            static::TYPE_TAX_SERVICES => Labels::getLabel('LBL_TAX_SERVICES', $langId),
+            static::TYPE_FULL_TEXT_SEARCH => Labels::getLabel('LBL_FULL_TEXT_SEARCH', $langId),
+            static::TYPE_PAYMENT_METHOD => Labels::getLabel('LBL_PAYMENT_METHODS', $langId)
+        ];
+    }
+    
+    /**
+     * getSearchObject
+     *
+     * @param  int $langId
+     * @param  bool $isActive
+     * @param  bool $joinSettings
+     * @return object
+     */
+    public static function getSearchObject(int $langId = 0, bool $isActive = true, bool $joinSettings = false)
     {
         $langId = FatUtility::int($langId);
         $srch = new SearchBase(static::DB_TBL, 'plg');
@@ -72,12 +102,17 @@ class Plugin extends MyAppModel
         $srch->addOrder('plg.' . static::DB_TBL_PREFIX . 'display_order', 'ASC');
         return $srch;
     }
-
-    public static function isActive($code)
+    
+    /**
+     * isActive
+     *
+     * @param  string $code - Keyname
+     * @return bool
+     */
+    public static function isActive(string $code): bool
     {
         return (0 < static::getAttributesByCode($code, 'plugin_active') ? true : false);
     }
-
 
     public static function getAttributesByCode($code, $attr = '', $langId = 0)
     {
@@ -106,20 +141,6 @@ class Plugin extends MyAppModel
             return $row[$attr];
         }
         return $row;
-    }
-
-    public static function getTypeArr($langId)
-    {
-        return [
-            static::TYPE_CURRENCY => Labels::getLabel('LBL_CURRENCY', $langId),
-            static::TYPE_SOCIAL_LOGIN => Labels::getLabel('LBL_SOCIAL_LOGIN', $langId),
-            static::TYPE_PUSH_NOTIFICATION => Labels::getLabel('LBL_PUSH_NOTIFICATION', $langId),
-            static::TYPE_PAYOUTS => Labels::getLabel('LBL_PAYOUT', $langId),
-            static::TYPE_ADVERTISEMENT_FEED => Labels::getLabel('LBL_ADVERTISEMENT_FEED', $langId),
-            static::TYPE_SMS_NOTIFICATION => Labels::getLabel('LBL_SMS_NOTIFICATION', $langId),
-            static::TYPE_TAX_SERVICES => Labels::getLabel('LBL_Tax_Services', $langId),
-            static::TYPE_FULL_TEXT_SEARCH => Labels::getLabel('LBL_Full_TEXT_SEARCH', $langId)
-        ];
     }
 
     private static function pluginTypeSrchObj($typeId, $langId, $customCols = true, $active = false)

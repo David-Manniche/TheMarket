@@ -14,13 +14,13 @@ class ElasticSearch extends FullTextSearchBase
     private $groupByFields;
     public $error = false;
 
-    const KEY_NAME = __CLASS__;
-    const INDEX_PREFIX = "yk-products-";
-	
-	public $requiredKeys = [
+    public const KEY_NAME = __CLASS__;
+    public const INDEX_PREFIX = "yk-products-";
+    
+    public $requiredKeys = [
         'host',
-		'username',
-		'password'
+        'username',
+        'password'
     ];
 
     /* Creating ElasticSearch Connection
@@ -31,8 +31,8 @@ class ElasticSearch extends FullTextSearchBase
     {
         $this->indexName = self::INDEX_PREFIX . $langId;
         $this->langId = $langId;
-		
-        if (false == $this->validateSettings($langId)) {
+        
+        if (false == $this->validateSettings()) {
             return false;
         }
        
@@ -53,8 +53,8 @@ class ElasticSearch extends FullTextSearchBase
             return false;
         }
         
-        $textSearch = 	[ 'bool' =>
-                            [ 'should'=>
+        $textSearch = [ 'bool' =>
+                            [ 'should' =>
                                 [
                                     /* [ product general fields */
                                     ['match' => ['general.product_name' => $keyword ]  ],
@@ -69,18 +69,18 @@ class ElasticSearch extends FullTextSearchBase
                                     /*  inventory fields ] */
 
                                     /* [ brands fields */
-                                    ['match' => ['brand.brand_name' => ['query' => $keyword , 'fuzziness'=> '1' ] ] ],
+                                    ['match' => ['brand.brand_name' => ['query' => $keyword, 'fuzziness' => '1' ] ] ],
                                     ['match' => ['brand_short_description' => $keyword ] ],
                                     /*  brands fields ] */
 
                                     /* [ categories fields */
-                                    ['match' => ['categories.prodcat_identifier' => ['query' => $keyword , 'fuzziness' => '1' ] ] ],
+                                    ['match' => ['categories.prodcat_identifier' => ['query' => $keyword, 'fuzziness' => '1' ] ] ],
                                     ['match' => ['categories.prodcat_name' => $keyword ] ],
                                     /*  categories fields ] */
 
                                     /* [ options fields */
-                                    ['match' => ['options.optionvalue_identifier' => ['query' => $keyword , 'fuzziness' => '1' ] ] ],
-                                    ['match' => ['options.optionvalue_name' => ['query' => $keyword , 'fuzziness' => '1' ] ] ],
+                                    ['match' => ['options.optionvalue_identifier' => ['query' => $keyword, 'fuzziness' => '1' ] ] ],
+                                    ['match' => ['options.optionvalue_name' => ['query' => $keyword, 'fuzziness' => '1' ] ] ],
                                     /*  options fields ] */
                                 ]
                             ]
@@ -140,7 +140,7 @@ class ElasticSearch extends FullTextSearchBase
                 continue;
             }
             $categoryFilter['bool']['should'][$key] = [
-                'wildcard' =>  [
+                'wildcard' => [
                     'categories.prodcat_code' => [
                          "value" => '*' . str_pad($category, 6, 0, STR_PAD_LEFT) . '*'
                         ]
@@ -153,18 +153,17 @@ class ElasticSearch extends FullTextSearchBase
         } else {
             $this->search["must"][0] = $categoryFilter;
         }
-
     }
 
     public function addShopIdCondition($shopId)
     {
         $shopId = FatUtility::int($shopId);
         if (1 > $shopId) {
-            return ;
+            return;
         }
 
         $shopFilter['bool']['must'] = [
-            'match' =>  [
+            'match' => [
                 'inventories.shop.shop_id' => $shopId
                 ]
             ];
@@ -235,10 +234,10 @@ class ElasticSearch extends FullTextSearchBase
         //@todo based on in_stock
     }
 
-    public function addFeaturedProdCondition(){
-        
+    public function addFeaturedProdCondition()
+    {
         $filter['bool']['must'] = [
-            'match' =>  [
+            'match' => [
                 'general.product_featured' => 1
                 ]
             ];
@@ -256,7 +255,7 @@ class ElasticSearch extends FullTextSearchBase
             return;
         }
         $priceFilters['range'] = [
-                        'general.theprice'=> [ 'gte' => $minPrice, 'lte' => $maxPrice ]
+                        'general.theprice' => [ 'gte' => $minPrice, 'lte' => $maxPrice ]
                     ];
 
         if (array_key_exists('must', $this->search)) {
@@ -272,7 +271,7 @@ class ElasticSearch extends FullTextSearchBase
 
         if ($categoryId) {
             $catCode = ProductCategory::getAttributesById($categoryId, 'prodcat_code');
-            $categoryFilter['wildcard'] = ['categories.prodcat_code'=> [ "value" => $catCode.'*',"boost"=> "2.0", "rewrite"=>"constant_score" ] ];
+            $categoryFilter['wildcard'] = ['categories.prodcat_code' => [ "value" => $catCode . '*', "boost" => "2.0", "rewrite" => "constant_score" ] ];
             if (array_key_exists('must', $this->search)) {
                 array_push($this->search["must"], $categoryFilter);
             } else {
@@ -300,7 +299,7 @@ class ElasticSearch extends FullTextSearchBase
             $this->search = ['match_all' => []];
         }
 
-        return $this->results =  $this->search($this->search, $this->page, $this->pageSize, $aggregationPrice, $this->fields, $this->groupByFields, $this->sortField);
+        return $this->results = $this->search($this->search, $this->page, $this->pageSize, $aggregationPrice, $this->fields, $this->groupByFields, $this->sortField);
     }
 
     public function setPageNumber($page)
@@ -357,7 +356,7 @@ class ElasticSearch extends FullTextSearchBase
         $result = array();
         $params = [
             'index' => $this->indexName,
-            'body'  => [
+            'body' => [
                 "_source" => $source,
                 'query' => [
                     'bool' => $queryData,
@@ -408,18 +407,18 @@ class ElasticSearch extends FullTextSearchBase
             return false;
         }
         $params = [
-            'index'  =>  $this->indexName,
-            'body'   =>  [
+            'index' => $this->indexName,
+            'body' => [
                 'settings' => [
-                    'analysis' =>[
+                    'analysis' => [
                         'filter' => [
-                            mb_strtolower($language) . "_stop" => [ "type" => "stop","stopwords" => "_" . mb_strtolower($language) . "_"],
-                            mb_strtolower($language) . "_stemmer"  => [ "type" => "stemmer", "language" => mb_strtolower($language) ]
+                            mb_strtolower($language) . "_stop" => [ "type" => "stop", "stopwords" => "_" . mb_strtolower($language) . "_"],
+                            mb_strtolower($language) . "_stemmer" => [ "type" => "stemmer", "language" => mb_strtolower($language) ]
                         ],
                         "analyzer" => [
                             "rebuilt_" . mb_strtolower($language) => [
                                 "tokenizer" => "standard",
-                                "filter"  => [ "lowercase", "decimal_digit", mb_strtolower($language) . "_stop", mb_strtolower($language) . "_stemmer", "snowball"]
+                                "filter" => [ "lowercase", "decimal_digit", mb_strtolower($language) . "_stop", mb_strtolower($language) . "_stemmer", "snowball"]
                             ]
                         ]
                     ]
@@ -474,7 +473,7 @@ class ElasticSearch extends FullTextSearchBase
         $params = [
             'index' => $this->indexName,
             'type' => 'data',
-            'id' =>  $documentId,
+            'id' => $documentId,
             'body' => $data
         ];
 
@@ -501,7 +500,7 @@ class ElasticSearch extends FullTextSearchBase
 
         $params = [
             'index' => $this->indexName,
-            'id'    => $documentId
+            'id' => $documentId
         ];
         try {
             $response = $this->client->delete($params);
@@ -521,8 +520,8 @@ class ElasticSearch extends FullTextSearchBase
     {
         $params = [
             'index' => $this->indexName,
-            'id'    => $documentId,
-            'body'  => [
+            'id' => $documentId,
+            'body' => [
                 'doc' => $data
             ]
         ];
@@ -590,8 +589,8 @@ class ElasticSearch extends FullTextSearchBase
 
         $params = [
             'index' => $this->indexName,
-            'id'    => $documentId,
-            'body'  => [
+            'id' => $documentId,
+            'body' => [
                 'script' => array(
                     "source" => "ctx._source." . $dataIndexName . ".add(params." . $dataIndexName . ")",
                     "params" => $data
@@ -623,10 +622,10 @@ class ElasticSearch extends FullTextSearchBase
 
         $params = [
             'index' => $this->indexName,
-            'id'    => $documentId,
-            'body'  => [
+            'id' => $documentId,
+            'body' => [
                 'script' => array(
-                    "source" => "ctx._source.".$dataIndexName.".removeIf(data -> data.".$dataIndexColumnName." == params.".$dataIndexColumnName.")",
+                    "source" => "ctx._source." . $dataIndexName . ".removeIf(data -> data." . $dataIndexColumnName . " == params." . $dataIndexColumnName . ")",
                     "params" => $dataIndexArray
                 )
             ]

@@ -18,13 +18,13 @@ class Avalaratax extends TaxBase
     private $_invoiceId;
     private $_taxApiResponse;
     private $_invoiceDate;
-	
-	public $requiredKeys = [
+    
+    public $requiredKeys = [
         'account_number',
-		'commit_transaction',
-		'company_code',
-		'environment',
-		'license_key'
+        'commit_transaction',
+        'company_code',
+        'environment',
+        'license_key'
     ];
 
     public function __construct($langId)
@@ -34,7 +34,7 @@ class Avalaratax extends TaxBase
             $this->langId = CommonHelper::getLangId();
         }
 
-        if (false == $this->validateSettings($langId)) {
+        if (false == $this->validateSettings()) {
             return false;
         }
 
@@ -118,7 +118,7 @@ class Avalaratax extends TaxBase
 
         $recordCount = 0;
        
-        if (false == $formatted){
+        if (false == $formatted) {
             return $this->_client->listTaxCodes($filter, $pageSize, $pageNumber, $orderBy);
         }
 
@@ -338,7 +338,7 @@ class Avalaratax extends TaxBase
         foreach ($taxes->lines as $line) {
             $taxDetails = [];
             foreach ($line->details as $lineTaxdetail) {
-                $taxName = $lineTaxdetail->taxName;                
+                $taxName = $lineTaxdetail->taxName;
                 if (isset($taxDetails[$taxName])) {
                     $taxDetails[$taxName]['value'] += $lineTaxdetail->tax;
                 } else {

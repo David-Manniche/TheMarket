@@ -21,15 +21,11 @@ trait PluginHelper
      * getSettings
      *
      * @param  string $column
-     * @param  int $langId
      * @return array
      */
-    public function getSettings(string $column = '', int $langId = 0)
+    public function getSettings(string $column = '')
     {
-        $langId = FatUtility::int($langId);
-        if (1 > $langId) {
-            $langId = CommonHelper::getLangId();
-        }
+        $this->langId = 0 < $this->langId ? $this->langId : CommonHelper::getLangId();
 
         try {
             $keyName = get_called_class()::KEY_NAME;
@@ -38,22 +34,23 @@ trait PluginHelper
             return false;
         }
         $pluginSetting = new PluginSetting(0, $keyName);
-        return $pluginSetting->get($langId, $column);
+        return $pluginSetting->get($this->langId, $column);
     }
     
     /**
      * validateSettings - To validate plugin required keys are updated in db or not.
      *
-     * @param  mixed $langId
+     * @param  int $langId
      * @return bool
      */
-    protected function validateSettings(int $langId)
+    protected function validateSettings(int $langId = 0): bool
     {
+        $this->langId = 0 < $langId ? $langId : CommonHelper::getLangId();
         $this->settings = $this->getSettings();
         if (isset($this->requiredKeys) && !empty($this->requiredKeys) && is_array($this->requiredKeys)) {
             foreach ($this->requiredKeys as $key) {
                 if (!array_key_exists($key, $this->settings)) {
-                    $this->error = Labels::getLabel('MSG_PLUGIN_SETTINGS_NOT_CONFIGURED', $langId);
+                    $this->error = Labels::getLabel('MSG_PLUGIN_SETTINGS_NOT_CONFIGURED', $this->langId);
                     return false;
                 }
             }

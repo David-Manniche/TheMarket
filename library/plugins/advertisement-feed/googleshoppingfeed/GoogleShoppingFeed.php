@@ -1,4 +1,5 @@
 <?php
+
 include_once CONF_INSTALLATION_PATH . 'library/GoogleAPI/vendor/autoload.php';
 class GoogleShoppingFeed extends AdvertisementFeedBase
 {
@@ -42,10 +43,10 @@ class GoogleShoppingFeed extends AdvertisementFeedBase
         $service = new Google_Service_ShoppingContent($client);
         $batch = $service->createBatch();
 
-		$channel = $this->getSettings('channel');
-		if (false === $channel) {
-			return false;
-		}
+        $channel = $this->getSettings('channel');
+        if (false === $channel) {
+            return false;
+        }
         foreach ($data['data'] as $prodDetail) {
             $colorOption = array_filter($prodDetail['optionsData'], function ($v) {
                 return 1 == $v['option_is_color'];

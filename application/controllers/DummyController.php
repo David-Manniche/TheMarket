@@ -639,4 +639,18 @@ class DummyController extends MyAppController
         echo $error;
         CommonHelper::printArray($resp);
     }
+
+    public function stripe()
+    {
+        $error = '';
+        if (false === PluginHelper::includePlugin('StripeConnect', 'payment-methods', $this->siteLangId, $error)) {
+            CommonHelper::printArray($error, true);
+        }
+        $obj = new StripeConnect($this->siteLangId);
+        /* if (false === $obj->createAccount()) {
+            CommonHelper::printArray($obj->getError(), true);
+        } */
+        $obj->validateStripeUser();
+        echo "Done";
+    }
 }
