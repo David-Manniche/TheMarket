@@ -344,7 +344,7 @@ class Tax extends MyAppModel
                 $address = Shop::getShopAddress($shopInfo['shop_id'], true, $langId);
                 $fromAddress = $this->formatAddress($extraInfo['shippingAddress'], true);
             } else {
-                $fromAddress = CommonHelper::getAdminAddress($langId);
+                $fromAddress = Admin::getAddress($langId);
                 $shipFromStateId = FatApp::getConfig('CONF_STATE', FatUtility::VAR_INT, 0);
             }
            

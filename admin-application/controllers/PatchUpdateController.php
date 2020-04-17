@@ -53,13 +53,13 @@ class PatchUpdateController extends AdminBaseController
     public function updateAvalarataxCat()
     {
 		$error = '';
-		if (false === PluginHelper::includePlugin('Avalaratax', 'tax', $this->adminLangId, $error)) {
+		if (false === PluginHelper::includePlugin('AvalaraTax', 'tax', $this->adminLangId, $error)) {
             FatUtility::dieWithError($error);
 		}
-        $avalaraObj = new Avalaratax($this->adminLangId); 
+        $avalaraObj = new AvalaraTax($this->adminLangId); 
         $codesArr = $avalaraObj->getCodes(null, null, null, array('id ASC'), false);
         
-        $pluginId = Plugin::getAttributesByCode(Avalaratax::KEY_NAME, 'plugin_id');
+        $pluginId = Plugin::getAttributesByCode(AvalaraTax::KEY_NAME, 'plugin_id');
         $db = FatApp::getDb();
         $parentArr = [];
         foreach ($codesArr->value as $code) {

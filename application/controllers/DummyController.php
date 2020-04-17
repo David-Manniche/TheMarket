@@ -617,7 +617,7 @@ class DummyController extends MyAppController
     
     public function testavalaratax(){
      
-        require_once CONF_PLUGIN_DIR . '/tax/avalaratax/Avalaratax.php';
+        require_once CONF_PLUGIN_DIR . '/tax/avalaratax/AvalaraTax.php';
         
         $itemsArr = [];
         
@@ -659,8 +659,9 @@ class DummyController extends MyAppController
         );    
         
         
-        $avalaraObj = new Avalaratax(1); 
-        $txRates = $avalaraObj->getRates($fromAddress , $toAddress,$itemsArr ,$shippingItems,1);
+        $avalaraObj = new AvalaraTax(1); 
+        //$txRates = $avalaraObj->getRates($fromAddress , $toAddress,$itemsArr ,$shippingItems,1);
+        $txRates = $avalaraObj->getCodes();
         //print_r($avalaraObj->getTaxApiActualResponse());
       CommonHelper::printArray($txRates);
 //        die();

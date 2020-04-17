@@ -1900,29 +1900,6 @@ class CommonHelper extends FatUtility
         return $taxVal['name'] . ' (' . $taxVal['percentageValue'] . ')';
     }
 
-    public static function getAdminAddress($langId){
-        global $adminAddress;
-        if (!empty($adminAddress) && $adminAddress['line1'] != '') {
-            return $adminAddress;
-        }
-
-        $countryId = FatApp::getConfig('CONF_COUNTRY', FatUtility::VAR_INT, 0);
-        $countryCode = Countries::getAttributesById($countryId, 'country_code');
-
-        $stateId = FatApp::getConfig('CONF_STATE', FatUtility::VAR_INT, 0);
-        $stateName = States::getAttributesByLangId($langId, $stateId, 'state_name');
-        $stateCode = States::getAttributesById($stateId, 'state_code');
-        
-       return $adminAddress = [
-            'line1' => FatApp::getConfig('CONF_ADDRESS_' . $langId, FatUtility::VAR_STRING, ''),
-            'line2' => '',
-            'city' =>FatApp::getConfig('CONF_CITY_' . $langId, FatUtility::VAR_STRING, ''),
-            'state' => $stateName,
-            'state_code' => $stateCode,
-            'postalCode' => FatApp::getConfig('CONF_ZIP_CODE', FatUtility::VAR_STRING, ''),
-            'country' => $countryCode,
-        ];
-    }
 
     public static function replaceStringData($str, $replacements = array(), $replaceTags = false)
     {
