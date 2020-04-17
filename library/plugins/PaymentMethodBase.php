@@ -14,25 +14,29 @@ class PaymentMethodBase extends pluginBase
     public function loadLoggedUserInfo(): bool
     {
         $srch = User::getSearchObject();
-        $srch->joinTable(Countries::DB_TBL, 'LEFT OUTER JOIN', 'u.user_country_id = c.country_id', 'c');
+        $srch->joinTable(Shop::DB_TBL, 'LEFT OUTER JOIN', 'u.user_id = sh.shop_user_id', 'sh');
+        $srch->joinTable(Shop::DB_TBL_LANG, 'LEFT OUTER JOIN', 'sh.shop_id = sh_l.shoplang_shop_id', 'sh_l');
+        $srch->joinTable(Countries::DB_TBL, 'LEFT OUTER JOIN', 'sh.shop_country_id = c.country_id', 'c');
         $srch->joinTable(Countries::DB_TBL_LANG, 'LEFT OUTER JOIN', 'c.country_id = c_l.countrylang_country_id AND countrylang_lang_id = ' . $this->langId, 'c_l');
-        $srch->joinTable(States::DB_TBL, 'LEFT OUTER JOIN', 'u.user_state_id = s.state_id', 's');
+        $srch->joinTable(States::DB_TBL, 'LEFT OUTER JOIN', 'sh.shop_state_id = s.state_id', 's');
         $srch->joinTable(States::DB_TBL_LANG, 'LEFT OUTER JOIN', 's.state_id = s_l.statelang_state_id AND statelang_lang_id = ' . $this->langId, 's_l');
         $srch->joinTable(User::DB_TBL_CRED, 'LEFT OUTER JOIN', 'uc.' . User::DB_TBL_CRED_PREFIX . 'user_id = u.user_id', 'uc');
         $srch->joinTable(User::DB_TBL_USR_BANK_INFO, 'LEFT OUTER JOIN', 'ub.ub_user_id = u.user_id', 'ub');
         $srch->addMultipleFields([
             'user_id',
             'user_name',
-            'user_dial_code',
-            'user_phone',
+            'shop_phone',
+            'shop_id',
             'credential_email',
             'credential_username',
+            'shop_postalcode',
             'IFNULL(country_name, country_code) as country_name',
             'IFNULL(state_name, state_identifier) as state_name',
+            'IFNULL(shop_name, shop_identifier) as shop_name',
+            'shop_description',
             'user_dob',
             'user_address1',
             'user_address2',
-            'user_zip',
             'user_city',
             'country_code',
             'state_code',
@@ -53,8 +57,8 @@ class PaymentMethodBase extends pluginBase
     {
         $this->userId = UserAuthentication::getLoggedUserId(true);
         $this->userId = FatUtility::int($this->userId);
-        if (1 > $this->userId) {
-            $this->error = Labels::getLabel('MSG_USER_NOT_LOGGED_IN', $this->langId);
+        if (1 > $this->userId || false === User::isSeller()) {
+            $this->error = Labels::getLabel('MSG_INVALID_USER', $this->langId);
             return false;
         }
         return true;
