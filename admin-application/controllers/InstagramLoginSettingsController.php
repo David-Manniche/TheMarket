@@ -5,15 +5,15 @@ class InstagramLoginSettingsController extends SocialLoginSettingsController
     public static function getConfigurationKeys()
     {
         return [
-                'client_id' => [
+                'app_id' => [
                     'type' => PluginSetting::TYPE_STRING,
                     'required' => true,
-                    'label' => "Client ID",
+                    'label' => "App Id",
                 ],
-                'client_secret' => [
+                'app_secret' => [
                     'type' => PluginSetting::TYPE_STRING,
                     'required' => true,
-                    'label' => "Client Secret",
+                    'label' => "App Secret",
                 ],
             ];
     }

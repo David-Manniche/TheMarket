@@ -19,13 +19,14 @@ class InstagramLoginController extends SocialMediaAuthController
     private function validateSettings()
     {
         $settings = $this->getSettings();
-        if (!isset($settings['client_id']) || !isset($settings['client_secret'])) {
+        if (!isset($settings['app_id']) || !isset($settings['app_secret'])) {
             $message = Labels::getLabel('MSG_PLUGIN_SETTINGS_NOT_CONFIGURED', $this->siteLangId);
             $this->setErrorAndRedirect($message, true);
         }
-        $this->clientId = $settings['client_id'];
-        $this->clientSecret = $settings['client_secret'];
-        $this->redirectUri = CommonHelper::generateFullUrl(static::KEY_NAME, 'index', [], '', false);
+        $this->clientId = $settings['app_id'];
+        $this->clientSecret = $settings['app_secret'];
+        $this->redirectUri = CommonHelper::generateFullUrl(static::KEY_NAME);
+		/* $this->redirectUri = CommonHelper::generateFullUrl(static::KEY_NAME, 'index', [], '', false); */
     }
 
     
@@ -34,8 +35,8 @@ class InstagramLoginController extends SocialMediaAuthController
         return static::PRODUCTION_URL . 'authorize?' . http_build_query([
             'response_type' => 'code',
             'client_id' => $this->clientId,
+			'scope' => 'user_profile,user_media',
             'redirect_uri' => $this->redirectUri,
-            'scope' => 'basic',
         ]);
     }
 
@@ -46,7 +47,6 @@ class InstagramLoginController extends SocialMediaAuthController
         $accessToken = FatApp::getPostedData('accessToken', FatUtility::VAR_STRING, '');
         
         $instaAuthObj = new InstagramApi();
-
         if (empty($accessToken)) {
             if (isset($get['code'])) {
                 try {
