@@ -3,21 +3,8 @@
     $frmSrch->setFormTagAttribute('class', 'form');
     $frmSrch->developerTags['colClassPrefix'] = 'col-lg-2 col-md-';
     $frmSrch->developerTags['fld_default_col'] = 2;
-
-    $submitBtnFld = $frmSrch->getField('date_from');
-    $submitBtnFld->developerTags['noCaptionTag'] = true;
-
-    $submitBtnFld = $frmSrch->getField('date_to');
-    $submitBtnFld->developerTags['noCaptionTag'] = true;
-
-    $submitBtnFld = $frmSrch->getField('btn_submit');
-    $submitBtnFld->setFieldTagAttribute('class', 'btn--block');
-    $submitBtnFld->developerTags['noCaptionTag'] = true;
-
-    $cancelBtnFld = $frmSrch->getField('btn_clear');
-    $cancelBtnFld->setFieldTagAttribute('class', 'btn--block');
-    $cancelBtnFld->developerTags['noCaptionTag'] = true;
 ?>
+
 <?php $this->includeTemplate('_partial/seller/sellerDashboardNavigation.php'); ?>
 <main id="main-area" class="main" role="main">
     <div class="content-wrapper content-space">
@@ -36,21 +23,28 @@
                             <div class="action"><?php echo '<a href="javascript:void(0)" onClick="exportSalesReport()" class="btn btn--secondary btn--block btn--sm">'.Labels::getLabel('LBL_Export', $siteLangId).'</a>'; ?></div>
                         </div>
                         <div class="cards-content">
-                                <?php if (empty($orderDate)) { ?>
+                            <?php if (empty($orderDate)) { ?>
                                 <div class="replaced">
                                     <?php
-                                    $submitFld = $frmSrch->getField('btn_submit');
-                                    $submitFld->setFieldTagAttribute('class', 'btn--block btn btn--primary');
+                                        $dateFrm = $frmSrch->getField('date_from');
+                                        $dateFrm->developerTags['noCaptionTag'] = true;
+                                    
+                                        $dateTo = $frmSrch->getField('date_to');
+                                        $dateTo->developerTags['noCaptionTag'] = true;
 
-                                    $fldClear= $frmSrch->getField('btn_clear');
-                                    $fldClear->setFieldTagAttribute('class', 'btn--block btn btn-outline-primary');
-                                    echo $frmSrch->getFormHtml();
+                                        $submitFld = $frmSrch->getField('btn_submit');
+                                        $submitFld->developerTags['noCaptionTag'] = true;
+                                        $submitFld->setFieldTagAttribute('class', 'btn--block btn btn--primary');
+
+                                        $fldClear = $frmSrch->getField('btn_clear');
+                                        $fldClear->setFieldTagAttribute('class', 'btn--block btn btn-outline-primary');
+                                        $fldClear->developerTags['noCaptionTag'] = true;
+                                        echo $frmSrch->getFormHtml();
                                     ?>
                                 </div>
-                                <?php  } else {
-                                        echo  $frmSrch->getFormHtml();
-                                } ?>
-
+                            <?php  } else {
+                                echo  $frmSrch->getFormHtml();
+                            } ?>
                         </div>
                     </div>
                 </div>
