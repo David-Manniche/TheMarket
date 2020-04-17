@@ -25,7 +25,7 @@ class InstagramLoginController extends SocialMediaAuthController
         }
         $this->clientId = $settings['app_id'];
         $this->clientSecret = $settings['app_secret'];
-        $this->redirectUri = CommonHelper::generateFullUrl().'/instalogin.php';
+        $this->redirectUri = CommonHelper::generateFullUrl('public', 'instalogin.php');
 		/* $this->redirectUri = CommonHelper::generateFullUrl(static::KEY_NAME, 'index', [], '', false); */
     }
 
