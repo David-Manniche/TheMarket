@@ -223,14 +223,16 @@ class Tax extends MyAppModel
         $taxObj = self::getTaxCatObjByProductId($productId, $langId);
         $taxObj->addMultipleFields(array('IFNULL(taxcat_name,taxcat_identifier) as taxcat_name', 'taxcat_code', 'ptt_seller_user_id', 'ptt_taxcat_id', 'ptt_product_id', 'taxval_is_percent', 'taxval_value', 'taxval_options'));
         $taxObj->doNotCalculateRecords();
+        $taxObj->setPageSize(1);
 
         $cnd = $taxObj->addCondition('ptt_seller_user_id', '=', 0);
         $cnd->attachCondition('ptt_seller_user_id', '=', $userId, 'OR');
 
-        $cnd = $taxObj->addCondition('taxval_seller_user_id', '=', 0);
-        $cnd->attachCondition('taxval_seller_user_id', '=', $userId, 'OR');
-
-        $taxObj->setPageSize(1);
+        if (false == static::getActivatedServiceId()) {
+            $cnd = $taxObj->addCondition('taxval_seller_user_id', '=', 0);
+            $cnd->attachCondition('taxval_seller_user_id', '=', $userId, 'OR');
+        }   
+        
         if (FatApp::getConfig('CONF_TAX_COLLECTED_BY_SELLER', FatUtility::VAR_INT, 0)) {
             $taxObj->addOrder('taxval_seller_user_id', 'DESC');
             $taxObj->addOrder('ptt_seller_user_id', 'DESC');
@@ -250,56 +252,35 @@ class Tax extends MyAppModel
         $line2 = '';
         $city = '';
         $state = '';
+        $stateCode = '';
 
-        if (true == $shop) {
-            if (array_key_exists('shop_postalcode', $address)) {
-                $postalCode = $address['shop_postalcode'];
-            }
-
-            if (array_key_exists('shop_address_line_1', $address)) {
-                $line1 = $address['shop_address_line_1'];
-            }
-
-            if (array_key_exists('shop_address_line_2', $address)) {
-                $line2 = $address['shop_address_line_2'];
-            }
-
-            if (array_key_exists('shop_city', $address)) {
-                $city = $address['shop_city'];
-            }
-            
-            if (array_key_exists('state_name', $address)) {
-                $state = $address['state_name'];
-            }
-        } else {
-            if (array_key_exists('ua_zip', $address)) {
-                $postalCode = $address['ua_zip'];
-            }
-    
-            if (array_key_exists('ua_address1', $address)) {
-                $line1 = $address['ua_address1'];
-            }
-    
-            if (array_key_exists('ua_address2', $address)) {
-                $line2 = $address['ua_address2'];
-            }
-    
-            if (array_key_exists('city', $address)) {
-                $city = $address['city'];
-            }
-
-            if (array_key_exists('state', $address)) {
-                $state = $address['state'];
-            }
+        if (true == $shop) {           
+            $postalCode = array_key_exists('shop_postalcode', $address) ? $address['shop_postalcode'] : $postalCode;
+            $line1 = array_key_exists('shop_address_line_1', $address) ? $address['shop_address_line_1'] : $line1;
+            $line2 = array_key_exists('shop_address_line_2', $address) ? $address['shop_address_line_2'] : $line2;
+            $city = array_key_exists('shop_city', $address) ? $address['shop_city'] : $city;
+            $state = array_key_exists('state_name', $address) ? $address['state_name'] : $state;
+            $stateCode = array_key_exists('state_code', $address) ? $address['state_code'] : $stateCode;
+        } else {           
+            $postalCode = array_key_exists('ua_zip', $address) ? $address['ua_zip'] : $postalCode;
+            $line1 = array_key_exists('ua_address1', $address) ? $address['ua_address1'] : $line1;
+            $line2 = array_key_exists('ua_address2', $address) ? $address['ua_address2'] : $line2;
+            $city = array_key_exists('city', $address) ? $address['city'] : $city;
+            $city = array_key_exists('ua_city', $address) ? $address['ua_city'] : $city;
+            $state = array_key_exists('state', $address) ? $address['state'] : $state;
+            $state = array_key_exists('state_name', $address) ? $address['state_name'] : $state;
+            $stateCode = array_key_exists('state_code', $address) ? $address['state_code'] : $stateCode;
         }
 
         return [
             'line1' => $line1,
             'line2' => $line2,
             'city' => $city,
-            'state' => $state,
+            'state' => empty($state) ? $stateCode : $state,
+            'state_code'=>empty($stateCode) ? $state : $stateCode,
             'postalCode' => $postalCode,
-            'country' => $address['country_code'],
+            'country' => isset($address['country']) ? $address['country'] : $address['country_code'],
+            'country_code' => $address['country_code'],
         ];
     }
     
@@ -310,7 +291,7 @@ class Tax extends MyAppModel
         if (empty($taxCategoryRow)) {
             return $data = [
                 'status' => false,
-                'msg' => Labels::getLabels('MSG_INVALID_TAX_CATEGORY', $langId),
+                'msg' => Labels::getLabel('MSG_INVALID_TAX_CATEGORY', $langId),
                 'tax' => $tax,
                 'options' => []
             ];
@@ -321,6 +302,7 @@ class Tax extends MyAppModel
 
         $shipFromStateId = 0;
         $shipToStateId = 0;
+        
         if (isset($extraInfo['shipping_address']['ua_state_id'])) {
             $shipToStateId = FatUtility::int($extraInfo['shipping_address']['ua_state_id']);
         }
@@ -408,7 +390,7 @@ class Tax extends MyAppModel
                 'tax' => 0,
                 'options' => []
             ];
-
+           
             if ($confTaxStructure == TaxStructure::TYPE_COMBINED) {
                 foreach ($taxRates['data'] as $code => $rate) {
                     $data['tax'] = $data['tax'] + $rate['tax'];

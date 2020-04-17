@@ -9,7 +9,49 @@ class PatchUpdateController extends AdminBaseController
         set_time_limit(0);
     }
 
-    public function updateAvalarataxCat(){
+    public function updateTaxJarCat()
+    {
+        if (false === PluginHelper::includePlugin('TaxJartax', 'tax', $this->adminLangId, $error)) {
+            FatUtility::dieWithError($error);
+        }
+        
+        $taxJarObj = new TaxJarTax($this->adminLangId); 
+        $codesArr = $taxJarObj->getCodes(null, null, null, array(), false);
+
+        $pluginId = Plugin::getAttributesByCode(TaxJartax::KEY_NAME, 'plugin_id');
+        $db = FatApp::getDb();
+        $parentArr = [];
+        foreach ($codesArr as $code) {
+            $parentId = 0;
+           
+           $arr = [
+               'taxcat_identifier' => ($code->name != '') ? $code->name : $code->product_tax_code,
+               'taxcat_code' => $code->product_tax_code,
+               'taxcat_parent' => $parentId,   
+               'taxcat_plugin_id' => $pluginId,
+               'taxcat_active' => applicationConstants::ACTIVE ,
+               'taxcat_deleted' => applicationConstants::NO ,
+               'taxcat_last_updated' => date('Y-m-d H:i:s')
+           ];
+           
+           $db->insertFromArray(Tax::DB_TBL, $arr, false, array(), $arr);
+           $taxCatId = $db->getInsertId();
+
+           $data = array(
+            'taxcatlang_taxcat_id' => $taxCatId,
+            'taxcatlang_lang_id' => $this->adminLangId,
+            'taxcat_name' => ($code->description != '') ? $code->description : $code->taxCode,
+            );
+    
+            $taxObj = new Tax($taxCatId);
+            $taxObj->updateLangData($this->adminLangId, $data);
+
+        }
+        echo 'Done';
+    }
+
+    public function updateAvalarataxCat()
+    {
 		$error = '';
 		if (false === PluginHelper::includePlugin('Avalaratax', 'tax', $this->adminLangId, $error)) {
             FatUtility::dieWithError($error);

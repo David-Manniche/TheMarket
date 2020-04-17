@@ -234,10 +234,10 @@ class CheckoutController extends MyAppController
         $this->set('cartHasPhysicalProduct', $cartHasPhysicalProduct);
         // $this->set('cartSummary', $this->cartObj->getCartFinancialSummary($this->siteLangId));
 
-        if ($this->cartObj->getError() != '') {
-            Message::addErrorMessage($this->cartObj->getError());
-            FatApp::redirectUser(CommonHelper::generateUrl('cart'));
-        }
+        // if ($this->cartObj->getError() != '') {
+        //     Message::addErrorMessage($this->cartObj->getError());
+        //     FatApp::redirectUser(CommonHelper::generateUrl('cart'));
+        // }
 
         $obj = new Extrapage();
         $pageData = $obj->getContentByPageType(Extrapage::CHECKOUT_PAGE_RIGHT_BLOCK, $this->siteLangId);
@@ -864,6 +864,14 @@ class CheckoutController extends MyAppController
             FatUtility::dieWithError($this->errMessage);
         }
 
+        if ($this->cartObj->getError() != '') {
+            if (true === MOBILE_APP_API_CALL) {
+                LibHelper::dieJsonError($this->cartObj->getError());
+            }
+            Message::addErrorMessage($this->cartObj->getError());
+            FatUtility::dieWithError(Message::getHtml());
+        }
+
         $cartSummary = $this->cartObj->getCartFinancialSummary($this->siteLangId);
         $userId = UserAuthentication::getLoggedUserId();
         $userWalletBalance = User::getUserBalance($userId, true);
@@ -1192,9 +1200,15 @@ class CheckoutController extends MyAppController
                     if (array_key_exists($productInfo['selprod_id'], $cartSummary["prodTaxOptions"])) {
                         $productTaxOption = $cartSummary["prodTaxOptions"][$productInfo['selprod_id']];
                     }
+                    
                     foreach ($productTaxOption as $taxStroId => $taxStroName) {
                         $taxStructure = new TaxStructure(FatApp::getConfig('CONF_TAX_STRUCTURE', FatUtility::VAR_FLOAT, 0));
-                        if (FatApp::getConfig('CONF_TAX_STRUCTURE', FatUtility::VAR_FLOAT, 0) == TaxStructure::TYPE_COMBINED) {
+                        if (Tax::getActivatedServiceId()) {
+                            $op_product_tax_options[$taxStroId]['value'] = $taxStroName['value'];
+                            $op_product_tax_options[$taxStroId]['name'] = $taxStroId;
+                            $op_product_tax_options[$taxStroId]['percentageValue'] = $taxStroName['percentageValue'];
+                            $op_product_tax_options[$taxStroId]['inPercentage'] = $taxStroName['inPercentage'];
+                        } else if (FatApp::getConfig('CONF_TAX_STRUCTURE', FatUtility::VAR_FLOAT, 0) == TaxStructure::TYPE_COMBINED) {
                             $taxLangData = $taxStructure->getOptionData($taxStroId);
                             // CommonHelper::printArray($taxLangData, true);
                             $op_product_tax_options[$taxLangData['taxstro_name'][$lang_id]]['value'] = $taxStroName['value'];
@@ -1213,7 +1227,7 @@ class CheckoutController extends MyAppController
                             $op_product_tax_options[$label]['inPercentage'] = $taxStroName['inPercentage'];
                         }
                     }
-
+                    
                     $productsLangData[$lang_id] = array(
                     'oplang_lang_id' => $lang_id,
                     'op_product_name' => $langSpecificProductInfo['product_name'],
@@ -1228,7 +1242,7 @@ class CheckoutController extends MyAppController
                     'op_product_tax_options' => json_encode($op_product_tax_options),
                     );
                 }
-
+                
                 /* $taxCollectedBySeller = applicationConstants::NO;
                 if(FatApp::getConfig('CONF_TAX_COLLECTED_BY_SELLER',FatUtility::VAR_INT,0)){
                 $taxCollectedBySeller = applicationConstants::YES;

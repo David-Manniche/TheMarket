@@ -566,6 +566,54 @@ class DummyController extends MyAppController
     {
         AbandonedCart::sendReminderAbandonedCart();
     }
+
+    public function testTaxjar(){
+        require_once CONF_PLUGIN_DIR . '/tax/taxjartax/TaxJarTax.php';
+        $itemsArr = [];
+        
+        $item = [
+              'amount' => 100,
+              'quantity' => 2,
+              'itemCode' => 100,
+              'taxCode' => 'P0000000',                
+        ];
+        array_push($itemsArr, $item);
+        
+        $shippingItems = [];
+      
+        $shippingItem = [
+            'amount' => 12,
+            'quantity' => 1,
+            'itemCode' => 'S-100', 
+            'taxCode' => 'FR',
+        ];
+        array_push($shippingItems, $shippingItem);      
+        
+       
+        $fromAddress = array(
+            'line1' => '9500 Gilman Drive',
+            'line2' => '',
+            'city' => 'La Jolla',
+            'state' => 'CA',
+            'postalCode' => '92093',
+            'country' => 'US',
+        );
+
+        $toAddress = array(
+            'line1' => '1335 E 103rd St',
+            'line2' => '',
+            'city' =>'Los Angeles',
+            'state' => 'CA',
+            'postalCode' => '90002',
+            'country' => 'US',
+        );    
+        
+        
+        $avalaraObj = new TaxJarTax(1); 
+        $txRates = $avalaraObj->getRates($fromAddress , $toAddress,$itemsArr ,$shippingItems,1);
+        CommonHelper::printArray($txRates);
+        exit;
+    }
     
     public function testavalaratax(){
      

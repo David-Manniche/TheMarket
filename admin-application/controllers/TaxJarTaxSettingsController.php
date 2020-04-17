@@ -15,7 +15,7 @@ class TaxJarTaxSettingsController extends TaxSettingsController
                 'required' => false,
                 'label' => "Sandbox Key/Token",
             ],
-            'sender_id' => [
+            'environment' => [
                 'type' => PluginSetting::TYPE_BOOL,
                 'required' => true,
                 'label' => "Production Mode",
