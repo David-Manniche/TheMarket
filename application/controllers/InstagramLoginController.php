@@ -28,8 +28,8 @@ class InstagramLoginController extends SocialMediaAuthController
         return static::PRODUCTION_URL . 'authorize?' . http_build_query([
             'response_type' => 'code',
             'client_id' => $this->settings['client_id'],
+            'scope' => 'user_profile,user_media',
             'redirect_uri' => $this->redirectUri,
-            'scope' => 'basic',
         ]);
     }
 
@@ -40,7 +40,6 @@ class InstagramLoginController extends SocialMediaAuthController
         $accessToken = FatApp::getPostedData('accessToken', FatUtility::VAR_STRING, '');
         
         $instaAuthObj = new InstagramApi();
-
         if (empty($accessToken)) {
             if (isset($get['code'])) {
                 try {

@@ -36,7 +36,7 @@ class EmailHandler extends FatModel
         return $row;
     }
 
-    private function sendSms($tpl, $phone, $arrReplacements, $langId)
+    public function sendSms($tpl, $phone, $arrReplacements, $langId)
     {
         $langId = 1 > FatUtility::int($langId) ? $this->commonLangId : FatUtility::int($langId);
         if (empty($phone) || empty($tpl) || empty($arrReplacements)) {

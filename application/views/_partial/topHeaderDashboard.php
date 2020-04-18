@@ -1,4 +1,4 @@
-<?php if (FatApp::getConfig('CONF_AUTO_RESTORE_ON', FatUtility::VAR_INT, 1) && CommonHelper::demoUrl()) {
+<?php if (FatApp::getConfig('CONF_AUTO_RESTORE_ON', FatUtility::VAR_INT, 1) && CommonHelper::demoUrl() && 'subscriptioncheckout' != strtolower($controllerName)) {
 			$this->includeTemplate('restore-system/top-header.php');
 		} ?>
 		

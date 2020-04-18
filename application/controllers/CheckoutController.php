@@ -1142,6 +1142,9 @@ class CheckoutController extends MyAppController
                 $productsLangData = array();
                 $productShippingLangData = array();
                 foreach ($allLanguages as $lang_id => $language_name) {
+                    if (0 == $lang_id){
+                        continue;
+                    }
                     $langSpecificProductInfo = $this->getCartProductLangData($productInfo['selprod_id'], $lang_id);
                     if (!$langSpecificProductInfo) {
                         continue;
