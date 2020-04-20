@@ -25,7 +25,14 @@ class AvalaraTax extends TaxBase
 		'license_key'
     ];
 
-    public function __construct($langId)
+    /**
+     * __construct
+     *
+     * @param  int $langId
+     * @param  array $fromAddress
+     * @param  array $toAddress
+     */
+    public function __construct(int $langId, array $fromAddress, array $toAddress)
     {
         $this->langId = FatUtility::int($langId);
         if (1 > $this->langId) {
@@ -34,6 +41,14 @@ class AvalaraTax extends TaxBase
 
         if (false == $this->validateSettings($langId)) {
             return false;
+        }
+
+        if (!empty($fromAddress)) {
+            $this->setFromAddress($fromAddress);
+        }
+
+        if (!empty($toAddress)) {
+            $this->setToAddress($toAddress);
         }
 
         $environment = FatUtility::int($this->settings['environment']) == 1 ? 'production' : 'sandbox';
@@ -51,12 +66,18 @@ class AvalaraTax extends TaxBase
         return $p->authenticated;
     }
 
-    public function getRates($fromAddress, $toAddress, $itemsArr, $shippingItem, $userId)
+    /**
+     * getRates
+     *
+     * @param  array $itemsArr
+     * @param  array $shippingItem
+     * @param  int $userId
+     * @return array
+     */
+    public function getRates($itemsArr, $shippingItem, $userId)
     {
         try {
-            $this->setFromAddress($fromAddress)
-                    ->setToAddress($toAddress)
-                    ->setProducts($itemsArr)
+            $this->setProducts($itemsArr)
                     ->setProductsShipping($shippingItem)
                     ->setCustomerCode($userId);
 
@@ -75,28 +96,36 @@ class AvalaraTax extends TaxBase
         ];
     }
 
-    public function createInvoice($fromAddress, $toAddress, $itemsArr, $shippingItem, $userId, $invoiceDate, $InvoiceNo)
+    /**
+     * createInvoice
+     *
+     * @param  array $itemsArr
+     * @param  array $shippingItem
+     * @param  int $userId
+     * @param  string $invoiceDate
+     * @param  string $InvoiceNo
+     * @return array
+     */
+    public function createInvoice($itemsArr, $shippingItem, $userId, $invoiceDate, $InvoiceNo)
     {
         try {
-            $this->setFromAddress($fromAddress)
-                    ->setToAddress($toAddress)
-                    ->setProducts($itemsArr)
+            $this->setProducts($itemsArr)
                     ->setProductsShipping($shippingItem)
-                    //->setCustomerCode($userId)
+                    ->setCustomerCode($userId)
                     ->setInvoiceId($InvoiceNo)
                     ->setInvoiceDate($invoiceDate);
 
             $taxes = $this->calculateTaxes(true);
-        } catch (\Exception $e) {
+        } catch (\Exception $e) { 
             return [
                 'status' => false,
-                'msg' => Labels::getLabel($e->getMessage(), $this->langId),
+                'msg' => $e->getMessage(),
             ];
         }
 
         return [
             'status' => true,
-            'msg' => Labels::getLabel("MSG_SUCCESS", $this->langId),
+            'referenceId' => $taxes->id,
             'data' => $this->formatTaxes($taxes)
         ];
     }
@@ -317,7 +346,7 @@ class AvalaraTax extends TaxBase
             return false;
         }
 
-        $requiredKeys = ['line1', 'line2', 'city', 'state', 'postalCode', 'country'];
+        $requiredKeys = ['line1', 'line2', 'city', 'state', 'postalCode', 'country', 'stateCode', 'countryCode'];
         return !array_diff($requiredKeys, array_keys($address));
     }
 

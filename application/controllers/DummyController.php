@@ -602,7 +602,12 @@ class DummyController extends MyAppController
     }
     
     public function testavalaratax(){
-     
+        
+        $orderSubObj = new Orders();
+        $childOrderInfo = $orderSubObj->getOrderProductsByOpId(235, 1);
+        $taxObj = new Tax(0);
+        $rs = $taxObj->createInvoice($childOrderInfo);
+        CommonHelper::printArray($rs, true);
         require_once CONF_PLUGIN_DIR . '/tax/avalaratax/AvalaraTax.php';
         
         $itemsArr = [];

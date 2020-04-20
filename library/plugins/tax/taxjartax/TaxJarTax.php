@@ -197,13 +197,13 @@ class TaxJarTax extends TaxBase
 
         try {
             $order = $this->client->createOrder($this->params);                    
-        } catch(exception $e){ die($e->getMessage());
+        } catch(exception $e){ 
             return [
                 'status' => false,
                 'msg' => $e->getMessage(),
             ];
         }
-        CommonHelper::printArray($order);
+      
         return [
             'status' => true,
             'referenceId' => $order->transaction_id,

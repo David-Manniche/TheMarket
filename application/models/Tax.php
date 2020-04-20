@@ -519,7 +519,7 @@ class Tax extends MyAppModel
         return $data;
     }
 
-    public static function createInvoice($childOrderInfo)
+    public function createInvoice($childOrderInfo)
     {
         $activatedTaxServiceId = static::getActivatedServiceId();
         if (!$activatedTaxServiceId) {
