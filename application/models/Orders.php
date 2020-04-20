@@ -1743,7 +1743,14 @@ class Orders extends MyAppModel
             /* Allocation of Rewards points [ */
             /* Handeled in addOrderPaymentHistory Function. */
             /*]*/
-
+            $taxObj = new Tax(0);
+            if (false == $taxObj->createInvoice($childOrderInfo)) {
+                $info = [
+                    'op_invoice_number' => $childOrderInfo['op_invoice_number'],
+                    'error_message' => $taxObj->getError()
+                ];
+                $emailNotificationObj->sendTaxApiOrderCreationFailure($info, $langId);
+            }
             Cronjob::RewardsOnPurchase($childOrderInfo['op_order_id']);
             Cronjob::firstTimeBuyerDiscount($childOrderInfo['order_user_id'], $childOrderInfo['op_order_id']);
         }
@@ -1887,7 +1894,7 @@ class Orders extends MyAppModel
         $srch->joinTable(OrderProduct::DB_TBL_CHARGES, 'LEFT OUTER JOIN', 'opc.' . OrderProduct::DB_TBL_CHARGES_PREFIX . 'op_id = op.op_id', 'opc');
         $srch->joinTable(Orders::DB_TBL_ORDER_PRODUCTS_SHIPPING, 'LEFT OUTER JOIN', 'ops.opshipping_op_id = op.op_id', 'ops');
 
-        $srch->addMultipleFields(array('op.*', 'opst.*', 'op_l.*', 'o.order_id', 'o.order_is_paid', 'o.order_language_id', 'o.order_user_id', 'sum(' . OrderProduct::DB_TBL_CHARGES_PREFIX . 'amount) as op_other_charges', 'o.order_affiliate_user_id', 'pmethod_code', 'optsu_user_id', 'ops.opshipping_by_seller_user_id'));
+        $srch->addMultipleFields(array('op.*', 'opst.*', 'op_l.*', 'o.order_id', 'o.order_is_paid', 'o.order_date_added', 'o.order_language_id', 'o.order_user_id', 'sum(' . OrderProduct::DB_TBL_CHARGES_PREFIX . 'amount) as op_other_charges', 'o.order_affiliate_user_id', 'pmethod_code', 'optsu_user_id', 'ops.opshipping_by_seller_user_id'));
         $srch->addCondition('op_id', '=', $op_id);
         $srch->doNotCalculateRecords();
         $srch->doNotLimitRecords();
@@ -2281,7 +2288,16 @@ class Orders extends MyAppModel
         foreach ($orderInfo as $order) {
             if (!FatApp::getDb()->updateFromArray(
                 Orders::DB_TBL_ORDER_USER_ADDRESS,
-                ['oua_address1' => static::REPLACE_ORDER_USER_ADDRESS, 'oua_address2' => static::REPLACE_ORDER_USER_ADDRESS, 'oua_city' => static::REPLACE_ORDER_USER_ADDRESS, 'oua_state' => static::REPLACE_ORDER_USER_ADDRESS, 'oua_country' => static::REPLACE_ORDER_USER_ADDRESS, 'oua_country_code' => static::REPLACE_ORDER_USER_ADDRESS, 'oua_phone' => static::REPLACE_ORDER_USER_ADDRESS, 'oua_zip' => static::REPLACE_ORDER_USER_ADDRESS],
+                [
+                    'oua_address1' => static::REPLACE_ORDER_USER_ADDRESS, 
+                    'oua_address2' => static::REPLACE_ORDER_USER_ADDRESS, 
+                    'oua_city' => static::REPLACE_ORDER_USER_ADDRESS, 
+                    'oua_state' => static::REPLACE_ORDER_USER_ADDRESS, 
+                    'oua_country' => static::REPLACE_ORDER_USER_ADDRESS, 
+                    'oua_country_code' => static::REPLACE_ORDER_USER_ADDRESS,
+                    'oua_state_code' => static::REPLACE_ORDER_USER_ADDRESS, 
+                    'oua_phone' => static::REPLACE_ORDER_USER_ADDRESS, 
+                    'oua_zip' => static::REPLACE_ORDER_USER_ADDRESS],
                 ['smt' => 'oua_order_id = ? ', 'vals' => [$order['order_id']]]
             )
             ) {
