@@ -1745,7 +1745,11 @@ class Orders extends MyAppModel
             /*]*/
             $taxObj = new Tax(0);
             if (false == $taxObj->createInvoice($childOrderInfo)) {
-                // will send email notification
+                $info = [
+                    'op_invoice_number' => $childOrderInfo['op_invoice_number'],
+                    'error_message' => $taxObj->getError()
+                ];
+                $emailNotificationObj->sendTaxApiOrderCreationFailure($info, $langId);
             }
             Cronjob::RewardsOnPurchase($childOrderInfo['op_order_id']);
             Cronjob::firstTimeBuyerDiscount($childOrderInfo['order_user_id'], $childOrderInfo['op_order_id']);
