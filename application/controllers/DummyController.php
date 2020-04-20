@@ -568,6 +568,19 @@ class DummyController extends MyAppController
     }
 
     public function testTaxjar(){
+        $orders = new Orders();
+        $childOrderInfo = $orders->getOrderProductsByOpId(233, 1);
+
+        $langId = $childOrderInfo['oplang_lang_id'];
+
+        $taxObj = new Tax();
+        $address = $taxObj->createInvoice($childOrderInfo);
+
+        
+        CommonHelper::printArray($address, true);
+
+
+
         require_once CONF_PLUGIN_DIR . '/tax/taxjartax/TaxJarTax.php';
         $itemsArr = [];
         

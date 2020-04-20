@@ -21,6 +21,7 @@ class Admin extends MyAppModel
 
         $countryId = FatApp::getConfig('CONF_COUNTRY', FatUtility::VAR_INT, 0);
         $countryCode = Countries::getAttributesById($countryId, 'country_code');
+        $countryName = Countries::getAttributesByLangId($langId, $countryId, 'country_name');
 
         $stateId = FatApp::getConfig('CONF_STATE', FatUtility::VAR_INT, 0);
         $stateName = States::getAttributesByLangId($langId, $stateId, 'state_name');
@@ -31,9 +32,10 @@ class Admin extends MyAppModel
             'line2' => '',
             'city' =>FatApp::getConfig('CONF_CITY_' . $langId, FatUtility::VAR_STRING, ''),
             'state' => $stateName,
-            'state_code' => $stateCode,
+            'stateCode' => $stateCode,
             'postalCode' => FatApp::getConfig('CONF_ZIP_CODE', FatUtility::VAR_STRING, ''),
-            'country' => $countryCode,
+            'country' => $countryName,
+            'countryCode' => $countryCode,
         ];
     }
 }

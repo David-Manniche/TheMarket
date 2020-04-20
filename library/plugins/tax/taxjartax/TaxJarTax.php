@@ -9,9 +9,10 @@ class TaxJarTax extends TaxBase
     public $error;
 
     public $langId = 0;
-    private $_fromAddress = [];
-    private $_toAddress = [];
+    private $fromAddress = [];
+    private $toAddress = [];
     private $client;
+    private $params = [];
 
     private const RATE_TYPE_STATE = 1;
     private const RATE_TYPE_COUNTY = 2;
@@ -30,10 +31,12 @@ class TaxJarTax extends TaxBase
      * __construct
      *
      * @param  int $langId
+     * @param  array $fromAddress
+     * @param  array $toAddress
      */
-    public function __construct(int $langId)
+    public function __construct(int $langId, array $fromAddress = array(), array $toAddress = array())
     {
-        $this->langId = FatUtility::int($langId);
+        $this->langId = FatUtility::int($langId);        
         if (1 > $this->langId) {
             $this->langId = CommonHelper::getLangId();
         }
@@ -43,6 +46,14 @@ class TaxJarTax extends TaxBase
                 'status' => false,
                 'msg' => $this->error,
             ];
+        }
+
+        if (!empty($fromAddress)) {
+            $this->setFromAddress($fromAddress);
+        }
+
+        if (!empty($toAddress)) {
+            $this->setToAddress($toAddress);
         }
 
         $isLiveMode = $this->settings['environment'];
@@ -63,41 +74,17 @@ class TaxJarTax extends TaxBase
     /**
      * getRates
      *
-     * @param  array $fromAddress
-     * @param  array $toAddress
      * @param  array $itemsArr
      * @param  array $shippingItem
      * @param  int $userId
      * @return array
      */
-    public function getRates(array $fromAddress, array $toAddress, array $itemsArr, array $shippingItem, int $userId)
+    public function getRates(array $itemsArr, array $shippingItem, int $userId)
     {
-        $params = [
-            'from_country' => $fromAddress['country'],
-            'from_zip' => $fromAddress['postalCode'],
-            'from_state' => $fromAddress['state_code'],
-            'from_city' => $fromAddress['city'],
-            'from_street' => $fromAddress['line1'] . " " . $fromAddress['line2'],
-            'to_country' => $toAddress['country'],
-            'to_zip' => $toAddress['postalCode'],
-            'to_state' => $toAddress['state_code'],
-            'to_city' => $toAddress['city'],
-            'to_street' => $toAddress['line1'] . " " . $toAddress['line2'],
-            'amount' => $itemsArr[0]['amount'] + $shippingItem[0]['amount'],
-            'shipping' => $shippingItem[0]['amount'],
-            'line_items' => [
-                [
-                    'id' => '1',
-                    'quantity' => $itemsArr[0]['quantity'],
-                    'product_tax_code' => "'" . $itemsArr[0]['taxCode'] . "'",
-                    'unit_price' => $itemsArr[0]['amount'],
-                    'discount' => 0
-                ]
-            ]
-        ];
+        $this->setItems($itemsArr, $shippingItem, $userId);
         
         try {
-            $taxes = $this->client->taxForOrder($params);            
+            $taxes = $this->client->taxForOrder($this->params);            
         } catch(exception $e){
             return [
                 'status' => false,
@@ -191,6 +178,140 @@ class TaxJarTax extends TaxBase
                 'msg' => $e->getMessage()
             ];
         }
+    }
+
+    /**
+     * createInvoice
+     *
+     * @param  array $itemsArr
+     * @param  array $shippingItem
+     * @param  int $userId
+     * @param  string $orderDate
+     * @param  string $invoiceNumber
+     * @return array
+     */
+    public function createInvoice(array $itemsArr, array $shippingItem, int $userId, string $txnDateTime, string $invoiceNumber){
+        $this->params['transaction_id'] = $invoiceNumber;
+        $this->params['transaction_date'] = $this->formatDateTime($txnDateTime);
+        $this->setItemsForOrder($itemsArr, $shippingItem);
+
+        try {
+            $order = $this->client->createOrder($this->params);                    
+        } catch(exception $e){ die($e->getMessage());
+            return [
+                'status' => false,
+                'msg' => $e->getMessage(),
+            ];
+        }
+        CommonHelper::printArray($order);
+        return [
+            'status' => true,
+            'referenceId' => $order->transaction_id,
+            'data' => $order
+        ];
+    }
+
+    private function formatDateTime($txnDateTime){
+       return date("Y-m-d\TH:i:s", strtotime($txnDateTime));
+    }
+
+    private function setItemsForOrder($itemsArr, $shippingItem) {
+                        
+        $lineItems = [];
+        $salesTax = 0;
+        $totalDiscount = 0;
+        $totalAmount = 0; 
+        //$netAmount = ($childOrderInfo['op_unit_price'] * $quantity) - abs($discount)  + $shippingAmount;
+        //348 - 86.12 - 0.1 + 30 = 
+        foreach($itemsArr as $item){
+            $arr = [
+                'id' => $item['itemCode'],
+                'quantity' => $item['quantity'],
+                'product_identifier' => $item['productName'],
+                'description' => $item['description'],
+                'unit_price' => $item['amount'],
+                'discount' => $item['discount'],
+                'sales_tax' => 0 + $item['salesTax'],
+            ];
+
+            $totalAmount = $totalAmount + ($item['amount'] * $item['quantity']);
+            $salesTax = $salesTax + $item['salesTax'];         
+            $totalDiscount = $item['discount'];
+            array_push($lineItems, $arr);
+        }
+
+        $shipAmount = 0;
+        foreach($shippingItem as $item){
+            $shipAmount = $shipAmount + $item['amount'];
+        }
+        
+        $this->params['line_items'] = $lineItems;
+        $this->params['shipping'] = $shipAmount;        
+        $this->params['sales_tax'] = $salesTax;
+        $this->params['amount'] = $totalAmount - $totalDiscount + $shipAmount ;
+    }
+
+    private function setItems($itemsArr, $shippingItem, $userId) {
+        $totalAmount = 0;
+        $lineItems = [];
+       
+        foreach($itemsArr as $item){
+            $arr = [
+                'id' => $item['itemCode'],
+                'quantity' => $item['quantity'],
+                'product_tax_code' =>$item['taxCode'],
+                'unit_price' => $item['amount'],
+                'discount' => 0
+            ];
+            $totalAmount = $totalAmount + $item['amount'];
+            array_push($lineItems, $arr);
+        }
+
+        $shipAmount = 0;
+        foreach($shippingItem as $item){
+            $shipAmount = $shipAmount + $item['amount'];
+        }
+
+        $this->params['line_items'] = $lineItems;
+        $this->params['shipping'] = $shipAmount;
+        $this->params['amount'] = $totalAmount + $shipAmount;
+    }
+
+    private function setFromAddress(array $address) {
+        
+        if (!$this->validateAddress($address)) {
+            $this->error = "E_Avalara_Error:_Invalid_From_Address_keys";
+            return false;
+        }
+        $this->params['from_country'] = $address['countryCode'];
+        $this->params['from_zip'] = $address['postalCode'];
+        $this->params['from_state'] = $address['stateCode'];
+        $this->params['from_city'] = $address['city'];
+        $this->params['from_street'] = $address['line1'] . " " . $address['line2'];       
+        return $this;
+    }
+    
+    private function setToAddress(array $address) { 
+        if (!$this->validateAddress($address)) {
+            $this->error = "E_Avalara_Error:_Invalid_From_Address_keys";
+            return false;
+        }
+        
+        $this->params['to_country'] = $address['countryCode'];
+        $this->params['to_zip'] = $address['postalCode'];
+        $this->params['to_state'] = $address['stateCode'];
+        $this->params['to_city'] = $address['city'];
+        $this->params['to_street'] = $address['line1'] . " " . $address['line2'];
+        return $this;
+    }
+    
+    private function validateAddress(array $address) {
+        if (!is_array($address)) {
+            return false;
+        }
+        
+        $requiredKeys = ['line1', 'line2', 'city', 'state', 'postalCode', 'country' , 'stateCode', 'countryCode'];
+        return !array_diff($requiredKeys, array_keys($address));
     }
 
     private  function getRateTypesNames() {

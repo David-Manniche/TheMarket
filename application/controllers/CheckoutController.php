@@ -941,6 +941,7 @@ class CheckoutController extends MyAppController
         'oua_state' => $billingAddressArr['state_name'],
         'oua_country' => $billingAddressArr['country_name'],
         'oua_country_code' => $billingAddressArr['country_code'],
+        'oua_state_code' => $billingAddressArr['state_code'],
         'oua_phone' => $billingAddressArr['ua_phone'],
         'oua_zip' => $billingAddressArr['ua_zip'],
         );
@@ -956,6 +957,7 @@ class CheckoutController extends MyAppController
             'oua_state' => $shippingAddressArr['state_name'],
             'oua_country' => $shippingAddressArr['country_name'],
             'oua_country_code' => $shippingAddressArr['country_code'],
+            'oua_state_code' => $shippingAddressArr['state_code'],
             'oua_phone' => $shippingAddressArr['ua_phone'],
             'oua_zip' => $shippingAddressArr['ua_zip'],
             );
@@ -1288,6 +1290,7 @@ class CheckoutController extends MyAppController
                     /* 'op_tax_collected_by_seller'    =>    $taxCollectedBySeller, */
                     'op_free_ship_upto' => $cartProduct['shop_free_ship_upto'],
                     'op_actual_shipping_charges' => $cartProduct['shipping_cost'],
+                    'op_tax_code' => $cartProduct['taxCode'],
                     'productSpecifics' => [
                         'op_selprod_return_age' => $productInfo['return_age'],
                         'op_selprod_cancellation_age' => $productInfo['cancellation_age'],

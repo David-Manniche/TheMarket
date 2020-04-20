@@ -421,6 +421,7 @@ class Cart extends FatModel
                     $tax = $taxData['tax'];
 
                     $this->products[$key]['tax'] = $tax;
+                    $this->products[$key]['taxCode'] =$taxData['taxCode'];
                     $this->products[$key]['taxOptions'] = $taxOptions;
                     /*]*/
 
@@ -633,6 +634,7 @@ class Cart extends FatModel
                     $tax = $taxData['tax'];
 
                     $this->products[$key]['tax'] = $tax;
+                    $this->products[$key]['taxCode'] = $taxData['taxCode'];
                     $this->products[$key]['taxOptions'] = $taxOptions;
                     /*]*/
 
@@ -806,8 +808,9 @@ class Cart extends FatModel
         
         $tax = $taxData['tax'];
         $sellerProductRow['tax'] = $tax;
+        $sellerProductRow['taxCode'] = $taxData['taxCode'];
         /* ] */
-
+       
         $sellerProductRow['total'] = $totalPrice;
         $sellerProductRow['netTotal'] = $sellerProductRow['total'] + $sellerProductRow['shipping_cost'];
 
