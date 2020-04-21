@@ -335,16 +335,16 @@ class Tax extends MyAppModel
         global $taxRates;
         if (0 < $activatedTaxServiceId && !empty($extraInfo) && $extraInfo['shippingAddress'] != '') {
             $cacheKey = $langId . '-' . $shipFromStateId . '-' . $shipToStateId . '-' . $productId . '-' . $qty . '-' . $sellerId;
-            // if (true == $useCache) {
-            //     $rates = FatCache::get('taxCharges' . $cacheKey, CONF_API_REQ_CACHE_TIME, '.txt');
-            //     if ($rates) {
-            //         return unserialize($rates);
-            //     }
-            // }
+            if (true == $useCache) {
+                $rates = FatCache::get('taxCharges' . $cacheKey, CONF_API_REQ_CACHE_TIME, '.txt');
+                if ($rates) {
+                    return unserialize($rates);
+                }
+            }
            
-            // if (isset($taxRates['values'])) {
-            //     return $taxRates['values'];
-            // }
+            if (isset($taxRates['values'])) {
+                return $taxRates['values'];
+            }
             
             $pluginKey = Plugin::getAttributesById($activatedTaxServiceId, 'plugin_code');
 
