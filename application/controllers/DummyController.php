@@ -561,7 +561,7 @@ class DummyController extends MyAppController
               'amount' => 100,
               'quantity' => 2,
               'itemCode' => 100,
-              'taxCode' => 'P0000000',                
+              'taxCode' => '20010',                
         ];
         array_push($itemsArr, $item);
         
@@ -586,7 +586,7 @@ class DummyController extends MyAppController
         );
 
         $toAddress = array(
-            'line1' => '1335 E 103rd St',
+            'line1' => '123 Palm Grove Ln',
             'line2' => '',
             'city' =>'Los Angeles',
             'state' => 'CA',
@@ -595,8 +595,8 @@ class DummyController extends MyAppController
         );    
         
         
-        $avalaraObj = new TaxJarTax(1); 
-        $txRates = $avalaraObj->getRates($fromAddress , $toAddress,$itemsArr ,$shippingItems,1);
+        $avalaraObj = new TaxJarTax(1, $fromAddress , $toAddress); 
+        $txRates = $avalaraObj->getRates($itemsArr ,$shippingItems,1);
         CommonHelper::printArray($txRates);
         exit;
     }

@@ -263,7 +263,7 @@ class TaxJarTax extends TaxBase
                 'unit_price' => $item['amount'],
                 'discount' => 0
             ];
-            $totalAmount = $totalAmount + $item['amount'];
+            $totalAmount = $totalAmount + ($item['amount'] * $item['quantity']);
             array_push($lineItems, $arr);
         }
 
@@ -274,7 +274,7 @@ class TaxJarTax extends TaxBase
 
         $this->params['line_items'] = $lineItems;
         $this->params['shipping'] = $shipAmount;
-        $this->params['amount'] = $totalAmount + $shipAmount;
+        $this->params['amount'] = $totalAmount;
     }
 
     private function setFromAddress(array $address) {
