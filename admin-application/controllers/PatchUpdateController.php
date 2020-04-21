@@ -11,14 +11,14 @@ class PatchUpdateController extends AdminBaseController
 
     public function updateTaxJarCat()
     {
-        if (false === PluginHelper::includePlugin('TaxJartax', 'tax', $this->adminLangId, $error)) {
+        if (false === PluginHelper::includePlugin('TaxJarTax', 'tax', $this->adminLangId, $error)) {
             FatUtility::dieWithError($error);
         }
         
         $taxJarObj = new TaxJarTax($this->adminLangId); 
         $codesArr = $taxJarObj->getCodes(null, null, null, array(), false);
 
-        $pluginId = Plugin::getAttributesByCode(TaxJartax::KEY_NAME, 'plugin_id');
+        $pluginId = Plugin::getAttributesByCode(TaxJarTax::KEY_NAME, 'plugin_id');
         $db = FatApp::getDb();
         $parentArr = [];
         foreach ($codesArr as $code) {
