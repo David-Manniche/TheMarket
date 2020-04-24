@@ -134,7 +134,21 @@ class TaxJarTax extends TaxBase
                 'taxDetails' => $taxDetails,
             );
         }    
-        
+
+        $itemId = $taxes->breakdown->line_items{0}->id;
+        if (isset($taxes->breakdown->shipping)) {
+            foreach ($rateTypes as $key=> $name){
+                if (isset($taxes->breakdown->shipping->$name) && $taxes->breakdown->shipping->$name > 0) {
+                    if (isset($formatedTax[$itemId]['taxDetails'][$types[$key]]['value'])) {
+                        $formatedTax[$itemId]['taxDetails'][$types[$key]]['value'] = $formatedTax[$itemId]['taxDetails'][$types[$key]]['value'] + $taxes->breakdown->shipping->$name;
+                    } else{
+                        $formatedTax[$itemId]['taxDetails'][$types[$key]]['name'] = $types[$key];
+                        $formatedTax[$itemId]['taxDetails'][$types[$key]]['value'] = $taxes->breakdown->shipping->$name;
+                    }
+                }
+            } 
+        }
+                 
         return $formatedTax;
     }
 
