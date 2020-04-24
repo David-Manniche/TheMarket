@@ -130,7 +130,7 @@ class TaxJarTax extends TaxBase
                 }
             }  
             $formatedTax[$item->id] = array(    
-                'tax' => $taxes->breakdown->combined_tax_rate,      
+                'tax' => $taxes->breakdown->tax_collectable,      
                 'taxDetails' => $taxDetails,
             );
         }    
@@ -328,13 +328,13 @@ class TaxJarTax extends TaxBase
 
     private function getRateTypesKeys(){
         return array(
-            static::RATE_TYPE_STATE => 'state_sales_tax_rate',
-            static::RATE_TYPE_COUNTY => 'county_tax_rate',
-            static::RATE_TYPE_CITY => 'city_tax_rate',
-            static::RATE_TYPE_QST => 'qst_tax_rate',
-            static::RATE_TYPE_PST => 'pst_tax_rate',
-            static::RATE_TYPE_GST => 'gst_tax_rate',
-            static::RATE_TYPE_SPECIAL => 'special_tax_rate',
+            static::RATE_TYPE_STATE => 'state_amount',
+            static::RATE_TYPE_COUNTY => 'county_amount',
+            static::RATE_TYPE_CITY => 'city_amount',
+            static::RATE_TYPE_QST => 'qst',
+            static::RATE_TYPE_PST => 'pst',
+            static::RATE_TYPE_GST => 'gst',
+            static::RATE_TYPE_SPECIAL => 'special_district_amount',
         );
     }
     
