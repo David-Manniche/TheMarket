@@ -14,6 +14,8 @@ class Tax extends MyAppModel
     public const DB_TBL_PRODUCT_TO_TAX = 'tbl_product_to_tax';
     public const DB_TBL_PRODUCT_TO_TAX_PREFIX = 'ptt_';
 
+    private const TAX_RATE_CACHE_KEY_NAME = "taxRateCache_";
+
     private $db;
 
     public const TYPE_PERCENTAGE = 1;
@@ -332,9 +334,23 @@ class Tax extends MyAppModel
             $shopInfo = Shop::getAttributesByUserId($sellerId, array('shop_state_id', 'shop_id'));
             $shipFromStateId = $shopInfo['shop_state_id'];
         }
-        global $taxRates;
+
+        $arr  = [
+            'productId' => $productId,
+            'prodPrice' => $prodPrice,
+            'sellerId' => $sellerId,
+            'langId' =>   $langId,
+            'qty' => $qty,
+            'shipFromStateId' => $shipFromStateId,
+            'shipToStateId' => $shipToStateId,
+            'extraInfo' => $extraInfo,
+            'taxCategoryRow' => $taxCategoryRow
+        ];
+        $cacheKey = self::TAX_RATE_CACHE_KEY_NAME . md5(json_encode($arr));
+
+        global $taxRatesArr;
         if (0 < $activatedTaxServiceId && !empty($extraInfo) && $extraInfo['shippingAddress'] != '') {
-            $cacheKey = $langId . '-' . $shipFromStateId . '-' . $shipToStateId . '-' . $productId . '-' . $qty . '-' . $sellerId;
+           
             if (true == $useCache) {
                 $rates = FatCache::get('taxCharges' . $cacheKey, CONF_API_REQ_CACHE_TIME, '.txt');
                 if ($rates) {
@@ -342,8 +358,8 @@ class Tax extends MyAppModel
                 }
             }
            
-            if (isset($taxRates['values'])) {
-                return $taxRates['values'];
+            if (isset($taxRatesArr[$cacheKey]['values'])) {
+                return $taxRatesArr[$cacheKey]['values'];
             }
             
             $pluginKey = Plugin::getAttributesById($activatedTaxServiceId, 'plugin_code');
@@ -404,7 +420,7 @@ class Tax extends MyAppModel
                     'taxCode' => $taxCategoryRow['taxcat_code'],
                     'options' => []
                 ];
-                $taxRates['values'] = $data;
+                $taxRatesArr[$cacheKey]['values'] = $data;
                 FatCache::set('taxCharges' . $cacheKey, serialize($data), '.txt');
                 return  $data;
             }
@@ -443,7 +459,7 @@ class Tax extends MyAppModel
                     }
                 }
             }
-            $taxRates['values'] = $data;
+            $taxRatesArr[$cacheKey]['values'] = $data;
             FatCache::set('taxCharges' . $cacheKey, serialize($data), '.txt');
             return $data;
         }
