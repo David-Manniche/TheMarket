@@ -124,7 +124,7 @@ class TaxJarTax extends TaxBase
             $taxDetails = [];
            
             foreach ($rateTypes as $key=> $name){
-                if (isset($item->$name) && $item->$name > 0) {
+                if (isset($item->$name) ) {
                     $taxDetails[$types[$key]]['name'] = $types[$key];
                     $taxDetails[$types[$key]]['value'] = $item->$name;
                 }
@@ -138,7 +138,7 @@ class TaxJarTax extends TaxBase
         $itemId = $taxes->breakdown->line_items{0}->id;
         if (isset($taxes->breakdown->shipping)) {
             foreach ($rateTypes as $key=> $name){
-                if (isset($taxes->breakdown->shipping->$name) && $taxes->breakdown->shipping->$name > 0) {
+                if (isset($taxes->breakdown->shipping->$name)) {
                     if (isset($formatedTax[$itemId]['taxDetails'][$types[$key]]['value'])) {
                         $formatedTax[$itemId]['taxDetails'][$types[$key]]['value'] = $formatedTax[$itemId]['taxDetails'][$types[$key]]['value'] + $taxes->breakdown->shipping->$name;
                     } else{
