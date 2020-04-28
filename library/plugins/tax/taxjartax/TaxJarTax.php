@@ -48,14 +48,6 @@ class TaxJarTax extends TaxBase
             ];
         }
 
-        if (!empty($fromAddress)) {
-            $this->setFromAddress($fromAddress);
-        }
-
-        if (!empty($toAddress)) {
-            $this->setToAddress($toAddress);
-        }
-
         $isLiveMode = $this->settings['environment'];
         $apiToken = $this->settings['live_key'];
         if (0 == $isLiveMode) {
@@ -65,6 +57,14 @@ class TaxJarTax extends TaxBase
         $this->client = TaxJar\Client::withApiKey($apiToken);
         if (0 == $isLiveMode) {
             $this->client->setApiConfig('api_url', TaxJar\Client::SANDBOX_API_URL);
+        }
+
+        if (!empty($fromAddress)) {
+            $this->setFromAddress($fromAddress);            
+        }
+
+        if (!empty($toAddress)) {
+            $this->setToAddress($toAddress);
         }
 
         //$this->client->setApiConfig('headers', ['X-TJ-Expected-Response' => 422]);
@@ -81,6 +81,13 @@ class TaxJarTax extends TaxBase
      */
     public function getRates(array $itemsArr, array $shippingItem, int $userId)
     {
+        if ($this->error != ''){
+            return [
+                'status' => false,
+                'msg' => $this->error,
+            ];
+        }    
+
         $this->setItems($itemsArr, $shippingItem, $userId);
         
         try {
@@ -93,12 +100,12 @@ class TaxJarTax extends TaxBase
         }
         
         
-        if (!isset($taxes->breakdown)) {
-            return [
-                'status' => false,
-                'msg' => Labels::getLabel("LBL_Tax_could_not_be_calculated_from_TaxJar", $this->langId),
-            ];
-        }    
+        // if (!isset($taxes->breakdown)) {
+        //     return [
+        //         'status' => false,
+        //         'msg' => Labels::getLabel("LBL_Tax_could_not_be_calculated_from_TaxJar", $this->langId),
+        //     ];
+        // }    
 
         return [
             'status' => true,
@@ -120,23 +127,33 @@ class TaxJarTax extends TaxBase
         $types = $this->getRateTypesNames();
         $rateTypes = $this->getRateTypesKeys();
        
-        foreach ($taxes->breakdown->line_items as $item) {           
+        if (isset($taxes->breakdown->line_items)) {
+            foreach ($taxes->breakdown->line_items as $item) {           
+                $taxDetails = [];
+            
+                foreach ($rateTypes as $key=> $name){
+                    if (isset($item->$name) ) {
+                        $taxDetails[$types[$key]]['name'] = $types[$key];
+                        $taxDetails[$types[$key]]['value'] = $item->$name;
+                    }
+                }  
+                $formatedTax[$item->id] = array(    
+                    'tax' => $taxes->breakdown->tax_collectable,      
+                    'taxDetails' => $taxDetails,
+                );
+            } 
+        } else {
             $taxDetails = [];
-           
-            foreach ($rateTypes as $key=> $name){
-                if (isset($item->$name) ) {
-                    $taxDetails[$types[$key]]['name'] = $types[$key];
-                    $taxDetails[$types[$key]]['value'] = $item->$name;
-                }
-            }  
-            $formatedTax[$item->id] = array(    
-                'tax' => $taxes->breakdown->tax_collectable,      
+            $taxDetails[Labels::getLabel('LBL_TAX', $this->langId)]['name'] = Labels::getLabel('LBL_TAX', $this->langId);
+            $taxDetails[Labels::getLabel('LBL_TAX', $this->langId)]['value'] = $taxes->amount_to_collect;
+            $formatedTax[0] = array(    
+                'tax' => $taxes->amount_to_collect,      
                 'taxDetails' => $taxDetails,
             );
-        }    
+        }   
 
-        $itemId = $taxes->breakdown->line_items{0}->id;
         if (isset($taxes->breakdown->shipping)) {
+            $itemId = $taxes->breakdown->line_items{0}->id;
             foreach ($rateTypes as $key=> $name){
                 if (isset($taxes->breakdown->shipping->$name)) {
                     if (isset($formatedTax[$itemId]['taxDetails'][$types[$key]]['value'])) {
@@ -293,8 +310,7 @@ class TaxJarTax extends TaxBase
 
     private function setFromAddress(array $address) {
         
-        if (!$this->validateAddress($address)) {
-            $this->error = "E_Avalara_Error:_Invalid_From_Address_keys";
+        if (!$this->validateAddress($address)) {           
             return false;
         }
         $this->params['from_country'] = $address['countryCode'];
@@ -304,12 +320,29 @@ class TaxJarTax extends TaxBase
         $this->params['from_street'] = $address['line1'] . " " . $address['line2'];       
         return $this;
     }
-    
+
+       
     private function setToAddress(array $address) { 
-        if (!$this->validateAddress($address)) {
-            $this->error = "E_Avalara_Error:_Invalid_From_Address_keys";
+        if (!$this->validateAddress($address)) {            
             return false;
         }
+
+        /*if ($this->params['from_state'] != $this->params['to_state']) {
+            $regions = $this->client->nexusRegions();
+            if (empty($regions) || count($regions['regions']) == 0) {
+                $this->error = "Invalid_nexus_regions";
+                return false;
+            }
+
+            foreach($regions as $region) {
+                if ($region->region_code == $address['stateCode']) {
+                    $this->params['nexus_addresses'] = [                       
+                        'country' => $region->country_code,
+                        'state' => $region->region_code,
+                    ];
+                }                
+            }            
+        }*/
         
         $this->params['to_country'] = $address['countryCode'];
         $this->params['to_zip'] = $address['postalCode'];
@@ -323,6 +356,22 @@ class TaxJarTax extends TaxBase
         if (!is_array($address)) {
             return false;
         }
+
+        // if (0 < $this->settings['environment']) {
+        //     try {
+        //         $addresses = $this->client->validateAddress([
+        //             'country' => $address['countryCode'],
+        //             'state' => $address['stateCode'],
+        //             'zip' => $address['postalCode'],
+        //             'city' => $address['city'],
+        //             'street' => $address['line1'] . ' ' . $address['line2']
+        //         ]);                
+        //     } catch(exception $e){
+        //         $this->error = $e->getMessage();
+        //         return false;
+        //     }
+        //     return true;
+        // }
         
         $requiredKeys = ['line1', 'line2', 'city', 'state', 'postalCode', 'country' , 'stateCode', 'countryCode'];
         return !array_diff($requiredKeys, array_keys($address));
