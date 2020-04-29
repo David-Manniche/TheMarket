@@ -250,7 +250,7 @@ h1.heading small{font-size:14px;font-weight:400;line-height:1;display:block;}
                 <td><?php echo $text_version; ?></td>
                 <td><?php echo $php_version; ?></td>
                 <td>5.5+</td>
-                <td class="text-center"><?php if ($php_version >= '5.5') { ?>
+                <td class="text-center"><?php if ($php_version >= '7.1') { ?>
                   <span class="text-success"><i class="fa fa-check-circle svg-icn check"><svg class="icon icon--check"><use xlink:href="#Check_Circle" /></svg>
 
 </i></span>
