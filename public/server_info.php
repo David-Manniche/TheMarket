@@ -1,6 +1,7 @@
 <?php 
 
 function getInBytes($value){
+  $value = str_replace('M','',  $value);
 	$value = trim($value);
 	$last_char = strtolower($value[strlen($value) - 1]);
 	switch($last_char){
@@ -215,7 +216,7 @@ h1.heading small{font-size:14px;font-weight:400;line-height:1;display:block;}
 	  </div>
 	  
   </header>
-  <?php if ($error_warning) { ?>
+  <?php if (isset($error_warning) && $error_warning !='') { ?>
   <div class="alert alert--danger"><i class="fa fa-exclamation-circle"></i> <?php echo $error_warning; ?>
     <button type="button" class="close" data-dismiss="alert">&times;</button>
   </div>
@@ -239,7 +240,7 @@ h1.heading small{font-size:14px;font-weight:400;line-height:1;display:block;}
                 <td><?php echo $text_memory_limit; ?></td>
                 <td><?php echo ini_get('memory_limit'); ?></td>
                 <td>32M or 32M+</td>
-                <td class="text-center"><?php if ($memory_limit) { ?>
+                <td class="text-center"><?php if ($memory_limit >= 32) { ?>
                   <span class="text-success"><i class="fa fa-check-circle svg-icn check"><svg class="icon icon--check"><use xlink:href="#Check_Circle" /></svg></i></span>
                   <?php } else { ?>
                   <span class="text-danger"><i class="fa fa-minus-circle svg-icn delete"><svg class="icon icon--check"><use xlink:href="#Check_Close" /></svg></i></span>
@@ -249,7 +250,7 @@ h1.heading small{font-size:14px;font-weight:400;line-height:1;display:block;}
               <tr>
                 <td><?php echo $text_version; ?></td>
                 <td><?php echo $php_version; ?></td>
-                <td>5.5+</td>
+                <td>7.1+</td>
                 <td class="text-center"><?php if ($php_version >= '7.1') { ?>
                   <span class="text-success"><i class="fa fa-check-circle svg-icn check"><svg class="icon icon--check"><use xlink:href="#Check_Circle" /></svg>
 
