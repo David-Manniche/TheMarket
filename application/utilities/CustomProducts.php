@@ -2313,16 +2313,19 @@ trait CustomProducts
         }
 
         $prod = new Product($productId);
-        if (!$prod->saveProductData($post)) {
-            Message::addErrorMessage($prod->getError());
-            FatUtility::dieWithError(Message::getHtml());
-        }
+		if(FatApp::getConfig("CONF_PRODUCT_DIMENSIONS_ENABLE", FatUtility::VAR_INT, 1)) {
+			if (!$prod->saveProductData($post)) {
+				Message::addErrorMessage($prod->getError());
+				FatUtility::dieWithError(Message::getHtml());
+			}
+		}
 
         $psFree = 0;
         $prodShippingDetails = Product::getProductShippingDetails($productId, $this->siteLangId, $prodSellerId);
         if (!empty($prodShippingDetails)) {
             $psFree = $prodShippingDetails['ps_free'];
         }
+
         if (!$prod->saveProductSellerShipping($prodSellerId, $psFree, $post['ps_from_country_id'])) {
             Message::addErrorMessage($prod->getError());
             FatUtility::dieWithError(Message::getHtml());
