@@ -1,7 +1,6 @@
 <?php
     defined('SYSTEM_INIT') or die('Invalid Usage.');
     $blockLangFrm->setFormTagAttribute('class', 'web_form layout--' . $formLayout);
-    $blockLangFrm->setFormTagAttribute('onsubmit', 'setupBlockLang(this); return(false);');
 
     $blockLangFrm->developerTags['colClassPrefix'] = 'col-md-';
     $blockLangFrm->developerTags['fld_default_col'] = 12;

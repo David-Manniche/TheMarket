@@ -1359,16 +1359,18 @@ class ProductsController extends AdminBaseController
         $productId = FatApp::getPostedData('product_id', FatUtility::VAR_INT, 0);
         $frm = $this->getProductShippingFrm($productId);
         $post = $frm->getFormDataFromArray(FatApp::getPostedData());
-        if (false === $post) {
+        
+		if (false === $post) {
             Message::addErrorMessage(current($frm->getValidationErrors()));
             FatUtility::dieWithError(Message::getHtml());
         }
-
-        $prod = new Product($productId);
-        if (!$prod->saveProductData($post)) {
-            Message::addErrorMessage($prod->getError());
-            FatUtility::dieWithError(Message::getHtml());
-        }
+		$prod = new Product($productId);
+		if(FatApp::getConfig("CONF_PRODUCT_DIMENSIONS_ENABLE", FatUtility::VAR_INT, 1)) {
+			if (!$prod->saveProductData($post)) {
+				Message::addErrorMessage($prod->getError());
+				FatUtility::dieWithError(Message::getHtml());
+			}
+		}
 
         $prodSellerId = Product::getAttributesById($productId, 'product_seller_id');
         $psFree = 0;
