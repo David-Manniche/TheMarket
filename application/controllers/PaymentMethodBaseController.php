@@ -1,6 +1,6 @@
 <?php
 
-class AdvertisementFeedBaseController extends SellerPluginBaseController
+class PaymentMethodBaseController extends SellerPluginBaseController
 {
     public function __construct($action)
     {
@@ -20,28 +20,7 @@ class AdvertisementFeedBaseController extends SellerPluginBaseController
 
     protected function redirectBack()
     {
-        FatApp::redirectUser(CommonHelper::generateUrl($this->keyName));
-    }
-
-    protected function updateMerchantInfo($detail = [], $redirect = true)
-    {
-        if (!is_array($detail)) {
-            FatUtility::dieJsonError(Labels::getLabel('MSG_INVALID_REQUEST', $this->siteLangId));
-        }
-        $obj = new User(UserAuthentication::getLoggedUserId());
-        foreach ($detail as $key => $value) {
-            if (false === $obj->updateUserMeta($key, $value)) {
-                Message::addErrorMessage($obj->getError());
-                if (true === $redirect) {
-                    $this->redirectBack();
-                }
-            }
-        }
-        Message::addMessage(Labels::getLabel("MSG_SUCCESSFULLY_UPDATED", $this->siteLangId));
-        if (false === $redirect) {
-            FatUtility::dieJsonSuccess(Message::getHtml());
-        }
-        $this->redirectBack();
+        FatApp::redirectUser(CommonHelper::generateUrl('Seller'));
     }
 
     protected function getPluginData($attr = '')

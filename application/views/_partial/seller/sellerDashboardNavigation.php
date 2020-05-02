@@ -50,6 +50,13 @@ $action = strtolower($action);
                             </i><span class="menu-item__title"><?php echo Labels::getLabel('LBL_Manage_Shop', $siteLangId);?></span></a></div>
                 </li>
                 <?php } ?>
+                <?php if (Plugin::isActive('StripeConnect')) { ?>
+                <li class="menu__item <?php echo ($controller == 'stripe-connect' && $action == 'index') ? 'is-active' : ''; ?>">
+                    <div class="menu__item__inner"><a title="<?php echo Labels::getLabel('LBL_STRIPE_CONNECT', $siteLangId);?>" href="<?php echo CommonHelper::generateUrl('StripeConnect'); ?>">
+                        <i class="fab fa-stripe-s"></i>
+                        <span class="menu-item__title"><?php echo Labels::getLabel('LBL_STRIPE_CONNECT', $siteLangId);?></span></a></div>
+                </li>
+                <?php } ?>
                 <!-- <li class="menu__item"><div class="menu__item__inner"><a title="<?php echo Labels::getLabel('LBL_View_Shop', $siteLangId); ?>" target="_blank" href="<?php echo CommonHelper::generateUrl('Shops', 'view', array($shop_id)); ?>"><i class="icn shop"><svg class="svg"><use xlink:href="<?php echo CONF_WEBROOT_URL; ?>images/retina/sprite.svg#dash-view-shop" href="<?php echo CONF_WEBROOT_URL; ?>images/retina/sprite.svg#dash-view-shop"></use></svg>
                    </i><span class="menu-item__title"><?php echo Labels::getLabel('LBL_View_Shop', $siteLangId); ?></span></a></    div></li> -->
                 <?php if ($userPrivilege->canViewProducts(UserAuthentication::getLoggedUserId(), true)) { ?>

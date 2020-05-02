@@ -650,7 +650,7 @@ class DummyController extends MyAppController
         /* if (false === $obj->createAccount()) {
             CommonHelper::printArray($obj->getError(), true);
         } */
-        $obj->validateUser();
+        $obj->isUserValid();
         echo "Done";
     }
 }
