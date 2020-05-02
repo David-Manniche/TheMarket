@@ -44,7 +44,11 @@
                         $urlFld = $colectionForm->getField('urlrewrite_custom');
                         $urlFld->setFieldTagAttribute('id', "urlrewrite_custom");
                         $urlFld->setFieldTagAttribute('onkeyup', "getSlugUrl(this,this.value,'".$baseUrl."','post')");
-                        $urlFld->htmlAfterField = "<small class='form-text text-muted'>" . CommonHelper::generateFullUrl('Shops', 'Collection', array($shop_id)).'</small>';
+                        $collectionUrl = "";
+                        if (0 < $scollection_id) {
+                            $collectionUrl = CommonHelper::generateFullUrl('Shops', 'Collection', array($shop_id, $scollection_id));
+                        }
+                        $urlFld->htmlAfterField = "<small class='form-text text-muted'>" . $collectionUrl .'</small>';
                         $IDFld = $colectionForm->getField('scollection_id');
                         $IDFld->setFieldTagAttribute('id', "scollection_id");
                         $identiFierFld = $colectionForm->getField('scollection_identifier');
