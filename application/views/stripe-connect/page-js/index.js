@@ -15,41 +15,29 @@ var keyName = 'StripeConnect';
         });
     };
 
-
 	setupRequiredFields = function (frm){
 		if (!$(frm).validate()) return;
 		var data = fcom.frmData(frm);
 		fcom.updateWithAjax(fcom.makeUrl(keyName, 'setupRequiredFields'), data, function(t) {});
     }
-    
-    deleteBatch = function (adsBatchId){
-		var agree = confirm(langLbl.confirmDelete);
-		if( !agree ){
-			return false;
-		}
-		fcom.updateWithAjax(fcom.makeUrl(keyName, 'deleteBatch', [adsBatchId]), '', function(t) {
-            search();
+
+    financialInfoForm = function (frm) {
+        $.facebox(function() {
+            fcom.ajax(fcom.makeUrl(keyName, 'financialInfoForm'),'',function(res){
+                $.facebox(res,'faceboxWidth');
+            });
 		});
     }
 
-    setuppluginform = function (frm) {
-        if (!$(frm).validate()) return;
-        var data = fcom.frmData(frm);
-		fcom.updateWithAjax(fcom.makeUrl(keyName, 'setupServiceAccountForm'), data, function(t) {
-            $(document).trigger('close.facebox');
-            location.reload();
-        });
+    setupFinancialInfo = function (frm){
+		if (!$(frm).validate()) return;
+		var data = fcom.frmData(frm);
+		fcom.updateWithAjax(fcom.makeUrl(keyName, 'setupFinancialInfo'), data, function(t) {});
     }
 
-    publishBatch = function (adsBatchId) {
-        $.mbsmessage(langLbl.processing,true,'alert--process alert');   
-		fcom.updateWithAjax(fcom.makeUrl(keyName, 'publishBatch', [adsBatchId]), '', function(t) {
-            if( t.status == 1 ){
-				$.mbsmessage(t.msg, true, 'alert--success');
-			} else {
-                $.mbsmessage(t.msg, true, 'alert--danger');
-            }
-            search();
+    clearFinancialInfoForm = function() {
+        fcom.ajax(fcom.makeUrl(keyName, 'financialInfoForm'),'',function(res){
+            $.facebox(res,'faceboxWidth');
         });
-    }
+    };
 })();

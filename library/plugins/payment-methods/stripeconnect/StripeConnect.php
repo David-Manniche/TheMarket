@@ -63,7 +63,6 @@ class StripeConnect extends PaymentMethodBase
                 'card_payments',
                 'transfers',
             ],
-            'business_type' => 'individual',
             'business_profile' => [
                 'name' => $this->userData['shop_name'],
                 // 'url' => CommonHelper::generateFullUrl('shops', 'view', [$this->userData['shop_id']]),
@@ -71,26 +70,15 @@ class StripeConnect extends PaymentMethodBase
                 'support_url' => 'https://satbir.yokartv8.4livedemo.com' . CommonHelper::generateUrl('shops', 'view', [$this->userData['shop_id']]),
                 'support_phone' => $this->userData['shop_phone'],
                 'support_email' => $this->userData['credential_email'],
-                'support_address' => $this->userData['user_city'] . ', ' . $this->userData['state_code'] . ', ' . $this->userData['country_code'],
-                'product_description' => $this->userData['shop_description'],
-            ],
-            'individual' => [
-                'address' => [
-                    'city' => $this->userData['user_city'],
-                    'line1' => $this->userData['user_city'],
+                'support_address' => [
+                    'city' => $this->userData['shop_city'],
+                    'country' => strtoupper($this->userData['country_code']),
+                    'line1' => $name[0],
+                    'line2' => $this->userData['shop_name'],
                     'postal_code' => $this->userData['shop_postalcode'],
                     'state' => $this->userData['state_code'],
                 ],
-                'dob' => [
-                    'day' => $dob[2],
-                    'month' => $dob[1],
-                    'year' => $dob[0],
-                ],
-                'email' => $this->userData['credential_email'],
-                'first_name' => $name[0],
-                'last_name' => isset($name[1]) ? $name[1] : '',
-                'phone' => $this->userData['shop_phone'],
-                'id_number' => $this->doRequest(self::REQUEST_PERSON_ID)
+                'product_description' => $this->userData['shop_description'],
             ],
             'tos_acceptance' => [
                 'date' => time(),
@@ -103,7 +91,12 @@ class StripeConnect extends PaymentMethodBase
         }
         return $data;
     }
-
+    
+    /**
+     * createAccount
+     *
+     * @return bool
+     */
     public function createAccount(): bool
     {
         if (false === $this->loadLoggedUserInfo()) {
@@ -194,7 +187,11 @@ class StripeConnect extends PaymentMethodBase
      */
     public function getAccountId(): string
     {
-        return empty($this->stripeAccountId) ? $this->getUserMeta('stripe_account_id') : $this->stripeAccountId;
+        if (!empty($this->stripeAccountId)) {
+            return $this->stripeAccountId;
+        }
+        
+        return $this->getUserMeta('stripe_account_id');
     }
 
     /**
@@ -204,6 +201,10 @@ class StripeConnect extends PaymentMethodBase
      */
     public function getRemoteUserInfo(): object
     {
+        if (!empty($this->userInfoObj)) {
+            return $this->userInfoObj;
+        }
+        
         return \Stripe\Account::retrieve($this->getAccountId());
     }
 
@@ -214,8 +215,29 @@ class StripeConnect extends PaymentMethodBase
      */
     public function getRequiredFields(): array
     {
-
+        $this->userInfoObj = $this->getRemoteUserInfo();
+        CommonHelper::printArray($this->userInfoObj);
+        if (isset($this->userInfoObj->requirements->currently_due)) {
+            $this->requiredFields  = $this->userInfoObj->requirements->currently_due;
+            CommonHelper::printArray($this->requiredFields, true);
+            // $this->requiredFields = array_diff($this->requiredFields, ['external_account']);
+            // $this->requiredFields = array_map('array_filter', $this->requiredFields);
+        }
         return $this->requiredFields;
+    }
+    
+    /**
+     * isFinancialInfoRequired
+     *
+     * @return bool
+     */
+    public function isFinancialInfoRequired(): bool
+    {
+        $this->userInfoObj = $this->getRemoteUserInfo();
+        if (isset($this->userInfoObj->requirements->currently_due->external_account) && empty($this->userInfoObj->requirements->currently_due->external_account)) {
+            return true;
+        }
+        return false;
     }
 
     /**
@@ -225,11 +247,21 @@ class StripeConnect extends PaymentMethodBase
      */
     public function getBusinessProfile(): object
     {
-
-        return (object) $this->business_profile;
+        $this->userInfoObj = $this->getRemoteUserInfo();
+        $this->business_profile  = $this->userInfoObj->business_profile;
+        if ('US' != strtoupper($this->userData['country_code'])) {
+            unset($this->business_profile['mcc']);
+        }
+        return $this->business_profile;
     }
 
     public function updateRequiredFields(array $data): bool
+    {
+        $accountObj = $this->getRemoteUserInfo();
+        // $accountObj->individual->
+    }
+
+    public function updateBusinessProfileFields(array $data): bool
     {
         $accountObj = $this->getRemoteUserInfo();
         // $accountObj->individual->
@@ -242,7 +274,7 @@ class StripeConnect extends PaymentMethodBase
      */
     public function userAccountCanTransfer(): bool
     {
-        $user = !empty($this->userInfoObj) ? $this->userInfoObj : $this->getRemoteUserInfo();
+        $user = $this->getRemoteUserInfo();
         return ('inactive' == $user->capabilities->transfers) ? false : true;
     }
 
@@ -253,27 +285,12 @@ class StripeConnect extends PaymentMethodBase
      */
     public function isUserValid(): bool
     {
-        $this->userInfoObj = $this->getRemoteUserInfo();
         if (empty($this->getAccountId()) || false === $this->userAccountCanTransfer()) {
             if (false === $this->doRequest(self::REQUEST_CREATE_ACCOUNT)) {
                 $this->error = $this->getError();
                 return false;
             }
         }
-
-        if (isset($this->userInfoObj->business_profile)) {
-            $this->business_profile  = $this->userInfoObj->business_profile;
-            if ('US' != strtoupper($this->userData['country_code'])) {
-                unset($this->business_profile['mcc']);
-            }
-        }
-
-        if (isset($this->userInfoObj->business_profile)) {
-            $this->requiredFields  = $this->userInfoObj->requirements->currently_due;
-            $this->requiredFields = array_diff($this->requiredFields, ['external_account']);
-            $this->requiredFields = array_map('array_filter', $this->requiredFields);
-            return false;
-        }
-        return true;
+        return (1 > count($this->getRequiredFields()));
     }
 }

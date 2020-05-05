@@ -22,12 +22,12 @@ $this->includeTemplate('_partial/dashboardNavigation.php');
                                 </div>
                                 <div class="col-md-4">
                                     <?php if (!empty($requiredFields)) { ?>
-                                        <a class="btn btn-outline-primary btn--sm" href="javascript:void(0)" onClick="requiredFieldsForm();" id="js-required-fields" title="<?php echo Labels::getLabel('Lbl_SETUP_ACCOUNT', $siteLangId); ?>">
+                                        <a class="btn btn-outline-primary btn--sm" href="javascript:void(0)" onClick="requiredFieldsForm();" id="js-required-fields" title="<?php echo Labels::getLabel('LBL_SETUP_ACCOUNT', $siteLangId); ?>">
                                             <?php echo Labels::getLabel('Lbl_SETUP_ACCOUNT', $siteLangId); ?>
                                         </a>
                                     <?php } ?>
-                                    <?php if (!empty($businessProfile)) { ?>
-                                        <a class="btn btn--primary btn--sm" href="javascript:void(0)" onClick="businessProfileForm();" id="js-bussiness-profile"><?php echo Labels::getLabel('Lbl_BUSINESS_PROFILE', $siteLangId); ?></a>
+                                    <?php if (true == $isFinancialInfoRequired) { ?>
+                                        <a class="btn btn--primary btn--sm" href="javascript:void(0)" onClick="financialInfoForm();" id="js-financial-form"><?php echo Labels::getLabel('LBL_FINANCIAL_FORM', $siteLangId); ?></a>
                                     <?php } ?>
                                 </div>
                             </div>

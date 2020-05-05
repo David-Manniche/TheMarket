@@ -15,7 +15,7 @@ class PaymentMethodBase extends pluginBase
     {
         $srch = User::getSearchObject();
         $srch->joinTable(Shop::DB_TBL, 'LEFT OUTER JOIN', 'u.user_id = sh.shop_user_id', 'sh');
-        $srch->joinTable(Shop::DB_TBL_LANG, 'LEFT OUTER JOIN', 'sh.shop_id = sh_l.shoplang_shop_id', 'sh_l');
+        $srch->joinTable(Shop::DB_TBL_LANG, 'LEFT OUTER JOIN', 'sh.shop_id = sh_l.shoplang_shop_id AND shoplang_lang_id = ' . $this->langId, 'sh_l');
         $srch->joinTable(Countries::DB_TBL, 'LEFT OUTER JOIN', 'sh.shop_country_id = c.country_id', 'c');
         $srch->joinTable(Countries::DB_TBL_LANG, 'LEFT OUTER JOIN', 'c.country_id = c_l.countrylang_country_id AND countrylang_lang_id = ' . $this->langId, 'c_l');
         $srch->joinTable(States::DB_TBL, 'LEFT OUTER JOIN', 'sh.shop_state_id = s.state_id', 's');
@@ -35,9 +35,7 @@ class PaymentMethodBase extends pluginBase
             'IFNULL(shop_name, shop_identifier) as shop_name',
             'shop_description',
             'user_dob',
-            'user_address1',
-            'user_address2',
-            'user_city',
+            'shop_city',
             'country_code',
             'state_code',
             'ub.*'

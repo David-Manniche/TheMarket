@@ -28,7 +28,7 @@ class StripeConnectController extends PaymentMethodBaseController
     {
         $this->set('accountId', $this->stripeConnect->getAccountId());
         $this->set('requiredFields', $this->stripeConnect->getRequiredFields());
-        $this->set('businessProfile', $this->stripeConnect->getBusinessProfile());
+        $this->set('isFinancialInfoRequired', $this->stripeConnect->isFinancialInfoRequired());
         $this->set('userData', $this->getUserMeta());
         $this->set('keyName', self::KEY_NAME);
         $this->set('pluginName', $this->getPluginData('plugin_name'));
@@ -43,9 +43,9 @@ class StripeConnectController extends PaymentMethodBaseController
         $this->_template->render(false, false);
     }
 
-    public function businessProfileForm()
+    public function financialInfoForm()
     {
-        $frm = $this->getBusinessProfileForm();
+        $frm = $this->getFinancialInfoForm();
         $this->set('frm', $frm);
         $this->set('keyName', self::KEY_NAME);
         $this->_template->render(false, false);
@@ -56,6 +56,14 @@ class StripeConnectController extends PaymentMethodBaseController
         $post = FatApp::getPostedData();
         CommonHelper::printArray($post, true);
         $this->stripeConnect->updateRequiredFields($post, false);
+    }
+
+    
+    public function setupFinancialInfo()
+    {
+        $post = FatApp::getPostedData();
+        CommonHelper::printArray($post, true);
+        $this->stripeConnect->updateFinancialInfo($post, false);
     }
 
     private function getRequiredFieldsForm()
@@ -86,17 +94,18 @@ class StripeConnectController extends PaymentMethodBaseController
         return $frm;
     }
 
-    private function getBusinessProfileForm()
+    private function getFinancialInfoForm()
     {
         $frm = new Form('frm' . self::KEY_NAME);
+        $frm->addRequiredField(Labels::getLabel('LBL_ACCOUNT_HOLDER_NAME', $this->siteLangId), 'account_holder_name');
+        $frm->addRequiredField(Labels::getLabel('LBL_ACCOUNT_NUMBER', $this->siteLangId), 'account_number');
 
-        $fieldsData = $this->stripeConnect->getBusinessProfile();
-        foreach ($fieldsData as $field =>$value) {
-            $name = $label = $field;
-            $label = ucwords(str_replace("_", " ", $label));
-            $fld = $frm->addTextBox($label, $name, $value);
-            $fld->requirement->setRequired(true);
-        }
+        $options = [
+            'individual' => Labels::getLabel('LBL_INDIVIDUAL', $this->siteLangId),
+            'company' => Labels::getLabel('LBL_COMPANY', $this->siteLangId),
+        ];
+        $fld = $frm->addSelectBox(Labels::getLabel('LBL_ACCOUNT_HOLDER_TYPE', $this->siteLangId), 'account_holder_type');
+        $fld->requirement->setRequired(true);
         $submitBtn = $frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_SAVE', $this->siteLangId));
         $cancelButton = $frm->addButton("", "btn_clear", Labels::getLabel('LBL_Clear', $this->siteLangId), array('onclick' => 'clearForm();'));
         $submitBtn->attachField($cancelButton);
