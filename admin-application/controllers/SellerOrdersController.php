@@ -445,7 +445,7 @@ class SellerOrdersController extends AdminBaseController
                     $whr = array('smt' => 'order_id = ?', 'vals' => array($orderDetail['order_id']));
                     if (!FatApp::getDb()->updateFromArray(Orders::DB_TBL, $updateArray, $whr)) {
                         Message::addErrorMessage(Labels::getLabel('MSG_Invalid_Access', $this->adminLangId));
-                        FatUtility::dieWithError(Message::getHtml());
+                        FatUtility::dieJsonError(Message::getHtml());
                     }
                 }
             }
