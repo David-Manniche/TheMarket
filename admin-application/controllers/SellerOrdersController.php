@@ -430,7 +430,7 @@ class SellerOrdersController extends AdminBaseController
             FatUtility::dieJsonError(Message::getHtml());
         }
 
-        if ($orderDetail['pmethod_code'] == 'CashOnDelivery' && (orderStatus::ORDER_DELIVERED == $post["op_status_id"] || orderStatus::ORDER_COMPLETED == $post["op_status_id"]) && Orders::ORDER_IS_PAID != $orderDetail['order_is_paid']) {
+        if (strtolower($orderDetail['pmethod_code']) == 'cashondelivery' && (orderStatus::ORDER_DELIVERED == $post["op_status_id"] || orderStatus::ORDER_COMPLETED == $post["op_status_id"]) && Orders::ORDER_IS_PAID != $orderDetail['order_is_paid']) {
             $orderProducts = new OrderProductSearch($this->adminLangId, true, true);
             $orderProducts->joinPaymentMethod();
             $orderProducts->addMultipleFields(['op_status_id']);
