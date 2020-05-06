@@ -8,7 +8,9 @@ $btnFld = $frm->getField('btn_submit');
 $btnFld->addFieldTagAttribute('class', 'btn btn--primary');
 
 $btnFld = $frm->getField('btn_clear');
-$btnFld->addFieldTagAttribute('class', 'btn btn-outline-primary');
-$btnFld->addFieldTagAttribute('onClick', 'clearForm();');
+if (null != $btnFld) {
+    $btnFld->addFieldTagAttribute('class', 'btn btn-outline-primary');
+    $btnFld->addFieldTagAttribute('onClick', 'clearForm();');
+}
 
 echo $frm->getFormHtml();

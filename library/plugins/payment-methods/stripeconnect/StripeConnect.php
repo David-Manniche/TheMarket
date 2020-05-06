@@ -216,12 +216,8 @@ class StripeConnect extends PaymentMethodBase
     public function getRequiredFields(): array
     {
         $this->userInfoObj = $this->getRemoteUserInfo();
-        CommonHelper::printArray($this->userInfoObj);
         if (isset($this->userInfoObj->requirements->currently_due)) {
             $this->requiredFields  = $this->userInfoObj->requirements->currently_due;
-            CommonHelper::printArray($this->requiredFields, true);
-            // $this->requiredFields = array_diff($this->requiredFields, ['external_account']);
-            // $this->requiredFields = array_map('array_filter', $this->requiredFields);
         }
         return $this->requiredFields;
     }
@@ -258,7 +254,8 @@ class StripeConnect extends PaymentMethodBase
     public function updateRequiredFields(array $data): bool
     {
         $accountObj = $this->getRemoteUserInfo();
-        // $accountObj->individual->
+        $accountObj = json_decode(json_encode($data));
+        CommonHelper::printArray();
     }
 
     public function updateBusinessProfileFields(array $data): bool
