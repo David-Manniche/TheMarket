@@ -602,13 +602,13 @@ class SellerController extends SellerBaseController
         }
 
         
-        if (strtolower($orderDetail['pmethod_code']) == 'cashondelivery' && (orderStatus::ORDER_DELIVERED == $post["op_status_id"] || orderStatus::ORDER_COMPLETED == $post["op_status_id"]) && Orders::ORDER_IS_PAID != $orderDetail['order_is_paid']) {
+        if (strtolower($orderDetail['pmethod_code']) == 'cashondelivery' && (OrderStatus::ORDER_DELIVERED == $post["op_status_id"] || OrderStatus::ORDER_COMPLETED == $post["op_status_id"]) && Orders::ORDER_IS_PAID != $orderDetail['order_is_paid']) {
             $orderProducts = new OrderProductSearch($this->siteLangId, true, true);
             $orderProducts->joinPaymentMethod();
             $orderProducts->addMultipleFields(['op_status_id']);
             $orderProducts->addCondition('op_order_id', '=', $orderDetail['order_id']);
-            $orderProducts->addCondition('op_status_id', '!=', orderStatus::ORDER_DELIVERED);
-            $orderProducts->addCondition('op_status_id', '!=', orderStatus::ORDER_COMPLETED);
+            $orderProducts->addCondition('op_status_id', '!=', OrderStatus::ORDER_DELIVERED);
+            $orderProducts->addCondition('op_status_id', '!=', OrderStatus::ORDER_COMPLETED);
             $rs = $orderProducts->getResultSet();
             if ($rs) {
                 $childOrders = FatApp::getDb()->fetchAll($rs);
