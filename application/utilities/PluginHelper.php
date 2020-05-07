@@ -32,12 +32,12 @@ trait PluginHelper
         }
 
         try {
-            $keyName = get_called_class()::KEY_NAME;
+            $this->keyName = get_called_class()::KEY_NAME;
         } catch (\Error $e) {
             $this->error = $e->getMessage();
             return false;
         }
-        $pluginSetting = new PluginSetting(0, $keyName);
+        $pluginSetting = new PluginSetting(0, $this->keyName);
         return $pluginSetting->get($langId, $column);
     }
     
@@ -52,8 +52,8 @@ trait PluginHelper
         $this->settings = $this->getSettings();
         if (isset($this->requiredKeys) && !empty($this->requiredKeys) && is_array($this->requiredKeys)) {
             foreach ($this->requiredKeys as $key) {
-                if (!array_key_exists($key, $this->settings)) {
-                    $this->error = Labels::getLabel('MSG_PLUGIN_SETTINGS_NOT_CONFIGURED', $langId);
+                if (!array_key_exists($key, $this->settings) || empty($this->settings[$key])) {
+                    $this->error = $this->keyName . ' ' . Labels::getLabel('MSG_SETTINGS_NOT_CONFIGURED', $langId);
                     return false;
                 }
             }

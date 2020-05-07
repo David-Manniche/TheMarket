@@ -16,10 +16,6 @@ class InstagramLoginController extends SocialMediaAuthController
     public function __construct($action)
     {
         parent::__construct($action);
-        if (false == $this->validateSettings($this->siteLangId)) {
-            $this->setErrorAndRedirect($this->error, true);
-            return false;
-        }
         $this->redirectUri = CommonHelper::generateFullUrl(static::KEY_NAME, 'index', [], '', false);
     }
     
@@ -35,6 +31,11 @@ class InstagramLoginController extends SocialMediaAuthController
 
     public function index()
     {
+        if (false == $this->validateSettings($this->siteLangId)) {
+            $this->setErrorAndRedirect($this->error, true);
+            return false;
+        }
+        
         $get = FatApp::getQueryStringData();
         $userType = FatApp::getPostedData('type', FatUtility::VAR_INT, User::USER_TYPE_BUYER);
         $accessToken = FatApp::getPostedData('accessToken', FatUtility::VAR_STRING, '');
