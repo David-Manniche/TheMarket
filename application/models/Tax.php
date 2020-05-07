@@ -182,8 +182,8 @@ class Tax extends MyAppModel
         'taxcat_active' => $data['taxcat_active'],
         'taxcat_deleted' => 0,
         'taxcat_last_updated' => date('Y-m-d H:i:s'),
-        'taxcat_code' => $data['taxcat_code'],
-        'taxcat_plugin_id' => $data['taxcat_plugin_id'],
+        'taxcat_code' => array_key_exists('taxcat_code', $data) ? $data['taxcat_code'] : '',
+        'taxcat_plugin_id' => array_key_exists('taxcat_plugin_id', $data) ? $data['taxcat_plugin_id'] : 0,
         );
 
         if ($this->mainTableRecordId > 0) {
@@ -382,11 +382,10 @@ class Tax extends MyAppModel
                 $fields = array('shop_postalcode', 'shop_address_line_1' ,'shop_address_line_2', 'shop_city', 'state_name', 'state_code', 'country_code');
                 $address = Shop::getShopAddress($shopInfo['shop_id'], true, $langId, $fields);
                 $fromAddress = $this->formatAddress($address, 'shop');
-            } else {
+            } else { 
                 $fromAddress = Admin::getAddress($langId);
                 $shipFromStateId = FatApp::getConfig('CONF_STATE', FatUtility::VAR_INT, 0);
             }
-           
             $toAddress = $this->formatAddress($extraInfo['shippingAddress']);
            
             $itemsArr = [];

@@ -50,7 +50,7 @@ class AvalaraTax extends TaxBase
         if (!empty($toAddress)) {
             $this->setToAddress($toAddress);
         }
-
+        
         $environment = FatUtility::int($this->settings['environment']) == 1 ? 'production' : 'sandbox';
 
         $this->client = new Avalara\AvaTaxClient(FatApp::getConfig('CONF_WEBSITE_NAME_' . $langId), FatApp::getConfig('CONF_YOKART_VERSION'), $_SERVER['HTTP_HOST'], $environment);
@@ -75,8 +75,8 @@ class AvalaraTax extends TaxBase
      * @return array
      */
     public function getRates($itemsArr, $shippingItem, $userId)
-    {
-        try {
+    { 
+       try {
             $this->setProducts($itemsArr)
                     ->setProductsShipping($shippingItem)
                     ->setCustomerCode($userId);
@@ -88,7 +88,7 @@ class AvalaraTax extends TaxBase
                 'msg' => Labels::getLabel($e->getMessage(), $this->langId),
             ];
         }
-
+        //CommonHelper::printArray($taxes); exit;
         return [
             'status' => true,
             'msg' => Labels::getLabel("MSG_SUCCESS", $this->langId),
@@ -186,7 +186,6 @@ class AvalaraTax extends TaxBase
             throw new Exception("E_Avalara_Error:_Invalid_From_Address_keys");
         }
         $this->fromAddress = $address;
-
         return $this;
     }
 
@@ -286,14 +285,14 @@ class AvalaraTax extends TaxBase
             }
 
             foreach ($this->products as $itemKey => $item) {
-                $tb->withLine($item['amount'], $item['quantity'], $item['itemCode'], $item['taxCode']);
+                $tb->withLine($item['amount']*$item['quantity'], $item['quantity'], $item['itemCode'], $item['taxCode']);
                 $tb->withLineDescription(Labels::getLabel('LBL_Product', $this->langId));
 
                 $fromAddress = $this->fromAddress;
                 $toAddress = $this->toAddress;
 
-                $tb->withLineAddress(Avalara\TransactionAddressType::C_SHIPFROM, $fromAddress['line1'], $fromAddress['line2'], null, $fromAddress['city'], $fromAddress['state'], $fromAddress['postalCode'], $fromAddress['country'])
-                        ->withLineAddress(Avalara\TransactionAddressType::C_SHIPTO, $toAddress['line1'], $toAddress['line2'], null, $toAddress['city'], $toAddress['state'], $toAddress['postalCode'], $toAddress['country']);
+                $tb->withLineAddress(Avalara\TransactionAddressType::C_SHIPFROM, $fromAddress['line1'], $fromAddress['line2'], null, $fromAddress['city'], $fromAddress['stateCode'], $fromAddress['postalCode'], $fromAddress['countryCode'])
+                        ->withLineAddress(Avalara\TransactionAddressType::C_SHIPTO, $toAddress['line1'], $toAddress['line2'], null, $toAddress['city'], $toAddress['stateCode'], $toAddress['postalCode'], $toAddress['countryCode']);
             }
 
 
@@ -345,8 +344,8 @@ class AvalaraTax extends TaxBase
         if (!is_array($address)) {
             return false;
         }
-
-        $requiredKeys = ['line1', 'line2', 'city', 'state', 'postalCode', 'country', 'stateCode', 'countryCode'];
+       
+        $requiredKeys = ['line1', 'line2', 'city', 'state', 'postalCode', 'country', 'stateCode', 'country', 'countryCode'];
         return !array_diff($requiredKeys, array_keys($address));
     }
 
@@ -362,6 +361,7 @@ class AvalaraTax extends TaxBase
 
     private function formatTaxes($taxes)
     {
+       // CommonHelper::printArray($taxes);
         $formatedTax = [];
         foreach ($taxes->lines as $line) {
             $taxDetails = [];

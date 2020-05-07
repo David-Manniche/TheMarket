@@ -268,9 +268,7 @@ class DummyController extends MyAppController
 
     public function test()
     {
-        $row = Product::getAttributesById(73);
-        CommonHelper::printArray($row);
-        exit;
+       
     }
 
     private function getShopInfo($shop_id)
@@ -608,10 +606,10 @@ class DummyController extends MyAppController
         $itemsArr = [];
         
         $item = [
-              'amount' => 100,
-              'quantity' => 2,
-              'itemCode' => 100,
-              'taxCode' => 'P0000000',                
+              'amount' => 200,
+              'quantity' => 1,
+              'itemCode' => 7,
+              'taxCode' => 'PC030100',                
         ];
         array_push($itemsArr, $item);
         
@@ -631,8 +629,10 @@ class DummyController extends MyAppController
             'line2' => '',
             'city' => 'CA',
             'state' => 'CA',
+            'stateCode' => 'CA',
             'postalCode' => '92615',
             'country' => 'US',
+            'countryCode' => 'US',
         );
 
         $toAddress = array(
@@ -640,14 +640,16 @@ class DummyController extends MyAppController
             'line2' => '',
             'city' =>'New York',
             'state' => 'NY',
+            'stateCode' => 'NY',
             'postalCode' => '10019',
             'country' => 'US',
+            'countryCode' => 'US',
         );    
         
         
-        $avalaraObj = new AvalaraTax(1); 
-        //$txRates = $avalaraObj->getRates($fromAddress , $toAddress,$itemsArr ,$shippingItems,1);
-        $txRates = $avalaraObj->getCodes();
+        $avalaraObj = new AvalaraTax(1, $fromAddress , $toAddress); 
+        $txRates = $avalaraObj->getRates($itemsArr ,$shippingItems,1);
+        //$txRates = $avalaraObj->getCodes();
         //print_r($avalaraObj->getTaxApiActualResponse());
       CommonHelper::printArray($txRates);
 //        die();
