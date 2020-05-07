@@ -48,7 +48,7 @@ class PayPalPayoutController extends PayoutBaseController
     {
         parent::__construct($action);
         if (false == $this->validateSettings($this->adminLangId)) {
-            return false;
+            LibHelper::dieJsonError($this->error);
         }
     }
 

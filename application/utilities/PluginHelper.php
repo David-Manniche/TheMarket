@@ -52,7 +52,7 @@ trait PluginHelper
         $this->settings = $this->getSettings();
         if (isset($this->requiredKeys) && !empty($this->requiredKeys) && is_array($this->requiredKeys)) {
             foreach ($this->requiredKeys as $key) {
-                if (!array_key_exists($key, $this->settings)) {
+                if (!array_key_exists($key, $this->settings) || empty($this->settings[$key])) {
                     $this->error = $this->keyName . ' ' . Labels::getLabel('MSG_SETTINGS_NOT_CONFIGURED', $langId);
                     return false;
                 }

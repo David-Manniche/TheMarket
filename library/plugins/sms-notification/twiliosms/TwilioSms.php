@@ -21,13 +21,17 @@ class TwilioSms extends SmsNotificationBase
         if (1 > $this->langId) {
             $this->langId = CommonHelper::getLangId();
         }
-        if (false == $this->validateSettings($langId)) {
-            return false;
-        }
     }
     
     public function send($to, $body)
     {
+        if (false == $this->validateSettings($langId)) {
+            return [
+                'status' => false,
+                'msg' => $this->error
+            ];
+        }
+        
         if (empty($to) || empty($body)) {
             return [
                 'status' => false,
