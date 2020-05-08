@@ -309,6 +309,7 @@ class Tax extends MyAppModel
     public function calculateTaxRates($productId, $prodPrice, $sellerId, $langId, $qty = 1, $extraInfo = array(), $useCache = false)
     {
         $tax = 0;
+        $defaultTaxName = Labels::getLabel('LBL_Tax', $langId);
         $taxCategoryRow = $this->getTaxRates($productId, $sellerId, $langId);
         if (empty($taxCategoryRow)) {
             return $data = [
@@ -448,13 +449,13 @@ class Tax extends MyAppModel
             } else {
                 foreach ($taxRates['data'] as $rate) {
                     $data['tax'] = $data['tax'] + $rate['tax'];
-                    $data['options'][-1]['name'] = Labels::getLabel('LBL_Tax', $langId);
-                    $data['options'][-1]['inPercentage'] = TAX::TYPE_FIXED;
-                    $data['options'][-1]['percentageValue'] = 0;
-                    if (isset($data['options'][-1]['value'])) {
-                        $data['options'][-1]['value'] = $data['options'][-1]['value'] + $rate['tax'];
+                    $data['options'][$defaultTaxName]['name'] = Labels::getLabel('LBL_Tax', $langId);
+                    $data['options'][$defaultTaxName]['inPercentage'] = TAX::TYPE_FIXED;
+                    $data['options'][$defaultTaxName]['percentageValue'] = 0;
+                    if (isset($data['options'][$defaultTaxName]['value'])) {
+                        $data['options'][$defaultTaxName]['value'] = $data['options'][$defaultTaxName]['value'] + $rate['tax'];
                     } else {
-                        $data['options'][-1]['value'] = $rate['tax'];
+                        $data['options'][$defaultTaxName]['value'] = $rate['tax'];
                     }
                 }
             }
@@ -476,7 +477,7 @@ class Tax extends MyAppModel
                 'tax' => $tax,
                 'taxCode' => $taxCategoryRow['taxcat_code'],
                 'options' => [
-                    '-1' => [
+                    $defaultTaxName => [
                         'name' => Labels::getLabel('LBL_Tax', $langId),
                         'inPercentage' => $taxCategoryRow['taxval_is_percent'],
                         'percentageValue' => $taxCategoryRow['taxval_value'],
@@ -522,13 +523,13 @@ class Tax extends MyAppModel
         } else {
             $taxStructure = new TaxStructure($confTaxStructure);
             $structureName = $taxStructure->getName($langId);
-            $data['options'][-1]['name'] = Labels::getLabel('LBL_Tax', $langId);
-            $data['options'][-1]['inPercentage'] = $taxCategoryRow['taxval_is_percent'];
-            $data['options'][-1]['percentageValue'] = $taxCategoryRow['taxval_value'];
+            $data['options'][$defaultTaxName]['name'] = Labels::getLabel('LBL_Tax', $langId);
+            $data['options'][$defaultTaxName]['inPercentage'] = $taxCategoryRow['taxval_is_percent'];
+            $data['options'][$defaultTaxName]['percentageValue'] = $taxCategoryRow['taxval_value'];
             if (array_key_exists('taxstr_name', $structureName) && $structureName['taxstr_name'] != '') {
-                $data['options'][-1]['name'] = $structureName['taxstr_name'];
+                $data['options'][$defaultTaxName]['name'] = $structureName['taxstr_name'];
             }
-            $data['options'][-1]['value'] = $tax;
+            $data['options'][$defaultTaxName]['value'] = $tax;
         }
         $data['status'] = true;
         return $data;
