@@ -27,3 +27,6 @@ define('CONF_IMG_CACHE_TIME', 14400); // in seconds (1400 = 4 hours)
 define('CONF_HOME_PAGE_CACHE_TIME', 28800); // in seconds (28800 = 8 hours)
 define('CONF_FILTER_CACHE_TIME', 14400); // in seconds (1400 = 4 hours)
 define('CONF_API_REQ_CACHE_TIME', 108000); // in seconds (108000 = 30 min)
+
+define('S3_KEY', '');
+define('S3_SECRET', ''); 

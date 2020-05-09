@@ -1,6 +1,6 @@
 New Features:
     => Avalara Tax API [Execute {domainame}/admin/patch-update/update-avalaratax-cat]
-
+    => S3 bucket implementation.
 Bugs:
     => 036750 - Seller Shop - Custom URL for shop collections
     => 036504 - wrong stats are displaying on buyer dashboard - pending and total orders

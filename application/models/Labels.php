@@ -154,6 +154,10 @@ class Labels extends MyAppModel
 
     public static function readDataFromFile($langId, $key, $type = Labels::TYPE_WEB, $returnArr = true)
     {
+        if (strpos(CONF_UPLOADS_PATH, 's3://') !== false) {
+            return;
+        }
+
         global $languages;
         if (!isset($languages[$langId])) {
             $languages[$langId] = Language::getAttributesById($langId, 'language_code', false);
