@@ -11,6 +11,7 @@ define('CONF_URL_REWRITING_ENABLED', true);
 define('PASSWORD_SALT', 'ewoiruqojfklajreajflfdsaf');
 define('CONF_INSTALLATION_PATH', dirname(dirname(__FILE__)) . DIRECTORY_SEPARATOR);
 define('CONF_UPLOADS_PATH', CONF_INSTALLATION_PATH . 'user-uploads' . DIRECTORY_SEPARATOR);
+//define('CONF_UPLOADS_PATH',  's3://');
 define('CONF_FRONT_END_APPLICATION_DIR', 'application/');
 define('CONF_PLUGIN_DIR', CONF_INSTALLATION_PATH . 'library/plugins/');
 
@@ -29,4 +30,5 @@ define('CONF_FILTER_CACHE_TIME', 14400); // in seconds (1400 = 4 hours)
 define('CONF_API_REQ_CACHE_TIME', 108000); // in seconds (108000 = 30 min)
 
 define('S3_KEY', '');
-define('S3_SECRET', ''); 
+define('S3_SECRET', '');
+define('S3_REGION', 'us-east-2');  

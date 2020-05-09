@@ -622,13 +622,12 @@ class AttachedFile extends MyAppModel
         if (empty($image_name) || !file_exists($uploadedFilePath . $image_name)) {
             $imagePath = $no_image;
         }
-
-        //$fileMimeType = mime_content_type($imagePath);
+        
         if (strpos($_SERVER['REQUEST_URI'], '?t=') === false) {
             $filemtime = filemtime($imagePath);
             $_SERVER['REQUEST_URI'] = rtrim($_SERVER['REQUEST_URI'], '/') . '/?t=' . $filemtime;
         }
-
+       
         static::setHeaders();
 
         static::checkModifiedHeader($imagePath);
@@ -919,7 +918,7 @@ class AttachedFile extends MyAppModel
        
        $client = S3Client::factory([
                    'credentials' => ['key' => S3_KEY, 'secret' => S3_SECRET],
-                   'region' => 'us-east-2',
+                   'region' => S3_REGION,
                    'version' => 'latest'
        ]);
         $client->registerStreamWrapper();
