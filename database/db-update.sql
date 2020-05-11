@@ -1248,4 +1248,4 @@ INSERT INTO `tbl_language_labels`(`label_key`, `label_lang_id`, `label_caption`,
 INSERT INTO `tbl_language_labels`(`label_key`, `label_lang_id`, `label_caption`, `label_type`) VALUES ('APP_PLEASE_ENTER_YOUR_NEW_PHONE_NUMBER_A_VERIFICATION_CODE_WILL_BE_SENT_TO_THE_NEW_NUMBER',1,'Please enter your new Phone number. A verification code will be sent to the new number',2);
 INSERT INTO `tbl_language_labels`(`label_key`, `label_lang_id`, `label_caption`, `label_type`) VALUES ('APP_PLEASE_CHECK_YOUR_CURRENT_PHONE_NUMBER_AND_GET_OTP',1,'Please check your current phone number and Get Otp',2);
 -- --------------------TV-9.2.0----------------------------
-
+ALTER TABLE `tbl_attached_files` ADD `afile_attribute_title` VARCHAR(250) NOT NULL AFTER `afile_name`, ADD `afile_attribute_alt` VARCHAR(250) NOT NULL AFTER `afile_attribute_title`;

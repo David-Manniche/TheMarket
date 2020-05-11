@@ -471,6 +471,9 @@
                         <?php if ($objPrivilege->canViewUrlRewrite(AdminAuthentication::getLoggedAdminId(), true)) { ?>
                             <li><a href="<?php echo CommonHelper::generateUrl('UrlRewriting'); ?>"><?php echo Labels::getLabel('LBL_Url_Rewriting', $adminLangId);?></a></li>
                         <?php } ?>
+						<?php if ($objPrivilege->canViewImageAttributes(AdminAuthentication::getLoggedAdminId(), true)) { ?>
+                            <li><a href="<?php echo CommonHelper::generateUrl('ImageAttributes'); ?>"><?php echo Labels::getLabel('LBL_Image_Attributes', $adminLangId);?></a></li>
+                        <?php } ?>
                     </ul>
                 </li>
             <?php } ?>
