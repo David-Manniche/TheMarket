@@ -73,15 +73,31 @@ class CustomRouter
                 $srch->doNotCalculateRecords();
                 $srch->addMultipleFields(array('urlrewrite_custom','urlrewrite_original'));
                 $srch->setPageSize(1);
-                $srch->addCondition(UrlRewrite::DB_TBL_PREFIX . 'custom', '=', $customUrl[0]); 
+                $srch->addCondition(UrlRewrite::DB_TBL_PREFIX . 'custom', '=', $customUrl[0]);
                 $rs = $srch->getResultSet();
                 $row = FatApp::getDb()->fetch($rs);
+
+                if (!$row && FatApp::getConfig('CONF_ENABLE_301', FatUtility::VAR_INT, 0) && !FatUtility::isAjaxCall()) { 
+                    $srch = UrlRewrite::getSearchObject();
+                    $srch->doNotCalculateRecords();
+                    $srch->addMultipleFields(array('urlrewrite_custom','urlrewrite_original'));
+                    $srch->setPageSize(1);
+                    $srch->addCondition(UrlRewrite::DB_TBL_PREFIX . 'original', '=', $customUrl[0]); 
+                    $rs = $srch->getResultSet();
+                    $res = FatApp::getDb()->fetch($rs);                   
+                    if (!empty($res) && $res['urlrewrite_custom'] != '') { var_dump($res);
+                        $redirectQueryString = (isset($customUrl[1]) && $customUrl[1] != '') ?  '?'. $customUrl[1] : '';              
+                        header("HTTP/1.1 301 Moved Permanently");
+                        header("Location: " . CommonHelper::generateFullUrl(CONF_WEBROOT_URL). '/' .$res['urlrewrite_custom'] . $redirectQueryString );
+                        header("Connection: close");
+                    }
+                }
             }
             if (!$row && (!isset($customUrl[1]) || (isset($customUrl[1]) && strpos($customUrl[1], 'pagesize') === false))) {
                 return;
             }
             /*]*/
-
+           
             $url = $row['urlrewrite_original'];
             if (!$row && isset($customUrl[1])) {
                 $url = $customUrl[0];
