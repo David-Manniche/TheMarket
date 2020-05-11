@@ -267,6 +267,7 @@ $(document).ready(function() {
 	                },
 	                minCropBoxWidth: minWidth,
 	                minCropBoxHeight: minHeight,
+					minContainerHeight: 350,
 	                toggleDragModeOnDblclick: false,
 		        };
 				$(inputBtn).val('');

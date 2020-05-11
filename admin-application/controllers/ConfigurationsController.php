@@ -1603,16 +1603,18 @@ class ConfigurationsController extends AdminBaseController
                 $ul = $frm->addHtml('', 'MediaGrids', '<div class="row">');
 
                 $ul->htmlAfterField .= '<div class="col-md-4 mb-5"> <h3>' . Labels::getLabel('LBL_Select_Admin_Logo', $this->adminLangId) . ' </h3> <div class="logoWrap"><div class="uploaded--image">';
-
-                if (AttachedFile::getAttachment(AttachedFile::FILETYPE_ADMIN_LOGO, 0, 0, $langId)) {
-                    $ul->htmlAfterField .= '<img src="' . CommonHelper::generateFullUrl('Image', 'siteAdminLogo', array($langId)) . '"> <a  class="remove--img" href="javascript:void(0);" onclick="removeSiteAdminLogo(' . $langId . ')" ><i class="ion-close-round"></i></a>';
+				
+                if ($fileData = AttachedFile::getAttachment(AttachedFile::FILETYPE_ADMIN_LOGO, 0, 0, $langId)) {
+					$uploadedTime = AttachedFile::setTimeParam($fileData['afile_updated_at']);
+					$image = FatCache::getCachedUrl(CommonHelper::generateFullUrl('Image', 'siteAdminLogo', array($langId)) . $uploadedTime, CONF_IMG_CACHE_TIME, '.jpg');
+                    $ul->htmlAfterField .= '<img src="' . $image . '"> <a  class="remove--img" href="javascript:void(0);" onclick="removeSiteAdminLogo(' . $langId . ')" ><i class="ion-close-round"></i></a>';
                 }
 
                 $ul->htmlAfterField .= ' </div></div>';
                 
                 $ul->htmlAfterField .= '<ul class="list-inline">';
                 foreach($ratioArr as $key=>$data){ 
-                    $checked = ($key == 1) ? $checked = "checked = checked" : '';
+                    $checked = ($key == $fileData['afile_aspect_ratio']) ? $checked = "checked = checked" : '';
                     $name = 'ratio_type_'.AttachedFile::FILETYPE_ADMIN_LOGO;
                     $ul->htmlAfterField .="<li><label><span class='radio'><input class='prefRatio-js' type='radio' name='".$name."' value='".$key."' $checked><i class='input-helper'></i></span>".$data."</label></li>";
                 }
@@ -1623,8 +1625,10 @@ class ConfigurationsController extends AdminBaseController
                 $ul->htmlAfterField .= '<div class="col-md-4 mb-5">  <h3>' . Labels::getLabel('LBL_Select_Desktop_Logo', $this->adminLangId) . '</h3> <div class="logoWrap"><div class="uploaded--image">';
 
 
-                if (AttachedFile::getAttachment(AttachedFile::FILETYPE_FRONT_LOGO, 0, 0, $langId)) {
-                    $ul->htmlAfterField .= '<img src="' . CommonHelper::generateFullUrl('Image', 'siteLogo', array($langId), CONF_WEBROOT_FRONT_URL) . '"> <a  class="remove--img" href="javascript:void(0);" onclick="removeDesktopLogo(' . $langId . ')" ><i class="ion-close-round"></i></a>';
+                if ($fileData = attachedFile::getAttachment(AttachedFile::FILETYPE_FRONT_LOGO, 0, 0, $langId)) {
+					$uploadedTime = AttachedFile::setTimeParam($fileData['afile_updated_at']);
+					$image = FatCache::getCachedUrl(CommonHelper::generateFullUrl('Image', 'siteLogo', array($langId), CONF_WEBROOT_FRONT_URL) . $uploadedTime, CONF_IMG_CACHE_TIME, '.jpg');
+                    $ul->htmlAfterField .= '<img src="' . $image . '"> <a  class="remove--img" href="javascript:void(0);" onclick="removeDesktopLogo(' . $langId . ')" ><i class="ion-close-round"></i></a>';
                 }
 
                 /*$ul->htmlAfterField .= ' </div></div><input type="file" onChange="popupImage(this)" name="front_logo" id="front_logo" data-min_width = "168" data-min_height = "37" data-file_type=' . AttachedFile::FILETYPE_FRONT_LOGO . ' value="Upload file"><small>Dimensions 168*37</small></li>';*/
@@ -1633,7 +1637,7 @@ class ConfigurationsController extends AdminBaseController
                 
                 $ul->htmlAfterField .= '<ul class="list-inline">';
                 foreach($ratioArr as $key=>$data){ 
-                    $checked = ($key == 1) ? $checked = "checked = checked" : '';
+                    $checked = ($key == $fileData['afile_aspect_ratio']) ? $checked = "checked = checked" : '';
                     $name = 'ratio_type_'.AttachedFile::FILETYPE_FRONT_LOGO;
                     $ul->htmlAfterField .="<li><label><span class='radio'><input class='prefRatio-js' type='radio' name='".$name."' value='".$key."' $checked><i class='input-helper'></i></span>".$data."</label></li>";
                 }
@@ -1677,15 +1681,17 @@ class ConfigurationsController extends AdminBaseController
                 $ul->htmlAfterField .= '<div class="col-md-4 mb-5"> <h3>' . Labels::getLabel('LBL_Select_Payment_Page_Logo', $this->adminLangId) . '</h3> <div class="logoWrap"><div class="uploaded--image">';
 
 
-                if (AttachedFile::getAttachment(AttachedFile::FILETYPE_PAYMENT_PAGE_LOGO, 0, 0, $langId)) {
-                    $ul->htmlAfterField .= '<img src="' . CommonHelper::generateFullUrl('Image', 'paymentPageLogo', array($langId, 'THUMB'), CONF_WEBROOT_FRONT_URL) . '"><a  class="remove--img" href="javascript:void(0);" onclick="removePaymentPageLogo(' . $langId . ')" ><i class="ion-close-round"></i></a>';
+                if ($fileData = AttachedFile::getAttachment(AttachedFile::FILETYPE_PAYMENT_PAGE_LOGO, 0, 0, $langId)) {
+					$uploadedTime = AttachedFile::setTimeParam($fileData['afile_updated_at']);
+					$image = FatCache::getCachedUrl(CommonHelper::generateFullUrl('Image', 'paymentPageLogo', array($langId, 'THUMB'), CONF_WEBROOT_FRONT_URL) . $uploadedTime, CONF_IMG_CACHE_TIME, '.jpg');
+                    $ul->htmlAfterField .= '<img src="' . $image . '"><a  class="remove--img" href="javascript:void(0);" onclick="removePaymentPageLogo(' . $langId . ')" ><i class="ion-close-round"></i></a>';
                 }
 
                 $ul->htmlAfterField .= ' </div></div>';
                 
                 $ul->htmlAfterField .= '<ul class="list-inline">';
                 foreach($ratioArr as $key=>$data){ 
-                    $checked = ($key == 1) ? $checked = "checked = checked" : '';
+                    $checked = ($key == $fileData['afile_aspect_ratio']) ? $checked = "checked = checked" : '';
                     $name = 'ratio_type_'.AttachedFile::FILETYPE_PAYMENT_PAGE_LOGO;
                     $ul->htmlAfterField .="<li><label><span class='radio'><input class='prefRatio-js' type='radio' name='".$name."' value='".$key."' $checked><i class='input-helper'></i></span>".$data."</label></li>";
                 }
@@ -1743,15 +1749,17 @@ class ConfigurationsController extends AdminBaseController
                 $ul->htmlAfterField .= '<div class="col-md-4 mb-5"> <h3>' . Labels::getLabel('LBL_Select_Invoice_Logo', $this->adminLangId) . '</h3> <div class="logoWrap"><div class="uploaded--image">';
 
 
-                if (AttachedFile::getAttachment(AttachedFile::FILETYPE_INVOICE_LOGO, 0, 0, $langId)) {
-                    $ul->htmlAfterField .= '<img src="' . CommonHelper::generateFullUrl('Image', 'invoiceLogo', array($langId, 'THUMB'), CONF_WEBROOT_FRONT_URL) . '"><a  class="remove--img" href="javascript:void(0);" onclick="removeInvoiceLogo(' . $langId . ')" ><i class="ion-close-round"></i></a>';
+                if ($fileData = AttachedFile::getAttachment(AttachedFile::FILETYPE_INVOICE_LOGO, 0, 0, $langId)) {
+					$uploadedTime = AttachedFile::setTimeParam($fileData['afile_updated_at']);
+					$image = FatCache::getCachedUrl(CommonHelper::generateFullUrl('Image', 'invoiceLogo', array($langId, 'THUMB'), CONF_WEBROOT_FRONT_URL) . $uploadedTime, CONF_IMG_CACHE_TIME, '.jpg');
+                    $ul->htmlAfterField .= '<img src="' . $image . '"><a  class="remove--img" href="javascript:void(0);" onclick="removeInvoiceLogo(' . $langId . ')" ><i class="ion-close-round"></i></a>';
                 }
 
                 $ul->htmlAfterField .= ' </div></div>';
                 
                 $ul->htmlAfterField .= '<ul class="list-inline">';
                 foreach($ratioArr as $key=>$data){ 
-                    $checked = ($key == 1) ? $checked = "checked = checked" : '';
+                    $checked = ($key == $fileData['afile_aspect_ratio']) ? $checked = "checked = checked" : '';
                     $name = 'ratio_type_'.AttachedFile::FILETYPE_INVOICE_LOGO;
                     $ul->htmlAfterField .="<li><label><span class='radio'><input class='prefRatio-js' type='radio' name='".$name."' value='".$key."' $checked><i class='input-helper'></i></span>".$data."</label></li>";
                 }
