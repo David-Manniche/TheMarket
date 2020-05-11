@@ -64,3 +64,7 @@ echo $tbl->getHtml(); ?>
 echo FatUtility::createHiddenFormFromData($postedData, array('name' => 'frmImgAttrPaging'));
 $pagingArr=array('pageCount'=>$pageCount,'page'=>$page,'recordCount'=>$recordCount,'adminLangId'=>$adminLangId);
 $this->includeTemplate('_partial/pagination.php', $pagingArr, false);
+?>
+<script>
+var moduleType = <?php echo $moduleType; ?>;
+</script>

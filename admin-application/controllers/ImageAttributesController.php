@@ -54,14 +54,21 @@ class ImageAttributesController extends AdminBaseController
 				);
                 break;
 			case AttachedFile::FILETYPE_BRAND_IMAGE:
-                $srch->joinTable(Brand::DB_TBL, 'LEFT OUTER JOIN', 'product_id = afile_record_id', 'b');
+                $srch->joinTable(Brand::DB_TBL, 'LEFT OUTER JOIN', 'brand_id = afile_record_id', 'b');
 				$srch->joinTable(Brand::DB_TBL_LANG, 'LEFT OUTER JOIN', 'b.brand_id = b_l.brandlang_brand_id AND b_l.brandlang_lang_id = ' . $this->adminLangId, 'b_l');
 				$srch->addMultipleFields(
 					array('brand_id as record_id', 'IFNULL(brand_name, brand_identifier) as record_name', 'afile_type')
 				);
-                break;				
+                break;
+			case AttachedFile::FILETYPE_BLOG_POST_IMAGE:
+                $srch->joinTable(BlogPost::DB_TBL, 'LEFT OUTER JOIN', 'post_id = afile_record_id', 'bp');
+				$srch->joinTable(BlogPost::DB_TBL_LANG, 'LEFT OUTER JOIN', 'bp.post_id = bp_l.postlang_post_id AND bp_l.postlang_lang_id = ' . $this->adminLangId, 'bp_l');
+				$srch->addMultipleFields(
+					array('post_id as record_id', 'IFNULL(post_title, post_identifier) as record_name', 'afile_type')
+				);
+                break;
             default:
-				$srch->joinTable(ProductCategory::DB_TBL, 'LEFT OUTER JOIN', 'product_id = afile_record_id', 'pc');
+				$srch->joinTable(ProductCategory::DB_TBL, 'LEFT OUTER JOIN', 'prodcat_id = afile_record_id', 'pc');
 				$srch->joinTable(ProductCategory::DB_TBL_LANG, 'LEFT OUTER JOIN', 'pc.prodcat_id = pc_l.prodcatlang_prodcat_id AND pc_l.prodcatlang_lang_id = ' . $this->adminLangId, 'pc_l');
 				$srch->addMultipleFields(
 					array('prodcat_id as record_id', 'IFNULL(prodcat_name, prodcat_identifier) as record_name', 'afile_type')
@@ -82,7 +89,6 @@ class ImageAttributesController extends AdminBaseController
         $srch->setPageSize($pageSize);
 
         $srch->addOrder('afile_id', 'DESC');
-
         $rs = $srch->getResultSet();
         $records = FatApp::getDb()->fetchAll($rs);
         $this->set("arr_listing", $records);
@@ -123,11 +129,63 @@ class ImageAttributesController extends AdminBaseController
         $this->_template->render(false, false);
     }
 	
-	public function attributeForm($recordId, $moduleType)
+	public function attributeForm($recordId, $moduleType, $langId = 0)
 	{
-		echo $moduleType;
+		$recordId = FatUtility::int($recordId);
+		$moduleType = FatUtility::int($moduleType);
+		$langId = FatUtility::int($langId);
+		
+		if ($recordId < 1) {
+            Message::addErrorMessage($this->str_invalid_request);
+            FatUtility::dieWithError(Message::getHtml());
+        }
+		
+		$images = AttachedFile::getMultipleAttachments($moduleType, $recordId, 0, $this->adminLangId, false, 0, 0, true);
+		
+		$languages = Language::getAllNames();
+		$frm = $this->getImgAttrForm($recordId, $moduleType, $langId);
+        $frm->fill(array('module_type' => $moduleType));
+        $this->set('languages', $languages);
+        $this->set('images', $images);
+        $this->set('frm', $frm);
 		$this->_template->render(false, false);
 	}
+	
+	private function getImgAttrForm($recordId, $moduleType, $langId)
+    {
+        $this->objPrivilege->canViewImageAttributes();
+        $recordId = FatUtility::int($recordId);
+        $moduleType = FatUtility::int($moduleType);
+        $langId = FatUtility::int($langId);
+		
+		$images = AttachedFile::getMultipleAttachments($moduleType, $recordId, 0, $langId, false, 0, 0, true);
+		
+        $frm = new Form('frmImgAttr');
+		$frm->addHiddenField('', 'module_type', $moduleType);
+		$frm->addHiddenField('', 'record_id', $recordId);
+		$languagesAssocArr = Language::getAllNames();
+        $frm->addSelectBox(Labels::getLabel('LBL_Language', $this->adminLangId), 'lang_id', array( 0 => Labels::getLabel('LBL_All_Languages', $this->adminLangId) ) + $languagesAssocArr, $langId, array(), '');
+		$frm->addTextBox(Labels::getLabel('LBL_Image_Title', $this->adminLangId), 'image_title');
+		$frm->addTextBox(Labels::getLabel('LBL_Image_Alt', $this->adminLangId), 'image_alt');
+        $frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_Save_Changes', $this->adminLangId));
+        return $frm;
+    }
+	
+	public function images($recordId, $moduleType, $lang_id = 0)
+    {
+        $recordId = FatUtility::int($recordId);
+        $moduleType = FatUtility::int($moduleType);
+        if ($recordId < 1) {
+            Message::addErrorMessage($this->str_invalid_request);
+            FatUtility::dieWithError(Message::getHtml());
+        }
+		
+        $images = AttachedFile::getMultipleAttachments(AttachedFile::FILETYPE_PRODUCT_IMAGE, $recordId, 0, $lang_id, false, 0, 0, true);
+		
+        $this->set('images', $productImages);
+        $this->set('languages', Language::getAllNames());
+        $this->_template->render(false, false);
+    }
 
     public function setup()
     {
