@@ -100,34 +100,6 @@ class ImageAttributesController extends AdminBaseController
         $this->set('postedData', $post);
         $this->_template->render(false, false);
     }
-
-    public function form($urlrewrite_id = 0)
-    {
-        $this->objPrivilege->canViewImageAttributes();
-        $urlrewrite_id = FatUtility::int($urlrewrite_id);
-
-        $frm = $this->getForm();
-        $frm->fill(array('urlrewrite_id' => $urlrewrite_id));
-
-        if (0 < $urlrewrite_id) {
-            $srch = UrlRewrite::getSearchObject();
-            $srch->addCondition('urlrewrite_id', '=', $urlrewrite_id);
-            $rs = $srch->getResultSet();
-            $data = FatApp::getDb()->fetch($rs);
-            if ($data === false) {
-                FatUtility::dieWithError($this->str_invalid_request);
-            }
-            $urlRewriteData = UrlRewrite::getAttributesById($urlrewrite_id);
-            // $customUrl  = explode("/", $urlRewriteData['urlrewrite_custom']);
-            $data['urlrewrite_custom'] = $urlRewriteData['urlrewrite_custom'];
-            $frm->fill($data);
-        }
-
-        $this->set('languages', Language::getAllNames());
-        $this->set('urlrewrite_id', $urlrewrite_id);
-        $this->set('frm', $frm);
-        $this->_template->render(false, false);
-    }
 	
 	public function attributeForm($recordId, $moduleType, $langId = 0)
 	{
@@ -140,18 +112,54 @@ class ImageAttributesController extends AdminBaseController
             FatUtility::dieWithError(Message::getHtml());
         }
 		
-		$images = AttachedFile::getMultipleAttachments($moduleType, $recordId, 0, $this->adminLangId, false, 0, 0, true);
-		
+		switch ($moduleType) {
+            case AttachedFile::FILETYPE_PRODUCT_IMAGE:
+                $data =  Product::getProductDataById($this->adminLangId, $recordId, 'IFNULL(product_name, product_identifier) as title');
+				$title = $data['title'];
+                break;
+			case AttachedFile::FILETYPE_BRAND_IMAGE:
+                $srch = Brand::getListingObj($this->adminLangId, null, true);
+				$srch->addCondition('brand_id', '=', $recordId);
+				$srch->addOrder('brand_id', 'DESC');
+				$rs = $srch->getResultSet();
+				$records = FatApp::getDb()->fetch($rs);
+				$title = $records['brand_name'];
+                break;
+			case AttachedFile::FILETYPE_BLOG_POST_IMAGE:
+                $srch = BlogPost::getSearchObject($this->adminLangId);
+				$srch->addFld('IFNULL(post_title, post_identifier) as post_title');
+				$srch->addCondition('post_id', '=', $recordId);
+				$srch->addOrder('post_id', 'DESC');
+				$rs = $srch->getResultSet();
+				$records = FatApp::getDb()->fetch($rs);
+				
+				$title = $records['post_title'];
+                break;
+            default:
+				$srch = ProductCategory::getSearchObject(false, $this->adminLangId);
+				$srch->addCondition(ProductCategory::DB_TBL_PREFIX . 'deleted', '=', 0);
+				$srch->addFld('IFNULL(prodcat_name, prodcat_identifier) AS prodcat_name');
+				$srch->addCondition('prodcat_id', '=', $recordId);
+				$srch->addOrder('prodcat_id', 'DESC');
+				$rs = $srch->getResultSet();
+				$records = FatApp::getDb()->fetch($rs);
+				$title = $records['prodcat_name'];
+			break;
+		}
+		$images = AttachedFile::getMultipleAttachments($moduleType, $recordId, 0, $langId, false, 0, 0, true);
 		$languages = Language::getAllNames();
-		$frm = $this->getImgAttrForm($recordId, $moduleType, $langId);
-        $frm->fill(array('module_type' => $moduleType));
+		$frm = $this->getImgAttrForm($recordId, $moduleType, $langId, $images);
+        $this->set('recordId', $recordId);
+        $this->set('moduleType', $moduleType);
+        $this->set('langId', $langId);
         $this->set('languages', $languages);
+        $this->set('title', $title);
         $this->set('images', $images);
         $this->set('frm', $frm);
 		$this->_template->render(false, false);
 	}
 	
-	private function getImgAttrForm($recordId, $moduleType, $langId)
+	private function getImgAttrForm($recordId, $moduleType, $langId, $images)
     {
         $this->objPrivilege->canViewImageAttributes();
         $recordId = FatUtility::int($recordId);
@@ -165,13 +173,16 @@ class ImageAttributesController extends AdminBaseController
 		$frm->addHiddenField('', 'record_id', $recordId);
 		$languagesAssocArr = Language::getAllNames();
         $frm->addSelectBox(Labels::getLabel('LBL_Language', $this->adminLangId), 'lang_id', array( 0 => Labels::getLabel('LBL_All_Languages', $this->adminLangId) ) + $languagesAssocArr, $langId, array(), '');
-		$frm->addTextBox(Labels::getLabel('LBL_Image_Title', $this->adminLangId), 'image_title');
-		$frm->addTextBox(Labels::getLabel('LBL_Image_Alt', $this->adminLangId), 'image_alt');
-        $frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_Save_Changes', $this->adminLangId));
+		foreach($images as $afileId => $afileData) {
+			$frm->addTextBox(Labels::getLabel('LBL_Image_Title', $this->adminLangId), 'image_title'.$afileId);
+			$frm->addTextBox(Labels::getLabel('LBL_Image_Alt', $this->adminLangId), 'image_alt'.$afileId);
+		}
+        $frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_Save', $this->adminLangId));
+        $frm->addButton('', 'btn_discard', Labels::getLabel('LBL_Discard', $this->adminLangId));
         return $frm;
     }
 	
-	public function images($recordId, $moduleType, $lang_id = 0)
+	/* public function images($recordId, $moduleType, $lang_id = 0)
     {
         $recordId = FatUtility::int($recordId);
         $moduleType = FatUtility::int($moduleType);
@@ -185,48 +196,47 @@ class ImageAttributesController extends AdminBaseController
         $this->set('images', $productImages);
         $this->set('languages', Language::getAllNames());
         $this->_template->render(false, false);
-    }
+    } */
 
     public function setup()
     {
         $this->objPrivilege->canEditImageAttributes();
-
-        $frm = $this->getForm();
-        $post = $frm->getFormDataFromArray(FatApp::getPostedData());
-
+		
+        $post = FatApp::getPostedData();
+		
         if (false === $post) {
             Message::addErrorMessage(current($frm->getValidationErrors()));
             FatUtility::dieJsonError(Message::getHtml());
         }
 
-        $urlrewrite_id = FatUtility::int($post['urlrewrite_id']);
-        unset($post['urlrewrite_id']);
-
-        $url = ltrim(FatApp::getPostedData('urlrewrite_custom', FatUtility::VAR_STRING), '/');
-        $post['urlrewrite_custom'] = CommonHelper::seoUrl($url);
-
-        $url = FatApp::getPostedData('urlrewrite_original', FatUtility::VAR_STRING);
-        $post['urlrewrite_original'] = trim($url, '/\\');
-
-        /* if ($urlrewrite_id>0) {
-            $urlRewriteData =  UrlRewrite::getAttributesById($urlrewrite_id);
-            $customUrl  = explode("/", $urlRewriteData['urlrewrite_custom']);
-            $attachId = isset($customUrl[1])? $customUrl[1] : '';
-            if ($attachId) {
-                $post['urlrewrite_custom'].='/'.$attachId;
-            }
-        } */
-        
-        $record = new UrlRewrite($urlrewrite_id);
-        $record->assignValues($post);
-
-        if (!$record->save()) {
-            Message::addErrorMessage($record->getError());
+        $recordId = FatUtility::int($post['record_id']);
+        $moduleType = FatUtility::int($post['module_type']);
+        $langId = FatUtility::int($post['lang_id']);
+		
+		if(!$recordId || !$moduleType) {
+			Message::addErrorMessage($this->str_invalid_request_id);
             FatUtility::dieJsonError(Message::getHtml());
-        }
+		}
+		
+		$images = AttachedFile::getMultipleAttachments($moduleType, $recordId, 0, $langId, false, 0, 0, true);
+		
+		$frm = $this->getImgAttrForm($recordId, $moduleType, $langId, $images);
+        $post = $frm->getFormDataFromArray(FatApp::getPostedData());
+		
+        $db = FatApp::getDb();
+		foreach($images as $afileId => $afileData) {
+			if(empty($post['image_title'.$afileId]) && empty($post['image_alt'.$afileId])) {
+				continue;
+			}
+			$where = array('smt' => 'afile_record_id = ? and afile_id = ?', 'vals' => array($recordId, $afileId));
+            if(!$db->updateFromArray(AttachedFile::DB_TBL, array('afile_attribute_title' => $post['image_title'.$afileId], 'afile_attribute_alt' => $post['image_alt'.$afileId]), $where)){
+				Message::addErrorMessage($db->getError());
+                FatUtility::dieWithError(Message::getHtml());
+			}
+		}
 
         $this->set('msg', $this->str_setup_successful);
-        $this->set('urlrewrite_id', $urlrewrite_id);
+        $this->set('recordId', $recordId);
         $this->_template->render(false, false, 'json-success.php');
     }
 

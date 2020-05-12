@@ -61,6 +61,7 @@
 					</div>
 					<div class="col-md-6">
 						<section class="section" id="attrForm">
+							<div id="dvForm"></div>
 							<div class="alert-aligned" id="dvAlert">
                                 <div class="cards-message" role="alert">
                                     <div class="cards-message-icon"><i class="fas fa-exclamation-triangle"></i></div>

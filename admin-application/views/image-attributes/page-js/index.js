@@ -27,24 +27,17 @@ $(document).ready(function() {
         $(dv).html(fcom.getLoader());
         fcom.ajax(fcom.makeUrl('ImageAttributes', 'search'), data, function(res) {
             $(dv).html(res);
+			$("#dvForm").hide();
+			$("#dvAlert").show();
         });
     };
 
-    urlForm = function(id) {
-        var frm = document.frmImgAttrPaging;
-        $.facebox(function() {
-            fcom.ajax(fcom.makeUrl('ImageAttributes', 'form', [id]), '', function(t) {
-                $.facebox(t, 'faceboxWidth');
-            });
-        });
-    };
 
     setup = function(frm) {
         if (!$(frm).validate()) return;
         var data = fcom.frmData(frm);
         fcom.updateWithAjax(fcom.makeUrl('ImageAttributes', 'setup'), data, function(t) {
-            reloadList();
-            $(document).trigger('close.facebox');
+            /* reloadList(); */
         });
     };
 	
@@ -53,29 +46,26 @@ $(document).ready(function() {
 			$("#dvForm").html(t).show();
 			$("#dvAlert").hide();
 		});
-
-	};
-
-    deleteRecord = function(id) {
-        if (!confirm(langLbl.confirmDelete)) {
-            return;
-        }
-        data = 'id=' + id;
-        fcom.updateWithAjax(fcom.makeUrl('ImageAttributes', 'deleteRecord'), data, function(res) {
-            reloadList();
-        });
-    };
-
-	deleteSelected = function(){
-        if(!confirm(langLbl.confirmDelete)){
-            return false;
-        }
-        $("#frmImgAttributeListing").submit();
-    };
-
+	};	
+	
+	discardForm = function(){
+		$("#dvForm").hide();
+		$("#dvAlert").show();
+	};	
+    
     clearSearch = function() {
         document.frmSearch.reset();
         searchUrls(document.frmSearch);
     };
 
 })();
+
+$(document).on('change','.language-js',function(){
+    var langId = $(this).val();
+    var recordId = $('#frmImgAttribute input[name=record_id]').val();
+    var module = $('#frmImgAttribute input[name=module_type]').val();
+    fcom.ajax(fcom.makeUrl('ImageAttributes', 'attributeForm', [recordId, module, langId]), '', function(t) {
+		$("#dvForm").html(t);
+		$('#frmImgAttribute input[name=lang_id]').val(langId);
+	});
+});
