@@ -14,20 +14,17 @@ $this->includeTemplate('_partial/dashboardNavigation.php');
                     <div class="cards">
                         <div class="cards-content">
                             <div class="row">
-                                <div class="col-md-8">
+                                <div class="col-md-9">
                                     <h6 class="m-0">
                                         <?php echo Labels::getLabel('Lbl_ACCOUNT_ID', $siteLangId);?> : 
                                         <?php echo $accountId; ?>
                                     </h6>
                                 </div>
-                                <div class="col-md-4">
+                                <div class="col-md-3">
                                     <?php if (!empty($requiredFields)) { ?>
                                         <a class="btn btn-outline-primary btn--sm" href="javascript:void(0)" onClick="requiredFieldsForm();" id="js-required-fields" title="<?php echo Labels::getLabel('LBL_SETUP_ACCOUNT', $siteLangId); ?>">
                                             <?php echo Labels::getLabel('Lbl_SETUP_ACCOUNT', $siteLangId); ?>
                                         </a>
-                                    <?php } ?>
-                                    <?php if (true == $isFinancialInfoRequired) { ?>
-                                        <a class="btn btn--primary btn--sm" href="javascript:void(0)" onClick="financialInfoForm();" id="js-financial-form"><?php echo Labels::getLabel('LBL_FINANCIAL_FORM', $siteLangId); ?></a>
                                     <?php } ?>
                                 </div>
                             </div>
@@ -38,7 +35,6 @@ $this->includeTemplate('_partial/dashboardNavigation.php');
         </div>
     </div>
 </main>
-
 <?php if (!empty($requiredFields)) { ?>
     <script>
         requiredFieldsForm();

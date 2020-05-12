@@ -4,24 +4,38 @@ class StripeConnectController extends PaymentMethodBaseController
 {
     public const KEY_NAME = 'StripeConnect';
     private $stripeConnect;
-    public $requiredKeys = [
-        'publishable_key',
-        'secret_key'
-    ];
+
+    private $businessTypeForm = false;
+    private $externalForm = false;
+
 
     public function __construct($action)
     {
         parent::__construct($action);
+        $this->init();
+    }
+
+    public function init()
+    {
         $error = '';
         if (false === PluginHelper::includePlugin(self::KEY_NAME, 'payment-methods', $this->siteLangId, $error)) {
             Message::addErrorMessage($error);
             $this->redirectBack();
         }
+
         $this->stripeConnect = new StripeConnect($this->siteLangId);
+
+        if (false === $this->stripeConnect->init()) {
+            Message::addErrorMessage($this->stripeConnect->getError());
+            $this->redirectBack();
+        }
+
         if (false === $this->stripeConnect->isUserValid() && !empty($this->stripeConnect->getError())) {
             Message::addErrorMessage($this->stripeConnect->getError());
             $this->redirectBack();
         }
+
+        $this->settings = $this->stripeConnect->getKeys();
     }
 
     public function index()
@@ -32,20 +46,25 @@ class StripeConnectController extends PaymentMethodBaseController
         $this->set('userData', $this->getUserMeta());
         $this->set('keyName', self::KEY_NAME);
         $this->set('pluginName', $this->getPluginData('plugin_name'));
+        $this->set('publishableKey', $this->settings['publishable_key']);
         $this->_template->render();
     }
 
     public function requiredFieldsForm()
     {
         $frm = $this->getRequiredFieldsForm();
-        $this->set('frm', $frm);
-        $this->set('keyName', self::KEY_NAME);
-        $this->_template->render(false, false);
-    }
 
-    public function financialInfoForm()
-    {
-        $frm = $this->getFinancialInfoForm();
+        $fieldType = '';
+        $pageTitle = Labels::getLabel('LBL_USER_DETAIL', $this->siteLangId);
+        if (true === $this->businessTypeForm) {
+            $pageTitle = Labels::getLabel('LBL_BUSINESS_TYPE', $this->siteLangId);
+        } else if (true === $this->externalForm) {
+            $pageTitle = Labels::getLabel('LBL_FINANCIAL_INFORMATION', $this->siteLangId);
+            $fieldType = 'external_account';
+        }
+
+        $this->set('fieldType', $fieldType);    
+        $this->set('pageTitle', $pageTitle);    
         $this->set('frm', $frm);
         $this->set('keyName', self::KEY_NAME);
         $this->_template->render(false, false);
@@ -53,18 +72,22 @@ class StripeConnectController extends PaymentMethodBaseController
 
     public function setupRequiredFields()
     {
-        $frm = $this->getRequiredFieldsForm();
-        $post = array_filter($frm->getFormDataFromArray(FatApp::getPostedData()));
-        $this->stripeConnect->updateRequiredFields($post, false);
+        $post = array_filter(FatApp::getPostedData());
+        unset($post['fOutMode'], $post['fIsAjax']);
+        if (false === $this->stripeConnect->updateRequiredFields($post)) {
+            FatUtility::dieJsonError($this->stripeConnect->getError());
+        }
+        FatUtility::dieJsonSuccess(Labels::getLabel('MSG_SUCCESS', $this->siteLangId));
     }
 
-    
     public function setupFinancialInfo()
     {
         $frm = $this->getFinancialInfoForm();
         $post = array_filter($frm->getFormDataFromArray(FatApp::getPostedData()));
-        unset($post['btn_submit']);
-        // $this->stripeConnect->updateFinancialInfo($post);
+        if (false === $this->stripeConnect->updateFinancialInfo($post)) {
+            FatUtility::dieJsonError($this->stripeConnect->getError());
+        }
+        FatUtility::dieJsonSuccess(Labels::getLabel('MSG_SUCCESS', $this->siteLangId));
     }
 
     private function getRequiredFieldsForm()
@@ -74,9 +97,9 @@ class StripeConnectController extends PaymentMethodBaseController
         $fieldsData = $this->stripeConnect->getRequiredFields();
         foreach ($fieldsData as $field) {
             if ('business_type' == $field) {
-                return $this->getBusinessTypeForm();
+                return $this->getBusinessTypeForm($field);
             } else if ('external_account' == $field) {
-                return $this->getFinancialInfoForm();
+                return $this->getFinancialInfoForm($field);
             }
 
             $name = $label = $field;
@@ -101,10 +124,11 @@ class StripeConnectController extends PaymentMethodBaseController
         return $frm;
     }
 
-    private function getBusinessTypeForm()
+    private function getBusinessTypeForm(string $type)
     {
+        $this->businessTypeForm = true;
         $frm = new Form('frm' . self::KEY_NAME);
-
+        $frm->addHiddenField('', 'action_type', $type);
         $options = [
             'individual' => Labels::getLabel('LBL_INDIVIDUAL', $this->siteLangId),
             'company' => Labels::getLabel('LBL_COMPANY', $this->siteLangId),
@@ -116,24 +140,22 @@ class StripeConnectController extends PaymentMethodBaseController
             $options['government_entity'] = Labels::getLabel('LBL_GOVERNMENT_ENTITY', $this->siteLangId);
         }
 
-        $fld = $frm->addSelectBox(Labels::getLabel('LBL_BUSINESS_TYPE', $this->siteLangId), 'business_type', $options);
+        $fld = $frm->addSelectBox(Labels::getLabel('LBL_SELECT_BUSINESS_TYPE', $this->siteLangId), 'business_type', $options);
         $fld->requirement->setRequired(true);
         $frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_SAVE', $this->siteLangId));
         return $frm;
     }
 
-    private function getFinancialInfoForm()
+    private function getFinancialInfoForm(string $type)
     {
+        $this->externalForm = true;
+
         $frm = new Form('frm' . self::KEY_NAME);
+        $frm->addHiddenField('', 'action_type', $type);
         $frm->addRequiredField(Labels::getLabel('LBL_ACCOUNT_HOLDER_NAME', $this->siteLangId), 'account_holder_name');
         $frm->addRequiredField(Labels::getLabel('LBL_ACCOUNT_NUMBER', $this->siteLangId), 'account_number');
 
-        $options = [
-            'individual' => Labels::getLabel('LBL_INDIVIDUAL', $this->siteLangId),
-            'company' => Labels::getLabel('LBL_COMPANY', $this->siteLangId),
-        ];
-        $fld = $frm->addSelectBox(Labels::getLabel('LBL_ACCOUNT_HOLDER_TYPE', $this->siteLangId), 'account_holder_type', $options);
-        $fld->requirement->setRequired(true);
+        $fld = $frm->addRequiredField(Labels::getLabel('LBL_ROUTING_NUMBER_(_IFSC_CODE_)', $this->siteLangId), 'routing_number');
         $submitBtn = $frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_SAVE', $this->siteLangId));
         $cancelButton = $frm->addButton("", "btn_clear", Labels::getLabel('LBL_Clear', $this->siteLangId), array('onclick' => 'clearForm();'));
         $submitBtn->attachField($cancelButton);

@@ -5,7 +5,6 @@ class StripeConnect extends PaymentMethodBase
     public const KEY_NAME = __CLASS__;
     private $stripeAccountId;
     private $requiredFields = [];
-    private $business_profile = [];
     private $userInfoObj;
 
     public $requiredKeys = [
@@ -14,7 +13,10 @@ class StripeConnect extends PaymentMethodBase
     ];
 
     public const REQUEST_CREATE_ACCOUNT = 1;
-    public const REQUEST_PERSON_ID = 2;
+    public const REQUEST_UPDATE_ACCOUNT = 2;
+    public const REQUEST_PERSON_ID = 3;
+    public const REQUEST_ADD_BANK_ACCOUNT = 4;
+    public const REQUEST_UPDATE_BUSINESS_TYPE = 5;
 
     /**
      * __construct
@@ -25,20 +27,24 @@ class StripeConnect extends PaymentMethodBase
     public function __construct(int $langId)
     {
         $this->langId = 0 < $langId ? $langId : CommonHelper::getLangId();
-        if (false == $this->validateSettings()) {
-            return false;
-        }
-        $this->initialize();
     }
 
     /**
-     * initialize
+     * init
      *
      * @return void
      */
-    private function initialize()
+    public function init()
     {
+        if (false == $this->validateSettings()) {
+            return false;
+        }
+
         if (false === $this->validateLoggedUser()) {
+            return false;
+        }
+
+        if (false === $this->loadLoggedUserInfo()) {
             return false;
         }
 
@@ -47,6 +53,48 @@ class StripeConnect extends PaymentMethodBase
         \Stripe\Stripe::setApiKey($this->settings['secret_key']);
         return true;
     }
+
+    /**
+     * getKeys - To get plugin keys
+     * 
+     * @return array
+     */
+    public function getKeys(): array
+    {
+        return $this->settings;
+    }
+
+    /**
+     * create
+     *
+     * @return object
+     */
+    private function create(array $data): object
+    {
+        return \Stripe\Account::create($data);
+    }
+
+    /**
+     * update
+     *
+     * @return object
+     */
+    private function update(array $data): object
+    {
+        return \Stripe\Account::update($this->getAccountId(), $data);
+    }
+
+    /**
+     * createExternalAccount - For Financial(Bank) Data
+     *
+     * @return object
+     */
+    private function createExternalAccount(array $data): object
+    {
+        return \Stripe\Account::createExternalAccount($this->getAccountId(), $data);
+    }
+    
+
 
     /* Need to this below array dynamic as per country rules. Base on required Fields via validateUser() function requirements->currently_due.
         Must follow https://medium.com/@Keithweaver_/creating-your-own-marketplace-with-stripe-connect-php-like-shopify-or-uber-6eadbb08993f for help.
@@ -99,11 +147,8 @@ class StripeConnect extends PaymentMethodBase
      */
     public function createAccount(): bool
     {
-        if (false === $this->loadLoggedUserInfo()) {
-            return false;
-        }
         $data = $this->userAccountData();
-        $resp = \Stripe\Account::create($data);
+        $resp = $this->create($data);
         $this->stripeAccountId = $resp->id;
         return $this->updateUserMeta('stripe_account_id', $resp->id);
     }
@@ -114,15 +159,24 @@ class StripeConnect extends PaymentMethodBase
      * @param  mixed $requestType
      * @return mixed
      */
-    private function doRequest(int $requestType)
+    private function doRequest(int $requestType, array $data = [])
     {
         try {
             switch ($requestType) {
                 case self::REQUEST_CREATE_ACCOUNT:
                     return $this->createAccount();
                     break;
+                case self::REQUEST_UPDATE_ACCOUNT:
+                    return $this->updateAccount($data);
+                    break;
                 case self::REQUEST_PERSON_ID:
                     return $this->getPersonId();
+                    break;
+                case self::REQUEST_ADD_BANK_ACCOUNT:
+                    return $this->addFinancialInfo($data);
+                    break;
+                case self::REQUEST_UPDATE_BUSINESS_TYPE:
+                    return $this->updateBusinessType($data);
                     break;
             }
         } catch (\Stripe\Exception\CardException $e) {
@@ -229,39 +283,91 @@ class StripeConnect extends PaymentMethodBase
      */
     public function isFinancialInfoRequired(): bool
     {
-        $this->userInfoObj = $this->getRemoteUserInfo();
-        if (isset($this->userInfoObj->requirements->currently_due->external_account) && empty($this->userInfoObj->requirements->currently_due->external_account)) {
+        if (in_array('external_account', $this->getRequiredFields())) {
             return true;
         }
         return false;
     }
 
     /**
-     * getBusinessProfile
-     *
-     * @return object
+     * updateRequiredFields
+     * 
+     * @param array $data 
+     * @return bool
      */
-    public function getBusinessProfile(): object
-    {
-        $this->userInfoObj = $this->getRemoteUserInfo();
-        $this->business_profile  = $this->userInfoObj->business_profile;
-        if ('US' != strtoupper($this->userData['country_code'])) {
-            unset($this->business_profile['mcc']);
-        }
-        return $this->business_profile;
-    }
-
     public function updateRequiredFields(array $data): bool
     {
-        $accountObj = $this->getRemoteUserInfo();
-        $accountObj = json_decode(json_encode($data));
-        CommonHelper::printArray();
+        $requestType = '';
+        $actionType = 'N/A';
+        if (isset($data['action_type'])) {
+            $actionType = $data['action_type'];
+        }
+        
+        switch ($actionType) {
+            case 'business_type':
+                $requestType = self::REQUEST_UPDATE_BUSINESS_TYPE;
+                break;
+            case 'external_account':
+                $requestType = self::REQUEST_ADD_BANK_ACCOUNT;
+                break;
+            default:
+                $requestType = self::REQUEST_UPDATE_ACCOUNT;
+                break;
+        }
+        return $this->doRequest($requestType, $data);
     }
 
-    public function updateBusinessProfileFields(array $data): bool
+    /**
+     * updateBusinessType
+     * 
+     * @param array $data 
+     * @return bool
+     */
+    private function updateBusinessType(array $data): bool
     {
-        $accountObj = $this->getRemoteUserInfo();
-        // $accountObj->individual->
+        $this->update($data);
+        $this->updateUserMeta('business_type', $data['business_type']);
+        return true;
+    }
+
+    /**
+     * addFinancialInfo
+     * 
+     * @param array $data 
+     * @return bool
+     */
+    private function addFinancialInfo(array $data): bool
+    {
+        $businessType = $this->getUserMeta('business_type');
+        $this->getBaseCurrencyCode();
+        $data = [
+                'external_account' => [
+                    'object' => 'bank_account',
+                    'account_holder_name' => $data['account_holder_name'],
+                    'account_number' => $data['account_number'],
+                    'account_holder_type' => $businessType,
+                    /*'country' => strtoupper($this->userData['country_code']),
+                    'currency' => $this->systemCurrencyCode,*/
+                    'country' => 'US',
+                    'currency' => 'USD',
+                    'routing_number' => $data['routing_number'],
+                ]
+            ];
+
+        $resp = $this->createExternalAccount($data);
+        return $this->updateUserMeta('stripe_bank_account_id', $resp->id);
+    }
+
+    /**
+     * updateAccount
+     * 
+     * @param array $data 
+     * @return bool
+     */
+    public function updateAccount(array $data): bool
+    {
+        $this->update($data);
+        return true;
     }
 
     /**
@@ -271,8 +377,8 @@ class StripeConnect extends PaymentMethodBase
      */
     public function userAccountCanTransfer(): bool
     {
-        $user = $this->getRemoteUserInfo();
-        return ('inactive' == $user->capabilities->transfers) ? false : true;
+        $this->userInfoObj = $this->getRemoteUserInfo();
+        return ('inactive' == $this->userInfoObj->capabilities->transfers) ? false : true;
     }
 
     /**
@@ -282,7 +388,7 @@ class StripeConnect extends PaymentMethodBase
      */
     public function isUserValid(): bool
     {
-        if (empty($this->getAccountId()) || false === $this->userAccountCanTransfer()) {
+        if (empty($this->getAccountId())) {
             if (false === $this->doRequest(self::REQUEST_CREATE_ACCOUNT)) {
                 $this->error = $this->getError();
                 return false;
