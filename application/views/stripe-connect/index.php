@@ -16,14 +16,20 @@ $this->includeTemplate('_partial/dashboardNavigation.php');
                             <div class="row">
                                 <div class="col-md-9">
                                     <h6 class="m-0">
-                                        <?php echo Labels::getLabel('Lbl_ACCOUNT_ID', $siteLangId);?> : 
-                                        <?php echo $accountId; ?>
+                                        <?php if (empty($accountId)) { ?>
+                                            <a class="btn btn-outline-primary btn--sm" href="<?php echo CommonHelper::generateUrl('StripeConnect', 'connect'); ?>">
+                                                <?php echo Labels::getLabel('Lbl_CONNECT_TO_STRIPE', $siteLangId); ?>
+                                            </a>
+                                        <?php } else { ?>
+                                            <?php echo Labels::getLabel('Lbl_ACCOUNT_ID', $siteLangId);?> : 
+                                            <?php echo $accountId; ?>
+                                        <?php } ?>
                                     </h6>
                                 </div>
                                 <div class="col-md-3">
                                     <?php if (!empty($requiredFields)) { ?>
-                                        <a class="btn btn-outline-primary btn--sm" href="javascript:void(0)" onClick="requiredFieldsForm();" id="js-required-fields" title="<?php echo Labels::getLabel('LBL_SETUP_ACCOUNT', $siteLangId); ?>">
-                                            <?php echo Labels::getLabel('Lbl_SETUP_ACCOUNT', $siteLangId); ?>
+                                        <a class="btn btn-outline-primary btn--sm" href="javascript:void(0)" onClick="requiredFieldsForm();" id="js-required-fields">
+                                            <?php echo Labels::getLabel('Lbl_UPDATE_ACCOUNT', $siteLangId); ?>
                                         </a>
                                     <?php } ?>
                                 </div>

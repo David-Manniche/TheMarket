@@ -8,7 +8,6 @@ class StripeConnectController extends PaymentMethodBaseController
     private $businessTypeForm = false;
     private $externalForm = false;
 
-
     public function __construct($action)
     {
         parent::__construct($action);
@@ -30,7 +29,7 @@ class StripeConnectController extends PaymentMethodBaseController
             $this->redirectBack();
         }
 
-        if (false === $this->stripeConnect->isUserValid() && !empty($this->stripeConnect->getError())) {
+        if (!empty($this->stripeConnect->getError())) {
             Message::addErrorMessage($this->stripeConnect->getError());
             $this->redirectBack();
         }
@@ -48,6 +47,14 @@ class StripeConnectController extends PaymentMethodBaseController
         $this->set('pluginName', $this->getPluginData('plugin_name'));
         $this->set('publishableKey', $this->settings['publishable_key']);
         $this->_template->render();
+    }
+
+    public function connect()
+    {
+        if (false === $this->stripeConnect->connect()) {
+            Message::addErrorMessage($this->stripeConnect->getError());
+        }
+        $this->redirectBack(self::KEY_NAME);        
     }
 
     public function requiredFieldsForm()
@@ -118,9 +125,8 @@ class StripeConnectController extends PaymentMethodBaseController
             $fld = $frm->addTextBox($label, $name);
             $fld->requirement->setRequired(true);
         }
-        $submitBtn = $frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_SAVE', $this->siteLangId));
-        $cancelButton = $frm->addButton("", "btn_clear", Labels::getLabel('LBL_Clear', $this->siteLangId), array('onclick' => 'clearForm();'));
-        $submitBtn->attachField($cancelButton);
+        $frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_SAVE', $this->siteLangId));
+        $frm->addButton("", "btn_clear", Labels::getLabel('LBL_Clear', $this->siteLangId), array('onclick' => 'clearForm();'));
         return $frm;
     }
 

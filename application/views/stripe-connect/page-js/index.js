@@ -1,12 +1,12 @@
 var keyName = 'StripeConnect';
 
-(function() {    
-	requiredFieldsForm = function(){
+(function() {
+    requiredFieldsForm = function(){
         $.facebox(function() {
             fcom.ajax(fcom.makeUrl(keyName, 'requiredFieldsForm'),'',function(res){
                 $.facebox(res,'faceboxWidth medium-fb-width');
             });
-		});
+        });
     };
     
     clearForm = function() {

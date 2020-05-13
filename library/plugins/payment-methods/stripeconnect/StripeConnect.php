@@ -1,4 +1,5 @@
 <?php
+require_once dirname(__FILE__) . '/StripeConnectFunctions.php';
 
 class StripeConnect extends PaymentMethodBase
 {
@@ -12,11 +13,14 @@ class StripeConnect extends PaymentMethodBase
         'secret_key'
     ];
 
+    use StripeConnectFunctions;
+
     public const REQUEST_CREATE_ACCOUNT = 1;
-    public const REQUEST_UPDATE_ACCOUNT = 2;
-    public const REQUEST_PERSON_ID = 3;
-    public const REQUEST_ADD_BANK_ACCOUNT = 4;
-    public const REQUEST_UPDATE_BUSINESS_TYPE = 5;
+    public const REQUEST_RETRIEVE_ACCOUNT = 2;
+    public const REQUEST_UPDATE_ACCOUNT = 3;
+    public const REQUEST_PERSON_ID = 4;
+    public const REQUEST_ADD_BANK_ACCOUNT = 5;
+    public const REQUEST_UPDATE_BUSINESS_TYPE = 6;
 
     /**
      * __construct
@@ -44,9 +48,7 @@ class StripeConnect extends PaymentMethodBase
             return false;
         }
 
-        if (false === $this->loadLoggedUserInfo()) {
-            return false;
-        }
+        $this->loadLoggedUserInfo();
 
         require_once dirname(__FILE__) . '/vendor/autoload.php';
 
@@ -65,41 +67,28 @@ class StripeConnect extends PaymentMethodBase
     }
 
     /**
-     * create
+     * connect
      *
-     * @return object
+     * @return bool
      */
-    private function create(array $data): object
+    public function connect(): bool
     {
-        return \Stripe\Account::create($data);
+        if (empty($this->getAccountId())) {
+            if (false === $this->doRequest(self::REQUEST_CREATE_ACCOUNT)) {
+                return false;
+            }
+        }
+        return true;
     }
 
     /**
-     * update
+     * createAccount
      *
-     * @return object
+     * Can follow: https://stripe.com/docs/api/persons/create OR https://medium.com/@Keithweaver_/creating-your-own-marketplace-with-stripe-connect-php-like-shopify-or-uber-6eadbb08993f for help.
+     * 
+     * @return bool
      */
-    private function update(array $data): object
-    {
-        return \Stripe\Account::update($this->getAccountId(), $data);
-    }
-
-    /**
-     * createExternalAccount - For Financial(Bank) Data
-     *
-     * @return object
-     */
-    private function createExternalAccount(array $data): object
-    {
-        return \Stripe\Account::createExternalAccount($this->getAccountId(), $data);
-    }
-    
-
-
-    /* Need to this below array dynamic as per country rules. Base on required Fields via validateUser() function requirements->currently_due.
-        Must follow https://medium.com/@Keithweaver_/creating-your-own-marketplace-with-stripe-connect-php-like-shopify-or-uber-6eadbb08993f for help.
-    */
-    public function userAccountData(): array
+    public function createAccount(): bool
     {
         $name = explode(' ', $this->userData['user_name']);
         $dob = explode('-', $this->userData['user_dob']);
@@ -134,77 +123,16 @@ class StripeConnect extends PaymentMethodBase
                 'user_agent' => CommonHelper::userAgent(),
             ]
         ];
+
         if (true === $this->getBaseCurrencyCode()) {
             $data['default_currency'] = $this->systemCurrencyCode;
         }
-        return $data;
-    }
-    
-    /**
-     * createAccount
-     *
-     * @return bool
-     */
-    public function createAccount(): bool
-    {
-        $data = $this->userAccountData();
+
         $resp = $this->create($data);
         $this->stripeAccountId = $resp->id;
         return $this->updateUserMeta('stripe_account_id', $resp->id);
     }
     
-    /**
-     * doRequest
-     *
-     * @param  mixed $requestType
-     * @return mixed
-     */
-    private function doRequest(int $requestType, array $data = [])
-    {
-        try {
-            switch ($requestType) {
-                case self::REQUEST_CREATE_ACCOUNT:
-                    return $this->createAccount();
-                    break;
-                case self::REQUEST_UPDATE_ACCOUNT:
-                    return $this->updateAccount($data);
-                    break;
-                case self::REQUEST_PERSON_ID:
-                    return $this->getPersonId();
-                    break;
-                case self::REQUEST_ADD_BANK_ACCOUNT:
-                    return $this->addFinancialInfo($data);
-                    break;
-                case self::REQUEST_UPDATE_BUSINESS_TYPE:
-                    return $this->updateBusinessType($data);
-                    break;
-            }
-        } catch (\Stripe\Exception\CardException $e) {
-            // Since it's a decline, \Stripe\Exception\CardException will be caught
-            $this->error = $e->getError()->param . ' - ' . $e->getMessage();
-        } catch (\Stripe\Exception\RateLimitException $e) {
-            // Too many requests made to the API too quickly
-            $this->error = $e->getError()->param . ' - ' . $e->getMessage();
-        } catch (\Stripe\Exception\InvalidRequestException $e) {
-            // Invalid parameters were supplied to Stripe's API
-            $this->error = $e->getError()->param . ' - ' . $e->getMessage();
-        } catch (\Stripe\Exception\AuthenticationException $e) {
-            // Authentication with Stripe's API failed
-            $this->error = $e->getError()->param . ' - ' . $e->getMessage();
-            // (maybe you changed API keys recently)
-        } catch (\Stripe\Exception\ApiConnectionException $e) {
-            // Network communication with Stripe failed
-            $this->error = $e->getError()->param . ' - ' . $e->getMessage();
-        } catch (\Stripe\Exception\ApiErrorException $e) {
-            // Display a very generic error to the user, and maybe send
-            $this->error = $e->getError()->param . ' - ' . $e->getMessage();
-            // yourself an email
-        } catch (Exception $e) {
-            // Something else happened, completely unrelated to Stripe
-            $this->error = $e->getMessage();
-        }
-        return false;
-    }
 
     /**
      * getPersonId
@@ -228,9 +156,7 @@ class StripeConnect extends PaymentMethodBase
      */
     private function createPersonId(): bool
     {
-        $resp = \Stripe\Token::create([
-            'pii' => ['id_number' => '000000000'],
-        ]);
+        $resp = $this->createToken();
         return $this->updateUserMeta('stripe_person_id', $resp->id);
     }
 
@@ -259,7 +185,7 @@ class StripeConnect extends PaymentMethodBase
             return $this->userInfoObj;
         }
         
-        return \Stripe\Account::retrieve($this->getAccountId());
+        return $this->doRequest(self::REQUEST_RETRIEVE_ACCOUNT);
     }
 
     /**
@@ -269,6 +195,10 @@ class StripeConnect extends PaymentMethodBase
      */
     public function getRequiredFields(): array
     {
+        if (empty($this->getAccountId())) {
+            return [];
+        }
+
         $this->userInfoObj = $this->getRemoteUserInfo();
         if (isset($this->userInfoObj->requirements->currently_due)) {
             $this->requiredFields  = $this->userInfoObj->requirements->currently_due;
@@ -283,7 +213,7 @@ class StripeConnect extends PaymentMethodBase
      */
     public function isFinancialInfoRequired(): bool
     {
-        if (in_array('external_account', $this->getRequiredFields())) {
+        if (!empty($this->getAccountId()) && in_array('external_account', $this->getRequiredFields())) {
             return true;
         }
         return false;
@@ -301,6 +231,7 @@ class StripeConnect extends PaymentMethodBase
         $actionType = 'N/A';
         if (isset($data['action_type'])) {
             $actionType = $data['action_type'];
+            unset($data['action_type']);
         }
         
         switch ($actionType) {
@@ -314,6 +245,7 @@ class StripeConnect extends PaymentMethodBase
                 $requestType = self::REQUEST_UPDATE_ACCOUNT;
                 break;
         }
+
         return $this->doRequest($requestType, $data);
     }
 
@@ -379,21 +311,5 @@ class StripeConnect extends PaymentMethodBase
     {
         $this->userInfoObj = $this->getRemoteUserInfo();
         return ('inactive' == $this->userInfoObj->capabilities->transfers) ? false : true;
-    }
-
-    /**
-     * isUserValid
-     *
-     * @return bool
-     */
-    public function isUserValid(): bool
-    {
-        if (empty($this->getAccountId())) {
-            if (false === $this->doRequest(self::REQUEST_CREATE_ACCOUNT)) {
-                $this->error = $this->getError();
-                return false;
-            }
-        }
-        return (1 > count($this->getRequiredFields()));
     }
 }
