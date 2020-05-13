@@ -2007,4 +2007,30 @@ class CommonHelper extends FatUtility
             'extra' => $extra
         );
     }
+	
+	public static function getImageAttributes($fileType, $recordId, $recordSubId = 0, $afileId = 0, $screen = 0, $langId = 0)
+	{
+		$fileType = FatUtility::int($fileType);
+		$recordId = FatUtility::int($recordId);
+		$afileId = FatUtility::int($afileId);
+		$screen = FatUtility::int($screen);
+		$recordSubId = FatUtility::int($recordSubId);
+		$langId = FatUtility::int($langId);
+		
+		if ($langId == 0) {
+			$langId = self::$_lang_id;
+		}
+		/* if($recordId == 0 && $afileId == 0) {
+			return array();
+		} */
+		if ($afileId > 0) {
+			$res = AttachedFile::getAttributesById($afileId);
+            if (!false == $res && $res['afile_type'] == $fileType) {
+                $file_row = $res;
+            }
+        } else {
+            $file_row = AttachedFile::getAttachment($fileType, $recordId, $recordSubId, $langId, true, $screen);
+        }
+		return $file_row;
+	}
 }

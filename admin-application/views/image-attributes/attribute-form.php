@@ -35,6 +35,9 @@ $btn->setFieldTagAttribute('class', "btn-clean btn-sm btn-icon btn-secondary");
 							case AttachedFile::FILETYPE_PRODUCT_IMAGE:
 								$imageUrl = CommonHelper::generateFullUrl('Image','Product', array($recordId, "THUMB", 0, $afileId, $langId), CONF_WEBROOT_FRONT_URL);
 								break;
+							case AttachedFile::FILETYPE_BRAND_LOGO:
+								$imageUrl = CommonHelper::generateFullUrl('Image','brand', array($recordId, $langId, "THUMB", $afileId), CONF_WEBROOT_FRONT_URL);
+								break;
 							case AttachedFile::FILETYPE_BRAND_IMAGE:
 								$imageUrl = CommonHelper::generateFullUrl('Image','brandImage', array($recordId, $langId, "THUMB", $afileId), CONF_WEBROOT_FRONT_URL);
 								break;

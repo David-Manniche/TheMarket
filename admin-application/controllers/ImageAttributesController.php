@@ -57,15 +57,15 @@ class ImageAttributesController extends AdminBaseController
 					$cnd->attachCondition('product_identifier', 'like', '%' . $post['keyword'] . '%');
 				}
                 break;
-			case AttachedFile::FILETYPE_BRAND_IMAGE:
-                $srch->joinTable(Brand::DB_TBL, 'LEFT OUTER JOIN', 'brand_id = afile_record_id', 'b');
-				$srch->joinTable(Brand::DB_TBL_LANG, 'LEFT OUTER JOIN', 'b.brand_id = b_l.brandlang_brand_id AND b_l.brandlang_lang_id = ' . $this->adminLangId, 'b_l');
+			case AttachedFile::FILETYPE_CATEGORY_BANNER:
+                $srch->joinTable(ProductCategory::DB_TBL, 'LEFT OUTER JOIN', 'prodcat_id = afile_record_id', 'pc');
+				$srch->joinTable(ProductCategory::DB_TBL_LANG, 'LEFT OUTER JOIN', 'pc.prodcat_id = pc_l.prodcatlang_prodcat_id AND pc_l.prodcatlang_lang_id = ' . $this->adminLangId, 'pc_l');
 				$srch->addMultipleFields(
-					array('brand_id as record_id', 'IFNULL(brand_name, brand_identifier) as record_name', 'afile_type')
+					array('prodcat_id as record_id', 'IFNULL(prodcat_name, prodcat_identifier) as record_name', 'afile_type')
 				);
 				if (!empty($post['keyword'])) {
-					$cnd = $srch->addCondition('brand_name', 'like', '%' . $post['keyword'] . '%');
-					$cnd->attachCondition('brand_identifier', 'like', '%' . $post['keyword'] . '%');
+					$cnd = $srch->addCondition('prodcat_name', 'like', '%' . $post['keyword'] . '%');
+					$cnd->attachCondition('prodcat_identifier', 'like', '%' . $post['keyword'] . '%');
 				}
                 break;
 			case AttachedFile::FILETYPE_BLOG_POST_IMAGE:
@@ -80,14 +80,14 @@ class ImageAttributesController extends AdminBaseController
 				}
                 break;
             default:
-				$srch->joinTable(ProductCategory::DB_TBL, 'LEFT OUTER JOIN', 'prodcat_id = afile_record_id', 'pc');
-				$srch->joinTable(ProductCategory::DB_TBL_LANG, 'LEFT OUTER JOIN', 'pc.prodcat_id = pc_l.prodcatlang_prodcat_id AND pc_l.prodcatlang_lang_id = ' . $this->adminLangId, 'pc_l');
+				$srch->joinTable(Brand::DB_TBL, 'LEFT OUTER JOIN', 'brand_id = afile_record_id', 'b');
+				$srch->joinTable(Brand::DB_TBL_LANG, 'LEFT OUTER JOIN', 'b.brand_id = b_l.brandlang_brand_id AND b_l.brandlang_lang_id = ' . $this->adminLangId, 'b_l');
 				$srch->addMultipleFields(
-					array('prodcat_id as record_id', 'IFNULL(prodcat_name, prodcat_identifier) as record_name', 'afile_type')
+					array('brand_id as record_id', 'IFNULL(brand_name, brand_identifier) as record_name', 'afile_type')
 				);
 				if (!empty($post['keyword'])) {
-					$cnd = $srch->addCondition('prodcat_name', 'like', '%' . $post['keyword'] . '%');
-					$cnd->attachCondition('prodcat_identifier', 'like', '%' . $post['keyword'] . '%');
+					$cnd = $srch->addCondition('brand_name', 'like', '%' . $post['keyword'] . '%');
+					$cnd->attachCondition('brand_identifier', 'like', '%' . $post['keyword'] . '%');
 				}
 				break;
         }
@@ -130,13 +130,15 @@ class ImageAttributesController extends AdminBaseController
                 $data =  Product::getProductDataById($this->adminLangId, $recordId, 'IFNULL(product_name, product_identifier) as title');
 				$title = $data['title'];
                 break;
-			case AttachedFile::FILETYPE_BRAND_IMAGE:
-                $srch = Brand::getListingObj($this->adminLangId, null, true);
-				$srch->addCondition('brand_id', '=', $recordId);
-				$srch->addOrder('brand_id', 'DESC');
+			case AttachedFile::FILETYPE_CATEGORY_BANNER:
+                $srch = ProductCategory::getSearchObject(false, $this->adminLangId);
+				$srch->addCondition(ProductCategory::DB_TBL_PREFIX . 'deleted', '=', 0);
+				$srch->addFld('IFNULL(prodcat_name, prodcat_identifier) AS prodcat_name');
+				$srch->addCondition('prodcat_id', '=', $recordId);
+				$srch->addOrder('prodcat_id', 'DESC');
 				$rs = $srch->getResultSet();
 				$records = FatApp::getDb()->fetch($rs);
-				$title = $records['brand_name'];
+				$title = $records['prodcat_name'];
                 break;
 			case AttachedFile::FILETYPE_BLOG_POST_IMAGE:
                 $srch = BlogPost::getSearchObject($this->adminLangId);
@@ -149,14 +151,12 @@ class ImageAttributesController extends AdminBaseController
 				$title = $records['post_title'];
                 break;
             default:
-				$srch = ProductCategory::getSearchObject(false, $this->adminLangId);
-				$srch->addCondition(ProductCategory::DB_TBL_PREFIX . 'deleted', '=', 0);
-				$srch->addFld('IFNULL(prodcat_name, prodcat_identifier) AS prodcat_name');
-				$srch->addCondition('prodcat_id', '=', $recordId);
-				$srch->addOrder('prodcat_id', 'DESC');
+				$srch = Brand::getListingObj($this->adminLangId, null, true);
+				$srch->addCondition('brand_id', '=', $recordId);
+				$srch->addOrder('brand_id', 'DESC');
 				$rs = $srch->getResultSet();
 				$records = FatApp::getDb()->fetch($rs);
-				$title = $records['prodcat_name'];
+				$title = $records['brand_name'];
 			break;
 		}
 		$images = AttachedFile::getMultipleAttachments($moduleType, $recordId, 0, $langId, false, 0, 0, true);
