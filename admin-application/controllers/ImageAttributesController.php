@@ -50,8 +50,12 @@ class ImageAttributesController extends AdminBaseController
                 $srch->joinTable(Product::DB_TBL, 'INNER JOIN', 'product_id = afile_record_id', 'p');
 				$srch->joinTable(Product::DB_TBL_LANG, 'LEFT OUTER JOIN', 'p.product_id = p_l.productlang_product_id AND p_l.productlang_lang_id = ' . $this->adminLangId, 'p_l');
 				$srch->addMultipleFields(
-					array('product_id as record_id', 'IFNULL(product_name, product_identifier) as record_name', 'product_identifier as record_identifier', 'afile_type')
+					array('product_id as record_id', 'IFNULL(product_name, product_identifier) as record_name', 'afile_type')
 				);
+				if (!empty($post['keyword'])) {
+					$cnd = $srch->addCondition('product_name', 'like', '%' . $post['keyword'] . '%');
+					$cnd->attachCondition('product_identifier', 'like', '%' . $post['keyword'] . '%');
+				}
                 break;
 			case AttachedFile::FILETYPE_BRAND_IMAGE:
                 $srch->joinTable(Brand::DB_TBL, 'LEFT OUTER JOIN', 'brand_id = afile_record_id', 'b');
@@ -59,6 +63,10 @@ class ImageAttributesController extends AdminBaseController
 				$srch->addMultipleFields(
 					array('brand_id as record_id', 'IFNULL(brand_name, brand_identifier) as record_name', 'afile_type')
 				);
+				if (!empty($post['keyword'])) {
+					$cnd = $srch->addCondition('brand_name', 'like', '%' . $post['keyword'] . '%');
+					$cnd->attachCondition('brand_identifier', 'like', '%' . $post['keyword'] . '%');
+				}
                 break;
 			case AttachedFile::FILETYPE_BLOG_POST_IMAGE:
                 $srch->joinTable(BlogPost::DB_TBL, 'LEFT OUTER JOIN', 'post_id = afile_record_id', 'bp');
@@ -66,6 +74,10 @@ class ImageAttributesController extends AdminBaseController
 				$srch->addMultipleFields(
 					array('post_id as record_id', 'IFNULL(post_title, post_identifier) as record_name', 'afile_type')
 				);
+				if (!empty($post['keyword'])) {
+					$cnd = $srch->addCondition('post_title', 'like', '%' . $post['keyword'] . '%');
+					$cnd->attachCondition('post_identifier', 'like', '%' . $post['keyword'] . '%');
+				}
                 break;
             default:
 				$srch->joinTable(ProductCategory::DB_TBL, 'LEFT OUTER JOIN', 'prodcat_id = afile_record_id', 'pc');
@@ -73,12 +85,13 @@ class ImageAttributesController extends AdminBaseController
 				$srch->addMultipleFields(
 					array('prodcat_id as record_id', 'IFNULL(prodcat_name, prodcat_identifier) as record_name', 'afile_type')
 				);
+				if (!empty($post['keyword'])) {
+					$cnd = $srch->addCondition('prodcat_name', 'like', '%' . $post['keyword'] . '%');
+					$cnd->attachCondition('prodcat_identifier', 'like', '%' . $post['keyword'] . '%');
+				}
 				break;
         }
-		if (!empty($post['keyword'])) {
-			$cnd = $srch->addCondition('record_name', 'like', '%' . $post['keyword'] . '%');
-			$cnd->attachCondition('record_identifier', 'like', '%' . $post['keyword'] . '%');
-		}
+		
         $srch->addGroupBy('record_id');
 		$srch->addOrder('afile_id', 'DESC');
         $page = FatApp::getPostedData('page', FatUtility::VAR_INT, 1);
