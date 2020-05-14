@@ -100,7 +100,7 @@ class StripeConnectController extends PaymentMethodBaseController
     private function getRequiredFieldsForm()
     {
         $frm = new Form('frm' . self::KEY_NAME);
-
+        
         $fieldsData = $this->stripeConnect->getRequiredFields();
         foreach ($fieldsData as $field) {
             if ('business_type' == $field) {
@@ -121,12 +121,36 @@ class StripeConnectController extends PaymentMethodBaseController
                     $name .= '[' . $nameVal . ']';
                 }
             }
+
+            $relationshipBoolFields = [];
+            if ('relationship' === $labelParts[0]) {
+                $relationshipBoolFields = [
+                    'director',
+                    'executive',
+                    'owner',
+                    'representative'
+                ];
+            } else if (false !== strpos($label, 'person_')) {
+                $personId = $this->getUserMeta('stripe_person_id');
+                $label = str_replace($personId, "Person", $label);
+            }
+
             $label = ucwords(str_replace("_", " ", $label));
-            $fld = $frm->addTextBox($label, $name);
+
+            if (in_array(end($labelParts), $relationshipBoolFields)) {
+                $options = [
+                    0 => Labels::getLabel('LBL_NO', $this->siteLangId),
+                    1 => Labels::getLabel('LBL_YES', $this->siteLangId)
+                ];
+                $fld = $frm->addSelectBox($label, $name, $options);
+            } else {
+                $fld = $frm->addTextBox($label, $name);
+            }
             $fld->requirement->setRequired(true);
         }
-        $frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_SAVE', $this->siteLangId));
-        $frm->addButton("", "btn_clear", Labels::getLabel('LBL_Clear', $this->siteLangId), array('onclick' => 'clearForm();'));
+        $submitBtn = $frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_SAVE', $this->siteLangId));
+        $cancelButton = $frm->addButton("", "btn_clear", Labels::getLabel('LBL_Clear', $this->siteLangId), array('onclick' => 'clearForm();'));
+        $submitBtn->attachField($cancelButton);
         return $frm;
     }
 

@@ -18,9 +18,11 @@ class StripeConnect extends PaymentMethodBase
     public const REQUEST_CREATE_ACCOUNT = 1;
     public const REQUEST_RETRIEVE_ACCOUNT = 2;
     public const REQUEST_UPDATE_ACCOUNT = 3;
-    public const REQUEST_PERSON_ID = 4;
+    public const REQUEST_PERSON_TOKEN = 4;
     public const REQUEST_ADD_BANK_ACCOUNT = 5;
     public const REQUEST_UPDATE_BUSINESS_TYPE = 6;
+    public const REQUEST_CREATE_PERSON = 7;
+    public const REQUEST_UPDATE_PERSON = 8;
 
     /**
      * __construct
@@ -129,35 +131,43 @@ class StripeConnect extends PaymentMethodBase
         }
 
         $resp = $this->create($data);
+        if (false === $resp) {
+            return false;
+        }
         $this->stripeAccountId = $resp->id;
         return $this->updateUserMeta('stripe_account_id', $resp->id);
     }
     
 
     /**
-     * getPersonId
+     * getPersonToken
      *
      * @return string
      */
-    public function getPersonId(): string
+    public function getPersonToken(): string
     {
-        $personId = $this->getUserMeta('stripe_person_id');
+        $personId = $this->getUserMeta('stripe_person_token');
         if (empty($personId)) {
-            $this->createPersonId();
-            $personId = $this->getUserMeta('stripe_person_id');
+            if (false === $this->createPersonToken()) {
+                return false;
+            }
+            $personId = $this->getUserMeta('stripe_person_token');
         }
         return (string)$personId;
     }
 
     /**
-     * createPersonId
+     * createPersonToken
      *
      * @return string
      */
-    private function createPersonId(): bool
+    private function createPersonToken(): bool
     {
         $resp = $this->createToken();
-        return $this->updateUserMeta('stripe_person_id', $resp->id);
+        if (false === $resp) {
+            return false;
+        }
+        return $this->updateUserMeta('stripe_person_token', $resp->id);
     }
 
     /**
@@ -172,6 +182,16 @@ class StripeConnect extends PaymentMethodBase
         }
         
         return $this->getUserMeta('stripe_account_id');
+    }
+
+    /**
+     * getRelationshipPersonId
+     *
+     * @return string
+     */
+    public function getRelationshipPersonId(): string
+    {
+        return $this->getUserMeta('stripe_person_id');
     }
 
     /**
@@ -257,7 +277,10 @@ class StripeConnect extends PaymentMethodBase
      */
     private function updateBusinessType(array $data): bool
     {
-        $this->update($data);
+        if (false === $this->update($data)) {
+            return false;
+        }
+
         $this->updateUserMeta('business_type', $data['business_type']);
         return true;
     }
@@ -287,6 +310,9 @@ class StripeConnect extends PaymentMethodBase
             ];
 
         $resp = $this->createExternalAccount($data);
+        if (false === $resp) {
+            return false;
+        }
         return $this->updateUserMeta('stripe_bank_account_id', $resp->id);
     }
 
@@ -298,7 +324,42 @@ class StripeConnect extends PaymentMethodBase
      */
     public function updateAccount(array $data): bool
     {
-        $this->update($data);
+        $relationship = [];
+        $personData = [];
+
+        $personId = $this->getUserMeta('stripe_person_id');
+        if (array_key_exists('relationship', $data)) {
+            $relationship = $data['relationship'];
+            unset($data['relationship']);
+        }else if (!empty($personId) && array_key_exists($personId, $data)) {
+            $personData = $data[$personId];
+            unset($data[$personId]);
+        }
+
+        if (false === $this->update($data)) {
+            return false;
+        }
+
+        if (!empty($relationship)) {
+            array_walk_recursive($relationship, function (&$val) {
+                if ($val == 0 || $val == 1) {
+                    $val = 0 < $val ? true : false;
+                }
+            });
+            $resp = $this->doRequest(self::REQUEST_CREATE_PERSON, ['relationship' => $relationship]);
+            if (false === $resp) {
+                return false;
+            }
+            $this->updateUserMeta('stripe_person_id', $resp->id);
+        }
+
+        if (!empty($personData)) {
+            $resp = $this->doRequest(self::REQUEST_UPDATE_PERSON, $personData);
+            if (false === $resp) {
+                return false;
+            }
+        }
+
         return true;
     }
 
