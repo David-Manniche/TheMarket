@@ -10,7 +10,53 @@ if (isset($stripe)) {
         <?php }
     }
 }
-?>
+    if(isset($client_secret)) { ?>
+    
+          <script src="https://js.stripe.com/v3/"></script>
+          
+            <script type="text/javascript">
+          
+              
+            $(document).ready(function(){
+                $('.cc-payment').addClass('payment-load');
+               
+            });
+              var publishable_key = '<?php echo $stripe['publishable_key']; ?>';
+               
+              var stripe = Stripe(publishable_key);
+              var clientSecret = '<?php echo $client_secret; ?>';
+               
+              stripe.confirmCardPayment(clientSecret, {
+                payment_method: '<?php echo $payment_method_id; ?>'
+              }).then(function(result) {
+                    console.log(result);
+                    if (result.error) {
+                    // PaymentIntent client secret was invalid
+                    } 
+                    else {
+                        if (result.paymentIntent.status === 'succeeded') {
+                            
+                            var data = 'order_id=<?php echo $order_id ?>&payment_intent_id=<?php echo $payment_intent_id ?>&is_ajax_request=yes';
+                           
+                             $.ajax({
+                              type: "POST",
+                              url: '<?php echo CommonHelper::generateUrl('StripePay', 'StripeSuccess') ?>',
+                              data: data,
+                              success: function(data){
+                                location.href = '<?php echo CommonHelper::generateUrl('custom', 'paymentSuccess', array($order_id), CONF_WEBROOT_URL); ?>';
+                              }
+                            }); 
+                            
+                        } else if (result.paymentIntent.status === 'requires_payment_method') {
+                        // Authentication failed, prompt the customer to enter another payment method
+                        }
+                    }
+              }); 
+
+               
+            </script>
+    
+<?php } ?>
 <div class="payment-page">
     <div class="cc-payment">
         <?php $this->includeTemplate('_partial/paymentPageLogo.php', array('siteLangId'=>$siteLangId)); ?>    
