@@ -481,8 +481,22 @@ class AttachedFile extends MyAppModel
             $img = new ImageResize($imagePath);
         } catch (Exception $e) {
             try {
-                $img = static::getDefaultImage($imagePath, $w, $h);
-                $img->setExtraSpaceColor(204, 204, 204);
+                /*In S3 bucket for some large files PHP functions like getImageSize gives some error. So handled the same accordingly */
+                if (CONF_USE_FAT_CACHE && strpos(CONF_UPLOADS_PATH, 's3://') !== false) {
+                    static::setLastModified($imagePath);
+                    static::setContentType($imagePath);
+                    $readFileFromCache = FatCache::get($imagePath, CONF_IMG_CACHE_TIME, '.jpg');
+                    if (!$readFileFromCache) {
+                        $fileContent = file_get_contents($imagePath);
+                        FatCache::set($imagePath, $fileContent, '.jpg');
+                    }
+                    
+                    $tempPath = CONF_INSTALLATION_PATH . 'public' . FatCache::getCachedUrl($imagePath, CONF_IMG_CACHE_TIME, '.jpg');
+                    $img = new ImageResize($tempPath);
+                } else {
+                    $img = static::getDefaultImage($imagePath, $w, $h);
+                    $img->setExtraSpaceColor(204, 204, 204);
+                }
             } catch (Exception $e) {
                 $img = static::getDefaultImage($imagePath, $w, $h);
                 $img->setExtraSpaceColor(204, 204, 204);
