@@ -39,6 +39,13 @@ class StripeConnectController extends PaymentMethodBaseController
 
     public function index()
     {
+        $accountId = $this->stripeConnect->getAccountId();
+        if (!empty($accountId) && true === $this->stripeConnect->isUserAccountRejected()) {
+            Message::addErrorMessage($this->stripeConnect->getError());
+            $this->redirectBack(self::KEY_NAME);
+        }
+        // CommonHelper::printArray($this->stripeConnect->getRemoteUserInfo(), true);
+
         $this->set('accountId', $this->stripeConnect->getAccountId());
         $this->set('requiredFields', $this->stripeConnect->getRequiredFields());
         $this->set('isFinancialInfoRequired', $this->stripeConnect->isFinancialInfoRequired());
@@ -54,7 +61,7 @@ class StripeConnectController extends PaymentMethodBaseController
         if (false === $this->stripeConnect->connect()) {
             Message::addErrorMessage($this->stripeConnect->getError());
         }
-        $this->redirectBack(self::KEY_NAME);        
+        $this->redirectBack(self::KEY_NAME);   
     }
 
     public function requiredFieldsForm()
@@ -77,14 +84,48 @@ class StripeConnectController extends PaymentMethodBaseController
         $this->_template->render(false, false);
     }
 
+    private function validateResponse($resp)
+    {
+        if (false === $resp) {
+            Message::addErrorMessage($this->stripeConnect->getError());
+            $this->redirectBack(self::KEY_NAME);
+        }
+        return true;
+    }
+
     public function setupRequiredFields()
     {
         $post = array_filter(FatApp::getPostedData());
-        unset($post['fOutMode'], $post['fIsAjax']);
-        if (false === $this->stripeConnect->updateRequiredFields($post)) {
-            FatUtility::dieJsonError($this->stripeConnect->getError());
+        if (isset($post['fIsAjax'])) {
+            unset($post['fOutMode'], $post['fIsAjax']);
         }
-        FatUtility::dieJsonSuccess(Labels::getLabel('MSG_SUCCESS', $this->siteLangId));
+
+        $redirect = false;
+        if (array_key_exists('verification', $_FILES)) {
+            $redirect = true;
+            foreach ($_FILES['verification']['tmp_name']['document'] as $side => $filePath) {
+                $resp = $this->stripeConnect->uploadVerificationFile($filePath);
+                $this->validateResponse($resp);
+
+                $resp = $this->stripeConnect->updateVericationDocument($side);
+                $this->validateResponse($resp);
+            }
+        }
+
+        if (false === $this->stripeConnect->updateRequiredFields($post)) {
+            $msg = $this->stripeConnect->getError();
+            if (true === $redirect) {
+                Message::addErrorMessage($msg);
+                $this->redirectBack(self::KEY_NAME);
+            }
+            FatUtility::dieJsonError($msg);
+        }
+        $msg = Labels::getLabel('MSG_SUCCESS', $this->siteLangId);
+        if (true === $redirect) {
+            Message::addMessage($msg);
+            $this->redirectBack(self::KEY_NAME);
+        }
+        FatUtility::dieJsonSuccess($msg);
     }
 
     public function setupFinancialInfo()
@@ -110,7 +151,7 @@ class StripeConnectController extends PaymentMethodBaseController
             }
 
             $name = $label = $field;
-            if (0 < strpos($field, ".")) {
+            if (false !== strpos($field, ".")) {
                 $labelParts = explode(".", $field);
                 $label = implode(" ", $labelParts);
                 $name = $labelParts[0];
@@ -123,31 +164,57 @@ class StripeConnectController extends PaymentMethodBaseController
             }
 
             $relationshipBoolFields = [];
-            if ('relationship' === $labelParts[0]) {
+            if (false !== strpos($field, "relationship")) {
                 $relationshipBoolFields = [
                     'director',
                     'executive',
                     'owner',
                     'representative'
                 ];
-            } else if (false !== strpos($label, 'person_')) {
+            }
+
+            if (false !== strpos($label, 'person_')) {
                 $personId = $this->getUserMeta('stripe_person_id');
                 $label = str_replace($personId, "Person", $label);
             }
 
-            $label = ucwords(str_replace("_", " ", $label));
+            if ('individual' === $labelParts[0] && 'id_number' == end($labelParts)) {
+                continue;
+            }
 
+            $htmlAfterField = '';
+            if (false !== strpos($label, 'state') || false !== strpos($label, 'country')) {
+                $htmlAfterField = Labels::getLabel('LBL_USE_COUNTRY/STATE_CODE_INSTEAD_OF_FULL_NAME', $this->siteLangId);
+            }
+
+            $label = ucwords(str_replace("_", " ", $label));
             if (in_array(end($labelParts), $relationshipBoolFields)) {
                 $options = [
                     0 => Labels::getLabel('LBL_NO', $this->siteLangId),
                     1 => Labels::getLabel('LBL_YES', $this->siteLangId)
                 ];
                 $fld = $frm->addSelectBox($label, $name, $options);
+            } else if (false !== strpos($field, 'verification.document')) {
+                $lbl = Labels::getLabel("LBL_IDENTIFYING_DOCUMENT,_EITHER_A_PASSPORT_OR_LOCAL_ID_CARD", $this->siteLangId);
+                $lblFront = $lbl . ' ' . Labels::getLabel("LBL_FRONT", $this->siteLangId);
+                $lblBack = $lbl . ' ' . Labels::getLabel("LBL_BACK", $this->siteLangId);
+                $htmlAfterField = Labels::getLabel("LBL_THE_UPLOADED_FILE_NEEDS_TO_BE_A_COLOR_IMAGE_(SMALLER_THAN_8,000PX_BY_8,000px),_IN_JPG,_PNG,_OR_PDF_FORMAT,_AND_LESS_THAN_10_MB_IN_SIZE.", $this->siteLangId);
+
+                $fld = $frm->addFileUpload($lblFront, 'verification[document][front]');
+                $fld2 = $frm->addFileUpload($lblBack, 'verification[document][back]');
+                $fld2->requirement->setRequired(true);
+                $fld2->htmlAfterField = '<p class="note">' . $htmlAfterField . '</p>';
+
+                $frm->addFormTagAttribute('enctype', 'multipart/form-data');
             } else {
                 $fld = $frm->addTextBox($label, $name);
             }
             $fld->requirement->setRequired(true);
+            if (!empty($htmlAfterField)) {
+                $fld->htmlAfterField = '<p class="note">' . $htmlAfterField . '</p>';
+            }
         }
+
         $submitBtn = $frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_SAVE', $this->siteLangId));
         $cancelButton = $frm->addButton("", "btn_clear", Labels::getLabel('LBL_Clear', $this->siteLangId), array('onclick' => 'clearForm();'));
         $submitBtn->attachField($cancelButton);

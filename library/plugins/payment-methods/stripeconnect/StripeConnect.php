@@ -7,6 +7,7 @@ class StripeConnect extends PaymentMethodBase
     private $stripeAccountId;
     private $requiredFields = [];
     private $userInfoObj;
+    private $response;
 
     public $requiredKeys = [
         'publishable_key',
@@ -23,6 +24,7 @@ class StripeConnect extends PaymentMethodBase
     public const REQUEST_UPDATE_BUSINESS_TYPE = 6;
     public const REQUEST_CREATE_PERSON = 7;
     public const REQUEST_UPDATE_PERSON = 8;
+    public const REQUEST_UPLOAD_VERIFICATION_FILE = 9;
 
     /**
      * __construct
@@ -80,6 +82,35 @@ class StripeConnect extends PaymentMethodBase
                 return false;
             }
         }
+        return true;
+    }
+
+    /**
+     * isUserAccountRejected
+     *
+     * @return bool
+     */
+    public function isUserAccountRejected(): bool
+    {
+        $this->userInfoObj = $this->getRemoteUserInfo();
+        $requirements = $this->userInfoObj->requirements;
+        if (isset($requirements->disabled_reason) && false !== strpos($requirements->disabled_reason, "rejected")) {
+            $this->unsetUserAccountElements();
+            $msg = Labels::getLabel('MSG_YOUR_ACCOUNT_HAS_BEEN_', $this->langId);
+            $this->error = $msg . ucwords(str_replace(".", " - ", $requirements->disabled_reason));
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * unsetUserAccountElements
+     * 
+     * @return type
+     */
+    private function unsetUserAccountElements(): bool
+    {
+        FatApp::getDb()->deleteRecords(User::DB_TBL_META, ['smt' => 'usermeta_user_id = ? AND usermeta_key LIKE ? ', 'vals' => [$this->userId, 'stripe_%']]);
         return true;
     }
 
@@ -219,7 +250,12 @@ class StripeConnect extends PaymentMethodBase
             return [];
         }
 
+        if (!empty($this->requiredFields)) {
+            return $this->requiredFields;
+        }
+
         $this->userInfoObj = $this->getRemoteUserInfo();
+        $resp = $this->isUserAccountRejected();
         if (isset($this->userInfoObj->requirements->currently_due)) {
             $this->requiredFields  = $this->userInfoObj->requirements->currently_due;
         }
@@ -281,7 +317,7 @@ class StripeConnect extends PaymentMethodBase
             return false;
         }
 
-        $this->updateUserMeta('business_type', $data['business_type']);
+        $this->updateUserMeta('stripe_business_type', $data['business_type']);
         return true;
     }
 
@@ -293,7 +329,7 @@ class StripeConnect extends PaymentMethodBase
      */
     private function addFinancialInfo(array $data): bool
     {
-        $businessType = $this->getUserMeta('business_type');
+        $businessType = $this->getUserMeta('stripe_business_type');
         $this->getBaseCurrencyCode();
         $data = [
                 'external_account' => [
@@ -322,39 +358,42 @@ class StripeConnect extends PaymentMethodBase
      * @param array $data 
      * @return bool
      */
-    public function updateAccount(array $data): bool
+    private function updateAccount(array $data): bool
     {
         $relationship = [];
         $personData = [];
 
-        $personId = $this->getUserMeta('stripe_person_id');
+        $personId = $this->getRelationshipPersonId();
+
         if (array_key_exists('relationship', $data)) {
             $relationship = $data['relationship'];
             unset($data['relationship']);
-        }else if (!empty($personId) && array_key_exists($personId, $data)) {
+        }
+
+        if (!empty($personId) && array_key_exists($personId, $data)) {
             $personData = $data[$personId];
             unset($data[$personId]);
         }
 
-        if (false === $this->update($data)) {
-            return false;
+        if (array_key_exists('individual', $data) && in_array('individual.id_number', $this->getRequiredFields())) {
+            $data['individual']['id_number'] = $this->doRequest(self::REQUEST_PERSON_TOKEN);
         }
 
-        if (!empty($relationship)) {
-            array_walk_recursive($relationship, function (&$val) {
-                if ($val == 0 || $val == 1) {
-                    $val = 0 < $val ? true : false;
-                }
-            });
+        if (!empty($data)) {
+            $this->update($data);
+        }
+
+        if (empty($personId) && !empty($relationship)) {
             $resp = $this->doRequest(self::REQUEST_CREATE_PERSON, ['relationship' => $relationship]);
             if (false === $resp) {
                 return false;
             }
             $this->updateUserMeta('stripe_person_id', $resp->id);
-        }
-
-        if (!empty($personData)) {
-            $resp = $this->doRequest(self::REQUEST_UPDATE_PERSON, $personData);
+        } else if (!empty($personId) && (!empty($relationship) || !empty($personData))) {
+            $relationship = !empty($relationship) ? ['relationship' => $relationship] : [];
+            $data = array_merge($relationship, $personData);
+            // CommonHelper::printArray($data, true);
+            $resp = $this->doRequest(self::REQUEST_UPDATE_PERSON, $data);
             if (false === $resp) {
                 return false;
             }
@@ -364,13 +403,42 @@ class StripeConnect extends PaymentMethodBase
     }
 
     /**
-     * userAccountCanTransfer
-     *
+     * uploadVerificationFile
+     * 
+     * @param string $path 
      * @return bool
      */
-    public function userAccountCanTransfer(): bool
+    public function uploadVerificationFile(string $path): bool
     {
-        $this->userInfoObj = $this->getRemoteUserInfo();
-        return ('inactive' == $this->userInfoObj->capabilities->transfers) ? false : true;
+        $this->response = $this->doRequest(self::REQUEST_UPLOAD_VERIFICATION_FILE, [$path]);
+        if (false === $this->response) {
+            return false;
+        }
+        return true;
+    }
+
+    /**
+     * updateVericationDocument
+     * 
+     * @param string $side - Front/Back of uploaded document
+     * @param string $responseId - Returned from "function createFile"
+     * @return bool
+     */
+    public function updateVericationDocument(string $side): bool
+    {
+        if (empty($this->response)) {
+            $this->error = Labels::getLabel('LBL_INVALID_REQUEST', $this->langId);
+            return false;
+        }
+
+        $data = [
+            'verification' => [
+                'document' => [
+                    $side => $this->response
+                ]
+            ]
+        ];
+        $resp = $this->doRequest(self::REQUEST_UPDATE_PERSON, $data);
+        return (false === $resp) ? false : true;
     }
 }

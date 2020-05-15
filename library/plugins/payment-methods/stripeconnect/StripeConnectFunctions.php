@@ -67,6 +67,11 @@ trait StripeConnectFunctions
      */
     private function createPerson(array $data): object
     {
+        array_walk_recursive($data, function (&$val) {
+            if (!is_object($val) && ($val == 0 || $val == 1)) {
+                $val = 0 < $val ? 'true' : 'false';
+            }
+        });
         return \Stripe\Account::createPerson(
             $this->getAccountId(),
             $data
@@ -80,12 +85,30 @@ trait StripeConnectFunctions
      */
     private function updatePerson(array $data): object
     {
-        CommonHelper::printArray($data);
+        array_walk_recursive($data, function (&$val) {
+            if (!is_object($val) && ($val == 0 || $val == 1)) {
+                $val = 0 < $val ? 'true' : 'false';
+            }
+        });
         return \Stripe\Account::updatePerson(
             $this->getAccountId(),
             $this->getRelationshipPersonId(),
             $data
         );
+    }
+
+    /**
+     * createFile - For file upload
+     *
+     * @return object
+     */
+    private function createFile(string $filePath): object
+    {
+        $fp = fopen($filePath, 'r');
+        return \Stripe\File::create([
+            'purpose' => 'identity_document',
+            'file' => $fp
+        ]);
     }
     
     /**
@@ -94,7 +117,7 @@ trait StripeConnectFunctions
      * @param  mixed $requestType
      * @return mixed
      */
-    private function doRequest(int $requestType, array $data = [])
+    public function doRequest(int $requestType, array $data = [])
     {
         try {
             switch ($requestType) {
@@ -121,6 +144,9 @@ trait StripeConnectFunctions
                     break;
                 case self::REQUEST_UPDATE_PERSON:
                     return $this->updatePerson($data);
+                    break;
+                case self::REQUEST_UPLOAD_VERIFICATION_FILE:
+                    return $this->createFile(reset($data));
                     break;
             }
         } catch (\Stripe\Exception\CardException $e) {
