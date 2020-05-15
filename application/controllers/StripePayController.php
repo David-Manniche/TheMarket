@@ -65,38 +65,27 @@ class StripePayController extends PaymentController
 			
             if (strtolower($_SERVER['REQUEST_METHOD']) == 'post') {
 				$charge = $this->stripeAuthentication($orderId);
-                if ($charge['id']) {
-                    $payment_method = \Stripe\PaymentMethod::create([
-                            'type' => 'card',
-                              'card' => [
-                                'number' => $_POST['cc_number'],
-                                'exp_month' => $_POST['cc_expire_date_month'],
-                                'exp_year' => $_POST['cc_expire_date_year'],
-                                'cvc' => $_POST['cc_cvv'],
-                              ],
-                            ]);
-                    $payment_method = $payment_method->__toArray();
-                    
-                    $this->set('order_id', $orderId);
-                    $this->set('payment_intent_id', $charge['id']);
-                    $this->set('payment_method_id', $payment_method['id']);
-                    $this->set('client_secret', $charge['client_secret']);
-                }
+				if(isset($charge['id']) && $charge['id']) {
+					$payment_method = \Stripe\PaymentMethod::create([
+						'type' => 'card',
+						  'card' => [
+							'number' => $_POST['cc_number'],
+							'exp_month' => $_POST['cc_expire_date_month'],
+							'exp_year' => $_POST['cc_expire_date_year'],
+							'cvc' => $_POST['cc_cvv'],
+						  ],
+						]);
+					$payment_method = $payment_method->__toArray();
+					
+					$this->set('order_id', $orderId);
+					$this->set('payment_intent_id', $charge['id']);
+					$this->set('payment_method_id', $payment_method['id']);
+					$this->set('client_secret', $charge['client_secret']);
+				} else {
+					$this->error = Labels::getLabel('LBL_STRIPE_AUTHENTICATION_ERROR', $this->siteLangId);
+				}
             }
 			
-			
-            
-            /* if ($checkPayment) {
-                $this->set('success', true);
-                if (true === MOBILE_APP_API_CALL) {
-                    $this->_template->render();
-                }
-            } else {
-                if (true === MOBILE_APP_API_CALL) {
-                    $message = Labels::getLabel('MSG_Payment_Failed', $this->siteLangId);
-                    FatUtility::dieJsonError($message);
-                }
-            } */
         } else {
             $message = Labels::getLabel('MSG_INVALID_ORDER_PAID_CANCELLED', $this->siteLangId);
             if (true === MOBILE_APP_API_CALL) {
@@ -194,7 +183,6 @@ class StripePayController extends PaymentController
 			\Stripe\Stripe::setApiKey($stripe['secret_key']);
 		}
         
-		
         try {
 			if (!empty(trim($this->paymentSettings['privateKey'])) && !empty(trim($this->paymentSettings['publishableKey']))) {
 				

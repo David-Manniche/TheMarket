@@ -31,9 +31,9 @@ if (isset($stripe)) {
               }).then(function(result) {
                     console.log(result);
                     if (result.error) {
-                    // PaymentIntent client secret was invalid
-                    } 
-                    else {
+						// PaymentIntent client secret was invalid
+						location.href = '<?php echo $cancelBtnUrl; ?>';
+                    } else {
                         if (result.paymentIntent.status === 'succeeded') {
                             
                             var data = 'order_id=<?php echo $order_id ?>&payment_intent_id=<?php echo $payment_intent_id ?>&is_ajax_request=yes';
@@ -48,7 +48,8 @@ if (isset($stripe)) {
                             }); 
                             
                         } else if (result.paymentIntent.status === 'requires_payment_method') {
-                        // Authentication failed, prompt the customer to enter another payment method
+							// Authentication failed, prompt the customer to enter another payment method
+							location.href = '<?php echo CommonHelper::generateUrl('custom', 'paymentFailed'); ?>';
                         }
                     }
               }); 
