@@ -330,6 +330,10 @@ class StripeConnect extends PaymentMethodBase
     private function addFinancialInfo(array $data): bool
     {
         $businessType = $this->getUserMeta('stripe_business_type');
+        if ('non_profit' == $businessType) {
+            $businessType = 'company';
+        }
+
         $this->getBaseCurrencyCode();
         $data = [
                 'external_account' => [
