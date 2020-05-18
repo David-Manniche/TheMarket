@@ -72,7 +72,12 @@ class ProductsController extends MyAppController
         $frm->fill($get);
         $data = $this->getListingData($get);
         
-        
+		if (array_key_exists('keyword', $get) && count($data['products'])) {
+			$searchItemObj = new SearchItem();
+			$searchData = array('keyword'=>$get['keyword']);
+			$searchItemObj->addSearchResult($searchData);
+		}
+		
         $common = array(
             'frmProductSearch' => $frm,
             'recordId' => 0,
