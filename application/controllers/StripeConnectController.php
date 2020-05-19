@@ -44,10 +44,15 @@ class StripeConnectController extends PaymentMethodBaseController
             Message::addErrorMessage($this->stripeConnect->getError());
             $this->redirectBack(self::KEY_NAME);
         }
-        // CommonHelper::printArray($this->stripeConnect->getRemoteUserInfo(), true);
+
+        $requiredFields = $this->stripeConnect->getRequiredFields();
+        if (!empty($requiredFields) && 'custom' != $this->stripeConnect->getAccountType())
+        {
+            $this->redirectBack(self::KEY_NAME, 'initialVerification');
+        }
 
         $this->set('accountId', $this->stripeConnect->getAccountId());
-        $this->set('requiredFields', $this->stripeConnect->getRequiredFields());
+        $this->set('requiredFields', $requiredFields);
         $this->set('isFinancialInfoRequired', $this->stripeConnect->isFinancialInfoRequired());
         $this->set('userData', $this->getUserMeta());
         $this->set('keyName', self::KEY_NAME);
@@ -56,12 +61,39 @@ class StripeConnectController extends PaymentMethodBaseController
         $this->_template->render();
     }
 
-    public function connect()
+    public function register()
     {
-        if (false === $this->stripeConnect->connect()) {
+        if (false === $this->stripeConnect->register()) {
             Message::addErrorMessage($this->stripeConnect->getError());
         }
-        $this->redirectBack(self::KEY_NAME);   
+        $this->redirectBack(self::KEY_NAME);
+    }
+
+    public function login()
+    {
+        FatApp::redirectUser($this->stripeConnect->getRedirectUri());   
+    }
+
+    public function callback()
+    {
+        $code = FatApp::getQueryStringData('code');
+        if (false == $this->stripeConnect->accessAccountId($code)) {
+            Message::addErrorMessage($this->stripeConnect->getError());
+        }
+        $this->redirectBack(self::KEY_NAME);
+    }
+
+    public function initialVerification()
+    {
+        $userInfo = $this->stripeConnect->getRemoteUserInfo();
+        
+        CommonHelper::printArray($userInfo, true);
+    }
+
+    private function initialVerificationForm()
+    {
+        $frm = new Form('frm' . self::KEY_NAME);
+        
     }
 
     public function requiredFieldsForm()
@@ -228,14 +260,8 @@ class StripeConnectController extends PaymentMethodBaseController
         $frm->addHiddenField('', 'action_type', $type);
         $options = [
             'individual' => Labels::getLabel('LBL_INDIVIDUAL', $this->siteLangId),
-            'company' => Labels::getLabel('LBL_COMPANY', $this->siteLangId),
-            'non_profit' => Labels::getLabel('LBL_NON_PROFIT', $this->siteLangId)
+            'company' => Labels::getLabel('LBL_COMPANY', $this->siteLangId)
         ];
-        $defultCountryId = FatApp::getConfig('CONF_COUNTRY', FatUtility::VAR_INT, 0);
-        $countryCode = Countries::getAttributesById($defultCountryId, 'country_code');
-        if ('US' == strtoupper($countryCode)) {
-            $options['government_entity'] = Labels::getLabel('LBL_GOVERNMENT_ENTITY', $this->siteLangId);
-        }
 
         $fld = $frm->addSelectBox(Labels::getLabel('LBL_SELECT_BUSINESS_TYPE', $this->siteLangId), 'business_type', $options);
         $fld->requirement->setRequired(true);

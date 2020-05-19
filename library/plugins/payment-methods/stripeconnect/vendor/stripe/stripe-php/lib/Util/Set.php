@@ -2,16 +2,16 @@
 
 namespace Stripe\Util;
 
-use ArrayIterator;
 use IteratorAggregate;
+use ArrayIterator;
 
 class Set implements IteratorAggregate
 {
     private $_elts;
 
-    public function __construct($members = [])
+    public function __construct($members = array())
     {
-        $this->_elts = [];
+        $this->_elts = array();
         foreach ($members as $item) {
             $this->_elts[$item] = true;
         }
@@ -34,7 +34,7 @@ class Set implements IteratorAggregate
 
     public function toArray()
     {
-        return \array_keys($this->_elts);
+        return array_keys($this->_elts);
     }
 
     public function getIterator()

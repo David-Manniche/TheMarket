@@ -17,8 +17,11 @@ $this->includeTemplate('_partial/dashboardNavigation.php');
                                 <div class="col-md-9">
                                     <h6 class="m-0">
                                         <?php if (empty($accountId)) { ?>
-                                            <a class="btn btn-outline-primary btn--sm" href="<?php echo CommonHelper::generateUrl('StripeConnect', 'connect'); ?>">
-                                                <?php echo Labels::getLabel('Lbl_CONNECT_TO_STRIPE', $siteLangId); ?>
+                                            <a class="btn btn-outline-primary btn--sm" href="<?php echo CommonHelper::generateUrl($keyName, 'register'); ?>">
+                                                <?php echo Labels::getLabel('Lbl_REGISTER', $siteLangId); ?>
+                                            </a>
+                                            <a class="btn btn--primary btn--sm" href="<?php echo CommonHelper::generateUrl($keyName, 'login')?>" title="<?php echo Labels::getLabel('MSG_LOGIN', $siteLangId); ?>">
+                                                <?php echo Labels::getLabel('Lbl_ALREADY_HAVE_ACCOUNT_?', $siteLangId); ?>
                                             </a>
                                         <?php } else { ?>
                                             <?php echo Labels::getLabel('Lbl_ACCOUNT_ID', $siteLangId);?> : 

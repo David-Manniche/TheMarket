@@ -5,14 +5,18 @@ class StripeConnect extends PaymentMethodBase
 {
     public const KEY_NAME = __CLASS__;
     private $stripeAccountId;
+    private $stripeAccountType;
     private $requiredFields = [];
     private $userInfoObj;
     private $response;
 
     public $requiredKeys = [
+        'client_id',
         'publishable_key',
         'secret_key'
     ];
+
+    private const CONNECT_URI = "https://connect.stripe.com/oauth";
 
     use StripeConnectFunctions;
 
@@ -61,6 +65,16 @@ class StripeConnect extends PaymentMethodBase
     }
 
     /**
+     * getRedirectUri
+     * 
+     * @return string
+     */
+    public function getRedirectUri(): string
+    {
+        return self::CONNECT_URI . "/authorize?response_type=code&client_id=" . $this->settings['client_id'] . "&scope=read_write&redirect_uri=" . CommonHelper::generateFullUrl(self::KEY_NAME, 'callback');
+    }
+
+    /**
      * getKeys - To get plugin keys
      * 
      * @return array
@@ -75,7 +89,26 @@ class StripeConnect extends PaymentMethodBase
      *
      * @return bool
      */
-    public function connect(): bool
+    private function connect(): bool
+    {
+        $params = [
+            'clientId'                => $this->settings['client_id'],
+            'clientSecret'            => $this->settings['secret_key'],
+            'redirectUri'             => $this->getRedirectUri(),
+            'urlAuthorize'            => self::CONNECT_URI . '/authorize',
+            'urlAccessToken'          => self::CONNECT_URI . '/token',
+            'urlResourceOwnerDetails' => 'https://api.stripe.com/v1/account'
+        ];
+        $this->stripe = new \League\OAuth2\Client\Provider\GenericProvider($params);
+        return true;
+    }
+
+    /**
+     * register
+     *
+     * @return bool
+     */
+    public function register(): bool
     {
         if (empty($this->getAccountId())) {
             if (false === $this->doRequest(self::REQUEST_CREATE_ACCOUNT)) {
@@ -83,6 +116,28 @@ class StripeConnect extends PaymentMethodBase
             }
         }
         return true;
+    }
+
+    /**
+     * accessAccountId
+     * 
+     * @param string $code 
+     * @return bool
+     */
+    public function accessAccountId(string $code): bool
+    {
+        try {
+            $this->connect();
+            $accessToken = $this->stripe->getAccessToken('authorization_code', [
+                'code' => $code
+            ]);
+            $this->stripeAccountId = $this->stripe->getResourceOwner($accessToken)->getId();
+            return $this->updateUserMeta('stripe_account_id', $this->stripeAccountId);
+        }
+        catch (Exception $e){
+            $this->error = $e->getMessage();
+            return false;
+        }
     }
 
     /**
@@ -166,6 +221,7 @@ class StripeConnect extends PaymentMethodBase
             return false;
         }
         $this->stripeAccountId = $resp->id;
+        $this->updateUserMeta('stripe_account_type', 'custom');
         return $this->updateUserMeta('stripe_account_id', $resp->id);
     }
     
@@ -216,6 +272,37 @@ class StripeConnect extends PaymentMethodBase
     }
 
     /**
+     * getAccountType
+     *
+     * @return string
+     */
+    public function getAccountType(): string
+    {
+        if (!empty($this->stripeAccountType)) {
+            return $this->stripeAccountType;
+        }
+        
+        $this->stripeAccountType = $this->getUserMeta('stripe_account_type');
+        if (empty($this->stripeAccountType)) {
+            $this->accessAccountType();
+            $this->updateUserMeta('stripe_account_type', $this->stripeAccountType);
+        }
+        return $this->stripeAccountType;
+    }
+
+    /**
+     * accessAccountType
+     *
+     * @return bool
+     */
+    private function accessAccountType(): bool
+    {
+        $this->userInfoObj = $this->getRemoteUserInfo();
+        $this->stripeAccountType = $this->userInfoObj->type;
+        return true;
+    }
+
+    /**
      * getRelationshipPersonId
      *
      * @return string
@@ -255,7 +342,6 @@ class StripeConnect extends PaymentMethodBase
         }
 
         $this->userInfoObj = $this->getRemoteUserInfo();
-        $resp = $this->isUserAccountRejected();
         if (isset($this->userInfoObj->requirements->currently_due)) {
             $this->requiredFields  = $this->userInfoObj->requirements->currently_due;
         }
@@ -330,9 +416,6 @@ class StripeConnect extends PaymentMethodBase
     private function addFinancialInfo(array $data): bool
     {
         $businessType = $this->getUserMeta('stripe_business_type');
-        if ('non_profit' == $businessType) {
-            $businessType = 'company';
-        }
 
         $this->getBaseCurrencyCode();
         $data = [
