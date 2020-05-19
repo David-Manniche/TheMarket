@@ -7,6 +7,7 @@ class StripeConnect extends PaymentMethodBase
     private $stripeAccountId;
     private $stripeAccountType;
     private $requiredFields = [];
+    private $initialPendingFields = [];
     private $userInfoObj;
     private $response;
 
@@ -187,28 +188,6 @@ class StripeConnect extends PaymentMethodBase
             'requested_capabilities' => [
                 'card_payments',
                 'transfers',
-            ],
-            'business_profile' => [
-                'name' => $this->userData['shop_name'],
-                // 'url' => CommonHelper::generateFullUrl('shops', 'view', [$this->userData['shop_id']]),
-                'url' => 'https://satbir.yokartv8.4livedemo.com' . CommonHelper::generateUrl('shops', 'view', [$this->userData['shop_id']]),
-                'support_url' => 'https://satbir.yokartv8.4livedemo.com' . CommonHelper::generateUrl('shops', 'view', [$this->userData['shop_id']]),
-                'support_phone' => $this->userData['shop_phone'],
-                'support_email' => $this->userData['credential_email'],
-                'support_address' => [
-                    'city' => $this->userData['shop_city'],
-                    'country' => strtoupper($this->userData['country_code']),
-                    'line1' => $name[0],
-                    'line2' => $this->userData['shop_name'],
-                    'postal_code' => $this->userData['shop_postalcode'],
-                    'state' => $this->userData['state_code'],
-                ],
-                'product_description' => $this->userData['shop_description'],
-            ],
-            'tos_acceptance' => [
-                'date' => time(),
-                'ip' => CommonHelper::getClientIp(),
-                'user_agent' => CommonHelper::userAgent(),
             ]
         ];
 
@@ -527,5 +506,57 @@ class StripeConnect extends PaymentMethodBase
         ];
         $resp = $this->doRequest(self::REQUEST_UPDATE_PERSON, $data);
         return (false === $resp) ? false : true;
+    }
+
+    /**
+     * verifyInitialSetup
+     * 
+     * @return bool
+     */
+    public function verifyInitialSetup():bool
+    {
+        $this->userInfoObj = $this->getRemoteUserInfo();
+        $initialElements = $this->userInfoObj->__toArray(true);
+
+        if (!$this->userInfoObj->offsetExists('email') || empty($initialElements['email'])) {
+            $this->initialPendingFields[] = 'email';
+        }
+
+        if (!$this->userInfoObj->offsetExists('business_profile') || empty(array_filter($initialElements['business_profile']))) {
+            $this->initialPendingFields[] = 'business_profile';
+        }
+
+        $this->requiredFields = $initialElements['requirements']['currently_due'];
+        if (in_array('tos_acceptance.date', $this->requiredFields) || in_array('tos_acceptance.ip', $this->requiredFields)) {
+            $this->initialPendingFields[] = 'tos_acceptance';
+        }
+
+        return (1 > count($this->initialPendingFields));
+    }
+
+    public function initialFieldsSetup()
+    {
+        /*'business_profile' => [
+                'name' => $this->userData['shop_name'],
+                // 'url' => CommonHelper::generateFullUrl('shops', 'view', [$this->userData['shop_id']]),
+                'url' => 'https://satbir.yokartv8.4livedemo.com' . CommonHelper::generateUrl('shops', 'view', [$this->userData['shop_id']]),
+                'support_url' => 'https://satbir.yokartv8.4livedemo.com' . CommonHelper::generateUrl('shops', 'view', [$this->userData['shop_id']]),
+                'support_phone' => $this->userData['shop_phone'],
+                'support_email' => $this->userData['credential_email'],
+                'support_address' => [
+                    'city' => $this->userData['shop_city'],
+                    'country' => strtoupper($this->userData['country_code']),
+                    'line1' => $name[0],
+                    'line2' => $this->userData['shop_name'],
+                    'postal_code' => $this->userData['shop_postalcode'],
+                    'state' => $this->userData['state_code'],
+                ],
+                'product_description' => $this->userData['shop_description'],
+            ],
+            'tos_acceptance' => [
+                'date' => time(),
+                'ip' => CommonHelper::getClientIp(),
+                'user_agent' => CommonHelper::userAgent(),
+            ]*/
     }
 }

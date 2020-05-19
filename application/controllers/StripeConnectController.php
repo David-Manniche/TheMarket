@@ -45,10 +45,8 @@ class StripeConnectController extends PaymentMethodBaseController
             $this->redirectBack(self::KEY_NAME);
         }
 
-        $requiredFields = $this->stripeConnect->getRequiredFields();
-        if (!empty($requiredFields) && 'custom' != $this->stripeConnect->getAccountType())
-        {
-            $this->redirectBack(self::KEY_NAME, 'initialVerification');
+        if (false === $this->stripeConnect->verifyInitialSetup()) {
+            $this->redirectBack(self::KEY_NAME, 'initialSetup');
         }
 
         $this->set('accountId', $this->stripeConnect->getAccountId());
@@ -83,17 +81,37 @@ class StripeConnectController extends PaymentMethodBaseController
         $this->redirectBack(self::KEY_NAME);
     }
 
-    public function initialVerification()
+    public function initialSetup()
     {
-        $userInfo = $this->stripeConnect->getRemoteUserInfo();
-        
-        CommonHelper::printArray($userInfo, true);
+        $this->stripeConnect->verifyInitialSetup();
     }
 
-    private function initialVerificationForm()
+    private function initialSetupForm()
     {
         $frm = new Form('frm' . self::KEY_NAME);
-        
+
+        $url = 'https://satbir.yokartv8.4livedemo.com' . CommonHelper::generateUrl('shops', 'view', [$this->userData['shop_id']]);
+
+        $frm->addHiddenField('', 'business_profile[url]', $url);
+        $frm->addHiddenField('', 'business_profile[support_url]', $url);
+        $frm->addRequiredField(Labels::getLabel('LBL_SHOP_NAME', $this->siteLangId), 'business_profile[name]');
+        $frm->addRequiredField(Labels::getLabel('LBL_SUPPORT_PHONE', $this->siteLangId), 'business_profile[support_phone]');
+        $frm->addRequiredField(Labels::getLabel('LBL_SUPPORT_EMAIL', $this->siteLangId), 'business_profile[support_email]');
+        $frm->addRequiredField(Labels::getLabel('LBL_SUPPORT_ADDRESS_CITY', $this->siteLangId), 'business_profile[support_address][city]');
+        $fld = $frm->addRequiredField(Labels::getLabel('LBL_SUPPORT_ADDRESS_COUNTRY', $this->siteLangId), 'business_profile[support_address][country]');
+        $fld->htmlAfterField = Labels::getLabel('LBL_USE_COUNTRY_CODE_INSTEAD_OF_FULL_NAME', $this->siteLangId);
+
+        $frm->addRequiredField(Labels::getLabel('LBL_SUPPORT_ADDRESS_LINE_1', $this->siteLangId), 'business_profile[support_address][line1]');
+        $frm->addRequiredField(Labels::getLabel('LBL_SUPPORT_ADDRESS_LINE_2', $this->siteLangId), 'business_profile[support_address][line2]');
+        $frm->addRequiredField(Labels::getLabel('LBL_SUPPORT_ADDRESS_POSTAL_CODE', $this->siteLangId), 'business_profile[support_address][postal_code]');
+
+        $fld = $frm->addRequiredField(Labels::getLabel('LBL_SUPPORT_ADDRESS_STATE', $this->siteLangId), 'business_profile[support_address][state]');
+        $fld->htmlAfterField = Labels::getLabel('LBL_USE_STATE_CODE_INSTEAD_OF_FULL_NAME', $this->siteLangId);
+
+        $fld = $frm->addCheckBox(Labels::getLabel('LBL_I_AGREE_TO_THE_TERMS_OF_SERVICES', $this->siteLangId), 'tos_acceptance', 1);
+        $fld->requirement->setRequired(true);
+        $frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_SAVE', $this->siteLangId));
+        return $frm;
     }
 
     public function requiredFieldsForm()
