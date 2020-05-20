@@ -112,6 +112,17 @@ trait StripeConnectFunctions
     }
     
     /**
+     * deleteAccount
+     *
+     * @return object
+     */
+    private function deleteAccount(): object
+    {
+        $this->userInfoObj = $this->retrieve();
+        return $this->userInfoObj->delete();
+    }
+    
+    /**
      * doRequest
      *
      * @param  mixed $requestType
@@ -147,6 +158,9 @@ trait StripeConnectFunctions
                     break;
                 case self::REQUEST_UPLOAD_VERIFICATION_FILE:
                     return $this->createFile(reset($data));
+                    break;
+                case self::REQUEST_DELETE_ACCOUNT:
+                    return $this->deleteAccount();
                     break;
             }
         } catch (\Stripe\Exception\CardException $e) {

@@ -55,7 +55,7 @@ class Countries extends MyAppModel
         return ImportexportCommon::validateFields($requiredFields, $columnIndex, $columnTitle, $columnValue, $langId);
     }
 
-    public function getCountriesArr($langId, $isActive = true)
+    public function getCountriesArr($langId, $isActive = true, $idCol = 'country_id')
     {
         $langId = FatUtility::int($langId);
 
@@ -65,9 +65,9 @@ class Countries extends MyAppModel
         $srch->addOrder('country_name', 'ASC');
         $srch->addMultipleFields(
             array(
-                'country_id',
-                'if(country_name is null,country_code,country_name)as country_name'
-                )
+                $idCol,
+                'COALESCE(country_name, country_code) as country_name'
+            )
         );
 
         $rs = $srch->getResultSet();

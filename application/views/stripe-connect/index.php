@@ -18,21 +18,24 @@ $this->includeTemplate('_partial/dashboardNavigation.php');
                                     <h6 class="m-0">
                                         <?php if (empty($accountId)) { ?>
                                             <a class="btn btn-outline-primary btn--sm" href="<?php echo CommonHelper::generateUrl($keyName, 'register'); ?>">
-                                                <?php echo Labels::getLabel('Lbl_REGISTER', $siteLangId); ?>
+                                                <?php echo Labels::getLabel('LBL_REGISTER', $siteLangId); ?>
                                             </a>
                                             <a class="btn btn--primary btn--sm" href="<?php echo CommonHelper::generateUrl($keyName, 'login')?>" title="<?php echo Labels::getLabel('MSG_LOGIN', $siteLangId); ?>">
-                                                <?php echo Labels::getLabel('Lbl_ALREADY_HAVE_ACCOUNT_?', $siteLangId); ?>
+                                                <?php echo Labels::getLabel('LBL_ALREADY_HAVE_ACCOUNT_?', $siteLangId); ?>
                                             </a>
                                         <?php } else { ?>
-                                            <?php echo Labels::getLabel('Lbl_ACCOUNT_ID', $siteLangId);?> : 
+                                            <?php echo Labels::getLabel('LBL_ACCOUNT_ID', $siteLangId);?> : 
                                             <?php echo $accountId; ?>
+                                            <a class="btn btn--primary btn--sm" href="javascript:void(0)" onClick="deleteAccount();" title="<?php echo Labels::getLabel('LBL_DELETE_ACCOUNT', $siteLangId); ?>">
+                                                <i class="fa fa-trash"></i>
+                                            </a>
                                         <?php } ?>
                                     </h6>
                                 </div>
                                 <div class="col-md-3">
                                     <?php if (!empty($requiredFields)) { ?>
-                                        <a class="btn btn-outline-primary btn--sm" href="javascript:void(0)" onClick="requiredFieldsForm();" id="js-required-fields">
-                                            <?php echo Labels::getLabel('Lbl_UPDATE_ACCOUNT', $siteLangId); ?>
+                                        <a class="btn btn-outline-primary btn--sm" href="javascript:void(0)" onClick="requiredFieldsForm();">
+                                            <?php echo Labels::getLabel('LBL_UPDATE_ACCOUNT', $siteLangId); ?>
                                         </a>
                                     <?php } ?>
                                 </div>

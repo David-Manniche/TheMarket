@@ -5,6 +5,11 @@ class StripeConnectSettingsController extends PaymentMethodSettingsController
     public static function getConfigurationKeys()
     {
         return [
+            'env' => [
+                'type' => PluginSetting::TYPE_BOOL,
+                'required' => true,
+                'label' => "Enable Live Mode",
+            ],
             'client_id' => [
                 'type' => PluginSetting::TYPE_STRING,
                 'required' => true,
@@ -19,6 +24,21 @@ class StripeConnectSettingsController extends PaymentMethodSettingsController
                 'type' => PluginSetting::TYPE_STRING,
                 'required' => true,
                 'label' => "Secret key",
+            ],
+            'live_client_id' => [
+                'type' => PluginSetting::TYPE_STRING,
+                'required' => true,
+                'label' => "Live Client Id",
+            ],
+            'live_publishable_key' => [
+                'type' => PluginSetting::TYPE_STRING,
+                'required' => true,
+                'label' => "Live Publishable Key",
+            ],
+            'live_secret_key' => [
+                'type' => PluginSetting::TYPE_STRING,
+                'required' => true,
+                'label' => "Live Secret key",
             ],
         ];
     }

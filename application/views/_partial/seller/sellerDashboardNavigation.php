@@ -51,9 +51,9 @@ $action = strtolower($action);
                 </li>
                 <?php } ?>
                 <?php if (Plugin::isActive('StripeConnect')) { ?>
-                <li class="menu__item <?php echo ($controller == 'stripe-connect' && $action == 'index') ? 'is-active' : ''; ?>">
+                <li class="menu__item <?php echo ($controller == 'stripeconnect') ? 'is-active' : ''; ?>">
                     <div class="menu__item__inner"><a title="<?php echo Labels::getLabel('LBL_STRIPE_CONNECT', $siteLangId);?>" href="<?php echo CommonHelper::generateUrl('StripeConnect'); ?>">
-                        <i class="fab fa-stripe-s"></i>
+                        <i class="icn fab fa-stripe-s"></i>
                         <span class="menu-item__title"><?php echo Labels::getLabel('LBL_STRIPE_CONNECT', $siteLangId);?></span></a></div>
                 </li>
                 <?php } ?>

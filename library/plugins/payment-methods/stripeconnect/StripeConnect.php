@@ -10,6 +10,7 @@ class StripeConnect extends PaymentMethodBase
     private $initialPendingFields = [];
     private $userInfoObj;
     private $response;
+    private $liveMode;
 
     public $requiredKeys = [
         'client_id',
@@ -30,6 +31,7 @@ class StripeConnect extends PaymentMethodBase
     public const REQUEST_CREATE_PERSON = 7;
     public const REQUEST_UPDATE_PERSON = 8;
     public const REQUEST_UPLOAD_VERIFICATION_FILE = 9;
+    public const REQUEST_DELETE_ACCOUNT = 10;
 
     /**
      * __construct
@@ -57,11 +59,15 @@ class StripeConnect extends PaymentMethodBase
             return false;
         }
 
+        if (isset($this->settings['env']) && applicationConstants::YES == $this->settings['env']) {
+            $this->liveMode = "live_";
+        }
+
         $this->loadLoggedUserInfo();
 
         require_once dirname(__FILE__) . '/vendor/autoload.php';
 
-        \Stripe\Stripe::setApiKey($this->settings['secret_key']);
+        \Stripe\Stripe::setApiKey($this->settings[$this->liveMode . 'secret_key']);
         return true;
     }
 
@@ -72,7 +78,7 @@ class StripeConnect extends PaymentMethodBase
      */
     public function getRedirectUri(): string
     {
-        return self::CONNECT_URI . "/authorize?response_type=code&client_id=" . $this->settings['client_id'] . "&scope=read_write&redirect_uri=" . CommonHelper::generateFullUrl(self::KEY_NAME, 'callback');
+        return self::CONNECT_URI . "/authorize?response_type=code&client_id=" . $this->settings[$this->liveMode . 'client_id'] . "&scope=read_write&redirect_uri=" . CommonHelper::generateFullUrl(self::KEY_NAME, 'callback');
     }
 
     /**
@@ -93,8 +99,8 @@ class StripeConnect extends PaymentMethodBase
     private function connect(): bool
     {
         $params = [
-            'clientId'                => $this->settings['client_id'],
-            'clientSecret'            => $this->settings['secret_key'],
+            'clientId'                => $this->settings[$this->liveMode . 'client_id'],
+            'clientSecret'            => $this->settings[$this->liveMode . 'secret_key'],
             'redirectUri'             => $this->getRedirectUri(),
             'urlAuthorize'            => self::CONNECT_URI . '/authorize',
             'urlAccessToken'          => self::CONNECT_URI . '/token',
@@ -171,6 +177,36 @@ class StripeConnect extends PaymentMethodBase
     }
 
     /**
+     * initialFieldsValue
+     * 
+     * @return array
+     */
+    public function initialFieldsValue(): array
+    {
+        $name = explode(' ', $this->userData['user_name']);
+        return [
+                'email' => $this->userData['credential_email'],
+                'business_profile' => [
+                    'name' => $this->userData['shop_name'],
+                    // 'url' => CommonHelper::generateFullUrl('shops', 'view', [$this->userData['shop_id']]),
+                    'url' => 'https://satbir.yokartv8.4livedemo.com' . CommonHelper::generateUrl('shops', 'view', [$this->userData['shop_id']]),
+                    'support_url' => 'https://satbir.yokartv8.4livedemo.com' . CommonHelper::generateUrl('shops', 'view', [$this->userData['shop_id']]),
+                    'support_phone' => $this->userData['shop_phone'],
+                    'support_email' => $this->userData['credential_email'],
+                    'support_address' => [
+                        'city' => $this->userData['shop_city'],
+                        'country' => strtoupper($this->userData['country_code']),
+                        'line1' => $name[0],
+                        'line2' => $this->userData['shop_name'],
+                        'postal_code' => $this->userData['shop_postalcode'],
+                        'state' => $this->userData['state_code'],
+                    ],
+                    'product_description' => $this->userData['shop_description'],
+                ]
+            ];
+    }
+
+    /**
      * createAccount
      *
      * Can follow: https://stripe.com/docs/api/persons/create OR https://medium.com/@Keithweaver_/creating-your-own-marketplace-with-stripe-connect-php-like-shopify-or-uber-6eadbb08993f for help.
@@ -179,8 +215,6 @@ class StripeConnect extends PaymentMethodBase
      */
     public function createAccount(): bool
     {
-        $name = explode(' ', $this->userData['user_name']);
-        $dob = explode('-', $this->userData['user_dob']);
         $data = [
             'type' => 'custom',
             'country' => strtoupper($this->userData['country_code']),
@@ -441,13 +475,12 @@ class StripeConnect extends PaymentMethodBase
             unset($data[$personId]);
         }
 
-        if (array_key_exists('individual', $data) && in_array('individual.id_number', $this->getRequiredFields())) {
+        if (in_array('individual.id_number', $this->getRequiredFields())) {
             $data['individual']['id_number'] = $this->doRequest(self::REQUEST_PERSON_TOKEN);
         }
 
         if (!empty($data)) {
-            $this->update($data);
-        }
+            $resp = $this->update($data);        }
 
         if (empty($personId) && !empty($relationship)) {
             $resp = $this->doRequest(self::REQUEST_CREATE_PERSON, ['relationship' => $relationship]);
@@ -509,14 +542,24 @@ class StripeConnect extends PaymentMethodBase
     }
 
     /**
+     * getInitialPendingFields
+     * 
+     * @return array
+     */
+    public function getInitialPendingFields(): array
+    {
+        return $this->initialPendingFields;
+    }
+
+    /**
      * verifyInitialSetup
      * 
      * @return bool
      */
-    public function verifyInitialSetup():bool
+    public function verifyInitialSetup(): bool
     {
         $this->userInfoObj = $this->getRemoteUserInfo();
-        $initialElements = $this->userInfoObj->__toArray(true);
+        $initialElements = $this->userInfoObj->toArray();
 
         if (!$this->userInfoObj->offsetExists('email') || empty($initialElements['email'])) {
             $this->initialPendingFields[] = 'email';
@@ -534,29 +577,50 @@ class StripeConnect extends PaymentMethodBase
         return (1 > count($this->initialPendingFields));
     }
 
-    public function initialFieldsSetup()
+    /**
+     * initialFieldsSetup
+     * 
+     * @param array $post 
+     * @return bool
+     */
+    public function initialFieldsSetup(array $post): bool
     {
-        /*'business_profile' => [
-                'name' => $this->userData['shop_name'],
-                // 'url' => CommonHelper::generateFullUrl('shops', 'view', [$this->userData['shop_id']]),
-                'url' => 'https://satbir.yokartv8.4livedemo.com' . CommonHelper::generateUrl('shops', 'view', [$this->userData['shop_id']]),
-                'support_url' => 'https://satbir.yokartv8.4livedemo.com' . CommonHelper::generateUrl('shops', 'view', [$this->userData['shop_id']]),
-                'support_phone' => $this->userData['shop_phone'],
-                'support_email' => $this->userData['credential_email'],
-                'support_address' => [
-                    'city' => $this->userData['shop_city'],
-                    'country' => strtoupper($this->userData['country_code']),
-                    'line1' => $name[0],
-                    'line2' => $this->userData['shop_name'],
-                    'postal_code' => $this->userData['shop_postalcode'],
-                    'state' => $this->userData['state_code'],
-                ],
-                'product_description' => $this->userData['shop_description'],
-            ],
-            'tos_acceptance' => [
+        if (array_key_exists('tos_acceptance', $post)) {
+            $post['tos_acceptance'] =  [
                 'date' => time(),
                 'ip' => CommonHelper::getClientIp(),
                 'user_agent' => CommonHelper::userAgent(),
-            ]*/
+            ];
+        }
+
+        if (false === $this->updateRequiredFields($post)) {
+            return false;
+        }
+        return true;
+    }
+
+    /**
+     * getErrorWhileUpdate
+     * 
+     * @return array
+     */
+    public function getErrorWhileUpdate(): array
+    {
+        return ($this->getRemoteUserInfo()->toArray())['requirements']['errors'];
+    }
+
+    /**
+     * deleteAccount
+     * 
+     * @return bool
+     */
+    public function deleteAccount(): bool
+    {
+        $resp = $this->doRequest(self::REQUEST_DELETE_ACCOUNT);
+        if (true === $resp->deleted) {
+            return true;
+        }
+        $this->error = Labels::getLabel('MSG_UNABLE_TO_DELETE_ACCOUNT', $this->langId);
+        return false;
     }
 }

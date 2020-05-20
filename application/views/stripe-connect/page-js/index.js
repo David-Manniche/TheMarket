@@ -15,6 +15,12 @@ var keyName = 'StripeConnect';
         });
     };
 
+    deleteAccount = function() {
+        fcom.updateWithAjax(fcom.makeUrl(keyName, 'deleteAccount'), '', function(t) {
+            location.reload();
+        });
+    };
+
 	setupRequiredFields = function (frm){
 		if (!$(frm).validate()) return;
 		var data = fcom.frmData(frm);

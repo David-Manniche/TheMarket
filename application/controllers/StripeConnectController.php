@@ -33,29 +33,28 @@ class StripeConnectController extends PaymentMethodBaseController
             Message::addErrorMessage($this->stripeConnect->getError());
             $this->redirectBack();
         }
-
-        $this->settings = $this->stripeConnect->getKeys();
     }
 
     public function index()
     {
         $accountId = $this->stripeConnect->getAccountId();
-        if (!empty($accountId) && true === $this->stripeConnect->isUserAccountRejected()) {
-            Message::addErrorMessage($this->stripeConnect->getError());
-            $this->redirectBack(self::KEY_NAME);
-        }
 
-        if (false === $this->stripeConnect->verifyInitialSetup()) {
-            $this->redirectBack(self::KEY_NAME, 'initialSetup');
+        if (!empty($accountId)) {
+            if (true === $this->stripeConnect->isUserAccountRejected()) {
+                Message::addErrorMessage($this->stripeConnect->getError());
+                $this->redirectBack(self::KEY_NAME);
+            }
+
+            if (false === $this->stripeConnect->verifyInitialSetup()) {
+                $this->redirectBack(self::KEY_NAME, 'getInitialSetupForm');
+            }
         }
+        $requiredFields = $this->stripeConnect->getRequiredFields();
 
         $this->set('accountId', $this->stripeConnect->getAccountId());
         $this->set('requiredFields', $requiredFields);
-        $this->set('isFinancialInfoRequired', $this->stripeConnect->isFinancialInfoRequired());
-        $this->set('userData', $this->getUserMeta());
         $this->set('keyName', self::KEY_NAME);
         $this->set('pluginName', $this->getPluginData('plugin_name'));
-        $this->set('publishableKey', $this->settings['publishable_key']);
         $this->_template->render();
     }
 
@@ -83,35 +82,84 @@ class StripeConnectController extends PaymentMethodBaseController
 
     public function initialSetup()
     {
-        $this->stripeConnect->verifyInitialSetup();
+        $post = array_filter(FatApp::getPostedData());
+        if (isset($post['fIsAjax'])) {
+            unset($post['fOutMode'], $post['fIsAjax']);
+        }
+
+        if (false === $this->stripeConnect->initialFieldsSetup($post)) {
+            FatUtility::dieJsonError($this->stripeConnect->getError());
+        }
+        $msg = Labels::getLabel('MSG_SETUP_SUCCESSFULLY', $this->siteLangId);
+        FatUtility::dieJsonSuccess($msg);
+    }
+
+    public function getInitialSetupForm()
+    {
+        if (true === $this->stripeConnect->verifyInitialSetup()) {
+            $msg = Labels::getLabel('MSG_NO_MORE_INITIAL_FIELDS_PENDING', $this->siteLangId);
+            Message::addErrorMessage($msg);
+            $this->redirectBack(self::KEY_NAME);
+        }
+        $initialFieldsValue = $this->stripeConnect->initialFieldsValue();
+        $frm = $this->initialSetupForm();
+        $frm->fill($initialFieldsValue);
+        
+        $pageTitle = Labels::getLabel('LBL_INITIAL_ACCOUNT_SETUP', $this->siteLangId);
+        $stateCode = isset($initialFieldsValue['business_profile']['state']) ? $initialFieldsValue['business_profile']['state'] : 0;
+
+        $errors = $this->stripeConnect->getErrorWhileUpdate();
+        $this->set('errors', $errors);
+
+        $this->set('frm', $frm);
+        $this->set('stateCode', $stateCode);
+        $this->set('pageTitle', $pageTitle);
+        $this->set('keyName', self::KEY_NAME);
+        $this->_template->render();
     }
 
     private function initialSetupForm()
     {
+        $initialFields = $this->stripeConnect->getInitialPendingFields();
+
         $frm = new Form('frm' . self::KEY_NAME);
 
-        $url = 'https://satbir.yokartv8.4livedemo.com' . CommonHelper::generateUrl('shops', 'view', [$this->userData['shop_id']]);
+        if (in_array('email', $initialFields)) {
+            $fld = $frm->addRequiredField(Labels::getLabel('LBL_EMAIL', $this->siteLangId), 'email');
+            $fld->requirement->setRequired(true);
+        }
 
-        $frm->addHiddenField('', 'business_profile[url]', $url);
-        $frm->addHiddenField('', 'business_profile[support_url]', $url);
-        $frm->addRequiredField(Labels::getLabel('LBL_SHOP_NAME', $this->siteLangId), 'business_profile[name]');
-        $frm->addRequiredField(Labels::getLabel('LBL_SUPPORT_PHONE', $this->siteLangId), 'business_profile[support_phone]');
-        $frm->addRequiredField(Labels::getLabel('LBL_SUPPORT_EMAIL', $this->siteLangId), 'business_profile[support_email]');
-        $frm->addRequiredField(Labels::getLabel('LBL_SUPPORT_ADDRESS_CITY', $this->siteLangId), 'business_profile[support_address][city]');
-        $fld = $frm->addRequiredField(Labels::getLabel('LBL_SUPPORT_ADDRESS_COUNTRY', $this->siteLangId), 'business_profile[support_address][country]');
-        $fld->htmlAfterField = Labels::getLabel('LBL_USE_COUNTRY_CODE_INSTEAD_OF_FULL_NAME', $this->siteLangId);
+        if (in_array('business_profile', $initialFields)) {
+            $frm->addHiddenField('', 'business_profile[url]');
+            $frm->addHiddenField('', 'business_profile[support_url]');
+            $frm->addRequiredField(Labels::getLabel('LBL_SHOP_NAME', $this->siteLangId), 'business_profile[name]');
+            $frm->addRequiredField(Labels::getLabel('LBL_SUPPORT_PHONE', $this->siteLangId), 'business_profile[support_phone]');
+            $frm->addRequiredField(Labels::getLabel('LBL_SUPPORT_EMAIL', $this->siteLangId), 'business_profile[support_email]');
 
-        $frm->addRequiredField(Labels::getLabel('LBL_SUPPORT_ADDRESS_LINE_1', $this->siteLangId), 'business_profile[support_address][line1]');
-        $frm->addRequiredField(Labels::getLabel('LBL_SUPPORT_ADDRESS_LINE_2', $this->siteLangId), 'business_profile[support_address][line2]');
-        $frm->addRequiredField(Labels::getLabel('LBL_SUPPORT_ADDRESS_POSTAL_CODE', $this->siteLangId), 'business_profile[support_address][postal_code]');
+            $frm->addRequiredField(Labels::getLabel('LBL_SUPPORT_ADDRESS_LINE_1', $this->siteLangId), 'business_profile[support_address][line1]');
+            $frm->addRequiredField(Labels::getLabel('LBL_SUPPORT_ADDRESS_LINE_2', $this->siteLangId), 'business_profile[support_address][line2]');
+            $frm->addRequiredField(Labels::getLabel('LBL_SUPPORT_ADDRESS_POSTAL_CODE', $this->siteLangId), 'business_profile[support_address][postal_code]');
 
-        $fld = $frm->addRequiredField(Labels::getLabel('LBL_SUPPORT_ADDRESS_STATE', $this->siteLangId), 'business_profile[support_address][state]');
-        $fld->htmlAfterField = Labels::getLabel('LBL_USE_STATE_CODE_INSTEAD_OF_FULL_NAME', $this->siteLangId);
+            $frm->addRequiredField(Labels::getLabel('LBL_SUPPORT_ADDRESS_CITY', $this->siteLangId), 'business_profile[support_address][city]');
 
-        $fld = $frm->addCheckBox(Labels::getLabel('LBL_I_AGREE_TO_THE_TERMS_OF_SERVICES', $this->siteLangId), 'tos_acceptance', 1);
-        $fld->requirement->setRequired(true);
-        $frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_SAVE', $this->siteLangId));
-        return $frm;
+            $countryObj = new Countries();
+            $countriesArr = $countryObj->getCountriesArr($this->siteLangId, true, 'country_code');
+            $frm->addSelectBox(Labels::getLabel('LBL_SUPPORT_ADDRESS_COUNTRY', $this->siteLangId), 'business_profile[support_address][country]', $countriesArr, '', ['id' => 'country'])->requirement->setRequired(true);
+
+            $frm->addSelectBox(Labels::getLabel('LBL_SUPPORT_ADDRESS_STATE', $this->siteLangId), 'business_profile[support_address][state]', [], '', ['id' => 'state', 'disabled' => 'disabled'])->requirement->setRequired(true);
+        }
+
+        if (in_array('tos_acceptance', $initialFields)) {
+            $fld = $frm->addCheckBox(Labels::getLabel('LBL_I_AGREE_TO_THE_TERMS_OF_SERVICES', $this->siteLangId), 'tos_acceptance', 1);
+            $fld->requirement->setRequired(true);
+        }
+
+        if (0 < count($initialFields)) {
+            $frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_SAVE', $this->siteLangId));
+            return $frm;
+        }
+
+        return false;
     }
 
     public function requiredFieldsForm()
@@ -127,8 +175,9 @@ class StripeConnectController extends PaymentMethodBaseController
             $fieldType = 'external_account';
         }
 
-        $this->set('fieldType', $fieldType);    
-        $this->set('pageTitle', $pageTitle);    
+        $errors = $this->stripeConnect->getErrorWhileUpdate();
+        $this->set('errors', $errors);
+        $this->set('pageTitle', $pageTitle);
         $this->set('frm', $frm);
         $this->set('keyName', self::KEY_NAME);
         $this->_template->render(false, false);
@@ -175,6 +224,7 @@ class StripeConnectController extends PaymentMethodBaseController
             Message::addMessage($msg);
             $this->redirectBack(self::KEY_NAME);
         }
+
         FatUtility::dieJsonSuccess($msg);
     }
 
@@ -301,5 +351,14 @@ class StripeConnectController extends PaymentMethodBaseController
         $cancelButton = $frm->addButton("", "btn_clear", Labels::getLabel('LBL_Clear', $this->siteLangId), array('onclick' => 'clearForm();'));
         $submitBtn->attachField($cancelButton);
         return $frm;
+    }
+
+    public function deleteAccount()
+    {
+        if (false === $this->stripeConnect->deleteAccount()) {
+            FatUtility::dieJsonError($this->stripeConnect->getError());
+        }
+        $msg = Labels::getLabel('MSG_SUCCESS', $this->siteLangId);
+        FatUtility::dieJsonSuccess($msg);
     }
 }

@@ -212,6 +212,13 @@ function getCountryStates(countryId, stateId, dv) {
     });
 };
 
+function getStatesByCountryCode(countryCode, stateCode, dv, idCol = 'state_id') {
+    fcom.ajax(fcom.makeUrl('GuestUser', 'getStatesByCountryCode', [countryCode, stateCode, idCol]), '', function (res) {
+        $(dv).empty();
+        $(dv).append(res).change();
+    });
+};
+
 function recentlyViewedProducts(selprodId) {
     if (typeof selprodId == 'undefined') {
         selprodId = 0;
