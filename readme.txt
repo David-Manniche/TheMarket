@@ -1,4 +1,4 @@
-Multivendor - Released Version : TV-9.2.0
+Multivendor - Released Version : RV-9.2.0
 
 New Features
     => New "Plugins" option under system settings in Admin console.
