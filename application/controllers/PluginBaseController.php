@@ -4,7 +4,6 @@ class PluginBaseController extends MyAppController
 {
     use PluginHelper;
     
-    private $keyName;
     private $plugin;
 
     public function __construct($action)

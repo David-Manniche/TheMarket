@@ -268,9 +268,7 @@ class DummyController extends MyAppController
 
     public function test()
     {
-        $row = Product::getAttributesById(73);
-        CommonHelper::printArray($row);
-        exit;
+       
     }
 
     private function getShopInfo($shop_id)
@@ -551,6 +549,125 @@ class DummyController extends MyAppController
     {
         AbandonedCart::sendReminderAbandonedCart();
     }
+
+    public function testTaxjar(){
+       
+        require_once CONF_PLUGIN_DIR . '/tax/taxjartax/TaxJarTax.php';
+        $itemsArr = [];
+        
+        $item = [
+              'amount' => 100,
+              'quantity' => 2,
+              'itemCode' => 100,
+              'taxCode' => '20010',                
+        ];
+        array_push($itemsArr, $item);
+        
+        $shippingItems = [];
+      
+        $shippingItem = [
+            'amount' => 12,
+            'quantity' => 1,
+            'itemCode' => 'S-100', 
+            'taxCode' => 'FR',
+        ];
+        array_push($shippingItems, $shippingItem);      
+        
+       
+        $fromAddress = array(
+            'line1' => '9500 Gilman Drive',
+            'line2' => '',
+            'city' => 'La Jolla',
+            'state' => 'CA',
+            'postalCode' => '92093',
+            'country' => 'US',
+        );
+
+        $toAddress = array(
+            'line1' => '123 Palm Grove Ln',
+            'line2' => '',
+            'city' =>'Los Angeles',
+            'state' => 'CA',
+            'postalCode' => '90002',
+            'country' => 'US',
+        );    
+        
+        
+        $avalaraObj = new TaxJarTax(1, $fromAddress , $toAddress); 
+        $txRates = $avalaraObj->getRates($itemsArr ,$shippingItems,1);
+        CommonHelper::printArray($txRates);
+        exit;
+    }
+    
+    public function testavalaratax(){
+        
+        require_once CONF_PLUGIN_DIR . '/tax/avalaratax/AvalaraTax.php';
+        
+        $itemsArr = [];
+        
+        $item = [
+              'amount' => 200,
+              'quantity' => 1,
+              'itemCode' => 7,
+              'taxCode' => 'PC030100',                
+        ];
+        array_push($itemsArr, $item);
+        
+        $shippingItems = [];
+      
+        $shippingItem = [
+            'amount' => 12,
+            'quantity' => 1,
+            'itemCode' => 'S-100', 
+            'taxCode' => 'FR',
+        ];
+        array_push($shippingItems, $shippingItem);      
+        
+       
+        $fromAddress = array(
+            'line1' => '123 Main Street',
+            'line2' => '',
+            'city' => 'CA',
+            'state' => 'CA',
+            'stateCode' => 'CA',
+            'postalCode' => '92615',
+            'country' => 'US',
+            'countryCode' => 'US',
+        );
+
+        $toAddress = array(
+            'line1' => '1500 Broadway',
+            'line2' => '',
+            'city' =>'New York',
+            'state' => 'NY',
+            'stateCode' => 'NY',
+            'postalCode' => '10019',
+            'country' => 'US',
+            'countryCode' => 'US',
+        );    
+        
+        
+        $avalaraObj = new AvalaraTax(1, $fromAddress , $toAddress); 
+        $txRates = $avalaraObj->getRates($itemsArr ,$shippingItems,1);
+        //$txRates = $avalaraObj->getCodes();
+        //print_r($avalaraObj->getTaxApiActualResponse());
+      CommonHelper::printArray($txRates);
+//        die();
+        
+        //$taxRates1 = $avalaraObj->createInvoice($fromAddress , $toAddress,$itemsArr ,$shippingItems,100,'2019-10-11','S-1000');
+     
+       // echo('<pre>' . json_encode($txRates, JSON_PRETTY_PRINT) . '</pre>');
+      // echo('<pre>' . json_encode($taxRates1, JSON_PRETTY_PRINT) . '</pre>');
+        die(); 
+        
+//        CA STATE TAX
+//        CA COUNTY TAX
+//        CA CITY TAX
+//        CA SPECIAL TAX
+        
+    }
+    
+    
 
     public function send()
     {

@@ -5,6 +5,98 @@ class PatchUpdateController extends AdminBaseController
     {
         parent::__construct($action);
         $this->objPrivilege->canEditPatch($this->admin_id);
+        ini_set('memory_limit', '100M');
+        set_time_limit(0);
+    }
+
+    public function updateTaxJarCat()
+    {
+        if (false === PluginHelper::includePlugin('TaxJarTax', 'tax', $this->adminLangId, $error)) {
+            FatUtility::dieWithError($error);
+        }
+        
+        $taxJarObj = new TaxJarTax($this->adminLangId); 
+        $codesArr = $taxJarObj->getCodes(null, null, null, array(), false);
+
+        $pluginId = Plugin::getAttributesByCode(TaxJarTax::KEY_NAME, 'plugin_id');
+        $db = FatApp::getDb();
+        $parentArr = [];
+        foreach ($codesArr as $code) {
+            $parentId = 0;
+           
+           $arr = [
+               'taxcat_identifier' => ($code->name != '') ? $code->name : $code->product_tax_code,
+               'taxcat_code' => $code->product_tax_code,
+               'taxcat_parent' => $parentId,   
+               'taxcat_plugin_id' => $pluginId,
+               'taxcat_active' => applicationConstants::ACTIVE ,
+               'taxcat_deleted' => applicationConstants::NO ,
+               'taxcat_last_updated' => date('Y-m-d H:i:s')
+           ];
+           
+           $db->insertFromArray(Tax::DB_TBL, $arr, false, array(), $arr);
+           $taxCatId = $db->getInsertId();
+
+           $data = array(
+            'taxcatlang_taxcat_id' => $taxCatId,
+            'taxcatlang_lang_id' => $this->adminLangId,
+            'taxcat_name' => ($code->description != '') ? $code->description : $code->taxCode,
+            );
+    
+            $taxObj = new Tax($taxCatId);
+            $taxObj->updateLangData($this->adminLangId, $data);
+
+        }
+        echo 'Done';
+    }
+
+    public function updateAvalarataxCat()
+    {
+		$error = '';
+		if (false === PluginHelper::includePlugin('AvalaraTax', 'tax', $this->adminLangId, $error)) {
+            FatUtility::dieWithError($error);
+		}
+        $avalaraObj = new AvalaraTax($this->adminLangId); 
+        $codesArr = $avalaraObj->getCodes(null, null, null, array('id ASC'), false);
+        
+        $pluginId = Plugin::getAttributesByCode(AvalaraTax::KEY_NAME, 'plugin_id');
+        $db = FatApp::getDb();
+        $parentArr = [];
+        foreach ($codesArr->value as $code) {
+            $parentId = 0;
+            if (isset($code->parentTaxCode) && $code->parentTaxCode != '') {
+                if (array_key_exists($code->parentTaxCode, $parentArr)) {
+                    $parentId = $parentArr[$code->parentTaxCode];
+                } else {
+                    $parentId = Tax::getAttributesByCode($code->parentTaxCode, 'taxcat_id', $pluginId);
+                    $parentArr[$code->parentTaxCode] = $parentId;
+                }
+            }    
+            
+           $arr = [
+               'taxcat_identifier' => ($code->description != '') ? $code->description : $code->taxCode,
+               'taxcat_code' => $code->taxCode,
+               'taxcat_parent' => $parentId,   
+               'taxcat_plugin_id' => $pluginId,
+               'taxcat_active' => $code->isActive ? applicationConstants::ACTIVE : applicationConstants::INACTIVE ,
+               'taxcat_deleted' => applicationConstants::NO ,
+               'taxcat_last_updated' => date('Y-m-d H:i:s')
+           ];
+           
+           $db->insertFromArray(Tax::DB_TBL, $arr, false, array(), $arr);
+           $taxCatId = $db->getInsertId();
+
+           $data = array(
+            'taxcatlang_taxcat_id' => $taxCatId,
+            'taxcatlang_lang_id' => $this->adminLangId,
+            'taxcat_name' => ($code->description != '') ? $code->description : $code->taxCode,
+            );
+    
+            $taxObj = new Tax($taxCatId);
+            $taxObj->updateLangData($this->adminLangId, $data);
+
+        }
+        echo 'Done';
     }
 
     public function resetFullTextSearchData()

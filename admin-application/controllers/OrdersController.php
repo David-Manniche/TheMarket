@@ -183,7 +183,7 @@ class OrdersController extends AdminBaseController
 
         $order['comments'] = $orderObj->getOrderComments($this->adminLangId, array("order_id" => $order['order_id']));
         $order['payments'] = $orderObj->getOrderPayments(array("order_id" => $order['order_id']));
-
+       
         $frm = $this->getPaymentForm($this->adminLangId, $order['order_id']);
         $this->set('frm', $frm);
         $this->set('yesNoArr', applicationConstants::getYesNoArr($this->adminLangId));

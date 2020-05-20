@@ -1179,6 +1179,21 @@ class EmailHandler extends FatModel
         }
     }
 
+    public function sendTaxApiOrderCreationFailure($data, $langId) {
+        $adminEmail = FatApp::getConfig("CONF_SITE_OWNER_EMAIL", FatUtility::VAR_STRING, "");
+        $tpl = "taxapi_order_creation_failure";
+        $defaultSiteLangId = FatApp::getConfig('conf_default_site_lang');
+        $arrReplacements = array(
+            '{invoice_number}' => $data['op_invoice_number'],
+            '{error_message}' => $data['op_invoerror_messageice_number']
+        );
+
+        if (self::sendMailTpl($adminEmail, $tpl, $langId, $vars)) {
+            return true;
+        }
+        return false;
+    }
+
     public function sendTxnNotification($txnId, $langId)
     {
         $langId = FatUtility::int($langId);

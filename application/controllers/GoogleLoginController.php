@@ -7,39 +7,34 @@ class GoogleLoginController extends SocialMediaAuthController
     public const KEY_NAME = 'GoogleLogin';
 
     private $client;
-    private $clientId;
-    private $clientSecret;
-    private $developerKey;
+
+    public $requiredKeys = [
+        'client_id',
+        'client_secret',
+        'developer_key'
+    ];
 
     public function __construct($action)
     {
         parent::__construct($action);
     }
 
-    private function validateSettings()
-    {
-        $settings = $this->getSettings();
-        if (!isset($settings['client_id']) || !isset($settings['client_secret']) || !isset($settings['developer_key'])) {
-            $message = Labels::getLabel('MSG_PLUGIN_SETTINGS_NOT_CONFIGURED', $this->siteLangId);
-            $this->setErrorAndRedirect($message, true);
-        }
-        $this->clientId = $settings['client_id'];
-        $this->clientSecret = $settings['client_secret'];
-        $this->developerKey = $settings['developer_key'];
-    }
-
     private function setupConfiguration()
     {
-        $this->validateSettings();
+        if (false == $this->validateSettings($this->siteLangId)) {
+            $this->setErrorAndRedirect($this->error, true);
+            return false;
+        }
+
         $redirectUri = CommonHelper::generateFullUrl(static::KEY_NAME, 'index', [], '', false);
         
         $this->client = new Google_Client();
         $this->client->setApplicationName(FatApp::getConfig('CONF_WEBSITE_NAME_' . $this->siteLangId)); // Set your applicatio name
         $this->client->setScopes(['email']);
-        $this->client->setClientId($this->clientId);
-        $this->client->setClientSecret($this->clientSecret);
+        $this->client->setClientId($this->settings['client_id']);
+        $this->client->setClientSecret($this->settings['client_secret']);
         $this->client->setRedirectUri($redirectUri);
-        $this->client->setDeveloperKey($this->developerKey);
+        $this->client->setDeveloperKey($this->settings['developer_key']);
     }
 
 

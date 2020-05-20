@@ -44,11 +44,13 @@ switch ($frmType) {
         break;
     case Configurations::FORM_LOCAL:
         $countryFld = $frm->getField('CONF_COUNTRY');
-        $countryFld->setFieldTagAttribute('id', 'user_country_id');
-        $countryFld->setFieldTagAttribute('onChange', 'getCountryStates(this.value,'.FatApp::getConfig('CONF_STATE', FatUtility::VAR_INT, 1).',\'#user_state_id\')');
+        if ($countryFld) {
+            $countryFld->setFieldTagAttribute('id', 'user_country_id');
+            $countryFld->setFieldTagAttribute('onChange', 'getCountryStates(this.value,'.FatApp::getConfig('CONF_STATE', FatUtility::VAR_INT, 1).',\'#user_state_id\')');
 
-        $stateFld = $frm->getField('CONF_STATE');
-        $stateFld->setFieldTagAttribute('id', 'user_state_id');
+            $stateFld = $frm->getField('CONF_STATE');
+            $stateFld->setFieldTagAttribute('id', 'user_state_id');
+        }
         break;    
 
     case Configurations::FORM_DISCOUNT:

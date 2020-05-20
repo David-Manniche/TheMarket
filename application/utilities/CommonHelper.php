@@ -1900,6 +1900,7 @@ class CommonHelper extends FatUtility
         return $taxVal['name'] . ' (' . $taxVal['percentageValue'] . ')';
     }
 
+
     public static function replaceStringData($str, $replacements = array(), $replaceTags = false)
     {
         foreach ($replacements as $key => $val) {

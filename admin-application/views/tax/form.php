@@ -5,8 +5,11 @@ $frmTax->developerTags['colClassPrefix'] = 'col-md-';
 $frmTax->developerTags['fld_default_col'] = 12;
 
 $valueFld = $frmTax->getField('taxval_value');
-$valueFld->setFieldTagAttribute('id', 'taxval_value');
-$valueFld->setFieldTagAttribute('onKeyup', 'splitValues(this.value)');
+if($valueFld){
+    $valueFld->setFieldTagAttribute('id', 'taxval_value');
+    $valueFld->setFieldTagAttribute('onKeyup', 'splitValues(this.value)');
+}
+
 ?>
 <section class="section">
 	<div class="sectionhead">

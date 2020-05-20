@@ -9,7 +9,11 @@ class SmsNotificationController extends PluginBaseController
 
     public function callback($keyName)
     {
-        require_once CONF_PLUGIN_DIR . '/sms-notification/' . strtolower($keyName) . '/' . $keyName . '.php';
+		$error = '';
+		if (false === PluginHelper::includePlugin($keyName, 'sms-notification', $this->siteLangId, $error)) {
+			$this->error = $error;
+			return false;
+		}
         $smsNotification = new $keyName($this->siteLangId);
         $smsNotification->callback();
     }
