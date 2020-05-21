@@ -4,13 +4,15 @@ require_once dirname(__FILE__) . '/StripeConnectFunctions.php';
 class StripeConnect extends PaymentMethodBase
 {
     public const KEY_NAME = __CLASS__;
-    private $stripeAccountId;
+    private $stripeAccountId = '';
     private $stripeAccountType;
     private $requiredFields = [];
     private $initialPendingFields = [];
     private $userInfoObj;
-    private $response;
-    private $liveMode;
+    private $resp = [];
+    private $liveMode = '';
+    private $sessionId = '';
+    private $priceId = '';
 
     public $requiredKeys = [
         'client_id',
@@ -32,6 +34,8 @@ class StripeConnect extends PaymentMethodBase
     public const REQUEST_UPDATE_PERSON = 8;
     public const REQUEST_UPLOAD_VERIFICATION_FILE = 9;
     public const REQUEST_DELETE_ACCOUNT = 10;
+    public const REQUEST_CREATE_SESSION = 11;
+    public const REQUEST_CREATE_PRICE = 12;
 
     /**
      * __construct
@@ -108,6 +112,16 @@ class StripeConnect extends PaymentMethodBase
         ];
         $this->stripe = new \League\OAuth2\Client\Provider\GenericProvider($params);
         return true;
+    }
+
+    /**
+     * getResponse
+     * 
+     * @return object
+     */
+    public function getResponse(): object
+    {
+        return empty($this->resp) ? (object) array() : $this->resp;
     }
 
     /**
@@ -209,7 +223,7 @@ class StripeConnect extends PaymentMethodBase
     /**
      * createAccount
      *
-     * Can follow: https://stripe.com/docs/api/persons/create OR https://medium.com/@Keithweaver_/creating-your-own-marketplace-with-stripe-connect-php-like-shopify-or-uber-6eadbb08993f for help.
+     * Can follow: https://stripe.com/docs/api OR https://medium.com/@Keithweaver_/creating-your-own-marketplace-with-stripe-connect-php-like-shopify-or-uber-6eadbb08993f for help.
      * 
      * @return bool
      */
@@ -229,13 +243,13 @@ class StripeConnect extends PaymentMethodBase
             $data['default_currency'] = $this->systemCurrencyCode;
         }
 
-        $resp = $this->create($data);
-        if (false === $resp) {
+        $this->resp = $this->create($data);
+        if (false === $this->resp) {
             return false;
         }
-        $this->stripeAccountId = $resp->id;
+        $this->stripeAccountId = $this->resp->id;
         $this->updateUserMeta('stripe_account_type', 'custom');
-        return $this->updateUserMeta('stripe_account_id', $resp->id);
+        return $this->updateUserMeta('stripe_account_id', $this->resp->id);
     }
     
 
@@ -263,11 +277,11 @@ class StripeConnect extends PaymentMethodBase
      */
     private function createPersonToken(): bool
     {
-        $resp = $this->createToken();
-        if (false === $resp) {
+        $this->resp = $this->createToken();
+        if (false === $this->resp) {
             return false;
         }
-        return $this->updateUserMeta('stripe_person_token', $resp->id);
+        return $this->updateUserMeta('stripe_person_token', $this->resp->id);
     }
 
     /**
@@ -445,11 +459,11 @@ class StripeConnect extends PaymentMethodBase
                 ]
             ];
 
-        $resp = $this->createExternalAccount($data);
-        if (false === $resp) {
+        $this->resp = $this->createExternalAccount($data);
+        if (false === $this->resp) {
             return false;
         }
-        return $this->updateUserMeta('stripe_bank_account_id', $resp->id);
+        return $this->updateUserMeta('stripe_bank_account_id', $this->resp->id);
     }
 
     /**
@@ -480,20 +494,20 @@ class StripeConnect extends PaymentMethodBase
         }
 
         if (!empty($data)) {
-            $resp = $this->update($data);        }
+            $this->resp = $this->update($data);        }
 
         if (empty($personId) && !empty($relationship)) {
-            $resp = $this->doRequest(self::REQUEST_CREATE_PERSON, ['relationship' => $relationship]);
-            if (false === $resp) {
+            $this->resp = $this->doRequest(self::REQUEST_CREATE_PERSON, ['relationship' => $relationship]);
+            if (false === $this->resp) {
                 return false;
             }
-            $this->updateUserMeta('stripe_person_id', $resp->id);
+            $this->updateUserMeta('stripe_person_id', $this->resp->id);
         } else if (!empty($personId) && (!empty($relationship) || !empty($personData))) {
             $relationship = !empty($relationship) ? ['relationship' => $relationship] : [];
             $data = array_merge($relationship, $personData);
             // CommonHelper::printArray($data, true);
-            $resp = $this->doRequest(self::REQUEST_UPDATE_PERSON, $data);
-            if (false === $resp) {
+            $this->resp = $this->doRequest(self::REQUEST_UPDATE_PERSON, $data);
+            if (false === $this->resp) {
                 return false;
             }
         }
@@ -509,8 +523,8 @@ class StripeConnect extends PaymentMethodBase
      */
     public function uploadVerificationFile(string $path): bool
     {
-        $this->response = $this->doRequest(self::REQUEST_UPLOAD_VERIFICATION_FILE, [$path]);
-        if (false === $this->response) {
+        $this->resp = $this->doRequest(self::REQUEST_UPLOAD_VERIFICATION_FILE, [$path]);
+        if (false === $this->resp) {
             return false;
         }
         return true;
@@ -520,12 +534,11 @@ class StripeConnect extends PaymentMethodBase
      * updateVericationDocument
      * 
      * @param string $side - Front/Back of uploaded document
-     * @param string $responseId - Returned from "function createFile"
      * @return bool
      */
     public function updateVericationDocument(string $side): bool
     {
-        if (empty($this->response)) {
+        if (empty($this->resp)) {
             $this->error = Labels::getLabel('LBL_INVALID_REQUEST', $this->langId);
             return false;
         }
@@ -533,12 +546,12 @@ class StripeConnect extends PaymentMethodBase
         $data = [
             'verification' => [
                 'document' => [
-                    $side => $this->response
+                    $side => $this->resp
                 ]
             ]
         ];
-        $resp = $this->doRequest(self::REQUEST_UPDATE_PERSON, $data);
-        return (false === $resp) ? false : true;
+        $this->resp = $this->doRequest(self::REQUEST_UPDATE_PERSON, $data);
+        return (false === $this->resp) ? false : true;
     }
 
     /**
@@ -616,11 +629,73 @@ class StripeConnect extends PaymentMethodBase
      */
     public function deleteAccount(): bool
     {
-        $resp = $this->doRequest(self::REQUEST_DELETE_ACCOUNT);
-        if (true === $resp->deleted) {
+        $this->resp = $this->doRequest(self::REQUEST_DELETE_ACCOUNT);
+        if (true === $this->resp->deleted) {
             return true;
         }
         $this->error = Labels::getLabel('MSG_UNABLE_TO_DELETE_ACCOUNT', $this->langId);
         return false;
+    }
+
+    /**
+     * initiateSession
+     * 
+     * @param array $data
+     * @return bool
+     */
+    public function initiateSession(array $data): bool
+    {
+        if (empty($data)) {
+            $this->error = Labels::getLabel('MSG_INVALID_REQUEST', $this->langId);
+            return false;
+        }
+
+        $this->resp = $this->doRequest(self::REQUEST_CREATE_SESSION, $data);
+        if (false === $this->resp) {
+            return false;
+        }
+        $this->sessionId = $this->resp->id;
+        return true;
+    }
+
+    /**
+     * getSessionId
+     * 
+     * @return string
+     */
+    public function getSessionId(): string
+    {
+        return $this->sessionId;
+    }
+
+    /**
+     * createPriceObject
+     * 
+     * @param array $data
+     * @return bool
+     */
+    public function createPriceObject(array $data): bool
+    {
+        if (empty($data)) {
+            $this->error = Labels::getLabel('MSG_INVALID_REQUEST', $this->langId);
+            return false;
+        }
+
+        $this->resp = $this->doRequest(self::REQUEST_CREATE_PRICE, $data);
+        if (false === $this->resp) {
+            return false;
+        }
+        $this->priceId = $this->resp->id;
+        return true;
+    }
+
+    /**
+     * getPriceId
+     * 
+     * @return string
+     */
+    public function getPriceId(): string
+    {
+        return $this->priceId;
     }
 }

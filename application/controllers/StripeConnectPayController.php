@@ -3,10 +3,47 @@
 class StripeConnectPayController extends PaymentController
 {
     public const KEY_NAME = 'StripeConnect';
-    private $error = false;
-                                           
-    private $paymentSettings = false;
-   
+    private $stripeConnect;
+    private $settings;
+    private $liveMode = '';
+    
+    public function __construct($action)
+    {
+        parent::__construct($action);
+        $this->init($action);
+    }
+
+    public function init()
+    {
+        $error = '';
+        if (false === PluginHelper::includePlugin(self::KEY_NAME, 'payment-methods', $this->siteLangId, $error)) {
+            $this->setErrorAndRedirect($error);
+        }
+
+        $this->stripeConnect = new StripeConnect($this->siteLangId);
+
+        if (false === $this->stripeConnect->init()) {
+            $this->setStripeErrorAndRedirect();
+        }
+
+        if (!empty($this->stripeConnect->getError())) {
+            $this->setStripeErrorAndRedirect();
+        }
+
+        $this->settings = $this->stripeConnect->getKeys();
+
+        if (isset($this->settings['env']) && applicationConstants::YES == $this->settings['env']) {
+            $this->liveMode = "live_";
+        }
+    }
+
+    private function setErrorAndRedirect(string $msg = "")
+    {
+        $msg = !empty($msg) ? $msg : $this->stripeConnect->getError();
+        LibHelper::exitWithError($msg, false, true);
+        CommonHelper::redirectUserReferer();
+    }
+
     protected function allowedCurrenciesArr()
     {
         return [
@@ -17,97 +54,82 @@ class StripeConnectPayController extends PaymentController
     public function charge($orderId)
     {
         if (empty(trim($orderId))) {
-            $message = Labels::getLabel('MSG_Invalid_Access', $this->siteLangId);
-            if (true === MOBILE_APP_API_CALL) {
-                FatUtility::dieJsonError($message);
-            }
-            Message::addErrorMessage($message);
-            CommonHelper::redirectUserReferer();
+            $msg = Labels::getLabel('MSG_Invalid_Access', $this->siteLangId);
+            $this->setErrorAndRedirect($msg);
         }
 
         $orderPaymentObj = new OrderPayment($orderId, $this->siteLangId);
         $paymentAmount = $orderPaymentObj->getOrderPaymentGatewayAmount();
-        $payableAmount = $this->formatPayableAmount($paymentAmount);
         $orderInfo = $orderPaymentObj->getOrderPrimaryinfo();
 
+        $orderObj = new Orders();
+        $orderProducts = $orderObj->getChildOrders(array('order_id' => $orderInfo['id']), $orderInfo['order_type'], $orderInfo['order_language_id']);
+
         if (!$orderInfo['id']) {
-            if (true === MOBILE_APP_API_CALL) {
-                $message = Labels::getLabel('MSG_Invalid_Access', $this->siteLangId);
-                FatUtility::dieJsonError($message);
+            $msg = Labels::getLabel('MSG_Invalid_Access', $this->siteLangId);
+            $this->setErrorAndRedirect($msg);
+        } elseif ($orderInfo && $orderInfo["order_is_paid"] != Orders::ORDER_IS_PENDING) {
+            $cancelUrl = CommonHelper::getPaymentCancelPageUrl();
+            if ($orderInfo['order_type'] == Orders::ORDER_WALLET_RECHARGE) {
+                $cancelUrl = CommonHelper::getPaymentFailurePageUrl();
             }
-            FatUtility::exitWithErrorCode(404);
-        } elseif ($orderInfo && $orderInfo["order_is_paid"] == Orders::ORDER_IS_PENDING) {
-            $checkPayment = $this->doPayment($payableAmount, $orderInfo);
-            $frm = $this->getPaymentForm($orderId);
-            $this->set('frm', $frm);
-            if ($checkPayment) {
-                $this->set('success', true);
-                if (true === MOBILE_APP_API_CALL) {
-                    $this->_template->render();
+
+            $data = [
+                'mode' => 'payment',
+                'payment_method_types' => ['card'],
+                'success_url' => CommonHelper::generateFullUrl(self::KEY_NAME . 'Pay', 'distribute'),
+                'cancel_url' => $cancelUrl,
+                'line_items' => [],
+            ];
+
+            foreach ($orderProducts as $op) {
+                $shippingCost = CommonHelper::orderProductAmount($op, 'SHIPPING');
+                $volumeDiscount = CommonHelper::orderProductAmount($op, 'VOLUME_DISCOUNT');
+                $total = CommonHelper::orderProductAmount($op, 'cart_total') + $shippingCost + $volumeDiscount;
+
+                $priceData = [
+                    'unit_amount' => $total,
+                    'currency' => $orderInfo['order_currency_code'],
+                    'product_data' => [
+                        'name' => $op['op_selprod_title'],
+                        'metadata' => [
+                            'id' => $op['op_id']
+                        ]
+                    ]
+                ];
+
+                // CommonHelper::printArray($priceData, true);
+
+                if (false === $this->stripeConnect->createPriceObject($priceData)) {
+                    $this->setErrorAndRedirect();
                 }
-            } else {
-                if (true === MOBILE_APP_API_CALL) {
-                    $message = Labels::getLabel('MSG_Payment_Failed', $this->siteLangId);
-                    FatUtility::dieJsonError($message);
-                }
+
+                $data['line_items'][] = [
+                    'price' => $this->stripeConnect->getPriceId(),
+                    'quantity' => $op['op_qty']
+                ];
             }
-        } else {
-            $message = Labels::getLabel('MSG_INVALID_ORDER_PAID_CANCELLED', $this->siteLangId);
-            if (true === MOBILE_APP_API_CALL) {
-                FatUtility::dieJsonError($message);
+
+            if (false === $this->stripeConnect->initiateSession($data)) {
+                $this->setErrorAndRedirect();
             }
-            $this->error = $message;
-        }
-        $this->set('paymentAmount', $paymentAmount);
-        $this->set('orderInfo', $orderInfo);
-        if ($this->error) {
-            $this->set('error', $this->error);
-        }
 
-        $cancelBtnUrl = CommonHelper::getPaymentCancelPageUrl();
-        if ($orderInfo['order_type'] == Orders::ORDER_WALLET_RECHARGE) {
-            $cancelBtnUrl = CommonHelper::getPaymentFailurePageUrl();
+            $sessionId = $this->stripeConnect->getSessionId();
+            $publishableKey = $this->settings[$this->liveMode . 'publishable_key'];
+
+            $this->set('publishableKey', $publishableKey);
+            $this->set('sessionId', $sessionId);
+            $this->_template->render(true, false);
         }
-        $this->set('cancelBtnUrl', $cancelBtnUrl);
-        $this->set('exculdeMainHeaderDiv', true);
-        $this->_template->render(true, false);
+        die('here');
+        $message = Labels::getLabel('MSG_INVALID_ORDER._ALREADY_PAID_OR_CANCELLED', $this->siteLangId);
+        LibHelper::exitWithError($message, false, true);
+        CommonHelper::redirectUserReferer();
     }
 
-    public function checkCardType()
+    public function distribute()
     {
-        $post = FatApp::getPostedData();
-        $res = ValidateElement::ccNumber($post['cc']);
-        echo json_encode($res);
-        exit;
-    }
-
-    private function formatPayableAmount($amount = null)
-    {
-        if ($amount == null) {
-            return false;
-        }
-        $amount = number_format($amount, 2, '.', '');
-        return $amount * 100;
-    }
-
-    private function getPaymentForm($orderId)
-    {
-        $frm = new Form('frmPaymentForm', array('id' => 'frmPaymentForm', 'action' => CommonHelper::generateUrl('StripePay', 'charge', array($orderId)), 'class' => "form form--normal"));
-        $frm->addRequiredField(Labels::getLabel('LBL_ENTER_CREDIT_CARD_NUMBER', $this->siteLangId), 'cc_number');
-        $frm->addRequiredField(Labels::getLabel('LBL_CARD_HOLDER_NAME', $this->siteLangId), 'cc_owner');
-        $data['months'] = applicationConstants::getMonthsArr($this->siteLangId);
-        $today = getdate();
-        $data['year_expire'] = array();
-        for ($i = $today['year']; $i < $today['year'] + 11; $i++) {
-            $data['year_expire'][strftime('%Y', mktime(0, 0, 0, 1, 1, $i))] = strftime('%Y', mktime(0, 0, 0, 1, 1, $i));
-        }
-        $frm->addSelectBox(Labels::getLabel('LBL_EXPIRY_MONTH', $this->siteLangId), 'cc_expire_date_month', $data['months'], '', array(), '');
-        $frm->addSelectBox(Labels::getLabel('LBL_EXPIRY_YEAR', $this->siteLangId), 'cc_expire_date_year', $data['year_expire'], '', array(), '');
-        $frm->addPasswordField(Labels::getLabel('LBL_CVV_SECURITY_CODE', $this->siteLangId), 'cc_cvv')->requirements()->setRequired();
-        /* $frm->addCheckBox(Labels::getLabel('LBL_SAVE_THIS_CARD_FOR_FASTER_CHECKOUT',$this->siteLangId), 'cc_save_card','1'); */
-        $frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_Pay_Now', $this->siteLangId));
-
-        return $frm;
+        CommonHelper::printArray(FatApp::getPostedData(), true);
     }
 
     private function doPayment($payment_amount, $orderInfo)

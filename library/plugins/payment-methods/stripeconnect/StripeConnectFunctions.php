@@ -2,9 +2,10 @@
 
 trait StripeConnectFunctions
 {
-	/**
-     * create
-     *
+    /**
+     * create - Create Custom Account
+     * 
+     * @param array $data 
      * @return object
      */
     private function create(array $data): object
@@ -13,7 +14,7 @@ trait StripeConnectFunctions
     }
 
     /**
-     * retrieve
+     * retrieve - Retrieve account info
      *
      * @return object
      */
@@ -23,8 +24,9 @@ trait StripeConnectFunctions
     }
 
     /**
-     * update
-     *
+     * update - Update Account Data
+     * 
+     * @param array $data 
      * @return object
      */
     private function update(array $data): object
@@ -37,7 +39,8 @@ trait StripeConnectFunctions
 
     /**
      * createExternalAccount - For Financial(Bank) Data
-     *
+     * 
+     * @param array $data 
      * @return object
      */
     private function createExternalAccount(array $data): object
@@ -62,7 +65,8 @@ trait StripeConnectFunctions
 
     /**
      * createPerson - Relationship Person
-     *
+     * 
+     * @param array $data 
      * @return object
      */
     private function createPerson(array $data): object
@@ -79,8 +83,9 @@ trait StripeConnectFunctions
     }
 
     /**
-     * updatePerson - Relationship Person
-     *
+     * updatePerson
+     * 
+     * @param array $data - Update Relationship Person
      * @return object
      */
     private function updatePerson(array $data): object
@@ -98,8 +103,9 @@ trait StripeConnectFunctions
     }
 
     /**
-     * createFile - For file upload
-     *
+     * createFile - Creating file object to update any document
+     * 
+     * @param string $filePath 
      * @return object
      */
     private function createFile(string $filePath): object
@@ -120,6 +126,43 @@ trait StripeConnectFunctions
     {
         $this->userInfoObj = $this->retrieve();
         return $this->userInfoObj->delete();
+    }
+
+    /**
+     * createSession
+     * 
+     * @param array $data 
+     *      e.g.[
+     *          'success_url' => '',
+     *          'cancel_url' => '',
+     *          'payment_method_types' => ['card'],
+     *          'line_items' => [
+     *               [
+     *                 'price' => '',
+     *                 'quantity' => ?,
+     *               ],
+     *           ],
+     *       ]
+     * @return object
+     */
+    private function createSession(array $data): object
+    {
+        $this->resp = \Stripe\Checkout\Session::create($data);
+        if (false === $this->resp) {
+            return (object) array();
+        }
+        return $this->resp;
+    }
+
+    /**
+     * createPrice
+     *
+     * @param array $data
+     * @return object
+     */
+    private function createPrice(array $data): object
+    {
+        return \Stripe\Price::create($data);
     }
     
     /**
@@ -161,6 +204,12 @@ trait StripeConnectFunctions
                     break;
                 case self::REQUEST_DELETE_ACCOUNT:
                     return $this->deleteAccount();
+                    break;
+                case self::REQUEST_CREATE_SESSION:
+                    return $this->createSession($data);
+                    break;
+                case self::REQUEST_CREATE_PRICE:
+                    return $this->createPrice($data);
                     break;
             }
         } catch (\Stripe\Exception\CardException $e) {
