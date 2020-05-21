@@ -320,6 +320,7 @@
                 $objPrivilege->canViewContentPages(AdminAuthentication::getLoggedAdminId(), true) ||
                 $objPrivilege->canViewContentBlocks(AdminAuthentication::getLoggedAdminId(), true) ||
                 $objPrivilege->canViewNavigationManagement(AdminAuthentication::getLoggedAdminId(), true) ||
+                $objPrivilege->canViewZones(AdminAuthentication::getLoggedAdminId(), true) ||
                 $objPrivilege->canViewCountries(AdminAuthentication::getLoggedAdminId(), true) ||
                 $objPrivilege->canViewStates(AdminAuthentication::getLoggedAdminId(), true) ||
                 $objPrivilege->canViewCollections(AdminAuthentication::getLoggedAdminId(), true) ||
@@ -386,6 +387,10 @@
                     <?php if ($objPrivilege->canViewFaqCategories(AdminAuthentication::getLoggedAdminId(), true)) { ?>
                         <li><a href="<?php echo CommonHelper::generateUrl('FaqCategories'); ?>"><?php echo Labels::getLabel('LBL_FAQs', $adminLangId);?></a></li>
                     <?php } ?>
+
+                    <?php if ($objPrivilege->canViewZones(AdminAuthentication::getLoggedAdminId(), true)) { ?>
+                        <li><a href="<?php echo CommonHelper::generateUrl('Zones'); ?>"><?php echo Labels::getLabel('LBL_Zone(Regions)_Management', $adminLangId);?></a></li>
+                    <?php }?>
                         
                     <?php if ($objPrivilege->canViewCountries(AdminAuthentication::getLoggedAdminId(), true)) {?>
                         <li><a href="<?php echo CommonHelper::generateUrl('Countries'); ?>"><?php echo Labels::getLabel('LBL_Countries_Management', $adminLangId);?></a></li>
@@ -478,7 +483,9 @@
                 $objPrivilege->canViewShippingMethods(AdminAuthentication::getLoggedAdminId(), true) ||
                 $objPrivilege->canViewShippingCompanyUsers(AdminAuthentication::getLoggedAdminId(), true) ||
                 $objPrivilege->canViewShippingDurationLabels(AdminAuthentication::getLoggedAdminId(), true) ||
-                $objPrivilege->canViewManualShippingApi(AdminAuthentication::getLoggedAdminId(), true)
+                $objPrivilege->canViewManualShippingApi(AdminAuthentication::getLoggedAdminId(), true) ||
+                $objPrivilege->canViewShippingPackages(AdminAuthentication::getLoggedAdminId(), true) ||
+                $objPrivilege->canViewShippingManagement(AdminAuthentication::getLoggedAdminId(), true)
             ) { ?>
             <li class="haschild"><a href="javascript:void(0);"><?php echo Labels::getLabel('LBL_Shipping_Api', $adminLangId);?></a>
                 <ul>
@@ -497,6 +504,14 @@
                     <?php if ($objPrivilege->canViewShippingCompanyUsers(AdminAuthentication::getLoggedAdminId(), true)) {?>
                     <li><a href="<?php echo CommonHelper::generateUrl('ShippingCompanyUsers');?>"><?php echo Labels::getLabel('LBL_Shipping_Company_Users', $adminLangId);?></a></li>
                     <?php } ?>
+
+                    <?php if ($objPrivilege->canViewShippingPackages(AdminAuthentication::getLoggedAdminId(), true)) { ?>
+                        <li><a href="<?php echo CommonHelper::generateUrl('shippingPackages'); ?>"><?php echo Labels::getLabel('LBL_Shipping_Packages', $adminLangId);?></a></li>
+                    <?php } ?>
+
+                    <?php if ($objPrivilege->canViewShippingManagement(AdminAuthentication::getLoggedAdminId(), true)) { ?>
+                        <li><a href="<?php echo CommonHelper::generateUrl('shippingProfile'); ?>"><?php echo Labels::getLabel('LBL_Shipping_Management', $adminLangId);?></a></li>
+                    <?php }?>
 
                     <?php /* if($objPrivilege->canViewManualShippingApi(AdminAuthentication::getLoggedAdminId(), true)){?>
                         <li><a href="<?php echo CommonHelper::generateUrl('ManualShippingApi'); ?>"><?php echo Labels::getLabel('LBL_Manual_Shipping_Api',$adminLangId);?></a></li>
