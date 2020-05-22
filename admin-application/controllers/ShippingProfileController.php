@@ -83,9 +83,17 @@ class ShippingProfileController extends AdminBaseController
             }
             
             $frm->fill($data);
+
+            $prodCountSrch = new SearchBase(ShippingProfileProduct::DB_TBL, 'selsppro');
+            $prodCountSrch->doNotCalculateRecords();
+            $prodCountSrch->doNotLimitRecords();
+            $prodCountSrch->addCondition('shippro_shipprofile_id', '=', $profileId);
+            $rs = $prodCountSrch->getResultSet();
+            $productCount = FatApp::getDb()->totalRecords($rs);
         }
         $this->set('profile_id', $profileId);
         $this->set('profileData', $data);
+        $this->set('productCount', $productCount);
         $this->set('frm', $frm);
         $this->_template->render();
     }

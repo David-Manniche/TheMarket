@@ -1498,4 +1498,5 @@ class AdminPrivilege
     {
         return $this->checkPermission($adminId, static::SECTION_SHIPPING_MANAGEMENT, static::PRIVILEGE_WRITE, $returnResult);
     }
+    
 }

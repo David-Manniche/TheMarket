@@ -4,7 +4,6 @@ $frm->setFormTagAttribute('class', 'web_form form_vertical');
 $frm->setFormTagAttribute('onsubmit', 'setupProfileProduct(this); return(false);');
 $frm->developerTags['fld_default_col'] = 6;
 $proFld = $frm->getField("product_name");
-$proFld->htmlAfterField = "<span class='form-text text-muted text-danger'>".Labels::getLabel("LBL_Product_will_automatically_remove_from_other_profile", $adminLangId)."</span>";
 $proFld->addFieldTagAttribute('placeholder', Labels::getLabel('LBL_Search_Product...', $adminLangId));
 ?>
 <div class="portlet__head">
@@ -18,6 +17,7 @@ $proFld->addFieldTagAttribute('placeholder', Labels::getLabel('LBL_Search_Produc
 <div class="portlet__body" >
     <div class="row">
         <div class="col-md-12">
+            <h5><?php echo Labels::getLabel("LBL_Product_will_automatically_remove_from_other_profile", $adminLangId) ;?></h5>
 			<?php echo $frm->getFormHtml(); ?></form>
         </div>
     </div>

@@ -919,10 +919,10 @@ class ProductsController extends AdminBaseController
             $tax->addFld('ptt_taxcat_id');
             
             if (Tax::getActivatedServiceId()) {
-                $tax->addFld('concat(IFNULL(taxcat_name,taxcat_identifier), " (",taxcat_code,")")as taxcat_name');               
-            }else{
-                $tax->addFld('IFNULL(taxcat_name,taxcat_identifier)as taxcat_name'); 
-            } 
+                $tax->addFld('concat(IFNULL(taxcat_name,taxcat_identifier), " (",taxcat_code,")")as taxcat_name');
+            } else {
+                $tax->addFld('IFNULL(taxcat_name,taxcat_identifier)as taxcat_name');
+            }
        
             $tax->doNotCalculateRecords();
             $tax->setPageSize(1);
@@ -1005,7 +1005,7 @@ class ProductsController extends AdminBaseController
             $frm->addCheckBox(Labels::getLabel('LBL_Translate_To_Other_Languages', $this->adminLangId), 'auto_update_other_langs_data', 1, array(), false, 0);
         }
         
-        $frm->addRequiredField(Labels::getLabel('LBL_Tax_Category', $this->adminLangId), 'taxcat_name');        
+        $frm->addRequiredField(Labels::getLabel('LBL_Tax_Category', $this->adminLangId), 'taxcat_name');
 
         $fldMinSelPrice = $frm->addFloatField(Labels::getLabel('LBL_Minimum_Selling_Price', $this->adminLangId) . ' [' . CommonHelper::getCurrencySymbol(true) . ']', 'product_min_selling_price', '');
         $fldMinSelPrice->requirements()->setPositive();
@@ -1120,7 +1120,7 @@ class ProductsController extends AdminBaseController
         $warrantyFld->requirements()->setPositive();
         $frm->addCheckBox(Labels::getLabel('LBL_Mark_This_Product_As_Featured?', $this->adminLangId), 'product_featured', 1, array(), false, 0);
 
-        $productType = Product::getAttributesById($productId, 'product_type');
+       /*  $productType = Product::getAttributesById($productId, 'product_type');
         if ($productType == Product::PRODUCT_TYPE_PHYSICAL) {
             $frm->addCheckBox(Labels::getLabel('LBL_Product_Is_Eligible_For_Free_Shipping?', $this->adminLangId), 'ps_free', 1, array(), false, 0);
             $codFld = $frm->addCheckBox(Labels::getLabel('LBL_Product_Is_Available_for_Cash_on_Delivery_(COD)?', $this->adminLangId), 'product_cod_enabled', 1, array(), false, 0);
@@ -1129,7 +1129,7 @@ class ProductsController extends AdminBaseController
                 $codFld->addFieldTagAttribute('disabled', 'disabled');
                 $codFld->htmlAfterField = '<br/><small>' . Labels::getLabel('LBL_COD_option_is_disabled_in_payment_gateway_settings', $this->adminLangId) . '</small>';
             }
-        }
+        } */
         $frm->addHiddenField('', 'product_seller_id');
         $frm->addHiddenField('', 'product_id', $productId);
         $frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_Save_And_Next', $this->adminLangId));
@@ -1163,7 +1163,7 @@ class ProductsController extends AdminBaseController
             FatUtility::dieWithError(Message::getHtml());
         }
 
-        $productType = Product::getAttributesById($productId, 'product_type');
+       /*  $productType = Product::getAttributesById($productId, 'product_type');
         if ($productType == Product::PRODUCT_TYPE_PHYSICAL) {
             $psFree = isset($post['ps_free']) ? $post['ps_free'] : 0;
             $psFromCountryId = 0;
@@ -1175,7 +1175,7 @@ class ProductsController extends AdminBaseController
                 Message::addErrorMessage($prod->getError());
                 FatUtility::dieWithError(Message::getHtml());
             }
-        }
+        } */
 
         if ($post['product_seller_id'] > 0) {
             $taxData = Tax::getTaxCatByProductId($productId);
@@ -1314,6 +1314,18 @@ class ProductsController extends AdminBaseController
             $productData['shipping_country'] = Countries::getCountryById($prodShippingDetails['ps_from_country_id'], $this->adminLangId, 'country_name');
             $productData['ps_from_country_id'] = $prodShippingDetails['ps_from_country_id'];
         }
+        $productData['ps_free'] = isset($prodShippingDetails['ps_free']) ? $prodShippingDetails['ps_free'] : 0;
+
+        /* [ GET ATTACHED PROFILE ID */
+        $profSrch = ShippingProfileProduct::getSearchObject();
+        $profSrch->addCondition('shippro_product_id', '=', $productId);
+        $proRs = $profSrch->getResultSet();
+        $profileData = FatApp::getDb()->fetch($proRs);
+        if (!empty($profileData)) {
+            $productData['shipping_profile'] = $profileData['profile_id'];
+        }
+        /* ]*/
+        
         $productFrm->fill($productData);
         $this->set('productFrm', $productFrm);
         $this->_template->render(false, false, 'products/product-shipping-frm.php');
@@ -1324,36 +1336,35 @@ class ProductsController extends AdminBaseController
         $frm = new Form('frmProductShipping');
         $productType = Product::getAttributesById($productId, 'product_type');
 
-        if ($productType == Product::PRODUCT_TYPE_PHYSICAL && FatApp::getConfig("CONF_PRODUCT_DIMENSIONS_ENABLE", FatUtility::VAR_INT, 1)) {
-            $lengthUnitsArr = applicationConstants::getLengthUnitsArr($this->adminLangId);
-            $frm->addSelectBox(Labels::getLabel('LBL_Dimensions_Unit', $this->adminLangId), 'product_dimension_unit', $lengthUnitsArr)->requirements()->setRequired();
+        $shipProfileArr = ShippingProfile::getProfileArr(0, true, true);
+        $frm->addSelectBox(Labels::getLabel('LBL_Shipping_Profile', $this->adminLangId), 'shipping_profile', $shipProfileArr)->requirements()->setRequired();
+        
+        if ($productType == Product::PRODUCT_TYPE_PHYSICAL) {
+            if (FatApp::getConfig("CONF_PRODUCT_DIMENSIONS_ENABLE", FatUtility::VAR_INT, 1)) {
+                $shipPackArr = ShippingPackage::getAllNames();
+                $frm->addSelectBox(Labels::getLabel('LBL_Shipping_Package', $this->adminLangId), 'product_ship_package', $shipPackArr)->requirements()->setRequired();
+                
+                $weightUnitsArr = applicationConstants::getWeightUnitsArr($this->adminLangId);
+                $frm->addSelectBox(Labels::getLabel('LBL_Weight_Unit', $this->adminLangId), 'product_weight_unit', $weightUnitsArr)->requirements()->setRequired();
 
-            $lengthFld = $frm->addFloatField(Labels::getLabel('LBL_Length', $this->adminLangId), 'product_length', '0.00');
-            $lengthFld->requirements()->setRequired(true);
-            $lengthFld->requirements()->setFloatPositive();
-            $lengthFld->requirements()->setRange('0.00001', '9999999999');
+                $weightFld = $frm->addFloatField(Labels::getLabel('LBL_Weight', $this->adminLangId), 'product_weight', '0.00');
+                $weightFld->requirements()->setRequired(true);
+                $weightFld->requirements()->setFloatPositive();
+                $weightFld->requirements()->setRange('0.01', '9999999999');
+            }
+            $frm->addCheckBox(Labels::getLabel('LBL_Product_Is_Eligible_For_Free_Shipping?', $this->adminLangId), 'ps_free', 1, array(), false, 0);
 
-            $widthFld = $frm->addFloatField(Labels::getLabel('LBL_Width', $this->adminLangId), 'product_width', '0.00');
-            $widthFld->requirements()->setRequired(true);
-            $widthFld->requirements()->setFloatPositive();
-            $widthFld->requirements()->setRange('0.00001', '9999999999');
-
-            $heightFld = $frm->addFloatField(Labels::getLabel('LBL_Height', $this->adminLangId), 'product_height', '0.00');
-            $heightFld->requirements()->setRequired(true);
-            $heightFld->requirements()->setFloatPositive();
-            $heightFld->requirements()->setRange('0.00001', '9999999999');
-
-            $weightUnitsArr = applicationConstants::getWeightUnitsArr($this->adminLangId);
-            $frm->addSelectBox(Labels::getLabel('LBL_Weight_Unit', $this->adminLangId), 'product_weight_unit', $weightUnitsArr)->requirements()->setRequired();
-
-            $weightFld = $frm->addFloatField(Labels::getLabel('LBL_Weight', $this->adminLangId), 'product_weight', '0.00');
-            $weightFld->requirements()->setRequired(true);
-            $weightFld->requirements()->setFloatPositive();
-            $weightFld->requirements()->setRange('0.01', '9999999999');
+            $codFld = $frm->addCheckBox(Labels::getLabel('LBL_Product_Is_Available_for_Cash_on_Delivery_(COD)?', $this->adminLangId), 'product_cod_enabled', 1, array(), false, 0);
+            $paymentMethod = new PaymentMethods();
+            if (!$paymentMethod->cashOnDeliveryIsActive()) {
+                $codFld->addFieldTagAttribute('disabled', 'disabled');
+                $codFld->htmlAfterField = '<br/><small>' . Labels::getLabel('LBL_COD_option_is_disabled_in_payment_gateway_settings', $this->adminLangId) . '</small>';
+            }
             /* ] */
         }
+
         $frm->addTextBox(Labels::getLabel('LBL_Country_of_Origin', $this->adminLangId), 'shipping_country');
-        $frm->addHtml('', '', '<table id="tab_shipping" width="100%" class="table table-bordered"></table><div class="gap"></div>');
+        //$frm->addHtml('', '', '<table id="tab_shipping" width="100%" class="table table-bordered"></table><div class="gap"></div>');
 
         $frm->addHiddenField('', 'ps_from_country_id');
         $frm->addHiddenField('', 'product_id', $productId);
@@ -1369,33 +1380,36 @@ class ProductsController extends AdminBaseController
         $frm = $this->getProductShippingFrm($productId);
         $post = $frm->getFormDataFromArray(FatApp::getPostedData());
         
-		if (false === $post) {
+        if (false === $post) {
             Message::addErrorMessage(current($frm->getValidationErrors()));
             FatUtility::dieWithError(Message::getHtml());
         }
-		$prod = new Product($productId);
-		if(FatApp::getConfig("CONF_PRODUCT_DIMENSIONS_ENABLE", FatUtility::VAR_INT, 1)) {
-			if (!$prod->saveProductData($post)) {
-				Message::addErrorMessage($prod->getError());
-				FatUtility::dieWithError(Message::getHtml());
-			}
-		}
-
-        $prodSellerId = Product::getAttributesById($productId, 'product_seller_id');
-        $psFree = 0;
-        $prodShippingDetails = Product::getProductShippingDetails($productId, $this->adminLangId, $prodSellerId);
-        if (!empty($prodShippingDetails)) {
-            $psFree = $prodShippingDetails['ps_free'];
+        $prod = new Product($productId);
+        if (!$prod->saveProductData($post)) {
+            Message::addErrorMessage($prod->getError());
+            FatUtility::dieWithError(Message::getHtml());
         }
+        
+        $prodSellerId = Product::getAttributesById($productId, 'product_seller_id');
+        $psFree = isset($post['ps_free']) ? $post['ps_free'] : 0;
+        
         if (!$prod->saveProductSellerShipping($prodSellerId, $psFree, $post['ps_from_country_id'])) {
             Message::addErrorMessage($prod->getError());
             FatUtility::dieWithError(Message::getHtml());
         }
 
-        $productShiping = FatApp::getPostedData('product_shipping');
-        if (!empty($productShiping)) {
-            Product::addUpdateProductShippingRates($productId, $productShiping, $prodSellerId);
+        if (isset($post['shipping_profile']) && $post['shipping_profile'] > 0) {
+            $shipProProdData = array(
+                'shippro_shipprofile_id' => $post['shipping_profile'],
+                'shippro_product_id' => $productId
+            );
+            $spObj = new ShippingProfileProduct();
+            if (!$spObj->addProduct($shipProProdData)) {
+                Message::addErrorMessage($spObj->getError());
+                FatUtility::dieJsonError(Message::getHtml());
+            }
         }
+       
         $this->set('msg', Labels::getLabel('LBL_Product_Shipping_Setup_Successful', $this->adminLangId));
         $this->set('productId', $prod->getMainTableRecordId());
         $this->_template->render(false, false, 'json-success.php');

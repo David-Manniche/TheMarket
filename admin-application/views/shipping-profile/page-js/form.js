@@ -84,7 +84,8 @@ $(document).ready(function() {
         $(dv).html(fcom.getLoader());
         fcom.ajax(fcom.makeUrl('ShippingZones', 'search', [profileId]), '', function(res) {
             $(dv).html(res);
-        });
+		});
+		//searchProductsSection(profileId);
     };
 	
 	zoneForm = function(profileId, zoneId) {
@@ -95,7 +96,7 @@ $(document).ready(function() {
 		
         fcom.displayProcessing();
         fcom.ajax(fcom.makeUrl('ShippingZones', 'form', [profileId, zoneId]), '', function(t) {
-            $.facebox(t, 'faceboxWidth');
+			$.facebox(t, 'faceboxWidth');
             fcom.updateFaceboxContent(t);
         });
     };
@@ -162,6 +163,7 @@ $(document).ready(function() {
 	addEditShipRates = function(zoneId, rateId) {
 		fcom.displayProcessing();
         fcom.ajax(fcom.makeUrl('shippingZoneRates', 'form', [zoneId, rateId]), '', function(t) {
+			//$('#product-section--js').html(t);
             $.facebox(t, 'faceboxWidth');
             fcom.updateFaceboxContent(t);
         });

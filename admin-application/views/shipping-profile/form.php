@@ -18,11 +18,10 @@ $frm->setFormTagAttribute('onsubmit', 'setupProfile(this); return(false);');
                     </div>
                 </div>
                 <div class="row justify-content-center">
-                    <div class="col-md-10">
-                        <!--shipping from--->
+                    <div class="col-md-12">
                         <div class="row">
-                            <div class="col-md-8">
-                                <div class="portlet">
+                            <div class="col-md-12">
+                            <div class="portlet">
                                     <div class="portlet__head">
                                         <div class="portlet__head-label">
                                             <h3 class="portlet__head-title"><?php echo Labels::getLabel('LBL_Name', $adminLangId); ?>
@@ -67,13 +66,16 @@ $frm->setFormTagAttribute('onsubmit', 'setupProfile(this); return(false);');
                                         </form>
                                         <?php echo $frm->getExternalJs(); ?>
                                     </div>
-                                </div>
-                                <!-- products section  -->
-                                <?php if (empty($profileData) || ((isset($profileData['shipprofile_default']) && $profileData['shipprofile_default'] != 1))) { ?>
-                                <div class="portlet" id="product-section--js"></div>
-                                <?php } ?>
+                                </div>                                
                                 <!---->
-                                <!---->
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-12">
+                        <!--shipping from--->
+                        <div class="row">
+                            <div class="col-md-6">
+                                
                                 <div class="portlet">
                                     <div class="portlet__head">
                                         <div class="portlet__head-label">
@@ -95,16 +97,27 @@ $frm->setFormTagAttribute('onsubmit', 'setupProfile(this); return(false);');
                                     <div id="listing-zones" class="portlet__body"></div>
                                 </div>
                             </div>
-                            <div class="col-md-4">
-                                <div class="portlet">
-                                    <div class="portlet__body">
-                                        <div class="alert alert-elevate fade show alert-custom " role="alert">
-                                            <div class="alert-icon"><i class="fas fa-exclamation-triangle"></i></div>
-                                            <div class="alert-text">
+                            <div class="col-md-6">
+                                <?php if (empty($profileData) || ((isset($profileData['shipprofile_default']) && $profileData['shipprofile_default'] == 1))) { ?>
+                                    <div class="portlet">
+                                        <div class="portlet__head">
+                                            <div class="portlet__head-label">
+                                                <h3 class="portlet__head-title"><?php echo Labels::getLabel('LBL_Total_Products', $adminLangId);?>
+                                                    : <?php echo $productCount; ?>
+                                                </h3>
                                             </div>
                                         </div>
+                                        <div class="portlet__body">
+                                            <p><span class='form-text text-muted'><?php echo Labels::getLabel('LBL_We_don\'t_show_product_list_in_default_profile._The_products_removed_from_other_profiles_will_automatically_add_in_default_profile', $adminLangId);?></span>
+                                            </p>
+                                        </div>
                                     </div>
-                                </div>
+                                    <?php } ?>
+                                    <!-- products section  -->
+                                    <?php if (empty($profileData) || ((isset($profileData['shipprofile_default']) && $profileData['shipprofile_default'] != 1))) { ?>
+                                    <div class="portlet" id="product-section--js"></div>
+                                    <?php } ?>
+                                    <!---->
                             </div>
                         </div>
                     </div>
