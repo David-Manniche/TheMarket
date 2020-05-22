@@ -74,6 +74,7 @@ class OrderPayment extends Orders
         "customer_phone" => $userInfo["user_phone"],
         "order_currency_code" => $orderCurrencyCode,
         "order_type" => $orderInfo['order_type'],
+        "order_tax_charged" => $orderInfo["order_tax_charged"],
         "order_is_paid" => $orderInfo["order_is_paid"],
         "order_language" => $orderInfo["order_language_code"],
         "order_language_id" => $orderInfo["order_language_id"],

@@ -130,7 +130,9 @@
         <?php
         $gatewayCount=0;
         foreach ($paymentMethods as $key => $val) {
-            if (in_array($val['pmethod_code'], $excludePaymentGatewaysArr[applicationConstants::CHECKOUT_PRODUCT])) {
+            $pmethodCode = isset($val['plugin_code']) ? $val['plugin_code'] : $val['pmethod_code'];
+
+            if (in_array($pmethodCode, $excludePaymentGatewaysArr[applicationConstants::CHECKOUT_PRODUCT])) {
                 continue;
             }
             $gatewayCount++;
@@ -143,21 +145,33 @@
                             <ul id="payment_methods_tab" class="" data-simplebar>
                                 <?php $count=0;
                                 foreach ($paymentMethods as $key => $val) {
-                                    if (in_array($val['pmethod_code'], $excludePaymentGatewaysArr[applicationConstants::CHECKOUT_PRODUCT])) {
+                                    $pmethodCode = isset($val['plugin_code']) ? $val['plugin_code'] : $val['pmethod_code'];
+                                    $pmethodId = isset($val['plugin_id']) ? $val['plugin_id'] : $val['pmethod_id'];
+                                    $pmethodName = isset($val['plugin_name']) ? $val['plugin_name'] : $val['pmethod_name'];
+
+                                    $pmethodType = isset($val['plugin_id']) ? PaymentMethods::TYPE_PLUGIN : PaymentMethods::TYPE_DEFAULT;
+                                    if (in_array($pmethodCode, $excludePaymentGatewaysArr[applicationConstants::CHECKOUT_PRODUCT])) {
                                         continue;
                                     }
                                     $count++; ?>
                                     <li>
-                                        <a href="<?php echo CommonHelper::generateUrl('Checkout', 'PaymentTab', array($orderInfo['order_id'], $val['pmethod_id'])); ?>">
+                                        <a href="<?php echo CommonHelper::generateUrl('Checkout', 'PaymentTab', array($orderInfo['order_id'], $pmethodId, $pmethodType)); ?>">
                                             <div class="payment-box">
                                                 <i class="payment-icn">
                                                     <?php
-                                                    $fileData = AttachedFile::getAttachment(AttachedFile::FILETYPE_PAYMENT_METHOD, $val['pmethod_id'], 0, 0, false);
+                                                    if (isset($val['plugin_id'])) {
+                                                        $fileData = AttachedFile::getAttachment(AttachedFile::FILETYPE_PLUGIN_LOGO, $pmethodId);
+                                                        $uploadedTime = AttachedFile::setTimeParam($fileData['afile_updated_at']);
+                                                        $imageUrl = FatCache::getCachedUrl(CommonHelper::generateUrl('Image', 'plugin', array($pmethodId, 'SMALL')) . $uploadedTime, CONF_IMG_CACHE_TIME, '.jpg');
+                                                    } else {
+                                                        $fileData = AttachedFile::getAttachment(AttachedFile::FILETYPE_PAYMENT_METHOD, $pmethodId, 0, 0, false);
+                                                        $imageUrl = CommonHelper::generateUrl('Image', 'paymentMethod', array($pmethodId,'SMALL'));
+                                                    }
                                                     $aspectRatioArr = AttachedFile::getRatioTypeArray($siteLangId);
                                                     ?>
-                                                    <img <?php if ($fileData['afile_aspect_ratio'] > 0) { ?> data-ratio= "<?php echo $aspectRatioArr[$fileData['afile_aspect_ratio']]; ?>" <?php } ?> src="<?php echo CommonHelper::generateUrl('Image', 'paymentMethod', array($val['pmethod_id'],'SMALL')); ?>" alt="">
+                                                    <img <?php if ($fileData['afile_aspect_ratio'] > 0) { ?> data-ratio= "<?php echo $aspectRatioArr[$fileData['afile_aspect_ratio']]; ?>" <?php } ?> src="<?php echo $imageUrl; ?>" alt="">
                                                 </i>
-                                                <span><?php echo $val['pmethod_name']; ?></span>
+                                                <span><?php echo $pmethodName; ?></span>
                                             </div>
                                         </a>
                                     </li>

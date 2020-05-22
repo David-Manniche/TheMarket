@@ -13,6 +13,7 @@ class StripeConnect extends PaymentMethodBase
     private $liveMode = '';
     private $sessionId = '';
     private $priceId = '';
+    private $customerId = '';
 
     public $requiredKeys = [
         'client_id',
@@ -36,6 +37,8 @@ class StripeConnect extends PaymentMethodBase
     public const REQUEST_DELETE_ACCOUNT = 10;
     public const REQUEST_CREATE_SESSION = 11;
     public const REQUEST_CREATE_PRICE = 12;
+    public const REQUEST_CREATE_CUSTOMER = 13;
+    public const REQUEST_UPDATE_CUSTOMER = 14;
 
     /**
      * __construct
@@ -697,5 +700,81 @@ class StripeConnect extends PaymentMethodBase
     public function getPriceId(): string
     {
         return $this->priceId;
+    }
+
+    /**
+     * createCustomerObject
+     * 
+     * @param array $data
+     * @return bool
+     */
+    public function createCustomerObject(array $data): bool
+    {
+        if (empty($data)) {
+            $this->error = Labels::getLabel('MSG_INVALID_REQUEST', $this->langId);
+            return false;
+        }
+
+        $data = $this->formatCustomerDataFromOrder($data);
+        if (!empty($this->getCustomerId())) {
+            $this->resp = $this->doRequest(self::REQUEST_UPDATE_CUSTOMER, $data);            
+        } else {
+            $this->resp = $this->doRequest(self::REQUEST_CREATE_CUSTOMER, $data);            
+        }
+
+        if (false === $this->resp) {
+            return false;
+        }
+        $this->customerId = $this->resp->id;
+        return $this->updateUserMeta('stripe_customer_id', $this->customerId);;
+    }
+
+    /**
+     * getCustomerId
+     * 
+     * @return string
+     */
+    public function getCustomerId(): string
+    {
+        $customerId = $this->getUserMeta('stripe_customer_id');
+        return !empty($customerId) ? $customerId : $this->customerId;
+    }
+
+    /**
+     * formatCustomerDataFromOrder
+     * @param array $orderInfo 
+     * @return type
+     */
+    public function formatCustomerDataFromOrder(array $orderInfo)
+    {
+        if (empty($orderInfo)) {
+            return [];
+        }
+
+        return [
+            'address' => [
+                'line1' => $orderInfo['customer_billing_address_1'],
+                'line2' => $orderInfo['customer_billing_address_2'],
+                'city' => $orderInfo['customer_billing_city'],
+                'state' => $orderInfo['customer_billing_state'],
+                'country' => $orderInfo['customer_billing_country'],
+                'postal_code' => $orderInfo['customer_billing_postcode']
+            ],
+            'shipping' => [
+                'address' => [
+                    'line1' => $orderInfo['customer_shipping_address_1'],
+                    'line2' => $orderInfo['customer_shipping_address_2'],
+                    'city' => $orderInfo['customer_shipping_city'],
+                    'state' => $orderInfo['customer_shipping_state'],
+                    'country' => $orderInfo['customer_shipping_country'],
+                    'postal_code' => $orderInfo['customer_shipping_postcode']
+                ],
+                'name' => $orderInfo['customer_shipping_name'],
+                'phone' => $orderInfo['customer_shipping_phone']
+            ],
+            'email' => $orderInfo['customer_email'],
+            'name' => $orderInfo['customer_billing_name'],
+            'phone' => $orderInfo['customer_billing_phone']
+        ]; 
     }
 }

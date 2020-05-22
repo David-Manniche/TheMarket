@@ -68,38 +68,49 @@ class StripeConnectPayController extends PaymentController
         if (!$orderInfo['id']) {
             $msg = Labels::getLabel('MSG_Invalid_Access', $this->siteLangId);
             $this->setErrorAndRedirect($msg);
-        } elseif ($orderInfo && $orderInfo["order_is_paid"] != Orders::ORDER_IS_PENDING) {
+        } elseif ($orderInfo && $orderInfo["order_is_paid"] == Orders::ORDER_IS_PENDING) {
             $cancelUrl = CommonHelper::getPaymentCancelPageUrl();
             if ($orderInfo['order_type'] == Orders::ORDER_WALLET_RECHARGE) {
                 $cancelUrl = CommonHelper::getPaymentFailurePageUrl();
             }
 
+            if (false === $this->stripeConnect->createCustomerObject($orderInfo)) {
+                $this->setErrorAndRedirect();
+            }
+
+            $customerId = $this->stripeConnect->getCustomerId();
+
+            $orderFormattedData = $this->stripeConnect->formatCustomerDataFromOrder($orderInfo);
             $data = [
                 'mode' => 'payment',
                 'payment_method_types' => ['card'],
                 'success_url' => CommonHelper::generateFullUrl(self::KEY_NAME . 'Pay', 'distribute'),
                 'cancel_url' => $cancelUrl,
                 'line_items' => [],
+                'customer' => $customerId,
+                'payment_intent_data' => [
+                    'receipt_email' => FatApp::getConfig('CONF_SITE_OWNER_EMAIL'),
+                    'shipping' => $orderFormattedData['shipping'],
+                    'transfer_data' => []
+                ]
             ];
 
+            $charges = $orderObj->getOrderProductChargesByOrderId($orderInfo['id']);
             foreach ($orderProducts as $op) {
-                $shippingCost = CommonHelper::orderProductAmount($op, 'SHIPPING');
-                $volumeDiscount = CommonHelper::orderProductAmount($op, 'VOLUME_DISCOUNT');
-                $total = CommonHelper::orderProductAmount($op, 'cart_total') + $shippingCost + $volumeDiscount;
-
+                $netAmount = CommonHelper::orderProductAmount($op, 'NETAMOUNT');
+                $singleItemPrice = $netAmount / $op['op_qty'];
                 $priceData = [
-                    'unit_amount' => $total,
+                    'unit_amount' => $this->formatPayableAmount($singleItemPrice),
                     'currency' => $orderInfo['order_currency_code'],
                     'product_data' => [
                         'name' => $op['op_selprod_title'],
                         'metadata' => [
                             'id' => $op['op_id']
                         ]
-                    ]
+                    ],
+                    'nickname' => Labels::getLabel('LBL_SHIPPING_COST_AND_TAX_CHARGES_INCLUDED', $this->siteLangId)
                 ];
-
-                // CommonHelper::printArray($priceData, true);
-
+                // CommonHelper::printArray($priceData);
                 if (false === $this->stripeConnect->createPriceObject($priceData)) {
                     $this->setErrorAndRedirect();
                 }
@@ -108,7 +119,22 @@ class StripeConnectPayController extends PaymentController
                     'price' => $this->stripeConnect->getPriceId(),
                     'quantity' => $op['op_qty']
                 ];
+
+                // No need of application_fee_amount as tranfer_data amount are mutually exclusive.
+                // $data['payment_intent_data']['application_fee_amount'] = round($op['op_commission_charged']);
+                
+                $data['payment_intent_data']['statement_descriptor'] = $op['op_invoice_number'];
+
+                $accountId = User::getUserMeta($op['op_selprod_user_id'], 'stripe_account_id');
+                if (!empty($accountId)) {
+                    $data['payment_intent_data']['transfer_data'] = [
+                        'destination' => $accountId,
+                        'amount' => round($netAmount - $op['op_commission_charged'])
+                    ];
+                }
             }
+            /*CommonHelper::printArray($orderInfo);
+            CommonHelper::printArray($orderProducts, true);*/
 
             if (false === $this->stripeConnect->initiateSession($data)) {
                 $this->setErrorAndRedirect();
@@ -120,11 +146,17 @@ class StripeConnectPayController extends PaymentController
             $this->set('publishableKey', $publishableKey);
             $this->set('sessionId', $sessionId);
             $this->_template->render(true, false);
+        } else {
+            $message = Labels::getLabel('MSG_INVALID_ORDER._ALREADY_PAID_OR_CANCELLED', $this->siteLangId);
+            LibHelper::exitWithError($message, false, true);
+            CommonHelper::redirectUserReferer();
         }
-        die('here');
-        $message = Labels::getLabel('MSG_INVALID_ORDER._ALREADY_PAID_OR_CANCELLED', $this->siteLangId);
-        LibHelper::exitWithError($message, false, true);
-        CommonHelper::redirectUserReferer();
+    }
+
+    private function formatPayableAmount($amount)
+    {
+        $amount = number_format($amount, 2, '.', '');
+        return $amount * 100;
     }
 
     public function distribute()

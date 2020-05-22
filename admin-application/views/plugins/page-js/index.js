@@ -110,7 +110,7 @@ $(document).ready(function() {
 $(document).on('click','.uploadFile-Js',function(){
 	var node = this;
 	$('#form-upload').remove();
-	var pluginId = $(node).attr('data-pluginId');
+	var pluginId = $(node).attr('data-plugin_id');
 	var frm = '<form enctype="multipart/form-data" id="form-upload" style="position:absolute; top:-100px;" >';
 	frm = frm.concat('<input type="file" name="file" />');
 	frm = frm.concat('<input type="hidden" name="pluginId" value="'+pluginId+'"/>');
@@ -141,12 +141,11 @@ $(document).on('click','.uploadFile-Js',function(){
 						$('.text-danger').remove();
 						$('#Plugin_icon').html(ans.msg);
 						if(ans.status == true){
-							$('#Plugin_icon').removeClass('text-danger');
-							$('#Plugin_icon').addClass('text-success');
-							//editPluginForm(ans.pluginId);
+							$(".tabs_nav a.active").click();
 						}else{
 							$('#Plugin_icon').removeClass('text-success');
 							$('#Plugin_icon').addClass('text-danger');
+							fcom.displayErrorMessage(ans.msg);
 						}
 					},
 					error: function(xhr, ajaxOptions, thrownError) {

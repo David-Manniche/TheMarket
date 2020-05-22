@@ -164,6 +164,31 @@ trait StripeConnectFunctions
     {
         return \Stripe\Price::create($data);
     }
+
+    /**
+     * createCustomer
+     *
+     * @param array $data
+     * @return object
+     */
+    private function createCustomer(array $data): object
+    {
+        return \Stripe\Customer::create($data);
+    }
+
+    /**
+     * updateCustomer
+     *
+     * @param array $data
+     * @return object
+     */
+    private function updateCustomer(array $data): object
+    {
+        return \Stripe\Customer::update(
+            $this->getCustomerId(),
+            $data
+        );
+    }
     
     /**
      * doRequest
@@ -210,6 +235,12 @@ trait StripeConnectFunctions
                     break;
                 case self::REQUEST_CREATE_PRICE:
                     return $this->createPrice($data);
+                    break;
+                case self::REQUEST_CREATE_CUSTOMER:
+                    return $this->createCustomer($data);
+                    break;
+                case self::REQUEST_UPDATE_CUSTOMER:
+                    return $this->updateCustomer($data);
                     break;
             }
         } catch (\Stripe\Exception\CardException $e) {
