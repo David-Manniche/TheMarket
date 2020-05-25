@@ -14,6 +14,8 @@ class StripeConnect extends PaymentMethodBase
     private $sessionId = '';
     private $priceId = '';
     private $customerId = '';
+    private $loginUrl = '';
+    private $connectedAccounts = [];
 
     public $requiredKeys = [
         'client_id',
@@ -39,6 +41,8 @@ class StripeConnect extends PaymentMethodBase
     public const REQUEST_CREATE_PRICE = 12;
     public const REQUEST_CREATE_CUSTOMER = 13;
     public const REQUEST_UPDATE_CUSTOMER = 14;
+    public const REQUEST_CREATE_LOGIN_LINK = 15;
+    public const REQUEST_ALL_CONNECT_ACCOUNTS = 16;
 
     /**
      * __construct
@@ -205,9 +209,8 @@ class StripeConnect extends PaymentMethodBase
                 'email' => $this->userData['credential_email'],
                 'business_profile' => [
                     'name' => $this->userData['shop_name'],
-                    // 'url' => CommonHelper::generateFullUrl('shops', 'view', [$this->userData['shop_id']]),
-                    'url' => 'https://satbir.yokartv8.4livedemo.com' . CommonHelper::generateUrl('shops', 'view', [$this->userData['shop_id']]),
-                    'support_url' => 'https://satbir.yokartv8.4livedemo.com' . CommonHelper::generateUrl('shops', 'view', [$this->userData['shop_id']]),
+                    'url' => CommonHelper::generateFullUrl('shops', 'view', [$this->userData['shop_id']]),
+                    'support_url' => CommonHelper::generateFullUrl('shops', 'view', [$this->userData['shop_id']]),
                     'support_phone' => $this->userData['shop_phone'],
                     'support_email' => $this->userData['credential_email'],
                     'support_address' => [
@@ -633,10 +636,18 @@ class StripeConnect extends PaymentMethodBase
     public function deleteAccount(): bool
     {
         $this->resp = $this->doRequest(self::REQUEST_DELETE_ACCOUNT);
-        if (true === $this->resp->deleted) {
+
+        if (false === $this->resp) {
+            return false;
+        }
+
+        $this->resp = $this->resp->toArray();
+        if (array_key_exists('deleted', $this->resp) && true == $this->resp['deleted']) {
+            $this->unsetUserAccountElements();
             return true;
         }
-        $this->error = Labels::getLabel('MSG_UNABLE_TO_DELETE_ACCOUNT', $this->langId);
+
+        $this->error = Labels::getLabel('MSG_UNABLE_TO_DELETE_THIS_ACCOUNT', $this->langId);
         return false;
     }
 
@@ -776,5 +787,57 @@ class StripeConnect extends PaymentMethodBase
             'name' => $orderInfo['customer_billing_name'],
             'phone' => $orderInfo['customer_billing_phone']
         ]; 
+    }
+
+    /**
+     * createLoginLink
+     * 
+     * @return bool
+     */
+    public function createLoginLink(): bool
+    {
+        $this->resp = $this->doRequest(self::REQUEST_CREATE_LOGIN_LINK);
+        if (false === $this->resp) {
+            return false;
+        }
+        $this->loginUrl = $this->resp->url;
+        return true;
+    }
+
+    /**
+     * getLoginUrl
+     * 
+     * @return string
+     */
+    public function getLoginUrl(): string
+    {
+        return $this->loginUrl;
+    }
+
+    /**
+     * loadAllAccounts
+     * 
+     * @param $data - Used for pagination
+     * Detail : https://stripe.com/docs/api/accounts/list?lang=php
+     * @return bool
+     */
+    public function loadAllAccounts(array $data = ['limit' => 10]): bool
+    {
+        $this->resp = $this->doRequest(self::REQUEST_ALL_CONNECT_ACCOUNTS, $data);
+        if (false === $this->resp) {
+            return false;
+        }
+        $this->connectedAccounts = $this->resp->toArray();
+        return true;
+    }
+
+    /**
+     * getAllAccounts
+     * 
+     * @return array
+     */
+    public function getAllAccounts(): array
+    {
+        return $this->connectedAccounts;
     }
 }

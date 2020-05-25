@@ -18,9 +18,10 @@ trait StripeConnectFunctions
      *
      * @return object
      */
-    private function retrieve(): object
+    private function retrieve(string $accountId = ""): object
     {
-        return \Stripe\Account::retrieve($this->getAccountId());
+        $accountId = empty($accountId) ? $this->getAccountId() : $accountId;
+        return \Stripe\Account::retrieve($accountId);
     }
 
     /**
@@ -118,14 +119,15 @@ trait StripeConnectFunctions
     }
     
     /**
-     * deleteAccount
+     * delete
      *
+     * Description - Accounts created using test-mode keys can be deleted at any time. 
+     * Accounts created using live-mode keys can only be deleted once all balances are zero.
      * @return object
      */
-    private function deleteAccount(): object
+    private function delete(): object
     {
-        $this->userInfoObj = $this->retrieve();
-        return $this->userInfoObj->delete();
+        return $this->retrieve($this->getAccountId())->delete();
     }
 
     /**
@@ -189,6 +191,29 @@ trait StripeConnectFunctions
             $data
         );
     }
+
+    /**
+     * loginLink
+     * 
+     * Description - You may only create login links for Express accounts connected to your platform.
+     * @return object
+     */
+    private function loginLink(): object
+    {
+        return \Stripe\Account::createLoginLink(
+            $this->getAccountId()
+        );
+    }
+
+    /**
+     * connectedAccounts
+     * 
+     * @return object
+     */
+    private function connectedAccounts(array $data = ['limit' => 10]): object
+    {
+        return \Stripe\Account::all($data);
+    }
     
     /**
      * doRequest
@@ -228,7 +253,7 @@ trait StripeConnectFunctions
                     return $this->createFile(reset($data));
                     break;
                 case self::REQUEST_DELETE_ACCOUNT:
-                    return $this->deleteAccount();
+                    return $this->delete();
                     break;
                 case self::REQUEST_CREATE_SESSION:
                     return $this->createSession($data);
@@ -241,6 +266,12 @@ trait StripeConnectFunctions
                     break;
                 case self::REQUEST_UPDATE_CUSTOMER:
                     return $this->updateCustomer($data);
+                    break;
+                case self::REQUEST_CREATE_LOGIN_LINK:
+                    return $this->loginLink();
+                    break;
+                case self::REQUEST_ALL_CONNECT_ACCOUNTS:
+                    return $this->connectedAccounts($data);
                     break;
             }
         } catch (\Stripe\Exception\CardException $e) {

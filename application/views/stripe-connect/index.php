@@ -26,8 +26,13 @@ $this->includeTemplate('_partial/dashboardNavigation.php');
                                         <?php } else { ?>
                                             <?php echo Labels::getLabel('LBL_ACCOUNT_ID', $siteLangId);?> : 
                                             <?php echo $accountId; ?>
-                                            <a class="btn btn--primary btn--sm" href="javascript:void(0)" onClick="deleteAccount();" title="<?php echo Labels::getLabel('LBL_DELETE_ACCOUNT', $siteLangId); ?>">
+                                            <a class="btn btn--primary btn--sm" href="<?php echo CommonHelper::generateUrl($keyName, 'deleteAccount')?>" onclick="return confirm('<?php echo Labels::getLabel('LBL_ARE_YOU_SURE?', $siteLangId); ?>')" title="<?php echo Labels::getLabel('LBL_DELETE_ACCOUNT', $siteLangId); ?>">
                                                 <i class="fa fa-trash"></i>
+                                            </a>
+                                        <?php } ?>
+                                        <?php if (!empty($loginUrl)) { ?>
+                                             <a class="btn btn--primary btn--sm" href="<?php echo $loginUrl; ?>" target="_blank">
+                                                <?php echo Labels::getLabel('LBL_STRIPE_DASHBOARD', $siteLangId); ?>
                                             </a>
                                         <?php } ?>
                                     </h6>

@@ -38,7 +38,7 @@ class StripeConnectController extends PaymentMethodBaseController
     public function index()
     {
         $accountId = $this->stripeConnect->getAccountId();
-
+        
         if (!empty($accountId)) {
             if (true === $this->stripeConnect->isUserAccountRejected()) {
                 Message::addErrorMessage($this->stripeConnect->getError());
@@ -51,6 +51,10 @@ class StripeConnectController extends PaymentMethodBaseController
         }
         $requiredFields = $this->stripeConnect->getRequiredFields();
 
+        // This will return url only for ExpressAccount connected to admin account.
+        $this->stripeConnect->createLoginLink();
+
+        $this->set('loginUrl', $this->stripeConnect->getLoginUrl());
         $this->set('accountId', $this->stripeConnect->getAccountId());
         $this->set('requiredFields', $requiredFields);
         $this->set('keyName', self::KEY_NAME);
@@ -356,9 +360,11 @@ class StripeConnectController extends PaymentMethodBaseController
     public function deleteAccount()
     {
         if (false === $this->stripeConnect->deleteAccount()) {
-            FatUtility::dieJsonError($this->stripeConnect->getError());
+            Message::addErrorMessage($this->stripeConnect->getError());
+            $this->redirectBack(self::KEY_NAME);
         }
-        $msg = Labels::getLabel('MSG_SUCCESS', $this->siteLangId);
-        FatUtility::dieJsonSuccess($msg);
+        $msg = Labels::getLabel('MSG_SUCCESSFULLY_DELETED', $this->siteLangId);
+        Message::addMessage($msg);
+        $this->redirectBack(self::KEY_NAME);
     }
 }
