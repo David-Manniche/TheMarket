@@ -3557,6 +3557,19 @@ class AccountController extends LoggedUserController
         if (1 > $updatePhnFrm && false === UserAuthentication::validateUserPhone($userId, $phoneNumber)) {
             LibHelper::dieJsonError(Labels::getLabel('MSG_INVALID_PHONE_NUMBER', $this->siteLangId));
         }
+
+        if (0 < $updatePhnFrm) {
+            $db = FatApp::getDb();
+            $srch = User::getSearchObject(false, 0, false);
+            $srch->addCondition('user_phone', '=', $phoneNumber);
+            $srch->addCondition('user_id', '!=', $userId);
+            $rs = $srch->getResultSet();
+            $row = $db->fetch($rs);
+            if (!empty($row)) {
+                LibHelper::dieJsonError(Labels::getLabel('MSG_THIS_PHONE_NUMBER_IS_ALREADY_EXISTS.', $this->siteLangId));       
+            }
+        }
+
         $this->sendOtp($userId, trim($countryIso), trim($dialCode), $phoneNumber);
 
         $this->set('msg', Labels::getLabel('MSG_OTP_SENT!_PLEASE_CHECK_YOUR_PHONE.', $this->siteLangId));
