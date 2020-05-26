@@ -84,7 +84,7 @@ class StripeConnectPayController extends PaymentController
             $data = [
                 'mode' => 'payment',
                 'payment_method_types' => ['card'],
-                'success_url' => CommonHelper::generateUrl('custom', 'paymentSuccess', [$orderInfo['id']]),
+                'success_url' => CommonHelper::generateFullUrl('custom', 'paymentSuccess', [$orderInfo['id']]),
                 'cancel_url' => $cancelUrl,
                 'line_items' => [],
                 'customer' => $customerId,
