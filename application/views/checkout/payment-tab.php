@@ -5,7 +5,8 @@ $frm->developerTags['fld_default_col'] = 12;
 $frm->setFormTagAttribute('onsubmit', 'confirmOrder(this); return(false);'); 
 
 $pmethodName = isset($paymentMethod["plugin_name"]) ? $paymentMethod["plugin_name"] : $paymentMethod["pmethod_name"];
-$pmethodDescription = isset($paymentMethod["plugin_description"]) ? $paymentMethod["plugin_description"] : $paymentMethod["pmethod_description"];
+$pmethodDescription = isset($paymentMethod["pmethod_description"]) ? $paymentMethod["pmethod_description"] : '';
+$pmethodDescription = isset($paymentMethod["plugin_description"]) ? $paymentMethod["plugin_description"] : $pmethodDescription;
 $pmethodCode = isset($paymentMethod["plugin_code"]) ? $paymentMethod["plugin_code"] : $paymentMethod["pmethod_code"];
 ?>
 <div class="">

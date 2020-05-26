@@ -90,8 +90,7 @@ class StripeConnectPayController extends PaymentController
                 'customer' => $customerId,
                 'payment_intent_data' => [
                     'receipt_email' => FatApp::getConfig('CONF_SITE_OWNER_EMAIL'),
-                    'shipping' => $orderFormattedData['shipping'],
-                    'transfer_data' => []
+                    'shipping' => $orderFormattedData['shipping']
                 ]
             ];
 
