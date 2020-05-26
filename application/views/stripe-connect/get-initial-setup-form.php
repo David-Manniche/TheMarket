@@ -28,7 +28,7 @@ if (null != $btnFld) {
 			<div class="panel panel--centered clearfix">
 				<div class="clearfix">
 					<div class="section__body">
-						<?php $this->includeTemplate('stripe-connect/fieldsErrors.php', ['errors' => $errors]);
+						<?php $this->includeTemplate('stripe-connect/fieldsErrors.php', ['errors' => $errors]); ?>
 						<div class="box box--white">
 							<?php echo $frm->getFormHtml(); ?>
 						</div>
