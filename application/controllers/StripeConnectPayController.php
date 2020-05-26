@@ -10,10 +10,9 @@ class StripeConnectPayController extends PaymentController
     public function __construct($action)
     {
         parent::__construct($action);
-        $this->init($action);
     }
 
-    public function init()
+    private function includePlugin()
     {
         $error = '';
         if (false === PluginHelper::includePlugin(self::KEY_NAME, 'payment-methods', $this->siteLangId, $error)) {
@@ -22,18 +21,23 @@ class StripeConnectPayController extends PaymentController
 
         $this->stripeConnect = new StripeConnect($this->siteLangId);
 
+        $this->settings = $this->stripeConnect->getKeys();
+
+        if (isset($this->settings['env']) && applicationConstants::YES == $this->settings['env']) {
+            $this->liveMode = "live_";
+        }
+    }
+
+    public function init()
+    {
+        $this->includePlugin();
+
         if (false === $this->stripeConnect->init()) {
             $this->setErrorAndRedirect();
         }
 
         if (!empty($this->stripeConnect->getError())) {
             $this->setErrorAndRedirect();
-        }
-
-        $this->settings = $this->stripeConnect->getKeys();
-
-        if (isset($this->settings['env']) && applicationConstants::YES == $this->settings['env']) {
-            $this->liveMode = "live_";
         }
     }
 
@@ -53,6 +57,8 @@ class StripeConnectPayController extends PaymentController
 
     public function charge($orderId)
     {
+        $this->init();
+
         if (empty(trim($orderId))) {
             $msg = Labels::getLabel('MSG_Invalid_Access', $this->siteLangId);
             $this->setErrorAndRedirect($msg);
@@ -163,7 +169,9 @@ class StripeConnectPayController extends PaymentController
     }
 
     public function distribute()
-    {        
+    {   
+        $this->includePlugin();
+
         $payload = @file_get_contents('php://input');
         $sig_header = $_SERVER['HTTP_STRIPE_SIGNATURE'];
 
