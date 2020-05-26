@@ -144,6 +144,7 @@ class StripeConnectPayController extends PaymentController
 
             $this->set('publishableKey', $publishableKey);
             $this->set('sessionId', $sessionId);
+            $this->set('exculdeMainHeaderDiv', true);
             $this->_template->render(true, false);
         } else {
             $message = Labels::getLabel('MSG_INVALID_ORDER._ALREADY_PAID_OR_CANCELLED', $this->siteLangId);
