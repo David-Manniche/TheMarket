@@ -12,71 +12,71 @@ class ShippingProfile extends MyAppModel
 
     public static function getSearchObject($isActive = false)
     {
-		$srch = new SearchBase(static::DB_TBL, 'sprofile');
-		if ($isActive == true) {
+        $srch = new SearchBase(static::DB_TBL, 'sprofile');
+        if ($isActive == true) {
             $srch->addCondition('sprofile.'. static::DB_TBL_PREFIX .'active', '=', applicationConstants::ACTIVE);
         }
-		return $srch;
+        return $srch;
     }
-	
-	public static function getProfileArr($userId, $assoc = true, $isActive = false)
-	{
-		$srch = self::getSearchObject($isActive);
-		$srch->addCondition('shipprofile_user_id', '=', $userId);
-		$srch->addMultipleFields(array('shipprofile_id', 'shipprofile_name'));
-		$srch->addOrder('shipprofile_default', 'DESC');
-		$srch->addOrder('shipprofile_id', 'ASC');
-		$srch->doNotCalculateRecords();
+    
+    public static function getProfileArr($userId, $assoc = true, $isActive = false)
+    {
+        $srch = self::getSearchObject($isActive);
+        $srch->addCondition('shipprofile_user_id', '=', $userId);
+        $srch->addMultipleFields(array('shipprofile_id', 'shipprofile_name'));
+        $srch->addOrder('shipprofile_default', 'DESC');
+        $srch->addOrder('shipprofile_id', 'ASC');
+        $srch->doNotCalculateRecords();
         $srch->doNotLimitRecords();
-		if ($assoc) {
+        if ($assoc) {
             return FatApp::getDb()->fetchAllAssoc($srch->getResultSet());
         } else {
             return FatApp::getDb()->fetchAll($srch->getResultSet(), static::tblFld('id'));
         }
-	}
-	
-	public static function getShipProfileIdByName($profileName, $userId = 0)
-	{
-		$srch = self::getSearchObject();
-		$srch->addCondition('shipprofile_name', '=', trim($profileName));
-		$srch->addCondition('shipprofile_user_id', '=', $userId);
-		$srch->addFld('shipprofile_id');
-		$rs = $srch->getResultSet();
-		$row = FatApp::getDb()->fetch($rs);
-		if (!empty($row)) {
-			return $row['shipprofile_id'];
-		}
-		return 0;
-	}
-	
-	public static function getDefaultProfileId($userId) 
-	{
-		$srch = self::getSearchObject();
-		$srch->addCondition('shipprofile_user_id', '=', $userId);
-		$srch->addCondition('shipprofile_default', '=', 1);
-		$srch->addFld('shipprofile_id');
-		$rs = $srch->getResultSet();
-		$row = FatApp::getDb()->fetch($rs);
-		if (empty($row)) {
-			//return $row['shipprofile_id'];
-			/* [ CREATE DEFAULT SHIPPING PROFILE */
-				$dataToInsert = array(
-					'shipprofile_user_id' => $userId,
-					'shipprofile_name' => Labels::getLabel('LBL_ORDER_LEVEL_SHIPPING', CommonHelper::getLangId()),
-					'shipprofile_active' => 1,
-					'shipprofile_default' => 1
-				);
-				
-				$spObj = new ShippingProfile();
-				$spObj->assignValues($dataToInsert);
+    }
+    
+    public static function getShipProfileIdByName($profileName, $userId = 0)
+    {
+        $srch = self::getSearchObject();
+        $srch->addCondition('shipprofile_name', '=', trim($profileName));
+        $srch->addCondition('shipprofile_user_id', '=', $userId);
+        $srch->addFld('shipprofile_id');
+        $rs = $srch->getResultSet();
+        $row = FatApp::getDb()->fetch($rs);
+        if (!empty($row)) {
+            return $row['shipprofile_id'];
+        }
+        return 0;
+    }
+    
+    public static function getDefaultProfileId($userId)
+    {
+        $srch = self::getSearchObject();
+        $srch->addCondition('shipprofile_user_id', '=', $userId);
+        $srch->addCondition('shipprofile_default', '=', 1);
+        $srch->addFld('shipprofile_id');
+        $rs = $srch->getResultSet();
+        $row = FatApp::getDb()->fetch($rs);
+        if (empty($row)) {
+            //return $row['shipprofile_id'];
+            /* [ CREATE DEFAULT SHIPPING PROFILE */
+            $dataToInsert = array(
+                    'shipprofile_user_id' => $userId,
+                    'shipprofile_name' => Labels::getLabel('LBL_ORDER_LEVEL_SHIPPING', CommonHelper::getLangId()),
+                    'shipprofile_active' => 1,
+                    'shipprofile_default' => 1
+                );
+                
+            $spObj = new ShippingProfile();
+            $spObj->assignValues($dataToInsert);
 
-				if (!$spObj->save()) {
-					Message::addErrorMessage($spObj->getError());
-					FatUtility::dieJsonError(Message::getHtml());
-				}
-				return $spObj->getMainTableRecordId();
-			/* ] */
-		}
-		return $row['shipprofile_id'];
-	}
+            if (!$spObj->save()) {
+                Message::addErrorMessage($spObj->getError());
+                FatUtility::dieJsonError(Message::getHtml());
+            }
+            return $spObj->getMainTableRecordId();
+            /* ] */
+        }
+        return $row['shipprofile_id'];
+    }
 }

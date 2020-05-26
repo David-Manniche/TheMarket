@@ -684,6 +684,7 @@ class ImportExportController extends AdminBaseController
     {
         $frm = new Form('frmExport', array('id' => 'frmExport'));
         $options = Importexport::getImportExportTypeArr('export', $langId, false);
+        unset($options[Importexport::TYPE_INVENTORY_UPDATE]);
         $fld = $frm->addRadioButtons(
             '',
             'export_option',
@@ -709,9 +710,10 @@ class ImportExportController extends AdminBaseController
     {
         $frm = new Form('frmImport', array('id' => 'frmImport'));
         $options = Importexport::getImportExportTypeArr('import', $langId, false);
-        if (!FatApp::getConfig('CONF_ENABLED_SELLER_CUSTOM_PRODUCT', FatUtility::VAR_INT, 0)) {
+        unset($options[Importexport::TYPE_INVENTORY_UPDATE]);
+        /* if (!FatApp::getConfig('CONF_ENABLED_SELLER_CUSTOM_PRODUCT', FatUtility::VAR_INT, 0)) {
             unset($options[Importexport::TYPE_PRODUCTS]);
-        }
+        } */
         $fld = $frm->addRadioButtons(
             '',
             'export_option',

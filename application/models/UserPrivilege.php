@@ -28,6 +28,8 @@ class UserPrivilege
     public const SECTION_PROMOTIONS = 26;
     public const SECTION_PROMOTION_CHARGES = 27;
     public const SECTION_SUBSCRIPTION = 28;
+    public const SECTION_SHIPPING_PROFILE = 28;
+
 
     public const MODULE_SHOP = 1;
     public const MODULE_ORDERS = 2;
@@ -679,6 +681,16 @@ class UserPrivilege
     public function canEditTaxCategory($sellerId = 0, $returnResult = false)
     {
         return $this->checkPermission($sellerId, static::SECTION_TAX_CATEGORY, static::PRIVILEGE_WRITE, $returnResult);
+    }
+
+    public function canViewShippingProfiles($sellerId = 0, $returnResult = false)
+    {
+        return $this->checkPermission($sellerId, static::SECTION_SHIPPING_PROFILE, static::PRIVILEGE_READ, $returnResult);
+    }
+
+    public function canEditShippingProfiles($sellerId = 0, $returnResult = false)
+    {
+        return $this->checkPermission($sellerId, static::SECTION_SHIPPING_PROFILE, static::PRIVILEGE_WRITE, $returnResult);
     }
 
     public function canViewProductOptions($sellerId = 0, $returnResult = false)

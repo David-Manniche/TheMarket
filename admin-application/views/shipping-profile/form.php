@@ -86,7 +86,7 @@ $frm->setFormTagAttribute('onsubmit', 'setupProfile(this); return(false);');
                                             <div class="portlet__head-actions">
                                                 <a href="javascript:0;"
                                                     onClick="zoneForm(<?php echo $profile_id;?>, 0)"
-                                                    class="link font-bolder"><?php echo Labels::getLabel('LBL_Create_Shipping_Zone', $adminLangId); ?>
+                                                    class="link font-bolder"><i class="fa fa-plus icon"></i>
                                                 </a>
                                             </div>
                                         </div>
@@ -99,7 +99,7 @@ $frm->setFormTagAttribute('onsubmit', 'setupProfile(this); return(false);');
                             </div>
                             <div class="col-md-6">
                                 <?php if (empty($profileData) || ((isset($profileData['shipprofile_default']) && $profileData['shipprofile_default'] == 1))) { ?>
-                                    <div class="portlet">
+                                    <div class="portlet" id="product-section--js">
                                         <div class="portlet__head">
                                             <div class="portlet__head-label">
                                                 <h3 class="portlet__head-title"><?php echo Labels::getLabel('LBL_Total_Products', $adminLangId);?>

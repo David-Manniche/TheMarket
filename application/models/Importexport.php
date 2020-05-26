@@ -156,7 +156,7 @@ class Importexport extends ImportexportCommon
 
     public function parseContentForExport($colValue)
     {
-        return html_entity_decode($colValue, ENT_QUOTES , 'utf-8');
+        return html_entity_decode($colValue, ENT_QUOTES, 'utf-8');
     }
 
     private function validateCSVHeaders($csvFilePointer, $coloumArr, $langId)
@@ -610,7 +610,7 @@ class Importexport extends ImportexportCommon
                 if ('prodcat_parent_identifier' == $columnKey) {
                     $colValue = array_key_exists($row['prodcat_parent'], $categoriesIdentifiers) ? $categoriesIdentifiers[$row['prodcat_parent']] : '';
                 }
-                $sheetData[] = $this->parseContentForExport($colValue); 
+                $sheetData[] = $this->parseContentForExport($colValue);
             }
             CommonHelper::writeExportDataToCSV($this->CSVfileObj, $sheetData);
         }
@@ -653,7 +653,7 @@ class Importexport extends ImportexportCommon
                     $colValue = array_key_exists($row['afile_screen'], $displayArr) ? $displayArr[ $row['afile_screen'] ] : '';
                 }
 
-                $sheetData[] = $this->parseContentForExport($colValue); 
+                $sheetData[] = $this->parseContentForExport($colValue);
             }
             CommonHelper::writeExportDataToCSV($this->CSVfileObj, $sheetData);
         }
@@ -990,7 +990,7 @@ class Importexport extends ImportexportCommon
                         break;
                 }
 
-                $sheetData[] = $this->parseContentForExport($colValue); 
+                $sheetData[] = $this->parseContentForExport($colValue);
             }
             CommonHelper::writeExportDataToCSV($this->CSVfileObj, $sheetData);
         }
@@ -1150,7 +1150,7 @@ class Importexport extends ImportexportCommon
                         break;
                 }
 
-                $sheetData[] = $this->parseContentForExport($colValue); 
+                $sheetData[] = $this->parseContentForExport($colValue);
             }
             CommonHelper::writeExportDataToCSV($this->CSVfileObj, $sheetData);
         }
@@ -1320,10 +1320,18 @@ class Importexport extends ImportexportCommon
             $taxCategoryIdentifierById = $this->getTaxCategoriesArr();
         }
 
-        if (!$this->settings['CONF_USE_DIMENSION_UNIT_ID']) {
+        /* if (!$this->settings['CONF_USE_DIMENSION_UNIT_ID']) {
             $lengthUnitsArr = applicationConstants::getLengthUnitsArr($langId);
+        } */
+
+        if (!$this->settings['CONF_USE_SHIPPING_PROFILE_ID']) {
+            $shippingProfiles = $this->getShippingProfileArr();
         }
 
+        if (!$this->settings['CONF_USE_SHIPPING_PACKAGE_ID']) {
+            $shippingPackages = $this->getShippingPackageArr();
+        }
+                
         if (!$this->settings['CONF_USE_WEIGHT_UNIT_ID']) {
             $weightUnitsArr = applicationConstants::getWeightUnitsArr($langId);
         }
@@ -1338,9 +1346,12 @@ class Importexport extends ImportexportCommon
             $srch->joinTable(Product::DB_TBL_PRODUCT_SHIPPING, 'LEFT OUTER JOIN', 'ps.ps_product_id = tp.product_id and ps.ps_user_id = tp.product_seller_id', 'ps');
         }
         $srch->joinTable(Countries::DB_TBL, 'LEFT OUTER JOIN', 'c.country_id = ps.ps_from_country_id', 'c');
+        $srch->joinTable(ShippingProfileProduct::DB_TBL, 'LEFT OUTER JOIN', 'tp.product_id = sppro.shippro_product_id', 'sppro');
+        /* $srch->joinTable(ShippingProfile::DB_TBL, 'LEFT OUTER JOIN', 'sppro.shippro_shipprofile_id = shp.shipprofile_id', 'shp');
+        $srch->joinTable(ShippingPackage::DB_TBL, 'LEFT OUTER JOIN', 'spp.shippack_id = tp.product_ship_package', 'spp'); */
         //$srch->joinTable(Countries::DB_TBL,'LEFT OUTER JOIN','c.country_id = tp.product_ship_country','c');
         $srch->doNotCalculateRecords();
-        $srch->addMultipleFields(['tp.*', 'tp_l.*', 'ps.ps_from_country_id', 'ps.ps_free', 'user_id', 'credential_username', 'brand_id', 'brand_identifier', 'country_id', 'country_code', 'product_warranty']);
+        $srch->addMultipleFields(['tp.*', 'tp_l.*', 'ps.ps_from_country_id', 'ps.ps_free', 'user_id', 'credential_username', 'brand_id', 'brand_identifier', 'country_id', 'country_code', 'product_warranty', 'sppro.shippro_shipprofile_id']);
         if ($userId) {
             $cnd = $srch->addCondition('tp.product_seller_id', '=', $userId, 'OR');
             $cnd->attachCondition('tp.product_seller_id', '=', 0);
@@ -1404,9 +1415,17 @@ class Importexport extends ImportexportCommon
                     $colValue = (!empty($row['ptt_taxcat_id']) && array_key_exists($row['ptt_taxcat_id'], $taxCategoryIdentifierById) ? $taxCategoryIdentifierById[ $row['ptt_taxcat_id'] ] : 0);
                 }
 
-                if ('product_dimension_unit_identifier' == $columnKey) {
-                    $colValue = (!empty($row['product_dimension_unit']) && array_key_exists($row['product_dimension_unit'], $lengthUnitsArr) ? $lengthUnitsArr[$row['product_dimension_unit']] : '');
+                if ('product_ship_package_identifier' == $columnKey) {
+                    $colValue = (!empty($row['product_ship_package']) && array_key_exists($row['product_ship_package'], $shippingPackages) ? $shippingPackages[$row['product_ship_package']] : '');
                 }
+
+                if ('shipping_profile_identifier' == $columnKey) {
+                    $colValue = (!empty($row['shippro_shipprofile_id']) && array_key_exists($row['shippro_shipprofile_id'], $shippingProfiles) ? $shippingProfiles[$row['shippro_shipprofile_id']] : '');
+                }
+
+                /* if ('product_dimension_unit_identifier' == $columnKey) {
+                    $colValue = (!empty($row['product_dimension_unit']) && array_key_exists($row['product_dimension_unit'], $lengthUnitsArr) ? $lengthUnitsArr[$row['product_dimension_unit']] : '');
+                } */
 
                 if ('product_weight_unit_identifier' == $columnKey) {
                     $colValue = (!empty($row['product_weight_unit']) && array_key_exists($row['product_weight_unit'], $weightUnitsArr) ? $weightUnitsArr[$row['product_weight_unit']] : '');
@@ -1440,10 +1459,20 @@ class Importexport extends ImportexportCommon
             $prodTypeIdentifierArr = array_flip($prodTypeIdentifierArr);
         }
 
-        if (!$this->settings['CONF_USE_DIMENSION_UNIT_ID']) {
+        if (!$this->settings['CONF_USE_SHIPPING_PROFILE_ID']) {
+            $shippingProfiles = $this->getShippingProfileArr();
+            $shippingProfiles = array_flip($shippingProfiles);
+        }
+
+        if (!$this->settings['CONF_USE_SHIPPING_PACKAGE_ID']) {
+            $shippingPackages = $this->getShippingPackageArr();
+            $shippingPackages = array_flip($shippingPackages);
+        }
+
+        /* if (!$this->settings['CONF_USE_DIMENSION_UNIT_ID']) {
             $lengthUnitsArr = applicationConstants::getLengthUnitsArr($langId);
             $lengthUnitsArr = array_flip($lengthUnitsArr);
-        }
+        } */
 
         if (!$this->settings['CONF_USE_WEIGHT_UNIT_ID']) {
             $weightUnitsArr = applicationConstants::getWeightUnitsArr($langId);
@@ -1629,6 +1658,24 @@ class Importexport extends ImportexportCommon
                                 }
                             }
                             $taxCatId = isset($taxCategoryArr[$colValue]) ? $taxCategoryArr[$colValue] : 0;
+                            break;
+                        case 'product_ship_package_identifier':
+                            $columnKey = 'product_ship_package';
+                            if (!array_key_exists($colValue, $shippingPackages)) {
+                                $invalid = true;
+                            } else {
+                                $colValue = $shippingPackages[$colValue];
+                            }
+                            break;
+                        case 'shipping_profile_identifier':
+                            $columnKey = 'shippro_shipprofile_id';
+                            if (FatApp::getConfig("CONF_PRODUCT_DIMENSIONS_ENABLE", FatUtility::VAR_INT, 1)) {
+                                if (!array_key_exists($colValue, $shippingProfiles)) {
+                                    $invalid = true;
+                                } else {
+                                    $colValue = $shippingProfiles[$colValue];
+                                }
+                            }
                             break;
                         case 'product_dimension_unit_identifier':
                             $columnKey = 'product_dimension_unit';
@@ -1883,7 +1930,7 @@ class Importexport extends ImportexportCommon
             $sheetData = array();
             foreach ($headingsArr as $columnKey => $heading) {
                 $colValue = array_key_exists($columnKey, $row) ? $row[$columnKey] : '';
-                $sheetData[] = $this->parseContentForExport($colValue); 
+                $sheetData[] = $this->parseContentForExport($colValue);
             }
             CommonHelper::writeExportDataToCSV($this->CSVfileObj, $sheetData);
         }
@@ -2029,7 +2076,7 @@ class Importexport extends ImportexportCommon
             $sheetData = array();
             foreach ($headingsArr as $columnKey => $heading) {
                 $colValue = array_key_exists($columnKey, $row) ? $row[$columnKey] : '';
-                $sheetData[] = $this->parseContentForExport($colValue); 
+                $sheetData[] = $this->parseContentForExport($colValue);
             }
             CommonHelper::writeExportDataToCSV($this->CSVfileObj, $sheetData);
         }
@@ -2187,7 +2234,7 @@ class Importexport extends ImportexportCommon
                 if ('prodspeclang_lang_code' == $columnKey) {
                     $colValue = $languageCodes[ $row['prodspeclang_lang_id'] ];
                 }
-                $sheetData[] = $this->parseContentForExport($colValue); 
+                $sheetData[] = $this->parseContentForExport($colValue);
             }
             CommonHelper::writeExportDataToCSV($this->CSVfileObj, $sheetData);
         }
@@ -2378,7 +2425,7 @@ class Importexport extends ImportexportCommon
                     $colValue = !empty($row['credential_username']) ? $row['credential_username'] : Labels::getLabel('LBL_Admin', $langId);
                 }
 
-                $sheetData[] = $this->parseContentForExport($colValue); 
+                $sheetData[] = $this->parseContentForExport($colValue);
             }
             CommonHelper::writeExportDataToCSV($this->CSVfileObj, $sheetData);
         }
@@ -2616,7 +2663,7 @@ class Importexport extends ImportexportCommon
                     $colValue = $languageCodes[ $row['afile_lang_id'] ];
                 }
 
-                $sheetData[] = $this->parseContentForExport($colValue); 
+                $sheetData[] = $this->parseContentForExport($colValue);
             }
             CommonHelper::writeExportDataToCSV($this->CSVfileObj, $sheetData);
         }
@@ -2887,7 +2934,7 @@ class Importexport extends ImportexportCommon
                     $colValue = $languageCodes[ $row['afile_lang_id'] ];
                 }
 
-                $sheetData[] = $this->parseContentForExport($colValue); 
+                $sheetData[] = $this->parseContentForExport($colValue);
             }
             CommonHelper::writeExportDataToCSV($this->CSVfileObj, $sheetData);
         }
@@ -2949,7 +2996,7 @@ class Importexport extends ImportexportCommon
                     $colValue = (FatUtility::int($colValue) == 1) ? 'YES' : 'NO';
                 }
 
-                $sheetData[] = $this->parseContentForExport($colValue); 
+                $sheetData[] = $this->parseContentForExport($colValue);
             }
             CommonHelper::writeExportDataToCSV($this->CSVfileObj, $sheetData);
         }
@@ -3241,7 +3288,7 @@ class Importexport extends ImportexportCommon
             $sheetData = array();
             foreach ($headingsArr as $columnKey => $heading) {
                 $colValue = array_key_exists($columnKey, $row) ? $row[$columnKey] : '';
-                $sheetData[] = $this->parseContentForExport($colValue); 
+                $sheetData[] = $this->parseContentForExport($colValue);
             }
             CommonHelper::writeExportDataToCSV($this->CSVfileObj, $sheetData);
         }
@@ -3455,7 +3502,7 @@ class Importexport extends ImportexportCommon
             $sheetData = array();
             foreach ($headingsArr as $columnKey => $heading) {
                 $colValue = array_key_exists($columnKey, $row) ? $row[$columnKey] : '';
-                $sheetData[] = $this->parseContentForExport($colValue); 
+                $sheetData[] = $this->parseContentForExport($colValue);
             }
             CommonHelper::writeExportDataToCSV($this->CSVfileObj, $sheetData);
         }
@@ -3602,7 +3649,7 @@ class Importexport extends ImportexportCommon
                 if (in_array($columnKey, array( 'splprice_start_date', 'splprice_end_date' ))) {
                     $colValue = $this->displayDate($colValue);
                 }
-                $sheetData[] = $this->parseContentForExport($colValue); 
+                $sheetData[] = $this->parseContentForExport($colValue);
             }
             CommonHelper::writeExportDataToCSV($this->CSVfileObj, $sheetData);
         }
@@ -3729,7 +3776,7 @@ class Importexport extends ImportexportCommon
             $sheetData = array();
             foreach ($headingsArr as $columnKey => $heading) {
                 $colValue = array_key_exists($columnKey, $row) ? $row[$columnKey] : '';
-                $sheetData[] = $this->parseContentForExport($colValue); 
+                $sheetData[] = $this->parseContentForExport($colValue);
             }
             CommonHelper::writeExportDataToCSV($this->CSVfileObj, $sheetData);
         }
@@ -3848,7 +3895,7 @@ class Importexport extends ImportexportCommon
             $sheetData = array();
             foreach ($headingsArr as $columnKey => $heading) {
                 $colValue = array_key_exists($columnKey, $row) ? $row[$columnKey] : '';
-                $sheetData[] = $this->parseContentForExport($colValue); 
+                $sheetData[] = $this->parseContentForExport($colValue);
             }
             CommonHelper::writeExportDataToCSV($this->CSVfileObj, $sheetData);
         }
@@ -3996,7 +4043,7 @@ class Importexport extends ImportexportCommon
             $sheetData = array();
             foreach ($headingsArr as $columnKey => $heading) {
                 $colValue = array_key_exists($columnKey, $row) ? $row[$columnKey] : '';
-                $sheetData[] = $this->parseContentForExport($colValue); 
+                $sheetData[] = $this->parseContentForExport($colValue);
             }
             CommonHelper::writeExportDataToCSV($this->CSVfileObj, $sheetData);
         }
@@ -4111,7 +4158,7 @@ class Importexport extends ImportexportCommon
             $sheetData = array();
             foreach ($headingsArr as $columnKey => $heading) {
                 $colValue = array_key_exists($columnKey, $row) ? $row[$columnKey] : '';
-                $sheetData[] = $this->parseContentForExport($colValue); 
+                $sheetData[] = $this->parseContentForExport($colValue);
             }
             CommonHelper::writeExportDataToCSV($this->CSVfileObj, $sheetData);
         }
@@ -4260,7 +4307,7 @@ class Importexport extends ImportexportCommon
                     $colValue = (FatUtility::int($colValue) == 1) ? 'YES' : 'NO';
                 }
 
-                $sheetData[] = $this->parseContentForExport($colValue); 
+                $sheetData[] = $this->parseContentForExport($colValue);
             }
             CommonHelper::writeExportDataToCSV($this->CSVfileObj, $sheetData);
         }
@@ -4413,7 +4460,7 @@ class Importexport extends ImportexportCommon
             $sheetData = array();
             foreach ($headingsArr as $columnKey => $heading) {
                 $colValue = array_key_exists($columnKey, $row) ? $row[$columnKey] : '';
-                $sheetData[] = $this->parseContentForExport($colValue); 
+                $sheetData[] = $this->parseContentForExport($colValue);
             }
             CommonHelper::writeExportDataToCSV($this->CSVfileObj, $sheetData);
         }
@@ -4577,7 +4624,7 @@ class Importexport extends ImportexportCommon
                     $colValue = (!empty($colValue) ? $colValue : Labels::getLabel('LBL_Admin', $langId));
                 }
 
-                $sheetData[] = $this->parseContentForExport($colValue); 
+                $sheetData[] = $this->parseContentForExport($colValue);
             }
             CommonHelper::writeExportDataToCSV($this->CSVfileObj, $sheetData);
         }
@@ -4751,7 +4798,7 @@ class Importexport extends ImportexportCommon
                     }
                 }
 
-                $sheetData[] = $this->parseContentForExport($colValue); 
+                $sheetData[] = $this->parseContentForExport($colValue);
             }
             CommonHelper::writeExportDataToCSV($this->CSVfileObj, $sheetData);
         }
@@ -4917,7 +4964,7 @@ class Importexport extends ImportexportCommon
                 if ('state_active' == $columnKey && !$this->settings['CONF_USE_O_OR_1']) {
                     $colValue = (FatUtility::int($colValue) == 1) ? 'YES' : 'NO';
                 }
-                $sheetData[] = $this->parseContentForExport($colValue); 
+                $sheetData[] = $this->parseContentForExport($colValue);
             }
             CommonHelper::writeExportDataToCSV($this->CSVfileObj, $sheetData);
         }
@@ -5083,7 +5130,7 @@ class Importexport extends ImportexportCommon
                         $colValue = isset($policyPointTypeArr[$row['ppoint_type']]) ? $policyPointTypeArr[$row['ppoint_type']] : '';
                         break;
                 }
-                $sheetData[] = $this->parseContentForExport($colValue); 
+                $sheetData[] = $this->parseContentForExport($colValue);
             }
             CommonHelper::writeExportDataToCSV($this->CSVfileObj, $sheetData);
         }
@@ -5246,7 +5293,7 @@ class Importexport extends ImportexportCommon
                     $colValue = array_key_exists($row['prodcat_parent'], $categoriesIdentifiers) ? $categoriesIdentifiers[$row['prodcat_parent']] : '';
                 }
 
-                $sheetData[] = $this->parseContentForExport($colValue); 
+                $sheetData[] = $this->parseContentForExport($colValue);
             }
             CommonHelper::writeExportDataToCSV($this->CSVfileObj, $sheetData);
         }
@@ -5286,7 +5333,7 @@ class Importexport extends ImportexportCommon
                     $colValue = $this->displayDateTime($colValue);
                 }
 
-                $sheetData[] = $this->parseContentForExport($colValue); 
+                $sheetData[] = $this->parseContentForExport($colValue);
             }
             CommonHelper::writeExportDataToCSV($this->CSVfileObj, $sheetData);
         }
