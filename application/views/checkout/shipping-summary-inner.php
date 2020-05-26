@@ -212,6 +212,10 @@ $shippingapi_idFld->developerTags['col'] = 6;
 </div>
 
 <script>
+    <?php if (empty($shippingAddressDetail)) {?>
+        showAddressList();
+    <?php }?>
+
     $('.shipping_method').on("change", function() {
 
         if ($(this).val() == "0") {

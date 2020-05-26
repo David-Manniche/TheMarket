@@ -558,7 +558,8 @@ class CheckoutController extends MyAppController
             $this->cartObj->unSetShippingAddressSameAsBilling();
             $this->cartObj->unsetCartShippingAddress();
         }
-
+    
+        $this->set('shippingAddressDetail', UserAddress::getUserAddresses(UserAuthentication::getLoggedUserId(), $this->siteLangId, 0, $this->cartObj->getCartShippingAddress()));
         $this->set('productSelectedShippingMethodsArr', $productSelectedShippingMethodsArr);
         $this->set('shipStationCarrierList', $this->cartObj->shipStationCarrierList());
         $this->set('shippingMethods', $shippingMethods);
