@@ -22,6 +22,12 @@ class StripeConnectController extends PaymentMethodBaseController
             $this->redirectBack();
         }
 
+        if (false === User::isSeller()) {
+            $msg = Labels::getLabel('MSG_LOGGED_USED_MUST_BE_SELLER_TYPE', $this->siteLangId);
+            Message::addErrorMessage($msg);
+            $this->redirectBack();
+        }
+
         $this->stripeConnect = new StripeConnect($this->siteLangId);
 
         if (false === $this->stripeConnect->init()) {

@@ -55,7 +55,7 @@ class PaymentMethodBase extends pluginBase
     {
         $this->userId = UserAuthentication::getLoggedUserId(true);
         $this->userId = FatUtility::int($this->userId);
-        if (1 > $this->userId || false === User::isSeller()) {
+        if (1 > $this->userId) {
             $this->error = Labels::getLabel('MSG_INVALID_USER', $this->langId);
             return false;
         }
