@@ -23,11 +23,11 @@ class StripeConnectPayController extends PaymentController
         $this->stripeConnect = new StripeConnect($this->siteLangId);
 
         if (false === $this->stripeConnect->init()) {
-            $this->setStripeErrorAndRedirect();
+            $this->setErrorAndRedirect();
         }
 
         if (!empty($this->stripeConnect->getError())) {
-            $this->setStripeErrorAndRedirect();
+            $this->setErrorAndRedirect();
         }
 
         $this->settings = $this->stripeConnect->getKeys();
