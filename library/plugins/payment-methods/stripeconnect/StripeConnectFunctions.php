@@ -208,11 +208,44 @@ trait StripeConnectFunctions
     /**
      * connectedAccounts
      * 
+     * @param array $data
      * @return object
      */
     private function connectedAccounts(array $data = ['limit' => 10]): object
     {
         return \Stripe\Account::all($data);
+    }
+
+    /**
+     * webhookConstructEvent
+     * 
+     * @param array $data
+     * @return object
+     */
+    private function webhookConstructEvent(array $data = []): object
+    {
+        $payload = $data['payload'];
+        $sig_header = $data['sig_header'];
+        $endpoint_secret = $this->settings['webhook_signing_secret'];
+        return \Stripe\Webhook::constructEvent(
+            $payload, $sig_header, $endpoint_secret
+        );
+    }
+
+    /**
+     * transferAmount
+     * 
+     * @param array $data : [
+     *         'amount' => 7000,
+     *         'currency' => 'inr',
+     *         'destination' => '{{CONNECTED_STRIPE_ACCOUNT_ID}}',
+     *         'transfer_group' => '{ORDER10}',
+     *       ]
+     * @return object
+     */
+    private function transferAmount(array $data = []): object
+    {
+        return \Stripe\Transfer::create($data);
     }
     
     /**
@@ -273,6 +306,12 @@ trait StripeConnectFunctions
                 case self::REQUEST_ALL_CONNECT_ACCOUNTS:
                     return $this->connectedAccounts($data);
                     break;
+                case self::REQUEST_CREATE_WEBHOOK_EVENT:
+                    return $this->webhookConstructEvent($data);
+                    break;
+                case self::REQUEST_TRANSFER_AMOUNT:
+                    return $this->transferAmount($data);
+                    break;
             }
         } catch (\Stripe\Exception\CardException $e) {
             // Since it's a decline, \Stripe\Exception\CardException will be caught
@@ -291,6 +330,14 @@ trait StripeConnectFunctions
             // Network communication with Stripe failed
             $this->error = $e->getError()->param . ' - ' . $e->getMessage();
         } catch (\Stripe\Exception\ApiErrorException $e) {
+            // Display a very generic error to the user, and maybe send
+            $this->error = $e->getError()->param . ' - ' . $e->getMessage();
+            // yourself an email
+        } catch (\Stripe\Exception\SignatureVerificationException $e) {
+            // Display a very generic error to the user, and maybe send
+            $this->error = $e->getError()->param . ' - ' . $e->getMessage();
+            // yourself an email
+        } catch (\UnexpectedValueException $e) {
             // Display a very generic error to the user, and maybe send
             $this->error = $e->getError()->param . ' - ' . $e->getMessage();
             // yourself an email

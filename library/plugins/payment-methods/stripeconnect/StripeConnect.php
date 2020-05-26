@@ -16,6 +16,7 @@ class StripeConnect extends PaymentMethodBase
     private $customerId = '';
     private $loginUrl = '';
     private $connectedAccounts = [];
+    private $event = [];
 
     public $requiredKeys = [
         'client_id',
@@ -43,6 +44,8 @@ class StripeConnect extends PaymentMethodBase
     public const REQUEST_UPDATE_CUSTOMER = 14;
     public const REQUEST_CREATE_LOGIN_LINK = 15;
     public const REQUEST_ALL_CONNECT_ACCOUNTS = 16;
+    public const REQUEST_CREATE_WEBHOOK_EVENT = 17;
+    public const REQUEST_TRANSFER_AMOUNT = 18;
 
     /**
      * __construct
@@ -839,5 +842,45 @@ class StripeConnect extends PaymentMethodBase
     public function getAllAccounts(): array
     {
         return $this->connectedAccounts;
+    }
+
+    /**
+     * createWebhookEvent
+     * 
+     * @param $data
+     * @return bool
+     */
+    public function createWebhookEvent(array $data): bool
+    {
+        $this->event = $this->doRequest(self::REQUEST_CREATE_WEBHOOK_EVENT, $data);
+        if (false === $this->event) {
+            return false;
+        }
+        return true;
+    }
+
+    /**
+     * getWebhookEvent
+     * 
+     * @return object
+     */
+    public function getWebhookEvent(): object
+    {
+        return empty($this->event) ? (object) array() : $this->event;
+    }
+
+    /**
+     * doTransfer
+     * 
+     * @param $data
+     * @return bool
+     */
+    public function doTransfer(array $data): bool
+    {
+        $this->resp = $this->doRequest(self::REQUEST_TRANSFER_AMOUNT, $data);
+        if (false === $this->resp) {
+            return false;
+        }
+        return true;
     }
 }

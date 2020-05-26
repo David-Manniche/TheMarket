@@ -84,13 +84,16 @@ class StripeConnectPayController extends PaymentController
             $data = [
                 'mode' => 'payment',
                 'payment_method_types' => ['card'],
-                'success_url' => CommonHelper::generateFullUrl(self::KEY_NAME . 'Pay', 'distribute'),
+                'success_url' => CommonHelper::generateUrl('custom', 'paymentSuccess', [$orderInfo['id']]),
                 'cancel_url' => $cancelUrl,
                 'line_items' => [],
                 'customer' => $customerId,
                 'payment_intent_data' => [
                     'receipt_email' => FatApp::getConfig('CONF_SITE_OWNER_EMAIL'),
                     'shipping' => $orderFormattedData['shipping']
+                ],
+                'metadata' => [
+                    'orderId' => $orderId
                 ]
             ];
 
@@ -120,17 +123,17 @@ class StripeConnectPayController extends PaymentController
                 ];
 
                 // No need of application_fee_amount as tranfer_data amount are mutually exclusive.
-                // $data['payment_intent_data']['application_fee_amount'] = round($op['op_commission_charged']);
+                // $data['payment_intent_data']['application_fee_amount'] = $this->formatPayableAmount($op['op_commission_charged']);
                 
                 $data['payment_intent_data']['statement_descriptor'] = $op['op_invoice_number'];
 
-                $accountId = User::getUserMeta($op['op_selprod_user_id'], 'stripe_account_id');
+                /*$accountId = User::getUserMeta($op['op_selprod_user_id'], 'stripe_account_id');
                 if (!empty($accountId)) {
                     $data['payment_intent_data']['transfer_data'] = [
                         'destination' => $accountId,
-                        'amount' => round($netAmount - $op['op_commission_charged'])
+                        'amount' => $this->formatPayableAmount($netAmount - $op['op_commission_charged'])
                     ];
-                }
+                }*/
             }
             /*CommonHelper::printArray($orderInfo);
             CommonHelper::printArray($orderProducts, true);*/
@@ -160,99 +163,63 @@ class StripeConnectPayController extends PaymentController
     }
 
     public function distribute()
-    {
-        CommonHelper::printArray(FatApp::getPostedData(), true);
-    }
+    {        
+        $payload = @file_get_contents('php://input');
+        $sig_header = $_SERVER['HTTP_STRIPE_SIGNATURE'];
 
-    private function doPayment($payment_amount, $orderInfo)
-    {
-        $this->paymentSettings = $this->getPaymentSettings();
-        if ($payment_amount == null || !$this->paymentSettings || $orderInfo['id'] == null) {
-            return false;
+        $data = [
+            'payload' => $payload,
+            'sig_header' => $sig_header
+        ];
+        
+        if ($this->stripeConnect->createWebhookEvent($data)) {
+            $this->setErrorAndRedirect();
         }
-        $checkPayment = false;
-        if (strtolower($_SERVER['REQUEST_METHOD']) == 'post') {
-            try {
-                $stripeToken = FatApp::getPostedData('stripeToken', FatUtility::VAR_STRING, '');
 
-                if (empty($stripeToken)) {
-                    $message = Labels::getLabel('MSG_The_Stripe_Token_was_not_generated_correctly', $this->siteLangId);
-                    if (true === MOBILE_APP_API_CALL) {
-                        FatUtility::dieJsonError($message);
-                    }
-                    throw new Exception($message);
-                } else {
-                    $stripe = array(
-                    'secret_key' => $this->paymentSettings['privateKey'],
-                    'publishable_key' => $this->paymentSettings['publishableKey']
-                    );
-                    if (!empty(trim($this->paymentSettings['privateKey'])) && !empty(trim($this->paymentSettings['publishableKey']))) {
-                        \Stripe\Stripe::setApiKey($stripe['secret_key']);
-                    }
+        $event = $this->stripeConnect->getWebhookEvent();
+        if ($event->type == "order.payment_succeeded") {
+            $orderResp = $event->data->object;
+            $metaData = $orderResp->metadata;
+            $charge = $orderResp->metadata;
 
-                    $customer = \Stripe\Customer::create(
-                        array(
-                          "email" => $orderInfo['customer_email'],
-                          "source" => $stripeToken,
-                        )
-                    );
-                    $charge = \Stripe\Charge::create(
-                        array(
-                        "customer" => $customer->id,
-                        'amount' => $payment_amount,
-                        'currency' => $this->systemCurrencyCode,
-                        )
-                    );
-                    $charge = $charge->__toArray();
+            $orderId = $metaData->orderId;
+            $orderPaymentObj = new OrderPayment($orderId, $this->siteLangId);
+            $paymentAmount = $orderPaymentObj->getOrderPaymentGatewayAmount();
+            $orderInfo = $orderPaymentObj->getOrderPrimaryinfo();
 
-                    if (isset($charge['status'])) {
-                        if (strtolower($charge['status']) == 'succeeded') {
-                            $message = '';
-                            $message .= 'Id: ' . (string)$charge['id'] . "&";
-                            $message .= 'Object: ' . (string)$charge['object'] . "&";
-                            $message .= 'Amount: ' . (string)$charge['amount'] . "&";
-                            $message .= 'Amount Refunded: ' . (string)$charge['amount_refunded'] . "&";
-                            $message .= 'Application Fee: ' . (string)$charge['application_fee'] . "&";
-                            $message .= 'Balance Transaction: ' . (string)$charge['balance_transaction'] . "&";
-                            $message .= 'Captured: ' . (string)$charge['captured'] . "&";
-                            $message .= 'Created: ' . (string)$charge['created'] . "&";
-                            $message .= 'Currency: ' . (string)$charge['currency'] . "&";
-                            $message .= 'Customer: ' . (string)$charge['customer'] . "&";
-                            $message .= 'Description: ' . (string)$charge['description'] . "&";
-                            $message .= 'Destination: ' . (string)$charge['destination'] . "&";
-                            $message .= 'Dispute: ' . (string)$charge['dispute'] . "&";
-                            $message .= 'Failure Code: ' . (string)$charge['failure_code'] . "&";
-                            $message .= 'Failure Message: ' . (string)$charge['failure_message'] . "&";
-                            $message .= 'Invoice: ' . (string)$charge['invoice'] . "&";
-                            $message .= 'Livemode: ' . (string)$charge['livemode'] . "&";
-                            $message .= 'Paid: ' . (string)$charge['paid'] . "&";
-                            $message .= 'Receipt Email: ' . (string)$charge['receipt_email'] . "&";
-                            $message .= 'Receipt Number: ' . (string)$charge['receipt_number'] . "&";
-                            $message .= 'Refunded: ' . (string)$charge['refunded'] . "&";
-                            $message .= 'Shipping: ' . (string)$charge['shipping'] . "&";
-                            $message .= 'Statement Descriptor: ' . (string)$charge['statement_descriptor'] . "&";
-                            $message .= 'Status: ' . (string)$charge['status'] . "&";
-                            /* Recording Payment in DB */
-                            $orderPaymentObj = new OrderPayment($orderInfo['id']);
-                            $orderPaymentObj->addOrderPayment($this->paymentSettings["pmethod_name"], $charge['id'], ($payment_amount / 100), Labels::getLabel("MSG_Received_Payment", $this->siteLangId), $message);
-                            /* End Recording Payment in DB */
-                            $checkPayment = true;
+            $orderObj = new Orders();
+            $orderProducts = $orderObj->getChildOrders(array('order_id' => $orderInfo['id']), $orderInfo['order_type'], $orderInfo['order_language_id']);
 
-                            if (false === MOBILE_APP_API_CALL) {
-                                FatApp::redirectUser(CommonHelper::generateUrl('custom', 'paymentSuccess', array($orderInfo['id'])));
-                            }
-                        } else {
-                            $orderPaymentObj->addOrderPaymentComments($message);
-                            if (false === MOBILE_APP_API_CALL) {
-                                FatApp::redirectUser(CommonHelper::generateUrl('custom', 'paymentFailed'));
-                            }
-                        }
-                    }
+            foreach ($orderProducts as $op) {
+                $accountId = User::getUserMeta($op['op_selprod_user_id'], 'stripe_account_id');
+                if (empty($accountId)) {
+                    continue;
                 }
-            } catch (Exception $e) {
-                $this->error = $e->getMessage();
+                
+                $netAmount = CommonHelper::orderProductAmount($op, 'NETAMOUNT');
+
+                $data = [
+                    'amount' => $this->formatPayableAmount($netAmount - $op['op_commission_charged']),
+                    'currency' => $orderInfo['order_currency_code'],
+                    'destination' => $accountId,
+                    'transfer_group' => $orderId,
+                ];
+
+                if (false === $this->stripeConnect->doTransfer($data)) {
+                    $this->setErrorAndRedirect();        
+                }
             }
+            $orderPaymentObj = new OrderPayment($orderInfo['id']);
+            $orderPaymentObj->addOrderPayment($this->settings["plugin_name"], $orderResp->id, $paymentAmount, Labels::getLabel("MSG_Received_Payment", $this->siteLangId), $message);
+        } elseif ($event->type == "payment_intent.succeeded") {
+            $intent = $event->data->object;
+            $intentId = $intent->id;
+        } elseif ($event->type == "payment_intent.payment_failed") {
+            $intent = $event->data->object;
+            $error_message = $intent->last_payment_error ? $intent->last_payment_error->message : "";
+            $this->setErrorAndRedirect($error_message);
         }
-        return $checkPayment;
+
+        EmailHandler::sendSmtpEmail('satbir.kaushik@fatbit.in', 'Stripe Payment Response', json_encode($event));
     }
 }

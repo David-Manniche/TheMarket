@@ -40,6 +40,11 @@ class StripeConnectSettingsController extends PaymentMethodSettingsController
                 'required' => true,
                 'label' => "Live Secret key",
             ],
+            'webhook_signing_secret' => [
+                'type' => PluginSetting::TYPE_STRING,
+                'required' => true,
+                'label' => "Webhook Signing Secret C. A.",
+            ],
         ];
     }
 }
