@@ -129,7 +129,7 @@ class StripeConnectPayController extends PaymentController
                     'quantity' => $op['op_qty']
                 ];
 
-                // No need of application_fee_amount as tranfer_data amount are mutually exclusive.
+                // You may not provide the application_fee_amount parameter and the transfer_data[amount] parameter simultaneously. They are mutually exclusive.
                 // $data['payment_intent_data']['application_fee_amount'] = $this->formatPayableAmount($op['op_commission_charged']);
                 
                 $data['payment_intent_data']['statement_descriptor'] = $op['op_invoice_number'];
@@ -168,43 +168,7 @@ class StripeConnectPayController extends PaymentController
         $amount = number_format($amount, 2, '.', '');
         return $amount * 100;
     }
-
-    /*public function distribute($orderId)
-    {   
-        $this->init();
-
-        $orderPaymentObj = new OrderPayment($orderId, $this->siteLangId);
-        $paymentAmount = $orderPaymentObj->getOrderPaymentGatewayAmount();
-        $payableAmount = $this->formatPayableAmount($paymentAmount);
-        $orderInfo = $orderPaymentObj->getOrderPrimaryinfo();
-
-        $orderObj = new Orders();
-        $orderProducts = $orderObj->getChildOrders(array('order_id' => $orderInfo['id']), $orderInfo['order_type'], $orderInfo['order_language_id']);
-
-        foreach ($orderProducts as $op) {
-            $accountId = User::getUserMeta($op['op_selprod_user_id'], 'stripe_account_id');
-            if (empty($accountId)) {
-                continue;
-            }
-            
-            $netAmount = CommonHelper::orderProductAmount($op, 'NETAMOUNT');
-
-            $data = [
-                'amount' => $this->formatPayableAmount($netAmount - $op['op_commission_charged']),
-                'currency' => $orderInfo['order_currency_code'],
-                'destination' => $accountId,
-                'transfer_group' => $orderId,
-            ];
-
-            if (false === $this->stripeConnect->doTransfer($data)) {
-                $this->setErrorAndRedirect();        
-            }
-        }
-        $orderPaymentObj = new OrderPayment($orderInfo['id']);
-        $orderPaymentObj->addOrderPayment($this->settings["plugin_name"], $orderResp->id, $paymentAmount, Labels::getLabel("MSG_Received_Payment", $this->siteLangId), $message);
-        FatApp::redirectUser(CommonHelper::generateUrl('custom', 'paymentSuccess', array($orderInfo['id'])));
-    }*/
-
+    
     public function paymentStatus()
     {   
         $this->includePlugin();
