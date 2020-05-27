@@ -44,6 +44,7 @@ class StripeConnect extends PaymentMethodBase
     public const REQUEST_CREATE_LOGIN_LINK = 15;
     public const REQUEST_ALL_CONNECT_ACCOUNTS = 16;
     public const REQUEST_TRANSFER_AMOUNT = 17;
+    public const REQUEST_INITIATE_REFUND = 18;
 
     /**
      * __construct
@@ -400,16 +401,16 @@ class StripeConnect extends PaymentMethodBase
     /**
      * updateRequiredFields
      * 
-     * @param array $data 
+     * @param array $requestParam 
      * @return bool
      */
-    public function updateRequiredFields(array $data): bool
+    public function updateRequiredFields(array $requestParam): bool
     {
         $requestType = '';
         $actionType = 'N/A';
-        if (isset($data['action_type'])) {
-            $actionType = $data['action_type'];
-            unset($data['action_type']);
+        if (isset($requestParam['action_type'])) {
+            $actionType = $requestParam['action_type'];
+            unset($requestParam['action_type']);
         }
         
         switch ($actionType) {
@@ -424,51 +425,51 @@ class StripeConnect extends PaymentMethodBase
                 break;
         }
 
-        return $this->doRequest($requestType, $data);
+        return $this->doRequest($requestType, $requestParam);
     }
 
     /**
      * updateBusinessType
      * 
-     * @param array $data 
+     * @param array $requestParam 
      * @return bool
      */
-    private function updateBusinessType(array $data): bool
+    private function updateBusinessType(array $requestParam): bool
     {
-        if (false === $this->update($data)) {
+        if (false === $this->update($requestParam)) {
             return false;
         }
 
-        $this->updateUserMeta('stripe_business_type', $data['business_type']);
+        $this->updateUserMeta('stripe_business_type', $requestParam['business_type']);
         return true;
     }
 
     /**
      * addFinancialInfo
      * 
-     * @param array $data 
+     * @param array $requestParam 
      * @return bool
      */
-    private function addFinancialInfo(array $data): bool
+    private function addFinancialInfo(array $requestParam): bool
     {
         $businessType = $this->getUserMeta('stripe_business_type');
 
         $this->getBaseCurrencyCode();
-        $data = [
+        $requestParam = [
                 'external_account' => [
                     'object' => 'bank_account',
-                    'account_holder_name' => $data['account_holder_name'],
-                    'account_number' => $data['account_number'],
+                    'account_holder_name' => $requestParam['account_holder_name'],
+                    'account_number' => $requestParam['account_number'],
                     'account_holder_type' => $businessType,
                     /*'country' => strtoupper($this->userData['country_code']),
                     'currency' => $this->systemCurrencyCode,*/
                     'country' => 'US',
                     'currency' => 'USD',
-                    'routing_number' => $data['routing_number'],
+                    'routing_number' => $requestParam['routing_number'],
                 ]
             ];
 
-        $this->resp = $this->createExternalAccount($data);
+        $this->resp = $this->createExternalAccount($requestParam);
         if (false === $this->resp) {
             return false;
         }
@@ -478,32 +479,32 @@ class StripeConnect extends PaymentMethodBase
     /**
      * updateAccount
      * 
-     * @param array $data 
+     * @param array $requestParam 
      * @return bool
      */
-    private function updateAccount(array $data): bool
+    private function updateAccount(array $requestParam): bool
     {
         $relationship = [];
         $personData = [];
 
         $personId = $this->getRelationshipPersonId();
 
-        if (array_key_exists('relationship', $data)) {
-            $relationship = $data['relationship'];
-            unset($data['relationship']);
+        if (array_key_exists('relationship', $requestParam)) {
+            $relationship = $requestParam['relationship'];
+            unset($requestParam['relationship']);
         }
 
-        if (!empty($personId) && array_key_exists($personId, $data)) {
-            $personData = $data[$personId];
-            unset($data[$personId]);
+        if (!empty($personId) && array_key_exists($personId, $requestParam)) {
+            $personData = $requestParam[$personId];
+            unset($requestParam[$personId]);
         }
 
         if (in_array('individual.id_number', $this->getRequiredFields())) {
-            $data['individual']['id_number'] = $this->doRequest(self::REQUEST_PERSON_TOKEN);
+            $requestParam['individual']['id_number'] = $this->doRequest(self::REQUEST_PERSON_TOKEN);
         }
 
-        if (!empty($data)) {
-            $this->resp = $this->update($data);        }
+        if (!empty($requestParam)) {
+            $this->resp = $this->update($requestParam);        }
 
         if (empty($personId) && !empty($relationship)) {
             $this->resp = $this->doRequest(self::REQUEST_CREATE_PERSON, ['relationship' => $relationship]);
@@ -513,9 +514,9 @@ class StripeConnect extends PaymentMethodBase
             $this->updateUserMeta('stripe_person_id', $this->resp->id);
         } else if (!empty($personId) && (!empty($relationship) || !empty($personData))) {
             $relationship = !empty($relationship) ? ['relationship' => $relationship] : [];
-            $data = array_merge($relationship, $personData);
-            // CommonHelper::printArray($data, true);
-            $this->resp = $this->doRequest(self::REQUEST_UPDATE_PERSON, $data);
+            $requestParam = array_merge($relationship, $personData);
+            // CommonHelper::printArray($requestParam, true);
+            $this->resp = $this->doRequest(self::REQUEST_UPDATE_PERSON, $requestParam);
             if (false === $this->resp) {
                 return false;
             }
@@ -552,14 +553,14 @@ class StripeConnect extends PaymentMethodBase
             return false;
         }
 
-        $data = [
+        $requestParam = [
             'verification' => [
                 'document' => [
                     $side => $this->resp
                 ]
             ]
         ];
-        $this->resp = $this->doRequest(self::REQUEST_UPDATE_PERSON, $data);
+        $this->resp = $this->doRequest(self::REQUEST_UPDATE_PERSON, $requestParam);
         return (false === $this->resp) ? false : true;
     }
 
@@ -657,17 +658,17 @@ class StripeConnect extends PaymentMethodBase
     /**
      * initiateSession
      * 
-     * @param array $data
+     * @param array $requestParam
      * @return bool
      */
-    public function initiateSession(array $data): bool
+    public function initiateSession(array $requestParam): bool
     {
-        if (empty($data)) {
+        if (empty($requestParam)) {
             $this->error = Labels::getLabel('MSG_INVALID_REQUEST', $this->langId);
             return false;
         }
 
-        $this->resp = $this->doRequest(self::REQUEST_CREATE_SESSION, $data);
+        $this->resp = $this->doRequest(self::REQUEST_CREATE_SESSION, $requestParam);
         if (false === $this->resp) {
             return false;
         }
@@ -688,17 +689,17 @@ class StripeConnect extends PaymentMethodBase
     /**
      * createPriceObject
      * 
-     * @param array $data
+     * @param array $requestParam
      * @return bool
      */
-    public function createPriceObject(array $data): bool
+    public function createPriceObject(array $requestParam): bool
     {
-        if (empty($data)) {
+        if (empty($requestParam)) {
             $this->error = Labels::getLabel('MSG_INVALID_REQUEST', $this->langId);
             return false;
         }
 
-        $this->resp = $this->doRequest(self::REQUEST_CREATE_PRICE, $data);
+        $this->resp = $this->doRequest(self::REQUEST_CREATE_PRICE, $requestParam);
         if (false === $this->resp) {
             return false;
         }
@@ -719,21 +720,21 @@ class StripeConnect extends PaymentMethodBase
     /**
      * createCustomerObject
      * 
-     * @param array $data
+     * @param array $requestParam
      * @return bool
      */
-    public function createCustomerObject(array $data): bool
+    public function createCustomerObject(array $requestParam): bool
     {
-        if (empty($data)) {
+        if (empty($requestParam)) {
             $this->error = Labels::getLabel('MSG_INVALID_REQUEST', $this->langId);
             return false;
         }
 
-        $data = $this->formatCustomerDataFromOrder($data);
+        $requestParam = $this->formatCustomerDataFromOrder($requestParam);
         if (!empty($this->getCustomerId())) {
-            $this->resp = $this->doRequest(self::REQUEST_UPDATE_CUSTOMER, $data);            
+            $this->resp = $this->doRequest(self::REQUEST_UPDATE_CUSTOMER, $requestParam);            
         } else {
-            $this->resp = $this->doRequest(self::REQUEST_CREATE_CUSTOMER, $data);            
+            $this->resp = $this->doRequest(self::REQUEST_CREATE_CUSTOMER, $requestParam);            
         }
 
         if (false === $this->resp) {
@@ -820,13 +821,13 @@ class StripeConnect extends PaymentMethodBase
     /**
      * loadAllAccounts
      * 
-     * @param $data - Used for pagination
+     * @param $requestParam - Used for pagination
      * Detail : https://stripe.com/docs/api/accounts/list?lang=php
      * @return bool
      */
-    public function loadAllAccounts(array $data = ['limit' => 10]): bool
+    public function loadAllAccounts(array $requestParam = ['limit' => 10]): bool
     {
-        $this->resp = $this->doRequest(self::REQUEST_ALL_CONNECT_ACCOUNTS, $data);
+        $this->resp = $this->doRequest(self::REQUEST_ALL_CONNECT_ACCOUNTS, $requestParam);
         if (false === $this->resp) {
             return false;
         }
@@ -847,12 +848,28 @@ class StripeConnect extends PaymentMethodBase
     /**
      * doTransfer
      * 
-     * @param $data
+     * @param $requestParam
      * @return bool
      */
-    public function doTransfer(array $data): bool
+    public function doTransfer(array $requestParam): bool
     {
-        $this->resp = $this->doRequest(self::REQUEST_TRANSFER_AMOUNT, $data);
+        $this->resp = $this->doRequest(self::REQUEST_TRANSFER_AMOUNT, $requestParam);
+        if (false === $this->resp) {
+            return false;
+        }
+        return true;
+    }
+
+    /**
+     * initiateRefund
+     * 
+     * @param $requestParam
+     * Follow : https://stripe.com/docs/api/refunds/create
+     * @return bool
+     */
+    public function initiateRefund(array $requestParam): bool
+    {
+        $this->resp = $this->doRequest(self::REQUEST_INITIATE_REFUND, $requestParam);
         if (false === $this->resp) {
             return false;
         }

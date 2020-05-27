@@ -225,7 +225,7 @@ class StripeConnectPayController extends PaymentController
 
             $paymentAmount = $orderPaymentObj->getOrderPaymentGatewayAmount();
 
-            if (false === $orderPaymentObj->addOrderPayment($this->settings["plugin_name"], $intentId, $paymentAmount, Labels::getLabel("MSG_Received_Payment", $this->siteLangId), $message)) {
+            if (false === $orderPaymentObj->addOrderPayment($this->settings["plugin_code"], $intentId, $paymentAmount, Labels::getLabel("MSG_Received_Payment", $this->siteLangId), $message)) {
                 $orderPaymentObj->addOrderPaymentComments($message);
             }
         } else if ($payload['type'] == "payment_intent.payment_failed") {

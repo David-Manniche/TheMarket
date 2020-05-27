@@ -5,12 +5,12 @@ trait StripeConnectFunctions
     /**
      * create - Create Custom Account
      * 
-     * @param array $data 
+     * @param array $requestParam 
      * @return object
      */
-    private function create(array $data): object
+    private function create(array $requestParam): object
     {
-        return \Stripe\Account::create($data);
+        return \Stripe\Account::create($requestParam);
     }
 
     /**
@@ -27,28 +27,28 @@ trait StripeConnectFunctions
     /**
      * update - Update Account Data
      * 
-     * @param array $data 
+     * @param array $requestParam 
      * @return object
      */
-    private function update(array $data): object
+    private function update(array $requestParam): object
     {
         return \Stripe\Account::update(
             $this->getAccountId(),
-            $data
+            $requestParam
         );
     }
 
     /**
      * createExternalAccount - For Financial(Bank) Data
      * 
-     * @param array $data 
+     * @param array $requestParam 
      * @return object
      */
-    private function createExternalAccount(array $data): object
+    private function createExternalAccount(array $requestParam): object
     {
         return \Stripe\Account::createExternalAccount(
             $this->getAccountId(),
-            $data
+            $requestParam
         );
     }
 
@@ -67,31 +67,31 @@ trait StripeConnectFunctions
     /**
      * createPerson - Relationship Person
      * 
-     * @param array $data 
+     * @param array $requestParam 
      * @return object
      */
-    private function createPerson(array $data): object
+    private function createPerson(array $requestParam): object
     {
-        array_walk_recursive($data, function (&$val) {
+        array_walk_recursive($requestParam, function (&$val) {
             if (!is_object($val) && ($val == 0 || $val == 1)) {
                 $val = 0 < $val ? 'true' : 'false';
             }
         });
         return \Stripe\Account::createPerson(
             $this->getAccountId(),
-            $data
+            $requestParam
         );
     }
 
     /**
      * updatePerson
      * 
-     * @param array $data - Update Relationship Person
+     * @param array $requestParam - Update Relationship Person
      * @return object
      */
-    private function updatePerson(array $data): object
+    private function updatePerson(array $requestParam): object
     {
-        array_walk_recursive($data, function (&$val) {
+        array_walk_recursive($requestParam, function (&$val) {
             if (!is_object($val) && ($val == 0 || $val == 1)) {
                 $val = 0 < $val ? 'true' : 'false';
             }
@@ -99,7 +99,7 @@ trait StripeConnectFunctions
         return \Stripe\Account::updatePerson(
             $this->getAccountId(),
             $this->getRelationshipPersonId(),
-            $data
+            $requestParam
         );
     }
 
@@ -133,7 +133,7 @@ trait StripeConnectFunctions
     /**
      * createSession
      * 
-     * @param array $data 
+     * @param array $requestParam 
      *      e.g.[
      *          'success_url' => '',
      *          'cancel_url' => '',
@@ -147,9 +147,9 @@ trait StripeConnectFunctions
      *       ]
      * @return object
      */
-    private function createSession(array $data): object
+    private function createSession(array $requestParam): object
     {
-        $this->resp = \Stripe\Checkout\Session::create($data);
+        $this->resp = \Stripe\Checkout\Session::create($requestParam);
         if (false === $this->resp) {
             return (object) array();
         }
@@ -159,36 +159,36 @@ trait StripeConnectFunctions
     /**
      * createPrice
      *
-     * @param array $data
+     * @param array $requestParam
      * @return object
      */
-    private function createPrice(array $data): object
+    private function createPrice(array $requestParam): object
     {
-        return \Stripe\Price::create($data);
+        return \Stripe\Price::create($requestParam);
     }
 
     /**
      * createCustomer
      *
-     * @param array $data
+     * @param array $requestParam
      * @return object
      */
-    private function createCustomer(array $data): object
+    private function createCustomer(array $requestParam): object
     {
-        return \Stripe\Customer::create($data);
+        return \Stripe\Customer::create($requestParam);
     }
 
     /**
      * updateCustomer
      *
-     * @param array $data
+     * @param array $requestParam
      * @return object
      */
-    private function updateCustomer(array $data): object
+    private function updateCustomer(array $requestParam): object
     {
         return \Stripe\Customer::update(
             $this->getCustomerId(),
-            $data
+            $requestParam
         );
     }
 
@@ -208,18 +208,18 @@ trait StripeConnectFunctions
     /**
      * connectedAccounts
      * 
-     * @param array $data
+     * @param array $requestParam
      * @return object
      */
-    private function connectedAccounts(array $data = ['limit' => 10]): object
+    private function connectedAccounts(array $requestParam = ['limit' => 10]): object
     {
-        return \Stripe\Account::all($data);
+        return \Stripe\Account::all($requestParam);
     }
 
     /**
      * transferAmount
      * 
-     * @param array $data : [
+     * @param array $requestParam : [
      *         'amount' => 7000,
      *         'currency' => 'inr',
      *         'destination' => '{{CONNECTED_STRIPE_ACCOUNT_ID}}',
@@ -227,9 +227,21 @@ trait StripeConnectFunctions
      *       ]
      * @return object
      */
-    private function transferAmount(array $data = []): object
+    private function transferAmount(array $requestParam = []): object
     {
-        return \Stripe\Transfer::create($data);
+        return \Stripe\Transfer::create($requestParam);
+    }
+
+    /**
+     * requestRefund
+     * 
+     * @param array $requestParam
+     * Follow : https://stripe.com/docs/api/refunds/create
+     * @return object
+     */
+    private function requestRefund(array $requestParam = []): object
+    {
+        return \Stripe\Refund::create($requestParam);
     }
     
     /**
@@ -238,7 +250,7 @@ trait StripeConnectFunctions
      * @param  mixed $requestType
      * @return mixed
      */
-    public function doRequest(int $requestType, array $data = [])
+    public function doRequest(int $requestType, array $requestParam = [])
     {
         try {
             switch ($requestType) {
@@ -249,49 +261,52 @@ trait StripeConnectFunctions
                     return $this->retrieve();
                     break;
                 case self::REQUEST_UPDATE_ACCOUNT:
-                    return $this->updateAccount($data);
+                    return $this->updateAccount($requestParam);
                     break;
                 case self::REQUEST_PERSON_TOKEN:
                     return $this->getPersonToken();
                     break;
                 case self::REQUEST_ADD_BANK_ACCOUNT:
-                    return $this->addFinancialInfo($data);
+                    return $this->addFinancialInfo($requestParam);
                     break;
                 case self::REQUEST_UPDATE_BUSINESS_TYPE:
-                    return $this->updateBusinessType($data);
+                    return $this->updateBusinessType($requestParam);
                     break;
                 case self::REQUEST_CREATE_PERSON:
-                    return $this->createPerson($data);
+                    return $this->createPerson($requestParam);
                     break;
                 case self::REQUEST_UPDATE_PERSON:
-                    return $this->updatePerson($data);
+                    return $this->updatePerson($requestParam);
                     break;
                 case self::REQUEST_UPLOAD_VERIFICATION_FILE:
-                    return $this->createFile(reset($data));
+                    return $this->createFile(reset($requestParam));
                     break;
                 case self::REQUEST_DELETE_ACCOUNT:
                     return $this->delete();
                     break;
                 case self::REQUEST_CREATE_SESSION:
-                    return $this->createSession($data);
+                    return $this->createSession($requestParam);
                     break;
                 case self::REQUEST_CREATE_PRICE:
-                    return $this->createPrice($data);
+                    return $this->createPrice($requestParam);
                     break;
                 case self::REQUEST_CREATE_CUSTOMER:
-                    return $this->createCustomer($data);
+                    return $this->createCustomer($requestParam);
                     break;
                 case self::REQUEST_UPDATE_CUSTOMER:
-                    return $this->updateCustomer($data);
+                    return $this->updateCustomer($requestParam);
                     break;
                 case self::REQUEST_CREATE_LOGIN_LINK:
                     return $this->loginLink();
                     break;
                 case self::REQUEST_ALL_CONNECT_ACCOUNTS:
-                    return $this->connectedAccounts($data);
+                    return $this->connectedAccounts($requestParam);
                     break;
                 case self::REQUEST_TRANSFER_AMOUNT:
-                    return $this->transferAmount($data);
+                    return $this->transferAmount($requestParam);
+                    break;
+                case self::REQUEST_INITIATE_REFUND:
+                    return $this->requestRefund($requestParam);
                     break;
             }
         } catch (\Stripe\Exception\CardException $e) {
