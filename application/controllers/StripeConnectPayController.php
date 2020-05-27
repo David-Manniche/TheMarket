@@ -208,39 +208,75 @@ class StripeConnectPayController extends PaymentController
     public function paymentStatus()
     {   
         $this->includePlugin();
-        $this->settings = $this->stripeConnect->getKeys();
-
-        $payload = @file_get_contents('php://input');
-        $sig_header = $_SERVER['HTTP_STRIPE_SIGNATURE'];
-
-        $data = [
-            'payload' => $payload,
-            'sig_header' => $sig_header
-        ];
         
-        if ($this->stripeConnect->createWebhookEvent($data)) {
+        if (false === $this->stripeConnect->init(true)) {
             $this->setErrorAndRedirect();
         }
 
-        $event = $this->stripeConnect->getWebhookEvent();
-        if ($event->type == "order.payment_succeeded") {
-            $orderResp = $event->data->object;
-            $metaData = $orderResp->metadata;
-            $charge = $orderResp->metadata;
+        $this->settings = $this->stripeConnect->getKeys();
 
-            $orderId = $metaData->orderId;
+        $payload = @file_get_contents('php://input');
+        $payload = json_decode($payload, true);
+        
+        // $sig_header = $_SERVER['HTTP_STRIPE_SIGNATURE'];
+
+        if ($payload['type'] == "payment_intent.succeeded") {
+            $intent = $payload['data']['object'];
+            $intentId = $intent['id'];
+            $charges = $intent['charges']['data'];
+
+            $message = '';
+
+            foreach ($charges as $charge) {
+                $message .= 'Id: ' . $charge['id'] . "&";
+                $message .= 'Object: ' . $charge['object'] . "&";
+                $message .= 'Amount: ' . $charge['amount'] . "&";
+                $message .= 'Amount Refunded: ' . $charge['amount_refunded'] . "&";
+                $message .= 'Application Fee: ' . $charge['application_fee'] . "&";
+                $message .= 'Balance Transaction: ' . $charge['balance_transaction'] . "&";
+                $message .= 'Captured: ' . $charge['captured'] . "&";
+                $message .= 'Created: ' . $charge['created'] . "&";
+                $message .= 'Currency: ' . $charge['currency'] . "&";
+                $message .= 'Customer: ' . $charge['customer'] . "&";
+                $message .= 'Description: ' . $charge['description'] . "&";
+                $message .= 'Destination: ' . $charge['destination'] . "&";
+                $message .= 'Dispute: ' . $charge['dispute'] . "&";
+                $message .= 'Failure Code: ' . $charge['failure_code'] . "&";
+                $message .= 'Failure Message: ' . $charge['failure_message'] . "&";
+                $message .= 'Invoice: ' . $charge['invoice'] . "&";
+                $message .= 'Livemode: ' . $charge['livemode'] . "&";
+                $message .= 'Paid: ' . $charge['paid'] . "&";
+                $message .= 'Receipt Email: ' . $charge['receipt_email'] . "&";
+                $message .= 'Receipt Number: ' . $charge['receipt_number'] . "&";
+                $message .= 'Refunded: ' . $charge['refunded'] . "&";
+                $message .= 'Statement Descriptor: ' . $charge['statement_descriptor'] . "&";
+                $message .= 'Status: ' . $charge['status'] . "& \n\n";
+            }
+
+            $orderInfo = explode('-', $charges[0]['statement_descriptor']);
+            $orderId = $orderInfo[0];
+
+            /* Recording Payment in DB */
             $orderPaymentObj = new OrderPayment($orderId, $this->siteLangId);
+
             $paymentAmount = $orderPaymentObj->getOrderPaymentGatewayAmount();
+
+            if (false === $orderPaymentObj->addOrderPayment($this->settings["plugin_name"], $intentId, $paymentAmount, Labels::getLabel("MSG_Received_Payment", $this->siteLangId), $message)) {
+                $orderPaymentObj->addOrderPaymentComments($message);
+            }
+        } else if ($payload['type'] == "payment_intent.payment_failed") {
+            $intent = $payload['data']['object'];
+            $intentId = $intent['id'];
+
+            $error_message = $intent['last_payment_error'] ? $intent['last_payment_error']['message'] : "";
             
-            $orderPaymentObj = new OrderPayment($orderId);
-            $orderPaymentObj->addOrderPayment($this->settings["plugin_name"], $orderResp->id, $paymentAmount, Labels::getLabel("MSG_Received_Payment", $this->siteLangId), $message);
-        } elseif ($event->type == "payment_intent.succeeded") {
-            $intent = $event->data->object;
-            $intentId = $intent->id;
-        } elseif ($event->type == "payment_intent.payment_failed") {
-            $intent = $event->data->object;
-            $error_message = $intent->last_payment_error ? $intent->last_payment_error->message : "";
-            $this->setErrorAndRedirect($error_message);
+            $orderInfo = explode('-', $charges[0]['statement_descriptor']);
+            $orderId = $orderInfo[0];
+
+            /* Recording Payment in DB */
+            $orderPaymentObj = new OrderPayment($orderId, $this->siteLangId);
+
+            $orderPaymentObj->addOrderPaymentComments($error_message);
         }
     }
 }

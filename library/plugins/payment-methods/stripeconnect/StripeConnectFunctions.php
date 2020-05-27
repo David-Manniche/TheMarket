@@ -227,6 +227,7 @@ trait StripeConnectFunctions
         $payload = $data['payload'];
         $sig_header = $data['sig_header'];
         $endpoint_secret = $this->settings['webhook_signing_secret'];
+
         return \Stripe\Webhook::constructEvent(
             $payload, $sig_header, $endpoint_secret
         );
@@ -335,7 +336,7 @@ trait StripeConnectFunctions
             // yourself an email
         } catch (\Stripe\Exception\SignatureVerificationException $e) {
             // Display a very generic error to the user, and maybe send
-            $this->error = $e->getError()->param . ' - ' . $e->getMessage();
+            $this->error = $e->getMessage();
             // yourself an email
         } catch (\UnexpectedValueException $e) {
             // Display a very generic error to the user, and maybe send

@@ -61,23 +61,25 @@ class StripeConnect extends PaymentMethodBase
     /**
      * init
      *
+     * @param bool $webhook
      * @return void
      */
-    public function init()
+    public function init(bool $webhook = false)
     {
         if (false == $this->validateSettings()) {
             return false;
         }
 
-        if (false === $this->validateLoggedUser()) {
-            return false;
+        if (false === $webhook) {
+            if (false === $this->validateLoggedUser()) {
+                return false;
+            }
+            $this->loadLoggedUserInfo();
         }
 
         if (isset($this->settings['env']) && applicationConstants::YES == $this->settings['env']) {
             $this->liveMode = "live_";
         }
-
-        $this->loadLoggedUserInfo();
 
         require_once dirname(__FILE__) . '/vendor/autoload.php';
 
@@ -102,7 +104,7 @@ class StripeConnect extends PaymentMethodBase
      */
     public function getKeys(): array
     {
-        return empty($this->settings) ? $this->stripeConnect->getSettings() : $this->settings;
+        return empty($this->settings) ? $this->getSettings() : $this->settings;
     }
 
     /**
