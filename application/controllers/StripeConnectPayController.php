@@ -20,12 +20,6 @@ class StripeConnectPayController extends PaymentController
         }
 
         $this->stripeConnect = new StripeConnect($this->siteLangId);
-
-        $this->settings = $this->stripeConnect->getKeys();
-
-        if (isset($this->settings['env']) && applicationConstants::YES == $this->settings['env']) {
-            $this->liveMode = "live_";
-        }
     }
 
     public function init()
@@ -38,6 +32,12 @@ class StripeConnectPayController extends PaymentController
 
         if (!empty($this->stripeConnect->getError())) {
             $this->setErrorAndRedirect();
+        }
+
+        $this->settings = $this->stripeConnect->getKeys();
+
+        if (isset($this->settings['env']) && applicationConstants::YES == $this->settings['env']) {
+            $this->liveMode = "live_";
         }
     }
 
@@ -90,7 +90,8 @@ class StripeConnectPayController extends PaymentController
             $data = [
                 'mode' => 'payment',
                 'payment_method_types' => ['card'],
-                'success_url' => CommonHelper::generateFullUrl('custom', 'paymentSuccess', [$orderInfo['id']]),
+                // 'success_url' => CommonHelper::generateFullUrl(self::KEY_NAME . 'pay', 'distribute', [$orderId]),
+                'success_url' => CommonHelper::generateUrl('custom', 'paymentSuccess', array($orderInfo['id'])),
                 'cancel_url' => $cancelUrl,
                 'line_items' => [],
                 'customer' => $customerId,
@@ -133,13 +134,13 @@ class StripeConnectPayController extends PaymentController
                 
                 $data['payment_intent_data']['statement_descriptor'] = $op['op_invoice_number'];
 
-                /*$accountId = User::getUserMeta($op['op_selprod_user_id'], 'stripe_account_id');
+                $accountId = User::getUserMeta($op['op_selprod_user_id'], 'stripe_account_id');
                 if (!empty($accountId)) {
                     $data['payment_intent_data']['transfer_data'] = [
                         'destination' => $accountId,
                         'amount' => $this->formatPayableAmount($netAmount - $op['op_commission_charged'])
                     ];
-                }*/
+                }
             }
             /*CommonHelper::printArray($orderInfo);
             CommonHelper::printArray($orderProducts, true);*/
@@ -168,9 +169,46 @@ class StripeConnectPayController extends PaymentController
         return $amount * 100;
     }
 
-    public function distribute()
+    /*public function distribute($orderId)
+    {   
+        $this->init();
+
+        $orderPaymentObj = new OrderPayment($orderId, $this->siteLangId);
+        $paymentAmount = $orderPaymentObj->getOrderPaymentGatewayAmount();
+        $payableAmount = $this->formatPayableAmount($paymentAmount);
+        $orderInfo = $orderPaymentObj->getOrderPrimaryinfo();
+
+        $orderObj = new Orders();
+        $orderProducts = $orderObj->getChildOrders(array('order_id' => $orderInfo['id']), $orderInfo['order_type'], $orderInfo['order_language_id']);
+
+        foreach ($orderProducts as $op) {
+            $accountId = User::getUserMeta($op['op_selprod_user_id'], 'stripe_account_id');
+            if (empty($accountId)) {
+                continue;
+            }
+            
+            $netAmount = CommonHelper::orderProductAmount($op, 'NETAMOUNT');
+
+            $data = [
+                'amount' => $this->formatPayableAmount($netAmount - $op['op_commission_charged']),
+                'currency' => $orderInfo['order_currency_code'],
+                'destination' => $accountId,
+                'transfer_group' => $orderId,
+            ];
+
+            if (false === $this->stripeConnect->doTransfer($data)) {
+                $this->setErrorAndRedirect();        
+            }
+        }
+        $orderPaymentObj = new OrderPayment($orderInfo['id']);
+        $orderPaymentObj->addOrderPayment($this->settings["plugin_name"], $orderResp->id, $paymentAmount, Labels::getLabel("MSG_Received_Payment", $this->siteLangId), $message);
+        FatApp::redirectUser(CommonHelper::generateUrl('custom', 'paymentSuccess', array($orderInfo['id'])));
+    }*/
+
+    public function paymentStatus()
     {   
         $this->includePlugin();
+        $this->settings = $this->stripeConnect->getKeys();
 
         $payload = @file_get_contents('php://input');
         $sig_header = $_SERVER['HTTP_STRIPE_SIGNATURE'];
@@ -193,31 +231,8 @@ class StripeConnectPayController extends PaymentController
             $orderId = $metaData->orderId;
             $orderPaymentObj = new OrderPayment($orderId, $this->siteLangId);
             $paymentAmount = $orderPaymentObj->getOrderPaymentGatewayAmount();
-            $orderInfo = $orderPaymentObj->getOrderPrimaryinfo();
-
-            $orderObj = new Orders();
-            $orderProducts = $orderObj->getChildOrders(array('order_id' => $orderInfo['id']), $orderInfo['order_type'], $orderInfo['order_language_id']);
-
-            foreach ($orderProducts as $op) {
-                $accountId = User::getUserMeta($op['op_selprod_user_id'], 'stripe_account_id');
-                if (empty($accountId)) {
-                    continue;
-                }
-                
-                $netAmount = CommonHelper::orderProductAmount($op, 'NETAMOUNT');
-
-                $data = [
-                    'amount' => $this->formatPayableAmount($netAmount - $op['op_commission_charged']),
-                    'currency' => $orderInfo['order_currency_code'],
-                    'destination' => $accountId,
-                    'transfer_group' => $orderId,
-                ];
-
-                if (false === $this->stripeConnect->doTransfer($data)) {
-                    $this->setErrorAndRedirect();        
-                }
-            }
-            $orderPaymentObj = new OrderPayment($orderInfo['id']);
+            
+            $orderPaymentObj = new OrderPayment($orderId);
             $orderPaymentObj->addOrderPayment($this->settings["plugin_name"], $orderResp->id, $paymentAmount, Labels::getLabel("MSG_Received_Payment", $this->siteLangId), $message);
         } elseif ($event->type == "payment_intent.succeeded") {
             $intent = $event->data->object;
@@ -227,7 +242,5 @@ class StripeConnectPayController extends PaymentController
             $error_message = $intent->last_payment_error ? $intent->last_payment_error->message : "";
             $this->setErrorAndRedirect($error_message);
         }
-
-        EmailHandler::sendSmtpEmail('satbir.kaushik@fatbit.in', 'Stripe Payment Response', json_encode($event));
     }
 }

@@ -102,7 +102,7 @@ class StripeConnect extends PaymentMethodBase
      */
     public function getKeys(): array
     {
-        return $this->settings;
+        return empty($this->settings) ? $this->stripeConnect->getSettings() : $this->settings;
     }
 
     /**
