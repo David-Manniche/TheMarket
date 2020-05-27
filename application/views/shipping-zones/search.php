@@ -29,6 +29,7 @@
 			</div>
 		</div>
 		<div class="col-auto">
+			<?php if ($canEdit) {?>
 			<ul class="actions">
 				<li>
 					<a href="javascript:0;"
@@ -49,6 +50,7 @@
 							class="fa fa-plus-square"></i></a>
 				</li>
 			</ul>
+			<?php } ?>
 		</div>
 	</div>
 	<?php if (!empty($shipRates)) { ?>
@@ -84,6 +86,7 @@
 				<td><?php echo CommonHelper::displayMoneyFormat($rate['shiprate_cost']);?>
 				</td>
 				<td>
+					<?php if ($canEdit) {?>
 					<ul class="actions">
 						<li>
 							<a href="javascript:0;"
@@ -98,6 +101,7 @@
 									class="fa fa-trash"></i></a>
 						</li>
 					</ul>
+					<?php }?>
 				</td>
 			</tr>
 			<?php } ?>
@@ -112,4 +116,7 @@
 </div>
 <?php
     }
+} else {
+    $message = Labels::getLabel('LBL_No_Records_Found', $siteLangId);
+    $this->includeTemplate('_partial/no-record-found.php', array('siteLangId'=>$siteLangId,'message'=>$message));
 }

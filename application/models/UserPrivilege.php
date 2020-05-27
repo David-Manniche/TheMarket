@@ -421,10 +421,10 @@ class UserPrivilege
 
         if (1 > $parentId) {
             $subusers = User::getSubUsers($userId, array('user_id'));
-            $allowedUsers = array_merge ($allowedUsers, array_column($subusers, 'user_id'));            
+            $allowedUsers = array_merge($allowedUsers, array_column($subusers, 'user_id'));
         }
         
-        if (in_array($data['brand_seller_id'], $allowedUsers))  {
+        if (in_array($data['brand_seller_id'], $allowedUsers)) {
             return true;
         }
         

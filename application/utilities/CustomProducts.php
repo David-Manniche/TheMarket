@@ -277,7 +277,7 @@ trait CustomProducts
         }
         $productOptions = Product::getProductOptions($product_id, $this->siteLangId, false, 1);
         $optionSeparateImage = Option::getAttributesById($option_id, 'option_is_separate_images');
-        if(count($productOptions) > 0 && $optionSeparateImage == 1){
+        if (count($productOptions) > 0 && $optionSeparateImage == 1) {
             FatUtility::dieJsonError(Labels::getLabel('LBL_you_have_already_added_option_having_separate_image', $this->siteLangId));
         }
         $prodObj = new Product($product_id);
@@ -890,7 +890,7 @@ trait CustomProducts
         /* saving of product Tag[ */
 
 
-        if (!$prodObj->addUpdateProductTags($product_tags)) {           
+        if (!$prodObj->addUpdateProductTags($product_tags)) {
             Message::addErrorMessage($prodObj->getError());
             FatUtility::dieWithError(Message::getHtml());
         }
@@ -1805,11 +1805,11 @@ trait CustomProducts
             
             $activatedTaxServiceId = Tax::getActivatedServiceId();
 
-            $tax->addFld('ptt_taxcat_id');            
+            $tax->addFld('ptt_taxcat_id');
             if ($activatedTaxServiceId) {
-                $tax->addFld('concat(IFNULL(taxcat_name,taxcat_identifier), " (",taxcat_code,")")as taxcat_name');               
-            }else{
-                $tax->addFld('IFNULL(taxcat_name,taxcat_identifier)as taxcat_name'); 
+                $tax->addFld('concat(IFNULL(taxcat_name,taxcat_identifier), " (",taxcat_code,")")as taxcat_name');
+            } else {
+                $tax->addFld('IFNULL(taxcat_name,taxcat_identifier)as taxcat_name');
             }
             
             $tax->doNotCalculateRecords();
@@ -1873,11 +1873,11 @@ trait CustomProducts
             FatUtility::dieWithError(Message::getHtml());
         }
 
-        if($post['product_brand_id'] < 1 && FatApp::getConfig("CONF_PRODUCT_BRAND_MANDATORY", FatUtility::VAR_INT, 1)){
+        if ($post['product_brand_id'] < 1 && FatApp::getConfig("CONF_PRODUCT_BRAND_MANDATORY", FatUtility::VAR_INT, 1)) {
             Message::addErrorMessage(Labels::getLabel('MSG_Please_Choose_Brand_From_List', $this->siteLangId));
             FatUtility::dieWithError(Message::getHtml());
         }
-        if($post['ptc_prodcat_id'] < 1){
+        if ($post['ptc_prodcat_id'] < 1) {
             Message::addErrorMessage(Labels::getLabel('MSG_Please_Choose_Category_From_List', $this->siteLangId));
             FatUtility::dieWithError(Message::getHtml());
         }
@@ -2025,7 +2025,7 @@ trait CustomProducts
             FatUtility::dieWithError(Message::getHtml());
         }
 
-        if ($prodData['product_type'] == Product::PRODUCT_TYPE_PHYSICAL) {
+        /* if ($prodData['product_type'] == Product::PRODUCT_TYPE_PHYSICAL) {
             $psFree = isset($post['ps_free']) ? $post['ps_free'] : 0;
             $psFromCountryId = 0;
             $prodShippingDetails = Product::getProductShippingDetails($productId, $this->siteLangId, $prodData['product_seller_id']);
@@ -2036,7 +2036,7 @@ trait CustomProducts
                 Message::addErrorMessage($prod->getError());
                 FatUtility::dieWithError(Message::getHtml());
             }
-        }
+        } */
         $this->set('msg', Labels::getLabel('LBL_Product_Attributes_Setup_Successful', $this->siteLangId));
         $this->set('productId', $prod->getMainTableRecordId());
         $this->_template->render(false, false, 'json-success.php');
@@ -2257,14 +2257,27 @@ trait CustomProducts
             Message::addErrorMessage($this->str_invalid_request);
             FatUtility::dieWithError(Message::getHtml());
         }
-
+        
         $productFrm = $this->getProductShippingFrm($productId);
         $productData = Product::getAttributesById($productId);
         $prodShippingDetails = Product::getProductShippingDetails($productId, $this->siteLangId, $productData['product_seller_id']);
+        $productData['ps_free'] = $prodShippingDetails['ps_free'];
         if (isset($prodShippingDetails['ps_from_country_id'])) {
             $productData['shipping_country'] = Countries::getCountryById($prodShippingDetails['ps_from_country_id'], $this->siteLangId, 'country_name');
             $productData['ps_from_country_id'] = $prodShippingDetails['ps_from_country_id'];
         }
+        $productData['ps_free'] = (isset($prodShippingDetails['ps_free'])) ? $prodShippingDetails['ps_free'] : 0;
+        
+        /* [ GET ATTACHED PROFILE ID */
+        $profSrch = ShippingProfileProduct::getSearchObject();
+        $profSrch->addCondition('shippro_product_id', '=', $productId);
+        $proRs = $profSrch->getResultSet();
+        $profileData = FatApp::getDb()->fetch($proRs);
+        if (!empty($profileData)) {
+            $productData['shipping_profile'] = $profileData['profile_id'];
+        }
+        /* ]*/
+        
         $productFrm->fill($productData);
         $this->set('productFrm', $productFrm);
         $this->set('productId', $productId);
@@ -2313,22 +2326,27 @@ trait CustomProducts
         }
 
         $prod = new Product($productId);
-		if(FatApp::getConfig("CONF_PRODUCT_DIMENSIONS_ENABLE", FatUtility::VAR_INT, 1)) {
-			if (!$prod->saveProductData($post)) {
-				Message::addErrorMessage($prod->getError());
-				FatUtility::dieWithError(Message::getHtml());
-			}
-		}
-
-        $psFree = 0;
-        $prodShippingDetails = Product::getProductShippingDetails($productId, $this->siteLangId, $prodSellerId);
-        if (!empty($prodShippingDetails)) {
-            $psFree = $prodShippingDetails['ps_free'];
+        if (!$prod->saveProductData($post)) {
+            Message::addErrorMessage($prod->getError());
+            FatUtility::dieWithError(Message::getHtml());
         }
 
+        $psFree = isset($post['ps_free']) ? $post['ps_free'] : 0;
         if (!$prod->saveProductSellerShipping($prodSellerId, $psFree, $post['ps_from_country_id'])) {
             Message::addErrorMessage($prod->getError());
             FatUtility::dieWithError(Message::getHtml());
+        }
+
+        if (isset($post['shipping_profile']) && $post['shipping_profile'] > 0) {
+            $shipProProdData = array(
+                'shippro_shipprofile_id' => $post['shipping_profile'],
+                'shippro_product_id' => $productId
+            );
+            $spObj = new ShippingProfileProduct();
+            if (!$spObj->addProduct($shipProProdData)) {
+                Message::addErrorMessage($spObj->getError());
+                FatUtility::dieJsonError(Message::getHtml());
+            }
         }
 
         $productShiping = FatApp::getPostedData('product_shipping');

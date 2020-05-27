@@ -4,23 +4,23 @@ $productFrm->setFormTagAttribute('onsubmit', 'setUpProductShipping(this); return
 $productFrm->developerTags['colClassPrefix'] = 'col-md-';
 $productFrm->developerTags['fld_default_col'] = 12;
 
-$diomesionFld = $productFrm->getField('product_dimension_unit');
-$diomesionFld->developerTags['col'] = 6;
+$spProfileFld = $productFrm->getField('shipping_profile');
+$spProfileFld->developerTags['col'] = 6;
 
-$lenFld = $productFrm->getField('product_length');
-$lenFld->developerTags['col'] = 6;
-
-$widthFld = $productFrm->getField('product_width');
-$widthFld->developerTags['col'] = 6;
-
-$heightFld = $productFrm->getField('product_height');
-$heightFld->developerTags['col'] = 6;
+$spPackageFld = $productFrm->getField('product_ship_package');
+$spPackageFld->developerTags['col'] = 6;
 
 $weightUnitFld = $productFrm->getField('product_weight_unit');
 $weightUnitFld->developerTags['col'] = 6;
 
 $weightFld = $productFrm->getField('product_weight');
 $weightFld->developerTags['col'] = 6;
+
+$psFreeFld = $productFrm->getField('ps_free');
+$psFreeFld->developerTags['col'] = 6;
+
+$codFld = $productFrm->getField('product_cod_enabled');
+$codFld->developerTags['col'] = 6;
 
 $btnBackFld = $productFrm->getField('btn_back');
 $btnBackFld->developerTags['col'] = 6;

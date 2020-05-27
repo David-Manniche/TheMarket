@@ -318,7 +318,7 @@ $(document).on('keyup', "input[name='product_name']", function(){
         currObj.siblings('ul.dropdown-menu').remove();
         currObj.autocomplete({'source': function(request, response) {
         		$.ajax({
-        			url: fcom.makeUrl('seller', 'autoCompleteProducts'),
+        			url: fcom.makeUrl('ShippingProfileProducts', 'autoCompleteProducts'),
         			data: {keyword: request, fIsAjax:1, keyword:currObj.val()},
         			dataType: 'json',
         			type: 'post',
@@ -330,10 +330,10 @@ $(document).on('keyup', "input[name='product_name']", function(){
         		});
         	},
             select: function (event, ui) {
-                $("#"+parentForm+" input[name='selshipprod_selprod_id']").val(ui.item.id);
+                $("#"+parentForm+" input[name='shippro_product_id']").val(ui.item.id);
             }
         });
     }else{
-        $("#"+parentForm+" input[name='selshipprod_selprod_id']").val('');
+        $("#"+parentForm+" input[name='shippro_product_id']").val('');
     }
 });

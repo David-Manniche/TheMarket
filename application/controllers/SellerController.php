@@ -4451,7 +4451,7 @@ class SellerController extends SellerBaseController
             $srchFrm->addHiddenField('', 'selprod_id', $selProd_id);
             $srchFrm->fill(array('keyword' => $productsTitle[$selProd_id]));
         }
-		$this->set("canEdit", $this->userPrivilege->canEditSpecialPrice(UserAuthentication::getLoggedUserId(), true));
+        $this->set("canEdit", $this->userPrivilege->canEditSpecialPrice(UserAuthentication::getLoggedUserId(), true));
         $this->set("dataToEdit", $dataToEdit);
         $this->set("frmSearch", $srchFrm);
         $this->set("selProd_id", $selProd_id);
@@ -4797,7 +4797,7 @@ class SellerController extends SellerBaseController
             $frm->addCheckBox(Labels::getLabel('LBL_Translate_To_Other_Languages', $this->siteLangId), 'auto_update_other_langs_data', 1, array(), false, 0);
         }
 
-        $frm->addRequiredField(Labels::getLabel('LBL_Tax_Category', $this->siteLangId), 'taxcat_name'); 
+        $frm->addRequiredField(Labels::getLabel('LBL_Tax_Category', $this->siteLangId), 'taxcat_name');
         $fldMinSelPrice = $frm->addFloatField(Labels::getLabel('LBL_Minimum_Selling_Price', $this->siteLangId) . ' [' . CommonHelper::getCurrencySymbol(true) . ']', 'product_min_selling_price', '');
         $fldMinSelPrice->requirements()->setPositive();
 
@@ -4832,18 +4832,7 @@ class SellerController extends SellerBaseController
         } else {
             $productType = Product::getAttributesById($productId, 'product_type');
         }
-        if ($productType == Product::PRODUCT_TYPE_PHYSICAL) {
-            if($preqId == 0){
-                $frm->addCheckBox(Labels::getLabel('LBL_Product_Is_Eligible_For_Free_Shipping?', $this->siteLangId), 'ps_free', 1, array(), false, 0);
-            }
-            
-            $codFld = $frm->addCheckBox(Labels::getLabel('LBL_Product_Is_Available_for_Cash_on_Delivery_(COD)?', $this->siteLangId), 'product_cod_enabled', 1, array(), false, 0);
-            $paymentMethod = new PaymentMethods();
-            if (!$paymentMethod->cashOnDeliveryIsActive()) {
-                $codFld->addFieldTagAttribute('disabled', 'disabled');
-                $codFld->htmlAfterField = '<br/><small>' . Labels::getLabel('LBL_COD_option_is_disabled_in_payment_gateway_settings', $this->siteLangId) . '</small>';
-            }
-        }
+        
         $frm->addHiddenField('', 'product_id', $productId);
         $frm->addHiddenField('', 'preq_id', $preqId);
         $frm->addButton('', 'btn_back', Labels::getLabel('LBL_Back', $this->siteLangId));
@@ -4861,37 +4850,35 @@ class SellerController extends SellerBaseController
         } else {
             $productType = Product::getAttributesById($productId, 'product_type');
         }
-        if ($productType == Product::PRODUCT_TYPE_PHYSICAL && FatApp::getConfig("CONF_PRODUCT_DIMENSIONS_ENABLE", FatUtility::VAR_INT, 1)) {
-            $lengthUnitsArr = applicationConstants::getLengthUnitsArr($this->siteLangId);
-            $frm->addSelectBox(Labels::getLabel('LBL_Dimensions_Unit', $this->siteLangId), 'product_dimension_unit', $lengthUnitsArr)->requirements()->setRequired();
+        $shipProfileArr = ShippingProfile::getProfileArr($this->userParentId, true, true);
+        $frm->addSelectBox(Labels::getLabel('LBL_Shipping_Profile', $this->siteLangId), 'shipping_profile', $shipProfileArr)->requirements()->setRequired();
+        if ($productType == Product::PRODUCT_TYPE_PHYSICAL) {
+            if (FatApp::getConfig("CONF_PRODUCT_DIMENSIONS_ENABLE", FatUtility::VAR_INT, 1)) {
+                $shipPackArr = ShippingPackage::getAllNames();
+                $frm->addSelectBox(Labels::getLabel('LBL_Shipping_Package', $this->siteLangId), 'product_ship_package', $shipPackArr)->requirements()->setRequired();
+                
+                $weightUnitsArr = applicationConstants::getWeightUnitsArr($this->siteLangId);
+                $frm->addSelectBox(Labels::getLabel('LBL_Weight_Unit', $this->siteLangId), 'product_weight_unit', $weightUnitsArr)->requirements()->setRequired();
 
-            $lengthFld = $frm->addFloatField(Labels::getLabel('LBL_Length', $this->siteLangId), 'product_length', '0.00');
-            $lengthFld->requirements()->setRequired(true);
-            $lengthFld->requirements()->setFloatPositive();
-            $lengthFld->requirements()->setRange('0.00001', '9999999999');
+                $weightFld = $frm->addFloatField(Labels::getLabel('LBL_Weight', $this->siteLangId), 'product_weight', '0.00');
+                $weightFld->requirements()->setRequired(true);
+                $weightFld->requirements()->setFloatPositive();
+                $weightFld->requirements()->setRange('0.01', '9999999999');
+            }
 
-            $widthFld = $frm->addFloatField(Labels::getLabel('LBL_Width', $this->siteLangId), 'product_width', '0.00');
-            $widthFld->requirements()->setRequired(true);
-            $widthFld->requirements()->setFloatPositive();
-            $widthFld->requirements()->setRange('0.00001', '9999999999');
+            $frm->addCheckBox(Labels::getLabel('LBL_Product_Is_Eligible_For_Free_Shipping?', $this->siteLangId), 'ps_free', 1, array(), false, 0);
 
-            $heightFld = $frm->addFloatField(Labels::getLabel('LBL_Height', $this->siteLangId), 'product_height', '0.00');
-            $heightFld->requirements()->setRequired(true);
-            $heightFld->requirements()->setFloatPositive();
-            $heightFld->requirements()->setRange('0.00001', '9999999999');
-
-            $weightUnitsArr = applicationConstants::getWeightUnitsArr($this->siteLangId);
-            $frm->addSelectBox(Labels::getLabel('LBL_Weight_Unit', $this->siteLangId), 'product_weight_unit', $weightUnitsArr)->requirements()->setRequired();
-
-            $weightFld = $frm->addFloatField(Labels::getLabel('LBL_Weight', $this->siteLangId), 'product_weight', '0.00');
-            $weightFld->requirements()->setRequired(true);
-            $weightFld->requirements()->setFloatPositive();
-            $weightFld->requirements()->setRange('0.01', '9999999999');
+            $codFld = $frm->addCheckBox(Labels::getLabel('LBL_Product_Is_Available_for_Cash_on_Delivery_(COD)?', $this->siteLangId), 'product_cod_enabled', 1, array(), false, 0);
+            $paymentMethod = new PaymentMethods();
+            if (!$paymentMethod->cashOnDeliveryIsActive()) {
+                $codFld->addFieldTagAttribute('disabled', 'disabled');
+                $codFld->htmlAfterField = '<br/><small>' . Labels::getLabel('LBL_COD_option_is_disabled_in_payment_gateway_settings', $this->siteLangId) . '</small>';
+            }
             /* ] */
         }
         if ($preqId == 0) {
             $frm->addTextBox(Labels::getLabel('LBL_Country_the_Product_is_being_shipped_from', $this->siteLangId), 'shipping_country');
-            $frm->addHtml('', '', '<div id="tab_shipping"></div>'); 
+            //$frm->addHtml('', '', '<div id="tab_shipping"></div>');
         }
 
         $frm->addHiddenField('', 'ps_from_country_id');
@@ -4926,11 +4913,11 @@ class SellerController extends SellerBaseController
     {
         $selProdId = FatApp::getPostedData('selProdId', FatUtility::VAR_INT, 0);
         $qty = FatApp::getPostedData('qty', FatUtility::VAR_INT, 0);
-        if ( $selProdId < 1 ){
+        if ($selProdId < 1) {
             FatUtility::dieJsonError(Labels::getLabel('MSG_Please_choose_product', $this->siteLangId));
         }
         $minPurchaseQty = SellerProduct::getAttributesById($selProdId, 'selprod_min_order_qty');
-        if ( $qty < $minPurchaseQty){
+        if ($qty < $minPurchaseQty) {
             FatUtility::dieJsonError(Labels::getLabel('MSG_Quantity_cannot_be_less_than_the_Minimum_Order_Quantity', $this->siteLangId) . ': ' . $minPurchaseQty);
         }
         $this->_template->render(false, false, 'json-success.php');

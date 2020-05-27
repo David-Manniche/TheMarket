@@ -4,6 +4,7 @@ class ShippingZonesController extends SellerBaseController
     public function __construct($action)
     {
         parent::__construct($action);
+        $this->userPrivilege->canViewShippingProfiles(UserAuthentication::getLoggedUserId());
     }
     
     public function search($profileId)
@@ -29,6 +30,7 @@ class ShippingZonesController extends SellerBaseController
         $this->set("zoneLocations", $zoneLocations);
         $this->set("shipRatesData", $shipRates);
         $this->set("profile_id", $profileId);
+        $this->set('canEdit', $this->userPrivilege->canEditShippingProfiles(UserAuthentication::getLoggedUserId(), true));
         $this->_template->render(false, false);
     }
     
@@ -124,6 +126,7 @@ class ShippingZonesController extends SellerBaseController
     
     public function setup()
     {
+        $this->userPrivilege->canEditShippingProfiles(UserAuthentication::getLoggedUserId());
         $post = FatApp::getPostedData();
         if (empty($post)) {
             Message::addErrorMessage(Labels::getLabel('LBL_Invalid_Request', $this->siteLangId));
@@ -182,6 +185,8 @@ class ShippingZonesController extends SellerBaseController
     
     public function deleteZone($zoneId)
     {
+        $this->userPrivilege->canEditShippingProfiles(UserAuthentication::getLoggedUserId());
+        
         //== Remove zone from profile
         $sObj = new ShippingProfileZone($zoneId);
         if (!$sObj->deleteRecord()) {

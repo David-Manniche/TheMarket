@@ -4,6 +4,7 @@ class ShippingProfileController extends SellerBaseController
     public function __construct($action)
     {
         parent::__construct($action);
+        $this->userPrivilege->canViewShippingProfiles(UserAuthentication::getLoggedUserId());
     }
 
     public function index()
@@ -22,16 +23,16 @@ class ShippingProfileController extends SellerBaseController
         $page = FatApp::getPostedData('page', FatUtility::VAR_INT, 1);
         $post = $searchForm->getFormDataFromArray($data);
         
-        $prodCountSrch = SellerShipProfileProduct::getSearchObject($this->siteLangId);
+        $prodCountSrch = ShippingProfileProduct::getSearchObject($this->siteLangId);
         $prodCountSrch->doNotCalculateRecords();
         $prodCountSrch->doNotLimitRecords();
-        $prodCountSrch->addGroupBy('selshipprod_shipprofile_id');
-        $prodCountSrch->addMultipleFields(array("COUNT(*) as totalProducts, selshipprod_shipprofile_id"));
+        $prodCountSrch->addGroupBy('shippro_shipprofile_id');
+        $prodCountSrch->addMultipleFields(array("COUNT(*) as totalProducts, shippro_shipprofile_id"));
         $prodCountQuery = $prodCountSrch->getQuery();
         
         $srch = ShippingProfile::getSearchObject();
         $srch->addCondition('sprofile.shipprofile_user_id', '=', $userId);
-        $srch->joinTable('('. $prodCountQuery .')', 'LEFT OUTER JOIN', 'sproduct.selshipprod_shipprofile_id = sprofile.shipprofile_id', 'sproduct');
+        $srch->joinTable('(' . $prodCountQuery . ')', 'LEFT OUTER JOIN', 'sproduct.shippro_shipprofile_id = sprofile.shipprofile_id', 'sproduct');
         
         $srch->addMultipleFields(array('sprofile.*', 'if(sproduct.totalProducts is null, 0, sproduct.totalProducts) as totalProducts'));
         
@@ -39,7 +40,7 @@ class ShippingProfileController extends SellerBaseController
         $srch->addOrder('shipprofile_id', 'ASC');
         
         if (!empty($post['keyword'])) {
-            $srch->addCondition('sprofile.shipprofile_name', 'like', '%'.$post['keyword'].'%');
+            $srch->addCondition('sprofile.shipprofile_name', 'like', '%' . $post['keyword'] . '%');
         }
         
         $srch->setPageNumber($page);
@@ -85,11 +86,13 @@ class ShippingProfileController extends SellerBaseController
         $this->set('profile_id', $profileId);
         $this->set('frm', $frm);
         $this->set('profileData', $data);
+        $this->set('canEdit', $this->userPrivilege->canEditShippingProfiles(UserAuthentication::getLoggedUserId(), true));
         $this->_template->render();
     }
     
     public function setup()
     {
+        $this->userPrivilege->canEditShippingProfiles(UserAuthentication::getLoggedUserId());
         $frm = $this->getForm();
         $post = $frm->getFormDataFromArray(FatApp::getPostedData());
         if (empty($post)) {

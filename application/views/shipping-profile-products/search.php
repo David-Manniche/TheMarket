@@ -31,10 +31,10 @@ foreach ($productsData as $sn => $row) {
                 $td->appendElement('plaintext', array(), $imgData, true);
                 break;
             case 'actions':
-                if (isset($profileData['shipprofile_default']) && $profileData['shipprofile_default'] != 1) {
+                if ($canEdit && isset($profileData['shipprofile_default']) && $profileData['shipprofile_default'] != 1) {
                     $ul = $td->appendElement("ul", array('class' => 'actions'), '', true);
                     $li = $ul->appendElement("li");
-                    $li->appendElement('a', array('href' => 'javascript:void(0)', 'onClick' => 'removeProductFromProfile('. $row['selprod_id'] .')', 'title' => Labels::getLabel('LBL_Remove_Product_from_profile', $siteLangId), true), '<i class="fa fa-trash"></i>', true);
+                    $li->appendElement('a', array('href' => 'javascript:void(0)', 'onClick' => 'removeProductFromProfile('. $row['product_id'] .')', 'title' => Labels::getLabel('LBL_Remove_Product_from_profile', $siteLangId), true), '<i class="fa fa-trash"></i>', true);
                 }
             break;
             default:

@@ -11,9 +11,9 @@ $featuredFld->developerTags['cbHtmlAfterCheckbox'] = '<i class="input-helper"></
 $freeShopFld->developerTags['cbLabelAttributes'] = array('class' => 'checkbox');
 $freeShopFld->developerTags['cbHtmlAfterCheckbox'] = '<i class="input-helper"></i>'; */
 
-$codFld = $productFrm->getField('product_cod_enabled');
+/* $codFld = $productFrm->getField('product_cod_enabled');
 $codFld->developerTags['cbLabelAttributes'] = array('class' => 'checkbox');
-$codFld->developerTags['cbHtmlAfterCheckbox'] = '<i class="input-helper"></i>';
+$codFld->developerTags['cbHtmlAfterCheckbox'] = '<i class="input-helper"></i>'; */
 
 $btnBackFld = $productFrm->getField('btn_back');
 $btnBackFld->setFieldTagAttribute('onClick', 'customCatalogProductForm('.$preqId.');');
@@ -73,8 +73,8 @@ $btnBackFld->value = Labels::getLabel('LBL_Back', $siteLangId);
                     </div>
                 </div>
             </div>
-                <?php if ($productType == Product::PRODUCT_TYPE_PHYSICAL) { ?>
-                <?php /* 
+                <?php /* if ($productType == Product::PRODUCT_TYPE_PHYSICAL) { ?>
+                <?php  
                 <div class="col-md-4">
                     <div class="field-set">
                         <div class="caption-wraper"></div>
@@ -84,7 +84,7 @@ $btnBackFld->value = Labels::getLabel('LBL_Back', $siteLangId);
                             </div>
                         </div>
                     </div>
-                </div> */ ?>
+                </div>  ?>
                 <div class="col-md-4">
                     <div class="field-set">
                         <div class="caption-wraper"></div>
@@ -95,7 +95,7 @@ $btnBackFld->value = Labels::getLabel('LBL_Back', $siteLangId);
                         </div>
                     </div>
                 </div>
-                <?php } ?>
+                <?php } */ ?>
         </div>
         <div class="specifications-form-<?php echo $siteDefaultLangId; ?>"></div>
         <div class="specifications-list-<?php echo $siteDefaultLangId; ?>"></div>

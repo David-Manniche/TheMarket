@@ -317,7 +317,7 @@ $(document).on('keyup', "input[name='product_name']", function(){
         			},
         		});
         	},
-            select: function (event, ui) {
+            select: function (event, ui) {console.log(ui);
                 $("#"+parentForm+" input[name='shippro_product_id']").val(ui.item.id);
             }
         });

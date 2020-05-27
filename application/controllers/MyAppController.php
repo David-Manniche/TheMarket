@@ -139,7 +139,10 @@ class MyAppController extends FatController
             'fileSizeExceeded' => Labels::getLabel("MSG_FILE_SIZE_SHOULD_BE_LESSER_THAN_{SIZE-LIMIT}", $this->siteLangId),
             'copyToClipboard' => Labels::getLabel('LBL_Copy_to_clipboard', $this->siteLangId),
             'copied' => Labels::getLabel('LBL_Copied', $this->siteLangId),
-            'invalidGRecaptchaKeys' => Labels::getLabel('LBL_YOU_MIGHT_HAVE_INVALID_GOOGLE_RECAPTCHA_V3_KEYS._PLEASE_VERIFY.', $this->siteLangId),
+            'invalidGRecaptchaKeys' => Labels::getLabel('LBL_YOU_MIGHT_HAVE_INVALID_GOOGLE_RECAPTCHA_V3_KEYS._PLEASE_VERIFY.',
+             $this->siteLangId),
+             'saveProfileFirst' => Labels::getLabel('LBL_Save_Profile_First', $this->siteLangId),
+			'minimumOneLocationRequired' => Labels::getLabel('LBL_Minimum_one_location_is_required', $this->siteLangId)
             );
 
             $languages = Language::getAllNames(false);

@@ -11,7 +11,7 @@ class ShippingProfileProduct extends MyAppModel
     public static function getSearchObject()
     {
         $srch = new SearchBase(static::DB_TBL, 'sppro');
-        $srch->joinTable(Product::DB_TBL, 'LEFT JOIN', 'pro.product_id = sppro.shippro_product_id', 'pro');
+        $srch->joinTable(Product::DB_TBL, 'LEFT OUTER JOIN', 'pro.product_id = sppro.shippro_product_id', 'pro');
         $srch->addMultipleFields(array('product_id', 'product_identifier as product_name', 'shippro_shipprofile_id as profile_id'));
         return $srch;
     }

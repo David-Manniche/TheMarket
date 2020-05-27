@@ -15,7 +15,7 @@ $searchFrm->developerTags['fld_default_col'] = 6;
             <div class="col-auto">
                 <div class="content-header-right">
                     <a href="<?php echo CommonHelper::generateUrl('shippingProfile', 'form',[0]);?>"
-                        class="btn btn--secondary btn--sm"><?php echo Labels::getLabel('LBL_Create_Profile', $siteLangId);?></a>
+                        class="btn btn-outline-primary btn--sm"><?php echo Labels::getLabel('LBL_Create_Profile', $siteLangId);?></a>
                 </div>
             </div>
         </div>

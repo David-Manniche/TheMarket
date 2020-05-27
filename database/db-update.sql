@@ -166,12 +166,4 @@ CREATE TABLE `tbl_shipping_locations` (
 
 ALTER TABLE `tbl_shipping_locations`
   ADD UNIQUE KEY `tbl_shipping_locations_shiploc_shipprofile_id_unique` (`shiploc_shipprofile_id`,`shiploc_zone_id`,`shiploc_country_id`,`shiploc_state_id`);  
-
-CREATE TABLE `tbl_seller_shipping_profile_products` (
-  `selshipprod_shipprofile_id` int(11) NOT NULL,
-  `selshipprod_selprod_id` int(11) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-
-ALTER TABLE `tbl_seller_shipping_profile_products`
-  ADD UNIQUE KEY `selshipprod_shipprofile_id` (`selshipprod_selprod_id`);
 -- Shippping Module End-----

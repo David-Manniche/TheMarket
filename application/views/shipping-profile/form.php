@@ -80,10 +80,12 @@ $frm->developerTags['fld_default_col'] = 6;
 											</div>
 										</div>
 										<div class="col-auto">
+										<?php if($canEdit) {?>
 											<a href="javascript:0;"
 												onClick="zoneForm(<?php echo $profile_id;?>, 0)"
 												class="link font-bolder"><i class="fa fa-plus-square"></i>
 											</a>
+										<?php }?>
 										</div>
 									</div>
 								</div>
