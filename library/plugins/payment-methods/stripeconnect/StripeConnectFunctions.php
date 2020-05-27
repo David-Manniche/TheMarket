@@ -217,23 +217,6 @@ trait StripeConnectFunctions
     }
 
     /**
-     * webhookConstructEvent
-     * 
-     * @param array $data
-     * @return object
-     */
-    private function webhookConstructEvent(array $data = []): object
-    {
-        $payload = $data['payload'];
-        $sig_header = $data['sig_header'];
-        $endpoint_secret = $this->settings['webhook_signing_secret'];
-
-        return \Stripe\Webhook::constructEvent(
-            $payload, $sig_header, $endpoint_secret
-        );
-    }
-
-    /**
      * transferAmount
      * 
      * @param array $data : [
@@ -306,9 +289,6 @@ trait StripeConnectFunctions
                     break;
                 case self::REQUEST_ALL_CONNECT_ACCOUNTS:
                     return $this->connectedAccounts($data);
-                    break;
-                case self::REQUEST_CREATE_WEBHOOK_EVENT:
-                    return $this->webhookConstructEvent($data);
                     break;
                 case self::REQUEST_TRANSFER_AMOUNT:
                     return $this->transferAmount($data);
