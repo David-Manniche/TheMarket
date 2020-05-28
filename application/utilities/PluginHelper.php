@@ -118,31 +118,9 @@ trait PluginHelper
 
         $pluginType = Plugin::getAttributesByCode($keyName, 'plugin_type');
 
-        switch ($pluginType) {
-            case Plugin::TYPE_PUSH_NOTIFICATION:
-                $directory = "push-notification";
-                break;
-            case Plugin::TYPE_ADVERTISEMENT_FEED:
-                $directory = "advertisement-feed";
-                break;
-            case Plugin::TYPE_SMS_NOTIFICATION:
-                $directory = "sms-notification";
-                break;
-            case Plugin::TYPE_FULL_TEXT_SEARCH:
-                $directory = "full-text-search";
-                break;
-            case Plugin::TYPE_TAX_SERVICES:
-                $directory = "tax";
-                break;
-            case Plugin::TYPE_PAYMENT_METHOD:
-                $directory = "payment-methods";
-                break;
-            default:
-                $directory = "";
-                break;
-        }
+        $directory = Plugin::getDirectory($pluginType);
 
-        if (empty($directory)) {
+        if (false == $directory) {
             $error =  Labels::getLabel('MSG_INVALID_PLUGIN_TYPE', $langId);
             return false;
         }
