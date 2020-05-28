@@ -13,7 +13,8 @@ ALTER TABLE `tbl_tax_categories` ADD `taxcat_parent` INT(11) NOT NULL AFTER `tax
 
 
 INSERT INTO `tbl_plugins` (`plugin_identifier`, `plugin_type`, `plugin_code`, `plugin_active`, `plugin_display_order`) VALUES ('Stripe Connect', 11, 'StripeConnect', 1, 1); 
-ALTER TABLE `tbl_orders` ADD `order_pmethod_type` TINYINT(2) NOT NULL COMMENT 'Default Or Plugin In PaymentMethods' AFTER `order_pmethod_id`; UPDATE `tbl_orders` SET `order_pmethod_type` = '1' WHERE order_pmethod_type != 2;
+ALTER TABLE `tbl_orders` ADD `order_pmethod_type` TINYINT(2) NOT NULL COMMENT 'Default Or Plugin In PaymentMethods' AFTER `order_pmethod_id`;
+UPDATE `tbl_orders` SET `order_pmethod_type` = '1' WHERE order_pmethod_type != 2;
 
 ALTER TABLE `tbl_tax_categories` DROP INDEX `saletaxcat_identifier`; 
 ALTER TABLE `tbl_tax_categories` DROP INDEX `taxcat_identifier`; 

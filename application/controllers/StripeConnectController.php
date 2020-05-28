@@ -17,7 +17,7 @@ class StripeConnectController extends PaymentMethodBaseController
     public function init()
     {
         $error = '';
-        if (false === PluginHelper::includePlugin(self::KEY_NAME, 'payment-methods', $this->siteLangId, $error)) {
+        if (false === PluginHelper::includePlugin(self::KEY_NAME, 'payment-methods', $error, $this->siteLangId)) {
             Message::addErrorMessage($error);
             $this->redirectBack();
         }
