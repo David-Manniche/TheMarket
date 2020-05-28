@@ -45,37 +45,39 @@ class Plugin extends MyAppModel
             array('plugin_code')
         );
     }
-    
-    /**
-     * getTypeArr
-     *
-     * @param  int $langId
-     * @return array
-     */
-    public static function getTypeArr(int $langId)
+
+    public static function getTypeArr($langId)
     {
         return [
-            static::TYPE_CURRENCY => Labels::getLabel('LBL_CURRENCY', $langId),
-            static::TYPE_SOCIAL_LOGIN => Labels::getLabel('LBL_SOCIAL_LOGIN', $langId),
-            static::TYPE_PUSH_NOTIFICATION => Labels::getLabel('LBL_PUSH_NOTIFICATION', $langId),
-            static::TYPE_PAYOUTS => Labels::getLabel('LBL_PAYOUT', $langId),
-            static::TYPE_ADVERTISEMENT_FEED => Labels::getLabel('LBL_ADVERTISEMENT_FEED', $langId),
-            static::TYPE_SMS_NOTIFICATION => Labels::getLabel('LBL_SMS_NOTIFICATION', $langId),
-            static::TYPE_TAX_SERVICES => Labels::getLabel('LBL_TAX_SERVICES', $langId),
-            static::TYPE_FULL_TEXT_SEARCH => Labels::getLabel('LBL_FULL_TEXT_SEARCH', $langId),
-            static::TYPE_PAYMENT_METHOD => Labels::getLabel('LBL_PAYMENT_METHODS', $langId)
+            self::TYPE_CURRENCY => Labels::getLabel('LBL_CURRENCY', $langId),
+            self::TYPE_SOCIAL_LOGIN => Labels::getLabel('LBL_SOCIAL_LOGIN', $langId),
+            self::TYPE_PUSH_NOTIFICATION => Labels::getLabel('LBL_PUSH_NOTIFICATION', $langId),
+            self::TYPE_PAYOUTS => Labels::getLabel('LBL_PAYOUT', $langId),
+            self::TYPE_ADVERTISEMENT_FEED => Labels::getLabel('LBL_ADVERTISEMENT_FEED', $langId),
+            self::TYPE_SMS_NOTIFICATION => Labels::getLabel('LBL_SMS_NOTIFICATION', $langId),
+            self::TYPE_TAX_SERVICES => Labels::getLabel('LBL_Tax_Services', $langId),
+            self::TYPE_FULL_TEXT_SEARCH => Labels::getLabel('LBL_Full_TEXT_SEARCH', $langId)
         ];
     }
-    
-    /**
-     * getSearchObject
-     *
-     * @param  int $langId
-     * @param  bool $isActive
-     * @param  bool $joinSettings
-     * @return object
-     */
-    public static function getSearchObject(int $langId = 0, bool $isActive = true, bool $joinSettings = false)
+
+    public static function getDirectory(int $pluginType)
+    {
+        $pluginDir = [
+            self::TYPE_PUSH_NOTIFICATION => "push-notification",
+            self::TYPE_ADVERTISEMENT_FEED => "advertisement-feed",
+            self::TYPE_SMS_NOTIFICATION => "sms-notification",
+            self::TYPE_FULL_TEXT_SEARCH => "full-text-search",
+            self::TYPE_TAX_SERVICES => "tax",
+            self::TYPE_PAYMENT_METHOD => "payment-methods",
+        ];
+
+        if (array_key_exists($pluginType, $pluginDir)) {
+            return $pluginDir[$pluginType];
+        }
+        return false;
+    }
+
+    public static function getSearchObject($langId = 0, $isActive = true, $joinSettings = false)
     {
         $langId = FatUtility::int($langId);
         $srch = new SearchBase(static::DB_TBL, 'plg');
