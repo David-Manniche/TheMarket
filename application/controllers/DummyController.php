@@ -679,15 +679,13 @@ class DummyController extends MyAppController
 
     public function stripe()
     {
-        $error = '';
-        if (false === PluginHelper::includePlugin('StripeConnect', 'payment-methods', $this->siteLangId, $error)) {
-            CommonHelper::printArray($error, true);
-        }
-        $obj = new StripeConnect($this->siteLangId);
-        /* if (false === $obj->createAccount()) {
-            CommonHelper::printArray($obj->getError(), true);
-        } */
-        $obj->isUserValid();
-        echo "Done";
+        /*$obj = new Orders();
+        $data = $obj->getOrderProductsByOpId(287, $this->siteLangId);
+        CommonHelper::printArray($data, true);*/
+        // Plugin::canRefund('StripeConnect', $this->siteLangId);
+        $obj = new PaymentMethods();
+        $obj->canRefundToCard('StripeConnect', $this->siteLangId);
+        $obj->initiateRefund('O1588577566');
+        echo $obj->getError();
     }
 }

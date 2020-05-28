@@ -56,7 +56,8 @@ class Plugin extends MyAppModel
             self::TYPE_ADVERTISEMENT_FEED => Labels::getLabel('LBL_ADVERTISEMENT_FEED', $langId),
             self::TYPE_SMS_NOTIFICATION => Labels::getLabel('LBL_SMS_NOTIFICATION', $langId),
             self::TYPE_TAX_SERVICES => Labels::getLabel('LBL_Tax_Services', $langId),
-            self::TYPE_FULL_TEXT_SEARCH => Labels::getLabel('LBL_Full_TEXT_SEARCH', $langId)
+            self::TYPE_FULL_TEXT_SEARCH => Labels::getLabel('LBL_FULL_TEXT_SEARCH', $langId),
+            self::TYPE_PAYMENT_METHOD => Labels::getLabel('LBL_PAYMENT_METHODS', $langId),
         ];
     }
 

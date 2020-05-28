@@ -164,13 +164,24 @@ class OrderReturnRequest extends MyAppModel
         $srch->doNotCalculateRecords();
         $srch->doNotLimitRecords();
         $srch->addCondition('orrequest_id', '=', $orrequest_id);
-        $srch->addMultipleFields(array('orrequest_id', 'orrequest_op_id', 'orrequest_qty', 'orrequest_type', 'op_commission_percentage', 'op_affiliate_commission_percentage', 'op_qty', 'order_language_id', 'op_shop_owner_name', 'op_unit_price', 'op_other_charges', 'op_commission_include_shipping', 'op_tax_collected_by_seller', 'op_commission_include_tax', 'op_free_ship_upto', 'op_actual_shipping_charges'));
+        $srch->addMultipleFields(array('orrequest_id', 'orrequest_op_id', 'orrequest_qty', 'orrequest_type', 'op_commission_percentage', 'op_affiliate_commission_percentage', 'op_qty', 'order_language_id', 'op_shop_owner_name', 'op_unit_price', 'op_other_charges', 'op_commission_include_shipping', 'op_tax_collected_by_seller', 'op_commission_include_tax', 'op_free_ship_upto', 'op_actual_shipping_charges', 'order_pmethod_id', 'order_pmethod_type'));
         $rs = $srch->getResultSet();
         $requestRow = $db->fetch($rs);
 
         if (!$requestRow) {
             $this->error = Labels::getLabel("MSG_Invalid_Request", $this->commonLangId);
             return false;
+        }
+
+        $canRefundToCard = false;
+        if ($requestRow['orrequest_type'] != static::RETURN_REQUEST_TYPE_REPLACE && PaymentMethods::TYPE_PLUGIN == $requestRow['order_pmethod_type']) {
+            $pluginKey = Plugin::getAttributesById($requestRow['order_pmethod_id'], 'plugin_code');
+
+            $paymentMethodObj = new PaymentMethods();
+            if (true === $paymentMethodObj->canRefundToCard($pluginKey)) {
+                $moveRefundToWallet = false;
+                $canRefundToCard = true;
+            }
         }
 
         $oObj = new Orders();
@@ -227,11 +238,16 @@ class OrderReturnRequest extends MyAppModel
         if ($requestRow['orrequest_type'] == static::RETURN_REQUEST_TYPE_REPLACE) {
             $moveRefundInWallet = false;
         }
+
         $approvedByLabel = sprintf(Labels::getLabel('MSG_Approved_Return_Request', $orderLangId), $requestRow['op_shop_owner_name']);
         if (!$user_id && AdminAuthentication::isAdminLogged()) {
             $approvedByLabel = sprintf(Labels::getLabel('MSG_Approved_Return_Request', $orderLangId), FatApp::getConfig('CONF_WEBSITE_NAME_' . $orderLangId));
         }
-        $oObj->addChildProductOrderHistory($requestRow['orrequest_op_id'], $orderLangId, FatApp::getConfig("CONF_RETURN_REQUEST_APPROVED_ORDER_STATUS"), $approvedByLabel, 1, '', 0, $moveRefundInWallet);
+        if (true == $oObj->addChildProductOrderHistory($requestRow['orrequest_op_id'], $orderLangId, FatApp::getConfig("CONF_RETURN_REQUEST_APPROVED_ORDER_STATUS"), $approvedByLabel, 1, '', 0, $moveRefundInWallet)) {
+            if (true === $canRefundToCard) {
+
+            }
+        }
         $db->commitTransaction();
         return true;
     }

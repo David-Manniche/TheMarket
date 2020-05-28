@@ -9,6 +9,11 @@ class PaymentMethods extends MyAppModel
     public const TYPE_DEFAULT = 1;
     public const TYPE_PLUGIN = 2;
 
+    private $paymentPlugin = '';
+    private $keyname = '';
+    private $langId = '';
+    private $canRefundToCard = false;
+    private $resp = [];
     private $db;
 
     public function __construct($id = 0)
@@ -57,5 +62,68 @@ class PaymentMethods extends MyAppModel
         } else {
             return false;
         }
+    }
+
+    /**
+     * canRefundToCard
+     * 
+     * @param string $keyname 
+     * @param int $langId 
+     * @return bool
+     */
+    public function canRefundToCard(string $keyname, int $langId, int $methodType = self::TYPE_PLUGIN): bool
+    {
+        if (self::TYPE_DEFAULT == $methodType) {
+            return false;
+        }
+        $this->keyname = $keyname;
+        $this->langId = $langId;
+        $this->paymentPlugin = PluginHelper::callPlugin($this->keyname, [$this->langId]);
+        return $this->canRefundToCard = method_exists($this->paymentPlugin, 'initiateRefund');
+    }
+
+    /**
+     * initiateRefund
+     * 
+     * @param $orderId
+     * @return mixed
+     */
+    public function initiateRefund(string $orderId): bool
+    {
+        if (false == $this->canRefundToCard) {
+            $msg = Labels::getLabel('MSG_THIS_{PAYMENT-METHOD}_PAYMENT_METHOD_IS_NOT_ABLE_TO_REFUND_IN_CARD', $this->langId);
+            $this->error = CommonHelper::replaceStringData($msg, ['{PAYMENT-METHOD}' => $this->keyname]);
+            return false;
+        }
+
+        $orderObj = new Orders();
+        $payments = $orderObj->getOrderPayments(array("order_id" => $orderId));
+        CommonHelper::printArray($payments, true);
+        switch ($this->keyname) {
+            case 'StripeConnect':
+                $requestParam = [
+
+                ];
+                // $this->resp = $this->paymentPlugin->initiateRefund($requestParam);
+                break;
+            
+        }
+        
+        if (false == $this->resp) {
+            $this->error = $this->paymentPlugin->getError(); 
+            return false;
+        }
+
+        return true;
+    }
+
+    /**
+     * getResponse
+     * 
+     * @return array
+     */
+    public function getResponse(): array
+    {
+        return $this->resp;
     }
 }
