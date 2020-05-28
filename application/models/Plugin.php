@@ -67,7 +67,6 @@ class Plugin extends MyAppModel
             self::TYPE_SMS_NOTIFICATION => "sms-notification",
             self::TYPE_FULL_TEXT_SEARCH => "full-text-search",
             self::TYPE_TAX_SERVICES => "tax",
-            self::TYPE_PAYMENT_METHOD => "payment-methods",
         ];
 
         if (array_key_exists($pluginType, $pluginDir)) {
