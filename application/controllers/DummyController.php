@@ -268,24 +268,7 @@ class DummyController extends MyAppController
 
     public function test()
     {
-        $warning = Labels::getLabel("MSG_One_of_the_product_in_combo_is_not_available_in_requested_quantity,_you_can_buy_upto_max_{n}_quantity.", $this->siteLangId);
-        echo $warning = str_replace(array('{n}', '{N}'), 1, $warning);
-        exit;
-        $srch = new ProductSearch(1);
-        $srch->setDefinedCriteria();
-        //$srch->joinProductToCategory();
-        $srch->joinTable(Product::DB_TBL_PRODUCT_TO_CATEGORY, 'INNER JOIN', 'ptc.ptc_product_id = p.product_id', 'ptc');
-        $srch->joinTable(ProductCategory::DB_TBL, 'INNER JOIN', 'c.prodcat_id = ptc.ptc_prodcat_id and c.prodcat_active = ' . applicationConstants::ACTIVE . ' and c.prodcat_deleted = ' . applicationConstants::NO, 'c');
-        $srch->joinSellerSubscription(0, false, true);
-        $srch->addSubscriptionValidCondition();
-        $srch->doNotCalculateRecords();
-        $srch->doNotLimitRecords();
-        $srch->addCondition('selprod_deleted', '=', applicationConstants::NO);
-        $srch->addMultipleFields(array('count(distinct(p.product_id)) as productCounts', 'c.prodcat_code', 'c.prodcat_id'));
-        $srch->addGroupBy('p.product_id');
-        $srch->addDirectCondition('c.prodcat_code like "%000113%"');
-        echo $srch->getQuery();
-        exit;
+       
     }
 
     private function getShopInfo($shop_id)
@@ -566,18 +549,67 @@ class DummyController extends MyAppController
     {
         AbandonedCart::sendReminderAbandonedCart();
     }
-    
-    public function testavalaratax(){
-     
-        require_once CONF_PLUGIN_DIR . '/tax/avalaratax/Avalaratax.php';
-        
+
+    public function testTaxjar(){
+       
+        require_once CONF_PLUGIN_DIR . '/tax/taxjartax/TaxJarTax.php';
         $itemsArr = [];
         
         $item = [
               'amount' => 100,
               'quantity' => 2,
               'itemCode' => 100,
-              'taxCode' => 'P0000000',                
+              'taxCode' => '20010',                
+        ];
+        array_push($itemsArr, $item);
+        
+        $shippingItems = [];
+      
+        $shippingItem = [
+            'amount' => 12,
+            'quantity' => 1,
+            'itemCode' => 'S-100', 
+            'taxCode' => 'FR',
+        ];
+        array_push($shippingItems, $shippingItem);      
+        
+       
+        $fromAddress = array(
+            'line1' => '9500 Gilman Drive',
+            'line2' => '',
+            'city' => 'La Jolla',
+            'state' => 'CA',
+            'postalCode' => '92093',
+            'country' => 'US',
+        );
+
+        $toAddress = array(
+            'line1' => '123 Palm Grove Ln',
+            'line2' => '',
+            'city' =>'Los Angeles',
+            'state' => 'CA',
+            'postalCode' => '90002',
+            'country' => 'US',
+        );    
+        
+        
+        $avalaraObj = new TaxJarTax(1, $fromAddress , $toAddress); 
+        $txRates = $avalaraObj->getRates($itemsArr ,$shippingItems,1);
+        CommonHelper::printArray($txRates);
+        exit;
+    }
+    
+    public function testavalaratax(){
+        
+        require_once CONF_PLUGIN_DIR . '/tax/avalaratax/AvalaraTax.php';
+        
+        $itemsArr = [];
+        
+        $item = [
+              'amount' => 200,
+              'quantity' => 1,
+              'itemCode' => 7,
+              'taxCode' => 'PC030100',                
         ];
         array_push($itemsArr, $item);
         
@@ -597,8 +629,10 @@ class DummyController extends MyAppController
             'line2' => '',
             'city' => 'CA',
             'state' => 'CA',
+            'stateCode' => 'CA',
             'postalCode' => '92615',
             'country' => 'US',
+            'countryCode' => 'US',
         );
 
         $toAddress = array(
@@ -606,13 +640,16 @@ class DummyController extends MyAppController
             'line2' => '',
             'city' =>'New York',
             'state' => 'NY',
+            'stateCode' => 'NY',
             'postalCode' => '10019',
             'country' => 'US',
+            'countryCode' => 'US',
         );    
         
         
-        $avalaraObj = new Avalaratax(1); 
-        $txRates = $avalaraObj->getRates($fromAddress , $toAddress,$itemsArr ,$shippingItems,1);
+        $avalaraObj = new AvalaraTax(1, $fromAddress , $toAddress); 
+        $txRates = $avalaraObj->getRates($itemsArr ,$shippingItems,1);
+        //$txRates = $avalaraObj->getCodes();
         //print_r($avalaraObj->getTaxApiActualResponse());
       CommonHelper::printArray($txRates);
 //        die();

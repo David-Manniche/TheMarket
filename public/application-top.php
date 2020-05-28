@@ -1,4 +1,4 @@
-<?php
+<?php 
 if (substr_count($_SERVER['HTTP_ACCEPT_ENCODING'], 'gzip')) {
     ob_start("ob_gzhandler");
 } else {
@@ -54,7 +54,8 @@ if ((!isset($_SERVER['HTTP_X_FORWARDED_PROTO']) || $_SERVER['HTTP_X_FORWARDED_PR
 } */
 /* --- Redirect SSL --- */
 $_SESSION['WYSIWYGFileManagerRequirements'] = CONF_INSTALLATION_PATH . 'public/WYSIWYGFileManagerRequirements.php';
-
+require_once CONF_INSTALLATION_PATH . 'library/aws/aws-autoloader.php';
+AttachedFile::registerS3ClientStream();
 
 define('SYSTEM_INIT', true);
-define('CONF_WEB_APP_VERSION', 'TV-9.2.0');
+define('CONF_WEB_APP_VERSION', 'RV-9.2.0');

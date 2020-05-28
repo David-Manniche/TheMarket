@@ -14,6 +14,8 @@ class Tax extends MyAppModel
     public const DB_TBL_PRODUCT_TO_TAX = 'tbl_product_to_tax';
     public const DB_TBL_PRODUCT_TO_TAX_PREFIX = 'ptt_';
 
+    private const TAX_RATE_CACHE_KEY_NAME = "taxRateCache_";
+
     private $db;
 
     public const TYPE_PERCENTAGE = 1;
@@ -180,8 +182,8 @@ class Tax extends MyAppModel
         'taxcat_active' => $data['taxcat_active'],
         'taxcat_deleted' => 0,
         'taxcat_last_updated' => date('Y-m-d H:i:s'),
-        'taxcat_code' => $data['taxcat_code'],
-        'taxcat_plugin_id' => $data['taxcat_plugin_id'],
+        'taxcat_code' => array_key_exists('taxcat_code', $data) ? $data['taxcat_code'] : '',
+        'taxcat_plugin_id' => array_key_exists('taxcat_plugin_id', $data) ? $data['taxcat_plugin_id'] : 0,
         );
 
         if ($this->mainTableRecordId > 0) {
@@ -223,14 +225,16 @@ class Tax extends MyAppModel
         $taxObj = self::getTaxCatObjByProductId($productId, $langId);
         $taxObj->addMultipleFields(array('IFNULL(taxcat_name,taxcat_identifier) as taxcat_name', 'taxcat_code', 'ptt_seller_user_id', 'ptt_taxcat_id', 'ptt_product_id', 'taxval_is_percent', 'taxval_value', 'taxval_options'));
         $taxObj->doNotCalculateRecords();
+        $taxObj->setPageSize(1);
 
         $cnd = $taxObj->addCondition('ptt_seller_user_id', '=', 0);
         $cnd->attachCondition('ptt_seller_user_id', '=', $userId, 'OR');
 
-        $cnd = $taxObj->addCondition('taxval_seller_user_id', '=', 0);
-        $cnd->attachCondition('taxval_seller_user_id', '=', $userId, 'OR');
-
-        $taxObj->setPageSize(1);
+        if (false == static::getActivatedServiceId()) {
+            $cnd = $taxObj->addCondition('taxval_seller_user_id', '=', 0);
+            $cnd->attachCondition('taxval_seller_user_id', '=', $userId, 'OR');
+        }   
+        
         if (FatApp::getConfig('CONF_TAX_COLLECTED_BY_SELLER', FatUtility::VAR_INT, 0)) {
             $taxObj->addOrder('taxval_seller_user_id', 'DESC');
             $taxObj->addOrder('ptt_seller_user_id', 'DESC');
@@ -243,75 +247,76 @@ class Tax extends MyAppModel
         return FatApp::getDb()->fetch($rs);
     }
 
-    private function formatAddress($address, $shop = false)
+    private function formatAddress($address, $type = false)
     {
         $postalCode = '';
         $line1 = '';
         $line2 = '';
         $city = '';
         $state = '';
+        $stateCode = '';
+        $country = '';
+        $countryCode ='' ;
 
-        if (true == $shop) {
-            if (array_key_exists('shop_postalcode', $address)) {
-                $postalCode = $address['shop_postalcode'];
-            }
-
-            if (array_key_exists('shop_address_line_1', $address)) {
-                $line1 = $address['shop_address_line_1'];
-            }
-
-            if (array_key_exists('shop_address_line_2', $address)) {
-                $line2 = $address['shop_address_line_2'];
-            }
-
-            if (array_key_exists('shop_city', $address)) {
-                $city = $address['shop_city'];
-            }
-            
-            if (array_key_exists('state_name', $address)) {
-                $state = $address['state_name'];
-            }
-        } else {
-            if (array_key_exists('ua_zip', $address)) {
-                $postalCode = $address['ua_zip'];
-            }
-    
-            if (array_key_exists('ua_address1', $address)) {
-                $line1 = $address['ua_address1'];
-            }
-    
-            if (array_key_exists('ua_address2', $address)) {
-                $line2 = $address['ua_address2'];
-            }
-    
-            if (array_key_exists('city', $address)) {
-                $city = $address['city'];
-            }
-
-            if (array_key_exists('state', $address)) {
-                $state = $address['state'];
-            }
+        switch (strtolower($type)) {
+            case 'order':
+                $postalCode = array_key_exists('oua_zip', $address) ? $address['oua_zip'] : $postalCode;
+                $line1 = array_key_exists('oua_address1', $address) ? $address['oua_address1'] : $line1;
+                $line2 = array_key_exists('oua_address2', $address) ? $address['oua_address2'] : $line2;
+                $city = array_key_exists('oua_city', $address) ? $address['oua_city'] : $city;
+                $state = array_key_exists('oua_state', $address) ? $address['oua_state'] : $state;
+                $country = array_key_exists('oua_country', $address) ? $address['oua_country'] : $country;
+                $stateCode = array_key_exists('oua_state_code', $address) ? $address['oua_state_code'] : $stateCode;
+                $countryCode = array_key_exists('oua_country_code', $address) ? $address['oua_country_code'] : $countryCode;
+                break;
+            case 'shop':
+                $postalCode = array_key_exists('shop_postalcode', $address) ? $address['shop_postalcode'] : $postalCode;
+                $line1 = array_key_exists('shop_address_line_1', $address) ? $address['shop_address_line_1'] : $line1;
+                $line2 = array_key_exists('shop_address_line_2', $address) ? $address['shop_address_line_2'] : $line2;
+                $city = array_key_exists('shop_city', $address) ? $address['shop_city'] : $city;
+                $state = array_key_exists('state_name', $address) ? $address['state_name'] : $state;
+                $stateCode = array_key_exists('state_code', $address) ? $address['state_code'] : $stateCode;
+                $country = array_key_exists('country', $address) ? $address['country'] : $country;
+                $countryCode = array_key_exists('country_code', $address) ? $address['country_code'] : $countryCode;
+                break; 
+            default :            
+                $postalCode = array_key_exists('ua_zip', $address) ? $address['ua_zip'] : $postalCode;
+                $line1 = array_key_exists('ua_address1', $address) ? $address['ua_address1'] : $line1;
+                $line2 = array_key_exists('ua_address2', $address) ? $address['ua_address2'] : $line2;
+                $city = array_key_exists('city', $address) ? $address['city'] : $city;
+                $city = array_key_exists('ua_city', $address) ? $address['ua_city'] : $city;
+                $state = array_key_exists('state', $address) ? $address['state'] : $state;
+                $state = array_key_exists('state_name', $address) ? $address['state_name'] : $state;
+                $stateCode = array_key_exists('state_code', $address) ? $address['state_code'] : $stateCode;
+                $country = array_key_exists('country', $address) ? $address['country'] : $country;
+                $country = array_key_exists('country_name', $address) ? $address['country_name'] : $country;
+                $countryCode = array_key_exists('country_code', $address) ? $address['country_code'] : $countryCode;
+                break;       
         }
 
         return [
             'line1' => $line1,
             'line2' => $line2,
             'city' => $city,
-            'state' => $state,
+            'state' => empty($state) ? $stateCode : $state,
+            'stateCode'=>empty($stateCode) ? $state : $stateCode,
             'postalCode' => $postalCode,
-            'country' => $address['country_code'],
+            'country' => isset($country) ? $country : $countryCode,
+            'countryCode' => $countryCode,
         ];
     }
     
     public function calculateTaxRates($productId, $prodPrice, $sellerId, $langId, $qty = 1, $extraInfo = array(), $useCache = false)
     {
         $tax = 0;
+        $defaultTaxName = Labels::getLabel('LBL_Tax', $langId);
         $taxCategoryRow = $this->getTaxRates($productId, $sellerId, $langId);
         if (empty($taxCategoryRow)) {
             return $data = [
                 'status' => false,
-                'msg' => Labels::getLabels('MSG_INVALID_TAX_CATEGORY', $langId),
+                'msg' => Labels::getLabel('MSG_INVALID_TAX_CATEGORY', $langId),
                 'tax' => $tax,
+                'taxCode' => '',
                 'options' => []
             ];
         }
@@ -321,6 +326,7 @@ class Tax extends MyAppModel
 
         $shipFromStateId = 0;
         $shipToStateId = 0;
+        
         if (isset($extraInfo['shipping_address']['ua_state_id'])) {
             $shipToStateId = FatUtility::int($extraInfo['shipping_address']['ua_state_id']);
         }
@@ -329,9 +335,23 @@ class Tax extends MyAppModel
             $shopInfo = Shop::getAttributesByUserId($sellerId, array('shop_state_id', 'shop_id'));
             $shipFromStateId = $shopInfo['shop_state_id'];
         }
-        global $taxRates;
+
+        $arr  = [
+            'productId' => $productId,
+            'prodPrice' => $prodPrice,
+            'sellerId' => $sellerId,
+            'langId' =>   $langId,
+            'qty' => $qty,
+            'shipFromStateId' => $shipFromStateId,
+            'shipToStateId' => $shipToStateId,
+            'extraInfo' => $extraInfo,
+            'taxCategoryRow' => $taxCategoryRow
+        ];
+        $cacheKey = self::TAX_RATE_CACHE_KEY_NAME . md5(json_encode($arr));
+
+        global $taxRatesArr;
         if (0 < $activatedTaxServiceId && !empty($extraInfo) && $extraInfo['shippingAddress'] != '') {
-            $cacheKey = $langId . '-' . $shipFromStateId . '-' . $shipToStateId . '-' . $productId . '-' . $qty . '-' . $sellerId;
+           
             if (true == $useCache) {
                 $rates = FatCache::get('taxCharges' . $cacheKey, CONF_API_REQ_CACHE_TIME, '.txt');
                 if ($rates) {
@@ -339,18 +359,19 @@ class Tax extends MyAppModel
                 }
             }
            
-            if (isset($taxRates['values'])) {
-                return $taxRates['values'];
+            if (isset($taxRatesArr[$cacheKey]['values'])) {
+                return $taxRatesArr[$cacheKey]['values'];
             }
             
             $pluginKey = Plugin::getAttributesById($activatedTaxServiceId, 'plugin_code');
 
             $error = '';
-            if (false === PluginHelper::includePlugin($pluginKey, 'tax', $langId, $error)) {
+            if (false === PluginHelper::includePlugin($pluginKey, 'tax', $error, $langId)) {
                 return $data = [
                     'status' => false,
                     'msg' => $error,
                     'tax' => $tax,
+                    'taxCode' => $taxCategoryRow['taxcat_code'],                    
                     'options' => []
                 ];
             }
@@ -359,13 +380,13 @@ class Tax extends MyAppModel
             
             if ($extraInfo['shippedBySeller']) {
                 /* @todo check to get with seller_address */
-                $address = Shop::getShopAddress($shopInfo['shop_id'], true, $langId);
-                $fromAddress = $this->formatAddress($extraInfo['shippingAddress'], true);
-            } else {
-                $fromAddress = CommonHelper::getAdminAddress($langId);
+                $fields = array('shop_postalcode', 'shop_address_line_1' ,'shop_address_line_2', 'shop_city', 'state_name', 'state_code', 'country_code');
+                $address = Shop::getShopAddress($shopInfo['shop_id'], true, $langId, $fields);
+                $fromAddress = $this->formatAddress($address, 'shop');
+            } else { 
+                $fromAddress = Admin::getAddress($langId);
                 $shipFromStateId = FatApp::getConfig('CONF_STATE', FatUtility::VAR_INT, 0);
             }
-           
             $toAddress = $this->formatAddress($extraInfo['shippingAddress']);
            
             $itemsArr = [];
@@ -386,9 +407,9 @@ class Tax extends MyAppModel
             ];
             array_push($shippingItems, $shippingItem);
 
-            $taxApi = new $pluginKey($langId);
+            $taxApi = new $pluginKey($langId, $fromAddress, $toAddress);
             
-            $taxRates = $taxApi->getRates($fromAddress, $toAddress, $itemsArr, $shippingItems, $extraInfo['buyerId']);
+            $taxRates = $taxApi->getRates($itemsArr, $shippingItems, $extraInfo['buyerId']);
             
             if (false == $taxRates['status']) {
                 //@todo Log Errors
@@ -396,9 +417,10 @@ class Tax extends MyAppModel
                     'status' => false,
                     'msg' => $taxRates['msg'],
                     'tax' => $tax,
+                    'taxCode' => $taxCategoryRow['taxcat_code'],
                     'options' => []
                 ];
-                $taxRates['values'] = $data;
+                $taxRatesArr[$cacheKey]['values'] = $data;
                 FatCache::set('taxCharges' . $cacheKey, serialize($data), '.txt');
                 return  $data;
             }
@@ -406,9 +428,10 @@ class Tax extends MyAppModel
             $data = [
                 'status' => true,
                 'tax' => 0,
+                'taxCode' => $taxCategoryRow['taxcat_code'],
                 'options' => []
             ];
-
+           
             if ($confTaxStructure == TaxStructure::TYPE_COMBINED) {
                 foreach ($taxRates['data'] as $code => $rate) {
                     $data['tax'] = $data['tax'] + $rate['tax'];
@@ -426,17 +449,17 @@ class Tax extends MyAppModel
             } else {
                 foreach ($taxRates['data'] as $rate) {
                     $data['tax'] = $data['tax'] + $rate['tax'];
-                    $data['options'][-1]['name'] = Labels::getLabel('LBL_Tax', $langId);
-                    $data['options'][-1]['inPercentage'] = TAX::TYPE_FIXED;
-                    $data['options'][-1]['percentageValue'] = 0;
-                    if (isset($data['options'][-1]['value'])) {
-                        $data['options'][-1]['value'] = $data['options'][-1]['value'] + $rate['tax'];
+                    $data['options'][$defaultTaxName]['name'] = Labels::getLabel('LBL_Tax', $langId);
+                    $data['options'][$defaultTaxName]['inPercentage'] = TAX::TYPE_FIXED;
+                    $data['options'][$defaultTaxName]['percentageValue'] = 0;
+                    if (isset($data['options'][$defaultTaxName]['value'])) {
+                        $data['options'][$defaultTaxName]['value'] = $data['options'][$defaultTaxName]['value'] + $rate['tax'];
                     } else {
-                        $data['options'][-1]['value'] = $rate['tax'];
+                        $data['options'][$defaultTaxName]['value'] = $rate['tax'];
                     }
                 }
             }
-            $taxRates['values'] = $data;
+            $taxRatesArr[$cacheKey]['values'] = $data;
             FatCache::set('taxCharges' . $cacheKey, serialize($data), '.txt');
             return $data;
         }
@@ -452,8 +475,9 @@ class Tax extends MyAppModel
             return $data = [
                 'status' => true,
                 'tax' => $tax,
+                'taxCode' => $taxCategoryRow['taxcat_code'],
                 'options' => [
-                    '-1' => [
+                    $defaultTaxName => [
                         'name' => Labels::getLabel('LBL_Tax', $langId),
                         'inPercentage' => $taxCategoryRow['taxval_is_percent'],
                         'percentageValue' => $taxCategoryRow['taxval_value'],
@@ -464,6 +488,7 @@ class Tax extends MyAppModel
         }
         
         $data['tax'] = $tax;
+        $data['taxCode'] = $taxCategoryRow['taxcat_code'];
              
         if ($confTaxStructure == TaxStructure::TYPE_COMBINED) {
             $shipFromStateId = FatUtility::int($shipFromStateId);
@@ -498,16 +523,100 @@ class Tax extends MyAppModel
         } else {
             $taxStructure = new TaxStructure($confTaxStructure);
             $structureName = $taxStructure->getName($langId);
-            $data['options'][-1]['name'] = Labels::getLabel('LBL_Tax', $langId);
-            $data['options'][-1]['inPercentage'] = $taxCategoryRow['taxval_is_percent'];
-            $data['options'][-1]['percentageValue'] = $taxCategoryRow['taxval_value'];
+            $data['options'][$defaultTaxName]['name'] = Labels::getLabel('LBL_Tax', $langId);
+            $data['options'][$defaultTaxName]['inPercentage'] = $taxCategoryRow['taxval_is_percent'];
+            $data['options'][$defaultTaxName]['percentageValue'] = $taxCategoryRow['taxval_value'];
             if (array_key_exists('taxstr_name', $structureName) && $structureName['taxstr_name'] != '') {
-                $data['options'][-1]['name'] = $structureName['taxstr_name'];
+                $data['options'][$defaultTaxName]['name'] = $structureName['taxstr_name'];
             }
-            $data['options'][-1]['value'] = $tax;
+            $data['options'][$defaultTaxName]['value'] = $tax;
         }
         $data['status'] = true;
         return $data;
+    }
+
+    public function createInvoice($childOrderInfo)
+    {
+        $activatedTaxServiceId = static::getActivatedServiceId();
+        if (!$activatedTaxServiceId) {
+            return true;
+        }
+        $langId = $childOrderInfo['oplang_lang_id'];
+        $pluginKey = Plugin::getAttributesById($activatedTaxServiceId, 'plugin_code');
+
+        $error = '';
+        if (false === PluginHelper::includePlugin($pluginKey, 'tax', $error, $langId)) {
+            $this->error = $error;
+            return false;
+        }
+               
+        if (0 < $childOrderInfo['opshipping_by_seller_user_id']) {
+            /* @todo check to get with seller_address */
+            $fields = array('shop_postalcode', 'shop_address_line_1' ,'shop_address_line_2', 'shop_city', 'state_name', 'state_code', 'country_code');
+            $address = Shop::getShopAddress($childOrderInfo['op_shop_id'], true, $langId, $fields);
+            $fromAddress = $this->formatAddress($address, 'shop');
+        } else {
+            $fromAddress = Admin::getAddress($langId);
+        }
+
+        $orderObj = new Orders();
+        $addresses = $orderObj->getOrderAddresses($childOrderInfo['order_id']);
+
+        $toAddress = (!empty($addresses[Orders::SHIPPING_ADDRESS_TYPE])) ? $addresses[Orders::SHIPPING_ADDRESS_TYPE] : $addresses[Orders::BILLING_ADDRESS_TYPE];
+        $toAddress = $this->formatAddress($toAddress, 'order');
+        
+        $couponDiscount = isset($childOrderInfo['charges'][OrderProduct::CHARGE_TYPE_DISCOUNT]) ? $childOrderInfo['charges'][OrderProduct::CHARGE_TYPE_DISCOUNT]['opcharge_amount'] : 0;
+        $volumeDiscount = isset($childOrderInfo['charges'][OrderProduct::CHARGE_TYPE_VOLUME_DISCOUNT]) ? $childOrderInfo['charges'][OrderProduct::CHARGE_TYPE_VOLUME_DISCOUNT]['opcharge_amount'] : 0;
+        $rewardPointDiscount = isset($childOrderInfo['charges'][OrderProduct::CHARGE_TYPE_REWARD_POINT_DISCOUNT]) ? $childOrderInfo['charges'][OrderProduct::CHARGE_TYPE_REWARD_POINT_DISCOUNT]['opcharge_amount'] : 0;
+        
+        $discount = abs($couponDiscount) + abs($rewardPointDiscount) + abs($volumeDiscount);
+        if (0 < $childOrderInfo['op_refund_qty']) {
+            $discountPerQauntity = $discount / $childOrderInfo['op_qty'];
+            $discount = $discountPerQauntity * ($childOrderInfo['op_qty'] - $childOrderInfo['op_refund_qty']);
+        }
+    
+        $quantity = $childOrderInfo['op_qty'] - $childOrderInfo['op_refund_qty'];
+
+        $salesTax = isset($childOrderInfo['charges'][OrderProduct::CHARGE_TYPE_TAX]) ? $childOrderInfo['charges'][OrderProduct::CHARGE_TYPE_TAX]['opcharge_amount'] : 0;
+        if (0 < $childOrderInfo['op_refund_qty']) {
+            $salesTaxPerQuantity = $salesTax / $childOrderInfo['op_qty'];
+            $salesTax = $salesTaxPerQuantity * $quantity;
+        }
+
+        $shippingAmount = CommonHelper::orderProductAmount($childOrderInfo, 'SHIPPING') - $childOrderInfo['op_refund_shipping'];
+        
+        $itemsArr = [];
+        $item = [
+            'amount' => $childOrderInfo['op_unit_price'],
+            'quantity' => $quantity,
+            'productName' => $childOrderInfo['op_selprod_title'],
+            'description' => $childOrderInfo['op_product_name'],
+            'itemCode' => $childOrderInfo['op_id'],
+            'taxCode' => $childOrderInfo['op_tax_code'],
+            'salesTax' => $salesTax,
+            'discount' => abs($discount)
+        ];
+        array_push($itemsArr, $item);
+
+        $shippingItems = [];        
+        $shippingItem = [
+            'amount' => $shippingAmount,
+            'quantity' => 1,
+            'itemCode' => 'S-' . $childOrderInfo['op_id'],
+            'taxCode' => $childOrderInfo['op_tax_code'],
+        ];
+        array_push($shippingItems, $shippingItem);
+       
+        $taxApi = new $pluginKey($langId, $fromAddress, $toAddress);
+            
+        $taxRates = $taxApi->createInvoice($itemsArr, $shippingItems, $childOrderInfo['op_selprod_user_id'], $childOrderInfo['order_date_added'], $childOrderInfo['op_invoice_number']);
+       
+        if (false == $taxRates['status']){
+            $this->error = $taxRates['msg'];
+            return false;
+        }
+
+        return true;
     }
 
     public static function getTaxCatByProductId($productId = 0, $userId = 0, $langId = 0, $fields = array())

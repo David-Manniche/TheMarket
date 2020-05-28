@@ -21,8 +21,8 @@ class InstagramApi
 		return $data['access_token'];	
 	}
 
-	public function GetUserProfileInfo($access_token) { 
-		$url = 'https://api.instagram.com/v1/users/self/?access_token=' . $access_token;	
+	public function GetUserProfileInfo($access_token) {
+		$url = 'https://graph.instagram.com/me?fields=id,username&access_token=' . $access_token;	
 
 		$ch = curl_init();		
 		curl_setopt($ch, CURLOPT_URL, $url);		
@@ -30,11 +30,11 @@ class InstagramApi
 		curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE);
 		$data = json_decode(curl_exec($ch), true);
 		$http_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);	
-		curl_close($ch); 
-		if($data['meta']['code'] != 200 || $http_code != 200)
+		curl_close($ch);
+		if(empty($data))
 			throw new Exception('Error : Failed to get user information');
 
-		return $data['data'];
+		return $data;
 	}
 }
 

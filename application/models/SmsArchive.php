@@ -50,7 +50,7 @@ class SmsArchive extends MyAppModel
         $pluginKey = Plugin::getAttributesById($smsGateway, 'plugin_code');
         
 		$error = '';
-		if (false === PluginHelper::includePlugin($pluginKey, 'sms-notification', $this->langId, $error)) {
+		if (false === PluginHelper::includePlugin($pluginKey, 'sms-notification', $error, $this->langId)) {
 			$this->error = $error;
 			return false;
 		}

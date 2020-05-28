@@ -20,7 +20,7 @@ class GoogleShoppingFeedController extends AdvertisementFeedBaseController
     {
         parent::__construct($action);
         $error = '';
-        if (false === PluginHelper::includePlugin(self::KEY_NAME, 'advertisement-feed', $this->siteLangId, $error)) {
+        if (false === PluginHelper::includePlugin(self::KEY_NAME, 'advertisement-feed', $error, $this->siteLangId)) {
             Message::addErrorMessage($error);
             $this->redirectBack();
         }

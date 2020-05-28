@@ -414,13 +414,16 @@ class Cart extends FatModel
                     $taxOptions = [];
                     if (array_key_exists('options', $taxData)) {
                         foreach ($taxData['options'] as $optionId => $optionval) {
-                            $taxOptions[$optionval['name']] = isset($taxOptions[$optionval['name']]) ? ($taxOptions[$optionval['name']] + $optionval['value']) : $optionval['value'];
+                            if (0 < $optionval['value']) {
+                                $taxOptions[$optionval['name']] = isset($taxOptions[$optionval['name']]) ? ($taxOptions[$optionval['name']] + $optionval['value']) : $optionval['value'];
+                            }
                         }
                     }
 
                     $tax = $taxData['tax'];
 
                     $this->products[$key]['tax'] = $tax;
+                    $this->products[$key]['taxCode'] =$taxData['taxCode'];
                     $this->products[$key]['taxOptions'] = $taxOptions;
                     /*]*/
 
@@ -633,6 +636,7 @@ class Cart extends FatModel
                     $tax = $taxData['tax'];
 
                     $this->products[$key]['tax'] = $tax;
+                    $this->products[$key]['taxCode'] = $taxData['taxCode'];
                     $this->products[$key]['taxOptions'] = $taxOptions;
                     /*]*/
 
@@ -806,8 +810,9 @@ class Cart extends FatModel
         
         $tax = $taxData['tax'];
         $sellerProductRow['tax'] = $tax;
+        $sellerProductRow['taxCode'] = $taxData['taxCode'];
         /* ] */
-
+       
         $sellerProductRow['total'] = $totalPrice;
         $sellerProductRow['netTotal'] = $sellerProductRow['total'] + $sellerProductRow['shipping_cost'];
 
@@ -1219,8 +1224,10 @@ class Cart extends FatModel
                 if (array_key_exists('options', $taxData)) {
                     foreach ($taxData['options'] as $optionId => $optionval) {
                         $prodTaxOptions[$product['selprod_id']][$optionId] = $optionval;
-                        $taxOptions[$optionval['name']]['value'] = isset($taxOptions[$optionval['name']]['value']) ? ($taxOptions[$optionval['name']]['value'] + $optionval['value']) : $optionval['value'];
-                        $taxOptions[$optionval['name']]['title'] = CommonHelper::displayTaxPercantage($optionval);
+                        if (isset($optionval['value']) && 0 < $optionval['value']) {
+                            $taxOptions[$optionval['name']]['value'] = isset($taxOptions[$optionval['name']]['value']) ? ($taxOptions[$optionval['name']]['value'] + $optionval['value']) : $optionval['value'];
+                            $taxOptions[$optionval['name']]['title'] = CommonHelper::displayTaxPercantage($optionval);
+                        }
                     }
                 }
 

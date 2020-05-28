@@ -22,8 +22,7 @@
                                     'attr' => [
                                         'href' => 'javascript:void(0)',
                                         'onclick' => 'userForm(0)',
-                                        'title' => Labels::getLabel('LBL_Add_User', $adminLangId),
-                                        'class' => 'toolbar-btn-js d-none'
+                                        'title' => Labels::getLabel('LBL_Add_User', $adminLangId)
                                     ],
                                     'label' => '<i class="fas fa-plus"></i>'
                                 ],

@@ -49,8 +49,8 @@ trait PluginHelper
         $this->settings = $this->getSettings();
         if (isset($this->requiredKeys) && !empty($this->requiredKeys) && is_array($this->requiredKeys)) {
             foreach ($this->requiredKeys as $key) {
-                if (!array_key_exists($key, $this->settings)) {
-                    $this->error = $this->keyName . Labels::getLabel('MSG_SETTINGS_NOT_CONFIGURED', $this->langId);
+                if (!array_key_exists($key, $this->settings) || empty($this->settings[$key])) {
+                    $this->error = $this->keyName . ' ' . Labels::getLabel('MSG_SETTINGS_NOT_CONFIGURED', $langId);
                     return false;
                 }
             }
@@ -63,11 +63,11 @@ trait PluginHelper
      *
      * @param  string $keyName
      * @param  string $directory
-     * @param  int $langId
      * @param  string $error
+     * @param  int $langId
      * @return mixed
      */
-    public static function includePlugin(string $keyName, string $directory, int $langId = 0, &$error = '')
+    public static function includePlugin(string $keyName, string $directory, &$error = '', int $langId = 0)
     {
         if (1 > $langId) {
             $langId = CommonHelper::getLangId();
@@ -91,5 +91,65 @@ trait PluginHelper
         }
         
         require_once $file;
+    }
+
+    /**
+     * callPlugin - Used to call plugin file without including plugin. This function is used for files exists in library\plugins. 
+     * 
+     * @param string $keyname
+     * @param string $args
+     * @param string $error
+     * @param int $langId
+     * @return mixed
+     */
+    public static function callPlugin(string $keyName, array $args = [], &$error = '', int $langId = 0)
+    {
+        if (1 > $langId) {
+            $langId = CommonHelper::getLangId();
+        }
+        
+        if (empty($keyName)) {
+            $error =  Labels::getLabel('MSG_INVALID_KEY_NAME', $langId);
+            return false;
+        }
+
+        $pluginType = Plugin::getAttributesByCode($keyName, 'plugin_type');
+
+        switch ($pluginType) {
+            case Plugin::TYPE_PUSH_NOTIFICATION:
+                $directory = "push-notification";
+                break;
+            case Plugin::TYPE_ADVERTISEMENT_FEED:
+                $directory = "advertisement-feed";
+                break;
+            case Plugin::TYPE_SMS_NOTIFICATION:
+                $directory = "sms-notification";
+                break;
+            case Plugin::TYPE_FULL_TEXT_SEARCH:
+                $directory = "full-text-search";
+                break;
+            case Plugin::TYPE_TAX_SERVICES:
+                $directory = "tax";
+                break;
+            case Plugin::TYPE_PAYMENT_METHOD:
+                $directory = "payment-methods";
+                break;
+            default:
+                $directory = "";
+                break;
+        }
+
+        if (empty($directory)) {
+            $error =  Labels::getLabel('MSG_INVALID_PLUGIN_TYPE', $langId);
+            return false;
+        }
+
+        $error = '';
+        if (false === PluginHelper::includePlugin($keyName, $directory, $error, $langId)) {
+            return false;
+        }
+
+        $reflect  = new ReflectionClass($keyName);
+        return $reflect->newInstanceArgs($args);
     }
 }
