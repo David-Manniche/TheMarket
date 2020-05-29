@@ -22,6 +22,7 @@ class ShippingProfileProductsController extends SellerBaseController
         
         $srch = ShippingProfileProduct::getSearchObject($this->siteLangId);
         $srch->addCondition('shippro_shipprofile_id', '=', $profileId);
+        $srch->addCondition('shippro_user_id', '=', $this->userParentId);
         $srch->addOrder('product_name', 'ASC');
         $srch->setPageNumber($page);
         $srch->setPageSize($pageSize);
@@ -52,6 +53,7 @@ class ShippingProfileProductsController extends SellerBaseController
             FatUtility::dieJsonError(Message::getHtml());
         }
         $data = array(
+            'shippro_user_id' => $this->userParentId,
             'shippro_shipprofile_id' => $post['shippro_shipprofile_id'],
             'shippro_product_id' => $post['shippro_product_id']
         );

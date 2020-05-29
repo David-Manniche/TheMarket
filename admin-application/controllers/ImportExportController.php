@@ -683,8 +683,7 @@ class ImportExportController extends AdminBaseController
     private function getExportForm($langId)
     {
         $frm = new Form('frmExport', array('id' => 'frmExport'));
-        $options = Importexport::getImportExportTypeArr('export', $langId, false);
-        unset($options[Importexport::TYPE_INVENTORY_UPDATE]);
+        $options = Importexport::getImportExportTypeArr('export', $langId, false);        
         $fld = $frm->addRadioButtons(
             '',
             'export_option',
@@ -710,7 +709,6 @@ class ImportExportController extends AdminBaseController
     {
         $frm = new Form('frmImport', array('id' => 'frmImport'));
         $options = Importexport::getImportExportTypeArr('import', $langId, false);
-        unset($options[Importexport::TYPE_INVENTORY_UPDATE]);
         /* if (!FatApp::getConfig('CONF_ENABLED_SELLER_CUSTOM_PRODUCT', FatUtility::VAR_INT, 0)) {
             unset($options[Importexport::TYPE_PRODUCTS]);
         } */
@@ -810,6 +808,12 @@ class ImportExportController extends AdminBaseController
         $fld = $frm->addCheckBox(Labels::getLabel("LBL_Use_shipping_duration_id_instead_of_shipping_duration_identifier", $this->adminLangId), 'CONF_USE_SHIPPING_DURATION_ID', 1, array(), false, 0);
         $fld->htmlAfterField = '<br><small>' . Labels::getLabel("MSG_Use_shipping_duration_id_instead_of_shipping_duration_identifier_in_worksheets", $this->adminLangId) . '</small>';
 
+        $fld = $frm->addCheckBox(Labels::getLabel("LBL_Use_shipping_profile_id_instead_of_shipping_profile_identifier", $this->adminLangId), 'CONF_USE_SHIPPING_PROFILE_ID', 1, array(), false, 0);
+        $fld->htmlAfterField = '<br><small>' . Labels::getLabel("MSG_Use_shipping_profile_id_instead_of_shipping_profile_identifier_in_worksheets", $this->adminLangId) . '</small>';
+
+        $fld = $frm->addCheckBox(Labels::getLabel("LBL_Use_shipping_package_id_instead_of_shipping_package_identifier", $this->adminLangId), 'CONF_USE_SHIPPING_PACKAGE_ID', 1, array(), false, 0);
+        $fld->htmlAfterField = '<br><small>' . Labels::getLabel("MSG_Use_shipping_package_id_instead_of_shipping_package_identifier_in_worksheets", $this->adminLangId) . '</small>';
+        
         $fld = $frm->addCheckBox(Labels::getLabel("LBL_Use_1_for_yes_0_for_no", $this->adminLangId), 'CONF_USE_O_OR_1', 1, array(), false, 0);
         $fld->htmlAfterField = '<br><small>' . Labels::getLabel("MSG_Use_1_for_yes_0_for_no_for_status_type_data", $this->adminLangId) . '</small>';
         $frm->addSubmitButton('', 'btn_submit', Labels::getLabel("LBL_Save_Changes", $this->adminLangId));

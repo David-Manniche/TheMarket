@@ -1164,7 +1164,7 @@ class ImportexportCommon extends FatModel
         return $row = $this->db->fetchAllAssoc($rs);
     }
 
-    public function getShippingProfileArr($byId = true, $taxCatIdOrIdentifier = false)
+    public function getShippingProfileArr($byId = true, $taxCatIdOrIdentifier = false, $userId = 0)
     {
         $srch = ShippingProfile::getSearchObject(false);
         $srch->doNotCalculateRecords();
@@ -1181,13 +1181,29 @@ class ImportexportCommon extends FatModel
                 $srch->addCondition('shipprofile_id', '=', $taxCatIdOrIdentifier);
             }
         } else {
-            $srch->addMultipleFields(array('shipprofile_name', 'shipprofile_id'));
+            $srch->addMultipleFields(array('shipprofile_name', 'shipprofile_id', 'shipprofile_user_id'));
             if ($taxCatIdOrIdentifier) {
                 $srch->addCondition('shipprofile_name', '=', $taxCatIdOrIdentifier);
             }
         }
+
+        if (0 < $userId) {
+            $cnd = $srch->addCondition('shipprofile_user_id', '=', 0);
+            $cnd->attachCondition('shipprofile_user_id', '=', $userId);
+        }
+
         $rs = $srch->getResultSet();
-        return $row = $this->db->fetchAllAssoc($rs);
+
+        $res = [];
+        if ($byId) {
+            $res = $this->db->fetchAllAssoc($rs);
+        } else {
+            while ($row = $this->db->fetch($rs)) {
+                $res[$row['shipprofile_name']][$row['shipprofile_user_id']] = $row['shipprofile_id'];
+            }
+        }
+
+        return $res;
     }
 
     public function getTaxCategoriesArr($byId = true, $taxCatIdOrIdentifier = false)

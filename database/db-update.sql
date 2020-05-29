@@ -93,11 +93,12 @@ ALTER TABLE `tbl_shipping_profile`
 
 CREATE TABLE `tbl_shipping_profile_products` (
   `shippro_shipprofile_id` int(11) NOT NULL,
-  `shippro_product_id` int(11) NOT NULL
+  `shippro_product_id` int(11) NOT NULL,
+  `shippro_user_id` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 ALTER TABLE `tbl_shipping_profile_products`
-  ADD UNIQUE KEY `shippro_shipprofile_id` (`shippro_product_id`);
+  ADD PRIMARY KEY (`shippro_product_id`,`shippro_user_id`);
 
 CREATE TABLE `tbl_shipping_profile_zones` (
   `shipprozone_id` int(11) NOT NULL,

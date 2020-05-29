@@ -2271,6 +2271,7 @@ trait CustomProducts
         /* [ GET ATTACHED PROFILE ID */
         $profSrch = ShippingProfileProduct::getSearchObject();
         $profSrch->addCondition('shippro_product_id', '=', $productId);
+        $profSrch->addCondition('shippro_user_id', '=', $this->userParentId);
         $proRs = $profSrch->getResultSet();
         $profileData = FatApp::getDb()->fetch($proRs);
         if (!empty($profileData)) {
@@ -2340,7 +2341,8 @@ trait CustomProducts
         if (isset($post['shipping_profile']) && $post['shipping_profile'] > 0) {
             $shipProProdData = array(
                 'shippro_shipprofile_id' => $post['shipping_profile'],
-                'shippro_product_id' => $productId
+                'shippro_product_id' => $productId,
+                'shippro_user_id' => $this->userParentId
             );
             $spObj = new ShippingProfileProduct();
             if (!$spObj->addProduct($shipProProdData)) {

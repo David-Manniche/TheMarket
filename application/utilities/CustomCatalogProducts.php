@@ -1430,7 +1430,7 @@ trait CustomCatalogProducts
             FatUtility::dieWithError(Labels::getLabel('MSG_Invalid_Access', $this->siteLangId));
         }
 
-        $productFrm = $this->getProductShippingFrm(0, $preqId);
+        $productFrm = $this->getProductShippingFrm(0, $preqId, true);
         $preqContent = $productReqRow['preq_content'];
         $preqContentData = json_decode($preqContent, true);
         $productFrm->fill($preqContentData);

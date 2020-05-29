@@ -55,7 +55,7 @@ class Importexport extends ImportexportCommon
                 $arr[static::TYPE_CATEGORIES] = Labels::getLabel('LBL_Categories', $langId);
                 $arr[static::TYPE_PRODUCTS] = Labels::getLabel('LBL_Catalogs', $langId);
                 $arr[static::TYPE_SELLER_PRODUCTS] = Labels::getLabel('LBL_Seller_Products', $langId);
-                $arr[static::TYPE_INVENTORY_UPDATE] = Labels::getLabel('LBL_INVENTORY_UPDATE', $langId);
+                // $arr[static::TYPE_INVENTORY_UPDATE] = Labels::getLabel('LBL_INVENTORY_UPDATE', $langId);
                 $arr[static::TYPE_BRANDS] = Labels::getLabel('LBL_Brands', $langId);
                 $arr[static::TYPE_OPTIONS] = Labels::getLabel('LBL_Options', $langId);
                 $arr[static::TYPE_OPTION_VALUES] = Labels::getLabel('LBL_Option_Values', $langId);
@@ -72,7 +72,7 @@ class Importexport extends ImportexportCommon
             case 'IMPORT':
                 $arr[static::TYPE_PRODUCTS] = Labels::getLabel('LBL_Catalogs', $langId);
                 $arr[static::TYPE_SELLER_PRODUCTS] = Labels::getLabel('LBL_Seller_Products', $langId);
-                $arr[static::TYPE_INVENTORY_UPDATE] = Labels::getLabel('LBL_INVENTORY_UPDATE', $langId);
+                // $arr[static::TYPE_INVENTORY_UPDATE] = Labels::getLabel('LBL_INVENTORY_UPDATE', $langId);
                 if (!$sellerDashboard) {
                     $arr[static::TYPE_CATEGORIES] = Labels::getLabel('LBL_Categories', $langId);
                     $arr[static::TYPE_BRANDS] = Labels::getLabel('LBL_Brands', $langId);
@@ -106,7 +106,7 @@ class Importexport extends ImportexportCommon
         static::PRODUCT_OPTION => Labels::getLabel('LBL_Product_Options', $langId),
         //static::PRODUCT_TAG => Labels::getLabel('LBL_Product_Tags', $langId),
         static::PRODUCT_SPECIFICATION => Labels::getLabel('LBL_Product_Specifications', $langId),
-        static::PRODUCT_SHIPPING => Labels::getLabel('LBL_Product_Shipping', $langId),
+        // static::PRODUCT_SHIPPING => Labels::getLabel('LBL_Product_Shipping', $langId),
         );
         return $arr;
     }
@@ -1335,6 +1335,9 @@ class Importexport extends ImportexportCommon
         if (!$this->settings['CONF_USE_WEIGHT_UNIT_ID']) {
             $weightUnitsArr = applicationConstants::getWeightUnitsArr($langId);
         }
+                
+        $shipProfileSrch = ShippingProfileProduct::getUserSearchObject($userId);
+        $shipProfileSubQuery = $shipProfileSrch->getQuery();
 
         $srch = Product::getSearchObject($langId, false, true);
         $srch->joinTable(User::DB_TBL, 'LEFT OUTER JOIN', 'u.user_id = tp.product_seller_id', 'u');
@@ -1346,7 +1349,7 @@ class Importexport extends ImportexportCommon
             $srch->joinTable(Product::DB_TBL_PRODUCT_SHIPPING, 'LEFT OUTER JOIN', 'ps.ps_product_id = tp.product_id and ps.ps_user_id = tp.product_seller_id', 'ps');
         }
         $srch->joinTable(Countries::DB_TBL, 'LEFT OUTER JOIN', 'c.country_id = ps.ps_from_country_id', 'c');
-        $srch->joinTable(ShippingProfileProduct::DB_TBL, 'LEFT OUTER JOIN', 'tp.product_id = sppro.shippro_product_id', 'sppro');
+        $srch->joinTable('(' . $shipProfileSubQuery . ')', 'LEFT OUTER JOIN', 'tp.product_id = sppro.shippro_product_id', 'sppro');
         /* $srch->joinTable(ShippingProfile::DB_TBL, 'LEFT OUTER JOIN', 'sppro.shippro_shipprofile_id = shp.shipprofile_id', 'shp');
         $srch->joinTable(ShippingPackage::DB_TBL, 'LEFT OUTER JOIN', 'spp.shippack_id = tp.product_ship_package', 'spp'); */
         //$srch->joinTable(Countries::DB_TBL,'LEFT OUTER JOIN','c.country_id = tp.product_ship_country','c');
@@ -1460,8 +1463,7 @@ class Importexport extends ImportexportCommon
         }
 
         if (!$this->settings['CONF_USE_SHIPPING_PROFILE_ID']) {
-            $shippingProfiles = $this->getShippingProfileArr();
-            $shippingProfiles = array_flip($shippingProfiles);
+            $shippingProfiles = $this->getShippingProfileArr(false);
         }
 
         if (!$this->settings['CONF_USE_SHIPPING_PACKAGE_ID']) {
@@ -1532,7 +1534,7 @@ class Importexport extends ImportexportCommon
                             $colValue = $userId;
                         }
                     }
-
+                    
                     if (0 < $sellerId && ($sellerId != $userId || 1 > $userId)) {
                         $colIndex = $colInd;
                         $errMsg = Labels::getLabel("MSG_Sorry_you_are_not_authorized_to_update_this_product.", $langId);
@@ -1545,7 +1547,7 @@ class Importexport extends ImportexportCommon
                         }
                     }
                 }
-
+                
                 if (false === $errMsg) {
                     $errMsg = Product::validateFields($columnKey, $columnTitle, $colValue, $langId, $prodType);
                 }
@@ -1673,7 +1675,7 @@ class Importexport extends ImportexportCommon
                                 if (!array_key_exists($colValue, $shippingProfiles)) {
                                     $invalid = true;
                                 } else {
-                                    $colValue = $shippingProfiles[$colValue];
+                                    $colValue = $shippingProfiles[$colValue][$userId];
                                 }
                             }
                             break;
@@ -1749,11 +1751,17 @@ class Importexport extends ImportexportCommon
                     }
                 }
             }
-
-            if (false === $errorInRow && count($prodDataArr)) {
+            
+            if (false === $errorInRow && count($prodDataArr)) { 
                 $prodDataArr['product_added_on'] = date('Y-m-d H:i:s');
                 ;
                 $prodDataArr['product_added_by_admin_id'] = (1 > $userId) ? applicationConstants::YES : applicationConstants::NO;
+
+                if (array_key_exists('shippro_shipprofile_id', $prodDataArr)) {
+                    $shippro_shipprofile_id = $prodDataArr['shippro_shipprofile_id'];
+                    unset($prodDataArr['shippro_shipprofile_id']);
+                }
+                
 
                 if (!empty($prodData) && $prodData['product_id'] && (!$sellerId || ($sellerId && $prodData['product_seller_id'] == $sellerId))) {
                     unset($prodData['product_seller_id']);
@@ -1773,7 +1781,7 @@ class Importexport extends ImportexportCommon
 
                     $where = array('smt' => 'product_id = ?', 'vals' => array( $productId ) );
                     $this->db->updateFromArray(Product::DB_TBL, $prodDataArr, $where);
-
+                    
                     if ($sellerId && $this->isDefaultSheetData($langId)) {
                         $tempData = array(
                         'pti_product_id' => $productId,
@@ -1835,6 +1843,15 @@ class Importexport extends ImportexportCommon
                         $productSellerShiping = array_merge($productSellerShiping, $prodShippingArr);
 
                         FatApp::getDb()->insertFromArray(PRODUCT::DB_TBL_PRODUCT_SHIPPING, $productSellerShiping, false, array(), $productSellerShiping);
+                        
+                        $shipProProdData = array(
+                            'shippro_shipprofile_id' => $shippro_shipprofile_id,
+                            'shippro_product_id' => $productId,
+                            'shippro_user_id' => $userId
+                        );
+                        
+                        $spObj = new ShippingProfileProduct();
+                        $spObj->addProduct($shipProProdData);
                     }
 
                     /* Lang Data [*/

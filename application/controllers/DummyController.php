@@ -260,15 +260,13 @@ class DummyController extends MyAppController
     }
 
     public function index()
-    {       
-        $allowedUserIds = User::getAuthenticUserIds(22, 4);
-        var_dump($allowedUserIds);exit;
+    {
+        
     }
 
 
     public function test()
     {
-       
     }
 
     private function getShopInfo($shop_id)
@@ -550,8 +548,8 @@ class DummyController extends MyAppController
         AbandonedCart::sendReminderAbandonedCart();
     }
 
-    public function testTaxjar(){
-       
+    public function testTaxjar()
+    {
         require_once CONF_PLUGIN_DIR . '/tax/taxjartax/TaxJarTax.php';
         $itemsArr = [];
         
@@ -559,7 +557,7 @@ class DummyController extends MyAppController
               'amount' => 100,
               'quantity' => 2,
               'itemCode' => 100,
-              'taxCode' => '20010',                
+              'taxCode' => '20010',
         ];
         array_push($itemsArr, $item);
         
@@ -568,10 +566,10 @@ class DummyController extends MyAppController
         $shippingItem = [
             'amount' => 12,
             'quantity' => 1,
-            'itemCode' => 'S-100', 
+            'itemCode' => 'S-100',
             'taxCode' => 'FR',
         ];
-        array_push($shippingItems, $shippingItem);      
+        array_push($shippingItems, $shippingItem);
         
        
         $fromAddress = array(
@@ -590,17 +588,17 @@ class DummyController extends MyAppController
             'state' => 'CA',
             'postalCode' => '90002',
             'country' => 'US',
-        );    
+        );
         
         
-        $avalaraObj = new TaxJarTax(1, $fromAddress , $toAddress); 
-        $txRates = $avalaraObj->getRates($itemsArr ,$shippingItems,1);
+        $avalaraObj = new TaxJarTax(1, $fromAddress, $toAddress);
+        $txRates = $avalaraObj->getRates($itemsArr, $shippingItems, 1);
         CommonHelper::printArray($txRates);
         exit;
     }
     
-    public function testavalaratax(){
-        
+    public function testavalaratax()
+    {
         require_once CONF_PLUGIN_DIR . '/tax/avalaratax/AvalaraTax.php';
         
         $itemsArr = [];
@@ -609,7 +607,7 @@ class DummyController extends MyAppController
               'amount' => 200,
               'quantity' => 1,
               'itemCode' => 7,
-              'taxCode' => 'PC030100',                
+              'taxCode' => 'PC030100',
         ];
         array_push($itemsArr, $item);
         
@@ -618,10 +616,10 @@ class DummyController extends MyAppController
         $shippingItem = [
             'amount' => 12,
             'quantity' => 1,
-            'itemCode' => 'S-100', 
+            'itemCode' => 'S-100',
             'taxCode' => 'FR',
         ];
-        array_push($shippingItems, $shippingItem);      
+        array_push($shippingItems, $shippingItem);
         
        
         $fromAddress = array(
@@ -644,27 +642,26 @@ class DummyController extends MyAppController
             'postalCode' => '10019',
             'country' => 'US',
             'countryCode' => 'US',
-        );    
+        );
         
         
-        $avalaraObj = new AvalaraTax(1, $fromAddress , $toAddress); 
-        $txRates = $avalaraObj->getRates($itemsArr ,$shippingItems,1);
+        $avalaraObj = new AvalaraTax(1, $fromAddress, $toAddress);
+        $txRates = $avalaraObj->getRates($itemsArr, $shippingItems, 1);
         //$txRates = $avalaraObj->getCodes();
         //print_r($avalaraObj->getTaxApiActualResponse());
-      CommonHelper::printArray($txRates);
+        CommonHelper::printArray($txRates);
 //        die();
         
         //$taxRates1 = $avalaraObj->createInvoice($fromAddress , $toAddress,$itemsArr ,$shippingItems,100,'2019-10-11','S-1000');
      
-       // echo('<pre>' . json_encode($txRates, JSON_PRETTY_PRINT) . '</pre>');
-      // echo('<pre>' . json_encode($taxRates1, JSON_PRETTY_PRINT) . '</pre>');
-        die(); 
+        // echo('<pre>' . json_encode($txRates, JSON_PRETTY_PRINT) . '</pre>');
+        // echo('<pre>' . json_encode($taxRates1, JSON_PRETTY_PRINT) . '</pre>');
+        die();
         
 //        CA STATE TAX
 //        CA COUNTY TAX
 //        CA CITY TAX
 //        CA SPECIAL TAX
-        
     }
     
     

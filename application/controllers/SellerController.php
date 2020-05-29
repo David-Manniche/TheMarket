@@ -3570,13 +3570,12 @@ class SellerController extends SellerBaseController
         $productId = FatUtility::int($productId);
         $srch = Product::getSearchObject($this->siteLangId);
         $srch->addMultipleFields(
-            array('product_id', 'product_seller_id', 'product_added_by_admin_id',
+            array('product_id', 'product_ship_package', 'product_seller_id', 'product_added_by_admin_id',
                     'IFNULL(product_name,product_identifier)as product_name')
         );
         $srch->addCondition('product_id', '=', $productId);
         $rs = $srch->getResultSet();
         $productDetails = FatApp::getDb()->fetch($rs);
-
 
         if ($productDetails['product_seller_id'] > 0) {
             Message::addErrorMessage(
@@ -3598,8 +3597,22 @@ class SellerController extends SellerBaseController
             $shippingDetails['shipping_country'] = Countries::getCountryById($shippingDetails['ps_from_country_id'], $this->siteLangId, 'country_name');
         }
         $shippingDetails['ps_product_id'] = $productId;
+        $shippingDetails['product_ship_package'] = $productDetails['product_ship_package'];
         $shippingFrm = $this->getShippingForm();
+
+        /* [ GET ATTACHED PROFILE ID */
+        $profSrch = ShippingProfileProduct::getSearchObject();
+        $profSrch->addCondition('shippro_product_id', '=', $productId);
+        $profSrch->addCondition('shippro_user_id', '=', $userId);
+        $proRs = $profSrch->getResultSet();
+        $profileData = FatApp::getDb()->fetch($proRs);
+        if (!empty($profileData)) {
+            $shippingDetails['shipping_profile'] = $profileData['profile_id'];
+        }
+        /* ]*/
+
         $shippingFrm->fill($shippingDetails);
+
         $this->set('shippingFrm', $shippingFrm);
 
         $this->set('productDetails', $productDetails);
@@ -3612,13 +3625,19 @@ class SellerController extends SellerBaseController
     {
         $frm = new Form('frmCustomProduct');
         $fld = $frm->addTextBox(Labels::getLabel('LBL_Shipping_country', $this->siteLangId), 'shipping_country');
+       
+        $shipProfileArr = ShippingProfile::getProfileArr($this->userParentId, true, true);
+        $frm->addSelectBox(Labels::getLabel('LBL_Shipping_Profile', $this->siteLangId), 'shipping_profile', $shipProfileArr)->requirements()->setRequired();
 
+        if (FatApp::getConfig("CONF_PRODUCT_DIMENSIONS_ENABLE", FatUtility::VAR_INT, 1)) {
+            $shipPackArr = ShippingPackage::getAllNames();
+            $frm->addSelectBox(Labels::getLabel('LBL_Shipping_Package', $this->siteLangId), 'product_ship_package', $shipPackArr)->requirements()->setRequired();
+        }
         $fld = $frm->addCheckBox(Labels::getLabel('LBL_Free_Shipping', $this->siteLangId), 'ps_free', 1);
-        $frm->addHtml('', '', '<div id="tab_shipping"></div>');
+        //$frm->addHtml('', '', '<div id="tab_shipping"></div>');
 
         $frm->addHiddenField('', 'ps_from_country_id');
         $frm->addHiddenField('', 'ps_product_id');
-        $frm->addHtml('', '', '<div id="tab_shipping"></div>');
         $frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_Save_Changes', $this->siteLangId));
         $frm->addButton('', 'btn_cancel', Labels::getLabel('LBL_Cancel', $this->siteLangId));
         return $frm;
@@ -3649,12 +3668,17 @@ class SellerController extends SellerBaseController
 
         unset($post['product_id']);
         unset($post['product_shipping']);
-        $prodObj = new Product($product_id);
-        $data_to_be_save = $post;
-        $data_to_be_save['ps_product_id'] = $product_id;
+        //$prodObj = new Product($product_id);
 
+        $prod = new Product($product_id);
+        if (!$prod->saveProductData($post)) {
+            Message::addErrorMessage($prod->getError());
+            FatUtility::dieWithError(Message::getHtml());
+        }
 
         /* Save Prodcut Shipping  [ */
+        $data_to_be_save = $post;
+        $data_to_be_save['ps_product_id'] = $product_id;
         if (!$this->addUpdateProductSellerShipping($product_id, $data_to_be_save)) {
             Message::addErrorMessage(FatApp::getDb()->getError());
             FatUtility::dieWithError(Message::getHtml());
@@ -3663,12 +3687,24 @@ class SellerController extends SellerBaseController
         /* ] */
 
         /* Save Prodcut Shipping Details [ */
-        if (!$this->addUpdateProductShippingRates($product_id, $productShiping)) {
+        /* if (!$this->addUpdateProductShippingRates($product_id, $productShiping)) {
             Message::addErrorMessage($taxObj->getError());
             FatUtility::dieWithError(Message::getHtml());
-        }
-
+        } */
         /* ] */
+
+        if (isset($post['shipping_profile']) && $post['shipping_profile'] > 0) {
+            $shipProProdData = array(
+                'shippro_shipprofile_id' => $post['shipping_profile'],
+                'shippro_product_id' => $product_id,
+                'shippro_user_id' => $this->userParentId
+            );
+            $spObj = new ShippingProfileProduct();
+            if (!$spObj->addProduct($shipProProdData)) {
+                Message::addErrorMessage($spObj->getError());
+                FatUtility::dieWithError(Message::getHtml());
+            }
+        }
 
         $this->set('msg', Labels::getLabel('LBL_Shipping_Setup_Successful', $this->siteLangId));
         $this->set('product_id', $product_id);
@@ -4840,7 +4876,7 @@ class SellerController extends SellerBaseController
         return $frm;
     }
 
-    private function getProductShippingFrm($productId, $preqId = 0)
+    private function getProductShippingFrm($productId, $preqId = 0, $forCatalogReq = false)
     {
         $frm = new Form('frmProductShipping');
         if ($preqId > 0) {
@@ -4850,7 +4886,13 @@ class SellerController extends SellerBaseController
         } else {
             $productType = Product::getAttributesById($productId, 'product_type');
         }
-        $shipProfileArr = ShippingProfile::getProfileArr($this->userParentId, true, true);
+
+        $userId = $this->userParentId;
+        if (true == $forCatalogReq) {
+            $userId = 0;
+        }
+
+        $shipProfileArr = ShippingProfile::getProfileArr($userId, true, true);
         $frm->addSelectBox(Labels::getLabel('LBL_Shipping_Profile', $this->siteLangId), 'shipping_profile', $shipProfileArr)->requirements()->setRequired();
         if ($productType == Product::PRODUCT_TYPE_PHYSICAL) {
             if (FatApp::getConfig("CONF_PRODUCT_DIMENSIONS_ENABLE", FatUtility::VAR_INT, 1)) {

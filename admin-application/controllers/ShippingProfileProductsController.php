@@ -22,6 +22,7 @@ class ShippingProfileProductsController extends AdminBaseController
       
         $srch = ShippingProfileProduct::getSearchObject();
         $srch->addCondition('shippro_shipprofile_id', '=', $profileId);
+        $srch->addCondition('shippro_user_id', '=', 0);
         $srch->addOrder('product_name', 'ASC');
         $srch->setPageNumber($page);
         $srch->setPageSize($pageSize);
@@ -84,6 +85,7 @@ class ShippingProfileProductsController extends AdminBaseController
             FatUtility::dieJsonError(Message::getHtml());
         }
         $data = array(
+            'shippro_user_id' => 0,
             'shippro_product_id' => $post['shippro_product_id'],
             'shippro_shipprofile_id' => $post['shippro_shipprofile_id']
         );

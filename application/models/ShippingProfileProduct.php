@@ -24,4 +24,23 @@ class ShippingProfileProduct extends MyAppModel
         }
         return true;
     }
+
+    public static function getUserSearchObject($userId = 0)
+    {
+        $srch = new SearchBase(static::DB_TBL, 'sppro');
+        $fields = array('sppro.shippro_product_id');
+        if (0 < $userId) {
+            $srch->joinTable(static::DB_TBL, 'LEFT OUTER JOIN', 'spprot.shippro_product_id = sppro.shippro_product_id and spprot.shippro_user_id = ' . $userId, 'spprot');
+            $fields[] = 'if(spprot.shippro_user_id > 0, spprot.shippro_user_id, sppro.shippro_user_id) as shippro_user_id';
+            $fields[] = 'if(spprot.shippro_user_id > 0, spprot.shippro_shipprofile_id, sppro.shippro_shipprofile_id) as shippro_shipprofile_id';
+        } else {
+            $fields[] = 'sppro.shippro_user_id';
+            $fields[] = 'sppro.shippro_shipprofile_id';
+        }
+        $srch->addMultipleFields($fields);
+        $srch->addGroupBy('sppro.shippro_product_id');
+        $srch->doNotCalculateRecords();
+        $srch->doNotLimitRecords();
+        return $srch;
+    }
 }
