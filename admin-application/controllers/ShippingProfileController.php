@@ -71,6 +71,7 @@ class ShippingProfileController extends AdminBaseController
         $profileId = FatUtility::int($profileId);
         $frm = $this->getForm($profileId);
         $data = [];
+        $productCount = 0;
         if (0 < $profileId) {
             $data = ShippingProfile::getAttributesById($profileId);
             if (empty($data)) {

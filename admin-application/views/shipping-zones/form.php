@@ -88,7 +88,7 @@ if (!empty($excludeLocations)) {
 											value="<?php echo $zone['zone_id']; ?>"
 											class="checkbox_zone_<?php echo $zone['zone_id']; ?>"
 											<?php echo (in_array($zone['zone_id'], $exZoneIds)) ?'disabled':''; ?>
-										<?php echo ($countCounties == $totalCountries) ? 'checked' : ''; ?>
+										<?php echo ($countCounties == $totalCountries && $countCounties != 0) ? 'checked' : ''; ?>
 										><i class="input-helper"></i></span><?php echo $zone['zone_name']; ?>
 								</label>
 							</div>
@@ -186,7 +186,7 @@ if (!empty($excludeLocations)) {
 	</form>
 </div>
 <script>
-	$(document).on('keyup', "input[name='shipzone_name']", function() {
+	/* $(document).on('keyup', "input[name='shipzone_name']", function() {
 		var currObj = $(this);
 		var parentForm = currObj.closest('form').attr('id');
 		$("#" + parentForm + " input[name='shipzone_id']").val(0);
@@ -224,5 +224,5 @@ if (!empty($excludeLocations)) {
 		} else {
 			$("#" + parentForm + " input[name='shipzone_id']").val(0);
 		}
-	});
+	}); */
 </script>

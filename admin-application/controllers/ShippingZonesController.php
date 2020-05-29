@@ -130,22 +130,20 @@ class ShippingZonesController extends AdminBaseController
             FatUtility::dieJsonError(Message::getHtml());
         }
         $shipZoneId = (isset($post['shipzone_id']))? $post['shipzone_id'] : 0;
-        
+       
         if (!$this->checkForLocations($post['shipzone_profile_id'], $shipZoneId, $post)) {
             Message::addErrorMessage(Labels::getLabel('LBL_Locations_already_added_in_other_zone_of_same_profile', $this->adminLangId));
             FatUtility::dieJsonError(Message::getHtml());
         }
         
-        if ($shipZoneId <= 0) { /* Add New Zone */
-            unset($post['shipzone_id']);
-            $sObj = new ShippingZone($shipZoneId);
-            $sObj->assignValues($post);
-            if (!$sObj->save()) {
-                Message::addErrorMessage($sObj->getError());
-                FatUtility::dieJsonError(Message::getHtml());
-            }
-            $shipZoneId = $sObj->getMainTableRecordId();
+        unset($post['shipzone_id']);
+        $sObj = new ShippingZone($shipZoneId);
+        $sObj->assignValues($post);
+        if (!$sObj->save()) {
+            Message::addErrorMessage($sObj->getError());
+            FatUtility::dieJsonError(Message::getHtml());
         }
+        $shipZoneId = $sObj->getMainTableRecordId();
         
         $db = FatApp::getDb();
         $db->startTransaction();

@@ -24,6 +24,7 @@ class ShippingProfileController extends SellerBaseController
         $post = $searchForm->getFormDataFromArray($data);
         
         $prodCountSrch = ShippingProfileProduct::getSearchObject($this->siteLangId);
+        $prodCountSrch->addCondition('shippro_user_id', '=', $this->userParentId);
         $prodCountSrch->doNotCalculateRecords();
         $prodCountSrch->doNotLimitRecords();
         $prodCountSrch->addGroupBy('shippro_shipprofile_id');

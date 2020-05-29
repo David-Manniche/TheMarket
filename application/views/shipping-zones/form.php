@@ -185,7 +185,7 @@ if (!empty($excludeLocations)) {
     </form>
 </div>
 <script>
-    $(document).on('keyup', "input[name='shipzone_name']", function() {
+   /*  $(document).on('keyup', "input[name='shipzone_name']", function() {
         var currObj = $(this);
         var parentForm = currObj.closest('form').attr('id');
         $("#" + parentForm + " input[name='shipzone_id']").val(0);
@@ -223,5 +223,5 @@ if (!empty($excludeLocations)) {
         } else {
             $("#" + parentForm + " input[name='shipzone_id']").val(0);
         }
-    });
+    }); */
 </script>

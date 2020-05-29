@@ -139,16 +139,14 @@ class ShippingZonesController extends SellerBaseController
             FatUtility::dieJsonError(Message::getHtml());
         }
         
-        if ($shipZoneId <= 0) { /* Add New Zone */
-            unset($post['shipzone_id']);
-            $sObj = new ShippingZone($shipZoneId);
-            $sObj->assignValues($post);
-            if (!$sObj->save()) {
-                Message::addErrorMessage($sObj->getError());
-                FatUtility::dieJsonError(Message::getHtml());
-            }
-            $shipZoneId = $sObj->getMainTableRecordId();
+        unset($post['shipzone_id']);
+        $sObj = new ShippingZone($shipZoneId);
+        $sObj->assignValues($post);
+        if (!$sObj->save()) {
+            Message::addErrorMessage($sObj->getError());
+            FatUtility::dieJsonError(Message::getHtml());
         }
+        $shipZoneId = $sObj->getMainTableRecordId();
         
         $db = FatApp::getDb();
         $db->startTransaction();

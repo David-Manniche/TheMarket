@@ -94,7 +94,7 @@ $(document).ready(function() {
 			return;
 		}
 			
-        fcom.displayProcessing();
+        $('#product-section--js').html(fcom.getLoader());
         fcom.ajax(fcom.makeUrl('ShippingZones', 'form', [profileId, zoneId]), '', function(t) {
 			$('#product-section--js').html(t);
         });
