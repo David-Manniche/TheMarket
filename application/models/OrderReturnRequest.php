@@ -173,16 +173,7 @@ class OrderReturnRequest extends MyAppModel
             return false;
         }
 
-        $canRefundToCard = false;
-        if ($requestRow['orrequest_type'] != static::RETURN_REQUEST_TYPE_REPLACE && PaymentMethods::TYPE_PLUGIN == $requestRow['order_pmethod_type']) {
-            $pluginKey = Plugin::getAttributesById($requestRow['order_pmethod_id'], 'plugin_code');
-
-            $paymentMethodObj = new PaymentMethods();
-            if (true === $paymentMethodObj->canRefundToCard($pluginKey)) {
-                $moveRefundToWallet = false;
-                $canRefundToCard = true;
-            }
-        }
+        $canRefundToCard = (PaymentMethods::MOVE_TO_CUSTOMER_CARD == $moveRefundInWallet);
 
         $oObj = new Orders();
         $charges = $oObj->getOrderProductChargesArr($requestRow['orrequest_op_id']);
@@ -235,7 +226,7 @@ class OrderReturnRequest extends MyAppModel
             }
         }
 
-        if ($requestRow['orrequest_type'] == static::RETURN_REQUEST_TYPE_REPLACE) {
+        if ($requestRow['orrequest_type'] == static::RETURN_REQUEST_TYPE_REPLACE || true == $canRefundToCard) {
             $moveRefundInWallet = false;
         }
 
@@ -245,7 +236,32 @@ class OrderReturnRequest extends MyAppModel
         }
         if (true == $oObj->addChildProductOrderHistory($requestRow['orrequest_op_id'], $orderLangId, FatApp::getConfig("CONF_RETURN_REQUEST_APPROVED_ORDER_STATUS"), $approvedByLabel, 1, '', 0, $moveRefundInWallet)) {
             if (true === $canRefundToCard) {
+                if (PaymentMethods::TYPE_PLUGIN == $requestRow['order_pmethod_type']) {
+                    $pluginKey = Plugin::getAttributesById($requestRow['order_pmethod_id'], 'plugin_code');
 
+                    $paymentMethodObj = new PaymentMethods();
+                    if (true === $paymentMethodObj->canRefundToCard($pluginKey, $orderLangId)) {
+                        if (false == $paymentMethodObj->initiateRefund($requestRow['orrequest_op_id'])) {
+                            $this->error = $paymentMethodObj->getError();
+                            $db->rollbackTransaction();
+                            return false;
+                        }
+                        $resp = $paymentMethodObj->getResponse();
+                        if (empty($resp)) {
+                            $this->error = Labels::getLabel('LBL_UNABLE_TO_PLACE_GATEWAY_REFUND_REQUEST', $orderLangId);
+                            $db->rollbackTransaction();
+                            return false;
+                        }
+
+                        $dataToUpdate = ['orrequest_payment_gateway_req_id' => $resp->id];
+                        $whereArr = array( 'smt' => 'orrequest_id = ?', 'vals' => [$orrequest_id]);
+                        if (!$db->updateFromArray(static::DB_TBL, $dataToUpdate, $whereArr)) {
+                            $this->error = $db->getError();
+                            $db->rollbackTransaction();
+                            return false;
+                        }
+                    }
+                }
             }
         }
         $db->commitTransaction();

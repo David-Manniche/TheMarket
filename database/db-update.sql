@@ -76,3 +76,6 @@ style=\"padding:0; height:50px;\"></td>\r\n						</tr>\r\n					</tbody>\r\n				<
 end here\r\n				-->\r\n				   </td>\r\n		</tr>\r\n	</tbody>\r\n</table>\r\n', '{invoice_number} - Yokart Order Invoice
 Number.<br/>\r\n{website_name} Name of our website<br>\r\n{website_url} URL of our website<br>\r\n{error_message} - 
 Error Message received from TaxApi while creating order \r\n{social_media_icons} <br>\r\n{contact_us_url} <br>', 1);
+
+ALTER TABLE `tbl_order_return_requests` CHANGE `orrequest_refund_in_wallet` `orrequest_refund_in_wallet` TINYINT(1) NOT NULL COMMENT 'Defined In PaymentMethods Model';
+ALTER TABLE `tbl_order_return_requests` ADD `orrequest_payment_gateway_req_id` VARCHAR(255) NOT NULL AFTER `orrequest_status`;

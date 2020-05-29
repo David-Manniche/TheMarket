@@ -340,6 +340,9 @@ trait StripeConnectFunctions
         } catch (Exception $e) {
             // Something else happened, completely unrelated to Stripe
             $this->error = $e->getMessage();
+        } catch (Error $e) {
+            // Handle error
+            $this->error = $e->getMessage();
         }
         return false;
     }

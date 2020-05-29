@@ -169,13 +169,24 @@ class OrderReturnRequestsController extends AdminBaseController
             'orrequest_date', 'orrequest_status', 'orrequest_reference', 'buyer.user_name as buyer_name', 'buyer_cred.credential_username as buyer_username',
             'buyer_cred.credential_email as buyer_email', 'buyer.user_phone as buyer_phone', 'seller.user_name as seller_name',
             'seller.user_phone as seller_phone', 'seller_cred.credential_username as seller_username', 'seller_cred.credential_email as seller_email',
-            'op_product_name', 'op_selprod_title', 'op_selprod_options', 'op_brand_name', 'op_shop_name', 'op_qty', 'op_unit_price',  'IFNULL(orreason_title, orreason_identifier) as orreason_title', 'order_tax_charged', 'op_other_charges', 'op_refund_shipping', 'op_refund_amount', 'op_commission_percentage', 'op_affiliate_commission_percentage', 'op_commission_include_shipping', 'op_commission_include_tax', 'op_free_ship_upto', 'op_actual_shipping_charges')
+            'op_product_name', 'op_selprod_title', 'op_selprod_options', 'op_brand_name', 'op_shop_name', 'op_qty', 'op_unit_price',  'IFNULL(orreason_title, orreason_identifier) as orreason_title', 'order_tax_charged', 'op_other_charges', 'op_refund_shipping', 'op_refund_amount', 'op_commission_percentage', 'op_affiliate_commission_percentage', 'op_commission_include_shipping', 'op_commission_include_tax', 'op_free_ship_upto', 'op_actual_shipping_charges', 'order_pmethod_id', 'order_pmethod_type')
         );
         $srch->addCondition('orrequest_id', '=', $orrequest_id);
         $srch->doNotCalculateRecords();
         $srch->doNotLimitRecords();
         $rs = $srch->getResultSet();
         $requestRow = FatApp::getDb()->fetch($rs);
+        
+        $canRefundToCard = false;
+        if (PaymentMethods::TYPE_PLUGIN == $requestRow['order_pmethod_type']) {
+            $pluginKey = Plugin::getAttributesById($requestRow['order_pmethod_id'], 'plugin_code');
+
+            $paymentMethodObj = new PaymentMethods();
+            if (true === $paymentMethodObj->canRefundToCard($pluginKey, $this->adminLangId)) {
+                $canRefundToCard = true;
+            }
+        }
+
         if (!$requestRow) {
             Message::addErrorMessage($this->str_invalid_request);
             FatApp::redirectUser(CommonHelper::generateUrl('OrderReturnRequests'));
@@ -200,7 +211,7 @@ class OrderReturnRequestsController extends AdminBaseController
         if ($attachedFile = AttachedFile::getAttachment(AttachedFile::FILETYPE_BUYER_RETURN_PRODUCT, $orrequest_id)) {
             $this->set('attachedFile', $attachedFile);
         }
-        $this->set('frmUpdateStatus', $this->getUpdateStatusForm($orrequest_id, $this->adminLangId));
+        $this->set('frmUpdateStatus', $this->getUpdateStatusForm($orrequest_id, $this->adminLangId, $canRefundToCard));
         $this->_template->render();
     }
     
@@ -325,7 +336,7 @@ class OrderReturnRequestsController extends AdminBaseController
         if(!Notification::saveNotifications($notificationData)){
         Message::addErrorMessage(Labels::getLabel("MSG_NOTIFICATION_COULD_NOT_BE_SENT",$this->adminLangId));
         FatUtility::dieWithError( Message::getHtml() );
-        }	*/
+        }   */
         
         
         $this->set('orrmsg_orrequest_id', $orrmsg_orrequest_id);
@@ -340,6 +351,7 @@ class OrderReturnRequestsController extends AdminBaseController
         $orrequest_id = FatApp::getPostedData('orrequest_id', FatUtility::VAR_INT, 0);
         $frm = $this->getUpdateStatusForm($orrequest_id, $this->adminLangId);
         $post = $frm->getFormDataFromArray(FatApp::getPostedData());
+        
         if (false == $post) {
             Message::addErrorMessage($frm->getValidationErrors());
             FatUtility::dieJsonError(Message::getHtml());
@@ -353,39 +365,53 @@ class OrderReturnRequestsController extends AdminBaseController
         $cnd->attachCondition('orrequest_status', '=', OrderReturnRequest::RETURN_REQUEST_STATUS_ESCALATED);
         $srch->doNotCalculateRecords();
         $srch->doNotLimitRecords();
-        $srch->addMultipleFields(array('orrequest_id', 'op_id', 'order_language_id', 'orrequest_user_id'));
+        $srch->addMultipleFields(array('orrequest_id', 'op_id', 'order_language_id', 'orrequest_user_id', 'order_pmethod_id', 'order_pmethod_type'));
         $rs = $srch->getResultSet();
         $row = FatApp::getDb()->fetch($rs);
+
         if (!$row) {
             Message::addErrorMessage(Labels::getLabel('LBL_Invalid_Request_or_Status_is_already_Approved_or_Declined!', $this->adminLangId));
             FatUtility::dieJsonError(Message::getHtml());
+        }
+
+        $transferTo = $post['orrequest_refund_in_wallet'];
+        if (PaymentMethods::TYPE_PLUGIN == $row['order_pmethod_type']) {
+            $pluginKey = Plugin::getAttributesById($row['order_pmethod_id'], 'plugin_code');
+
+            $paymentMethodObj = new PaymentMethods();
+            if (true === $paymentMethodObj->canRefundToCard($pluginKey, $this->adminLangId)) {
+                $transferTo = FatApp::getPostedData('orrequest_refund_in_wallet', FatUtility::VAR_INT, 0);
+            }
         }
         
         $orrObj = new OrderReturnRequest();
         $user_id = 0;
         $successMsg = '';
         switch ($post['orrequest_status']) {
-        case OrderReturnRequest::RETURN_REQUEST_STATUS_REFUNDED:
-            if (!$orrObj->approveRequest($row['orrequest_id'], $user_id, $this->adminLangId, $post['orrequest_refund_in_wallet'], $post['orrequest_admin_comment'])) {
-                Message::addErrorMessage($orrObj->getError());
-                FatApp::redirectUser(CommonHelper::generateUrl('orderReturnRequests'));
-            }
-            $successMsg = Labels::getLabel('LBL_Return_request_has_been_refunded_successfully.', $this->adminLangId);
-            break;
-            
-        case OrderReturnRequest::RETURN_REQUEST_STATUS_WITHDRAWN:
-            if (!$orrObj->withdrawRequest($row['orrequest_id'], $user_id, $this->adminLangId, $row['op_id'], $row['order_language_id'])) {
-                Message::addErrorMessage(Labels::getLabel($orrObj->getError(), $this->adminLangId));
-                FatApp::redirectUser(CommonHelper::generateUrl('orderReturnRequests'));
-            }
-            $successMsg = Labels::getLabel('LBL_Return_request_has_been_withdrawn_successfully.', $this->adminLangId);
-            break;
+            case OrderReturnRequest::RETURN_REQUEST_STATUS_REFUNDED:
+                if (!$orrObj->approveRequest($row['orrequest_id'], $user_id, $this->adminLangId, $transferTo, $post['orrequest_admin_comment'])) {
+                    FatUtility::dieJsonError($orrObj->getError());
+                    /*Message::addErrorMessage($orrObj->getError());
+                    FatApp::redirectUser(CommonHelper::generateUrl('orderReturnRequests'));*/
+                }
+                $successMsg = Labels::getLabel('LBL_Return_request_has_been_refunded_successfully.', $this->adminLangId);
+                break;
+                
+            case OrderReturnRequest::RETURN_REQUEST_STATUS_WITHDRAWN:
+                if (!$orrObj->withdrawRequest($row['orrequest_id'], $user_id, $this->adminLangId, $row['op_id'], $row['order_language_id'])) {
+                    FatUtility::dieJsonError($orrObj->getError());
+                    /*Message::addErrorMessage($orrObj->getError());
+                    FatApp::redirectUser(CommonHelper::generateUrl('orderReturnRequests'));*/
+                }
+                $successMsg = Labels::getLabel('LBL_Return_request_has_been_withdrawn_successfully.', $this->adminLangId);
+                break;
         }
         
         $emailNotificationObj = new EmailHandler();
         if (!$emailNotificationObj->sendOrderReturnRequestStatusChangeNotification($row['orrequest_id'], $this->adminLangId)) {
-            Message::addErrorMessage(Labels::getLabel($emailNotificationObj->getError(), $this->adminLangId));
-            FatApp::redirectUser(CommonHelper::generateUrl('orderReturnRequests'));
+            FatUtility::dieJsonError($emailNotificationObj->getError());
+            /*Message::addErrorMessage($emailNotificationObj->getError());
+            FatApp::redirectUser(CommonHelper::generateUrl('orderReturnRequests'));*/
         }
 
         //send notification to admin
@@ -398,8 +424,9 @@ class OrderReturnRequestsController extends AdminBaseController
         );
         
         if (!Notification::saveNotifications($notificationData)) {
-            Message::addErrorMessage(Labels::getLabel("MSG_NOTIFICATION_COULD_NOT_BE_SENT", $this->adminLangId));
-            FatApp::redirectUser(CommonHelper::generateUrl('orderReturnRequests'));
+            FatUtility::dieJsonError(Labels::getLabel("MSG_NOTIFICATION_COULD_NOT_BE_SENT", $this->adminLangId));
+            /*Message::addErrorMessage(Labels::getLabel("MSG_NOTIFICATION_COULD_NOT_BE_SENT", $this->adminLangId));
+            FatApp::redirectUser(CommonHelper::generateUrl('orderReturnRequests'));*/
         }
         
         FatUtility::dieJsonSuccess($successMsg);
@@ -535,7 +562,7 @@ class OrderReturnRequestsController extends AdminBaseController
         return $frm;
     }
     
-    private function getUpdateStatusForm($orrequest_id, $langId)
+    private function getUpdateStatusForm($orrequest_id, $langId, $canRefundToCard = false)
     {
         $frm = new Form('frmUpdateStatus');
         
@@ -543,7 +570,15 @@ class OrderReturnRequestsController extends AdminBaseController
         unset($statusArr[OrderReturnRequest::RETURN_REQUEST_STATUS_ESCALATED]);
         unset($statusArr[OrderReturnRequest::RETURN_REQUEST_STATUS_CANCELLED]);
         $frm->addSelectBox(Labels::getLabel('LBL_Status', $this->adminLangId), 'orrequest_status', $statusArr, '', array(), '');
-        $frm->addCheckBox(Labels::getLabel('LBL_Transfer_Refund_to_Wallet', $this->adminLangId), 'orrequest_refund_in_wallet', 1, array('checked' => 'checked'), false, 0);
+        // $frm->addCheckBox(Labels::getLabel('LBL_Transfer_Refund_to_Wallet', $this->adminLangId), 'orrequest_refund_in_wallet', 1, array('checked' => 'checked'), false, 0);
+
+        $moveRefundLocationArr = PaymentMethods::moveRefundLocationsArr($this->adminLangId);
+        if (false == $canRefundToCard) {
+            unset($moveRefundLocationArr[PaymentMethods::MOVE_TO_CUSTOMER_CARD]);
+        }
+
+        $frm->addRadioButtons(Labels::getLabel('LBL_TRANSFER_REFUND', $this->adminLangId), 'orrequest_refund_in_wallet', $moveRefundLocationArr, PaymentMethods::MOVE_TO_ADMIN_WALLET, array('class' => 'list-inline'));
+
         $frm->addTextarea(Labels::getLabel('LBL_Comment', $this->adminLangId), 'orrequest_admin_comment');
         $frm->addHiddenField('', 'orrequest_id', $orrequest_id);
         $frm->addSubmitButton('&nbsp;', 'btn_submit', Labels::getLabel('LBL_Update', $this->adminLangId));

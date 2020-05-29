@@ -9,6 +9,10 @@ class PaymentMethods extends MyAppModel
     public const TYPE_DEFAULT = 1;
     public const TYPE_PLUGIN = 2;
 
+    public const MOVE_TO_ADMIN_WALLET = 0;
+    public const MOVE_TO_CUSTOMER_WALLET = 1;
+    public const MOVE_TO_CUSTOMER_CARD = 2;
+
     private $paymentPlugin = '';
     private $keyname = '';
     private $langId = '';
@@ -76,6 +80,7 @@ class PaymentMethods extends MyAppModel
         if (self::TYPE_DEFAULT == $methodType) {
             return false;
         }
+        
         $this->keyname = $keyname;
         $this->langId = $langId;
         $this->paymentPlugin = PluginHelper::callPlugin($this->keyname, [$this->langId]);
@@ -83,36 +88,69 @@ class PaymentMethods extends MyAppModel
     }
 
     /**
+     * moveRefundLocationsArr
+     * 
+     * @param type $langId 
+     * @return array
+     */
+    public static function moveRefundLocationsArr($langId = 0): array
+    {
+        $langId = FatUtility::int($langId);
+        if ($langId < 1) {
+            $langId = FatApp::getConfig('CONF_ADMIN_DEFAULT_LANG');
+        }
+
+        return [
+            self::MOVE_TO_ADMIN_WALLET => Labels::getLabel('LBL_MOVE_TO_ADMIN_WALLET', $langId),
+            self::MOVE_TO_CUSTOMER_WALLET => Labels::getLabel('LBL_MOVE_TO_CUSTOMER_WALLET', $langId),
+            self::MOVE_TO_CUSTOMER_CARD => Labels::getLabel('LBL_MOVE_TO_CUSTOMER_CARD', $langId),
+        ];
+    }
+
+    /**
      * initiateRefund
      * 
-     * @param $orderId
+     * @param $opId
      * @return mixed
      */
-    public function initiateRefund(string $orderId): bool
+    public function initiateRefund(string $opId): bool
     {
         if (false == $this->canRefundToCard) {
             $msg = Labels::getLabel('MSG_THIS_{PAYMENT-METHOD}_PAYMENT_METHOD_IS_NOT_ABLE_TO_REFUND_IN_CARD', $this->langId);
             $this->error = CommonHelper::replaceStringData($msg, ['{PAYMENT-METHOD}' => $this->keyname]);
             return false;
         }
-
+        
         $orderObj = new Orders();
-        $payments = $orderObj->getOrderPayments(array("order_id" => $orderId));
-        CommonHelper::printArray($payments, true);
+        $childOrderInfo = $orderObj->getOrderProductsByOpId($opId, $this->langId);
+        $payments = $orderObj->getOrderPayments(["order_id" => $childOrderInfo['op_order_id']]);
+
+        $txnId = "";
+        array_walk($payments, function($value, $key) use (&$txnId) {
+            if ($this->keyname == $value['opayment_method']) {
+                $txnId = $value['opayment_gateway_txn_id'];
+                return;
+            }
+        });
+
+        $txnAmount = $childOrderInfo['op_refund_amount'];
+
         switch ($this->keyname) {
             case 'StripeConnect':
                 $requestParam = [
-
+                    'amount' => $txnAmount,
+                    'payment_intent' => $txnId
                 ];
-                // $this->resp = $this->paymentPlugin->initiateRefund($requestParam);
+                $this->resp = $this->paymentPlugin->initiateRefund($requestParam);
                 break;
             
         }
         
         if (false == $this->resp) {
-            $this->error = $this->paymentPlugin->getError(); 
+            $this->error = $this->paymentPlugin->getError();
             return false;
         }
+        $this->resp = $this->paymentPlugin->getResponse(); 
 
         return true;
     }
@@ -120,10 +158,10 @@ class PaymentMethods extends MyAppModel
     /**
      * getResponse
      * 
-     * @return array
+     * @return object
      */
-    public function getResponse(): array
+    public function getResponse(): object
     {
-        return $this->resp;
+        return empty($this->resp) ? (object) array() : $this->resp;
     }
 }

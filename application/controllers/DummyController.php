@@ -685,7 +685,7 @@ class DummyController extends MyAppController
         // Plugin::canRefund('StripeConnect', $this->siteLangId);
         $obj = new PaymentMethods();
         $obj->canRefundToCard('StripeConnect', $this->siteLangId);
-        $obj->initiateRefund('O1588577566');
+        $obj->initiateRefund('228');
         echo $obj->getError();
     }
 }
