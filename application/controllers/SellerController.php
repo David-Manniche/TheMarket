@@ -2768,17 +2768,28 @@ class SellerController extends SellerBaseController
 
         $srch->doNotCalculateRecords();
         $srch->doNotLimitRecords();
-        $srch->addMultipleFields(array('orrequest_id'));
+        $srch->addMultipleFields(array('orrequest_id', 'order_pmethod_id', 'order_pmethod_type'));
 
         $rs = $srch->getResultSet();
         $requestRow = FatApp::getDb()->fetch($rs);
+        
         if (!$requestRow) {
             Message::addErrorMessage(Labels::getLabel("MSG_Invalid_Access", $this->siteLangId));
             FatApp::redirectUser(CommonHelper::generateUrl('Seller', 'viewOrderReturnRequest', array($requestRow['orrequest_id'])));
         }
 
+        $transferTo = PaymentMethods::MOVE_TO_CUSTOMER_WALLET;
+        if (PaymentMethods::TYPE_PLUGIN == $requestRow['order_pmethod_type']) {
+            $pluginKey = Plugin::getAttributesById($requestRow['order_pmethod_id'], 'plugin_code');
+
+            $paymentMethodObj = new PaymentMethods();
+            if (true === $paymentMethodObj->canRefundToCard($pluginKey, $this->siteLangId)) {
+                $transferTo = PaymentMethods::MOVE_TO_CUSTOMER_CARD;
+            }
+        }
+        
         $orrObj = new OrderReturnRequest();
-        if (!$orrObj->approveRequest($requestRow['orrequest_id'], $user_id, $this->siteLangId)) {
+        if (!$orrObj->approveRequest($requestRow['orrequest_id'], $user_id, $this->siteLangId, $transferTo)) {
             Message::addErrorMessage(Labels::getLabel($orrObj->getError(), $this->siteLangId));
             FatApp::redirectUser(CommonHelper::generateUrl('Seller', 'viewOrderReturnRequest', array($requestRow['orrequest_id'])));
         }
@@ -4451,7 +4462,7 @@ class SellerController extends SellerBaseController
             $srchFrm->addHiddenField('', 'selprod_id', $selProd_id);
             $srchFrm->fill(array('keyword' => $productsTitle[$selProd_id]));
         }
-		$this->set("canEdit", $this->userPrivilege->canEditSpecialPrice(UserAuthentication::getLoggedUserId(), true));
+        $this->set("canEdit", $this->userPrivilege->canEditSpecialPrice(UserAuthentication::getLoggedUserId(), true));
         $this->set("dataToEdit", $dataToEdit);
         $this->set("frmSearch", $srchFrm);
         $this->set("selProd_id", $selProd_id);
@@ -4797,7 +4808,7 @@ class SellerController extends SellerBaseController
             $frm->addCheckBox(Labels::getLabel('LBL_Translate_To_Other_Languages', $this->siteLangId), 'auto_update_other_langs_data', 1, array(), false, 0);
         }
 
-        $frm->addRequiredField(Labels::getLabel('LBL_Tax_Category', $this->siteLangId), 'taxcat_name'); 
+        $frm->addRequiredField(Labels::getLabel('LBL_Tax_Category', $this->siteLangId), 'taxcat_name');
         $fldMinSelPrice = $frm->addFloatField(Labels::getLabel('LBL_Minimum_Selling_Price', $this->siteLangId) . ' [' . CommonHelper::getCurrencySymbol(true) . ']', 'product_min_selling_price', '');
         $fldMinSelPrice->requirements()->setPositive();
 
@@ -4833,7 +4844,7 @@ class SellerController extends SellerBaseController
             $productType = Product::getAttributesById($productId, 'product_type');
         }
         if ($productType == Product::PRODUCT_TYPE_PHYSICAL) {
-            if($preqId == 0){
+            if ($preqId == 0) {
                 $frm->addCheckBox(Labels::getLabel('LBL_Product_Is_Eligible_For_Free_Shipping?', $this->siteLangId), 'ps_free', 1, array(), false, 0);
             }
             
@@ -4891,7 +4902,7 @@ class SellerController extends SellerBaseController
         }
         if ($preqId == 0) {
             $frm->addTextBox(Labels::getLabel('LBL_Country_the_Product_is_being_shipped_from', $this->siteLangId), 'shipping_country');
-            $frm->addHtml('', '', '<div id="tab_shipping"></div>'); 
+            $frm->addHtml('', '', '<div id="tab_shipping"></div>');
         }
 
         $frm->addHiddenField('', 'ps_from_country_id');
@@ -4926,11 +4937,11 @@ class SellerController extends SellerBaseController
     {
         $selProdId = FatApp::getPostedData('selProdId', FatUtility::VAR_INT, 0);
         $qty = FatApp::getPostedData('qty', FatUtility::VAR_INT, 0);
-        if ( $selProdId < 1 ){
+        if ($selProdId < 1) {
             FatUtility::dieJsonError(Labels::getLabel('MSG_Please_choose_product', $this->siteLangId));
         }
         $minPurchaseQty = SellerProduct::getAttributesById($selProdId, 'selprod_min_order_qty');
-        if ( $qty < $minPurchaseQty){
+        if ($qty < $minPurchaseQty) {
             FatUtility::dieJsonError(Labels::getLabel('MSG_Quantity_cannot_be_less_than_the_Minimum_Order_Quantity', $this->siteLangId) . ': ' . $minPurchaseQty);
         }
         $this->_template->render(false, false, 'json-success.php');
