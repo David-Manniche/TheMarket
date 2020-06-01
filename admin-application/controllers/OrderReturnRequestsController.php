@@ -374,7 +374,7 @@ class OrderReturnRequestsController extends AdminBaseController
             FatUtility::dieJsonError(Message::getHtml());
         }
 
-        $transferTo = $post['orrequest_refund_in_wallet'];
+        $transferTo = isset($post['orrequest_refund_in_wallet']) ? $post['orrequest_refund_in_wallet'] : '';
         if (PaymentMethods::TYPE_PLUGIN == $row['order_pmethod_type']) {
             $pluginKey = Plugin::getAttributesById($row['order_pmethod_id'], 'plugin_code');
 

@@ -13,6 +13,9 @@ class PaymentMethods extends MyAppModel
     public const MOVE_TO_CUSTOMER_WALLET = 1;
     public const MOVE_TO_CUSTOMER_CARD = 2;
 
+    public const REFUND_TYPE_RETURN = 1;
+    public const REFUND_TYPE_CANCEL = 2;
+
     private $paymentPlugin = '';
     private $keyname = '';
     private $langId = '';
@@ -119,7 +122,7 @@ class PaymentMethods extends MyAppModel
      * @param $opId
      * @return mixed
      */
-    public function initiateRefund(string $opId): bool
+    public function initiateRefund(string $opId, int $refundType = self::REFUND_TYPE_RETURN): bool
     {
         if (false == $this->canRefundToCard) {
             $msg = Labels::getLabel('MSG_THIS_{PAYMENT-METHOD}_PAYMENT_METHOD_IS_NOT_ABLE_TO_REFUND_IN_CARD', $this->langId);
@@ -139,7 +142,20 @@ class PaymentMethods extends MyAppModel
             }
         });
 
-        $txnAmount = $childOrderInfo['op_refund_amount'];
+        switch ($refundType) {
+            case self::REFUND_TYPE_RETURN:
+                $txnAmount = $childOrderInfo['op_refund_amount'];
+                break;
+            
+            case self::REFUND_TYPE_CANCEL:
+                $txnAmount = (($childOrderInfo["op_unit_price"] * $childOrderInfo["op_qty"]) + $childOrderInfo["op_other_charges"]);
+                break;
+            
+            default:
+                $this->error = Labels::getLabel('MSG_INVALID_REFUND_TYPE', $this->langId);
+                return false;
+                break;
+        }
 
         switch ($this->keyname) {
             case 'StripeConnect':
