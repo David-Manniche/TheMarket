@@ -201,17 +201,8 @@ class OrderCancellationRequestsController extends AdminBaseController
                     FatUtility::dieJsonError(Message::getHtml());
                 }
 
-                $canRefundToCard = false;
-                $transferTo = $post['ocrequest_refund_in_wallet'];
-                if (PaymentMethods::TYPE_PLUGIN == $row['order_pmethod_type']) {
-                    $pluginKey = Plugin::getAttributesById($row['order_pmethod_id'], 'plugin_code');
-
-                    $paymentMethodObj = new PaymentMethods();
-                    if (true === $paymentMethodObj->canRefundToCard($pluginKey, $this->adminLangId)) {
-                        $transferTo = FatApp::getPostedData('ocrequest_refund_in_wallet', FatUtility::VAR_INT, 0);
-                        $canRefundToCard = true;
-                    }
-                }
+                $transferTo = FatApp::getPostedData('ocrequest_refund_in_wallet', FatUtility::VAR_INT, 0);
+                $canRefundToCard = (PaymentMethods::MOVE_TO_CUSTOMER_CARD == $transferTo);
 
                 $dataToUpdate = array( 'ocrequest_status' => OrderCancelRequest::CANCELLATION_REQUEST_STATUS_APPROVED, 'ocrequest_refund_in_wallet' => $transferTo, 'ocrequest_admin_comment' => $post['ocrequest_admin_comment'] );
                 $successMsgString = str_replace(strToLower('{updatedStatus}'), OrderCancelRequest::getRequestStatusArr($this->adminLangId)[OrderCancelRequest::CANCELLATION_REQUEST_STATUS_APPROVED], $msgString);
