@@ -88,7 +88,7 @@ class StripeConnect extends PaymentMethodBase
 
     /**
      * getRedirectUri
-     * 
+     *
      * @return string
      */
     public function getRedirectUri(): string
@@ -98,7 +98,7 @@ class StripeConnect extends PaymentMethodBase
 
     /**
      * getKeys - To get plugin keys
-     * 
+     *
      * @return array
      */
     public function getKeys(): array
@@ -127,7 +127,7 @@ class StripeConnect extends PaymentMethodBase
 
     /**
      * getResponse
-     * 
+     *
      * @return object
      */
     public function getResponse(): object
@@ -152,8 +152,8 @@ class StripeConnect extends PaymentMethodBase
 
     /**
      * accessAccountId
-     * 
-     * @param string $code 
+     *
+     * @param string $code
      * @return bool
      */
     public function accessAccountId(string $code): bool
@@ -165,8 +165,7 @@ class StripeConnect extends PaymentMethodBase
             ]);
             $this->stripeAccountId = $this->stripe->getResourceOwner($accessToken)->getId();
             return $this->updateUserMeta('stripe_account_id', $this->stripeAccountId);
-        }
-        catch (Exception $e){
+        } catch (Exception $e) {
             $this->error = $e->getMessage();
             return false;
         }
@@ -192,7 +191,7 @@ class StripeConnect extends PaymentMethodBase
 
     /**
      * unsetUserAccountElements
-     * 
+     *
      * @return type
      */
     private function unsetUserAccountElements(): bool
@@ -203,7 +202,7 @@ class StripeConnect extends PaymentMethodBase
 
     /**
      * initialFieldsValue
-     * 
+     *
      * @return array
      */
     public function initialFieldsValue(): array
@@ -234,7 +233,7 @@ class StripeConnect extends PaymentMethodBase
      * createAccount
      *
      * Can follow: https://stripe.com/docs/api OR https://medium.com/@Keithweaver_/creating-your-own-marketplace-with-stripe-connect-php-like-shopify-or-uber-6eadbb08993f for help.
-     * 
+     *
      * @return bool
      */
     public function createAccount(): bool
@@ -400,8 +399,8 @@ class StripeConnect extends PaymentMethodBase
 
     /**
      * updateRequiredFields
-     * 
-     * @param array $requestParam 
+     *
+     * @param array $requestParam
      * @return bool
      */
     public function updateRequiredFields(array $requestParam): bool
@@ -430,8 +429,8 @@ class StripeConnect extends PaymentMethodBase
 
     /**
      * updateBusinessType
-     * 
-     * @param array $requestParam 
+     *
+     * @param array $requestParam
      * @return bool
      */
     private function updateBusinessType(array $requestParam): bool
@@ -446,8 +445,8 @@ class StripeConnect extends PaymentMethodBase
 
     /**
      * addFinancialInfo
-     * 
-     * @param array $requestParam 
+     *
+     * @param array $requestParam
      * @return bool
      */
     private function addFinancialInfo(array $requestParam): bool
@@ -478,8 +477,8 @@ class StripeConnect extends PaymentMethodBase
 
     /**
      * updateAccount
-     * 
-     * @param array $requestParam 
+     *
+     * @param array $requestParam
      * @return bool
      */
     private function updateAccount(array $requestParam): bool
@@ -504,7 +503,8 @@ class StripeConnect extends PaymentMethodBase
         }
 
         if (!empty($requestParam)) {
-            $this->resp = $this->update($requestParam);        }
+            $this->resp = $this->update($requestParam);
+        }
 
         if (empty($personId) && !empty($relationship)) {
             $this->resp = $this->doRequest(self::REQUEST_CREATE_PERSON, ['relationship' => $relationship]);
@@ -512,7 +512,7 @@ class StripeConnect extends PaymentMethodBase
                 return false;
             }
             $this->updateUserMeta('stripe_person_id', $this->resp->id);
-        } else if (!empty($personId) && (!empty($relationship) || !empty($personData))) {
+        } elseif (!empty($personId) && (!empty($relationship) || !empty($personData))) {
             $relationship = !empty($relationship) ? ['relationship' => $relationship] : [];
             $requestParam = array_merge($relationship, $personData);
             // CommonHelper::printArray($requestParam, true);
@@ -527,8 +527,8 @@ class StripeConnect extends PaymentMethodBase
 
     /**
      * uploadVerificationFile
-     * 
-     * @param string $path 
+     *
+     * @param string $path
      * @return bool
      */
     public function uploadVerificationFile(string $path): bool
@@ -542,7 +542,7 @@ class StripeConnect extends PaymentMethodBase
 
     /**
      * updateVericationDocument
-     * 
+     *
      * @param string $side - Front/Back of uploaded document
      * @return bool
      */
@@ -566,7 +566,7 @@ class StripeConnect extends PaymentMethodBase
 
     /**
      * getInitialPendingFields
-     * 
+     *
      * @return array
      */
     public function getInitialPendingFields(): array
@@ -576,7 +576,7 @@ class StripeConnect extends PaymentMethodBase
 
     /**
      * verifyInitialSetup
-     * 
+     *
      * @return bool
      */
     public function verifyInitialSetup(): bool
@@ -602,8 +602,8 @@ class StripeConnect extends PaymentMethodBase
 
     /**
      * initialFieldsSetup
-     * 
-     * @param array $post 
+     *
+     * @param array $post
      * @return bool
      */
     public function initialFieldsSetup(array $post): bool
@@ -624,7 +624,7 @@ class StripeConnect extends PaymentMethodBase
 
     /**
      * getErrorWhileUpdate
-     * 
+     *
      * @return array
      */
     public function getErrorWhileUpdate(): array
@@ -634,7 +634,7 @@ class StripeConnect extends PaymentMethodBase
 
     /**
      * deleteAccount
-     * 
+     *
      * @return bool
      */
     public function deleteAccount(): bool
@@ -657,7 +657,7 @@ class StripeConnect extends PaymentMethodBase
 
     /**
      * initiateSession
-     * 
+     *
      * @param array $requestParam
      * @return bool
      */
@@ -678,7 +678,7 @@ class StripeConnect extends PaymentMethodBase
 
     /**
      * getSessionId
-     * 
+     *
      * @return string
      */
     public function getSessionId(): string
@@ -688,7 +688,7 @@ class StripeConnect extends PaymentMethodBase
 
     /**
      * createPriceObject
-     * 
+     *
      * @param array $requestParam
      * @return bool
      */
@@ -709,7 +709,7 @@ class StripeConnect extends PaymentMethodBase
 
     /**
      * getPriceId
-     * 
+     *
      * @return string
      */
     public function getPriceId(): string
@@ -719,7 +719,7 @@ class StripeConnect extends PaymentMethodBase
 
     /**
      * createCustomerObject
-     * 
+     *
      * @param array $requestParam
      * @return bool
      */
@@ -732,21 +732,22 @@ class StripeConnect extends PaymentMethodBase
 
         $requestParam = $this->formatCustomerDataFromOrder($requestParam);
         if (!empty($this->getCustomerId())) {
-            $this->resp = $this->doRequest(self::REQUEST_UPDATE_CUSTOMER, $requestParam);            
+            $this->resp = $this->doRequest(self::REQUEST_UPDATE_CUSTOMER, $requestParam);
         } else {
-            $this->resp = $this->doRequest(self::REQUEST_CREATE_CUSTOMER, $requestParam);            
+            $this->resp = $this->doRequest(self::REQUEST_CREATE_CUSTOMER, $requestParam);
         }
 
         if (false === $this->resp) {
             return false;
         }
         $this->customerId = $this->resp->id;
-        return $this->updateUserMeta('stripe_customer_id', $this->customerId);;
+        return $this->updateUserMeta('stripe_customer_id', $this->customerId);
+        ;
     }
 
     /**
      * getCustomerId
-     * 
+     *
      * @return string
      */
     public function getCustomerId(): string
@@ -757,7 +758,7 @@ class StripeConnect extends PaymentMethodBase
 
     /**
      * formatCustomerDataFromOrder
-     * @param array $orderInfo 
+     * @param array $orderInfo
      * @return type
      */
     public function formatCustomerDataFromOrder(array $orderInfo)
@@ -790,12 +791,12 @@ class StripeConnect extends PaymentMethodBase
             'email' => $orderInfo['customer_email'],
             'name' => $orderInfo['customer_billing_name'],
             'phone' => $orderInfo['customer_billing_phone']
-        ]; 
+        ];
     }
 
     /**
      * createLoginLink
-     * 
+     *
      * @return bool
      */
     public function createLoginLink(): bool
@@ -810,7 +811,7 @@ class StripeConnect extends PaymentMethodBase
 
     /**
      * getLoginUrl
-     * 
+     *
      * @return string
      */
     public function getLoginUrl(): string
@@ -820,7 +821,7 @@ class StripeConnect extends PaymentMethodBase
 
     /**
      * loadAllAccounts
-     * 
+     *
      * @param $requestParam - Used for pagination
      * Detail : https://stripe.com/docs/api/accounts/list?lang=php
      * @return bool
@@ -837,7 +838,7 @@ class StripeConnect extends PaymentMethodBase
 
     /**
      * getAllAccounts
-     * 
+     *
      * @return array
      */
     public function getAllAccounts(): array
@@ -847,7 +848,7 @@ class StripeConnect extends PaymentMethodBase
 
     /**
      * doTransfer
-     * 
+     *
      * @param $requestParam
      * @return bool
      */
@@ -862,7 +863,7 @@ class StripeConnect extends PaymentMethodBase
 
     /**
      * initiateRefund
-     * 
+     *
      * @param $requestParam
      * Follow : https://stripe.com/docs/api/refunds/create
      * @return bool

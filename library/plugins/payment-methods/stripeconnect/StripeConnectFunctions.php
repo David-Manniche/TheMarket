@@ -4,8 +4,8 @@ trait StripeConnectFunctions
 {
     /**
      * create - Create Custom Account
-     * 
-     * @param array $requestParam 
+     *
+     * @param array $requestParam
      * @return object
      */
     private function create(array $requestParam): object
@@ -26,8 +26,8 @@ trait StripeConnectFunctions
 
     /**
      * update - Update Account Data
-     * 
-     * @param array $requestParam 
+     *
+     * @param array $requestParam
      * @return object
      */
     private function update(array $requestParam): object
@@ -40,8 +40,8 @@ trait StripeConnectFunctions
 
     /**
      * createExternalAccount - For Financial(Bank) Data
-     * 
-     * @param array $requestParam 
+     *
+     * @param array $requestParam
      * @return object
      */
     private function createExternalAccount(array $requestParam): object
@@ -66,8 +66,8 @@ trait StripeConnectFunctions
 
     /**
      * createPerson - Relationship Person
-     * 
-     * @param array $requestParam 
+     *
+     * @param array $requestParam
      * @return object
      */
     private function createPerson(array $requestParam): object
@@ -85,7 +85,7 @@ trait StripeConnectFunctions
 
     /**
      * updatePerson
-     * 
+     *
      * @param array $requestParam - Update Relationship Person
      * @return object
      */
@@ -105,8 +105,8 @@ trait StripeConnectFunctions
 
     /**
      * createFile - Creating file object to update any document
-     * 
-     * @param string $filePath 
+     *
+     * @param string $filePath
      * @return object
      */
     private function createFile(string $filePath): object
@@ -121,7 +121,7 @@ trait StripeConnectFunctions
     /**
      * delete
      *
-     * Description - Accounts created using test-mode keys can be deleted at any time. 
+     * Description - Accounts created using test-mode keys can be deleted at any time.
      * Accounts created using live-mode keys can only be deleted once all balances are zero.
      * @return object
      */
@@ -132,8 +132,8 @@ trait StripeConnectFunctions
 
     /**
      * createSession
-     * 
-     * @param array $requestParam 
+     *
+     * @param array $requestParam
      *      e.g.[
      *          'success_url' => '',
      *          'cancel_url' => '',
@@ -194,7 +194,7 @@ trait StripeConnectFunctions
 
     /**
      * loginLink
-     * 
+     *
      * Description - You may only create login links for Express accounts connected to your platform.
      * @return object
      */
@@ -207,7 +207,7 @@ trait StripeConnectFunctions
 
     /**
      * connectedAccounts
-     * 
+     *
      * @param array $requestParam
      * @return object
      */
@@ -218,7 +218,7 @@ trait StripeConnectFunctions
 
     /**
      * transferAmount
-     * 
+     *
      * @param array $requestParam : [
      *         'amount' => 7000,
      *         'currency' => 'inr',
@@ -234,7 +234,7 @@ trait StripeConnectFunctions
 
     /**
      * requestRefund
-     * 
+     *
      * @param array $requestParam
      * Follow : https://stripe.com/docs/api/refunds/create
      * @return object
