@@ -3,6 +3,8 @@ require_once dirname(__FILE__) . '/StripeConnectFunctions.php';
 
 class StripeConnect extends PaymentMethodBase
 {
+    use StripeConnectFunctions;
+
     public const KEY_NAME = __CLASS__;
     private $stripeAccountId = '';
     private $stripeAccountType;
@@ -24,8 +26,6 @@ class StripeConnect extends PaymentMethodBase
     ];
 
     private const CONNECT_URI = "https://connect.stripe.com/oauth";
-
-    use StripeConnectFunctions;
 
     public const REQUEST_CREATE_ACCOUNT = 1;
     public const REQUEST_RETRIEVE_ACCOUNT = 2;
@@ -81,7 +81,7 @@ class StripeConnect extends PaymentMethodBase
         }
 
         require_once dirname(__FILE__) . '/vendor/autoload.php';
-
+        
         \Stripe\Stripe::setApiKey($this->settings[$this->liveMode . 'secret_key']);
         return true;
     }

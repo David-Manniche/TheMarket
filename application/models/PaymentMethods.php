@@ -70,9 +70,9 @@ class PaymentMethods extends MyAppModel
 
     /**
      * canRefundToCard
-     * 
-     * @param string $keyname 
-     * @param int $langId 
+     *
+     * @param string $keyname
+     * @param int $langId
      * @return bool
      */
     public function canRefundToCard(string $keyname, int $langId, int $methodType = self::TYPE_PLUGIN): bool
@@ -89,8 +89,8 @@ class PaymentMethods extends MyAppModel
 
     /**
      * moveRefundLocationsArr
-     * 
-     * @param type $langId 
+     *
+     * @param type $langId
      * @return array
      */
     public static function moveRefundLocationsArr($langId = 0): array
@@ -107,9 +107,15 @@ class PaymentMethods extends MyAppModel
         ];
     }
 
+    private function formatPayableAmount($amount)
+    {
+        $amount = number_format($amount, 2, '.', '');
+        return $amount * 100;
+    }
+
     /**
      * initiateRefund
-     * 
+     *
      * @param $opId
      * @return mixed
      */
@@ -126,7 +132,7 @@ class PaymentMethods extends MyAppModel
         $payments = $orderObj->getOrderPayments(["order_id" => $childOrderInfo['op_order_id']]);
 
         $txnId = "";
-        array_walk($payments, function($value, $key) use (&$txnId) {
+        array_walk($payments, function ($value, $key) use (&$txnId) {
             if ($this->keyname == $value['opayment_method']) {
                 $txnId = $value['opayment_gateway_txn_id'];
                 return;
@@ -138,26 +144,30 @@ class PaymentMethods extends MyAppModel
         switch ($this->keyname) {
             case 'StripeConnect':
                 $requestParam = [
-                    'amount' => $txnAmount,
+                    'amount' => $this->formatPayableAmount($txnAmount),
                     'payment_intent' => $txnId
                 ];
+                if (false === $this->paymentPlugin->init(true)) {
+                    $this->error = $this->paymentPlugin->getError();
+                    return false;
+                }
+
                 $this->resp = $this->paymentPlugin->initiateRefund($requestParam);
                 break;
-            
         }
         
         if (false == $this->resp) {
             $this->error = $this->paymentPlugin->getError();
             return false;
         }
-        $this->resp = $this->paymentPlugin->getResponse(); 
+        $this->resp = $this->paymentPlugin->getResponse();
 
         return true;
     }
 
     /**
      * getResponse
-     * 
+     *
      * @return object
      */
     public function getResponse(): object
