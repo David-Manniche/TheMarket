@@ -8,20 +8,20 @@ class ShippingProfileZone extends MyAppModel
     {
         parent::__construct(static::DB_TBL, static::DB_TBL_PREFIX . 'id', $id);
     }
-	
-	public static function getSearchObject()
+    
+    public static function getSearchObject()
     {
-		$srch = new SearchBase(static::DB_TBL, 'spzone');
-		$srch->joinTable(ShippingZone::DB_TBL, 'LEFT OUTER JOIN', 'szone.shipzone_id = spzone.shipprozone_shipzone_id', 'szone');
-		return $srch;
+        $srch = new SearchBase(static::DB_TBL, 'spzone');
+        $srch->joinTable(ShippingZone::DB_TBL, 'LEFT OUTER JOIN', 'szone.shipzone_id = spzone.shipprozone_shipzone_id', 'szone');
+        return $srch;
     }
 
-	/* public function addZone($data)
-	{
-		if (!FatApp::getDb()->insertFromArray(self::DB_TBL, $data, true, array(), $data)) {
+    /* public function addZone($data)
+    {
+        if (!FatApp::getDb()->insertFromArray(self::DB_TBL, $data, true, array(), $data)) {
             $this->error = FatApp::getDb()->getError();
             return false;
         }
-		return true;
-	} */
+        return true;
+    } */
 }

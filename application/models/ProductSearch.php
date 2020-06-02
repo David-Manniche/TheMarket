@@ -19,6 +19,7 @@ class ProductSearch extends SearchBase
     private $shopsJoined = false;
     private $commonLangId;
     private $sellerSubscriptionOrderJoined = false;
+    private $joinProductShippedBy = false;
 
     public function __construct($langId = 0, $otherTbl = null, $prodIdColumName = null, $isProductActive = true, $isProductApproved = true, $isProductDeleted = true)
     {
@@ -362,13 +363,14 @@ class ProductSearch extends SearchBase
     }
 
     public function joinProductShippedBySeller($sellerId = 0)
-    {
+    {      
         $sellerId = FatUtility::int($sellerId);
         $this->joinTable(Product::DB_PRODUCT_SHIPPED_BY_SELLER, 'LEFT OUTER JOIN', 'psbs.psbs_product_id = p.product_id and psbs.psbs_user_id = ' . $sellerId, 'psbs');
     }
 
     public function joinProductShippedBy()
     {
+        $this->joinProductShippedBy = true;
         $this->joinTable(Product::DB_PRODUCT_SHIPPED_BY_SELLER, 'LEFT OUTER JOIN', 'psbs.psbs_product_id = p.product_id and psbs.psbs_user_id = selprod_user_id', 'psbs');
     }
     public function joinProductFreeShipping()
@@ -957,5 +959,52 @@ class ProductSearch extends SearchBase
     public function joinProductSpecifics()
     {
         $this->joinTable(ProductSpecifics::DB_TBL, 'LEFT JOIN', 'ps.ps_product_id = p.product_id', 'ps');
+    }
+
+    public function joinShippingProfileProducts()
+    {
+        if (!$this->joinProductShippedBy) {
+            trigger_error(Labels::getLabel('ERR_joinProductShippedBy_function_not_joined.', $this->commonLangId), E_USER_ERROR);
+        }
+
+        $this->joinTable(ShippingProfileProduct::DB_TBL, 'LEFT OUTER JOIN', 'spprod.shippro_product_id = selprod_product_id and if(product_seller_id = 0, (if(psbs.psbs_user_id > 0, spprod.shippro_user_id = psbs.psbs_user_id, spprod.shippro_user_id = 0)), (spprod.shippro_user_id = selprod_user_id))', 'spprod');
+    }
+
+    public function joinShippingProfile()
+    {
+        $this->joinTable(ShippingProfile::DB_TBL, 'LEFT OUTER JOIN', 'spprod.shippro_shipprofile_id = spprof.shipprofile_id', 'spprof');
+    }
+
+    public function joinShippingZones()
+    {
+        $this->joinTable(ShippingProfileZone::DB_TBL, 'LEFT OUTER JOIN', 'shipz.shipprozone_shipprofile_id = spprof.shipprofile_id', 'shipz');
+    }
+
+    public function joinShippingRates($langId = 0)
+    {
+        $langId = FatUtility::int($langId);
+        if ($this->langId && 1 > $langId) {
+            $langId = $this->langId;
+        }
+
+        $this->joinTable(ShippingRate::DB_TBL, 'LEFT OUTER JOIN', 'shipr.shiprate_shipprozone_id = shipz.shipprozone_id', 'shipr');
+        if (0 < $langId) {
+            $this->joinTable(ShippingRate::DB_TBL_LANG, 'LEFT OUTER JOIN', 'shipr_l.shipratelang_shiprate_id = shipr.shiprate_id and shipr_l.shipratelang_lang_id = '. $langId, 'shipr_l');
+        }
+    }
+
+    public function joinShippingLocations($countryId, $stateId, $langId = 0)
+    {
+        $langId = FatUtility::int($langId);
+        if ($this->langId && 1 > $langId) {
+            $langId = $this->langId;
+        }
+
+        $srch = ShippingZone::getZoneLocationSearchObject($langId);
+        $srch->addDirectCondition("(shiploc_country_id = '-1' or (shiploc_country_id = '" . $countryId. "' and (shiploc_state_id = '-1' or shiploc_state_id = '" . $stateId . "')) )");
+        $srch->doNotCalculateRecords();
+        $srch->doNotLimitRecords();
+       
+        $this->joinTable('(' .$srch->getQuery() . ')', 'LEFT OUTER JOIN', 'shiploc.shiploc_shipzone_id = shipz.shipprozone_id', 'shiploc');
     }
 }

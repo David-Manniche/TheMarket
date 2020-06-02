@@ -484,20 +484,15 @@ class CheckoutController extends MyAppController
             FatUtility::dieWithError($this->errMessage);
         }
 
-        /* $frm = $this->getShippingApiForm( $this->siteLangId );
-        $post = $frm->getFormDataFromArray(FatApp::getPostedData());
-        $shippingapi_id = FatUtility::int($post['shippingapi_id']);
-        if( !$shippingapi_id ){
-        FatUtility::dieWithError( Labels::getLabel('MSG_Please_select_shipping_api', $this->siteLangId) );
-        } */
         $productSelectedShippingMethodsArr = $this->cartObj->getProductShippingMethod();
+        
         $selectedShippingapi_id = $this->cartObj->getCartShippingApi();
         $user_id = UserAuthentication::getLoggedUserId();
 
         $manualShippingArt = array('Seller Shiping');
         $frm_data = array('shippingapi_id' => $selectedShippingapi_id );
-        $shippingMethods = $this->getShippingMethods($this->siteLangId);
-
+        $shippingMethods = Shipping::getShippingMethods($this->siteLangId);
+       
         if (false === MOBILE_APP_API_CALL) {
             $frm = $this->getShippingApiForm($this->siteLangId);
             $frm->fill($frm_data);
@@ -1152,7 +1147,7 @@ class CheckoutController extends MyAppController
                 $productsLangData = array();
                 $productShippingLangData = array();
                 foreach ($allLanguages as $lang_id => $language_name) {
-                    if (0 == $lang_id){
+                    if (0 == $lang_id) {
                         continue;
                     }
                     $langSpecificProductInfo = $this->getCartProductLangData($productInfo['selprod_id'], $lang_id);
@@ -1213,7 +1208,7 @@ class CheckoutController extends MyAppController
                             $op_product_tax_options[$taxStroId]['name'] = $taxStroId;
                             $op_product_tax_options[$taxStroId]['percentageValue'] = $taxStroName['percentageValue'];
                             $op_product_tax_options[$taxStroId]['inPercentage'] = $taxStroName['inPercentage'];
-                        } else if (FatApp::getConfig('CONF_TAX_STRUCTURE', FatUtility::VAR_FLOAT, 0) == TaxStructure::TYPE_COMBINED) {
+                        } elseif (FatApp::getConfig('CONF_TAX_STRUCTURE', FatUtility::VAR_FLOAT, 0) == TaxStructure::TYPE_COMBINED) {
                             $taxLangData = $taxStructure->getOptionData($taxStroId);
                             // CommonHelper::printArray($taxLangData, true);
                             $op_product_tax_options[$taxLangData['taxstro_name'][$lang_id]]['value'] = $taxStroName['value'];

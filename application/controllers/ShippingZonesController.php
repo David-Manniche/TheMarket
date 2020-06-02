@@ -371,7 +371,7 @@ class ShippingZonesController extends SellerBaseController
         }
         $rateSrch = ShippingRate::getSearchObject($this->siteLangId);
         $rateSrch->addCondition('shiprate_shipprozone_id', 'IN', $zoneIds);
-        $rateSrch->addMultipleFields(array('srate.*', 'if(ratelang.rate_name is null, shiprate_identifier, ratelang.rate_name) as shiprate_rate_name'));
+        $rateSrch->addMultipleFields(array('srate.*', 'if(ratelang.shiprate_name is null, shiprate_identifier, ratelang.shiprate_name) as shiprate_rate_name'));
         $rateSrch->doNotCalculateRecords();
         $rateSrch->doNotLimitRecords();
         $rateRs = $rateSrch->getResultSet();

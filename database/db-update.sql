@@ -133,12 +133,12 @@ ALTER TABLE `tbl_shipping_rates`
 CREATE TABLE `tbl_shipping_rates_lang` (
   `shipratelang_shiprate_id` int(11) NOT NULL,
   `shipratelang_lang_id` int(11) NOT NULL,
-  `rate_name` varchar(255) NOT NULL
+  `shiprate_name` varchar(255) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 ALTER TABLE `tbl_shipping_rates_lang`
   ADD PRIMARY KEY (`shipratelang_shiprate_id`,`shipratelang_lang_id`),
-  ADD UNIQUE KEY `ratelang_lang_id` (`shipratelang_lang_id`,`rate_name`);
+  ADD UNIQUE KEY `ratelang_lang_id` (`shipratelang_lang_id`,`shiprate_name`);
 
 
 CREATE TABLE `tbl_shipping_zone` (
@@ -150,15 +150,14 @@ CREATE TABLE `tbl_shipping_zone` (
 
 ALTER TABLE `tbl_shipping_zone`
   ADD PRIMARY KEY (`shipzone_id`),
-  ADD UNIQUE KEY `tbl_shipping_zone_shipzone_name_unique` (`shipzone_name`,`shipzone_user_id`);
+  ADD UNIQUE KEY `shipzone_name` (`shipzone_name`,`shipzone_user_id`);
 
 ALTER TABLE `tbl_shipping_zone`
   MODIFY `shipzone_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 ALTER TABLE `tbl_products` ADD `product_ship_package` INT(11) NOT NULL AFTER `product_deleted`;
 
-CREATE TABLE `tbl_shipping_locations` (
-  `shiploc_shipprofile_id` int(11) NOT NULL,
+CREATE TABLE `tbl_shipping_locations` ( 
   `shiploc_shipzone_id` int(11) NOT NULL,
   `shiploc_zone_id` int(11) NOT NULL,
   `shiploc_country_id` int(11) NOT NULL,
@@ -166,5 +165,5 @@ CREATE TABLE `tbl_shipping_locations` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 ALTER TABLE `tbl_shipping_locations`
-  ADD UNIQUE KEY `tbl_shipping_locations_shiploc_shipprofile_id_unique` (`shiploc_shipprofile_id`,`shiploc_zone_id`,`shiploc_country_id`,`shiploc_state_id`);  
+  ADD UNIQUE KEY `shiploc_shipzone_id` (`shiploc_shipzone_id`,`shiploc_zone_id`,`shiploc_country_id`,`shiploc_state_id`);  
 -- Shippping Module End-----
