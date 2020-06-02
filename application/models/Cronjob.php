@@ -54,13 +54,13 @@ class Cronjob extends FatModel
                     $onDuplicateKeyTagProdUpdate = array_merge($tagProd, array('tpr_weightage' => 'mysql_func_tpr_weightage + ' . $recommendedProd['weightage']));
                     FatApp::getDb()->insertFromArray('tbl_tag_product_recommendation', $tagProd, true, array(), $onDuplicateKeyTagProdUpdate);
 
-                    $tagProd = array(
-                    'tpr_tag_id' => $relatedTagProdArr[$prodId]['tag_id'],
-                    'tpr_product_id' => $val['rab_record_id'],
-                    'tpr_weightage' => $recommendedProd['weightage'],
-                    );
-                    $onDuplicateKeyTagProdUpdate = array_merge($tagProd, array('tpr_weightage' => 'mysql_func_tpr_weightage + ' . $recommendedProd['weightage']));
-                    FatApp::getDb()->insertFromArray('tbl_tag_product_recommendation', $tagProd, true, array(), $onDuplicateKeyTagProdUpdate);
+                    // $tagProd = array(
+                    // 'tpr_tag_id' => $relatedTagProdArr[$prodId]['tag_id'],
+                    // 'tpr_product_id' => $val['rab_record_id'],
+                    // 'tpr_weightage' => $recommendedProd['weightage'],
+                    // );
+                    // $onDuplicateKeyTagProdUpdate = array_merge($tagProd, array('tpr_weightage' => 'mysql_func_tpr_weightage + ' . $recommendedProd['weightage']));
+                    // FatApp::getDb()->insertFromArray('tbl_tag_product_recommendation', $tagProd, true, array(), $onDuplicateKeyTagProdUpdate);
                 //echo FatApp::getDb()->getError();
                 } else {
                     /*User Product Recommendation*/

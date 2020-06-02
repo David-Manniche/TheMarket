@@ -4,7 +4,6 @@ class PluginSettingController extends AdminBaseController
 {
     use PluginHelper;
 
-    protected $keyName;
     protected $frmObj;
     protected $pluginSettingObj;
 

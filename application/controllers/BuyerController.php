@@ -67,14 +67,14 @@ class BuyerController extends BuyerBaseController
         $orderSrch->doNotCalculateRecords();
         $orderSrch->doNotLimitRecords();
         /* $orderSrch->addBuyerOrdersCounts(date('Y-m-d',strtotime("-1 days")),date('Y-m-d',strtotime("-1 days")),'yesterdayOrder'); */
-        $orderSrch->addBuyerOrdersCounts(false, false, 'pendingOrder');
+        // $orderSrch->addBuyerOrdersCounts(false, false, 'pendingOrder');
         $completedOrderStatus = unserialize(FatApp::getConfig("CONF_COMPLETED_ORDER_STATUS", FatUtility::VAR_STRING, ''));
         if (!empty($completedOrderStatus)) {
             $orderSrch->addCondition('op_status_id', 'NOT IN', $completedOrderStatus);
         }
         $orderSrch->addGroupBy('order_user_id');
         $orderSrch->addCondition('order_user_id', '=', $userId);
-        $orderSrch->addMultipleFields(array('pendingOrderCount'));
+        $orderSrch->addMultipleFields(array('COUNT(o.order_id) as pendingOrderCount'));
         $rs = $orderSrch->getResultSet();
         $ordersStats = FatApp::getDb()->fetch($rs);
         /* ]*/

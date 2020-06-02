@@ -1763,4 +1763,39 @@ class ProductsController extends MyAppController
         $this->set('options', $optionRows);
         $this->_template->render();
     }
+    
+    public function autoCompleteTaxCategories()
+    {
+        $pagesize = 10;
+        $post = FatApp::getPostedData();       
+        $srch = Tax::getSearchObject($this->siteLangId,true);
+        $srch->addCondition('taxcat_deleted', '=', 0);
+        $activatedTaxServiceId = Tax::getActivatedServiceId();
+        
+        $srch->addFld('taxcat_id'); 
+        if ($activatedTaxServiceId) {
+            $srch->addFld('concat(IFNULL(taxcat_name,taxcat_identifier), " (",taxcat_code,")")as taxcat_name');
+        }else{
+            $srch->addFld('IFNULL(taxcat_name,taxcat_identifier)as taxcat_name'); 
+        }
+        $srch->addCondition('taxcat_plugin_id', '=', $activatedTaxServiceId);       
+
+        if (!empty($post['keyword'])) {
+            $srch->addCondition('taxcat_name', 'LIKE', '%' . $post['keyword'] . '%')
+            ->attachCondition('taxcat_identifier', 'LIKE', '%' . $post['keyword'] . '%')
+            ->attachCondition('taxcat_code', 'LIKE', '%' . $post['keyword'] . '%');
+        }
+        $srch->setPageSize($pagesize);
+        $rs = $srch->getResultSet();
+        $db = FatApp::getDb();
+        $taxCategories = $db->fetchAll($rs, 'taxcat_id');
+        $json = array();
+        foreach ($taxCategories as $key => $taxCategory) {
+            $json[] = array(
+                'id' => $key,
+                'name' => strip_tags(html_entity_decode($taxCategory['taxcat_name'], ENT_QUOTES, 'UTF-8'))
+            );
+        }
+        die(json_encode($json));     
+    }
 }

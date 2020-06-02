@@ -325,7 +325,7 @@ class EmailHandler extends FatModel
         '{new_email}' => $d['user_new_email'],
         );
 
-        if (!self::sendMailTpl($d['user_email'], $tpl, $langId, $vars)) {
+        if (!self::sendMailTpl($d['user_new_email'], $tpl, $langId, $vars)) {
             return false;
         }
         $this->sendSms($tpl, $d['user_phone'], $vars, $langId);
@@ -1177,6 +1177,21 @@ class EmailHandler extends FatModel
         } else {
             $this->error = Labels::getLabel('MSG_INVALID_REQUEST', $this->commonLangId);
         }
+    }
+
+    public function sendTaxApiOrderCreationFailure($data, $langId) {
+        $adminEmail = FatApp::getConfig("CONF_SITE_OWNER_EMAIL", FatUtility::VAR_STRING, "");
+        $tpl = "taxapi_order_creation_failure";
+        $defaultSiteLangId = FatApp::getConfig('conf_default_site_lang');
+        $arrReplacements = array(
+            '{invoice_number}' => $data['op_invoice_number'],
+            '{error_message}' => $data['op_invoerror_messageice_number']
+        );
+
+        if (self::sendMailTpl($adminEmail, $tpl, $langId, $vars)) {
+            return true;
+        }
+        return false;
     }
 
     public function sendTxnNotification($txnId, $langId)

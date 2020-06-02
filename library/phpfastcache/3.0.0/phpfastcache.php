@@ -17,8 +17,8 @@ if(!function_exists("__c")) {
 }
 
 // main function
-if(!function_exists("phpFastCache")) {
-	function phpFastCache($storage = "auto", $config = array()) {
+if(!function_exists("phpFastCache")) { 
+	function phpFastCache($storage = "auto", $config = array()) { 
         $storage = strtolower($storage);
         if(empty($config)) {
             $config = phpFastCache::$config;
@@ -234,13 +234,13 @@ class phpFastCache {
                     die(" NEED WRITEABLE ".$path);
                 }
             }
-            if(!@file_exists($path."/.htaccess")) {
+            if(!@file_exists($path.".htaccess")) {
                 //   echo "write me";
                 $html = "order deny, allow \r\n
 deny from all \r\n
 allow from 127.0.0.1";
 
-                $f = @fopen($path."/.htaccess","w+");
+                $f = @fopen($path.".htaccess","w+");
                 if(!$f) {
                     die(" CANT CREATE HTACCESS TO PROTECT FOLDER - PLZ CHMOD 0777 FOR ".$path);
                 }

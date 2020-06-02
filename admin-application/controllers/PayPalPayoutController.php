@@ -39,21 +39,17 @@ class PayPalPayoutController extends PayoutBaseController
         'USD' => 0.30
     ];
 
+    public $requiredKeys = [
+        'client_id',
+        'client_secret',
+    ];
+
     public function __construct($action)
     {
         parent::__construct($action);
-        $this->validateSettings();
-    }
-
-    private function validateSettings()
-    {
-        $settings = $this->getSettings();
-        if (!isset($settings['client_id']) || !isset($settings['client_secret'])) {
-            $message = Labels::getLabel('MSG_PLUGIN_SETTINGS_NOT_CONFIGURED', CommonHelper::getLangId());
-            LibHelper::dieJsonError($message);
+        if (false == $this->validateSettings($this->adminLangId)) {
+            LibHelper::dieJsonError($this->error);
         }
-        $this->clientId = $settings['client_id'];
-        $this->clientSecret = $settings['client_secret'];
     }
 
     private function getAccessTokenUrl()
@@ -75,7 +71,7 @@ class PayPalPayoutController extends PayoutBaseController
         curl_setopt($ch, CURLOPT_POST, 1);
         curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
         curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
-        curl_setopt($ch, CURLOPT_USERPWD, $this->clientId . ':' . $this->clientSecret);
+        curl_setopt($ch, CURLOPT_USERPWD, $this->settings['client_id'] . ':' . $this->settings['client_secret']);
         
         $headers = array();
         $headers[] = 'Accept: application/json';
