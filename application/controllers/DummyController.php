@@ -683,9 +683,31 @@ class DummyController extends MyAppController
         $data = $obj->getOrderProductsByOpId(287, $this->siteLangId);
         CommonHelper::printArray($data, true);*/
         // Plugin::canRefund('StripeConnect', $this->siteLangId);
-        $obj = new PaymentMethods();
+        /* $obj = new PaymentMethods();
         $obj->canRefundToCard('StripeConnect', $this->siteLangId);
         $obj->initiateRefund('228');
-        echo $obj->getError();
+        echo $obj->getError(); */
+        $charge = [
+            'amount' => 200,
+            'currency' => 'USD',
+            'destination' => 'acct_1Gmx9DGkbY2HMTLT',
+            'transfer_group' => 'Discount Amount',
+        ];
+
+        $error = '';
+        if (false === $obj = PluginHelper::callPlugin('StripeConnect', [$this->siteLangId], $error, $this->siteLangId)) {
+            echo $obj->getError();
+            die;
+        }
+        if (false === $obj->init(true)) {
+            echo $obj->getError();
+            die;
+        }
+        if (false === $obj->doRequest(StripeConnect::REQUEST_TRANSFER_AMOUNT, $charge)) {
+            echo $obj->getError();
+            die;
+        }
+        $resp = $obj->getResponse();
+        CommonHelper::printArray($resp, true);
     }
 }
