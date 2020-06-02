@@ -170,7 +170,7 @@ class StripeConnectPayController extends PaymentController
     }
     
     public function paymentStatus()
-    {   
+    {
         $this->includePlugin();
         
         if (false === $this->stripeConnect->init(true)) {
@@ -228,7 +228,7 @@ class StripeConnectPayController extends PaymentController
             if (false === $orderPaymentObj->addOrderPayment($this->settings["plugin_code"], $intentId, $paymentAmount, Labels::getLabel("MSG_Received_Payment", $this->siteLangId), $message)) {
                 $orderPaymentObj->addOrderPaymentComments($message);
             }
-        } else if ($payload['type'] == "payment_intent.payment_failed") {
+        } elseif ($payload['type'] == "payment_intent.payment_failed") {
             $intent = $payload['data']['object'];
             $intentId = $intent['id'];
 
