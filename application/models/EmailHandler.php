@@ -325,7 +325,7 @@ class EmailHandler extends FatModel
         '{new_email}' => $d['user_new_email'],
         );
 
-        if (!self::sendMailTpl($d['user_email'], $tpl, $langId, $vars)) {
+        if (!self::sendMailTpl($d['user_new_email'], $tpl, $langId, $vars)) {
             return false;
         }
         $this->sendSms($tpl, $d['user_phone'], $vars, $langId);
