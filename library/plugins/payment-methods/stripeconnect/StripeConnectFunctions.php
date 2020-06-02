@@ -217,6 +217,18 @@ trait StripeConnectFunctions
     }
 
     /**
+     * requestRefund
+     *
+     * @param array $requestParam
+     * Follow : https://stripe.com/docs/api/refunds/create
+     * @return object
+     */
+    private function requestRefund(array $requestParam = []): object
+    {
+        return \Stripe\Refund::create($requestParam);
+    }
+
+    /**
      * transferAmount
      *
      * @param array $requestParam : [
@@ -233,15 +245,25 @@ trait StripeConnectFunctions
     }
 
     /**
-     * requestRefund
+     * reverseTransfer
      *
-     * @param array $requestParam
-     * Follow : https://stripe.com/docs/api/refunds/create
+     * @param array $requestParam : [
+     *         'transferId' => 'tr_1XXXXXXXXXXXX,
+     *         'data' => [
+     *              'amount' => 1000, // In Paisa
+     *              'description' => '',
+     *              'metadata' => [
+     *                  'xyz' => 'abc' // Set of key-value pairs that you can attach to an object.
+     *              ],
+     *          ],
+     *       ]
      * @return object
      */
-    private function requestRefund(array $requestParam = []): object
+    private function reverseTransfer(array $requestParam = []): object
     {
-        return \Stripe\Refund::create($requestParam);
+        $transferId = $requestParam['transferId'];
+        $data = $requestParam['data'];
+        return \Stripe\Transfer::createReversal($transferId, $data);
     }
     
     /**
@@ -302,11 +324,14 @@ trait StripeConnectFunctions
                 case self::REQUEST_ALL_CONNECT_ACCOUNTS:
                     return $this->connectedAccounts($requestParam);
                     break;
+                case self::REQUEST_INITIATE_REFUND:
+                    return $this->requestRefund($requestParam);
+                    break;
                 case self::REQUEST_TRANSFER_AMOUNT:
                     return $this->transferAmount($requestParam);
                     break;
-                case self::REQUEST_INITIATE_REFUND:
-                    return $this->requestRefund($requestParam);
+                case self::REQUEST_REVERSE_TRANSFER:
+                    return $this->reverseTransfer($requestParam);
                     break;
             }
         } catch (\Stripe\Exception\CardException $e) {

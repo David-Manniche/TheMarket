@@ -43,8 +43,9 @@ class StripeConnect extends PaymentMethodBase
     public const REQUEST_UPDATE_CUSTOMER = 14;
     public const REQUEST_CREATE_LOGIN_LINK = 15;
     public const REQUEST_ALL_CONNECT_ACCOUNTS = 16;
-    public const REQUEST_TRANSFER_AMOUNT = 17;
-    public const REQUEST_INITIATE_REFUND = 18;
+    public const REQUEST_INITIATE_REFUND = 17;
+    public const REQUEST_TRANSFER_AMOUNT = 18;
+    public const REQUEST_REVERSE_TRANSFER = 19;
 
     /**
      * __construct
@@ -847,9 +848,30 @@ class StripeConnect extends PaymentMethodBase
     }
 
     /**
-     * doTransfer
+     * initiateRefund
      *
      * @param $requestParam
+     * Follow : https://stripe.com/docs/api/refunds/create
+     * @return bool
+     */
+    public function initiateRefund(array $requestParam): bool
+    {
+        $this->resp = $this->doRequest(self::REQUEST_INITIATE_REFUND, $requestParam);
+        if (false === $this->resp) {
+            return false;
+        }
+        return true;
+    }
+    
+    /**
+     * doTransfer
+     *
+     * @param array $requestParam : [
+     *         'amount' => 7000,
+     *         'currency' => 'inr',
+     *         'destination' => '{{CONNECTED_STRIPE_ACCOUNT_ID}}',
+     *         'transfer_group' => '{ORDER10}',
+     *       ]
      * @return bool
      */
     public function doTransfer(array $requestParam): bool
@@ -862,15 +884,23 @@ class StripeConnect extends PaymentMethodBase
     }
 
     /**
-     * initiateRefund
+     * revertTransfer
      *
-     * @param $requestParam
-     * Follow : https://stripe.com/docs/api/refunds/create
+     * @param array $requestParam : [
+     *         'transferId' => 'tr_1XXXXXXXXXXXX,
+     *         'data' => [
+     *              'amount' => 1000, // In Paisa
+     *              'description' => '',
+     *              'metadata' => [
+     *                  'xyz' => 'abc' // Set of key-value pairs that you can attach to an object.
+     *              ],
+     *          ],
+     *       ]
      * @return bool
      */
-    public function initiateRefund(array $requestParam): bool
+    public function revertTransfer(array $requestParam): bool
     {
-        $this->resp = $this->doRequest(self::REQUEST_INITIATE_REFUND, $requestParam);
+        $this->resp = $this->doRequest(self::REQUEST_REVERSE_TRANSFER, $requestParam);
         if (false === $this->resp) {
             return false;
         }
