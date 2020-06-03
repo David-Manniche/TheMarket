@@ -10,7 +10,7 @@ class SmsNotificationController extends PluginBaseController
     public function callback($keyName)
     {
 		$error = '';
-		if (false === PluginHelper::includePlugin($keyName, 'sms-notification', $this->siteLangId, $error)) {
+		if (false === PluginHelper::includePlugin($keyName, 'sms-notification', $error, $this->siteLangId)) {
 			$this->error = $error;
 			return false;
 		}
