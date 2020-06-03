@@ -6,9 +6,14 @@ class FcmPushNotification extends PushNotificationBase
     public const LIMIT = 1000;
 
     private $deviceTokens;
+<<<<<<< HEAD
     public $requiredKeys = [
         'server_api_key'
     ];
+=======
+
+    public $requiredKeys = ['server_api_key'];
+>>>>>>> develop
 
     public function __construct($deviceTokens)
     {
@@ -77,4 +82,8 @@ class FcmPushNotification extends PushNotificationBase
             'data' => $response
         ];
     }
+<<<<<<< HEAD
 }
+=======
+}
+>>>>>>> develop
