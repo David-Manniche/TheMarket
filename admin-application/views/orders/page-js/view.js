@@ -13,7 +13,7 @@ $(document).ready(function(){
 	};
 
 	generateLabel = function (orderId, opId) {
-		fcom.updateWithAjax(fcom.makeUrl('ShippingModule', 'generateLabel', [orderId, opId]), '', function(t) {			
+		fcom.updateWithAjax(fcom.makeUrl('ShippingServices', 'generateLabel', [orderId, opId]), '', function(t) {			
 			window.location.reload();
 		});
 	}

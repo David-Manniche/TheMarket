@@ -97,8 +97,8 @@ trait PluginHelper
     }
 
     /**
-     * callPlugin - Used to call plugin file without including plugin. This function is used for files exists in library\plugins. 
-     * 
+     * callPlugin - Used to call plugin file without including plugin. This function is used for files exists in library\plugins.
+     *
      * @param string $keyname
      * @param string $args
      * @param string $error

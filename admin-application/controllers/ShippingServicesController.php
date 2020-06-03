@@ -13,13 +13,18 @@ class ShippingServicesController extends AdminBaseController
         $this->canEdit = $this->objPrivilege->canEditShippingSoftware($this->admin_id, true);
         $this->set("canEdit", $this->canEdit);
 
-        $plugin = new Plugin();
+        $this->init();
+    }
+
+    private function init()
+    {
         $this->keyName = $plugin->getDefaultPluginKeyName(Plugin::TYPE_SHIPPING_SERVICES);
+
         $error = '';
-        if (false === PluginHelper::includePlugin($this->keyName, 'shipping-services', $this->adminLangId, $error)) {
+        $this->shipping = PluginHelper::callPlugin($this->keyName, [$this->adminLangId], $error = '', $this->adminLangId);
+        if (false === $this->shipping) {
             FatUtility::dieJsonError($error);
         }
-        $this->shipping = new $this->keyName();
     }
 
     public function generateLabel($orderId, $opId)

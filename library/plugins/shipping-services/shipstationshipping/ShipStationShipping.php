@@ -3,7 +3,7 @@
 class ShipStationShipping extends ShippingServicesBase
 {
     public const KEY_NAME = __CLASS__;
-    public $shipStation;
+    public $shipStation = [];
     
     private $order;
     private $orderResponse;
@@ -21,21 +21,26 @@ class ShipStationShipping extends ShippingServicesBase
      *
      * @return void
      */
-    public function __construct()
+    public function __construct($langId)
     {
-        if (false == $this->validateSettings()) {
-            return false;
+        $this->langId = FatUtility::int($langId);
+        if (1 > $this->langId) {
+            $this->langId = CommonHelper::getLangId();
         }
-        $this->initialize();
+        $this->init();
     }
         
     /**
-     * initialize
+     * init
      *
      * @return void
      */
-    private function initialize()
+    private function init()
     {
+        if (false == $this->validateSettings($this->langId)) {
+            trigger_error($this->getError(), E_USER_ERROR);
+        }
+
         include_once dirname(__FILE__) . '/libraries/unirest/Unirest.php';
         include_once dirname(__FILE__) . '/libraries/shipstation/Shipstation.class.php';
 
