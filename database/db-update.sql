@@ -29,3 +29,63 @@ INSERT INTO `tbl_language_labels` (`label_key`, `label_lang_id`, `label_caption`
 ("APP_I_AM_LISTENING", 1, "Say Something I Am Listening", 2),
 ("APP_VOICE_SEARCH", 1, "Voice Search", 2),
 ("APP_EXPLORE", 1, "Explore", 2);
+
+
+/* TAX MANAGEMENT */
+
+CREATE TABLE `tbl_tax_rules` (
+  `taxrule_id` int(11) NOT NULL,
+  `taxrule_taxcat_id` int(11) NOT NULL,
+  `taxrule_identifier` varchar(255) NOT NULL,
+  `taxrule_rate` decimal(10,4) NOT NULL,
+  `taxrule_is_combined` tinyint(4) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+ALTER TABLE `tbl_tax_rules`
+  ADD PRIMARY KEY (`taxrule_id`);
+  
+ALTER TABLE `tbl_tax_rules`
+  MODIFY `taxrule_id` int(11) NOT NULL AUTO_INCREMENT;
+  
+CREATE TABLE `tbl_tax_rules_lang` (
+  `taxrulelang_taxrule_id` int(11) NOT NULL,
+  `taxrulelang_lang_id` int(11) NOT NULL,
+  `taxrule_name` varchar(250) COLLATE utf8mb4_unicode_ci NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+ALTER TABLE `tbl_tax_rules_lang`
+  ADD PRIMARY KEY (`taxrulelang_taxrule_id`,`taxrulelang_lang_id`);
+    
+CREATE TABLE `tbl_tax_rule_details` (
+  `taxruledet_id` int(11) NOT NULL,
+  `taxruledet_taxrule_id` int(11) NOT NULL,
+  `taxruledet_identifier` varchar(255) NOT NULL,
+  `taxruledet_rate` decimal(10,2) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+ALTER TABLE `tbl_tax_rule_details`
+  ADD PRIMARY KEY (`taxruledet_id`);
+  
+ALTER TABLE `tbl_tax_rule_details`
+  MODIFY `taxruledet_id` int(11) NOT NULL AUTO_INCREMENT;
+
+CREATE TABLE `tbl_tax_rule_details_lang` (
+  `taxruledetlang_taxruledet_id` int(11) NOT NULL,
+  `taxruledetlang_lang_id` int(11) NOT NULL,
+  `taxruledet_name` varchar(255) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+ALTER TABLE `tbl_tax_rule_details_lang`
+  ADD PRIMARY KEY (`taxruledetlang_taxruledet_id`,`taxruledetlang_lang_id`);
+
+CREATE TABLE `tbl_tax_rule_locations` (
+  `taxruleloc_taxcat_id` int(11) NOT NULL,
+  `taxruleloc_taxrule_id` int(11) NOT NULL,
+  `taxruleloc_country_id` int(11) NOT NULL,
+  `taxruleloc_state_id` int(11) NOT NULL,
+  `taxruleloc_type` int(11) DEFAULT NULL COMMENT 'including or excluding',
+  `taxruleloc_unique` int(11) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+ALTER TABLE `tbl_tax_rule_locations`
+  ADD UNIQUE KEY `taxruleloc_taxcat_id` (`taxruleloc_taxcat_id`,`taxruleloc_country_id`,`taxruleloc_state_id`,`taxruleloc_type`,`taxruleloc_unique`);

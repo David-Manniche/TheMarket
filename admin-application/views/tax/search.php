@@ -78,6 +78,9 @@ foreach ($arr_listing as $sn => $row) {
 
                     $innerLi=$innerUl->appendElement('li');
                     $innerLi->appendElement('a', array('href'=>'javascript:void(0)','class'=>'button small green','title'=>Labels::getLabel('LBL_Edit', $adminLangId),"onclick"=>"addTaxForm(".$row['taxcat_id'].")"), Labels::getLabel('LBL_Edit', $adminLangId), true);
+					
+					$innerLi=$innerUl->appendElement('li');
+                    $innerLi->appendElement('a', array('href'=>CommonHelper::generateUrl('Tax', 'ruleForm', array($row['taxcat_id'])),'class'=>'button small green','title'=>Labels::getLabel('LBL_Add_Rule', $adminLangId)), Labels::getLabel('LBL_Add_Rule', $adminLangId), true);
 
                     $innerLi=$innerUl->appendElement('li');
                     $innerLi->appendElement('a', array('href'=>'javascript:void(0)','class'=>'button small green','title'=>Labels::getLabel('LBL_Delete', $adminLangId),"onclick"=>"deleteRecord(".$row['taxcat_id'].")"), Labels::getLabel('LBL_Delete', $adminLangId), true);

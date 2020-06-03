@@ -310,12 +310,12 @@ class TaxController extends AdminBaseController
     {
         $this->objPrivilege->canEditTax();
 
-        $taxcat_id = FatApp::getPostedData('id', FatUtility::VAR_INT, 0);
-        if (1 > $taxcat_id) {
+        $taxCatId = FatApp::getPostedData('id', FatUtility::VAR_INT, 0);
+        if (1 > $taxCatId) {
             FatUtility::dieJsonError($this->str_invalid_request_id);
         }
 
-        $this->markAsDeleted($taxcat_id);
+        $this->markAsDeleted($taxCatId);
 
         FatUtility::dieJsonSuccess($this->str_delete_record);
     }
@@ -360,6 +360,11 @@ class TaxController extends AdminBaseController
             Message::addErrorMessage($taxtObj->getError());
             FatUtility::dieJsonError(Message::getHtml());
         }
+		
+		if (!$this->deleteGroupData($taxcat_id)) {
+			Message::addErrorMessage(Labels::getLabel('LBL_Unable_to_delete_group_old_data', $this->adminLangId));
+			FatUtility::dieJsonError(Message::getHtml());
+		}
     }
 
     public function changeStatus()
@@ -517,7 +522,217 @@ class TaxController extends AdminBaseController
         }
         die(json_encode($json));     
     }
-
+	
+	public function ruleForm($taxCatId = 0)
+    {
+        $this->objPrivilege->canEditTax();
+        $taxCatId = FatUtility::int($taxCatId);
+        $frm = TaxRule::getRuleForm($this->adminLangId, 0);
+		$data = [];
+		$rulesData = [];
+		$combinedRulesDetails = [];
+		$ruleLocations = [];
+        
+		if ($taxCatId == 0) {
+            FatUtility::dieWithError($this->str_invalid_request);
+        }
+		
+		$data = Tax::getAttributesById($taxCatId);
+		$data['taxrule_is_combined'] = 0;
+		$frm->fill($data);
+		$taxObj = new TaxRule();
+		$rulesData = $taxObj->getRules($taxCatId, $this->adminLangId);
+		if (!empty($rulesData)) {
+			$rulesIds = array_column($rulesData, 'taxrule_id');
+			$combinedRulesDetails = $taxObj->getCombinedRuleDetails($rulesIds, $this->adminLangId);
+			$ruleLocations = $taxObj->getLocations($taxCatId);
+		}
+        $this->set('taxCategory', $data['taxcat_identifier']);
+        $this->set('frm', $frm);
+        $this->set('rules', $rulesData);
+        $this->set('combinedRulesDetails', $combinedRulesDetails);
+        $this->set('ruleLocations', $ruleLocations);
+        $this->_template->render();
+    }
+	
+	public function setupTaxRule()
+    {
+        $this->objPrivilege->canEditTax();
+        $data = FatApp::getPostedData();
+		
+		if (empty($data)) {
+            Message::addErrorMessage(Labels::getLabel('LBL_Invalid_Request', $this->adminLangId));
+            FatUtility::dieJsonError(Message::getHtml());
+        }
+		
+		if (isset($data['rules']) && !empty($data['rules'])) {
+			$rulesData = $data['rules'];
+			if (!$this->checkForValidStateTypes($rulesData)) {
+				Message::addErrorMessage(Labels::getLabel('LBL_All_States_And_Include_can\'t_be_used_together_or_All_state_can\'t_be_used_more_then_once_in_a_group_for_same_country', $this->adminLangId));
+				FatUtility::dieJsonError(Message::getHtml());
+			}
+		}
+		
+        $taxCatId = $data['taxcat_id'];
+		unset($data['taxcat_id']);
+        /* $taxGrpObj = new TaxGroup($taxCatId);
+		$taxGrpObj->assignValues($data);
+		
+        if (!$taxGrpObj->save()) {
+            Message::addErrorMessage($taxGrpObj->getError());
+            FatUtility::dieJsonError(Message::getHtml());
+        }
+		
+		$taxCatId = $taxGrpObj->getMainTableRecordId(); */
+		/* [ DELETE OLD DATA FROM GROUP */
+		if (!$this->deleteGroupData($taxCatId)) {
+			Message::addErrorMessage(Labels::getLabel('LBL_Unable_to_delete_old_tax_settings', $this->adminLangId));
+			FatUtility::dieJsonError(Message::getHtml());
+		}
+		/* ] */
+		
+		if (isset($data['rules']) && !empty($data['rules'])) {
+			$rules = $data['rules'];
+			foreach($rules as $rule) {
+				$ruleId = 0;
+				$isCombined = FatUtility::int($rule['taxrule_is_combined']);
+				$states = (isset($rule['states'])) ? $rule['states'] : [];
+				unset($rule['taxrule_id']);
+				$taxRuleObj = new TaxRule($ruleId);
+				$rule['taxrule_taxcat_id'] = $taxCatId;
+				$taxRuleObj->assignValues($rule);
+				if (!$taxRuleObj->save()) {
+					Message::addErrorMessage($taxRuleObj->getError());
+					FatUtility::dieJsonError(Message::getHtml());
+				}
+				$ruleId = $taxRuleObj->getMainTableRecordId();
+				$data_to_update = array(
+					TaxRule::DB_TBL_LANG_PREFIX.'taxrule_id' => $ruleId,
+					TaxRule::DB_TBL_LANG_PREFIX.'lang_id' => $this->adminLangId,
+					TaxRule::DB_TBL_PREFIX.'name' => $rule['taxrule_name'],
+				);
+				
+				if (!$taxRuleObj->updateLangData($this->adminLangId, $data_to_update)) {
+					Message::addErrorMessage($taxRuleObj->getError());
+					FatUtility::dieJsonError(Message::getHtml());
+				}
+				
+				unset($taxRuleObj);
+				/* [ update location data */
+				if (!empty($states)) {
+					if(!$this->updateLocationData($states, $taxCatId, $ruleId, $rule)) {
+						Message::addErrorMessage(Labels::getLabel('LBL_Unable_to_Update_Location_Data', $this->adminLangId));
+						FatUtility::dieJsonError(Message::getHtml());
+					}
+				}
+				/* ] */	
+				
+				/* [ UPDATE COMBINED TAX DETAILS */
+				if ($isCombined > 0) {
+					$combinedTaxes = $rule['combinedTaxDetails'];
+					if (!empty($combinedTaxes)) {
+						if (!$this->updateCombinedData($combinedTaxes, $ruleId, $this->adminLangId)) {
+							Message::addErrorMessage(Labels::getLabel('LBL_Unable_to_Update_Combined_Tax_Data', $this->adminLangId));
+							FatUtility::dieJsonError(Message::getHtml());
+						}
+					}
+				}
+				/* ] */
+			}
+		}
+		
+		$this->set('msg', Labels::getLabel('LBL_Updated_Successfully', $this->adminLangId));
+		$this->set('taxCatId', $taxCatId);
+        $this->_template->render(false, false, 'json-success.php');
+    }
+	
+	private function checkForValidStateTypes($rulesData = [])
+	{
+		if(!empty($rulesData)) {
+			$types = [];
+			$countries = [];
+			$currentkey = 0;
+			foreach ($rulesData as $key => $rule) {
+				if ($currentkey = array_search($rule['country_id'], $countries) !== false  && (($rule['type'] == TaxRule::TYPE_ALL_STATES && $types[$currentkey] == TaxRule::TYPE_ALL_STATES) || ($rule['type'] == TaxRule::TYPE_ALL_STATES && $types[$currentkey] == TaxRule::TYPE_INCLUDE_STATES) || ($rule['type'] == TaxRule::TYPE_INCLUDE_STATES && $types[$currentkey] == TaxRule::TYPE_ALL_STATES))) {
+					return false;
+				} else {
+					if ($rule['type'] != TaxRule::TYPE_EXCLUDE_STATES) {
+						$countries[] = $rule['country_id'];
+						$types[] = $rule['type'];
+					} else {
+						unset($rulesData[$key]);
+					}
+				}
+			}
+		}
+		return true;
+	}
+	
+	private function deleteGroupData($taxCatId)
+	{
+		$taxRuleObj = new TaxRule();
+		if (!$taxRuleObj->deleteRules($taxCatId)) {
+			Message::addErrorMessage($taxRuleObj->getError());
+			FatUtility::dieJsonError(Message::getHtml());
+		}
+		$locObj = new TaxRuleLocation();
+		if (!$locObj->deleteLocations($taxCatId)) {
+			return false;
+		}
+		return true;
+	}
+	
+	private function updateLocationData($states, $taxCatId, $ruleId, $rule) {
+		$locObj = new TaxRuleLocation();
+		foreach($states as $state) {
+			$isUnique = 1;
+			if ($rule['type'] == TaxRule::TYPE_EXCLUDE_STATES) {
+				$isUnique = NULL;
+			}
+			
+			$data = array(
+				'taxruleloc_taxcat_id' => $taxCatId,
+				'taxruleloc_taxrule_id' => $ruleId,
+				'taxruleloc_country_id' => $rule['country_id'],
+				'taxruleloc_state_id' => $state,
+				'taxruleloc_type' => $rule['type'],
+				'taxruleloc_unique' => $isUnique
+			);
+			if (!$locObj->updateLocations($data)) {
+				//Message::addErrorMessage($locObj->getError());
+				return false;
+				//FatUtility::dieJsonError(Message::getHtml());
+			}
+		}
+		return true;
+	}
+	
+	private function updateCombinedData($combinedTaxes, $ruleId, $langId) {
+		if (!empty($combinedTaxes)) { 
+			foreach($combinedTaxes as $combinedTax) {
+				$comTaxId = 0;
+				$combinedTax['taxruledet_taxrule_id'] = $ruleId;
+				unset($combinedTax['taxruledet_id']);
+				$taxRuleComObj = new TaxRuleCombined($comTaxId);
+				$taxRuleComObj->assignValues($combinedTax);
+				if (!$taxRuleComObj->save()) {
+					Message::addErrorMessage($taxRuleComObj->getError());
+					//FatUtility::dieJsonError(Message::getHtml());
+					return false;
+				}
+				$data_to_update = array(
+					TaxRuleCombined::DB_TBL_LANG_PREFIX.'taxruledet_id' => $ruleId,
+					TaxRuleCombined::DB_TBL_LANG_PREFIX.'lang_id' => $this->adminLangId,
+					TaxRuleCombined::DB_TBL_PREFIX.'name' => $combinedTax['taxruledet_name']
+				);
+				if (!$taxRuleComObj->updateLangData($langId, $data_to_update)) {
+					Message::addErrorMessage($taxRuleComObj->getError());
+					FatUtility::dieJsonError(Message::getHtml());
+				}
+			}
+		}
+		return true;
+	}
 
     /* public function getCombinedValues($value)
     {
