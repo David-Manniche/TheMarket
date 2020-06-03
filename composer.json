@@ -1,10 +1,11 @@
 {
     "require": {
         "phpmd/phpmd": "^2.6",
-        "friendsofphp/php-cs-fixer": "^2.14"
+        "friendsofphp/php-cs-fixer": "^2.14",
+        "taxjar/taxjar-php": "^1.10",
+        "avalara/avataxclient": "^20.1"
     },
     "require-dev": {
         "phpunit/phpunit": "^8.3"
     }
 }
-

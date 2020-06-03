@@ -66,7 +66,7 @@ trait SellerCollections
             $urlSrch->doNotLimitRecords();
             $urlSrch->addFld('urlrewrite_custom');
 
-            $urlSrch->addCondition('urlrewrite_original', '=', 'shops/collection/' . $shop_id);
+            $urlSrch->addCondition('urlrewrite_original', '=', 'shops/collection/' . $shop_id . '/' . $scollection_id);
             $rs = $urlSrch->getResultSet();
             $urlRow = FatApp::getDb()->fetch($rs);
             if ($urlRow) {
@@ -176,12 +176,12 @@ trait SellerCollections
         /* url data[ */
 
 
-        $shopOriginalUrl = Shop::SHOP_COLLECTION_ORGINAL_URL . $shop_id;
+        $shopOriginalUrl = Shop::SHOP_COLLECTION_ORGINAL_URL . $shop_id . '/' . $collection_id;
         if ($post['urlrewrite_custom'] == '') {
             FatApp::getDb()->deleteRecords(UrlRewrite::DB_TBL, array( 'smt' => 'urlrewrite_original = ?', 'vals' => array($shopOriginalUrl)));
         } else {
             $shop = new Shop($shop_id);
-            $shop->setupCollectionUrl($post['urlrewrite_custom']);
+            $shop->setupCollectionUrl($post['urlrewrite_custom'], $collection_id);
         }
         /* ] */
         $newTabLangId = 0;

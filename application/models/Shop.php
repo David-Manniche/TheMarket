@@ -211,6 +211,11 @@ class Shop extends MyAppModel
         $srch->addCondition(static::tblFld('id'), '=', $shop_id);
         $srch->joinTable(States::DB_TBL, 'LEFT JOIN', 's.shop_state_id=ss.state_id and ss.state_active=' . applicationConstants::ACTIVE, 'ss');
         $srch->joinTable(Countries::DB_TBL, 'LEFT JOIN', 's.shop_country_id=sc.country_id and sc.country_active=' . applicationConstants::ACTIVE, 'sc');
+        
+        if (0 < $langId) {
+            $srch->joinTable(States::DB_TBL_LANG, 'LEFT JOIN', 'ss_l.statelang_state_id=ss.state_id and ss_l.statelang_lang_id=' . $langId, 'ss_l');
+        }
+       
         if ($isActive) {
             $srch->addCondition('s.shop_active', '=', $isActive);
         }
@@ -274,7 +279,7 @@ class Shop extends MyAppModel
         return $frm;
     }
 
-    private function _rewriteUrl($keyword, $type = 'shop')
+    private function _rewriteUrl($keyword, $type = 'shop', $collectionId = 0)
     {
         if ($this->mainTableRecordId < 1) {
             return false;
@@ -304,7 +309,7 @@ class Shop extends MyAppModel
                 $seoUrl .= '-policy';
                 break;
             case 'collection':
-                $originalUrl = Shop::SHOP_COLLECTION_ORGINAL_URL . $this->mainTableRecordId;
+                $originalUrl = Shop::SHOP_COLLECTION_ORGINAL_URL . $this->mainTableRecordId . '/' . $collectionId;
                 $shopUrl = static::getShopUrl($this->mainTableRecordId, 'urlrewrite_custom');
                 $seoUrl = preg_replace('/-' . $shopUrl . '$/', '', $seoUrl);
                 $seoUrl .= '-' . $shopUrl;
@@ -319,9 +324,9 @@ class Shop extends MyAppModel
         return UrlRewrite::update($originalUrl, $customUrl);
     }
 
-    public function setupCollectionUrl($keyword)
+    public function setupCollectionUrl($keyword, $collectionId)
     {
-        return $this->_rewriteUrl($keyword, 'collection');
+        return $this->_rewriteUrl($keyword, 'collection', $collectionId);
     }
 
     public function rewriteUrlShop($keyword)

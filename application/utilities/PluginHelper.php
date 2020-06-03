@@ -6,13 +6,25 @@ trait PluginHelper
     public $settings = [];
     public $langId = 0;
     public $keyName;
-
+    
+    /**
+     * getError
+     *
+     * @return string
+     */
     public function getError()
     {
         return $this->error;
     }
-
-    public function getSettings($column = '', $langId = 0)
+    
+    /**
+     * getSettings
+     *
+     * @param  string $column
+     * @param  int $langId
+     * @return array
+     */
+    public function getSettings(string $column = '', int $langId = 0)
     {
         $langId = FatUtility::int($langId);
         if (1 > $langId) {
@@ -20,35 +32,43 @@ trait PluginHelper
         }
 
         try {
-            $keyName = get_called_class()::KEY_NAME;
+            $this->keyName = get_called_class()::KEY_NAME;
         } catch (\Error $e) {
-            $message = $e->getMessage();
-            if (true === MOBILE_APP_API_CALL) {
-                LibHelper::dieJsonError($message);
-            }
-            Message::addErrorMessage($message);
-            CommonHelper::redirectUserReferer();
+            $this->error = $e->getMessage();
+            return false;
         }
-        $pluginSetting = new PluginSetting(0, $keyName);
+        $pluginSetting = new PluginSetting(0, $this->keyName);
         return $pluginSetting->get($langId, $column);
     }
     
-    protected function validateSettings()
+    /**
+     * validateSettings - To validate plugin required keys are updated in db or not.
+     *
+     * @param  mixed $langId
+     * @return bool
+     */
+    protected function validateSettings(int $langId)
     {
         $this->settings = $this->getSettings();
         if (isset($this->requiredKeys) && !empty($this->requiredKeys) && is_array($this->requiredKeys)) {
             foreach ($this->requiredKeys as $key) {
-                if (!array_key_exists($key, $this->settings)) {
-                    $this->error = Labels::getLabel('MSG_PLUGIN_SETTINGS_NOT_CONFIGURED', $this->langId);
+                if (!array_key_exists($key, $this->settings) || empty($this->settings[$key])) {
+                    $this->error = $this->keyName . ' ' . Labels::getLabel('MSG_SETTINGS_NOT_CONFIGURED', $langId);
                     return false;
                 }
             }
         }
         return true;
     }
-
+    
     /**
-    * This function is used for KingPin plugins only.
+     * includePlugin
+     *
+     * @param  string $keyName
+     * @param  string $directory
+     * @param  int $langId
+     * @param  string $error
+     * @return mixed
      */
     public static function includePlugin(string $keyName, string $directory, int $langId = 0, &$error = '')
     {
@@ -65,6 +85,7 @@ trait PluginHelper
             $error =  Labels::getLabel('MSG_PLUGIN_IS_NOT_ACTIVE', $langId);
             return false;
         }
+        
         $file = CONF_PLUGIN_DIR . '/' . $directory . '/' . strtolower($keyName) . '/' . $keyName . '.php';
 
         if (!file_exists($file)) {

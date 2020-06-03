@@ -12,9 +12,10 @@ class Plugin extends MyAppModel
     public const TYPE_PUSH_NOTIFICATION = 3;
     public const TYPE_PAYOUTS = 4;
     public const TYPE_ADVERTISEMENT_FEED = 5;
-    public const TYPE_SMS_NOTIFICATION = 6;
+    public const TYPE_SMS_NOTIFICATION = 6;    
     public const TYPE_FULL_TEXT_SEARCH = 7;
     public const TYPE_SHIPPING_SERVICES = 8;
+    public const TYPE_TAX_SERVICES  = 10;
 
     /* Define here :  if system can not activate multiple plugins for a same feature*/
     public const HAVING_KINGPIN = [
@@ -22,6 +23,7 @@ class Plugin extends MyAppModel
         self::TYPE_PUSH_NOTIFICATION,
         self::TYPE_ADVERTISEMENT_FEED,
         self::TYPE_SMS_NOTIFICATION,
+        self::TYPE_TAX_SERVICES ,   
         self::TYPE_FULL_TEXT_SEARCH,
         self::TYPE_SHIPPING_SERVICES,
     ];
@@ -43,20 +45,6 @@ class Plugin extends MyAppModel
         $this->objMainTableRecord->setSensitiveFields(
             array('plugin_code')
         );
-    }
-
-    public static function getTypeArr($langId)
-    {
-        return [
-            static::TYPE_CURRENCY => Labels::getLabel('LBL_CURRENCY', $langId),
-            static::TYPE_SOCIAL_LOGIN => Labels::getLabel('LBL_SOCIAL_LOGIN', $langId),
-            static::TYPE_PUSH_NOTIFICATION => Labels::getLabel('LBL_PUSH_NOTIFICATION', $langId),
-            static::TYPE_PAYOUTS => Labels::getLabel('LBL_PAYOUT', $langId),
-            static::TYPE_ADVERTISEMENT_FEED => Labels::getLabel('LBL_ADVERTISEMENT_FEED', $langId),
-            static::TYPE_SMS_NOTIFICATION => Labels::getLabel('LBL_SMS_NOTIFICATION', $langId),
-            static::TYPE_FULL_TEXT_SEARCH => Labels::getLabel('LBL_Full_TEXT_SEARCH', $langId),
-            static::TYPE_SHIPPING_SERVICES => Labels::getLabel('LBL_SHIPPING_SERVICES', $langId)
-        ];
     }
 
     public static function getSearchObject($langId = 0, $isActive = true, $joinSettings = false)
@@ -120,6 +108,21 @@ class Plugin extends MyAppModel
             return $row[$attr];
         }
         return $row;
+    }
+
+    public static function getTypeArr($langId)
+    {
+        return [
+            static::TYPE_CURRENCY => Labels::getLabel('LBL_CURRENCY', $langId),
+            static::TYPE_SOCIAL_LOGIN => Labels::getLabel('LBL_SOCIAL_LOGIN', $langId),
+            static::TYPE_PUSH_NOTIFICATION => Labels::getLabel('LBL_PUSH_NOTIFICATION', $langId),
+            static::TYPE_PAYOUTS => Labels::getLabel('LBL_PAYOUT', $langId),
+            static::TYPE_ADVERTISEMENT_FEED => Labels::getLabel('LBL_ADVERTISEMENT_FEED', $langId),
+            static::TYPE_SMS_NOTIFICATION => Labels::getLabel('LBL_SMS_NOTIFICATION', $langId),
+            static::TYPE_TAX_SERVICES => Labels::getLabel('LBL_Tax_Services', $langId),
+            static::TYPE_FULL_TEXT_SEARCH => Labels::getLabel('LBL_Full_TEXT_SEARCH', $langId),
+            static::TYPE_SHIPPING_SERVICES => Labels::getLabel('LBL_SHIPPING_SERVICES', $langId)
+        ];
     }
 
     private static function pluginTypeSrchObj($typeId, $langId, $customCols = true, $active = false)

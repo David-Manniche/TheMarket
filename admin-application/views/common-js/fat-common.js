@@ -27,7 +27,7 @@ var fcom = {
 
 			fcom.ajaxRequestLog.push(obj);
 
-			if (repeatCount >= 5 && !pageReloading) {
+			if (repeatCount >= 10 && !pageReloading) {
 				if (confirm('This page seems to be stuck with some ajax call loop.\nDo you want to reload the page?')) {
 					pageReloading = true;
 					location.reload();

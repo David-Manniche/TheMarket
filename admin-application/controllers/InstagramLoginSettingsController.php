@@ -8,7 +8,7 @@ class InstagramLoginSettingsController extends SocialLoginSettingsController
                 'client_id' => [
                     'type' => PluginSetting::TYPE_STRING,
                     'required' => true,
-                    'label' => "Client ID",
+                    'label' => "Client Id",
                 ],
                 'client_secret' => [
                     'type' => PluginSetting::TYPE_STRING,

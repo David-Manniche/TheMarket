@@ -84,19 +84,6 @@ $(document).ready(function(){
 		//});
 	};
 
-	setupBlockLang=function(frm){
-		if (!$(frm).validate()) return;
-		var data = fcom.frmData(frm);
-		fcom.updateWithAjax(fcom.makeUrl('ContentBlock', 'langSetup'), data, function(t) {
-			reloadList();
-			if (t.langId>0) {
-				addBlockLangForm(t.epageId, t.langId);
-				return ;
-			}
-			$(document).trigger('close.facebox');
-		});
-	};
-
 	resetToDefaultContent =  function(){
 		var agree  = confirm(langLbl.confirmReplaceCurrentToDefault);
 		if( !agree ){ return false; }

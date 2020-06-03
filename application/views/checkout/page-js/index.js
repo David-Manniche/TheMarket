@@ -405,7 +405,10 @@ $("document").ready(function(){
 		fcom.ajax(fcom.makeUrl('Checkout', 'PaymentSummary'), '', function(ans) {
 			$(pageContent).html(ans);
 			$(paymentDiv).addClass('is-current');
-			setTimeout(function(){ $('#payment_methods_tab').find('li:first a')[0].click(); }, 500);
+			setTimeout(function(){ 
+				//$('#payment_methods_tab').find('li:first a').click();
+				$("#payment_methods_tab li:first a").trigger('click');
+			 }, 500);
 			//$("#payment_methods_tab li:first a").trigger('click');
 		});
 	};

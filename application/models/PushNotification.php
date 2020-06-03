@@ -202,7 +202,6 @@ class PushNotification extends MyAppModel
         $srch->doNotLimitRecords();
         $rs = $srch->getResultSet();
         $notificationList = FatApp::getDb()->fetchAll($rs);
-        
         if (1 > count($notificationList)) {
             $error = Labels::getLabel('MSG_NO_RECORD_FOUND', CommonHelper::getLangId());
             return false;

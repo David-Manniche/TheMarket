@@ -115,13 +115,15 @@ class PluginsController extends AdminBaseController
             $newTabLangId = FatApp::getConfig('CONF_ADMIN_DEFAULT_LANG', FatUtility::VAR_INT, 1);
         }
         
-        $defaultCurrConvAPI = FatApp::getConfig('CONF_DEFAULT_PLUGIN_' . $pluginType, FatUtility::VAR_INT, 0);
-        if (!empty($post['CONF_DEFAULT_PLUGIN_' . $pluginType]) || empty($defaultCurrConvAPI)) {
-            $confVal = empty($defaultCurrConvAPI) ? $pluginId : $post['CONF_DEFAULT_PLUGIN_' . $pluginType];
-            $confRecord = new Configurations();
-            if (!$confRecord->update(['CONF_DEFAULT_PLUGIN_' . $pluginType => $confVal])) {
-                Message::addErrorMessage($confRecord->getError());
-                FatUtility::dieJsonError(Message::getHtml());
+        if (in_array($pluginType, Plugin::HAVING_KINGPIN)) {
+            $defaultCurrConvAPI = FatApp::getConfig('CONF_DEFAULT_PLUGIN_' . $pluginType, FatUtility::VAR_INT, 0);
+            if (!empty($post['CONF_DEFAULT_PLUGIN_' . $pluginType]) || empty($defaultCurrConvAPI)) {
+                $confVal = empty($defaultCurrConvAPI) ? $pluginId : $post['CONF_DEFAULT_PLUGIN_' . $pluginType];
+                $confRecord = new Configurations();
+                if (!$confRecord->update(['CONF_DEFAULT_PLUGIN_' . $pluginType => $confVal])) {
+                    Message::addErrorMessage($confRecord->getError());
+                    FatUtility::dieJsonError(Message::getHtml());
+                }
             }
         }
 

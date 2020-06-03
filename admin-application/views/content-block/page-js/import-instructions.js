@@ -29,11 +29,12 @@ $(document).ready(function(){
 
 	};
 	addBlockForm = function(id, langId, autoFillLangData = 0) {
-		fcom.displayProcessing();
+		addBlockLangForm(id, langId, autoFillLangData);
+		/* fcom.displayProcessing();
 		var frm = document.frmBlockSearch;
 			fcom.ajax(fcom.makeUrl('ContentBlock', 'langForm', [id, langId, autoFillLangData]), '', function(t) {
 				fcom.updateFaceboxContent(t);
-		});
+		}); */
 	};
 
 	setupBlock = function(frm) {
@@ -83,7 +84,7 @@ $(document).ready(function(){
 		//});
 	};
 
-	setupBlockLang=function(frm){
+	/* setupBlockLang=function(frm){
 		// if (!$(frm).validate()) return;
 
 		var data = $("form[name=frmBlockLang]").serializeArray();
@@ -97,7 +98,7 @@ $(document).ready(function(){
 			}
 			$(document).trigger('close.facebox');
 		});
-	};
+	}; */
 
 	resetToDefaultContent =  function(){
 		var agree  = confirm(langLbl.confirmReplaceCurrentToDefault);

@@ -154,9 +154,11 @@ class SellerOrdersController extends AdminBaseController
         $srch->doNotCalculateRecords();
         $srch->doNotLimitRecords();
         $srch->addMultipleFields(
-            array( 'order_id', 'order_is_paid', 'order_pmethod_id', 'order_tax_charged', 'order_date_added', 'op_id', 'op_qty', 'op_unit_price', 'op_selprod_user_id', 'op_invoice_number', 'IFNULL(orderstatus_name, orderstatus_identifier) as orderstatus_name', 'ou.user_name as buyer_user_name', 'ouc.credential_username as buyer_username', 'pmethod_code', 'IFNULL(pmethod_name, IFNULL(pmethod_identifier, "Wallet")) as pmethod_name', 'op_commission_charged', 'op_qty', 'op_commission_percentage', 'ou.user_name as buyer_name', 'ouc.credential_username as buyer_username', 'ouc.credential_email as buyer_email', 'ou.user_phone as buyer_phone', 'op.op_shop_owner_name', 'op.op_shop_owner_username', 'op_l.op_shop_name', 'op.op_shop_owner_email', 'op.op_shop_owner_phone',
-            'op_selprod_title', 'op_product_name', 'op_brand_name', 'op_selprod_options', 'op_selprod_sku', 'op_product_model', 'op_product_type',
-            'op_shipping_duration_name', 'op_shipping_durations', 'op_status_id', 'op_refund_qty', 'op_refund_amount', 'op_refund_commission', 'op_other_charges', 'optosu.optsu_user_id', 'ops.opshipping_by_seller_user_id', 'op_tax_collected_by_seller', 'order_is_wallet_selected', 'order_reward_point_used', 'op_product_tax_options')
+            array(
+                'order_id', 'order_is_paid', 'order_pmethod_id', 'order_tax_charged', 'order_date_added', 'op_id', 'op_qty', 'op_unit_price', 'op_selprod_user_id', 'op_invoice_number', 'IFNULL(orderstatus_name, orderstatus_identifier) as orderstatus_name', 'ou.user_name as buyer_user_name', 'ouc.credential_username as buyer_username', 'pmethod_code', 'IFNULL(pmethod_name, IFNULL(pmethod_identifier, "Wallet")) as pmethod_name', 'op_commission_charged', 'op_qty', 'op_commission_percentage', 'ou.user_name as buyer_name', 'ouc.credential_username as buyer_username', 'ouc.credential_email as buyer_email', 'ou.user_phone as buyer_phone', 'op.op_shop_owner_name', 'op.op_shop_owner_username', 'op_l.op_shop_name', 'op.op_shop_owner_email', 'op.op_shop_owner_phone',
+                'op_selprod_title', 'op_product_name', 'op_brand_name', 'op_selprod_options', 'op_selprod_sku', 'op_product_model', 'op_product_type',
+                'op_shipping_duration_name', 'op_shipping_durations', 'op_status_id', 'op_refund_qty', 'op_refund_amount', 'op_refund_commission', 'op_other_charges', 'optosu.optsu_user_id', 'ops.opshipping_by_seller_user_id', 'op_tax_collected_by_seller', 'order_is_wallet_selected', 'order_reward_point_used', 'op_product_tax_options'
+            )
         );
         $srch->addCondition('op_id', '=', $op_id);
 
@@ -183,7 +185,7 @@ class SellerOrdersController extends AdminBaseController
             $processingStatuses = $orderObj->getAdminAllowedUpdateOrderStatuses(false, $opRow['op_product_type']);
         }
 
-        $data = array('op_id' => $op_id, 'op_status_id' => $opRow['op_status_id'] );
+        $data = array('op_id' => $op_id, 'op_status_id' => $opRow['op_status_id']);
         $frm = $this->getOrderCommentsForm($opRow, $processingStatuses);
         $frm->fill($data);
 
@@ -197,7 +199,7 @@ class SellerOrdersController extends AdminBaseController
         if (((strtolower($opRow['pmethod_code']) == 'cashondelivery') || (in_array($opRow['op_status_id'], $allowedShippingUserStatuses))) && $this->canEdit && !$shippingHanldedBySeller && ($opRow['op_product_type'] == Product::PRODUCT_TYPE_PHYSICAL && $opRow['order_is_paid'] != Orders::ORDER_IS_CANCELLED)) {
             $displayShippingUserForm = true;
             $shippingUserFrm = $this->getShippingCompanyUserForm($displayShippingUserForm);
-            $shippingUserdata = array('op_id' => $op_id, 'optsu_user_id' => $opRow['optsu_user_id'] );
+            $shippingUserdata = array('op_id' => $op_id, 'optsu_user_id' => $opRow['optsu_user_id']);
             $shippingUserFrm->fill($shippingUserdata);
             $this->set('shippingUserFrm', $shippingUserFrm);
         }
@@ -256,8 +258,10 @@ class SellerOrdersController extends AdminBaseController
         $srch->addCondition('op_id', '=', $op_id);
         //$srch->addMultipleFields(array('op_id','op_order_id','optsu_user_id'));
         $srch->addMultipleFields(
-            array( 'order_id', 'order_pmethod_id', 'order_date_added', 'op_id', 'op_qty', 'op_unit_price',
-            'op_invoice_number', 'IFNULL(orderstatus_name, orderstatus_identifier) as orderstatus_name', 'ou.user_name as buyer_user_name', 'ouc.credential_username as buyer_username', 'IFNULL(pmethod_name, IFNULL(pmethod_identifier, "Wallet")) as pmethod_name', 'op_commission_charged', 'op_commission_percentage',   'ou.user_name as buyer_name', 'ouc.credential_username as buyer_username', 'ouc.credential_email as buyer_email', 'ou.user_phone as buyer_phone', 'op.op_shop_owner_name', 'op.op_shop_owner_username', 'op_l.op_shop_name', 'op.op_shop_owner_email', 'op.op_shop_owner_phone', 'op_selprod_title', 'op_product_name', 'op_brand_name', 'op_selprod_options', 'op_selprod_sku', 'op_product_model', 'op_shipping_duration_name', 'op_shipping_durations', 'op_status_id', 'op_other_charges', 'optsu_user_id', 'op_product_weight', 'credential_email', 'pmethod_code')
+            array(
+                'order_id', 'order_pmethod_id', 'order_date_added', 'op_id', 'op_qty', 'op_unit_price',
+                'op_invoice_number', 'IFNULL(orderstatus_name, orderstatus_identifier) as orderstatus_name', 'ou.user_name as buyer_user_name', 'ouc.credential_username as buyer_username', 'IFNULL(pmethod_name, IFNULL(pmethod_identifier, "Wallet")) as pmethod_name', 'op_commission_charged', 'op_commission_percentage',   'ou.user_name as buyer_name', 'ouc.credential_username as buyer_username', 'ouc.credential_email as buyer_email', 'ou.user_phone as buyer_phone', 'op.op_shop_owner_name', 'op.op_shop_owner_username', 'op_l.op_shop_name', 'op.op_shop_owner_email', 'op.op_shop_owner_phone', 'op_selprod_title', 'op_product_name', 'op_brand_name', 'op_selprod_options', 'op_selprod_sku', 'op_product_model', 'op_shipping_duration_name', 'op_shipping_durations', 'op_status_id', 'op_other_charges', 'optsu_user_id', 'op_product_weight', 'credential_email', 'pmethod_code'
+            )
         );
         $rs = $srch->getResultSet();
         $orderDetail = FatApp::getDb()->fetch($rs);
@@ -326,11 +330,11 @@ class SellerOrdersController extends AdminBaseController
             $amt = CommonHelper::orderProductAmount($orderDetail);
             $txnObj = new Transactions();
             $txnDataArr = array(
-            'utxn_user_id' => $shippingUserRow['optsu_user_id'],
-            'utxn_comments' => $comments,
-            'utxn_status' => Transactions::STATUS_COMPLETED,
-            'utxn_debit' => $amt,
-            'utxn_op_id' => $orderDetail['op_id'],
+                'utxn_user_id' => $shippingUserRow['optsu_user_id'],
+                'utxn_comments' => $comments,
+                'utxn_status' => Transactions::STATUS_COMPLETED,
+                'utxn_debit' => $amt,
+                'utxn_op_id' => $orderDetail['op_id'],
             );
             if (!$txnObj->addTransaction($txnDataArr)) {
                 $db->rollbackTransaction();
@@ -406,9 +410,9 @@ class SellerOrdersController extends AdminBaseController
         }
 
         $restrictOrderStatusChange = array_merge(
-            (array)FatApp::getConfig("CONF_DEFAULT_SHIPPING_ORDER_STATUS"),
-            (array)FatApp::getConfig("CONF_DEFAULT_DEIVERED_ORDER_STATUS"),
-            (array)FatApp::getConfig("CONF_COMPLETED_ORDER_STATUS")
+            (array) FatApp::getConfig("CONF_DEFAULT_SHIPPING_ORDER_STATUS"),
+            (array) FatApp::getConfig("CONF_DEFAULT_DEIVERED_ORDER_STATUS"),
+            (array) FatApp::getConfig("CONF_COMPLETED_ORDER_STATUS")
         );
         if (/* strtolower($orderDetail['pmethod_code']) == 'cashondelivery' &&  */!$orderDetail['optsu_user_id'] && in_array($post["op_status_id"], $restrictOrderStatusChange) && $orderDetail['op_product_type'] == Product::PRODUCT_TYPE_PHYSICAL) {
             Message::addErrorMessage(Labels::getLabel('MSG_Please_assign_shipping_user', $this->adminLangId));
@@ -424,6 +428,27 @@ class SellerOrdersController extends AdminBaseController
         } else {
             Message::addErrorMessage($this->str_invalid_request);
             FatUtility::dieJsonError(Message::getHtml());
+        }
+
+        if (strtolower($orderDetail['pmethod_code']) == 'cashondelivery' && (OrderStatus::ORDER_DELIVERED == $post["op_status_id"] || OrderStatus::ORDER_COMPLETED == $post["op_status_id"]) && Orders::ORDER_IS_PAID != $orderDetail['order_is_paid']) {
+            $orderProducts = new OrderProductSearch($this->adminLangId, true, true);
+            $orderProducts->joinPaymentMethod();
+            $orderProducts->addMultipleFields(['op_status_id']);
+            $orderProducts->addCondition('op_order_id', '=', $orderDetail['order_id']);
+            $orderProducts->addCondition('op_status_id', '!=', OrderStatus::ORDER_DELIVERED);
+            $orderProducts->addCondition('op_status_id', '!=', OrderStatus::ORDER_COMPLETED);
+            $rs = $orderProducts->getResultSet();
+            if ($rs) {
+                $childOrders = FatApp::getDb()->fetchAll($rs);
+                if (empty($childOrders)) {
+                    $updateArray = array('order_is_paid' => Orders::ORDER_IS_PAID);
+                    $whr = array('smt' => 'order_id = ?', 'vals' => array($orderDetail['order_id']));
+                    if (!FatApp::getDb()->updateFromArray(Orders::DB_TBL, $updateArray, $whr)) {
+                        Message::addErrorMessage(Labels::getLabel('MSG_Invalid_Access', $this->adminLangId));
+                        FatUtility::dieJsonError(Message::getHtml());
+                    }
+                }
+            }
         }
 
         $this->set('msg', Labels::getLabel('LBL_Updated_Successfully', $this->adminLangId));
@@ -486,8 +511,10 @@ class SellerOrdersController extends AdminBaseController
         $srch->doNotCalculateRecords();
         $srch->doNotLimitRecords();
         $srch->addMultipleFields(
-            array( 'order_id', 'order_pmethod_id', 'order_date_added', 'op_id', 'op_qty', 'op_unit_price',
-            'op_invoice_number', 'IFNULL(orderstatus_name, orderstatus_identifier) as orderstatus_name', 'ou.user_name as buyer_user_name', 'ouc.credential_username as buyer_username', 'IFNULL(pmethod_name, IFNULL(pmethod_identifier, "Wallet")) as pmethod_name', 'op_commission_charged', 'op_commission_percentage',   'ou.user_name as buyer_name', 'ouc.credential_username as buyer_username', 'ouc.credential_email as buyer_email', 'ou.user_phone as buyer_phone', 'op.op_shop_owner_name', 'op.op_shop_owner_username', 'op_l.op_shop_name', 'op.op_shop_owner_email', 'op.op_shop_owner_phone', 'op_selprod_title', 'op_product_name', 'op_brand_name', 'op_selprod_options', 'op_selprod_sku', 'op_product_model', 'op_shipping_duration_name', 'op_shipping_durations', 'op_status_id', 'op_other_charges')
+            array(
+                'order_id', 'order_pmethod_id', 'order_date_added', 'op_id', 'op_qty', 'op_unit_price',
+                'op_invoice_number', 'IFNULL(orderstatus_name, orderstatus_identifier) as orderstatus_name', 'ou.user_name as buyer_user_name', 'ouc.credential_username as buyer_username', 'IFNULL(pmethod_name, IFNULL(pmethod_identifier, "Wallet")) as pmethod_name', 'op_commission_charged', 'op_commission_percentage',   'ou.user_name as buyer_name', 'ouc.credential_username as buyer_username', 'ouc.credential_email as buyer_email', 'ou.user_phone as buyer_phone', 'op.op_shop_owner_name', 'op.op_shop_owner_username', 'op_l.op_shop_name', 'op.op_shop_owner_email', 'op.op_shop_owner_phone', 'op_selprod_title', 'op_product_name', 'op_brand_name', 'op_selprod_options', 'op_selprod_sku', 'op_product_model', 'op_shipping_duration_name', 'op_shipping_durations', 'op_status_id', 'op_other_charges'
+            )
         );
         $srch->addCondition('op_id', '=', $op_id);
         $opRs = $srch->getResultSet();
@@ -653,10 +680,10 @@ class SellerOrdersController extends AdminBaseController
         $frm->addTextBox(Labels::getLabel('LBL_Seller_Shop', $this->adminLangId), 'shop_name');
         /* $frm->addTextBox(Labels::getLabel('LBL_Customer',$this->adminLangId),'customer_name'); */
 
-        $frm->addDateField('', 'date_from', '', array('placeholder' => Labels::getLabel('LBL_Date_From', $this->adminLangId), 'readonly' => 'readonly' ));
-        $frm->addDateField('', 'date_to', '', array('placeholder' => Labels::getLabel('LBL_Date_To', $this->adminLangId), 'readonly' => 'readonly' ));
-        $frm->addTextBox('', 'price_from', '', array('placeholder' => Labels::getLabel('LBL_Order_From', $this->adminLangId) . ' [' . $currencySymbol . ']' ));
-        $frm->addTextBox('', 'price_to', '', array('placeholder' => Labels::getLabel('LBL_Order_to', $this->adminLangId) . ' [' . $currencySymbol . ']' ));
+        $frm->addDateField('', 'date_from', '', array('placeholder' => Labels::getLabel('LBL_Date_From', $this->adminLangId), 'readonly' => 'readonly'));
+        $frm->addDateField('', 'date_to', '', array('placeholder' => Labels::getLabel('LBL_Date_To', $this->adminLangId), 'readonly' => 'readonly'));
+        $frm->addTextBox('', 'price_from', '', array('placeholder' => Labels::getLabel('LBL_Order_From', $this->adminLangId) . ' [' . $currencySymbol . ']'));
+        $frm->addTextBox('', 'price_to', '', array('placeholder' => Labels::getLabel('LBL_Order_to', $this->adminLangId) . ' [' . $currencySymbol . ']'));
 
         $frm->addHiddenField('', 'page');
         $frm->addHiddenField('', 'user_id');

@@ -7,27 +7,19 @@ class CurrencyConverterController extends CurrencyConverterBaseController
     public const KEY_NAME = 'CurrencyConverter';
     private const PRODUCTION_URL = 'https://free.currconv.com/api/v7/';
 
-    private $apiKey;
+    public $requiredKeys = ['api_key'];
 
     public function __construct($action)
     {
         parent::__construct($action);
-        $this->validateSettings();
-    }
-
-    private function validateSettings()
-    {
-        $settings = $this->getSettings();
-        if (!isset($settings['api_key'])) {
-            $message = Labels::getLabel('MSG_PLUGIN_SETTINGS_NOT_CONFIGURED', $this->adminLangId);
-            LibHelper::dieJsonError($message);
+        if (false == $this->validateSettings($this->adminLangId)) {
+            FatUtility::dieJsonError($this->error);
         }
-        $this->apiKey = $settings['api_key'];
     }
-
-    private function accessKey()
+    
+    private function apiKey()
     {
-        return '?apiKey=' . $this->apiKey;
+        return '?apiKey=' . $this->settings['api_key'];
     }
 
     private function getData($apiUrl)
@@ -44,7 +36,7 @@ class CurrencyConverterController extends CurrencyConverterBaseController
 
     public function getRates($toCurrencies = [])
     {
-        $accessKey = $this->accessKey();
+        $apiKey = $this->apiKey();
         $baseCurrencyCode = $this->getBaseCurrencyCode();
 
         $toCurrenciesQuery = '';
@@ -54,7 +46,7 @@ class CurrencyConverterController extends CurrencyConverterBaseController
             }
         }
         
-        $getConversionRatesUrl = static::PRODUCTION_URL . 'convert' . $accessKey . '&compact=ultra&q=' . rtrim($toCurrenciesQuery, ',');
+        $getConversionRatesUrl = static::PRODUCTION_URL . 'convert' . $apiKey . '&compact=ultra&q=' . rtrim($toCurrenciesQuery, ',');
         $response = $this->getData($getConversionRatesUrl);
         $data = [];
         foreach ($response as $key => $rate) {

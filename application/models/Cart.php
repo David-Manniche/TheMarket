@@ -1,11 +1,11 @@
 <?php
-
 class Cart extends FatModel
 {
     private $products = array();
     private $SYSTEM_ARR = array();
     private $warning;
     private $shippingService;
+    private $cartCache;
 
     public const CART_KEY_PREFIX_PRODUCT = 'SP_'; /* SP stands for Seller Product */
     public const CART_KEY_PREFIX_BATCH = 'SB_'; /* SB stands for Seller Batch/Combo Product */
@@ -71,6 +71,7 @@ class Cart extends FatModel
         if (!isset($this->SYSTEM_ARR['shopping_cart']) || !is_array($this->SYSTEM_ARR['shopping_cart'])) {
             $this->SYSTEM_ARR['shopping_cart'] = array();
         }
+        $this->cartCache = true;
     }
 
     public static function getCartKeyPrefixArr()
@@ -397,29 +398,33 @@ class Cart extends FatModel
                         $taxableProdPrice = $taxableProdPrice - ($cartDiscounts['discountedSelProdIds'][$sellerProductRow['selprod_id']]) / $quantity;
                     }
 
-                    $shipFromStateId = 0;
-                    $shipToStateId = 0;
-                    if (isset($this->products[$key]['shipping_address']['ua_state_id'])) {
-                        $shipToStateId = $this->products[$key]['shipping_address']['ua_state_id'];
-                    }
-
-                    if ($isProductShippedBySeller) {
-                        $shipFromStateId = Shop::getAttributesByUserId($sellerProductRow['selprod_user_id'], 'shop_state_id');
-                    }
-
                     $taxObj = new Tax();
-                    $taxData = $taxObj->calculateTaxRates($sellerProductRow['product_id'], $taxableProdPrice, $sellerProductRow['selprod_user_id'], $siteLangId, $quantity, array(), $shipFromStateId, $shipToStateId);
-
+                    $extraData = array(
+                        'billingAddress' => isset($this->products[$key]['billing_address']) ? $this->products[$key]['billing_address'] : '',
+                        'shippingAddress' => isset($this->products[$key]['shipping_address']) ? $this->products[$key]['shipping_address'] : '',
+                        'shippedBySeller' => $isProductShippedBySeller,
+                        'shippingCost' => $shippingCost,
+                        'buyerId' => $this->cart_user_id
+                    );
+                    
+                    $taxData = $taxObj->calculateTaxRates($sellerProductRow['product_id'], $taxableProdPrice, $sellerProductRow['selprod_user_id'], $siteLangId, $quantity, $extraData, $this->cartCache);
+                    if (false == $taxData['status'] && $taxData['msg'] != '') {
+                        $this->error = $taxData['msg'];
+                    }
+                    
                     $taxOptions = [];
                     if (array_key_exists('options', $taxData)) {
                         foreach ($taxData['options'] as $optionId => $optionval) {
-                            $taxOptions[$optionval['name']] = isset($taxOptions[$optionval['name']]) ? ($taxOptions[$optionval['name']] + $optionval['value']) : $optionval['value'];
+                            if (0 < $optionval['value']) {
+                                $taxOptions[$optionval['name']] = isset($taxOptions[$optionval['name']]) ? ($taxOptions[$optionval['name']] + $optionval['value']) : $optionval['value'];
+                            }
                         }
                     }
 
                     $tax = $taxData['tax'];
 
                     $this->products[$key]['tax'] = $tax;
+                    $this->products[$key]['taxCode'] =$taxData['taxCode'];
                     $this->products[$key]['taxOptions'] = $taxOptions;
                     /*]*/
 
@@ -607,19 +612,20 @@ class Cart extends FatModel
                     /*]*/
 
                     /*[ Product Tax */
-                    $shipFromStateId = 0;
-                    $shipToStateId = 0;
-                    if (isset($this->products[$key]['shipping_address']['ua_state_id'])) {
-                        $shipToStateId = $this->products[$key]['shipping_address']['ua_state_id'];
-                    }
-
-                    if ($isProductShippedBySeller) {
-                        $shipFromStateId = Shop::getAttributesByUserId($sellerProductRow['selprod_user_id'], 'shop_state_id');
-                    }
-
                     $taxableProdPrice = $sellerProductRow['theprice'] - $sellerProductRow['volume_discount'];
                     $taxObj = new Tax();
-                    $taxData = $taxObj->calculateTaxRates($sellerProductRow['product_id'], $taxableProdPrice, $sellerProductRow['selprod_user_id'], $siteLangId, $quantity, array(), $shipFromStateId, $shipToStateId);
+                    $extraData = array(
+                        'billingAddress' => isset($this->products[$key]['billing_address']) ? $this->products[$key]['billing_address'] : '',
+                        'shippingAddress' => isset($this->products[$key]['shipping_address']) ? $this->products[$key]['shipping_address'] : '',
+                        'shippedBySeller' => $isProductShippedBySeller,
+                        'shippingCost' => $shippingCost,
+                        'buyerId' => $this->cart_user_id
+                    );
+                    $taxData = $taxObj->calculateTaxRates($sellerProductRow['product_id'], $taxableProdPrice, $sellerProductRow['selprod_user_id'], $siteLangId, $quantity, $extraData, $this->cartCache);
+                    
+                    if (false == $taxData['status'] && $taxData['msg'] != '') {
+                        $this->error = $taxData['msg'];
+                    }
 
                     $taxOptions = [];
                     if (array_key_exists('options', $taxData)) {
@@ -631,6 +637,7 @@ class Cart extends FatModel
                     $tax = $taxData['tax'];
 
                     $this->products[$key]['tax'] = $tax;
+                    $this->products[$key]['taxCode'] = $taxData['taxCode'];
                     $this->products[$key]['taxOptions'] = $taxOptions;
                     /*]*/
 
@@ -798,10 +805,15 @@ class Cart extends FatModel
 
         $taxObj = new Tax();
         $taxData = $taxObj->calculateTaxRates($sellerProductRow['product_id'], $taxableProdPrice, $sellerProductRow['selprod_user_id'], $siteLangId, $quantity);
+        if (false == $taxData['status'] && $taxData['msg'] != '') {
+            $this->error = $taxData['msg'];
+        }
+        
         $tax = $taxData['tax'];
         $sellerProductRow['tax'] = $tax;
+        $sellerProductRow['taxCode'] = $taxData['taxCode'];
         /* ] */
-
+       
         $sellerProductRow['total'] = $totalPrice;
         $sellerProductRow['netTotal'] = $sellerProductRow['total'] + $sellerProductRow['shipping_cost'];
 
@@ -835,11 +847,11 @@ class Cart extends FatModel
         $found = false;
         if (is_array($cartProducts)) {
             foreach ($cartProducts as $cartKey => $product) {
-                if ( ($key == 'all' || (md5($product['key']) == $key) && !$product['is_batch'])) {
+                if (($key == 'all' || (md5($product['key']) == $key) && !$product['is_batch'])) {
                     $found = true;
                     unset($this->SYSTEM_ARR['cart'][$cartKey]);
                     $this->updateTempStockHold($product['selprod_id'], 0, 0);
-                    if ( ($key == 'all' || md5($product['key']) == $key) && !$product['is_batch']) {
+                    if (($key == 'all' || md5($product['key']) == $key) && !$product['is_batch']) {
                         if (is_numeric($this->cart_user_id) && $this->cart_user_id > 0) {
                             AbandonedCart::saveAbandonedCart($this->cart_user_id, $product['selprod_id'], $product['quantity'], AbandonedCart::ACTION_DELETED);
                         }
@@ -1162,6 +1174,8 @@ class Cart extends FatModel
         $isCodEnabled = true;
         $taxOptions = [];
         $prodTaxOptions = [];
+        $productSelectedShippingMethodsArr = $this->getProductShippingMethod();
+
         if (is_array($products) && count($products)) {
             foreach ($products as $product) {
                 $codEnabled = false;
@@ -1188,24 +1202,33 @@ class Cart extends FatModel
                     }
                 }
 
-                $shipFromStateId = 0;
-                $shipToStateId = 0;
-                if (isset($product['shipping_address']['ua_state_id'])) {
-                    $shipToStateId = $product['shipping_address']['ua_state_id'];
-                }
-
-                if (Product::isProductShippedBySeller($product['product_id'], $product['product_seller_id'], $product['selprod_user_id'])) {
-                    $shipFromStateId = Shop::getAttributesByUserId($product['selprod_user_id'], 'shop_state_id');
+                $isProductShippedBySeller = Product::isProductShippedBySeller($product['product_id'], $product['product_seller_id'], $product['selprod_user_id']);
+                
+                $shippingCost = 0;
+                if (!empty($productSelectedShippingMethodsArr['product']) && isset($productSelectedShippingMethodsArr['product'][$product['selprod_id']])) {
+                    $shippingDurationRow = $productSelectedShippingMethodsArr['product'][$product['selprod_id']];
+                    $shippingCost = ROUND(($shippingDurationRow['mshipapi_cost']), 2);
                 }
 
                 $taxObj = new Tax();
-                $taxData = $taxObj->calculateTaxRates($product['product_id'], $taxableProdPrice, $product['selprod_user_id'], $langId, $product['quantity'], array(), $shipFromStateId, $shipToStateId);
-
+                $extraData = array(
+                    'billingAddress' => isset($product['billing_address']) ? $product['billing_address'] : '',
+                    'shippingAddress' => isset($product['shipping_address']) ? $product['shipping_address'] : '',
+                    'shippedBySeller' => $isProductShippedBySeller,
+                    'shippingCost' => $shippingCost,
+                    'buyerId' => $this->cart_user_id
+                );
+                $taxData = $taxObj->calculateTaxRates($product['product_id'], $taxableProdPrice, $product['selprod_user_id'], $langId, $product['quantity'], $extraData, $this->cartCache);
+                if (false == $taxData['status'] && $taxData['msg'] != '') {
+                    $this->error = $taxData['msg'];
+                }
                 if (array_key_exists('options', $taxData)) {
                     foreach ($taxData['options'] as $optionId => $optionval) {
                         $prodTaxOptions[$product['selprod_id']][$optionId] = $optionval;
-                        $taxOptions[$optionval['name']]['value'] = isset($taxOptions[$optionval['name']]['value']) ? ($taxOptions[$optionval['name']]['value'] + $optionval['value']) : $optionval['value'];
-                        $taxOptions[$optionval['name']]['title'] = CommonHelper::displayTaxPercantage($optionval);
+                        if (isset($optionval['value']) && 0 < $optionval['value']) {
+                            $taxOptions[$optionval['name']]['value'] = isset($taxOptions[$optionval['name']]['value']) ? ($taxOptions[$optionval['name']]['value'] + $optionval['value']) : $optionval['value'];
+                            $taxOptions[$optionval['name']]['title'] = CommonHelper::displayTaxPercantage($optionval);
+                        }
                     }
                 }
 
@@ -1600,7 +1623,7 @@ class Cart extends FatModel
 
     public function clear($includeAbandonedCart = false)
     {
-        if($includeAbandonedCart == true){
+        if ($includeAbandonedCart == true) {
             $cartProducts = $this->getProducts($this->cart_lang_id);
             if (is_array($cartProducts)) {
                 foreach ($cartProducts as $cartKey => $product) {
@@ -1899,5 +1922,20 @@ class Cart extends FatModel
         $deleteQuery = "DELETE FROM tbl_product_stock_hold WHERE pshold_added_on < DATE_SUB(NOW(), INTERVAL " . $intervalInMinutes . " MINUTE)";
         FatApp::getDb()->query($deleteQuery);
         return true;
+    }
+
+    public function getError()
+    {
+        return $this->error;
+    }
+
+    public function enableCache()
+    {
+        $this->cartCache = true;
+    }
+
+    public function disableCache()
+    {
+        $this->cartCache = false;
     }
 }

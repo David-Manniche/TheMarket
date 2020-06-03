@@ -30,9 +30,6 @@
         </div>
     </div>
 </div>
-<?php if (FatApp::getConfig('CONF_AUTO_RESTORE_ON', FatUtility::VAR_INT, 1) && CommonHelper::demoUrl()) {
-    $this->includeTemplate('restore-system/top-header.php');
-} ?>
 <div class="wrapper">
     <div id="loader-wrapper">
         <div class="yokart-loader"><img
@@ -43,6 +40,9 @@
     </div>
     <!--header start here-->
     <header id="header" class="header no-print" role="site-header">
+		<?php if (FatApp::getConfig('CONF_AUTO_RESTORE_ON', FatUtility::VAR_INT, 1) && CommonHelper::demoUrl()) {
+			$this->includeTemplate('restore-system/top-header.php');
+		} ?>
         <div class="top-bar">
             <div class="container">
                 <div class="row align-items-center">

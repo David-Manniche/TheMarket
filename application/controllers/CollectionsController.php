@@ -252,7 +252,7 @@ class CollectionsController extends MyAppController
                         $collections[$val['shop_id']]['shop_logo'] = CommonHelper::generateFullUrl('image', 'shopLogo', array($val['shop_id'], $this->siteLangId));
                         $collections[$val['shop_id']]['shop_banner'] = CommonHelper::generateFullUrl('image', 'shopBanner', array($val['shop_id'], $this->siteLangId));
                         array_walk($products, function (&$value, &$key) {
-                            $uploadedTime = AttachedFile::setTimeParam($value['product_image_updated_on']);
+                            $uploadedTime = AttachedFile::setTimeParam($value['product_updated_on']);
                             $value['product_image_url'] = FatCache::getCachedUrl(CommonHelper::generateFullUrl('image', 'product', array($value['product_id'], "THUMB", $value['selprod_id'], 0, $this->siteLangId)) . $uploadedTime, CONF_IMG_CACHE_TIME, '.jpg');
                         });
                     }

@@ -16,14 +16,15 @@ class GoogleLoginController extends SocialMediaAuthController
     public function __construct($action)
     {
         parent::__construct($action);
-        if (false === $this->validateSettings()) {
-            $this->setErrorAndRedirect($this->error, true);
-            return false;
-        }
     }
 
     private function setupConfiguration()
     {
+        if (false == $this->validateSettings($this->siteLangId)) {
+            $this->setErrorAndRedirect($this->error, true);
+            return false;
+        }
+
         $redirectUri = CommonHelper::generateFullUrl(static::KEY_NAME, 'index', [], '', false);
         
         $this->client = new Google_Client();
@@ -53,6 +54,10 @@ class GoogleLoginController extends SocialMediaAuthController
             if (empty($accessToken)) {
                 $this->client->authenticate($get['code']);
                 $accessToken = $this->client->getAccessToken();
+                if (null == $accessToken) {
+                    $message = Labels::getLabel('MSG_UNABLE_TO_ACCESS_THIS_ACCOUNT', $this->siteLangId);
+                    $this->setErrorAndRedirect($message, true);
+                }
             }
 
             $this->client->setAccessToken($accessToken);

@@ -127,20 +127,67 @@ class OrdersController extends AdminBaseController
         $this->_template->render(false, false);
     }
 
-    public function View($orderId)
+    public function View($order_id)
     {
         $this->objPrivilege->canViewOrders();
 
-        $orderObj = new Orders();
-        $orderDetail = $orderObj->getOrder($orderId, $this->adminLangId);
-        if (false == $orderDetail) {
-            Message::addErrorMessage($orderObj->getError());
+        $srch = new OrderSearch($this->adminLangId);
+        $srch->joinOrderPaymentMethod();
+        $srch->doNotCalculateRecords();
+        $srch->doNotLimitRecords();
+        $srch->joinOrderBuyerUser();
+        $srch->addMultipleFields(
+            array('order_id', 'order_user_id', 'order_date_added', 'order_is_paid', 'order_tax_charged', 'order_site_commission',
+            'order_reward_point_value', 'order_volume_discount_total', 'buyer.user_name as buyer_user_name', 'buyer_cred.credential_email as buyer_email', 'buyer.user_phone as buyer_phone', 'order_net_amount', 'order_shippingapi_name', 'order_pmethod_id', 'ifnull(pmethod_name,pmethod_identifier)as pmethod_name', 'order_discount_total', 'pmethod_code', 'order_is_wallet_selected', 'order_reward_point_used', 'order_deleted')
+        );
+        $srch->addCondition('order_id', '=', $order_id);
+        $srch->addCondition('order_type', '=', Orders::ORDER_PRODUCT);
+        $rs = $srch->getResultSet();
+        $order = FatApp::getDb()->fetch($rs);
+        if (!$order) {
+            Message::addErrorMessage(Labels::getLabel('MSG_Order_Data_Not_Found', $this->adminLangId));
             FatApp::redirectUser(CommonHelper::generateUrl("Orders"));
         }
-        $frm = $this->getPaymentForm($this->adminLangId, $orderDetail['order_id']);
+
+
+        $opSrch = new OrderProductSearch($this->adminLangId, false, true, true);
+        $opSrch->addCountsOfOrderedProducts();
+        $opSrch->addOrderProductCharges();
+        $opSrch->doNotCalculateRecords();
+        $opSrch->doNotLimitRecords();
+        $opSrch->addCondition('op.op_order_id', '=', $order['order_id']);
+
+        $opSrch->addMultipleFields(
+            array('op_id', 'op_invoice_number', 'op_selprod_title', 'op_product_name',
+            'op_qty', 'op_brand_name', 'op_selprod_options', 'op_selprod_sku', 'op_product_model',
+            'op_shop_name', 'op_shop_owner_name', 'op_shop_owner_email', 'op_shop_owner_phone', 'op_unit_price',
+            'totCombinedOrders as totOrders', 'op_shipping_duration_name', 'op_shipping_durations',  'IFNULL(orderstatus_name, orderstatus_identifier) as orderstatus_name', 'op_other_charges', 'op_product_tax_options')
+        );
+
+        $opRs = $opSrch->getResultSet();
+        $order['products'] = FatApp::getDb()->fetchAll($opRs, 'op_id');
+
+        $orderObj = new Orders($order['order_id']);
+
+        $charges = $orderObj->getOrderProductChargesByOrderId($order['order_id']);
+
+        foreach ($order['products'] as $opId => $opVal) {
+            $order['products'][$opId]['charges'] = $charges[$opId];
+            $taxOptions = json_decode($opVal['op_product_tax_options'], true);
+            $order['products'][$opId]['taxOptions'] = $taxOptions;
+        }
+
+        $addresses = $orderObj->getOrderAddresses($order['order_id']);
+        $order['billingAddress'] = $addresses[Orders::BILLING_ADDRESS_TYPE];
+        $order['shippingAddress'] = (!empty($addresses[Orders::SHIPPING_ADDRESS_TYPE])) ? $addresses[Orders::SHIPPING_ADDRESS_TYPE] : array();
+
+        $order['comments'] = $orderObj->getOrderComments($this->adminLangId, array("order_id" => $order['order_id']));
+        $order['payments'] = $orderObj->getOrderPayments(array("order_id" => $order['order_id']));
+       
+        $frm = $this->getPaymentForm($this->adminLangId, $order['order_id']);
         $this->set('frm', $frm);
         $this->set('yesNoArr', applicationConstants::getYesNoArr($this->adminLangId));
-        $this->set('order', $orderDetail);
+        $this->set('order', $order);
 
         $this->_template->render();
     }

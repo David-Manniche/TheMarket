@@ -19,10 +19,8 @@
 			{
 				$.systemMessage(t.msg,'alert--danger');
 			}
-		});  
-		if($(".g-recaptcha").html()){			
-			grecaptcha.reset();
-		}
+		}); 
+		googleCaptcha();
 		return false;
 	}
 })();

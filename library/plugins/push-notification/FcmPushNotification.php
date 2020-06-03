@@ -1,8 +1,8 @@
 <?php
 class FcmPushNotification extends PushNotificationBase
 {
+    public const KEY_NAME = __CLASS__;
     private const PRODUCTION_URL = 'https://fcm.googleapis.com/fcm/send';
-    public const KEY_NAME = 'FcmPushNotification';
     public const LIMIT = 1000;
 
     private $deviceTokens;
@@ -12,20 +12,27 @@ class FcmPushNotification extends PushNotificationBase
 
     public function __construct($deviceTokens)
     {
-        if (false == $this->validateSettings()) {
+        $this->deviceTokens = $deviceTokens;
+    }
+
+    private function init()
+    {
+        if (false == $this->validateSettings(CommonHelper::getLangId())) {
             return false;
         }
         
-        if (!is_array($deviceTokens) || empty($deviceTokens) || 1000 < count($deviceTokens)) {
+        if (!is_array($this->deviceTokens) || empty($this->deviceTokens) || 1000 < count($this->deviceTokens)) {
             $this->error = Labels::getLabel('LBL_ARRAY_MUST_CONTAIN_AT_LEAST_1_AND_AT_MOST_1000_REGISTRATION_TOKENS', CommonHelper::getLangId());
             return false;
         }
-
-        $this->deviceTokens = $deviceTokens;
     }
-    
+
     public function notify($title, $message, $os, $data = [])
     {
+        if ($this->init()) {
+            return false;
+        }
+            
         if (empty($title) || empty($message)) {
             $this->error = Labels::getLabel('LBL_INVALID_REQUEST', CommonHelper::getLangId());
             return false;

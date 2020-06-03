@@ -110,7 +110,7 @@ class SmsTemplate extends MyAppModel
     private function updateStatus($status)
     {
         if (empty($this->stplCode)) {
-            $this->error = Labels::getLabel('ERR_INVALID_REQUEST_USER_NOT_INITIALIZED', CommonHelper::getLangId());
+            $this->error = Labels::getLabel('ERR_INVALID_REQUEST', CommonHelper::getLangId());
             return false;
         }
 

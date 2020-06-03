@@ -1802,7 +1802,16 @@ trait CustomProducts
             } else {
                 $tax->addCondition('ptt_seller_user_id', '=', 0);
             }
-            $tax->addMultipleFields(array('ptt_taxcat_id'));
+            
+            $activatedTaxServiceId = Tax::getActivatedServiceId();
+
+            $tax->addFld('ptt_taxcat_id');            
+            if ($activatedTaxServiceId) {
+                $tax->addFld('concat(IFNULL(taxcat_name,taxcat_identifier), " (",taxcat_code,")")as taxcat_name');               
+            }else{
+                $tax->addFld('IFNULL(taxcat_name,taxcat_identifier)as taxcat_name'); 
+            }
+            
             $tax->doNotCalculateRecords();
             $tax->setPageSize(1);
             $tax->addOrder('ptt_seller_user_id', 'ASC');
@@ -1810,6 +1819,7 @@ trait CustomProducts
             $taxData = FatApp::getDb()->fetch($rs);
             if (!empty($taxData)) {
                 $prodData['ptt_taxcat_id'] = $taxData['ptt_taxcat_id'];
+                $prodData['taxcat_name'] = $taxData['taxcat_name'];
             }
 
             $srch = Product::getSearchObject($this->siteLangId);
@@ -2190,8 +2200,8 @@ trait CustomProducts
             Message::addErrorMessage($this->str_invalid_request);
             FatUtility::dieWithError(Message::getHtml());
         }
-        $prod = new Product();
-        if (!$prod->addUpdateProductTag($productId, $tagId)) {
+        $prod = new Product($productId);
+        if (!$prod->addUpdateProductTag($tagId)) {
             Message::addErrorMessage(Labels::getLabel($prod->getError(), $this->siteLangId));
             FatUtility::dieWithError(Message::getHtml());
         }
@@ -2217,8 +2227,8 @@ trait CustomProducts
             FatUtility::dieWithError(Message::getHtml());
         }
 
-        $prod = new Product();
-        if (!$prod->removeProductTag($productId, $tagId)) {
+        $prod = new Product($productId);
+        if (!$prod->removeProductTag($tagId)) {
             Message::addErrorMessage(Labels::getLabel($prod->getError(), $this->siteLangId));
             FatUtility::dieWithError(Message::getHtml());
         }
@@ -2303,16 +2313,19 @@ trait CustomProducts
         }
 
         $prod = new Product($productId);
-        if (!$prod->saveProductData($post)) {
-            Message::addErrorMessage($prod->getError());
-            FatUtility::dieWithError(Message::getHtml());
-        }
+		if(FatApp::getConfig("CONF_PRODUCT_DIMENSIONS_ENABLE", FatUtility::VAR_INT, 1)) {
+			if (!$prod->saveProductData($post)) {
+				Message::addErrorMessage($prod->getError());
+				FatUtility::dieWithError(Message::getHtml());
+			}
+		}
 
         $psFree = 0;
         $prodShippingDetails = Product::getProductShippingDetails($productId, $this->siteLangId, $prodSellerId);
         if (!empty($prodShippingDetails)) {
             $psFree = $prodShippingDetails['ps_free'];
         }
+
         if (!$prod->saveProductSellerShipping($prodSellerId, $psFree, $post['ps_from_country_id'])) {
             Message::addErrorMessage($prod->getError());
             FatUtility::dieWithError(Message::getHtml());
