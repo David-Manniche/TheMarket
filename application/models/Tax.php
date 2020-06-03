@@ -366,7 +366,7 @@ class Tax extends MyAppModel
             $pluginKey = Plugin::getAttributesById($activatedTaxServiceId, 'plugin_code');
 
             $error = '';
-            if (false === PluginHelper::includePlugin($pluginKey, 'tax', $langId, $error)) {
+            if (false === PluginHelper::includePlugin($pluginKey, 'tax', $error, $langId)) {
                 return $data = [
                     'status' => false,
                     'msg' => $error,
@@ -545,7 +545,7 @@ class Tax extends MyAppModel
         $pluginKey = Plugin::getAttributesById($activatedTaxServiceId, 'plugin_code');
 
         $error = '';
-        if (false === PluginHelper::includePlugin($pluginKey, 'tax', $langId, $error)) {
+        if (false === PluginHelper::includePlugin($pluginKey, 'tax', $error, $langId)) {
             $this->error = $error;
             return false;
         }
