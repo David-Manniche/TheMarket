@@ -219,7 +219,7 @@ class ShipStationShipping extends ShippingServicesBase
     }
         
     /**
-     * bindLabel
+     * bindLabel - This function should be called after addOrder
      *
      * @return void
      */

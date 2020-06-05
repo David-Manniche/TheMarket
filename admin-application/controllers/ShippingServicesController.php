@@ -4,7 +4,13 @@ class ShippingServicesController extends AdminBaseController
 {
     private $shipping;
     private $keyName;
-
+    
+    /**
+     * __construct
+     *
+     * @param  string $action
+     * @return void
+     */
     public function __construct($action)
     {
         parent::__construct($action);
@@ -15,7 +21,12 @@ class ShippingServicesController extends AdminBaseController
 
         $this->init();
     }
-
+    
+    /**
+     * init
+     *
+     * @return void
+     */
     private function init()
     {
         $plugin = new Plugin();
@@ -27,8 +38,15 @@ class ShippingServicesController extends AdminBaseController
             FatUtility::dieJsonError($error);
         }
     }
-
-    public function generateLabel($orderId, $opId)
+    
+    /**
+     * generateLabel
+     *
+     * @param  string $orderId
+     * @param  int $opId
+     * @return void
+     */
+    public function generateLabel(string $orderId, int $opId)
     {
         if (false === $this->shippingService->addOrder($orderId, $opId)) {
             LibHelper::dieJsonError($this->shippingService->getError());

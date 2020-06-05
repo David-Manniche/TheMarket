@@ -2,10 +2,10 @@
 
 trait ShipStationFunctions
 {
-    
     /**
      * getResponse
      *
+     * @param  bool $convertToArray
      * @return mixed
      */
     public function getResponse(bool $convertToArray = true)
@@ -18,11 +18,11 @@ trait ShipStationFunctions
     }
     
     /**
-     * getFormatedError
+     * formatError
      *
      * @return mixed
      */
-    public function getFormatedError()
+    public function formatError()
     {
         $exceptionMsg = isset($this->error['ExceptionMessage']) ? ' ' . $this->error['ExceptionMessage'] : '';
         return (isset($this->error['Message']) ? $this->error['Message'] : $this->error) . $exceptionMsg;
@@ -145,7 +145,7 @@ trait ShipStationFunctions
      * @param  bool $formatError
      * @return bool
      */
-    public function doRequest(int $requestType, $requestParam = [], bool $formatError = true): bool
+    private function doRequest(int $requestType, $requestParam = [], bool $formatError = true): bool
     {
         try {
             switch ($requestType) {
@@ -166,7 +166,7 @@ trait ShipStationFunctions
             if (array_key_exists('Message', $this->getResponse(true))) {
                 $this->error = (true === $formatError) ? $this->getResponse(true) : $this->resp;
                 if (true === $formatError) {
-                    $this->error = $this->getFormatedError();
+                    $this->error = $this->formatError();
                 }
                 return false;
             }
@@ -178,7 +178,7 @@ trait ShipStationFunctions
             $this->error = $e->getMessage();
         }
 
-        $this->error =  (true === $formatError ? $this->getFormatedError() : $this->error);
+        $this->error =  (true === $formatError ? $this->formatError() : $this->error);
         return false;
     }
 }
