@@ -676,4 +676,16 @@ class DummyController extends MyAppController
         echo $error;
         CommonHelper::printArray($resp);
     }
+
+    public function ship()
+    {
+        $error = "";
+        $obj = PluginHelper::callPlugin('ShipStationShipping', [$this->siteLangId], $error, $this->siteLangId);
+        if (false == $obj) {
+            echo $error;die;
+        }
+        $obj->addOrder('O1571721470', 190, $this->siteLangId);
+        echo 'success';
+        die;
+    }
 }

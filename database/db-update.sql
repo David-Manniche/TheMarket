@@ -34,3 +34,14 @@ INSERT INTO `tbl_plugins` (`plugin_identifier`, `plugin_type`, `plugin_code`, `p
 UPDATE `tbl_shipping_apis` SET `shippingapi_identifier` = 'Shipping Services' WHERE `tbl_shipping_apis`.`shippingapi_id` = 2;
 UPDATE `tbl_shipping_apis_lang` SET `shippingapi_name` = 'Shipping Services' WHERE `tbl_shipping_apis_lang`.`shippingapilang_shippingapi_id` = 2 AND `tbl_shipping_apis_lang`.`shippingapilang_lang_id` = 1;
 UPDATE `tbl_shipping_apis_lang` SET `shippingapi_name` = 'خدمات الشحن' WHERE `tbl_shipping_apis_lang`.`shippingapilang_shippingapi_id` = 2 AND `tbl_shipping_apis_lang`.`shippingapilang_lang_id` = 2;
+
+CREATE TABLE `tbl_order_product_shipment`(
+    `opship_op_id` INT(11) NOT NULL,
+    `opship_order_id` VARCHAR(150) NOT NULL COMMENT 'From third party',
+    `opship_shipment_id` VARCHAR(150) NOT NULL,
+    `opship_tracking_number` VARCHAR(150) NOT NULL,
+    `opship_response` TEXT NOT NULL
+) ENGINE = InnoDB;
+
+ALTER TABLE `tbl_order_product_shipment`
+  ADD PRIMARY KEY (`opship_op_id`);

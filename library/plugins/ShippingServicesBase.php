@@ -11,6 +11,11 @@ class ShippingServicesBase extends pluginBase
         }
         return $orderDetail;
     }
+
+    public function getOrderProductShipment(int $opId, string $attr = '')
+    {
+        return OrderProductShipment::getAttributesById($opId, $attr);
+    }
     
     public function convertWeightInOunce($productWeight, $productWeightClass)
     {

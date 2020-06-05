@@ -1694,7 +1694,7 @@ class Cart extends FatModel
         $cartObj->updateUserCart();
     }
 
-    public function shipStationCarrierList()
+    /* public function shipStationCarrierList()
     {
         $carrierList = array();
         $carrierList[0] = Labels::getLabel('MSG_Select_Services', commonHelper::getLangId());
@@ -1718,6 +1718,29 @@ class Cart extends FatModel
             // $carriers = new stdClass();
         }
         return $carrierList;
+    } */
+	
+    public function shipStationCarrierList(int $langId = 0)
+    {
+		$langId = (0 < $langId) ? $langId : commonHelper::getLangId();
+		
+        $plugin = new Plugin();
+        $shippingServiceName = $plugin->getDefaultPluginKeyName(Plugin::TYPE_SHIPPING_SERVICES);
+        $carriers = [];
+        if (false !== $shippingServiceName) {
+            $error = '';
+            $shippingService = PluginHelper::callPlugin($shippingServiceName, [$langId], $error, $langId);
+            if (false === $shippingService) {
+				$this->error = $error;
+				return false;
+            }
+            $carriers = $shippingService->getCarriers(true, $langId);
+			if (empty($carriers) && !empty($shippingService->getError())) {
+				$this->error = $shippingService->getError();
+				return false;
+			}
+        }
+		return $carriers;
     }
 
     public function getCache($key)
@@ -1750,17 +1773,7 @@ class Cart extends FatModel
         $products = $this->getProducts($this->cart_lang_id);
         $prodKey = $this->getProductByKey($cartKey);
 
-        $services = $this->getCarrierShipmentServices($cartKey, $carrier_id, $lang_id);
-        if (false === $services) {
-            return false;
-        }
-
-        if (!empty($carrier_id)) {
-            $shippingObj = clone $this->shippingService;
-            $servicesList = $shippingObj->formatCarrierOptions($services, $products[$prodKey]['shop_eligible_for_free_shipping'], $products[$prodKey]['psbs_user_id'], $lang_id);
-        }
-
-        return $servicesList;
+        return $this->getCarrierShipmentServices($cartKey, $carrier_id, $lang_id);
     }
 
     public function getProductByKey($find_key)
@@ -1813,15 +1826,10 @@ class Cart extends FatModel
         $shippingServiceName = $plugin->getDefaultPluginKeyName(Plugin::TYPE_SHIPPING_SERVICES);
         if (false !== $shippingServiceName) {
             $error = '';
-            if (false === PluginHelper::includePlugin($shippingServiceName, 'shipping-services', $lang_id, $error)) {
-                if (true === MOBILE_APP_API_CALL) {
-                    FatUtility::dieJsonError($error);
-                }
-                Message::addErrorMessage($error);
-                FatUtility::dieWithError(Message::getHtml());
+            $this->shippingService = PluginHelper::callPlugin($shippingServiceName, [$lang_id], $error, $lang_id);
+            if (false === $this->shippingService) {
+                LibHelper::dieJsonError($error);
             }
-
-            $this->shippingService = new $shippingServiceName();
 
             $this->shippingService->setAddress($productShippingAddress['ua_name'], $productShippingAddress['ua_address1'], $productShippingAddress['ua_address2'], $productShippingAddress['ua_city'], $productShippingAddress['state_code'], $productShippingAddress['ua_zip'], $productShippingAddress['country_code'], $productShippingAddress['ua_phone']);
             
@@ -1831,10 +1839,12 @@ class Cart extends FatModel
                 $this->shippingService->setDimensions($productLengthInCenti, $productWidthInCenti, $productHeightInCenti);
             }
 
-            $product_rates = (array) $this->shippingService->getShippingRates($carrier_id, $sellerPinCode, $lang_id);
+            $product_rates = $this->shippingService->getShippingRates($carrier_id, $sellerPinCode, $lang_id);
             if (false === $product_rates) {
+				$this->error = $this->shippingService->getError();
                 return false;
             }
+			$product_rates = $this->shippingService->formatShippingRates();
         }
 
         return $product_rates;
