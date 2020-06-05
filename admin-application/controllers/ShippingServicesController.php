@@ -36,13 +36,12 @@ class ShippingServicesController extends AdminBaseController
         $order = $this->shippingService->getResponse();
         $shipmentApiOrderId = $order['orderId'];
 
-        if (false === $this->shippingService->addLabel(true)) {
+        if (false === $this->shippingService->bindLabel()) {
             LibHelper::dieJsonError($this->shippingService->getError());
         }
         
         $response = $this->shippingService->getResponse(false);
         $responseArr = json_decode($response, true);
-
         $recordCol = ['opship_op_id' => $opId];
 
         $dataToSave = [

@@ -1,5 +1,4 @@
 <?php
-use Guzzle\Http\Exception\ClientErrorResponseException;
 
 trait ShipStationFunctions
 {
@@ -14,8 +13,8 @@ trait ShipStationFunctions
         if (empty($this->resp)) {
             return false;
         }
-        $response = (string) $this->resp->getBody();
-        return (true === $convertToArray ? json_decode($response, true) : $response);
+
+        return (true === $convertToArray ? json_decode($this->resp, true) : $this->resp);
     }
     
     /**
@@ -30,47 +29,112 @@ trait ShipStationFunctions
     }
     
     /**
+     * call - Call ShipStation
+     *
+     * @return void
+     */
+    private function call(string $requestType, array $requestParam = [])
+    {
+        $ch = curl_init();
+        $authToken = base64_encode($this->settings['api_key'] . ':' . $this->settings['api_secret_key']);
+        $request = [
+            CURLOPT_URL => self::PRODUCTION_URL . $this->endpoint,
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_ENCODING => "",
+            CURLOPT_MAXREDIRS => 10,
+            CURLOPT_TIMEOUT => 0,
+            CURLOPT_FOLLOWLOCATION => true,
+            CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+            CURLOPT_CUSTOMREQUEST => $requestType,
+            CURLOPT_HTTPHEADER => [
+                'Host: ' . self::HOST,
+                'Authorization: Basic ' . $authToken
+            ],
+        ];
+
+        if (!empty($requestParam)) {
+            $requestParam = json_encode($requestParam);
+            $request[CURLOPT_POSTFIELDS] = $requestParam;
+            $request[CURLOPT_HTTPHEADER][] = 'Content-Type: application/json';
+        }
+
+        curl_setopt_array($ch, $request);
+        
+        $this->resp = curl_exec($ch);
+        if (false === $this->resp) {
+            throw new Exception(curl_error($ch));
+        }
+
+        curl_close($ch);
+        return true;
+    }
+        
+    /**
+     * get - To hit get request
+     *
+     * @return void
+     */
+    private function get(): bool
+    {
+        return $this->call('GET');
+    }
+
+    /**
+     * post - To hit post request
+     *
+     * @return void
+     */
+    private function post(array $requestParam): bool
+    {
+        return $this->call('POST', $requestParam);
+    }
+
+    /**
      * carrierList
      *
-     * @return object
+     * @return bool
      */
-    private function carrierList(): object
+    private function carrierList(): bool
     {
-        return $this->shipStation->Carriers->getList();
+        $this->endpoint = 'carriers';
+        return $this->get();
     }
         
     /**
      * shippingRates
      *
      * @param  array $requestParam
-     * @return object
+     * @return bool
      */
-    private function shippingRates(array $requestParam): object
+    private function shippingRates(array $requestParam): bool
     {
-        return $this->shipStation->Shipments->getRates($requestParam);
+        $this->endpoint = 'shipments/getrates';
+        return $this->post($requestParam);
     }
         
     /**
      * createOrder
      *
-     * @param  object $requestParam
-     * @return object
+     * @param  array $requestParam
+     * @return bool
      */
-    private function createOrder(object $requestParam): object
+    private function createOrder(array $requestParam): bool
     {
-        return $this->shipStation->orders->createOrder($requestParam);
+        $this->endpoint = 'orders/createorder';
+        return $this->post($requestParam);
     }
 
     /**
      * createLabel
      *
-     * @param  object $requestParam
-     * @return object
+     * @param  array $requestParam
+     * @return bool
      */
-    private function createLabel(object $requestParam): object
+    private function createLabel(array $requestParam): bool
     {
-        $testLabel = isset($this->settings['test_label']) ? $this->settings['test_label'] : false;
-        return $this->shipStation->orders->createLabelForOrder($requestParam, $testLabel);
+        $this->endpoint = 'orders/createlabelfororder';
+        $requestParam['testLabel'] = isset($this->settings['test_label']) && 0 < $this->settings['test_label'] ? true : false;
+        return $this->post($requestParam);
     }
         
     /**
@@ -86,44 +150,31 @@ trait ShipStationFunctions
         try {
             switch ($requestType) {
                 case self::REQUEST_CARRIER_LIST:
-                    $this->resp = $this->carrierList();
+                    $this->carrierList();
                     break;
                 case self::REQUEST_SHIPPING_RATES:
-                    $this->resp = $this->shippingRates($requestParam);
+                    $this->shippingRates($requestParam);
                     break;
                 case self::REQUEST_CREATE_ORDER:
-                    $this->resp = $this->createOrder($requestParam);
+                    $this->createOrder($requestParam);
                     break;
                 case self::REQUEST_CREATE_LABEL:
-                    $this->resp = $this->createLabel($requestParam);
+                    $this->createLabel($requestParam);
                     break;
             }
+            
+            if (array_key_exists('Message', $this->getResponse(true))) {
+                $this->error = (true === $formatError) ? $this->getResponse(true) : $this->resp;
+                if (true === $formatError) {
+                    $this->error = $this->getFormatedError();
+                }
+                return false;
+            }
+
             return true;
-        } catch (ClientErrorResponseException $e) {
-            // Display a very generic error to the user, and maybe send
-            $this->resp = $e->getResponse();
-            $this->error = $this->getResponse();
-            // yourself an email
-        } catch (GuzzleHttp\Exception\ClientException $e) {
-            // Display a very generic error to the user, and maybe send
-            $this->resp = $e->getResponse();
-            $this->error = $this->getResponse();
-            // yourself an email
-        } catch (GuzzleHttp\Exception\ServerException $e) {
-            // Display a very generic error to the user, and maybe send
-            $this->resp = $e->getResponse();
-            $this->error = $this->getResponse();
-            // yourself an email
-        } catch (GuzzleHttp\Exception\BadResponseException $e) {
-            // Display a very generic error to the user, and maybe send
-            $this->resp = $e->getResponse();
-            $this->error = $this->getResponse();
-            // yourself an email
         } catch (Exception $e) {
-            // Something else happened, completely unrelated to Stripe
             $this->error = $e->getMessage();
         } catch (Error $e) {
-            // Handle error
             $this->error = $e->getMessage();
         }
 

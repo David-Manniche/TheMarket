@@ -1,23 +1,13 @@
 <?php
-include_once dirname(__FILE__) . '/vendor/autoload.php';
 require_once dirname(__FILE__) . '/ShipStationFunctions.php';
-
-use MichaelB\ShipStation\ShipStationApi;
-
-use MichaelB\ShipStation\Models\Address;
-use MichaelB\ShipStation\Models\AdvancedOptions;
-use MichaelB\ShipStation\Models\Dimensions;
-use MichaelB\ShipStation\Models\InsuranceOptions;
-use MichaelB\ShipStation\Models\InternationalOptions;
-use MichaelB\ShipStation\Models\Order;
-use MichaelB\ShipStation\Models\Weight;
-use MichaelB\ShipStation\Models\OrderItem;
 
 class ShipStationShipping extends ShippingServicesBase
 {
     use ShipStationFunctions;
 
     public const KEY_NAME = __CLASS__;
+    public const HOST = 'ssapi.shipstation.com';
+    public const PRODUCTION_URL = 'https://' . self::HOST . '/';
 
     private const REQUEST_CARRIER_LIST = 1;
     private const REQUEST_SHIPPING_RATES = 2;
@@ -26,6 +16,7 @@ class ShipStationShipping extends ShippingServicesBase
     
     private $resp;
     private $canGenerateLabelForOrder = false;
+    private $endpoint = '';
 
     public $requiredKeys = [
         'api_key',
@@ -56,11 +47,6 @@ class ShipStationShipping extends ShippingServicesBase
         if (false == $this->validateSettings($this->langId)) {
             trigger_error($this->getError(), E_USER_ERROR);
         }
-
-        $apiKey = $this->settings['api_key'];
-        $apiSecret = $this->settings['api_secret_key'];
-        $this->shipStation = new ShipStationApi($apiKey, $apiSecret);
-        $this->address = $this->weight = $this->dimensions = $this->item = (object)array();
         return true;
     }
 
@@ -74,7 +60,7 @@ class ShipStationShipping extends ShippingServicesBase
     public function getCarriers(bool $assoc = false, int $langId = 0): array
     {
         if (false === $this->doRequest(self::REQUEST_CARRIER_LIST)) {
-            CommonHelper::printArray($this->error, true);
+            // CommonHelper::printArray($this->error, true);
             return [];
         }
         $list = $this->getResponse();
@@ -109,10 +95,10 @@ class ShipStationShipping extends ShippingServicesBase
             'serviceCode' => null,
             'packageCode' => null,
             'fromPostalCode' => $from_pin_code,
-            'toState' => $this->address->state,
-            'toCountry' => $this->address->country,
-            'toPostalCode' => $this->address->postalCode,
-            'toCity' => $this->address->city,
+            'toState' => $this->address['state'],
+            'toCountry' => $this->address['country'],
+            'toPostalCode' => $this->address['postalCode'],
+            'toCity' => $this->address['city'],
             'weight' => $this->getWeight(),
             'dimensions' => $this->getDimensions()
         ];
@@ -130,7 +116,6 @@ class ShipStationShipping extends ShippingServicesBase
     public function formatShippingRates(): array
     {
         $rateOptions = [];
-
         if (!empty($this->getResponse())) {
             $rateOptions[] = Labels::getLabel('MSG_Select_Service', $this->langId);
             foreach ($this->getResponse() as $key => $value) {
@@ -180,40 +165,40 @@ class ShipStationShipping extends ShippingServicesBase
             $billingAddress = $orderDetail['billingAddress'];
             $shippingAddress = $orderDetail['shippingAddress'];
 
-            $this->order = new Order();
-            $this->order->orderNumber = $orderInvoiceNumber;
-            $this->order->orderKey = $orderInvoiceNumber; // if specified, the method becomes idempotent and the existing Order with that key will be updated
-            $this->order->orderDate = $orderDate;
-            $this->order->paymentDate = $orderDate;
-            $this->order->orderStatus = "awaiting_shipment"; // {awaiting_shipment, on_hold, shipped, cancelled}
-            $this->order->customerUsername = $orderDetail['buyer_user_name'];
-            $this->order->customerEmail = $orderDetail['buyer_email'];
-            $this->order->amountPaid = $orderDetail['order_net_amount'];
-            $this->order->taxAmount = (1 > $taxCharged ? $orderDetail['order_tax_charged'] : $taxCharged);
-            $this->order->shippingAmount = $shippingTotal;
-            /* $this->order->customerNotes     = null;
-            $this->order->internalNotes     = "Express Shipping Please";
-            $this->order->requestedShippingService     = "Priority Mail"; */
-            $this->order->paymentMethod = $orderDetail['pmethod_name'];
-            /* $this->order->carrierCode       = "fedex"; */
-            $this->order->serviceCode       = $op['opshipping_carrier'];
-            $this->order->packageCode = "package";
-            /* $this->order->confirmation      = null;
-            $this->order->shipDate          = null; */
+            $this->order = [];
+            $this->order['orderNumber'] = $orderInvoiceNumber;
+            $this->order['orderKey'] = $orderInvoiceNumber; // if specified, the method becomes idempotent and the existing Order with that key will be updated
+            $this->order['orderDate'] = $orderDate;
+            $this->order['paymentDate'] = $orderDate;
+            $this->order['orderStatus'] = "awaiting_shipment"; // {awaiting_shipment, on_hold, shipped, cancelled}
+            $this->order['customerUsername'] = $orderDetail['buyer_user_name'];
+            $this->order['customerEmail'] = $orderDetail['buyer_email'];
+            $this->order['amountPaid'] = $orderDetail['order_net_amount'];
+            $this->order['taxAmount'] = (1 > $taxCharged ? $orderDetail['order_tax_charged'] : $taxCharged);
+            $this->order['shippingAmount'] = $shippingTotal;
+            /* $this->order['customerNotes']     = null;
+            $this->order['internalNotes']     = "Express Shipping Please";
+            $this->order['requestedShippingService']     = "Priority Mail"; */
+            $this->order['paymentMethod'] = $orderDetail['pmethod_name'];
+            /* $this->order['carrierCode']       = "fedex"; */
+            $this->order['serviceCode']       = $op['opshipping_carrier'];
+            $this->order['packageCode'] = "package";
+            /* $this->order['confirmation']      = null;
+            $this->order['shipDate']          = null; */
 
 
             $this->setAddress($billingAddress['oua_name'], $billingAddress['oua_address1'], $billingAddress['oua_address2'], $billingAddress['oua_city'], $billingAddress['oua_state'], $billingAddress['oua_zip'], $billingAddress['oua_country_code'], $billingAddress['oua_phone']);
-            $this->order->billTo = $this->getAddress();
+            $this->order['billTo'] = $this->getAddress();
 
             $this->setAddress($shippingAddress['oua_name'], $shippingAddress['oua_address1'], $shippingAddress['oua_address2'], $shippingAddress['oua_city'], $shippingAddress['oua_state'], $shippingAddress['oua_zip'], $shippingAddress['oua_country_code'], $shippingAddress['oua_phone']);
-            $this->order->shipTo = $this->getAddress();
+            $this->order['shipTo'] = $this->getAddress();
 
             $weightUnitsArr = applicationConstants::getWeightUnitsArr($this->langId);
             $weightUnitName = ($op['op_product_weight_unit']) ? $weightUnitsArr[$op['op_product_weight_unit']] : '';
             $productWeightInOunce = $this->convertWeightInOunce($op['op_product_weight'], $weightUnitName);
 
             $this->setWeight($productWeightInOunce);
-            $this->order->weight = $this->getWeight();
+            $this->order['weight'] = $this->getWeight();
 
             $lengthUnitsArr = applicationConstants::getLengthUnitsArr($this->langId);
             $dimUnitName = ($op['op_product_dimension_unit']) ? $lengthUnitsArr[$op['op_product_dimension_unit']] : '';
@@ -223,10 +208,10 @@ class ShipStationShipping extends ShippingServicesBase
             $heightInCenti = $this->convertLengthInCenti($op['op_product_height'], $dimUnitName);
 
             $this->setDimensions($lengthInCenti, $widthInCenti, $heightInCenti);
-            $this->order->dimensions = $this->getDimensions();
+            $this->order['dimensions'] = $this->getDimensions();
 
             $this->setItem($op);
-            $this->order->items = [$this->getItem()];
+            $this->order['items'] = [$this->getItem()];
         }
 
         $this->canGenerateLabelForOrder = true;
@@ -234,31 +219,17 @@ class ShipStationShipping extends ShippingServicesBase
     }
         
     /**
-     * addLabel
+     * bindLabel
      *
-     * @param  bool $testlabel
      * @return void
      */
-    public function addLabel(bool $testlabel = false)
+    public function bindLabel()
     {
         if (false === $this->canGenerateLabelForOrder) {
             $this->error = Labels::getLabel('MSG_ORDER_CONFIRMATION_IS_REQUIRED', $this->langId);
             return false;
         }
-        // $order = $this->getResponse();
-
-        /* $this->lblData = new Order();
-        $this->lblData->orderId = $order['orderId'];
-        $this->lblData->carrierCode = $order['carrierCode'];
-        $this->lblData->serviceCode = $order['serviceCode'];
-        $this->lblData->confirmation = 'signature';
-        $this->lblData->shipDate = date('Y-m-d', strtotime('+5 years'));
-        $this->lblData->weight = $this->getWeight();
-        $this->lblData->dimensions = $this->getDimensions(); */
-        $this->order->confirmation = 'signature';
-        $this->order->shipDate = date('Y-m-d', strtotime('+5 years'));
-        
-        return $this->createLabel($this->order);
+        return $this->doRequest(self::REQUEST_CREATE_LABEL, $this->getResponse());
     }
         
     /**
@@ -298,32 +269,32 @@ class ShipStationShipping extends ShippingServicesBase
      * @param  string $zip
      * @param  string $countryCode
      * @param  string $phone
-     * @return void
+     * @return bool
      */
-    public function setAddress(string $name, string $stt1, string $stt2, string $city, string $state, string $zip, string $countryCode, string $phone)
+    public function setAddress(string $name, string $stt1, string $stt2, string $city, string $state, string $zip, string $countryCode, string $phone): bool
     {
-        $this->address = new Address();
+        $this->address = [];
 
-        $this->address->name = $name; // This has to be a String... If you put NULL the API cries...
-        // $this->address->company       = null;
-        $this->address->street1 = $stt1;
-        $this->address->street2 = $stt2;
-        $this->address->city = $city;
-        $this->address->state = $state;
-        $this->address->postalCode = $zip;
-        $this->address->country = $countryCode;
-        $this->address->phone = $phone;
+        $this->address['name'] = $name; // This has to be a String... If you put NULL the API cries...
+        // $this->address['company']       = null;
+        $this->address['street1'] = $stt1;
+        $this->address['street2'] = $stt2;
+        $this->address['city'] = $city;
+        $this->address['state'] = $state;
+        $this->address['postalCode'] = $zip;
+        $this->address['country'] = $countryCode;
+        $this->address['phone'] = $phone;
         return true;
     }
     
     /**
      * getAddress
      *
-     * @return object
+     * @return array
      */
-    public function getAddress(): object
+    public function getAddress(): array
     {
-        return empty($this->address) ? new Address() : $this->address;
+        return empty($this->address) ? [] : $this->address;
     }
           
     /**
@@ -331,13 +302,13 @@ class ShipStationShipping extends ShippingServicesBase
      *
      * @param  float $weight
      * @param  string $unit
-     * @return void
+     * @return bool
      */
-    public function setWeight($weight, $unit = 'ounces')
+    public function setWeight($weight, $unit = 'ounces'): bool
     {
-        $this->weight = new Weight();
-        $this->weight->value = floatval($weight);
-        $this->weight->units = trim($unit);
+        $this->weight = [];
+        $this->weight['value'] = floatval($weight);
+        $this->weight['units'] = trim($unit);
 
         return true;
     }
@@ -347,9 +318,9 @@ class ShipStationShipping extends ShippingServicesBase
      *
      * @return object
      */
-    public function getWeight(): object
+    public function getWeight(): array
     {
-        return empty($this->weight) ? new Weight() : $this->weight;
+        return empty($this->weight) ? [] : $this->weight;
     }
          
     /**
@@ -359,16 +330,16 @@ class ShipStationShipping extends ShippingServicesBase
      * @param  int $width
      * @param  int $height
      * @param  string $unit
-     * @return void
+     * @return bool
      */
-    public function setDimensions($length, $width, $height, $unit = 'centimeters')
+    public function setDimensions($length, $width, $height, $unit = 'centimeters'): bool
     {
-        $this->dimensions = new Dimensions();
+        $this->dimensions = [];
 
-        $this->dimensions->units = $unit;
-        $this->dimensions->length = $length;
-        $this->dimensions->width = $width;
-        $this->dimensions->height = $height;
+        $this->dimensions['units'] = $unit;
+        $this->dimensions['length'] = $length;
+        $this->dimensions['width'] = $width;
+        $this->dimensions['height'] = $height;
 
         return true;
     }
@@ -378,38 +349,38 @@ class ShipStationShipping extends ShippingServicesBase
      *
      * @return object
      */
-    public function getDimensions(): object
+    public function getDimensions(): array
     {
-        return empty($this->dimensions) ? new Dimensions() : $this->dimensions;
+        return empty($this->dimensions) ? [] : $this->dimensions;
     }
          
     /**
      * setItem
      *
      * @param  array $op
-     * @return void
+     * @return bool
      */
     public function setItem($op): bool
     {
-        $this->item = new OrderItem();
+        $this->item = [];
 
-        $this->item->lineItemKey = $op['op_product_name'];
-        $this->item->sku = $op['op_selprod_sku'];
-        $this->item->name = $op['op_selprod_title'];
-        $this->item->imageUrl = CommonHelper::generateFullUrl('image', 'product', array($op['selprod_product_id'], "THUMB", $op['op_selprod_id'], 0, $this->langId));
-        $this->item->weight = $this->order->weight;
-        $this->item->quantity = $op['op_qty'];
-        $this->item->unitPrice = $op['op_unit_price'];
+        $this->item['lineItemKey'] = $op['op_product_name'];
+        $this->item['sku'] = $op['op_selprod_sku'];
+        $this->item['name'] = $op['op_selprod_title'];
+        $this->item['imageUrl'] = CommonHelper::generateFullUrl('image', 'product', array($op['selprod_product_id'], "THUMB", $op['op_selprod_id'], 0, $this->langId));
+        $this->item['weight'] = $this->order['weight'];
+        $this->item['quantity'] = $op['op_qty'];
+        $this->item['unitPrice'] = $op['op_unit_price'];
         return true;
     }
 
     /**
      * getItem
      *
-     * @return object
+     * @return array
      */
-    public function getItem(): object
+    public function getItem(): array
     {
-        return empty($this->item) ? new OrderItem() : $this->item;
-    } 
+        return empty($this->item) ? [] : $this->item;
+    }
 }
