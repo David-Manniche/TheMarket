@@ -427,7 +427,7 @@ trait SellerProducts
             Message::addErrorMessage(Labels::getLabel('LBL_Invalid_Request', $this->siteLangId));
             FatUtility::dieJsonError(Message::getHtml());
         }
-        $productId = $post['selprod_product_id'];
+        $productId = FatApp::getPostedData('selprod_product_id', FatUtility::VAR_INT, 0);
         unset($post['selprod_id']);
         $data_to_be_save = $post;
         $useShopPolicy = FatApp::getPostedData('use_shop_policy', FatUtility::VAR_INT, 0);
@@ -523,9 +523,9 @@ trait SellerProducts
             }
             /* ] */
 
-            $productId = SellerProduct::getAttributesById($selprod_id, 'selprod_product_id', false);
-            Product::updateMinPrices($productId);
+            // $productId = SellerProduct::getAttributesById($selprod_id, 'selprod_product_id', false);
         }
+        Product::updateMinPrices($productId);
 
         if ($error) {
             FatUtility::dieWithError(Message::getHtml());
