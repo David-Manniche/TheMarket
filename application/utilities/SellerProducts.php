@@ -297,7 +297,6 @@ trait SellerProducts
     public function validatePostedData($post)
     {
         $selprod_id = FatUtility::int($post['selprod_id']);
-        $urlrewrite_id = FatUtility::int($post['selprod_urlrewrite_id']);
         $selprod_product_id = FatUtility::int($post['selprod_product_id']);
 
         if (!UserPrivilege::isUserHasValidSubsription($this->userParentId)) {
@@ -422,15 +421,14 @@ trait SellerProducts
     {
         $this->userPrivilege->canEditProducts(UserAuthentication::getLoggedUserId());
         $post = $this->validatePostedData(FatApp::getPostedData());
-
         $productOptions = Product::getProductOptions($post['selprod_product_id'], $this->siteLangId, true);
         $optionCombinations = CommonHelper::combinationOfElementsOfArr($productOptions, 'optionValues', '_');
         if (empty($productOptions) || empty($optionCombinations)) {
             Message::addErrorMessage(Labels::getLabel('LBL_Invalid_Request', $this->siteLangId));
             FatUtility::dieJsonError(Message::getHtml());
         }
-        $productId = $post['selprod_product_id'];
-		unset($post['selprod_id']);
+        $productId = FatApp::getPostedData('selprod_product_id', FatUtility::VAR_INT, 0);
+        unset($post['selprod_id']);
         $data_to_be_save = $post;
         $useShopPolicy = FatApp::getPostedData('use_shop_policy', FatUtility::VAR_INT, 0);
         $error = false;
@@ -447,7 +445,7 @@ trait SellerProducts
                 }
                 $data_to_be_save['selprod_deleted'] = applicationConstants::NO;
             }
-            if (!$post['selprod_cost' . $optionKey] || (!$post['selprod_price' . $optionKey]) || (!$post['selprod_stock' . $optionKey])) {
+            if (!isset($post['selprod_cost' . $optionKey]) || !isset($post['selprod_price' . $optionKey]) || !isset($post['selprod_stock' . $optionKey])) {
                 continue;
             }
             $data_to_be_save['selprod_code'] = $selProdCode;
@@ -481,16 +479,16 @@ trait SellerProducts
             $selProdSpecificsObj = new SellerProductSpecifics($selprod_id);
             if (0 < $useShopPolicy) {
                 if (!$selProdSpecificsObj->deleteRecord()) {
-					Message::addErrorMessage(Labels::getLabel($selProdSpecificsObj->getError(), $this->siteLangId));
-					FatUtility::dieWithError(Message::getHtml());
+                    Message::addErrorMessage(Labels::getLabel($selProdSpecificsObj->getError(), $this->siteLangId));
+                    FatUtility::dieWithError(Message::getHtml());
                 }
             } else {
                 $post['sps_selprod_id'] = $selprod_id;
                 $selProdSpecificsObj->assignValues($post);
                 $data = $selProdSpecificsObj->getFlds();
                 if (!$selProdSpecificsObj->addNew(array(), $data)) {
-					Message::addErrorMessage(Labels::getLabel($selProdSpecificsObj->getError(), $this->siteLangId));
-					FatUtility::dieWithError(Message::getHtml());
+                    Message::addErrorMessage(Labels::getLabel($selProdSpecificsObj->getError(), $this->siteLangId));
+                    FatUtility::dieWithError(Message::getHtml());
                 }
             }
 
@@ -515,7 +513,7 @@ trait SellerProducts
                 'selprodlang_selprod_id' => $selprod_id,
                 'selprodlang_lang_id' => $langId,
                 'selprod_title' => $post['selprod_title' . $langId],
-                'selprod_comments' => $post['selprod_comments' . $langId],
+                'selprod_comments' => isset($post['selprod_comments' . $langId]) ? $post['selprod_comments' . $langId] : '',
                 );
 
                 if (!$sellerProdObj->updateLangData($langId, $selProdData)) {
@@ -525,9 +523,9 @@ trait SellerProducts
             }
             /* ] */
 
-            $productId = SellerProduct::getAttributesById($selprod_id, 'selprod_product_id', false);
-            Product::updateMinPrices($productId);
+            // $productId = SellerProduct::getAttributesById($selprod_id, 'selprod_product_id', false);
         }
+        Product::updateMinPrices($productId);
 
         if ($error) {
             FatUtility::dieWithError(Message::getHtml());
@@ -1704,28 +1702,28 @@ trait SellerProducts
             FatUtility::dieJsonError(Message::getHtml());
         }
         
-		if (isset($_FILES['downloadable_file']) && is_uploaded_file($_FILES['downloadable_file']['tmp_name'])) {
-			$fileHandlerObj = new AttachedFile();
-			if (!$res = $fileHandlerObj->saveAttachment(
-				$_FILES['downloadable_file']['tmp_name'],
-				AttachedFile::FILETYPE_SELLER_PRODUCT_DIGITAL_DOWNLOAD,
-				$selprod_id,
-				0,
-				$_FILES['downloadable_file']['name'],
-				-1,
-				$unique_record = false,
-				$lang_id
-			)
-			) {
-				Message::addErrorMessage($fileHandlerObj->getError());
-				FatUtility::dieJsonError(Message::getHtml());
-			}
-			Message::addMessage(Labels::getLabel('MSG_File_Uploaded_Successfully.', $this->siteLangId));
+        if (isset($_FILES['downloadable_file']) && is_uploaded_file($_FILES['downloadable_file']['tmp_name'])) {
+            $fileHandlerObj = new AttachedFile();
+            if (!$res = $fileHandlerObj->saveAttachment(
+                $_FILES['downloadable_file']['tmp_name'],
+                AttachedFile::FILETYPE_SELLER_PRODUCT_DIGITAL_DOWNLOAD,
+                $selprod_id,
+                0,
+                $_FILES['downloadable_file']['name'],
+                -1,
+                $unique_record = false,
+                $lang_id
+            )
+            ) {
+                Message::addErrorMessage($fileHandlerObj->getError());
+                FatUtility::dieJsonError(Message::getHtml());
+            }
+            Message::addMessage(Labels::getLabel('MSG_File_Uploaded_Successfully.', $this->siteLangId));
             FatUtility::dieJsonSuccess(Message::getHtml());
-		}
-		
-		if(!empty($post['selprod_downloadable_link'.$selprod_id])){
-			$data_to_be_save = array();
+        }
+        
+        if (!empty($post['selprod_downloadable_link'.$selprod_id])) {
+            $data_to_be_save = array();
             $data_to_be_save['selprod_downloadable_link'] = $post['selprod_downloadable_link'.$selprod_id];
             $sellerProdObj = new SellerProduct($selprod_id);
             $sellerProdObj->assignValues($data_to_be_save);
@@ -1734,9 +1732,9 @@ trait SellerProducts
                 Message::addErrorMessage(Labels::getLabel($sellerProdObj->getError(), $this->siteLangId));
                 FatUtility::dieJsonError(Message::getHtml());
             }
-			Message::addMessage(Labels::getLabel('MSG_Setup_Successful.', $this->siteLangId));
-			FatUtility::dieJsonSuccess(Message::getHtml());
-		}
+            Message::addMessage(Labels::getLabel('MSG_Setup_Successful.', $this->siteLangId));
+            FatUtility::dieJsonSuccess(Message::getHtml());
+        }
     }
 
     public function deleteDigitalFile($selprodId, $afileId = 0)
@@ -2411,7 +2409,7 @@ trait SellerProducts
         }
 
         $status = ($sellerProductData['selprod_active'] == applicationConstants::ACTIVE) ? applicationConstants::INACTIVE : applicationConstants::ACTIVE;
-		
+        
         $this->updateSellerProductStatus($selprodId, $status);
 
         $this->set('msg', Labels::getLabel('MSG_Status_changed_Successfully', $this->siteLangId));
@@ -2474,7 +2472,7 @@ trait SellerProducts
             $srchFrm->addHiddenField('', 'selprod_id', $selProd_id);
             $srchFrm->fill(array('keyword' => $productsTitle[$selProdId]));
         }
-		$this->set("canEdit", $this->userPrivilege->canEditVolumeDiscount(UserAuthentication::getLoggedUserId(), true));
+        $this->set("canEdit", $this->userPrivilege->canEditVolumeDiscount(UserAuthentication::getLoggedUserId(), true));
         $this->set("dataToEdit", $dataToEdit);
         $this->set("frmSearch", $srchFrm);
         $this->set("selProd_id", $selProd_id);
@@ -2665,7 +2663,7 @@ trait SellerProducts
             $srchFrm->addHiddenField('', 'selprod_id', $selProd_id);
             $srchFrm->fill(array('keyword' => $productsTitle[$selProdId]));
         }
-		$this->set("canEdit", $this->userPrivilege->canEditRelatedProducts(UserAuthentication::getLoggedUserId(), true));
+        $this->set("canEdit", $this->userPrivilege->canEditRelatedProducts(UserAuthentication::getLoggedUserId(), true));
         $relProdFrm = $this->getRelatedProductsForm();
         $this->set("dataToEdit", $dataToEdit);
         $this->set("frmSearch", $srchFrm);
@@ -2735,7 +2733,7 @@ trait SellerProducts
             FatUtility::dieJsonError(Message::getHtml());
         }
         $relatedProducts = (isset($post['selected_products'])) ? $post['selected_products'] : array();
-        if( count($relatedProducts) < 1 ){
+        if (count($relatedProducts) < 1) {
             Message::addErrorMessage(Labels::getLabel("MSG_You_need_to_add_atleast_one_related_product", $this->siteLangId));
             FatUtility::dieJsonError(Message::getHtml());
         }
@@ -2779,7 +2777,7 @@ trait SellerProducts
         $srch->addCondition('selprod_user_id', '=', $this->userParentId);
         $srch->addCondition(SellerProduct::DB_TBL_UPSELL_PRODUCTS_PREFIX . 'sellerproduct_id', '=', $selprod_id);
         $srch->addGroupBy('selprod_id');
-        $srch->addGroupBy('upsell_sellerproduct_id'); 
+        $srch->addGroupBy('upsell_sellerproduct_id');
         $srch->addOrder('selprod_id', 'DESC');
         $rs = $srch->getResultSet();
         $upsellProds = FatApp::getDb()->fetchAll($rs);
@@ -2842,7 +2840,7 @@ trait SellerProducts
             $srchFrm->addHiddenField('', 'selprod_id', $selProd_id);
             $srchFrm->fill(array('keyword' => $productsTitle[$selProdId]));
         }
-		$this->set("canEdit", $this->userPrivilege->canEditBuyTogetherProducts(UserAuthentication::getLoggedUserId(), true));
+        $this->set("canEdit", $this->userPrivilege->canEditBuyTogetherProducts(UserAuthentication::getLoggedUserId(), true));
         $relProdFrm = $this->getUpsellProductsForm();
         $this->set("dataToEdit", $dataToEdit);
         $this->set("frmSearch", $srchFrm);
@@ -2867,9 +2865,9 @@ trait SellerProducts
         $srch->addCondition('selprod_user_id', '=', $this->userParentId);
         $srch->addFld('if(upsell_sellerproduct_id = ' . $selProdId . ', 1 , 0) as priority');
         $srch->addGroupBy('selprod_id');
-        $srch->addGroupBy('upsell_sellerproduct_id');   
+        $srch->addGroupBy('upsell_sellerproduct_id');
         $srch->addOrder('priority', 'DESC');
-        $srch->setPageNumber($page);    
+        $srch->setPageNumber($page);
         $rs = $srch->getResultSet();
         $db = FatApp::getDb();
         $upsellProds = $db->fetchAll($rs);
@@ -2907,14 +2905,14 @@ trait SellerProducts
         if (!UserPrivilege::canEditSellerProduct($this->userParentId, $selprod_id)) {
             Message::addErrorMessage(Labels::getLabel("MSG_Please_Select_A_Valid_Product", $this->siteLangId));
             FatUtility::dieJsonError(Message::getHtml());
-        } 
+        }
         if ($selprod_id <= 0) {
             Message::addErrorMessage(Labels::getLabel('MSG_Please_Select_A_Valid_Product', $this->siteLangId));
             //FatApp::redirectUser($_SESSION['referer_page_url']);
             FatUtility::dieJsonError(Message::getHtml());
         }
         $upsellProducts = (isset($post['selected_products'])) ? $post['selected_products'] : array();
-        if( count($upsellProducts) < 1 ){
+        if (count($upsellProducts) < 1) {
             Message::addErrorMessage(Labels::getLabel("MSG_You_need_to_add_atleast_one_buy_together_product", $this->siteLangId));
             FatUtility::dieJsonError(Message::getHtml());
         }

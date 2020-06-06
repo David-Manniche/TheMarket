@@ -140,6 +140,7 @@ class MyAppController extends FatController
             'copyToClipboard' => Labels::getLabel('LBL_Copy_to_clipboard', $this->siteLangId),
             'copied' => Labels::getLabel('LBL_Copied', $this->siteLangId),
             'invalidGRecaptchaKeys' => Labels::getLabel('LBL_YOU_MIGHT_HAVE_INVALID_GOOGLE_RECAPTCHA_V3_KEYS._PLEASE_VERIFY.', $this->siteLangId),
+            'processing_counter' => Labels::getLabel('LBL_{counter}_OUT_OF_{count}_RECORD_BATCHES.', $this->siteLangId),
             );
 
             $languages = Language::getAllNames(false);
