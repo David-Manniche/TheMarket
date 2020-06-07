@@ -152,7 +152,7 @@ class AdminBaseController extends FatController
         foreach ($languages as $val) {
             $jsVariables['language' . $val['language_id']] = $val['language_layout_direction'];
         }
-
+		$jsVariables['languages'] = $languages;
         //get notifications count
         $db = FatApp::getDb();
         $notifyObject = Notification::getSearchObject();

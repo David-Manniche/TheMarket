@@ -527,6 +527,8 @@ class TaxController extends AdminBaseController
     {
         $this->objPrivilege->canEditTax();
         $taxCatId = FatUtility::int($taxCatId);
+		$siteDefaultLangId = FatApp::getConfig('conf_default_site_lang', FatUtility::VAR_INT, 1);
+		$languages = Language::getAllNames();
         $frm = TaxRule::getRuleForm($this->adminLangId, 0);
 		$data = [];
 		$rulesData = [];
@@ -540,13 +542,28 @@ class TaxController extends AdminBaseController
 		$data = Tax::getAttributesById($taxCatId);
 		$data['taxrule_is_combined'] = 0;
 		$frm->fill($data);
+		
 		$taxObj = new TaxRule();
-		$rulesData = $taxObj->getRules($taxCatId, $this->adminLangId);
+		$rulesData = $taxObj->getRules($taxCatId);
+		foreach ($rulesData as $key => $val) {
+			foreach ($languages as $langId => $lang) {
+                $rulesLangData = $taxObj->getAttributesByLangId($langId, $val['taxrule_id']);
+                if (!empty($rulesLangData)) {
+                    $rulesData[$key]['taxrule_name'][$langId] = $rulesLangData['taxrule_name'];
+                }
+			}
+		}
+		
 		if (!empty($rulesData)) {
 			$rulesIds = array_column($rulesData, 'taxrule_id');
-			$combinedRulesDetails = $taxObj->getCombinedRuleDetails($rulesIds, $this->adminLangId);
+			$combinedRulesDetails = $taxObj->getCombinedRuleDetails($rulesIds);
 			$ruleLocations = $taxObj->getLocations($taxCatId);
 		}
+		
+		unset($languages[$siteDefaultLangId]);
+        $this->set('siteDefaultLangId', $siteDefaultLangId);
+        $this->set('otherLanguages', $languages);
+		
         $this->set('taxCategory', $data['taxcat_identifier']);
         $this->set('frm', $frm);
         $this->set('rules', $rulesData);
@@ -575,15 +592,7 @@ class TaxController extends AdminBaseController
 		
         $taxCatId = $data['taxcat_id'];
 		unset($data['taxcat_id']);
-        /* $taxGrpObj = new TaxGroup($taxCatId);
-		$taxGrpObj->assignValues($data);
-		
-        if (!$taxGrpObj->save()) {
-            Message::addErrorMessage($taxGrpObj->getError());
-            FatUtility::dieJsonError(Message::getHtml());
-        }
-		
-		$taxCatId = $taxGrpObj->getMainTableRecordId(); */
+
 		/* [ DELETE OLD DATA FROM GROUP */
 		if (!$this->deleteGroupData($taxCatId)) {
 			Message::addErrorMessage(Labels::getLabel('LBL_Unable_to_delete_old_tax_settings', $this->adminLangId));
@@ -605,18 +614,13 @@ class TaxController extends AdminBaseController
 					Message::addErrorMessage($taxRuleObj->getError());
 					FatUtility::dieJsonError(Message::getHtml());
 				}
-				$ruleId = $taxRuleObj->getMainTableRecordId();
-				$data_to_update = array(
-					TaxRule::DB_TBL_LANG_PREFIX.'taxrule_id' => $ruleId,
-					TaxRule::DB_TBL_LANG_PREFIX.'lang_id' => $this->adminLangId,
-					TaxRule::DB_TBL_PREFIX.'name' => $rule['taxrule_name'],
-				);
 				
-				if (!$taxRuleObj->updateLangData($this->adminLangId, $data_to_update)) {
+				$ruleId = $taxRuleObj->getMainTableRecordId();
+				$taxRuleObj = new TaxRule($ruleId);
+				if (!$taxRuleObj->updateRuleLangData($rule)) {
 					Message::addErrorMessage($taxRuleObj->getError());
 					FatUtility::dieJsonError(Message::getHtml());
 				}
-				
 				unset($taxRuleObj);
 				/* [ update location data */
 				if (!empty($states)) {
@@ -626,7 +630,6 @@ class TaxController extends AdminBaseController
 					}
 				}
 				/* ] */	
-				
 				/* [ UPDATE COMBINED TAX DETAILS */
 				if ($isCombined > 0) {
 					$combinedTaxes = $rule['combinedTaxDetails'];
@@ -720,14 +723,18 @@ class TaxController extends AdminBaseController
 					//FatUtility::dieJsonError(Message::getHtml());
 					return false;
 				}
-				$data_to_update = array(
-					TaxRuleCombined::DB_TBL_LANG_PREFIX.'taxruledet_id' => $ruleId,
-					TaxRuleCombined::DB_TBL_LANG_PREFIX.'lang_id' => $this->adminLangId,
-					TaxRuleCombined::DB_TBL_PREFIX.'name' => $combinedTax['taxruledet_name']
-				);
-				if (!$taxRuleComObj->updateLangData($langId, $data_to_update)) {
-					Message::addErrorMessage($taxRuleComObj->getError());
-					FatUtility::dieJsonError(Message::getHtml());
+				
+				foreach ($combinedTax['taxruledet_name'] as $langId => $taxName) {
+					$data_to_update = array(
+						TaxRuleCombined::DB_TBL_LANG_PREFIX.'taxruledet_id' => $ruleId,
+						TaxRuleCombined::DB_TBL_LANG_PREFIX.'lang_id' => $langId,
+						TaxRuleCombined::DB_TBL_PREFIX.'name' => $taxName
+					);
+					
+					if (!$taxRuleComObj->updateLangData($langId, $data_to_update)) {
+						Message::addErrorMessage($taxRuleComObj->getError());
+						FatUtility::dieJsonError(Message::getHtml());
+					}
 				}
 			}
 		}

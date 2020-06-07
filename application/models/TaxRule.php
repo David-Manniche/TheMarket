@@ -59,7 +59,7 @@ class TaxRule extends MyAppModel
         
 		/* [ TAX CATEGORY RULE FORM */
 		$frm->addHiddenField('', 'taxrule_id[]', 0);
-		$frm->addRequiredField(Labels::getLabel('LBL_Name', $langId), 'taxrule_name[]', '');
+		/* $frm->addRequiredField(Labels::getLabel('LBL_Name', $langId), 'taxrule_name[]', ''); */
 		$fld = $frm->addFloatField(Labels::getLabel('LBL_Tax_Rate(%)', $langId), 'taxrule_rate[]', '');
         $fld->requirements()->setPositive();
 		 
@@ -82,10 +82,31 @@ class TaxRule extends MyAppModel
 		
 		/* [ TAX GROUP RULE COMBINED DETAILS FORM */
 		$frm->addHiddenField('', 'taxruledet_id[]');
-		$frm->addTextBox(Labels::getLabel('LBL_Name', $langId), 'taxruledet_name[]', '');
+		/* $frm->addTextBox(Labels::getLabel('LBL_Name', $langId), 'taxruledet_name[]', ''); */
 		$fld = $frm->addTextBox(Labels::getLabel('LBL_Tax_Rate(%)', $langId), 'taxruledet_rate[]', '');
         //$fld->requirements()->required();
 		/* ] */
+		
+		$siteDefaultLangId = FatApp::getConfig('conf_default_site_lang', FatUtility::VAR_INT, 1);
+        $languages = Language::getAllNames();
+        foreach ($languages as $languageId => $lang) {
+            if ($languageId == $siteDefaultLangId) {
+                $frm->addRequiredField(Labels::getLabel('LBL_Rule_Name', $languageId), 'taxrule_name[' . $languageId . '][]');
+            } else {
+                $frm->addTextBox(Labels::getLabel('LBL_Rule_Name', $languageId), 'taxrule_name[' . $languageId . '][]');
+            }
+			if ($languageId == $siteDefaultLangId) {
+                $frm->addRequiredField(Labels::getLabel('LBL_Combined_Tax_Name', $languageId), 'taxruledet_name[' . $languageId . '][]');
+            } else {
+                $frm->addTextBox(Labels::getLabel('LBL_Combined_Tax_Name', $languageId), 'taxruledet_name[' . $languageId . '][]');
+            }
+        }
+
+        $translatorSubscriptionKey = FatApp::getConfig('CONF_TRANSLATOR_SUBSCRIPTION_KEY', FatUtility::VAR_STRING, '');
+        unset($languages[$siteDefaultLangId]);
+        if (!empty($translatorSubscriptionKey) && count($languages) > 0) {
+            $frm->addCheckBox(Labels::getLabel('LBL_Translate_To_Other_Languages', $langId), 'auto_update_other_langs_data', 1, array(), false, 0);
+        }
 		
 		$fld_submit = $frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_Save', $langId));
         $fld_cancel = $frm->addButton("", "btn_clear", Labels::getLabel('LBL_Cancel', $langId));
@@ -93,7 +114,49 @@ class TaxRule extends MyAppModel
         return $frm;
     }
 	
-	public function getRules($taxCatId, $langId)
+	public function updateRuleLangData($langData)
+    {
+        if ($this->mainTableRecordId < 1 || empty($langData)) {
+            $this->error = Labels::getLabel('ERR_Invalid_Request', $this->commonLangId);
+            return false;
+        }
+        $autoUpdateOtherLangsData = isset($langData['auto_update_other_langs_data']) ? FatUtility::int($langData['auto_update_other_langs_data']) : 0;
+        foreach ($langData['taxrule_name'] as $langId => $ruleName) {
+            if (empty($ruleName) && $autoUpdateOtherLangsData > 0) {
+                $this->saveTranslatedRuleLangData($langId);
+            } elseif (!empty($ruleName)) {
+                $data = array(
+					TaxRule::DB_TBL_LANG_PREFIX.'taxrule_id' => $this->mainTableRecordId,
+					TaxRule::DB_TBL_LANG_PREFIX.'lang_id' => $langId,
+					TaxRule::DB_TBL_PREFIX.'name' => $ruleName,
+				);
+				
+                if (!$this->updateLangData($langId, $data)) {
+                    $this->error = $this->getError();
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+	
+	public function saveTranslatedRuleLangData($langId)
+    {
+        $langId = FatUtility::int($langId);
+        if ($this->mainTableRecordId < 1 || $langId < 1) {
+            $this->error = Labels::getLabel('ERR_Invalid_Request', $this->commonLangId);
+            return false;
+        }
+
+        $translateLangobj = new TranslateLangData(static::DB_TBL_LANG);
+        if (false === $translateLangobj->updateTranslatedData($this->mainTableRecordId, 0, $langId)) {
+            $this->error = $translateLangobj->getError();
+            return false;
+        }
+        return true;
+    }
+	
+	public function getRules($taxCatId, $langId = 0)
 	{
 		$srch = TaxRule::getSearchObject($langId);
 		$srch->addCondition('taxrule_taxcat_id', '=', $taxCatId);
@@ -102,15 +165,27 @@ class TaxRule extends MyAppModel
 		return $rulesData;
 	}
 	
-	public function getCombinedRuleDetails($rulesIds, $langId)
+	public function getCombinedRuleDetails($rulesIds)
 	{
 		if (empty($rulesIds)) {
 			return [];
 		}
-		$srch = TaxRuleCombined::getSearchObject($langId);
+		$srch = TaxRuleCombined::getSearchObject();
 		$srch->addCondition('taxruledet_taxrule_id', 'IN', $rulesIds);
 		$rs = $srch->getResultSet();
 		$combinedData = FatApp::getDb()->fetchAll($rs);
+		
+		$taxRuleCom = new TaxRuleCombined();
+		$languages = Language::getAllNames();
+		foreach ($combinedData as $key => $val) {
+			foreach ($languages as $langId => $lang) {
+                $rulesLangData = $taxRuleCom->getAttributesByLangId($langId, $val['taxruledet_id']);
+                if (!empty($rulesLangData)) {
+                    $combinedData[$key]['taxruledet_name'][$langId] = $rulesLangData['taxruledet_name'];
+                }
+			}
+		}
+		
 		return self::groupDataByKey($combinedData, 'taxruledet_taxrule_id');
 	}
 	

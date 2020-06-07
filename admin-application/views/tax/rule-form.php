@@ -3,6 +3,7 @@ $frm->setFormTagAttribute('class', 'web_form');
 $frm->setFormTagAttribute('onsubmit', 'setupTaxRule(this); return(false);');
 $frm->developerTags['colClassPrefix'] = 'col-md-';
 $frm->developerTags['fld_default_col'] = 12;
+$combTaxCount = 0;
 ?>
 <div class="container grid__item grid__item--fluid">
     <div class="row mt-4">
@@ -29,7 +30,7 @@ $frm->developerTags['fld_default_col'] = 12;
                             <div class="tax-rule-container--js">
                                 <?php if(!empty($rules)) { 
                                     $index = 1;
-                                    foreach($rules as $rule) { 
+                                    foreach($rules as $rule) {
                                         $ruleId = $rule['taxrule_id'];
                                         $locations = (!empty($ruleLocations) && isset($ruleLocations[$ruleId]))?$ruleLocations[$ruleId]:array();
                                         $countryIds = [];
@@ -58,8 +59,8 @@ $frm->developerTags['fld_default_col'] = 12;
                                         <?php
                                         $taxruleIdFld = $frm->getField('taxrule_id[]');
                                         $taxruleIdFld->value = $rule['taxrule_id'];
-                                        $taxruleNameFld = $frm->getField('taxrule_name[]');
-                                        $taxruleNameFld->value = $rule['taxrule_name'];
+                                        $taxruleNameFld = $frm->getField('taxrule_name['.$adminLangId.'][]');
+                                        $taxruleNameFld->value = $rule['taxrule_name'][$adminLangId];
                                         $taxruleRateFld = $frm->getField('taxrule_rate[]');
                                         $taxruleRateFld->value = $rule['taxrule_rate'];
                                         $combinedFld = $frm->getField('taxrule_is_combined[]');
@@ -70,37 +71,37 @@ $frm->developerTags['fld_default_col'] = 12;
                                         $combinedFld->developerTags['cbLabelAttributes'] = array('class' => 'checkbox');
                                         $combinedFld->developerTags['cbHtmlAfterCheckbox'] = '<i class="input-helper"></i>';
                                         echo $frm->getFieldHtml('taxrule_id[]'); ?>
-                                            <div class="col-lg-4">
+                                            <div class="col-md-6">
                                                 <div class="border rounded p-4  h-100">
                                                     <div class="form-group">
                                                         <label for="example-text-input" class=""><?php echo $taxruleNameFld->getCaption();?></label>
-                                                        <?php echo $frm->getFieldHtml('taxrule_name[]'); ?>
+                                                        <?php echo $frm->getFieldHtml('taxrule_name['.$adminLangId.'][]'); ?>
                                                     </div>
                                                     <div class="form-group">
                                                         <label for="example-text-input"><?php echo $taxruleRateFld->getCaption();?></label>
                                                         <?php echo $frm->getFieldHtml('taxrule_rate[]'); ?>
                                                     </div>
-                                        <?php
-                                        $countryFld = $frm->getField('taxruleloc_country_id[]');
-                                        $countryFld->setFieldTagAttribute('id','ua_country_id');
-                                        $countryFld->setFieldTagAttribute('onChange','getCountryStatesTaxInTaxForm(this, this.value,0)');
-                                        $countryFld->value = $countryIds;
-                                        $typeFld = $frm->getField('taxruleloc_type[]');
-                                        $typeFld->value = $typeIds;
-                                        $stateFld = $frm->getField('taxruleloc_state_id[]');
-                                        $stateFld->value = $stateIds;
-										$stateFld->addFieldTagAttribute('multiple', 'true');
-                                        $stateFld->addFieldTagAttribute('id', 'ua_state_id');
-                                        $stateFld->addFieldTagAttribute('class', 'selectpicker');
-                                        $stateFld->addFieldTagAttribute('data-style', 'bg-white rounded-pill px-4 py-2 shadow-sm');
-										?>
+														<?php
+														$countryFld = $frm->getField('taxruleloc_country_id[]');
+														$countryFld->setFieldTagAttribute('id','ua_country_id');
+														$countryFld->setFieldTagAttribute('onChange','getCountryStatesTaxInTaxForm(this, this.value,0)');
+														$countryFld->value = $countryIds;
+														$typeFld = $frm->getField('taxruleloc_type[]');
+														$typeFld->value = $typeIds;
+														$stateFld = $frm->getField('taxruleloc_state_id[]');
+														$stateFld->value = $stateIds;
+														$stateFld->addFieldTagAttribute('multiple', 'true');
+														$stateFld->addFieldTagAttribute('id', 'ua_state_id');
+														$stateFld->addFieldTagAttribute('class', 'selectpicker');
+														$stateFld->addFieldTagAttribute('data-style', 'bg-white rounded-pill px-4 py-2 shadow-sm');
+														?>
                                                     <div class="form-group">
                                                         <label for="example-text-input" class=""><?php echo $countryFld->getCaption();?></label>
                                                         <?php echo $frm->getFieldHtml('taxruleloc_country_id[]');?>
                                                     </div>
                                                 </div>
                                             </div>
-                                            <div class="col-lg-8">
+                                            <div class="col-md-6">
                                                 <div class="border rounded p-4  h-100">
                                                     <div class="form-group">
                                                         <label for="example-text-input" class=""><?php echo $typeFld->getCaption();?></label>
@@ -116,80 +117,167 @@ $frm->developerTags['fld_default_col'] = 12;
                                                 </div>
                                             </div>
                                         </div>
-                                        <table class="table table-bordered table-hover table-edited my-4 combined-tax-details--js" style="<?php echo ($rule['taxrule_is_combined'] > 0)?"display:table;" : "display:none;";?>">
-                                            <thead>
-                                                <tr>
-                                                    <th width="60%">
-                                                        <?php echo Labels::getLabel('LBL_Name', $adminLangId)?></th>
-                                                    <th width="30%">
-                                                        <?php echo Labels::getLabel('LBL_Tax_Rate', $adminLangId)?></th>
-                                                    <th width="10%">
-                                                    </th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                        <?php
-                                        $combinedData = [];
-                                        if(!empty($combinedRulesDetails) && isset($combinedRulesDetails[$rule['taxrule_id']])) { 
-                                            $combinedData = $combinedRulesDetails[$rule['taxrule_id']];
-                                        }
-                                        if (!empty($combinedData)) { 
-                                            foreach($combinedData as $comData) { ?>
-                                                <tr class="rule-detail-row--js">
-                                                    <td scope="row">
-                                                <?php
-                                                $idFld = $frm->getField('taxruledet_id[]');
-                                                $idFld->value = $comData['taxruledet_id'];
-                                                $nameFld = $frm->getField('taxruledet_name[]');
-                                                $nameFld->value = $comData['taxruledet_name'];
-                                                $rateFld = $frm->getField('taxruledet_rate[]');
-                                                $rateFld->value = $comData['taxruledet_rate'];
-                                                echo $frm->getFieldHtml('taxruledet_id[]');
-                                                echo $frm->getFieldHtml('taxruledet_name[]');?>
-                                                    </td>
-                                                    <td>
-                                                        <?php echo $frm->getFieldHtml('taxruledet_rate[]');?>
-                                                    </td>
-                                                    <td>
-                                                        <a href="javascript:0;" class="themebtn btn-primary remove-combined-form--js"><i class="ion-minus">
-                                                            </i></a>
-                                                    </td>
-                                                </tr>
-                                                <?php }
-                                        }
-                                        else { ?>
-                                                <tr class="rule-detail-row--js">
-                                                    <td scope="row">
-                                            <?php
-                                            $idFld = $frm->getField('taxruledet_id[]');
-                                            $idFld->value = '';
-                                            $nameFld = $frm->getField('taxruledet_name[]');
-                                            $nameFld->value = '';
-                                            $rateFld = $frm->getField('taxruledet_rate[]');
-                                            $rateFld->value = '';
-                                            echo $frm->getFieldHtml('taxruledet_id[]');
-                                            echo $frm->getFieldHtml('taxruledet_name[]');?>
-                                                    </td>
-                                                    <td>
-                                                        <?php echo $frm->getFieldHtml('taxruledet_rate[]');?>
-                                                    </td>
-                                                    <td>
-                                                        <a href="javascript:0;" class="themebtn btn-primary remove-combined-form--js"><i class="ion-minus">
-                                                            </i></a>
-                                                    </td>
-                                                </tr>
-                                                <?php } ?>
-                                            </tbody>
-                                            <tfoot>
-                                                <tr>
-                                                    <td colspan="2">
-                                                    </td>
-                                                    <td>
-                                                        <a href="javascript:0;" class="themebtn btn-primary add-combined-form--js"><i class="ion-plus"></i></a>
-                                                    </td>
-                                                </tr>
-                                            </tfoot>
-                                        </table>
+										<div class="row">
+											<div class="col-md-6">
+												<table class="table table-bordered table-hover table-edited my-4 combined-tax-details--js" style="<?php echo ($rule['taxrule_is_combined'] > 0)?"display:table;" : "display:none;";?>">
+														<thead>
+															<tr>
+																<th width="60%">
+																	<?php echo Labels::getLabel('LBL_Name', $adminLangId)?></th>
+																<th width="30%">
+																	<?php echo Labels::getLabel('LBL_Tax_Rate', $adminLangId)?></th>
+																<th width="10%">
+																</th>
+															</tr>
+														</thead>
+														<tbody>
+													<?php
+													$combinedData = [];
+													if(!empty($combinedRulesDetails) && isset($combinedRulesDetails[$rule['taxrule_id']])) { 
+														$combinedData = $combinedRulesDetails[$rule['taxrule_id']];
+													}
+													if (!empty($combinedData)) { 
+														foreach($combinedData as $comData) { ?>
+															<tr class="rule-detail-row--js rule-detail-row<?php echo $combTaxCount; ?>">
+																<td scope="row">
+															<?php
+															$idFld = $frm->getField('taxruledet_id[]');
+															$idFld->value = $comData['taxruledet_id'];
+															$nameFld = $frm->getField('taxruledet_name['.$adminLangId.'][]');
+															$nameFld->value = $comData['taxruledet_name'][$adminLangId];
+															$rateFld = $frm->getField('taxruledet_rate[]');
+															$rateFld->value = $comData['taxruledet_rate'];
+															echo $frm->getFieldHtml('taxruledet_id[]');
+															echo $frm->getFieldHtml('taxruledet_name['.$adminLangId.'][]');?>
+																</td>
+																<td>
+																	<?php echo $frm->getFieldHtml('taxruledet_rate[]');?>
+																</td>
+																<td>
+																	<a href="javascript:0;" class="themebtn btn-primary remove-combined-form--js"><i class="ion-minus">
+																		</i></a>
+																</td>
+															</tr>
+															<?php $combTaxCount++; }
+													}
+													else { ?>
+															<tr class="rule-detail-row--js rule-detail-row<?php echo $combTaxCount; ?>">
+																<td scope="row">
+														<?php
+														$idFld = $frm->getField('taxruledet_id[]');
+														$idFld->value = '';
+														$nameFld = $frm->getField('taxruledet_name['.$adminLangId.'][]');
+														$nameFld->value = '';
+														$rateFld = $frm->getField('taxruledet_rate[]');
+														$rateFld->value = '';
+														echo $frm->getFieldHtml('taxruledet_id[]');
+														echo $frm->getFieldHtml('taxruledet_name['.$adminLangId.'][]');?>
+																</td>
+																<td>
+																	<?php echo $frm->getFieldHtml('taxruledet_rate[]');?>
+																</td>
+																<td>
+																	<a href="javascript:0;" class="themebtn btn-primary remove-combined-form--js"><i class="ion-minus">
+																		</i></a>
+																</td>
+															</tr>
+															<?php } ?>
+														</tbody>
+														<tfoot>
+															<tr>
+																<td colspan="2">
+																</td>
+																<td>
+																	<a href="javascript:0;" class="themebtn btn-primary add-combined-form--js"><i class="ion-plus"></i></a>
+																</td>
+															</tr>
+														</tfoot>
+													</table>
+											</div>
+											<div id="tax-lang-form--js" class="col-md-6">
+												<?php 
+												 if(!empty($otherLanguages)){ 
+													foreach($otherLanguages as $langId=>$data) { 
+														$layout = Language::getLayoutDirection($langId);
+												 ?>
+												 <span class="-gap"></span>
+												 <div class="accordians_container flat">
+													 <div class="accordian_panel">
+														 <span class="accordian_title accordianhead active" id="collapse_<?php echo $langId; ?>" onclick="translateData(this, '<?php echo $siteDefaultLangId; ?>', '<?php echo $langId; ?>')">
+														 <?php echo $data." "; echo Labels::getLabel('LBL_Language_Data', $adminLangId); ?>
+														 </span>
+														 <div class="accordian_body accordiancontent layout--<?php echo $layout; ?>" style="display: none;">
+															<div class="">
+																 <div class="row">
+																	<div class="col-md-12">
+																		<div class="field-set">
+																			<div class="caption-wraper">
+																				<label class="field_label">
+																				<?php  $fld = $frm->getField('taxrule_name['.$langId.'][]');
+																					$fld->value = isset($rule['taxrule_name'][$langId]) ? $rule['taxrule_name'][$langId] : '';
+																					echo $fld->getCaption(); ?>
+																				</label>
+																			</div>
+																			<div class="field-wraper">
+																				<div class="field_cover">
+																				<?php echo $frm->getFieldHtml('taxrule_name['.$langId.'][]'); ?>
+																				</div>
+																			</div>
+																		</div>
+																	</div>
+																	<div class="col-md-12 combined-tax-lang-details--js<?php echo $langId; ?>">
+																	<?php
+													$combinedData = [];
+													if(!empty($combinedRulesDetails) && isset($combinedRulesDetails[$rule['taxrule_id']])) { 
+														$combinedData = $combinedRulesDetails[$rule['taxrule_id']];
+													}
+													$combTaxCount = 0;
+													if (!empty($combinedData)) { 
+														foreach($combinedData as $comData) { ?>
+															
+																<div class="field-set rule-detail-row<?php echo $combTaxCount; ?>">
+																	<div class="caption-wraper">
+																		<label class="field_label">
+																			<?php $fld = $frm->getField('taxruledet_name['.$langId.'][]');
+																			$fld->value = isset($comData['taxruledet_name'][$langId]) ? $comData['taxruledet_name'][$langId] : '';
+																			echo $fld->getCaption(); ?>
+																		</label>
+																	</div>
+																	<div class="field-wraper">
+																		<div class="field_cover">
+																		<?php echo $frm->getFieldHtml('taxruledet_name['.$langId.'][]'); ?>
+																		</div>
+																	</div>
+																</div>
+															
+															<?php $combTaxCount++; }
+													}
+													else { ?>
+																<div class="field-set rule-detail-row<?php echo $combTaxCount; ?>">
+																	<div class="caption-wraper">
+																		<label class="field_label">
+																		<?php  $fld = $frm->getField('taxruledet_name['.$langId.'][]');
+																			echo $fld->getCaption(); ?>
+																		</label>
+																	</div>
+																	<div class="field-wraper">
+																		<div class="field_cover">
+																		<?php echo $frm->getFieldHtml('taxruledet_name['.$langId.'][]'); ?>
+																		</div>
+																	</div>
+																</div>
+															<?php } ?>
+															</div>
+																</div>
+															</div>
+														 </div>
+													 </div>
+												 </div>
+												 <?php } 
+												 }
+												 ?>
+											</div>
+										</div>
                                     </div>
                                 </div>
                                 <script>
@@ -208,7 +296,7 @@ $frm->developerTags['fld_default_col'] = 12;
 											</div>
 										</div>
 										<div class="row">
-                                            <?php $taxruleNameFld = $frm->getField("taxrule_name[]"); 
+                                            <?php $taxruleNameFld = $frm->getField("taxrule_name[".$adminLangId."][]"); 
                                               $taxruleRateFld = $frm->getField("taxrule_rate[]"); 
                                               echo $frm->getFieldHtml('taxrule_id[]');
                                             ?>
@@ -218,7 +306,7 @@ $frm->developerTags['fld_default_col'] = 12;
                                                         <label for="example-text-input" class="">
                                                             <?php echo $taxruleNameFld->getCaption();?>
                                                         </label>
-                                                        <?php echo $frm->getFieldHtml("taxrule_name[]"); ?></div>
+                                                        <?php echo $frm->getFieldHtml("taxrule_name[".$adminLangId."][]"); ?></div>
                                                     <div class="form-group">
                                                         <label for="example-text-input">
                                                             <?php echo $taxruleRateFld->getCaption();?>
@@ -276,9 +364,9 @@ $frm->developerTags['fld_default_col'] = 12;
                                                 </tr>
                                             </thead>
                                             <tbody>
-                                                <tr class="rule-detail-row--js">
+                                                <tr class="rule-detail-row--js rule-detail-row<?php echo $combTaxCount; ?>">
                                                     <td scope="row">
-                                                        <?php $detIdsFld=$frm->getField("taxruledet_id[]"); $detIdsFld->value="";$detNameFld=$frm->getField("taxruledet_name[]"); $detNameFld->value="";$detRateFld=$frm->getField("taxruledet_rate[]"); $detRateFld->value="";echo $frm->getFieldHtml("taxruledet_id[]"); echo $frm->getFieldHtml("taxruledet_name[]");?></td>
+                                                        <?php $detIdsFld=$frm->getField("taxruledet_id[]"); $detIdsFld->value="";$detNameFld=$frm->getField("taxruledet_name[".$adminLangId."][]"); $detNameFld->value="";$detRateFld=$frm->getField("taxruledet_rate[]"); $detRateFld->value="";echo $frm->getFieldHtml("taxruledet_id[]"); echo $frm->getFieldHtml("taxruledet_name[".$adminLangId."][]");?></td>
                                                     <td>
                                                         <?php echo $frm->getFieldHtml("taxruledet_rate[]");?></td>
                                                     <td>
@@ -339,7 +427,7 @@ $frm->developerTags['fld_default_col'] = 12;
             var lastIndex = $('.tax-rule-form--js:last').data('index');
             lastIndex = parseInt(lastIndex);
             var newIndex = lastIndex + 1;
-            var ruleFormHtml = '<div class="tax-rule-form--js tax-rule-form-'+ newIndex +'" data-index="'+ newIndex +'"><div class="p-4"><div class="row mb-4"><div class="col-sm-12"><h3 class="portlet__head-title"><?php echo Labels::getLabel("LBL_Tax_Rules", $adminLangId)?></h3><a href="javascript:void(0);" class="themebtn btn-primary remove-tax-rule--js"><i class="ion-plus"></i> <?php echo Labels::getLabel("LBL_Delete_Tax_Rule", $adminLangId);?></a></div></div><div class="row"><?php $taxruleNameFld=$frm->getField("taxrule_name[]");$taxruleNameFld->value=""; $taxruleRateFld=$frm->getField("taxrule_rate[]"); $taxruleRateFld->value=""; echo $frm->getFieldHtml('taxrule_id[]'); ?><div class="col-lg-4"><div class="border rounded p-4 h-100"><div class="form-group"><label for="example-text-input" class=""><?php echo $taxruleNameFld->getCaption();?></label><?php echo $frm->getFieldHtml("taxrule_name[]"); ?></div><div class="form-group"><label for="example-text-input"><?php echo $taxruleRateFld->getCaption();?></label><?php echo $frm->getFieldHtml("taxrule_rate[]"); ?></div><?php $countryFld=$frm->getField("taxruleloc_country_id[]"); $countryFld->value="";$countryFld->setFieldTagAttribute("id","ua_country_id"); $countryFld->setFieldTagAttribute("onChange","getCountryStatesTaxInTaxForm(this, this.value,0)"); $typeFld=$frm->getField("taxruleloc_type[]");$typeFld->value="";$stateFld=$frm->getField("taxruleloc_state_id[]"); $stateFld->value="";$stateFld->addFieldTagAttribute("multiple", "true"); $stateFld->addFieldTagAttribute("id", "ua_state_id"); $stateFld->addFieldTagAttribute("class", "selectpicker"); $stateFld->addFieldTagAttribute("data-style", "bg-white rounded-pill px-4 py-2 shadow-sm"); $comFld = $frm->getField("taxrule_is_combined[]"); $comFld->checked = ""; ?><div class="form-group"><label for="example-text-input" class=""><?php echo $countryFld->getCaption();?></label><?php echo $frm->getFieldHtml("taxruleloc_country_id[]");?></div></div></div><div class="col-lg-8"><div class="border rounded p-4 h-100"><div class="form-group"><label for="example-text-input" class=""><?php echo $typeFld->getCaption();?></label><?php echo $frm->getFieldHtml("taxruleloc_type[]");?></div><div class="form-group"><label for="example-text-input" class=""><?php echo $stateFld->getCaption();?></label><?php echo $frm->getFieldHtml("taxruleloc_state_id[]");?></div><div class="form-group"><?php echo $frm->getFieldHtml("taxrule_is_combined[]");?></div></div></div></div><table class="table table-bordered table-hover table-edited my-4 combined-tax-details--js" style="display:none;"><thead><tr><th width="60%"><?php echo Labels::getLabel("LBL_Name", $adminLangId)?></th><th width="30%"><?php echo Labels::getLabel("LBL_Tax_Rate", $adminLangId)?></th><th width="10%"></th></tr></thead><tbody><tr class="rule-detail-row--js"><td scope="row"><?php $detIdsFld=$frm->getField("taxruledet_id[]"); $detIdsFld->value="";$detNameFld=$frm->getField("taxruledet_name[]"); $detNameFld->value="";$detRateFld=$frm->getField("taxruledet_rate[]"); $detRateFld->value="";echo $frm->getFieldHtml("taxruledet_id[]"); echo $frm->getFieldHtml("taxruledet_name[]");?></td><td><?php echo $frm->getFieldHtml("taxruledet_rate[]");?></td><td><a href="javascript:void(0);" class="themebtn btn-primary remove-combined-form--js"><i class="ion-minus"></i></a></td></tr></tbody><tfoot><tr><td colspan="2"></td><td><a href="javascript:0;" class="themebtn btn-primary add-combined-form--js"><i class="ion-plus"></i></a></td></tr></tfoot></table></div></div>';
+            var ruleFormHtml = '<div class="tax-rule-form--js tax-rule-form-'+ newIndex +'" data-index="'+ newIndex +'"><div class="p-4"><div class="row mb-4"><div class="col-sm-12"><h3 class="portlet__head-title"><?php echo Labels::getLabel("LBL_Tax_Rules", $adminLangId)?></h3><a href="javascript:void(0);" class="themebtn btn-primary remove-tax-rule--js"><i class="ion-plus"></i> <?php echo Labels::getLabel("LBL_Delete_Tax_Rule", $adminLangId);?></a></div></div><div class="row"><?php $taxruleNameFld=$frm->getField("taxrule_name[".$adminLangId."][]");$taxruleNameFld->value=""; $taxruleRateFld=$frm->getField("taxrule_rate[]"); $taxruleRateFld->value=""; echo $frm->getFieldHtml('taxrule_id[]'); ?><div class="col-lg-4"><div class="border rounded p-4 h-100"><div class="form-group"><label for="example-text-input" class=""><?php echo $taxruleNameFld->getCaption();?></label><?php echo $frm->getFieldHtml("taxrule_name[".$adminLangId."][]"); ?></div><div class="form-group"><label for="example-text-input"><?php echo $taxruleRateFld->getCaption();?></label><?php echo $frm->getFieldHtml("taxrule_rate[]"); ?></div><?php $countryFld=$frm->getField("taxruleloc_country_id[]"); $countryFld->value="";$countryFld->setFieldTagAttribute("id","ua_country_id"); $countryFld->setFieldTagAttribute("onChange","getCountryStatesTaxInTaxForm(this, this.value,0)"); $typeFld=$frm->getField("taxruleloc_type[]");$typeFld->value="";$stateFld=$frm->getField("taxruleloc_state_id[]"); $stateFld->value="";$stateFld->addFieldTagAttribute("multiple", "true"); $stateFld->addFieldTagAttribute("id", "ua_state_id"); $stateFld->addFieldTagAttribute("class", "selectpicker"); $stateFld->addFieldTagAttribute("data-style", "bg-white rounded-pill px-4 py-2 shadow-sm"); $comFld = $frm->getField("taxrule_is_combined[]"); $comFld->checked = ""; ?><div class="form-group"><label for="example-text-input" class=""><?php echo $countryFld->getCaption();?></label><?php echo $frm->getFieldHtml("taxruleloc_country_id[]");?></div></div></div><div class="col-lg-8"><div class="border rounded p-4 h-100"><div class="form-group"><label for="example-text-input" class=""><?php echo $typeFld->getCaption();?></label><?php echo $frm->getFieldHtml("taxruleloc_type[]");?></div><div class="form-group"><label for="example-text-input" class=""><?php echo $stateFld->getCaption();?></label><?php echo $frm->getFieldHtml("taxruleloc_state_id[]");?></div><div class="form-group"><?php echo $frm->getFieldHtml("taxrule_is_combined[]");?></div></div></div></div><table class="table table-bordered table-hover table-edited my-4 combined-tax-details--js" style="display:none;"><thead><tr><th width="60%"><?php echo Labels::getLabel("LBL_Name", $adminLangId)?></th><th width="30%"><?php echo Labels::getLabel("LBL_Tax_Rate", $adminLangId)?></th><th width="10%"></th></tr></thead><tbody><tr class="rule-detail-row--js"><td scope="row"><?php $detIdsFld=$frm->getField("taxruledet_id[]"); $detIdsFld->value="";$detNameFld=$frm->getField("taxruledet_name[".$adminLangId."][]"); $detNameFld->value="";$detRateFld=$frm->getField("taxruledet_rate[]"); $detRateFld->value="";echo $frm->getFieldHtml("taxruledet_id[]"); echo $frm->getFieldHtml("taxruledet_name[".$adminLangId."][]");?></td><td><?php echo $frm->getFieldHtml("taxruledet_rate[]");?></td><td><a href="javascript:void(0);" class="themebtn btn-primary remove-combined-form--js"><i class="ion-minus"></i></a></td></tr></tbody><tfoot><tr><td colspan="2"></td><td><a href="javascript:0;" class="themebtn btn-primary add-combined-form--js"><i class="ion-plus"></i></a></td></tr></tfoot></table></div></div>';
             $('.tax-rule-form--js:last').after(ruleFormHtml);
             $('.tax-rule-form-'+ newIndex +' .selectpicker').selectpicker();
         });
@@ -351,16 +439,25 @@ $frm->developerTags['fld_default_col'] = 12;
 </script>
 <script>
     $(document).ready(function(){
+		var combTaxCount = <?php echo $combTaxCount; ?>;
         $('body').on('click', '.add-combined-form--js', function(){
+			combTaxCount++;
             var parentIndex = $(this).parents('.tax-rule-form--js').data('index');
-            var rowHtml = '<tr class="rule-detail-row--js"><td scope="row"> <?php $idFld = $frm->getField('taxruledet_id[]'); $idFld->value = ""; $nameFld = $frm->getField('taxruledet_name[]'); $nameFld->value = ""; $rateFld = $frm->getField('taxruledet_rate[]'); $rateFld->value = ""; echo $frm->getFieldHtml('taxruledet_id[]'); echo $frm->getFieldHtml('taxruledet_name[]');?></td><td> <?php echo $frm->getFieldHtml('taxruledet_rate[]');?></td><td> <a href="javascript:void(0);" class="themebtn btn-primary remove-combined-form--js"><i class="ion-minus"></i></a></td></tr>';
+            var rowHtml = '<tr class="rule-detail-row--js rule-detail-row'+combTaxCount+'"><td scope="row"> <?php $idFld = $frm->getField('taxruledet_id[]'); $idFld->value = ""; $nameFld = $frm->getField('taxruledet_name['.$adminLangId.'][]'); $nameFld->value = ""; $rateFld = $frm->getField('taxruledet_rate[]'); $rateFld->value = ""; echo $frm->getFieldHtml('taxruledet_id[]'); echo $frm->getFieldHtml('taxruledet_name['.$adminLangId.'][]');?></td><td> <?php echo $frm->getFieldHtml('taxruledet_rate[]');?></td><td> <a href="javascript:void(0);" class="themebtn btn-primary remove-combined-form--js"><i class="ion-minus"></i></a></td></tr>';
             $('.tax-rule-form-'+ parentIndex +' .combined-tax-details--js tbody').append(rowHtml);
+			
+			<?php foreach($otherLanguages as $langId => $data) { ?>
+				var langRowHtml = '<div class="field-set rule-detail-row'+combTaxCount+'"><div class="caption-wraper"><label class="field_label"><?php echo Labels::getLabel('LBL_Combined_Tax_Name', $adminLangId);?></label></div><div class="field-wraper"><div class="field_cover"><?php $nameFld = $frm->getField('taxruledet_name['.$langId.'][]'); $nameFld->value = ""; echo $frm->getFieldHtml('taxruledet_name['.$langId.'][]'); ?></div></div></div>';	
+				$('.tax-rule-form-'+ parentIndex +' .combined-tax-lang-details--js'+<?php echo $langId; ?>).append(langRowHtml);
+			<?php } ?>
             //$("table tbody").append(markup);
         });
         // Find and remove selected table rows
         $('body').on('click', '.remove-combined-form--js', function(){
             var rowCount = $(this).parents('tbody').find('tr').length;
             if (rowCount > 1) {
+				var className = $(this).parents('tr').attr('class').split(' ').pop();
+                $('.'+className).remove();
                 $(this).parents('tr').remove();
             }
         });
