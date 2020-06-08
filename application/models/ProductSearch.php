@@ -363,7 +363,7 @@ class ProductSearch extends SearchBase
     }
 
     public function joinProductShippedBySeller($sellerId = 0)
-    {      
+    {
         $sellerId = FatUtility::int($sellerId);
         $this->joinTable(Product::DB_PRODUCT_SHIPPED_BY_SELLER, 'LEFT OUTER JOIN', 'psbs.psbs_product_id = p.product_id and psbs.psbs_user_id = ' . $sellerId, 'psbs');
     }
@@ -975,9 +975,14 @@ class ProductSearch extends SearchBase
         $this->joinTable(ShippingProfile::DB_TBL, 'LEFT OUTER JOIN', 'spprod.shippro_shipprofile_id = spprof.shipprofile_id', 'spprof');
     }
 
+    public function joinShippingProfileZones()
+    {
+        $this->joinTable(ShippingProfileZone::DB_TBL, 'LEFT OUTER JOIN', 'shippz.shipprozone_shipprofile_id = spprof.shipprofile_id', 'shippz');
+    }
+
     public function joinShippingZones()
     {
-        $this->joinTable(ShippingProfileZone::DB_TBL, 'LEFT OUTER JOIN', 'shipz.shipprozone_shipprofile_id = spprof.shipprofile_id', 'shipz');
+        $this->joinTable(ShippingZone::DB_TBL, 'LEFT OUTER JOIN', 'shipz.shipzone_id = shippz.shipprozone_shipzone_id', 'shipz');
     }
 
     public function joinShippingRates($langId = 0)
@@ -987,7 +992,7 @@ class ProductSearch extends SearchBase
             $langId = $this->langId;
         }
 
-        $this->joinTable(ShippingRate::DB_TBL, 'LEFT OUTER JOIN', 'shipr.shiprate_shipprozone_id = shipz.shipprozone_id', 'shipr');
+        $this->joinTable(ShippingRate::DB_TBL, 'LEFT OUTER JOIN', 'shipr.shiprate_shipprozone_id = shippz.shipprozone_id', 'shipr');
         if (0 < $langId) {
             $this->joinTable(ShippingRate::DB_TBL_LANG, 'LEFT OUTER JOIN', 'shipr_l.shipratelang_shiprate_id = shipr.shiprate_id and shipr_l.shipratelang_lang_id = '. $langId, 'shipr_l');
         }
@@ -1004,7 +1009,7 @@ class ProductSearch extends SearchBase
         $srch->addDirectCondition("(shiploc_country_id = '-1' or (shiploc_country_id = '" . $countryId. "' and (shiploc_state_id = '-1' or shiploc_state_id = '" . $stateId . "')) )");
         $srch->doNotCalculateRecords();
         $srch->doNotLimitRecords();
-       
-        $this->joinTable('(' .$srch->getQuery() . ')', 'LEFT OUTER JOIN', 'shiploc.shiploc_shipzone_id = shipz.shipprozone_id', 'shiploc');
+        
+        $this->joinTable('(' .$srch->getQuery() . ')', 'INNER JOIN', 'shiploc.shiploc_shipzone_id = shippz.shipprozone_shipzone_id', 'shiploc');
     }
 }

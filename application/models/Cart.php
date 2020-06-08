@@ -269,8 +269,14 @@ class Cart extends FatModel
                 $this->products[$key]['quantity'] = $quantity;
                 $this->products[$key]['has_physical_product'] = 0;
                 $this->products[$key]['has_digital_product'] = 0;
+                $this->products[$key]['is_cod_enabled'] = 0;
+                $this->products[$key]['shop_eligible_for_free_shipping'] = 0;
             }
         }
+        
+        usort($this->products, function ($a, $b) {
+            return $a['shop_id'] - $b['shop_id'];
+        });
         return $this->products;
     }
 
@@ -407,7 +413,7 @@ class Cart extends FatModel
                     );
                     
                     $taxData = $taxObj->calculateTaxRates($sellerProductRow['product_id'], $taxableProdPrice, $sellerProductRow['selprod_user_id'], $siteLangId, $quantity, $extraData, $this->cartCache);
-                    if (false == $taxData['status'] && $taxData['msg'] != ''){
+                    if (false == $taxData['status'] && $taxData['msg'] != '') {
                         $this->error = $taxData['msg'];
                     }
                     
@@ -631,11 +637,11 @@ class Cart extends FatModel
         $found = false;
         if (is_array($cartProducts)) {
             foreach ($cartProducts as $cartKey => $product) {
-                if ( ($key == 'all' || (md5($product['key']) == $key) && !$product['is_batch'])) {
+                if (($key == 'all' || (md5($product['key']) == $key) && !$product['is_batch'])) {
                     $found = true;
                     unset($this->SYSTEM_ARR['cart'][$cartKey]);
                     $this->updateTempStockHold($product['selprod_id'], 0, 0);
-                    if ( ($key == 'all' || md5($product['key']) == $key) && !$product['is_batch']) {
+                    if (($key == 'all' || md5($product['key']) == $key) && !$product['is_batch']) {
                         if (is_numeric($this->cart_user_id) && $this->cart_user_id > 0) {
                             AbandonedCart::saveAbandonedCart($this->cart_user_id, $product['selprod_id'], $product['quantity'], AbandonedCart::ACTION_DELETED);
                         }
@@ -991,11 +997,11 @@ class Cart extends FatModel
                 $shippingCost = 0;
                 if (!empty($productSelectedShippingMethodsArr['product']) && isset($productSelectedShippingMethodsArr['product'][$product['selprod_id']])) {
                     $shippingDurationRow = $productSelectedShippingMethodsArr['product'][$product['selprod_id']];
-                    $shippingCost = ROUND(($shippingDurationRow['mshipapi_cost']), 2);                   
+                    $shippingCost = ROUND(($shippingDurationRow['mshipapi_cost']), 2);
                 }
 
                 $taxObj = new Tax();
-                $extraData = array(                    
+                $extraData = array(
                     'billingAddress' => isset($product['billing_address']) ? $product['billing_address'] : '',
                     'shippingAddress' => isset($product['shipping_address']) ? $product['shipping_address'] : '',
                     'shippedBySeller' => $isProductShippedBySeller,
@@ -1003,7 +1009,7 @@ class Cart extends FatModel
                     'buyerId' => $this->cart_user_id
                 );
                 $taxData = $taxObj->calculateTaxRates($product['product_id'], $taxableProdPrice, $product['selprod_user_id'], $langId, $product['quantity'], $extraData, $this->cartCache);
-                if (false == $taxData['status'] && $taxData['msg'] != ''){
+                if (false == $taxData['status'] && $taxData['msg'] != '') {
                     $this->error = $taxData['msg'];
                 }
                 if (array_key_exists('options', $taxData)) {
@@ -1405,7 +1411,7 @@ class Cart extends FatModel
 
     public function clear($includeAbandonedCart = false)
     {
-        if($includeAbandonedCart == true){
+        if ($includeAbandonedCart == true) {
             $cartProducts = $this->getProducts($this->cart_lang_id);
             if (is_array($cartProducts)) {
                 foreach ($cartProducts as $cartKey => $product) {
@@ -1620,11 +1626,128 @@ class Cart extends FatModel
         return $product_rates;
     }
 
+    public function getShippingRates()
+    {
+        $shippingOptions = $this->getShippingOptions();
+        $shippingRates = [];
+        foreach ($shippingOptions as $level => $levelItems) {
+            if (count($levelItems['rates']) > 0 && $level != Shipping::LEVEL_PRODUCT) {
+                $name = current($levelItems['rates'])['code'];
+                $shippingRates[$name] =  $levelItems['rates'];
+            } else {
+                foreach ($levelItems['products'] as $product) {
+                    $name = current($levelItems['rates'][$product['selprod_id']])['code'];
+                    $shippingRates[$name] =  $levelItems['rates'][$product['selprod_id']];
+                }
+            }
+        }
+        return $shippingRates;
+    }
+
+    public function getShippingOptions()
+    {
+        $shippedByArr = [];
+
+        $shipToCountryId = 0;
+        $shipToStateId = 0;
+
+        $shippingAddressDetail = UserAddress::getUserAddresses($this->cart_user_id, $this->cart_lang_id, 0, $this->getCartShippingAddress());
+
+        if (!empty($shippingAddressDetail)) {
+            $shipToCountryId = isset($shippingAddressDetail['ua_country_id']) ? $shippingAddressDetail['ua_country_id'] : 0;
+        }
+
+        if (!empty($shippingAddressDetail)) {
+            $shipToStateId = isset($shippingAddressDetail['ua_state_id']) ? $shippingAddressDetail['ua_state_id'] : 0;
+        }
+
+        $physicalSelProdIdArr = [];
+        $digitalSelProdIdArr = [];
+        $cartProducts = $this->getBasketProducts($this->cart_lang_id);
+       
+        $productInfo = [];
+        foreach ($cartProducts as $key => $val) {
+            $productInfo[$val['selprod_id']] = $val;
+            if ($val['is_physical_product']) {
+                $physicalSelProdIdArr[] = $val['selprod_id'];
+            } else {
+                $digitalSelProdIdArr[] = $val['selprod_id'];
+            }
+        }
+
+        $shipping = new Shipping($this->cart_lang_id);
+        $selProdShipRates = $shipping->getSellerProductShippingRates($physicalSelProdIdArr, $shipToCountryId, $shipToStateId);
+        
+        foreach ($selProdShipRates as $rateId => $rates) {
+            $shippedBy = Shipping::BY_ADMIN;
+            $shippingLevel = Shipping::LEVEL_PRODUCT;
+
+            if ($rates['shiippingBySeller']) {
+                $shippedBy = Shipping::BY_SHOP;
+            }
+            
+            if ($rates['shipprofile_default']) {
+                $shippingLevel = Shipping::LEVEL_ORDER;
+                if ($rates['shiippingBySeller']) {
+                    $shippingLevel = Shipping::LEVEL_SHOP;
+                }
+            }
+
+            $selPprodData = [];
+            $shippingCost = [
+                'id' => $rates['shiprate_id'],
+                'code' => $rates['selprod_id'],
+                'title' => $rates['shiprate_name'],
+                'cost' => $rates['shiprate_cost'],
+            ];
+
+            $shippedByArr[$shippingLevel]['products'][$rates['selprod_id']] = $productInfo[$rates['selprod_id']];
+            switch ($shippingLevel) {
+                case Shipping::LEVEL_PRODUCT:
+                    $shippedByArr[$shippingLevel]['shipping_options'][$rates['selprod_id']][] = $rates;
+                    
+                    $code = '';
+                    if (isset($shippedByArr[$shippingLevel]['rates'][$rates['selprod_id']][$rates['shiprate_id']]['code']) && $shippedByArr[$shippingLevel]['rates'][$rates['selprod_id']][$rates['shiprate_id']]['code'] != '') {
+                        $code = $shippedByArr[$shippingLevel]['rates'][$rates['selprod_id']][$rates['shiprate_id']]['code'];
+                    }
+                    
+                    if ($code != '') {
+                        $shippingCost['code'] = $shippingCost['code'] . '_' . $code;
+                    }
+
+                    $shippedByArr[$shippingLevel]['rates'][$rates['selprod_id']][$rates['shiprate_id']] = $shippingCost;
+                    break;
+                case Shipping::LEVEL_ORDER:
+                case Shipping::LEVEL_SHOP:
+                    $shippedByArr[$shippingLevel]['shipping_options'][$rates['shiprate_id']] = $rates;
+                    
+                    $code = '';
+                    if (isset($shippedByArr[$shippingLevel]['rates'][$rates['shiprate_id']]['code']) && $shippedByArr[$shippingLevel]['rates'][$rates['shiprate_id']]['code'] != '') {
+                        $code = $shippedByArr[$shippingLevel]['rates'][$rates['shiprate_id']]['code'];
+                    }
+
+                    if ($code != '') {
+                        $shippingCost['code'] = $shippingCost['code'] . '_' . $code;
+                    }
+
+                    $shippedByArr[$shippingLevel]['rates'][$rates['shiprate_id']] = $shippingCost;
+                    break;
+            }
+        }
+        
+        foreach ($digitalSelProdIdArr as $selProdId) {
+            $shippedByArr[Shipping::LEVEL_PRODUCT]['products'][$selProdId] = $productInfo[$selProdId];
+            $shippedByArr[Shipping::LEVEL_PRODUCT]['shipping_options'][$selProdId] = [];
+            $shippedByArr[Shipping::LEVEL_PRODUCT]['rates'][$selProdId] = [];
+        }
+        return $shippedByArr;
+    }
+
     public function convertWeightInOunce($productWeight, $productWeightClass)
     {
         $coversionRate = 1;
         switch ($productWeightClass) {
-            case "KG" :
+            case "KG":
                 $coversionRate = "35.274";
                 break;
             case "GM":
@@ -1704,15 +1827,18 @@ class Cart extends FatModel
         return true;
     }
 
-    public function getError(){
+    public function getError()
+    {
         return $this->error;
     }
 
-    public function enableCache() {
+    public function enableCache()
+    {
         $this->cartCache = true;
     }
 
-    public function disableCache() {
+    public function disableCache()
+    {
         $this->cartCache = false;
     }
 }

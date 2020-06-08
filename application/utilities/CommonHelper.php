@@ -1575,6 +1575,7 @@ class CommonHelper extends FatUtility
         return $csvValidMimes;
     }
 
+
     public static function createDropDownFromArray($name = '', $arr = array(), $selected = 0, $extra = ' ', $selectCaption = '')
     {
         $dropDown = '<select name="' . $name . '" ' . $extra . '>';
