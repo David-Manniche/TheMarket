@@ -265,6 +265,10 @@ class StripeConnectPayController extends PaymentController
                         'currency' => $orderInfo['order_currency_code'],
                         'destination' => $accountId,
                         'transfer_group' => $op['op_invoice_number'],
+                        'description' => $comments,
+                        'metadata' => [
+                            'op_id' => $op['op_id']
+                        ]
                     ];
         
                     if (false === $this->stripeConnect->doTransfer($charge)) {

@@ -236,6 +236,10 @@ trait StripeConnectFunctions
      *         'currency' => 'inr',
      *         'destination' => '{{CONNECTED_STRIPE_ACCOUNT_ID}}',
      *         'transfer_group' => '{ORDER10}',
+     *         'description' => '',
+     *         'metadata' => [
+     *              'xyz' => 'XXX'
+     *          ]
      *       ]
      * @return object
      */
@@ -253,7 +257,7 @@ trait StripeConnectFunctions
      *              'amount' => 1000, // In Paisa
      *              'description' => '',
      *              'metadata' => [
-     *                  'xyz' => 'abc' // Set of key-value pairs that you can attach to an object.
+     *                  'xyz' => 'XXX' // Set of key-value pairs that you can attach to an object.
      *              ],
      *          ],
      *       ]
