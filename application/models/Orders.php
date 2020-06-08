@@ -1701,7 +1701,7 @@ class Orders extends MyAppModel
                 $payment = current($orderObj->getOrderPayments(["order_id" => $childOrderInfo['op_order_id']]));
                 if (!empty($payment['opayment_gateway_txn_id'])) {
                     $pluginKey = Plugin::getAttributesById($paymentMethodId, 'plugin_code');
-                    $comments = Labels::getLabel('MSG_ALREADY_TRANSFERED_TO_{account-id}_ACCOUNT._TXN_ID_:_{txn-id}');
+                    $comments = Labels::getLabel('MSG_ALREADY_TRANSFERED_TO_{account-id}_ACCOUNT._TXN_ID_:_{txn-id}', $langId);
                     $accountId = User::getUserMeta($childOrderInfo['op_selprod_user_id'], 'stripe_account_id');
                     $comments = CommonHelper::replaceStringData($comments, ['{account-id}' => $accountId, '{txn-id}' => $payment['opayment_gateway_txn_id']]);
                     switch ($pluginKey) {
