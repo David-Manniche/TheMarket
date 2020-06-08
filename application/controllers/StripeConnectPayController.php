@@ -252,7 +252,7 @@ class StripeConnectPayController extends PaymentController
                     $txnArray["utxn_status"] = Transactions::STATUS_COMPLETED;
                     $txnArray["utxn_op_id"] = $op['op_id'];
                     $txnArray["utxn_comments"] = $comments;
-                    $txnArray["utxn_type"] = Transactions::TYPE_PRODUCT_SALE;
+                    $txnArray["utxn_type"] = Transactions::TYPE_TRANSFER_TO_THIRD_PARTY_ACCOUNT;
                     $transObj = new Transactions();
                     if ($txnId = $transObj->addTransaction($txnArray)) {
                         $emailNotificationObj = new EmailHandler();
