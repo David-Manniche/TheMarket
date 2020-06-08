@@ -243,7 +243,7 @@ class StripeConnectPayController extends PaymentController
                 $restAmountToBePaid = $total - $paidAmount;
 
                 if (0 < $restAmountToBePaid) {
-                    $comments = Labels::getLabel('MSG_PENDING_DISCOUNT_AMOUNT_FROM_#{invoice-no}');
+                    $comments = Labels::getLabel('MSG_PENDING_DISCOUNT_AMOUNT_FROM_#{invoice-no}', $this->siteLangId);
                     $comments = CommonHelper::replaceStringData($comments, ['{invoice-no}' => $op['op_invoice_number']]);
 
                     $txnArray["utxn_user_id"] = $op['op_selprod_user_id'];
@@ -276,7 +276,7 @@ class StripeConnectPayController extends PaymentController
                         continue;
                     }
 
-                    $comments = Labels::getLabel('MSG_PENDING_DISCOUNT_AMOUNT_CREDITED_TO_YOUR_{account-name}._ACCOUNT_ADDRESS_{account-address}');
+                    $comments = Labels::getLabel('MSG_PENDING_DISCOUNT_AMOUNT_CREDITED_TO_YOUR_{account-name}._ACCOUNT_ADDRESS_:_{account-address}', $this->siteLangId);
                     $comments = CommonHelper::replaceStringData($comments, ['{account-name}' => self::KEY_NAME, '{account-address}' => $accountId]);
 
                     $txnArray["utxn_user_id"] = $op['op_selprod_user_id'];
