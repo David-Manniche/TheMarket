@@ -26,6 +26,7 @@ class StripeConnect extends PaymentMethodBase
     ];
 
     private const CONNECT_URI = "https://connect.stripe.com/oauth";
+    public const TERMS_AND_SERVICES_URI = "https://stripe.com/en-in/connect-account/legal";
 
     public const REQUEST_CREATE_ACCOUNT = 1;
     public const REQUEST_RETRIEVE_ACCOUNT = 2;

@@ -160,8 +160,9 @@ class StripeConnectController extends PaymentMethodBaseController
         }
 
         if (in_array('tos_acceptance', $initialFields)) {
-            $fld = $frm->addCheckBox(Labels::getLabel('LBL_I_AGREE_TO_THE_TERMS_OF_SERVICES', $this->siteLangId), 'tos_acceptance', 1);
+            $fld = $frm->addCheckBox(Labels::getLabel('LBL_I_AGREE', $this->siteLangId), 'tos_acceptance', 1);
             $fld->requirement->setRequired(true);
+            $fld->htmlAfterField = ' <a href="' . $this->stripeConnect::TERMS_AND_SERVICES_URI . '" target="_blank">' . $label = Labels::getLabel('LBL_TERMS_OF_SERVICE', $this->siteLangId) . '</a>';
         }
 
         if (0 < count($initialFields)) {

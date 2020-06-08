@@ -679,16 +679,6 @@ class DummyController extends MyAppController
 
     public function stripe()
     {
-        /*$obj = new Orders();
-        $data = $obj->getOrderProductsByOpId(287, $this->siteLangId);
-        CommonHelper::printArray($data, true);*/
-        // Plugin::canRefund('StripeConnect', $this->siteLangId);
-        /* $obj = new PaymentMethods();
-        $obj->canRefundToCard('StripeConnect', $this->siteLangId);
-        $obj->initiateRefund('228');
-        echo $obj->getError(); */
-
-        
         $error = '';
         if (false === $obj = PluginHelper::callPlugin('StripeConnect', [$this->siteLangId], $error, $this->siteLangId)) {
             echo $obj->getError();
@@ -699,45 +689,5 @@ class DummyController extends MyAppController
             die;
         }
 
-        // Transfer
-        /* $charge = [
-            'amount' => 1,
-            'currency' => 'USD',
-            'destination' => 'acct_1Gmx9DGkbY2HMTLT',
-            'transfer_group' => 'Discount Amount',
-        ];
-
-        if (false === $obj->doTransfer($charge)) {
-            echo $obj->getError();
-            die;
-        } */
-
-        // Reverse Transfer
-        /* $requestParam = [
-            'transferId' => 'tr_1Gqz7HCvMMMb9OAZYw82sAO6',
-            'data' => [
-                'amount' => 1, // In Paisa
-                'description' => 'Testing',
-                'metadata' => [
-                    'xyz' => 'abc' // Set of key-value pairs that you can attach to an object.
-                ],
-            ],
-        ];
-        if (false === $obj->revertTransfer($requestParam)) {
-            echo $obj->getError();
-            die;
-        }
-        $resp = $obj->getResponse(); */
-
-        $orderPaymentObj = new OrderPayment('O1591439964', $this->siteLangId);
-        $orderInfo = $orderPaymentObj->getOrderPrimaryinfo();
-        $orderObj = new Orders();
-        $orderProducts = $orderObj->getChildOrders(array('order_id' => $orderInfo['id']), $orderInfo['order_type'], $orderInfo['order_language_id']);
-        foreach ($orderProducts as $op) {
-            $shippingCost = CommonHelper::orderProductAmount($op, 'SHIPPING');
-            $volumeDiscount = CommonHelper::orderProductAmount($op, 'VOLUME_DISCOUNT');
-            echo $total = CommonHelper::orderProductAmount($op, 'cart_total') + $shippingCost + $volumeDiscount;
-        }
-        CommonHelper::printArray($orderProducts, true);
     }
 }
