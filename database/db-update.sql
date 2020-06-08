@@ -82,3 +82,5 @@ ALTER TABLE `tbl_order_return_requests` ADD `orrequest_payment_gateway_req_id` V
 
 ALTER TABLE `tbl_order_cancel_requests` CHANGE `ocrequest_refund_in_wallet` `ocrequest_refund_in_wallet` TINYINT(1) NOT NULL COMMENT 'Defined In PaymentMethods Model';
 ALTER TABLE `tbl_order_cancel_requests` ADD `ocrequest_payment_gateway_req_id` VARCHAR(255) NOT NULL AFTER `ocrequest_status`;
+
+ALTER TABLE `tbl_user_transactions`  ADD `utxn_gateway_txn_id` VARCHAR(150) NOT NULL  AFTER `utxn_debit`;

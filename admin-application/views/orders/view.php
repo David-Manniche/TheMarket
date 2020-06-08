@@ -98,7 +98,7 @@ if ($order['order_reward_point_used'] > 0) {
                             foreach ($order["products"] as $op) {
                                 $shippingCost = CommonHelper::orderProductAmount($op, 'SHIPPING');
                                 $volumeDiscount = CommonHelper::orderProductAmount($op, 'VOLUME_DISCOUNT');
-                                $total = CommonHelper::orderProductAmount($op, 'cart_total') + $shippingCost+$volumeDiscount;
+                                $total = CommonHelper::orderProductAmount($op, 'cart_total') + $shippingCost + $volumeDiscount;
                                 $cartTotal = $cartTotal + CommonHelper::orderProductAmount($op, 'cart_total');
                                 $shippingTotal = $shippingTotal + CommonHelper::orderProductAmount($op, 'shipping'); ?>
                             <tr>

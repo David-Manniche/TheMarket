@@ -90,7 +90,6 @@ class StripeConnectPayController extends PaymentController
             $data = [
                 'mode' => 'payment',
                 'payment_method_types' => ['card'],
-                // 'success_url' => CommonHelper::generateFullUrl(self::KEY_NAME . 'pay', 'distribute', [$orderId]),
                 'success_url' => CommonHelper::generateFullUrl('custom', 'paymentSuccess', array($orderInfo['id'])),
                 'cancel_url' => $cancelUrl,
                 'line_items' => [],
@@ -109,7 +108,7 @@ class StripeConnectPayController extends PaymentController
                 $netAmount = CommonHelper::orderProductAmount($op, 'NETAMOUNT');
                 $singleItemPrice = $netAmount / $op['op_qty'];
                 $priceData = [
-                    'unit_amount' => $this->formatPayableAmount($singleItemPrice),
+                    'unit_amount' => $this->convertInPaisa($singleItemPrice),
                     'currency' => $orderInfo['order_currency_code'],
                     'product_data' => [
                         'name' => $op['op_selprod_title'],
@@ -130,7 +129,7 @@ class StripeConnectPayController extends PaymentController
                 ];
 
                 // You may not provide the application_fee_amount parameter and the transfer_data[amount] parameter simultaneously. They are mutually exclusive.
-                // $data['payment_intent_data']['application_fee_amount'] = $this->formatPayableAmount($op['op_commission_charged']);
+                // $data['payment_intent_data']['application_fee_amount'] = $this->convertInPaisa($op['op_commission_charged']);
                 
                 $data['payment_intent_data']['statement_descriptor'] = $op['op_invoice_number'];
 
@@ -138,7 +137,7 @@ class StripeConnectPayController extends PaymentController
                 if (!empty($accountId)) {
                     $data['payment_intent_data']['transfer_data'] = [
                         'destination' => $accountId,
-                        'amount' => $this->formatPayableAmount($netAmount - $op['op_commission_charged'])
+                        'amount' => $this->convertInPaisa($netAmount - $op['op_commission_charged'])
                     ];
                 }
             }
@@ -163,7 +162,7 @@ class StripeConnectPayController extends PaymentController
         }
     }
 
-    private function formatPayableAmount($amount)
+    private function convertInPaisa($amount)
     {
         $amount = number_format($amount, 2, '.', '');
         return $amount * 100;
@@ -227,6 +226,73 @@ class StripeConnectPayController extends PaymentController
 
             if (false === $orderPaymentObj->addOrderPayment($this->settings["plugin_code"], $intentId, $paymentAmount, Labels::getLabel("MSG_Received_Payment", $this->siteLangId), $message)) {
                 $orderPaymentObj->addOrderPaymentComments($message);
+            }
+
+            $orderInfo = $orderPaymentObj->getOrderPrimaryinfo();
+
+            $orderObj = new Orders();
+            $orderProducts = $orderObj->getChildOrders(array('order_id' => $orderInfo['id']), $orderInfo['order_type'], $orderInfo['order_language_id']);
+
+            foreach ($orderProducts as $op) {
+                $netAmount = CommonHelper::orderProductAmount($op, 'NETAMOUNT');
+                $shippingCost = CommonHelper::orderProductAmount($op, 'SHIPPING');
+                $volumeDiscount = CommonHelper::orderProductAmount($op, 'VOLUME_DISCOUNT');
+                $total = CommonHelper::orderProductAmount($op, 'cart_total') + $shippingCost + $volumeDiscount;
+                $paidAmount = ($netAmount - $op['op_commission_charged']);
+
+                $restAmountToBePaid = $total - $paidAmount;
+
+                if (0 < $restAmountToBePaid) {
+                    $comments = Labels::getLabel('MSG_PENDING_DISCOUNT_AMOUNT_FROM_#{invoice-no}');
+                    $comments = CommonHelper::replaceStringData($comments, ['{invoice-no}' => $op['op_invoice_number']]);
+
+                    $txnArray["utxn_user_id"] = $op['op_selprod_user_id'];
+                    $txnArray["utxn_credit"] = $restAmountToBePaid;
+                    $txnArray["utxn_debit"] = 0;
+                    $txnArray["utxn_status"] = Transactions::STATUS_COMPLETED;
+                    $txnArray["utxn_op_id"] = $op['op_id'];
+                    $txnArray["utxn_comments"] = $comments;
+                    $txnArray["utxn_type"] = Transactions::TYPE_PRODUCT_SALE;
+                    $transObj = new Transactions();
+                    if ($txnId = $transObj->addTransaction($txnArray)) {
+                        $emailNotificationObj = new EmailHandler();
+                        $emailNotificationObj->sendTxnNotification($txnId, $this->siteLangId);
+                    }
+
+                    $accountId = User::getUserMeta($op['op_selprod_user_id'], 'stripe_account_id');
+                    $charge = [
+                        'amount' => $this->convertInPaisa($restAmountToBePaid),
+                        'currency' => $orderInfo['order_currency_code'],
+                        'destination' => $accountId,
+                        'transfer_group' => $op['op_invoice_number'],
+                    ];
+        
+                    if (false === $this->stripeConnect->doTransfer($charge)) {
+                        $this->setErrorAndRedirect();
+                    }
+
+                    $resp = $this->stripeConnect->getResponse();
+                    if (empty($resp->id)) {
+                        continue;
+                    }
+
+                    $comments = Labels::getLabel('MSG_PENDING_DISCOUNT_AMOUNT_CREDITED_TO_YOUR_{account-name}._ACCOUNT_ADDRESS_{account-address}');
+                    $comments = CommonHelper::replaceStringData($comments, ['{account-name}' => self::KEY_NAME, '{account-address}' => $accountId]);
+
+                    $txnArray["utxn_user_id"] = $op['op_selprod_user_id'];
+                    $txnArray["utxn_credit"] = 0;
+                    $txnArray["utxn_debit"] = $restAmountToBePaid;
+                    $txnArray["utxn_status"] = Transactions::STATUS_COMPLETED;
+                    $txnArray["utxn_op_id"] = $op['op_id'];
+                    $txnArray["utxn_comments"] = $comments;
+                    $txnArray["utxn_gateway_txn_id"] = $resp->id;
+                    $txnArray["utxn_type"] = Transactions::TYPE_TRANSFER_TO_THIRD_PARTY_ACCOUNT;
+                    $transObj = new Transactions();
+                    if ($txnId = $transObj->addTransaction($txnArray)) {
+                        $emailNotificationObj = new EmailHandler();
+                        $emailNotificationObj->sendTxnNotification($txnId, $this->siteLangId);
+                    }
+                }
             }
         } elseif ($payload['type'] == "payment_intent.payment_failed") {
             $intent = $payload['data']['object'];
