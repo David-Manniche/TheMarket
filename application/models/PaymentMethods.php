@@ -146,8 +146,8 @@ class PaymentMethods extends MyAppModel
 
         $txnData = $this->getTransferTxnData();
 
-        if (!empty($records)) {
-            foreach ($records as $txn) {
+        if (!empty($txnData)) {
+            foreach ($txnData as $txn) {
                 if (!empty($txn['utxn_gateway_txn_id'])) {
                     $this->transferId = $txn['utxn_gateway_txn_id'];
                     $this->extraAmount = $txn['utxn_debit'];
