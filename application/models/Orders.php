@@ -1591,7 +1591,6 @@ class Orders extends MyAppModel
                 $formattedInvoiceNumber = "#" . $childOrderInfo["op_invoice_number"];
                 $comments = Labels::getLabel('Msg_Cash_collected_for_COD_order', $langId) . ' ' . $formattedInvoiceNumber;
                 $amt = CommonHelper::orderProductAmount($childOrderInfo);
-                $txnObj = new Transactions();
 
                 $txnDataArr = array(
                 'utxn_user_id' => $childOrderInfo['op_selprod_user_id'],
@@ -1630,7 +1629,6 @@ class Orders extends MyAppModel
                 $formattedInvoiceNumber = "#" . $childOrderInfo["op_invoice_number"];
                 $comments = Labels::getLabel('Msg_Cash_Deposited_for_COD_order', $langId) . ' ' . $formattedInvoiceNumber;
                 $amt = CommonHelper::orderProductAmount($childOrderInfo);
-                $txnObj = new Transactions();
 
                 $txnDataArr = array(
                 'utxn_user_id' => $childOrderInfo['optsu_user_id'],
@@ -1695,11 +1693,39 @@ class Orders extends MyAppModel
             }
             /* ] */
 
-
+            $chargeCommission = true;
+            $orderObj = new Orders();
+            $orderRow = $orderObj->getOrderById($childOrderInfo['op_order_id'], $langId);
+            $paymentMethodId = $orderRow['order_pmethod_id'];
+            if (PaymentMethods::TYPE_PLUGIN == $orderRow['order_pmethod_type']) {
+                $payment = current($orderObj->getOrderPayments(["order_id" => $childOrderInfo['op_order_id']]));
+                if (!empty($payment['opayment_gateway_txn_id'])) {
+                    $pluginKey = Plugin::getAttributesById($paymentMethodId, 'plugin_code');
+                    $comments = Labels::getLabel('MSG_ALREADY_TRANSFERED_TO_{account-id}_ACCOUNT._TXN_ID_:_{txn-id}');
+                    $accountId = User::getUserMeta($childOrderInfo['op_selprod_user_id'], 'stripe_account_id');
+                    $comments = CommonHelper::replaceStringData($comments, ['{account-id}' => $accountId, '{txn-id}' => $payment['opayment_gateway_txn_id']]);
+                    switch ($pluginKey) {
+                        case 'StripeConnect':
+                            $txnArray["utxn_user_id"] = $childOrderInfo['op_selprod_user_id'];
+                            $txnArray["utxn_credit"] = 0;
+                            $txnArray["utxn_debit"] = $txnAmount;
+                            $txnArray["utxn_status"] = Transactions::STATUS_COMPLETED;
+                            $txnArray["utxn_op_id"] = $childOrderInfo['op_id'];
+                            $txnArray["utxn_comments"] = $comments;
+                            $txnArray["utxn_type"] = Transactions::TYPE_PRODUCT_SALE;
+                            $transObj = new Transactions();
+                            if ($txnId = $transObj->addTransaction($txnArray)) {
+                                $chargeCommission = false;
+                                $emailNotificationObj->sendTxnNotification($txnId, $langId);
+                            }
+                            break;
+                    }
+                }
+            }
             /* Charge Commission/fees to Vendor [*/
             $commissionFees = $childOrderInfo['op_commission_charged'] - $childOrderInfo['op_refund_commission'];
 
-            if ($commissionFees > 0) {
+            if ($commissionFees > 0 && true === $chargeCommission) {
                 $comments = sprintf(Labels::getLabel('Msg_Charged_Commission_for_order', $langId), $formattedInvoiceNumber);
                 $txnArray["utxn_user_id"] = $childOrderInfo['op_selprod_user_id'];
                 $txnArray["utxn_debit"] = $commissionFees;

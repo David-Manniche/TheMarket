@@ -234,9 +234,12 @@ class StripeConnectPayController extends PaymentController
             $orderProducts = $orderObj->getChildOrders(array('order_id' => $orderInfo['id']), $orderInfo['order_type'], $orderInfo['order_language_id']);
 
             foreach ($orderProducts as $op) {
+                $canAvail = CommonHelper::canAvailShippingChargesBySeller($op['op_selprod_user_id'], $op['opshipping_by_seller_user_id']);
+
                 $netAmount = CommonHelper::orderProductAmount($op, 'NETAMOUNT');
-                $shippingCost = CommonHelper::orderProductAmount($op, 'SHIPPING');
+                $shippingCost = (true == $canAvail ? CommonHelper::orderProductAmount($op, 'SHIPPING') : 0);
                 $volumeDiscount = CommonHelper::orderProductAmount($op, 'VOLUME_DISCOUNT');
+
                 $total = CommonHelper::orderProductAmount($op, 'cart_total') + $shippingCost + $volumeDiscount;
                 $paidAmount = ($netAmount - $op['op_commission_charged']);
 

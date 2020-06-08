@@ -233,12 +233,15 @@ class PaymentMethods extends MyAppModel
      *
      * @return void
      */
-    private function getTransferTxnData()
+    public function getTransferTxnData(int $sellerId = 0, int $opId = 0)
     {
+        $sellerId = 0 < $sellerId ? $sellerId : $this->sellerId;
+        $opId = 0 < $opId ? $opId : $this->opId;
+
         $db = FatApp::getDb();
-        $srch = Transactions::getUserTransactionsObj($this->sellerId);
+        $srch = Transactions::getUserTransactionsObj($sellerId);
         $srch->addCondition('utxn.utxn_type', '=', Transactions::TYPE_TRANSFER_TO_THIRD_PARTY_ACCOUNT);
-        $srch->addCondition('utxn.utxn_op_id', '=', $this->opId);
+        $srch->addCondition('utxn.utxn_op_id', '=', $opId);
         $srch->addOrder('utxn_gateway_txn_id', 'DESC');
         $rs = $srch->getResultSet();
         $records = $db->fetchAll($rs);
