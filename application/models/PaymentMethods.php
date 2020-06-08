@@ -22,6 +22,11 @@ class PaymentMethods extends MyAppModel
     private $canRefundToCard = false;
     private $resp = [];
     private $db;
+    private $sellerId = '';
+    private $opId = '';
+    private $extraAmount = '';
+    private $transferId = '';
+    private $invoiceNumber = '';
 
     public function __construct($id = 0)
     {
@@ -124,15 +129,38 @@ class PaymentMethods extends MyAppModel
      */
     public function initiateRefund(string $opId, int $refundType = self::REFUND_TYPE_RETURN): bool
     {
+        $db = FatApp::getDb();
         if (false == $this->canRefundToCard) {
             $msg = Labels::getLabel('MSG_THIS_{PAYMENT-METHOD}_PAYMENT_METHOD_IS_NOT_ABLE_TO_REFUND_IN_CARD', $this->langId);
             $this->error = CommonHelper::replaceStringData($msg, ['{PAYMENT-METHOD}' => $this->keyname]);
             return false;
         }
-        
+        $this->opId = $opId;
+
         $orderObj = new Orders();
-        $childOrderInfo = $orderObj->getOrderProductsByOpId($opId, $this->langId);
+        $childOrderInfo = $orderObj->getOrderProductsByOpId($this->opId, $this->langId);
         $payments = $orderObj->getOrderPayments(["order_id" => $childOrderInfo['op_order_id']]);
+
+        $this->sellerId = $childOrderInfo['op_selprod_user_id'];
+        $this->invoiceNumber = $childOrderInfo['op_invoice_number'];
+
+        $txnData = $this->getTransferTxnData();
+
+        if (!empty($records)) {
+            foreach ($records as $txn) {
+                if (!empty($txn['utxn_gateway_txn_id'])) {
+                    $this->transferId = $txn['utxn_gateway_txn_id'];
+                    $this->extraAmount = $txn['utxn_debit'];
+                    break;
+                }
+                $this->extraAmount = $txn['utxn_credit'];
+            }
+
+            if (empty($this->transferId)) {
+                // Partial Amount if credited. (Discount Or Rewards Point)
+                $this->refundFromWallet();
+            }
+        }
 
         $txnId = "";
         array_walk($payments, function ($value, $key) use (&$txnId) {
@@ -168,16 +196,80 @@ class PaymentMethods extends MyAppModel
                     return false;
                 }
 
-                $this->resp = $this->paymentPlugin->initiateRefund($requestParam);
+                $respStatus = $this->paymentPlugin->initiateRefund($requestParam);
+                if (false == $respStatus) {
+                    $this->error = $this->paymentPlugin->getError();
+                    return false;
+                }
+
+                if (!empty($this->transferId)) {
+                    $comments = Labels::getLabel('MSG_REFUND_INITIATE_REGARDING_#{invoice-no}', $this->langId);
+                    $comments = CommonHelper::replaceStringData($comments, ['{invoice-no}' => $this->invoiceNumber]);
+                    $requestParam = [
+                        'transferId' => $this->transferId,
+                        'data' => [
+                            'amount' => $this->formatPayableAmount($this->extraAmount), // In Paisa
+                            'description' => $comments,
+                            'metadata' => [
+                                'op_id' => $this->opId
+                            ],
+                        ],
+                    ];
+                    $respStatus = $this->paymentPlugin->revertTransfer($requestParam);
+                    if (false == $respStatus) {
+                        $this->error = $this->paymentPlugin->getError();
+                        return false;
+                    }
+                }
+                //To get response object
+                $this->resp = $this->paymentPlugin->getResponse();
                 break;
         }
-        
-        if (false == $this->resp) {
-            $this->error = $this->paymentPlugin->getError();
+        return true;
+    }
+    
+    /**
+     * getTransferTxnData
+     *
+     * @return void
+     */
+    private function getTransferTxnData()
+    {
+        $srch = Transactions::getUserTransactionsObj($this->sellerId);
+        $srch->addCondition('utxn.utxn_type', '=', Transactions::TYPE_TRANSFER_TO_THIRD_PARTY_ACCOUNT);
+        $srch->addCondition('utxn.utxn_op_id', '=', $this->opId);
+        $srch->addOrder('utxn_gateway_txn_id', 'DESC');
+        $rs = $srch->getResultSet();
+        $records = $db->fetchAll($rs);
+        if (!$records) {
+            $this->error = $db->getError();
             return false;
         }
-        $this->resp = $this->paymentPlugin->getResponse();
+        return $records;
+    }
+    
+    /**
+     * refundFromWallet - Partial Amount if credited. (Discount Or Rewards Point)
+     *
+     * @return bool
+     */
+    private function refundFromWallet()
+    {
+        $comments = Labels::getLabel('MSG_REFUND_INITIATE_REGARDING_#{invoice-no}', $this->langId);
+        $comments = CommonHelper::replaceStringData($comments, ['{invoice-no}' => $this->invoiceNumber]);
 
+        $txnArray["utxn_user_id"] = $this->sellerId;
+        $txnArray["utxn_credit"] = 0;
+        $txnArray["utxn_debit"] = $this->extraAmount;
+        $txnArray["utxn_status"] = Transactions::STATUS_COMPLETED;
+        $txnArray["utxn_op_id"] = $this->opId;
+        $txnArray["utxn_comments"] = $comments;
+        $txnArray["utxn_type"] = Transactions::TYPE_ORDER_REFUND;
+        $transObj = new Transactions();
+        if ($txnId = $transObj->addTransaction($txnArray)) {
+            $emailNotificationObj = new EmailHandler();
+            $emailNotificationObj->sendTxnNotification($txnId, $this->langId);
+        }
         return true;
     }
 
