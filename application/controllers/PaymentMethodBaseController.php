@@ -13,7 +13,7 @@ class PaymentMethodBaseController extends SellerPluginBaseController
         }
         $this->keyName = $class::KEY_NAME;
         if (false === Plugin::isActive($this->keyName)) {
-            Message::addErrorMessage(Labels::getLabel('MSG_NO_ADVERTISEMENT_PLUGIN_ACTIVE', $this->siteLangId));
+            Message::addErrorMessage(Labels::getLabel('MSG_NO_PAYMENT_METHOD_PLUGIN_ACTIVE', $this->siteLangId));
             FatApp::redirectUser(CommonHelper::generateUrl('Seller'));
         }
     }

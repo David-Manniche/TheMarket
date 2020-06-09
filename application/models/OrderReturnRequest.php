@@ -267,4 +267,37 @@ class OrderReturnRequest extends MyAppModel
         $db->commitTransaction();
         return true;
     }
+
+    public static function getReturnRequestById($opId, $attr = null)
+    {
+        $opId = FatUtility::convertToType($opId, FatUtility::VAR_INT);
+        if (1 > $opId) {
+            return false;
+        }
+
+        $db = FatApp::getDb();
+
+        $srch = new SearchBase(static::DB_TBL);
+        $srch->addCondition('orrequest_op_id', '=', $opId);
+
+        if (null != $attr) {
+            if (is_array($attr)) {
+                $srch->addMultipleFields($attr);
+            } elseif (is_string($attr)) {
+                $srch->addFld($attr);
+            }
+        }
+
+        $rs = $srch->getResultSet();
+        $row = $db->fetch($rs);
+
+        if (!is_array($row)) {
+            return false;
+        }
+
+        if (is_string($attr)) {
+            return $row[$attr];
+        }
+        return $row;
+    }
 }

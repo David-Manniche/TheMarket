@@ -170,13 +170,33 @@ class PaymentMethods extends MyAppModel
             }
         });
 
+        $checkShipping = false;
+        if (0 < $childOrderInfo["op_free_ship_upto"] && array_key_exists(OrderProduct::CHARGE_TYPE_SHIPPING, $childOrderInfo['charges']) && $childOrderInfo["op_actual_shipping_charges"] != $childOrderInfo['charges'][OrderProduct::CHARGE_TYPE_SHIPPING]['opcharge_amount']) {
+            $checkShipping = true;
+        }
+
         switch ($refundType) {
             case self::REFUND_TYPE_RETURN:
                 $txnAmount = $childOrderInfo['op_refund_amount'];
                 break;
             
             case self::REFUND_TYPE_CANCEL:
-                $txnAmount = (($childOrderInfo["op_unit_price"] * $childOrderInfo["op_qty"]) + $childOrderInfo["op_other_charges"]);
+                $txnAmount = ($childOrderInfo["op_unit_price"] * $childOrderInfo["op_qty"]);
+                
+                /*Deduct Shipping Amount[*/
+                $actualShipCharges = 0;
+                if (true === $checkShipping && $childOrderInfo["op_free_ship_upto"] > $txnAmount) {
+                    $unitShipCharges = round($childOrderInfo['op_actual_shipping_charges'] / $childOrderInfo["op_qty"], 2);
+                    $returnShipChargesToCust = 0;
+                    if (FatApp::getConfig('CONF_RETURN_SHIPPING_CHARGES_TO_CUSTOMER', FatUtility::VAR_INT, 0)) {
+                        $returnShipChargesToCust = $unitShipCharges * $childOrderInfo["op_refund_qty"];
+                    }
+
+                    $actualShipCharges = $childOrderInfo['op_actual_shipping_charges'] - $returnShipChargesToCust;
+                    $txnAmount -= $actualShipCharges;
+                }
+                
+                $txnAmount += $childOrderInfo["op_other_charges"];
                 break;
             
             default:
@@ -262,19 +282,7 @@ class PaymentMethods extends MyAppModel
     {
         $comments = Labels::getLabel('MSG_REFUND_INITIATE_REGARDING_#{invoice-no}', $this->langId);
         $comments = CommonHelper::replaceStringData($comments, ['{invoice-no}' => $this->invoiceNumber]);
-
-        $txnArray["utxn_user_id"] = $this->sellerId;
-        $txnArray["utxn_credit"] = 0;
-        $txnArray["utxn_debit"] = $this->extraAmount;
-        $txnArray["utxn_status"] = Transactions::STATUS_COMPLETED;
-        $txnArray["utxn_op_id"] = $this->opId;
-        $txnArray["utxn_comments"] = $comments;
-        $txnArray["utxn_type"] = Transactions::TYPE_ORDER_REFUND;
-        $transObj = new Transactions();
-        if ($txnId = $transObj->addTransaction($txnArray)) {
-            $emailNotificationObj = new EmailHandler();
-            $emailNotificationObj->sendTxnNotification($txnId, $this->langId);
-        }
+        Transactions::debitWallet($this->sellerId, Transactions::TYPE_ORDER_REFUND, $this->extraAmount, $this->langId, $comments, $this->opId);
         return true;
     }
 

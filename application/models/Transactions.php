@@ -233,4 +233,48 @@ class Transactions extends MyAppModel
         $srch->addOrder('utxn_id', 'DESC');
         return $srch;
     }
+
+    /**
+     * creditWallet
+     *
+     * @return bool
+     */
+    public static function creditWallet(int $userId, int $txnType, $txnAmount, int $langId, string $comments, int $opId = 0)
+    {
+        $txnArray["utxn_user_id"] = $userId;
+        $txnArray["utxn_credit"] = $txnAmount;
+        $txnArray["utxn_debit"] = 0;
+        $txnArray["utxn_status"] = Transactions::STATUS_COMPLETED;
+        $txnArray["utxn_op_id"] = $opId;
+        $txnArray["utxn_comments"] = $comments;
+        $txnArray["utxn_type"] = $txnType;
+        $transObj = new Transactions();
+        if ($txnId = $transObj->addTransaction($txnArray)) {
+            $emailNotificationObj = new EmailHandler();
+            $emailNotificationObj->sendTxnNotification($txnId, $langId);
+        }
+        return true;
+    }
+
+    /**
+     * debitWallet
+     *
+     * @return bool
+     */
+    public static function debitWallet(int $userId, int $txnType, $txnAmount, int $langId, string $comments, int $opId = 0)
+    {
+        $txnArray["utxn_user_id"] = $userId;
+        $txnArray["utxn_credit"] = 0;
+        $txnArray["utxn_debit"] = $txnAmount;
+        $txnArray["utxn_status"] = Transactions::STATUS_COMPLETED;
+        $txnArray["utxn_op_id"] = $opId;
+        $txnArray["utxn_comments"] = $comments;
+        $txnArray["utxn_type"] = $txnType;
+        $transObj = new Transactions();
+        if ($txnId = $transObj->addTransaction($txnArray)) {
+            $emailNotificationObj = new EmailHandler();
+            $emailNotificationObj->sendTxnNotification($txnId, $langId);
+        }
+        return true;
+    }
 }

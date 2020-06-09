@@ -24,7 +24,8 @@ class Plugin extends MyAppModel
         self::TYPE_ADVERTISEMENT_FEED,
         self::TYPE_SMS_NOTIFICATION,
         self::TYPE_TAX_SERVICES ,
-        self::TYPE_FULL_TEXT_SEARCH
+        self::TYPE_FULL_TEXT_SEARCH,
+        self::TYPE_PAYMENT_METHOD
     ];
 
     public const ATTRS = [

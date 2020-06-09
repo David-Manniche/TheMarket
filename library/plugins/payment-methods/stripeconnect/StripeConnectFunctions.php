@@ -22,7 +22,6 @@ trait StripeConnectFunctions
     {
         $accountId = empty($accountId) ? $this->getAccountId() : $accountId;
         return $this->stripe->accounts->retrieve($accountId);
-        // return $this->stripe->accounts->retrieve($accountId);
     }
 
     /**

@@ -185,8 +185,9 @@ class StripeConnectPayController extends PaymentController
             $intentId = $intent['id'];
             $charges = $intent['charges']['data'];
 
-            $message = '';
+            $transferIdsArr = [];
 
+            $message = '';
             foreach ($charges as $charge) {
                 $message .= 'Id: ' . $charge['id'] . "&";
                 $message .= 'Object: ' . $charge['object'] . "&";
@@ -211,6 +212,8 @@ class StripeConnectPayController extends PaymentController
                 $message .= 'Refunded: ' . $charge['refunded'] . "&";
                 $message .= 'Statement Descriptor: ' . $charge['statement_descriptor'] . "&";
                 $message .= 'Status: ' . $charge['status'] . "& \n\n";
+
+                $transferIdsArr[$charge['destination']] = $charge['transfer'];
             }
 
             $orderInfo = explode('-', $charges[0]['statement_descriptor']);
@@ -237,7 +240,21 @@ class StripeConnectPayController extends PaymentController
                 $shippingCost = (true == $canAvail ? CommonHelper::orderProductAmount($op, 'SHIPPING') : 0);
                 $volumeDiscount = CommonHelper::orderProductAmount($op, 'VOLUME_DISCOUNT');
 
+                $accountId = User::getUserMeta($op['op_selprod_user_id'], 'stripe_account_id');
+
                 $total = CommonHelper::orderProductAmount($op, 'cart_total') + $shippingCost + $volumeDiscount;
+
+                // Credit sold product amount to seller wallet.
+                $comments = Labels::getLabel('MSG_PRODUCT_SOLD._#{invoice-no}', $langId);
+                $comments = CommonHelper::replaceStringData($comments, ['{invoice-no}' => $op['op_invoice_number']]);
+                Transactions::creditWallet($op['op_selprod_user_id'], Transactions::TYPE_PRODUCT_SALE, $total, $this->siteLangId, $comments, $op['op_id']);
+                
+                // Credit sold product amount to seller wallet.
+                $txnId = isset($transferIdsArr[$charge['destination']]) ? $transferIdsArr[$charge['destination']] : '';
+                $comments = Labels::getLabel('MSG_ALREADY_TRANSFERED_TO_{account-id}_ACCOUNT._TRANSFER_ID_:_{txn-id}', $langId);
+                $comments = CommonHelper::replaceStringData($comments, ['{account-id}' => $accountId, '{txn-id}' => $txnId]);
+                Transactions::debitWallet($op['op_selprod_user_id'], Transactions::TYPE_PRODUCT_SALE, $total, $this->siteLangId, $comments, $op['op_id']);
+
                 $paidAmount = ($netAmount - $op['op_commission_charged']);
 
                 $restAmountToBePaid = $total - $paidAmount;
@@ -246,20 +263,8 @@ class StripeConnectPayController extends PaymentController
                     $comments = Labels::getLabel('MSG_PENDING_DISCOUNT_AMOUNT_FROM_#{invoice-no}', $this->siteLangId);
                     $comments = CommonHelper::replaceStringData($comments, ['{invoice-no}' => $op['op_invoice_number']]);
 
-                    $txnArray["utxn_user_id"] = $op['op_selprod_user_id'];
-                    $txnArray["utxn_credit"] = $restAmountToBePaid;
-                    $txnArray["utxn_debit"] = 0;
-                    $txnArray["utxn_status"] = Transactions::STATUS_COMPLETED;
-                    $txnArray["utxn_op_id"] = $op['op_id'];
-                    $txnArray["utxn_comments"] = $comments;
-                    $txnArray["utxn_type"] = Transactions::TYPE_TRANSFER_TO_THIRD_PARTY_ACCOUNT;
-                    $transObj = new Transactions();
-                    if ($txnId = $transObj->addTransaction($txnArray)) {
-                        $emailNotificationObj = new EmailHandler();
-                        $emailNotificationObj->sendTxnNotification($txnId, $this->siteLangId);
-                    }
+                    Transactions::creditWallet($op['op_selprod_user_id'], Transactions::TYPE_TRANSFER_TO_THIRD_PARTY_ACCOUNT, $restAmountToBePaid, $this->siteLangId, $comments, $op['op_id']);
 
-                    $accountId = User::getUserMeta($op['op_selprod_user_id'], 'stripe_account_id');
                     $charge = [
                         'amount' => $this->convertInPaisa($restAmountToBePaid),
                         'currency' => $orderInfo['order_currency_code'],
@@ -283,19 +288,7 @@ class StripeConnectPayController extends PaymentController
                     $comments = Labels::getLabel('MSG_PENDING_DISCOUNT_AMOUNT_CREDITED_TO_YOUR_{account-name}._ACCOUNT_ADDRESS_:_{account-address}', $this->siteLangId);
                     $comments = CommonHelper::replaceStringData($comments, ['{account-name}' => self::KEY_NAME, '{account-address}' => $accountId]);
 
-                    $txnArray["utxn_user_id"] = $op['op_selprod_user_id'];
-                    $txnArray["utxn_credit"] = 0;
-                    $txnArray["utxn_debit"] = $restAmountToBePaid;
-                    $txnArray["utxn_status"] = Transactions::STATUS_COMPLETED;
-                    $txnArray["utxn_op_id"] = $op['op_id'];
-                    $txnArray["utxn_comments"] = $comments;
-                    $txnArray["utxn_gateway_txn_id"] = $resp->id;
-                    $txnArray["utxn_type"] = Transactions::TYPE_TRANSFER_TO_THIRD_PARTY_ACCOUNT;
-                    $transObj = new Transactions();
-                    if ($txnId = $transObj->addTransaction($txnArray)) {
-                        $emailNotificationObj = new EmailHandler();
-                        $emailNotificationObj->sendTxnNotification($txnId, $this->siteLangId);
-                    }
+                    Transactions::debitWallet($op['op_selprod_user_id'], Transactions::TYPE_TRANSFER_TO_THIRD_PARTY_ACCOUNT, $restAmountToBePaid, $this->siteLangId, $comments, $op['op_id']);
                 }
             }
         } elseif ($payload['type'] == "payment_intent.payment_failed") {
