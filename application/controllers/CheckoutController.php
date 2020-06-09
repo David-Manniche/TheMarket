@@ -1200,39 +1200,24 @@ class CheckoutController extends MyAppController
 
                     $op_products_dimension_unit_name = ($productInfo['product_dimension_unit']) ? $lengthUnitsArr[$productInfo['product_dimension_unit']] : '';
                     $op_product_weight_unit_name = ($productInfo['product_weight_unit']) ? $weightUnitsArr[$productInfo['product_weight_unit']] : '';
-                    $op_product_tax_options = array();
-                    $productTaxOption = array();
+                   
+				   $op_product_tax_options = array();
+					$productTaxOption = array();
                     if (array_key_exists($productInfo['selprod_id'], $cartSummary["prodTaxOptions"])) {
                         $productTaxOption = $cartSummary["prodTaxOptions"][$productInfo['selprod_id']];
                     }
-                    
+					
                     foreach ($productTaxOption as $taxStroId => $taxStroName) {
-                        $taxStructure = new TaxStructure(FatApp::getConfig('CONF_TAX_STRUCTURE', FatUtility::VAR_FLOAT, 0));
-                        if (Tax::getActivatedServiceId()) {
-                            $op_product_tax_options[$taxStroId]['value'] = $taxStroName['value'];
-                            $op_product_tax_options[$taxStroId]['name'] = $taxStroId;
-                            $op_product_tax_options[$taxStroId]['percentageValue'] = $taxStroName['percentageValue'];
-                            $op_product_tax_options[$taxStroId]['inPercentage'] = $taxStroName['inPercentage'];
-                        } else if (FatApp::getConfig('CONF_TAX_STRUCTURE', FatUtility::VAR_FLOAT, 0) == TaxStructure::TYPE_COMBINED) {
-                            $taxLangData = $taxStructure->getOptionData($taxStroId);
-                            // CommonHelper::printArray($taxLangData, true);
-                            $op_product_tax_options[$taxLangData['taxstro_name'][$lang_id]]['value'] = $taxStroName['value'];
-                            $op_product_tax_options[$taxLangData['taxstro_name'][$lang_id]]['name'] = $taxLangData['taxstro_name'][$lang_id];
-                            $op_product_tax_options[$taxLangData['taxstro_name'][$lang_id]]['percentageValue'] = $taxStroName['percentageValue'];
-                            $op_product_tax_options[$taxLangData['taxstro_name'][$lang_id]]['inPercentage'] = $taxStroName['inPercentage'];
-                        } else {
-                            $structureName = $taxStructure->getName($lang_id);
-                            $label = Labels::getLabel('LBL_Tax', $lang_id);
-                            if (array_key_exists('taxstr_name', $structureName) && $structureName['taxstr_name'] != '') {
-                                $label = $structureName['taxstr_name'];
+							$label = Labels::getLabel('LBL_Tax', $lang_id);
+                            if (array_key_exists('name', $taxStroName) && $taxStroName['name'] != '') {
+                                $label = $taxStroName['name'];
                             }
                             $op_product_tax_options[$label]['name'] = $label;
                             $op_product_tax_options[$label]['value'] = $taxStroName['value'];
                             $op_product_tax_options[$label]['percentageValue'] = $taxStroName['percentageValue'];
                             $op_product_tax_options[$label]['inPercentage'] = $taxStroName['inPercentage'];
-                        }
                     }
-                    
+					
                     $productsLangData[$lang_id] = array(
                     'oplang_lang_id' => $lang_id,
                     'op_product_name' => $langSpecificProductInfo['product_name'],

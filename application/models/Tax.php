@@ -21,6 +21,8 @@ class Tax extends MyAppModel
     public const TYPE_PERCENTAGE = 1;
     public const TYPE_FIXED = 0;
 
+    public const TAX_TYPE_COMBINED = 1;
+
     public function __construct($id = 0)
     {
         parent::__construct(static::DB_TBL, static::DB_TBL_PREFIX . 'id', $id);
@@ -215,7 +217,33 @@ class Tax extends MyAppModel
         return false;
     }
 
-    public function getTaxRates($productId, $userId, $langId)
+	public function getTaxRates($productId, $userId, $langId, $userCountry = 0, $userState = 0)
+    {
+        $productId = Fatutility::int($productId);
+        $userId = Fatutility::int($userId);
+        $langId = Fatutility::int($langId);
+
+        $taxRates = array();
+		$srch = self::getTaxCatObjByProductId($productId, $langId);
+		$srch->addCondition('ptt_product_id', '=', $productId, 'AND');
+		$srch->joinTable(TaxRuleLocation::DB_TBL, 'LEFT JOIN', 'taxLoc.taxruleloc_taxcat_id = ptt_taxcat_id', 'taxLoc');
+		$srch->joinTable(TaxRule::DB_TBL, 'LEFT JOIN', 'taxRule.taxrule_id = taxLoc.taxruleloc_taxrule_id', 'taxRule');
+		$srch->joinTable(TaxRule::DB_TBL_LANG, 'LEFT JOIN', 'taxRuleLang.taxrulelang_taxrule_id = taxrule.taxrule_id and
+			taxrulelang_lang_id = '.$langId, 'taxRuleLang');
+		
+		if ($userCountry > 0) {
+			$srch->addCondition('taxruleloc_country_id', '=', $userCountry, 'AND');
+		}
+		if ($userState > 0) {
+			$srch->addDirectCondition('((taxruleloc_type = '. TaxRule::TYPE_INCLUDE_STATES .' AND taxruleloc_state_id= '. $userState .') OR (taxruleloc_type = '. TaxRule::TYPE_ALL_STATES .' AND taxruleloc_state_id = -1) OR (taxruleloc_type = '. TaxRule::TYPE_EXCLUDE_STATES .' AND taxruleloc_state_id != '. $userState .'))', 'AND');
+		}
+		$srch->addOrder('taxrule_id', 'ASC');
+        $rs = $srch->getResultSet();
+        return FatApp::getDb()->fetch($rs);
+    }
+	
+	
+    /* public function getTaxRates($productId, $userId, $langId)
     {
         $productId = Fatutility::int($productId);
         $userId = Fatutility::int($userId);
@@ -245,7 +273,7 @@ class Tax extends MyAppModel
 
         $rs = $taxObj->getResultSet();
         return FatApp::getDb()->fetch($rs);
-    }
+    } */
 
     private function formatAddress($address, $type = false)
     {
@@ -310,7 +338,28 @@ class Tax extends MyAppModel
     {
         $tax = 0;
         $defaultTaxName = Labels::getLabel('LBL_Tax', $langId);
-        $taxCategoryRow = $this->getTaxRates($productId, $sellerId, $langId);
+        
+        $activatedTaxServiceId = static::getActivatedServiceId();
+        $confTaxStructure = FatApp::getConfig('CONF_TAX_STRUCTURE', FatUtility::VAR_FLOAT, 0);
+
+        $shipFromStateId = 0;
+        $shipToStateId = 0;
+		$shipToCountryId = 0;
+        
+        if (isset($extraInfo['shipping_address']['ua_country_id'])) {
+            $shipToCountryId = FatUtility::int($extraInfo['shipping_address']['ua_country_id']);
+        }
+		
+		if (isset($extraInfo['shipping_address']['ua_state_id'])) {
+            $shipToStateId = FatUtility::int($extraInfo['shipping_address']['ua_state_id']);
+        }
+
+        if (array_key_exists('shippingAddress', $extraInfo)) {
+            $shopInfo = Shop::getAttributesByUserId($sellerId, array('shop_state_id', 'shop_id'));
+            $shipFromStateId = $shopInfo['shop_state_id'];
+        }
+		
+		$taxCategoryRow = $this->getTaxRates($productId, $sellerId, $langId, $shipToCountryId, $shipToStateId);
         if (empty($taxCategoryRow)) {
             return $data = [
                 'status' => false,
@@ -319,21 +368,6 @@ class Tax extends MyAppModel
                 'taxCode' => '',
                 'options' => []
             ];
-        }
-
-        $activatedTaxServiceId = static::getActivatedServiceId();
-        $confTaxStructure = FatApp::getConfig('CONF_TAX_STRUCTURE', FatUtility::VAR_FLOAT, 0);
-
-        $shipFromStateId = 0;
-        $shipToStateId = 0;
-        
-        if (isset($extraInfo['shipping_address']['ua_state_id'])) {
-            $shipToStateId = FatUtility::int($extraInfo['shipping_address']['ua_state_id']);
-        }
-
-        if (array_key_exists('shippingAddress', $extraInfo)) {
-            $shopInfo = Shop::getAttributesByUserId($sellerId, array('shop_state_id', 'shop_id'));
-            $shipFromStateId = $shopInfo['shop_state_id'];
         }
 
         $arr  = [
@@ -348,7 +382,7 @@ class Tax extends MyAppModel
             'taxCategoryRow' => $taxCategoryRow
         ];
         $cacheKey = self::TAX_RATE_CACHE_KEY_NAME . md5(json_encode($arr));
-
+		
         global $taxRatesArr;
         if (0 < $activatedTaxServiceId && !empty($extraInfo) && $extraInfo['shippingAddress'] != '') {
            
@@ -432,7 +466,7 @@ class Tax extends MyAppModel
                 'options' => []
             ];
            
-            if ($confTaxStructure == TaxStructure::TYPE_COMBINED) {
+            if ($taxCategoryRow['taxrule_is_combined'] == static::TAX_TYPE_COMBINED) {
                 foreach ($taxRates['data'] as $code => $rate) {
                     $data['tax'] = $data['tax'] + $rate['tax'];
                     foreach ($rate['taxDetails'] as $name => $val) {
@@ -461,13 +495,14 @@ class Tax extends MyAppModel
             }
             $taxRatesArr[$cacheKey]['values'] = $data;
             FatCache::set('taxCharges' . $cacheKey, serialize($data), '.txt');
+			
             return $data;
         }
-
+		
         if ($taxCategoryRow['taxval_is_percent'] == static::TYPE_PERCENTAGE) {
-            $tax = round((($prodPrice * $qty) * $taxCategoryRow['taxval_value']) / 100, 2);
+            $tax = round((($prodPrice * $qty) * $taxCategoryRow['taxrule_rate']) / 100, 2);
         } else {
-            $tax = $taxCategoryRow['taxval_value'] * $qty;
+            $tax = $taxCategoryRow['taxrule_rate'] * $qty;
         }
         
 
@@ -480,7 +515,7 @@ class Tax extends MyAppModel
                     $defaultTaxName => [
                         'name' => Labels::getLabel('LBL_Tax', $langId),
                         'inPercentage' => $taxCategoryRow['taxval_is_percent'],
-                        'percentageValue' => $taxCategoryRow['taxval_value'],
+                        'percentageValue' => $taxCategoryRow['taxrule_rate'],
                         'value' => $tax
                     ]
                 ]
@@ -489,46 +524,29 @@ class Tax extends MyAppModel
         
         $data['tax'] = $tax;
         $data['taxCode'] = $taxCategoryRow['taxcat_code'];
-             
-        if ($confTaxStructure == TaxStructure::TYPE_COMBINED) {
+ 
+        if ($taxCategoryRow['taxrule_is_combined'] == static::TAX_TYPE_COMBINED) {
             $shipFromStateId = FatUtility::int($shipFromStateId);
            
             $shipFromStateId = (1 > $shipFromStateId) ? FatApp::getConfig('CONF_STATE', FatUtility::VAR_INT, 0) : $shipFromStateId;
 
-            $taxOptions = json_decode($taxCategoryRow['taxval_options'], true);
-            $taxStructure = new TaxStructure($confTaxStructure);
-            $options = $taxStructure->getOptions($langId);
-            foreach ($options as $optionVal) {
-                $taxOptionVal = isset($taxOptions[$optionVal['taxstro_id']]) ? $taxOptions[$optionVal['taxstro_id']] : 0;
-                if ($shipFromStateId != $shipToStateId && $optionVal['taxstro_interstate'] == applicationConstants::YES) {
-                    $data['options'][$optionVal['taxstro_id']]['name'] = $optionVal['taxstro_name'];
-                    $data['options'][$optionVal['taxstro_id']]['percentageValue'] = $taxOptionVal;
-                    $data['options'][$optionVal['taxstro_id']]['inPercentage'] = $taxCategoryRow['taxval_is_percent'];
-                    if ($taxCategoryRow['taxval_is_percent'] == static::TYPE_PERCENTAGE) {
-                        $data['options'][$optionVal['taxstro_id']]['value'] = round((($prodPrice * $qty) * $taxOptionVal) / 100, 2);
-                    } else {
-                        $data['options'][$optionVal['taxstro_id']][$optionVal['taxstro_name']] = $taxOptionVal * $qty;
-                    }
-                } elseif ($shipFromStateId == $shipToStateId && $optionVal['taxstro_interstate'] == applicationConstants::NO) {
-                    $data['options'][$optionVal['taxstro_id']]['name'] = $optionVal['taxstro_name'];
-                    $data['options'][$optionVal['taxstro_id']]['percentageValue'] = $taxOptionVal;
-                    $data['options'][$optionVal['taxstro_id']]['inPercentage'] = $taxCategoryRow['taxval_is_percent'];
-                    if ($taxCategoryRow['taxval_is_percent'] == static::TYPE_PERCENTAGE) {
-                        $data['options'][$optionVal['taxstro_id']]['value'] = round((($prodPrice * $qty) * $taxOptionVal) / 100, 2);
-                    } else {
-                        $data['options'][$optionVal['taxstro_id']]['value'] = $taxOptionVal * $qty;
-                    }
-                }
-            }
+            $srch = TaxRuleCombined::getSearchObject($langId);
+			$srch->addCondition('taxruledet_taxrule_id', '=', $taxCategoryRow['taxrule_id']);
+			$srch->doNotCalculateRecords();
+			$srch->doNotLimitRecords();
+			$combinedData = FatApp::getDb()->fetchAll($srch->getResultSet());
+			if (!empty($combinedData)) {
+				foreach($combinedData as $comData) {
+					$data['options'][$comData['taxruledet_id']]['name'] = $comData['taxruledet_name'];
+                    $data['options'][$comData['taxruledet_id']]['percentageValue'] = $comData['taxruledet_rate'];
+                    $data['options'][$comData['taxruledet_id']]['inPercentage'] = 1;
+					$data['options'][$comData['taxruledet_id']]['value'] = round((($prodPrice * $qty) * $comData['taxruledet_rate']) / 100, 2);
+				}
+			}
         } else {
-            $taxStructure = new TaxStructure($confTaxStructure);
-            $structureName = $taxStructure->getName($langId);
-            $data['options'][$defaultTaxName]['name'] = Labels::getLabel('LBL_Tax', $langId);
+            $data['options'][$defaultTaxName]['name'] = $taxCategoryRow['taxrule_name'];
             $data['options'][$defaultTaxName]['inPercentage'] = $taxCategoryRow['taxval_is_percent'];
-            $data['options'][$defaultTaxName]['percentageValue'] = $taxCategoryRow['taxval_value'];
-            if (array_key_exists('taxstr_name', $structureName) && $structureName['taxstr_name'] != '') {
-                $data['options'][$defaultTaxName]['name'] = $structureName['taxstr_name'];
-            }
+            $data['options'][$defaultTaxName]['percentageValue'] = $taxCategoryRow['taxrule_rate'];
             $data['options'][$defaultTaxName]['value'] = $tax;
         }
         $data['status'] = true;

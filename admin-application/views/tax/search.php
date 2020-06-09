@@ -52,7 +52,7 @@ foreach ($arr_listing as $sn => $row) {
                 }
                 break;
             case 'taxval_value':
-                $str = CommonHelper::displayTaxFormat($row['taxval_is_percent'], $row[$key]);
+                $str = ($row[$key]) ? CommonHelper::displayTaxFormat($row['taxval_is_percent'], $row[$key]) : '--';
 
                 $td->appendElement('plaintext', array(), $str, true);
                 break;

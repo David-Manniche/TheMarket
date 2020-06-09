@@ -49,6 +49,12 @@ class TaxController extends AdminBaseController
         $post = $searchForm->getFormDataFromArray($data);
 
         $srch = Tax::getSearchObject($this->adminLangId, false);
+		$srch->joinTable(
+            TaxRule::DB_TBL,
+            'LEFT OUTER JOIN',
+            'tr.taxrule_taxcat_id = t.taxcat_id',
+            'tr'
+        );
         $srch->addCondition('taxcat_deleted', '=', 0);
         
         $activatedTaxServiceId = Tax::getActivatedServiceId();
@@ -73,7 +79,7 @@ class TaxController extends AdminBaseController
             'tv.taxval_taxcat_id = t.taxcat_id AND taxval_seller_user_id = 0',
             'tv'
         );
-        $srch->addMultipleFields(array("t_l.taxcat_name", "tv.taxval_is_percent,tv.taxval_value"));
+        $srch->addMultipleFields(array("t_l.taxcat_name", "tv.taxval_is_percent", "tr.taxrule_rate as taxval_value"));
         $srch->addOrder('taxcat_active', 'DESC');
         $rs = $srch->getResultSet();
         $records = array();
@@ -115,7 +121,7 @@ class TaxController extends AdminBaseController
 
         $taxcat_id = $post['taxcat_id'];
         unset($post['taxcat_id']);
-
+		$post['taxval_is_percent'] = Tax::TYPE_PERCENTAGE;
         $record = new Tax($taxcat_id);
         if (!$record->addUpdateData($post)) {
             Message::addErrorMessage($record->getError());
@@ -125,8 +131,7 @@ class TaxController extends AdminBaseController
         if ($taxcat_id == 0) {
             $taxcat_id = $record->getMainTableRecordId();
         }
-      
-        
+		
         if (!$activatedTaxServiceId) {
             $taxvalOptions = array();
             $taxStructure = new TaxStructure(FatApp::getConfig('CONF_TAX_STRUCTURE', FatUtility::VAR_FLOAT, 0));
@@ -138,8 +143,6 @@ class TaxController extends AdminBaseController
             $data = array(
             'taxval_taxcat_id' => $taxcat_id,
             'taxval_seller_user_id' => 0,
-            'taxval_is_percent' => $post['taxval_is_percent'],
-            'taxval_value' => $post['taxval_value'],
             'taxval_options' => FatUtility::convertToJson($taxvalOptions),
             );
 
@@ -257,10 +260,7 @@ class TaxController extends AdminBaseController
             foreach ($options as $optionVal) {
                 $data[$optionVal['taxstro_id']] = isset($taxOptions[$optionVal['taxstro_id']]) ? $taxOptions[$optionVal['taxstro_id']] : '';
             }
-            /* if (FatApp::getConfig('CONF_TAX_STRUCTURE', FatUtility::VAR_FLOAT, 0) == Tax::STRUCTURE_GST) {
-                $taxValues = Tax::getCombinedValues($data['taxval_value']);
-                $data = array_merge($data, $taxValues);
-            } */
+			
             $frm->fill($data);
         }
 
@@ -464,13 +464,13 @@ class TaxController extends AdminBaseController
             $frm->addHiddenField('', 'taxcat_plugin_id', $activatedTaxServiceId)->requirements()->setRequired();
             $frm->addRequiredField(Labels::getLabel('LBL_Tax_Code', $this->adminLangId), 'taxcat_code');
         } else {
-            $typeArr = applicationConstants::getYesNoArr($this->adminLangId);
-            $frm->addSelectBox(Labels::getLabel('LBL_Percentage', $this->adminLangId), 'taxval_is_percent', $typeArr, '', array(), '');
+            /* $typeArr = applicationConstants::getYesNoArr($this->adminLangId);
+            $frm->addSelectBox(Labels::getLabel('LBL_Percentage', $this->adminLangId), 'taxval_is_percent', $typeArr, '', array(), ''); */
 
-            $fld = $frm->addFloatField(Labels::getLabel('LBL_Total_Value', $this->adminLangId), 'taxval_value');
+           /*  $fld = $frm->addFloatField(Labels::getLabel('LBL_Total_Value', $this->adminLangId), 'taxval_value');
             $fld->requirements()->setFloatPositive(true);
-            $fld->requirements()->setRange('0', '100');
-
+            $fld->requirements()->setRange('0', '100'); */
+			$frm->addHiddenField('', 'taxval_is_percent', TAX::TYPE_PERCENTAGE);
             if (FatApp::getConfig('CONF_TAX_STRUCTURE', FatUtility::VAR_FLOAT, 0) == TaxStructure::TYPE_COMBINED) {
                 $taxStructure = new TaxStructure(FatApp::getConfig('CONF_TAX_STRUCTURE', FatUtility::VAR_FLOAT, 0));
                 $options = $taxStructure->getOptions($this->adminLangId);

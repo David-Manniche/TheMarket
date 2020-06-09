@@ -1382,31 +1382,25 @@ class SellerController extends SellerBaseController
         $page = FatUtility::int($page);
 
         $srch = Tax::getSearchObject($this->siteLangId);
-
+		$srch->joinTable(TaxRule::DB_TBL, 'LEFT JOIN', 'taxRule.taxrule_taxcat_id = taxcat_id', 'taxRule');
         if (!empty($post['keyword'])) {
             $cnd = $srch->addCondition('t.taxcat_identifier', 'like', '%' . $post['keyword'] . '%');
             $cnd->attachCondition('t_l.taxcat_name', 'like', '%' . $post['keyword'] . '%');
         }
-                
+		
         $activatedTaxServiceId = Tax::getActivatedServiceId();
         $srch->addCondition('taxcat_plugin_id', '=', $activatedTaxServiceId);
 
-        $srch->addMultipleFields(array('taxcat_id', 'IFNULL(taxcat_name,taxcat_identifier) as taxcat_name','taxcat_code'));
+        $srch->addMultipleFields(array('taxcat_id', 'IFNULL(taxcat_name, taxcat_identifier) as taxcat_name', 'taxcat_code', 'taxrule_rate'));
         $srch->addCondition('taxcat_deleted', '=', 0);
         $srch->setPageNumber($page);
         $srch->setPageSize($pagesize);
         $srch->addOrder('taxcat_name', 'ASC');
-        /* $srch->addMultipleFields(array('taxcat_id','IFNULL(taxcat_name,taxcat_identifier) as taxcat_name','taxval_seller_user_id','taxval_is_percent','taxval_value'));
-          $srch->joinTable(Tax::DB_TBL_VALUES, 'LEFT OUTER JOIN','tv.taxval_taxcat_id = t.taxcat_id','tv');
-          $srch->setPageNumber($page);
-          $srch->setPageSize($pagesize);
-          $srch->addOrder('taxval_seller_user_id','DESC'); */
-        $taxCatData = array();
-
+		
         $rs = $srch->getResultSet();
         $taxCatData = FatApp::getDb()->fetchAll($rs, 'taxcat_id');
 
-        $records = array();
+        /* $records = array();
         if (!empty($taxCatData)) {
             $taxObj = new Tax();
             foreach ($taxCatData as $tcatId => $val) {
@@ -1418,11 +1412,13 @@ class SellerController extends SellerBaseController
                 $records[$tcatId]['taxcat_name'] = $val['taxcat_name'];
                 $records[$tcatId]['taxcat_id'] = $val['taxcat_id'];
                 $records[$tcatId]['taxcat_code'] = $val['taxcat_code'];
+                $records[$tcatId]['taxval_value'] = $val['taxrule_rate'];
                 //$records[$tcatId]['taxval_seller_user_id'] = $userId;
             }
-        }
+        } */
+		
         $this->set('canEdit', $this->userPrivilege->canEditTaxCategory(UserAuthentication::getLoggedUserId(), true));
-        $this->set("arr_listing", $records);
+        $this->set("arr_listing", $taxCatData);
         $this->set('pageCount', $srch->pages());
         $this->set('recordCount', $srch->recordCount());
         $this->set('page', $page);
