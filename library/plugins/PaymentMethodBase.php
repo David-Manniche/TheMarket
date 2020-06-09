@@ -2,17 +2,24 @@
 
 class PaymentMethodBase extends pluginBase
 {
-    public $userId;
     public $userData;
     public $userMeta;
     
     /**
      * loadLoggedUserInfo
      *
+     * @param int $userId
      * @return bool
      */
-    public function loadLoggedUserInfo(): bool
+    public function loadLoggedUserInfo(int $userId): bool
     {
+        $this->userId = $userId;
+        $this->userId = FatUtility::int($this->userId);
+        if (1 > $this->userId) {
+            $this->error = Labels::getLabel('MSG_INVALID_USER', $this->langId);
+            return false;
+        }
+
         $srch = User::getSearchObject();
         $srch->joinTable(Shop::DB_TBL, 'LEFT OUTER JOIN', 'u.user_id = sh.shop_user_id', 'sh');
         $srch->joinTable(Shop::DB_TBL_LANG, 'LEFT OUTER JOIN', 'sh.shop_id = sh_l.shoplang_shop_id AND shoplang_lang_id = ' . $this->langId, 'sh_l');
@@ -45,23 +52,7 @@ class PaymentMethodBase extends pluginBase
         $this->userData = FatApp::getDb()->fetch($rs);
         return true;
     }
-    
-    /**
-     * validateLoggedUser
-     *
-     * @return bool
-     */
-    protected function validateLoggedUser(): bool
-    {
-        $this->userId = UserAuthentication::getLoggedUserId(true);
-        $this->userId = FatUtility::int($this->userId);
-        if (1 > $this->userId) {
-            $this->error = Labels::getLabel('MSG_INVALID_USER', $this->langId);
-            return false;
-        }
-        return true;
-    }
-    
+
     /**
      * getBaseCurrencyCode
      *

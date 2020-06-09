@@ -6,6 +6,7 @@ class StripeConnect extends PaymentMethodBase
     use StripeConnectFunctions;
 
     public const KEY_NAME = __CLASS__;
+    private $stripe;
     private $stripeAccountId = '';
     private $stripeAccountType;
     private $requiredFields = [];
@@ -62,29 +63,26 @@ class StripeConnect extends PaymentMethodBase
     /**
      * init
      *
-     * @param bool $webhook
+     * @param int $userId
      * @return void
      */
-    public function init(bool $webhook = false)
+    public function init(int $userId = 0)
     {
         if (false == $this->validateSettings()) {
             return false;
         }
 
-        if (false === $webhook) {
-            if (false === $this->validateLoggedUser()) {
+        if (0 < $userId) {
+            if (false === $this->loadLoggedUserInfo($userId)) {
                 return false;
             }
-            $this->loadLoggedUserInfo();
         }
 
         if (isset($this->settings['env']) && applicationConstants::YES == $this->settings['env']) {
             $this->liveMode = "live_";
         }
 
-        require_once dirname(__FILE__) . '/vendor/autoload.php';
-        
-        \Stripe\Stripe::setApiKey($this->settings[$this->liveMode . 'secret_key']);
+        $this->stripe = new \Stripe\StripeClient($this->settings[$this->liveMode . 'secret_key']);
         return true;
     }
 
@@ -180,7 +178,11 @@ class StripeConnect extends PaymentMethodBase
      */
     public function isUserAccountRejected(): bool
     {
-        $this->userInfoObj = $this->getRemoteUserInfo();
+        if (false === $this->loadRemoteUserInfo()) {
+            return false;
+        }
+
+        $this->userInfoObj = $this->getResponse();
         $requirements = $this->userInfoObj->requirements;
         if (isset($requirements->disabled_reason) && false !== strpos($requirements->disabled_reason, "rejected")) {
             $this->unsetUserAccountElements();
@@ -335,7 +337,10 @@ class StripeConnect extends PaymentMethodBase
      */
     private function accessAccountType(): bool
     {
-        $this->userInfoObj = $this->getRemoteUserInfo();
+        if (false === $this->loadRemoteUserInfo()) {
+            return false;
+        }
+        $this->userInfoObj = $this->getResponse();
         $this->stripeAccountType = $this->userInfoObj->type;
         return true;
     }
@@ -351,17 +356,22 @@ class StripeConnect extends PaymentMethodBase
     }
 
     /**
-     * getRemoteUserInfo
+     * loadRemoteUserInfo
      *
-     * @return object
+     * @return bool
      */
-    public function getRemoteUserInfo(): object
+    public function loadRemoteUserInfo(): bool
     {
         if (!empty($this->userInfoObj)) {
-            return $this->userInfoObj;
+            $this->resp = $this->userInfoObj;
+            return true;
         }
         
-        return $this->doRequest(self::REQUEST_RETRIEVE_ACCOUNT);
+        $this->resp = $this->doRequest(self::REQUEST_RETRIEVE_ACCOUNT);
+        if (false === $this->resp) {
+            return false;
+        }
+        return true;
     }
 
     /**
@@ -371,15 +381,15 @@ class StripeConnect extends PaymentMethodBase
      */
     public function getRequiredFields(): array
     {
-        if (empty($this->getAccountId())) {
+        if (empty($this->getAccountId()) || false === $this->loadRemoteUserInfo()) {
             return [];
         }
 
         if (!empty($this->requiredFields)) {
             return $this->requiredFields;
         }
-
-        $this->userInfoObj = $this->getRemoteUserInfo();
+        
+        $this->userInfoObj = $this->getResponse();
         if (isset($this->userInfoObj->requirements->currently_due)) {
             $this->requiredFields  = $this->userInfoObj->requirements->currently_due;
         }
@@ -583,7 +593,11 @@ class StripeConnect extends PaymentMethodBase
      */
     public function verifyInitialSetup(): bool
     {
-        $this->userInfoObj = $this->getRemoteUserInfo();
+        if (false === $this->loadRemoteUserInfo()) {
+            return false;
+        }
+        
+        $this->userInfoObj = $this->getResponse();
         $initialElements = $this->userInfoObj->toArray();
 
         if (!$this->userInfoObj->offsetExists('email') || empty($initialElements['email'])) {
@@ -631,7 +645,7 @@ class StripeConnect extends PaymentMethodBase
      */
     public function getErrorWhileUpdate(): array
     {
-        return ($this->getRemoteUserInfo()->toArray())['requirements']['errors'];
+        return (false === $this->loadRemoteUserInfo()) ? [] : ($this->loadRemoteUserInfo()->toArray())['requirements']['errors'];
     }
 
     /**

@@ -10,7 +10,7 @@ trait StripeConnectFunctions
      */
     private function create(array $requestParam): object
     {
-        return \Stripe\Account::create($requestParam);
+        return $this->stripe->accounts->create($requestParam);
     }
 
     /**
@@ -21,7 +21,8 @@ trait StripeConnectFunctions
     private function retrieve(string $accountId = ""): object
     {
         $accountId = empty($accountId) ? $this->getAccountId() : $accountId;
-        return \Stripe\Account::retrieve($accountId);
+        return $this->stripe->accounts->retrieve($accountId);
+        // return $this->stripe->accounts->retrieve($accountId);
     }
 
     /**
@@ -32,7 +33,7 @@ trait StripeConnectFunctions
      */
     private function update(array $requestParam): object
     {
-        return \Stripe\Account::update(
+        return $this->stripe->accounts->update(
             $this->getAccountId(),
             $requestParam
         );
@@ -46,7 +47,7 @@ trait StripeConnectFunctions
      */
     private function createExternalAccount(array $requestParam): object
     {
-        return \Stripe\Account::createExternalAccount(
+        return $this->stripe->accounts->createExternalAccount(
             $this->getAccountId(),
             $requestParam
         );
@@ -59,7 +60,7 @@ trait StripeConnectFunctions
      */
     private function createToken(): object
     {
-        return \Stripe\Token::create([
+        return $this->stripe->tokens->create([
             'pii' => ['id_number' => '000000000'],
         ]);
     }
@@ -77,7 +78,7 @@ trait StripeConnectFunctions
                 $val = 0 < $val ? 'true' : 'false';
             }
         });
-        return \Stripe\Account::createPerson(
+        return $this->stripe->accounts->createPerson(
             $this->getAccountId(),
             $requestParam
         );
@@ -96,7 +97,7 @@ trait StripeConnectFunctions
                 $val = 0 < $val ? 'true' : 'false';
             }
         });
-        return \Stripe\Account::updatePerson(
+        return $this->stripe->accounts->updatePerson(
             $this->getAccountId(),
             $this->getRelationshipPersonId(),
             $requestParam
@@ -127,7 +128,7 @@ trait StripeConnectFunctions
      */
     private function delete(): object
     {
-        return $this->retrieve($this->getAccountId())->delete();
+        return $this->stripe->accounts->delete($this->getAccountId());
     }
 
     /**
@@ -149,7 +150,7 @@ trait StripeConnectFunctions
      */
     private function createSession(array $requestParam): object
     {
-        $this->resp = \Stripe\Checkout\Session::create($requestParam);
+        $this->resp = $this->stripe->checkout->sessions->create($requestParam);
         if (false === $this->resp) {
             return (object) array();
         }
@@ -164,7 +165,7 @@ trait StripeConnectFunctions
      */
     private function createPrice(array $requestParam): object
     {
-        return \Stripe\Price::create($requestParam);
+        return $this->stripe->prices->create($requestParam);
     }
 
     /**
@@ -175,7 +176,7 @@ trait StripeConnectFunctions
      */
     private function createCustomer(array $requestParam): object
     {
-        return \Stripe\Customer::create($requestParam);
+        return $this->stripe->customers->create($requestParam);
     }
 
     /**
@@ -186,7 +187,7 @@ trait StripeConnectFunctions
      */
     private function updateCustomer(array $requestParam): object
     {
-        return \Stripe\Customer::update(
+        return $this->stripe->customers->update(
             $this->getCustomerId(),
             $requestParam
         );
@@ -200,7 +201,7 @@ trait StripeConnectFunctions
      */
     private function loginLink(): object
     {
-        return \Stripe\Account::createLoginLink(
+        return $this->stripe->accounts->createLoginLink(
             $this->getAccountId()
         );
     }
@@ -213,7 +214,7 @@ trait StripeConnectFunctions
      */
     private function connectedAccounts(array $requestParam = ['limit' => 10]): object
     {
-        return \Stripe\Account::all($requestParam);
+        return $this->stripe->accounts->all($requestParam);
     }
 
     /**
@@ -225,7 +226,7 @@ trait StripeConnectFunctions
      */
     private function requestRefund(array $requestParam = []): object
     {
-        return \Stripe\Refund::create($requestParam);
+        return $this->stripe->refunds->create($requestParam);
     }
 
     /**
@@ -245,7 +246,7 @@ trait StripeConnectFunctions
      */
     private function transferAmount(array $requestParam = []): object
     {
-        return \Stripe\Transfer::create($requestParam);
+        return $this->stripe->transfers->create($requestParam);
     }
 
     /**
@@ -267,7 +268,7 @@ trait StripeConnectFunctions
     {
         $transferId = $requestParam['transferId'];
         $data = $requestParam['data'];
-        return \Stripe\Transfer::createReversal($transferId, $data);
+        return $this->stripe->transfers->createReversal($transferId, $data);
     }
     
     /**

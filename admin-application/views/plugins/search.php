@@ -3,6 +3,7 @@ $arr_flds = [
     'dragdrop' => '',
     'select_all' => Labels::getLabel('LBL_Select_all', $adminLangId),
     'listserial' => '#',
+    'plugin_icon' => Labels::getLabel('PLUGIN_ICON', $adminLangId),
     'plugin_identifier' => Labels::getLabel('LBL_PLUGIN', $adminLangId),
     'plugin_active' => Labels::getLabel('LBL_Status', $adminLangId),
     'action' => '',
@@ -24,7 +25,7 @@ foreach ($arr_flds as $key => $val) {
         $e = $th->appendElement('th', array(), $val);
     }
 }
-
+$aspectRatioArr = AttachedFile::getRatioTypeArray($adminLangId);
 $sr_no = 0;
 foreach ($arr_listing as $sn => $row) {
     $sr_no++;
@@ -43,6 +44,15 @@ foreach ($arr_listing as $sn => $row) {
                 break;
             case 'listserial':
                 $td->appendElement('plaintext', array(), $sr_no);
+                break;
+            case 'plugin_icon':
+                $fileData = AttachedFile::getAttachment(AttachedFile::FILETYPE_PLUGIN_LOGO, $row['plugin_id']);
+                $uploadedTime = AttachedFile::setTimeParam($fileData['afile_updated_at']);
+                $aspectRatio = ($fileData['afile_aspect_ratio'] > 0 && isset($aspectRatioArr[$fileData['afile_aspect_ratio']])) ? $aspectRatioArr[$fileData['afile_aspect_ratio']] : '';
+
+                $imageUrl = FatCache::getCachedUrl(CommonHelper::generateUrl('Image', 'plugin', array($row['plugin_id'], 'ICON'), CONF_WEBROOT_FRONT_URL) . $uploadedTime, CONF_IMG_CACHE_TIME, '.jpg');
+                $imgHtm = '<img src="' . $imageUrl . '" data-ratio="' . $aspectRatio . '">';
+                $td->appendElement('plaintext', array(), $imgHtm, true);
                 break;
             case 'plugin_identifier':
                 $defaultCurrConvAPI = FatApp::getConfig('CONF_DEFAULT_PLUGIN_' . $row['plugin_type'], FatUtility::VAR_INT, 0);

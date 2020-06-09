@@ -1,7 +1,5 @@
 <?php
 
-require_once CONF_INSTALLATION_PATH . 'vendor/autoload.php';
-
 class TaxJarTax extends TaxBase
 {
     public const KEY_NAME = 'TaxJarTax';
@@ -24,7 +22,7 @@ class TaxJarTax extends TaxBase
     
     public $requiredKeys = [
         'live_key',
-		'environment'
+        'environment'
     ];
 
     /**
@@ -36,12 +34,12 @@ class TaxJarTax extends TaxBase
      */
     public function __construct(int $langId, array $fromAddress = array(), array $toAddress = array())
     {
-        $this->langId = FatUtility::int($langId);        
+        $this->langId = FatUtility::int($langId);
         if (1 > $this->langId) {
             $this->langId = CommonHelper::getLangId();
         }
 
-        if (false == $this->validateSettings($langId)) { 
+        if (false == $this->validateSettings($langId)) {
             return [
                 'status' => false,
                 'msg' => $this->error,
@@ -60,7 +58,7 @@ class TaxJarTax extends TaxBase
         }
 
         if (!empty($fromAddress)) {
-            $this->setFromAddress($fromAddress);            
+            $this->setFromAddress($fromAddress);
         }
 
         if (!empty($toAddress)) {
@@ -69,7 +67,7 @@ class TaxJarTax extends TaxBase
 
         //$this->client->setApiConfig('headers', ['X-TJ-Expected-Response' => 422]);
         //$this->client->setApiConfig('debug', true);
-    }    
+    }
 
     /**
      * getRates
@@ -81,18 +79,18 @@ class TaxJarTax extends TaxBase
      */
     public function getRates(array $itemsArr, array $shippingItem, int $userId)
     {
-        if ($this->error != ''){
+        if ($this->error != '') {
             return [
                 'status' => false,
                 'msg' => $this->error,
             ];
-        }    
+        }
 
         $this->setItems($itemsArr, $shippingItem, $userId);
         
         try {
-            $taxes = $this->client->taxForOrder($this->params);            
-        } catch(exception $e){
+            $taxes = $this->client->taxForOrder($this->params);
+        } catch (exception $e) {
             return [
                 'status' => false,
                 'msg' => $e->getMessage(),
@@ -105,15 +103,14 @@ class TaxJarTax extends TaxBase
         //         'status' => false,
         //         'msg' => Labels::getLabel("LBL_Tax_could_not_be_calculated_from_TaxJar", $this->langId),
         //     ];
-        // }    
+        // }
 
         return [
             'status' => true,
             'msg' => Labels::getLabel("MSG_SUCCESS", $this->langId),
             'data' => $this->formatTaxes($taxes)
         ];
-
-    }    
+    }
 
     /**
      * formatTaxes
@@ -128,42 +125,42 @@ class TaxJarTax extends TaxBase
         $rateTypes = $this->getRateTypesKeys();
        
         if (isset($taxes->breakdown->line_items)) {
-            foreach ($taxes->breakdown->line_items as $item) {           
+            foreach ($taxes->breakdown->line_items as $item) {
                 $taxDetails = [];
             
-                foreach ($rateTypes as $key=> $name){
-                    if (isset($item->$name) ) {
+                foreach ($rateTypes as $key=> $name) {
+                    if (isset($item->$name)) {
                         $taxDetails[$types[$key]]['name'] = $types[$key];
                         $taxDetails[$types[$key]]['value'] = $item->$name;
                     }
-                }  
-                $formatedTax[$item->id] = array(    
-                    'tax' => $taxes->breakdown->tax_collectable,      
+                }
+                $formatedTax[$item->id] = array(
+                    'tax' => $taxes->breakdown->tax_collectable,
                     'taxDetails' => $taxDetails,
                 );
-            } 
+            }
         } else {
             $taxDetails = [];
             $taxDetails[Labels::getLabel('LBL_TAX', $this->langId)]['name'] = Labels::getLabel('LBL_TAX', $this->langId);
             $taxDetails[Labels::getLabel('LBL_TAX', $this->langId)]['value'] = $taxes->amount_to_collect;
-            $formatedTax[0] = array(    
-                'tax' => $taxes->amount_to_collect,      
+            $formatedTax[0] = array(
+                'tax' => $taxes->amount_to_collect,
                 'taxDetails' => $taxDetails,
             );
-        }   
+        }
 
         if (isset($taxes->breakdown->shipping)) {
             $itemId = $taxes->breakdown->line_items{0}->id;
-            foreach ($rateTypes as $key=> $name){
+            foreach ($rateTypes as $key=> $name) {
                 if (isset($taxes->breakdown->shipping->$name)) {
                     if (isset($formatedTax[$itemId]['taxDetails'][$types[$key]]['value'])) {
                         $formatedTax[$itemId]['taxDetails'][$types[$key]]['value'] = $formatedTax[$itemId]['taxDetails'][$types[$key]]['value'] + $taxes->breakdown->shipping->$name;
-                    } else{
+                    } else {
                         $formatedTax[$itemId]['taxDetails'][$types[$key]]['name'] = $types[$key];
                         $formatedTax[$itemId]['taxDetails'][$types[$key]]['value'] = $taxes->breakdown->shipping->$name;
                     }
                 }
-            } 
+            }
         }
                  
         return $formatedTax;
@@ -181,9 +178,9 @@ class TaxJarTax extends TaxBase
      */
     public function getCodes(int $pageSize = null, int $pageNumber = null, string $filter = null, array $orderBy = null, bool $formatted = true)
     {
-        if (false == $formatted){
+        if (false == $formatted) {
             return $this->client->categories();
-        }    
+        }
         
         $codesArr = $this->client->categories();
         $formatedCodesArr = [];
@@ -221,14 +218,15 @@ class TaxJarTax extends TaxBase
      * @param  string $invoiceNumber
      * @return array
      */
-    public function createInvoice(array $itemsArr, array $shippingItem, int $userId, string $txnDateTime, string $invoiceNumber){
+    public function createInvoice(array $itemsArr, array $shippingItem, int $userId, string $txnDateTime, string $invoiceNumber)
+    {
         $this->params['transaction_id'] = $invoiceNumber;
         $this->params['transaction_date'] = $this->formatDateTime($txnDateTime);
         $this->setItemsForOrder($itemsArr, $shippingItem);
 
         try {
-            $order = $this->client->createOrder($this->params);                    
-        } catch(exception $e){ 
+            $order = $this->client->createOrder($this->params);
+        } catch (exception $e) {
             return [
                 'status' => false,
                 'msg' => $e->getMessage(),
@@ -242,19 +240,20 @@ class TaxJarTax extends TaxBase
         ];
     }
 
-    private function formatDateTime($txnDateTime){
-       return date("Y-m-d\TH:i:s", strtotime($txnDateTime));
+    private function formatDateTime($txnDateTime)
+    {
+        return date("Y-m-d\TH:i:s", strtotime($txnDateTime));
     }
 
-    private function setItemsForOrder($itemsArr, $shippingItem) {
-                        
+    private function setItemsForOrder($itemsArr, $shippingItem)
+    {
         $lineItems = [];
         $salesTax = 0;
         $totalDiscount = 0;
-        $totalAmount = 0; 
+        $totalAmount = 0;
         //$netAmount = ($childOrderInfo['op_unit_price'] * $quantity) - abs($discount)  + $shippingAmount;
-        //348 - 86.12 - 0.1 + 30 = 
-        foreach($itemsArr as $item){
+        //348 - 86.12 - 0.1 + 30 =
+        foreach ($itemsArr as $item) {
             $arr = [
                 'id' => $item['itemCode'],
                 'quantity' => $item['quantity'],
@@ -266,27 +265,28 @@ class TaxJarTax extends TaxBase
             ];
 
             $totalAmount = $totalAmount + ($item['amount'] * $item['quantity']);
-            $salesTax = $salesTax + $item['salesTax'];         
+            $salesTax = $salesTax + $item['salesTax'];
             $totalDiscount = $item['discount'];
             array_push($lineItems, $arr);
         }
 
         $shipAmount = 0;
-        foreach($shippingItem as $item){
+        foreach ($shippingItem as $item) {
             $shipAmount = $shipAmount + $item['amount'];
         }
         
         $this->params['line_items'] = $lineItems;
-        $this->params['shipping'] = $shipAmount;        
+        $this->params['shipping'] = $shipAmount;
         $this->params['sales_tax'] = $salesTax;
         $this->params['amount'] = $totalAmount - $totalDiscount + $shipAmount ;
     }
 
-    private function setItems($itemsArr, $shippingItem, $userId) {
+    private function setItems($itemsArr, $shippingItem, $userId)
+    {
         $totalAmount = 0;
         $lineItems = [];
        
-        foreach($itemsArr as $item){
+        foreach ($itemsArr as $item) {
             $arr = [
                 'id' => $item['itemCode'],
                 'quantity' => $item['quantity'],
@@ -299,7 +299,7 @@ class TaxJarTax extends TaxBase
         }
 
         $shipAmount = 0;
-        foreach($shippingItem as $item){
+        foreach ($shippingItem as $item) {
             $shipAmount = $shipAmount + $item['amount'];
         }
 
@@ -308,22 +308,23 @@ class TaxJarTax extends TaxBase
         $this->params['amount'] = $totalAmount;
     }
 
-    private function setFromAddress(array $address) {
-        
-        if (!$this->validateAddress($address)) {           
+    private function setFromAddress(array $address)
+    {
+        if (!$this->validateAddress($address)) {
             return false;
         }
         $this->params['from_country'] = $address['countryCode'];
         $this->params['from_zip'] = $address['postalCode'];
         $this->params['from_state'] = $address['stateCode'];
         $this->params['from_city'] = $address['city'];
-        $this->params['from_street'] = $address['line1'] . " " . $address['line2'];       
+        $this->params['from_street'] = $address['line1'] . " " . $address['line2'];
         return $this;
     }
 
        
-    private function setToAddress(array $address) { 
-        if (!$this->validateAddress($address)) {            
+    private function setToAddress(array $address)
+    {
+        if (!$this->validateAddress($address)) {
             return false;
         }
 
@@ -336,12 +337,12 @@ class TaxJarTax extends TaxBase
 
             foreach($regions as $region) {
                 if ($region->region_code == $address['stateCode']) {
-                    $this->params['nexus_addresses'] = [                       
+                    $this->params['nexus_addresses'] = [
                         'country' => $region->country_code,
                         'state' => $region->region_code,
                     ];
-                }                
-            }            
+                }
+            }
         }*/
         
         $this->params['to_country'] = $address['countryCode'];
@@ -352,7 +353,8 @@ class TaxJarTax extends TaxBase
         return $this;
     }
     
-    private function validateAddress(array $address) {
+    private function validateAddress(array $address)
+    {
         if (!is_array($address)) {
             return false;
         }
@@ -365,7 +367,7 @@ class TaxJarTax extends TaxBase
         //             'zip' => $address['postalCode'],
         //             'city' => $address['city'],
         //             'street' => $address['line1'] . ' ' . $address['line2']
-        //         ]);                
+        //         ]);
         //     } catch(exception $e){
         //         $this->error = $e->getMessage();
         //         return false;
@@ -377,7 +379,8 @@ class TaxJarTax extends TaxBase
         return !array_diff($requiredKeys, array_keys($address));
     }
 
-    private  function getRateTypesNames() {
+    private function getRateTypesNames()
+    {
         return array(
             static::RATE_TYPE_STATE => Labels::getLabel('LBL_STATE_TAX', $this->langId),
             static::RATE_TYPE_COUNTY => Labels::getLabel('LBL_COUNTRY_TAX', $this->langId),
@@ -389,7 +392,8 @@ class TaxJarTax extends TaxBase
         );
     }
 
-    private function getRateTypesKeys(){
+    private function getRateTypesKeys()
+    {
         return array(
             static::RATE_TYPE_STATE => 'state_amount',
             static::RATE_TYPE_COUNTY => 'county_amount',
@@ -400,5 +404,4 @@ class TaxJarTax extends TaxBase
             static::RATE_TYPE_SPECIAL => 'special_district_amount',
         );
     }
-    
 }

@@ -10,23 +10,23 @@ class StripeConnectPayController extends PaymentController
     public function __construct($action)
     {
         parent::__construct($action);
-    }
-
-    private function includePlugin()
-    {
+        
         $error = '';
-        if (false === PluginHelper::includePlugin(self::KEY_NAME, 'payment-methods', $error, $this->siteLangId)) {
+        $this->stripeConnect = PluginHelper::callPlugin(self::KEY_NAME, [$this->siteLangId], $error, $this->siteLangId);
+        if (false === $this->stripeConnect) {
             $this->setErrorAndRedirect($error);
         }
-
-        $this->stripeConnect = new StripeConnect($this->siteLangId);
     }
 
     public function init()
     {
-        $this->includePlugin();
+        $userId = UserAuthentication::getLoggedUserId(true);
+        if (1 > $userId) {
+            $msg = Labels::getLabel('MSG_INVALID_USER', $this->siteLangId);
+            $this->setErrorAndRedirect($msg);
+        }
 
-        if (false === $this->stripeConnect->init()) {
+        if (false === $this->stripeConnect->init($userId)) {
             $this->setErrorAndRedirect();
         }
 
@@ -74,92 +74,91 @@ class StripeConnectPayController extends PaymentController
         if (!$orderInfo['id']) {
             $msg = Labels::getLabel('MSG_Invalid_Access', $this->siteLangId);
             $this->setErrorAndRedirect($msg);
-        } elseif ($orderInfo && $orderInfo["order_is_paid"] == Orders::ORDER_IS_PENDING) {
-            $cancelUrl = CommonHelper::getPaymentCancelPageUrl();
-            if ($orderInfo['order_type'] == Orders::ORDER_WALLET_RECHARGE) {
-                $cancelUrl = CommonHelper::getPaymentFailurePageUrl();
-            }
+        }
+        
+        if ($orderInfo["order_is_paid"] != Orders::ORDER_IS_PENDING) {
+            $msg = Labels::getLabel('MSG_INVALID_ORDER._ALREADY_PAID_OR_CANCELLED', $this->siteLangId);
+            $this->setErrorAndRedirect($msg);
+        }
+ 
+        if (false === $this->stripeConnect->createCustomerObject($orderInfo)) {
+            $this->setErrorAndRedirect();
+        }
+        $customerId = $this->stripeConnect->getCustomerId();
+ 
+ 
+        $cancelUrl = CommonHelper::getPaymentCancelPageUrl();
+        if ($orderInfo['order_type'] == Orders::ORDER_WALLET_RECHARGE) {
+            $cancelUrl = CommonHelper::getPaymentFailurePageUrl();
+        }
 
-            if (false === $this->stripeConnect->createCustomerObject($orderInfo)) {
+        $orderFormattedData = $this->stripeConnect->formatCustomerDataFromOrder($orderInfo);
+        $data = [
+            'mode' => 'payment',
+            'payment_method_types' => ['card'],
+            'success_url' => CommonHelper::generateFullUrl('custom', 'paymentSuccess', array($orderInfo['id'])),
+            'cancel_url' => $cancelUrl,
+            'line_items' => [],
+            'customer' => $customerId,
+            'payment_intent_data' => [
+                'receipt_email' => FatApp::getConfig('CONF_SITE_OWNER_EMAIL'),
+                'shipping' => $orderFormattedData['shipping']
+            ],
+            'metadata' => [
+                'orderId' => $orderId
+            ]
+        ];
+
+        $charges = $orderObj->getOrderProductChargesByOrderId($orderInfo['id']);
+        foreach ($orderProducts as $op) {
+            $netAmount = CommonHelper::orderProductAmount($op, 'NETAMOUNT');
+            $singleItemPrice = $netAmount / $op['op_qty'];
+            $priceData = [
+                'unit_amount' => $this->convertInPaisa($singleItemPrice),
+                'currency' => $orderInfo['order_currency_code'],
+                'product_data' => [
+                    'name' => $op['op_selprod_title'],
+                    'metadata' => [
+                        'id' => $op['op_id']
+                    ]
+                ],
+                'nickname' => Labels::getLabel('LBL_SHIPPING_COST_AND_TAX_CHARGES_INCLUDED', $this->siteLangId)
+            ];
+            
+            if (false === $this->stripeConnect->createPriceObject($priceData)) {
                 $this->setErrorAndRedirect();
             }
 
-            $customerId = $this->stripeConnect->getCustomerId();
-
-            $orderFormattedData = $this->stripeConnect->formatCustomerDataFromOrder($orderInfo);
-            $data = [
-                'mode' => 'payment',
-                'payment_method_types' => ['card'],
-                'success_url' => CommonHelper::generateFullUrl('custom', 'paymentSuccess', array($orderInfo['id'])),
-                'cancel_url' => $cancelUrl,
-                'line_items' => [],
-                'customer' => $customerId,
-                'payment_intent_data' => [
-                    'receipt_email' => FatApp::getConfig('CONF_SITE_OWNER_EMAIL'),
-                    'shipping' => $orderFormattedData['shipping']
-                ],
-                'metadata' => [
-                    'orderId' => $orderId
-                ]
+            $data['line_items'][] = [
+                'price' => $this->stripeConnect->getPriceId(),
+                'quantity' => $op['op_qty']
             ];
 
-            $charges = $orderObj->getOrderProductChargesByOrderId($orderInfo['id']);
-            foreach ($orderProducts as $op) {
-                $netAmount = CommonHelper::orderProductAmount($op, 'NETAMOUNT');
-                $singleItemPrice = $netAmount / $op['op_qty'];
-                $priceData = [
-                    'unit_amount' => $this->convertInPaisa($singleItemPrice),
-                    'currency' => $orderInfo['order_currency_code'],
-                    'product_data' => [
-                        'name' => $op['op_selprod_title'],
-                        'metadata' => [
-                            'id' => $op['op_id']
-                        ]
-                    ],
-                    'nickname' => Labels::getLabel('LBL_SHIPPING_COST_AND_TAX_CHARGES_INCLUDED', $this->siteLangId)
+            // You may not provide the application_fee_amount parameter and the transfer_data[amount] parameter simultaneously. They are mutually exclusive.
+            // $data['payment_intent_data']['application_fee_amount'] = $this->convertInPaisa($op['op_commission_charged']);
+            
+            $data['payment_intent_data']['statement_descriptor'] = $op['op_invoice_number'];
+
+            $accountId = User::getUserMeta($op['op_selprod_user_id'], 'stripe_account_id');
+            if (!empty($accountId)) {
+                $data['payment_intent_data']['transfer_data'] = [
+                    'destination' => $accountId,
+                    'amount' => $this->convertInPaisa($netAmount - $op['op_commission_charged'])
                 ];
-                // CommonHelper::printArray($priceData);
-                if (false === $this->stripeConnect->createPriceObject($priceData)) {
-                    $this->setErrorAndRedirect();
-                }
-
-                $data['line_items'][] = [
-                    'price' => $this->stripeConnect->getPriceId(),
-                    'quantity' => $op['op_qty']
-                ];
-
-                // You may not provide the application_fee_amount parameter and the transfer_data[amount] parameter simultaneously. They are mutually exclusive.
-                // $data['payment_intent_data']['application_fee_amount'] = $this->convertInPaisa($op['op_commission_charged']);
-                
-                $data['payment_intent_data']['statement_descriptor'] = $op['op_invoice_number'];
-
-                $accountId = User::getUserMeta($op['op_selprod_user_id'], 'stripe_account_id');
-                if (!empty($accountId)) {
-                    $data['payment_intent_data']['transfer_data'] = [
-                        'destination' => $accountId,
-                        'amount' => $this->convertInPaisa($netAmount - $op['op_commission_charged'])
-                    ];
-                }
             }
-            /*CommonHelper::printArray($orderInfo);
-            CommonHelper::printArray($orderProducts, true);*/
-
-            if (false === $this->stripeConnect->initiateSession($data)) {
-                $this->setErrorAndRedirect();
-            }
-
-            $sessionId = $this->stripeConnect->getSessionId();
-            $publishableKey = $this->settings[$this->liveMode . 'publishable_key'];
-
-            $this->set('publishableKey', $publishableKey);
-            $this->set('sessionId', $sessionId);
-            $this->set('exculdeMainHeaderDiv', true);
-            $this->_template->render(true, false);
-        } else {
-            $message = Labels::getLabel('MSG_INVALID_ORDER._ALREADY_PAID_OR_CANCELLED', $this->siteLangId);
-            LibHelper::exitWithError($message, false, true);
-            CommonHelper::redirectUserReferer();
         }
+
+        if (false === $this->stripeConnect->initiateSession($data)) {
+            $this->setErrorAndRedirect();
+        }
+
+        $sessionId = $this->stripeConnect->getSessionId();
+        $publishableKey = $this->settings[$this->liveMode . 'publishable_key'];
+
+        $this->set('publishableKey', $publishableKey);
+        $this->set('sessionId', $sessionId);
+        $this->set('exculdeMainHeaderDiv', true);
+        $this->_template->render(true, false);
     }
 
     private function convertInPaisa($amount)
@@ -170,9 +169,7 @@ class StripeConnectPayController extends PaymentController
     
     public function paymentStatus()
     {
-        $this->includePlugin();
-        
-        if (false === $this->stripeConnect->init(true)) {
+        if (false === $this->stripeConnect->init()) {
             $this->setErrorAndRedirect();
         }
 

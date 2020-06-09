@@ -17,8 +17,16 @@ class StripeConnectController extends PaymentMethodBaseController
     public function init()
     {
         $error = '';
-        if (false === PluginHelper::includePlugin(self::KEY_NAME, 'payment-methods', $error, $this->siteLangId)) {
+        $this->stripeConnect = PluginHelper::callPlugin(self::KEY_NAME, [$this->siteLangId], $error, $this->siteLangId);
+        if (false === $this->stripeConnect) {
             Message::addErrorMessage($error);
+            $this->redirectBack();
+        }
+
+        $userId = UserAuthentication::getLoggedUserId(true);
+        if (1 > $userId) {
+            $msg = Labels::getLabel('MSG_INVALID_USER', $this->siteLangId);
+            Message::addErrorMessage($msg);
             $this->redirectBack();
         }
 
@@ -28,9 +36,7 @@ class StripeConnectController extends PaymentMethodBaseController
             $this->redirectBack();
         }
 
-        $this->stripeConnect = new StripeConnect($this->siteLangId);
-
-        if (false === $this->stripeConnect->init()) {
+        if (false === $this->stripeConnect->init($userId)) {
             Message::addErrorMessage($this->stripeConnect->getError());
             $this->redirectBack();
         }
@@ -106,11 +112,19 @@ class StripeConnectController extends PaymentMethodBaseController
 
     public function getInitialSetupForm()
     {
-        if (true === $this->stripeConnect->verifyInitialSetup()) {
-            $msg = Labels::getLabel('MSG_NO_MORE_INITIAL_FIELDS_PENDING', $this->siteLangId);
-            Message::addErrorMessage($msg);
+        $initialFieldsStatus = $this->stripeConnect->verifyInitialSetup();
+
+        if (false === $initialFieldsStatus && !empty($this->stripeConnect->getError())) {
+            Message::addErrorMessage($this->stripeConnect->getError());
             $this->redirectBack(self::KEY_NAME);
         }
+
+        if (true === $this->stripeConnect->verifyInitialSetup()) {
+            $msg = Labels::getLabel('MSG_NO_MORE_INITIAL_FIELDS_PENDING', $this->siteLangId);
+            Message::addMessage($msg);
+            $this->redirectBack(self::KEY_NAME);
+        }
+
         $initialFieldsValue = $this->stripeConnect->initialFieldsValue();
         $frm = $this->initialSetupForm();
         $frm->fill($initialFieldsValue);
@@ -131,7 +145,6 @@ class StripeConnectController extends PaymentMethodBaseController
     private function initialSetupForm()
     {
         $initialFields = $this->stripeConnect->getInitialPendingFields();
-
         $frm = new Form('frm' . self::KEY_NAME);
 
         if (in_array('email', $initialFields)) {
