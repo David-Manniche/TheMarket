@@ -447,26 +447,6 @@ class CheckoutController extends MyAppController
         $this->_template->render(false, false, 'json-success.php');
     }
 
-    /* public function shippingSummary(){
-    $criteria = array( 'isUserLogged' => true, 'hasBillingAddress' => true, 'hasShippingAddress' => true );
-    if( !$this->isEligibleForNextStep( $criteria ) ){
-    if( Message::getErrorCount() ){
-                $this->errMessage = Message::getHtml();
-    } else {
-                Message::addErrorMessage(Labels::getLabel('MSG_Something_went_wrong,_please_try_after_some_time.', $this->siteLangId));
-                $this->errMessage = Message::getHtml();
-    }
-    FatUtility::dieWithError( $this->errMessage );
-    }
-
-    $selectedShippingapi_id = $this->cartObj->getCartShippingApi();
-    $frm_data = array('shippingapi_id' => $selectedShippingapi_id );
-    $frm = $this->getShippingApiForm( $this->siteLangId );
-    $frm->fill($frm_data);
-    $this->set( 'frmShippingApi', $frm);
-    $this->_template->render( false, false);
-    } */
-
     public function shippingSummary()
     {
         $criteria = array( 'isUserLogged' => true );
@@ -516,107 +496,6 @@ class CheckoutController extends MyAppController
         $this->set('shippingAddressDetail', UserAddress::getUserAddresses(UserAuthentication::getLoggedUserId(), $this->siteLangId, 0, $this->cartObj->getCartShippingAddress()));
         $this->set('products', $cartProducts);
         $this->set('shippingRates', $shippingRates);
-        $this->_template->render(false, false, 'checkout/shipping-summary-inner-mannual.php');
-    }
-
-    public function shippingSummaryOld()
-    {
-        $criteria = array( 'isUserLogged' => true );
-        if (!$this->isEligibleForNextStep($criteria)) {
-            if (Message::getErrorCount()) {
-                $this->errMessage = Message::getHtml();
-            } else {
-                Message::addErrorMessage(Labels::getLabel('MSG_Something_went_wrong,_please_try_after_some_time.', $this->siteLangId));
-                $this->errMessage = Message::getHtml();
-            }
-            if (true === MOBILE_APP_API_CALL) {
-                $this->errMessage = Labels::getLabel('MSG_Something_went_wrong,_please_try_after_some_time.', $this->siteLangId);
-                FatUtility::dieJsonError($this->errMessage);
-            }
-            FatUtility::dieWithError($this->errMessage);
-        }
-
-        $productSelectedShippingMethodsArr = $this->cartObj->getProductShippingMethod();
-        
-        $selectedShippingapi_id = $this->cartObj->getCartShippingApi();
-        $user_id = UserAuthentication::getLoggedUserId();
-        
-        $frm_data = array('shippingapi_id' => $selectedShippingapi_id );
-        $shippingMethods = Shipping::getShippingMethods($this->siteLangId);
-       
-        if (false === MOBILE_APP_API_CALL) {
-            $frm = $this->getShippingApiForm($this->siteLangId);
-            $frm->fill($frm_data);
-            $this->set('frmShippingApi', $frm);
-        }
-
-        /* $shippingDurationError = '';
-        if( $shippingDurationError ){
-        FatUtility::dieWithError( $shippingDurationError );
-        } */
-        $cart_products = $this->cartObj->getProducts($this->siteLangId);
-        /* get user shipping address[ */
-        $shippingAddressDetail = UserAddress::getUserAddresses($user_id, $this->siteLangId, 0, $this->cartObj->getCartShippingAddress());
-
-        /* ] */
-        foreach ($cart_products as $cartkey => $cartval) {
-            $cart_products[$cartkey]['pship_id'] = 0;
-            $shipBy = 0;
-
-            if ($cart_products[$cartkey]['psbs_user_id']) {
-                $shipBy = $cart_products[$cartkey]['psbs_user_id'];
-            }
-
-            /* $limit = 1; */
-            $ua_country_id = isset($shippingAddressDetail['ua_country_id']) ? $shippingAddressDetail['ua_country_id'] : 0;
-            $shipping_options = Product::getProductShippingRates($cartval['product_id'], $this->siteLangId, $ua_country_id, $shipBy);
-
-            $free_shipping_options = Product::getProductFreeShippingAvailabilty($cartval['product_id'], $this->siteLangId, $ua_country_id, $shipBy);
-
-            $cart_products[$cartkey]['is_shipping_selected'] = isset($productSelectedShippingMethodsArr['product'][$cartval['selprod_id']]) ? $productSelectedShippingMethodsArr['product'][$cartval['selprod_id']]['mshipapi_id'] : false;
-            if ($cart_products[$cartkey]['is_shipping_selected'] && $productSelectedShippingMethodsArr['product'][$cartval['selprod_id']]['mshipapi_id'] == SHIPPINGMETHODS::SHIPSTATION_SHIPPING) {
-                $cart_products[$cartkey]['selected_shipping_option'] = $productSelectedShippingMethodsArr['product'][$cartval['selprod_id']];
-            } elseif ($cart_products[$cartkey]['is_shipping_selected'] && $productSelectedShippingMethodsArr['product'][$cartval['selprod_id']]['mshipapi_id'] == SHIPPINGMETHODS::MANUAL_SHIPPING) {
-                $cart_products[$cartkey]['pship_id'] = $productSelectedShippingMethodsArr['product'][$cartval['selprod_id']]['pship_id'];
-            }
-            $cart_products[$cartkey]['shipping_rates'] = $shipping_options;
-            $cart_products[$cartkey]['shipping_free_availbilty'] = $free_shipping_options;
-            if (true === MOBILE_APP_API_CALL) {
-                $optionTitle = '';
-                if (is_array($cartval['options']) && count($cartval['options'])) {
-                    foreach ($cartval['options'] as $op) {
-                        $optionTitle .= $op['option_name'] . ': ' . $op['optionvalue_name'] . ', ';
-                    }
-                }
-                $cart_products[$cartkey]['optionsTitle'] = rtrim($optionTitle, ', ');
-            }
-        }
-        if (count($cart_products) == 0) {
-            $this->errMessage = Labels::getLabel('MSG_Your_Cart_is_empty', $this->siteLangId);
-            if (true === MOBILE_APP_API_CALL) {
-                FatUtility::dieJsonError($this->errMessage);
-            }
-            Message::addErrorMessage($this->errMessage);
-            FatUtility::dieWithError(Message::getHtml());
-        }
-
-        if (!$this->cartObj->hasPhysicalProduct()) {
-            $this->cartObj->unSetShippingAddressSameAsBilling();
-            $this->cartObj->unsetCartShippingAddress();
-        }
-
-        $this->set('productSelectedShippingMethodsArr', $productSelectedShippingMethodsArr);
-        $this->set('shipStationCarrierList', $this->cartObj->shipStationCarrierList());
-        $this->set('shippingMethods', $shippingMethods);
-        $this->set('products', $cart_products);
-        $this->set('cartSummary', $this->cartObj->getCartFinancialSummary($this->siteLangId));
-        $this->set('shippingAddressDetail', UserAddress::getUserAddresses(UserAuthentication::getLoggedUserId(), $this->siteLangId, 0, $this->cartObj->getCartShippingAddress()));
-
-        $this->set('selectedProductShippingMethod', $this->cartObj->getProductShippingMethod());
-
-        if (true === MOBILE_APP_API_CALL) {
-            $this->_template->render();
-        }
         $this->_template->render(false, false, 'checkout/shipping-summary-inner.php');
     }
 

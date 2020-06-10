@@ -13,7 +13,7 @@ class Shipping
 
     public const TYPE_MANUAL = -1;
     
-    public function __construct($langId = 0)
+    public function __construct(int $langId = 0)
     {
         $this->langId = FatUtility::int($langId);
     }
@@ -24,7 +24,7 @@ class Shipping
     * @param  int $langId
     * @return array
     */
-    public static function getShippedByArr(int $langId)
+    public static function getShippedByArr(int $langId):array
     {
         $langId = FatUtility::int($langId);
         $arr = [
@@ -40,7 +40,7 @@ class Shipping
     * @param  int $langId
     * @return array
     */
-    public static function getLevels(int $langId)
+    public static function getLevels(int $langId):array
     {
         $langId = FatUtility::int($langId);
         $arr = [
@@ -57,7 +57,7 @@ class Shipping
     * @param  int $langId
     * @return array
     */
-    public static function getShippingMethods($langId)
+    public static function getShippingMethods($langId):array
     {
         $langId = FatUtility::int($langId);
         $arr = [
@@ -69,32 +69,12 @@ class Shipping
     }
 
     /**
-     * getSellerProductRates
-     *
-     * @param  array $selProdIdArr
-     * @param  int $$countryId
-     * @param  int $stateId
-     * @return array
-    */
-
-    public function getSellerProductRates($cartProducts)
-    {
-        $shippedByArr = [
-            static::BY_ADMIN => ''
-        ];
-
-        if (!FatApp::getConfig('CONF_SHIPPED_BY_ADMIN_ONLY', FatUtility::VAR_INT, 0)) {
-            $shippedByArr[static::BY_SHOP] = '';
-        }
-    }
-
-    /**
      * getSellerProductShippingProfileIds
      *
      * @param  array $selProdIdArr
      * @return array
      */
-    public function getSellerProductShippingProfileIds(array $selProdIdArr)
+    public function getSellerProductShippingProfileIds(array $selProdIdArr):array
     {
         $selProdIdArr = FatUtility::int($selProdIdArr);
 
@@ -123,7 +103,7 @@ class Shipping
      * @return array
      */
 
-    public function getSellerProductShippingRates(array $selProdIdArr, int $countryId, int $stateId)
+    public function getSellerProductShippingRates(array $selProdIdArr, int $countryId, int $stateId):array
     {
         $countryId = FatUtility::int($countryId);
         $stateId = FatUtility::int($stateId);
@@ -148,7 +128,17 @@ class Shipping
         return FatApp::getDb()->fetchAll($prodSrchRs);
     }
 
-    public function calculateCharges($physicalSelProdIdArr, $shipToCountryId, $shipToStateId, $productInfo)
+
+    /**
+     * calculateCharges
+     *
+     * @param  array $physicalSelProdIdArr
+     * @param  int $shipToCountryId
+     * @param  int $shipToStateId
+     * @param  array $productInfo
+     * @return array
+     */
+    public function calculateCharges(array $physicalSelProdIdArr, int $shipToCountryId, int $shipToStateId, array $productInfo):array
     {
         $selProdShipRates = $this->getSellerProductShippingRates($physicalSelProdIdArr, $shipToCountryId, $shipToStateId);
 
@@ -187,37 +177,18 @@ class Shipping
             switch ($shippingLevel) {
                 case Shipping::LEVEL_PRODUCT:
                     $shippedByArr[$shippingLevel]['shipping_options'][$rates['selprod_id']][] = $rates;
-                    
-                    $code = '';
-                    if (isset($shippedByArr[$shippingLevel]['rates'][$rates['selprod_id']][$rates['shiprate_id']]['code']) && $shippedByArr[$shippingLevel]['rates'][$rates['selprod_id']][$rates['shiprate_id']]['code'] != '') {
-                        $code = $shippedByArr[$shippingLevel]['rates'][$rates['selprod_id']][$rates['shiprate_id']]['code'];
+                   
+                    if (isset($shippedByArr[$shippingLevel]['rates'][$rates['selprod_id']][$rates['shiprate_id']]) && $shippedByArr[$shippingLevel]['rates'][$rates['selprod_id']][$rates['shiprate_id']] != null) {
+                        $this->setCost($shippedByArr[$shippingLevel]['rates'][$rates['selprod_id']][$rates['shiprate_id']], $shippingCost);
                     }
-
-                    if ($code != '') {
-                        $shippingCost['code'] = $shippingCost['code'] . '_' . $code;
-                        $arr = array_filter(explode('_', $shippingCost['code']));
-                        sort($arr);
-                        $shippingCost['code'] = implode('_', $arr);
-                    }
-
                     $shippedByArr[$shippingLevel]['rates'][$rates['selprod_id']][$rates['shiprate_id']] = $shippingCost;
                     break;
                 case Shipping::LEVEL_ORDER:
                 case Shipping::LEVEL_SHOP:
                     $shippedByArr[$shippingLevel]['shipping_options'][$rates['shiprate_id']] = $rates;
-                    
-                    $code = '';
-                    if (isset($shippedByArr[$shippingLevel]['rates'][$rates['shiprate_id']]['code']) && $shippedByArr[$shippingLevel]['rates'][$rates['shiprate_id']]['code'] != '') {
-                        $code = $shippedByArr[$shippingLevel]['rates'][$rates['shiprate_id']]['code'];
+                    if (isset($shippedByArr[$shippingLevel]['rates'][$rates['shiprate_id']]) && $shippedByArr[$shippingLevel]['rates'][$rates['shiprate_id']] != null) {
+                        $this->setCost($shippedByArr[$shippingLevel]['rates'][$rates['shiprate_id']], $shippingCost);
                     }
-
-                    if ($code != '') {
-                        $shippingCost['code'] = $shippingCost['code'] . '_' . $code;
-                        $arr = array_filter(explode('_', $shippingCost['code']));
-                        sort($arr);
-                        $shippingCost['code'] = implode('_', $arr);
-                    }
-
                     $shippedByArr[$shippingLevel]['rates'][$rates['shiprate_id']] = $shippingCost;
                     break;
             }
@@ -234,14 +205,35 @@ class Shipping
        
         return $shippedByArr;
     }
+    
+    /**
+    * setCost
+    *
+    * @param  array $item
+    * @param  array $shippingCost
+    */
+    public function setCost(array &$item, array &$shippingCost)
+    {
+        $code = '';
+        if (isset($item['code']) && $item['code'] != '') {
+            $code = $item['code'];
+        }
+
+        if ($code != '') {
+            $shippingCost['code'] = $shippingCost['code'] . '_' . $code;
+            $arr = array_filter(explode('_', $shippingCost['code']));
+            sort($arr);
+            $shippingCost['code'] = implode('_', $arr);
+        }
+    }
 
     /**
     * setCombinedCharges
     *
-    * @param  array $shippedByArr   
+    * @param  array $shippedByArr
     * @return array
     */
-    public function setCombinedCharges(&$shippedByArr)
+    public function setCombinedCharges(array &$shippedByArr):array
     {
         $levels = array_keys($shippedByArr);
         $weightUnitsArr = applicationConstants::getWeightUnitsArr($this->langId);
@@ -286,7 +278,7 @@ class Shipping
     * @param  float $price
     * @return array
     */
-    public function filterShippingRates(&$rates, $weight = 0, $price = 0)
+    public function filterShippingRates(&$rates, float $weight = 0, float $price = 0):array
     {
         $priceOrWeighCondMatched = false;
         $defaultShippingRates = [];
@@ -343,10 +335,17 @@ class Shipping
         return $rates;
     }
 
-    public static function convertWeightInOunce($productWeight, $productWeightClass)
+    /**
+    * convertWeightInOunce
+    *
+    * @param  float $productWeight
+    * @param  string $productWeightClass
+    * @return float
+    */
+    public static function convertWeightInOunce(float $productWeight, string $productWeightClass):float
     {
         $coversionRate = 1;
-        switch ($productWeightClass) {
+        switch (strtoupper($productWeightClass)) {
             case "KG":
                 $coversionRate = "35.274";
                 break;
@@ -370,10 +369,17 @@ class Shipping
         return $productWeight * $coversionRate;
     }
 
-    public function convertLengthInCenti($productWeight, $productWeightClass)
+    /**
+    * convertLengthInCenti
+    *
+    * @param  float $productWeight
+    * @param  string $productWeightClass
+    * @return float
+    */
+    public function convertLengthInCenti(float $productWeight, string $productWeightClass):float
     {
         $coversionRate = 1;
-        switch ($productWeightClass) {
+        switch (strtoupper($productWeightClass)) {
             case "IN":
                 $coversionRate = "2.54";
                 break;
