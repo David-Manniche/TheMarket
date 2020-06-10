@@ -10,12 +10,6 @@ ALTER TABLE `tbl_tax_categories` DROP INDEX `saletaxcat_identifier`;
 ALTER TABLE `tbl_tax_categories` DROP INDEX `taxcat_identifier`; 
 ALTER TABLE `tbl_tax_categories` ADD UNIQUE( `taxcat_identifier`, `taxcat_plugin_id`);
 ALTER TABLE `tbl_tax_categories` ADD `taxcat_parent` INT(11) NOT NULL AFTER `taxcat_code`;
-
-
-INSERT INTO `tbl_plugins` (`plugin_identifier`, `plugin_type`, `plugin_code`, `plugin_active`, `plugin_display_order`) VALUES ('Stripe Connect', 11, 'StripeConnect', 1, 1); 
-ALTER TABLE `tbl_orders` ADD `order_pmethod_type` TINYINT(2) NOT NULL COMMENT 'Default Or Plugin In PaymentMethods' AFTER `order_pmethod_id`;
-UPDATE `tbl_orders` SET `order_pmethod_type` = '1' WHERE order_pmethod_type != 2;
-
 ALTER TABLE `tbl_tax_categories` DROP INDEX `saletaxcat_identifier`; 
 ALTER TABLE `tbl_tax_categories` DROP INDEX `taxcat_identifier`; 
 ALTER TABLE `tbl_tax_categories` ADD UNIQUE( `taxcat_identifier`, `taxcat_plugin_id`); 
@@ -77,6 +71,14 @@ end here\r\n				-->\r\n				   </td>\r\n		</tr>\r\n	</tbody>\r\n</table>\r\n', '{
 Number.<br/>\r\n{website_name} Name of our website<br>\r\n{website_url} URL of our website<br>\r\n{error_message} - 
 Error Message received from TaxApi while creating order \r\n{social_media_icons} <br>\r\n{contact_us_url} <br>', 1);
 
+--
+-- Stripe Connect Plugin
+--
+
+INSERT INTO `tbl_plugins` (`plugin_identifier`, `plugin_type`, `plugin_code`, `plugin_active`, `plugin_display_order`) VALUES ('Stripe Connect', 11, 'StripeConnect', 0, 1); 
+ALTER TABLE `tbl_orders` ADD `order_pmethod_type` TINYINT(2) NOT NULL COMMENT 'Default Or Plugin In PaymentMethods' AFTER `order_pmethod_id`;
+UPDATE `tbl_orders` SET `order_pmethod_type` = '1' WHERE order_pmethod_type != 2;
+
 ALTER TABLE `tbl_order_return_requests` CHANGE `orrequest_refund_in_wallet` `orrequest_refund_in_wallet` TINYINT(1) NOT NULL COMMENT 'Defined In PaymentMethods Model';
 ALTER TABLE `tbl_order_return_requests` ADD `orrequest_payment_gateway_req_id` VARCHAR(255) NOT NULL AFTER `orrequest_status`;
 
@@ -84,3 +86,5 @@ ALTER TABLE `tbl_order_cancel_requests` CHANGE `ocrequest_refund_in_wallet` `ocr
 ALTER TABLE `tbl_order_cancel_requests` ADD `ocrequest_payment_gateway_req_id` VARCHAR(255) NOT NULL AFTER `ocrequest_status`;
 
 ALTER TABLE `tbl_user_transactions`  ADD `utxn_gateway_txn_id` VARCHAR(150) NOT NULL  AFTER `utxn_debit`;
+
+-- --------------------------------------------------------

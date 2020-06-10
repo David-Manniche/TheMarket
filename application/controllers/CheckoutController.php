@@ -893,9 +893,10 @@ class CheckoutController extends MyAppController
         $pmRs = $pmSrch->getResultSet();
         $paymentMethods = FatApp::getDb()->fetchAll($pmRs);
 
-        $paymentMethodsPlugins = Plugin::getDataByType(Plugin::TYPE_PAYMENT_METHOD, $this->siteLangId);
+        $splitPaymentMethodsPlugins = Plugin::getDataByType(Plugin::TYPE_SPLIT_PAYMENT_METHOD, $this->siteLangId);
+        $regularPaymentMethodsPlugins = Plugin::getDataByType(Plugin::TYPE_REGULAR_PAYMENT_METHOD, $this->siteLangId);
 
-        $paymentMethods = array_merge($paymentMethods, $paymentMethodsPlugins);
+        $paymentMethods = array_merge($paymentMethods, $splitPaymentMethodsPlugins, $regularPaymentMethodsPlugins);
 
         /* ] */
 

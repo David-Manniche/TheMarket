@@ -84,7 +84,7 @@ class StripeConnectController extends PaymentMethodBaseController
 
     public function login()
     {
-        FatApp::redirectUser($this->stripeConnect->getRedirectUri());   
+        FatApp::redirectUser($this->stripeConnect->getRedirectUri());
     }
 
     public function callback()
@@ -194,7 +194,7 @@ class StripeConnectController extends PaymentMethodBaseController
         $pageTitle = Labels::getLabel('LBL_USER_DETAIL', $this->siteLangId);
         if (true === $this->businessTypeForm) {
             $pageTitle = Labels::getLabel('LBL_BUSINESS_TYPE', $this->siteLangId);
-        } else if (true === $this->externalForm) {
+        } elseif (true === $this->externalForm) {
             $pageTitle = Labels::getLabel('LBL_FINANCIAL_INFORMATION', $this->siteLangId);
             $fieldType = 'external_account';
         }
@@ -270,7 +270,7 @@ class StripeConnectController extends PaymentMethodBaseController
         foreach ($fieldsData as $field) {
             if ('business_type' == $field) {
                 return $this->getBusinessTypeForm($field);
-            } else if ('external_account' == $field) {
+            } elseif ('external_account' == $field) {
                 return $this->getFinancialInfoForm($field);
             }
 
@@ -279,7 +279,7 @@ class StripeConnectController extends PaymentMethodBaseController
                 $labelParts = explode(".", $field);
                 $label = implode(" ", $labelParts);
                 $name = $labelParts[0];
-                foreach($labelParts as $i => $nameVal) {
+                foreach ($labelParts as $i => $nameVal) {
                     if (0 == $i) {
                         continue;
                     }
@@ -318,7 +318,7 @@ class StripeConnectController extends PaymentMethodBaseController
                     1 => Labels::getLabel('LBL_YES', $this->siteLangId)
                 ];
                 $fld = $frm->addSelectBox($label, $name, $options);
-            } else if (false !== strpos($field, 'verification.document')) {
+            } elseif (false !== strpos($field, 'verification.document')) {
                 $lbl = Labels::getLabel("LBL_IDENTIFYING_DOCUMENT,_EITHER_A_PASSPORT_OR_LOCAL_ID_CARD", $this->siteLangId);
                 $lblFront = $lbl . ' ' . Labels::getLabel("LBL_FRONT", $this->siteLangId);
                 $lblBack = $lbl . ' ' . Labels::getLabel("LBL_BACK", $this->siteLangId);
