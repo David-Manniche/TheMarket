@@ -36,7 +36,7 @@ class StripeConnectPayController extends PaymentController
 
         $this->settings = $this->stripeConnect->getKeys();
 
-        if (isset($this->settings['env']) && applicationConstants::YES == $this->settings['env']) {
+        if (isset($this->settings['env']) && Plugin::ENV_PRODUCTION == $this->settings['env']) {
             $this->liveMode = "live_";
         }
     }

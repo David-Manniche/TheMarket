@@ -7,6 +7,9 @@ class Plugin extends MyAppModel
     public const DB_TBL_PREFIX = 'plugin_';
     public const DB_TBL_LANG_PREFIX = 'pluginlang_';
 
+    public const ENV_SANDBOX = 0;
+    public const ENV_PRODUCTION = 1;
+
     public const TYPE_CURRENCY = 1;
     public const TYPE_SOCIAL_LOGIN = 2;
     public const TYPE_PUSH_NOTIFICATION = 3;
@@ -77,6 +80,19 @@ class Plugin extends MyAppModel
             return $pluginDir[$pluginType];
         }
         return false;
+    }
+
+    public static function getEnvArr(int $langId)
+    {
+        $langId = FatUtility::int($langId);
+        if ($langId < 1) {
+            $langId = FatApp::getConfig('CONF_ADMIN_DEFAULT_LANG');
+        }
+
+        return [
+            self::ENV_SANDBOX => Labels::getLabel('LBL_SANDBOX', $langId),
+            self::ENV_PRODUCTION => Labels::getLabel('LBL_PRODUCTION', $langId),
+        ];
     }
 
     public static function getSearchObject($langId = 0, $isActive = true, $joinSettings = false)

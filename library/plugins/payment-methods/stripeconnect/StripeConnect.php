@@ -78,7 +78,7 @@ class StripeConnect extends PaymentMethodBase
             }
         }
 
-        if (isset($this->settings['env']) && applicationConstants::YES == $this->settings['env']) {
+        if (isset($this->settings['env']) && Plugin::ENV_PRODUCTION == $this->settings['env']) {
             $this->liveMode = "live_";
         }
 
