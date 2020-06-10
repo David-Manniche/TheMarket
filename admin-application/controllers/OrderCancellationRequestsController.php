@@ -224,6 +224,15 @@ class OrderCancellationRequestsController extends AdminBaseController
                                     FatUtility::dieJsonError(Labels::getLabel('LBL_UNABLE_TO_PLACE_GATEWAY_REFUND_REQUEST', $row['order_language_id']));
                                 }
                                 $dataToUpdate['ocrequest_payment_gateway_req_id'] = $resp->id;
+                                
+                                // Debit from wallet if plugin/payment method support's direct payment to card.
+                                if (!empty($resp->id)) {
+                                    $childOrderInfo = $this->getOrderProductsByOpId($row['ocrequest_op_id'], $this->adminLangId);
+                                    $txnAmount = (($childOrderInfo["op_unit_price"] * $childOrderInfo["op_qty"]) + $childOrderInfo["op_other_charges"]);
+                                    $comments = Labels::getLabel('LBL_ALREADY_TRANSFERED._TXN_ID_:_{txn-id}', $langId);
+                                    $comments = CommonHelper::replaceStringData($comments, ['{txn-id}' => $resp->id]);
+                                    Transactions::debitWallet($childOrderInfo['order_user_id'], Transactions::TYPE_ORDER_REFUND, $txnAmount, $this->adminLangId, $comments, $row['ocrequest_op_id'], $resp->id);
+                                }
                             }
                         }
                     }

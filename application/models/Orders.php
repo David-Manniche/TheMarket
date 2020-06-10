@@ -1297,24 +1297,7 @@ class Orders extends MyAppModel
             }
         }
     }
-
-    private function deductIfAlreadyPaid(int $userId, int $txnType, $txnAmount, string $comments)
-    {
-        $orderObj = new Orders();
-        $orderRow = $orderObj->getOrderById($this->orderId, $this->langId);
-        $paymentMethodId = $orderRow['order_pmethod_id'];
-        if (PaymentMethods::TYPE_PLUGIN == $orderRow['order_pmethod_type']) {
-            $pluginKey = Plugin::getAttributesById($paymentMethodId, 'plugin_code');
-            switch ($pluginKey) {
-                case 'StripeConnect':
-                    Transactions::debitWallet($userId, $txnType, $txnAmount, $this->langId, $comments, $this->opId);
-                    return true;
-                    break;
-            }
-        }
-        return false;
-    }
-
+    
     public function addChildProductOrderHistory($op_id, $langId, $opStatusId, $comment = '', $notify = false, $trackingNumber = '', $releasePayments = 0, $moveRefundToWallet = true)
     {
         $op_id = FatUtility::int($op_id);
@@ -1454,13 +1437,6 @@ class Orders extends MyAppModel
                 }
                 /*]*/
 
-                // Debit from wallet if plugin/payment method support's direct payment to card.
-                if (!empty($cancelRequestDetail['ocrequest_payment_gateway_req_id'])) {
-                    $comments = Labels::getLabel('LBL_ALREADY_TRANSFERED._TXN_ID_:_{txn-id}', $langId);
-                    $comments = CommonHelper::replaceStringData($comments, ['{txn-id}' => $cancelRequestDetail['ocrequest_payment_gateway_req_id']]);
-                    $this->deductIfAlreadyPaid($childOrderInfo['order_user_id'], Transactions::TYPE_ORDER_REFUND, $txnAmount, $comments);
-                }
-
                 /*Deduct Shipping Amount[*/
                 if (0 < $childOrderInfo["op_free_ship_upto"] && array_key_exists(OrderProduct::CHARGE_TYPE_SHIPPING, $childOrderInfo['charges']) && $childOrderInfo["op_actual_shipping_charges"] != $childOrderInfo['charges'][OrderProduct::CHARGE_TYPE_SHIPPING]['opcharge_amount']) {
                     $sellerProdTotalPrice = 0;
@@ -1541,14 +1517,6 @@ class Orders extends MyAppModel
                     }
                 }
                 /* ] */
-
-                // Debit from wallet if plugin/payment method support's direct payment to card.
-                $gatewayRequestId = OrderReturnRequest::getReturnRequestById($opId, 'orrequest_payment_gateway_req_id');
-                if (!empty($gatewayRequestId)) {
-                    $comments = Labels::getLabel('LBL_ALREADY_TRANSFERED._TXN_ID_:_{txn-id}', $langId);
-                    $comments = CommonHelper::replaceStringData($comments, ['{txn-id}' => $gatewayRequestId]);
-                    $this->deductIfAlreadyPaid($childOrderInfo['order_user_id'], Transactions::TYPE_ORDER_REFUND, $txnAmount, $comments);
-                }
 
                 /*Deduct Shipping Amount[*/
                 if (0 < $childOrderInfo["op_free_ship_upto"] && array_key_exists(OrderProduct::CHARGE_TYPE_SHIPPING, $childOrderInfo['charges']) && $childOrderInfo["op_actual_shipping_charges"] != $childOrderInfo['charges'][OrderProduct::CHARGE_TYPE_SHIPPING]['opcharge_amount']) {

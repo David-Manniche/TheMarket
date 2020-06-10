@@ -253,6 +253,15 @@ class OrderReturnRequest extends MyAppModel
                             return false;
                         }
 
+                        // Debit from wallet if plugin/payment method support's direct payment to card.
+                        if (!empty($resp->id)) {
+                            $childOrderInfo = $this->getOrderProductsByOpId($requestRow['orrequest_op_id'], $orderLangId);
+                            $txnAmount = $childOrderInfo['op_refund_amount'];
+                            $comments = Labels::getLabel('LBL_ALREADY_TRANSFERED._TXN_ID_:_{txn-id}', $langId);
+                            $comments = CommonHelper::replaceStringData($comments, ['{txn-id}' => $resp->id]);
+                            Transactions::debitWallet($childOrderInfo['order_user_id'], Transactions::TYPE_ORDER_REFUND, $txnAmount, $orderLangId, $comments, $requestRow['orrequest_op_id'], $resp->id);
+                        }
+
                         $dataToUpdate = ['orrequest_payment_gateway_req_id' => $resp->id];
                         $whereArr = array( 'smt' => 'orrequest_id = ?', 'vals' => [$orrequest_id]);
                         if (!$db->updateFromArray(static::DB_TBL, $dataToUpdate, $whereArr)) {
