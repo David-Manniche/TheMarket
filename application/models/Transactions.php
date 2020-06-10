@@ -239,7 +239,7 @@ class Transactions extends MyAppModel
      *
      * @return bool
      */
-    public static function creditWallet(int $userId, int $txnType, $txnAmount, int $langId, string $comments, int $opId = 0)
+    public static function creditWallet(int $userId, int $txnType, $txnAmount, int $langId, string $comments, int $opId = 0, $gatewayTxnId = '')
     {
         $txnArray["utxn_user_id"] = $userId;
         $txnArray["utxn_credit"] = $txnAmount;
@@ -248,6 +248,7 @@ class Transactions extends MyAppModel
         $txnArray["utxn_op_id"] = $opId;
         $txnArray["utxn_comments"] = $comments;
         $txnArray["utxn_type"] = $txnType;
+        $txnArray["utxn_gateway_txn_id"] = $gatewayTxnId;
         $transObj = new Transactions();
         if ($txnId = $transObj->addTransaction($txnArray)) {
             $emailNotificationObj = new EmailHandler();
@@ -261,7 +262,7 @@ class Transactions extends MyAppModel
      *
      * @return bool
      */
-    public static function debitWallet(int $userId, int $txnType, $txnAmount, int $langId, string $comments, int $opId = 0)
+    public static function debitWallet(int $userId, int $txnType, $txnAmount, int $langId, string $comments, int $opId = 0, $gatewayTxnId = '')
     {
         $txnArray["utxn_user_id"] = $userId;
         $txnArray["utxn_credit"] = 0;
@@ -270,6 +271,7 @@ class Transactions extends MyAppModel
         $txnArray["utxn_op_id"] = $opId;
         $txnArray["utxn_comments"] = $comments;
         $txnArray["utxn_type"] = $txnType;
+        $txnArray["utxn_gateway_txn_id"] = $gatewayTxnId;
         $transObj = new Transactions();
         if ($txnId = $transObj->addTransaction($txnArray)) {
             $emailNotificationObj = new EmailHandler();

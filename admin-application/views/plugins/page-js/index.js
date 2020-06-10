@@ -157,7 +157,6 @@ $(document).on('click', '.uploadFile-Js', function () {
 });
 
 $(document).on('change', '#setupEnvFields', function () {
-    var val = $(this).val();
     var form = $(this).closest('form');
     var formElements = form.prop('elements');
     $(formElements).each(function (index) {

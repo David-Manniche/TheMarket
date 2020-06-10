@@ -251,9 +251,9 @@ class StripeConnectPayController extends PaymentController
                 
                 // Credit sold product amount to seller wallet.
                 $txnId = isset($transferIdsArr[$charge['destination']]) ? $transferIdsArr[$charge['destination']] : '';
-                $comments = Labels::getLabel('MSG_ALREADY_TRANSFERED_TO_{account-id}_ACCOUNT._TRANSFER_ID_:_{txn-id}', $langId);
+                $comments = Labels::getLabel('MSG_TRANSFERED_TO_{account-id}_ACCOUNT._TRANSFER_ID_:_{txn-id}', $langId);
                 $comments = CommonHelper::replaceStringData($comments, ['{account-id}' => $accountId, '{txn-id}' => $txnId]);
-                Transactions::debitWallet($op['op_selprod_user_id'], Transactions::TYPE_PRODUCT_SALE, $total, $this->siteLangId, $comments, $op['op_id']);
+                Transactions::debitWallet($op['op_selprod_user_id'], Transactions::TYPE_PRODUCT_SALE, $total, $this->siteLangId, $comments, $op['op_id'], $txnId);
 
                 $paidAmount = ($netAmount - $op['op_commission_charged']);
 
@@ -288,7 +288,7 @@ class StripeConnectPayController extends PaymentController
                     $comments = Labels::getLabel('MSG_PENDING_DISCOUNT_AMOUNT_CREDITED_TO_YOUR_{account-name}._ACCOUNT_ADDRESS_:_{account-address}', $this->siteLangId);
                     $comments = CommonHelper::replaceStringData($comments, ['{account-name}' => self::KEY_NAME, '{account-address}' => $accountId]);
 
-                    Transactions::debitWallet($op['op_selprod_user_id'], Transactions::TYPE_TRANSFER_TO_THIRD_PARTY_ACCOUNT, $restAmountToBePaid, $this->siteLangId, $comments, $op['op_id']);
+                    Transactions::debitWallet($op['op_selprod_user_id'], Transactions::TYPE_TRANSFER_TO_THIRD_PARTY_ACCOUNT, $restAmountToBePaid, $this->siteLangId, $comments, $op['op_id'], $resp->id);
                 }
             }
         } elseif ($payload['type'] == "payment_intent.payment_failed") {
