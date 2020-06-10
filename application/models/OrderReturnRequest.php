@@ -257,8 +257,7 @@ class OrderReturnRequest extends MyAppModel
                         if (!empty($resp->id)) {
                             $childOrderInfo = $oObj->getOrderProductsByOpId($requestRow['orrequest_op_id'], $orderLangId);
                             $txnAmount = $childOrderInfo['op_refund_amount'];
-                            $comments = Labels::getLabel('LBL_ALREADY_TRANSFERED._TXN_ID_:_{txn-id}', $orderLangId);
-                            $comments = CommonHelper::replaceStringData($comments, ['{txn-id}' => $resp->id]);
+                            $comments = Labels::getLabel('LBL_TRANSFERED_TO_YOUR_CARD', $orderLangId);
                             Transactions::debitWallet($childOrderInfo['order_user_id'], Transactions::TYPE_ORDER_REFUND, $txnAmount, $orderLangId, $comments, $requestRow['orrequest_op_id'], $resp->id);
                         }
 
