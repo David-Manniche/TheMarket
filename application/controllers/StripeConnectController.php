@@ -71,15 +71,17 @@ class StripeConnectController extends PaymentMethodBaseController
         $this->set('requiredFields', $requiredFields);
         $this->set('keyName', self::KEY_NAME);
         $this->set('pluginName', $this->getPluginData()['plugin_name']);
-        $this->_template->render();
+        $this->_template->render(false, false);
     }
 
     public function register()
     {
         if (false === $this->stripeConnect->register()) {
-            Message::addErrorMessage($this->stripeConnect->getError());
+            FatUtility::dieJsonError($this->stripeConnect->getError());
         }
-        $this->redirectBack(self::KEY_NAME);
+        $msg = Labels::getLabel('MSG_SETUP_SUCCESSFULLY', $this->siteLangId);
+        FatUtility::dieJsonSuccess($msg);
+        // $this->redirectBack(self::KEY_NAME);
     }
 
     public function login()
@@ -93,7 +95,7 @@ class StripeConnectController extends PaymentMethodBaseController
         if (false == $this->stripeConnect->accessAccountId($code)) {
             Message::addErrorMessage($this->stripeConnect->getError());
         }
-        $this->redirectBack(self::KEY_NAME);
+        $this->redirectBack('seller', 'shop', [self::KEY_NAME]);
     }
 
     public function initialSetup()
@@ -139,7 +141,7 @@ class StripeConnectController extends PaymentMethodBaseController
         $this->set('stateCode', $stateCode);
         $this->set('pageTitle', $pageTitle);
         $this->set('keyName', self::KEY_NAME);
-        $this->_template->render();
+        $this->_template->render(false, false);
     }
 
     private function initialSetupForm()

@@ -1572,7 +1572,7 @@ class SellerController extends SellerBaseController
         $this->_template->render(false, false, 'cropper/index.php');
     }
 
-    public function shopForm()
+    public function shopForm($callbackKeyName = '')
     {
         $userId = $this->userParentId;
         $shopDetails = Shop::getAttributesByUserId($userId, null, false);
@@ -1612,11 +1612,19 @@ class SellerController extends SellerBaseController
 
         $shopFrm->fill($shopDetails);
 
+        $plugin = new Plugin();
+        $keyName = $plugin->getDefaultPluginKeyName(Plugin::TYPE_SPLIT_PAYMENT_METHOD);
+
+        if (!empty($callbackKeyName)) {
+            $this->set('action', $callbackKeyName);
+        }
+
         $this->set('shopFrm', $shopFrm);
         $this->set('stateId', $stateId);
         $this->set('shop_id', $shop_id);
         $this->set('siteLangId', $this->siteLangId);
         $this->set('language', Language::getAllNames());
+        $this->_template->addJs('js/jscolor.js');
         $this->_template->render(false, false);
     }
 

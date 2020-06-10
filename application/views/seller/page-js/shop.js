@@ -24,6 +24,16 @@ $(document).on('change', '.collection-language-js', function() {
     var scollection_id = document.frmCollectionMedia.scollection_id.value;
     shopCollectionImages(scollection_id, lang_id);
 });
+
+$(document).on("change", "#country", function(){
+    $("#state").attr('disabled', 'disabled');
+    getStatesByCountryCode($(this).val(),'','#state', 'state_code');
+});
+
+$(document).on("change", "#state", function(){
+    $(this).removeAttr("disabled");
+});
+
 (function() {
     var runningAjaxReq = false;
     var dv = '#shopFormBlock';
@@ -708,7 +718,61 @@ $(document).on('change', '.collection-language-js', function() {
             }
         });
 	}
+    
+    pluginPlatform = function(el) {
+        $(dv + " .tabs__content .row").html(fcom.getLoader());
+        var platformUrl = $(el).data('platformurl');
+        fcom.ajax(platformUrl, '', function(t) {
+            $(dv + " .tabs__content .row").html(t);
+            $(el).parent().siblings().removeClass('is-active');
+            $(el).parent().addClass('is-active');
+        });
+    };
 
+    requiredFieldsForm = function(){
+        $.facebox(function() {
+            fcom.ajax(fcom.makeUrl(keyName, 'requiredFieldsForm'),'',function(res){
+                $.facebox(res,'faceboxWidth medium-fb-width');
+            });
+        });
+    };
+    
+    clearForm = function() {
+        fcom.ajax(fcom.makeUrl(keyName, 'requiredFieldsForm'),'',function(res){
+            $.facebox(res,'faceboxWidth medium-fb-width');
+        });
+    };
+    
+	setupRequiredFields = function (frm){
+		if (!$(frm).validate()) return;
+		var data = fcom.frmData(frm);
+        var attr = $(frm).attr('enctype');
+        if (typeof attr !== typeof undefined && attr !== false) {
+            $(frm).attr('action', fcom.makeUrl(keyName, 'setupRequiredFields')).removeAttr("onsubmit").submit();
+            return false;
+        }
+		fcom.updateWithAjax(fcom.makeUrl(keyName, 'setupRequiredFields'), data, function(t) {
+            $("#facebox .close").trigger('click');
+            location.reload();
+        });
+    }
+    
+    register = function (el){
+        var href = $(el).data('href');
+        fcom.updateWithAjax(href, '', function(t) {
+            $('.pluginPlatform-js').click();
+        });
+    }
+
+    initialSetup = function (frm){
+        if (!$(frm).validate()) return;
+        var data = fcom.frmData(frm);
+        fcom.updateWithAjax(fcom.makeUrl(keyName, 'initialSetup'), data, function(t) {
+            if( t.status ){
+                window.location = fcom.makeUrl(keyName);
+            }
+        });
+    }
 })();
 
 function bindAutoComplete() {

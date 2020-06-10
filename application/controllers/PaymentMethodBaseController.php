@@ -18,9 +18,9 @@ class PaymentMethodBaseController extends SellerPluginBaseController
         }
     }
 
-    protected function redirectBack(string $ctrl = 'Seller', string $method = '')
+    protected function redirectBack(string $ctrl = 'Seller', string $method = '', array $attr = [])
     {
-        FatApp::redirectUser(CommonHelper::generateUrl($ctrl, $method));
+        FatApp::redirectUser(CommonHelper::generateUrl($ctrl, $method, $attr));
     }
 
     protected function getPluginData($attr = '')
