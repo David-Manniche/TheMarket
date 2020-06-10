@@ -116,13 +116,13 @@ class StripeConnectController extends PaymentMethodBaseController
 
         if (false === $initialFieldsStatus && !empty($this->stripeConnect->getError())) {
             Message::addErrorMessage($this->stripeConnect->getError());
-            $this->redirectBack(self::KEY_NAME);
+            $this->redirectBack();
         }
 
         if (true === $this->stripeConnect->verifyInitialSetup()) {
             $msg = Labels::getLabel('MSG_NO_MORE_INITIAL_FIELDS_PENDING', $this->siteLangId);
             Message::addMessage($msg);
-            $this->redirectBack(self::KEY_NAME);
+            $this->redirectBack();
         }
 
         $initialFieldsValue = $this->stripeConnect->initialFieldsValue();

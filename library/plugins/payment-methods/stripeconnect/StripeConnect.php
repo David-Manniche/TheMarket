@@ -645,7 +645,7 @@ class StripeConnect extends PaymentMethodBase
      */
     public function getErrorWhileUpdate(): array
     {
-        return (false === $this->loadRemoteUserInfo()) ? [] : ($this->loadRemoteUserInfo()->toArray())['requirements']['errors'];
+        return (false === $this->loadRemoteUserInfo()) ? [] : ($this->getResponse()->toArray())['requirements']['errors'];
     }
 
     /**
