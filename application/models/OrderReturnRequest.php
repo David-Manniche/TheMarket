@@ -255,7 +255,7 @@ class OrderReturnRequest extends MyAppModel
 
                         // Debit from wallet if plugin/payment method support's direct payment to card.
                         if (!empty($resp->id)) {
-                            $childOrderInfo = $this->getOrderProductsByOpId($requestRow['orrequest_op_id'], $orderLangId);
+                            $childOrderInfo = $oObj->getOrderProductsByOpId($requestRow['orrequest_op_id'], $orderLangId);
                             $txnAmount = $childOrderInfo['op_refund_amount'];
                             $comments = Labels::getLabel('LBL_ALREADY_TRANSFERED._TXN_ID_:_{txn-id}', $langId);
                             $comments = CommonHelper::replaceStringData($comments, ['{txn-id}' => $resp->id]);
