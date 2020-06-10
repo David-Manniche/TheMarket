@@ -480,26 +480,26 @@
                 </li>
             <?php } ?>
             <?php if (
-                $objPrivilege->canViewShippingMethods(AdminAuthentication::getLoggedAdminId(), true) ||
+                /* $objPrivilege->canViewShippingMethods(AdminAuthentication::getLoggedAdminId(), true) || */
                 $objPrivilege->canViewShippingCompanyUsers(AdminAuthentication::getLoggedAdminId(), true) ||
-                $objPrivilege->canViewShippingDurationLabels(AdminAuthentication::getLoggedAdminId(), true) ||
-                $objPrivilege->canViewManualShippingApi(AdminAuthentication::getLoggedAdminId(), true) ||
+                /* $objPrivilege->canViewShippingDurationLabels(AdminAuthentication::getLoggedAdminId(), true) ||
+                $objPrivilege->canViewManualShippingApi(AdminAuthentication::getLoggedAdminId(), true) || */
                 $objPrivilege->canViewShippingPackages(AdminAuthentication::getLoggedAdminId(), true) ||
                 $objPrivilege->canViewShippingManagement(AdminAuthentication::getLoggedAdminId(), true)
             ) { ?>
             <li class="haschild"><a href="javascript:void(0);"><?php echo Labels::getLabel('LBL_Shipping_Api', $adminLangId);?></a>
                 <ul>
-                    <?php if ($objPrivilege->canViewShippingMethods(AdminAuthentication::getLoggedAdminId(), true)) {?>
+                    <?php /* if ($objPrivilege->canViewShippingMethods(AdminAuthentication::getLoggedAdminId(), true)) {?>
                     <li><a href="<?php echo CommonHelper::generateUrl('ShippingMethods'); ?>"><?php echo Labels::getLabel('LBL_Shipping_Methods', $adminLangId);?></a></li>
-                    <?php } ?>
+                    <?php } */ ?>
 
-                    <?php if ($objPrivilege->canViewShippingDurationLabels(AdminAuthentication::getLoggedAdminId(), true)) {?>
+                    <?php /* if ($objPrivilege->canViewShippingDurationLabels(AdminAuthentication::getLoggedAdminId(), true)) {?>
                     <li><a href="<?php echo CommonHelper::generateUrl('ShippingDurations'); ?>"><?php echo Labels::getLabel('LBL_Duration_Labels', $adminLangId);?></a></li>
-                    <?php } ?>
+                    <?php } */ ?>
 
-                    <?php if ($objPrivilege->canViewShippingCompanies(AdminAuthentication::getLoggedAdminId(), true)) {?>
+                    <?php /* if ($objPrivilege->canViewShippingCompanies(AdminAuthentication::getLoggedAdminId(), true)) {?>
                     <li><a href="<?php echo CommonHelper::generateUrl('ShippingCompanies'); ?>"><?php echo Labels::getLabel('LBL_Shipping_Companies', $adminLangId);?></a></li>
-                    <?php } ?>
+                    <?php } */ ?>
 
                     <?php if ($objPrivilege->canViewShippingCompanyUsers(AdminAuthentication::getLoggedAdminId(), true)) {?>
                     <li><a href="<?php echo CommonHelper::generateUrl('ShippingCompanyUsers');?>"><?php echo Labels::getLabel('LBL_Shipping_Company_Users', $adminLangId);?></a></li>

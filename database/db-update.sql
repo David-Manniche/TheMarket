@@ -165,5 +165,13 @@ CREATE TABLE `tbl_shipping_locations` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 ALTER TABLE `tbl_shipping_locations`
-  ADD UNIQUE KEY `shiploc_shipzone_id` (`shiploc_shipzone_id`,`shiploc_zone_id`,`shiploc_country_id`,`shiploc_state_id`);  
+  ADD UNIQUE KEY `shiploc_shipzone_id` (`shiploc_shipzone_id`,`shiploc_zone_id`,`shiploc_country_id`,`shiploc_state_id`);
+
+ALTER TABLE `tbl_order_product_shipping` ADD `opshipping_level` INT(4) NOT NULL AFTER `opshipping_by_seller_user_id`;  
+ALTER TABLE `tbl_order_product_shipping` CHANGE `opshipping_duration_id` `opshipping_rate_id` INT(11) NOT NULL;
+ALTER TABLE `tbl_order_product_shipping` DROP `opshipping_max_duration`;
+ALTER TABLE `tbl_order_product_shipping` CHANGE `opshipping_pship_id` `opshipping_code` VARCHAR(255) NOT NULL; 
+ALTER TABLE `tbl_order_product_shipping` DROP `opshipping_company_id`;
+ALTER TABLE `tbl_order_product_shipping` DROP `opshipping_method_id`; 
+ALTER TABLE `tbl_order_product_shipping` ADD `opshipping_label` VARCHAR(255) NOT NULL AFTER `opshipping_level`;
 -- Shippping Module End-----

@@ -86,8 +86,6 @@ class Shipping
         if (!FatApp::getConfig('CONF_SHIPPED_BY_ADMIN_ONLY', FatUtility::VAR_INT, 0)) {
             $shippedByArr[static::BY_SHOP] = '';
         }
-
-        
     }
 
     /**
@@ -134,17 +132,259 @@ class Shipping
         $srch->setDefinedCriteria(0, 0, array(), false);
         $srch->joinProductShippedBy();
         $srch->joinShippingProfileProducts();
-        $srch->joinShippingProfile();
+        $srch->joinShippingProfile($this->langId);
         $srch->joinShippingProfileZones();
         $srch->joinShippingZones();
         $srch->joinShippingRates($this->langId);
         $srch->joinShippingLocations($countryId, $stateId);
         $srch->addCondition('selprod_id', 'IN', $selProdIdArr);
-        $srch->addMultipleFields(array('selprod_id', 'shippro_shipprofile_id', 'shipprozone_id','shiprate_id', 'coalesce(shipr_l.shiprate_name, shipr.shiprate_identifier) as shiprate_name', 'shiprate_cost', 'shiprate_condition_type', 'shiprate_min_val', 'shiprate_max_val', 'psbs.psbs_user_id', 'product_id', 'shiploc_shipzone_id' ,'if(psbs_user_id > 0 or product_seller_id > 0, 1, 0) as shiippingBySeller', 'shipprofile_default', 'shop_id'));
+        $srch->addMultipleFields(array('selprod_id', 'shippro_shipprofile_id', 'shipprozone_id','shiprate_id', 'coalesce(shipr_l.shiprate_name, shipr.shiprate_identifier) as shiprate_name', 'shiprate_cost', 'shiprate_condition_type', 'shiprate_min_val', 'shiprate_max_val', 'psbs.psbs_user_id', 'product_id', 'shiploc_shipzone_id' ,'if(psbs_user_id > 0 or product_seller_id > 0, 1, 0) as shiippingBySeller', 'shipprofile_default', 'shop_id', 'shipprofile_name'));
         $srch->addCondition('shiprate_id', '!=', 'null');
         $srch->addGroupBy('selprod_id');
         $srch->addGroupBy('shiprate_id');
+        //$srch->addOrder('shiprate_cost');
+        $srch->addOrder('shiprate_condition_type', 'desc');
         $prodSrchRs = $srch->getResultSet();
         return FatApp::getDb()->fetchAll($prodSrchRs);
+    }
+
+    public function calculateCharges($physicalSelProdIdArr, $shipToCountryId, $shipToStateId, $productInfo)
+    {
+        $selProdShipRates = $this->getSellerProductShippingRates($physicalSelProdIdArr, $shipToCountryId, $shipToStateId);
+
+        foreach ($selProdShipRates as $rateId => $rates) {
+            $product = $productInfo[$rates['selprod_id']];
+            $shippedBy = Shipping::BY_ADMIN;
+            $shippingLevel = Shipping::LEVEL_PRODUCT;
+
+            if ($rates['shiippingBySeller']) {
+                $shippedBy = Shipping::BY_SHOP;
+            }
+            
+            if ($rates['shipprofile_default']) {
+                $shippingLevel = Shipping::LEVEL_ORDER;
+                if ($rates['shiippingBySeller']) {
+                    $shippingLevel = Shipping::LEVEL_SHOP;
+                }
+            }
+            
+            $shippingCost = [
+                'id' => $rates['shiprate_id'],
+                'code' => $rates['selprod_id'],
+                'title' => $rates['shiprate_name'],
+                'cost' => $rates['shiprate_cost'],
+                'shiprate_condition_type' => $rates['shiprate_condition_type'],
+                'shiprate_min_val' => $rates['shiprate_condition_type'],
+                'shiprate_max_val' => $rates['shiprate_max_val'],
+                'shipping_level' => $shippingLevel,
+                'shipping_type' => Shipping::TYPE_MANUAL,
+                /* 'shipprofile_key' => $rates['shipprofile_id'], */
+                'shipping_label' => $rates['shipprofile_name'],
+            ];
+            unset($physicalSelProdIdArr[$rates['selprod_id']]);
+            
+            $shippedByArr[$shippingLevel]['products'][$rates['selprod_id']] = $product;
+            switch ($shippingLevel) {
+                case Shipping::LEVEL_PRODUCT:
+                    $shippedByArr[$shippingLevel]['shipping_options'][$rates['selprod_id']][] = $rates;
+                    
+                    $code = '';
+                    if (isset($shippedByArr[$shippingLevel]['rates'][$rates['selprod_id']][$rates['shiprate_id']]['code']) && $shippedByArr[$shippingLevel]['rates'][$rates['selprod_id']][$rates['shiprate_id']]['code'] != '') {
+                        $code = $shippedByArr[$shippingLevel]['rates'][$rates['selprod_id']][$rates['shiprate_id']]['code'];
+                    }
+
+                    if ($code != '') {
+                        $shippingCost['code'] = $shippingCost['code'] . '_' . $code;
+                        $arr = array_filter(explode('_', $shippingCost['code']));
+                        sort($arr);
+                        $shippingCost['code'] = implode('_', $arr);
+                    }
+
+                    $shippedByArr[$shippingLevel]['rates'][$rates['selprod_id']][$rates['shiprate_id']] = $shippingCost;
+                    break;
+                case Shipping::LEVEL_ORDER:
+                case Shipping::LEVEL_SHOP:
+                    $shippedByArr[$shippingLevel]['shipping_options'][$rates['shiprate_id']] = $rates;
+                    
+                    $code = '';
+                    if (isset($shippedByArr[$shippingLevel]['rates'][$rates['shiprate_id']]['code']) && $shippedByArr[$shippingLevel]['rates'][$rates['shiprate_id']]['code'] != '') {
+                        $code = $shippedByArr[$shippingLevel]['rates'][$rates['shiprate_id']]['code'];
+                    }
+
+                    if ($code != '') {
+                        $shippingCost['code'] = $shippingCost['code'] . '_' . $code;
+                        $arr = array_filter(explode('_', $shippingCost['code']));
+                        sort($arr);
+                        $shippingCost['code'] = implode('_', $arr);
+                    }
+
+                    $shippedByArr[$shippingLevel]['rates'][$rates['shiprate_id']] = $shippingCost;
+                    break;
+            }
+        }
+
+        $this->setCombinedCharges($shippedByArr);
+
+        /*Include Physical products whose shipping rates not defined */
+        foreach ($physicalSelProdIdArr as $selProdId) {
+            $shippedByArr[Shipping::LEVEL_PRODUCT]['products'][$selProdId] = $productInfo[$selProdId];
+            $shippedByArr[Shipping::LEVEL_PRODUCT]['shipping_options'][$selProdId] = [];
+            $shippedByArr[Shipping::LEVEL_PRODUCT]['rates'][$selProdId] = [];
+        }
+       
+        return $shippedByArr;
+    }
+
+    /**
+    * setCombinedCharges
+    *
+    * @param  array $shippedByArr   
+    * @return array
+    */
+    public function setCombinedCharges(&$shippedByArr)
+    {
+        $levels = array_keys($shippedByArr);
+        $weightUnitsArr = applicationConstants::getWeightUnitsArr($this->langId);
+
+        foreach ($levels as $level) {
+            if ($level == Shipping::LEVEL_PRODUCT) {
+                foreach ($shippedByArr[$level]['products'] as $selProdId => $product) {
+                    $prodCombinedWeight = 0;
+                    $prodCombinedPrice = 0;
+
+                    $prodWeight = $product['product_weight'] * $product['quantity'];
+                    $productWeightClass = isset($weightUnitsArr[$product['product_weight_unit']]) ? $weightUnitsArr[$product['product_weight_unit']] : '';
+                    $productWeightInOunce = static::convertWeightInOunce($product['product_weight'], $productWeightClass);
+                    $prodCombinedWeight = $prodCombinedWeight + $productWeightInOunce;
+    
+                    $prodCombinedPrice = $prodCombinedPrice + ($product['theprice'] * $product['quantity']);
+                    $this->filterShippingRates($shippedByArr[$level]['rates'][$selProdId], $prodCombinedWeight, $prodCombinedPrice);
+                }
+            } else {
+                $prodCombinedWeight = 0;
+                $prodCombinedPrice = 0;
+                foreach ($shippedByArr[$level]['products'] as $product) {
+                    $prodWeight = $product['product_weight'] * $product['quantity'];
+                    $productWeightClass = isset($weightUnitsArr[$product['product_weight_unit']]) ? $weightUnitsArr[$product['product_weight_unit']] : '';
+                    $productWeightInOunce = static::convertWeightInOunce($product['product_weight'], $productWeightClass);
+                    $prodCombinedWeight = $prodCombinedWeight + $productWeightInOunce;
+    
+                    $prodCombinedPrice = $prodCombinedPrice + ($product['theprice'] * $product['quantity']);
+                }
+
+                $this->filterShippingRates($shippedByArr[$level]['rates'], $prodCombinedWeight, $prodCombinedPrice);
+            }
+        }
+        return $shippedByArr;
+    }
+
+    /**
+    * filterShippingRates
+    *
+    * @param  array $rates
+    * @param  float $weight
+    * @param  float $price
+    * @return array
+    */
+    public function filterShippingRates(&$rates, $weight = 0, $price = 0)
+    {
+        $priceOrWeighCondMatched = false;
+        $defaultShippingRates = [];
+        $priceOrWeightCost = '';
+        $priceOrWeightCostId = 0;
+
+        foreach ($rates as $key => $rate) {
+            switch ($rate['shiprate_condition_type']) {
+
+                case ShippingRate::CONDITION_TYPE_PRICE:
+                    if ($price < $rate['shiprate_min_val'] || $price > $rate['shiprate_max_val']) {
+                        unset($rates[$rate['id']]);
+                        continue 2;
+                    }
+                    $priceOrWeighCondMatched = true;
+                    break;
+
+                case ShippingRate::CONDITION_TYPE_WEIGHT:
+                    if ($weight < $rate['shiprate_min_val'] || $weight > $rate['shiprate_max_val']) {
+                        unset($rates[$rate['id']]);
+                        continue 2;
+                    }
+                    $priceOrWeighCondMatched = true;
+                    break;
+
+                default:
+                    if (true == $priceOrWeighCondMatched) {
+                        unset($rates[$rate['id']]);
+                        continue 2;
+                    }
+                    $priceOrWeightCost = $rate['cost'];
+                    $priceOrWeightCostId = $rate['id'];
+                    $defaultShippingRates[] = $rate['id'];
+                break;
+            }
+
+            if (in_array($rate['shiprate_condition_type'], [ShippingRate::CONDITION_TYPE_PRICE, ShippingRate::CONDITION_TYPE_WEIGHT])) {
+                if ($priceOrWeightCost != '' && $priceOrWeightCost < $rate['cost']) {
+                    unset($rates[$priceOrWeightCostId]);
+                    $priceOrWeightCost = $rate['cost'];
+                    $priceOrWeightCostId = $rate['id'];
+                    continue;
+                } else {
+                    unset($rates[$rate['id']]);
+                }
+            }
+
+            if (true == $priceOrWeighCondMatched && !empty($defaultShippingRates)) {
+                foreach ($defaultShippingRates as $rateId) {
+                    unset($rates[$rateId]);
+                }
+            }
+        }
+        return $rates;
+    }
+
+    public static function convertWeightInOunce($productWeight, $productWeightClass)
+    {
+        $coversionRate = 1;
+        switch ($productWeightClass) {
+            case "KG":
+                $coversionRate = "35.274";
+                break;
+            case "GM":
+                $coversionRate = "0.035274";
+                break;
+            case "PN":
+                $coversionRate = "16";
+                break;
+            case "OU":
+                $coversionRate = "1";
+                break;
+            case "Ltr":
+                $coversionRate = "33.814";
+                break;
+            case "Ml":
+                $coversionRate = "0.033814";
+                break;
+        }
+
+        return $productWeight * $coversionRate;
+    }
+
+    public function convertLengthInCenti($productWeight, $productWeightClass)
+    {
+        $coversionRate = 1;
+        switch ($productWeightClass) {
+            case "IN":
+                $coversionRate = "2.54";
+                break;
+            case "MM":
+                $coversionRate = "0.1";
+                break;
+            case "CM":
+                $coversionRate = "1";
+                break;
+        }
+
+        return $productWeight * $coversionRate;
     }
 }

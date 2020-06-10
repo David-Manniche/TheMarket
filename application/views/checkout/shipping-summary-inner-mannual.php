@@ -12,29 +12,37 @@
                     ksort($shippingRates);
                     foreach ($shippingRates as $level => $levelItems) { ?>
                     <div class="short-detail">
-                    <?php if (count($levelItems['rates']) > 0 && $level != Shipping::LEVEL_PRODUCT) {  ?>
+                    <?php if (count($levelItems['products']) > 1 && $level != Shipping::LEVEL_PRODUCT) {  ?>
                     <div class="shipping-seller">
                             <div class="row  justify-content-between">
                                 <div class="col-auto">
                                     <div class="shipping-seller-title"></div>
                                 </div>
                                 <div class="col-auto">
-                                    <?php if(count($levelItems['rates']) > 0) { 
-                                       $name = current($levelItems['rates'])['code'];
-                                    ?>                                
-                                    <select name="shipping_services[<?php echo $name;?>]">
-                                        <option value="0"><?php echo Labels::getLabel('LBL_Select_Delivery_option', $siteLangId);?></option>
-                                        <?php  foreach ($levelItems['rates'] as $key => $shippingRate) { ?>
-                                            <option value="<?php echo $key; ?>"><?php echo $shippingRate['title'] .' ( ' . $shippingRate['cost'] . ' )';?></option>
-                                        <?php }?>
-                                    </select>
-                                    <?php }?>
+                                    <ul class="shipping-selectors">
+                                    <?php
+                                       $priceListCount = count($levelItems['rates']);
+                                       if ($priceListCount == 1 && current($levelItems['rates'])['cost'] == 0) {
+                                           echo '<li class="info-message">' . Labels::getLabel('LBL_Free_Shipping', $siteLangId) . '</li>';
+                                       } else {
+                                            if(count($levelItems['rates']) > 0) {
+                                                $name = current($levelItems['rates'])['code'];
+                                               echo '<li><select name="shipping_services[' . $name . ']">';
+                                               foreach ($levelItems['rates'] as $key => $shippingRate) { 
+                                                   echo '<option value="' . $key . '">' . $shippingRate['title'] .' ( ' . $shippingRate['cost'] . ' ) </option>';
+                                               }
+                                               echo '</select></li>';
+                                           } else if ($product['product_type'] == Product::PRODUCT_TYPE_PHYSICAL) {
+                                               echo '<li class="info-message">' . Labels::getLabel('MSG_Product_is_not_available_for_shipping', $siteLangId) . '</li>';
+                                           }
+                                       } 
+                                    ?>
+                                    </ul>                                   
                                 </div>
                             </div>
                         </div>
                     </div>
                     <?php }
-                    //CommonHelper::printArray($levelItems);exit;
                     foreach ($levelItems['products'] as $product) {
                         $productUrl = !$isAppUser ? CommonHelper::generateUrl('Products', 'View', array($product['selprod_id'])) : 'javascript:void(0)';
                         $shopUrl = !$isAppUser ? CommonHelper::generateUrl('Shops', 'View', array($product['shop_id'])) : 'javascript:void(0)';
@@ -73,17 +81,44 @@
                             </div>
                         </td>
                         <td width="40%">
-                        <?php if ($level == Shipping::LEVEL_PRODUCT && isset($levelItems['rates'][$product['selprod_id']])) {  ?>
-                            <?php if(count($levelItems['rates'][$product['selprod_id']]) > 0) { 
-                                       $name = current($levelItems['rates'][$product['selprod_id']])['code']; 
-                                    ?>                                
-                                    <select name="shipping_services[<?php echo $name;?>]">
-                                    <option value="0"><?php echo Labels::getLabel('LBL_Select_Delivery_option', $siteLangId);?></option>
-                                <?php foreach ($levelItems['rates'][$product['selprod_id']] as $key => $shippingRate) { ?>
-                                    <option value="<?php echo $key; ?>"><?php echo $shippingRate['title'] .' ( ' . $shippingRate['cost'] . ' )';?></option>
-                                <?php }?>
-                            </select>
-                        <?php } } ?>
+                        <ul class="shipping-selectors">
+                        <?php 
+                        if (count($levelItems['products']) == 1 && count($levelItems['rates']) > 0 && $level != Shipping::LEVEL_PRODUCT) {
+                            $priceListCount = count($levelItems['rates']);
+                            if ($priceListCount == 1 && current($levelItems['rates'])['cost'] == 0) {
+                                echo '<li class="info-message">' . Labels::getLabel('LBL_Free_Shipping', $siteLangId) . '</li>';
+                            } else {
+                                 if(count($levelItems['rates']) > 0) {
+                                     $name = current($levelItems['rates'])['code'];
+                                    echo '<li><select name="shipping_services[' . $name . ']">';
+                                    foreach ($levelItems['rates'] as $key => $shippingRate) { 
+                                        echo '<option value="' . $key . '">' . $shippingRate['title'] .' ( ' . $shippingRate['cost'] . ' ) </option>';
+                                    }
+                                    echo '</select></li>';
+                                } else if ($product['product_type'] == Product::PRODUCT_TYPE_PHYSICAL) {
+                                    echo '<li class="info-message">' . Labels::getLabel('MSG_Product_is_not_available_for_shipping', $siteLangId) . '</li>';
+                                }
+                            } 
+                        }
+                        
+                        if ($level == Shipping::LEVEL_PRODUCT && isset($levelItems['rates'][$product['selprod_id']])) {
+                                $priceListCount = count($levelItems['rates'][$product['selprod_id']]);
+                                if ($priceListCount == 1 && current($levelItems['rates'][$product['selprod_id']])['cost'] == 0) {
+                                    echo '<li class="info-message">' . Labels::getLabel('LBL_Free_Shipping', $siteLangId) . '</li>';
+                                } else {
+                                    if ($priceListCount > 0) {
+                                        $name = current($levelItems['rates'][$product['selprod_id']])['code'];
+                                        echo '<li><select name="shipping_services[' . $name . ']">';
+                                        foreach ($levelItems['rates'][$product['selprod_id']] as $key => $shippingRate) {
+                                            echo '<option value="' . $key . '">' . $shippingRate['title'] .' ( ' . $shippingRate['cost'] . ' ) </option>';
+                                        }
+                                        echo '</select></li>';
+                                    } elseif ($product['product_type'] == Product::PRODUCT_TYPE_PHYSICAL) {
+                                        echo '<li class="info-message">' . Labels::getLabel('MSG_Product_is_not_available_for_shipping', $siteLangId) . '</li>';
+                                    }
+                                }
+                            } ?>
+                        </ul>
                         </td>
                         <td width="10%">
 							<span class="item__price"><?php echo CommonHelper::displayMoneyFormat($product['theprice'] * $product['quantity']); ?> </span>

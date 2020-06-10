@@ -250,7 +250,7 @@ class Cart extends FatModel
 
                 $this->products[$key] = [
                     'shipping_cost' => 0,
-                    'sduration_id' => 0,
+                    'opshipping_rate_id' => 0,
                     'commission_percentage' => '',
                     'commission' => 0,
                     'tax' => 0,
@@ -333,7 +333,7 @@ class Cart extends FatModel
                 // }
 
                 $this->products[$key]['shipping_cost'] = 0;
-                $this->products[$key]['sduration_id'] = 0;
+                $this->products[$key]['opshipping_rate_id'] = 0;
                 $this->products[$key]['commission_percentage'] = '';
                 $this->products[$key]['commission'] = 0;
 
@@ -385,9 +385,10 @@ class Cart extends FatModel
 
                     /*[ Product shipping cost */
                     $shippingCost = 0;
+                   
                     if (!empty($productSelectedShippingMethodsArr['product']) && isset($productSelectedShippingMethodsArr['product'][$sellerProductRow['selprod_id']])) {
                         $shippingDurationRow = $productSelectedShippingMethodsArr['product'][$sellerProductRow['selprod_id']];
-                        $this->products[$key]['sduration_id'] = isset($shippingDurationRow['sduration_id']) ? $shippingDurationRow['sduration_id'] : '';
+                        $this->products[$key]['opshipping_rate_id'] = isset($shippingDurationRow['mshipapi_id']) ? $shippingDurationRow['mshipapi_id'] : '';
                         $shippingCost = ROUND(($shippingDurationRow['mshipapi_cost']), 2);
                         $this->products[$key]['shipping_cost'] = $shippingCost;
                     }
@@ -572,10 +573,10 @@ class Cart extends FatModel
 
         /* set variable of shipping cost of the product, if shipping already selected[ */
         $sellerProductRow['shipping_cost'] = 0;
-        $sellerProductRow['sduration_id'] = 0;
+        $sellerProductRow['opshipping_rate_id'] = 0;
         if (!empty($productSelectedShippingMethodsArr) && isset($productSelectedShippingMethodsArr[$selprod_id])) {
             $shippingDurationRow = $productSelectedShippingMethodsArr[$selprod_id];
-            $sellerProductRow['sduration_id'] = $shippingDurationRow['sduration_id'];
+            $sellerProductRow['opshipping_rate_id'] = $shippingDurationRow['mshipapi_id'];
             $sellerProductRow['shipping_cost'] = ROUND(($shippingDurationRow['mshipapi_cost'] * $quantity), 2);
         }
         /* ] */
@@ -911,19 +912,19 @@ class Cart extends FatModel
                     }
                 }
             } else {
-                if ($product['is_physical_product'] && !isset($this->SYSTEM_ARR['shopping_cart']['product_shipping_methods']['product'][$product['selprod_id']])) {
+                if ($product['is_physical_product'] && !isset($this->SYSTEM_ARR['shopping_cart']['product_shipping_methods']['product'][$product['selprod_id']])) {                   
                     return false;
                 }
 
 
-                if (isset($this->SYSTEM_ARR['shopping_cart']['product_shipping_methods']['product'][$product['selprod_id']]['mshipapi_id'])) {
+                /* if (isset($this->SYSTEM_ARR['shopping_cart']['product_shipping_methods']['product'][$product['selprod_id']]['mshipapi_id'])) {
                     $shipapi_id = $this->SYSTEM_ARR['shopping_cart']['product_shipping_methods']['product'][$product['selprod_id']]['mshipapi_id'];
                     $ShipingApiRow = ShippingApi::getAttributesById($shipapi_id, 'shippingapi_id');
 
                     if (!$ShipingApiRow) {
                         return false;
                     }
-                }
+                } */
             }
         }
         return true;
@@ -1598,10 +1599,10 @@ class Cart extends FatModel
 
 
 
-        $productWeightInOunce = $this->convertWeightInOunce($productWeight, $productWeightClass);
-        $productLengthInCenti = $this->convertLengthInCenti($productLength, $productLengthUnit);
-        $productWidthInCenti = $this->convertLengthInCenti($productWidth, $productLengthUnit);
-        $productHeightInCenti = $this->convertLengthInCenti($productHeight, $productLengthUnit);
+        $productWeightInOunce = Shipping::convertWeightInOunce($productWeight, $productWeightClass);
+        $productLengthInCenti = Shipping::convertLengthInCenti($productLength, $productLengthUnit);
+        $productWidthInCenti = Shipping::convertLengthInCenti($productWidth, $productLengthUnit);
+        $productHeightInCenti = Shipping::convertLengthInCenti($productHeight, $productLengthUnit);
 
         $product_rates = array();
         try {
@@ -1631,11 +1632,17 @@ class Cart extends FatModel
         $shippingOptions = $this->getShippingOptions();
         $shippingRates = [];
         foreach ($shippingOptions as $level => $levelItems) {
+            if (count($levelItems['rates']) <= 0) {
+                continue;
+            }
             if (count($levelItems['rates']) > 0 && $level != Shipping::LEVEL_PRODUCT) {
                 $name = current($levelItems['rates'])['code'];
                 $shippingRates[$name] =  $levelItems['rates'];
             } else {
                 foreach ($levelItems['products'] as $product) {
+                    if (count($levelItems['rates'][$product['selprod_id']]) <= 0) {
+                        continue;
+                    }
                     $name = current($levelItems['rates'][$product['selprod_id']])['code'];
                     $shippingRates[$name] =  $levelItems['rates'][$product['selprod_id']];
                 }
@@ -1668,124 +1675,25 @@ class Cart extends FatModel
         $productInfo = [];
         foreach ($cartProducts as $key => $val) {
             $productInfo[$val['selprod_id']] = $val;
+            
             if ($val['is_physical_product']) {
-                $physicalSelProdIdArr[] = $val['selprod_id'];
+                $physicalSelProdIdArr[$val['selprod_id']] = $val['selprod_id'];
             } else {
-                $digitalSelProdIdArr[] = $val['selprod_id'];
+                $digitalSelProdIdArr[$val['selprod_id']] = $val['selprod_id'];
             }
         }
 
         $shipping = new Shipping($this->cart_lang_id);
-        $selProdShipRates = $shipping->getSellerProductShippingRates($physicalSelProdIdArr, $shipToCountryId, $shipToStateId);
+        $shippedByArr = $shipping->calculateCharges($physicalSelProdIdArr, $shipToCountryId, $shipToStateId, $productInfo);
         
-        foreach ($selProdShipRates as $rateId => $rates) {
-            $shippedBy = Shipping::BY_ADMIN;
-            $shippingLevel = Shipping::LEVEL_PRODUCT;
-
-            if ($rates['shiippingBySeller']) {
-                $shippedBy = Shipping::BY_SHOP;
-            }
-            
-            if ($rates['shipprofile_default']) {
-                $shippingLevel = Shipping::LEVEL_ORDER;
-                if ($rates['shiippingBySeller']) {
-                    $shippingLevel = Shipping::LEVEL_SHOP;
-                }
-            }
-
-            $selPprodData = [];
-            $shippingCost = [
-                'id' => $rates['shiprate_id'],
-                'code' => $rates['selprod_id'],
-                'title' => $rates['shiprate_name'],
-                'cost' => $rates['shiprate_cost'],
-            ];
-
-            $shippedByArr[$shippingLevel]['products'][$rates['selprod_id']] = $productInfo[$rates['selprod_id']];
-            switch ($shippingLevel) {
-                case Shipping::LEVEL_PRODUCT:
-                    $shippedByArr[$shippingLevel]['shipping_options'][$rates['selprod_id']][] = $rates;
-                    
-                    $code = '';
-                    if (isset($shippedByArr[$shippingLevel]['rates'][$rates['selprod_id']][$rates['shiprate_id']]['code']) && $shippedByArr[$shippingLevel]['rates'][$rates['selprod_id']][$rates['shiprate_id']]['code'] != '') {
-                        $code = $shippedByArr[$shippingLevel]['rates'][$rates['selprod_id']][$rates['shiprate_id']]['code'];
-                    }
-                    
-                    if ($code != '') {
-                        $shippingCost['code'] = $shippingCost['code'] . '_' . $code;
-                    }
-
-                    $shippedByArr[$shippingLevel]['rates'][$rates['selprod_id']][$rates['shiprate_id']] = $shippingCost;
-                    break;
-                case Shipping::LEVEL_ORDER:
-                case Shipping::LEVEL_SHOP:
-                    $shippedByArr[$shippingLevel]['shipping_options'][$rates['shiprate_id']] = $rates;
-                    
-                    $code = '';
-                    if (isset($shippedByArr[$shippingLevel]['rates'][$rates['shiprate_id']]['code']) && $shippedByArr[$shippingLevel]['rates'][$rates['shiprate_id']]['code'] != '') {
-                        $code = $shippedByArr[$shippingLevel]['rates'][$rates['shiprate_id']]['code'];
-                    }
-
-                    if ($code != '') {
-                        $shippingCost['code'] = $shippingCost['code'] . '_' . $code;
-                    }
-
-                    $shippedByArr[$shippingLevel]['rates'][$rates['shiprate_id']] = $shippingCost;
-                    break;
-            }
-        }
-        
+        /*Include digital products */
         foreach ($digitalSelProdIdArr as $selProdId) {
             $shippedByArr[Shipping::LEVEL_PRODUCT]['products'][$selProdId] = $productInfo[$selProdId];
             $shippedByArr[Shipping::LEVEL_PRODUCT]['shipping_options'][$selProdId] = [];
             $shippedByArr[Shipping::LEVEL_PRODUCT]['rates'][$selProdId] = [];
         }
+
         return $shippedByArr;
-    }
-
-    public function convertWeightInOunce($productWeight, $productWeightClass)
-    {
-        $coversionRate = 1;
-        switch ($productWeightClass) {
-            case "KG":
-                $coversionRate = "35.274";
-                break;
-            case "GM":
-                $coversionRate = "0.035274";
-                break;
-            case "PN":
-                $coversionRate = "16";
-                break;
-            case "OU":
-                $coversionRate = "1";
-                break;
-            case "Ltr":
-                $coversionRate = "33.814";
-                break;
-            case "Ml":
-                $coversionRate = "0.033814";
-                break;
-        }
-
-        return $productWeight * $coversionRate;
-    }
-
-    public function convertLengthInCenti($productWeight, $productWeightClass)
-    {
-        $coversionRate = 1;
-        switch ($productWeightClass) {
-            case "IN":
-                $coversionRate = "2.54";
-                break;
-            case "MM":
-                $coversionRate = "0.1";
-                break;
-            case "CM":
-                $coversionRate = "1";
-                break;
-        }
-
-        return $productWeight * $coversionRate;
     }
 
     public function getSellersProductItemsPrice($cartProducts)
