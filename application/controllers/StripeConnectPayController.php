@@ -112,6 +112,8 @@ class StripeConnectPayController extends PaymentController
         $charges = $orderObj->getOrderProductChargesByOrderId($orderInfo['id']);
         foreach ($orderProducts as $op) {
             $netAmount = CommonHelper::orderProductAmount($op, 'NETAMOUNT');
+            $amountToBePaidToSeller = CommonHelper::orderProductAmount($op, 'NETAMOUNT', false, User::USER_TYPE_SELLER);
+            $amountToBePaidToSeller = ($amountToBePaidToSeller - $op['op_commission_charged']);
             $singleItemPrice = $netAmount / $op['op_qty'];
             $priceData = [
                 'unit_amount' => $this->convertInPaisa($singleItemPrice),
@@ -143,7 +145,7 @@ class StripeConnectPayController extends PaymentController
             if (!empty($accountId)) {
                 $data['payment_intent_data']['transfer_data'] = [
                     'destination' => $accountId,
-                    'amount' => $this->convertInPaisa($netAmount - $op['op_commission_charged'])
+                    'amount' => $this->convertInPaisa($amountToBePaidToSeller)
                 ];
             }
         }
