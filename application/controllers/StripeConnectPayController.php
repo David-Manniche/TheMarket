@@ -114,6 +114,7 @@ class StripeConnectPayController extends PaymentController
             $netAmount = CommonHelper::orderProductAmount($op, 'NETAMOUNT');
             $amountToBePaidToSeller = CommonHelper::orderProductAmount($op, 'NETAMOUNT', false, User::USER_TYPE_SELLER);
             $amountToBePaidToSeller = ($amountToBePaidToSeller - $op['op_commission_charged']);
+            
             $singleItemPrice = $netAmount / $op['op_qty'];
             $priceData = [
                 'unit_amount' => $this->convertInPaisa($singleItemPrice),
