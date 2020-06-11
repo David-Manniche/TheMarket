@@ -72,6 +72,7 @@ class StripeConnectController extends PaymentMethodBaseController
         $this->set('requiredFields', $requiredFields);
         $this->set('keyName', self::KEY_NAME);
         $this->set('pluginName', $this->getPluginData()['plugin_name']);
+        $this->set('stripeAccountType', $this->stripeConnect->getAccountType());
         $this->_template->render(false, false);
     }
 

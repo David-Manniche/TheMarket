@@ -13,9 +13,11 @@
         <?php } else { ?>
             <?php echo Labels::getLabel('LBL_ACCOUNT_ID', $siteLangId);?> : 
             <?php echo $accountId; ?>
-            <a class="btn btn--primary btn--sm"  onClick="deleteAccount(this)" href="javascript:void(0)"  data-href="<?php echo CommonHelper::generateUrl($keyName, 'deleteAccount')?>" onclick="return confirm('<?php echo Labels::getLabel('LBL_ARE_YOU_SURE?', $siteLangId); ?>')" title="<?php echo Labels::getLabel('LBL_DELETE_ACCOUNT', $siteLangId); ?>">
-                <i class="fa fa-trash"></i>
-            </a>
+            <?php if ('custom' == $stripeAccountType) { ?>
+                <a class="btn btn--primary btn--sm"  onClick="deleteAccount(this)" href="javascript:void(0)"  data-href="<?php echo CommonHelper::generateUrl($keyName, 'deleteAccount')?>" title="<?php echo Labels::getLabel('LBL_DELETE_ACCOUNT', $siteLangId); ?>">
+                    <i class="fa fa-trash"></i>
+                </a>
+            <?php } ?>
         <?php } ?>
         <?php if (!empty($loginUrl)) { ?>
                 <a class="btn btn--primary btn--sm" href="<?php echo $loginUrl; ?>" target="_blank">

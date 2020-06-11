@@ -1684,9 +1684,9 @@ class Orders extends MyAppModel
             }
 
             $alreadyPaid = false;
+            $orderObj = new Orders();
             $payment = current($orderObj->getOrderPayments(["order_id" => $childOrderInfo['op_order_id']]));
             if (!empty($payment['opayment_gateway_txn_id'])) {
-                $orderObj = new Orders();
                 $orderRow = $orderObj->getOrderById($this->orderId, $this->langId);
                 $paymentMethodId = $orderRow['order_pmethod_id'];
                 if (PaymentMethods::TYPE_PLUGIN == $orderRow['order_pmethod_type']) {
