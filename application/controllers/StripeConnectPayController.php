@@ -242,7 +242,7 @@ class StripeConnectPayController extends PaymentController
                     'amount' => $this->convertInPaisa($amountToBePaidToSeller),
                     'currency' => $orderInfo['order_currency_code'],
                     'destination' => $accountId,
-                    'transfer_group' => $transferGroup,
+                    'transfer_group' => $op['op_invoice_number'],
                     'description' => $comments,
                     'metadata' => [
                         'op_id' => $op['op_id']
