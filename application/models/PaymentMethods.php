@@ -24,7 +24,7 @@ class PaymentMethods extends MyAppModel
     private $db;
     private $sellerId = '';
     private $opId = '';
-    private $extraAmount = '';
+    private $transferAmount = '';
     private $transferId = '';
     private $invoiceNumber = '';
 
@@ -148,12 +148,12 @@ class PaymentMethods extends MyAppModel
 
         if (!empty($txnData)) {
             foreach ($txnData as $txn) {
+                $this->transferAmount = $txn['utxn_credit'];
                 if (!empty($txn['utxn_gateway_txn_id'])) {
                     $this->transferId = $txn['utxn_gateway_txn_id'];
-                    $this->extraAmount = $txn['utxn_debit'];
+                    $this->transferAmount = $txn['utxn_debit'];
                     break;
                 }
-                $this->extraAmount = $txn['utxn_credit'];
             }
 
             if (empty($this->transferId)) {
@@ -229,7 +229,7 @@ class PaymentMethods extends MyAppModel
                     $requestParam = [
                         'transferId' => $this->transferId,
                         'data' => [
-                            'amount' => $this->formatPayableAmount($this->extraAmount), // In Paisa
+                            'amount' => $this->formatPayableAmount($this->transferAmount), // In Paisa
                             'description' => $comments,
                             'metadata' => [
                                 'op_id' => $this->opId
@@ -282,7 +282,7 @@ class PaymentMethods extends MyAppModel
     {
         $comments = Labels::getLabel('MSG_REFUND_INITIATE_REGARDING_#{invoice-no}', $this->langId);
         $comments = CommonHelper::replaceStringData($comments, ['{invoice-no}' => $this->invoiceNumber]);
-        Transactions::debitWallet($this->sellerId, Transactions::TYPE_ORDER_REFUND, $this->extraAmount, $this->langId, $comments, $this->opId);
+        Transactions::debitWallet($this->sellerId, Transactions::TYPE_ORDER_REFUND, $this->transferAmount, $this->langId, $comments, $this->opId);
         return true;
     }
 

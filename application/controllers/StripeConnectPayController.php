@@ -136,19 +136,8 @@ class StripeConnectPayController extends PaymentController
                 'price' => $this->stripeConnect->getPriceId(),
                 'quantity' => $op['op_qty']
             ];
-
-            // You may not provide the application_fee_amount parameter and the transfer_data[amount] parameter simultaneously. They are mutually exclusive.
-            // $data['payment_intent_data']['application_fee_amount'] = $this->convertInPaisa($op['op_commission_charged']);
             
             $data['payment_intent_data']['statement_descriptor'] = $op['op_invoice_number'];
-
-            $accountId = User::getUserMeta($op['op_selprod_user_id'], 'stripe_account_id');
-            if (!empty($accountId)) {
-                $data['payment_intent_data']['transfer_data'] = [
-                    'destination' => $accountId,
-                    'amount' => $this->convertInPaisa($amountToBePaidToSeller)
-                ];
-            }
         }
 
         if (false === $this->stripeConnect->initiateSession($data)) {
@@ -247,45 +236,30 @@ class StripeConnectPayController extends PaymentController
                 $comments = CommonHelper::replaceStringData($comments, ['{invoice-no}' => $op['op_invoice_number'], '{commission-amount}' => $op['op_commission_charged']]);
                 Transactions::creditWallet($op['op_selprod_user_id'], Transactions::TYPE_PRODUCT_SALE, $amountToBePaidToSeller, $this->siteLangId, $comments, $op['op_id']);
                 
+                $charge = [
+                    'amount' => $this->convertInPaisa($amountToBePaidToSeller),
+                    'currency' => $orderInfo['order_currency_code'],
+                    'destination' => $accountId,
+                    'transfer_group' => $op['op_invoice_number'],
+                    'description' => $comments,
+                    'metadata' => [
+                        'op_id' => $op['op_id']
+                    ]
+                ];
+    
+                if (false === $this->stripeConnect->doTransfer($charge)) {
+                    $this->setErrorAndRedirect();
+                }
+
+                $resp = $this->stripeConnect->getResponse();
+                if (empty($resp->id)) {
+                    continue;
+                }
+
                 // Debit sold product amount to seller wallet.
-                $txnId = isset($transferIdsArr[$accountId]) ? $transferIdsArr[$accountId] : '';
                 $comments = Labels::getLabel('MSG_TRANSFERED_TO_{account-id}_ACCOUNT.', $this->siteLangId);
                 $comments = CommonHelper::replaceStringData($comments, ['{account-id}' => $accountId]);
-                Transactions::debitWallet($op['op_selprod_user_id'], Transactions::TYPE_PRODUCT_SALE, $amountToBePaidToSeller, $this->siteLangId, $comments, $op['op_id'], $txnId);
-
-                $restAmountToBePaid = $amountToBePaidToSeller - $productSoldAmount;
-
-                if (0 < $restAmountToBePaid) {
-                    $comments = Labels::getLabel('MSG_PENDING_AMOUNT_FROM_#{invoice-no}', $this->siteLangId);
-                    $comments = CommonHelper::replaceStringData($comments, ['{invoice-no}' => $op['op_invoice_number']]);
-
-                    Transactions::creditWallet($op['op_selprod_user_id'], Transactions::TYPE_TRANSFER_TO_THIRD_PARTY_ACCOUNT, $restAmountToBePaid, $this->siteLangId, $comments, $op['op_id']);
-
-                    $charge = [
-                        'amount' => $this->convertInPaisa($restAmountToBePaid),
-                        'currency' => $orderInfo['order_currency_code'],
-                        'destination' => $accountId,
-                        'transfer_group' => $op['op_invoice_number'],
-                        'description' => $comments,
-                        'metadata' => [
-                            'op_id' => $op['op_id']
-                        ]
-                    ];
-        
-                    if (false === $this->stripeConnect->doTransfer($charge)) {
-                        $this->setErrorAndRedirect();
-                    }
-
-                    $resp = $this->stripeConnect->getResponse();
-                    if (empty($resp->id)) {
-                        continue;
-                    }
-
-                    $comments = Labels::getLabel('MSG_PENDING_DISCOUNT_AMOUNT_CREDITED_TO_YOUR_{account-name}._ACCOUNT_ADDRESS_:_{account-address}', $this->siteLangId);
-                    $comments = CommonHelper::replaceStringData($comments, ['{account-name}' => self::KEY_NAME, '{account-address}' => $accountId]);
-
-                    Transactions::debitWallet($op['op_selprod_user_id'], Transactions::TYPE_TRANSFER_TO_THIRD_PARTY_ACCOUNT, $restAmountToBePaid, $this->siteLangId, $comments, $op['op_id'], $resp->id);
-                }
+                Transactions::debitWallet($op['op_selprod_user_id'], Transactions::TYPE_TRANSFER_TO_THIRD_PARTY_ACCOUNT, $amountToBePaidToSeller, $this->siteLangId, $comments, $op['op_id'], $resp->id);
             }
         } elseif ($payload['type'] == "payment_intent.payment_failed") {
             $intent = $payload['data']['object'];
