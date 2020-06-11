@@ -104,11 +104,17 @@ $(document).on("change", "#state", function(){
         });
     };
 
-    shopForm = function() {
+    shopForm = function(tab = '') {
         $(dv).html(fcom.getLoader());
-        fcom.ajax(fcom.makeUrl('Seller', 'shopForm'), '', function(t) {
+        fcom.ajax(fcom.makeUrl('Seller', 'shopForm', [tab]), '', function(t) {
             $(dv).html(t);
             jscolor.installByClassName("jscolor");
+            if ('' != tab) {
+                $('.' + tab).click();
+                var url = self.location.href;
+                url = url.replace(tab, '');
+                window.history.pushState("","",url) ;
+            }
         });
     };
 
@@ -730,17 +736,21 @@ $(document).on("change", "#state", function(){
     };
 
     requiredFieldsForm = function(){
-        $.facebox(function() {
-            fcom.ajax(fcom.makeUrl(keyName, 'requiredFieldsForm'),'',function(res){
-                $.facebox(res,'faceboxWidth medium-fb-width');
-            });
+        var contentDv = dv + " .tabs__content .row .requiredFieldsForm-js";
+        $(contentDv).html(fcom.getLoader());
+        fcom.ajax(fcom.makeUrl(keyName, 'requiredFieldsForm'),'',function(res){
+            t = $.parseJSON(res);
+            if(1 > t.status){
+                $(contentDv).html(t.html);
+            } else {
+                $.mbsmessage(t.msg, false, 'alert--success');
+                $(contentDv).html('');
+            }
         });
     };
     
     clearForm = function() {
-        fcom.ajax(fcom.makeUrl(keyName, 'requiredFieldsForm'),'',function(res){
-            $.facebox(res,'faceboxWidth medium-fb-width');
-        });
+        requiredFieldsForm();
     };
     
 	setupRequiredFields = function (frm){
@@ -752,8 +762,7 @@ $(document).on("change", "#state", function(){
             return false;
         }
 		fcom.updateWithAjax(fcom.makeUrl(keyName, 'setupRequiredFields'), data, function(t) {
-            $("#facebox .close").trigger('click');
-            location.reload();
+            requiredFieldsForm();
         });
     }
     
@@ -768,9 +777,15 @@ $(document).on("change", "#state", function(){
         if (!$(frm).validate()) return;
         var data = fcom.frmData(frm);
         fcom.updateWithAjax(fcom.makeUrl(keyName, 'initialSetup'), data, function(t) {
-            if( t.status ){
-                window.location = fcom.makeUrl(keyName);
-            }
+            $('.' + keyName).click();
+        });
+    }
+
+    deleteAccount = function (el){
+        if( !confirm( langLbl.confirmDelete ) ){ return false; };
+        var href = $(el).data('href');
+        fcom.updateWithAjax(href, '', function(t) {
+            $('.pluginPlatform-js').click();
         });
     }
 })();

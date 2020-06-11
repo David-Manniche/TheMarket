@@ -82,6 +82,9 @@ class StripeConnect extends PaymentMethodBase
             $this->liveMode = "live_";
         }
 
+        // For Some functions this line is also required to initiate API secret key
+        \Stripe\Stripe::setApiKey($this->settings[$this->liveMode . 'secret_key']);
+
         $this->stripe = new \Stripe\StripeClient($this->settings[$this->liveMode . 'secret_key']);
         return true;
     }
@@ -447,6 +450,10 @@ class StripeConnect extends PaymentMethodBase
      */
     private function updateBusinessType(array $requestParam): bool
     {
+        if ('individual' == $requestParam['business_type']) {
+            $requestParam['individual']['id_number'] = $this->doRequest(self::REQUEST_PERSON_TOKEN);
+        }
+
         if (false === $this->update($requestParam)) {
             return false;
         }

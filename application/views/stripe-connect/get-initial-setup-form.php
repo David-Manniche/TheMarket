@@ -14,16 +14,15 @@ if (null != $btnFld) {
     $btnFld->addFieldTagAttribute('onClick', 'clearForm();');
 } ?>
 
-            <div class="col-md-12">
-                <h2 class="content-header-title">
-                    <?php echo $pageTitle; ?>
-                </h2>
-                <div class="section__body">
-                    <?php $this->includeTemplate('stripe-connect/fieldsErrors.php', ['errors' => $errors]); ?>
-                        <?php echo $frm->getFormHtml(); ?>
-                </div>
-            </div>
-        </div>
+<div class="col-md-12">
+    <h2 class="content-header-title">
+        <?php echo $pageTitle; ?>
+    </h2>
+    <div class="section__body">
+        <?php $this->includeTemplate('stripe-connect/fieldsErrors.php', ['errors' => $errors]); ?>
+            <?php echo $frm->getFormHtml(); ?>
+    </div>
+</div>
 <script language="javascript">
     $(document).ready(function() {
         getStatesByCountryCode($("#country").val(),

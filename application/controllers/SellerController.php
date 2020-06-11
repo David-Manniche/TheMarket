@@ -1550,7 +1550,7 @@ class SellerController extends SellerBaseController
 
         $this->_template->addJs('js/cropper.js');
         $this->_template->addJs('js/cropper-main.js');
-
+        
         $this->set('tab', $tab);
         $this->set('subTab', $subTab);
         $this->set('shop_id', $shop_id);

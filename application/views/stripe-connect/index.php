@@ -13,7 +13,7 @@
         <?php } else { ?>
             <?php echo Labels::getLabel('LBL_ACCOUNT_ID', $siteLangId);?> : 
             <?php echo $accountId; ?>
-            <a class="btn btn--primary btn--sm" href="<?php echo CommonHelper::generateUrl($keyName, 'deleteAccount')?>" onclick="return confirm('<?php echo Labels::getLabel('LBL_ARE_YOU_SURE?', $siteLangId); ?>')" title="<?php echo Labels::getLabel('LBL_DELETE_ACCOUNT', $siteLangId); ?>">
+            <a class="btn btn--primary btn--sm"  onClick="deleteAccount(this)" href="javascript:void(0)"  data-href="<?php echo CommonHelper::generateUrl($keyName, 'deleteAccount')?>" onclick="return confirm('<?php echo Labels::getLabel('LBL_ARE_YOU_SURE?', $siteLangId); ?>')" title="<?php echo Labels::getLabel('LBL_DELETE_ACCOUNT', $siteLangId); ?>">
                 <i class="fa fa-trash"></i>
             </a>
         <?php } ?>
@@ -31,6 +31,7 @@
         </a>
     <?php } ?>
 </div>
+<div class="col-md-12 requiredFieldsForm-js"></div>
 
 <?php if (!empty($requiredFields)) { ?>
     <script>

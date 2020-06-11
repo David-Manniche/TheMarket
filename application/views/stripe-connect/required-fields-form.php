@@ -13,22 +13,9 @@ if (null != $btnFld) {
     $btnFld->addFieldTagAttribute('onClick', 'clearForm();');
 } ?>
 
-<div class="container">
-	<div class="row">
-		<div class="col-md-12 align--center">
-			<div class="width--narrow">
-				<h2><?php echo $pageTitle; ?></h2>
-			</div>
-		</div>
-	</div>
-	<div class="panel panel--centered clearfix">
-		<div class="clearfix">
-			<div class="section__body">
-				<?php $this->includeTemplate('stripe-connect/fieldsErrors.php', ['errors' => $errors]);?>
-				<div class="box box--white">
-					<?php echo $frm->getFormHtml(); ?>
-				</div>
-			</div>
-		</div>
-	</div>
+<hr>
+<div class="section__body">
+    <h6 class="content-header-title"><?php echo $pageTitle; ?></h6>
+    <?php $this->includeTemplate('stripe-connect/fieldsErrors.php', ['errors' => $errors]); ?>
+        <?php echo $frm->getFormHtml(); ?>
 </div>

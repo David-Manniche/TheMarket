@@ -20,7 +20,7 @@
         <?php } elseif ($subTab) {?>
         returnAddressLangForm(<?php echo $subTab;?>);
         <?php } else { ?>
-        shopForm();
+        shopForm("<?php echo $tab;?>");
         <?php } ?>
     });
 </script>
