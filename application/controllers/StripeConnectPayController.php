@@ -177,6 +177,8 @@ class StripeConnectPayController extends PaymentController
             $intentId = $intent['id'];
             $charges = $intent['charges']['data'];
 
+            $transferGroup = $intent['transfer_group'];
+
             $transferIdsArr = [];
 
             $message = '';
@@ -240,7 +242,7 @@ class StripeConnectPayController extends PaymentController
                     'amount' => $this->convertInPaisa($amountToBePaidToSeller),
                     'currency' => $orderInfo['order_currency_code'],
                     'destination' => $accountId,
-                    'transfer_group' => $op['op_invoice_number'],
+                    'transfer_group' => $transferGroup,
                     'description' => $comments,
                     'metadata' => [
                         'op_id' => $op['op_id']
