@@ -90,7 +90,7 @@ $action = strtolower($action);
                                 </i><span class="menu-item__title"><?php echo Labels::getLabel('LBL_Tax_Categories', $siteLangId);?></span></a></div>
                     </li>
                 <?php }?>
-                <?php if ($userPrivilege->canViewShippingProfiles(UserAuthentication::getLoggedUserId(), true)) { ?>
+                <?php if ($userPrivilege->canViewShippingProfiles(UserAuthentication::getLoggedUserId(), true) && !FatApp::getConfig('CONF_SHIPPED_BY_ADMIN_ONLY', FatUtility::VAR_INT, 0)) { ?>
                 <li class="menu__item <?php echo ($controller == 'shippingprofile') ? 'is-active' : ''; ?>">
                     <div class="menu__item__inner">
 						<a title="<?php echo Labels::getLabel('LBL_Manage_Shipping', $siteLangId); ?>" href="<?php echo CommonHelper::generateUrl('shippingProfile'); ?>">

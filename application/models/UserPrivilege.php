@@ -685,11 +685,17 @@ class UserPrivilege
 
     public function canViewShippingProfiles($sellerId = 0, $returnResult = false)
     {
+        if (FatApp::getConfig('CONF_SHIPPED_BY_ADMIN_ONLY', FatUtility::VAR_INT, 0) == applicationConstants::YES) {
+            return $this->returnFalseOrDie($returnResult);
+        }
         return $this->checkPermission($sellerId, static::SECTION_SHIPPING_PROFILE, static::PRIVILEGE_READ, $returnResult);
     }
 
     public function canEditShippingProfiles($sellerId = 0, $returnResult = false)
     {
+        if (FatApp::getConfig('CONF_SHIPPED_BY_ADMIN_ONLY', FatUtility::VAR_INT, 0) == applicationConstants::YES) {
+            return $this->returnFalseOrDie($returnResult);
+        }
         return $this->checkPermission($sellerId, static::SECTION_SHIPPING_PROFILE, static::PRIVILEGE_WRITE, $returnResult);
     }
 

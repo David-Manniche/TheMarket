@@ -2332,18 +2332,47 @@ trait CustomProducts
             FatUtility::dieWithError(Message::getHtml());
         }
 
-        $psFree = isset($post['ps_free']) ? $post['ps_free'] : 0;
-        if (!$prod->saveProductSellerShipping($prodSellerId, $psFree, $post['ps_from_country_id'])) {
-            Message::addErrorMessage($prod->getError());
-            FatUtility::dieWithError(Message::getHtml());
+        if (!FatApp::getConfig('CONF_SHIPPED_BY_ADMIN_ONLY', FatUtility::VAR_INT, 0)) {
+            $psFree = isset($post['ps_free']) ? $post['ps_free'] : 0;
+            if (!$prod->saveProductSellerShipping($prodSellerId, $psFree, $post['ps_from_country_id'])) {
+                Message::addErrorMessage($prod->getError());
+                FatUtility::dieWithError(Message::getHtml());
+            }
+        } else {
+            if (!Product::isShipFromConfigured($productId)) {
+                if (!$prod->saveProductSellerShipping(0, 0, FatApp::getConfig('CONF_COUNTRY', FatUtility::VAR_INT, 0))) {
+                    Message::addErrorMessage($prod->getError());
+                    FatUtility::dieWithError(Message::getHtml());
+                }
+            }
         }
 
-        if (isset($post['shipping_profile']) && $post['shipping_profile'] > 0) {
-            $shipProProdData = array(
-                'shippro_shipprofile_id' => $post['shipping_profile'],
-                'shippro_product_id' => $productId,
-                'shippro_user_id' => $this->userParentId
-            );
+        $shipBy = $this->userParentId;
+        $shipProProdData = [];
+        if (FatApp::getConfig('CONF_SHIPPED_BY_ADMIN_ONLY', FatUtility::VAR_INT, 0)) {
+            $shipBy = 0;
+            $shippingProfile = ShippingProfile::getProfileArr(0, true, true, true);
+            $shippingProfileId =  array_key_first($shippingProfile);
+
+            $isShippingProfileLinked = ShippingProfileProduct::isShippingProfileLinked($productId);
+            if (!$isShippingProfileLinked) {
+                $shipProProdData = array(
+                    'shippro_shipprofile_id' => $shippingProfileId,
+                    'shippro_product_id' => $productId,
+                    'shippro_user_id' => $shipBy
+                );
+            }
+        } else {
+            if (isset($post['shipping_profile']) && $post['shipping_profile'] > 0) {
+                $shipProProdData = array(
+                    'shippro_shipprofile_id' => $post['shipping_profile'],
+                    'shippro_product_id' => $productId,
+                    'shippro_user_id' => $shipBy
+                );
+            }
+        }
+
+        if (!empty($shipProProdData)) {
             $spObj = new ShippingProfileProduct();
             if (!$spObj->addProduct($shipProProdData)) {
                 Message::addErrorMessage($spObj->getError());

@@ -1204,7 +1204,7 @@ class CheckoutController extends MyAppController
                     'productShippingData' => $productShippingData,
                     'productShippingLangData' => $productShippingLangData,
                     /* 'op_tax_collected_by_seller'    =>    $taxCollectedBySeller, */
-                    'op_free_ship_upto' => $cartProduct['shop_free_ship_upto'],
+                    /* 'op_free_ship_upto' => $cartProduct['shop_free_ship_upto'], */
                     'op_actual_shipping_charges' => $cartProduct['shipping_cost'],
                     'op_tax_code' => $cartProduct['taxCode'],
                     'productSpecifics' => [
@@ -1225,9 +1225,9 @@ class CheckoutController extends MyAppController
                 }
 
                 $shippingCost = $cartProduct['shipping_cost'];
-                if ($cartProduct['shop_eligible_for_free_shipping'] && $cartProduct['psbs_user_id'] > 0) {
+                /* if ($cartProduct['shop_eligible_for_free_shipping'] && $cartProduct['psbs_user_id'] > 0) {
                     $shippingCost = 0;
-                }
+                } */
 
                 $rewardPoints = 0;
                 $rewardPoints = $orderData['order_reward_point_value'];

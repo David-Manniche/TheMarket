@@ -1237,7 +1237,7 @@ class Product extends MyAppModel
             return false;
         }
        
-        if (!$this->updateModifiedTime()) {           
+        if (!$this->updateModifiedTime()) {
             return false;
         }
         return true;
@@ -1465,7 +1465,7 @@ END,   special_price_found ) as special_price_found'
 
         if (!empty($maxPriceRange)) {
             $currCurrencyId = isset($criteria['currency_id']) ? $criteria['currency_id'] : FatApp::getConfig('CONF_CURRENCY', FatUtility::VAR_INT, 1);
-            $max_price_range_default_currency = CommonHelper::convertExistingToOtherCurrency( $currCurrencyId, $maxPriceRange, FatApp::getConfig('CONF_CURRENCY', FatUtility::VAR_INT, 1), false);
+            $max_price_range_default_currency = CommonHelper::convertExistingToOtherCurrency($currCurrencyId, $maxPriceRange, FatApp::getConfig('CONF_CURRENCY', FatUtility::VAR_INT, 1), false);
             //$max_price_range_default_currency =  CommonHelper::getDefaultCurrencyValue($maxPriceRange, false, false);
             $srch->addHaving('theprice', '<=', $max_price_range_default_currency);
         }
@@ -1860,6 +1860,23 @@ END,   special_price_found ) as special_price_found'
         $srch->addCondition(ProductSpecifics::DB_TBL_PREFIX . 'product_id', '=', $productId);
         $rs = $srch->getResultSet();
         return FatApp::getDb()->fetch($rs);
+    }
+
+    public static function isShipFromConfigured($productId, $userId = 0)
+    {
+        $productId = FatUtility::int($productId);
+        $userId = FatUtility::int($userId);
+       
+        $srch = new SearchBase(static::DB_TBL_PRODUCT_SHIPPING, 'ps');
+        $srch->addCondition('ps_product_id', '=', $productId);
+        $srch->addCondition('ps_user_id', '=', $userId);
+        $srch->setPageSize(1);
+        $srch->doNotCalculateRecords();       
+        $res = FatApp::getDb()->fetch($srch->getResultSet());
+        if (!empty($res)) {
+            return true;
+        }
+        return false;
     }
 
     public function updateUpdatedOn()

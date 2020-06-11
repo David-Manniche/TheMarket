@@ -43,4 +43,21 @@ class ShippingProfileProduct extends MyAppModel
         $srch->doNotLimitRecords();
         return $srch;
     }
+
+    public static function isShippingProfileLinked($productId, $userId = 0)
+    {
+        $productId = FatUtility::int($productId);
+        $userId = FatUtility::int($userId);
+       
+        $srch = new SearchBase(static::DB_TBL, 'sppro');
+        $srch->addCondition('shippro_product_id', '=', $productId);
+        $srch->addCondition('shippro_user_id', '=', $userId);
+        $srch->setPageSize(1);
+        $srch->doNotCalculateRecords();
+        $res = FatApp::getDb()->fetch($srch->getResultSet());
+        if (!empty($res)) {
+            return true;
+        }
+        return false;
+    }
 }

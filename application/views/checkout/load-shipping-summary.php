@@ -7,11 +7,11 @@
 			if( count($products) ){
 			foreach( $products as $product ){?>
 			<p><?php echo $product['selprod_title']; ?> - <span class="shipping-price"><?php 
-			if($product['shop_eligible_for_free_shipping'] && $product['psbs_user_id'] > 0){
+			/* if($product['shop_eligible_for_free_shipping'] && $product['psbs_user_id'] > 0){
 				echo '<strike>'.CommonHelper::displayMoneyFormat($product['shipping_cost']).'</strike> '.CommonHelper::displayMoneyFormat(0);
-			}else{
+			}else{ */
 			echo CommonHelper::displayMoneyFormat($product['shipping_cost']);} ?></span></p>
-			<?php } 
+			<?php /* }  */
 			} ?>
 		</div>
 		<div class="selected-panel-action"><a href="javascript:void(0);" onclick="changeShipping()"; class="btn btn--primary btn--sm ripplelink"><?php echo Labels::getLabel('LBL_Change_Shipping',$siteLangId); ?></a></div>

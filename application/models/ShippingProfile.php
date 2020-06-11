@@ -19,15 +19,24 @@ class ShippingProfile extends MyAppModel
         return $srch;
     }
     
-    public static function getProfileArr($userId, $assoc = true, $isActive = false)
+    public static function getProfileArr($userId, $assoc = true, $isActive = false, $default = false)
     {
         $srch = self::getSearchObject($isActive);
-        $srch->addCondition('shipprofile_user_id', '=', $userId);
+        if (FatApp::getConfig('CONF_SHIPPED_BY_ADMIN_ONLY', FatUtility::VAR_INT, 0)) {
+            $srch->addCondition('shipprofile_user_id', '=', 0);
+        } else {
+            $srch->addCondition('shipprofile_user_id', '=', $userId);
+        }
         $srch->addMultipleFields(array('shipprofile_id', 'shipprofile_name'));
         $srch->addOrder('shipprofile_default', 'DESC');
         $srch->addOrder('shipprofile_id', 'ASC');
         $srch->doNotCalculateRecords();
         $srch->doNotLimitRecords();
+
+        if (true == $default) {
+            $srch->addCondition('shipprofile_default', '=', applicationConstants::YES);
+        }
+
         if ($assoc) {
             return FatApp::getDb()->fetchAllAssoc($srch->getResultSet());
         } else {

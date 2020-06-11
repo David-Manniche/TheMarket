@@ -27,7 +27,7 @@ trait CustomCatalogProducts
 
     public function searchCustomCatalogProducts()
     {
-        $userId = UserAuthentication::getLoggedUserId();    
+        $userId = UserAuthentication::getLoggedUserId();
         $this->userPrivilege->canViewProducts($userId);
         $this->canAddCustomCatalogProduct();
         $frmSearchCustomCatalogProducts = $this->getCustomCatalogProductsSearchForm();
@@ -1333,7 +1333,7 @@ trait CustomCatalogProducts
             $productSpecifications['prod_spec_name'] = $specifications['prod_spec_name'][$langId];
             $productSpecifications['prod_spec_value'] = $specifications['prod_spec_value'][$langId];
             $productSpecifications['prod_spec_group'] = isset($specifications['prod_spec_group'][$langId]) ? $specifications['prod_spec_group'][$langId] : [];
-        }       
+        }
         $this->set('productSpecifications', $productSpecifications);
         $this->set('langId', $langId);
         $this->_template->render(false, false, 'seller/catalog-specifications.php');
@@ -1457,6 +1457,10 @@ trait CustomCatalogProducts
         if (!in_array($productReqData['preq_user_id'], $userArr) || $productReqData['preq_status'] != ProductRequest::STATUS_PENDING) {
             Message::addErrorMessage(Labels::getLabel('MSG_Invalid_Access', $this->siteLangId));
             FatUtility::dieWithError(Message::getHtml());
+        }
+
+        if (FatApp::getConfig('CONF_SHIPPED_BY_ADMIN_ONLY', FatUtility::VAR_INT, 0)) {
+            $post['ps_from_country_id'] = FatApp::getConfig('CONF_COUNTRY', FatUtility::VAR_INT, 0);
         }
 
         unset($post['preq_id']);
@@ -1729,5 +1733,4 @@ trait CustomCatalogProducts
         $this->set('preqId', $preqId);
         $this->_template->render(false, false);
     }
-
 }

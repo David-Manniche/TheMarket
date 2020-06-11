@@ -270,7 +270,7 @@ class Cart extends FatModel
                 $this->products[$key]['has_physical_product'] = 0;
                 $this->products[$key]['has_digital_product'] = 0;
                 $this->products[$key]['is_cod_enabled'] = 0;
-                $this->products[$key]['shop_eligible_for_free_shipping'] = 0;
+                /* $this->products[$key]['shop_eligible_for_free_shipping'] = 0; */
             }
         }
         
@@ -486,7 +486,7 @@ class Cart extends FatModel
                 }
             }
 
-            $sellerPrice = $this->getSellersProductItemsPrice($this->products);
+            /* $sellerPrice = $this->getSellersProductItemsPrice($this->products);
             foreach ($this->products as $cartkey => $cartval) {
                 $this->products[$cartkey]['shop_eligible_for_free_shipping'] = 0;
 
@@ -496,7 +496,7 @@ class Cart extends FatModel
                         $this->products[$cartkey]['shop_eligible_for_free_shipping'] = 1;
                     }
                 }
-            }
+            } */
         }
         /* CommonHelper::printArray($this->products); die(); */
         return $this->products;
@@ -1027,7 +1027,7 @@ class Cart extends FatModel
                 $originalShipping += $product['shipping_cost'];
                 $totalSiteCommission += $product['commission'];
 
-                if (!$product['shop_eligible_for_free_shipping'] || $product['psbs_user_id'] == 0) {
+                if (/* !$product['shop_eligible_for_free_shipping'] ||  */$product['psbs_user_id'] == 0) {
                     $shippingTotal += $product['shipping_cost'];
                 }
             }
@@ -1544,12 +1544,12 @@ class Cart extends FatModel
                 $code = $value->serviceCode;
                 $price = $value->shipmentCost + $value->otherCost;
                 $name = $value->serviceName;
-                if ($products[$prodKey]['shop_eligible_for_free_shipping'] > 0 && $products[$prodKey]['psbs_user_id'] > 0) {
-                    /* $displayPrice = CommonHelper::displayMoneyFormat(0); */
+                /* if ($products[$prodKey]['shop_eligible_for_free_shipping'] > 0 && $products[$prodKey]['psbs_user_id'] > 0) {
                     $displayPrice = Labels::getLabel('LBL_Free_Shipping', $lang_id);
                 } else {
                     $displayPrice = CommonHelper::displayMoneyFormat($price);
-                }
+                } */
+                $displayPrice = CommonHelper::displayMoneyFormat($price);
                 $label = $name . " (" . $displayPrice . " )";
                 $servicesList[$code . "-" . $price] = $label;
             }

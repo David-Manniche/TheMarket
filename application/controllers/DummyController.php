@@ -261,12 +261,8 @@ class DummyController extends MyAppController
 
     public function index()
     {
-        $langId = 1 ;
-        $selProdIdArr = [169, 141];
-
-        $obj = new Shipping(1);
-       $res = $obj->getSellerProductShippingRates($selProdIdArr, 99, 0);
-
+        $shippingProfile = ShippingProfile::getProfileArr(0, true, true, true);
+        $res = array_key_first($shippingProfile);
         CommonHelper::printArray($res);
     }
 
