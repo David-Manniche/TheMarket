@@ -236,6 +236,7 @@ class StripeConnectPayController extends PaymentController
             foreach ($orderProducts as $op) {
                 $productSoldAmount = CommonHelper::orderProductAmount($op, 'NETAMOUNT');
                 $amountToBePaidToSeller = CommonHelper::orderProductAmount($op, 'NETAMOUNT', false, User::USER_TYPE_SELLER);
+                $amountToBePaidToSeller = ($amountToBePaidToSeller - $op['op_commission_charged']);
 
                 $accountId = User::getUserMeta($op['op_selprod_user_id'], 'stripe_account_id');
                 // Credit sold product amount to seller wallet.
