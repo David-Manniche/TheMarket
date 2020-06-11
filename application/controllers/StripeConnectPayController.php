@@ -177,10 +177,6 @@ class StripeConnectPayController extends PaymentController
             $intentId = $intent['id'];
             $charges = $intent['charges']['data'];
 
-            $transferGroup = $intent['transfer_group'];
-
-            $transferIdsArr = [];
-
             $message = '';
             foreach ($charges as $charge) {
                 $message .= 'Id: ' . $charge['id'] . "&";
@@ -206,8 +202,6 @@ class StripeConnectPayController extends PaymentController
                 $message .= 'Refunded: ' . $charge['refunded'] . "&";
                 $message .= 'Statement Descriptor: ' . $charge['statement_descriptor'] . "&";
                 $message .= 'Status: ' . $charge['status'] . "& \n\n";
-
-                $transferIdsArr[$charge['destination']] = $charge['transfer'];
             }
 
             $orderInfo = explode('-', $charges[0]['statement_descriptor']);
