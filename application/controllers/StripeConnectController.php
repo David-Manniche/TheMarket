@@ -329,6 +329,10 @@ class StripeConnectController extends PaymentMethodBaseController
                 ];
                 $fld = $frm->addSelectBox($label, $name, $options);
             } elseif (false !== strpos($field, 'verification.document')) {
+                if (empty($this->stripeConnect->getRelationshipPersonId())) {
+                    continue;
+                }
+
                 $lbl = Labels::getLabel("LBL_IDENTIFYING_DOCUMENT,_EITHER_A_PASSPORT_OR_LOCAL_ID_CARD", $this->siteLangId);
                 $lblFront = $lbl . ' ' . Labels::getLabel("LBL_FRONT", $this->siteLangId);
                 $lblBack = $lbl . ' ' . Labels::getLabel("LBL_BACK", $this->siteLangId);

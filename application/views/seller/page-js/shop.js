@@ -744,7 +744,7 @@ $(document).on("change", "#state", function(){
                 $(contentDv).html(t.html);
             } else {
                 $.mbsmessage(t.msg, false, 'alert--success');
-                $(contentDv).html('');
+                $('.pluginPlatform-js').click();
             }
         });
     };

@@ -218,7 +218,7 @@ class StripeConnectPayController extends PaymentController
 
             $orderInfo = explode('-', $charges[0]['statement_descriptor']);
             $orderId = $orderInfo[0];
-
+            
             /* Recording Payment in DB */
             $orderPaymentObj = new OrderPayment($orderId, $this->siteLangId);
 
@@ -234,33 +234,25 @@ class StripeConnectPayController extends PaymentController
             $orderProducts = $orderObj->getChildOrders(array('order_id' => $orderInfo['id']), $orderInfo['order_type'], $orderInfo['order_language_id']);
 
             foreach ($orderProducts as $op) {
-                $canAvail = CommonHelper::canAvailShippingChargesBySeller($op['op_selprod_user_id'], $op['opshipping_by_seller_user_id']);
-
-                $netAmount = CommonHelper::orderProductAmount($op, 'NETAMOUNT');
-                $shippingCost = (true == $canAvail ? CommonHelper::orderProductAmount($op, 'SHIPPING') : 0);
-                $volumeDiscount = CommonHelper::orderProductAmount($op, 'VOLUME_DISCOUNT');
+                $productSoldAmount = CommonHelper::orderProductAmount($op, 'NETAMOUNT');
+                $amountToBePaidToSeller = CommonHelper::orderProductAmount($op, 'NETAMOUNT', false, User::USER_TYPE_SELLER);
 
                 $accountId = User::getUserMeta($op['op_selprod_user_id'], 'stripe_account_id');
-
-                $total = CommonHelper::orderProductAmount($op, 'cart_total') + $shippingCost + $volumeDiscount;
-
                 // Credit sold product amount to seller wallet.
-                $comments = Labels::getLabel('MSG_PRODUCT_SOLD._#{invoice-no}', $langId);
+                $comments = Labels::getLabel('MSG_PRODUCT_SOLD._#{invoice-no}', $this->siteLangId);
                 $comments = CommonHelper::replaceStringData($comments, ['{invoice-no}' => $op['op_invoice_number']]);
-                Transactions::creditWallet($op['op_selprod_user_id'], Transactions::TYPE_PRODUCT_SALE, $total, $this->siteLangId, $comments, $op['op_id']);
+                Transactions::creditWallet($op['op_selprod_user_id'], Transactions::TYPE_PRODUCT_SALE, $productSoldAmount, $this->siteLangId, $comments, $op['op_id']);
                 
-                // Credit sold product amount to seller wallet.
-                $txnId = isset($transferIdsArr[$charge['destination']]) ? $transferIdsArr[$charge['destination']] : '';
-                $comments = Labels::getLabel('MSG_TRANSFERED_TO_{account-id}_ACCOUNT._TRANSFER_ID_:_{txn-id}', $langId);
+                // Debit sold product amount to seller wallet.
+                $txnId = isset($transferIdsArr[$accountId]) ? $transferIdsArr[$accountId] : '';
+                $comments = Labels::getLabel('MSG_TRANSFERED_TO_{account-id}_ACCOUNT._TRANSFER_ID_:_{txn-id}', $this->siteLangId);
                 $comments = CommonHelper::replaceStringData($comments, ['{account-id}' => $accountId, '{txn-id}' => $txnId]);
-                Transactions::debitWallet($op['op_selprod_user_id'], Transactions::TYPE_PRODUCT_SALE, $total, $this->siteLangId, $comments, $op['op_id'], $txnId);
+                Transactions::debitWallet($op['op_selprod_user_id'], Transactions::TYPE_PRODUCT_SALE, $productSoldAmount, $this->siteLangId, $comments, $op['op_id'], $txnId);
 
-                $paidAmount = ($netAmount - $op['op_commission_charged']);
-
-                $restAmountToBePaid = $total - $paidAmount;
+                $restAmountToBePaid = $amountToBePaidToSeller - $productSoldAmount;
 
                 if (0 < $restAmountToBePaid) {
-                    $comments = Labels::getLabel('MSG_PENDING_DISCOUNT_AMOUNT_FROM_#{invoice-no}', $this->siteLangId);
+                    $comments = Labels::getLabel('MSG_PENDING_AMOUNT_FROM_#{invoice-no}', $this->siteLangId);
                     $comments = CommonHelper::replaceStringData($comments, ['{invoice-no}' => $op['op_invoice_number']]);
 
                     Transactions::creditWallet($op['op_selprod_user_id'], Transactions::TYPE_TRANSFER_TO_THIRD_PARTY_ACCOUNT, $restAmountToBePaid, $this->siteLangId, $comments, $op['op_id']);
