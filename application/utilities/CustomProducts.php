@@ -2257,10 +2257,15 @@ trait CustomProducts
             Message::addErrorMessage($this->str_invalid_request);
             FatUtility::dieWithError(Message::getHtml());
         }
-        
-        $productFrm = $this->getProductShippingFrm($productId);
         $productData = Product::getAttributesById($productId);
-        $prodShippingDetails = Product::getProductShippingDetails($productId, $this->siteLangId, $productData['product_seller_id']);
+        $shippedByUserId = $productData['product_seller_id'];
+        if (FatApp::getConfig('CONF_SHIPPED_BY_ADMIN_ONLY', FatUtility::VAR_INT, 0)) {
+            $shippedByUserId = 0;
+        }
+
+        $productFrm = $this->getProductShippingFrm($productId);
+        
+        $prodShippingDetails = Product::getProductShippingDetails($productId, $this->siteLangId, $shippedByUserId);
         $productData['ps_free'] = $prodShippingDetails['ps_free'];
         if (isset($prodShippingDetails['ps_from_country_id'])) {
             $productData['shipping_country'] = Countries::getCountryById($prodShippingDetails['ps_from_country_id'], $this->siteLangId, 'country_name');
@@ -2271,7 +2276,7 @@ trait CustomProducts
         /* [ GET ATTACHED PROFILE ID */
         $profSrch = ShippingProfileProduct::getSearchObject();
         $profSrch->addCondition('shippro_product_id', '=', $productId);
-        $profSrch->addCondition('shippro_user_id', '=', $this->userParentId);
+        $profSrch->addCondition('shippro_user_id', '=', $shippedByUserId);
         $proRs = $profSrch->getResultSet();
         $profileData = FatApp::getDb()->fetch($proRs);
         if (!empty($profileData)) {

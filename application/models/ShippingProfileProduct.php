@@ -28,15 +28,19 @@ class ShippingProfileProduct extends MyAppModel
     public static function getUserSearchObject($userId = 0)
     {
         $srch = new SearchBase(static::DB_TBL, 'sppro');
-        $fields = array('sppro.shippro_product_id');
-        if (0 < $userId) {
-            $srch->joinTable(static::DB_TBL, 'LEFT OUTER JOIN', 'spprot.shippro_product_id = sppro.shippro_product_id and spprot.shippro_user_id = ' . $userId, 'spprot');
-            $fields[] = 'if(spprot.shippro_user_id > 0, spprot.shippro_user_id, sppro.shippro_user_id) as shippro_user_id';
-            $fields[] = 'if(spprot.shippro_user_id > 0, spprot.shippro_shipprofile_id, sppro.shippro_shipprofile_id) as shippro_shipprofile_id';
+        $fields = array('sppro.shippro_product_id', 'if(spprot.shippro_user_id > 0, spprot.shippro_user_id, sppro.shippro_user_id) as shippro_user_id', 'if(spprot.shippro_user_id > 0, spprot.shippro_shipprofile_id, sppro.shippro_shipprofile_id) as shippro_shipprofile_id');
+
+        if (FatApp::getConfig('CONF_SHIPPED_BY_ADMIN_ONLY', FatUtility::VAR_INT, 0)) {
+            $cond = ' and spprot.shippro_user_id = 0';
         } else {
-            $fields[] = 'sppro.shippro_user_id';
-            $fields[] = 'sppro.shippro_shipprofile_id';
+            if ($userId) {
+                $cond = ' and spprot.shippro_user_id = ' . $userId;
+            } else {
+                $cond = ' and spprot.shippro_user_id = tp.product_seller_id';
+            }
         }
+        $srch->joinTable(Product::DB_TBL, 'LEFT OUTER JOIN', 'tp.product_id = sppro.shippro_product_id', 'tp');
+        $srch->joinTable(static::DB_TBL, 'LEFT OUTER JOIN', 'spprot.shippro_product_id = sppro.shippro_product_id ' . $cond, 'spprot');
         $srch->addMultipleFields($fields);
         $srch->addGroupBy('sppro.shippro_product_id');
         $srch->doNotCalculateRecords();

@@ -261,9 +261,8 @@ class DummyController extends MyAppController
 
     public function index()
     {
-        $shippingProfile = ShippingProfile::getProfileArr(0, true, true, true);
-        $res = array_key_first($shippingProfile);
-        CommonHelper::printArray($res);
+        $shipProfileSrch = ShippingProfileProduct::getUserSearchObject(0);
+       echo $shipProfileSubQuery = $shipProfileSrch->getQuery();
     }
 
 

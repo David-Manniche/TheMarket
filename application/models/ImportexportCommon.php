@@ -356,13 +356,17 @@ class ImportexportCommon extends FatModel
             } else {
                 $arr['tax_category_identifier'] = Labels::getLabel('LBL_Tax_Category_Identifier', $langId);
             }
+            
+            $shippedBy = FatApp::getConfig('CONF_SHIPPED_BY_ADMIN_ONLY', FatUtility::VAR_INT, 0);
 
-            if ($this->settings['CONF_USE_SHIPPING_PROFILE_ID']) {
-                $arr['shipping_profile_id'] = Labels::getLabel('LBL_SHIPPING_PROFILE_ID', $langId);
-            } else {
-                $arr['shipping_profile_identifier'] = Labels::getLabel('LBL_SHIPPING_PROFILE_IDENTIFIER', $langId);
+            if ((0 == $userId && $shippedBy) || !$shippedBy) {
+                if ($this->settings['CONF_USE_SHIPPING_PROFILE_ID']) {
+                    $arr['shipping_profile_id'] = Labels::getLabel('LBL_SHIPPING_PROFILE_ID', $langId);
+                } else {
+                    $arr['shipping_profile_identifier'] = Labels::getLabel('LBL_SHIPPING_PROFILE_IDENTIFIER', $langId);
+                }
             }
-
+            
             if (FatApp::getConfig("CONF_PRODUCT_DIMENSIONS_ENABLE", FatUtility::VAR_INT, 1)) {
                 if ($this->settings['CONF_USE_SHIPPING_PACKAGE_ID']) {
                     $arr['product_ship_package_id'] = Labels::getLabel('LBL_SHIPPING_PACKAGE_ID', $langId);
@@ -390,22 +394,20 @@ class ImportexportCommon extends FatModel
             }
             $arr['product_warranty'] = Labels::getLabel('LBL_PRODUCT_WARRANTY_(DAYS)', $langId);
             $arr['product_upc'] = Labels::getLabel('LBL_EAN/UPC/GTIN_code', $langId);
-            if ($this->settings['CONF_USE_COUNTRY_ID']) {
-                $arr['ps_from_country_id'] = Labels::getLabel('LBL_Shipping_Country_Id', $langId);
-            // $arr['product_ship_country_id'] = Labels::getLabel('LBL_Shipping_Country_Id', $langId);
-            } else {
-                $arr['country_code'] = Labels::getLabel('LBL_Shipping_Country_Code', $langId);
-                // $arr['product_ship_country_code'] = Labels::getLabel('LBL_Shipping_Country_Code', $langId);
+
+            if ((0 == $userId && $shippedBy) || !$shippedBy) {
+                if ($this->settings['CONF_USE_COUNTRY_ID']) {
+                    $arr['ps_from_country_id'] = Labels::getLabel('LBL_Shipping_Country_Id', $langId);
+                } else {
+                    $arr['country_code'] = Labels::getLabel('LBL_Shipping_Country_Code', $langId);
+                }
             }
 
-            // Not necessary
-            // if(!$userId){
-            //     $arr['product_added_on'] = Labels::getLabel('LBL_Added_On', $langId);
-            // }
+            if ((0 == $userId && $shippedBy) || !$shippedBy) {
+                $arr['ps_free'] = Labels::getLabel('LBL_Free_Shipping', $langId);
+                $arr['product_cod_enabled'] = Labels::getLabel('LBL_COD_available', $langId);
+            }
 
-            $arr['ps_free'] = Labels::getLabel('LBL_Free_Shipping', $langId);
-            // $arr['product_ship_free'] = Labels::getLabel('LBL_Free_Shipping', $langId);
-            $arr['product_cod_enabled'] = Labels::getLabel('LBL_COD_available', $langId);
             if (!$userId) {
                 $arr['product_featured'] = Labels::getLabel('LBL_Featured', $langId);
             }
@@ -1187,9 +1189,13 @@ class ImportexportCommon extends FatModel
             }
         }
 
-        if (0 < $userId) {
-            $cnd = $srch->addCondition('shipprofile_user_id', '=', 0);
-            $cnd->attachCondition('shipprofile_user_id', '=', $userId);
+        if (FatApp::getConfig('CONF_SHIPPED_BY_ADMIN_ONLY', FatUtility::VAR_INT, 0)) {
+            $srch->addCondition('shipprofile_user_id', '=', 0);
+        } else {
+            if (0 < $userId) {
+                $cnd = $srch->addCondition('shipprofile_user_id', '=', 0);
+                $cnd->attachCondition('shipprofile_user_id', '=', $userId);
+            }
         }
 
         $rs = $srch->getResultSet();

@@ -1871,7 +1871,7 @@ END,   special_price_found ) as special_price_found'
         $srch->addCondition('ps_product_id', '=', $productId);
         $srch->addCondition('ps_user_id', '=', $userId);
         $srch->setPageSize(1);
-        $srch->doNotCalculateRecords();       
+        $srch->doNotCalculateRecords();
         $res = FatApp::getDb()->fetch($srch->getResultSet());
         if (!empty($res)) {
             return true;

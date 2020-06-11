@@ -1335,7 +1335,7 @@ class Importexport extends ImportexportCommon
         if (!$this->settings['CONF_USE_WEIGHT_UNIT_ID']) {
             $weightUnitsArr = applicationConstants::getWeightUnitsArr($langId);
         }
-                
+        
         $shipProfileSrch = ShippingProfileProduct::getUserSearchObject($userId);
         $shipProfileSubQuery = $shipProfileSrch->getQuery();
 
@@ -1343,11 +1343,18 @@ class Importexport extends ImportexportCommon
         $srch->joinTable(User::DB_TBL, 'LEFT OUTER JOIN', 'u.user_id = tp.product_seller_id', 'u');
         $srch->joinTable(User::DB_TBL_CRED, 'LEFT OUTER JOIN', 'uc.credential_user_id = tp.product_seller_id', 'uc');
         $srch->joinTable(Brand::DB_TBL, 'LEFT OUTER JOIN', 'b.brand_id = tp.product_brand_id', 'b');
-        if ($userId) {
-            $srch->joinTable(Product::DB_TBL_PRODUCT_SHIPPING, 'LEFT OUTER JOIN', 'ps.ps_product_id = tp.product_id and ps.ps_user_id = ' . $userId, 'ps');
+        
+        if (FatApp::getConfig('CONF_SHIPPED_BY_ADMIN_ONLY', FatUtility::VAR_INT, 0)) {
+            $cond = ' and ps.ps_user_id = 0';
         } else {
-            $srch->joinTable(Product::DB_TBL_PRODUCT_SHIPPING, 'LEFT OUTER JOIN', 'ps.ps_product_id = tp.product_id and ps.ps_user_id = tp.product_seller_id', 'ps');
+            if ($userId) {
+                $cond = ' and ps.ps_user_id = ' . $userId;
+            } else {
+                $cond = ' and ps.ps_user_id = tp.product_seller_id';
+            }
         }
+        
+        $srch->joinTable(Product::DB_TBL_PRODUCT_SHIPPING, 'LEFT OUTER JOIN', 'ps.ps_product_id = tp.product_id ' . $cond, 'ps');
         $srch->joinTable(Countries::DB_TBL, 'LEFT OUTER JOIN', 'c.country_id = ps.ps_from_country_id', 'c');
         $srch->joinTable('(' . $shipProfileSubQuery . ')', 'LEFT OUTER JOIN', 'tp.product_id = sppro.shippro_product_id', 'sppro');
         /* $srch->joinTable(ShippingProfile::DB_TBL, 'LEFT OUTER JOIN', 'sppro.shippro_shipprofile_id = shp.shipprofile_id', 'shp');
@@ -1371,6 +1378,7 @@ class Importexport extends ImportexportCommon
             $srch->addCondition('product_id', '>=', $minId);
             $srch->addCondition('product_id', '<=', $maxId);
         }
+        
         $rs = $srch->getResultSet();
 
         $sheetData = array();
@@ -1481,6 +1489,9 @@ class Importexport extends ImportexportCommon
             $weightUnitsArr = array_flip($weightUnitsArr);
         }
 
+        $shippingProfileArr = ShippingProfile::getProfileArr(0, true, true, true);
+        $adminDefaultShipProfileId =  array_key_first($shippingProfileArr);
+
         $coloumArr = $this->getProductsCatalogColoumArr($langId, $sellerId);
         $this->validateCSVHeaders($csvFilePointer, $coloumArr, $langId);
 
@@ -1588,6 +1599,13 @@ class Importexport extends ImportexportCommon
                             }
                             break;
                         case 'product_cod_enabled':
+                            if ($this->settings['CONF_USE_O_OR_1']) {
+                                $colValue = (FatUtility::int($colValue) == 1) ? applicationConstants::YES : applicationConstants::NO;
+                            } else {
+                                $colValue = (strtoupper($colValue) == 'YES') ? applicationConstants::YES : applicationConstants::NO;
+                            }
+                            
+                            break;
                         case 'product_featured':
                         case 'product_approved':
                         case 'product_active':
@@ -1671,12 +1689,16 @@ class Importexport extends ImportexportCommon
                             break;
                         case 'shipping_profile_identifier':
                             $columnKey = 'shippro_shipprofile_id';
-                            if (FatApp::getConfig("CONF_PRODUCT_DIMENSIONS_ENABLE", FatUtility::VAR_INT, 1)) {
-                                if (!array_key_exists($colValue, $shippingProfiles)) {
-                                    $invalid = true;
-                                } else {
-                                    $colValue = $shippingProfiles[$colValue][$userId];
-                                }
+                            $shipBy = $userId;
+                            
+                            if (FatApp::getConfig('CONF_SHIPPED_BY_ADMIN_ONLY', FatUtility::VAR_INT, 0)) {
+                                $shipBy = 0;
+                            }
+                            
+                            if (!array_key_exists($colValue, $shippingProfiles)) {
+                                $invalid = true;
+                            } else {
+                                $colValue = isset($shippingProfiles[$colValue][$shipBy]) ? $shippingProfiles[$colValue][$shipBy] : 0;
                             }
                             break;
                         case 'product_dimension_unit_identifier':
@@ -1752,17 +1774,18 @@ class Importexport extends ImportexportCommon
                 }
             }
             
-            if (false === $errorInRow && count($prodDataArr)) { 
+            if (false === $errorInRow && count($prodDataArr)) {
                 $prodDataArr['product_added_on'] = date('Y-m-d H:i:s');
                 ;
                 $prodDataArr['product_added_by_admin_id'] = (1 > $userId) ? applicationConstants::YES : applicationConstants::NO;
 
+                $shippro_shipprofile_id = 0;
                 if (array_key_exists('shippro_shipprofile_id', $prodDataArr)) {
                     $shippro_shipprofile_id = $prodDataArr['shippro_shipprofile_id'];
                     unset($prodDataArr['shippro_shipprofile_id']);
                 }
                 
-
+                $newRecord = false;
                 if (!empty($prodData) && $prodData['product_id'] && (!$sellerId || ($sellerId && $prodData['product_seller_id'] == $sellerId))) {
                     unset($prodData['product_seller_id']);
                     $productId = $prodData['product_id'];
@@ -1781,6 +1804,11 @@ class Importexport extends ImportexportCommon
 
                     $where = array('smt' => 'product_id = ?', 'vals' => array( $productId ) );
                     $this->db->updateFromArray(Product::DB_TBL, $prodDataArr, $where);
+                    
+                    $shippedByUserId = (0 < $userId) ? $userId : 0;
+                    if (FatApp::getConfig('CONF_SHIPPED_BY_ADMIN_ONLY', FatUtility::VAR_INT, 0)) {
+                        $shippedByUserId = 0;
+                    }
                     
                     if ($sellerId && $this->isDefaultSheetData($langId)) {
                         $tempData = array(
@@ -1807,9 +1835,16 @@ class Importexport extends ImportexportCommon
                             continue;
                         }
 
+                        $shippedByUserId = (0 < $userId) ? $userId : 0;
+                        if (FatApp::getConfig('CONF_SHIPPED_BY_ADMIN_ONLY', FatUtility::VAR_INT, 0)) {
+                            $shippedByUserId = 0;
+                        }
+
                         if (!$this->db->insertFromArray(Product::DB_TBL, $prodDataArr, false, array(), $prodDataArr)) {
                             FatUtility::dieJsonError($this->db->getError());
                         }
+
+                        $newRecord = true;
                         // echo $this->db->getError();
                         $productId = $this->db->getInsertId();
 
@@ -1836,22 +1871,43 @@ class Importexport extends ImportexportCommon
                     }
 
                     if ($this->isDefaultSheetData($langId)) {
+                        $shipProProdData = [];
                         $productSellerShiping = array(
-                        'ps_product_id' => $productId,
-                        'ps_user_id' => $userId,
-                        );
-                        $productSellerShiping = array_merge($productSellerShiping, $prodShippingArr);
+                            'ps_product_id' => $productId,
+                            'ps_user_id' => $shippedByUserId,
+                            );
+                            
+                        if (FatApp::getConfig('CONF_SHIPPED_BY_ADMIN_ONLY', FatUtility::VAR_INT, 0) && $newRecord == true && 0 < $sellerId) {
+                            if (!ShippingProfileProduct::isShippingProfileLinked($productId)) {
+                                $shipProProdData = array(
+                                    'shippro_shipprofile_id' => $adminDefaultShipProfileId,
+                                    'shippro_product_id' => $productId,
+                                    'shippro_user_id' => 0
+                                );
+                            }
 
-                        FatApp::getDb()->insertFromArray(PRODUCT::DB_TBL_PRODUCT_SHIPPING, $productSellerShiping, false, array(), $productSellerShiping);
+                            if (!Product::isShipFromConfigured($productId)) {
+                                $prodShippingArr['ps_from_country_id'] = FatApp::getConfig('CONF_COUNTRY', FatUtility::VAR_INT, 0);
+                                $prodShippingArr['ps_free'] = 0;
+                                $productSellerShiping = array_merge($productSellerShiping, $prodShippingArr);
+                                FatApp::getDb()->insertFromArray(PRODUCT::DB_TBL_PRODUCT_SHIPPING, $productSellerShiping, false, array(), $productSellerShiping);
+                            }
+                        }
                         
-                        $shipProProdData = array(
-                            'shippro_shipprofile_id' => $shippro_shipprofile_id,
-                            'shippro_product_id' => $productId,
-                            'shippro_user_id' => $userId
-                        );
+                        if ($shippro_shipprofile_id > 0) {
+                            $shipProProdData = array(
+                                'shippro_shipprofile_id' => $shippro_shipprofile_id,
+                                'shippro_product_id' => $productId,
+                                'shippro_user_id' => $shippedByUserId
+                            );
+                            $productSellerShiping = array_merge($productSellerShiping, $prodShippingArr);
+                            FatApp::getDb()->insertFromArray(PRODUCT::DB_TBL_PRODUCT_SHIPPING, $productSellerShiping, false, array(), $productSellerShiping);
+                        }
                         
-                        $spObj = new ShippingProfileProduct();
-                        $spObj->addProduct($shipProProdData);
+                        if (!empty($shipProProdData)) {
+                            $spObj = new ShippingProfileProduct();
+                            $spObj->addProduct($shipProProdData);
+                        }
                     }
 
                     /* Lang Data [*/

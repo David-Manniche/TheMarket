@@ -122,8 +122,8 @@ class Shipping
         $srch->addCondition('shiprate_id', '!=', 'null');
         $srch->addGroupBy('selprod_id');
         $srch->addGroupBy('shiprate_id');
-        //$srch->addOrder('shiprate_cost');
-        $srch->addOrder('shiprate_condition_type', 'desc');
+        $srch->addOrder('shiprate_cost');
+        //$srch->addOrder('shiprate_condition_type', 'desc');
         $prodSrchRs = $srch->getResultSet();
         return FatApp::getDb()->fetchAll($prodSrchRs);
     }
