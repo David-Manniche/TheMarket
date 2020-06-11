@@ -209,8 +209,7 @@ class PaymentMethods extends MyAppModel
             case 'StripeConnect':
                 $requestParam = [
                     'amount' => $this->formatPayableAmount($txnAmount),
-                    'payment_intent' => $txnId,
-                    'reverse_transfer' => true
+                    'payment_intent' => $txnId
                 ];
                 if (false === $this->paymentPlugin->init(true)) {
                     $this->error = $this->paymentPlugin->getError();
