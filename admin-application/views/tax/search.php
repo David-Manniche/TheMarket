@@ -7,8 +7,6 @@ $arr_flds = array(
 
 if ($activatedTaxServiceId) {
     $arr_flds['taxcat_code'] = Labels::getLabel('LBL_Tax_Code', $adminLangId);
-} else {
-    $arr_flds['taxval_value'] = Labels::getLabel('LBL_Value', $adminLangId);
 }
 
 $arr_flds['taxcat_active'] = Labels::getLabel('LBL_Status', $adminLangId);
@@ -51,11 +49,6 @@ foreach ($arr_listing as $sn => $row) {
                     $td->appendElement('plaintext', array(), $row[$key], true);
                 }
                 break;
-            case 'taxval_value':
-                $str = ($row[$key]) ? CommonHelper::displayTaxFormat($row['taxval_is_percent'], $row[$key]) : '--';
-
-                $td->appendElement('plaintext', array(), $str, true);
-                break;
             case 'taxcat_active':
                 $active = "active";
                 if (!$row['taxcat_active']) {
@@ -70,15 +63,13 @@ foreach ($arr_listing as $sn => $row) {
                 break;
             case 'action':
 				if($canEdit){
-					$ul = $td->appendElement("ul",array("class"=>"actions"));
-					$li = $ul->appendElement("li");
-					$li->appendElement('a', array('href'=>'javascript:void(0)', 'class'=>'button small green', 'title'=>Labels::getLabel('LBL_Edit',$adminLangId),"onclick"=>"addTaxForm(".$row['taxcat_id'].")"),'<i class="far fa-edit icon"></i>', true);
+					$td->appendElement('a', array('href'=>'javascript:void(0)', 'class'=>'btn btn-clean btn-sm btn-icon', 'title'=>Labels::getLabel('LBL_Edit',$adminLangId),"onclick"=>"addTaxForm(".$row['taxcat_id'].")"),'<i class="far fa-edit icon"></i>', true);
 					
-					$li = $ul->appendElement("li");
-					$li->appendElement('a', array('href'=>CommonHelper::generateUrl('Tax','ruleForm',array($row['taxcat_id'])), 'class'=>'button small green', 'title'=>Labels::getLabel('LBL_Add_Rule',$adminLangId)),'<i class="ion-navicon-round icon"></i>', true);
+					if (0 == $activatedTaxServiceId) {
+						$td->appendElement('a', array('href'=>CommonHelper::generateUrl('Tax','ruleForm',array($row['taxcat_id'])), 'class'=>'btn btn-clean btn-sm btn-icon', 'title'=>Labels::getLabel('LBL_Add_Rule',$adminLangId)),'<i class="ion-navicon-round icon"></i>', true);
+					}
 					
-					$li = $ul->appendElement("li");
-					$li->appendElement('a', array('href'=>"javascript:void(0)", 'class'=>'button small green', 'title'=>Labels::getLabel('LBL_Delete',$adminLangId),"onclick"=>"deleteRecord(".$row['taxcat_id'].")"),'<i class="fa fa-trash  icon"></i>', true);
+					$td->appendElement('a', array('href'=>"javascript:void(0)", 'class'=>'btn btn-clean btn-sm btn-icon', 'title'=>Labels::getLabel('LBL_Delete',$adminLangId),"onclick"=>"deleteRecord(".$row['taxcat_id'].")"),'<i class="fa fa-trash  icon"></i>', true);
 				}
                 break;
             default:

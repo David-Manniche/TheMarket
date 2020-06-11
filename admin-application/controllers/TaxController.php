@@ -49,12 +49,6 @@ class TaxController extends AdminBaseController
         $post = $searchForm->getFormDataFromArray($data);
 
         $srch = Tax::getSearchObject($this->adminLangId, false);
-		$srch->joinTable(
-            TaxRule::DB_TBL,
-            'LEFT OUTER JOIN',
-            'tr.taxrule_taxcat_id = t.taxcat_id',
-            'tr'
-        );
         $srch->addCondition('taxcat_deleted', '=', 0);
         
         $activatedTaxServiceId = Tax::getActivatedServiceId();
@@ -79,7 +73,7 @@ class TaxController extends AdminBaseController
             'tv.taxval_taxcat_id = t.taxcat_id AND taxval_seller_user_id = 0',
             'tv'
         );
-        $srch->addMultipleFields(array("t_l.taxcat_name", "tv.taxval_is_percent", "tr.taxrule_rate as taxval_value"));
+        $srch->addMultipleFields(array("t_l.taxcat_name", "tv.taxval_is_percent"));
         $srch->addOrder('taxcat_active', 'DESC');
         $rs = $srch->getResultSet();
         $records = array();

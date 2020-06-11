@@ -222,58 +222,29 @@ class Tax extends MyAppModel
         $productId = Fatutility::int($productId);
         $userId = Fatutility::int($userId);
         $langId = Fatutility::int($langId);
-
+		$activatedTaxServiceId = static::getActivatedServiceId();
+        
         $taxRates = array();
 		$srch = self::getTaxCatObjByProductId($productId, $langId);
 		$srch->addCondition('ptt_product_id', '=', $productId, 'AND');
-		$srch->joinTable(TaxRuleLocation::DB_TBL, 'LEFT JOIN', 'taxLoc.taxruleloc_taxcat_id = ptt_taxcat_id', 'taxLoc');
-		$srch->joinTable(TaxRule::DB_TBL, 'LEFT JOIN', 'taxRule.taxrule_id = taxLoc.taxruleloc_taxrule_id', 'taxRule');
-		$srch->joinTable(TaxRule::DB_TBL_LANG, 'LEFT JOIN', 'taxRuleLang.taxrulelang_taxrule_id = taxrule.taxrule_id and
-			taxrulelang_lang_id = '.$langId, 'taxRuleLang');
+		if (0 == $activatedTaxServiceId) {
+			$srch->joinTable(TaxRuleLocation::DB_TBL, 'LEFT JOIN', 'taxLoc.taxruleloc_taxcat_id = ptt_taxcat_id', 'taxLoc');
+			$srch->joinTable(TaxRule::DB_TBL, 'LEFT JOIN', 'taxRule.taxrule_id = taxLoc.taxruleloc_taxrule_id', 'taxRule');
+			$srch->joinTable(TaxRule::DB_TBL_LANG, 'LEFT JOIN', 'taxRuleLang.taxrulelang_taxrule_id = taxrule.taxrule_id and
+				taxrulelang_lang_id = '.$langId, 'taxRuleLang');
+			
+			if ($userCountry > 0) {
+				$srch->addCondition('taxruleloc_country_id', '=', $userCountry, 'AND');
+			}
+			if ($userState > 0) {
+				$srch->addDirectCondition('((taxruleloc_type = '. TaxRule::TYPE_INCLUDE_STATES .' AND taxruleloc_state_id= '. $userState .') OR (taxruleloc_type = '. TaxRule::TYPE_ALL_STATES .' AND taxruleloc_state_id = -1) OR (taxruleloc_type = '. TaxRule::TYPE_EXCLUDE_STATES .' AND taxruleloc_state_id != '. $userState .'))', 'AND');
+			}
+			$srch->addOrder('taxrule_id', 'ASC');
+		}
 		
-		if ($userCountry > 0) {
-			$srch->addCondition('taxruleloc_country_id', '=', $userCountry, 'AND');
-		}
-		if ($userState > 0) {
-			$srch->addDirectCondition('((taxruleloc_type = '. TaxRule::TYPE_INCLUDE_STATES .' AND taxruleloc_state_id= '. $userState .') OR (taxruleloc_type = '. TaxRule::TYPE_ALL_STATES .' AND taxruleloc_state_id = -1) OR (taxruleloc_type = '. TaxRule::TYPE_EXCLUDE_STATES .' AND taxruleloc_state_id != '. $userState .'))', 'AND');
-		}
-		$srch->addOrder('taxrule_id', 'ASC');
         $rs = $srch->getResultSet();
         return FatApp::getDb()->fetch($rs);
     }
-	
-	
-    /* public function getTaxRates($productId, $userId, $langId)
-    {
-        $productId = Fatutility::int($productId);
-        $userId = Fatutility::int($userId);
-        $langId = Fatutility::int($langId);
-
-        $taxRates = array();
-        $taxObj = self::getTaxCatObjByProductId($productId, $langId);
-        $taxObj->addMultipleFields(array('IFNULL(taxcat_name,taxcat_identifier) as taxcat_name', 'taxcat_code', 'ptt_seller_user_id', 'ptt_taxcat_id', 'ptt_product_id', 'taxval_is_percent', 'taxval_value', 'taxval_options'));
-        $taxObj->doNotCalculateRecords();
-        $taxObj->setPageSize(1);
-
-        $cnd = $taxObj->addCondition('ptt_seller_user_id', '=', 0);
-        $cnd->attachCondition('ptt_seller_user_id', '=', $userId, 'OR');
-
-        if (false == static::getActivatedServiceId()) {
-            $cnd = $taxObj->addCondition('taxval_seller_user_id', '=', 0);
-            $cnd->attachCondition('taxval_seller_user_id', '=', $userId, 'OR');
-        }   
-        
-        if (FatApp::getConfig('CONF_TAX_COLLECTED_BY_SELLER', FatUtility::VAR_INT, 0)) {
-            $taxObj->addOrder('taxval_seller_user_id', 'DESC');
-            $taxObj->addOrder('ptt_seller_user_id', 'DESC');
-        } else {
-            $taxObj->addOrder('taxval_seller_user_id', 'ASC');
-            $taxObj->addOrder('ptt_seller_user_id', 'ASC');
-        }
-
-        $rs = $taxObj->getResultSet();
-        return FatApp::getDb()->fetch($rs);
-    } */
 
     private function formatAddress($address, $type = false)
     {
@@ -340,7 +311,6 @@ class Tax extends MyAppModel
         $defaultTaxName = Labels::getLabel('LBL_Tax', $langId);
         
         $activatedTaxServiceId = static::getActivatedServiceId();
-        $confTaxStructure = FatApp::getConfig('CONF_TAX_STRUCTURE', FatUtility::VAR_FLOAT, 0);
 
         $shipFromStateId = 0;
         $shipToStateId = 0;
@@ -655,43 +625,6 @@ class Tax extends MyAppModel
     public function removeTaxSetByAdmin($productId = 0)
     {
         FatApp::getDb()->deleteRecords(static::DB_TBL_PRODUCT_TO_TAX, array('smt' => 'ptt_seller_user_id = ? and ptt_product_id = ?', 'vals' => array(0, $productId)));
-    }
-
-    public static function validatePostOptions($langId)
-    {
-        if (!FatApp::getConfig('CONF_TAX_STRUCTURE', FatUtility::VAR_FLOAT, 0) == TaxStructure::TYPE_COMBINED) {
-            return true;
-        }
-
-        $taxStructure = new TaxStructure(FatApp::getConfig('CONF_TAX_STRUCTURE', FatUtility::VAR_FLOAT, 0));
-        $options = $taxStructure->getOptions($langId);
-        $post = FatApp::getPostedData();
-
-        $sameStateSum = 0;
-        $interStateSum = 0;
-
-        $havingSameStateValue = false;
-        $havingInterStateValue = false;
-
-        foreach ($options as $optionVal) {
-            if ($optionVal['taxstro_interstate'] == applicationConstants::YES) {
-                $interStateSum += $post[$optionVal['taxstro_id']];
-                $havingInterStateValue = true;
-            } else {
-                $sameStateSum += $post[$optionVal['taxstro_id']];
-                $havingSameStateValue = true;
-            }
-        }
-
-        if ($havingSameStateValue == true && $sameStateSum != $post['taxval_value']) {
-            return false;
-        }
-
-        if ($havingInterStateValue == true && $interStateSum != $post['taxval_value']) {
-            return false;
-        }
-
-        return true;
     }
 
     public static function getActivatedServiceId()

@@ -31,7 +31,7 @@ INSERT INTO `tbl_language_labels` (`label_key`, `label_lang_id`, `label_caption`
 ("APP_EXPLORE", 1, "Explore", 2);
 
 
-/* TAX MANAGEMENT */
+/* TAX MANAGEMENT [ */
 
 CREATE TABLE `tbl_tax_rules` (
   `taxrule_id` int(11) NOT NULL,
@@ -89,3 +89,6 @@ CREATE TABLE `tbl_tax_rule_locations` (
 
 ALTER TABLE `tbl_tax_rule_locations`
   ADD UNIQUE KEY `taxruleloc_taxcat_id` (`taxruleloc_taxcat_id`,`taxruleloc_country_id`,`taxruleloc_state_id`,`taxruleloc_type`,`taxruleloc_unique`);
+
+DROP TABLE `tbl_tax_structure`, `tbl_tax_structure_lang`;
+/* ] */
