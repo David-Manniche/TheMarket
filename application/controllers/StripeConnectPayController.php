@@ -249,8 +249,8 @@ class StripeConnectPayController extends PaymentController
                 
                 // Debit sold product amount to seller wallet.
                 $txnId = isset($transferIdsArr[$accountId]) ? $transferIdsArr[$accountId] : '';
-                $comments = Labels::getLabel('MSG_TRANSFERED_TO_{account-id}_ACCOUNT._TRANSFER_ID_:_{txn-id}', $this->siteLangId);
-                $comments = CommonHelper::replaceStringData($comments, ['{account-id}' => $accountId, '{txn-id}' => $txnId]);
+                $comments = Labels::getLabel('MSG_TRANSFERED_TO_{account-id}_ACCOUNT.', $this->siteLangId);
+                $comments = CommonHelper::replaceStringData($comments, ['{account-id}' => $accountId]);
                 Transactions::debitWallet($op['op_selprod_user_id'], Transactions::TYPE_PRODUCT_SALE, $amountToBePaidToSeller, $this->siteLangId, $comments, $op['op_id'], $txnId);
 
                 $restAmountToBePaid = $amountToBePaidToSeller - $productSoldAmount;
