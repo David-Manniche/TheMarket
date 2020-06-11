@@ -114,7 +114,7 @@ class StripeConnectPayController extends PaymentController
             $netAmount = CommonHelper::orderProductAmount($op, 'NETAMOUNT');
             $amountToBePaidToSeller = CommonHelper::orderProductAmount($op, 'NETAMOUNT', false, User::USER_TYPE_SELLER);
             $amountToBePaidToSeller = ($amountToBePaidToSeller - $op['op_commission_charged']);
-            
+
             $singleItemPrice = $netAmount / $op['op_qty'];
             $priceData = [
                 'unit_amount' => $this->convertInPaisa($singleItemPrice),
@@ -243,15 +243,15 @@ class StripeConnectPayController extends PaymentController
 
                 $accountId = User::getUserMeta($op['op_selprod_user_id'], 'stripe_account_id');
                 // Credit sold product amount to seller wallet.
-                $comments = Labels::getLabel('MSG_PRODUCT_SOLD._#{invoice-no}', $this->siteLangId);
-                $comments = CommonHelper::replaceStringData($comments, ['{invoice-no}' => $op['op_invoice_number']]);
-                Transactions::creditWallet($op['op_selprod_user_id'], Transactions::TYPE_PRODUCT_SALE, $productSoldAmount, $this->siteLangId, $comments, $op['op_id']);
+                $comments = Labels::getLabel('MSG_PRODUCT_SOLD._#{invoice-no}._COMMISSION_CHARGED_{commission-amount}', $this->siteLangId);
+                $comments = CommonHelper::replaceStringData($comments, ['{invoice-no}' => $op['op_invoice_number'], '{commission-amount}' => $op['op_commission_charged']]);
+                Transactions::creditWallet($op['op_selprod_user_id'], Transactions::TYPE_PRODUCT_SALE, $amountToBePaidToSeller, $this->siteLangId, $comments, $op['op_id']);
                 
                 // Debit sold product amount to seller wallet.
                 $txnId = isset($transferIdsArr[$accountId]) ? $transferIdsArr[$accountId] : '';
                 $comments = Labels::getLabel('MSG_TRANSFERED_TO_{account-id}_ACCOUNT._TRANSFER_ID_:_{txn-id}', $this->siteLangId);
                 $comments = CommonHelper::replaceStringData($comments, ['{account-id}' => $accountId, '{txn-id}' => $txnId]);
-                Transactions::debitWallet($op['op_selprod_user_id'], Transactions::TYPE_PRODUCT_SALE, $productSoldAmount, $this->siteLangId, $comments, $op['op_id'], $txnId);
+                Transactions::debitWallet($op['op_selprod_user_id'], Transactions::TYPE_PRODUCT_SALE, $amountToBePaidToSeller, $this->siteLangId, $comments, $op['op_id'], $txnId);
 
                 $restAmountToBePaid = $amountToBePaidToSeller - $productSoldAmount;
 
