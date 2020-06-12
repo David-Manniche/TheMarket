@@ -738,6 +738,31 @@ class SellerController extends SellerBaseController
             Message::addErrorMessage(Labels::getLabel('MSG_ERROR_INVALID_REQUEST', $this->siteLangId));
             FatUtility::dieJsonError(Message::getHtml());
         }
+
+        if (PaymentMethods::TYPE_PLUGIN == $orderDetail['order_pmethod_type']) {
+            $pluginKey = Plugin::getAttributesById($orderDetail['order_pmethod_id'], 'plugin_code');
+
+            $paymentMethodObj = new PaymentMethods();
+            if (true === $paymentMethodObj->canRefundToCard($pluginKey, $this->siteLangId)) {
+                if (false == $paymentMethodObj->initiateRefund($op_id, PaymentMethods::REFUND_TYPE_CANCEL)) {
+                    FatUtility::dieJsonError($paymentMethodObj->getError());
+                }
+
+                $resp = $paymentMethodObj->getResponse();
+                if (empty($resp)) {
+                    FatUtility::dieJsonError(Labels::getLabel('LBL_UNABLE_TO_PLACE_GATEWAY_REFUND_REQUEST', $this->siteLangId));
+                }
+    
+                // Debit from wallet if plugin/payment method support's direct payment to card.
+                if (!empty($resp->id)) {
+                    $childOrderInfo = $orderObj->getOrderProductsByOpId($op_id, $this->siteLangId);
+                    $txnAmount = (($childOrderInfo["op_unit_price"] * $childOrderInfo["op_qty"]) + $childOrderInfo["op_other_charges"]);
+                    $comments = Labels::getLabel('LBL_TRANSFERED_TO_YOUR_CARD', $this->siteLangId);
+                    Transactions::debitWallet($childOrderInfo['order_user_id'], Transactions::TYPE_ORDER_REFUND, $txnAmount, $this->siteLangId, $comments, $op_id, $resp->id);
+                }
+            }
+        }
+
         Message::addMessage(Labels::getLabel("MSG_Updated_Successfully", $this->siteLangId));
         $this->set('msg', Labels::getLabel('MSG_Updated_Successfully', $this->siteLangId));
         $this->_template->render(false, false, 'json-success.php');

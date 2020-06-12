@@ -236,39 +236,32 @@ class OrderReturnRequest extends MyAppModel
         }
         if (true == $oObj->addChildProductOrderHistory($requestRow['orrequest_op_id'], $orderLangId, FatApp::getConfig("CONF_RETURN_REQUEST_APPROVED_ORDER_STATUS"), $approvedByLabel, 1, '', 0, $moveRefundInWallet)) {
             if (true === $canRefundToCard) {
-                if (PaymentMethods::TYPE_PLUGIN == $requestRow['order_pmethod_type']) {
-                    $pluginKey = Plugin::getAttributesById($requestRow['order_pmethod_id'], 'plugin_code');
+                if (false == $paymentMethodObj->initiateRefund($requestRow['orrequest_op_id'])) {
+                    $this->error = $paymentMethodObj->getError();
+                    $db->rollbackTransaction();
+                    return false;
+                }
+                $resp = $paymentMethodObj->getResponse();
+                if (empty($resp)) {
+                    $this->error = Labels::getLabel('LBL_UNABLE_TO_PLACE_GATEWAY_REFUND_REQUEST', $orderLangId);
+                    $db->rollbackTransaction();
+                    return false;
+                }
 
-                    $paymentMethodObj = new PaymentMethods();
-                    if (true === $paymentMethodObj->canRefundToCard($pluginKey, $orderLangId)) {
-                        if (false == $paymentMethodObj->initiateRefund($requestRow['orrequest_op_id'])) {
-                            $this->error = $paymentMethodObj->getError();
-                            $db->rollbackTransaction();
-                            return false;
-                        }
-                        $resp = $paymentMethodObj->getResponse();
-                        if (empty($resp)) {
-                            $this->error = Labels::getLabel('LBL_UNABLE_TO_PLACE_GATEWAY_REFUND_REQUEST', $orderLangId);
-                            $db->rollbackTransaction();
-                            return false;
-                        }
+                // Debit from wallet if plugin/payment method support's direct payment to card.
+                if (!empty($resp->id)) {
+                    $childOrderInfo = $oObj->getOrderProductsByOpId($requestRow['orrequest_op_id'], $orderLangId);
+                    $txnAmount = $childOrderInfo['op_refund_amount'];
+                    $comments = Labels::getLabel('LBL_TRANSFERED_TO_YOUR_CARD', $orderLangId);
+                    Transactions::debitWallet($childOrderInfo['order_user_id'], Transactions::TYPE_ORDER_REFUND, $txnAmount, $orderLangId, $comments, $requestRow['orrequest_op_id'], $resp->id);
+                }
 
-                        // Debit from wallet if plugin/payment method support's direct payment to card.
-                        if (!empty($resp->id)) {
-                            $childOrderInfo = $oObj->getOrderProductsByOpId($requestRow['orrequest_op_id'], $orderLangId);
-                            $txnAmount = $childOrderInfo['op_refund_amount'];
-                            $comments = Labels::getLabel('LBL_TRANSFERED_TO_YOUR_CARD', $orderLangId);
-                            Transactions::debitWallet($childOrderInfo['order_user_id'], Transactions::TYPE_ORDER_REFUND, $txnAmount, $orderLangId, $comments, $requestRow['orrequest_op_id'], $resp->id);
-                        }
-
-                        $dataToUpdate = ['orrequest_payment_gateway_req_id' => $resp->id];
-                        $whereArr = array( 'smt' => 'orrequest_id = ?', 'vals' => [$orrequest_id]);
-                        if (!$db->updateFromArray(static::DB_TBL, $dataToUpdate, $whereArr)) {
-                            $this->error = $db->getError();
-                            $db->rollbackTransaction();
-                            return false;
-                        }
-                    }
+                $dataToUpdate = ['orrequest_payment_gateway_req_id' => $resp->id];
+                $whereArr = array( 'smt' => 'orrequest_id = ?', 'vals' => [$orrequest_id]);
+                if (!$db->updateFromArray(static::DB_TBL, $dataToUpdate, $whereArr)) {
+                    $this->error = $db->getError();
+                    $db->rollbackTransaction();
+                    return false;
                 }
             }
         }
