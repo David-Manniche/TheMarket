@@ -163,6 +163,9 @@ class PaymentMethods extends MyAppModel
             foreach ($txnData as $txn) {
                 if (!empty($txn['utxn_gateway_txn_id'])) {
                     $this->transferId = $txn['utxn_gateway_txn_id'];
+
+                    /* Used for cancel order. REFUND_TYPE_CANCEL */
+                    $txnAmount = $txn['utxn_debit'];
                     break;
                 }
             }
@@ -187,22 +190,7 @@ class PaymentMethods extends MyAppModel
                 break;
             
             case self::REFUND_TYPE_CANCEL:
-                $txnAmount = ($childOrderInfo["op_unit_price"] * $childOrderInfo["op_qty"]);
-                
-                /*Deduct Shipping Amount[*/
-                $actualShipCharges = 0;
-                if (true === $checkShipping && $childOrderInfo["op_free_ship_upto"] > $txnAmount) {
-                    $unitShipCharges = round($childOrderInfo['op_actual_shipping_charges'] / $childOrderInfo["op_qty"], 2);
-                    $returnShipChargesToCust = 0;
-                    if (FatApp::getConfig('CONF_RETURN_SHIPPING_CHARGES_TO_CUSTOMER', FatUtility::VAR_INT, 0)) {
-                        $returnShipChargesToCust = $unitShipCharges * $childOrderInfo["op_refund_qty"];
-                    }
-
-                    $actualShipCharges = $childOrderInfo['op_actual_shipping_charges'] - $returnShipChargesToCust;
-                    $txnAmount -= $actualShipCharges;
-                }
-                
-                $txnAmount += $childOrderInfo["op_other_charges"];
+                // Already calculated above.
                 break;
             
             default:
