@@ -236,6 +236,7 @@ class OrderReturnRequest extends MyAppModel
         }
         if (true == $oObj->addChildProductOrderHistory($requestRow['orrequest_op_id'], $orderLangId, FatApp::getConfig("CONF_RETURN_REQUEST_APPROVED_ORDER_STATUS"), $approvedByLabel, 1, '', 0, $moveRefundInWallet)) {
             if (true === $canRefundToCard) {
+                $paymentMethodObj = new PaymentMethods();
                 if (false == $paymentMethodObj->initiateRefund($requestRow['orrequest_op_id'])) {
                     $this->error = $paymentMethodObj->getError();
                     $db->rollbackTransaction();
