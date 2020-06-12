@@ -757,7 +757,8 @@ class SellerController extends SellerBaseController
                 if (!empty($resp->id)) {
                     $childOrderInfo = $orderObj->getOrderProductsByOpId($op_id, $this->siteLangId);
                     $txnAmount = $paymentMethodObj->getTxnAmount();
-                    $comments = Labels::getLabel('LBL_TRANSFERED_TO_YOUR_CARD', $this->siteLangId);
+                    $comments = Labels::getLabel('LBL_TRANSFERED_TO_YOUR_CARD._INVOICE_#{invoice-no}', $this->siteLangId);
+                    $comments = CommonHelper::replaceStringData($comments, ['{invoice-no}' => $childOrderInfo['op_invoice_number']]);
                     Transactions::debitWallet($childOrderInfo['order_user_id'], Transactions::TYPE_ORDER_REFUND, $txnAmount, $this->siteLangId, $comments, $op_id, $resp->id);
                 }
             }

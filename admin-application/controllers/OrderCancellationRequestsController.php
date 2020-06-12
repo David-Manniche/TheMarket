@@ -229,7 +229,8 @@ class OrderCancellationRequestsController extends AdminBaseController
                                 if (!empty($resp->id)) {
                                     $childOrderInfo = $oObj->getOrderProductsByOpId($row['ocrequest_op_id'], $this->adminLangId);
                                     $txnAmount = $paymentMethodObj->getTxnAmount();
-                                    $comments = Labels::getLabel('LBL_TRANSFERED_TO_YOUR_CARD', $this->adminLangId);
+                                    $comments = Labels::getLabel('LBL_TRANSFERED_TO_YOUR_CARD._INVOICE_#{invoice-no}', $this->siteLangId);
+                                    $comments = CommonHelper::replaceStringData($comments, ['{invoice-no}' => $childOrderInfo['op_invoice_number']]);
                                     Transactions::debitWallet($childOrderInfo['order_user_id'], Transactions::TYPE_ORDER_REFUND, $txnAmount, $this->adminLangId, $comments, $row['ocrequest_op_id'], $resp->id);
                                 }
                             }
