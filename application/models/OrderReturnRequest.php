@@ -226,7 +226,7 @@ class OrderReturnRequest extends MyAppModel
             }
         }
 
-        if ($requestRow['orrequest_type'] == static::RETURN_REQUEST_TYPE_REPLACE || true == $canRefundToCard) {
+        if ($requestRow['orrequest_type'] == static::RETURN_REQUEST_TYPE_REPLACE) {
             $moveRefundInWallet = false;
         }
 
