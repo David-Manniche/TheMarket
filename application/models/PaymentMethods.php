@@ -260,7 +260,7 @@ class PaymentMethods extends MyAppModel
      *
      * @return void
      */
-    public function getTxnAmount(int $sellerId = 0, int $opId = 0)
+    public function getTxnAmount()
     {
         return $this->txnAmount;
     }
@@ -270,7 +270,7 @@ class PaymentMethods extends MyAppModel
      *
      * @return void
      */
-    public function getSellerTxnAmount(int $sellerId = 0, int $opId = 0)
+    public function getSellerTxnAmount()
     {
         return $this->sellerTxnAmount;
     }
@@ -300,7 +300,7 @@ class PaymentMethods extends MyAppModel
     }
     
     /**
-     * refundFromWallet - Partial Amount if credited. (Discount Or Rewards Point)
+     * refundFromWallet - Refund transferred amount to seller
      *
      * @return bool
      */
@@ -308,12 +308,12 @@ class PaymentMethods extends MyAppModel
     {
         $comments = Labels::getLabel('MSG_REFUND_INITIATE_REGARDING_#{invoice-no}', $this->langId);
         $comments = CommonHelper::replaceStringData($comments, ['{invoice-no}' => $this->invoiceNumber]);
-        Transactions::debitWallet($this->sellerId, Transactions::TYPE_ORDER_REFUND, $this->txnAmount, $this->langId, $comments, $this->opId);
+        Transactions::debitWallet($this->sellerId, Transactions::TYPE_ORDER_REFUND, $this->sellerTxnAmount, $this->langId, $comments, $this->opId);
         return true;
     }
 
     /**
-     * returnRefundAmount - Return Refund amount if debited from user remote account.
+     * returnRefundAmount - Return Refund amount if debited from seller remote account.
      *
      * @return bool
      */
@@ -327,7 +327,7 @@ class PaymentMethods extends MyAppModel
         $accountId = User::getUserMeta($this->sellerId, 'stripe_account_id');
         $comments = Labels::getLabel('MSG_REFUND_INITIATE_FROM_ACCOUNT_{account-id}', $this->langId);
         $comments = CommonHelper::replaceStringData($comments, ['{account-id}' => $accountId]);
-        Transactions::creditWallet($this->sellerId, Transactions::TYPE_ORDER_REFUND, $this->txnAmount, $this->langId, $comments, $this->opId, $this->remoteTxnId);
+        Transactions::creditWallet($this->sellerId, Transactions::TYPE_ORDER_REFUND, $this->sellerTxnAmount, $this->langId, $comments, $this->opId, $this->remoteTxnId);
         return true;
     }
 
