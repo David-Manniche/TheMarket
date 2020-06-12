@@ -1446,7 +1446,7 @@ trait CustomCatalogProducts
         $this->userPrivilege->canEditProducts(UserAuthentication::getLoggedUserId());
         $this->canAddCustomCatalogProduct();
         $preqId = FatApp::getPostedData('preq_id', FatUtility::VAR_INT, 0);
-        $frm = $this->getProductShippingFrm(0, $preqId);
+        $frm = $this->getProductShippingFrm(0, $preqId, true);
         $post = $frm->getFormDataFromArray(FatApp::getPostedData());
         if (false === $post) {
             Message::addErrorMessage(current($frm->getValidationErrors()));

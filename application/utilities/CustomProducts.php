@@ -1194,7 +1194,7 @@ trait CustomProducts
         $productSellerShiping['ps_product_id'] = $product_id;
         $productSellerShiping['ps_user_id'] = $this->userParentId;
         $productSellerShiping['ps_from_country_id'] = $data_to_be_save['ps_from_country_id'];
-        $productSellerShiping['ps_free'] = $data_to_be_save['ps_free'];
+        $productSellerShiping['ps_free'] = isset($data_to_be_save['ps_free']) ? $data_to_be_save['ps_free'] : 0;
         if (!FatApp::getDb()->insertFromArray(PRODUCT::DB_TBL_PRODUCT_SHIPPING, $productSellerShiping, false, array(), $productSellerShiping)) {
             $this->error = FatApp::getDb()->getError();
             return false;

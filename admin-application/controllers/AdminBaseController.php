@@ -433,7 +433,7 @@ class AdminBaseController extends FatController
         
         if ($type != 'REQUESTED_CATALOG_PRODUCT') {
             $fld = $frm->addTextBox(Labels::getLabel('LBL_Country_Of_Origin', $langId), 'shipping_country');
-            $fld = $frm->addCheckBox(Labels::getLabel('LBL_Free_Shipping', $langId), 'ps_free', 1);
+            //$fld = $frm->addCheckBox(Labels::getLabel('LBL_Free_Shipping', $langId), 'ps_free', 1);
             $frm->addHtml('', '', '<table id="tab_shipping" width="100%"></table><div class="gap"></div>');
         }
         

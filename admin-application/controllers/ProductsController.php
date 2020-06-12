@@ -1360,7 +1360,7 @@ class ProductsController extends AdminBaseController
                 $weightFld->requirements()->setFloatPositive();
                 $weightFld->requirements()->setRange('0.01', '9999999999');
             }
-            $frm->addCheckBox(Labels::getLabel('LBL_Product_Is_Eligible_For_Free_Shipping?', $this->adminLangId), 'ps_free', 1, array(), false, 0);
+            /* $frm->addCheckBox(Labels::getLabel('LBL_Product_Is_Eligible_For_Free_Shipping?', $this->adminLangId), 'ps_free', 1, array(), false, 0); */
 
             $codFld = $frm->addCheckBox(Labels::getLabel('LBL_Product_Is_Available_for_Cash_on_Delivery_(COD)?', $this->adminLangId), 'product_cod_enabled', 1, array(), false, 0);
             $paymentMethod = new PaymentMethods();

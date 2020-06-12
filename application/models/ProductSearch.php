@@ -374,16 +374,20 @@ class ProductSearch extends SearchBase
     public function joinProductShippedBy()
     {
         $this->joinProductShippedBy = true;
+        $cond = 'and psbs.psbs_user_id = selprod_user_id';
         if (FatApp::getConfig('CONF_SHIPPED_BY_ADMIN_ONLY', FatUtility::VAR_INT, 0)) {
-            $this->joinTable(Product::DB_PRODUCT_SHIPPED_BY_SELLER, 'LEFT OUTER JOIN', 'psbs.psbs_product_id = p.product_id and psbs.psbs_user_id = 0', 'psbs');
-        } else {
-            $this->joinTable(Product::DB_PRODUCT_SHIPPED_BY_SELLER, 'LEFT OUTER JOIN', 'psbs.psbs_product_id = p.product_id and psbs.psbs_user_id = selprod_user_id', 'psbs');
+            $cond = 'and psbs.psbs_user_id = 0';
         }
+        $this->joinTable(Product::DB_PRODUCT_SHIPPED_BY_SELLER, 'LEFT OUTER JOIN', 'psbs.psbs_product_id = p.product_id ' . $cond, 'psbs');
     }
     
     public function joinProductFreeShipping()
     {
-        $this->joinTable(Product::DB_TBL_PRODUCT_SHIPPING, 'LEFT OUTER JOIN', 'ps.ps_product_id = p.product_id and ps.ps_user_id = selprod_user_id', 'ps');
+        $cond = 'and ps.ps_user_id = selprod_user_id';
+        if (FatApp::getConfig('CONF_SHIPPED_BY_ADMIN_ONLY', FatUtility::VAR_INT, 0)) {
+            $cond = 'and ps.ps_user_id = 0';
+        }
+        $this->joinTable(Product::DB_TBL_PRODUCT_SHIPPING, 'LEFT OUTER JOIN', 'ps.ps_product_id = p.product_id ' . $cond, 'ps');
     }
 
     public function joinShops($langId = 0, $isActive = true, $isDisplayStatus = true, $shopId = 0)
@@ -419,8 +423,6 @@ class ProductSearch extends SearchBase
             $this->joinShopsLang($langId);
         }
     }
-
-
 
     public function joinShopSpecifics()
     {
