@@ -256,7 +256,17 @@ class PaymentMethods extends MyAppModel
     }
     
     /**
-     * getSellerTxnAmount - Return txn amount used while refund
+     * getTxnAmount - Return txn amount used while refund
+     *
+     * @return void
+     */
+    public function getTxnAmount(int $sellerId = 0, int $opId = 0)
+    {
+        return $this->txnAmount;
+    }
+
+    /**
+     * getSellerTxnAmount - Return selller txn amount used while refund
      *
      * @return void
      */

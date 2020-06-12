@@ -228,7 +228,7 @@ class OrderCancellationRequestsController extends AdminBaseController
                                 // Debit from wallet if plugin/payment method support's direct payment to card.
                                 if (!empty($resp->id)) {
                                     $childOrderInfo = $oObj->getOrderProductsByOpId($row['ocrequest_op_id'], $this->adminLangId);
-                                    $txnAmount = $paymentMethodObj->getSellerTxnAmount();
+                                    $txnAmount = $paymentMethodObj->getTxnAmount();
                                     $comments = Labels::getLabel('LBL_TRANSFERED_TO_YOUR_CARD', $this->adminLangId);
                                     Transactions::debitWallet($childOrderInfo['order_user_id'], Transactions::TYPE_ORDER_REFUND, $txnAmount, $this->adminLangId, $comments, $row['ocrequest_op_id'], $resp->id);
                                 }
