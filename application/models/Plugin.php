@@ -271,6 +271,10 @@ class Plugin extends MyAppModel
             return false;
         }
 
+        if (in_array($typeId, self::HAVING_KINGPIN) && empty((new self())->getDefaultPluginKeyName($typeId))) {
+            return [];
+        }
+
         $srch = static::pluginTypeSrchObj($typeId, $langId, $assoc, $active);
 
         if (true == $assoc) {
