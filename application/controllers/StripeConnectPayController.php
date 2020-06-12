@@ -253,7 +253,7 @@ class StripeConnectPayController extends PaymentController
                 }
 
                 // Debit sold product amount to seller wallet.
-                $comments = Labels::getLabel('MSG_TRANSFERED_TO_{account-id}_ACCOUNT.', $this->siteLangId);
+                $comments = Labels::getLabel('MSG_TRANSFERED_TO_ACCOUNT_{account-id}.', $this->siteLangId);
                 $comments = CommonHelper::replaceStringData($comments, ['{account-id}' => $accountId]);
                 Transactions::debitWallet($op['op_selprod_user_id'], Transactions::TYPE_TRANSFER_TO_THIRD_PARTY_ACCOUNT, $amountToBePaidToSeller, $this->siteLangId, $comments, $op['op_id'], $resp->id);
             }
