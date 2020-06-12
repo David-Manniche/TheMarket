@@ -28,6 +28,7 @@ class PaymentMethods extends MyAppModel
     private $transferId = '';
     private $invoiceNumber = '';
     private $remoteTxnId = '';
+    private $sellerTxnAmount = '';
 
     public function __construct($id = 0)
     {
@@ -165,7 +166,7 @@ class PaymentMethods extends MyAppModel
                     $this->transferId = $txn['utxn_gateway_txn_id'];
 
                     /* Used for cancel order. REFUND_TYPE_CANCEL */
-                    $txnAmount = $txn['utxn_debit'];
+                    $this->sellerTxnAmount = $txn['utxn_debit'];
                     break;
                 }
             }
@@ -187,10 +188,11 @@ class PaymentMethods extends MyAppModel
         switch ($refundType) {
             case self::REFUND_TYPE_RETURN:
                 $txnAmount = $childOrderInfo['op_refund_amount'];
+                $this->sellerTxnAmount = $txnAmount;
                 break;
             
             case self::REFUND_TYPE_CANCEL:
-                // Already calculated above.
+                $txnAmount = CommonHelper::orderProductAmount($childOrderInfo, 'NETAMOUNT');
                 break;
             
             default:
@@ -227,7 +229,7 @@ class PaymentMethods extends MyAppModel
                     $requestParam = [
                         'transferId' => $this->transferId,
                         'data' => [
-                            'amount' => $this->formatPayableAmount($this->txnAmount), // In Paisa
+                            'amount' => $this->formatPayableAmount($this->sellerTxnAmount), // In Paisa
                             'description' => $comments,
                             'metadata' => [
                                 'op_id' => $this->opId
@@ -254,13 +256,13 @@ class PaymentMethods extends MyAppModel
     }
     
     /**
-     * getTxnAmount - Return txn amount used while refund
+     * getSellerTxnAmount - Return txn amount used while refund
      *
      * @return void
      */
-    public function getTxnAmount(int $sellerId = 0, int $opId = 0)
+    public function getSellerTxnAmount(int $sellerId = 0, int $opId = 0)
     {
-        return $this->txnAmount;
+        return $this->sellerTxnAmount;
     }
 
     /**

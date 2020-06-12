@@ -756,7 +756,7 @@ class SellerController extends SellerBaseController
                 // Debit from wallet if plugin/payment method support's direct payment to card.
                 if (!empty($resp->id)) {
                     $childOrderInfo = $orderObj->getOrderProductsByOpId($op_id, $this->siteLangId);
-                    $txnAmount = $paymentMethodObj->getTxnAmount();
+                    $txnAmount = $paymentMethodObj->getSellerTxnAmount();
                     $comments = Labels::getLabel('LBL_TRANSFERED_TO_YOUR_CARD', $this->siteLangId);
                     Transactions::debitWallet($childOrderInfo['order_user_id'], Transactions::TYPE_ORDER_REFUND, $txnAmount, $this->siteLangId, $comments, $op_id, $resp->id);
                 }
