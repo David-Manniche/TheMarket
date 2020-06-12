@@ -1425,6 +1425,8 @@ class CheckoutController extends MyAppController
             $this->set('confirmForm', $confirmForm);
         }
 
+        $this->set('canUseWalletForPayment', PaymentMethods::canUseWalletForPayment());
+
         if (true === MOBILE_APP_API_CALL) {
             $this->set('products', $cartProducts);
             $this->set('orderId', $order_id);

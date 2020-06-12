@@ -6,6 +6,7 @@ foreach ($paymentMethods as $key => $val) {
 $data = array(
     'orderId' => $orderId,
     'orderType' => $orderType,
+    'canUseWalletForPayment' => (true == $canUseWalletForPayment ? 1 : 0),
     'paymentMethods' => $paymentMethods,
 );
 

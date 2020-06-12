@@ -78,6 +78,18 @@ class PaymentMethods extends MyAppModel
     }
 
     /**
+     * canUseWalletForPayment
+     *
+     * @return bool
+     */
+    public static function canUseWalletForPayment(): bool
+    {
+        $pluginObj = new Plugin();
+        $keyName = $pluginObj->getDefaultPluginKeyName(Plugin::TYPE_SPLIT_PAYMENT_METHOD);
+        return empty($keyName);
+    }
+
+    /**
      * canRefundToCard
      *
      * @param string $keyname

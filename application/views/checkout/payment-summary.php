@@ -43,7 +43,7 @@
             </div>
             <?php } ?>
             <div class="col-md-6 mb-3">
-                <?php if ($userWalletBalance > 0 && $cartSummary['orderNetAmount'] > 0) { ?>
+                <?php if ($canUseWalletForPayment && $userWalletBalance > 0 && $cartSummary['orderNetAmount'] > 0) { ?>
                     <label class="checkbox brand" id="brand_95">
                         <input onChange="walletSelection(this)" type="checkbox" <?php echo ($cartSummary["cartWalletSelected"]) ? 'checked="checked"' : ''; ?> name="pay_from_wallet" id="pay_from_wallet" />
                         <i class="input-helper"></i>

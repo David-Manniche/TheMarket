@@ -352,7 +352,7 @@ class Plugin extends MyAppModel
     }
     
     /**
-     * getDefaultPluginKeyName
+     * getDefaultPluginKeyName - Used for Kingpin plugins only
      *
      * @param  int $typeId
      * @return mixed
@@ -363,7 +363,7 @@ class Plugin extends MyAppModel
     }
     
     /**
-     * getDefaultPluginData
+     * getDefaultPluginData - Used for Kingpin plugins only
      *
      * @param  int $typeId
      * @param  mixed $attr
