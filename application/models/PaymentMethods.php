@@ -27,6 +27,7 @@ class PaymentMethods extends MyAppModel
     private $transferAmount = '';
     private $transferId = '';
     private $invoiceNumber = '';
+    private $remoteTxnId = '';
 
     public function __construct($id = 0)
     {
@@ -148,17 +149,10 @@ class PaymentMethods extends MyAppModel
 
         if (!empty($txnData)) {
             foreach ($txnData as $txn) {
-                $this->transferAmount = $txn['utxn_credit'];
                 if (!empty($txn['utxn_gateway_txn_id'])) {
                     $this->transferId = $txn['utxn_gateway_txn_id'];
-                    $this->transferAmount = $txn['utxn_debit'];
                     break;
                 }
-            }
-
-            if (empty($this->transferId)) {
-                // Partial Amount if credited. (Discount Or Rewards Point)
-                $this->refundFromWallet();
             }
         }
 
@@ -205,10 +199,12 @@ class PaymentMethods extends MyAppModel
                 break;
         }
 
+        $this->txnAmount = $txnAmount;
+
         switch ($this->keyname) {
             case 'StripeConnect':
                 $requestParam = [
-                    'amount' => $this->formatPayableAmount($txnAmount),
+                    'amount' => $this->formatPayableAmount($this->txnAmount),
                     'payment_intent' => $txnId
                 ];
                 if (false === $this->paymentPlugin->init(true)) {
@@ -221,6 +217,9 @@ class PaymentMethods extends MyAppModel
                     $this->error = $this->paymentPlugin->getError();
                     return false;
                 }
+                
+                // Debit from wallet until not getting debited from user remote account.
+                $this->refundFromWallet();
 
                 if (!empty($this->transferId)) {
                     $comments = Labels::getLabel('MSG_REFUND_INITIATE_REGARDING_#{invoice-no}', $this->langId);
@@ -228,7 +227,7 @@ class PaymentMethods extends MyAppModel
                     $requestParam = [
                         'transferId' => $this->transferId,
                         'data' => [
-                            'amount' => $this->formatPayableAmount($this->transferAmount), // In Paisa
+                            'amount' => $this->formatPayableAmount($this->txnAmount), // In Paisa
                             'description' => $comments,
                             'metadata' => [
                                 'op_id' => $this->opId
@@ -240,9 +239,15 @@ class PaymentMethods extends MyAppModel
                         $this->error = $this->paymentPlugin->getError();
                         return false;
                     }
+
+                    //To get response object
+                    $this->resp = $this->paymentPlugin->getResponse();
+                    if (!empty($this->resp->id)) {
+                        $this->remoteTxnId = $this->resp->id;
+                        // Credit to wallet if successfully refund from remote account
+                        return $this->returnRefundAmount();
+                    }
                 }
-                //To get response object
-                $this->resp = $this->paymentPlugin->getResponse();
                 break;
         }
         return true;
@@ -281,7 +286,26 @@ class PaymentMethods extends MyAppModel
     {
         $comments = Labels::getLabel('MSG_REFUND_INITIATE_REGARDING_#{invoice-no}', $this->langId);
         $comments = CommonHelper::replaceStringData($comments, ['{invoice-no}' => $this->invoiceNumber]);
-        Transactions::debitWallet($this->sellerId, Transactions::TYPE_ORDER_REFUND, $this->transferAmount, $this->langId, $comments, $this->opId);
+        Transactions::debitWallet($this->sellerId, Transactions::TYPE_ORDER_REFUND, $this->txnAmount, $this->langId, $comments, $this->opId);
+        return true;
+    }
+
+    /**
+     * returnRefundAmount - Return Refund amount if debited from user remote account.
+     *
+     * @return bool
+     */
+    private function returnRefundAmount()
+    {
+        if (empty($this->remoteTxnId)) {
+            $this->error = Labels::getLabel('MSG_NO_REMOTE_TXN_ID_FOUND', $this->langId);
+            return false;
+        }
+
+        $accountId = User::getUserMeta($this->sellerId, 'stripe_account_id');
+        $comments = Labels::getLabel('MSG_REFUND_INITIATE_FROM_ACCOUNT_{account-id}', $this->langId);
+        $comments = CommonHelper::replaceStringData($comments, ['{account-id}' => $accountId]);
+        Transactions::creditWallet($this->sellerId, Transactions::TYPE_ORDER_REFUND, $this->txnAmount, $this->langId, $comments, $this->opId, $this->remoteTxnId);
         return true;
     }
 

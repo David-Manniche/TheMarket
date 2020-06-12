@@ -1502,7 +1502,6 @@ class Orders extends MyAppModel
                 $comments = sprintf(Labels::getLabel('LBL_Return_Request_Approved', $langId), $formattedRequestValue);
                 $txnAmount = $childOrderInfo['op_refund_amount'];
 
-                $txnAmount = $txnAmount;
                 /*Refund to Buyer[*/
                 if ($txnAmount > 0) {
                     $txnArray["utxn_user_id"] = $childOrderInfo['order_user_id'];
