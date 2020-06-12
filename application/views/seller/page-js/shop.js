@@ -729,7 +729,10 @@ $(document).on("change", "#state", function(){
         $(dv + " .tabs__content .row").html(fcom.getLoader());
         var platformUrl = $(el).data('platformurl');
         fcom.ajax(platformUrl, '', function(t) {
-            $(dv + " .tabs__content .row").html(t);
+            t = $.parseJSON(t);
+            htm = (1 > t.status) ? t.msg : t.html;
+            
+            $(dv + " .tabs__content .row").html(htm);
             $(el).parent().siblings().removeClass('is-active');
             $(el).parent().addClass('is-active');
         });

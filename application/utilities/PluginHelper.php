@@ -25,6 +25,10 @@ trait PluginHelper
      */
     public function getSettings(string $column = '')
     {
+        if (!empty($this->settings)) {
+            return $this->settings;
+        }
+
         $this->langId = 0 < $this->langId ? $this->langId : CommonHelper::getLangId();
 
         try {
@@ -34,7 +38,7 @@ trait PluginHelper
             return false;
         }
         $pluginSetting = new PluginSetting(0, $this->keyName);
-        return $pluginSetting->get($this->langId, $column);
+        return $this->settings = $pluginSetting->get($this->langId, $column);
     }
     
     /**
@@ -49,8 +53,8 @@ trait PluginHelper
         $this->settings = $this->getSettings();
         if (isset($this->requiredKeys) && !empty($this->requiredKeys) && is_array($this->requiredKeys)) {
             foreach ($this->requiredKeys as $key) {
-                if (!array_key_exists($key, $this->settings) || empty($this->settings[$key])) {
-                    $this->error = $this->keyName . ' ' . Labels::getLabel('MSG_SETTINGS_NOT_CONFIGURED', $langId);
+                if (!array_key_exists($key, $this->settings) || '' == $this->settings[$key]) {
+                    $this->error = $this->keyName . ' : ' . ' "' . $key . '" ' . Labels::getLabel('MSG_SETTINGS_NOT_CONFIGURED', $langId);
                     return false;
                 }
             }

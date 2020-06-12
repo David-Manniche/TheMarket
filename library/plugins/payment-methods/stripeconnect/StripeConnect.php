@@ -21,6 +21,7 @@ class StripeConnect extends PaymentMethodBase
     private $connectedAccounts = [];
 
     public $requiredKeys = [
+        'env',
         'client_id',
         'publishable_key',
         'secret_key'
@@ -68,6 +69,20 @@ class StripeConnect extends PaymentMethodBase
      */
     public function init(int $userId = 0)
     {
+        if (false == $this->getSettings()) {
+            return false;
+        }
+        
+        if (isset($this->settings['env']) && Plugin::ENV_PRODUCTION == $this->settings['env']) {
+            $this->liveMode = "live_";
+            $this->requiredKeys = [
+                'env',
+                $this->liveMode . 'client_id',
+                $this->liveMode . 'publishable_key',
+                $this->liveMode . 'secret_key'
+            ];
+        }
+
         if (false == $this->validateSettings()) {
             return false;
         }
@@ -76,10 +91,6 @@ class StripeConnect extends PaymentMethodBase
             if (false === $this->loadLoggedUserInfo($userId)) {
                 return false;
             }
-        }
-
-        if (isset($this->settings['env']) && Plugin::ENV_PRODUCTION == $this->settings['env']) {
-            $this->liveMode = "live_";
         }
 
         // For Some functions this line is also required to initiate API secret key

@@ -73,7 +73,9 @@ class StripeConnectController extends PaymentMethodBaseController
         $this->set('keyName', self::KEY_NAME);
         $this->set('pluginName', $this->getPluginData()['plugin_name']);
         $this->set('stripeAccountType', $this->stripeConnect->getAccountType());
-        $this->_template->render(false, false);
+        $json['status'] = 1;
+        $json['html'] = $this->_template->render(false, false, 'stripe-connect/index.php', true, false);
+        FatUtility::dieJsonSuccess($json);
     }
 
     public function register()
