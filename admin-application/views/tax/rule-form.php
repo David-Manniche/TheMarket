@@ -74,7 +74,7 @@ $combTaxCount = 0;
 													$taxruleNameFld = $frm->getField('taxrule_name['.$adminLangId.'][]');
 													$taxruleNameFld->value = $rule['taxrule_name'][$adminLangId];
 													$taxruleRateFld = $frm->getField('taxrule_rate[]');
-													$taxruleRateFld->value = $rule['taxrule_rate'];
+													$taxruleRateFld->value = $rule['taxruledet_rate'];
 													$combinedFld = $frm->getField('taxrule_is_combined[]');
 													$combinedFld->checked = "";
 													if ($rule['taxrule_is_combined'] > 0) {
@@ -246,13 +246,12 @@ $combTaxCount = 0;
 																$combTaxCount = 0;
 																if (!empty($combinedData)) { 
 																	foreach($combinedData as $comData) { ?>
-																		
 																			<div class="field-set rule-detail-row<?php echo $combTaxCount; ?>">
 																				<div class="caption-wraper">
 																					<label class="field_label">
 																						<?php $fld = $frm->getField('taxruledet_name['.$langId.'][]');
 																						$fld->value = isset($comData['taxruledet_name'][$langId]) ? $comData['taxruledet_name'][$langId] : '';
-																						echo $fld->getCaption(); ?>
+																						echo $fld->getCaption(); ?> <span class="replaceText--js"></span>
 																					</label>
 																				</div>
 																				<div class="field-wraper">
@@ -261,7 +260,6 @@ $combTaxCount = 0;
 																					</div>
 																				</div>
 																			</div>
-																		
 																		<?php $combTaxCount++; }
 																}
 																else { ?>
@@ -270,7 +268,7 @@ $combTaxCount = 0;
 																					<label class="field_label">
 																					<?php  $fld = $frm->getField('taxruledet_name['.$langId.'][]');
 																						echo $fld->getCaption(); ?>
-																					</label>
+																					<span class="replaceText--js"></span></label>
 																				</div>
 																				<div class="field-wraper">
 																					<div class="field_cover">
@@ -438,6 +436,7 @@ $combTaxCount = 0;
 </script>
 <script>
     $(document).ready(function() {
+		var adminLangId = <?php echo $adminLangId; ?>;
         $('.add-rule-form--js').on('click', function() {
             var lastIndex = $('.tax-rule-form--js:last').data('index');
             lastIndex = parseInt(lastIndex);
@@ -450,6 +449,11 @@ $combTaxCount = 0;
 		$('body').on('click', '.remove-tax-rule--js', function(){
             $(this).parents('.tax-rule-form--js').remove();
         });
+		
+		/* $('.rule-detail-row--js input[name="taxruledet_name['+adminLangId+'][]"]').keyup(function(){
+			var className = $(this).parents('tr').attr('class').split(' ').pop();
+			$('.'+className+' .replaceText--js').html($(this).val());
+		}); */
     });
 </script>
 <script>
@@ -462,7 +466,7 @@ $combTaxCount = 0;
             $('.tax-rule-form-'+ parentIndex +' .combined-tax-details--js tbody').append(rowHtml);
 			
 			<?php foreach($otherLanguages as $langId => $data) { ?>
-				var langRowHtml = '<div class="field-set rule-detail-row'+combTaxCount+'"><div class="caption-wraper"><label class="field_label"><?php echo Labels::getLabel('LBL_Combined_Tax_Name', $adminLangId);?></label></div><div class="field-wraper"><div class="field_cover"><?php $nameFld = $frm->getField('taxruledet_name['.$langId.'][]'); $nameFld->value = ""; echo $frm->getFieldHtml('taxruledet_name['.$langId.'][]'); ?></div></div></div>';	
+				var langRowHtml = '<div class="field-set rule-detail-row'+combTaxCount+'"><div class="caption-wraper"><label class="field_label"><?php echo Labels::getLabel('LBL_Tax_Name', $adminLangId);?><span class="replaceText--js"></span></label></div><div class="field-wraper"><div class="field_cover"><?php $nameFld = $frm->getField('taxruledet_name['.$langId.'][]'); $nameFld->value = ""; echo $frm->getFieldHtml('taxruledet_name['.$langId.'][]'); ?></div></div></div>';	
 				$('.tax-rule-form-'+ parentIndex +' .combined-tax-lang-details--js'+<?php echo $langId; ?>).append(langRowHtml);
 			<?php } ?>
             //$("table tbody").append(markup);

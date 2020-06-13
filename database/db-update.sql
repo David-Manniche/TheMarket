@@ -91,4 +91,10 @@ ALTER TABLE `tbl_tax_rule_locations`
   ADD UNIQUE KEY `taxruleloc_taxcat_id` (`taxruleloc_taxcat_id`,`taxruleloc_country_id`,`taxruleloc_state_id`,`taxruleloc_type`,`taxruleloc_unique`);
 
 DROP TABLE `tbl_tax_structure`, `tbl_tax_structure_lang`;
+DROP TABLE `tbl_tax_rules_lang`;
+ALTER TABLE `tbl_tax_rules`
+  DROP `taxrule_identifier`,
+  DROP `taxrule_rate`;
+  
+ALTER TABLE `tbl_tax_rule_details` ADD `taxruledet_default` TINYINT NOT NULL AFTER `taxruledet_rate`;
 /* ] */

@@ -22,23 +22,26 @@
 			
 			var taxrule_is_combined = 0;
 			var combinedTax = [];
+			
+			var taxruledet_id = 0;
+			var details = {"taxruledet_id" : taxruledet_id, "taxruledet_name" : taxrule_name, "taxruledet_rate" : taxrule_rate, "taxruledet_default" : 1};
+			combinedTax.push(details);
+			console.log(combinedTax);
+	
 			if ($(className + ' input[name="taxrule_is_combined[]"]').prop("checked") == true) {
 				var taxrule_is_combined = 1;
 				$(className +" .rule-detail-row--js").each(function(currentIndex, detailData) {
-					var taxruledet_id = $(detailData).find(' input[name="taxruledet_id[]"]').val();
-					
-					/* var taxruledet_name = $(detailData).find(' input[name="taxruledet_name[]"]').val(); */
-					var taxruledet_name = [];
+					taxruledet_id = $(detailData).find(' input[name="taxruledet_id[]"]').val();
 					
 					var rowClass = $(detailData).attr('class').split(' ').pop();
-				
+					var taxruledet_name = [];
 					for (var key in langLbl['languages']) {
 						taxruledet_name[key] = $('.'+rowClass + ' input[name="taxruledet_name['+key+'][]"]').val();
 					}
 					
 					var taxruledet_rate = $(detailData).find(' input[name="taxruledet_rate[]"]').val();
 				
-					var details = {"taxruledet_id" : taxruledet_id, "taxruledet_name" : taxruledet_name, "taxruledet_rate" : taxruledet_rate};
+					details = {"taxruledet_id" : taxruledet_id, "taxruledet_name" : taxruledet_name, "taxruledet_rate" : taxruledet_rate, "taxruledet_default" : 0};
 					
 					combinedTax.push(details);
 				});
