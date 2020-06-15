@@ -4068,7 +4068,12 @@ class SellerController extends SellerBaseController
             if (!empty($productOptions) && $selprod_id == 0) {
                 $optionCombinations = CommonHelper::combinationOfElementsOfArr($productOptions, 'optionValues', '_');
                 if ($optionCombinations) {
+                    $i = $j = 0;
                     foreach ($optionCombinations as $optionKey => $optionValue) {
+                        if (SellerProduct::UPDATE_OPTIONS_COUNT < $i) {
+                            $j++;
+                            $i = 0;
+                        }
                         /* Check if product already added for this option [ */
                         $selProdCode = $product_id . '_' . $optionKey;
                         $selProdAvailable = Product::isSellProdAvailableForUser($selProdCode, $this->siteLangId, $this->userParentId);
@@ -4077,22 +4082,23 @@ class SellerController extends SellerBaseController
                         }
                         /* ] */
                         // $frm->addRequiredField(Labels::getLabel('LBL_Url_Keyword', $this->siteLangId), 'selprod_url_keyword'.$optionKey);
-                        $costPrice = $frm->addTextBox(Labels::getLabel('LBL_Cost_Price', $this->siteLangId) . ' [' . CommonHelper::getCurrencySymbol(true) . ']', 'selprod_cost' . $optionKey);
+                        $costPrice = $frm->addTextBox(Labels::getLabel('LBL_Cost_Price', $this->siteLangId) . ' [' . CommonHelper::getCurrencySymbol(true) . ']',  'varients[' . $j . '][selprod_cost' . $optionKey . ']');
                         // $costPrice->requirements()->setPositive();
 
-                        $fld = $frm->addTextBox(Labels::getLabel('LBL_Price', $this->siteLangId) . ' [' . CommonHelper::getCurrencySymbol(true) . ']', 'selprod_price' . $optionKey);
+                        $fld = $frm->addTextBox(Labels::getLabel('LBL_Price', $this->siteLangId) . ' [' . CommonHelper::getCurrencySymbol(true) . ']', 'varients[' . $j . '][selprod_price' . $optionKey . ']');
                         /* $fld->requirements()->setPositive();
                           if (isset($productData['product_min_selling_price'])) {
                           $fld->requirements()->setRange($productData['product_min_selling_price'], 9999999999);
                           } */
 
-                        $fld = $frm->addTextBox(Labels::getLabel('LBL_Quantity', $this->siteLangId), 'selprod_stock' . $optionKey);
+                        $fld = $frm->addTextBox(Labels::getLabel('LBL_Quantity', $this->siteLangId), 'varients[' . $j . '][selprod_stock' . $optionKey . ']');
                         // $fld->requirements()->setPositive();
 
-                        $fld_sku = $frm->addTextBox(Labels::getLabel('LBL_Product_SKU', $this->siteLangId), 'selprod_sku' . $optionKey);
+                        $fld_sku = $frm->addTextBox(Labels::getLabel('LBL_Product_SKU', $this->siteLangId), 'varients[' . $j . '][selprod_sku' . $optionKey . ']');
                         if (FatApp::getConfig("CONF_PRODUCT_SKU_MANDATORY", FatUtility::VAR_INT, 1)) {
                             // $fld_sku->requirements()->setRequired();
                         }
+                        $i++;
                     }
                 }
             } else {

@@ -18,7 +18,11 @@ class FullTextSearch extends FatModel
         if (false == $this->defaultPlugin) {
             trigger_error(Labels::getLabel('LBL_PLUGIN_NOT_ACTIVATED', $this->langId), E_USER_ERROR);
         }
-        require_once CONF_INSTALLATION_PATH . 'library/plugins/full-text-search/' . $this->defaultPlugin . '.php';
+        
+        $error = '';
+        if (false === PluginHelper::includePlugin($this->defaultPlugin, 'full-text-search', $error, $this->langId)) {
+            trigger_error($error, E_USER_ERROR);
+        }
     }
 
     public function createIndex() {
@@ -487,8 +491,12 @@ class FullTextSearch extends FatModel
         if (!$defaultPlugin) {
             trigger_error(Labels::getLabel('LBL_INVALID_REQUEST', $langId), E_USER_ERROR);
         }
-
-        require_once CONF_INSTALLATION_PATH . 'library/plugins/full-text-search/' . $defaultPlugin . '.php';
+        
+        $error = '';
+        if (false === PluginHelper::includePlugin($defaultPlugin, 'full-text-search', $error, $langId)) {
+            trigger_error($error, E_USER_ERROR);
+        }
+        
         $srch = new $defaultPlugin($langId);
             
         if (array_key_exists('keyword', $criteria)) {

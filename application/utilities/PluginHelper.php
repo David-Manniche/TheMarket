@@ -66,11 +66,11 @@ trait PluginHelper
      *
      * @param  string $keyName
      * @param  string $directory
-     * @param  int $langId
      * @param  string $error
+     * @param  int $langId
      * @return mixed
      */
-    public static function includePlugin(string $keyName, string $directory, int $langId = 0, &$error = '')
+    public static function includePlugin(string $keyName, string $directory, &$error = '', int $langId = 0)
     {
         if (1 > $langId) {
             $langId = CommonHelper::getLangId();
@@ -94,5 +94,43 @@ trait PluginHelper
         }
         
         require_once $file;
+    }
+
+    /**
+     * callPlugin - Used to call plugin file without including plugin. This function is used for files exists in library\plugins. 
+     * 
+     * @param string $keyname
+     * @param string $args
+     * @param string $error
+     * @param int $langId
+     * @return mixed
+     */
+    public static function callPlugin(string $keyName, array $args = [], &$error = '', int $langId = 0)
+    {
+        if (1 > $langId) {
+            $langId = CommonHelper::getLangId();
+        }
+        
+        if (empty($keyName)) {
+            $error =  Labels::getLabel('MSG_INVALID_KEY_NAME', $langId);
+            return false;
+        }
+
+        $pluginType = Plugin::getAttributesByCode($keyName, 'plugin_type');
+
+        $directory = Plugin::getDirectory($pluginType);
+
+        if (false == $directory) {
+            $error =  Labels::getLabel('MSG_INVALID_PLUGIN_TYPE', $langId);
+            return false;
+        }
+
+        $error = '';
+        if (false === PluginHelper::includePlugin($keyName, $directory, $error, $langId)) {
+            return false;
+        }
+
+        $reflect  = new ReflectionClass($keyName);
+        return $reflect->newInstanceArgs($args);
     }
 }

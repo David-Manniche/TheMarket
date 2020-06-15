@@ -11,7 +11,7 @@ class PatchUpdateController extends AdminBaseController
 
     public function updateTaxJarCat()
     {
-        if (false === PluginHelper::includePlugin('TaxJarTax', 'tax', $this->adminLangId, $error)) {
+        if (false === PluginHelper::includePlugin('TaxJarTax', 'tax', $error, $this->adminLangId)) {
             FatUtility::dieWithError($error);
         }
         
@@ -53,7 +53,7 @@ class PatchUpdateController extends AdminBaseController
     public function updateAvalarataxCat()
     {
 		$error = '';
-		if (false === PluginHelper::includePlugin('AvalaraTax', 'tax', $this->adminLangId, $error)) {
+		if (false === PluginHelper::includePlugin('AvalaraTax', 'tax', $error, $this->adminLangId)) {
             FatUtility::dieWithError($error);
 		}
         $avalaraObj = new AvalaraTax($this->adminLangId); 

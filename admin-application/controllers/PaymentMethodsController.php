@@ -306,7 +306,6 @@ class PaymentMethodsController extends AdminBaseController
         $this->objPrivilege->canViewPaymentMethods();
         $frm = new Form('frmGatewayLang');
         $frm->addHiddenField('', 'pmethod_id', $pMethodId);
-        $frm->addHiddenField('', 'lang_id', $lang_id);
         $frm->addSelectBox(Labels::getLabel('LBL_LANGUAGE', $this->adminLangId), 'lang_id', Language::getAllNames(), $lang_id, array(), '');
         $frm->addRequiredField(Labels::getLabel('LBL_Gateway_Name', $this->adminLangId), 'pmethod_name');
         $frm->addTextarea(Labels::getLabel('LBL_Details', $this->adminLangId), 'pmethod_description');
