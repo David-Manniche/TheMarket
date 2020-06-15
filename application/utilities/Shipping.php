@@ -35,7 +35,7 @@ class Shipping
     }
 
     /**
-    * getShippingMethods
+    * getLevels
     *
     * @param  int $langId
     * @return array
