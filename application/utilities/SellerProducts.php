@@ -432,7 +432,8 @@ trait SellerProducts
         $data_to_be_save = $post;
         $useShopPolicy = FatApp::getPostedData('use_shop_policy', FatUtility::VAR_INT, 0);
         $error = false;
-
+        
+        $selprod_id = 0;
         foreach ($optionCombinations as $optionKey => $optionValue) {
             /* Check if product already added for this option [ */
             $selProdCode = $post['selprod_code'] . $optionKey;
