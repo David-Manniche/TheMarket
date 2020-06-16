@@ -43,10 +43,10 @@ CREATE TABLE `tbl_tax_rules` (
 
 ALTER TABLE `tbl_tax_rules`
   ADD PRIMARY KEY (`taxrule_id`);
-  
+
 ALTER TABLE `tbl_tax_rules`
   MODIFY `taxrule_id` int(11) NOT NULL AUTO_INCREMENT;
-  
+
 CREATE TABLE `tbl_tax_rules_lang` (
   `taxrulelang_taxrule_id` int(11) NOT NULL,
   `taxrulelang_lang_id` int(11) NOT NULL,
@@ -55,7 +55,7 @@ CREATE TABLE `tbl_tax_rules_lang` (
 
 ALTER TABLE `tbl_tax_rules_lang`
   ADD PRIMARY KEY (`taxrulelang_taxrule_id`,`taxrulelang_lang_id`);
-    
+
 CREATE TABLE `tbl_tax_rule_details` (
   `taxruledet_id` int(11) NOT NULL,
   `taxruledet_taxrule_id` int(11) NOT NULL,
@@ -65,7 +65,7 @@ CREATE TABLE `tbl_tax_rule_details` (
 
 ALTER TABLE `tbl_tax_rule_details`
   ADD PRIMARY KEY (`taxruledet_id`);
-  
+
 ALTER TABLE `tbl_tax_rule_details`
   MODIFY `taxruledet_id` int(11) NOT NULL AUTO_INCREMENT;
 
@@ -93,8 +93,6 @@ ALTER TABLE `tbl_tax_rule_locations`
 DROP TABLE `tbl_tax_structure`, `tbl_tax_structure_lang`;
 DROP TABLE `tbl_tax_rules_lang`;
 ALTER TABLE `tbl_tax_rules`
-  DROP `taxrule_identifier`,
-  DROP `taxrule_rate`;
-  
-ALTER TABLE `tbl_tax_rule_details` ADD `taxruledet_default` TINYINT NOT NULL AFTER `taxruledet_rate`;
+  DROP `taxrule_identifier`;
+ALTER TABLE `tbl_tax_rules` ADD `taxrule_name` VARCHAR(255) NOT NULL AFTER `taxrule_taxcat_id`;
 /* ] */
