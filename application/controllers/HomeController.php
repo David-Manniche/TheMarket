@@ -991,6 +991,19 @@ class HomeController extends MyAppController
         $this->set('data', ['urlSegmentsDetail' => $detail]);
         $this->_template->render();
     }
+
+    public function getGeoAddress()
+    {
+        $address = new Address();
+        $lat = FatApp::getPostedData('lat', FatUtility::VAR_STRING, '');
+        $lng = FatApp::getPostedData('lng', FatUtility::VAR_STRING, '');
+        
+        $response = $address->getGeoData($lat, $lng);
+        if (false === $response['status']) {
+            FatUtility::dieJsonError($response['msg']);
+        }
+        FatUtility::dieJsonSuccess($response);
+    }
         
     public function pwaManifest()
     {

@@ -701,7 +701,24 @@ class ConfigurationsController extends AdminBaseController
                 $fld3->requirements()->setInt();
                 $fld3->requirements()->setRange('1', '2000');
                 $fld3->htmlAfterField = "<br><small>" . Labels::getLabel("LBL_Determines_how_many_catalog_items_are_shown_per_page_(products,_categories,_etc)", $this->adminLangId) . ".</small>";
-
+                
+                $frm->addHtml('', 'geolocation', '<h3>' . Labels::getLabel('LBL_Location', $this->adminLangId) . '</h3>');
+                $fld = $frm->addRadioButtons(
+                    Labels::getLabel("LBL_ACTIVATE_GEO_LOCATION", $this->adminLangId),
+                    'CONF_ENABLE_GEO_LOCATION',
+                    applicationConstants::getYesNoArr($this->adminLangId),
+                    '',
+                    array('class' => 'list-inline')
+                );
+                $fld->htmlAfterField = "<small>" . Labels::getLabel("LBL_PRODUCT_LISTING", $this->adminLangId) . "</small>";
+                $fld = $frm->addRadioButtons(
+                    Labels::getLabel("LBL_PRODUCT_LISTING", $this->adminLangId),
+                    'CONF_PRODUCT_GEO_LOCATION',
+                    applicationConstants::getProductListingSettings($this->adminLangId),
+                    '',
+                    array('class' => 'list-inline')
+                );
+                $fld->htmlAfterField = "<small>" . Labels::getLabel("LBL_DISPLAY_AND_SEARCH_PRODUCTS_BASED_ON_LOCATION", $this->adminLangId) . "</small>";
                 break;
 
             case Configurations::FORM_USER_ACCOUNT:

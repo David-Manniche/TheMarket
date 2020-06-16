@@ -1,5 +1,3 @@
-
-
 if (getCookie("screenWidth") != screen.width) {
 	$.ajax({url: fcom.makeUrl('Custom', 'updateScreenResolution', [screen.width, screen.height])});
 }
@@ -97,6 +95,7 @@ $(document).ready(function () {
 		return false;
 		setSlider();
 	});
+	loadGeoLocation();
 });
 
 /* for search form */
@@ -581,4 +580,164 @@ function googleCaptcha()
 			$.mbsmessage(langLbl.invalidGRecaptchaKeys,true,'alert--danger');
 		}
     }, 200);
+}
+
+function getLocation() {
+    return {
+        'lat' : getCookie('_ykGeoLat'), 
+		'lng' : getCookie('_ykGeoLng'),
+		'country' : getCookie('_ykGeoCountry'),
+		'state' : getCookie('_ykGeoState'),
+		'zip' : getCookie('_ykGeoZip')
+    };
+}
+
+function accessLocation(force = false) {
+	var location = getLocation();	
+    if ("" == location.lat || "" == location.lng || "" == location.country || "" == location.state  || force) {
+        $.facebox(function() {
+            fcom.ajax(fcom.makeUrl('Home', 'accessLocation'), '', function(t) {
+                $.facebox(t, 'small-fb-width');
+                googleAddressAutocomplete();
+            });
+        });
+    }
+}
+
+function loadGeoLocation() {
+	if (!CONF_ENABLE_GEO_LOCATION){
+		return;
+	}
+	
+	if (typeof navigator.geolocation == 'undefined') {
+		console.log(langLbl.geoLocationNotSupported);
+        return false;
+	}
+
+	navigator.geolocation.getCurrentPosition(function(position){
+		var lat = position.coords.latitude;
+		var lng = position.coords.longitude;
+		getGeoAddress(lat, lng);
+	});
+}
+
+function getGeoAddress(lat, lng) {
+    var data = 'lat='+lat+"&lng="+lng;
+    fcom.ajax(fcom.makeUrl('Home', 'getGeoAddress'), data, function(t) {
+        var res = $.parseJSON(t);
+        if (res.status) {
+            var data = res.data;
+            setCookie('_ykGeoLat', data.lat);
+            setCookie('_ykGeoLng', data.lng);
+			setCookie('_ykGeoZip', data.postal_code);
+			setCookie('_ykGeoCountryCode', data.countryCode);
+			setCookie('_ykGeoStateCode', data.stateCode);
+            var level2 = 'undefined' == typeof data.city ? '' : data.city + ", ";
+            var address = data.postal_code + " " + level2 + data.state;
+            setCookie('_ykGeoAddress', address);
+            $(document).trigger('close.facebox');
+            displayGeoAddress(address);            
+        }
+    });
+}
+
+function setCookie(cname, cvalue, exdays = 365) {
+    var d = new Date();
+    d.setTime(d.getTime() + (exdays * 24 * 60 * 60 * 1000));
+    var expires = "expires="+d.toUTCString();
+    document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
+}
+
+function getCookie(cname) {
+    var name = cname + "=";
+    var ca = document.cookie.split(';');
+    for(var i = 0; i < ca.length; i++) {
+        var c = ca[i];
+        while (c.charAt(0) == ' ') {
+            c = c.substring(1);
+        }
+        if (c.indexOf(name) == 0) {
+            return c.substring(name.length, c.length);
+        }
+    }
+    return "";
+}
+
+function displayGeoAddress(address)
+{
+    if (0 < $("#js-curent-zip-code").length) {
+        $("#js-curent-zip-code").text(address);
+    }
+}
+
+function googleAddressAutocomplete(elementId = 'ga-autoComplete', field = 'formatted_address', canSetCookie = true, callback = 'googleSelectedAddress') {
+    if (1 > $("#" + elementId).length) {
+        var msg = (langLbl.fieldNotFound).replace('{field}', elementId + ' Field');
+        $.systemMessage(msg, 'alert--danger');
+        return false;
+    }
+    var fieldElement = document.getElementById(elementId);
+    setTimeout(function(){ $("#" + elementId).attr('autocomplete', 'no'); }, 500);
+    var options = { types: ['(regions)'] }
+    var autocomplete = new google.maps.places.Autocomplete(fieldElement, options);
+    google.maps.event.addListener(autocomplete, 'place_changed', function () {
+        var place = autocomplete.getPlace();
+        var lat = place['geometry']['location'].lat();
+        var lng = place['geometry']['location'].lng();
+        if (canSetCookie) {
+            setCookie('_ykGeoLat', lat);
+            setCookie('_ykGeoLng', lng);
+        }
+        var address = '';
+        var data = {};
+        data['lat'] = lat;
+        data['lng'] = lng;
+        data['formatted_address'] = place['formatted_address'];
+        if (0 < place.address_components.length) {
+            var addressComponents = place.address_components;
+            for (var i = 0; i < addressComponents.length; i++) {
+                var key = place.address_components[i].types[0];
+                var value = place.address_components[i].long_name;               
+                if ('country' == key) {
+					data['country_code'] = place.address_components[i].short_name;
+					data['country'] = value;
+                } else if ('administrative_area_level_1' == key){
+					data['state_code'] = place.address_components[i].short_name;
+					data['state'] = value;
+				} else if ('administrative_area_level_2' == key){					
+					data['city'] = value;
+				} else {
+					data[key] = value;
+				} 
+			}
+			
+			var level2 = ('undefined' == typeof data.city) ? '' : data.city + ", ";
+            var address = data.postal_code + " " + level2 + data.state;
+           
+            fieldValue =  ("" == address) ? data["formatted_address"] : address;
+            if ('undefined' == typeof fieldValue) {
+                var msg = (langLbl.fieldNotFound).replace('{field}', field);
+                $.systemMessage(msg, 'alert--danger');
+                fieldValue = '';
+            }
+			
+			fieldValue = fieldValue.replace(/,\s*$/, "");
+            $("#" + elementId).val(fieldValue);
+            if (canSetCookie) {
+                setCookie('_ykGeoZip', data['postal_code']);
+                address = data.postal_code + " " + level2 + data.state;
+            }
+        }
+        if (canSetCookie) {
+            setCookie('_ykGeoAddress', address);
+            displayGeoAddress(address);
+        }
+        if (0 < $("#facebox #" + elementId).length) {
+            $(document).trigger('close.facebox');
+        }
+        if (eval("typeof " + callback) == 'function') { 
+            window[callback](data); 
+        }
+        return data;
+    });
 }

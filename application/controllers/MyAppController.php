@@ -787,4 +787,17 @@ class MyAppController extends FatController
             $this->_template->render();
         }
     }
+
+    public function accessLocation()
+    {
+        $this->set('frm', $this->getGoogleAutocompleteAddressForm());
+        $this->_template->render(false, false, '_partial/access-location.php');
+    }
+
+    protected function getGoogleAutocompleteAddressForm()
+    {
+        $frm = new Form('googleAutocomplete');
+        $frm->addTextBox('', 'location');
+        return $frm;
+    }
 }

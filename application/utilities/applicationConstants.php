@@ -89,6 +89,9 @@ class applicationConstants
     public const SMS_CHARACTER_LENGTH = 160;
     public const BLOG_TITLE_CHARACTER_LENGTH = 70; /* Used for home page collection.*/
 
+    public const BASED_ON_SHIPPING = 1;
+    public const BASED_ON_DISTANCE = 2;
+
     public static function getWeightUnitsArr($langId)
     {
         $langId = FatUtility::int($langId);
@@ -396,6 +399,14 @@ class applicationConstants
         '10' => Labels::getLabel('LBL_October', $langId),
         '11' => Labels::getLabel('LBL_November', $langId),
         '12' => Labels::getLabel('LBL_December', $langId),
+        );
+    }
+
+    public static function getProductListingSettings($langId)
+    {
+        return array(
+            static::BASED_ON_SHIPPING => Labels::getLabel('LBL_BASED_ON_SHIPPING', $langId),
+            static::BASED_ON_DISTANCE => Labels::getLabel('LBL_BASED_ON_DISTANCE', $langId),
         );
     }
 }

@@ -1,4 +1,22 @@
-<?php defined('SYSTEM_INIT') or die('Invalid Usage');
+<?php defined('SYSTEM_INIT') or die('Invalid Usage'); ?>
+<?php if (FatApp::getConfig('CONF_ENABLE_GEO_LOCATION', FatUtility::VAR_INT, 0)) {?>
+<li class="dropdown dropdown--arrow">
+    <a href="javascript:void(0)" onClick="accessLocation(true)" class="" title="<?php echo Labels::getLabel("LBL_Location", $siteLangId); ?>">
+      <i class="icn">
+          <svg class="svg">
+              <use xlink:href="<?php echo CONF_WEBROOT_URL; ?>images/retina/sprite.svg#gps" href="<?php echo CONF_WEBROOT_URL; ?>images/retina/sprite.svg#gps">
+              </use> 
+          </svg> 
+      </i>
+      <span id="js-curent-zip-code">
+          <?php
+              echo isset($_COOKIE["_ykGeoAddress"]) ? $_COOKIE["_ykGeoAddress"] : Labels::getLabel("LBL_Location", $siteLangId);
+          ?>
+      </span>                      
+    </a>
+</li>
+<?php }?>
+<?php 
 $showDefalultLi = true;
 if ($languages && count($languages) > 1) {
     $showDefalultLi = false;

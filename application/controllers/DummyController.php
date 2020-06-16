@@ -261,8 +261,11 @@ class DummyController extends MyAppController
 
     public function index()
     {
-        $shipProfileSrch = ShippingProfileProduct::getUserSearchObject(0);
-       echo $shipProfileSubQuery = $shipProfileSrch->getQuery();
+        $address = new Address();
+        $lat = '37.4238253802915';
+        $lng = '-122.0829009197085';
+        
+        $response = $address->getGeoData($lat, $lng);
     }
 
 
