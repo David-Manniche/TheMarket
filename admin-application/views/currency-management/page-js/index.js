@@ -109,11 +109,12 @@ $(document).ready(function() {
         fcom.ajax(fcom.makeUrl(converterClass, 'update'), '', function(res) {
             var ans = $.parseJSON(res);
             if( ans.status == 1 ){
-				$.mbsmessage(ans.msg, true, 'alert--success');
+                $.systemMessage(ans.msg,'alert--success', false);
+                reloadList();
 			} else {
-				$.mbsmessage(ans.msg, true, 'alert--danger');
+                $.systemMessage(ans.msg,'alert--danger', false);
+                return;
 			}
-            reloadList();
         });
     };
 
