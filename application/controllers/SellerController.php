@@ -753,7 +753,7 @@ class SellerController extends SellerBaseController
                     FatUtility::dieJsonError(Labels::getLabel('LBL_UNABLE_TO_PLACE_GATEWAY_REFUND_REQUEST', $this->siteLangId));
                 }
     
-                // Debit from wallet if plugin/payment method support's direct payment to card.
+                // Debit from wallet if plugin/payment method support's direct payment to card of customer.
                 if (!empty($resp->id)) {
                     $childOrderInfo = $orderObj->getOrderProductsByOpId($op_id, $this->siteLangId);
                     $txnAmount = $paymentMethodObj->getTxnAmount();

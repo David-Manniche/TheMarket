@@ -269,7 +269,80 @@ trait StripeConnectFunctions
         $data = $requestParam['data'];
         return $this->stripe->transfers->createReversal($transferId, $data);
     }
+
+    /**
+     * createSource - This function is being used to save card on stripe connect
+     *
+     * @param array $requestParam : ['source' => 'tok_mastercard']
+     * @return object
+     */
+    private function createSource(array $requestParam): object
+    {
+        return $this->stripe->customers->createSource(
+            $this->getCustomerId(),
+            ["source" => $requestParam['cardToken']]
+        );
+    }
     
+    /**
+     * deleteSource
+     *
+     * @param array $requestParam : ['cardId' => 'card_xxxxx']
+     * @return object
+     */
+    private function deleteSource(array $requestParam): object
+    {
+        $cardId = $requestParam['cardId'];
+        return $this->stripe->customers->deleteSource(
+            $this->getCustomerId(),
+            $cardId
+        );
+    }
+    
+    /**
+     * listAllCards
+     *
+     * @return object
+     */
+    private function listAllCards(): object
+    {
+        $pagesize = FatApp::getConfig('CONF_ADMIN_PAGESIZE', FatUtility::VAR_INT, 10);
+        return $this->stripe->customers->allSources(
+            $this->getCustomerId(),
+            ['object' => 'card', 'limit' => $pagesize]
+        );
+    }
+
+    /**
+     * createCardToken - Used if customer don't want to save card.
+     *
+     * @param array $requestParam : [
+     *           'number' => '4242424242424242',
+     *           'exp_month' => 6,
+     *           'exp_year' => 2021,
+     *           'cvc' => '314',
+     *       ]
+     * @return object
+     */
+    private function createCardToken(array $requestParam): object
+    {
+        return $this->stripe->tokens->create([
+            'card' => $requestParam
+        ]);
+    }
+
+    /**
+     * charge
+     *
+     * @param array $requestParam
+     * @return object
+     */
+    private function charge(array $requestParam): object
+    {
+        return $this->stripe->charges->create([$requestParam]);
+    }
+
+
     /**
      * doRequest
      *
@@ -336,6 +409,21 @@ trait StripeConnectFunctions
                     break;
                 case self::REQUEST_REVERSE_TRANSFER:
                     return $this->reverseTransfer($requestParam);
+                    break;
+                case self::REQUEST_ADD_CARD:
+                    return $this->createSource($requestParam);
+                    break;
+                case self::REQUEST_REMOVE_CARD:
+                    return $this->deleteSource($requestParam);
+                    break;
+                case self::REQUEST_LIST_ALL_CARDS:
+                    return $this->listAllCards();
+                    break;
+                case self::REQUEST_CREATE_CARD_TOKEN:
+                    return $this->createCardToken($requestParam);
+                    break;
+                case self::REQUEST_CHARGE:
+                    return $this->charge($requestParam);
                     break;
             }
         } catch (\Stripe\Exception\CardException $e) {
