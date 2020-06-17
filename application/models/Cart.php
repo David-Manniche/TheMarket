@@ -915,7 +915,7 @@ class Cart extends FatModel
                     }
                 }
             } else {
-                if ($product['is_physical_product'] && !isset($this->SYSTEM_ARR['shopping_cart']['product_shipping_methods']['product'][$product['selprod_id']])) {                   
+                if ($product['is_physical_product'] && !isset($this->SYSTEM_ARR['shopping_cart']['product_shipping_methods']['product'][$product['selprod_id']])) {
                     return false;
                 }
 
@@ -1487,11 +1487,11 @@ class Cart extends FatModel
         }
         $cartObj->updateUserCart();
     }
-	
+    
     public function shippingCarrierList(int $langId = 0)
     {
-		$langId = (0 < $langId) ? $langId : commonHelper::getLangId();
-		
+        $langId = (0 < $langId) ? $langId : commonHelper::getLangId();
+        
         $plugin = new Plugin();
         $shippingServiceName = $plugin->getDefaultPluginKeyName(Plugin::TYPE_SHIPPING_SERVICES);
         $carriers = [];
@@ -1499,16 +1499,16 @@ class Cart extends FatModel
             $error = '';
             $shippingService = PluginHelper::callPlugin($shippingServiceName, [$langId], $error, $langId);
             if (false === $shippingService) {
-				$this->error = $error;
-				return false;
+                $this->error = $error;
+                return false;
             }
             $carriers = $shippingService->getCarriers(true, $langId);
-			if (empty($carriers) && !empty($shippingService->getError())) {
-				$this->error = $shippingService->getError();
-				return false;
-			}
+            if (empty($carriers) && !empty($shippingService->getError())) {
+                $this->error = $shippingService->getError();
+                return false;
+            }
         }
-		return $carriers;
+        return $carriers;
     }
 
     public function getCache($key)
@@ -1624,10 +1624,10 @@ class Cart extends FatModel
 
             $product_rates = $this->shippingService->getShippingRates($carrier_id, $sellerPinCode, $lang_id);
             if (false === $product_rates) {
-				$this->error = $this->shippingService->getError();
+                $this->error = $this->shippingService->getError();
                 return false;
             }
-			$product_rates = $this->shippingService->formatShippingRates();
+            $product_rates = $this->shippingService->formatShippingRates();
         }
 
         return $product_rates;
