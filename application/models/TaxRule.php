@@ -31,7 +31,7 @@ class TaxRule extends MyAppModel
 
     public function deleteRules($taxCatId)
     {
-        if (!FatApp::getDb()->query('DELETE rules, ruleDetails FROM '. self::DB_TBL .' rules LEFT JOIN '. TaxRuleCombined::DB_TBL .' ruleDetails ON ruleDetails.taxruledet_taxrule_id  = rules.taxrule_id  WHERE rules.taxrule_taxcat_id = '. $taxCatId)) {
+        if (!FatApp::getDb()->query('DELETE rules, ruleDetails, ruleDetailsLang FROM '. self::DB_TBL .' rules LEFT JOIN '. TaxRuleCombined::DB_TBL .' ruleDetails ON ruleDetails.taxruledet_taxrule_id  = rules.taxrule_id LEFT JOIN '. TaxRuleCombined::DB_TBL_LANG . ' ruleDetailsLang ON ruleDetails.taxruledet_id  = ruleDetailsLang.taxruledetlang_taxruledet_id WHERE rules.taxrule_taxcat_id = '. $taxCatId)) {
             $this->error = FatApp::getDb()->getError();
             return false;
         };
@@ -46,7 +46,7 @@ class TaxRule extends MyAppModel
 
         /* [ TAX CATEGORY RULE FORM */
         $frm->addHiddenField('', 'taxrule_id[]', 0);
-        $frm->addRequiredField(Labels::getLabel('LBL_Rule_Name', $langId), 'taxrule_name', '');
+        /*$frm->addRequiredField(Labels::getLabel('LBL_Rule_Name', $langId), 'taxrule_name', '');*/
         $fld = $frm->addFloatField(Labels::getLabel('LBL_Tax_Rate(%)', $langId), 'taxrule_rate[]', '');
         $fld->requirements()->setPositive();
 
@@ -77,15 +77,15 @@ class TaxRule extends MyAppModel
         $siteDefaultLangId = FatApp::getConfig('conf_default_site_lang', FatUtility::VAR_INT, 1);
         $languages = Language::getAllNames();
         foreach ($languages as $languageId => $lang) {
-            /*if ($languageId == $siteDefaultLangId) {
+            if ($languageId == $siteDefaultLangId) {
                 $frm->addRequiredField(Labels::getLabel('LBL_Rule_Name', $languageId), 'taxrule_name[' . $languageId . '][]');
             } else {
                 $frm->addTextBox(Labels::getLabel('LBL_Rule_Name', $languageId), 'taxrule_name[' . $languageId . '][]');
-            }*/
+            }
             if ($languageId == $siteDefaultLangId) {
                 $frm->addRequiredField(Labels::getLabel('LBL_Tax_Name', $languageId), 'taxruledet_name[' . $languageId . '][]');
             } else {
-                $frm->addTextBox(Labels::getLabel('LBL_Combined_Tax_Name', $languageId), 'taxruledet_name[' . $languageId . '][]');
+                $frm->addTextBox(Labels::getLabel('LBL_Tax_Name', $languageId), 'taxruledet_name[' . $languageId . '][]');
             }
         }
 

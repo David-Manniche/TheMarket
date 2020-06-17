@@ -7,7 +7,10 @@
 			var myIndex = $(data).data('index');
 			var className = '.tax-rule-form-'+ myIndex;
 			var taxrule_id = $(className + ' input[name="taxrule_id[]"]').val();
-
+			var taxrule_name = [];
+			for (var key in langLbl['languages']) {
+				taxrule_name[key] = $(className + ' input[name="taxrule_name['+key+'][]"]').val();
+			}
 			var taxrule_rate = $(className + ' input[name="taxrule_rate[]"]').val();
 			var country_id = $(className + ' select[name="taxruleloc_country_id[]"]').val();
 			var type = $(className + ' select[name="taxruleloc_type[]"]').val();
@@ -15,7 +18,6 @@
 			if (type == -1) {
 				var states = [-1];
 			}
-
 
 			var taxrule_is_combined = 0;
 			var combinedTax = [];
@@ -33,16 +35,21 @@
 
 					var taxruledet_rate = $(detailData).find(' input[name="taxruledet_rate[]"]').val();
 
-					var details = {"taxruledet_id" : taxruledet_id, "taxruledet_name" : taxruledet_name, "taxruledet_rate" : taxruledet_rate, "taxruledet_default" : 0};
+					var details = {"taxruledet_id" : taxruledet_id, "taxruledet_name" : taxruledet_name, "taxruledet_rate" : taxruledet_rate};
 
 					combinedTax.push(details);
 				});
 			} else {
+				/*var taxrule_name = [];
+				for (var key in langLbl['languages']) {
+					taxrule_name[key] = $(className + ' input[name="taxrule_name['+key+'][]"]').val();
+				}*/
 				var taxruledet_id = 0;
-				var details = {"taxruledet_id" : taxruledet_id, "taxruledet_name" : taxrule_name, "taxruledet_rate" : taxrule_rate, "taxruledet_default" : 1};
+				var details = {"taxruledet_id" : taxruledet_id, "taxruledet_name" : taxrule_name, "taxruledet_rate" : taxrule_rate};
 				combinedTax.push(details);
 				console.log(combinedTax);
 			}
+			// debugger;
 			var currentData = {"taxrule_id" : taxrule_id, "taxrule_name" : taxrule_name, "taxrule_rate" : taxrule_rate, "country_id" : country_id, "type" : type, "states" : states, "taxrule_is_combined" : taxrule_is_combined, "combinedTaxDetails" : combinedTax};
 			dataToSave.push(currentData);
 		});
@@ -69,11 +76,11 @@ $(document).ready(function() {
 		if ($(this). prop("checked") == true) {
 			$('.tax-rule-form-'+ parentIndex +' .combined-tax-details--js').show();
 			$('.tax-rule-form-'+ parentIndex +' .combined-tax-lang-details--js').show();
-			$("#tax-lang-form--js").removeClass("col-md-12").addClass("col-md-6");
+			$('.tax-rule-form-'+ parentIndex +' .taxrule-lang-form--js').hide();
 		} else {
 			$('.tax-rule-form-'+ parentIndex +' .combined-tax-details--js').hide();
 			$('.tax-rule-form-'+ parentIndex +' .combined-tax-lang-details--js').hide();
-			$("#tax-lang-form--js").removeClass("col-md-6").addClass("col-md-12");
+			$('.tax-rule-form-'+ parentIndex +' .taxrule-lang-form--js').show();
 		}
 	});
 });

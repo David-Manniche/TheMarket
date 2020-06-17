@@ -495,30 +495,20 @@ class Tax extends MyAppModel
         $data['tax'] = $tax;
         $data['taxCode'] = $taxCategoryRow['taxcat_code'];
 
-        if ($taxCategoryRow['taxrule_is_combined'] == static::TAX_TYPE_COMBINED) {
-            $shipFromStateId = FatUtility::int($shipFromStateId);
-
-            $shipFromStateId = (1 > $shipFromStateId) ? FatApp::getConfig('CONF_STATE', FatUtility::VAR_INT, 0) : $shipFromStateId;
-
-            $srch = TaxRuleCombined::getSearchObject($langId);
-            $srch->addCondition('taxruledet_taxrule_id', '=', $taxCategoryRow['taxrule_id']);
-            $srch->doNotCalculateRecords();
-            $srch->doNotLimitRecords();
-            $combinedData = FatApp::getDb()->fetchAll($srch->getResultSet());
-            if (!empty($combinedData)) {
-                foreach($combinedData as $comData) {
-                    $data['options'][$comData['taxruledet_id']]['name'] = $comData['taxruledet_name'];
-                    $data['options'][$comData['taxruledet_id']]['percentageValue'] = $comData['taxruledet_rate'];
-                    $data['options'][$comData['taxruledet_id']]['inPercentage'] = 1;
-                    $data['options'][$comData['taxruledet_id']]['value'] = round((($prodPrice * $qty) * $comData['taxruledet_rate']) / 100, 2);
-                }
+        $srch = TaxRuleCombined::getSearchObject($langId);
+        $srch->addCondition('taxruledet_taxrule_id', '=', $taxCategoryRow['taxrule_id']);
+        $srch->doNotCalculateRecords();
+        $srch->doNotLimitRecords();
+        $combinedData = FatApp::getDb()->fetchAll($srch->getResultSet());
+        if (!empty($combinedData)) {
+            foreach ($combinedData as $comData) {
+                $data['options'][$comData['taxruledet_id']]['name'] = $comData['taxruledet_name'];
+                $data['options'][$comData['taxruledet_id']]['percentageValue'] = $comData['taxruledet_rate'];
+                $data['options'][$comData['taxruledet_id']]['inPercentage'] = 1;
+                $data['options'][$comData['taxruledet_id']]['value'] = round((($prodPrice * $qty) * $comData['taxruledet_rate']) / 100, 2);
             }
-        } else {
-            $data['options'][$defaultTaxName]['name'] = $taxCategoryRow['taxrule_name'];
-            $data['options'][$defaultTaxName]['inPercentage'] = $taxCategoryRow['taxval_is_percent'];
-            $data['options'][$defaultTaxName]['percentageValue'] = $taxCategoryRow['taxrule_rate'];
-            $data['options'][$defaultTaxName]['value'] = $tax;
         }
+
         $data['status'] = true;
         return $data;
     }
