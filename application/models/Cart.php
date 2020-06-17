@@ -251,7 +251,7 @@ class Cart extends FatModel
 
                 $this->products[$key] = [
                     'shipping_cost' => 0,
-                    'sduration_id' => 0,
+                    'opshipping_rate_id' => 0,
                     'commission_percentage' => '',
                     'commission' => 0,
                     'tax' => 0,
@@ -270,8 +270,14 @@ class Cart extends FatModel
                 $this->products[$key]['quantity'] = $quantity;
                 $this->products[$key]['has_physical_product'] = 0;
                 $this->products[$key]['has_digital_product'] = 0;
+                $this->products[$key]['is_cod_enabled'] = 0;
+                /* $this->products[$key]['shop_eligible_for_free_shipping'] = 0; */
             }
         }
+        
+        usort($this->products, function ($a, $b) {
+            return $a['shop_id'] - $b['shop_id'];
+        });
         return $this->products;
     }
 
@@ -328,7 +334,7 @@ class Cart extends FatModel
                 // }
 
                 $this->products[$key]['shipping_cost'] = 0;
-                $this->products[$key]['sduration_id'] = 0;
+                $this->products[$key]['opshipping_rate_id'] = 0;
                 $this->products[$key]['commission_percentage'] = '';
                 $this->products[$key]['commission'] = 0;
 
@@ -380,9 +386,10 @@ class Cart extends FatModel
 
                     /*[ Product shipping cost */
                     $shippingCost = 0;
+                   
                     if (!empty($productSelectedShippingMethodsArr['product']) && isset($productSelectedShippingMethodsArr['product'][$sellerProductRow['selprod_id']])) {
                         $shippingDurationRow = $productSelectedShippingMethodsArr['product'][$sellerProductRow['selprod_id']];
-                        $this->products[$key]['sduration_id'] = isset($shippingDurationRow['sduration_id']) ? $shippingDurationRow['sduration_id'] : '';
+                        $this->products[$key]['opshipping_rate_id'] = isset($shippingDurationRow['mshipapi_id']) ? $shippingDurationRow['mshipapi_id'] : '';
                         $shippingCost = ROUND(($shippingDurationRow['mshipapi_cost']), 2);
                         $this->products[$key]['shipping_cost'] = $shippingCost;
                     }
@@ -482,7 +489,7 @@ class Cart extends FatModel
                 }
             }
 
-            $sellerPrice = $this->getSellersProductItemsPrice($this->products);
+            /* $sellerPrice = $this->getSellersProductItemsPrice($this->products);
             foreach ($this->products as $cartkey => $cartval) {
                 $this->products[$cartkey]['shop_eligible_for_free_shipping'] = 0;
 
@@ -492,220 +499,7 @@ class Cart extends FatModel
                         $this->products[$cartkey]['shop_eligible_for_free_shipping'] = 1;
                     }
                 }
-            }
-        }
-        /* CommonHelper::printArray($this->products); die(); */
-        return $this->products;
-    }
-
-
-    public function getProducts_old($siteLangId = 0)
-    {
-        if (!$this->products) {
-            $productSelectedShippingMethodsArr = $this->getProductShippingMethod();
-            $maxConfiguredCommissionVal = FatApp::getConfig("CONF_MAX_COMMISSION", FatUtility::VAR_INT, 0);
-
-            $db = FatApp::getDb();
-            $prodGroupQtyArr = array();
-            $prodGroupPriceArr = array();
-
-            $associatedAffiliateUserId = 0;
-            /* detect current logged user has associated affiliate user[ */
-            $loggedUserId = 0;
-            if (UserAuthentication::isUserLogged() || UserAuthentication::isGuestUserLogged()) {
-                $loggedUserId = UserAuthentication::getLoggedUserId();
-                $associatedAffiliateUserId = User::getAttributesById($loggedUserId, 'user_affiliate_referrer_user_id');
-                if ($associatedAffiliateUserId > 0) {
-                    $prodObj = new Product();
-                }
-            }
-            /* ] */
-
-            $is_cod_enabled = true;
-            foreach ($this->SYSTEM_ARR['cart'] as $key => $quantity) {
-                $selprod_id = 0;
-                $prodgroup_id = 0;
-                $sellerProductRow = array();
-
-                $affiliateCommissionPercentage = '';
-                $affiliateCommission = 0;
-
-                $keyDecoded = unserialize(base64_decode($key));
-                if (strpos($keyDecoded, static::CART_KEY_PREFIX_PRODUCT) !== false) {
-                    $selprod_id = FatUtility::int(str_replace(static::CART_KEY_PREFIX_PRODUCT, '', $keyDecoded));
-                }
-
-                //To rid of from invalid product detail in listing.
-                if (1 > $selprod_id) {
-                    unset($this->SYSTEM_ARR['cart'][$key]);
-                    continue;
-                }
-
-                /* CommonHelper::printArray($keyDecoded); die; */
-                // if( strpos($keyDecoded, static::CART_KEY_PREFIX_BATCH ) !== FALSE ){
-                // $prodgroup_id = FatUtility::int(str_replace( static::CART_KEY_PREFIX_BATCH, '', $keyDecoded ));
-                // }
-
-                $this->products[$key]['shipping_cost'] = 0;
-                $this->products[$key]['sduration_id'] = 0;
-                $this->products[$key]['commission_percentage'] = '';
-                $this->products[$key]['commission'] = 0;
-
-
-                $this->products[$key]['tax'] = 0;
-                $this->products[$key]['taxOptions'] = [];
-                $this->products[$key]['reward_point'] = 0;
-                $this->products[$key]['volume_discount'] = 0;
-                $this->products[$key]['volume_discount_total'] = 0;
-                $this->products[$key]['is_shipping_selected'] = false;
-                $selProdCost = $shopId = '';
-                /* seller products[ */
-                if ($selprod_id > 0) {
-                    $sellerProductRow = $this->getSellerProductData($selprod_id, $quantity, $siteLangId, $loggedUserId);
-
-                    /* echo "<pre>"; var_dump($sellerProductRow); */
-                    if (!$sellerProductRow) {
-                        $this->removeCartKey($key);
-                        continue;
-                    }
-                    $this->products[$key] = $sellerProductRow;
-
-                    /*[COD available*/
-                    $codEnabled = false;
-                    $isProductShippedBySeller = Product::isProductShippedBySeller($sellerProductRow['product_id'], $sellerProductRow['product_seller_id'], $sellerProductRow['selprod_user_id']);
-
-                    if ($is_cod_enabled && $isProductShippedBySeller) {
-                        $walletBalance = User::getUserBalance($sellerProductRow['selprod_user_id']);
-                        if ($sellerProductRow['selprod_cod_enabled']) {
-                            $codEnabled = true;
-                        }
-                        $codMinWalletBalance = -1;
-                        $shop_cod_min_wallet_balance = Shop::getAttributesByUserId($sellerProductRow['selprod_user_id'], 'shop_cod_min_wallet_balance');
-                        if ($shop_cod_min_wallet_balance > -1) {
-                            $codMinWalletBalance = $shop_cod_min_wallet_balance;
-                        } elseif (FatApp::getConfig('CONF_COD_MIN_WALLET_BALANCE', FatUtility::VAR_FLOAT, -1) > -1) {
-                            $codMinWalletBalance = FatApp::getConfig('CONF_COD_MIN_WALLET_BALANCE', FatUtility::VAR_FLOAT, -1);
-                        }
-                        if ($codMinWalletBalance > -1 && $codMinWalletBalance > $walletBalance) {
-                            $codEnabled = false;
-                        }
-                    } else {
-                        if ($sellerProductRow['product_cod_enabled']) {
-                            $codEnabled = true;
-                        }
-                    }
-                    $is_cod_enabled = $codEnabled;
-                    /* ]*/
-
-                    /*[ Product shipping cost */
-                    $shippingCost = 0;
-                    if (!empty($productSelectedShippingMethodsArr['product']) && isset($productSelectedShippingMethodsArr['product'][$sellerProductRow['selprod_id']])) {
-                        $shippingDurationRow = $productSelectedShippingMethodsArr['product'][$sellerProductRow['selprod_id']];
-                        $this->products[$key]['sduration_id'] = isset($shippingDurationRow['sduration_id']) ? $shippingDurationRow['sduration_id'] : '';
-                        $shippingCost = ROUND(($shippingDurationRow['mshipapi_cost']), 2);
-                        $this->products[$key]['shipping_cost'] = $shippingCost;
-                    }
-
-                    if (UserAuthentication::isUserLogged() || UserAuthentication::isGuestUserLogged()) {
-                        $this->products[$key]['shipping_address'] = UserAddress::getUserAddresses(UserAuthentication::getLoggedUserId(), $siteLangId, 0, $this->getCartShippingAddress());
-                    }
-                    /*]*/
-
-                    /*[ Product Tax */
-                    $taxableProdPrice = $sellerProductRow['theprice'] - $sellerProductRow['volume_discount'];
-                    $taxObj = new Tax();
-                    $extraData = array(
-                        'billingAddress' => isset($this->products[$key]['billing_address']) ? $this->products[$key]['billing_address'] : '',
-                        'shippingAddress' => isset($this->products[$key]['shipping_address']) ? $this->products[$key]['shipping_address'] : '',
-                        'shippedBySeller' => $isProductShippedBySeller,
-                        'shippingCost' => $shippingCost,
-                        'buyerId' => $this->cart_user_id
-                    );
-                    $taxData = $taxObj->calculateTaxRates($sellerProductRow['product_id'], $taxableProdPrice, $sellerProductRow['selprod_user_id'], $siteLangId, $quantity, $extraData, $this->cartCache);
-                    
-                    if (false == $taxData['status'] && $taxData['msg'] != '') {
-                        $this->error = $taxData['msg'];
-                    }
-
-                    $taxOptions = [];
-                    if (array_key_exists('options', $taxData)) {
-                        foreach ($taxData['options'] as $optionId => $optionval) {
-                            $taxOptions[$optionval['name']] = isset($taxOptions[$optionval['name']]) ? ($taxOptions[$optionval['name']] + $optionval['value']) : $optionval['value'];
-                        }
-                    }
-
-                    $tax = $taxData['tax'];
-
-                    $this->products[$key]['tax'] = $tax;
-                    $this->products[$key]['taxCode'] = $taxData['taxCode'];
-                    $this->products[$key]['taxOptions'] = $taxOptions;
-                    /*]*/
-
-                    /*[ Product Commission */
-                    $commissionPercentage = SellerProduct::getProductCommission($sellerProductRow['selprod_id']);
-                    $commissionCostValue = $sellerProductRow['theprice'];
-
-                    if (FatApp::getConfig('CONF_COMMISSION_INCLUDING_TAX', FatUtility::VAR_INT, 0) && $tax) {
-                        $commissionCostValue = $commissionCostValue + ($tax / $quantity);
-                    }
-
-                    if (FatApp::getConfig('CONF_COMMISSION_INCLUDING_SHIPPING', FatUtility::VAR_INT, 0) && $shippingCost && $this->products[$key]['psbs_user_id'] > 0) {
-                        $commissionCostValue = $commissionCostValue + ($shippingCost / $quantity);
-                    }
-
-                    $commissionCostValue = ROUND(($commissionCostValue * $quantity), 2);
-                    $commission = ROUND(($commissionCostValue * $commissionPercentage / 100), 2);
-                    $commission = MIN($commission, $maxConfiguredCommissionVal);
-
-                    $this->products[$key]['commission_percentage'] = $commissionPercentage;
-                    $this->products[$key]['commission'] = ROUND($commission, 2);
-                    /*]*/
-
-                    /* Affiliate Commission[ */
-                    if ($associatedAffiliateUserId > 0) {
-                        $affiliateCommissionPercentage = AffiliateCommission::getAffiliateCommission($associatedAffiliateUserId, $sellerProductRow['product_id'], $prodObj);
-                        $affiliateCommissionCostValue = ROUND($sellerProductRow['theprice'] * $quantity, 2);
-                        $affiliateCommission = ROUND($affiliateCommissionCostValue * $affiliateCommissionPercentage / 100, 2);
-                    }
-                    /* ] */
-                    $selProdCost = $sellerProductRow['selprod_cost'];
-                    $shopId = $sellerProductRow['shop_id'];
-                } else {
-                    $is_cod_enabled = false;
-                    if (UserAuthentication::isUserLogged() || UserAuthentication::isGuestUserLogged()) {
-                        $this->products[$key]['shipping_address'] = UserAddress::getUserAddresses(UserAuthentication::getLoggedUserId(), $siteLangId, 0, $this->getCartShippingAddress());
-                    }
-                }
-                /* ] */
-
-                $this->products[$key]['key'] = $key;
-                $this->products[$key]['is_batch'] = 0;
-                $this->products[$key]['is_cod_enabled'] = $is_cod_enabled;
-                $this->products[$key]['selprod_id'] = $selprod_id;
-                $this->products[$key]['quantity'] = $quantity;
-                $this->products[$key]['has_physical_product'] = 0;
-                $this->products[$key]['has_digital_product'] = 0;
-                /* $this->products[$key]['product_ship_free'] = $sellerProductRow['product_ship_free']; */
-                $this->products[$key]['selprod_cost'] = $selProdCost;
-                $this->products[$key]['affiliate_commission_percentage'] = $affiliateCommissionPercentage;
-                $this->products[$key]['affiliate_commission'] = $affiliateCommission;
-                $this->products[$key]['affiliate_user_id'] = $associatedAffiliateUserId;
-                if (UserAuthentication::isUserLogged() || UserAuthentication::isGuestUserLogged()) {
-                    $this->products[$key]['seller_address'] = Shop::getShopAddress($shopId, true, $siteLangId);
-                }
-            }
-
-            $sellerPrice = $this->getSellersProductItemsPrice($this->products);
-            foreach ($this->products as $cartkey => $cartval) {
-                $this->products[$cartkey]['shop_eligible_for_free_shipping'] = 0;
-
-                if (!empty($cartval['selprod_user_id']) && array_key_exists($cartval['selprod_user_id'], $sellerPrice)) {
-                    $this->products[$cartkey]['totalPrice'] = $sellerPrice[$cartval['selprod_user_id']]['totalPrice'];
-                    if ($cartval['shop_free_ship_upto'] > 0 && $cartval['shop_free_ship_upto'] < $sellerPrice[$cartval['selprod_user_id']]['totalPrice']) {
-                        $this->products[$cartkey]['shop_eligible_for_free_shipping'] = 1;
-                    }
-                }
-            }
+            } */
         }
         /* CommonHelper::printArray($this->products); die(); */
         return $this->products;
@@ -782,10 +576,10 @@ class Cart extends FatModel
 
         /* set variable of shipping cost of the product, if shipping already selected[ */
         $sellerProductRow['shipping_cost'] = 0;
-        $sellerProductRow['sduration_id'] = 0;
+        $sellerProductRow['opshipping_rate_id'] = 0;
         if (!empty($productSelectedShippingMethodsArr) && isset($productSelectedShippingMethodsArr[$selprod_id])) {
             $shippingDurationRow = $productSelectedShippingMethodsArr[$selprod_id];
-            $sellerProductRow['sduration_id'] = $shippingDurationRow['sduration_id'];
+            $sellerProductRow['opshipping_rate_id'] = $shippingDurationRow['mshipapi_id'];
             $sellerProductRow['shipping_cost'] = ROUND(($shippingDurationRow['mshipapi_cost'] * $quantity), 2);
         }
         /* ] */
@@ -1121,19 +915,19 @@ class Cart extends FatModel
                     }
                 }
             } else {
-                if ($product['is_physical_product'] && !isset($this->SYSTEM_ARR['shopping_cart']['product_shipping_methods']['product'][$product['selprod_id']])) {
+                if ($product['is_physical_product'] && !isset($this->SYSTEM_ARR['shopping_cart']['product_shipping_methods']['product'][$product['selprod_id']])) {                   
                     return false;
                 }
 
 
-                if (isset($this->SYSTEM_ARR['shopping_cart']['product_shipping_methods']['product'][$product['selprod_id']]['mshipapi_id'])) {
+                /* if (isset($this->SYSTEM_ARR['shopping_cart']['product_shipping_methods']['product'][$product['selprod_id']]['mshipapi_id'])) {
                     $shipapi_id = $this->SYSTEM_ARR['shopping_cart']['product_shipping_methods']['product'][$product['selprod_id']]['mshipapi_id'];
                     $ShipingApiRow = ShippingApi::getAttributesById($shipapi_id, 'shippingapi_id');
 
                     if (!$ShipingApiRow) {
                         return false;
                     }
-                }
+                } */
             }
         }
         return true;
@@ -1238,7 +1032,7 @@ class Cart extends FatModel
                 $originalShipping += $product['shipping_cost'];
                 $totalSiteCommission += $product['commission'];
 
-                if (!$product['shop_eligible_for_free_shipping'] || $product['psbs_user_id'] == 0) {
+                if (/* !$product['shop_eligible_for_free_shipping'] ||  */$product['psbs_user_id'] == 0) {
                     $shippingTotal += $product['shipping_cost'];
                 }
             }
@@ -1693,34 +1487,8 @@ class Cart extends FatModel
         }
         $cartObj->updateUserCart();
     }
-
-    /* public function shipStationCarrierList()
-    {
-        $carrierList = array();
-        $carrierList[0] = Labels::getLabel('MSG_Select_Services', commonHelper::getLangId());
-        try {
-            require_once(CONF_INSTALLATION_PATH . 'library/APIs/shipstatation/ship.class.php');
-            $carriers = null;
-            //$carriers = $this->getCache("shipstationcarriers");
-            if (!$carriers) {
-                $apiKeys = ShippingMethods::getShipStationApiKeys(ShippingMethods::SHIPPING_SERVICES);
-                $ship = new Ship($apiKeys['shipstation_api_key'], $apiKeys['shipstation_api_secret_key']);
-                $carriers = $ship->getCarriers();
-                // $this->setCache("shipstationcarriers", $carriers);
-            }
-
-            foreach ($carriers as $carrier) {
-                $code = $carrier->code;
-                $name = $carrier->name;
-                $carrierList[$code] = $name;
-            }
-        } catch (Exception $ex) {
-            // $carriers = new stdClass();
-        }
-        return $carrierList;
-    } */
 	
-    public function shipStationCarrierList(int $langId = 0)
+    public function shippingCarrierList(int $langId = 0)
     {
 		$langId = (0 < $langId) ? $langId : commonHelper::getLangId();
 		
@@ -1766,8 +1534,23 @@ class Cart extends FatModel
     public function getCarrierShipmentServicesList($cartKey, $carrier_id = 0, $lang_id = 0)
     {
         $servicesList = array();
-        if (empty($carrier_id)) {
-            return $servicesList;
+
+        $servicesList[0] = Labels::getLabel('MSG_Select_Services', $lang_id);
+
+        if (!empty($carrier_id)) {
+            foreach ($services as $key => $value) {
+                $code = $value->serviceCode;
+                $price = $value->shipmentCost + $value->otherCost;
+                $name = $value->serviceName;
+                /* if ($products[$prodKey]['shop_eligible_for_free_shipping'] > 0 && $products[$prodKey]['psbs_user_id'] > 0) {
+                    $displayPrice = Labels::getLabel('LBL_Free_Shipping', $lang_id);
+                } else {
+                    $displayPrice = CommonHelper::displayMoneyFormat($price);
+                } */
+                $displayPrice = CommonHelper::displayMoneyFormat($price);
+                $label = $name . " (" . $displayPrice . " )";
+                $servicesList[$code . "-" . $price] = $label;
+            }
         }
 
         $products = $this->getProducts($this->cart_lang_id);
@@ -1815,10 +1598,10 @@ class Cart extends FatModel
 
         $productLengthUnit = ($product['product_weight_unit']) ? $weightUnitsArr[$product['product_weight_unit']] : '';
 
-        $productWeightInOunce = $this->convertWeightInOunce($productWeight, $productWeightClass);
-        $productLengthInCenti = $this->convertLengthInCenti($productLength, $productLengthUnit);
-        $productWidthInCenti = $this->convertLengthInCenti($productWidth, $productLengthUnit);
-        $productHeightInCenti = $this->convertLengthInCenti($productHeight, $productLengthUnit);
+        $productWeightInOunce = Shipping::convertWeightInOunce($productWeight, $productWeightClass);
+        $productLengthInCenti = Shipping::convertLengthInCenti($productLength, $productLengthUnit);
+        $productWidthInCenti = Shipping::convertLengthInCenti($productWidth, $productLengthUnit);
+        $productHeightInCenti = Shipping::convertLengthInCenti($productHeight, $productLengthUnit);
 
         $product_rates = array();
 
@@ -1850,49 +1633,73 @@ class Cart extends FatModel
         return $product_rates;
     }
 
-    public function convertWeightInOunce($productWeight, $productWeightClass)
+    public function getShippingRates()
     {
-        $coversionRate = 1;
-        switch ($productWeightClass) {
-            case "KG":
-                $coversionRate = "35.274";
-                break;
-            case "GM":
-                $coversionRate = "0.035274";
-                break;
-            case "PN":
-                $coversionRate = "16";
-                break;
-            case "OU":
-                $coversionRate = "1";
-                break;
-            case "Ltr":
-                $coversionRate = "33.814";
-                break;
-            case "Ml":
-                $coversionRate = "0.033814";
-                break;
+        $shippingOptions = $this->getShippingOptions();
+        $shippingRates = [];
+        foreach ($shippingOptions as $level => $levelItems) {
+            if (count($levelItems['rates']) <= 0) {
+                continue;
+            }
+            if (count($levelItems['rates']) > 0 && $level != Shipping::LEVEL_PRODUCT) {
+                $name = current($levelItems['rates'])['code'];
+                $shippingRates[$name] =  $levelItems['rates'];
+            } else {
+                foreach ($levelItems['products'] as $product) {
+                    if (count($levelItems['rates'][$product['selprod_id']]) <= 0) {
+                        continue;
+                    }
+                    $name = current($levelItems['rates'][$product['selprod_id']])['code'];
+                    $shippingRates[$name] =  $levelItems['rates'][$product['selprod_id']];
+                }
+            }
         }
-
-        return $productWeight * $coversionRate;
+        return $shippingRates;
     }
 
-    public function convertLengthInCenti($productWeight, $productWeightClass)
+    public function getShippingOptions()
     {
-        $coversionRate = 1;
-        switch ($productWeightClass) {
-            case "IN":
-                $coversionRate = "2.54";
-                break;
-            case "MM":
-                $coversionRate = "0.1";
-                break;
-            case "CM":
-                $coversionRate = "1";
-                break;
+        $shippedByArr = [];
+
+        $shipToCountryId = 0;
+        $shipToStateId = 0;
+
+        $shippingAddressDetail = UserAddress::getUserAddresses($this->cart_user_id, $this->cart_lang_id, 0, $this->getCartShippingAddress());
+
+        if (!empty($shippingAddressDetail)) {
+            $shipToCountryId = isset($shippingAddressDetail['ua_country_id']) ? $shippingAddressDetail['ua_country_id'] : 0;
         }
 
-        return $productWeight * $coversionRate;
+        if (!empty($shippingAddressDetail)) {
+            $shipToStateId = isset($shippingAddressDetail['ua_state_id']) ? $shippingAddressDetail['ua_state_id'] : 0;
+        }
+
+        $physicalSelProdIdArr = [];
+        $digitalSelProdIdArr = [];
+        $cartProducts = $this->getBasketProducts($this->cart_lang_id);
+       
+        $productInfo = [];
+        foreach ($cartProducts as $key => $val) {
+            $productInfo[$val['selprod_id']] = $val;
+            
+            if ($val['is_physical_product']) {
+                $physicalSelProdIdArr[$val['selprod_id']] = $val['selprod_id'];
+            } else {
+                $digitalSelProdIdArr[$val['selprod_id']] = $val['selprod_id'];
+            }
+        }
+
+        $shipping = new Shipping($this->cart_lang_id);
+        $shippedByArr = $shipping->calculateCharges($physicalSelProdIdArr, $shipToCountryId, $shipToStateId, $productInfo);
+        
+        /*Include digital products */
+        foreach ($digitalSelProdIdArr as $selProdId) {
+            $shippedByArr[Shipping::LEVEL_PRODUCT]['products'][$selProdId] = $productInfo[$selProdId];
+            $shippedByArr[Shipping::LEVEL_PRODUCT]['shipping_options'][$selProdId] = [];
+            $shippedByArr[Shipping::LEVEL_PRODUCT]['rates'][$selProdId] = [];
+        }
+
+        return $shippedByArr;
     }
 
     public function getSellersProductItemsPrice($cartProducts)

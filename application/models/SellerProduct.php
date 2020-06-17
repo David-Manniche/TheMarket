@@ -23,12 +23,14 @@ class SellerProduct extends MyAppModel
     public const DB_TBL_RELATED_PRODUCTS = 'tbl_related_products';
     public const DB_TBL_RELATED_PRODUCTS_PREFIX = 'related_';
 
-	public const DB_TBL_EXTERNAL_RELATIONS = 'tbl_seller_product_external_relations';
-	public const DB_TBL_EXTERNAL_RELATIONS_PREFIX = 'sperel_';
+    public const DB_TBL_EXTERNAL_RELATIONS = 'tbl_seller_product_external_relations';
+    public const DB_TBL_EXTERNAL_RELATIONS_PREFIX = 'sperel_';
     public const MAX_RANGE_OF_MINIMUM_PURCHANGE_QTY = 9999;
     
     public const VOL_DISCOUNT_MIN_QTY = 2;
     public const VOL_DISCOUNT_MAX_QTY = 9999;
+
+    public const UPDATE_OPTIONS_COUNT = 10;
 
     public function __construct($id = 0)
     {
@@ -329,7 +331,7 @@ class SellerProduct extends MyAppModel
                 $srch->addMultipleFields($attr);
             }
         } else {
-                $srch->addMultipleFields(array('upsell_sellerproduct_id', 'selprod_id', 'product_id', 'IFNULL(selprod_title  ,IFNULL(product_name, product_identifier)) as selprod_title','selprod_price','selprod_stock', 'IFNULL(product_identifier ,product_name) as product_name','product_identifier','selprod_product_id','CASE WHEN m.splprice_selprod_id IS NULL THEN 0 ELSE 1 END AS special_price_found',
+            $srch->addMultipleFields(array('upsell_sellerproduct_id', 'selprod_id', 'product_id', 'IFNULL(selprod_title  ,IFNULL(product_name, product_identifier)) as selprod_title','selprod_price','selprod_stock', 'IFNULL(product_identifier ,product_name) as product_name','product_identifier','selprod_product_id','CASE WHEN m.splprice_selprod_id IS NULL THEN 0 ELSE 1 END AS special_price_found',
             'IFNULL(m.splprice_price, selprod_price) AS theprice', 'selprod_min_order_qty','product_updated_on'));
         }
         $srch->addCondition(Product::DB_TBL_PREFIX . 'active', '=', applicationConstants::YES);
@@ -777,7 +779,7 @@ class SellerProduct extends MyAppModel
             return false;
         }
 
-        $sellerProdObj = new SellerProduct($selprodId); 
+        $sellerProdObj = new SellerProduct($selprodId);
         if (!$sellerProdObj->deleteRecord(true)) {
             $this->error = $sellerProdObj->getError();
             return false;

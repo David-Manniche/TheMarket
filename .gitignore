@@ -20,7 +20,7 @@
 /mbs-errors.log
 /restore
 /bkup
-
+/application/views/.sass-cache
 
 # zip files
 /*.zip

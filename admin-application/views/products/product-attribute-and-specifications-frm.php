@@ -14,7 +14,7 @@ $fld = $productFrm->getField('product_featured');
 $fld->developerTags['cbLabelAttributes'] = array('class' => 'checkbox');
 $fld->developerTags['cbHtmlAfterCheckbox'] = '<i class="input-helper"></i>';
 
-if($productData['product_type'] == Product::PRODUCT_TYPE_PHYSICAL) {
+/* if($productData['product_type'] == Product::PRODUCT_TYPE_PHYSICAL) {
 $fld = $productFrm->getField('ps_free');
 $fld->developerTags['cbLabelAttributes'] = array('class' => 'checkbox');
 $fld->developerTags['cbHtmlAfterCheckbox'] = '<i class="input-helper"></i>';
@@ -22,7 +22,7 @@ $fld->developerTags['cbHtmlAfterCheckbox'] = '<i class="input-helper"></i>';
 $fld = $productFrm->getField('product_cod_enabled');
 $fld->developerTags['cbLabelAttributes'] = array('class' => 'checkbox');
 $fld->developerTags['cbHtmlAfterCheckbox'] = '<i class="input-helper"></i>';
-}
+} */
 
 ?>
 <div class="row justify-content-center">
@@ -95,7 +95,7 @@ $fld->developerTags['cbHtmlAfterCheckbox'] = '<i class="input-helper"></i>';
                  </div>
              </div>
           </div>   
-        <?php if($productData['product_type'] == Product::PRODUCT_TYPE_PHYSICAL) { ?>  
+        <?php /* if($productData['product_type'] == Product::PRODUCT_TYPE_PHYSICAL) { ?>  
           <div class="row">
              <div class="col-md-6">
                  <div class="field-set">
@@ -118,7 +118,7 @@ $fld->developerTags['cbHtmlAfterCheckbox'] = '<i class="input-helper"></i>';
                  </div>
             </div>
          </div>
-        <?php } ?>
+        <?php } */ ?>
         
          <div class="specifications-form-<?php echo $siteDefaultLangId; ?>"></div>
          <div class="specifications-list-<?php echo $siteDefaultLangId; ?>"></div>

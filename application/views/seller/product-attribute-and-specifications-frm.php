@@ -6,16 +6,6 @@ $fld = $productFrm->getField('product_featured');
 $fld->developerTags['cbLabelAttributes'] = array('class' => 'checkbox');
 $fld->developerTags['cbHtmlAfterCheckbox'] = '<i class="input-helper"></i>';
 
-if($productData['product_type'] == Product::PRODUCT_TYPE_PHYSICAL) {
-$fld = $productFrm->getField('ps_free');
-$fld->developerTags['cbLabelAttributes'] = array('class' => 'checkbox');
-$fld->developerTags['cbHtmlAfterCheckbox'] = '<i class="input-helper"></i>';
-
-$fld = $productFrm->getField('product_cod_enabled');
-$fld->developerTags['cbLabelAttributes'] = array('class' => 'checkbox');
-$fld->developerTags['cbHtmlAfterCheckbox'] = '<i class="input-helper"></i>';
-}
-
 $btnBackFld = $productFrm->getField('btn_back');
 $btnBackFld->setFieldTagAttribute('onClick', 'customProductForm('.$productId.');');
 ?>
@@ -23,7 +13,7 @@ $btnBackFld->setFieldTagAttribute('onClick', 'customProductForm('.$productId.');
      <div class="col-md-12">
         <?php echo $productFrm->getFormTag(); ?>
         <div class="row">
-             <div class="col-md-6">
+             <div class="col-md-4">
                  <div class="field-set">
                      <div class="caption-wraper">
                         <label class="field_label">
@@ -42,7 +32,7 @@ $btnBackFld->setFieldTagAttribute('onClick', 'customProductForm('.$productId.');
                      </div>
                  </div>
              </div>
-             <div class="col-md-6">
+             <div class="col-md-4">
                 <div class="field-set">
                      <div class="caption-wraper">
                         <label class="field_label">
@@ -59,9 +49,7 @@ $btnBackFld->setFieldTagAttribute('onClick', 'customProductForm('.$productId.');
                      </div>
                  </div>
              </div>
-          </div>
-          <div class="row">
-            <div class="col-md-4">
+             <div class="col-md-4">
                 <div class="field-set">
                     <div class="caption-wraper"></div>
                      <div class="field-wraper">
@@ -70,30 +58,8 @@ $btnBackFld->setFieldTagAttribute('onClick', 'customProductForm('.$productId.');
                          </div>
                      </div>
                 </div>
-            </div>
-           <?php if($productData['product_type'] == Product::PRODUCT_TYPE_PHYSICAL) { ?>
-             <div class="col-md-4">
-                 <div class="field-set">
-                     <div class="caption-wraper"></div>
-                     <div class="field-wraper">
-                         <div class="field_cover">
-                         <?php echo $productFrm->getFieldHtml('ps_free');  ?>
-                         </div>
-                     </div>
-                 </div>
-            </div>
-            <div class="col-md-4">
-                 <div class="field-set">
-                     <div class="caption-wraper"></div>
-                     <div class="field-wraper">
-                         <div class="field_cover">
-                         <?php echo $productFrm->getFieldHtml('product_cod_enabled'); ?>
-                         </div>
-                     </div>
-                 </div>
-            </div>
-            <?php } ?>
-         </div>
+            </div> 
+          </div>       
          <div class="specifications-form-<?php echo $siteDefaultLangId; ?>"></div>
          <div class="specifications-list-<?php echo $siteDefaultLangId; ?>"></div>
          

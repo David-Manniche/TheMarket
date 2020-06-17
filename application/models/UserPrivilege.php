@@ -28,6 +28,8 @@ class UserPrivilege
     public const SECTION_PROMOTIONS = 26;
     public const SECTION_PROMOTION_CHARGES = 27;
     public const SECTION_SUBSCRIPTION = 28;
+    public const SECTION_SHIPPING_PROFILE = 28;
+
 
     public const MODULE_SHOP = 1;
     public const MODULE_ORDERS = 2;
@@ -419,10 +421,10 @@ class UserPrivilege
 
         if (1 > $parentId) {
             $subusers = User::getSubUsers($userId, array('user_id'));
-            $allowedUsers = array_merge ($allowedUsers, array_column($subusers, 'user_id'));            
+            $allowedUsers = array_merge($allowedUsers, array_column($subusers, 'user_id'));
         }
         
-        if (in_array($data['brand_seller_id'], $allowedUsers))  {
+        if (in_array($data['brand_seller_id'], $allowedUsers)) {
             return true;
         }
         
@@ -679,6 +681,22 @@ class UserPrivilege
     public function canEditTaxCategory($sellerId = 0, $returnResult = false)
     {
         return $this->checkPermission($sellerId, static::SECTION_TAX_CATEGORY, static::PRIVILEGE_WRITE, $returnResult);
+    }
+
+    public function canViewShippingProfiles($sellerId = 0, $returnResult = false)
+    {
+        if (FatApp::getConfig('CONF_SHIPPED_BY_ADMIN_ONLY', FatUtility::VAR_INT, 0) == applicationConstants::YES) {
+            return $this->returnFalseOrDie($returnResult);
+        }
+        return $this->checkPermission($sellerId, static::SECTION_SHIPPING_PROFILE, static::PRIVILEGE_READ, $returnResult);
+    }
+
+    public function canEditShippingProfiles($sellerId = 0, $returnResult = false)
+    {
+        if (FatApp::getConfig('CONF_SHIPPED_BY_ADMIN_ONLY', FatUtility::VAR_INT, 0) == applicationConstants::YES) {
+            return $this->returnFalseOrDie($returnResult);
+        }
+        return $this->checkPermission($sellerId, static::SECTION_SHIPPING_PROFILE, static::PRIVILEGE_WRITE, $returnResult);
     }
 
     public function canViewProductOptions($sellerId = 0, $returnResult = false)

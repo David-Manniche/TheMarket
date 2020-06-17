@@ -592,6 +592,7 @@ class CustomProductsController extends AdminBaseController
             'product_cod_enabled' => isset($data['product_cod_enabled']) ? $data['product_cod_enabled'] : 0,
             'product_ship_free' => isset($data['ps_free']) ? $data['ps_free'] : 0,
             'product_ship_country' => isset($data['ps_from_country_id']) ? $data['ps_from_country_id'] : 0,
+            'product_ship_package' => isset($data['product_ship_package']) ? $data['product_ship_package'] : 0,
             'product_added_on' => date('Y-m-d H:i:s'),
             'product_featured' => isset($data['product_featured']) ? $data['product_featured'] : applicationConstants::NO,
             'product_upc' => isset($data['product_upc']) ? $data['product_upc'] : applicationConstants::NO,
@@ -607,6 +608,19 @@ class CustomProductsController extends AdminBaseController
             }
 
             $product_id = $prodObj->getMainTableRecordId();
+
+            if (isset($data['shipping_profile']) && $data['shipping_profile'] > 0) {
+                $shipProProdData = array(
+                    'shippro_shipprofile_id' => $data['shipping_profile'],
+                    'shippro_product_id' => $product_id,
+                    'shippro_user_id' => 0
+                );
+                $spObj = new ShippingProfileProduct();
+                if (!$spObj->addProduct($shipProProdData)) {
+                    Message::addErrorMessage($spObj->getError());
+                    FatUtility::dieWithError(Message::getHtml());
+                }
+            }
 
             $prodSepc = [
                 'ps_product_id' => $product_id,
@@ -772,7 +786,6 @@ class CustomProductsController extends AdminBaseController
                         $db->rollbackTransaction();
                         FatUtility::dieWithError(Message::getHtml());
                     }
-                    
                 }
             }
 
@@ -926,7 +939,7 @@ class CustomProductsController extends AdminBaseController
                 } */
                 $languages = Language::getAllNames();
                 foreach ($languages as $langId => $langName) {
-                    if(!empty($prodSpecData['prod_spec_name'][$langId])){
+                    if (!empty($prodSpecData['prod_spec_name'][$langId])) {
                         foreach ($prodSpecData['prod_spec_name'][$langId] as $specKey => $specval) {
                             $prod = new Product($product_id);
                             $prodSpecGroup = !empty($prodSpecData['prod_spec_group'][$langId][$specKey]) ? $prodSpecData['prod_spec_group'][$langId][$specKey] : '';

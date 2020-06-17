@@ -136,10 +136,10 @@ $buyQuantity->addFieldTagAttribute('data-page', 'product-view');
 
                                     <?php /* include(CONF_THEME_PATH.'_partial/product-listing-head-section.php'); */ ?>
 
-                                    <?php  if ($shop['shop_free_ship_upto'] > 0 && Product::PRODUCT_TYPE_PHYSICAL == $product['product_type']) { ?>
+                                    <?php /*  if ($shop['shop_free_ship_upto'] > 0 && Product::PRODUCT_TYPE_PHYSICAL == $product['product_type']) { ?>
                                         <?php $freeShipAmt = CommonHelper::displayMoneyFormat($shop['shop_free_ship_upto']); ?>
                                         <div class="note-messages"><?php echo str_replace('{amount}', $freeShipAmt, Labels::getLabel('LBL_Free_shipping_up_to_{amount}_purchase', $siteLangId));?></div>
-                                    <?php }?>
+                                    <?php } */?>
                                     <div class="divider"></div>
                                     <?php if (!empty($optionRows)) { ?>
                                     <div class="gap"> </div>

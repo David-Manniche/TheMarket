@@ -356,16 +356,34 @@ class ImportexportCommon extends FatModel
             } else {
                 $arr['tax_category_identifier'] = Labels::getLabel('LBL_Tax_Category_Identifier', $langId);
             }
+            
+            $shippedBy = FatApp::getConfig('CONF_SHIPPED_BY_ADMIN_ONLY', FatUtility::VAR_INT, 0);
 
-            $arr['product_length'] = Labels::getLabel('LBL_Length', $langId);
-            $arr['product_width'] = Labels::getLabel('LBL_Width', $langId);
-            $arr['product_height'] = Labels::getLabel('LBL_Height', $langId);
+            if ((0 == $userId && $shippedBy) || !$shippedBy) {
+                if ($this->settings['CONF_USE_SHIPPING_PROFILE_ID']) {
+                    $arr['shipping_profile_id'] = Labels::getLabel('LBL_SHIPPING_PROFILE_ID', $langId);
+                } else {
+                    $arr['shipping_profile_identifier'] = Labels::getLabel('LBL_SHIPPING_PROFILE_IDENTIFIER', $langId);
+                }
+            }
+            
+            if (FatApp::getConfig("CONF_PRODUCT_DIMENSIONS_ENABLE", FatUtility::VAR_INT, 1)) {
+                if ($this->settings['CONF_USE_SHIPPING_PACKAGE_ID']) {
+                    $arr['product_ship_package_id'] = Labels::getLabel('LBL_SHIPPING_PACKAGE_ID', $langId);
+                } else {
+                    $arr['product_ship_package_identifier'] = Labels::getLabel('LBL_SHIPPING_PACKAGE_IDENTIFIER', $langId);
+                }
+            }
 
-            if ($this->settings['CONF_USE_DIMENSION_UNIT_ID']) {
+            /*  $arr['product_length'] = Labels::getLabel('LBL_Length', $langId);
+             $arr['product_width'] = Labels::getLabel('LBL_Width', $langId);
+             $arr['product_height'] = Labels::getLabel('LBL_Height', $langId); */
+
+            /* if ($this->settings['CONF_USE_DIMENSION_UNIT_ID']) {
                 $arr['product_dimension_unit'] = Labels::getLabel('LBL_Dimension_Unit_Id', $langId);
             } else {
                 $arr['product_dimension_unit_identifier'] = Labels::getLabel('LBL_Dimension_Unit_Identifier', $langId);
-            }
+            } */
 
             $arr['product_weight'] = Labels::getLabel('LBL_Weight', $langId);
 
@@ -376,22 +394,20 @@ class ImportexportCommon extends FatModel
             }
             $arr['product_warranty'] = Labels::getLabel('LBL_PRODUCT_WARRANTY_(DAYS)', $langId);
             $arr['product_upc'] = Labels::getLabel('LBL_EAN/UPC/GTIN_code', $langId);
-            if ($this->settings['CONF_USE_COUNTRY_ID']) {
-                $arr['ps_from_country_id'] = Labels::getLabel('LBL_Shipping_Country_Id', $langId);
-            // $arr['product_ship_country_id'] = Labels::getLabel('LBL_Shipping_Country_Id', $langId);
-            } else {
-                $arr['country_code'] = Labels::getLabel('LBL_Shipping_Country_Code', $langId);
-                // $arr['product_ship_country_code'] = Labels::getLabel('LBL_Shipping_Country_Code', $langId);
+
+            if ((0 == $userId && $shippedBy) || !$shippedBy) {
+                if ($this->settings['CONF_USE_COUNTRY_ID']) {
+                    $arr['ps_from_country_id'] = Labels::getLabel('LBL_Shipping_Country_Id', $langId);
+                } else {
+                    $arr['country_code'] = Labels::getLabel('LBL_Shipping_Country_Code', $langId);
+                }
             }
 
-            // Not necessary
-            // if(!$userId){
-            //     $arr['product_added_on'] = Labels::getLabel('LBL_Added_On', $langId);
-            // }
+            if ((0 == $userId && $shippedBy) || !$shippedBy) {
+                $arr['ps_free'] = Labels::getLabel('LBL_Free_Shipping', $langId);
+                $arr['product_cod_enabled'] = Labels::getLabel('LBL_COD_available', $langId);
+            }
 
-            $arr['ps_free'] = Labels::getLabel('LBL_Free_Shipping', $langId);
-            // $arr['product_ship_free'] = Labels::getLabel('LBL_Free_Shipping', $langId);
-            $arr['product_cod_enabled'] = Labels::getLabel('LBL_COD_available', $langId);
             if (!$userId) {
                 $arr['product_featured'] = Labels::getLabel('LBL_Featured', $langId);
             }
@@ -954,6 +970,8 @@ class ImportexportCommon extends FatModel
         'CONF_USE_POLICY_POINT_TYPE_ID' => ($siteConfiguration) ? FatApp::getConfig('CONF_USE_POLICY_POINT_TYPE_ID', FatUtility::VAR_INT, 0) : false,
         'CONF_USE_SHIPPING_COMPANY_ID' => ($siteConfiguration) ? FatApp::getConfig('CONF_USE_SHIPPING_COMPANY_ID', FatUtility::VAR_INT, 0) : false,
         'CONF_USE_SHIPPING_DURATION_ID' => ($siteConfiguration) ? FatApp::getConfig('CONF_USE_SHIPPING_DURATION_ID', FatUtility::VAR_INT, 0) : false,
+        'CONF_USE_SHIPPING_PROFILE_ID' => ($siteConfiguration) ? FatApp::getConfig('CONF_USE_SHIPPING_PROFILE_ID', FatUtility::VAR_INT, 0) : false,
+        'CONF_USE_SHIPPING_PACKAGE_ID' => ($siteConfiguration) ? FatApp::getConfig('CONF_USE_SHIPPING_PACKAGE_ID', FatUtility::VAR_INT, 0) : false,
         'CONF_USE_O_OR_1' => ($siteConfiguration) ? FatApp::getConfig('CONF_USE_O_OR_1', FatUtility::VAR_INT, 0) : false,
         );
     }
@@ -1120,6 +1138,78 @@ class ImportexportCommon extends FatModel
         }
         $rs = $srch->getResultSet();
         return $row = $this->db->fetchAllAssoc($rs);
+    }
+    
+    public function getShippingPackageArr($byId = true, $taxCatIdOrIdentifier = false)
+    {
+        $srch = ShippingPackage::getSearchObject();
+        $srch->doNotCalculateRecords();
+
+        if ($taxCatIdOrIdentifier) {
+            $srch->setPageSize(1);
+        } else {
+            $srch->doNotLimitRecords();
+        }
+
+        if ($byId) {
+            $srch->addMultipleFields(array('shippack_id', 'shippack_name'));
+            if ($taxCatIdOrIdentifier) {
+                $srch->addCondition('shippack_id', '=', $taxCatIdOrIdentifier);
+            }
+        } else {
+            $srch->addMultipleFields(array('shippack_name', 'shippack_id'));
+            if ($taxCatIdOrIdentifier) {
+                $srch->addCondition('shippack_name', '=', $taxCatIdOrIdentifier);
+            }
+        }
+        $rs = $srch->getResultSet();
+        return $row = $this->db->fetchAllAssoc($rs);
+    }
+
+    public function getShippingProfileArr($byId = true, $taxCatIdOrIdentifier = false, $userId = 0)
+    {
+        $srch = ShippingProfile::getSearchObject(false);
+        $srch->doNotCalculateRecords();
+
+        if ($taxCatIdOrIdentifier) {
+            $srch->setPageSize(1);
+        } else {
+            $srch->doNotLimitRecords();
+        }
+
+        if ($byId) {
+            $srch->addMultipleFields(array('shipprofile_id', 'shipprofile_name'));
+            if ($taxCatIdOrIdentifier) {
+                $srch->addCondition('shipprofile_id', '=', $taxCatIdOrIdentifier);
+            }
+        } else {
+            $srch->addMultipleFields(array('shipprofile_name', 'shipprofile_id', 'shipprofile_user_id'));
+            if ($taxCatIdOrIdentifier) {
+                $srch->addCondition('shipprofile_name', '=', $taxCatIdOrIdentifier);
+            }
+        }
+
+        if (FatApp::getConfig('CONF_SHIPPED_BY_ADMIN_ONLY', FatUtility::VAR_INT, 0)) {
+            $srch->addCondition('shipprofile_user_id', '=', 0);
+        } else {
+            if (0 < $userId) {
+                $cnd = $srch->addCondition('shipprofile_user_id', '=', 0);
+                $cnd->attachCondition('shipprofile_user_id', '=', $userId);
+            }
+        }
+
+        $rs = $srch->getResultSet();
+
+        $res = [];
+        if ($byId) {
+            $res = $this->db->fetchAllAssoc($rs);
+        } else {
+            while ($row = $this->db->fetch($rs)) {
+                $res[$row['shipprofile_name']][$row['shipprofile_user_id']] = $row['shipprofile_id'];
+            }
+        }
+
+        return $res;
     }
 
     public function getTaxCategoriesArr($byId = true, $taxCatIdOrIdentifier = false)

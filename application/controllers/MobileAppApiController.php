@@ -3283,7 +3283,7 @@ class MobileAppApiController extends MyAppController
         }
 
         $cart_shipping_summary['productSelectedShippingMethodsArr'] = $productSelectedShippingMethodsArr;
-        $cart_shipping_summary['shipStationCarrierList'] = $cartObj->shipStationCarrierList();
+        $cart_shipping_summary['shipStationCarrierList'] = $cartObj->shippingCarrierList();
         $cart_shipping_summary['shippingMethods'] = $shippingMethods;
         $cart_shipping_summary['products'] = $cart_products;
         $cart_shipping_summary['cartSummary'] = $cartSummaryArr;

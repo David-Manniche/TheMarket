@@ -835,6 +835,8 @@ class ConfigurationsController extends AdminBaseController
                 $fld = $frm->addCheckBox(Labels::getLabel("LBL_Return_Shipping_Charges_to_Customer", $this->adminLangId), 'CONF_RETURN_SHIPPING_CHARGES_TO_CUSTOMER', 1, array(), false, 0);
                 $fld->htmlAfterField = '<br><small>' . Labels::getLabel("LBL_On_enabling_return_shipping_charges_to_customer,", $this->adminLangId) . '</small>';
 
+                $fld = $frm->addCheckBox(Labels::getLabel("LBL_SHIPPED_BY_ADMIN_ONLY", $this->adminLangId), 'CONF_SHIPPED_BY_ADMIN_ONLY', 1, array(), false, 0);
+                $fld->htmlAfterField = '<br><small>' . Labels::getLabel("LBL_On_enabling_shipping_charges_manged_by_admin_only,", $this->adminLangId) . '</small>';
 
                 $fld = $frm->addSelectBox(
                     Labels::getLabel("LBL_Default_Child_Order_Status", $this->adminLangId),
