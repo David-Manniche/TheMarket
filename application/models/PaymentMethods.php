@@ -207,7 +207,10 @@ class PaymentMethods extends MyAppModel
             case 'StripeConnect':
                 $requestParam = [
                     'amount' => $this->formatPayableAmount($this->txnAmount),
-                    'payment_intent' => $txnId
+                    'charge' => $txnId,
+                    'metadata' => [
+                       'orderInvoice' => $this->invoiceNumber
+                    ]
                 ];
                 if (false === $this->paymentPlugin->init(true)) {
                     $this->error = $this->paymentPlugin->getError();

@@ -49,6 +49,11 @@ class StripeConnect extends PaymentMethodBase
     public const REQUEST_INITIATE_REFUND = 17;
     public const REQUEST_TRANSFER_AMOUNT = 18;
     public const REQUEST_REVERSE_TRANSFER = 19;
+    public const REQUEST_ADD_CARD = 20;
+    public const REQUEST_REMOVE_CARD = 21;
+    public const REQUEST_LIST_ALL_CARDS = 22;
+    public const REQUEST_CREATE_CARD_TOKEN = 23;
+    public const REQUEST_CHARGE = 24;
 
     /**
      * __construct
@@ -801,7 +806,7 @@ class StripeConnect extends PaymentMethodBase
             return [];
         }
 
-        return [
+        $orderData = [
             'address' => [
                 'line1' => $orderInfo['customer_billing_address_1'],
                 'line2' => $orderInfo['customer_billing_address_2'],
@@ -826,6 +831,7 @@ class StripeConnect extends PaymentMethodBase
             'name' => $orderInfo['customer_billing_name'],
             'phone' => $orderInfo['customer_billing_phone']
         ];
+        return $orderData;
     }
 
     /**
@@ -934,6 +940,84 @@ class StripeConnect extends PaymentMethodBase
     public function revertTransfer(array $requestParam): bool
     {
         $this->resp = $this->doRequest(self::REQUEST_REVERSE_TRANSFER, $requestParam);
+        if (false === $this->resp) {
+            return false;
+        }
+        return true;
+    }
+
+    /**
+     * addCard
+     *
+     * @return bool
+     */
+    public function addCard(array $requestParam): bool
+    {
+        $this->resp = $this->doRequest(self::REQUEST_ADD_CARD, $requestParam);
+        if (false === $this->resp) {
+            return false;
+        }
+        return true;
+    }
+    
+    /**
+     * removeCard
+     *
+     * @param array $requestParam : ['cardId' => 'card_xxxxx']
+     * @return bool
+     */
+    public function removeCard(array $requestParam): bool
+    {
+        $this->resp = $this->doRequest(self::REQUEST_REMOVE_CARD, $requestParam);
+        if (false === $this->resp) {
+            return false;
+        }
+        return true;
+    }
+    
+    /**
+     * loadSavedCards - Retrieve All Saved Cards
+     *
+     * @return bool
+     */
+    public function loadSavedCards(): bool
+    {
+        $this->resp = $this->doRequest(self::REQUEST_LIST_ALL_CARDS);
+        if (false === $this->resp) {
+            return false;
+        }
+        return true;
+    }
+
+    /**
+     * getCardToken
+     *
+     * @param array $requestParam : [
+     *           'number' => '4242424242424242',
+     *           'exp_month' => 6,
+     *           'exp_year' => 2021,
+     *           'cvc' => '314',
+     *       ]
+     * @return bool
+     */
+    public function getCardToken(array $requestParam): bool
+    {
+        $this->resp = $this->doRequest(self::REQUEST_CREATE_CARD_TOKEN, $requestParam);
+        if (false === $this->resp) {
+            return false;
+        }
+        return true;
+    }
+        
+    /**
+     * doCharge
+     *
+     * @param array $requestParam
+     * @return bool
+     */
+    public function doCharge(array $requestParam): bool
+    {
+        $this->resp = $this->doRequest(self::REQUEST_CHARGE, $requestParam);
         if (false === $this->resp) {
             return false;
         }
