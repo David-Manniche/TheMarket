@@ -20,6 +20,7 @@ class ProductSearch extends SearchBase
     private $commonLangId;
     private $sellerSubscriptionOrderJoined = false;
     private $joinProductShippedBy = false;
+    private $geoAddress = [];
 
     public function __construct($langId = 0, $otherTbl = null, $prodIdColumName = null, $isProductActive = true, $isProductApproved = true, $isProductDeleted = true)
     {
@@ -55,6 +56,31 @@ class ProductSearch extends SearchBase
 
         if ($isProductApproved) {
             $this->addCondition('product_approved', '=', PRODUCT::APPROVED);
+        }
+    }
+
+    public function setGeoAddress($address = [])
+    {
+        if (!FatApp::getConfig('CONF_ENABLE_GEO_LOCATION', FatUtility::VAR_INT, 0)) {
+            return;
+        }
+
+        if (!empty($address)) {
+            $this->geoAddress = $address;
+        } else {
+            $this->geoAddress = [
+                'ykGeoLat' => isset($_COOKIE['_ykGeoLat']) ? $_COOKIE['_ykGeoLat'] : '',
+                'ykGeoLng' => isset($_COOKIE['_ykGeoLng']) ? $_COOKIE['_ykGeoLng'] : '',
+                'ykGeoZip' => isset($_COOKIE['_ykGeoZip']) ? $_COOKIE['_ykGeoZip'] : '',
+                'ykGeoStateCode' => isset($_COOKIE['_ykGeoStateCode']) ? $_COOKIE['_ykGeoStateCode'] : '',
+                'ykGeoCountryCode' => isset($_COOKIE['_ykGeoCountryCode']) ? $_COOKIE['_ykGeoCountryCode'] : '',
+                'ykGeoAddress' => isset($_COOKIE['_ykGeoAddress']) ? $_COOKIE['_ykGeoAddress'] : '',
+            ];
+        }
+
+        if (!empty($this->geoAddress)) {
+            $this->geoAddress['ykGeoCountryId'] = Countries::getCountryByCode($this->geoAddress['ykGeoCountryCode'], 'country_id');
+            $this->geoAddress['ykGeoStateId'] = States::getByCode($this->geoAddress['ykGeoStateCode'], 'state_id');
         }
     }
 
@@ -395,6 +421,7 @@ class ProductSearch extends SearchBase
         if (!$this->sellerUserJoined) {
             trigger_error(Labels::getLabel('ERR_joinShops_cannot_be_joined,_unless_joinSellers_is_not_applied.', $this->commonLangId), E_USER_ERROR);
         }
+        
         $langId = FatUtility::int($langId);
         if ($this->langId && 1 > $langId) {
             $langId = $this->langId;
@@ -414,6 +441,40 @@ class ProductSearch extends SearchBase
         $shopId = FatUtility::int($shopId);
         if (0 < $shopId) {
             $shopCondition .= ' and shop.shop_id = ' . $shopId;
+        }
+
+        if (FatApp::getConfig('CONF_ENABLE_GEO_LOCATION', FatUtility::VAR_INT, 0)) {
+            $prodGeoCondition = FatApp::getConfig('CONF_PRODUCT_GEO_LOCATION', FatUtility::VAR_INT, 0);
+            switch ($prodGeoCondition) {
+                case applicationConstants::BASED_ON_RADIUS:
+                    $this->addFld('( 3959 * acos( cos( radians(37) ) * cos( radians( shop_lat ) ) 
+                    * cos( radians( shop_lng ) - radians(-122) ) + sin( radians(37) ) * sin(radians(shop_lat)) ) ) AS distance');
+                    $this->addHaving('distance', '<=', Product::DISTANCE_IN_MILES);
+                    break;
+                case applicationConstants::BASED_ON_BUYER_LOCATION:
+                    $level = FatApp::getConfig('CONF_LOCATION_LEVEL', FatUtility::VAR_INT, 0);
+                    $countryBased = $stateBased = $zipBased = false;
+                    if (applicationConstants::LOCATION_COUNTRY == $level) {
+                        $countryBased = true;
+                    } elseif (applicationConstants::LOCATION_STATE == $level) {
+                        $countryBased = $stateBased = true;
+                    } elseif (applicationConstants::LOCATION_ZIP == $level) {
+                        $countryBased = $stateBased = $zipBased = true;
+                    }
+
+                    if ($countryBased && array_key_exists('ykGeoCountryId', $this->geoAddress) && $this->geoAddress['ykGeoCountryId'] > 0) {
+                        $shopCondition .= ' and shop.shop_country_id = ' . $this->geoAddress['ykGeoCountryId'];
+                    }
+
+                    if ($stateBased && array_key_exists('ykGeoStateId', $this->geoAddress) && $this->geoAddress['ykGeoStateId'] > 0) {
+                        $shopCondition .= ' and shop.shop_state_id = ' . $this->geoAddress['ykGeoStateId'];
+                    }
+                    
+                    if ($zipBased && array_key_exists('ykGeoZip', $this->geoAddress) && $this->geoAddress['ykGeoZip'] > 0) {
+                        $shopCondition .= ' and shop.shop_postalcode = ' . $this->geoAddress['ykGeoZip'];
+                    }
+                    break;
+            }
         }
 
         $this->joinTable(Shop::DB_TBL, 'INNER JOIN', 'seller_user.user_id = shop.shop_user_id ' . $shopCondition, 'shop');
@@ -1022,4 +1083,18 @@ class ProductSearch extends SearchBase
         
         $this->joinTable('(' . $srch->getQuery() . ')', 'INNER JOIN', 'shiploc.shiploc_shipzone_id = shippz.shipprozone_shipzone_id', 'shiploc');
     }
+
+    /* public function joinDeliveryLocations($langId = 0)
+    {
+        $langId = FatUtility::int($langId);
+        if ($this->langId && 1 > $langId) {
+            $langId = $this->langId;
+        }
+
+        $srch->joinProductShippedBy();
+        $srch->joinShippingProfileProducts();
+        $srch->joinShippingProfile($langId);
+        $srch->joinShippingProfileZones();
+        $srch->joinShippingZones();
+    } */
 }

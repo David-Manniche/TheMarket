@@ -9,7 +9,7 @@ var Dashboard = function() {
 		$(el).addClass("is-active");
 	};
 	var sidebarChangeWidth = function () {
-        
+
 		var $menuItemsTitle = $("li .menu-item__title");
 		if ($("body").hasClass('sidebar-is-reduced')) {
 			$("body").removeClass('sidebar-is-reduced').addClass('sidebar-is-expanded');
@@ -95,7 +95,7 @@ $(document).ready(function () {
 		return false;
 		setSlider();
 	});
-	loadGeoLocation();
+	accessLocation();
 });
 
 /* for search form */
@@ -584,17 +584,17 @@ function googleCaptcha()
 
 function getLocation() {
     return {
-        'lat' : getCookie('_ykGeoLat'), 
+        'lat' : getCookie('_ykGeoLat'),
 		'lng' : getCookie('_ykGeoLng'),
-		'country' : getCookie('_ykGeoCountry'),
-		'state' : getCookie('_ykGeoState'),
+		'countryCode' : getCookie('_ykGeoCountryCode'),
+		'stateCode' : getCookie('_ykGeoStateCode'),
 		'zip' : getCookie('_ykGeoZip')
     };
 }
 
 function accessLocation(force = false) {
-	var location = getLocation();	
-    if ("" == location.lat || "" == location.lng || "" == location.country || "" == location.state  || force) {
+	var location = getLocation();
+    if ("" == location.lat || "" == location.lng || "" == location.countryCode || force) {
         $.facebox(function() {
             fcom.ajax(fcom.makeUrl('Home', 'accessLocation'), '', function(t) {
                 $.facebox(t, 'small-fb-width');
@@ -608,7 +608,7 @@ function loadGeoLocation() {
 	if (!CONF_ENABLE_GEO_LOCATION){
 		return;
 	}
-	
+
 	if (typeof navigator.geolocation == 'undefined') {
 		console.log(langLbl.geoLocationNotSupported);
         return false;
@@ -621,27 +621,57 @@ function loadGeoLocation() {
 	});
 }
 
+function setGeoAddress(data) {
+	var address = '';
+	setCookie('_ykGeoLat', data.lat);
+	setCookie('_ykGeoLng', data.lng);
+
+	if ('undefined' != typeof data.postal_code){
+		setCookie('_ykGeoZip', data.postal_code);
+		address += data.postal_code + ', ';
+	}
+
+	if ('undefined' != typeof data.city){		
+		address += data.city + ', ';
+	}
+
+	if ('undefined' != typeof data.state){
+		setCookie('_ykGeoStateCode', data.state_code);
+		address += data.state + ', ';
+	}
+
+	if ('undefined' != typeof data.country){
+		setCookie('_ykGeoCountryCode', data.country_code);
+		address += data.country + ', ';
+	}
+	address = address.replace(/,\s*$/, "");
+
+	var formatedAddr = ('undefined' == typeof data.formatted_address) ? '' : data.formatted_address;
+	address = ('' == address) ? formatedAddr : address;
+
+	setCookie('_ykGeoAddress', address);
+
+	return address;
+}
+
 function getGeoAddress(lat, lng) {
     var data = 'lat='+lat+"&lng="+lng;
     fcom.ajax(fcom.makeUrl('Home', 'getGeoAddress'), data, function(t) {
         var res = $.parseJSON(t);
         if (res.status) {
             var data = res.data;
-            setCookie('_ykGeoLat', data.lat);
-            setCookie('_ykGeoLng', data.lng);
-			setCookie('_ykGeoZip', data.postal_code);
-			setCookie('_ykGeoCountryCode', data.countryCode);
-			setCookie('_ykGeoStateCode', data.stateCode);
-            var level2 = 'undefined' == typeof data.city ? '' : data.city + ", ";
-            var address = data.postal_code + " " + level2 + data.state;
-            setCookie('_ykGeoAddress', address);
+			address = setGeoAddress(data);
             $(document).trigger('close.facebox');
-            displayGeoAddress(address);            
+            displayGeoAddress(address);
         }
     });
 }
 
+var canSetCookie = false;
 function setCookie(cname, cvalue, exdays = 365) {
+	if (false == canSetCookie) {
+		return false;
+	}
     var d = new Date();
     d.setTime(d.getTime() + (exdays * 24 * 60 * 60 * 1000));
     var expires = "expires="+d.toUTCString();
@@ -670,7 +700,8 @@ function displayGeoAddress(address)
     }
 }
 
-function googleAddressAutocomplete(elementId = 'ga-autoComplete', field = 'formatted_address', canSetCookie = true, callback = 'googleSelectedAddress') {
+function googleAddressAutocomplete(elementId = 'ga-autoComplete', field = 'formatted_address', saveCookie = true, callback = 'googleSelectedAddress') {
+	canSetCookie = saveCookie;
     if (1 > $("#" + elementId).length) {
         var msg = (langLbl.fieldNotFound).replace('{field}', elementId + ' Field');
         $.systemMessage(msg, 'alert--danger');
@@ -684,10 +715,6 @@ function googleAddressAutocomplete(elementId = 'ga-autoComplete', field = 'forma
         var place = autocomplete.getPlace();
         var lat = place['geometry']['location'].lat();
         var lng = place['geometry']['location'].lng();
-        if (canSetCookie) {
-            setCookie('_ykGeoLat', lat);
-            setCookie('_ykGeoLng', lng);
-        }
         var address = '';
         var data = {};
         data['lat'] = lat;
@@ -697,46 +724,33 @@ function googleAddressAutocomplete(elementId = 'ga-autoComplete', field = 'forma
             var addressComponents = place.address_components;
             for (var i = 0; i < addressComponents.length; i++) {
                 var key = place.address_components[i].types[0];
-                var value = place.address_components[i].long_name;               
+                var value = place.address_components[i].long_name;
+				data[key] = value;
                 if ('country' == key) {
 					data['country_code'] = place.address_components[i].short_name;
 					data['country'] = value;
                 } else if ('administrative_area_level_1' == key){
 					data['state_code'] = place.address_components[i].short_name;
 					data['state'] = value;
-				} else if ('administrative_area_level_2' == key){					
+				} else if ('administrative_area_level_2' == key){
 					data['city'] = value;
-				} else {
-					data[key] = value;
-				} 
+				}
 			}
-			
-			var level2 = ('undefined' == typeof data.city) ? '' : data.city + ", ";
-            var address = data.postal_code + " " + level2 + data.state;
-           
-            fieldValue =  ("" == address) ? data["formatted_address"] : address;
-            if ('undefined' == typeof fieldValue) {
+			address = setGeoAddress(data);
+			if ('' == address) {
                 var msg = (langLbl.fieldNotFound).replace('{field}', field);
                 $.systemMessage(msg, 'alert--danger');
-                fieldValue = '';
             }
-			
-			fieldValue = fieldValue.replace(/,\s*$/, "");
-            $("#" + elementId).val(fieldValue);
-            if (canSetCookie) {
-                setCookie('_ykGeoZip', data['postal_code']);
-                address = data.postal_code + " " + level2 + data.state;
-            }
+
+			$("#" + elementId).val(address);
+			displayGeoAddress(address);
         }
-        if (canSetCookie) {
-            setCookie('_ykGeoAddress', address);
-            displayGeoAddress(address);
-        }
+
         if (0 < $("#facebox #" + elementId).length) {
             $(document).trigger('close.facebox');
         }
-        if (eval("typeof " + callback) == 'function') { 
-            window[callback](data); 
+        if (eval("typeof " + callback) == 'function') {
+            window[callback](data);
         }
         return data;
     });

@@ -89,8 +89,13 @@ class applicationConstants
     public const SMS_CHARACTER_LENGTH = 160;
     public const BLOG_TITLE_CHARACTER_LENGTH = 70; /* Used for home page collection.*/
 
-    public const BASED_ON_SHIPPING = 1;
-    public const BASED_ON_DISTANCE = 2;
+    public const BASED_ON_DELIVERY_LOCATION = 1;
+    public const BASED_ON_RADIUS = 2;
+    public const BASED_ON_BUYER_LOCATION = 3;
+
+    public const LOCATION_COUNTRY = 0;
+    public const LOCATION_STATE = 1;
+    public const LOCATION_ZIP = 2;
 
     public static function getWeightUnitsArr($langId)
     {
@@ -405,8 +410,18 @@ class applicationConstants
     public static function getProductListingSettings($langId)
     {
         return array(
-            static::BASED_ON_SHIPPING => Labels::getLabel('LBL_BASED_ON_SHIPPING', $langId),
-            static::BASED_ON_DISTANCE => Labels::getLabel('LBL_BASED_ON_DISTANCE', $langId),
+            static::BASED_ON_DELIVERY_LOCATION => Labels::getLabel('LBL_BASED_ON_DELIVERY_LOCATION', $langId),
+            static::BASED_ON_RADIUS => Labels::getLabel('LBL_BASED_ON_RADIUS', $langId),
+            static::BASED_ON_BUYER_LOCATION => Labels::getLabel('LBL_BASED_ON_BUYER_LOCATION', $langId),
+        );
+    }
+
+    public static function getLocationLevels($langId)
+    {
+        return array(
+            static::LOCATION_COUNTRY => Labels::getLabel('LBL_COUNTRY_LEVEL', $langId),
+            static::LOCATION_STATE => Labels::getLabel('LBL_STATE_LEVEL', $langId),
+            static::LOCATION_ZIP => Labels::getLabel('LBL_POSTAL_CODE_LEVEL', $langId),
         );
     }
 }

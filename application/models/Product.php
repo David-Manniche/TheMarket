@@ -62,6 +62,8 @@ class Product extends MyAppModel
     public const PRODUCT_REVIEWS_ORGINAL_URL = 'reviews/product/';
     public const PRODUCT_MORE_SELLERS_ORGINAL_URL = 'products/sellers/';
 
+    public const DISTANCE_IN_MILES = 10;
+
     public function __construct($id = 0)
     {
         parent::__construct(static::DB_TBL, static::DB_TBL_PREFIX . 'id', $id);
@@ -1309,6 +1311,7 @@ class Product extends MyAppModel
         $srch->joinForPrice('', $criteria, true);
         $srch->unsetDefaultLangForJoins();
         $srch->joinSellers();
+        $srch->setGeoAddress();
         $srch->joinShops($langId, true, true, $shop_id);
         $srch->joinShopCountry();
         $srch->joinShopState();

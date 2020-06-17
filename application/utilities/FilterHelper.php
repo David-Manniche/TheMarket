@@ -16,6 +16,7 @@ class FilterHelper extends FatUtility
         $prodSrchObj->joinSellerProducts(0, '', $headerFormParamsAssocArr, true);
         $prodSrchObj->unsetDefaultLangForJoins();
         $prodSrchObj->joinSellers();
+        $prodSrchObj->setGeoAddress();
         $prodSrchObj->joinShops($langId);
         $prodSrchObj->joinShopCountry();
         $prodSrchObj->joinShopState();

@@ -719,6 +719,16 @@ class ConfigurationsController extends AdminBaseController
                     array('class' => 'list-inline')
                 );
                 $fld->htmlAfterField = "<small>" . Labels::getLabel("LBL_DISPLAY_AND_SEARCH_PRODUCTS_BASED_ON_LOCATION", $this->adminLangId) . "</small>";
+                
+                $fld = $frm->addRadioButtons(
+                    Labels::getLabel("LBL_PRODUCT_LISTING_FILTER", $this->adminLangId),
+                    'CONF_LOCATION_LEVEL',
+                    applicationConstants::getLocationLevels($this->adminLangId),
+                    '',
+                    array('class' => 'list-inline')
+                );
+                $fld->htmlAfterField = "<small>" . Labels::getLabel("LBL_DISPLAY_AND_SEARCH_PRODUCTS_BASED_ON_CRITERIA", $this->adminLangId) . "</small>";
+
                 break;
 
             case Configurations::FORM_USER_ACCOUNT:

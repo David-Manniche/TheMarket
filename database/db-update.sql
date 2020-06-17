@@ -186,3 +186,7 @@ INSERT INTO `tbl_language_labels` (`label_key`, `label_lang_id`, `label_caption`
 ("APP_I_AM_LISTENING", 1, "Say Something I Am Listening", 2),
 ("APP_VOICE_SEARCH", 1, "Voice Search", 2),
 ("APP_EXPLORE", 1, "Explore", 2);
+
+-- auto detect location search
+ALTER TABLE `tbl_shops` ADD `shop_lat` VARCHAR(100) NOT NULL AFTER `shop_free_ship_upto`, ADD `shop_lng` VARCHAR(100) NOT NULL AFTER `shop_lat`;
+-- auto detect location
