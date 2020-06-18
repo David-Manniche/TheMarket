@@ -82,11 +82,11 @@ class TaxRule extends MyAppModel
             } else {
                 $frm->addTextBox(Labels::getLabel('LBL_Rule_Name', $languageId), 'taxrule_name[' . $languageId . '][]');
             }
-            if ($languageId == $siteDefaultLangId) {
+            /*if ($languageId == $siteDefaultLangId) {
                 $frm->addRequiredField(Labels::getLabel('LBL_Tax_Name', $languageId), 'taxruledet_name[' . $languageId . '][]');
-            } else {
+            } else {*/
                 $frm->addTextBox(Labels::getLabel('LBL_Tax_Name', $languageId), 'taxruledet_name[' . $languageId . '][]');
-            }
+            /*}*/
         }
 
         $translatorSubscriptionKey = FatApp::getConfig('CONF_TRANSLATOR_SUBSCRIPTION_KEY', FatUtility::VAR_STRING, '');

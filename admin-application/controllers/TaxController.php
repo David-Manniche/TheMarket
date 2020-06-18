@@ -524,7 +524,6 @@ class TaxController extends AdminBaseController
             $ruleLocations = $taxObj->getLocations($taxCatId);
         }
 
-        /*CommonHelper::printArray($combinedRulesDetails); die;*/
         unset($languages[$siteDefaultLangId]);
         $this->set('siteDefaultLangId', $siteDefaultLangId);
         $this->set('otherLanguages', $languages);

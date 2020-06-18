@@ -1152,7 +1152,7 @@ class CheckoutController extends MyAppController
                 $productsLangData = array();
                 $productShippingLangData = array();
                 foreach ($allLanguages as $lang_id => $language_name) {
-                    if (0 == $lang_id){
+                    if (0 == $lang_id) {
                         continue;
                     }
                     $langSpecificProductInfo = $this->getCartProductLangData($productInfo['selprod_id'], $lang_id);
@@ -1200,24 +1200,34 @@ class CheckoutController extends MyAppController
 
                     $op_products_dimension_unit_name = ($productInfo['product_dimension_unit']) ? $lengthUnitsArr[$productInfo['product_dimension_unit']] : '';
                     $op_product_weight_unit_name = ($productInfo['product_weight_unit']) ? $weightUnitsArr[$productInfo['product_weight_unit']] : '';
-                   
-				   $op_product_tax_options = array();
-					$productTaxOption = array();
+
+                    $op_product_tax_options = array();
+                    $productTaxOption = array();
                     if (array_key_exists($productInfo['selprod_id'], $cartSummary["prodTaxOptions"])) {
                         $productTaxOption = $cartSummary["prodTaxOptions"][$productInfo['selprod_id']];
                     }
-					
+
                     foreach ($productTaxOption as $taxStroId => $taxStroName) {
-							$label = Labels::getLabel('LBL_Tax', $lang_id);
-                            if (array_key_exists('name', $taxStroName) && $taxStroName['name'] != '') {
-                                $label = $taxStroName['name'];
-                            }
-                            $op_product_tax_options[$label]['name'] = $label;
-                            $op_product_tax_options[$label]['value'] = $taxStroName['value'];
-                            $op_product_tax_options[$label]['percentageValue'] = $taxStroName['percentageValue'];
-                            $op_product_tax_options[$label]['inPercentage'] = $taxStroName['inPercentage'];
+                        $label = Labels::getLabel('LBL_Tax', $lang_id);
+                        if (array_key_exists('name', $taxStroName) && $taxStroName['name'] != '') {
+                            $label = $taxStroName['name'];
+                        }
+                        $op_product_tax_options[$label]['name'] = $label;
+                        $op_product_tax_options[$label]['value'] = $taxStroName['value'];
+                        $op_product_tax_options[$label]['percentageValue'] = $taxStroName['percentageValue'];
+                        $op_product_tax_options[$label]['inPercentage'] = $taxStroName['inPercentage'];
+
+                        $productsChargesLogData[$lang_id] = array(
+                        'opchargelog_type' => OrderProduct::CHARGE_TYPE_TAX,
+                        'opchargeloglang_lang_id' => $lang_id,
+                        'opchargelog_identifier' => $langSpecificProductInfo['product_name'],
+                        'opchargelog_name' => $op_selprod_options,
+                        'opchargelog_value' => !empty($langSpecificProductInfo['brand_name']) ? $langSpecificProductInfo['brand_name'] : '',
+                        'opchargelog_is_percent' => $langSpecificProductInfo['shop_name'],
+                        'opchargelog_percentvalue' => $sduration_name
+                        );
                     }
-					
+
                     $productsLangData[$lang_id] = array(
                     'oplang_lang_id' => $lang_id,
                     'op_product_name' => $langSpecificProductInfo['product_name'],
@@ -1231,8 +1241,9 @@ class CheckoutController extends MyAppController
                     'op_product_weight_unit_name' => $op_product_weight_unit_name,
                     'op_product_tax_options' => json_encode($op_product_tax_options),
                     );
+
                 }
-                
+
                 /* $taxCollectedBySeller = applicationConstants::NO;
                 if(FatApp::getConfig('CONF_TAX_COLLECTED_BY_SELLER',FatUtility::VAR_INT,0)){
                 $taxCollectedBySeller = applicationConstants::YES;
