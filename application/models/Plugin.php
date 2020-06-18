@@ -66,6 +66,7 @@ class Plugin extends MyAppModel
     {
         $pluginDir = [
             self::TYPE_CURRENCY_CONVERTER => "currency-converter",
+            self::TYPE_SOCIAL_LOGIN => "social-login",
             self::TYPE_PUSH_NOTIFICATION => "push-notification",
             self::TYPE_ADVERTISEMENT_FEED => "advertisement-feed",
             self::TYPE_SMS_NOTIFICATION => "sms-notification",
