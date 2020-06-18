@@ -515,13 +515,19 @@ class Orders extends MyAppModel
                 /* saving of products Charges log lang data[ */
                 $prodChargesloglangData = $product['productChargesLogLangData'];
                 if (!empty($prodChargesloglangData)) {
-                    foreach ($prodChargesloglangData as $prodChargeloglangData) {
-                        $prodChargeloglangData['opchargeloglang_op_id'] = $op_id;
-                        $opChargeLogLangObj->assignValues($prodChargeloglangData);
-                        if (!$opChargeLogLangObj->addNew()) {
-                            $db->rollbackTransaction();
-                            $this->error = $opChargeLogLangObj->getError();
-                            return false;
+                    foreach ($prodChargesloglangData as $ruleDetId => $prodChargeloglangData) {
+                        $languages = Language::getAllNames();
+                        foreach ($languages as $langId => $langName) {
+                            if (empty($prodChargeloglangData[$langId])) {
+                                continue;
+                            }
+                            $prodChargeloglangData[$langId]['opchargeloglang_op_id'] = $op_id;
+                            $opChargeLogLangObj->assignValues($prodChargeloglangData[$langId]);
+                            if (!$opChargeLogLangObj->addNew()) {
+                                $db->rollbackTransaction();
+                                $this->error = $opChargeLogLangObj->getError();
+                                return false;
+                            }
                         }
                     }
                 }

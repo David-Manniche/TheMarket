@@ -1172,6 +1172,7 @@ class CheckoutController extends MyAppController
 
                 $productsLangData = array();
                 $productShippingLangData = array();
+                $productTaxChargesLangData = array();
                 foreach ($allLanguages as $lang_id => $language_name) {
                     if (0 == $lang_id) {
                         continue;
@@ -1223,7 +1224,6 @@ class CheckoutController extends MyAppController
                     $op_product_weight_unit_name = ($productInfo['product_weight_unit']) ? $weightUnitsArr[$productInfo['product_weight_unit']] : '';
 
                     $op_product_tax_options = array();
-                    $productTaxChargesLangData = array();
                     foreach ($productTaxOption as $taxStroId => $taxStroName) {
                         $label = Labels::getLabel('LBL_Tax', $lang_id);
                         if (array_key_exists('name', $taxStroName) && $taxStroName['name'] != '') {
@@ -1234,10 +1234,10 @@ class CheckoutController extends MyAppController
                         $op_product_tax_options[$label]['percentageValue'] = $taxStroName['percentageValue'];
                         $op_product_tax_options[$label]['inPercentage'] = $taxStroName['inPercentage'];
 
-                        $langData =  OrderProductChargeLog::getAttributesByLangId($taxStroId, $lang_id);
+                        $langData =  TaxRuleCombined::getAttributesByLangId($taxStroId, $lang_id);
                         $langLabel = (isset($langData['taxruledet_name']) && $langData['taxruledet_name'] != '') ? $langData['taxruledet_name'] : $label;
 
-                        $productTaxChargesLangData[$lang_id] = array(
+                        $productTaxChargesLangData[$taxStroId][$lang_id] = array(
                         'opchargeloglang_lang_id' => $lang_id,
                         'opchargelog_name' => $langLabel
                         );
@@ -1258,7 +1258,7 @@ class CheckoutController extends MyAppController
                     );
 
                 }
-
+                /*CommonHelper::printArray($productTaxChargesLangData); die;*/
                 /* $taxCollectedBySeller = applicationConstants::NO;
                 if(FatApp::getConfig('CONF_TAX_COLLECTED_BY_SELLER',FatUtility::VAR_INT,0)){
                 $taxCollectedBySeller = applicationConstants::YES;

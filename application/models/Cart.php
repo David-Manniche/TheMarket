@@ -405,12 +405,12 @@ class Cart extends FatModel
                         'shippingCost' => $shippingCost,
                         'buyerId' => $this->cart_user_id
                     );
-                    
+
                     $taxData = $taxObj->calculateTaxRates($sellerProductRow['product_id'], $taxableProdPrice, $sellerProductRow['selprod_user_id'], $siteLangId, $quantity, $extraData, $this->cartCache);
-                    if (false == $taxData['status'] && $taxData['msg'] != ''){
+                    if (false == $taxData['status'] && $taxData['msg'] != '') {
                         $this->error = $taxData['msg'];
                     }
-                    
+
                     $taxOptions = [];
                     if (array_key_exists('options', $taxData)) {
                         foreach ($taxData['options'] as $optionId => $optionval) {
@@ -621,8 +621,8 @@ class Cart extends FatModel
                         'buyerId' => $this->cart_user_id
                     );
                     $taxData = $taxObj->calculateTaxRates($sellerProductRow['product_id'], $taxableProdPrice, $sellerProductRow['selprod_user_id'], $siteLangId, $quantity, $extraData, $this->cartCache);
-                    
-                    if (false == $taxData['status'] && $taxData['msg'] != ''){
+
+                    if (false == $taxData['status'] && $taxData['msg'] != '') {
                         $this->error = $taxData['msg'];
                     }
 
@@ -807,12 +807,12 @@ class Cart extends FatModel
         if (false == $taxData['status'] && $taxData['msg'] != '') {
             $this->error = $taxData['msg'];
         }
-        
+
         $tax = $taxData['tax'];
         $sellerProductRow['tax'] = $tax;
         $sellerProductRow['taxCode'] = $taxData['taxCode'];
         /* ] */
-       
+
         $sellerProductRow['total'] = $totalPrice;
         $sellerProductRow['netTotal'] = $sellerProductRow['total'] + $sellerProductRow['shipping_cost'];
 
@@ -846,11 +846,11 @@ class Cart extends FatModel
         $found = false;
         if (is_array($cartProducts)) {
             foreach ($cartProducts as $cartKey => $product) {
-                if ( ($key == 'all' || (md5($product['key']) == $key) && !$product['is_batch'])) {
+                if (($key == 'all' || (md5($product['key']) == $key) && !$product['is_batch'])) {
                     $found = true;
                     unset($this->SYSTEM_ARR['cart'][$cartKey]);
                     $this->updateTempStockHold($product['selprod_id'], 0, 0);
-                    if ( ($key == 'all' || md5($product['key']) == $key) && !$product['is_batch']) {
+                    if (($key == 'all' || md5($product['key']) == $key) && !$product['is_batch']) {
                         if (is_numeric($this->cart_user_id) && $this->cart_user_id > 0) {
                             AbandonedCart::saveAbandonedCart($this->cart_user_id, $product['selprod_id'], $product['quantity'], AbandonedCart::ACTION_DELETED);
                         }
@@ -1202,15 +1202,15 @@ class Cart extends FatModel
                 }
 
                 $isProductShippedBySeller = Product::isProductShippedBySeller($product['product_id'], $product['product_seller_id'], $product['selprod_user_id']);
-                
+
                 $shippingCost = 0;
                 if (!empty($productSelectedShippingMethodsArr['product']) && isset($productSelectedShippingMethodsArr['product'][$product['selprod_id']])) {
                     $shippingDurationRow = $productSelectedShippingMethodsArr['product'][$product['selprod_id']];
-                    $shippingCost = ROUND(($shippingDurationRow['mshipapi_cost']), 2);                   
+                    $shippingCost = ROUND(($shippingDurationRow['mshipapi_cost']), 2);
                 }
 
                 $taxObj = new Tax();
-                $extraData = array(                    
+                $extraData = array(
                     'billingAddress' => isset($product['billing_address']) ? $product['billing_address'] : '',
                     'shippingAddress' => isset($product['shipping_address']) ? $product['shipping_address'] : '',
                     'shippedBySeller' => $isProductShippedBySeller,
@@ -1218,7 +1218,7 @@ class Cart extends FatModel
                     'buyerId' => $this->cart_user_id
                 );
                 $taxData = $taxObj->calculateTaxRates($product['product_id'], $taxableProdPrice, $product['selprod_user_id'], $langId, $product['quantity'], $extraData, $this->cartCache);
-                if (false == $taxData['status'] && $taxData['msg'] != ''){
+                if (false == $taxData['status'] && $taxData['msg'] != '') {
                     $this->error = $taxData['msg'];
                 }
                 if (array_key_exists('options', $taxData)) {
@@ -1622,7 +1622,7 @@ class Cart extends FatModel
 
     public function clear($includeAbandonedCart = false)
     {
-        if($includeAbandonedCart == true){
+        if ($includeAbandonedCart == true) {
             $cartProducts = $this->getProducts($this->cart_lang_id);
             if (is_array($cartProducts)) {
                 foreach ($cartProducts as $cartKey => $product) {
@@ -1841,7 +1841,7 @@ class Cart extends FatModel
     {
         $coversionRate = 1;
         switch ($productWeightClass) {
-            case "KG" :
+            case "KG":
                 $coversionRate = "35.274";
                 break;
             case "GM":
@@ -1921,15 +1921,18 @@ class Cart extends FatModel
         return true;
     }
 
-    public function getError(){
+    public function getError()
+    {
         return $this->error;
     }
 
-    public function enableCache() {
+    public function enableCache()
+    {
         $this->cartCache = true;
     }
 
-    public function disableCache() {
+    public function disableCache()
+    {
         $this->cartCache = false;
     }
 }
