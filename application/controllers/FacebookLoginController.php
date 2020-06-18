@@ -4,10 +4,6 @@ class FacebookLoginController extends SocialMediaAuthController
 {
     public const KEY_NAME = 'FacebookLogin';
 
-    private $userName;
-    private $facebookId;
-    private $email;
-
     public function __construct($action)
     {
         parent::__construct($action);
