@@ -3,6 +3,7 @@ $frm->setFormTagAttribute('class', 'web_form');
 $frm->setFormTagAttribute('onsubmit', 'setupTaxRule(this); return(false);');
 $frm->developerTags['colClassPrefix'] = 'col-md-';
 $frm->developerTags['fld_default_col'] = 12;
+$combTaxCount = 0;
 ?>
 <div class='page'>
     <div class='container container-fluid'>
@@ -47,7 +48,6 @@ $frm->developerTags['fld_default_col'] = 12;
                                                     $countryIds = [];
                                                     $stateIds = [];
                                                     $typeIds = [];
-                                                    $combTaxCount = 0;
                                                     $combinedData = [];
                                                     if (!empty($combinedRulesDetails) && isset($combinedRulesDetails[$rule['taxrule_id']])) {
                                                         $combinedData = $combinedRulesDetails[$rule['taxrule_id']];
