@@ -147,26 +147,25 @@ $combTaxCount = 0;
                                                                      <div class="accordian_body accordiancontent layout--<?php echo $layout; ?>">
                                                                         <div class="">
                                                                              <div class="row">
-                                                                                <?php if (!empty($combinedData)) {
-                                                                                    foreach ($combinedData as $comData) { ?>
-                                                                                        <div class="col-md-12">
-                                                                                            <div class="field-set">
-                                                                                                <div class="caption-wraper">
-                                                                                                    <label class="field_label">
-                                                                                                    <?php  $fld = $frm->getField('taxrule_name['.$langId.'][]');
-                                                                                                    $fld->value = isset($comData['taxruledet_name'][$langId]) ? $comData['taxruledet_name'][$langId] : '';
-                                                                                                    echo $fld->getCaption(); ?>
-                                                                                                    </label>
-                                                                                                </div>
-                                                                                                <div class="field-wraper">
-                                                                                                    <div class="field_cover">
-                                                                                                    <?php echo $frm->getFieldHtml('taxrule_name['.$langId.'][]'); ?>
-                                                                                                    </div>
-                                                                                                </div>
+                                                                                <?php $fld = $frm->getField('taxrule_name['.$langId.'][]'); if (!empty($combinedData) && $rule['taxrule_is_combined'] == 0) {
+                                                                                    foreach ($combinedData as $comData) {
+                                                                                        $fld->value = isset($comData['taxruledet_name'][$langId]) ? $comData['taxruledet_name'][$langId] : '';
+                                                                                    } ?>
+                                                                                <?php } ?>
+                                                                                <div class="col-md-12">
+                                                                                    <div class="field-set">
+                                                                                        <div class="caption-wraper">
+                                                                                            <label class="field_label">
+                                                                                            <?php echo $fld->getCaption(); ?>
+                                                                                            </label>
+                                                                                        </div>
+                                                                                        <div class="field-wraper">
+                                                                                            <div class="field_cover">
+                                                                                            <?php echo $frm->getFieldHtml('taxrule_name['.$langId.'][]'); ?>
                                                                                             </div>
                                                                                         </div>
-                                                                                    <?php } ?>
-                                                                                <?php } ?>
+                                                                                    </div>
+                                                                                </div>
                                                                             </div>
                                                                         </div>
                                                                      </div>
