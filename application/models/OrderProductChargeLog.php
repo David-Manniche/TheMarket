@@ -10,7 +10,7 @@ class OrderProductChargelog extends MyAppModel
 
     public function __construct($id = 0)
     {
-        parent::__construct(static::DB_TBL, static::DB_TBL_PREFIX . 'id', $id);
+        parent::__construct(static::DB_TBL, static::DB_TBL_PREFIX . 'op_id', $id);
     }
 
     public static function getSearchObject($langId = 0)
@@ -21,7 +21,7 @@ class OrderProductChargelog extends MyAppModel
             $srch->joinTable(
                 static::DB_TBL_LANG,
                 'LEFT OUTER JOIN',
-                'opcl_l.opchargeloglang_opchargelog_id = opchargelog_id
+                'opcl_l.opchargeloglang_op_id = opchargelog_op_id
 			AND opcl_l.opchargeloglang_lang_id = ' . $langId,
                 'opcl_l'
             );

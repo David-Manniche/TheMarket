@@ -381,6 +381,7 @@ class Orders extends MyAppModel
             $opLangRecordObj = new TableRecord(static::DB_TBL_ORDER_PRODUCTS_LANG);
             $opShippingRecordObj = new TableRecord(static::DB_TBL_ORDER_PRODUCTS_SHIPPING);
             $opShippingLangRecordObj = new TableRecord(static::DB_TBL_ORDER_PRODUCTS_SHIPPING_LANG);
+            $opChargeLogLangObj = new TableRecord(OrderProductChargeLog::DB_TBL_LANG);
 
             $counter = 1;
             foreach ($products as $selprodId => $product) {
@@ -487,6 +488,37 @@ class Orders extends MyAppModel
                         if (!$opShippingLangRecordObj->addNew()) {
                             $db->rollbackTransaction();
                             $this->error = $opShippingLangRecordObj->getError();
+                            return false;
+                        }
+                    }
+                }
+                /*]*/
+
+                $opChargeLog = new OrderProductChargeLog();
+                /* saving of products Charges log data[ */
+                $prodChargeslogData = $product['productChargesLogData'];
+                if (!empty($prodChargeslogData)) {
+                    foreach ($prodChargeslogData as $id => $prodChargeslog) {
+                        $prodChargeslog['opchargelog_op_id'] = $op_id;
+                        $opChargeLog->assignValues($prodChargeslog);
+                        if (!$opChargeLog->save()) {
+                            $db->rollbackTransaction();
+                            $this->error = $opChargeLog->getError();
+                            return false;
+                        }
+                    }
+                }
+                /*]*/
+
+                /* saving of products Charges log lang data[ */
+                $prodChargesloglangData = $product['productChargesLogLangData'];
+                if (!empty($prodChargesloglangData)) {
+                    foreach ($prodChargesloglangData as $prodChargeloglangData) {
+                        $prodChargeloglangData['opchargeloglang_op_id'] = $op_id;
+                        $opChargeLogLangObj->assignValues($prodChargeloglangData);
+                        if (!$opChargeLogLangObj->addNew()) {
+                            $db->rollbackTransaction();
+                            $this->error = $opChargeLogLangObj->getError();
                             return false;
                         }
                     }
@@ -1327,7 +1359,7 @@ class Orders extends MyAppModel
             return false;
         }
         $commentId = $db->getInsertId();
-        
+
         // If order status is in buyer order statuses then send update email
         if (in_array($opStatusId, unserialize(FatApp::getConfig("CONF_BUYER_ORDER_STATUS"))) && $notify) {
             $emailNotificationObj->orderStatusUpdateBuyer($commentId, $childOrderInfo['order_language_id'], $childOrderInfo['order_user_id']);
@@ -1755,7 +1787,7 @@ class Orders extends MyAppModel
             Cronjob::firstTimeBuyerDiscount($childOrderInfo['order_user_id'], $childOrderInfo['op_order_id']);
         }
 
-        
+
         return true;
     }
 
@@ -2289,14 +2321,14 @@ class Orders extends MyAppModel
             if (!FatApp::getDb()->updateFromArray(
                 Orders::DB_TBL_ORDER_USER_ADDRESS,
                 [
-                    'oua_address1' => static::REPLACE_ORDER_USER_ADDRESS, 
-                    'oua_address2' => static::REPLACE_ORDER_USER_ADDRESS, 
-                    'oua_city' => static::REPLACE_ORDER_USER_ADDRESS, 
-                    'oua_state' => static::REPLACE_ORDER_USER_ADDRESS, 
-                    'oua_country' => static::REPLACE_ORDER_USER_ADDRESS, 
+                    'oua_address1' => static::REPLACE_ORDER_USER_ADDRESS,
+                    'oua_address2' => static::REPLACE_ORDER_USER_ADDRESS,
+                    'oua_city' => static::REPLACE_ORDER_USER_ADDRESS,
+                    'oua_state' => static::REPLACE_ORDER_USER_ADDRESS,
+                    'oua_country' => static::REPLACE_ORDER_USER_ADDRESS,
                     'oua_country_code' => static::REPLACE_ORDER_USER_ADDRESS,
-                    'oua_state_code' => static::REPLACE_ORDER_USER_ADDRESS, 
-                    'oua_phone' => static::REPLACE_ORDER_USER_ADDRESS, 
+                    'oua_state_code' => static::REPLACE_ORDER_USER_ADDRESS,
+                    'oua_phone' => static::REPLACE_ORDER_USER_ADDRESS,
                     'oua_zip' => static::REPLACE_ORDER_USER_ADDRESS],
                 ['smt' => 'oua_order_id = ? ', 'vals' => [$order['order_id']]]
             )

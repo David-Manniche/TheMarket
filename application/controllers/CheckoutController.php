@@ -1124,6 +1124,7 @@ class CheckoutController extends MyAppController
 
         if ($cartProducts) {
             $productShippingData = array();
+            $productTaxChargesData = array();
             foreach ($cartProducts as $cartProduct) {
                 $productInfo = $this->getCartProductInfo($cartProduct['selprod_id']);
                 if (!$productInfo) {
@@ -1149,8 +1150,29 @@ class CheckoutController extends MyAppController
                     }
                     $productShippingData['opshipping_by_seller_user_id'] = $shippingDurationRow['shipped_by_seller'];
                 }
+
+                $productTaxOption = array();
+                if (array_key_exists($productInfo['selprod_id'], $cartSummary["prodTaxOptions"])) {
+                    $productTaxOption = $cartSummary["prodTaxOptions"][$productInfo['selprod_id']];
+                }
+
+                foreach ($productTaxOption as $taxStroId => $taxStroName) {
+                    $label = Labels::getLabel('LBL_Tax', $this->siteLangId);
+                    if (array_key_exists('name', $taxStroName) && $taxStroName['name'] != '') {
+                        $label = $taxStroName['name'];
+                    }
+                    $productTaxChargesData[$taxStroId] = array(
+                    'opchargelog_type' => OrderProduct::CHARGE_TYPE_TAX,
+                    'opchargelog_identifier' => $label,
+                    'opchargelog_value' => $taxStroName['value'],
+                    'opchargelog_is_percent' => $taxStroName['inPercentage'],
+                    'opchargelog_percentvalue' => $taxStroName['percentageValue']
+                    );
+                }
+
                 $productsLangData = array();
                 $productShippingLangData = array();
+                $productTaxChargesLangData = array();
                 foreach ($allLanguages as $lang_id => $language_name) {
                     if (0 == $lang_id) {
                         continue;
@@ -1202,11 +1224,6 @@ class CheckoutController extends MyAppController
                     $op_product_weight_unit_name = ($productInfo['product_weight_unit']) ? $weightUnitsArr[$productInfo['product_weight_unit']] : '';
 
                     $op_product_tax_options = array();
-                    $productTaxOption = array();
-                    if (array_key_exists($productInfo['selprod_id'], $cartSummary["prodTaxOptions"])) {
-                        $productTaxOption = $cartSummary["prodTaxOptions"][$productInfo['selprod_id']];
-                    }
-
                     foreach ($productTaxOption as $taxStroId => $taxStroName) {
                         $label = Labels::getLabel('LBL_Tax', $lang_id);
                         if (array_key_exists('name', $taxStroName) && $taxStroName['name'] != '') {
@@ -1217,14 +1234,9 @@ class CheckoutController extends MyAppController
                         $op_product_tax_options[$label]['percentageValue'] = $taxStroName['percentageValue'];
                         $op_product_tax_options[$label]['inPercentage'] = $taxStroName['inPercentage'];
 
-                        $productsChargesLogData[$lang_id] = array(
-                        'opchargelog_type' => OrderProduct::CHARGE_TYPE_TAX,
+                        $productTaxChargesLangData[$lang_id] = array(
                         'opchargeloglang_lang_id' => $lang_id,
-                        'opchargelog_identifier' => $langSpecificProductInfo['product_name'],
-                        'opchargelog_name' => $op_selprod_options,
-                        'opchargelog_value' => !empty($langSpecificProductInfo['brand_name']) ? $langSpecificProductInfo['brand_name'] : '',
-                        'opchargelog_is_percent' => $langSpecificProductInfo['shop_name'],
-                        'opchargelog_percentvalue' => $sduration_name
+                        'opchargelog_name' => $op_selprod_options
                         );
                     }
 
@@ -1286,6 +1298,8 @@ class CheckoutController extends MyAppController
                     'productsLangData' => $productsLangData,
                     'productShippingData' => $productShippingData,
                     'productShippingLangData' => $productShippingLangData,
+                    'productChargesLogData' => $productTaxChargesData,
+                    'productChargesLogLangData' => $productTaxChargesLangData,
                     /* 'op_tax_collected_by_seller'    =>    $taxCollectedBySeller, */
                     'op_free_ship_upto' => $cartProduct['shop_free_ship_upto'],
                     'op_actual_shipping_charges' => $cartProduct['shipping_cost'],

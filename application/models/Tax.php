@@ -230,8 +230,6 @@ class Tax extends MyAppModel
         if (0 == $activatedTaxServiceId) {
             $srch->joinTable(TaxRuleLocation::DB_TBL, 'LEFT JOIN', 'taxLoc.taxruleloc_taxcat_id = ptt_taxcat_id', 'taxLoc');
             $srch->joinTable(TaxRule::DB_TBL, 'LEFT JOIN', 'taxRule.taxrule_id = taxLoc.taxruleloc_taxrule_id', 'taxRule');
-            $srch->joinTable(TaxRule::DB_TBL_LANG, 'LEFT JOIN', 'taxRuleLang.taxrulelang_taxrule_id = taxrule.taxrule_id and
-                taxrulelang_lang_id = '.$langId, 'taxRuleLang');
 
             if ($userCountry > 0) {
                 $srch->addCondition('taxruleloc_country_id', '=', $userCountry, 'AND');
