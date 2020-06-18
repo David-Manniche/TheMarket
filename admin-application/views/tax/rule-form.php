@@ -590,7 +590,6 @@ $combTaxCount = 0;
 
             <?php foreach ($otherLanguages as $langId => $data) { ?>
                 var langRowHtml = '<div class="field-set rule-detail-row'+combTaxCount+'"><div class="caption-wraper"><label class="field_label"><?php echo Labels::getLabel('LBL_Tax_Name', $adminLangId);?><span class="replaceText--js"></span></label></div><div class="field-wraper"><div class="field_cover"><?php $nameFld = $frm->getField('taxruledet_name['.$langId.'][]'); $nameFld->value = ""; echo $frm->getFieldHtml('taxruledet_name['.$langId.'][]'); ?></div></div></div>';
-                alert(parentIndex);
                 $('.tax-rule-form-'+ parentIndex +' .combined-tax-lang-details--js'+<?php echo $langId; ?>).append(langRowHtml);
             <?php } ?>
             //$("table tbody").append(markup);
