@@ -314,12 +314,12 @@ class Tax extends MyAppModel
         $shipToStateId = 0;
         $shipToCountryId = 0;
 
-        if (isset($extraInfo['shipping_address']['ua_country_id'])) {
-            $shipToCountryId = FatUtility::int($extraInfo['shipping_address']['ua_country_id']);
+        if (isset($extraInfo['shippingAddress']['ua_country_id'])) {
+            $shipToCountryId = FatUtility::int($extraInfo['shippingAddress']['ua_country_id']);
         }
 
-        if (isset($extraInfo['shipping_address']['ua_state_id'])) {
-            $shipToStateId = FatUtility::int($extraInfo['shipping_address']['ua_state_id']);
+        if (isset($extraInfo['shippingAddress']['ua_state_id'])) {
+            $shipToStateId = FatUtility::int($extraInfo['shippingAddress']['ua_state_id']);
         }
 
         if (array_key_exists('shippingAddress', $extraInfo)) {
