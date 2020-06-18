@@ -95,4 +95,17 @@ DROP TABLE `tbl_tax_rules_lang`;
 ALTER TABLE `tbl_tax_rules`
   DROP `taxrule_identifier`;
 ALTER TABLE `tbl_tax_rules` ADD `taxrule_name` VARCHAR(255) NOT NULL AFTER `taxrule_taxcat_id`;
+CREATE TABLE `tbl_order_prod_charges_logs` (
+  `opchargelog_op_id` int(11) NOT NULL,
+  `opchargelog_type` int(11) NOT NULL,
+  `opchargelog_identifier` varchar(255) NOT NULL,
+  `opchargelog_value` decimal(10,4) NOT NULL,
+  `opchargelog_is_percent` tinyint(4) NOT NULL,
+  `opchargelog_percentvalue` decimal(10,4) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+CREATE TABLE `tbl_order_prod_charges_logs_lang` (
+  `opchargeloglang_op_id` int(11) NOT NULL,
+  `opchargeloglang_lang_id` int(11) NOT NULL,
+  `opchargelog_name` varchar(255) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 /* ] */
