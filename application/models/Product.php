@@ -1313,6 +1313,16 @@ class Product extends MyAppModel
         $srch->joinSellers();
         $srch->setGeoAddress();
         $srch->joinShops($langId, true, true, $shop_id);
+        if (FatApp::getConfig('CONF_ENABLE_GEO_LOCATION', FatUtility::VAR_INT, 0)) {
+            $prodGeoCondition = FatApp::getConfig('CONF_PRODUCT_GEO_LOCATION', FatUtility::VAR_INT, 0);
+            switch ($prodGeoCondition) {
+                case applicationConstants::BASED_ON_DELIVERY_LOCATION:
+                    $srch->joinDeliveryLocations();
+                    /* $srch->addFld('if(p.product_type = ' . Product::PRODUCT_TYPE_PHYSICAL . ', shipprofile.shippro_product_id, -1) as shippingProfile');
+                    $srch->addHaving('shippingProfile', 'IS NOT', 'mysql_func_null', 'and', true); */
+                    break;
+            }
+        }
         $srch->joinShopCountry();
         $srch->joinShopState();
         $srch->joinBrands($langId);
@@ -1337,6 +1347,7 @@ class Product extends MyAppModel
             'selprod_sold_count', 'selprod_return_policy', /* 'ifnull(sq_sprating.totReviews,0) totReviews','IF(ufp_id > 0, 1, 0) as isfavorite', */'selprod_min_order_qty'
             )
         );
+       
 
         $includeRating = false;
 

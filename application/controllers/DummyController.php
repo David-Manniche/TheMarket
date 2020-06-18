@@ -261,11 +261,29 @@ class DummyController extends MyAppController
 
     public function index()
     {
-        $address = new Address();
+       /*  $address = new Address();
         $lat = '37.4238253802915';
         $lng = '-122.0829009197085';
         
-        $response = $address->getGeoData($lat, $lng);
+        $response = $address->getGeoData($lat, $lng); */
+        $langId = 1;
+        $countryId = 99;
+        $stateId = 0;
+
+        $srch = ShippingProfileProduct::getUserSearchObject();
+        $srch->joinTable(ShippingProfile::DB_TBL, 'INNER JOIN', 'sppro.shippro_shipprofile_id = spprof.shipprofile_id and spprof.shipprofile_active = ' . applicationConstants::YES, 'spprof');
+        $srch->joinTable(ShippingProfileZone::DB_TBL, 'INNER JOIN', 'shippz.shipprozone_shipprofile_id = spprof.shipprofile_id', 'shippz');
+        $srch->joinTable(ShippingZone::DB_TBL, 'INNER JOIN', 'shipz.shipzone_id = shippz.shipprozone_shipzone_id and shipz.shipzone_active = ' . applicationConstants::YES, 'shipz');
+
+        $tempSrch = ShippingZone::getZoneLocationSearchObject($langId);
+        $tempSrch->addDirectCondition("(shiploc_country_id = '-1' or (shiploc_country_id = '" . $countryId. "' and (shiploc_state_id = '-1' or shiploc_state_id = '" . $stateId . "')) )");
+        $tempSrch->doNotCalculateRecords();
+        $tempSrch->doNotLimitRecords();
+        
+        $srch->joinTable('(' . $tempSrch->getQuery() . ')', 'INNER JOIN', 'shiploc.shiploc_shipzone_id = shippz.shipprozone_shipzone_id', 'shiploc');
+        echo $srch->getQuery();
+
+
     }
 
 

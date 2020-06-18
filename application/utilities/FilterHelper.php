@@ -24,7 +24,14 @@ class FilterHelper extends FatUtility
         $prodSrchObj->joinProductToCategory($langId);
         $prodSrchObj->joinSellerSubscription(0, false, true);
         $prodSrchObj->addSubscriptionValidCondition();
-
+        if (FatApp::getConfig('CONF_ENABLE_GEO_LOCATION', FatUtility::VAR_INT, 0)) {
+            $prodGeoCondition = FatApp::getConfig('CONF_PRODUCT_GEO_LOCATION', FatUtility::VAR_INT, 0);
+            switch ($prodGeoCondition) {
+                case applicationConstants::BASED_ON_DELIVERY_LOCATION:
+                    $prodSrchObj->joinDeliveryLocations();
+                    break;
+            }
+        }
         $categoryId = 0;
         $categoriesArr = array();
         if (array_key_exists('category', $post)) {
@@ -186,10 +193,10 @@ class FilterHelper extends FatUtility
     {
         if (FatApp::getConfig('CONF_DEFAULT_PLUGIN_' . Plugin::TYPE_FULL_TEXT_SEARCH, FatUtility::VAR_INT, 0)) {
             $srch = FullTextSearch::getListingObj($post, $langId);
-			$srch->setFields(array('aggregations'));
+            $srch->setFields(array('aggregations'));
             $srch->setPageNumber(0);
             $srch->setPageSize(9999);
-            $result = $srch->fetch(true);			
+            $result = $srch->fetch(true);
             $priceArr = [];
 
             if (array_key_exists('aggregations', $result)) {
@@ -210,12 +217,27 @@ class FilterHelper extends FatUtility
         $priceSrch = static::getSearchObj($langIdForKeywordSeach, $post);
         $priceSrch->doNotLimitRecords();
         $priceSrch->doNotCalculateRecords();
-        $priceSrch->addMultipleFields(array('MIN(theprice) as minPrice', 'MAX(theprice) as maxPrice'));
-        $qry = $priceSrch->getQuery();
-        $qry .= ' having minPrice IS NOT NULL AND maxPrice IS NOT NULL';
-        //$priceRs = $priceSrch->getResultSet();
-        $priceRs = FatApp::getDb()->query($qry);
-        return FatApp::getDb()->fetch($priceRs);
+
+        $useSubQuery = false ;
+        if (FatApp::getConfig('CONF_ENABLE_GEO_LOCATION', FatUtility::VAR_INT, 0)) {
+            $prodGeoCondition = FatApp::getConfig('CONF_PRODUCT_GEO_LOCATION', FatUtility::VAR_INT, 0);
+            switch ($prodGeoCondition) {
+                case applicationConstants::BASED_ON_DELIVERY_LOCATION:
+                    $priceSrch->addMultipleFields(array('theprice'));
+                     $rs = FatApp::getDb()->query('select MIN(theprice) as minPrice, MAX(theprice) as maxPrice from ( ' . $priceSrch->getQuery() . ') as pricetbl');
+                    $useSubQuery = true;
+                    break;
+            }
+        }
+        
+        if (false == $useSubQuery) {
+            $priceSrch->addMultipleFields(array('MIN(theprice) as minPrice', 'MAX(theprice) as maxPrice'));
+            $priceSrch->addHaving('minPrice', 'IS NOT', 'mysql_func_null', 'and', true);
+            $priceSrch->addHaving('maxPrice', 'IS NOT', 'mysql_func_null', 'and', true);
+            $rs = $priceSrch->getResultSet();
+        }
+
+        return FatApp::getDb()->fetch($rs);
     }
 
     public static function getCategories($langId, $categoryId, $prodSrchObj, $cacheKey)

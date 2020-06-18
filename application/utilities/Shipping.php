@@ -98,7 +98,7 @@ class Shipping
      * getSellerProductShippingRates
      *
      * @param  array $selProdIdArr
-     * @param  int $$countryId
+     * @param  int $countryId
      * @param  int $stateId
      * @return array
      */

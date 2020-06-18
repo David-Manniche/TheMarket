@@ -17,22 +17,26 @@ class ShippingZone extends MyAppModel
     {
         $srch = new SearchBase(static::DB_TBL, 'szone');
         if ($isActive == true) {
-            $srch->addCondition('szone.'. static::DB_TBL_PREFIX .'active', '=', applicationConstants::ACTIVE);
+            $srch->addCondition('szone.' . static::DB_TBL_PREFIX .'active', '=', applicationConstants::ACTIVE);
         }
         return $srch;
     }
     
-    public static function getZoneLocationSearchObject($langId)
+    public static function getZoneLocationSearchObject($langId = 0)
     {
+        $langId = FatUtility::int($langId);
         $srch = new SearchBase(static::DB_SHIP_LOC_TBL, 'sloc');
         $srch->joinTable(Countries::DB_TBL, 'LEFT OUTER JOIN', 'sc.country_id = sloc.shiploc_country_id', 'sc');
-        $srch->joinTable(Countries::DB_TBL_LANG, 'LEFT OUTER JOIN', 'c_l.'.Countries::DB_TBL_LANG_PREFIX.'country_id = sc.'.Countries::tblFld('id').' and c_l.'.Countries::DB_TBL_LANG_PREFIX.'lang_id = '.$langId, 'c_l');
-        $srch->addMultipleFields(
-            array(
-                'shiploc_shipzone_id', 'shiploc_zone_id', 'shiploc_country_id','shiploc_state_id', 'country_id',
-                'if(country_name is null, country_code, country_name) as country_name'
-            )
-        );
+        
+        $fields = ['shiploc_shipzone_id', 'shiploc_zone_id', 'shiploc_country_id','shiploc_state_id', 'country_id'];
+        if (0 < $langId) {
+            $srch->joinTable(Countries::DB_TBL_LANG, 'LEFT OUTER JOIN', 'c_l.' . Countries::DB_TBL_LANG_PREFIX . 'country_id = sc.' . Countries::tblFld('id') . ' and c_l.' . Countries::DB_TBL_LANG_PREFIX . 'lang_id = ' . $langId, 'c_l');
+            $fields[] = 'if(country_name is null, country_code, country_name) as country_name';
+        } else {
+            $fields[] = 'country_code as country_name';
+        }
+        
+        $srch->addMultipleFields($fields);
         return $srch;
     }
     
