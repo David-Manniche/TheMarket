@@ -2,7 +2,7 @@
 
 /*
  *    Reference : https://data.fixer.io
- *    Please note: The default base currency is EUR. It can be change with your subscription plan.
+ *    Please note: The default base currency is EUR. It can be changed, depend upon your subscription plan.
  */
 
 use Curl\Curl;
@@ -17,8 +17,14 @@ class FixerCurrencyConverter extends CurrencyConverterBase
     private $actionUri = '';
     private $response = '';
     private $toCurrencies = [];
-
-    public function __construct($langId)
+    
+    /**
+     * __construct
+     *
+     * @param  int $langId
+     * @return void
+     */
+    public function __construct(int $langId)
     {
         $this->langId = FatUtility::int($langId);
         if (1 > $this->langId) {
@@ -40,14 +46,14 @@ class FixerCurrencyConverter extends CurrencyConverterBase
         if (false === $this->loadBaseCurrency()) {
             return false;
         }
-
+        
         return true;
     }
             
     /**
      * initiateUri
      *
-     * @param  mixed $action
+     * @param  string $action
      * @return bool
      */
     private function initiateUri(string $action = ''): bool
@@ -91,7 +97,7 @@ class FixerCurrencyConverter extends CurrencyConverterBase
     /**
      * bindQueryString
      *
-     * @param  mixed $queryString
+     * @param  string $queryString
      * @return bool
      */
     private function bindQueryString(string $queryString): bool
@@ -144,8 +150,11 @@ class FixerCurrencyConverter extends CurrencyConverterBase
      */
     public function getRates(array $toCurrencies = []): array
     {
-        $this->toCurrencies = is_array($toCurrencies) ? array_filter($toCurrencies) : [];
+        if (false === $this->init()) {
+            return false;
+        }
 
+        $this->toCurrencies = is_array($toCurrencies) ? array_filter($toCurrencies) : [];
         if (false === $this->convert()) {
             return [
                 'status' => Plugin::RETURN_FALSE,

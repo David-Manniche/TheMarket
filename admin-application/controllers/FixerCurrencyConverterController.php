@@ -16,20 +16,12 @@ class FixerCurrencyConverterController extends CurrencyConverterBaseController
         if (false === $this->fixer) {
             $this->setError($error);
         }
-        $this->init();
     }
 
     private function setError(string $msg = "")
     {
         $msg = !empty($msg) ? $msg : $this->fixer->getError();
         LibHelper::dieJsonError($msg);
-    }
-
-    private function init()
-    {
-        if (false === $this->fixer->init()) {
-            $this->setError();
-        }
     }
 
     public function getRates($toCurrencies = [])

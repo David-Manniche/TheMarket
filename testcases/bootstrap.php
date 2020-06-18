@@ -1,6 +1,4 @@
 <?php 
-/* ./vendor/phpunit/phpunit/phpunit --filter testLogin --bootstrap ./tests/bootstrap.php ./tests/testcases/UserAuthenticationTest */
-/* ./vendor/bin/phpunit --filter testLogin --bootstrap ./tests/bootstrap.php ./tests/testcases/UserAuthenticationTest */
 
 $_SERVER['REDIRECT_REDIRECT_STATUS'] = '200';
 $_SERVER['REDIRECT_STATUS'] = '200';
@@ -73,5 +71,6 @@ define('CONF_WEBROOT_URL', CONF_WEBROOT_FRONTEND);
 define('MOBILE_APP_API_CALL', false);
 
 define('CONF_PLUGIN_DIR', CONF_INSTALLATION_PATH . 'library/plugins/');
+define('CONF_TEST_CASES_DIR', CONF_INSTALLATION_PATH . 'testcases/');
 
 require_once CONF_INSTALLATION_PATH . 'library/autoloader.php';

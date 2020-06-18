@@ -31,4 +31,6 @@ define('CONF_API_REQ_CACHE_TIME', 108000); // in seconds (108000 = 30 min)
 
 define('S3_KEY', '');
 define('S3_SECRET', '');
-define('S3_REGION', 'us-east-2');  
+define('S3_REGION', 'us-east-2');
+
+define('CONF_TEST_CASES_DIR', CONF_INSTALLATION_PATH . 'testcases/');
