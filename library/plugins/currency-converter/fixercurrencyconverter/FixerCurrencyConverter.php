@@ -176,7 +176,7 @@ class FixerCurrencyConverter extends CurrencyConverterBase
         return [
             'status' => $status,
             'msg' => $msg,
-            'data' => isset($data->rates) ? $data->rates : []
+            'data' => isset($data->rates) ? (array) $data->rates : []
         ];
     }
 }
