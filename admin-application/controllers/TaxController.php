@@ -606,6 +606,7 @@ class TaxController extends AdminBaseController
 
                 /* [ UPDATE COMBINED TAX DETAILS */
                 $combinedTaxes = $rule['combinedTaxDetails'];
+                CommonHelper::printArray($combinedTaxes); die;
                 if (!empty($combinedTaxes)) {
                     if (!$this->updateCombinedData($combinedTaxes, $ruleId, $this->adminLangId)) {
                         Message::addErrorMessage(Labels::getLabel('LBL_Unable_to_Update_Combined_Tax_Data', $this->adminLangId));

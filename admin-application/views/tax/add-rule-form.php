@@ -2,8 +2,8 @@
 $frm->setFormTagAttribute('class', 'web_form');
 /*$frm->setFormTagAttribute('onsubmit', 'setupTaxRule(this); return(false);');
 $frm->developerTags['colClassPrefix'] = 'col-md-';
-$frm->developerTags['fld_default_col'] = 12;
-$combTaxCount = 0;*/
+$frm->developerTags['fld_default_col'] = 12;*/
+$combTaxCount = 0;
 ?>
 <div class="tax-rule-form--js tax-rule-form-<?php echo $index; ?>" data-index="<?php echo $index; ?>">
     <div class="p-4">

@@ -21,16 +21,16 @@
 
 			var taxrule_is_combined = 0;
 			var combinedTax = [];
-
 			if ($(className + ' input[name="taxrule_is_combined[]"]').prop("checked") == true) {
 				var taxrule_is_combined = 1;
 				$(className +" .rule-detail-row--js").each(function(currentIndex, detailData) {
 					var taxruledet_id = $(detailData).find(' input[name="taxruledet_id[]"]').val();
 
-					var rowClass = $(detailData).attr('class').split(' ').pop();
+					/*var rowClass = $(detailData).attr('class').split(' ').pop();*/
 					var taxruledet_name = [];
 					for (var key in langLbl['languages']) {
-						taxruledet_name[key] = $('.'+rowClass + ' input[name="taxruledet_name['+key+'][]"]').val();
+						console.log(currentIndex);
+						taxruledet_name[key] = $(detailData).find('input[name="taxruledet_name['+key+'][]"]').val();
 					}
 
 					var taxruledet_rate = $(detailData).find(' input[name="taxruledet_rate[]"]').val();
