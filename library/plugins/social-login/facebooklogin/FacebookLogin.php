@@ -114,11 +114,16 @@ class FacebookLogin extends SocialMediaAuthBase
     /**
      * verifyAccessToken
      *
-     * @param  mixed $accessToken
+     * @param  string $accessToken
+     * @param  string $state
      * @return void
      */
-    public function verifyAccessToken($accessToken)
+    public function verifyAccessToken(string $accessToken, string $state = ''): bool
     {
+        if (!empty($state)) {
+            $this->helper->getPersistentDataHandler()->set('state', $state);
+        }
+
         $this->fbAuthObj->setDefaultAccessToken($accessToken);
 
         try {

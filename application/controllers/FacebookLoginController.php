@@ -34,10 +34,9 @@ class FacebookLoginController extends SocialMediaAuthController
         }
 
         if (!empty($accessToken)) {
-            if (isset($get['state'])) {
-                $this->helper->getPersistentDataHandler()->set('state', $get['state']);
-            }
-            if (false === $this->fb->verifyAccessToken($accessToken)) {
+            $state = isset($get['state']) ? $get['state'] : '';
+            
+            if (false === $this->fb->verifyAccessToken($accessToken, $state)) {
                 $this->setErrorAndRedirect($this->fb->getError(), true);
             }
             $resp = $this->fb->getResponse();
