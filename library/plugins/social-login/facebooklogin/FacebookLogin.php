@@ -16,6 +16,7 @@ class facebooklogin extends SocialMediaAuthBase
     private $fbAuthObj;
     private $helper;
     private $response = [];
+    private $accessToken = '';
 
     /**
      * __construct
@@ -73,6 +74,27 @@ class facebooklogin extends SocialMediaAuthBase
     private function getResponse(): array
     {
         return $this->response;
+    }
+    
+    /**
+     * loadAccessToken
+     *
+     * @return bool
+     */
+    public function loadAccessToken(): bool
+    {
+        try {
+            $this->response = $this->helper->getAccessToken();
+        } catch (FacebookResponseException $e) {
+            $this->error = Labels::getLabel('MSG_GRAPH_RETURNED_AN_ERROR:_', $this->siteLangId);
+            $this->error .= $e->getMessage();
+            return false;
+        } catch (FacebookSDKException $e) {
+            $this->error = Labels::getLabel('MSG_FACEBOOK_SDK_RETURNED_AN_ERROR:_', $this->siteLangId);
+            $this->error .= $e->getMessage();
+            return false;
+        }
+        return true;
     }
 
     /**
