@@ -35,14 +35,15 @@ class FacebookLoginController extends SocialMediaAuthController
 
         if (!empty($accessToken)) {
             $state = isset($get['state']) ? $get['state'] : '';
-            
+
             if (false === $this->fb->verifyAccessToken($accessToken, $state)) {
                 $this->setErrorAndRedirect($this->fb->getError(), true);
             }
             $resp = $this->fb->getResponse();
-            $email = !empty($resp['email']) ? $resp['email'] : '';
+            $fbId = $resp->getId();
+            $fbEmail = $resp->getEmail();
 
-            $userInfo = $this->doLogin($email, $resp['userName'], $resp['facebookId'], $userType);
+            $userInfo = $this->doLogin($fbEmail, $fbEmail, $fbId, $userType);
             $this->redirectToDashboard($userInfo['user_preferred_dashboard']);
         }
         FatApp::redirectUser($this->fb->getRequestUri());

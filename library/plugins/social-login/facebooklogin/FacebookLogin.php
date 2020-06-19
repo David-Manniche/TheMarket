@@ -69,11 +69,11 @@ class FacebookLogin extends SocialMediaAuthBase
     /**
      * getResponse
      *
-     * @return array
+     * @return object
      */
-    public function getResponse(): array
+    public function getResponse(): object
     {
-        return $this->response;
+        return empty($this->response) ? (object) array() : $this->response;
     }
     
     /**
