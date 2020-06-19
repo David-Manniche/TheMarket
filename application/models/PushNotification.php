@@ -184,7 +184,10 @@ class PushNotification extends MyAppModel
             $error =  Labels::getLabel('MSG_PLUGIN_IS_NOT_ACTIVE', CommonHelper::getLangId());
             return false;
         }
-        require_once CONF_PLUGIN_DIR . '/push-notification/' . $keyName . '.php';
+        
+        if (false === PluginHelper::includePlugin($keyName, 'push-notification', $error, CommonHelper::getLangId())) {
+            return false;
+        }
         
         $limit = $keyName::LIMIT;
 
@@ -202,7 +205,6 @@ class PushNotification extends MyAppModel
         $srch->doNotLimitRecords();
         $rs = $srch->getResultSet();
         $notificationList = FatApp::getDb()->fetchAll($rs);
-        
         if (1 > count($notificationList)) {
             $error = Labels::getLabel('MSG_NO_RECORD_FOUND', CommonHelper::getLangId());
             return false;

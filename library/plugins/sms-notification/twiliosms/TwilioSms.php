@@ -5,10 +5,15 @@ use Twilio\Rest\Client;
 
 class TwilioSms extends SmsNotificationBase
 {
-    public const KEY_NAME = 'TwilioSms';
-    private $settings = [];
-    private $langId = 0;
+    public const KEY_NAME = __CLASS__;
     
+    public $langId = 0;
+    
+    public $requiredKeys = [
+        'account_sid',
+        'auth_token',
+        'sender_id'
+    ];
 
     public function __construct($langId)
     {
@@ -16,23 +21,17 @@ class TwilioSms extends SmsNotificationBase
         if (1 > $this->langId) {
             $this->langId = CommonHelper::getLangId();
         }
-        $this->validateSettings();
-    }
-    
-    private function validateSettings()
-    {
-        $this->settings = $this->getSettings();
-        $requiredKeyArr = ['account_sid', 'auth_token', 'sender_id'];
-        foreach ($requiredKeyArr as $key) {
-            if (!array_key_exists($key, $this->settings)) {
-                $this->error = Labels::getLabel('MSG_SETTINGS_NOT_UPDATED', $this->langId);
-                return false;
-            }
-        }
     }
     
     public function send($to, $body)
     {
+        if (false == $this->validateSettings($this->langId)) {
+            return [
+                'status' => false,
+                'msg' => $this->error
+            ];
+        }
+        
         if (empty($to) || empty($body)) {
             return [
                 'status' => false,

@@ -76,7 +76,7 @@ if (!$print) {
                                     <p><strong><?php echo Labels::getLabel('LBL_Tax', $siteLangId);?>:</strong> <?php echo CommonHelper::displayMoneyFormat(CommonHelper::orderProductAmount($orderDetail, 'TAX'), true, false, true, false, true);?></p>
                                     <?php } else {
                                     foreach ($orderDetail['taxOptions'] as $key => $val) { ?>
-                                            <p><strong><?php echo $key ?>:</strong> <?php echo CommonHelper::displayMoneyFormat($val, true, false, true, false, true); ?></p>
+                                            <p><strong><?php echo CommonHelper::displayTaxPercantage($val, true) ?>:</strong> <?php echo CommonHelper::displayMoneyFormat($val['value'], true, false, true, false, true); ?></p>
                                         <?php }
                                 }?>
                                 <?php } ?>
@@ -183,7 +183,7 @@ if (!$print) {
                                             echo CommonHelper::displayMoneyFormat(CommonHelper::orderProductAmount($orderDetail, 'TAX'), true, false, true, false, true);
                                         } else {
                                             foreach ($orderDetail['taxOptions'] as $key => $val) { ?>
-                                                <p><strong><?php echo $key ?>:</strong> <?php echo CommonHelper::displayMoneyFormat($val, true, false, true, false, true); ?></p>
+                                                <p><strong><?php echo CommonHelper::displayTaxPercantage($val, true) ?>:</strong> <?php echo CommonHelper::displayMoneyFormat($val['value'], true, false, true, false, true); ?></p>
                                             <?php }
                                         } ?>
                                     </td>
@@ -325,7 +325,7 @@ if (!$print) {
                                     <th><?php echo Labels::getLabel('LBL_Downloaded_count', $siteLangId);?></th>
                                     <th><?php echo Labels::getLabel('LBL_Expired_on', $siteLangId);?></th>
                                     <?php if ($canEdit) { ?>
-                                        <th><?php echo Labels::getLabel('LBL_Action', $siteLangId);?></th>
+                                        <th></th>
                                     <?php }?>
                                 </tr>
                                 <?php $sr_no = 1;

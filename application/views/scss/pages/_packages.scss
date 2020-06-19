@@ -38,19 +38,23 @@
 }
 
 .packages-box .box.two .box-inner {
-    background: $brand-color; color:$brand-color-inverse;
+    background: $brand-color;
+    color: $brand-color-inverse;
 }
 
 .packages-box .box.two .after-box h3 {
-    background: $brand-color; color:$brand-color-inverse;
+    background: $brand-color;
+    color: $brand-color-inverse;
 }
 
 .packages-box .box.three .box-inner {
-    background: $secondary-color; color:$secondary-color-inverse;
+    background: $secondary-color;
+    color: $secondary-color-inverse;
 }
 
 .packages-box .box.three .after-box h3 {
-    background: $secondary-color; color:$secondary-color-inverse;
+    background: $secondary-color;
+    color: $secondary-color-inverse;
 }
 
 .packages-box .name {
@@ -63,7 +67,7 @@
 
 .packages-box .name span {
     color: #fff;
-    font-size: 0.8em;
+    font-size: 0.8rem;
     display: block;
     font-weight: normal;
     text-transform: none;
@@ -71,19 +75,19 @@
 
 .packages-box .valid {
     color: #fff;
-    font-size: 1.1em;
+    font-size: 1.1rem;
     font-weight: 400;
     line-height: 1.5;
     font-family: $family-primary;
 }
 
 .packages-box .valid sup {
-    font-size: 3.2em;
+    font-size: 3.2rem;
 }
 
-.packages-box .valid span {
-    font-size: 4em;
-    font-weight: 800;
+.packages-box .valid span.currency-value {
+    font-size: 3rem;
+    font-weight: 600;
     line-height: 1;
 }
 
@@ -95,13 +99,13 @@
 .packages-box .trial ul {}
 
 .packages-box .trial ul li {
-    font-size: 1em;
+    font-size: 1rem;
     margin: 5px 0;
     color: #fff;
 }
 
 .packages-box .trial ul li span {
-    font-size: 1em;
+    font-size: 1rem;
     font-weight: 600;
 }
 

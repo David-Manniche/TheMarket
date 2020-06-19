@@ -166,11 +166,13 @@
 }
 
 .banner {
-    background-repeat: no-repeat;
-    background-position: center top;
+    background-repeat: repeat;
+    background-position: center;
     position: relative;
     background-attachment: fixed;
-    background-size: cover;
+    background-size: 25%;
+    background-color: var(--brand-color);
+    color: var(--brand-color-inverse);
 
     &:after {
         position: absolute;
@@ -180,7 +182,7 @@
         bottom: 0;
         z-index: 0;
         content: "";
-        opacity: 0.5;
+        opacity: 0.3;
         background: #232526;
         /* fallback for old browsers */
         /* Chrome 10-25, Safari 5.1-6 */
@@ -197,7 +199,7 @@
 
 .seller-slogan {
     position: relative;
-    color: #fff;
+     
     height: 100%;
     display: -webkit-box;
     display: -ms-flexbox;
@@ -210,11 +212,11 @@
     .seller-slogan-txt {
         position: static;
         bottom: 0;
-        color: #fff;
+
 
         h3 {
             font-size: 3rem;
-            color: inherit;
+            
             font-weight: 600;
 
             span {
@@ -243,6 +245,7 @@
     margin: 3.125rem 0;
     padding: 20px;
     background: rgba(255, 255, 255, 0.95);
+    color: $body-color;
     width: 100%;
     border-radius: 4px;
 }

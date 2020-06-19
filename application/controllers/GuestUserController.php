@@ -83,11 +83,13 @@ class GuestUserController extends MyAppController
         }
         $userName = FatApp::getPostedData('username');
         $dialCode = FatApp::getPostedData('user_dial_code', FatUtility::VAR_STRING, '');
+        $withPhone = false;
         if (!empty($dialCode)) {
             $userName = trim($dialCode) . trim($userName);
+            $withPhone = true;
         }
 
-        if (!$authentication->login($userName, FatApp::getPostedData('password'), $_SERVER['REMOTE_ADDR'], true, false, $this->app_user['temp_user_id'], $userType)) {
+        if (!$authentication->login($userName, FatApp::getPostedData('password'), $_SERVER['REMOTE_ADDR'], true, false, $this->app_user['temp_user_id'], $userType, $withPhone)) {
             $message = Labels::getLabel($authentication->getError(), $this->siteLangId);
             FatUtility::dieJsonError($message);
         }
@@ -346,7 +348,7 @@ class GuestUserController extends MyAppController
 
         $dialCode = FatApp::getPostedData('user_dial_code', FatUtility::VAR_STRING, '');
         $countryIso = FatApp::getPostedData('user_country_iso', FatUtility::VAR_STRING, '');
-        $phoneNumber = FatUtility::int($post['user_phone']);
+        $phoneNumber = isset($post['user_phone']) ? FatUtility::int($post['user_phone']) : '';
         if ((0 < $signUpWithPhone && empty($phoneNumber)) || (!empty($phoneNumber) && (empty($dialCode) || empty($countryIso)))) {
             $message = Labels::getLabel("MSG_INVALID_PHONE_NUMBER", $this->siteLangId);
             LibHelper::exitWithError($message, false, true);
@@ -381,7 +383,7 @@ class GuestUserController extends MyAppController
         }
 
         if (false === $userObj->updateUserMeta('user_country_iso', $countryIso)) {
-            LibHelper::exitWithError($user->getError(), false, true);
+            LibHelper::exitWithError($userObj->getError(), false, true);
             FatApp::redirectUser(CommonHelper::generateUrl('GuestUser', 'loginForm'));
         }
 

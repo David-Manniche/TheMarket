@@ -11,7 +11,7 @@ if ($controllerName == 'Products' && $actionName == 'view') {
 $additionalAttributes = (CommonHelper::getLayoutDirection() == 'rtl') ? 'direction="rtl" style="direction: rtl;"' : '';
 ?>
 <!DOCTYPE html>
-<html lang="<?php echo strtolower($siteLangCode);?>" data-theme="light" dir="<?php echo CommonHelper::getLayoutDirection();?>" prefix="og: http://ogp.me/ns#" <?php echo $additionalAttributes;?> class="<?php echo $htmlClass;?> <?php if (FatApp::getConfig('CONF_AUTO_RESTORE_ON', FatUtility::VAR_INT, 1) && CommonHelper::demoUrl()) { echo "sticky-demo-header"; } ?>">
+<html lang="<?php echo strtolower($siteLangCode);?>" data-version="<?php echo CONF_WEB_APP_VERSION;?>" data-theme="light" dir="<?php echo CommonHelper::getLayoutDirection();?>" prefix="og: http://ogp.me/ns#" <?php echo $additionalAttributes;?> class="<?php echo $htmlClass;?> <?php if (FatApp::getConfig('CONF_AUTO_RESTORE_ON', FatUtility::VAR_INT, 1) && CommonHelper::demoUrl()) { echo "sticky-demo-header"; } ?>">
 <head>
 <!-- Yo!Kart -->
 <meta charset="utf-8">
@@ -22,12 +22,12 @@ $additionalAttributes = (CommonHelper::getLayoutDirection() == 'rtl') ? 'directi
 <meta name="robots" content="noindex" />
 <?php }?>
 <!-- favicon ================================================== -->
-<meta name="theme-color" content="#<?php echo $themeDetail['tcolor_primary_color']; ?>">
+<meta name="theme-color" content="#<?php echo $themeDetail[ThemeColor::TYPE_PRIMARY]; ?>">
 <meta name="msapplication-TileColor" content="#ffffff">
 <meta name="msapplication-TileImage" content="<?php echo CommonHelper::generateUrl('Image', 'appleTouchIcon', array($siteLangId, '144-144')); ?>">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">    
-<meta name="msapplication-navbutton-color" content="#<?php echo $themeDetail['tcolor_primary_color']; ?>">
+<meta name="msapplication-navbutton-color" content="#<?php echo $themeDetail[ThemeColor::TYPE_PRIMARY]; ?>">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="msapplication-starturl" content="/">     
 <?php 

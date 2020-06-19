@@ -5,6 +5,7 @@ class Option extends MyAppModel
     public const DB_TBL = 'tbl_options';
     public const DB_TBL_LANG = 'tbl_options_lang';
     public const DB_TBL_PREFIX = 'option_';
+	public const DB_TBL_LANG_PREFIX = 'optionlang_';
 
     public const OPTION_TYPE_SELECT = 1;
     public const OPTION_TYPE_CHECKBOX = 2;

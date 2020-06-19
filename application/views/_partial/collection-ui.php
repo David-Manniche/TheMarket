@@ -1,5 +1,6 @@
 <?php
 $showActionBtns = !empty($showActionBtns) ? $showActionBtns : false;
+$isWishList = isset($isWishList) ? $isWishList : 0;
 $staticCollectionClass = '';
 if ($controllerName = 'Products' && isset($action) && $action == 'view') {
     $staticCollectionClass = 'static--collection';
@@ -23,7 +24,7 @@ if ($showAddToFavorite) { ?>
                         </label>
                 </li>
                 <li>
-                    <a onClick="addToCart( $(this), event );" href="javascript:void(0)" class="" title="<?php echo Labels::getLabel('LBL_Move_to_cart', $siteLangId); ?>" data-id='<?php echo $product['selprod_id']; ?>'><i class="fa fa-shopping-cart"></i></a>
+                    <a onClick="addToCart( $(this), event , <?php echo $isWishList; ?>);" href="javascript:void(0)" class="" title="<?php echo Labels::getLabel('LBL_Move_to_cart', $siteLangId); ?>" data-id='<?php echo $product['selprod_id']; ?>'><i class="fa fa-shopping-cart"></i></a>
                 </li>
                 <?php } ?>
                 <li>

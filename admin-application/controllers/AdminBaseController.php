@@ -239,7 +239,8 @@ class AdminBaseController extends FatController
 
         $arr_options2 = array('-1' => Labels::getLabel('LBL_Does_Not_Matter', $this->adminLangId)) + User::getUserTypesArr($this->adminLangId);
         $arr_options2 = $arr_options2 + array(User::USER_TYPE_BUYER_SELLER => Labels::getLabel('LBL_Buyer', $this->adminLangId) . '+' . Labels::getLabel('LBL_Seller', $this->adminLangId));
-
+        $arr_options2 = $arr_options2 + array(User::USER_TYPE_SUB_USER => Labels::getLabel('LBL_Sub_User', $this->adminLangId));
+        
         $frm->addSelectBox(Labels::getLabel('LBL_Active_Users', $this->adminLangId), 'user_active', $arr_options, -1, array(), '');
         $frm->addSelectBox(Labels::getLabel('LBL_Email_Verified', $this->adminLangId), 'user_verified', $arr_options1, -1, array(), '');
         $frm->addSelectBox(Labels::getLabel('LBL_User_Type', $this->adminLangId), 'type', $arr_options2, -1, array(), '');
@@ -338,8 +339,8 @@ class AdminBaseController extends FatController
             $brandFld = $frm->addTextBox(Labels::getLabel('LBL_Brand/Manfacturer', $this->adminLangId), 'brand_name');
             if (FatApp::getConfig("CONF_PRODUCT_BRAND_MANDATORY", FatUtility::VAR_INT, 1)) {
                 $brandFld->requirements()->setRequired();
-            }
-            
+            }           
+           
             //$fld1 = $frm->addTextBox(Labels::getLabel('LBL_Category',$this->adminLangId),'category_name');
 
             $frm->addHiddenField('', 'product_brand_id');
@@ -365,50 +366,12 @@ class AdminBaseController extends FatController
         $taxCategories = Tax::getSaleTaxCatArr($this->adminLangId);
         $frm->addSelectBox(Labels::getLabel('LBL_Tax_Category', $this->adminLangId), 'ptt_taxcat_id', $taxCategories, '', array(), 'Select')->requirements()->setRequired(true);
 
+        $shipProfileArr = ShippingProfile::getProfileArr(0, true, true);
+        $frm->addSelectBox(Labels::getLabel('LBL_Shipping_Profile', $this->adminLangId), 'shipping_profile', $shipProfileArr)->requirements()->setRequired();
+        
         if (FatApp::getConfig("CONF_PRODUCT_DIMENSIONS_ENABLE", FatUtility::VAR_INT, 1)) {
-            /* dimension unit[ */
-            $lengthUnitsArr = applicationConstants::getLengthUnitsArr($langId);
-            $frm->addSelectBox(Labels::getLabel('LBL_Dimensions_Unit', $langId), 'product_dimension_unit', $lengthUnitsArr)->requirements()->setRequired();
-            $pDimensionUnitUnReqObj = new FormFieldRequirement('product_dimension_unit', Labels::getLabel('LBL_Dimensions_Unit', $langId));
-            $pDimensionUnitUnReqObj->setRequired(false);
-
-            $pDimensionUnitReqObj = new FormFieldRequirement('product_dimension_unit', Labels::getLabel('LBL_Dimensions_Unit', $langId));
-            $pDimensionUnitReqObj->setRequired(true);
-            /* ] */
-
-            /* length [ */
-            $frm->addFloatField(Labels::getLabel('LBL_Length', $langId), 'product_length', '0.00');
-
-            $pLengthUnReqObj = new FormFieldRequirement('product_length', Labels::getLabel('LBL_Length', $langId));
-            $pLengthUnReqObj->setRequired(false);
-
-            $pLengthReqObj = new FormFieldRequirement('product_length', Labels::getLabel('LBL_Length', $langId));
-            $pLengthReqObj->setRequired(true);
-            $pLengthReqObj->setFloatPositive();
-            $pLengthReqObj->setRange('0.00001', '9999999999');
-            /* ] */
-
-            /* width[ */
-            $frm->addFloatField(Labels::getLabel('LBL_Width', $langId), 'product_width', '0.00');
-            $pWidthUnReqObj = new FormFieldRequirement('product_width', Labels::getLabel('LBL_Width', $langId));
-            $pWidthUnReqObj->setRequired(false);
-
-            $pWidthReqObj = new FormFieldRequirement('product_width', Labels::getLabel('LBL_Width', $langId));
-            $pWidthReqObj->setRequired(true);
-            $pWidthReqObj->setFloatPositive();
-            $pWidthReqObj->setRange('0.00001', '9999999999');
-            /* ] */
-
-            /* height[ */
-            $frm->addFloatField(Labels::getLabel('LBL_Height', $langId), 'product_height', '0.00');
-            $pHeightUnReqObj = new FormFieldRequirement('product_height', Labels::getLabel('LBL_Height', $langId));
-            $pHeightUnReqObj->setRequired(false);
-
-            $pHeightReqObj = new FormFieldRequirement('product_height', Labels::getLabel('LBL_Height', $langId));
-            $pHeightReqObj->setRequired(true);
-            $pHeightReqObj->setFloatPositive();
-            $pHeightReqObj->setRange('0.00001', '9999999999');
-            /* ] */
+            $shipPackArr = ShippingPackage::getAllNames();
+            $frm->addSelectBox(Labels::getLabel('LBL_Shipping_Package', $this->adminLangId), 'product_ship_package', $shipPackArr)->requirements()->setRequired();
 
             /* weight unit[ */
             $weightUnitsArr = applicationConstants::getWeightUnitsArr($langId);
@@ -430,19 +393,6 @@ class AdminBaseController extends FatController
             $pWeightReqObj->setFloatPositive();
             $pWeightReqObj->setRange('0.01', '9999999999');
             /* ] */
-
-            $pTypeFld->requirements()->addOnChangerequirementUpdate(Product::PRODUCT_TYPE_DIGITAL, 'eq', 'product_length', $pLengthUnReqObj);
-            $pTypeFld->requirements()->addOnChangerequirementUpdate(Product::PRODUCT_TYPE_PHYSICAL, 'eq', 'product_length', $pLengthReqObj);
-
-            $pTypeFld->requirements()->addOnChangerequirementUpdate(Product::PRODUCT_TYPE_DIGITAL, 'eq', 'product_width', $pWidthUnReqObj);
-            $pTypeFld->requirements()->addOnChangerequirementUpdate(Product::PRODUCT_TYPE_PHYSICAL, 'eq', 'product_width', $pWidthReqObj);
-
-            $pTypeFld->requirements()->addOnChangerequirementUpdate(Product::PRODUCT_TYPE_DIGITAL, 'eq', 'product_height', $pHeightUnReqObj);
-            $pTypeFld->requirements()->addOnChangerequirementUpdate(Product::PRODUCT_TYPE_PHYSICAL, 'eq', 'product_height', $pHeightReqObj);
-
-
-            $pTypeFld->requirements()->addOnChangerequirementUpdate(Product::PRODUCT_TYPE_DIGITAL, 'eq', 'product_dimension_unit', $pDimensionUnitUnReqObj);
-            $pTypeFld->requirements()->addOnChangerequirementUpdate(Product::PRODUCT_TYPE_PHYSICAL, 'eq', 'product_dimension_unit', $pDimensionUnitReqObj);
 
             $pTypeFld->requirements()->addOnChangerequirementUpdate(Product::PRODUCT_TYPE_DIGITAL, 'eq', 'product_weight', $pWeightUnReqObj);
             $pTypeFld->requirements()->addOnChangerequirementUpdate(Product::PRODUCT_TYPE_PHYSICAL, 'eq', 'product_weight', $pWeightReqObj);
@@ -483,7 +433,7 @@ class AdminBaseController extends FatController
         
         if ($type != 'REQUESTED_CATALOG_PRODUCT') {
             $fld = $frm->addTextBox(Labels::getLabel('LBL_Country_Of_Origin', $langId), 'shipping_country');
-            $fld = $frm->addCheckBox(Labels::getLabel('LBL_Free_Shipping', $langId), 'ps_free', 1);
+            //$fld = $frm->addCheckBox(Labels::getLabel('LBL_Free_Shipping', $langId), 'ps_free', 1);
             $frm->addHtml('', '', '<table id="tab_shipping" width="100%"></table><div class="gap"></div>');
         }
         

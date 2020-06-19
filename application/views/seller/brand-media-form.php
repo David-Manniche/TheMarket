@@ -2,12 +2,13 @@
 $brandReqMediaFrm->setFormTagAttribute('class', 'form form_horizontal');
 $brandReqMediaFrm->developerTags['colClassPrefix'] = 'col-lg-12 col-md-12 col-sm-';
 $brandReqMediaFrm->developerTags['fld_default_col'] = 12;
-
+$ratioFld = $brandReqMediaFrm->getField('ratio_type');
+$ratioFld->addFieldTagAttribute('class', 'prefRatio-js');
 $fld = $brandReqMediaFrm->getField('logo');
 $fld->addFieldTagAttribute('class', 'btn btn--primary btn--sm');
 $fld->addFieldTagAttribute('onChange', 'brandPopupImage(this)');
 
-$preferredDimensionsStr = ' <small class="form-text text-muted">'. sprintf(Labels::getLabel('LBL_Preferred_Dimensions', $siteLangId), '500*500').'</small>';
+$preferredDimensionsStr = ' <small class="form-text text-muted preferredDimensions-js">'. sprintf(Labels::getLabel('LBL_Preferred_Dimensions', $siteLangId), '500 x 500').'</small>';
 
 $htmlAfterField = $preferredDimensionsStr;
 if (!empty($brandImages)) {
@@ -65,3 +66,14 @@ $fld->htmlAfterField = $htmlAfterField;
         <?php } ?>
     </div>
 </div>
+<script>
+var ratioTypeSquare = <?php echo AttachedFile::RATIO_TYPE_SQUARE; ?>;
+$(document).on('change','.prefRatio-js',function(){
+    if($(this).val() == ratioTypeSquare)
+    {
+		$('.preferredDimensions-js').html((langLbl.preferredDimensions).replace(/%s/g, '500 x 500'));
+    } else {
+		$('.preferredDimensions-js').html((langLbl.preferredDimensions).replace(/%s/g, '500 x 280'));
+    }
+});
+</script>

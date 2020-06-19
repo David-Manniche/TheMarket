@@ -450,7 +450,7 @@ $(document).ready(function(){
 			.replace(/^-+/, '')             // Trim - from start of text
 			.replace(/-+$/, '');
 			if ( $("#"+is_slugify).val()==0 ){
-				$("#"+str_val_id).val(str);
+				$("#"+str_val_id).val(str).keyup();
 				$("#"+caption).html(siteConstants.webroot+str);
 			}
 		};
@@ -553,7 +553,7 @@ function getCookie(cname) {
   return "";
 }
 
-var gReCaptcha = false;
+var gCaptcha = false;
 function googleCaptcha()
 {
     $("body").addClass("captcha");
@@ -562,7 +562,7 @@ function googleCaptcha()
     submitBtn.attr("disabled", "disabled");
 
     var checkToken = setInterval(function(){
-        if (true === gReCaptcha) {
+        if (true === gCaptcha) {
             submitBtn.removeAttr("disabled");
             clearInterval(checkToken);
         }
@@ -570,13 +570,15 @@ function googleCaptcha()
 
     /*Google reCaptcha V3  */
     setTimeout(function(){
-        if (0 < inputObj.length) {
+        if (0 < inputObj.length && 'undefined' !== typeof grecaptcha) {
             grecaptcha.ready(function() {
                 grecaptcha.execute(langLbl.captchaSiteKey, {action: inputObj.data('action')}).then(function(token) {
                     inputObj.val(token);
-                    gReCaptcha = true;
+                    gCaptcha = true;
                 });
-            });
-        }
+			});
+        } else if ('undefined' === typeof grecaptcha) {
+			$.mbsmessage(langLbl.invalidGRecaptchaKeys,true,'alert--danger');
+		}
     }, 200);
 }

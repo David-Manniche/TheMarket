@@ -28,7 +28,6 @@ foreach ($arr_listing as $sn=>$row) {
     $tr = $tbl->appendElement('tr');
     $tr->setAttribute("id", $row['brand_id']);
 
-
     foreach ($arr_flds as $key=>$val) {
         if ($key == "brand_logo") {
             $td = $tr->appendElement('td', array('style' => 'text-align:center;'));
@@ -38,6 +37,10 @@ foreach ($arr_listing as $sn=>$row) {
         switch ($key) {
             case 'listserial':
                 $td->appendElement('plaintext', array(), $sr_no);
+            break;
+            case 'shop_name':
+                $name = $row['shop_name'] . '(' . $row['user_name'] . ')' ;
+                $td->appendElement('plaintext', array(), $name);
             break;
             case 'brand_logo':
                 $td->appendElement(

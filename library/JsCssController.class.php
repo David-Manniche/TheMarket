@@ -245,7 +245,7 @@ class JsCssController
                 continue;
             }
             if (file_exists(CONF_THEME_PATH . 'common-js' . DIRECTORY_SEPARATOR . $fl)) {
-                $str .= file_get_contents(CONF_THEME_PATH . 'common-js' . DIRECTORY_SEPARATOR . $fl);
+                $str .=  '/* */'. file_get_contents(CONF_THEME_PATH . 'common-js' . DIRECTORY_SEPARATOR . $fl);
             }
         }
 

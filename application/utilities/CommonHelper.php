@@ -86,6 +86,9 @@ class CommonHelper extends FatUtility
 
     public static function getLangId()
     {
+        if (1 > self::$_lang_id) {
+            return FatApp::getConfig('CONF_DEFAULT_SITE_LANG', FatUtility::VAR_INT, 1);
+        }
         return self::$_lang_id;
     }
 
@@ -1572,6 +1575,7 @@ class CommonHelper extends FatUtility
         return $csvValidMimes;
     }
 
+
     public static function createDropDownFromArray($name = '', $arr = array(), $selected = 0, $extra = ' ', $selectCaption = '')
     {
         $dropDown = '<select name="' . $name . '" ' . $extra . '>';
@@ -1827,7 +1831,7 @@ class CommonHelper extends FatUtility
     }
 
     public static function demoUrl()
-    {
+    { 
         if (strpos($_SERVER ['SERVER_NAME'], 'demo.yo-kart.com') !== false) {
             return true;
         }
@@ -1884,6 +1888,19 @@ class CommonHelper extends FatUtility
         }
         return $totalCount;
     }
+
+    public static function displayTaxPercantage($taxVal, $displayPercentage = false)
+    {        
+        if (false == $displayPercentage) {
+            return $taxVal['name'];
+        }
+
+        if ($taxVal['inPercentage'] == Tax::TYPE_PERCENTAGE) {
+            return $taxVal['name'] . ' (' . $taxVal['percentageValue'] . '%)';
+        }
+        return $taxVal['name'] . ' (' . $taxVal['percentageValue'] . ')';
+    }
+
 
     public static function replaceStringData($str, $replacements = array(), $replaceTags = false)
     {

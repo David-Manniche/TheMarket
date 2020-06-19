@@ -96,7 +96,8 @@ unlinkSlick = function () {
 }
 
 slickWidgetScroll = function () {
-    $('.js-widget-scroll').slick(getSlickSliderSettings(3, 1, langLbl.layoutDirection, false, {
+	var slides = ($('.widget-stats').length > 2) ? 3 : 2 ;
+    $('.js-widget-scroll').slick(getSlickSliderSettings(slides, 1, langLbl.layoutDirection, false, {
         1199: 3,
         1023: 2,
         767: 1,
@@ -1055,7 +1056,7 @@ $(document).ready(function () {
         var inputElement = $(formElement + " input[name='username']");
         var altPlaceHolder = inputElement.attr('data-alt-placeholder');
         var placeHolder = inputElement.attr('placeholder')
-        inputElement.attr({ 'placeholder': altPlaceHolder, 'data-alt-placeholder': placeHolder });
+        inputElement.val("").attr({ 'placeholder': altPlaceHolder, 'data-alt-placeholder': placeHolder });
         var objLbl = 0 < flag ? langLbl.withUsernameOrEmail : langLbl.withPhoneNumber;
         $(obj).attr('onclick', 'signInWithPhone(this, ' + (!flag) + ')').text(objLbl)
         stylePhoneNumberFld(formElement + " input[name='username']", (!flag));

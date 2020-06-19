@@ -12,13 +12,18 @@ class Plugin extends MyAppModel
     public const TYPE_PUSH_NOTIFICATION = 3;
     public const TYPE_PAYOUTS = 4;
     public const TYPE_ADVERTISEMENT_FEED = 5;
-    public const TYPE_SMS_NOTIFICATION = 6;
+    public const TYPE_SMS_NOTIFICATION = 6;    
+    public const TYPE_FULL_TEXT_SEARCH = 7;
+    public const TYPE_TAX_SERVICES  = 10;
 
+    /* Define here :  if system can not activate multiple plugins for a same feature*/
     public const HAVING_KINGPIN = [
         self::TYPE_CURRENCY,
         self::TYPE_PUSH_NOTIFICATION,
         self::TYPE_ADVERTISEMENT_FEED,
-        self::TYPE_SMS_NOTIFICATION
+        self::TYPE_SMS_NOTIFICATION,
+        self::TYPE_TAX_SERVICES ,   
+        self::TYPE_FULL_TEXT_SEARCH
     ];
 
     public const ATTRS = [
@@ -30,7 +35,7 @@ class Plugin extends MyAppModel
     ];
 
     private $db;
-    
+
     public function __construct($id = 0)
     {
         parent::__construct(static::DB_TBL, static::DB_TBL_PREFIX . 'id', $id);
@@ -38,6 +43,36 @@ class Plugin extends MyAppModel
         $this->objMainTableRecord->setSensitiveFields(
             array('plugin_code')
         );
+    }
+
+    public static function getTypeArr($langId)
+    {
+        return [
+            self::TYPE_CURRENCY => Labels::getLabel('LBL_CURRENCY', $langId),
+            self::TYPE_SOCIAL_LOGIN => Labels::getLabel('LBL_SOCIAL_LOGIN', $langId),
+            self::TYPE_PUSH_NOTIFICATION => Labels::getLabel('LBL_PUSH_NOTIFICATION', $langId),
+            self::TYPE_PAYOUTS => Labels::getLabel('LBL_PAYOUT', $langId),
+            self::TYPE_ADVERTISEMENT_FEED => Labels::getLabel('LBL_ADVERTISEMENT_FEED', $langId),
+            self::TYPE_SMS_NOTIFICATION => Labels::getLabel('LBL_SMS_NOTIFICATION', $langId),
+            self::TYPE_TAX_SERVICES => Labels::getLabel('LBL_Tax_Services', $langId),
+            self::TYPE_FULL_TEXT_SEARCH => Labels::getLabel('LBL_Full_TEXT_SEARCH', $langId)
+        ];
+    }
+
+    public static function getDirectory(int $pluginType)
+    {
+        $pluginDir = [
+            self::TYPE_PUSH_NOTIFICATION => "push-notification",
+            self::TYPE_ADVERTISEMENT_FEED => "advertisement-feed",
+            self::TYPE_SMS_NOTIFICATION => "sms-notification",
+            self::TYPE_FULL_TEXT_SEARCH => "full-text-search",
+            self::TYPE_TAX_SERVICES => "tax",
+        ];
+
+        if (array_key_exists($pluginType, $pluginDir)) {
+            return $pluginDir[$pluginType];
+        }
+        return false;
     }
 
     public static function getSearchObject($langId = 0, $isActive = true, $joinSettings = false)
@@ -78,7 +113,7 @@ class Plugin extends MyAppModel
     {
         $srch = new SearchBase(static::DB_TBL, 'plg');
         $srch->addCondition('plg.' . static::DB_TBL_PREFIX . 'code', '=', $code);
-        
+
         if (0 < $langId) {
             $srch->joinTable(self::DB_TBL_LANG, 'LEFT JOIN', self::DB_TBL_LANG_PREFIX . static::DB_TBL_PREFIX . 'id = ' . static::DB_TBL_PREFIX . 'id and ' . self::DB_TBL_LANG_PREFIX . 'lang_id = ' . $langId, 'plg_l');
         }
@@ -101,18 +136,6 @@ class Plugin extends MyAppModel
             return $row[$attr];
         }
         return $row;
-    }
-
-    public static function getTypeArr($langId)
-    {
-        return [
-            static::TYPE_CURRENCY => Labels::getLabel('LBL_CURRENCY', $langId),
-            static::TYPE_SOCIAL_LOGIN => Labels::getLabel('LBL_SOCIAL_LOGIN', $langId),
-            static::TYPE_PUSH_NOTIFICATION => Labels::getLabel('LBL_PUSH_NOTIFICATION', $langId),
-            static::TYPE_PAYOUTS => Labels::getLabel('LBL_PAYOUT', $langId),
-            static::TYPE_ADVERTISEMENT_FEED => Labels::getLabel('LBL_ADVERTISEMENT_FEED', $langId),
-            static::TYPE_SMS_NOTIFICATION => Labels::getLabel('LBL_SMS_NOTIFICATION', $langId),
-        ];
     }
 
     private static function pluginTypeSrchObj($typeId, $langId, $customCols = true, $active = false)
@@ -145,7 +168,7 @@ class Plugin extends MyAppModel
         }
 
         $rs = $srch->getResultSet();
-        
+
         $db = FatApp::getDb();
         if (true == $assoc) {
             return $db->fetchAllAssoc($rs);
@@ -189,7 +212,7 @@ class Plugin extends MyAppModel
             ]
         );
         $rs = $srch->getResultSet();
-        
+
         return FatApp::getDb()->fetchAllAssoc($rs);
     }
 

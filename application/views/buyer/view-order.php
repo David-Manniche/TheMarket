@@ -1,4 +1,4 @@
-<?php defined('SYSTEM_INIT') or die('Invalid Usage . ');
+<?php defined('SYSTEM_INIT') or die('Invalid Usage . '); 
     $canCancelOrder = true;
     $canReturnRefund = true;
     $canReviewOrders = false;
@@ -99,7 +99,7 @@ if (true == $primaryOrder) {
                                 <p><strong><?php echo Labels::getLabel('LBL_Tax', $siteLangId); ?>:</strong> <?php echo CommonHelper::displayMoneyFormat(CommonHelper::orderProductAmount($childOrderDetail, 'TAX'), true, false, true, false, true); ?></p>
                                 <?php } else { ?>
                                     <?php foreach ($childOrderDetail['taxOptions'] as $key => $val) { ?>
-                                        <p><strong><?php echo $key ?>:</strong> <?php echo CommonHelper::displayMoneyFormat($val, true, false, true, false, true); ?></p>
+                                        <p><strong><?php echo CommonHelper::displayTaxPercantage($val, true) ?>:</strong> <?php echo CommonHelper::displayMoneyFormat($val['value'], true, false, true, false, true); ?></p>
                                     <?php }
                                 } ?>
                                 <p><strong><?php echo Labels::getLabel('LBL_Discount', $siteLangId); ?>:</strong> <?php echo CommonHelper::displayMoneyFormat(CommonHelper::orderProductAmount($childOrderDetail, 'DISCOUNT'), true, false, true, false, true); ?></p> <?php $volumeDiscount = CommonHelper::orderProductAmount($childOrderDetail, 'VOLUME_DISCOUNT');
@@ -210,11 +210,12 @@ if (true == $primaryOrder) {
                                             echo CommonHelper::displayMoneyFormat(CommonHelper::orderProductAmount($childOrder, 'TAX'), true, false, true, false, true);
                                         } else {
                                             foreach ($childOrder['taxOptions'] as $key => $val) { ?>
-                                                <p><strong><?php echo $key ?>:</strong> <?php echo CommonHelper::displayMoneyFormat($val, true, false, true, false, true); ?></p>
-                                                <?php if (!isset($taxOptionsTotal[$key])) {
-                                                    $taxOptionsTotal[$key] = 0;
-                                                }
-                                                $taxOptionsTotal[$key] += $val;
+                                                <p><strong><?php echo CommonHelper::displayTaxPercantage($val, true) ?> :</strong> <?php echo CommonHelper::displayMoneyFormat($val['value'], true, false, true, false, true); ?></p>
+                                                <?php if (!isset($taxOptionsTotal[$key]['value'])) {
+                                                            $taxOptionsTotal[$key]['value'] = 0;
+                                                        }
+                                                        $taxOptionsTotal[$key]['value'] += $val['value'];
+                                                        $taxOptionsTotal[$key]['title'] = CommonHelper::displayTaxPercantage($val);
                                             }
                                         } ?>
                                     </td>
@@ -246,8 +247,8 @@ if (true == $primaryOrder) {
                                 <?php } else {
                                     foreach ($taxOptionsTotal as $key => $val) { ?>
                                         <tr>
-                                            <td colspan="8"><?php echo $key ?></td>
-                                            <td><?php echo CommonHelper::displayMoneyFormat($val, true, false, true, false, true); ?></td>
+                                            <td colspan="8"><?php echo $val['title']; ?></td>
+                                            <td><?php echo CommonHelper::displayMoneyFormat($val['value'], true, false, true, false, true); ?></td>
                                         </tr>
                                     <?php }
                                 } ?>
@@ -395,7 +396,7 @@ if (true == $primaryOrder) {
                                     <th><?php echo Labels::getLabel('LBL_Download_times', $siteLangId); ?></th>
                                     <th><?php echo Labels::getLabel('LBL_Downloaded_count', $siteLangId); ?></th>
                                     <th><?php echo Labels::getLabel('LBL_Expired_on', $siteLangId); ?></th>
-                                    <th><?php echo Labels::getLabel('LBL_Action', $siteLangId); ?></th>
+                                    <th></th>
                                 </tr>
                                 <?php $sr_no = 1;
                                 foreach ($digitalDownloads as $key => $row) {

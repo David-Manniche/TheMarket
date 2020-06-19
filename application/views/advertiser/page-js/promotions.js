@@ -59,6 +59,7 @@ $(document).on('change',"select[name='banner_blocation_id']",function(){
 		}
 		$(dv).html(fcom.getLoader());
 		fcom.ajax(fcom.makeUrl('Advertiser', 'searchPromotions'),data, function(t) {
+			$(dv).addClass("listing-tbl");
 			$(dv).html(t);
 		});
 	};
@@ -66,6 +67,7 @@ $(document).on('change',"select[name='banner_blocation_id']",function(){
 	promotionForm = function(promotionId) {
 		fcom.ajax(fcom.makeUrl('Advertiser', 'promotionForm', [ promotionId]), '', function(t) {
 			$(dv).html(t);
+			$(dv).removeClass("listing-tbl");
 			$('.formshowhide-js').hide();
 		});
 	};

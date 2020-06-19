@@ -1,6 +1,7 @@
 <?php defined('SYSTEM_INIT') or die('Invalid Usage.');
 if ($products) {
     $showActionBtns = !empty($showActionBtns) ? $showActionBtns : false;
+    $isWishList = isset($isWishList) ? $isWishList : 0;
     foreach ($products as $product) {
         $productUrl = CommonHelper::generateUrl('Products', 'View', array($product['selprod_id'])); ?> <div class="col-xl-3 col-lg-4 col-md-<?php echo (isset($colMdVal) && $colMdVal > 0)?$colMdVal:4; ?> col-6 column">
     <!--product tile-->
@@ -17,9 +18,9 @@ if ($products) {
             <span class="tag--soldout"><?php echo Labels::getLabel('LBL_SOLD_OUT', $siteLangId);?></span>
         <?php  } ?>
         <div class="products__body"> 
-            <?php $this->includeTemplate('_partial/collection-ui.php', array('product'=>$product,'siteLangId'=>$siteLangId, 'showActionBtns'=> $showActionBtns), false); ?> 
+            <?php $this->includeTemplate('_partial/collection-ui.php', array('product'=>$product,'siteLangId'=>$siteLangId, 'showActionBtns'=> $showActionBtns, 'isWishList' => $isWishList), false); ?> 
         <div class="products__img">
-                <?php $uploadedTime = AttachedFile::setTimeParam($product['product_image_updated_on']);?> <a title="<?php echo $product['selprod_title']; ?>"
+                <?php $uploadedTime = AttachedFile::setTimeParam($product['product_updated_on']);?> <a title="<?php echo $product['selprod_title']; ?>"
                     href="<?php echo !isset($product['promotion_id'])?CommonHelper::generateUrl('Products', 'View', array($product['selprod_id'])):CommonHelper::generateUrl('Products', 'track', array($product['promotion_record_id']))?>">
                     <img data-ratio="1:1 (500x500)"
                         src="<?php echo FatCache::getCachedUrl(CommonHelper::generateUrl('image', 'product', array($product['product_id'], "CLAYOUT3", $product['selprod_id'], 0, $siteLangId)).$uploadedTime, CONF_IMG_CACHE_TIME, '.jpg'); ?>"

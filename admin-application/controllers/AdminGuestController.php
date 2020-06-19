@@ -218,7 +218,8 @@ class AdminGuestController extends FatController
             $this->set('msg', Message::getHtml());
             $this->_template->render(false, false, 'json-error.php', true, false);
         }
-        $this->sendSms('admin_forgot_password', FatApp::getConfig('CONF_SITE_PHONE'), $replacements, $langId);
+        $emaiHandObj = new EmailHandler();
+        $emaiHandObj->sendSms('admin_forgot_password', FatApp::getConfig('CONF_SITE_PHONE'), $replacements, $langId);
 
         $this->set('msg', Labels::getLabel('MSG_YOUR_PASSWORD_RESET_INSTRUCTIONS_TO_YOUR_EMAIL', $this->adminLangId));
         $this->_template->render(false, false, 'json-success.php', true, false);
@@ -320,7 +321,8 @@ class AdminGuestController extends FatController
         );
         EmailHandler::sendMailTpl($admin_row['admin_email'], 'user_admin_password_changed_successfully', $this->adminLangId, $arr_replacements);
         if (!empty(FatApp::getConfig('CONF_SITE_PHONE'))) {
-            $this->sendSms('user_admin_password_changed_successfully', FatApp::getConfig('CONF_SITE_PHONE'), $arr_replacements, $this->adminLangId);
+            $emaiHandObj = new EmailHandler();
+            $emaiHandObj->sendSms('user_admin_password_changed_successfully', FatApp::getConfig('CONF_SITE_PHONE'), $arr_replacements, $this->adminLangId);
         }
         $this->set('msg', Labels::getLabel('MSG_Password_Changed_Successfully', $this->adminLangId));
         $this->_template->render(false, false, 'json-success.php', true, false);
@@ -423,10 +425,7 @@ class AdminGuestController extends FatController
     {
         $frm = new Form('adminFrmForgot');
         $frm->addEmailField('', 'admin_email', '', array('placeholder' => Labels::getLabel('LBL_Enter_Your_Email_Address', $this->adminLangId)))->requirements()->setRequired();
-        //$frm->addRequiredField('', 'security_code');
-        if (FatApp::getConfig('CONF_RECAPTCHA_SITEKEY', FatUtility::VAR_STRING, '') != '') {
-            $frm->addHtml('', 'security_code', '<div class="g-recaptcha" data-sitekey="' . FatApp::getConfig('CONF_RECAPTCHA_SITEKEY', FatUtility::VAR_STRING, '') . '"></div>');
-        }
+        CommonHelper::addCaptchaField($frm);
         $frm->addSubmitButton('', 'btn_forgot', Labels::getLabel('LBL_Send_Reset_Pasword_Email', $this->adminLangId));
         return $frm;
     }

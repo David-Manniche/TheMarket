@@ -6,7 +6,11 @@ if (count($productSpecifications) > 0) {
     foreach ($productSpecifications as $data) {
         $count = 0;
         foreach ($data as $value) {
-            $specificationData[$count] = array('prod_spec_name' => $productSpecifications['prod_spec_name'][$count], 'prod_spec_value' => $productSpecifications['prod_spec_value'][$count], 'prod_spec_group' => $productSpecifications['prod_spec_group'][$count]);
+            $specificationData[$count] = array(
+                'prod_spec_name' => $productSpecifications['prod_spec_name'][$count], 
+                'prod_spec_value' => $productSpecifications['prod_spec_value'][$count], 
+                'prod_spec_group' => isset($productSpecifications['prod_spec_group'][$count]) ? $productSpecifications['prod_spec_group'][$count] : ''
+            );
             $count++;
         }
     }
@@ -19,7 +23,7 @@ if (count($productSpecifications) > 0) {
                     'prod_spec_name' => Labels::getLabel('LBL_Specification_Name', $siteLangId),
                     'prod_spec_value' => Labels::getLabel('LBL_Specification_Value', $siteLangId),
                     'prod_spec_group' => Labels::getLabel('LBL_Specification_Group', $siteLangId),
-                    'action' => Labels::getLabel('LBL_Action', $siteLangId)
+                    'action' => ''
                 );
 
                 $tbl = new HtmlElement('table', array('width' => '100%', 'class' => 'table'));

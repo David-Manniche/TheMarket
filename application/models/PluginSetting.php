@@ -12,6 +12,7 @@ class PluginSetting
     public const TYPE_STRING = 1;
     public const TYPE_INT = 2;
     public const TYPE_FLOAT = 3;
+    public const TYPE_BOOL = 4;
 
     public function __construct($id, $pluginKey = '')
     {
@@ -115,6 +116,10 @@ class PluginSetting
                 case static::TYPE_FLOAT:
                     $fld = $frm->addFloatField($label, $fieldName);
                     break;
+                case static::TYPE_BOOL:
+                    $yesNo = array_reverse(applicationConstants::getYesNoArr($langId));
+                    $fld = $frm->addSelectBox($label, $fieldName, $yesNo, '', array(), '');
+                    break;    
                 default:
                     $fld = $frm->addTextBox($label, $fieldName);
                     break;

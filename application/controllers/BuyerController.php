@@ -67,14 +67,14 @@ class BuyerController extends BuyerBaseController
         $orderSrch->doNotCalculateRecords();
         $orderSrch->doNotLimitRecords();
         /* $orderSrch->addBuyerOrdersCounts(date('Y-m-d',strtotime("-1 days")),date('Y-m-d',strtotime("-1 days")),'yesterdayOrder'); */
-        $orderSrch->addBuyerOrdersCounts(false, false, 'pendingOrder');
+        // $orderSrch->addBuyerOrdersCounts(false, false, 'pendingOrder');
         $completedOrderStatus = unserialize(FatApp::getConfig("CONF_COMPLETED_ORDER_STATUS", FatUtility::VAR_STRING, ''));
         if (!empty($completedOrderStatus)) {
             $orderSrch->addCondition('op_status_id', 'NOT IN', $completedOrderStatus);
         }
         $orderSrch->addGroupBy('order_user_id');
         $orderSrch->addCondition('order_user_id', '=', $userId);
-        $orderSrch->addMultipleFields(array('pendingOrderCount'));
+        $orderSrch->addMultipleFields(array('COUNT(o.order_id) as pendingOrderCount'));
         $rs = $orderSrch->getResultSet();
         $ordersStats = FatApp::getDb()->fetch($rs);
         /* ]*/
@@ -562,7 +562,7 @@ class BuyerController extends BuyerBaseController
         $srch->addDigitalDownloadCondition();
         $srch->joinSellerProducts();
         $srch->joinTable(Product::DB_TBL, 'INNER JOIN', 'sp.selprod_product_id = p.product_id', 'p');
-        $srch->addMultipleFields(array('op_id', 'op_invoice_number', 'order_user_id', 'op_product_type', 'order_date_added', 'op_qty', 'op_status_id', 'op_selprod_max_download_times', 'op_selprod_id', 'op_selprod_id', 'product_image_updated_on', 'selprod_product_id', 'op_selprod_download_validity_in_days', 'opd.*'));
+        $srch->addMultipleFields(array('op_id','op_invoice_number','order_user_id','op_product_type','order_date_added','op_qty','op_status_id','op_selprod_max_download_times', 'op_selprod_id','op_selprod_id', 'product_updated_on', 'selprod_product_id','op_selprod_download_validity_in_days','opd.*'));
         $srch->setPageNumber($page);
         $srch->addCondition('order_user_id', '=', $user_id);
         $srch->addOrder('order_date_added', 'desc');
@@ -1615,7 +1615,11 @@ class BuyerController extends BuyerBaseController
             $this->_template->render();
         }
         Message::addMessage(Labels::getLabel('MSG_Feedback_Submitted_Successfully', $this->siteLangId));
-        FatApp::redirectUser(CommonHelper::generateUrl('Buyer', 'Orders'));
+        if (isset($post['referrer']) && !empty($post['referrer'])) {
+            FatApp::redirectUser($post['referrer']);
+        } else {
+            FatApp::redirectUser(CommonHelper::generateUrl('Buyer', 'Orders'));
+        }
     }
 
     public function orderReturnRequest($op_id)
@@ -2399,6 +2403,7 @@ class BuyerController extends BuyerBaseController
         $frm->addRequiredField(Labels::getLabel('LBL_Title', $langId), 'spreview_title');
         $frm->addTextArea(Labels::getLabel('LBL_Description', $langId), 'spreview_description')->requirements()->setRequired();
         $frm->addHiddenField('', 'op_id', $op_id);
+        $frm->addHiddenField('', 'referrer', CommonHelper::redirectUserReferer(true));
         $frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_Send_Review', $langId));
         return $frm;
     }

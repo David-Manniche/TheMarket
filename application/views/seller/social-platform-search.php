@@ -15,18 +15,28 @@
 </div>
 <div class="col-lg-12 col-md-12">
     <?php $arr_flds = array(
-        'listserial'=>Labels::getLabel('LBL_Sr._no.', $siteLangId),
+        'listserial'=>'#',
         'splatform_identifier'=>Labels::getLabel('LBL_Title', $siteLangId),
         'splatform_url'    =>    Labels::getLabel('LBL_URL', $siteLangId),
         'splatform_active'    =>    Labels::getLabel('LBL_Status', $siteLangId)
     );
     if ($canEdit) {
-        $arr_flds['action'] = Labels::getLabel('LBL_Action', $siteLangId);
+        $arr_flds['action'] = '';
     }
     $tbl = new HtmlElement('table', array('width'=>'100%', 'class'=>'table'));
     $th = $tbl->appendElement('thead')->appendElement('tr');
-    foreach ($arr_flds as $val) {
-        $e = $th->appendElement('th', array(), $val);
+    foreach ($arr_flds as $key => $val) {
+        if ($key == 'listserial') {
+            $e = $th->appendElement('th', array('width' => '5%'), $val);
+        } elseif ($key == 'splatform_identifier') {
+            $e = $th->appendElement('th', array('width' => '25%'), $val);
+        } elseif ($key == 'splatform_url') {
+            $e = $th->appendElement('th', array('width' => '45%'), $val);
+        } elseif ($key == 'splatform_active') {
+            $e = $th->appendElement('th', array('width' => '10%'), $val);
+        }  elseif ($key == 'action') {
+            $e = $th->appendElement('th', array('width' => '15%'), $val);
+        }
     }
 
     $sr_no = 0;

@@ -122,7 +122,9 @@ class Thread extends MyAppModel
             $srch->addCondition('message_thread_id', '=', $this->mainTableRecordId);
         }
 
-        $cnd = $srch->addCondition('ttm.message_to', '=', $userId);
+        $parentAndThierChildIds = User::getParentAndTheirChildIds($userId);
+       
+        $cnd = $srch->addCondition('ttm.message_to', 'in', $parentAndThierChildIds);
         /* $cnd->attachCondition('ttm.message_to','=',$userId,'OR'); */
 
         $srch->addMultipleFields(array("count(ttm.message_id) as UnreadMessageCount"));
@@ -140,6 +142,14 @@ class Thread extends MyAppModel
             return true;
         }
 
+        $this->error = FatApp::getDb()->getError();
+        return false;
+    }
+    
+    public function markMessageReadFromUserArr($threadId, $userIds){    
+        if(FatApp::getDb()->query('update tbl_thread_messages set message_is_unread = ' . self::MESSAGE_IS_READ . ' where message_thread_id = '. $threadId . ' and  message_to in (' . implode($userIds, ',') . ')')){
+            return true;
+        }
         $this->error = FatApp::getDb()->getError();
         return false;
     }

@@ -14,27 +14,25 @@ class FacebookLoginController extends SocialMediaAuthController
     private $userName;
     private $facebookId;
     private $email;
-    private $settings;
     private $fbAuthObj;
     private $helper;
+
+    public $requiredKeys = [
+        'app_id',
+        'app_secret'
+    ];
 
     public function __construct($action)
     {
         parent::__construct($action);
-        $this->validateSettings();
     }
 
-    private function validateSettings()
+    private function initialize()
     {
-        $settings = $this->getSettings();
-        if (!isset($settings['app_id']) || !isset($settings['app_secret'])) {
-            $message = Labels::getLabel('MSG_SETTINGS_NOT_UPDATED', $this->siteLangId);
-            $this->setErrorAndRedirect($message, true);
-        }
         $this->fbAuthObj = new Facebook(
             [
-            'app_id' => $settings['app_id'],
-            'app_secret' => $settings['app_secret'],
+            'app_id' => $this->settings['app_id'],
+            'app_secret' => $this->settings['app_secret'],
             'default_graph_version' => 'v3.2',
             ]
         );
@@ -70,6 +68,12 @@ class FacebookLoginController extends SocialMediaAuthController
 
     public function index()
     {
+        if (false == $this->validateSettings($this->siteLangId)) {
+            $this->setErrorAndRedirect($this->error, true);
+            return false;
+        }
+        $this->initialize();
+        
         $get = FatApp::getQueryStringData();
         $userType = FatApp::getPostedData('type', FatUtility::VAR_INT, User::USER_TYPE_BUYER);
         $accessToken = FatApp::getPostedData('accessToken', FatUtility::VAR_STRING, '');

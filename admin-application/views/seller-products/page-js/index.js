@@ -13,7 +13,7 @@ $(document).ready(function(){
 				type: 'post',
 				success: function(json) {
 					response($.map(json, function(item) {
-						return { label: item['name'] +'(' + item['username'] + ')', value: item['username'], value: item['id'] };
+						return { label: item['name'] +'(' + item['username'] + ')', value: item['username'], id: item['id'] };
 					}));
 				},
 			});

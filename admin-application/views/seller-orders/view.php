@@ -91,7 +91,7 @@ if ($order['order_reward_point_used'] > 0) {
                                         <?php  echo '+'.CommonHelper::displayMoneyFormat(CommonHelper::orderProductAmount($order, 'TAX'), true, true);
                                     } else {
                                         foreach ($order['taxOptions'] as $key => $val) { ?>
-                                            <p><strong><?php echo $key ?>:</strong> <?php echo CommonHelper::displayMoneyFormat($val); ?></p>
+                                            <p><strong><?php echo CommonHelper::displayTaxPercantage($val, true) ?>:</strong> <?php echo CommonHelper::displayMoneyFormat($val['value']); ?></p>
                                         <?php }
                                     } ?></td>
                                 <?php } ?>
@@ -260,7 +260,7 @@ if ($order['order_reward_point_used'] > 0) {
                                         echo CommonHelper::displayMoneyFormat(CommonHelper::orderProductAmount($order, 'TAX'), true, true);
                                     } else {
                                         foreach ($order['taxOptions'] as $key => $val) { ?>
-                                            <p><strong><?php echo $key ?>:</strong> <?php echo CommonHelper::displayMoneyFormat($val); ?></p>
+                                            <p><strong><?php echo CommonHelper::displayTaxPercantage($val, true) ?>:</strong> <?php echo CommonHelper::displayMoneyFormat($val['value']); ?></p>
                                         <?php }
                                     } ?></td>
                                     <?php }?> <td>

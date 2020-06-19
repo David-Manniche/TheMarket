@@ -279,7 +279,7 @@ class UserAuthentication extends FatModel
         return true;
     }
 
-    public function login($username, $password, $ip, $encryptPassword = true, $isAdmin = false, $tempUserId = 0, $userType = 0)
+    public function login($username, $password, $ip, $encryptPassword = true, $isAdmin = false, $tempUserId = 0, $userType = 0, $withPhone = false)
     {
         $db = FatApp::getDb();
         if ($this->isBruteForceAttempt($ip, $username)) {
@@ -328,6 +328,9 @@ class UserAuthentication extends FatModel
         $rs = $srch->getResultSet();
         if (!$row = $db->fetch($rs)) {
             $this->error = Labels::getLabel('ERR_INVALID_USERNAME_OR_PASSWORD', $this->commonLangId);
+            if ($withPhone) {
+                $this->error = Labels::getLabel('ERR_INVALID_PHONE_NUMBER_OR_PASSWORD', $this->commonLangId);
+            }
             return false;
         }
 
@@ -384,9 +387,24 @@ class UserAuthentication extends FatModel
                 $this->error = Labels::getLabel('ERR_YOUR_ACCOUNT_HAS_BEEN_DEACTIVATED_OR_NOT_ACTIVE', $this->commonLangId);
                 return false;
             }
+
+            $rowUser = User::getAttributesById($row['credential_user_id']);
+            if (0 < $rowUser['user_parent']){ 
+                $parentUser = new User($rowUser['user_parent']);
+                $parentSrch = $parentUser->getUserSearchObj();
+                $parentSrch->addCondition('credential_active', '=', applicationConstants::ACTIVE);
+                $rs = $parentSrch->getResultSet();
+                $parentData = FatApp::getDb()->fetch($rs);                
+                if (false == $parentData || null == $parentData) {
+                    $this->error = Labels::getLabel('ERR_YOUR_ACCOUNT_HAS_BEEN_DEACTIVATED_OR_NOT_ACTIVE', $this->commonLangId);
+                    return false;
+                }
+            }
+        } else {
+            $rowUser = User::getAttributesById($row['credential_user_id']);            
         }
 
-        $rowUser = User::getAttributesById($row['credential_user_id']);
+        
 
         $rowUser['user_ip'] = $ip;
         $rowUser['user_email'] = $row['credential_email'];

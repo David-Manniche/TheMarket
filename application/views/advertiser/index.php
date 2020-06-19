@@ -123,7 +123,7 @@
                                         <th><?php echo Labels::getLabel('LBL_Clicks', $siteLangId);?></th>
                                         <th><?php echo Labels::getLabel('LBL_Duration', $siteLangId);?></th>
                                         <th><?php echo Labels::getLabel('LBL_Approved', $siteLangId);?></th>
-                                        <th><?php echo Labels::getLabel('LBL_Action', $siteLangId);?></th>
+                                        <th></th>
                                     </tr>
                                     <?php if (count($activePromotions) > 0) {
                                         $arrYesNo = applicationConstants::getYesNoArr($siteLangId);

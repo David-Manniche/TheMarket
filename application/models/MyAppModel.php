@@ -73,6 +73,11 @@ class MyAppModel extends FatModel
             return false;
         }
 
+        if (!$this->updateModifiedTime()) {
+            $this->error = $this->getError();
+            return false;
+        }
+
         return true;
     }
 
@@ -93,10 +98,42 @@ class MyAppModel extends FatModel
         $this->objMainTableRecord->assignValues($arr, $handleDates, $mysql_date_format, $mysql_datetime_format, $execute_mysql_functions);
     }
 
+    public function updateModifiedTime()
+    {
+        if (!($this->mainTableRecordId > 0)) {
+            return false;
+        }
+
+        $this->assignValues(array(static::tblFld('updated_on') => date('Y-m-d H:i:s')));
+        $flds = $this->getFlds();
+        if (count($flds) == 0) {
+            return true;
+        }
+
+        if (!$this->objMainTableRecord->update(array('smt' => $this->mainTableIdField . ' = ?', 'vals' => array($this->mainTableRecordId)))) {
+            $this->error = $this->objMainTableRecord->getError();
+            return false;
+        }
+        
+        $this->logUpdatedRecord();
+
+        return true;
+    }
+
     public function deleteRecord($deleteLangData = false)
     {
-        if (!FatApp::getDb()->deleteRecords($this->mainTableName, array('smt' => $this->mainTableIdField . ' = ?', 'vals' => array($this->mainTableRecordId)))) {
+        if (!($this->mainTableRecordId > 0)) {
+            $this->error = 'ERR_INVALID_REQUEST_ID';
+            return false;
+        }
+
+        if (!FatApp::getDb()->deleteRecords($this->mainTableName, array('smt'=>$this->mainTableIdField . ' = ?', 'vals'=>array($this->mainTableRecordId)))) {
             $this->error = FatApp::getDb()->getError();
+            return false;
+        }
+        
+        if (!$this->updateModifiedTime()) {
+            $this->error = $this->getError();
             return false;
         }
 
@@ -109,6 +146,9 @@ class MyAppModel extends FatModel
             $this->error = FatApp::getDb()->getError();
             return false;
         }
+        
+        $this->logUpdatedRecord();
+
         return true;
     }
 
@@ -260,6 +300,11 @@ class MyAppModel extends FatModel
         return $this->objMainTableRecord->getFlds();
     }
 
+    public function unsetFld($key)
+    {
+        $this->objMainTableRecord->unsetFld($key);
+    }
+
     public function getFldValue($key)
     {
         return $this->objMainTableRecord->getFldValue($key);
@@ -290,6 +335,10 @@ class MyAppModel extends FatModel
             $this->error = $this->objMainTableRecord->getError();
         }
 
+        if (!$this->updateModifiedTime()) {
+            $this->error = $this->getError();
+        }
+
         return $result;
     }
 
@@ -310,12 +359,19 @@ class MyAppModel extends FatModel
             $this->error = 'ERR_INVALID_REQUEST_ID';
             return false;
         }
-
-        $db = FatApp::getDb();
-        if (!$db->updateFromArray(static::DB_TBL, [static::DB_TBL_PREFIX . 'active' => $v], ['smt' => static::DB_TBL_PREFIX . 'id = ?', 'vals' => [$this->mainTableRecordId]])) {
-            $this->error = $db->getError();
+        $data = array(
+            static::tblFld('updated_on') => date('Y-m-d H:i:s'),
+            //static::tblFld('active') => $v
+        );
+        $this->assignValues($data);
+        $this->setFldValue(static::tblFld('active'), $v);
+        
+        if (!$this->objMainTableRecord->update(array('smt' => $this->mainTableIdField . ' = ?', 'vals' => array($this->mainTableRecordId)))) {
+            $this->error = $this->objMainTableRecord->getError();
             return false;
         }
+
+        $this->logUpdatedRecord();
 
         return true;
     }
@@ -351,5 +407,29 @@ class MyAppModel extends FatModel
             return false;
         }
         return true;
+    }
+
+    public function logUpdatedRecord()
+    {
+        if (1 > $this->mainTableRecordId) {
+            return false;
+        }
+
+        //$prefix = substr(static::DB_TBL_PREFIX, 0, -1);
+        $prefix = static::DB_TBL_PREFIX;
+        $typeArr = UpdatedRecordLog::getTypeArr();
+
+        if (!array_key_exists($prefix, $typeArr)) {
+            return false;
+        }
+
+        $data = [
+            'urlog_record_id' => $this->mainTableRecordId,
+            'urlog_subrecord_id' => 0,
+            'urlog_record_type' => $typeArr[$prefix],
+            'urlog_executed' => 0,
+            'urlog_added_on' => date('Y-m-d H:i:s')
+        ];
+        FatApp::getDb()->insertFromArray(UpdatedRecordLog::DB_TBL, $data, false, array(), $data);
     }
 }

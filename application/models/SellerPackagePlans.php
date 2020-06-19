@@ -38,6 +38,7 @@ class SellerPackagePlans extends MyAppModel
             $srch->addCondition(SellerPackagePlans::DB_TBL_PREFIX . 'spackage_id', '=', $packageId);
         }
         $srch->addCondition('spp.spplan_active', '=', applicationConstants::YES);
+        $srch->addOrder('spp.spplan_price', 'ASC');
         $rs = $srch->getResultSet();
         $records = array();
         $records = FatApp::getDb()->fetchAll($rs);
@@ -99,7 +100,7 @@ class SellerPackagePlans extends MyAppModel
     public static function getCheapPlanPriceWithPeriod($plan, $price)
     {
         $subcriptionPeriodArr = self::getSubscriptionPeriods(CommonHelper::getLangId());
-        return CommonHelper::displayMoneyFormat($price, false, false, true, true) . " <br/>" . " " . Labels::getLabel("LBL_Per", CommonHelper::getLangId()) . " " . (($plan[SellerPackagePlans::DB_TBL_PREFIX . 'interval'] > 1) ? $plan[SellerPackagePlans::DB_TBL_PREFIX . 'interval'] : '')
+        return CommonHelper::displayMoneyFormat($price) . " <br/>" . " " . Labels::getLabel("LBL_Per", CommonHelper::getLangId()) . " " . (($plan[SellerPackagePlans::DB_TBL_PREFIX . 'interval'] > 1) ? $plan[SellerPackagePlans::DB_TBL_PREFIX . 'interval'] : '')
         . "  " . $subcriptionPeriodArr[$plan[SellerPackagePlans::DB_TBL_PREFIX . 'frequency']];
     }
     public static function getPlanByPackageId($spackageId = 0)

@@ -1,13 +1,13 @@
 <?php defined('SYSTEM_INIT') or die('Invalid Usage.');
 $arr_flds = array(
-        'listserial'=>Labels::getLabel('LBL_Sr._no.', $siteLangId),
+        'listserial'=>'#',
         'option_identifier'=>Labels::getLabel('LBL_Option_Name', $siteLangId)
     );
 if ($canEdit) {
-    $arr_flds = array_merge($arr_flds, array('action'=>Labels::getLabel('LBL_Action', $siteLangId)));
+    $arr_flds = array_merge($arr_flds, array('action'=>''));
 }
 if (count($arr_listing) > 0 && $canEdit) {
-    $arr_flds = array_merge(array('select_all'=>Labels::getLabel('LBL_Select_all', $siteLangId)), $arr_flds);
+    $arr_flds = array_merge(array('select_all'=>''), $arr_flds);
 }
 
 $tbl = new HtmlElement(

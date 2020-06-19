@@ -1,6 +1,6 @@
 <?php defined('SYSTEM_INIT') or die('Invalid Usage.');
 $arr_flds = array(
-    // 'select_all'=>Labels::getLabel('LBL_Select_all', $siteLangId),
+    // 'select_all'=>'',
     'product_name' => Labels::getLabel('LBL_Product_Name', $siteLangId),
     'upsell_products' => Labels::getLabel('LBL_Buy_Together_Products', $siteLangId)
 );
@@ -21,7 +21,8 @@ foreach ($arrListing as $selProdId => $upsellProds) {
     foreach ($arr_flds as $key => $val) {
         $tr->setAttribute('id', 'row-'.$selProdId);
         if($key == 'product_name'){
-            $td = $tr->appendElement('td', array('class' => 'js-product-edit cursor-pointer', 'row-id' => $selProdId, 'title' => Labels::getLabel('LBL_Click_Here_For_Edit', $siteLangId)));
+            $title = ($canEdit) ? Labels::getLabel('LBL_Click_Here_For_Edit', $siteLangId) : '';
+            $td = $tr->appendElement('td', array('class' => 'js-product-edit cursor-pointer', 'row-id' => $selProdId, 'title' => $title));
         }else{
             $td = $tr->appendElement('td');
         }

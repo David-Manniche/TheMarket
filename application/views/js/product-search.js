@@ -317,7 +317,11 @@ function resetListingFilter(){
 	/* $("input:checkbox[name=brands]").each(function(){
 		$(this).prop( "checked", false );	
 	}); */
-
+	var shop_id = parseInt($("input[name=shop_id]").val());
+	if (shop_id > 0){
+		document.frmSearch.reset();
+		$("input[id=keyword]").val('');
+	}
 	document.frmProductSearch.reset();
     document.frmProductSearchPaging.reset();
     var frm = document.frmProductSearch;
@@ -429,7 +433,6 @@ function getSearchQueryUrl(includeBaseUrl){
 	if(typeof includeBaseUrl != 'undefined' || includeBaseUrl != null){
 		url = $currentPageUrl;		
 	}
-	
 	var keyword = $("input[id=keyword]").val();
 	if(keyword !=''){
 		delete searchArr['keyword'];
@@ -591,9 +594,10 @@ function updatePriceFilter(minPrice,maxPrice,addPriceFilter){
         }
 		$("input[id=keyword]").val(keyword);
 		reloadProductListing(frm);
+		$('#resetAll').css('display','block');
 	};
 
-	loadProductListingfilters = function(frm){
+	loadProductListingfilters = function(frm) {		
 		$('.productFilters-js').html(fcom.getLoader());
 		var url = window.location.href;
 		if($currentPageUrl == removeLastSpace(url)+'/index'){

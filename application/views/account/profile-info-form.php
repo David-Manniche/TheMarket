@@ -58,7 +58,7 @@ $fld->addFieldTagAttribute('class','btn btn--primary btn--sm'); */
                         <div class="avtar avtar--large mb-4 ">
                             <?php
                                 $userId = UserAuthentication::getLoggedUserId();
-                                $userImgUpdatedOn = User::getAttributesById($userId, 'user_img_updated_on');
+                                $userImgUpdatedOn = User::getAttributesById($userId, 'user_updated_on');
                                 $uploadedTime = AttachedFile::setTimeParam($userImgUpdatedOn);
 
                                 $profileImg = FatCache::getCachedUrl(CommonHelper::generateUrl('Image', 'user', array($userId,'thumb',true)).$uploadedTime, CONF_IMG_CACHE_TIME, '.jpg');

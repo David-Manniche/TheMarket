@@ -36,7 +36,7 @@ class EmailHandler extends FatModel
         return $row;
     }
 
-    private function sendSms($tpl, $phone, $arrReplacements, $langId)
+    public function sendSms($tpl, $phone, $arrReplacements, $langId)
     {
         $langId = 1 > FatUtility::int($langId) ? $this->commonLangId : FatUtility::int($langId);
         if (empty($phone) || empty($tpl) || empty($arrReplacements)) {
@@ -244,7 +244,7 @@ class EmailHandler extends FatModel
 
         if (!empty($bcc)) {
             $bccEmails = implode(", ", array_keys($bcc));
-            $headers .= 'Cc: ' . $bccEmails;
+			$headers .= "\r\nBcc: " . $bccEmails;
         }
 
         if (!$db->insertFromArray(
@@ -324,7 +324,7 @@ class EmailHandler extends FatModel
         '{new_email}' => $d['user_new_email'],
         );
 
-        if (!self::sendMailTpl($d['user_email'], $tpl, $langId, $vars)) {
+        if (!self::sendMailTpl($d['user_new_email'], $tpl, $langId, $vars)) {
             return false;
         }
         $this->sendSms($tpl, $d['user_phone'], $vars, $langId);
@@ -1176,6 +1176,21 @@ class EmailHandler extends FatModel
         } else {
             $this->error = Labels::getLabel('MSG_INVALID_REQUEST', $this->commonLangId);
         }
+    }
+
+    public function sendTaxApiOrderCreationFailure($data, $langId) {
+        $adminEmail = FatApp::getConfig("CONF_SITE_OWNER_EMAIL", FatUtility::VAR_STRING, "");
+        $tpl = "taxapi_order_creation_failure";
+        $defaultSiteLangId = FatApp::getConfig('conf_default_site_lang');
+        $arrReplacements = array(
+            '{invoice_number}' => $data['op_invoice_number'],
+            '{error_message}' => $data['op_invoerror_messageice_number']
+        );
+
+        if (self::sendMailTpl($adminEmail, $tpl, $langId, $vars)) {
+            return true;
+        }
+        return false;
     }
 
     public function sendTxnNotification($txnId, $langId)
@@ -2465,7 +2480,7 @@ class EmailHandler extends FatModel
         return array(
         '{website_name}' => FatApp::getConfig('CONF_WEBSITE_NAME_' . $langId),
         '{website_url}' => CommonHelper::generateFullUrl('', '', array(), CONF_WEBROOT_FRONT_URL),
-        '{Company_Logo}' => '<img style="max-width:150px" src="' . FatCache::getCachedUrl(CommonHelper::generateFullUrl('Image', 'emailLogo', array($langId), CONF_WEBROOT_FRONT_URL) . $uploadedTime, CONF_IMG_CACHE_TIME, '.jpg') . '" />',
+        '{Company_Logo}' => '<img style="max-width:100%" src="' . FatCache::getCachedUrl(CommonHelper::generateFullUrl('Image', 'emailLogo', array($langId), CONF_WEBROOT_FRONT_URL) . $uploadedTime, CONF_IMG_CACHE_TIME, '.jpg') . '" />',
         '{current_date}' => date('M d, Y'),
         '{social_media_icons}' => $social_media_icons,
         '{contact_us_url}' => CommonHelper::generateFullUrl('custom', 'contactUs', array(), CONF_WEBROOT_FRONT_URL),
@@ -2782,6 +2797,27 @@ class EmailHandler extends FatModel
         $this->sendSms($tpl, $phone, $vars, $langId);
         return true;
     }
+	
+	public function sendEmailToUser($langId, $data)
+    {
+        $tpl = 'user_send_email';
+		
+		$replacements = array(
+            '{full_name}' => $data['user_name'],
+            '{admin_subject}' => $data['mail_subject'],
+            '{admin_message}' => $data["mail_message"]
+        );
+
+        if (!self::sendMailTpl($data['credential_email'], $tpl, $langId, $replacements)) {
+            return false;
+        }
+		
+		if (!empty($data['user_phone'])) {
+			$this->sendSms($tpl, $data['user_phone'], $replacements, $langId);
+		}
+        return true;
+    }
+	
     public static function getEmailTemplatePermissionsArr()
     {
         return array(
@@ -2808,5 +2844,19 @@ class EmailHandler extends FatModel
             'promotion_approval_required_to_admin' => AdminPrivilege::SECTION_PROMOTIONS,
             'data_request_notification_to_admin' => AdminPrivilege::SECTION_USERS,
         );
+    }
+
+    /**
+    * This function returns the path of file from where it calls
+    *
+    * @param string $fileName
+    * @return integer $directory
+    */
+    public static function getTemplatePath($fileName = '', $directory = '_partial/emails')
+    {
+        if (empty($fileName)) {
+            $fileName = current(debug_backtrace())['file'];
+        }
+        return CONF_VIEW_DIR_PATH . $directory . '/' . basename($fileName);
     }
 }

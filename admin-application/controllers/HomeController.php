@@ -10,7 +10,6 @@ class HomeController extends AdminBaseController
         $this->canEdit = $this->objPrivilege->canEditAdminDashboard($this->admin_id, true);
         $this->set("canView", $this->canView);
         $this->set("canEdit", $this->canEdit);
-        include_once CONF_INSTALLATION_PATH . 'library/phpfastcache.php';
     }
 
     public function index()
@@ -27,14 +26,10 @@ class HomeController extends AdminBaseController
         );
 
 
-        // simple Caching with:
-        phpFastCache::setup("storage", "files");
-        phpFastCache::setup("path", CONF_UPLOADS_PATH . "caching");
-        $cache = phpFastCache();
-        $dashboardInfo = $cache->get("dashboardInfo" . $this->adminLangId);
-
-        $dashboardInfo = array();
-        if ($dashboardInfo == null) {
+        // simple Caching with:        
+        $dashboardInfoCache = FatCache::get('dashboardInfoCache'.$this->adminLangId, CONF_HOME_PAGE_CACHE_TIME, '.txt');
+        //$dashboardInfo = array();
+        if (!$dashboardInfoCache) {
             include_once CONF_INSTALLATION_PATH . 'library/analytics/analyticsapi.php';
             try {
                 $analytics = new Ykart_analytics($analyticArr);
@@ -158,8 +153,10 @@ class HomeController extends AdminBaseController
             $dashboardInfo['socialVisits'] = isset($socialVisits) ? $socialVisits : '';
             $dashboardInfo['conversionChatData'] = $conversionChatData;
             $dashboardInfo['conversionStats'] = $conversionStats;
-
-            $cache->set("dashboardInfo" . $this->adminLangId, $dashboardInfo, 24 * 60 * 60);
+            FatCache::set('dashboardInfoCache' . $this->adminLangId, serialize($dashboardInfo), '.txt');
+            //$cache->set("dashboardInfo" . $this->adminLangId, $dashboardInfo, 24 * 60 * 60);
+        } else {
+            $dashboardInfo =  unserialize($dashboardInfoCache);
         }
 
         //$saleStats = Stats::getTotalSalesStats();
@@ -249,6 +246,7 @@ class HomeController extends AdminBaseController
                 $srch->doNotCalculateRecords();
                 $srch->addOrder('u.user_id', 'DESC');
                 $srch->addCondition('u.user_is_advertiser', '=', 1);
+                $srch->addCondition('u.user_parent', '=', 0);
                 $srch->addMultipleFields(array('user_name', 'credential_username', 'credential_email', 'user_phone', 'user_regdate'));
                 $srch->setPageNumber(1);
                 $srch->setPageSize(10);
@@ -308,12 +306,10 @@ class HomeController extends AdminBaseController
         'redirectUri' => CommonHelper::generateFullUrl('configurations', 'redirect', array(), '', false),
         'googleAnalyticsID' => FatApp::getConfig("CONF_ANALYTICS_ID")
         );
-        phpFastCache::setup("storage", "files");
-        phpFastCache::setup("path", CONF_UPLOADS_PATH . "caching");
-        $cache = phpFastCache();
-
-        $result = $cache->get("dashboardInfo_" . $type . '_' . $interval . '_' . $this->adminLangId);
-        if ($result == null) {
+       
+        $dashboardInfoCache = FatCache::get("dashboardInfo_" . $type . '_' . $interval . '_' . $this->adminLangId, CONF_HOME_PAGE_CACHE_TIME, '.txt');
+        //$result = $cache->get("dashboardInfo_" . $type . '_' . $interval . '_' . $this->adminLangId);
+        if (!$dashboardInfoCache) {
             if (strtoupper($type) == 'TOP_PRODUCTS') {
                 $statsObj = new Statistics();
                 $result = $statsObj->getTopProducts($interval, $this->adminLangId, 10);
@@ -353,8 +349,10 @@ class HomeController extends AdminBaseController
                     echo $e->getMessage();
                 }
             }
-
-            $cache->set("dashboardInfo_" . $type . '_' . $interval . '_' . $this->adminLangId, $result, 6 * 60 * 60);
+            FatCache::set("dashboardInfo_" . $type . '_' . $interval . '_' . $this->adminLangId, serialize($result), '.txt');
+           // $cache->set("dashboardInfo_" . $type . '_' . $interval . '_' . $this->adminLangId, $result, 6 * 60 * 60);
+        } else {
+            $result = unserialize($dashboardInfoCache);
         }
         $this->set('stats_type', strtoupper($type));
         $this->set('stats_info', $result);

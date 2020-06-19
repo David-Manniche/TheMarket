@@ -112,7 +112,7 @@ trait SellerUsers
             $frm->fill($data);
             $stateId = $data['user_state_id'];
         }
-
+		$this->set('userId', $userId);
         $this->set('frm', $frm);
         $this->set('stateId', $stateId);
         $this->set('siteLangId', $this->siteLangId);
@@ -136,12 +136,18 @@ trait SellerUsers
             Message::addErrorMessage(current($frm->getValidationErrors()));
             FatUtility::dieWithError(Message::getHtml());
         }
+		
         if (0 < $userId) {
-            $userData = User::getAttributesById($userId);
+			$srch = User::getSearchObject(true, UserAuthentication::getLoggedUserId());
+			$srch->addMultipleFields(array('user_id', 'user_parent', 'credential_username'));
+			$srch->addCondition('user_id', '=', $userId);
+			$rs = $srch->getResultSet();
+			$userData = FatApp::getDb()->fetch($rs);
             if (empty($userData) || $userData['user_parent'] != UserAuthentication::getLoggedUserId()) {
                 Message::addErrorMessage(Labels::getLabel('MSG_Invalid_Request', $this->siteLangId));
                 FatUtility::dieWithError(Message::getHtml());
             }
+			$post['user_username'] = $userData['credential_username'];
         }
 
         if ($post == false) {

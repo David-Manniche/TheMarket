@@ -1,9 +1,18 @@
 <?php defined('SYSTEM_INIT') or die('Invalid Usage.');
 $frm->setFormTagAttribute('id', 'returnAddressLangFrm');
 $frm->setFormTagAttribute('class', 'form form--horizontal layout--'.$formLayout);
-$frm->developerTags['colClassPrefix'] = 'col-lg-6 col-md-';
-$frm->developerTags['fld_default_col'] = 6;
+$frm->developerTags['colClassPrefix'] = 'col-md-';
+$frm->developerTags['fld_default_col'] = 4;
 $frm->setFormTagAttribute('onsubmit', 'setReturnAddressLang(this); return(false);');
+
+$address1 = $frm->getField('ura_address_line_1');
+$address1->developerTags['col'] = 6;
+
+$address2 = $frm->getField('ura_address_line_2');
+$address2->developerTags['col'] = 6;
+
+$submitFld = $frm->getField('btn_submit');
+$submitFld->developerTags['noCaptionTag'] = true;
 
 $langFld = $frm->getField('lang_id');
 $langFld->setfieldTagAttribute('onChange', "returnAddressLangForm(this.value);");

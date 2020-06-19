@@ -1,24 +1,25 @@
-.listing-tbl{ overflow-x: auto;}
+.listing-tbl {
+    overflow-x: auto;
+}
 
 .table {
-    
     background-color: #fff;
     margin-bottom: 0;
-     
-    
+
     @include media-breakpoint-down(lg) {
         & {
             white-space: nowrap;
             display: block;
         }
     }
-    
-    
+
+
     @include media-breakpoint-down(md) {
         & {
             min-height: 170px;
         }
     }
+
     tr {
         &:last-child {
             td {
@@ -26,7 +27,11 @@
             }
         }
 
+
         td {
+            position: relative;
+            /* word-break:break-word;*/
+
             &:first-child {
                 padding-left: 0;
             }
@@ -371,17 +376,18 @@
             &:first-child {
                 padding-#{$start-direction}: 0;
             }
-            &:last-child{padding-#{$end-direction}: 0;
-    text-align: #{$end-direction};}
+
+            &:last-child {
+                padding-#{$end-direction}: 0;
+                text-align: #{$end-direction};
+            }
         }
     }
 }
 
- 
 
-.table td {
-    position: relative;
-}
+
+
 
 .table .btn {
     margin: 2px;

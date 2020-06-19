@@ -838,13 +838,14 @@ class BrandsController extends AdminBaseController
         $data = FatApp::getPostedData();
         $page = (empty($data['page']) || $data['page'] <= 0) ? 1 : $data['page'];
         $post = $searchForm->getFormDataFromArray($data);
-
+        
         $prodBrandObj = new Brand();
+        
         $srch = $prodBrandObj->getSearchObject();
-        /*$srch->joinTable(User::DB_TBL, 'LEFT OUTER JOIN', 'u.user_id = brand_seller_id', 'u');*/
-        $srch->joinTable(Shop::DB_TBL, 'LEFT OUTER JOIN', Shop::DB_TBL_PREFIX . 'user_id = brand_seller_id', 'shop');
+        $srch->joinTable(User::DB_TBL, 'LEFT OUTER JOIN', 'u.user_id = brand_seller_id', 'u');
+        $srch->joinTable(Shop::DB_TBL, 'LEFT OUTER JOIN', 'shop_user_id = if(u.user_parent > 0, user_parent, u.user_id)', 'shop');
         $srch->joinTable(Shop::DB_TBL_LANG, 'LEFT OUTER JOIN', 'shop.shop_id = s_l.shoplang_shop_id AND shoplang_lang_id = ' . $this->adminLangId, 's_l');
-        $srch->addMultipleFields(array('b.*', 'ifnull(shop_name, shop_identifier) as shop_name'));
+        $srch->addMultipleFields(array('b.*','u.user_name', 'ifnull(shop_name, shop_identifier) as shop_name'));
         $srch->addCondition('brand_status', '=', applicationConstants::NO);
         $srch->addCondition('brand_seller_id', '>', 0);
         $srch->addOrder('b.brand_id', 'desc');

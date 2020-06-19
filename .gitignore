@@ -7,6 +7,7 @@
 /user-uploads/*
 /admin-application/views/innovas
 /application/views/innovas
+/application/controllers/DummyController.php
 /conf
 /index.php
 /library/core
@@ -19,7 +20,7 @@
 /mbs-errors.log
 /restore
 /bkup
-
+/application/views/.sass-cache
 
 # zip files
 /*.zip

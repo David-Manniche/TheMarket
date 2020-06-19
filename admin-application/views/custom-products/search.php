@@ -29,9 +29,11 @@ foreach ($arr_listing as $sn => $row) {
             case 'listserial':
                 $td->appendElement('plaintext', array(), $sr_no);
                 break;
-            case 'product_identifier':
-                $td->appendElement('plaintext', array(), $row['product_name'] . '<br>', true);
-                $td->appendElement('plaintext', array(), '('.$row[$key].')', true);
+            case 'shop_name':
+                $td->appendElement('plaintext', array(), $row[$key] . '<br>', true);
+                if($row['user_parent'] > 0 ){
+                    $td->appendElement('plaintext', array(), '('.$row['user_name'].')', true);    
+                }                
                 break;
             case 'preq_status':
                 $td->appendElement('label', array('class'=>'label label-'.$reqStatusClassArr[$row[$key]].''), $reqStatusArr[$row[$key]], true);

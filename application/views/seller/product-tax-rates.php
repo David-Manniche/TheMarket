@@ -16,7 +16,7 @@
 					'listserial'=> Labels::getLabel( 'LBL_Sr.', $siteLangId ),
 					'taxcat_name' => Labels::getLabel( 'LBL_Tax_Category', $siteLangId ),
 					'taxval_value' => Labels::getLabel( 'LBL_Value', $siteLangId ),
-					'action'	=>	Labels::getLabel('LBL_Action', $siteLangId),
+					'action'	=>	'',
 				);
 				$tbl = new HtmlElement('table', array('width'=>'100%', 'class'=>'table'));
 				$th = $tbl->appendElement('thead')->appendElement('tr',array('class' => ''));

@@ -50,11 +50,16 @@ class TaxController extends AdminBaseController
 
         $srch = Tax::getSearchObject($this->adminLangId, false);
         $srch->addCondition('taxcat_deleted', '=', 0);
+        
+        $activatedTaxServiceId = Tax::getActivatedServiceId();
+        $srch->addCondition('taxcat_plugin_id', '=', $activatedTaxServiceId);
+        
         $srch->addFld('t.*');
 
         if (!empty($post['keyword'])) {
             $cnd = $srch->addCondition('t.taxcat_identifier', 'like', '%' . $post['keyword'] . '%');
             $cnd->attachCondition('t_l.taxcat_name', 'like', '%' . $post['keyword'] . '%', 'OR');
+            $cnd->attachCondition('t.taxcat_code', 'like', '%' . $post['keyword'] . '%', 'OR');
         }
 
         $page = (empty($page) || $page <= 0) ? 1 : $page;
@@ -84,6 +89,7 @@ class TaxController extends AdminBaseController
         $this->set('postedData', $post);
         $this->set('yesNoArr', applicationConstants::getYesNoArr($this->adminLangId));
         $this->set('activeInactiveArr', applicationConstants::getActiveInactiveArr($this->adminLangId));
+        $this->set('activatedTaxServiceId', $activatedTaxServiceId);
         $this->_template->render(false, false);
     }
 
@@ -98,10 +104,13 @@ class TaxController extends AdminBaseController
             Message::addErrorMessage(current($frm->getValidationErrors()));
             FatUtility::dieJsonError(Message::getHtml());
         }
-
-        if (Tax::validatePostOptions($this->adminLangId) == false) {
-            Message::addErrorMessage(Labels::getLabel('LBL_Invalid_Tax_Option_Rate', $this->adminLangId));
-            FatUtility::dieJsonError(Message::getHtml());
+        
+        $activatedTaxServiceId = Tax::getActivatedServiceId();
+        if (!$activatedTaxServiceId) {
+            if (Tax::validatePostOptions($this->adminLangId) == false) {
+                Message::addErrorMessage(Labels::getLabel('LBL_Invalid_Tax_Option_Rate', $this->adminLangId));
+                FatUtility::dieJsonError(Message::getHtml());
+            }
         }
 
         $taxcat_id = $post['taxcat_id'];
@@ -116,26 +125,29 @@ class TaxController extends AdminBaseController
         if ($taxcat_id == 0) {
             $taxcat_id = $record->getMainTableRecordId();
         }
+      
+        
+        if (!$activatedTaxServiceId) {
+            $taxvalOptions = array();
+            $taxStructure = new TaxStructure(FatApp::getConfig('CONF_TAX_STRUCTURE', FatUtility::VAR_FLOAT, 0));
+            $options = $taxStructure->getOptions($this->adminLangId);
+            foreach ($options as $optionVal) {
+                $taxvalOptions[$optionVal['taxstro_id']] = $post[$optionVal['taxstro_id']];
+            }
 
-        $taxvalOptions = array();
-        $taxStructure = new TaxStructure(FatApp::getConfig('CONF_TAX_STRUCTURE', FatUtility::VAR_FLOAT, 0));
-        $options = $taxStructure->getOptions($this->adminLangId);
-        foreach ($options as $optionVal) {
-            $taxvalOptions[$optionVal['taxstro_id']] = $post[$optionVal['taxstro_id']];
-        }
+            $data = array(
+            'taxval_taxcat_id' => $taxcat_id,
+            'taxval_seller_user_id' => 0,
+            'taxval_is_percent' => $post['taxval_is_percent'],
+            'taxval_value' => $post['taxval_value'],
+            'taxval_options' => FatUtility::convertToJson($taxvalOptions),
+            );
 
-        $data = array(
-        'taxval_taxcat_id' => $taxcat_id,
-        'taxval_seller_user_id' => 0,
-        'taxval_is_percent' => $post['taxval_is_percent'],
-        'taxval_value' => $post['taxval_value'],
-        'taxval_options' => FatUtility::convertToJson($taxvalOptions),
-        );
-
-        $obj = new Tax();
-        if (!$obj->addUpdateTaxValues($data, $data)) {
-            Message::addErrorMessage($obj->getError());
-            FatUtility::dieWithError(Message::getHtml());
+            $obj = new Tax();
+            if (!$obj->addUpdateTaxValues($data, $data)) {
+                Message::addErrorMessage($obj->getError());
+                FatUtility::dieWithError(Message::getHtml());
+            }
         }
 
         $newTabLangId = 0;
@@ -243,7 +255,7 @@ class TaxController extends AdminBaseController
             $taxStructure = new TaxStructure(FatApp::getConfig('CONF_TAX_STRUCTURE', FatUtility::VAR_FLOAT, 0));
             $options = $taxStructure->getOptions($this->adminLangId);
             foreach ($options as $optionVal) {
-                $data[$optionVal['taxstro_id']] = $taxOptions[$optionVal['taxstro_id']];
+                $data[$optionVal['taxstro_id']] = isset($taxOptions[$optionVal['taxstro_id']]) ? $taxOptions[$optionVal['taxstro_id']] : '';
             }
             /* if (FatApp::getConfig('CONF_TAX_STRUCTURE', FatUtility::VAR_FLOAT, 0) == Tax::STRUCTURE_GST) {
                 $taxValues = Tax::getCombinedValues($data['taxval_value']);
@@ -440,19 +452,26 @@ class TaxController extends AdminBaseController
         $frm = new Form('frmTax');
         $frm->addHiddenField('', 'taxcat_id', $taxcat_id);
         $frm->addRequiredField(Labels::getLabel('LBL_Tax_Category_Identifier', $this->adminLangId), 'taxcat_identifier');
+        
+        $activatedTaxServiceId = Tax::getActivatedServiceId();
+        
+        if ($activatedTaxServiceId) {
+            $frm->addHiddenField('', 'taxcat_plugin_id', $activatedTaxServiceId)->requirements()->setRequired();
+            $frm->addRequiredField(Labels::getLabel('LBL_Tax_Code', $this->adminLangId), 'taxcat_code');
+        } else {
+            $typeArr = applicationConstants::getYesNoArr($this->adminLangId);
+            $frm->addSelectBox(Labels::getLabel('LBL_Percentage', $this->adminLangId), 'taxval_is_percent', $typeArr, '', array(), '');
 
-        $typeArr = applicationConstants::getYesNoArr($this->adminLangId);
-        $frm->addSelectBox(Labels::getLabel('LBL_Percentage', $this->adminLangId), 'taxval_is_percent', $typeArr, '', array(), '');
+            $fld = $frm->addFloatField(Labels::getLabel('LBL_Total_Value', $this->adminLangId), 'taxval_value');
+            $fld->requirements()->setFloatPositive(true);
+            $fld->requirements()->setRange('0', '100');
 
-        $fld = $frm->addFloatField(Labels::getLabel('LBL_Total_Value', $this->adminLangId), 'taxval_value');
-        $fld->requirements()->setFloatPositive(true);
-        $fld->requirements()->setRange('0', '100');
-
-        if (FatApp::getConfig('CONF_TAX_STRUCTURE', FatUtility::VAR_FLOAT, 0) == TaxStructure::TYPE_COMBINED) {
-            $taxStructure = new TaxStructure(FatApp::getConfig('CONF_TAX_STRUCTURE', FatUtility::VAR_FLOAT, 0));
-            $options = $taxStructure->getOptions($this->adminLangId);
-            foreach ($options as $optionVal) {
-                $frm->addRequiredField($optionVal['taxstro_name'], $optionVal['taxstro_id'], '', array('data-type' => $optionVal['taxstro_interstate']));
+            if (FatApp::getConfig('CONF_TAX_STRUCTURE', FatUtility::VAR_FLOAT, 0) == TaxStructure::TYPE_COMBINED) {
+                $taxStructure = new TaxStructure(FatApp::getConfig('CONF_TAX_STRUCTURE', FatUtility::VAR_FLOAT, 0));
+                $options = $taxStructure->getOptions($this->adminLangId);
+                foreach ($options as $optionVal) {
+                    $frm->addRequiredField($optionVal['taxstro_name'], $optionVal['taxstro_id'], '', array('data-type' => $optionVal['taxstro_interstate']));
+                }
             }
         }
 
@@ -461,6 +480,42 @@ class TaxController extends AdminBaseController
         $frm->addSelectBox(Labels::getLabel('LBL_Status', $this->adminLangId), 'taxcat_active', $activeInactiveArr, '', array(), '');
         $frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_Save_Changes', $this->adminLangId));
         return $frm;
+    }
+    
+    public function autoCompleteTaxCategories()
+    {
+        $pagesize = 10;
+        $post = FatApp::getPostedData();
+        $this->objPrivilege->canViewTax();
+        $srch = Tax::getSearchObject($this->adminLangId,true);
+        $srch->addCondition('taxcat_deleted', '=', 0);
+        $activatedTaxServiceId = Tax::getActivatedServiceId();
+        
+        $srch->addFld('taxcat_id'); 
+        if ($activatedTaxServiceId) {
+            $srch->addFld('concat(IFNULL(taxcat_name,taxcat_identifier), " (",taxcat_code,")")as taxcat_name');
+        }else{
+            $srch->addFld('IFNULL(taxcat_name,taxcat_identifier)as taxcat_name'); 
+        }
+        $srch->addCondition('taxcat_plugin_id', '=', $activatedTaxServiceId);       
+
+        if (!empty($post['keyword'])) {
+            $srch->addCondition('taxcat_name', 'LIKE', '%' . $post['keyword'] . '%')
+            ->attachCondition('taxcat_identifier', 'LIKE', '%' . $post['keyword'] . '%')
+            ->attachCondition('taxcat_code', 'LIKE', '%' . $post['keyword'] . '%');
+        }
+        $srch->setPageSize($pagesize);
+        $rs = $srch->getResultSet();
+        $db = FatApp::getDb();
+        $taxCategories = $db->fetchAll($rs, 'taxcat_id');
+        $json = array();
+        foreach ($taxCategories as $key => $taxCategory) {
+            $json[] = array(
+                'id' => $key,
+                'name' => strip_tags(html_entity_decode($taxCategory['taxcat_name'], ENT_QUOTES, 'UTF-8'))
+            );
+        }
+        die(json_encode($json));     
     }
 
 

@@ -83,7 +83,7 @@ class CountriesController extends AdminBaseController
         $frm = $this->getForm($countryId);
 
         if (0 < $countryId) {
-            $data = Countries::getAttributesById($countryId, array('country_id', 'country_code', 'country_active', 'country_currency_id', 'country_language_id'));
+            $data = Countries::getAttributesById($countryId);
 
             if ($data === false) {
                 FatUtility::dieWithError($this->str_invalid_request);
@@ -240,6 +240,9 @@ class CountriesController extends AdminBaseController
         $frm->addHiddenField('', 'country_id', $countryId);
         $frm->addRequiredField(Labels::getLabel('LBL_Country_code', $this->adminLangId), 'country_code');
 
+		$zoneArr = Zone::getAllZones($this->adminLangId, true);
+        $frm->addSelectBox(Labels::getLabel('LBL_Zone', $this->adminLangId), 'country_region_id', $zoneArr);
+		
         $currencyArr = Currency::getCurrencyNameWithCode($this->adminLangId);
         $frm->addSelectBox(Labels::getLabel('LBL_Currency', $this->adminLangId), 'country_currency_id', $currencyArr);
 

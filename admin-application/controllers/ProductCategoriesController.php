@@ -171,6 +171,7 @@ class ProductCategoriesController extends AdminBaseController
         }
 
         $prodCatId = FatUtility::int($post['prodcat_id']);
+        
         $productCategory = new ProductCategory($prodCatId);
         if (!$productCategory->saveCategoryData($post)) {
             Message::addErrorMessage($productCategory->getError());
@@ -332,20 +333,10 @@ class ProductCategoriesController extends AdminBaseController
             Message::addErrorMessage($this->str_invalid_request_id);
             FatUtility::dieJsonError(Message::getHtml());
         }
-
+        
         /* Sub-Categories have products[ */
-        $categoriesHaveProducts = $prodCateObj->categoriesHaveProducts($this->adminLangId);
-
-        $srch = ProductCategory::getSearchObject(true, $this->adminLangId, false);
-        $srch->addCondition('m.prodcat_parent', '=', $prodcat_id);
-        $srch->addCondition('m.prodcat_deleted', '=', 0);
-        $srch->addMultipleFields(array("m.prodcat_id"));
-        if ($categoriesHaveProducts) {
-            $srch->addCondition('m.prodcat_id', 'in', $categoriesHaveProducts);
-        }
-        $rs = $srch->getResultSet();
-        if ($srch->recordCount() > 0) {
-            FatUtility::dieJsonError(Labels::getLabel('LBL_Products_are_associated_with_its_sub-categories_so_we_are_not_able_to_delete_this_category', $this->adminLangId));
+        if (true === $prodCateObj->haveProducts()) {
+            FatUtility::dieJsonError(Labels::getLabel('LBL_Products_are_associated_with_its_category/sub-categories_so_we_are_not_able_to_delete_this_category', $this->adminLangId));
         }
         /* ] */
 

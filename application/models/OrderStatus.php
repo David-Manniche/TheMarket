@@ -1,6 +1,6 @@
 <?php
 
-class orderStatus extends MyAppModel
+class OrderStatus extends MyAppModel
 {
     public const DB_TBL = 'tbl_orders_status';
     public const DB_TBL_PREFIX = 'orderstatus_';

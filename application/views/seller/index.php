@@ -145,11 +145,11 @@ $this->includeTemplate('_partial/seller/sellerDashboardNavigation.php'); ?>
                                             <ul>
                                                 <?php if ($pendingDaysForCurrentPlan >= 0) { ?>
                                                     <li>
-                                                        <span class="total"><?php echo Labels::getLabel('LBL_Products', $siteLangId);?></span>
+                                                        <span class="total"><?php echo Labels::getLabel('LBL_Remaining', $siteLangId);?></span>
                                                         <span class="total-numbers"><?php echo $pendingDaysForCurrentPlan; ?> <?php echo Labels::getLabel('LBL_Days', $siteLangId); ?></span>
                                                     </li>
                                                     <li>
-                                                        <span class="total"><?php echo Labels::getLabel('LBL_Remaining', $siteLangId);?></span>
+                                                        <span class="total"><?php echo Labels::getLabel('LBL_Allowed_Products', $siteLangId);?></span>
                                                         <span class="total-numbers"><?php echo ($remainingAllowedProducts > 0)? $remainingAllowedProducts:0 ; ?></span>
                                                     </li>
                                                 <?php } else { ?>
@@ -261,7 +261,7 @@ $this->includeTemplate('_partial/seller/sellerDashboardNavigation.php'); ?>
                                     <tr class="">
                                         <th colspan="2" width="60%"><?php echo Labels::getLabel('LBL_Order_Particulars', $siteLangId);?></th>
                                         <th width="20%"><?php echo Labels::getLabel('LBL_Amount', $siteLangId);?></th>
-                                        <th width="20%"><?php echo Labels::getLabel('LBL_Action', $siteLangId);?></th>
+                                        <th width="20%"></th>
                                     </tr>
                                     <?php if (count($orders) > 0) {
                                         foreach ($orders as $orderId => $row) {
@@ -388,11 +388,7 @@ $this->includeTemplate('_partial/seller/sellerDashboardNavigation.php'); ?>
                                     </tr>
                                     <?php } ?>
                                 </tbody>
-                                <div class="scroll-hint-icon-wrap" data-target="scrollable-icon">
-                                    <span class="scroll-hint-icon">
-                                        <div class="scroll-hint-text"><?php echo Labels::getLabel('LBL_Scrollable', $siteLangId);?></div>
-                                    </span>
-                                </div>
+                                 
                             </table>
                         </div>
                     </div>
@@ -418,7 +414,7 @@ $this->includeTemplate('_partial/seller/sellerDashboardNavigation.php'); ?>
                                         <th width="60%"><?php echo Labels::getLabel('LBL_Order_Particulars', $siteLangId);?></th>
                                         <th width="10%"><?php echo Labels::getLabel('LBL_Qty', $siteLangId);?></th>
                                         <th width="20%"><?php echo Labels::getLabel('LBL_Status', $siteLangId);?></th>
-                                        <th width="10%"><?php echo Labels::getLabel('LBL_Action', $siteLangId);?></th>
+                                        <th width="10%"></th>
                                     </tr>
                                     <?php if (count($returnRequests) > 0) {
                                         foreach ($returnRequests as $row) {
@@ -469,11 +465,7 @@ $this->includeTemplate('_partial/seller/sellerDashboardNavigation.php'); ?>
                                     </tr>
                                     <?php } ?>
                                 </tbody>
-                                <div class="scroll-hint-icon-wrap" data-target="scrollable-icon">
-                                    <span class="scroll-hint-icon">
-                                        <div class="scroll-hint-text"><?php echo Labels::getLabel('LBL_Scrollable', $siteLangId);?></div>
-                                    </span>
-                                </div>
+                                 
                             </table>
                         </div>
                     </div>
@@ -542,11 +534,7 @@ $this->includeTemplate('_partial/seller/sellerDashboardNavigation.php'); ?>
                                     </tr>
                                     <?php } ?>
                                 </tbody>
-                                <div class="scroll-hint-icon-wrap" data-target="scrollable-icon">
-                                    <span class="scroll-hint-icon">
-                                        <div class="scroll-hint-text"><?php echo Labels::getLabel('LBL_Scrollable', $siteLangId);?></div>
-                                    </span>
-                                </div>
+                                
                             </table>
                         </div>
                     </div>

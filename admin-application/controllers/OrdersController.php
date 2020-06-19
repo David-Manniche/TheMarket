@@ -183,7 +183,7 @@ class OrdersController extends AdminBaseController
 
         $order['comments'] = $orderObj->getOrderComments($this->adminLangId, array("order_id" => $order['order_id']));
         $order['payments'] = $orderObj->getOrderPayments(array("order_id" => $order['order_id']));
-
+       
         $frm = $this->getPaymentForm($this->adminLangId, $order['order_id']);
         $this->set('frm', $frm);
         $this->set('yesNoArr', applicationConstants::getYesNoArr($this->adminLangId));
@@ -254,7 +254,18 @@ class OrdersController extends AdminBaseController
             Message::addErrorMessage(Labels::getLabel('LBL_Error:_Please_perform_this_action_on_valid_record.', $this->adminLangId));
             FatUtility::dieJsonError(Message::getHtml());
         }
-
+		
+		$allowedCancellationArr =  Orders::getBuyerAllowedOrderCancellationStatuses();
+		$srch = new OrderProductSearch(0, true);
+        $srch->addMultipleFields(array('op.op_status_id', 'o.order_id'));
+        $srch->addCondition('order_id', '=', $order_id);
+		$srch->addCondition('op_status_id', 'NOT IN', $allowedCancellationArr);
+        $opDetails = FatApp::getDb()->fetchAll($srch->getResultSet());
+		if(!empty($opDetails)) {
+			Message::addErrorMessage(Labels::getLabel('LBL_Error:_Orders_that_are_completed_cannot_be_Cancelled.', $this->adminLangId));
+			FatUtility::dieJsonError(Message::getHtml());
+		}
+		
         if ($order["order_is_paid"]) {
             if (!$orderObj->addOrderPaymentHistory($order_id, Orders::ORDER_IS_CANCELLED, Labels::getLabel('MSG_Order_Cancelled', $order['order_language_id']), 1)) {
                 Message::addErrorMessage($orderObj->getError());

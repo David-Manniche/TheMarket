@@ -1,16 +1,16 @@
 <?php
 $arr_flds = array(
-        'listserial'=>Labels::getLabel('LBL_Sr._No', $siteLangId),
-        'promotion_name'=>Labels::getLabel('LBL_Promotion_name', $siteLangId),
+        'listserial'=>'#',
+        'promotion_name'=>Labels::getLabel('LBL_TITLE', $siteLangId),
         'promotion_budget'=>Labels::getLabel('LBL_Budget', $siteLangId),
         'promotion_duration'=>Labels::getLabel('LBL_Duration', $siteLangId),
         'promotion_type'=>Labels::getLabel('LBL_Type', $siteLangId),
-        'promotion_date'=>Labels::getLabel('LBL_Promotion_date', $siteLangId),
-        'promotion_time'=>Labels::getLabel('LBL_Time', $siteLangId),
-        'promotion_end_date'=>Labels::getLabel('LBL_Promotion_Status', $siteLangId),
+        'promotion_date'=>Labels::getLabel('LBL_SCHEDULED', $siteLangId),
+        // 'promotion_time'=>Labels::getLabel('LBL_Time', $siteLangId),
+        'promotion_end_date'=>Labels::getLabel('LBL_PROMOTION', $siteLangId),
         'promotion_approved'=>Labels::getLabel('LBL_Approved', $siteLangId),
         'promotion_active'=>Labels::getLabel('LBL_Status', $siteLangId),
-        'action' => Labels::getLabel('LBL_Action', $siteLangId),
+        'action' => '',
     );
 $tbl = new HtmlElement(
     'table',
@@ -18,8 +18,8 @@ $tbl = new HtmlElement(
 );
 
 $th = $tbl->appendElement('thead')->appendElement('tr');
-foreach ($arr_flds as $val) {
-    $e = $th->appendElement('th', array(), $val);
+foreach ($arr_flds as $key => $val) {
+    $th->appendElement('th', array(), $val);
 }
 $arrYesNo = applicationConstants::getYesNoArr($siteLangId);
 $activeInactiveArr = applicationConstants::getActiveInactiveArr($siteLangId);
@@ -58,22 +58,26 @@ foreach ($arr_listing as $sn => $row) {
                 if ($row[$key] < date("Y-m-d")) {
                     $txt .= Labels::getLabel('LBL_Expired', $siteLangId);
                 } else {
-                    $txt .= Labels::getLabel('LBL_Active', $siteLangId);
+                    if ($row['promotion_start_date'] >= date("Y-m-d")){
+                        $txt .= Labels::getLabel('LBL_RUNNING', $siteLangId);
+                    } else {
+                        $txt .= Labels::getLabel('LBL_SCHEDULED', $siteLangId);
+                    }
                 }
                 $td->appendElement('plaintext', array(), $txt, true);
                 break;
             case 'promotion_date':
-                $str = Labels::getLabel('LBL_Start_Date', $siteLangId).' : '.FatDate::format($row['promotion_start_date']).'<br>';
-                $str.= Labels::getLabel('LBL_End_Date', $siteLangId).' : '.FatDate::format($row['promotion_end_date']);
+                $str = '<span class="text-nowrap">' . Labels::getLabel('LBL_Start', $siteLangId).' : ' . FatDate::format($row['promotion_start_date']) . ' ' . date("G:i", strtotime($row['promotion_start_time'])) . '</span><br>';
+                $str.= '<span class="text-nowrap">' . Labels::getLabel('LBL_End', $siteLangId).' : ' . FatDate::format($row['promotion_end_date']) . ' ' . date("G:i", strtotime($row['promotion_end_time'])) . '</span>';
 
                 $td->appendElement('plaintext', array(), $str, true);
                 break;
-            case 'promotion_time':
+            /* case 'promotion_time':
                 $str = "<span class='text-nowrap'>".Labels::getLabel('LBL_Start_Time', $siteLangId).' : '.date("G:i", strtotime($row['promotion_start_time']))."</span><br>";
                 $str.= "<span  class='text-nowrap'>".Labels::getLabel('LBL_End_Time', $siteLangId).' : '.date("G:i", strtotime($row['promotion_end_time']))."</span>";
 
                 $td->appendElement('plaintext', array(), $str, true);
-                break;
+                break; */
             case 'action':
                 $ul = $td->appendElement("ul", array("class"=>"actions"));
                 if ($canEdit) {

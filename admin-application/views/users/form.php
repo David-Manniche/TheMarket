@@ -34,8 +34,10 @@ $stateFld->setFieldTagAttribute('id','user_state_id');
 		<div class="tabs_nav_container responsive flat">
 			<ul class="tabs_nav">
 				<li><a class="active" href="javascript:void(0)" onclick="userForm(<?php echo $user_id ?>);"><?php echo Labels::getLabel('LBL_General',$adminLangId); ?></a></li>
-				<li><a href="javascript:void(0)" onclick="addBankInfoForm(<?php echo $user_id ?>);"><?php echo Labels::getLabel('LBL_Bank_Info',$adminLangId); ?></a></li>
-				<li><a href="javascript:void(0)" onclick="addUserAddress(<?php echo $user_id ?>);"><?php echo Labels::getLabel('LBL_Addresses',$adminLangId); ?></a></li>							
+				<?php if($userParent == 0) { ?>
+					<li><a href="javascript:void(0)" onclick="addBankInfoForm(<?php echo $user_id ?>);"><?php echo Labels::getLabel('LBL_Bank_Info',$adminLangId); ?></a></li>
+					<li><a href="javascript:void(0)" onclick="addUserAddress(<?php echo $user_id ?>);"><?php echo Labels::getLabel('LBL_Addresses',$adminLangId); ?></a></li>
+				<?php }?>							
 			</ul>
 			<div class="tabs_panel_wrap">
 				<div class="tabs_panel">

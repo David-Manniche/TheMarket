@@ -163,7 +163,7 @@
             $("#tabs_004").show();
             $("a[rel='tabs_004']").addClass('active');
             $("#tabs_004").html(res);
-            addShippingTab(productId);
+            //addShippingTab(productId);
 		});
     }
 

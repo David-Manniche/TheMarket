@@ -845,6 +845,7 @@ $(document).on('change', '.language-js', function () {
     prodSpecificationSection = function (langId, $key = - 1) {
         var preqId = $("input[name='preq_id']").val();
         var data = "langId=" + langId + "&key=" + $key;
+        
         fcom.ajax(fcom.makeUrl('Seller', 'catalogProdSpecForm', [preqId]), data, function (res) {
             $(".specifications-form-" + langId).html(res);
         });

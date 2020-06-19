@@ -1,4 +1,4 @@
-<?php
+<?php 
 if (substr_count($_SERVER['HTTP_ACCEPT_ENCODING'], 'gzip')) {
     ob_start("ob_gzhandler");
 } else {
@@ -36,7 +36,8 @@ ini_set('session.cookie_httponly', true);
 ini_set('session.cookie_path', CONF_WEBROOT_FRONT_URL);
 session_start();
 FatApp::getDb()->query("SET NAMES utf8mb4");
-/*FatApp::getDb()->logQueries(true,CONF_UPLOADS_PATH.'logQuery.txt');*/
+/* FatApp::getDb()->clearQueryLog();
+FatApp::getDb()->logQueries(true,CONF_UPLOADS_PATH.'logQuery.txt'); */
 
 /* --- Redirect SSL --- */
 $protocol = (FatApp::getConfig('CONF_USE_SSL', FatUtility::VAR_INT, 0)==1)?'https://':'http://';
@@ -53,7 +54,8 @@ if ((!isset($_SERVER['HTTP_X_FORWARDED_PROTO']) || $_SERVER['HTTP_X_FORWARDED_PR
 } */
 /* --- Redirect SSL --- */
 $_SESSION['WYSIWYGFileManagerRequirements'] = CONF_INSTALLATION_PATH . 'public/WYSIWYGFileManagerRequirements.php';
-
+require_once CONF_INSTALLATION_PATH . 'library/aws/aws-autoloader.php';
+AttachedFile::registerS3ClientStream();
 
 define('SYSTEM_INIT', true);
-define('CONF_WEB_APP_VERSION', 'TV-9.1.6.20200319');
+define('CONF_WEB_APP_VERSION', 'RV-9.2.0');

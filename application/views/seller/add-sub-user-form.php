@@ -7,8 +7,7 @@
         </div>
     </div>
 </div>
-<div class="cards-content">
-    <div class="form__subcontent">
+ 
         <?php
         $frm->setFormTagAttribute('onsubmit', 'setup(this); return(false);');
         $frm->setFormTagAttribute('class', 'form form--horizontal');
@@ -23,10 +22,13 @@
         $countryFld->setFieldTagAttribute('onChange', 'getCountryStates(this.value,'.$stateId.',\'#user_state_id\')');
         $stateFld = $frm->getField('user_state_id');
         $stateFld->setFieldTagAttribute('id', 'user_state_id');
+		if ($userId > 0) {
+			$usernameFld = $frm->getField('user_username');
+            $usernameFld->setFieldTagAttribute('disabled', 'disabled');
+        }
         echo $frm->getFormHtml();
         ?>
-    </div>
-</div>
+ 
 <script language="javascript">
     $(document).ready(function() {
         getCountryStates($("#user_country_id").val(), <?php echo $stateId ;?>, '#user_state_id');

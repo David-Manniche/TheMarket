@@ -7,27 +7,19 @@ class FixerCurrencyConverterController extends CurrencyConverterBaseController
     public const KEY_NAME = 'FixerCurrencyConverter';
     private const PRODUCTION_URL = 'http://data.fixer.io/api/';
 
-    private $accessKey;
+    public $requiredKeys = ['access_key'];
 
     public function __construct($action)
     {
         parent::__construct($action);
-        $this->validateSettings();
-    }
-
-    private function validateSettings()
-    {
-        $settings = $this->getSettings();
-        if (!isset($settings['access_key'])) {
-            $message = Labels::getLabel('MSG_SETTINGS_NOT_UPDATED', $this->adminLangId);
-            LibHelper::dieJsonError($message);
+        if (false == $this->validateSettings($this->adminLangId)) {
+            FatUtility::dieJsonError($this->error);
         }
-        $this->accessKey = $settings['access_key'];
     }
 
     private function accessKey()
     {
-        return '?access_key=' . $this->accessKey;
+        return '?access_key=' . $this->settings['access_key'];
     }
 
     private function getData($apiUrl)

@@ -4,7 +4,7 @@ $arr_flds = array(
 	'listserial'=>'Sr.',
 	'prodgroup_name' => Labels::getLabel('LBL_Batch_Name', $siteLangId),
 	'prodgroup_active' => Labels::getLabel('LBL_Status', $siteLangId),
-	'action' => Labels::getLabel('LBL_Action', $siteLangId)
+	'action' => ''
 );
 $tbl = new HtmlElement('table', array('width'=>'100%', 'class'=>'table'));
 $th = $tbl->appendElement('thead')->appendElement('tr',array('class' => ''));

@@ -8,33 +8,26 @@ class GoogleShoppingFeedController extends AdvertisementFeedBaseController
     public const SCOPE = 'https://www.googleapis.com/auth/content';
 
     private $client;
-    private $clientId;
-    private $clientSecret;
-    private $developerKey;
     private $pluginData;
+
+    public $requiredKeys = [
+        'client_id',
+        'client_secret',
+        'developer_key'
+    ];
 
     public function __construct($action)
     {
         parent::__construct($action);
-        require_once(CONF_PLUGIN_DIR . 'advertisement-feed/' . strtolower(self::KEY_NAME) . '/' . self::KEY_NAME . '.php');
-    }
-
-    private function validateSettings()
-    {
-        $settings = $this->getSettings();
-        if (!isset($settings['client_id']) || !isset($settings['client_secret']) || !isset($settings['developer_key'])) {
-            $message = Labels::getLabel('MSG_SETTINGS_NOT_UPDATED', $this->siteLangId);
-            Message::addErrorMessage($message);
+        $error = '';
+        if (false === PluginHelper::includePlugin(self::KEY_NAME, 'advertisement-feed', $error, $this->siteLangId)) {
+            Message::addErrorMessage($error);
             $this->redirectBack();
         }
-        $this->clientId = $settings['client_id'];
-        $this->clientSecret = $settings['client_secret'];
-        $this->developerKey = $settings['developer_key'];
     }
 
     public function index()
     {
-        $settings = $this->getSettings();
         $this->set('userData', $this->getUserMeta());
         $this->set('keyName', self::KEY_NAME);
         $this->set('pluginName', $this->getPluginData('plugin_name'));
@@ -43,15 +36,18 @@ class GoogleShoppingFeedController extends AdvertisementFeedBaseController
 
     private function setupConfiguration()
     {
-        $this->validateSettings();
+        if (false == $this->validateSettings($this->siteLangId)) {
+            $this->redirectBack();
+            return false;
+        }
         
         $this->client = new Google_Client();
         $this->client->setApplicationName(FatApp::getConfig('CONF_WEBSITE_NAME_' . $this->siteLangId)); // Set your application name
         $this->client->setScopes(self::SCOPE);
-        $this->client->setClientId($this->clientId);
-        $this->client->setClientSecret($this->clientSecret);
+        $this->client->setClientId($this->settings['client_id']);
+        $this->client->setClientSecret($this->settings['client_secret']);
         $this->client->setRedirectUri(CommonHelper::generateFullUrl(static::KEY_NAME, 'getAccessToken', [], '', false));
-        $this->client->setDeveloperKey($this->developerKey);
+        $this->client->setDeveloperKey($this->settings['developer_key']);
         $this->client->setAccessType('offline');
         $this->client->setApprovalPrompt('force');
     }

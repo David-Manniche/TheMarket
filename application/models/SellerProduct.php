@@ -23,14 +23,21 @@ class SellerProduct extends MyAppModel
     public const DB_TBL_RELATED_PRODUCTS = 'tbl_related_products';
     public const DB_TBL_RELATED_PRODUCTS_PREFIX = 'related_';
 
+    public const DB_TBL_EXTERNAL_RELATIONS = 'tbl_seller_product_external_relations';
+    public const DB_TBL_EXTERNAL_RELATIONS_PREFIX = 'sperel_';
     public const MAX_RANGE_OF_MINIMUM_PURCHANGE_QTY = 9999;
     
     public const VOL_DISCOUNT_MIN_QTY = 2;
     public const VOL_DISCOUNT_MAX_QTY = 9999;
 
+    public const UPDATE_OPTIONS_COUNT = 10;
+
     public function __construct($id = 0)
     {
         parent::__construct(static::DB_TBL, static::DB_TBL_PREFIX . 'id', $id);
+        $this->objMainTableRecord->setSensitiveFields(
+            array('selprod_id')
+        );
     }
 
     public static function getSearchObject($langId = 0, $joinSpecifics = false)
@@ -324,9 +331,9 @@ class SellerProduct extends MyAppModel
                 $srch->addMultipleFields($attr);
             }
         } else {
-            $srch->addMultipleFields(array('upsell_sellerproduct_id', 'selprod_id', 'product_id', 'IFNULL(selprod_title  ,IFNULL(product_name, product_identifier)) as selprod_title', 'selprod_price', 'selprod_stock', 'IFNULL(product_identifier ,product_name) as product_name', 'product_identifier', 'selprod_product_id', 'CASE WHEN m.splprice_selprod_id IS NULL THEN 0 ELSE 1 END AS special_price_found', 'IFNULL(m.splprice_price, selprod_price) AS theprice', 'selprod_min_order_qty', 'product_image_updated_on'));
+            $srch->addMultipleFields(array('upsell_sellerproduct_id', 'selprod_id', 'product_id', 'IFNULL(selprod_title  ,IFNULL(product_name, product_identifier)) as selprod_title','selprod_price','selprod_stock', 'IFNULL(product_identifier ,product_name) as product_name','product_identifier','selprod_product_id','CASE WHEN m.splprice_selprod_id IS NULL THEN 0 ELSE 1 END AS special_price_found',
+            'IFNULL(m.splprice_price, selprod_price) AS theprice', 'selprod_min_order_qty','product_updated_on'));
         }
-
         $srch->addCondition(Product::DB_TBL_PREFIX . 'active', '=', applicationConstants::YES);
         $srch->addCondition('selprod_deleted', '=', applicationConstants::NO);
         $srch->addCondition('product_deleted', '=', applicationConstants::NO);
@@ -742,7 +749,7 @@ class SellerProduct extends MyAppModel
                 $srch->addMultipleFields($criteria);
             }
         } else {
-            $srch->addMultipleFields(array('related_sellerproduct_id', 'selprod_id', 'IFNULL(product_identifier ,product_name) as product_name', 'IFNULL(selprod_title, IFNULL(product_name, product_identifier)) as selprod_title', 'product_identifier', 'selprod_price', 'product_image_updated_on'));
+            $srch->addMultipleFields(array('related_sellerproduct_id', 'selprod_id', 'IFNULL(product_identifier ,product_name) as product_name', 'IFNULL(selprod_title, IFNULL(product_name, product_identifier)) as selprod_title', 'product_identifier','selprod_price','product_updated_on'));
         }
         return $srch;
     }
@@ -765,19 +772,26 @@ class SellerProduct extends MyAppModel
         }
     }
 
-    public function deleteSellerProduct($selprod_id)
+    public function deleteSellerProduct($selprodId)
     {
-        if (!$selprod_id) {
+        if (!$selprodId) {
             $this->error = Labels::getLabel('ERR_Invalid_Request', CommonHelper::getLangId());
             return false;
         }
 
-        $db = FatApp::getDb();
-        if (!$db->updateFromArray(static::DB_TBL, array( static::DB_TBL_PREFIX . 'deleted' => 1), array('smt' => static::DB_TBL_PREFIX . 'id = ?', 'vals' => array($selprod_id)))) {
-            $this->error = $db->getError();
+        $sellerProdObj = new SellerProduct($selprodId);
+        if (!$sellerProdObj->deleteRecord(true)) {
+            $this->error = $sellerProdObj->getError();
             return false;
         }
         return true;
+
+        /* $db = FatApp::getDb();
+        if (!$db->updateFromArray(static::DB_TBL, array( static::DB_TBL_PREFIX . 'deleted' => 1), array('smt' => static::DB_TBL_PREFIX . 'id = ?','vals' => array($selprod_id)))) {
+            $this->error = $db->getError();
+            return false;
+        }
+        return true; */
     }
 
     public static function getSelprodPolicies($selprod_id, $policy_type, $langId, $limit = null, $active = true, $deleted = false)

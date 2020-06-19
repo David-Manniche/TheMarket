@@ -130,11 +130,11 @@ defined('SYSTEM_INIT') or die('Invalid Usage.'); ?>
                         <?php }?>
                         <?php $netChargeAmt = $cartSummary['cartTotal'] + $cartSummary['cartTaxTotal'] - ((0 < $cartSummary['cartVolumeDiscount'])?$cartSummary['cartVolumeDiscount']:0);?>
                         <?php $netChargeAmt = $netChargeAmt - ((0 < $cartSummary['cartDiscounts']['coupon_discount_total'])?$cartSummary['cartDiscounts']['coupon_discount_total']:0);?>
-                        <?php if ($cartSummary['taxOptions'] ) { 
+                        <?php if (isset($cartSummary['taxOptions']) && !empty($cartSummary['taxOptions'])) { 
                         foreach($cartSummary['taxOptions'] as $taxName => $taxVal){ ?>
                         <tr>
-                            <td><?php echo $taxName; ?></td>
-                            <td><?php echo CommonHelper::displayMoneyFormat($taxVal); ?></td>
+                            <td><?php echo $taxVal['title']; ?></td>
+                            <td><?php echo CommonHelper::displayMoneyFormat($taxVal['value']); ?></td>
                         </tr>
                         <?php   }
                      }?>

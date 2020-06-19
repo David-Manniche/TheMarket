@@ -7,7 +7,7 @@ $arr_flds = array(
     /* 'orrequest_type'        =>    Labels::getLabel( 'LBL_Request_Type', $siteLangId ), */
     'orrequest_qty'        =>    Labels::getLabel('LBL_Return_Qty', $siteLangId),
     'orrequest_status'    =>    Labels::getLabel('LBL_Status', $siteLangId),
-    'action'            =>    Labels::getLabel('LBL_Action', $siteLangId),
+    'action'            =>    '',
 );
 
 $tbl = new HtmlElement('table', array('class'=>'table'));

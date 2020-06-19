@@ -72,10 +72,19 @@ if (0 < $coupon_discount_total) {
 }
 
 if (0 < $cartTaxTotal) {
-    $priceDetail['priceDetail'][] = array(
-        'key' => Labels::getLabel('LBL_Tax', $siteLangId),
-        'value' => CommonHelper::displayMoneyFormat($cartTaxTotal)
-    );
+    if (isset($cartSummary['taxOptions']) && !empty($cartSummary['taxOptions'])) { 
+        foreach($cartSummary['taxOptions'] as $taxName => $taxVal){
+            $priceDetail['priceDetail'][] = array(
+                'key' => $taxVal['title'],
+                'value' => CommonHelper::displayMoneyFormat($taxVal['value'])
+            );
+        }
+    } else {
+        $priceDetail['priceDetail'][] = array(
+            'key' => Labels::getLabel('LBL_Tax_Charges', $siteLangId),
+            'value' => CommonHelper::displayMoneyFormat($cartTaxTotal)
+        );
+    }
 }
 
 if (0 < $shippingTotal) {

@@ -10,12 +10,15 @@ $selprodDownloadFrm->developerTags['fld_default_col'] = 4; ?>
             <?php foreach ($savedOptions as $key => $val) {
                 $downloadableFileFld = $selprodDownloadFrm->getField('downloadable_file'.$key);
                 $downloadableFileFld->setFieldTagAttribute('onchange', 'setUpSellerProductDownloads('.applicationConstants::DIGITAL_DOWNLOAD_FILE.', '.$product_id.','.$key.'); return false;');
+				$dwnldLink = $selprodDownloadFrm->getField('selprod_downloadable_link'.$key);
+				$dwnldLink->setFieldTagAttribute('class', 'h-auto');
                 $submitButton = $selprodDownloadFrm->getField('btn_submit'.$key);
-                $submitButton->setFieldTagAttribute('onClick', 'setUpSellerProductDownloads('.applicationConstants::DIGITAL_DOWNLOAD_FILE.', '.$product_id.','.$key.'); return false;'); ?>
+				$submitButton->setFieldTagAttribute('class', 'btn-block');
+                $submitButton->setFieldTagAttribute('onClick', 'setUpSellerProductDownloads('.applicationConstants::DIGITAL_DOWNLOAD_LINK.', '.$product_id.','.$key.'); return false;'); ?>
                 <div class="p-4 mb-4 border rounded">
                     <h6><?php echo ($val !== '') ? Labels::getLabel('LBL_Add_downloads_for', $siteLangId).' '.str_replace("_", " | ", $val) : '' ?></h6>
                     <div class="row">
-                        <div class="col-md-4">
+                        <?php /* <div class="col-md-4">
                             <div class="field-set">
                                 <div class="caption-wraper"><label class="field_label"><?php echo $selprodDownloadFrm->getField('download_type'.$key)->getCaption(); ?><span
                                             class="spn_must_field">*</span></label></div>
@@ -23,24 +26,8 @@ $selprodDownloadFrm->developerTags['fld_default_col'] = 4; ?>
                                     <div class="field_cover"><?php echo $selprodDownloadFrm->getFieldHtml('download_type'.$key); ?></div>
                                 </div>
                             </div>
-                        </div>
-                        <div class="col-md-4 lang_fld<?php echo $key; ?>">
-                            <div class="field-set">
-                                <div class="caption-wraper"><label class="field_label"><?php echo $selprodDownloadFrm->getField('lang_id'.$key)->getCaption(); ?><span class="spn_must_field">*</span></label></div>
-                                <div class="field-wraper">
-                                    <div class="field_cover"><?php echo $selprodDownloadFrm->getFieldHtml('lang_id'.$key); ?></div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-4 downloadable_file_fld<?php echo $key; ?>">
-                            <div class="field-set">
-                                <div class="caption-wraper"><label class="field_label"><?php echo $selprodDownloadFrm->getField('downloadable_file'.$key)->getCaption(); ?><span class="spn_must_field">*</span></label></div>
-                                <div class="field-wraper">
-                                    <div class="field_cover"><?php echo $selprodDownloadFrm->getFieldHtml('downloadable_file'.$key); ?></div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-6 downloadable_link_fld<?php echo $key; ?>">
+                        </div> */ ?>
+                        <div class="col-md-9 downloadable_link_fld<?php echo $key; ?>">
                             <div class="field-set">
                                 <div class="caption-wraper"><label class="field_label"><?php echo $selprodDownloadFrm->getField('selprod_downloadable_link'.$key)->getCaption(); ?><span class="spn_must_field">*</span></label></div>
                                 <div class="field-wraper">
@@ -48,7 +35,7 @@ $selprodDownloadFrm->developerTags['fld_default_col'] = 4; ?>
                                 </div>
                             </div>
                         </div>
-                        <div class="col-md-2 submit_button<?php echo $key; ?>">
+                        <div class="col-md-3 submit_button<?php echo $key; ?>">
                             <div class="field-set">
                                 <div class="caption-wraper"><label class="field_label"></label></div>
                                 <div class="field-wraper">
@@ -57,6 +44,25 @@ $selprodDownloadFrm->developerTags['fld_default_col'] = 4; ?>
                             </div>
                         </div>
                     </div>
+					<hr>
+					<div class="row">
+						<div class="col-md-6 lang_fld<?php echo $key; ?>">
+                            <div class="field-set">
+                                <div class="caption-wraper"><label class="field_label"><?php echo $selprodDownloadFrm->getField('lang_id'.$key)->getCaption(); ?><span class="spn_must_field">*</span></label></div>
+                                <div class="field-wraper">
+                                    <div class="field_cover"><?php echo $selprodDownloadFrm->getFieldHtml('lang_id'.$key); ?></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6 downloadable_file_fld<?php echo $key; ?>">
+                            <div class="field-set">
+                                <div class="caption-wraper"><label class="field_label"><?php echo $selprodDownloadFrm->getField('downloadable_file'.$key)->getCaption(); ?><span class="spn_must_field">*</span></label></div>
+                                <div class="field-wraper">
+                                    <div class="field_cover"><?php echo $selprodDownloadFrm->getFieldHtml('downloadable_file'.$key); ?></div>
+                                </div>
+                            </div>
+                        </div>
+					</div>
                     <div class="row">
                         <div class="col-md-12 filesList<?php echo $key; ?>">
                         <?php
@@ -129,7 +135,7 @@ $selprodDownloadFrm->developerTags['fld_default_col'] = 4; ?>
     var DIGITAL_DOWNLOAD_FILE = <?php echo applicationConstants::DIGITAL_DOWNLOAD_FILE; ?>;
     var DIGITAL_DOWNLOAD_LINK = <?php echo applicationConstants::DIGITAL_DOWNLOAD_LINK; ?>;
 
-    $(".downloadType-js").each(function() {
+    /* $(".downloadType-js").each(function() {
         var id = $(this).attr('id');
         $("select[name='download_type"+id+"']").trigger("change");
         $(document).on("change", "select[name='download_type"+id+"']", function(){
@@ -148,5 +154,5 @@ $selprodDownloadFrm->developerTags['fld_default_col'] = 4; ?>
             }
         });
 
-    });
+    }); */
 </script>

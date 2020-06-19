@@ -78,49 +78,115 @@ $(document).on('change','.selprodoption_optionvalue_id',function(){
             setTimeout(function() { window.location.href = fcom.makeUrl('Seller', 'products'); }, 1000);
 		});
 	};
+	
+	optionsAssocArr = function(formData) {
+	  var data = {};
+	  $.each( formData, function( key, obj ) {
+        if ('' != obj.value) {
+            var a = obj.name.match(/(.*?)\[(.*?)\]\[(.*?)\]/);
+            if(a !== null)
+            {
+                var subName = a[1];
+                var subKey = a[2];
+                var options = a[3];
+                
+                if( !data[subName]) {
+                    data[subName] = [];
+                }
+                
+                if (!data[subName][subKey]) {
+                    data[subName][subKey] = [];
+                }
 
-	setUpMultipleSellerProducts = function(frm){
-		if (!$(frm).validate()) return;
-
-		runningAjaxReq = true;
-		var data = fcom.frmData(frm);
-
-		$('.optionFld-js').each(function(){
-			var $this = $(this);
-			var errorInRow = false;
-			$this.find('input').each(function(){
-				if($(this).parent().hasClass('fldSku') && CONF_PRODUCT_SKU_MANDATORY != 1){
-					return;
-				}
-				if($(this).val().length == 0 || $(this).val() == 0){
-					errorInRow = true;
-					return false;
-				}
-			});
-			if (errorInRow) {
-				$this.parent().addClass('invalid');
-			} else {
-				$this.parent().removeClass('invalid');
-			}
-		});
-		if ($("#optionsTable-js > tbody > tr.invalid").length == $("#optionsTable-js > tbody > tr").length) {
-			$.systemMessage(LBL_MANDATORY_OPTION_FIELDS, 'alert--danger');
-			return false;
-		}
-
-		fcom.updateWithAjax(fcom.makeUrl('Seller', 'setUpMultipleSellerProducts'), data, function(t) {
-			runningAjaxReq = false;
-			if(productType === PRODUCT_TYPE_DIGITAL){
-				sellerProductDownloadFrm(t.product_id, 0);
-				return;
-			}
-			window.location.replace(fcom.makeUrl('Seller', 'products'));
-		});
+                if( data[subName][subKey][options] ) {
+                    if( $.isArray( data[subName][subKey][options] ) ) {
+                        data[subName][subKey][options] = obj.value;
+                    } else {
+                        data[subName][subKey][options] = obj.value;
+                    }
+                } else {
+                    data[subName][subKey][options] = obj.value;
+                }
+            } else {
+                if( data[obj.name] ) {
+                    if( $.isArray( data[obj.name] ) ) {
+                        data[obj.name].push( obj.value );
+                    } else {
+                        data[obj.name] = [ ];
+                        data[obj.name].push( obj.value );
+                    }
+                } else {
+                    data[obj.name] = obj.value;
+                }
+            }
+        }
+      });
+	  return data;
 	};
 
-	sellerProductDownloadFrm = function( product_id, selprod_id, type ) {
+	setUpMultipleSellerProducts = function(frm, i = 0, orignalData = []){
+		if (!$(frm).validate()) return;
+
+        if (1 > orignalData.length) {
+            orignalData = optionsAssocArr($(frm).serializeArray());
+        }
+        var data = orignalData;
+        var varients = data.varients;
+        if(i < varients.length) {
+            var final = {};
+            $.extend(final, data, varients[i]);
+            final.varients = [];
+            var data = jQuery.param( final );
+            // var data = fcom.frmData(frm);
+		
+            $('.optionFld-js').each(function(){
+                var $this = $(this);
+                var errorInRow = false;
+                $this.find('input').each(function(){
+                    if($(this).parent().hasClass('fldSku') && CONF_PRODUCT_SKU_MANDATORY != 1){
+                        return;
+                    }
+                    if($(this).val().length == 0 || $(this).val() == 0){
+                        errorInRow = true;
+                        return false;
+                    }
+                });
+                if (errorInRow) {
+                    $this.parent().addClass('invalid');
+                } else {
+                    $this.parent().removeClass('invalid');
+                }
+            });
+            if ($("#optionsTable-js > tbody > tr.invalid").length == $("#optionsTable-js > tbody > tr").length) {
+                $.systemMessage(LBL_MANDATORY_OPTION_FIELDS, 'alert--danger');
+                return false;
+            }
+
+            fcom.updateWithAjax(fcom.makeUrl('Seller', 'setUpMultipleSellerProducts'), data, function(t) {
+                i++;
+                if (i < varients.length) {
+                    setUpMultipleSellerProducts(frm, i, orignalData);
+                }
+                if (i == varients.length) {
+                    if(productType === PRODUCT_TYPE_DIGITAL){
+                        sellerProductDownloadFrm(t.product_id, 0);
+                        return;
+                    }
+                }
+            });
+            var counterString = langLbl.processing_counter.replace("{counter}", (i+1));
+            counterString = counterString.replace("{count}", varients.length);
+            counterString = langLbl.processing + " " + counterString;
+            $.mbsmessage(counterString, false, 'alert--process alert'); 
+        }
+        if (i == (varients.length - 1)) {
+            setTimeout(function() { window.location.href = fcom.makeUrl('Seller', 'products'); }, 1000);
+        }
+	};
+
+	sellerProductDownloadFrm = function( product_id, selprod_id ) {
 		$("#tabs_002").html(fcom.getLoader());
-		fcom.ajax(fcom.makeUrl('Seller', 'sellerProductDownloadFrm', [ product_id, selprod_id, type ]), '', function(t) {
+		fcom.ajax(fcom.makeUrl('Seller', 'sellerProductDownloadFrm', [ product_id, selprod_id ]), '', function(t) {
 			$(".tabs_panel").html('');
             $(".tabs_panel").hide();
             $(".tabs_nav-js  > li").removeClass('is-active');
@@ -134,12 +200,11 @@ $(document).on('change','.selprodoption_optionvalue_id',function(){
 	};
 
 	setUpSellerProductDownloads = function (type, product_id, selprod_id){
-		download_type = $("select[name='download_type"+selprod_id+"']").val();
 		var data = new FormData();
 		$inputs = $('#frmDownload input[type=text],#frmDownload input[type=textarea],#frmDownload select,#frmDownload input[type=hidden]');
 		$inputs.each(function() { data.append( this.name,$(this).val());});
 		data.append( 'selprod_id', selprod_id);
-		if(download_type == type) {
+		if(DIGITAL_DOWNLOAD_FILE == type) {
 			$.each( $('#downloadable_file'+selprod_id)[0].files, function(i, file) {
 				$(dv).html(fcom.getLoader());
 				data.append('downloadable_file', file);
@@ -153,10 +218,10 @@ $(document).on('change','.selprodoption_optionvalue_id',function(){
 						var ans = $.parseJSON(t);
 						if( ans.status == 0 ){
 							$.mbsmessage( ans.msg,true,'alert--danger' );
-							sellerProductDownloadFrm(product_id, selprod_id, download_type);
+							sellerProductDownloadFrm(product_id, selprod_id);
 							return;
 						}
-						sellerProductDownloadFrm(product_id, selprod_id, download_type);
+						sellerProductDownloadFrm(product_id, selprod_id);
 					},
 					error: function(jqXHR, textStatus, errorThrown){
 						alert("Error Occurred.");
@@ -175,7 +240,7 @@ $(document).on('change','.selprodoption_optionvalue_id',function(){
 					return;
 				}
 				$.systemMessage( ans.msg,'alert--success' );
-				sellerProductDownloadFrm(product_id, selprod_id, download_type);
+				sellerProductDownloadFrm(product_id, selprod_id);
 			});
 		}
 	};

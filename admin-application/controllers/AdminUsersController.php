@@ -28,7 +28,7 @@ class AdminUsersController extends AdminBaseController
 
 				SET catid = id;
 				SET code = '';
-				WHILE catid > 0 DO
+				WHILE catid > 0  AND LENGTH(code) < 240 DO
 					SET code = CONCAT(RIGHT(CONCAT('000000', catid), 6), '_', code);
 					SELECT bpcategory_parent INTO catid FROM tbl_blog_post_categories WHERE bpcategory_id = catid;
 				END WHILE;
@@ -42,7 +42,7 @@ class AdminUsersController extends AdminBaseController
 
 				SET catid = id;
 				SET code = '';
-				WHILE catid > 0 DO
+				WHILE catid > 0 AND LENGTH(code) < 240 DO
 					SET code = CONCAT(RIGHT(CONCAT('000000', catid), 6), '_', code);
 					SELECT prodcat_parent INTO catid FROM tbl_product_categories WHERE prodcat_id = catid;
 				END WHILE;
@@ -156,11 +156,19 @@ class AdminUsersController extends AdminBaseController
         }
         unset($post['admin_id']);
         $record = new AdminUsers($adminId);
-        if ($adminId == 0) {
-            $password = $post['password'];
+		
+		if (0 < $adminId) {
+            $data = AdminUsers::getAttributesById($adminId);
+            if ($data === false) {
+                FatUtility::dieWithError($this->str_invalid_request);
+            }
+			$post['admin_username'] = $data['admin_username'];
+        } else {
+			$password = $post['password'];
             $encryptedPassword = UserAuthentication::encryptPassword($password);
             $post['admin_password'] = $encryptedPassword;
-        }
+		}
+		
 
         $record->assignValues($post);
 
@@ -281,7 +289,7 @@ class AdminUsersController extends AdminBaseController
     }
 
     private function updateAdminUserStatus($adminId, $status)
-    {
+    { 
         $status = FatUtility::int($status);
         $adminId = FatUtility::int($adminId);
         if (1 > $adminId || -1 == $status) {

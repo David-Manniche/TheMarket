@@ -42,6 +42,9 @@ class Product extends MyAppModel
     public const DB_PRODUCT_MIN_PRICE = 'tbl_products_min_price';
     public const DB_PRODUCT_MIN_PRICE_PREFIX = 'pmp_';
 
+    public const DB_PRODUCT_EXTERNAL_RELATIONS = 'tbl_product_external_relations';
+    public const DB_PRODUCT_EXTERNAL_RELATIONS_PREFIX = 'perel_';
+
     public const PRODUCT_TYPE_PHYSICAL = 1;
     public const PRODUCT_TYPE_DIGITAL = 2;
 
@@ -379,101 +382,95 @@ class Product extends MyAppModel
         return true;
     }
 
-    public function addUpdateProductOption($product_id, $option_id)
+    public function addUpdateProductOption($option_id)
     {
-        $product_id = FatUtility::int($product_id);
         $option_id = FatUtility::int($option_id);
-        if (!$product_id || !$option_id) {
+        if (!$this->mainTableRecordId || !$option_id) {
             $this->error = Labels::getLabel('ERR_Invalid_Request', $this->commonLangId);
             return false;
         }
         $record = new TableRecord(static::DB_PRODUCT_TO_OPTION);
         $to_save_arr = array();
-        $to_save_arr[static::DB_PRODUCT_TO_OPTION_PREFIX . 'product_id'] = $product_id;
+        $to_save_arr[static::DB_PRODUCT_TO_OPTION_PREFIX . 'product_id'] = $this->mainTableRecordId;
         $to_save_arr[static::DB_PRODUCT_TO_OPTION_PREFIX . 'option_id'] = $option_id;
         $record->assignValues($to_save_arr);
         if (!$record->addNew(array(), $to_save_arr)) {
             $this->error = $record->getError();
             return false;
         }
+        $this->logUpdatedRecord();
         return true;
     }
 
-    public function removeProductOption($product_id, $option_id)
+    public function removeProductOption($option_id)
     {
         $db = FatApp::getDb();
-        $product_id = FatUtility::int($product_id);
         $option_id = FatUtility::int($option_id);
-        if (!$product_id || !$option_id) {
+        if (!$this->mainTableRecordId || !$option_id) {
             $this->error = Labels::getLabel('ERR_Invalid_Request', $this->commonLangId);
             return false;
         }
-        if (!$db->deleteRecords(static::DB_PRODUCT_TO_OPTION, array('smt' => static::DB_PRODUCT_TO_OPTION_PREFIX . 'product_id = ? AND ' . static::DB_PRODUCT_TO_OPTION_PREFIX . 'option_id = ?', 'vals' => array($product_id, $option_id)))) {
+        if (!$db->deleteRecords(static::DB_PRODUCT_TO_OPTION, array('smt'=> static::DB_PRODUCT_TO_OPTION_PREFIX.'product_id = ? AND '.static::DB_PRODUCT_TO_OPTION_PREFIX . 'option_id = ?','vals' => array($this->mainTableRecordId, $option_id)))) {
             $this->error = $db->getError();
             return false;
         }
+        $this->logUpdatedRecord();
         return true;
     }
 
-    public function addUpdateProductTag($product_id, $tag_id)
+    public function addUpdateProductTag($tag_id)
     {
-        $product_id = FatUtility::int($product_id);
         $tag_id = FatUtility::int($tag_id);
-        if (!$product_id || !$tag_id) {
+        if (!$this->mainTableRecordId || !$tag_id) {
             $this->error = Labels::getLabel('ERR_Invalid_Request', $this->commonLangId);
             return false;
         }
         $record = new TableRecord(static::DB_PRODUCT_TO_TAG);
         $to_save_arr = array();
-        $to_save_arr[static::DB_PRODUCT_TO_TAG_PREFIX . 'product_id'] = $product_id;
-        $to_save_arr[static::DB_PRODUCT_TO_TAG_PREFIX . 'tag_id'] = $tag_id;
+        $to_save_arr[static::DB_PRODUCT_TO_TAG_PREFIX.'product_id'] = $this->mainTableRecordId;
+        $to_save_arr[static::DB_PRODUCT_TO_TAG_PREFIX.'tag_id'] = $tag_id;
         $record->assignValues($to_save_arr);
         if (!$record->addNew(array(), $to_save_arr)) {
             $this->error = $record->getError();
             return false;
         }
+        $this->logUpdatedRecord();
         return true;
     }
 
-    public function addUpdateProductTags($product_id, $tags = array())
+    public function addUpdateProductTags($tags = array())
     {
-        if (!$product_id) {
+        if (!$this->mainTableRecordId) {
             $this->error = Labels::getLabel('ERR_Invalid_Request', $this->commonLangId);
             return false;
         }
 
-        FatApp::getDb()->deleteRecords(static::DB_PRODUCT_TO_TAG, array('smt' => static::DB_PRODUCT_TO_TAG_PREFIX . 'product_id = ?', 'vals' => array($product_id)));
+        FatApp::getDb()->deleteRecords(static::DB_PRODUCT_TO_TAG, array('smt'=> static::DB_PRODUCT_TO_TAG_PREFIX.'product_id = ?','vals' => array($this->mainTableRecordId)));
         if (empty($tags)) {
             return true;
         }
 
-        $record = new TableRecord(static::DB_PRODUCT_TO_TAG);
         foreach ($tags as $tag_id) {
-            $to_save_arr = array();
-            $to_save_arr['ptt_product_id'] = $product_id;
-            $to_save_arr['ptt_tag_id'] = $tag_id;
-            $record->assignValues($to_save_arr);
-            if (!$record->addNew(array(), $to_save_arr)) {
-                $this->error = $record->getError();
+            if (!$this->addUpdateProductTag($tag_id)) {
                 return false;
             }
         }
         return true;
     }
 
-    public function removeProductTag($product_id, $tag_id)
+    public function removeProductTag($tag_id)
     {
         $db = FatApp::getDb();
-        $product_id = FatUtility::int($product_id);
         $tag_id = FatUtility::int($tag_id);
-        if (!$product_id || !$tag_id) {
+        if (!$this->mainTableRecordId || !$tag_id) {
             $this->error = Labels::getLabel('ERR_Invalid_Request', $this->commonLangId);
             return false;
         }
-        if (!$db->deleteRecords(static::DB_PRODUCT_TO_TAG, array('smt' => static::DB_PRODUCT_TO_TAG_PREFIX . 'product_id = ? AND ' . static::DB_PRODUCT_TO_TAG_PREFIX . 'tag_id = ?', 'vals' => array($product_id, $tag_id)))) {
+        if (!$db->deleteRecords(static::DB_PRODUCT_TO_TAG, array('smt'=> static::DB_PRODUCT_TO_TAG_PREFIX.'product_id = ? AND '.static::DB_PRODUCT_TO_TAG_PREFIX . 'tag_id = ?','vals' => array($this->mainTableRecordId, $tag_id)))) {
             $this->error = $db->getError();
             return false;
         }
+        $this->logUpdatedRecord();
         return true;
     }
 
@@ -1034,7 +1031,7 @@ class Product extends MyAppModel
         $srch->joinTable(Product::DB_TBL_LANG, 'LEFT OUTER JOIN', 'p.product_id = p_l.productlang_product_id AND p_l.productlang_lang_id = ' . CommonHelper::getLangId(), 'p_l');
         $srch->addOrder('product_name');
         $srch->addCondition('selprod_user_id', '=', $user_id);
-        $srch->addCondition('selprod_deleted', '=', 0);
+        /* $srch->addCondition('selprod_deleted', '=', 0); */
         $srch->addMultipleFields(
             array(
             'count(selprod_id) as totProducts')
@@ -1203,37 +1200,44 @@ class Product extends MyAppModel
         return true;
     }
 
-    public function removeProductCategory($product_id, $option_id)
+    public function removeProductCategory($option_id)
     {
         $db = FatApp::getDb();
-        $product_id = FatUtility::int($product_id);
         $option_id = FatUtility::int($option_id);
-        if (!$product_id || !$option_id) {
+        if (!$this->mainTableRecordId || !$option_id) {
             $this->error = Labels::getLabel('ERR_Invalid_Request', $this->commonLangId);
             return false;
         }
-        if (!$db->deleteRecords(static::DB_TBL_PRODUCT_TO_CATEGORY, array('smt' => static::DB_TBL_PRODUCT_TO_CATEGORY_PREFIX . 'product_id = ? AND ' . static::DB_TBL_PRODUCT_TO_CATEGORY_PREFIX . 'prodcat_id = ?', 'vals' => array($product_id, $option_id)))) {
+        if (!$db->deleteRecords(static::DB_TBL_PRODUCT_TO_CATEGORY, array('smt'=> static::DB_TBL_PRODUCT_TO_CATEGORY_PREFIX.'product_id = ? AND '.static::DB_TBL_PRODUCT_TO_CATEGORY_PREFIX . 'prodcat_id = ?','vals' => array($this->mainTableRecordId, $option_id)))) {
             $this->error = $db->getError();
             return false;
         }
+       
+        if (!$this->updateModifiedTime()) {
+            return false;
+        }
+
         return true;
     }
 
-    public function addUpdateProductCategory($product_id, $option_id)
+    public function addUpdateProductCategory($prodCatId)
     {
-        $product_id = FatUtility::int($product_id);
-        $option_id = FatUtility::int($option_id);
-        if (!$product_id || !$option_id) {
+        $prodCatId = FatUtility::int($prodCatId);
+        if (!$this->mainTableRecordId || !$prodCatId) {
             $this->error = Labels::getLabel('ERR_Invalid_Request', $this->commonLangId);
             return false;
         }
         $record = new TableRecord(static::DB_TBL_PRODUCT_TO_CATEGORY);
         $to_save_arr = array();
-        $to_save_arr[static::DB_TBL_PRODUCT_TO_CATEGORY_PREFIX . 'product_id'] = $product_id;
-        $to_save_arr[static::DB_TBL_PRODUCT_TO_CATEGORY_PREFIX . 'prodcat_id'] = $option_id;
+        $to_save_arr[static::DB_TBL_PRODUCT_TO_CATEGORY_PREFIX.'product_id'] = $this->mainTableRecordId;
+        $to_save_arr[static::DB_TBL_PRODUCT_TO_CATEGORY_PREFIX.'prodcat_id'] = $prodCatId;
         $record->assignValues($to_save_arr);
         if (!$record->addNew(array(), $to_save_arr)) {
             $this->error = $record->getError();
+            return false;
+        }
+       
+        if (!$this->updateModifiedTime()) {
             return false;
         }
         return true;
@@ -1247,9 +1251,9 @@ class Product extends MyAppModel
             FatUtility::dieWithError(Message::getHtml());
         }
 
-        $db = FatApp::getDb();
-        if (!$db->updateFromArray(static::DB_TBL, array(static::DB_TBL_PREFIX . 'deleted' => applicationConstants::YES), array('smt' => static::DB_TBL_PREFIX . 'id = ?', 'vals' => array($this->mainTableRecordId)))) {
-            $this->error = $db->getError();
+        $product = new Product($productId);
+        if (!$product->deleteRecord()) {
+            $this->error = $product->getError();
             return false;
         }
         return true;
@@ -1323,7 +1327,7 @@ class Product extends MyAppModel
         }
         /*substring_index(group_concat(IFNULL(prodcat_name, prodcat_identifier) ORDER BY IFNULL(prodcat_name, prodcat_identifier) ASC SEPARATOR "," ) , ",", 1) as prodcat_name*/
         $srch->addMultipleFields(
-            array('prodcat_code', 'product_id', 'prodcat_id', 'COALESCE(product_name, product_identifier) as product_name', 'product_model',  'product_image_updated_on', 'COALESCE(prodcat_name, prodcat_identifier) as prodcat_name',
+            array('prodcat_code','product_id', 'prodcat_id', 'COALESCE(product_name, product_identifier) as product_name', 'product_model',  'product_updated_on','COALESCE(prodcat_name, prodcat_identifier) as prodcat_name',
             'selprod_id', 'selprod_user_id',  'selprod_code', 'selprod_stock', 'selprod_condition', 'selprod_price', 'COALESCE(selprod_title  ,COALESCE(product_name, product_identifier)) as selprod_title',
             'splprice_display_list_price', 'splprice_display_dis_val', 'splprice_display_dis_type', 'splprice_start_date', 'splprice_end_date',
             'brand_id', 'COALESCE(brand_name, brand_identifier) as brand_name', 'user_name', 'IF(selprod_stock > 0, 1, 0) AS in_stock',
@@ -1445,8 +1449,9 @@ END,   special_price_found ) as special_price_found'
             $minPriceRange = floor($criteria['min_price_range']);
         }
         //currency_id
-        if (!empty($minPriceRange) && isset($criteria['currency_id'])) {
-            $min_price_range_default_currency = CommonHelper::convertExistingToOtherCurrency($criteria['currency_id'], $minPriceRange, FatApp::getConfig('CONF_CURRENCY', FatUtility::VAR_INT, 1), false);
+        if (!empty($minPriceRange)) {
+            $currCurrencyId = isset($criteria['currency_id']) ? $criteria['currency_id'] : FatApp::getConfig('CONF_CURRENCY', FatUtility::VAR_INT, 1);
+            $min_price_range_default_currency = CommonHelper::convertExistingToOtherCurrency($currCurrencyId, $minPriceRange, FatApp::getConfig('CONF_CURRENCY', FatUtility::VAR_INT, 1), false);
             //$min_price_range_default_currency =  CommonHelper::getDefaultCurrencyValue($minPriceRange, false, false);
             $srch->addHaving('theprice', '>=', $min_price_range_default_currency);
         }
@@ -1458,8 +1463,9 @@ END,   special_price_found ) as special_price_found'
             $maxPriceRange = ceil($criteria['max_price_range']);
         }
 
-        if (!empty($maxPriceRange) && isset($criteria['currency_id'])) {
-            $max_price_range_default_currency = CommonHelper::convertExistingToOtherCurrency($criteria['currency_id'], $maxPriceRange, FatApp::getConfig('CONF_CURRENCY', FatUtility::VAR_INT, 1), false);
+        if (!empty($maxPriceRange)) {
+            $currCurrencyId = isset($criteria['currency_id']) ? $criteria['currency_id'] : FatApp::getConfig('CONF_CURRENCY', FatUtility::VAR_INT, 1);
+            $max_price_range_default_currency = CommonHelper::convertExistingToOtherCurrency($currCurrencyId, $maxPriceRange, FatApp::getConfig('CONF_CURRENCY', FatUtility::VAR_INT, 1), false);
             //$max_price_range_default_currency =  CommonHelper::getDefaultCurrencyValue($maxPriceRange, false, false);
             $srch->addHaving('theprice', '<=', $max_price_range_default_currency);
         }
@@ -1854,5 +1860,28 @@ END,   special_price_found ) as special_price_found'
         $srch->addCondition(ProductSpecifics::DB_TBL_PREFIX . 'product_id', '=', $productId);
         $rs = $srch->getResultSet();
         return FatApp::getDb()->fetch($rs);
+    }
+
+    public static function isShipFromConfigured($productId, $userId = 0)
+    {
+        $productId = FatUtility::int($productId);
+        $userId = FatUtility::int($userId);
+       
+        $srch = new SearchBase(static::DB_TBL_PRODUCT_SHIPPING, 'ps');
+        $srch->addCondition('ps_product_id', '=', $productId);
+        $srch->addCondition('ps_user_id', '=', $userId);
+        $srch->setPageSize(1);
+        $srch->doNotCalculateRecords();
+        $res = FatApp::getDb()->fetch($srch->getResultSet());
+        if (!empty($res)) {
+            return true;
+        }
+        return false;
+    }
+
+    public function updateUpdatedOn()
+    {
+        $productId = FatUtility::int($this->mainTableRecordId);
+        FatApp::getDb()->updateFromArray('tbl_products', array('product_updated_on' => date('Y-m-d H:i:s')), array('smt' => 'product_id = ?','vals' => array($productId)));
     }
 }

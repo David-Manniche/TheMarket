@@ -41,11 +41,11 @@ class CustomProductsController extends AdminBaseController
 
         $srch = ProductRequest::getSearchObject($this->adminLangId, false, true);
         $srch->joinTable(User::DB_TBL, 'LEFT OUTER JOIN', 'preq_user_id = u.user_id', 'u');
-        $srch->joinTable(Shop::DB_TBL, 'LEFT OUTER JOIN', Shop::DB_TBL_PREFIX . 'user_id = u.user_id', 'shop');
+        $srch->joinTable(Shop::DB_TBL, 'LEFT OUTER JOIN', Shop::DB_TBL_PREFIX . 'user_id = if(u.user_parent > 0, u.user_parent, u.user_id)', 'shop');
         $srch->joinTable(Shop::DB_TBL_LANG, 'LEFT OUTER JOIN', 'shop.shop_id = s_l.shoplang_shop_id AND shoplang_lang_id = ' . $this->adminLangId, 's_l');
         /*$srch->joinTable(User::DB_TBL_CRED, 'LEFT OUTER JOIN', 'uc.credential_user_id = u.user_id', 'uc');*/
         $srch->addOrder('preq_added_on', 'desc');
-        $srch->addMultipleFields(array('preq.*', 'user_id', 'user_name', 'ifnull(shop_name, shop_identifier) as shop_name'));
+        $srch->addMultipleFields(array('preq.*', 'user_id', 'user_name', 'user_parent', 'ifnull(shop_name, shop_identifier) as shop_name'));
         if (!empty($post['keyword'])) {
             $cond = $srch->addCondition('preq.preq_content', 'like', '%' . $post['keyword'] . '%');
             $cond->attachCondition('preq_l.preq_lang_data', 'like', '%' . $post['keyword'] . '%', 'OR');
@@ -86,6 +86,7 @@ class CustomProductsController extends AdminBaseController
             'preq_status' => $res['preq_status'],
             'user_id' => $res['user_id'],
             'user_name' => $res['user_name'],
+            'user_parent' => $res['user_parent'],
             'shop_name' => $res['shop_name'],
             /*'credential_username' => $res['credential_username'],
             'credential_email' => $res['credential_email'],*/
@@ -591,6 +592,7 @@ class CustomProductsController extends AdminBaseController
             'product_cod_enabled' => isset($data['product_cod_enabled']) ? $data['product_cod_enabled'] : 0,
             'product_ship_free' => isset($data['ps_free']) ? $data['ps_free'] : 0,
             'product_ship_country' => isset($data['ps_from_country_id']) ? $data['ps_from_country_id'] : 0,
+            'product_ship_package' => isset($data['product_ship_package']) ? $data['product_ship_package'] : 0,
             'product_added_on' => date('Y-m-d H:i:s'),
             'product_featured' => isset($data['product_featured']) ? $data['product_featured'] : applicationConstants::NO,
             'product_upc' => isset($data['product_upc']) ? $data['product_upc'] : applicationConstants::NO,
@@ -606,6 +608,19 @@ class CustomProductsController extends AdminBaseController
             }
 
             $product_id = $prodObj->getMainTableRecordId();
+
+            if (isset($data['shipping_profile']) && $data['shipping_profile'] > 0) {
+                $shipProProdData = array(
+                    'shippro_shipprofile_id' => $data['shipping_profile'],
+                    'shippro_product_id' => $product_id,
+                    'shippro_user_id' => 0
+                );
+                $spObj = new ShippingProfileProduct();
+                if (!$spObj->addProduct($shipProProdData)) {
+                    Message::addErrorMessage($spObj->getError());
+                    FatUtility::dieWithError(Message::getHtml());
+                }
+            }
 
             $prodSepc = [
                 'ps_product_id' => $product_id,
@@ -646,7 +661,7 @@ class CustomProductsController extends AdminBaseController
             $optons = isset($data['product_option']) ? $data['product_option'] : array();
             if (!empty($optons)) {
                 foreach ($optons as $option_id) {
-                    if (!$prodObj->addUpdateProductOption($product_id, $option_id)) {
+                    if (!$prodObj->addUpdateProductOption($option_id)) {
                         Message::addErrorMessage(Labels::getLabel($prodObj->getError(), FatApp::getConfig('CONF_ADMIN_DEFAULT_LANG', FatUtility::VAR_INT, 1)));
                         $db->rollbackTransaction();
                         FatUtility::dieWithError(Message::getHtml());
@@ -659,7 +674,7 @@ class CustomProductsController extends AdminBaseController
             $tags = isset($data['product_tags']) ? $data['product_tags'] : array();
             if (!empty($tags)) {
                 foreach ($tags as $tag_id) {
-                    if (!$prodObj->addUpdateProductTag($product_id, $tag_id)) {
+                    if (!$prodObj->addUpdateProductTag($tag_id)) {
                         Message::addErrorMessage(Labels::getLabel($prodObj->getError(), FatApp::getConfig('CONF_ADMIN_DEFAULT_LANG', FatUtility::VAR_INT, 1)));
                         $db->rollbackTransaction();
                         FatUtility::dieWithError(Message::getHtml());
@@ -924,7 +939,7 @@ class CustomProductsController extends AdminBaseController
                 } */
                 $languages = Language::getAllNames();
                 foreach ($languages as $langId => $langName) {
-                    if(!empty($prodSpecData['prod_spec_name'][$langId])){
+                    if (!empty($prodSpecData['prod_spec_name'][$langId])) {
                         foreach ($prodSpecData['prod_spec_name'][$langId] as $specKey => $specval) {
                             $prod = new Product($product_id);
                             $prodSpecGroup = !empty($prodSpecData['prod_spec_group'][$langId][$specKey]) ? $prodSpecData['prod_spec_group'][$langId][$specKey] : '';

@@ -72,7 +72,7 @@ foreach ($arr_listing as $sn => $row) {
                 break;
             case 'action':
                 $ul = $td->appendElement("ul", array("class" => "actions actions--centered"));
-                if ($canEdit && applicationConstants::ACTIVE == $row['plugin_active'] && (!in_array($pluginType, Plugin::HAVING_KINGPIN) || $row['plugin_id'] == $row['conf_val'])) {
+                if ($canEdit) {
                     $td->appendElement('a', array('href' => 'javascript:void(0)','class' => 'btn btn-clean btn-sm btn-icon','title' => Labels::getLabel('LBL_Edit', $adminLangId),"onclick" => "editPluginForm(" . $type . ", " . $row['plugin_id'] . ")"), '<i class="far fa-edit icon"></i>', true);
                     $td->appendElement('a', array('href' => 'javascript:void(0)','class' => 'btn btn-clean btn-sm btn-icon','title' => Labels::getLabel('LBL_Settings', $adminLangId),"onclick" => "editSettingForm('" . $row['plugin_code'] . "')"), '<i class="fas fa-cog icon"></i>', true);
                 }

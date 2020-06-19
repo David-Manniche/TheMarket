@@ -83,6 +83,7 @@
 		}
 	}
 	?>
+<?php if (FatApp::getConfig('CONF_PWA_SERVICE_WORKER', FatUtility::VAR_INT, 1)) {?>
 	<script>
    $(document).ready(function(){       
     if ('serviceWorker' in navigator) {
@@ -93,5 +94,6 @@
     }
 });
 </script>
+<?php }?>
 </body>
 </html>

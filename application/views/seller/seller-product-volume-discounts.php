@@ -21,7 +21,7 @@
                         'listserial'=> Labels::getLabel('LBL_Sr.', $siteLangId),
                         'voldiscount_min_qty' => Labels::getLabel('LBL_Minimum_Quantity', $siteLangId),
                         'voldiscount_percentage' => Labels::getLabel('LBL_Discount', $siteLangId).' (%)',
-                        'action' => Labels::getLabel('LBL_Action', $siteLangId),
+                        'action' => '',
                         );
                         $tbl = new HtmlElement('table', array('width'=>'100%', 'class'=>'table'));
                         $th = $tbl->appendElement('thead')->appendElement('tr', array('class' => ''));

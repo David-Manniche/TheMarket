@@ -525,6 +525,9 @@ $(document).on("change", "input[type='file']", fileSizeValidation);
 function fileSizeValidation() {
     const fsize = this.files[0].size;
     if (fsize > langLbl.allowedFileSize) {
+		if(0 < $("#facebox").length) {
+			$(document).trigger('close.facebox');
+		}
         var msg = langLbl.fileSizeExceeded;
         var msg = msg.replace("{size-limit}", bytesToSize(langLbl.allowedFileSize));
         $.mbsmessage(msg, true, 'alert--danger');
@@ -532,6 +535,7 @@ function fileSizeValidation() {
         $("#uploadFileName").text("Select File To Upload");
         return false;
     }
+	return true;
 }
 
 function bytesToSize(bytes) {
@@ -539,4 +543,34 @@ function bytesToSize(bytes) {
     if (bytes == 0) return '0 Byte';
     var i = parseInt(Math.floor(Math.log(bytes) / Math.log(1024)));
     return Math.round(bytes / Math.pow(1024, i), 2) + ' ' + sizes[i];
+}
+
+var gCaptcha = false;
+function googleCaptcha()
+{
+    $("body").addClass("captcha");
+    var inputObj = $("form input[name='g-recaptcha-response']");
+    console.log(inputObj);
+    var submitBtn = inputObj.closest("form").find('input[type="submit"]');
+    submitBtn.attr("disabled", "disabled");
+    var checkToken = setInterval(function(){
+        if (true === gCaptcha) {
+            submitBtn.removeAttr("disabled");
+            clearInterval(checkToken);
+        }
+    }, 500);
+
+    /*Google reCaptcha V3  */
+    setTimeout(function(){
+        if (0 < inputObj.length && 'undefined' !== typeof grecaptcha) {
+            grecaptcha.ready(function() {
+                grecaptcha.execute(langLbl.captchaSiteKey, {action: inputObj.data('action')}).then(function(token) {
+                    inputObj.val(token);
+                    gCaptcha = true;
+                });
+			});
+        } else if ('undefined' === typeof grecaptcha) {
+			$.mbsmessage(langLbl.invalidGRecaptchaKeys,true,'alert--danger');
+		}
+    }, 200);
 }
