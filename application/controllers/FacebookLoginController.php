@@ -11,11 +11,11 @@ class FacebookLoginController extends SocialMediaAuthController
         $error = '';
         $this->fb = PluginHelper::callPlugin(self::KEY_NAME, [$this->siteLangId], $error, $this->siteLangId);
         if (false === $this->fb) {
-            $this->setErrorAndRedirect($error);
+            $this->setErrorAndRedirect($error, true);
         }
 
         if (false === $this->fb->init()) {
-            $this->setErrorAndRedirect($this->fb->getError());
+            $this->setErrorAndRedirect($this->fb->getError(), true);
         }
     }
     
@@ -30,7 +30,7 @@ class FacebookLoginController extends SocialMediaAuthController
                 $this->helper->getPersistentDataHandler()->set('state', $get['state']);
             }
             if (false === $this->fb->verifyAccessToken($accessToken)) {
-                $this->setErrorAndRedirect($this->fb->getError());
+                $this->setErrorAndRedirect($this->fb->getError(), true);
             }
             $resp = $this->fb->getResponse();
             $email = !empty($resp['email']) ? $resp['email'] : '';
