@@ -8,19 +8,30 @@ class TaxRule extends MyAppModel
     const TYPE_INCLUDE_STATES = 1;
     const TYPE_EXCLUDE_STATES = 2;
 
-    public function __construct($id = 0)
+    public function __construct(int $id = 0)
     {
         parent::__construct(static::DB_TBL, static::DB_TBL_PREFIX . 'id', $id);
         $this->db = FatApp::getDb();
     }
 
-    public static function getSearchObject()
+    /**
+    * getSearchObject
+    *
+    * @return object
+    */
+    public static function getSearchObject(): object
     {
         $srch = new SearchBase(static::DB_TBL, 'taxRule');
         return $srch;
     }
 
-    public static function getTypeOptions($langId)
+    /**
+    * getTypeOptions
+    *
+    * @param  int $langId
+    * @return array
+    */
+    public static function getTypeOptions(int $langId): array
     {
         return array(
             self::TYPE_ALL_STATES => Labels::getLabel('LBL_ALL_STATES', $langId),
@@ -29,7 +40,13 @@ class TaxRule extends MyAppModel
         );
     }
 
-    public function deleteRules($taxCatId)
+    /**
+    * deleteRules
+    *
+    * @param  int $taxCatId
+    * @return bool
+    */
+    public function deleteRules(int $taxCatId): bool
     {
         if (!FatApp::getDb()->query('DELETE rules, ruleDetails, ruleDetailsLang FROM '. self::DB_TBL .' rules LEFT JOIN '. TaxRuleCombined::DB_TBL .' ruleDetails ON ruleDetails.taxruledet_taxrule_id  = rules.taxrule_id LEFT JOIN '. TaxRuleCombined::DB_TBL_LANG . ' ruleDetailsLang ON ruleDetails.taxruledet_id  = ruleDetailsLang.taxruledetlang_taxruledet_id WHERE rules.taxrule_taxcat_id = '. $taxCatId)) {
             $this->error = FatApp::getDb()->getError();
@@ -38,7 +55,14 @@ class TaxRule extends MyAppModel
         return true;
     }
 
-    public static function getRuleForm($langId, $userId)
+    /**
+    * getRuleForm
+    *
+    * @param  int $langId
+    * @param  int $userId
+    * @return object
+    */
+    public static function getRuleForm(int $langId, int $userId): object
     {
         $frm = new Form('frmTaxRule');
         $frm->addHiddenField('', 'taxcat_id', 0);
@@ -85,7 +109,7 @@ class TaxRule extends MyAppModel
             /*if ($languageId == $siteDefaultLangId) {
                 $frm->addRequiredField(Labels::getLabel('LBL_Tax_Name', $languageId), 'taxruledet_name[' . $languageId . '][]');
             } else {*/
-                $frm->addTextBox(Labels::getLabel('LBL_Tax_Name', $languageId), 'taxruledet_name[' . $languageId . '][]');
+            $frm->addTextBox(Labels::getLabel('LBL_Tax_Name', $languageId), 'taxruledet_name[' . $languageId . '][]');
             /*}*/
         }
 
@@ -101,7 +125,14 @@ class TaxRule extends MyAppModel
         return $frm;
     }
 
-    public function getRules($taxCatId, $langId)
+    /**
+    * getRules
+    *
+    * @param  int $taxCatId
+    * @param  int $langId
+    * @return array
+    */
+    public function getRules(int $taxCatId, int $langId): array
     {
         $srch = TaxRule::getSearchObject();
         /*$srch->joinTable(TaxRuleCombined::DB_TBL, 'LEFT OUTER JOIN', 'trd.taxruledet_taxrule_id = taxrule_id', 'trd');
@@ -112,7 +143,13 @@ class TaxRule extends MyAppModel
         return $rulesData;
     }
 
-    public function getCombinedRuleDetails($rulesIds)
+    /**
+    * getCombinedRuleDetails
+    *
+    * @param  array $rulesIds
+    * @return array
+    */
+    public function getCombinedRuleDetails(array $rulesIds): array
     {
         if (empty($rulesIds)) {
             return [];
@@ -137,7 +174,13 @@ class TaxRule extends MyAppModel
         return self::groupDataByKey($combinedData, 'taxruledet_taxrule_id');
     }
 
-    public function getLocations($taxCatId)
+    /**
+    * getLocations
+    *
+    * @param  int $taxCatId
+    * @return array
+    */
+    public function getLocations(int $taxCatId): array
     {
         $srch = TaxRuleLocation::getSearchObject();
         $srch->addCondition('taxruleloc_taxcat_id', '=', $taxCatId);
@@ -146,7 +189,14 @@ class TaxRule extends MyAppModel
         return self::groupDataByKey($locationsData, 'taxruleloc_taxrule_id');
     }
 
-    public static function groupDataByKey($data, $key)
+    /**
+    * groupDataByKey
+    *
+    * @param  array $data
+    * @param  string $key
+    * @return array
+    */
+    public static function groupDataByKey(array $data, string $key): array
     {
         $groupedData = [];
         if (!empty($data)) {

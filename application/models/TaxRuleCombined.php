@@ -7,13 +7,19 @@ class TaxRuleCombined extends MyAppModel
     const DB_TBL_LANG = 'tbl_tax_rule_details_lang';
     const DB_TBL_LANG_PREFIX = 'taxruledetlang_';
 
-    public function __construct($id = 0)
+    public function __construct(int $id = 0)
     {
         parent::__construct(static::DB_TBL, static::DB_TBL_PREFIX . 'id', $id);
         $this->db = FatApp::getDb();
     }
 
-    public static function getSearchObject($langId = 0)
+    /**
+    * getSearchObject
+    *
+    * @param  int $langId
+    * @return object
+    */
+    public static function getSearchObject(int $langId = 0): object
     {
         $langId = FatUtility::int($langId);
         $srch = new SearchBase(static::DB_TBL, 'taxCom');
