@@ -1408,6 +1408,11 @@ trait SellerProducts
             FatUtility::dieJsonError(Message::getHtml());
         }
 
+        if (!$post['meta_other_meta_tags'] == '' && $post['meta_other_meta_tags'] == strip_tags($post['meta_other_meta_tags'])) {
+            Message::addErrorMessage(Labels::getLabel('MSG_Invalid_Other_Meta_Tag', $this->siteLangId));
+            FatUtility::dieJsonError(Message::getHtml());
+        }
+
         $tabsArr = MetaTag::getTabsArr();
         $metaType = MetaTag::META_GROUP_PRODUCT_DETAIL;
 
