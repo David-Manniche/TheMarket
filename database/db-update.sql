@@ -1279,3 +1279,4 @@ INSERT INTO `tbl_language_labels`(`label_key`, `label_lang_id`, `label_caption`,
 -- --------------------TV-9.2.0----------------------------
 
 
+ALTER TABLE `tbl_tax_structure_lang` CHANGE `taxstr_name` `taxstr_name` VARCHAR(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL;
