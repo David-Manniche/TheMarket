@@ -104,6 +104,9 @@ General Enhancements
     => Allowed special characters in import-export sheets
 
 Fixes
+    => Order net amount is not visible if tax and shipping is not applied.
+    => Added Validation for other meta tags for seller.
+    => Invalid text displayed while adding tax struture lang data for arabic language
 
 UI Fixes
     => Displayed order id as invoice number for subscription orders.
