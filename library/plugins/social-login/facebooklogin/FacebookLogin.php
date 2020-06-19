@@ -71,7 +71,7 @@ class facebooklogin extends SocialMediaAuthBase
      *
      * @return array
      */
-    public function getResponse(): array
+    private function getResponse(): array
     {
         return $this->response;
     }
@@ -84,17 +84,31 @@ class facebooklogin extends SocialMediaAuthBase
     public function loadAccessToken(): bool
     {
         try {
-            $this->response = $this->helper->getAccessToken();
+            $this->accessToken = $this->helper->getAccessToken();
+            if (empty($this->accessToken) || null == $this->accessToken) {
+                $this->error = $this->error = Labels::getLabel('MSG_UNABLE_TO_RETRIEVE_ACCESS_TOKEN', $this->langId);
+                return false;
+            }
         } catch (FacebookResponseException $e) {
-            $this->error = Labels::getLabel('MSG_GRAPH_RETURNED_AN_ERROR:_', $this->siteLangId);
+            $this->error = Labels::getLabel('MSG_GRAPH_RETURNED_AN_ERROR:_', $this->langId);
             $this->error .= $e->getMessage();
             return false;
         } catch (FacebookSDKException $e) {
-            $this->error = Labels::getLabel('MSG_FACEBOOK_SDK_RETURNED_AN_ERROR:_', $this->siteLangId);
+            $this->error = Labels::getLabel('MSG_FACEBOOK_SDK_RETURNED_AN_ERROR:_', $this->langId);
             $this->error .= $e->getMessage();
             return false;
         }
         return true;
+    }
+    
+    /**
+     * getAccessToken
+     *
+     * @return string
+     */
+    public function getAccessToken(): string
+    {
+        return $this->accessToken;
     }
 
     /**
@@ -111,11 +125,11 @@ class facebooklogin extends SocialMediaAuthBase
             $graphResponse = $this->fbAuthObj->get('/me?fields=id, name, email, first_name, last_name');
             $fbUser = $graphResponse->getGraphUser();
         } catch (FacebookResponseException $e) {
-            $this->error = Labels::getLabel('MSG_GRAPH_RETURNED_AN_ERROR:_', $this->siteLangId);
+            $this->error = Labels::getLabel('MSG_GRAPH_RETURNED_AN_ERROR:_', $this->langId);
             $this->error .= $e->getMessage();
             return false;
         } catch (FacebookSDKException $e) {
-            $this->error = Labels::getLabel('MSG_FACEBOOK_SDK_RETURNED_AN_ERROR:_', $this->siteLangId);
+            $this->error = Labels::getLabel('MSG_FACEBOOK_SDK_RETURNED_AN_ERROR:_', $this->langId);
             $this->error .= $e->getMessage();
             return false;
         }
