@@ -572,11 +572,17 @@ function googleCaptcha()
     setTimeout(function(){
         if (0 < inputObj.length && 'undefined' !== typeof grecaptcha) {
             grecaptcha.ready(function() {
-                grecaptcha.execute(langLbl.captchaSiteKey, {action: inputObj.data('action')}).then(function(token) {
-                    inputObj.val(token);
-                    gCaptcha = true;
-                });
-			});
+                try {
+                    grecaptcha.execute(langLbl.captchaSiteKey, {action: inputObj.data('action')}).then(function(token) {
+                        inputObj.val(token);
+                        gCaptcha = true;
+                    });
+                }
+                catch(error) {
+                    $.mbsmessage(error, true, 'alert--danger');
+                    return;
+                }
+            });
         } else if ('undefined' === typeof grecaptcha) {
 			$.mbsmessage(langLbl.invalidGRecaptchaKeys,true,'alert--danger');
 		}
