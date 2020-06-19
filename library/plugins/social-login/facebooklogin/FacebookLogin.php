@@ -4,7 +4,7 @@ use Facebook\Exceptions\FacebookResponseException;
 use Facebook\Exceptions\FacebookSDKException;
 use Facebook\Facebook;
 
-class facebooklogin extends SocialMediaAuthBase
+class FacebookLogin extends SocialMediaAuthBase
 {
     public const KEY_NAME = __CLASS__;
 

@@ -25,8 +25,12 @@ class FacebookLoginController extends SocialMediaAuthController
         $userType = FatApp::getPostedData('type', FatUtility::VAR_INT, User::USER_TYPE_BUYER);
         $accessToken = FatApp::getPostedData('accessToken', FatUtility::VAR_STRING, '');
 
-        if (empty($accessToken) && false != $this->fb->loadAccessToken()) {
-            $accessToken = $this->fb->getAccessToken();
+        if (empty($accessToken)) {
+            if (!empty($get['code']) && false == $this->fb->loadAccessToken()) {
+                $this->setErrorAndRedirect($this->fb->getError(), true);
+            } else {
+                $accessToken = $this->fb->getAccessToken();
+            }
         }
 
         if (!empty($accessToken)) {
