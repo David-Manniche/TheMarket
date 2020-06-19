@@ -1172,7 +1172,6 @@ class CheckoutController extends MyAppController
 
                 $productsLangData = array();
                 $productShippingLangData = array();
-                $productTaxChargesLangData = array();
                 foreach ($allLanguages as $lang_id => $language_name) {
                     if (0 == $lang_id) {
                         continue;
@@ -1234,10 +1233,10 @@ class CheckoutController extends MyAppController
                         $op_product_tax_options[$label]['percentageValue'] = $taxStroName['percentageValue'];
                         $op_product_tax_options[$label]['inPercentage'] = $taxStroName['inPercentage'];
 
-                        $langData =  TaxRuleCombined::getAttributesByLangId($taxStroId, $lang_id);
+                        $langData =  TaxRuleCombined::getAttributesByLangId($lang_id, $taxStroId, array(), 1);
                         $langLabel = (isset($langData['taxruledet_name']) && $langData['taxruledet_name'] != '') ? $langData['taxruledet_name'] : $label;
 
-                        $productTaxChargesLangData[$taxStroId][$lang_id] = array(
+                        $productTaxChargesData[$taxStroId]['langData'][$lang_id] = array(
                         'opchargeloglang_lang_id' => $lang_id,
                         'opchargelog_name' => $langLabel
                         );
@@ -1258,7 +1257,6 @@ class CheckoutController extends MyAppController
                     );
 
                 }
-                /*CommonHelper::printArray($productTaxChargesLangData); die;*/
                 /* $taxCollectedBySeller = applicationConstants::NO;
                 if(FatApp::getConfig('CONF_TAX_COLLECTED_BY_SELLER',FatUtility::VAR_INT,0)){
                 $taxCollectedBySeller = applicationConstants::YES;
@@ -1302,7 +1300,6 @@ class CheckoutController extends MyAppController
                     'productShippingData' => $productShippingData,
                     'productShippingLangData' => $productShippingLangData,
                     'productChargesLogData' => $productTaxChargesData,
-                    'productChargesLogLangData' => $productTaxChargesLangData,
                     /* 'op_tax_collected_by_seller'    =>    $taxCollectedBySeller, */
                     'op_free_ship_upto' => $cartProduct['shop_free_ship_upto'],
                     'op_actual_shipping_charges' => $cartProduct['shipping_cost'],

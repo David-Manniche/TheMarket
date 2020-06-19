@@ -95,15 +95,22 @@ DROP TABLE `tbl_tax_rules_lang`;
 ALTER TABLE `tbl_tax_rules`
   DROP `taxrule_identifier`;
 ALTER TABLE `tbl_tax_rules` ADD `taxrule_name` VARCHAR(255) NOT NULL AFTER `taxrule_taxcat_id`;
+
 CREATE TABLE `tbl_order_prod_charges_logs` (
+  `opchargelog_id` int(11) NOT NULL,
   `opchargelog_op_id` int(11) NOT NULL,
   `opchargelog_type` int(11) NOT NULL,
   `opchargelog_identifier` varchar(255) NOT NULL,
-  `opchargelog_value` decimal(10,4) NOT NULL,
+  `opchargelog_value` decimal(10,2) NOT NULL,
   `opchargelog_is_percent` tinyint(4) NOT NULL,
-  `opchargelog_percentvalue` decimal(10,4) NOT NULL
+  `opchargelog_percentvalue` decimal(10,2) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+ALTER TABLE `tbl_order_prod_charges_logs`
+  ADD PRIMARY KEY (`opchargelog_id`);
+ALTER TABLE `tbl_order_prod_charges_logs`
+  MODIFY `opchargelog_id` int(11) NOT NULL AUTO_INCREMENT;
 CREATE TABLE `tbl_order_prod_charges_logs_lang` (
+  `opchargeloglang_opchargelog_id` int(11) NOT NULL,
   `opchargeloglang_op_id` int(11) NOT NULL,
   `opchargeloglang_lang_id` int(11) NOT NULL,
   `opchargelog_name` varchar(255) NOT NULL

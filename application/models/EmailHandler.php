@@ -729,7 +729,8 @@ class EmailHandler extends FatModel
             }
 
             foreach ($orderProducts as $opID => $val) {
-                $taxOptions = json_decode($val['op_product_tax_options'], true);
+                $opChargesLog = new OrderProductChargelog($opID);
+                $taxOptions = $opChargesLog->getData($this->siteLangId);
                 $orderProducts[$opID]['taxOptions'] = $taxOptions;
             }
 
@@ -808,7 +809,8 @@ class EmailHandler extends FatModel
         $OrderInfo = $orderObj->getOrderById($orderId, $langId);
         $childOrderInfo = $orderObj->getOrderProductsByOpId($opId, $langId);
 
-        $taxOptions = json_decode($childOrderInfo['op_product_tax_options'], true);
+        $opChargesLog = new OrderProductChargelog($opId);
+        $taxOptions = $opChargesLog->getData($this->siteLangId);
         $childOrderInfo['taxOptions'] = $taxOptions;
 
         if ($childOrderInfo) {
@@ -988,7 +990,8 @@ class EmailHandler extends FatModel
             foreach ($orderVendors as $key => $val) :
                 $shippingHanldedBySeller = CommonHelper::canAvailShippingChargesBySeller($val['op_selprod_user_id'], $val['opshipping_by_seller_user_id']);
 
-                $taxOptions = json_decode($val['op_product_tax_options'], true);
+                $opChargesLog = new OrderProductChargelog($val['op_id']);
+                $taxOptions = $opChargesLog->getData($this->siteLangId);
                 $val['taxOptions'] = $taxOptions;
 
                 $tpl = new FatTemplate('', '');
@@ -1076,7 +1079,8 @@ class EmailHandler extends FatModel
             $charges = $orderObj->getOrderProductChargesArr($orderComment['op_id']);
             $orderComment['charges'] = $charges;
 
-            $taxOptions = json_decode($orderComment['op_product_tax_options'], true);
+            $opChargesLog = new OrderProductChargelog($orderComment['op_id']);
+            $taxOptions = $opChargesLog->getData($this->siteLangId);
             $orderComment['taxOptions'] = $taxOptions;
 
             $tpl = new FatTemplate('', '');
@@ -1150,7 +1154,8 @@ class EmailHandler extends FatModel
             $charges = $orderObj->getOrderProductChargesArr($orderComment['op_id']);
             $orderComment['charges'] = $charges;
 
-            $taxOptions = json_decode($orderComment['op_product_tax_options'], true);
+            $opChargesLog = new OrderProductChargelog($orderComment['op_id']);
+            $taxOptions = $opChargesLog->getData($this->siteLangId);
             $orderComment['taxOptions'] = $taxOptions;
 
             $shippingHanldedBySeller = CommonHelper::canAvailShippingChargesBySeller($orderComment['op_selprod_user_id'], $orderComment['opshipping_by_seller_user_id']);
@@ -2071,7 +2076,8 @@ class EmailHandler extends FatModel
         $orderObj = new Orders();
         $orderProduct = $orderObj->getOrderProductsByOpId($opId, $langId);
 
-        $taxOptions = json_decode($orderProduct['op_product_tax_options'], true);
+        $opChargesLog = new OrderProductChargelog($opId);
+        $taxOptions = $opChargesLog->getData($this->siteLangId);
         $orderProduct['taxOptions'] = $taxOptions;
 
         if ($orderProduct) {
@@ -2798,11 +2804,11 @@ class EmailHandler extends FatModel
         $this->sendSms($tpl, $phone, $vars, $langId);
         return true;
     }
-	
+
 	public function sendEmailToUser($langId, $data)
     {
         $tpl = 'user_send_email';
-		
+
 		$replacements = array(
             '{full_name}' => $data['user_name'],
             '{admin_subject}' => $data['mail_subject'],
@@ -2812,13 +2818,13 @@ class EmailHandler extends FatModel
         if (!self::sendMailTpl($data['credential_email'], $tpl, $langId, $replacements)) {
             return false;
         }
-		
+
 		if (!empty($data['user_phone'])) {
 			$this->sendSms($tpl, $data['user_phone'], $replacements, $langId);
 		}
         return true;
     }
-	
+
     public static function getEmailTemplatePermissionsArr()
     {
         return array(

@@ -416,7 +416,8 @@ class SellerController extends SellerBaseController
 
         $orderDetail['comments'] = $orderObj->getOrderComments($this->siteLangId, array("op_id" => $op_id, 'seller_id' => $userId));
 
-        $taxOptions = json_decode($orderDetail['op_product_tax_options'], true);
+        $opChargesLog = new OrderProductChargelog($op_id);
+        $taxOptions = $opChargesLog->getData($this->siteLangId);
         $orderDetail['taxOptions'] = $taxOptions;
 
         $data = array('op_id' => $op_id, 'op_status_id' => $orderDetail['op_status_id']);
@@ -601,7 +602,7 @@ class SellerController extends SellerBaseController
             FatUtility::dieJsonError(Message::getHtml());
         }
 
-        
+
         if (strtolower($orderDetail['pmethod_code']) == 'cashondelivery' && (OrderStatus::ORDER_DELIVERED == $post["op_status_id"] || OrderStatus::ORDER_COMPLETED == $post["op_status_id"]) && Orders::ORDER_IS_PAID != $orderDetail['order_is_paid']) {
             $orderProducts = new OrderProductSearch($this->siteLangId, true, true);
             $orderProducts->joinPaymentMethod();
@@ -675,7 +676,8 @@ class SellerController extends SellerBaseController
             $notEligible = true;
             Message::addErrorMessage(sprintf(Labels::getLabel('LBL_this_order_already', $this->siteLangId), $orderStatuses[$orderDetail["op_status_id"]]));
         }
-        $taxOptions = json_decode($orderDetail['op_product_tax_options'], true);
+        $opChargesLog = new OrderProductChargelog($op_id);
+        $taxOptions = $opChargesLog->getData($this->siteLangId);
         $orderDetail['taxOptions'] = $taxOptions;
 
         $frm = $this->getOrderCancelForm($this->siteLangId);
@@ -1387,7 +1389,7 @@ class SellerController extends SellerBaseController
             $cnd = $srch->addCondition('t.taxcat_identifier', 'like', '%' . $post['keyword'] . '%');
             $cnd->attachCondition('t_l.taxcat_name', 'like', '%' . $post['keyword'] . '%');
         }
-		
+
         $activatedTaxServiceId = Tax::getActivatedServiceId();
         $srch->addCondition('taxcat_plugin_id', '=', $activatedTaxServiceId);
 
@@ -1396,7 +1398,7 @@ class SellerController extends SellerBaseController
         $srch->setPageNumber($page);
         $srch->setPageSize($pagesize);
         $srch->addOrder('taxcat_name', 'ASC');
-		
+
         $rs = $srch->getResultSet();
         $taxCatData = FatApp::getDb()->fetchAll($rs, 'taxcat_id');
 
@@ -1416,7 +1418,7 @@ class SellerController extends SellerBaseController
                 //$records[$tcatId]['taxval_seller_user_id'] = $userId;
             }
         } */
-		
+
         $this->set('canEdit', $this->userPrivilege->canEditTaxCategory(UserAuthentication::getLoggedUserId(), true));
         $this->set("arr_listing", $taxCatData);
         $this->set('pageCount', $srch->pages());
@@ -1432,11 +1434,11 @@ class SellerController extends SellerBaseController
     public function changeTaxRates($taxcat_id)
     {
         $activatedTaxServiceId = Tax::getActivatedServiceId();
-        
+
         if ($activatedTaxServiceId) {
             FatUtility::dieWithError($this->str_invalid_request);
         }
-        
+
         $taxcat_id = FatUtility::int($taxcat_id);
 
         $frm = $this->getchangeTaxRatesForm($this->siteLangId);
@@ -1478,11 +1480,11 @@ class SellerController extends SellerBaseController
     {
         $this->userPrivilege->canEditTaxCategory(UserAuthentication::getLoggedUserId());
         $activatedTaxServiceId = Tax::getActivatedServiceId();
-        
+
         if ($activatedTaxServiceId) {
             FatUtility::dieWithError($this->str_invalid_request);
         }
-        
+
         $frm = $this->getchangeTaxRatesForm($this->siteLangId);
         $post = $frm->getFormDataFromArray(FatApp::getPostedData());
 
@@ -4793,7 +4795,7 @@ class SellerController extends SellerBaseController
             $frm->addCheckBox(Labels::getLabel('LBL_Translate_To_Other_Languages', $this->siteLangId), 'auto_update_other_langs_data', 1, array(), false, 0);
         }
 
-        $frm->addRequiredField(Labels::getLabel('LBL_Tax_Category', $this->siteLangId), 'taxcat_name'); 
+        $frm->addRequiredField(Labels::getLabel('LBL_Tax_Category', $this->siteLangId), 'taxcat_name');
         $fldMinSelPrice = $frm->addFloatField(Labels::getLabel('LBL_Minimum_Selling_Price', $this->siteLangId) . ' [' . CommonHelper::getCurrencySymbol(true) . ']', 'product_min_selling_price', '');
         $fldMinSelPrice->requirements()->setPositive();
 
@@ -4832,7 +4834,7 @@ class SellerController extends SellerBaseController
             if($preqId == 0){
                 $frm->addCheckBox(Labels::getLabel('LBL_Product_Is_Eligible_For_Free_Shipping?', $this->siteLangId), 'ps_free', 1, array(), false, 0);
             }
-            
+
             $codFld = $frm->addCheckBox(Labels::getLabel('LBL_Product_Is_Available_for_Cash_on_Delivery_(COD)?', $this->siteLangId), 'product_cod_enabled', 1, array(), false, 0);
             $paymentMethod = new PaymentMethods();
             if (!$paymentMethod->cashOnDeliveryIsActive()) {
@@ -4887,7 +4889,7 @@ class SellerController extends SellerBaseController
         }
         if ($preqId == 0) {
             $frm->addTextBox(Labels::getLabel('LBL_Country_the_Product_is_being_shipped_from', $this->siteLangId), 'shipping_country');
-            $frm->addHtml('', '', '<div id="tab_shipping"></div>'); 
+            $frm->addHtml('', '', '<div id="tab_shipping"></div>');
         }
 
         $frm->addHiddenField('', 'ps_from_country_id');

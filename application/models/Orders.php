@@ -496,8 +496,8 @@ class Orders extends MyAppModel
                 }
                 /*]*/
 
-                $opChargeLog = new OrderProductChargeLog();
-                /* saving of products Charges log data[ */
+                /* saving of products Charges log & log lang data[ */
+                $opChargeLog = new OrderProductChargeLog($op_id);
                 $prodChargeslogData = $product['productChargesLogData'];
                 if (!empty($prodChargeslogData)) {
                     foreach ($prodChargeslogData as $id => $prodChargeslog) {
@@ -508,21 +508,11 @@ class Orders extends MyAppModel
                             $this->error = $opChargeLog->getError();
                             return false;
                         }
-                    }
-                }
-                /*]*/
-
-                /* saving of products Charges log lang data[ */
-                $prodChargesloglangData = $product['productChargesLogLangData'];
-                if (!empty($prodChargesloglangData)) {
-                    foreach ($prodChargesloglangData as $ruleDetId => $prodChargeloglangData) {
-                        $languages = Language::getAllNames();
-                        foreach ($languages as $langId => $langName) {
-                            if (empty($prodChargeloglangData[$langId])) {
-                                continue;
-                            }
-                            $prodChargeloglangData[$langId]['opchargeloglang_op_id'] = $op_id;
-                            $opChargeLogLangObj->assignValues($prodChargeloglangData[$langId]);
+                        $opChargeLogId = $opChargeLog->getMainTableRecordId();
+                        foreach ($prodChargeslog['langData'] as $langId => $langData) {
+                            $langData['opchargeloglang_opchargelog_id'] = $opChargeLogId;
+                            $langData['opchargeloglang_op_id'] = $op_id;
+                            $opChargeLogLangObj->assignValues($langData);
                             if (!$opChargeLogLangObj->addNew()) {
                                 $db->rollbackTransaction();
                                 $this->error = $opChargeLogLangObj->getError();

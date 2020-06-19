@@ -46,7 +46,7 @@ class MyAppModel extends FatModel
 
         $srch->doNotCalculateRecords();
         $srch->doNotLimitRecords();
-        
+
         if ($assoc) {
             return FatApp::getDb()->fetchAllAssoc($srch->getResultSet());
         } else {
@@ -114,7 +114,7 @@ class MyAppModel extends FatModel
             $this->error = $this->objMainTableRecord->getError();
             return false;
         }
-        
+
         $this->logUpdatedRecord();
 
         return true;
@@ -131,7 +131,7 @@ class MyAppModel extends FatModel
             $this->error = FatApp::getDb()->getError();
             return false;
         }
-        
+
         if (!$this->updateModifiedTime()) {
             $this->error = $this->getError();
             return false;
@@ -146,7 +146,7 @@ class MyAppModel extends FatModel
             $this->error = FatApp::getDb()->getError();
             return false;
         }
-        
+
         $this->logUpdatedRecord();
 
         return true;
@@ -365,7 +365,7 @@ class MyAppModel extends FatModel
         );
         $this->assignValues($data);
         $this->setFldValue(static::tblFld('active'), $v);
-        
+
         if (!$this->objMainTableRecord->update(array('smt' => $this->mainTableIdField . ' = ?', 'vals' => array($this->mainTableRecordId)))) {
             $this->error = $this->objMainTableRecord->getError();
             return false;

@@ -210,7 +210,8 @@ class BuyerController extends BuyerBaseController
         foreach ($childOrderDetail as $opID => $val) {
             $childOrderDetail[$opID]['charges'] = $orderDetail['charges'][$opID];
 
-            $taxOptions = json_decode($val['op_product_tax_options'], true);
+            $opChargesLog = new OrderProductChargelog($opID);
+            $taxOptions = $opChargesLog->getData($this->siteLangId);
             $childOrderDetail[$opID]['taxOptions'] = $taxOptions;
         }
 
@@ -2460,7 +2461,7 @@ class BuyerController extends BuyerBaseController
             }
 
             $fbAccessToken = $accessToken->getValue();
-            
+
             unset($_SESSION['fb_' . FatApp::getConfig("CONF_FACEBOOK_APP_ID") . '_code']);
             unset($_SESSION['fb_' . FatApp::getConfig("CONF_FACEBOOK_APP_ID") . '_access_token']);
             unset($_SESSION['fb_' . FatApp::getConfig("CONF_FACEBOOK_APP_ID") . '_user_id']);

@@ -28,5 +28,4 @@ class TaxRuleCombined extends MyAppModel
         }
         return $srch;
     }
-
 }
