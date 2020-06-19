@@ -559,11 +559,11 @@ function googleCaptcha()
     $("body").addClass("captcha");
     var inputObj = $("form input[name='g-recaptcha-response']");
     var submitBtn = inputObj.parent("form").find('input[type="submit"]');
-    submitBtn.attr("disabled", "disabled");
+    submitBtn.attr({"disabled": "disabled", "type" : "button"}).val(langLbl.loadingCaptcha);
 
     var checkToken = setInterval(function(){
         if (true === gCaptcha) {
-            submitBtn.removeAttr("disabled");
+            submitBtn.removeAttr("disabled").attr('type', 'submit').val(langLbl.confirmPayment);
             clearInterval(checkToken);
         }
     }, 500);

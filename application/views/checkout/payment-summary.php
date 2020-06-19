@@ -148,7 +148,7 @@
                                     }
                                     $count++; ?>
                                     <li>
-                                        <a href="<?php echo CommonHelper::generateUrl('Checkout', 'PaymentTab', array($orderInfo['order_id'], $val['pmethod_id'])); ?>">
+                                        <a href="<?php echo CommonHelper::generateUrl('Checkout', 'PaymentTab', array($orderInfo['order_id'], $val['pmethod_id'])); ?>" data-paymentmethod="<?php echo $val['pmethod_code']; ?>">
                                             <div class="payment-box">
                                                 <i class="payment-icn">
                                                     <?php
@@ -182,8 +182,20 @@
                 <?php } ?>
             </section>
         </div>
-                </div>
-            </div>
+	</div>
+</div>
+<script>
+	var enableGcaptcha = false;
+</script>
+<?php 
+$siteKey = FatApp::getConfig('CONF_RECAPTCHA_SITEKEY', FatUtility::VAR_STRING, '');
+$secretKey = FatApp::getConfig('CONF_RECAPTCHA_SECRETKEY', FatUtility::VAR_STRING, '');
+if (!empty($siteKey) && !empty($secretKey)) {?>
+    <script src='https://www.google.com/recaptcha/api.js?render=<?php echo $siteKey; ?>'></script>
+	<script>
+		var enableGcaptcha = true;
+	</script>
+<?php } ?>
 
 <?php if ($cartSummary['orderPaymentGatewayCharges']) { ?>
     <script type="text/javascript">
@@ -215,7 +227,11 @@
             }
             $(containerId).html(fcom.getLoader());
             fcom.ajax(tabObj.attr('href'), '', function(response) {
-                $(containerId).html(response);
+				$(containerId).html(response);
+				var paymentMethod = tabObj.data('paymentmethod');
+				if ('cashondelivery' == paymentMethod.toLowerCase() && true == enableGcaptcha) {
+					googleCaptcha();
+				}
             });
         }
     </script>

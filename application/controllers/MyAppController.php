@@ -141,6 +141,8 @@ class MyAppController extends FatController
             'copied' => Labels::getLabel('LBL_Copied', $this->siteLangId),
             'invalidGRecaptchaKeys' => Labels::getLabel('LBL_YOU_MIGHT_HAVE_INVALID_GOOGLE_RECAPTCHA_V3_KEYS._PLEASE_VERIFY.', $this->siteLangId),
             'processing_counter' => Labels::getLabel('LBL_{counter}_OUT_OF_{count}_RECORD_BATCHES.', $this->siteLangId),
+            'loadingCaptcha' => Labels::getLabel('LBL_Loading_Captcha...', $this->siteLangId),
+            'confirmPayment' => Labels::getLabel('LBL_CONFIRM_PAYMENT', $this->siteLangId),
             );
 
             $languages = Language::getAllNames(false);
