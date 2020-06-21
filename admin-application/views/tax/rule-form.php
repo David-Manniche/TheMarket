@@ -191,6 +191,7 @@ $combTaxCount = 0;
                                                                     </thead>
                                                                     <tbody>
                                                                     <?php if (!empty($combinedData)) {
+																		$combTaxCount = 0;
                                                                         foreach ($combinedData as $comData) { ?>
                                                                             <tr class="rule-detail-row--js rule-detail-row<?php echo $combTaxCount; ?>">
                                                                                 <td scope="row">
@@ -214,7 +215,7 @@ $combTaxCount = 0;
                                                                             </tr>
                                                                             <?php $combTaxCount++;
                                                                         }
-        } else { ?>
+																	} else { ?>
                                                                         <tr class="rule-detail-row--js rule-detail-row<?php echo $combTaxCount; ?>">
                                                                             <td scope="row">
                                                                     <?php
@@ -489,11 +490,11 @@ $combTaxCount = 0;
                                                                     <div class="">
                                                                          <div class="row">
                                                                             <div class="col-md-12 combined-tax-lang-details--js<?php echo $langId; ?>">
-                                                                                <div class="field-set">
+                                                                                <div class="field-set rule-detail-row<?php echo $combTaxCount; ?>">
                                                                                     <div class="caption-wraper">
                                                                                         <label class="field_label">
                                                                                         <?php  $fld = $frm->getField('taxruledet_name['.$langId.'][]');
-                                                                echo $fld->getCaption(); ?>
+																						echo $fld->getCaption(); ?>
                                                                                         </label>
                                                                                     </div>
                                                                                     <div class="field-wraper">

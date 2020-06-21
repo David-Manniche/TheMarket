@@ -26,11 +26,10 @@
 				$(className +" .rule-detail-row--js").each(function(currentIndex, detailData) {
 					var taxruledet_id = $(detailData).find(' input[name="taxruledet_id[]"]').val();
 
-					/*var rowClass = $(detailData).attr('class').split(' ').pop();*/
+					var rowClass = $(detailData).attr('class').split(' ').pop();
 					var taxruledet_name = [];
 					for (var key in langLbl['languages']) {
-						console.log(currentIndex);
-						taxruledet_name[key] = $(detailData).find('input[name="taxruledet_name['+key+'][]"]').val();
+						taxruledet_name[key] = $(detailData).parents('.combined-tax-details--js').find('.'+rowClass).find('input[name="taxruledet_name['+key+'][]"]').val();
 					}
 
 					var taxruledet_rate = $(detailData).find(' input[name="taxruledet_rate[]"]').val();
@@ -49,7 +48,6 @@
 				combinedTax.push(details);
 				console.log(combinedTax);
 			}
-			// debugger;
 			var currentData = {"taxrule_id" : taxrule_id, "taxrule_name" : taxrule_name, "taxrule_rate" : taxrule_rate, "country_id" : country_id, "type" : type, "states" : states, "taxrule_is_combined" : taxrule_is_combined, "combinedTaxDetails" : combinedTax};
 			dataToSave.push(currentData);
 		});
