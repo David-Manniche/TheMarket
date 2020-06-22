@@ -370,6 +370,8 @@ class Orders extends MyAppModel
                 $db->deleteRecords(OrderProduct::DB_TBL_CHARGES, array('smt' => OrderProduct::DB_TBL_CHARGES_PREFIX . 'op_id = ?', 'vals' => array( $opId ) ));
                 $db->deleteRecords(Orders::DB_TBL_ORDER_PRODUCTS_SHIPPING, array('smt' => 'opshipping_op_id = ?', 'vals' => array( $opId ) ));
                 $db->deleteRecords(Orders::DB_TBL_ORDER_PRODUCTS_SHIPPING_LANG, array('smt' => 'opshippinglang_op_id = ?', 'vals' => array( $opId ) ));
+                $db->deleteRecords(OrderProductChargeLog::DB_TBL, array('smt' => 'opchargelog_op_id = ?', 'vals' => array( $opId ) ));
+                $db->deleteRecords(OrderProductChargeLog::DB_TBL_LANG, array('smt' => 'opchargeloglang_op_id = ?', 'vals' => array( $opId ) ));
                 $db->deleteRecords(OrderProductSpecifics::DB_TBL, array('smt' => 'ops_op_id = ?', 'vals' => array( $opId )));
             }
         }
@@ -381,6 +383,7 @@ class Orders extends MyAppModel
             $opLangRecordObj = new TableRecord(static::DB_TBL_ORDER_PRODUCTS_LANG);
             $opShippingRecordObj = new TableRecord(static::DB_TBL_ORDER_PRODUCTS_SHIPPING);
             $opShippingLangRecordObj = new TableRecord(static::DB_TBL_ORDER_PRODUCTS_SHIPPING_LANG);
+            $opChargeLogLangObj = new TableRecord(OrderProductChargeLog::DB_TBL_LANG);
 
             $counter = 1;
             foreach ($products as $selprodId => $product) {
@@ -488,6 +491,33 @@ class Orders extends MyAppModel
                             $db->rollbackTransaction();
                             $this->error = $opShippingLangRecordObj->getError();
                             return false;
+                        }
+                    }
+                }
+                /*]*/
+
+                /* saving of products Charges log & log lang data[ */
+                $opChargeLog = new OrderProductChargeLog($op_id);
+                $prodChargeslogData = $product['productChargesLogData'];
+                if (!empty($prodChargeslogData)) {
+                    foreach ($prodChargeslogData as $id => $prodChargeslog) {
+                        $prodChargeslog['opchargelog_op_id'] = $op_id;
+                        $opChargeLog->assignValues($prodChargeslog);
+                        if (!$opChargeLog->save()) {
+                            $db->rollbackTransaction();
+                            $this->error = $opChargeLog->getError();
+                            return false;
+                        }
+                        $opChargeLogId = $opChargeLog->getMainTableRecordId();
+                        foreach ($prodChargeslog['langData'] as $langId => $langData) {
+                            $langData['opchargeloglang_opchargelog_id'] = $opChargeLogId;
+                            $langData['opchargeloglang_op_id'] = $op_id;
+                            $opChargeLogLangObj->assignValues($langData);
+                            if (!$opChargeLogLangObj->addNew()) {
+                                $db->rollbackTransaction();
+                                $this->error = $opChargeLogLangObj->getError();
+                                return false;
+                            }
                         }
                     }
                 }
@@ -1328,7 +1358,7 @@ class Orders extends MyAppModel
             return false;
         }
         $commentId = $db->getInsertId();
-        
+
         // If order status is in buyer order statuses then send update email
         if (in_array($opStatusId, unserialize(FatApp::getConfig("CONF_BUYER_ORDER_STATUS"))) && $notify) {
             $emailNotificationObj->orderStatusUpdateBuyer($commentId, $childOrderInfo['order_language_id'], $childOrderInfo['order_user_id']);
@@ -1756,7 +1786,7 @@ class Orders extends MyAppModel
             Cronjob::firstTimeBuyerDiscount($childOrderInfo['order_user_id'], $childOrderInfo['op_order_id']);
         }
 
-        
+
         return true;
     }
 
@@ -2290,14 +2320,14 @@ class Orders extends MyAppModel
             if (!FatApp::getDb()->updateFromArray(
                 Orders::DB_TBL_ORDER_USER_ADDRESS,
                 [
-                    'oua_address1' => static::REPLACE_ORDER_USER_ADDRESS, 
-                    'oua_address2' => static::REPLACE_ORDER_USER_ADDRESS, 
-                    'oua_city' => static::REPLACE_ORDER_USER_ADDRESS, 
-                    'oua_state' => static::REPLACE_ORDER_USER_ADDRESS, 
-                    'oua_country' => static::REPLACE_ORDER_USER_ADDRESS, 
+                    'oua_address1' => static::REPLACE_ORDER_USER_ADDRESS,
+                    'oua_address2' => static::REPLACE_ORDER_USER_ADDRESS,
+                    'oua_city' => static::REPLACE_ORDER_USER_ADDRESS,
+                    'oua_state' => static::REPLACE_ORDER_USER_ADDRESS,
+                    'oua_country' => static::REPLACE_ORDER_USER_ADDRESS,
                     'oua_country_code' => static::REPLACE_ORDER_USER_ADDRESS,
-                    'oua_state_code' => static::REPLACE_ORDER_USER_ADDRESS, 
-                    'oua_phone' => static::REPLACE_ORDER_USER_ADDRESS, 
+                    'oua_state_code' => static::REPLACE_ORDER_USER_ADDRESS,
+                    'oua_phone' => static::REPLACE_ORDER_USER_ADDRESS,
                     'oua_zip' => static::REPLACE_ORDER_USER_ADDRESS],
                 ['smt' => 'oua_order_id = ? ', 'vals' => [$order['order_id']]]
             )

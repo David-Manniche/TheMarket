@@ -7,9 +7,9 @@ $arr_flds = array(
 if ($activatedTaxServiceId) {
     $arr_flds['taxcat_code'] = Labels::getLabel('LBL_Tax_Code', $siteLangId);
 } else {
-    $arr_flds['taxval_value'] = Labels::getLabel('LBL_Value', $siteLangId);
+    $arr_flds['taxrule_rate'] = Labels::getLabel('LBL_Value', $siteLangId);
     if (FatApp::getConfig('CONF_TAX_COLLECTED_BY_SELLER', FatUtility::VAR_INT, 0)) {
-        $arr_flds['action'] = Labels::getLabel('LBL_Action', $siteLangId);
+        /* $arr_flds['action'] = Labels::getLabel('LBL_Action', $siteLangId); */
     }
 }
 
@@ -33,30 +33,19 @@ foreach ($arr_listing as $sn => $row) {
             case 'taxcat_name':
                 $td->appendElement('plaintext', array(), $row[$key] . '<br>', true);
                 break;
-            case 'taxval_value':
+            case 'taxrule_rate':
                 /* Error Handling[ */
-                if (!isset($row['taxval_value'])) {
-                    $row['taxval_value'] = 0;
+                if (!isset($row['taxrule_rate'])) {
+                    $row['taxrule_rate'] = 0;
                 }
-
-                if (!isset($row['default']['taxval_value'])) {
-                    $row['default']['taxval_value'] = 0;
-                }
-
+				
                 if (!isset($row['taxval_is_percent'])) {
-                    $row['taxval_is_percent'] = 0;
+                    $row['taxval_is_percent'] = 1;
                 }
                 /* ] */
 
                 $str = '';
-                if (FatApp::getConfig('CONF_TAX_COLLECTED_BY_SELLER', FatUtility::VAR_INT, 0)) {
-                    $str= CommonHelper::displayTaxFormat($row['taxval_is_percent'], $row['taxval_value']);
-                    if ($row['default']['taxval_value'] != $row['taxval_value']) {
-                        $str.= ' <span class="item__price--old strikethrough">'.CommonHelper::displayTaxFormat($row['default']['taxval_is_percent'], $row['default']['taxval_value']).'</span> ';
-                    }
-                } else {
-                    $str = '<span class="item__price--old">'.CommonHelper::displayTaxFormat($row['default']['taxval_is_percent'], $row['default']['taxval_value']).'</span> ';
-                }
+                $str = '<span class="item__price--old">'.CommonHelper::displayTaxFormat($row['taxval_is_percent'], $row['taxrule_rate']).'</span> ';
                 $td->appendElement('plaintext', array(), $str, true);
                 break;
             case 'action':
