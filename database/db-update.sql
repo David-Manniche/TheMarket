@@ -189,8 +189,8 @@ INSERT INTO `tbl_language_labels` (`label_key`, `label_lang_id`, `label_caption`
 
 
 /* TAX MANAGEMENT [ */
-DROP TABLE `tbl_tax_structure`, `tbl_tax_structure_lang`;
-DROP TABLE `tbl_tax_rules_lang`;
+DROP TABLE `tbl_tax_structure`;
+DROP TABLE `tbl_tax_structure_lang`;
 
 CREATE TABLE `tbl_tax_rules` (
   `taxrule_id` int(11) NOT NULL,
