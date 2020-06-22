@@ -1,6 +1,6 @@
 <?php
 
-class OrderProductChargelog extends MyAppModel
+class OrderProductChargeLog extends MyAppModel
 {
     public const DB_TBL = 'tbl_order_prod_charges_logs';
     public const DB_TBL_PREFIX = 'opchargelog_';

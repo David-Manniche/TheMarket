@@ -210,7 +210,7 @@ class BuyerController extends BuyerBaseController
         foreach ($childOrderDetail as $opID => $val) {
             $childOrderDetail[$opID]['charges'] = $orderDetail['charges'][$opID];
 
-            $opChargesLog = new OrderProductChargelog($opID);
+            $opChargesLog = new OrderProductChargeLog($opID);
             $taxOptions = $opChargesLog->getData($this->siteLangId);
             $childOrderDetail[$opID]['taxOptions'] = $taxOptions;
         }

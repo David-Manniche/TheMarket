@@ -728,7 +728,7 @@ class EmailHandler extends FatModel
             }
 
             foreach ($orderProducts as $opID => $val) {
-                $opChargesLog = new OrderProductChargelog($opID);
+                $opChargesLog = new OrderProductChargeLog($opID);
                 $taxOptions = $opChargesLog->getData($langId);
                 $orderProducts[$opID]['taxOptions'] = $taxOptions;
             }
@@ -808,7 +808,7 @@ class EmailHandler extends FatModel
         $OrderInfo = $orderObj->getOrderById($orderId, $langId);
         $childOrderInfo = $orderObj->getOrderProductsByOpId($opId, $langId);
 
-        $opChargesLog = new OrderProductChargelog($opId);
+        $opChargesLog = new OrderProductChargeLog($opId);
         $taxOptions = $opChargesLog->getData($langId);
         $childOrderInfo['taxOptions'] = $taxOptions;
 
@@ -989,7 +989,7 @@ class EmailHandler extends FatModel
             foreach ($orderVendors as $key => $val) :
                 $shippingHanldedBySeller = CommonHelper::canAvailShippingChargesBySeller($val['op_selprod_user_id'], $val['opshipping_by_seller_user_id']);
 
-                $opChargesLog = new OrderProductChargelog($val['op_id']);
+                $opChargesLog = new OrderProductChargeLog($val['op_id']);
                 $taxOptions = $opChargesLog->getData($langId);
                 $val['taxOptions'] = $taxOptions;
 
@@ -1078,7 +1078,7 @@ class EmailHandler extends FatModel
             $charges = $orderObj->getOrderProductChargesArr($orderComment['op_id']);
             $orderComment['charges'] = $charges;
 
-            $opChargesLog = new OrderProductChargelog($orderComment['op_id']);
+            $opChargesLog = new OrderProductChargeLog($orderComment['op_id']);
             $taxOptions = $opChargesLog->getData($langId);
             $orderComment['taxOptions'] = $taxOptions;
 
@@ -1153,7 +1153,7 @@ class EmailHandler extends FatModel
             $charges = $orderObj->getOrderProductChargesArr($orderComment['op_id']);
             $orderComment['charges'] = $charges;
 
-            $opChargesLog = new OrderProductChargelog($orderComment['op_id']);
+            $opChargesLog = new OrderProductChargeLog($orderComment['op_id']);
             $taxOptions = $opChargesLog->getData($langId);
             $orderComment['taxOptions'] = $taxOptions;
 
@@ -2075,7 +2075,7 @@ class EmailHandler extends FatModel
         $orderObj = new Orders();
         $orderProduct = $orderObj->getOrderProductsByOpId($opId, $langId);
 
-        $opChargesLog = new OrderProductChargelog($opId);
+        $opChargesLog = new OrderProductChargeLog($opId);
         $taxOptions = $opChargesLog->getData($langId);
         $orderProduct['taxOptions'] = $taxOptions;
 

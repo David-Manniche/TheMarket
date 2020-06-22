@@ -214,7 +214,7 @@ class SellerOrdersController extends AdminBaseController
             $digitalDownloadLinks = Orders::getOrderProductDigitalDownloadLinks($op_id);
         }
 
-        $opChargesLog = new OrderProductChargelog($op_id);
+        $opChargesLog = new OrderProductChargeLog($op_id);
         $taxOptions = $opChargesLog->getData($this->adminLangId);
         $opRow['taxOptions'] = $taxOptions;
         $this->set('allLanguages', Language::getAllNames(false, 0, false, false));
