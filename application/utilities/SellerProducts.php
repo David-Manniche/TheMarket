@@ -531,7 +531,6 @@ trait SellerProducts
             FatUtility::dieWithError(Message::getHtml());
         }
         $this->set('product_id', $productId);
-        $this->set('selprod_id', $selprod_id);
         $this->set('msg', Labels::getLabel('LBL_Product_Setup_Successful', $this->siteLangId));
         $this->_template->render(false, false, 'json-success.php');
     }

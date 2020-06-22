@@ -175,20 +175,8 @@ ALTER TABLE `tbl_order_product_shipping` DROP `opshipping_company_id`;
 ALTER TABLE `tbl_order_product_shipping` DROP `opshipping_method_id`;
 ALTER TABLE `tbl_order_product_shipping` ADD `opshipping_label` VARCHAR(255) NOT NULL AFTER `opshipping_level`;
 -- Shippping Module End-----
-ALTER TABLE `tbl_tax_structure_lang` CHANGE `taxstr_name` `taxstr_name` VARCHAR(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL;
 
-INSERT INTO `tbl_language_labels` (`label_key`, `label_lang_id`, `label_caption`, `label_type`) VALUES
-("APP_VOICE_SEARCH_TXT", 1, "Tap Here On Mic And Say Something To Search!", 2),
-("APP_RESEND_OTP", 1, "Resend OTP", 2),
-("APP_CLICK_HERE", 1, "Click Here", 2),
-("APP_PLEASE_ENTER_VALID_OTP", 1, "Please Enter Valid OTP", 2),
-("APP_SHOW_MORE", 1, "Show More", 2),
-("APP_I_AM_LISTENING", 1, "Say Something I Am Listening", 2),
-("APP_VOICE_SEARCH", 1, "Voice Search", 2),
-("APP_EXPLORE", 1, "Explore", 2);
-
-
-/* TAX MANAGEMENT [ */
+-- Tax Upgrade-----
 DROP TABLE `tbl_tax_structure`;
 DROP TABLE `tbl_tax_structure_lang`;
 
@@ -259,4 +247,6 @@ CREATE TABLE `tbl_order_prod_charges_logs_lang` (
   `opchargeloglang_lang_id` int(11) NOT NULL,
   `opchargelog_name` varchar(255) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-/* ] */
+-- Tax Upgrade End-----
+
+ALTER TABLE `tbl_attached_files` ADD `afile_attribute_title` VARCHAR(250) NOT NULL AFTER `afile_name`, ADD `afile_attribute_alt` VARCHAR(250) NOT NULL AFTER `afile_attribute_title`;

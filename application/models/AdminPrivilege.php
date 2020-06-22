@@ -114,6 +114,7 @@ class AdminPrivilege
     public const SECTION_SMS_TEMPLATE = 108;
     public const SECTION_SHIPPING_PACKAGES = 109;
     public const SECTION_SHIPPING_MANAGEMENT = 110;
+	public const SECTION_IMAGE_ATTRIBUTES = 111;
 
     public const PRIVILEGE_NONE = 0;
     public const PRIVILEGE_READ = 1;
@@ -216,7 +217,8 @@ class AdminPrivilege
         static::SECTION_FAQ_CATEGORY => Labels::getLabel('MSG_Faq_Category', CommonHelper::getLangId()),
         static::SECTION_FAQ => Labels::getLabel('MSG_Faq', CommonHelper::getLangId()),
         static::SECTION_URL_REWRITE => Labels::getLabel('MSG_Url_Rewriting', CommonHelper::getLangId()),
-
+		static::SECTION_IMAGE_ATTRIBUTES => Labels::getLabel('MSG_Image_Attributes', CommonHelper::getLangId()),
+		
         static::SECTION_BLOG_POST_CATEGORIES => Labels::getLabel('MSG_Blog_Categories', CommonHelper::getLangId()),
         static::SECTION_BLOG_POSTS => Labels::getLabel('MSG_Blog_Posts', CommonHelper::getLangId()),
         static::SECTION_BLOG_CONTRIBUTIONS => Labels::getLabel('MSG_Blog_Contributions', CommonHelper::getLangId()),
@@ -916,6 +918,16 @@ class AdminPrivilege
     public function canEditUrlRewrite($adminId = 0, $returnResult = false)
     {
         return $this->checkPermission($adminId, static::SECTION_URL_REWRITE, static::PRIVILEGE_WRITE, $returnResult);
+    }
+	
+	public function canViewImageAttributes($adminId = 0, $returnResult = false)
+    {
+        return $this->checkPermission($adminId, static::SECTION_IMAGE_ATTRIBUTES, static::PRIVILEGE_READ, $returnResult);
+    }
+
+    public function canEditImageAttributes($adminId = 0, $returnResult = false)
+    {
+        return $this->checkPermission($adminId, static::SECTION_IMAGE_ATTRIBUTES, static::PRIVILEGE_WRITE, $returnResult);
     }
 
     public function canViewTestimonial($adminId = 0, $returnResult = false)
