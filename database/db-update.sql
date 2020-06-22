@@ -32,51 +32,29 @@ INSERT INTO `tbl_language_labels` (`label_key`, `label_lang_id`, `label_caption`
 
 
 /* TAX MANAGEMENT [ */
+DROP TABLE `tbl_tax_structure`, `tbl_tax_structure_lang`;
+DROP TABLE `tbl_tax_rules_lang`;
 
 CREATE TABLE `tbl_tax_rules` (
   `taxrule_id` int(11) NOT NULL,
   `taxrule_taxcat_id` int(11) NOT NULL,
-  `taxrule_identifier` varchar(255) NOT NULL,
-  `taxrule_rate` decimal(10,4) NOT NULL,
+  `taxrule_name` varchar(255) NOT NULL,
+  `taxrule_rate` decimal(10,2) NOT NULL,
   `taxrule_is_combined` tinyint(4) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-
-ALTER TABLE `tbl_tax_rules`
-  ADD PRIMARY KEY (`taxrule_id`);
-
-ALTER TABLE `tbl_tax_rules`
-  MODIFY `taxrule_id` int(11) NOT NULL AUTO_INCREMENT;
-
-CREATE TABLE `tbl_tax_rules_lang` (
-  `taxrulelang_taxrule_id` int(11) NOT NULL,
-  `taxrulelang_lang_id` int(11) NOT NULL,
-  `taxrule_name` varchar(250) COLLATE utf8mb4_unicode_ci NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
-ALTER TABLE `tbl_tax_rules_lang`
-  ADD PRIMARY KEY (`taxrulelang_taxrule_id`,`taxrulelang_lang_id`);
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE `tbl_tax_rule_details` (
   `taxruledet_id` int(11) NOT NULL,
   `taxruledet_taxrule_id` int(11) NOT NULL,
   `taxruledet_identifier` varchar(255) NOT NULL,
   `taxruledet_rate` decimal(10,2) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-
-ALTER TABLE `tbl_tax_rule_details`
-  ADD PRIMARY KEY (`taxruledet_id`);
-
-ALTER TABLE `tbl_tax_rule_details`
-  MODIFY `taxruledet_id` int(11) NOT NULL AUTO_INCREMENT;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE `tbl_tax_rule_details_lang` (
   `taxruledetlang_taxruledet_id` int(11) NOT NULL,
   `taxruledetlang_lang_id` int(11) NOT NULL,
   `taxruledet_name` varchar(255) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-
-ALTER TABLE `tbl_tax_rule_details_lang`
-  ADD PRIMARY KEY (`taxruledetlang_taxruledet_id`,`taxruledetlang_lang_id`);
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE `tbl_tax_rule_locations` (
   `taxruleloc_taxcat_id` int(11) NOT NULL,
@@ -85,16 +63,25 @@ CREATE TABLE `tbl_tax_rule_locations` (
   `taxruleloc_state_id` int(11) NOT NULL,
   `taxruleloc_type` int(11) DEFAULT NULL COMMENT 'including or excluding',
   `taxruleloc_unique` int(11) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+ALTER TABLE `tbl_tax_rules`
+  ADD PRIMARY KEY (`taxrule_id`);
+
+ALTER TABLE `tbl_tax_rule_details`
+  ADD PRIMARY KEY (`taxruledet_id`);
+
+ALTER TABLE `tbl_tax_rule_details_lang`
+  ADD PRIMARY KEY (`taxruledetlang_taxruledet_id`,`taxruledetlang_lang_id`);
 
 ALTER TABLE `tbl_tax_rule_locations`
   ADD UNIQUE KEY `taxruleloc_taxcat_id` (`taxruleloc_taxcat_id`,`taxruleloc_country_id`,`taxruleloc_state_id`,`taxruleloc_type`,`taxruleloc_unique`);
 
-DROP TABLE `tbl_tax_structure`, `tbl_tax_structure_lang`;
-DROP TABLE `tbl_tax_rules_lang`;
 ALTER TABLE `tbl_tax_rules`
-  DROP `taxrule_identifier`;
-ALTER TABLE `tbl_tax_rules` ADD `taxrule_name` VARCHAR(255) NOT NULL AFTER `taxrule_taxcat_id`;
+  MODIFY `taxrule_id` int(11) NOT NULL AUTO_INCREMENT;
+
+ALTER TABLE `tbl_tax_rule_details`
+  MODIFY `taxruledet_id` int(11) NOT NULL AUTO_INCREMENT;
 
 CREATE TABLE `tbl_order_prod_charges_logs` (
   `opchargelog_id` int(11) NOT NULL,
@@ -104,7 +91,7 @@ CREATE TABLE `tbl_order_prod_charges_logs` (
   `opchargelog_value` decimal(10,2) NOT NULL,
   `opchargelog_is_percent` tinyint(4) NOT NULL,
   `opchargelog_percentvalue` decimal(10,2) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 ALTER TABLE `tbl_order_prod_charges_logs`
   ADD PRIMARY KEY (`opchargelog_id`);
 ALTER TABLE `tbl_order_prod_charges_logs`
@@ -114,5 +101,5 @@ CREATE TABLE `tbl_order_prod_charges_logs_lang` (
   `opchargeloglang_op_id` int(11) NOT NULL,
   `opchargeloglang_lang_id` int(11) NOT NULL,
   `opchargelog_name` varchar(255) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /* ] */
