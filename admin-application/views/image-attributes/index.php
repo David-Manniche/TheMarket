@@ -32,7 +32,7 @@
 							<div class="sectionhead">
 								<h4><?php echo Labels::getLabel('LBL_Image_Attributes', $adminLangId); ?> </h4>
 								<?php
-								if ($canEdit) {
+								/* if ($canEdit) {
 									$data = [
 										'adminLangId' => $adminLangId,
 										'statusButtons' => false,
@@ -49,7 +49,7 @@
 									];
 				
 									$this->includeTemplate('_partial/action-buttons.php', $data, false);
-								}
+								} */
 								?>
 							</div>
 							<div class="sectionbody">
