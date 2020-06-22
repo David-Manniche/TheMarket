@@ -11,6 +11,7 @@
         <?php
             if (array_key_exists(Shipping::BY_ADMIN, $shippingRates)) {
                     ksort($shippingRates);
+            }
                     foreach ($shippingRates as $level => $levelItems) { ?>
                     <div class="short-detail">
                     <?php if (count($levelItems['products']) > 1 && $level != Shipping::LEVEL_PRODUCT) {  ?>
@@ -29,16 +30,16 @@
                                             if(count($levelItems['rates']) > 0) {
                                                 $name = current($levelItems['rates'])['code'];
                                                echo '<li><select name="shipping_services[' . $name . ']">';
-                                               foreach ($levelItems['rates'] as $key => $shippingRate) { 
+                                               foreach ($levelItems['rates'] as $key => $shippingRate) {
                                                    echo '<option value="' . $key . '">' . $shippingRate['title'] .' ( ' . $shippingRate['cost'] . ' ) </option>';
                                                }
                                                echo '</select></li>';
                                            } else if ($product['product_type'] == Product::PRODUCT_TYPE_PHYSICAL) {
                                                echo '<li class="info-message">' . Labels::getLabel('MSG_Product_is_not_available_for_shipping', $siteLangId) . '</li>';
                                            }
-                                       } 
+                                       }
                                     ?>
-                                    </ul>                                   
+                                    </ul>
                                 </div>
                             </div>
                         </div>
@@ -48,7 +49,7 @@
                         $productUrl = !$isAppUser ? CommonHelper::generateUrl('Products', 'View', array($product['selprod_id'])) : 'javascript:void(0)';
                         $shopUrl = !$isAppUser ? CommonHelper::generateUrl('Shops', 'View', array($product['shop_id'])) : 'javascript:void(0)';
                         $imageUrl = FatCache::getCachedUrl(CommonHelper::generateUrl('image', 'product', array($product['product_id'], "THUMB", $product['selprod_id'], 0, $siteLangId)), CONF_IMG_CACHE_TIME, '.jpg'); ?>
-            
+
             <table class="table table-shipping">
                 <tbody>
                     <tr class="<?php echo (!$product['in_stock']) ? 'disabled' : ''; ?>">
@@ -72,13 +73,13 @@
                                     <?php
                             }
                         } ?>
-                                    | <?php echo Labels::getLabel('LBL_Quantity', $siteLangId) ?> <?php echo $product['quantity']; ?>                                    
+                                    | <?php echo Labels::getLabel('LBL_Quantity', $siteLangId) ?> <?php echo $product['quantity']; ?>
                                 </div>
                             </div>
                         </td>
                         <td width="40%">
                         <ul class="shipping-selectors">
-                        <?php 
+                        <?php
                         if (count($levelItems['products']) == 1 && count($levelItems['rates']) > 0 && $level != Shipping::LEVEL_PRODUCT) {
                             $priceListCount = count($levelItems['rates']);
                             if ($priceListCount == 1 && current($levelItems['rates'])['cost'] == 0) {
@@ -87,16 +88,16 @@
                                  if(count($levelItems['rates']) > 0) {
                                      $name = current($levelItems['rates'])['code'];
                                     echo '<li><select name="shipping_services[' . $name . ']">';
-                                    foreach ($levelItems['rates'] as $key => $shippingRate) { 
+                                    foreach ($levelItems['rates'] as $key => $shippingRate) {
                                         echo '<option value="' . $key . '">' . $shippingRate['title'] .' ( ' . $shippingRate['cost'] . ' ) </option>';
                                     }
                                     echo '</select></li>';
                                 } else if ($product['product_type'] == Product::PRODUCT_TYPE_PHYSICAL) {
                                     echo '<li class="info-message">' . Labels::getLabel('MSG_Product_is_not_available_for_shipping', $siteLangId) . '</li>';
                                 }
-                            } 
+                            }
                         }
-                        
+
                         if ($level == Shipping::LEVEL_PRODUCT && isset($levelItems['rates'][$product['selprod_id']])) {
                                 $priceListCount = count($levelItems['rates'][$product['selprod_id']]);
                                 if ($priceListCount == 1 && current($levelItems['rates'][$product['selprod_id']])['cost'] == 0) {
@@ -135,15 +136,15 @@
 
                 </tbody>
             </table>
-            
+
             <?php if($level == Shipping::LEVEL_PRODUCT) {?>
                 </div>
                 <div class="short-detail">
-            <?php } 
+            <?php }
             }
 
         }
-    }
+
 ?>
 
             <div>

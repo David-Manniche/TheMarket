@@ -173,7 +173,7 @@ class OrdersController extends AdminBaseController
 
         foreach ($order['products'] as $opId => $opVal) {
             $order['products'][$opId]['charges'] = $charges[$opId];
-            $opChargesLog = new OrderProductChargelog($opId);
+            $opChargesLog = new OrderProductChargeLog($opId);
             $taxOptions = $opChargesLog->getData($this->adminLangId);
             $order['products'][$opId]['taxOptions'] = $taxOptions;
         }
