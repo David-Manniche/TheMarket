@@ -40,7 +40,6 @@ class GoogleLoginController extends SocialMediaAuthController
                     $this->setErrorAndRedirect($message, true);
                 }
             }
-
             $this->google->setAccessToken($accessToken);
             $this->google->loadClientData();
 

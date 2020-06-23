@@ -80,7 +80,17 @@ class GoogleLogin extends SocialMediaAuthBase
      */
     public function authenticate(string $code): bool
     {
-        $this->client->authenticate($code);
+        if (empty($code)) {
+            $this->error = Labels::getLabel('MSG_BAD_REQUEST', $this->langId);
+            return false;
+        }
+
+        $resp = $this->client->authenticate($code);
+
+        if (isset($resp['error']) && isset($resp['error_description'])) {
+            $this->error = $resp['error'] . ' - ' . $resp['error_description'];
+            return false;
+        }
         return true;
     }
 
@@ -102,7 +112,11 @@ class GoogleLogin extends SocialMediaAuthBase
      */
     public function setAccessToken(string $accessToken): bool
     {
-        $this->client->setAccessToken($accessToken);
+        if (empty($accessToken)) {
+            $this->error = Labels::getLabel('MSG_BAD_REQUEST', $this->langId);
+            return false;
+        }
+        $resp = $this->client->setAccessToken($accessToken);
         return true;
     }
 
@@ -156,6 +170,6 @@ class GoogleLogin extends SocialMediaAuthBase
     public function refreshAccessToken(): string
     {
         $this->client->fetchAccessTokenWithRefreshToken($this->client->getRefreshToken());
-        return $this->client->getAccessToken();
+        return $this->getAccessToken();
     }
 }

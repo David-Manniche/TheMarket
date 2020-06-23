@@ -7,7 +7,7 @@ class GoogleLoginTest extends PluginBaseTest
     private $error = '';
 
     /**
-     * testVerifyAccessToken - Return Array in case of missing required keys.
+     * init
      *
      * @return bool
      */
@@ -30,13 +30,13 @@ class GoogleLoginTest extends PluginBaseTest
     }
 
     /**
-     * testVerifyAccessToken - Return Array in case of missing required keys.
+     * testAuthenticate
      *
-     * @dataProvider setInput
-     * @param  array $toCurrencies
+     * @dataProvider setAuthInput
+     * @param  array $code
      * @return void
      */
-    public function testVerifyAccessToken(string $accessToken, string $state = '', bool $expected = true): void
+    public function testAuthenticate(string $code, bool $expected = true): void
     {
         switch ($this->init()) {
             case false:
@@ -45,25 +45,68 @@ class GoogleLoginTest extends PluginBaseTest
                 break;
             
             default:
-                $result = $this->classObj->verifyAccessToken($accessToken, $state);
+                $result = $this->classObj->authenticate($code);
+                if (false === $result) {
+                    echo $this->classObj->getError();
+                }
                 $this->assertEquals($expected, $result);
                 break;
         }
     }
         
     /**
-     * setInput
+     * setAuthInput
      *
      * @return array
      */
-    public function setInput(): array
+    public function setAuthInput(): array
     {
         // Returned false in case of invalid or missing Plugin Keys. Fail in case of opposite expectation.
         return [
-            ['', '', false], // Return False in case of all input empty.
-            ['abc', 'xyz', false], // Return False in case of all input empty
-            ['EAAEViMZCbui8BAOgZB44rNUIWWbIRUtbJjzMI63nvW3iIcd1mAozgtfZCixUPMl6VC3YXA9ocjauZBxi5V6gFeijZBZABtaTY5Sy8Ym5ADZBfS70oG5cDaOa3X5HEDC5irEAPUnZCKfKklZAYmL2AUPnLuBT0TeQdsIDYl9r7kgGvAwZDZD'], // Return True in case state empty
-            ['EAAEViMZCbui8BAOgZB44rNUIWWbIRUtbJjzMI63nvW3iIcd1mAozgtfZCixUPMl6VC3YXA9ocjauZBxi5V6gFeijZBZABtaTY5Sy8Ym5ADZBfS70oG5cDaOa3X5HEDC5irEAPUnZCKfKklZAYmL2AUPnLuBT0TeQdsIDYl9r7kgGvAwZDZD', 'ce5f965b037a2a71a316dd7cb2f94e2b'], // Return False in case of same access token been already used
+            ['', false], // Return False in case of empty input.
+            ['abc', false], // Return False in case of wrong input.
+            ['4/1AGMhN5-Wob96JggkuwJhSCEW9tXH8ngw4G4JilTT4YWeAHaV0C4noApoBcjyclkanShIw5MoPeBrppRhBP5jME', false], // Return True in case valid Code
+        ];
+    }
+
+    /**
+     * testSetAccessToken
+     *
+     * @dataProvider setAccessTokenInput
+     * @param  array $accessToken
+     * @return void
+     */
+    public function testSetAccessToken(string $accessToken, bool $expected = true): void
+    {
+        switch ($this->init()) {
+            case false:
+                echo $this->error;
+                $this->assertEquals($expected, false);
+                break;
+            
+            default:
+                $result = $this->classObj->setAccessToken($accessToken);
+                if (false === $result) {
+                    echo $this->classObj->getError();
+                }
+                $this->assertEquals($expected, $result);
+                break;
+        }
+    }
+        
+    /**
+     * setAuthInput
+     *
+     * @return array
+     */
+    public function setAccessTokenInput(): array
+    {
+        // Returned false in case of invalid or missing Plugin Keys. Fail in case of opposite expectation.
+        return [
+            ['', false], // Return False in case of empty input.
+            ['abc', true], // Return true either access_Token is wrong.
+            ['abc', false], // In case missing plugin keys.
+            ['ya29.a0AfH6SMCnHrEFgUqi2G4P1GG5q1p-cXlIh7AwNyHODTDTtJu47hnl_IXdJIiKrut9hV5MYUZQQSzqTNyWItZUOejLYLSJEkhqgcyOfptidJCnz6Lcg0ufCfDrBoCTHIPKMXlaAz9AkRIIkLlipbS9gyoM_RkOR2xjbhk'], // Return True in case valid accessToken
         ];
     }
 }

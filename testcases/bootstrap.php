@@ -72,5 +72,6 @@ define('MOBILE_APP_API_CALL', false);
 
 define('CONF_PLUGIN_DIR', CONF_INSTALLATION_PATH . 'library/plugins/');
 define('CONF_TEST_CASES_DIR', CONF_INSTALLATION_PATH . 'testcases/');
+define('CONF_WEBROOT_URL_TRADITIONAL', CONF_WEBROOT_URL . 'public/index.php?url=');
 
 require_once CONF_INSTALLATION_PATH . 'library/autoloader.php';

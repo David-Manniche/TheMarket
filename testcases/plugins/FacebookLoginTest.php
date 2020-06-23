@@ -7,7 +7,7 @@ class FacebookLoginTest extends PluginBaseTest
     private $error = '';
 
     /**
-     * testVerifyAccessToken - Return Array in case of missing required keys.
+     * init
      *
      * @return bool
      */

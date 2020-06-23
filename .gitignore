@@ -96,3 +96,5 @@ $RECYCLE.BIN/
 
 php_errors.log
 
+# Php Unit Test
+.php_cs.cache
