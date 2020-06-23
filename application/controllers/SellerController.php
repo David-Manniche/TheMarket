@@ -601,7 +601,7 @@ class SellerController extends SellerBaseController
             FatUtility::dieJsonError(Message::getHtml());
         }
 
-        
+
         if (strtolower($orderDetail['pmethod_code']) == 'cashondelivery' && (OrderStatus::ORDER_DELIVERED == $post["op_status_id"] || OrderStatus::ORDER_COMPLETED == $post["op_status_id"]) && Orders::ORDER_IS_PAID != $orderDetail['order_is_paid']) {
             $orderProducts = new OrderProductSearch($this->siteLangId, true, true);
             $orderProducts->joinPaymentMethod();
@@ -1391,7 +1391,7 @@ class SellerController extends SellerBaseController
             $cnd = $srch->addCondition('t.taxcat_identifier', 'like', '%' . $post['keyword'] . '%');
             $cnd->attachCondition('t_l.taxcat_name', 'like', '%' . $post['keyword'] . '%');
         }
-                
+
         $activatedTaxServiceId = Tax::getActivatedServiceId();
         $srch->addCondition('taxcat_plugin_id', '=', $activatedTaxServiceId);
 
@@ -1440,11 +1440,11 @@ class SellerController extends SellerBaseController
     public function changeTaxRates($taxcat_id)
     {
         $activatedTaxServiceId = Tax::getActivatedServiceId();
-        
+
         if ($activatedTaxServiceId) {
             FatUtility::dieWithError($this->str_invalid_request);
         }
-        
+
         $taxcat_id = FatUtility::int($taxcat_id);
 
         $frm = $this->getchangeTaxRatesForm($this->siteLangId);
@@ -1486,11 +1486,11 @@ class SellerController extends SellerBaseController
     {
         $this->userPrivilege->canEditTaxCategory(UserAuthentication::getLoggedUserId());
         $activatedTaxServiceId = Tax::getActivatedServiceId();
-        
+
         if ($activatedTaxServiceId) {
             FatUtility::dieWithError($this->str_invalid_request);
         }
-        
+
         $frm = $this->getchangeTaxRatesForm($this->siteLangId);
         $post = $frm->getFormDataFromArray(FatApp::getPostedData());
 
@@ -3321,7 +3321,7 @@ class SellerController extends SellerBaseController
           $fld1->htmlAfterField='<span id="input-field'.AttachedFile::FILETYPE_SHOP_BANNER.'"></span>
           <div><img src="'.CommonHelper::generateUrl('Image','shopBanner',array($shop_id, $this->siteLangId, 'THUMB')).'"></div>';
           } */
-
+        // $frm->addHtml('', '', '<div id="map" style="width:1500px; height:500px"></div>');
         $frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_Save_Changes', $this->siteLangId));
         return $frm;
     }
@@ -3630,7 +3630,7 @@ class SellerController extends SellerBaseController
     {
         $frm = new Form('frmCustomProduct');
         $fld = $frm->addTextBox(Labels::getLabel('LBL_Shipping_country', $this->siteLangId), 'shipping_country');
-       
+
         $shipProfileArr = ShippingProfile::getProfileArr($this->userParentId, true, true);
         $frm->addSelectBox(Labels::getLabel('LBL_Shipping_Profile', $this->siteLangId), 'shipping_profile', $shipProfileArr)->requirements()->setRequired();
 
@@ -4879,7 +4879,7 @@ class SellerController extends SellerBaseController
         } else {
             $productType = Product::getAttributesById($productId, 'product_type');
         }
-        
+
         $frm->addHiddenField('', 'product_id', $productId);
         $frm->addHiddenField('', 'preq_id', $preqId);
         $frm->addButton('', 'btn_back', Labels::getLabel('LBL_Back', $this->siteLangId));
@@ -4911,7 +4911,7 @@ class SellerController extends SellerBaseController
             if (FatApp::getConfig("CONF_PRODUCT_DIMENSIONS_ENABLE", FatUtility::VAR_INT, 1)) {
                 $shipPackArr = ShippingPackage::getAllNames();
                 $frm->addSelectBox(Labels::getLabel('LBL_Shipping_Package', $this->siteLangId), 'product_ship_package', $shipPackArr)->requirements()->setRequired();
-                
+
                 $weightUnitsArr = applicationConstants::getWeightUnitsArr($this->siteLangId);
                 $frm->addSelectBox(Labels::getLabel('LBL_Weight_Unit', $this->siteLangId), 'product_weight_unit', $weightUnitsArr)->requirements()->setRequired();
 
@@ -4931,7 +4931,7 @@ class SellerController extends SellerBaseController
                     $codFld->htmlAfterField = '<br/><small>' . Labels::getLabel('LBL_COD_option_is_disabled_in_payment_gateway_settings', $this->siteLangId) . '</small>';
                 }
             }
-            
+
             /* ] */
         }
         if ($preqId == 0 && !FatApp::getConfig('CONF_SHIPPED_BY_ADMIN_ONLY', FatUtility::VAR_INT, 0)) {
