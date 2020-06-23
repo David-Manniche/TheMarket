@@ -156,7 +156,11 @@ class Importexport extends ImportexportCommon
 
     public function parseContentForExport($colValue)
     {
-        return html_entity_decode($colValue, ENT_QUOTES, 'utf-8');
+        $encoding = mb_detect_encoding($colValue, "auto");
+        return mb_convert_encoding($colValue, 'utf-8', $encoding);
+        /* $colValue = html_entity_decode($colValue, ENT_QUOTES, 'utf-8')
+        return mb_convert_encoding($colValue, 'UTF-16LE', 'UTF-8'); */
+        //html_entity_decode($colValue, ENT_QUOTES, 'utf-8');
     }
 
     private function validateCSVHeaders($csvFilePointer, $coloumArr, $langId)

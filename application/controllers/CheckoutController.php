@@ -485,8 +485,8 @@ class CheckoutController extends MyAppController
         }
 
         $shippingRates = $this->cartObj->getShippingOptions($this->siteLangId);
-        $shippingLevels = Shipping::getLevels($this->siteLangId);
-        $shippedTypesArr = Shipping::getShippedByArr($this->siteLangId);
+        /* $shippingLevels = Shipping::getLevels($this->siteLangId);
+        $shippedTypesArr = Shipping::getShippedByArr($this->siteLangId); */
 
         if (true === MOBILE_APP_API_CALL) {
             $this->_template->render();

@@ -86,6 +86,7 @@ class ProductSearch extends SearchBase
         $this->joinShopCountry();
         $this->joinShopState();
         $this->joinBrands();
+        $this->joinShippingPackages();
     }
 
     public function setBatchProductsCriteria($splPriceForDate = '')
@@ -969,6 +970,16 @@ class ProductSearch extends SearchBase
     public function joinProductSpecifics()
     {
         $this->joinTable(ProductSpecifics::DB_TBL, 'LEFT JOIN', 'ps.ps_product_id = p.product_id', 'ps');
+    }
+
+    public function joinShippingPackages($langId = 0)
+    {
+        $langId = FatUtility::int($langId);
+        if ($this->langId && 1 > $langId) {
+            $langId = $this->langId;
+        }
+
+        $this->joinTable(ShippingPackage::DB_TBL, 'LEFT OUTER JOIN', 'shipkg.shippack_id = p.product_ship_package', 'shipkg');
     }
 
     public function joinShippingProfileProducts()

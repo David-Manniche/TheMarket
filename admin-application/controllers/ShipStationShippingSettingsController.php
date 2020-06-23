@@ -5,10 +5,10 @@ class ShipStationShippingSettingsController extends ShippingServicesSettingsCont
     public static function getConfigurationKeys()
     {
         return [
-            'test_label' => [
+            'environment' => [
                 'type' => PluginSetting::TYPE_BOOL,
                 'required' => true,
-                'label' => "Test label",
+                'label' => "Production Mode",
             ],
             'api_key' => [
                 'type' => PluginSetting::TYPE_STRING,

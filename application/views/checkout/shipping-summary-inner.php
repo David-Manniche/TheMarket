@@ -10,7 +10,8 @@
         <div class="review-wrapper step__body">
         <?php
             if (array_key_exists(Shipping::BY_ADMIN, $shippingRates)) {
-                    ksort($shippingRates);
+                ksort($shippingRates);
+            }       
                     foreach ($shippingRates as $level => $levelItems) { ?>
                     <div class="short-detail">
                     <?php if (count($levelItems['products']) > 1 && $level != Shipping::LEVEL_PRODUCT) {  ?>
@@ -142,7 +143,7 @@
             <?php } 
             }
 
-        }
+       
     }
 ?>
 

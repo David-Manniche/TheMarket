@@ -12,6 +12,7 @@ class Shipping
     public const LEVEL_PRODUCT = 3;
 
     public const TYPE_MANUAL = -1;
+    public $plugInKey = '';
     
     public function __construct(int $langId = 0)
     {
@@ -19,7 +20,7 @@ class Shipping
     }
 
     /**
-    * getShippingMethods
+    * getShippedByArr
     *
     * @param  int $langId
     * @return array
@@ -64,7 +65,11 @@ class Shipping
             static::TYPE_MANUAL => Labels::getLabel('LBL_System_Level_Shipping', $langId)
         ];
 
-        // Add third party shipping plugins
+        $thirdPartyApis = Plugin::getDataByType(Plugin::TYPE_SHIPPING_SERVICES, 1, true);
+        if (!empty($thirdPartyApis)) {
+            return $thirdPartyApis;
+        }
+
         return $arr;
     }
 
@@ -98,7 +103,7 @@ class Shipping
      * getSellerProductShippingRates
      *
      * @param  array $selProdIdArr
-     * @param  int $$countryId
+     * @param  int $countryId
      * @param  int $stateId
      * @return array
      */
@@ -118,7 +123,7 @@ class Shipping
         $srch->joinShippingRates($this->langId);
         $srch->joinShippingLocations($countryId, $stateId);
         $srch->addCondition('selprod_id', 'IN', $selProdIdArr);
-        $srch->addMultipleFields(array('selprod_id', 'shippro_shipprofile_id', 'shipprozone_id','shiprate_id', 'coalesce(shipr_l.shiprate_name, shipr.shiprate_identifier) as shiprate_name', 'shiprate_cost', 'shiprate_condition_type', 'shiprate_min_val', 'shiprate_max_val', 'psbs.psbs_user_id', 'product_id', 'shiploc_shipzone_id' ,'if(psbs_user_id > 0 or product_seller_id > 0, 1, 0) as shiippingBySeller', 'shipprofile_default', 'shop_id', 'shipprofile_name'));
+        $srch->addMultipleFields(array('selprod_id', 'shippro_shipprofile_id', 'shipprozone_id','shiprate_id', 'coalesce(shipr_l.shiprate_name, shipr.shiprate_identifier) as shiprate_name', 'shiprate_cost', 'shiprate_condition_type', 'shiprate_min_val', 'shiprate_max_val', 'psbs.psbs_user_id', 'product_id', 'shiploc_shipzone_id' ,'if(psbs_user_id > 0 or product_seller_id > 0, 1, 0) as shiippingBySeller', 'shipprofile_default', 'shop_id', 'shipprofile_name', 'shop_postalcode'));
         $srch->addCondition('shiprate_id', '!=', 'null');
         $srch->addGroupBy('selprod_id');
         $srch->addGroupBy('shiprate_id');
@@ -128,19 +133,100 @@ class Shipping
         return FatApp::getDb()->fetchAll($prodSrchRs);
     }
 
+    private function fetchShippingRatesFromApi($selProdShipRates, $shippingAddressDetail, $productInfo)
+    {
+        $pluginKey = $this->getPlugInKey();
+        $directory = Plugin::getDirectory(Plugin::TYPE_SHIPPING_SERVICES);
+        if (false === PluginHelper::includePlugin($pluginKey, $directory, $error, $this->langId)) {
+            return [
+                    'status' => false,
+                    'msg' => $error
+                ];
+        }
+
+        $shippingApi = new $pluginKey($this->langId);
+        $carriers = $shippingApi->getCarriers();
+        
+        $shippingApi->setAddress($shippingAddressDetail['ua_name'], $shippingAddressDetail['ua_address1'], $shippingAddressDetail['ua_address2'], $shippingAddressDetail['ua_city'], $shippingAddressDetail['state_name'], $shippingAddressDetail['ua_zip'], $shippingAddressDetail['country_code'], $shippingAddressDetail['ua_phone']);
+        
+        $weightUnitsArr = applicationConstants::getWeightUnitsArr($this->langId);
+        $dimensionUnits = ShippingPackage::getUnitTypes($this->langId);
+        
+        foreach ($selProdShipRates as $rateId => $rates) {
+            $product = $productInfo[$rates['selprod_id']];
+            $shippedBy = Shipping::BY_ADMIN;
+            $shippingLevel = Shipping::LEVEL_PRODUCT;
+
+            $shippedByArr[$shippingLevel]['products'][$rates['selprod_id']] = $product;
+
+            $fromZipCode = FatApp::getConfig('CONF_ZIP_CODE', FatUtility::VAR_STRING, '');
+            if ($rates['shiippingBySeller']) {
+                $shippedBy = Shipping::BY_SHOP;
+                $fromZipCode = $rates['shop_postalcode'];
+            }
+
+            $prodWeight = $product['product_weight'] * $product['quantity'];
+            $productWeightClass = isset($weightUnitsArr[$product['product_weight_unit']]) ? $weightUnitsArr[$product['product_weight_unit']] : '';
+            $productWeightInOunce = Shipping::convertWeightInOunce($prodWeight, $productWeightClass);
+            
+            $shippingApi->setWeight($productWeightInOunce);
+            $shippingApi->setDimensions($product['shippack_length'], $product['shippack_width'], $product['shippack_height'], $dimensionUnits[$product['shippack_units']]);
+
+            foreach ($carriers as $carrier) {
+                $shippingRates = $shippingApi->getShippingRates($carrier['code'], $fromZipCode, $this->langId);
+                if (false == $shippingRates) {
+                    continue;
+                }
+                //CommonHelper::printArray($shippingRates, true);
+                foreach ($shippingRates as $key => $value) {
+                    $shippingCost = [
+                        'id' => $rates['serviceCode'],
+                        'code' => $carrier['code'],
+                        'title' => $rates['serviceName'],
+                        'cost' => $rates['shipmentCost'] + $rates['otherCost'],
+                        'shiprate_condition_type' => '',
+                        'shiprate_min_val' => 0,
+                        'shiprate_max_val' => 0,
+                        'shipping_level' => $shippingLevel,
+                        'shipping_type' => $activateServiceId,
+                        'shipping_label' => $rates['name'],
+                    ];
+                    $shippedByArr[$shippingLevel]['rates'][$rates['selprod_id']][$rates['serviceCode']] = $shippingCost;
+                }
+                /*If rates fetched from one shipment carriers then ignore for others */
+                if (!empty($shippedByArr[$shippingLevel]['rates'][$rates['selprod_id']])) {
+                    continue 2;
+                }
+            }
+        }
+        return $shippedByArr;
+    }
 
     /**
      * calculateCharges
      *
      * @param  array $physicalSelProdIdArr
-     * @param  int $shipToCountryId
-     * @param  int $shipToStateId
+     * @param  array $shippingAddressDetail
      * @param  array $productInfo
      * @return array
      */
-    public function calculateCharges(array $physicalSelProdIdArr, int $shipToCountryId, int $shipToStateId, array $productInfo):array
+    public function calculateCharges(array $physicalSelProdIdArr, array $shippingAddressDetail, array $productInfo):array
     {
+        if (!empty($shippingAddressDetail)) {
+            $shipToCountryId = isset($shippingAddressDetail['ua_country_id']) ? $shippingAddressDetail['ua_country_id'] : 0;
+        }
+
+        if (!empty($shippingAddressDetail)) {
+            $shipToStateId = isset($shippingAddressDetail['ua_state_id']) ? $shippingAddressDetail['ua_state_id'] : 0;
+        }
+
         $selProdShipRates = $this->getSellerProductShippingRates($physicalSelProdIdArr, $shipToCountryId, $shipToStateId);
+        
+        $activateServiceId = $this->getActivatedServiceId();
+
+        if (0 < $activateServiceId) {
+            return $this->fetchShippingRatesFromApi($selProdShipRates, $shippingAddressDetail, $productInfo);
+        }
 
         foreach ($selProdShipRates as $rateId => $rates) {
             $product = $productInfo[$rates['selprod_id']];
@@ -246,7 +332,7 @@ class Shipping
 
                     $prodWeight = $product['product_weight'] * $product['quantity'];
                     $productWeightClass = isset($weightUnitsArr[$product['product_weight_unit']]) ? $weightUnitsArr[$product['product_weight_unit']] : '';
-                    $productWeightInOunce = static::convertWeightInOunce($product['product_weight'], $productWeightClass);
+                    $productWeightInOunce = static::convertWeightInOunce($prodWeight, $productWeightClass);
                     $prodCombinedWeight = $prodCombinedWeight + $productWeightInOunce;
     
                     $prodCombinedPrice = $prodCombinedPrice + ($product['theprice'] * $product['quantity']);
@@ -258,7 +344,7 @@ class Shipping
                 foreach ($shippedByArr[$level]['products'] as $product) {
                     $prodWeight = $product['product_weight'] * $product['quantity'];
                     $productWeightClass = isset($weightUnitsArr[$product['product_weight_unit']]) ? $weightUnitsArr[$product['product_weight_unit']] : '';
-                    $productWeightInOunce = static::convertWeightInOunce($product['product_weight'], $productWeightClass);
+                    $productWeightInOunce = static::convertWeightInOunce($prodWeight, $productWeightClass);
                     $prodCombinedWeight = $prodCombinedWeight + $productWeightInOunce;
     
                     $prodCombinedPrice = $prodCombinedPrice + ($product['theprice'] * $product['quantity']);
@@ -392,5 +478,37 @@ class Shipping
         }
 
         return $productWeight * $coversionRate;
+    }
+
+    /**
+    * getActivatedServiceId
+    *
+    * @return int
+    */
+    public function getActivatedServiceId():int
+    {
+        $defaultApi = FatApp::getConfig('CONF_DEFAULT_PLUGIN_' . Plugin::TYPE_SHIPPING_SERVICES, FatUtility::VAR_INT, 0);
+
+        if (empty($defaultApi)) {
+            return 0;
+        }
+
+        $keyName = Plugin::getAttributesById($defaultApi, 'plugin_code');
+
+        if (!Plugin::isActive($keyName)) {
+            return 0;
+        }
+        $this->plugInKey = $keyName;
+        return $defaultApi;
+    }
+
+    /**
+    * getActivatedServiceId
+    *
+    * @return string
+    */
+    public function getPlugInKey():string
+    {
+        return $this->plugInKey;
     }
 }

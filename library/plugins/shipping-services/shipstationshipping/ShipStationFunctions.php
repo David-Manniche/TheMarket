@@ -61,6 +61,7 @@ trait ShipStationFunctions
         curl_setopt_array($ch, $request);
         
         $this->resp = curl_exec($ch);
+        //CommonHelper::printArray($this->resp);
         if (false === $this->resp) {
             throw new Exception(curl_error($ch));
         }
@@ -133,7 +134,7 @@ trait ShipStationFunctions
     private function createLabel(array $requestParam): bool
     {
         $this->endpoint = 'orders/createlabelfororder';
-        $requestParam['testLabel'] = isset($this->settings['test_label']) && 0 < $this->settings['test_label'] ? true : false;
+        $requestParam['testLabel'] = isset($this->settings['environment']) && 0 < $this->settings['environment'] ? false : true;
         return $this->post($requestParam);
     }
         

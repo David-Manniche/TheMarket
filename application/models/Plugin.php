@@ -135,7 +135,7 @@ class Plugin extends MyAppModel
         if (empty($row) || !is_array($row)) {
             return false;
         }
-
+        
         if (!empty($attr) && is_string($attr)) {
             return $row[$attr];
         }

@@ -102,6 +102,7 @@ class ShipStationShipping extends ShippingServicesBase
             'weight' => $this->getWeight(),
             'dimensions' => $this->getDimensions()
         ];
+        
         if (false === $this->doRequest(self::REQUEST_SHIPPING_RATES, $pkgDetail)) {
             return false;
         }
