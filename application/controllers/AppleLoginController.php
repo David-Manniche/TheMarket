@@ -10,27 +10,18 @@ class AppleLoginController extends SocialMediaAuthController
     public function __construct($action)
     {
         parent::__construct($action);
+
+        $error = '';
+        $this->apple = PluginHelper::callPlugin(self::KEY_NAME, [$this->siteLangId], $error, $this->siteLangId);
+        if (false === $this->apple) {
+            $this->setErrorAndRedirect($error, true);
+        }
+
+        if (false === $this->apple->init()) {
+            $this->setErrorAndRedirect($this->apple->getError(), true);
+        }
     }
     
-    private function getRequestUri()
-    {
-        if (false == $this->validateSettings($this->siteLangId)) {
-            $this->setErrorAndRedirect($this->error, true);
-            return false;
-        }
-        
-        $redirectUri = CommonHelper::generateFullUrl(static::KEY_NAME, 'index', array(), '', false);
-        $_SESSION['appleSignIn']['state'] = bin2hex(random_bytes(5));
-        return static::PRODUCTION_URL . 'authorize?' . http_build_query([
-            'response_type' => 'code id_token',
-            'response_mode' => 'form_post',
-            'client_id' => $this->settings['client_id'],
-            'redirect_uri' => $redirectUri,
-            'state' => $_SESSION['appleSignIn']['state'],
-            'scope' => 'name email',
-        ]);
-    }
-
     public function index()
     {
         $post = FatApp::getPostedData();
@@ -69,6 +60,8 @@ class AppleLoginController extends SocialMediaAuthController
             $userInfo = $this->doLogin($email, $username, $appleId, $userType);
             $this->redirectToDashboard($userInfo['user_preferred_dashboard']);
         }
-        FatApp::redirectUser($this->getRequestUri());
+        
+        $_SESSION['appleSignIn']['state'] = bin2hex(random_bytes(5));
+        FatApp::redirectUser($this->apple->getRequestUri());
     }
 }

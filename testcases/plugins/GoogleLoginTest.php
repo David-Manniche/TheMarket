@@ -3,31 +3,6 @@
 class GoogleLoginTest extends PluginBaseTest
 {
     public const KEY_NAME = 'GoogleLogin';
-    private $classObj = '';
-    private $error = '';
-
-    /**
-     * init
-     *
-     * @return bool
-     */
-    private function init(): bool
-    {
-        $class = self::KEY_NAME;
-        $this->langId = CommonHelper::getLangId();
-        $this->classObj = new $class($this->langId);
-
-        $this->classObj = PluginHelper::callPlugin($class, [$this->langId], $this->error, $this->langId);
-        if (false === $this->classObj) {
-            return false;
-        }
-
-        if (false === $resp = $this->classObj->init()) {
-            $this->error = $this->classObj->getError();
-            return false;
-        }
-        return true;
-    }
 
     /**
      * testAuthenticate

@@ -1,8 +1,8 @@
 <?php
 
-class FacebookLoginTest extends PluginBaseTest
+class AppleLoginTest extends PluginBaseTest
 {
-    public const KEY_NAME = 'FacebookLogin';
+    public const KEY_NAME = 'AppleLogin';
 
     /**
      * testVerifyAccessToken - Return Array in case of missing required keys.
