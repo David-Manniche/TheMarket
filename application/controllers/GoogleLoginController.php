@@ -36,13 +36,13 @@ class GoogleLoginController extends SocialMediaAuthController
 
                 $accessToken = $this->google->getAccessToken();
                 if (empty($accessToken)) {
-					$message = Labels::getLabel('MSG_UNABLE_TO_ACCESS_THIS_ACCOUNT', $this->siteLangId);
-					$this->setErrorAndRedirect($message, true);
-				}
+                    $message = Labels::getLabel('MSG_UNABLE_TO_ACCESS_THIS_ACCOUNT', $this->siteLangId);
+                    $this->setErrorAndRedirect($message, true);
+                }
             }
 
             $this->google->setAccessToken($accessToken);
-            $this->google->setClientData();
+            $this->google->loadClientData();
 
             $user = $this->google->getClientData();
 
@@ -58,7 +58,6 @@ class GoogleLoginController extends SocialMediaAuthController
             $userInfo = $this->doLogin($userGoogleEmail, $userGoogleName, $userGoogleId, $userType);
             $this->redirectToDashboard($userInfo['user_preferred_dashboard']);
         }
-
         FatApp::redirectUser($this->google->getAuthUrl());
     }
 }

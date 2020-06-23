@@ -75,12 +75,12 @@ class GoogleLogin extends SocialMediaAuthBase
     /**
      * authenticate
      *
-     * @param string $code 
+     * @param string $code
      * @return bool
-     */    
+     */
     public function authenticate(string $code): bool
     {
-        $this->client->authenticate($get['code']);
+        $this->client->authenticate($code);
         return true;
     }
 
@@ -88,18 +88,18 @@ class GoogleLogin extends SocialMediaAuthBase
      * getAccessToken
      *
      * @return bool
-     */    
+     */
     public function getAccessToken(): string
     {
         $accessToken = $this->client->getAccessToken();
-        return null == $accessToken ? '' : $accessToken
+        return null == $accessToken || !isset($accessToken['access_token']) ? '' : $accessToken['access_token'];
     }
 
     /**
      * setAccessToken
      *
      * @return bool
-     */    
+     */
     public function setAccessToken(string $accessToken): bool
     {
         $this->client->setAccessToken($accessToken);
@@ -107,11 +107,11 @@ class GoogleLogin extends SocialMediaAuthBase
     }
 
     /**
-     * setClientData
+     * loadClientData
      *
      * @return bool
-     */    
-    public function setClientData(): bool
+     */
+    public function loadClientData(): bool
     {
         $this->oauth2 = new Google_Service_Oauth2($this->client);
         $this->clientData = $this->oauth2->userinfo->get();
@@ -122,17 +122,17 @@ class GoogleLogin extends SocialMediaAuthBase
      * getClientData
      *
      * @return array
-     */    
+     */
     public function getClientData(): array
     {
-        return $this->clientData;
+        return (array) $this->clientData;
     }
 
     /**
      * getAuthUrl
      *
      * @return string
-     */    
+     */
     public function getAuthUrl(): string
     {
         return $this->client->createAuthUrl();
@@ -142,7 +142,7 @@ class GoogleLogin extends SocialMediaAuthBase
      * isAccessTokenExpired
      *
      * @return bool
-     */ 
+     */
     public function isAccessTokenExpired(): bool
     {
         return $this->client->isAccessTokenExpired();
@@ -152,7 +152,7 @@ class GoogleLogin extends SocialMediaAuthBase
      * refreshAccessToken
      *
      * @return string
-     */    
+     */
     public function refreshAccessToken(): string
     {
         $this->client->fetchAccessTokenWithRefreshToken($this->client->getRefreshToken());
