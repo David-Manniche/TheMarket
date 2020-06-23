@@ -13,6 +13,9 @@ class Shipping
 
     public const TYPE_MANUAL = -1;
     public $plugInKey = '';
+    public $plugInId = 0;
+
+    private const RATE_CACHE_KEY_NAME = "shipRateCache_";
     
     public function __construct(int $langId = 0)
     {
@@ -104,7 +107,7 @@ class Shipping
      *
      * @param  array $selProdIdArr
      * @param  int $countryId
-     * @param  int $stateId
+     * @param  int $stateId    
      * @return array
      */
 
@@ -121,7 +124,7 @@ class Shipping
         $srch->joinShippingProfileZones();
         $srch->joinShippingZones();
         $srch->joinShippingRates($this->langId);
-        $srch->joinShippingLocations($countryId, $stateId);
+        $srch->joinShippingLocations($countryId, $stateId, 0);
         $srch->addCondition('selprod_id', 'IN', $selProdIdArr);
         $srch->addMultipleFields(array('selprod_id', 'shippro_shipprofile_id', 'shipprozone_id','shiprate_id', 'coalesce(shipr_l.shiprate_name, shipr.shiprate_identifier) as shiprate_name', 'shiprate_cost', 'shiprate_condition_type', 'shiprate_min_val', 'shiprate_max_val', 'psbs.psbs_user_id', 'product_id', 'shiploc_shipzone_id' ,'if(psbs_user_id > 0 or product_seller_id > 0, 1, 0) as shiippingBySeller', 'shipprofile_default', 'shop_id', 'shipprofile_name', 'shop_postalcode'));
         $srch->addCondition('shiprate_id', '!=', 'null');
@@ -133,15 +136,12 @@ class Shipping
         return FatApp::getDb()->fetchAll($prodSrchRs);
     }
 
-    private function fetchShippingRatesFromApi($selProdShipRates, $shippingAddressDetail, $productInfo)
+    private function fetchShippingRatesFromApi($selProdShipRates, $shippingAddressDetail, $productInfo, &$physicalSelProdIdArr)
     {
         $pluginKey = $this->getPlugInKey();
         $directory = Plugin::getDirectory(Plugin::TYPE_SHIPPING_SERVICES);
         if (false === PluginHelper::includePlugin($pluginKey, $directory, $error, $this->langId)) {
-            return [
-                    'status' => false,
-                    'msg' => $error
-                ];
+            trigger_error($error, E_USER_ERROR);
         }
 
         $shippingApi = new $pluginKey($this->langId);
@@ -151,7 +151,7 @@ class Shipping
         
         $weightUnitsArr = applicationConstants::getWeightUnitsArr($this->langId);
         $dimensionUnits = ShippingPackage::getUnitTypes($this->langId);
-        
+     
         foreach ($selProdShipRates as $rateId => $rates) {
             $product = $productInfo[$rates['selprod_id']];
             $shippedBy = Shipping::BY_ADMIN;
@@ -172,31 +172,45 @@ class Shipping
             $shippingApi->setWeight($productWeightInOunce);
             $shippingApi->setDimensions($product['shippack_length'], $product['shippack_width'], $product['shippack_height'], $dimensionUnits[$product['shippack_units']]);
 
+            $cacheKeyArr = [$productWeightInOunce ,$product['shippack_length'], $product['shippack_width'], $product['shippack_height'], $dimensionUnits[$product['shippack_units']] ];
+            
             foreach ($carriers as $carrier) {
-                $shippingRates = $shippingApi->getShippingRates($carrier['code'], $fromZipCode, $this->langId);
-                if (false == $shippingRates) {
+                $cacheKeyArr = array_merge($cacheKeyArr, [$carrier['code'], $fromZipCode, $this->langId]);
+                $cacheKey = self::RATE_CACHE_KEY_NAME . md5(json_encode($cacheKeyArr));
+                $shippingRates = FatCache::get($cacheKey, CONF_API_REQ_CACHE_TIME, '.txt');
+                if ($shippingRates) {
+                    $shippingRates = unserialize($shippingRates);
+                } else {
+                    $shippingRates = $shippingApi->getShippingRates($carrier['code'], $fromZipCode, $this->langId);
+                    FatCache::set($cacheKey, serialize($shippingRates), '.txt');
+                }
+                
+                if (false == $shippingRates || empty($shippingRates)) {
                     continue;
                 }
-                //CommonHelper::printArray($shippingRates, true);
+
+                unset($physicalSelProdIdArr[$rates['selprod_id']]);
+               
                 foreach ($shippingRates as $key => $value) {
                     $shippingCost = [
-                        'id' => $rates['serviceCode'],
-                        'code' => $carrier['code'],
-                        'title' => $rates['serviceName'],
-                        'cost' => $rates['shipmentCost'] + $rates['otherCost'],
+                        'id' => $value['serviceCode'],
+                        'code' => $rates['selprod_id'],
+                        'title' => $value['serviceName'],
+                        'cost' => $value['shipmentCost'] + $value['otherCost'],
                         'shiprate_condition_type' => '',
                         'shiprate_min_val' => 0,
                         'shiprate_max_val' => 0,
                         'shipping_level' => $shippingLevel,
-                        'shipping_type' => $activateServiceId,
-                        'shipping_label' => $rates['name'],
+                        'shipping_type' => $this->getPlugInId(),
+                        'carrier_code' => $carrier['code'],
                     ];
-                    $shippedByArr[$shippingLevel]['rates'][$rates['selprod_id']][$rates['serviceCode']] = $shippingCost;
+                    $shippedByArr[$shippingLevel]['rates'][$rates['selprod_id']][$carrier['code'] . '|' . $value['serviceName']] = $shippingCost;
                 }
                 /*If rates fetched from one shipment carriers then ignore for others */
                 if (!empty($shippedByArr[$shippingLevel]['rates'][$rates['selprod_id']])) {
                     continue 2;
                 }
+
             }
         }
         return $shippedByArr;
@@ -219,68 +233,69 @@ class Shipping
         if (!empty($shippingAddressDetail)) {
             $shipToStateId = isset($shippingAddressDetail['ua_state_id']) ? $shippingAddressDetail['ua_state_id'] : 0;
         }
-
+       
         $selProdShipRates = $this->getSellerProductShippingRates($physicalSelProdIdArr, $shipToCountryId, $shipToStateId);
-        
-        $activateServiceId = $this->getActivatedServiceId();
-
-        if (0 < $activateServiceId) {
-            return $this->fetchShippingRatesFromApi($selProdShipRates, $shippingAddressDetail, $productInfo);
+        if (0 < $this->getPlugInId()) {
+           // $selProdShipRates = $this->getSellerProductShippingRates($physicalSelProdIdArr, $shipToCountryId, $shipToStateId, false);
+            $shippedByArr = $this->fetchShippingRatesFromApi($selProdShipRates, $shippingAddressDetail, $productInfo, $physicalSelProdIdArr);
         }
 
-        foreach ($selProdShipRates as $rateId => $rates) {
-            $product = $productInfo[$rates['selprod_id']];
-            $shippedBy = Shipping::BY_ADMIN;
-            $shippingLevel = Shipping::LEVEL_PRODUCT;
-
-            if ($rates['shiippingBySeller']) {
-                $shippedBy = Shipping::BY_SHOP;
-            }
-            
-            if ($rates['shipprofile_default']) {
-                $shippingLevel = Shipping::LEVEL_ORDER;
+        if (0 == $this->getPlugInId()) {
+           // $selProdShipRates = $this->getSellerProductShippingRates($physicalSelProdIdArr, $shipToCountryId, $shipToStateId);
+            foreach ($selProdShipRates as $rateId => $rates) {
+                $product = $productInfo[$rates['selprod_id']];
+                $shippedBy = Shipping::BY_ADMIN;
+                $shippingLevel = Shipping::LEVEL_PRODUCT;
+    
                 if ($rates['shiippingBySeller']) {
-                    $shippingLevel = Shipping::LEVEL_SHOP;
+                    $shippedBy = Shipping::BY_SHOP;
+                }
+                
+                if ($rates['shipprofile_default']) {
+                    $shippingLevel = Shipping::LEVEL_ORDER;
+                    if ($rates['shiippingBySeller']) {
+                        $shippingLevel = Shipping::LEVEL_SHOP;
+                    }
+                }
+                
+                $shippingCost = [
+                    'id' => $rates['shiprate_id'],
+                    'code' => $rates['selprod_id'],
+                    'title' => $rates['shiprate_name'],
+                    'cost' => $rates['shiprate_cost'],
+                    'shiprate_condition_type' => $rates['shiprate_condition_type'],
+                    'shiprate_min_val' => $rates['shiprate_condition_type'],
+                    'shiprate_max_val' => $rates['shiprate_max_val'],
+                    'shipping_level' => $shippingLevel,
+                    'shipping_type' => Shipping::TYPE_MANUAL,
+                    /* 'shipprofile_key' => $rates['shipprofile_id'], */
+                    'carrier_code' => $rates['shipprofile_name'],
+                ];
+                unset($physicalSelProdIdArr[$rates['selprod_id']]);
+                
+                $shippedByArr[$shippingLevel]['products'][$rates['selprod_id']] = $product;
+                switch ($shippingLevel) {
+                    case Shipping::LEVEL_PRODUCT:
+                        $shippedByArr[$shippingLevel]['shipping_options'][$rates['selprod_id']][] = $rates;
+                       
+                        if (isset($shippedByArr[$shippingLevel]['rates'][$rates['selprod_id']][$rates['shiprate_id']]) && $shippedByArr[$shippingLevel]['rates'][$rates['selprod_id']][$rates['shiprate_id']] != null) {
+                            $this->setCost($shippedByArr[$shippingLevel]['rates'][$rates['selprod_id']][$rates['shiprate_id']], $shippingCost);
+                        }
+                        $shippedByArr[$shippingLevel]['rates'][$rates['selprod_id']][$rates['shiprate_id']] = $shippingCost;
+                        break;
+                    case Shipping::LEVEL_ORDER:
+                    case Shipping::LEVEL_SHOP:
+                        $shippedByArr[$shippingLevel]['shipping_options'][$rates['shiprate_id']] = $rates;
+                        if (isset($shippedByArr[$shippingLevel]['rates'][$rates['shiprate_id']]) && $shippedByArr[$shippingLevel]['rates'][$rates['shiprate_id']] != null) {
+                            $this->setCost($shippedByArr[$shippingLevel]['rates'][$rates['shiprate_id']], $shippingCost);
+                        }
+                        $shippedByArr[$shippingLevel]['rates'][$rates['shiprate_id']] = $shippingCost;
+                        break;
                 }
             }
-            
-            $shippingCost = [
-                'id' => $rates['shiprate_id'],
-                'code' => $rates['selprod_id'],
-                'title' => $rates['shiprate_name'],
-                'cost' => $rates['shiprate_cost'],
-                'shiprate_condition_type' => $rates['shiprate_condition_type'],
-                'shiprate_min_val' => $rates['shiprate_condition_type'],
-                'shiprate_max_val' => $rates['shiprate_max_val'],
-                'shipping_level' => $shippingLevel,
-                'shipping_type' => Shipping::TYPE_MANUAL,
-                /* 'shipprofile_key' => $rates['shipprofile_id'], */
-                'shipping_label' => $rates['shipprofile_name'],
-            ];
-            unset($physicalSelProdIdArr[$rates['selprod_id']]);
-            
-            $shippedByArr[$shippingLevel]['products'][$rates['selprod_id']] = $product;
-            switch ($shippingLevel) {
-                case Shipping::LEVEL_PRODUCT:
-                    $shippedByArr[$shippingLevel]['shipping_options'][$rates['selprod_id']][] = $rates;
-                   
-                    if (isset($shippedByArr[$shippingLevel]['rates'][$rates['selprod_id']][$rates['shiprate_id']]) && $shippedByArr[$shippingLevel]['rates'][$rates['selprod_id']][$rates['shiprate_id']] != null) {
-                        $this->setCost($shippedByArr[$shippingLevel]['rates'][$rates['selprod_id']][$rates['shiprate_id']], $shippingCost);
-                    }
-                    $shippedByArr[$shippingLevel]['rates'][$rates['selprod_id']][$rates['shiprate_id']] = $shippingCost;
-                    break;
-                case Shipping::LEVEL_ORDER:
-                case Shipping::LEVEL_SHOP:
-                    $shippedByArr[$shippingLevel]['shipping_options'][$rates['shiprate_id']] = $rates;
-                    if (isset($shippedByArr[$shippingLevel]['rates'][$rates['shiprate_id']]) && $shippedByArr[$shippingLevel]['rates'][$rates['shiprate_id']] != null) {
-                        $this->setCost($shippedByArr[$shippingLevel]['rates'][$rates['shiprate_id']], $shippingCost);
-                    }
-                    $shippedByArr[$shippingLevel]['rates'][$rates['shiprate_id']] = $shippingCost;
-                    break;
-            }
+    
+            $this->setCombinedCharges($shippedByArr);
         }
-
-        $this->setCombinedCharges($shippedByArr);
 
         /*Include Physical products whose shipping rates not defined */
         foreach ($physicalSelProdIdArr as $selProdId) {
@@ -485,30 +500,47 @@ class Shipping
     *
     * @return int
     */
-    public function getActivatedServiceId():int
+    private function getActivatedServiceId():int
     {
-        $defaultApi = FatApp::getConfig('CONF_DEFAULT_PLUGIN_' . Plugin::TYPE_SHIPPING_SERVICES, FatUtility::VAR_INT, 0);
+        $defaultPluginApiId = FatApp::getConfig('CONF_DEFAULT_PLUGIN_' . Plugin::TYPE_SHIPPING_SERVICES, FatUtility::VAR_INT, 0);
 
-        if (empty($defaultApi)) {
+        if (empty($defaultPluginApiId)) {
             return 0;
         }
 
-        $keyName = Plugin::getAttributesById($defaultApi, 'plugin_code');
+        $keyName = Plugin::getAttributesById($defaultPluginApiId, 'plugin_code');
 
         if (!Plugin::isActive($keyName)) {
             return 0;
         }
         $this->plugInKey = $keyName;
-        return $defaultApi;
+        $this->plugInId = $defaultPluginApiId;
+        return $defaultPluginApiId;
     }
 
     /**
-    * getActivatedServiceId
+    * getPlugInKey
     *
     * @return string
     */
     public function getPlugInKey():string
     {
+        if (empty($this->plugInKey)) {
+            $this->getActivatedServiceId();
+        }
         return $this->plugInKey;
+    }
+
+    /**
+    * getPlugInId
+    *
+    * @return int
+    */
+    public function getPlugInId():int
+    {
+        if (1 > $this->plugInId) {
+            return $this->getActivatedServiceId();
+        }
+        return $this->plugInId;
     }
 }

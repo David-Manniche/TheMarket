@@ -548,7 +548,8 @@ class CheckoutController extends MyAppController
         $shipProducts = [];
         
         $basketProducts = $this->cartObj->getBasketProducts($this->siteLangId);
-        
+        //CommonHelper::printArray($post['shipping_services']);
+        //CommonHelper::printArray($shippingRates);
         foreach ($post['shipping_services'] as $prodIdCobination => $rateId) {
             if (empty($rateId)) {
                 $message = Labels::getLabel('MSG_Shipping_Method_is_not_selected_on_products_in_cart', $this->siteLangId);
@@ -659,9 +660,11 @@ class CheckoutController extends MyAppController
                 'mshipapi_code' => $shipInfo['code'],
                 'mshipapi_id' => $shipInfo['id'],
                 'mshipapi_label' => $shipInfo['title'],
+                'mshipapi_carrier' => $shipInfo['carrier_code'],
+                'mshipapi_type' => $shipInfo['shipping_type'],
                 'mshipapi_cost' => $shipProducts[$cartval['selprod_id']]['cost'],
                 'shipped_by_seller' => Product::isShippedBySeller($cartval['selprod_user_id'], $product['product_seller_id'], $product['shippedBySellerId']),
-                'mshipapi_level' => $shipInfo['shipping_label']
+                'mshipapi_level' => $shipInfo['shipping_level']
             );
         }
       
@@ -827,13 +830,12 @@ class CheckoutController extends MyAppController
             }
             FatUtility::dieWithError($this->errMessage);
         }
-
+        
         if ($this->cartObj->getError() != '') {
             if (true === MOBILE_APP_API_CALL) {
                 LibHelper::dieJsonError($this->cartObj->getError());
             }
-            Message::addErrorMessage($this->cartObj->getError());
-            FatUtility::dieWithError(Message::getHtml());
+            LibHelper::dieWithError($this->cartObj->getError());
         }
 
         $cartSummary = $this->cartObj->getCartFinancialSummary($this->siteLangId);
@@ -1068,10 +1070,15 @@ class CheckoutController extends MyAppController
                     $productShippingData = array(
                         'opshipping_code' => $shippingDurationRow['mshipapi_code'],
                         'opshipping_level' => $shippingDurationRow['mshipapi_level'],
-                        'opshipping_rate_id' => $shippingDurationRow['mshipapi_id'],
                         'opshipping_label' => $shippingDurationRow['mshipapi_label'],
                         'opshipping_by_seller_user_id' => $shippingDurationRow['shipped_by_seller']
                         );
+                    if ($shippingDurationRow['mshipapi_type'] == Shipping::TYPE_MANUAL) {
+                        $productShippingData['opshipping_rate_id'] = $shippingDurationRow['mshipapi_id'];
+                    } else {
+                        $productShippingData['opshipping_service_code'] = $shippingDurationRow['mshipapi_id'];
+                        $productShippingData['opshipping_carrier_code'] = $shippingDurationRow['mshipapi_carrier'];
+                    }
                 }
                 $productsLangData = array();
                 $productShippingLangData = array();
@@ -1088,7 +1095,7 @@ class CheckoutController extends MyAppController
                         $langData =  ShippingRate::getAttributesByLangId($shippingDurationRow['mshipapi_id'], $lang_id);
                         $label = (isset($langData['shiprate_name']) && $langData['shiprate_name'] != '') ? $langData['shiprate_name'] : $shippingDurationRow['mshipapi_label'];
                         $productShippingLangData[$lang_id] = array(
-                        'opshipping_carrier' => $label,
+                        'opshipping_title' => $label,
                         'opshipping_duration' => '',
                         'opshipping_duration_name' => $label . '-' . $shippingDurationRow['mshipapi_cost'],
                         'opshippinglang_lang_id' => $lang_id

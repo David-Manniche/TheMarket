@@ -174,6 +174,8 @@ ALTER TABLE `tbl_order_product_shipping` CHANGE `opshipping_pship_id` `opshippin
 ALTER TABLE `tbl_order_product_shipping` DROP `opshipping_company_id`;
 ALTER TABLE `tbl_order_product_shipping` DROP `opshipping_method_id`; 
 ALTER TABLE `tbl_order_product_shipping` ADD `opshipping_label` VARCHAR(255) NOT NULL AFTER `opshipping_level`;
+ALTER TABLE `tbl_order_product_shipping` ADD `opshipping_carrier_code` VARCHAR(150) NOT NULL AFTER `opshipping_label`, ADD `opshipping_service_code` VARCHAR(150) NOT NULL AFTER `opshipping_carrier_code`;
+ALTER TABLE `tbl_order_product_shipping_lang` CHANGE `opshipping_carrier` `opshipping_title` VARCHAR(150) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL;
 -- Shippping Module End-----
 ALTER TABLE `tbl_tax_structure_lang` CHANGE `taxstr_name` `taxstr_name` VARCHAR(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL;
 

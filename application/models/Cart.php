@@ -915,7 +915,7 @@ class Cart extends FatModel
                     }
                 }
             } else {
-                if ($product['is_physical_product'] && !isset($this->SYSTEM_ARR['shopping_cart']['product_shipping_methods']['product'][$product['selprod_id']])) {
+                if ($product['is_physical_product'] && !isset($this->SYSTEM_ARR['shopping_cart']['product_shipping_methods']['product'][$product['selprod_id']])) {                    
                     return false;
                 }
 
@@ -1488,7 +1488,7 @@ class Cart extends FatModel
         $cartObj->updateUserCart();
     }
     
-    public function shippingCarrierList(int $langId = 0)
+    /* public function shippingCarrierList(int $langId = 0)
     {
         $langId = (0 < $langId) ? $langId : commonHelper::getLangId();
         
@@ -1509,7 +1509,7 @@ class Cart extends FatModel
             }
         }
         return $carriers;
-    }
+    } */
 
     public function getCache($key)
     {

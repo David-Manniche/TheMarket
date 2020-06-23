@@ -89,7 +89,7 @@ trait PluginHelper
         $file = CONF_PLUGIN_DIR . '/' . $directory . '/' . strtolower($keyName) . '/' . $keyName . '.php';
 
         if (!file_exists($file)) {
-            $error =  Labels::getLabel('MSG_UNABLE_TO_LOCATE_REQUIRED_FILE', $langId);
+            $error =  Labels::getLabel('MSG_UNABLE_TO_LOCATE_REQUIRED_FILE', $langId) . '-' . $keyName;
             return false;
         }
         
