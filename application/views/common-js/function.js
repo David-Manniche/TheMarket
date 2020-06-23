@@ -774,13 +774,13 @@ function initMap(lat = 40.72, lng = -73.96, elementId = 'map') {
   	geocoder = new google.maps.Geocoder;
   	infowindow = new google.maps.InfoWindow;
 	geocodeAddress(geocoder, map, infowindow);
-  	document.getElementById('mapAddress-js').addEventListener('blur', function() {
+  	document.getElementById('postal-code').addEventListener('blur', function() {
 		geocodeAddress(geocoder, map, infowindow);
   	});
 }
 
 function geocodeAddress(geocoder, resultsMap, infowindow) {
-    var address = document.getElementById('mapAddress-js').value;
+    var address = document.getElementById('postal-code').value;
     geocoder.geocode({'address': address}, function(results, status) {
       if (status === 'OK') {
         resultsMap.setCenter(results[0].geometry.location);
@@ -818,11 +818,30 @@ function geocodePosition(pos) {
                 var components = {};
                 jQuery.each(address_components, function(k,v1) {jQuery.each(v1.types, function(k2, v2){components[v2]=v1.long_name});});
 
+				var city;
                 var postal_code;
+				var state;
+                var country;
+
+                if(components.locality) {
+                    city = components.locality;
+                }
+
+                if(!city) {
+                    city = components.administrative_area_level_1;
+                }
 				if(components.postal_code) {
                     postal_code = components.postal_code;
                 }
-				$('#mapAddress-js').val(postal_code);
+                if(components.administrative_area_level_1) {
+                    state = components.administrative_area_level_1;
+                }
+                if(components.country) {
+                    country = components.country;
+                }
+				$('#shop_state').val(state);
+				$('#shop_country_id').val(country);
+				$('#postal-code').val(postal_code);
             }
         }
     });
