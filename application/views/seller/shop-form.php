@@ -24,6 +24,11 @@ $identiFierFld->setFieldTagAttribute('onkeyup', "Slugify(this.value,'urlrewrite_
 $postalCode = $shopFrm->getField('shop_postalcode');
 $postalCode->setFieldTagAttribute('id', "mapAddress-js");
 
+$latFld = $shopFrm->getField('shop_lat');
+$latFld->setFieldTagAttribute('id', "lat");
+$lngFld = $shopFrm->getField('shop_lng');
+$lngFld->setFieldTagAttribute('id', "lng");
+
 $variables= array('language'=>$language,'siteLangId'=>$siteLangId,'shop_id'=>$shop_id,'action'=>$action);
 $this->includeTemplate('seller/_partial/shop-navigation.php', $variables, false); ?>
 <div class="cards">
@@ -38,7 +43,9 @@ $this->includeTemplate('seller/_partial/shop-navigation.php', $variables, false)
 </div>
 <script language="javascript">
     $(document).ready(function() {
-        initMap();
+        var lat = $('#lat').val();
+        var lng = $('#lng').val();
+        initMap(lat, lng);
         getCountryStates($("#shop_country_id").val(), <?php echo $stateId ;?>, '#shop_state');
     });
 </script>

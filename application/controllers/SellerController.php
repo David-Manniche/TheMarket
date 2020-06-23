@@ -3322,6 +3322,8 @@ class SellerController extends SellerBaseController
           <div><img src="'.CommonHelper::generateUrl('Image','shopBanner',array($shop_id, $this->siteLangId, 'THUMB')).'"></div>';
           } */
         // $frm->addHtml('', '', '<div id="map" style="width:1500px; height:500px"></div>');
+        $frm->addHiddenField('', 'shop_lat');
+        $frm->addHiddenField('', 'shop_lng');
         $frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_Save_Changes', $this->siteLangId));
         return $frm;
     }

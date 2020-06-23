@@ -96,7 +96,6 @@ $(document).ready(function () {
 		setSlider();
 	});
 	accessLocation();
-	initMap();
 });
 
 /* for search form */
@@ -757,44 +756,74 @@ function googleAddressAutocomplete(elementId = 'ga-autoComplete', field = 'forma
     });
 }
 
+var map;
+var marker;
+var geocoder;
+var infowindow;
 // Initialize the map.
-function initMap(elementId = 'map') {
+function initMap(lat = 40.72, lng = -73.96, elementId = 'map') {
+	var lat = parseInt(lat);
+	var lng = parseInt(lng);
 	if (1 > $("#" + elementId).length) {
         return;
 	}
-  	var map = new google.maps.Map(document.getElementById(elementId), {
+  	map = new google.maps.Map(document.getElementById(elementId), {
 		zoom: 8,
-		center: {lat: 40.72, lng: -73.96}
+		center: {lat: lat, lng: lng}
   	});
-  	var geocoder = new google.maps.Geocoder;
-  	var infowindow = new google.maps.InfoWindow;
-
+  	geocoder = new google.maps.Geocoder;
+  	infowindow = new google.maps.InfoWindow;
+	geocodeAddress(geocoder, map, infowindow);
   	document.getElementById('mapAddress-js').addEventListener('blur', function() {
-		geocodePlaceId(geocoder, map, infowindow);
+		geocodeAddress(geocoder, map, infowindow);
   	});
 }
 
-// This function is called when the user clicks the UI button requesting
-// a geocode of a place ID.
-function geocodePlaceId(geocoder, map, infowindow) {
-  var placeId = document.getElementById('mapAddress-js').value;
-  geocoder.geocode({'placeId': placeId}, function(results, status) {
-	  alert(status);
-	if (status === 'OK') {
-	  if (results[0]) {
-		map.setZoom(11);
-		map.setCenter(results[0].geometry.location);
-		var marker = new google.maps.Marker({
-		  map: map,
-		  position: results[0].geometry.location
-		});
-		infowindow.setContent(results[0].formatted_address);
-		infowindow.open(map, marker);
-	  } else {
-		window.alert('No results found');
-	  }
-	} else {
-	  window.alert('Geocoder failed due to: ' + status);
-	}
-  });
+function geocodeAddress(geocoder, resultsMap, infowindow) {
+    var address = document.getElementById('mapAddress-js').value;
+    geocoder.geocode({'address': address}, function(results, status) {
+      if (status === 'OK') {
+        resultsMap.setCenter(results[0].geometry.location);
+		if (marker && marker.setMap) {
+		    marker.setMap(null);
+	  	}
+        marker = new google.maps.Marker({
+          map: resultsMap,
+          position: results[0].geometry.location,
+		  draggable: true
+        });
+      	infowindow.setContent(results[0].formatted_address);
+	  	infowindow.open(map, marker);
+		document.getElementById('lat').value = marker.getPosition().lat().toFixed(6);
+		document.getElementById('lng').value = marker.getPosition().lng().toFixed(6);
+
+		google.maps.event.addListener(marker, 'dragend', function() {
+        	geocodePosition(marker.getPosition());
+      	});
+      } else {
+        alert('Geocode was not successful for the following reason: ' + status);
+      }
+    });
+}
+
+function geocodePosition(pos) {
+	document.getElementById('lat').value = pos.lat().toFixed(6);
+	document.getElementById('lng').value = pos.lng().toFixed(6);
+	geocoder.geocode({'latLng': pos}, function(results, status) {
+        if (status == google.maps.GeocoderStatus.OK) {
+            if (results[0]) {
+				infowindow.setContent(results[0].formatted_address);
+				infowindow.open(map, marker);
+                var address_components = results[0].address_components;
+                var components = {};
+                jQuery.each(address_components, function(k,v1) {jQuery.each(v1.types, function(k2, v2){components[v2]=v1.long_name});});
+
+                var postal_code;
+				if(components.postal_code) {
+                    postal_code = components.postal_code;
+                }
+				$('#mapAddress-js').val(postal_code);
+            }
+        }
+    });
 }
