@@ -293,7 +293,7 @@ if ($order['order_reward_point_used'] > 0) {
                         </section>
                     </div>
                 </div>
-                <?php if (count($order["comments"])>0) { ?>
+                <?php if ($order["comments"] && count($order["comments"])>0) { ?>
                 <section class="section">
                     <div class="sectionhead">
                         <h4><?php echo Labels::getLabel('LBL_Order_Status_History', $adminLangId); ?></h4>
@@ -307,7 +307,7 @@ if ($order['order_reward_point_used'] > 0) {
                                     <th width="15%"><?php echo Labels::getLabel('LBL_Payment_Status', $adminLangId); ?></th>
                                     <th width="60%"><?php echo Labels::getLabel('LBL_Comments', $adminLangId); ?></th>
                                 </tr>
-                                <?php foreach ($order["comments"] as $key => $row) {?>
+                                <?php foreach ($order["comments"] as $key => $row) { ?>
                                 <tr>
                                     <td><?php echo FatDate::format($row['oshistory_date_added']);?></td>
                                     <td><?php echo $yesNoArr[$row['oshistory_customer_notified']];?></td>
