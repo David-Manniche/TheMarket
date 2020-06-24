@@ -20,6 +20,8 @@ function fatAutoLoader($className)
         require_once CONF_APPLICATION_PATH . 'models/' . $className . '.php';
     } elseif (file_exists(CONF_PLUGIN_DIR . $className . '.php')) {
         require_once CONF_PLUGIN_DIR . $className . '.php';
+    } elseif (file_exists(CONF_TEST_CASES_DIR . $className . '.php')) {
+        require_once CONF_TEST_CASES_DIR . $className . '.php';
     } else {
         /*
          * if current application path is not the application folder at installtion path

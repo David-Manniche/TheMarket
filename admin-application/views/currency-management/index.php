@@ -19,7 +19,7 @@
                         </h4>
                         <?php
                         if ($canEdit) {
-                            $currencyPlugins = Plugin::getNamesByType(Plugin::TYPE_CURRENCY, $adminLangId);
+                            $currencyPlugins = Plugin::getNamesByType(Plugin::TYPE_CURRENCY_CONVERTER, $adminLangId);
                             $obj = new Currency();
                             $currencyConverter = $obj->getCurrencyConverterApi();
 

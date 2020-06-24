@@ -1,4 +1,4 @@
 <?php
-class SmsNotificationBase extends pluginBase
+class SmsNotificationBase extends PluginBase
 {
 }

@@ -1,5 +1,5 @@
 <?php
-class FullTextSearchBase extends pluginBase
+class FullTextSearchBase extends PluginBase
 {
 	
 }
