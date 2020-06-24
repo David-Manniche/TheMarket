@@ -95,7 +95,9 @@ $(document).ready(function () {
 		return false;
 		setSlider();
 	});
-	accessLocation();
+    if (isUserDashboard == 0) {
+        accessLocation();
+    }
 });
 
 /* for search form */
