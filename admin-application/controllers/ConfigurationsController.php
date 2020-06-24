@@ -576,8 +576,8 @@ class ConfigurationsController extends AdminBaseController
                 $frm->addSelectBox(Labels::getLabel('LBL_Terms_and_Conditions_Page', $this->adminLangId), 'CONF_TERMS_AND_CONDITIONS_PAGE', $cpagesArr);
                 $frm->addSelectBox(Labels::getLabel('LBL_GDPR_policy_page', $this->adminLangId), 'CONF_GDPR_POLICY_PAGE', $cpagesArr);
 
-                $taxStructureArr = TaxStructure::getAllAssoc($this->adminLangId);
-                $frm->addSelectBox(Labels::getLabel('LBL_TAX_STRUCTURE', $this->adminLangId), 'CONF_TAX_STRUCTURE', $taxStructureArr, array(), array(), '');
+                /* $taxStructureArr = TaxStructure::getAllAssoc($this->adminLangId);
+                $frm->addSelectBox(Labels::getLabel('LBL_TAX_STRUCTURE', $this->adminLangId), 'CONF_TAX_STRUCTURE', $taxStructureArr, array(), array(), ''); */
 
                 $frm->addSelectBox(Labels::getLabel('LBL_Cookies_Policies_Page', $this->adminLangId), 'CONF_COOKIES_BUTTON_LINK', $cpagesArr);
                 $fld1 = $frm->addCheckBox(Labels::getLabel('LBL_Cookies_Policies', $this->adminLangId), 'CONF_ENABLE_COOKIES', 1, array(), false, 0);
@@ -642,6 +642,36 @@ class ConfigurationsController extends AdminBaseController
 
                 $fld = $frm->addTextarea(Labels::getLabel("LBL_Body_Script", $this->adminLangId), 'CONF_GOOGLE_TAG_MANAGER_BODY_SCRIPT');
                 $fld->htmlAfterField = "<small>" . Labels::getLabel("LBL_This_is_the_code_provided_by_google_tag_manager_for_integration.", $this->adminLangId) . "</small>";
+				
+				$frm->addHtml('', 'Analytics', '<h3>' . Labels::getLabel("LBL_Google_Webmaster", $this->adminLangId) . '</h3>');
+				$fld = $frm->addFileUpload(Labels::getLabel('LBL_HTML_file_Verification', $this->adminLangId), 'google_file_verification', array('accept' => '.html', 'onChange' => 'updateVerificationFile(this, "google")'));
+				$htmlAfterField = '';
+				$target_dir = CONF_INSTALLATION_PATH.'public/';
+				$files = preg_grep('~^google.*\.html$~', scandir($target_dir));
+				$file = current($files);
+				if ($file!='') {
+					$htmlAfterField .= $fld->htmlAfterField = '<a href="'.CommonHelper::generateFullUrl('', '', array(), CONF_WEBROOT_FRONT_URL).$file.'" target="_blank" class="btn btn-clean btn-sm btn-icon" title="' . Labels::getLabel("LBL_View_File", $this->adminLangId) . '"><i class="fas fa-eye icon"></i></a><a href="javascript:void();" class="btn btn-clean btn-sm btn-icon" title="' . Labels::getLabel("LBL_Delete_File", $this->adminLangId) . '" onclick="deleteVerificationFile(\'google\')"><i class="fa fa-trash  icon"></i></a>';
+                }
+				$htmlAfterField .= "<small>" . Labels::getLabel("LBL_Upload_HTML_file_provided_by_Google_webmaster_tool.", $this->adminLangId) . "</small>";
+				$fld->htmlAfterField = $htmlAfterField;
+				
+				$frm->addHtml('', 'Analytics', '<h3>' . Labels::getLabel("LBL_Bing_Webmaster", $this->adminLangId) . '</h3>');
+				$fld = $frm->addFileUpload(Labels::getLabel('LBL_XML_file_Authentication', $this->adminLangId), 'bing_file_verification', array('accept' => '.xml', 'onChange' => 'updateVerificationFile(this, "bing")'));
+				$htmlAfterField = '';
+				if (file_exists(CONF_INSTALLATION_PATH.'public/BingSiteAuth.xml')) {
+					$htmlAfterField .= $fld->htmlAfterField = '<a href="'.CommonHelper::generateFullUrl('', '', array(), CONF_WEBROOT_FRONT_URL).'BingSiteAuth.xml'.'" target="_blank" class="btn btn-clean btn-sm btn-icon" title="' . Labels::getLabel("LBL_View_File", $this->adminLangId) . '"><i class="fas fa-eye icon"></i></a><a href="javascript:void();" class="btn btn-clean btn-sm btn-icon" title="' . Labels::getLabel("LBL_Delete_File", $this->adminLangId) . '" onclick="deleteVerificationFile(\'bing\')"><i class="fa fa-trash  icon"></i></a>';
+                }
+				$htmlAfterField .= "<small>" . Labels::getLabel("LBL_Upload_BindSiteAuthXML_file_provided_by_Bing_webmaster_tool.", $this->adminLangId) . "</small>";
+				$fld->htmlAfterField = $htmlAfterField;
+				
+				$frm->addHtml('', 'Analytics', '<h3>' . Labels::getLabel("LBL_Hotjar", $this->adminLangId) . '</h3>');
+				$fld = $frm->addTextarea(Labels::getLabel("LBL_Head_Script", $this->adminLangId), 'CONF_HOTJAR_HEAD_SCRIPT');
+				$fld->htmlAfterField = "<small>" . Labels::getLabel("LBL_This_is_the_code_provided_by_hotjar_for_integration.", $this->adminLangId) . "</small>";
+				
+				$frm->addHtml('', 'Analytics', '<h3>' . Labels::getLabel("LBL_Schema_COdes", $this->adminLangId) . '</h3>');
+				$fld = $frm->addTextarea(Labels::getLabel("LBL_Default_Schema", $this->adminLangId), 'CONF_DEFAULT_SCHEMA_CODES_SCRIPT');
+				$fld->htmlAfterField = "<small>" . Labels::getLabel("LBL_Update_Schema_code_related_information.", $this->adminLangId) . "</small>";
+				
                 break;
 
             case Configurations::FORM_PRODUCT:
@@ -1818,4 +1848,58 @@ class ConfigurationsController extends AdminBaseController
         $this->set("dateTime", $dateTime);
         $this->_template->render(false, false, 'json-success.php');
     }
+	
+	public function updateVerificationFile()
+	{
+		$post = FatApp::getPostedData();
+        if (empty($post)) {
+            Message::addErrorMessage(Labels::getLabel('LBL_Invalid_Request_Or_File_not_supported', $this->adminLangId));
+            FatUtility::dieJsonError(Message::getHtml());
+        }
+        $fileType = FatApp::getPostedData('fileType', FatUtility::VAR_STRING, '');
+		if (!isset($_FILES['verification_file']['name'])){
+			Message::addErrorMessage(Labels::getLabel('MSG_Please_select_a_file', $this->adminLangId));
+            FatUtility::dieJsonError(Message::getHtml());
+		}
+		
+		$target_dir = CONF_INSTALLATION_PATH.'public/';
+		$file = $_FILES['verification_file']['name'];
+		$temp_name = $_FILES['verification_file']['tmp_name'];
+		if ($fileType == 'bing') {
+			$path_filename = $target_dir.'BingSiteAuth.xml';
+		} else {
+			$path = pathinfo($file);
+			$filename = $path['filename'];
+			$ext = $path['extension'];
+			$path_filename = $filename.'.'.$ext;
+		}
+		// Check if file already exists
+		if (file_exists($path_filename)) {
+			unlink($path_filename);
+		}
+		move_uploaded_file($temp_name,$path_filename);
+		$this->set('msg', Labels::getLabel('LBL_File_uploaded_successfully', $this->adminLangId));
+        $this->_template->render(false, false, 'json-success.php');
+	}
+	
+	public function deleteVerificationFile($fileType)
+	{
+        if ($fileType == '') {
+            Message::addErrorMessage(Labels::getLabel('LBL_Invalid_Request', $this->adminLangId));
+            FatUtility::dieJsonError(Message::getHtml());
+        }
+		$target_dir = CONF_INSTALLATION_PATH.'public/';
+		if ($fileType == 'bing') {
+			$path_filename = $target_dir.'BingSiteAuth.xml';
+		} else {
+			$files = preg_grep('~^google.*\.html$~', scandir($target_dir));
+			$file = current($files);
+			$path_filename = $target_dir.$file;
+		}
+		if (file_exists($path_filename)) {
+			unlink($path_filename);
+		}
+		$this->set('msg', Labels::getLabel('LBL_File_deleted_successfully', $this->adminLangId));
+        $this->_template->render(false, false, 'json-success.php');
+	}
 }

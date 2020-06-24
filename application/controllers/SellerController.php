@@ -416,7 +416,8 @@ class SellerController extends SellerBaseController
 
         $orderDetail['comments'] = $orderObj->getOrderComments($this->siteLangId, array("op_id" => $op_id, 'seller_id' => $userId));
 
-        $taxOptions = json_decode($orderDetail['op_product_tax_options'], true);
+        $opChargesLog = new OrderProductChargeLog($op_id);
+        $taxOptions = $opChargesLog->getData($this->siteLangId);
         $orderDetail['taxOptions'] = $taxOptions;
 
         $data = array('op_id' => $op_id, 'op_status_id' => $orderDetail['op_status_id']);
@@ -601,7 +602,7 @@ class SellerController extends SellerBaseController
             FatUtility::dieJsonError(Message::getHtml());
         }
 
-        
+
         if (strtolower($orderDetail['pmethod_code']) == 'cashondelivery' && (OrderStatus::ORDER_DELIVERED == $post["op_status_id"] || OrderStatus::ORDER_COMPLETED == $post["op_status_id"]) && Orders::ORDER_IS_PAID != $orderDetail['order_is_paid']) {
             $orderProducts = new OrderProductSearch($this->siteLangId, true, true);
             $orderProducts->joinPaymentMethod();
@@ -675,7 +676,8 @@ class SellerController extends SellerBaseController
             $notEligible = true;
             Message::addErrorMessage(sprintf(Labels::getLabel('LBL_this_order_already', $this->siteLangId), $orderStatuses[$orderDetail["op_status_id"]]));
         }
-        $taxOptions = json_decode($orderDetail['op_product_tax_options'], true);
+        $opChargesLog = new OrderProductChargeLog($op_id);
+        $taxOptions = $opChargesLog->getData($this->siteLangId);
         $orderDetail['taxOptions'] = $taxOptions;
 
         $frm = $this->getOrderCancelForm($this->siteLangId);
@@ -1386,31 +1388,25 @@ class SellerController extends SellerBaseController
         $page = FatUtility::int($page);
 
         $srch = Tax::getSearchObject($this->siteLangId);
-
+		$srch->joinTable(TaxRule::DB_TBL, 'LEFT JOIN', 'taxRule.taxrule_taxcat_id = taxcat_id', 'taxRule');
         if (!empty($post['keyword'])) {
             $cnd = $srch->addCondition('t.taxcat_identifier', 'like', '%' . $post['keyword'] . '%');
             $cnd->attachCondition('t_l.taxcat_name', 'like', '%' . $post['keyword'] . '%');
         }
-                
+
         $activatedTaxServiceId = Tax::getActivatedServiceId();
         $srch->addCondition('taxcat_plugin_id', '=', $activatedTaxServiceId);
 
-        $srch->addMultipleFields(array('taxcat_id', 'IFNULL(taxcat_name,taxcat_identifier) as taxcat_name','taxcat_code'));
+        $srch->addMultipleFields(array('taxcat_id', 'IFNULL(taxcat_name, taxcat_identifier) as taxcat_name', 'taxcat_code', 'taxrule_rate'));
         $srch->addCondition('taxcat_deleted', '=', 0);
         $srch->setPageNumber($page);
         $srch->setPageSize($pagesize);
         $srch->addOrder('taxcat_name', 'ASC');
-        /* $srch->addMultipleFields(array('taxcat_id','IFNULL(taxcat_name,taxcat_identifier) as taxcat_name','taxval_seller_user_id','taxval_is_percent','taxval_value'));
-          $srch->joinTable(Tax::DB_TBL_VALUES, 'LEFT OUTER JOIN','tv.taxval_taxcat_id = t.taxcat_id','tv');
-          $srch->setPageNumber($page);
-          $srch->setPageSize($pagesize);
-          $srch->addOrder('taxval_seller_user_id','DESC'); */
-        $taxCatData = array();
 
         $rs = $srch->getResultSet();
         $taxCatData = FatApp::getDb()->fetchAll($rs, 'taxcat_id');
 
-        $records = array();
+        /* $records = array();
         if (!empty($taxCatData)) {
             $taxObj = new Tax();
             foreach ($taxCatData as $tcatId => $val) {
@@ -1422,11 +1418,13 @@ class SellerController extends SellerBaseController
                 $records[$tcatId]['taxcat_name'] = $val['taxcat_name'];
                 $records[$tcatId]['taxcat_id'] = $val['taxcat_id'];
                 $records[$tcatId]['taxcat_code'] = $val['taxcat_code'];
+                $records[$tcatId]['taxval_value'] = $val['taxrule_rate'];
                 //$records[$tcatId]['taxval_seller_user_id'] = $userId;
             }
-        }
+        } */
+
         $this->set('canEdit', $this->userPrivilege->canEditTaxCategory(UserAuthentication::getLoggedUserId(), true));
-        $this->set("arr_listing", $records);
+        $this->set("arr_listing", $taxCatData);
         $this->set('pageCount', $srch->pages());
         $this->set('recordCount', $srch->recordCount());
         $this->set('page', $page);
@@ -1440,11 +1438,11 @@ class SellerController extends SellerBaseController
     public function changeTaxRates($taxcat_id)
     {
         $activatedTaxServiceId = Tax::getActivatedServiceId();
-        
+
         if ($activatedTaxServiceId) {
             FatUtility::dieWithError($this->str_invalid_request);
         }
-        
+
         $taxcat_id = FatUtility::int($taxcat_id);
 
         $frm = $this->getchangeTaxRatesForm($this->siteLangId);
@@ -1486,11 +1484,11 @@ class SellerController extends SellerBaseController
     {
         $this->userPrivilege->canEditTaxCategory(UserAuthentication::getLoggedUserId());
         $activatedTaxServiceId = Tax::getActivatedServiceId();
-        
+
         if ($activatedTaxServiceId) {
             FatUtility::dieWithError($this->str_invalid_request);
         }
-        
+
         $frm = $this->getchangeTaxRatesForm($this->siteLangId);
         $post = $frm->getFormDataFromArray(FatApp::getPostedData());
 
@@ -3630,7 +3628,7 @@ class SellerController extends SellerBaseController
     {
         $frm = new Form('frmCustomProduct');
         $fld = $frm->addTextBox(Labels::getLabel('LBL_Shipping_country', $this->siteLangId), 'shipping_country');
-       
+
         $shipProfileArr = ShippingProfile::getProfileArr($this->userParentId, true, true);
         $frm->addSelectBox(Labels::getLabel('LBL_Shipping_Profile', $this->siteLangId), 'shipping_profile', $shipProfileArr)->requirements()->setRequired();
 
@@ -4879,7 +4877,7 @@ class SellerController extends SellerBaseController
         } else {
             $productType = Product::getAttributesById($productId, 'product_type');
         }
-        
+
         $frm->addHiddenField('', 'product_id', $productId);
         $frm->addHiddenField('', 'preq_id', $preqId);
         $frm->addButton('', 'btn_back', Labels::getLabel('LBL_Back', $this->siteLangId));
@@ -4911,7 +4909,7 @@ class SellerController extends SellerBaseController
             if (FatApp::getConfig("CONF_PRODUCT_DIMENSIONS_ENABLE", FatUtility::VAR_INT, 1)) {
                 $shipPackArr = ShippingPackage::getAllNames();
                 $frm->addSelectBox(Labels::getLabel('LBL_Shipping_Package', $this->siteLangId), 'product_ship_package', $shipPackArr)->requirements()->setRequired();
-                
+
                 $weightUnitsArr = applicationConstants::getWeightUnitsArr($this->siteLangId);
                 $frm->addSelectBox(Labels::getLabel('LBL_Weight_Unit', $this->siteLangId), 'product_weight_unit', $weightUnitsArr)->requirements()->setRequired();
 
@@ -4931,7 +4929,7 @@ class SellerController extends SellerBaseController
                     $codFld->htmlAfterField = '<br/><small>' . Labels::getLabel('LBL_COD_option_is_disabled_in_payment_gateway_settings', $this->siteLangId) . '</small>';
                 }
             }
-            
+
             /* ] */
         }
         if ($preqId == 0 && !FatApp::getConfig('CONF_SHIPPED_BY_ADMIN_ONLY', FatUtility::VAR_INT, 0)) {

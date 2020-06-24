@@ -7,8 +7,6 @@ $arr_flds = array(
 
 if ($activatedTaxServiceId) {
     $arr_flds['taxcat_code'] = Labels::getLabel('LBL_Tax_Code', $adminLangId);
-} else {
-    $arr_flds['taxval_value'] = Labels::getLabel('LBL_Value', $adminLangId);
 }
 
 $arr_flds['taxcat_active'] = Labels::getLabel('LBL_Status', $adminLangId);
@@ -51,11 +49,6 @@ foreach ($arr_listing as $sn => $row) {
                     $td->appendElement('plaintext', array(), $row[$key], true);
                 }
                 break;
-            case 'taxval_value':
-                $str = CommonHelper::displayTaxFormat($row['taxval_is_percent'], $row[$key]);
-
-                $td->appendElement('plaintext', array(), $str, true);
-                break;
             case 'taxcat_active':
                 $active = "active";
                 if (!$row['taxcat_active']) {
@@ -69,19 +62,15 @@ foreach ($arr_listing as $sn => $row) {
                 $td->appendElement('plaintext', array(), $str, true);
                 break;
             case 'action':
-                $ul = $td->appendElement("ul", array("class"=>"actions actions--centered"));
-                if ($canEdit) {
-                    $li = $ul->appendElement("li", array('class'=>'droplink'));
-                    $li->appendElement('a', array('href'=>'javascript:void(0)', 'class'=>'button small green','title'=>Labels::getLabel('addTaxForm', $adminLangId)), '<i class="ion-android-more-horizontal icon"></i>', true);
-                    $innerDiv=$li->appendElement('div', array('class'=>'dropwrap'));
-                    $innerUl=$innerDiv->appendElement('ul', array('class'=>'linksvertical'));
-
-                    $innerLi=$innerUl->appendElement('li');
-                    $innerLi->appendElement('a', array('href'=>'javascript:void(0)','class'=>'button small green','title'=>Labels::getLabel('LBL_Edit', $adminLangId),"onclick"=>"addTaxForm(".$row['taxcat_id'].")"), Labels::getLabel('LBL_Edit', $adminLangId), true);
-
-                    $innerLi=$innerUl->appendElement('li');
-                    $innerLi->appendElement('a', array('href'=>'javascript:void(0)','class'=>'button small green','title'=>Labels::getLabel('LBL_Delete', $adminLangId),"onclick"=>"deleteRecord(".$row['taxcat_id'].")"), Labels::getLabel('LBL_Delete', $adminLangId), true);
-                }
+				if($canEdit){
+					$td->appendElement('a', array('href'=>'javascript:void(0)', 'class'=>'btn btn-clean btn-sm btn-icon', 'title'=>Labels::getLabel('LBL_Edit',$adminLangId),"onclick"=>"addTaxForm(".$row['taxcat_id'].")"),'<i class="far fa-edit icon"></i>', true);
+					
+					if (0 == $activatedTaxServiceId) {
+						$td->appendElement('a', array('href'=>CommonHelper::generateUrl('Tax','ruleForm',array($row['taxcat_id'])), 'class'=>'btn btn-clean btn-sm btn-icon', 'title'=>Labels::getLabel('LBL_Add_Rule',$adminLangId)),'<i class="ion-navicon-round icon"></i>', true);
+					}
+					
+					$td->appendElement('a', array('href'=>"javascript:void(0)", 'class'=>'btn btn-clean btn-sm btn-icon', 'title'=>Labels::getLabel('LBL_Delete',$adminLangId),"onclick"=>"deleteRecord(".$row['taxcat_id'].")"),'<i class="fa fa-trash  icon"></i>', true);
+				}
                 break;
             default:
                 $td->appendElement('plaintext', array(), $row[$key], true);

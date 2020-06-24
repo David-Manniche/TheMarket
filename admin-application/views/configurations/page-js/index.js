@@ -317,7 +317,16 @@ $(document).ready(function() {
             }
         });
 	}
-
+	
+	deleteVerificationFile = function(fileType) {
+		if (!confirm(langLbl.confirmDelete)) {
+			return;
+		}
+		fcom.updateWithAjax(fcom.makeUrl('Configurations', 'deleteVerificationFile', [fileType]), '', function(t) {
+			getForm(document.frmConfiguration.form_type.value);
+		});
+	};
+	
 })();
 
 
@@ -374,3 +383,39 @@ getCountryStates = function(countryId, stateId, dv) {
     });
     $.systemMessage.close();
 };
+
+updateVerificationFile = function(inputBtn, fileType){
+	var formData = new FormData();
+	formData.append('fileType', fileType);
+	var file = inputBtn.files[0];
+	if (inputBtn.files && inputBtn.files[0]) {
+		var file = inputBtn.files[0];
+		fcom.displayProcessing(langLbl.processing, ' ', true);
+		formData.append('verification_file', file);
+		$.ajax({
+			url: fcom.makeUrl('Configurations', 'updateVerificationFile'),
+			type: 'post',
+			dataType: 'json',
+			data: formData,
+			cache: false,
+			contentType: false,
+			processData: false,
+			success: function(ans) {
+				if (!ans.status) {
+					$.systemMessage(ans.msg, 'alert--danger');
+					return;
+				}
+				$.systemMessage(ans.msg, 'alert--success');
+				getForm(document.frmConfiguration.form_type.value);
+				$(document).trigger('close.facebox');
+			},
+			error: function(xhr, ajaxOptions, thrownError) {
+				if (xhr.responseText) {
+					$.systemMessage(xhr.responseText, 'alert--danger');
+					return;
+				}
+				alert(thrownError + "\r\n" + xhr.statusText + "\r\n" + xhr.responseText);
+			}
+		});
+	}
+}

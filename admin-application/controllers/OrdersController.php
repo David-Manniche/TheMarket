@@ -173,7 +173,8 @@ class OrdersController extends AdminBaseController
 
         foreach ($order['products'] as $opId => $opVal) {
             $order['products'][$opId]['charges'] = $charges[$opId];
-            $taxOptions = json_decode($opVal['op_product_tax_options'], true);
+            $opChargesLog = new OrderProductChargelog($opId);
+            $taxOptions = $opChargesLog->getData($this->adminLangId);
             $order['products'][$opId]['taxOptions'] = $taxOptions;
         }
 
@@ -183,7 +184,7 @@ class OrdersController extends AdminBaseController
 
         $order['comments'] = $orderObj->getOrderComments($this->adminLangId, array("order_id" => $order['order_id']));
         $order['payments'] = $orderObj->getOrderPayments(array("order_id" => $order['order_id']));
-       
+
         $frm = $this->getPaymentForm($this->adminLangId, $order['order_id']);
         $this->set('frm', $frm);
         $this->set('yesNoArr', applicationConstants::getYesNoArr($this->adminLangId));
@@ -254,7 +255,7 @@ class OrdersController extends AdminBaseController
             Message::addErrorMessage(Labels::getLabel('LBL_Error:_Please_perform_this_action_on_valid_record.', $this->adminLangId));
             FatUtility::dieJsonError(Message::getHtml());
         }
-		
+
 		$allowedCancellationArr =  Orders::getBuyerAllowedOrderCancellationStatuses();
 		$srch = new OrderProductSearch(0, true);
         $srch->addMultipleFields(array('op.op_status_id', 'o.order_id'));
@@ -265,7 +266,7 @@ class OrdersController extends AdminBaseController
 			Message::addErrorMessage(Labels::getLabel('LBL_Error:_Orders_that_are_completed_cannot_be_Cancelled.', $this->adminLangId));
 			FatUtility::dieJsonError(Message::getHtml());
 		}
-		
+
         if ($order["order_is_paid"]) {
             if (!$orderObj->addOrderPaymentHistory($order_id, Orders::ORDER_IS_CANCELLED, Labels::getLabel('MSG_Order_Cancelled', $order['order_language_id']), 1)) {
                 Message::addErrorMessage($orderObj->getError());

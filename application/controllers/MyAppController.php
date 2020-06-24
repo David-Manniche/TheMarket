@@ -69,7 +69,7 @@ class MyAppController extends FatController
         }
         $defultCountryId = FatApp::getConfig('CONF_COUNTRY', FatUtility::VAR_INT, 0);
         $defaultCountryCode = Countries::getAttributesById($defultCountryId, 'country_code');
-        
+
         $jsVariablesCache = FatCache::get('jsVariablesCache' . $this->siteLangId, CONF_DEF_CACHE_TIME, '.txt');
         if (!$jsVariablesCache) {
             $jsVariables = array(
@@ -162,9 +162,9 @@ class MyAppController extends FatController
         if (CommonHelper::isThemePreview() && isset($_SESSION['preview_theme'])) {
             $themeId = $_SESSION['preview_theme'];
         }
-       
+
         $this->themeDetail = ThemeColor::getById($themeId, $this->siteLangId, false, true);
-        
+
         $currencySymbolLeft = CommonHelper::getCurrencySymbolLeft();
         $currencySymbolRight = CommonHelper::getCurrencySymbolRight();
 
@@ -615,7 +615,7 @@ class MyAppController extends FatController
             'user_new_email' => $data['user_new_email'],
             'user_email' => $data['user_email'],
             );
-            if (!$email->sendChangeEmailRequestNotification($this->siteLangId, array('user_name' => $dataArr['user_name'], 'user_email' => $dataArr['user_email'], 'user_new_email' => $dataArr['user_new_email'], 'user_phone' => $data['user_phone']))) {
+            if (!$email->sendChangeEmailRequestNotification($this->siteLangId, $dataArr)) {
                 return false;
             }
         }

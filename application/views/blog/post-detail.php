@@ -9,8 +9,7 @@
                         <?php if (!empty($post_images)) { ?>
                         <div class="post__pic">
                             <?php foreach ($post_images as $post_image) { ?>
-                            <div class="item">
-							<div class="media-wrapper"><img data-ratio="16:9" src="<?php echo FatUtility::generateUrl('image', 'blogPostFront', array($post_image['afile_record_id'], $post_image['afile_lang_id'], "LAYOUT1", 0, $post_image['afile_id']), CONF_WEBROOT_FRONT_URL); ?>" alt="<?php echo $post_image['afile_name']; ?>"></div></div>
+                            <div class="item"><div class="media-wrapper"><img data-ratio="16:9" src="<?php echo FatUtility::generateUrl('image', 'blogPostFront', array($post_image['afile_record_id'], $post_image['afile_lang_id'], "LAYOUT1", 0, $post_image['afile_id']), CONF_WEBROOT_FRONT_URL); ?>" alt="<?php echo $post_image['afile_attribute_alt']; ?>" title="<?php echo $post_image['afile_attribute_title']; ?>"></div></div>
                             <?php } ?>
                         </div>
                         <?php } ?>
@@ -74,7 +73,7 @@
                                         </ul>
                                     </div>
                                 </div>
-                                
+
                             </div>
                             <?php /*<ul class="likes-count">
                                 <!--<li><i class="icn-like"><img src="<?php echo CONF_WEBROOT_URL; ?>images/eye.svg"></i>500 Views</li>-->

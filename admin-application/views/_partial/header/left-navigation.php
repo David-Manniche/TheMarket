@@ -476,6 +476,9 @@
                         <?php if ($objPrivilege->canViewUrlRewrite(AdminAuthentication::getLoggedAdminId(), true)) { ?>
                             <li><a href="<?php echo CommonHelper::generateUrl('UrlRewriting'); ?>"><?php echo Labels::getLabel('LBL_Url_Rewriting', $adminLangId);?></a></li>
                         <?php } ?>
+						<?php if ($objPrivilege->canViewImageAttributes(AdminAuthentication::getLoggedAdminId(), true)) { ?>
+                            <li><a href="<?php echo CommonHelper::generateUrl('ImageAttributes'); ?>"><?php echo Labels::getLabel('LBL_Image_Attributes', $adminLangId);?></a></li>
+                        <?php } ?>
                     </ul>
                 </li>
             <?php } ?>
@@ -550,8 +553,8 @@
                         <?php if ($objPrivilege->canViewCurrencyManagement(AdminAuthentication::getLoggedAdminId(), true)) {?>
                             <li><a href="<?php echo CommonHelper::generateUrl('CurrencyManagement'); ?>"><?php echo Labels::getLabel('LBL_Currency_Management', $adminLangId);?></a></li>
                         <?php } ?>
-                        <?php if ($objPrivilege->canViewTax(AdminAuthentication::getLoggedAdminId(), true)) {?>
-                            <li><a href="<?php echo CommonHelper::generateUrl('TaxStructure'); ?>"><?php echo Labels::getLabel('LBL_Tax_Structure', $adminLangId);?></a></li>
+                        <?php if ($objPrivilege->canViewTax(AdminAuthentication::getLoggedAdminId(), true)) { ?>
+                            <?php /* <li><a href="<?php echo CommonHelper::generateUrl('TaxStructure'); ?>"><?php echo Labels::getLabel('LBL_Tax_Structure', $adminLangId);?></a></li> */ ?>
                             <li><a href="<?php echo CommonHelper::generateUrl('Tax'); ?>"><?php echo Labels::getLabel('LBL_Sales_Tax', $adminLangId);?></a></li>
                         <?php } ?>
                         <?php if ($objPrivilege->canViewCommissionSettings(AdminAuthentication::getLoggedAdminId(), true)) {?>

@@ -273,7 +273,7 @@ class Cart extends FatModel
                 /* $this->products[$key]['shop_eligible_for_free_shipping'] = 0; */
             }
         }
-        
+
         usort($this->products, function ($a, $b) {
             return $a['shop_id'] - $b['shop_id'];
         });
@@ -385,7 +385,7 @@ class Cart extends FatModel
 
                     /*[ Product shipping cost */
                     $shippingCost = 0;
-                   
+
                     if (!empty($productSelectedShippingMethodsArr['product']) && isset($productSelectedShippingMethodsArr['product'][$sellerProductRow['selprod_id']])) {
                         $shippingDurationRow = $productSelectedShippingMethodsArr['product'][$sellerProductRow['selprod_id']];
                         $this->products[$key]['opshipping_rate_id'] = isset($shippingDurationRow['mshipapi_id']) ? $shippingDurationRow['mshipapi_id'] : '';
@@ -412,12 +412,12 @@ class Cart extends FatModel
                         'shippingCost' => $shippingCost,
                         'buyerId' => $this->cart_user_id
                     );
-                    
+
                     $taxData = $taxObj->calculateTaxRates($sellerProductRow['product_id'], $taxableProdPrice, $sellerProductRow['selprod_user_id'], $siteLangId, $quantity, $extraData, $this->cartCache);
                     if (false == $taxData['status'] && $taxData['msg'] != '') {
                         $this->error = $taxData['msg'];
                     }
-                    
+
                     $taxOptions = [];
                     if (array_key_exists('options', $taxData)) {
                         foreach ($taxData['options'] as $optionId => $optionval) {
@@ -601,12 +601,12 @@ class Cart extends FatModel
         if (false == $taxData['status'] && $taxData['msg'] != '') {
             $this->error = $taxData['msg'];
         }
-        
+
         $tax = $taxData['tax'];
         $sellerProductRow['tax'] = $tax;
         $sellerProductRow['taxCode'] = $taxData['taxCode'];
         /* ] */
-       
+
         $sellerProductRow['total'] = $totalPrice;
         $sellerProductRow['netTotal'] = $sellerProductRow['total'] + $sellerProductRow['shipping_cost'];
 
@@ -914,7 +914,7 @@ class Cart extends FatModel
                     }
                 }
             } else {
-                if ($product['is_physical_product'] && !isset($this->SYSTEM_ARR['shopping_cart']['product_shipping_methods']['product'][$product['selprod_id']])) {                   
+                if ($product['is_physical_product'] && !isset($this->SYSTEM_ARR['shopping_cart']['product_shipping_methods']['product'][$product['selprod_id']])) {
                     return false;
                 }
 
@@ -996,7 +996,7 @@ class Cart extends FatModel
                 }
 
                 $isProductShippedBySeller = Product::isProductShippedBySeller($product['product_id'], $product['product_seller_id'], $product['selprod_user_id']);
-                
+
                 $shippingCost = 0;
                 if (!empty($productSelectedShippingMethodsArr['product']) && isset($productSelectedShippingMethodsArr['product'][$product['selprod_id']])) {
                     $shippingDurationRow = $productSelectedShippingMethodsArr['product'][$product['selprod_id']];
@@ -1675,11 +1675,11 @@ class Cart extends FatModel
         $physicalSelProdIdArr = [];
         $digitalSelProdIdArr = [];
         $cartProducts = $this->getBasketProducts($this->cart_lang_id);
-       
+
         $productInfo = [];
         foreach ($cartProducts as $key => $val) {
             $productInfo[$val['selprod_id']] = $val;
-            
+
             if ($val['is_physical_product']) {
                 $physicalSelProdIdArr[$val['selprod_id']] = $val['selprod_id'];
             } else {
@@ -1689,7 +1689,7 @@ class Cart extends FatModel
 
         $shipping = new Shipping($this->cart_lang_id);
         $shippedByArr = $shipping->calculateCharges($physicalSelProdIdArr, $shipToCountryId, $shipToStateId, $productInfo);
-        
+
         /*Include digital products */
         foreach ($digitalSelProdIdArr as $selProdId) {
             $shippedByArr[Shipping::LEVEL_PRODUCT]['products'][$selProdId] = $productInfo[$selProdId];

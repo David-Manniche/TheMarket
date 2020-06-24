@@ -23,9 +23,10 @@ if ($products) {
         <div class="products__img">
                 <?php $uploadedTime = AttachedFile::setTimeParam($product['_source']['general']['product_updated_on']);?> <a title="<?php echo $product['_source']['inventories'][0]['selprod_title']; ?>"
                     href="<?php echo !isset($product['promotion_id'])? CommonHelper::generateUrl('Products', 'View', array($product['_source']['general']['selprod_id'])):CommonHelper::generateUrl('Products', 'track', array($product['promotion_record_id']))?>">
-                    <img data-ratio="1:1 (500x500)"
+                    <?php $fileRow = CommonHelper::getImageAttributes(AttachedFile::FILETYPE_PRODUCT_IMAGE, $product['_source']['general']['product_id']);?>
+					<img data-ratio="1:1 (500x500)"
                         src="<?php echo FatCache::getCachedUrl(CommonHelper::generateUrl('image', 'product', array($product['_source']['general']['product_id'], "CLAYOUT3", $product['_source']['general']['selprod_id'], 0, $siteLangId)).$uploadedTime, CONF_IMG_CACHE_TIME, '.jpg'); ?>"
-                        alt="<?php echo $product['_source']['categories'][0]['prodcat_name']; ?>">
+                        alt="<?php echo (!empty($fileRow['afile_attribute_alt'])) ? $fileRow['afile_attribute_alt'] : $product['_source']['categories'][0]['prodcat_name']; ?>" title="<?php echo (!empty($fileRow['afile_attribute_title'])) ? $fileRow['afile_attribute_title'] : $product['_source']['categories'][0]['prodcat_name']; ?>">
                 </a>
             </div>
         </div>

@@ -87,7 +87,7 @@ INSERT INTO `tbl_shipping_profile` (`shipprofile_id`, `shipprofile_user_id`, `sh
 ALTER TABLE `tbl_shipping_profile`
   ADD PRIMARY KEY (`shipprofile_id`),
   ADD UNIQUE KEY `shipprofile_name` (`shipprofile_name`,`shipprofile_user_id`);
-  
+
 ALTER TABLE `tbl_shipping_profile`
   MODIFY `shipprofile_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
@@ -109,7 +109,7 @@ CREATE TABLE `tbl_shipping_profile_zones` (
 ALTER TABLE `tbl_shipping_profile_zones`
   ADD PRIMARY KEY (`shipprozone_id`),
   ADD UNIQUE KEY `shipprozone_shipzone_id` (`shipprozone_shipzone_id`,`shipprozone_shipprofile_id`);
-  
+
 ALTER TABLE `tbl_shipping_profile_zones`
   MODIFY `shipprozone_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 
@@ -125,7 +125,7 @@ ALTER TABLE `tbl_shipping_profile_zones`
 
 ALTER TABLE `tbl_shipping_rates`
   ADD PRIMARY KEY (`shiprate_id`);
-  
+
 ALTER TABLE `tbl_shipping_rates`
   MODIFY `shiprate_id` int(11) NOT NULL AUTO_INCREMENT;
 
@@ -157,7 +157,7 @@ ALTER TABLE `tbl_shipping_zone`
 
 ALTER TABLE `tbl_products` ADD `product_ship_package` INT(11) NOT NULL AFTER `product_deleted`;
 
-CREATE TABLE `tbl_shipping_locations` ( 
+CREATE TABLE `tbl_shipping_locations` (
   `shiploc_shipzone_id` int(11) NOT NULL,
   `shiploc_zone_id` int(11) NOT NULL,
   `shiploc_country_id` int(11) NOT NULL,
@@ -167,22 +167,86 @@ CREATE TABLE `tbl_shipping_locations` (
 ALTER TABLE `tbl_shipping_locations`
   ADD UNIQUE KEY `shiploc_shipzone_id` (`shiploc_shipzone_id`,`shiploc_zone_id`,`shiploc_country_id`,`shiploc_state_id`);
 
-ALTER TABLE `tbl_order_product_shipping` ADD `opshipping_level` INT(4) NOT NULL AFTER `opshipping_by_seller_user_id`;  
+ALTER TABLE `tbl_order_product_shipping` ADD `opshipping_level` INT(4) NOT NULL AFTER `opshipping_by_seller_user_id`;
 ALTER TABLE `tbl_order_product_shipping` CHANGE `opshipping_duration_id` `opshipping_rate_id` INT(11) NOT NULL;
 ALTER TABLE `tbl_order_product_shipping` DROP `opshipping_max_duration`;
-ALTER TABLE `tbl_order_product_shipping` CHANGE `opshipping_pship_id` `opshipping_code` VARCHAR(255) NOT NULL; 
+ALTER TABLE `tbl_order_product_shipping` CHANGE `opshipping_pship_id` `opshipping_code` VARCHAR(255) NOT NULL;
 ALTER TABLE `tbl_order_product_shipping` DROP `opshipping_company_id`;
-ALTER TABLE `tbl_order_product_shipping` DROP `opshipping_method_id`; 
+ALTER TABLE `tbl_order_product_shipping` DROP `opshipping_method_id`;
 ALTER TABLE `tbl_order_product_shipping` ADD `opshipping_label` VARCHAR(255) NOT NULL AFTER `opshipping_level`;
 -- Shippping Module End-----
-ALTER TABLE `tbl_tax_structure_lang` CHANGE `taxstr_name` `taxstr_name` VARCHAR(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL;
 
-INSERT INTO `tbl_language_labels` (`label_key`, `label_lang_id`, `label_caption`, `label_type`) VALUES
-("APP_VOICE_SEARCH_TXT", 1, "Tap Here On Mic And Say Something To Search!", 2),
-("APP_RESEND_OTP", 1, "Resend OTP", 2),
-("APP_CLICK_HERE", 1, "Click Here", 2),
-("APP_PLEASE_ENTER_VALID_OTP", 1, "Please Enter Valid OTP", 2),
-("APP_SHOW_MORE", 1, "Show More", 2),
-("APP_I_AM_LISTENING", 1, "Say Something I Am Listening", 2),
-("APP_VOICE_SEARCH", 1, "Voice Search", 2),
-("APP_EXPLORE", 1, "Explore", 2);
+-- Tax Upgrade-----
+DROP TABLE `tbl_tax_structure`;
+DROP TABLE `tbl_tax_structure_lang`;
+
+CREATE TABLE `tbl_tax_rules` (
+  `taxrule_id` int(11) NOT NULL,
+  `taxrule_taxcat_id` int(11) NOT NULL,
+  `taxrule_name` varchar(255) NOT NULL,
+  `taxrule_rate` decimal(10,2) NOT NULL,
+  `taxrule_is_combined` tinyint(4) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE `tbl_tax_rule_details` (
+  `taxruledet_id` int(11) NOT NULL,
+  `taxruledet_taxrule_id` int(11) NOT NULL,
+  `taxruledet_identifier` varchar(255) NOT NULL,
+  `taxruledet_rate` decimal(10,2) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE `tbl_tax_rule_details_lang` (
+  `taxruledetlang_taxruledet_id` int(11) NOT NULL,
+  `taxruledetlang_lang_id` int(11) NOT NULL,
+  `taxruledet_name` varchar(255) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE `tbl_tax_rule_locations` (
+  `taxruleloc_taxcat_id` int(11) NOT NULL,
+  `taxruleloc_taxrule_id` int(11) NOT NULL,
+  `taxruleloc_country_id` int(11) NOT NULL,
+  `taxruleloc_state_id` int(11) NOT NULL,
+  `taxruleloc_type` int(11) DEFAULT NULL COMMENT 'including or excluding',
+  `taxruleloc_unique` int(11) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+ALTER TABLE `tbl_tax_rules`
+  ADD PRIMARY KEY (`taxrule_id`);
+
+ALTER TABLE `tbl_tax_rule_details`
+  ADD PRIMARY KEY (`taxruledet_id`);
+
+ALTER TABLE `tbl_tax_rule_details_lang`
+  ADD PRIMARY KEY (`taxruledetlang_taxruledet_id`,`taxruledetlang_lang_id`);
+
+ALTER TABLE `tbl_tax_rule_locations`
+  ADD UNIQUE KEY `taxruleloc_taxcat_id` (`taxruleloc_taxcat_id`,`taxruleloc_country_id`,`taxruleloc_state_id`,`taxruleloc_type`,`taxruleloc_unique`);
+
+ALTER TABLE `tbl_tax_rules`
+  MODIFY `taxrule_id` int(11) NOT NULL AUTO_INCREMENT;
+
+ALTER TABLE `tbl_tax_rule_details`
+  MODIFY `taxruledet_id` int(11) NOT NULL AUTO_INCREMENT;
+
+CREATE TABLE `tbl_order_prod_charges_logs` (
+  `opchargelog_id` int(11) NOT NULL,
+  `opchargelog_op_id` int(11) NOT NULL,
+  `opchargelog_type` int(11) NOT NULL,
+  `opchargelog_identifier` varchar(255) NOT NULL,
+  `opchargelog_value` decimal(10,2) NOT NULL,
+  `opchargelog_is_percent` tinyint(4) NOT NULL,
+  `opchargelog_percentvalue` decimal(10,2) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+ALTER TABLE `tbl_order_prod_charges_logs`
+  ADD PRIMARY KEY (`opchargelog_id`);
+ALTER TABLE `tbl_order_prod_charges_logs`
+  MODIFY `opchargelog_id` int(11) NOT NULL AUTO_INCREMENT;
+CREATE TABLE `tbl_order_prod_charges_logs_lang` (
+  `opchargeloglang_opchargelog_id` int(11) NOT NULL,
+  `opchargeloglang_op_id` int(11) NOT NULL,
+  `opchargeloglang_lang_id` int(11) NOT NULL,
+  `opchargelog_name` varchar(255) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+-- Tax Upgrade End-----
+
+ALTER TABLE `tbl_attached_files` ADD `afile_attribute_title` VARCHAR(250) NOT NULL AFTER `afile_name`, ADD `afile_attribute_alt` VARCHAR(250) NOT NULL AFTER `afile_attribute_title`;

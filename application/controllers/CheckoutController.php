@@ -469,7 +469,7 @@ class CheckoutController extends MyAppController
         $shippingMethods = Shipping::getShippingMethods($this->siteLangId);
 
         $cartProducts = $this->cartObj->getProducts($this->siteLangId);
-       
+
         if (count($cartProducts) == 0) {
             $this->errMessage = Labels::getLabel('MSG_Your_Cart_is_empty', $this->siteLangId);
             if (true === MOBILE_APP_API_CALL) {
@@ -491,7 +491,7 @@ class CheckoutController extends MyAppController
         if (true === MOBILE_APP_API_CALL) {
             $this->_template->render();
         }
-       
+
         $this->set('cartSummary', $this->cartObj->getCartFinancialSummary($this->siteLangId));
         $this->set('shippingAddressDetail', UserAddress::getUserAddresses(UserAuthentication::getLoggedUserId(), $this->siteLangId, 0, $this->cartObj->getCartShippingAddress()));
         $this->set('products', $cartProducts);
@@ -542,9 +542,9 @@ class CheckoutController extends MyAppController
         $shippingRates = $this->cartObj->getShippingRates();
         $selectedShippingMethods = [];
         $shipProducts = [];
-        
+
         $basketProducts = $this->cartObj->getBasketProducts($this->siteLangId);
-        
+
         foreach ($post['shipping_services'] as $prodIdCobination => $rateId) {
             if (empty($rateId)) {
                 $message = Labels::getLabel('MSG_Shipping_Method_is_not_selected_on_products_in_cart', $this->siteLangId);
@@ -555,7 +555,7 @@ class CheckoutController extends MyAppController
                 $message = Labels::getLabel('MSG_Shipping_Method_is_not_selected_on_products_in_cart', $this->siteLangId);
                 LibHelper::exitWithError($message, true);
             }
-           
+
             if (!array_key_exists($rateId, $shippingRates[$prodIdCobination])) {
                 $message = Labels::getLabel('MSG_Something_went_wrong,_please_try_after_some_time.', $this->siteLangId);
                 LibHelper::exitWithError($message, true);
@@ -584,13 +584,13 @@ class CheckoutController extends MyAppController
             $counter = 1;
             $productArr = explode('_', $prodIdCobination);
             $prodCount = count($productArr);
-            
+
             foreach ($productArr as $selProdId) {
                 foreach ($basketProducts as $cartKey => $product) {
                     if ($product['selprod_id'] != $selProdId) {
                         continue;
                     }
-                   
+
                     if ($prodCount > 0 && $counter == $prodCount) {
                         $shipProducts[$selProdId]['cost']  = $shippingRates[$prodIdCobination][$rateId]['cost'] - $shippingAmount[$prodIdCobination];
                     } else {
@@ -603,7 +603,7 @@ class CheckoutController extends MyAppController
                 $counter++;
             }
         }
-     
+
         $userId = UserAuthentication::getLoggedUserId();
 
         $cartProducts = $this->cartObj->getProducts($this->siteLangId);
@@ -619,13 +619,13 @@ class CheckoutController extends MyAppController
         $sn = 0;
         $json = array();
         $prodSrchObj = new ProductSearch();
-        
+
         foreach ($cartProducts as $cartkey => $cartval) {
             $sn++;
             if ($cartval['product_type'] != Product::PRODUCT_TYPE_PHYSICAL) {
                 continue;
             }
-            
+
             if (!array_key_exists($cartval['selprod_id'], $shipProducts) || empty($shipProducts[$cartval['selprod_id']])) {
                 $json['error']['product'][$sn] = sprintf(Labels::getLabel('M_Shipping_Info_Required_for_%s', $this->siteLangId), htmlentities($cartval['product_name']));
                 continue;
@@ -660,7 +660,7 @@ class CheckoutController extends MyAppController
                 'mshipapi_level' => $shipInfo['shipping_label']
             );
         }
-      
+
         if (!$json) {
             $this->cartObj->setProductShippingMethod($productToShippingMethods);
             if (!$this->cartObj->isProductShippingMethodSet()) {
@@ -950,7 +950,7 @@ class CheckoutController extends MyAppController
 
         $orderData['order_user_comments'] = '';
         $orderData['order_admin_comments'] = '';
-        
+
         if (!empty($cartSummary["cartDiscounts"])) {
             $orderData['order_discount_coupon_code'] = $cartSummary["cartDiscounts"]["coupon_code"];
             $orderData['order_discount_type'] = $cartSummary["cartDiscounts"]["coupon_discount_type"];
@@ -1051,6 +1051,7 @@ class CheckoutController extends MyAppController
         if ($cartProducts) {
             $productShippingData = array();
             foreach ($cartProducts as $cartProduct) {
+                $productTaxChargesData = array();
                 $productInfo = $this->getCartProductInfo($cartProduct['selprod_id']);
                 if (!$productInfo) {
                     continue;
@@ -1070,6 +1071,26 @@ class CheckoutController extends MyAppController
                         'opshipping_by_seller_user_id' => $shippingDurationRow['shipped_by_seller']
                         );
                 }
+
+                $productTaxOption = array();
+                if (array_key_exists($productInfo['selprod_id'], $cartSummary["prodTaxOptions"])) {
+                    $productTaxOption = $cartSummary["prodTaxOptions"][$productInfo['selprod_id']];
+                }
+
+                foreach ($productTaxOption as $taxStroId => $taxStroName) {
+                    $label = Labels::getLabel('LBL_Tax', $this->siteLangId);
+                    if (array_key_exists('name', $taxStroName) && $taxStroName['name'] != '') {
+                        $label = $taxStroName['name'];
+                    }
+                    $productTaxChargesData[$taxStroId] = array(
+                    'opchargelog_type' => OrderProduct::CHARGE_TYPE_TAX,
+                    'opchargelog_identifier' => $label,
+                    'opchargelog_value' => $taxStroName['value'],
+                    'opchargelog_is_percent' => $taxStroName['inPercentage'],
+                    'opchargelog_percentvalue' => $taxStroName['percentageValue']
+                    );
+                }
+
                 $productsLangData = array();
                 $productShippingLangData = array();
                 foreach ($allLanguages as $lang_id => $language_name) {
@@ -1113,39 +1134,27 @@ class CheckoutController extends MyAppController
 
                     $op_products_dimension_unit_name = ($productInfo['product_dimension_unit']) ? $lengthUnitsArr[$productInfo['product_dimension_unit']] : '';
                     $op_product_weight_unit_name = ($productInfo['product_weight_unit']) ? $weightUnitsArr[$productInfo['product_weight_unit']] : '';
+
                     $op_product_tax_options = array();
-                    $productTaxOption = array();
-                    if (array_key_exists($productInfo['selprod_id'], $cartSummary["prodTaxOptions"])) {
-                        $productTaxOption = $cartSummary["prodTaxOptions"][$productInfo['selprod_id']];
-                    }
-                    
                     foreach ($productTaxOption as $taxStroId => $taxStroName) {
-                        $taxStructure = new TaxStructure(FatApp::getConfig('CONF_TAX_STRUCTURE', FatUtility::VAR_FLOAT, 0));
-                        if (Tax::getActivatedServiceId()) {
-                            $op_product_tax_options[$taxStroId]['value'] = $taxStroName['value'];
-                            $op_product_tax_options[$taxStroId]['name'] = $taxStroId;
-                            $op_product_tax_options[$taxStroId]['percentageValue'] = $taxStroName['percentageValue'];
-                            $op_product_tax_options[$taxStroId]['inPercentage'] = $taxStroName['inPercentage'];
-                        } elseif (FatApp::getConfig('CONF_TAX_STRUCTURE', FatUtility::VAR_FLOAT, 0) == TaxStructure::TYPE_COMBINED) {
-                            $taxLangData = $taxStructure->getOptionData($taxStroId);
-                            // CommonHelper::printArray($taxLangData, true);
-                            $op_product_tax_options[$taxLangData['taxstro_name'][$lang_id]]['value'] = $taxStroName['value'];
-                            $op_product_tax_options[$taxLangData['taxstro_name'][$lang_id]]['name'] = $taxLangData['taxstro_name'][$lang_id];
-                            $op_product_tax_options[$taxLangData['taxstro_name'][$lang_id]]['percentageValue'] = $taxStroName['percentageValue'];
-                            $op_product_tax_options[$taxLangData['taxstro_name'][$lang_id]]['inPercentage'] = $taxStroName['inPercentage'];
-                        } else {
-                            $structureName = $taxStructure->getName($lang_id);
-                            $label = Labels::getLabel('LBL_Tax', $lang_id);
-                            if (array_key_exists('taxstr_name', $structureName) && $structureName['taxstr_name'] != '') {
-                                $label = $structureName['taxstr_name'];
-                            }
-                            $op_product_tax_options[$label]['name'] = $label;
-                            $op_product_tax_options[$label]['value'] = $taxStroName['value'];
-                            $op_product_tax_options[$label]['percentageValue'] = $taxStroName['percentageValue'];
-                            $op_product_tax_options[$label]['inPercentage'] = $taxStroName['inPercentage'];
+                        $label = Labels::getLabel('LBL_Tax', $lang_id);
+                        if (array_key_exists('name', $taxStroName) && $taxStroName['name'] != '') {
+                            $label = $taxStroName['name'];
                         }
+                        $op_product_tax_options[$label]['name'] = $label;
+                        $op_product_tax_options[$label]['value'] = $taxStroName['value'];
+                        $op_product_tax_options[$label]['percentageValue'] = $taxStroName['percentageValue'];
+                        $op_product_tax_options[$label]['inPercentage'] = $taxStroName['inPercentage'];
+
+                        $langData =  TaxRuleCombined::getAttributesByLangId($lang_id, $taxStroId, array(), 1);
+                        $langLabel = (isset($langData['taxruledet_name']) && $langData['taxruledet_name'] != '') ? $langData['taxruledet_name'] : $label;
+
+                        $productTaxChargesData[$taxStroId]['langData'][$lang_id] = array(
+                        'opchargeloglang_lang_id' => $lang_id,
+                        'opchargelog_name' => $langLabel
+                        );
                     }
-                    
+
                     $productsLangData[$lang_id] = array(
                     'oplang_lang_id' => $lang_id,
                     'op_product_name' => $langSpecificProductInfo['product_name'],
@@ -1159,8 +1168,8 @@ class CheckoutController extends MyAppController
                     'op_product_weight_unit_name' => $op_product_weight_unit_name,
                     'op_product_tax_options' => json_encode($op_product_tax_options),
                     );
+
                 }
-                
                 /* $taxCollectedBySeller = applicationConstants::NO;
                 if(FatApp::getConfig('CONF_TAX_COLLECTED_BY_SELLER',FatUtility::VAR_INT,0)){
                 $taxCollectedBySeller = applicationConstants::YES;
@@ -1203,6 +1212,7 @@ class CheckoutController extends MyAppController
                     'productsLangData' => $productsLangData,
                     'productShippingData' => $productShippingData,
                     'productShippingLangData' => $productShippingLangData,
+                    'productChargesLogData' => $productTaxChargesData,
                     /* 'op_tax_collected_by_seller'    =>    $taxCollectedBySeller, */
                     /* 'op_free_ship_upto' => $cartProduct['shop_free_ship_upto'], */
                     'op_actual_shipping_charges' => $cartProduct['shipping_cost'],

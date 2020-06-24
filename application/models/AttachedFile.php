@@ -137,6 +137,19 @@ class AttachedFile extends MyAppModel
         );
         return $arr;
     }
+	
+	public static function getImgAttrTypeArray($langId)
+    {
+        return $arr = array(
+        static::FILETYPE_PRODUCT_IMAGE => Labels::getLabel('LBL_Products', $langId),
+        static::FILETYPE_BRAND_LOGO => Labels::getLabel('LBL_Brand_Logo', $langId),
+        static::FILETYPE_BRAND_IMAGE => Labels::getLabel('LBL_Brand_Banner', $langId),
+        /* static::FILETYPE_CATEGORY_IMAGE => Labels::getLabel('LBL_Categories', $langId), */
+        static::FILETYPE_CATEGORY_BANNER => Labels::getLabel('LBL_Category_Banner', $langId),
+        static::FILETYPE_BLOG_POST_IMAGE => Labels::getLabel('LBL_Blogs', $langId),
+        );
+        return $arr;
+    }
 
     public static function getRatioTypeArray($langId)
     {
