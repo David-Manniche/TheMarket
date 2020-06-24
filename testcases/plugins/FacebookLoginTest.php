@@ -5,10 +5,10 @@ class FacebookLoginTest extends PluginBaseTest
     public const KEY_NAME = 'FacebookLogin';
 
     /**
-     * testVerifyAccessToken - Return Array in case of missing required keys.
+     * testVerifyAccessToken
      *
      * @dataProvider setInput
-     * @param  array $toCurrencies
+     * @param  array $accessToken
      * @return void
      */
     public function testVerifyAccessToken(string $accessToken, string $state = '', bool $expected = true): void
