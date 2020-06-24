@@ -29,6 +29,7 @@ $text_install_extension = '2. Please make sure the PHP extensions listed below a
 $text_msql_version = '3. Please make sure you have Mysql version 5.6 or greater than 5.6';
 $text_note='Note: In some server environment, script unable to detect server settings. So if you have configured your server as per required settings, You can install <a href="http://www.fatbit.com/" target="_blank">FatBit</a> Powered Scripts. ';
 $text_strict_trans_tables='4. sql_mode - strict_trans_tables should be disabled.';
+$text_composer = '5. PHP Composer should be installed.';
 $text_setting = 'PHP Settings';
 $text_current = 'Current Settings';
 $text_required = 'Required Settings';
@@ -101,7 +102,6 @@ $mbstring = extension_loaded('mbstring');
 $ioncube = extension_loaded('IonCube Loader');
 $json = extension_loaded('json');
 $fileinfo = extension_loaded('fileinfo');
-
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -412,8 +412,8 @@ $fileinfo = extension_loaded('fileinfo');
                   </td>
                   <td><?php echo $php_version; ?>
                   </td>
-                  <td>7.2+ & <= 7.3</td>
-                  <td class="text-center"><?php if ($php_version >= '7.2') { ?>
+                  <td>7.3</td>
+                  <td class="text-center"><?php if ($php_version >= '7.3' && $php_version < '7.4') { ?>
                     <span class="text-success"><i class="fa fa-check-circle svg-icn check"><svg
                           class="icon icon--check">
                           <use xlink:href="#Check_Circle" /></svg>
@@ -860,6 +860,8 @@ $fileinfo = extension_loaded('fileinfo');
           <p><?php echo $text_msql_version; ?>
           </p>
           <p><?php echo $text_strict_trans_tables; ?>
+          </p>
+          <p><?php echo $text_composer; ?>
           </p>
           <p><?php echo $text_note; ?>
           </p>
