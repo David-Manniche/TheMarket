@@ -764,6 +764,7 @@ var infowindow;
 function initMap(lat = 40.72, lng = -73.96, elementId = 'map') {
 	var lat = parseInt(lat);
 	var lng = parseInt(lng);
+	var address = '';
 	if (1 > $("#" + elementId).length) {
         return;
 	}
@@ -773,14 +774,25 @@ function initMap(lat = 40.72, lng = -73.96, elementId = 'map') {
   	});
   	geocoder = new google.maps.Geocoder;
   	infowindow = new google.maps.InfoWindow;
-	geocodeAddress(geocoder, map, infowindow);
-  	document.getElementById('postal-code').addEventListener('blur', function() {
-		geocodeAddress(geocoder, map, infowindow);
+
+	address = document.getElementById('postal_code').value;
+	/*address = {lat: parseFloat(lat), lng: parseFloat(lat)};*/
+	geocodeAddress(geocoder, map, infowindow, address);
+
+  	document.getElementById('postal_code').addEventListener('blur', function() {
+		address = document.getElementById('postal_code').value;
+		geocodeAddress(geocoder, map, infowindow, address);
   	});
+
+	for (i = 0; i < document.getElementsByClassName('addressSelection-js').length; i++) {
+	    document.getElementsByClassName('addressSelection-js')[i].addEventListener("change", function(e) {
+			address = e.target.options[e.target.selectedIndex].text;
+			geocodeAddress(geocoder, map, infowindow, address);
+	  	});
+	}
 }
 
-function geocodeAddress(geocoder, resultsMap, infowindow) {
-    var address = document.getElementById('postal-code').value;
+function geocodeAddress(geocoder, resultsMap, infowindow, address) {
     geocoder.geocode({'address': address}, function(results, status) {
       if (status === 'OK') {
         resultsMap.setCenter(results[0].geometry.location);
@@ -792,16 +804,13 @@ function geocodeAddress(geocoder, resultsMap, infowindow) {
           position: results[0].geometry.location,
 		  draggable: true
         });
-      	infowindow.setContent(results[0].formatted_address);
-	  	infowindow.open(map, marker);
-		document.getElementById('lat').value = marker.getPosition().lat().toFixed(6);
-		document.getElementById('lng').value = marker.getPosition().lng().toFixed(6);
 
+		geocodePosition(marker.getPosition());
 		google.maps.event.addListener(marker, 'dragend', function() {
         	geocodePosition(marker.getPosition());
       	});
       } else {
-        alert('Geocode was not successful for the following reason: ' + status);
+        /*console.log('Geocode was not successful for the following reason: ' + status);*/
       }
     });
 }
@@ -815,33 +824,41 @@ function geocodePosition(pos) {
 				infowindow.setContent(results[0].formatted_address);
 				infowindow.open(map, marker);
                 var address_components = results[0].address_components;
-                var components = {};
-                jQuery.each(address_components, function(k,v1) {jQuery.each(v1.types, function(k2, v2){components[v2]=v1.long_name});});
-
-				var city;
-                var postal_code;
-				var state;
-                var country;
-
-                if(components.locality) {
-                    city = components.locality;
-                }
-
-                if(!city) {
-                    city = components.administrative_area_level_1;
-                }
-				if(components.postal_code) {
-                    postal_code = components.postal_code;
-                }
-                if(components.administrative_area_level_1) {
-                    state = components.administrative_area_level_1;
-                }
-                if(components.country) {
-                    country = components.country;
-                }
-				$('#shop_state').val(state);
-				$('#shop_country_id').val(country);
-				$('#postal-code').val(postal_code);
+		        var data = {};
+		        data['lat'] = pos.lat().toFixed(6);
+		        data['lng'] = pos.lng().toFixed(6);
+		        data['formatted_address'] = results[0].formatted_address;
+				if (0 < address_components.length) {
+		            var addressComponents = address_components;
+		            for (var i = 0; i < addressComponents.length; i++) {
+		                var key = address_components[i].types[0];
+		                var value = address_components[i].long_name;
+						data[key] = value;
+		                if ('country' == key) {
+							data['country_code'] = address_components[i].short_name;
+							data['country'] = value;
+		                } else if ('administrative_area_level_1' == key){
+							data['state_code'] = address_components[i].short_name;
+							data['state'] = value;
+						} else if ('administrative_area_level_2' == key){
+							data['city'] = value;
+						}
+					}
+		        }
+				$('#postal_code').val(data.postal_code);
+				$('#shop_country_id option').each(function(){
+				    if (this.text == data.country) {
+				       	$('#shop_country_id').val(this.value);
+						var state = 0;
+						$('#shop_state option').each(function(){
+							if (this.text == data.state) {
+								state = this.value;
+							}
+						});
+						getCountryStates(this.value, state, '#shop_state');
+						return false;
+				    }
+				});
             }
         }
     });

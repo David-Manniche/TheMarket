@@ -7,10 +7,12 @@ $shopFrm->developerTags['fld_default_col'] = 4;
 
 $countryFld = $shopFrm->getField('shop_country_id');
 $countryFld->setFieldTagAttribute('id', 'shop_country_id');
+$countryFld->setFieldTagAttribute('class', 'addressSelection-js');
 $countryFld->setFieldTagAttribute('onChange', 'getCountryStates(this.value,'.$stateId.',\'#shop_state\')');
 
 $stateFld = $shopFrm->getField('shop_state');
 $stateFld->setFieldTagAttribute('id', 'shop_state');
+$stateFld->setFieldTagAttribute('class', 'addressSelection-js');
 
 $urlFld = $shopFrm->getField('urlrewrite_custom');
 $urlFld->setFieldTagAttribute('id', "urlrewrite_custom");
@@ -22,7 +24,7 @@ $identiFierFld = $shopFrm->getField('shop_identifier');
 $identiFierFld->setFieldTagAttribute('onkeyup', "Slugify(this.value,'urlrewrite_custom','shop_id','shopurl')");
 
 $postalCode = $shopFrm->getField('shop_postalcode');
-$postalCode->setFieldTagAttribute('id', "postal-code");
+$postalCode->setFieldTagAttribute('id', "postal_code");
 
 $latFld = $shopFrm->getField('shop_lat');
 $latFld->setFieldTagAttribute('id', "lat");

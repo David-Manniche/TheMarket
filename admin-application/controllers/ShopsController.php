@@ -577,11 +577,12 @@ class ShopsController extends AdminBaseController
         $fld = $frm->addTextBox(Labels::getLabel('LBL_ORDER_RETURN_AGE', $this->adminLangId), 'shop_return_age');
         $fld->requirements()->setInt();
         $fld->requirements()->setPositive();
-        
+
         $fld = $frm->addTextBox(Labels::getLabel('LBL_ORDER_CANCELLATION_AGE', $this->adminLangId), 'shop_cancellation_age');
         $fld->requirements()->setInt();
         $fld->requirements()->setPositive();
-
+        $frm->addHiddenField('', 'shop_lat');
+        $frm->addHiddenField('', 'shop_lng');
         $frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_Save_Changes', $this->adminLangId));
         return $frm;
     }
@@ -1071,7 +1072,7 @@ class ShopsController extends AdminBaseController
         } else {
             $row = ShopCollection::getAttributesByLangId($langId, $scollection_id);
         }
-        
+
         $data = [];
         $data['scollection_id'] = $scollection_id;
         $data['lang_id'] = $langId;
@@ -1095,7 +1096,7 @@ class ShopsController extends AdminBaseController
         $frm->addSelectBox(Labels::getLabel('LBL_LANGUAGE', $this->adminLangId), 'lang_id', Language::getAllNames(), $lang_id, array(), '');
         $frm->addHiddenField('', 'shop_id', $shop_id);
         $frm->addRequiredField('Collection Name', 'name');
-        
+
         $siteLangId = FatApp::getConfig('conf_default_site_lang', FatUtility::VAR_INT, 1);
         $translatorSubscriptionKey = FatApp::getConfig('CONF_TRANSLATOR_SUBSCRIPTION_KEY', FatUtility::VAR_STRING, '');
 
