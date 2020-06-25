@@ -225,9 +225,12 @@ $cancelBtnFld->setFieldTagAttribute('class', 'btn btn-outline-primary');
                                 <?php }?>
                                 <th width="20%"><?php echo Labels::getLabel('LBL_Cost_Price', $siteLangId); ?>
                                 </th>
+                                <?php $selPriceTitle = (FatApp::getConfig("CONF_PRODUCT_INCLUSIVE_TAX", FatUtility::VAR_INT, 0)) ? Labels::getLabel('LBL_This_price_is_including_the_tax_rates.', $siteLangId) : Labels::getLabel('LBL_This_price_is_excluding_the_tax_rates.', $siteLangId);
+                                             $selPriceTitle .= ' '.Labels::getLabel('LBL_Min_Selling_price', $siteLangId).' '. CommonHelper::displayMoneyFormat($productMinSellingPrice, true, true);
+                                             ?>
                                 <th width="20%"><?php echo Labels::getLabel('LBL_Selling_Price', $siteLangId); ?>
                                     <i class="fa fa-info-circle" data-toggle="tooltip" data-placement="right"
-                                        title="<?php echo Labels::getLabel('LBL_This_price_is_excluding_the_tax_rates.', $siteLangId).' '.Labels::getLabel('LBL_Min_Selling_price', $siteLangId).' '. CommonHelper::displayMoneyFormat($productMinSellingPrice, true, true); ?>"></i>
+                                        title="<?php echo $selPriceTitle; ?>"></i>
                                 </th>
                                 <th width="20%"><?php echo Labels::getLabel('LBL_Quantity', $siteLangId); ?>
                                 </th>
