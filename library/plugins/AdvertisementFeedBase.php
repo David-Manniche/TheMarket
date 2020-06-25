@@ -1,6 +1,6 @@
 <?php
 
-class AdvertisementFeedBase extends pluginBase
+class AdvertisementFeedBase extends PluginBase
 {
     protected function getUserMeta($key = '')
     {

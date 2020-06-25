@@ -1,5 +1,5 @@
 <?php
-include_once CONF_INSTALLATION_PATH . 'library/GoogleAPI/vendor/autoload.php';
+
 class GoogleShoppingFeed extends AdvertisementFeedBase
 {
     public const KEY_NAME = 'GoogleShoppingFeed';

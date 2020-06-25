@@ -1,6 +1,6 @@
 <?php
 
-include_once CONF_INSTALLATION_PATH . 'library/GoogleAPI/vendor/autoload.php';
+require_once CONF_INSTALLATION_PATH . 'vendor/autoload.php';
 
 class GoogleShoppingFeedController extends AdvertisementFeedBaseController
 {

@@ -7,22 +7,25 @@ class Plugin extends MyAppModel
     public const DB_TBL_PREFIX = 'plugin_';
     public const DB_TBL_LANG_PREFIX = 'pluginlang_';
 
-    public const TYPE_CURRENCY = 1;
+    public const RETURN_FALSE  = 0;
+    public const RETURN_TRUE  = 1;
+
+    public const TYPE_CURRENCY_CONVERTER = 1;
     public const TYPE_SOCIAL_LOGIN = 2;
     public const TYPE_PUSH_NOTIFICATION = 3;
     public const TYPE_PAYOUTS = 4;
     public const TYPE_ADVERTISEMENT_FEED = 5;
-    public const TYPE_SMS_NOTIFICATION = 6;    
+    public const TYPE_SMS_NOTIFICATION = 6;
     public const TYPE_FULL_TEXT_SEARCH = 7;
     public const TYPE_TAX_SERVICES  = 10;
 
     /* Define here :  if system can not activate multiple plugins for a same feature*/
     public const HAVING_KINGPIN = [
-        self::TYPE_CURRENCY,
+        self::TYPE_CURRENCY_CONVERTER,
         self::TYPE_PUSH_NOTIFICATION,
         self::TYPE_ADVERTISEMENT_FEED,
         self::TYPE_SMS_NOTIFICATION,
-        self::TYPE_TAX_SERVICES ,   
+        self::TYPE_TAX_SERVICES ,
         self::TYPE_FULL_TEXT_SEARCH
     ];
 
@@ -48,7 +51,7 @@ class Plugin extends MyAppModel
     public static function getTypeArr($langId)
     {
         return [
-            self::TYPE_CURRENCY => Labels::getLabel('LBL_CURRENCY', $langId),
+            self::TYPE_CURRENCY_CONVERTER => Labels::getLabel('LBL_CURRENCY_CONVERTER', $langId),
             self::TYPE_SOCIAL_LOGIN => Labels::getLabel('LBL_SOCIAL_LOGIN', $langId),
             self::TYPE_PUSH_NOTIFICATION => Labels::getLabel('LBL_PUSH_NOTIFICATION', $langId),
             self::TYPE_PAYOUTS => Labels::getLabel('LBL_PAYOUT', $langId),
@@ -62,6 +65,8 @@ class Plugin extends MyAppModel
     public static function getDirectory(int $pluginType)
     {
         $pluginDir = [
+            self::TYPE_CURRENCY_CONVERTER => "currency-converter",
+            self::TYPE_SOCIAL_LOGIN => "social-login",
             self::TYPE_PUSH_NOTIFICATION => "push-notification",
             self::TYPE_ADVERTISEMENT_FEED => "advertisement-feed",
             self::TYPE_SMS_NOTIFICATION => "sms-notification",
