@@ -404,7 +404,7 @@ class Cart extends FatModel
                         'shippingCost' => $shippingCost,
                         'buyerId' => $this->cart_user_id
                     );
-                    if (FatApp::getConfig("CONF_PRODUCT_INCLUSIVE_TAX", FatUtility::VAR_INT, 0)) {
+                    if (FatApp::getConfig("CONF_PRODUCT_INCLUSIVE_TAX", FatUtility::VAR_INT, 0) && 0 == Tax::getActivatedServiceId()) {
                         $shipToStateId = 0;
                         $shipToCountryId = 0;
 
@@ -564,7 +564,7 @@ class Cart extends FatModel
             $quantity = $sellerProductRow['selprod_stock'];
         }
         
-        if (FatApp::getConfig("CONF_PRODUCT_INCLUSIVE_TAX", FatUtility::VAR_INT, 0)) {
+        if (FatApp::getConfig("CONF_PRODUCT_INCLUSIVE_TAX", FatUtility::VAR_INT, 0) && 0 == Tax::getActivatedServiceId()) {
             $tax = new Tax();
             $taxCategoryRow = $tax->getTaxRates($sellerProductRow['product_id'], $sellerProductRow['selprod_user_id'], $siteLangId);
             $sellerProductRow['theprice'] = round($sellerProductRow['theprice'] / (1 + ( $taxCategoryRow['taxrule_rate'] / 100)), 2);
