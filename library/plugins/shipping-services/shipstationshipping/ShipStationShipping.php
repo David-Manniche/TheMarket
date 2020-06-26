@@ -67,18 +67,18 @@ class ShipStationShipping extends ShippingServicesBase
     /**
      * getRates
      *
-     * @param  string $carrier_code
-     * @param  string $from_pin_code
+     * @param  string $carrierCode
+     * @param  string $shipFromPostalCode
      * @param  int $langId
      * @return void
      */
-    public function getRates(string $carrier_code, string $from_pin_code, int $langId)
+    public function getRates(string $carrierCode, string $shipFromPostalCode)
     {
         $pkgDetail = [
-            'carrierCode' => $carrier_code,
+            'carrierCode' => $carrierCode,
             'serviceCode' => null,
             'packageCode' => null,
-            'fromPostalCode' => $from_pin_code,
+            'fromPostalCode' => $shipFromPostalCode,
             'toState' => $this->address['state'],
             'toCountry' => $this->address['country'],
             'toPostalCode' => $this->address['postalCode'],

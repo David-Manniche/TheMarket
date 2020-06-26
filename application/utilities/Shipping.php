@@ -225,7 +225,7 @@ class Shipping
                 if ($shippingRates) {
                     $shippingRates = unserialize($shippingRates);
                 } else {
-                    $shippingRates = $this->shippingApiObj->getRates($carrier['code'], $fromZipCode, $this->langId);
+                    $shippingRates = $this->shippingApiObj->getRates($carrier['code'], $fromZipCode);
                     if (false === $shippingRates) {
                         // echo $this->shippingApiObj->getError();
                     }
