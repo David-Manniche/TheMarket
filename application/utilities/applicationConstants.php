@@ -12,6 +12,9 @@ class applicationConstants
     public const ON = 1;
     public const OFF = 0;
 
+    public const SUCCESS = 1;
+    public const FAILURE = 0;
+
     public const ACTIVE = 1;
     public const INACTIVE = 0;
 

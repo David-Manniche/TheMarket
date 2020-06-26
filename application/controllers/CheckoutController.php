@@ -544,6 +544,10 @@ class CheckoutController extends MyAppController
         }
 
         $shippingRates = $this->cartObj->getShippingRates();
+		if (false == $shippingRates) {
+			LibHelper::exitWithError($this->cartObj->getError(), true);
+		}
+		
         $selectedShippingMethods = [];
         $shipProducts = [];
         

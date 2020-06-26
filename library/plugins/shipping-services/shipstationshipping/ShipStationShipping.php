@@ -1,4 +1,5 @@
 <?php
+
 require_once dirname(__FILE__) . '/ShipStationFunctions.php';
 
 class ShipStationShipping extends ShippingServicesBase
@@ -34,7 +35,6 @@ class ShipStationShipping extends ShippingServicesBase
         if (1 > $this->langId) {
             $this->langId = CommonHelper::getLangId();
         }
-        $this->init();
     }
         
     /**
@@ -42,10 +42,10 @@ class ShipStationShipping extends ShippingServicesBase
      *
      * @return bool
      */
-    private function init(): bool
+    public function init(): bool
     {
         if (false == $this->validateSettings($this->langId)) {
-            trigger_error($this->getError(), E_USER_ERROR);
+            return false;
         }
         return true;
     }
@@ -63,21 +63,7 @@ class ShipStationShipping extends ShippingServicesBase
             // CommonHelper::printArray($this->error, true);
             return [];
         }
-        $list = $this->getResponse();
-        if (true === $assoc) {
-            $langId = 1 > $langId ? commonHelper::getLangId() : $langId;
-            $list = array_reduce($list, function ($result, $item) {
-                $name = $item['name'];
-                if (!empty($item['nickname']) && strtolower($item['name']) !== strtolower($item['nickname'])) {
-                    $name .= ' - ' . $item['nickname'];
-                }
-                $result[$item['code']] = $name;
-                return $result;
-            });
-            array_unshift($list, Labels::getLabel('MSG_SELECT_CARRIER', $langId));
-        }
-
-        return $list;
+        return $this->getResponse();
     }
     
     /**
@@ -102,6 +88,7 @@ class ShipStationShipping extends ShippingServicesBase
             'weight' => $this->getWeight(),
             'dimensions' => $this->getDimensions()
         ];
+
         if (false === $this->doRequest(self::REQUEST_SHIPPING_RATES, $pkgDetail)) {
             return false;
         }

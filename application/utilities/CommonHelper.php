@@ -1831,7 +1831,7 @@ class CommonHelper extends FatUtility
     }
 
     public static function demoUrl()
-    { 
+    {
         if (strpos($_SERVER ['SERVER_NAME'], 'demo.yo-kart.com') !== false) {
             return true;
         }
@@ -1890,7 +1890,7 @@ class CommonHelper extends FatUtility
     }
 
     public static function displayTaxPercantage($taxVal, $displayPercentage = false)
-    {        
+    {
         if (false == $displayPercentage) {
             return $taxVal['name'];
         }

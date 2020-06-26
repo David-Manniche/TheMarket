@@ -1636,6 +1636,10 @@ class Cart extends FatModel
     public function getShippingRates()
     {
         $shippingOptions = $this->getShippingOptions();
+        if (false == $shippingOptions) {
+            return false;
+        }
+
         $shippingRates = [];
         foreach ($shippingOptions as $level => $levelItems) {
             if (count($levelItems['rates']) <= 0) {
@@ -1683,8 +1687,9 @@ class Cart extends FatModel
         
 
         $shipping = new Shipping($this->cart_lang_id);
-        $shippedByArr = $shipping->calculateCharges($physicalSelProdIdArr, $shippingAddressDetail, $productInfo);
-        
+        $response =  $shipping->calculateCharges($physicalSelProdIdArr, $shippingAddressDetail, $productInfo);
+        $shippedByArr = $response['data'];
+
         /*Include digital products */
         foreach ($digitalSelProdIdArr as $selProdId) {
             $shippedByArr[Shipping::LEVEL_PRODUCT]['products'][$selProdId] = $productInfo[$selProdId];

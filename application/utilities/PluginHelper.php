@@ -70,7 +70,7 @@ trait PluginHelper
      * @param  int $langId
      * @return mixed
      */
-    public static function includePlugin(string $keyName, string $directory, &$error = '', int $langId = 0)
+    public static function includePlugin(string $keyName, string $directory, &$error = '', int $langId = 0, bool $checkActive = true)
     {
         if (1 > $langId) {
             $langId = CommonHelper::getLangId();
@@ -81,7 +81,7 @@ trait PluginHelper
             return false;
         }
 
-        if (1 > Plugin::isActive($keyName)) {
+        if (true === $checkActive && 1 > Plugin::isActive($keyName)) {
             $error =  Labels::getLabel('MSG_PLUGIN_IS_NOT_ACTIVE', $langId);
             return false;
         }
@@ -105,7 +105,7 @@ trait PluginHelper
      * @param int $langId
      * @return mixed
      */
-    public static function callPlugin(string $keyName, array $args = [], &$error = '', int $langId = 0)
+    public static function callPlugin(string $keyName, array $args = [], &$error = '', int $langId = 0, bool $checkActive = true)
     {
         if (1 > $langId) {
             $langId = CommonHelper::getLangId();
@@ -126,7 +126,7 @@ trait PluginHelper
         }
 
         $error = '';
-        if (false === PluginHelper::includePlugin($keyName, $directory, $error, $langId)) {
+        if (false === PluginHelper::includePlugin($keyName, $directory, $error, $langId, $checkActive)) {
             return false;
         }
 
