@@ -1622,12 +1622,13 @@ class Cart extends FatModel
                 $this->shippingService->setDimensions($productLengthInCenti, $productWidthInCenti, $productHeightInCenti);
             }
 
-            $product_rates = $this->shippingService->getShippingRates($carrier_id, $sellerPinCode, $lang_id);
+            $product_rates = $this->shippingService->getRates($carrier_id, $sellerPinCode, $lang_id);
             if (false === $product_rates) {
                 $this->error = $this->shippingService->getError();
                 return false;
             }
-            $product_rates = $this->shippingService->formatShippingRates();
+			
+			$product_rates = Shipping::formatShippingRates($product_rates, $lang_id);
         }
 
         return $product_rates;

@@ -180,7 +180,6 @@ class Shipping
         }
 
         $carriers = $this->shippingApiObj->getCarriers();
-        CommonHelper::printArray($carriers);
         $this->shippingApiObj->setAddress($shippingAddressDetail['ua_name'], $shippingAddressDetail['ua_address1'], $shippingAddressDetail['ua_address2'], $shippingAddressDetail['ua_city'], $shippingAddressDetail['state_name'], $shippingAddressDetail['ua_zip'], $shippingAddressDetail['country_code'], $shippingAddressDetail['ua_phone']);
         
         $weightUnitsArr = applicationConstants::getWeightUnitsArr($this->langId);
@@ -226,13 +225,13 @@ class Shipping
                 if ($shippingRates) {
                     $shippingRates = unserialize($shippingRates);
                 } else {
-                    $shippingRates = $this->shippingApiObj->getShippingRates($carrier['code'], $fromZipCode, $this->langId);
+                    $shippingRates = $this->shippingApiObj->getRates($carrier['code'], $fromZipCode, $this->langId);
                     if (false === $shippingRates) {
                         // echo $this->shippingApiObj->getError();
                     }
                     FatCache::set($cacheKey, serialize($shippingRates), '.txt');
                 }
-                CommonHelper::printArray($shippingRates, true);
+
                 if (false == $shippingRates || empty($shippingRates)) {
                     continue;
                 }
@@ -533,7 +532,7 @@ class Shipping
      * @param  string $productWeightClass
      * @return float
      */
-    public function convertLengthInCenti(float $productWeight, string $productWeightClass): float
+    public static function convertLengthInCenti(float $productWeight, string $productWeightClass): float
     {
         $coversionRate = 1;
         switch (strtoupper($productWeightClass)) {
@@ -613,5 +612,29 @@ class Shipping
             $this->loadDefaultPluginData();
         }
         return $this->pluginId;
+    }
+
+    /**
+     * formatShippingRates
+     *
+     * @return array
+     */
+    public static function formatShippingRates(array $rates, int $langId): array
+    {
+        $rateOptions = [];
+        if (!empty($rates)) {
+            $rateOptions[] = Labels::getLabel('MSG_SELECT_SERVICE', $langId);
+            foreach ($rates as $key => $value) {
+                $code = $value['serviceCode'];
+                $price = $value['shipmentCost'] + $value['otherCost'];
+                $name = $value['serviceName'];
+                $displayPrice = CommonHelper::displayMoneyFormat($price);
+
+                $label = $name . " (" . $displayPrice . " )";
+                $rateOptions[$code . "-" . $price] = $label;
+            }
+        }
+
+        return $rateOptions;
     }
 }

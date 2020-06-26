@@ -53,11 +53,9 @@ class ShipStationShipping extends ShippingServicesBase
     /**
      * getCarriers
      *
-     * @param  bool $assoc
-     * @param  int $langId
      * @return array
      */
-    public function getCarriers(bool $assoc = false, int $langId = 0): array
+    public function getCarriers(): array
     {
         if (false === $this->doRequest(self::REQUEST_CARRIER_LIST)) {
             // CommonHelper::printArray($this->error, true);
@@ -67,14 +65,14 @@ class ShipStationShipping extends ShippingServicesBase
     }
     
     /**
-     * getShippingRates
+     * getRates
      *
      * @param  string $carrier_code
      * @param  string $from_pin_code
      * @param  int $langId
      * @return void
      */
-    public function getShippingRates(string $carrier_code, string $from_pin_code, int $langId)
+    public function getRates(string $carrier_code, string $from_pin_code, int $langId)
     {
         $pkgDetail = [
             'carrierCode' => $carrier_code,
@@ -93,30 +91,6 @@ class ShipStationShipping extends ShippingServicesBase
             return false;
         }
         return $this->getResponse();
-    }
-   
-    /**
-     * formatShippingRates
-     *
-     * @return array
-     */
-    public function formatShippingRates(): array
-    {
-        $rateOptions = [];
-        if (!empty($this->getResponse())) {
-            $rateOptions[] = Labels::getLabel('MSG_Select_Service', $this->langId);
-            foreach ($this->getResponse() as $key => $value) {
-                $code = $value['serviceCode'];
-                $price = $value['shipmentCost'] + $value['otherCost'];
-                $name = $value['serviceName'];
-                $displayPrice = CommonHelper::displayMoneyFormat($price);
-
-                $label = $name . " (" . $displayPrice . " )";
-                $rateOptions[$code . "-" . $price] = $label;
-            }
-        }
-
-        return $rateOptions;
     }
 
     /**
@@ -182,7 +156,7 @@ class ShipStationShipping extends ShippingServicesBase
 
             $weightUnitsArr = applicationConstants::getWeightUnitsArr($this->langId);
             $weightUnitName = ($op['op_product_weight_unit']) ? $weightUnitsArr[$op['op_product_weight_unit']] : '';
-            $productWeightInOunce = $this->convertWeightInOunce($op['op_product_weight'], $weightUnitName);
+            $productWeightInOunce = Shipping::convertWeightInOunce($op['op_product_weight'], $weightUnitName);
 
             $this->setWeight($productWeightInOunce);
             $this->order['weight'] = $this->getWeight();
@@ -190,9 +164,9 @@ class ShipStationShipping extends ShippingServicesBase
             $lengthUnitsArr = applicationConstants::getLengthUnitsArr($this->langId);
             $dimUnitName = ($op['op_product_dimension_unit']) ? $lengthUnitsArr[$op['op_product_dimension_unit']] : '';
 
-            $lengthInCenti = $this->convertLengthInCenti($op['op_product_length'], $dimUnitName);
-            $widthInCenti = $this->convertLengthInCenti($op['op_product_width'], $dimUnitName);
-            $heightInCenti = $this->convertLengthInCenti($op['op_product_height'], $dimUnitName);
+            $lengthInCenti = Shipping::convertLengthInCenti($op['op_product_length'], $dimUnitName);
+            $widthInCenti = Shipping::convertLengthInCenti($op['op_product_width'], $dimUnitName);
+            $heightInCenti = Shipping::convertLengthInCenti($op['op_product_height'], $dimUnitName);
 
             $this->setDimensions($lengthInCenti, $widthInCenti, $heightInCenti);
             $this->order['dimensions'] = $this->getDimensions();
@@ -227,7 +201,7 @@ class ShipStationShipping extends ShippingServicesBase
      */
     public function downloadLabel(int $opId)
     {
-        $orderProductShipmentDetail = $this->getOrderProductShipment($opId);
+        $orderProductShipmentDetail = OrderProductShipment::getAttributesById($opId);
         $shipmentResponse = json_decode($orderProductShipmentDetail['opship_response'], true);
         $trackingNumber = $orderProductShipmentDetail['opship_tracking_number'];
 
