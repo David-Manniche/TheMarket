@@ -328,6 +328,7 @@ class Tax extends MyAppModel
         }
 
         $taxCategoryRow = $this->getTaxRates($productId, $sellerId, $langId, $shipToCountryId, $shipToStateId);
+        /* CommonHelper::printArray($taxCategoryRow); die; */
         if (empty($taxCategoryRow)) {
             return $data = [
                 'status' => false,
@@ -434,30 +435,16 @@ class Tax extends MyAppModel
                 'options' => []
             ];
 
-            if ($taxCategoryRow['taxrule_is_combined'] == static::TAX_TYPE_COMBINED) {
-                foreach ($taxRates['data'] as $code => $rate) {
-                    $data['tax'] = $data['tax'] + $rate['tax'];
-                    foreach ($rate['taxDetails'] as $name => $val) {
-                        $data['options'][$name]['name'] = $val['name'];
-                        $data['options'][$name]['percentageValue'] = 0;
-                        $data['options'][$name]['inPercentage'] = TAX::TYPE_FIXED;
-                        if (isset($data['options'][$name]['value'])) {
-                            $data['options'][$name]['value'] = $data['options'][$name]['value'] + $val['value'];
-                        } else {
-                            $data['options'][$name]['value'] = $val['value'];
-                        }
-                    }
-                }
-            } else {
-                foreach ($taxRates['data'] as $rate) {
-                    $data['tax'] = $data['tax'] + $rate['tax'];
-                    $data['options'][$defaultTaxName]['name'] = Labels::getLabel('LBL_Tax', $langId);
-                    $data['options'][$defaultTaxName]['inPercentage'] = TAX::TYPE_FIXED;
-                    $data['options'][$defaultTaxName]['percentageValue'] = 0;
-                    if (isset($data['options'][$defaultTaxName]['value'])) {
-                        $data['options'][$defaultTaxName]['value'] = $data['options'][$defaultTaxName]['value'] + $rate['tax'];
+            foreach ($taxRates['data'] as $code => $rate) {
+                $data['tax'] = $data['tax'] + $rate['tax'];
+                foreach ($rate['taxDetails'] as $name => $val) {
+                    $data['options'][$name]['name'] = $val['name'];
+                    $data['options'][$name]['percentageValue'] = 0;
+                    $data['options'][$name]['inPercentage'] = TAX::TYPE_FIXED;
+                    if (isset($data['options'][$name]['value'])) {
+                        $data['options'][$name]['value'] = $data['options'][$name]['value'] + $val['value'];
                     } else {
-                        $data['options'][$defaultTaxName]['value'] = $rate['tax'];
+                        $data['options'][$name]['value'] = $val['value'];
                     }
                 }
             }
@@ -467,14 +454,21 @@ class Tax extends MyAppModel
             return $data;
         }
 
+        if (0 < $activatedTaxServiceId) {
+            return $data = [
+                'status' => false,
+                'msg' => Labels::getLabel('MSG_INVALID_TAX_CATEGORY', $langId),
+                'tax' => $tax,
+                'taxCode' => '',
+                'options' => []
+            ];
+        }
         if ($taxCategoryRow['taxval_is_percent'] == static::TYPE_PERCENTAGE) {
             $tax = round((($prodPrice * $qty) * $taxCategoryRow['taxrule_rate']) / 100, 2);
         } else {
             $tax = $taxCategoryRow['taxrule_rate'] * $qty;
         }
-
-
-        if (0 < $activatedTaxServiceId) {
+        /* if (0 < $activatedTaxServiceId) {
             return $data = [
                 'status' => true,
                 'tax' => $tax,
@@ -488,7 +482,7 @@ class Tax extends MyAppModel
                     ]
                 ]
             ];
-        }
+        } */
 
         $data['tax'] = $tax;
         $data['taxCode'] = $taxCategoryRow['taxcat_code'];

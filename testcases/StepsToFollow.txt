@@ -9,5 +9,16 @@ To Run Test Case Follow Below Steps:
    a. bootstrap.php having all configuration related constants and other settings. It will load this file before run test.
    b. ./vendor/bin/phpunit --filter <ANY FUNCTION NAME> --bootstrap ./<DIR>/bootstrap.php ./<DIR>/<FILE WITH EXTENSION> this is used to run function individually.
 
+5. While updating composer if your php version displayed wrong then just run.
+    composer config platform.php <CURRENT PHP VERSION>
+    OR
+    Add this in your composer.json file/
+    ,
+    "config": {
+        "platform": {
+            "php": "7.3.19"
+        }
+    }
+
 
 Example : ./vendor/bin/phpunit --bootstrap ./testcases/bootstrap.php ./testcases/plugins/FixerCurrencyConverterTest.php
