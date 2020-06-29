@@ -5,16 +5,15 @@ trait ShipStationFunctions
     /**
      * getResponse
      *
-     * @param  bool $convertToArray
+     * @param  bool $decodeJson
      * @return mixed
      */
-    public function getResponse(bool $convertToArray = true)
+    public function getResponse(bool $decodeJson = true)
     {
         if (empty($this->resp)) {
             return false;
         }
-
-        return (true === $convertToArray ? json_decode($this->resp, true) : $this->resp);
+        return (true === $decodeJson ? json_decode($this->resp, true) : $this->resp);
     }
     
     /**
@@ -61,7 +60,6 @@ trait ShipStationFunctions
         curl_setopt_array($ch, $request);
         
         $this->resp = curl_exec($ch);
-        //CommonHelper::printArray($this->resp);
         if (false === $this->resp) {
             throw new Exception(curl_error($ch));
         }

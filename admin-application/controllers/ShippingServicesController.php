@@ -15,8 +15,8 @@ class ShippingServicesController extends AdminBaseController
     {
         parent::__construct($action);
         $this->admin_id = AdminAuthentication::getLoggedAdminId();
-        $this->objPrivilege->canViewShippingSoftware($this->admin_id);
-        $this->canEdit = $this->objPrivilege->canEditShippingSoftware($this->admin_id, true);
+        $this->objPrivilege->canViewShippingManagement($this->admin_id);
+        $this->canEdit = $this->objPrivilege->canEditShippingManagement($this->admin_id, true);
         $this->set("canEdit", $this->canEdit);
 
         $this->init();
@@ -37,12 +37,15 @@ class ShippingServicesController extends AdminBaseController
         if (false === $this->shippingService) {
             FatUtility::dieJsonError($error);
         }
+
+        if (false === $this->shippingService->init()) {
+            FatUtility::dieJsonError($this->shippingService->getError());
+        }
     }
     
     /**
      * generateLabel
      *
-     * @param  string $orderId
      * @param  int $opId
      * @return void
      */
@@ -52,9 +55,19 @@ class ShippingServicesController extends AdminBaseController
             LibHelper::dieJsonError($this->shippingService->getError());
         }
         $order = $this->shippingService->getResponse();
+        
         $shipmentApiOrderId = $order['orderId'];
+        $requestParam = [
+            'orderId' => $order['orderId'],
+            'carrierCode' => $order['carrierCode'],
+            'serviceCode' => $order['serviceCode'],
+            'confirmation' => $order['confirmation'],
+            'shipDate' => date('Y-m-d', strtotime('+7 day')),
+            'weight' => $order['weight'],
+            'dimensions' => $order['dimensions'],
+        ];
 
-        if (false === $this->shippingService->bindLabel()) {
+        if (false === $this->shippingService->bindLabel($requestParam)) {
             LibHelper::dieJsonError($this->shippingService->getError());
         }
         

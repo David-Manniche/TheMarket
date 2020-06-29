@@ -1623,7 +1623,7 @@ class Cart extends FatModel
             }
 
             $product_rates = $this->shippingService->getRates($carrier_id, $sellerPinCode);
-            if (false === $product_rates) {
+            if (empty($product_rates)) {
                 $this->error = $this->shippingService->getError();
                 return false;
             }

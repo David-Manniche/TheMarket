@@ -16,7 +16,6 @@ class ShipStationShipping extends ShippingServicesBase
     private const REQUEST_CREATE_LABEL = 4;
     
     private $resp;
-    private $canGenerateLabelForOrder = false;
     private $endpoint = '';
 
     public $requiredKeys = [
@@ -58,7 +57,6 @@ class ShipStationShipping extends ShippingServicesBase
     public function getCarriers(): array
     {
         if (false === $this->doRequest(self::REQUEST_CARRIER_LIST)) {
-            // CommonHelper::printArray($this->error, true);
             return [];
         }
         return $this->getResponse();
@@ -72,7 +70,7 @@ class ShipStationShipping extends ShippingServicesBase
      * @param  int $langId
      * @return void
      */
-    public function getRates(string $carrierCode, string $shipFromPostalCode)
+    public function getRates(string $carrierCode, string $shipFromPostalCode): array
     {
         $pkgDetail = [
             'carrierCode' => $carrierCode,
@@ -88,7 +86,7 @@ class ShipStationShipping extends ShippingServicesBase
         ];
 
         if (false === $this->doRequest(self::REQUEST_SHIPPING_RATES, $pkgDetail)) {
-            return false;
+            return [];
         }
         return $this->getResponse();
     }
@@ -100,10 +98,11 @@ class ShipStationShipping extends ShippingServicesBase
      * @param  int $opId
      * @return void
      */
-    public function addOrder(string $orderId, int $opId)
+    public function addOrder(string $orderId, int $opId): bool
     {
-        $orderDetail = $this->getSystemOrder($orderId, $this->langId, $opId);
-        if (false === $orderDetail) {
+        $orderDetail = $this->getSystemOrder($opId);
+
+        if (empty($orderDetail)) {
             return false;
         }
 
@@ -111,72 +110,70 @@ class ShipStationShipping extends ShippingServicesBase
         $orderDate = date('Y-m-d', $orderTimestamp) . 'T' . date('H:i:s', $orderTimestamp) . '.0000000';
         
         $taxCharged = 0;
-        $shippingTotal = 0;
         $orderInvoiceNumber = 0;
 
-        foreach ($orderDetail["products"] as $op) {
-            $shippingTotal = $shippingTotal + CommonHelper::orderProductAmount($op, 'shipping');
-            if (!empty($op['taxOptions'])) {
-                foreach ($op['taxOptions'] as $key => $val) {
-                    $taxCharged += $val['value'];
-                }
+        $taxOptions = json_decode($orderDetail['op_product_tax_options'], true);
+
+        $shippingTotal = CommonHelper::orderProductAmount($orderDetail, 'shipping');
+        if (!empty($taxOptions)) {
+            foreach ($taxOptions as $key => $val) {
+                $taxCharged += $val['value'];
             }
-            $orderInvoiceNumber = $op['op_invoice_number'];
-
-            $billingAddress = $orderDetail['billingAddress'];
-            $shippingAddress = $orderDetail['shippingAddress'];
-
-            $this->order = [];
-            $this->order['orderNumber'] = $orderInvoiceNumber;
-            $this->order['orderKey'] = $orderInvoiceNumber; // if specified, the method becomes idempotent and the existing Order with that key will be updated
-            $this->order['orderDate'] = $orderDate;
-            $this->order['paymentDate'] = $orderDate;
-            $this->order['orderStatus'] = "awaiting_shipment"; // {awaiting_shipment, on_hold, shipped, cancelled}
-            $this->order['customerUsername'] = $orderDetail['buyer_user_name'];
-            $this->order['customerEmail'] = $orderDetail['buyer_email'];
-            $this->order['amountPaid'] = $orderDetail['order_net_amount'];
-            $this->order['taxAmount'] = (1 > $taxCharged ? $orderDetail['order_tax_charged'] : $taxCharged);
-            $this->order['shippingAmount'] = $shippingTotal;
-            /* $this->order['customerNotes']     = null;
-            $this->order['internalNotes']     = "Express Shipping Please";
-            $this->order['requestedShippingService']     = "Priority Mail"; */
-            $this->order['paymentMethod'] = $orderDetail['pmethod_name'];
-            /* $this->order['carrierCode']       = "fedex"; */
-            $this->order['serviceCode']       = $op['opshipping_carrier'];
-            $this->order['packageCode'] = "package";
-            /* $this->order['confirmation']      = null;
-            $this->order['shipDate']          = null; */
-
-
-            $this->setAddress($billingAddress['oua_name'], $billingAddress['oua_address1'], $billingAddress['oua_address2'], $billingAddress['oua_city'], $billingAddress['oua_state'], $billingAddress['oua_zip'], $billingAddress['oua_country_code'], $billingAddress['oua_phone']);
-            $this->order['billTo'] = $this->getAddress();
-
-            $this->setAddress($shippingAddress['oua_name'], $shippingAddress['oua_address1'], $shippingAddress['oua_address2'], $shippingAddress['oua_city'], $shippingAddress['oua_state'], $shippingAddress['oua_zip'], $shippingAddress['oua_country_code'], $shippingAddress['oua_phone']);
-            $this->order['shipTo'] = $this->getAddress();
-
-            $weightUnitsArr = applicationConstants::getWeightUnitsArr($this->langId);
-            $weightUnitName = ($op['op_product_weight_unit']) ? $weightUnitsArr[$op['op_product_weight_unit']] : '';
-            $productWeightInOunce = Shipping::convertWeightInOunce($op['op_product_weight'], $weightUnitName);
-
-            $this->setWeight($productWeightInOunce);
-            $this->order['weight'] = $this->getWeight();
-
-            $lengthUnitsArr = applicationConstants::getLengthUnitsArr($this->langId);
-            $dimUnitName = ($op['op_product_dimension_unit']) ? $lengthUnitsArr[$op['op_product_dimension_unit']] : '';
-
-            $lengthInCenti = Shipping::convertLengthInCenti($op['op_product_length'], $dimUnitName);
-            $widthInCenti = Shipping::convertLengthInCenti($op['op_product_width'], $dimUnitName);
-            $heightInCenti = Shipping::convertLengthInCenti($op['op_product_height'], $dimUnitName);
-
-            $this->setDimensions($lengthInCenti, $widthInCenti, $heightInCenti);
-            $this->order['dimensions'] = $this->getDimensions();
-
-            $this->setItem($op);
-            $this->order['items'] = [$this->getItem()];
         }
+        $orderInvoiceNumber = $orderDetail['op_invoice_number'];
 
-        $this->canGenerateLabelForOrder = true;
-        return $this->doRequest(self::REQUEST_CREATE_ORDER, $this->order);
+        $orderObj = new Orders($orderDetail['order_id']);
+        $addresses = $orderObj->getOrderAddresses($orderDetail['order_id']);
+        $billingAddress = $addresses[Orders::BILLING_ADDRESS_TYPE];
+        $shippingAddress = (!empty($addresses[Orders::SHIPPING_ADDRESS_TYPE])) ? $addresses[Orders::SHIPPING_ADDRESS_TYPE] : array();
+
+        $this->order = [];
+        $this->order['orderNumber'] = $orderInvoiceNumber;
+        $this->order['orderKey'] = $orderInvoiceNumber; // if specified, the method becomes idempotent and the existing Order with that key will be updated
+        $this->order['orderDate'] = $orderDate;
+        $this->order['paymentDate'] = $orderDate;
+        $this->order['orderStatus'] = "awaiting_shipment"; // {awaiting_shipment, on_hold, shipped, cancelled}
+        $this->order['customerUsername'] = $orderDetail['buyer_user_name'];
+        $this->order['customerEmail'] = $orderDetail['buyer_email'];
+        $this->order['amountPaid'] = $orderDetail['order_net_amount'];
+        $this->order['taxAmount'] = (1 > $taxCharged ? $orderDetail['order_tax_charged'] : $taxCharged);
+        $this->order['shippingAmount'] = $shippingTotal;
+        /* $this->order['customerNotes']     = null;
+        $this->order['internalNotes']     = "Express Shipping Please"; */
+        $this->order['paymentMethod'] = $orderDetail['pmethod_name'];
+        $this->order['carrierCode']       = $orderDetail['opshipping_carrier_code'];
+        $this->order['serviceCode']       = $orderDetail['opshipping_service_code'];
+        $this->order['packageCode'] = "package";
+        /* $this->order['confirmation']      = null;
+        $this->order['shipDate']          = null; */
+
+
+        $this->setAddress($billingAddress['oua_name'], $billingAddress['oua_address1'], $billingAddress['oua_address2'], $billingAddress['oua_city'], $billingAddress['oua_state'], $billingAddress['oua_zip'], $billingAddress['oua_country_code'], $billingAddress['oua_phone']);
+        $this->order['billTo'] = $this->getAddress();
+
+        $this->setAddress($shippingAddress['oua_name'], $shippingAddress['oua_address1'], $shippingAddress['oua_address2'], $shippingAddress['oua_city'], $shippingAddress['oua_state'], $shippingAddress['oua_zip'], $shippingAddress['oua_country_code'], $shippingAddress['oua_phone']);
+        $this->order['shipTo'] = $this->getAddress();
+
+        $weightUnitsArr = applicationConstants::getWeightUnitsArr($this->langId);
+        $weightUnitName = ($orderDetail['op_product_weight_unit']) ? $weightUnitsArr[$orderDetail['op_product_weight_unit']] : '';
+        $productWeightInOunce = Shipping::convertWeightInOunce($orderDetail['op_product_weight'], $weightUnitName);
+
+        $this->setWeight($productWeightInOunce);
+        $this->order['weight'] = $this->getWeight();
+
+        $lengthUnitsArr = applicationConstants::getLengthUnitsArr($this->langId);
+        $dimUnitName = ($orderDetail['op_product_dimension_unit']) ? $lengthUnitsArr[$orderDetail['op_product_dimension_unit']] : '';
+
+        $lengthInCenti = Shipping::convertLengthInCenti($orderDetail['op_product_length'], $dimUnitName);
+        $widthInCenti = Shipping::convertLengthInCenti($orderDetail['op_product_width'], $dimUnitName);
+        $heightInCenti = Shipping::convertLengthInCenti($orderDetail['op_product_height'], $dimUnitName);
+
+        $this->setDimensions($lengthInCenti, $widthInCenti, $heightInCenti);
+        $this->order['dimensions'] = $this->getDimensions();
+
+        $this->setItem($orderDetail);
+        $this->order['items'] = [$this->getItem()];
+        return $this->doRequest(self::REQUEST_CREATE_ORDER, $this->order); //Return bool
     }
         
     /**
@@ -184,13 +181,9 @@ class ShipStationShipping extends ShippingServicesBase
      *
      * @return void
      */
-    public function bindLabel()
+    public function bindLabel(array $requestParam): bool
     {
-        if (false === $this->canGenerateLabelForOrder) {
-            $this->error = Labels::getLabel('MSG_ORDER_CONFIRMATION_IS_REQUIRED', $this->langId);
-            return false;
-        }
-        return $this->doRequest(self::REQUEST_CREATE_LABEL, $this->getResponse());
+        return $this->doRequest(self::REQUEST_CREATE_LABEL, $requestParam); //Return bool
     }
         
     /**
@@ -321,7 +314,7 @@ class ShipStationShipping extends ShippingServicesBase
      * @param  array $op
      * @return bool
      */
-    public function setItem($op): bool
+    public function setItem(array $op): bool
     {
         $this->item = [];
 

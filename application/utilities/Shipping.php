@@ -198,9 +198,9 @@ class Shipping
             }
 
             if (empty($fromZipCode)) {
-               /*  $user = self::BY_ADMIN == $shippedBy ? Labels::getLabel('MSG_ADMIN', $this->langId) : Labels::getLabel('MSG_SHOP', $this->langId);
-                $error = Labels::getLabel('MSG_UNABLE_TO_LOCATE_{USER}_POSTAL_CODE', $this->langId);
-                $this->error = CommonHelper::replaceStringData($error, ['{USER}' => $user]); */
+                /*  $user = self::BY_ADMIN == $shippedBy ? Labels::getLabel('MSG_ADMIN', $this->langId) : Labels::getLabel('MSG_SHOP', $this->langId);
+                 $error = Labels::getLabel('MSG_UNABLE_TO_LOCATE_{USER}_POSTAL_CODE', $this->langId);
+                 $this->error = CommonHelper::replaceStringData($error, ['{USER}' => $user]); */
                 continue;
             }
             
@@ -226,10 +226,9 @@ class Shipping
                     $shippingRates = unserialize($shippingRates);
                 } else {
                     $shippingRates = $this->shippingApiObj->getRates($carrier['code'], $fromZipCode);
-                    if (false === $shippingRates) {
-                        // echo $this->shippingApiObj->getError();
+                    if (!empty($shippingRates)) {
+                        FatCache::set($cacheKey, serialize($shippingRates), '.txt');
                     }
-                    FatCache::set($cacheKey, serialize($shippingRates), '.txt');
                 }
 
                 if (false == $shippingRates || empty($shippingRates)) {
