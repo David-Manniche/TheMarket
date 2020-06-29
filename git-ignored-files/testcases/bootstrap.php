@@ -1,4 +1,5 @@
 <?php
+
 $_SERVER['REDIRECT_REDIRECT_STATUS'] = '200';
 $_SERVER['REDIRECT_STATUS'] = '200';
 $_SERVER['HTTP_HOST'] = 'yokartv8.local.4livedemo.com';

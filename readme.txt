@@ -12,3 +12,4 @@ Bugs:
 
 Enhancements:
     => Tax module upgrade
+    => Test cases classes enhancements.

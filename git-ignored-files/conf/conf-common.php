@@ -14,6 +14,7 @@ define('CONF_UPLOADS_PATH', CONF_INSTALLATION_PATH . 'user-uploads' . DIRECTORY_
 //define('CONF_UPLOADS_PATH',  's3://');
 define('CONF_FRONT_END_APPLICATION_DIR', 'application/');
 define('CONF_PLUGIN_DIR', CONF_INSTALLATION_PATH . 'library/plugins/');
+define('CONF_TEST_CASES_DIR', CONF_INSTALLATION_PATH . 'testcases/');
 
 if (strpos($_SERVER ['SERVER_NAME'], '.4demo.biz') !== false) {
     define('CONF_CORE_LIB_PATH', '/etc/fatlib/');
@@ -33,4 +34,4 @@ define('S3_KEY', '');
 define('S3_SECRET', '');
 define('S3_REGION', 'us-east-2');
 
-define('CONF_TEST_CASES_DIR', CONF_INSTALLATION_PATH . 'testcases/');
+

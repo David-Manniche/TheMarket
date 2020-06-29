@@ -1,6 +1,6 @@
 <?php
 
-class GoogleLoginTest extends PluginBaseTest
+class GoogleLoginTest extends YkPluginTest
 {
     public const KEY_NAME = 'GoogleLogin';
 

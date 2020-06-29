@@ -21,6 +21,7 @@
 /restore
 /bkup
 /application/views/.sass-cache
+/testcases/bootstrap.php
 
 # zip files
 /*.zip
@@ -96,5 +97,8 @@ $RECYCLE.BIN/
 
 php_errors.log
 
+.php_cs.cache
+
 # Php Unit Test
 .phpunit.result.cache
+/testcases/bootstrap.php

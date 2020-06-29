@@ -1,9 +1,5 @@
 <?php
-declare(strict_types=1);
-
-use PHPUnit\Framework\TestCase;
-
-class SellerPackagePlansTest extends TestCase
+class SellerPackagePlansTest extends YkModelTest
 {   
    
     /**

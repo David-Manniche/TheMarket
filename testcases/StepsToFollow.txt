@@ -10,4 +10,6 @@ To Run Test Case Follow Below Steps:
    b. ./vendor/bin/phpunit --filter <ANY FUNCTION NAME> --bootstrap ./<DIR>/bootstrap.php ./<DIR>/<FILE WITH EXTENSION> this is used to run function individually.
 
 
-Example : ./vendor/bin/phpunit --bootstrap ./testcases/bootstrap.php ./testcases/plugins/FixerCurrencyConverterTest.php
+Example : 
+1) ./vendor/bin/phpunit --bootstrap ./testcases/bootstrap.php ./testcases/plugins/FixerCurrencyConverterTest.php
+2) vendor/bin/phpunit --bootstrap testcases/bootstrap.php testcases/models/ShopTest.php

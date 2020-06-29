@@ -1,10 +1,5 @@
 <?php
-
-declare(strict_types=1);
-
-use PHPUnit\Framework\TestCase;
-
-class PluginBaseTest extends TestCase
+class YkPluginTest extends YkAppTest
 {
     protected $classObj = '';
     protected $error = '';

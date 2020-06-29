@@ -1,9 +1,5 @@
 <?php
-declare(strict_types=1);
-
-use PHPUnit\Framework\TestCase;
-
-class UserPrivilegeTest extends TestCase
+class UserPrivilegeTest extends YkModelTest
 {   
    
     /**

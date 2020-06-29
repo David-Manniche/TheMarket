@@ -1,5 +1,4 @@
-<?php
-
+<?php 
 function getInBytes($value)
 {
     $value = str_replace('M', '', $value);

@@ -1,6 +1,6 @@
 <?php
 
-class InstagramLoginTest extends PluginBaseTest
+class InstagramLoginTest extends YkPluginTest
 {
     public const KEY_NAME = 'InstagramLogin';
 
