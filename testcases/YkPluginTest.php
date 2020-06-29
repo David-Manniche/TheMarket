@@ -40,9 +40,8 @@ class YkPluginTest extends YkAppTest
         $directory = Plugin::getDirectory($pluginType);
         $langId = CommonHelper::getLangId();
 
-        $error = '';
-        if (false === PluginHelper::includePlugin($keyName, $directory, $error, $langId)) {
-            FatUtility::dieJsonError($error);
+        if (false === PluginHelper::includePlugin($keyName, $directory, $error, $langId, false)) {
+            // FatUtility::dieJsonError($error);
         }
     }
 }
