@@ -23,13 +23,19 @@ class Tax extends MyAppModel
 
     public const TAX_TYPE_COMBINED = 1;
 
-    public function __construct($id = 0)
+    public function __construct(int $id = 0)
     {
         parent::__construct(static::DB_TBL, static::DB_TBL_PREFIX . 'id', $id);
         $this->db = FatApp::getDb();
     }
 
-    public static function getFieldTypeArr($langId)
+    /**
+    * getFieldTypeArr
+    *
+    * @param  int $langId
+    * @return array
+    */
+    public static function getFieldTypeArr(int $langId): array
     {
         $langId = FatUtility::int($langId);
         if ($langId == 0) {
@@ -42,7 +48,13 @@ class Tax extends MyAppModel
         return $arr;
     }
 
-    public static function getStructureArr($langId)
+    /**
+    * getStructureArr
+    *
+    * @param  int $langId
+    * @return array
+    */
+    public static function getStructureArr(int $langId): array
     {
         $langId = FatUtility::int($langId);
         if ($langId == 0) {
@@ -56,7 +68,12 @@ class Tax extends MyAppModel
         return $arr;
     }
 
-    public static function getSearchObject($langId = 0, $isActive = true)
+    /**
+    * getSearchObject
+    *
+    * @return object
+    */
+    public static function getSearchObject(int $langId = 0, bool $isActive = true): object
     {
         $langId = FatUtility::int($langId);
         $srch = new SearchBase(static::DB_TBL, 't');
@@ -77,7 +94,14 @@ class Tax extends MyAppModel
         return $srch;
     }
 
-    public static function getSaleTaxCatArr($langId, $isActive = true)
+    /**
+    * getSaleTaxCatArr
+    *
+    * @param  int $langId
+    * @param  bool $isActive
+    * @return array
+    */
+    public static function getSaleTaxCatArr(int $langId, bool $isActive = true): array
     {
         $langId = FatUtility::int($langId);
 
@@ -96,16 +120,21 @@ class Tax extends MyAppModel
         }
         $srch->addCondition('taxcat_plugin_id', '=', $activatedTaxServiceId);
 
-        $rs = $srch->getResultSet();
-        $row = FatApp::getDb()->fetchAllAssoc($rs);
-
-        if (!is_array($row)) {
-            return false;
+        $res = $srch->getResultSet();
+        if (!$res) {
+            return array();
         }
-        return $row;
+        return FatApp::getDb()->fetchAllAssoc($res);
     }
 
-    public static function getTaxCatObjByProductId($productId, $langId = 0)
+    /**
+    * getTaxCatObjByProductId
+    *
+    * @param  int $productId
+    * @param  int $langId
+    * @return object
+    */
+    public static function getTaxCatObjByProductId(int $productId, int $langId = 0): object
     {
         $srch = static::getSearchObject($langId);
         $srch->joinTable(
@@ -126,13 +155,21 @@ class Tax extends MyAppModel
         return $srch;
     }
 
-    public function getTaxValuesByCatId($taxcat_id, $userId = 0, $defaultValue = false)
+    /**
+    * getTaxValuesByCatId
+    *
+    * @param  int $taxcatId
+    * @param  int $userId
+    * @param  bool $defaultValue
+    * @return array
+    */
+    public function getTaxValuesByCatId(int $taxcatId, int $userId = 0, bool $defaultValue = false): array
     {
-        $taxcat_id = FatUtility::int($taxcat_id);
+        $taxcatId = FatUtility::int($taxcatId);
         $userId = FatUtility::int($userId);
 
         $srch = new SearchBase(static::DB_TBL_VALUES);
-        $srch->addCondition('taxval_taxcat_id', '=', $taxcat_id);
+        $srch->addCondition('taxval_taxcat_id', '=', $taxcatId);
 
         if ($defaultValue) {
             $srch->addOrder('taxval_seller_user_id', 'ASC');
@@ -158,17 +195,17 @@ class Tax extends MyAppModel
         return array();
     }
 
-    public function addUpdateTaxValues($data = array(), $onDuplicateUpdateData = array())
+    /**
+    * addUpdateProductTaxCat
+    *
+    * @param  array $data
+    * @return bool
+    */
+    public function addUpdateProductTaxCat(array $data): bool
     {
-        if (!FatApp::getDb()->insertFromArray(static::DB_TBL_VALUES, $data, false, array(), $onDuplicateUpdateData)) {
-            $this->error = FatApp::getDb()->getError();
+        if (0 >= Fatutility::int($data['ptt_product_id']) || 0 >= Fatutility::int($data['ptt_taxcat_id']) || 0 >= Fatutility::int($data['ptt_seller_user_id'])) {
             return false;
         }
-        return true;
-    }
-
-    public function addUpdateProductTaxCat($data)
-    {
         if (!FatApp::getDb()->insertFromArray(static::DB_TBL_PRODUCT_TO_TAX, $data, false, array(), $data)) {
             $this->error = FatApp::getDb()->getError();
             return false;
@@ -176,7 +213,13 @@ class Tax extends MyAppModel
         return true;
     }
 
-    public function addUpdateData($data)
+    /**
+    * addUpdateData
+    *
+    * @param  array $data
+    * @return bool
+    */
+    public function addUpdateData(array $data): bool
     {
         unset($data['taxcat_id']);
         $assignValues = array(
@@ -204,7 +247,13 @@ class Tax extends MyAppModel
         return true;
     }
 
-    public function canRecordMarkDelete($id)
+    /**
+    * canRecordMarkDelete
+    *
+    * @param  int $id
+    * @return bool
+    */
+    public function canRecordMarkDelete(int $id): bool
     {
         $srch = $this->getSearchObject(0, false);
         $srch->addCondition('t.' . static::DB_TBL_PREFIX . 'id', '=', $id);
@@ -217,7 +266,17 @@ class Tax extends MyAppModel
         return false;
     }
 
-    public function getTaxRates($productId, $userId, $langId, $userCountry = 0, $userState = 0)
+    /**
+    * getTaxRates
+    *
+    * @param  int $productId
+    * @param  int $userId
+    * @param  int $langId
+    * @param  int $userCountry
+    * @param  int $userState
+    * @return array
+    */
+    public function getTaxRates(int $productId, int $userId, int $langId, int $userCountry = 0, int $userState = 0): array
     {
         $productId = Fatutility::int($productId);
         $userId = Fatutility::int($userId);
@@ -240,11 +299,22 @@ class Tax extends MyAppModel
             $srch->addOrder('taxrule_id', 'ASC');
         }
 
-        $rs = $srch->getResultSet();
-        return FatApp::getDb()->fetch($rs);
+        $res = $srch->getResultSet();
+        $row = FatApp::getDb()->fetch($res);
+        if (!is_array($row)) {
+            return array();
+        }
+        return array();
     }
 
-    private function formatAddress($address, $type = false)
+    /**
+    * formatAddress
+    *
+    * @param  array $address
+    * @param  string $type
+    * @return array
+    */
+    private function formatAddress(array $address, string $type = ''): array
     {
         $postalCode = '';
         $line1 = '';
@@ -303,7 +373,20 @@ class Tax extends MyAppModel
         ];
     }
 
-    public function calculateTaxRates($productId, $prodPrice, $sellerId, $langId, $qty = 1, $extraInfo = array(), $useCache = false)
+    /**
+    * calculateTaxRates
+    *
+    * @param int $productId
+    * @param float $prodPrice
+    * @param int $sellerId
+    * @param int $langId
+    * @param int $qty
+    * @param int $type
+    * @param array $extraInfo
+    * @param bool $useCache
+    * @return array
+    */
+    public function calculateTaxRates(int $productId, float $prodPrice, int $sellerId, int $langId, int $qty = 1, array $extraInfo = array(), bool $useCache = false): array
     {
         $tax = 0;
         $defaultTaxName = Labels::getLabel('LBL_Tax', $langId);
@@ -511,7 +594,13 @@ class Tax extends MyAppModel
         return $data;
     }
 
-    public function createInvoice($childOrderInfo)
+    /**
+    * createInvoice
+    *
+    * @param  array $childOrderInfo
+    * @return bool
+    */
+    public function createInvoice(array $childOrderInfo): bool
     {
         $activatedTaxServiceId = static::getActivatedServiceId();
         if (!$activatedTaxServiceId) {
@@ -595,7 +684,16 @@ class Tax extends MyAppModel
         return true;
     }
 
-    public static function getTaxCatByProductId($productId = 0, $userId = 0, $langId = 0, $fields = array())
+    /**
+    * getTaxCatByProductId
+    *
+    * @param  int $productId
+    * @param  int $userId
+    * @param  int $langId
+    * @param  array $fields
+    * @return array
+    */
+    public static function getTaxCatByProductId(int $productId = 0, int $userId = 0, int $langId = 0, array $fields = array()): array
     {
         $taxData = array();
         $taxObj = static::getTaxCatObjByProductId($productId, $langId);
@@ -610,12 +708,23 @@ class Tax extends MyAppModel
         return $taxData;
     }
 
-    public function removeTaxSetByAdmin($productId = 0)
+    /**
+    * removeTaxSetByAdmin
+    *
+    * @param  int $productId
+    * @return bool
+    */
+    public function removeTaxSetByAdmin(int $productId = 0): bool
     {
-        FatApp::getDb()->deleteRecords(static::DB_TBL_PRODUCT_TO_TAX, array('smt' => 'ptt_seller_user_id = ? and ptt_product_id = ?', 'vals' => array(0, $productId)));
+        return FatApp::getDb()->deleteRecords(static::DB_TBL_PRODUCT_TO_TAX, array('smt' => 'ptt_seller_user_id = ? and ptt_product_id = ?', 'vals' => array(0, $productId)));
     }
 
-    public static function getActivatedServiceId()
+    /**
+    * getActivatedServiceId
+    *
+    * @return int
+    */
+    public static function getActivatedServiceId(): int
     {
         $defaultTaxApi = FatApp::getConfig('CONF_DEFAULT_PLUGIN_' . Plugin::TYPE_TAX_SERVICES, FatUtility::VAR_INT, 0);
         $defaultTaxApiIsActive = 0;
@@ -628,7 +737,15 @@ class Tax extends MyAppModel
         return  $defaultTaxApiIsActive;
     }
 
-    public static function getAttributesByCode($code, $attr = null, $plugInId = 0)
+    /**
+    * getAttributesByCode
+    *
+    * @param  string $code
+    * @param  array $attr
+    * @param  int $plugInId
+    * @return array
+    */
+    public static function getAttributesByCode(string $code, array $attr = null, int $plugInId = 0): array
     {
         $code = FatUtility::convertToType($code, FatUtility::VAR_STRING);
         $plugInId = FatUtility::convertToType($plugInId, FatUtility::VAR_INT);
@@ -648,11 +765,11 @@ class Tax extends MyAppModel
             }
         }
 
-        $rs = $srch->getResultSet();
-        $row = $db->fetch($rs);
+        $res = $srch->getResultSet();
+        $row = $db->fetch($res);
 
         if (!is_array($row)) {
-            return false;
+            return array();
         }
 
         if (is_string($attr)) {

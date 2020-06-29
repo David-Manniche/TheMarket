@@ -37,7 +37,7 @@ class ProductsController extends MyAppController
         $frm = $this->getProductSearchForm($includeKeywordRelevancy);
 
         $get['join_price'] = 1;
-        
+
         $arr = array();
 
         switch ($method) {
@@ -71,13 +71,13 @@ class ProductsController extends MyAppController
 
         $frm->fill($get);
         $data = $this->getListingData($get);
-        
+
 		if (array_key_exists('keyword', $get) && count($data['products'])) {
 			$searchItemObj = new SearchItem();
 			$searchData = array('keyword'=>$get['keyword']);
 			$searchItemObj->addSearchResult($searchData);
 		}
-		
+
         $common = array(
             'frmProductSearch' => $frm,
             'recordId' => 0,
@@ -152,7 +152,7 @@ class ProductsController extends MyAppController
     {
         $db = FatApp::getDb();
         $headerFormParamsAssocArr = FilterHelper::getParamsAssocArr();
-        
+
         $categoryId = 0;
         if (array_key_exists('category', $headerFormParamsAssocArr)) {
             $categoryId = FatUtility::int($headerFormParamsAssocArr['category']);
@@ -164,7 +164,7 @@ class ProductsController extends MyAppController
             $keyword = $headerFormParamsAssocArr['keyword'];
             $langIdForKeywordSeach = $this->siteLangId;
         }
-        
+
         $cacheKey = FilterHelper::getCacheKey($this->siteLangId, $headerFormParamsAssocArr);
 
         $headerFormParamsAssocArr['doNotJoinSpecialPrice'] = true;
@@ -227,7 +227,7 @@ class ProductsController extends MyAppController
             $priceArr['minPrice'] = $filterDefaultMinValue;
             $priceArr['maxPrice'] = $filterDefaultMaxValue;
         }
-        
+
         if (array_key_exists('price-min-range', $headerFormParamsAssocArr) && array_key_exists('price-max-range', $headerFormParamsAssocArr)) {
             $priceArr['minPrice'] = $headerFormParamsAssocArr['price-min-range'];
             $priceArr['maxPrice'] = $headerFormParamsAssocArr['price-max-range'];
@@ -238,7 +238,7 @@ class ProductsController extends MyAppController
             $priceArr['minPrice'] = CommonHelper::convertExistingToOtherCurrency($headerFormParamsAssocArr['currency_id'], $headerFormParamsAssocArr['price-min-range'], $this->siteCurrencyId, false);
             $priceArr['maxPrice'] = CommonHelper::convertExistingToOtherCurrency($headerFormParamsAssocArr['currency_id'], $headerFormParamsAssocArr['price-max-range'], $this->siteCurrencyId, false);
         }
-        
+
         /* ] */
 
         /* Availability Filters[ */
@@ -1561,7 +1561,7 @@ class ProductsController extends MyAppController
     private function getListingData($get)
     {
         $db = FatApp::getDb();
-        
+
         $userId = 0;
         if (UserAuthentication::isUserLogged()) {
             $userId = UserAuthentication::getLoggedUserId();
@@ -1591,7 +1591,7 @@ class ProductsController extends MyAppController
 			$srch->setFields(array('brand', 'categories', 'general'));
             $records = $srch->fetch();
 			$products = [];
-            
+
             if (isset($records['hits']) && count($records['hits']) > 0) {
                 foreach ($records['hits'] as $record) {
                     if (FatApp::getConfig('CONF_ADD_FAVORITES_TO_WISHLIST', FatUtility::VAR_INT, 1) == applicationConstants::NO) {
@@ -1763,22 +1763,22 @@ class ProductsController extends MyAppController
         $this->set('options', $optionRows);
         $this->_template->render();
     }
-    
+
     public function autoCompleteTaxCategories()
     {
         $pagesize = 10;
-        $post = FatApp::getPostedData();       
+        $post = FatApp::getPostedData();
         $srch = Tax::getSearchObject($this->siteLangId,true);
         $srch->addCondition('taxcat_deleted', '=', 0);
         $activatedTaxServiceId = Tax::getActivatedServiceId();
-        
-        $srch->addFld('taxcat_id'); 
+
+        $srch->addFld('taxcat_id');
         if ($activatedTaxServiceId) {
             $srch->addFld('concat(IFNULL(taxcat_name,taxcat_identifier), " (",taxcat_code,")")as taxcat_name');
         }else{
-            $srch->addFld('IFNULL(taxcat_name,taxcat_identifier)as taxcat_name'); 
+            $srch->addFld('IFNULL(taxcat_name,taxcat_identifier)as taxcat_name');
         }
-        $srch->addCondition('taxcat_plugin_id', '=', $activatedTaxServiceId);       
+        $srch->addCondition('taxcat_plugin_id', '=', $activatedTaxServiceId);
 
         if (!empty($post['keyword'])) {
             $srch->addCondition('taxcat_name', 'LIKE', '%' . $post['keyword'] . '%')
@@ -1796,6 +1796,6 @@ class ProductsController extends MyAppController
                 'name' => strip_tags(html_entity_decode($taxCategory['taxcat_name'], ENT_QUOTES, 'UTF-8'))
             );
         }
-        die(json_encode($json));     
+        die(json_encode($json));
     }
 }
