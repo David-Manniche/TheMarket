@@ -15,13 +15,8 @@ if (null != $btnFld) {
 } ?>
 
 <div class="col-md-12">
-    <h2 class="content-header-title">
-        <?php echo $pageTitle; ?>
-    </h2>
-    <div class="section__body">
-        <?php $this->includeTemplate('stripe-connect/fieldsErrors.php', ['errors' => $errors]); ?>
-            <?php echo $frm->getFormHtml(); ?>
-    </div>
+<?php $this->includeTemplate('stripe-connect/fieldsErrors.php', ['errors' => $errors]); ?>
+<?php echo $frm->getFormHtml(); ?>
 </div>
 <script language="javascript">
     $(document).ready(function() {

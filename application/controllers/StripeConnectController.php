@@ -60,7 +60,6 @@ class StripeConnectController extends PaymentMethodBaseController
 
             if (false === $this->stripeConnect->verifyInitialSetup()) {
                 $this->getInitialSetupForm();
-                return;
             }
         }
         $requiredFields = $this->stripeConnect->getRequiredFields();
@@ -115,7 +114,7 @@ class StripeConnectController extends PaymentMethodBaseController
         FatUtility::dieJsonSuccess($msg);
     }
 
-    public function getInitialSetupForm()
+    private function getInitialSetupForm()
     {
         $initialFieldsStatus = $this->stripeConnect->verifyInitialSetup();
 
@@ -142,7 +141,9 @@ class StripeConnectController extends PaymentMethodBaseController
         $this->set('stateCode', $stateCode);
         $this->set('pageTitle', $pageTitle);
         $this->set('keyName', self::KEY_NAME);
-        $this->_template->render(false, false, 'stripe-connect/get-initial-setup-form.php');
+        $json['status'] = 1;
+        $json['html'] = $this->_template->render(false, false, 'stripe-connect/get-initial-setup-form.php', true, false);
+        FatUtility::dieJsonSuccess($json);
     }
 
     private function initialSetupForm()
