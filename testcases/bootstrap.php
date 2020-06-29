@@ -1,7 +1,8 @@
 <?php
+
 $_SERVER['REDIRECT_REDIRECT_STATUS'] = '200';
 $_SERVER['REDIRECT_STATUS'] = '200';
-$_SERVER['HTTP_HOST'] = 'yokartv8.local.4livedemo.com';
+$_SERVER['HTTP_HOST'] = 'localhost';
 $_SERVER['HTTP_USER_AGENT'] = 'Mozilla/5.0 (Windows NT 6.3; WOW64; rv:60.0) Gecko/20100101 Firefox/60.0';
 $_SERVER['HTTP_ACCEPT'] = 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8';
 $_SERVER['HTTP_ACCEPT_LANGUAGE'] = 'en-US,en;q=0.5';
@@ -10,18 +11,18 @@ $_SERVER['HTTP_COOKIE'] = '__unam=ec11dfb-162d251a0d3-24516594-126; _ga=GA1.2.17
 $_SERVER['HTTP_CONNECTION'] = 'keep-alive';
 $_SERVER['HTTP_UPGRADE_INSECURE_REQUESTS'] = '1';
 $_SERVER['PATH'] = '/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/root/.fzf/bin';
-$_SERVER['SERVER_SIGNATURE'] = 'Apache/2.4.18 (Ubuntu) Server at yokartv8.local.4livedemo.com Port 80';
+$_SERVER['SERVER_SIGNATURE'] = 'Apache/2.4.18 (Ubuntu) Server at localhost Port 80';
 $_SERVER['SERVER_SOFTWARE'] = 'Apache/2.4.18 (Ubuntu)';
-$_SERVER['SERVER_NAME'] = 'yokartv8.local.4livedemo.com';
+$_SERVER['SERVER_NAME'] = 'localhost';
 $_SERVER['SERVER_ADDR'] = '127.0.0.1';
 $_SERVER['SERVER_PORT'] = '80';
 $_SERVER['REMOTE_ADDR'] = '127.0.0.1';
-$_SERVER['DOCUMENT_ROOT'] = 'yokart';
+$_SERVER['DOCUMENT_ROOT'] = 'C:/xampp/htdocs';
 $_SERVER['REQUEST_SCHEME'] = 'http';
 $_SERVER['CONTEXT_PREFIX'] = '';
-$_SERVER['CONTEXT_DOCUMENT_ROOT'] = 'yokart';
+$_SERVER['CONTEXT_DOCUMENT_ROOT'] = 'C:/xampp/htdocs';
 $_SERVER['SERVER_ADMIN'] = 'webmaster@localhost';
-$_SERVER['SCRIPT_FILENAME'] = 'yokart/public/index.php';
+$_SERVER['SCRIPT_FILENAME'] = 'C:/xampp/htdocs/yokartv8/public/index.php';
 $_SERVER['REMOTE_PORT'] = '52664';
 $_SERVER['REDIRECT_URL'] = '';
 $_SERVER['REDIRECT_QUERY_STRING'] = 'url=';
@@ -30,8 +31,8 @@ $_SERVER['SERVER_PROTOCOL'] = 'HTTP/1.1';
 $_SERVER['REQUEST_METHOD'] = 'GET';
 $_SERVER['QUERY_STRING'] = 'url=';
 $_SERVER['REQUEST_URI'] = '';
-$_SERVER['SCRIPT_NAME'] = '/public/index.php';
-$_SERVER['PHP_SELF'] = '/public/index.php';
+$_SERVER['SCRIPT_NAME'] = '/yokartv8/public/index.php';
+$_SERVER['PHP_SELF'] = '/yokartv8/public/index.php';
 $_SERVER['REQUEST_TIME_FLOAT'] = time();
 
 require_once 'conf.php';

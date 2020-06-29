@@ -622,7 +622,10 @@ class Tax extends MyAppModel
         if (0 < $defaultTaxApi) {
             $defaultTaxApiIsActive = Plugin::getAttributesById($defaultTaxApi, 'plugin_active');
         }
-        return  $defaultTaxApi;
+        if (0 < $defaultTaxApiIsActive) {
+            return  $defaultTaxApi;
+        }
+        return  $defaultTaxApiIsActive;
     }
 
     public static function getAttributesByCode($code, $attr = null, $plugInId = 0)

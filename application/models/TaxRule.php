@@ -48,11 +48,13 @@ class TaxRule extends MyAppModel
     */
     public function deleteRules(int $taxCatId): bool
     {
-        if (!FatApp::getDb()->query('DELETE rules, ruleDetails, ruleDetailsLang FROM '. self::DB_TBL .' rules LEFT JOIN '. TaxRuleCombined::DB_TBL .' ruleDetails ON ruleDetails.taxruledet_taxrule_id  = rules.taxrule_id LEFT JOIN '. TaxRuleCombined::DB_TBL_LANG . ' ruleDetailsLang ON ruleDetails.taxruledet_id  = ruleDetailsLang.taxruledetlang_taxruledet_id WHERE rules.taxrule_taxcat_id = '. $taxCatId)) {
-            $this->error = FatApp::getDb()->getError();
-            return false;
-        };
-        return true;
+        $db = FatApp::getDb();
+        $db->query('DELETE rules, ruleDetails, ruleDetailsLang FROM '. self::DB_TBL .' rules LEFT JOIN '. TaxRuleCombined::DB_TBL .' ruleDetails ON ruleDetails.taxruledet_taxrule_id  = rules.taxrule_id LEFT JOIN '. TaxRuleCombined::DB_TBL_LANG . ' ruleDetailsLang ON ruleDetails.taxruledet_id  = ruleDetailsLang.taxruledetlang_taxruledet_id WHERE rules.taxrule_taxcat_id = '. $taxCatId);
+        if(0 < $db->rowsAffected()) {
+            return true;
+        }
+        $this->error = $db->getError();
+        return false;
     }
 
     /**
@@ -132,14 +134,12 @@ class TaxRule extends MyAppModel
     * @param  int $langId
     * @return array
     */
-    public function getRules(int $taxCatId, int $langId): array
+    public function getRules(int $taxCatId): array
     {
         $srch = TaxRule::getSearchObject();
-        /*$srch->joinTable(TaxRuleCombined::DB_TBL, 'LEFT OUTER JOIN', 'trd.taxruledet_taxrule_id = taxrule_id', 'trd');
-        $srch->joinTable(TaxRuleCombined::DB_TBL_LANG, 'LEFT OUTER JOIN', 'trdl.taxruledetlang_taxruledet_id = trd.taxruledet_id AND trdl.taxruledetlang_lang_id = '.$langId, 'trdl');*/
         $srch->addCondition('taxrule_taxcat_id', '=', $taxCatId);
-        $rs = $srch->getResultSet();
-        $rulesData = FatApp::getDb()->fetchAll($rs);
+        $res = $srch->getResultSet();
+        $rulesData = FatApp::getDb()->fetchAll($res);
         return $rulesData;
     }
 
@@ -184,8 +184,8 @@ class TaxRule extends MyAppModel
     {
         $srch = TaxRuleLocation::getSearchObject();
         $srch->addCondition('taxruleloc_taxcat_id', '=', $taxCatId);
-        $rs = $srch->getResultSet();
-        $locationsData = FatApp::getDb()->fetchAll($rs);
+        $res = $srch->getResultSet();
+        $locationsData = FatApp::getDb()->fetchAll($res);
         return self::groupDataByKey($locationsData, 'taxruleloc_taxrule_id');
     }
 
