@@ -34,5 +34,6 @@ $_SERVER['REQUEST_URI'] = '';
 $_SERVER['SCRIPT_NAME'] = '/yokartv8/public/index.php';
 $_SERVER['PHP_SELF'] = '/yokartv8/public/index.php';
 $_SERVER['REQUEST_TIME_FLOAT'] = time();
+$_SERVER['HTTPS'] = 'on';
 
 require_once 'conf.php';
