@@ -1,6 +1,6 @@
 <?php
 
-class CurrencyConverterTest extends PluginBaseTest
+class CurrencyConverterTest extends YkPluginTest
 {
     public const KEY_NAME = 'CurrencyConverter';
 

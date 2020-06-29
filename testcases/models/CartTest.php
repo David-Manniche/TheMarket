@@ -1,9 +1,5 @@
 <?php
-declare(strict_types=1);
-
-use PHPUnit\Framework\TestCase;
-
-class CartTest extends TestCase
+class CartTest extends YkModelTest
 {   
    
     /**

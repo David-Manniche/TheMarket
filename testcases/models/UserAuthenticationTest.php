@@ -1,9 +1,5 @@
 <?php
-declare(strict_types=1);
-
-use PHPUnit\Framework\TestCase;
-
-class UserAuthenticationTest extends TestCase
+class UserAuthenticationTest extends YkModelTest
 {    
     public function setUp() :void
     {

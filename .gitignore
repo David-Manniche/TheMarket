@@ -21,6 +21,7 @@
 /restore
 /bkup
 /application/views/.sass-cache
+/testcases/bootstrap.php
 
 # zip files
 /*.zip

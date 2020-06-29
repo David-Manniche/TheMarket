@@ -1,6 +1,6 @@
 <?php
 
-class FacebookLoginTest extends PluginBaseTest
+class FacebookLoginTest extends YkPluginTest
 {
     public const KEY_NAME = 'FacebookLogin';
 

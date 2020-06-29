@@ -1,6 +1,6 @@
 <?php
 
-class AppleLoginTest extends PluginBaseTest
+class AppleLoginTest extends YkPluginTest
 {
     public const KEY_NAME = 'AppleLogin';
 
