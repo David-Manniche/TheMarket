@@ -11,8 +11,11 @@ $frm->developerTags['fld_default_col'] = 12;
     <div class="sectionbody space">
         <div class="tabs_nav_container responsive flat">
             <ul class="tabs_nav">
-                <li><a class="active" href="javascript:void(0)" onclick="setupPluginForm(<?php echo $pluginId ?>);">
-                <?php echo Labels::getLabel('LBL_General', $adminLangId); ?></a></li>
+                <li>
+                    <a class="active" href="javascript:void(0)" onclick="editPluginForm(<?php echo $type ?>, <?php echo $pluginId ?>);">
+                        <?php echo Labels::getLabel('LBL_General', $adminLangId); ?>
+                    </a>
+                </li>
                 <li class="<?php echo (0 == $pluginId) ? 'fat-inactive' : ''; ?>">
                     <a href="javascript:void(0);" <?php echo (0 < $pluginId) ? "onclick='editPluginLangForm(" . $pluginId . "," . FatApp::getConfig('conf_default_site_lang', FatUtility::VAR_INT, 1) . ");'" : ""; ?>>
                         <?php echo Labels::getLabel('LBL_Language_Data', $adminLangId); ?>

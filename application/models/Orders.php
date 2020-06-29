@@ -1328,19 +1328,24 @@ class Orders extends MyAppModel
             }
         }
     }
-
-
+    
     public function addChildProductOrderHistory($op_id, $langId, $opStatusId, $comment = '', $notify = false, $trackingNumber = '', $releasePayments = 0, $moveRefundToWallet = true)
     {
         $op_id = FatUtility::int($op_id);
         $langId = FatUtility::int($langId);
         $opStatusId = FatUtility::int($opStatusId);
 
+        $this->langId = $langId;
+
         $childOrderInfo = $this->getOrderProductsByOpId($op_id, $langId);
         if (empty($childOrderInfo)) {
             $this->error = Labels::getLabel("MSG_Invalid_Access", $langId);
             return false;
         }
+
+        $this->orderId = $childOrderInfo['op_order_id'];
+        $this->opId = $op_id;
+
         $db = FatApp::getDb();
         $emailNotificationObj = new EmailHandler();
 
@@ -1436,8 +1441,8 @@ class Orders extends MyAppModel
                 /* CommonHelper::printArray($childOrderInfo); die; */
                 $formattedRequestValue = "#" . $childOrderInfo["op_invoice_number"];
                 $retReqObj = new OrderCancelRequest();
-                $returnRequestDetail = $retReqObj->getCancelRequestById($childOrderInfo['op_id']);
-                if (!empty($returnRequestDetail)) {
+                $cancelRequestDetail = $retReqObj->getCancelRequestById($childOrderInfo['op_id']);
+                if (!empty($cancelRequestDetail)) {
                     $comments = sprintf(Labels::getLabel('LBL_Cancel_Request_Approved', $langId), $formattedRequestValue);
                 } else {
                     $comments = sprintf(Labels::getLabel('LBL_Order_has_been_Cancelled', $langId), $formattedRequestValue);
@@ -1462,6 +1467,7 @@ class Orders extends MyAppModel
                     }
                 }
                 /*]*/
+
                 /*Deduct Shipping Amount[*/
                 if (0 < $childOrderInfo["op_free_ship_upto"] && array_key_exists(OrderProduct::CHARGE_TYPE_SHIPPING, $childOrderInfo['charges']) && $childOrderInfo["op_actual_shipping_charges"] != $childOrderInfo['charges'][OrderProduct::CHARGE_TYPE_SHIPPING]['opcharge_amount']) {
                     $sellerProdTotalPrice = 0;
@@ -1527,7 +1533,6 @@ class Orders extends MyAppModel
                 $comments = sprintf(Labels::getLabel('LBL_Return_Request_Approved', $langId), $formattedRequestValue);
                 $txnAmount = $childOrderInfo['op_refund_amount'];
 
-                $txnAmount = $txnAmount;
                 /*Refund to Buyer[*/
                 if ($txnAmount > 0) {
                     $txnArray["utxn_user_id"] = $childOrderInfo['order_user_id'];
@@ -1621,7 +1626,6 @@ class Orders extends MyAppModel
                 $formattedInvoiceNumber = "#" . $childOrderInfo["op_invoice_number"];
                 $comments = Labels::getLabel('Msg_Cash_collected_for_COD_order', $langId) . ' ' . $formattedInvoiceNumber;
                 $amt = CommonHelper::orderProductAmount($childOrderInfo);
-                $txnObj = new Transactions();
 
                 $txnDataArr = array(
                 'utxn_user_id' => $childOrderInfo['op_selprod_user_id'],
@@ -1660,7 +1664,6 @@ class Orders extends MyAppModel
                 $formattedInvoiceNumber = "#" . $childOrderInfo["op_invoice_number"];
                 $comments = Labels::getLabel('Msg_Cash_Deposited_for_COD_order', $langId) . ' ' . $formattedInvoiceNumber;
                 $amt = CommonHelper::orderProductAmount($childOrderInfo);
-                $txnObj = new Transactions();
 
                 $txnDataArr = array(
                 'utxn_user_id' => $childOrderInfo['optsu_user_id'],
@@ -1710,7 +1713,23 @@ class Orders extends MyAppModel
                 $txnAmount = $txnAmount + ($unitTaxCharges * $availQty);
             }
 
-            if ($txnAmount > 0) {
+            $alreadyPaid = false;
+            $orderObj = new Orders();
+            $payment = current($orderObj->getOrderPayments(["order_id" => $childOrderInfo['op_order_id']]));
+            if (!empty($payment['opayment_gateway_txn_id'])) {
+                $orderRow = $orderObj->getOrderById($this->orderId, $this->langId);
+                $paymentMethodId = $orderRow['order_pmethod_id'];
+                if (PaymentMethods::TYPE_PLUGIN == $orderRow['order_pmethod_type']) {
+                    $pluginKey = Plugin::getAttributesById($paymentMethodId, 'plugin_code');
+                    switch ($pluginKey) {
+                        case 'StripeConnect':
+                            $alreadyPaid = true;
+                            break;
+                    }
+                }
+            }
+
+            if (false === $alreadyPaid && $txnAmount > 0) {
                 $txnArray["utxn_user_id"] = $childOrderInfo['op_selprod_user_id'];
                 $txnArray["utxn_credit"] = $txnAmount;
                 $txnArray["utxn_debit"] = 0;
@@ -1725,11 +1744,10 @@ class Orders extends MyAppModel
             }
             /* ] */
 
-
             /* Charge Commission/fees to Vendor [*/
             $commissionFees = $childOrderInfo['op_commission_charged'] - $childOrderInfo['op_refund_commission'];
 
-            if ($commissionFees > 0) {
+            if ($commissionFees > 0 && false === $alreadyPaid) {
                 $comments = sprintf(Labels::getLabel('Msg_Charged_Commission_for_order', $langId), $formattedInvoiceNumber);
                 $txnArray["utxn_user_id"] = $childOrderInfo['op_selprod_user_id'];
                 $txnArray["utxn_debit"] = $commissionFees;
@@ -1925,7 +1943,7 @@ class Orders extends MyAppModel
         $srch->joinTable(OrderProduct::DB_TBL_CHARGES, 'LEFT OUTER JOIN', 'opc.' . OrderProduct::DB_TBL_CHARGES_PREFIX . 'op_id = op.op_id', 'opc');
         $srch->joinTable(Orders::DB_TBL_ORDER_PRODUCTS_SHIPPING, 'LEFT OUTER JOIN', 'ops.opshipping_op_id = op.op_id', 'ops');
 
-        $srch->addMultipleFields(array('op.*', 'opst.*', 'op_l.*', 'o.order_id', 'o.order_is_paid', 'o.order_date_added', 'o.order_language_id', 'o.order_user_id', 'sum(' . OrderProduct::DB_TBL_CHARGES_PREFIX . 'amount) as op_other_charges', 'o.order_affiliate_user_id', 'pmethod_code', 'optsu_user_id', 'ops.opshipping_by_seller_user_id'));
+        $srch->addMultipleFields(array('op.*', 'opst.*', 'op_l.*', 'o.order_id', 'o.order_is_paid', 'o.order_date_added', 'o.order_language_id', 'o.order_user_id', 'sum(' . OrderProduct::DB_TBL_CHARGES_PREFIX . 'amount) as op_other_charges', 'o.order_affiliate_user_id', 'pmethod_code', 'optsu_user_id', 'ops.opshipping_by_seller_user_id', 'o.order_pmethod_id', 'o.order_pmethod_type'));
         $srch->addCondition('op_id', '=', $op_id);
         $srch->doNotCalculateRecords();
         $srch->doNotLimitRecords();

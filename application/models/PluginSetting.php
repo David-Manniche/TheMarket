@@ -119,7 +119,7 @@ class PluginSetting
                 case static::TYPE_BOOL:
                     $yesNo = array_reverse(applicationConstants::getYesNoArr($langId));
                     $fld = $frm->addSelectBox($label, $fieldName, $yesNo, '', array(), '');
-                    break;    
+                    break;
                 default:
                     $fld = $frm->addTextBox($label, $fieldName);
                     break;

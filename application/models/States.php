@@ -89,7 +89,7 @@ class States extends MyAppModel
         return $row;
     }
 
-    public function getStatesByCountryId($countryId, $langId, $isActive = true)
+    public function getStatesByCountryId($countryId, $langId, $isActive = true, $idCol = 'state_id')
     {
         $langId = FatUtility::int($langId);
         $countryId = FatUtility::int($countryId);
@@ -101,17 +101,47 @@ class States extends MyAppModel
         $srch->addOrder('state_name', 'ASC');
         $srch->addMultipleFields(
             array(
-                'state_id',
+                $idCol,
                 'IFNULL(state_name, state_identifier) as state_name'
-                )
+            )
         );
 
         $rs = $srch->getResultSet();
         $row = FatApp::getDb()->fetchAllAssoc($rs);
+        if (!is_array($row)) {
+            return false;
+        }
+        return $row;
+    }
+
+    public static function getStateByCode($countryCode, $attr = null)
+    {
+        if (!$countryCode) {
+            return false;
+        }
+
+        $srch = static::getSearchObject();
+        $srch->addCondition('state_code', '=', strtoupper($countryCode));
+
+        if (null != $attr) {
+            if (is_array($attr)) {
+                $srch->addMultipleFields($attr);
+            } elseif (is_string($attr)) {
+                $srch->addFld($attr);
+            }
+        }
+
+        $rs = $srch->getResultSet();
+        $row = FatApp::getDb()->fetch($rs);
 
         if (!is_array($row)) {
             return false;
         }
+
+        if (is_string($attr)) {
+            return $row[$attr];
+        }
+
         return $row;
     }
 }

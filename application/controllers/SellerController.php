@@ -740,6 +740,32 @@ class SellerController extends SellerBaseController
             Message::addErrorMessage(Labels::getLabel('MSG_ERROR_INVALID_REQUEST', $this->siteLangId));
             FatUtility::dieJsonError(Message::getHtml());
         }
+
+        if (PaymentMethods::TYPE_PLUGIN == $orderDetail['order_pmethod_type']) {
+            $pluginKey = Plugin::getAttributesById($orderDetail['order_pmethod_id'], 'plugin_code');
+
+            $paymentMethodObj = new PaymentMethods();
+            if (true === $paymentMethodObj->canRefundToCard($pluginKey, $this->siteLangId)) {
+                if (false == $paymentMethodObj->initiateRefund($op_id, PaymentMethods::REFUND_TYPE_CANCEL)) {
+                    FatUtility::dieJsonError($paymentMethodObj->getError());
+                }
+
+                $resp = $paymentMethodObj->getResponse();
+                if (empty($resp)) {
+                    FatUtility::dieJsonError(Labels::getLabel('LBL_UNABLE_TO_PLACE_GATEWAY_REFUND_REQUEST', $this->siteLangId));
+                }
+    
+                // Debit from wallet if plugin/payment method support's direct payment to card of customer.
+                if (!empty($resp->id)) {
+                    $childOrderInfo = $orderObj->getOrderProductsByOpId($op_id, $this->siteLangId);
+                    $txnAmount = $paymentMethodObj->getTxnAmount();
+                    $comments = Labels::getLabel('LBL_TRANSFERED_TO_YOUR_CARD._INVOICE_#{invoice-no}', $this->siteLangId);
+                    $comments = CommonHelper::replaceStringData($comments, ['{invoice-no}' => $childOrderInfo['op_invoice_number']]);
+                    Transactions::debitWallet($childOrderInfo['order_user_id'], Transactions::TYPE_ORDER_REFUND, $txnAmount, $this->siteLangId, $comments, $op_id, $resp->id);
+                }
+            }
+        }
+
         Message::addMessage(Labels::getLabel("MSG_Updated_Successfully", $this->siteLangId));
         $this->set('msg', Labels::getLabel('MSG_Updated_Successfully', $this->siteLangId));
         $this->_template->render(false, false, 'json-success.php');
@@ -1552,7 +1578,7 @@ class SellerController extends SellerBaseController
 
         $this->_template->addJs('js/cropper.js');
         $this->_template->addJs('js/cropper-main.js');
-
+        
         $this->set('tab', $tab);
         $this->set('subTab', $subTab);
         $this->set('shop_id', $shop_id);
@@ -1574,7 +1600,7 @@ class SellerController extends SellerBaseController
         $this->_template->render(false, false, 'cropper/index.php');
     }
 
-    public function shopForm()
+    public function shopForm($callbackKeyName = '')
     {
         $userId = $this->userParentId;
         $shopDetails = Shop::getAttributesByUserId($userId, null, false);
@@ -1614,11 +1640,19 @@ class SellerController extends SellerBaseController
 
         $shopFrm->fill($shopDetails);
 
+        $plugin = new Plugin();
+        $keyName = $plugin->getDefaultPluginKeyName(Plugin::TYPE_SPLIT_PAYMENT_METHOD);
+
+        if (!empty($callbackKeyName)) {
+            $this->set('action', $callbackKeyName);
+        }
+
         $this->set('shopFrm', $shopFrm);
         $this->set('stateId', $stateId);
         $this->set('shop_id', $shop_id);
         $this->set('siteLangId', $this->siteLangId);
         $this->set('language', Language::getAllNames());
+        $this->_template->addJs('js/jscolor.js');
         $this->_template->render(false, false);
     }
 
@@ -2770,17 +2804,28 @@ class SellerController extends SellerBaseController
 
         $srch->doNotCalculateRecords();
         $srch->doNotLimitRecords();
-        $srch->addMultipleFields(array('orrequest_id'));
+        $srch->addMultipleFields(array('orrequest_id', 'order_pmethod_id', 'order_pmethod_type'));
 
         $rs = $srch->getResultSet();
         $requestRow = FatApp::getDb()->fetch($rs);
+        
         if (!$requestRow) {
             Message::addErrorMessage(Labels::getLabel("MSG_Invalid_Access", $this->siteLangId));
             FatApp::redirectUser(CommonHelper::generateUrl('Seller', 'viewOrderReturnRequest', array($requestRow['orrequest_id'])));
         }
 
+        $transferTo = PaymentMethods::MOVE_TO_CUSTOMER_WALLET;
+        if (PaymentMethods::TYPE_PLUGIN == $requestRow['order_pmethod_type']) {
+            $pluginKey = Plugin::getAttributesById($requestRow['order_pmethod_id'], 'plugin_code');
+
+            $paymentMethodObj = new PaymentMethods();
+            if (true === $paymentMethodObj->canRefundToCard($pluginKey, $this->siteLangId)) {
+                $transferTo = PaymentMethods::MOVE_TO_CUSTOMER_CARD;
+            }
+        }
+        
         $orrObj = new OrderReturnRequest();
-        if (!$orrObj->approveRequest($requestRow['orrequest_id'], $user_id, $this->siteLangId)) {
+        if (!$orrObj->approveRequest($requestRow['orrequest_id'], $user_id, $this->siteLangId, $transferTo)) {
             Message::addErrorMessage(Labels::getLabel($orrObj->getError(), $this->siteLangId));
             FatApp::redirectUser(CommonHelper::generateUrl('Seller', 'viewOrderReturnRequest', array($requestRow['orrequest_id'])));
         }
@@ -4877,7 +4922,6 @@ class SellerController extends SellerBaseController
         } else {
             $productType = Product::getAttributesById($productId, 'product_type');
         }
-
         $frm->addHiddenField('', 'product_id', $productId);
         $frm->addHiddenField('', 'preq_id', $preqId);
         $frm->addButton('', 'btn_back', Labels::getLabel('LBL_Back', $this->siteLangId));

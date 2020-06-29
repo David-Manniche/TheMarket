@@ -1,6 +1,7 @@
 <?php  defined('SYSTEM_INIT') or die('Invalid Usage.');
 $arr_flds = array(
     'utxn_id'    =>    Labels::getLabel('LBL_Txn_ID', $siteLangId),
+    'utxn_gateway_txn_id'    =>    Labels::getLabel('LBL_GATEWAY_TXN_ID', $siteLangId),
     'utxn_date'    =>    Labels::getLabel('LBL_Date', $siteLangId),
     'utxn_credit' =>    Labels::getLabel('LBL_Credit', $siteLangId),
     'utxn_debit'    =>    Labels::getLabel('LBL_Debit', $siteLangId),
@@ -9,7 +10,7 @@ $arr_flds = array(
     'utxn_status'    =>    Labels::getLabel('LBL_Status', $siteLangId),
 );
 
-$tbl = new HtmlElement('table', array('class'=>'table'));
+$tbl = new HtmlElement('table', array('class' => 'table'));
 $th = $tbl->appendElement('thead')->appendElement('tr', array('class' => ''));
 foreach ($arr_flds as $val) {
     $e = $th->appendElement('th', array(), $val);
@@ -25,6 +26,10 @@ foreach ($arrListing as $sn => $row) {
         switch ($key) {
             case 'utxn_id':
                 $td->appendElement('plaintext', array(), Transactions::formatTransactionNumber($row[$key]), true);
+                break;
+            case 'utxn_gateway_txn_id':
+                $pgTxnId = !empty($row[$key]) ? $row[$key] : Labels::getLabel('LBL_N/A', $siteLangId);
+                $td->appendElement('plaintext', array(), $pgTxnId, true);
                 break;
             case 'utxn_date':
                 $td->appendElement('plaintext', array(), FatDate::format($row[$key]), true);

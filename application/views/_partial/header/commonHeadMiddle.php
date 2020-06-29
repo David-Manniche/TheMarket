@@ -83,14 +83,14 @@ if (FatApp::getConfig("CONF_ENABLE_ENGAGESPOT_PUSH_NOTIFICATION", FatUtility::VA
 }
 
 if (Message::getMessageCount() || Message::getErrorCount() || Message::getDialogCount() || Message::getInfoCount()) { ?>
-    jQuery("document").ready(function() {
+    (function() {
         if (CONF_AUTO_CLOSE_SYSTEM_MESSAGES == 1) {
             var time = CONF_TIME_AUTO_CLOSE_SYSTEM_MESSAGES * 1000;
             setTimeout(function() {
                 $.systemMessage.close();
             }, time);
         }
-    });
+    })();
 <?php }
 
 $pixelId = FatApp::getConfig("CONF_FACEBOOK_PIXEL_ID", FatUtility::VAR_STRING, '');

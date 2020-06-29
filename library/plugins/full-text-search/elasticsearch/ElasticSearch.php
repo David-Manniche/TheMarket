@@ -14,13 +14,13 @@ class ElasticSearch extends FullTextSearchBase
     private $groupByFields;
     public $error = false;
 
-    const KEY_NAME = __CLASS__;
-    const INDEX_PREFIX = "yk-products-";
-	
-	public $requiredKeys = [
+    public const KEY_NAME = __CLASS__;
+    public const INDEX_PREFIX = "yk-products-";
+    
+    public $requiredKeys = [
         'host',
-		'username',
-		'password'
+        'username',
+        'password'
     ];
 
     /* Creating ElasticSearch Connection
@@ -31,8 +31,8 @@ class ElasticSearch extends FullTextSearchBase
     {
         $this->indexName = self::INDEX_PREFIX . $langId;
         $this->langId = $langId;
-		
-        if (false == $this->validateSettings($langId)) {
+        
+        if (false == $this->validateSettings()) {
             return false;
         }
        
@@ -153,7 +153,6 @@ class ElasticSearch extends FullTextSearchBase
         } else {
             $this->search["must"][0] = $categoryFilter;
         }
-
     }
 
     public function addShopIdCondition($shopId)

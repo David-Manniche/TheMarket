@@ -65,6 +65,7 @@ class PluginsController extends AdminBaseController
         $this->set('identifier', $identifier);
         $this->set('languages', Language::getAllNames());
         $this->set('pluginId', $pluginId);
+        $this->set('type', $pluginType);
         $this->set('frm', $frm);
         $this->_template->render(false, false);
     }
@@ -314,15 +315,19 @@ class PluginsController extends AdminBaseController
         if (in_array($pluginType, Plugin::HAVING_KINGPIN)) {
             $frm->addCheckBox(Labels::getLabel('LBL_MARK_AS_DEFAULT', $this->adminLangId), 'CONF_DEFAULT_PLUGIN_' . $pluginType, $pluginId, array(), false, 0);
         }
-
-        /*$fld = $frm->addButton(
+        
+        $fld = $frm->addButton(
             'Icon',
             'plugin_icon',
             Labels::getLabel('LBL_Upload_File', $this->adminLangId),
             array('class'=>'uploadFile-Js','id'=>'plugin_icon','data-plugin_id' => $pluginId)
         );
-        $fld->htmlAfterField='<span id="plugin_icon"></span>
-        <div class="uploaded--image"><img src="'.CommonHelper::generateUrl('Image', 'plugin', array($pluginId,'MEDIUM'), CONF_WEBROOT_FRONT_URL).'"></div>';*/
+        $fld->htmlAfterField = '<span id="plugin_icon"></span>';
+        if ($attachment = AttachedFile::getAttachment(AttachedFile::FILETYPE_PLUGIN_LOGO, $pluginId)) {
+            $uploadedTime = AttachedFile::setTimeParam($attachment['afile_updated_at']);
+            $fld->htmlAfterField .= '<div class="uploaded--image">
+            <img src="'.FatCache::getCachedUrl(CommonHelper::generateUrl('Image', 'plugin', array($pluginId), CONF_WEBROOT_FRONT_URL) . $uploadedTime, CONF_IMG_CACHE_TIME, '.jpg').'"></div>';
+        }
 
         $frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_Save_Changes', $this->adminLangId));
         return $frm;

@@ -580,12 +580,12 @@ class AccountController extends LoggedUserController
         $rs = $srch->getResultSet();
 
         $records = FatApp::getDb()->fetchAll($rs, 'utxn_id');
-
         $this->set('arrListing', $records);
         $this->set('page', $page);
         $this->set('pageCount', $srch->pages());
         $this->set('recordCount', $srch->recordCount());
         $this->set('postedData', $post);
+        $this->set('siteLangId', $this->siteLangId);
         $this->set('statusArr', Transactions::getStatusArr($this->siteLangId));
         if (true === MOBILE_APP_API_CALL) {
             $this->creditsInfo();

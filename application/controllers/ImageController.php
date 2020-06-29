@@ -1235,4 +1235,43 @@ class ImageController extends FatController
         $image_name = isset($file_row['afile_physical_path']) ? $file_row['afile_physical_path'] : '';
         AttachedFile::displayOriginalImage($image_name);
     }
+
+    public function plugin($recordId, $sizeType = '', $displayUniversalImage = true)
+    {
+        $default_image = 'product_default_image.jpg';
+        $recordId = FatUtility::int($recordId);
+        $file_row = AttachedFile::getAttachment(AttachedFile::FILETYPE_PLUGIN_LOGO, $recordId, 0, 0, $displayUniversalImage);
+        $image_name = isset($file_row['afile_physical_path']) ? $file_row['afile_physical_path'] : '';
+
+        switch (strtoupper($sizeType)) {
+            case 'ICON':
+                $w = 30;
+                $h = 30;
+                AttachedFile::displayImage($image_name, $w, $h, $default_image);
+                break;
+            case 'MINITHUMB':
+                $w = 61;
+                $h = 61;
+                AttachedFile::displayImage($image_name, $w, $h, $default_image);
+                break;
+            case 'THUMB':
+                $w = 100;
+                $h = 100;
+                AttachedFile::displayImage($image_name, $w, $h, $default_image);
+                break;
+            case 'SMALL':
+                $w = 200;
+                $h = 200;
+                AttachedFile::displayImage($image_name, $w, $h, $default_image);
+                break;
+            case 'MEDIUM':
+                $w = 250;
+                $h = 250;
+                AttachedFile::displayImage($image_name, $w, $h, $default_image);
+                break;
+            default:
+                AttachedFile::displayOriginalImage($image_name, $default_image);
+                break;
+        }
+    }
 }

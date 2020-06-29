@@ -281,6 +281,11 @@ class User extends MyAppModel
             return false;
         }
 
+        if (empty($key) || empty($value)) {
+            $this->error = Labels::getLabel('ERR_INVALID_REQUEST_PARAMETERS', $this->commonLangId);
+            return false;
+        }
+
         $updateData = [
             static::DB_TBL_META_PREFIX . 'user_id' => $this->mainTableRecordId,
             static::DB_TBL_META_PREFIX . 'key' => $key,
