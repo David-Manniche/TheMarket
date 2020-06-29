@@ -18,12 +18,12 @@ class TaxRuleTest extends TestCase
 
     public function setDeleteRule()
     {
-        return array(
-            array(-1, false), // Invalid taxCatId
-            array(0, false), // Invalid taxCatId
-            array(1, false), // Invalid taxCatId
-            array(8, true), // valid taxCatId
-        );
+        return [
+            [-1, false],  // Invalid taxCatId
+            [0, false],  // Invalid taxCatId
+            [1, false],  // Invalid taxCatId
+            [8, true], // valid taxCatId
+        ];
     }
 
     /**
@@ -38,12 +38,12 @@ class TaxRuleTest extends TestCase
 
     public function setGetRules()
     {
-        return array(
-            array(-1), // Invalid taxCatId
-            array(0), // Invalid taxCatId
-            array(1), // Invalid taxCatId
-            array(8), // valid taxCatId
-        );
+        return [
+            [-1],  // Invalid taxCatId
+            [0],  // Invalid taxCatId
+            [1],  // Invalid taxCatId
+            [8], // valid taxCatId
+        ];
     }
 
     /**
@@ -58,11 +58,17 @@ class TaxRuleTest extends TestCase
 
     public function setGetCombinedRuleDetails()
     {
-        return array(
-            array(array()), // Empty Array
-            array(array(-1,0,null)), // Invalid array
-            array(array(1,2,3,4,5)), // valid Rule Ids
-        );
+        return [
+            [
+                []
+            ], // Empty Array
+            [
+                [-1, 0, null]
+            ], // Invalid array
+            [
+                [1, 2, 3, 4, 5]
+            ], // valid Rule Ids
+        ];
     }
 
     /**
@@ -77,11 +83,11 @@ class TaxRuleTest extends TestCase
 
     public function setGetLocations()
     {
-        return array(
-            array(-1), // Invalid taxCatId
-            array(0), // Invalid taxCatId
-            array(1), // Invalid taxCatId
-            array(8), // valid taxCatId
-        );
+        return [
+            [-1],  // Invalid taxCatId
+            [0],  // Invalid taxCatId
+            [1],  // Invalid taxCatId
+            [8], // valid taxCatId
+        ];
     }
 }

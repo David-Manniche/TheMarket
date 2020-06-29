@@ -676,9 +676,7 @@ class TaxController extends AdminBaseController
                 'taxruleloc_unique' => $isUnique
             );
             if (!$locObj->updateLocations($data)) {
-                //Message::addErrorMessage($locObj->getError());
                 return false;
-                //FatUtility::dieJsonError(Message::getHtml());
             }
         }
         return true;

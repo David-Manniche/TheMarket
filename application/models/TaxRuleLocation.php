@@ -29,6 +29,9 @@ class TaxRuleLocation extends MyAppModel
     */
     public function updateLocations(array $data): bool
     {
+        if (0 >= FatUtility::int($data['taxruleloc_taxcat_id']) || 0 >= FatUtility::int($data['taxruleloc_taxrule_id'])) {
+            return false;
+        }
         if (!FatApp::getDb()->insertFromArray(self::DB_TBL, $data, true, array(), $data)) {
             $this->error = FatApp::getDb()->getError();
             return false;
@@ -44,16 +47,18 @@ class TaxRuleLocation extends MyAppModel
     */
     public function deleteLocations(int $taxCatId): bool
     {
-        if (!FatApp::getDb()->deleteRecords(
+        $db = FatApp::getDb();
+        $db->deleteRecords(
             self::DB_TBL,
             array(
                 'smt'=> self::DB_TBL_PREFIX .'taxcat_id=? ',
                 'vals'=>array($taxCatId)
             )
-        )) {
-            $this->error = FatApp::getDb()->getError();
-            return false;
+        );
+        if(0 < $db->rowsAffected()) {
+            return true;
         }
-        return true;
+        $this->error = $db->getError();
+        return false;
     }
 }
