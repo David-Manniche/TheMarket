@@ -146,6 +146,37 @@ if (!empty($product['moreSellersArr']) && 0 < count($product['moreSellersArr']))
     }
 }
 
+$productDetailPageBanner = [];
+if (isset($banners['Product_Detail_Page_Banner']) && $banners['Product_Detail_Page_Banner']['blocation_active'] && count($banners['Product_Detail_Page_Banner']['banners'])) {
+    foreach ($banners['Product_Detail_Page_Banner']['banners'] as &$val) {
+        $bannerImageUrl = '';
+        if (!AttachedFile::getMultipleAttachments(AttachedFile::FILETYPE_BANNER, $val['banner_id'], 0, $siteLangId)) {
+            continue;
+        } else {
+            $slideArr = AttachedFile::getMultipleAttachments(AttachedFile::FILETYPE_BANNER, $val['banner_id'], 0, $siteLangId);
+            foreach ($slideArr as $slideScreen) {
+                switch ($slideScreen['afile_screen']) {
+                    case applicationConstants::SCREEN_MOBILE:
+                        $bannerImageUrl = CommonHelper::generateFullUrl('Banner', 'productDetailPageBanner', array($val['banner_id'], $siteLangId, applicationConstants::SCREEN_MOBILE));
+                        break;
+                    case applicationConstants::SCREEN_IPAD:
+                        $bannerImageUrl = CommonHelper::generateFullUrl('Banner', 'productDetailPageBanner', array($val['banner_id'], $siteLangId, applicationConstants::SCREEN_IPAD));
+                        break;
+                    case applicationConstants::SCREEN_DESKTOP:
+                        $bannerImageUrl = CommonHelper::generateFullUrl('Banner', 'productDetailPageBanner', array($val['banner_id'], $siteLangId, applicationConstants::SCREEN_DESKTOP));
+                        break;
+                }
+            }
+            $val['banner_image_url'] = $bannerImageUrl;
+            $bannerUrl = CommonHelper::generateFullUrl('Banner', 'url', array($val['banner_id']));
+            $urlTypeData = CommonHelper::getUrlTypeData($bannerUrl);
+
+            $val['banner_url'] = ($urlTypeData['urlType'] == applicationConstants::URL_TYPE_EXTERNAL ? $bannerUrl : $urlTypeData['recordId']);
+            $val['banner_url_type'] = $urlTypeData['urlType'];
+        }
+    }
+    $productDetailPageBanner = $banners['Product_Detail_Page_Banner']['banners'];
+}
 
 $data = array(
     'reviews' => empty($reviews) ? (object)array() : $reviews,
@@ -157,7 +188,7 @@ $data = array(
         'title' => Labels::getLabel('LBL_Specifications', $siteLangId),
         'data' => $productSpecifications,
     ),
-    'banners' => $banners,
+    'banners' => $productDetailPageBanner,
     'product' => array(
         'title' => Labels::getLabel('LBL_Detail', $siteLangId),
         'data' => empty($product) ? (object)array() : $product,
