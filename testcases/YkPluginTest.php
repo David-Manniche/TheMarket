@@ -15,11 +15,6 @@ class YkPluginTest extends YkAppTest
         $this->langId = CommonHelper::getLangId();
         $this->classObj = new $class($this->langId);
 
-        $this->classObj = PluginHelper::callPlugin($class, [$this->langId], $this->error, $this->langId);
-        if (false === $this->classObj) {
-            return false;
-        }
-
         if (method_exists($this->classObj, 'init') && false === $this->classObj->init()) {
             $this->error = $this->classObj->getError();
             return false;
@@ -41,7 +36,7 @@ class YkPluginTest extends YkAppTest
         $langId = CommonHelper::getLangId();
 
         if (false === PluginHelper::includePlugin($keyName, $directory, $error, $langId, false)) {
-            // FatUtility::dieJsonError($error);
+            FatUtility::dieJsonError($error);
         }
     }
 }

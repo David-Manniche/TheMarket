@@ -10,6 +10,9 @@ class Plugin extends MyAppModel
     public const RETURN_FALSE  = 0;
     public const RETURN_TRUE  = 1;
 
+    public const ACTIVE  = 1;
+    public const INACTIVE  = 0;
+
     public const TYPE_CURRENCY_CONVERTER = 1;
     public const TYPE_SOCIAL_LOGIN = 2;
     public const TYPE_PUSH_NOTIFICATION = 3;
