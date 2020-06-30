@@ -63,7 +63,9 @@ $lngFld->setFieldTagAttribute('id', "lng");
                 <div class="tabs_panel_wrap">
                     <div class="tabs_panel">
                         <?php echo $frmShop->getFormHtml(); ?>
+                        <?php if (FatApp::getConfig('CONF_ENABLE_GEO_LOCATION', FatUtility::VAR_INT, 0)) { ?>
                         <div id="map" style="width:900px; height:500px"></div>
+                        <?php } ?>
                     </div>
                 </div>
             </div>

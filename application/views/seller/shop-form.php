@@ -38,7 +38,9 @@ $this->includeTemplate('seller/_partial/shop-navigation.php', $variables, false)
         <div class="tabs__content">
             <div class="row">
                 <div class="col-lg-12 col-md-12" id="shopFormBlock"> <?php echo $shopFrm->getFormHtml(); ?> </div>
+                <?php if (FatApp::getConfig('CONF_ENABLE_GEO_LOCATION', FatUtility::VAR_INT, 0)) { ?>
                 <div class="col-lg-12 col-md-12" id="map" style="width:1500px; height:500px"></div>
+                <?php } ?>
             </div>
         </div>
     </div>
