@@ -754,7 +754,7 @@ class SellerController extends SellerBaseController
                 if (empty($resp)) {
                     FatUtility::dieJsonError(Labels::getLabel('LBL_UNABLE_TO_PLACE_GATEWAY_REFUND_REQUEST', $this->siteLangId));
                 }
-    
+
                 // Debit from wallet if plugin/payment method support's direct payment to card of customer.
                 if (!empty($resp->id)) {
                     $childOrderInfo = $orderObj->getOrderProductsByOpId($op_id, $this->siteLangId);
@@ -1578,7 +1578,7 @@ class SellerController extends SellerBaseController
 
         $this->_template->addJs('js/cropper.js');
         $this->_template->addJs('js/cropper-main.js');
-        
+
         $this->set('tab', $tab);
         $this->set('subTab', $subTab);
         $this->set('shop_id', $shop_id);
@@ -2808,7 +2808,7 @@ class SellerController extends SellerBaseController
 
         $rs = $srch->getResultSet();
         $requestRow = FatApp::getDb()->fetch($rs);
-        
+
         if (!$requestRow) {
             Message::addErrorMessage(Labels::getLabel("MSG_Invalid_Access", $this->siteLangId));
             FatApp::redirectUser(CommonHelper::generateUrl('Seller', 'viewOrderReturnRequest', array($requestRow['orrequest_id'])));
@@ -2823,7 +2823,7 @@ class SellerController extends SellerBaseController
                 $transferTo = PaymentMethods::MOVE_TO_CUSTOMER_CARD;
             }
         }
-        
+
         $orrObj = new OrderReturnRequest();
         if (!$orrObj->approveRequest($requestRow['orrequest_id'], $user_id, $this->siteLangId, $transferTo)) {
             Message::addErrorMessage(Labels::getLabel($orrObj->getError(), $this->siteLangId));
@@ -3364,7 +3364,9 @@ class SellerController extends SellerBaseController
           $fld1->htmlAfterField='<span id="input-field'.AttachedFile::FILETYPE_SHOP_BANNER.'"></span>
           <div><img src="'.CommonHelper::generateUrl('Image','shopBanner',array($shop_id, $this->siteLangId, 'THUMB')).'"></div>';
           } */
-
+        // $frm->addHtml('', '', '<div id="map" style="width:1500px; height:500px"></div>');
+        $frm->addHiddenField('', 'shop_lat');
+        $frm->addHiddenField('', 'shop_lng');
         $frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_Save_Changes', $this->siteLangId));
         return $frm;
     }

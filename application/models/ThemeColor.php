@@ -86,7 +86,7 @@ class ThemeColor extends MyAppModel
         }
         $srch->addOrder('tcolor_display_order', 'asc');
 
-        $rs = $srch->getResultSet();
+        $rs = $srch->getResultSet();        
         if (true == $assoc) {
             return FatApp::getDb()->fetchAllAssoc($rs);
         }

@@ -1,22 +1,22 @@
--- [Avalara Tax API--------  
-INSERT INTO `tbl_plugins` (`plugin_id`, `plugin_identifier`, `plugin_type`, `plugin_code`, `plugin_active`, `plugin_display_order`) VALUES (NULL, 'Avalara Tax', '10', 'AvalaraTax', '1', '9'); 
+-- [Avalara Tax API--------
+INSERT INTO `tbl_plugins` (`plugin_id`, `plugin_identifier`, `plugin_type`, `plugin_code`, `plugin_active`, `plugin_display_order`) VALUES (NULL, 'Avalara Tax', '10', 'AvalaraTax', '1', '9');
 
 INSERT INTO `tbl_plugins_lang` (`pluginlang_plugin_id`, `pluginlang_lang_id`, `plugin_name`, `plugin_description`) VALUES (11, 1, 'Avalara Tax', '<a href=\"https://developer.avalara.com/api-reference/avatax/rest/v2/\">https://developer.avalara.com/api-reference/avatax/rest/v2/</a>'),
 (11, 2, 'ضريبة أفالارا', '<a href=\"https://developer.avalara.com/api-reference/avatax/rest/v2/\">https://developer.avalara.com/api-reference/avatax/rest/v2/</a>');
 
 ALTER TABLE `tbl_tax_categories` ADD `taxcat_code` VARCHAR(50) NOT NULL AFTER `taxcat_identifier`;
 ALTER TABLE `tbl_tax_categories` ADD `taxcat_plugin_id` INT NOT NULL AFTER `taxcat_code`;
-ALTER TABLE `tbl_tax_categories` DROP INDEX `saletaxcat_identifier`; 
-ALTER TABLE `tbl_tax_categories` DROP INDEX `taxcat_identifier`; 
+ALTER TABLE `tbl_tax_categories` DROP INDEX `saletaxcat_identifier`;
+ALTER TABLE `tbl_tax_categories` DROP INDEX `taxcat_identifier`;
 ALTER TABLE `tbl_tax_categories` ADD UNIQUE( `taxcat_identifier`, `taxcat_plugin_id`);
 ALTER TABLE `tbl_tax_categories` ADD `taxcat_parent` INT(11) NOT NULL AFTER `taxcat_code`;
-ALTER TABLE `tbl_tax_categories` DROP INDEX `saletaxcat_identifier`; 
-ALTER TABLE `tbl_tax_categories` DROP INDEX `taxcat_identifier`; 
-ALTER TABLE `tbl_tax_categories` ADD UNIQUE( `taxcat_identifier`, `taxcat_plugin_id`); 
-ALTER TABLE `tbl_tax_categories` ADD `taxcat_parent` INT(11) NOT NULL AFTER `taxcat_code`; 
-INSERT INTO `tbl_plugins` (`plugin_id`, `plugin_identifier`, `plugin_type`, `plugin_code`, `plugin_active`, `plugin_display_order`) VALUES (NULL, 'TaxJar', '10', 'TaxJarTax', '0', '11'); 
-ALTER TABLE `tbl_order_products_lang` CHANGE `op_product_tax_options` `op_product_tax_options` TEXT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL; 
-ALTER TABLE `tbl_order_products` ADD `op_tax_code` VARCHAR(150) NOT NULL AFTER `op_actual_shipping_charges`; 
+ALTER TABLE `tbl_tax_categories` DROP INDEX `saletaxcat_identifier`;
+ALTER TABLE `tbl_tax_categories` DROP INDEX `taxcat_identifier`;
+ALTER TABLE `tbl_tax_categories` ADD UNIQUE( `taxcat_identifier`, `taxcat_plugin_id`);
+ALTER TABLE `tbl_tax_categories` ADD `taxcat_parent` INT(11) NOT NULL AFTER `taxcat_code`;
+INSERT INTO `tbl_plugins` (`plugin_id`, `plugin_identifier`, `plugin_type`, `plugin_code`, `plugin_active`, `plugin_display_order`) VALUES (NULL, 'TaxJar', '10', 'TaxJarTax', '0', '11');
+ALTER TABLE `tbl_order_products_lang` CHANGE `op_product_tax_options` `op_product_tax_options` TEXT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL;
+ALTER TABLE `tbl_order_products` ADD `op_tax_code` VARCHAR(150) NOT NULL AFTER `op_actual_shipping_charges`;
 ALTER TABLE `tbl_order_user_address` ADD `oua_state_code` VARCHAR(100) NOT NULL AFTER `oua_state`;
 
 INSERT INTO `tbl_email_templates` (`etpl_code`, `etpl_lang_id`, `etpl_name`, `etpl_subject`, `etpl_body`, `etpl_replacements`, `etpl_status`) VALUES
@@ -260,7 +260,7 @@ ALTER TABLE `tbl_attached_files` ADD `afile_attribute_title` VARCHAR(250) NOT NU
 -- Stripe Connect Plugin
 --
 
-INSERT INTO `tbl_plugins` (`plugin_identifier`, `plugin_type`, `plugin_code`, `plugin_active`, `plugin_display_order`) VALUES ('Stripe Connect', 11, 'StripeConnect', 0, 1); 
+INSERT INTO `tbl_plugins` (`plugin_identifier`, `plugin_type`, `plugin_code`, `plugin_active`, `plugin_display_order`) VALUES ('Stripe Connect', 11, 'StripeConnect', 0, 1);
 ALTER TABLE `tbl_orders` ADD `order_pmethod_type` TINYINT(2) NOT NULL COMMENT 'Default Or Plugin In PaymentMethods' AFTER `order_pmethod_id`;
 UPDATE `tbl_orders` SET `order_pmethod_type` = '1' WHERE order_pmethod_type != 2;
 
@@ -305,3 +305,7 @@ ALTER TABLE `tbl_order_product_shipment`
   ADD PRIMARY KEY (`opship_op_id`);
 
 -- ShipStation Module End-----
+
+-- auto detect location search
+ALTER TABLE `tbl_shops` ADD `shop_lat` VARCHAR(100) NOT NULL AFTER `shop_free_ship_upto`, ADD `shop_lng` VARCHAR(100) NOT NULL AFTER `shop_lat`;
+-- auto detect location

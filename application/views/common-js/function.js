@@ -11,7 +11,7 @@ var Dashboard = function() {
 		$(el).addClass("is-active");
 	};
 	var sidebarChangeWidth = function () {
-        
+
 		var $menuItemsTitle = $("li .menu-item__title");
 		if ($("body").hasClass('sidebar-is-reduced')) {
 			$("body").removeClass('sidebar-is-reduced').addClass('sidebar-is-expanded');
@@ -588,4 +588,286 @@ function googleCaptcha()
 			$.mbsmessage(langLbl.invalidGRecaptchaKeys,true,'alert--danger');
 		}
     }, 200);
+}
+
+function getLocation() {
+    return {
+        'lat' : getCookie('_ykGeoLat'),
+		'lng' : getCookie('_ykGeoLng'),
+		'countryCode' : getCookie('_ykGeoCountryCode'),
+		'stateCode' : getCookie('_ykGeoStateCode'),
+		'zip' : getCookie('_ykGeoZip')
+    };
+}
+
+function accessLocation(force = false) {
+	var location = getLocation();
+    if ("" == location.lat || "" == location.lng || "" == location.countryCode || force) {
+        $.facebox(function() {
+            fcom.ajax(fcom.makeUrl('Home', 'accessLocation'), '', function(t) {
+                $.facebox(t, 'small-fb-width');
+                googleAddressAutocomplete();
+            });
+        });
+    }
+}
+
+function loadGeoLocation() {
+	if (!CONF_ENABLE_GEO_LOCATION){
+		return;
+	}
+
+	if (typeof navigator.geolocation == 'undefined') {
+		console.log(langLbl.geoLocationNotSupported);
+        return false;
+	}
+
+	navigator.geolocation.getCurrentPosition(function(position){
+		var lat = position.coords.latitude;
+		var lng = position.coords.longitude;
+		getGeoAddress(lat, lng);
+	});
+}
+
+function setGeoAddress(data) {
+	var address = '';
+	setCookie('_ykGeoLat', data.lat);
+	setCookie('_ykGeoLng', data.lng);
+
+	if ('undefined' != typeof data.postal_code){
+		setCookie('_ykGeoZip', data.postal_code);
+		address += data.postal_code + ', ';
+	}
+
+	if ('undefined' != typeof data.city){
+		address += data.city + ', ';
+	}
+
+	if ('undefined' != typeof data.state){
+		setCookie('_ykGeoStateCode', data.state_code);
+		address += data.state + ', ';
+	}
+
+	if ('undefined' != typeof data.country){
+		setCookie('_ykGeoCountryCode', data.country_code);
+		address += data.country + ', ';
+	}
+	address = address.replace(/,\s*$/, "");
+
+	var formatedAddr = ('undefined' == typeof data.formatted_address) ? '' : data.formatted_address;
+	address = ('' == address) ? formatedAddr : address;
+
+	setCookie('_ykGeoAddress', address);
+
+	return address;
+}
+
+function getGeoAddress(lat, lng) {
+    var data = 'lat='+lat+"&lng="+lng;
+    fcom.ajax(fcom.makeUrl('Home', 'getGeoAddress'), data, function(t) {
+        var res = $.parseJSON(t);
+        if (res.status) {
+            var data = res.data;
+			address = setGeoAddress(data);
+            $(document).trigger('close.facebox');
+            displayGeoAddress(address);
+        }
+    });
+}
+
+var canSetCookie = false;
+function setCookie(cname, cvalue, exdays = 365) {
+	if (false == canSetCookie) {
+		return false;
+	}
+    var d = new Date();
+    d.setTime(d.getTime() + (exdays * 24 * 60 * 60 * 1000));
+    var expires = "expires="+d.toUTCString();
+    document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
+}
+
+function getCookie(cname) {
+    var name = cname + "=";
+    var ca = document.cookie.split(';');
+    for(var i = 0; i < ca.length; i++) {
+        var c = ca[i];
+        while (c.charAt(0) == ' ') {
+            c = c.substring(1);
+        }
+        if (c.indexOf(name) == 0) {
+            return c.substring(name.length, c.length);
+        }
+    }
+    return "";
+}
+
+function displayGeoAddress(address)
+{
+    if (0 < $("#js-curent-zip-code").length) {
+        $("#js-curent-zip-code").text(address);
+    }
+}
+
+function googleAddressAutocomplete(elementId = 'ga-autoComplete', field = 'formatted_address', saveCookie = true, callback = 'googleSelectedAddress') {
+	canSetCookie = saveCookie;
+    if (1 > $("#" + elementId).length) {
+        var msg = (langLbl.fieldNotFound).replace('{field}', elementId + ' Field');
+        $.systemMessage(msg, 'alert--danger');
+        return false;
+    }
+    var fieldElement = document.getElementById(elementId);
+    setTimeout(function(){ $("#" + elementId).attr('autocomplete', 'no'); }, 500);
+    var options = { types: ['(regions)'] }
+    var autocomplete = new google.maps.places.Autocomplete(fieldElement, options);
+    google.maps.event.addListener(autocomplete, 'place_changed', function () {
+        var place = autocomplete.getPlace();
+        var lat = place['geometry']['location'].lat();
+        var lng = place['geometry']['location'].lng();
+        var address = '';
+        var data = {};
+        data['lat'] = lat;
+        data['lng'] = lng;
+        data['formatted_address'] = place['formatted_address'];
+        if (0 < place.address_components.length) {
+            var addressComponents = place.address_components;
+            for (var i = 0; i < addressComponents.length; i++) {
+                var key = place.address_components[i].types[0];
+                var value = place.address_components[i].long_name;
+				data[key] = value;
+                if ('country' == key) {
+					data['country_code'] = place.address_components[i].short_name;
+					data['country'] = value;
+                } else if ('administrative_area_level_1' == key){
+					data['state_code'] = place.address_components[i].short_name;
+					data['state'] = value;
+				} else if ('administrative_area_level_2' == key){
+					data['city'] = value;
+				}
+			}
+			address = setGeoAddress(data);
+			if ('' == address) {
+                var msg = (langLbl.fieldNotFound).replace('{field}', field);
+                $.systemMessage(msg, 'alert--danger');
+            }
+
+			$("#" + elementId).val(address);
+			displayGeoAddress(address);
+        }
+
+        if (0 < $("#facebox #" + elementId).length) {
+            $(document).trigger('close.facebox');
+        }
+        if (eval("typeof " + callback) == 'function') {
+            window[callback](data);
+        }
+        return data;
+    });
+}
+
+var map;
+var marker;
+var geocoder;
+var infowindow;
+// Initialize the map.
+function initMap(lat = 40.72, lng = -73.96, elementId = 'map') {
+	var lat = parseInt(lat);
+	var lng = parseInt(lng);
+	var address = '';
+	if (1 > $("#" + elementId).length) {
+        return;
+	}
+  	map = new google.maps.Map(document.getElementById(elementId), {
+		zoom: 8,
+		center: {lat: lat, lng: lng}
+  	});
+  	geocoder = new google.maps.Geocoder;
+  	infowindow = new google.maps.InfoWindow;
+
+	address = document.getElementById('postal_code').value;
+	/*address = {lat: parseFloat(lat), lng: parseFloat(lat)};*/
+	geocodeAddress(geocoder, map, infowindow, address);
+
+  	document.getElementById('postal_code').addEventListener('blur', function() {
+		address = document.getElementById('postal_code').value;
+		geocodeAddress(geocoder, map, infowindow, address);
+  	});
+
+	for (i = 0; i < document.getElementsByClassName('addressSelection-js').length; i++) {
+	    document.getElementsByClassName('addressSelection-js')[i].addEventListener("change", function(e) {
+			address = e.target.options[e.target.selectedIndex].text;
+			geocodeAddress(geocoder, map, infowindow, address);
+	  	});
+	}
+}
+
+function geocodeAddress(geocoder, resultsMap, infowindow, address) {
+    geocoder.geocode({'address': address}, function(results, status) {
+      if (status === 'OK') {
+        resultsMap.setCenter(results[0].geometry.location);
+		if (marker && marker.setMap) {
+		    marker.setMap(null);
+	  	}
+        marker = new google.maps.Marker({
+          map: resultsMap,
+          position: results[0].geometry.location,
+		  draggable: true
+        });
+
+		geocodePosition(marker.getPosition());
+		google.maps.event.addListener(marker, 'dragend', function() {
+        	geocodePosition(marker.getPosition());
+      	});
+      } else {
+        /*console.log('Geocode was not successful for the following reason: ' + status);*/
+      }
+    });
+}
+
+function geocodePosition(pos) {
+	document.getElementById('lat').value = pos.lat().toFixed(6);
+	document.getElementById('lng').value = pos.lng().toFixed(6);
+	geocoder.geocode({'latLng': pos}, function(results, status) {
+        if (status == google.maps.GeocoderStatus.OK) {
+            if (results[0]) {
+				infowindow.setContent(results[0].formatted_address);
+				infowindow.open(map, marker);
+                var address_components = results[0].address_components;
+		        var data = {};
+		        data['lat'] = pos.lat().toFixed(6);
+		        data['lng'] = pos.lng().toFixed(6);
+		        data['formatted_address'] = results[0].formatted_address;
+				if (0 < address_components.length) {
+		            var addressComponents = address_components;
+		            for (var i = 0; i < addressComponents.length; i++) {
+		                var key = address_components[i].types[0];
+		                var value = address_components[i].long_name;
+						data[key] = value;
+		                if ('country' == key) {
+							data['country_code'] = address_components[i].short_name;
+							data['country'] = value;
+		                } else if ('administrative_area_level_1' == key){
+							data['state_code'] = address_components[i].short_name;
+							data['state'] = value;
+						} else if ('administrative_area_level_2' == key){
+							data['city'] = value;
+						}
+					}
+		        }
+				$('#postal_code').val(data.postal_code);
+				$('#shop_country_id option').each(function(){
+				    if (this.text == data.country) {
+				       	$('#shop_country_id').val(this.value);
+						var state = 0;
+						$('#shop_state option').each(function(){
+							if (this.text == data.state) {
+								state = this.value;
+							}
+						});
+						getCountryStates(this.value, state, '#shop_state');
+						return false;
+				    }
+				});
+            }
+        }
+    });
 }

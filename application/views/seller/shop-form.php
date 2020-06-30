@@ -8,10 +8,10 @@ $shopFrm->developerTags['fld_default_col'] = 4;
 $countryFld = $shopFrm->getField('shop_country_id');
 $countryFld->setFieldTagAttribute('id', 'shop_country_id');
 $countryFld->setFieldTagAttribute('onChange', 'getCountryStates(this.value,' . $stateId . ',\'#shop_state\')');
-
+$countryFld->setFieldTagAttribute('class', 'addressSelection-js');
 $stateFld = $shopFrm->getField('shop_state');
 $stateFld->setFieldTagAttribute('id', 'shop_state');
-
+$stateFld->setFieldTagAttribute('class', 'addressSelection-js');
 $urlFld = $shopFrm->getField('urlrewrite_custom');
 $urlFld->setFieldTagAttribute('id', "urlrewrite_custom");
 $urlFld->setFieldTagAttribute('onkeyup', "getSlugUrl(this,this.value)");
@@ -21,7 +21,15 @@ $IDFld->setFieldTagAttribute('id', "shop_id");
 $identiFierFld = $shopFrm->getField('shop_identifier');
 $identiFierFld->setFieldTagAttribute('onkeyup', "Slugify(this.value,'urlrewrite_custom','shop_id','shopurl')");
 $variables = array('language' => $language, 'siteLangId' => $siteLangId, 'shop_id' => $shop_id, 'action' => $action);
+$postalCode = $shopFrm->getField('shop_postalcode');
+$postalCode->setFieldTagAttribute('id', "postal_code");
 
+$latFld = $shopFrm->getField('shop_lat');
+$latFld->setFieldTagAttribute('id', "lat");
+$lngFld = $shopFrm->getField('shop_lng');
+$lngFld->setFieldTagAttribute('id', "lng");
+
+$variables= array('language'=>$language,'siteLangId'=>$siteLangId,'shop_id'=>$shop_id,'action'=>$action);
 $this->includeTemplate('seller/_partial/shop-navigation.php', $variables, false); ?>
 
 <div class="cards">
@@ -29,6 +37,9 @@ $this->includeTemplate('seller/_partial/shop-navigation.php', $variables, false)
         <div class="tabs__content">
             <div class="row">
                 <div class="col-lg-12 col-md-12" id="shopFormBlock"> <?php echo $shopFrm->getFormHtml(); ?>
+                <?php if (FatApp::getConfig('CONF_ENABLE_GEO_LOCATION', FatUtility::VAR_INT, 0)) { ?>
+                <div class="col-lg-12 col-md-12" id="map" style="width:1500px; height:500px"></div>
+                <?php } ?>
                 </div>
             </div>
         </div>
@@ -40,3 +51,12 @@ $this->includeTemplate('seller/_partial/shop-navigation.php', $variables, false)
             .val(), <?php echo $stateId ;?> , '#shop_state');
     });
 </script>
+<?php if (FatApp::getConfig('CONF_ENABLE_GEO_LOCATION', FatUtility::VAR_INT, 0)) { ?>
+<script>
+$(document).ready(function() {
+    var lat = $('#lat').val();
+    var lng = $('#lng').val();
+    initMap(lat, lng);
+});
+</script>
+<?php } ?>
