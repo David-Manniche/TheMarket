@@ -1395,7 +1395,7 @@ class Importexport extends ImportexportCommon
             $taxData = $this->getTaxCategoryByProductId($row['product_id']);
 
             if (!empty($taxData)) {
-                $row = array_merge($row, $taxData);
+                $row = $row + $taxData;
             }
             $sheetData = array();
             foreach ($headingsArr as $columnKey => $heading) {
@@ -1541,7 +1541,7 @@ class Importexport extends ImportexportCommon
                                 $colIndex = $colInd;
                                 $errMsg = str_replace('{column-name}', $columnTitle, Labels::getLabel("MSG_Invalid_{column-name}.", $langId));
                             } else {
-                                $usernameArr = array_merge($usernameArr, $res);
+                                $usernameArr = $usernameArr + $res;
                             }
                         }
                         $userId = array_key_exists($userName, $usernameArr) ? FatUtility::int($usernameArr[$userName]) : 0;
@@ -1638,7 +1638,7 @@ class Importexport extends ImportexportCommon
                                         if (!$res) {
                                             continue;
                                         } else {
-                                            $categoryIdentifierArr = array_merge($categoryIdentifierArr, $res);
+                                            $categoryIdentifierArr = $categoryIdentifierArr + $res;
                                         }
                                     }
                                     if (isset($categoryIdentifierArr[$val])) {
@@ -1655,7 +1655,7 @@ class Importexport extends ImportexportCommon
                                 if (!$res) {
                                     $invalid = true;
                                 } else {
-                                    $brandIdentifierArr = array_merge($brandIdentifierArr, $res);
+                                    $brandIdentifierArr = $brandIdentifierArr + $res;
                                 }
                             }
                             $colValue = isset($brandIdentifierArr[$colValue]) ? $brandIdentifierArr[$colValue] : 0;
@@ -1678,7 +1678,7 @@ class Importexport extends ImportexportCommon
                                 if (!$res) {
                                     $invalid = true;
                                 } else {
-                                    $taxCategoryArr = array_merge($taxCategoryArr, $res);
+                                    $taxCategoryArr = $taxCategoryArr + $res;
                                 }
                             }
                             $taxCatId = isset($taxCategoryArr[$colValue]) ? $taxCategoryArr[$colValue] : 0;
@@ -1737,7 +1737,7 @@ class Importexport extends ImportexportCommon
                                 if (!$res) {
                                     $invalid = true;
                                 } else {
-                                    $countryArr = array_merge($countryArr, $res);
+                                    $countryArr = $countryArr + $res;
                                 }
                             }
                             $colValue = isset($countryArr[$colValue]) ? $countryArr[$colValue] : 0;
@@ -1920,7 +1920,7 @@ class Importexport extends ImportexportCommon
                     'productlang_lang_id' => $langId,
                     );
 
-                    $langData = array_merge($langData, $prodlangDataArr);
+                    $langData = $langData + $prodlangDataArr;
 
                     $this->db->insertFromArray(Product::DB_TBL_LANG, $langData, false, array(), $langData);
                     /* ]*/
@@ -2051,7 +2051,7 @@ class Importexport extends ImportexportCommon
                                 if (!$res) {
                                     $invalid = true;
                                 } else {
-                                    $prodIndetifierArr = array_merge($prodIndetifierArr, $res);
+                                    $prodIndetifierArr = $prodIndetifierArr + $res;
                                 }
                             }
                             $colValue = array_key_exists($colValue, $prodIndetifierArr) ? $prodIndetifierArr[$colValue] : 0;
@@ -2061,7 +2061,7 @@ class Importexport extends ImportexportCommon
                                 if (!$res) {
                                     $invalid = true;
                                 } else {
-                                    $optionIdentifierArr = array_merge($optionIdentifierArr, $res);
+                                    $optionIdentifierArr = $optionIdentifierArr + $res;
                                 }
                             }
                             $colValue = array_key_exists($colValue, $optionIdentifierArr) ? $optionIdentifierArr[$colValue] : 0;
@@ -2198,7 +2198,7 @@ class Importexport extends ImportexportCommon
                                 if (!$res) {
                                     $invalid = true;
                                 } else {
-                                    $prodIndetifierArr = array_merge($prodIndetifierArr, $res);
+                                    $prodIndetifierArr = ($prodIndetifierArr + $res);
                                 }
                             }
                             $colValue = array_key_exists($colValue, $prodIndetifierArr) ? $prodIndetifierArr[$colValue] : 0;
@@ -2208,7 +2208,7 @@ class Importexport extends ImportexportCommon
                                 if (!$res) {
                                     $invalid = true;
                                 } else {
-                                    $tagIndetifierArr = array_merge($tagIndetifierArr, $res);
+                                    $tagIndetifierArr = ($tagIndetifierArr + $res);
                                 }
                             }
                             $colValue = array_key_exists($colValue, $tagIndetifierArr) ? $tagIndetifierArr[$colValue] : 0;
@@ -2362,7 +2362,7 @@ class Importexport extends ImportexportCommon
                                     if (!$res) {
                                         $invalid = true;
                                     } else {
-                                        $prodIndetifierArr = array_merge($prodIndetifierArr, $res);
+                                        $prodIndetifierArr = ($prodIndetifierArr + $res);
                                     }
                                 }
                                 $productId = $colValue = array_key_exists($colValue, $prodIndetifierArr) ? $prodIndetifierArr[$colValue] : 0;
@@ -2551,7 +2551,7 @@ class Importexport extends ImportexportCommon
                                     if (!$res) {
                                         $invalid = true;
                                     } else {
-                                        $prodIndetifierArr = array_merge($prodIndetifierArr, $res);
+                                        $prodIndetifierArr = ($prodIndetifierArr + $res);
                                     }
                                 }
                                 $colValue = array_key_exists($colValue, $prodIndetifierArr) ? $prodIndetifierArr[$colValue] : 0;
@@ -2589,7 +2589,7 @@ class Importexport extends ImportexportCommon
                                     if (!$res) {
                                         $invalid = true;
                                     } else {
-                                        $usernameArr = array_merge($usernameArr, $res);
+                                        $usernameArr = ($usernameArr + $res);
                                     }
                                 }
                                 $userId = $colValue = array_key_exists($colValue, $usernameArr) ? FatUtility::int($usernameArr[$colValue]) : 0;
@@ -2609,7 +2609,7 @@ class Importexport extends ImportexportCommon
                                 if (!$res) {
                                     $invalid = true;
                                 } else {
-                                    $countryCodeArr = array_merge($countryCodeArr, $res);
+                                    $countryCodeArr = ($countryCodeArr + $res);
                                 }
                             }
                             $colValue = array_key_exists($colValue, $countryCodeArr) ? $countryCodeArr[$colValue] : -1;
@@ -2625,7 +2625,7 @@ class Importexport extends ImportexportCommon
                                 if (!$res) {
                                     $invalid = true;
                                 } else {
-                                    $scompanyIdentifierArr = array_merge($scompanyIdentifierArr, $res);
+                                    $scompanyIdentifierArr = ($scompanyIdentifierArr + $res);
                                 }
                             }
                             $colValue = array_key_exists($colValue, $scompanyIdentifierArr) ? $scompanyIdentifierArr[$colValue] : 0;
@@ -2640,7 +2640,7 @@ class Importexport extends ImportexportCommon
                                 if (!$res) {
                                     $invalid = true;
                                 } else {
-                                    $durationIdentifierArr = array_merge($durationIdentifierArr, $res);
+                                    $durationIdentifierArr = ($durationIdentifierArr + $res);
                                 }
                             }
                             $colValue = array_key_exists($colValue, $durationIdentifierArr) ? $durationIdentifierArr[$colValue] : 0;
@@ -2797,7 +2797,7 @@ class Importexport extends ImportexportCommon
                                     if (!$res) {
                                         $invalid = true;
                                     } else {
-                                        $prodIndetifierArr = array_merge($prodIndetifierArr, $res);
+                                        $prodIndetifierArr = ($prodIndetifierArr + $res);
                                     }
                                 }
                                 $colValue = $productId = array_key_exists($colValue, $prodIndetifierArr) ? $prodIndetifierArr[$colValue] : 0;
@@ -2827,7 +2827,7 @@ class Importexport extends ImportexportCommon
                                     if (!$res) {
                                         $invalid = true;
                                     }
-                                    $optionIdentifierArr = array_merge($optionIdentifierArr, $res);
+                                    $optionIdentifierArr = ($optionIdentifierArr + $res);
                                 }
                                 $colValue = $optionId = array_key_exists($colValue, $optionIdentifierArr) ? $optionIdentifierArr[$colValue] : 0;
                             }
@@ -2866,7 +2866,7 @@ class Importexport extends ImportexportCommon
                                     if (!$res) {
                                         $invalid = true;
                                     }
-                                    $optionValueIndetifierArr[$optionId] = array_merge($optionValueIndetifierArr[$optionId], $res);
+                                    $optionValueIndetifierArr[$optionId] = ($optionValueIndetifierArr[$optionId] + $res);
                                 }
                                 $colValue = $optionValueId = isset($optionValueIndetifierArr[$optionId][$colValue]) ? $optionValueIndetifierArr[$optionId][$colValue] : 0;
                             }
@@ -3139,7 +3139,6 @@ class Importexport extends ImportexportCommon
                                 if (!$res) {
                                     $invalid = true;
                                 } else {
-                                    // $prodIndetifierArr = array_merge($prodIndetifierArr, $res);
                                     $prodIndetifierArr = $prodIndetifierArr + $res;
                                 }
                             }
@@ -3156,7 +3155,7 @@ class Importexport extends ImportexportCommon
                                 if (!$res) {
                                     $invalid = true;
                                 } else {
-                                    $usernameArr = array_merge($usernameArr, $res);
+                                    $usernameArr = $usernameArr + $res;
                                 }
                             }
                             $userId = $colValue = array_key_exists($colValue, $usernameArr) ? $usernameArr[$colValue] : 0;
@@ -3419,7 +3418,7 @@ class Importexport extends ImportexportCommon
                                 if (!$res) {
                                     $invalid = true;
                                 } else {
-                                    $optionIdentifierArr = array_merge($optionIdentifierArr, $res);
+                                    $optionIdentifierArr = ($optionIdentifierArr + $res);
                                 }
                             }
                             $colValue = $optionId = array_key_exists($colValue, $optionIdentifierArr) ? $optionIdentifierArr[$colValue] : 0;
@@ -3461,7 +3460,7 @@ class Importexport extends ImportexportCommon
                                     if (!$res) {
                                         $invalid = true;
                                     } else {
-                                        $optionValueIndetifierArr[$optionId] = array_merge($optionValueIndetifierArr[$optionId], $res);
+                                        $optionValueIndetifierArr[$optionId] = ($optionValueIndetifierArr[$optionId] + $res);
                                     }
                                 }
                                 $optionValueId = array_key_exists($colValue, $optionValueIndetifierArr[$optionId]) ? $optionValueIndetifierArr[$optionId][$colValue] : 0;
@@ -4292,7 +4291,7 @@ class Importexport extends ImportexportCommon
                                 if (!$res) {
                                     $invalid = true;
                                 } else {
-                                    $policyPonitIdArr = array_merge($policyPonitIdArr, $res);
+                                    $policyPonitIdArr = ($policyPonitIdArr + $res);
                                 }
                             }
                         }
@@ -4305,7 +4304,7 @@ class Importexport extends ImportexportCommon
                                 if (!$res) {
                                     $invalid = true;
                                 } else {
-                                    $policyPonitIdentifierArr = array_merge($policyPonitIdentifierArr, $res);
+                                    $policyPonitIdentifierArr = ($policyPonitIdentifierArr + $res);
                                 }
                             }
                             $colValue = $policyPointId = $policyPonitIdentifierArr[$colValue];
@@ -4431,7 +4430,7 @@ class Importexport extends ImportexportCommon
                                 if (!$res) {
                                     $invalid = true;
                                 } else {
-                                    $userArr = array_merge($userArr, $res);
+                                    $userArr = ($userArr + $res);
                                 }
                             }
                             $colValue = $userId = array_key_exists($colValue, $userArr) ? $userArr[$colValue] : 0;
@@ -4596,7 +4595,7 @@ class Importexport extends ImportexportCommon
                             if (!$res) {
                                 $invalid = true;
                             } else {
-                                $optionIdArr = array_merge($optionIdArr, $res);
+                                $optionIdArr = ($optionIdArr + $res);
                             }
                         }
 
@@ -4607,7 +4606,7 @@ class Importexport extends ImportexportCommon
                                 if (!$res) {
                                     $invalid = true;
                                 } else {
-                                    $optionIdentifierArr = array_merge($optionIdentifierArr, $res);
+                                    $optionIdentifierArr = ($optionIdentifierArr + $res);
                                 }
                             }
 
@@ -4752,7 +4751,7 @@ class Importexport extends ImportexportCommon
                             if (!$res) {
                                 $invalid = true;
                             } else {
-                                $usernameArr = array_merge($usernameArr, $res);
+                                $usernameArr = ($usernameArr + $res);
                             }
                         }
                         $userId = $colValue = array_key_exists($colValue, $usernameArr) ? $usernameArr[$colValue] : 0;
