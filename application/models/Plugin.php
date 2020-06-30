@@ -24,6 +24,7 @@ class Plugin extends MyAppModel
     public const TYPE_ADVERTISEMENT_FEED = 5;
     public const TYPE_SMS_NOTIFICATION = 6;
     public const TYPE_FULL_TEXT_SEARCH = 7;
+    public const TYPE_SHIPPING_SERVICES = 8;
     public const TYPE_TAX_SERVICES  = 10;
     public const TYPE_SPLIT_PAYMENT_METHOD  = 11;
     public const TYPE_REGULAR_PAYMENT_METHOD  = 13;
@@ -45,7 +46,8 @@ class Plugin extends MyAppModel
         self::TYPE_TAX_SERVICES ,
         self::TYPE_FULL_TEXT_SEARCH,
         self::TYPE_SPLIT_PAYMENT_METHOD,
-        self::TYPE_REGULAR_PAYMENT_METHOD
+        self::TYPE_REGULAR_PAYMENT_METHOD,
+        self::TYPE_SHIPPING_SERVICES,
     ];
 
     public const ATTRS = [
@@ -86,6 +88,7 @@ class Plugin extends MyAppModel
             self::TYPE_FULL_TEXT_SEARCH => Labels::getLabel('LBL_FULL_TEXT_SEARCH', $langId),
             self::TYPE_SPLIT_PAYMENT_METHOD => Labels::getLabel('LBL_SPLIT_PAYMENT_METHODS', $langId),
             self::TYPE_REGULAR_PAYMENT_METHOD => Labels::getLabel('LBL_REGULAR_PAYMENT_METHODS', $langId),
+            static::TYPE_SHIPPING_SERVICES => Labels::getLabel('LBL_SHIPPING_SERVICES', $langId),
         ];
     }
     
@@ -107,6 +110,7 @@ class Plugin extends MyAppModel
             self::TYPE_TAX_SERVICES => "tax",
             self::TYPE_SPLIT_PAYMENT_METHOD => "payment-methods",
             self::TYPE_REGULAR_PAYMENT_METHOD => "payment-methods",
+            self::TYPE_SHIPPING_SERVICES => "shipping-services",
         ];
 
         if (array_key_exists($pluginType, $pluginDir)) {
@@ -233,7 +237,7 @@ class Plugin extends MyAppModel
         if (empty($row) || !is_array($row)) {
             return false;
         }
-
+        
         if (!empty($attr) && is_string($attr)) {
             return $row[$attr];
         }

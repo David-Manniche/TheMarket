@@ -72,7 +72,7 @@ $(document).ready(function() {
 
     settingsForm = function() {
         $.facebox(function() {
-            fcom.ajax(fcom.makeUrl('ShipStationSettings', ''), '', function(t) {
+            fcom.ajax(fcom.makeUrl('ShipStationApiSettings', ''), '', function(t) {
                 fcom.updateFaceboxContent(t);
             });
         });
@@ -81,7 +81,7 @@ $(document).ready(function() {
     setupShippingSettings = function(frm) {
         if (!$(frm).validate()) return;
         var data = fcom.frmData(frm);
-        fcom.updateWithAjax(fcom.makeUrl('ShipStationSettings', 'setup'), data, function(t) {
+        fcom.updateWithAjax(fcom.makeUrl('ShipStationApiSettings', 'setup'), data, function(t) {
             $(document).trigger('close.facebox');
         });
     };

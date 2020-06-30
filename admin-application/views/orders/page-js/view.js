@@ -11,4 +11,10 @@ $(document).ready(function(){
 			window.location.reload();
 		});
 	};
+
+	generateLabel = function (orderId, opId) {
+		fcom.updateWithAjax(fcom.makeUrl('ShippingServices', 'generateLabel', [orderId, opId]), '', function(t) {			
+			window.location.reload();
+		});
+	}
 })();

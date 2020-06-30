@@ -146,6 +146,8 @@ class MyAppController extends FatController
             'saveProfileFirst' => Labels::getLabel('LBL_Save_Profile_First', $this->siteLangId),
             'minimumOneLocationRequired' => Labels::getLabel('LBL_Minimum_one_location_is_required', $this->siteLangId),
             'processing_counter' => Labels::getLabel('LBL_{counter}_OUT_OF_{count}_RECORD_BATCHES.', $this->siteLangId),
+            'loadingCaptcha' => Labels::getLabel('LBL_Loading_Captcha...', $this->siteLangId),
+            'confirmPayment' => Labels::getLabel('LBL_CONFIRM_PAYMENT', $this->siteLangId),
             );
 
             $languages = Language::getAllNames(false);

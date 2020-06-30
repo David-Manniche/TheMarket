@@ -33,7 +33,6 @@ class GoogleLoginController extends SocialMediaAuthController
         if (!empty($accessToken) || isset($get['code'])) {
             if (empty($accessToken)) {
                 $this->google->authenticate($get['code']);
-
                 $accessToken = $this->google->getAccessToken();
                 if (empty($accessToken)) {
                     $message = Labels::getLabel('MSG_UNABLE_TO_ACCESS_THIS_ACCOUNT', $this->siteLangId);

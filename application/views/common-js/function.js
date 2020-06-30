@@ -450,7 +450,8 @@ $(document).ready(function(){
 			.replace(/^-+/, '')             // Trim - from start of text
 			.replace(/-+$/, '');
 			if ( $("#"+is_slugify).val()==0 ){
-				$("#"+str_val_id).val(str).keyup();
+				// $("#"+str_val_id).val(str).keyup();
+				$("#"+str_val_id).val(str);
 				$("#"+caption).html(siteConstants.webroot+str);
 			}
 		};
@@ -559,11 +560,11 @@ function googleCaptcha()
     $("body").addClass("captcha");
     var inputObj = $("form input[name='g-recaptcha-response']");
     var submitBtn = inputObj.parent("form").find('input[type="submit"]');
-    submitBtn.attr("disabled", "disabled");
+    submitBtn.attr({"disabled": "disabled", "type" : "button"}).val(langLbl.loadingCaptcha);
 
     var checkToken = setInterval(function(){
         if (true === gCaptcha) {
-            submitBtn.removeAttr("disabled");
+            submitBtn.removeAttr("disabled").attr('type', 'submit').val(langLbl.confirmPayment);
             clearInterval(checkToken);
         }
     }, 500);
@@ -572,11 +573,17 @@ function googleCaptcha()
     setTimeout(function(){
         if (0 < inputObj.length && 'undefined' !== typeof grecaptcha) {
             grecaptcha.ready(function() {
-                grecaptcha.execute(langLbl.captchaSiteKey, {action: inputObj.data('action')}).then(function(token) {
-                    inputObj.val(token);
-                    gCaptcha = true;
-                });
-			});
+                try {
+                    grecaptcha.execute(langLbl.captchaSiteKey, {action: inputObj.data('action')}).then(function(token) {
+                        inputObj.val(token);
+                        gCaptcha = true;
+                    });
+                }
+                catch(error) {
+                    $.mbsmessage(error, true, 'alert--danger');
+                    return;
+                }
+            });
         } else if ('undefined' === typeof grecaptcha) {
 			$.mbsmessage(langLbl.invalidGRecaptchaKeys,true,'alert--danger');
 		}

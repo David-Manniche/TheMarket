@@ -10,7 +10,7 @@ class ShippingMethods extends MyAppModel
     public const DB_SETTING_TBL_PREFIX = 'shippingapi_';
 
     public const MANUAL_SHIPPING = 1;
-    public const SHIPSTATION_SHIPPING = 2;
+    public const SHIPPING_SERVICES = 2;
 
     private $db;
 

@@ -67,7 +67,7 @@ foreach ($products as $index => $product) {
             case ShippingMethods::MANUAL_SHIPPING:
                 $shippinhMethodArr['rates'] = $shipping_options;
                 break;
-            case ShippingMethods::SHIPSTATION_SHIPPING:
+            case ShippingMethods::SHIPPING_SERVICES:
                 $shippinhMethodArr['rates'] = $shipStation;
                 break;
         }

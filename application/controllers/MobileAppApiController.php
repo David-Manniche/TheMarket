@@ -3247,7 +3247,7 @@ class MobileAppApiController extends MyAppController
             $free_shipping_options = Product::getProductFreeShippingAvailabilty($cartval['product_id'], $this->siteLangId, $shippingAddressDetail['ua_country_id'], $shipBy);
 
             $cart_products[$cartkey]['is_shipping_selected'] = isset($productSelectedShippingMethodsArr['product'][$cartval['selprod_id']]) ? $productSelectedShippingMethodsArr['product'][$cartval['selprod_id']]['mshipapi_id'] : false;
-            if ($cart_products[$cartkey]['is_shipping_selected'] && $productSelectedShippingMethodsArr['product'][$cartval['selprod_id']]['mshipapi_id'] == SHIPPINGMETHODS::SHIPSTATION_SHIPPING) {
+            if ($cart_products[$cartkey]['is_shipping_selected'] && $productSelectedShippingMethodsArr['product'][$cartval['selprod_id']]['mshipapi_id'] == SHIPPINGMETHODS::SHIPPING_SERVICES) {
                 $cart_products[$cartkey]['selected_shipping_option'] = $productSelectedShippingMethodsArr['product'][$cartval['selprod_id']];
             } elseif ($cart_products[$cartkey]['is_shipping_selected'] && $productSelectedShippingMethodsArr['product'][$cartval['selprod_id']]['mshipapi_id'] == SHIPPINGMETHODS::MANUAL_SHIPPING) {
                 $cart_products[$cartkey]['pship_id'] = $productSelectedShippingMethodsArr['product'][$cartval['selprod_id']]['pship_id'];
@@ -3283,7 +3283,7 @@ class MobileAppApiController extends MyAppController
         }
 
         $cart_shipping_summary['productSelectedShippingMethodsArr'] = $productSelectedShippingMethodsArr;
-        $cart_shipping_summary['shipStationCarrierList'] = $cartObj->shipStationCarrierList();
+        $cart_shipping_summary['shipStationCarrierList'] = $cartObj->shippingCarrierList();
         $cart_shipping_summary['shippingMethods'] = $shippingMethods;
         $cart_shipping_summary['products'] = $cart_products;
         $cart_shipping_summary['cartSummary'] = $cartSummaryArr;
@@ -3407,7 +3407,7 @@ class MobileAppApiController extends MyAppController
                         );
                     }
                 }
-            } elseif (isset($productKey) && ($shipping_type == ShippingCompanies::SHIPSTATION_SHIPPING) && !empty($shipping_service)) {
+            } elseif (isset($productKey) && ($shipping_type == ShippingCompanies::SHIPPING_SERVICES) && !empty($shipping_service)) {
                 list($carrier_name, $carrier_price) = explode("-", $shipping_service);
                 $productToShippingMethods['product'][$seller_product_id] = array(
                  'selprod_id' => $cartval['selprod_id'],
