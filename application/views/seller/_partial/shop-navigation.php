@@ -1,5 +1,7 @@
 <?php  defined('SYSTEM_INIT') or die('Invalid Usage.'); 
 $inactive = (0 == $shop_id) ? 'fat-inactive' : '';
+$formLangId = isset($formLangId) ? $formLangId : 0;
+$splitPaymentMethodsPlugins = Plugin::getDataByType(Plugin::TYPE_SPLIT_PAYMENT_METHOD, $siteLangId);
 ?>
 <div class="tabs ">
     <ul class="arrowTabs">
@@ -41,5 +43,16 @@ $inactive = (0 == $shop_id) ? 'fat-inactive' : '';
                 <?php
         } ?>><?php echo Labels::getLabel('LBL_SOCIAL_PLATFORMS', $siteLangId); ?></a>
         </li>
+
+        <?php foreach ($splitPaymentMethodsPlugins as $plugin) { ?>
+            <li class="<?php echo !empty($action) && ($action == $plugin['plugin_code']) ? 'is-active' : ''; ?>">
+                <a href="javascript:void(0)" class="pluginPlatform-js <?php echo $plugin['plugin_code']; ?>" <?php if ($shop_id > 0) { ?> onClick="pluginPlatform(this)" <?php } ?> data-platformurl="<?php echo CommonHelper::generateUrl($plugin['plugin_code'])?>">
+                    <?php echo $plugin['plugin_name']; ?>
+                </a>
+            </li>
+            <script>
+                var keyName = "<?php echo $plugin['plugin_code']?>";
+            </script>
+        <?php } ?>
     </ul>
 </div>

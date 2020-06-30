@@ -2,7 +2,6 @@
 
 class AdvertisementFeedBaseController extends SellerPluginBaseController
 {
-    private $keyName;
     public function __construct($action)
     {
         parent::__construct($action);

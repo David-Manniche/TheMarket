@@ -28,6 +28,8 @@ class Transactions extends MyAppModel
     public const TYPE_PPC = 9;
     public const TYPE_MONEY_WITHDRAWL_REFUND = 10;
     public const TYPE_ORDER_SHIPPING = 11;
+    public const TYPE_TRANSFER_TO_THIRD_PARTY_ACCOUNT = 12; //Direct transfer to third party account like Stripe Connect.
+
 
     public const CREDIT_TYPE = 1;
     public const DEBIT_TYPE = 2;
@@ -230,5 +232,51 @@ class Transactions extends MyAppModel
         $srch->addGroupBy('utxn.utxn_id');
         $srch->addOrder('utxn_id', 'DESC');
         return $srch;
+    }
+
+    /**
+     * creditWallet
+     *
+     * @return bool
+     */
+    public static function creditWallet(int $userId, int $txnType, $txnAmount, int $langId, string $comments, int $opId = 0, $gatewayTxnId = '')
+    {
+        $txnArray["utxn_user_id"] = $userId;
+        $txnArray["utxn_credit"] = $txnAmount;
+        $txnArray["utxn_debit"] = 0;
+        $txnArray["utxn_status"] = Transactions::STATUS_COMPLETED;
+        $txnArray["utxn_op_id"] = $opId;
+        $txnArray["utxn_comments"] = $comments;
+        $txnArray["utxn_type"] = $txnType;
+        $txnArray["utxn_gateway_txn_id"] = $gatewayTxnId;
+        $transObj = new Transactions();
+        if ($txnId = $transObj->addTransaction($txnArray)) {
+            $emailNotificationObj = new EmailHandler();
+            $emailNotificationObj->sendTxnNotification($txnId, $langId);
+        }
+        return true;
+    }
+
+    /**
+     * debitWallet
+     *
+     * @return bool
+     */
+    public static function debitWallet(int $userId, int $txnType, $txnAmount, int $langId, string $comments, int $opId = 0, $gatewayTxnId = '')
+    {
+        $txnArray["utxn_user_id"] = $userId;
+        $txnArray["utxn_credit"] = 0;
+        $txnArray["utxn_debit"] = $txnAmount;
+        $txnArray["utxn_status"] = Transactions::STATUS_COMPLETED;
+        $txnArray["utxn_op_id"] = $opId;
+        $txnArray["utxn_comments"] = $comments;
+        $txnArray["utxn_type"] = $txnType;
+        $txnArray["utxn_gateway_txn_id"] = $gatewayTxnId;
+        $transObj = new Transactions();
+        if ($txnId = $transObj->addTransaction($txnArray)) {
+            $emailNotificationObj = new EmailHandler();
+            $emailNotificationObj->sendTxnNotification($txnId, $langId);
+        }
+        return true;
     }
 }

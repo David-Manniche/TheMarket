@@ -24,6 +24,16 @@ $(document).on('change', '.collection-language-js', function() {
     var scollection_id = document.frmCollectionMedia.scollection_id.value;
     shopCollectionImages(scollection_id, lang_id);
 });
+
+$(document).on("change", "#country", function(){
+    $("#state").attr('disabled', 'disabled');
+    getStatesByCountryCode($(this).val(),'','#state', 'state_code');
+});
+
+$(document).on("change", "#state", function(){
+    $(this).removeAttr("disabled");
+});
+
 (function() {
     var runningAjaxReq = false;
     var dv = '#shopFormBlock';
@@ -94,11 +104,17 @@ $(document).on('change', '.collection-language-js', function() {
         });
     };
 
-    shopForm = function() {
+    shopForm = function(tab = '') {
         $(dv).html(fcom.getLoader());
-        fcom.ajax(fcom.makeUrl('Seller', 'shopForm'), '', function(t) {
+        fcom.ajax(fcom.makeUrl('Seller', 'shopForm', [tab]), '', function(t) {
             $(dv).html(t);
             jscolor.installByClassName("jscolor");
+            if ('' != tab) {
+                $('.' + tab).click();
+                var url = self.location.href;
+                url = url.replace(tab, '');
+                window.history.pushState("","",url) ;
+            }
         });
     };
 
@@ -708,7 +724,73 @@ $(document).on('change', '.collection-language-js', function() {
             }
         });
 	}
+    
+    pluginPlatform = function(el) {
+        $(dv + " .tabs__content .row").html(fcom.getLoader());
+        var platformUrl = $(el).data('platformurl');
+        fcom.ajax(platformUrl, '', function(t) {
+            t = $.parseJSON(t);
+            htm = (1 > t.status) ? t.msg : t.html;
+            
+            $(dv + " .tabs__content .row").html(htm);
+            $(el).parent().siblings().removeClass('is-active');
+            $(el).parent().addClass('is-active');
+        });
+    };
 
+    requiredFieldsForm = function(){
+        var contentDv = dv + " .tabs__content .row .requiredFieldsForm-js";
+        $(contentDv).html(fcom.getLoader());
+        fcom.ajax(fcom.makeUrl(keyName, 'requiredFieldsForm'),'',function(res){
+            t = $.parseJSON(res);
+            if(1 > t.status){
+                $(contentDv).html(t.html);
+            } else {
+                $.mbsmessage(t.msg, false, 'alert--success');
+                $('.pluginPlatform-js').click();
+            }
+        });
+    };
+    
+    clearForm = function() {
+        requiredFieldsForm();
+    };
+    
+	setupRequiredFields = function (frm){
+		if (!$(frm).validate()) return;
+		var data = fcom.frmData(frm);
+        var attr = $(frm).attr('enctype');
+        if (typeof attr !== typeof undefined && attr !== false) {
+            $(frm).attr('action', fcom.makeUrl(keyName, 'setupRequiredFields')).removeAttr("onsubmit").submit();
+            return false;
+        }
+		fcom.updateWithAjax(fcom.makeUrl(keyName, 'setupRequiredFields'), data, function(t) {
+            requiredFieldsForm();
+        });
+    }
+    
+    register = function (el){
+        var href = $(el).data('href');
+        fcom.updateWithAjax(href, '', function(t) {
+            $('.pluginPlatform-js').click();
+        });
+    }
+
+    initialSetup = function (frm){
+        if (!$(frm).validate()) return;
+        var data = fcom.frmData(frm);
+        fcom.updateWithAjax(fcom.makeUrl(keyName, 'initialSetup'), data, function(t) {
+            $('.' + keyName).click();
+        });
+    }
+
+    deleteAccount = function (el){
+        if( !confirm( langLbl.confirmDelete ) ){ return false; };
+        var href = $(el).data('href');
+        fcom.updateWithAjax(href, '', function(t) {
+            $('.pluginPlatform-js').click();
+        });
+    }
 })();
 
 function bindAutoComplete() {

@@ -9,6 +9,12 @@ class FcmPushNotification extends PushNotificationBase
 
     public $requiredKeys = ['server_api_key'];
 
+    /**
+     * __construct
+     * 
+     * @param array $deviceTokens 
+     * @return void
+     */
     public function __construct($deviceTokens)
     {
         $this->deviceTokens = $deviceTokens;
@@ -20,7 +26,11 @@ class FcmPushNotification extends PushNotificationBase
             return false;
         }
         
-        if (!is_array($this->deviceTokens) || empty($this->deviceTokens) || 1000 < count($this->deviceTokens)) {
+        if (is_string($this->deviceTokens) && !empty($this->deviceTokens)) {
+            $this->deviceTokens = [$this->deviceTokens];
+        }
+
+        if (empty($this->deviceTokens) || 1000 < count($this->deviceTokens)) {
             $this->error = Labels::getLabel('LBL_ARRAY_MUST_CONTAIN_AT_LEAST_1_AND_AT_MOST_1000_REGISTRATION_TOKENS', CommonHelper::getLangId());
             return false;
         }
@@ -28,7 +38,7 @@ class FcmPushNotification extends PushNotificationBase
 
     public function notify($title, $message, $os, $data = [])
     {
-        if ($this->init()) {
+        if (false === $this->init()) {
             return false;
         }
             

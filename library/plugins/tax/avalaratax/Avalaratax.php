@@ -1,7 +1,5 @@
 <?php
 
-require_once CONF_INSTALLATION_PATH . 'vendor/autoload.php';
-
 class AvalaraTax extends TaxBase
 {
     public const KEY_NAME = 'AvalaraTax';
@@ -17,12 +15,12 @@ class AvalaraTax extends TaxBase
     private $invoiceId;
     private $response;
     private $invoiceDate;
-	
-	public $requiredKeys = [
+    
+    public $requiredKeys = [
         'account_number',
-		'company_code',
-		'environment',
-		'license_key'
+        'company_code',
+        'environment',
+        'license_key'
     ];
 
     /**
@@ -39,7 +37,7 @@ class AvalaraTax extends TaxBase
             $this->langId = CommonHelper::getLangId();
         }
 
-        if (false == $this->validateSettings($langId)) {
+        if (false == $this->validateSettings()) {
             return false;
         }
 
@@ -75,8 +73,8 @@ class AvalaraTax extends TaxBase
      * @return array
      */
     public function getRates($itemsArr, $shippingItem, $userId)
-    { 
-       try {
+    {
+        try {
             $this->setProducts($itemsArr)
                     ->setProductsShipping($shippingItem)
                     ->setCustomerCode($userId);
@@ -116,7 +114,7 @@ class AvalaraTax extends TaxBase
                     ->setInvoiceDate($invoiceDate);
 
             $taxes = $this->calculateTaxes(true);
-        } catch (\Exception $e) { 
+        } catch (\Exception $e) {
             return [
                 'status' => false,
                 'msg' => $e->getMessage(),
@@ -145,7 +143,7 @@ class AvalaraTax extends TaxBase
 
         $recordCount = 0;
        
-        if (false == $formatted){
+        if (false == $formatted) {
             return $this->client->listTaxCodes($filter, $pageSize, $pageNumber, $orderBy);
         }
 
@@ -361,12 +359,12 @@ class AvalaraTax extends TaxBase
 
     private function formatTaxes($taxes)
     {
-       // CommonHelper::printArray($taxes);
+        // CommonHelper::printArray($taxes);
         $formatedTax = [];
         foreach ($taxes->lines as $line) {
             $taxDetails = [];
             foreach ($line->details as $lineTaxdetail) {
-                $taxName = $lineTaxdetail->taxName;                
+                $taxName = $lineTaxdetail->taxName;
                 if (isset($taxDetails[$taxName])) {
                     $taxDetails[$taxName]['value'] += $lineTaxdetail->tax;
                 } else {

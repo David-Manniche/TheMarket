@@ -212,6 +212,13 @@ function getCountryStates(countryId, stateId, dv) {
     });
 };
 
+function getStatesByCountryCode(countryCode, stateCode, dv, idCol = 'state_id') {
+    fcom.ajax(fcom.makeUrl('GuestUser', 'getStatesByCountryCode', [countryCode, stateCode, idCol]), '', function (res) {
+        $(dv).empty();
+        $(dv).append(res).change();
+    });
+};
+
 function recentlyViewedProducts(selprodId) {
     if (typeof selprodId == 'undefined') {
         selprodId = 0;
@@ -1111,6 +1118,13 @@ $(document).ready(function () {
             $(this).parent().parent('div').find('.increase-js').removeClass('not-allowed');
         } else {
             val = $(this).val();
+			if ($(this).parent().parent('div').find('.decrease-js').hasClass('not-allowed')) {
+				$(this).parent().parent('div').find('.decrease-js').removeClass('not-allowed');
+			}
+			
+			if ($(this).parent().parent('div').find('.increase-js').hasClass('not-allowed')) {
+				$(this).parent().parent('div').find('.increase-js').removeClass('not-allowed');
+			}
         }
         $(this).val(val);
         var key = $(this).attr('data-key');
@@ -1118,8 +1132,16 @@ $(document).ready(function () {
         if (page == 'product-view') {
             return false;
         }
-        cart.update(key, page);
     });
+	
+	$(document).on("blur", '.productQty-js', function () {
+		var key = $(this).attr('data-key');
+        var page = $(this).attr('data-page');
+        if (page == 'product-view') {
+            return false;
+        }
+		cart.update(key, page);
+	});
 
     $(document).on("click", '.decrease-js', function () {
         if ($(this).hasClass('not-allowed')) {
