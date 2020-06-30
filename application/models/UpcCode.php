@@ -35,6 +35,9 @@ class UpcCode extends MyAppModel
         $srch->addFld('upc_code');
         $rs = $srch->getResultSet();
         $code = $db->fetch($rs);
+        if (empty($code)) {
+            return '';
+        }
         return $code['upc_code'];
     }
 }

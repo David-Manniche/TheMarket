@@ -388,10 +388,8 @@ $(document).ready(function(){
 		};
 
 		function initialize() {
-			total_li= $(elem).children('ul').children('li').length;
-			console.log(total_li);
-			limit= settings.limit;
-			console.log(limit);
+			total_li= $(elem).children('ul').children('li').length;			
+			limit= settings.limit;			
 			extra_li= total_li-limit;
 			if (total_li > limit) {
 			   $(elem).children('ul').children('li:gt('+(limit-1)+')').hide();

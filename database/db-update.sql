@@ -188,7 +188,7 @@ DROP TABLE `tbl_tax_structure_lang`;
 CREATE TABLE `tbl_tax_rules` (
   `taxrule_id` int(11) NOT NULL,
   `taxrule_taxcat_id` int(11) NOT NULL,
-  `taxrule_name` varchar(255) NOT NULL,
+  `taxrule_identifier` varchar(255) NOT NULL,
   `taxrule_rate` decimal(10,2) NOT NULL,
   `taxrule_is_combined` tinyint(4) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;

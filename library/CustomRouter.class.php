@@ -51,7 +51,7 @@ class CustomRouter
         }
         define('MOBILE_APP_USER_TYPE', $userType);
 
-        if (defined('SYSTEM_FRONT') && SYSTEM_FRONT === true/*  && !FatUtility::isAjaxCall() */) {  
+        if (defined('SYSTEM_FRONT') && SYSTEM_FRONT === true/*  && !FatUtility::isAjaxCall() */) {
             $url = urldecode($_SERVER['REQUEST_URI']);
             
             if (strpos($url, "index.php?url=") !== false || UrlRewrite::staticContentProvider($controller, $action) == true) {
@@ -77,18 +77,19 @@ class CustomRouter
                 $rs = $srch->getResultSet();
                 $row = FatApp::getDb()->fetch($rs);
 
-                if (!$row && FatApp::getConfig('CONF_ENABLE_301', FatUtility::VAR_INT, 0) && !FatUtility::isAjaxCall()) { 
+                if (!$row && FatApp::getConfig('CONF_ENABLE_301', FatUtility::VAR_INT, 0) && !FatUtility::isAjaxCall()) {
                     $srch = UrlRewrite::getSearchObject();
                     $srch->doNotCalculateRecords();
                     $srch->addMultipleFields(array('urlrewrite_custom','urlrewrite_original'));
                     $srch->setPageSize(1);
-                    $srch->addCondition(UrlRewrite::DB_TBL_PREFIX . 'original', '=', $customUrl[0]); 
+                    $srch->addCondition(UrlRewrite::DB_TBL_PREFIX . 'original', '=', $customUrl[0]);
                     $rs = $srch->getResultSet();
-                    $res = FatApp::getDb()->fetch($rs);                   
-                    if (!empty($res) && $res['urlrewrite_custom'] != '') { var_dump($res);
-                        $redirectQueryString = (isset($customUrl[1]) && $customUrl[1] != '') ?  '?'. $customUrl[1] : '';              
+                    $res = FatApp::getDb()->fetch($rs);
+                    if (!empty($res) && $res['urlrewrite_custom'] != '') {
+                        var_dump($res);
+                        $redirectQueryString = (isset($customUrl[1]) && $customUrl[1] != '') ?  '?' . $customUrl[1] : '';
                         header("HTTP/1.1 301 Moved Permanently");
-                        header("Location: " . CommonHelper::generateFullUrl(CONF_WEBROOT_URL). '/' .$res['urlrewrite_custom'] . $redirectQueryString );
+                        header("Location: " . CommonHelper::generateFullUrl(CONF_WEBROOT_URL) . '/' . $res['urlrewrite_custom'] . $redirectQueryString);
                         header("Connection: close");
                     }
                 }
@@ -98,17 +99,17 @@ class CustomRouter
             }
             /*]*/
            
-            $url = $row['urlrewrite_original'];
+            $url = (!empty($row['urlrewrite_original'])) ? $row['urlrewrite_original'] : '';
             if (!$row && isset($customUrl[1])) {
                 $url = $customUrl[0];
             }
            
             $arr = explode('/', $url);
 
-            $controller = (isset($arr[0]))?$arr[0]:'';
+            $controller = (isset($arr[0])) ? $arr[0] : '';
             array_shift($arr);
 
-            $action = (isset($arr[0]))?$arr[0]:'';
+            $action = (isset($arr[0])) ? $arr[0] : '';
             array_shift($arr);
 
             $queryString = $arr;

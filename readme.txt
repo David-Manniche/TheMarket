@@ -15,6 +15,7 @@ Bugs:
 Enhancements:
     => Tax module upgrade
     => Test cases classes enhancements.
+    => Compatiblility with php 7.4    
 Notes:
    ==========Stripe Connect Installation Notes[:=========
    Composer should be installed on server to run the stripe connect module: composer.json on root of the project has details to download the required libraries in root's vendor folder.

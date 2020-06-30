@@ -51,8 +51,7 @@ var submitBtnNode = null;
 			});
 		});
 	} catch(e) {
-		console.log(e.message);
-		console.log(data);
+		console.log(e.message);		
 		logout();
 	}
 })(jQuery);

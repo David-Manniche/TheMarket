@@ -1,24 +1,24 @@
 <?php defined('SYSTEM_INIT') or die('Invalid usage');
 /* reviews processing */
-$totReviews = FatUtility::int($reviews['totReviews']);
-$avgRating = FatUtility::convertToType($reviews['prod_rating'], FatUtility::VAR_FLOAT);
-$rated_1 = FatUtility::int($reviews['rated_1']);
-$rated_2 = FatUtility::int($reviews['rated_2']);
-$rated_3 = FatUtility::int($reviews['rated_3']);
-$rated_4 = FatUtility::int($reviews['rated_4']);
-$rated_5 = FatUtility::int($reviews['rated_5']);
+$totReviews = 0 ;
+if (!empty($reviews)) {
+    $totReviews = (!empty($reviews['totReviews'])) ? FatUtility::int($reviews['totReviews']) : 0;
+    
+    $rate_5_width = $rate_4_width = $rate_3_width = $rate_2_width = $rate_1_width = 0;
 
-$pixelToFillRight = $avgRating/5*160;
-$pixelToFillRight = FatUtility::convertToType($pixelToFillRight, FatUtility::VAR_FLOAT);
+    if ($totReviews) {
+        $rated_1 = FatUtility::int($reviews['rated_1']);
+        $rated_2 = FatUtility::int($reviews['rated_2']);
+        $rated_3 = FatUtility::int($reviews['rated_3']);
+        $rated_4 = FatUtility::int($reviews['rated_4']);
+        $rated_5 = FatUtility::int($reviews['rated_5']);
 
-$rate_5_width = $rate_4_width =$rate_3_width= $rate_2_width= $rate_1_width = 0;
-
-if ($totReviews) {
-    $rate_5_width = round(FatUtility::convertToType($rated_5/$totReviews*100, FatUtility::VAR_FLOAT), 2);
-    $rate_4_width = round(FatUtility::convertToType($rated_4/$totReviews*100, FatUtility::VAR_FLOAT), 2);
-    $rate_3_width = round(FatUtility::convertToType($rated_3/$totReviews*100, FatUtility::VAR_FLOAT), 2);
-    $rate_2_width = round(FatUtility::convertToType($rated_2/$totReviews*100, FatUtility::VAR_FLOAT), 2);
-    $rate_1_width = round(FatUtility::convertToType($rated_1/$totReviews*100, FatUtility::VAR_FLOAT), 2);
+        $rate_5_width = round(FatUtility::convertToType($rated_5 / $totReviews * 100, FatUtility::VAR_FLOAT), 2);
+        $rate_4_width = round(FatUtility::convertToType($rated_4 / $totReviews * 100, FatUtility::VAR_FLOAT), 2);
+        $rate_3_width = round(FatUtility::convertToType($rated_3 / $totReviews * 100, FatUtility::VAR_FLOAT), 2);
+        $rate_2_width = round(FatUtility::convertToType($rated_2 / $totReviews * 100, FatUtility::VAR_FLOAT), 2);
+        $rate_1_width = round(FatUtility::convertToType($rated_1 / $totReviews * 100, FatUtility::VAR_FLOAT), 2);
+    }
 }
 ?>
 <div class="col-md-7">
@@ -57,6 +57,3 @@ if ($totReviews) {
         </ul>
     </div>
 </div>
-<script>
-    /* $('#itemRatings div.progress__fill').css({'clip':'rect(0px, <?php echo $pixelToFillRight; ?>px, 160px, 0px)'}); */
-</script>
