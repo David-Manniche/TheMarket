@@ -4190,7 +4190,7 @@ class SellerController extends SellerBaseController
         return $frm;
     }
 
-    public function catalogInfo($product_id = 0)
+    public function catalogInfo($product_id)
     {
         $product_id = FatUtility::int($product_id);
         $prodSrchObj = new ProductSearch($this->siteLangId, null, null, false, false);

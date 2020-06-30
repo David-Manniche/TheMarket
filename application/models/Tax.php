@@ -693,7 +693,7 @@ class Tax extends MyAppModel
     * @param  array $fields
     * @return array
     */
-    public static function getTaxCatByProductId(int $productId = 0, int $userId = 0, int $langId = 0, array $fields = array()): array
+    public static function getTaxCatByProductId(int $productId, int $userId = 0, int $langId = 0, array $fields = array()): array
     {
         $taxData = array();
         $taxObj = static::getTaxCatObjByProductId($productId, $langId);
@@ -703,8 +703,11 @@ class Tax extends MyAppModel
         }
         $taxObj->doNotCalculateRecords();
         $taxObj->doNotLimitRecords();
-        $rs = $taxObj->getResultSet();
-        $taxData = FatApp::getDb()->fetch($rs);
+        $res = $taxObj->getResultSet();
+        $taxData = FatApp::getDb()->fetch($res);
+        if(!$taxData) {
+            return array();
+        }
         return $taxData;
     }
 
@@ -714,9 +717,14 @@ class Tax extends MyAppModel
     * @param  int $productId
     * @return bool
     */
-    public function removeTaxSetByAdmin(int $productId = 0): bool
+    public function removeTaxSetByAdmin(int $productId): bool
     {
-        return FatApp::getDb()->deleteRecords(static::DB_TBL_PRODUCT_TO_TAX, array('smt' => 'ptt_seller_user_id = ? and ptt_product_id = ?', 'vals' => array(0, $productId)));
+        $db = FatApp::getDb();
+        $db->deleteRecords(static::DB_TBL_PRODUCT_TO_TAX, array('smt' => 'ptt_seller_user_id = ? and ptt_product_id = ?', 'vals' => array(0, $productId)));
+        if(0 < $db->rowsAffected()) {
+            return true;
+        }
+        return false;
     }
 
     /**
