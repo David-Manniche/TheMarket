@@ -282,7 +282,6 @@ class Tax extends MyAppModel
         $userId = Fatutility::int($userId);
         $langId = Fatutility::int($langId);
         $activatedTaxServiceId = static::getActivatedServiceId();
-
         $taxRates = array();
         $srch = self::getTaxCatObjByProductId($productId, $langId);
         $srch->addCondition('ptt_product_id', '=', $productId, 'AND');
@@ -298,13 +297,12 @@ class Tax extends MyAppModel
             }
             $srch->addOrder('taxrule_id', 'ASC');
         }
-
         $res = $srch->getResultSet();
         $row = FatApp::getDb()->fetch($res);
         if (!is_array($row)) {
             return array();
         }
-        return array();
+        return $row;
     }
 
     /**

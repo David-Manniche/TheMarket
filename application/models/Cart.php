@@ -418,7 +418,9 @@ class Cart extends FatModel
                         }
                         $tax = new Tax();
                         $taxCategoryRow = $tax->getTaxRates($sellerProductRow['product_id'], $sellerProductRow['selprod_user_id'], $siteLangId, $shipToCountryId, $shipToStateId);
-                        $sellerProductRow['theprice'] = round($sellerProductRow['theprice'] / (1 + ( $taxCategoryRow['taxrule_rate'] / 100)), 2);
+                        if (array_key_exists('taxrule_rate', $taxCategoryRow)) {
+                            $sellerProductRow['theprice'] = round($sellerProductRow['theprice'] / (1 + ( $taxCategoryRow['taxrule_rate'] / 100)), 2);
+                        }
                     }
                     /*[ Product Tax */
                     $taxableProdPrice = $sellerProductRow['theprice'] - $sellerProductRow['volume_discount'];
@@ -564,13 +566,15 @@ class Cart extends FatModel
             /* requested quantity cannot more than stock available */
             $quantity = $sellerProductRow['selprod_stock'];
         }
-        
+
         if (FatApp::getConfig("CONF_PRODUCT_INCLUSIVE_TAX", FatUtility::VAR_INT, 0) && 0 == Tax::getActivatedServiceId()) {
             $tax = new Tax();
             $taxCategoryRow = $tax->getTaxRates($sellerProductRow['product_id'], $sellerProductRow['selprod_user_id'], $siteLangId);
-            $sellerProductRow['theprice'] = round($sellerProductRow['theprice'] / (1 + ( $taxCategoryRow['taxrule_rate'] / 100)), 2);
+            if (array_key_exists('taxrule_rate', $taxCategoryRow)) {
+                $sellerProductRow['theprice'] = round($sellerProductRow['theprice'] / (1 + ( $taxCategoryRow['taxrule_rate'] / 100)), 2);
+            }
         }
-        
+
         /* update/fetch/apply theprice, according to volume discount module[ */
         $sellerProductRow['volume_discount'] = 0;
         $sellerProductRow['volume_discount_percentage'] = 0;
@@ -1504,11 +1508,11 @@ class Cart extends FatModel
         }
         $cartObj->updateUserCart();
     }
-    
+
     /* public function shippingCarrierList(int $langId = 0)
     {
         $langId = (0 < $langId) ? $langId : commonHelper::getLangId();
-        
+
         $plugin = new Plugin();
         $shippingServiceName = $plugin->getDefaultPluginKeyName(Plugin::TYPE_SHIPPING_SERVICES);
         $carriers = [];
@@ -1581,7 +1585,7 @@ class Cart extends FatModel
         if (!$this->hasPhysicalProduct()) {
             return false;
         }
-        
+
         foreach ($this->SYSTEM_ARR['cart'] as $key => $cart) {
             if ($find_key == md5($key)) {
                 return $key;
@@ -1596,7 +1600,7 @@ class Cart extends FatModel
         if (false === $key || empty($carrier_id)) {
             return array();
         }
-        
+
         $products = $this->getProducts($this->cart_lang_id);
         $weightUnitsArr = applicationConstants::getWeightUnitsArr($lang_id);
         $lengthUnitsArr = applicationConstants::getLengthUnitsArr($lang_id);
@@ -1632,7 +1636,7 @@ class Cart extends FatModel
             }
 
             $this->shippingService->setAddress($productShippingAddress['ua_name'], $productShippingAddress['ua_address1'], $productShippingAddress['ua_address2'], $productShippingAddress['ua_city'], $productShippingAddress['state_code'], $productShippingAddress['ua_zip'], $productShippingAddress['country_code'], $productShippingAddress['ua_phone']);
-            
+
             $this->shippingService->setWeight($productWeightInOunce);
 
             if ($productLengthInCenti > 0 && $productWidthInCenti > 0 && $productHeightInCenti > 0) {
@@ -1644,7 +1648,7 @@ class Cart extends FatModel
                 $this->error = $this->shippingService->getError();
                 return false;
             }
-			
+
 			$product_rates = Shipping::formatShippingRates($product_rates, $lang_id);
         }
 
@@ -1702,7 +1706,7 @@ class Cart extends FatModel
                 $digitalSelProdIdArr[$val['selprod_id']] = $val['selprod_id'];
             }
         }
-        
+
 
         $shipping = new Shipping($this->cart_lang_id);
         $response =  $shipping->calculateCharges($physicalSelProdIdArr, $shippingAddressDetail, $productInfo);

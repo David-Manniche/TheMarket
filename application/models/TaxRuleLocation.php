@@ -47,18 +47,16 @@ class TaxRuleLocation extends MyAppModel
     */
     public function deleteLocations(int $taxCatId): bool
     {
-        $db = FatApp::getDb();
-        $db->deleteRecords(
+        if(!FatApp::getDb()->deleteRecords(
             self::DB_TBL,
             array(
                 'smt'=> self::DB_TBL_PREFIX .'taxcat_id=? ',
                 'vals'=>array($taxCatId)
             )
-        );
-        if(0 < $db->rowsAffected()) {
-            return true;
+        )) {
+            $this->error = FatApp::getDb()->getError();
+            return false;
         }
-        $this->error = $db->getError();
-        return false;
+        return true;
     }
 }

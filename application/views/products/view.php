@@ -129,7 +129,7 @@ $buyQuantity->addFieldTagAttribute('data-page', 'product-view');
                                         <span class="product_off"><?php echo CommonHelper::showProductDiscountedText($product, $siteLangId); ?></span>
                                         <?php } ?>
                                     </div>
-                                    <?php if (FatApp::getConfig("CONF_PRODUCT_INCLUSIVE_TAX", FatUtility::VAR_INT, 0)) { ?>
+                                    <?php if (FatApp::getConfig("CONF_PRODUCT_INCLUSIVE_TAX", FatUtility::VAR_INT, 0) && 0 == Tax::getActivatedServiceId()) { ?>
                                     <div class="detail-grouping">
                                         <div class="products__category"><?php echo Labels::getLabel('LBL_Inclusive_All_Taxes', $siteLangId);?></div>
                                     </div>
