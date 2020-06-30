@@ -86,6 +86,7 @@ class ProductSearch extends SearchBase
         $this->joinShopCountry();
         $this->joinShopState();
         $this->joinBrands();
+        $this->joinShippingPackages();
     }
 
     public function setBatchProductsCriteria($splPriceForDate = '')
@@ -971,6 +972,16 @@ class ProductSearch extends SearchBase
         $this->joinTable(ProductSpecifics::DB_TBL, 'LEFT JOIN', 'ps.ps_product_id = p.product_id', 'ps');
     }
 
+    public function joinShippingPackages($langId = 0)
+    {
+        $langId = FatUtility::int($langId);
+        if ($this->langId && 1 > $langId) {
+            $langId = $this->langId;
+        }
+
+        $this->joinTable(ShippingPackage::DB_TBL, 'LEFT OUTER JOIN', 'shipkg.shippack_id = p.product_ship_package', 'shipkg');
+    }
+
     public function joinShippingProfileProducts()
     {
         if (!$this->joinProductShippedBy) {
@@ -1008,7 +1019,7 @@ class ProductSearch extends SearchBase
         }
     }
 
-    public function joinShippingLocations($countryId, $stateId, $langId = 0)
+    public function joinShippingLocations($countryId, $stateId, $langId = 0, $innerJoin = true)
     {
         $langId = FatUtility::int($langId);
         if ($this->langId && 1 > $langId) {
@@ -1020,6 +1031,8 @@ class ProductSearch extends SearchBase
         $srch->doNotCalculateRecords();
         $srch->doNotLimitRecords();
         
-        $this->joinTable('(' . $srch->getQuery() . ')', 'INNER JOIN', 'shiploc.shiploc_shipzone_id = shippz.shipprozone_shipzone_id', 'shiploc');
+        $joinCondition = (true == $innerJoin) ? 'INNER JOIN' : 'LEFT OUTER JOIN' ;
+
+        $this->joinTable('(' . $srch->getQuery() . ')', $joinCondition, 'shiploc.shiploc_shipzone_id = shippz.shipprozone_shipzone_id', 'shiploc');
     }
 }

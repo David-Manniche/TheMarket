@@ -1,6 +1,6 @@
 <?php
 
-class ShipStationSettingsController extends ShippingSettingsController
+class ShipStationApiSettingsController extends ShippingSettingsController
 {
     private $keyName = "shipstation_shipping";
     

@@ -260,9 +260,9 @@ class DummyController extends MyAppController
     }
 
     public function index()
-    {       
-        $allowedUserIds = User::getAuthenticUserIds(22, 4);
-        var_dump($allowedUserIds);exit;
+    {
+        $thirdPartyApis = Shipping::getShippingMethods(1);
+        var_dump($thirdPartyApis); exit;
     }
 
 
@@ -688,6 +688,16 @@ class DummyController extends MyAppController
             echo $obj->getError();
             die;
         }
-
+    }
+    public function ship()
+    {
+        $error = "";
+        $obj = PluginHelper::callPlugin('ShipStationShipping', [$this->siteLangId], $error, $this->siteLangId);
+        if (false == $obj) {
+            echo $error;die;
+        }
+        $obj->addOrder('O1571721470', 190, $this->siteLangId);
+        echo 'success';
+        die;
     }
 }

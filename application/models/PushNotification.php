@@ -259,7 +259,7 @@ class PushNotification extends MyAppModel
             } else {
                 static::updateDetail($recordId, static::STATUS_PROCESSING, $lastUserAccessTime);
             }
-            // return $response;
+            return $response;
         }
     }
 }

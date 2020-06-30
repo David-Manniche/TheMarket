@@ -100,10 +100,11 @@ class OrderSearch extends SearchBase
     {
         $this->joinTable(SellerPackagePlans::DB_TBL, 'LEFT OUTER JOIN', 'oss.ossubs_plan_id = spp.spplan_id', 'spp');
     }
+
     public function joinPackage($langId = 0)
     {
         $this->joinTable(SellerPackages::DB_TBL, 'LEFT OUTER JOIN', 'spp.spplan_spackage_id = sp.spackage_id', 'sp');
-        if ($this->langId > 0) {
+        if ($langId > 0) {
             $this->joinTable(
                 SellerPackages::DB_TBL_LANG,
                 'LEFT OUTER JOIN',
@@ -112,5 +113,25 @@ class OrderSearch extends SearchBase
                 'sp_l'
             );
         }
+    }
+
+    public function joinOrderProduct($langId = 0)
+    {
+        $langId = 0 < $langId ? $langId : $this->langId;
+
+        $this->joinTable(Orders::DB_TBL_ORDER_PRODUCTS, 'LEFT OUTER JOIN', 'op.op_order_id = o.order_id', 'op');
+        if ($langId > 0) {
+            $this->joinTable(Orders::DB_TBL_ORDER_PRODUCTS_LANG, 'LEFT OUTER JOIN', 'torp_l.oplang_op_id = op.op_id and torp_l.oplang_lang_id = ' . $langId, 'torp_l');
+        }
+    }
+
+    public function joinOrderProductShipping()
+    {
+        $this->joinTable(Orders::DB_TBL_ORDER_PRODUCTS_SHIPPING, 'LEFT OUTER JOIN', 'ops.opshipping_op_id = op.op_id', 'ops');
+    }
+
+    public function joinSellerProduct()
+    {
+        $this->joinTable(SellerProduct::DB_TBL, 'LEFT OUTER JOIN', 'sp.selprod_id = op.op_selprod_id and op.op_is_batch = 0', 'sp');
     }
 }

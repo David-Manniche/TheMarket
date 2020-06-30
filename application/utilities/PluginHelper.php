@@ -74,6 +74,7 @@ trait PluginHelper
      * @param  string $directory
      * @param  string $error
      * @param  int $langId
+     * @param bool $checkActive
      * @return mixed
      */
     public static function includePlugin(string $keyName, string $directory, &$error = '', int $langId = 0, bool $checkActive = true)
@@ -95,7 +96,7 @@ trait PluginHelper
         $file = CONF_PLUGIN_DIR . $directory . '/' . strtolower($keyName) . '/' . $keyName . '.php';
         
         if (!file_exists($file)) {
-            $error =  Labels::getLabel('MSG_UNABLE_TO_LOCATE_REQUIRED_FILE', $langId);
+            $error =  Labels::getLabel('MSG_UNABLE_TO_LOCATE_REQUIRED_FILE', $langId) . '-' . $keyName;
             return false;
         }
         
@@ -114,6 +115,7 @@ trait PluginHelper
      * @param string $args - Constructor Arguments
      * @param string $error
      * @param int $langId
+     * @param bool $checkActive
      * @return mixed
      */
     public static function callPlugin(string $keyName, array $args = [], &$error = '', int $langId = 0, bool $checkActive = true)

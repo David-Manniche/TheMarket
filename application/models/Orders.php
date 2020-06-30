@@ -2410,4 +2410,73 @@ class Orders extends MyAppModel
         }
         return true;
     }
+
+    public function getOrder($orderId, $langId, $opId = 0)
+    {
+        $opId = FatUtility::int($opId);
+        
+        $srch = new OrderSearch($langId);
+        $srch->joinOrderPaymentMethod();
+        $srch->doNotCalculateRecords();
+        $srch->doNotLimitRecords();
+        $srch->joinOrderBuyerUser();
+        $srch->addMultipleFields(
+            array('order_id', 'order_user_id', 'order_date_added', 'order_is_paid', 'order_tax_charged', 'order_site_commission',
+            'order_reward_point_value', 'order_volume_discount_total', 'buyer.user_name as buyer_user_name', 'buyer_cred.credential_email as buyer_email', 'buyer.user_phone as buyer_phone', 'order_net_amount', 'order_shippingapi_name', 'order_pmethod_id', 'ifnull(pmethod_name,pmethod_identifier)as pmethod_name', 'order_discount_total', 'pmethod_code', 'order_is_wallet_selected', 'order_reward_point_used', 'order_deleted')
+        );
+        $srch->addCondition('order_id', '=', $orderId);
+        $srch->addCondition('order_type', '=', self::ORDER_PRODUCT);
+        $rs = $srch->getResultSet();
+        $order = FatApp::getDb()->fetch($rs);
+        if (!$order) {
+            $this->error = Labels::getLabel('MSG_Order_Data_Not_Found', $langId);
+            return false;
+        }
+
+        $attr = array('op_id', 'op_invoice_number', 'op_selprod_title', 'op_product_name',
+        'op_qty', 'op_brand_name', 'op_selprod_options', 'op_selprod_sku', 'op_product_model',
+        'op_shop_name', 'op_shop_owner_name', 'op_shop_owner_email', 'op_shop_owner_phone', 'op_unit_price',
+        'totCombinedOrders as totOrders', 'op_shipping_duration_name', 'op_shipping_durations',  'IFNULL(orderstatus_name, orderstatus_identifier) as orderstatus_name', 'op_other_charges', 'op_product_tax_options');
+        
+        $opSrch = new OrderProductSearch($langId, false, true, true);
+        $opSrch->addCountsOfOrderedProducts();
+        $opSrch->addOrderProductCharges();
+        
+        if (0 < $opId) {
+            $opSrch->joinSellerProducts();
+            $opSrch->joinTable(Orders::DB_TBL_ORDER_PRODUCTS_SHIPPING, 'LEFT OUTER JOIN', 'ops.opshipping_op_id = op.op_id', 'ops');
+            $opSrch->joinTable(Orders::DB_TBL_ORDER_PRODUCTS_SHIPPING_LANG, 'LEFT OUTER JOIN', 'opsl.opshippinglang_op_id = op.op_id AND opsl.opshippinglang_lang_id = ' . $langId, 'opsl');
+            $opSrch->joinTable(ShippingCompanies::DB_TBL, 'LEFT OUTER JOIN', 'ops.opshipping_company_id = opsc.scompany_id', 'opsc');
+            $opSrch->joinTable(ShippingCompanies::DB_TBL_LANG, 'LEFT OUTER JOIN', 'opscl.scompanylang_scompany_id = opsc.scompany_id AND opscl.scompanylang_lang_id = ' . $langId, 'opscl');
+            $opSrch->addCondition('op.op_id', '=', $opId);
+            $extraAttr = [
+                'selprod_product_id', 'op_selprod_id', 'opshipping_method_id', 'opshipping_company_id', 'op_product_length', 'op_product_width', 'op_product_height', 'op_product_dimension_unit', 'op_product_weight', 'op_product_weight_unit', 'opshipping_carrier', 'IFNULL(scompany_name, scompany_identifier) as carrier_code'
+            ];
+            $attr = array_merge($attr, $extraAttr);
+        }
+        $opSrch->addCondition('op.op_order_id', '=', $order['order_id']);
+        $opSrch->addMultipleFields($attr);
+        $opSrch->doNotCalculateRecords();
+        $opSrch->doNotLimitRecords();
+        $opRs = $opSrch->getResultSet();
+        $order['products'] = FatApp::getDb()->fetchAll($opRs, 'op_id');
+
+        $orderObj = new Orders($order['order_id']);
+
+        $charges = $orderObj->getOrderProductChargesByOrderId($order['order_id']);
+
+        foreach ($order['products'] as $opId => $opVal) {
+            $order['products'][$opId]['charges'] = $charges[$opId];
+            $taxOptions = json_decode($opVal['op_product_tax_options'], true);
+            $order['products'][$opId]['taxOptions'] = $taxOptions;
+        }
+
+        $addresses = $orderObj->getOrderAddresses($order['order_id']);
+        $order['billingAddress'] = $addresses[self::BILLING_ADDRESS_TYPE];
+        $order['shippingAddress'] = (!empty($addresses[self::SHIPPING_ADDRESS_TYPE])) ? $addresses[self::SHIPPING_ADDRESS_TYPE] : array();
+
+        $order['comments'] = $orderObj->getOrderComments($langId, array("order_id" => $order['order_id']));
+        $order['payments'] = $orderObj->getOrderPayments(array("order_id" => $order['order_id']));
+        return $order;
+    }
 }

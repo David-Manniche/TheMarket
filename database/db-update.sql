@@ -177,6 +177,8 @@ ALTER TABLE `tbl_order_product_shipping` CHANGE `opshipping_pship_id` `opshippin
 ALTER TABLE `tbl_order_product_shipping` DROP `opshipping_company_id`;
 ALTER TABLE `tbl_order_product_shipping` DROP `opshipping_method_id`;
 ALTER TABLE `tbl_order_product_shipping` ADD `opshipping_label` VARCHAR(255) NOT NULL AFTER `opshipping_level`;
+ALTER TABLE `tbl_order_product_shipping` ADD `opshipping_carrier_code` VARCHAR(150) NOT NULL AFTER `opshipping_label`, ADD `opshipping_service_code` VARCHAR(150) NOT NULL AFTER `opshipping_carrier_code`;
+ALTER TABLE `tbl_order_product_shipping_lang` CHANGE `opshipping_carrier` `opshipping_title` VARCHAR(150) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL;
 -- Shippping Module End-----
 
 -- Tax Upgrade-----
@@ -269,3 +271,37 @@ ALTER TABLE `tbl_order_cancel_requests` CHANGE `ocrequest_refund_in_wallet` `ocr
 ALTER TABLE `tbl_order_cancel_requests` ADD `ocrequest_payment_gateway_req_id` VARCHAR(255) NOT NULL AFTER `ocrequest_status`;
 
 ALTER TABLE `tbl_user_transactions`  ADD `utxn_gateway_txn_id` VARCHAR(150) NOT NULL  AFTER `utxn_debit`;
+
+-- Stripe Connect Module End-----
+
+INSERT INTO `tbl_language_labels` (`label_key`, `label_lang_id`, `label_caption`, `label_type`) VALUES
+("APP_VOICE_SEARCH_TXT", 1, "Tap Here On Mic And Say Something To Search!", 2),
+("APP_RESEND_OTP", 1, "Resend OTP", 2),
+("APP_CLICK_HERE", 1, "Click Here", 2),
+("APP_PLEASE_ENTER_VALID_OTP", 1, "Please Enter Valid OTP", 2),
+("APP_SHOW_MORE", 1, "Show More", 2),
+("APP_I_AM_LISTENING", 1, "Say Something I Am Listening", 2),
+("APP_VOICE_SEARCH", 1, "Voice Search", 2),
+("APP_EXPLORE", 1, "Explore", 2);
+
+--
+-- ShipStation Plugin
+--
+
+INSERT INTO `tbl_plugins` (`plugin_identifier`, `plugin_type`, `plugin_code`, `plugin_active`, `plugin_display_order`) VALUES ('Ship Station', '8', 'ShipStationShipping', '0', '1');
+UPDATE `tbl_shipping_apis` SET `shippingapi_identifier` = 'Shipping Services' WHERE `tbl_shipping_apis`.`shippingapi_id` = 2;
+UPDATE `tbl_shipping_apis_lang` SET `shippingapi_name` = 'Shipping Services' WHERE `tbl_shipping_apis_lang`.`shippingapilang_shippingapi_id` = 2 AND `tbl_shipping_apis_lang`.`shippingapilang_lang_id` = 1;
+UPDATE `tbl_shipping_apis_lang` SET `shippingapi_name` = 'خدمات الشحن' WHERE `tbl_shipping_apis_lang`.`shippingapilang_shippingapi_id` = 2 AND `tbl_shipping_apis_lang`.`shippingapilang_lang_id` = 2;
+
+CREATE TABLE `tbl_order_product_shipment`(
+    `opship_op_id` INT(11) NOT NULL,
+    `opship_order_id` VARCHAR(150) NOT NULL COMMENT 'From third party',
+    `opship_shipment_id` VARCHAR(150) NOT NULL,
+    `opship_tracking_number` VARCHAR(150) NOT NULL,
+    `opship_response` TEXT NOT NULL
+) ENGINE = InnoDB;
+
+ALTER TABLE `tbl_order_product_shipment`
+  ADD PRIMARY KEY (`opship_op_id`);
+
+-- ShipStation Module End-----

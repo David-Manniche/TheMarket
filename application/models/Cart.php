@@ -4,6 +4,7 @@ class Cart extends FatModel
     private $products = array();
     private $SYSTEM_ARR = array();
     private $warning;
+    private $shippingService;
     private $cartCache;
 
     public const CART_KEY_PREFIX_PRODUCT = 'SP_'; /* SP stands for Seller Product */
@@ -521,7 +522,7 @@ class Cart extends FatModel
         'product_dimension_unit', 'product_weight', 'product_weight_unit',
         'selprod_id', 'selprod_code', 'selprod_stock', 'selprod_user_id', 'IF(selprod_stock > 0, 1, 0) AS in_stock', 'selprod_min_order_qty',
         'special_price_found', 'theprice', 'shop_id', 'shop_free_ship_upto',
-        'splprice_display_list_price', 'splprice_display_dis_val', 'splprice_display_dis_type', 'selprod_price', 'selprod_cost', 'case when product_seller_id=0 then IFNULL(psbs_user_id,0)   else product_seller_id end  as psbs_user_id', 'product_seller_id', 'product_cod_enabled', 'selprod_cod_enabled'));
+        'splprice_display_list_price', 'splprice_display_dis_val', 'splprice_display_dis_type', 'selprod_price', 'selprod_cost', 'case when product_seller_id=0 then IFNULL(psbs_user_id,0)   else product_seller_id end  as psbs_user_id', 'product_seller_id', 'product_cod_enabled', 'selprod_cod_enabled', 'shippack_length', 'shippack_width', 'shippack_height', 'shippack_units'));
 
         if ($siteLangId) {
             $prodSrch->joinBrands();
@@ -1486,32 +1487,29 @@ class Cart extends FatModel
         }
         $cartObj->updateUserCart();
     }
-
-    public function shipStationCarrierList()
+    
+    /* public function shippingCarrierList(int $langId = 0)
     {
-        $carrierList = array();
-        $carrierList[0] = Labels::getLabel('MSG_Select_Services', commonHelper::getLangId());
-        try {
-            require_once(CONF_INSTALLATION_PATH . 'library/APIs/shipstatation/ship.class.php');
-            $carriers = null;
-            //$carriers = $this->getCache("shipstationcarriers");
-            if (!$carriers) {
-                $apiKeys = ShippingMethods::getShipStationApiKeys(ShippingMethods::SHIPSTATION_SHIPPING);
-                $ship = new Ship($apiKeys['shipstation_api_key'], $apiKeys['shipstation_api_secret_key']);
-                $carriers = $ship->getCarriers();
-                // $this->setCache("shipstationcarriers", $carriers);
+        $langId = (0 < $langId) ? $langId : commonHelper::getLangId();
+        
+        $plugin = new Plugin();
+        $shippingServiceName = $plugin->getDefaultPluginKeyName(Plugin::TYPE_SHIPPING_SERVICES);
+        $carriers = [];
+        if (false !== $shippingServiceName) {
+            $error = '';
+            $shippingService = PluginHelper::callPlugin($shippingServiceName, [$langId], $error, $langId);
+            if (false === $shippingService) {
+                $this->error = $error;
+                return false;
             }
-
-            foreach ($carriers as $carrier) {
-                $code = $carrier->code;
-                $name = $carrier->name;
-                $carrierList[$code] = $name;
+            $carriers = $shippingService->getCarriers(true, $langId);
+            if (empty($carriers) && !empty($shippingService->getError())) {
+                $this->error = $shippingService->getError();
+                return false;
             }
-        } catch (Exception $ex) {
-            // $carriers = new stdClass();
         }
-        return $carrierList;
-    }
+        return $carriers;
+    } */
 
     public function getCache($key)
     {
@@ -1535,10 +1533,6 @@ class Cart extends FatModel
 
     public function getCarrierShipmentServicesList($cartKey, $carrier_id = 0, $lang_id = 0)
     {
-        $products = $this->getProducts($this->cart_lang_id);
-        $prodKey = $this->getProductByKey($cartKey);
-
-        $services = $this->getCarrierShipmentServices($cartKey, $carrier_id, $lang_id);
         $servicesList = array();
 
         $servicesList[0] = Labels::getLabel('MSG_Select_Services', $lang_id);
@@ -1559,7 +1553,10 @@ class Cart extends FatModel
             }
         }
 
-        return $servicesList;
+        $products = $this->getProducts($this->cart_lang_id);
+        $prodKey = $this->getProductByKey($cartKey);
+
+        return $this->getCarrierShipmentServices($cartKey, $carrier_id, $lang_id);
     }
 
     public function getProductByKey($find_key)
@@ -1567,7 +1564,7 @@ class Cart extends FatModel
         if (!$this->hasPhysicalProduct()) {
             return false;
         }
-
+        
         foreach ($this->SYSTEM_ARR['cart'] as $key => $cart) {
             if ($find_key == md5($key)) {
                 return $key;
@@ -1578,14 +1575,14 @@ class Cart extends FatModel
 
     public function getCarrierShipmentServices($product_key, $carrier_id, $lang_id)
     {
-        if (!$key = $this->getProductByKey($product_key)) {
+        $key = $this->getProductByKey($product_key);
+        if (false === $key || empty($carrier_id)) {
             return array();
         }
-
+        
         $products = $this->getProducts($this->cart_lang_id);
         $weightUnitsArr = applicationConstants::getWeightUnitsArr($lang_id);
         $lengthUnitsArr = applicationConstants::getLengthUnitsArr($lang_id);
-
 
         $product = $products[$key];
         $productShippingAddress = $product['shipping_address'];
@@ -1601,31 +1598,37 @@ class Cart extends FatModel
 
         $productLengthUnit = ($product['product_weight_unit']) ? $weightUnitsArr[$product['product_weight_unit']] : '';
 
-
-
         $productWeightInOunce = Shipping::convertWeightInOunce($productWeight, $productWeightClass);
         $productLengthInCenti = Shipping::convertLengthInCenti($productLength, $productLengthUnit);
         $productWidthInCenti = Shipping::convertLengthInCenti($productWidth, $productLengthUnit);
         $productHeightInCenti = Shipping::convertLengthInCenti($productHeight, $productLengthUnit);
 
         $product_rates = array();
-        try {
-            require_once(CONF_INSTALLATION_PATH . 'library/APIs/shipstatation/ship.class.php');
-            $apiKeys = ShippingMethods::getShipStationApiKeys(ShippingMethods::SHIPSTATION_SHIPPING);
-            $Ship = new Ship($apiKeys['shipstation_api_key'], $apiKeys['shipstation_api_secret_key']);
 
-            $Ship->setProductDeliveryAddress($productShippingAddress['state_code'], $productShippingAddress['country_code'], $productShippingAddress['ua_city'], $productShippingAddress['ua_zip']);
-
-            $Ship->setProductWeight($productWeightInOunce);
-            // $Ship->setProductDim($productLengthInCenti,$productWidthInCenti,$productHeightInCenti);
-            if ($productLengthInCenti > 0 && $productWidthInCenti > 0 && $productHeightInCenti > 0) {
-                $Ship->setProductDim($productLengthInCenti, $productWidthInCenti, $productHeightInCenti);
+        $plugin = new Plugin();
+        $shippingServiceName = $plugin->getDefaultPluginKeyName(Plugin::TYPE_SHIPPING_SERVICES);
+        if (false !== $shippingServiceName) {
+            $error = '';
+            $this->shippingService = PluginHelper::callPlugin($shippingServiceName, [$lang_id], $error, $lang_id);
+            if (false === $this->shippingService) {
+                LibHelper::dieJsonError($error);
             }
 
-            $product_rates = (array) $Ship->getProductShippingRates($carrier_id, $sellerPinCode, $Ship->getProductWeight(), $Ship->getProductDeliveryAddress(), $Ship->getProductDim());
-        } catch (Exception $ex) {
-            $ex->getMessage();
-            return array();
+            $this->shippingService->setAddress($productShippingAddress['ua_name'], $productShippingAddress['ua_address1'], $productShippingAddress['ua_address2'], $productShippingAddress['ua_city'], $productShippingAddress['state_code'], $productShippingAddress['ua_zip'], $productShippingAddress['country_code'], $productShippingAddress['ua_phone']);
+            
+            $this->shippingService->setWeight($productWeightInOunce);
+
+            if ($productLengthInCenti > 0 && $productWidthInCenti > 0 && $productHeightInCenti > 0) {
+                $this->shippingService->setDimensions($productLengthInCenti, $productWidthInCenti, $productHeightInCenti);
+            }
+
+            $product_rates = $this->shippingService->getRates($carrier_id, $sellerPinCode);
+            if (empty($product_rates)) {
+                $this->error = $this->shippingService->getError();
+                return false;
+            }
+			
+			$product_rates = Shipping::formatShippingRates($product_rates, $lang_id);
         }
 
         return $product_rates;
@@ -1634,6 +1637,10 @@ class Cart extends FatModel
     public function getShippingRates()
     {
         $shippingOptions = $this->getShippingOptions();
+        if (false == $shippingOptions) {
+            return false;
+        }
+
         $shippingRates = [];
         foreach ($shippingOptions as $level => $levelItems) {
             if (count($levelItems['rates']) <= 0) {
@@ -1664,14 +1671,6 @@ class Cart extends FatModel
 
         $shippingAddressDetail = UserAddress::getUserAddresses($this->cart_user_id, $this->cart_lang_id, 0, $this->getCartShippingAddress());
 
-        if (!empty($shippingAddressDetail)) {
-            $shipToCountryId = isset($shippingAddressDetail['ua_country_id']) ? $shippingAddressDetail['ua_country_id'] : 0;
-        }
-
-        if (!empty($shippingAddressDetail)) {
-            $shipToStateId = isset($shippingAddressDetail['ua_state_id']) ? $shippingAddressDetail['ua_state_id'] : 0;
-        }
-
         $physicalSelProdIdArr = [];
         $digitalSelProdIdArr = [];
         $cartProducts = $this->getBasketProducts($this->cart_lang_id);
@@ -1686,9 +1685,11 @@ class Cart extends FatModel
                 $digitalSelProdIdArr[$val['selprod_id']] = $val['selprod_id'];
             }
         }
+        
 
         $shipping = new Shipping($this->cart_lang_id);
-        $shippedByArr = $shipping->calculateCharges($physicalSelProdIdArr, $shipToCountryId, $shipToStateId, $productInfo);
+        $response =  $shipping->calculateCharges($physicalSelProdIdArr, $shippingAddressDetail, $productInfo);
+        $shippedByArr = $response['data'];
 
         /*Include digital products */
         foreach ($digitalSelProdIdArr as $selProdId) {
