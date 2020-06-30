@@ -1534,9 +1534,9 @@ class Importexport extends ImportexportCommon
                         } else {
                             $userName = ($userName == Labels::getLabel('LBL_Admin', $langId) ? '' : $userName);
                         }
-
+                        $userName = strtolower($userName);
                         if (!empty($userName) && !array_key_exists($userName, $usernameArr)) {
-                            $res = $this->getAllUserArr(false, $userName);
+                            $res = array_change_key_case($this->getAllUserArr(false, $userName), CASE_LOWER);
                             if (!$res) {
                                 $colIndex = $colInd;
                                 $errMsg = str_replace('{column-name}', $columnTitle, Labels::getLabel("MSG_Invalid_{column-name}.", $langId));
@@ -1630,11 +1630,12 @@ class Importexport extends ImportexportCommon
                             break;
                         case 'category_indentifier':
                             $catArr = array();
-                            $catIdentifiers = explode(',', $colValue);
+                            $catIdentifiers = explode('|', $colValue);
                             if (!empty($catIdentifiers)) {
                                 foreach ($catIdentifiers as $val) {
+                                    $val = strtolower($val);
                                     if (!array_key_exists($val, $categoryIdentifierArr)) {
-                                        $res = $this->getAllCategoryIdentifiers(false, $val);
+                                        $res = array_change_key_case($this->getAllCategoryIdentifiers(false, $val), CASE_LOWER);
                                         if (!$res) {
                                             continue;
                                         } else {
@@ -1650,8 +1651,9 @@ class Importexport extends ImportexportCommon
                             break;
                         case 'brand_identifier':
                             $columnKey = 'product_brand_id';
+                            $colValue = strtolower($colValue);
                             if (!array_key_exists($colValue, $brandIdentifierArr)) {
-                                $res = $this->getAllBrandsArr(false, $colValue);
+                                $res = array_change_key_case($this->getAllBrandsArr(false, $colValue), CASE_LOWER);
                                 if (!$res) {
                                     $invalid = true;
                                 } else {
@@ -1673,8 +1675,9 @@ class Importexport extends ImportexportCommon
                             $taxCatId = $colValue;
                             break;
                         case 'tax_category_identifier':
+                            $colValue = strtolower($colValue);
                             if (!array_key_exists($colValue, $taxCategoryArr)) {
-                                $res = $this->getTaxCategoriesArr(false, $colValue);
+                                $res = array_change_key_case($this->getTaxCategoriesArr(false, $colValue), CASE_LOWER);
                                 if (!$res) {
                                     $invalid = true;
                                 } else {
@@ -1732,8 +1735,9 @@ class Importexport extends ImportexportCommon
                             break;
                         case 'country_code':
                             $columnKey = 'ps_from_country_id';
+                            $colValue = strtolower($colValue);
                             if (!array_key_exists($colValue, $countryArr)) {
-                                $res = $this->getCountriesArr(false, $colValue);
+                                $res = array_change_key_case($this->getCountriesArr(false, $colValue), CASE_LOWER);
                                 if (!$res) {
                                     $invalid = true;
                                 } else {
@@ -2045,9 +2049,10 @@ class Importexport extends ImportexportCommon
                     CommonHelper::writeToCSVFile($this->CSVfileObj, $err);
                 } else {
                     if (in_array($columnKey, array( 'product_identifier', 'option_identifier' ))) {
+                        $colValue = strtolower($colValue);
                         if ('product_identifier' == $columnKey) {
                             if (!array_key_exists($colValue, $prodIndetifierArr)) {
-                                $res = $this->getAllProductsIdentifiers(false, $colValue);
+                                $res = array_change_key_case($this->getAllProductsIdentifiers(false, $colValue), CASE_LOWER);
                                 if (!$res) {
                                     $invalid = true;
                                 } else {
@@ -2057,7 +2062,7 @@ class Importexport extends ImportexportCommon
                             $colValue = array_key_exists($colValue, $prodIndetifierArr) ? $prodIndetifierArr[$colValue] : 0;
                         } else {
                             if (!array_key_exists($colValue, $optionIdentifierArr)) {
-                                $res = $this->getAllOptions(false, $colValue);
+                                $res = array_change_key_case($this->getAllOptions(false, $colValue), CASE_LOWER);
                                 if (!$res) {
                                     $invalid = true;
                                 } else {
@@ -2192,9 +2197,10 @@ class Importexport extends ImportexportCommon
                     CommonHelper::writeToCSVFile($this->CSVfileObj, $err);
                 } else {
                     if (in_array($columnKey, array( 'product_identifier', 'tag_identifier' ))) {
+                        $colValue = strtolower($colValue);
                         if ('product_identifier' == $columnKey) {
                             if (!array_key_exists($colValue, $prodIndetifierArr)) {
-                                $res = $this->getAllProductsIdentifiers(false, $colValue);
+                                $res = array_change_key_case($this->getAllProductsIdentifiers(false, $colValue), CASE_LOWER);
                                 if (!$res) {
                                     $invalid = true;
                                 } else {
@@ -2204,7 +2210,7 @@ class Importexport extends ImportexportCommon
                             $colValue = array_key_exists($colValue, $prodIndetifierArr) ? $prodIndetifierArr[$colValue] : 0;
                         } else {
                             if (!array_key_exists($colValue, $tagIndetifierArr)) {
-                                $res = $this->getAllTags(false, $colValue);
+                                $res = array_change_key_case($this->getAllTags(false, $colValue), CASE_LOWER);
                                 if (!$res) {
                                     $invalid = true;
                                 } else {
@@ -2356,8 +2362,9 @@ class Importexport extends ImportexportCommon
                         case 'product_id':
                         case 'product_identifier':
                             if ('product_identifier' == $columnKey) {
+                                $colValue = strtolower($colValue);
                                 if (!array_key_exists($colValue, $prodIndetifierArr)) {
-                                    $res = $this->getAllProductsIdentifiers(false, $colValue);
+                                    $res = array_change_key_case($this->getAllProductsIdentifiers(false, $colValue), CASE_LOWER);
 
                                     if (!$res) {
                                         $invalid = true;
@@ -2546,8 +2553,9 @@ class Importexport extends ImportexportCommon
                         case 'product_id':
                         case 'product_identifier':
                             if ('product_identifier' == $columnKey) {
+                                $colValue = strtolower($colValue);
                                 if (!array_key_exists($colValue, $prodIndetifierArr)) {
-                                    $res = $this->getAllProductsIdentifiers(false, $colValue);
+                                    $res = array_change_key_case($this->getAllProductsIdentifiers(false, $colValue), CASE_LOWER);
                                     if (!$res) {
                                         $invalid = true;
                                     } else {
@@ -2583,9 +2591,9 @@ class Importexport extends ImportexportCommon
                                 $userId = $colValue;
                             } else {
                                 $colValue = ($colValue == Labels::getLabel('LBL_Admin', $langId) ? '' : $colValue);
-
+                                $colValue = strtolower($colValue);
                                 if (!empty($colValue) && !array_key_exists($colValue, $usernameArr)) {
-                                    $res = $this->getAllUserArr(false, $colValue);
+                                    $res = array_change_key_case($this->getAllUserArr(false, $colValue), CASE_LOWER);
                                     if (!$res) {
                                         $invalid = true;
                                     } else {
@@ -2604,8 +2612,9 @@ class Importexport extends ImportexportCommon
                             break;
                         case 'country_code':
                         case 'country_id':
+                            $colValue = strtolower($colValue);
                             if ('country_code' == $columnKey && !array_key_exists($colValue, $countryCodeArr)) {
-                                $res = $this->getCountriesArr(false, $colValue);
+                                $res = array_change_key_case($this->getCountriesArr(false, $colValue), CASE_LOWER);
                                 if (!$res) {
                                     $invalid = true;
                                 } else {
@@ -2620,8 +2629,9 @@ class Importexport extends ImportexportCommon
                             break;
                         case 'scompany_identifier':
                             $columnKey = 'pship_company';
+                            $colValue = strtolower($colValue);
                             if (!array_key_exists($colValue, $scompanyIdentifierArr)) {
-                                $res = $this->getAllShippingCompany(false, $colValue);
+                                $res = array_change_key_case($this->getAllShippingCompany(false, $colValue), CASE_LOWER);
                                 if (!$res) {
                                     $invalid = true;
                                 } else {
@@ -2635,8 +2645,9 @@ class Importexport extends ImportexportCommon
                             break;
                         case 'sduration_identifier':
                             $columnKey = 'pship_duration';
+                            $colValue = strtolower($colValue);
                             if (!array_key_exists($colValue, $durationIdentifierArr)) {
-                                $res = $this->getAllShippingDurations(false, $colValue);
+                                $res = array_change_key_case($this->getAllShippingDurations(false, $colValue), CASE_LOWER);
                                 if (!$res) {
                                     $invalid = true;
                                 } else {
@@ -2792,8 +2803,9 @@ class Importexport extends ImportexportCommon
                                 $productId = $colValue;
                             }
                             if ('product_identifier' == $columnKey) {
+                                $colValue = strtolower($colValue);
                                 if (!array_key_exists($colValue, $prodIndetifierArr)) {
-                                    $res = $this->getAllProductsIdentifiers(false, $colValue);
+                                    $res = array_change_key_case($this->getAllProductsIdentifiers(false, $colValue), CASE_LOWER);
                                     if (!$res) {
                                         $invalid = true;
                                     } else {
@@ -2822,8 +2834,9 @@ class Importexport extends ImportexportCommon
                             }
                             if ('option_identifier' == $columnKey) {
                                 $optionId = 0;
+                                $colValue = strtolower($colValue);
                                 if (!empty($colValue) && !array_key_exists($colValue, $optionIdentifierArr)) {
-                                    $res = $this->getAllOptions(false, $colValue);
+                                    $res = array_change_key_case($this->getAllOptions(false, $colValue), CASE_LOWER);
                                     if (!$res) {
                                         $invalid = true;
                                     }
@@ -2860,9 +2873,9 @@ class Importexport extends ImportexportCommon
                                 $columnKey = 'afile_record_subid';
                                 $optionValueId = 0;
                                 $optionValueIndetifierArr[$optionId] = array_key_exists($optionId, $optionValueIndetifierArr) ? $optionValueIndetifierArr[$optionId] : array();
-
+                                $colValue = strtolower($colValue);
                                 if (!empty($colValue) && !array_key_exists($colValue, $optionValueIndetifierArr[$optionId])) {
-                                    $res = $this->getAllOptionValues($optionId, false, $colValue);
+                                    $res = array_change_key_case($this->getAllOptionValues($optionId, false, $colValue), CASE_LOWER);
                                     if (!$res) {
                                         $invalid = true;
                                     }
@@ -3134,8 +3147,9 @@ class Importexport extends ImportexportCommon
                             break;
                         case 'product_identifier':
                             $columnKey = 'selprod_product_id';
+                            $colValue = strtolower($colValue);
                             if (!array_key_exists($colValue, $prodIndetifierArr)) {
-                                $res = $this->getAllProductsIdentifiers(false, $colValue);
+                                $res = array_change_key_case($this->getAllProductsIdentifiers(false, $colValue), CASE_LOWER);
                                 if (!$res) {
                                     $invalid = true;
                                 } else {
@@ -3150,8 +3164,9 @@ class Importexport extends ImportexportCommon
                         case 'credential_username':
                             $columnKey = 'selprod_user_id';
                             $colValue = ($colValue == Labels::getLabel('LBL_Admin', $langId) ? '' : $colValue);
+                            $colValue = strtolower($colValue);
                             if (!empty($colValue) && !array_key_exists($colValue, $usernameArr)) {
-                                $res = $this->getAllUserArr(false, $colValue);
+                                $res = array_change_key_case($this->getAllUserArr(false, $colValue), CASE_LOWER);
                                 if (!$res) {
                                     $invalid = true;
                                 } else {
@@ -3413,8 +3428,9 @@ class Importexport extends ImportexportCommon
                     if (in_array($columnKey, array('option_id', 'option_identifier'))) {
                         $optionId = $colValue;
                         if ('option_identifier' == $columnKey) {
+                            $colValue = strtolower($colValue);
                             if (!array_key_exists($colValue, $optionIdentifierArr)) {
-                                $res = $this->getAllOptions(false, $colValue);
+                                $res = array_change_key_case($this->getAllOptions(false, $colValue), CASE_LOWER);
                                 if (!$res) {
                                     $invalid = true;
                                 } else {
@@ -3454,9 +3470,9 @@ class Importexport extends ImportexportCommon
                             if ('optionvalue_identifier' == $columnKey) {
                                 $optionValueId = 0;
                                 $optionValueIndetifierArr[$optionId] = array_key_exists($optionId, $optionValueIndetifierArr) ? $optionValueIndetifierArr[$optionId] : array();
-
+                                $colValue = strtolower($colValue);
                                 if (!array_key_exists($colValue, $optionValueIndetifierArr[$optionId])) {
-                                    $res = $this->getAllOptionValues($optionId, false, $colValue);
+                                    $res = array_change_key_case($this->getAllOptionValues($optionId, false, $colValue), CASE_LOWER);
                                     if (!$res) {
                                         $invalid = true;
                                     } else {
@@ -4298,9 +4314,9 @@ class Importexport extends ImportexportCommon
 
                         if ('ppoint_identifier' == $columnKey) {
                             $columnKey = 'sppolicy_ppoint_id';
-
+                            $colValue = strtolower($colValue);
                             if (!array_key_exists($colValue, $policyPonitIdentifierArr)) {
-                                $res = $this->getAllPrivacyPoints(false, $colValue);
+                                $res = array_change_key_case($this->getAllPrivacyPoints(false, $colValue), CASE_LOWER);
                                 if (!$res) {
                                     $invalid = true;
                                 } else {
@@ -4425,8 +4441,9 @@ class Importexport extends ImportexportCommon
                         $colValue = ($colValue == Labels::getLabel('LBL_Admin', $langId) ? '' : $colValue);
 
                         if (!empty($colValue)) {
+                            $colValue = strtolower($colValue);
                             if (!array_key_exists($colValue, $userArr)) {
-                                $res = $this->getAllUserArr(false, $colValue);
+                                $res = array_change_key_case($this->getAllUserArr(false, $colValue), CASE_LOWER);
                                 if (!$res) {
                                     $invalid = true;
                                 } else {
@@ -4601,8 +4618,9 @@ class Importexport extends ImportexportCommon
 
                         if ('option_identifier' == $columnKey) {
                             $columnKey = 'optionvalue_option_id';
+                            $colValue = strtolower($colValue);
                             if (!array_key_exists($colValue, $optionIdentifierArr)) {
-                                $res = $this->getAllOptions(false, $colValue);
+                                $res = array_change_key_case($this->getAllOptions(false, $colValue), CASE_LOWER);
                                 if (!$res) {
                                     $invalid = true;
                                 } else {
@@ -4745,9 +4763,9 @@ class Importexport extends ImportexportCommon
                     if ('credential_username' == $columnKey) {
                         $columnKey = 'tag_user_id';
                         $colValue = ($colValue == Labels::getLabel('LBL_Admin', $langId) ? '' : $colValue);
-
+                        $colValue = strtolower($colValue);
                         if (!empty($colValue) && !array_key_exists($colValue, $usernameArr)) {
-                            $res = $this->getAllUserArr(false, $colValue);
+                            $res = array_change_key_case($this->getAllUserArr(false, $colValue), CASE_LOWER);
                             if (!$res) {
                                 $invalid = true;
                             } else {
