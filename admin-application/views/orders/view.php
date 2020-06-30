@@ -379,7 +379,8 @@ if ($order['order_reward_point_used'] > 0) {
                         </section>
                     </div>
                 </div>
-                <?php if (is_array($order["comments"]) && count($order["comments"]) > 0) { ?>
+                <?php 
+                if (isset($order["comments"]) && is_array($order["comments"]) && count($order["comments"]) > 0) { ?>
                 <section class="section">
                     <div class="sectionhead">
                         <h4><?php echo Labels::getLabel('LBL_Order_Status_History', $adminLangId); ?>

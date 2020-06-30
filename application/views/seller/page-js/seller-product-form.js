@@ -132,12 +132,14 @@ $(document).on('change','.selprodoption_optionvalue_id',function(){
         }
         var data = orignalData;
         var varients = data.varients;
+        varients = varients.filter(function(){return true;});
+        
         if(i < varients.length) {
+            var chunk = varients[i];
             var final = {};
-            $.extend(final, data, varients[i]);
+            $.extend(final, data, chunk);
             final.varients = [];
             var data = jQuery.param( final );
-            // var data = fcom.frmData(frm);
 		
             $('.optionFld-js').each(function(){
                 var $this = $(this);

@@ -32,12 +32,3 @@ $pmethodCode = isset($paymentMethod["plugin_code"]) ? $paymentMethod["plugin_cod
         });
     }
 </script>
-<?php 
-$siteKey = FatApp::getConfig('CONF_RECAPTCHA_SITEKEY', FatUtility::VAR_STRING, '');
-$secretKey = FatApp::getConfig('CONF_RECAPTCHA_SECRETKEY', FatUtility::VAR_STRING, '');
-if (!empty($siteKey) && !empty($secretKey) && 'cashondelivery' == strtolower($pmethodCode)) {?>
-    <script src='https://www.google.com/recaptcha/api.js?render=<?php echo $siteKey; ?>'></script>
-    <script>
-        googleCaptcha();
-    </script>
-<?php } ?>

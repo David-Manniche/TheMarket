@@ -432,7 +432,8 @@ trait SellerProducts
         $data_to_be_save = $post;
         $useShopPolicy = FatApp::getPostedData('use_shop_policy', FatUtility::VAR_INT, 0);
         $error = false;
-
+        
+        $selprod_id = 0;
         foreach ($optionCombinations as $optionKey => $optionValue) {
             /* Check if product already added for this option [ */
             $selProdCode = $post['selprod_code'] . $optionKey;
@@ -1403,6 +1404,11 @@ trait SellerProducts
         }
         if (false === $post) {
             Message::addErrorMessage(current($frm->getValidationErrors()));
+            FatUtility::dieJsonError(Message::getHtml());
+        }
+
+        if (!$post['meta_other_meta_tags'] == '' && $post['meta_other_meta_tags'] == strip_tags($post['meta_other_meta_tags'])) {
+            Message::addErrorMessage(Labels::getLabel('MSG_Invalid_Other_Meta_Tag', $this->siteLangId));
             FatUtility::dieJsonError(Message::getHtml());
         }
 
