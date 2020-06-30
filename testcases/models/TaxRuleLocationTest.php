@@ -62,9 +62,9 @@ class TaxRuleLocationTest extends YkModelTest
     public function setDeleteLocations()
     {
         return [
-            [-1, false], // Invalid taxCatId
-            [0, false],  // Invalid taxCatId
-            [1, false], // Invalid taxCatId
+            [-1, true], // Invalid taxCatId
+            [0, true],  // Invalid taxCatId
+            [1, true], // Invalid taxCatId
             [8, true], // valid taxCatId
         ];
     }

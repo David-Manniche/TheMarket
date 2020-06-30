@@ -7,10 +7,12 @@ $frmShop->developerTags['colClassPrefix'] = 'col-md-';
 $frmShop->developerTags['fld_default_col'] = 12;
 $countryFld = $frmShop->getField('shop_country_id');
 $countryFld->setFieldTagAttribute('id', 'shop_country_id');
+$countryFld->setFieldTagAttribute('class', 'addressSelection-js');
 $countryFld->setFieldTagAttribute('onChange', 'getCountryStates(this.value,' . $stateId . ',\'#shop_state\')');
 
 $stateFld = $frmShop->getField('shop_state');
 $stateFld->setFieldTagAttribute('id', 'shop_state');
+$stateFld->setFieldTagAttribute('class', 'addressSelection-js');
 
 $fld = $frmShop->getField('shop_featured');
 $fld->htmlAfterField = '<small><br>' . Labels::getLabel('LBL_Featured_Shops_will_be_listed_on_Featured_Shops_Page._Featured_Shops_will_get_priority,', $adminLangId) . '</small>';
@@ -18,6 +20,14 @@ $urlFld = $frmShop->getField('urlrewrite_custom');
 $urlFld->setFieldTagAttribute('id', "urlrewrite_custom");
 $urlFld->htmlAfterField = "<br><small class='text--small'>" . CommonHelper::generateFullUrl('shops', 'View', array($shop_id), CONF_WEBROOT_FRONT_URL) . '</small>';
 $urlFld->setFieldTagAttribute('onkeyup', "getSlugUrl(this,this.value,'')");
+
+$postalCode = $frmShop->getField('shop_postalcode');
+$postalCode->setFieldTagAttribute('id', "postal_code");
+
+$latFld = $frmShop->getField('shop_lat');
+$latFld->setFieldTagAttribute('id', "lat");
+$lngFld = $frmShop->getField('shop_lng');
+$lngFld->setFieldTagAttribute('id', "lng");
 ?>
     <section class="section">
         <div class="sectionhead">
@@ -52,8 +62,10 @@ $urlFld->setFieldTagAttribute('onkeyup', "getSlugUrl(this,this.value,'')");
                 </ul>
                 <div class="tabs_panel_wrap">
                     <div class="tabs_panel">
-
                         <?php echo $frmShop->getFormHtml(); ?>
+                        <?php if (FatApp::getConfig('CONF_ENABLE_GEO_LOCATION', FatUtility::VAR_INT, 0)) { ?>
+                        <div id="map" style="width:900px; height:500px"></div>
+                        <?php } ?>
                     </div>
                 </div>
             </div>
@@ -64,3 +76,12 @@ $urlFld->setFieldTagAttribute('onkeyup', "getSlugUrl(this,this.value,'')");
             getCountryStates($("#shop_country_id").val(), <?php echo $stateId ;?>, '#shop_state');
         });
     </script>
+    <?php if (FatApp::getConfig('CONF_ENABLE_GEO_LOCATION', FatUtility::VAR_INT, 0)) { ?>
+    <script>
+    $(document).ready(function() {
+        var lat = $('#lat').val();
+        var lng = $('#lng').val();
+        initMap(lat, lng);
+    });
+    </script>
+    <?php } ?>

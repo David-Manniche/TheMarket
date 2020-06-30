@@ -129,11 +129,11 @@ $buyQuantity->addFieldTagAttribute('data-page', 'product-view');
                                         <span class="product_off"><?php echo CommonHelper::showProductDiscountedText($product, $siteLangId); ?></span>
                                         <?php } ?>
                                     </div>
-
-                                    <!--<div class="detail-grouping">
-                                        <div class="products__category"><a href="<?php echo CommonHelper::generateUrl('Category', 'View', array($product['prodcat_id']));?>"><?php echo $product['prodcat_name'];?> </a></div>
-                                    </div>-->
-
+                                    <?php if (FatApp::getConfig("CONF_PRODUCT_INCLUSIVE_TAX", FatUtility::VAR_INT, 0) && 0 == Tax::getActivatedServiceId()) { ?>
+                                    <div class="detail-grouping">
+                                        <div class="products__category"><?php echo Labels::getLabel('LBL_Inclusive_All_Taxes', $siteLangId);?></div>
+                                    </div>
+                                    <?php } ?>
                                     <?php /* include(CONF_THEME_PATH.'_partial/product-listing-head-section.php'); */ ?>
 
                                     <?php /*  if ($shop['shop_free_ship_upto'] > 0 && Product::PRODUCT_TYPE_PHYSICAL == $product['product_type']) { ?>

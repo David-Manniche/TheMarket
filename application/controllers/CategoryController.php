@@ -74,6 +74,7 @@ class CategoryController extends MyAppController
         }
 
         $srch = Product::getListingObj($get, $this->siteLangId, $userId);
+        
         $srch->setPageNumber($page);
         if ($pageSize) {
             $srch->setPageSize($pageSize);

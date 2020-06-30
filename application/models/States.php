@@ -144,4 +144,35 @@ class States extends MyAppModel
 
         return $row;
     }
+
+    public static function getByCode($stateCode, $attr = null)
+    {
+        if (!$stateCode) {
+            return false;
+        }
+
+        $srch = static::getSearchObject();
+        $srch->addCondition('state_code', '=', strtoupper($stateCode));
+
+        if (null != $attr) {
+            if (is_array($attr)) {
+                $srch->addMultipleFields($attr);
+            } elseif (is_string($attr)) {
+                $srch->addFld($attr);
+            }
+        }
+
+        $rs = $srch->getResultSet();
+        $row = FatApp::getDb()->fetch($rs);
+
+        if (!is_array($row)) {
+            return false;
+        }
+
+        if (is_string($attr)) {
+            return $row[$attr];
+        }
+
+        return $row;
+    }
 }

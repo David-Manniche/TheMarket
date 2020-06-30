@@ -48,13 +48,11 @@ class TaxRule extends MyAppModel
     */
     public function deleteRules(int $taxCatId): bool
     {
-        $db = FatApp::getDb();
-        $db->query('DELETE rules, ruleDetails, ruleDetailsLang FROM '. self::DB_TBL .' rules LEFT JOIN '. TaxRuleCombined::DB_TBL .' ruleDetails ON ruleDetails.taxruledet_taxrule_id  = rules.taxrule_id LEFT JOIN '. TaxRuleCombined::DB_TBL_LANG . ' ruleDetailsLang ON ruleDetails.taxruledet_id  = ruleDetailsLang.taxruledetlang_taxruledet_id WHERE rules.taxrule_taxcat_id = '. $taxCatId);
-        if(0 < $db->rowsAffected()) {
-            return true;
+        if(!FatApp::getDb()->query('DELETE rules, ruleDetails, ruleDetailsLang FROM '. self::DB_TBL .' rules LEFT JOIN '. TaxRuleCombined::DB_TBL .' ruleDetails ON ruleDetails.taxruledet_taxrule_id  = rules.taxrule_id LEFT JOIN '. TaxRuleCombined::DB_TBL_LANG . ' ruleDetailsLang ON ruleDetails.taxruledet_id  = ruleDetailsLang.taxruledetlang_taxruledet_id WHERE rules.taxrule_taxcat_id = '. $taxCatId)) {
+            $this->error = FatApp::getDb()->getError();
+            return false;
         }
-        $this->error = $db->getError();
-        return false;
+        return true;
     }
 
     /**

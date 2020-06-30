@@ -34,6 +34,11 @@
                         <span class="products__price_old"><?php echo CommonHelper::displayMoneyFormat($product['selprod_price']); ?></span> <span class="product_off"><?php echo CommonHelper::showProductDiscountedText($product, $siteLangId); ?></span>
                     <?php } ?>
                     </div>
+                    <?php if (FatApp::getConfig("CONF_PRODUCT_INCLUSIVE_TAX", FatUtility::VAR_INT, 0) && 0 == Tax::getActivatedServiceId()) { ?>
+                    <div class="detail-grouping">
+                        <div class="products__category"><?php echo Labels::getLabel('LBL_Inclusive_All_Taxes', $siteLangId);?></div>
+                    </div>
+                    <?php } ?>
                     <div class="divider"></div>
                     <div class="gap"></div>
                 </div>

@@ -282,7 +282,6 @@ class Tax extends MyAppModel
         $userId = Fatutility::int($userId);
         $langId = Fatutility::int($langId);
         $activatedTaxServiceId = static::getActivatedServiceId();
-
         $taxRates = array();
         $srch = self::getTaxCatObjByProductId($productId, $langId);
         $srch->addCondition('ptt_product_id', '=', $productId, 'AND');
@@ -298,13 +297,12 @@ class Tax extends MyAppModel
             }
             $srch->addOrder('taxrule_id', 'ASC');
         }
-
         $res = $srch->getResultSet();
         $row = FatApp::getDb()->fetch($res);
         if (!is_array($row)) {
             return array();
         }
-        return array();
+        return $row;
     }
 
     /**
@@ -411,6 +409,7 @@ class Tax extends MyAppModel
         }
 
         $taxCategoryRow = $this->getTaxRates($productId, $sellerId, $langId, $shipToCountryId, $shipToStateId);
+        /* CommonHelper::printArray($taxCategoryRow); die; */
         if (empty($taxCategoryRow)) {
             return $data = [
                 'status' => false,
@@ -517,30 +516,16 @@ class Tax extends MyAppModel
                 'options' => []
             ];
 
-            if ($taxCategoryRow['taxrule_is_combined'] == static::TAX_TYPE_COMBINED) {
-                foreach ($taxRates['data'] as $code => $rate) {
-                    $data['tax'] = $data['tax'] + $rate['tax'];
-                    foreach ($rate['taxDetails'] as $name => $val) {
-                        $data['options'][$name]['name'] = $val['name'];
-                        $data['options'][$name]['percentageValue'] = 0;
-                        $data['options'][$name]['inPercentage'] = TAX::TYPE_FIXED;
-                        if (isset($data['options'][$name]['value'])) {
-                            $data['options'][$name]['value'] = $data['options'][$name]['value'] + $val['value'];
-                        } else {
-                            $data['options'][$name]['value'] = $val['value'];
-                        }
-                    }
-                }
-            } else {
-                foreach ($taxRates['data'] as $rate) {
-                    $data['tax'] = $data['tax'] + $rate['tax'];
-                    $data['options'][$defaultTaxName]['name'] = Labels::getLabel('LBL_Tax', $langId);
-                    $data['options'][$defaultTaxName]['inPercentage'] = TAX::TYPE_FIXED;
-                    $data['options'][$defaultTaxName]['percentageValue'] = 0;
-                    if (isset($data['options'][$defaultTaxName]['value'])) {
-                        $data['options'][$defaultTaxName]['value'] = $data['options'][$defaultTaxName]['value'] + $rate['tax'];
+            foreach ($taxRates['data'] as $code => $rate) {
+                $data['tax'] = $data['tax'] + $rate['tax'];
+                foreach ($rate['taxDetails'] as $name => $val) {
+                    $data['options'][$name]['name'] = $val['name'];
+                    $data['options'][$name]['percentageValue'] = 0;
+                    $data['options'][$name]['inPercentage'] = TAX::TYPE_FIXED;
+                    if (isset($data['options'][$name]['value'])) {
+                        $data['options'][$name]['value'] = $data['options'][$name]['value'] + $val['value'];
                     } else {
-                        $data['options'][$defaultTaxName]['value'] = $rate['tax'];
+                        $data['options'][$name]['value'] = $val['value'];
                     }
                 }
             }
@@ -550,14 +535,21 @@ class Tax extends MyAppModel
             return $data;
         }
 
+        if (0 < $activatedTaxServiceId) {
+            return $data = [
+                'status' => false,
+                'msg' => Labels::getLabel('MSG_INVALID_TAX_CATEGORY', $langId),
+                'tax' => $tax,
+                'taxCode' => '',
+                'options' => []
+            ];
+        }
         if ($taxCategoryRow['taxval_is_percent'] == static::TYPE_PERCENTAGE) {
             $tax = round((($prodPrice * $qty) * $taxCategoryRow['taxrule_rate']) / 100, 2);
         } else {
             $tax = $taxCategoryRow['taxrule_rate'] * $qty;
         }
-
-
-        if (0 < $activatedTaxServiceId) {
+        /* if (0 < $activatedTaxServiceId) {
             return $data = [
                 'status' => true,
                 'tax' => $tax,
@@ -571,7 +563,7 @@ class Tax extends MyAppModel
                     ]
                 ]
             ];
-        }
+        } */
 
         $data['tax'] = $tax;
         $data['taxCode'] = $taxCategoryRow['taxcat_code'];
@@ -693,7 +685,7 @@ class Tax extends MyAppModel
     * @param  array $fields
     * @return array
     */
-    public static function getTaxCatByProductId(int $productId = 0, int $userId = 0, int $langId = 0, array $fields = array()): array
+    public static function getTaxCatByProductId(int $productId, int $userId = 0, int $langId = 0, array $fields = array()): array
     {
         $taxData = array();
         $taxObj = static::getTaxCatObjByProductId($productId, $langId);
@@ -703,8 +695,11 @@ class Tax extends MyAppModel
         }
         $taxObj->doNotCalculateRecords();
         $taxObj->doNotLimitRecords();
-        $rs = $taxObj->getResultSet();
-        $taxData = FatApp::getDb()->fetch($rs);
+        $res = $taxObj->getResultSet();
+        $taxData = FatApp::getDb()->fetch($res);
+        if(!$taxData) {
+            return array();
+        }
         return $taxData;
     }
 
@@ -714,9 +709,14 @@ class Tax extends MyAppModel
     * @param  int $productId
     * @return bool
     */
-    public function removeTaxSetByAdmin(int $productId = 0): bool
+    public function removeTaxSetByAdmin(int $productId): bool
     {
-        return FatApp::getDb()->deleteRecords(static::DB_TBL_PRODUCT_TO_TAX, array('smt' => 'ptt_seller_user_id = ? and ptt_product_id = ?', 'vals' => array(0, $productId)));
+        $db = FatApp::getDb();
+        $db->deleteRecords(static::DB_TBL_PRODUCT_TO_TAX, array('smt' => 'ptt_seller_user_id = ? and ptt_product_id = ?', 'vals' => array(0, $productId)));
+        if(0 < $db->rowsAffected()) {
+            return true;
+        }
+        return false;
     }
 
     /**

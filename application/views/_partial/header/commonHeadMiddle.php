@@ -64,13 +64,17 @@ if ($canonicalUrl == '') {
 </style>
 <script type="text/javascript">
 <?php
+
+$isUserDashboard = ($isUserDashboard) ? 1 : 0;
 echo $str = 'var langLbl = ' . FatUtility::convertToJson($jsVariables, JSON_UNESCAPED_UNICODE) . ';
     var CONF_AUTO_CLOSE_SYSTEM_MESSAGES = ' . FatApp::getConfig("CONF_AUTO_CLOSE_SYSTEM_MESSAGES", FatUtility::VAR_INT, 0) . ';
     var CONF_TIME_AUTO_CLOSE_SYSTEM_MESSAGES = ' . FatApp::getConfig("CONF_TIME_AUTO_CLOSE_SYSTEM_MESSAGES", FatUtility::VAR_INT, 3) . ';
+    var CONF_ENABLE_GEO_LOCATION = ' . FatApp::getConfig("CONF_ENABLE_GEO_LOCATION", FatUtility::VAR_INT, 0) . ';
     var extendEditorJs = ' . $extendEditorJs . ';
     var themeActive = ' . $themeActive . ';
     var currencySymbolLeft = "' . $currencySymbolLeft . '";
     var currencySymbolRight = "' . $currencySymbolRight . '";
+    var isUserDashboard = "' . $isUserDashboard . '";
     if( CONF_TIME_AUTO_CLOSE_SYSTEM_MESSAGES <= 0  ){
         CONF_TIME_AUTO_CLOSE_SYSTEM_MESSAGES = 3;
     }';

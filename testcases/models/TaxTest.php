@@ -166,4 +166,114 @@ class TaxTest extends YkModelTest
             ],  // Valid data
         ];
     }
+
+    /**
+     * @dataProvider setGetTaxCatByProductId
+     */
+    public function testGetTaxCatByProductId($data)
+    {
+        $result = Tax::getTaxCatByProductId($data['prouctId'], $data['userId'], $data['langId'], $data['attr']);
+        $this->assertIsArray($result);
+    }
+
+    public function setGetTaxCatByProductId()
+    {
+        return [
+            [
+                [
+                    'prouctId' => 0,
+                    'userId' => 0,
+                    'langId' => 0,
+                    'attr' => [],
+                ]
+            ],  // Invalid data
+            [
+                [
+                    'prouctId' => 0,
+                    'userId' => 0,
+                    'langId' => 1,
+                    'attr' => ['ptt_taxcat_id'],
+                ]
+            ],  // Invalid data
+            [
+                [
+                    'prouctId' => 1,
+                    'userId' => 4,
+                    'langId' => 1,
+                    'attr' => ['ptt_taxcat_id'],
+                ]
+            ],  // Valid data
+        ];
+    }
+
+    /**
+     * @dataProvider setRemoveTaxSetByAdmin
+     */
+    public function testRemoveTaxSetByAdmin($data, $expected)
+    {
+        $tax = new Tax();
+        $result = $tax->removeTaxSetByAdmin($data);
+        $this->assertEquals($expected, $result);
+    }
+
+    public function setRemoveTaxSetByAdmin()
+    {
+        return [
+            [
+                -1, false
+            ],  // Invalid productId
+            [
+                0, false
+            ],  // Invalid productId
+            [
+                5555555555, false
+            ],  // Invalid productId
+            [
+                1, true
+            ],  // valid productId
+        ];
+    }
+
+    /**
+     * @dataProvider setGetAttributesByCode
+     */
+    public function testGetAttributesByCode($data)
+    {
+        $result = Tax::getAttributesByCode($data['code'], $data['attr'], $data['pluginId']);
+        $this->assertIsArray($result);
+    }
+
+    public function setGetAttributesByCode()
+    {
+        return [
+            [
+                [
+                    'code' => 0,
+                    'attr' => [],
+                    'pluginId' => 0,
+                ]
+            ],  // Invalid data
+            [
+                [
+                    'code' => '',
+                    'attr' => [],
+                    'pluginId' => 0,
+                ]
+            ],  // Invalid data
+            [
+                [
+                    'code' => 'testapp',
+                    'attr' => [],
+                    'pluginId' => 0,
+                ]
+            ],  // Invalid data
+            [
+                [
+                    'code' => 'testapp',
+                    'attr' => ['taxcat_plugin_id'],
+                    'pluginId' => 15,
+                ]
+            ],  // Valid data
+        ];
+    }
 }
