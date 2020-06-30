@@ -1549,11 +1549,11 @@ class SellerController extends SellerBaseController
             'taxval_options' => FatUtility::convertToJson($taxvalOptions),
         );
 
-        $taxObj = new Tax();
+        /* $taxObj = new Tax();
         if (!$taxObj->addUpdateTaxValues($data, $data)) {
             Message::addErrorMessage($taxObj->getError());
             FatUtility::dieJsonError(Message::getHtml());
-        }
+        } */
 
         $this->set('taxcatId', $taxcat_id);
         $this->set('msg', Labels::getLabel('MSG_Setup_Successfull', $this->siteLangId));
