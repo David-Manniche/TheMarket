@@ -3139,7 +3139,8 @@ class Importexport extends ImportexportCommon
                                 if (!$res) {
                                     $invalid = true;
                                 } else {
-                                    $prodIndetifierArr = array_merge($prodIndetifierArr, $res);
+                                    // $prodIndetifierArr = array_merge($prodIndetifierArr, $res);
+                                    $prodIndetifierArr = $prodIndetifierArr + $res;
                                 }
                             }
                             $productId = $colValue = array_key_exists($colValue, $prodIndetifierArr) ? $prodIndetifierArr[$colValue] : 0;
