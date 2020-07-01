@@ -1,4 +1,5 @@
 <?php
+
 class FcmPushNotification extends PushNotificationBase
 {
     public const KEY_NAME = __CLASS__;
@@ -11,40 +12,66 @@ class FcmPushNotification extends PushNotificationBase
 
     /**
      * __construct
-     * 
-     * @param array $deviceTokens 
+     *
+     * @param int $langId
      * @return void
      */
-    public function __construct($deviceTokens)
+    public function __construct(int $langId)
+    {
+        $this->langId = $langId;
+    }
+        
+    /**
+     * formatOutput
+     *
+     * @param  int $status
+     * @param  string $msg
+     * @param  array $data
+     * @return array
+     */
+    private function formatOutput(int $status, string $msg, array $data = [])
+    {
+        return [
+            'status' => $status,
+            'msg' => $msg,
+            'data' => $data,
+        ];
+    }
+    
+    /**
+     * setDeviceTokens
+     *
+     * @param  array $deviceTokens
+     * @return void
+     */
+    public function setDeviceTokens(array $deviceTokens): void
     {
         $this->deviceTokens = $deviceTokens;
     }
-
-    private function init()
+    
+    /**
+     * notify
+     *
+     * @param  string $title
+     * @param  string $message
+     * @param  int $os
+     * @param  array $data
+     * @return array
+     */
+    public function notify(string $title, string $message, int $os, array $data = []): array
     {
-        if (false == $this->validateSettings(CommonHelper::getLangId())) {
-            return false;
-        }
-        
-        if (is_string($this->deviceTokens) && !empty($this->deviceTokens)) {
-            $this->deviceTokens = [$this->deviceTokens];
+        if (false === $this->validateSettings($this->langId)) {
+            return $this->formatOutput(Plugin::RETURN_FALSE, $this->error);
         }
 
         if (empty($this->deviceTokens) || 1000 < count($this->deviceTokens)) {
-            $this->error = Labels::getLabel('LBL_ARRAY_MUST_CONTAIN_AT_LEAST_1_AND_AT_MOST_1000_REGISTRATION_TOKENS', CommonHelper::getLangId());
-            return false;
-        }
-    }
-
-    public function notify($title, $message, $os, $data = [])
-    {
-        if (false === $this->init()) {
-            return false;
+            $this->error = Labels::getLabel('LBL_ARRAY_MUST_CONTAIN_AT_LEAST_1_AND_AT_MOST_1000_REGISTRATION_TOKENS', $this->langId);
+            return $this->formatOutput(Plugin::RETURN_FALSE, $this->error);
         }
             
         if (empty($title) || empty($message)) {
-            $this->error = Labels::getLabel('LBL_INVALID_REQUEST', CommonHelper::getLangId());
-            return false;
+            $this->error = Labels::getLabel('LBL_INVALID_REQUEST', $this->langId);
+            return $this->formatOutput(Plugin::RETURN_FALSE, $this->error);
         }
 
         $msg = [
@@ -56,7 +83,7 @@ class FcmPushNotification extends PushNotificationBase
         $fields = [
             'registration_ids' => $this->deviceTokens,
             'notification' => $msg,
-            'data' => $data['customData'],
+            'data' => isset($data['customData']) ? $data['customData'] : [],
             'priority' => 'high'
         ];
 
@@ -65,6 +92,8 @@ class FcmPushNotification extends PushNotificationBase
             $fields['data'] = array_merge($msg, $fields['data']);
         }
         
+        $fields['data'] = empty($fields['data']) ? (object) [] : $fields['data'];
+
         $headers = [
             'Authorization: key=' . $this->settings['server_api_key'],
             'Content-Type: application/json'
@@ -79,11 +108,9 @@ class FcmPushNotification extends PushNotificationBase
         curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($fields));
         $response = curl_exec($ch);
         curl_close($ch);
+
         $result = json_decode($response, true);
-        return [
-            'success' => isset($result['success']) ? $result['success'] : 0,
-            'failure' => isset($result['failure']) ? $result['failure'] : 0,
-            'data' => $response
-        ];
+        $msg = Labels::getLabel('MSG_SUCCESS', $this->langId);
+        return $this->formatOutput(Plugin::RETURN_TRUE, $msg, $result);
     }
 }

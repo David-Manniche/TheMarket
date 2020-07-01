@@ -16,13 +16,25 @@ class PushNotification extends MyAppModel
 
     public const NOTIFY_TO_BUYER = 1;
     public const NOTIFY_TO_SELLER = 2;
-
-    public function __construct($pushNotificationId = 0)
+    
+    /**
+     * __construct
+     *
+     * @param  int $pushNotificationId
+     * @return void
+     */
+    public function __construct(int $pushNotificationId = 0)
     {
         parent::__construct(static::DB_TBL, static::DB_TBL_PREFIX . 'id', $pushNotificationId);
     }
-
-    public static function getSearchObject($joinNotificationUsers = false)
+    
+    /**
+     * getSearchObject
+     *
+     * @param  bool $joinNotificationUsers
+     * @return object
+     */
+    public static function getSearchObject(bool $joinNotificationUsers = false): object
     {
         $srch = new SearchBase(static::DB_TBL, 'pn');
 
@@ -32,8 +44,14 @@ class PushNotification extends MyAppModel
 
         return $srch;
     }
-
-    public static function getStatusArr($langId)
+    
+    /**
+     * getStatusArr
+     *
+     * @param  int $langId
+     * @return array
+     */
+    public static function getStatusArr(int $langId): array
     {
         return [
             static::STATUS_PENDING => Labels::getLabel('LBL_PENDING', $langId),
@@ -41,23 +59,38 @@ class PushNotification extends MyAppModel
             static::STATUS_COMPLETED => Labels::getLabel('LBL_COMPLETED', $langId)
         ];
     }
-
-    public static function getUserTypeArr($langId)
+    
+    /**
+     * getUserTypeArr
+     *
+     * @param  int $langId
+     * @return void
+     */
+    public static function getUserTypeArr(int $langId): array
     {
         return [
             static::NOTIFY_TO_BUYER => Labels::getLabel('LBL_BUYERS', $langId),
             static::NOTIFY_TO_SELLER => Labels::getLabel('LBL_SELLERS', $langId),
         ];
     }
-
-    private static function getDeviceTokensData($recordId, $buyers, $sellers, $userAuthType, $joinNotificationUsers = true)
+    
+    /**
+     * getDeviceTokensData
+     *
+     * @param  int $recordId
+     * @param  int $joinBuyers
+     * @param  int $joinSellers
+     * @param  int $userAuthType
+     * @param  bool $joinNotificationUsers
+     * @return mixed
+     */
+    private static function getDeviceTokensData(int $recordId, int $joinBuyers, int $joinSellers, int $userAuthType, bool $joinNotificationUsers = true): array
     {
-        $buyers = FatUtility::int($buyers);
-        $sellers = FatUtility::int($sellers);
-        $userAuthType = FatUtility::int($userAuthType);
-
-        if (1 > $buyers && 1 > $sellers) {
-            return false;
+        if (1 > $joinBuyers && 1 > $joinSellers) {
+            return [
+                'lastUserAccessTime' => '',
+                'deviceTokens' => []
+            ];
         }
 
         $joinNotificationUsers = (User::AUTH_TYPE_GUEST == $userAuthType ? false : $joinNotificationUsers);
@@ -74,14 +107,14 @@ class PushNotification extends MyAppModel
                 if (true === $joinNotificationUsers) {
                     $joinUsers = 'pnu.pntu_user_id = u.user_id';
                 } else {
-                    $joinBuyers = 'pn.pnotification_for_buyer = u.user_is_buyer AND pn.pnotification_for_buyer = 1';
-                    $joinSellers = 'pn.pnotification_for_seller = u.user_is_supplier and pn.pnotification_for_seller = 1';
-                    if (0 < $buyers && 0 < $sellers) {
-                        $joinUsers = '((' . $joinBuyers . ') OR (' . $joinSellers . '))';
-                    } elseif (0 < $sellers) {
-                        $joinUsers = $joinSellers;
-                    } elseif (0 < $buyers) {
-                        $joinUsers = $joinBuyers;
+                    $joinBuyersCond = 'pn.pnotification_for_buyer = u.user_is_buyer AND pn.pnotification_for_buyer = 1';
+                    $joinSellersCond = 'pn.pnotification_for_seller = u.user_is_supplier and pn.pnotification_for_seller = 1';
+                    if (0 < $joinBuyers && 0 < $joinSellers) {
+                        $joinUsers = '((' . $joinBuyersCond . ') OR (' . $joinSellersCond . '))';
+                    } elseif (0 < $joinSellers) {
+                        $joinUsers = $joinSellersCond;
+                    } elseif (0 < $joinBuyers) {
+                        $joinUsers = $joinBuyersCond;
                     }
                 }
 
@@ -91,7 +124,10 @@ class PushNotification extends MyAppModel
                 break;
             
             default:
-                return false;
+                return [
+                    'lastUserAccessTime' => '',
+                    'deviceTokens' => []
+                ];
                 break;
         }
 
@@ -100,7 +136,7 @@ class PushNotification extends MyAppModel
         $srch->addCondition(static::DB_TBL_PREFIX . 'id', '=', $recordId);
 
         if (User::AUTH_TYPE_GUEST == $userAuthType) {
-            if (0 < $sellers) {
+            if (0 < $joinSellers) {
                 $userType = User::USER_TYPE_SELLER;
             } else {
                 $userType = User::USER_TYPE_BUYER;
@@ -110,12 +146,12 @@ class PushNotification extends MyAppModel
             $srch->addCondition('uc.' . User::DB_TBL_CRED_PREFIX . 'active', '=', applicationConstants::YES);
             $srch->addCondition('uc.' . User::DB_TBL_CRED_PREFIX . 'verified', '=', applicationConstants::YES);
         
-            if (0 < $buyers) {
+            if (0 < $joinBuyers) {
                 $cnd = $srch->addCondition('u.' . User::DB_TBL_PREFIX . 'is_buyer', '=', applicationConstants::YES);
             }
         
-            if (0 < $sellers) {
-                if (0 < $buyers) {
+            if (0 < $joinSellers) {
+                if (0 < $joinBuyers) {
                     $cnd->attachCondition('u.' . User::DB_TBL_PREFIX . 'is_supplier', '=', applicationConstants::YES);
                 } else {
                     $srch->addCondition('u.' . User::DB_TBL_PREFIX . 'is_supplier', '=', applicationConstants::YES);
@@ -145,12 +181,21 @@ class PushNotification extends MyAppModel
         foreach ($tokenData as $data) {
             $deviceTokens[$data['uauth_device_os']][] = $data['uauth_fcm_id'];
         }
+
         return [
             'lastUserAccessTime' => $lastUserAccessTime,
             'deviceTokens' => $deviceTokens
         ];
     }
-
+    
+    /**
+     * updateDetail
+     *
+     * @param  int $recordId
+     * @param  int $status
+     * @param  string $lastUserAccessTime
+     * @return bool
+     */
     private static function updateDetail(int $recordId, int $status, string $lastUserAccessTime = ''): bool
     {
         $dataToSave = [
@@ -170,8 +215,14 @@ class PushNotification extends MyAppModel
         }
         return true;
     }
-
-    public static function send(&$error = '')
+    
+    /**
+     * send
+     *
+     * @param  mixed $error
+     * @return bool
+     */
+    public static function send(string &$error = ''): bool
     {
         $defaultPushNotiAPI = FatApp::getConfig('CONF_DEFAULT_PLUGIN_' . Plugin::TYPE_PUSH_NOTIFICATION, FatUtility::VAR_INT, 0);
         if (empty($defaultPushNotiAPI)) {
@@ -179,13 +230,16 @@ class PushNotification extends MyAppModel
             return false;
         }
 
-        $keyName = Plugin::getAttributesById($defaultPushNotiAPI, 'plugin_code');
-        if (1 > Plugin::isActive($keyName)) {
+        $pluginData = Plugin::getAttributesById($defaultPushNotiAPI);
+        $keyName = $pluginData['plugin_code'];
+
+        if (1 > Fatutility::int($pluginData['plugin_active'])) {
             $error =  Labels::getLabel('MSG_PLUGIN_IS_NOT_ACTIVE', CommonHelper::getLangId());
             return false;
         }
         
-        if (false === PluginHelper::includePlugin($keyName, 'push-notification', $error, CommonHelper::getLangId())) {
+        $notificationObj = PluginHelper::callPlugin($keyName, [CommonHelper::getLangId()], $error, CommonHelper::getLangId(), false);
+        if (false === $notificationObj) {
             return false;
         }
         
@@ -212,13 +266,13 @@ class PushNotification extends MyAppModel
 
         foreach ($notificationList as $notificationDetail) {
             $recordId = $notificationDetail[static::DB_TBL_PREFIX . 'id'];
-            $buyers = $notificationDetail['pnotification_for_buyer'];
-            $sellers = $notificationDetail['pnotification_for_seller'];
+            $joinBuyers = $notificationDetail['pnotification_for_buyer'];
+            $joinSellers = $notificationDetail['pnotification_for_seller'];
             $userAuthType = $notificationDetail['pnotification_user_auth_type'];
 
             $joinNotificationUsers = (0 < $notificationDetail['pnotification_user_linked']) ? true : false;
             
-            $data = static::getDeviceTokensData($recordId, $buyers, $sellers, $userAuthType, $joinNotificationUsers);
+            $data = static::getDeviceTokensData($recordId, $joinBuyers, $joinSellers, $userAuthType, $joinNotificationUsers);
             $deviceTokens = $data['deviceTokens'];
             $lastUserAccessTime = $data['lastUserAccessTime'];
             
@@ -244,10 +298,11 @@ class PushNotification extends MyAppModel
                 ];
 
                 foreach ($deviceTokens as $os => $dtokens) {
-                    $obj = new $keyName($dtokens);
-                    $response = $obj->notify($notificationDetail['pnotification_title'], $notificationDetail['pnotification_description'], $os, $data);
+                    $dtokens = (array) $dtokens;
+                    $notificationObj->setDeviceTokens($dtokens);
+                    $response = $notificationObj->notify($notificationDetail['pnotification_title'], $notificationDetail['pnotification_description'], $os, $data);
                     if (false === $response) {
-                        $error = $obj->getError();
+                        $error = $notificationObj->getError();
                     }
                 }
             } catch (\Error $e) {
@@ -259,7 +314,8 @@ class PushNotification extends MyAppModel
             } else {
                 static::updateDetail($recordId, static::STATUS_PROCESSING, $lastUserAccessTime);
             }
-            return $response;
+            CommonHelper::printArray($response);
         }
+        return true;
     }
 }

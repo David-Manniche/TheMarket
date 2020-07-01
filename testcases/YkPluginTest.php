@@ -14,7 +14,6 @@ class YkPluginTest extends YkAppTest
         $class = static::KEY_NAME;
         $this->langId = CommonHelper::getLangId();
         $this->classObj = new $class($this->langId);
-
         if (method_exists($this->classObj, 'init') && false === $this->classObj->init()) {
             $this->error = $this->classObj->getError();
             return false;

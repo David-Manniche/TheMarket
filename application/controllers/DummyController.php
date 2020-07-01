@@ -691,8 +691,7 @@ class DummyController extends MyAppController
     public function send()
     {
         $error = '';
-        $resp = PushNotification::send($error);
+        PushNotification::send($error);
         echo $error;
-        CommonHelper::printArray($resp);
     }
 }
