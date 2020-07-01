@@ -203,7 +203,7 @@ class Tax extends MyAppModel
     */
     public function addUpdateProductTaxCat(array $data): bool
     {
-        if (0 >= Fatutility::int($data['ptt_product_id']) || 0 >= Fatutility::int($data['ptt_taxcat_id']) || 0 >= Fatutility::int($data['ptt_seller_user_id'])) {
+        if (0 >= Fatutility::int($data['ptt_product_id']) || 0 >= Fatutility::int($data['ptt_taxcat_id'])) {
             return false;
         }
         if (!FatApp::getDb()->insertFromArray(static::DB_TBL_PRODUCT_TO_TAX, $data, false, array(), $data)) {
@@ -344,7 +344,7 @@ class Tax extends MyAppModel
                 $country = array_key_exists('country', $address) ? $address['country'] : $country;
                 $countryCode = array_key_exists('country_code', $address) ? $address['country_code'] : $countryCode;
                 break;
-            default :
+            default:
                 $postalCode = array_key_exists('ua_zip', $address) ? $address['ua_zip'] : $postalCode;
                 $line1 = array_key_exists('ua_address1', $address) ? $address['ua_address1'] : $line1;
                 $line2 = array_key_exists('ua_address2', $address) ? $address['ua_address2'] : $line2;
@@ -435,7 +435,6 @@ class Tax extends MyAppModel
 
         global $taxRatesArr;
         if (0 < $activatedTaxServiceId && !empty($extraInfo) && $extraInfo['shippingAddress'] != '') {
-
             if (true == $useCache) {
                 $rates = FatCache::get('taxCharges' . $cacheKey, CONF_API_REQ_CACHE_TIME, '.txt');
                 if ($rates) {
@@ -668,7 +667,7 @@ class Tax extends MyAppModel
 
         $taxRates = $taxApi->createInvoice($itemsArr, $shippingItems, $childOrderInfo['op_selprod_user_id'], $childOrderInfo['order_date_added'], $childOrderInfo['op_invoice_number']);
 
-        if (false == $taxRates['status']){
+        if (false == $taxRates['status']) {
             $this->error = $taxRates['msg'];
             return false;
         }
@@ -697,7 +696,7 @@ class Tax extends MyAppModel
         $taxObj->doNotLimitRecords();
         $res = $taxObj->getResultSet();
         $taxData = FatApp::getDb()->fetch($res);
-        if(!$taxData) {
+        if (!$taxData) {
             return array();
         }
         return $taxData;
@@ -711,12 +710,10 @@ class Tax extends MyAppModel
     */
     public function removeTaxSetByAdmin(int $productId): bool
     {
-        $db = FatApp::getDb();
-        $db->deleteRecords(static::DB_TBL_PRODUCT_TO_TAX, array('smt' => 'ptt_seller_user_id = ? and ptt_product_id = ?', 'vals' => array(0, $productId)));
-        if(0 < $db->rowsAffected()) {
-            return true;
+        if (!FatApp::getDb()->deleteRecords(static::DB_TBL_PRODUCT_TO_TAX, array('smt' => 'ptt_seller_user_id = ? and ptt_product_id = ?', 'vals' => array(0, $productId)))) {
+            return false;
         }
-        return false;
+        return true;
     }
 
     /**
