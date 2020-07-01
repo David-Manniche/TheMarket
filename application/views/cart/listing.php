@@ -8,7 +8,7 @@ defined('SYSTEM_INIT') or die('Invalid Usage.'); ?>
                 <?php foreach ($products as $product) { 
                         $productUrl = CommonHelper::generateUrl('Products', 'View', array($product['selprod_id']));
                         $shopUrl = CommonHelper::generateUrl('Shops', 'View', array($product['shop_id']));
-                        $imageUrl = FatCache::getCachedUrl(CommonHelper::generateUrl('image', 'product', array($product['product_id'], "THUMB", $product['selprod_id'], 0, $siteLangId)), CONF_IMG_CACHE_TIME, '.jpg');               
+                        $imageUrl = UrlHelper::getCachedUrl(UrlHelper::generateFileUrl('image', 'product', array($product['product_id'], "THUMB", $product['selprod_id'], 0, $siteLangId)), CONF_IMG_CACHE_TIME, '.jpg');               
                ?>
                 <li class="cart-list-item <?php echo md5($product['key']); ?> <?php echo (!$product['in_stock']) ? 'disabled' : ''; ?>">
                     <div class="row align-items-center">

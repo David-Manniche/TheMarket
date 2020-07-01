@@ -56,12 +56,12 @@
                      $prodOrBatchUrl = 'javascript:void(0)';
                     if ($orderDetail['op_is_batch']) {
                         $prodOrBatchUrl = CommonHelper::generateUrl('Products', 'batch', array($orderDetail['op_selprod_id']));
-                        $prodOrBatchImgUrl = FatCache::getCachedUrl(CommonHelper::generateUrl('image', 'BatchProduct', array($orderDetail['op_selprod_id'],$siteLangId, "SMALL"), CONF_WEBROOT_URL), CONF_IMG_CACHE_TIME, '.jpg');
+                        $prodOrBatchImgUrl = UrlHelper::getCachedUrl(UrlHelper::generateFileUrl('image', 'BatchProduct', array($orderDetail['op_selprod_id'],$siteLangId, "SMALL"), CONF_WEBROOT_URL), CONF_IMG_CACHE_TIME, '.jpg');
                     } else {
                         if (Product::verifyProductIsValid($orderDetail['op_selprod_id']) == true) {
                             $prodOrBatchUrl = CommonHelper::generateUrl('Products', 'view', array($orderDetail['op_selprod_id']));
                         }
-                        $prodOrBatchImgUrl = FatCache::getCachedUrl(CommonHelper::generateUrl('image', 'product', array($orderDetail['selprod_product_id'], "SMALL", $orderDetail['op_selprod_id'], 0, $siteLangId), CONF_WEBROOT_URL), CONF_IMG_CACHE_TIME, '.jpg');
+                        $prodOrBatchImgUrl = UrlHelper::getCachedUrl(UrlHelper::generateFileUrl('image', 'product', array($orderDetail['selprod_product_id'], "SMALL", $orderDetail['op_selprod_id'], 0, $siteLangId), CONF_WEBROOT_URL), CONF_IMG_CACHE_TIME, '.jpg');
                     }  ?>
                                         <figure class="item__pic"><a href="<?php echo $prodOrBatchUrl;?>"><img src="<?php echo $prodOrBatchImgUrl; ?>" title="<?php echo $orderDetail['op_product_name'];?>"
                                                     alt="<?php echo $orderDetail['op_product_name']; ?>"></a></figure>

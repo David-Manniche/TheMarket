@@ -1,5 +1,5 @@
 <?php defined('SYSTEM_INIT') or die('Invalid usage');
-$totReviews = $avgRating  = 0 ;
+$totReviews = $avgRating  = $pixelToFillRight = 0 ;
 if (!empty($reviews)) {
     $totReviews = (!empty($reviews['totReviews'])) ? FatUtility::int($reviews['totReviews']) : 0;
     $avgRating = (!empty($reviews['prod_rating'])) ? FatUtility::convertToType($reviews['prod_rating'], FatUtility::VAR_FLOAT) : 0;

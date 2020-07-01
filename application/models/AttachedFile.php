@@ -504,7 +504,7 @@ class AttachedFile extends MyAppModel
                         FatCache::set($imagePath, $fileContent, '.jpg');
                     }
                     
-                    $tempPath = CONF_INSTALLATION_PATH . 'public' . FatCache::getCachedUrl($imagePath, CONF_IMG_CACHE_TIME, '.jpg');
+                    $tempPath = CONF_INSTALLATION_PATH . 'public' . UrlHelper::getCachedUrl($imagePath, CONF_IMG_CACHE_TIME, '.jpg');
                     $img = new ImageResize($tempPath);
                 } else {
                     $img = static::getDefaultImage($imagePath, $w, $h);

@@ -4,7 +4,8 @@ New Features:
     => S3 bucket implementation.
     => Shipping Packages and Profile Module.
     => Configuration to on/off seller shipping.
-    => Shipstation api for shiping rates.    
+    => Shipstation api for shiping rates.  
+    => CDN handling based on configuration.  
 Bugs:
     => 036750 - Seller Shop - Custom URL for shop collections
     => 036504 - wrong stats are displaying on buyer dashboard - pending and total orders

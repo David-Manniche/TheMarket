@@ -29,7 +29,7 @@
 											$batchInStock = true;
 											foreach($pg_products as $product){ 
 											$productUrl = CommonHelper::generateUrl('Products','View',array($product['selprod_id']));
-											$imgSrc = FatCache::getCachedUrl(CommonHelper::generateUrl('image','product', array($product['product_id'], "SMALL", $product['selprod_id'], 0, $siteLangId),CONF_WEBROOT_URL), CONF_IMG_CACHE_TIME, '.jpg');
+											$imgSrc = UrlHelper::getCachedUrl(UrlHelper::generateFileUrl('image','product', array($product['product_id'], "SMALL", $product['selprod_id'], 0, $siteLangId),CONF_WEBROOT_URL), CONF_IMG_CACHE_TIME, '.jpg');
 											$productsTotalPrice += $product['theprice'];
 											?>
                       <li>

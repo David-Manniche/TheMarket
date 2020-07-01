@@ -81,7 +81,7 @@
                                     $userImgUpdatedOn = User::getAttributesById($loggedUserId, 'user_updated_on');
                                     $uploadedTime = AttachedFile::setTimeParam($userImgUpdatedOn);
                                     ?>
-                                        <img src="<?php echo FatCache::getCachedUrl(CommonHelper::generateUrl('Image', 'user', array($loggedUserId,'thumb',true)).$uploadedTime, CONF_IMG_CACHE_TIME, '.jpg');?>" alt="<?php echo $loggedUserName; ?>">
+                                        <img src="<?php echo UrlHelper::getCachedUrl(UrlHelper::generateFileUrl('Image', 'user', array($loggedUserId,'thumb',true)).$uploadedTime, CONF_IMG_CACHE_TIME, '.jpg');?>" alt="<?php echo $loggedUserName; ?>">
                                     </div>
                                     <div class="msg__desc">
                                         <span class="msg__title"><?php echo $loggedUserName;?></span> <?php
