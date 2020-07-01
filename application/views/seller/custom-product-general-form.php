@@ -3,8 +3,10 @@ $productFrm->setFormTagAttribute('class', 'form form--horizontal');
 $productFrm->setFormTagAttribute('onsubmit', 'setupCustomProduct(this); return(false);');
 
 $fld = $productFrm->getField('auto_update_other_langs_data');
-$fld->developerTags['cbLabelAttributes'] = array('class' => 'checkbox');
-$fld->developerTags['cbHtmlAfterCheckbox'] = '<i class="input-helper"></i>';
+if (null != $fld) {
+    $fld->developerTags['cbLabelAttributes'] = array('class' => 'checkbox');
+    $fld->developerTags['cbHtmlAfterCheckbox'] = '<i class="input-helper"></i>';
+}
 
 $btnDiscardFld = $productFrm->getField('btn_discard');
 $btnDiscardFld->setFieldTagAttribute('onClick', 'goToCatalog()');
@@ -60,7 +62,8 @@ $btnDiscardFld->setFieldTagAttribute('onClick', 'goToCatalog()');
                             <span class="spn_must_field">*</span>
                             <?php } ?>
                         </label>
-                       <small><a class="form-text text-muted" href="javascript:void(0)" onClick="addBrandReqForm(0);"><?php echo Labels::getLabel('LBL_Request_For_Brand', $siteLangId) ; ?></a></small>
+                        <small><a class="form-text text-muted" href="javascript:void(0)"
+                                onClick="addBrandReqForm(0);"><?php echo Labels::getLabel('LBL_Request_For_Brand', $siteLangId) ; ?></a></small>
                     </div>
                     <div class="field-wraper">
                         <div class="field_cover">
@@ -144,7 +147,8 @@ $btnDiscardFld->setFieldTagAttribute('onClick', 'goToCatalog()');
             </div>
         </div>
         <?php $divLayout = Language::getLayoutDirection($siteDefaultLangId); ?>
-        <div class="p-4 mb-4 bg-gray rounded layout--<?php echo $divLayout;?>">
+        <div
+            class="p-4 mb-4 bg-gray rounded layout--<?php echo $divLayout;?>">
             <div class="row">
                 <div class="col-md-6">
                     <div class="field-set">
@@ -222,66 +226,79 @@ $btnDiscardFld->setFieldTagAttribute('onClick', 'goToCatalog()');
         if (!empty($otherLanguages)) {
             foreach ($otherLanguages as $langId => $data) {
                 $layout = Language::getLayoutDirection($langId); ?>
-                <div class="accordion my-4" id="specification-accordion-<?php echo $langId; ?>">
+        <div class="accordion my-4"
+            id="specification-accordion-<?php echo $langId; ?>">
 
-                            <h6 class="dropdown-toggle" data-toggle="collapse" data-target="#collapse-<?php echo $langId; ?>" aria-expanded="true" aria-controls="collapse-<?php echo $langId; ?>"><span onclick="translateData(this, '<?php echo $siteDefaultLangId; ?>', '<?php echo $langId; ?>')"> <?php echo $data." "; echo Labels::getLabel('LBL_Language_Data', $siteLangId); ?> </span>
-                            </h6>
-                            <div id="collapse-<?php echo $langId; ?>" class="collapse collapse-js-<?php echo $langId; ?>" aria-labelledby="headingOne" data-parent="#specification-accordion-<?php echo $langId; ?>">
-                             <div class="p-4 mb-4 bg-gray rounded" dir="<?php echo $layout; ?>">
-							 <div class="row">
-                                    <div class="col-md-6">
-                                        <div class="field-set">
-                                            <div class="caption-wraper">
-                                                <label class="field_label">
-                                                    <?php  $fld = $productFrm->getField('product_name['.$langId.']');
-                                                    echo $fld->getCaption(); ?>
-                                                </label>
-                                            </div>
-                                            <div class="field-wraper">
-                                                <div class="field_cover">
-                                                    <?php echo $productFrm->getFieldHtml('product_name['.$langId.']'); ?>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <div class="field-set">
-                                            <div class="caption-wraper">
-                                                <label class="field_label">
-                                                    <?php  $fld = $productFrm->getField('product_youtube_video['.$langId.']');
-                                                    echo $fld->getCaption(); ?>
-                                                </label>
-                                            </div>
-                                            <div class="field-wraper">
-                                                <div class="field_cover">
-                                                    <?php echo $productFrm->getFieldHtml('product_youtube_video['.$langId.']'); ?>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
+            <h6 class="dropdown-toggle" data-toggle="collapse"
+                data-target="#collapse-<?php echo $langId; ?>"
+                aria-expanded="true"
+                aria-controls="collapse-<?php echo $langId; ?>"><span
+                    onclick="translateData(this, '<?php echo $siteDefaultLangId; ?>', '<?php echo $langId; ?>')">
+                    <?php echo $data." ";
+                echo Labels::getLabel('LBL_Language_Data', $siteLangId); ?>
+                </span>
+            </h6>
+            <div id="collapse-<?php echo $langId; ?>"
+                class="collapse collapse-js-<?php echo $langId; ?>"
+                aria-labelledby="headingOne"
+                data-parent="#specification-accordion-<?php echo $langId; ?>">
+                <div class="p-4 mb-4 bg-gray rounded"
+                    dir="<?php echo $layout; ?>">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="field-set">
+                                <div class="caption-wraper">
+                                    <label class="field_label">
+                                        <?php  $fld = $productFrm->getField('product_name['.$langId.']');
+                echo $fld->getCaption(); ?>
+                                    </label>
                                 </div>
-                                <div class="row">
-                                    <div class="col-md-12">
-                                        <div class="field-set">
-                                            <div class="caption-wraper">
-                                                <label class="field_label">
-                                                    <?php  $fld = $productFrm->getField('product_description_'.$langId);
-                                                    echo $fld->getCaption(); ?>
-                                                </label>
-                                            </div>
-                                            <div class="field-wraper">
-                                                <div class="field_cover">
-                                                    <?php echo $productFrm->getFieldHtml('product_description_'.$langId); ?>
-                                                </div>
-                                            </div>
-                                        </div>
+                                <div class="field-wraper">
+                                    <div class="field_cover">
+                                        <?php echo $productFrm->getFieldHtml('product_name['.$langId.']'); ?>
                                     </div>
                                 </div>
                             </div>
-							</div>
-
+                        </div>
+                        <div class="col-md-6">
+                            <div class="field-set">
+                                <div class="caption-wraper">
+                                    <label class="field_label">
+                                        <?php  $fld = $productFrm->getField('product_youtube_video['.$langId.']');
+                echo $fld->getCaption(); ?>
+                                    </label>
+                                </div>
+                                <div class="field-wraper">
+                                    <div class="field_cover">
+                                        <?php echo $productFrm->getFieldHtml('product_youtube_video['.$langId.']'); ?>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="field-set">
+                                <div class="caption-wraper">
+                                    <label class="field_label">
+                                        <?php  $fld = $productFrm->getField('product_description_'.$langId);
+                echo $fld->getCaption(); ?>
+                                    </label>
+                                </div>
+                                <div class="field-wraper">
+                                    <div class="field_cover">
+                                        <?php echo $productFrm->getFieldHtml('product_description_'.$langId); ?>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-            <?php }
+            </div>
+
+        </div>
+        <?php
+            }
         } ?>
         <div class="row">
             <div class="col-6">
@@ -289,7 +306,7 @@ $btnDiscardFld->setFieldTagAttribute('onClick', 'goToCatalog()');
                     <div class="caption-wraper"><label class="field_label"></label></div>
                     <div class="field-wraper">
                         <div class="field_cover">
-                        <?php echo $productFrm->getFieldHtml('btn_discard'); ?>
+                            <?php echo $productFrm->getFieldHtml('btn_discard'); ?>
                         </div>
                     </div>
                 </div>
@@ -299,7 +316,7 @@ $btnDiscardFld->setFieldTagAttribute('onClick', 'goToCatalog()');
                     <div class="caption-wraper"><label class="field_label"></label></div>
                     <div class="field-wraper">
                         <div class="field_cover">
-                        <?php
+                            <?php
                         echo $productFrm->getFieldHtml('product_id');
                         echo $productFrm->getFieldHtml('product_brand_id');
                         echo $productFrm->getFieldHtml('ptc_prodcat_id');
@@ -331,12 +348,16 @@ $btnDiscardFld->setFieldTagAttribute('onClick', 'goToCatalog()');
                     type: 'post',
                     success: function(json) {
                         response($.map(json, function(item) {
-                            return { label: item['name'], value: item['name'], id: item['id'] };
+                            return {
+                                label: item['name'],
+                                value: item['name'],
+                                id: item['id']
+                            };
                         }));
                     },
                 });
             },
-            'select': function (event, ui) {
+            'select': function(event, ui) {
                 $("input[name='product_brand_id']").val(ui.item.id);
             }
         });
@@ -362,12 +383,16 @@ $btnDiscardFld->setFieldTagAttribute('onClick', 'goToCatalog()');
                     type: 'post',
                     success: function(json) {
                         response($.map(json, function(item) {
-                            return { label: item['name'], value: item['name'], id: item['id'] };
+                            return {
+                                label: item['name'],
+                                value: item['name'],
+                                id: item['id']
+                            };
                         }));
                     },
                 });
             },
-            'select': function (event, ui) {
+            'select': function(event, ui) {
                 $("input[name='ptc_prodcat_id']").val(ui.item.id);
             }
         });
@@ -377,26 +402,33 @@ $btnDiscardFld->setFieldTagAttribute('onClick', 'goToCatalog()');
                 $("input[name='ptc_prodcat_id']").val(0);
             }
         });
-        
+
         $('input[name=\'taxcat_name\']').autocomplete({
             'classes': {
                 "ui-autocomplete": "custom-ui-autocomplete"
             },
             'source': function(request, response) {
-                    $.ajax({
-                            url: fcom.makeUrl('products', 'autoCompleteTaxCategories'),
-                            data: {keyword: request['term'],fIsAjax:1},
-                            dataType: 'json',
-                            type: 'post',
-                            success: function(json) {
-                                    response($.map(json, function(item) {
-                                            return { label: item['name'], value: item['name'], id: item['id'] };
-                                    }));
-                            },
-                    });
+                $.ajax({
+                    url: fcom.makeUrl('products', 'autoCompleteTaxCategories'),
+                    data: {
+                        keyword: request['term'],
+                        fIsAjax: 1
+                    },
+                    dataType: 'json',
+                    type: 'post',
+                    success: function(json) {
+                        response($.map(json, function(item) {
+                            return {
+                                label: item['name'],
+                                value: item['name'],
+                                id: item['id']
+                            };
+                        }));
+                    },
+                });
             },
             select: function(event, ui) {
-                    $('input[name=\'ptt_taxcat_id\']').val(ui.item.id);
+                $('input[name=\'ptt_taxcat_id\']').val(ui.item.id);
             }
         });
     });

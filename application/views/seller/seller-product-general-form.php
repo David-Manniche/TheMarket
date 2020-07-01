@@ -7,8 +7,11 @@ if ($selprod_id > 0 || empty($productOptions)) {
 $siteDefaultLangId = FatApp::getConfig('conf_default_site_lang', FatUtility::VAR_INT, 1);
 $frmSellerProduct->setFormTagAttribute('class', 'form form--horizontal layout--'.Language::getLayoutDirection($siteDefaultLangId));
 $autoUpdateFld = $frmSellerProduct->getField('auto_update_other_langs_data');
-$autoUpdateFld->developerTags['cbLabelAttributes'] = array('class' => 'checkbox');
-$autoUpdateFld->developerTags['cbHtmlAfterCheckbox'] = '<i class="input-helper"></i>';
+if (null != $autoUpdateFld) {
+    $autoUpdateFld->developerTags['cbLabelAttributes'] = array('class' => 'checkbox');
+    $autoUpdateFld->developerTags['cbHtmlAfterCheckbox'] = '<i class="input-helper"></i>';
+}
+
 $returnAgeFld = $frmSellerProduct->getField('selprod_return_age');
 $cancellationAgeFld = $frmSellerProduct->getField('selprod_cancellation_age');
 $returnAge = FatUtility::int($returnAgeFld->value);

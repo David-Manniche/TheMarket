@@ -7,17 +7,16 @@ $productFrm->developerTags['fld_default_col'] = 12;
 $spProfileFld = $productFrm->getField('shipping_profile');
 $spProfileFld->developerTags['col'] = 6;
 
-$spPackageFld = $productFrm->getField('product_ship_package');
-$spPackageFld->developerTags['col'] = 6;
-
-$weightUnitFld = $productFrm->getField('product_weight_unit');
-$weightUnitFld->developerTags['col'] = 6;
-
-$weightFld = $productFrm->getField('product_weight');
-$weightFld->developerTags['col'] = 6;
-
-$psFreeFld = $productFrm->getField('ps_free');
-$psFreeFld->developerTags['col'] = 6;
+if (FatApp::getConfig("CONF_PRODUCT_DIMENSIONS_ENABLE", FatUtility::VAR_INT, 1)) {
+    $spPackageFld = $productFrm->getField('product_ship_package');
+    $spPackageFld->developerTags['col'] = 6;
+    
+    $weightUnitFld = $productFrm->getField('product_weight_unit');
+    $weightUnitFld->developerTags['col'] = 6;
+    
+    $weightFld = $productFrm->getField('product_weight');
+    $weightFld->developerTags['col'] = 6;
+}
 
 $codFld = $productFrm->getField('product_cod_enabled');
 $codFld->developerTags['col'] = 6;

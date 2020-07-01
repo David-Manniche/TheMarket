@@ -50,7 +50,7 @@ foreach ($arr_listing as $sn => $row) {
                 $uploadedTime = AttachedFile::setTimeParam($fileData['afile_updated_at']);
                 $aspectRatio = ($fileData['afile_aspect_ratio'] > 0 && isset($aspectRatioArr[$fileData['afile_aspect_ratio']])) ? $aspectRatioArr[$fileData['afile_aspect_ratio']] : '';
 
-                $imageUrl = FatCache::getCachedUrl(CommonHelper::generateUrl('Image', 'plugin', array($row['plugin_id'], 'ICON'), CONF_WEBROOT_FRONT_URL) . $uploadedTime, CONF_IMG_CACHE_TIME, '.jpg');
+                $imageUrl = UrlHelper::getCachedUrl(UrlHelper::generateFileUrl('Image', 'plugin', array($row['plugin_id'], 'ICON'), CONF_WEBROOT_FRONT_URL) . $uploadedTime, CONF_IMG_CACHE_TIME, '.jpg');
                 $imgHtm = '<img src="' . $imageUrl . '" data-ratio="' . $aspectRatio . '">';
                 $td->appendElement('plaintext', array(), $imgHtm, true);
                 break;

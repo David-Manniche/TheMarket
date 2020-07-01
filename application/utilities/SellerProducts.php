@@ -245,11 +245,15 @@ trait SellerProducts
             $languages = Language::getAllNames();
             foreach ($languages as $langId => $langName) {
                 $langData = SellerProduct::getAttributesByLangId($langId, $selprod_id);
-                $sellerProductRow['selprod_title'.$langId] = $langData['selprod_title'];
-                $sellerProductRow['selprod_comments'.$langId] = $langData['selprod_comments'];
+                $sellerProductRow['selprod_title' . $langId] = '';
+                $sellerProductRow['selprod_comments' . $langId] = '';
+                if (!empty($langData)) {
+                    $sellerProductRow['selprod_title' . $langId] = $langData['selprod_title'];
+                    $sellerProductRow['selprod_comments' . $langId] = $langData['selprod_comments'];
+                }
             }
         } else {
-            $sellerProductRow['selprod_title'.FatApp::getConfig('conf_default_site_lang', FatUtility::VAR_INT, 1)] = $productRow['product_name'];
+            $sellerProductRow['selprod_title' . FatApp::getConfig('conf_default_site_lang', FatUtility::VAR_INT, 1)] = $productRow['product_name'];
         }
 
         $frmSellerProduct->fill($sellerProductRow);

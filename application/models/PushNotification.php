@@ -230,7 +230,7 @@ class PushNotification extends MyAppModel
                 $imageUrl = '';
                 if ($imgData = AttachedFile::getAttachment(AttachedFile::FILETYPE_PUSH_NOTIFICATION_IMAGE, $recordId)) {
                     $uploadedTime = AttachedFile::setTimeParam($imgData['afile_updated_at']);
-                    $imageUrl = FatCache::getCachedUrl(CommonHelper::generateFullUrl('Image', 'pushNotificationImage', [$recordId], CONF_WEBROOT_FRONT_URL) . $uploadedTime, CONF_IMG_CACHE_TIME, '.jpg');
+                    $imageUrl = UrlHelper::getCachedUrl(UrlHelper::generateFullFileUrl('Image', 'pushNotificationImage', [$recordId], CONF_WEBROOT_FRONT_URL) . $uploadedTime, CONF_IMG_CACHE_TIME, '.jpg');
                 }
 
                 $data = [

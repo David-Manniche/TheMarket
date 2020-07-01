@@ -160,7 +160,7 @@ class PushNotificationsController extends AdminBaseController
 
         if ($imgData = AttachedFile::getAttachment(AttachedFile::FILETYPE_PUSH_NOTIFICATION_IMAGE, $pNotificationId)) {
             $uploadedTime = AttachedFile::setTimeParam($imgData['afile_updated_at']);
-            $ul->htmlAfterField .= '<img src="' . FatCache::getCachedUrl(CommonHelper::generateFullUrl('Image', 'pushNotificationImage', [$pNotificationId], CONF_WEBROOT_FRONT_URL) . $uploadedTime, CONF_IMG_CACHE_TIME, '.jpg') . '">';
+            $ul->htmlAfterField .= '<img src="' . UrlHelper::getCachedUrl(UrlHelper::generateFullFileUrl('Image', 'pushNotificationImage', [$pNotificationId], CONF_WEBROOT_FRONT_URL) . $uploadedTime, CONF_IMG_CACHE_TIME, '.jpg') . '">';
             if (0 == $status) {
                 $ul->htmlAfterField .= '<a  class="remove--img" href="javascript:void(0);" onclick="removeImage(' . $pNotificationId . ')" ><i class="ion-close-round"></i></a>';
             }

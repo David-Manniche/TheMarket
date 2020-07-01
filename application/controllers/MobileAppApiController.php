@@ -1062,7 +1062,7 @@ class MobileAppApiController extends MyAppController
                 $moreSellerSrch->addGroupBy('selprod_code');
                 $moreSellerRs = $moreSellerSrch->getResultSet();
                 $moreSellerRow = $db->fetch($moreSellerRs);
-                $mainImgUrl = FatCache::getCachedUrl(CommonHelper::generateFullUrl('image', 'product', array($product['product_id'], "MEDIUM", $product['selprod_id'], 0, $this->siteLangId)), CONF_IMG_CACHE_TIME, '.jpg');
+                $mainImgUrl = UrlHelper::getCachedUrl(UrlHelper::generateFullFileUrl('image', 'product', array($product['product_id'], "MEDIUM", $product['selprod_id'], 0, $this->siteLangId)), CONF_IMG_CACHE_TIME, '.jpg');
                 $product['discounted_text'] = CommonHelper::showProductDiscountedText($product, $this->siteLangId);
 
                 $product['product_image'] = $mainImgUrl;
@@ -1535,7 +1535,7 @@ class MobileAppApiController extends MyAppController
         }
 
 
-        $mainImgUrl = FatCache::getCachedUrl(CommonHelper::generateFullUrl('image', 'product', array($product['product_id'], "MEDIUM", $product['selprod_id'], 0, $this->siteLangId)), CONF_IMG_CACHE_TIME, '.jpg');
+        $mainImgUrl = UrlHelper::getCachedUrl(UrlHelper::generateFullFileUrl('image', 'product', array($product['product_id'], "MEDIUM", $product['selprod_id'], 0, $this->siteLangId)), CONF_IMG_CACHE_TIME, '.jpg');
         $product['product_image'] = $mainImgUrl;
 
         /* ]  */
@@ -1607,7 +1607,7 @@ class MobileAppApiController extends MyAppController
 
         if ($upsellProducts) {
             foreach ($upsellProducts as &$upsellProduct) {
-                $mainImgUrl = FatCache::getCachedUrl(CommonHelper::generateFullUrl('image', 'product', array($upsellProduct['product_id'], "MEDIUM", $upsellProduct['selprod_id'], 0, $this->siteLangId)), CONF_IMG_CACHE_TIME, '.jpg');
+                $mainImgUrl = UrlHelper::getCachedUrl(UrlHelper::generateFullFileUrl('image', 'product', array($upsellProduct['product_id'], "MEDIUM", $upsellProduct['selprod_id'], 0, $this->siteLangId)), CONF_IMG_CACHE_TIME, '.jpg');
                 $upsellProduct['discounted_text'] = CommonHelper::showProductDiscountedText($upsellProduct, $this->siteLangId);
                 $upsellProduct['product_image'] = $mainImgUrl;
                 $upsellProduct['currency_selprod_price'] = CommonHelper::displayMoneyFormat($upsellProduct['selprod_price'], true, false, false);
@@ -1627,7 +1627,7 @@ class MobileAppApiController extends MyAppController
         $relatedProducts = FatApp::getDb()->fetchAll($rs);
         if ($relatedProducts) {
             foreach ($relatedProducts as &$relatedProduct) {
-                $mainImgUrl = FatCache::getCachedUrl(CommonHelper::generateFullUrl('image', 'product', array($relatedProduct['product_id'], "MEDIUM", $relatedProduct['selprod_id'], 0, $this->siteLangId)), CONF_IMG_CACHE_TIME, '.jpg');
+                $mainImgUrl = UrlHelper::getCachedUrl(UrlHelper::generateFullFileUrl('image', 'product', array($relatedProduct['product_id'], "MEDIUM", $relatedProduct['selprod_id'], 0, $this->siteLangId)), CONF_IMG_CACHE_TIME, '.jpg');
                 $relatedProduct['discounted_text'] = CommonHelper::showProductDiscountedText($relatedProduct, $this->siteLangId);
                 $relatedProduct['product_image'] = $mainImgUrl;
                 $relatedProduct['currency_selprod_price'] = CommonHelper::displayMoneyFormat($relatedProduct['selprod_price'], true, false, false);
@@ -2770,7 +2770,7 @@ class MobileAppApiController extends MyAppController
 
         if ($favoriteProducts) {
             foreach ($favoriteProducts as &$favoriteProduct) {
-                $mainImgUrl = FatCache::getCachedUrl(CommonHelper::generateFullUrl('image', 'product', array($favoriteProduct['product_id'], "MEDIUM", $favoriteProduct['selprod_id'], 0, $this->siteLangId)), CONF_IMG_CACHE_TIME, '.jpg');
+                $mainImgUrl = UrlHelper::getCachedUrl(UrlHelper::generateFullFileUrl('image', 'product', array($favoriteProduct['product_id'], "MEDIUM", $favoriteProduct['selprod_id'], 0, $this->siteLangId)), CONF_IMG_CACHE_TIME, '.jpg');
                 $favoriteProduct['discounted_text'] = CommonHelper::showProductDiscountedText($favoriteProduct, $this->siteLangId);
                 $favoriteProduct['product_image'] = $mainImgUrl;
                 $favoriteProduct['currency_selprod_price'] = CommonHelper::displayMoneyFormat($favoriteProduct['selprod_price'], true, false, false);
@@ -2842,7 +2842,7 @@ class MobileAppApiController extends MyAppController
 
         if ($wishListProducts) {
             foreach ($wishListProducts as &$wishlistProduct) {
-                $mainImgUrl = FatCache::getCachedUrl(CommonHelper::generateFullUrl('image', 'product', array($wishlistProduct['product_id'], "MEDIUM", $wishlistProduct['selprod_id'], 0, $this->siteLangId)), CONF_IMG_CACHE_TIME, '.jpg');
+                $mainImgUrl = UrlHelper::getCachedUrl(UrlHelper::generateFullFileUrl('image', 'product', array($wishlistProduct['product_id'], "MEDIUM", $wishlistProduct['selprod_id'], 0, $this->siteLangId)), CONF_IMG_CACHE_TIME, '.jpg');
                 $wishlistProduct['discounted_text'] = CommonHelper::showProductDiscountedText($wishlistProduct, $this->siteLangId);
                 $wishlistProduct['product_image'] = $mainImgUrl;
                 $wishlistProduct['currency_selprod_price'] = CommonHelper::displayMoneyFormat($wishlistProduct['selprod_price'], true, false, false);
@@ -3622,7 +3622,7 @@ class MobileAppApiController extends MyAppController
             $shopsArr[$cnt] = $val;
             $shopProducts = $db->fetchAll($prodRs);
             foreach ($shopProducts as &$shopProduct) {
-                $mainImgUrl = FatCache::getCachedUrl(CommonHelper::generateFullUrl('image', 'product', array($shopProduct['product_id'], "MEDIUM", $shopProduct['selprod_id'], 0, $this->siteLangId)), CONF_IMG_CACHE_TIME, '.jpg');
+                $mainImgUrl = UrlHelper::getCachedUrl(UrlHelper::generateFullFileUrl('image', 'product', array($shopProduct['product_id'], "MEDIUM", $shopProduct['selprod_id'], 0, $this->siteLangId)), CONF_IMG_CACHE_TIME, '.jpg');
                 $shopProduct['discounted_text'] = CommonHelper::showProductDiscountedText($shopProduct, $this->siteLangId);
                 $shopProduct['product_image'] = $mainImgUrl;
                 $shopProduct['currency_selprod_price'] = CommonHelper::displayMoneyFormat($shopProduct['selprod_price'], true, false, false);
@@ -3732,7 +3732,7 @@ class MobileAppApiController extends MyAppController
             $brandProducts = $db->fetchAll($prodRs);
 
             foreach ($brandProducts as &$brandProduct) {
-                $mainImgUrl = FatCache::getCachedUrl(CommonHelper::generateFullUrl('image', 'product', array($brandProduct['product_id'], "MEDIUM", $brandProduct['selprod_id'], 0, $this->siteLangId)), CONF_IMG_CACHE_TIME, '.jpg');
+                $mainImgUrl = UrlHelper::getCachedUrl(UrlHelper::generateFullFileUrl('image', 'product', array($brandProduct['product_id'], "MEDIUM", $brandProduct['selprod_id'], 0, $this->siteLangId)), CONF_IMG_CACHE_TIME, '.jpg');
                 $brandProduct['discounted_text'] = CommonHelper::showProductDiscountedText($brandProduct, $this->siteLangId);
                 $brandProduct['product_image'] = $mainImgUrl;
                 $brandProduct['currency_selprod_price'] = CommonHelper::displayMoneyFormat($brandProduct['selprod_price'], true, false, false);
@@ -4320,7 +4320,7 @@ class MobileAppApiController extends MyAppController
 
             $charges = $oObj->getOrderProductChargesArr($order['op_id']);
             $order['charges'] = $charges;
-            $mainImgUrl = FatCache::getCachedUrl(CommonHelper::generateFullUrl('image', 'product', array($order['selprod_product_id'], "MEDIUM", $order['op_selprod_id'], 0, $this->siteLangId)), CONF_IMG_CACHE_TIME, '.jpg');
+            $mainImgUrl = UrlHelper::getCachedUrl(UrlHelper::generateFullFileUrl('image', 'product', array($order['selprod_product_id'], "MEDIUM", $order['op_selprod_id'], 0, $this->siteLangId)), CONF_IMG_CACHE_TIME, '.jpg');
             $order['product_image'] = $mainImgUrl;
             if (in_array($order["op_status_id"], SelProdReview::getBuyerAllowedOrderReviewStatuses()) && FatApp::getConfig("CONF_ALLOW_REVIEWS", FatUtility::VAR_INT, 0)) {
                 $eligible_for_feedback = 1;
@@ -4405,7 +4405,7 @@ class MobileAppApiController extends MyAppController
         $orderShippingCharges = 0;
         foreach ($childOrderDetail as $opID => $val) {
             $childOrderDetail[$opID]['charges'] = $orderDetail['charges'][$opID];
-            $mainImgUrl = FatCache::getCachedUrl(CommonHelper::generateFullUrl('image', 'product', array($val['selprod_product_id'], "MEDIUM", $val['op_selprod_id'], 0, $this->siteLangId)), CONF_IMG_CACHE_TIME, '.jpg');
+            $mainImgUrl = UrlHelper::getCachedUrl(UrlHelper::generateFullFileUrl('image', 'product', array($val['selprod_product_id'], "MEDIUM", $val['op_selprod_id'], 0, $this->siteLangId)), CONF_IMG_CACHE_TIME, '.jpg');
             $childOrderDetail[$opID]['product_image'] = $mainImgUrl;
 
             $childOrder = $childOrderDetail[$opID];
@@ -4914,7 +4914,7 @@ class MobileAppApiController extends MyAppController
         $requests = FatApp::getDb()->fetchAll($rs);
 
         foreach ($requests as &$request) {
-            $mainImgUrl = FatCache::getCachedUrl(CommonHelper::generateFullUrl('image', 'product', array($request['op_selprod_id'], "MEDIUM", $request['selprod_product_id'], 0, $this->siteLangId)), CONF_IMG_CACHE_TIME, '.jpg');
+            $mainImgUrl = UrlHelper::getCachedUrl(UrlHelper::generateFullFileUrl('image', 'product', array($request['op_selprod_id'], "MEDIUM", $request['selprod_product_id'], 0, $this->siteLangId)), CONF_IMG_CACHE_TIME, '.jpg');
             $request['product_image'] = $mainImgUrl;
         }
 
@@ -6072,7 +6072,7 @@ class MobileAppApiController extends MyAppController
         $requests = FatApp::getDb()->fetchAll($rs);
 
         foreach ($requests as &$request) {
-            $mainImgUrl = FatCache::getCachedUrl(CommonHelper::generateFullUrl('image', 'product', array($request['selprod_product_id'], "MEDIUM", $request['op_selprod_id'], 0, $this->siteLangId)), CONF_IMG_CACHE_TIME, '.jpg');
+            $mainImgUrl = UrlHelper::getCachedUrl(UrlHelper::generateFullFileUrl('image', 'product', array($request['selprod_product_id'], "MEDIUM", $request['op_selprod_id'], 0, $this->siteLangId)), CONF_IMG_CACHE_TIME, '.jpg');
             $request['product_image'] = $mainImgUrl;
         }
 

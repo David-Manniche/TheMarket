@@ -24,7 +24,7 @@
         $count=1;
     foreach ($images as $afile_id => $row) {
         ?> <li id="<?php echo $row['afile_id']; ?>"> <img
-            src="<?php echo FatCache::getCachedUrl(CommonHelper::generateUrl('image', 'customProduct', array($row['afile_record_id'], "THUMB", $row['afile_id']), CONF_WEBROOT_URL), CONF_IMG_CACHE_TIME, '.jpg'); ?>"
+            src="<?php echo UrlHelper::getCachedUrl(UrlHelper::generateFileUrl('image', 'customProduct', array($row['afile_record_id'], "THUMB", $row['afile_id']), CONF_WEBROOT_URL), CONF_IMG_CACHE_TIME, '.jpg'); ?>"
             title="<?php echo $row['afile_name']; ?>" alt="<?php echo $row['afile_name']; ?>"> <hr> <a class="deleteLink" href="javascript:void(0);" title="<?php echo Labels::getLabel('LBL_Delete', $siteLangId); ?> <?php echo $row['afile_name']; ?>"
             onclick="deleteCustomProductImage(<?php echo $row['afile_record_id']; ?>, <?php echo $row['afile_id']; ?>);" class="delete"><i class="fa fa-times"></i></a>
         <?php echo ($count == 1) ? '<p><strong>'.Labels::getLabel('LBL_Main_Photo', $siteLangId).'</strong></p>' : '&nbsp;'; ?></i></a> <?php if (!empty($imgTypesArr[$row['afile_record_subid']])) {

@@ -31,15 +31,15 @@ if (!empty($category['banner'])) {
         switch ($slideScreen['afile_screen']) {
             case applicationConstants::SCREEN_MOBILE:
 				$fileRow = CommonHelper::getImageAttributes(AttachedFile::FILETYPE_CATEGORY_BANNER, $category['prodcat_id'], 0, 0, applicationConstants::SCREEN_MOBILE);
-                $mobile_url = '<736:' .FatCache::getCachedUrl(CommonHelper::generateUrl('Category', 'Banner', array($category['prodcat_id'], $siteLangId, 'MOBILE', applicationConstants::SCREEN_MOBILE)).$uploadedTime, CONF_IMG_CACHE_TIME, '.jpg').",";
+                $mobile_url = '<736:' .UrlHelper::getCachedUrl(UrlHelper::generateFileUrl('Category', 'Banner', array($category['prodcat_id'], $siteLangId, 'MOBILE', applicationConstants::SCREEN_MOBILE)).$uploadedTime, CONF_IMG_CACHE_TIME, '.jpg').",";
                 break;
             case applicationConstants::SCREEN_IPAD:
 				$fileRow = CommonHelper::getImageAttributes(AttachedFile::FILETYPE_CATEGORY_BANNER, $category['prodcat_id'], 0, 0, applicationConstants::SCREEN_IPAD);
-				$tablet_url = ' >768:' .FatCache::getCachedUrl(CommonHelper::generateUrl('Category', 'Banner', array($category['prodcat_id'], $siteLangId, 'TABLET', applicationConstants::SCREEN_IPAD)).$uploadedTime, CONF_IMG_CACHE_TIME, '.jpg').",";
+				$tablet_url = ' >768:' .UrlHelper::getCachedUrl(UrlHelper::generateFileUrl('Category', 'Banner', array($category['prodcat_id'], $siteLangId, 'TABLET', applicationConstants::SCREEN_IPAD)).$uploadedTime, CONF_IMG_CACHE_TIME, '.jpg').",";
                 break;
             case applicationConstants::SCREEN_DESKTOP:
 				$fileRow = CommonHelper::getImageAttributes(AttachedFile::FILETYPE_CATEGORY_BANNER, $category['prodcat_id'], 0, 0, applicationConstants::SCREEN_DESKTOP);
-                $desktop_url = ' >1025:' .FatCache::getCachedUrl(CommonHelper::generateUrl('Category', 'Banner', array($category['prodcat_id'], $siteLangId, 'DESKTOP', applicationConstants::SCREEN_DESKTOP)).$uploadedTime, CONF_IMG_CACHE_TIME, '.jpg').",";
+                $desktop_url = ' >1025:' .UrlHelper::getCachedUrl(UrlHelper::generateFileUrl('Category', 'Banner', array($category['prodcat_id'], $siteLangId, 'DESKTOP', applicationConstants::SCREEN_DESKTOP)).$uploadedTime, CONF_IMG_CACHE_TIME, '.jpg').",";
                 break;
             } ?>
     <?php } ?>
@@ -60,13 +60,13 @@ if (array_key_exists('brand_id', $postedData) && $postedData['brand_id'] > 0) {
             $uploadedTime = AttachedFile::setTimeParam($slideScreen['afile_updated_at']);
             switch ($slideScreen['afile_screen']) {
                 case applicationConstants::SCREEN_MOBILE:
-                    $mobile_url = '<736:' .FatCache::getCachedUrl(CommonHelper::generateUrl('Image', 'BrandImage', array($postedData['brand_id'], $siteLangId, 'MOBILE', 0, applicationConstants::SCREEN_MOBILE)).$uploadedTime, CONF_IMG_CACHE_TIME, '.jpg').",";
+                    $mobile_url = '<736:' .UrlHelper::getCachedUrl(UrlHelper::generateFileUrl('Image', 'BrandImage', array($postedData['brand_id'], $siteLangId, 'MOBILE', 0, applicationConstants::SCREEN_MOBILE)).$uploadedTime, CONF_IMG_CACHE_TIME, '.jpg').",";
                     break;
                 case applicationConstants::SCREEN_IPAD:
-                    $tablet_url = ' >768:' .FatCache::getCachedUrl(CommonHelper::generateUrl('Image', 'BrandImage', array($postedData['brand_id'], $siteLangId, 'TABLET', 0, applicationConstants::SCREEN_IPAD)).$uploadedTime, CONF_IMG_CACHE_TIME, '.jpg').",";
+                    $tablet_url = ' >768:' .UrlHelper::getCachedUrl(UrlHelper::generateFileUrl('Image', 'BrandImage', array($postedData['brand_id'], $siteLangId, 'TABLET', 0, applicationConstants::SCREEN_IPAD)).$uploadedTime, CONF_IMG_CACHE_TIME, '.jpg').",";
                     break;
                 case applicationConstants::SCREEN_DESKTOP:
-                    $desktop_url = ' >1025:' .FatCache::getCachedUrl(CommonHelper::generateUrl('Image', 'BrandImage', array($postedData['brand_id'], $siteLangId, 'DESKTOP', 0, applicationConstants::SCREEN_DESKTOP)).$uploadedTime, CONF_IMG_CACHE_TIME, '.jpg').",";
+                    $desktop_url = ' >1025:' .UrlHelper::getCachedUrl(UrlHelper::generateFileUrl('Image', 'BrandImage', array($postedData['brand_id'], $siteLangId, 'DESKTOP', 0, applicationConstants::SCREEN_DESKTOP)).$uploadedTime, CONF_IMG_CACHE_TIME, '.jpg').",";
                     break;
             }
         } ?>
@@ -210,7 +210,7 @@ if (array_key_exists('brand_id', $postedData) && $postedData['brand_id'] > 0) {
                 <?php if (array_key_exists('brand_id', $postedData) && $postedData['brand_id'] > 0) {
                     ?> <div class="brands-block-wrapper">
                     <div class="brands-block">
-                        <img src="<?php echo FatCache::getCachedUrl(CommonHelper::generateUrl('image', 'brand', array($postedData['brand_id'] , $siteLangId, 'COLLECTION_PAGE')), CONF_IMG_CACHE_TIME, '.jpg'); ?>">
+                        <img src="<?php echo UrlHelper::getCachedUrl(UrlHelper::generateFileUrl('image', 'brand', array($postedData['brand_id'] , $siteLangId, 'COLLECTION_PAGE')), CONF_IMG_CACHE_TIME, '.jpg'); ?>">
                     </div>
                 </div> <?php
                 } ?>

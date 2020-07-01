@@ -51,10 +51,19 @@ class CustomRouter
         }
         define('MOBILE_APP_USER_TYPE', $userType);
 
+        /* Handled CDN url for static contents and 404 for other requests. Specially when mapped on same root directory[*/
+        if (CDN_DOMAIN_URL != '' && (strpos(CDN_DOMAIN_URL, $_SERVER['SERVER_NAME']) !== false)) {
+            if (!UrlHelper::staticContentProvider($controller, $action)) {
+                $action = 'error404';
+                return;
+            }
+        }
+        /* ]*/
+
         if (defined('SYSTEM_FRONT') && SYSTEM_FRONT === true/*  && !FatUtility::isAjaxCall() */) {
             $url = urldecode($_SERVER['REQUEST_URI']);
             
-            if (strpos($url, "index.php?url=") !== false || UrlRewrite::staticContentProvider($controller, $action) == true) {
+            if (strpos($url, "index.php?url=") !== false || UrlHelper::staticContentProvider($controller, $action) == true) {
                 return ;
             }
 

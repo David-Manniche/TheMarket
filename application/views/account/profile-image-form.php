@@ -8,7 +8,7 @@
             $userImgUpdatedOn = User::getAttributesById($userId, 'user_updated_on');
             $uploadedTime = AttachedFile::setTimeParam($userImgUpdatedOn);
 
-            $profileImg = FatCache::getCachedUrl(CommonHelper::generateUrl('Image', 'user', array($userId,'thumb',true)).$uploadedTime, CONF_IMG_CACHE_TIME, '.jpg');
+            $profileImg = UrlHelper::getCachedUrl(UrlHelper::generateFileUrl('Image', 'user', array($userId,'thumb',true)).$uploadedTime, CONF_IMG_CACHE_TIME, '.jpg');
         ?>
         <img src="<?php echo $profileImg;?>" alt="<?php echo Labels::getLabel('LBL_Profile_Image', $siteLangId);?>">
         <!--img src="<?php /* echo CommonHelper::generateUrl('Account','userProfileImage',array(UserAuthentication::getLoggedUserId(),'croped',true));?>" alt="<?php echo Labels::getLabel('LBL_Profile_Image', $siteLangId); */?>"-->

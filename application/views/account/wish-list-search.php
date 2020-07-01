@@ -39,7 +39,7 @@
                     } ?>
                                 <a href="<?php echo $productUrl; ?>"
                                     class="item__pic">
-                                    <img src="<?php echo FatCache::getCachedUrl(CommonHelper::generateUrl('image', 'product', array($product['product_id'], "THUMB", $product['selprod_id'], 0, $siteLangId ), CONF_WEBROOT_URL), CONF_IMG_CACHE_TIME, '.jpg'); ?>"
+                                    <img src="<?php echo UrlHelper::getCachedUrl(UrlHelper::generateFileUrl('image', 'product', array($product['product_id'], "THUMB", $product['selprod_id'], 0, $siteLangId ), CONF_WEBROOT_URL), CONF_IMG_CACHE_TIME, '.jpg'); ?>"
                                         title="<?php echo $product['product_name']; ?>"
                                         alt="<?php echo $product['product_name']; ?>">
                                 </a>

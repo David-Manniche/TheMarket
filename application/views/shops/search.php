@@ -13,7 +13,7 @@ foreach($allShops as $shop){ /* CommonHelper::printArray($shop); die; */ ?>
                         $fileData = AttachedFile::getAttachment(AttachedFile::FILETYPE_SHOP_LOGO, $shop['shop_id'], 0, 0, false);
                         $aspectRatioArr = AttachedFile::getRatioTypeArray($siteLangId);
                         ?>
-                        <img <?php if ($fileData['afile_aspect_ratio'] > 0) { ?> data-ratio= "<?php echo $aspectRatioArr[$fileData['afile_aspect_ratio']]; ?>" <?php } ?> src="<?php echo FatCache::getCachedUrl(CommonHelper::generateUrl('image','shopLogo', array($shop['shop_id'], $siteLangId, "THUMB", 0, false),CONF_WEBROOT_URL), CONF_IMG_CACHE_TIME, '.jpg'); ?>" alt="<?php echo $shop['shop_name']; ?>">
+                        <img <?php if ($fileData['afile_aspect_ratio'] > 0) { ?> data-ratio= "<?php echo $aspectRatioArr[$fileData['afile_aspect_ratio']]; ?>" <?php } ?> src="<?php echo UrlHelper::getCachedUrl(UrlHelper::generateFileUrl('image','shopLogo', array($shop['shop_id'], $siteLangId, "THUMB", 0, false),CONF_WEBROOT_URL), CONF_IMG_CACHE_TIME, '.jpg'); ?>" alt="<?php echo $shop['shop_name']; ?>">
                     </div>
                     <div class="ftshops_detail">
                         <div class="ftshops_name"><a href="<?php echo CommonHelper::generateUrl('shops','view', array($shop['shop_id'])); ?>"><?php echo $shop['shop_name'];?></a></div>
@@ -79,7 +79,7 @@ foreach($allShops as $shop){ /* CommonHelper::printArray($shop); die; */ ?>
 					<ul class="listing--items">
 						<?php if(!empty($val['products'])){
 							foreach($val['products'] as $product){ ?>
-							<li><a class="item__pic" target='_blank' href="<?php echo CommonHelper::generateUrl('Products','View',array($product['selprod_id'])); ?>"><img alt="<?php echo $product['product_name'];?>" src="<?php echo FatCache::getCachedUrl(CommonHelper::generateUrl('image','product', array($product['product_id'], "SMALL", $product['selprod_id'], 0, $siteLangId),CONF_WEBROOT_URL), CONF_IMG_CACHE_TIME, '.jpg'); ?>"></a></li>
+							<li><a class="item__pic" target='_blank' href="<?php echo CommonHelper::generateUrl('Products','View',array($product['selprod_id'])); ?>"><img alt="<?php echo $product['product_name'];?>" src="<?php echo UrlHelper::getCachedUrl(UrlHelper::generateFileUrl('image','product', array($product['product_id'], "SMALL", $product['selprod_id'], 0, $siteLangId),CONF_WEBROOT_URL), CONF_IMG_CACHE_TIME, '.jpg'); ?>"></a></li>
 						<?php }
 						} ?>
 						<li><a target='_blank' href="<?php echo CommonHelper::generateUrl('shops','view',array($val['shop_id']));?>" class="item__link"><span><?php echo str_replace('{n}', $val['totalProducts'], Labels::getLabel('LBL_View_{n}_Product(s)', $siteLangId)); ?></span></a></li>

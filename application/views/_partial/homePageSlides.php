@@ -16,14 +16,14 @@
 					$uploadedTime = AttachedFile::setTimeParam($slideScreen['afile_updated_at']);
 					switch($slideScreen['afile_screen']){
 						case applicationConstants::SCREEN_MOBILE:
-							$mobile_url = FatCache::getCachedUrl(CommonHelper::generateUrl('Image','slide',array($slide['slide_id'], applicationConstants::SCREEN_MOBILE, $siteLangId, 'MOBILE')).$uploadedTime,CONF_IMG_CACHE_TIME, '.jpg').",";
+							$mobile_url = UrlHelper::getCachedUrl(UrlHelper::generateFileUrl('Image','slide',array($slide['slide_id'], applicationConstants::SCREEN_MOBILE, $siteLangId, 'MOBILE')).$uploadedTime,CONF_IMG_CACHE_TIME, '.jpg').",";
 							break;
 						case applicationConstants::SCREEN_IPAD:
-							$tablet_url = FatCache::getCachedUrl(CommonHelper::generateUrl('Image','slide',array($slide['slide_id'], applicationConstants::SCREEN_IPAD, $siteLangId, 'TABLET')).$uploadedTime,
+							$tablet_url = UrlHelper::getCachedUrl(UrlHelper::generateFileUrl('Image','slide',array($slide['slide_id'], applicationConstants::SCREEN_IPAD, $siteLangId, 'TABLET')).$uploadedTime,
 							CONF_IMG_CACHE_TIME, '.jpg').",";
 							break;
 						case applicationConstants::SCREEN_DESKTOP:
-							$defaultUrl =  FatCache::getCachedUrl(CommonHelper::generateUrl('Image','slide',array($slide['slide_id'], applicationConstants::SCREEN_DESKTOP, $siteLangId, 'DESKTOP')).$uploadedTime,CONF_IMG_CACHE_TIME, '.jpg');
+							$defaultUrl =  UrlHelper::getCachedUrl(UrlHelper::generateFileUrl('Image','slide',array($slide['slide_id'], applicationConstants::SCREEN_DESKTOP, $siteLangId, 'DESKTOP')).$uploadedTime,CONF_IMG_CACHE_TIME, '.jpg');
 							$desktop_url = $defaultUrl.",";
 							break;
 					}
@@ -31,7 +31,7 @@
 			}
 
 			if($defaultUrl == ''){
-				$defaultUrl = FatCache::getCachedUrl(CommonHelper::generateUrl('Image','slide',array($slide['slide_id'], applicationConstants::SCREEN_DESKTOP, $siteLangId, 'DESKTOP')),CONF_IMG_CACHE_TIME, '.jpg');
+				$defaultUrl = UrlHelper::getCachedUrl(UrlHelper::generateFileUrl('Image','slide',array($slide['slide_id'], applicationConstants::SCREEN_DESKTOP, $siteLangId, 'DESKTOP')),CONF_IMG_CACHE_TIME, '.jpg');
 			}
 
 			$out = '<div class="hero-item">';

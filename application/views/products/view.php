@@ -24,24 +24,24 @@ $buyQuantity->addFieldTagAttribute('data-page', 'product-view');
                                 <div class="slider-for" dir="<?php echo CommonHelper::getLayoutDirection();?>" id="slider-for">
                                     <?php if ($productImagesArr) { ?>
                                         <?php foreach ($productImagesArr as $afile_id => $image) {
-                                            $originalImgUrl = FatCache::getCachedUrl(CommonHelper::generateUrl('Image', 'product', array($product['product_id'], 'ORIGINAL', 0, $image['afile_id'] )), CONF_IMG_CACHE_TIME, '.jpg');
-                                            $mainImgUrl = FatCache::getCachedUrl(CommonHelper::generateUrl('Image', 'product', array($product['product_id'], 'MEDIUM', 0, $image['afile_id'] )), CONF_IMG_CACHE_TIME, '.jpg');
-                                            $thumbImgUrl = FatCache::getCachedUrl(CommonHelper::generateUrl('Image', 'product', array($product['product_id'], 'THUMB', 0, $image['afile_id'] )), CONF_IMG_CACHE_TIME, '.jpg'); ?>
+                                            $originalImgUrl = UrlHelper::getCachedUrl(UrlHelper::generateFileUrl('Image', 'product', array($product['product_id'], 'ORIGINAL', 0, $image['afile_id'] )), CONF_IMG_CACHE_TIME, '.jpg');
+                                            $mainImgUrl = UrlHelper::getCachedUrl(UrlHelper::generateFileUrl('Image', 'product', array($product['product_id'], 'MEDIUM', 0, $image['afile_id'] )), CONF_IMG_CACHE_TIME, '.jpg');
+                                            $thumbImgUrl = UrlHelper::getCachedUrl(UrlHelper::generateFileUrl('Image', 'product', array($product['product_id'], 'THUMB', 0, $image['afile_id'] )), CONF_IMG_CACHE_TIME, '.jpg'); ?>
                                             <img class="xzoom active" id="xzoom-default" src="<?php echo $mainImgUrl; ?>" xoriginal="<?php echo $originalImgUrl; ?>">
                                             <?php break;
                                         } ?>
                                     <?php } else {
-                                        $mainImgUrl = FatCache::getCachedUrl(CommonHelper::generateUrl('Image', 'product', array(0, 'MEDIUM', 0 )), CONF_IMG_CACHE_TIME, '.jpg');
-                                        $originalImgUrl = FatCache::getCachedUrl(CommonHelper::generateUrl('Image', 'product', array(0, 'ORIGINAL', 0 )), CONF_IMG_CACHE_TIME, '.jpg'); ?>
+                                        $mainImgUrl = UrlHelper::getCachedUrl(UrlHelper::generateFileUrl('Image', 'product', array(0, 'MEDIUM', 0 )), CONF_IMG_CACHE_TIME, '.jpg');
+                                        $originalImgUrl = UrlHelper::getCachedUrl(UrlHelper::generateFileUrl('Image', 'product', array(0, 'ORIGINAL', 0 )), CONF_IMG_CACHE_TIME, '.jpg'); ?>
                                     <img class="xzoom" src="<?php echo $mainImgUrl; ?>" xoriginal="<?php echo $originalImgUrl; ?>">
                                     <?php } ?>
                                 </div>
                                 <?php if ($productImagesArr) { ?>
                                 <div class="slider-nav xzoom-thumbs" dir="<?php echo CommonHelper::getLayoutDirection();?>" id="slider-nav">
                                     <?php foreach ($productImagesArr as $afile_id => $image) {
-                                        $originalImgUrl = FatCache::getCachedUrl(CommonHelper::generateUrl('Image', 'product', array($product['product_id'], 'ORIGINAL', 0, $image['afile_id'] )), CONF_IMG_CACHE_TIME, '.jpg');
-                                        $mainImgUrl = FatCache::getCachedUrl(CommonHelper::generateUrl('Image', 'product', array($product['product_id'], 'MEDIUM', 0, $image['afile_id'] )), CONF_IMG_CACHE_TIME, '.jpg');
-                                        /* $thumbImgUrl = FatCache::getCachedUrl(CommonHelper::generateUrl('Image', 'product', array($product['product_id'], 'THUMB', 0, $image['afile_id']) ), CONF_IMG_CACHE_TIME, '.jpg'); */ ?>
+                                        $originalImgUrl = UrlHelper::getCachedUrl(UrlHelper::generateFileUrl('Image', 'product', array($product['product_id'], 'ORIGINAL', 0, $image['afile_id'] )), CONF_IMG_CACHE_TIME, '.jpg');
+                                        $mainImgUrl = UrlHelper::getCachedUrl(UrlHelper::generateFileUrl('Image', 'product', array($product['product_id'], 'MEDIUM', 0, $image['afile_id'] )), CONF_IMG_CACHE_TIME, '.jpg');
+                                        /* $thumbImgUrl = UrlHelper::getCachedUrl(UrlHelper::generateFileUrl('Image', 'product', array($product['product_id'], 'THUMB', 0, $image['afile_id']) ), CONF_IMG_CACHE_TIME, '.jpg'); */ ?>
                                     <div class="thumb"><a href="<?php echo $originalImgUrl; ?>"><img class="xzoom-gallery" width="80" src="<?php echo $mainImgUrl; ?>"></a></div>
                                     <?php } ?>
                                 </div>
@@ -371,7 +371,7 @@ $buyQuantity->addFieldTagAttribute('data-page', 'product-view');
                                             <tr>
                                                 <td class="<?php echo $cancelClass; ?>">
                                                     <figure class="item__pic"><a title="<?php echo $usproduct['selprod_title']; ?>" href="<?php echo CommonHelper::generateUrl('products', 'view', array($usproduct['selprod_id']))?>"><img
-                                                                src="<?php echo FatCache::getCachedUrl(CommonHelper::generateUrl('Image', 'product', array($usproduct['product_id'], 'MINI', $usproduct['selprod_id'] )), CONF_IMG_CACHE_TIME, '.jpg'); ?>"
+                                                                src="<?php echo UrlHelper::getCachedUrl(UrlHelper::generateFileUrl('Image', 'product', array($usproduct['product_id'], 'MINI', $usproduct['selprod_id'] )), CONF_IMG_CACHE_TIME, '.jpg'); ?>"
                                                                 alt="<?php echo $usproduct['product_identifier']; ?>"> </a></figure>
                                                 </td>
                                                 <td class="<?php echo $cancelClass; ?>">
@@ -734,7 +734,7 @@ $buyQuantity->addFieldTagAttribute('data-page', 'product-view');
 		},
 		"description": "<?php echo CommonHelper::renderHtml($product['product_description']);?>",
 		"name": "<?php echo $product['selprod_title'];?>",
-		"image": "<?php echo FatCache::getCachedUrl(CommonHelper::generateFullUrl('Image', 'product', array($product['product_id'], 'THUMB', 0, $image['afile_id'] )), CONF_IMG_CACHE_TIME, '.jpg');?>",
+		"image": "<?php echo UrlHelper::getCachedUrl(UrlHelper::generateFullFileUrl('Image', 'product', array($product['product_id'], 'THUMB', 0, $image['afile_id'] )), CONF_IMG_CACHE_TIME, '.jpg');?>",
 		"offers": {
 			"@type": "Offer",
 			"availability": "http://schema.org/InStock",

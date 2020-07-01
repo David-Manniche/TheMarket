@@ -13,7 +13,7 @@
                     </a>
                 </div>
             </div>
-            <div class="featured_logo mt-2 mb-3"><img src="<?php echo FatCache::getCachedUrl(CommonHelper::generateUrl('image','shopLogo', array($shop['shop_id'], $siteLangId, "THUMB", 0, false),CONF_WEBROOT_URL), CONF_IMG_CACHE_TIME, '.jpg'); ?>" alt="<?php echo $shop['shop_name']; ?>"></div>
+            <div class="featured_logo mt-2 mb-3"><img src="<?php echo UrlHelper::getCachedUrl(UrlHelper::generateFileUrl('image','shopLogo', array($shop['shop_id'], $siteLangId, "THUMB", 0, false),CONF_WEBROOT_URL), CONF_IMG_CACHE_TIME, '.jpg'); ?>" alt="<?php echo $shop['shop_name']; ?>"></div>
             <div class="featured_detail">
                  <div class="featured_name"><a href="<?php echo CommonHelper::generateUrl('shops','view', array($shop['shop_id']));?>"><?php echo $shop['shop_name'];?></a></div>
                  <div class="featured_location"><?php echo $shop['state_name'];?><?php echo ($shop['country_name'] && $shop['state_name'])?', ':'';?><?php echo $shop['country_name'];?></div>

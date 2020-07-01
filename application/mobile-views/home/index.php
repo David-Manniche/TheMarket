@@ -2,7 +2,7 @@
 
 foreach ($slides as $index => $slideDetail) {
     $uploadedTime = AttachedFile::setTimeParam($slideDetail['slide_img_updated_on']);
-    $slides[$index]['slide_image_url'] = FatCache::getCachedUrl(CommonHelper::generateFullUrl('Image', 'slide', array($slideDetail['slide_id'], applicationConstants::SCREEN_MOBILE, $siteLangId, 'MOBILE')).$uploadedTime, CONF_IMG_CACHE_TIME, '.jpg');
+    $slides[$index]['slide_image_url'] = UrlHelper::getCachedUrl(UrlHelper::generateFullFileUrl('Image', 'slide', array($slideDetail['slide_id'], applicationConstants::SCREEN_MOBILE, $siteLangId, 'MOBILE')).$uploadedTime, CONF_IMG_CACHE_TIME, '.jpg');
     $urlTypeData = CommonHelper::getUrlTypeData($slideDetail['slide_url']);
     $slides[$index]['slide_url'] = ($urlTypeData['urlType'] == applicationConstants::URL_TYPE_EXTERNAL ? $slideDetail['slide_url'] : $urlTypeData['recordId']);
     $slides[$index]['slide_url_type'] = $urlTypeData['urlType'];
@@ -24,14 +24,14 @@ foreach ($slides as $index => $slideDetail) {
 }
 foreach ($sponsoredProds as $index => $product) {
     $uploadedTime = AttachedFile::setTimeParam($product['product_updated_on']);
-    $sponsoredProds[$index]['product_image_url'] = FatCache::getCachedUrl(CommonHelper::generateFullUrl('image', 'product', array($product['product_id'], "CLAYOUT3", $product['selprod_id'], 0, $siteLangId)).$uploadedTime, CONF_IMG_CACHE_TIME, '.jpg');
+    $sponsoredProds[$index]['product_image_url'] = UrlHelper::getCachedUrl(UrlHelper::generateFullFileUrl('image', 'product', array($product['product_id'], "CLAYOUT3", $product['selprod_id'], 0, $siteLangId)).$uploadedTime, CONF_IMG_CACHE_TIME, '.jpg');
     $sponsoredProds[$index]['selprod_price'] = CommonHelper::displayMoneyFormat($product['selprod_price'], false, false, false);
     $sponsoredProds[$index]['theprice'] = CommonHelper::displayMoneyFormat($product['theprice'], false, false, false);
 }
 foreach ($sponsoredShops as $shopIndex => $shopData) {
     foreach ($shopData["products"] as $index => $shopProduct) {
         $uploadedTime = AttachedFile::setTimeParam($shopProduct['product_updated_on']);
-        $sponsoredShops[$shopIndex]['products'][$index]['product_image_url'] = FatCache::getCachedUrl(CommonHelper::generateFullUrl('image', 'product', array($shopProduct['product_id'], "CLAYOUT3", $shopProduct['selprod_id'], 0, $siteLangId)).$uploadedTime, CONF_IMG_CACHE_TIME, '.jpg');
+        $sponsoredShops[$shopIndex]['products'][$index]['product_image_url'] = UrlHelper::getCachedUrl(UrlHelper::generateFullFileUrl('image', 'product', array($shopProduct['product_id'], "CLAYOUT3", $shopProduct['selprod_id'], 0, $siteLangId)).$uploadedTime, CONF_IMG_CACHE_TIME, '.jpg');
         $sponsoredShops[$shopIndex]['products'][$index]['selprod_price'] = CommonHelper::displayMoneyFormat($shopProduct['selprod_price'], false, false, false);
         $sponsoredShops[$shopIndex]['products'][$index]['theprice'] = CommonHelper::displayMoneyFormat($shopProduct['theprice'], false, false, false);
     }
@@ -40,7 +40,7 @@ foreach ($collections as $collectionIndex => $collectionData) {
     if (array_key_exists('products', $collectionData)) {
         foreach ($collectionData['products'] as $index => $product) {
             $uploadedTime = AttachedFile::setTimeParam($product['product_updated_on']);
-            $collections[$collectionIndex]['products'][$index]['product_image_url'] = FatCache::getCachedUrl(CommonHelper::generateFullUrl('image', 'product', array($product['product_id'], "CLAYOUT3", $product['selprod_id'], 0, $siteLangId)).$uploadedTime, CONF_IMG_CACHE_TIME, '.jpg');
+            $collections[$collectionIndex]['products'][$index]['product_image_url'] = UrlHelper::getCachedUrl(UrlHelper::generateFullFileUrl('image', 'product', array($product['product_id'], "CLAYOUT3", $product['selprod_id'], 0, $siteLangId)).$uploadedTime, CONF_IMG_CACHE_TIME, '.jpg');
             $collections[$collectionIndex]['products'][$index]['selprod_price'] = CommonHelper::displayMoneyFormat($product['selprod_price'], false, false, false);
             $collections[$collectionIndex]['products'][$index]['theprice'] = CommonHelper::displayMoneyFormat($product['theprice'], false, false, false);
         }
@@ -51,16 +51,16 @@ foreach ($collections as $collectionIndex => $collectionData) {
             $collections[$collectionIndex]['categories'][$index]['prodcat_name'] = html_entity_decode($category['prodcat_name'], ENT_QUOTES, 'utf-8');
             $collections[$collectionIndex]['categories'][$index]['prodcat_description'] = strip_tags(html_entity_decode($category['prodcat_description'], ENT_QUOTES, 'utf-8'));
 
-            $collections[$collectionIndex]['categories'][$index]['category_image_url'] = FatCache::getCachedUrl(CommonHelper::generateFullUrl('Category', 'banner', array($category['prodcat_id'] , $siteLangId, 'MOBILE', applicationConstants::SCREEN_MOBILE)).$uploadedTime, CONF_IMG_CACHE_TIME, '.jpg');
+            $collections[$collectionIndex]['categories'][$index]['category_image_url'] = UrlHelper::getCachedUrl(UrlHelper::generateFullFileUrl('Category', 'banner', array($category['prodcat_id'] , $siteLangId, 'MOBILE', applicationConstants::SCREEN_MOBILE)).$uploadedTime, CONF_IMG_CACHE_TIME, '.jpg');
         }
     } elseif (array_key_exists('shops', $collectionData)) {
         foreach ($collectionData['shops'] as $index => $shop) {
-            $collections[$collectionIndex]['shops'][$index]['shop_logo'] = FatCache::getCachedUrl(CommonHelper::generateFullUrl('image', 'shopLogo', array($shop['shop_id'], $siteLangId)), CONF_IMG_CACHE_TIME, '.jpg');
-            $collections[$collectionIndex]['shops'][$index]['shop_banner'] = FatCache::getCachedUrl(CommonHelper::generateFullUrl('image', 'shopBanner', array($shop['shop_id'], $siteLangId, 'MOBILE', 0, applicationConstants::SCREEN_MOBILE)), CONF_IMG_CACHE_TIME, '.jpg');
+            $collections[$collectionIndex]['shops'][$index]['shop_logo'] = UrlHelper::getCachedUrl(UrlHelper::generateFullFileUrl('image', 'shopLogo', array($shop['shop_id'], $siteLangId)), CONF_IMG_CACHE_TIME, '.jpg');
+            $collections[$collectionIndex]['shops'][$index]['shop_banner'] = UrlHelper::getCachedUrl(UrlHelper::generateFullFileUrl('image', 'shopBanner', array($shop['shop_id'], $siteLangId, 'MOBILE', 0, applicationConstants::SCREEN_MOBILE)), CONF_IMG_CACHE_TIME, '.jpg');
         }
     } elseif (array_key_exists('brands', $collectionData)) {
         foreach ($collectionData['brands'] as $index => $shop) {
-            $collections[$collectionIndex]['brands'][$index]['brand_image'] = FatCache::getCachedUrl(CommonHelper::generateFullUrl('image', 'brand', array($shop['brand_id'], $siteLangId)), CONF_IMG_CACHE_TIME, '.jpg');
+            $collections[$collectionIndex]['brands'][$index]['brand_image'] = UrlHelper::getCachedUrl(UrlHelper::generateFullFileUrl('image', 'brand', array($shop['brand_id'], $siteLangId)), CONF_IMG_CACHE_TIME, '.jpg');
         }
     }
 }
@@ -83,16 +83,16 @@ foreach ($banners as $location => $bannerLocationDetail) {
 
         switch ($bannerDetail['banner_blocation_id']) {
             case BannerLocation::HOME_PAGE_TOP_BANNER:
-                $bannerUrl = FatCache::getCachedUrl(CommonHelper::generateFullUrl('Banner', 'HomePageBannerTopLayout', array($bannerDetail['banner_id'], $siteLangId, applicationConstants::SCREEN_MOBILE)).$uploadedTime, CONF_IMG_CACHE_TIME, '.jpg');
+                $bannerUrl = UrlHelper::getCachedUrl(UrlHelper::generateFullFileUrl('Banner', 'HomePageBannerTopLayout', array($bannerDetail['banner_id'], $siteLangId, applicationConstants::SCREEN_MOBILE)).$uploadedTime, CONF_IMG_CACHE_TIME, '.jpg');
                 break;
             case BannerLocation::HOME_PAGE_MIDDLE_BANNER:
-                $bannerUrl = FatCache::getCachedUrl(CommonHelper::generateFullUrl('Banner', 'HomePageBannerMiddleLayout', array($bannerDetail['banner_id'], $siteLangId, applicationConstants::SCREEN_MOBILE)).$uploadedTime, CONF_IMG_CACHE_TIME, '.jpg');
+                $bannerUrl = UrlHelper::getCachedUrl(UrlHelper::generateFullFileUrl('Banner', 'HomePageBannerMiddleLayout', array($bannerDetail['banner_id'], $siteLangId, applicationConstants::SCREEN_MOBILE)).$uploadedTime, CONF_IMG_CACHE_TIME, '.jpg');
                 break;
             case BannerLocation::HOME_PAGE_BOTTOM_BANNER:
-                $bannerUrl = FatCache::getCachedUrl(CommonHelper::generateFullUrl('Banner', 'HomePageBannerBottomLayout', array($bannerDetail['banner_id'], $siteLangId, applicationConstants::SCREEN_MOBILE)).$uploadedTime, CONF_IMG_CACHE_TIME, '.jpg');
+                $bannerUrl = UrlHelper::getCachedUrl(UrlHelper::generateFullFileUrl('Banner', 'HomePageBannerBottomLayout', array($bannerDetail['banner_id'], $siteLangId, applicationConstants::SCREEN_MOBILE)).$uploadedTime, CONF_IMG_CACHE_TIME, '.jpg');
                 break;
             default:
-                $bannerUrl = FatCache::getCachedUrl(CommonHelper::generateFullUrl('Banner', 'showOriginalBanner', array($bannerDetail['banner_id'], $siteLangId)).$uploadedTime, CONF_IMG_CACHE_TIME, '.jpg');
+                $bannerUrl = UrlHelper::getCachedUrl(UrlHelper::generateFullFileUrl('Banner', 'showOriginalBanner', array($bannerDetail['banner_id'], $siteLangId)).$uploadedTime, CONF_IMG_CACHE_TIME, '.jpg');
                 break;
         }
 

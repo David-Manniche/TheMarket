@@ -3,8 +3,10 @@ $productFrm->setFormTagAttribute('class', 'web_form mt-5');
 $productFrm->setFormTagAttribute('onsubmit', 'setUpProduct(this); return(false);');
 
 $fld = $productFrm->getField('auto_update_other_langs_data');
-$fld->developerTags['cbLabelAttributes'] = array('class' => 'checkbox');
-$fld->developerTags['cbHtmlAfterCheckbox'] = '<i class="input-helper"></i>';
+if (null != $fld){
+    $fld->developerTags['cbLabelAttributes'] = array('class' => 'checkbox');
+    $fld->developerTags['cbHtmlAfterCheckbox'] = '<i class="input-helper"></i>';
+}
 
 $btnDiscardFld = $productFrm->getField('btn_discard');
 if($prodCatId > 0){
