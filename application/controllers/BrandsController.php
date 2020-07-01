@@ -54,13 +54,13 @@ class BrandsController extends MyAppController
                 $brandProducts = $db->fetchAll($prodRs);
 
                 foreach ($brandProducts as &$brandProduct) {
-                    $mainImgUrl = FatCache::getCachedUrl(CommonHelper::generateFullUrl('image', 'product', array($brandProduct['product_id'], "MEDIUM", $brandProduct['selprod_id'], 0, $this->siteLangId)), CONF_IMG_CACHE_TIME, '.jpg');
+                    $mainImgUrl = UrlHelper::getCachedUrl(UrlHelper::generateFullFileUrl('image', 'product', array($brandProduct['product_id'], "MEDIUM", $brandProduct['selprod_id'], 0, $this->siteLangId)), CONF_IMG_CACHE_TIME, '.jpg');
                     $brandProduct['discounted_text'] = CommonHelper::showProductDiscountedText($brandProduct, $this->siteLangId);
                     $brandProduct['product_image'] = $mainImgUrl;
                     $brandProduct['currency_selprod_price'] = CommonHelper::displayMoneyFormat($brandProduct['selprod_price'], true, false, false);
                     $brandProduct['currency_theprice'] = CommonHelper::displayMoneyFormat($brandProduct['theprice'], true, false, false);
                 }
-                $brandsArr[$cnt]['brand_image'] = FatCache::getCachedUrl(CommonHelper::generateFullUrl('image', 'brand', array($val['brand_id'], $this->siteLangId)), CONF_IMG_CACHE_TIME, '.jpg');
+                $brandsArr[$cnt]['brand_image'] = UrlHelper::getCachedUrl(UrlHelper::generateFullFileUrl('image', 'brand', array($val['brand_id'], $this->siteLangId)), CONF_IMG_CACHE_TIME, '.jpg');
                 $brandsArr[$cnt]['products'] = $brandProducts;
                 $brandsArr[$cnt]['totalProducts'] = $prodSrch->recordCount();
                 $cnt++;

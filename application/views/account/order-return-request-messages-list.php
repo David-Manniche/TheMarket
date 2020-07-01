@@ -7,7 +7,7 @@
             $shop_name =' - '.$message['shop_name'];
             $userImgUpdatedOn = Shop::getAttributesById($message['shop_id'], 'shop_updated_on');
             $uploadedTime = AttachedFile::setTimeParam($userImgUpdatedOn);
-            $toImage = FatCache::getCachedUrl(CommonHelper::generateUrl('Image', 'shopLogo', array($message['shop_id'], $siteLangId, 'thumb')).$uploadedTime, CONF_IMG_CACHE_TIME, '.jpg');
+            $toImage = UrlHelper::getCachedUrl(UrlHelper::generateFileUrl('Image', 'shopLogo', array($message['shop_id'], $siteLangId, 'thumb')).$uploadedTime, CONF_IMG_CACHE_TIME, '.jpg');
         } else {
             if($message['orrmsg_from_admin_id']) {
                 $toImage = CommonHelper::generateUrl('Image', 'siteLogo', array( $siteLangId, 'THUMB' ));
@@ -15,7 +15,7 @@
 
                 $userImgUpdatedOn = User::getAttributesById($message['orrmsg_from_user_id'], 'user_updated_on');
                 $uploadedTime = AttachedFile::setTimeParam($userImgUpdatedOn);
-                $toImage = FatCache::getCachedUrl(CommonHelper::generateUrl('Image', 'user', array($message['orrmsg_from_user_id'],'thumb',true)).$uploadedTime, CONF_IMG_CACHE_TIME, '.jpg');
+                $toImage = UrlHelper::getCachedUrl(UrlHelper::generateFileUrl('Image', 'user', array($message['orrmsg_from_user_id'],'thumb',true)).$uploadedTime, CONF_IMG_CACHE_TIME, '.jpg');
             }    
             
         } 

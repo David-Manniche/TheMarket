@@ -33,7 +33,7 @@
             switch ($key) {
                 case 'promotion_image':
                     if ($row['promotion_type']==Promotions::PROMOTE_PRODUCT) {
-                        $td->appendElement('plaintext', array(), '<div class="avtar"><img src="'.FatCache::getCachedUrl(CommonHelper::generateUrl('image', 'product', array($product['promotion_product_id'],'MINI',0,0, $siteLangId)), CONF_IMG_CACHE_TIME, '.jpg').'" alt="'.$row["prod_name"].'"></div>', true);
+                        $td->appendElement('plaintext', array(), '<div class="avtar"><img src="'.UrlHelper::getCachedUrl(UrlHelper::generateFileUrl('image', 'product', array($product['promotion_product_id'],'MINI',0,0, $siteLangId)), CONF_IMG_CACHE_TIME, '.jpg').'" alt="'.$row["prod_name"].'"></div>', true);
                     } elseif ($row['promotion_type'] == Promotions::PROMOTE_SHOP) {
                         $td->appendElement('plaintext', array(), '<div class="avtar"><img src="'.CommonHelper::generateUrl('image', 'shop', array($product['promotion_shop_id'], 'MINI', 0, 0, $siteLangId)).'" alt="'.$row["shop_identifier"].'"></div>', true);
                     } elseif ($row['promotion_type'] == Promotions::PROMOTE_BANNER) {

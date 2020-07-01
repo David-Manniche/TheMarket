@@ -97,46 +97,4 @@ class UrlRewrite extends MyAppModel
 
         return $slug;
     }
-
-    public static function staticContentProvider($controller, $action)
-    {
-
-        if (in_array($controller, array('js-css','image','fonts','images', 'js', 'img', 'innovas','assetmanager'))) {
-            return true;
-        }
-
-        $arr = [
-            'banner' => [
-                'home-page-banner-top-layout',
-                'home-page-banner-middle-layout',
-                'home-page-banner-bottom-layout',
-                'product-detail-page-banner',
-                'thumb',
-                'show-original-banner'
-            ],
-            'category' => [
-                'banner',
-                'seller-banner',
-                'image',
-                'icon',
-                'banner'
-            ],
-            'custom' => [
-                'update-screen-resolution'
-            ],
-            'home' => [
-                'pwa-manifest',
-                'get-url-segments-detail',
-                'splash-screen-data',
-                'get-image',
-                'get-all-sponsored-products'
-            ]
-        ];
-
-        if (array_key_exists($controller, $arr) && in_array($action, $arr[$controller])) {
-            return true;
-        }
-
-        return false;
-    }
 }

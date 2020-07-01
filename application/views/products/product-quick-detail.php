@@ -4,8 +4,8 @@
         <?php if ($productImagesArr) { ?>
         <div class="js-product-gallery product-gallery" dir="<?php echo CommonHelper::getLayoutDirection();?>">
             <?php foreach ($productImagesArr as $afile_id => $image) {
-                $mainImgUrl = FatCache::getCachedUrl(CommonHelper::generateUrl('Image', 'product', array($product['product_id'], 'MEDIUM', 0, $image['afile_id'] )), CONF_IMG_CACHE_TIME, '.jpg');
-                $thumbImgUrl = FatCache::getCachedUrl(CommonHelper::generateUrl('Image', 'product', array($product['product_id'], 'THUMB', 0, $image['afile_id'] )), CONF_IMG_CACHE_TIME, '.jpg'); ?>
+                $mainImgUrl = UrlHelper::getCachedUrl(UrlHelper::generateFileUrl('Image', 'product', array($product['product_id'], 'MEDIUM', 0, $image['afile_id'] )), CONF_IMG_CACHE_TIME, '.jpg');
+                $thumbImgUrl = UrlHelper::getCachedUrl(UrlHelper::generateFileUrl('Image', 'product', array($product['product_id'], 'THUMB', 0, $image['afile_id'] )), CONF_IMG_CACHE_TIME, '.jpg'); ?>
             <div class=""><?php if (isset($imageGallery) && $imageGallery) { ?>
                 <a href="<?php echo $mainImgUrl; ?>" class="gallery" rel="gallery">
                     <?php } ?>
@@ -16,7 +16,7 @@
             <?php }?>
         </div>
         <?php } else {
-                    $mainImgUrl = FatCache::getCachedUrl(CommonHelper::generateUrl('Image', 'product', array(0, 'MEDIUM', 0 )), CONF_IMG_CACHE_TIME, '.jpg'); ?>
+                    $mainImgUrl = UrlHelper::getCachedUrl(UrlHelper::generateFileUrl('Image', 'product', array(0, 'MEDIUM', 0 )), CONF_IMG_CACHE_TIME, '.jpg'); ?>
         <div class="item__main"><img src="<?php echo $mainImgUrl; ?>"></div>
         <?php
                 } ?>

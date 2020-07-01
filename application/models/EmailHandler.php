@@ -2472,7 +2472,7 @@ class EmailHandler extends FatModel
 
             if (!empty($img)) {
                 $uploadedTime = AttachedFile::setTimeParam($img['afile_updated_at']);
-                $imgSrc = FatCache::getCachedUrl(CommonHelper::generateFullUrl('Image', 'SocialPlatform', array($row['splatform_id']), CONF_WEBROOT_FRONT_URL) . $uploadedTime, CONF_IMG_CACHE_TIME, '.jpg');
+                $imgSrc = UrlHelper::getCachedUrl(UrlHelper::generateFullFileUrl('Image', 'SocialPlatform', array($row['splatform_id']), CONF_WEBROOT_FRONT_URL) . $uploadedTime, CONF_IMG_CACHE_TIME, '.jpg');
             } elseif ($row['splatform_icon_class'] != '') {
                 $imgSrc = CommonHelper::generateFullUrl('', '', array(), CONF_WEBROOT_FRONT_URL) . 'images/' . $row['splatform_icon_class'] . '.png';
             }
@@ -2486,7 +2486,7 @@ class EmailHandler extends FatModel
         return array(
         '{website_name}' => FatApp::getConfig('CONF_WEBSITE_NAME_' . $langId),
         '{website_url}' => CommonHelper::generateFullUrl('', '', array(), CONF_WEBROOT_FRONT_URL),
-        '{Company_Logo}' => '<img style="max-width:100%" src="' . FatCache::getCachedUrl(CommonHelper::generateFullUrl('Image', 'emailLogo', array($langId), CONF_WEBROOT_FRONT_URL) . $uploadedTime, CONF_IMG_CACHE_TIME, '.jpg') . '" />',
+        '{Company_Logo}' => '<img style="max-width:100%" src="' . UrlHelper::getCachedUrl(UrlHelper::generateFullFileUrl('Image', 'emailLogo', array($langId), CONF_WEBROOT_FRONT_URL) . $uploadedTime, CONF_IMG_CACHE_TIME, '.jpg') . '" />',
         '{current_date}' => date('M d, Y'),
         '{social_media_icons}' => $social_media_icons,
         '{contact_us_url}' => CommonHelper::generateFullUrl('custom', 'contactUs', array(), CONF_WEBROOT_FRONT_URL),

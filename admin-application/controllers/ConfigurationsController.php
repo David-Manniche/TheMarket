@@ -1671,7 +1671,7 @@ class ConfigurationsController extends AdminBaseController
 
                 if ($fileData = AttachedFile::getAttachment(AttachedFile::FILETYPE_ADMIN_LOGO, 0, 0, $langId)) {
 					$uploadedTime = AttachedFile::setTimeParam($fileData['afile_updated_at']);
-					$image = FatCache::getCachedUrl(CommonHelper::generateFullUrl('Image', 'siteAdminLogo', array($langId)) . $uploadedTime, CONF_IMG_CACHE_TIME, '.jpg');
+					$image = UrlHelper::getCachedUrl(UrlHelper::generateFullFileUrl('Image', 'siteAdminLogo', array($langId)) . $uploadedTime, CONF_IMG_CACHE_TIME, '.jpg');
                     $ul->htmlAfterField .= '<img src="' . $image . '"> <a  class="remove--img" href="javascript:void(0);" onclick="removeSiteAdminLogo(' . $langId . ')" ><i class="ion-close-round"></i></a>';
                 }
 
@@ -1692,7 +1692,7 @@ class ConfigurationsController extends AdminBaseController
 
                 if ($fileData = attachedFile::getAttachment(AttachedFile::FILETYPE_FRONT_LOGO, 0, 0, $langId)) {
 					$uploadedTime = AttachedFile::setTimeParam($fileData['afile_updated_at']);
-					$image = FatCache::getCachedUrl(CommonHelper::generateFullUrl('Image', 'siteLogo', array($langId), CONF_WEBROOT_FRONT_URL) . $uploadedTime, CONF_IMG_CACHE_TIME, '.jpg');
+					$image = UrlHelper::getCachedUrl(UrlHelper::generateFullFileUrl('Image', 'siteLogo', array($langId), CONF_WEBROOT_FRONT_URL) . $uploadedTime, CONF_IMG_CACHE_TIME, '.jpg');
                     $ul->htmlAfterField .= '<img src="' . $image . '"> <a  class="remove--img" href="javascript:void(0);" onclick="removeDesktopLogo(' . $langId . ')" ><i class="ion-close-round"></i></a>';
                 }
 
@@ -1748,7 +1748,7 @@ class ConfigurationsController extends AdminBaseController
 
                 if ($fileData = AttachedFile::getAttachment(AttachedFile::FILETYPE_PAYMENT_PAGE_LOGO, 0, 0, $langId)) {
 					$uploadedTime = AttachedFile::setTimeParam($fileData['afile_updated_at']);
-					$image = FatCache::getCachedUrl(CommonHelper::generateFullUrl('Image', 'paymentPageLogo', array($langId, 'THUMB'), CONF_WEBROOT_FRONT_URL) . $uploadedTime, CONF_IMG_CACHE_TIME, '.jpg');
+					$image = UrlHelper::getCachedUrl(UrlHelper::generateFullFileUrl('Image', 'paymentPageLogo', array($langId, 'THUMB'), CONF_WEBROOT_FRONT_URL) . $uploadedTime, CONF_IMG_CACHE_TIME, '.jpg');
                     $ul->htmlAfterField .= '<img src="' . $image . '"><a  class="remove--img" href="javascript:void(0);" onclick="removePaymentPageLogo(' . $langId . ')" ><i class="ion-close-round"></i></a>';
                 }
 
@@ -1816,7 +1816,7 @@ class ConfigurationsController extends AdminBaseController
 
                 if ($fileData = AttachedFile::getAttachment(AttachedFile::FILETYPE_INVOICE_LOGO, 0, 0, $langId)) {
 					$uploadedTime = AttachedFile::setTimeParam($fileData['afile_updated_at']);
-					$image = FatCache::getCachedUrl(CommonHelper::generateFullUrl('Image', 'invoiceLogo', array($langId, 'THUMB'), CONF_WEBROOT_FRONT_URL) . $uploadedTime, CONF_IMG_CACHE_TIME, '.jpg');
+					$image = UrlHelper::getCachedUrl(UrlHelper::generateFullFileUrl('Image', 'invoiceLogo', array($langId, 'THUMB'), CONF_WEBROOT_FRONT_URL) . $uploadedTime, CONF_IMG_CACHE_TIME, '.jpg');
                     $ul->htmlAfterField .= '<img src="' . $image . '"><a  class="remove--img" href="javascript:void(0);" onclick="removeInvoiceLogo(' . $langId . ')" ><i class="ion-close-round"></i></a>';
                 }
 
