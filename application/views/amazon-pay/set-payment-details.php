@@ -102,13 +102,12 @@ if(isset($amazon) && strlen($orderId) > 0 &&  $orderInfo["order_is_paid"] == Ord
 									}
 									
 								}
-							}else{
-								console.log(data);
+							}else{								
 								logout();
 							}
 						} catch(e) {
 							console.log(e.message);
-							console.log(data);
+							//console.log(data);
 							logout();
 						}
 					});

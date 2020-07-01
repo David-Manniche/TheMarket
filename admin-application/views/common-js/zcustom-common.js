@@ -550,7 +550,6 @@ function googleCaptcha()
 {
     $("body").addClass("captcha");
     var inputObj = $("form input[name='g-recaptcha-response']");
-    console.log(inputObj);
     var submitBtn = inputObj.closest("form").find('input[type="submit"]');
     submitBtn.attr("disabled", "disabled");
     var checkToken = setInterval(function(){

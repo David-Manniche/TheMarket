@@ -4,7 +4,7 @@ foreach ($pnotifications as &$pvalue) {
     $image = '';
     if ($imgData = AttachedFile::getAttachment(AttachedFile::FILETYPE_PUSH_NOTIFICATION_IMAGE, $pvalue['pnotification_id'])) {
         $uploadedTime = AttachedFile::setTimeParam($imgData['afile_updated_at']);
-        $image = FatCache::getCachedUrl(CommonHelper::generateFullUrl('Image', 'pushNotificationImage', [$pvalue['pnotification_id']], CONF_WEBROOT_FRONT_URL) . $uploadedTime, CONF_IMG_CACHE_TIME, '.jpg');
+        $image = UrlHelper::getCachedUrl(UrlHelper::generateFullFileUrl('Image', 'pushNotificationImage', [$pvalue['pnotification_id']], CONF_WEBROOT_FRONT_URL) . $uploadedTime, CONF_IMG_CACHE_TIME, '.jpg');
     }
     $pvalue['image'] = $image;
     $pvalue['urlDetail'] = (object)array();

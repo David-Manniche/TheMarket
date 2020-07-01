@@ -372,7 +372,7 @@ class HomeController extends MyAppController
                 $imgUpdatedOn = Collections::getAttributesById($collection_id, 'collection_img_updated_on');
                 $uploadedTime = AttachedFile::setTimeParam($imgUpdatedOn);
 
-                $collection['collection_image'] = FatCache::getCachedUrl(CommonHelper::generateFullUrl('image', 'collectionReal', array( $collection_id, $langId,  'ORIGINAL', AttachedFile::FILETYPE_COLLECTION_IMAGE)) . $uploadedTime, CONF_IMG_CACHE_TIME, '.jpg');
+                $collection['collection_image'] = UrlHelper::getCachedUrl(UrlHelper::generateFullFileUrl('image', 'collectionReal', array( $collection_id, $langId,  'ORIGINAL', AttachedFile::FILETYPE_COLLECTION_IMAGE)) . $uploadedTime, CONF_IMG_CACHE_TIME, '.jpg');
                 $collections[] = $collection;
                 $i++;
                 continue;
@@ -1040,7 +1040,7 @@ class HomeController extends MyAppController
             );
             
             foreach ($iconsArr as $key => $val) {
-                $iconUrl = FatCache::getCachedUrl(CommonHelper::generateUrl('Image', 'appleTouchIcon', array($this->siteLangId, $val . '-' . $val)), CONF_IMG_CACHE_TIME, '.png');
+                $iconUrl = UrlHelper::getCachedUrl(UrlHelper::generateFullUrl('Image', 'appleTouchIcon', array($this->siteLangId, $val . '-' . $val)), CONF_IMG_CACHE_TIME, '.png');
                 $icons = [
                     'src' => $iconUrl,
                     'sizes' => $val . 'x' . $val,

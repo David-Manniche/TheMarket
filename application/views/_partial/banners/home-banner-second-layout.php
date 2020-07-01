@@ -29,13 +29,13 @@ if (!empty($bannerLayout1['banners']) && $bannerLayout1['blocation_active']) { ?
             $uploadedTime = AttachedFile::setTimeParam($slideScreen['afile_updated_at']);
             switch ($slideScreen['afile_screen']) {
                     case applicationConstants::SCREEN_MOBILE:
-                        $mobile_url = FatCache::getCachedUrl(CommonHelper::generateUrl('Banner', 'HomePageBannerBottomLayout', array($val['banner_id'], $siteLangId, applicationConstants::SCREEN_MOBILE)).$uploadedTime, CONF_IMG_CACHE_TIME, '.jpg').",";
+                        $mobile_url = UrlHelper::getCachedUrl(UrlHelper::generateFileUrl('Banner', 'HomePageBannerBottomLayout', array($val['banner_id'], $siteLangId, applicationConstants::SCREEN_MOBILE)).$uploadedTime, CONF_IMG_CACHE_TIME, '.jpg').",";
                         break;
                     case applicationConstants::SCREEN_IPAD:
-                        $tablet_url = FatCache::getCachedUrl(CommonHelper::generateUrl('Banner', 'HomePageBannerBottomLayout', array($val['banner_id'], $siteLangId, applicationConstants::SCREEN_IPAD)).$uploadedTime).",";
+                        $tablet_url = UrlHelper::getCachedUrl(UrlHelper::generateFileUrl('Banner', 'HomePageBannerBottomLayout', array($val['banner_id'], $siteLangId, applicationConstants::SCREEN_IPAD)).$uploadedTime).",";
                         break;
                     case applicationConstants::SCREEN_DESKTOP:
-                        $defaultImgUrl = FatCache::getCachedUrl(CommonHelper::generateUrl('Banner', 'HomePageBannerBottomLayout', array($val['banner_id'], $siteLangId, applicationConstants::SCREEN_DESKTOP)).$uploadedTime, CONF_IMG_CACHE_TIME, '.jpg');
+                        $defaultImgUrl = UrlHelper::getCachedUrl(UrlHelper::generateFileUrl('Banner', 'HomePageBannerBottomLayout', array($val['banner_id'], $siteLangId, applicationConstants::SCREEN_DESKTOP)).$uploadedTime, CONF_IMG_CACHE_TIME, '.jpg');
                         $desktop_url = $defaultImgUrl.",";
                         break;
                 }

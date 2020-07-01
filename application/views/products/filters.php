@@ -268,7 +268,7 @@ if (isset($prodcat_code)) {
         <div class="widgets-data">
             <ul class="list-vertical">
                 <?php foreach ($conditionsArr as $condition) {
-                if ($condition['selprod_condition'] == 0) {
+                if (empty($condition) || $condition['selprod_condition'] == 0) {
                     continue;
                 } ?>
                 <li><label class="checkbox condition" id="condition_<?php echo $condition['selprod_condition']; ?>"><input value="<?php echo $condition['selprod_condition']; ?>" name="conditions" type="checkbox" <?php if (in_array($condition['selprod_condition'], $conditionsCheckedArr)) {

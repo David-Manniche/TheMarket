@@ -180,7 +180,7 @@
                                                     if (isset($val['plugin_id'])) {
                                                         $fileData = AttachedFile::getAttachment(AttachedFile::FILETYPE_PLUGIN_LOGO, $pmethodId);
                                                         $uploadedTime = AttachedFile::setTimeParam($fileData['afile_updated_at']);
-                                                        $imageUrl = FatCache::getCachedUrl(CommonHelper::generateUrl('Image', 'plugin', array($pmethodId, 'SMALL')) . $uploadedTime, CONF_IMG_CACHE_TIME, '.jpg');
+                                                        $imageUrl = UrlHelper::getCachedUrl(UrlHelper::generateFileUrl('Image', 'plugin', array($pmethodId, 'SMALL')) . $uploadedTime, CONF_IMG_CACHE_TIME, '.jpg');
                                                     } else {
                                                         $fileData = AttachedFile::getAttachment(AttachedFile::FILETYPE_PAYMENT_METHOD, $pmethodId, 0, 0, false);
                                                         $imageUrl = CommonHelper::generateUrl('Image', 'paymentMethod', array($pmethodId,'SMALL'));

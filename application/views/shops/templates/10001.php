@@ -8,13 +8,13 @@ foreach ($catBannerArr as $slideScreen) {
     $uploadedTime = AttachedFile::setTimeParam($slideScreen['afile_updated_at']);
     switch ($slideScreen['afile_screen']) {
         case applicationConstants::SCREEN_MOBILE:
-            $mobile_url = FatCache::getCachedUrl(CommonHelper::generateUrl('image', 'shopBanner', array($shop['shop_id'], $siteLangId, 'MOBILE', 0, applicationConstants::SCREEN_MOBILE)).$uploadedTime, CONF_IMG_CACHE_TIME, '.jpg').",";
+            $mobile_url = UrlHelper::getCachedUrl(UrlHelper::generateFileUrl('image', 'shopBanner', array($shop['shop_id'], $siteLangId, 'MOBILE', 0, applicationConstants::SCREEN_MOBILE)).$uploadedTime, CONF_IMG_CACHE_TIME, '.jpg').",";
             break;
         case applicationConstants::SCREEN_IPAD:
-            $tablet_url = FatCache::getCachedUrl(CommonHelper::generateUrl('image', 'shopBanner', array($shop['shop_id'], $siteLangId, 'TABLET', 0, applicationConstants::SCREEN_IPAD)).$uploadedTime).",";
+            $tablet_url = UrlHelper::getCachedUrl(UrlHelper::generateFileUrl('image', 'shopBanner', array($shop['shop_id'], $siteLangId, 'TABLET', 0, applicationConstants::SCREEN_IPAD)).$uploadedTime).",";
             break;
         case applicationConstants::SCREEN_DESKTOP:
-            $defaultImgUrl = FatCache::getCachedUrl(CommonHelper::generateUrl('image', 'shopBanner', array($shop['shop_id'], $siteLangId, 'DESKTOP', 0, applicationConstants::SCREEN_DESKTOP)).$uploadedTime, CONF_IMG_CACHE_TIME, '.jpg');
+            $defaultImgUrl = UrlHelper::getCachedUrl(UrlHelper::generateFileUrl('image', 'shopBanner', array($shop['shop_id'], $siteLangId, 'DESKTOP', 0, applicationConstants::SCREEN_DESKTOP)).$uploadedTime, CONF_IMG_CACHE_TIME, '.jpg');
             $desktop_url = $defaultImgUrl.",";
             break;
     }

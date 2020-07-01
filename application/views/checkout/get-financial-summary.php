@@ -38,7 +38,7 @@
                     <tr class="physical_product_tab-js">
                         <td>
                             <?php $productUrl = CommonHelper::generateUrl('Products', 'View', array($product['selprod_id'])); ?>
-                            <div class="item__pic"><a href="<?php echo $productUrl;?>"><img src=<?php echo FatCache::getCachedUrl(CommonHelper::generateUrl('image', 'product', array($product['product_id'], "THUMB", $product['selprod_id'], 0, $siteLangId)), CONF_IMG_CACHE_TIME, '.jpg'); ?>" alt="<?php echo $product['product_name']; ?>" title="<?php echo $product['product_name']; ?>"></a></div>
+                            <div class="item__pic"><a href="<?php echo $productUrl;?>"><img src=<?php echo UrlHelper::getCachedUrl(UrlHelper::generateFileUrl('image', 'product', array($product['product_id'], "THUMB", $product['selprod_id'], 0, $siteLangId)), CONF_IMG_CACHE_TIME, '.jpg'); ?>" alt="<?php echo $product['product_name']; ?>" title="<?php echo $product['product_name']; ?>"></a></div>
                         </td>
                         <td>
                             <div class="item__description">

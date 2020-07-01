@@ -58,7 +58,7 @@ foreach ($fileTypeArr as $fileType) {
         $fn = 'removeCollectionBGImage';
     }
     $imgUpdatedOn = AttachedFile::setTimeParam($imgUpdatedOn);
-    $imgUrl = FatCache::getCachedUrl(CommonHelper::generateUrl('image', $method, array($collection_id, 0, 'THUMB'), CONF_WEBROOT_FRONT_URL).$imgUpdatedOn, CONF_IMG_CACHE_TIME, '.jpg');
+    $imgUrl = UrlHelper::getCachedUrl(CommonHelper::generateFileUrl('image', $method, array($collection_id, 0, 'THUMB'), CONF_WEBROOT_FRONT_URL).$imgUpdatedOn, CONF_IMG_CACHE_TIME, '.jpg');
 
     $imagesHtml = '<ul class="grids--onefifth '.$cType.'CollectionImages-js">
         <li id="'.$cType.'Image-0">
@@ -74,7 +74,7 @@ foreach ($fileTypeArr as $fileType) {
             </div>
         </li>';
     foreach ($languages as $langId => $langName) {
-        $langImgUrl = FatCache::getCachedUrl(CommonHelper::generateUrl('image', $method, array($collection_id, $langId, 'THUMB'), CONF_WEBROOT_FRONT_URL).$imgUpdatedOn, CONF_IMG_CACHE_TIME, '.jpg');
+        $langImgUrl = UrlHelper::getCachedUrl(UrlHelper::generateFileUrl('image', $method, array($collection_id, $langId, 'THUMB'), CONF_WEBROOT_FRONT_URL).$imgUpdatedOn, CONF_IMG_CACHE_TIME, '.jpg');
 
         $imagesHtml .= '<li class="d-none" id="'.$cType.'Image-'.$langId.'">
                             <div class="logoWrap">

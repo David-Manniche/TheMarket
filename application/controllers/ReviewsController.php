@@ -42,7 +42,8 @@ class ReviewsController extends MyAppController
 
         $canSubmitFeedback = true;
         $orderProduct = SelProdReview::getProductOrderId($product['product_id'], $loggedUserId);
-        if (!Orders::canSubmitFeedback($loggedUserId, $orderProduct['op_order_id'], $selprod_id)) {
+        $op_order_id = (!empty($orderProduct) && array_key_exists('op_order_id', $orderProduct)) ? $orderProduct['op_order_id'] : 0;
+        if (!Orders::canSubmitFeedback($loggedUserId, $op_order_id, $selprod_id)) {
             $canSubmitFeedback = false;
         }
         $this->set('canSubmitFeedback', $canSubmitFeedback);
@@ -79,7 +80,7 @@ class ReviewsController extends MyAppController
         $srch->setPageSize($pageSize);
 
         switch ($orderBy) {
-            case 'most_helpful' :
+            case 'most_helpful':
                 $srch->addOrder('helpful', 'desc');
                 break;
             default:
@@ -210,7 +211,7 @@ class ReviewsController extends MyAppController
         $srch->setPageSize($pageSize);
 
         switch ($orderBy) {
-            case 'most_helpful' :
+            case 'most_helpful':
                 $srch->addOrder('helpful', 'desc');
                 break;
             default:

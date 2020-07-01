@@ -15,7 +15,7 @@ foreach($userFavoriteShops as $val){?>
 					<ul class="listing--items">
 						<?php if(!empty($val['products'])){
 							foreach($val['products'] as $product){?>
-								<li><a class="item__pic" href="<?php echo CommonHelper::generateUrl('Products','View',array($product['product_id'])); ?>"><img alt="" src="<?php echo FatCache::getCachedUrl(CommonHelper::generateUrl('image','product', array($product['product_id'], "SMALL", $product['selprod_id'], 0, $siteLangId),CONF_WEBROOT_URL), CONF_IMG_CACHE_TIME, '.jpg'); ?>"></a></li>								
+								<li><a class="item__pic" href="<?php echo CommonHelper::generateUrl('Products','View',array($product['product_id'])); ?>"><img alt="" src="<?php echo UrlHelper::getCachedUrl(UrlHelper::generateFileUrl('image','product', array($product['product_id'], "SMALL", $product['selprod_id'], 0, $siteLangId),CONF_WEBROOT_URL), CONF_IMG_CACHE_TIME, '.jpg'); ?>"></a></li>								
 						<?php } }?>
 						<?php if( $val['totalProducts'] <= $totalProdCountToDisplay ){ ?>
 						<li><a class="item__link" href="<?php echo CommonHelper::generateUrl('Custom','FavoriteShops',array($val['ufs_user_id']));?>"><span><?php echo Labels::getLabel('LBL_No_More_Products', $siteLangId); ?></span></a></li>	

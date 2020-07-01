@@ -147,7 +147,7 @@ class Thread extends MyAppModel
     }
     
     public function markMessageReadFromUserArr($threadId, $userIds){    
-        if(FatApp::getDb()->query('update tbl_thread_messages set message_is_unread = ' . self::MESSAGE_IS_READ . ' where message_thread_id = '. $threadId . ' and  message_to in (' . implode($userIds, ',') . ')')){
+        if(FatApp::getDb()->query('update tbl_thread_messages set message_is_unread = ' . self::MESSAGE_IS_READ . ' where message_thread_id = '. $threadId . ' and  message_to in (' . implode(',', $userIds) . ')')){
             return true;
         }
         $this->error = FatApp::getDb()->getError();

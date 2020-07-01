@@ -417,7 +417,7 @@ $fileinfo = extension_loaded('fileinfo');
                                     <td><?php echo $php_version; ?>
                                     </td>
                                     <td>7.3</td>
-                                    <td class="text-center"><?php if ($php_version >= '7.3' && $php_version < '7.4') { ?>
+                                    <td class="text-center"><?php if ($php_version >= '7.3') { ?>
                                         <span class="text-success"><i class="fa fa-check-circle svg-icn check"><svg
                                                     class="icon icon--check">
                                                     <use xlink:href="#Check_Circle" /></svg>

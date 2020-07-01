@@ -34,4 +34,7 @@ define('S3_KEY', '');
 define('S3_SECRET', '');
 define('S3_REGION', 'us-east-2');
 
+/*CDN sub domain url which points to site document root*/
+define('CDN_DOMAIN_URL', '');
+
 

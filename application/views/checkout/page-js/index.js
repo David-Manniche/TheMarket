@@ -503,7 +503,7 @@ $("document").ready(function(){
 			obj.find('.payment-js').addClass('pending');
 			obj.find('.order-complete-js').addClass('pending');
 		    break;
-		  case 'SHIPPING': console.log(type);
+		  case 'SHIPPING': 
 			obj.find('.billing-js').addClass('completed');
 			obj.find('.shipping-js').addClass('inprogress');
 			obj.find('.payment-js').addClass('pending');

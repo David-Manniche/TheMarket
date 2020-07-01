@@ -248,7 +248,7 @@ class Navigation
 
         $catWithProductConditoon = '';
         if ($categoriesMainRootArr) {
-            $catWithProductConditoon = " and nlink_category_id in(" . implode($categoriesMainRootArr, ",") . ")";
+            $catWithProductConditoon = " and nlink_category_id in(" . implode(",", $categoriesMainRootArr) . ")";
         }
 
         /* ] */

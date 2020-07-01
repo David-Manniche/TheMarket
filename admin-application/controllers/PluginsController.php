@@ -326,7 +326,7 @@ class PluginsController extends AdminBaseController
         if ($attachment = AttachedFile::getAttachment(AttachedFile::FILETYPE_PLUGIN_LOGO, $pluginId)) {
             $uploadedTime = AttachedFile::setTimeParam($attachment['afile_updated_at']);
             $fld->htmlAfterField .= '<div class="uploaded--image">
-            <img src="'.FatCache::getCachedUrl(CommonHelper::generateUrl('Image', 'plugin', array($pluginId), CONF_WEBROOT_FRONT_URL) . $uploadedTime, CONF_IMG_CACHE_TIME, '.jpg').'"></div>';
+            <img src="'.UrlHelper::getCachedUrl(UrlHelper::generateFileUrl('Image', 'plugin', array($pluginId), CONF_WEBROOT_FRONT_URL) . $uploadedTime, CONF_IMG_CACHE_TIME, '.jpg').'"></div>';
         }
 
         $frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_Save_Changes', $this->adminLangId));

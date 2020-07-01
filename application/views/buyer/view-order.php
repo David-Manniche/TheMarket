@@ -166,12 +166,12 @@ if (true == $primaryOrder) {
                                             $prodOrBatchUrl = 'javascript:void(0)';
                                             if ($childOrder['op_is_batch']) {
                                                 $prodOrBatchUrl = CommonHelper::generateUrl('Products', 'batch', array($childOrder['op_selprod_id']));
-                                                $prodOrBatchImgUrl = FatCache::getCachedUrl(CommonHelper::generateUrl('image', 'BatchProduct', array($childOrder['op_selprod_id'],$siteLangId, "SMALL"), CONF_WEBROOT_URL), CONF_IMG_CACHE_TIME, '.jpg');
+                                                $prodOrBatchImgUrl = UrlHelper::getCachedUrl(UrlHelper::generateFileUrl('image', 'BatchProduct', array($childOrder['op_selprod_id'],$siteLangId, "SMALL"), CONF_WEBROOT_URL), CONF_IMG_CACHE_TIME, '.jpg');
                                             } else {
                                                 if (Product::verifyProductIsValid($childOrder['op_selprod_id']) == true) {
                                                     $prodOrBatchUrl = CommonHelper::generateUrl('Products', 'view', array($childOrder['op_selprod_id']));
                                                 }
-                                                $prodOrBatchImgUrl = FatCache::getCachedUrl(CommonHelper::generateUrl('image', 'product', array($childOrder['selprod_product_id'], "SMALL", $childOrder['op_selprod_id'], 0, $siteLangId), CONF_WEBROOT_URL), CONF_IMG_CACHE_TIME, '.jpg');
+                                                $prodOrBatchImgUrl = UrlHelper::getCachedUrl(UrlHelper::generateFileUrl('image', 'product', array($childOrder['selprod_product_id'], "SMALL", $childOrder['op_selprod_id'], 0, $siteLangId), CONF_WEBROOT_URL), CONF_IMG_CACHE_TIME, '.jpg');
                                             } ?> <figure class="item__pic"><a href="<?php echo $prodOrBatchUrl; ?>"><img src="<?php echo $prodOrBatchImgUrl; ?>" title="<?php echo $childOrder['op_product_name']; ?>" alt="<?php echo $childOrder['op_product_name']; ?>"></a></figure>
                                                 </div>
                                         </td>
