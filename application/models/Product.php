@@ -102,25 +102,27 @@ class Product extends MyAppModel
     public static function requiredFields($prodType = PRODUCT::PRODUCT_TYPE_PHYSICAL)
     {
         $arr = array(
-        ImportexportCommon::VALIDATE_POSITIVE_INT => array(
-        'product_id',
-        'category_Id',
-        'tax_category_id',
-        'product_min_selling_price',
-        ),
-        ImportexportCommon::VALIDATE_NOT_NULL => array(
-        'product_name',
-        'product_identifier',
-        'credential_username',
-        'category_indentifier',
-        'product_type_identifier',
-        'tax_category_identifier'
-        ),
-        ImportexportCommon::VALIDATE_INT => array(
-        'product_seller_id',
-        'product_type',
-        'product_ship_free',
-        ),
+            ImportexportCommon::VALIDATE_POSITIVE_INT => array(
+            'product_id',
+            'category_Id',
+            'tax_category_id',
+            ),
+            ImportexportCommon::VALIDATE_NOT_NULL => array(
+            'product_name',
+            'product_identifier',
+            'credential_username',
+            'category_indentifier',
+            'product_type_identifier',
+            'tax_category_identifier'
+            ),
+            ImportexportCommon::VALIDATE_INT => array(
+            'product_seller_id',
+            'product_type',
+            'product_ship_free',
+            ),
+            ImportexportCommon::VALIDATE_FLOAT => array(
+            'product_min_selling_price',
+            ),
         );
 
         if (FatApp::getConfig('CONF_PRODUCT_BRAND_MANDATORY', FatUtility::VAR_INT, 1)) {
