@@ -13,4 +13,4 @@ To Run Test Case Follow Below Steps:
 
 Example :
 1) ./vendor/bin/phpunit --bootstrap ./testcases/bootstrap.php ./testcases/plugins/FixerCurrencyConverterTest.php
-2) vendor/bin/phpunit --bootstrap testcases/bootstrap.php testcases/models/ShopTest.php
+2) ./vendor/bin/phpunit --bootstrap ./testcases/bootstrap.php ./testcases/models/ShopTest.php

@@ -5,18 +5,17 @@ class CurrencyConverterTest extends YkPluginTest
     public const KEY_NAME = 'CurrencyConverter';
 
     /**
-     * testGetRates - Return Array in case of missing required keys.
+     * testGetRates
      *
      * @dataProvider setInput
-     * @param  array $toCurrencies
+     * @param  bool $expected
+     * @param  mixed $toCurrencies
      * @return void
      */
-    public function testGetRates(array $toCurrencies): void
+    public function testGetRates(bool $expected, $toCurrencies)
     {
-        $class = self::KEY_NAME;
-        $object = new $class(CommonHelper::getLangId());
-        $result = $object->getRates($toCurrencies);
-        print_r($result);
+        $this->setFailureReturnType(static::TYPE_ARRAY);
+        $result = $this->execute(self::KEY_NAME, [CommonHelper::getLangId()], 'getRates', [$toCurrencies]);
         $this->assertIsArray($result);
     }
         
@@ -28,12 +27,9 @@ class CurrencyConverterTest extends YkPluginTest
     public function setInput(): array
     {
         return [
-            [
-                ['USD', 'INR']  // Return Passed Currencies Conversion Rates. Expected TRUE
-            ],
-            [
-                []  // It is required to pass currencies to convert. Expected TRUE
-            ],
+            [true, ['USD', 'INR']], // Return Passed Currencies Conversion Rates. Expected TRUE
+            [true, []], // It is required to pass currencies to convert. Expected TRUE
+            [false, 'test'],   // Return error, Invalid request param,
         ];
     }
 }
