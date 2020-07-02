@@ -5,40 +5,45 @@ class InstagramLoginTest extends YkPluginTest
     public const KEY_NAME = 'InstagramLogin';
 
     /**
-     * testRequestAccessToken
+     * init
      *
-     * @dataProvider setCodeInput
-     * @param  array $code
      * @return void
      */
-    public function testRequestAccessToken(string $code, bool $expected = true): void
+    public function init()
     {
-        switch ($this->init()) {
-            case false:
-                echo $this->error;
-                $this->assertEquals($expected, false);
-                break;
-            
-            default:
-                $result = $this->classObj->requestAccessToken($code);
-                $this->assertEquals($expected, $result);
-                break;
+        if (false === $this->classObj->init()) {
+            $this->error = $this->classObj->getError();
+            return false;
         }
+        return true;
+    }
+
+    /**
+     * testRequestAccessToken
+     *
+     * @dataProvider dataRequestAccessToken
+     * @param  bool $expected
+     * @param  mixed $code
+     * @return void
+     */
+    public function testRequestAccessToken($expected, $code)
+    {
+        $response = $this->execute(self::KEY_NAME, [CommonHelper::getLangId()], 'requestAccessToken', [$code]);
+        $this->assertEquals($expected, $response);
     }
         
     /**
-     * setCodeInput
+     * dataRequestAccessToken
      *
      * @return array
      */
-    public function setCodeInput(): array
+    public function dataRequestAccessToken(): array
     {
         // Returned false in case of invalid or missing Plugin Keys. Fail in case of opposite expectation.
         return [
-            ['', false], // Return False in case of all input empty.
-            ['abc', false], // Return False in case of all input empty
-            ['AQDr4yahWlB7JuyWEJT-y5PCrw8zBlqM7mzMF5L4TXjjTJa9ldEv-nRx0XJ7ro_RxR-clLsDp_Vz_YjEk-cQh2yD9g4DDpIaFGnitBy1z6ZH9wQMo0bLZKim_tnVf0vmHIMpWl5hgNqt-E0zHHZ33rbhsupE4ufsohZZEIR1xmdl6RWvgI1ZFiuhFWT5Rldnjn2xT9Q6iCRFePf_Vs4qwbuczfJk49kwA9oQBk_LKazGTQ#_'], // Return True 
-            ['AQDr4yahWlB7JuyWEJT-y5PCrw8zBlqM7mzMF5L4TXjjTJa9ldEv-nRx0XJ7ro_RxR-clLsDp_Vz_YjEk-cQh2yD9g4DDpIaFGnitBy1z6ZH9wQMo0bLZKim_tnVf0vmHIMpWl5hgNqt-E0zHHZ33rbhsupE4ufsohZZEIR1xmdl6RWvgI1ZFiuhFWT5Rldnjn2xT9Q6iCRFePf_Vs4qwbuczfJk49kwA9oQBk_LKazGTQ#_', false], // Return False if already use
+            [false, ''], // Return False in case of all input empty.
+            [false, 'abc'], // Return False in case of all input empty
+            [false, 'AQDr4yahWlB7JuyWEJT-y5PCrw8zBlqM7mzMF5L4TXjjTJa9ldEv-nRx0XJ7ro_RxR-clLsDp_Vz_YjEk-cQh2yD9g4DDpIaFGnitBy1z6ZH9wQMo0bLZKim_tnVf0vmHIMpWl5hgNqt-E0zHHZ33rbhsupE4ufsohZZEIR1xmdl6RWvgI1ZFiuhFWT5Rldnjn2xT9Q6iCRFePf_Vs4qwbuczfJk49kwA9oQBk_LKazGTQ#_'], // Return false if expired 
         ];
     }
 
@@ -46,22 +51,14 @@ class InstagramLoginTest extends YkPluginTest
      * testRequestUserProfileInfo
      *
      * @dataProvider setAccessTokenInput
-     * @param  array $accessToken
+     * @param  bool $expected
+     * @param  mixed $accessToken
      * @return void
      */
-    public function testRequestUserProfileInfo(string $accessToken, bool $expected = true): void
+    public function testRequestUserProfileInfo($expected, $accessToken): void
     {
-        switch ($this->init()) {
-            case false:
-                echo $this->error;
-                $this->assertEquals($expected, false);
-                break;
-            
-            default:
-                $result = $this->classObj->requestUserProfileInfo($accessToken);
-                $this->assertEquals($expected, $result);
-                break;
-        }
+        $response = $this->execute(self::KEY_NAME, [CommonHelper::getLangId()], 'requestUserProfileInfo', [$accessToken]);
+        $this->assertEquals($expected, $response);
     }
         
     /**
@@ -73,9 +70,9 @@ class InstagramLoginTest extends YkPluginTest
     {
         // Returned false in case of invalid or missing Plugin Keys. Fail in case of opposite expectation.
         return [
-            ['', false], // Return False in case of empty input.
-            ['abc', false], // Return False in case of invalid input.
-            ['IGQVJYQ0FTUW5fdzdjWkVLM21CM2hQdDZAWOWRXU04wcTdrc2tmWElPd3RyZAkFhcGxybVBYWnJWODRGS045aVNJRWRDRWUxTEpBM05HUy1PZAUdHOVFMRWtPcVVvMDYxcUFoNGkwOWpVRmdHb0hkdU4wYUN1SzVpdEtucVRv'], // Return True if valid
+            [false, ''], // Return False in case of empty input.
+            [false, 'abc'], // Return False in case of invalid input.
+            [false, 'IGQVJYQ0FTUW5fdzdjWkVLM21CM2hQdDZAWOWRXU04wcTdrc2tmWElPd3RyZAkFhcGxybVBYWnJWODRGS045aVNJRWRDRWUxTEpBM05HUy1PZAUdHOVFMRWtPcVVvMDYxcUFoNGkwOWpVRmdHb0hkdU4wYUN1SzVpdEtucVRv'], // Return false if expired
         ];
     }
 }
