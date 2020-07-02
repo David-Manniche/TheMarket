@@ -160,46 +160,45 @@
                 <div class="payment_methods_list" <?php echo ($cartSummary['orderPaymentGatewayCharges'] <= 0) ? 'is--disabled' : ''; ?>>
                     <?php if ($cartSummary['orderPaymentGatewayCharges'] && 0 < $gatewayCount && 0 < count($paymentMethods)) { ?>
                     <ul id="payment_methods_tab" class="" data-simplebar>
-                        <?php $count=0;
-                                foreach ($paymentMethods as $key => $val) {
-                                    $pmethodCode = isset($val['plugin_code']) ? $val['plugin_code'] : $val['pmethod_code'];
-                                    $pmethodId = isset($val['plugin_id']) ? $val['plugin_id'] : $val['pmethod_id'];
-                                    $pmethodName = isset($val['plugin_name']) ? $val['plugin_name'] : $val['pmethod_name'];
+                        <?php $count = 0;
+                        foreach ($paymentMethods as $key => $val) {
+                            $pmethodCode = $val['plugin_code'];
+                            $pmethodId = $val['plugin_id'];
+                            $pmethodName = $val['plugin_name'];
 
-                                    $pmethodType = isset($val['plugin_id']) ? PaymentMethods::TYPE_PLUGIN : PaymentMethods::TYPE_DEFAULT;
-                                    if (in_array($pmethodCode, $excludePaymentGatewaysArr[applicationConstants::CHECKOUT_PRODUCT])) {
-                                        continue;
-                                    }
-                                    $count++; ?>
-                        <li>
-                            <a href="<?php echo CommonHelper::generateUrl('Checkout', 'PaymentTab', array($orderInfo['order_id'], $val['pmethod_id'])); ?>"
-                                data-paymentmethod="<?php echo $val['pmethod_code']; ?>">
-                                <div class="payment-box">
-                                    <i class="payment-icn">
-                                        <?php
-                                                    if (isset($val['plugin_id'])) {
-                                                        $fileData = AttachedFile::getAttachment(AttachedFile::FILETYPE_PLUGIN_LOGO, $pmethodId);
-                                                        $uploadedTime = AttachedFile::setTimeParam($fileData['afile_updated_at']);
-                                                        $imageUrl = UrlHelper::getCachedUrl(UrlHelper::generateFileUrl('Image', 'plugin', array($pmethodId, 'SMALL')) . $uploadedTime, CONF_IMG_CACHE_TIME, '.jpg');
-                                                    } else {
-                                                        $fileData = AttachedFile::getAttachment(AttachedFile::FILETYPE_PAYMENT_METHOD, $pmethodId, 0, 0, false);
-                                                        $imageUrl = CommonHelper::generateUrl('Image', 'paymentMethod', array($pmethodId,'SMALL'));
-                                                    }
-                                    $aspectRatioArr = AttachedFile::getRatioTypeArray($siteLangId); ?>
-                                        <img <?php if ($fileData['afile_aspect_ratio'] > 0) { ?>
-                                    data-ratio= "<?php echo $aspectRatioArr[$fileData['afile_aspect_ratio']]; ?>"
-                                    <?php } ?> src="<?php echo $imageUrl; ?>" alt="">
-                                    </i>
-                                    <span><?php echo $pmethodName; ?></span>
-                                </div>
-                            </a>
-                        </li>
-                        <?php
-                                } ?>
+                            if (in_array($pmethodCode, $excludePaymentGatewaysArr[applicationConstants::CHECKOUT_PRODUCT])) {
+                                continue;
+                            }
+                            $count++; ?>
+                            <li>
+                                <a href="<?php echo CommonHelper::generateUrl('Checkout', 'PaymentTab', array($orderInfo['order_id'], $pmethodId)); ?>"
+                                    data-paymentmethod="<?php echo $pmethodCode; ?>">
+                                    <div class="payment-box">
+                                        <i class="payment-icn">
+                                            <?php
+                                            if (isset($val['plugin_id'])) {
+                                                $fileData = AttachedFile::getAttachment(AttachedFile::FILETYPE_PLUGIN_LOGO, $pmethodId);
+                                                $uploadedTime = AttachedFile::setTimeParam($fileData['afile_updated_at']);
+                                                $imageUrl = UrlHelper::getCachedUrl(UrlHelper::generateFileUrl('Image', 'plugin', array($pmethodId, 'SMALL')) . $uploadedTime, CONF_IMG_CACHE_TIME, '.jpg');
+                                            } else {
+                                                $fileData = AttachedFile::getAttachment(AttachedFile::FILETYPE_PAYMENT_METHOD, $pmethodId, 0, 0, false);
+                                                $imageUrl = CommonHelper::generateUrl('Image', 'paymentMethod', array($pmethodId,'SMALL'));
+                                            }
+                                            $aspectRatioArr = AttachedFile::getRatioTypeArray($siteLangId); ?>
+                                            <img <?php if ($fileData['afile_aspect_ratio'] > 0) { ?>
+                                                data-ratio= "<?php echo $aspectRatioArr[$fileData['afile_aspect_ratio']]; ?>"
+                                                <?php } ?> src="<?php echo $imageUrl; ?>" alt="">
+                                        </i>
+                                        <span><?php echo $pmethodName; ?></span>
+                                    </div>
+                                </a>
+                            </li>
+                            <?php
+                        } ?>
                     </ul>
                     <?php } else {
-                                    echo Labels::getLabel("LBL_Payment_method_is_not_available._Please_contact_your_administrator.", $siteLangId);
-                                } ?>
+                        echo Labels::getLabel("LBL_Payment_method_is_not_available._Please_contact_your_administrator.", $siteLangId);
+                    } ?>
                 </div>
             </div>
             <div class="col-md-8">

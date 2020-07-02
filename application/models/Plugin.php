@@ -46,7 +46,7 @@ class Plugin extends MyAppModel
         self::TYPE_TAX_SERVICES ,
         self::TYPE_FULL_TEXT_SEARCH,
         self::TYPE_SPLIT_PAYMENT_METHOD,
-        self::TYPE_REGULAR_PAYMENT_METHOD,
+        // self::TYPE_REGULAR_PAYMENT_METHOD,
         self::TYPE_SHIPPING_SERVICES,
     ];
 

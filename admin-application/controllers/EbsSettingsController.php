@@ -1,31 +1,13 @@
 <?php
 
-class EbsSettingsController extends PaymentSettingsController
+class EbsSettingsController extends PaymentMethodSettingsController
 {
-    private $keyName = "ebs";
-    
-    public function index()
-    {
-        $paymentSettings = $this->getPaymentSettings($this->keyName);
-        $frm = $this->getForm();
-        $frm->fill($paymentSettings);
-        $this->set('frm', $frm);
-        $this->set('paymentMethod', $this->keyName);
-        $this->_template->render(false, false);
-    }
-    
-    public function setup()
-    {
-        $frm = $this->getForm();
-        $this->setUpPaymentSettings($frm, $this->keyName);
-    }
-    
-    private function getForm()
+    public static function form($langId)
     {
         $frm = new Form('frmPaymentMethods');
-        $frm->addRequiredField(Labels::getLabel('LBL_Account_ID', $this->adminLangId), 'accountId');
-        $frm->addRequiredField(Labels::getLabel('LBL_Secret_Key', $this->adminLangId), 'secretKey');
-        $frm->addSubmitButton('&nbsp;', 'btn_submit', Labels::getLabel('LBL_Save_Changes', $this->adminLangId));
+        $frm->addRequiredField(Labels::getLabel('LBL_Account_ID', $langId), 'accountId');
+        $frm->addRequiredField(Labels::getLabel('LBL_Secret_Key', $langId), 'secretKey');
+        $frm->addSubmitButton('&nbsp;', 'btn_submit', Labels::getLabel('LBL_Save_Changes', $langId));
         return $frm;
     }
 }

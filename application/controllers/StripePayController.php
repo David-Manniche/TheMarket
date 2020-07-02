@@ -3,7 +3,7 @@
 require_once CONF_INSTALLATION_PATH . 'library/payment-plugins/stripe/init.php';
 class StripePayController extends PaymentController
 {
-    private $keyName = "Stripe";
+    public const KEY_NAME = 'Stripe';
 
     private $error = false;
 
@@ -29,8 +29,8 @@ class StripePayController extends PaymentController
 
         $this->paymentSettings = $this->getPaymentSettings();
         $stripe = array(
-        'secret_key' => $this->paymentSettings['privateKey'],
-        'publishable_key' => $this->paymentSettings['publishableKey']
+            'secret_key' => $this->paymentSettings['privateKey'],
+            'publishable_key' => $this->paymentSettings['publishableKey']
         );
         $this->set('stripe', $stripe);
 
@@ -62,30 +62,29 @@ class StripePayController extends PaymentController
             /* $checkPayment = $this->doPayment($payableAmount, $orderInfo); */
             $frm = $this->getPaymentForm($orderId);
             $this->set('frm', $frm);
-			
+            
             if (strtolower($_SERVER['REQUEST_METHOD']) == 'post') {
-				$charge = $this->stripeAuthentication($orderId);
-				if(isset($charge['id']) && $charge['id']) {
-					$payment_method = \Stripe\PaymentMethod::create([
-						'type' => 'card',
-						  'card' => [
-							'number' => $_POST['cc_number'],
-							'exp_month' => $_POST['cc_expire_date_month'],
-							'exp_year' => $_POST['cc_expire_date_year'],
-							'cvc' => $_POST['cc_cvv'],
-						  ],
-						]);
-					$payment_method = $payment_method->__toArray();
-					
-					$this->set('order_id', $orderId);
-					$this->set('payment_intent_id', $charge['id']);
-					$this->set('payment_method_id', $payment_method['id']);
-					$this->set('client_secret', $charge['client_secret']);
-				} else {
-					$this->error = Labels::getLabel('LBL_STRIPE_AUTHENTICATION_ERROR', $this->siteLangId);
-				}
+                $charge = $this->stripeAuthentication($orderId);
+                if (isset($charge['id']) && $charge['id']) {
+                    $payment_method = \Stripe\PaymentMethod::create([
+                        'type' => 'card',
+                          'card' => [
+                            'number' => $_POST['cc_number'],
+                            'exp_month' => $_POST['cc_expire_date_month'],
+                            'exp_year' => $_POST['cc_expire_date_year'],
+                            'cvc' => $_POST['cc_cvv'],
+                          ],
+                        ]);
+                    $payment_method = $payment_method->__toArray();
+                    
+                    $this->set('order_id', $orderId);
+                    $this->set('payment_intent_id', $charge['id']);
+                    $this->set('payment_method_id', $payment_method['id']);
+                    $this->set('client_secret', $charge['client_secret']);
+                } else {
+                    $this->error = Labels::getLabel('LBL_STRIPE_AUTHENTICATION_ERROR', $this->siteLangId);
+                }
             }
-			
         } else {
             $message = Labels::getLabel('MSG_INVALID_ORDER_PAID_CANCELLED', $this->siteLangId);
             if (true === MOBILE_APP_API_CALL) {
@@ -127,8 +126,8 @@ class StripePayController extends PaymentController
 
     private function getPaymentSettings()
     {
-        $pmObj = new PaymentSettings($this->keyName);
-        return $pmObj->getPaymentSettings();
+        $pluginSetting = new PluginSetting(0, self::KEY_NAME);
+        return $pluginSetting->get($this->siteLangId);
     }
 
     private function getPaymentForm($orderId)
@@ -150,78 +149,76 @@ class StripePayController extends PaymentController
 
         return $frm;
     }
-	
-	public function stripeAuthentication($orderId = 0) {
-        
+    
+    public function stripeAuthentication($orderId = 0)
+    {
         $this->paymentSettings = $this->getPaymentSettings();
         if (!$this->paymentSettings) {
-           $this->error =  Labels::getLabel('STRIPE_INVALID_PAYMENT_GATEWAY_SETUP_ERROR', $this->siteLangId);
-        } 
-		
-		$stripeToken = FatApp::getPostedData('stripeToken', FatUtility::VAR_STRING, '');
-		
-		if (empty($stripeToken)) {
-			$message = Labels::getLabel('MSG_The_Stripe_Token_was_not_generated_correctly', $this->siteLangId);
-			if (true === MOBILE_APP_API_CALL) {
-				FatUtility::dieJsonError($message);
-			}
-			throw new Exception($message);
-		}
-		
+            $this->error =  Labels::getLabel('STRIPE_INVALID_PAYMENT_GATEWAY_SETUP_ERROR', $this->siteLangId);
+        }
+        
+        $stripeToken = FatApp::getPostedData('stripeToken', FatUtility::VAR_STRING, '');
+        
+        if (empty($stripeToken)) {
+            $message = Labels::getLabel('MSG_The_Stripe_Token_was_not_generated_correctly', $this->siteLangId);
+            if (true === MOBILE_APP_API_CALL) {
+                FatUtility::dieJsonError($message);
+            }
+            throw new Exception($message);
+        }
+        
         $orderPaymentObj = new OrderPayment($orderId, $this->siteLangId);
         $paymentAmount = $orderPaymentObj->getOrderPaymentGatewayAmount();
         $paymentAmount = $this->formatPayableAmount($paymentAmount);
         
         $stripe = array(
-		'secret_key' => $this->paymentSettings['privateKey'],
-		'publishable_key' => $this->paymentSettings['publishableKey']
-		);
-		
+        'secret_key' => $this->paymentSettings['privateKey'],
+        'publishable_key' => $this->paymentSettings['publishableKey']
+        );
+        
         $this->set('stripe', $stripe);
         
         if (!empty(trim($this->paymentSettings['privateKey'])) && !empty(trim($this->paymentSettings['publishableKey']))) {
-			\Stripe\Stripe::setApiKey($stripe['secret_key']);
-		}
+            \Stripe\Stripe::setApiKey($stripe['secret_key']);
+        }
         
         try {
-			if (!empty(trim($this->paymentSettings['privateKey'])) && !empty(trim($this->paymentSettings['publishableKey']))) {
-				
-				\Stripe\Stripe::setApiKey($stripe['secret_key']);
-				
-				$orderInfo = $orderPaymentObj->getOrderPrimaryinfo();
-				
-				$customer = \Stripe\Customer::create([
+            if (!empty(trim($this->paymentSettings['privateKey'])) && !empty(trim($this->paymentSettings['publishableKey']))) {
+                \Stripe\Stripe::setApiKey($stripe['secret_key']);
+                
+                $orderInfo = $orderPaymentObj->getOrderPrimaryinfo();
+                
+                $customer = \Stripe\Customer::create([
                             "email" => $orderInfo['customer_email'],
                             "source" => $_POST['stripeToken'],
                 ]);
-				$charge = \Stripe\PaymentIntent::create([
-							"customer" => $customer->id,
-							'amount' => $paymentAmount,
-							'currency' => $this->systemCurrencyCode,
-							'payment_method_types' => ['card'],
-							'payment_method_options' => array ('card' => array ('installments' => NULL,'request_three_d_secure' => 'any')),
-							'metadata'=>array('order_id'=>$orderId)
-							
+                $charge = \Stripe\PaymentIntent::create([
+                            "customer" => $customer->id,
+                            'amount' => $paymentAmount,
+                            'currency' => $this->systemCurrencyCode,
+                            'payment_method_types' => ['card'],
+                            'payment_method_options' => array('card' => array('installments' => null,'request_three_d_secure' => 'any')),
+                            'metadata'=>array('order_id'=>$orderId)
+                            
 
-				]);
-			   
-				$charge = $charge->__toArray();
-				return $charge;
-		
-			}
-        }catch (Exception $e) {
+                ]);
+               
+                $charge = $charge->__toArray();
+                return $charge;
+            }
+        } catch (Exception $e) {
             $this->error = $e->getMessage();
         }
         
         if ($this->error) {
             return $this->error;
-			Message::addErrorMessage($this->error);
+            Message::addErrorMessage($this->error);
             CommonHelper::redirectUserReferer();
         }
     }
-	
-	public function stripeSuccess() {
     
+    public function stripeSuccess()
+    {
         $this->paymentSettings = $this->getPaymentSettings();
         $stripe = [
             'secret_key' => $this->paymentSettings['privateKey'],
@@ -234,9 +231,9 @@ class StripePayController extends PaymentController
             $_POST['payment_intent_id']
         );
         
-       $charge = $charge->__toArray();
+        $charge = $charge->__toArray();
        
-       $orderPaymentObj = new OrderPayment($_POST['order_id']);
+        $orderPaymentObj = new OrderPayment($_POST['order_id']);
        
         if (strtolower($charge['status']) == 'succeeded') {
             $message .= 'Id: ' . (string) $charge['charges']['data'][0]['id'] . "&";
@@ -263,20 +260,20 @@ class StripePayController extends PaymentController
             $message .= 'Shipping: ' . (string) $charge['charges']['data'][0]['shipping'] . "&";
             $message .= 'Statement Descriptor: ' . (string) $charge['charges']['data'][0]['statement_descriptor'] . "&";
             $message .= 'Status: ' . (string) $charge['charges']['data'][0]['status'] . "&";
-			/* Recording Payment in DB */
-			/* $paymentAmount = $orderPaymentObj->getOrderPaymentGatewayAmount();
-			$payableAmount = $this->formatPayableAmount($paymentAmount); */
-			$payment_amount = $charge['charges']['data'][0]['amount'];
-			$orderPaymentObj->addOrderPayment($this->paymentSettings["pmethod_name"], $charge['id'], ($payment_amount / 100), Labels::getLabel("MSG_Received_Payment", $this->siteLangId), $message);
-			/* End Recording Payment in DB */
-			if (false === MOBILE_APP_API_CALL) {
-				FatApp::redirectUser(CommonHelper::generateUrl('custom', 'paymentSuccess', array($_POST['order_id'])));
-			}
+            /* Recording Payment in DB */
+            /* $paymentAmount = $orderPaymentObj->getOrderPaymentGatewayAmount();
+            $payableAmount = $this->formatPayableAmount($paymentAmount); */
+            $payment_amount = $charge['charges']['data'][0]['amount'];
+            $orderPaymentObj->addOrderPayment($this->paymentSettings["pmethod_name"], $charge['id'], ($payment_amount / 100), Labels::getLabel("MSG_Received_Payment", $this->siteLangId), $message);
+            /* End Recording Payment in DB */
+            if (false === MOBILE_APP_API_CALL) {
+                FatApp::redirectUser(CommonHelper::generateUrl('custom', 'paymentSuccess', array($_POST['order_id'])));
+            }
         } else {
             $orderPaymentObj->addOrderPaymentComments($message);
-			if (false === MOBILE_APP_API_CALL) {
-				FatApp::redirectUser(CommonHelper::generateUrl('custom', 'paymentFailed'));
-			}
-        }  
+            if (false === MOBILE_APP_API_CALL) {
+                FatApp::redirectUser(CommonHelper::generateUrl('custom', 'paymentFailed'));
+            }
+        }
     }
 }

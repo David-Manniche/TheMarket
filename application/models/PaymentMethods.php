@@ -97,12 +97,8 @@ class PaymentMethods extends MyAppModel
      * @param int $langId
      * @return bool
      */
-    public function canRefundToCard(string $keyname, int $langId, int $methodType = self::TYPE_PLUGIN): bool
+    public function canRefundToCard(string $keyname, int $langId): bool
     {
-        if (self::TYPE_DEFAULT == $methodType) {
-            return false;
-        }
-        
         $this->keyname = $keyname;
         $this->langId = $langId;
         $this->paymentPlugin = PluginHelper::callPlugin($this->keyname, [$this->langId]);

@@ -829,37 +829,27 @@ class CheckoutController extends MyAppController
             if (Message::getErrorCount()) {
                 $this->errMessage = Message::getHtml();
             }
-            FatUtility::dieWithError($this->errMessage);
+            Message::addErrorMessage($this->errMessage);
+            FatUtility::dieWithError(Message::getHtml());
         }
         
         if ($this->cartObj->getError() != '') {
             if (true === MOBILE_APP_API_CALL) {
                 LibHelper::dieJsonError($this->cartObj->getError());
             }
-            LibHelper::dieWithError($this->cartObj->getError());
+            Message::addErrorMessage($this->cartObj->getError());
+            FatUtility::dieWithError(Message::getHtml());
         }
 
         $cartSummary = $this->cartObj->getCartFinancialSummary($this->siteLangId);
         $userId = UserAuthentication::getLoggedUserId();
         $userWalletBalance = User::getUserBalance($userId, true);
+        
         /* Payment Methods[ */
-        $pmSrch = PaymentMethods::getSearchObject($this->siteLangId);
-        $pmSrch->doNotCalculateRecords();
-        $pmSrch->doNotLimitRecords();
-        $pmSrch->addMultipleFields(array('pmethod_id', 'IFNULL(pmethod_name, pmethod_identifier) as pmethod_name', 'pmethod_code', 'pmethod_description'));
-
-        if (!$cartSummary["isCodEnabled"] || ($cartSummary['cartWalletSelected'] && $userWalletBalance < $cartSummary['orderNetAmount'])) {
-            $pmSrch->addCondition('pmethod_code', '!=', 'CashOnDelivery');
-        }
-
-        $pmRs = $pmSrch->getResultSet();
-        $paymentMethods = FatApp::getDb()->fetchAll($pmRs);
-
         $splitPaymentMethodsPlugins = Plugin::getDataByType(Plugin::TYPE_SPLIT_PAYMENT_METHOD, $this->siteLangId);
         $regularPaymentMethodsPlugins = Plugin::getDataByType(Plugin::TYPE_REGULAR_PAYMENT_METHOD, $this->siteLangId);
 
-        $paymentMethods = array_merge($paymentMethods, $splitPaymentMethodsPlugins, $regularPaymentMethodsPlugins);
-
+        $paymentMethods = array_merge($splitPaymentMethodsPlugins, $regularPaymentMethodsPlugins);
         /* ] */
 
         $orderData = array();
@@ -1368,26 +1358,8 @@ class CheckoutController extends MyAppController
         $this->_template->render(false, false);
     }
 
-    private function getPaymentMethodData($pmethod_id)
+    public function paymentTab($order_id, $pmethod_id)
     {
-        $pmSrch = PaymentMethods::getSearchObject($this->siteLangId);
-        $pmSrch->doNotCalculateRecords();
-        $pmSrch->doNotLimitRecords();
-        $pmSrch->addMultipleFields(array('pmethod_id', 'IFNULL(pmethod_name, pmethod_identifier) as pmethod_name', 'pmethod_code', 'pmethod_description'));
-        $pmSrch->addCondition('pmethod_id', '=', $pmethod_id);
-        $pmRs = $pmSrch->getResultSet();
-        $paymentMethod = FatApp::getDb()->fetch($pmRs);
-
-        if (!$paymentMethod) {
-            FatUtility::dieWithError(Labels::getLabel("MSG_Selected_Payment_method_not_found!", $this->siteLangId));
-        }
-        return $paymentMethod;
-    }
-
-    public function paymentTab($order_id, $pmethod_id, $pmethodType = '')
-    {
-        $pmethodType = empty($pmethodType) ? PaymentMethods::TYPE_DEFAULT : $pmethodType;
-
         $pmethod_id = FatUtility::int($pmethod_id);
         if (!$pmethod_id) {
             FatUtility::dieWithError(Labels::getLabel("MSG_Invalid_Request!", $this->siteLangId));
@@ -1414,23 +1386,16 @@ class CheckoutController extends MyAppController
             FatUtility::dieWithError(Labels::getLabel('MSG_INVALID_ORDER_PAID_CANCELLED', $this->siteLangId));
         }
 
-        //commonHelper::printArray($orderInfo);
-        if (PaymentMethods::TYPE_PLUGIN == $pmethodType) {
-            $methodCode = Plugin::getAttributesById($pmethod_id, 'plugin_code');
-            $paymentMethod = Plugin::getAttributesByCode($methodCode, Plugin::ATTRS, $this->siteLangId);
-        } else {
-            $paymentMethod = $this->getPaymentMethodData($pmethod_id);
-            $methodCode = $paymentMethod['pmethod_code'];
-        }
+        $methodCode = Plugin::getAttributesById($pmethod_id, 'plugin_code');
+        $paymentMethod = Plugin::getAttributesByCode($methodCode, Plugin::ATTRS, $this->siteLangId);
         
-        $frm = $this->getPaymentTabForm($this->siteLangId, $methodCode, $pmethodType);
+        $frm = $this->getPaymentTabForm($this->siteLangId, $methodCode);
         $controller = $methodCode . 'Pay';
         $frm->setFormTagAttribute('action', CommonHelper::generateUrl($controller, 'charge', array($order_id)));
         $frm->fill(
             array(
                 'order_type' => $orderInfo['order_type'],
                 'order_id' => $order_id,
-                'pmethod_id' => $pmethod_id,
                 'plugin_id' => $pmethod_id,
             )
         );
@@ -1581,9 +1546,7 @@ class CheckoutController extends MyAppController
     public function ConfirmOrder()
     {
         $order_type = FatApp::getPostedData('order_type', FatUtility::VAR_INT, 0);
-        $pmethod_id = FatApp::getPostedData('pmethod_id', FatUtility::VAR_INT, 0);
-        $plugin_id = FatApp::getPostedData('plugin_id', FatUtility::VAR_INT, 0);
-        $pmethod_id = 0 < $plugin_id ? $plugin_id : $pmethod_id;
+        $pmethod_id = FatApp::getPostedData('plugin_id', FatUtility::VAR_INT, 0);
 
         $order_id = FatApp::getPostedData("order_id", FatUtility::VAR_STRING, "");
         $user_id = UserAuthentication::getLoggedUserId();
@@ -1592,17 +1555,10 @@ class CheckoutController extends MyAppController
         $orderNetAmount = isset($cartSummary['orderNetAmount']) ? FatUtility::convertToType($cartSummary['orderNetAmount'], FatUtility::VAR_FLOAT) : 0;
 
         if (0 < $pmethod_id) {
-            if (0 < $plugin_id) {
-                $paymentMethodRow = Plugin::getAttributesById($pmethod_id);
-                $isActive = $paymentMethodRow['plugin_active'];
-                $pmethodCode = $paymentMethodRow['plugin_code'];
-                $pmethodIdentifier = $paymentMethodRow['plugin_identifier'];
-            } else {
-                $paymentMethodRow = PaymentMethods::getAttributesById($pmethod_id);
-                $isActive = $paymentMethodRow['pmethod_active'];
-                $pmethodCode = $paymentMethodRow['pmethod_code'];
-                $pmethodIdentifier = $paymentMethodRow['pmethod_identifier'];
-            }
+            $paymentMethodRow = Plugin::getAttributesById($pmethod_id);
+            $isActive = $paymentMethodRow['plugin_active'];
+            $pmethodCode = $paymentMethodRow['plugin_code'];
+            $pmethodIdentifier = $paymentMethodRow['plugin_identifier'];
 
             if (!$paymentMethodRow || $isActive != applicationConstants::ACTIVE) {
                 $this->errMessage = Labels::getLabel("LBL_Invalid_Payment_method,_Please_contact_Webadmin.", $this->siteLangId);
@@ -1745,31 +1701,6 @@ class CheckoutController extends MyAppController
             }
         }
 
-        /* Enable it if we add Shipping Users in Project Check, System have shipping company user added or nor, if not, then COD is not allowed for Project[ */
-        /* if( strtolower($pmethodCode) == 'cashondelivery' ){
-        if( !CommonHelper::verifyCaptcha() ) {
-        Message::addErrorMessage(Labels::getLabel('MSG_That_captcha_was_incorrect',$this->siteLangId));
-        FatUtility::dieWithError( Message::getHtml() );
-        //FatApp::redirectUser(CommonHelper::generateUrl('Custom', 'ContactUs'));
-        }
-        $srch = User::getSearchObject( true );
-        $srch->doNotCalculateRecords();
-        $srch->setPageSize(1);
-        $srch->addCondition( 'user_type', '=', User::USER_TYPE_SHIPPING_COMPANY );
-        $srch->addCondition( 'uc.credential_active', '=', applicationConstants::ACTIVE );
-        $srch->addCondition( 'uc.credential_verified', '=', applicationConstants::YES );
-        $srch->addMultipleFields( array('user_id') );
-        $rs = $srch->getResultSet();
-        $userRow = FatApp::getDb()->fetch($rs);
-        if( !$userRow ){
-        $str = Labels::getLabel("LBL_{paymentMethodName}_is_not_available_as_Shipping_Company_is_not_added_by_admin_as_yet.", $this->siteLangId );
-        $str = str_replace('{paymentmethodname}', $pmethodIdentifier , $str);
-        Message::addErrorMessage( $str );
-        FatUtility::dieWithError( Message::getHtml() );
-        }
-        } */
-        /* ] */
-
         if ($userWalletBalance >= $cartSummary['orderNetAmount'] && $cartSummary['cartWalletSelected'] && !$pmethod_id) {
             $frm = $this->getWalletPaymentForm($this->siteLangId);
         } else {
@@ -1827,8 +1758,7 @@ class CheckoutController extends MyAppController
         if ($pmethod_id) {
             $_SESSION['cart_order_id'] = $order_id;
             $_SESSION['order_type'] = $order_type;
-            $pmethodType = 0 < $plugin_id ? PaymentMethods::TYPE_PLUGIN : PaymentMethods::TYPE_DEFAULT;
-            $orderObj->updateOrderInfo($order_id, array('order_pmethod_id' => $pmethod_id, 'order_pmethod_type' => $pmethodType));
+            $orderObj->updateOrderInfo($order_id, array('order_pmethod_id' => $pmethod_id, 'order_pmethod_type' => PaymentMethods::TYPE_PLUGIN));
             // $this->cartObj->clear();
             // $this->cartObj->updateUserCart();
         }
@@ -1846,10 +1776,6 @@ class CheckoutController extends MyAppController
 
         /*]*/
 
-        /* if ( !$orderObj->addOrderHistory( $order_id, 1, Labels::getLabel("LBL_-NA-",$this->siteLangId), true, $this->siteLangId ) ){
-        Message::addErrorMessage( $orderObj->getError() );
-        FatUtility::dieWithError( Message::getHtml() );
-        } */
         if (true === MOBILE_APP_API_CALL) {
             $this->_template->render();
         }
@@ -1926,10 +1852,8 @@ class CheckoutController extends MyAppController
         return $shippingApis;
     }
 
-    private function getPaymentTabForm($langId, $paymentMethodCode = '', $pmethodType = '')
+    private function getPaymentTabForm($langId, $paymentMethodCode = '')
     {
-        $pmethodType = empty($pmethodType) ? PaymentMethods::TYPE_DEFAULT : $pmethodType;
-
         $frm = new Form('frmPaymentTabForm');
         $frm->setFormTagAttribute('id', 'frmPaymentTabForm');
 
@@ -1941,11 +1865,7 @@ class CheckoutController extends MyAppController
         $frm->addHiddenField('', 'order_type');
         $frm->addHiddenField('', 'order_id');
         
-        if (PaymentMethods::TYPE_PLUGIN == $pmethodType) {
-            $frm->addHiddenField('', 'plugin_id');
-        } else {
-            $frm->addHiddenField('', 'pmethod_id');
-        }
+        $frm->addHiddenField('', 'plugin_id');
 
         return $frm;
     }

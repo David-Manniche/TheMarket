@@ -1,26 +1,8 @@
 <?php
 
-class TwocheckoutSettingsController extends PaymentSettingsController
+class TwocheckoutSettingsController extends PaymentMethodSettingsController
 {
-    private $keyName = "Twocheckout";
-    
-    public function index()
-    {
-        $paymentSettings = $this->getPaymentSettings($this->keyName);
-        $frm = $this->getForm();
-        $frm->fill($paymentSettings);
-        $this->set('frm', $frm);
-        $this->set('paymentMethod', $this->keyName);
-        $this->_template->render(false, false);
-    }
-    
-    public function setup()
-    {
-        $frm = $this->getForm();
-        $this->setUpPaymentSettings($frm, $this->keyName);
-    }
-    
-    private function getForm()
+    public static function form($langId)
     {
         $frm = new Form('frmPaymentMethods');
         
@@ -28,11 +10,11 @@ class TwocheckoutSettingsController extends PaymentSettingsController
         'HOSTED' => 'Hosted Checkout',
         'API' => 'Payment API'
         );
-        $frm->addRadioButtons(Labels::getLabel('LBL_Payment_Type', $this->adminLangId), 'payment_type', $paymentTypesArr, 'HOSTED', array('class' => 'box--scroller'));
-        $frm->addRequiredField(Labels::getLabel('LBL_Seller_ID', $this->adminLangId), 'sellerId');
-        $frm->addRequiredField(Labels::getLabel('LBL_Publishable_Key', $this->adminLangId), 'publishableKey');
-        $frm->addRequiredField(Labels::getLabel('LBL_Private_Key', $this->adminLangId), 'privateKey');
-        $frm->addRequiredField(Labels::getLabel('LBL_Secret_Word', $this->adminLangId), 'hashSecretWord');
+        $frm->addRadioButtons(Labels::getLabel('LBL_Payment_Type', $langId), 'payment_type', $paymentTypesArr, 'HOSTED', array('class' => 'box--scroller'));
+        $frm->addRequiredField(Labels::getLabel('LBL_Seller_ID', $langId), 'sellerId');
+        $frm->addRequiredField(Labels::getLabel('LBL_Publishable_Key', $langId), 'publishableKey');
+        $frm->addRequiredField(Labels::getLabel('LBL_Private_Key', $langId), 'privateKey');
+        $frm->addRequiredField(Labels::getLabel('LBL_Secret_Word', $langId), 'hashSecretWord');
         
         $frm->addHTML(
             'Remember',
@@ -42,7 +24,7 @@ class TwocheckoutSettingsController extends PaymentSettingsController
         );
         
         
-        $frm->addSubmitButton('&nbsp;', 'btn_submit', Labels::getLabel('LBL_Save_Changes', $this->adminLangId));
+        $frm->addSubmitButton('&nbsp;', 'btn_submit', Labels::getLabel('LBL_Save_Changes', $langId));
         return $frm;
     }
 }
