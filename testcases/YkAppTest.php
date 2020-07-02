@@ -71,8 +71,7 @@ class YkAppTest extends TestCase
       
         $this->classObj = $reflector->newInstanceArgs($constructorArgs);
         
-        if (method_exists($this->classObj, 'init') && false === $this->classObj->init()) {
-            $this->error = $this->classObj->getError();
+        if (method_exists($this, 'init') && false === $this->init()) {
             return false;
         }
 

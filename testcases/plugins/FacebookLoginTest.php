@@ -3,6 +3,20 @@
 class FacebookLoginTest extends YkPluginTest
 {
     public const KEY_NAME = 'FacebookLogin';
+    
+    /**
+     * init
+     *
+     * @return void
+     */
+    public function init()
+    {
+        if (false === $this->classObj->init()) {
+            $this->error = $this->classObj->getError();
+            return false;
+        }
+        return true;
+    }
 
     /**
      * testVerifyAccessToken
