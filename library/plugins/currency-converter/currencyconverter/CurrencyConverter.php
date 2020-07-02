@@ -143,7 +143,11 @@ class CurrencyConverter extends CurrencyConverterBase
     public function getRates(array $toCurrencies = []): array
     {
         if (false === $this->init()) {
-            return false;
+            return [
+                'status' => Plugin::RETURN_FALSE,
+                'msg' => $this->getError(),
+                'data' => []
+            ];
         }
 
         $this->toCurrencies = is_array($toCurrencies) ? array_filter($toCurrencies) : [];

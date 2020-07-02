@@ -10,7 +10,7 @@ class ShopTest extends YkModelTest
      * @param  mixed $shopId
      * @return void
      */
-    public function testIsShopActive($expected, $userId, $shopId)
+    public function testIsShopActive(bool $expected, $userId, $shopId)
     {
         $result = $this->execute('Shop', [], 'isShopActive', [$userId, $shopId]);
         $this->assertEquals($expected, $result);

@@ -14,9 +14,9 @@ class CurrencyConverterTest extends YkPluginTest
      */
     public function testGetRates(bool $expected, $toCurrencies)
     {
-        $this->setFailureReturnType(static::TYPE_ARRAY);
-        $result = $this->execute(self::KEY_NAME, [CommonHelper::getLangId()], 'getRates', [$toCurrencies]);
-        $this->assertIsArray($result);
+        $this->expectedReturnType(static::TYPE_ARRAY);
+        $response = $this->execute(self::KEY_NAME, [CommonHelper::getLangId()], 'getRates', [$toCurrencies]);
+        $this->assertEquals($expected, $response);
     }
         
     /**

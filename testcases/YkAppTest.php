@@ -12,6 +12,7 @@ class YkAppTest extends TestCase
     public const TYPE_ARRAY = 4;
 
     private $returnType = self::TYPE_BOOL;
+    private $response = '';
 
     /**
      * execute
@@ -22,7 +23,7 @@ class YkAppTest extends TestCase
      * @param  array $args
      * @return void
      */
-    protected function execute(string $class, array $constructorArgs, string $method, array $args)
+    protected function execute(string $class, array $constructorArgs, string $method, array $args): bool
     {
         //Target our class
         $reflector = new ReflectionClass($class);
@@ -38,27 +39,27 @@ class YkAppTest extends TestCase
             switch ($param->getType()) {
                 case 'int':
                     if (false === is_int($args[$index])) {
-                        return $this->returnFailureResponse();
+                        return $this->returnResponse();
                     }
                     break;
                 case 'string':
                     if (false === is_string($args[$index])) {
-                        return $this->returnFailureResponse();
+                        return $this->returnResponse();
                     }
                     break;
                 case 'float':
                     if (false === is_float($args[$index])) {
-                        return $this->returnFailureResponse();
+                        return $this->returnResponse();
                     }
                     break;
                 case 'bool':
                     if (false === is_bool($args[$index])) {
-                        return $this->returnFailureResponse();
+                        return $this->returnResponse();
                     }
                     break;
                 case 'array':
                     if (false === is_array($args[$index])) {
-                        return $this->returnFailureResponse();
+                        return $this->returnResponse();
                     }
                     break;
             }
@@ -67,28 +68,33 @@ class YkAppTest extends TestCase
         $classObj = $reflector->newInstanceArgs($constructorArgs);
 
         $reflectionMethod = new ReflectionMethod($class, $method);
-        return $reflectionMethod->invokeArgs($classObj, $args);
+        $this->response = $reflectionMethod->invokeArgs($classObj, $args);
+        return $this->returnResponse();
     }
     
     /**
-     * returnFailureResponse
+     * returnResponse
      *
-     * @return mixed
+     * @return bool
      */
-    private function returnFailureResponse()
+    private function returnResponse(): bool
     {
+        if (empty($this->response)) {
+            return false;
+        }
+
         switch ($this->returnType) {
             case self::TYPE_BOOL:
-                return false;
+                return is_bool($this->response);
                 break;
             case self::TYPE_INT:
-                return 0;
+                return is_int($this->response);
                 break;
             case self::TYPE_STRING:
-                return '';
+                return is_string($this->response);
                 break;
             case self::TYPE_ARRAY:
-                return [];
+                return is_array($this->response);
                 break;
             
             default:
@@ -98,13 +104,23 @@ class YkAppTest extends TestCase
     }
     
     /**
-     * setFailureReturnType
+     * expectedReturnType
      *
      * @param  int $returnType
      * @return void
      */
-    public function setFailureReturnType(int $returnType): void
+    protected function expectedReturnType(int $returnType): void
     {
         $this->returnType = $returnType;
+    }
+        
+    /**
+     * getResponse
+     *
+     * @return mixed
+     */
+    protected function getResponse()
+    {
+        return $this->response;
     }
 }
