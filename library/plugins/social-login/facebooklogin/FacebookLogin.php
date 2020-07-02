@@ -120,6 +120,11 @@ class FacebookLogin extends SocialMediaAuthBase
      */
     public function verifyAccessToken(string $accessToken, string $state = ''): bool
     {
+        if (empty($accessToken)) {
+            $this->error = Labels::getLabel('MSG_INVALID_ACCESS_TOKEN', $this->langId);
+            return false;
+        }
+
         if (!empty($state)) {
             $this->helper->getPersistentDataHandler()->set('state', $state);
         }
@@ -128,17 +133,19 @@ class FacebookLogin extends SocialMediaAuthBase
 
         try {
             $graphResponse = $this->fbAuthObj->get('/me?fields=id, name, email, first_name, last_name');
-            $fbUser = $graphResponse->getGraphUser();
+            $this->response = $graphResponse->getGraphUser();
+            if (empty($this->response)) {
+                $this->error = Labels::getLabel('MSG_UNABLE_TO_RETRIEVE_USER', $this->langId);
+                return false;
+            }
+            return true;
         } catch (FacebookResponseException $e) {
             $this->error = Labels::getLabel('MSG_GRAPH_RETURNED_AN_ERROR:_', $this->langId);
             $this->error .= $e->getMessage();
-            return false;
         } catch (FacebookSDKException $e) {
             $this->error = Labels::getLabel('MSG_FACEBOOK_SDK_RETURNED_AN_ERROR:_', $this->langId);
             $this->error .= $e->getMessage();
-            return false;
         }
-        $this->response = $fbUser;
-        return true;
+        return false;
     }
 }

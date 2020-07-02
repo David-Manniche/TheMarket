@@ -1,26 +1,6 @@
 <?php
 class YkPluginTest extends YkAppTest
 {
-    protected $classObj = '';
-    protected $error = '';
-
-    /**
-     * init
-     *
-     * @return bool
-     */
-    protected function init(): bool
-    {
-        $class = static::KEY_NAME;
-        $this->langId = CommonHelper::getLangId();
-        $this->classObj = new $class($this->langId);
-        if (method_exists($this->classObj, 'init') && false === $this->classObj->init()) {
-            $this->error = $this->classObj->getError();
-            return false;
-        }
-        return true;
-    }
-
     /**
      * setupBeforeClass - This will treat as constructor.
      *

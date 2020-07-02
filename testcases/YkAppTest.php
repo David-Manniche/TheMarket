@@ -12,7 +12,9 @@ class YkAppTest extends TestCase
     public const TYPE_ARRAY = 4;
 
     private $returnType = self::TYPE_BOOL;
-    private $response = '';
+    private $result = '';
+    private $error = '';
+    public $classObj = '';
 
     /**
      * execute
@@ -21,9 +23,9 @@ class YkAppTest extends TestCase
      * @param  array $constructorArgs
      * @param  string $method
      * @param  array $args
-     * @return void
+     * @return mixed
      */
-    protected function execute(string $class, array $constructorArgs, string $method, array $args): bool
+    protected function execute(string $class, array $constructorArgs, string $method, array $args)
     {
         //Target our class
         $reflector = new ReflectionClass($class);
@@ -31,74 +33,68 @@ class YkAppTest extends TestCase
         //Get the parameters of a method
         $parameters = $reflector->getMethod($method)->getParameters();
 
+        $invalidParam = false;
         foreach ($parameters as $index => $param) {
-            if ($param->isOptional() && empty($args[$index])) {
+            $paramValue = $args[$index];
+            if ($param->isOptional() && empty($paramValue)) {
                 continue;
             }
 
-            switch ($param->getType()) {
+            $paramName = $param->getName();
+            $paramType = $param->getType();
+
+            switch ($paramType) {
                 case 'int':
-                    if (false === is_int($args[$index])) {
-                        return $this->returnResponse();
-                    }
+                    $invalidParam = (false === is_int($paramValue));
                     break;
                 case 'string':
-                    if (false === is_string($args[$index])) {
-                        return $this->returnResponse();
-                    }
+                    $invalidParam = (false === is_string($paramValue));
                     break;
                 case 'float':
-                    if (false === is_float($args[$index])) {
-                        return $this->returnResponse();
-                    }
+                    $invalidParam = (false === is_float($paramValue));
                     break;
                 case 'bool':
-                    if (false === is_bool($args[$index])) {
-                        return $this->returnResponse();
-                    }
+                    $invalidParam = (false === is_bool($paramValue));
                     break;
                 case 'array':
-                    if (false === is_array($args[$index])) {
-                        return $this->returnResponse();
-                    }
+                    $invalidParam = (false === is_array($paramValue));
                     break;
+            }
+
+            if (true === $invalidParam) {
+                $msg = Labels::getLabel('MSG_INVALID_{PARAM}_ARGUMENT_TYPE_{WRONG-PARAM-TYPE}_EXPECTED_{PARAM-TYPE}', CommonHelper::getLangId());
+                $replaceData = ['{PARAM}' => $paramName, '{WRONG-PARAM-TYPE}' => gettype($paramValue), '{PARAM-TYPE}' => $paramType];
+                $this->error = CommonHelper::replaceStringData($msg, $replaceData);
+                return false;
             }
         }
       
-        $classObj = $reflector->newInstanceArgs($constructorArgs);
+        $this->classObj = $reflector->newInstanceArgs($constructorArgs);
+        
+        if (method_exists($this->classObj, 'init') && false === $this->classObj->init()) {
+            $this->error = $this->classObj->getError();
+            return false;
+        }
 
         $reflectionMethod = new ReflectionMethod($class, $method);
-        $this->response = $reflectionMethod->invokeArgs($classObj, $args);
+        $this->result = $reflectionMethod->invokeArgs($this->classObj, $args);
         return $this->returnResponse();
     }
     
     /**
      * returnResponse
      *
-     * @return bool
+     * @return mixed
      */
-    private function returnResponse(): bool
+    private function returnResponse()
     {
-        if (empty($this->response)) {
-            return false;
-        }
-
         switch ($this->returnType) {
-            case self::TYPE_BOOL:
-                return is_bool($this->response);
-                break;
-            case self::TYPE_INT:
-                return is_int($this->response);
-                break;
-            case self::TYPE_STRING:
-                return is_string($this->response);
-                break;
             case self::TYPE_ARRAY:
-                return is_array($this->response);
+                return is_array($this->result);
                 break;
             
             default:
-                return false;
+                return $this->result;
                 break;
         }
     }
@@ -109,18 +105,28 @@ class YkAppTest extends TestCase
      * @param  int $returnType
      * @return void
      */
-    protected function expectedReturnType(int $returnType): void
+    public function expectedReturnType(int $returnType): void
     {
         $this->returnType = $returnType;
     }
         
     /**
-     * getResponse
+     * getResult
      *
      * @return mixed
      */
-    protected function getResponse()
+    public function getResult()
     {
-        return $this->response;
+        return $this->result;
+    }
+
+    /**
+     * getError
+     *
+     * @return string
+     */
+    public function getError(): string
+    {
+        return $this->error;
     }
 }
