@@ -22,8 +22,9 @@ class FacebookLoginTest extends YkPluginTest
      * testVerifyAccessToken
      *
      * @dataProvider setInput
+     * @param  mixed $expected
      * @param  mixed $accessToken
-     * @param  mixed $accessToken
+     * @param  mixed $state
      * @return void
      */
     public function testVerifyAccessToken(bool $expected, $accessToken, $state = ''): void

@@ -86,7 +86,6 @@ class GoogleLogin extends SocialMediaAuthBase
         }
 
         $resp = $this->client->authenticate($code);
-
         if (isset($resp['error']) && isset($resp['error_description'])) {
             $this->error = $resp['error'] . ' - ' . $resp['error_description'];
             return false;
