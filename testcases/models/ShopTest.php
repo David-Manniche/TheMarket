@@ -1,24 +1,36 @@
 <?php
 class ShopTest extends YkModelTest
 {
-   
     /**
+     * testIsShopActive
+     *
      * @dataProvider shopActiveData
+     * @param  bool $expected
+     * @param  mixed $userId
+     * @param  mixed $shopId
+     * @return void
      */
-    public function testIsShopActive($userId, $shopId, $expected)
+    public function testIsShopActive($expected, $userId, $shopId)
     {
-        $shop = new Shop();
-        $result = $shop->isShopActive($userId, $shopId);
+        $result = $this->execute('Shop', [], 'isShopActive', [$userId, $shopId]);
         $this->assertEquals($expected, $result);
     }
-    
+        
+    /**
+     * shopActiveData
+     *
+     * @return array
+     */
     public function shopActiveData()
     {
         return array(
-            array('test', '1', false), // Invalid userid and valid shopid
-            array('4', 'test', true), // Invalid shopid and valid userid
-            array('test', 'test', false), // Invalid userid and shopid
-            array('4', '1', true), // Valid userid and shopid
+            array(false, 'test', '1'), // Invalid userid and valid shopid
+            array(false, 'test', 1), // Invalid userid and valid shopid
+            array(false, '4', 'test'), // Invalid shopid and valid userid
+            array(false, 4, 'test'), // Invalid shopid and valid userid
+            array(false, 'test', 'test'), // Invalid userid and shopid
+            array(false, '4', '1'), // Valid userid and shopid
+            array(true, 4, 1), // Valid userid and shopid
         );
     }
 }
