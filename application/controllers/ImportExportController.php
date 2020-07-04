@@ -5,9 +5,11 @@ class ImportExportController extends SellerBaseController
     public function __construct($action)
     {
         parent::__construct($action);
-        if (!Shop::isShopActive($this->userParentId, 0, true)) {
+        $shop = new Shop(0, $this->userParentId);
+        if (!$shop->isActive()) {
             FatApp::redirectUser(CommonHelper::generateUrl('Seller', 'shop'));
         }
+        
         if (!UserPrivilege::isUserHasValidSubsription($this->userParentId)) {
             Message::addInfo(Labels::getLabel("MSG_Please_buy_subscription", $this->siteLangId));
             FatApp::redirectUser(CommonHelper::generateUrl('Seller', 'Packages'));

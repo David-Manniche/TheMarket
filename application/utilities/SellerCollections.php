@@ -58,7 +58,7 @@ trait SellerCollections
         $shop_id = $this->commonShopCollection();
         $colectionForm = $this->getCollectionGeneralForm('', $shop_id);
         $shopcolDetails = ShopCollection::getCollectionGeneralDetail($shop_id, $scollection_id);
-        $baseUrl = Shop::getShopUrl($shop_id, 'urlrewrite_custom');
+        $baseUrl = Shop::getRewriteCustomUrl($shop_id);
         if (!empty($shopcolDetails)) {
             /* url data[ */
             $urlSrch = UrlRewrite::getSearchObject();

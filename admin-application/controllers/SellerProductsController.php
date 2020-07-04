@@ -1556,7 +1556,7 @@ class SellerProductsController extends AdminBaseController
         $className = ucwords(implode(' ', $arr));
         if ($action == 'index') {
             $nodes[] = array('title' => $className);
-        } else if ($action == 'upsellProducts') {
+        } elseif ($action == 'upsellProducts') {
             $nodes[] = array('title' => Labels::getLabel('LBL_BUY_TOGETHER_PRODUCTS', $this->adminLangId));
         } else {
             $arr = explode('-', FatUtility::camel2dashed($action));
@@ -2226,7 +2226,16 @@ class SellerProductsController extends AdminBaseController
     /* Catalog section closed ] */
     private function isShopActive($userId, $shopId = 0, $returnResult = false)
     {
-        return Shop::isShopActive($userId, $shopId, $returnResult);
+        $shop = new Shop($shopId, $userId);
+        if (false == $returnResult) {
+            return $shop->isActive();
+        }
+
+        if ($shop->isActive()) {
+            return $shop->getData();
+        }
+
+        return false;        
     }
 
     private function addNewCatalogRequestForm()
@@ -2471,7 +2480,7 @@ class SellerProductsController extends AdminBaseController
             );
         }
 
-        $sellerProdObj = new SellerProduct($selprodId);        
+        $sellerProdObj = new SellerProduct($selprodId);
         if (!$sellerProdObj->changeStatus($status)) {
             Message::addErrorMessage($sellerProdObj->getError());
             FatUtility::dieWithError(Message::getHtml());
@@ -2995,7 +3004,7 @@ class SellerProductsController extends AdminBaseController
         $srch = SellerProduct::searchUpsellProducts($this->adminLangId);
         $srch->addCondition(SellerProduct::DB_TBL_UPSELL_PRODUCTS_PREFIX . 'sellerproduct_id', '=', $selprod_id);
         $srch->addGroupBy('selprod_id');
-        $srch->addGroupBy('upsell_sellerproduct_id'); 
+        $srch->addGroupBy('upsell_sellerproduct_id');
         $srch->addOrder('selprod_id', 'DESC');
         $rs = $srch->getResultSet();
         $upsellProds = FatApp::getDb()->fetchAll($rs);
@@ -3099,7 +3108,7 @@ class SellerProductsController extends AdminBaseController
             $srch->addOrder('priority', 'DESC');
             $srch->addCondition('upsell_sellerproduct_id', '=', $productId);
             $srch->addGroupBy('selprod_id');
-            $srch->addGroupBy('upsell_sellerproduct_id'); 
+            $srch->addGroupBy('upsell_sellerproduct_id');
             $srch->doNotCalculateRecords();
             $srch->doNotLimitRecords();
             $rs = $srch->getResultSet();

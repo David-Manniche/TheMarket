@@ -202,7 +202,7 @@ class ShopsController extends AdminBaseController
             FatUtility::dieJsonError(Message::getHtml());
         }
 
-        $shop_id = $post['shop_id'];
+        $shop_id = FatUtility::int($post['shop_id']);
         unset($post['shop_id']);
 
         $shop = new Shop($shop_id);
@@ -298,7 +298,7 @@ class ShopsController extends AdminBaseController
         $this->objPrivilege->canEditShops();
         $post = FatApp::getPostedData();
 
-        $shop_id = $post['shop_id'];
+        $shop_id = FatUtility::int($post['shop_id']);
         $lang_id = $post['lang_id'];
 
         if ($shop_id == 0 || $lang_id == 0) {
@@ -744,7 +744,7 @@ class ShopsController extends AdminBaseController
 
 
 
-        $shop_id = $shopDetails['shop_id'];
+        $shop_id = FatUtility::int($shopDetails['shop_id']);
 
         $shopObj = new Shop($shop_id);
         $data = array('shop_ltemplate_id' => $ltemplate_id);
@@ -824,7 +824,7 @@ class ShopsController extends AdminBaseController
             $rs = $urlSrch->getResultSet();
             $urlRow = FatApp::getDb()->fetch($rs);
             if ($urlRow) {
-                $shopUrl = Shop::getShopUrl($shop_id, 'urlrewrite_custom');
+                $shopUrl = Shop::getRewriteCustomUrl($shop_id);
                 $shopcolDetails['urlrewrite_custom'] = str_replace('-' . $shopUrl, '', $urlRow['urlrewrite_custom']);
             }
             /* ] */
@@ -832,7 +832,7 @@ class ShopsController extends AdminBaseController
             $colectionForm->fill($shopcolDetails);
             $this->set('scollection_id', $scollection_id);
         }
-        $this->set('baseUrl', Shop::getShopUrl($shop_id, 'urlrewrite_custom'));
+        $this->set('baseUrl', Shop::getRewriteCustomUrl($shop_id));
         $this->set('languages', Language::getAllNames());
         $this->set('colectionForm', $colectionForm);
         $this->_template->render(false, false);

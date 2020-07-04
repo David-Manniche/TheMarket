@@ -9,7 +9,7 @@ foreach ($slides as $index => $slideDetail) {
 
     switch ($urlTypeData['urlType']) {
         case applicationConstants::URL_TYPE_SHOP:
-            $slides[$index]['slide_url_title'] = Shop::getShopName($urlTypeData['recordId'], $siteLangId);
+            $slides[$index]['slide_url_title'] = Shop::getName($urlTypeData['recordId'], $siteLangId);
             break;
         case applicationConstants::URL_TYPE_PRODUCT:
             $slides[$index]['slide_url_title'] = SellerProduct::getProductDisplayTitle($urlTypeData['recordId'], $siteLangId);
@@ -104,7 +104,7 @@ foreach ($banners as $location => $bannerLocationDetail) {
 
         switch ($urlTypeData['urlType']) {
             case applicationConstants::URL_TYPE_SHOP:
-                $banners[$location]['banners'][$index]['banner_url_title'] = Shop::getShopName($urlTypeData['recordId'], $siteLangId);
+                $banners[$location]['banners'][$index]['banner_url_title'] = Shop::getName($urlTypeData['recordId'], $siteLangId);
                 break;
             case applicationConstants::URL_TYPE_PRODUCT:
                 $banners[$location]['banners'][$index]['banner_url_title'] = SellerProduct::getProductDisplayTitle($urlTypeData['recordId'], $siteLangId);
