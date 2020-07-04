@@ -741,30 +741,28 @@ class SellerController extends SellerBaseController
             FatUtility::dieJsonError(Message::getHtml());
         }
 
-        if (PaymentMethods::TYPE_PLUGIN == $orderDetail['order_pmethod_type']) {
-            $pluginKey = Plugin::getAttributesById($orderDetail['order_pmethod_id'], 'plugin_code');
+		$pluginKey = Plugin::getAttributesById($orderDetail['order_pmethod_id'], 'plugin_code');
 
-            $paymentMethodObj = new PaymentMethods();
-            if (true === $paymentMethodObj->canRefundToCard($pluginKey, $this->siteLangId)) {
-                if (false == $paymentMethodObj->initiateRefund($op_id, PaymentMethods::REFUND_TYPE_CANCEL)) {
-                    FatUtility::dieJsonError($paymentMethodObj->getError());
-                }
+		$paymentMethodObj = new PaymentMethods();
+		if (true === $paymentMethodObj->canRefundToCard($pluginKey, $this->siteLangId)) {
+			if (false == $paymentMethodObj->initiateRefund($op_id, PaymentMethods::REFUND_TYPE_CANCEL)) {
+				FatUtility::dieJsonError($paymentMethodObj->getError());
+			}
 
-                $resp = $paymentMethodObj->getResponse();
-                if (empty($resp)) {
-                    FatUtility::dieJsonError(Labels::getLabel('LBL_UNABLE_TO_PLACE_GATEWAY_REFUND_REQUEST', $this->siteLangId));
-                }
+			$resp = $paymentMethodObj->getResponse();
+			if (empty($resp)) {
+				FatUtility::dieJsonError(Labels::getLabel('LBL_UNABLE_TO_PLACE_GATEWAY_REFUND_REQUEST', $this->siteLangId));
+			}
 
-                // Debit from wallet if plugin/payment method support's direct payment to card of customer.
-                if (!empty($resp->id)) {
-                    $childOrderInfo = $orderObj->getOrderProductsByOpId($op_id, $this->siteLangId);
-                    $txnAmount = $paymentMethodObj->getTxnAmount();
-                    $comments = Labels::getLabel('LBL_TRANSFERED_TO_YOUR_CARD._INVOICE_#{invoice-no}', $this->siteLangId);
-                    $comments = CommonHelper::replaceStringData($comments, ['{invoice-no}' => $childOrderInfo['op_invoice_number']]);
-                    Transactions::debitWallet($childOrderInfo['order_user_id'], Transactions::TYPE_ORDER_REFUND, $txnAmount, $this->siteLangId, $comments, $op_id, $resp->id);
-                }
-            }
-        }
+			// Debit from wallet if plugin/payment method support's direct payment to card of customer.
+			if (!empty($resp->id)) {
+				$childOrderInfo = $orderObj->getOrderProductsByOpId($op_id, $this->siteLangId);
+				$txnAmount = $paymentMethodObj->getTxnAmount();
+				$comments = Labels::getLabel('LBL_TRANSFERED_TO_YOUR_CARD._INVOICE_#{invoice-no}', $this->siteLangId);
+				$comments = CommonHelper::replaceStringData($comments, ['{invoice-no}' => $childOrderInfo['op_invoice_number']]);
+				Transactions::debitWallet($childOrderInfo['order_user_id'], Transactions::TYPE_ORDER_REFUND, $txnAmount, $this->siteLangId, $comments, $op_id, $resp->id);
+			}
+		}
 
         Message::addMessage(Labels::getLabel("MSG_Updated_Successfully", $this->siteLangId));
         $this->set('msg', Labels::getLabel('MSG_Updated_Successfully', $this->siteLangId));
@@ -2804,7 +2802,7 @@ class SellerController extends SellerBaseController
 
         $srch->doNotCalculateRecords();
         $srch->doNotLimitRecords();
-        $srch->addMultipleFields(array('orrequest_id', 'order_pmethod_id', 'order_pmethod_type'));
+        $srch->addMultipleFields(array('orrequest_id', 'order_pmethod_id'));
 
         $rs = $srch->getResultSet();
         $requestRow = FatApp::getDb()->fetch($rs);
@@ -2815,14 +2813,12 @@ class SellerController extends SellerBaseController
         }
 
         $transferTo = PaymentMethods::MOVE_TO_CUSTOMER_WALLET;
-        if (PaymentMethods::TYPE_PLUGIN == $requestRow['order_pmethod_type']) {
-            $pluginKey = Plugin::getAttributesById($requestRow['order_pmethod_id'], 'plugin_code');
+		$pluginKey = Plugin::getAttributesById($requestRow['order_pmethod_id'], 'plugin_code');
 
-            $paymentMethodObj = new PaymentMethods();
-            if (true === $paymentMethodObj->canRefundToCard($pluginKey, $this->siteLangId)) {
-                $transferTo = PaymentMethods::MOVE_TO_CUSTOMER_CARD;
-            }
-        }
+		$paymentMethodObj = new PaymentMethods();
+		if (true === $paymentMethodObj->canRefundToCard($pluginKey, $this->siteLangId)) {
+			$transferTo = PaymentMethods::MOVE_TO_CUSTOMER_CARD;
+		}
 
         $orrObj = new OrderReturnRequest();
         if (!$orrObj->approveRequest($requestRow['orrequest_id'], $user_id, $this->siteLangId, $transferTo)) {

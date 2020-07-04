@@ -15,7 +15,6 @@ if (null != $btnFld) {
 
 <hr>
 <div class="section__body">
-    <h6 class="content-header-title"><?php echo $pageTitle; ?></h6>
     <?php $this->includeTemplate('stripe-connect/fieldsErrors.php', ['errors' => $errors]); ?>
-        <?php echo $frm->getFormHtml(); ?>
+    <?php echo $frm->getFormHtml(); ?>
 </div>

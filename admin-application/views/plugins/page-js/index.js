@@ -86,22 +86,31 @@ $(document).ready(function () {
         });
     };
 
-    toggleStatus = function (obj) {
-        if (!confirm(langLbl.confirmUpdateStatus)) { return; }
+    toggleStatus = function (obj, status, confirmBox = true) {
+        if (confirmBox && !confirm(langLbl.confirmUpdateStatus)) { return; }
         var pluginId = parseInt(obj.id);
         if (pluginId < 1) {
             fcom.displayErrorMessage(langLbl.invalidRequest);
             return false;
         }
-        data = 'pluginId=' + pluginId;
+        data = 'pluginId=' + pluginId + "&status=" + status;
         fcom.ajax(fcom.makeUrl('Plugins', 'changeStatus'), data, function (res) {
             var ans = $.parseJSON(res);
             if (ans.status == 1) {
                 fcom.displaySuccessMessage(ans.msg);
-                $(obj).toggleClass("active");
-                setTimeout(function () { reloadList(); }, 1000);
+                $(obj).toggleClass("active").attr('onclick', 'toggleStatus(this, ' + (0 < status ? 0 : 1) + ')');
             } else {
-                fcom.displayErrorMessage(ans.msg);
+                if ('undefined' != typeof ans.types) {
+                    if (!confirm(ans.msg)) {
+                        return;
+                    }
+                    var data = 'pluginTypes=' + (ans.types).join('_');
+                    fcom.ajax(fcom.makeUrl('Plugins', 'changeStatusByType'), data, function (res) {
+                        toggleStatus(obj, status, false);
+                    });
+                } else {
+                    fcom.displayErrorMessage(ans.msg);
+                }
             }
         });
     };

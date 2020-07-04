@@ -280,6 +280,7 @@ class PluginsController extends AdminBaseController
     {
         $this->objPrivilege->canEditPlugins();
         $pluginId = FatApp::getPostedData('pluginId', FatUtility::VAR_INT, 0);
+        $status = FatApp::getPostedData('status', FatUtility::VAR_INT, 0);
         if (0 >= $pluginId) {
             FatUtility::dieJsonError($this->str_invalid_request_id);
         }
@@ -289,11 +290,40 @@ class PluginsController extends AdminBaseController
         if ($data == false) {
             FatUtility::dieJsonError($this->str_invalid_request);
         }
-
-        $status = ($data['plugin_active'] == applicationConstants::ACTIVE) ? applicationConstants::INACTIVE : applicationConstants::ACTIVE;
-        $error = '';
+        
         if (false == Plugin::updateStatus($data['plugin_type'], $status, $pluginId, $error)) {
+            $groupType = Plugin::getGroupType($data['plugin_type']);
+            if (!empty($groupType)) {
+                $error = [
+                    'status' => Plugin::RETURN_FALSE,
+                    'msg' => $error,
+                    'types' => array_values(array_diff($groupType, [$data['plugin_type']]))
+                ];
+            }
             FatUtility::dieJsonError($error);
+        }
+
+        $this->set('msg', $this->str_update_record);
+        $this->_template->render(false, false, 'json-success.php');
+    }
+
+    public function changeStatusByType()
+    {
+        $this->objPrivilege->canEditPlugins();
+        $pluginTypes = FatApp::getPostedData('pluginTypes', FatUtility::VAR_STRING, '');
+        $pluginTypes = explode('_', $pluginTypes);
+        if (empty($pluginTypes)) {
+            FatUtility::dieJsonError(Labels::getLabel('MSG_INVALID_REQUEST', $this->adminLangId));
+        }
+
+        foreach ($pluginTypes as $pluginType) {
+            $groupType = Plugin::getGroupType($pluginType);
+            if (empty($groupType)) {
+                continue;
+            }
+            if (false == Plugin::updateStatus($pluginType, Plugin::INACTIVE, null, $error)) {
+                FatUtility::dieJsonError($error);
+            }
         }
 
         $this->set('msg', $this->str_update_record);

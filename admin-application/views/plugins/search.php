@@ -73,7 +73,7 @@ foreach ($arr_listing as $sn => $row) {
                 if (!$row['plugin_active']) {
                     $active = '';
                 }
-                $statucAct = ($canEdit === true) ? 'toggleStatus(this)' : '';
+                $statucAct = ($canEdit === true) ? 'toggleStatus(this, ' . ($row['plugin_active'] > 0 ? 0 : 1) . ')' : '';
                 $str = '<label id="' . $row['plugin_id'] . '" class="statustab ' . $active . '" onclick="' . $statucAct . '">
                 <span data-off="' . Labels::getLabel('LBL_Active', $adminLangId) . '" data-on="' . Labels::getLabel('LBL_Inactive', $adminLangId) . '" class="switch-labels"></span>
                 <span class="switch-handles"></span>

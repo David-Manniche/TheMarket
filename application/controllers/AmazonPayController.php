@@ -3,7 +3,7 @@
 require_once CONF_INSTALLATION_PATH . 'library/payment-plugins/PayWithAmazon/Client.php';
 class AmazonPayController extends PaymentController
 {
-    private $key_name = "Amazon";
+    public const KEY_NAME = 'Amazon';
     private $error = false;
     private $paymentSettings = false;
     private $currencyCode;
@@ -209,8 +209,7 @@ class AmazonPayController extends PaymentController
 
     private function getPaymentSettings()
     {
-        $pmObj = new PaymentSettings($this->key_name);
-        $paymentSettings = $pmObj->getPaymentSettings();
-        return $paymentSettings;
+        $pluginSetting = new PluginSetting(0, self::KEY_NAME);
+        return $pluginSetting->get($this->siteLangId);
     }
 }

@@ -6,9 +6,6 @@ class PaymentMethods extends MyAppModel
     public const DB_TBL_LANG = 'tbl_payment_methods_lang';
     public const DB_TBL_PREFIX = 'pmethod_';
     
-    public const TYPE_DEFAULT = 1;
-    public const TYPE_PLUGIN = 2;
-
     public const MOVE_TO_ADMIN_WALLET = 0;
     public const MOVE_TO_CUSTOMER_WALLET = 1;
     public const MOVE_TO_CUSTOMER_CARD = 2;

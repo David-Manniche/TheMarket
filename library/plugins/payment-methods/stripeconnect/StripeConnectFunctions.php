@@ -3,6 +3,33 @@
 trait StripeConnectFunctions
 {
     /**
+     * boolParams - Used to get bool type request params
+     *
+     * @var array
+     */
+    public $boolParams = [
+        "director",
+        "executive",
+        "owner",
+        "representative",
+    ];
+
+    /**
+     * convertToBool
+     *
+     * @param  array $requestParam
+     * @return void
+     */
+    public function convertToBool(array &$requestParam): void
+    {
+        array_walk_recursive($requestParam, function (&$val, $key) {
+            if (in_array($key, $this->boolParams)) {
+                $val = (bool) $val;
+            }
+        });
+    }
+
+    /**
      * create - Create Custom Account
      *
      * @param array $requestParam
@@ -72,11 +99,10 @@ trait StripeConnectFunctions
      */
     private function createPerson(array $requestParam): object
     {
-        array_walk_recursive($requestParam, function (&$val) {
-            if (!is_object($val) && ($val == 0 || $val == 1)) {
-                $val = 0 < $val ? 'true' : 'false';
-            }
-        });
+        $this->convertToBool($requestParam);
+        /* var_dump($requestParam);
+CommonHelper::printArray($requestParam);
+die; */
         return $this->stripe->accounts->createPerson(
             $this->getAccountId(),
             $requestParam
@@ -91,11 +117,10 @@ trait StripeConnectFunctions
      */
     private function updatePerson(array $requestParam): object
     {
-        array_walk_recursive($requestParam, function (&$val) {
-            if (!is_object($val) && ($val == 0 || $val == 1)) {
-                $val = 0 < $val ? 'true' : 'false';
-            }
-        });
+        $this->convertToBool($requestParam);
+        /* var_dump($requestParam);
+CommonHelper::printArray($requestParam);
+die; */
         return $this->stripe->accounts->updatePerson(
             $this->getAccountId(),
             $this->getRelationshipPersonId(),
@@ -117,7 +142,7 @@ trait StripeConnectFunctions
             'file' => $fp
         ]);
     }
-    
+
     /**
      * delete
      *
@@ -283,7 +308,7 @@ trait StripeConnectFunctions
             ["source" => $requestParam['cardToken']]
         );
     }
-    
+
     /**
      * deleteSource
      *
@@ -298,7 +323,7 @@ trait StripeConnectFunctions
             $cardId
         );
     }
-    
+
     /**
      * listAllCards
      *
@@ -340,127 +365,5 @@ trait StripeConnectFunctions
     private function charge(array $requestParam): object
     {
         return $this->stripe->charges->create([$requestParam]);
-    }
-
-
-    /**
-     * doRequest
-     *
-     * @param  mixed $requestType
-     * @return mixed
-     */
-    public function doRequest(int $requestType, array $requestParam = [])
-    {
-        try {
-            switch ($requestType) {
-                case self::REQUEST_CREATE_ACCOUNT:
-                    return $this->createAccount();
-                    break;
-                case self::REQUEST_RETRIEVE_ACCOUNT:
-                    return $this->retrieve();
-                    break;
-                case self::REQUEST_UPDATE_ACCOUNT:
-                    return $this->updateAccount($requestParam);
-                    break;
-                case self::REQUEST_PERSON_TOKEN:
-                    return $this->getPersonToken();
-                    break;
-                case self::REQUEST_ADD_BANK_ACCOUNT:
-                    return $this->addFinancialInfo($requestParam);
-                    break;
-                case self::REQUEST_UPDATE_BUSINESS_TYPE:
-                    return $this->updateBusinessType($requestParam);
-                    break;
-                case self::REQUEST_CREATE_PERSON:
-                    return $this->createPerson($requestParam);
-                    break;
-                case self::REQUEST_UPDATE_PERSON:
-                    return $this->updatePerson($requestParam);
-                    break;
-                case self::REQUEST_UPLOAD_VERIFICATION_FILE:
-                    return $this->createFile(reset($requestParam));
-                    break;
-                case self::REQUEST_DELETE_ACCOUNT:
-                    return $this->delete();
-                    break;
-                case self::REQUEST_CREATE_SESSION:
-                    return $this->createSession($requestParam);
-                    break;
-                case self::REQUEST_CREATE_PRICE:
-                    return $this->createPrice($requestParam);
-                    break;
-                case self::REQUEST_CREATE_CUSTOMER:
-                    return $this->createCustomer($requestParam);
-                    break;
-                case self::REQUEST_UPDATE_CUSTOMER:
-                    return $this->updateCustomer($requestParam);
-                    break;
-                case self::REQUEST_CREATE_LOGIN_LINK:
-                    return $this->loginLink();
-                    break;
-                case self::REQUEST_ALL_CONNECT_ACCOUNTS:
-                    return $this->connectedAccounts($requestParam);
-                    break;
-                case self::REQUEST_INITIATE_REFUND:
-                    return $this->requestRefund($requestParam);
-                    break;
-                case self::REQUEST_TRANSFER_AMOUNT:
-                    return $this->transferAmount($requestParam);
-                    break;
-                case self::REQUEST_REVERSE_TRANSFER:
-                    return $this->reverseTransfer($requestParam);
-                    break;
-                case self::REQUEST_ADD_CARD:
-                    return $this->createSource($requestParam);
-                    break;
-                case self::REQUEST_REMOVE_CARD:
-                    return $this->deleteSource($requestParam);
-                    break;
-                case self::REQUEST_LIST_ALL_CARDS:
-                    return $this->listAllCards();
-                    break;
-                case self::REQUEST_CREATE_CARD_TOKEN:
-                    return $this->createCardToken($requestParam);
-                    break;
-                case self::REQUEST_CHARGE:
-                    return $this->charge($requestParam);
-                    break;
-            }
-        } catch (\Stripe\Exception\CardException $e) {
-            // Since it's a decline, \Stripe\Exception\CardException will be caught
-            $this->error = $e->getError()->param . ' - ' . $e->getMessage();
-        } catch (\Stripe\Exception\RateLimitException $e) {
-            // Too many requests made to the API too quickly
-            $this->error = $e->getError()->param . ' - ' . $e->getMessage();
-        } catch (\Stripe\Exception\InvalidRequestException $e) {
-            // Invalid parameters were supplied to Stripe's API
-            $this->error = $e->getError()->param . ' - ' . $e->getMessage();
-        } catch (\Stripe\Exception\AuthenticationException $e) {
-            // Authentication with Stripe's API failed
-            $this->error = $e->getError()->param . ' - ' . $e->getMessage();
-            // (maybe you changed API keys recently)
-        } catch (\Stripe\Exception\ApiConnectionException $e) {
-            // Network communication with Stripe failed
-            $this->error = $e->getError()->param . ' - ' . $e->getMessage();
-        } catch (\Stripe\Exception\ApiErrorException $e) {
-            // Display a very generic error to the user, and maybe send
-            $this->error = $e->getError()->param . ' - ' . $e->getMessage();
-            // yourself an email
-        } catch (\Stripe\Exception\SignatureVerificationException $e) {
-            // Display a very generic error to the user, and maybe send
-            $this->error = $e->getMessage();
-            // yourself an email
-        } catch (\UnexpectedValueException $e) {
-            // Display a very generic error to the user, and maybe send
-            $this->error = $e->getError()->param . ' - ' . $e->getMessage();
-            // yourself an email
-        } catch (Exception $e) {
-            // Something else happened, completely unrelated to Stripe
-            $this->error = $e->getMessage();
-        } catch (Error $e) {
-            // Handle error
-            $this->error = $e->getMessage();
-        }
-        return false;
     }
 }

@@ -25,14 +25,16 @@ $(document).on('change', '.collection-language-js', function() {
     shopCollectionImages(scollection_id, lang_id);
 });
 
-$(document).on("change", "#country", function(){
-    $("#state").attr('disabled', 'disabled');
-    getStatesByCountryCode($(this).val(),'','#state', 'state_code');
+$(document).on("change", ".country", function(){
+    $state = $(this).data("statefield");
+    $("." + $state).removeAttr("disabled");
+    getStatesByCountryCode($(this).val(), '', "." + $state, 'state_code');
 });
 
-$(document).on("change", "#state", function(){
+$(document).on("change", ".state", function(){
     $(this).removeAttr("disabled");
 });
+
 
 (function() {
     var runningAjaxReq = false;

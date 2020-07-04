@@ -264,7 +264,6 @@ class MyAppController extends FatController
     public function getStates($countryId, $stateId = 0, $return = false, $idCol = 'state_id')
     {
         $countryId = FatUtility::int($countryId);
-        $stateId = FatUtility::int($stateId);
 
         $stateObj = new States();
         $statesArr = $stateObj->getStatesByCountryId($countryId, $this->siteLangId, true, $idCol);
@@ -281,8 +280,7 @@ class MyAppController extends FatController
     public function getStatesByCountryCode($countryCode, $stateCode = '')
     {
         $countryId = Countries::getCountryByCode($countryCode, 'country_id');
-        $stateId = States::getStateByCode($stateCode, 'state_id');
-        $this->getStates($countryId, $stateId, false, 'state_code');
+        $this->getStates($countryId, $stateCode, false, 'state_code');
     }
 
     public function getBreadcrumbNodes($action)

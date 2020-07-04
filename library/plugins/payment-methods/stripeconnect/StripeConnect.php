@@ -6,6 +6,7 @@ class StripeConnect extends PaymentMethodBase
     use StripeConnectFunctions;
 
     public const KEY_NAME = __CLASS__;
+
     private $stripe;
     private $stripeAccountId = '';
     private $stripeAccountType;
@@ -371,7 +372,7 @@ class StripeConnect extends PaymentMethodBase
      */
     public function getRelationshipPersonId(): string
     {
-        return $this->getUserMeta('stripe_person_id');
+        return (string) $this->getUserMeta('stripe_person_id');
     }
 
     /**
@@ -394,6 +395,69 @@ class StripeConnect extends PaymentMethodBase
     }
 
     /**
+     * getBusinessTypeFields
+     *
+     * @return array
+     */
+    public function getBusinessTypeFields(string $businessType): array
+    {
+        $businessType = 'individual' == $businessType ? $businessType : 'other';
+
+        $bussinessTypeFileds = [
+            'individual' => [
+                'individual.first_name',
+                'individual.last_name',
+                'individual.email',
+                'individual.phone',
+                'individual.dob.day',
+                'individual.dob.month',
+                'individual.dob.year',
+                'individual.address.line1',
+                'individual.address.city',
+                'individual.address.postal_code',
+                'individual.address.country',
+                'individual.address.state',
+                'individual.verification.document',
+            ],
+            'other' => [
+                'company.address.line1',
+                'company.address.city',
+                'company.address.postal_code',
+                'company.address.country',
+                'company.address.state',
+                'company.name',
+                'company.phone',
+                'company.tax_id',
+                'relationship_person.address.line1',
+                'relationship_person.address.city',
+                'relationship_person.address.postal_code',
+                'relationship_person.address.country',
+                'relationship_person.address.state',
+                'relationship_person.dob.day',
+                'relationship_person.dob.month',
+                'relationship_person.dob.year',
+                'relationship_person.email',
+                'relationship_person.first_name',
+                'relationship_person.last_name',
+                'relationship_person.phone',
+                'relationship_person.ssn_last_4',
+                'relationship.title',
+                'relationship.owner',
+                'relationship.representative'
+            ]
+        ];
+
+        $common = [
+            'business_profile.mcc',
+            'external_account.account_holder_name',
+            'external_account.account_number',
+            'external_account.routing_number',
+        ];
+
+        return array_merge($bussinessTypeFileds[$businessType], $common);
+    }
+
+    /**
      * getRequiredFields
      *
      * @return array
@@ -409,32 +473,34 @@ class StripeConnect extends PaymentMethodBase
         }
         
         $this->userInfoObj = $this->getResponse();
-        if (isset($this->userInfoObj->requirements->currently_due)) {
-            $this->requiredFields  = $this->userInfoObj->requirements->currently_due;
+        // CommonHelper::printArray($this->userInfoObj);
+        $errors = $this->userInfoObj->requirements->errors;
+        $businessType = (string) $this->getUserMeta('stripe_business_type');
+        $currentlyDue = $this->userInfoObj->requirements->currently_due;
+        if (empty($currentlyDue)) {
+            return [];
         }
+
+        $this->requiredFields = $this->getBusinessTypeFields($businessType);
+        
+        $formSubmittedFlag = $this->getUserMeta('stripe_form_submitted');
+
+        if (!empty($formSubmittedFlag) || empty($businessType)) {
+            $this->requiredFields  = $currentlyDue;
+        }
+        // CommonHelper::printArray($currentlyDue);
         return $this->requiredFields;
     }
     
-    /**
-     * isFinancialInfoRequired
-     *
-     * @return bool
-     */
-    public function isFinancialInfoRequired(): bool
-    {
-        if (!empty($this->getAccountId()) && in_array('external_account', $this->getRequiredFields())) {
-            return true;
-        }
-        return false;
-    }
 
     /**
      * updateRequiredFields
      *
      * @param array $requestParam
+     * @param int $updateSubmittedFormFlag
      * @return bool
      */
-    public function updateRequiredFields(array $requestParam): bool
+    public function updateRequiredFields(array $requestParam, int $updateSubmittedFormFlag = 0): bool
     {
         $requestType = '';
         $actionType = 'N/A';
@@ -454,7 +520,18 @@ class StripeConnect extends PaymentMethodBase
                 $requestType = self::REQUEST_UPDATE_ACCOUNT;
                 break;
         }
-
+        
+        if (array_key_exists('external_account', $requestParam)) {
+            $this->getBaseCurrencyCode();
+            $requestParam['external_account']['object'] = 'bank_account';
+            $requestParam['external_account']['country'] = strtoupper($this->userData['country_code']);
+            $requestParam['external_account']['currency'] = $this->systemCurrencyCode;
+        }
+        
+        $formSubmittedFlag = $this->getUserMeta('stripe_form_submitted');
+        if (empty($formSubmittedFlag) && 0 < $updateSubmittedFormFlag) {
+            $this->updateUserMeta('stripe_form_submitted', 1);
+        }
         return $this->doRequest($requestType, $requestParam);
     }
 
@@ -495,10 +572,8 @@ class StripeConnect extends PaymentMethodBase
                     'account_holder_name' => $requestParam['account_holder_name'],
                     'account_number' => $requestParam['account_number'],
                     'account_holder_type' => $businessType,
-                    /*'country' => strtoupper($this->userData['country_code']),
-                    'currency' => $this->systemCurrencyCode,*/
-                    'country' => 'US',
-                    'currency' => 'USD',
+                    'country' => strtoupper($this->userData['country_code']),
+                    'currency' => $this->systemCurrencyCode,
                     'routing_number' => $requestParam['routing_number'],
                 ]
             ];
@@ -519,12 +594,17 @@ class StripeConnect extends PaymentMethodBase
     private function updateAccount(array $requestParam): bool
     {
         $relationship = [];
+        $person = [];
         $personData = [];
 
         $personId = $this->getRelationshipPersonId();
 
         if (array_key_exists('relationship', $requestParam)) {
             $relationship = $requestParam['relationship'];
+            $person = isset($requestParam['relationship_person']) ? $requestParam['relationship_person'] : [];
+            if (!empty($person)) {
+                unset($requestParam['relationship_person']);
+            }
             unset($requestParam['relationship']);
         }
 
@@ -542,7 +622,8 @@ class StripeConnect extends PaymentMethodBase
         }
 
         if (empty($personId) && !empty($relationship)) {
-            $this->resp = $this->doRequest(self::REQUEST_CREATE_PERSON, ['relationship' => $relationship]);
+            $personDataToUpdate = array_merge($person, ['relationship' => $relationship]);
+            $this->resp = $this->doRequest(self::REQUEST_CREATE_PERSON, $personDataToUpdate);
             if (false === $this->resp) {
                 return false;
             }
@@ -622,6 +703,8 @@ class StripeConnect extends PaymentMethodBase
         
         $this->userInfoObj = $this->getResponse();
         $initialElements = $this->userInfoObj->toArray();
+        
+        $this->initialPendingFields = [];
 
         if (!$this->userInfoObj->offsetExists('email') || empty($initialElements['email'])) {
             $this->initialPendingFields[] = 'email';
@@ -632,6 +715,7 @@ class StripeConnect extends PaymentMethodBase
         }
 
         $this->requiredFields = $initialElements['requirements']['currently_due'];
+        
         if (in_array('tos_acceptance.date', $this->requiredFields) || in_array('tos_acceptance.ip', $this->requiredFields)) {
             $this->initialPendingFields[] = 'tos_acceptance';
         }
@@ -658,6 +742,7 @@ class StripeConnect extends PaymentMethodBase
         if (false === $this->updateRequiredFields($post)) {
             return false;
         }
+
         return true;
     }
 
@@ -798,9 +883,9 @@ class StripeConnect extends PaymentMethodBase
     /**
      * formatCustomerDataFromOrder
      * @param array $orderInfo
-     * @return type
+     * @return array
      */
-    public function formatCustomerDataFromOrder(array $orderInfo)
+    public function formatCustomerDataFromOrder(array $orderInfo): array
     {
         if (empty($orderInfo)) {
             return [];
@@ -1022,5 +1107,126 @@ class StripeConnect extends PaymentMethodBase
             return false;
         }
         return true;
+    }
+
+    /**
+     * doRequest
+     *
+     * @param  mixed $requestType
+     * @return mixed
+     */
+    public function doRequest(int $requestType, array $requestParam = [])
+    {
+        try {
+            switch ($requestType) {
+                case self::REQUEST_CREATE_ACCOUNT:
+                    return $this->createAccount();
+                    break;
+                case self::REQUEST_RETRIEVE_ACCOUNT:
+                    return $this->retrieve();
+                    break;
+                case self::REQUEST_UPDATE_ACCOUNT:
+                    return $this->updateAccount($requestParam);
+                    break;
+                case self::REQUEST_PERSON_TOKEN:
+                    return $this->getPersonToken();
+                    break;
+                case self::REQUEST_ADD_BANK_ACCOUNT:
+                    return $this->addFinancialInfo($requestParam);
+                    break;
+                case self::REQUEST_UPDATE_BUSINESS_TYPE:
+                    return $this->updateBusinessType($requestParam);
+                    break;
+                case self::REQUEST_CREATE_PERSON:
+                    return $this->createPerson($requestParam);
+                    break;
+                case self::REQUEST_UPDATE_PERSON:
+                    return $this->updatePerson($requestParam);
+                    break;
+                case self::REQUEST_UPLOAD_VERIFICATION_FILE:
+                    return $this->createFile(reset($requestParam));
+                    break;
+                case self::REQUEST_DELETE_ACCOUNT:
+                    return $this->delete();
+                    break;
+                case self::REQUEST_CREATE_SESSION:
+                    return $this->createSession($requestParam);
+                    break;
+                case self::REQUEST_CREATE_PRICE:
+                    return $this->createPrice($requestParam);
+                    break;
+                case self::REQUEST_CREATE_CUSTOMER:
+                    return $this->createCustomer($requestParam);
+                    break;
+                case self::REQUEST_UPDATE_CUSTOMER:
+                    return $this->updateCustomer($requestParam);
+                    break;
+                case self::REQUEST_CREATE_LOGIN_LINK:
+                    return $this->loginLink();
+                    break;
+                case self::REQUEST_ALL_CONNECT_ACCOUNTS:
+                    return $this->connectedAccounts($requestParam);
+                    break;
+                case self::REQUEST_INITIATE_REFUND:
+                    return $this->requestRefund($requestParam);
+                    break;
+                case self::REQUEST_TRANSFER_AMOUNT:
+                    return $this->transferAmount($requestParam);
+                    break;
+                case self::REQUEST_REVERSE_TRANSFER:
+                    return $this->reverseTransfer($requestParam);
+                    break;
+                case self::REQUEST_ADD_CARD:
+                    return $this->createSource($requestParam);
+                    break;
+                case self::REQUEST_REMOVE_CARD:
+                    return $this->deleteSource($requestParam);
+                    break;
+                case self::REQUEST_LIST_ALL_CARDS:
+                    return $this->listAllCards();
+                    break;
+                case self::REQUEST_CREATE_CARD_TOKEN:
+                    return $this->createCardToken($requestParam);
+                    break;
+                case self::REQUEST_CHARGE:
+                    return $this->charge($requestParam);
+                    break;
+            }
+        } catch (\Stripe\Exception\CardException $e) {
+            // Since it's a decline, \Stripe\Exception\CardException will be caught
+            $this->error = $e->getError()->param . ' - ' . $e->getMessage();
+        } catch (\Stripe\Exception\RateLimitException $e) {
+            // Too many requests made to the API too quickly
+            $this->error = $e->getError()->param . ' - ' . $e->getMessage();
+        } catch (\Stripe\Exception\InvalidRequestException $e) {
+            // Invalid parameters were supplied to Stripe's API
+            $this->error = $e->getError()->param . ' - ' . $e->getMessage();
+        } catch (\Stripe\Exception\AuthenticationException $e) {
+            // Authentication with Stripe's API failed
+            $this->error = $e->getError()->param . ' - ' . $e->getMessage();
+            // (maybe you changed API keys recently)
+        } catch (\Stripe\Exception\ApiConnectionException $e) {
+            // Network communication with Stripe failed
+            $this->error = $e->getError()->param . ' - ' . $e->getMessage();
+        } catch (\Stripe\Exception\ApiErrorException $e) {
+            // Display a very generic error to the user, and maybe send
+            $this->error = $e->getError()->param . ' - ' . $e->getMessage();
+            // yourself an email
+        } catch (\Stripe\Exception\SignatureVerificationException $e) {
+            // Display a very generic error to the user, and maybe send
+            $this->error = $e->getMessage();
+            // yourself an email
+        } catch (\UnexpectedValueException $e) {
+            // Display a very generic error to the user, and maybe send
+            $this->error = $e->getMessage();
+            // yourself an email
+        } catch (Exception $e) {
+            // Something else happened, completely unrelated to Stripe
+            $this->error = $e->getMessage();
+        } catch (Error $e) {
+            // Handle error
+            $this->error = $e->getMessage();
+        }
+        return false;
     }
 }

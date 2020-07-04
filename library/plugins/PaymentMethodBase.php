@@ -94,6 +94,7 @@ class PaymentMethodBase extends pluginBase
      */
     protected function getUserMeta(string $key = '')
     {
-        return User::getUserMeta($this->userId, $key);
+        $resp = User::getUserMeta($this->userId, $key);
+        return !empty($key) ? (string) $resp : $resp;
     }
 }

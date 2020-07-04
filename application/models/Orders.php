@@ -1719,14 +1719,12 @@ class Orders extends MyAppModel
             if (!empty($payment['opayment_gateway_txn_id'])) {
                 $orderRow = $orderObj->getOrderById($this->orderId, $this->langId);
                 $paymentMethodId = $orderRow['order_pmethod_id'];
-                if (PaymentMethods::TYPE_PLUGIN == $orderRow['order_pmethod_type']) {
-                    $pluginKey = Plugin::getAttributesById($paymentMethodId, 'plugin_code');
-                    switch ($pluginKey) {
-                        case 'StripeConnect':
-                            $alreadyPaid = true;
-                            break;
-                    }
-                }
+				$pluginKey = Plugin::getAttributesById($paymentMethodId, 'plugin_code');
+				switch ($pluginKey) {
+					case 'StripeConnect':
+						$alreadyPaid = true;
+						break;
+				}
             }
 
             if (false === $alreadyPaid && $txnAmount > 0) {
@@ -1943,7 +1941,7 @@ class Orders extends MyAppModel
         $srch->joinTable(OrderProduct::DB_TBL_CHARGES, 'LEFT OUTER JOIN', 'opc.' . OrderProduct::DB_TBL_CHARGES_PREFIX . 'op_id = op.op_id', 'opc');
         $srch->joinTable(Orders::DB_TBL_ORDER_PRODUCTS_SHIPPING, 'LEFT OUTER JOIN', 'ops.opshipping_op_id = op.op_id', 'ops');
 
-        $srch->addMultipleFields(array('op.*', 'opst.*', 'op_l.*', 'o.order_id', 'o.order_is_paid', 'o.order_date_added', 'o.order_language_id', 'o.order_user_id', 'sum(' . OrderProduct::DB_TBL_CHARGES_PREFIX . 'amount) as op_other_charges', 'o.order_affiliate_user_id', 'pmethod_code', 'optsu_user_id', 'ops.opshipping_by_seller_user_id', 'o.order_pmethod_id', 'o.order_pmethod_type'));
+        $srch->addMultipleFields(array('op.*', 'opst.*', 'op_l.*', 'o.order_id', 'o.order_is_paid', 'o.order_date_added', 'o.order_language_id', 'o.order_user_id', 'sum(' . OrderProduct::DB_TBL_CHARGES_PREFIX . 'amount) as op_other_charges', 'o.order_affiliate_user_id', 'pmethod_code', 'optsu_user_id', 'ops.opshipping_by_seller_user_id', 'o.order_pmethod_id'));
         $srch->addCondition('op_id', '=', $op_id);
         $srch->doNotCalculateRecords();
         $srch->doNotLimitRecords();

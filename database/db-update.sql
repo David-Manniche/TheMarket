@@ -261,8 +261,6 @@ ALTER TABLE `tbl_attached_files` ADD `afile_attribute_title` VARCHAR(250) NOT NU
 --
 
 INSERT INTO `tbl_plugins` (`plugin_identifier`, `plugin_type`, `plugin_code`, `plugin_active`, `plugin_display_order`) VALUES ('Stripe Connect', 11, 'StripeConnect', 0, 1);
-ALTER TABLE `tbl_orders` ADD `order_pmethod_type` TINYINT(2) NOT NULL COMMENT 'Default Or Plugin In PaymentMethods' AFTER `order_pmethod_id`;
-UPDATE `tbl_orders` SET `order_pmethod_type` = '1' WHERE order_pmethod_type != 2;
 
 ALTER TABLE `tbl_order_return_requests` CHANGE `orrequest_refund_in_wallet` `orrequest_refund_in_wallet` TINYINT(1) NOT NULL COMMENT 'Defined In PaymentMethods Model';
 ALTER TABLE `tbl_order_return_requests` ADD `orrequest_payment_gateway_req_id` VARCHAR(255) NOT NULL AFTER `orrequest_status`;
@@ -315,21 +313,27 @@ ALTER TABLE `tbl_shops` ADD `shop_lat` VARCHAR(100) NOT NULL AFTER `shop_free_sh
 
 INSERT INTO `tbl_plugins` (`plugin_identifier`, `plugin_type`, `plugin_code`, `plugin_active`, `plugin_display_order`) VALUES ('Stripe', '13', 'Stripe', '0', '1');
 INSERT INTO `tbl_plugins` (`plugin_identifier`, `plugin_type`, `plugin_code`, `plugin_active`, `plugin_display_order`) VALUES ('Amazon', '13', 'Amazon', '0', '1');
-INSERT INTO `tbl_plugins` (`plugin_identifier`, `plugin_type`, `plugin_code`, `plugin_active`, `plugin_display_order`) VALUES ('AuthorizeAim', '13', 'Authorize Aim', '0', '1');
+INSERT INTO `tbl_plugins` (`plugin_identifier`, `plugin_type`, `plugin_code`, `plugin_active`, `plugin_display_order`) VALUES ('Authorize Aim', '13', 'AuthorizeAim', '0', '1');
 INSERT INTO `tbl_plugins` (`plugin_identifier`, `plugin_type`, `plugin_code`, `plugin_active`, `plugin_display_order`) VALUES ('Braintree', '13', 'Braintree', '0', '1');
-INSERT INTO `tbl_plugins` (`plugin_identifier`, `plugin_type`, `plugin_code`, `plugin_active`, `plugin_display_order`) VALUES ('CashOnDelivery', '13', 'Cash On Delivery', '0', '1');
+INSERT INTO `tbl_plugins` (`plugin_identifier`, `plugin_type`, `plugin_code`, `plugin_active`, `plugin_display_order`) VALUES ('Cash On Delivery', '13', 'CashOnDelivery', '0', '1');
 INSERT INTO `tbl_plugins` (`plugin_identifier`, `plugin_type`, `plugin_code`, `plugin_active`, `plugin_display_order`) VALUES ('Ccavenue', '13', 'Ccavenue', '0', '1');
 INSERT INTO `tbl_plugins` (`plugin_identifier`, `plugin_type`, `plugin_code`, `plugin_active`, `plugin_display_order`) VALUES ('Citrus', '13', 'Citrus', '0', '1');
 INSERT INTO `tbl_plugins` (`plugin_identifier`, `plugin_type`, `plugin_code`, `plugin_active`, `plugin_display_order`) VALUES ('Ebs', '13', 'Ebs', '0', '1');
 INSERT INTO `tbl_plugins` (`plugin_identifier`, `plugin_type`, `plugin_code`, `plugin_active`, `plugin_display_order`) VALUES ('Khipu', '13', 'Khipu', '0', '1');
 INSERT INTO `tbl_plugins` (`plugin_identifier`, `plugin_type`, `plugin_code`, `plugin_active`, `plugin_display_order`) VALUES ('Omise', '13', 'Omise', '0', '1');
 INSERT INTO `tbl_plugins` (`plugin_identifier`, `plugin_type`, `plugin_code`, `plugin_active`, `plugin_display_order`) VALUES ('PayFort', '13', 'PayFort', '0', '1');
-INSERT INTO `tbl_plugins` (`plugin_identifier`, `plugin_type`, `plugin_code`, `plugin_active`, `plugin_display_order`) VALUES ('PaypalStandard', '13', 'Paypal Standard', '0', '1');
+INSERT INTO `tbl_plugins` (`plugin_identifier`, `plugin_type`, `plugin_code`, `plugin_active`, `plugin_display_order`) VALUES ('Paypal Standard', '13', 'PaypalStandard', '0', '1');
 INSERT INTO `tbl_plugins` (`plugin_identifier`, `plugin_type`, `plugin_code`, `plugin_active`, `plugin_display_order`) VALUES ('Paytm', '13', 'Paytm', '0', '1');
 INSERT INTO `tbl_plugins` (`plugin_identifier`, `plugin_type`, `plugin_code`, `plugin_active`, `plugin_display_order`) VALUES ('PayuIndia', '13', 'PayuIndia', '0', '1');
 INSERT INTO `tbl_plugins` (`plugin_identifier`, `plugin_type`, `plugin_code`, `plugin_active`, `plugin_display_order`) VALUES ('PayuMoney', '13', 'PayuMoney', '0', '1');
 INSERT INTO `tbl_plugins` (`plugin_identifier`, `plugin_type`, `plugin_code`, `plugin_active`, `plugin_display_order`) VALUES ('Razorpay', '13', 'Razorpay', '0', '1');
 INSERT INTO `tbl_plugins` (`plugin_identifier`, `plugin_type`, `plugin_code`, `plugin_active`, `plugin_display_order`) VALUES ('Twocheckout', '13', 'Twocheckout', '0', '1');
-INSERT INTO `tbl_plugins` (`plugin_identifier`, `plugin_type`, `plugin_code`, `plugin_active`, `plugin_display_order`) VALUES ('TransferBank', '13', 'Transfer Bank', '0', '1');
+INSERT INTO `tbl_plugins` (`plugin_identifier`, `plugin_type`, `plugin_code`, `plugin_active`, `plugin_display_order`) VALUES ('Transfer Bank', '13', 'TransferBank', '0', '1');
+
+UPDATE tbl_orders o
+INNER JOIN tbl_payment_methods pm ON pm.pmethod_id = o.order_pmethod_id
+INNER JOIN tbl_plugins p ON p.plugin_code = pm.pmethod_code
+SET o.order_pmethod_id = p.plugin_id
+WHERE o.order_pmethod_id > 0;
 
 -- End --

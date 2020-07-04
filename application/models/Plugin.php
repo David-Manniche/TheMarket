@@ -88,7 +88,7 @@ class Plugin extends MyAppModel
             self::TYPE_FULL_TEXT_SEARCH => Labels::getLabel('LBL_FULL_TEXT_SEARCH', $langId),
             self::TYPE_SPLIT_PAYMENT_METHOD => Labels::getLabel('LBL_SPLIT_PAYMENT_METHODS', $langId),
             self::TYPE_REGULAR_PAYMENT_METHOD => Labels::getLabel('LBL_REGULAR_PAYMENT_METHODS', $langId),
-            static::TYPE_SHIPPING_SERVICES => Labels::getLabel('LBL_SHIPPING_SERVICES', $langId),
+            self::TYPE_SHIPPING_SERVICES => Labels::getLabel('LBL_SHIPPING_SERVICES', $langId),
         ];
     }
     
@@ -127,6 +127,7 @@ class Plugin extends MyAppModel
      */
     public static function getGroupType(int $pluginType): array
     {
+        $groupArr = [];
         try {
             $eitherGroupTypes = Plugin::EITHER_GROUP_TYPE;
             array_walk($eitherGroupTypes, function ($group, $index) use ($pluginType, &$groupArr) {
@@ -138,7 +139,7 @@ class Plugin extends MyAppModel
         } catch (Exception $e) {
             // Do Nothing. Used Just to break array_walk.
         }
-        return empty($groupArr) ? [] : $groupArr;
+        return $groupArr;
     }
     
     /**
@@ -151,7 +152,7 @@ class Plugin extends MyAppModel
     {
         $langId = FatUtility::int($langId);
         if ($langId < 1) {
-            $langId = FatApp::getConfig('CONF_ADMIN_DEFAULT_LANG');
+            $langId = CommonHelper::getLangId();
         }
 
         return [
@@ -463,10 +464,10 @@ class Plugin extends MyAppModel
                 $srch->setPageSize(1);
                 $srch->getResultSet();
                 if (0 < $srch->recordCount()) {
-                    $langId = FatApp::getConfig('CONF_ADMIN_DEFAULT_LANG');
+                    $langId = CommonHelper::getLangId();
                     $pluginTypesArr = static::getTypeArr($langId);
-                    $msg = Labels::getLabel("MSG_PLEASE_TURN_OFF_ACTIVE_{PLUGIN-TYPE}_PLUGINS", $langId);
-                    $error = CommonHelper::replaceStringData($msg, ['{PLUGIN-TYPE}' => $pluginTypesArr[$pluginType]]);
+                    $msg = Labels::getLabel("MSG_TURNING_ON_{PLUGIN-TYPE}_WILL_TURN_OFF_{OTHER-PLUGIN-TYPE}_PLUGINS._DO_YOU_WANT_TO_CONTINUE_?", $langId);
+                    $error = CommonHelper::replaceStringData($msg, ['{PLUGIN-TYPE}' => $pluginTypesArr[$typeId], '{OTHER-PLUGIN-TYPE}' => $pluginTypesArr[$pluginType]]);
                     return false;
                 }
             }
