@@ -3876,7 +3876,7 @@ class MobileAppApiController extends MyAppController
         'siteLangId' => $this->siteLangId
         );
 
-        $srchCat = Shop::getUserShopProdCategoriesObj($shop['shop_user_id'], $this->siteLangId, $shop['shop_id'], 0);
+        $srchCat = Shop::getProdCategoriesObj($shop['shop_user_id'], $this->siteLangId, $shop['shop_id'], 0);
         $srchCat->doNotCalculateRecords();
         $srchCat->doNotLimitRecords();
         $rs = $srchCat->getResultSet();

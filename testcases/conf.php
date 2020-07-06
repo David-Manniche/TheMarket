@@ -14,5 +14,4 @@ FatApp::unregisterGlobals();
 if (file_exists(CONF_APPLICATION_PATH . 'utilities/prehook.php')) {
     require_once CONF_APPLICATION_PATH . 'utilities/prehook.php';
 }
-
 // FatApplication::getInstance()->callHook();

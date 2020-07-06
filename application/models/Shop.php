@@ -156,7 +156,7 @@ class Shop extends MyAppModel
         return $row;
     }
 
-    public static function getUserShopProdCategoriesObj($userId, $siteLangId, $shopId = 0, $prodcat_id = 0)
+    public static function getProdCategoriesObj($userId, $siteLangId, $shopId = 0, $prodcat_id = 0)
     {
         $userId = FatUtility::int($userId);
         $prodcat_id = FatUtility::int($prodcat_id);
@@ -180,27 +180,7 @@ class Shop extends MyAppModel
         $srch->addMultipleFields(array('prodcat_id', 'ifnull(prodcat_name,prodcat_identifier) as prodcat_name', 'shop_id'));
         return $srch;
     }
-    
-    /**
-     * setFavorite
-     *
-     * @param  int $userId
-     * @return bool
-     */
-    public function setFavorite(int $userId): bool
-    {
-        if (1 > $this->mainTableRecordId || 1 > $userId) {
-            return false;
-        }
-       
-        $data_to_save = array( 'ufs_user_id' => $userId, 'ufs_shop_id' => $this->mainTableRecordId );
-        $data_to_save_on_duplicate = array( 'ufs_shop_id' => $this->mainTableRecordId );
-        if (!FatApp::getDb()->insertFromArray(static::DB_TBL_SHOP_FAVORITE, $data_to_save, false, array(), $data_to_save_on_duplicate)) {
-            $this->error = FatApp::getDb()->getError();
-            return false;
-        }
-        return true;
-    }
+   
     public static function getShopAddress($shop_id, $isActive = true, $langId = 0, $attr = array())
     {
         $shop_id = FatUtility::int($shop_id);
@@ -236,31 +216,6 @@ class Shop extends MyAppModel
             return $row[$attr];
         }
         return $row;
-    }
-    
-    /**
-     * getRewriteCustomUrl
-     *
-     * @param  int $shopId
-     * @return string
-     */
-    public static function getRewriteCustomUrl(int $shopId = 0): string
-    {
-        $db = FatApp::getDb();
-        $shopOriginalUrl = 'shops/view/' . $shopId;
-        $urlSrch = UrlRewrite::getSearchObject();
-        $urlSrch->doNotCalculateRecords();
-        $urlSrch->doNotLimitRecords();
-        $urlSrch->addCondition('urlrewrite_original', '=', $shopOriginalUrl);
-        $urlSrch->addFld('urlrewrite_custom');
-        $rs = $urlSrch->getResultSet();
-        $row = $db->fetch($rs);
-
-        if (!is_array($row)) {
-            return false;
-        }
-
-        return $row['urlrewrite_custom'];
     }
 
     public static function getFilterSearchForm()
@@ -346,6 +301,52 @@ class Shop extends MyAppModel
     public function rewriteUrlpolicy($keyword)
     {
         return $this->_rewriteUrl($keyword, 'policy');
+    }
+
+    /**
+     * setFavorite
+     *
+     * @param  int $userId
+     * @return bool
+     */
+    public function setFavorite(int $userId): bool
+    {
+        if (1 > $this->mainTableRecordId || 1 > $userId) {
+            return false;
+        }
+       
+        $data_to_save = array( 'ufs_user_id' => $userId, 'ufs_shop_id' => $this->mainTableRecordId );
+        $data_to_save_on_duplicate = array( 'ufs_shop_id' => $this->mainTableRecordId );
+        if (!FatApp::getDb()->insertFromArray(static::DB_TBL_SHOP_FAVORITE, $data_to_save, false, array(), $data_to_save_on_duplicate)) {
+            $this->error = FatApp::getDb()->getError();
+            return false;
+        }
+        return true;
+    }
+    
+    /**
+     * getRewriteCustomUrl
+     *
+     * @param  int $shopId
+     * @return string
+     */
+    public static function getRewriteCustomUrl(int $shopId = 0): string
+    {
+        $db = FatApp::getDb();
+        $shopOriginalUrl = 'shops/view/' . $shopId;
+        $urlSrch = UrlRewrite::getSearchObject();
+        $urlSrch->doNotCalculateRecords();
+        $urlSrch->doNotLimitRecords();
+        $urlSrch->addCondition('urlrewrite_original', '=', $shopOriginalUrl);
+        $urlSrch->addFld('urlrewrite_custom');
+        $rs = $urlSrch->getResultSet();
+        $row = $db->fetch($rs);
+
+        if (!is_array($row)) {
+            return false;
+        }
+
+        return $row['urlrewrite_custom'];
     }
     
     /**

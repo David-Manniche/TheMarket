@@ -37,6 +37,9 @@ $_SERVER['REQUEST_TIME_FLOAT'] = time();
 
 define('CONF_WEBROOT_FRONTEND', '/');
 define('CONF_WEBROOT_BACKEND', '/admin/');
+define('MOBILE_APP_API_CALL', false);
+define('MOBILE_APP_API_VERSION', '');
+//DB
 define('CONF_DB_SERVER', 'localhost');
 define('CONF_DB_USER', '');
 define('CONF_DB_PASS', '');
