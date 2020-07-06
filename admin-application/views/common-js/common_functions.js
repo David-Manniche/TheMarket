@@ -605,16 +605,15 @@ function formAction(frm, callback) {
 }
 
 
-function toggleBulkStatues(status) {
+function toggleBulkStatues(status, msg = '') {
     var element = 0 < $("#facebox").length ? "#facebox " : '';
     element = element + 'form.actionButtons-js';
-
     if (1 > $(element).length) {
         $.systemMessage(langLbl.actionButtonsClass, 'alert--danger', true);
         return false;
     }
-
-    if (!confirm(langLbl.confirmUpdateStatus)) {
+    msg = ('' == msg) ? langLbl.confirmUpdateStatus : msg;
+    if (!confirm(msg)) {
         return false;
     }
     $(element + " input[name='status']").val(status);

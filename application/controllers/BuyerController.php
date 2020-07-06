@@ -434,7 +434,7 @@ class BuyerController extends BuyerBaseController
         $srch->addMultipleFields(
             array('order_id', 'order_user_id', 'order_date_added', 'order_net_amount', 'op_invoice_number',
             'totCombinedOrders as totOrders', 'op_selprod_id', 'op_selprod_title', 'op_product_name', 'op_id', 'op_other_charges', 'op_unit_price',
-            'op_qty', 'op_selprod_options', 'op_brand_name', 'op_shop_name', 'op_status_id', 'op_product_type', 'IFNULL(orderstatus_name, orderstatus_identifier) as orderstatus_name', 'order_pmethod_id', 'order_status', 'pmethod_name', 'IFNULL(orrequest_id, 0) as return_request', 'IFNULL(ocrequest_id, 0) as cancel_request', 'orderstatus_color_code', 'COALESCE(sps.selprod_return_age, ss.shop_return_age) as return_age', 'COALESCE(sps.selprod_cancellation_age, ss.shop_cancellation_age) as cancellation_age')
+            'op_qty', 'op_selprod_options', 'op_brand_name', 'op_shop_name', 'op_status_id', 'op_product_type', 'IFNULL(orderstatus_name, orderstatus_identifier) as orderstatus_name', 'order_pmethod_id', 'order_status', 'plugin_name', 'IFNULL(orrequest_id, 0) as return_request', 'IFNULL(ocrequest_id, 0) as cancel_request', 'orderstatus_color_code', 'COALESCE(sps.selprod_return_age, ss.shop_return_age) as return_age', 'COALESCE(sps.selprod_cancellation_age, ss.shop_cancellation_age) as cancellation_age')
         );
 
         $keyword = FatApp::getPostedData('keyword', null, '');
@@ -2540,80 +2540,8 @@ class BuyerController extends BuyerBaseController
             $this->_template->render();
         }
 
-        /* Update existing cart [ */
-
-        /* $db = FatApp::getDb();
-        if(!$db->updateFromArray( 'tbl_user_cart', array( 'usercart_details' => $orderDetail['order_cart_data'],"usercart_added_date" => date ( 'Y-m-d H:i:s' ) ), array('smt' => 'usercart_user_id = ?', 'vals' => array($userId) ) )){
-        Message::addErrorMessage(Labels::getLabel("MSG_Can_not_be_Re-Order",$this->siteLangId));
-        FatUtility::dieJsonError( Message::getHtml() );
-        } */
-
-        /* ] */
         return;
     }
-
-
-    /* repay payment pending order [ */
-    /* public function repayOrder($opId){
-    $opId = FatUtility::convertToType($opId,FatUtility::VAR_INT);
-    if(empty($opId)){
-    Message::addErrorMessage(Labels::getLabel('MSG_Invalid_request',$this->siteLangId));
-    CommonHelper::redirectUserReferer();
-    }
-    $userId = UserAuthentication::getLoggedUserId();
-    $srch = new OrderProductSearch( $this->siteLangId, true);
-    $srch->joinPaymentMethod();
-    $srch->addStatusCondition( unserialize(FatApp::getConfig("CONF_BUYER_ORDER_STATUS")) );
-    $srch->addCondition( 'order_user_id', '=', $userId );
-    $srch->addCondition( 'op_id', '=', $opId );
-    $srch->addCondition( 'op_status_id', '=', FatApp::getConfig('CONF_DEFAULT_ORDER_STATUS') );
-    $srch->addOrder("op_id","DESC");
-    $srch->addMultipleFields( array('op_status_id', 'op_id', 'order_id', 'order_cart_data', 'pmethod_code') );
-
-    $rs = $srch->getResultSet();
-    $opDetail = FatApp::getDb()->fetch( $rs );
-
-    if( !$opDetail || CommonHelper::isMultidimArray($opDetail) ){
-    Message::addErrorMessage(Labels::getLabel( 'MSG_ERROR_INVALID_ACCESS', $this->siteLangId ));
-    CommonHelper::redirectUserReferer();
-    }
-
-    // Repayment is not allowed for CashOnDelivery Orders for Now, to enable make it uncomment[
-    if( strtolower($opDetail['pmethod_code']) == "cashondelivery" ){
-    Message::addErrorMessage( Labels::getLabel( "MSG_Repayment_is_not_allowed_for_".$opDetail['pmethod_code'], $this->siteLangId ) );
-    CommonHelper::redirectUserReferer();
-    }
-    //]
-
-    $_SESSION['shopping_cart']["order_id"] = $opDetail['order_id'];
-
-    $cartInfo = unserialize( $opDetail['order_cart_data'] );
-    unset($cartInfo['shopping_cart']);
-    FatApp::getDb()->deleteRecords('tbl_user_cart', array('smt'=>'`usercart_user_id`=?', 'vals'=>array(UserAuthentication::getLoggedUserId())));
-    $cartObj = new Cart();
-    foreach($cartInfo as $key => $quantity){
-
-    $keyDecoded = unserialize( base64_decode($key) );
-
-    $selprod_id = 0;
-    $prodgroup_id = 0;
-
-    if( strpos($keyDecoded, Cart::CART_KEY_PREFIX_PRODUCT ) !== FALSE ){
-                $selprod_id = FatUtility::int(str_replace( Cart::CART_KEY_PREFIX_PRODUCT, '', $keyDecoded ));
-    }
-
-    if( strpos($keyDecoded, Cart::CART_KEY_PREFIX_BATCH ) !== FALSE ){
-                $prodgroup_id = FatUtility::int(str_replace( Cart::CART_KEY_PREFIX_BATCH, '', $keyDecoded ));
-    }
-
-    $cartObj->add($selprod_id, $quantity,$prodgroup_id);
-
-
-    }
-    $cartObj->updateUserCart();
-    FatApp::redirectUser(CommonHelper::generateUrl('Cart'));
-    } */
-    /* ] */
 
     public function shareEarnUrl()
     {

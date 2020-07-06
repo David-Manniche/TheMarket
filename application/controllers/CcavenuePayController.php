@@ -3,11 +3,26 @@
 require_once CONF_INSTALLATION_PATH . 'library/payment-plugins/ccavenue/Crypto.php';
 class CcavenuePayController extends PaymentController
 {
-    private $keyName = "Ccavenue";
+    public const KEY_NAME = "Ccavenue";
 
+    public function __construct($action)
+    {
+        parent::__construct($action);
+        $this->init();
+    }
+    
     protected function allowedCurrenciesArr()
     {
         return ['INR'];
+    }
+
+    private function init(): void
+    {
+        if (false === $this->plugin->validateSettings($this->siteLangId)) {
+            $this->setErrorAndRedirect($this->plugin->getError());
+        }
+
+        $this->settings = $this->plugin->getSettings();
     }
 
     public function charge($orderId = '')
@@ -15,12 +30,7 @@ class CcavenuePayController extends PaymentController
         if (empty($orderId)) {
             FatUtility::exitWIthErrorCode(404);
         }
-        $pmObj = new PaymentSettings($this->keyName);
-
-        if (!$paymentSettings = $pmObj->getPaymentSettings()) {
-            Message::addErrorMessage($pmObj->getError());
-            CommonHelper::redirectUserReferer();
-        }
+        
         $orderPaymentObj = new OrderPayment($orderId, $this->siteLangId);
         $paymentAmount = $orderPaymentObj->getOrderPaymentGatewayAmount();
         $orderInfo = $orderPaymentObj->getOrderPrimaryinfo();
@@ -50,10 +60,8 @@ class CcavenuePayController extends PaymentController
             FatUtility::exitWIthErrorCode(404);
         }
 
-        $pmObj = new PaymentSettings($this->keyName);
-        $paymentSettings = $pmObj->getPaymentSettings();
-        $working_key = $paymentSettings['working_key'];
-        $access_code = $paymentSettings['access_code'];
+        $working_key = $this->settings['working_key'];
+        $access_code = $this->settings['access_code'];
         $merchant_data = '';
         $post = FatApp::getPostedData();
 
@@ -78,10 +86,8 @@ class CcavenuePayController extends PaymentController
     }
     public function callback()
     {
-        $pmObj = new PaymentSettings($this->keyName);
-        $paymentSettings = $pmObj->getPaymentSettings();
         $post = FatApp::getPostedData();
-        $workingKey = $paymentSettings['working_key'];
+        $workingKey = $this->settings['working_key'];
         $encResponse = $post["encResp"];            //This is the response sent by the CCAvenue Server
         $rcvdString = decrypt($encResponse, $workingKey);        //Crypto Decryption used as per the specified working key.
         $request = $rcvdString;
@@ -111,7 +117,7 @@ class CcavenuePayController extends PaymentController
                 $request .= "\n\n CCAvenue :: TOTAL PAID MISMATCH! " . strtolower($paid_amount) . "\n\n";
             }
             if ($order_status == "Success" && $total_paid_match) {
-                $orderPaymentObj->addOrderPayment($paymentSettings["pmethod_name"], $tracking_id, $paymentGatewayCharge, Labels::getLabel("LBL_Received_Payment", $this->siteLangId), $request);
+                $orderPaymentObj->addOrderPayment($this->settings["plugin_code"], $tracking_id, $paymentGatewayCharge, Labels::getLabel("LBL_Received_Payment", $this->siteLangId), $request);
                 FatApp::redirectUser(CommonHelper::generateUrl('custom', 'paymentSuccess', array($orderId)));
             } else {
                 $orderPaymentObj->addOrderPaymentComments($request);
@@ -122,8 +128,6 @@ class CcavenuePayController extends PaymentController
 
     private function getPaymentForm($orderId)
     {
-        $pmObj = new PaymentSettings($this->keyName);
-        $paymentSettings = $pmObj->getPaymentSettings();
         $orderPaymentObj = new OrderPayment($orderId, $this->siteLangId);
         $paymentGatewayCharge = $orderPaymentObj->getOrderPaymentGatewayAmount();
         $orderInfo = $orderPaymentObj->getOrderPrimaryinfo();
@@ -131,7 +135,7 @@ class CcavenuePayController extends PaymentController
         $frm = new Form('frm-ccavenue', array('id' => 'frm-ccavenue', 'action' => CommonHelper::generateFullUrl('CcavenuePay', 'iframe', array($orderId)), 'class' => "form form--normal"));
 
         $frm->addHiddenField('', 'tid', "", array("id" => "tid"));
-        $frm->addHiddenField('', 'merchant_id', $paymentSettings["merchant_id"]);
+        $frm->addHiddenField('', 'merchant_id', $this->settings["merchant_id"]);
         $frm->addHiddenField('', 'order_id', $orderInfo['invoice']);
         $frm->addHiddenField('', 'amount', $paymentGatewayCharge);
         $frm->addHiddenField('', 'merchant_param1', $orderId);

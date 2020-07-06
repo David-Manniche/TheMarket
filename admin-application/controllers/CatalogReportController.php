@@ -42,7 +42,7 @@ class CatalogReportController extends AdminBaseController
         $opSrch->doNotCalculateRecords();
         $opSrch->doNotLimitRecords();
         $cnd = $opSrch->addCondition('order_is_paid', '=', Orders::ORDER_IS_PAID, 'OR');
-        $cnd->attachCondition('pmethod_code', '=', 'CashOnDelivery');
+        $cnd->attachCondition('plugin_code', '=', 'CashOnDelivery');
         
         $opSrch->addStatusCondition(unserialize(FatApp::getConfig("CONF_COMPLETED_ORDER_STATUS")));
         $opSrch->addMultipleFields(

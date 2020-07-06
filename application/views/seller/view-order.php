@@ -61,8 +61,8 @@ if (!$print) {
                                 <p><strong><?php echo Labels::getLabel('LBL_Payment_Method', $siteLangId);?>: </strong><?php echo $selected_method;?></p>
                                 <p><strong><?php echo Labels::getLabel('LBL_Status', $siteLangId);?>: </strong>
                                 <?php echo Orders::getOrderPaymentStatusArr($siteLangId)[$orderDetail['order_is_paid']];
-                                if ('' != $orderDetail['pmethod_name'] && 'CashOnDelivery' == $orderDetail['pmethod_code']) {
-                                    echo ' ('.$orderDetail['pmethod_name'].' )';
+                                if ('' != $orderDetail['plugin_name'] && 'CashOnDelivery' == $orderDetail['plugin_code']) {
+                                    echo ' ('.$orderDetail['plugin_name'].' )';
                                 } ?>
                                 </p>
                                 <p><strong><?php echo Labels::getLabel('LBL_Cart_Total', $siteLangId);?>: </strong><?php echo CommonHelper::displayMoneyFormat(CommonHelper::orderProductAmount($orderDetail, 'CART_TOTAL'), true, false, true, false, true);?></p>

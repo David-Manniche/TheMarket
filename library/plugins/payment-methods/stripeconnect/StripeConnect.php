@@ -75,7 +75,7 @@ class StripeConnect extends PaymentMethodBase
      */
     public function init(int $userId = 0)
     {
-        if (false == $this->getSettings()) {
+        if (false == $this->validateSettings()) {
             return false;
         }
         
@@ -87,10 +87,6 @@ class StripeConnect extends PaymentMethodBase
                 $this->liveMode . 'publishable_key',
                 $this->liveMode . 'secret_key'
             ];
-        }
-
-        if (false == $this->validateSettings()) {
-            return false;
         }
 
         if (0 < $userId) {
@@ -114,16 +110,6 @@ class StripeConnect extends PaymentMethodBase
     public function getRedirectUri(): string
     {
         return self::CONNECT_URI . "/authorize?response_type=code&client_id=" . $this->settings[$this->liveMode . 'client_id'] . "&scope=read_write&redirect_uri=" . CommonHelper::generateFullUrl(self::KEY_NAME, 'callback', [], '', false);
-    }
-
-    /**
-     * getKeys - To get plugin keys
-     *
-     * @return array
-     */
-    public function getKeys(): array
-    {
-        return empty($this->settings) ? $this->getSettings() : $this->settings;
     }
 
     /**

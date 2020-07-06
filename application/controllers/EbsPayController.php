@@ -2,15 +2,29 @@
 
 class EbsPayController extends PaymentController
 {
-    private $keyName = "ebs";
+    public const KEY_NAME = "Ebs";
     private $error = false;
-    private $paymentSettings = false;
+
+    public function __construct($action)
+    {
+        parent::__construct($action);
+        $this->init();
+    }
 
     protected function allowedCurrenciesArr()
     {
         return [
             'INR', 'USD', 'GBP', 'Eur', 'AED', 'QAR', 'OMR', 'CAD', 'HKD', 'SGD', 'AUD'
         ];
+    }
+
+    private function init(): void
+    {
+        if (false === $this->plugin->validateSettings($this->siteLangId)) {
+            $this->setErrorAndRedirect($this->plugin->getError());
+        }
+
+        $this->settings = $this->plugin->getSettings();
     }
 
     public function charge($orderId)
@@ -20,10 +34,9 @@ class EbsPayController extends PaymentController
             CommonHelper::redirectUserReferer();
         }
 
-        $this->paymentSettings = $this->getPaymentSettings();
         $ebs = array(
-        'account_id' => trim($this->paymentSettings['accountId']),
-        'secret_key' => trim($this->paymentSettings['secretKey'])
+        'account_id' => trim($this->settings['accountId']),
+        'secret_key' => trim($this->settings['secretKey'])
         );
         $this->set('ebs', $ebs);
 
@@ -68,16 +81,9 @@ class EbsPayController extends PaymentController
         $amount = number_format($amount, 2, '.', '');
         return $amount * 100;
     }
-
-    private function getPaymentSettings()
-    {
-        $pmObj = new PaymentSettings($this->keyName);
-        return $pmObj->getPaymentSettings();
-    }
-
+    
     private function getPaymentForm($orderId)
     {
-        $this->paymentSettings = $this->getPaymentSettings();
         $orderPaymentObj = new OrderPayment($orderId, $this->siteLangId);
         $paymentAmount = $orderPaymentObj->getOrderPaymentGatewayAmount();
         $orderInfo = $orderPaymentObj->getOrderPrimaryinfo();
@@ -89,7 +95,7 @@ class EbsPayController extends PaymentController
             $mode = "TEST";
         }
         $frm->addHiddenField('', 'mode', $mode);
-        $frm->addHiddenField('', 'account_id', $this->paymentSettings["accountId"]);
+        $frm->addHiddenField('', 'account_id', $this->settings["accountId"]);
         $frm->addHiddenField('', 'reference_no', $orderId);
 
         $frm->addHiddenField('', 'amount', $paymentAmount);
@@ -112,7 +118,7 @@ class EbsPayController extends PaymentController
         $frm->addHiddenField('', 'ship_country', $orderInfo["customer_shipping_country_code"]);
         $frm->addHiddenField('', 'ship_phone', $orderInfo['customer_shipping_phone']);
         $return_url = CommonHelper::generateFullUrl('ebsPay', 'callback');
-        $string = $this->paymentSettings["secretKey"] . "|" . $this->paymentSettings["accountId"] . "|" . $paymentAmount . "|" . $orderId . "|" . $return_url . "|" . $mode;
+        $string = $this->settings["secretKey"] . "|" . $this->settings["accountId"] . "|" . $paymentAmount . "|" . $orderId . "|" . $return_url . "|" . $mode;
         /* echo $string; die; */
         $secure_hash = md5($string);
 
@@ -127,8 +133,8 @@ class EbsPayController extends PaymentController
         $get = FatApp::getQueryStringData();
         if (isset($get['DR'])) {
             include_once CONF_INSTALLATION_PATH . 'library/payment-plugins/ebs/Rc43.php';
-            $paymentSettings = $this->getPaymentSettings();
-            $secret_key = $paymentSettings["secretKey"];
+            
+            $secret_key = $this->settings["secretKey"];
             $DR = preg_replace("/\s/", "+", $get['DR']);
             $rc4 = new Crypt_RC4($secret_key);
             $QueryString = base64_decode($DR);
@@ -145,7 +151,7 @@ class EbsPayController extends PaymentController
             $orderPaymentObj = new OrderPayment($orderId, $this->siteLangId);
             $paymentAmount = $orderPaymentObj->getOrderPaymentGatewayAmount();
             if ($response['ResponseCode'] == '0') {
-                if ($orderPaymentObj->addOrderPayment($paymentSettings["pmethod_name"], $response['TransactionID'], $paymentAmount, Labels::getLabel("LBL_Received_Payment", $this->siteLangId), serialize($response))) {
+                if ($orderPaymentObj->addOrderPayment($this->settings["plugin_code"], $response['TransactionID'], $paymentAmount, Labels::getLabel("LBL_Received_Payment", $this->siteLangId), serialize($response))) {
                 }
                 FatApp::redirectUser(CommonHelper::generateUrl('custom', 'paymentSuccess', array($orderId)));
             } else {

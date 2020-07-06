@@ -1,7 +1,7 @@
 <?php
 $selected_method = '';
 if ($order['order_pmethod_id']) {
-    $selected_method .= CommonHelper::displayNotApplicable($adminLangId, $order["pmethod_name"]);
+    $selected_method .= CommonHelper::displayNotApplicable($adminLangId, $order["plugin_name"]);
 }
 if ($order['order_is_wallet_selected'] == applicationConstants::YES) {
     $selected_method .= ($selected_method != '') ? ' + ' . Labels::getLabel("LBL_Wallet", $adminLangId) : Labels::getLabel("LBL_Wallet", $adminLangId);
@@ -58,8 +58,8 @@ if ($order['order_reward_point_used'] > 0) {
                                 </td>
                                 <td><strong><?php echo Labels::getLabel('LBL_Payment_Status', $adminLangId); ?>:</strong>
                                     <?php echo Orders::getOrderPaymentStatusArr($adminLangId)[$order['order_is_paid']];
-                                if ('' != $order['pmethod_name'] && 'CashOnDelivery' == $order['pmethod_code']) {
-                                    echo ' ('.$order['pmethod_name'].' )';
+                                if ('' != $order['plugin_name'] && 'CashOnDelivery' == $order['plugin_code']) {
+                                    echo ' ('.$order['plugin_name'].' )';
                                 }
                                 ?>
                                 </td>
@@ -121,7 +121,7 @@ if ($order['order_reward_point_used'] > 0) {
                                 </th>
                                 <th class="text-right"><?php echo Labels::getLabel('LBL_Total', $adminLangId); ?>
                                 </th>
-                                <?php if ('CashOnDelivery' == $order['pmethod_code'] || Orders::ORDER_IS_PAID == $order['order_is_paid']) { ?>
+                                <?php if ('CashOnDelivery' == $order['plugin_code'] || Orders::ORDER_IS_PAID == $order['order_is_paid']) { ?>
                                 <th class="text-right"></th>
                                 <?php } ?>
                             </tr>
@@ -137,74 +137,85 @@ if ($order['order_reward_point_used'] > 0) {
                                 $cartTotal = $cartTotal + CommonHelper::orderProductAmount($op, 'cart_total');
                                 $shippingTotal = $shippingTotal + CommonHelper::orderProductAmount($op, 'shipping');
                                 $invoiceNumber = $op['op_invoice_number'];
-                                $opId = $op['op_id']; ?>
-                            <tr>
-                                <td><?php echo $k; ?>
-                                </td>
-                                <td><?php echo $invoiceNumber; ?>
-                                </td>
-                                <td><?php echo $op['orderstatus_name']; ?>
-                                </td>
-                                <td><?php
-                                $txt = '';
-                                if ($op['op_selprod_title'] != '') {
-                                    $txt .= $op['op_selprod_title'].'<br/>';
-                                }
-                                $txt .= $op['op_product_name'];
-                                $txt .= '<br/>';
-                                if (!empty($op['op_brand_name'])) {
-                                    $txt .=  Labels::getLabel('LBL_Brand', $adminLangId).': '.$op['op_brand_name'];
-                                }
-                                if (!empty($op['op_brand_name']) && !empty($op['op_selprod_options'])) {
-                                    $txt .= ' | ' ;
-                                }
-                                if ($op['op_selprod_options'] != '') {
-                                    $txt .= $op['op_selprod_options'];
-                                }
-                                if ($op['op_selprod_sku'] != '') {
-                                    $txt .= '<br/>'.Labels::getLabel('LBL_SKU', $adminLangId).': ' . $op['op_selprod_sku'];
-                                }
-                                if ($op['op_product_model'] != '') {
-                                    $txt .= '<br/>'.Labels::getLabel('LBL_Model', $adminLangId).':  ' . $op['op_product_model'];
-                                }
-                                $txt .= '<br/><strong>'.Labels::getLabel('LBL_Shop_Detail', $adminLangId).':</strong><br/>'.Labels::getLabel('LBL_Shop_Name', $adminLangId).': '.$op['op_shop_name'];
-                                $txt .= '<br/>'.Labels::getLabel('LBL_Seller_Name', $adminLangId).': '.$op['op_shop_owner_name'].' <br/>'.Labels::getLabel('LBL_Seller_Email_Id', $adminLangId).': '. $op['op_shop_owner_email'];
-                                if ($op['op_shop_owner_phone'] != '') {
-                                    $txt .= '<br/>'.Labels::getLabel('LBL_Seller_Phone', $adminLangId).': '.$op['op_shop_owner_phone'];
-                                }
-                                echo $txt; ?>
-                                </td>
-                                <td><strong><?php echo Labels::getLabel('LBL_Shipping_Class', $adminLangId); ?>:
-                                    </strong><?php echo CommonHelper::displayNotApplicable($adminLangId, $op["op_shipping_duration_name"]); ?><br />
-                                    <strong><?php echo Labels::getLabel('LBL_Duration:', $adminLangId); ?>
-                                    </strong><?php echo CommonHelper::displayNotApplicable($adminLangId, $op["op_shipping_durations"]); ?>
-                                </td>
-
-                                <td><?php echo CommonHelper::displayMoneyFormat($op["op_unit_price"], true, true); ?>
-                                </td>
-                                <td><?php echo $op['op_qty']; ?>
-                                </td>
-                                <td class="text-right"><?php echo CommonHelper::displayMoneyFormat($shippingCost, true, true); ?>
-                                </td>
-
-
-                                <td><?php echo CommonHelper::displayMoneyFormat(CommonHelper::orderProductAmount($op, 'VOLUME_DISCOUNT')); ?>
-                                </td>
-
-                                <td class="text-right"><?php echo CommonHelper::displayMoneyFormat($total, true, true); ?>
-                                </td>
-                                <?php if ('CashOnDelivery' == $order['pmethod_code'] || Orders::ORDER_IS_PAID == $order['order_is_paid']) {
-                                    $orderId = $order["order_id"]; ?>
-                                <td class="text-right">
-                                    <a href="javascript:void(0)"
-                                        onclick="generateLabel('<?php echo $orderId; ?>', <?php echo $opId; ?>)"
-                                        title="<?php echo Labels::getLabel('LBL_GENERATE_LABEL', $adminLangId); ?>"
-                                        class="btn-clean btn-sm btn-icon btn-secondary "><i
-                                            class="fas fa-image"></i></a>
-                                </td>
-                                <?php
-                                } ?>
-                            </tr>
+                                $opId = FatUtility::int($op['op_id']); 
+                                ?>
+                                <tr>
+                                    <td><?php echo $k; ?></td>
+                                    <td><?php echo $invoiceNumber; ?></td>
+                                    <td><?php echo $op['orderstatus_name']; ?></td>
+                                    <td>
+                                        <?php
+                                        $txt = '';
+                                        if ($op['op_selprod_title'] != '') {
+                                            $txt .= $op['op_selprod_title'].'<br/>';
+                                        }
+                                        $txt .= $op['op_product_name'];
+                                        $txt .= '<br/>';
+                                        if (!empty($op['op_brand_name'])) {
+                                            $txt .=  Labels::getLabel('LBL_Brand', $adminLangId).': '.$op['op_brand_name'];
+                                        }
+                                        if (!empty($op['op_brand_name']) && !empty($op['op_selprod_options'])) {
+                                            $txt .= ' | ' ;
+                                        }
+                                        if ($op['op_selprod_options'] != '') {
+                                            $txt .= $op['op_selprod_options'];
+                                        }
+                                        if ($op['op_selprod_sku'] != '') {
+                                            $txt .= '<br/>'.Labels::getLabel('LBL_SKU', $adminLangId).': ' . $op['op_selprod_sku'];
+                                        }
+                                        if ($op['op_product_model'] != '') {
+                                            $txt .= '<br/>'.Labels::getLabel('LBL_Model', $adminLangId).':  ' . $op['op_product_model'];
+                                        }
+                                        $txt .= '<br/><strong>'.Labels::getLabel('LBL_Shop_Detail', $adminLangId).':</strong><br/>'.Labels::getLabel('LBL_Shop_Name', $adminLangId).': '.$op['op_shop_name'];
+                                        $txt .= '<br/>'.Labels::getLabel('LBL_Seller_Name', $adminLangId).': '.$op['op_shop_owner_name'].' <br/>'.Labels::getLabel('LBL_Seller_Email_Id', $adminLangId).': '. $op['op_shop_owner_email'];
+                                        if ($op['op_shop_owner_phone'] != '') {
+                                            $txt .= '<br/>'.Labels::getLabel('LBL_Seller_Phone', $adminLangId).': '.$op['op_shop_owner_phone'];
+                                        }
+                                        echo $txt; ?>
+                                    </td>
+                                    <td>
+                                        <strong><?php echo Labels::getLabel('LBL_Shipping_Class', $adminLangId); ?>:</strong>
+                                        <?php echo CommonHelper::displayNotApplicable($adminLangId, $op["op_shipping_duration_name"]); ?><br />
+                                        <strong><?php echo Labels::getLabel('LBL_Duration:', $adminLangId); ?></strong>
+                                        <?php echo CommonHelper::displayNotApplicable($adminLangId, $op["op_shipping_durations"]); ?>
+                                    </td>
+                                    <td>
+                                        <?php echo CommonHelper::displayMoneyFormat($op["op_unit_price"], true, true); ?>
+                                    </td>
+                                    <td>
+                                        <?php echo $op['op_qty']; ?>
+                                    </td>
+                                    <td class="text-right">
+                                        <?php echo CommonHelper::displayMoneyFormat($shippingCost, true, true); ?>
+                                    </td>
+                                    <td>
+                                        <?php echo CommonHelper::displayMoneyFormat(CommonHelper::orderProductAmount($op, 'VOLUME_DISCOUNT')); ?>
+                                    </td>
+                                    <td class="text-right">
+                                        <?php echo CommonHelper::displayMoneyFormat($total, true, true); ?>
+                                    </td>
+                                    <?php if ('CashOnDelivery' == $order['plugin_code'] || Orders::ORDER_IS_PAID == $order['order_is_paid']) {
+                                        $orderId = $order["order_id"]; ?>
+                                        <td class="text-right">
+                                            <a href="javascript:void(0)"
+                                                onclick="generateLabel('<?php echo $orderId; ?>', <?php echo $opId; ?>)"
+                                                title="<?php echo Labels::getLabel('LBL_GENERATE_LABEL', $adminLangId); ?>"
+                                                class="btn-clean btn-sm btn-icon btn-secondary ">
+                                                <i class="fas fa-image"></i>
+                                            </a>
+                                            <?php 
+                                            $orderShipment = OrderProductShipment::getAttributesById($opId, 'opship_response');
+                                            if (!empty($orderShipment)) { ?>
+                                                <a target="_blank" href="<?php echo CommonHelper::generateUrl("ShippingServices", 'previewLabel', [$opId]); ?>"
+                                                    title="<?php echo Labels::getLabel('LBL_PREVIEW_LABEL', $adminLangId); ?>"
+                                                    class="btn-clean btn-sm btn-icon btn-secondary ">
+                                                    <i class="fas fa-eye"></i>
+                                                </a>
+                                            <?php } ?>
+                                        </td>
+                                    <?php
+                                    } ?>
+                                </tr>
                             <?php
                                 $k++;
                                 if (!empty($op['taxOptions'])) {
@@ -467,7 +478,7 @@ if ($order['order_reward_point_used'] > 0) {
                     </div>
                 </section>
                 <?php }?>
-                <?php if (!$order["order_is_paid"] && $canEdit && 'CashOnDelivery' != $order['pmethod_code']) {?>
+                <?php if (!$order["order_is_paid"] && $canEdit && 'CashOnDelivery' != $order['plugin_code']) {?>
                 <section class="section">
                     <div class="sectionhead">
                         <h4><?php echo Labels::getLabel('LBL_Order_Payments', $adminLangId); ?>

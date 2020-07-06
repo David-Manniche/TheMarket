@@ -13,7 +13,9 @@ class AttachedFile extends MyAppModel
     public const FILETYPE_SELLER_APPROVAL_FILE = 3;
     public const FILETYPE_SHOP_LOGO = 4;
     public const FILETYPE_SHOP_BANNER = 5;
+    
     public const FILETYPE_PAYMENT_METHOD = 6;
+
     public const FILETYPE_USER_IMAGE = 7;
     public const FILETYPE_BRAND_LOGO = 8;
     public const FILETYPE_USER_PROFILE_IMAGE = 9; /*User profile original image*/

@@ -2,16 +2,31 @@
 require_once CONF_INSTALLATION_PATH . 'library/payment-plugins/PayFort/PayfortIntegration.php';
 class PayFortPayController extends PaymentController
 {
-    private $keyName = "PayFort";
+    public const KEY_NAME = "PayFort";
     private $testEnvironmentUrl = 'https://sbcheckout.payfort.com/FortAPI/paymentPage';
     private $liveEnvironmentUrl = 'https://checkout.payfort.com/FortAPI/paymentPage';
     private $error = false;
-                                           
+    
+    public function __construct($action)
+    {
+        parent::__construct($action);
+        $this->init();
+    }
+    
     protected function allowedCurrenciesArr()
     {
         return [
             'AED', 'USD', 'JOD', 'KWD', 'OMR', 'TND', 'BHD', 'LYD', 'IQD', 'SAR'
         ];
+    }
+
+    private function init(): void
+    {
+        if (false === $this->plugin->validateSettings($this->siteLangId)) {
+            $this->setErrorAndRedirect($this->plugin->getError());
+        }
+
+        $this->settings = $this->plugin->getSettings();
     }
 
     public function charge($orderId = '')
@@ -59,12 +74,6 @@ class PayFortPayController extends PaymentController
             FatApp::redirectUser($paymentChargeUrl);
         }
 
-        $paymentSettings = $this->getPaymentSettings();
-        if (!$this->validatePayFortSettings($paymentSettings)) {
-            Message::addErrorMessage(Labels::getLabel('PAYFORT_INVALID_PAYMENT_GATEWAY_SETUP_ERROR', $this->siteLangId));
-            redirectUser($paymentChargeUrl);
-        }
-
         $orderPaymentObj = new OrderPayment($orderId, $this->siteLangId);
         $paymentGatewayCharge = 0.00;
         $orderInfo = array();
@@ -85,7 +94,7 @@ class PayFortPayController extends PaymentController
 
         $payfortIntegration = new PayfortIntegration();
 
-        $returnSignature = $payfortIntegration->calculateSignature($arrData, $paymentSettings['sha_response_phrase'], $paymentSettings['sha_type']);
+        $returnSignature = $payfortIntegration->calculateSignature($arrData, $this->settings['sha_response_phrase'], $this->settings['sha_type']);
 
         if ($returnSignature == $_REQUEST['signature'] && substr($_REQUEST['response_code'], 2) == '000' && $_REQUEST['amount'] == $paymentGatewayCharge && $_REQUEST['currency'] == $this->systemCurrencyCode && $_REQUEST['merchant_reference'] == $orderInfo['id']) {
             $message = array();
@@ -96,7 +105,7 @@ class PayFortPayController extends PaymentController
             }
 
             $gateWayCharges = ($paymentGatewayCharge/100);
-            $orderPaymentObj->addOrderPayment($paymentSettings["pmethod_code"], $_REQUEST['fort_id'], $gateWayCharges, 'Received Payment', implode('&', $message));
+            $orderPaymentObj->addOrderPayment($this->settings["plugin_code"], $_REQUEST['fort_id'], $gateWayCharges, 'Received Payment', implode('&', $message));
 
             FatApp::redirectUser(CommonHelper::generateUrl('custom', 'paymentSuccess', array($orderId)));
         } else {
@@ -118,12 +127,6 @@ class PayFortPayController extends PaymentController
         $paymentGatewayCharge = $this->formatPayableAmount($orderPaymentObj->getOrderPaymentGatewayAmount());
         $orderInfo = $orderPaymentObj->getOrderPrimaryinfo();
 
-        $paymentSettings = $this->getPaymentSettings();
-
-        if (!$this->validatePayFortSettings($paymentSettings)) {
-            $this->error = Labels::getLabel('PAYFORT_Invalid_Payment_Gateway_Setup_Error', $this->siteLangId);
-        }
-
         if (!$orderInfo['id']) {
             $this->error = Labels::getLabel('MSG_INVALID_ACCESS', $this->siteLangId);
             return false;
@@ -138,32 +141,26 @@ class PayFortPayController extends PaymentController
             $return_url = CommonHelper::generateFullUrl('PayFortPay', 'doPayment', array($orderId), '', false);
 
             $paramsValues = array(
-                                    'access_code' => $paymentSettings['access_code'],
+                                    'access_code' => $this->settings['access_code'],
                                     'amount' => $paymentGatewayCharge,
                                     'command' => 'PURCHASE',
                                     'currency' => strtoupper($this->systemCurrencyCode),
                                     'customer_email' => $orderInfo['customer_email'],
                                     'language' => strtolower($orderInfo['order_language']),
-                                    'merchant_identifier' => $paymentSettings['merchant_id'],
+                                    'merchant_identifier' => $this->settings['merchant_id'],
                                     'merchant_reference' => $orderInfo['id'],
                                     'order_description' => $orderPaymentGatewayDescription,
                                     'return_url' => $return_url,
                                 );
 
             $payfortIntegration = new PayfortIntegration();
-            $signature      = $payfortIntegration->calculateSignature($paramsValues, $paymentSettings['sha_request_phrase'], $paymentSettings['sha_type']);
+            $signature      = $payfortIntegration->calculateSignature($paramsValues, $this->settings['sha_request_phrase'], $this->settings['sha_type']);
             $paramsValues['signature'] = $signature;
 
             return $paramsValues;
         } else {
             return array();
         }
-    }
-
-    private function getPaymentSettings()
-    {
-        $pmObj = new PaymentSettings($this->keyName);
-        return $pmObj->getPaymentSettings();
     }
 
     private function formatPayableAmount($amount = null)
@@ -173,17 +170,6 @@ class PayFortPayController extends PaymentController
         }
         $amount = number_format($amount, 2, '.', '');
         return $amount*100;
-    }
-
-    private function validatePayFortSettings($paymentSettings = array())
-    {
-        $settingVal = array('merchant_id','access_code','sha_type','sha_request_phrase','sha_response_phrase');
-        foreach ($settingVal as $val) {
-            if (!isset($paymentSettings[$val]) || strlen(trim($paymentSettings[$val])) == 0) {
-                return false;
-            }
-        }
-        return true;
     }
 
     private function getPaymentForm($requestParams = array())

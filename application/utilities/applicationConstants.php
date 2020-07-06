@@ -328,15 +328,15 @@ class applicationConstants
         static::CHECKOUT_PRODUCT => array(''),
         static::CHECKOUT_SUBSCRIPTION => array(
          'CashOnDelivery',
-         'Transferbank'
+         'TransferBank'
         ),
         static::CHECKOUT_PPC => array(
                         'CashOnDelivery',
-                        'Transferbank'
+                        'TransferBank'
         ),
         static::CHECKOUT_ADD_MONEY_TO_WALLET => array(
                         'CashOnDelivery',
-                        'Transferbank'
+                        'TransferBank'
         )
         );
     }

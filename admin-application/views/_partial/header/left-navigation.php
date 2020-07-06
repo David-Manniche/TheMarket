@@ -547,9 +547,6 @@
                         <?php if ($objPrivilege->canViewThemeColor(AdminAuthentication::getLoggedAdminId(), true)) { ?>
                             <li><a href="<?php echo CommonHelper::generateUrl('ThemeColor'); ?>"><?php echo Labels::getLabel('LBL_Theme_Settings', $adminLangId);?></a></li>
                         <?php } ?>
-                        <?php if ($objPrivilege->canViewPaymentMethods(AdminAuthentication::getLoggedAdminId(), true)) {?>
-                            <li><a href="<?php echo CommonHelper::generateUrl('PaymentMethods'); ?>"><?php echo Labels::getLabel('LBL_Payment_Methods', $adminLangId);?></a></li>
-                        <?php } ?>
                         <?php if ($objPrivilege->canViewCurrencyManagement(AdminAuthentication::getLoggedAdminId(), true)) {?>
                             <li><a href="<?php echo CommonHelper::generateUrl('CurrencyManagement'); ?>"><?php echo Labels::getLabel('LBL_Currency_Management', $adminLangId);?></a></li>
                         <?php } ?>

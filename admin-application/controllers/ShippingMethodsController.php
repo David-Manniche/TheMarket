@@ -191,7 +191,7 @@ class ShippingMethodsController extends AdminBaseController
         $newTabLangId = 0;
         $languages = Language::getAllNames();
         foreach ($languages as $langId => $langName) {
-            if (!$row = PaymentMethods::getAttributesByLangId($langId, $shippingapi_id)) {
+            if (!$row = ShippingMethods::getAttributesByLangId($langId, $shippingapi_id)) {
                 $newTabLangId = $langId;
                 break;
             }

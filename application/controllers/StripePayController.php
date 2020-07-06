@@ -6,14 +6,27 @@ class StripePayController extends PaymentController
     public const KEY_NAME = 'Stripe';
 
     private $error = false;
-
-    private $paymentSettings = false;
    
+    public function __construct($action)
+    {
+        parent::__construct($action);
+        $this->init();
+    }
+
     protected function allowedCurrenciesArr()
     {
         return [
             'USD', 'AED', 'AFN', 'ALL', 'AMD', 'ANG', 'AOA', 'ARS', 'AUD', 'AWG', 'AZN', 'BAM', 'BBD', 'BDT', 'BGN', 'BIF', 'BMD', 'BND', 'BOB', 'BRL', 'BSD', 'BWP', 'BZD', 'CAD', 'CDF', 'CHF', 'CLP', 'CNY', 'COP', 'CRC', 'CVE', 'CZK', 'DJF', 'DKK', 'DOP', 'DZD', 'EGP', 'ETB', 'EUR', 'FJD', 'FKP', 'GBP', 'GEL', 'GIP', 'GMD', 'GNF', 'GTQ', 'GYD', 'HKD', 'HNL', 'HRK', 'HTG', 'HUF', 'IDR', 'ILS', 'INR', 'ISK', 'JMD', 'JPY', 'KES', 'KGS', 'KHR', 'KMF', 'KRW', 'KYD', 'KZT', 'LAK', 'LBP', 'LKR', 'LRD', 'LSL', 'MAD', 'MDL', 'MGA', 'MKD', 'MMK', 'MNT', 'MOP', 'MRO', 'MUR', 'MVR', 'MWK', 'MXN', 'MYR', 'MZN', 'NAD', 'NGN', 'NIO', 'NOK', 'NPR', 'NZD', 'PAB', 'PEN', 'PGK', 'PHP', 'PKR', 'PLN', 'PYG', 'QAR', 'RON', 'RSD', 'RUB', 'RWF', 'SAR', 'SBD', 'SCR', 'SEK', 'SGD', 'SHP', 'SLL', 'SOS', 'SRD', 'STD', 'SZL', 'THB', 'TJS', 'TOP', 'TRY', 'TTD', 'TWD', 'TZS', 'UAH', 'UGX', 'UYU', 'UZS', 'VND', 'VUV', 'WST', 'XAF', 'XCD', 'XOF', 'XPF', 'YER', 'ZAR', 'ZMW'
         ];
+    }
+    
+    private function init(): void
+    {
+        if (false === $this->plugin->validateSettings($this->siteLangId)) {
+            $this->setErrorAndRedirect($this->plugin->getError());
+        }
+
+        $this->settings = $this->plugin->getSettings();
     }
 
     public function charge($orderId)
@@ -27,20 +40,19 @@ class StripePayController extends PaymentController
             CommonHelper::redirectUserReferer();
         }
 
-        $this->paymentSettings = $this->getPaymentSettings();
         $stripe = array(
-            'secret_key' => $this->paymentSettings['privateKey'],
-            'publishable_key' => $this->paymentSettings['publishableKey']
+            'secret_key' => $this->settings['privateKey'],
+            'publishable_key' => $this->settings['publishableKey']
         );
         $this->set('stripe', $stripe);
 
-        if (!isset($this->paymentSettings['privateKey']) && !isset($this->paymentSettings['publishableKey'])) {
+        if (!isset($this->settings['privateKey']) && !isset($this->settings['publishableKey'])) {
             Message::addErrorMessage(Labels::getLabel('STRIPE_INVALID_PAYMENT_GATEWAY_SETUP_ERROR', $this->siteLangId));
             CommonHelper::redirectUserReferer();
         }
 
-        if (strlen(trim($this->paymentSettings['privateKey'])) > 0 && strlen(trim($this->paymentSettings['publishableKey'])) > 0) {
-            if (strpos($this->paymentSettings['privateKey'], 'test') !== false || strpos($this->paymentSettings['publishableKey'], 'test') !== false) {
+        if (strlen(trim($this->settings['privateKey'])) > 0 && strlen(trim($this->settings['publishableKey'])) > 0) {
+            if (strpos($this->settings['privateKey'], 'test') !== false || strpos($this->settings['publishableKey'], 'test') !== false) {
             }
             \Stripe\Stripe::setApiKey($stripe['secret_key']);
         } else {
@@ -124,12 +136,6 @@ class StripePayController extends PaymentController
         return $amount * 100;
     }
 
-    private function getPaymentSettings()
-    {
-        $pluginSetting = new PluginSetting(0, self::KEY_NAME);
-        return $pluginSetting->get($this->siteLangId);
-    }
-
     private function getPaymentForm($orderId)
     {
         $frm = new Form('frmPaymentForm', array('id' => 'frmPaymentForm', 'action' => CommonHelper::generateUrl('StripePay', 'charge', array($orderId)), 'class' => "form form--normal"));
@@ -151,12 +157,7 @@ class StripePayController extends PaymentController
     }
     
     public function stripeAuthentication($orderId = 0)
-    {
-        $this->paymentSettings = $this->getPaymentSettings();
-        if (!$this->paymentSettings) {
-            $this->error =  Labels::getLabel('STRIPE_INVALID_PAYMENT_GATEWAY_SETUP_ERROR', $this->siteLangId);
-        }
-        
+    {        
         $stripeToken = FatApp::getPostedData('stripeToken', FatUtility::VAR_STRING, '');
         
         if (empty($stripeToken)) {
@@ -172,18 +173,18 @@ class StripePayController extends PaymentController
         $paymentAmount = $this->formatPayableAmount($paymentAmount);
         
         $stripe = array(
-        'secret_key' => $this->paymentSettings['privateKey'],
-        'publishable_key' => $this->paymentSettings['publishableKey']
+        'secret_key' => $this->settings['privateKey'],
+        'publishable_key' => $this->settings['publishableKey']
         );
         
         $this->set('stripe', $stripe);
         
-        if (!empty(trim($this->paymentSettings['privateKey'])) && !empty(trim($this->paymentSettings['publishableKey']))) {
+        if (!empty(trim($this->settings['privateKey'])) && !empty(trim($this->settings['publishableKey']))) {
             \Stripe\Stripe::setApiKey($stripe['secret_key']);
         }
         
         try {
-            if (!empty(trim($this->paymentSettings['privateKey'])) && !empty(trim($this->paymentSettings['publishableKey']))) {
+            if (!empty(trim($this->settings['privateKey'])) && !empty(trim($this->settings['publishableKey']))) {
                 \Stripe\Stripe::setApiKey($stripe['secret_key']);
                 
                 $orderInfo = $orderPaymentObj->getOrderPrimaryinfo();
@@ -219,10 +220,9 @@ class StripePayController extends PaymentController
     
     public function stripeSuccess()
     {
-        $this->paymentSettings = $this->getPaymentSettings();
         $stripe = [
-            'secret_key' => $this->paymentSettings['privateKey'],
-            'publishable_key' => $this->paymentSettings['publishableKey']
+            'secret_key' => $this->settings['privateKey'],
+            'publishable_key' => $this->settings['publishableKey']
         ];
        
         \Stripe\Stripe::setApiKey($stripe['secret_key']);
@@ -264,7 +264,7 @@ class StripePayController extends PaymentController
             /* $paymentAmount = $orderPaymentObj->getOrderPaymentGatewayAmount();
             $payableAmount = $this->formatPayableAmount($paymentAmount); */
             $payment_amount = $charge['charges']['data'][0]['amount'];
-            $orderPaymentObj->addOrderPayment($this->paymentSettings["pmethod_name"], $charge['id'], ($payment_amount / 100), Labels::getLabel("MSG_Received_Payment", $this->siteLangId), $message);
+            $orderPaymentObj->addOrderPayment($this->settings["plugin_code"], $charge['id'], ($payment_amount / 100), Labels::getLabel("MSG_Received_Payment", $this->siteLangId), $message);
             /* End Recording Payment in DB */
             if (false === MOBILE_APP_API_CALL) {
                 FatApp::redirectUser(CommonHelper::generateUrl('custom', 'paymentSuccess', array($_POST['order_id'])));

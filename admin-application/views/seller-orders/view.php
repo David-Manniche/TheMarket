@@ -1,7 +1,7 @@
 <?php
 $selected_method = '';
 if ($order['order_pmethod_id']) {
-    $selected_method.= CommonHelper::displayNotApplicable($adminLangId, $order["pmethod_name"]);
+    $selected_method.= CommonHelper::displayNotApplicable($adminLangId, $order["plugin_name"]);
 }
 if ($order['order_is_wallet_selected'] == applicationConstants::YES) {
     $selected_method.= ($selected_method!='') ? ' + '.Labels::getLabel("LBL_Wallet", $adminLangId) : Labels::getLabel("LBL_Wallet", $adminLangId);

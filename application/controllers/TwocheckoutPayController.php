@@ -12,8 +12,14 @@
  */
 class TwocheckoutPayController extends PaymentController
 {
-    private $keyName = "Twocheckout";
+    public const KEY_NAME = "Twocheckout";
     private $paymentType = ""; //holds two values HOSTED or API
+
+    public function __construct($action)
+    {
+        parent::__construct($action);
+        $this->init();
+    }
 
     protected function allowedCurrenciesArr()
     {
@@ -21,10 +27,18 @@ class TwocheckoutPayController extends PaymentController
             'USD', 'EUR', 'GBP', 'JPY', 'CAD', 'RON', 'CZK', 'HUF', 'TRY', 'ZAR', 'EGP', 'MXN', 'PEN'
         ];
     }
+    
+    private function init(): void
+    {
+        if (false === $this->plugin->validateSettings($this->siteLangId)) {
+            $this->setErrorAndRedirect($this->plugin->getError());
+        }
+
+        $this->settings = $this->plugin->getSettings();
+    }
 
     public function charge($orderId)
     {
-        $paymentSettings = $this->getPaymentSettings();
         $orderPaymentObj = new OrderPayment($orderId, $this->siteLangId);
         $paymentAmount = $orderPaymentObj->getOrderPaymentGatewayAmount();
         $orderInfo = $orderPaymentObj->getOrderPrimaryinfo();
@@ -39,8 +53,8 @@ class TwocheckoutPayController extends PaymentController
                 /***
 * Adding here because we want these values in the js script
 **/
-                $this->set('sellerId', $paymentSettings['sellerId']);
-                $this->set('publishableKey', $paymentSettings['publishableKey']);
+                $this->set('sellerId', $this->settings['sellerId']);
+                $this->set('publishableKey', $this->settings['publishableKey']);
                 if (FatApp::getConfig('CONF_TRANSACTION_MODE', FatUtility::VAR_BOOLEAN, false) == true) {
                     $this->set('transaction_mode', 'production');
                 } else {
@@ -70,14 +84,13 @@ class TwocheckoutPayController extends PaymentController
      */
     public function callback()
     {
-        $paymentSettings = $this->getPaymentSettings();
         $post = FatApp::getPostedData();
         $orderId = $post['li_0_product_id'];//in our case it is order id (hosted checkout case)
         //$orderPaymentAmount = $request['total'];
         $orderPaymentObj = new OrderPayment($orderId, $this->siteLangId);
         $orderPaymentAmount = $orderPaymentObj->getOrderPaymentGatewayAmount();
-        $hashSecretWord = $paymentSettings['hashSecretWord']; //2Checkout Secret Word
-        $hashSid = $paymentSettings['sellerId']; //2Checkout account number
+        $hashSecretWord = $this->settings['hashSecretWord']; //2Checkout Secret Word
+        $hashSid = $this->settings['sellerId']; //2Checkout account number
         $hashOrder = $post['order_number']; //2Checkout Order Number
         $hashTotal = $orderPaymentAmount; //Sale total to validate against
         $StringToHash = strtoupper(md5($hashSecretWord . $hashSid . $hashOrder . $hashTotal));
@@ -91,7 +104,7 @@ class TwocheckoutPayController extends PaymentController
                 $message .= 'Description: ' . $post['li_0_name'] . "\n";
                 $message .= 'Hash Match: ' . 'Keys matched' . "\n";
                 /* Recording Payment in DB */
-                $orderPaymentObj->addOrderPayment($paymentSettings["pmethod_name"], $post['invoice_id'], $orderPaymentAmount, Labels::getLabel("LBL_Received_Payment", $this->siteLangId), $message);
+                $orderPaymentObj->addOrderPayment($this->settings["plugin_code"], $post['invoice_id'], $orderPaymentAmount, Labels::getLabel("LBL_Received_Payment", $this->siteLangId), $message);
                 /* End Recording Payment in DB */
                 FatApp::redirectUser(CommonHelper::generateUrl('custom', 'paymentSuccess', array($orderId)));
             }
@@ -105,7 +118,6 @@ class TwocheckoutPayController extends PaymentController
      */
     public function send($orderId)
     {
-        $paymentSettings = $this->getPaymentSettings();
         $post = FatApp::getPostedData();
         $orderPaymentObj = new OrderPayment($orderId, $this->siteLangId);
         /* Retrieve Payment to charge corresponding to your order */
@@ -141,12 +153,12 @@ class TwocheckoutPayController extends PaymentController
             )
             );
             if (FatApp::getConfig('CONF_TRANSACTION_MODE', FatUtility::VAR_BOOLEAN, false) == true) {
-                $url = 'https://www.2checkout.com/checkout/api/1/' . $paymentSettings['sellerId'] . '/rs/authService';
+                $url = 'https://www.2checkout.com/checkout/api/1/' . $this->settings['sellerId'] . '/rs/authService';
             } elseif (FatApp::getConfig('CONF_TRANSACTION_MODE', FatUtility::VAR_BOOLEAN, false) == false) {
-                $url = 'https://sandbox.2checkout.com/checkout/api/1/' . $paymentSettings['sellerId'] . '/rs/authService';
+                $url = 'https://sandbox.2checkout.com/checkout/api/1/' . $this->settings['sellerId'] . '/rs/authService';
             }
-            $params['sellerId'] = $paymentSettings['sellerId'];
-            $params['privateKey'] = $paymentSettings['privateKey'];
+            $params['sellerId'] = $this->settings['sellerId'];
+            $params['privateKey'] = $this->settings['privateKey'];
 
             $curl = curl_init($url);
             $params = json_encode($params);
@@ -169,14 +181,14 @@ class TwocheckoutPayController extends PaymentController
                     $result_array[$member] = $data;
                 }
                 /**
-                "validationErrors": null,
-                "exception": {
-                "errorMsg": "Payment Authorization Failed:  Please verify your Credit Card details are entered correctly and try again, or try another payment method.",
-                "httpStatus": "400",
-                "exception": false,
-                "errorCode": "602"
-                },
-                "response": null
+                * "validationErrors": null,
+                * "exception": {
+                * "errorMsg": "Payment Authorization Failed:  Please verify your Credit Card details are entered correctly and try again, or try another payment method.",
+                * "httpStatus": "400",
+                * "exception": false,
+                * "errorCode": "602"
+                * },
+                * "response": null
                 **/
                 /* CommonHelper::printArray($result_array); die; */
                 $exception = $result_array['exception']; //must be null in case of successful orders
@@ -199,7 +211,7 @@ class TwocheckoutPayController extends PaymentController
                         $message .= 'Response Message: ' . $responseMsg . "\n";
                         if ($responseCode == 'APPROVED') {
                             /* Recording Payment in DB */
-                            $orderPaymentObj->addOrderPayment($paymentSettings["pmethod_name"], $transactionId, $orderPaymentAmount, Labels::getLabel("LBL_Received_Payment", $this->siteLangId), $message);
+                            $orderPaymentObj->addOrderPayment($this->settings["plugin_code"], $transactionId, $orderPaymentAmount, Labels::getLabel("LBL_Received_Payment", $this->siteLangId), $message);
                             $json['redirect'] = CommonHelper::generateUrl('custom', 'paymentSuccess', array($orderId));
                             /* End Recording Payment in DB */
                         }
@@ -221,24 +233,15 @@ class TwocheckoutPayController extends PaymentController
 
     private function getPaymentForm($orderId)
     {
-        $paymentSettings = $this->getPaymentSettings();
-        $this->paymentType = $paymentSettings['payment_type'];
+        $this->paymentType = $this->settings['payment_type'];
         if ($this->paymentType == 'HOSTED') { /* check admin controller for confirmation */
-            return $this->getHostedCheckoutForm($paymentSettings, $orderId);
+            return $this->getHostedCheckoutForm($orderId);
         } else {
-            return $this->getAPICheckoutForm($paymentSettings, $orderId);
+            return $this->getAPICheckoutForm($orderId);
         }
     }
 
-    private function getPaymentSettings()
-    {
-        $pmObj = new PaymentSettings($this->keyName);
-        $paymentSettings = $pmObj->getPaymentSettings();
-        $this->paymentType = $paymentSettings['payment_type'];
-        return $paymentSettings;
-    }
-
-    private function getHostedCheckoutForm($paymentSettings, $orderId)
+    private function getHostedCheckoutForm($orderId)
     {
         $orderPaymentObj = new OrderPayment($orderId, $this->siteLangId);
         $payment_gateway_charge = $orderPaymentObj->getOrderPaymentGatewayAmount();
@@ -251,7 +254,7 @@ class TwocheckoutPayController extends PaymentController
         }
         $frm = new Form('frmTwoCheckout', array('id' => 'frmTwoCheckout', 'action' => $actionUrl, 'class' => "form form--normal"));
 
-        $frm->addHiddenField('sid', 'sid', $paymentSettings["sellerId"]);
+        $frm->addHiddenField('sid', 'sid', $this->settings["sellerId"]);
         $frm->addHiddenField('mode', 'mode', '2CO');//it should always be 2CO (We're using hosted payment approach)
         $txnid = $orderInfo["invoice"];
         $frm->addHiddenField('li_0_name', 'li_0_name', 'Payment for Order - Invoice #' . $txnid);
@@ -288,7 +291,7 @@ class TwocheckoutPayController extends PaymentController
         return $frm;
     }
 
-    private function getAPICheckoutForm($paymentSettings, $orderId)
+    private function getAPICheckoutForm($orderId)
     {
         $frm = new Form('frmTwoCheckout', array('id' => 'frmTwoCheckout', 'action' => CommonHelper::generateUrl('TwocheckoutPay', 'send', array($orderId)), 'class' => "form form--normal"));
 

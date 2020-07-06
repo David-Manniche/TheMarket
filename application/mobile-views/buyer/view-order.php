@@ -117,17 +117,17 @@ foreach ($childArr as $index => $childOrder) {
         'value' => CommonHelper::displayMoneyFormat(CommonHelper::orderProductAmount($childOrder)),
     );
 
-    $paymentMethodName = $childOrder['pmethod_name']?:$childOrder['pmethod_identifier'];
+    $paymentMethodName = $childOrder['plugin_name']?:$childOrder['plugin_identifier'];
     if (0 < $childOrder['order_pmethod_id'] && 0 < $childOrder['order_is_wallet_selected']) {
         $paymentMethodName .= ' + ';
     }
     if (0 < $childOrder['order_is_wallet_selected']) {
         $paymentMethodName .= Labels::getLabel("LBL_Wallet", $siteLangId);
     }
-    $childArr[$index]['pmethod_name'] = $paymentMethodName;
+    $childArr[$index]['plugin_name'] = $paymentMethodName;
 
     $orderObj = new Orders($childOrder['order_id']);
-    if ($childOrder['pmethod_code'] == 'CashOnDelivery') {
+    if ($childOrder['plugin_code'] == 'CashOnDelivery') {
         $processingStatuses = $orderObj->getAdminAllowedUpdateOrderStatuses(true);
     } else {
         $processingStatuses = $orderObj->getAdminAllowedUpdateOrderStatuses(false, $childOrder['op_product_type']);

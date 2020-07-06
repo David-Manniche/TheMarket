@@ -312,14 +312,6 @@ class PluginsController extends AdminBaseController
         }
         
         if (false == Plugin::updateStatus($data['plugin_type'], $status, $pluginId, $error)) {
-            $groupType = Plugin::getGroupType($data['plugin_type']);
-            if (!empty($groupType)) {
-                $error = [
-                    'status' => Plugin::RETURN_FALSE,
-                    'msg' => $error,
-                    'types' => array_values(array_diff($groupType, [$data['plugin_type']]))
-                ];
-            }
             FatUtility::dieJsonError($error);
         }
 
@@ -351,10 +343,6 @@ class PluginsController extends AdminBaseController
             $eiherPluginTypes = array_values(array_diff($groupType, [$data['plugin_type']]));
             
             foreach ($eiherPluginTypes as $pluginType) {
-                $groupType = Plugin::getGroupType($pluginType);
-                if (empty($groupType)) {
-                    continue;
-                }
                 if (false == Plugin::updateStatus($pluginType, Plugin::INACTIVE, null, $error)) {
                     FatUtility::dieJsonError($error);
                 }
@@ -434,6 +422,39 @@ class PluginsController extends AdminBaseController
             }
             Plugin::updateStatus($pluginType, $status, $pluginId);
         }
+        $this->set('msg', $this->str_update_record);
+        $this->_template->render(false, false, 'json-success.php');
+    }
+
+    public function changeBulkStatusByType()
+    {
+        $this->objPrivilege->canEditPlugins();
+        $pluginGroupType = FatApp::getPostedData('plugin_type', FatUtility::VAR_INT, 0);
+        $status = FatApp::getPostedData('status', FatUtility::VAR_INT, 0);
+
+        $pluginIdsArr = FatUtility::int(FatApp::getPostedData('plugin_ids'));
+        if (empty($pluginIdsArr) || -1 == $status || 1 > $pluginGroupType) {
+            FatUtility::dieJsonError(Labels::getLabel('MSG_INVALID_REQUEST', $this->adminLangId));
+        }
+
+        foreach ($pluginIdsArr as $pluginId) {
+            if (1 > $pluginId) {
+                continue;
+            }
+            Plugin::updateStatus($pluginGroupType, $status, $pluginId);
+        }
+
+        if (Plugin::ACTIVE == $status) {
+            $groupType = Plugin::getGroupType($pluginGroupType);
+            $eiherPluginTypes = array_values(array_diff($groupType, [$pluginGroupType]));
+            
+            foreach ($eiherPluginTypes as $pluginType) {
+                if (false == Plugin::updateStatus($pluginType, Plugin::INACTIVE, null, $error)) {
+                    FatUtility::dieJsonError($error);
+                }
+            }
+        }
+        
         $this->set('msg', $this->str_update_record);
         $this->_template->render(false, false, 'json-success.php');
     }

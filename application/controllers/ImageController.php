@@ -510,6 +510,9 @@ class ImageController extends FatController
         }
     }
 
+    /* 
+    * All Payment methods moved to plugins section.
+    */
     public function paymentMethod($recordId, $sizeType = '', $afile_id = 0)
     {
         $default_image = 'product_default_image.jpg';
@@ -519,16 +522,28 @@ class ImageController extends FatController
 
         if ($afile_id > 0) {
             $file_row = AttachedFile::getAttributesById($afile_id);
-            if (false == $file_row || (!false == $file_row && $file_row['afile_type'] != AttachedFile::FILETYPE_PAYMENT_METHOD)) {
+            // if (false == $file_row || (!false == $file_row && $file_row['afile_type'] != AttachedFile::FILETYPE_PAYMENT_METHOD)) {
+            if (false == $file_row || (!false == $file_row && $file_row['afile_type'] != AttachedFile::FILETYPE_PLUGIN_LOGO)) {
                 return;
             }
         } else {
-            $file_row = AttachedFile::getAttachment(AttachedFile::FILETYPE_PAYMENT_METHOD, $recordId);
+            // $file_row = AttachedFile::getAttachment(AttachedFile::FILETYPE_PAYMENT_METHOD, $recordId);
+            $file_row = AttachedFile::getAttachment(AttachedFile::FILETYPE_PLUGIN_LOGO, $recordId);
         }
 
         $image_name = isset($file_row['afile_physical_path']) ? $file_row['afile_physical_path'] : '';
 
         switch (strtoupper($sizeType)) {
+            case 'ICON':
+                $w = 30;
+                $h = 30;
+                AttachedFile::displayImage($image_name, $w, $h, $default_image);
+                break;
+            case 'MINITHUMB':
+                $w = 61;
+                $h = 61;
+                AttachedFile::displayImage($image_name, $w, $h, $default_image);
+                break;
             case 'THUMB':
                 $w = 100;
                 $h = 100;

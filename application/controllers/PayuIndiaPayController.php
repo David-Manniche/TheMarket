@@ -2,11 +2,26 @@
 
 class PayuIndiaPayController extends PaymentController
 {
-    private $keyName = "PayuIndia";
+    public const KEY_NAME = "PayuIndia";
     
+    public function __construct($action)
+    {
+        parent::__construct($action);
+        $this->init();
+    }
+
     protected function allowedCurrenciesArr()
     {
         return ['INR'];
+    }
+    
+    private function init(): void
+    {
+        if (false === $this->plugin->validateSettings($this->siteLangId)) {
+            $this->setErrorAndRedirect($this->plugin->getError());
+        }
+
+        $this->settings = $this->plugin->getSettings();
     }
 
     public function charge($orderId)
@@ -16,11 +31,6 @@ class PayuIndiaPayController extends PaymentController
             CommonHelper::redirectUserReferer();
         }
 
-        $pmObj = new PaymentSettings($this->keyName);
-        if (!$paymentSettings = $pmObj->getPaymentSettings()) {
-            Message::addErrorMessage($pmObj->getError());
-            CommonHelper::redirectUserReferer();
-        }
         $orderPaymentObj = new OrderPayment($orderId, $this->siteLangId);
         $paymentAmount = $orderPaymentObj->getOrderPaymentGatewayAmount();
         $orderInfo = $orderPaymentObj->getOrderPrimaryinfo();
@@ -40,8 +50,6 @@ class PayuIndiaPayController extends PaymentController
 
     public function callback()
     {
-        $pmObj = new PaymentSettings($this->keyName);
-        $paymentSettings = $pmObj->getPaymentSettings();
         $post = FatApp::getPostedData();
         foreach ($post as $key => $value) {
             $request .= '&' . $key . '=' . urlencode(html_entity_decode($value, ENT_QUOTES, 'UTF-8'));
@@ -54,9 +62,9 @@ class PayuIndiaPayController extends PaymentController
             $orderPaymentGatewayDescription = sprintf(Labels::getLabel('MSG_Order_Payment_Gateway_Description', $this->siteLangId), $orderInfo["site_system_name"], $orderInfo['invoice']);
             switch ($post['status']) {
             case 'success':
-                $receiver_match = (strtolower($post['key']) == strtolower($paymentSettings['merchant_id']));
+                $receiver_match = (strtolower($post['key']) == strtolower($this->settings['merchant_id']));
                 $total_paid_match = ((float)$post['amount'] == (float)$paymentGatewayCharge);
-                $hash_string = $paymentSettings["salt"] . "|" . $post["status"] . "||||||||||" . $post["udf1"] . "|" . $post["email"] . "|" . $post["firstname"] . "|" . $post["productinfo"] . "|" . $post["amount"] . "|" . $post["txnid"] . "|" . $post["key"];
+                $hash_string = $this->settings["salt"] . "|" . $post["status"] . "||||||||||" . $post["udf1"] . "|" . $post["email"] . "|" . $post["firstname"] . "|" . $post["productinfo"] . "|" . $post["amount"] . "|" . $post["txnid"] . "|" . $post["key"];
                 $reverse_hash = strtolower(hash('sha512', $hash_string));
                 $reverse_hash_match = ($post['hash'] == $reverse_hash);
                 if ($receiver_match && $total_paid_match && $reverse_hash_match) {
@@ -74,7 +82,7 @@ class PayuIndiaPayController extends PaymentController
                 break;
             }
             if ($order_payment_status == 1) {
-                $orderPaymentObj->addOrderPayment($paymentSettings["pmethod_name"], $post["mihpayid"], $paymentGatewayCharge, Labels::getLabel("LBL_Received_Payment", $this->siteLangId), $request);
+                $orderPaymentObj->addOrderPayment($this->settings["plugin_code"], $post["mihpayid"], $paymentGatewayCharge, Labels::getLabel("LBL_Received_Payment", $this->siteLangId), $request);
                 FatApp::redirectUser(CommonHelper::generateUrl('custom', 'paymentSuccess', array($orderId)));
             } else {
                 $orderPaymentObj->addOrderPaymentComments($request);
@@ -88,8 +96,6 @@ class PayuIndiaPayController extends PaymentController
 
     private function getPaymentForm($orderId)
     {
-        $pmObj = new PaymentSettings($this->keyName);
-        $paymentSettings = $pmObj->getPaymentSettings();
         $orderPaymentObj = new OrderPayment($orderId, $this->siteLangId);
         $paymentGatewayCharge = $orderPaymentObj->getOrderPaymentGatewayAmount();
         if (FatApp::getConfig('CONF_TRANSACTION_MODE', FatUtility::VAR_BOOLEAN, false) == true) {
@@ -116,7 +122,7 @@ class PayuIndiaPayController extends PaymentController
             $cancelBtnUrl = CommonHelper::getPaymentFailurePageUrl();
         }
 
-        $frm->addHiddenField('key', 'key', $paymentSettings["merchant_id"]);
+        $frm->addHiddenField('key', 'key', $this->settings["merchant_id"]);
         $frm->addHiddenField('txnid', 'txnid', $txnid);
         $frm->addHiddenField('amount', 'amount', $paymentGatewayCharge);
         $frm->addHiddenField('productinfo', 'productinfo', $orderPaymentGatewayDescription);
@@ -129,9 +135,9 @@ class PayuIndiaPayController extends PaymentController
         $frm->addHiddenField('Furl', 'Furl', CommonHelper::generateFullUrl('PayuIndiaPay', 'callback'));
 
         $frm->addHiddenField('curl', 'curl', $cancelBtnUrl);
-        $key = $paymentSettings["merchant_id"];
+        $key = $this->settings["merchant_id"];
         $amount = $paymentGatewayCharge;
-        $salt = $paymentSettings["salt"];
+        $salt = $this->settings["salt"];
         $udf1 = $orderId;
         $Hash = hash('sha512', $key . '|' . $txnid . '|' . $paymentGatewayCharge . '|' . $orderPaymentGatewayDescription . '|' . $firstname . '|' . $email . '|' . $udf1 . '||||||||||' . $salt);
         $frm->addHiddenField('hash', 'hash', $Hash);

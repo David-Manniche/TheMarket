@@ -322,6 +322,7 @@ INSERT INTO `tbl_plugins` (`plugin_identifier`, `plugin_type`, `plugin_code`, `p
 INSERT INTO `tbl_plugins` (`plugin_identifier`, `plugin_type`, `plugin_code`, `plugin_active`, `plugin_display_order`) VALUES ('Khipu', '13', 'Khipu', '0', '1');
 INSERT INTO `tbl_plugins` (`plugin_identifier`, `plugin_type`, `plugin_code`, `plugin_active`, `plugin_display_order`) VALUES ('Omise', '13', 'Omise', '0', '1');
 INSERT INTO `tbl_plugins` (`plugin_identifier`, `plugin_type`, `plugin_code`, `plugin_active`, `plugin_display_order`) VALUES ('PayFort', '13', 'PayFort', '0', '1');
+INSERT INTO `tbl_plugins` (`plugin_identifier`, `plugin_type`, `plugin_code`, `plugin_active`, `plugin_display_order`) VALUES ('PayFortStart', '13', 'PayFortStart', '0', '1');
 INSERT INTO `tbl_plugins` (`plugin_identifier`, `plugin_type`, `plugin_code`, `plugin_active`, `plugin_display_order`) VALUES ('Paypal Standard', '13', 'PaypalStandard', '0', '1');
 INSERT INTO `tbl_plugins` (`plugin_identifier`, `plugin_type`, `plugin_code`, `plugin_active`, `plugin_display_order`) VALUES ('Paytm', '13', 'Paytm', '0', '1');
 INSERT INTO `tbl_plugins` (`plugin_identifier`, `plugin_type`, `plugin_code`, `plugin_active`, `plugin_display_order`) VALUES ('PayuIndia', '13', 'PayuIndia', '0', '1');
@@ -336,4 +337,11 @@ INNER JOIN tbl_plugins p ON p.plugin_code = pm.pmethod_code
 SET o.order_pmethod_id = p.plugin_id
 WHERE o.order_pmethod_id > 0;
 
+DROP TABLE `tbl_payment_methods`;
+DROP TABLE `tbl_payment_methods_lang`;
+DROP TABLE `tbl_payment_method_settings`;
+-- End --
+
+-- Shipstation Shipping API --
+ALTER TABLE `tbl_order_product_shipment` CHANGE `opship_response` `opship_response` LONGTEXT CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL;
 -- End --

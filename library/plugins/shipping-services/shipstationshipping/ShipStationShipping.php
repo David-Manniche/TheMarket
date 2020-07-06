@@ -140,7 +140,7 @@ class ShipStationShipping extends ShippingServicesBase
         $this->order['shippingAmount'] = $shippingTotal;
         /* $this->order['customerNotes']     = null;
         $this->order['internalNotes']     = "Express Shipping Please"; */
-        $this->order['paymentMethod'] = $orderDetail['pmethod_name'];
+        $this->order['paymentMethod'] = $orderDetail['plugin_name'];
         $this->order['carrierCode']       = $orderDetail['opshipping_carrier_code'];
         $this->order['serviceCode']       = $orderDetail['opshipping_service_code'];
         $this->order['packageCode'] = "package";
@@ -185,31 +185,28 @@ class ShipStationShipping extends ShippingServicesBase
     {
         return $this->doRequest(self::REQUEST_CREATE_LABEL, $requestParam); //Return bool
     }
-        
+
     /**
      * downloadLabel
      *
-     * @param  mixed $opId
+     * @param  string $labelData
+     * @param  string $filename
      * @return void
      */
-    public function downloadLabel(int $opId)
-    {
-        $orderProductShipmentDetail = OrderProductShipment::getAttributesById($opId);
-        $shipmentResponse = json_decode($orderProductShipmentDetail['opship_response'], true);
-        $trackingNumber = $orderProductShipmentDetail['opship_tracking_number'];
-
-        $filename = "label-" . $trackingNumber . ".pdf";
-        
+    public function downloadLabel(string $labelData, string $filename = "label.pdf", bool $preview = false)
+    {       
+        $disposition = (true === $preview ? 'inline' : 'attachment');
         header("Pragma: public");
         header("Expires: 0");
         header("Cache-Control: must-revalidate, post-check=0, pre-check=0");
         header("Cache-Control: public");
         header("Content-Description: File Transfer");
         header("Content-Type: application/pdf");
-        header("Content-Disposition: attachment; filename=" . $filename);
+        header("Content-Disposition: " . $disposition . "; filename=" . $filename);
         header("Content-Transfer-Encoding: binary");
         
-        return base64_decode($shipmentResponse['labelData']);
+        echo base64_decode($labelData);
+        die;
     }
             
     /**

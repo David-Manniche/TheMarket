@@ -47,7 +47,7 @@ trait PluginHelper
      * @param  int $langId
      * @return bool
      */
-    protected function validateSettings(int $langId = 0): bool
+    public function validateSettings(int $langId = 0): bool
     {
         $this->langId = 0 < $langId ? $langId : CommonHelper::getLangId();
         $this->settings = $this->getSettings();

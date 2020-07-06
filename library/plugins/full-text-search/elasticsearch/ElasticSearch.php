@@ -8,11 +8,10 @@ class ElasticSearch extends FullTextSearchBase
 {
     private $client;
     private $indexName;
-    private $search;
-    private $fields;
-    private $sortField;
+    private $search = [];
+    private $fields = [];
+    private $sortField = [];
     private $groupByFields;
-    public $error = false;
 
     public const KEY_NAME = __CLASS__;
     public const INDEX_PREFIX = "yk-products-";
@@ -42,9 +41,6 @@ class ElasticSearch extends FullTextSearchBase
              ->build();
 
         $this->pageSize = FatApp::getConfig('conf_page_size', FatUtility::VAR_INT, 10);
-        $this->search = [];
-        $this->fields = [];
-        $this->sortField = [];
     }
 
     public function addKeywordCondition($keyword)
@@ -378,6 +374,9 @@ class ElasticSearch extends FullTextSearchBase
         }
         try {
             $results = $this->client->search($params);
+        } catch (error $e) {
+            $this->setErrorMessage($e);
+            return false;
         } catch (exception $e) {
             $this->setErrorMessage($e);
             return false;

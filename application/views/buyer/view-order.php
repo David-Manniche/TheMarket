@@ -80,7 +80,7 @@ if (true == $primaryOrder) {
                         <div class="col-lg-6 col-md-6 mb-4">
                             <div class="info--order">
                                 <p><strong><?php echo Labels::getLabel('LBL_Customer_Name', $siteLangId); ?>: </strong><?php echo $childOrderDetail['user_name']; ?></p> <?php
-                                $paymentMethodName = !empty($childOrderDetail['pmethod_name']) ? $childOrderDetail['pmethod_identifier'] : '';
+                                $paymentMethodName = !empty($childOrderDetail['plugin_name']) ? $childOrderDetail['plugin_identifier'] : '';
                                 if ($childOrderDetail['order_pmethod_id'] > 0 && $childOrderDetail['order_is_wallet_selected'] > 0) {
                                     $paymentMethodName  .= ' + ';
                                 }
@@ -89,8 +89,8 @@ if (true == $primaryOrder) {
                                 } ?> <p><strong><?php echo Labels::getLabel('LBL_Payment_Method', $siteLangId); ?>: </strong><?php echo $paymentMethodName; ?></p>
                                 <p><strong><?php echo Labels::getLabel('LBL_Payment_Status', $siteLangId); ?>: </strong>
                                 <?php echo Orders::getOrderPaymentStatusArr($siteLangId)[$childOrderDetail['order_is_paid']];
-                                if ('' != $childOrderDetail['pmethod_name'] && 'CashOnDelivery' == $childOrderDetail['pmethod_code']) {
-                                    echo ' (' . $childOrderDetail['pmethod_name'] . ' )';
+                                if ('' != $childOrderDetail['plugin_name'] && 'CashOnDelivery' == $childOrderDetail['plugin_code']) {
+                                    echo ' (' . $childOrderDetail['plugin_name'] . ' )';
                                 } ?>
                                 <?php /*echo $orderStatuses[$childOrderDetail['op_status_id']];*/ ?></p>
                                 <p><strong><?php echo Labels::getLabel('LBL_Cart_Total', $siteLangId); ?>: </strong><?php echo CommonHelper::displayMoneyFormat(CommonHelper::orderProductAmount($childOrderDetail, 'CART_TOTAL'), true, false, true, false, true); ?></p>

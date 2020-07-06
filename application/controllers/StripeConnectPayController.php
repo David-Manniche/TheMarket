@@ -37,18 +37,11 @@ class StripeConnectPayController extends PaymentController
             $this->setErrorAndRedirect();
         }
 
-        $this->settings = $this->stripeConnect->getKeys();
+        $this->settings = $this->stripeConnect->getSettings();
 
         if (isset($this->settings['env']) && Plugin::ENV_PRODUCTION == $this->settings['env']) {
             $this->liveMode = "live_";
         }
-    }
-
-    private function setErrorAndRedirect(string $msg = "")
-    {
-        $msg = !empty($msg) ? $msg : $this->stripeConnect->getError();
-        LibHelper::exitWithError($msg, false, true);
-        CommonHelper::redirectUserReferer();
     }
 
     protected function allowedCurrenciesArr()

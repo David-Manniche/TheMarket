@@ -171,10 +171,11 @@ class WalletPayController extends MyAppController
         $pmSrch = PaymentMethods::getSearchObject($this->siteLangId);
         $pmSrch->doNotCalculateRecords();
         $pmSrch->doNotLimitRecords();
-        $pmSrch->addMultipleFields(array('pmethod_id', 'IFNULL(pmethod_name, pmethod_identifier) as pmethod_name', 'pmethod_code', 'pmethod_description'));
+        $pmSrch->addMultipleFields(Plugin::ATTRS);
         $pmRs = $pmSrch->getResultSet();
         $paymentMethods = FatApp::getDb()->fetchAll($pmRs);
         $excludePaymentGatewaysArr = applicationConstants::getExcludePaymentGatewayArr();
+
         $this->set('paymentMethods', $paymentMethods);
         $this->set('excludePaymentGatewaysArr', $excludePaymentGatewaysArr);
         $this->set('headerData', $headerData);
@@ -185,10 +186,10 @@ class WalletPayController extends MyAppController
         $this->_template->render(true, true);
     }
 
-    public function PaymentTab($order_id, $pmethod_id)
+    public function PaymentTab($order_id, $plugin_id)
     {
-        $pmethod_id = FatUtility::int($pmethod_id);
-        if (!$pmethod_id) {
+        $plugin_id = FatUtility::int($plugin_id);
+        if (!$plugin_id) {
             FatUtility::dieWithError(Labels::getLabel("MSG_Invalid_Request!", $this->siteLangId));
         }
 
@@ -218,8 +219,8 @@ class WalletPayController extends MyAppController
         $pmSrch = PaymentMethods::getSearchObject($this->siteLangId);
         $pmSrch->doNotCalculateRecords();
         $pmSrch->doNotLimitRecords();
-        $pmSrch->addMultipleFields(array('pmethod_id', 'IFNULL(pmethod_name, pmethod_identifier) as pmethod_name', 'pmethod_code', 'pmethod_description'));
-        $pmSrch->addCondition('pmethod_id', '=', $pmethod_id);
+        $pmSrch->addMultipleFields(Plugin::ATTRS);
+        $pmSrch->addCondition('plugin_id', '=', $plugin_id);
         $pmRs = $pmSrch->getResultSet();
         $paymentMethod = FatApp::getDb()->fetch($pmRs);
         //var_dump($paymentMethod);
@@ -227,39 +228,20 @@ class WalletPayController extends MyAppController
             FatUtility::dieWithError(Labels::getLabel("MSG_Selected_Payment_method_not_found!", $this->siteLangId));
         }
 
-        $frm = $this->getPaymentTabForm($this->siteLangId, $paymentMethod['pmethod_code']);
-        $controller = $paymentMethod['pmethod_code'] . 'Pay';
+        $frm = $this->getPaymentTabForm($this->siteLangId, $paymentMethod['plugin_code']);
+        $controller = $paymentMethod['plugin_code'] . 'Pay';
         $frm->setFormTagAttribute('action', CommonHelper::generateUrl($controller, 'charge', array($orderInfo['order_id'])));
         $frm->fill(
             array(
                 'order_type' => $orderInfo['order_type'],
                 'order_id' => $order_id,
-                'pmethod_id' => $pmethod_id
+                'plugin_id' => $plugin_id
                 )
         );
 
         $this->set('orderInfo', $orderInfo);
         $this->set('paymentMethod', $paymentMethod);
         $this->set('frm', $frm);
-        /* Partial Payment is not allowed, Wallet + COD, So, disabling COD in case of Partial Payment Wallet Selected. [ */
-        /* if( strtolower($paymentMethod['pmethod_code']) == "cashondelivery" ){
-        if( $this->cartObj->hasDigitalProduct() ){
-        $str = Labels::getLabel( 'MSG_{COD}_is_not_available_if_your_cart_has_any_Digital_Product', $this->siteLangId );
-        $str = str_replace( '{cod}', $paymentMethod['pmethod_name'], $str );
-        FatUtility::dieWithError( $str );
-        }
-        $cartSummary = $this->cartObj->getCartFinancialSummary($this->siteLangId);
-        $user_id = UserAuthentication::getLoggedUserId();
-        $userWalletBalance = User::getUserBalance($user_id,true);
-
-        if( $cartSummary['cartWalletSelected'] && $userWalletBalance < $cartSummary['orderNetAmount'] ){
-        $str = Labels::getLabel('MSG_Wallet_can_not_be_used_along_with_{COD}', $this->siteLangId );
-        $str = str_replace( '{cod}', $paymentMethod['pmethod_name'], $str );
-        FatUtility::dieWithError( $str );
-        //$this->set('error', $str );
-        }
-        } */
-        /* ] */
         $this->_template->render(false, false, '', false, false);
     }
 
@@ -274,7 +256,7 @@ class WalletPayController extends MyAppController
         $frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_Confirm_Payment', $langId));
         $frm->addHiddenField('', 'order_type');
         $frm->addHiddenField('', 'order_id');
-        $frm->addHiddenField('', 'pmethod_id');
+        $frm->addHiddenField('', 'plugin_id');
         return $frm;
     }
 
@@ -296,9 +278,9 @@ class WalletPayController extends MyAppController
             } */
 
             $user_id = UserAuthentication::getLoggedUserId();
-            $pmethod_id = FatApp::getPostedData('pmethod_id', FatUtility::VAR_INT, 0);
-            $paymentMethodRow = PaymentMethods::getAttributesById($pmethod_id);
-            if (!$paymentMethodRow || $paymentMethodRow['pmethod_active'] != applicationConstants::ACTIVE) {
+            $plugin_id = FatApp::getPostedData('plugin_id', FatUtility::VAR_INT, 0);
+            $paymentMethodRow = Plugin::getAttributesById($plugin_id);
+            if (!$paymentMethodRow || $paymentMethodRow['plugin_active'] != Plugin::ACTIVE) {
                 Message::addErrorMessage(Labels::getLabel("LBL_Invalid_Payment_method,_Please_contact_Webadmin.", $this->siteLangId));
                 FatUtility::dieWithError(Message::getHtml());
             }
@@ -324,7 +306,7 @@ class WalletPayController extends MyAppController
                 FatUtility::dieWithError(Message::getHtml());
             }
 
-            $orderObj->updateOrderInfo($order_id, array('order_pmethod_id' => $pmethod_id));
+            $orderObj->updateOrderInfo($order_id, array('order_pmethod_id' => $plugin_id));
             $this->_template->render(false, false, 'json-success.php');
         }
         /* ] */
@@ -338,49 +320,24 @@ class WalletPayController extends MyAppController
 
         $user_id = UserAuthentication::getLoggedUserId();
         $userWalletBalance = User::getUserBalance($user_id, true);
-        $pmethod_id = FatApp::getPostedData('pmethod_id', FatUtility::VAR_INT, 0);
+        $plugin_id = FatApp::getPostedData('plugin_id', FatUtility::VAR_INT, 0);
 
         $post = FatApp::getPostedData();
         // commonHelper::printArray($post); die;
 
-        $paymentMethodRow = PaymentMethods::getAttributesById($pmethod_id);
-        if (!$paymentMethodRow || $paymentMethodRow['pmethod_active'] != applicationConstants::ACTIVE) {
+        $paymentMethodRow = Plugin::getAttributesById($plugin_id);
+        if (!$paymentMethodRow || $paymentMethodRow['plugin_active'] != Plugin::ACTIVE) {
             Message::addErrorMessage(Labels::getLabel("LBL_Invalid_Payment_method,_Please_contact_Webadmin.", $this->siteLangId));
             FatUtility::dieWithError(Message::getHtml());
         }
 
-        if (strtolower($paymentMethodRow['pmethod_code']) == 'cashondelivery' && FatApp::getConfig('CONF_RECAPTCHA_SITEKEY', FatUtility::VAR_STRING, '') != '' && FatApp::getConfig('CONF_RECAPTCHA_SECRETKEY', FatUtility::VAR_STRING, '') != '') {
+        if (strtolower($paymentMethodRow['plugin_code']) == 'cashondelivery' && FatApp::getConfig('CONF_RECAPTCHA_SITEKEY', FatUtility::VAR_STRING, '') != '' && FatApp::getConfig('CONF_RECAPTCHA_SECRETKEY', FatUtility::VAR_STRING, '') != '') {
             if (!CommonHelper::verifyCaptcha()) {
                 Message::addErrorMessage(Labels::getLabel('MSG_That_captcha_was_incorrect', $this->siteLangId));
                 FatUtility::dieWithError(Message::getHtml());
                 //FatApp::redirectUser(CommonHelper::generateUrl('Custom', 'ContactUs'));
             }
         }
-
-        /* Enable it if we add Shipping Users in Project Check, System have shipping company user added or nor, if not, then COD is not allowed for Project[ */
-        /* if( strtolower($paymentMethodRow['pmethod_code']) == 'cashondelivery' ){
-        if( !CommonHelper::verifyCaptcha() ) {
-        Message::addErrorMessage(Labels::getLabel('MSG_That_captcha_was_incorrect',$this->siteLangId));
-        FatUtility::dieWithError( Message::getHtml() );
-        //FatApp::redirectUser(CommonHelper::generateUrl('Custom', 'ContactUs'));
-        }
-        $srch = User::getSearchObject( true );
-        $srch->doNotCalculateRecords();
-        $srch->setPageSize(1);
-        $srch->addCondition( 'user_type', '=', User::USER_TYPE_SHIPPING_COMPANY );
-        $srch->addCondition( 'uc.credential_active', '=', applicationConstants::ACTIVE );
-        $srch->addCondition( 'uc.credential_verified', '=', applicationConstants::YES );
-        $srch->addMultipleFields( array('user_id') );
-        $rs = $srch->getResultSet();
-        $userRow = FatApp::getDb()->fetch($rs);
-        if( !$userRow ){
-        $str = Labels::getLabel("LBL_{paymentMethodName}_is_not_available_as_Shipping_Company_is_not_added_by_admin_as_yet.", $this->siteLangId );
-        $str = str_replace('{paymentmethodname}', $paymentMethodRow['pmethod_identifier'] , $str);
-        Message::addErrorMessage( $str );
-        FatUtility::dieWithError( Message::getHtml() );
-        }
-        } */
-        /* ] */
 
         $frm = $this->getPaymentTabForm($this->siteLangId);
         $post = $frm->getFormDataFromArray($post);
@@ -404,16 +361,12 @@ class WalletPayController extends MyAppController
             FatUtility::dieWithError(Message::getHtml());
         }
 
-        if ($pmethod_id) {
-            $orderObj->updateOrderInfo($order_id, array('order_pmethod_id' => $pmethod_id));
+        if ($plugin_id) {
+            $orderObj->updateOrderInfo($order_id, array('order_pmethod_id' => $plugin_id));
             $this->cartObj->clear();
             $this->cartObj->updateUserCart();
         }
 
-        /* if ( !$orderObj->addOrderHistory( $order_id, 1, Labels::getLabel("LBL_-NA-",$this->siteLangId), true, $this->siteLangId ) ){
-        Message::addErrorMessage( $orderObj->getError() );
-        FatUtility::dieWithError( Message::getHtml() );
-        } */
         $this->_template->render(false, false, 'json-success.php');
     }
 }

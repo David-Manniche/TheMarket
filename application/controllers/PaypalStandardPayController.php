@@ -2,9 +2,15 @@
 
 class PaypalStandardPayController extends PaymentController
 {
-    private $keyName = "PaypalStandard";
+    public const KEY_NAME = "PaypalStandard";
     private $testEnvironmentUrl = 'https://www.sandbox.paypal.com/cgi-bin/webscr';
     private $liveEnvironmentUrl = 'https://www.paypal.com/cgi-bin/webscr';
+
+    public function __construct($action)
+    {
+        parent::__construct($action);
+        $this->init();
+    }
 
     protected function allowedCurrenciesArr()
     {
@@ -13,11 +19,18 @@ class PaypalStandardPayController extends PaymentController
         ];
     }
 
+    
+    private function init(): void
+    {
+        if (false === $this->plugin->validateSettings($this->siteLangId)) {
+            $this->setErrorAndRedirect($this->plugin->getError());
+        }
+
+        $this->settings = $this->plugin->getSettings();
+    }
+
     private function getPaymentForm($orderId)
     {
-        $pmObj = new PaymentSettings($this->keyName);
-        $paymentSettings = $pmObj->getPaymentSettings();
-
         $orderPaymentObj = new OrderPayment($orderId, $this->siteLangId);
         $paymentGatewayCharge = $orderPaymentObj->getOrderPaymentGatewayAmount();
         $orderInfo = $orderPaymentObj->getOrderPrimaryinfo();
@@ -26,7 +39,7 @@ class PaypalStandardPayController extends PaymentController
         $frm = new Form('frmPayPalStandard', array('id' => 'frmPayPalStandard', 'action' => $actionUrl));
         $frm->addHiddenField('', 'cmd', "_cart");
         $frm->addHiddenField('', 'upload', "1");
-        $frm->addHiddenField('', 'business', $paymentSettings["merchant_email"]);
+        $frm->addHiddenField('', 'business', $this->settings["merchant_email"]);
 
         $orderPaymentGatewayDescription = sprintf(Labels::getLabel('MSG_Order_Payment_Gateway_Description', $this->siteLangId), $orderInfo["site_system_name"], $orderInfo['invoice']);
         $frm->addHiddenField('', 'item_name_1', $orderPaymentGatewayDescription);
@@ -61,12 +74,6 @@ class PaypalStandardPayController extends PaymentController
     {
         if ($orderId == '') {
             Message::addErrorMessage(Labels::getLabel('MSG_Invalid_Access', $this->siteLangId));
-            CommonHelper::redirectUserReferer();
-        }
-
-        $pmObj = new PaymentSettings($this->keyName);
-        if (!$paymentSettings = $pmObj->getPaymentSettings()) {
-            Message::addErrorMessage($pmObj->getError());
             CommonHelper::redirectUserReferer();
         }
 
@@ -106,9 +113,6 @@ class PaypalStandardPayController extends PaymentController
 
     public function callback()
     {
-        $pmObj = new PaymentSettings($this->keyName);
-        $paymentSettings = $pmObj->getPaymentSettings();
-
         $post = FatApp::getPostedData();
 
         $orderId = (isset($post['custom'])) ? $post['custom'] : 0;
@@ -135,23 +139,23 @@ class PaypalStandardPayController extends PaymentController
             $response = curl_exec($curl);
 
             if ((strcmp($response, 'VERIFIED') == 0 || strcmp($response, 'UNVERIFIED') == 0) && isset($post['payment_status'])) {
-                $orderPaymentStatus = $paymentSettings['order_status_initial'];
+                $orderPaymentStatus = $this->settings['order_status_initial'];
                 switch (strtoupper($post['payment_status'])) {
                     case 'PENDING':
-                        $orderPaymentStatus = $paymentSettings['order_status_pending'];
+                        $orderPaymentStatus = $this->settings['order_status_pending'];
                         break;
                     case 'PROCESSED':
-                        $orderPaymentStatus = $paymentSettings['order_status_processed'];
+                        $orderPaymentStatus = $this->settings['order_status_processed'];
                         break;
                     case 'COMPLETED':
-                        $orderPaymentStatus = $paymentSettings['order_status_completed'];
+                        $orderPaymentStatus = $this->settings['order_status_completed'];
                         break;
                     default:
-                        $orderPaymentStatus = $paymentSettings['order_status_others'];
+                        $orderPaymentStatus = $this->settings['order_status_others'];
                         break;
                 }
 
-                $receiverMatch = (strtolower($post['receiver_email']) == strtolower($paymentSettings['merchant_email']));
+                $receiverMatch = (strtolower($post['receiver_email']) == strtolower($this->settings['merchant_email']));
 
                 $totalPaidMatch = ((float)$post['mc_gross'] == $paymentGatewayCharge);
 
@@ -164,7 +168,7 @@ class PaypalStandardPayController extends PaymentController
                 }
 
                 if ($orderPaymentStatus == Orders::ORDER_IS_PAID && $receiverMatch && $totalPaidMatch) {
-                    $orderPaymentObj->addOrderPayment($paymentSettings["pmethod_code"], $post["txn_id"], $paymentGatewayCharge, Labels::getLabel('MSG_Payment_Received', $this->siteLangId), $request . "#" . $response);
+                    $orderPaymentObj->addOrderPayment($this->settings["plugin_code"], $post["txn_id"], $paymentGatewayCharge, Labels::getLabel('MSG_Payment_Received', $this->siteLangId), $request . "#" . $response);
                 } else {
                     $orderPaymentObj->addOrderPaymentComments($request);
                 }

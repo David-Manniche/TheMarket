@@ -389,7 +389,7 @@ class SellerController extends SellerBaseController
         }
 
         $codOrder = false;
-        if (strtolower($orderDetail['pmethod_code']) == 'cashondelivery') {
+        if (strtolower($orderDetail['plugin_code']) == 'cashondelivery') {
             $codOrder = true;
         }
 
@@ -556,14 +556,8 @@ class SellerController extends SellerBaseController
             FatUtility::dieJsonError(Message::getHtml());
         }
 
-        /* if( strtolower($orderDetail['pmethod_code']) == 'cashondelivery' ){
-          $processingStatuses = $orderObj->getVendorAllowedUpdateOrderStatuses(false,true);
-          } else {
-          $processingStatuses = $orderObj->getAdminAllowedUpdateOrderStatuses();
-          } */
-
         $codOrder = false;
-        if (strtolower($orderDetail['pmethod_code']) == 'cashondelivery') {
+        if (strtolower($orderDetail['plugin_code']) == 'cashondelivery') {
             $codOrder = true;
         }
 
@@ -603,7 +597,7 @@ class SellerController extends SellerBaseController
         }
 
 
-        if (strtolower($orderDetail['pmethod_code']) == 'cashondelivery' && (OrderStatus::ORDER_DELIVERED == $post["op_status_id"] || OrderStatus::ORDER_COMPLETED == $post["op_status_id"]) && Orders::ORDER_IS_PAID != $orderDetail['order_is_paid']) {
+        if (strtolower($orderDetail['plugin_code']) == 'cashondelivery' && (OrderStatus::ORDER_DELIVERED == $post["op_status_id"] || OrderStatus::ORDER_COMPLETED == $post["op_status_id"]) && Orders::ORDER_IS_PAID != $orderDetail['order_is_paid']) {
             $orderProducts = new OrderProductSearch($this->siteLangId, true, true);
             $orderProducts->joinPaymentMethod();
             $orderProducts->addMultipleFields(['op_status_id']);

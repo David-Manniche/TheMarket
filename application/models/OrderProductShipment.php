@@ -19,4 +19,43 @@ class OrderProductShipment extends MyAppModel
         parent::__construct(static::DB_TBL, static::DB_TBL_PREFIX . 'op_id', $id);
         $this->langId = (0 < $langId ? $langId : $this->commonLangId);
     }
+    
+    /**
+     * getAttributesById
+     *
+     * @param  int $recordId
+     * @param  mixed $attr
+     * @return void
+     */
+    public static function getAttributesById($recordId, $attr = null)
+    {
+        $recordId = FatUtility::convertToType($recordId, FatUtility::VAR_INT);
+        $db = FatApp::getDb();
+
+        $srch = new SearchBase(static::DB_TBL);
+        $srch->doNotCalculateRecords();
+        $srch->setPageSize(1);
+        $srch->addCondition(static::DB_TBL_PREFIX . 'op_id', '=', $recordId);
+
+        if (null != $attr) {
+            if (is_array($attr)) {
+                $srch->addMultipleFields($attr);
+            } elseif (is_string($attr)) {
+                $srch->addFld($attr);
+            }
+        }
+
+        $rs = $srch->getResultSet();
+        $row = $db->fetch($rs);
+
+        if (!is_array($row)) {
+            return false;
+        }
+
+        if (is_string($attr)) {
+            return $row[$attr];
+        }
+
+        return $row;
+    }
 }

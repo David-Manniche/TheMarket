@@ -4,27 +4,31 @@ require_once CONF_INSTALLATION_PATH . 'library/payment-plugins/omise/lib/Omise.p
 
 class OmisePayController extends PaymentController
 {
-    private $keyName = "omise";
-    private $paymentSettings = "omise";
+    public const KEY_NAME = "Omise";
+    
+    public function __construct($action)
+    {
+        parent::__construct($action);
+        $this->init();
+    }
 
     protected function allowedCurrenciesArr()
     {
         return ['THB'];
     }
 
-    public function __construct($action)
+    private function init(): void
     {
-        parent::__construct($action);
-        $pmObj = new PaymentSettings($this->keyName);
-        if (!$this->paymentSettings = $pmObj->getPaymentSettings()) {
-            Message::addErrorMessage($pmObj->getError());
-            CommonHelper::redirectUserReferer();
+        if (false === $this->plugin->validateSettings($this->siteLangId)) {
+            $this->setErrorAndRedirect($this->plugin->getError());
         }
+
+        $this->settings = $this->plugin->getSettings();
         if (!defined('OMISE_PUBLIC_KEY')) {
-            define('OMISE_PUBLIC_KEY', $this->paymentSettings['public_key']);
+            define('OMISE_PUBLIC_KEY', $this->settings['public_key']);
         }
         if (!defined('OMISE_SECRET_KEY')) {
-            define('OMISE_SECRET_KEY', $this->paymentSettings['secret_key']);
+            define('OMISE_SECRET_KEY', $this->settings['secret_key']);
         }
     }
 
@@ -96,37 +100,38 @@ class OmisePayController extends PaymentController
                 unset($_SESSION[UserAuthentication::SESSION_ELEMENT_NAME]['omiseChargeId']);
                 $token = OmiseToken::create(
                     array(
-                    'card' => array(
-                    'name' => $post['cc_owner'],
-                    'number' => str_replace(' ', '', $post['cc_number']),
-                    'expiration_month' => $post['cc_expire_date_month'],
-                    'expiration_year' => $post['cc_expire_date_year'],
-                    'city' => FatUtility::decodeHtmlEntities($orderInfo['customer_billing_city'], ENT_QUOTES, 'UTF-8'),
-                    'city' => FatUtility::decodeHtmlEntities($orderInfo['customer_billing_city'], ENT_QUOTES, 'UTF-8'),
-                    'postal_code' => FatUtility::decodeHtmlEntities($orderInfo['customer_billing_postcode'], ENT_QUOTES, 'UTF-8'),
-                    'security_code' => $post['cc_cvv'],
-                    'livemode' => $livemode
-                    ))
+                        'card' => array(
+                            'name' => $post['cc_owner'],
+                            'number' => str_replace(' ', '', $post['cc_number']),
+                            'expiration_month' => $post['cc_expire_date_month'],
+                            'expiration_year' => $post['cc_expire_date_year'],
+                            'city' => FatUtility::decodeHtmlEntities($orderInfo['customer_billing_city'], ENT_QUOTES, 'UTF-8'),
+                            'city' => FatUtility::decodeHtmlEntities($orderInfo['customer_billing_city'], ENT_QUOTES, 'UTF-8'),
+                            'postal_code' => FatUtility::decodeHtmlEntities($orderInfo['customer_billing_postcode'], ENT_QUOTES, 'UTF-8'),
+                            'security_code' => $post['cc_cvv'],
+                            'livemode' => $livemode
+                        )
+                    )
                 );
                 $token_ref = $token->offsetGet('id');
                 $customer = OmiseCustomer::create(
                     array(
-                    'email' => $orderInfo['customer_email'],
-                    'description' => $orderInfo['customer_name'] . ' (id: ' . $orderInfo['customer_id'] . ')',
-                    'card' => $token_ref,
-                    'livemode' => $livemode
+                        'email' => $orderInfo['customer_email'],
+                        'description' => $orderInfo['customer_name'] . ' (id: ' . $orderInfo['customer_id'] . ')',
+                        'card' => $token_ref,
+                        'livemode' => $livemode
                     )
                 );
                 $response = OmiseCharge::create(
                     array(
-                    'amount' => $orderActualPaid,
-                    'currency' => 'thb', /* $orderInfo["order_currency_code"], */
-                    'description' => 'Order-' . $orderId,
-                    'ip' => $_SERVER['REMOTE_ADDR'],
-                    'customer' => $customer->offsetGet('id'),
-                    // 'card'        => $token_ref,
-                    'livemode' => $livemode,
-                    'return_uri' => CommonHelper::generateFullUrl('OmisePay', 'success', array($orderId))
+                        'amount' => $orderActualPaid,
+                        'currency' => 'thb', /* $orderInfo["order_currency_code"], */
+                        'description' => 'Order-' . $orderId,
+                        'ip' => $_SERVER['REMOTE_ADDR'],
+                        'customer' => $customer->offsetGet('id'),
+                        // 'card'        => $token_ref,
+                        'livemode' => $livemode,
+                        'return_uri' => CommonHelper::generateFullUrl('OmisePay', 'success', array($orderId))
                     )
                 );
                 if (!$response) {
@@ -154,7 +159,7 @@ class OmisePayController extends PaymentController
                     throw new Exception(Labels::getLabel('MSG_INVALID_TRANSACTION_AMOUNT', $this->siteLangId));
                 }
                 /* Recording Payment in DB */
-                if (!$orderPaymentObj->addOrderPayment($this->paymentSettings["pmethod_name"], $response->offsetGet('transaction'), $orderPaymentAmount, Labels::getLabel("LBL_Received_Payment", $this->siteLangId), json_encode((array)$response))) {
+                if (!$orderPaymentObj->addOrderPayment($this->settings["plugin_code"], $response->offsetGet('transaction'), $orderPaymentAmount, Labels::getLabel("LBL_Received_Payment", $this->siteLangId), json_encode((array) $response))) {
                     $error = Labels::getLabel('LBL_INVALID_ACTION', $this->siteLangId);
                 } else {
                     $json['redirect'] = CommonHelper::generateUrl('custom', 'paymentSuccess', array($orderId));
@@ -194,7 +199,7 @@ class OmisePayController extends PaymentController
             }
 
             /* Recording Payment in DB */
-            if (!$orderPaymentObj->addOrderPayment($this->paymentSettings["pmethod_name"], $charge->offsetGet('transaction'), $orderPaymentAmount, Labels::getLabel("LBL_Received_Payment", $this->siteLangId), json_encode((array)$charge))) {
+            if (!$orderPaymentObj->addOrderPayment($this->settings["plugin_code"], $charge->offsetGet('transaction'), $orderPaymentAmount, Labels::getLabel("LBL_Received_Payment", $this->siteLangId), json_encode((array) $charge))) {
                 $error = Labels::getLabel('LBL_INVALID_ACTION', $this->siteLangId);
             } else {
                 FatApp::redirectUser(CommonHelper::generateUrl('custom', 'paymentSuccess', array($orderId)));

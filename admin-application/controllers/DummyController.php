@@ -49,4 +49,10 @@ class DummyController extends AdminBaseController
         CommonHelper::printArray($prodTitleAnchor);
         die;
     }
+
+    public function query()
+    {
+        $query = PaymentMethods::getSearchObject();
+        echo $query->getQuery();
+    }
 }

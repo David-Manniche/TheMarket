@@ -5,8 +5,13 @@ class AmazonPayController extends PaymentController
 {
     public const KEY_NAME = 'Amazon';
     private $error = false;
-    private $paymentSettings = false;
     private $currencyCode;
+
+    public function __construct($action)
+    {
+        parent::__construct($action);
+        $this->init();
+    }
 
     protected function allowedCurrenciesArr()
     {
@@ -15,15 +20,24 @@ class AmazonPayController extends PaymentController
         ];
     }
 
+    private function init(): void
+    {
+        if (false === $this->plugin->validateSettings($this->siteLangId)) {
+            $this->setErrorAndRedirect($this->plugin->getError());
+        }
+
+        $this->settings = $this->plugin->getSettings();
+    }
+
     public function charge($orderId)
     {
-        $this->paymentSettings = $this->getPaymentSettings();
         $amazon = array(
-        'merchant_id' => trim($this->paymentSettings['amazon_merchantId']),
-        'access_key' => trim($this->paymentSettings['amazon_accessKey']),
-        'secret_key' => trim($this->paymentSettings['amazon_secretKey']),
-        'client_id' => trim($this->paymentSettings['amazon_clientId'])
+            'merchant_id' => trim($this->settings['amazon_merchantId']),
+            'access_key' => trim($this->settings['amazon_accessKey']),
+            'secret_key' => trim($this->settings['amazon_secretKey']),
+            'client_id' => trim($this->settings['amazon_clientId'])
         );
+
         $this->set('amazon', $amazon);
         if (!(strlen($amazon['merchant_id']) > 0 && strlen($amazon['access_key']) > 0 && strlen($amazon['secret_key']) > 0 && strlen($amazon['client_id']) > 0 && strlen(FatApp::getConfig('CONF_TRANSACTION_MODE', FatUtility::VAR_STRING, '0')))) {
             $this->error = Labels::getLabel('AMAZON_INVALID_PAYMENT_GATEWAY_SETUP_ERROR', $this->siteLangId);
@@ -78,12 +92,12 @@ class AmazonPayController extends PaymentController
         } elseif (strlen($postedData['orderReferenceId']) <= 0) {
             FatUtility::dieJsonError(Labels::getLabel('MSG_INVALID_POST_REQUEST', $this->siteLangId));
         }
-        $this->paymentSettings = $this->getPaymentSettings();
+        
         $config = array(
-        'merchant_id' => trim($this->paymentSettings['amazon_merchantId']),
-        'access_key' => trim($this->paymentSettings['amazon_accessKey']),
-        'secret_key' => trim($this->paymentSettings['amazon_secretKey']),
-        'client_id' => trim($this->paymentSettings['amazon_clientId'])
+        'merchant_id' => trim($this->settings['amazon_merchantId']),
+        'access_key' => trim($this->settings['amazon_accessKey']),
+        'secret_key' => trim($this->settings['amazon_secretKey']),
+        'client_id' => trim($this->settings['amazon_clientId'])
         );
         if (!(strlen($config['merchant_id']) > 0 && strlen($config['access_key']) > 0 && strlen($config['secret_key']) > 0 && strlen($config['client_id']) > 0)) {
             FatUtility::dieJsonError(Labels::getLabel('AMAZON_INVALID_PAYMENT_GATEWAY_SETUP_ERROR', $this->siteLangId));
@@ -131,12 +145,12 @@ class AmazonPayController extends PaymentController
         } elseif (strlen($postedData['amazon_order_reference_id']) <= 0) {
             FatUtility::dieJsonError(Labels::getLabel('MSG_INVALID_POST_REQUEST', $this->siteLangId));
         }
-        $this->paymentSettings = $this->getPaymentSettings();
+        
         $config = array(
-        'merchant_id' => trim($this->paymentSettings['amazon_merchantId']),
-        'access_key' => trim($this->paymentSettings['amazon_accessKey']),
-        'secret_key' => trim($this->paymentSettings['amazon_secretKey']),
-        'client_id' => trim($this->paymentSettings['amazon_clientId'])
+        'merchant_id' => trim($this->settings['amazon_merchantId']),
+        'access_key' => trim($this->settings['amazon_accessKey']),
+        'secret_key' => trim($this->settings['amazon_secretKey']),
+        'client_id' => trim($this->settings['amazon_clientId'])
         );
         if (!(strlen($config['merchant_id']) > 0 && strlen($config['access_key']) > 0 && strlen($config['secret_key']) > 0 && strlen($config['client_id']) > 0)) {
             FatUtility::dieJsonError(Labels::getLabel('AMAZON_INVALID_PAYMENT_GATEWAY_SETUP_ERROR', $this->siteLangId));
@@ -184,7 +198,7 @@ class AmazonPayController extends PaymentController
                         $responsearray['close'] = json_decode($response->toJson());
                         if ($client->success) {
                             /* Recording Payment in DB */
-                            $orderPaymentObj->addOrderPayment($this->paymentSettings["pmethod_name"], $postedData['amazon_order_reference_id'], $paymentAmount, Labels::getLabel("LBL_Received_Payment", $this->siteLangId), json_encode($responsearray));
+                            $orderPaymentObj->addOrderPayment($this->settings["plugin_code"], $postedData['amazon_order_reference_id'], $paymentAmount, Labels::getLabel("LBL_Received_Payment", $this->siteLangId), json_encode($responsearray));
                             /* End Recording Payment in DB */
                         }
                         if ($client->success) {
@@ -198,6 +212,7 @@ class AmazonPayController extends PaymentController
             FatUtility::dieJsonError(Labels::getLabel('MSG_INVALID_ORDER_PAID_CANCELLED', $this->siteLangId));
         }
     }
+
     private function formatPayableAmount($amount = null)
     {
         if ($amount == null) {
@@ -205,11 +220,5 @@ class AmazonPayController extends PaymentController
         }
         $amount = number_format($amount, 2, '.', '');
         return $amount * 100;
-    }
-
-    private function getPaymentSettings()
-    {
-        $pluginSetting = new PluginSetting(0, self::KEY_NAME);
-        return $pluginSetting->get($this->siteLangId);
     }
 }

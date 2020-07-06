@@ -1,11 +1,7 @@
 <?php
 
-class PaymentMethods extends MyAppModel
+class PaymentMethods
 {
-    public const DB_TBL = 'tbl_payment_methods';
-    public const DB_TBL_LANG = 'tbl_payment_methods_lang';
-    public const DB_TBL_PREFIX = 'pmethod_';
-    
     public const MOVE_TO_ADMIN_WALLET = 0;
     public const MOVE_TO_CUSTOMER_WALLET = 1;
     public const MOVE_TO_CUSTOMER_CARD = 2;
@@ -26,53 +22,24 @@ class PaymentMethods extends MyAppModel
     private $invoiceNumber = '';
     private $remoteTxnId = '';
     private $sellerTxnAmount = '';
-
-    public function __construct($id = 0)
-    {
-        parent::__construct(static::DB_TBL, static::DB_TBL_PREFIX . 'id', $id);
-        $this->db = FatApp::getDb();
-        $this->objMainTableRecord->setSensitiveFields(
-            array(
-            'pmethod_code'
-            )
-        );
-    }
+    private $error = '';
 
     public static function getSearchObject($langId = 0, $isActive = true)
     {
-        $langId = FatUtility::int($langId);
-
-        $srch = new SearchBase(static::DB_TBL, 'pm');
-        if ($isActive == true) {
-            $srch->addCondition('pm.' . static::DB_TBL_PREFIX . 'active', '=', applicationConstants::ACTIVE);
-        }
-
-        if ($langId > 0) {
-            $srch->joinTable(
-                static::DB_TBL_LANG,
-                'LEFT OUTER JOIN',
-                'pm_l.pmethodlang_' . static::DB_TBL_PREFIX . 'id = pm.' . static::DB_TBL_PREFIX . 'id and pm_l.pmethodlang_lang_id = ' . $langId,
-                'pm_l'
-            );
-        }
-
-        $srch->addOrder('pm.' . static::DB_TBL_PREFIX . 'active', 'DESC');
-        $srch->addOrder('pm.' . static::DB_TBL_PREFIX . 'display_order', 'ASC');
+        $srch = Plugin::getSearchObject($langId, $isActive);
+        $cond = $srch->addCondition('plugin_type', '=', Plugin::TYPE_REGULAR_PAYMENT_METHOD);
+        $cond->attachCondition('plugin_type', '=', Plugin::TYPE_SPLIT_PAYMENT_METHOD);
         return $srch;
     }
-
-    public function cashOnDeliveryIsActive()
+    
+    /**
+     * cashOnDeliveryIsActive
+     *
+     * @return bool
+     */
+    public function cashOnDeliveryIsActive(): bool
     {
-        $paymentMethod = PaymentMethods::getSearchObject();
-        $paymentMethod->addMultipleFields(array('pmethod_id', 'pmethod_code', 'pmethod_active'));
-        $paymentMethod->addCondition('pmethod_code', '=', 'cashondelivery');
-        $paymentMethod->addCondition('pmethod_active', '=', applicationConstants::YES);
-        $rs = $paymentMethod->getResultSet();
-        if (FatApp::getDb()->fetch($rs)) {
-            return true;
-        } else {
-            return false;
-        }
+        return Plugin::isActive('CashOnDelivery');
     }
 
     /**
@@ -82,9 +49,12 @@ class PaymentMethods extends MyAppModel
      */
     public static function canUseWalletForPayment(): bool
     {
-        $pluginObj = new Plugin();
-        $keyName = $pluginObj->getDefaultPluginKeyName(Plugin::TYPE_SPLIT_PAYMENT_METHOD);
-        return empty($keyName);
+        $srch = Plugin::getSearchObject(0, true);
+        $srch->addCondition(Plugin::DB_TBL_PREFIX . 'type', '=', Plugin::TYPE_SPLIT_PAYMENT_METHOD);
+        $srch->addCondition(Plugin::DB_TBL_PREFIX . 'active', '=', Plugin::ACTIVE);
+        $srch->setPageSize(1);
+        $srch->getResultSet();
+        return (1 > $srch->recordCount());
     }
 
     /**
@@ -121,8 +91,14 @@ class PaymentMethods extends MyAppModel
             self::MOVE_TO_CUSTOMER_CARD => Labels::getLabel('LBL_MOVE_TO_CUSTOMER_CARD', $langId),
         ];
     }
-
-    private function formatPayableAmount($amount)
+    
+    /**
+     * convertInPaisa
+     *
+     * @param  mixed $amount
+     * @return void
+     */
+    private function convertInPaisa($amount): int
     {
         $amount = number_format($amount, 2, '.', '');
         return $amount * 100;
@@ -199,7 +175,7 @@ class PaymentMethods extends MyAppModel
         switch ($this->keyname) {
             case 'StripeConnect':
                 $requestParam = [
-                    'amount' => $this->formatPayableAmount($this->txnAmount),
+                    'amount' => $this->convertInPaisa($this->txnAmount),
                     'charge' => $txnId,
                     'metadata' => [
                        'orderInvoice' => $this->invoiceNumber
@@ -225,7 +201,7 @@ class PaymentMethods extends MyAppModel
                     $requestParam = [
                         'transferId' => $this->transferId,
                         'data' => [
-                            'amount' => $this->formatPayableAmount($this->sellerTxnAmount), // In Paisa
+                            'amount' => $this->convertInPaisa($this->sellerTxnAmount), // In Paisa
                             'description' => $comments,
                             'metadata' => [
                                 'op_id' => $this->opId
@@ -335,5 +311,15 @@ class PaymentMethods extends MyAppModel
     public function getResponse(): object
     {
         return empty($this->resp) ? (object) array() : $this->resp;
+    }
+    
+    /**
+     * getError
+     *
+     * @return string
+     */
+    public function getError(): string
+    {
+        return $this->error;
     }
 }

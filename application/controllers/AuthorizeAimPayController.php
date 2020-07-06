@@ -13,7 +13,13 @@ class AuthorizeAimPayController extends PaymentController
 
     public const VERSION = "2.0.0";
 
-    private $keyName = "AuthorizeAim";
+    public const KEY_NAME = 'AuthorizeAim';
+
+    public function __construct($action)
+    {
+        parent::__construct($action);
+        $this->init();
+    }
 
     protected function allowedCurrenciesArr()
     {
@@ -22,16 +28,19 @@ class AuthorizeAimPayController extends PaymentController
         ];
     }
 
+    private function init(): void
+    {
+        if (false === $this->plugin->validateSettings($this->siteLangId)) {
+            $this->setErrorAndRedirect($this->plugin->getError());
+        }
+
+        $this->settings = $this->plugin->getSettings();
+    }
+    
     public function charge($orderId = '')
     {
         if (empty($orderId)) {
             FatUtility::exitWIthErrorCode(404);
-        }
-
-        $pmObj = new PaymentSettings($this->keyName);
-        if (!$paymentSettings = $pmObj->getPaymentSettings()) {
-            Message::addErrorMessage($pmObj->getError());
-            CommonHelper::redirectUserReferer();
         }
 
         $orderPaymentObj = new OrderPayment($orderId, $this->siteLangId);
@@ -89,9 +98,6 @@ class AuthorizeAimPayController extends PaymentController
 
     public function send($orderId)
     {
-        $pmObj = new PaymentSettings($this->keyName);
-        $paymentSettings = $pmObj->getPaymentSettings();
-
         $frm = $this->getPaymentForm();
         $post = $frm->getFormDataFromArray(FatApp::getPostedData());
         if (false === $post) {
@@ -123,8 +129,8 @@ class AuthorizeAimPayController extends PaymentController
             /* Create a merchantAuthenticationType object with authentication details
                retrieved from the constants file */
             $merchantAuthentication = new AnetAPI\MerchantAuthenticationType();
-            $merchantAuthentication->setName($paymentSettings['login_id']);
-            $merchantAuthentication->setTransactionKey($paymentSettings['transaction_key']);
+            $merchantAuthentication->setName($this->settings['login_id']);
+            $merchantAuthentication->setTransactionKey($this->settings['transaction_key']);
 
             // Set the transaction's refId
             $refId = $orderId;
@@ -213,7 +219,7 @@ class AuthorizeAimPayController extends PaymentController
                         $str = Labels::getLabel("Description: {description}", $this->siteLangId);
                         $decription .= str_replace("{description}", $tresponse->getMessages()[0]->getDescription(), $str) . "\n";
 
-                        if (!$orderPaymentObj->addOrderPayment($paymentSettings["pmethod_name"], $tresponse->getTransId(), $orderPaymentAmount, Labels::getLabel("MSG_Received_Payment", $this->siteLangId), $message)) {
+                        if (!$orderPaymentObj->addOrderPayment($this->settings["plugin_code"], $tresponse->getTransId(), $orderPaymentAmount, Labels::getLabel("MSG_Received_Payment", $this->siteLangId), $message)) {
                             $json['error'] = Labels::getLabel('MSS_Transaction_Failed', $this->siteLangId);
                         } else {
                             $json['msg'] = $message;

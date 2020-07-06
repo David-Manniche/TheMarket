@@ -155,7 +155,7 @@ class SellerOrdersController extends AdminBaseController
         $srch->doNotLimitRecords();
         $srch->addMultipleFields(
             array(
-                'order_id', 'order_is_paid', 'order_pmethod_id', 'order_tax_charged', 'order_date_added', 'op_id', 'op_qty', 'op_unit_price', 'op_selprod_user_id', 'op_invoice_number', 'IFNULL(orderstatus_name, orderstatus_identifier) as orderstatus_name', 'ou.user_name as buyer_user_name', 'ouc.credential_username as buyer_username', 'pmethod_code', 'IFNULL(pmethod_name, IFNULL(pmethod_identifier, "Wallet")) as pmethod_name', 'op_commission_charged', 'op_qty', 'op_commission_percentage', 'ou.user_name as buyer_name', 'ouc.credential_username as buyer_username', 'ouc.credential_email as buyer_email', 'ou.user_phone as buyer_phone', 'op.op_shop_owner_name', 'op.op_shop_owner_username', 'op_l.op_shop_name', 'op.op_shop_owner_email', 'op.op_shop_owner_phone',
+                'order_id', 'order_is_paid', 'order_pmethod_id', 'order_tax_charged', 'order_date_added', 'op_id', 'op_qty', 'op_unit_price', 'op_selprod_user_id', 'op_invoice_number', 'IFNULL(orderstatus_name, orderstatus_identifier) as orderstatus_name', 'ou.user_name as buyer_user_name', 'ouc.credential_username as buyer_username', 'plugin_code', 'IFNULL(plugin_name, IFNULL(plugin_identifier, "Wallet")) as plugin_name', 'op_commission_charged', 'op_qty', 'op_commission_percentage', 'ou.user_name as buyer_name', 'ouc.credential_username as buyer_username', 'ouc.credential_email as buyer_email', 'ou.user_phone as buyer_phone', 'op.op_shop_owner_name', 'op.op_shop_owner_username', 'op_l.op_shop_name', 'op.op_shop_owner_email', 'op.op_shop_owner_phone',
                 'op_selprod_title', 'op_product_name', 'op_brand_name', 'op_selprod_options', 'op_selprod_sku', 'op_product_model', 'op_product_type',
                 'op_shipping_duration_name', 'op_shipping_durations', 'op_status_id', 'op_refund_qty', 'op_refund_amount', 'op_refund_commission', 'op_other_charges', 'optosu.optsu_user_id', 'ops.opshipping_by_seller_user_id', 'op_tax_collected_by_seller', 'order_is_wallet_selected', 'order_reward_point_used', 'op_product_tax_options'
             )
@@ -179,7 +179,7 @@ class SellerOrdersController extends AdminBaseController
         $opRow['shippingAddress'] = (!empty($addresses[Orders::SHIPPING_ADDRESS_TYPE])) ? $addresses[Orders::SHIPPING_ADDRESS_TYPE] : array();
         $opRow['comments'] = $orderObj->getOrderComments($this->adminLangId, array("op_id" => $op_id));
 
-        if ($opRow['pmethod_code'] == 'CashOnDelivery') {
+        if ($opRow['plugin_code'] == 'CashOnDelivery') {
             $processingStatuses = $orderObj->getAdminAllowedUpdateOrderStatuses(true);
         } else {
             $processingStatuses = $orderObj->getAdminAllowedUpdateOrderStatuses(false, $opRow['op_product_type']);
@@ -196,7 +196,7 @@ class SellerOrdersController extends AdminBaseController
         $allowedShippingUserStatuses = $orderObj->getAdminAllowedUpdateShippingUser();
         $displayShippingUserForm = false;
         /* CommonHelper::printArray($opRow); die; */
-        if (((strtolower($opRow['pmethod_code']) == 'cashondelivery') || (in_array($opRow['op_status_id'], $allowedShippingUserStatuses))) && $this->canEdit && !$shippingHanldedBySeller && ($opRow['op_product_type'] == Product::PRODUCT_TYPE_PHYSICAL && $opRow['order_is_paid'] != Orders::ORDER_IS_CANCELLED)) {
+        if (((strtolower($opRow['plugin_code']) == 'cashondelivery') || (in_array($opRow['op_status_id'], $allowedShippingUserStatuses))) && $this->canEdit && !$shippingHanldedBySeller && ($opRow['op_product_type'] == Product::PRODUCT_TYPE_PHYSICAL && $opRow['order_is_paid'] != Orders::ORDER_IS_CANCELLED)) {
             $displayShippingUserForm = true;
             $shippingUserFrm = $this->getShippingCompanyUserForm($displayShippingUserForm);
             $shippingUserdata = array('op_id' => $op_id, 'optsu_user_id' => $opRow['optsu_user_id']);
@@ -261,7 +261,7 @@ class SellerOrdersController extends AdminBaseController
         $srch->addMultipleFields(
             array(
                 'order_id', 'order_pmethod_id', 'order_date_added', 'op_id', 'op_qty', 'op_unit_price',
-                'op_invoice_number', 'IFNULL(orderstatus_name, orderstatus_identifier) as orderstatus_name', 'ou.user_name as buyer_user_name', 'ouc.credential_username as buyer_username', 'IFNULL(pmethod_name, IFNULL(pmethod_identifier, "Wallet")) as pmethod_name', 'op_commission_charged', 'op_commission_percentage',   'ou.user_name as buyer_name', 'ouc.credential_username as buyer_username', 'ouc.credential_email as buyer_email', 'ou.user_phone as buyer_phone', 'op.op_shop_owner_name', 'op.op_shop_owner_username', 'op_l.op_shop_name', 'op.op_shop_owner_email', 'op.op_shop_owner_phone', 'op_selprod_title', 'op_product_name', 'op_brand_name', 'op_selprod_options', 'op_selprod_sku', 'op_product_model', 'op_shipping_duration_name', 'op_shipping_durations', 'op_status_id', 'op_other_charges', 'optsu_user_id', 'op_product_weight', 'credential_email', 'pmethod_code'
+                'op_invoice_number', 'IFNULL(orderstatus_name, orderstatus_identifier) as orderstatus_name', 'ou.user_name as buyer_user_name', 'ouc.credential_username as buyer_username', 'IFNULL(plugin_name, IFNULL(plugin_identifier, "Wallet")) as plugin_name', 'op_commission_charged', 'op_commission_percentage',   'ou.user_name as buyer_name', 'ouc.credential_username as buyer_username', 'ouc.credential_email as buyer_email', 'ou.user_phone as buyer_phone', 'op.op_shop_owner_name', 'op.op_shop_owner_username', 'op_l.op_shop_name', 'op.op_shop_owner_email', 'op.op_shop_owner_phone', 'op_selprod_title', 'op_product_name', 'op_brand_name', 'op_selprod_options', 'op_selprod_sku', 'op_product_model', 'op_shipping_duration_name', 'op_shipping_durations', 'op_status_id', 'op_other_charges', 'optsu_user_id', 'op_product_weight', 'credential_email', 'plugin_code'
             )
         );
         $rs = $srch->getResultSet();
@@ -326,7 +326,7 @@ class SellerOrdersController extends AdminBaseController
         $srch->addCondition('optosu.optsu_op_id', '=', $orderDetail['op_id']);
         $rs = $srch->getResultSet();
         $shippingUserRow = FatApp::getDb()->fetch($rs);
-        if ($shippingUserRow && $orderDetail['pmethod_code'] == "CashOnDelivery") {
+        if ($shippingUserRow && $orderDetail['plugin_code'] == "CashOnDelivery") {
             $comments = Labels::getLabel('Msg_Cash_will_collect_against_COD_order', $this->adminLangId) . ' ' . $orderDetail['op_invoice_number'];
             $amt = CommonHelper::orderProductAmount($orderDetail);
             $txnObj = new Transactions();
@@ -396,7 +396,7 @@ class SellerOrdersController extends AdminBaseController
             FatUtility::dieJsonError(Message::getHtml());
         }
 
-        if ($orderDetail['pmethod_code'] == 'CashOnDelivery') {
+        if ($orderDetail['plugin_code'] == 'CashOnDelivery') {
             $processingStatuses = $orderObj->getAdminAllowedUpdateOrderStatuses(true);
         } else {
             $processingStatuses = $orderObj->getAdminAllowedUpdateOrderStatuses(false, $orderDetail['op_product_type']);
@@ -415,7 +415,7 @@ class SellerOrdersController extends AdminBaseController
             (array) FatApp::getConfig("CONF_DEFAULT_DEIVERED_ORDER_STATUS"),
             (array) FatApp::getConfig("CONF_COMPLETED_ORDER_STATUS")
         );
-        if (/* strtolower($orderDetail['pmethod_code']) == 'cashondelivery' &&  */!$orderDetail['optsu_user_id'] && in_array($post["op_status_id"], $restrictOrderStatusChange) && $orderDetail['op_product_type'] == Product::PRODUCT_TYPE_PHYSICAL) {
+        if (/* strtolower($orderDetail['plugin_code']) == 'cashondelivery' &&  */!$orderDetail['optsu_user_id'] && in_array($post["op_status_id"], $restrictOrderStatusChange) && $orderDetail['op_product_type'] == Product::PRODUCT_TYPE_PHYSICAL) {
             Message::addErrorMessage(Labels::getLabel('MSG_Please_assign_shipping_user', $this->adminLangId));
             FatUtility::dieJsonError(Message::getHtml());
         }
@@ -431,7 +431,7 @@ class SellerOrdersController extends AdminBaseController
             FatUtility::dieJsonError(Message::getHtml());
         }
 
-        if (strtolower($orderDetail['pmethod_code']) == 'cashondelivery' && (OrderStatus::ORDER_DELIVERED == $post["op_status_id"] || OrderStatus::ORDER_COMPLETED == $post["op_status_id"]) && Orders::ORDER_IS_PAID != $orderDetail['order_is_paid']) {
+        if (strtolower($orderDetail['plugin_code']) == 'cashondelivery' && (OrderStatus::ORDER_DELIVERED == $post["op_status_id"] || OrderStatus::ORDER_COMPLETED == $post["op_status_id"]) && Orders::ORDER_IS_PAID != $orderDetail['order_is_paid']) {
             $orderProducts = new OrderProductSearch($this->adminLangId, true, true);
             $orderProducts->joinPaymentMethod();
             $orderProducts->addMultipleFields(['op_status_id']);
@@ -514,7 +514,7 @@ class SellerOrdersController extends AdminBaseController
         $srch->addMultipleFields(
             array(
                 'order_id', 'order_pmethod_id', 'order_date_added', 'op_id', 'op_qty', 'op_unit_price',
-                'op_invoice_number', 'IFNULL(orderstatus_name, orderstatus_identifier) as orderstatus_name', 'ou.user_name as buyer_user_name', 'ouc.credential_username as buyer_username', 'IFNULL(pmethod_name, IFNULL(pmethod_identifier, "Wallet")) as pmethod_name', 'op_commission_charged', 'op_commission_percentage',   'ou.user_name as buyer_name', 'ouc.credential_username as buyer_username', 'ouc.credential_email as buyer_email', 'ou.user_phone as buyer_phone', 'op.op_shop_owner_name', 'op.op_shop_owner_username', 'op_l.op_shop_name', 'op.op_shop_owner_email', 'op.op_shop_owner_phone', 'op_selprod_title', 'op_product_name', 'op_brand_name', 'op_selprod_options', 'op_selprod_sku', 'op_product_model', 'op_shipping_duration_name', 'op_shipping_durations', 'op_status_id', 'op_other_charges'
+                'op_invoice_number', 'IFNULL(orderstatus_name, orderstatus_identifier) as orderstatus_name', 'ou.user_name as buyer_user_name', 'ouc.credential_username as buyer_username', 'IFNULL(plugin_name, IFNULL(plugin_identifier, "Wallet")) as plugin_name', 'op_commission_charged', 'op_commission_percentage',   'ou.user_name as buyer_name', 'ouc.credential_username as buyer_username', 'ouc.credential_email as buyer_email', 'ou.user_phone as buyer_phone', 'op.op_shop_owner_name', 'op.op_shop_owner_username', 'op_l.op_shop_name', 'op.op_shop_owner_email', 'op.op_shop_owner_phone', 'op_selprod_title', 'op_product_name', 'op_brand_name', 'op_selprod_options', 'op_selprod_sku', 'op_product_model', 'op_shipping_duration_name', 'op_shipping_durations', 'op_status_id', 'op_other_charges'
             )
         );
         $srch->addCondition('op_id', '=', $op_id);

@@ -3,8 +3,22 @@
 require_once CONF_INSTALLATION_PATH . 'library/payment-plugins/PayFortStart/autoload.php';
 class PayFortStartPayController extends PaymentController
 {
-    private $keyName = "PayFortStart";
-    private $error = false;
+    public const KEY_NAME = "PayFortStart";
+
+    public function __construct($action)
+    {
+        parent::__construct($action);
+        $this->init();
+    }
+    
+    private function init(): void
+    {
+        if (false === $this->plugin->validateSettings($this->siteLangId)) {
+            $this->setErrorAndRedirect($this->plugin->getError());
+        }
+
+        $this->settings = $this->plugin->getSettings();
+    }
 
     public function charge($orderId = '')
     {
@@ -12,20 +26,14 @@ class PayFortStartPayController extends PaymentController
             FatUtility::exitWIthErrorCode(404);
         }
 
-        $paymentSettings = $this->getPaymentSettings();
+        $orderPaymentObj = new OrderPayment($orderId, $this->siteLangId);
+        $paymentGatewayCharge = $orderPaymentObj->getOrderPaymentGatewayAmount();
+        $amount_in_cents = $this->formatPayableAmount($paymentGatewayCharge);
 
-        if (!$this->validatePayFortStartSettings($paymentSettings)) {
-            $this->error = Labels::getLabel('PAYFORTSTART_Invalid_Payment_Gateway_Setup_Error', $this->siteLangId);
-        } else {
-            $orderPaymentObj = new OrderPayment($orderId, $this->siteLangId);
-            $paymentGatewayCharge = $orderPaymentObj->getOrderPaymentGatewayAmount();
-            $amount_in_cents = $this->formatPayableAmount($paymentGatewayCharge);
+        $orderInfo = $orderPaymentObj->getOrderPrimaryinfo();
+        $orderPaymentGatewayDescription = sprintf(Labels::getLabel('MSG_Order_Payment_Gateway_Description', $this->siteLangId), $orderInfo["site_system_name"], $orderInfo['invoice']);
 
-            $orderInfo = $orderPaymentObj->getOrderPrimaryinfo();
-            $orderPaymentGatewayDescription = sprintf(Labels::getLabel('MSG_Order_Payment_Gateway_Description', $this->siteLangId), $orderInfo["site_system_name"], $orderInfo['invoice']);
-        }
-
-        $this->set('open_key', $paymentSettings['open_key']);
+        $this->set('open_key', $this->settings['open_key']);
         $this->set('paymentAmount', $paymentGatewayCharge);
         $this->set('amount_in_cents', $amount_in_cents);
         $this->set('orderId', $orderId);
@@ -44,7 +52,6 @@ class PayFortStartPayController extends PaymentController
         $post = FatApp::getPostedData();
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $orderId = $post["ord"];
-            $paymentSettings = $this->getPaymentSettings();
             $orderPaymentObj = new OrderPayment($orderId, $this->siteLangId);
             $orderInfo = $orderPaymentObj->getOrderPrimaryinfo();
             $orderPaymentGatewayDescription = sprintf(Labels::getLabel('MSG_Order_Payment_Gateway_Description', $this->siteLangId), $orderInfo["site_system_name"], $orderInfo['invoice']);
@@ -52,7 +59,7 @@ class PayFortStartPayController extends PaymentController
             $amount_in_cents = $this->formatPayableAmount($paymentGatewayCharge);
             $token = $post["startToken"];
             $email = $post["startEmail"];
-            Start::setApiKey($paymentSettings["secret_key"]);
+            Start::setApiKey($this->settings["secret_key"]);
             try {
                 $charge = Start_Charge::create(
                     array(
@@ -86,11 +93,6 @@ class PayFortStartPayController extends PaymentController
     protected function notifyCallBack($response)
     {
         $order_id = $response['order_id'];
-        $pmObj = new Paymentsettings($this->keyName);
-        if (!$payment_settings = $pmObj->getPaymentSettings()) {
-            Message::addErrorMessage($pmObj->getError());
-            CommonHelper::redirectUserReferer();
-        }
         $orderPaymentObj = new OrderPayment($order_id, $this->siteLangId);
         $payment_gateway_charge = $orderPaymentObj->getOrderPaymentGatewayAmount();
         $order_info = $orderPaymentObj->getOrderPrimaryinfo();
@@ -119,19 +121,13 @@ class PayFortStartPayController extends PaymentController
                     $request .= "\n\n PP_STANDARD :: TOTAL PAID MISMATCH! " . strtolower($response['captured_amount']) . "\n\n";
                 }
                 if ($order_payment_status == 1 && $total_paid_match) {
-                    $orderPaymentObj->addOrderPayment($payment_settings["pmethod_code"], $response['id'], $payment_gateway_charge, Labels::getLabel("LBL_Received_Payment", $this->siteLangId), $request . "#" . print_r($response, true));
+                    $orderPaymentObj->addOrderPayment($payment_settings["plugin_code"], $response['id'], $payment_gateway_charge, Labels::getLabel("LBL_Received_Payment", $this->siteLangId), $request . "#" . print_r($response, true));
                     FatApp::redirectUser(CommonHelper::generateUrl('custom', 'paymentSuccess', array($order_id)));
                 } else {
                     $orderPaymentObj->addOrderPaymentComments($request);
                 }
             }
         }
-    }
-
-    private function getPaymentSettings()
-    {
-        $pmObj = new PaymentSettings($this->keyName);
-        return $pmObj->getPaymentSettings();
     }
 
     private function formatPayableAmount($amount = null)
@@ -142,21 +138,5 @@ class PayFortStartPayController extends PaymentController
         $amount = number_format($amount, 2, '.', '');
         return $amount * 100;
         return $amount;
-    }
-
-    private function validatePayFortStartSettings($paymentSettings = array())
-    {
-        $settingVal = array('transaction_mode', 'secret_key', 'open_key');
-        foreach ($settingVal as $val) {
-            if (!isset($paymentSettings[$val]) || strlen(trim($paymentSettings[$val])) == 0) {
-                return false;
-            }
-        }
-        return true;
-    }
-
-    private function getPaymentForm($order_id)
-    {
-        return '';
     }
 }

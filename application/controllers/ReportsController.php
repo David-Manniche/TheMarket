@@ -71,7 +71,7 @@ class ReportsController extends SellerBaseController
         //$srch->doNotCalculateRecords();
         $srch->addStatusCondition(unserialize(FatApp::getConfig("CONF_COMPLETED_ORDER_STATUS")));
         $cnd = $srch->addCondition('order_is_paid', '=', Orders::ORDER_IS_PAID);
-        $cnd->attachCondition('pmethod_code', '=', 'cashondelivery');
+        $cnd->attachCondition('plugin_code', '=', 'cashondelivery');
         $srch->addMultipleFields(array( 'op_selprod_title', 'op_product_name', 'op_selprod_options', 'op_brand_name', 'SUM(op_refund_qty) as totRefundQty', 'SUM(op_qty - op_refund_qty) as totSoldQty', 'op.op_selprod_id', 'IFNULL(tquwl.wishlist_user_counts, 0) as wishlist_user_counts' ));
         $srch->addGroupBy('op.op_selprod_id');
         $srch->addGroupBy('op.op_is_batch');
@@ -326,7 +326,7 @@ class ReportsController extends SellerBaseController
         $orderProductSrch->doNotLimitRecords();
         $orderProductSrch->addStatusCondition(unserialize(FatApp::getConfig("CONF_PRODUCT_IS_ON_ORDER_STATUSES")));
         $cnd = $orderProductSrch->addCondition('order_is_paid', '=', Orders::ORDER_IS_PAID);
-        $cnd->attachCondition('pm.pmethod_code', '=', 'CashOnDelivery');
+        $cnd->attachCondition('pm.plugin_code', '=', 'CashOnDelivery');
         $orderProductSrch->addCondition('op.op_is_batch', '=', 0);
         $orderProductSrch->addMultipleFields(array( 'op.op_selprod_id', 'SUM(op_qty) as stock_on_order', 'op_selprod_options' ));
         $orderProductSrch->addGroupBy('op.op_selprod_id');

@@ -120,9 +120,9 @@ class OrderProductSearch extends SearchBase
         if (!$this->isOrdersTableJoined) {
             trigger_error(Labels::getLabel('MSG_Please_use_joinOrders()_first,_then_try_to_join_joinPaymentMethod()', $this->commonLangId), E_USER_ERROR);
         }
-        $this->joinTable(PaymentMethods::DB_TBL, 'LEFT OUTER JOIN', 'o.order_pmethod_id = pm.pmethod_id', 'pm');
+        $this->joinTable(Plugin::DB_TBL, 'LEFT OUTER JOIN', 'o.order_pmethod_id = pm.plugin_id', 'pm');
         if ($langId) {
-            $this->joinTable(PaymentMethods::DB_TBL_LANG, 'LEFT OUTER JOIN', 'pm.pmethod_id = pm_l.pmethodlang_pmethod_id AND pm_l.pmethodlang_lang_id = ' . $langId, 'pm_l');
+            $this->joinTable(Plugin::DB_TBL_LANG, 'LEFT OUTER JOIN', 'pm.plugin_id = pm_l.pluginlang_plugin_id AND pm_l.pluginlang_lang_id = ' . $langId, 'pm_l');
         }
     }
 

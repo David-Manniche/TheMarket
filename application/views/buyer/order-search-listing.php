@@ -82,8 +82,9 @@ foreach ($orders as $sn => $order) {
                 break;
             case 'status':
                 $pMethod ='';
-                if ($order['order_pmethod_id'] == PaymentSettings::CASH_ON_DELIVERY && $order['order_status'] == FatApp::getConfig('CONF_DEFAULT_ORDER_STATUS')) {
-                    $pMethod = " - " . $order['pmethod_name'] ;
+                $paymentMethodCode = Plugin::getAttributesById($order['order_pmethod_id'], 'plugin_code');
+                if (strtolower($paymentMethodCode) == 'cashondelivery' && $order['order_status'] == FatApp::getConfig('CONF_DEFAULT_ORDER_STATUS')) {
+                    $pMethod = " - " . $order['plugin_name'] ;
                 }
                 $txt = $order['orderstatus_name'] . $pMethod;
                 $td->appendElement('plaintext', array(), $txt, true);

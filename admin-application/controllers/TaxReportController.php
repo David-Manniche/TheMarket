@@ -38,7 +38,7 @@ class TaxReportController extends AdminBaseController
         $srch->joinSellerUser();
         $srch->joinTable(OrderProduct::DB_TBL_CHARGES, 'LEFT OUTER JOIN', 'op.op_id = opcharge.opcharge_op_id', 'opcharge');
         $cnd = $srch->addCondition('o.order_is_paid', '=', Orders::ORDER_IS_PAID);
-        $cnd->attachCondition('pmethod_code', '=', 'cashondelivery');
+        $cnd->attachCondition('plugin_code', '=', 'cashondelivery');
         $srch->addStatusCondition(unserialize(FatApp::getConfig('CONF_COMPLETED_ORDER_STATUS')));
         $srch->addCondition('opcharge.opcharge_type', '=', OrderProduct::CHARGE_TYPE_TAX);
         $srch->addGroupBy('op.op_shop_id');

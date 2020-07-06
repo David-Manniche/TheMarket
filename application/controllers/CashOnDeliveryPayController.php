@@ -53,19 +53,4 @@ class CashOnDeliveryPayController extends MyAppController
 
         FatApp::redirectUser(CommonHelper::generateFullUrl('custom', 'paymentSuccess', array( $orderInfo['id'])));
     }
-
-    /* private function getPaymentSettings(){
-    $pmObj = new PaymentSettings($this->keyName);
-    return $pmObj->getPaymentSettings();
-    } */
-
-    /* private function validateCashOnDeliverySettings($paymentSettings = array()){
-    $settingVal = array('child_order_status_initial');
-    foreach($settingVal as $val){
-    if( !isset($paymentSettings[$val]) || strlen( trim( $paymentSettings[$val] ) ) == 0 ){
-                return false;
-    }
-    }
-    return true;
-    } */
 }

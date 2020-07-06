@@ -3,28 +3,36 @@
 require_once CONF_INSTALLATION_PATH . 'library/payment-plugins/paytm/PaytmKit/lib/encdec_paytm.php';
 class PaytmPayController extends PaymentController
 {
-    private $keyName = "Paytm";
+    public const KEY_NAME = "Paytm";
     private $testEnvironmentUrl = 'https://securegw-stage.paytm.in/order';
     private $liveEnvironmentUrl = 'https://securegw.paytm.in/order';
-    private $error = false;
    
+    public function __construct($action)
+    {
+        parent::__construct($action);
+        $this->init();
+    }
+
     protected function allowedCurrenciesArr()
     {
         return [
             'INR'
         ];
     }
+    
+    private function init(): void
+    {
+        if (false === $this->plugin->validateSettings($this->siteLangId)) {
+            $this->setErrorAndRedirect($this->plugin->getError());
+        }
+
+        $this->settings = $this->plugin->getSettings();
+    }
                          
     public function charge($orderId)
     {
         if (empty(trim($orderId))) {
             Message::addErrorMessage(Labels::getLabel('MSG_Invalid_Access', $this->siteLangId));
-            CommonHelper::redirectUserReferer();
-        }
-
-        $pmObj = new PaymentSettings($this->keyName);
-        if (!$paymentSettings = $pmObj->getPaymentSettings()) {
-            Message::addErrorMessage($pmObj->getError());
             CommonHelper::redirectUserReferer();
         }
 
@@ -49,8 +57,6 @@ class PaytmPayController extends PaymentController
 
     public function callback()
     {
-        $pmObj = new PaymentSettings($this->keyName);
-        $paymentSettings = $pmObj->getPaymentSettings();
         $post = FatApp::getPostedData();
 
         $request = '';
@@ -60,7 +66,7 @@ class PaytmPayController extends PaymentController
 
         $isValidChecksum = false;
         $paytmChecksum = isset($post["CHECKSUMHASH"]) ? $post["CHECKSUMHASH"] : ""; //Sent by Paytm pg
-        $isValidChecksum = verifychecksum_e($post, $paymentSettings['merchant_key'], $paytmChecksum); //will return TRUE or FALSE string.
+        $isValidChecksum = verifychecksum_e($post, $this->settings['merchant_key'], $paytmChecksum); //will return TRUE or FALSE string.
         $arrOrder = explode("_", $post['ORDERID']);
         $orderId = (!empty($arrOrder[1])) ? $arrOrder[1] : 0;
         $txnInfo = $this->PaytmTransactionStatus($post['ORDERID']);
@@ -76,7 +82,7 @@ class PaytmPayController extends PaymentController
                 }
 
                 if ($txnInfo['STATUS'] == "TXN_SUCCESS" && $totalPaidMatch) {
-                    $orderPaymentObj->addOrderPayment($paymentSettings["pmethod_name"], $post['TXNID'], $paymentGatewayCharge, Labels::getLabel("MSG_Received_Payment", $this->siteLangId), $request);
+                    $orderPaymentObj->addOrderPayment($this->settings["plugin_code"], $post['TXNID'], $paymentGatewayCharge, Labels::getLabel("MSG_Received_Payment", $this->siteLangId), $request);
                     FatApp::redirectUser(CommonHelper::generateUrl('custom', 'paymentSuccess', array($orderId)));
                 } else {
                     $orderPaymentObj->addOrderPaymentComments($request);
@@ -99,18 +105,16 @@ class PaytmPayController extends PaymentController
         header("Pragma: no-cache");
         header("Cache-Control: no-cache");
         header("Expires: 0");
-        $pmObj = new Paymentsettings($this->keyName);
-        $paymentSettings = $pmObj->getPaymentSettings();
         $checkSum = "";
         $data = array(
-            "MID" => $paymentSettings["merchant_id"],
+            "MID" => $this->settings["merchant_id"],
             "ORDER_ID" => $orderId,
         );
 
-        $key = $paymentSettings['merchant_key'];
+        $key = $this->settings['merchant_key'];
         $checkSum = getChecksumFromArray($data, $key);
 
-        $request = array("MID" => $paymentSettings["merchant_id"], "ORDERID" => $orderId, "CHECKSUMHASH" => $checkSum);
+        $request = array("MID" => $this->settings["merchant_id"], "ORDERID" => $orderId, "CHECKSUMHASH" => $checkSum);
 
         $JsonData = json_encode($request);
         $postData = 'JsonData=' . urlencode($JsonData);
@@ -136,8 +140,6 @@ class PaytmPayController extends PaymentController
 
     private function getPaymentForm($orderId)
     {
-        $pmObj = new PaymentSettings($this->keyName);
-        $paymentSettings = $pmObj->getPaymentSettings();
         $orderPaymentObj = new OrderPayment($orderId, $this->siteLangId);
         $paymentGatewayCharge = $orderPaymentObj->getOrderPaymentGatewayAmount();
         $orderInfo = $orderPaymentObj->getOrderPrimaryinfo();
@@ -152,20 +154,20 @@ class PaytmPayController extends PaymentController
         $frm = new Form('frmPaytm', array('id' => 'frmPaytm', 'action' => $action_url, 'class' => "form form--normal"));
 
         $parameters = array(
-        "MID" => $paymentSettings["merchant_id"],
+        "MID" => $this->settings["merchant_id"],
         "ORDER_ID" => date("ymdhis") . "_" . $orderId,
         "CUST_ID" => $orderInfo['customer_id'],
         "TXN_AMOUNT" => $paymentGatewayCharge,
-        "CHANNEL_ID" => $paymentSettings['merchant_channel_id'],
-        "INDUSTRY_TYPE_ID" => $paymentSettings['merchant_industry_type'],
-        "WEBSITE" => $paymentSettings['merchant_website'],
+        "CHANNEL_ID" => $this->settings['merchant_channel_id'],
+        "INDUSTRY_TYPE_ID" => $this->settings['merchant_industry_type'],
+        "WEBSITE" => $this->settings['merchant_website'],
         "MOBILE_NO" => $orderInfo['customer_phone'],
         "EMAIL" => $orderInfo['customer_email'],
         "CALLBACK_URL" => CommonHelper::generateFullUrl('PaytmPay', 'callback'),
         "ORDER_DETAILS" => $orderPaymentGatewayDescription,
         );
 
-        $checkSumHash = getChecksumFromArray($parameters, $paymentSettings['merchant_key']);
+        $checkSumHash = getChecksumFromArray($parameters, $this->settings['merchant_key']);
 
         $frm->addHiddenField('', 'CHECKSUMHASH', $checkSumHash);
         foreach ($parameters as $paramkey => $paramval) {

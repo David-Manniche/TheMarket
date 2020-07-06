@@ -4271,7 +4271,7 @@ class MobileAppApiController extends MyAppController
         $srch->addMultipleFields(
             array('order_id', 'order_user_id', 'order_date_added', 'order_net_amount', 'op_invoice_number',
             'totCombinedOrders as totOrders', 'op_selprod_title', 'op_product_name', 'op_id', 'op_other_charges', 'op_unit_price',
-            'op_qty', 'op_selprod_options', 'op_brand_name', 'op_shop_name', 'op_status_id', 'op_product_type', 'IFNULL(orderstatus_name, orderstatus_identifier) as orderstatus_name', 'order_pmethod_id', 'order_status', 'pmethod_name', 'op_selprod_id', 'selprod_product_id')
+            'op_qty', 'op_selprod_options', 'op_brand_name', 'op_shop_name', 'op_status_id', 'op_product_type', 'IFNULL(orderstatus_name, orderstatus_identifier) as orderstatus_name', 'order_pmethod_id', 'order_status', 'plugin_name', 'op_selprod_id', 'selprod_product_id')
         );
 
         $keyword = FatApp::getPostedData('keyword', null, '');
@@ -5501,7 +5501,7 @@ class MobileAppApiController extends MyAppController
             FatUtility::dieJsonError(Labels::getLabel('MSG_Invalid_Access', $this->siteLangId));
         }
 
-        $paymentMethodName = ($orderDetail['pmethod_name'] != '') ? $orderDetail['pmethod_name'] : $orderDetail['pmethod_identifier'];
+        $paymentMethodName = ($orderDetail['plugin_name'] != '') ? $orderDetail['plugin_name'] : $orderDetail['plugin_identifier'];
         if ($orderDetail['order_pmethod_id'] > 0 && $orderDetail['order_is_wallet_selected'] > 0) {
             $paymentMethodName .= ' + ';
         }
@@ -5509,10 +5509,10 @@ class MobileAppApiController extends MyAppController
         if ($orderDetail['order_is_wallet_selected'] > 0) {
             $paymentMethodName .= Labels::getLabel("LBL_Wallet", $this->siteLangId);
         }
-        $orderDetail['pmethod_name'] = $paymentMethodName;
+        $orderDetail['plugin_name'] = $paymentMethodName;
 
         $codOrder = false;
-        if (strtolower($orderDetail['pmethod_code']) == 'cashondelivery') {
+        if (strtolower($orderDetail['plugin_code']) == 'cashondelivery') {
             $codOrder = true;
         }
 
@@ -5657,7 +5657,7 @@ class MobileAppApiController extends MyAppController
             FatUtility::dieJsonError(Labels::getLabel('MSG_Invalid_Access', $this->siteLangId));
         }
 
-        if (strtolower($orderDetail['pmethod_code']) == 'cashondelivery') {
+        if (strtolower($orderDetail['plugin_code']) == 'cashondelivery') {
             $processingStatuses = $orderObj->getVendorAllowedUpdateOrderStatuses(false, true);
         } else {
             $processingStatuses = $orderObj->getAdminAllowedUpdateOrderStatuses();

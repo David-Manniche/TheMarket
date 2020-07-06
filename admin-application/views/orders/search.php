@@ -65,8 +65,8 @@ foreach ($ordersList as $sn => $row) {
                 }
 
                 $value = Orders::getOrderPaymentStatusArr($adminLangId)[$row[$key]];
-                if ('' != $row['pmethod_name'] && 'CashOnDelivery' == $row['pmethod_code']) {
-                    $value.= ' ('.$row['pmethod_name'].' )';
+                if ('' != $row['plugin_name'] && 'CashOnDelivery' == $row['plugin_code']) {
+                    $value.= ' ('.$row['plugin_name'].' )';
                 }
 
                 $td->appendElement('span', array('class'=>'label '.$cls), $value);

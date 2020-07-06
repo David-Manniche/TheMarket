@@ -46,7 +46,7 @@ class Statistics extends MyAppModel
             $srch->doNotCalculateRecords();
             $srch->doNotLimitRecords();
             $cnd = $srch->addCondition('order_is_paid', '=', Orders::ORDER_IS_PAID);
-            $cnd->attachCondition('pmethod_code', '=', 'CashOnDelivery');
+            $cnd->attachCondition('plugin_code', '=', 'CashOnDelivery');
             $srch->addMultipleFields(array('avg(order_net_amount) AS avg_order,count(order_id) as total_orders'));
             $rs = $srch->getResultSet();
             return $this->db->fetch($rs);
@@ -59,7 +59,7 @@ class Statistics extends MyAppModel
             $srch->doNotCalculateRecords();
             $srch->doNotLimitRecords();
             $cnd = $srch->addCondition('order_is_paid', '=', Orders::ORDER_IS_PAID);
-            $cnd->attachCondition('pmethod_code', '=', 'CashOnDelivery');
+            $cnd->attachCondition('plugin_code', '=', 'CashOnDelivery');
             $completedOrderStatus = unserialize(FatApp::getConfig("CONF_COMPLETED_ORDER_STATUS"));
             $srch->addStatusCondition($completedOrderStatus);
             $srch->addMultipleFields(array('SUM((op_unit_price * op_qty ) + COALESCE(op_other_charges,0) - op_refund_amount) AS lifetime_sales,avg((op_unit_price * op_qty ) + COALESCE(op_other_charges,0) - op_refund_amount) AS avg_order,count(op_id) as total_orders'));
@@ -297,7 +297,7 @@ class Statistics extends MyAppModel
             $srch->doNotCalculateRecords();
             $srch->doNotLimitRecords();
             $cnd = $srch->addCondition('order_is_paid', '=', Orders::ORDER_IS_PAID);
-            $cnd->attachCondition('pmethod_code', '=', 'CashOnDelivery');
+            $cnd->attachCondition('plugin_code', '=', 'CashOnDelivery');
             $srch->addStatusCondition(unserialize(FatApp::getConfig("CONF_COMPLETED_ORDER_STATUS")));
             $srch->addMultipleFields(array('SUM((op_unit_price * op_qty ) + COALESCE(op_other_charges,0) - op_refund_amount) AS totalsales,SUM(op_commission_charged - op_refund_commission) totalcommission'));
 
@@ -494,7 +494,7 @@ class Statistics extends MyAppModel
         }
 
         $cnd = $srch->addCondition('order_is_paid', '=', Orders::ORDER_IS_PAID);
-        $cnd->attachCondition('pmethod_code', '=', 'CashOnDelivery');
+        $cnd->attachCondition('plugin_code', '=', 'CashOnDelivery');
         $srch->addStatusCondition(unserialize(FatApp::getConfig("CONF_COMPLETED_ORDER_STATUS")));
         $srch->addMultipleFields(array('IF(selprod_title is null or op_selprod_title ="",CONCAT(op_product_name,op_selprod_options) , selprod_title) as product_name', 'sum(op_qty - op_refund_qty) as sold'));
         switch (strtoupper($type)) {
@@ -573,7 +573,7 @@ class Statistics extends MyAppModel
             break;
         case 'PURCHASED':
             $cnd = $srch->addCondition('order_is_paid', '=', Orders::ORDER_IS_PAID);
-            $cnd->attachCondition('pmethod_code', '=', 'cashondelivery');
+            $cnd->attachCondition('plugin_code', '=', 'cashondelivery');
             break;
         }
         $srch->addMultipleFields(array('op_id'));

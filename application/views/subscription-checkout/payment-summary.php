@@ -141,7 +141,7 @@
         <?php
         $gatewayCount=0;
         foreach ($paymentMethods as $key => $val) {
-            if (in_array($val['pmethod_code'], $excludePaymentGatewaysArr[applicationConstants::CHECKOUT_SUBSCRIPTION])) {
+            if (in_array($val['plugin_code'], $excludePaymentGatewaysArr[applicationConstants::CHECKOUT_SUBSCRIPTION])) {
                 continue;
             }
             $gatewayCount++;
@@ -155,17 +155,17 @@
 								<ul id="payment_methods_tab" data-simplebar>
 								   <?php $count=0;
 									foreach ($paymentMethods as $key => $val) {
-										if (in_array($val['pmethod_code'], $excludePaymentGatewaysArr[applicationConstants::CHECKOUT_SUBSCRIPTION])) {
+										if (in_array($val['plugin_code'], $excludePaymentGatewaysArr[applicationConstants::CHECKOUT_SUBSCRIPTION])) {
 											continue;
 										}
 										$count++; ?>
 										<li>
-											<a href="<?php echo CommonHelper::generateUrl('SubscriptionCheckout', 'PaymentTab', array($orderInfo['order_id'], $val['pmethod_id'])); ?>">
+											<a href="<?php echo CommonHelper::generateUrl('SubscriptionCheckout', 'PaymentTab', array($orderInfo['order_id'], $val['plugin_id'])); ?>">
 												<div class="payment-box">
 													<i class="payment-icn">
-														<img src="<?php echo CommonHelper::generateUrl('Image', 'paymentMethod', array($val['pmethod_id'],'SMALL')); ?>" alt="">
+														<img src="<?php echo CommonHelper::generateUrl('Image', 'paymentMethod', array($val['plugin_id'],'SMALL')); ?>" alt="">
 													</i>
-													<span><?php echo $val['pmethod_name']; ?></span>
+													<span><?php echo $val['plugin_name']; ?></span>
 												</div>
 											</a>
 										</li>

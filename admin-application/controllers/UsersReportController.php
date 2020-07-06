@@ -37,30 +37,10 @@ class UsersReportController extends AdminBaseController
         }
         $pagesize = FatApp::getConfig('CONF_ADMIN_PAGESIZE', FatUtility::VAR_INT, 10);
 
-        /*
-        $ocSrch = new SearchBase(OrderProduct::DB_TBL_CHARGES, 'opc');
-        $ocSrch->doNotCalculateRecords();
-        $ocSrch->doNotLimitRecords();
-        $ocSrch->addMultipleFields(array('opcharge_op_id','sum(opcharge_amount) as op_other_charges'));
-        $ocSrch->addGroupBy('opc.opcharge_op_id');
-        $qryOtherCharges = $ocSrch->getQuery();
-
-        $srch = new OrderProductSearch(0,true);
-        $srch->joinPaymentMethod();
-        $srch->joinTable('(' . $qryOtherCharges . ')', 'LEFT OUTER JOIN', 'op.op_id = opcc.opcharge_op_id', 'opcc');
-        $cnd = $srch->addCondition('o.order_is_paid', '=',Orders::ORDER_IS_PAID);
-        $cnd->attachCondition('pmethod_code', '=','cashondelivery');
-        $srch->addStatusCondition(unserialize(FatApp::getConfig('CONF_COMPLETED_ORDER_STATUS')));
-        $srch->doNotCalculateRecords();
-        $srch->doNotLimitRecords();
-        $srch->addGroupBy('op.op_order_id');
-        $srch->addMultipleFields(array('op.op_order_id',"SUM(op_qty - op_refund_qty) as totQtys","sum(( op_unit_price * op_qty ) + op_other_charges - op_refund_amount) as totUserPurchase"));
-        */
-
         $srch = new OrderProductSearch(0, true);
         $srch->joinPaymentMethod();
         $cnd = $srch->addCondition('o.order_is_paid', '=', Orders::ORDER_IS_PAID);
-        $cnd->attachCondition('pmethod_code', '=', 'cashondelivery');
+        $cnd->attachCondition('plugin_code', '=', 'CashOnDelivery');
         $srch->addStatusCondition(unserialize(FatApp::getConfig('CONF_COMPLETED_ORDER_STATUS')));
         $srch->doNotCalculateRecords();
         $srch->doNotLimitRecords();
@@ -70,9 +50,9 @@ class UsersReportController extends AdminBaseController
 
         /*Get Order count,total order purchase*/
         $srch = new SearchBase(orders::DB_TBL, 'tord');
-        $srch->joinTable(PaymentMethods::DB_TBL, 'LEFT OUTER JOIN', 'tord.order_pmethod_id = pm.pmethod_id', 'pm');
+        $srch->joinTable(Plugin::DB_TBL, 'LEFT OUTER JOIN', 'tord.order_pmethod_id = pm.plugin_id', 'pm');
         $cnd = $srch->addCondition('tord.order_is_paid', '=', Orders::ORDER_IS_PAID);
-        $cnd->attachCondition('pmethod_code', '=', 'cashondelivery');
+        $cnd->attachCondition('plugin_code', '=', 'CashOnDelivery');
         $srch->joinTable('(' . $qryOrderProductQty . ')', 'LEFT OUTER JOIN', 'tord.order_id = top.op_order_id', 'top');
         $srch->doNotCalculateRecords();
         $srch->doNotLimitRecords();
@@ -92,7 +72,7 @@ class UsersReportController extends AdminBaseController
         $srch = new OrderProductSearch(0, true);
         $srch->joinPaymentMethod();
         $cnd = $srch->addCondition('o.order_is_paid', '=', Orders::ORDER_IS_PAID);
-        $cnd->attachCondition('pmethod_code', '=', 'cashondelivery');
+        $cnd->attachCondition('plugin_code', '=', 'CashOnDelivery');
         $srch->addStatusCondition(unserialize(FatApp::getConfig('CONF_COMPLETED_ORDER_STATUS')));
         $srch->doNotCalculateRecords();
         $srch->doNotLimitRecords();

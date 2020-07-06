@@ -45,7 +45,7 @@
                             </tr>
                             <tr>
                                 <td><?php echo $order["buyer_user_name"].' ('.$order['buyer_username'].')'; ?></td>
-                                <td><?php echo CommonHelper::displayNotApplicable($adminLangId, $order["pmethod_name"])?></td>
+                                <td><?php echo CommonHelper::displayNotApplicable($adminLangId, $order["plugin_name"])?></td>
                                 <td><?php echo CommonHelper::displayMoneyFormat($order['op_commission_charged'], true, true); ?></td>
                                 <td></td>
                             </tr>

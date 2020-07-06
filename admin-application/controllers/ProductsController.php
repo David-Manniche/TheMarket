@@ -1120,16 +1120,6 @@ class ProductsController extends AdminBaseController
         $warrantyFld->requirements()->setPositive();
         $frm->addCheckBox(Labels::getLabel('LBL_Mark_This_Product_As_Featured?', $this->adminLangId), 'product_featured', 1, array(), false, 0);
 
-        /*  $productType = Product::getAttributesById($productId, 'product_type');
-         if ($productType == Product::PRODUCT_TYPE_PHYSICAL) {
-             $frm->addCheckBox(Labels::getLabel('LBL_Product_Is_Eligible_For_Free_Shipping?', $this->adminLangId), 'ps_free', 1, array(), false, 0);
-             $codFld = $frm->addCheckBox(Labels::getLabel('LBL_Product_Is_Available_for_Cash_on_Delivery_(COD)?', $this->adminLangId), 'product_cod_enabled', 1, array(), false, 0);
-             $paymentMethod = new PaymentMethods();
-             if (!$paymentMethod->cashOnDeliveryIsActive()) {
-                 $codFld->addFieldTagAttribute('disabled', 'disabled');
-                 $codFld->htmlAfterField = '<br/><small>' . Labels::getLabel('LBL_COD_option_is_disabled_in_payment_gateway_settings', $this->adminLangId) . '</small>';
-             }
-         } */
         $frm->addHiddenField('', 'product_seller_id');
         $frm->addHiddenField('', 'product_id', $productId);
         $frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_Save_And_Next', $this->adminLangId));

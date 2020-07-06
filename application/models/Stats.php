@@ -12,7 +12,7 @@ class Stats extends MyAppModel
     {
         $srch = new SearchBase(Orders::DB_TBL_ORDER_PRODUCTS, $alias);
         $srch->joinTable(Orders::DB_TBL, 'LEFT OUTER JOIN', $alias . '.op_order_id = ' . $alias . 'temp.order_id', $alias . 'temp');
-        $srch->joinTable(PaymentMethods::DB_TBL, 'LEFT OUTER JOIN', $alias . 'temp.order_pmethod_id = ' . $alias . 'pm.pmethod_id', $alias . 'pm');
+        $srch->joinTable(Plugin::DB_TBL, 'LEFT OUTER JOIN', $alias . 'temp.order_pmethod_id = ' . $alias . 'pm.plugin_id', $alias . 'pm');
         $srch->doNotCalculateRecords();
         $srch->doNotLimitRecords();
 

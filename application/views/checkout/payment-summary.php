@@ -147,7 +147,7 @@
         <?php
         $gatewayCount=0;
         foreach ($paymentMethods as $key => $val) {
-            $pmethodCode = isset($val['plugin_code']) ? $val['plugin_code'] : $val['pmethod_code'];
+            $pmethodCode = $val['plugin_code'];
 
             if (in_array($pmethodCode, $excludePaymentGatewaysArr[applicationConstants::CHECKOUT_PRODUCT])) {
                 continue;

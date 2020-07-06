@@ -28,7 +28,7 @@ $frm->setFormTagAttribute('onsubmit', 'confirmOrder(this); return(false);'); ?>
 <?php 
 $siteKey = FatApp::getConfig('CONF_RECAPTCHA_SITEKEY', FatUtility::VAR_STRING, '');
 $secretKey = FatApp::getConfig('CONF_RECAPTCHA_SECRETKEY', FatUtility::VAR_STRING, '');
-if (!empty($siteKey) && !empty($secretKey) && 'cashondelivery' == strtolower($paymentMethod['pmethod_code'])) {?>
+if (!empty($siteKey) && !empty($secretKey) && 'cashondelivery' == strtolower($paymentMethod['plugin_code'])) {?>
     <script src='https://www.google.com/recaptcha/api.js?render=<?php echo $siteKey; ?>'></script>
     <script>
         googleCaptcha();

@@ -5,17 +5,32 @@ class BraintreePayController extends PaymentController
     public const ENVOIRMENT_LIVE = 'live';
     public const ENVOIRMENT_SANDBOX = 'sandbox';
 
-    private $keyName = "Braintree";
+    public const KEY_NAME = "Braintree";
+
     private $error = false;
-    private $paymentSettings = false;
     
+    public function __construct($action)
+    {
+        parent::__construct($action);
+        $this->init();
+    }
+
     protected function allowedCurrenciesArr()
     {
         return [
             'AED', 'AMD', 'AOA', 'ARS', 'AUD', 'AWG', 'AZN', 'BAM', 'BBD', 'BDT', 'BGN', 'BIF', 'BMD', 'BND', 'BOB', 'BRL', 'BSD', 'BWP', 'BYN', 'BZD', 'CAD', 'CHF', 'CLP', 'CNY', 'COP', 'CRC', 'CVE', 'CZK', 'DJF', 'DKK', 'DOP', 'DZD', 'EGP', 'ETB', 'EUR', 'FJD', 'FKP', 'GBP', 'GEL', 'GHS', 'GIP', 'GMD', 'GNF', 'GTQ', 'GYD', 'HKD', 'HNL', 'HRK', 'HTG', 'HUF', 'IDR', 'ILS', 'INR', 'ISK', 'JMD', 'JPY', 'KES', 'KGS', 'KHR', 'KMF', 'KRW', 'KYD', 'KZT', 'LAK', 'LBP', 'LKR', 'LRD', 'LSL', 'LTL', 'MAD', 'MDL', 'MKD', 'MNT', 'MOP', 'MUR', 'MVR', 'MWK', 'MXN', 'MYR', 'MZN', 'NAD', 'NGN', 'NIO', 'NOK', 'NPR', 'NZD', 'PAB', 'PEN', 'PGK', 'PHP', 'PKR', 'PLN', 'PYG', 'QAR', 'RON', 'RSD', 'RUB', 'RWF', 'SAR', 'SBD', 'SCR', 'SEK', 'SGD', 'SHP', 'SLL', 'SOS', 'SRD', 'STD', 'SVC', 'SYP', 'SZL', 'THB', 'TJS', 'TOP', 'TRY', 'TTD', 'TWD', 'TZS', 'UAH', 'UGX', 'USD', 'UYU', 'UZS', 'VES', 'VND', 'VUV', 'WST', 'XAF', 'XCD', 'XOF', 'XPF', 'YER', 'ZAR', 'ZMK', 'ZWD'
         ];
     }
-    
+
+    private function init(): void
+    {
+        if (false === $this->plugin->validateSettings($this->siteLangId)) {
+            $this->setErrorAndRedirect($this->plugin->getError());
+        }
+
+        $this->settings = $this->plugin->getSettings();
+    }
+
     public function charge($orderId)
     {
         if (empty(trim($orderId))) {
@@ -87,12 +102,6 @@ class BraintreePayController extends PaymentController
         return $amount * 100;
     }
 
-    private function getPaymentSettings()
-    {
-        $pmObj = new PaymentSettings($this->keyName);
-        return $pmObj->getPaymentSettings();
-    }
-
     private function getPaymentForm($orderId)
     {
         $frm = new Form('frmPaymentForm', array('id' => 'frmPaymentForm', 'action' => CommonHelper::generateUrl('BraintreePay', 'charge', array($orderId)), 'class' => "form form--normal"));
@@ -104,8 +113,7 @@ class BraintreePayController extends PaymentController
     {
         error_reporting(E_ALL);
         ini_set('display_errors', 1);
-        $this->paymentSettings = $this->getPaymentSettings();
-        if ($payment_amount == null || !$this->paymentSettings || $orderInfo['id'] == null) {
+        if ($payment_amount == null || $orderInfo['id'] == null) {
             return false;
         }
         $checkPayment = false;
@@ -140,7 +148,7 @@ class BraintreePayController extends PaymentController
                             $message .= 'Status: ' . (string)$charge['transaction']->status . "&";
                             /* Recording Payment in DB */
 
-                            $orderPaymentObj->addOrderPayment($this->paymentSettings["pmethod_name"], $charge['transaction']->id, ($payment_amount / 100), Labels::getLabel("MSG_Received_Payment", $this->siteLangId), $message);
+                            $orderPaymentObj->addOrderPayment($this->settings["plugin_code"], $charge['transaction']->id, ($payment_amount / 100), Labels::getLabel("MSG_Received_Payment", $this->siteLangId), $message);
                             /* End Recording Payment in DB */
                             $checkPayment = true;
 
@@ -165,16 +173,15 @@ class BraintreePayController extends PaymentController
     {
         $this->autoloadRequiredFunctions();
         try {
-            $this->paymentSettings = $this->getPaymentSettings();
-            if (!isset($this->paymentSettings['private_key']) || !isset($this->paymentSettings['public_key']) || !isset($this->paymentSettings['merchant_id'])) {
+            if (!isset($this->settings['private_key']) || !isset($this->settings['public_key']) || !isset($this->settings['merchant_id'])) {
                 return false;
             }
             $envoirment = (FatApp::getConfig('CONF_TRANSACTION_MODE', FatUtility::VAR_BOOLEAN, false) == true) ? static::ENVOIRMENT_LIVE : static::ENVOIRMENT_SANDBOX;
 
             Braintree_Configuration::environment($envoirment);
-            Braintree_Configuration::merchantId($this->paymentSettings['merchant_id']);
-            Braintree_Configuration::publicKey($this->paymentSettings['public_key']);
-            Braintree_Configuration::privateKey($this->paymentSettings['private_key']);
+            Braintree_Configuration::merchantId($this->settings['merchant_id']);
+            Braintree_Configuration::publicKey($this->settings['public_key']);
+            Braintree_Configuration::privateKey($this->settings['private_key']);
 
             return Braintree_ClientToken::generate();
         } catch (Exception $e) {

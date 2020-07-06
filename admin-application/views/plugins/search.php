@@ -108,10 +108,12 @@ if (count($arr_listing) == 0) {
     $tbl->appendElement('tr')->appendElement('td', array('colspan' => count($arr_flds)), Labels::getLabel('LBL_No_Records_Found', $adminLangId));
 }
 
+$function = !empty($otherPluginTypes) ? 'changeBulkStatusByType' : 'toggleBulkStatuses';
+
 $frm = new Form('frmPluginListing', array('id' => 'frmPluginListing'));
 $frm->setFormTagAttribute('class', 'web_form last_td_nowrap actionButtons-js');
 $frm->setFormTagAttribute('onsubmit', 'formAction(this, reloadList ); return(false);');
-$frm->setFormTagAttribute('action', CommonHelper::generateUrl('plugins', 'toggleBulkStatuses'));
+$frm->setFormTagAttribute('action', CommonHelper::generateUrl('plugins', $function));
 $frm->addHiddenField('', 'status');
 $frm->addHiddenField('', 'plugin_type', $pluginType);?>
 <section class="section">
@@ -121,7 +123,8 @@ $frm->addHiddenField('', 'plugin_type', $pluginType);?>
         if ($canEdit && !in_array($pluginType, Plugin::HAVING_KINGPIN)) {
             $data = [
                 'adminLangId' => $adminLangId,
-                'deleteButton' => false
+                'deleteButton' => false,
+                'msg' => $msg
             ];
 
             $this->includeTemplate('_partial/action-buttons.php', $data, false);

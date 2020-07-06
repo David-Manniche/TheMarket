@@ -506,8 +506,8 @@ class AccountController extends LoggedUserController
             $pmSrch = PaymentMethods::getSearchObject($this->siteLangId);
             $pmSrch->doNotCalculateRecords();
             $pmSrch->doNotLimitRecords();
-            $pmSrch->addMultipleFields(array('pmethod_id', 'IFNULL(pmethod_name, pmethod_identifier) as pmethod_name', 'pmethod_code', 'pmethod_description'));
-            $pmSrch->addCondition('pmethod_code', '!=', 'CashOnDelivery');
+            $pmSrch->addMultipleFields(Plugin::ATTRS);
+            $pmSrch->addCondition('plugin_code', '!=', 'CashOnDelivery');
 
             $pmRs = $pmSrch->getResultSet();
             $paymentMethods = FatApp::getDb()->fetchAll($pmRs);

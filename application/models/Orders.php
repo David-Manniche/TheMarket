@@ -1218,9 +1218,10 @@ class Orders extends MyAppModel
         $emailObj = new EmailHandler();
 
         // If order Payment status is 0 then becomes greater than 0 send main html email
+        $paymentMethodCode = Plugin::getAttributesById($orderInfo['order_pmethod_id'], 'plugin_code');
         if (!$orderInfo['order_is_paid'] && $orderPaymentStatus) {
             $emailNotify = $emailObj->orderPaymentUpdateBuyerAdmin($orderId);
-        } elseif ($orderInfo['order_pmethod_id'] == PaymentSettings::CASH_ON_DELIVERY) {
+        } elseif (strtolower($paymentMethodCode) == 'cashondelivery') {
             $emailNotify = $emailObj->cashOnDeliveryOrderUpdateBuyerAdmin($orderId);
             $emailObj->newOrderVendor($orderId, 0, 1);
         }
@@ -1241,10 +1242,10 @@ class Orders extends MyAppModel
             $isReferrerRewarded = false;
             $isReferralRewarded = false;
 
-            $paymentMethodRow = PaymentMethods::getAttributesById($orderInfo['order_pmethod_id']);
+            $paymentMethodRow = Plugin::getAttributesById($orderInfo['order_pmethod_id']);
 
             /* Use Reward Point [ */
-            if (strtolower($paymentMethodRow['pmethod_code']) != 'cashondelivery' && $orderInfo['order_reward_point_used'] > 0) {
+            if (strtolower($paymentMethodRow['plugin_code']) != 'cashondelivery' && $orderInfo['order_reward_point_used'] > 0) {
                 UserRewards::debit($orderInfo['order_user_id'], $orderInfo['order_reward_point_used'], $orderId, $orderInfo['order_language_id']);
             }
             /*]*/
@@ -1370,7 +1371,7 @@ class Orders extends MyAppModel
         }
 
         // If current order status is not paid up but new status is paid then commence updating the product's weightage
-        if (!in_array($childOrderInfo['op_status_id'], (array)FatApp::getConfig("CONF_DEFAULT_PAID_ORDER_STATUS")) && in_array($opStatusId, (array)FatApp::getConfig("CONF_DEFAULT_PAID_ORDER_STATUS")) && strtolower($childOrderInfo['pmethod_code']) != "cashondelivery") {
+        if (!in_array($childOrderInfo['op_status_id'], (array)FatApp::getConfig("CONF_DEFAULT_PAID_ORDER_STATUS")) && in_array($opStatusId, (array)FatApp::getConfig("CONF_DEFAULT_PAID_ORDER_STATUS")) && strtolower($childOrderInfo['plugin_code']) != "cashondelivery") {
             if ($childOrderInfo['op_is_batch']) {
                 $opSelprodCodeArr = explode('|', $childOrderInfo['op_selprod_code']);
             } else {
@@ -1527,7 +1528,7 @@ class Orders extends MyAppModel
         /* ] */
 
         /* If current order status is not return request approved but new status is return request approved then commence the order operation [ */
-        if (!in_array($childOrderInfo['op_status_id'], (array)FatApp::getConfig("CONF_RETURN_REQUEST_APPROVED_ORDER_STATUS")) && in_array($opStatusId, (array)FatApp::getConfig("CONF_RETURN_REQUEST_APPROVED_ORDER_STATUS")) && ($childOrderInfo["order_is_paid"] == Orders::ORDER_IS_PAID || strtolower($childOrderInfo['pmethod_code']) == "cashondelivery")) {
+        if (!in_array($childOrderInfo['op_status_id'], (array)FatApp::getConfig("CONF_RETURN_REQUEST_APPROVED_ORDER_STATUS")) && in_array($opStatusId, (array)FatApp::getConfig("CONF_RETURN_REQUEST_APPROVED_ORDER_STATUS")) && ($childOrderInfo["order_is_paid"] == Orders::ORDER_IS_PAID || strtolower($childOrderInfo['plugin_code']) == "cashondelivery")) {
             if ($moveRefundToWallet) {
                 $formattedRequestValue = "#" . $childOrderInfo["op_invoice_number"];
                 $comments = sprintf(Labels::getLabel('LBL_Return_Request_Approved', $langId), $formattedRequestValue);
@@ -1621,7 +1622,7 @@ class Orders extends MyAppModel
         /* ] */
 
         /* If current order status is not delivered but new Status is delivered and the order is of COD, then, check if delivered by seller then debiting transaction entry from seller wallet [ */
-        if (!in_array($childOrderInfo['op_status_id'], (array)FatApp::getConfig("CONF_DEFAULT_DEIVERED_ORDER_STATUS")) && in_array($opStatusId, (array)FatApp::getConfig("CONF_DEFAULT_DEIVERED_ORDER_STATUS")) && strtolower($childOrderInfo['pmethod_code']) == "cashondelivery") {
+        if (!in_array($childOrderInfo['op_status_id'], (array)FatApp::getConfig("CONF_DEFAULT_DEIVERED_ORDER_STATUS")) && in_array($opStatusId, (array)FatApp::getConfig("CONF_DEFAULT_DEIVERED_ORDER_STATUS")) && strtolower($childOrderInfo['plugin_code']) == "cashondelivery") {
             if (CommonHelper::canAvailShippingChargesBySeller($childOrderInfo['op_selprod_user_id'], $childOrderInfo['opshipping_by_seller_user_id'])) {
                 $formattedInvoiceNumber = "#" . $childOrderInfo["op_invoice_number"];
                 $comments = Labels::getLabel('Msg_Cash_collected_for_COD_order', $langId) . ' ' . $formattedInvoiceNumber;
@@ -1644,23 +1645,17 @@ class Orders extends MyAppModel
         /*]*/
 
         // If COD order and shipping user not set then assign shipping company  user seller/admin shiping company.
-        if (strtolower($childOrderInfo['pmethod_code']) == "cashondelivery" && !$childOrderInfo['optsu_user_id'] && CommonHelper::canAvailShippingChargesBySeller($childOrderInfo['op_selprod_user_id'], $childOrderInfo['opshipping_by_seller_user_id'])) {
+        if (strtolower($childOrderInfo['plugin_code']) == "cashondelivery" && !$childOrderInfo['optsu_user_id'] && CommonHelper::canAvailShippingChargesBySeller($childOrderInfo['op_selprod_user_id'], $childOrderInfo['opshipping_by_seller_user_id'])) {
             if (CommonHelper::canAvailShippingChargesBySeller($childOrderInfo['op_selprod_user_id'], $childOrderInfo['opshipping_by_seller_user_id'])) {
                 $shippingUserdata = array('optsu_op_id' => $childOrderInfo['op_id'], 'optsu_user_id' => $childOrderInfo['op_selprod_user_id']);
                 $db->insertFromArray(OrderProduct::DB_TBL_OP_TO_SHIPPING_USERS, $shippingUserdata, false, array('IGNORE'));
             }
         }
-        /* if( !in_array( $childOrderInfo['op_status_id'], (array)FatApp::getConfig("CONF_COD_ORDER_STATUS")) && in_array($opStatusId, (array)FatApp::getConfig("CONF_COD_ORDER_STATUS") ) && strtolower($childOrderInfo['pmethod_code']) == "cashondelivery" ){
-        if(CommonHelper::canAvailShippingChargesBySeller($childOrderInfo['op_selprod_user_id'],$childOrderInfo['opshipping_by_seller_user_id'])){
-        $shippingUserdata = array('optsu_op_id' => $childOrderInfo['op_id'], 'optsu_user_id' => $childOrderInfo['op_selprod_user_id']);
-        $db->insertFromArray(OrderProduct::DB_TBL_OP_TO_SHIPPING_USERS,$shippingUserdata,false,array('IGNORE'));
-        }
-        } */
 
         // If current order status is not completed but new status is completed then commence completing the order
-        if (!in_array($childOrderInfo['op_status_id'], (array)$this->getVendorOrderPaymentCreditedStatuses()) && in_array($opStatusId, (array)$this->getVendorOrderPaymentCreditedStatuses()) && ($childOrderInfo["order_is_paid"] == Orders::ORDER_IS_PAID || strtolower($childOrderInfo['pmethod_code']) == "cashondelivery")) {
+        if (!in_array($childOrderInfo['op_status_id'], (array)$this->getVendorOrderPaymentCreditedStatuses()) && in_array($opStatusId, (array)$this->getVendorOrderPaymentCreditedStatuses()) && ($childOrderInfo["order_is_paid"] == Orders::ORDER_IS_PAID || strtolower($childOrderInfo['plugin_code']) == "cashondelivery")) {
             /* If shipped by admin credit to shipping user as COD order payment deposited by them[*/
-            if (!CommonHelper::canAvailShippingChargesBySeller($childOrderInfo['op_selprod_user_id'], $childOrderInfo['opshipping_by_seller_user_id']) && strtolower($childOrderInfo['pmethod_code']) == "cashondelivery") {
+            if (!CommonHelper::canAvailShippingChargesBySeller($childOrderInfo['op_selprod_user_id'], $childOrderInfo['opshipping_by_seller_user_id']) && strtolower($childOrderInfo['plugin_code']) == "cashondelivery") {
                 $formattedInvoiceNumber = "#" . $childOrderInfo["op_invoice_number"];
                 $comments = Labels::getLabel('Msg_Cash_Deposited_for_COD_order', $langId) . ' ' . $formattedInvoiceNumber;
                 $amt = CommonHelper::orderProductAmount($childOrderInfo);
@@ -1941,7 +1936,7 @@ class Orders extends MyAppModel
         $srch->joinTable(OrderProduct::DB_TBL_CHARGES, 'LEFT OUTER JOIN', 'opc.' . OrderProduct::DB_TBL_CHARGES_PREFIX . 'op_id = op.op_id', 'opc');
         $srch->joinTable(Orders::DB_TBL_ORDER_PRODUCTS_SHIPPING, 'LEFT OUTER JOIN', 'ops.opshipping_op_id = op.op_id', 'ops');
 
-        $srch->addMultipleFields(array('op.*', 'opst.*', 'op_l.*', 'o.order_id', 'o.order_is_paid', 'o.order_date_added', 'o.order_language_id', 'o.order_user_id', 'sum(' . OrderProduct::DB_TBL_CHARGES_PREFIX . 'amount) as op_other_charges', 'o.order_affiliate_user_id', 'pmethod_code', 'optsu_user_id', 'ops.opshipping_by_seller_user_id', 'o.order_pmethod_id'));
+        $srch->addMultipleFields(array('op.*', 'opst.*', 'op_l.*', 'o.order_id', 'o.order_is_paid', 'o.order_date_added', 'o.order_language_id', 'o.order_user_id', 'sum(' . OrderProduct::DB_TBL_CHARGES_PREFIX . 'amount) as op_other_charges', 'o.order_affiliate_user_id', 'plugin_code', 'optsu_user_id', 'ops.opshipping_by_seller_user_id', 'o.order_pmethod_id'));
         $srch->addCondition('op_id', '=', $op_id);
         $srch->doNotCalculateRecords();
         $srch->doNotLimitRecords();
@@ -2420,7 +2415,7 @@ class Orders extends MyAppModel
         $srch->joinOrderBuyerUser();
         $srch->addMultipleFields(
             array('order_id', 'order_user_id', 'order_date_added', 'order_is_paid', 'order_tax_charged', 'order_site_commission',
-            'order_reward_point_value', 'order_volume_discount_total', 'buyer.user_name as buyer_user_name', 'buyer_cred.credential_email as buyer_email', 'buyer.user_phone as buyer_phone', 'order_net_amount', 'order_shippingapi_name', 'order_pmethod_id', 'ifnull(pmethod_name,pmethod_identifier)as pmethod_name', 'order_discount_total', 'pmethod_code', 'order_is_wallet_selected', 'order_reward_point_used', 'order_deleted')
+            'order_reward_point_value', 'order_volume_discount_total', 'buyer.user_name as buyer_user_name', 'buyer_cred.credential_email as buyer_email', 'buyer.user_phone as buyer_phone', 'order_net_amount', 'order_shippingapi_name', 'order_pmethod_id', 'ifnull(pmethod_name,pmethod_identifier)as pmethod_name', 'order_discount_total', 'plugin_code', 'order_is_wallet_selected', 'order_reward_point_used', 'order_deleted')
         );
         $srch->addCondition('order_id', '=', $orderId);
         $srch->addCondition('order_type', '=', self::ORDER_PRODUCT);

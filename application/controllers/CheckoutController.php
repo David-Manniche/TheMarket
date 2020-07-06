@@ -1358,10 +1358,10 @@ class CheckoutController extends MyAppController
         $this->_template->render(false, false);
     }
 
-    public function paymentTab($order_id, $pmethod_id)
+    public function paymentTab($order_id, $plugin_id)
     {
-        $pmethod_id = FatUtility::int($pmethod_id);
-        if (!$pmethod_id) {
+        $plugin_id = FatUtility::int($plugin_id);
+        if (!$plugin_id) {
             FatUtility::dieWithError(Labels::getLabel("MSG_Invalid_Request!", $this->siteLangId));
         }
 
@@ -1386,7 +1386,7 @@ class CheckoutController extends MyAppController
             FatUtility::dieWithError(Labels::getLabel('MSG_INVALID_ORDER_PAID_CANCELLED', $this->siteLangId));
         }
 
-        $methodCode = Plugin::getAttributesById($pmethod_id, 'plugin_code');
+        $methodCode = Plugin::getAttributesById($plugin_id, 'plugin_code');
         $paymentMethod = Plugin::getAttributesByCode($methodCode, Plugin::ATTRS, $this->siteLangId);
         
         $frm = $this->getPaymentTabForm($this->siteLangId, $methodCode);
@@ -1396,7 +1396,7 @@ class CheckoutController extends MyAppController
             array(
                 'order_type' => $orderInfo['order_type'],
                 'order_id' => $order_id,
-                'plugin_id' => $pmethod_id,
+                'plugin_id' => $plugin_id,
             )
         );
 
@@ -1407,7 +1407,7 @@ class CheckoutController extends MyAppController
         if (strtolower($methodCode) == "cashondelivery") {
             if ($this->cartObj->hasDigitalProduct()) {
                 $str = Labels::getLabel('MSG_{COD}_is_not_available_if_your_cart_has_any_Digital_Product', $this->siteLangId);
-                $str = str_replace('{cod}', $paymentMethod['pmethod_name'], $str);
+                $str = str_replace('{cod}', $paymentMethod['plugin_name'], $str);
                 FatUtility::dieWithError($str);
             }
             $cartSummary = $this->cartObj->getCartFinancialSummary($this->siteLangId);
@@ -1416,7 +1416,7 @@ class CheckoutController extends MyAppController
 
             if (!$cartSummary['isCodValidForNetAmt']) {
                 $str = Labels::getLabel('MSG_Sorry_{COD}_is_not_available_on_this_order.', $this->siteLangId) . ' <br/>' . Labels::getLabel('MSG_{COD}_is_available_on_payable_amount_between_{MIN}_and_{MAX}', $this->siteLangId);
-                $str = str_replace('{cod}', $paymentMethod['pmethod_name'], $str);
+                $str = str_replace('{cod}', $paymentMethod['plugin_name'], $str);
                 $str = str_replace('{min}', CommonHelper::displayMoneyFormat(FatApp::getConfig("CONF_MIN_COD_ORDER_LIMIT")), $str);
                 $str = str_replace('{max}', CommonHelper::displayMoneyFormat(FatApp::getConfig("CONF_MAX_COD_ORDER_LIMIT")), $str);
                 FatUtility::dieWithError($str);
@@ -1424,7 +1424,7 @@ class CheckoutController extends MyAppController
 
             if ($cartSummary['cartWalletSelected'] && $userWalletBalance < $cartSummary['orderNetAmount']) {
                 $str = Labels::getLabel('MSG_Wallet_can_not_be_used_along_with_{COD}', $this->siteLangId);
-                $str = str_replace('{cod}', $paymentMethod['pmethod_name'], $str);
+                $str = str_replace('{cod}', $paymentMethod['plugin_name'], $str);
                 FatUtility::dieWithError($str);
                 //$this->set('error', $str );
             }
@@ -1546,7 +1546,7 @@ class CheckoutController extends MyAppController
     public function ConfirmOrder()
     {
         $order_type = FatApp::getPostedData('order_type', FatUtility::VAR_INT, 0);
-        $pmethod_id = FatApp::getPostedData('plugin_id', FatUtility::VAR_INT, 0);
+        $plugin_id = FatApp::getPostedData('plugin_id', FatUtility::VAR_INT, 0);
 
         $order_id = FatApp::getPostedData("order_id", FatUtility::VAR_STRING, "");
         $user_id = UserAuthentication::getLoggedUserId();
@@ -1554,8 +1554,8 @@ class CheckoutController extends MyAppController
         $userWalletBalance = FatUtility::convertToType(User::getUserBalance($user_id, true), FatUtility::VAR_FLOAT);
         $orderNetAmount = isset($cartSummary['orderNetAmount']) ? FatUtility::convertToType($cartSummary['orderNetAmount'], FatUtility::VAR_FLOAT) : 0;
 
-        if (0 < $pmethod_id) {
-            $paymentMethodRow = Plugin::getAttributesById($pmethod_id);
+        if (0 < $plugin_id) {
+            $paymentMethodRow = Plugin::getAttributesById($plugin_id);
             $isActive = $paymentMethodRow['plugin_active'];
             $pmethodCode = $paymentMethodRow['plugin_code'];
             $pmethodIdentifier = $paymentMethodRow['plugin_identifier'];
@@ -1582,12 +1582,12 @@ class CheckoutController extends MyAppController
         if (true === MOBILE_APP_API_CALL) {
             $paymentUrl = '';
             $sendToWeb = 1;
-            if (0 < $pmethod_id) {
+            if (0 < $plugin_id) {
                 $controller = $pmethodCode . 'Pay';
                 $paymentUrl = CommonHelper::generateFullUrl($controller, 'charge', array($order_id));
             }
             if (Orders::ORDER_WALLET_RECHARGE != $order_type && $cartSummary['cartWalletSelected'] && $userWalletBalance >= $orderNetAmount) {
-                $sendToWeb = $pmethod_id = 0;
+                $sendToWeb = $plugin_id = 0;
                 $paymentUrl = CommonHelper::generateFullUrl('WalletPay', 'charge', array($order_id));
             }
             if (empty($paymentUrl)) {
@@ -1645,7 +1645,7 @@ class CheckoutController extends MyAppController
             /*$this->cartObj->clear();
             $this->cartObj->updateUserCart();*/
 
-            $orderObj->updateOrderInfo($order_id, array('order_pmethod_id' => $pmethod_id));
+            $orderObj->updateOrderInfo($order_id, array('order_pmethod_id' => $plugin_id));
 
             if (true === MOBILE_APP_API_CALL) {
                 $this->_template->render();
@@ -1671,7 +1671,7 @@ class CheckoutController extends MyAppController
             FatUtility::dieWithError($this->errMessage);
         }
 
-        if ($cartSummary['cartWalletSelected'] && $userWalletBalance >= $orderNetAmount && !$pmethod_id) {
+        if ($cartSummary['cartWalletSelected'] && $userWalletBalance >= $orderNetAmount && !$plugin_id) {
             if (true === MOBILE_APP_API_CALL) {
                 $this->_template->render();
             }
@@ -1680,9 +1680,6 @@ class CheckoutController extends MyAppController
         }
 
         $post = FatApp::getPostedData();
-        // commonHelper::printArray($post); die;
-
-        // $paymentMethodRow = PaymentMethods::getAttributesById($pmethod_id);
 
         if (!$paymentMethodRow || $isActive != applicationConstants::ACTIVE) {
             $this->errMessage = Labels::getLabel("LBL_Invalid_Payment_method,_Please_contact_Webadmin.", $this->siteLangId);
@@ -1701,7 +1698,7 @@ class CheckoutController extends MyAppController
             }
         }
 
-        if ($userWalletBalance >= $cartSummary['orderNetAmount'] && $cartSummary['cartWalletSelected'] && !$pmethod_id) {
+        if ($userWalletBalance >= $cartSummary['orderNetAmount'] && $cartSummary['cartWalletSelected'] && !$plugin_id) {
             $frm = $this->getWalletPaymentForm($this->siteLangId);
         } else {
             $frm = $this->getPaymentTabForm($this->siteLangId);
@@ -1746,7 +1743,7 @@ class CheckoutController extends MyAppController
             FatUtility::dieWithError(Message::getHtml());
         }
 
-        if ($cartSummary['orderPaymentGatewayCharges'] == 0 && $pmethod_id) {
+        if ($cartSummary['orderPaymentGatewayCharges'] == 0 && $plugin_id) {
             $this->errMessage = Labels::getLabel('MSG_Amount_for_payment_gateway_must_be_greater_than_zero.', $this->siteLangId);
             if (true === MOBILE_APP_API_CALL) {
                 LibHelper::dieJsonError($this->errMessage);
@@ -1755,10 +1752,10 @@ class CheckoutController extends MyAppController
             FatUtility::dieWithError(Message::getHtml());
         }
 
-        if ($pmethod_id) {
+        if ($plugin_id) {
             $_SESSION['cart_order_id'] = $order_id;
             $_SESSION['order_type'] = $order_type;
-            $orderObj->updateOrderInfo($order_id, array('order_pmethod_id' => $pmethod_id));
+            $orderObj->updateOrderInfo($order_id, array('order_pmethod_id' => $plugin_id));
             // $this->cartObj->clear();
             // $this->cartObj->updateUserCart();
         }

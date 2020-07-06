@@ -39,22 +39,6 @@ class SalesReportController extends AdminBaseController
         $page = (empty($post['page']) || $post['page'] <= 0) ? 1 : intval($post['page']);
         $pagesize = FatApp::getConfig('CONF_ADMIN_PAGESIZE', FatUtility::VAR_INT, 10);
 
-        /* $ocSrch = new SearchBase(OrderProduct::DB_TBL_CHARGES, 'opc');
-        $ocSrch->doNotCalculateRecords();
-        $ocSrch->doNotLimitRecords();
-        $ocSrch->addMultipleFields(array('opcharge_op_id','sum(opcharge_amount) as op_other_charges'));
-        $ocSrch->addGroupBy('opc.opcharge_op_id');
-        $qryOtherCharges = $ocSrch->getQuery();
-
-        $srch = new OrderProductSearch( 0, true );
-        $srch->joinPaymentMethod();
-        $srch->joinTable('(' . $qryOtherCharges . ')', 'LEFT OUTER JOIN', 'op.op_id = opcc.opcharge_op_id', 'opcc');
-        $srch->joinOrderProductCharges(OrderProduct::CHARGE_TYPE_TAX,'optax');
-        $srch->joinOrderProductCharges(OrderProduct::CHARGE_TYPE_SHIPPING,'opship');
-
-        $cnd = $srch->addCondition('o.order_is_paid', '=',Orders::ORDER_IS_PAID);
-        $cnd->attachCondition('pmethod_code', '=','cashondelivery');
-        $srch->addStatusCondition(unserialize(FatApp::getConfig('CONF_COMPLETED_ORDER_STATUS'))); */
         $srch = Report::salesReportObject();
         if (empty($orderDate)) {
             $date_from = FatApp::getPostedData('date_from', FatUtility::VAR_DATE, '');
