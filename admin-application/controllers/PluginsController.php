@@ -33,9 +33,29 @@ class PluginsController extends AdminBaseController
         $this->canEdit = $this->objPrivilege->canEditPlugins($this->admin_id, true);
         $pluginTypes = Plugin::getTypeArr($this->adminLangId);
         
+        $groupType = Plugin::getGroupType($type);
+        $otherPluginTypes = '';
+        if (!empty($groupType)) {
+            foreach ($groupType as $pluginType) {
+                if ($type == $pluginType) {
+                    continue;
+                }
+                $srch = Plugin::getSearchObject(0, true);
+                $srch->addCondition(Plugin::DB_TBL_PREFIX . 'type', '=', $pluginType);
+                $srch->addCondition(Plugin::DB_TBL_PREFIX . 'active', '=', Plugin::ACTIVE);
+                $srch->setPageSize(1);
+                $srch->getResultSet();
+                if (0 < $srch->recordCount()) {
+                    $otherPluginTypes .= $pluginTypes[$pluginType] . ', ';
+                }
+            }
+            $otherPluginTypes = rtrim($otherPluginTypes, ', ');
+        }
+
         $this->set("canEdit", $this->canEdit);
         $this->set("type", $type);
         $this->set("pluginTypes", $pluginTypes);
+        $this->set("otherPluginTypes", $otherPluginTypes);
         $this->set("arr_listing", $records);
         $this->set('activeInactiveArr', applicationConstants::getActiveInactiveArr($this->adminLangId));
         $this->_template->render(false, false);
@@ -310,22 +330,37 @@ class PluginsController extends AdminBaseController
     public function changeStatusByType()
     {
         $this->objPrivilege->canEditPlugins();
-        $pluginTypes = FatApp::getPostedData('pluginTypes', FatUtility::VAR_STRING, '');
-        $pluginTypes = explode('_', $pluginTypes);
-        if (empty($pluginTypes)) {
-            FatUtility::dieJsonError(Labels::getLabel('MSG_INVALID_REQUEST', $this->adminLangId));
+        $pluginId = FatApp::getPostedData('pluginId', FatUtility::VAR_INT, 0);
+        $status = FatApp::getPostedData('status', FatUtility::VAR_INT, 0);
+        if (0 >= $pluginId) {
+            FatUtility::dieJsonError($this->str_invalid_request_id);
         }
 
-        foreach ($pluginTypes as $pluginType) {
-            $groupType = Plugin::getGroupType($pluginType);
-            if (empty($groupType)) {
-                continue;
-            }
-            if (false == Plugin::updateStatus($pluginType, Plugin::INACTIVE, null, $error)) {
-                FatUtility::dieJsonError($error);
-            }
+        $data = Plugin::getAttributesById($pluginId, array('plugin_id', 'plugin_active', 'plugin_type'));
+
+        if ($data == false) {
+            FatUtility::dieJsonError($this->str_invalid_request);
         }
 
+        if (false == Plugin::updateStatus($data['plugin_type'], $status, $pluginId, $error)) {
+            FatUtility::dieJsonError($error);
+        }
+
+        if (Plugin::ACTIVE == $status) {
+            $groupType = Plugin::getGroupType($data['plugin_type']);
+            $eiherPluginTypes = array_values(array_diff($groupType, [$data['plugin_type']]));
+            
+            foreach ($eiherPluginTypes as $pluginType) {
+                $groupType = Plugin::getGroupType($pluginType);
+                if (empty($groupType)) {
+                    continue;
+                }
+                if (false == Plugin::updateStatus($pluginType, Plugin::INACTIVE, null, $error)) {
+                    FatUtility::dieJsonError($error);
+                }
+            }
+        }
+        
         $this->set('msg', $this->str_update_record);
         $this->_template->render(false, false, 'json-success.php');
     }

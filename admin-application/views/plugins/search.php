@@ -27,6 +27,7 @@ foreach ($arr_flds as $key => $val) {
 }
 $aspectRatioArr = AttachedFile::getRatioTypeArray($adminLangId);
 $sr_no = 0;
+$msg = '';
 foreach ($arr_listing as $sn => $row) {
     $sr_no++;
     $tr = $tbl->appendElement('tr', array( 'id' => $row['plugin_id'], 'class' => '' ));
@@ -73,7 +74,17 @@ foreach ($arr_listing as $sn => $row) {
                 if (!$row['plugin_active']) {
                     $active = '';
                 }
-                $statucAct = ($canEdit === true) ? 'toggleStatus(this, ' . ($row['plugin_active'] > 0 ? 0 : 1) . ')' : '';
+
+                $function = 'toggleStatus(this, ' . ($row['plugin_active'] > 0 ? 0 : 1) . ')';
+                if (!empty($otherPluginTypes)) {
+                    if (empty($msg)) {
+                        $msg = Labels::getLabel("MSG_TURNING_ON_{PLUGIN-TYPE}_WILL_TURN_OFF_{OTHER-PLUGIN-TYPE}_PLUGINS._DO_YOU_WANT_TO_CONTINUE_?", $adminLangId);
+                        $msg = CommonHelper::replaceStringData($msg, ['{PLUGIN-TYPE}' => $pluginTypes[$row['plugin_type']], '{OTHER-PLUGIN-TYPE}' => $otherPluginTypes]);
+                    }
+                    $function = "changeStatusEitherPluginTypes(this, " . ($row['plugin_active'] > 0 ? 0 : 1) . ", '" . $msg . "')";
+                }
+
+                $statucAct = ($canEdit === true) ? $function : '';
                 $str = '<label id="' . $row['plugin_id'] . '" class="statustab ' . $active . '" onclick="' . $statucAct . '">
                 <span data-off="' . Labels::getLabel('LBL_Active', $adminLangId) . '" data-on="' . Labels::getLabel('LBL_Inactive', $adminLangId) . '" class="switch-labels"></span>
                 <span class="switch-handles"></span>

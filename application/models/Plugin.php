@@ -452,27 +452,6 @@ class Plugin extends MyAppModel
         $db = FatApp::getDb();
         $max = in_array($typeId, self::HAVING_KINGPIN) && applicationConstants::ACTIVE == $status ? 2 : 1;
 
-        // Check if type belongs to Either Group Type
-        if (self::ACTIVE == $status) {
-            $groupType = static::getGroupType($typeId);
-            foreach ($groupType as $pluginType) {
-                if ($typeId == $pluginType) {
-                    continue;
-                }
-                $srch = static::getSearchObject(0, true);
-                $srch->addCondition(self::DB_TBL_PREFIX . 'type', '=', $pluginType);
-                $srch->setPageSize(1);
-                $srch->getResultSet();
-                if (0 < $srch->recordCount()) {
-                    $langId = CommonHelper::getLangId();
-                    $pluginTypesArr = static::getTypeArr($langId);
-                    $msg = Labels::getLabel("MSG_TURNING_ON_{PLUGIN-TYPE}_WILL_TURN_OFF_{OTHER-PLUGIN-TYPE}_PLUGINS._DO_YOU_WANT_TO_CONTINUE_?", $langId);
-                    $error = CommonHelper::replaceStringData($msg, ['{PLUGIN-TYPE}' => $pluginTypesArr[$typeId], '{OTHER-PLUGIN-TYPE}' => $pluginTypesArr[$pluginType]]);
-                    return false;
-                }
-            }
-        }
-
         for ($i = 0; $i < $max; $i++) {
             $condition = ['smt' => self::DB_TBL_PREFIX . 'type = ?', 'vals' => [$typeId]];
             if (null != $id) {
