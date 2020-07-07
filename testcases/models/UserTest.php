@@ -1,19 +1,21 @@
 <?php
 class UserTest extends YkModelTest
 {
-   
+    private $class = 'User';
+    
     /**
-     * @dataProvider setCredentialsData
+     * @dataProvider dataSetCredentials
      */
     public function testSetLoginCredentials($userId, $username, $email, $password, $active, $verified, $expected)
     {
-        $user = new User();
+        /* $user = new User();
         $user->setMainTableRecordId($userId);
-        $result = $user->setLoginCredentials($username, $email, $password, $active, $verified);
+        $result = $user->setLoginCredentials($username, $email, $password, $active, $verified); */
+        $result = $this->execute($this->class, [], 'canSellerUpgradeOrDowngradePlan', [$userId, $spPlanId, $langId]);
         $this->assertEquals($expected, $result);
     }
     
-    public function setCredentialsData()
+    public function dataSetCredentials()
     {
         return array(
             array('70000', 'dev70000', 'dev70000@dummyid.com', 'Test@123', null, null, true),//User details with inactive and unverified parameter

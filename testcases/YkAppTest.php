@@ -16,6 +16,8 @@ class YkAppTest extends TestCase
     private $error = '';
     public $reflectionClassInstance = '';
 
+    public $langId = CONF_LANG_ID;
+
     /**
      * execute
      *

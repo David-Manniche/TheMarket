@@ -1,28 +1,28 @@
 <?php
 class UserPrivilegeTest extends YkModelTest
-{   
-   
+{
+    private $class = 'UserPrivilege';
+
     /**
-     * @dataProvider canSellerUpgradeOrDowngradePlanData
+     * @dataProvider dataCanSellerUpgradeOrDowngradePlan
      */
-    public function testCanSellerUpgradeOrDowngradePlan( $userId, $spPlanId, $langId, $expected )
+    public function testCanSellerUpgradeOrDowngradePlan($expected, $userId, $spPlanId, $langId)
     {
-        $result = UserPrivilege::canSellerUpgradeOrDowngradePlan( $userId, $spPlanId, $langId );
+        $result = $this->execute($this->class, [], 'canSellerUpgradeOrDowngradePlan', [$userId, $spPlanId, $langId]);
         $this->assertEquals($expected, $result);
     }
     
-    public function canSellerUpgradeOrDowngradePlanData()
+    public function dataCanSellerUpgradeOrDowngradePlan()
     {
         return array(
-            array('test', 'test', 1, false), //Invalid plan id and user id
-            array('test', 7, 1, false), //Invalid user id but valid plan id            
-            array(79, 'test', 1, false), //Invalid plan id but Valid user id
-            array(79, 7, 1, true), //Valid user id and plan id
-        ); 
+            array(false, 'test', 'test', $this->langId), //Invalid UserId and planId
+            array(false, 'test', 99, $this->langId), //Invalid UserId but valid planId
+            array(false, 4, 'test', $this->langId), //Invalid plan id but Valid user id          
+            array(false, 4, 'test', $this->langId), //Invalid plan id but Valid user id
+            array(false, '4', 'test', $this->langId), //Invalid plan id but Valid user id
+            array(false, '4', '7', $this->langId), //Valid user id and plan id
+            array(false, 4, 7, '1'), //Valid user id and plan id but wrong langId
+            array(true, 4, 7, $this->langId), //Valid user id and plan id
+        );
     }
-    
-    
-    
-    
-    
 }

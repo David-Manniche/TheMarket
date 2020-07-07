@@ -45,5 +45,5 @@ define('CONF_DB_USER', '');
 define('CONF_DB_PASS', '');
 define('CONF_DB_NAME', '');
 
-
+define('CONF_LANG_ID', 1);
 require_once 'conf.php';
