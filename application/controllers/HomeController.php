@@ -981,7 +981,7 @@ class HomeController extends MyAppController
         $data['isWishlistEnable'] = FatApp::getConfig('CONF_ADD_FAVORITES_TO_WISHLIST', FatUtility::VAR_INT, 1);
         $data['canSendSms'] = SmsArchive::canSendSms() ? 1 : 0;
         $data['canAddReview'] = FatApp::getConfig('CONF_ALLOW_REVIEWS', FatUtility::VAR_INT, 1);
-        var_dump($data);
+      
         $this->set('data', $data);
         $this->_template->render();
     }
