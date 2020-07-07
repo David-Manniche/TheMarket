@@ -483,11 +483,17 @@ class UserPrivilege
     }
 
     /* Subscription privildges */
-
-    public static function canSellerUpgradeOrDowngradePlan($userId, $spPlanId = 0, $langId = 0)
+    
+    /**
+     * canSellerUpgradeOrDowngradePlan
+     *
+     * @param  int $userId
+     * @param  int $spPlanId
+     * @param  int $langId
+     * @return bool
+     */
+    public static function canSellerUpgradeOrDowngradePlan(int $userId, int $spPlanId = 0, int $langId = 0): bool
     {
-        $userId = FatUtility::int($userId);
-        $spPlanId = FatUtility::int($spPlanId);
         if (1 > $userId || $spPlanId < 1) {
             return false;
         }
@@ -510,19 +516,6 @@ class UserPrivilege
                 Message::addErrorMessage(sprintf(Labels::getLabel('M_YOU_ARE_DOWNGRADING_YOUR_PACKAGE', $langId), $allowedLimit['spackage_inventory_allowed'], $totalActiveInventories));
                 return false;
             }
-
-            /* if Downgrading package then give message to reduce products */
-            /*$planDetails = SellerPackagePlans::getSubscriptionPlanDataByPlanId($spPlanId, $langId);
-            $products = new Product();
-            $totalProducts  =  $products->getTotalProductsAddedByUser($userId);
-            if ($totalProducts > $planDetails[SellerPackages::DB_TBL_PREFIX.'products_allowed']) {
-                Message::addErrorMessage(sprintf(Labels::getLabel('M_YOU_ARE_DOWNGRADING_YOUR_PACKAGE', $langId), $planDetails[SellerPackages::DB_TBL_PREFIX.'products_allowed'], $totalProducts));
-                return false;
-            }*/
-
-            /* ] */
-            /* $totalProductsAdded  =
-            $totalImagesAdded  = */
         }
         return true;
     }

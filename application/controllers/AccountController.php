@@ -2037,8 +2037,8 @@ class AccountController extends LoggedUserController
         $srch->addCondition('ufs_shop_id', '=', $shop_id);
         $rs = $srch->getResultSet();
         if (!$row = $db->fetch($rs)) {
-            $shopObj = new Shop();
-            if (!$shopObj->addUpdateUserFavoriteShop($loggedUserId, $shop_id)) {
+            $shopObj = new Shop($shop_id);
+            if (!$shopObj->setFavorite($loggedUserId)) {
                 $message = Labels::getLabel('LBL_Some_problem_occurred,_Please_contact_webmaster', $this->siteLangId);
                 if (true === MOBILE_APP_API_CALL) {
                     FatUtility::dieJsonError($message);

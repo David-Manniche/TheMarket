@@ -14,7 +14,9 @@ class YkAppTest extends TestCase
     private $returnType = self::TYPE_BOOL;
     private $result = '';
     private $error = '';
-    public $classObj = '';
+    public $reflectionClassInstance = '';
+
+    public $langId = CONF_LANG_ID;
 
     /**
      * execute
@@ -25,27 +27,75 @@ class YkAppTest extends TestCase
      * @param  array $args
      * @return mixed
      */
-    protected function execute(string $class, array $constructorArgs, string $method, array $args)
+    protected function execute(string $class, array $constructorArgs, string $method, array $args = [])
     {
         //Target our class
-        $reflector = new ReflectionClass($class);
+        $reflectionClass = new ReflectionClass($class);
 
+        //Get the parameters of a constructor
+        $reflectionClassParam = $reflectionClass->getConstructor()->getParameters();
+        $reflectMethod = $reflectionClass->getMethod($method);
+        
+        if (!$reflectMethod->isStatic()) {
+            $invalidParam = $this->validateParamType($reflectionClassParam, $constructorArgs);
+
+            if (true === $invalidParam) {
+                return false;
+            }
+        }
+        
         //Get the parameters of a method
-        $parameters = $reflector->getMethod($method)->getParameters();
+        $reflectionParam = $reflectMethod->getParameters();
+        
+        $invalidParam = $this->validateParamType($reflectionParam, $args);
 
+        if (true === $invalidParam) {
+            return false;
+        }
+       
+        
+       
+        if (method_exists($this, 'init') && false === $this->init()) {
+            return false;
+        }
+
+        if (!$reflectMethod->isStatic()) {
+            $reflectionClass = $reflectionClass->newInstanceArgs($constructorArgs);
+        }
+        
+        $reflectionMethod = new ReflectionMethod($class, $method);
+        $this->result = $reflectionMethod->invokeArgs($reflectionClass, $args);
+        
+        return $this->returnResponse();
+    }
+    
+    /**
+     * validateParamType
+     *
+     * @param  array $reflectionParam
+     * @param  array $args
+     * @return bool
+     */
+    private function validateParamType(array $reflectionParam, array $args) :bool
+    {
         $invalidParam = false;
-        foreach ($parameters as $index => $param) {
-            $paramValue = $args[$index];
-            if ($param->isOptional() && empty($paramValue)) {
+        foreach ($reflectionParam as $index => $param) {
+            $paramValue = (array_key_exists($index, $args)) ? $args[$index] : null;
+            
+            if ($param->isOptional() && null == $paramValue) {
                 continue;
             }
 
             $paramName = $param->getName();
-            $paramType = $param->getType();
-
+            $paramType = null;
+            if (null != $param->getType()) {
+                $reflectionType = $param->getType();
+                $paramType = $reflectionType->getName();
+            }
+            
             switch ($paramType) {
                 case 'int':
-                    $invalidParam = (false === is_int($paramValue));
+                    $invalidParam = (false === is_int($paramValue)) ;
                     break;
                 case 'string':
                     $invalidParam = (false === is_string($paramValue));
@@ -65,19 +115,11 @@ class YkAppTest extends TestCase
                 $msg = Labels::getLabel('MSG_INVALID_{PARAM}_ARGUMENT_TYPE_{WRONG-PARAM-TYPE}_EXPECTED_{PARAM-TYPE}', CommonHelper::getLangId());
                 $replaceData = ['{PARAM}' => $paramName, '{WRONG-PARAM-TYPE}' => gettype($paramValue), '{PARAM-TYPE}' => $paramType];
                 $this->error = CommonHelper::replaceStringData($msg, $replaceData);
-                return false;
+                return $invalidParam;
             }
         }
-      
-        $this->classObj = $reflector->newInstanceArgs($constructorArgs);
-        
-        if (method_exists($this, 'init') && false === $this->init()) {
-            return false;
-        }
 
-        $reflectionMethod = new ReflectionMethod($class, $method);
-        $this->result = $reflectionMethod->invokeArgs($this->classObj, $args);
-        return $this->returnResponse();
+        return $invalidParam;
     }
     
     /**
@@ -91,7 +133,6 @@ class YkAppTest extends TestCase
             case self::TYPE_ARRAY:
                 return is_array($this->result);
                 break;
-            
             default:
                 return $this->result;
                 break;

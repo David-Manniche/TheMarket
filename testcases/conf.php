@@ -4,9 +4,6 @@ define('HTTP_YOKART_PUBLIC', $protocol . $_SERVER['HTTP_HOST'] . rtrim(rtrim(dir
 define('HTTP_YOKART', preg_replace('~/[^/]*/([^/]*)$~', '/\1', HTTP_YOKART_PUBLIC));
 
 $root = dirname(dirname(__FILE__)) . DIRECTORY_SEPARATOR;
-if (is_file($root . '/public/settings.php')) {
-    require_once($root . '/public/settings.php');
-}
 
 require_once $root . '/conf/conf.php';
 
@@ -17,5 +14,4 @@ FatApp::unregisterGlobals();
 if (file_exists(CONF_APPLICATION_PATH . 'utilities/prehook.php')) {
     require_once CONF_APPLICATION_PATH . 'utilities/prehook.php';
 }
-
 // FatApplication::getInstance()->callHook();

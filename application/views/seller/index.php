@@ -8,7 +8,7 @@ $this->includeTemplate('_partial/seller/sellerDashboardNavigation.php'); ?>
             </div>
             <div class="col-auto">
                 <div class="btn-group">
-                    <?php if (!Shop::isShopActive($userParentId, 0, true)) { ?>
+                    <?php if (!$isShopActive) { ?>
                         <a href="<?php echo  CommonHelper::generateUrl('Seller', 'shop'); ?>" class="btn btn-outline-primary btn--sm">
                             <?php echo Labels::getLabel('LBL_Create_Shop', $siteLangId); ?>
                         </a>

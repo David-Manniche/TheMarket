@@ -30,8 +30,31 @@ class Shop extends MyAppModel
 
     public const SHOP_PRODUCTS_COUNT_AT_HOMEPAGE = 2;
 
-    public function __construct($shopId = 0)
+    private $userId = 0;
+    private $langId = 0;
+    private $active = null;
+    private $data = null;
+    
+    /**
+     * __construct
+     *
+     * @param  int $shopId
+     * @param  int $userId
+     * @return void
+     */
+    public function __construct(int $shopId, int $userId = 0, int $langId = 0)
     {
+        if (0 < $shopId) {
+            $this->userId = $this->getUserId();
+        }
+
+        if (1 > $shopId && 0 < $userId) {
+            $this->userId = $userId;
+            $shopId = $this->getIdFromUserId();
+        }
+
+        $this->langId = $langId;
+        
         parent::__construct(static::DB_TBL, static::DB_TBL_PREFIX . 'id', $shopId);
         $this->objMainTableRecord->setSensitiveFields(array());
     }
@@ -133,38 +156,7 @@ class Shop extends MyAppModel
         return $row;
     }
 
-    public static function isShopActive($userId, $shopId = 0, $returnResult = false)
-    {
-        $shopId = FatUtility::int($shopId);
-        $userId = FatUtility::int($userId);
-        
-        if ($userId < 1 && $shopId < 1) {
-            return false;
-        }
-        
-        $shopDetails = self::getAttributesByUserId($userId, array('shop_active', 'shop_id'), false);
-
-        if (!false == $shopDetails && $shopDetails['shop_active'] != applicationConstants::ACTIVE) {
-            return false;
-        }
-
-        if ($shopId > 0) {
-            if (!$shopDetails['shop_id'] == $shopId) {
-                return false;
-            }
-        }
-
-        if ($returnResult === true) {
-            if (false == $shopDetails) {
-                return false;
-            }
-            return $shopDetails;
-        }
-
-        return true;
-    }
-
-    public static function getUserShopProdCategoriesObj($userId, $siteLangId, $shopId = 0, $prodcat_id = 0)
+    public static function getProdCategoriesObj($userId, $siteLangId, $shopId = 0, $prodcat_id = 0)
     {
         $userId = FatUtility::int($userId);
         $prodcat_id = FatUtility::int($prodcat_id);
@@ -188,20 +180,7 @@ class Shop extends MyAppModel
         $srch->addMultipleFields(array('prodcat_id', 'ifnull(prodcat_name,prodcat_identifier) as prodcat_name', 'shop_id'));
         return $srch;
     }
-
-    public function addUpdateUserFavoriteShop($user_id, $shop_id)
-    {
-        $user_id = FatUtility::int($user_id);
-        $shop_id = FatUtility::int($shop_id);
-
-        $data_to_save = array( 'ufs_user_id' => $user_id, 'ufs_shop_id' => $shop_id );
-        $data_to_save_on_duplicate = array( 'ufs_shop_id' => $shop_id );
-        if (!FatApp::getDb()->insertFromArray(static::DB_TBL_SHOP_FAVORITE, $data_to_save, false, array(), $data_to_save_on_duplicate)) {
-            $this->error = FatApp::getDb()->getError();
-            return false;
-        }
-        return true;
-    }
+   
     public static function getShopAddress($shop_id, $isActive = true, $langId = 0, $attr = array())
     {
         $shop_id = FatUtility::int($shop_id);
@@ -237,36 +216,6 @@ class Shop extends MyAppModel
             return $row[$attr];
         }
         return $row;
-    }
-
-    public static function getShopUrl($shopId = 0, $attr = array())
-    {
-        $db = FatApp::getDb();
-        $shopOriginalUrl = 'shops/view/' . $shopId;
-        $urlSrch = UrlRewrite::getSearchObject();
-        $urlSrch->doNotCalculateRecords();
-        $urlSrch->doNotLimitRecords();
-        $urlSrch->addFld('urlrewrite_custom');
-        $urlSrch->addCondition('urlrewrite_original', '=', $shopOriginalUrl);
-        $rs = $urlSrch->getResultSet();
-        if (null != $attr) {
-            if (is_array($attr)) {
-                $urlSrch->addMultipleFields($attr);
-            } elseif (is_string($attr)) {
-                $urlSrch->addFld($attr);
-            }
-        }
-
-        $rs = $urlSrch->getResultSet();
-        $row = $db->fetch($rs);
-
-        if (!is_array($row)) {
-            return false;
-        }
-
-        if (is_string($attr)) {
-            return $row[$attr];
-        }
     }
 
     public static function getFilterSearchForm()
@@ -310,7 +259,7 @@ class Shop extends MyAppModel
                 break;
             case 'collection':
                 $originalUrl = Shop::SHOP_COLLECTION_ORGINAL_URL . $this->mainTableRecordId . '/' . $collectionId;
-                $shopUrl = static::getShopUrl($this->mainTableRecordId, 'urlrewrite_custom');
+                $shopUrl = static::getRewriteCustomUrl($this->mainTableRecordId);
                 $seoUrl = preg_replace('/-' . $shopUrl . '$/', '', $seoUrl);
                 $seoUrl .= '-' . $shopUrl;
                 break;
@@ -354,21 +303,62 @@ class Shop extends MyAppModel
         return $this->_rewriteUrl($keyword, 'policy');
     }
 
-    /* public function getShopAttachments(){
-    $srch = static::getSearchObject();
-    } */
-    /* public function getUserShopData( $userId , $langId ){
-    $userId = FatUtility::int($userId);
-    $langId = FatUtility::int($langId);
-
-    $srch = static::getSearchObject($isActive , $langId);
-
-    $srch->addCondition( static::tblFld('user_id') , '=', $userId);
-    } */
-
-    public static function getShopName($shopId, $langId = 0, $isActive = true)
+    /**
+     * setFavorite
+     *
+     * @param  int $userId
+     * @return bool
+     */
+    public function setFavorite(int $userId): bool
     {
-        $shopId = FatUtility::int($shopId);
+        if (1 > $this->mainTableRecordId || 1 > $userId) {
+            return false;
+        }
+       
+        $data_to_save = array( 'ufs_user_id' => $userId, 'ufs_shop_id' => $this->mainTableRecordId );
+        $data_to_save_on_duplicate = array( 'ufs_shop_id' => $this->mainTableRecordId );
+        if (!FatApp::getDb()->insertFromArray(static::DB_TBL_SHOP_FAVORITE, $data_to_save, false, array(), $data_to_save_on_duplicate)) {
+            $this->error = FatApp::getDb()->getError();
+            return false;
+        }
+        return true;
+    }
+    
+    /**
+     * getRewriteCustomUrl
+     *
+     * @param  int $shopId
+     * @return string
+     */
+    public static function getRewriteCustomUrl(int $shopId = 0): string
+    {
+        $db = FatApp::getDb();
+        $shopOriginalUrl = 'shops/view/' . $shopId;
+        $urlSrch = UrlRewrite::getSearchObject();
+        $urlSrch->doNotCalculateRecords();
+        $urlSrch->doNotLimitRecords();
+        $urlSrch->addCondition('urlrewrite_original', '=', $shopOriginalUrl);
+        $urlSrch->addFld('urlrewrite_custom');
+        $rs = $urlSrch->getResultSet();
+        $row = $db->fetch($rs);
+
+        if (!is_array($row)) {
+            return false;
+        }
+
+        return $row['urlrewrite_custom'];
+    }
+    
+    /**
+     * getName
+     *
+     * @param  int $shopId
+     * @param  int $langId
+     * @param  bool $isActive
+     * @return string
+     */
+    public static function getName(int $shopId, int $langId = 0, bool $isActive = true): string
+    {
         if (1 > $shopId) {
             return false;
         }
@@ -381,8 +371,118 @@ class Shop extends MyAppModel
         $row = FatApp::getDb()->fetch($shopRs);
         if ($row) {
             return $row['shop_name'];
-        } else {
-            return false;
         }
+
+        return false;
+    }
+        
+    /**
+     * isActive
+     *
+     * @return int
+     */
+    public function isActive() : int
+    {
+        if (1 > $this->mainTableRecordId) {
+            return 0;
+        }
+
+        if (null != $this->active) {
+            return $this->active;
+        }
+       
+        if (null != $this->data) {
+            return $this->active = $this->data['shop_active'];
+        }
+        
+        $this->getData();
+
+        if (!empty($this->data)) {
+            return $this->active = $this->data['shop_active'];
+        }
+
+        return 0;
+    }
+    
+    /**
+     * getData
+     *
+     * @return array
+     */
+    public function getData() : array
+    {
+        if (1 > $this->mainTableRecordId) {
+            trigger_error('Shop instance not initialized!', E_USER_ERROR);
+        }
+
+        if (null == $this->data || empty($this->data)) {
+            $this->setData();
+        }
+
+        return $this->data;
+    }
+    
+    /**
+     * setData
+     *
+     * @return void
+     */
+    private function setData(): void
+    {
+        if (1 > $this->mainTableRecordId) {
+            trigger_error('Shop instance not initialized!', E_USER_ERROR);
+        }
+
+        if (null != $this->data && !empty($this->data)) {
+            return;
+        }
+
+        $this->data = self::getAttributesById($this->mainTableRecordId);
+    }
+
+    /**
+     * getIdFromUserId
+     *
+     * @return int
+     */
+    private function getIdFromUserId() : int
+    {
+        if (0 < $this->mainTableRecordId) {
+            return  $this->mainTableRecordId;
+        }
+
+        if (1 > $this->userId) {
+            return 0;
+        }
+
+        return self::getAttributesByUserId($this->userId, 'shop_id');
+    }
+    
+    /**
+     * getUserId
+     *
+     * @return int
+     */
+    private function getUserId() : int
+    {
+        if (1 > $this->mainTableRecordId) {
+            return  0;
+        }
+
+        if (0 < $this->userId) {
+            return $this->userId;
+        }
+
+        if (null != $this->data) {
+            return $this->userId = $this->data['shop_user_id'];
+        }
+        
+        $this->getData();
+
+        if (!empty($this->data)) {
+            return $this->userId = $this->data['shop_user_id'];
+        }
+
+        return 0;
     }
 }

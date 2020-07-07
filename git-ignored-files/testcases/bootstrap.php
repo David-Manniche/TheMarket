@@ -30,9 +30,20 @@ $_SERVER['GATEWAY_INTERFACE'] = 'CGI/1.1';
 $_SERVER['SERVER_PROTOCOL'] = 'HTTP/1.1';
 $_SERVER['REQUEST_METHOD'] = 'GET';
 $_SERVER['QUERY_STRING'] = 'url=';
-$_SERVER['REQUEST_URI'] = '';
+$_SERVER['REQUEST_URI'] = 'testcases';
 $_SERVER['SCRIPT_NAME'] = '/public/index.php';
 $_SERVER['PHP_SELF'] = '/public/index.php';
 $_SERVER['REQUEST_TIME_FLOAT'] = time();
 
+define('CONF_WEBROOT_FRONTEND', '/');
+define('CONF_WEBROOT_BACKEND', '/admin/');
+define('MOBILE_APP_API_CALL', false);
+define('MOBILE_APP_API_VERSION', '');
+//DB
+define('CONF_DB_SERVER', 'localhost');
+define('CONF_DB_USER', '');
+define('CONF_DB_PASS', '');
+define('CONF_DB_NAME', '');
+
+define('CONF_LANG_ID', 1);
 require_once 'conf.php';

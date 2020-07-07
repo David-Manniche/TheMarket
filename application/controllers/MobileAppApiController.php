@@ -3876,7 +3876,7 @@ class MobileAppApiController extends MyAppController
         'siteLangId' => $this->siteLangId
         );
 
-        $srchCat = Shop::getUserShopProdCategoriesObj($shop['shop_user_id'], $this->siteLangId, $shop['shop_id'], 0);
+        $srchCat = Shop::getProdCategoriesObj($shop['shop_user_id'], $this->siteLangId, $shop['shop_id'], 0);
         $srchCat->doNotCalculateRecords();
         $srchCat->doNotLimitRecords();
         $rs = $srchCat->getResultSet();
@@ -6296,8 +6296,8 @@ class MobileAppApiController extends MyAppController
         $srch->addCondition('ufs_shop_id', '=', $shop_id);
         $rs = $srch->getResultSet();
         if (!$row = $db->fetch($rs)) {
-            $shopObj = new Shop();
-            if (!$shopObj->addUpdateUserFavoriteShop($loggedUserId, $shop_id)) {
+            $shopObj = new Shop($shop_id);
+            if (!$shopObj->setFavorite($loggedUserId)) {
                 FatUtility::dieJsonError(Labels::getLabel('LBL_Some_problem_occurred,_Please_contact_webmaster', $this->siteLangId));
             }
             $action = 'A'; //Added to favorite

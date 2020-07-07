@@ -9,7 +9,7 @@ $arr_flds = [
     'action' => '',
 ];
 $allPlugins = $arr_listing;
-$pluginType = (array_shift($allPlugins))['plugin_type'];
+$pluginType = (!empty($allPlugins)) ? (array_shift($allPlugins))['plugin_type'] : '';
 if (!$canEdit || 2 > count($arr_listing) || in_array($pluginType, Plugin::HAVING_KINGPIN)) {
     unset($arr_flds['dragdrop']);
     if (!$canEdit || in_array($pluginType, Plugin::HAVING_KINGPIN) || 1 > count($arr_listing)) {
@@ -48,8 +48,12 @@ foreach ($arr_listing as $sn => $row) {
                 break;
             case 'plugin_icon':
                 $fileData = AttachedFile::getAttachment(AttachedFile::FILETYPE_PLUGIN_LOGO, $row['plugin_id']);
-                $uploadedTime = AttachedFile::setTimeParam($fileData['afile_updated_at']);
-                $aspectRatio = ($fileData['afile_aspect_ratio'] > 0 && isset($aspectRatioArr[$fileData['afile_aspect_ratio']])) ? $aspectRatioArr[$fileData['afile_aspect_ratio']] : '';
+                $uploadedTime = '';
+                $aspectRatio = '';
+                if (!empty($fileData)) {
+                    $uploadedTime = AttachedFile::setTimeParam($fileData['afile_updated_at']);
+                    $aspectRatio = ($fileData['afile_aspect_ratio'] > 0 && isset($aspectRatioArr[$fileData['afile_aspect_ratio']])) ? $aspectRatioArr[$fileData['afile_aspect_ratio']] : '';
+                }
 
                 $imageUrl = UrlHelper::getCachedUrl(UrlHelper::generateFileUrl('Image', 'plugin', array($row['plugin_id'], 'ICON'), CONF_WEBROOT_FRONT_URL) . $uploadedTime, CONF_IMG_CACHE_TIME, '.jpg');
                 $imgHtm = '<img src="' . $imageUrl . '" data-ratio="' . $aspectRatio . '">';

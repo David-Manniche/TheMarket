@@ -69,7 +69,7 @@ class SubscriptionCartController extends MyAppController
             Message::addErrorMessage(Labels::getLabel('LBL_Invalid_Request', $this->siteLangId));
             FatUtility::dieWithError(Message::getHtml());
         }
-        $spplan_id = $sellerPlanRow['spplan_id'];
+        $spplan_id = FatUtility::int($sellerPlanRow['spplan_id']);
         /* Subscription Downgrade And Upgrade Check check[ */
         if (!UserPrivilege ::canSellerUpgradeOrDowngradePlan(UserAuthentication::getLoggedUserId(), $spplan_id, $this->siteLangId)) {
             FatUtility::dieWithError(Message::getHtml());

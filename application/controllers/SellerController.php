@@ -134,6 +134,8 @@ class SellerController extends SellerBaseController
         $txnObj = new Transactions();
         $txnsSummary = $txnObj->getTransactionSummary($userId, date('Y-m-d'));
 
+       $isShopActive = $this->isShopActive($this->userParentId);
+
         $this->set('transactions', $transactions);
         $this->set('returnRequests', $returnRequests);
         $this->set('OrderReturnRequestStatusArr', OrderReturnRequest::getRequestStatusArr($this->siteLangId));
@@ -150,6 +152,7 @@ class SellerController extends SellerBaseController
         $this->set('dashboardStats', Stats::getUserSales($userId));
         $this->set('userParentId', $this->userParentId);
         $this->set('userPrivilege', $this->userPrivilege);
+        $this->set('isShopActive', $isShopActive);
         $this->_template->addJs(array('js/chartist.min.js'));
         $this->_template->addJs('js/slick.min.js');
         $this->_template->render(true, true);
@@ -1854,7 +1857,7 @@ class SellerController extends SellerBaseController
         $shopDetails = Shop::getAttributesByUserId($userId, null, false);
         $data_to_save_arr = array();
         $data_to_save_arr['shop_custom_color_status'] = $post['shop_custom_color_status'];
-        $shop_id = $shopDetails['shop_id'];
+        $shop_id = FatUtility::int($shopDetails['shop_id']);
         $shopObj = new Shop($shop_id);
         $shopObj->assignValues($data_to_save_arr);
         if (!$shopObj->save()) {
@@ -1955,7 +1958,7 @@ class SellerController extends SellerBaseController
             FatUtility::dieWithError(Message::getHtml());
         }
 
-        $shop_id = $shopDetails['shop_id'];
+        $shop_id = FatUtility::int($shopDetails['shop_id']);
 
         $shopObj = new Shop($shop_id);
         $data = array('shop_ltemplate_id' => $ltemplate_id);
@@ -2103,7 +2106,7 @@ class SellerController extends SellerBaseController
             Message::addErrorMessage(Labels::getLabel('MSG_Your_shop_deactivated_contact_admin', $this->siteLangId));
             FatUtility::dieWithError(Message::getHtml());
         }
-        $shop_id = $shopDetails['shop_id'];
+        $shop_id = FatUtility::int($shopDetails['shop_id']);
         $lang_id = FatApp::getPostedData('lang_id', FatUtility::VAR_INT, 0);
 
         if ($lang_id <= 0) {
@@ -3299,7 +3302,17 @@ class SellerController extends SellerBaseController
 
     private function isShopActive($userId, $shopId = 0, $returnResult = false)
     {
-        return Shop::isShopActive($userId, $shopId, $returnResult);
+        $shop = new Shop($shopId,$userId);
+        if (false == $returnResult) {
+            return $shop->isActive();
+        }
+
+        if ($shop->isActive()) {
+            return $shop->getData();
+        }
+
+        return false;
+        //return Shop::isShopActive($userId, $shopId, $returnResult);
     }
 
     private function getShopInfoForm($shop_id = 0)
@@ -3476,7 +3489,7 @@ class SellerController extends SellerBaseController
 
     private function getSellerProdCategoriesObj($userId, $shopId = 0, $prodcat_id = 0, $lang_id = 0)
     {
-        return Shop::getUserShopProdCategoriesObj($userId, $lang_id, $shopId, $prodcat_id);
+        return Shop::getProdCategoriesObj($userId, $lang_id, $shopId, $prodcat_id);
     }
 
     private function getCategoryMediaForm($prodCatId)
