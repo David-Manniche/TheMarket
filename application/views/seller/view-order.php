@@ -50,7 +50,7 @@ if (!$print) {
                                 <?php
                                 $selected_method = '';
                                 if ($orderDetail['order_pmethod_id'] > 0) {
-                                    $selected_method.= CommonHelper::displayNotApplicable($siteLangId, $orderDetail["pmethod_name"]);
+                                    $selected_method.= CommonHelper::displayNotApplicable($siteLangId, $orderDetail["plugin_name"]);
                                 }
                                 if ($orderDetail['order_is_wallet_selected'] > 0) {
                                     $selected_method.= ($selected_method!='') ? ' + '.Labels::getLabel("LBL_Wallet", $siteLangId) : Labels::getLabel("LBL_Wallet", $siteLangId);

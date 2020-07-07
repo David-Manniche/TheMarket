@@ -2415,7 +2415,7 @@ class Orders extends MyAppModel
         $srch->joinOrderBuyerUser();
         $srch->addMultipleFields(
             array('order_id', 'order_user_id', 'order_date_added', 'order_is_paid', 'order_tax_charged', 'order_site_commission',
-            'order_reward_point_value', 'order_volume_discount_total', 'buyer.user_name as buyer_user_name', 'buyer_cred.credential_email as buyer_email', 'buyer.user_phone as buyer_phone', 'order_net_amount', 'order_shippingapi_name', 'order_pmethod_id', 'ifnull(pmethod_name,pmethod_identifier)as pmethod_name', 'order_discount_total', 'plugin_code', 'order_is_wallet_selected', 'order_reward_point_used', 'order_deleted')
+            'order_reward_point_value', 'order_volume_discount_total', 'buyer.user_name as buyer_user_name', 'buyer_cred.credential_email as buyer_email', 'buyer.user_phone as buyer_phone', 'order_net_amount', 'order_shippingapi_name', 'order_pmethod_id', 'ifnull(plugin_name,plugin_identifier)as plugin_name', 'order_discount_total', 'plugin_code', 'order_is_wallet_selected', 'order_reward_point_used', 'order_deleted')
         );
         $srch->addCondition('order_id', '=', $orderId);
         $srch->addCondition('order_type', '=', self::ORDER_PRODUCT);

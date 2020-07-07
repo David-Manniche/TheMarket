@@ -45,7 +45,7 @@ class Stats extends MyAppModel
         }
 
         $cnd = $srch->addCondition($alias . 'temp.order_is_paid', '=', Orders::ORDER_IS_PAID);
-        $cnd->attachCondition($alias . 'pm.pmethod_code', '=', 'cashondelivery');
+        $cnd->attachCondition($alias . 'pm.plugin_code', '=', 'CashOnDelivery');
 
         return     $srch;
     }
