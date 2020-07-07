@@ -4,10 +4,9 @@ $frm->developerTags['colClassPrefix'] = 'col-lg-12 col-md-12 col-sm-';
 $frm->developerTags['fld_default_col'] = 12;
 $frm->setFormTagAttribute('onsubmit', 'confirmOrder(this); return(false);'); 
 
-$pmethodName = isset($paymentMethod["plugin_name"]) ? $paymentMethod["plugin_name"] : $paymentMethod["pmethod_name"];
-$pmethodDescription = isset($paymentMethod["pmethod_description"]) ? $paymentMethod["pmethod_description"] : '';
-$pmethodDescription = isset($paymentMethod["plugin_description"]) ? $paymentMethod["plugin_description"] : $pmethodDescription;
-$pmethodCode = isset($paymentMethod["plugin_code"]) ? $paymentMethod["plugin_code"] : $paymentMethod["pmethod_code"];
+$pmethodName = $paymentMethod["plugin_name"];
+$pmethodDescription = $paymentMethod["plugin_description"];
+$pmethodCode = $paymentMethod["plugin_code"];
 ?>
 <div class="">
     <p><strong><?php echo sprintf(Labels::getLabel('LBL_Pay_using_Payment_Method', $siteLangId), $pmethodName)?>:</strong></p><br />
