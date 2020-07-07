@@ -960,6 +960,10 @@ class HomeController extends MyAppController
     {
         $langCode = Language::getAttributesById($this->siteLangId, 'language_code', false);
 
+        $data = [
+            'CONF_ENABLE_GEO_LOCATION' => FatApp::getConfig('CONF_ENABLE_GEO_LOCATION', FatUtility::VAR_INT, 0)
+        ];
+
         $data['languageLabels'] = [
            'language_code' => $langCode,
            'language_layout_direction' => Language::getLayoutDirection($this->siteLangId),
@@ -977,6 +981,7 @@ class HomeController extends MyAppController
         $data['isWishlistEnable'] = FatApp::getConfig('CONF_ADD_FAVORITES_TO_WISHLIST', FatUtility::VAR_INT, 1);
         $data['canSendSms'] = SmsArchive::canSendSms() ? 1 : 0;
         $data['canAddReview'] = FatApp::getConfig('CONF_ALLOW_REVIEWS', FatUtility::VAR_INT, 1);
+        var_dump($data);
         $this->set('data', $data);
         $this->_template->render();
     }
