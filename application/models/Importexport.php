@@ -1483,10 +1483,10 @@ class Importexport extends ImportexportCommon
             $shippingPackages = array_flip($shippingPackages);
         }
 
-        /* if (!$this->settings['CONF_USE_DIMENSION_UNIT_ID']) {
+        if (!$this->settings['CONF_USE_DIMENSION_UNIT_ID']) {
             $lengthUnitsArr = applicationConstants::getLengthUnitsArr($langId);
             $lengthUnitsArr = array_flip($lengthUnitsArr);
-        } */
+        }
 
         if (!$this->settings['CONF_USE_WEIGHT_UNIT_ID']) {
             $weightUnitsArr = applicationConstants::getWeightUnitsArr($langId);
@@ -1510,6 +1510,15 @@ class Importexport extends ImportexportCommon
             foreach ($coloumArr as $columnKey => $columnTitle) {
                 $colIndex = $this->headingIndexArr[$columnTitle];
                 $colValue = $this->getCell($row, $colIndex, '');
+
+                if ($this->settings['CONF_USE_PRODUCT_TYPE_ID']) {
+                    $productTypeTitle = $coloumArr['product_type'];
+                    $prodType = strtolower($this->getCell($row, $this->headingIndexArr[$productTypeTitle], ''));
+                } else {
+                    $productTypeTitle = $coloumArr['product_type_identifier'];
+                    $prodType = (array_key_exists($prodType, $prodTypeIdentifierArr) ? $prodTypeIdentifierArr[$prodType] : 0);
+                }
+
                 $invalid = $errMsg = false;
 
                 if ($this->isDefaultSheetData($langId) && in_array($columnKey, array('product_seller_id', 'credential_username', 'product_id', 'product_identifier'))) {
@@ -1689,24 +1698,31 @@ class Importexport extends ImportexportCommon
                             break;
                         case 'product_ship_package_identifier':
                             $columnKey = 'product_ship_package';
-                            if (!array_key_exists($colValue, $shippingPackages)) {
-                                $invalid = true;
+                            if (Product::PRODUCT_TYPE_DIGITAL == $prodType) {
+                                $colValue = '';
                             } else {
-                                $colValue = $shippingPackages[$colValue];
+                                if (!array_key_exists($colValue, $shippingPackages)) {
+                                    $invalid = true;
+                                } else {
+                                    $colValue = $shippingPackages[$colValue];
+                                }
                             }
                             break;
                         case 'shipping_profile_identifier':
                             $columnKey = 'shippro_shipprofile_id';
-                            $shipBy = $userId;
-
-                            if (FatApp::getConfig('CONF_SHIPPED_BY_ADMIN_ONLY', FatUtility::VAR_INT, 0)) {
-                                $shipBy = 0;
-                            }
-
-                            if (!array_key_exists($colValue, $shippingProfiles)) {
-                                $invalid = true;
+                            if (Product::PRODUCT_TYPE_DIGITAL == $prodType) {
+                                $colValue = '';
                             } else {
-                                $colValue = isset($shippingProfiles[$colValue][$shipBy]) ? $shippingProfiles[$colValue][$shipBy] : 0;
+                                $shipBy = $userId;
+                                if (FatApp::getConfig('CONF_SHIPPED_BY_ADMIN_ONLY', FatUtility::VAR_INT, 0)) {
+                                    $shipBy = 0;
+                                }
+
+                                if (!array_key_exists($colValue, $shippingProfiles)) {
+                                    $invalid = true;
+                                } else {
+                                    $colValue = isset($shippingProfiles[$colValue][$shipBy]) ? $shippingProfiles[$colValue][$shipBy] : 0;
+                                }
                             }
                             break;
                         case 'product_dimension_unit_identifier':
@@ -1723,15 +1739,20 @@ class Importexport extends ImportexportCommon
 
                             break;
                         case 'product_weight_unit_identifier':
-                            $columnKey = 'product_weight_unit';
-                            if (FatApp::getConfig('CONF_PRODUCT_DIMENSIONS_ENABLE', FatUtility::VAR_INT, 0) && $prodType == PRODUCT::PRODUCT_TYPE_PHYSICAL) {
-                                if (!array_key_exists($colValue, $weightUnitsArr)) {
-                                    $invalid = true;
-                                } else {
-                                    $colValue = $weightUnitsArr[$colValue];
-                                }
-                            } else {
+                            if (Product::PRODUCT_TYPE_DIGITAL == $prodType) {
                                 $colValue = '';
+                            } else {
+                                $columnKey = 'product_weight_unit';
+                                if (FatApp::getConfig('CONF_PRODUCT_DIMENSIONS_ENABLE', FatUtility::VAR_INT, 0) && $prodType == PRODUCT::PRODUCT_TYPE_PHYSICAL) {
+                                    if (!array_key_exists($colValue, $weightUnitsArr)) {
+                                        die('herer');
+                                        $invalid = true;
+                                    } else {
+                                        $colValue = $weightUnitsArr[$colValue];
+                                    }
+                                } else {
+                                    $colValue = '';
+                                }
                             }
                             break;
                         case 'country_code':
@@ -1758,6 +1779,7 @@ class Importexport extends ImportexportCommon
 
                     if (true == $invalid) {
                         $errorInRow = true;
+                        $rowIndex . ", " . ($colIndex + 1);
                         $errMsg = str_replace('{column-name}', $columnTitle, Labels::getLabel("MSG_Invalid_{column-name}.", $langId));
                         CommonHelper::writeToCSVFile($this->CSVfileObj, array($rowIndex, ($colIndex + 1), $errMsg));
                     } else {
