@@ -1516,6 +1516,7 @@ class Importexport extends ImportexportCommon
                     $prodType = strtolower($this->getCell($row, $this->headingIndexArr[$productTypeTitle], ''));
                 } else {
                     $productTypeTitle = $coloumArr['product_type_identifier'];
+                    $prodType = strtolower($this->getCell($row, $this->headingIndexArr[$productTypeTitle], ''));
                     $prodType = (array_key_exists($prodType, $prodTypeIdentifierArr) ? $prodTypeIdentifierArr[$prodType] : 0);
                 }
 
@@ -1779,7 +1780,6 @@ class Importexport extends ImportexportCommon
 
                     if (true == $invalid) {
                         $errorInRow = true;
-                        $rowIndex . ", " . ($colIndex + 1);
                         $errMsg = str_replace('{column-name}', $columnTitle, Labels::getLabel("MSG_Invalid_{column-name}.", $langId));
                         CommonHelper::writeToCSVFile($this->CSVfileObj, array($rowIndex, ($colIndex + 1), $errMsg));
                     } else {
