@@ -11,6 +11,7 @@ Bugs:
     => 036604 - if product having some offer or special price then on all seller screen> strike is not there on original amount
     => 036596 - Admin is unable to make payment for cod order
     => 037316 - iOS- label issue on using existing number
+    => 039438 - Case sensitive product type identifier is not accepted while importing catalog.
 
 Enhancements:
     => Tax module upgrade
