@@ -345,3 +345,7 @@ DROP TABLE `tbl_payment_method_settings`;
 -- Shipstation Shipping API --
 ALTER TABLE `tbl_order_product_shipment` CHANGE `opship_response` `opship_response` LONGTEXT CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL;
 -- End --
+
+ALTER TABLE `tbl_url_rewrite` ADD `urlrewrite_lang_id` INT(11) NOT NULL DEFAULT '1' AFTER `urlrewrite_custom`;
+ALTER TABLE `tbl_url_rewrite` DROP INDEX `url_rewrite_original`;
+ALTER TABLE `tbl_url_rewrite` ADD UNIQUE( `urlrewrite_original`, `urlrewrite_lang_id`);

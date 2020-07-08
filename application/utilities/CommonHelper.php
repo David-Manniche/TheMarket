@@ -39,7 +39,11 @@ class CommonHelper extends FatUtility
                         self::$_lang_id = FatUtility::int(trim($_COOKIE['defaultSiteLang']));
                     }
                 }
-
+            
+                if (SYSTEM_LANG_ID > 0 && count(LANG_CODES_ARR) > 1 && 0 < FatApp::getConfig('CONF_LANG_SPECIFIC_URL', FatUtility::VAR_INT, 0)) {
+                    self::$_lang_id = SYSTEM_LANG_ID;
+                }
+                
                 if (isset($_COOKIE['defaultSiteCurrency'])) {
                     $currencies = Currency::getCurrencyAssoc(self::$_lang_id);
                     if (array_key_exists($_COOKIE['defaultSiteCurrency'], $currencies)) {
@@ -66,7 +70,7 @@ class CommonHelper extends FatUtility
             self::$_currency_id,
             array('currency_code', 'currency_symbol_left', 'currency_symbol_right', 'currency_value')
         );
-
+       
         self::$_lang_code = Language::getAttributesById(
             self::$_lang_id,
             'language_code'
@@ -90,6 +94,11 @@ class CommonHelper extends FatUtility
             return FatApp::getConfig('CONF_DEFAULT_SITE_LANG', FatUtility::VAR_INT, 1);
         }
         return self::$_lang_id;
+    }
+
+    public static function setLangId($langId)
+    {
+        self::$_lang_id = $langId;
     }
 
     public static function getLangCode()
@@ -204,22 +213,32 @@ class CommonHelper extends FatUtility
         if (!$use_root_url) {
             $use_root_url = CONF_WEBROOT_URL;
         }
-        /* $urlString = FatUtility::camel2dashed($controller);
-        $urlString.= '/'.FatUtility::camel2dashed($action);
-        $urlString.= '/'.implode('/',$queryData);
-        $urlString = trim($urlString,'/'); */
+
         $urlString = trim(ltrim($url, CONF_WEBROOT_FRONTEND), '/');
         $srch = UrlRewrite::getSearchObject();
-        $srch->addMultipleFields(array('urlrewrite_custom'));
+        $srch->addFld('urlrewrite_custom');
+        if (FatApp::getConfig('CONF_LANG_SPECIFIC_URL', FatUtility::VAR_INT, 0)) {
+            $srch->joinTable(Language::DB_TBL, 'LEFT OUTER JOIN', 'urlrewrite_lang_id = language_id');
+            $srch->addMultipleFields(array('if(urlrewrite_lang_id = ' . self::$_lang_id . ', 99 , 1) as priority'));
+            $srch->addOrder('priority', 'desc');
+        }
+        
         $srch->doNotCalculateRecords();
         $srch->setPageSize(1);
         $srch->addCondition(UrlRewrite::DB_TBL_PREFIX . 'original', 'LIKE', $urlString);
         $rs = $srch->getResultSet();
         if ($row = FatApp::getDb()->fetch($rs)) {
+            $url = $use_root_url ;
+            $seperator = '';
+            if (FatApp::getConfig('CONF_LANG_SPECIFIC_URL', FatUtility::VAR_INT, 0) && count(LANG_CODES_ARR) > 0 && self::$_lang_id != FatApp::getConfig('CONF_DEFAULT_SITE_LANG', FatUtility::VAR_INT, 1)) {
+                $url .= strtolower(LANG_CODES_ARR[self::$_lang_id]) ;
+                $seperator = '/';
+            }
+            
             if ($encodeUrl) {
-                $url = $use_root_url . urlencode($row['urlrewrite_custom']);
+                $url .=  $seperator . urlencode($row['urlrewrite_custom']);
             } else {
-                $url = $use_root_url . $row['urlrewrite_custom'];
+                $url .=  $seperator . $row['urlrewrite_custom'];
             }
         }
         return $url;
@@ -2009,30 +2028,30 @@ class CommonHelper extends FatUtility
             'extra' => $extra
         );
     }
-	
-	public static function getImageAttributes($fileType, $recordId, $recordSubId = 0, $afileId = 0, $screen = 0, $langId = 0)
-	{
-		$fileType = FatUtility::int($fileType);
-		$recordId = FatUtility::int($recordId);
-		$afileId = FatUtility::int($afileId);
-		$screen = FatUtility::int($screen);
-		$recordSubId = FatUtility::int($recordSubId);
-		$langId = FatUtility::int($langId);
-		
-		if ($langId == 0) {
-			$langId = self::$_lang_id;
-		}
-		/* if($recordId == 0 && $afileId == 0) {
-			return array();
-		} */
-		if ($afileId > 0) {
-			$res = AttachedFile::getAttributesById($afileId);
+    
+    public static function getImageAttributes($fileType, $recordId, $recordSubId = 0, $afileId = 0, $screen = 0, $langId = 0)
+    {
+        $fileType = FatUtility::int($fileType);
+        $recordId = FatUtility::int($recordId);
+        $afileId = FatUtility::int($afileId);
+        $screen = FatUtility::int($screen);
+        $recordSubId = FatUtility::int($recordSubId);
+        $langId = FatUtility::int($langId);
+        
+        if ($langId == 0) {
+            $langId = self::$_lang_id;
+        }
+        /* if($recordId == 0 && $afileId == 0) {
+            return array();
+        } */
+        if ($afileId > 0) {
+            $res = AttachedFile::getAttributesById($afileId);
             if (!false == $res && $res['afile_type'] == $fileType) {
                 $file_row = $res;
             }
         } else {
             $file_row = AttachedFile::getAttachment($fileType, $recordId, $recordSubId, $langId, true, $screen);
         }
-		return $file_row;
-	}
+        return $file_row;
+    }
 }

@@ -3,7 +3,7 @@
 class HomeController extends MyAppController
 {
     public function index()
-    {
+    {        
         $db = FatApp::getDb();
         $loggedUserId = UserAuthentication::getLoggedUserId(true);
 
@@ -184,12 +184,78 @@ class HomeController extends MyAppController
         $this->_template->render();
     }
 
-    public function setLanguage($langId = 0)
+    public function setLanguage($langId = 0, $pathname = '')
     {
         if (!FatUtility::isAjaxCall()) {
             die('Invalid Action.');
         }
 
+        $pathname = FatApp::getPostedData('pathname', FatUtility::VAR_STRING, '');
+        $redirectUrl = '';
+        if (empty($pathname)) {
+            $redirectUrl = CommonHelper::generateFullUrl();
+        }
+
+        $isDefaultLangId = false;
+        if ($langId == FatApp::getConfig('CONF_CURRENCY', FatUtility::VAR_INT, 1)) {
+            $isDefaultLangId = true;
+        }
+        
+
+        if (FatApp::getConfig('CONF_LANG_SPECIFIC_URL', FatUtility::VAR_INT, 0)) {
+            $langCodeArr = LANG_CODES_ARR;
+            if (count($langCodeArr) > 1) {
+                $langIds = array_flip($langCodeArr);
+    
+                if (!empty($pathname)) {
+                    $existingUrlLangCode = strtoupper(substr(ltrim($pathname, '/'), 0, 2));
+                } else {
+                    $existingUrlLangCode = $langCodeArr[CommonHelper::getLangId()];
+                }
+                    
+                if (in_array($existingUrlLangCode, LANG_CODES_ARR)) {
+                    $existingUrlLangId = $langIds[$existingUrlLangCode];
+                    $pathname = ltrim(substr(ltrim($pathname, '/'), 2), '/');
+                } else {
+                    $existingUrlLangId = FatApp::getConfig('CONF_CURRENCY', FatUtility::VAR_INT, 1);
+                    $pathname = ltrim($pathname, '/');
+                }
+                    
+                $srch = UrlRewrite::getSearchObject();
+                $srch->joinTable(UrlRewrite::DB_TBL, 'LEFT OUTER JOIN', 'temp.urlrewrite_original = ur.urlrewrite_original and temp.urlrewrite_lang_id = ' . $langId, 'temp');
+                $srch->doNotCalculateRecords();
+                $srch->setPageSize(1);
+                $srch->addMultipleFields(array('ifnull(temp.urlrewrite_custom, ur.urlrewrite_custom) customurl'));
+                $srch->addCondition('ur.' . UrlRewrite::DB_TBL_PREFIX . 'custom', '=', $pathname);
+               // $srch->addCondition('ur.' . UrlRewrite::DB_TBL_PREFIX . 'lang_id', '=', $existingUrlLangId);
+               
+                $rs = $srch->getResultSet();
+                $row = FatApp::getDb()->fetch($rs);
+                    
+                if (!empty($row)) {
+                    $redirectUrl = CommonHelper::generateFullUrl() ;
+
+                    if (false == $isDefaultLangId) {
+                        $redirectUrl .=  strtolower($langCodeArr[$langId]) . '/' ;
+                    }
+                    $redirectUrl .=  $row['customurl'];
+                }
+            }
+            
+            if (empty($redirectUrl)) {
+                $redirectUrl = CommonHelper::generateFullUrl() ;
+                if (false == $isDefaultLangId) {
+                    $redirectUrl .=  strtolower($langCodeArr[$langId]) . '/';
+                }
+                $redirectUrl .=  ltrim($pathname, '/');
+            }
+        } else {
+            if (empty($redirectUrl)) {
+                $redirectUrl = CommonHelper::generateFullUrl() . ltrim($pathname, '/');
+            }
+        }
+      
+       
         $langId = FatUtility::int($langId);
         if (0 < $langId) {
             $languages = Language::getAllNames();
@@ -197,6 +263,8 @@ class HomeController extends MyAppController
                 setcookie('defaultSiteLang', $langId, time() + 3600 * 24 * 10, CONF_WEBROOT_URL);
             }
         }
+        $this->set('redirectUrl', $redirectUrl);
+        $this->_template->render(false, false, 'json-success.php');
     }
 
     public function currencies()

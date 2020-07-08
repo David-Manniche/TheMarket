@@ -627,6 +627,8 @@ class ConfigurationsController extends AdminBaseController
                 break;
 
             case Configurations::FORM_SEO:
+                $fld = $frm->addCheckBox(Labels::getLabel('LBL_Add_LANGUAGE_CODE_IN_URLS', $this->adminLangId), 'CONF_LANG_SPECIFIC_URL', 1, array(), false, 0);
+
                 $fld = $frm->addTextBox(Labels::getLabel('LBL_Twitter_Username', $this->adminLangId), 'CONF_TWITTER_USERNAME');
                 $fld->htmlAfterField = '<small>' . Labels::getLabel("LBL_This_is_required_for_Twitter_Card_code_SEO_Update", $this->adminLangId) . '</small>';
 

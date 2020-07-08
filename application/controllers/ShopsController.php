@@ -177,7 +177,7 @@ class ShopsController extends MyAppController
     public function view($shop_id)
     {
         $db = FatApp::getDb();
-
+        
         $this->shopDetail($shop_id);
 
         if (true === MOBILE_APP_API_CALL) {

@@ -1236,9 +1236,14 @@ function loginPopUpBox(includeGuestLogin) {
 }
 
 function setSiteDefaultLang(langId) {
-    fcom.ajax(fcom.makeUrl('Home', 'setLanguage', [langId]), '', function (res) {
-        document.location.reload();
-    });
+    var url = window.location.pathname;    
+    var data = 'pathname='+url;
+    fcom.ajax(fcom.makeUrl('Home', 'setLanguage', [langId]), data, function (res) { 
+        var ans = $.parseJSON(res);  
+        if(ans.status == 1){
+            window.location.href = ans.redirectUrl;
+        }           
+    });    
 }
 
 function setSiteDefaultCurrency(currencyId) {
