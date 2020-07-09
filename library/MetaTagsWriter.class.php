@@ -51,9 +51,9 @@ class MetaTagsWriter {
 			'meta_keywords', 'meta_description', 'meta_other_meta_tags' ) );
 		
 		$rs = $srch->getResultSet();
-		
+		$title = $websiteName;
 		if( $metas = FatApp::getDb()->fetch( $rs ) ){ 
-			$title = $metas['meta_title']. ' | '.$websiteName;
+			$title = $metas['meta_title']. ' | '.$title;
 			echo '<title>' . $title . '</title>' . "\n";
 			echo '<meta name="application-name" content="' . $title . '">' . "\n";
 			echo '<meta name="apple-mobile-web-app-title" content="' . $title . '">' . "\n";
