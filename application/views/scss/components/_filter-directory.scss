@@ -2,7 +2,6 @@
     a {
         color: inherit;
     }
-
     .filter-directory_bar {
         display: -webkit-box;
         display: -ms-flexbox;
@@ -13,22 +12,17 @@
         border-bottom: $border;
         padding: 0 0 1rem 0;
         margin-bottom: 1rem;
-
-
         @include media-breakpoint-down(md) {
             & {
                 flex-direction: column;
             }
         }
-
-
         .filter-directory_search_input {
             margin-#{$end-direction}: 1rem;
             -webkit-box-flex: 0;
             -ms-flex: 0 0 170px;
             flex: 0 0 170px;
             max-width: 170px;
-
             @include media-breakpoint-down(md) {
                 & {
                     margin: 0;
@@ -38,7 +32,6 @@
                 }
             }
         }
-
         .filter-directory_indices {
             display: -webkit-box;
             display: -ms-flexbox;
@@ -50,17 +43,13 @@
             flex: 1;
             flex-direction: row;
             flex-wrap: nowrap;
-
-
             @include media-breakpoint-down(md) {
                 & {
                     justify-content: flex-start;
                     overflow-x: auto;
                     width: 100%;
-
                 }
             }
-
             li {
                 font-size: 0.8rem;
                 padding: 0.4rem;
@@ -70,7 +59,6 @@
             }
         }
     }
-
     .filter-directory_disabled {
         opacity: 0.2;
     }
@@ -95,7 +83,6 @@
     align-content: flex-start;
     white-space: nowrap;
     overflow-y: auto;
-
     li {
         margin: 0.5rem 0;
         -webkit-margin-end: 10px;
@@ -103,12 +90,10 @@
         margin-inline-end: 10px;
         font-size: 0.8rem;
     }
-
     .filter-directory_list_title {
         text-transform: uppercase;
         font-weight: 600;
     }
-
     .filter-directory_count {
         opacity: 0.66;
         font-size: 0.7rem;
