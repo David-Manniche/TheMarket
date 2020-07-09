@@ -68,10 +68,40 @@ class MetaTagsWriter
                 echo CommonHelper::renderHtml($metas['meta_other_meta_tags'], ENT_QUOTES, 'UTF-8');
             }
         } else {
-            echo '<title>' . $websiteName . '</title>\n<meta name="application-name" content="' . $title . '">\n
-			<meta name="apple-mobile-web-app-title" content="' . $title . '">';
+            return "<title>" . $websiteName . "</title>\n<meta name='application-name' content='" . $title . "'>\n
+			<meta name='apple-mobile-web-app-title' content='" . $title . "'>";
         }
+        /* $srch = Meta::metaSearch();
+
+        $srch->addCondition('meta_controller', 'LIKE', $controllerName);
+        $srch->addCondition('meta_action', 'LIKE', $action);
+
+        if(!empty($arrParameters) && $controllerName == 'content' ){
+            if(isset($arrParameters[0]) && FatUtility::int($arrParameters[0]) > 0){
+                $srch->addCondition('meta_record_id', '=', $arrParameters[0]);
+            }
+
+            if(isset($arrParameters[1]) && FatUtility::int($arrParameters[1]) > 0){
+                $srch->addCondition('meta_sub_record_id', '=', $arrParameters[1]);
+            }
+        }
+
+        $srch->doNotCalculateRecords();
+        $srch->doNotLimitRecords();
+
+        $rs = $srch->getResultSet(); */
         
+        /* if($metas = FatApp::getDb()->fetch($rs, 'cpage_id')){
+            echo '<title>' . $metas['meta_title'] . '</title>' . "\n";
+            if(isset($metas['meta_description']))
+                echo '<meta name="description" content="'.$metas['meta_description'].'" />';
+            if(isset($metas['meta_keywords']))
+                echo '<meta name="keywords" content="'.$metas['meta_keywords'].'" />';
+            if(isset($metas['meta_other_meta_tags']))
+                echo FatUtility::decodeHtmlEntities($metas['meta_other_meta_tags'], ENT_QUOTES, 'UTF-8');
+        }else{ */
+            //return '<title>' . $websiteName  . '</title>';
+        /* } */
     }
     
     /* static function getHeaderTags( $controller, $action, $arrParameters, $anotherTitle = '', $metaData = array() ) {
