@@ -126,7 +126,7 @@ class CategoryController extends MyAppController
     {
         $catId = FatUtility::int($catId);
         $langId = FatUtility::int($langId);
-		if ($afile_id > 0) {
+        if ($afile_id > 0) {
             $res = AttachedFile::getAttributesById($afile_id);
             if (!false == $res && $res['afile_type'] == AttachedFile::FILETYPE_CATEGORY_IMAGE) {
                 $file_row = $res;
@@ -209,8 +209,8 @@ class CategoryController extends MyAppController
         $default_image = 'product_default_image.jpg';
         $prodCatId = FatUtility::int($prodCatId);
         $langId = FatUtility::int($langId);
-		
-		if ($afile_id > 0) {
+        
+        if ($afile_id > 0) {
             $res = AttachedFile::getAttributesById($afile_id);
             if (!false == $res && $res['afile_type'] == AttachedFile::FILETYPE_CATEGORY_BANNER) {
                 $file_row = $res;
@@ -218,7 +218,7 @@ class CategoryController extends MyAppController
         } else {
             $file_row = AttachedFile::getAttachment(AttachedFile::FILETYPE_CATEGORY_BANNER, $prodCatId, 0, $langId, $displayUniversalImage, $screen);
         }
-		
+        
         
         $image_name = isset($file_row['afile_physical_path']) ? $file_row['afile_physical_path'] : '';
 

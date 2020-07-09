@@ -215,6 +215,10 @@ class CommonHelper extends FatUtility
         }
 
         $urlString = trim(ltrim($url, CONF_WEBROOT_FRONTEND), '/');
+        if (FatApp::getConfig('CONF_LANG_SPECIFIC_URL', FatUtility::VAR_INT, 0) && count(LANG_CODES_ARR) > 0 && self::$_lang_id != FatApp::getConfig('CONF_DEFAULT_SITE_LANG', FatUtility::VAR_INT, 1)) {
+            $url = rtrim($url, '/') . '/' . strtolower(LANG_CODES_ARR[self::$_lang_id])  ;
+        }
+        
         $srch = UrlRewrite::getSearchObject();
         $srch->addFld('urlrewrite_custom');
         if (FatApp::getConfig('CONF_LANG_SPECIFIC_URL', FatUtility::VAR_INT, 0)) {

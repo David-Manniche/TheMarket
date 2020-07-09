@@ -214,10 +214,10 @@ class HomeController extends MyAppController
                 }
                     
                 if (in_array($existingUrlLangCode, LANG_CODES_ARR)) {
-                    $existingUrlLangId = $langIds[$existingUrlLangCode];
+                    // $existingUrlLangId = $langIds[$existingUrlLangCode];
                     $pathname = ltrim(substr(ltrim($pathname, '/'), 2), '/');
                 } else {
-                    $existingUrlLangId = FatApp::getConfig('CONF_CURRENCY', FatUtility::VAR_INT, 1);
+                    // $existingUrlLangId = FatApp::getConfig('CONF_CURRENCY', FatUtility::VAR_INT, 1);
                     $pathname = ltrim($pathname, '/');
                 }
                     
