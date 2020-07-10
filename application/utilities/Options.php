@@ -8,7 +8,7 @@ trait Options
         $canRequest = FatApp::getConfig('CONF_SELLER_CAN_REQUEST_CUSTOM_PRODUCT', FatUtility::VAR_INT, 0);
         $canRequestCustomProd = FatApp::getConfig('CONF_ENABLED_SELLER_CUSTOM_PRODUCT', FatUtility::VAR_INT, 0);
         if (1 > $canRequest || 1 > $canRequestCustomProd) {
-            FatApp::redirectUser(CommonHelper::generateUrl('Seller'));
+            FatApp::redirectUser(UrlHelper::generateUrl('Seller'));
         }
         $this->set('canEdit', $this->userPrivilege->canEditProductOptions(UserAuthentication::getLoggedUserId(), true));
         $frmSearch = $this->getSearchForm();

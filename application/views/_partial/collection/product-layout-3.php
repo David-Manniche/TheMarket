@@ -14,7 +14,7 @@ if( isset( $collections ) && count($collections) ){
 				<h2><?php echo ($row['collection_name'] != '') ? $row['collection_name'] : ''; ?></h2>
 			</div>
 			<?php if( $row['totProducts'] > 6 ){ ?>
-				<div class="section__action"><a href="<?php echo CommonHelper::generateUrl('Collections','View',array($row['collection_id']));?>" class="link"><?php echo Labels::getLabel('LBL_View_More',$siteLangId); ?></a> </div>
+				<div class="section__action"><a href="<?php echo UrlHelper::generateUrl('Collections','View',array($row['collection_id']));?>" class="link"><?php echo Labels::getLabel('LBL_View_More',$siteLangId); ?></a> </div>
 			<?php }  ?>
 		</div>
 		<div class="js-collection-corner collection-corner product-listing" dir="<?php echo CommonHelper::getLayoutDirection();?>">

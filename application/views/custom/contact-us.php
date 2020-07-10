@@ -1,6 +1,6 @@
 <?php defined('SYSTEM_INIT') or die('Invalid Usage.');
 $contactFrm->setFormTagAttribute('class', 'form form--normal');
-$contactFrm->setFormTagAttribute('action', CommonHelper::generateUrl('Custom', 'contactSubmit'));
+$contactFrm->setFormTagAttribute('action', UrlHelper::generateUrl('Custom', 'contactSubmit'));
 $contactFrm->developerTags['colClassPrefix'] = 'col-md-';
 $contactFrm->developerTags['fld_default_col'] = 6;
 $fld = $contactFrm->getField('phone');

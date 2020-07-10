@@ -23,7 +23,7 @@ if ('' === $returnAgeFld->value || '' === $cancellationAgeFld->value) {
 $urlFld = $frmSellerProduct->getField('selprod_url_keyword');
 $urlFld->setFieldTagAttribute('id', "urlrewrite_custom");
 $urlFld->setFieldTagAttribute('onkeyup', "getSlugUrl(this,this.value, $selprod_id, 'post')");
-$urlFld->htmlAfterField = "<span class='form-text text-muted'>" . CommonHelper::generateFullUrl('Products', 'View', array($selprod_id), '/').'</span>';
+$urlFld->htmlAfterField = "<span class='form-text text-muted'>" . UrlHelper::generateFullUrl('Products', 'View', array($selprod_id), '/').'</span>';
 
 $fld = $frmSellerProduct->getField('selprod_subtract_stock');
 $fld->developerTags['cbLabelAttributes'] = array('class' => 'checkbox');

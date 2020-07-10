@@ -1,6 +1,6 @@
 <?php defined('SYSTEM_INIT') or die('Invalid usage'); ?>
 <ul class="clearfix">
-    <li><a href="<?php echo CommonHelper::generateUrl();?>"><?php echo Labels::getLabel('LBL_Home', $siteLangId);?> </a></li>
+    <li><a href="<?php echo UrlHelper::generateUrl();?>"><?php echo Labels::getLabel('LBL_Home', $siteLangId);?> </a></li>
     <?php
     if (!empty($this->variables['nodes'])) {
         foreach ($this->variables['nodes'] as $nodes) {

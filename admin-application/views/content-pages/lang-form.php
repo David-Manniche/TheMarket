@@ -13,7 +13,7 @@ if ($cpage_layout == ContentPage::CONTENT_PAGE_LAYOUT1_TYPE) {
     if (!empty($bgImages)) {
         $htmlAfterField .= '<ul class="image-listing grids--onethird">';
         foreach ($bgImages as $bgImage) {
-            $htmlAfterField .= '<li>' . $bannerTypeArr[$bgImage['afile_lang_id']] . '<div class="uploaded--image"><img src="' . CommonHelper::generateFullUrl('image', 'cpageBackgroundImage', array($bgImage['afile_record_id'],$bgImage['afile_lang_id'],'THUMB'), CONF_WEBROOT_FRONT_URL) . '"> <a href="javascript:void(0);" onClick="removeBgImage(' . $bgImage['afile_record_id'] . ',' . $bgImage['afile_lang_id'] . ',' . $cpage_layout.')" class="remove--img"><i class="ion-close-round"></i></a></div>';
+            $htmlAfterField .= '<li>' . $bannerTypeArr[$bgImage['afile_lang_id']] . '<div class="uploaded--image"><img src="' . UrlHelper::generateFullUrl('image', 'cpageBackgroundImage', array($bgImage['afile_record_id'],$bgImage['afile_lang_id'],'THUMB'), CONF_WEBROOT_FRONT_URL) . '"> <a href="javascript:void(0);" onClick="removeBgImage(' . $bgImage['afile_record_id'] . ',' . $bgImage['afile_lang_id'] . ',' . $cpage_layout.')" class="remove--img"><i class="ion-close-round"></i></a></div>';
         }
         $htmlAfterField .= '</li></ul>';
     } else {

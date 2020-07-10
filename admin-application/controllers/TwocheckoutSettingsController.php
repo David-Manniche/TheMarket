@@ -20,7 +20,7 @@ class TwocheckoutSettingsController extends PaymentMethodSettingsController
             'Remember',
             '&nbsp;',
             'In case of <strong>Hosted Checkout</strong>, Admin must set <strong>Direct Return (URL)</strong> to <strong>Header Redirect</strong> and 
-		<strong>Approved URL</strong> to <strong>' . CommonHelper::generateFullUrl('twocheckout_pay', 'callback', array(), CONF_WEBROOT_URL) . '</strong> under <strong>2Checkout Accounts</strong> Section.<br/><br/>'
+		<strong>Approved URL</strong> to <strong>' . UrlHelper::generateFullUrl('twocheckout_pay', 'callback', array(), CONF_WEBROOT_URL) . '</strong> under <strong>2Checkout Accounts</strong> Section.<br/><br/>'
         );
         
         

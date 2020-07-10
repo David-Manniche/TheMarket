@@ -26,7 +26,7 @@
 
 				</div>
 
-				<div class="col-md-auto col-sm-auto"><a href="<?php echo CommonHelper::generateUrl('Reviews','product',array($product['selprod_id'])); ?>" class="btn btn-outline-white btn--sm"><?php echo Labels::getLabel('Lbl_View_All_Reviews',$siteLangId); ?></a></div>
+				<div class="col-md-auto col-sm-auto"><a href="<?php echo UrlHelper::generateUrl('Reviews','product',array($product['selprod_id'])); ?>" class="btn btn-outline-white btn--sm"><?php echo Labels::getLabel('Lbl_View_All_Reviews',$siteLangId); ?></a></div>
 
 
 			</div>
@@ -49,7 +49,7 @@
 								<div class="col-md-4">
 									<div class="profile-avatar">
 										<div class="profile__dp">
-											<img src="<?php echo CommonHelper::generateUrl('Image', 'user', array($reviewData['spreview_postedby_user_id'],'thumb',true)); ?>" alt="<?php echo $reviewData['user_name']; ?>"></div>
+											<img src="<?php echo UrlHelper::generateUrl('Image', 'user', array($reviewData['spreview_postedby_user_id'],'thumb',true)); ?>" alt="<?php echo $reviewData['user_name']; ?>"></div>
 										<div class="profile__bio">
 											<div class="title"><?php echo Labels::getLabel('Lbl_By', $siteLangId) ; ?> <?php echo CommonHelper::displayName($reviewData['user_name']); ?> <span class="dated"><?php echo Labels::getLabel('Lbl_On_Date', $siteLangId) , ' ',FatDate::format($reviewData['spreview_posted_on']); ?></span></div>
 											<div class="yes-no">

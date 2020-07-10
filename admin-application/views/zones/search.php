@@ -71,7 +71,7 @@ if (count($arr_listing) == 0) {
 $frm = new Form('frmZoneListing', array('id'=>'frmZoneListing'));
 $frm->setFormTagAttribute('class', 'web_form last_td_nowrap');
 $frm->setFormTagAttribute('onsubmit', 'formAction(this, reloadList ); return(false);');
-$frm->setFormTagAttribute('action', CommonHelper::generateUrl('Zones', 'toggleBulkStatuses'));
+$frm->setFormTagAttribute('action', UrlHelper::generateUrl('Zones', 'toggleBulkStatuses'));
 $frm->addHiddenField('', 'status');
 
 echo $frm->getFormTag();

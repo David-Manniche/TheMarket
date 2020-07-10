@@ -18,7 +18,7 @@ trait SellerProducts
         $this->userPrivilege->canViewProducts(UserAuthentication::getLoggedUserId());
         $this->includeDateTimeFiles();
         if (!$this->isShopActive($this->userParentId, 0, true)) {
-            FatApp::redirectUser(CommonHelper::generateUrl('Seller', 'shop'));
+            FatApp::redirectUser(UrlHelper::generateUrl('Seller', 'shop'));
         }
 
         $product_id = FatUtility::int($product_id);
@@ -90,12 +90,12 @@ trait SellerProducts
         $this->userPrivilege->canEditProducts(UserAuthentication::getLoggedUserId());
         if (!UserPrivilege::isUserHasValidSubsription($this->userParentId)) {
             Message::addErrorMessage(Labels::getLabel("MSG_Please_buy_subscription", $this->siteLangId));
-            FatApp::redirectUser(CommonHelper::generateUrl('Seller', 'Packages'));
+            FatApp::redirectUser(UrlHelper::generateUrl('Seller', 'Packages'));
         }
 
         if (0 == $selprod_id && FatApp::getConfig('CONF_ENABLE_SELLER_SUBSCRIPTION_MODULE', FatUtility::VAR_INT, 0) && SellerProduct::getActiveCount($this->userParentId) >= SellerPackages::getAllowedLimit($this->userParentId, $this->siteLangId, 'spackage_inventory_allowed')) {
             Message::addErrorMessage(Labels::getLabel("MSG_You_have_crossed_your_package_limit.", $this->siteLangId));
-            FatApp::redirectUser(CommonHelper::generateUrl('Seller', 'Packages'));
+            FatApp::redirectUser(UrlHelper::generateUrl('Seller', 'Packages'));
         }
 
         $selprod_id = FatUtility::int($selprod_id);
@@ -106,7 +106,7 @@ trait SellerProducts
 
         if (!$vendorReturnAddress) {
             Message::addErrorMessage(Labels::getLabel('MSG_Please_add_return_address', $this->siteLangId));
-            FatApp::redirectUser(CommonHelper::generateUrl('seller', 'shop', array(User::RETURN_ADDRESS_ACCOUNT_TAB)));
+            FatApp::redirectUser(UrlHelper::generateUrl('seller', 'shop', array(User::RETURN_ADDRESS_ACCOUNT_TAB)));
         }
         $languages = Language::getAllNames();
         $userObj = new User($userId);
@@ -121,7 +121,7 @@ trait SellerProducts
             $vendorReturnAddress = FatApp::getDb()->fetch($rs);
             if (!$vendorReturnAddress) {
                 Message::addErrorMessage(Labels::getLabel('MSG_Please_add_return_address_before_adding/updating_product', $this->siteLangId));
-                FatApp::redirectUser(CommonHelper::generateUrl('seller', 'shop', array(User::RETURN_ADDRESS_ACCOUNT_TAB, $langId)));
+                FatApp::redirectUser(UrlHelper::generateUrl('seller', 'shop', array(User::RETURN_ADDRESS_ACCOUNT_TAB, $langId)));
             }
         }
         if (!$product_id) {
@@ -138,7 +138,7 @@ trait SellerProducts
 
         if (!UserPrivilege::canSellerAddProductInCatalog($product_id, $userId)) {
             Message::addErrorMessage(Labels::getLabel("MSG_Invalid_Request", $this->siteLangId));
-            FatApp::redirectUser(CommonHelper::generateUrl('Seller', 'Products'));
+            FatApp::redirectUser(UrlHelper::generateUrl('Seller', 'Products'));
         }
 
         /* $this->_template->addJs(array('js/jquery.datetimepicker.js'), false); */
@@ -160,12 +160,12 @@ trait SellerProducts
 
         if (0 == $selprod_id && FatApp::getConfig('CONF_ENABLE_SELLER_SUBSCRIPTION_MODULE', FatUtility::VAR_INT, 0) && SellerProduct::getActiveCount($this->userParentId) >= SellerPackages::getAllowedLimit($this->userParentId, $this->siteLangId, 'spackage_inventory_allowed')) {
             Message::addErrorMessage(Labels::getLabel("MSG_You_have_crossed_your_package_limit.", $this->siteLangId));
-            FatApp::redirectUser(CommonHelper::generateUrl('Seller', 'Packages'));
+            FatApp::redirectUser(UrlHelper::generateUrl('Seller', 'Packages'));
         }
 
         if (!UserPrivilege::isUserHasValidSubsription($this->userParentId)) {
             Message::addErrorMessage(Labels::getLabel("MSG_Please_buy_subscription", $this->siteLangId));
-            FatApp::redirectUser(CommonHelper::generateUrl('Seller', 'Packages'));
+            FatApp::redirectUser(UrlHelper::generateUrl('Seller', 'Packages'));
         }
         if ($selprod_id == 0 && !UserPrivilege::canSellerAddProductInCatalog($product_id, $this->userParentId)) {
             Message::addErrorMessage(Labels::getLabel("LBL_Please_Upgrade_your_package_to_add_new_products", $this->siteLangId));
@@ -1784,14 +1784,14 @@ trait SellerProducts
 
         if (1 > $aFileId || 1 > $recordId) {
             Message::addErrorMessage(Labels::getLabel('LBL_Invalid_Request', $this->siteLangId));
-            FatApp::redirectUser(CommonHelper::generateUrl('Seller', 'products'));
+            FatApp::redirectUser(UrlHelper::generateUrl('Seller', 'products'));
         }
 
         if ($fileType == AttachedFile::FILETYPE_SELLER_PRODUCT_DIGITAL_DOWNLOAD) {
             $selProdData = SellerProduct::getAttributesById($recordId, array('selprod_user_id'));
             if ($selProdData == false || ($selProdData && $selProdData['selprod_user_id'] !== $userId)) {
                 Message::addErrorMessage(Labels::getLabel("MSG_INVALID_ACCESS", $this->siteLangId));
-                FatApp::redirectUser(CommonHelper::generateUrl('Seller', 'viewOrder', array($recordId)));
+                FatApp::redirectUser(UrlHelper::generateUrl('Seller', 'viewOrder', array($recordId)));
             }
         } else {
             $srch = new OrderProductSearch(0, true);
@@ -1802,19 +1802,19 @@ trait SellerProducts
             $row = FatApp::getDb()->fetch($srch->getResultSet());
             if ($row == false || ($row && $row['op_selprod_user_id'] !== $userId)) {
                 Message::addErrorMessage(Labels::getLabel("MSG_INVALID_ACCESS", $this->siteLangId));
-                FatApp::redirectUser(CommonHelper::generateUrl('Seller', 'viewOrder', array($recordId)));
+                FatApp::redirectUser(UrlHelper::generateUrl('Seller', 'viewOrder', array($recordId)));
             }
         }
 
         $file_row = AttachedFile::getAttributesById($aFileId);
         if ($file_row == false || $file_row['afile_record_id'] != $recordId || $file_row['afile_type'] != $fileType) {
             Message::addErrorMessage(Labels::getLabel("MSG_INVALID_ACCESS", $this->siteLangId));
-            FatApp::redirectUser(CommonHelper::generateUrl('Seller', 'viewOrder', array($recordId)));
+            FatApp::redirectUser(UrlHelper::generateUrl('Seller', 'viewOrder', array($recordId)));
         }
 
         if (!file_exists(CONF_UPLOADS_PATH . $file_row['afile_physical_path'])) {
             Message::addErrorMessage(Labels::getLabel('LBL_File_not_found', $this->siteLangId));
-            FatApp::redirectUser(CommonHelper::generateUrl('Seller', 'viewOrder', array($recordId)));
+            FatApp::redirectUser(UrlHelper::generateUrl('Seller', 'viewOrder', array($recordId)));
         }
 
         $fileName = isset($file_row['afile_physical_path']) ? $file_row['afile_physical_path'] : '';
@@ -2189,7 +2189,7 @@ trait SellerProducts
 
         if (!UserPrivilege::isUserHasValidSubsription($this->userParentId)) {
             Message::addErrorMessage(Labels::getLabel("MSG_Please_buy_subscription", $this->siteLangId));
-            FatApp::redirectUser(CommonHelper::generateUrl('Seller', 'Packages'));
+            FatApp::redirectUser(UrlHelper::generateUrl('Seller', 'Packages'));
         }
         if (!$selprod_product_id) {
             Message::addErrorMessage(Labels::getLabel('MSG_Invalid_Request', $this->siteLangId));
@@ -2448,7 +2448,7 @@ trait SellerProducts
             $selProd_id = SellerProduct::getAttributesByID($selProd_id, 'selprod_id', false);
             if (empty($selProd_id)) {
                 Message::addErrorMessage(Labels::getLabel('MSG_INVALID_REQUEST', $this->siteLangId));
-                FatApp::redirectUser(CommonHelper::generateUrl('Seller', 'volumeDiscount'));
+                FatApp::redirectUser(UrlHelper::generateUrl('Seller', 'volumeDiscount'));
             }
         }
 
@@ -2639,7 +2639,7 @@ trait SellerProducts
             $selProd_id = SellerProduct::getAttributesByID($selProd_id, 'selprod_id', false);
             if (empty($selProd_id)) {
                 Message::addErrorMessage(Labels::getLabel('MSG_INVALID_REQUEST', $this->siteLangId));
-                FatApp::redirectUser(CommonHelper::generateUrl('Seller', 'volumeDiscount'));
+                FatApp::redirectUser(UrlHelper::generateUrl('Seller', 'volumeDiscount'));
             }
         }
 
@@ -2816,7 +2816,7 @@ trait SellerProducts
             $selProd_id = SellerProduct::getAttributesByID($selProd_id, 'selprod_id', false);
             if (empty($selProd_id)) {
                 Message::addErrorMessage(Labels::getLabel('MSG_INVALID_REQUEST', $this->siteLangId));
-                FatApp::redirectUser(CommonHelper::generateUrl('Seller', 'volumeDiscount'));
+                FatApp::redirectUser(UrlHelper::generateUrl('Seller', 'volumeDiscount'));
             }
         }
 

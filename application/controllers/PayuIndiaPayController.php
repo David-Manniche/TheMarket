@@ -83,7 +83,7 @@ class PayuIndiaPayController extends PaymentController
             }
             if ($order_payment_status == 1) {
                 $orderPaymentObj->addOrderPayment($this->settings["plugin_code"], $post["mihpayid"], $paymentGatewayCharge, Labels::getLabel("LBL_Received_Payment", $this->siteLangId), $request);
-                FatApp::redirectUser(CommonHelper::generateUrl('custom', 'paymentSuccess', array($orderId)));
+                FatApp::redirectUser(UrlHelper::generateUrl('custom', 'paymentSuccess', array($orderId)));
             } else {
                 $orderPaymentObj->addOrderPaymentComments($request);
                 FatApp::redirectUser(CommonHelper::getPaymentFailurePageUrl());
@@ -131,8 +131,8 @@ class PayuIndiaPayController extends PaymentController
         $frm->addHiddenField('Zipcode', 'Zipcode', $zip_code);
         $frm->addHiddenField('email', 'email', $email);
         $frm->addHiddenField('phone', 'phone', $phone_number);
-        $frm->addHiddenField('surl', 'surl', CommonHelper::generateFullUrl('PayuIndiaPay', 'callback'));
-        $frm->addHiddenField('Furl', 'Furl', CommonHelper::generateFullUrl('PayuIndiaPay', 'callback'));
+        $frm->addHiddenField('surl', 'surl', UrlHelper::generateFullUrl('PayuIndiaPay', 'callback'));
+        $frm->addHiddenField('Furl', 'Furl', UrlHelper::generateFullUrl('PayuIndiaPay', 'callback'));
 
         $frm->addHiddenField('curl', 'curl', $cancelBtnUrl);
         $key = $this->settings["merchant_id"];

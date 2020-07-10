@@ -6,7 +6,7 @@
         <div class="row">
             <div class="col-md-3">
                 <div class="profile-avatar">
-                    <div class="profile__dp"><img src="<?php echo CommonHelper::generateUrl('Image', 'user', array($review['spreview_postedby_user_id'],'thumb',true));?>" alt="<?php echo $review['user_name']; ?>"></div>
+                    <div class="profile__dp"><img src="<?php echo UrlHelper::generateUrl('Image', 'user', array($review['spreview_postedby_user_id'],'thumb',true));?>" alt="<?php echo $review['user_name']; ?>"></div>
                     <div class="profile__bio">
                         <div class="title"><?php echo Labels::getLabel('Lbl_By', $siteLangId) ; ?> <?php echo CommonHelper::displayName($review['user_name']); ?> <span
                                 class="dated"><?php echo Labels::getLabel('Lbl_On_Date', $siteLangId) , ' ',FatDate::format($review['spreview_posted_on']); ?></span></div>
@@ -38,7 +38,7 @@
                             <?php } ?>
                         </p>
                         <a class="btn btn--secondary btn-outline-primary mt-3"
-                            href="<?php echo CommonHelper::generateUrl('Reviews', 'shopPermalink', array($review['spreview_seller_user_id'] , $review['spreview_id'])) ?>"><?php echo Labels::getLabel('Lbl_Permalink', $siteLangId); ?> </a>
+                            href="<?php echo UrlHelper::generateUrl('Reviews', 'shopPermalink', array($review['spreview_seller_user_id'] , $review['spreview_id'])) ?>"><?php echo Labels::getLabel('Lbl_Permalink', $siteLangId); ?> </a>
                     </div>
                 </div>
             </div>

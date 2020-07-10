@@ -35,7 +35,7 @@ if ($order['order_reward_point_used'] > 0) {
                                 'otherButtons' => [
                                     [
                                         'attr' => [
-                                            'href' => CommonHelper::generateUrl('SellerOrders'),
+                                            'href' => UrlHelper::generateUrl('SellerOrders'),
                                             'title' => Labels::getLabel('LBL_BACK', $adminLangId)
                                         ],
                                         'label' => '<i class="fas fa-arrow-left"></i>'
@@ -292,11 +292,11 @@ if ($order['order_reward_point_used'] > 0) {
                                     $lang_name = $allLanguages[$row['afile_lang_id']]['language_name'];
                                 }
                                 if ($row['downloadable']) {
-                                    $fileName = '<a href="'.CommonHelper::generateUrl('SellerOrders', 'digitalDownloads', array($row['afile_id'],$row['afile_record_id'])).'">'.$row['afile_name'].'</a>';
+                                    $fileName = '<a href="'.UrlHelper::generateUrl('SellerOrders', 'digitalDownloads', array($row['afile_id'],$row['afile_record_id'])).'">'.$row['afile_name'].'</a>';
                                 } else {
                                     $fileName = $row['afile_name'];
                                 }
-                                $downloads = '<a href="'.CommonHelper::generateUrl('SellerOrders', 'digitalDownloads', array($row['afile_id'],$row['afile_record_id'])).'">'.Labels::getLabel('LBL_Downloads', $adminLangId).'</a>';
+                                $downloads = '<a href="'.UrlHelper::generateUrl('SellerOrders', 'digitalDownloads', array($row['afile_id'],$row['afile_record_id'])).'">'.Labels::getLabel('LBL_Downloads', $adminLangId).'</a>';
 
                                 $expiry = Labels::getLabel('LBL_N/A', $adminLangId) ;
                                 if ($row['expiry_date']!='') {
@@ -331,8 +331,8 @@ if ($order['order_reward_point_used'] > 0) {
                             </tr>
                             <?php $sr_no = 1;
                             foreach ($digitalDownloadLinks as $key => $row) {
-                                    /* $fileName = '<a href="'.CommonHelper::generateUrl('Seller','downloadDigitalFile',array($row['afile_id'],$row['afile_record_id'],AttachedFile::FILETYPE_ORDER_PRODUCT_DIGITAL_DOWNLOAD)).'">'.$row['afile_name'].'</a>'; */
-                                    /* $downloads = '<li><a href="'.CommonHelper::generateUrl('Seller','downloadDigitalFile',array($row['afile_id'],$row['afile_record_id'],AttachedFile::FILETYPE_ORDER_PRODUCT_DIGITAL_DOWNLOAD)).'"><i class="fa fa-download"></i></a></li>'; */
+                                    /* $fileName = '<a href="'.UrlHelper::generateUrl('Seller','downloadDigitalFile',array($row['afile_id'],$row['afile_record_id'],AttachedFile::FILETYPE_ORDER_PRODUCT_DIGITAL_DOWNLOAD)).'">'.$row['afile_name'].'</a>'; */
+                                    /* $downloads = '<li><a href="'.UrlHelper::generateUrl('Seller','downloadDigitalFile',array($row['afile_id'],$row['afile_record_id'],AttachedFile::FILETYPE_ORDER_PRODUCT_DIGITAL_DOWNLOAD)).'"><i class="fa fa-download"></i></a></li>'; */
 
                                     $expiry = Labels::getLabel('LBL_N/A', $adminLangId) ;
                                 if ($row['expiry_date']!='') {

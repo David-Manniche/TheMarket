@@ -15,7 +15,7 @@ class SmsTemplatesController extends AdminBaseController
                 LibHelper::dieJsonError($message);
             }
             Message::addErrorMessage($message);
-            FatApp::redirectUser(CommonHelper::generateUrl());
+            FatApp::redirectUser(UrlHelper::generateUrl());
         }
     }
 

@@ -7,16 +7,16 @@ class SellerBaseController extends LoggedUserController
         parent::__construct($action);
         /* if( !User::isSeller() ){
         Message::addErrorMessage( Labels::getLabel('MSG_Invalid_Access',$this->siteLangId) );
-        FatApp::redirectUser(CommonHelper::generateUrl('account'));
+        FatApp::redirectUser(UrlHelper::generateUrl('account'));
         } */
 
         if (UserAuthentication::isGuestUserLogged()) {
             Message::addErrorMessage(Labels::getLabel('MSG_Invalid_Access', $this->siteLangId));
-            FatApp::redirectUser(CommonHelper::generateUrl('account'));
+            FatApp::redirectUser(UrlHelper::generateUrl('account'));
         }
         
         if (!User::canAccessSupplierDashboard() || !User::isSellerVerified($this->userParentId)) {
-            FatApp::redirectUser(CommonHelper::generateUrl('Account', 'supplierApprovalForm'));
+            FatApp::redirectUser(UrlHelper::generateUrl('Account', 'supplierApprovalForm'));
         }
         $_SESSION[UserAuthentication::SESSION_ELEMENT_NAME]['activeTab'] = 'S';
 

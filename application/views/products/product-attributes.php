@@ -8,7 +8,7 @@
                 <tr>
                     <th><?php echo Labels::getLabel('LBL_Brand', $siteLangId); ?></th>
                     <td>
-                        <a href="<?php echo CommonHelper::generateUrl('brands', 'view', array($brandRow['brand_id'])) ;?>">
+                        <a href="<?php echo UrlHelper::generateUrl('brands', 'view', array($brandRow['brand_id'])) ;?>">
                             <?php echo $brandRow['brand_name']; ?>
                         </a>
                     </td>

@@ -36,7 +36,7 @@ $btnFinishFld->addWrapperAttribute('class', 'text-right'); */
                 foreach ($product_images as $afile_id => $row) { ?>
                 <li id="<?php echo $row['afile_id']; ?>">
                     <div class="logoWrap">
-                        <div class="logothumb"> <img src="<?php echo CommonHelper::generateUrl('image', 'product', array($row['afile_record_id'], "THUMB",$row['afile_id']), CONF_WEBROOT_URL); ?>" title="<?php echo $row['afile_name'];?>"
+                        <div class="logothumb"> <img src="<?php echo UrlHelper::generateUrl('image', 'product', array($row['afile_record_id'], "THUMB",$row['afile_id']), CONF_WEBROOT_URL); ?>" title="<?php echo $row['afile_name'];?>"
                                 alt="<?php echo $row['afile_name'];?>"> <?php echo ($count == 1) ? '<small><strong>'.Labels::getLabel('LBL_Default_Image', $adminLangId).'</strong></small>' : '&nbsp;'; if ($canEdit) { ?> <a
                                 class="deleteLink white" href="javascript:void(0);" title="Delete <?php echo $row['afile_name'];?>" onclick="deleteProductImage(<?php echo $row['afile_record_id']; ?>, <?php echo $row['afile_id']; ?>);"
                                 class="delete"><i class="ion-close-round"></i></a>

@@ -160,10 +160,10 @@
 										}
 										$count++; ?>
 										<li>
-											<a href="<?php echo CommonHelper::generateUrl('SubscriptionCheckout', 'PaymentTab', array($orderInfo['order_id'], $val['plugin_id'])); ?>">
+											<a href="<?php echo UrlHelper::generateUrl('SubscriptionCheckout', 'PaymentTab', array($orderInfo['order_id'], $val['plugin_id'])); ?>">
 												<div class="payment-box">
 													<i class="payment-icn">
-														<img src="<?php echo CommonHelper::generateUrl('Image', 'paymentMethod', array($val['plugin_id'],'SMALL')); ?>" alt="">
+														<img src="<?php echo UrlHelper::generateUrl('Image', 'paymentMethod', array($val['plugin_id'],'SMALL')); ?>" alt="">
 													</i>
 													<span><?php echo $val['plugin_name']; ?></span>
 												</div>

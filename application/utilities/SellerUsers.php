@@ -354,7 +354,7 @@ trait SellerUsers
         $userData = User::getAttributesById($userId);
         if (empty($userData) || $userId == UserAuthentication::getLoggedUserId() || $userData['user_parent'] != UserAuthentication::getLoggedUserId()) {
             Message::addErrorMessage(Labels::getLabel('MSG_Invalid_Request', $this->siteLangId));
-            FatApp::redirectUser(CommonHelper::generateUrl('seller', 'users'));
+            FatApp::redirectUser(UrlHelper::generateUrl('seller', 'users'));
         }
         $frm = $this->searchPermissionForm();
         $allAccessfrm = $this->getAllAccessForm();

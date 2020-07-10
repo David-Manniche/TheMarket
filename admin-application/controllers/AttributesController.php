@@ -108,12 +108,12 @@ class AttributesController extends AdminBaseController
         $attrgrp_id = FatUtility::int($attrgrp_id);
         if (!$attrgrp_id) {
             Message::addErrorMessage(Labels::getLabel('MSG_Invalid_Request', $this->adminLangId));
-            FatApp::redirectUser(CommonHelper::generateUrl('Attributes'));
+            FatApp::redirectUser(UrlHelper::generateUrl('Attributes'));
         }
         $attrgrp_row = AttributeGroup::getAttributesById($attrgrp_id);
         if (!$attrgrp_row) {
             Message::addErrorMessage(Labels::getLabel('MSG_No_Record_Exist', $this->adminLangId));
-            FatApp::redirectUser(CommonHelper::generateUrl('Attributes'));
+            FatApp::redirectUser(UrlHelper::generateUrl('Attributes'));
         }
         
         $attrGrpAttrObj = new AttrGroupAttribute();
@@ -172,13 +172,13 @@ class AttributesController extends AdminBaseController
         $post = $frm->getFormDataFromArray($data);
         if ($post == false) {
             Message::addErrorMessage(current($frm->getValidationErrors()));
-            FatApp::redirectUser(CommonHelper::generateUrl('Attributes'));
+            FatApp::redirectUser(UrlHelper::generateUrl('Attributes'));
         }
         $attrgrp_id = FatUtility::int($post['attrgrp_id']);
         $attrgrp_row = AttributeGroup::getAttributesById($attrgrp_id);
         if (!$attrgrp_row) {
             Message::addErrorMessage(Labels::getLabel('MSG_Attribute_Group_Not_Selected', $this->adminLangId));
-            FatApp::redirectUser(CommonHelper::generateUrl('Attributes'));
+            FatApp::redirectUser(UrlHelper::generateUrl('Attributes'));
         }
         $attrgrp_id = $attrgrp_row['attrgrp_id'];
         
@@ -243,11 +243,11 @@ class AttributesController extends AdminBaseController
         $attrGrpAttrObj = new AttrGroupAttribute();
         if (!$attrGrpAttrObj->addUpdateAttributes($attrgrp_id, $data_to_save)) {
             Message::addErrorMessage($attrGrpAttrObj->getError());
-            FatApp::redirectUser(CommonHelper::generateUrl('Attributes'));
+            FatApp::redirectUser(UrlHelper::generateUrl('Attributes'));
         }
         
         Message::addMessage($this->str_add_record);
-        FatApp::redirectUser(CommonHelper::generateUrl('Attributes'));
+        FatApp::redirectUser(UrlHelper::generateUrl('Attributes'));
     }
     
     public function searchAttributes()
@@ -290,7 +290,7 @@ class AttributesController extends AdminBaseController
         $attrgrp_row = AttributeGroup::getAttributesById($attrgrp_id);
         if (!$attrgrp_row) {
             Message::addErrorMessage(Labels::getLabel('MSG_Attribute_Group_not_selected', $this->adminLangId));
-            FatApp::redirectUser(CommonHelper::generateUrl('Attributes'));
+            FatApp::redirectUser(UrlHelper::generateUrl('Attributes'));
         }
         
         $attrgrp_id = $attrgrp_row['attrgrp_id'];

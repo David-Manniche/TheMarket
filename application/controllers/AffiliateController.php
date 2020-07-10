@@ -14,7 +14,7 @@ class AffiliateController extends AffiliateBaseController
     {
         include_once CONF_INSTALLATION_PATH . 'library/Fbapi.php';
 
-        $get_twitter_url = $_SESSION["TWITTER_URL"] = CommonHelper::generateFullUrl('Affiliate', 'twitterCallback');
+        $get_twitter_url = $_SESSION["TWITTER_URL"] = UrlHelper::generateFullUrl('Affiliate', 'twitterCallback');
 
         try {
             $twitteroauth = new TwitterOAuth(FatApp::getConfig("CONF_TWITTER_API_KEY"), FatApp::getConfig("CONF_TWITTER_API_SECRET"));
@@ -42,7 +42,7 @@ class AffiliateController extends AffiliateBaseController
             );
             $fb = new Fbapi($config);
 
-            $redirectUrl = CommonHelper::generateFullUrl('Affiliate', 'getFbToken', array(), '', false);
+            $redirectUrl = UrlHelper::generateFullUrl('Affiliate', 'getFbToken', array(), '', false);
             $fbLoginUrl = $fb->getLoginUrl($redirectUrl);
             if ($userInfo['user_fb_access_token'] != '') {
                 $fbAccessToken = $userInfo['user_fb_access_token'];
@@ -133,7 +133,7 @@ class AffiliateController extends AffiliateBaseController
             if (FatUtility::isAjaxCall()) {
                 FatUtility::dieWithError(Message::getHtml());
             }
-            FatApp::redirectUser(CommonHelper::generateUrl('Affiliate'));
+            FatApp::redirectUser(UrlHelper::generateUrl('Affiliate'));
         }
 
         $loggedUserId = UserAuthentication::getLoggedUserId();
@@ -154,7 +154,7 @@ class AffiliateController extends AffiliateBaseController
             if (FatUtility::isAjaxCall()) {
                 FatUtility::dieWithError(Message::getHtml());
             }
-            FatApp::redirectUser(CommonHelper::generateUrl('Account', 'ProfileInfo'));
+            FatApp::redirectUser(UrlHelper::generateUrl('Account', 'ProfileInfo'));
         }
         /* ] */
 
@@ -171,7 +171,7 @@ class AffiliateController extends AffiliateBaseController
             if (FatUtility::isAjaxCall()) {
                 FatUtility::dieWithError(Message::getHtml());
             }
-            FatApp::redirectUser(CommonHelper::generateUrl('Account', 'ProfileInfo'));
+            FatApp::redirectUser(UrlHelper::generateUrl('Account', 'ProfileInfo'));
         }
         /* ] */
 
@@ -186,7 +186,7 @@ class AffiliateController extends AffiliateBaseController
             $redirectUrl = $_SESSION[UserAuthentication::SESSION_ELEMENT_NAME]['redirect_user'];
             unset($_SESSION[UserAuthentication::SESSION_ELEMENT_NAME]['redirect_user']);
         } else {
-            $redirectUrl = CommonHelper::generateUrl('Affiliate', 'Sharing');
+            $redirectUrl = UrlHelper::generateUrl('Affiliate', 'Sharing');
         }
 
         include_once CONF_INSTALLATION_PATH . 'library/Fbapi.php';
@@ -334,7 +334,7 @@ class AffiliateController extends AffiliateBaseController
         $fbAccessToken = '';
         $fbLoginUrl = '';
 
-        $redirectUrl = CommonHelper::generateFullUrl('Affiliate', 'getFbToken', array(), '', false);
+        $redirectUrl = UrlHelper::generateFullUrl('Affiliate', 'getFbToken', array(), '', false);
         $fbLoginUrl = $fb->getLoginUrl($redirectUrl);
         if ($userInfo['user_fb_access_token'] != '') {
             $fbAccessToken = $userInfo['user_fb_access_token'];

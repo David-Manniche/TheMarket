@@ -53,7 +53,7 @@
                             ]
                         ];
                         if (!empty($orderDate)) {
-                            $url = CommonHelper::generateFullUrl('SalesReport');
+                            $url = UrlHelper::generateFullUrl('SalesReport');
                             $data['otherButtons'][] = [
                                 'attr' => [
                                     'href' => 'javascript:void(0)',

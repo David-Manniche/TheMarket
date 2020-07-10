@@ -68,9 +68,9 @@
                     <a class="navs_toggle" href="javascript:void(0)"><span></span></a>
                     <?php
                     if (CommonHelper::isThemePreview() && isset($_SESSION['preview_theme'])) {
-                        $logoUrl = CommonHelper::generateUrl('home', 'index');
+                        $logoUrl = UrlHelper::generateUrl('home', 'index');
                     } else {
-                        $logoUrl = CommonHelper::generateUrl();
+                        $logoUrl = UrlHelper::generateUrl();
                     }
                     ?>
                     <div class="logo">
@@ -81,7 +81,7 @@
                             ?>
                             <img <?php if ($fileData['afile_aspect_ratio'] > 0) { ?>
                             data-ratio= "<?php echo $aspectRatioArr[$fileData['afile_aspect_ratio']]; ?>"
-                            <?php } ?> src="<?php echo CommonHelper::generateFullUrl('Image', 'siteLogo', array($siteLangId), CONF_WEBROOT_FRONT_URL); ?>"
+                            <?php } ?> src="<?php echo UrlHelper::generateFullFileUrl('Image', 'siteLogo', array($siteLangId), CONF_WEBROOT_FRONT_URL); ?>"
                             alt="<?php echo FatApp::getConfig('CONF_WEBSITE_NAME_' . $siteLangId, FatUtility::VAR_STRING, '') ?>"
                             title="<?php echo FatApp::getConfig('CONF_WEBSITE_NAME_' . $siteLangId, FatUtility::VAR_STRING, '') ?>">
                         </a>

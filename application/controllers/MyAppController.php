@@ -15,7 +15,7 @@ class MyAppController extends FatController
             if (true === MOBILE_APP_API_CALL) {
                 FatUtility::dieJsonError(Labels::getLabel('MSG_Site_under_maintenance', CommonHelper::getLangId()));
             }
-            FatApp::redirectUser(CommonHelper::generateUrl('maintenance'));
+            FatApp::redirectUser(UrlHelper::generateUrl('maintenance'));
         }
 
         CommonHelper::initCommonVariables();
@@ -82,7 +82,7 @@ class MyAppController extends FatController
             'setMainProduct' => Labels::getLabel('LBL_Set_as_main_product', $this->siteLangId),
             'layoutDirection' => CommonHelper::getLayoutDirection(),
             'selectPlan' => Labels::getLabel('LBL_Please_Select_any_Plan_From_The_Above_Plans', $this->siteLangId),
-            'alreadyHaveThisPlan' => str_replace("{clickhere}", '<a href="' . CommonHelper::generateUrl('seller', 'subscriptions') . '">' . Labels::getLabel('LBL_Click_Here', $this->siteLangId) . '</a>', Labels::getLabel('LBL_You_have_already_Bought_this_plan._Please_choose_some_other_Plan_or_renew_it_from_{clickhere}', $this->siteLangId)),
+            'alreadyHaveThisPlan' => str_replace("{clickhere}", '<a href="' . UrlHelper::generateUrl('seller', 'subscriptions') . '">' . Labels::getLabel('LBL_Click_Here', $this->siteLangId) . '</a>', Labels::getLabel('LBL_You_have_already_Bought_this_plan._Please_choose_some_other_Plan_or_renew_it_from_{clickhere}', $this->siteLangId)),
             'processing' => Labels::getLabel('LBL_Processing...', $this->siteLangId),
             'requestProcessing' => Labels::getLabel('LBL_Request_Processing...', $this->siteLangId),
             'selectLocation' => Labels::getLabel('LBL_Select_Location_to_view_Wireframe', $this->siteLangId),
@@ -295,7 +295,7 @@ class MyAppController extends FatController
         if ($action == 'index') {
             $nodes[] = array('title' => Labels::getLabel('LBL_' . ucwords($className), $this->siteLangId));
         } else {
-            $nodes[] = array('title' => ucwords($className), 'href' => CommonHelper::generateUrl($urlController));
+            $nodes[] = array('title' => ucwords($className), 'href' => UrlHelper::generateUrl($urlController));
             $nodes[] = array('title' => Labels::getLabel('LBL_' . ucwords($action), $this->siteLangId));
         }
         return $nodes;
@@ -604,7 +604,7 @@ class MyAppController extends FatController
             $verificationCode = $userObj->prepareUserVerificationCode($data['user_email']);
         }
 
-        $link = CommonHelper::generateFullUrl('GuestUser', 'changeEmailVerification', array('verify' => $verificationCode));
+        $link = UrlHelper::generateFullUrl('GuestUser', 'changeEmailVerification', array('verify' => $verificationCode));
 
         $email = new EmailHandler();
         $dataArr = array(

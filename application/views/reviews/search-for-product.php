@@ -7,7 +7,7 @@
             <div class="col-md-4">
                 <div class="profile-avatar">
                     <div class="profile__dp">
-                        <img src="<?php echo CommonHelper::generateUrl('Image', 'user', array($review['spreview_postedby_user_id'],'thumb',true)); ?>" alt="<?php echo $review['user_name']; ?>"></div>
+                        <img src="<?php echo UrlHelper::generateUrl('Image', 'user', array($review['spreview_postedby_user_id'],'thumb',true)); ?>" alt="<?php echo $review['user_name']; ?>"></div>
                     <div class="profile__bio">
                         <div class="title"><?php echo Labels::getLabel('Lbl_By', $siteLangId) ; ?> <?php echo CommonHelper::displayName($review['user_name']); ?> <span
                                 class="dated"><?php echo Labels::getLabel('Lbl_On_Date', $siteLangId) , ' ',FatDate::format($review['spreview_posted_on']); ?></span></div>
@@ -41,7 +41,7 @@
                                 <?php echo Labels::getLabel('Lbl_SHOW_MORE', $siteLangId) ; ?> </a>
                             <?php } ?>
                         </p>
-                        <!-- <a class="btn btn--secondary btn-outline-primary mt-3" href="<?php echo CommonHelper::generateUrl('Reviews', 'productPermalink', array($review['spreview_selprod_id'] , $review['spreview_id'])) ?>"><?php echo Labels::getLabel('Lbl_Permalink', $siteLangId); ?> </a> -->
+                        <!-- <a class="btn btn--secondary btn-outline-primary mt-3" href="<?php echo UrlHelper::generateUrl('Reviews', 'productPermalink', array($review['spreview_selprod_id'] , $review['spreview_id'])) ?>"><?php echo Labels::getLabel('Lbl_Permalink', $siteLangId); ?> </a> -->
                     </div>
                 </div>
             </div>
@@ -49,7 +49,7 @@
     </li>
     <?php } ?>
 </ul>
-<div class="align--center  mt-4"><a href="<?php echo CommonHelper::generateUrl('Reviews', 'Product', array($selprod_id)); ?>"
+<div class="align--center  mt-4"><a href="<?php echo UrlHelper::generateUrl('Reviews', 'Product', array($selprod_id)); ?>"
         class="btn btn--secondary btn-outline-primary"><?php echo Labels::getLabel('Lbl_Showing_All', $siteLangId).' '.count($reviewsList).' '.Labels::getLabel('Lbl_Reviews', $siteLangId) ; ?> </a></div> <?php echo FatUtility::createHiddenFormFromData($postedData, array('name' => 'frmSearchReviewsPaging')); ?>
 <?php } else {
     // $this->includeTemplate('_partial/no-record-found.php', array('siteLangId'=>$siteLangId), false);

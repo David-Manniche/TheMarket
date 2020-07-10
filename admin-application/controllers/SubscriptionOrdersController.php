@@ -113,7 +113,7 @@ class SubscriptionOrdersController extends AdminBaseController
         $order = FatApp::getDb()->fetch($rs);
         if (!$order) {
             Message::addErrorMessage(Labels::getLabel('LBL_Order_data_not_found', $this->adminLangId));
-            FatApp::redirectUser(CommonHelper::generateUrl("SubscriptionOrders"));
+            FatApp::redirectUser(UrlHelper::generateUrl("SubscriptionOrders"));
         }
         
         

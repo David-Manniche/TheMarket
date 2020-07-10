@@ -3,8 +3,8 @@
 $data = array(
     'personalInfo' => (object)$personalInfo,
     'bankInfo' => (object)$bankInfo,
-    'privacyPolicyLink' => CommonHelper::generateFullUrl('cms', 'view', array($privacyPolicyLink)),
-    'faqLink' => CommonHelper::generateFullUrl('custom', 'faq'),
+    'privacyPolicyLink' => UrlHelper::generateFullUrl('cms', 'view', array($privacyPolicyLink)),
+    'faqLink' => UrlHelper::generateFullUrl('custom', 'faq'),
     'referralModuleIsEnabled' => FatApp::getConfig("CONF_ENABLE_REFERRER_MODULE", FatUtility::VAR_INT, 0),
     'hasDigitalProducts' => $hasDigitalProducts,
 );

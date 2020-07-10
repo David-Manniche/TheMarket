@@ -12,7 +12,7 @@ $IDFld = $prodBrandFrm->getField('brand_id');
 $IDFld->setFieldTagAttribute('id', "brand_id");
 $urlFld = $prodBrandFrm->getField('urlrewrite_custom');
 $urlFld->setFieldTagAttribute('id', "urlrewrite_custom");
-$urlFld->htmlAfterField = "<small class='text--small'>" . CommonHelper::generateFullUrl('Brands', 'View', array($brand_id), CONF_WEBROOT_FRONT_URL) . '</small>';
+$urlFld->htmlAfterField = "<small class='text--small'>" . UrlHelper::generateFullUrl('Brands', 'View', array($brand_id), CONF_WEBROOT_FRONT_URL) . '</small>';
 $urlFld->setFieldTagAttribute('onKeyup', "getSlugUrl(this,this.value)");
 ?>
 <section class="section">

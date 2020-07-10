@@ -52,7 +52,7 @@ if (count($arr_listing) == 0) {
 $frm = new Form('frmImgAttributeListing', array('id'=>'frmImgAttributeListing'));
 $frm->setFormTagAttribute('class', 'web_form last_td_nowrap actionButtons-js');
 $frm->setFormTagAttribute('onsubmit', 'formAction(this, reloadList ); return(false);');
-$frm->setFormTagAttribute('action', CommonHelper::generateUrl('UrlRewriting', 'deleteSelected'));
+$frm->setFormTagAttribute('action', UrlHelper::generateUrl('UrlRewriting', 'deleteSelected'));
 $frm->addHiddenField('', 'status');
 $frm->addHiddenField('', 'module_type', $moduleType);
 

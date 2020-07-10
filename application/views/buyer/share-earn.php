@@ -97,7 +97,7 @@ $this->includeTemplate('_partial/dashboardNavigation.php'); ?>
                     'og:url': "<?php echo $referralTrackingUrl?>",
                     'og:title': "<?php echo sprintf(FatApp::getConfig("CONF_SOCIAL_FEED_FACEBOOK_POST_TITLE_$siteLangId", FatUtility::VAR_STRING, ''), FatApp::getConfig("CONF_WEBSITE_NAME_$siteLangId"))?>",
                     'og:description': "<?php echo sprintf(FatApp::getConfig("CONF_SOCIAL_FEED_FACEBOOK_POST_CAPTION_$siteLangId", FatUtility::VAR_STRING, ''), FatApp::getConfig("CONF_WEBSITE_NAME_$siteLangId"))?>",
-                    'og:image': "<?php echo CommonHelper::generateFullUrl('image', 'socialFeed', array($siteLangId ,''), "/")?>",
+                    'og:image': "<?php echo UrlHelper::generateFullUrl('image', 'socialFeed', array($siteLangId ,''), "/")?>",
                 }
             })
         }, function(response) {

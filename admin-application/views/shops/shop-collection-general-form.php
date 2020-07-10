@@ -30,7 +30,7 @@ $fatInactive = ($scollection_id == 0) ? 'fat-inactive' : '';
         $urlFld = $colectionForm->getField('urlrewrite_custom');
         $urlFld->setFieldTagAttribute('id', "urlrewrite_custom");
         $urlFld->setFieldTagAttribute('onkeyup', "getSlugUrl(this,this.value,'" . $baseUrl."')");
-        $urlFld->htmlAfterField = "<br><small class='text--small'>" . CommonHelper::generateFullUrl('Shops', 'Collection', array($shop_id), CONF_WEBROOT_FRONT_URL) . '</small>';
+        $urlFld->htmlAfterField = "<br><small class='text--small'>" . UrlHelper::generateFullUrl('Shops', 'Collection', array($shop_id), CONF_WEBROOT_FRONT_URL) . '</small>';
             $IDFld = $colectionForm->getField('scollection_id');
         $IDFld->setFieldTagAttribute('id', "scollection_id");
         $identiFierFld = $colectionForm->getField('scollection_identifier');

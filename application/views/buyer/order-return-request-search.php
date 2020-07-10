@@ -66,10 +66,10 @@ foreach ($requests as $sn => $row) {
                 $ul = $td->appendElement("ul", array("class"=>"actions"), '', true);
 
                 if ($buyerPage) {
-                    $url = CommonHelper::generateUrl('Buyer', 'ViewOrderReturnRequest', array($row['orrequest_id']));
+                    $url = UrlHelper::generateUrl('Buyer', 'ViewOrderReturnRequest', array($row['orrequest_id']));
                 }
                 if ($sellerPage) {
-                    $url = CommonHelper::generateUrl('Seller', 'ViewOrderReturnRequest', array($row['orrequest_id']));
+                    $url = UrlHelper::generateUrl('Seller', 'ViewOrderReturnRequest', array($row['orrequest_id']));
                 }
                 $li = $ul->appendElement("li");
                 $li->appendElement(

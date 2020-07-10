@@ -128,10 +128,10 @@ if (!empty($product)) {
     $product['youtubeUrlThumbnail'] = '';
     if (!empty($product['product_youtube_video'])) {
         $youtubeVideoUrl = $product['product_youtube_video'];
-        $videoCode = CommonHelper::parseYouTubeurl($youtubeVideoUrl);
+        $videoCode = UrlHelper::parseYouTubeurl($youtubeVideoUrl);
         $product['youtubeUrlThumbnail'] = 'https://img.youtube.com/vi/'.$videoCode.'/hqdefault.jpg';
     }
-    $product['productUrl'] = CommonHelper::generateFullUrl('Products', 'View', array($product['selprod_id']));
+    $product['productUrl'] = UrlHelper::generateFullUrl('Products', 'View', array($product['selprod_id']));
 }
 
 $product['selprod_return_policies'] = !empty($product['selprod_return_policies']) ? $product['selprod_return_policies'] : (object)array();
@@ -157,18 +157,18 @@ if (isset($banners['Product_Detail_Page_Banner']) && $banners['Product_Detail_Pa
             foreach ($slideArr as $slideScreen) {
                 switch ($slideScreen['afile_screen']) {
                     case applicationConstants::SCREEN_MOBILE:
-                        $bannerImageUrl = CommonHelper::generateFullUrl('Banner', 'productDetailPageBanner', array($val['banner_id'], $siteLangId, applicationConstants::SCREEN_MOBILE));
+                        $bannerImageUrl = UrlHelper::generateFullUrl('Banner', 'productDetailPageBanner', array($val['banner_id'], $siteLangId, applicationConstants::SCREEN_MOBILE));
                         break;
                     case applicationConstants::SCREEN_IPAD:
-                        $bannerImageUrl = CommonHelper::generateFullUrl('Banner', 'productDetailPageBanner', array($val['banner_id'], $siteLangId, applicationConstants::SCREEN_IPAD));
+                        $bannerImageUrl = UrlHelper::generateFullUrl('Banner', 'productDetailPageBanner', array($val['banner_id'], $siteLangId, applicationConstants::SCREEN_IPAD));
                         break;
                     case applicationConstants::SCREEN_DESKTOP:
-                        $bannerImageUrl = CommonHelper::generateFullUrl('Banner', 'productDetailPageBanner', array($val['banner_id'], $siteLangId, applicationConstants::SCREEN_DESKTOP));
+                        $bannerImageUrl = UrlHelper::generateFullUrl('Banner', 'productDetailPageBanner', array($val['banner_id'], $siteLangId, applicationConstants::SCREEN_DESKTOP));
                         break;
                 }
             }
             $val['banner_image_url'] = $bannerImageUrl;
-            $bannerUrl = CommonHelper::generateFullUrl('Banner', 'url', array($val['banner_id']));
+            $bannerUrl = UrlHelper::generateFullUrl('Banner', 'url', array($val['banner_id']));
             $urlTypeData = CommonHelper::getUrlTypeData($bannerUrl);
 
             $val['banner_url'] = ($urlTypeData['urlType'] == applicationConstants::URL_TYPE_EXTERNAL ? $bannerUrl : $urlTypeData['recordId']);

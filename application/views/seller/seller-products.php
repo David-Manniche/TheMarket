@@ -82,7 +82,7 @@ foreach ($arrListing as $sn => $row) {
                 $li = $ul->appendElement("li");
                 $li->appendElement(
                     'a',
-                    array('href' => CommonHelper::generateUrl('seller', 'sellerProductForm', array($row['selprod_product_id'],$row['selprod_id'])), 'title' => Labels::getLabel('LBL_Edit', $siteLangId)),
+                    array('href' => UrlHelper::generateUrl('seller', 'sellerProductForm', array($row['selprod_product_id'],$row['selprod_id'])), 'title' => Labels::getLabel('LBL_Edit', $siteLangId)),
                     '<i class="fa fa-edit"></i>',
                     true
                 );
@@ -122,8 +122,8 @@ if (count($arrListing) == 0) {
     $frm = new Form('frmSellerProductsListing', array('id' => 'frmSellerProductsListing'));
     $frm->setFormTagAttribute('class', 'form actionButtons-js');
     $frm->setFormTagAttribute('onsubmit', 'formAction(this, reloadList ); return(false);');
-    // $frm->setFormTagAttribute('action', CommonHelper::generateUrl('Seller', 'deleteBulkSellerProducts'));
-    $frm->setFormTagAttribute('action', CommonHelper::generateUrl('Seller', 'toggleBulkStatuses'));
+    // $frm->setFormTagAttribute('action', UrlHelper::generateUrl('Seller', 'deleteBulkSellerProducts'));
+    $frm->setFormTagAttribute('action', UrlHelper::generateUrl('Seller', 'toggleBulkStatuses'));
     $frm->addHiddenField('', 'status');
 
     echo $frm->getFormTag();

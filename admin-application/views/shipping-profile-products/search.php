@@ -5,7 +5,7 @@ foreach ($productsData as $product) {
 ?>
 	<li class="d-flex align-items-center py-4 border-bottom">
 		<div class="col">
-			<img class="mr-2 product-profile-img" src="<?php echo CommonHelper::generateUrl('Image', 'product', array($product['product_id'], 'SMALL', 0, 0, 1 )) ?>" alt="" width="50"> <span><?php echo $product['product_name']?></span>
+			<img class="mr-2 product-profile-img" src="<?php echo UrlHelper::generateUrl('Image', 'product', array($product['product_id'], 'SMALL', 0, 0, 1 )) ?>" alt="" width="50"> <span><?php echo $product['product_name']?></span>
 		</div>
 		<?php if (isset($profileData['shipprofile_default']) && $profileData['shipprofile_default'] != 1) {?>
 		<div class="col-auto">

@@ -80,7 +80,7 @@ class ShippingProfileController extends AdminBaseController
             
             if ($data['shipprofile_user_id'] != 0) {
                 Message::addErrorMessage(Labels::getLabel('LBL_Invalid_Request', $this->adminLangId));
-                FatApp::redirectUser(CommonHelper::generateUrl('shippingProfile'));
+                FatApp::redirectUser(UrlHelper::generateUrl('shippingProfile'));
             }
             
             $frm->fill($data);

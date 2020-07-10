@@ -76,7 +76,7 @@
 								} ?>
 							</dt>
 							<dd><?php if( $val['afile_physical_path']!='' ){
-								echo "<a href='". CommonHelper::generateUrl( 'Users', 'downloadAttachment', array( $supplierRequest['user_id'], $val['sfreqvalue_formfield_id']) )."'>" . $val['sfreqvalue_text'] . "</a>";
+								echo "<a href='". UrlHelper::generateUrl( 'Users', 'downloadAttachment', array( $supplierRequest['user_id'], $val['sfreqvalue_formfield_id']) )."'>" . $val['sfreqvalue_text'] . "</a>";
 							} else {
 								echo nl2br( $val['sfreqvalue_text'] );
 							}

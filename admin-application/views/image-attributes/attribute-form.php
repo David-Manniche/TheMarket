@@ -33,22 +33,22 @@ $btn->setFieldTagAttribute('class', "btn-clean btn-sm btn-icon btn-secondary");
 						$frm->getField('image_alt'.$afileId)->value = $afileData['afile_attribute_alt'];
 						switch ($moduleType) {
 							case AttachedFile::FILETYPE_PRODUCT_IMAGE:
-								$imageUrl = CommonHelper::generateFullUrl('Image','Product', array($recordId, "THUMB", 0, $afileId, $langId), CONF_WEBROOT_FRONT_URL);
+								$imageUrl = UrlHelper::generateFullUrl('Image','Product', array($recordId, "THUMB", 0, $afileId, $langId), CONF_WEBROOT_FRONT_URL);
 								break;
 							case AttachedFile::FILETYPE_BRAND_LOGO:
-								$imageUrl = CommonHelper::generateFullUrl('Image','brand', array($recordId, $langId, "THUMB", $afileId), CONF_WEBROOT_FRONT_URL);
+								$imageUrl = UrlHelper::generateFullUrl('Image','brand', array($recordId, $langId, "THUMB", $afileId), CONF_WEBROOT_FRONT_URL);
 								break;
 							case AttachedFile::FILETYPE_BRAND_IMAGE:
-								$imageUrl = CommonHelper::generateFullUrl('Image','brandImage', array($recordId, $langId, "THUMB", $afileId), CONF_WEBROOT_FRONT_URL);
+								$imageUrl = UrlHelper::generateFullUrl('Image','brandImage', array($recordId, $langId, "THUMB", $afileId), CONF_WEBROOT_FRONT_URL);
 								break;
 							case AttachedFile::FILETYPE_BLOG_POST_IMAGE:
-								$imageUrl = CommonHelper::generateFullUrl('Image','blogPost', array($recordId, $langId, "THUMB", 0, $afileId, false), CONF_WEBROOT_FRONT_URL);
+								$imageUrl = UrlHelper::generateFullUrl('Image','blogPost', array($recordId, $langId, "THUMB", 0, $afileId, false), CONF_WEBROOT_FRONT_URL);
 								break;
 							case AttachedFile::FILETYPE_CATEGORY_IMAGE:
-								$imageUrl = CommonHelper::generateFullUrl('Category','image', array($recordId, $langId, "THUMB", 0, $afileId), CONF_WEBROOT_FRONT_URL);
+								$imageUrl = UrlHelper::generateFullUrl('Category','image', array($recordId, $langId, "THUMB", 0, $afileId), CONF_WEBROOT_FRONT_URL);
 								break;
 							default:
-								$imageUrl = CommonHelper::generateFullUrl('Category','banner', array($recordId, $langId, "THUMB", 0, $afileId), CONF_WEBROOT_FRONT_URL);
+								$imageUrl = UrlHelper::generateFullUrl('Category','banner', array($recordId, $langId, "THUMB", 0, $afileId), CONF_WEBROOT_FRONT_URL);
 								break;
 						} ?>
 					<div class="row">

@@ -2495,7 +2495,7 @@ class SellerProductsController extends AdminBaseController
             $selProd_id = SellerProduct::getAttributesByID($selProd_id, 'selprod_id', false);
             if (empty($selProd_id)) {
                 Message::addErrorMessage(Labels::getLabel('MSG_INVALID_REQUEST', $this->adminLangId));
-                FatApp::redirectUser(CommonHelper::generateUrl('SellerProducts', 'specialPrice'));
+                FatApp::redirectUser(UrlHelper::generateUrl('SellerProducts', 'specialPrice'));
             }
         }
 
@@ -2540,7 +2540,7 @@ class SellerProductsController extends AdminBaseController
             $selProd_id = SellerProduct::getAttributesByID($selProd_id, 'selprod_id', false);
             if (empty($selProd_id)) {
                 Message::addErrorMessage(Labels::getLabel('MSG_INVALID_REQUEST', $this->adminLangId));
-                FatApp::redirectUser(CommonHelper::generateUrl('SellerProducts', 'volumeDiscount'));
+                FatApp::redirectUser(UrlHelper::generateUrl('SellerProducts', 'volumeDiscount'));
             }
         }
 
@@ -2856,7 +2856,7 @@ class SellerProductsController extends AdminBaseController
             $selProd_id = SellerProduct::getAttributesByID($selProd_id, 'selprod_id', false);
             if (empty($selProd_id)) {
                 Message::addErrorMessage(Labels::getLabel('MSG_INVALID_REQUEST', $this->adminLangId));
-                FatApp::redirectUser(CommonHelper::generateUrl('Seller', 'volumeDiscount'));
+                FatApp::redirectUser(UrlHelper::generateUrl('Seller', 'volumeDiscount'));
             }
         }
 
@@ -3035,7 +3035,7 @@ class SellerProductsController extends AdminBaseController
             $selProd_id = SellerProduct::getAttributesByID($selProd_id, 'selprod_id', false);
             if (empty($selProd_id)) {
                 Message::addErrorMessage(Labels::getLabel('MSG_INVALID_REQUEST', $this->adminLangId));
-                FatApp::redirectUser(CommonHelper::generateUrl('Seller', 'volumeDiscount'));
+                FatApp::redirectUser(UrlHelper::generateUrl('Seller', 'volumeDiscount'));
             }
         }
 

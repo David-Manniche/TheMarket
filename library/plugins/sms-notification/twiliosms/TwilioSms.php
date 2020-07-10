@@ -46,7 +46,7 @@ class TwilioSms extends SmsNotificationBase
                 [
                     "body" => $body,
                     "from" => $this->settings['sender_id'],
-                    "statusCallback" => CommonHelper::generateFullUrl('SmsNotification', 'callback', [static::KEY_NAME], '', false)
+                    "statusCallback" => UrlHelper::generateFullUrl('SmsNotification', 'callback', [static::KEY_NAME], '', false)
                 ]
             );
         } catch (Exception $e) {

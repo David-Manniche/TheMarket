@@ -356,7 +356,7 @@ class ProductCategoriesController extends AdminBaseController
         switch ($action) {
             case 'index':
             case 'form':
-                $nodes[] = array('title' => Labels::getLabel('LBL_Categories', $this->adminLangId), 'href' => CommonHelper::generateUrl('ProductCategories'));
+                $nodes[] = array('title' => Labels::getLabel('LBL_Categories', $this->adminLangId), 'href' => UrlHelper::generateUrl('ProductCategories'));
         }
         return $nodes;
     }

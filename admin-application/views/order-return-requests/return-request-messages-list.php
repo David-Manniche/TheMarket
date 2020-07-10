@@ -20,10 +20,10 @@ foreach ($messagesList as $sn=>$row){
 		switch ($key){
 			case 'image':
 				$td->setAttribute('width','20%');
-				$img = '<img title="'.$row['msg_user_name'].'" src = "'.CommonHelper::generateUrl('Image','User', array($row['orrmsg_from_user_id'], 'THUMB', 1), CONF_WEBROOT_FRONT_URL).'" alt = "'.$row['msg_user_name'].'" >';
+				$img = '<img title="'.$row['msg_user_name'].'" src = "'.UrlHelper::generateUrl('Image','User', array($row['orrmsg_from_user_id'], 'THUMB', 1), CONF_WEBROOT_FRONT_URL).'" alt = "'.$row['msg_user_name'].'" >';
 				
 				if( $row['orrmsg_from_admin_id'] ){
-					$img = '<img title="'.$row['admin_name'].'" src = "'.CommonHelper::generateUrl('Image','siteAdminLogo', array( $adminLangId )).'" alt = "'.$row['admin_name'].'" >';
+					$img = '<img title="'.$row['admin_name'].'" src = "'.UrlHelper::generateUrl('Image','siteAdminLogo', array( $adminLangId )).'" alt = "'.$row['admin_name'].'" >';
 				}
 				
 				$td->appendElement('plaintext', array(), $img, true );

@@ -36,7 +36,7 @@ if ($order['order_reward_point_used'] > 0) {
                                 'otherButtons' => [
                                     [
                                         'attr' => [
-                                            'href' => CommonHelper::generateUrl('Orders'),
+                                            'href' => UrlHelper::generateUrl('Orders'),
                                             'title' => Labels::getLabel('LBL_BACK', $adminLangId)
                                         ],
                                         'label' => '<i class="fas fa-arrow-left"></i>'
@@ -206,7 +206,7 @@ if ($order['order_reward_point_used'] > 0) {
                                             <?php 
                                             $orderShipment = OrderProductShipment::getAttributesById($opId, 'opship_response');
                                             if (!empty($orderShipment)) { ?>
-                                                <a target="_blank" href="<?php echo CommonHelper::generateUrl("ShippingServices", 'previewLabel', [$opId]); ?>"
+                                                <a target="_blank" href="<?php echo UrlHelper::generateUrl("ShippingServices", 'previewLabel', [$opId]); ?>"
                                                     title="<?php echo Labels::getLabel('LBL_PREVIEW_LABEL', $adminLangId); ?>"
                                                     class="btn-clean btn-sm btn-icon btn-secondary ">
                                                     <i class="fas fa-eye"></i>

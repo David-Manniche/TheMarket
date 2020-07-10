@@ -117,7 +117,7 @@ class EbsPayController extends PaymentController
         $frm->addHiddenField('', 'ship_postal_code', $orderInfo["customer_shipping_postcode"]);
         $frm->addHiddenField('', 'ship_country', $orderInfo["customer_shipping_country_code"]);
         $frm->addHiddenField('', 'ship_phone', $orderInfo['customer_shipping_phone']);
-        $return_url = CommonHelper::generateFullUrl('ebsPay', 'callback');
+        $return_url = UrlHelper::generateFullUrl('ebsPay', 'callback');
         $string = $this->settings["secretKey"] . "|" . $this->settings["accountId"] . "|" . $paymentAmount . "|" . $orderId . "|" . $return_url . "|" . $mode;
         /* echo $string; die; */
         $secure_hash = md5($string);
@@ -153,7 +153,7 @@ class EbsPayController extends PaymentController
             if ($response['ResponseCode'] == '0') {
                 if ($orderPaymentObj->addOrderPayment($this->settings["plugin_code"], $response['TransactionID'], $paymentAmount, Labels::getLabel("LBL_Received_Payment", $this->siteLangId), serialize($response))) {
                 }
-                FatApp::redirectUser(CommonHelper::generateUrl('custom', 'paymentSuccess', array($orderId)));
+                FatApp::redirectUser(UrlHelper::generateUrl('custom', 'paymentSuccess', array($orderId)));
             } else {
                 $orderPaymentObj->addOrderPaymentComments(serialize($response));
                 FatApp::redirectUser(CommonHelper::getPaymentFailurePageUrl());

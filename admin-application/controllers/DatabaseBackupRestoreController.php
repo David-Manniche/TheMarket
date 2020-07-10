@@ -20,7 +20,7 @@ class DatabaseBackupRestoreController extends AdminBaseController
             $settingsObj = new Settings();
             $settingsObj->backupDatabase(trim($post["name"]));
             Message::addMessage(Labels::getLabel('LBL_Database_backup_on_Server_created_Successfully', $this->adminLangId));
-            FatApp::redirectUser(CommonHelper::generateUrl('DatabaseBackupRestore'));
+            FatApp::redirectUser(UrlHelper::generateUrl('DatabaseBackupRestore'));
         }
         
         if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($post['submit_upload'])) {
@@ -28,14 +28,14 @@ class DatabaseBackupRestoreController extends AdminBaseController
             $ext = strrchr($_FILES['file']['name'], '.');
             if (strtolower($ext) != '.sql') {
                 Message::addErrorMessage(Labels::getLabel('LBL_File_type_unsupporte._Please_upload_Sql_file', $this->adminLangId));
-                FatApp::redirectUser(CommonHelper::generateUrl('DatabaseBackupRestore'));
+                FatApp::redirectUser(UrlHelper::generateUrl('DatabaseBackupRestore'));
             }
             if (!self::saveFile($_FILES['file']['tmp_name'], $_FILES['file']['name'], CONF_DB_BACKUP_DIRECTORY . '/')) {
                 Message::addErrorMessage(Labels::getLabel('LBL_File_could_not_be_saved', $this->adminLangId));
-                FatApp::redirectUser(CommonHelper::generateUrl('DatabaseBackupRestore'));
+                FatApp::redirectUser(UrlHelper::generateUrl('DatabaseBackupRestore'));
             }
             Message::addMessage(Labels::getLabel('LBL_Database_Uploaded_Successfully', $this->adminLangId));
-            FatApp::redirectUser(CommonHelper::generateUrl('DatabaseBackupRestore'));
+            FatApp::redirectUser(UrlHelper::generateUrl('DatabaseBackupRestore'));
         }
         
         $this->set('backup_frm', $backup_frm);
@@ -60,7 +60,7 @@ class DatabaseBackupRestoreController extends AdminBaseController
             $settingsObj = new Settings();
             if (!$settingsObj->download_file($file)) {
                 Message::addErrorMessage($settingsObj->getError());
-                FatApp::redirectUser(CommonHelper::generateUrl('DatabaseBackupRestore'));
+                FatApp::redirectUser(UrlHelper::generateUrl('DatabaseBackupRestore'));
             }
         }
     }

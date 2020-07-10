@@ -20,7 +20,7 @@
                     <div class="">
                         <iframe src="<?php echo Fatutility::generateUrl('buyer', 'viewOrderReturnRequest', $urlParts) . '/print'; ?>" name="frame" style="display:none"></iframe>
                         <a href="javascript:void(0)" onclick="frames['frame'].print()" class="btn btn--primary btn--sm no-print"><?php echo Labels::getLabel('LBL_Print', $siteLangId); ?></a>
-                        <a href="<?php echo CommonHelper::generateUrl('Buyer', 'orderReturnRequests');?>" class="btn btn-outline-primary btn--sm no-print"><?php echo Labels::getLabel('LBL_Back', $siteLangId);?></a>
+                        <a href="<?php echo UrlHelper::generateUrl('Buyer', 'orderReturnRequests');?>" class="btn btn-outline-primary btn--sm no-print"><?php echo Labels::getLabel('LBL_Back', $siteLangId);?></a>
                     </div>
                 <?php } ?>
             </div>
@@ -49,7 +49,7 @@
                                     <?php echo ($request['op_shop_owner_name'] != '') ? '<strong>'.Labels::getLabel('LBL_Vendor_Name', $siteLangId).':</strong> '.$request['op_shop_owner_name'] : ''; ?></p>
                                     <p>
                                     <?php
-                                    /*$vendorShopUrl = CommonHelper::generateUrl('Shops', 'View', array($request['op_shop_id']));*/
+                                    /*$vendorShopUrl = UrlHelper::generateUrl('Shops', 'View', array($request['op_shop_id']));*/
                                     echo ($request['op_shop_name'] != '') ? '<strong>'.Labels::getLabel('LBL_Shop_Name', $siteLangId).':</strong> '.$request['op_shop_name'].'<br/>' : ''; ?>
                                     </p>
                                     <span class="gap"></span>
@@ -57,11 +57,11 @@
                             </div>
                         </div>
                     <?php if ($canEscalateRequest && !$print) { ?>
-                    <a class="btn btn--primary no-print" onClick="javascript: return confirm('<?php echo Labels::getLabel('MSG_Do_you_want_to_proceed?', $siteLangId); ?>')" href="<?php echo CommonHelper::generateUrl('Account', 'escalateOrderReturnRequest', array($request['orrequest_id'])); ?>"><?php echo str_replace("{websitename}", FatApp::getConfig('CONF_WEBSITE_NAME_'.$siteLangId), Labels::getLabel('LBL_Escalate_to_{websitename}', $siteLangId)); ?></a>
+                    <a class="btn btn--primary no-print" onClick="javascript: return confirm('<?php echo Labels::getLabel('MSG_Do_you_want_to_proceed?', $siteLangId); ?>')" href="<?php echo UrlHelper::generateUrl('Account', 'escalateOrderReturnRequest', array($request['orrequest_id'])); ?>"><?php echo str_replace("{websitename}", FatApp::getConfig('CONF_WEBSITE_NAME_'.$siteLangId), Labels::getLabel('LBL_Escalate_to_{websitename}', $siteLangId)); ?></a>
                     <?php } ?>
 
                     <?php if ($canWithdrawRequest && !$print) { ?>
-                    <a class="btn btn--primary btn--sm no-print" onClick="javascript: return confirm('<?php echo Labels::getLabel('MSG_Do_you_want_to_proceed?', $siteLangId); ?>')" href="<?php echo CommonHelper::generateUrl('Buyer', 'WithdrawOrderReturnRequest', array($request['orrequest_id'])); ?>"><?php echo Labels::getLabel('LBL_Withdraw_Request', $siteLangId); ?></a>
+                    <a class="btn btn--primary btn--sm no-print" onClick="javascript: return confirm('<?php echo Labels::getLabel('MSG_Do_you_want_to_proceed?', $siteLangId); ?>')" href="<?php echo UrlHelper::generateUrl('Buyer', 'WithdrawOrderReturnRequest', array($request['orrequest_id'])); ?>"><?php echo Labels::getLabel('LBL_Withdraw_Request', $siteLangId); ?></a>
                     <?php } ?>
 
 
@@ -147,7 +147,7 @@
                             } */
                             echo CommonHelper::displayMoneyFormat($returnDataArr['op_refund_amount'], true, false); ?></td>
                             <?php if (isset($attachedFile) && !empty($attachedFile)) { ?>
-                            <td><a href="<?php echo CommonHelper::generateUrl('Buyer', 'downloadAttachedFileForReturn', array($request["orrequest_id"]));  ?>" class="button small green" > <?php echo Labels::getLabel('LBL_Download', $siteLangId); ?></a></td>
+                            <td><a href="<?php echo UrlHelper::generateUrl('Buyer', 'downloadAttachedFileForReturn', array($request["orrequest_id"]));  ?>" class="button small green" > <?php echo Labels::getLabel('LBL_Download', $siteLangId); ?></a></td>
                             <?php } ?>
                         </tr>
                     </tbody>
@@ -172,7 +172,7 @@
                         <ul>
                            <li>
                                <div class="msg_db">
-                                   <div class="avtar"><img src="<?php echo CommonHelper::generateUrl('Image', 'user', array($logged_user_id, 'THUMB', 1)); ?>" alt="<?php echo $logged_user_name; ?>" title="<?php echo $logged_user_name; ?>"></div>
+                                   <div class="avtar"><img src="<?php echo UrlHelper::generateUrl('Image', 'user', array($logged_user_id, 'THUMB', 1)); ?>" alt="<?php echo $logged_user_name; ?>" title="<?php echo $logged_user_name; ?>"></div>
                                </div>
                                <div class="msg__desc">
                                    <span class="msg__title"><?php echo $logged_user_name; ?></span>

@@ -12,7 +12,7 @@
             <div class="js-widget-scroll widget-scroll">
                 <?php if ($userParentId == UserAuthentication::getLoggedUserId()) { ?>
                 <div class="widget widget-stats">
-                    <a href="<?php echo CommonHelper::generateUrl('Account', 'credits'); ?>">
+                    <a href="<?php echo UrlHelper::generateUrl('Account', 'credits'); ?>">
                         <div class="cards">
                             <div class="cards-header">
                                 <h5 class="cards-title"><?php echo Labels::getLabel('LBL_Credits', $siteLangId);?></h5>
@@ -42,7 +42,7 @@
                 </div>
                 <?php }?>
                 <div class="widget widget-stats">
-                    <a href="javascript:void(0)" onClick="redirectToPromotions('<?php echo CommonHelper::generateUrl('advertiser', 'promotions');?>')">
+                    <a href="javascript:void(0)" onClick="redirectToPromotions('<?php echo UrlHelper::generateUrl('advertiser', 'promotions');?>')">
                         <div class="cards">
                             <div class="cards-header">
                                 <h5 class="cards-title"><?php echo Labels::getLabel('LBL_Active_Promotions', $siteLangId);?></h5>
@@ -71,7 +71,7 @@
                     </a>
                 </div>
                 <div class="widget widget-stats">
-                    <a href="<?php echo CommonHelper::generateUrl('advertiser', 'promotionCharges');?>">
+                    <a href="<?php echo UrlHelper::generateUrl('advertiser', 'promotionCharges');?>">
                         <div class="cards">
                             <div class="cards-header">
                                 <h5 class="cards-title"><?php echo Labels::getLabel('LBL_All_Promotions', $siteLangId);?></h5>
@@ -108,7 +108,7 @@
                             <h5 class="cards-title "><?php echo Labels::getLabel('LBL_Active_Promotions', $siteLangId);?></h5>
                             <?php if (count($activePromotions)>0) { ?>
                             <div class="action">
-                                <a href="<?php echo CommonHelper::generateUrl('advertiser', 'promotions');?>" class="link"><?php echo Labels::getLabel('Lbl_View_All', $siteLangId);?></a>
+                                <a href="<?php echo UrlHelper::generateUrl('advertiser', 'promotions');?>" class="link"><?php echo Labels::getLabel('Lbl_View_All', $siteLangId);?></a>
                             </div>
                             <?php } ?>
                         </div>
@@ -153,7 +153,7 @@
                                         </td>
                                         <td>
                                             <ul class="actions">
-                                                <li><a  title="<?php echo Labels::getLabel('LBL_Analytics', $siteLangId); ?>"   href="<?php echo CommonHelper::generateUrl('advertiser', 'analytics', array($row['promotion_id'])); ?>"><i class="far fa-file-alt"></i></a></li>
+                                                <li><a  title="<?php echo Labels::getLabel('LBL_Analytics', $siteLangId); ?>"   href="<?php echo UrlHelper::generateUrl('advertiser', 'analytics', array($row['promotion_id'])); ?>"><i class="far fa-file-alt"></i></a></li>
                                             </ul>
                                         </td>
                                     </tr>
@@ -181,7 +181,7 @@
                             <h5 class="cards-title "><?php echo Labels::getLabel('LBL_Transaction_History', $siteLangId);?></h5>
                             <?php if (count($transactions) > 0) { ?>
                             <div class="action">
-                                <a href="<?php echo CommonHelper::generateUrl('Account', 'credits');?>" class="link"><?php echo Labels::getLabel('Lbl_View_All', $siteLangId);?></a>
+                                <a href="<?php echo UrlHelper::generateUrl('Account', 'credits');?>" class="link"><?php echo Labels::getLabel('Lbl_View_All', $siteLangId);?></a>
                             </div>
                             <?php } ?>
                         </div>

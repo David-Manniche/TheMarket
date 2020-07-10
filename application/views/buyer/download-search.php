@@ -62,7 +62,7 @@ foreach ($digitalDownloads as $sn => $row) {
         switch ($key) {
             case 'afile_name':
                 if ($row['downloadable']) {
-                    $fileName = '<a href="'.CommonHelper::generateUrl('Buyer', 'downloadDigitalFile', array($row['afile_id'], $row['afile_record_id'])).'">'.$row['afile_name'].'</a>';
+                    $fileName = '<a href="'.UrlHelper::generateUrl('Buyer', 'downloadDigitalFile', array($row['afile_id'], $row['afile_record_id'])).'">'.$row['afile_name'].'</a>';
                 } else {
                     $fileName = $row['afile_name'];
                 }
@@ -86,7 +86,7 @@ foreach ($digitalDownloads as $sn => $row) {
                 $ul = $td->appendElement("ul", array("class"=>"actions"), '', true);
                 if ($row['downloadable']) {
                     $li = $ul->appendElement("li");
-                    $li->appendElement('a', array('href'=> CommonHelper::generateUrl('Buyer', 'downloadDigitalFile', array($row['afile_id'], $row['afile_record_id'])), 'class'=>'', 'title'=>Labels::getLabel('LBL_View_Order', $siteLangId)), '<i class="fa fa-download"></i>', true);
+                    $li->appendElement('a', array('href'=> UrlHelper::generateUrl('Buyer', 'downloadDigitalFile', array($row['afile_id'], $row['afile_record_id'])), 'class'=>'', 'title'=>Labels::getLabel('LBL_View_Order', $siteLangId)), '<i class="fa fa-download"></i>', true);
                 }
                 break;
             default:

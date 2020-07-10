@@ -41,7 +41,7 @@ foreach ($arr_listing as $sn=>$row){
 				if($row[$key]==0){
 					$td->appendElement('plaintext', array(), $row[$key], true);
 				}else{
-					$td->appendElement('a', array('href'=>CommonHelper::generateUrl('ProductCategories','index',array($row['prodcat_id'])),'title'=>Labels::getLabel('LBL_View_Categories',$adminLangId)),$row[$key] );
+					$td->appendElement('a', array('href'=>UrlHelper::generateUrl('ProductCategories','index',array($row['prodcat_id'])),'title'=>Labels::getLabel('LBL_View_Categories',$adminLangId)),$row[$key] );
 				}
 			break;
 
@@ -49,7 +49,7 @@ foreach ($arr_listing as $sn=>$row){
 				$ul = $td->appendElement("ul",array("class"=>"actions"));
 				if($canEdit){
 					$li = $ul->appendElement("li");
-					$li->appendElement('a', array('href'=>CommonHelper::generateUrl('ProductCategories','form',array('general',$row['prodcat_id'])), 'class'=>'button small green', 'title'=>Labels::getLabel('LBL_Edit',$adminLangId),"onclick"=>"editRecord(".$row['prodcat_id'].")"),'<i class="far fa-edit icon"></i>', true);
+					$li->appendElement('a', array('href'=>UrlHelper::generateUrl('ProductCategories','form',array('general',$row['prodcat_id'])), 'class'=>'button small green', 'title'=>Labels::getLabel('LBL_Edit',$adminLangId),"onclick"=>"editRecord(".$row['prodcat_id'].")"),'<i class="far fa-edit icon"></i>', true);
 
 					$li = $ul->appendElement("li");
 					$li->appendElement('a', array('href'=>"javascript:;", 'class'=>'button small green', 'title'=>Labels::getLabel('LBL_Delete',$adminLangId),"onclick"=>"deleteRecord(".$row['prodcat_id'].")"),'<i class="fa fa-trash  icon"></i>', true);

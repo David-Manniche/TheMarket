@@ -22,7 +22,7 @@
 							$innerDiv=$li->appendElement('div',array('class'=>'dropwrap'));	
 							$innerUl=$innerDiv->appendElement('ul',array('class'=>'linksvertical'));
 							$innerLi=$innerUl->appendElement('li');
-							$innerLi->appendElement('a', array('href'=>CommonHelper::generateUrl('OrderReturnRequests'),'class'=>'button small green redirect--js','title'=>Labels::getLabel('LBL_Back_to_Order_Return_Requests',$adminLangId)),Labels::getLabel('LBL_Back_to_Order_Return_Requests',$adminLangId), true);	
+							$innerLi->appendElement('a', array('href'=>UrlHelper::generateUrl('OrderReturnRequests'),'class'=>'button small green redirect--js','title'=>Labels::getLabel('LBL_Back_to_Order_Return_Requests',$adminLangId)),Labels::getLabel('LBL_Back_to_Order_Return_Requests',$adminLangId), true);	
 							echo $ul->getHtml();		
 						?>							
                     </div>
@@ -86,7 +86,7 @@
 								echo CommonHelper::displayMoneyFormat($returnDataArr['op_refund_amount'], true, true);		
 								?> </td>
 							<?php if(isset($attachedFile) && !empty($attachedFile)){ ?>
-							<td><strong><?php echo Labels::getLabel('LBL_Download_Attached_Files',$adminLangId); ?>:</strong><a href="<?php echo CommonHelper::generateUrl('OrderReturnRequests','downloadAttachedFileForReturn' , array($requestRow["orrequest_id"]));  ?>" class="button small green" > <?php echo Labels::getLabel('LBL_Download',$adminLangId); ?></a></td>
+							<td><strong><?php echo Labels::getLabel('LBL_Download_Attached_Files',$adminLangId); ?>:</strong><a href="<?php echo UrlHelper::generateUrl('OrderReturnRequests','downloadAttachedFileForReturn' , array($requestRow["orrequest_id"]));  ?>" class="button small green" > <?php echo Labels::getLabel('LBL_Download',$adminLangId); ?></a></td>
 							<?php } ?>
                             </tr>   
                         </table>

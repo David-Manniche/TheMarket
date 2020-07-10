@@ -44,7 +44,7 @@ foreach ($arr_listing as $sn=>$row){
 						"onclick"=>"questionBankForm(".$row['qbank_id'].")"),'<i class="far fa-edit icon"></i>', true);
 						
 					$li = $ul->appendElement("li");
-					$li->appendElement('a', array('href'=>CommonHelper::generateUrl('Questions','index',array($row['qbank_id'])),'class'=>'button small green', 'title'=>Labels::getLabel('LBL_Questions',$adminLangId)),
+					$li->appendElement('a', array('href'=>UrlHelper::generateUrl('Questions','index',array($row['qbank_id'])),'class'=>'button small green', 'title'=>Labels::getLabel('LBL_Questions',$adminLangId)),
 						'<i class="ion-navicon-round icon"></i>', true);	
 
 					$li = $ul->appendElement("li");

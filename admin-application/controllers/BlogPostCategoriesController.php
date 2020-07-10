@@ -364,7 +364,7 @@ class BlogPostCategoriesController extends AdminBaseController
         $parameters = FatApp::getParameters();
         switch ($action) {
             case 'index':
-                $nodes[] = array('title' => Labels::getLabel('LBL_Root_categories', $this->adminLangId), 'href' => CommonHelper::generateUrl('BlogPostCategories'));
+                $nodes[] = array('title' => Labels::getLabel('LBL_Root_categories', $this->adminLangId), 'href' => UrlHelper::generateUrl('BlogPostCategories'));
                 if (isset($parameters[0]) && $parameters[0] > 0) {
                     $parent = FatUtility::int($parameters[0]);
                     if ($parent > 0) {
@@ -373,7 +373,7 @@ class BlogPostCategoriesController extends AdminBaseController
                         $category_structure = $bpCatObj->getCategoryStructure($parent);
                         foreach ($category_structure as $catKey => $catVal) {
                             if ($cntInc < count($category_structure)) {
-                                $nodes[] = array('title' => $catVal["bpcategory_identifier"], 'href' => CommonHelper::generateUrl('BlogPostCategories', 'index', array($catVal['bpcategory_id'])));
+                                $nodes[] = array('title' => $catVal["bpcategory_identifier"], 'href' => UrlHelper::generateUrl('BlogPostCategories', 'index', array($catVal['bpcategory_id'])));
                             } else {
                                 $nodes[] = array('title' => $catVal["bpcategory_identifier"]);
                             }

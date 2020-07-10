@@ -88,7 +88,7 @@
 	$frm = new Form('frmOptionsListing', array('id'=>'frmOptionsListing'));
 	$frm->setFormTagAttribute('class', 'web_form last_td_nowrap actionButtons-js');
 	$frm->setFormTagAttribute('onsubmit', 'formAction(this, reloadList ); return(false);');
-	$frm->setFormTagAttribute('action', CommonHelper::generateUrl('Options', 'deleteSelected'));
+	$frm->setFormTagAttribute('action', UrlHelper::generateUrl('Options', 'deleteSelected'));
 	$frm->addHiddenField('', 'status');
 
 	echo $frm->getFormTag();

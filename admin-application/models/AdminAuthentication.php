@@ -92,7 +92,7 @@ class AdminAuthentication extends FatModel
             if (FatUtility::isAjaxCall()) {
                 FatUtility::dieWithError(Labels::getLabel('MSG_Your_session_seems_to_be_expired.', CommonHelper::getLangId()));
             }
-            FatApp::redirectUser(CommonHelper::generateUrl());
+            FatApp::redirectUser(UrlHelper::generateUrl());
         }
 
         return $_SESSION[static::SESSION_ELEMENT_NAME][$key];

@@ -194,26 +194,26 @@ class ProductSearchController extends MyAppController
             case 'index':
                 $arr = array(
                     'pageTitle' => Labels::getLabel('LBL_All_PRODUCTS', $this->siteLangId),
-                    'canonicalUrl' => CommonHelper::generateFullUrl('Products', 'index'),
+                    'canonicalUrl' => UrlHelper::generateFullUrl('Products', 'index'),
                     'productSearchPageType' => SavedSearchProduct::PAGE_PRODUCT_INDEX,
-                    'bannerListigUrl' => CommonHelper::generateFullUrl('Banner', 'allProducts'),
+                    'bannerListigUrl' => UrlHelper::generateFullUrl('Banner', 'allProducts'),
                 );
                 break;
             case 'search':
                 $arr = array(
                     'pageTitle'=> Labels::getLabel('LBL_Search_results_for', $this->siteLangId),
-                    'canonicalUrl'=>CommonHelper::generateFullUrl('Products', 'search'),
+                    'canonicalUrl'=>UrlHelper::generateFullUrl('Products', 'search'),
                     'productSearchPageType'=>SavedSearchProduct::PAGE_PRODUCT,
-                    'bannerListigUrl'=>CommonHelper::generateFullUrl('Banner', 'searchListing'),
+                    'bannerListigUrl'=>UrlHelper::generateFullUrl('Banner', 'searchListing'),
                     'keyword' => $keyword,
                 );
                 break;
             case 'featured':
                 $arr = array(
                     'pageTitle' => Labels::getLabel('LBL_FEATURED_PRODUCTS', $this->siteLangId),
-                    'canonicalUrl' => CommonHelper::generateFullUrl('Products', 'featured'),
+                    'canonicalUrl' => UrlHelper::generateFullUrl('Products', 'featured'),
                     'productSearchPageType' => SavedSearchProduct::PAGE_FEATURED_PRODUCT,
-                    'bannerListigUrl' => CommonHelper::generateFullUrl('Banner', 'searchListing'),
+                    'bannerListigUrl' => UrlHelper::generateFullUrl('Banner', 'searchListing'),
                 );
                 $get['featured'] = 1;
                 break;

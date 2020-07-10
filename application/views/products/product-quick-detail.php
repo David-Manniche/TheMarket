@@ -26,7 +26,7 @@
         <div class="product-detail product-description product-detail-quickview">
             <div>
                 <div class="product-description-inner">
-                    <div class="products__title"><a title="<?php echo $product['selprod_title']; ?>" href="<?php echo !isset($product['promotion_id']) ? CommonHelper::generateUrl('Products', 'View', array($product['selprod_id'])) : CommonHelper::generateUrl('Products', 'track', array($product['promotion_record_id']))?>"><?php echo $product['selprod_title'];?></a>
+                    <div class="products__title"><a title="<?php echo $product['selprod_title']; ?>" href="<?php echo !isset($product['promotion_id']) ? UrlHelper::generateUrl('Products', 'View', array($product['selprod_id'])) : UrlHelper::generateUrl('Products', 'track', array($product['promotion_record_id']))?>"><?php echo $product['selprod_title'];?></a>
                     </div>
                     <div class="gap"></div>
                     <div class="products__price"><?php echo CommonHelper::displayMoneyFormat($product['theprice']); ?>
@@ -67,7 +67,7 @@
 									<?php foreach ($option['values'] as $opVal) {
 										$isAvailable = true;
 										if (in_array($opVal['optionvalue_id'], $product['selectedOptionValues'])) {
-											$optionUrl = CommonHelper::generateUrl('Products', 'view', array($product['selprod_id']));
+											$optionUrl = UrlHelper::generateUrl('Products', 'view', array($product['selprod_id']));
 											$selprodId = $product['selprod_id'];
 										} else {
 											$optionUrl = Product::generateProductOptionsUrl($product['selprod_id'], $selectedOptionsArr, $option['option_id'], $opVal['optionvalue_id'], $product['product_id']);

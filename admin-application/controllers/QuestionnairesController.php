@@ -274,7 +274,7 @@ class QuestionnairesController extends AdminBaseController
         $questionnaireId = FatUtility::int($questionnaireId);
         if ($questionnaireId <= 0) {
             Message::addErrorMessage($this->str_invalid_request);
-            FatApp::redirectUser(CommonHelper::generateUrl('Questionnaires'));
+            FatApp::redirectUser(UrlHelper::generateUrl('Questionnaires'));
         }
         $this->objPrivilege->canViewQuestionnaires();
         
@@ -294,7 +294,7 @@ class QuestionnairesController extends AdminBaseController
         $questionnaireId = FatUtility::int($questionnaireId);
         if ($questionnaireId <= 0) {
             Message::addErrorMessage($this->str_invalid_request);
-            FatApp::redirectUser(CommonHelper::generateUrl('Questionnaires'));
+            FatApp::redirectUser(UrlHelper::generateUrl('Questionnaires'));
         }
         $this->objPrivilege->canViewQuestionnaires();
         
@@ -391,7 +391,7 @@ class QuestionnairesController extends AdminBaseController
         $record = FatApp::getDb()->fetch($rs);
         $this->set('questionnaireData', $record);
         
-        $this->set('link', CommonHelper::generateFullUrl('Questionnaire', 'view', array($questionnaireId), CONF_WEBROOT_FRONT_URL));
+        $this->set('link', UrlHelper::generateFullUrl('Questionnaire', 'view', array($questionnaireId), CONF_WEBROOT_FRONT_URL));
         $this->_template->render(false, false);
     }
     

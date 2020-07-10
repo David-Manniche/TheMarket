@@ -6,7 +6,7 @@ $prodBrandFrm->developerTags['fld_default_col'] = 12;
 $prodBrandFrm->setFormTagAttribute('onsubmit', 'setupBrand(this); return(false);');
 $urlFld = $prodBrandFrm->getField('urlrewrite_custom');
 $urlFld->setFieldTagAttribute('id', "urlrewrite_custom");
-$urlFld->htmlAfterField = "<small class='text--small'>" . CommonHelper::generateFullUrl('Brands', 'View', array($brand_id), CONF_WEBROOT_FRONT_URL) . '</small>';
+$urlFld->htmlAfterField = "<small class='text--small'>" . UrlHelper::generateFullUrl('Brands', 'View', array($brand_id), CONF_WEBROOT_FRONT_URL) . '</small>';
 $urlFld->setFieldTagAttribute('onkeyup', "getSlugUrl(this,this.value)");
 $fld = $prodBrandFrm->getField('brand_status');
 $fld->setFieldTagAttribute('onChange', 'showHideCommentBox(this.value)');

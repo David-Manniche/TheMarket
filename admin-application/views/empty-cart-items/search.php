@@ -33,8 +33,8 @@ foreach ($arrListing as $sn => $row) {
                 $td->appendElement('plaintext', array(), $sr_no);
                 break;
             case 'emptycartitem_url':
-                $itemUrl = str_replace('{SITEROOT}', CommonHelper::generateFullUrl('', '', array(), CONF_WEBROOT_FRONT_URL), $row[$key]);
-                $itemUrl = str_replace('{siteroot}', CommonHelper::generateFullUrl('', '', array(), CONF_WEBROOT_FRONT_URL), $itemUrl);
+                $itemUrl = str_replace('{SITEROOT}', UrlHelper::generateFullUrl('', '', array(), CONF_WEBROOT_FRONT_URL), $row[$key]);
+                $itemUrl = str_replace('{siteroot}', UrlHelper::generateFullUrl('', '', array(), CONF_WEBROOT_FRONT_URL), $itemUrl);
                 $td->appendElement('plaintext', array(), $itemUrl);
                 break;
             case 'emptycartitem_identifier':
@@ -76,7 +76,7 @@ if (count($arrListing) == 0) {
 $frm = new Form('frmEmptyCartItemListing', array('id'=>'frmEmptyCartItemListing'));
 $frm->setFormTagAttribute('class', 'web_form last_td_nowrap actionButtons-js');
 $frm->setFormTagAttribute('onsubmit', 'formAction(this, reloadList ); return(false);');
-$frm->setFormTagAttribute('action', CommonHelper::generateUrl('EmptyCartItems', 'toggleBulkStatuses'));
+$frm->setFormTagAttribute('action', UrlHelper::generateUrl('EmptyCartItems', 'toggleBulkStatuses'));
 $frm->addHiddenField('', 'status');
 
 echo $frm->getFormTag();

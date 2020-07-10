@@ -292,12 +292,12 @@ class MobileAppApiController extends MyAppController
                             foreach ($collection_products as $skey => $sval) {
                                 $arr_product_val = array(
                                 "discounted_text" => CommonHelper::showProductDiscountedText($sval, $this->siteLangId),
-                                "image_url" => CommonHelper::generateFullUrl('image', 'product', array($sval['product_id'], "MEDIUM", $sval['selprod_id'], 0, $this->siteLangId)),
+                                "image_url" => UrlHelper::generateFullUrl('image', 'product', array($sval['product_id'], "MEDIUM", $sval['selprod_id'], 0, $this->siteLangId)),
                                 "currency_selprod_price" => CommonHelper::displayMoneyFormat($sval['selprod_price'], true, false, false),
                                 "currency_theprice" => CommonHelper::displayMoneyFormat($sval['theprice'], true, false, false),
                                 );
                                 $home_collection_products[] = array_merge($sval, $arr_product_val);
-                                //$home_collection_products[] = array_merge($sval, array("image_url"=>CommonHelper::generateFullUrl('image','product', array($sval['product_id'], "MEDIUM", $sval['selprod_id'], 0, $this->siteLangId))));
+                                //$home_collection_products[] = array_merge($sval, array("image_url"=>UrlHelper::generateFullUrl('image','product', array($sval['product_id'], "MEDIUM", $sval['selprod_id'], 0, $this->siteLangId))));
                             }
                             if (MOBILE_APP_API_VERSION < '1.3') {
                                 $collections[$collection['collection_layout_type']][$collection['collection_id']]['products'] = $home_collection_products;
@@ -341,7 +341,7 @@ class MobileAppApiController extends MyAppController
                             $collection_categories = $this->db->fetchAll($rs);
                             $home_collection_categories = array();
                             foreach ($collection_categories as $skey => $sval) {
-                                $home_collection_categories[] = array_merge($sval, array("image_url" => CommonHelper::generateFullUrl('category', 'icon', array($sval['prodcat_id'], $this->siteLangId))));
+                                $home_collection_categories[] = array_merge($sval, array("image_url" => UrlHelper::generateFullUrl('category', 'icon', array($sval['prodcat_id'], $this->siteLangId))));
                             }
 
                             if (MOBILE_APP_API_VERSION < '1.3') {
@@ -397,8 +397,8 @@ class MobileAppApiController extends MyAppController
                                     $rating = SelProdRating::getSellerRating($shopsData['shop_user_id']);
                                 }
                                 $shopsData['rating'] = $rating;
-                                $shopsData['shop_logo'] = CommonHelper::generateFullUrl('image', 'shopLogo', array($shopsData['shop_id'], $this->siteLangId));
-                                $shopsData['shop_banner'] = CommonHelper::generateFullUrl('image', 'shopBanner', array($shopsData['shop_id'], $this->siteLangId));
+                                $shopsData['shop_logo'] = UrlHelper::generateFullUrl('image', 'shopLogo', array($shopsData['shop_id'], $this->siteLangId));
+                                $shopsData['shop_banner'] = UrlHelper::generateFullUrl('image', 'shopBanner', array($shopsData['shop_id'], $this->siteLangId));
 
                                 if (MOBILE_APP_API_VERSION < '1.3') {
                                     $collections[$collection['collection_layout_type']][$collection['collection_id']]['shops'][$shopsData['shop_id']]['shopData'] = $shopsData;
@@ -413,13 +413,13 @@ class MobileAppApiController extends MyAppController
                                 foreach ($collectionProds as $pkey => $pval) {
                                     $arr_product_val = array(
                                     "discounted_text" => CommonHelper::showProductDiscountedText($pval, $this->siteLangId),
-                                    "image_url" => CommonHelper::generateFullUrl('image', 'product', array($pval['product_id'], "MEDIUM", $pval['selprod_id'], 0, $this->siteLangId)),
+                                    "image_url" => UrlHelper::generateFullUrl('image', 'product', array($pval['product_id'], "MEDIUM", $pval['selprod_id'], 0, $this->siteLangId)),
                                     "currency_selprod_price" => CommonHelper::displayMoneyFormat($pval['selprod_price'], true, false, false),
                                     "currency_theprice" => CommonHelper::displayMoneyFormat($pval['theprice'], true, false, false),
                                     );
                                     $home_collectionProds[] = array_merge($pval, $arr_product_val);
 
-                                    //$home_collectionProds[] = array_merge($pval, array("image_url"=>CommonHelper::generateFullUrl('image','product', array($pval['product_id'], "MEDIUM", $pval['selprod_id'], 0, $this->siteLangId))));
+                                    //$home_collectionProds[] = array_merge($pval, array("image_url"=>UrlHelper::generateFullUrl('image','product', array($pval['product_id'], "MEDIUM", $pval['selprod_id'], 0, $this->siteLangId))));
                                 }
 
 
@@ -490,7 +490,7 @@ class MobileAppApiController extends MyAppController
             $slides = $this->db->fetchAll($rs, 'slide_id');
             $home_slides = array();
             foreach ($slides as $key => $val) {
-                $home_slides[] = array_merge($val, array("image_url" => CommonHelper::generateFullUrl('Image', 'slide', array($val['slide_id'], applicationConstants::SCREEN_MOBILE, $this->siteLangId))));
+                $home_slides[] = array_merge($val, array("image_url" => UrlHelper::generateFullUrl('Image', 'slide', array($val['slide_id'], applicationConstants::SCREEN_MOBILE, $this->siteLangId))));
             }
         }
         /* ] */
@@ -537,7 +537,7 @@ class MobileAppApiController extends MyAppController
 
                 $home_banners = array();
                 foreach ($bannerListing as $bkey => $bval) {
-                    $home_banners[] = array_merge($bval, array("image_url" => CommonHelper::generateFullUrl('Banner', 'HomePageAfterFirstLayout', array($bval['banner_id'], $this->siteLangId))));
+                    $home_banners[] = array_merge($bval, array("image_url" => UrlHelper::generateFullUrl('Banner', 'HomePageAfterFirstLayout', array($bval['banner_id'], $this->siteLangId))));
                 }
                 $banners[$val['blocation_key']]['banners'] = $home_banners;
                 //commonhelper::printarray($banners[$val['blocation_key']]['banners']);
@@ -576,8 +576,8 @@ class MobileAppApiController extends MyAppController
                 $productShopSrchTempObj->addGroupBy('selprod_product_id');
                 $productShopSrchTempObj->setPageSize(2);
                 $Prs = $productShopSrchTempObj->getResultSet();
-                $shops['shop_logo'] = CommonHelper::generateFullUrl('image', 'shopLogo', array($shops['shop_id'], $this->siteLangId));
-                $shops['shop_banner'] = CommonHelper::generateFullUrl('image', 'shopBanner', array($shops['shop_id'], $this->siteLangId));
+                $shops['shop_logo'] = UrlHelper::generateFullUrl('image', 'shopLogo', array($shops['shop_id'], $this->siteLangId));
+                $shops['shop_banner'] = UrlHelper::generateFullUrl('image', 'shopBanner', array($shops['shop_id'], $this->siteLangId));
                 $sponsoredShops['shops'][$shops['shop_id']]['shopData'] = $shops;
                 $sponsoredShops['shops'][$shops['shop_id']]['shopData']['promotion_id'] = $shops['promotion_id'];
                 if (!FatApp::getConfig("CONF_ALLOW_REVIEWS", FatUtility::VAR_INT, 0)) {
@@ -591,7 +591,7 @@ class MobileAppApiController extends MyAppController
                 foreach ($sponsoredShops_products as $skey => $sval) {
                     $arr_product_val = array(
                       "discounted_text" => CommonHelper::showProductDiscountedText($sval, $this->siteLangId),
-                      "image_url" => CommonHelper::generateFullUrl('image', 'product', array($sval['product_id'], "MEDIUM", $sval['selprod_id'], 0, $this->siteLangId)),
+                      "image_url" => UrlHelper::generateFullUrl('image', 'product', array($sval['product_id'], "MEDIUM", $sval['selprod_id'], 0, $this->siteLangId)),
                       "currency_selprod_price" => CommonHelper::displayMoneyFormat($sval['selprod_price'], true, false, false),
                       "currency_theprice" => CommonHelper::displayMoneyFormat($sval['theprice'], true, false, false),
                                         );
@@ -635,7 +635,7 @@ class MobileAppApiController extends MyAppController
             foreach ($sponsoredProds as $skey => $sval) {
                 $arr_product_val = array(
                 "discounted_text" => CommonHelper::showProductDiscountedText($sval, $this->siteLangId),
-                "image_url" => CommonHelper::generateFullUrl('image', 'product', array($sval['product_id'], "MEDIUM", $sval['selprod_id'], 0, $this->siteLangId)),
+                "image_url" => UrlHelper::generateFullUrl('image', 'product', array($sval['product_id'], "MEDIUM", $sval['selprod_id'], 0, $this->siteLangId)),
                 "currency_selprod_price" => CommonHelper::displayMoneyFormat($sval['selprod_price'], true, false, false),
                 "currency_theprice" => CommonHelper::displayMoneyFormat($sval['theprice'], true, false, false),
                                         );
@@ -1096,15 +1096,15 @@ class MobileAppApiController extends MyAppController
             case 'PRODUCT_PRIMARY':
                 $product_id = FatApp::getPostedData('product_id', null, '');
                 $seller_product_id = FatApp::getPostedData('seller_product_id', null, '');
-                $image_url = CommonHelper::generateFullUrl('image', 'product', array($product_id, "MEDIUM", $seller_product_id, 0, $this->siteLangId));
+                $image_url = UrlHelper::generateFullUrl('image', 'product', array($product_id, "MEDIUM", $seller_product_id, 0, $this->siteLangId));
                 break;
             case 'SLIDE':
                 $slide_id = FatApp::getPostedData('slide_id', null, '');
-                $image_url = CommonHelper::generateFullUrl('Image', 'slide', array($slide_id, 0, $this->siteLangId));
+                $image_url = UrlHelper::generateFullUrl('Image', 'slide', array($slide_id, 0, $this->siteLangId));
                 break;
             case 'BANNER':
                 $banner_id = FatApp::getPostedData('banner_id', null, '');
-                $image_url = CommonHelper::generateFullUrl('Banner', 'HomePageAfterFirstLayout', array($banner_id, $this->siteLangId));
+                $image_url = UrlHelper::generateFullUrl('Banner', 'HomePageAfterFirstLayout', array($banner_id, $this->siteLangId));
                 break;
         }
         die($this->json_encode_unicode(array('status' => 1, 'currencySymbol' => $this->currencySymbol, 'unread_notifications' => $this->totalUnreadNotificationCount, 'data' => $image_url)));
@@ -1207,7 +1207,7 @@ class MobileAppApiController extends MyAppController
         if (!$product) {
             FatUtility::exitWithErrorCode(404);
             /* Message::addErrorMessage("Invalid Request");
-            FatApp::redirectUser(CommonHelper::generateUrl('Products')); */
+            FatApp::redirectUser(UrlHelper::generateUrl('Products')); */
         }
 
         /* over all catalog product reviews */
@@ -1286,7 +1286,7 @@ class MobileAppApiController extends MyAppController
         }
         $productGalleryImagesArr = array();
         foreach ($productGroupImages as $image) {
-            $mainImgUrl = CommonHelper::generateFullUrl('Image', 'product', array($image['afile_record_id'], 'MEDIUM', 0, $image['afile_id'] ));
+            $mainImgUrl = UrlHelper::generateFullUrl('Image', 'product', array($image['afile_record_id'], 'MEDIUM', 0, $image['afile_id'] ));
             $productGalleryImagesArr[] = array_merge($image, array('image_url' => $mainImgUrl));
         }
         /*commonhelper::printarray($productGalleryImagesArr);
@@ -1433,7 +1433,7 @@ class MobileAppApiController extends MyAppController
             }
 
             $product_description = trim(CommonHelper::subStringByWords(strip_tags(CommonHelper::renderHtml($product["product_description"], true)), 500));
-            $product_description .= ' - ' . Labels::getLabel('LBL_See_more_at', $this->siteLangId) . ": " . CommonHelper::getCurrUrl();
+            $product_description .= ' - ' . Labels::getLabel('LBL_See_more_at', $this->siteLangId) . ": " . UrlHelper::getCurrUrl();
 
             $productImageUrl = '';
             /* $productImageUrl = FatUtility::generateFullUrl('Image','product', array($product['product_id'],'', $product['selprod_id'],0,$this->siteLangId )); */
@@ -1530,7 +1530,7 @@ class MobileAppApiController extends MyAppController
             "currency_selprod_price" => CommonHelper::displayMoneyFormat($pval['selprod_price'], true, false, false),
             "currency_theprice" => CommonHelper::displayMoneyFormat($pval['theprice'], true, false, false),
             "discounted_text" => CommonHelper::showProductDiscountedText($pval, $this->siteLangId),
-            "image_url" => CommonHelper::generateFullUrl('image', 'product', array($pval['product_id'], "MEDIUM", $pval['selprod_id'], 0, $this->siteLangId)));
+            "image_url" => UrlHelper::generateFullUrl('image', 'product', array($pval['product_id'], "MEDIUM", $pval['selprod_id'], 0, $this->siteLangId)));
             $pd_recommendedProducts[] = array_merge($pval, $arr);
         }
 
@@ -1647,8 +1647,8 @@ class MobileAppApiController extends MyAppController
         $srch->addCondition('shop_id', '=', $product['shop_id']);
         $shopRs = $srch->getResultSet();
         $shop = FatApp::getDb()->fetch($shopRs);
-        $shop['shop_logo'] = CommonHelper::generateFullUrl('image', 'shopLogo', array($shop['shop_id'], $this->siteLangId));
-        $shop['shop_banner'] = CommonHelper::generateFullUrl('image', 'shopBanner', array($shop['shop_id'], $this->siteLangId));
+        $shop['shop_logo'] = UrlHelper::generateFullUrl('image', 'shopLogo', array($shop['shop_id'], $this->siteLangId));
+        $shop['shop_banner'] = UrlHelper::generateFullUrl('image', 'shopBanner', array($shop['shop_id'], $this->siteLangId));
 
 
         if (!FatApp::getConfig("CONF_ALLOW_REVIEWS", FatUtility::VAR_INT, 0)) {
@@ -1700,7 +1700,7 @@ class MobileAppApiController extends MyAppController
             $bannerListing = FatApp::getDb()->fetchAll($rs, 'banner_id');
 
             foreach ($bannerListing as $bkey => $bval) {
-                $product_bannerListing[] = array_merge($val, $bval, array("image_url" => CommonHelper::generateFullUrl('Banner', 'HomePageAfterFirstLayout', array($bval['banner_id'], $this->siteLangId))));
+                $product_bannerListing[] = array_merge($val, $bval, array("image_url" => UrlHelper::generateFullUrl('Banner', 'HomePageAfterFirstLayout', array($bval['banner_id'], $this->siteLangId))));
             }
 
             $banners[$val['blocation_key']]['banners'] = $product_bannerListing;
@@ -1886,7 +1886,7 @@ class MobileAppApiController extends MyAppController
         if (!empty($user)) {
             $arr = array(
             'user_id' => $user['user_id'],
-            'user_image' => CommonHelper::generateFullUrl('Image', 'user', array($user['user_id'], 'ORIGINAL')),
+            'user_image' => UrlHelper::generateFullUrl('Image', 'user', array($user['user_id'], 'ORIGINAL')),
             'name' => $user['user_name'],
             'email' => $user['credential_email'],
             'username' => $user['credential_username'],
@@ -1964,7 +1964,7 @@ class MobileAppApiController extends MyAppController
                 )
             );
 
-            $imageUrl = CommonHelper::generateFullUrl('Image', 'user', array($userId, 'ORIGINAL'));
+            $imageUrl = UrlHelper::generateFullUrl('Image', 'user', array($userId, 'ORIGINAL'));
         }
 
         if ($post['action'] == "avatar") {
@@ -2186,7 +2186,7 @@ class MobileAppApiController extends MyAppController
         'token' => $generatedToken,
         'user_name' => $userInfo["user_name"],
         'user_id' => $userInfo["user_id"],
-        'user_image' => CommonHelper::generateFullUrl('image', 'user', array($userInfo['user_id'], 'thumb', 1))
+        'user_image' => UrlHelper::generateFullUrl('image', 'user', array($userInfo['user_id'], 'thumb', 1))
         );
         die($this->json_encode_unicode($arr));
     }
@@ -2348,7 +2348,7 @@ class MobileAppApiController extends MyAppController
         }
         $userInfo = $userObj->getUserInfo(array('user_id', 'user_name'), true, true);
         $arr = array('status' => 1, 'token' => $token, 'user_name' => $userInfo["user_name"], 'user_id' => $userInfo["user_id"],
-        'user_image' => CommonHelper::generateFullUrl('image', 'user', array($userInfo['user_id'], 'ORIGINAL')));
+        'user_image' => UrlHelper::generateFullUrl('image', 'user', array($userInfo['user_id'], 'ORIGINAL')));
         die($this->json_encode_unicode($arr));
     }
 
@@ -2427,7 +2427,7 @@ class MobileAppApiController extends MyAppController
                     }
                     $userInfo = $userObj->getUserInfo(array('user_id', 'user_name'), true, true);
                     $arr = array('status' => 1, 'token' => $token, 'user_name' => $userInfo["user_name"], 'user_id' => $userInfo["user_id"],
-                    'user_image' => CommonHelper::generateFullUrl('image', 'user', array($userInfo['user_id'], 'ORIGINAL')));
+                    'user_image' => UrlHelper::generateFullUrl('image', 'user', array($userInfo['user_id'], 'ORIGINAL')));
                     die($this->json_encode_unicode($arr));
                 }
             } else {
@@ -2474,8 +2474,8 @@ class MobileAppApiController extends MyAppController
         $message_records = array();
         foreach ($records as $mkey => $mval) {
             $profile_images_arr = array(
-             "message_from_profile_url" => CommonHelper::generateFullUrl('image', 'user', array($mval['message_from_user_id'], 'thumb', 1)),
-             "message_to_profile_url" => CommonHelper::generateFullUrl('image', 'user', array($mval['message_to_user_id'], 'thumb', 1)),
+             "message_from_profile_url" => UrlHelper::generateFullUrl('image', 'user', array($mval['message_from_user_id'], 'thumb', 1)),
+             "message_to_profile_url" => UrlHelper::generateFullUrl('image', 'user', array($mval['message_to_user_id'], 'thumb', 1)),
              "message_timestamp" => strtotime($mval['message_date'])
                                         );
             $message_records[] = array_merge($mval, $profile_images_arr);
@@ -2538,8 +2538,8 @@ class MobileAppApiController extends MyAppController
         if (!empty($threadDetails)) {
             foreach ($threadDetails as $mkey => $mval) {
                 $profile_images_arr = array(
-                 "message_from_profile_url" => CommonHelper::generateFullUrl('image', 'user', array($mval['message_from_user_id'], 'ORIGINAL')),
-                 "message_to_profile_url" => CommonHelper::generateFullUrl('image', 'user', array($mval['message_to_user_id'], 'ORIGINAL')),
+                 "message_from_profile_url" => UrlHelper::generateFullUrl('image', 'user', array($mval['message_from_user_id'], 'ORIGINAL')),
+                 "message_to_profile_url" => UrlHelper::generateFullUrl('image', 'user', array($mval['message_to_user_id'], 'ORIGINAL')),
                  "message_timestamp" => strtotime($mval['message_date'])
                                 );
                 $thread_message_records[] = array_merge($mval, $profile_images_arr);
@@ -3145,7 +3145,7 @@ class MobileAppApiController extends MyAppController
         $productsArr = $cartObj->getProducts($this->siteLangId);
         $cartProductsArr = array();
         foreach ($productsArr as $ckey => $cval) {
-            $product['image_url'] = CommonHelper::generateFullUrl('image', 'product', array($cval['product_id'], "", $cval['selprod_id'], 0, $this->siteLangId));
+            $product['image_url'] = UrlHelper::generateFullUrl('image', 'product', array($cval['product_id'], "", $cval['selprod_id'], 0, $this->siteLangId));
             $product['currency_selprod_price'] = CommonHelper::displayMoneyFormat($cval['selprod_price'], true, false, false);
             $product['currency_theprice'] = CommonHelper::displayMoneyFormat($cval['theprice'], true, false, false);
             $product['currency_tax'] = CommonHelper::displayMoneyFormat($cval['tax'], true, false, false);
@@ -3254,7 +3254,7 @@ class MobileAppApiController extends MyAppController
             }
             $cart_products[$cartkey]['manual_shipping_rates'] = $shipping_options;
             $cart_products[$cartkey]['shipping_free_availbilty'] = $free_shipping_options;
-            $cart_products[$cartkey]['image_url'] = CommonHelper::generateFullUrl('image', 'product', array($cartval['product_id'], "MEDIUM", $cartval['selprod_id'], 0, $this->siteLangId));
+            $cart_products[$cartkey]['image_url'] = UrlHelper::generateFullUrl('image', 'product', array($cartval['product_id'], "MEDIUM", $cartval['selprod_id'], 0, $this->siteLangId));
 
             $cart_products[$cartkey]['currency_theprice'] = CommonHelper::displayMoneyFormat($cartval['theprice'], true, false, false);
             $cart_products[$cartkey]['currency_tax'] = CommonHelper::displayMoneyFormat($cartval['tax'], true, false, false);
@@ -3632,8 +3632,8 @@ class MobileAppApiController extends MyAppController
             $shopsArr[$cnt]['totalProducts'] = $prodSrch->recordCount();
             $shopsArr[$cnt]['shopRating'] = SelProdRating::getSellerRating($val['shop_user_id']);
             $shopsArr[$cnt]['shopTotalReviews'] = SelProdReview::getSellerTotalReviews($val['shop_user_id']);
-            $shopsArr[$cnt]['logo'] = CommonHelper::generateFullUrl('image', 'shopLogo', array($val['shop_id'], $this->siteLangId));
-            $shopsArr[$cnt]['banner'] = CommonHelper::generateFullUrl('image', 'shopBanner', array($val['shop_id'], $this->siteLangId));
+            $shopsArr[$cnt]['logo'] = UrlHelper::generateFullUrl('image', 'shopLogo', array($val['shop_id'], $this->siteLangId));
+            $shopsArr[$cnt]['banner'] = UrlHelper::generateFullUrl('image', 'shopBanner', array($val['shop_id'], $this->siteLangId));
             //commonhelper::printarray($shopProducts);
             //die();
             $cnt++;
@@ -3784,8 +3784,8 @@ class MobileAppApiController extends MyAppController
         if (!$shop) {
             FatUtility::dieJsonError(Labels::getLabel('MSG_INVALID_REQUEST', $this->siteLangId));
         }
-        $shop['logo'] = CommonHelper::generateFullUrl('image', 'shopLogo', array($shop['shop_id'], $this->siteLangId));
-        $shop['banner'] = CommonHelper::generateFullUrl('image', 'shopBanner', array($shop['shop_id'], $this->siteLangId));
+        $shop['logo'] = UrlHelper::generateFullUrl('image', 'shopLogo', array($shop['shop_id'], $this->siteLangId));
+        $shop['banner'] = UrlHelper::generateFullUrl('image', 'shopBanner', array($shop['shop_id'], $this->siteLangId));
         $prodSrchObj = new ProductSearch($this->siteLangId);
         $prodSrchObj->setDefinedCriteria();
         $prodSrchObj->joinSellerSubscription();
@@ -6587,9 +6587,9 @@ class MobileAppApiController extends MyAppController
             if ($authentication->login($user['credential_username'], $user['credential_password'], $_SERVER['REMOTE_ADDR'], false)) {
                 if ($uObj->deleteUserAPITempToken()) {
                     if ($is_wallet) {
-                        FatApp::redirectUser(CommonHelper::generateUrl('WalletPay', 'Recharge', array($order_id, 'api', $this->siteLangId, $this->siteCurrencyId)));
+                        FatApp::redirectUser(UrlHelper::generateUrl('WalletPay', 'Recharge', array($order_id, 'api', $this->siteLangId, $this->siteCurrencyId)));
                     } else {
-                        FatApp::redirectUser(CommonHelper::generateUrl('checkout', 'index', array('api', $this->siteLangId, $this->siteCurrencyId)));
+                        FatApp::redirectUser(UrlHelper::generateUrl('checkout', 'index', array('api', $this->siteLangId, $this->siteCurrencyId)));
                     }
                 }
             }
@@ -6925,7 +6925,7 @@ class MobileAppApiController extends MyAppController
             FatUtility::dieJSONError($orderObj->getError());
         }
         die($this->json_encode_unicode(array('status' => 1, 'order_id' => $order_id)));
-        /*$this->set( 'redirectUrl', CommonHelper::generateUrl('WalletPay', 'Recharge', array($order_id)) );
+        /*$this->set( 'redirectUrl', UrlHelper::generateUrl('WalletPay', 'Recharge', array($order_id)) );
         $this->set('msg', Labels::getLabel('MSG_Redirecting',$this->siteLangId));
         $this->_template->render(false, false, 'json-success.php');*/
     }
@@ -6941,7 +6941,7 @@ class MobileAppApiController extends MyAppController
                 'status' => 1,
                 'title' => $cpage['cpage_title'],
                 'content' => $cpage['cpage_content'],
-                'web_url' => CommonHelper::generateFullUrl('Cms', 'view', array($cpage['cpage_id'], true)),
+                'web_url' => UrlHelper::generateFullUrl('Cms', 'view', array($cpage['cpage_id'], true)),
                 )
             )
         );
@@ -6958,7 +6958,7 @@ class MobileAppApiController extends MyAppController
                 'status' => 1,
                 'title' => $cpage['cpage_title'],
                 'content' => $cpage['cpage_content'],
-                'web_url' => CommonHelper::generateFullUrl('Cms', 'view', array($cpage['cpage_id'])),
+                'web_url' => UrlHelper::generateFullUrl('Cms', 'view', array($cpage['cpage_id'])),
                 )
             )
         );
@@ -6975,7 +6975,7 @@ class MobileAppApiController extends MyAppController
                 'status' => 1,
                 'title' => $cpage['cpage_title'],
                 'content' => $cpage['cpage_content'],
-                'web_url' => CommonHelper::generateFullUrl('Cms', 'view', array($cpage['cpage_id'])),
+                'web_url' => UrlHelper::generateFullUrl('Cms', 'view', array($cpage['cpage_id'])),
                 )
             )
         );

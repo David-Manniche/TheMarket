@@ -941,7 +941,7 @@ class EmailHandler extends FatModel
         }
 
         $frontEndUrl = (CONF_WEBROOT_FRONT_URL) ? CONF_WEBROOT_FRONT_URL : CONF_WEBROOT_URL;
-        $url = CommonHelper::generateFullUrl('seller', 'products', array(), $frontEndUrl);
+        $url = UrlHelper::generateFullUrl('seller', 'products', array(), $frontEndUrl);
         $productAnchor = "<a href='" . $url . "'>" . Labels::getLabel('LBL_click_here', $langId) . "</a>";
 
         $arrReplacements = array(
@@ -1264,7 +1264,7 @@ class EmailHandler extends FatModel
         }
 
         $formattedRequestValue = "#" . str_pad($requestId, 6, '0', STR_PAD_LEFT);
-        $url = CommonHelper::generateFullUrl('account', 'messages', array(), CONF_WEBROOT_URL);
+        $url = UrlHelper::generateFullUrl('account', 'messages', array(), CONF_WEBROOT_URL);
         $url = '<a href="' . $url . '">' . Labels::getLabel('Msg_click_here', $langId) . '</a>';
 
         $statusArr = Transactions::getWithdrawlStatusArr($langId);
@@ -1347,7 +1347,7 @@ class EmailHandler extends FatModel
             return false;
         }
 
-        $url = CommonHelper::generateFullUrl('account', 'viewMessages', array($message['thread_id'], $messageId), CONF_WEBROOT_FRONT_URL);
+        $url = UrlHelper::generateFullUrl('account', 'viewMessages', array($message['thread_id'], $messageId), CONF_WEBROOT_FRONT_URL);
 
         $url = '<a href="' . $url . '">' . Labels::getLabel('LBL_click_here', $langId) . '</a>';
 
@@ -1398,7 +1398,7 @@ class EmailHandler extends FatModel
             return false;
         }
 
-        $sellerOrderDetailUrl = CommonHelper::generateFullUrl('Seller', 'ViewOrder', array($ocRequestRow["op_id"]));
+        $sellerOrderDetailUrl = UrlHelper::generateFullUrl('Seller', 'ViewOrder', array($ocRequestRow["op_id"]));
         $sellerOrderAnchor = "<a href='" . $sellerOrderDetailUrl . "'>" . $ocRequestRow["op_invoice_number"] . "</a>";
 
         $arrReplacements = array(
@@ -1419,7 +1419,7 @@ class EmailHandler extends FatModel
             $this->sendSms($tpl, $phone, $arrReplacements, $langId);
         }
 
-        $adminOrderDetailUrl = CommonHelper::generateFullUrl('SellerOrders', 'View', array($ocRequestRow["op_id"]), CONF_WEBROOT_BACKEND);
+        $adminOrderDetailUrl = UrlHelper::generateFullUrl('SellerOrders', 'View', array($ocRequestRow["op_id"]), CONF_WEBROOT_BACKEND);
         $adminOrderAnchor = "<a href='" . $adminOrderDetailUrl . "'>" . $ocRequestRow["op_invoice_number"] . "</a>";
         $arrReplacements['{invoice_number}'] = $adminOrderAnchor;
 
@@ -1480,9 +1480,9 @@ class EmailHandler extends FatModel
         }
 
         if ($msgDetail['op_is_batch']) {
-            $productUrl = CommonHelper::generateFullUrl('Products', 'batch', array($msgDetail['op_selprod_id']));
+            $productUrl = UrlHelper::generateFullUrl('Products', 'batch', array($msgDetail['op_selprod_id']));
         } else {
-            $productUrl = CommonHelper::generateFullUrl('Products', 'view', array($msgDetail['op_selprod_id']));
+            $productUrl = UrlHelper::generateFullUrl('Products', 'view', array($msgDetail['op_selprod_id']));
         }
 
         $productTitle = ($msgDetail['op_selprod_title'] != '') ? $msgDetail['op_selprod_title'] . ' (' . $msgDetail['op_product_name'] . ')' : $msgDetail['op_product_name'];
@@ -1607,7 +1607,7 @@ class EmailHandler extends FatModel
             return false;
         }
 
-        $requestDetailUrl = CommonHelper::generateFullUrl('Buyer', 'ViewOrderReturnRequest', array($msgDetail['orrequest_id']));
+        $requestDetailUrl = UrlHelper::generateFullUrl('Buyer', 'ViewOrderReturnRequest', array($msgDetail['orrequest_id']));
         $requestDetailUrl = '<a href="' . $requestDetailUrl . '">' . Labels::getLabel('LBL_Click_here', $langId) . '</a>';
 
         /* Buyer Notification [ */
@@ -1641,7 +1641,7 @@ class EmailHandler extends FatModel
             if ($msgDetail['orrmsg_from_admin_id']) {
                 $arrReplacements["{username}"] = FatApp::getConfig('CONF_WEBSITE_NAME_' . $langId);
             }
-            $requestDetailUrl = CommonHelper::generateFullUrl('Seller', 'ViewOrderReturnRequest', array($msgDetail['orrequest_id']));
+            $requestDetailUrl = UrlHelper::generateFullUrl('Seller', 'ViewOrderReturnRequest', array($msgDetail['orrequest_id']));
             $requestDetailUrl = '<a href="' . $requestDetailUrl . '">' . Labels::getLabel('LBL_Click_here', $langId) . '</a>';
             $arrReplacements['{click_here}'] = $requestDetailUrl;
             /* if ($return_request['refmsg_from_type']=="U"){
@@ -1780,7 +1780,7 @@ class EmailHandler extends FatModel
             $this->error = Labels::getLabel('MSG_INVALID_REQUEST', $this->commonLangId);
             return false;
         }
-        $requestDetailUrl = CommonHelper::generateFullUrl('Seller', 'requestedCatalog', array(), CONF_WEBROOT_FRONT_URL);
+        $requestDetailUrl = UrlHelper::generateFullUrl('Seller', 'requestedCatalog', array(), CONF_WEBROOT_FRONT_URL);
         $requestDetailUrl = '<a href="' . $requestDetailUrl . '">' . Labels::getLabel('LBL_Click_here', $langId) . '</a>';
 
         /* Buyer Notification [ */
@@ -2095,7 +2095,7 @@ class EmailHandler extends FatModel
             '{new_order_status}' => $statuesArr[$orderProduct["op_status_id"]],
             '{invoice_number}' => $orderProduct["op_invoice_number"],
             '{order_items_table_format}' => $orderItemsTableFormatHtml,
-            '{review_page_url}' => CommonHelper::generateFullUrl('Buyer', 'orderFeedback', array($orderProduct['op_id']), CONF_WEBROOT_FRONT_URL),
+            '{review_page_url}' => UrlHelper::generateFullUrl('Buyer', 'orderFeedback', array($orderProduct['op_id']), CONF_WEBROOT_FRONT_URL),
             );
             self::sendMailTpl($userInfo["credential_email"], "buyer_notification_review_order_product", $langId, $arrReplacements);
             $phone = !empty($userInfo['user_phone']) ? $userInfo['user_dial_code'] . $userInfo['user_phone'] : '';
@@ -2134,7 +2134,7 @@ class EmailHandler extends FatModel
         $reviewStatusArr = SelProdReview::getReviewStatusArr($langId);
         $newStatus = $reviewStatusArr[$spreviewData['spreview_status']];
 
-        $productUrl = CommonHelper::generateFullUrl('Products', 'View', array($spreviewData["spreview_selprod_id"]));
+        $productUrl = UrlHelper::generateFullUrl('Products', 'View', array($spreviewData["spreview_selprod_id"]));
         $prodTitleAnchor = "<a href='" . $productUrl . "'>" . $spreviewData['selprod_title'] . "</a>";
 
         $arrReplacements = array(
@@ -2474,7 +2474,7 @@ class EmailHandler extends FatModel
                 $uploadedTime = AttachedFile::setTimeParam($img['afile_updated_at']);
                 $imgSrc = UrlHelper::getCachedUrl(UrlHelper::generateFullFileUrl('Image', 'SocialPlatform', array($row['splatform_id']), CONF_WEBROOT_FRONT_URL) . $uploadedTime, CONF_IMG_CACHE_TIME, '.jpg');
             } elseif ($row['splatform_icon_class'] != '') {
-                $imgSrc = CommonHelper::generateFullUrl('', '', array(), CONF_WEBROOT_FRONT_URL) . 'images/' . $row['splatform_icon_class'] . '.png';
+                $imgSrc = UrlHelper::generateFullUrl('', '', array(), CONF_WEBROOT_FRONT_URL) . 'images/' . $row['splatform_icon_class'] . '.png';
             }
             $social_media_icons .= '<a style="display:inline-block;vertical-align:top; width:26px;height:26px; margin:0 0 0 5px; background:rgba(255,255,255,0.2); border-radius:100%;padding:4px;" href="' . $url . '" ' . $target_blank . ' title="' . $title . '" ><img alt="' . $title . '" width="24" style="margin:1px auto 0; display:block;" src = "' . $imgSrc . '"/></a>';
         }
@@ -2485,11 +2485,11 @@ class EmailHandler extends FatModel
 
         return array(
         '{website_name}' => FatApp::getConfig('CONF_WEBSITE_NAME_' . $langId),
-        '{website_url}' => CommonHelper::generateFullUrl('', '', array(), CONF_WEBROOT_FRONT_URL),
+        '{website_url}' => UrlHelper::generateFullUrl('', '', array(), CONF_WEBROOT_FRONT_URL),
         '{Company_Logo}' => '<img style="max-width:100%" src="' . UrlHelper::getCachedUrl(UrlHelper::generateFullFileUrl('Image', 'emailLogo', array($langId), CONF_WEBROOT_FRONT_URL) . $uploadedTime, CONF_IMG_CACHE_TIME, '.jpg') . '" />',
         '{current_date}' => date('M d, Y'),
         '{social_media_icons}' => $social_media_icons,
-        '{contact_us_url}' => CommonHelper::generateFullUrl('custom', 'contactUs', array(), CONF_WEBROOT_FRONT_URL),
+        '{contact_us_url}' => UrlHelper::generateFullUrl('custom', 'contactUs', array(), CONF_WEBROOT_FRONT_URL),
         );
     }
 

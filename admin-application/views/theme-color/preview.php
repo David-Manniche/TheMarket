@@ -11,7 +11,7 @@
 	
 	
 	echo $str = '<script type="text/javascript">
-		var SITE_ROOT_URL = "' . CommonHelper::generateFullUrl('','',array(),CONF_WEBROOT_FRONT_URL) . '" ;
+		var SITE_ROOT_URL = "' . UrlHelper::generateFullUrl('','',array(),CONF_WEBROOT_FRONT_URL) . '" ;
 		var langLbl = ' . json_encode(
 			$jsVariables 
 		) . ';
@@ -33,8 +33,8 @@
             <div class="one_third_grid"></div>
             <div class="one_third_grid">
             	<div class="text-center">
-                <a href="<?php   echo CommonHelper::generateUrl('ThemeColor','activateThemeColor',array($theme)); ?>" class="themebtn btn-default btn-sm"><?php echo Labels::getLabel('LBL_Activate_Theme',$adminLangId);?></a>
-                <a href="<?php   echo CommonHelper::generateUrl('ThemeColor'); ?>" class="themebtn btn-default btn-sm"><?php echo Labels::getLabel('LBL_Back_to_Themes',$adminLangId);?></a></div>
+                <a href="<?php   echo UrlHelper::generateUrl('ThemeColor','activateThemeColor',array($theme)); ?>" class="themebtn btn-default btn-sm"><?php echo Labels::getLabel('LBL_Activate_Theme',$adminLangId);?></a>
+                <a href="<?php   echo UrlHelper::generateUrl('ThemeColor'); ?>" class="themebtn btn-default btn-sm"><?php echo Labels::getLabel('LBL_Back_to_Themes',$adminLangId);?></a></div>
             </div>
             <div class="one_third_grid"></div>
         </div>          
@@ -43,7 +43,7 @@
 <div id="body">
 	<!--main panel start here-->
 	<div>
-		<iframe id="theme_preview_iframe" src="<?php echo CommonHelper::generateFullUrl('','',array(),CONF_WEBROOT_FRONT_URL); ?>?theme-preview" data="<?php echo $theme?>"></iframe>
+		<iframe id="theme_preview_iframe" src="<?php echo UrlHelper::generateFullUrl('','',array(),CONF_WEBROOT_FRONT_URL); ?>?theme-preview" data="<?php echo $theme?>"></iframe>
 	</div>          
 	<!--main panel end here-->
 </div>

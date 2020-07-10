@@ -14,7 +14,7 @@ if (isset($collections) && count($collections)) {
                                             <picture>
 												<?php $fileRow = CommonHelper::getImageAttributes(AttachedFile::FILETYPE_BLOG_POST_IMAGE, $blog['post_id']);?>
                                                 <img data-ratio="16:9"
-                                                src="<?php echo CommonHelper::generateFullUrl('Image', 'blogPostFront', array($blog['post_id'], $siteLangId, '')); ?>"
+                                                src="<?php echo UrlHelper::generateFullUrl('Image', 'blogPostFront', array($blog['post_id'], $siteLangId, '')); ?>"
                                                 alt="<?php echo (!empty($fileRow['afile_attribute_alt'])) ? $fileRow['afile_attribute_alt'] : $blog['post_title'];?>" title="<?php echo (!empty($fileRow['afile_attribute_title'])) ? $fileRow['afile_attribute_title'] : $blog['post_title'];?>">
                                             </picture>
                                         </a>
@@ -25,12 +25,12 @@ if (isset($collections) && count($collections)) {
                                             <span class="article__date"><?php echo $blog['post_updated_on']; ?></span>
                                         </div>
                                         <h3 class="article-title">
-                                            <a href="<?php echo CommonHelper::generateUrl('Blog', 'postDetail', array($blog['post_id'])); ?>"><span><?php echo !empty($blog['post_title']) ? $blog['post_title'] : $blog['post_identifier']; ?></span></a>
+                                            <a href="<?php echo UrlHelper::generateUrl('Blog', 'postDetail', array($blog['post_id'])); ?>"><span><?php echo !empty($blog['post_title']) ? $blog['post_title'] : $blog['post_identifier']; ?></span></a>
                                         </h3>
                                         <div class="article-des">
                                             <?php echo FatUtility::decodeHtmlEntities($blog['post_description']); ?>
                                         </div>
-                                        <a class="readmore-button btn btn-outline-primary btn--sm" href="<?php echo CommonHelper::generateUrl('Blog', 'postDetail', array($blog['post_id'])); ?>"><?php echo Labels::getLabel('LBL_READ_MORE', $siteLangId); ?></a>
+                                        <a class="readmore-button btn btn-outline-primary btn--sm" href="<?php echo UrlHelper::generateUrl('Blog', 'postDetail', array($blog['post_id'])); ?>"><?php echo Labels::getLabel('LBL_READ_MORE', $siteLangId); ?></a>
                                     </div>
                                 </div>
                             </div>

@@ -2,7 +2,7 @@
 defined('SYSTEM_INIT') or die('Invalid Usage.');
 $frm->setFormTagAttribute('id', 'frmAttributes');
 $frm->setFormTagAttribute('class', 'web_form');
-$frm->setFormTagAttribute('action', CommonHelper::generateUrl( 'Attributes','setupAttributes') );
+$frm->setFormTagAttribute('action', UrlHelper::generateUrl( 'Attributes','setupAttributes') );
 $frm->developerTags['colClassPrefix'] = 'col-md-';
 $frm->developerTags['fld_default_col'] = 4;
 

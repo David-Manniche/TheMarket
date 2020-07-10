@@ -39,7 +39,7 @@ if(isset($amazon) && strlen($orderId) > 0 &&  $orderInfo["order_is_paid"] == Ord
 	if( strlen($amazon['merchant_id']) > 0 && strlen($amazon['access_key']) > 0 && strlen($amazon['secret_key']) > 0 && strlen($amazon['client_id']) > 0 && strlen(FatApp::getConfig('CONF_TRANSACTION_MODE',FatUtility::VAR_STRING,'0')) > 0) {
 		?>
 		<script type="text/javascript">
-			var redirectAfterSuccess = '<?php echo CommonHelper::generateUrl('custom', 'paymentSuccess', array($orderId), CONF_WEBROOT_URL); ?>';
+			var redirectAfterSuccess = '<?php echo UrlHelper::generateUrl('custom', 'paymentSuccess', array($orderId), CONF_WEBROOT_URL); ?>';
 			var orderId  = '<?php echo $orderId; ?>';
 			window.onAmazonLoginReady = function () {
 				amazon.Login.setClientId('<?php echo $amazon['client_id']; ?>');
@@ -51,7 +51,7 @@ if(isset($amazon) && strlen($orderId) > 0 &&  $orderInfo["order_is_paid"] == Ord
 			function logout(){
 				amazon.Login.logout();
 				document.cookie = "amazon_Login_accessToken=; expires=Thu, 01 Jan 1970 00:00:00 GMT";
-				window.location = '<?php echo CommonHelper::generateUrl('AmazonPay', 'charge', array($orderId), CONF_WEBROOT_URL)?>';
+				window.location = '<?php echo UrlHelper::generateUrl('AmazonPay', 'charge', array($orderId), CONF_WEBROOT_URL)?>';
 			}
 			
 			var orderRefId = false;
@@ -59,7 +59,7 @@ if(isset($amazon) && strlen($orderId) > 0 &&  $orderInfo["order_is_paid"] == Ord
 				sellerId: "<?php echo $amazon['merchant_id']; ?>",
 				onOrderReferenceCreate: function (orderReference) {
 				   var access_token = "";
-					$.post("<?php echo CommonHelper::generateUrl('AmazonPay', 'get_details', array($orderId), CONF_WEBROOT_URL)?>", {
+					$.post("<?php echo UrlHelper::generateUrl('AmazonPay', 'get_details', array($orderId), CONF_WEBROOT_URL)?>", {
 						orderReferenceId: orderReference.getAmazonOrderReferenceId(),
 						addressConsentToken: access_token,
 					}).done(function (data) {

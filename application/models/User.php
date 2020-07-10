@@ -449,19 +449,19 @@ class User extends MyAppModel
     {
         switch ($preferredDashboard) {
             case User::USER_BUYER_DASHBOARD:
-                return CommonHelper::generateFullUrl('buyer');
+                return UrlHelper::generateFullUrl('buyer');
             break;
             case User::USER_SELLER_DASHBOARD:
-                return CommonHelper::generateFullUrl('seller');
+                return UrlHelper::generateFullUrl('seller');
             break;
             case User::USER_ADVERTISER_DASHBOARD:
-                return CommonHelper::generateFullUrl('advertiser');
+                return UrlHelper::generateFullUrl('advertiser');
             break;
             case User::USER_AFFILIATE_DASHBOARD:
-                return CommonHelper::generateFullUrl('affiliate');
+                return UrlHelper::generateFullUrl('affiliate');
             break;
         }
-        return CommonHelper::generateFullUrl('account');
+        return UrlHelper::generateFullUrl('account');
     }
 
     public static function getSupplierReqStatusArr($langId)
@@ -1733,7 +1733,7 @@ class User extends MyAppModel
     public function userEmailVerification($data, $langId)
     {
         $verificationCode = $this->prepareUserVerificationCode();
-        $link = CommonHelper::generateFullUrl('GuestUser', 'userCheckEmailVerification', array('verify' => $verificationCode));
+        $link = UrlHelper::generateFullUrl('GuestUser', 'userCheckEmailVerification', array('verify' => $verificationCode));
         $data = array(
                     'user_name' => $data['user_name'],
                     'link' => $link,
@@ -1800,7 +1800,7 @@ class User extends MyAppModel
 
     public function guestUserWelcomeEmail($data, $langId)
     {
-        $link = CommonHelper::generateFullUrl('GuestUser', 'loginForm');
+        $link = UrlHelper::generateFullUrl('GuestUser', 'loginForm');
         $phone = !empty($data['user_phone']) ? $data['user_dial_code'] . $data['user_phone'] : '';
         $data = array(
             'user_name' => $data['user_name'],
@@ -2440,7 +2440,7 @@ class User extends MyAppModel
             $_SESSION[UserAuthentication::TEMP_SESSION_ELEMENT_NAME]['otpUserId'] = $this->getMainTableRecordId();
         } else {
             if (FatApp::getConfig('CONF_WELCOME_EMAIL_REGISTRATION', FatUtility::VAR_INT, 1)) {
-                $link = CommonHelper::generateFullUrl('GuestUser', 'loginForm');
+                $link = UrlHelper::generateFullUrl('GuestUser', 'loginForm');
                 if (!$this->userWelcomeEmailRegistration($postedData, $link, $this->commonLangId)) {
                     $db->rollbackTransaction();
                     $message = Labels::getLabel("ERR_ERROR_IN_SENDING_WELCOME_EMAIL", $this->siteLangId);
@@ -2729,7 +2729,7 @@ class User extends MyAppModel
             $data['user_name'] = $username;
 
             //ToDO::Change login link to contact us link
-            $link = CommonHelper::generateFullUrl('GuestUser', 'loginForm');
+            $link = UrlHelper::generateFullUrl('GuestUser', 'loginForm');
             $data = array_merge($data, $uData);
 
             if (!$this->userWelcomeEmailRegistration($data, $link, $this->commonLangId)) {

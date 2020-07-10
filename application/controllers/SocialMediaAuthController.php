@@ -14,7 +14,7 @@ class SocialMediaAuthController extends PluginBaseController
         }
 
         Message::addErrorMessage($message);
-        FatApp::redirectUser(CommonHelper::generateUrl('GuestUser', 'loginForm'));
+        FatApp::redirectUser(UrlHelper::generateUrl('GuestUser', 'loginForm'));
     }
 
     protected function redirectToDashboard($preferredDashboard = 0, $referredRedirection = true)
@@ -22,7 +22,7 @@ class SocialMediaAuthController extends PluginBaseController
         $referredUrl = User::getPreferedDashbordRedirectUrl($preferredDashboard);
         $cartObj = new Cart();
         if ($cartObj->hasProducts()) {
-            $referredUrl = CommonHelper::generateFullUrl('cart');
+            $referredUrl = UrlHelper::generateFullUrl('cart');
             if (true === $referredRedirection) {
                 FatApp::redirectUser($referredUrl);
             }
@@ -78,7 +78,7 @@ class SocialMediaAuthController extends PluginBaseController
                 LibHelper::dieJsonError($message);
             }
             Message::addErrorMessage($message);
-            FatApp::redirectUser(CommonHelper::generateUrl('GuestUser', 'configureEmail'));
+            FatApp::redirectUser(UrlHelper::generateUrl('GuestUser', 'configureEmail'));
         }
 
         return $userInfo;

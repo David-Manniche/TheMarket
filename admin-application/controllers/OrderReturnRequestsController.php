@@ -187,7 +187,7 @@ class OrderReturnRequestsController extends AdminBaseController
 
         if (!$requestRow) {
             Message::addErrorMessage($this->str_invalid_request);
-            FatApp::redirectUser(CommonHelper::generateUrl('OrderReturnRequests'));
+            FatApp::redirectUser(UrlHelper::generateUrl('OrderReturnRequests'));
         }
         
         $oObj = new Orders();
@@ -388,7 +388,7 @@ class OrderReturnRequestsController extends AdminBaseController
                 if (!$orrObj->approveRequest($row['orrequest_id'], $user_id, $this->adminLangId, $transferTo, $post['orrequest_admin_comment'])) {
                     FatUtility::dieJsonError($orrObj->getError());
                     /*Message::addErrorMessage($orrObj->getError());
-                    FatApp::redirectUser(CommonHelper::generateUrl('orderReturnRequests'));*/
+                    FatApp::redirectUser(UrlHelper::generateUrl('orderReturnRequests'));*/
                 }
                 $successMsg = Labels::getLabel('LBL_Return_request_has_been_refunded_successfully.', $this->adminLangId);
                 break;
@@ -397,7 +397,7 @@ class OrderReturnRequestsController extends AdminBaseController
                 if (!$orrObj->withdrawRequest($row['orrequest_id'], $user_id, $this->adminLangId, $row['op_id'], $row['order_language_id'])) {
                     FatUtility::dieJsonError($orrObj->getError());
                     /*Message::addErrorMessage($orrObj->getError());
-                    FatApp::redirectUser(CommonHelper::generateUrl('orderReturnRequests'));*/
+                    FatApp::redirectUser(UrlHelper::generateUrl('orderReturnRequests'));*/
                 }
                 $successMsg = Labels::getLabel('LBL_Return_request_has_been_withdrawn_successfully.', $this->adminLangId);
                 break;
@@ -407,7 +407,7 @@ class OrderReturnRequestsController extends AdminBaseController
         if (!$emailNotificationObj->sendOrderReturnRequestStatusChangeNotification($row['orrequest_id'], $this->adminLangId)) {
             FatUtility::dieJsonError($emailNotificationObj->getError());
             /*Message::addErrorMessage($emailNotificationObj->getError());
-            FatApp::redirectUser(CommonHelper::generateUrl('orderReturnRequests'));*/
+            FatApp::redirectUser(UrlHelper::generateUrl('orderReturnRequests'));*/
         }
 
         //send notification to admin
@@ -422,7 +422,7 @@ class OrderReturnRequestsController extends AdminBaseController
         if (!Notification::saveNotifications($notificationData)) {
             FatUtility::dieJsonError(Labels::getLabel("MSG_NOTIFICATION_COULD_NOT_BE_SENT", $this->adminLangId));
             /*Message::addErrorMessage(Labels::getLabel("MSG_NOTIFICATION_COULD_NOT_BE_SENT", $this->adminLangId));
-            FatApp::redirectUser(CommonHelper::generateUrl('orderReturnRequests'));*/
+            FatApp::redirectUser(UrlHelper::generateUrl('orderReturnRequests'));*/
         }
         
         FatUtility::dieJsonSuccess($successMsg);
@@ -447,26 +447,26 @@ class OrderReturnRequestsController extends AdminBaseController
     // $requestRow = FatApp::getDb()->fetch( $rs );
     // if( !$requestRow ){
     // Message::addErrorMessage( Labels::getLabel('MSG_Invalid_Access', $this->adminLangId) );
-    // FatApp::redirectUser( CommonHelper::generateUrl('orderReturnRequests'));
+    // FatApp::redirectUser( UrlHelper::generateUrl('orderReturnRequests'));
     // }
         
     // $orrObj = new OrderReturnRequest();
     // $user_id = 0;
     // if( !$orrObj->approveRequest( $requestRow['orrequest_id'], $user_id, $this->adminLangId ) ){
     // Message::addErrorMessage( $orrObj->getError() );
-    // FatApp::redirectUser( CommonHelper::generateUrl('orderReturnRequests'));
+    // FatApp::redirectUser( UrlHelper::generateUrl('orderReturnRequests'));
     // }
         
     // /* email notification handling[ */
     // $emailNotificationObj = new EmailHandler();
     // if ( !$emailNotificationObj->sendOrderReturnRequestStatusChangeNotification( $requestRow['orrequest_id'], $this->adminLangId ) ){
     // Message::addErrorMessage( Labels::getLabel($emailNotificationObj->getError(),$this->adminLangId) );
-    // FatApp::redirectUser( CommonHelper::generateUrl('orderReturnRequests'));
+    // FatApp::redirectUser( UrlHelper::generateUrl('orderReturnRequests'));
     // }
     // /* ] */
         
     // Message::addMessage( Labels::getLabel('MSG_Request_Approved_Refund', $this->adminLangId) );
-    // FatApp::redirectUser( CommonHelper::generateUrl('orderReturnRequests'));
+    // FatApp::redirectUser( UrlHelper::generateUrl('orderReturnRequests'));
     // }
     
     // public function cancel( $orrequest_id ){
@@ -487,13 +487,13 @@ class OrderReturnRequestsController extends AdminBaseController
     // $request = FatApp::getDb()->fetch( $rs );
     // if( !$request ){
     // Message::addErrorMessage( Labels::getLabel('MSG_Invalid_Access', $this->adminLangId) );
-    // FatApp::redirectUser( CommonHelper::generateUrl('orderReturnRequests'));
+    // FatApp::redirectUser( UrlHelper::generateUrl('orderReturnRequests'));
     // }
     // $orrObj = new OrderReturnRequest();
     // $user_id = 0;
     // if( !$orrObj->withdrawRequest( $request['orrequest_id'], $user_id, $request['order_language_id'], $request['op_id'], $request['order_language_id'] ) ){
     // Message::addErrorMessage( Labels::getLabel($orrObj->getError(), $this->adminLangId) );
-    // FatApp::redirectUser( CommonHelper::generateUrl('orderReturnRequests'));
+    // FatApp::redirectUser( UrlHelper::generateUrl('orderReturnRequests'));
     // }
         
     // /* email notification handling[ */
@@ -505,7 +505,7 @@ class OrderReturnRequestsController extends AdminBaseController
     // /* ] */
         
     // Message::addMessage( Labels::getLabel('MSG_Request_Withdrawn', $this->adminLangId) );
-    // FatApp::redirectUser( CommonHelper::generateUrl('orderReturnRequests'));
+    // FatApp::redirectUser( UrlHelper::generateUrl('orderReturnRequests'));
     // }
     
     /* public function updateStatusForm($orrequest_id) {

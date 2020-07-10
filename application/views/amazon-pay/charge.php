@@ -39,13 +39,13 @@ if(isset($amazon) && strlen($orderId) > 0 && $orderInfo["order_is_paid"] == Orde
 				type: "PwA",
 				authorization: function () {
 					loginOptions = {scope: "profile postal_code payments:widget payments:shipping_address", popup: true};
-					authRequest = amazon.Login.authorize(loginOptions, "<?php echo CommonHelper::generateUrl('AmazonPay', 'charge', array($orderId), CONF_WEBROOT_URL,false)?>");
+					authRequest = amazon.Login.authorize(loginOptions, "<?php echo UrlHelper::generateUrl('AmazonPay', 'charge', array($orderId), CONF_WEBROOT_URL,false)?>");
 				},
 				onError: function (error) {
 					console.log(error);
 					amazon.Login.logout();
 					document.cookie = "amazon_Login_accessToken=; expires=Thu, 01 Jan 1970 00:00:00 GMT";
-					window.location = '<?php echo CommonHelper::generateUrl('AmazonPay', 'charge', array($orderId), CONF_WEBROOT_URL)?>';
+					window.location = '<?php echo UrlHelper::generateUrl('AmazonPay', 'charge', array($orderId), CONF_WEBROOT_URL)?>';
 				}
 			});
 		</script>

@@ -141,15 +141,15 @@ class UsersController extends AdminBaseController
         $user = $userObj->getUserInfo(array('credential_username', 'credential_password', 'user_preferred_dashboard'), false, false);
         if (!$user) {
             Message::addErrorMessage($this->str_invalid_request);
-            FatApp::redirectUser(CommonHelper::generateUrl('Users'));
+            FatApp::redirectUser(UrlHelper::generateUrl('Users'));
         }
         $userAuthObj = new UserAuthentication();
         if (!$userAuthObj->login($user['credential_username'], $user['credential_password'], $_SERVER['REMOTE_ADDR'], false, true) === true) {
             Message::addErrorMessage($userObj->getError());
-            FatApp::redirectUser(CommonHelper::generateUrl('Users'));
+            FatApp::redirectUser(UrlHelper::generateUrl('Users'));
         }
 
-        FatApp::redirectUser(CommonHelper::generateUrl('account', '', array(), CONF_WEBROOT_FRONT_URL));
+        FatApp::redirectUser(UrlHelper::generateUrl('account', '', array(), CONF_WEBROOT_FRONT_URL));
     }
 
     public function setup()

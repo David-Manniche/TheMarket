@@ -8,7 +8,7 @@ class BatchProductsController extends LoggedUserController
         $_SESSION[UserAuthentication::SESSION_ELEMENT_NAME]['activeTab'] = 'S';
         
         if (!User::canAccessSupplierDashboard()) {
-            FatApp::redirectUser(CommonHelper::generateUrl('Account', 'supplierApprovalForm'));
+            FatApp::redirectUser(UrlHelper::generateUrl('Account', 'supplierApprovalForm'));
         }
         $this->set('bodyClass', 'is--dashboard');
     }

@@ -50,7 +50,7 @@ if (count($arr_listing) == 0) {
                     break;
                 case 'user_name':
                     if ($canViewUsers) {
-                        !empty($row[$key]) ? $td->appendElement('a', array('href' => 'javascript:void(0)', 'onClick' => 'redirectfunc("'.CommonHelper::generateUrl('Users').'",'.$row['product_seller_id'].')'), $row[$key]) : $td->appendElement('plaintext', array(), (!empty($row[$key]) ? $row[$key] : 'Admin'), true);
+                        !empty($row[$key]) ? $td->appendElement('a', array('href' => 'javascript:void(0)', 'onClick' => 'redirectfunc("'.UrlHelper::generateUrl('Users').'",'.$row['product_seller_id'].')'), $row[$key]) : $td->appendElement('plaintext', array(), (!empty($row[$key]) ? $row[$key] : 'Admin'), true);
                     } else {
                         $td->appendElement('plaintext', array(), (!empty($row[$key]) ? $row[$key] : 'Admin'), true);
                     }
@@ -82,7 +82,7 @@ if (count($arr_listing) == 0) {
                     break;
                 case 'action':
                         if($canEdit){
-                            $td->appendElement('a', array('href'=> CommonHelper::generateUrl('Products','form',array($row['product_id'])), 'class'=>'btn btn-clean btn-sm btn-icon', 'title'=> Labels::getLabel('LBL_Edit',$adminLangId)),'<i class="far fa-edit icon"></i>', true);
+                            $td->appendElement('a', array('href'=> UrlHelper::generateUrl('Products','form',array($row['product_id'])), 'class'=>'btn btn-clean btn-sm btn-icon', 'title'=> Labels::getLabel('LBL_Edit',$adminLangId)),'<i class="far fa-edit icon"></i>', true);
                             
                             $td->appendElement('a', array('href'=>"javascript:;", 'class'=>'btn btn-clean btn-sm btn-icon', 'title'=>Labels::getLabel('LBL_Delete',$adminLangId),"onclick"=>"deleteProduct(".$row['product_id'].")"),'<i class="fa fa-trash  icon"></i>', true);
                         }
@@ -98,7 +98,7 @@ if (count($arr_listing) == 0) {
     $frm = new Form('frmProdListing', array('id'=>'frmProdListing'));
     $frm->setFormTagAttribute('class', 'web_form last_td_nowrap actionButtons-js');
     $frm->setFormTagAttribute('onsubmit', 'formAction(this, reloadList ); return(false);');
-    $frm->setFormTagAttribute('action', CommonHelper::generateUrl('Products', 'toggleBulkStatuses'));
+    $frm->setFormTagAttribute('action', UrlHelper::generateUrl('Products', 'toggleBulkStatuses'));
     $frm->addHiddenField('', 'status');
 
     echo $frm->getFormTag();

@@ -3,7 +3,7 @@
 $frm->setFormTagAttribute('class', 'form');
 $frm->setFormTagAttribute('id', 'pluginForm');
 $frm->setFormTagAttribute('onsubmit', 'setuppluginform(this); return(false);');
-$frm->setFormTagAttribute('action', CommonHelper::generateUrl($keyName, 'setup'));
+$frm->setFormTagAttribute('action', UrlHelper::generateUrl($keyName, 'setup'));
 $frm->developerTags['colClassPrefix'] = 'col-md-';
 $frm->developerTags['fld_default_col'] = 12; 
 

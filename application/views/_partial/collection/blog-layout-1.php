@@ -10,7 +10,7 @@ if (isset($collections) && count($collections)) {
 
                         <?php if (isset($row['totBlogs']) && $row['totBlogs'] > Collections::LIMIT_BLOG_LAYOUT1) { ?>
                             <div class="section__action"> 
-                                <a href="<?php echo CommonHelper::generateUrl('blog'); ?>" class="link">
+                                <a href="<?php echo UrlHelper::generateUrl('blog'); ?>" class="link">
                                     <?php echo Labels::getLabel('LBL_View_More', $siteLangId); ?>
                                 </a>
                             </div>
@@ -21,11 +21,11 @@ if (isset($collections) && count($collections)) {
                             <div class="col-md-4 mb-4 mb-md-0">
                                 <div class="post">
                                     <div class="post_media">
-                                        <a href="<?php echo CommonHelper::generateUrl('Blog', 'postDetail', array($blog['post_id'])); ?>" class="animate-scale">
+                                        <a href="<?php echo UrlHelper::generateUrl('Blog', 'postDetail', array($blog['post_id'])); ?>" class="animate-scale">
                                             <picture>
 												<?php $fileRow = CommonHelper::getImageAttributes(AttachedFile::FILETYPE_BLOG_POST_IMAGE, $blog['post_id']);?>
                                                 <img data-ratio="16:9"
-                                                src="<?php echo CommonHelper::generateFullUrl('Image', 'blogPostFront', array($blog['post_id'], $siteLangId, 'FEATURED')); ?>" alt="<?php echo (!empty($fileRow['afile_attribute_alt'])) ? $fileRow['afile_attribute_alt'] : $blog['post_title'];?>" title="<?php echo (!empty($fileRow['afile_attribute_title'])) ? $fileRow['afile_attribute_title'] : $blog['post_title'];?>">
+                                                src="<?php echo UrlHelper::generateFullUrl('Image', 'blogPostFront', array($blog['post_id'], $siteLangId, 'FEATURED')); ?>" alt="<?php echo (!empty($fileRow['afile_attribute_alt'])) ? $fileRow['afile_attribute_alt'] : $blog['post_title'];?>" title="<?php echo (!empty($fileRow['afile_attribute_title'])) ? $fileRow['afile_attribute_title'] : $blog['post_title'];?>">
                                             </picture>
                                         </a>
                                     </div>
@@ -35,7 +35,7 @@ if (isset($collections) && count($collections)) {
                                             <span class="article__date"><?php echo $blog['post_updated_on']; ?></span>
                                         </div>
                                         <h3 class="article-title">
-                                            <a href="<?php echo CommonHelper::generateUrl('Blog', 'postDetail', array($blog['post_id'])); ?>">
+                                            <a href="<?php echo UrlHelper::generateUrl('Blog', 'postDetail', array($blog['post_id'])); ?>">
                                                 <span>
                                                 <?php 
                                                     $title = !empty($blog['post_title']) ? $blog['post_title'] : $blog['post_identifier'];
@@ -48,7 +48,7 @@ if (isset($collections) && count($collections)) {
                                             <?php /* echo FatUtility::decodeHtmlEntities($blog['post_description']); */ ?>
                                         </div>                                     
                                     </div>
-                                    <a class="readmore-button link" href="<?php echo CommonHelper::generateUrl('Blog', 'postDetail', array($blog['post_id'])); ?>"><?php echo Labels::getLabel('LBL_READ_MORE', $siteLangId); ?></a>
+                                    <a class="readmore-button link" href="<?php echo UrlHelper::generateUrl('Blog', 'postDetail', array($blog['post_id'])); ?>"><?php echo Labels::getLabel('LBL_READ_MORE', $siteLangId); ?></a>
                                 </div>
                             </div>
                         <?php } ?>

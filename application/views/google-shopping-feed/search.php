@@ -89,7 +89,7 @@ foreach ($arrListing as $sn => $row) {
                     $li->appendElement(
                         'a',
                         [
-                            'href' => CommonHelper::generateUrl($keyName, 'bindProducts', [$row['adsbatch_id']]),
+                            'href' => UrlHelper::generateUrl($keyName, 'bindProducts', [$row['adsbatch_id']]),
                             'title' => Labels::getLabel('LBL_BIND_PRODUCTS', $siteLangId)
                         ],
                         '<i class="fa fa-link"></i>',

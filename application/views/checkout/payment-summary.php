@@ -171,7 +171,7 @@
                             }
                             $count++; ?>
                             <li>
-                                <a href="<?php echo CommonHelper::generateUrl('Checkout', 'PaymentTab', array($orderInfo['order_id'], $pmethodId)); ?>"
+                                <a href="<?php echo UrlHelper::generateUrl('Checkout', 'PaymentTab', array($orderInfo['order_id'], $pmethodId)); ?>"
                                     data-paymentmethod="<?php echo $pmethodCode; ?>">
                                     <div class="payment-box">
                                         <i class="payment-icn">
@@ -182,7 +182,7 @@
                                                 $imageUrl = UrlHelper::getCachedUrl(UrlHelper::generateFileUrl('Image', 'plugin', array($pmethodId, 'SMALL')) . $uploadedTime, CONF_IMG_CACHE_TIME, '.jpg');
                                             } else {
                                                 $fileData = AttachedFile::getAttachment(AttachedFile::FILETYPE_PAYMENT_METHOD, $pmethodId, 0, 0, false);
-                                                $imageUrl = CommonHelper::generateUrl('Image', 'paymentMethod', array($pmethodId,'SMALL'));
+                                                $imageUrl = UrlHelper::generateUrl('Image', 'paymentMethod', array($pmethodId,'SMALL'));
                                             }
                                             $aspectRatioArr = AttachedFile::getRatioTypeArray($siteLangId); ?>
                                             <img <?php if ($fileData['afile_aspect_ratio'] > 0) { ?>

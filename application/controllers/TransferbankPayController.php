@@ -55,7 +55,7 @@ class TransferbankPayController extends PaymentController
             $comment .= $this->settings["bank_details"] . "\n\n";
             $comment .= Labels::getLabel('MSG_PAYMENT_NOTE', $this->siteLangId);
             $orderPaymentObj->addOrderPaymentComments($comment);
-            $json['redirect'] = CommonHelper::generateUrl('custom', 'paymentSuccess', array($orderId));
+            $json['redirect'] = UrlHelper::generateUrl('custom', 'paymentSuccess', array($orderId));
         } else {
             $json['error'] = 'Invalid Request.';
         }
@@ -64,7 +64,7 @@ class TransferbankPayController extends PaymentController
 
     private function getPaymentForm($orderId)
     {
-        $frm = new Form('frmPaymentForm', array('id' => 'frmPaymentForm', 'action' => CommonHelper::generateUrl('TransferbankPay', 'send', array($orderId)), 'class' => "form form--normal"));
+        $frm = new Form('frmPaymentForm', array('id' => 'frmPaymentForm', 'action' => UrlHelper::generateUrl('TransferbankPay', 'send', array($orderId)), 'class' => "form form--normal"));
 
         $frm->addHtml('', 'htmlNote', Labels::getLabel('MSG_Bank_Transfer_Note', $this->siteLangId));
         $frm->addHtml('', 'htmlNote', '<div class="bank--details">' . nl2br($this->settings["bank_details"]) . '</div>');

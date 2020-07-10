@@ -15,7 +15,7 @@
                             <?php if (is_array($prodSpec) && !empty($prodSpec)) { ?>
                             <a onclick="addProdSpec(<?php echo $product_id;?>)" href="javascript:void(0)" class="btn btn--primary btn--sm"><?php echo Labels::getLabel('LBL_Add_Specification', $siteLangId);?></a>
                             <?php }?>
-                            <a href="<?php echo CommonHelper::generateUrl('Seller', 'sellerProductForm', array($product_id))?>" class="btn btn-outline-primary btn--sm"><?php echo Labels::getLabel('LBL_Add_to_Store', $siteLangId);?></a>
+                            <a href="<?php echo UrlHelper::generateUrl('Seller', 'sellerProductForm', array($product_id))?>" class="btn btn-outline-primary btn--sm"><?php echo Labels::getLabel('LBL_Add_to_Store', $siteLangId);?></a>
                         </div>
                     </div>
                 </div>

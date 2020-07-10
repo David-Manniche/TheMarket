@@ -295,7 +295,7 @@ class PaymentMethodsController extends AdminBaseController
         $frm->addRadioButtons(Labels::getLabel('LBL_Ratio', $this->adminLangId), 'ratio_type', $ratioArr, AttachedFile::RATIO_TYPE_SQUARE);
         $fld = $frm->addFileUpload(Labels::getLabel('LBL_Upload', $this->adminLangId), 'pmethod_icon', array('accept' => 'image/*', 'data-frm' => 'frmCollectionMedia'));
         $fld->htmlAfterField = '<span id="gateway_icon"></span>
-        <div class="uploaded--image"><img src="' . CommonHelper::generateUrl('Image', 'paymentMethod', array($pMethodId, 'MEDIUM'), CONF_WEBROOT_FRONT_URL) . '"></div>';
+        <div class="uploaded--image"><img src="' . UrlHelper::generateUrl('Image', 'paymentMethod', array($pMethodId, 'MEDIUM'), CONF_WEBROOT_FRONT_URL) . '"></div>';
 
         $frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_Save_Changes', $this->adminLangId));
         return $frm;

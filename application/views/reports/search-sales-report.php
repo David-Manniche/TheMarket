@@ -43,7 +43,7 @@ foreach ($arrListing as $sn => $row){
 			break;
 
 			case 'order_date':
-				$td->appendElement('plaintext', array(), '<a href="'.CommonHelper::generateUrl('Reports',
+				$td->appendElement('plaintext', array(), '<a href="'.UrlHelper::generateUrl('Reports',
 						'salesReport',array($row[$key])).'">'.FatDate::format($row[$key]).'</a>',true);
 			break;
 
@@ -69,7 +69,7 @@ if( count($arrListing) == 0 ){
 } else {
 	if(!empty($orderDate)){
 		echo '<div class="box__head"><div class="btn-group">';
-		echo '<a href="'.CommonHelper::generateUrl('Reports','SalesReport').'" class="btn btn-outline-primary btn--sm">'.Labels::getLabel('LBL_Back',$siteLangId).'</a>';
+		echo '<a href="'.UrlHelper::generateUrl('Reports','SalesReport').'" class="btn btn-outline-primary btn--sm">'.Labels::getLabel('LBL_Back',$siteLangId).'</a>';
 		echo '</div></div>';
 	}
     echo $tbl->getHtml();

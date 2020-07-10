@@ -75,11 +75,11 @@ class ShippingProfileController extends SellerBaseController
             $data = ShippingProfile::getAttributesById($profileId);
             if ($data === false) {
                 Message::addErrorMessage(Labels::getLabel('LBL_Invalid_Request', $this->siteLangId));
-                FatApp::redirectUser(CommonHelper::generateUrl('shippingProfile'));
+                FatApp::redirectUser(UrlHelper::generateUrl('shippingProfile'));
             }
             if ($data['shipprofile_user_id'] != $userId) {
                 Message::addErrorMessage(Labels::getLabel('LBL_Invalid_Request', $this->siteLangId));
-                FatApp::redirectUser(CommonHelper::generateUrl('shippingProfile'));
+                FatApp::redirectUser(UrlHelper::generateUrl('shippingProfile'));
             }
             $frm->fill($data);
         }

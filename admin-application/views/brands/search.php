@@ -45,7 +45,7 @@
                     $td->appendElement(
                         'plaintext',
                         array('style' => 'text-align:center'),
-                        '<img class="max-img" src="'.CommonHelper::generateUrl('image', 'brand', array($row['brand_id'], $adminLangId, 'MINITHUMB'), CONF_WEBROOT_FRONT_URL).'">',
+                        '<img class="max-img" src="'.UrlHelper::generateUrl('image', 'brand', array($row['brand_id'], $adminLangId, 'MINITHUMB'), CONF_WEBROOT_FRONT_URL).'">',
                         true
                     );
                     break;
@@ -88,7 +88,7 @@
     $frm = new Form('frmBrandListing', array('id'=>'frmBrandListing'));
     $frm->setFormTagAttribute('class', 'web_form last_td_nowrap actionButtons-js');
     $frm->setFormTagAttribute('onsubmit', 'formAction(this, reloadList ); return(false);');
-    $frm->setFormTagAttribute('action', CommonHelper::generateUrl('Brands', 'toggleBulkStatuses'));
+    $frm->setFormTagAttribute('action', UrlHelper::generateUrl('Brands', 'toggleBulkStatuses'));
     $frm->addHiddenField('', 'status');
 
     echo $frm->getFormTag();

@@ -37,19 +37,19 @@ if (true == $primaryOrder) {
                     <ul class="actions no-print">
                         <?php if ($canCancelOrder) { ?>
                         <li>
-                            <a href="<?php echo CommonHelper::generateUrl('Buyer', 'orderCancellationRequest', array($childOrderDetail['op_id'])); ?>" class="icn-highlighted" title="<?php echo Labels::getLabel('LBL_Cancel_Order', $siteLangId); ?>"><i
+                            <a href="<?php echo UrlHelper::generateUrl('Buyer', 'orderCancellationRequest', array($childOrderDetail['op_id'])); ?>" class="icn-highlighted" title="<?php echo Labels::getLabel('LBL_Cancel_Order', $siteLangId); ?>"><i
                                     class="fas fa-times"></i></a>
                         </li>
                         <?php }
                             if (FatApp::getConfig("CONF_ALLOW_REVIEWS", FatUtility::VAR_INT, 0) && $canReviewOrders && $canSubmitFeedback) {
                                 ?> <li>
-                            <a href="<?php echo CommonHelper::generateUrl('Buyer', 'orderFeedback', array($childOrderDetail['op_id'])); ?>" class="icn-highlighted" title="<?php echo Labels::getLabel('LBL_Feedback', $siteLangId); ?>"><i
+                            <a href="<?php echo UrlHelper::generateUrl('Buyer', 'orderFeedback', array($childOrderDetail['op_id'])); ?>" class="icn-highlighted" title="<?php echo Labels::getLabel('LBL_Feedback', $siteLangId); ?>"><i
                                     class="fa fa-star"></i></a>
                         </li> <?php
                             }
                             if ($canReturnRefund) { ?>
                         <li>
-                            <a href="<?php echo CommonHelper::generateUrl('Buyer', 'orderReturnRequest', array($childOrderDetail['op_id'])); ?>" class="icn-highlighted" title="<?php echo Labels::getLabel('LBL_Refund', $siteLangId); ?>"><i
+                            <a href="<?php echo UrlHelper::generateUrl('Buyer', 'orderReturnRequest', array($childOrderDetail['op_id'])); ?>" class="icn-highlighted" title="<?php echo Labels::getLabel('LBL_Refund', $siteLangId); ?>"><i
                                     class="fas fa-dollar-sign"></i></a>
                         </li>
                         <?php } ?>
@@ -69,7 +69,7 @@ if (true == $primaryOrder) {
                         <div class="">
                             <iframe src="<?php echo Fatutility::generateUrl('buyer', 'viewOrder', $urlParts) . '/print'; ?>" name="frame" style="display:none"></iframe>
                             <a href="javascript:void(0)" onclick="frames['frame'].print()" class="btn btn--primary btn--sm no-print"><?php echo Labels::getLabel('LBL_Print', $siteLangId); ?></a>
-                            <a href="<?php echo CommonHelper::generateUrl('Buyer', 'orders'); ?>" class="btn btn-outline-primary btn--sm no-print"><?php echo Labels::getLabel('LBL_Back_to_order', $siteLangId); ?></a>
+                            <a href="<?php echo UrlHelper::generateUrl('Buyer', 'orders'); ?>" class="btn btn-outline-primary btn--sm no-print"><?php echo Labels::getLabel('LBL_Back_to_order', $siteLangId); ?></a>
                         </div>
                     </div> <?php
                     } ?>
@@ -165,11 +165,11 @@ if (true == $primaryOrder) {
                                             <div class="pic--cell-left"> <?php
                                             $prodOrBatchUrl = 'javascript:void(0)';
                                             if ($childOrder['op_is_batch']) {
-                                                $prodOrBatchUrl = CommonHelper::generateUrl('Products', 'batch', array($childOrder['op_selprod_id']));
+                                                $prodOrBatchUrl = UrlHelper::generateUrl('Products', 'batch', array($childOrder['op_selprod_id']));
                                                 $prodOrBatchImgUrl = UrlHelper::getCachedUrl(UrlHelper::generateFileUrl('image', 'BatchProduct', array($childOrder['op_selprod_id'],$siteLangId, "SMALL"), CONF_WEBROOT_URL), CONF_IMG_CACHE_TIME, '.jpg');
                                             } else {
                                                 if (Product::verifyProductIsValid($childOrder['op_selprod_id']) == true) {
-                                                    $prodOrBatchUrl = CommonHelper::generateUrl('Products', 'view', array($childOrder['op_selprod_id']));
+                                                    $prodOrBatchUrl = UrlHelper::generateUrl('Products', 'view', array($childOrder['op_selprod_id']));
                                                 }
                                                 $prodOrBatchImgUrl = UrlHelper::getCachedUrl(UrlHelper::generateFileUrl('image', 'product', array($childOrder['selprod_product_id'], "SMALL", $childOrder['op_selprod_id'], 0, $siteLangId), CONF_WEBROOT_URL), CONF_IMG_CACHE_TIME, '.jpg');
                                             } ?> <figure class="item__pic"><a href="<?php echo $prodOrBatchUrl; ?>"><img src="<?php echo $prodOrBatchImgUrl; ?>" title="<?php echo $childOrder['op_product_name']; ?>" alt="<?php echo $childOrder['op_product_name']; ?>"></a></figure>
@@ -186,7 +186,7 @@ if (true == $primaryOrder) {
                                             <?php } else { ?>
                                                 <div class="item__category">
                                                     <a title="<?php echo $childOrder['op_product_name']; ?>"
-                                                href="<?php echo CommonHelper::generateUrl('Products', 'view', array($childOrder['op_selprod_id'])); ?>"><?php echo $childOrder['op_product_name']; ?> </a>
+                                                href="<?php echo UrlHelper::generateUrl('Products', 'view', array($childOrder['op_selprod_id'])); ?>"><?php echo $childOrder['op_product_name']; ?> </a>
                                                 </div>
                                             <?php } ?>
                                             <div class="item__brand"><?php echo Labels::getLabel('Lbl_Brand', $siteLangId)?>: <?php echo CommonHelper::displayNotApplicable($siteLangId, $childOrder['op_brand_name']); ?></div>
@@ -406,11 +406,11 @@ if (true == $primaryOrder) {
                                     }
 
                                     if ($row['downloadable']) {
-                                        $fileName = '<a href="' . CommonHelper::generateUrl('Buyer', 'downloadDigitalFile', array($row['afile_id'],$row['afile_record_id'])) . '">' . $row['afile_name'] . '</a>';
+                                        $fileName = '<a href="' . UrlHelper::generateUrl('Buyer', 'downloadDigitalFile', array($row['afile_id'],$row['afile_record_id'])) . '">' . $row['afile_name'] . '</a>';
                                     } else {
                                         $fileName = $row['afile_name'];
                                     }
-                                    $downloads = '<li><a href="' . CommonHelper::generateUrl('Buyer', 'downloadDigitalFile', array($row['afile_id'],$row['afile_record_id'])) . '"><i class="fa fa-download"></i></a></li>';
+                                    $downloads = '<li><a href="' . UrlHelper::generateUrl('Buyer', 'downloadDigitalFile', array($row['afile_id'],$row['afile_record_id'])) . '"><i class="fa fa-download"></i></a></li>';
 
                                     $expiry = Labels::getLabel('LBL_N/A', $siteLangId) ;
                                     if ($row['expiry_date'] != '') {

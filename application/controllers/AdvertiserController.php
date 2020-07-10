@@ -1151,7 +1151,7 @@ class AdvertiserController extends AdvertiserBaseController
 
         if ($promotionId < 1) {
             Message::addErrorMessage(Labels::getLabel('Msg_Invalid_Request', $this->siteLangId));
-            FatApp::redirectUser(CommonHelper::generateUrl('advertiser'));
+            FatApp::redirectUser(UrlHelper::generateUrl('advertiser'));
         }
         $promotionDetails = Promotion::getAttributesById($promotionId);
         if ($promotionDetails['promotion_user_id'] != $userId) {

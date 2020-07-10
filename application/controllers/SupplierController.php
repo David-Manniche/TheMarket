@@ -10,17 +10,17 @@ class SupplierController extends MyAppController
     public function index()
     {
         if (UserAuthentication::isUserLogged() && (User::isSeller() || User::isSigningUpForSeller())) {
-            FatApp::redirectUser(CommonHelper::generateUrl('seller'));
+            FatApp::redirectUser(UrlHelper::generateUrl('seller'));
         }
         if (UserAuthentication::isUserLogged()) {
             if (User::canViewSupplierTab()) {
-                FatApp::redirectUser(CommonHelper::generateUrl('account', 'supplierApprovalForm'));
+                FatApp::redirectUser(UrlHelper::generateUrl('account', 'supplierApprovalForm'));
             }
             Message::addErrorMessage(Labels::getLabel('MSG_You_are_already_logged_in._Please_logout_and_register_for_seller.', $this->siteLangId));
-            FatApp::redirectUser(CommonHelper::generateUrl('account'));
+            FatApp::redirectUser(UrlHelper::generateUrl('account'));
         }
         if (!FatApp::getConfig("CONF_ACTIVATE_SEPARATE_SIGNUP_FORM", FatUtility::VAR_INT, 1)) {
-            FatApp::redirectUser(CommonHelper::generateUrl('guest-user', 'login-form', array(applicationConstants::YES)));
+            FatApp::redirectUser(UrlHelper::generateUrl('guest-user', 'login-form', array(applicationConstants::YES)));
         }
         $sellerFrm = $this->getSellerForm();
         $obj = new Extrapage();
@@ -62,10 +62,10 @@ class SupplierController extends MyAppController
     public function account()
     {
         if (UserAuthentication::isUserLogged()) {
-            FatApp::redirectUser(CommonHelper::generateUrl('account'));
+            FatApp::redirectUser(UrlHelper::generateUrl('account'));
         }
         if (!FatApp::getConfig("CONF_ACTIVATE_SEPARATE_SIGNUP_FORM", FatUtility::VAR_INT, 1)) {
-            FatApp::redirectUser(CommonHelper::generateUrl('guest-user', 'registration-form'));
+            FatApp::redirectUser(UrlHelper::generateUrl('guest-user', 'registration-form'));
         }
         $frm = $this->getSellerForm();
         $postedData = $frm->getFormDataFromArray(FatApp::getPostedData());
@@ -92,7 +92,7 @@ class SupplierController extends MyAppController
             $cPageSrch->addCondition('cpage_id', '=', FatApp::getConfig('CONF_TERMS_AND_CONDITIONS_PAGE', FatUtility::VAR_INT, 0));
             $cpage = FatApp::getDb()->fetch($cPageSrch->getResultSet());
             if (!empty($cpage) && is_array($cpage)) {
-                $termsAndConditionsLinkHref = CommonHelper::generateUrl('Cms', 'view', array($cpage['cpage_id']));
+                $termsAndConditionsLinkHref = UrlHelper::generateUrl('Cms', 'view', array($cpage['cpage_id']));
             } else {
                 $termsAndConditionsLinkHref = 'javascript:void(0)';
             }
@@ -239,7 +239,7 @@ class SupplierController extends MyAppController
             }
         } else {
             if (FatApp::getConfig('CONF_WELCOME_EMAIL_REGISTRATION', FatUtility::VAR_INT, 1)) {
-                $link = CommonHelper::generateFullUrl('GuestUser', 'loginForm');
+                $link = UrlHelper::generateFullUrl('GuestUser', 'loginForm');
                 if (!$userObj->userWelcomeEmailRegistration($post, $link, $this->siteLangId)) {
                     Message::addErrorMessage(Labels::getLabel("MSG_WELCOME_EMAIL_COULD_NOT_BE_SENT", $this->siteLangId));
                     $db->rollbackTransaction();
@@ -719,7 +719,7 @@ class SupplierController extends MyAppController
         $frm = new Form('frmSeller');
         $frm->addHiddenField('', 'user_id', 0, array('id' => 'user_id'));
         $frm->setFormTagAttribute("class", "form invalid");
-        $frm->setFormTagAttribute("action", CommonHelper::generateUrl('supplier', 'account'));
+        $frm->setFormTagAttribute("action", UrlHelper::generateUrl('supplier', 'account'));
         $fld = $frm->addEmailField(Labels::getLabel('LBL_Your_Email', $this->siteLangId), 'user_email', '');
         $fld->setUnique('tbl_user_credentials', 'credential_email', 'credential_user_id', 'user_id', 'user_id');
         $frm->addRequiredField(Labels::getLabel('LBL_Your_Name', $this->siteLangId), 'user_name', '');

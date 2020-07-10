@@ -204,7 +204,7 @@ class NavigationsController extends AdminBaseController
             if (FatUtility::isAjaxCall()) {
                 FatUtility::dieWithError(Message::getHtml());
             }
-            FatApp::redirectUser(CommonHelper::generateUrl('navigations'));
+            FatApp::redirectUser(UrlHelper::generateUrl('navigations'));
         }
 
         $srch = new NavigationLinkSearch($this->adminLangId);

@@ -42,14 +42,14 @@ class Test
 							href="http://bwmarts.4demo.website/developer/css/' . $fl . '" />' . "\n";
                     } else {
                         $str .= '<link rel="stylesheet" type="text/css"
-							href="' . FatCache::getCachedUrl(CommonHelper::generateUrl('JsCss', 'cssCommon', array(), $use_root_url, false) . '&f=' . rawurlencode($fl) . '&min=0&sid=' . $time, CONF_DEF_CACHE_TIME, '.css') . '" />' . "\n";
+							href="' . FatCache::getCachedUrl(UrlHelper::generateUrl('JsCss', 'cssCommon', array(), $use_root_url, false) . '&f=' . rawurlencode($fl) . '&min=0&sid=' . $time, CONF_DEF_CACHE_TIME, '.css') . '" />' . "\n";
                     }
                 }
             }
 
             if ($mergeFiles) {
                 $str .= '<link rel="stylesheet" type="text/css"
-						href="' . FatCache::getCachedUrl(CommonHelper::generateUrl('JsCss', 'cssCommon', array(), $use_root_url, false) . '&min=1&sid=' . $last_updated, CONF_DEF_CACHE_TIME, '.css') . '" />' . "\n";
+						href="' . FatCache::getCachedUrl(UrlHelper::generateUrl('JsCss', 'cssCommon', array(), $use_root_url, false) . '&min=1&sid=' . $last_updated, CONF_DEF_CACHE_TIME, '.css') . '" />' . "\n";
             }
         }
 
@@ -97,14 +97,14 @@ class Test
 							href="http://bwmarts.4demo.website/developer/admin/css/' . $fl . '" />' . "\n";
                     } else {
                         $str .= '<link rel="stylesheet" type="text/css"
-							href="' . FatCache::getCachedUrl(CommonHelper::generateUrl('JsCss', 'cssCommon', array(), $use_root_url, false) . '&f=' . rawurlencode($fl) . '&min=0&sid=' . $time, CONF_DEF_CACHE_TIME, '.css') . '" />' . "\n";
+							href="' . FatCache::getCachedUrl(UrlHelper::generateUrl('JsCss', 'cssCommon', array(), $use_root_url, false) . '&f=' . rawurlencode($fl) . '&min=0&sid=' . $time, CONF_DEF_CACHE_TIME, '.css') . '" />' . "\n";
                     }
                 }
             }
 
             if ($mergeFiles) {
                 $str .= '<link rel="stylesheet" type="text/css"
-						href="' . FatCache::getCachedUrl(CommonHelper::generateUrl('JsCss', 'cssCommon', array(), $use_root_url, false) . '&min=1&sid=' . $last_updated, CONF_DEF_CACHE_TIME, '.css') . '" />' . "\n";
+						href="' . FatCache::getCachedUrl(UrlHelper::generateUrl('JsCss', 'cssCommon', array(), $use_root_url, false) . '&min=1&sid=' . $last_updated, CONF_DEF_CACHE_TIME, '.css') . '" />' . "\n";
             }
         }
 

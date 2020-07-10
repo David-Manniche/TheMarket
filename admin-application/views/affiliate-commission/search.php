@@ -78,7 +78,7 @@ if (count($arr_listing) == 0) {
 $frm = new Form('frmAffCommListing', array('id'=>'frmAffCommListing'));
 $frm->setFormTagAttribute('class', 'web_form last_td_nowrap actionButtons-js');
 $frm->setFormTagAttribute('onsubmit', 'formAction(this, reloadList ); return(false);');
-$frm->setFormTagAttribute('action', CommonHelper::generateUrl('AffiliateCommission', 'deleteSelected'));
+$frm->setFormTagAttribute('action', UrlHelper::generateUrl('AffiliateCommission', 'deleteSelected'));
 $frm->addHiddenField('', 'status');
 
 echo $frm->getFormTag();

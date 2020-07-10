@@ -13,7 +13,7 @@
 								<?php echo ($row['collection_name'] != '') ? ' <div class="section__heading"><h2>' . $row['collection_name'] .'</h2></div>' : ''; ?>
 
 								<?php if( $row['totCategories'] > Collections::LIMIT_CATEGORY_LAYOUT1 ){ ?>
-									<div class="section__action"> <a href="<?php echo CommonHelper::generateUrl('Collections','View',array($row['collection_id']));?>" class="link"><?php echo Labels::getLabel('LBL_View_More',$siteLangId); ?></a> </div>
+									<div class="section__action"> <a href="<?php echo UrlHelper::generateUrl('Collections','View',array($row['collection_id']));?>" class="link"><?php echo Labels::getLabel('LBL_View_More',$siteLangId); ?></a> </div>
 								<?php }  ?>
 							</div>
 							<?php include('category-layout-product-list.php'); ?>

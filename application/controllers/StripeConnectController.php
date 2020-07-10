@@ -94,7 +94,7 @@ class StripeConnectController extends PaymentMethodBaseController
         if (false == $this->stripeConnect->accessAccountId($code)) {
             $this->setError();
         }
-        FatApp::redirectUser(CommonHelper::generateUrl('seller', 'shop', [self::KEY_NAME]));
+        FatApp::redirectUser(UrlHelper::generateUrl('seller', 'shop', [self::KEY_NAME]));
     }
 
     public function initialSetup()
@@ -216,7 +216,7 @@ class StripeConnectController extends PaymentMethodBaseController
     {
         if (false === $resp) {
             Message::addErrorMessage($this->stripeConnect->getError());
-            FatApp::redirectUser(CommonHelper::generateUrl('seller', 'shop', [self::KEY_NAME]));
+            FatApp::redirectUser(UrlHelper::generateUrl('seller', 'shop', [self::KEY_NAME]));
         }
         return true;
     }
@@ -248,14 +248,14 @@ class StripeConnectController extends PaymentMethodBaseController
             $msg = $this->stripeConnect->getError();
             if (true === $redirect) {
                 Message::addErrorMessage($msg);
-                FatApp::redirectUser(CommonHelper::generateUrl('seller', 'shop', [self::KEY_NAME]));
+                FatApp::redirectUser(UrlHelper::generateUrl('seller', 'shop', [self::KEY_NAME]));
             }
             FatUtility::dieJsonError($msg);
         }
         $msg = Labels::getLabel('MSG_SUCCESS', $this->siteLangId);
         if (true === $redirect) {
             Message::addMessage($msg);
-            FatApp::redirectUser(CommonHelper::generateUrl('seller', 'shop', [self::KEY_NAME]));
+            FatApp::redirectUser(UrlHelper::generateUrl('seller', 'shop', [self::KEY_NAME]));
         }
 
         FatUtility::dieJsonSuccess($msg);

@@ -14,7 +14,7 @@ class AdminGuestController extends FatController
                 $json['loggedIn'] = true;
                 FatUtility::dieJsonError($json);
             } else {
-                FatApp::redirectUser(CommonHelper::generateUrl('home'));
+                FatApp::redirectUser(UrlHelper::generateUrl('home'));
             }
         }
         $controllerName = get_class($this);
@@ -82,7 +82,7 @@ class AdminGuestController extends FatController
         /* ] */
 
         if ($this->doCookieAdminLogin()) {
-            FatApp::redirectUser(CommonHelper::generateUrl('home'));
+            FatApp::redirectUser(UrlHelper::generateUrl('home'));
         }
 
         $this->set('frm', $frm);
@@ -111,7 +111,7 @@ class AdminGuestController extends FatController
         /* ] */
 
         if ($this->doCookieAdminLogin()) {
-            FatApp::redirectUser(CommonHelper::generateUrl('home'));
+            FatApp::redirectUser(UrlHelper::generateUrl('home'));
         }
 
         $this->set('frm', $frm);
@@ -147,7 +147,7 @@ class AdminGuestController extends FatController
         }
 
         if ($redirectUrl == '') {
-            $redirectUrl = CommonHelper::generateUrl('Home');
+            $redirectUrl = UrlHelper::generateUrl('Home');
         }
         $this->set('redirectUrl', $redirectUrl);
         /* ] */
@@ -194,9 +194,9 @@ class AdminGuestController extends FatController
         $token = UserAuthentication::encryptPassword(FatUtility::getRandomString(20));
 
         $data = array('admin_id' => $admin['admin_id'], 'token' => $token);
-        $reset_url = CommonHelper::generateFullUrl('adminGuest', 'resetPwd', array($admin['admin_id'], $token));
+        $reset_url = UrlHelper::generateFullUrl('adminGuest', 'resetPwd', array($admin['admin_id'], $token));
         $website_url_scheme = FatUtility::getUrlScheme();
-        $website_url = CommonHelper::generateFullUrl('', '', array(), CONF_WEBROOT_FRONTEND);
+        $website_url = UrlHelper::generateFullUrl('', '', array(), CONF_WEBROOT_FRONTEND);
         $adminAuthObj->deleteOldPasswordResetRequest();
         if (!$adminAuthObj->addPasswordResetRequest($data)) {
             Message::addErrorMessage($adminAuthObj->getError());
@@ -205,7 +205,7 @@ class AdminGuestController extends FatController
         }
         $replacements = array(
             '{reset_url}' => $reset_url,
-            '{site_domain}' => CommonHelper::generateFullUrl('', '', array(), CONF_WEBROOT_FRONTEND),
+            '{site_domain}' => UrlHelper::generateFullUrl('', '', array(), CONF_WEBROOT_FRONTEND),
             '{user_full_name}' => trim($admin['admin_name']),
         );
         if (!EmailHandler::sendMailTpl(
@@ -227,19 +227,19 @@ class AdminGuestController extends FatController
 
     public function resetPwd($adminId = 0, $token = '')
     {
-        /* die("We are currently working on this area..., for now, we have saved the sent email and token in table for this, but you cannot update the password for now <a href=".CommonHelper::generateFullUrl('','',array()).">Go to Admin Area</a>"); */
+        /* die("We are currently working on this area..., for now, we have saved the sent email and token in table for this, but you cannot update the password for now <a href=".UrlHelper::generateFullUrl('','',array()).">Go to Admin Area</a>"); */
         $adminId = FatUtility::int($adminId);
 
         if ($adminId < 1 || strlen(trim($token)) < 20) {
             Message::addErrorMessage(Labels::getLabel('MSG_Link_is_invalid_or_expired', $this->adminLangId));
-            FatApp::redirectUser(CommonHelper::generateUrl('adminGuest', 'loginForm'));
+            FatApp::redirectUser(UrlHelper::generateUrl('adminGuest', 'loginForm'));
         }
 
         $adminAuthObj = AdminAuthentication::getInstance();
 
         if (!$adminAuthObj->checkResetLink($adminId, trim($token))) {
             Message::addErrorMessage($adminAuthObj->getError());
-            FatApp::redirectUser(CommonHelper::generateUrl('adminGuest', 'loginForm'));
+            FatApp::redirectUser(UrlHelper::generateUrl('adminGuest', 'loginForm'));
         }
 
         $frm = $this->getResetPwdForm($adminId, trim($token));
@@ -317,7 +317,7 @@ class AdminGuestController extends FatController
 
         $arr_replacements = array(
         '{user_full_name}' => trim($admin_row['admin_name']),
-        '{login_link}' => CommonHelper::generateFullUrl('adminGuest', 'loginForm', array())
+        '{login_link}' => UrlHelper::generateFullUrl('adminGuest', 'loginForm', array())
         );
         EmailHandler::sendMailTpl($admin_row['admin_email'], 'user_admin_password_changed_successfully', $this->adminLangId, $arr_replacements);
         if (!empty(FatApp::getConfig('CONF_SITE_PHONE'))) {

@@ -24,7 +24,7 @@
 					<?php foreach($bannerAttachments as $img){?>
 					<div class="row">
 						<div class="profile__pic">
-							<img src="<?php echo CommonHelper::generateUrl('Image','shopBanner',array($img['afile_record_id'],$img['afile_lang_id'],'PREVIEW'));?>" alt="">
+							<img src="<?php echo UrlHelper::generateUrl('Image','shopBanner',array($img['afile_record_id'],$img['afile_lang_id'],'PREVIEW'));?>" alt="">
 						</div>
 						<small class="text--small"><?php echo $bannerTypeArr[$img['afile_lang_id']];?></small>
 						<div class="btngroup--fix">
@@ -42,7 +42,7 @@
 					<div class="row">
 						<?php $count = 1; foreach($logoAttachments as $img){?>
 						<div class="col-md-6">
-							<div class="profile__pic"><img src="<?php echo CommonHelper::generateUrl('Image','shopLogo',array($img['afile_record_id'],$img['afile_lang_id'],'SMALL'));?>" alt=""></div>
+							<div class="profile__pic"><img src="<?php echo UrlHelper::generateUrl('Image','shopLogo',array($img['afile_record_id'],$img['afile_lang_id'],'SMALL'));?>" alt=""></div>
 							<small class="text--small"><?php echo $bannerTypeArr[$img['afile_lang_id']];?></small>
 							<div class="btngroup--fix">
 								<a class = "btn btn--secondary btn--sm" href="javascript:void(0);" onClick="removeShopLogo(<?php echo $img['afile_record_id']; ?>,<?php echo $img['afile_lang_id']; ?>)"><?php echo Labels::getLabel('LBL_Remove',$adminLangId);?></a>

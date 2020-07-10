@@ -82,7 +82,7 @@ class QuestionnaireController extends MyAppController
             }
         }
         Message::addMessage(Labels::getLabel('Msg_Feedback_sent_successfuly', $this->siteLangId));
-        FatApp::redirectUser(CommonHelper::generateUrl(''));
+        FatApp::redirectUser(UrlHelper::generateUrl(''));
     }
 
     public function view($questionnaireId)

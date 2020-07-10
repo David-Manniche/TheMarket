@@ -4,17 +4,17 @@
 <div class="col-md-9">
     <h6 class="m-0">
         <?php if (empty($accountId)) { ?>
-            <a class="btn btn-outline-primary btn--sm" onClick="register(this)" href="javascript:void(0)"  data-href="<?php echo CommonHelper::generateUrl($keyName, 'register'); ?>">
+            <a class="btn btn-outline-primary btn--sm" onClick="register(this)" href="javascript:void(0)"  data-href="<?php echo UrlHelper::generateUrl($keyName, 'register'); ?>">
                 <?php echo Labels::getLabel('LBL_REGISTER', $siteLangId); ?>
             </a>
-            <a class="btn btn--primary btn--sm" href="<?php echo CommonHelper::generateUrl($keyName, 'login')?>" title="<?php echo Labels::getLabel('MSG_LOGIN', $siteLangId); ?>">
+            <a class="btn btn--primary btn--sm" href="<?php echo UrlHelper::generateUrl($keyName, 'login')?>" title="<?php echo Labels::getLabel('MSG_LOGIN', $siteLangId); ?>">
                 <?php echo Labels::getLabel('LBL_ALREADY_HAVE_ACCOUNT_?', $siteLangId); ?>
             </a>
         <?php } else { ?>
             <?php echo Labels::getLabel('LBL_ACCOUNT_ID', $siteLangId);?> : 
             <?php echo $accountId; ?>
             <?php if ('custom' == $stripeAccountType) { ?>
-                <a class="btn btn--primary btn--sm"  onClick="deleteAccount(this)" href="javascript:void(0)"  data-href="<?php echo CommonHelper::generateUrl($keyName, 'deleteAccount')?>" title="<?php echo Labels::getLabel('LBL_DELETE_ACCOUNT', $siteLangId); ?>">
+                <a class="btn btn--primary btn--sm"  onClick="deleteAccount(this)" href="javascript:void(0)"  data-href="<?php echo UrlHelper::generateUrl($keyName, 'deleteAccount')?>" title="<?php echo Labels::getLabel('LBL_DELETE_ACCOUNT', $siteLangId); ?>">
                     <i class="fa fa-trash"></i>
                 </a>
             <?php } ?>

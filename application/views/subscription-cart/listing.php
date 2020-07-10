@@ -21,7 +21,7 @@
           <div class="item__title"><a href="javascript:void(0)"><?php echo $subscription['spackage_name'] ?></a></div>
         </div>
         <div class="gap"></div>
-        <a href="<?php echo CommonHelper::generateUrl('seller','packages');?>" class="btn btn--sm btn--gray ripplelink"><?php echo Labels::getLabel('LBL_Edit',$siteLangId); ?></a> <a href="javascript:void(0)" onclick="subscription.remove('<?php echo md5($subscription['key']); ?>')" title="<?php echo Labels::getLabel('LBL_Remove', $siteLangId); ?>" class="btn btn--sm btn--gray ripplelink"><?php echo Labels::getLabel('LBL_Remove',$siteLangId); ?></a></td>
+        <a href="<?php echo UrlHelper::generateUrl('seller','packages');?>" class="btn btn--sm btn--gray ripplelink"><?php echo Labels::getLabel('LBL_Edit',$siteLangId); ?></a> <a href="javascript:void(0)" onclick="subscription.remove('<?php echo md5($subscription['key']); ?>')" title="<?php echo Labels::getLabel('LBL_Remove', $siteLangId); ?>" class="btn btn--sm btn--gray ripplelink"><?php echo Labels::getLabel('LBL_Remove',$siteLangId); ?></a></td>
       <td><div class="product_price product--price"><?php echo SellerPackagePlans::getPlanPriceWithPeriod($subscription,$subscription[SellerPackagePlans::DB_TBL_PREFIX.'price']);?>
           <?php if($subscription[SellerPackagePlans::DB_TBL_PREFIX.'trial_interval']>0){?>
           <span><?php echo SellerPackagePlans::getPlanTrialPeriod($subscription);?></span>
@@ -52,7 +52,7 @@
           <td class="hightlighted"><?php echo CommonHelper::displayMoneyFormat($cartSummary['cartTotal'], true, false, true, false, true); ?></td>
         </tr>
         <tr>
-          <td colspan="2"><a href="<?php echo CommonHelper::generateUrl('SubscriptionCheckout'); ?>" class="btn btn-outline-primary ripplelink"><?php echo Labels::getLabel('LBL_Proceed_to_Pay', $siteLangId); ?> </a></td>
+          <td colspan="2"><a href="<?php echo UrlHelper::generateUrl('SubscriptionCheckout'); ?>" class="btn btn-outline-primary ripplelink"><?php echo Labels::getLabel('LBL_Proceed_to_Pay', $siteLangId); ?> </a></td>
         </tr>
       </tbody>
     </table>

@@ -26,7 +26,7 @@ class MessagesController extends AdminBaseController
         $threadId = FatUtility::int($threadId);
         if (empty($threadId)) {
             Message::addErrorMessage($this->str_invalid_request);
-            FatApp::redirectUser(CommonHelper::generateUrl('Messages'));
+            FatApp::redirectUser(UrlHelper::generateUrl('Messages'));
         }
         $search = $this->getMessageSearchForm();
         $search->getField('thread_id')->value = $threadId;

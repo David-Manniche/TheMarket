@@ -22,7 +22,7 @@
 									<ul class="actions">
 										<li><a title="Edit" href="javascript:void(0)" onClick="bannerLocation(3)"><i class="far fa-edit icon"></i></a></li>
 										<!--<li><a title="Delete" href="javascript:void(0)"><i class="fa fa-trash  icon"></i></a></li>-->
-										<li><a title="View" target="_blank" href="<?php echo CommonHelper::generateUrl('banners','listing',array(3));?>"><i class="far fa-eye icon"></i></a></li>
+										<li><a title="View" target="_blank" href="<?php echo UrlHelper::generateUrl('banners','listing',array(3));?>"><i class="far fa-eye icon"></i></a></li>
 									</ul>
 								</div>
 							</div>
@@ -56,7 +56,7 @@
 										<div class="overlayer">
 											<ul class="actions">
 												<li><a title="Edit" href="javascript:void(0)" onClick="bannerLocation(4)"><i class="far fa-edit icon"></i></a></li>
-												<li><a title="View" target="_blank" href="<?php echo CommonHelper::generateUrl('banners','listing',array(4));?>"><i class="far fa-eye icon"></i></a></li>
+												<li><a title="View" target="_blank" href="<?php echo UrlHelper::generateUrl('banners','listing',array(4));?>"><i class="far fa-eye icon"></i></a></li>
 											</ul>
 										</div>
 									</div>
@@ -72,7 +72,7 @@
 										<div class="overlayer">
 											<ul class="actions">
 												<li><a title="Edit" href="javascript:void(0)" onClick="bannerLocation(5)"><i class="far fa-edit icon"></i></a></li>
-												<li><a title="View" target="_blank" href="<?php echo CommonHelper::generateUrl('banners','listing',array(5));?>"><i class="far fa-eye icon"></i></a></li>
+												<li><a title="View" target="_blank" href="<?php echo UrlHelper::generateUrl('banners','listing',array(5));?>"><i class="far fa-eye icon"></i></a></li>
 											</ul>
 										</div>
 									</div>
@@ -104,7 +104,7 @@
 								/* <div class="overlayer">
 									<ul class="actions">
 										<li><a title="Edit" href="javascript:void(0)" onClick="updateStatusForm(<?php echo Extrapage::HOME_PAGE_CONTENT_BLOCK1;?>)"><i class="far fa-edit icon"></i></a></li>
-										<li><a title="View" target="_blank" href="<?php echo CommonHelper::generateUrl('ContentBlock','index',array(Extrapage::HOME_PAGE_CONTENT_BLOCK1));?>"><i class="far fa-eye icon"></i></a></li>
+										<li><a title="View" target="_blank" href="<?php echo UrlHelper::generateUrl('ContentBlock','index',array(Extrapage::HOME_PAGE_CONTENT_BLOCK1));?>"><i class="far fa-eye icon"></i></a></li>
 									</ul>
 								</div> */
 								?>
@@ -123,7 +123,7 @@
 							<div class="overlayer">
 								<ul class="actions">
 									<li><a title="Edit" href="javascript:void(0)" onClick="bannerLocation(1)"><i class="far fa-edit icon"></i></a></li>
-									<li><a title="View" target="_blank" href="<?php echo CommonHelper::generateUrl('banners','listing',array(1));?>"><i class="far fa-eye icon"></i></a></li>
+									<li><a title="View" target="_blank" href="<?php echo UrlHelper::generateUrl('banners','listing',array(1));?>"><i class="far fa-eye icon"></i></a></li>
 								</ul>
 							</div>
 						</div>
@@ -162,7 +162,7 @@
 									/* <div class="overlayer">
 										<ul class="actions">
 											<li><a title="Edit" href="javascript:void(0)" onClick="updateStatusForm(<?php echo Extrapage::HOME_PAGE_CONTENT_BLOCK2;?>)"><i class="far fa-edit icon"></i></a></li>
-											<li><a title="View" target="_blank" href="<?php echo CommonHelper::generateUrl('ContentBlock','index',array(Extrapage::HOME_PAGE_CONTENT_BLOCK2));?>"><i class="far fa-eye icon"></i></a></li>
+											<li><a title="View" target="_blank" href="<?php echo UrlHelper::generateUrl('ContentBlock','index',array(Extrapage::HOME_PAGE_CONTENT_BLOCK2));?>"><i class="far fa-eye icon"></i></a></li>
 										</ul>
 									</div> */ ?>
 								</div>
@@ -199,7 +199,7 @@
 									<div class="overlayer">
 										<ul class="actions">
 											<li><a title="Edit" href="javascript:void(0)" onClick="bannerLocation(7)"><i class="far fa-edit icon"></i></a></li>
-											<li><a title="View" target="_blank" href="<?php echo CommonHelper::generateUrl('banners','listing',array(7));?>"><i class="far fa-eye icon"></i></a></li>
+											<li><a title="View" target="_blank" href="<?php echo UrlHelper::generateUrl('banners','listing',array(7));?>"><i class="far fa-eye icon"></i></a></li>
 										</ul>
 									</div>
 								</div>
@@ -226,7 +226,7 @@
 								<div class="overlayer">
 									<ul class="actions">
 										<li><a title="Edit" href="javascript:void(0)" onClick="bannerLocation(6)"><i class="far fa-edit icon"></i></a></li>
-										<li><a title="View" target="_blank" href="<?php echo CommonHelper::generateUrl('banners','listing',array(6));?>"><i class="far fa-eye icon"></i></a></li>
+										<li><a title="View" target="_blank" href="<?php echo UrlHelper::generateUrl('banners','listing',array(6));?>"><i class="far fa-eye icon"></i></a></li>
 									</ul>
 								</div>
 							</div>
@@ -262,7 +262,7 @@
 									<div class="overlayer">
 										<ul class="actions">
 											<li><a title="Edit" href="javascript:void(0)" onClick="updateStatusForm(<?php echo Extrapage::HOME_PAGE_CONTENT_BOTTOM_TOP;?>)"><i class="far fa-edit icon"></i></a></li>
-											<li><a title="View" target="_blank" href="<?php echo CommonHelper::generateUrl('ContentBlock','index',array(Extrapage::HOME_PAGE_CONTENT_BOTTOM_TOP));?>"><i class="far fa-eye icon"></i></a></li>
+											<li><a title="View" target="_blank" href="<?php echo UrlHelper::generateUrl('ContentBlock','index',array(Extrapage::HOME_PAGE_CONTENT_BOTTOM_TOP));?>"><i class="far fa-eye icon"></i></a></li>
 										</ul>
 									</div>
 								</div>
@@ -315,7 +315,7 @@
 									<div class="overlayer">
 										<ul class="actions">
 											<li><a title="Edit" href="javascript:void(0)" onClick="updateStatusForm(<?php echo Extrapage::HOME_PAGE_CONTENT_BOTTOM;?>)"><i class="far fa-edit icon"></i></a></li>
-											<li><a title="View" target="_blank" href="<?php echo CommonHelper::generateUrl('ContentBlock','index',array(Extrapage::HOME_PAGE_CONTENT_BOTTOM));?>"><i class="far fa-eye icon"></i></a></li>
+											<li><a title="View" target="_blank" href="<?php echo UrlHelper::generateUrl('ContentBlock','index',array(Extrapage::HOME_PAGE_CONTENT_BOTTOM));?>"><i class="far fa-eye icon"></i></a></li>
 										</ul>
 									</div>
 								</div>

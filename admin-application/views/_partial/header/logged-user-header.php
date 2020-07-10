@@ -8,8 +8,8 @@
                 $fileData = AttachedFile::getAttachment(AttachedFile::FILETYPE_ADMIN_LOGO, 0, 0, $adminLangId, false);
                 $aspectRatioArr = AttachedFile::getRatioTypeArray($adminLangId);
                 ?>
-                <a href="<?php echo CommonHelper::generateUrl('home'); ?>">
-                    <img <?php if ($fileData['afile_aspect_ratio'] > 0) { ?> data-ratio= "<?php echo $aspectRatioArr[$fileData['afile_aspect_ratio']]; ?>" <?php } ?> src="<?php echo CommonHelper::generateUrl('Image','siteAdminLogo', array( $adminLangId )); ?>" alt="">
+                <a href="<?php echo UrlHelper::generateUrl('home'); ?>">
+                    <img <?php if ($fileData['afile_aspect_ratio'] > 0) { ?> data-ratio= "<?php echo $aspectRatioArr[$fileData['afile_aspect_ratio']]; ?>" <?php } ?> src="<?php echo UrlHelper::generateUrl('Image','siteAdminLogo', array( $adminLangId )); ?>" alt="">
                 </a>
             </div>
             <div class="one_third_grid">
@@ -27,7 +27,7 @@
                             <div class="body" id="notificationList">
 
                             </div>
-							<div class="foot"><a href="<?php echo CommonHelper::generateUrl('notifications','');?>" class="link redirect--js"><?php echo Labels::getLabel('LBL_View_all',$adminLangId); ?></a></div>
+							<div class="foot"><a href="<?php echo UrlHelper::generateUrl('notifications','');?>" class="link redirect--js"><?php echo Labels::getLabel('LBL_View_all',$adminLangId); ?></a></div>
                         </div>
                     </li>
 					<li class="droplink" >
@@ -44,7 +44,7 @@
                         </div>
                     </li>
 					<!--<li class="sitemap">
-                        <a title="<?php echo Labels::getLabel('LBL_Update_Sitemap',$adminLangId);?>" href="<?php echo CommonHelper::generateUrl('sitemap', 'generate'); ?>"><img src="<?php echo CONF_WEBROOT_URL; ?>images/sitemap.svg" width="20" alt=""></a>
+                        <a title="<?php echo Labels::getLabel('LBL_Update_Sitemap',$adminLangId);?>" href="<?php echo UrlHelper::generateUrl('sitemap', 'generate'); ?>"><img src="<?php echo CONF_WEBROOT_URL; ?>images/sitemap.svg" width="20" alt=""></a>
                     </li>-->
 
                     <!--li class="droplink" >
@@ -63,7 +63,7 @@
                     </li-->
 
                     <li class="logout">
-                        <a href="<?php echo CommonHelper::generateUrl('profile','logout');?>" title="<?php echo Labels::getLabel('LBL_Logout',$adminLangId);?>"><img src="<?php echo CONF_WEBROOT_URL; ?>images/header_icon_3.svg" alt=""></a>
+                        <a href="<?php echo UrlHelper::generateUrl('profile','logout');?>" title="<?php echo Labels::getLabel('LBL_Logout',$adminLangId);?>"><img src="<?php echo CONF_WEBROOT_URL; ?>images/header_icon_3.svg" alt=""></a>
                     </li>
                 </ul>
             </div>

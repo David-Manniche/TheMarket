@@ -63,7 +63,7 @@ foreach ($arr_listing as $sn => $row) {
                 if ($row[$key]==0) {
                     $td->appendElement('plaintext', array(), $row[$key], true);
                 } else {
-                    $td->appendElement('a', array('href'=>CommonHelper::generateUrl('BlogPostCategories', 'index', array($row['post_id'])),'title'=>Labels::getLabel('LBL_View_Categories', $adminLangId)), $row[$key]);
+                    $td->appendElement('a', array('href'=>UrlHelper::generateUrl('BlogPostCategories', 'index', array($row['post_id'])),'title'=>Labels::getLabel('LBL_View_Categories', $adminLangId)), $row[$key]);
                 }
                 break;
             case 'action':

@@ -58,16 +58,16 @@
                                     <ul class="sublinks">
                                         <?php $subyChild=0;
                                         foreach ($link['children'] as $children) {
-                                            $subCatUrl = CommonHelper::generateUrl('category', 'view', array($children['prodcat_id']));
-                                            $subCatOrgUrl = CommonHelper::generateUrl('category', 'view', array($children['prodcat_id']), '', null, false, $getOrgUrl);
+                                            $subCatUrl = UrlHelper::generateUrl('category', 'view', array($children['prodcat_id']));
+                                            $subCatOrgUrl = UrlHelper::generateUrl('category', 'view', array($children['prodcat_id']), '', null, false, $getOrgUrl);
                                             ?>
                                         <li><a data-org-url="<?php echo $subCatOrgUrl; ?>" href="<?php echo $subCatUrl;?>"><?php echo $children['prodcat_name'];?></a>
                                             <?php if (isset($children['children']) && count($children['children'])>0) { ?>
                                             <ul>
                                                 <?php $subChild = 0;
                                                 foreach ($children['children'] as $childCat) {
-                                                    $catUrl = CommonHelper::generateUrl('category', 'view', array($childCat['prodcat_id']));
-                                                    $catOrgUrl = CommonHelper::generateUrl('category', 'view', array($children['prodcat_id']), '', null, false, $getOrgUrl);
+                                                    $catUrl = UrlHelper::generateUrl('category', 'view', array($childCat['prodcat_id']));
+                                                    $catOrgUrl = UrlHelper::generateUrl('category', 'view', array($children['prodcat_id']), '', null, false, $getOrgUrl);
                                                     ?>
                                                 <li><a data-org-url="<?php echo $catOrgUrl; ?>" href="<?php echo $catUrl; ?>"><?php echo $childCat['prodcat_name'];?></a></li>
                                                     <?php
@@ -133,16 +133,16 @@
                                             if (count($link['children']) > 0) { ?>
                                                 <ul>
                                                 <?php foreach ($link['children'] as $subCat) {
-                                                    $catUrl = CommonHelper::generateUrl('category', 'view', array($subCat['prodcat_id']));
-                                                    $catOrgUrl = CommonHelper::generateUrl('category', 'view', array($subCat['prodcat_id']), '', null, false, $getOrgUrl); ?>
+                                                    $catUrl = UrlHelper::generateUrl('category', 'view', array($subCat['prodcat_id']));
+                                                    $catOrgUrl = UrlHelper::generateUrl('category', 'view', array($subCat['prodcat_id']), '', null, false, $getOrgUrl); ?>
                                         <li><a data-org-url="<?php echo $catOrgUrl; ?>" href="<?php echo $catUrl; ?>"><?php echo $subCat['prodcat_name'];?></a></li>
                                                     <?php /*if (isset($subCat['children'])) { ?>
                                             <ul>
                                                         <?php
                                                         $subChild = 0;
                                                         foreach ($subCat['children'] as $childCat) {
-                                                            $childCatUrl = CommonHelper::generateUrl('category', 'view', array( $childCat['prodcat_id']));
-                                                            $childCatOrgUrl = CommonHelper::generateUrl('category', 'view', array( $childCat['prodcat_id']), '', null, false, $getOrgUrl); ?>
+                                                            $childCatUrl = UrlHelper::generateUrl('category', 'view', array( $childCat['prodcat_id']));
+                                                            $childCatOrgUrl = UrlHelper::generateUrl('category', 'view', array( $childCat['prodcat_id']), '', null, false, $getOrgUrl); ?>
                                                 <li><a data-org-url="<?php echo $childCatOrgUrl; ?>" href="<?php echo $childCatUrl; ?>"><?php echo $childCat['prodcat_name'];?></a></li>
                                                             <?php
                                                             if ($subChild++ == 4) {
@@ -160,7 +160,7 @@
                                         </li>
                                         <?php } ?>
                                     </ul>
-                                    <?php /* <a data-org-url="<?php echo CommonHelper::generateUrl('category', '', array(), '', null, false, $getOrgUrl); ?>" href="<?php echo CommonHelper::generateUrl('category');?>"
+                                    <?php /* <a data-org-url="<?php echo UrlHelper::generateUrl('category', '', array(), '', null, false, $getOrgUrl); ?>" href="<?php echo UrlHelper::generateUrl('category');?>"
                                         class="btn btn--sm btn--secondary ripplelink "><?php Labels::getLabel('LBL_View_All_Categories', $siteLangId);?></a> */ ?>
                                 </div>
                             </div>

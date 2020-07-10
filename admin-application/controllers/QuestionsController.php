@@ -25,7 +25,7 @@ class QuestionsController extends AdminBaseController
         $parameters = FatApp::getParameters();
         switch ($action) {
         case 'index':
-            $nodes[] = array('title' => Labels::getLabel('LBL_Question_Banks', $this->adminLangId), 'href' => CommonHelper::generateUrl('QuestionBanks'));
+            $nodes[] = array('title' => Labels::getLabel('LBL_Question_Banks', $this->adminLangId), 'href' => UrlHelper::generateUrl('QuestionBanks'));
             $nodes[] = array('title' => Labels::getLabel('LBL_Question', $this->adminLangId));
             break;
         }

@@ -52,14 +52,14 @@
 	</svg>
   </div>
   <h2><?php echo Labels::getLabel('LBL_Your_Shopping_Bag_is_Empty',$siteLangId); ?></h2>
-  <a href="<?php echo CommonHelper::generateUrl('Home'); ?>" class="btn btn--primary"><?php echo Labels::getLabel('LBL_Go_To_Homepage',$siteLangId); ?></a> <span class="gap"></span>
+  <a href="<?php echo UrlHelper::generateUrl('Home'); ?>" class="btn btn--primary"><?php echo Labels::getLabel('LBL_Go_To_Homepage',$siteLangId); ?></a> <span class="gap"></span>
   <?php if( $EmptyCartItems ) { ?>
 	<ul class="links--inline">
 		<?php
 		$counter = 1;
 		foreach( $EmptyCartItems as $item ){
-			$itemUrl = str_replace('{SITEROOT}', CommonHelper::generateFullUrl(), $item['emptycartitem_url'] );
-			$itemUrl = str_replace('{siteroot}', CommonHelper::generateFullUrl(), $itemUrl );
+			$itemUrl = str_replace('{SITEROOT}', UrlHelper::generateFullUrl(), $item['emptycartitem_url'] );
+			$itemUrl = str_replace('{siteroot}', UrlHelper::generateFullUrl(), $itemUrl );
 		?>
 			<li><a target="<?php echo $item['emptycartitem_url_is_newtab']?"_blank":"_self"?>" href="<?php echo $itemUrl; ?>"><?php echo $item['emptycartitem_title']; ?></a> <?php echo ( $counter < count($EmptyCartItems) ) ? '|' : ''; ?> </li>
 			<?php

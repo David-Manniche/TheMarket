@@ -47,7 +47,7 @@ class ConfirmPayController extends MyAppController
         $orderPaymentFinancials = $orderObj->getOrderPaymentFinancials($orderId);
 
         if ($orderPaymentFinancials['order_payment_gateway_charge']>0) {
-            FatApp::redirectUser(CommonHelper::generateUrl('Custom', 'paymentFailure', array($orderId)));
+            FatApp::redirectUser(UrlHelper::generateUrl('Custom', 'paymentFailure', array($orderId)));
         }
         if ($orderPaymentFinancials["order_payment_gateway_charge"] == 0) {
             $orderPaymentObj = new OrderPayment($orderId);
@@ -72,10 +72,10 @@ class ConfirmPayController extends MyAppController
 
 
         if ($isAjaxCall) {
-            $this->set('redirectUrl', CommonHelper::generateUrl('Custom', 'paymentSuccess', array($orderId)));
+            $this->set('redirectUrl', UrlHelper::generateUrl('Custom', 'paymentSuccess', array($orderId)));
             $this->set('msg', Labels::getLabel("MSG_Payment_from_wallet_made_successfully", $this->siteLangId));
             $this->_template->render(false, false, 'json-success.php');
         }
-        FatApp::redirectUser(CommonHelper::generateUrl('Custom', 'paymentSuccess', array($orderId)));
+        FatApp::redirectUser(UrlHelper::generateUrl('Custom', 'paymentSuccess', array($orderId)));
     }
 }

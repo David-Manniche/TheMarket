@@ -62,7 +62,7 @@
         </div>
           </div>
           <div class="col-md-auto col-sm-auto">
-          	<a href="<?php echo CommonHelper::generateUrl('Shops', 'View', array($shop['shop_id'])); ?>" class="btn btn-outline-white btn-sm"><?php echo Labels::getLabel('LBL_Back_to_Shop', $siteLangId); ?></a>
+          	<a href="<?php echo UrlHelper::generateUrl('Shops', 'View', array($shop['shop_id'])); ?>" class="btn btn-outline-white btn-sm"><?php echo Labels::getLabel('LBL_Back_to_Shop', $siteLangId); ?></a>
            </div>
         </div>
       </div>

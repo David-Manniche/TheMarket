@@ -108,7 +108,7 @@ class RazorpayPayController extends PaymentController
             }
             if ($success === true) {
                 $orderPaymentObj->addOrderPayment($this->settings["plugin_code"], $razorpay_payment_id, $paymentGatewayCharge, Labels::getLabel("L_Received_Payment", $this->siteLangId), 'Payment Successful. Razorpay Payment Id:' . $razorpay_payment_id);
-                FatApp::redirectUser(CommonHelper::generateUrl('custom', 'paymentSuccess', array($merchant_order_id)));
+                FatApp::redirectUser(UrlHelper::generateUrl('custom', 'paymentSuccess', array($merchant_order_id)));
             } else {
                 $orderPaymentObj->addOrderPaymentComments($error . ' Payment Failed! Check Razorpay dashboard for details of Payment Id:' . $razorpay_payment_id);
                 FatApp::redirectUser(CommonHelper::getPaymentFailurePageUrl());
@@ -120,7 +120,7 @@ class RazorpayPayController extends PaymentController
 
     private function getPaymentForm($orderId)
     {
-        $frm = new Form('razorpay-form', array('id' => 'razorpay-form', 'action' => CommonHelper::generateFullUrl('RazorpayPay', 'callback'), 'class' => "form form--normal"));
+        $frm = new Form('razorpay-form', array('id' => 'razorpay-form', 'action' => UrlHelper::generateFullUrl('RazorpayPay', 'callback'), 'class' => "form form--normal"));
 
         $frm->addHiddenField('', 'razorpay_payment_id', '', array('id' => 'razorpay_payment_id'));
         $frm->addHiddenField('', 'merchant_order_id', $orderId, array('id' => 'merchant_order_id'));

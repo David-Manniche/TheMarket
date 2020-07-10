@@ -21,7 +21,7 @@ foreach ($arr_listing as $sn=>$row){
 		$tr = $tbl->appendElement('tr',array('class'=>'read'));
 	}
 	$uname = ($row['user_name'])?$row['user_name']:'- Guest User -';
-	$url = CommonHelper::generateUrl($labelArr[$row['notification_label_key']][1]);
+	$url = UrlHelper::generateUrl($labelArr[$row['notification_label_key']][1]);
 	/* $url = 'http://'.$_SERVER['SERVER_NAME'].CONF_WEBROOT_BACKEND.$labelArr[$row['notification_label_key']][1]; */
 	foreach ($arr_flds as $key=>$val){
 		$td = $tr->appendElement('td');
@@ -33,7 +33,7 @@ foreach ($arr_listing as $sn=>$row){
 			break;
 			case 'profile':
 				$div = $td->appendElement('div', array('class'=>'avtar avtar--small'));
-				$div->appendElement('img', array('src'=>CommonHelper::generateUrl('Image','user',array($row['notification_user_id'],'MINI',true),CONF_WEBROOT_FRONT_URL)));
+				$div->appendElement('img', array('src'=>UrlHelper::generateUrl('Image','user',array($row['notification_user_id'],'MINI',true),CONF_WEBROOT_FRONT_URL)));
 			break;
 			case 'notification_label_key':
 				$td->appendElement('div', array('class'=>'listing__desc'),'<a href="javascript:void(0)" onclick=redirectfunc("'.$url.'","'.$row['notification_record_id'].'","'.$row['notification_id'].'") ><strong>'.$uname.'</strong></br>'.$labelArr[$row['notification_label_key']][0].'</a>',true);

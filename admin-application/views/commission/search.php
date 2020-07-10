@@ -79,7 +79,7 @@ if (count($arr_listing) == 0) {
 $frm = new Form('frmCommissionListing', array('id'=>'frmCommissionListing'));
 $frm->setFormTagAttribute('class', 'web_form last_td_nowrap');
 $frm->setFormTagAttribute('onsubmit', 'formAction(this, reloadList ); return(false);');
-$frm->setFormTagAttribute('action', CommonHelper::generateUrl('Commission', 'deleteSelected'));
+$frm->setFormTagAttribute('action', UrlHelper::generateUrl('Commission', 'deleteSelected'));
 $frm->addHiddenField('', 'status');
 
 echo $frm->getFormTag();

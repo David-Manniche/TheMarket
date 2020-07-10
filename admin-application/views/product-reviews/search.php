@@ -31,7 +31,7 @@ foreach ($arr_listing as $sn=>$row){
 				$td->appendElement('plaintext', array(), $sr_no);
 			break;
 			case 'selprod_title':
-				$td->appendElement('a', array('href' => CommonHelper::generateFullUrl('Products','View',array($row['selprod_id']),CONF_WEBROOT_FRONT_URL), 'target'=>'_blank'), $row[$key], true);
+				$td->appendElement('a', array('href' => UrlHelper::generateFullUrl('Products','View',array($row['selprod_id']),CONF_WEBROOT_FRONT_URL), 'target'=>'_blank'), $row[$key], true);
 			break;
 			case 'spreview_status':
 				$td->appendElement('plaintext', array(), $reviewStatus[$row[$key]], true);
@@ -58,7 +58,7 @@ foreach ($arr_listing as $sn=>$row){
 
 			case 'seller_username':
 				if($canViewUsers){
-					$td->appendElement('a', array('href' => 'javascript:void(0)', 'onClick' => 'redirectfunc("'.CommonHelper::generateUrl('Users').'", '.$row['shop_user_id'].')'), $row[$key], true);
+					$td->appendElement('a', array('href' => 'javascript:void(0)', 'onClick' => 'redirectfunc("'.UrlHelper::generateUrl('Users').'", '.$row['shop_user_id'].')'), $row[$key], true);
 				} else {
 					$td->appendElement('plaintext', array(), $row[$key], true);
 				}
@@ -68,7 +68,7 @@ foreach ($arr_listing as $sn=>$row){
 
 			case 'reviewed_by':
 				if($canViewUsers){
-					$td->appendElement('a', array('href' => 'javascript:void(0)', 'onClick' => 'redirectfunc("'.CommonHelper::generateUrl('Users').'", '.$row['credential_user_id'].')'), $row[$key], true);
+					$td->appendElement('a', array('href' => 'javascript:void(0)', 'onClick' => 'redirectfunc("'.UrlHelper::generateUrl('Users').'", '.$row['credential_user_id'].')'), $row[$key], true);
 				} else {
 					$td->appendElement('plaintext', array(), $row[$key], true);
 				}

@@ -777,7 +777,7 @@ class Cronjob extends FatModel
                 continue;
             }
             $phone = !empty($val['user_phone']) ? $val['user_dial_code'] . $val['user_phone'] : '';
-            $data = array("user_id" => $val['usercart_user_id'], "user_name" => $val['user_name'], "user_email" => $val['credential_email'], "link" => CommonHelper::generateFullUrl('Checkout'), 'user_phone' => $phone);
+            $data = array("user_id" => $val['usercart_user_id'], "user_name" => $val['user_name'], "user_email" => $val['credential_email'], "link" => UrlHelper::generateFullUrl('Checkout'), 'user_phone' => $phone);
 
             $email = new EmailHandler();
             if (!$email->remindBuyerForCartItems(FatApp::getConfig('CONF_DEFAULT_SITE_LANG', FatUtility::VAR_INT, 1), $data)) {
@@ -823,7 +823,7 @@ class Cronjob extends FatModel
 
         foreach ($row as $val) {
             $phone = !empty($row['user_phone']) ? $row['user_dial_code'] . $row['user_phone'] : '';
-            $data = array("user_id" => $val['user_id'], "user_name" => $val['user_name'], "user_email" => $val['credential_email'], "link" => CommonHelper::generateFullUrl('Account', 'wishlist'), 'user_phone' => $phone);
+            $data = array("user_id" => $val['user_id'], "user_name" => $val['user_name'], "user_email" => $val['credential_email'], "link" => UrlHelper::generateFullUrl('Account', 'wishlist'), 'user_phone' => $phone);
 
             $email = new EmailHandler();
             if (!$email->remindBuyerForWishlistItems(FatApp::getConfig('CONF_DEFAULT_SITE_LANG', FatUtility::VAR_INT, 1), $data)) {

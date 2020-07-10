@@ -44,7 +44,7 @@ class DummyController extends AdminBaseController
         $schObj->addCondition('spreview_status', '!=', SelProdReview::STATUS_PENDING);
         $schObj->addMultipleFields(array('spreview_selprod_id', 'spreview_status', 'product_name', 'selprod_title', 'user_name', 'credential_email', ));
         $spreviewData = FatApp::getDb()->fetch($schObj->getResultSet());
-        $productUrl = CommonHelper::generateFullUrl('Products', 'View', array($spreviewData["spreview_selprod_id"]), CONF_WEBROOT_FRONT_URL);
+        $productUrl = UrlHelper::generateFullUrl('Products', 'View', array($spreviewData["spreview_selprod_id"]), CONF_WEBROOT_FRONT_URL);
         echo $prodTitleAnchor = "<a href='" . $productUrl . "'>" . $spreviewData['selprod_title'] . "</a>";
         CommonHelper::printArray($prodTitleAnchor);
         die;

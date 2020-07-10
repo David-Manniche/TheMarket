@@ -109,7 +109,7 @@ class StripeConnect extends PaymentMethodBase
      */
     public function getRedirectUri(): string
     {
-        return self::CONNECT_URI . "/authorize?response_type=code&client_id=" . $this->settings[$this->liveMode . 'client_id'] . "&scope=read_write&redirect_uri=" . CommonHelper::generateFullUrl(self::KEY_NAME, 'callback', [], '', false);
+        return self::CONNECT_URI . "/authorize?response_type=code&client_id=" . $this->settings[$this->liveMode . 'client_id'] . "&scope=read_write&redirect_uri=" . UrlHelper::generateFullUrl(self::KEY_NAME, 'callback', [], '', false);
     }
 
     /**
@@ -222,8 +222,8 @@ class StripeConnect extends PaymentMethodBase
                 'email' => $this->userData['credential_email'],
                 'business_profile' => [
                     'name' => $this->userData['shop_name'],
-                    'url' => CommonHelper::generateFullUrl('shops', 'view', [$this->userData['shop_id']]),
-                    'support_url' => CommonHelper::generateFullUrl('shops', 'view', [$this->userData['shop_id']]),
+                    'url' => UrlHelper::generateFullUrl('shops', 'view', [$this->userData['shop_id']]),
+                    'support_url' => UrlHelper::generateFullUrl('shops', 'view', [$this->userData['shop_id']]),
                     'support_phone' => $this->userData['shop_phone'],
                     'support_email' => $this->userData['credential_email'],
                     'support_address' => [

@@ -239,7 +239,7 @@ class ThemeColorController extends AdminBaseController
             if (FatUtility::isAjaxCall()) {
                 FatUtility::dieJsonError(Message::getHtml());
             } else {
-                FatApp::redirectUser(CommonHelper::generateUrl('ThemeColor', ''));
+                FatApp::redirectUser(UrlHelper::generateUrl('ThemeColor', ''));
             }
         }
         /* $this->updateCssFiles(); */
@@ -248,7 +248,7 @@ class ThemeColorController extends AdminBaseController
             $this->_template->render(false, false, 'json-success.php');
         } else {
             Message::addMessage(Labels::getLabel('Msg_Theme_Activated_Successfully', CommonHelper::getLangId()));
-            FatApp::redirectUser(CommonHelper::generateUrl('ThemeColor', ''));
+            FatApp::redirectUser(UrlHelper::generateUrl('ThemeColor', ''));
         }
     }
 
@@ -343,14 +343,14 @@ class ThemeColorController extends AdminBaseController
         $themeId = FatUtility::int($themeId);
         if (0 >= $themeId) {
             Message::addErrorMessage($this->str_invalid_request_id);
-            FatApp::redirectUser(CommonHelper::generateUrl('ThemeColor'));
+            FatApp::redirectUser(UrlHelper::generateUrl('ThemeColor'));
         }
 
         /* $tObj = new ThemeColor();
         $theme = $tObj->getAttributesById($themeId); */
         if (!$themeId) {
             Message::addErrorMessage($this->str_invalid_request_id);
-            FatApp::redirectUser(CommonHelper::generateUrl('ThemeColor'));
+            FatApp::redirectUser(UrlHelper::generateUrl('ThemeColor'));
         }
         $_SESSION['preview_theme'] = $themeId;
 

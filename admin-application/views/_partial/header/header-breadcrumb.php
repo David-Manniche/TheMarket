@@ -2,7 +2,7 @@
 
 <ul class="breadcrumb ">
     <li>
-        <a href="<?php echo CommonHelper::generateUrl('') ?>">
+        <a href="<?php echo UrlHelper::generateUrl('') ?>">
             <?php echo labels::getLabel('LBL_Home', $adminLangId);?>
         </a>
     </li>

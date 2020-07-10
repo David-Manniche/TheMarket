@@ -6,7 +6,7 @@
                 $getOrgUrl = (CONF_DEVELOPMENT_MODE) ? true : false;
 				foreach( $nav['pages'] as $link ){ ?>
 					<?php if( $link['nlink_type'] == NavigationLinks::NAVLINK_TYPE_CMS && $link['nlink_cpage_id'] ): ?>
-					<li><a target="<?php echo $link['nlink_target']; ?>" data-org-url="<?php echo CommonHelper::generateUrl('Cms','view',array($link['nlink_cpage_id']),'',null,false,$getOrgUrl); ?>" href="<?php echo CommonHelper::generateUrl('Cms','view', array($link['nlink_cpage_id'])); ?>"><?php echo $link['nlink_caption']; ?></a></li>
+					<li><a target="<?php echo $link['nlink_target']; ?>" data-org-url="<?php echo UrlHelper::generateUrl('Cms','view',array($link['nlink_cpage_id']),'',null,false,$getOrgUrl); ?>" href="<?php echo UrlHelper::generateUrl('Cms','view', array($link['nlink_cpage_id'])); ?>"><?php echo $link['nlink_caption']; ?></a></li>
 					<?php endif; ?>
 					
 					<?php if( $link['nlink_type'] == NavigationLinks::NAVLINK_TYPE_EXTERNAL_PAGE ): 

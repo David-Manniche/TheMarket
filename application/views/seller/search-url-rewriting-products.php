@@ -55,7 +55,7 @@ foreach ($arrListing as $sn => $row) {
             case 'custom':
                 $post = "post";
                 $disabled =  (!$canEditUrlRewrite) ? "disabled" : "";
-                $td->appendElement('plaintext', array(), '<input '.$disabled.' type="text" name="custom_url" onkeyup = "getSlugUrl(this,this.value, '.$selProdId.', \''.$post.'\')" value="'.$row['urlrewrite_custom'].'" data-selprod_id="'.$selProdId.'" data-url_rewriting_id="'.$row['urlrewrite_id'].'"><span class="form-text text-muted ">'.CommonHelper::generateFullUrl('Products', 'View', array($selProdId), '/').'</span>', true);
+                $td->appendElement('plaintext', array(), '<input '.$disabled.' type="text" name="custom_url" onkeyup = "getSlugUrl(this,this.value, '.$selProdId.', \''.$post.'\')" value="'.$row['urlrewrite_custom'].'" data-selprod_id="'.$selProdId.'" data-url_rewriting_id="'.$row['urlrewrite_id'].'"><span class="form-text text-muted ">'.UrlHelper::generateFullUrl('Products', 'View', array($selProdId), '/').'</span>', true);
                 break;
             default:
                 $td->appendElement('plaintext', array(), $row[$key], true);

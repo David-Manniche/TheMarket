@@ -13,7 +13,7 @@ class CheckoutController extends MyAppController
             UserAuthentication::checkLogin();
         }
         if (!UserAuthentication::isUserLogged() && !UserAuthentication::isGuestUserLogged()) {
-            FatApp::redirectUser(CommonHelper::generateUrl('Cart'));
+            FatApp::redirectUser(UrlHelper::generateUrl('Cart'));
         }
 
         if (UserAuthentication::isGuestUserLogged()) {
@@ -24,7 +24,7 @@ class CheckoutController extends MyAppController
                 if (FatUtility::isAjaxCall()) {
                     FatUtility::dieWithError(Message::getHtml());
                 }
-                FatApp::redirectUser(CommonHelper::generateUrl('Cart'));
+                FatApp::redirectUser(UrlHelper::generateUrl('Cart'));
             }
         } else {
             $userObj = new User(UserAuthentication::getLoggedUserId());
@@ -42,11 +42,11 @@ class CheckoutController extends MyAppController
                 if (FatUtility::isAjaxCall()) {
                     $json['status'] = applicationConstants::NO;
                     $json['msg'] = $message;
-                    $json['url'] = CommonHelper::generateUrl('GuestUser', 'configureEmail');
+                    $json['url'] = UrlHelper::generateUrl('GuestUser', 'configureEmail');
                     LibHelper::dieJsonError($json);
                 }
                 Message::addErrorMessage($message);
-                FatApp::redirectUser(CommonHelper::generateUrl('GuestUser', 'configureEmail'));
+                FatApp::redirectUser(UrlHelper::generateUrl('GuestUser', 'configureEmail'));
             }
         }
 
@@ -211,12 +211,12 @@ class CheckoutController extends MyAppController
                 }
             }
             commonhelper::setAppUser();
-            FatApp::redirectUser(CommonHelper::generateUrl('checkout', 'index'));
+            FatApp::redirectUser(UrlHelper::generateUrl('checkout', 'index'));
         }
 
         $criteria = array('hasProducts' => true, 'hasStock' => true);
         if (!$this->isEligibleForNextStep($criteria)) {
-            FatApp::redirectUser(CommonHelper::generateUrl('cart'));
+            FatApp::redirectUser(UrlHelper::generateUrl('cart'));
         }
         $cartHasPhysicalProduct = false;
         if ($this->cartObj->hasPhysicalProduct()) {
@@ -236,7 +236,7 @@ class CheckoutController extends MyAppController
 
         // if ($this->cartObj->getError() != '') {
         //     Message::addErrorMessage($this->cartObj->getError());
-        //     FatApp::redirectUser(CommonHelper::generateUrl('cart'));
+        //     FatApp::redirectUser(UrlHelper::generateUrl('cart'));
         // }
 
         $obj = new Extrapage();
@@ -270,7 +270,7 @@ class CheckoutController extends MyAppController
         $cPageSrch->addCondition('cpage_id', '=', FatApp::getConfig('CONF_TERMS_AND_CONDITIONS_PAGE', FatUtility::VAR_INT, 0));
         $cpage = FatApp::getDb()->fetch($cPageSrch->getResultSet());
         if (!empty($cpage) && is_array($cpage)) {
-            $termsAndConditionsLinkHref = CommonHelper::generateUrl('Cms', 'view', array($cpage['cpage_id']));
+            $termsAndConditionsLinkHref = UrlHelper::generateUrl('Cms', 'view', array($cpage['cpage_id']));
         } else {
             $termsAndConditionsLinkHref = 'javascript:void(0)';
         }
@@ -295,7 +295,7 @@ class CheckoutController extends MyAppController
         $criteria = array( 'isUserLogged' => true );
         $cartObj = new Cart();
         if (!$this->isEligibleForNextStep($criteria)) {
-            $this->set('redirectUrl', CommonHelper::generateUrl('GuestUser', 'LoginForm'));
+            $this->set('redirectUrl', UrlHelper::generateUrl('GuestUser', 'LoginForm'));
             Message::addErrorMessage(Labels::getLabel('MSG_Your_Session_seems_to_be_expired.', $this->siteLangId));
             FatUtility::dieWithError(Message::getHtml());
         }
@@ -352,7 +352,7 @@ class CheckoutController extends MyAppController
             if (true === MOBILE_APP_API_CALL) {
                 FatUtility::dieJsonError($this->errMessage);
             }
-            $this->set('redirectUrl', CommonHelper::generateUrl('GuestUser', 'LoginForm'));
+            $this->set('redirectUrl', UrlHelper::generateUrl('GuestUser', 'LoginForm'));
             Message::addErrorMessage($this->errMessage);
             FatUtility::dieWithError(Message::getHtml());
         }
@@ -372,7 +372,7 @@ class CheckoutController extends MyAppController
             if (true === MOBILE_APP_API_CALL) {
                 FatUtility::dieJsonError($this->errMessage);
             }
-            $this->set('redirectUrl', CommonHelper::generateUrl('cart'));
+            $this->set('redirectUrl', UrlHelper::generateUrl('cart'));
             Message::addErrorMessage($this->errMessage);
             FatUtility::dieWithError(Message::getHtml());
         }
@@ -1302,7 +1302,7 @@ class CheckoutController extends MyAppController
         /* $orderInfo = $orderObj->getOrderById( $order_id, $this->siteLangId, array('payment_status' => 0) ); */
         if (!$orderInfo) {
             $this->cartObj->clear();
-            FatApp::redirectUser(CommonHelper::generateUrl('Buyer', 'viewOrder', array($order_id)));
+            FatApp::redirectUser(UrlHelper::generateUrl('Buyer', 'viewOrder', array($order_id)));
         }
 
         $userWalletBalance = User::getUserBalance($userId, true);
@@ -1312,14 +1312,14 @@ class CheckoutController extends MyAppController
             $confirmForm = $this->getConfirmFormWithNoAmount($this->siteLangId);
 
             if ((FatUtility::convertToType($userWalletBalance, FatUtility::VAR_FLOAT) > 0) && $cartSummary['cartWalletSelected'] && $cartSummary['orderNetAmount'] > 0) {
-                $WalletPaymentForm->addFormTagAttribute('action', CommonHelper::generateUrl('WalletPay', 'Charge', array($order_id)));
+                $WalletPaymentForm->addFormTagAttribute('action', UrlHelper::generateUrl('WalletPay', 'Charge', array($order_id)));
                 $WalletPaymentForm->fill(array('order_id' => $order_id));
                 $WalletPaymentForm->setFormTagAttribute('onsubmit', 'confirmOrder(this); return(false);');
                 $WalletPaymentForm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_Pay_Now', $this->siteLangId));
             }
 
             if ($cartSummary['orderNetAmount'] <= 0) {
-                $confirmForm->addFormTagAttribute('action', CommonHelper::generateUrl('ConfirmPay', 'Charge', array($order_id)));
+                $confirmForm->addFormTagAttribute('action', UrlHelper::generateUrl('ConfirmPay', 'Charge', array($order_id)));
                 $confirmForm->fill(array('order_id' => $order_id));
                 /* $confirmForm->setFormTagAttribute('onsubmit', 'confirmOrderWithoutPayment(this); return(false);'); */
                 $confirmForm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_Confirm_Order', $this->siteLangId));
@@ -1391,7 +1391,7 @@ class CheckoutController extends MyAppController
         
         $frm = $this->getPaymentTabForm($this->siteLangId, $methodCode);
         $controller = $methodCode . 'Pay';
-        $frm->setFormTagAttribute('action', CommonHelper::generateUrl($controller, 'charge', array($order_id)));
+        $frm->setFormTagAttribute('action', UrlHelper::generateUrl($controller, 'charge', array($order_id)));
         $frm->fill(
             array(
                 'order_type' => $orderInfo['order_type'],
@@ -1584,11 +1584,11 @@ class CheckoutController extends MyAppController
             $sendToWeb = 1;
             if (0 < $plugin_id) {
                 $controller = $pmethodCode . 'Pay';
-                $paymentUrl = CommonHelper::generateFullUrl($controller, 'charge', array($order_id));
+                $paymentUrl = UrlHelper::generateFullUrl($controller, 'charge', array($order_id));
             }
             if (Orders::ORDER_WALLET_RECHARGE != $order_type && $cartSummary['cartWalletSelected'] && $userWalletBalance >= $orderNetAmount) {
                 $sendToWeb = $plugin_id = 0;
-                $paymentUrl = CommonHelper::generateFullUrl('WalletPay', 'charge', array($order_id));
+                $paymentUrl = UrlHelper::generateFullUrl('WalletPay', 'charge', array($order_id));
             }
             if (empty($paymentUrl)) {
                 LibHelper::dieJsonError(Labels::getLabel('MSG_Please_Select_Payment_Method', $this->siteLangId));
@@ -1694,7 +1694,7 @@ class CheckoutController extends MyAppController
             if (!CommonHelper::verifyCaptcha()) {
                 Message::addErrorMessage(Labels::getLabel('MSG_That_captcha_was_incorrect', $this->siteLangId));
                 FatUtility::dieWithError(Message::getHtml());
-                //FatApp::redirectUser(CommonHelper::generateUrl('Custom', 'ContactUs'));
+                //FatApp::redirectUser(UrlHelper::generateUrl('Custom', 'ContactUs'));
             }
         }
 

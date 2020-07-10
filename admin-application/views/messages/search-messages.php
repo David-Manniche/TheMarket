@@ -18,7 +18,7 @@ foreach ($arr_listing as $sn => $row) {
         $td = $tr->appendElement('td');
         switch ($key) {
             case 'listserial':
-/*$img = '<img src="'.CommonHelper::generateUrl('Image','user',array($row['message_sent_by'],'THUMB',true),CONF_WEBROOT_FRONT_URL).'" />';
+/*$img = '<img src="'.UrlHelper::generateUrl('Image','user',array($row['message_sent_by'],'THUMB',true),CONF_WEBROOT_FRONT_URL).'" />';
                 $td->appendElement('plaintext', array(), $img ,true); */
 
                 $div_about_me = $td->appendElement('div', array('class'=>'avtar avtar--small'));

@@ -872,9 +872,9 @@ class UserAuthentication extends FatModel
             FatUtility::dieWithError(Message::getHtml());
         }
 
-        $_SESSION['referer_page_url'] = CommonHelper::getCurrUrl();
+        $_SESSION['referer_page_url'] = UrlHelper::getCurrUrl();
         if ($redirect == true) {
-            FatApp::redirectUser(CommonHelper::generateUrl('GuestUser', 'loginForm'));
+            FatApp::redirectUser(UrlHelper::generateUrl('GuestUser', 'loginForm'));
         }
 
         return false;

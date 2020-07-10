@@ -86,11 +86,11 @@ class WalletPayController extends MyAppController
         }
 
         if ($isAjaxCall) {
-            $this->set('redirectUrl', CommonHelper::generateUrl('Custom', 'paymentSuccess', array($orderId)));
+            $this->set('redirectUrl', UrlHelper::generateUrl('Custom', 'paymentSuccess', array($orderId)));
             $this->set('msg', Labels::getLabel("MSG_Payment_from_wallet_made_successfully", $this->siteLangId));
             $this->_template->render(false, false, 'json-success.php');
         }
-        FatApp::redirectUser(CommonHelper::generateUrl('Custom', 'paymentSuccess', array($orderId)));
+        FatApp::redirectUser(UrlHelper::generateUrl('Custom', 'paymentSuccess', array($orderId)));
     }
 
     public function Recharge($orderId, $appParam = '', $appLang = '1', $appCurrency = '1')
@@ -113,7 +113,7 @@ class WalletPayController extends MyAppController
                 }
             }
             commonhelper::setAppUser();
-            FatApp::redirectUser(CommonHelper::generateUrl('WalletPay', 'recharge', array($orderId)));
+            FatApp::redirectUser(UrlHelper::generateUrl('WalletPay', 'recharge', array($orderId)));
         }
 
         $isAjaxCall = FatUtility::isAjaxCall();
@@ -230,7 +230,7 @@ class WalletPayController extends MyAppController
 
         $frm = $this->getPaymentTabForm($this->siteLangId, $paymentMethod['plugin_code']);
         $controller = $paymentMethod['plugin_code'] . 'Pay';
-        $frm->setFormTagAttribute('action', CommonHelper::generateUrl($controller, 'charge', array($orderInfo['order_id'])));
+        $frm->setFormTagAttribute('action', UrlHelper::generateUrl($controller, 'charge', array($orderInfo['order_id'])));
         $frm->fill(
             array(
                 'order_type' => $orderInfo['order_type'],
@@ -335,7 +335,7 @@ class WalletPayController extends MyAppController
             if (!CommonHelper::verifyCaptcha()) {
                 Message::addErrorMessage(Labels::getLabel('MSG_That_captcha_was_incorrect', $this->siteLangId));
                 FatUtility::dieWithError(Message::getHtml());
-                //FatApp::redirectUser(CommonHelper::generateUrl('Custom', 'ContactUs'));
+                //FatApp::redirectUser(UrlHelper::generateUrl('Custom', 'ContactUs'));
             }
         }
 

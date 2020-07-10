@@ -46,7 +46,7 @@ $splitPaymentMethodsPlugins = Plugin::getDataByType(Plugin::TYPE_SPLIT_PAYMENT_M
 
         <?php foreach ($splitPaymentMethodsPlugins as $plugin) { ?>
             <li class="<?php echo !empty($action) && ($action == $plugin['plugin_code']) ? 'is-active' : ''; ?>">
-                <a href="javascript:void(0)" class="pluginPlatform-js <?php echo $plugin['plugin_code']; ?>" <?php if ($shop_id > 0) { ?> onClick="pluginPlatform(this)" <?php } ?> data-platformurl="<?php echo CommonHelper::generateUrl($plugin['plugin_code'])?>">
+                <a href="javascript:void(0)" class="pluginPlatform-js <?php echo $plugin['plugin_code']; ?>" <?php if ($shop_id > 0) { ?> onClick="pluginPlatform(this)" <?php } ?> data-platformurl="<?php echo UrlHelper::generateUrl($plugin['plugin_code'])?>">
                     <?php echo $plugin['plugin_name']; ?>
                 </a>
             </li>

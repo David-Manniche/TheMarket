@@ -92,7 +92,7 @@ foreach ($arr_listing as $sn=>$row) {
                     );
                     $innerLiPreview=$innerUl->appendElement('li');
                     //$li = $ul->appendElement("li");
-                    $url=CommonHelper::generateUrl('themeColor', 'preview', array($row['theme_id']));
+                    $url=UrlHelper::generateUrl('themeColor', 'preview', array($row['theme_id']));
                     $innerLiPreview->appendElement(
                         'a',
                         array('href'=>'javascript:void(0)', 'class'=>'button small green',

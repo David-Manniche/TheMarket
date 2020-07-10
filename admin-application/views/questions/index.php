@@ -27,7 +27,7 @@
 		<section class="section">
 		<div class="sectionhead">
 			<h4><?php echo Labels::getLabel('LBL_Questions_List',$adminLangId); ?> </h4>
-			<a href="<?php echo CommonHelper::generateUrl('QuestionBanks') ?>" class="themebtn btn-default btn-sm" ><?php echo Labels::getLabel('LBL_Back',$adminLangId); ?></a>
+			<a href="<?php echo UrlHelper::generateUrl('QuestionBanks') ?>" class="themebtn btn-default btn-sm" ><?php echo Labels::getLabel('LBL_Back',$adminLangId); ?></a>
 			<?php if($canEdit){ ?>
 			<a href="javascript:void(0)" class="themebtn btn-default btn-sm" onClick="questionForm('<?php echo $qbank_id; ?>',0)";><?php echo Labels::getLabel('LBL_Add_New',$adminLangId); ?></a>
 			<?php } ?>

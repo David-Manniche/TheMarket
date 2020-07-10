@@ -45,7 +45,7 @@ $userCompFld = $frm->getField('user_company');
 $userCompFld->developerTags['col'] = 12;
 
 
-$imgFrm->setFormTagAttribute('action', CommonHelper::generateUrl('Account', 'uploadProfileImage'));
+$imgFrm->setFormTagAttribute('action', UrlHelper::generateUrl('Account', 'uploadProfileImage'));
 /* $imgFrm->setFormTagAttribute('id', 'imageFrm');
 $fld = $imgFrm->getField('user_profile_image');
 $fld->addFieldTagAttribute('class','btn btn--primary btn--sm'); */
@@ -64,7 +64,7 @@ $fld->addFieldTagAttribute('class','btn btn--primary btn--sm'); */
                                 $profileImg = UrlHelper::getCachedUrl(UrlHelper::generateFileUrl('Image', 'user', array($userId,'thumb',true)).$uploadedTime, CONF_IMG_CACHE_TIME, '.jpg');
                             ?>
                             <img src="<?php echo $profileImg;?>" alt="<?php echo Labels::getLabel('LBL_Profile_Image', $siteLangId);?>">
-                            <!--img src="<?php /* echo CommonHelper::generateUrl('Account', 'userProfileImage', array(UserAuthentication::getLoggedUserId(), 'croped', true)).'?t='.time(); ?>"
+                            <!--img src="<?php /* echo UrlHelper::generateUrl('Account', 'userProfileImage', array(UserAuthentication::getLoggedUserId(), 'croped', true)).'?t='.time(); ?>"
                                 alt="<?php echo Labels::getLabel('LBL_Profile_Image', $siteLangId); */?>"-->
                         </div>
 						

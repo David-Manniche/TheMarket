@@ -104,7 +104,7 @@ class BraintreePayController extends PaymentController
 
     private function getPaymentForm($orderId)
     {
-        $frm = new Form('frmPaymentForm', array('id' => 'frmPaymentForm', 'action' => CommonHelper::generateUrl('BraintreePay', 'charge', array($orderId)), 'class' => "form form--normal"));
+        $frm = new Form('frmPaymentForm', array('id' => 'frmPaymentForm', 'action' => UrlHelper::generateUrl('BraintreePay', 'charge', array($orderId)), 'class' => "form form--normal"));
         $frm->addButton('', 'btn_submit', Labels::getLabel('LBL_Pay_Now', $this->siteLangId), array("disabled" => "disabled", "id" => "submit-button"));
         return $frm;
     }
@@ -152,14 +152,14 @@ class BraintreePayController extends PaymentController
                             /* End Recording Payment in DB */
                             $checkPayment = true;
 
-                            FatApp::redirectUser(CommonHelper::generateUrl('custom', 'paymentSuccess', array($orderInfo['id'])));
+                            FatApp::redirectUser(UrlHelper::generateUrl('custom', 'paymentSuccess', array($orderInfo['id'])));
                         } else {
                             $orderPaymentObj->addOrderPaymentComments($message);
-                            FatApp::redirectUser(CommonHelper::generateUrl('custom', 'paymentFailed'));
+                            FatApp::redirectUser(UrlHelper::generateUrl('custom', 'paymentFailed'));
                         }
                     } else {
                         $orderPaymentObj->addOrderPaymentComments($message);
-                        FatApp::redirectUser(CommonHelper::generateUrl('custom', 'paymentFailed'));
+                        FatApp::redirectUser(UrlHelper::generateUrl('custom', 'paymentFailed'));
                     }
                 }
             } catch (Exception $e) {

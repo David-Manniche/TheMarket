@@ -57,7 +57,7 @@ foreach ($arr_listing as $sn => $row) {
                 break;
             case 'numOfProducts':
                 if ($canViewSellerProducts) {
-                    $td->appendElement('a', array('href' => 'javascript:void(0)', 'onClick' => 'redirectfunc("'.CommonHelper::generateUrl('SellerProducts').'", '.$row['shop_user_id'].')'), $row[$key]);
+                    $td->appendElement('a', array('href' => 'javascript:void(0)', 'onClick' => 'redirectfunc("'.UrlHelper::generateUrl('SellerProducts').'", '.$row['shop_user_id'].')'), $row[$key]);
                 } else {
                     $td->appendElement('plaintext', array(), $row[$key], true);
                 }
@@ -67,14 +67,14 @@ foreach ($arr_listing as $sn => $row) {
                 break;
             case 'numOfReports':
                 if ($canViewShopReports) {
-                    $td->appendElement('a', array('target' => '_blank', 'href' => CommonHelper::generateUrl('ShopReports', 'index', array($row['shop_id'])) ), $row[$key]);
+                    $td->appendElement('a', array('target' => '_blank', 'href' => UrlHelper::generateUrl('ShopReports', 'index', array($row['shop_id'])) ), $row[$key]);
                 } else {
                     $td->appendElement('plaintext', array(), $row[$key], true);
                 }
                 break;
             case 'numOfReviews':
                 if ($canViewShopReports) {
-                    $td->appendElement('a', array('target' => '_blank', 'href' => CommonHelper::generateUrl('ProductReviews', 'index', array($row['shop_user_id'])) ), $row[$key]);
+                    $td->appendElement('a', array('target' => '_blank', 'href' => UrlHelper::generateUrl('ProductReviews', 'index', array($row['shop_user_id'])) ), $row[$key]);
                 } else {
                     $td->appendElement('plaintext', array(), $row[$key], true);
                 }
@@ -88,7 +88,7 @@ foreach ($arr_listing as $sn => $row) {
                     $td->appendElement('plaintext', array(), $row[$key], true);
                 }
                 $td->appendElement('br', array());
-                $shopLink = CommonHelper::generateFullUrl("Shops", 'View', array($row['shop_id']), CONF_WEBROOT_FRONT_URL);
+                $shopLink = UrlHelper::generateFullUrl("Shops", 'View', array($row['shop_id']), CONF_WEBROOT_FRONT_URL);
                 $td->appendElement('plaintext', array(), '<a href="'.$shopLink.'" target="_blank">'.Labels::getLabel('LBL_Visit_Shop', $adminLangId).'</a>', true);
                 break;
             case 'shop_created_on':
@@ -112,7 +112,7 @@ if (count($arr_listing) == 0) {
 $frm = new Form('frmShopListing', array('id'=>'frmShopListing'));
 $frm->setFormTagAttribute('class', 'web_form last_td_nowrap actionButtons-js');
 $frm->setFormTagAttribute('onsubmit', 'formAction(this, reloadList ); return(false);');
-$frm->setFormTagAttribute('action', CommonHelper::generateUrl('Shops', 'toggleBulkStatuses'));
+$frm->setFormTagAttribute('action', UrlHelper::generateUrl('Shops', 'toggleBulkStatuses'));
 $frm->addHiddenField('', 'status');
 
 echo $frm->getFormTag();

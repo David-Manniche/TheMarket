@@ -20,7 +20,7 @@
                         $innerDiv=$li->appendElement('div', array('class'=>'dropwrap'));
                         $innerUl=$innerDiv->appendElement('ul', array('class'=>'linksvertical'));
                         $innerLi=$innerUl->appendElement('li');
-                        $innerLi->appendElement('a', array('href'=>CommonHelper::generateUrl('SellerOrders'),'class'=>'button small green redirect--js','title'=>Labels::getLabel('LBL_Back_to_Orders', $adminLangId)), Labels::getLabel('LBL_Back_to_Orders', $adminLangId), true);
+                        $innerLi->appendElement('a', array('href'=>UrlHelper::generateUrl('SellerOrders'),'class'=>'button small green redirect--js','title'=>Labels::getLabel('LBL_Back_to_Orders', $adminLangId)), Labels::getLabel('LBL_Back_to_Orders', $adminLangId), true);
                         echo $ul->getHtml(); ?>
                     </div>
                     <div class="sectionbody">

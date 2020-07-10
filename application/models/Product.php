@@ -800,7 +800,7 @@ class Product extends MyAppModel
             if ($returnId) {
                 return $product['selprod_id'];
             }
-            return CommonHelper::generateUrl('Products', 'view', array($product['selprod_id']));
+            return UrlHelper::generateUrl('Products', 'view', array($product['selprod_id']));
         } else {
             $prodSrch2 = new ProductSearch(CommonHelper::getLangId());
             $prodSrch2->doNotCalculateRecords();
@@ -818,7 +818,7 @@ class Product extends MyAppModel
                 if ($returnId) {
                     return $product['selprod_id'];
                 }
-                return CommonHelper::generateUrl('Products', 'view', array($product['selprod_id'])) . "::";
+                return UrlHelper::generateUrl('Products', 'view', array($product['selprod_id'])) . "::";
             } else {
                 return false;
             }

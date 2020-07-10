@@ -7,15 +7,15 @@ $this->includeTemplate('_partial/buyerDashboardNavigation.php'); ?>
             </div>
             <div class="col-auto">
                 <div class="btn-group">
-                    <a href="<?php echo CommonHelper::generateUrl('Account', 'wishlist');?>" class="btn btn-outline-primary btn--sm"><?php echo Labels::getLabel('LBL_Favorites', $siteLangId);?> </a>
-                    <a href="<?php echo CommonHelper::generateUrl('Account', 'myAddresses');?>" class="btn btn-outline-primary btn--sm"> <?php echo Labels::getLabel('LBL_Manage_Addresses', $siteLangId);?> </a>
+                    <a href="<?php echo UrlHelper::generateUrl('Account', 'wishlist');?>" class="btn btn-outline-primary btn--sm"><?php echo Labels::getLabel('LBL_Favorites', $siteLangId);?> </a>
+                    <a href="<?php echo UrlHelper::generateUrl('Account', 'myAddresses');?>" class="btn btn-outline-primary btn--sm"> <?php echo Labels::getLabel('LBL_Manage_Addresses', $siteLangId);?> </a>
                 </div>
             </div>
         </div>
         <div class="content-body">
             <div class="js-widget-scroll widget-scroll">
                 <div class="widget widget-stats">
-                    <a href="<?php echo CommonHelper::generateUrl('account', 'credits');?>">
+                    <a href="<?php echo UrlHelper::generateUrl('account', 'credits');?>">
                         <div class="cards">
                             <div class="cards-header">
                                 <h5 class="cards-title"><?php echo Labels::getLabel('LBL_Credits', $siteLangId);?></h5>
@@ -44,7 +44,7 @@ $this->includeTemplate('_partial/buyerDashboardNavigation.php'); ?>
                     </a>
                 </div>
                 <div class="widget widget-stats">
-                    <a href="<?php echo CommonHelper::generateUrl('buyer', 'orders');?>">
+                    <a href="<?php echo UrlHelper::generateUrl('buyer', 'orders');?>">
                         <div class="cards">
                             <div class="cards-header">
                                 <h5 class="cards-title"><?php echo Labels::getLabel('LBL_Orders', $siteLangId);?></h5>
@@ -70,7 +70,7 @@ $this->includeTemplate('_partial/buyerDashboardNavigation.php'); ?>
                     </a>
                 </div>
                 <div class="widget widget-stats">
-                    <a href="<?php echo CommonHelper::generateUrl('buyer', 'rewardPoints');?>">
+                    <a href="<?php echo UrlHelper::generateUrl('buyer', 'rewardPoints');?>">
                         <div class="cards">
                             <div class="cards-header">
                                 <h5 class="cards-title"><?php echo Labels::getLabel('LBL_Reward_Points', $siteLangId);?></h5>
@@ -105,7 +105,7 @@ $this->includeTemplate('_partial/buyerDashboardNavigation.php'); ?>
                             <h5 class="cards-title"><?php echo Labels::getLabel('LBL_Latest_Orders', $siteLangId);?></h5>
                             <div class="action">
                             <?php if (count($orders)>0) { ?>
-                                <a href="<?php echo CommonHelper::generateUrl('buyer', 'orders');?>" class="link"><?php echo Labels::getLabel('Lbl_View_All', $siteLangId);?></a>
+                                <a href="<?php echo UrlHelper::generateUrl('buyer', 'orders');?>" class="link"><?php echo Labels::getLabel('Lbl_View_All', $siteLangId);?></a>
                             <?php } ?> </div>
                         </div>
                         <div class="cards-content ">
@@ -119,7 +119,7 @@ $this->includeTemplate('_partial/buyerDashboardNavigation.php'); ?>
                                         $canCancelOrder = true;
                                         $canReturnRefund = true;
                                         foreach ($orders as $orderId => $row) {
-                                            $orderDetailUrl = CommonHelper::generateUrl('Buyer', 'viewOrder', array($row['order_id'],$row['op_id']));
+                                            $orderDetailUrl = UrlHelper::generateUrl('Buyer', 'viewOrder', array($row['order_id'],$row['op_id']));
                                             if ($row['op_product_type'] == Product::PRODUCT_TYPE_DIGITAL) {
                                                 $canCancelOrder = (in_array($row["op_status_id"], (array)Orders::getBuyerAllowedOrderCancellationStatuses(true)));
                                                 $canReturnRefund = (in_array($row["op_status_id"], (array)Orders::getBuyerAllowedOrderReturnStatuses(true)));
@@ -136,11 +136,11 @@ $this->includeTemplate('_partial/buyerDashboardNavigation.php'); ?>
                                         <td> <?php
                                                 $prodOrBatchUrl = 'javascript:void(0)';
                                             if ($row['op_is_batch']) {
-                                                $prodOrBatchUrl = CommonHelper::generateUrl('Products', 'batch', array($row['op_selprod_id']));
+                                                $prodOrBatchUrl = UrlHelper::generateUrl('Products', 'batch', array($row['op_selprod_id']));
                                                 $prodOrBatchImgUrl = UrlHelper::getCachedUrl(UrlHelper::generateUrl('image', 'BatchProduct', array($row['op_selprod_id'],$siteLangId, "SMALL"), CONF_WEBROOT_URL), CONF_IMG_CACHE_TIME, '.jpg');
                                             } else {
                                                 if (Product::verifyProductIsValid($row['op_selprod_id']) == true) {
-                                                    $prodOrBatchUrl = CommonHelper::generateUrl('Products', 'view', array($row['op_selprod_id']));
+                                                    $prodOrBatchUrl = UrlHelper::generateUrl('Products', 'view', array($row['op_selprod_id']));
                                                 }
                                                 $prodOrBatchImgUrl = UrlHelper::getCachedUrl(UrlHelper::generateUrl('image', 'product', array($row['selprod_product_id'], "SMALL", $row['op_selprod_id'], 0, $siteLangId), CONF_WEBROOT_URL), CONF_IMG_CACHE_TIME, '.jpg');
                                             } ?> <figure class="item__pic"><a href="<?php echo $prodOrBatchUrl; ?>"><img src="<?php echo $prodOrBatchImgUrl; ?>" title="<?php echo $row['op_product_name']; ?>"
@@ -157,7 +157,7 @@ $this->includeTemplate('_partial/buyerDashboardNavigation.php'); ?>
                                                 </div>
                                                 <!-- <div class="item__brand"><span><?php /*echo Labels::getLabel('Lbl_Brand', $siteLangId)?>:</span> <?php echo CommonHelper::displayNotApplicable($siteLangId, $row['op_brand_name']);*/ ?></div> -->
                                                 <?php if ($row['op_selprod_options'] != '') { ?> <div class="item__specification"><?php echo $row['op_selprod_options'];?></div> <?php } ?> <?php if ($row['totOrders'] > 1) {
-                                                    echo Labels::getLabel('LBL_Part_combined_order', $siteLangId).' <a title="'.Labels::getLabel('LBL_View_Order_Detail', $siteLangId).'" href="'.CommonHelper::generateUrl('Buyer', 'viewOrder', array($row['order_id'])).'">'.$row['order_id'].'</a>';
+                                                    echo Labels::getLabel('LBL_Part_combined_order', $siteLangId).' <a title="'.Labels::getLabel('LBL_View_Order_Detail', $siteLangId).'" href="'.UrlHelper::generateUrl('Buyer', 'viewOrder', array($row['order_id'])).'">'.$row['order_id'].'</a>';
                                                 } ?>
                                             </div>
                                         </td>
@@ -171,10 +171,10 @@ $this->includeTemplate('_partial/buyerDashboardNavigation.php'); ?>
                                         <td>
                                             <ul class="actions">
                                                 <li><a title="<?php echo Labels::getLabel('LBL_View_Order', $siteLangId); ?>" href="<?php echo $orderDetailUrl; ?>"><i class="fa fa-eye"></i></a></li> <?php if ($canCancelOrder) { ?> <li><a
-                                                        href="<?php echo CommonHelper::generateUrl('buyer', 'orderCancellationRequest', array($row['op_id']));?>" title="<?php echo Labels::getLabel('LBL_Cancel_Order', $siteLangId);?>"><i
+                                                        href="<?php echo UrlHelper::generateUrl('buyer', 'orderCancellationRequest', array($row['op_id']));?>" title="<?php echo Labels::getLabel('LBL_Cancel_Order', $siteLangId);?>"><i
                                                             class="fas fa-times"></i></a></li> <?php } ?> <?php if ($canSubmitFeedback && $isValidForReview) {?> <li><a
-                                                        href="<?php echo CommonHelper::generateUrl('Buyer', 'orderFeedback', array($row['op_id']));?>" title="<?php echo Labels::getLabel('LBL_Feedback', $siteLangId);?>"><i class="fa fa-star"></i></a>
-                                                </li> <?php } ?> <?php if ($canReturnRefund) { ?> <li><a href="<?php echo CommonHelper::generateUrl('Buyer', 'orderReturnRequest', array($row['op_id']));?>"
+                                                        href="<?php echo UrlHelper::generateUrl('Buyer', 'orderFeedback', array($row['op_id']));?>" title="<?php echo Labels::getLabel('LBL_Feedback', $siteLangId);?>"><i class="fa fa-star"></i></a>
+                                                </li> <?php } ?> <?php if ($canReturnRefund) { ?> <li><a href="<?php echo UrlHelper::generateUrl('Buyer', 'orderReturnRequest', array($row['op_id']));?>"
                                                         title="<?php echo Labels::getLabel('LBL_Refund', $siteLangId);?>"><i class="fas fa-dollar-sign"></i></a></li> <?php } ?>
                                             </ul>
                                         </td>
@@ -192,7 +192,7 @@ $this->includeTemplate('_partial/buyerDashboardNavigation.php'); ?>
                     <div class="cards">
                         <div class="cards-header">
                             <h5 class="cards-title "><?php echo Labels::getLabel('LBL_Latest_Offers', $siteLangId);?></h5>
-                            <div class="action"> <?php if (count($offers)>0) { ?> <a href="<?php echo CommonHelper::generateUrl('buyer', 'offers');?>" class="link"><?php echo Labels::getLabel('Lbl_View_All', $siteLangId);?></a> <?php }?> </div>
+                            <div class="action"> <?php if (count($offers)>0) { ?> <a href="<?php echo UrlHelper::generateUrl('buyer', 'offers');?>" class="link"><?php echo Labels::getLabel('Lbl_View_All', $siteLangId);?></a> <?php }?> </div>
                         </div>
                         <div class="cards-content ">
                             <table class="table ">
@@ -205,7 +205,7 @@ $this->includeTemplate('_partial/buyerDashboardNavigation.php'); ?>
                                         foreach ($offers as $row) {
                                             $discountValue = ($row['coupon_discount_in_percent'] == ApplicationConstants::PERCENTAGE)?$row['coupon_discount_value'].' %':CommonHelper::displayMoneyFormat($row['coupon_discount_value']); ?> <tr>
                                         <td>
-                                            <figure class="item__pic"><img src="<?php echo CommonHelper::generateFullUrl('Image', 'coupon', array($row['coupon_id'],$siteLangId,'NORMAL'))?>"
+                                            <figure class="item__pic"><img src="<?php echo UrlHelper::generateFullUrl('Image', 'coupon', array($row['coupon_id'],$siteLangId,'NORMAL'))?>"
                                                     alt="<?php echo ($row['coupon_title'] == '')?$row['coupon_identifier']:$row['coupon_title']; ?>"></figure>
                                         </td>
                                         <td>
@@ -233,7 +233,7 @@ $this->includeTemplate('_partial/buyerDashboardNavigation.php'); ?>
                     <div class="cards">
                         <div class="cards-header">
                             <h5 class="cards-title "><?php echo Labels::getLabel('LBL_Return_requests', $siteLangId);?></h5> <?php if (count($returnRequests) > 0) { ?> <div class="action">
-                                <a href="<?php echo CommonHelper::generateUrl('buyer', 'orderReturnRequests');?>" class="link"><?php echo Labels::getLabel('Lbl_View_All', $siteLangId);?></a>
+                                <a href="<?php echo UrlHelper::generateUrl('buyer', 'orderReturnRequests');?>" class="link"><?php echo Labels::getLabel('Lbl_View_All', $siteLangId);?></a>
                             </div> <?php } ?>
                         </div>
                         <div class="cards-content ">
@@ -246,20 +246,20 @@ $this->includeTemplate('_partial/buyerDashboardNavigation.php'); ?>
                                         <th width="10%"></th>
                                     </tr> <?php if (count($returnRequests) > 0) {
                                         foreach ($returnRequests as $row) {
-                                            $orderDetailUrl = CommonHelper::generateUrl('buyer', 'viewOrder', array($row['order_id'],$row['op_id']));
+                                            $orderDetailUrl = UrlHelper::generateUrl('buyer', 'viewOrder', array($row['order_id'],$row['op_id']));
                                             $prodOrBatchUrl = 'javascript:void(0)';
                                             if ($row['op_is_batch']) {
-                                                $prodOrBatchUrl = CommonHelper::generateUrl('Products', 'batch', array($row['op_selprod_id']));
+                                                $prodOrBatchUrl = UrlHelper::generateUrl('Products', 'batch', array($row['op_selprod_id']));
                                             } else {
                                                 if (Product::verifyProductIsValid($row['op_selprod_id']) == true) {
-                                                    $prodOrBatchUrl = CommonHelper::generateUrl('Products', 'view', array($row['op_selprod_id']));
+                                                    $prodOrBatchUrl = UrlHelper::generateUrl('Products', 'view', array($row['op_selprod_id']));
                                                 }
                                             } ?> <tr>
                                         <td>
                                             <div class="item__description">
                                                 <div class="request__date"><?php echo FatDate::format($row['orrequest_date']); ?></div>
                                                 <div class="item__title">
-                                                    <a title="<?php echo Labels::getLabel('LBL_Invoice_number', $siteLangId); ?>" href="<?php echo CommonHelper::generateUrl('Buyer', 'viewOrder', array($row['order_id'],$row['op_id'])); ?>"
+                                                    <a title="<?php echo Labels::getLabel('LBL_Invoice_number', $siteLangId); ?>" href="<?php echo UrlHelper::generateUrl('Buyer', 'viewOrder', array($row['order_id'],$row['op_id'])); ?>"
                                                         href="<?php echo $orderDetailUrl; ?>"><?php echo $row['op_invoice_number']; ?></a>
                                                 </div>
                                                 <div class="item__title"> <?php if ($row['op_selprod_title'] != '') { ?> <a title="<?php echo $row['op_selprod_title'];?>" href="<?php echo $prodOrBatchUrl; ?>"> <?php echo $row['op_selprod_title']; ?>
@@ -275,7 +275,7 @@ $this->includeTemplate('_partial/buyerDashboardNavigation.php'); ?>
                                         <td>
                                             <ul class="actions">
                                                 <li>
-                                                    <a title="<?php echo Labels::getLabel('LBL_View_Request', $siteLangId); ?>" href="<?php echo CommonHelper::generateUrl('Buyer', 'ViewOrderReturnRequest', array($row['orrequest_id'])); ?>">
+                                                    <a title="<?php echo Labels::getLabel('LBL_View_Request', $siteLangId); ?>" href="<?php echo UrlHelper::generateUrl('Buyer', 'ViewOrderReturnRequest', array($row['orrequest_id'])); ?>">
                                                         <i class="fa fa-eye"></i>
                                                     </a>
                                                 </li>
@@ -298,7 +298,7 @@ $this->includeTemplate('_partial/buyerDashboardNavigation.php'); ?>
                     <div class="cards">
                         <div class="cards-header">
                             <h5 class="cards-title "><?php echo Labels::getLabel('LBL_Cancellation_requests', $siteLangId);?></h5> <?php if (count($cancellationRequests) > 0) { ?> <div class="action">
-                                <a href="<?php echo CommonHelper::generateUrl('buyer', 'orderCancellationRequests');?>" class="link"><?php echo Labels::getLabel('Lbl_View_All', $siteLangId);?></a>
+                                <a href="<?php echo UrlHelper::generateUrl('buyer', 'orderCancellationRequests');?>" class="link"><?php echo Labels::getLabel('Lbl_View_All', $siteLangId);?></a>
                             </div> <?php } ?>
                         </div>
                         <div class="cards-content ">
@@ -310,13 +310,13 @@ $this->includeTemplate('_partial/buyerDashboardNavigation.php'); ?>
                                         <th width="10%"><?php echo Labels::getLabel('LBL_Status', $siteLangId);?></th>
                                     </tr> <?php if (count($cancellationRequests) > 0) {
                                         foreach ($cancellationRequests as $row) {
-                                            $orderDetailUrl = CommonHelper::generateUrl('buyer', 'viewOrder', array($row['order_id'],$row['op_id']));
+                                            $orderDetailUrl = UrlHelper::generateUrl('buyer', 'viewOrder', array($row['order_id'],$row['op_id']));
                                             $prodOrBatchUrl = 'javascript:void(0)';
                                             if ($row['op_is_batch']) {
-                                                $prodOrBatchUrl = CommonHelper::generateUrl('Products', 'batch', array($row['op_selprod_id']));
+                                                $prodOrBatchUrl = UrlHelper::generateUrl('Products', 'batch', array($row['op_selprod_id']));
                                             } else {
                                                 if (Product::verifyProductIsValid($row['op_selprod_id']) == true) {
-                                                    $prodOrBatchUrl = CommonHelper::generateUrl('Products', 'view', array($row['op_selprod_id']));
+                                                    $prodOrBatchUrl = UrlHelper::generateUrl('Products', 'view', array($row['op_selprod_id']));
                                                 }
                                             } ?> <tr>
                                         <td>

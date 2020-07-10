@@ -40,9 +40,9 @@ $str='<table cellspacing="0" cellpadding="0" border="0" width="100%" style="bord
 
         $prodOrBatchUrl = 'javascript:void(0)';
         /* if($val["op_is_batch"]){
-            $prodOrBatchUrl  = CommonHelper::generateFullUrl('products','batch',array($val["op_selprod_id"]),"/");
+            $prodOrBatchUrl  = UrlHelper::generateFullUrl('products','batch',array($val["op_selprod_id"]),"/");
         }else{
-            $prodOrBatchUrl  = CommonHelper::generateFullUrl('products','view',array($val["op_selprod_id"]),"/");
+            $prodOrBatchUrl  = UrlHelper::generateFullUrl('products','view',array($val["op_selprod_id"]),"/");
         } */
 
         $productTaxChargedTxt = '';

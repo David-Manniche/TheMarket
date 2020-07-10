@@ -59,7 +59,7 @@ class GoogleLogin extends SocialMediaAuthBase
      */
     public function getRedirectUri(): string
     {
-        return !empty($this->redirectUri) ? $this->redirectUri : CommonHelper::generateFullUrl(self::KEY_NAME, 'index', [], '', false);
+        return !empty($this->redirectUri) ? $this->redirectUri : UrlHelper::generateFullUrl(self::KEY_NAME, 'index', [], '', false);
     }
     
     /**

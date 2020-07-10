@@ -3,7 +3,7 @@
     <h4><?php echo Labels::getLabel('LBL_Seller_Packages_Listings', $adminLangId);?>
     </h4>
     <?php
-        $url = CommonHelper::generateUrl('FaqCategories');
+        $url = UrlHelper::generateUrl('FaqCategories');
         $data = [
             'adminLangId' => $adminLangId,
             'statusButtons' => false,

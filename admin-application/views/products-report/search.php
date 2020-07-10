@@ -97,7 +97,7 @@ foreach ($arr_listing as $sn => $row) {
                 break;
 
             /* case 'order_date':
-                $td->appendElement('plaintext', array(), '<a href="'.CommonHelper::generateUrl('SalesReport','index',array($row[$key])).'">'.FatDate::format($row[$key]).'</a>',true);
+                $td->appendElement('plaintext', array(), '<a href="'.UrlHelper::generateUrl('SalesReport','index',array($row[$key])).'">'.FatDate::format($row[$key]).'</a>',true);
                 break;
             */
 
@@ -169,7 +169,7 @@ foreach ($arr_listing as $sn=>$row){
                 break;
 
             case 'order_date':
-                $td->appendElement('plaintext', array(), '<a href="'.CommonHelper::generateUrl('SalesReport',
+                $td->appendElement('plaintext', array(), '<a href="'.UrlHelper::generateUrl('SalesReport',
                         'index',array($row[$key])).'">'.FatDate::format($row[$key]).'</a>',true);
                 break;
 

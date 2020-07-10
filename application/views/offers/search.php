@@ -8,7 +8,7 @@ if (!empty($arr_listing) && is_array($arr_listing) ){
 				   <div class="row">
 						<div class="col-md-4 col-sm-4">
 						   <div class="offer">
-							   <div class="offer__logo"><img src="<?php echo CommonHelper::generateFullUrl('Image','coupon',array($row['coupon_id'],$siteLangId,'NORMAL'))?>" alt="<?php echo Labels::getLabel('LBL_Company_Logo', $siteLangId); ?>"></div>
+							   <div class="offer__logo"><img src="<?php echo UrlHelper::generateFullUrl('Image','coupon',array($row['coupon_id'],$siteLangId,'NORMAL'))?>" alt="<?php echo Labels::getLabel('LBL_Company_Logo', $siteLangId); ?>"></div>
 						   </div>
 						</div>
 						<div class="col-md-8 col-sm-8">

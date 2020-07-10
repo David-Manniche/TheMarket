@@ -16,7 +16,7 @@ if (0 < $withPhone) {
                     </div>
                 </div>
                 <div class="col-md-auto col-sm-auto">
-                    <a href="<?php echo CommonHelper::generateUrl('GuestUser', 'loginForm'); ?>" class="btn btn-outline-white btn-sm">
+                    <a href="<?php echo UrlHelper::generateUrl('GuestUser', 'loginForm'); ?>" class="btn btn-outline-white btn-sm">
                         <?php echo Labels::getLabel('LBL_Back_to_Login', $siteLangId);?>
                     </a>
                 </div>
@@ -61,7 +61,7 @@ if (0 < $withPhone) {
                                     $frm->setFormTagAttribute('id', 'frmPwdForgot');
                                     $frm->setFormTagAttribute('autocomplete', 'off');
                                     $frm->setValidatorJsObjectName('forgotValObj');
-                                    $frm->setFormTagAttribute('action', CommonHelper::generateUrl('GuestUser', 'forgotPassword'));
+                                    $frm->setFormTagAttribute('action', UrlHelper::generateUrl('GuestUser', 'forgotPassword'));
                                     $btnFld = $frm->getField('btn_submit');
                                     $btnFld->setFieldTagAttribute('class', 'btn--block');
                                     if (1 > $withPhone) {
@@ -78,7 +78,7 @@ if (0 < $withPhone) {
                                 </div>
                             </div>
                             <p class="text--dark"><?php echo Labels::getLabel('LBL_Back_to_login', $siteLangId);?>
-                                <a href="<?php echo CommonHelper::generateUrl('GuestUser', 'loginForm'); ?>" class="link">
+                                <a href="<?php echo UrlHelper::generateUrl('GuestUser', 'loginForm'); ?>" class="link">
                                     <?php echo Labels::getLabel('LBL_Click_Here', $siteLangId);?>
                                 </a>
                             </p>

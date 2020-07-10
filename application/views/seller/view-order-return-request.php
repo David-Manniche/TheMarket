@@ -9,7 +9,7 @@
                 <h2 class="content-header-title"><?php echo Labels::getLabel('LBL_View_Order_Return_Request', $siteLangId).': <span class="number">' . $request['orrequest_reference'].'</span>' ; ?></h2>
             </div>
             <div class="col-auto">
-                <div class="btn-group"><a href="<?php echo CommonHelper::generateUrl('Seller', 'orderReturnRequests'); ?>" class="btn btn-outline-primary btn--sm"><?php echo Labels::getLabel('LBL_Back_To_Return_Requests', $siteLangId); ?></a></div>
+                <div class="btn-group"><a href="<?php echo UrlHelper::generateUrl('Seller', 'orderReturnRequests'); ?>" class="btn btn-outline-primary btn--sm"><?php echo Labels::getLabel('LBL_Back_To_Return_Requests', $siteLangId); ?></a></div>
             </div>
         </div>
         <div class="content-body">
@@ -19,10 +19,10 @@
                     <?php if ($canEdit) { ?>
                         <div class="btn-group">
                             <?php if ($canEscalateRequest) { ?>
-                                <a class="btn btn-outline-primary btn--sm ripplelink" onClick="javascript: return confirm('<?php echo Labels::getLabel('MSG_Do_you_want_to_proceed?', $siteLangId); ?>')" href="<?php echo CommonHelper::generateUrl('Account', 'EscalateOrderReturnRequest', array($request['orrequest_id'])); ?>"><?php echo str_replace("{websitename}", FatApp::getConfig('CONF_WEBSITE_NAME_'.$siteLangId), Labels::getLabel('LBL_Escalate_to_{websitename}', $siteLangId)); ?></a>
+                                <a class="btn btn-outline-primary btn--sm ripplelink" onClick="javascript: return confirm('<?php echo Labels::getLabel('MSG_Do_you_want_to_proceed?', $siteLangId); ?>')" href="<?php echo UrlHelper::generateUrl('Account', 'EscalateOrderReturnRequest', array($request['orrequest_id'])); ?>"><?php echo str_replace("{websitename}", FatApp::getConfig('CONF_WEBSITE_NAME_'.$siteLangId), Labels::getLabel('LBL_Escalate_to_{websitename}', $siteLangId)); ?></a>
                             <?php } ?>
                             <?php if ($canApproveReturnRequest) { ?>
-                                <a class="btn btn-outline-primary btn--sm ripplelink" onClick="javascript: return confirm('<?php echo Labels::getLabel('MSG_Do_you_want_to_proceed?', $siteLangId); ?>')" href="<?php echo CommonHelper::generateUrl('Seller', 'approveOrderReturnRequest', array($request['orrequest_id'])); ?>"><?php echo Labels::getLabel('LBL_Approve_Refund', $siteLangId); ?></a>
+                                <a class="btn btn-outline-primary btn--sm ripplelink" onClick="javascript: return confirm('<?php echo Labels::getLabel('MSG_Do_you_want_to_proceed?', $siteLangId); ?>')" href="<?php echo UrlHelper::generateUrl('Seller', 'approveOrderReturnRequest', array($request['orrequest_id'])); ?>"><?php echo Labels::getLabel('LBL_Approve_Refund', $siteLangId); ?></a>
                             <?php } ?>
                         </div>
                     <?php } ?>
@@ -49,7 +49,7 @@
                         <h6><?php echo Labels::getLabel('LBL_Customer_Detail', $siteLangId); ?></h6>
                         <p><?php echo ($request['buyer_name'] != '') ? '<strong>'.Labels::getLabel('LBL_Customer_Name:', $siteLangId).'</strong> '.$request['buyer_name'] : ''; ?></p>
                         <?php if (isset($attachedFile) && !empty($attachedFile)) { ?>
-                            <p><strong><?php echo Labels::getLabel('Lbl_Download_attached_file', $siteLangId); ?>  </strong> <a href="<?php echo CommonHelper::generateUrl('Seller', 'downloadAttachedFileForReturn', array($request['orrequest_id'] , 0)); ?>" ><i class="fa fa-download"></i></a></p>
+                            <p><strong><?php echo Labels::getLabel('Lbl_Download_attached_file', $siteLangId); ?>  </strong> <a href="<?php echo UrlHelper::generateUrl('Seller', 'downloadAttachedFileForReturn', array($request['orrequest_id'] , 0)); ?>" ><i class="fa fa-download"></i></a></p>
                         <?php } ?>
                         </div>
                     </div>
@@ -148,7 +148,7 @@
                     <ul>
                        <li>
                            <div class="msg_db">
-                               <div class="avtar"><img src="<?php echo CommonHelper::generateUrl('Image', 'user', array($logged_user_id, 'THUMB', 1)); ?>" alt="<?php echo $logged_user_name; ?>" title="<?php echo $logged_user_name; ?>"></div>
+                               <div class="avtar"><img src="<?php echo UrlHelper::generateUrl('Image', 'user', array($logged_user_id, 'THUMB', 1)); ?>" alt="<?php echo $logged_user_name; ?>" title="<?php echo $logged_user_name; ?>"></div>
                            </div>
                            <div class="msg__desc">
                                <span class="msg__title"><?php echo $logged_user_name; ?></span>

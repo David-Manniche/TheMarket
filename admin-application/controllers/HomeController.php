@@ -21,7 +21,7 @@ class HomeController extends AdminBaseController
         $analyticArr = array(
         'clientId' => FatApp::getConfig("CONF_ANALYTICS_CLIENT_ID", FatUtility::VAR_STRING, ''),
         'clientSecretKey' => FatApp::getConfig("CONF_ANALYTICS_SECRET_KEY", FatUtility::VAR_STRING, ''),
-        'redirectUri' => CommonHelper::generateFullUrl('configurations', 'redirect', array(), '', false),
+        'redirectUri' => UrlHelper::generateFullUrl('configurations', 'redirect', array(), '', false),
         'googleAnalyticsID' => FatApp::getConfig("CONF_ANALYTICS_ID", FatUtility::VAR_STRING, '')
         );
 
@@ -303,7 +303,7 @@ class HomeController extends AdminBaseController
         $analyticArr = array(
         'clientId' => FatApp::getConfig("CONF_ANALYTICS_CLIENT_ID"),
         'clientSecretKey' => FatApp::getConfig("CONF_ANALYTICS_SECRET_KEY"),
-        'redirectUri' => CommonHelper::generateFullUrl('configurations', 'redirect', array(), '', false),
+        'redirectUri' => UrlHelper::generateFullUrl('configurations', 'redirect', array(), '', false),
         'googleAnalyticsID' => FatApp::getConfig("CONF_ANALYTICS_ID")
         );
        
@@ -376,7 +376,7 @@ class HomeController extends AdminBaseController
             }
         }
         Product::updateMinPrices();
-        //FatApp::redirectUser(CommonHelper::generateUrl("home"));
+        //FatApp::redirectUser(UrlHelper::generateUrl("home"));
     }
     public function setLanguage($langId = 0)
     {

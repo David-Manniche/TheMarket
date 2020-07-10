@@ -25,7 +25,7 @@
 					echo"<ul>";
 					foreach($chunkedCat as $category){
 					 ?>
-						 <li class=""><a class="anchor--js" data-role="anchor--js--link-<?php echo $catCount;?>"  href="javascript:void(0)"> <i class="cg-icon"><img src="<?php echo CommonHelper::generateUrl('category','icon',array($category['prodcat_id'],'1','collection_page'));?>"> </i> <span class="caption"><?php echo $category['prodcat_name']; ?></span> </a></li>
+						 <li class=""><a class="anchor--js" data-role="anchor--js--link-<?php echo $catCount;?>"  href="javascript:void(0)"> <i class="cg-icon"><img src="<?php echo UrlHelper::generateUrl('category','icon',array($category['prodcat_id'],'1','collection_page'));?>"> </i> <span class="caption"><?php echo $category['prodcat_name']; ?></span> </a></li>
 						 <?php
 						  $catCount++;
 						 if($embedMoreCat && $catCount==8){

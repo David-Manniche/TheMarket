@@ -12,7 +12,7 @@ defined( 'SYSTEM_INIT' ) or die( 'Invalid Usage.' );
                         $fileData = AttachedFile::getAttachment(AttachedFile::FILETYPE_ADMIN_LOGO, 0, 0, $adminLangId, false);
                         $aspectRatioArr = AttachedFile::getRatioTypeArray($adminLangId);
                         ?>
-                        <img <?php if ($fileData['afile_aspect_ratio'] > 0) { ?> data-ratio= "<?php echo $aspectRatioArr[$fileData['afile_aspect_ratio']]; ?>" <?php } ?> src="<?php echo CommonHelper::generateUrl('Image','siteAdminLogo', array(  $adminLangId)); ?>" alt="">
+                        <img <?php if ($fileData['afile_aspect_ratio'] > 0) { ?> data-ratio= "<?php echo $aspectRatioArr[$fileData['afile_aspect_ratio']]; ?>" <?php } ?> src="<?php echo UrlHelper::generateUrl('Image','siteAdminLogo', array(  $adminLangId)); ?>" alt="">
                     </figure>
                    
                    <div class="-align-center">
@@ -54,7 +54,7 @@ defined( 'SYSTEM_INIT' ) or die( 'Invalid Usage.' );
                             <div class="row -align-center">
                                 <div class="col-md-12">
                                     <div class="field-set">
-                                        <a href="<?php echo CommonHelper::generateUrl('adminGuest','loginForm');?>" class="-link-underline -txt-uppercase"><?php echo Labels::getLabel('LBL_Back_to_Login',$adminLangId); ?></a>
+                                        <a href="<?php echo UrlHelper::generateUrl('adminGuest','loginForm');?>" class="-link-underline -txt-uppercase"><?php echo Labels::getLabel('LBL_Back_to_Login',$adminLangId); ?></a>
                                     </div>
                                 </div>
                             </div>

@@ -25,9 +25,9 @@ $total = ($opCustomerBuyingPrice + $shippingPrice + $taxCharged - abs($volumeDis
 
 $prodOrBatchUrl = 'javascript:void(0)';
 /* if($orderProducts["op_is_batch"]){
-$prodOrBatchUrl = CommonHelper::generateFullUrl('products','batch',array($orderProducts["op_selprod_id"]),"/");
+$prodOrBatchUrl = UrlHelper::generateFullUrl('products','batch',array($orderProducts["op_selprod_id"]),"/");
 }else{
-$prodOrBatchUrl = CommonHelper::generateFullUrl('products','view',array($orderProducts["op_selprod_id"]),"/");
+$prodOrBatchUrl = UrlHelper::generateFullUrl('products','view',array($orderProducts["op_selprod_id"]),"/");
 } */
 $taxChargedTxt = '';
 $taxOptions = $orderProducts['taxOptions'];

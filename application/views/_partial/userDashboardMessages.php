@@ -1,7 +1,7 @@
 <div class="cards-header  p-3">
 	<h5 class="cards-title"><?php echo Labels::getLabel('LBL_Message',$siteLangId);?></h5>
 	<?php if (count($messages) > 0){ ?>
-	<div class="action"><a href="<?php echo CommonHelper::generateUrl('Account','messages');?>" class="link"><?php echo Labels::getLabel('LBL_View_All',$siteLangId);?></a></div>
+	<div class="action"><a href="<?php echo UrlHelper::generateUrl('Account','messages');?>" class="link"><?php echo Labels::getLabel('LBL_View_All',$siteLangId);?></a></div>
 <?php }?>
 </div>
 <?php if (count($messages) > 0){ ?>
@@ -15,7 +15,7 @@
 					}
 			?>
 			<li>
-				<div class="msg_db"><img src="<?php echo CommonHelper::generateUrl('Image','user',array($row['message_from_user_id'],'thumb',true));?>" alt="<?php echo $row['message_from_name']; ?>"></div>
+				<div class="msg_db"><img src="<?php echo UrlHelper::generateUrl('Image','user',array($row['message_from_user_id'],'thumb',true));?>" alt="<?php echo $row['message_from_name']; ?>"></div>
 				<div class="msg__desc">
 					<span class="msg__title"><?php echo htmlentities($row['message_from_name']);?></span>
 					<p class="msg__detail"><?php  echo CommonHelper::truncateCharacters($row['message_text'],85,'','',true);?></p>

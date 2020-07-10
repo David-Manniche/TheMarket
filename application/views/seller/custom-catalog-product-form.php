@@ -9,7 +9,7 @@
             </div>
             <div class="col-auto">
                 <div class="btn-group">
-                    <a href="<?php echo CommonHelper::generateUrl('seller', 'customCatalogProducts'); ?>" class="btn btn-outline-primary btn--sm"><?php echo Labels::getLabel('LBL_Back_to_Product_Requests', $siteLangId); ?></a>
+                    <a href="<?php echo UrlHelper::generateUrl('seller', 'customCatalogProducts'); ?>" class="btn btn-outline-primary btn--sm"><?php echo Labels::getLabel('LBL_Back_to_Product_Requests', $siteLangId); ?></a>
                 </div>
             </div>
         </div>
@@ -47,7 +47,7 @@
                     </ul>
                     
                     <?php /* if (0 < $preqId && !User::isCatalogRequestSubmittedForApproval($preqId)) {?>
-                        <a href="<?php echo CommonHelper::generateUrl('seller', 'approveCustomCatalogProducts', array($preqId));?>" class="btn btn-outline-primary btn--sm ml-auto"><?php echo Labels::getLabel('LBL_Submit_For_Approval', $siteLangId)?></a>
+                        <a href="<?php echo UrlHelper::generateUrl('seller', 'approveCustomCatalogProducts', array($preqId));?>" class="btn btn-outline-primary btn--sm ml-auto"><?php echo Labels::getLabel('LBL_Submit_For_Approval', $siteLangId)?></a>
                     <?php } */ ?>
                     
                 </div>   

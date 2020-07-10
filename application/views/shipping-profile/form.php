@@ -15,7 +15,7 @@ $frm->developerTags['fld_default_col'] = 6;
             </div>
             <div class="col-auto">
                 <div class="content-header-right">
-                    <a href="<?php echo CommonHelper::generateUrl('shippingProfile');?>"
+                    <a href="<?php echo UrlHelper::generateUrl('shippingProfile');?>"
                         class="btn btn--secondary btn--sm"><?php echo Labels::getLabel('LBL_back', $siteLangId);?></a>
                 </div>
             </div>

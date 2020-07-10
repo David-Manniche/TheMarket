@@ -118,7 +118,7 @@ class CcavenuePayController extends PaymentController
             }
             if ($order_status == "Success" && $total_paid_match) {
                 $orderPaymentObj->addOrderPayment($this->settings["plugin_code"], $tracking_id, $paymentGatewayCharge, Labels::getLabel("LBL_Received_Payment", $this->siteLangId), $request);
-                FatApp::redirectUser(CommonHelper::generateUrl('custom', 'paymentSuccess', array($orderId)));
+                FatApp::redirectUser(UrlHelper::generateUrl('custom', 'paymentSuccess', array($orderId)));
             } else {
                 $orderPaymentObj->addOrderPaymentComments($request);
                 FatApp::redirectUser(CommonHelper::getPaymentFailurePageUrl());
@@ -132,7 +132,7 @@ class CcavenuePayController extends PaymentController
         $paymentGatewayCharge = $orderPaymentObj->getOrderPaymentGatewayAmount();
         $orderInfo = $orderPaymentObj->getOrderPrimaryinfo();
 
-        $frm = new Form('frm-ccavenue', array('id' => 'frm-ccavenue', 'action' => CommonHelper::generateFullUrl('CcavenuePay', 'iframe', array($orderId)), 'class' => "form form--normal"));
+        $frm = new Form('frm-ccavenue', array('id' => 'frm-ccavenue', 'action' => UrlHelper::generateFullUrl('CcavenuePay', 'iframe', array($orderId)), 'class' => "form form--normal"));
 
         $frm->addHiddenField('', 'tid', "", array("id" => "tid"));
         $frm->addHiddenField('', 'merchant_id', $this->settings["merchant_id"]);
@@ -141,7 +141,7 @@ class CcavenuePayController extends PaymentController
         $frm->addHiddenField('', 'merchant_param1', $orderId);
         //$frm->addHiddenField('', 'currency', $orderInfo["order_currency_code"]);
         $frm->addHiddenField('', 'language', "EN");
-        $frm->addHiddenField('', 'redirect_url', CommonHelper::generateFullUrl('CcavenuePay', 'callback'));
+        $frm->addHiddenField('', 'redirect_url', UrlHelper::generateFullUrl('CcavenuePay', 'callback'));
         $frm->addHiddenField('', 'cancel_url', CommonHelper::getPaymentCancelPageUrl());
         //$frm->addHiddenField('', 'item_name_1', $order_payment_gateway_description);
         $frm->addHiddenField('', 'billing_name', $orderInfo["customer_billing_name"]);

@@ -43,7 +43,7 @@ class LibHelper extends FatUtility
         }
         return array(
             '{SITE_NAME}' => FatApp::getConfig("CONF_WEBSITE_NAME_$langId"),
-            '{SITE_URL}' => CommonHelper::generateFullUrl(),
+            '{SITE_URL}' => UrlHelper::generateFullUrl(),
         );
     }
 

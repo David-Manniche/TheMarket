@@ -108,7 +108,7 @@ if (count($arr_listing) == 0) {?>
         $frm = new Form('frmCollectionsListing', array('id' => 'frmCollectionsListing'));
         $frm->setFormTagAttribute('class', 'web_form last_td_nowrap actionButtons-js');
         $frm->setFormTagAttribute('onsubmit', 'formAction(this, reloadCollectionList ); return(false);');
-        $frm->setFormTagAttribute('action', CommonHelper::generateUrl('Shops', 'toggleBulkCollectionStatuses'));
+        $frm->setFormTagAttribute('action', UrlHelper::generateUrl('Shops', 'toggleBulkCollectionStatuses'));
         $frm->addHiddenField('', 'status', '');
         $frm->addHiddenField('', 'collection_shopId', $shopId);
 

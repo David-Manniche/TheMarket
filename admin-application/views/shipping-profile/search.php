@@ -50,7 +50,7 @@ if (count($arr_listing) == 0) {
                     break;
                 case 'action':
                         if ($canEdit) {
-                            $td->appendElement('a', array('href' => CommonHelper::generateUrl('shippingProfile', 'form', array($row['shipprofile_id'])),  'class' => 'btn btn-clean btn-sm btn-icon', 'title' => Labels::getLabel('LBL_Edit', $adminLangId)), '<i class="far fa-edit icon"></i>', true);
+                            $td->appendElement('a', array('href' => UrlHelper::generateUrl('shippingProfile', 'form', array($row['shipprofile_id'])),  'class' => 'btn btn-clean btn-sm btn-icon', 'title' => Labels::getLabel('LBL_Edit', $adminLangId)), '<i class="far fa-edit icon"></i>', true);
                         }
                     break;
                 default:

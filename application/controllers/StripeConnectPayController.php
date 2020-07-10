@@ -170,7 +170,7 @@ class StripeConnectPayController extends PaymentController
 
             $json['status'] = applicationConstants::ACTIVE;
             $json['msg'] = Labels::getLabel('MSG_SUCCESS', $this->siteLangId);
-            $json['redirectUrl'] = CommonHelper::generateFullUrl('custom', 'paymentSuccess', array($this->orderId));
+            $json['redirectUrl'] = UrlHelper::generateFullUrl('custom', 'paymentSuccess', array($this->orderId));
             FatUtility::dieJsonSuccess($json);
         }
 

@@ -104,7 +104,7 @@ class CartController extends MyAppController
                 FatUtility::dieJsonError($message);
             }
             Message::addErrorMessage($message);
-            FatApp::redirectUser(CommonHelper::generateUrl());
+            FatApp::redirectUser(UrlHelper::generateUrl());
         }
         if (UserAuthentication::isUserLogged()) {
             $user_is_buyer = User::getAttributesById(UserAuthentication::getLoggedUserId(), 'user_is_buyer');
@@ -117,7 +117,7 @@ class CartController extends MyAppController
                 if (FatUtility::isAjaxCall()) {
                     FatUtility::dieWithError(Message::getHtml());
                 }
-                FatApp::redirectUser(CommonHelper::generateUrl());
+                FatApp::redirectUser(UrlHelper::generateUrl());
             }
             $user_id = UserAuthentication::getLoggedUserId();
         }
@@ -313,8 +313,8 @@ class CartController extends MyAppController
             }
             $this->set('alertType', 'alert--info');
         } else {
-            $strProduct = '<a href="' . CommonHelper::generateUrl('Products', 'view', array($selprod_id)) . '">' . strip_tags(html_entity_decode($sellerProductRow['product_name'], ENT_QUOTES, 'UTF-8')) . '</a>';
-            $strCart = '<a href="' . CommonHelper::generateUrl('Cart') . '">' . Labels::getLabel('Lbl_Shopping_Cart', $this->siteLangId) . '</a>';
+            $strProduct = '<a href="' . UrlHelper::generateUrl('Products', 'view', array($selprod_id)) . '">' . strip_tags(html_entity_decode($sellerProductRow['product_name'], ENT_QUOTES, 'UTF-8')) . '</a>';
+            $strCart = '<a href="' . UrlHelper::generateUrl('Cart') . '">' . Labels::getLabel('Lbl_Shopping_Cart', $this->siteLangId) . '</a>';
             if ($logMessage) {
                 Message::addMessage(sprintf(Labels::getLabel('MSG_Success_cart_add', $this->siteLangId), $strProduct, $strCart));
             }
@@ -332,7 +332,7 @@ class CartController extends MyAppController
                 FatUtility::dieJsonError($message);
             }
             Message::addErrorMessage($message);
-            FatApp::redirectUser(CommonHelper::generateUrl());
+            FatApp::redirectUser(UrlHelper::generateUrl());
         }
 
         if (!isset($post['key'])) {
@@ -381,7 +381,7 @@ class CartController extends MyAppController
 
         if (empty($post)) {
             Message::addErrorMessage(Labels::getLabel('LBL_Invalid_Request', $this->siteLangId));
-            FatApp::redirectUser(CommonHelper::generateUrl());
+            FatApp::redirectUser(UrlHelper::generateUrl());
         }
 
         $prodgroup_id = FatApp::getPostedData('prodgroup_id', FatUtility::VAR_INT, 0);
@@ -408,7 +408,7 @@ class CartController extends MyAppController
                 FatUtility::dieJsonError($message);
             }
             Message::addErrorMessage($message);
-            FatApp::redirectUser(CommonHelper::generateUrl());
+            FatApp::redirectUser(UrlHelper::generateUrl());
         }
         if (empty($post['key'])) {
             $message = Labels::getLabel('LBL_Invalid_Product', $this->siteLangId);
@@ -456,7 +456,7 @@ class CartController extends MyAppController
         $post = FatApp::getPostedData();
         if (empty($post)) {
             Message::addErrorMessage(Labels::getLabel('LBL_Invalid_Request', $this->siteLangId));
-            FatApp::redirectUser(CommonHelper::generateUrl());
+            FatApp::redirectUser(UrlHelper::generateUrl());
         }
         $prodgroup_id = FatApp::getPostedData('prodgroup_id', FatUtility::VAR_INT, 0);
         $quantity = FatApp::getPostedData('quantity', FatUtility::VAR_INT, 1);
@@ -485,7 +485,7 @@ class CartController extends MyAppController
     $post = FatApp::getPostedData();
     if( empty($post) ){
     Message::addErrorMessage( Labels::getLabel('LBL_Invalid_Request', $this->siteLangId) );
-    FatApp::redirectUser( CommonHelper::generateUrl() );
+    FatApp::redirectUser( UrlHelper::generateUrl() );
     }
     $json = array();
     $prodgroup_id = FatApp::getPostedData( 'prodgroup_id', FatUtility::VAR_INT, 0 );

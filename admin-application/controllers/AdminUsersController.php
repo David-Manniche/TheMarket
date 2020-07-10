@@ -311,7 +311,7 @@ class AdminUsersController extends AdminBaseController
         $adminId = FatUtility::int($adminId);
         if (1 > $adminId || $adminId == 1 || $adminId == $this->admin_id) {
             Message::addErrorMessage($this->str_invalid_request);
-            FatApp::redirectUser(CommonHelper::generateUrl('adminUsers'));
+            FatApp::redirectUser(UrlHelper::generateUrl('adminUsers'));
         }
         $frm = $this->searchForm();
         $allAccessfrm = $this->getAllAccessForm();

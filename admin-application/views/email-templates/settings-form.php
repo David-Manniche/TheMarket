@@ -26,7 +26,7 @@ $langFld->addFieldTagAttribute('class', 'logo-language-js');
 $htmlAfterField = '';
 if (!empty($logoImage)) {
     $htmlAfterField .= '<ul class="image-listing grids--onethird">';
-    $htmlAfterField .= '<li><div class="uploaded--image"><img src="' . CommonHelper::generateFullUrl('image', 'emailLogo', array($logoImage['afile_lang_id'], time()), CONF_WEBROOT_FRONT_URL) . '"> <a  class="remove--img" href="javascript:void(0);" onclick="removeEmailLogo('.$logoImage['afile_lang_id'].')" ><i class="ion-close-round"></i></a></div>';
+    $htmlAfterField .= '<li><div class="uploaded--image"><img src="' . UrlHelper::generateFullUrl('image', 'emailLogo', array($logoImage['afile_lang_id'], time()), CONF_WEBROOT_FRONT_URL) . '"> <a  class="remove--img" href="javascript:void(0);" onclick="removeEmailLogo('.$logoImage['afile_lang_id'].')" ><i class="ion-close-round"></i></a></div>';
     $htmlAfterField .= '</li></ul>';
 } else {
     $htmlAfterField .= '<div class="temp-hide"><ul class="image-listing grids--onethird"><li><div class="uploaded--image"></div></li></ul></div>';

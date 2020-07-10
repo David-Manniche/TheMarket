@@ -28,11 +28,11 @@ foreach ($arr_listing as $sn=>$row){
 				$ul = $td->appendElement("ul",array("class"=>"actions"));
 				if($canEdit){
 					$li = $ul->appendElement("li");
-					$li->appendElement('a', array('href'=> CommonHelper::generateUrl('Attributes','attributes',array($row['attrgrp_id'])),'title'=>Labels::getLabel('LBL_Edit_Attributes',$adminLangId),'class'=>'button small green'),'<i class="far fa-edit icon"></i>', true);
+					$li->appendElement('a', array('href'=> UrlHelper::generateUrl('Attributes','attributes',array($row['attrgrp_id'])),'title'=>Labels::getLabel('LBL_Edit_Attributes',$adminLangId),'class'=>'button small green'),'<i class="far fa-edit icon"></i>', true);
 				}
 				
 				$li = $ul->appendElement("li");
-				$li->appendElement('a', array('href'=> CommonHelper::generateUrl('Attributes','manageAttributes',array($row['attrgrp_id'])),'title'=>Labels::getLabel('LBL_Manage_Attributes',$adminLangId),'class'=>'button small green'),'<i class="ion-navicon-round icon"></i>', true);
+				$li->appendElement('a', array('href'=> UrlHelper::generateUrl('Attributes','manageAttributes',array($row['attrgrp_id'])),'title'=>Labels::getLabel('LBL_Manage_Attributes',$adminLangId),'class'=>'button small green'),'<i class="ion-navicon-round icon"></i>', true);
 			break;
 			default:
 				$td->appendElement('plaintext', array(), $row[$key], true);

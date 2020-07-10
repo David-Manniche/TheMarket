@@ -35,9 +35,9 @@
                     if ($row['promotion_type']==Promotions::PROMOTE_PRODUCT) {
                         $td->appendElement('plaintext', array(), '<div class="avtar"><img src="'.UrlHelper::getCachedUrl(UrlHelper::generateFileUrl('image', 'product', array($product['promotion_product_id'],'MINI',0,0, $siteLangId)), CONF_IMG_CACHE_TIME, '.jpg').'" alt="'.$row["prod_name"].'"></div>', true);
                     } elseif ($row['promotion_type'] == Promotions::PROMOTE_SHOP) {
-                        $td->appendElement('plaintext', array(), '<div class="avtar"><img src="'.CommonHelper::generateUrl('image', 'shop', array($product['promotion_shop_id'], 'MINI', 0, 0, $siteLangId)).'" alt="'.$row["shop_identifier"].'"></div>', true);
+                        $td->appendElement('plaintext', array(), '<div class="avtar"><img src="'.UrlHelper::generateUrl('image', 'shop', array($product['promotion_shop_id'], 'MINI', 0, 0, $siteLangId)).'" alt="'.$row["shop_identifier"].'"></div>', true);
                     } elseif ($row['promotion_type'] == Promotions::PROMOTE_BANNER) {
-                        // $td->appendElement('plaintext', array(), '<div class="avtar"><img src="'.CommonHelper::generateUrl('image','promotion-banner',array($row["promotion_banner_file"],'MINI')).'" alt=""></div>' , true);
+                        // $td->appendElement('plaintext', array(), '<div class="avtar"><img src="'.UrlHelper::generateUrl('image','promotion-banner',array($row["promotion_banner_file"],'MINI')).'" alt=""></div>' , true);
                     }
                     break;
                 case 'promotion_id':
@@ -86,7 +86,7 @@
                 case 'promotion_clicks':
                     $td->appendElement(
                         'a',
-                        array('title' => Labels::getLabel('LBL_Enable', $siteLangId), 'title'=>Labels::getLabel('LBL_Edit', $siteLangId), "href"=>CommonHelper::generateUrl('account', 'promotion_clicks', array($row['promotion_id']))),
+                        array('title' => Labels::getLabel('LBL_Enable', $siteLangId), 'title'=>Labels::getLabel('LBL_Edit', $siteLangId), "href"=>UrlHelper::generateUrl('account', 'promotion_clicks', array($row['promotion_id']))),
                         $row["totClicks"],
                         true
                     );
@@ -109,7 +109,7 @@
                     $li->appendElement(
                         "a",
                         array('title' => Labels::getLabel('LBL_Enable', $siteLangId),
-                    'onclick' => '', 'href'=>CommonHelper::generateUrl('account', 'promotion_status', array($row['promotion_id'], 'unblock', $row['promotion_type']))),
+                    'onclick' => '', 'href'=>UrlHelper::generateUrl('account', 'promotion_status', array($row['promotion_id'], 'unblock', $row['promotion_type']))),
                         '<i class="fa fa-toggle-on"></i>',
                         true
                     );
@@ -118,7 +118,7 @@
                     $li->appendElement(
                         "a",
                         array('title' => Labels::getLabel('LBL_Disable', $siteLangId),
-                    'onclick' => '', 'href'=>CommonHelper::generateUrl('account', 'promotion_status', array($row['promotion_id'], 'block', $row['promotion_type']))),
+                    'onclick' => '', 'href'=>UrlHelper::generateUrl('account', 'promotion_status', array($row['promotion_id'], 'block', $row['promotion_type']))),
                         '<i class="fa fa-toggle-off"></i>',
                         true
                     );
@@ -127,7 +127,7 @@
                     $li->appendElement(
                         "a",
                         array('title' => Labels::getLabel('LBL_Analytics', $siteLangId),
-                    'onclick' => '', 'href'=>CommonHelper::generateUrl('account', 'promotion_analytics', array($row['promotion_id']))),
+                    'onclick' => '', 'href'=>UrlHelper::generateUrl('account', 'promotion_analytics', array($row['promotion_id']))),
                         '<i class="fa fa-list"></i>',
                         true
                     );

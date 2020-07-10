@@ -10,7 +10,7 @@ class PushNotificationsController extends AdminBaseController
         $active = (new Plugin())->getDefaultPluginData(Plugin::TYPE_PUSH_NOTIFICATION, 'plugin_active');
         if (false == $active || empty($active)) {
             Message::addErrorMessage(Labels::getlabel("MSG_NO_DEFAULT_PUSH_NOTIFICATION_PLUGIN__FOUND", $this->adminLangId));
-            FatApp::redirectUser(CommonHelper::generateUrl());
+            FatApp::redirectUser(UrlHelper::generateUrl());
         }
     }
 

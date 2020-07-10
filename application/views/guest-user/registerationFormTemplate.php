@@ -7,7 +7,7 @@ if (isset($signUpWithPhone) && 0 < $signUpWithPhone) {
     $onSubmitFunctionName = 'return registerWithPhone';
 }
 
-$registerFrm->setFormTagAttribute('action', CommonHelper::generateUrl('GuestUser', 'register'));
+$registerFrm->setFormTagAttribute('action', UrlHelper::generateUrl('GuestUser', 'register'));
 
 if ($onSubmitFunctionName) {
     $registerFrm->setValidatorJsObjectName('SignUpValObj');

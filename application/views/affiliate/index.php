@@ -14,7 +14,7 @@ $sharingFrm->developerTags['fld_default_col'] = 12;
         <div class="content-body">
             <div class="js-widget-scroll widget-scroll">
                 <div class="widget widget-stats">
-                    <a href="<?php echo CommonHelper::generateUrl('Account', 'credits'); ?>">
+                    <a href="<?php echo UrlHelper::generateUrl('Account', 'credits'); ?>">
                         <div class="cards">
                             <div class="cards-header">
                                 <h5 class="cards-title"><?php echo Labels::getLabel('LBL_Credits', $siteLangId);?></h5>
@@ -43,7 +43,7 @@ $sharingFrm->developerTags['fld_default_col'] = 12;
                     </a>
                 </div>
                 <div class="widget widget-stats">
-                    <a href="<?php echo CommonHelper::generateUrl('Account', 'credits'); ?>">
+                    <a href="<?php echo UrlHelper::generateUrl('Account', 'credits'); ?>">
                         <div class="cards">
                             <div class="cards-header">
                                 <h5 class="cards-title"><?php echo Labels::getLabel('LBL_Revenue', $siteLangId);?></h5>
@@ -126,7 +126,7 @@ $sharingFrm->developerTags['fld_default_col'] = 12;
                     <div class="cards-header">
                         <h5 class="cards-title "><?php echo Labels::getLabel('LBL_Information', $siteLangId);?></h5>
                         <div class="action">
-                            <a href="<?php echo CommonHelper::generateUrl('account', 'profileInfo');?>" class="link"><?php echo Labels::getLabel('LBL_Edit', $siteLangId);?>  <i class="fa fa-pencil"></i></a>
+                            <a href="<?php echo UrlHelper::generateUrl('account', 'profileInfo');?>" class="link"><?php echo Labels::getLabel('LBL_Edit', $siteLangId);?>  <i class="fa fa-pencil"></i></a>
                         </div>
                     </div>
                     <div class="cards-content ">
@@ -158,7 +158,7 @@ $sharingFrm->developerTags['fld_default_col'] = 12;
                         <div class="cards-header">
                             <h5 class="cards-title "><?php echo Labels::getLabel('LBL_Referred_by_me', $siteLangId);?></h5> <?php if (count($user_listing) > 0) {
         ?> <div class="action">
-                                <a href="<?php echo CommonHelper::generateUrl('affiliate', 'referredByMe'); ?>" class="link"><?php echo Labels::getLabel('Lbl_View_All', $siteLangId); ?></a>
+                                <a href="<?php echo UrlHelper::generateUrl('affiliate', 'referredByMe'); ?>" class="link"><?php echo Labels::getLabel('Lbl_View_All', $siteLangId); ?></a>
                             </div> <?php
     } ?>
                         </div>
@@ -212,7 +212,7 @@ $sharingFrm->developerTags['fld_default_col'] = 12;
                         <div class="cards-header">
                             <h5 class="cards-title "><?php echo Labels::getLabel('LBL_Transaction_History', $siteLangId);?></h5> <?php if (count($transactions) > 0) {
         ?> <div class="action">
-                                <a href="<?php echo CommonHelper::generateUrl('Account', 'credits'); ?>" class="link"><?php echo Labels::getLabel('Lbl_View_All', $siteLangId); ?></a>
+                                <a href="<?php echo UrlHelper::generateUrl('Account', 'credits'); ?>" class="link"><?php echo Labels::getLabel('Lbl_View_All', $siteLangId); ?></a>
                             </div> <?php
     } ?>
                         </div>
@@ -277,7 +277,7 @@ $sharingFrm->developerTags['fld_default_col'] = 12;
             method: 'feed',
             name: "<?php echo sprintf(FatApp::getConfig("CONF_SOCIAL_FEED_FACEBOOK_POST_TITLE_$siteLangId", FatUtility::VAR_STRING, ''), FatApp::getConfig("CONF_WEBSITE_NAME_$siteLangId"))?>",
             link: "<?php echo $affiliateTrackingUrl?>",
-            picture: "<?php echo CommonHelper::generateFullUrl('image', 'socialFeed', array($siteLangId ,''), "/")?>",
+            picture: "<?php echo UrlHelper::generateFullUrl('image', 'socialFeed', array($siteLangId ,''), "/")?>",
             caption: "<?php echo sprintf(FatApp::getConfig("CONF_SOCIAL_FEED_FACEBOOK_POST_CAPTION_$siteLangId", FatUtility::VAR_STRING, ''), FatApp::getConfig("CONF_WEBSITE_NAME_$siteLangId"))?>",
             description: "<?php echo str_replace(array("\n","\r","\r\n"), ' ', sprintf(FatApp::getConfig("CONF_SOCIAL_FEED_FACEBOOK_POST_DESCRIPTION_".$siteLangId, FatUtility::VAR_STRING, ''), FatApp::getConfig("CONF_WEBSITE_NAME_".$siteLangId)))?>",
         }, function(response) {

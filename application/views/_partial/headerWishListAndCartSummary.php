@@ -26,8 +26,8 @@ if ($user_is_buyer > 0 || (!UserAuthentication::isUserLogged())) { ?>
                         <?php
                         if (count($products)) {
                             foreach ($products as $product) {
-                                $productUrl = CommonHelper::generateUrl('Products', 'View', array($product['selprod_id']));
-                                $shopUrl = CommonHelper::generateUrl('Shops', 'View', array($product['shop_id']));
+                                $productUrl = UrlHelper::generateUrl('Products', 'View', array($product['selprod_id']));
+                                $shopUrl = UrlHelper::generateUrl('Shops', 'View', array($product['shop_id']));
                                 $imageUrl =  UrlHelper::getCachedUrl(UrlHelper::generateFileUrl('image', 'product', array($product['product_id'], "EXTRA-SMALL", $product['selprod_id'], 0, $siteLangId)), CONF_IMG_CACHE_TIME, '.jpg'); ?> <tr class="<?php echo (!$product['in_stock']) ? 'disabled' : '';
                                 echo ($product['is_digital_product'])?'digital_product_tab-js':'physical_product_tab-js'; ?>">
                             <td>
@@ -97,8 +97,8 @@ if ($user_is_buyer > 0 || (!UserAuthentication::isUserLogged())) { ?>
                     <td class="hightlighted"><?php echo CommonHelper::displayMoneyFormat($netChargeAmt); ?></td>
                 </tr>
                 <tr>
-                    <td class=""><a href="<?php echo CommonHelper::generateUrl('cart'); ?>" class="btn btn--primary ripplelink"><?php echo Labels::getLabel('LBL_View_Bag', $siteLangId); ?> </a></td>
-                    <td class=""><a class="btn btn-outline-primary ripplelink" href="<?php echo CommonHelper::generateUrl('Checkout'); ?>"><?php echo Labels::getLabel('LBL_Proceed_To_Pay', $siteLangId); ?></a></td>
+                    <td class=""><a href="<?php echo UrlHelper::generateUrl('cart'); ?>" class="btn btn--primary ripplelink"><?php echo Labels::getLabel('LBL_View_Bag', $siteLangId); ?> </a></td>
+                    <td class=""><a class="btn btn-outline-primary ripplelink" href="<?php echo UrlHelper::generateUrl('Checkout'); ?>"><?php echo Labels::getLabel('LBL_Proceed_To_Pay', $siteLangId); ?></a></td>
                 </tr>
             </table>
         </div>
