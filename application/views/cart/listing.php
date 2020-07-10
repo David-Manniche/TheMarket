@@ -99,13 +99,13 @@ defined('SYSTEM_INIT') or die('Invalid Usage.'); ?>
                     <span>
                         <?php echo Labels::getLabel("LBL_Coupon", $siteLangId); ?> "<strong><?php echo $cartSummary['cartDiscounts']['coupon_code']; ?></strong>" <?php echo Labels::getLabel("LBL_Applied", $siteLangId); ?>
                     </span>
-                    <a href="javascript:void(0)" onClick="removePromoCode()" class="btn btn--primary btn--sm">
+                    <a href="javascript:void(0)" onClick="removePromoCode()" class="btn btn-primary btn--sm">
                         <?php echo Labels::getLabel("LBL_Remove", $siteLangId); ?>
                     </a>
                 </div>
                 <?php } else { ?>
                     <div class="coupon">
-                        <a class="coupon-input btn btn--primary btn--block" href="javascript:void(0)" onclick="getPromoCode()"><?php echo Labels::getLabel('LBL_I_have_a_coupon', $siteLangId); ?></a>
+                        <a class="coupon-input btn btn-primary btn-block" href="javascript:void(0)" onclick="getPromoCode()"><?php echo Labels::getLabel('LBL_I_have_a_coupon', $siteLangId); ?></a>
                     </div>
                 <?php } ?>
 
@@ -151,7 +151,7 @@ defined('SYSTEM_INIT') or die('Invalid Usage.'); ?>
                         <tr>
                             <td colspan="2">
                                 <div class="buy-group">
-                                    <a class="btn btn--primary" href="<?php echo CommonHelper::generateUrl(); ?>"><?php echo Labels::getLabel('LBL_Shop_More', $siteLangId); ?></a>
+                                    <a class="btn btn-primary" href="<?php echo CommonHelper::generateUrl(); ?>"><?php echo Labels::getLabel('LBL_Shop_More', $siteLangId); ?></a>
                                     <a class="btn btn-outline-primary" href="javascript:void(0)" onclick="goToCheckout()"><?php echo Labels::getLabel('LBL_Checkout', $siteLangId); ?></a>
 
                                 </div>

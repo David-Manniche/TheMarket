@@ -33,7 +33,7 @@
                     <div class="gap"></div>
                     <?php if (!commonhelper::isAppUser()) { ?>
                     <div class="">
-                        <a class="editLink action btn btn--primary btn--sm " href="javascript:void(0)" onClick="editAddress('<?php echo $address['ua_id']; ?>')"><?php echo Labels::getLabel('LBL_Edit', $siteLangId)?></a>
+                        <a class="editLink action btn btn-primary btn--sm " href="javascript:void(0)" onClick="editAddress('<?php echo $address['ua_id']; ?>')"><?php echo Labels::getLabel('LBL_Edit', $siteLangId)?></a>
                         <a title="<?php echo Labels::getLabel('LBL_Delete', $siteLangId)?>" class="action btn btn-outline-primary btn--sm" onclick="removeAddress('<?php echo $address['ua_id']; ?>')" href="javascript:void(0)">
                             <?php echo Labels::getLabel('LBL_Delete', $siteLangId)?></a>
                     </div>
@@ -87,7 +87,7 @@
                     </p>
                     <div class="gap"></div>
                     <div class="">
-                        <a class="editLink action btn btn--primary btn--sm " href="javascript:void(0)" onClick="editAddress('<?php echo $address['ua_id']; ?>')"><?php echo Labels::getLabel('LBL_Edit', $siteLangId)?></a>
+                        <a class="editLink action btn btn-primary btn--sm " href="javascript:void(0)" onClick="editAddress('<?php echo $address['ua_id']; ?>')"><?php echo Labels::getLabel('LBL_Edit', $siteLangId)?></a>
                         <a title="<?php echo Labels::getLabel('LBL_Delete', $siteLangId)?>" class="action btn btn-outline-primary btn--sm" onclick="removeAddress('<?php echo $address['ua_id']; ?>')" href="javascript:void(0)">
                             <?php echo Labels::getLabel('LBL_Delete', $siteLangId)?></a>
                     </div>
@@ -101,7 +101,7 @@
 <div class="row align-items-center mt-4">
     <div class="col"></div>
     <div class="col-auto">
-        <a href="javascript:void(0)" id="btn-continue-js" onClick="setUpAddressSelection(this);" class="btn btn--primary"><?php echo Labels::getLabel('LBL_Continue', $siteLangId); ?></a>
+        <a href="javascript:void(0)" id="btn-continue-js" onClick="setUpAddressSelection(this);" class="btn btn-primary"><?php echo Labels::getLabel('LBL_Continue', $siteLangId); ?></a>
     </div>
 </div>
 <div id="addressFormDiv" style="display:none">

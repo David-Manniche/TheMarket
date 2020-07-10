@@ -20,6 +20,6 @@
             <?php }
             } ?>
         </div>
-        <div class="selected-panel-action"><a href="javascript:void(0);" onclick="viewOrder()" ; class="btn btn--primary btn--sm ripplelink"><?php echo Labels::getLabel('LBL_View_Order', $siteLangId); ?></a></div>
+        <div class="selected-panel-action"><a href="javascript:void(0);" onclick="viewOrder()" ; class="btn btn-primary btn--sm ripplelink"><?php echo Labels::getLabel('LBL_View_Order', $siteLangId); ?></a></div>
     </div>
 </section>

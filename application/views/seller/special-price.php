@@ -12,7 +12,7 @@
 		$keywordFld->setFieldTagAttribute('readonly', 'readonly');
 	}
     $submitBtnFld = $frmSearch->getField('btn_submit');
-    $submitBtnFld->setFieldTagAttribute('class', 'btn--block btn btn--primary');
+    $submitBtnFld->setFieldTagAttribute('class', 'btn btn-primary btn-block ');
     $submitBtnFld->setWrapperAttribute('class', (0 < $selProd_id ? ' d-none' : ''));
     $submitBtnFld->setWrapperAttribute('class', 'col-6');
     $submitBtnFld->developerTags['col'] = 2;
@@ -20,7 +20,7 @@
 
     $cancelBtnFld = $frmSearch->getField('btn_clear');
     $cancelBtnFld->setFieldTagAttribute('onclick', 'clearSearch(' . $selProd_id . ');');
-    $cancelBtnFld->setFieldTagAttribute('class', 'btn--block btn btn-outline-primary');
+    $cancelBtnFld->setFieldTagAttribute('class', 'btn btn-outline-primary btn-block');
     $cancelBtnFld->setWrapperAttribute('class', 'col-6');
     $cancelBtnFld->developerTags['col'] = 2;
     $cancelBtnFld->developerTags['noCaptionTag'] = true;
@@ -65,7 +65,7 @@
                                 <div class="col-auto"></div>
                                  <div class="col-auto">
                                     <div class="btn-group">
-                                        <a class="btn btn--primary btn--sm formActionBtn-js formActions-css" title="<?php echo Labels::getLabel('LBL_Delete_Special_Price', $siteLangId); ?>" onclick="deleteSpecialPriceRows()" href="javascript:void(0)">							
+                                        <a class="btn btn-primary btn--sm formActionBtn-js formActions-css" title="<?php echo Labels::getLabel('LBL_Delete_Special_Price', $siteLangId); ?>" onclick="deleteSpecialPriceRows()" href="javascript:void(0)">							
 										<i class="fa fa-trash"></i>
 										</a>
                                     </div>

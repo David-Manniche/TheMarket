@@ -64,13 +64,13 @@
                                     $dateToFld->developerTags['noCaptionTag'] = true;
 
                                     $submitBtnFld = $frmSearchPromotions->getField('btn_submit');
-                                    $submitBtnFld->setFieldTagAttribute('class', 'btn--block btn btn--primary');
+                                    $submitBtnFld->setFieldTagAttribute('class', 'btn btn-primary btn-block ');
                                     $submitBtnFld->setWrapperAttribute('class', 'col-lg-2');
                                     $submitBtnFld->developerTags['col'] = 2;
                                     $submitBtnFld->developerTags['noCaptionTag'] = true;
 
                                     $cancelBtnFld = $frmSearchPromotions->getField('btn_clear');
-                                    $cancelBtnFld->setFieldTagAttribute('class', 'btn btn--block btn-outline-primary');
+                                    $cancelBtnFld->setFieldTagAttribute('class', 'btn btn-block btn-outline-primary');
                                     $cancelBtnFld->setWrapperAttribute('class', 'col-lg-2');
                                     $cancelBtnFld->developerTags['col'] = 2;
                                     $cancelBtnFld->developerTags['noCaptionTag'] = true;

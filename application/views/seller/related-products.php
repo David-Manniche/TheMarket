@@ -23,7 +23,7 @@ $this->includeTemplate('_partial/seller/sellerDashboardNavigation.php'); ?>
                             $relProdFld->setFieldTagAttribute('placeholder', Labels::getLabel('LBL_Add_Related_Products', $siteLangId));
 
                             $submitBtnFld = $relProdFrm->getField('btn_submit');
-                            $submitBtnFld->setFieldTagAttribute('class', 'btn--block btn btn--primary'); ?>
+                            $submitBtnFld->setFieldTagAttribute('class', 'btn btn-primary btn-block '); ?>
                             <?php echo $relProdFrm->getFormTag(); ?>
                             <div class="row">
                                 <div class="col-md-3">

@@ -12,14 +12,14 @@ $keyFld->developerTags['col'] = 6;
 $keyFld->developerTags['noCaptionTag'] = true;
 
 $submitBtnFld = $frmSrch->getField('btn_submit');
-$submitBtnFld->setFieldTagAttribute('class', 'btn--block');
+$submitBtnFld->setFieldTagAttribute('class', 'btn-block');
 $submitBtnFld->setWrapperAttribute('class', 'col-lg-3');
 $submitBtnFld->developerTags['col'] = 3;
 $submitBtnFld->developerTags['noCaptionTag'] = true;
 
 $clearFld = $frmSrch->getField('btn_clear');
 $clearFld->setFieldTagAttribute('onclick', 'clearSearch(1)');
-$clearFld->setFieldTagAttribute('class', 'btn--block btn btn-outline-primary');
+$clearFld->setFieldTagAttribute('class', 'btn btn-outline-primary btn-block');
 $clearFld->setWrapperAttribute('class', 'col-lg-3');
 $clearFld->developerTags['col'] = 3;
 $clearFld->developerTags['noCaptionTag'] = true;

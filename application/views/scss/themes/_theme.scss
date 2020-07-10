@@ -1,0 +1,35 @@
+$family-primary: 'Poppins',
+sans-serif;
+$family-secondary: 'Open Sans',
+sans-serif;
+$blue:var(--brand-color);
+$primary:#ff3a59;
+$brand-color: var(--brand-color);
+$brand-color-inverse:var(--brand-color-inverse);
+$primary-color: var(--primary-color);
+$primary-color-inverse: var(--primary-color-inverse);
+$secondary-color: var(--secondary-color);
+$secondary-color-inverse: var(--secondary-color-inverse);
+$third-color: var(--third-color);
+$third-color-inverse:var(--third-color-inverse);
+$body-color: #525252;
+$dark-color: var(--dark-color);
+$light-color: var(--light-color);
+$gray-color: var(--gray-color);
+$gray-light: var(--gray-light);
+$txt-gray:#888;
+$border-color:#dee2e6;
+$border-dark-color: var(--border-dark-color);
+$border-light-color: var(--border-light-color);
+$border: solid 1px $border-color;
+$border-transparent: solid 1px transparent;
+$font-color:var(--font-color);
+$font-color2:var(--font-color2);
+$bg-white: #fff;
+$bg-white-inverse:$body-color;
+$bg-gray: #f4f5fa;
+$bg-gray-light: #f4f5fa;
+$success-color: #1dc9b7;
+$warning-color: #ffb822;
+$info-color: #5578eb;
+$danger-color: #fd397a;

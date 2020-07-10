@@ -18,7 +18,7 @@ $location->addFieldTagAttribute("placeholder", Labels::getLabel('LBL_ENTER_MANUA
         <div class="gap"></div>
         <div class="row no-gutters">
             <div class="col-auto mr-2">
-                <button class="btn btn--primary btn-block" type="button" name="btn_submit" onclick="loadGeoLocation()" title="<?php echo Labels::getLabel('LBL_ALLOW', $siteLangId); ?>">
+                <button class="btn btn-primary btn-block" type="button" name="btn_submit" onclick="loadGeoLocation()" title="<?php echo Labels::getLabel('LBL_ALLOW', $siteLangId); ?>">
                     <i class="icn">
                         <svg class="svg">
                             <use xlink:href="<?php echo CONF_WEBROOT_URL; ?>images/retina/sprite.svg#gps" href="<?php echo CONF_WEBROOT_URL; ?>images/retina/sprite.svg#gps"></use>

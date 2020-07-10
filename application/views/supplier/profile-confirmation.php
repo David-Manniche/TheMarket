@@ -18,5 +18,5 @@
      
     <p><?php echo $success_message; ?></p>
     <div class="gap"></div>
-    <a href="<?php echo CommonHelper::generateUrl('guest-user', 'login-form'); ?>" class="btn btn--primary"><?php echo Labels::getLabel('Lbl_Login', $siteLangId);?></a>
+    <a href="<?php echo CommonHelper::generateUrl('guest-user', 'login-form'); ?>" class="btn btn-primary"><?php echo Labels::getLabel('Lbl_Login', $siteLangId);?></a>
 </div>

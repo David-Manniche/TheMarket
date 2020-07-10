@@ -15,7 +15,7 @@
                     $optionSectionHeading->value = '<h2>Set Up Options</h2>';
                     //TODO:: Make, final word from language labels. */
                     /* $submitBtn = $frmSellerProduct->getField('btn_submit');
-                    $submitBtn->setFieldTagAttribute('class','btn btn--primary btn--sm');
+                    $submitBtn->setFieldTagAttribute('class','btn btn-primary btn--sm');
 
                     $cancelBtn = $frmSellerProduct->getField('btn_cancel');
                     $cancelBtn->setFieldTagAttribute('class','btn btn--secondary btn--sm'); */

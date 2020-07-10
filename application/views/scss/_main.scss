@@ -1,15 +1,9 @@
-@import url('https://fonts.googleapis.com/css?family=Open+Sans:400,400i,600,700,800|Poppins:300,400,400i,500,600,700,800');
-
+@import "themes/theme";
 @import 'bootstrap/bootstrap';
 @import 'bootstrap/variables';
-
-@import "themes/theme";
-@import "themes/variables";
-
 @import 'layout/header';
 @import 'layout/nav';
 @import 'layout/footer';
-
 @import 'components/accordion';
 @import 'components/tagify';
 @import 'components/auto-complete';
@@ -19,6 +13,7 @@
 @import 'components/browser_ie';
 @import 'components/button';
 @import 'components/cart';
+@import 'components/side-cart';
 @import 'components/catalog-popup';
 @import 'components/checkbox';
 @import 'components/cms';
@@ -66,7 +61,10 @@
 @import 'components/cards';
 @import 'components/switch';
 @import 'components/print';
-
+@import 'components/progress-checkout';
+@import 'components/list-group';
+@import 'components/media-more';
+@import 'components/bg';
 @import 'vendors/animate';
 @import 'vendors/fontawesome';
 @import 'vendors/chartist';
@@ -80,8 +78,6 @@
 @import 'vendors/tagify';
 @import 'vendors/intlTelInput.min';
 @import 'vendors/nouislider.min';
-
-
 @import 'pages/offline';
 @import 'pages/blog';
 @import 'pages/cart';

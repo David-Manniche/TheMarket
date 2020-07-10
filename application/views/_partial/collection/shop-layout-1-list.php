@@ -16,7 +16,7 @@
                          </svg></i> <span class="rate"><?php echo  round($row['rating'][$shop['shopData']['shop_id']],1);?><span></span></span>
                  </div>
                  <?php }?>
-                 <a href="<?php echo (!isset($shop['shopData']['promotion_id'])?CommonHelper::generateUrl('shops','view', array($shop['shopData']['shop_id'])):CommonHelper::generateUrl('shops','track', array($shop['shopData']['promotion_record_id'],Promotion::REDIRECT_SHOP,$shop['shopData']['promotion_record_id']))); ?>" class="btn btn--primary" tabindex="0"><?php echo Labels::getLabel('LBL_Shop_Now',$siteLangId);?></a>
+                 <a href="<?php echo (!isset($shop['shopData']['promotion_id'])?CommonHelper::generateUrl('shops','view', array($shop['shopData']['shop_id'])):CommonHelper::generateUrl('shops','track', array($shop['shopData']['promotion_record_id'],Promotion::REDIRECT_SHOP,$shop['shopData']['promotion_record_id']))); ?>" class="btn btn-primary" tabindex="0"><?php echo Labels::getLabel('LBL_Shop_Now',$siteLangId);?></a>
              </div>
          </div>
         </div>

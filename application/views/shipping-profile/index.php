@@ -28,11 +28,11 @@ $searchFrm->developerTags['fld_default_col'] = 6;
 
                                 <?php
                                 $submitFld = $searchFrm->getField('btn_submit');
-                                $submitFld->setFieldTagAttribute('class', 'btn btn--primary');
+                                $submitFld->setFieldTagAttribute('class', 'btn btn-primary');
 								$submitFld->developerTags['col'] = 3;
 
                                 $fldClear= $searchFrm->getField('btn_clear');
-                                $fldClear->setFieldTagAttribute('class', 'btn  btn--primary-border ml-2');
+                                $fldClear->setFieldTagAttribute('class', 'btn  btn-primary ml-2');
                                 $fldClear->setFieldTagAttribute('onclick', 'clearSearch()');
 								$submitFld->developerTags['col'] = 3;
                                 echo $searchFrm->getFormHtml();

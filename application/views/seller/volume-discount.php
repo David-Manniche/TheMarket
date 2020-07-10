@@ -14,14 +14,14 @@ if (0 < $selProd_id) {
     $keywordFld->developerTags['noCaptionTag'] = true;
 
     $submitBtnFld = $frmSearch->getField('btn_submit');
-    $submitBtnFld->setFieldTagAttribute('class', 'btn btn--primary btn--block');
+    $submitBtnFld->setFieldTagAttribute('class', 'btn btn-primary btn-block');
     $submitBtnFld->setWrapperAttribute('class', (0 < $selProd_id ? 'd-none' : ''));
     $submitBtnFld->setWrapperAttribute('class', 'col-6');
     $submitBtnFld->developerTags['col'] = 2;
     $submitBtnFld->developerTags['noCaptionTag'] = true;
 
     $cancelBtnFld = $frmSearch->getField('btn_clear');
-    $cancelBtnFld->setFieldTagAttribute('class', 'btn btn-outline-primary btn--block');
+    $cancelBtnFld->setFieldTagAttribute('class', 'btn btn-outline-primary btn-block');
     $cancelBtnFld->setFieldTagAttribute('onclick', 'clearSearch('.$selProd_id.');');
     $cancelBtnFld->setWrapperAttribute('class', 'col-6');
     $cancelBtnFld->developerTags['col'] = 2;

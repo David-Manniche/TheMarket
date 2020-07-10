@@ -6,11 +6,11 @@ $frm->developerTags['colClassPrefix'] = 'col-md-';
 $frm->developerTags['fld_default_col'] = 2;
 
 $btnFld = $frm->getField('btn_submit');
-$btnFld->addFieldTagAttribute('class', 'btn btn--block btn--primary');
+$btnFld->addFieldTagAttribute('class', 'btn btn-block btn--primary');
 $btnFld->developerTags['noCaptionTag'] = true;
 
 $btnFld = $frm->getField('btn_clear');
-$btnFld->addFieldTagAttribute('class', 'btn btn--block btn-outline-primary');
+$btnFld->addFieldTagAttribute('class', 'btn btn-block btn-outline-primary');
 $btnFld->addFieldTagAttribute('onClick', 'clearForm();');
 $btnFld->developerTags['noCaptionTag'] = true;
 

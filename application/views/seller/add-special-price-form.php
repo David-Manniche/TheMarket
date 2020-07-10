@@ -31,7 +31,7 @@
     $endDate = $frm->getField('splprice_end_date');
     $endDate->setFieldTagAttribute('id', 'splprice_end_date' . $selProdId);
 
-    $frm->addSubmitButton('', 'btn_update', Labels::getLabel('LBL_Save', $siteLangId), array('class' => 'btn--block btn btn--primary'));
+    $frm->addSubmitButton('', 'btn_update', Labels::getLabel('LBL_Save', $siteLangId), array('class' => 'btn btn-primary btn-block '));
 
 if (!empty($data) && 0 < count($data)) {
     $data['product_name'] = isset($data['product_name']) ? html_entity_decode($data['product_name'], ENT_QUOTES, 'UTF-8') : '';

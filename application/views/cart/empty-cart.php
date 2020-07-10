@@ -52,7 +52,7 @@
 	</svg>
   </div>
   <h2><?php echo Labels::getLabel('LBL_Your_Shopping_Bag_is_Empty',$siteLangId); ?></h2>
-  <a href="<?php echo CommonHelper::generateUrl('Home'); ?>" class="btn btn--primary"><?php echo Labels::getLabel('LBL_Go_To_Homepage',$siteLangId); ?></a> <span class="gap"></span>
+  <a href="<?php echo CommonHelper::generateUrl('Home'); ?>" class="btn btn-primary"><?php echo Labels::getLabel('LBL_Go_To_Homepage',$siteLangId); ?></a> <span class="gap"></span>
   <?php if( $EmptyCartItems ) { ?>
 	<ul class="links--inline">
 		<?php

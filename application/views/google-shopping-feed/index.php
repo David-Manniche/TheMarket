@@ -23,7 +23,7 @@ $serviceAccInfo = isset($userData['service_account']) ? $userData['service_accou
                                 <?php } ?>
                             </h6>
                             <?php if (!empty($merchantId)) { ?>
-                                <a class="btn btn--primary btn--sm" href="javascript:void(0)" onClick="serviceAccountForm();" id="userAccInfoBtn"><?php echo Labels::getLabel('Lbl_SERVICE_ACCOUNT_INFO', $siteLangId); ?></a>
+                                <a class="btn btn-primary btn--sm" href="javascript:void(0)" onClick="serviceAccountForm();" id="userAccInfoBtn"><?php echo Labels::getLabel('Lbl_SERVICE_ACCOUNT_INFO', $siteLangId); ?></a>
                             <?php } ?>
                         </div>
                     </div>

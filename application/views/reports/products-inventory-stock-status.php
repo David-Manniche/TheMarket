@@ -11,13 +11,13 @@ $keyFld->developerTags['col'] = 6;
 $keyFld->developerTags['noCaptionTag'] = true;
 
 $submitBtnFld = $frmSrch->getField('btn_submit');
-$submitBtnFld->setFieldTagAttribute('class', 'btn--block');
+$submitBtnFld->setFieldTagAttribute('class', 'btn-block');
 $submitBtnFld->setWrapperAttribute('class', 'col-lg-3');
 $submitBtnFld->developerTags['col'] = 3;
 $submitBtnFld->developerTags['noCaptionTag'] = true;
 
 $cancelBtnFld = $frmSrch->getField('btn_clear');
-$cancelBtnFld->setFieldTagAttribute('class', 'btn--block');
+$cancelBtnFld->setFieldTagAttribute('class', 'btn-block');
 $cancelBtnFld->setWrapperAttribute('class', 'col-lg-3');
 $cancelBtnFld->developerTags['col'] = 3;
 $cancelBtnFld->developerTags['noCaptionTag'] = true; ?> <?php $this->includeTemplate('_partial/dashboardNavigation.php'); ?> <main id="main-area" class="main" role="main">
@@ -36,10 +36,10 @@ $cancelBtnFld->developerTags['noCaptionTag'] = true; ?> <?php $this->includeTemp
                                     <div class="row">
                                         <div class="col-lg-6"> <?php
                                             $submitFld = $frmSrch->getField('btn_submit');
-                                            $submitFld->setFieldTagAttribute('class', 'btn--block btn btn--primary');
+                                            $submitFld->setFieldTagAttribute('class', 'btn btn-primary btn-block ');
 
                                             $fldClear= $frmSrch->getField('btn_clear');
-                                            $fldClear->setFieldTagAttribute('class', 'btn--block btn btn-outline-primary');
+                                            $fldClear->setFieldTagAttribute('class', 'btn btn-outline-primary btn-block');
                                             echo $frmSrch->getFormHtml(); ?>
                                         </div>
                                     </div>

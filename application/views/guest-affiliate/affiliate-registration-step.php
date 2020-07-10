@@ -6,7 +6,7 @@ $registerForm->developerTags['fld_default_col'] = 12;
 
 if( !$affiliate_register_step_number ){
 	$btnSubmitFld = $registerForm->getField('btn_submit');
-	$btnSubmitFld->addFieldTagAttribute( 'class', 'btn--block');
+	$btnSubmitFld->addFieldTagAttribute( 'class', 'btn-block');
 	$btnSubmitFld->developerTags['noCaptionTag'] = true;
 }
 

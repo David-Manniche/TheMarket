@@ -61,6 +61,6 @@
 	</div>
 
 	<div class="text-center mt-4">
-		<a href="https://www.yo-kart.com/multivendor-marketplace-packages.html" target="_blank" class="btn btn--primary">View Packages</a></div>
+		<a href="https://www.yo-kart.com/multivendor-marketplace-packages.html" target="_blank" class="btn btn-primary">View Packages</a></div>
 
 </div>

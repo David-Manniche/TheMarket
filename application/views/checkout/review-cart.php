@@ -117,7 +117,7 @@
         </div>
     </div>
 </div>
-<!-- <a class="btn btn--primary btn--h-large" onClick="loadPaymentSummary();" href="javascript:void(0)"><?php echo Labels::getLabel('LBL_Continue', $siteLangId); ?></a> -->
+<!-- <a class="btn btn-primary btn--h-large" onClick="loadPaymentSummary();" href="javascript:void(0)"><?php echo Labels::getLabel('LBL_Continue', $siteLangId); ?></a> -->
 <script type="text/javascript">
     $("document").ready(function() {
         <?php if ($cartHasPhysicalProduct) { ?>

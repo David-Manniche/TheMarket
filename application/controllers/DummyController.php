@@ -95,7 +95,17 @@ class DummyController extends MyAppController
         //echo 'Created All the Procedures.';
     }
 
-
+	public function cart()
+    {
+		$this->_template->render();
+    }
+	
+	public function checkout()
+    {
+		$this->set('exculdeMainHeaderDiv', true);
+		$this->_template->render(true, false);
+    }
+	
     public function updateDecimal()
     {
         $database = CONF_DB_NAME;

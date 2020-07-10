@@ -11,13 +11,13 @@ $keyFld->developerTags['col'] = 8;
 $keyFld->developerTags['noCaptionTag'] = true;
 
 $submitBtnFld = $frmSrch->getField('btn_submit');
-$submitBtnFld->setFieldTagAttribute('class', 'btn btn--primary btn--block');
+$submitBtnFld->setFieldTagAttribute('class', 'btn btn-primary btn-block');
 $submitBtnFld->setWrapperAttribute('class', 'col-6');
 $submitBtnFld->developerTags['col'] = 2;
 $submitBtnFld->developerTags['noCaptionTag'] = true;
 
 $cancelBtnFld = $frmSrch->getField('btn_clear');
-$cancelBtnFld->setFieldTagAttribute('class', 'btn btn-outline-primary btn--block');
+$cancelBtnFld->setFieldTagAttribute('class', 'btn btn-outline-primary btn-block');
 $cancelBtnFld->setWrapperAttribute('class', 'col-6');
 $cancelBtnFld->developerTags['col'] = 2;
 $cancelBtnFld->developerTags['noCaptionTag'] = true; ?>
@@ -39,7 +39,7 @@ $cancelBtnFld->developerTags['noCaptionTag'] = true; ?>
                             <h5 class="cards-title"><?php echo Labels::getLabel('LBL_Products_Inventory_Report', $siteLangId);?></h5>
                             <div class="action">
                                 <?php
-                                    echo '<div class="btn-group"><a href="javascript:void(0)" onClick="exportProductsInventoryReport()" class="btn btn--secondary btn--sm btn--block">'.Labels::getLabel('LBL_Export', $siteLangId).'</a></div>';?>
+                                    echo '<div class="btn-group"><a href="javascript:void(0)" onClick="exportProductsInventoryReport()" class="btn btn--secondary btn--sm btn-block">'.Labels::getLabel('LBL_Export', $siteLangId).'</a></div>';?>
                             </div>
                         </div>
                         <div class="cards-content">

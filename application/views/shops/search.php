@@ -27,7 +27,7 @@ foreach($allShops as $shop){ /* CommonHelper::printArray($shop); die; */ ?>
                             </svg></i> <span class="rate"><?php echo  round($shop['shopRating'],1);?><span></span></span>
                     </div>
                     <?php }?>
-                    <a href="<?php echo CommonHelper::generateUrl('shops','view', array($shop['shop_id']));?>" class="btn btn--primary btn--sm ripplelink" tabindex="0"><?php echo Labels::getLabel('LBL_View_Shop',$siteLangId);?></a>
+                    <a href="<?php echo CommonHelper::generateUrl('shops','view', array($shop['shop_id']));?>" class="btn btn-primary btn--sm ripplelink" tabindex="0"><?php echo Labels::getLabel('LBL_View_Shop',$siteLangId);?></a>
                 </div>
             </div>
           </div>

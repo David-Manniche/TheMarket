@@ -18,12 +18,12 @@ $keyFld->setWrapperAttribute('class','col-sm-6');
 $keyFld->developerTags['col'] = 6;
 
 $submitBtnFld = $frm->getField('btn_submit');
-$submitBtnFld->setFieldTagAttribute('class','btn--block');
+$submitBtnFld->setFieldTagAttribute('class','btn-block');
 $submitBtnFld->setWrapperAttribute('class','col-xs-6');
 $submitBtnFld->developerTags['col'] = 3;
 
 $cancelBtnFld = $frm->getField('btn_clear');
-$cancelBtnFld->setFieldTagAttribute('class','btn--block');
+$cancelBtnFld->setFieldTagAttribute('class','btn-block');
 $cancelBtnFld->setWrapperAttribute('class','col-xs-6');
 $cancelBtnFld->developerTags['col'] = 3;
 ?>

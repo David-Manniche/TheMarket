@@ -1,0 +1,455 @@
+.delv,
+.qnt {
+    width: auto;
+    @include media-breakpoint-down(md) {
+        & {
+            width: 100%;
+        }
+    }
+}
+
+.cart--full {
+    width: 100%;
+    thead {
+        th {
+            background: #f3f3f3;
+            color: #000;
+            font-weight: 300;
+            border: none;
+        }
+    }
+    td {
+        vertical-align: top;
+        &:first-child {
+            padding-#{$start-direction}: 0;
+        }
+    }
+    th {
+        &:first-child {
+            padding-#{$start-direction}: 15px;
+        }
+    }
+    .products__img {
+        max-width: 150px;
+        img {
+            max-width: 100%;
+            min-width: 2.5rem;
+        }
+    }
+    .cancelled--js {
+        opacity: 0.3;
+        pointer-events: none;
+    }
+    .products-head {
+        height: auto;
+    }
+}
+
+.gray-txt {
+    color: lighten($body-color, 50%);
+}
+
+.cart-advices {
+    .advices-icons {
+        background: #f3f3f3;
+        border-radius: 4px;
+        padding: 1rem;
+        display: -webkit-box;
+        display: -ms-flexbox;
+        display: flex;
+        font-weight: 600;
+        line-height: 1.2;
+        font-size: 0.8rem;
+        -webkit-box-pack: center;
+        -ms-flex-pack: center;
+        justify-content: center;
+        text-align: center;
+        -webkit-box-orient: vertical;
+        -webkit-box-direction: normal;
+        -ms-flex-direction: column;
+        flex-direction: column;
+        margin-top: 0.5rem;
+        .icn {
+            margin: 0 auto;
+            margin-bottom: 1rem;
+            max-width: 40px;
+        }
+        h6 {
+            margin-bottom: 0;
+            font-size: 0.8rem;
+        }
+    }
+}
+
+.addons-scrollbar {
+    max-height: 232px;
+    border: $border;
+    border-radius: 4px;
+}
+
+table.cart-tbl-addons th,
+table.cart-tbl-addons td {
+    padding: 1.5rem 1rem;
+    vertical-align: middle;
+}
+
+table.cart-tbl-addons tr td:first-child {
+    -webkit-padding-start: 1.5rem;
+    -moz-padding-start: 1.5rem;
+    padding-#{$start-direction}: 1.5rem;
+}
+
+table.cart-tbl-addons .item__title {
+    font-weight: 300;
+    color: $body-color;
+}
+
+.cart-list {
+    li {
+        border: $border;
+        border-radius: 4px;
+        padding: 1rem;
+        margin-bottom: 1rem;
+        &:last-child {
+            margin-bottom: 0;
+        }
+        .cart-list-detail {
+            display: flex;
+            justify-content: space-between;
+            @include media-breakpoint-down(sm) {
+                & {
+                    flex-direction: column;
+                }
+            }
+            .base-detail {
+                max-width: 70%;
+                flex: 0 0 70%;
+                @include media-breakpoint-down(sm) {
+                    & {
+                        max-width: none;
+                        flex: none;
+                        margin-bottom: 1rem;
+                    }
+                }
+            }
+            .base-price {
+                flex: 0 0 25%;
+                max-width: 25%;
+                @include media-breakpoint-down(sm) {
+                    & {
+                        max-width: none;
+                        flex: none;
+                    }
+                }
+                .base-price-line {
+                    display: flex;
+                    font-size: 0.9rem;
+                    justify-content: flex-end;
+                    color: lighten($body-color, 30%);
+                    margin-bottom: 0.5rem;
+                    @include media-breakpoint-down(sm) {
+                        & {
+                            justify-content: flex-start;
+                        }
+                    }
+                    >span {
+                        padding-#{$end-direction}: 0.5rem;
+                    }
+                }
+            }
+        }
+        .item__pic {
+            border: none;
+            width: auto;
+            height: auto;
+            max-width: 100px;
+            max-height: inherit;
+            margin: auto;
+        }
+        .item__description {
+            margin-bottom: 1rem;
+        }
+        .item__price_selling {
+            font-weight: 300;
+            color: $primary-color;
+        }
+        .item__price_total {
+            font-weight: 600;
+            color: $body-color;
+        }
+        .cart-list-footer {
+            border-top: $border;
+            margin-top: 1rem;
+            padding-top: 1rem;
+            font-size: 0.8rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            color: lighten($body-color, 20%);
+            a {
+                color: $primary-color;
+                font-size: inherit;
+            }
+        }
+    }
+}
+
+.table-cart {
+    thead {
+        th {
+            background: $gray-color;
+        }
+    }
+    td,
+    th {
+        padding: 1rem;
+    }
+    th {
+        &:first-child {
+            padding-#{$start-direction}: 1rem;
+        }
+    }
+}
+
+.box {
+    &.box--radius {
+        border-radius: 4px;
+    }
+    &.box--space {
+        padding: 1.25rem;
+    }
+    &.box--white {
+        box-shadow: 0 0 4px rgba(0, 0, 0, 0.15);
+        background: #fff;
+        position: relative;
+        width: 100%;
+        &:before,
+        &:after {
+            content: "";
+            display: table;
+            line-height: 0;
+        }
+    }
+}
+
+.empty-cart {
+    margin: 30px auto;
+    text-align: center;
+    max-width: 450px;
+}
+
+svg #oval,
+svg #plus,
+svg #diamond,
+svg #bubble-rounded {
+    -webkit-animation: plopp 4s ease-out infinite;
+    animation: plopp 4s ease-out infinite;
+}
+
+svg #oval:nth-child(1),
+svg #plus:nth-child(1),
+svg #diamond:nth-child(1),
+svg #bubble-rounded:nth-child(1) {
+    -webkit-animation-delay: -240ms;
+    animation-delay: -240ms;
+}
+
+svg #oval:nth-child(2),
+svg #plus:nth-child(2),
+svg #diamond:nth-child(2),
+svg #bubble-rounded:nth-child(2) {
+    -webkit-animation-delay: -480ms;
+    animation-delay: -480ms;
+}
+
+svg #oval:nth-child(3),
+svg #plus:nth-child(3),
+svg #diamond:nth-child(3),
+svg #bubble-rounded:nth-child(3) {
+    -webkit-animation-delay: -720ms;
+    animation-delay: -720ms;
+}
+
+svg #oval:nth-child(4),
+svg #plus:nth-child(4),
+svg #diamond:nth-child(4),
+svg #bubble-rounded:nth-child(4) {
+    -webkit-animation-delay: -960ms;
+    animation-delay: -960ms;
+}
+
+svg #oval:nth-child(5),
+svg #plus:nth-child(5),
+svg #diamond:nth-child(5),
+svg #bubble-rounded:nth-child(5) {
+    -webkit-animation-delay: -1200ms;
+    animation-delay: -1200ms;
+}
+
+svg #oval:nth-child(6),
+svg #plus:nth-child(6),
+svg #diamond:nth-child(6),
+svg #bubble-rounded:nth-child(6) {
+    -webkit-animation-delay: -1440ms;
+    animation-delay: -1440ms;
+}
+
+svg #oval:nth-child(7),
+svg #plus:nth-child(7),
+svg #diamond:nth-child(7),
+svg #bubble-rounded:nth-child(7) {
+    -webkit-animation-delay: -1680ms;
+    animation-delay: -1680ms;
+}
+
+svg #oval:nth-child(8),
+svg #plus:nth-child(8),
+svg #diamond:nth-child(8),
+svg #bubble-rounded:nth-child(8) {
+    -webkit-animation-delay: -1920ms;
+    animation-delay: -1920ms;
+}
+
+svg #oval:nth-child(9),
+svg #plus:nth-child(9),
+svg #diamond:nth-child(9),
+svg #bubble-rounded:nth-child(9) {
+    -webkit-animation-delay: -2160ms;
+    animation-delay: -2160ms;
+}
+
+svg #oval:nth-child(10),
+svg #plus:nth-child(10),
+svg #diamond:nth-child(10),
+svg #bubble-rounded:nth-child(10) {
+    -webkit-animation-delay: -2400ms;
+    animation-delay: -2400ms;
+}
+
+svg #oval:nth-child(11),
+svg #plus:nth-child(11),
+svg #diamond:nth-child(11),
+svg #bubble-rounded:nth-child(11) {
+    -webkit-animation-delay: -2640ms;
+    animation-delay: -2640ms;
+}
+
+svg #oval:nth-child(12),
+svg #plus:nth-child(12),
+svg #diamond:nth-child(12),
+svg #bubble-rounded:nth-child(12) {
+    -webkit-animation-delay: -2880ms;
+    animation-delay: -2880ms;
+}
+
+svg #oval:nth-child(13),
+svg #plus:nth-child(13),
+svg #diamond:nth-child(13),
+svg #bubble-rounded:nth-child(13) {
+    -webkit-animation-delay: -3120ms;
+    animation-delay: -3120ms;
+}
+
+svg #oval:nth-child(14),
+svg #plus:nth-child(14),
+svg #diamond:nth-child(14),
+svg #bubble-rounded:nth-child(14) {
+    -webkit-animation-delay: -3360ms;
+    animation-delay: -3360ms;
+}
+
+svg #oval:nth-child(15),
+svg #plus:nth-child(15),
+svg #diamond:nth-child(15),
+svg #bubble-rounded:nth-child(15) {
+    -webkit-animation-delay: -3600ms;
+    animation-delay: -3600ms;
+}
+
+svg #oval:nth-child(16),
+svg #plus:nth-child(16),
+svg #diamond:nth-child(16),
+svg #bubble-rounded:nth-child(16) {
+    -webkit-animation-delay: -3840ms;
+    animation-delay: -3840ms;
+}
+
+svg #bg-line {
+    -webkit-animation: float 20s ease infinite;
+    animation: float 20s ease infinite;
+}
+
+svg #bg-line:nth-child(2) {
+    -webkit-animation-delay: 1200ms;
+    animation-delay: 1200ms;
+    fill-opacity: 0.3;
+}
+
+svg #bg-line:nth-child(3) {
+    -webkit-animation-delay: 850ms;
+    animation-delay: 850ms;
+    fill-opacity: 0.4;
+}
+
+@-webkit-keyframes plopp {
+    0% {
+        -webkit-transform: translate(0, 0);
+        transform: translate(0, 0);
+        opacity: 1;
+    }
+    100% {
+        -webkit-transform: translate(0, -10px);
+        transform: translate(0, -10px);
+        opacity: 0;
+    }
+}
+
+@keyframes plopp {
+    0% {
+        -webkit-transform: translate(0, 0);
+        transform: translate(0, 0);
+        opacity: 1;
+    }
+    100% {
+        -webkit-transform: translate(0, -10px);
+        transform: translate(0, -10px);
+        opacity: 0;
+    }
+}
+
+@-webkit-keyframes float {
+    0% {
+        -webkit-transform: translate(0, 0);
+        transform: translate(0, 0);
+    }
+    25% {
+        -webkit-transform: translate(6px, 20px);
+        transform: translate(6px, 20px);
+    }
+    50% {
+        -webkit-transform: translate(25px, 10px);
+        transform: translate(25px, 10px);
+    }
+    100% {
+        -webkit-transform: translate(0, 0);
+        transform: translate(0, 0);
+    }
+}
+
+@keyframes float {
+    0% {
+        -webkit-transform: translate(0, 0);
+        transform: translate(0, 0);
+    }
+    25% {
+        -webkit-transform: translate(6px, 20px);
+        transform: translate(6px, 20px);
+    }
+    50% {
+        -webkit-transform: translate(25px, 10px);
+        transform: translate(25px, 10px);
+    }
+    100% {
+        -webkit-transform: translate(0, 0);
+        transform: translate(0, 0);
+    }
+}

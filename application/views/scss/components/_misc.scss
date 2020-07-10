@@ -1,34 +1,26 @@
+@import url('https://fonts.googleapis.com/css?family=Open+Sans:400,400i,600,700,800|Poppins:300,400,400i,500,600,700,800');
 html {
     font-size: 16px;
     overflow-x: hidden;
-
     @include media-breakpoint-down(lg) {
         & {
             font-size: 15px;
         }
     }
-
     @include media-breakpoint-down(md) {
         & {
             font-size: 14px;
         }
     }
-
     @include media-breakpoint-down(sm) {
         & {
             font-size: 13px;
         }
     }
-
     &.pop-on {
         overflow: hidden;
     }
-
-
-
 }
-
-
 
 body {
     font-family: $family-secondary;
@@ -41,6 +33,10 @@ h4,
 h5,
 h6 {
     font-family: $family-primary;
+}
+
+p {
+    margin: 0;
 }
 
 ol,
@@ -90,7 +86,7 @@ a:hover {
 }
 
 .divider,
-    {
+{
     height: 1px;
     background: $border-color;
     margin: 15px 0;
@@ -104,39 +100,9 @@ hr {}
     display: block;
 }
 
-/*Bg*/
-.bg--primary-color,
-.bg-primary {
-
-    background: $brand-color;
-    color: $brand-color-inverse;
-}
-
-.bg-second {
-    background: $secondary-color;
-    color: $secondary-color-inverse;
-}
-
-.bg-white {
-    background: #fff;
-}
-
-.bg-gray {
-    background: $gray-light;
-}
-
-.bg-light {
-    background: #f0f0f0;
-}
-
-.bg-gray-dark {
-    background: #efeded;
-}
-
 .txt-white {
     color: #fff;
 }
-
 
 .dragHandle {
     cursor: move;
@@ -198,7 +164,6 @@ hr {}
     font-size: 0.9em;
 }
 
-
 .cards-message {
     display: -webkit-box;
     display: -ms-flexbox;
@@ -218,7 +183,6 @@ hr {}
     margin: auto;
     color: var(--body-color);
     height: 100%;
-
     .cards-message-icon {
         display: -webkit-box;
         display: -ms-flexbox;
@@ -229,11 +193,9 @@ hr {}
         padding: 1.25rem 0;
         font-size: 2.5rem;
     }
-
     .alert-text {
         -ms-flex-item-align: center;
         align-self: center;
-
     }
 }
 
@@ -264,8 +226,10 @@ hr {}
 
 .docs-buttons {
     display: flex;
-    justify-content: center;    
-    .btn-group{ margin: 0 2px;}
+    justify-content: center;
+    .btn-group {
+        margin: 0 2px;
+    }
 }
 
 .custom-ui-autocomplete {
@@ -276,22 +240,17 @@ hr {}
     border-radius: 4px;
     font-size: 0.8rem !important;
     border: $border;
-
     .ui-menu-item {
         border-bottom: $border;
-
         .ui-menu-item-wrapper {
             padding: 0.5rem;
             border: none !important;
-
             &.ui-state-active {}
         }
-
         &:last-child {
             border-bottom: none;
         }
     }
-
     strong {
         font-weight: 600;
     }
@@ -305,7 +264,6 @@ hr {}
     text-decoration: line-through;
 }
 
-
 .cursor-pointer {
     cursor: pointer;
 }
@@ -315,5 +273,3 @@ hr {}
     display: flex;
     align-items: center;
 }
-
-
