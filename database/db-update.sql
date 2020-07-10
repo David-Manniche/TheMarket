@@ -346,3 +346,5 @@ ALTER TABLE `tbl_order_product_shipment` CHANGE `opship_response` `opship_respon
 ALTER TABLE `tbl_url_rewrite` ADD `urlrewrite_lang_id` INT(11) NOT NULL DEFAULT '1' AFTER `urlrewrite_custom`;
 ALTER TABLE `tbl_url_rewrite` DROP INDEX `url_rewrite_original`;
 ALTER TABLE `tbl_url_rewrite` ADD UNIQUE( `urlrewrite_original`, `urlrewrite_lang_id`);
+ALTER TABLE `tbl_url_rewrite` DROP INDEX `url_rewrite_custom`;
+ALTER TABLE `tbl_url_rewrite` ADD UNIQUE( `urlrewrite_custom`, `urlrewrite_lang_id`);
