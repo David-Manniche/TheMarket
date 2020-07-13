@@ -54,7 +54,7 @@ class TransferbankPayController extends PaymentController
             $comment = Labels::getLabel('MSG_PAYMENT_INSTRUCTIONS', $this->siteLangId) . "\n\n";
             $comment .= $this->settings["bank_details"] . "\n\n";
             $comment .= Labels::getLabel('MSG_PAYMENT_NOTE', $this->siteLangId);
-            $orderPaymentObj->addOrderPaymentComments($comment);
+            $orderPaymentObj->addOrderPaymentComments($comment, true);
             $json['redirect'] = UrlHelper::generateUrl('custom', 'paymentSuccess', array($orderId));
         } else {
             $json['error'] = 'Invalid Request.';

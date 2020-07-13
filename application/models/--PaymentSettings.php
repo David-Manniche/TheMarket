@@ -13,6 +13,10 @@ class PaymentSettings
     private $commonLangId;
 
     public const CASH_ON_DELIVERY = 4;
+    public const BANK_TRANSFER = 9;
+
+    public const PAYMENT_TYPE_COD = 1;
+    public const PAYMENT_TYPE_BANK_TRANSFER = 2;
 
     public function __construct($methodIdentifier)
     {

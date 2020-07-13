@@ -296,12 +296,12 @@ class OrderPayment extends Orders
         return true;
     }
 
-    public function addOrderPaymentComments($comments)
+    public function addOrderPaymentComments($comments, $notify = false)
     {
         $paymentOrderId = $this->paymentOrderId;
         $orderInfo = $this->attributes;
         if (!empty($orderInfo)) {
-            $this->addOrderPaymentHistory($paymentOrderId, Orders::ORDER_IS_PENDING, $comments, false);
+            $this->addOrderPaymentHistory($paymentOrderId, Orders::ORDER_IS_PENDING, $comments, $notify);
         } else {
             $this->error = Labels::getLabel('MSG_Invalid_Order', $this->commonLangId);
             return false;
