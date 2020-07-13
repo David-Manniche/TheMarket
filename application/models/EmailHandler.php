@@ -911,6 +911,39 @@ class EmailHandler extends FatModel
         return true;
     }
 
+    public function bankTranferOrderUpdateBuyerAdmin($orderId, $langId = 0)
+    {
+        $langId = FatApp::getConfig('conf_default_site_lang');
+        $langId = FatUtility::int($langId);
+        $orderObj = new Orders();
+        $orderDetail = $orderObj->getOrderById($orderId);
+
+        if (1 > $langId) {
+            $langId = $orderDetail['order_language_id'];
+        }
+
+        $userObj = new User($orderDetail["order_user_id"]);
+        $userInfo = $userObj->getUserInfo(array('user_name', 'credential_email', 'user_dial_code', 'user_phone'));
+
+        $payementStatusArr = Orders::getOrderPaymentStatusArr($langId);
+
+        if ($orderDetail) {
+            $arrReplacements = array(
+            '{user_full_name}' => trim($userInfo['user_name']),
+            '{invoice_number}' => $orderDetail['order_id'],
+            '{order_payment_method}' => Labels::getLabel('LBL_Cash_on_delivery', $langId),
+            );
+
+            $this->sendMailToAdminAndAdditionalEmails("primary_order_bank_transfer_payment_status_admin", $arrReplacements, static::ADD_ADDITIONAL_ALERTS, static::NOT_ONLY_SUPER_ADMIN, $langId);
+            $this->sendSms("primary_order_bank_transfer_payment_status_admin", FatApp::getConfig('CONF_SITE_PHONE'), $arrReplacements, $langId);
+
+            self::sendMailTpl($userInfo["credential_email"], "primary_order_bank_transfer_payment_status_buyer", $orderDetail['order_language_id'], $arrReplacements);
+            $phone = !empty($userInfo['user_phone']) ? $userInfo['user_dial_code'] . $userInfo['user_phone'] : '';
+            $this->sendSms("primary_order_bank_transfer_payment_status_buyer", $phone, $arrReplacements, $orderDetail['order_language_id']);
+        }
+        return true;
+    }
+
     public function sendProductStockAlert($selprod_id, $langId = 0)
     {
         $langId = FatUtility::int($langId);
@@ -963,7 +996,7 @@ class EmailHandler extends FatModel
         return true;
     }
 
-    public function newOrderVendor($orderId, $langId = 0, $codOrder = 0)
+    public function newOrderVendor($orderId, $langId = 0, $paymentType = 0)
     {
         $langId = FatApp::getConfig('conf_default_site_lang');
         $orderObj = new Orders();
@@ -1012,8 +1045,10 @@ class EmailHandler extends FatModel
                             '{order_id}' => $orderId,
                             );
 
-                if ($codOrder == 1) {
+                if ($paymentType == PaymentSettings::PAYMENT_TYPE_COD) {
                     $tpl = "vendor_cod_order_email";
+                } else if ($paymentType = PaymentSettings::PAYMENT_TYPE_BANK_TRANSFER) {
+                    $tpl = "vendor_bank_transfer_order_email";
                 } else {
                     if ($val['op_product_type'] == Product::PRODUCT_TYPE_DIGITAL) {
                         $tpl = "vendor_digital_order_email";
@@ -1026,13 +1061,14 @@ class EmailHandler extends FatModel
                 $bccEmails = $receipentsInfo['email'];
                 self::sendMailTpl($val["op_shop_owner_email"], $tpl, $langId, $arrReplacements, '', 0, array(), $bccEmails);
 
-                $phoneNumbers = $receipentsInfo['phone'];
-                $userPhone = !empty($userInfo['user_phone']) ? $userInfo['user_dial_code'] . $userInfo['user_phone'] : '';
-                $phoneNumbers[] = $userPhone;
-                foreach ($phoneNumbers as $phone) {
-                    $this->sendSms($tpl, $phone, $arrReplacements, $langId);
+                if (!in_array($paymentType, [PaymentSettings::PAYMENT_TYPE_COD, PaymentSettings::PAYMENT_TYPE_BANK_TRANSFER])) {
+                    $phoneNumbers = $receipentsInfo['phone'];
+                    $userPhone = !empty($userInfo['user_phone']) ? $userInfo['user_dial_code'] . $userInfo['user_phone'] : '';
+                    $phoneNumbers[] = $userPhone;
+                    foreach ($phoneNumbers as $phone) {
+                        $this->sendSms($tpl, $phone, $arrReplacements, $langId);
+                    }
                 }
-
                 $notiArrReplacements = array(
                         '{PRODUCT}' => $val["op_product_name"],
                         '{ORDERID}' => $orderDetail['order_id']
