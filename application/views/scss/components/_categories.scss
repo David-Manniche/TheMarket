@@ -1,0 +1,93 @@
+.categories {
+    position: relative !important;
+    >a {
+        display: flex !important;
+        align-items: center;
+        background-color: $brand-color;
+        color: $brand-color-inverse !important;
+        padding-left: 1rem !important;
+        padding-right: 1rem !important;
+        min-width: 250px;
+    }
+}
+
+.vertical-menu {
+    position: absolute;
+    top: 100%;
+    width: 100%;
+    background-color: #fff;
+    .menu {
+        width: 100%;
+        position: relative;
+        padding: 0;
+        margin: 0;
+        background-color: #fff;
+        color: $txt-gray;
+        font-weight: 300;
+        font-size: 0.8rem;
+    }
+    .menu a:hover {
+        text-decoration: none;
+    }
+    .menu>li {
+        display: block;
+    }
+    .menu>li>a {
+        padding: 0.8rem 1rem;
+        display: block;
+        border-bottom: $border;
+        color: #222;
+    }
+    .menu>li:hover>a {
+        color: $txt-gray;
+    }
+    .menu>li:hover {
+        background-color: #fff;
+    }
+    /* Megadrop width dropdown */
+    .menu>li>.megadrop {
+        opacity: 0;
+        visibility: hidden;
+        position: absolute;
+        list-style: none;
+        top: 0px;
+        left: 100%;
+        width: 1080px;
+        min-height: 100%;
+        text-align: left;
+        margin-top: 30px;
+        padding: 0 1rem;
+        z-index: 99;
+        overflow: hidden;
+        background-color: #fff;
+        >ul {
+            display: flex;
+            flex-wrap: wrap;
+            >li {
+                flex: 1;
+                padding: 1rem;
+            }
+        }
+    }
+    .menu>li:hover .megadrop {
+        opacity: 1;
+        visibility: visible;
+        margin-top: 0px;
+    }
+    .menu>li>ul li ul,
+    .menu li>ul li,
+    .menu>li>.megadrop,
+    .menu>li>ul,
+    .menu>li {
+        transition: all 0.2s ease-in-out;
+        -moz-transition: all 0.2s ease-in-out;
+        -webkit-transition: all 0.2s ease-in-out;
+        -ms-transition: all 0.2s ease-in-out;
+        -o-transition: all 0.2s ease-in-outs;
+    }
+    .megadrop-col {
+        display: flex;
+        flex-wrap: wrap;
+        font-size: 0.8rem;
+    }
+}

@@ -28,26 +28,22 @@
     display: -ms-flexbox;
     display: flex;
     padding: 0;
-
-    > li {
+    >li {
         display: block;
         font-size: 0.9em;
         font-weight: 600;
         position: static;
         margin: 0 2rem;
-
         &:first-child {
             margin-#{$start-direction}: 0;
             padding-#{$start-direction}: 0;
         }
-
         &:hover {
-            > a {
+            >a {
                 color: $brand-color;
             }
         }
-
-        > a {
+        >a {
             color: inherit;
             display: block;
             overflow: hidden;
@@ -57,43 +53,37 @@
             white-space: nowrap;
             line-height: 1;
             font-weight: 600;
-
             &:hover {
                 text-decoration: none;
-
                 &:after {
                     #{$start-direction}: 0;
                     width: 50%;
-                    background: $brand-color; color:$brand-color-inverse;
+                    background: $brand-color;
+                    color: $brand-color-inverse;
                 }
-
                 &:after {
                     #{$end-direction}: 0;
                     width: 50%;
-                    background: $brand-color; color:$brand-color-inverse;
+                    background: $brand-color;
+                    color: $brand-color-inverse;
                 }
             }
-
         }
-
         &.active {
-            > a {
+            >a {
                 &:after {
                     #{$start-direction}: 0;
                     width: 50%;
-                    background: $brand-color; color:$brand-color-inverse;
+                    background: $brand-color;
+                    color: $brand-color-inverse;
                 }
-
                 &:before {
                     #{$end-direction}: 0;
                     width: 50%;
-                    background: $brand-color; color:$brand-color-inverse;
+                    background: $brand-color;
+                    color: $brand-color-inverse;
                 }
-
             }
-
-
-
             .subnav__wrapper {
                 opacity: 1;
                 visibility: visible;
@@ -107,11 +97,7 @@
                 /* Safari */
                 transition-delay: 0.15s;
             }
-
         }
-
-
-
         &:after,
         &:before {
             content: "";
@@ -123,25 +109,19 @@
             -webkit-transition: 0.4s all ease;
             transition: 0.4s all ease;
         }
-
         &:after {
             #{$start-direction}: 50%;
         }
-
         &:before {
             #{$end-direction}: 50%;
         }
-
         .link__mobilenav {
             display: none;
         }
-
         .subnav {
             display: block;
         }
-
         .subnav__wrapper {
-
             background: #fff;
             -webkit-box-shadow: 0 5px 5px rgba(0, 0, 0, 0.20);
             box-shadow: 0 5px 5px rgba(0, 0, 0, 0.20);
@@ -158,9 +138,7 @@
             border-radius: 0px 0 4px 4px;
             max-height: 308px;
             overflow-y: auto;
-
         }
-
         .arrow {
             display: inline-block;
             height: 0px;
@@ -170,7 +148,6 @@
             visibility: hidden;
             width: 100%;
             z-index: 11;
-
             span {
                 &:after {
                     border-bottom: 12px solid #fff;
@@ -182,7 +159,6 @@
                     position: absolute;
                     top: 1px;
                 }
-
                 &:before {
                     border-bottom: 12px solid #f67c17;
                     border-#{$start-direction}: 12px solid transparent;
@@ -195,23 +171,17 @@
                 }
             }
         }
-
-
     }
-
     .three-pin {
         float: right;
         margin-#{$end-direction}: 0;
     }
-
     .more {
         cursor: pointer;
         z-index: 1;
-
         span {
             display: none;
         }
-
         i.icn {
             svg {
                 width: 28px;
@@ -219,7 +189,6 @@
                 fill: $brand-color;
             }
         }
-
     }
 }
 
@@ -227,35 +196,29 @@
     color: #222;
     margin: 0;
     padding: 0;
-
-    > li {
+    >li {
         display: inline-block;
         margin: 0 -2px;
         padding: 10px 0;
         vertical-align: top;
         width: 25%;
-
-        > a {
+        >a {
             color: inherit;
             display: inline-block;
             font-size: 0.9em;
             text-transform: uppercase;
             padding: 0;
-
             &:hover {
                 color: $brand-color;
             }
         }
-
-        > ul {
+        >ul {
             margin: 10px 0;
             padding: 0;
-
-            > li {
+            >li {
                 padding: 0 0 5px;
                 float: none;
                 display: block;
-
                 a {
                     color: #999;
                     font-size: 0.875em;
@@ -266,19 +229,17 @@
                     transition: all 300ms ease 0s;
                     -moz-transition: all 300ms ease 0s;
                     -webkit-transition: all 300ms ease 0s;
-
                     &:hover {
                         color: $brand-color;
                         text-decoration: none;
                         margin-#{$start-direction}: 10px;
-
                         &:before {
                             #{$end-direction}: 0;
                         }
                     }
-
                     &:before {
-                        background: $brand-color; color:$brand-color-inverse;
+                        background: $brand-color;
+                        color: $brand-color-inverse;
                         bottom: 0px;
                         content: "";
                         height: 1px;
@@ -293,7 +254,6 @@
                         transition-timing-function: ease-out;
                     }
                 }
-
                 .seemore {
                     a {
                         font-weight: 600;
@@ -304,8 +264,6 @@
     }
 }
 
-
-
 .navs_toggle {
     cursor: pointer;
     display: none;
@@ -314,13 +272,11 @@
     width: 40px;
     padding: 0;
     margin-#{$end-direction}: 1rem;
-
     @include media-breakpoint-down(lg) {
         & {
             display: inline-block;
         }
     }
-
     span {
         background: #333;
         display: block;
@@ -328,7 +284,6 @@
         margin: 20px 0 0;
         position: relative;
         width: 100%;
-
         &:before {
             background: #333;
             content: "";
@@ -338,7 +293,6 @@
             top: -10px;
             width: 75%;
         }
-
         &:after {
             background: #333;
             content: "";
@@ -349,7 +303,6 @@
             width: 75%;
         }
     }
-
     &.active {
         &:after {
             position: fixed;
@@ -365,7 +318,6 @@
 }
 
 @media (max-width:1199px) {
-
     .navigation-wrapper {
         background: #fff;
         bottom: 0;
@@ -378,22 +330,17 @@
         padding: 0;
         position: fixed;
         top: 0;
-        transform: translateX(-100% * $transform-direction);        
+        transform: translateX(-100% * $transform-direction);
         transition: all 300ms ease 0s;
         -moz-transition: all 300ms ease 0s;
         -webkit-transition: all 300ms ease 0s;
         width: 280px;
         z-index: 110;
-
         .toggled_left & {
             opacity: 1;
             transform: translateX(0px * $transform-direction);
         }
-
     }
-
-
-
     .navigations {
         margin: 0;
         width: 100%;
@@ -405,8 +352,7 @@
         -webkit-box-pack: start !important;
         -ms-flex-pack: start !important;
         justify-content: flex-start !important;
-
-        > li {
+        >li {
             display: block;
             float: none;
             width: auto;
@@ -414,22 +360,18 @@
             padding: 0;
             position: relative;
             border-bottom: $border;
-
-            > a {
+            >a {
                 color: inherit;
                 display: block;
                 padding: 16px;
                 position: relative;
                 overflow: visible;
                 height: auto;
-
                 &:after,
                 &:before {
                     content: normal;
                 }
             }
-
-
             .link__mobilenav {
                 bottom: 0;
                 cursor: pointer;
@@ -441,7 +383,6 @@
                 visibility: visible;
                 width: 40px;
                 z-index: 1;
-
                 &:before {
                     background: #000;
                     content: "";
@@ -451,7 +392,6 @@
                     top: 20px;
                     width: 12px;
                 }
-
                 &:after {
                     background: #000;
                     content: "";
@@ -464,21 +404,17 @@
                     -webkit-transform: rotate(90deg);
                     width: 12px;
                 }
-
                 &.active {
                     &:after {
                         display: none;
                     }
                 }
-
             }
-
             .subnav {
                 display: none;
                 position: relative;
                 width: 100%;
             }
-
             .subnav__wrapper {
                 border-top: medium none;
                 -webkit-box-shadow: none;
@@ -490,49 +426,39 @@
                 visibility: visible;
                 width: 100%;
             }
-
         }
-
         .subnav_row {
             padding: 0;
         }
-
         .arrow {
             display: none;
         }
-
         .three-pin {
             float: none;
             margin: 0;
         }
-
         .more {
             width: auto;
             padding: 15px 10px;
             height: auto;
-
             span {
                 display: block;
-
                 &:after,
                 &:before {
                     content: normal;
                 }
             }
-
             i.icn {
                 display: none;
             }
         }
     }
-
     .sublinks {
-        > li {
+        >li {
             display: inline-block;
             margin: 0;
             width: 100%;
-
-            > ul {
+            >ul {
                 margin-bottom: 0;
             }
         }
