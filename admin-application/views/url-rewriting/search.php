@@ -3,6 +3,7 @@ $arr_flds = array(
         'select_all'=>Labels::getLabel('LBL_Select_all', $adminLangId),
         'listserial'=> Labels::getLabel('LBL_Sr._No', $adminLangId),
         'urlrewrite_original'=> Labels::getLabel('LBL_Original', $adminLangId),
+        'language_code'=> Labels::getLabel('LBL_Language', $adminLangId),
         'urlrewrite_custom'=>Labels::getLabel('LBL_Custom', $adminLangId),
         'action' => '',
     );

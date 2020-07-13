@@ -38,7 +38,7 @@ class UrlRewritingController extends AdminBaseController
         $post = $searchForm->getFormDataFromArray($data);
 
         $srch = UrlRewrite::getSearchObject($this->adminLangId);
-
+        $srch->joinTable(Language::DB_TBL, 'LEFT OUTER JOIN', 'lng.language_id = ur.urlrewrite_lang_id', 'lng');
         if (!empty($post['keyword'])) {
             $condition = $srch->addCondition('ur.urlrewrite_original', 'like', '%' . $post['keyword'] . '%');
             $condition->attachCondition('ur.urlrewrite_custom', 'like', '%' . $post['keyword'] . '%', 'OR');
@@ -57,7 +57,6 @@ class UrlRewritingController extends AdminBaseController
 
         $srch->addOrder('urlrewrite_id', 'DESC');
         $srch->addOrder('urlrewrite_original', 'asc');
-
         $rs = $srch->getResultSet();
         $records = FatApp::getDb()->fetchAll($rs);
 
