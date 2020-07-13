@@ -715,9 +715,8 @@ class Importexport extends ImportexportCommon
                     if ($this->settings['CONF_USE_CATEGORY_ID']) {
                         $parentId = $prodCatDataArr['prodcat_parent'];
                     } else {
-                        $identifier = $prodCatDataArr['prodcat_parent'];
-
-                        $categoriesIdentifiers = $this->getAllCategoryIdentifiers(false);
+                        $identifier = strtolower($prodCatDataArr['prodcat_parent']);
+                        $categoriesIdentifiers = array_change_key_case($this->getAllCategoryIdentifiers(false), CASE_LOWER);
                         $parentId = isset($categoriesIdentifiers[$identifier]) ? $categoriesIdentifiers[$identifier] : 0;
                     }
                     if ($parentId) {
@@ -789,6 +788,7 @@ class Importexport extends ImportexportCommon
                 $errInSheet = true;
             }
         }
+        
         $ProductCategory = new ProductCategory();
         $ProductCategory->updateCatCode();
         // Close File
