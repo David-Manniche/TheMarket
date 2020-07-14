@@ -1,13 +1,13 @@
 <?php defined('SYSTEM_INIT') or die('Invalid Usage.');
 
-$key = array_search($shippingAddressId, array_column($addresses, 'ua_id'));
+$key = array_search($shippingAddressId, array_column($addresses, 'addr_id'));
 if (false === $key) {
     foreach ($addresses as &$value) {
-        $value['isShippingAddress'] = (1 == $value['ua_is_default']) ? 1 : 0;
+        $value['isShippingAddress'] = (1 == $value['add_is_default']) ? 1 : 0;
     }
 } else {
     foreach ($addresses as &$value) {
-        $value['isShippingAddress'] = ($shippingAddressId == $value['ua_id']) ? 1 : 0;
+        $value['isShippingAddress'] = ($shippingAddressId == $value['addr_id']) ? 1 : 0;
     }
 }
 

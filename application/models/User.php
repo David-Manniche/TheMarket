@@ -731,10 +731,10 @@ class User extends MyAppModel
         $db->startTransaction();
 
         /* Delete User Addresses [ */
-        $userAddress = new UserAddress();
-        if (!$userAddress->deleteUserAddresses($this->mainTableRecordId)) {
+        $address = new Address();
+        if (!$address->deleteByRecordId(Address::TYPE_USER, $this->mainTableRecordId)) {
             $db->rollbackTransaction();
-            $this->error = $userAddress->getError();
+            $this->error = $address->getError();
             return false;
         }
         /* ] */
@@ -2855,8 +2855,8 @@ class User extends MyAppModel
         return false;
     }
 
-    public static function getAuthenticUserIds($userId, $parentId = 0, $active = false){
-        
+    public static function getAuthenticUserIds($userId, $parentId = 0, $active = false)
+    {
         $userId = FatUtility::int($userId);
         $parentId = FatUtility::int($parentId);
         
@@ -2867,11 +2867,11 @@ class User extends MyAppModel
             $srch->addDirectCondition('(user_id = '. $userId. ' or user_parent = ' . $userId . ')');
         } else {
             $srch->addDirectCondition('(user_id = '. $userId. ' or user_parent = ' . $parentId . ')');
-        }    
-        If (true == $active){
+        }
+        if (true == $active) {
             $srch->joinTable(static::DB_TBL_CRED, 'LEFT OUTER JOIN', 'uc.' . static::DB_TBL_CRED_PREFIX . 'user_id = u.user_id', 'uc');
             $srch->addCondition('uc.' . static::DB_TBL_CRED_PREFIX . 'active', '=', applicationConstants::ACTIVE);
-            $srch->addCondition('uc.' . static::DB_TBL_CRED_PREFIX . 'verified', '=', applicationConstants::YES);                
+            $srch->addCondition('uc.' . static::DB_TBL_CRED_PREFIX . 'verified', '=', applicationConstants::YES);
         }
         $srch->doNotCalculateRecords();
         $srch->doNotLimitRecords();
@@ -2881,7 +2881,8 @@ class User extends MyAppModel
         return array_keys($record);
     }
 
-    public static function getParentAndTheirChildIds($userId, $active = false, $isParentId = false){
+    public static function getParentAndTheirChildIds($userId, $active = false, $isParentId = false)
+    {
         $userId = FatUtility::int($userId);
         if (false == $isParentId) {
             $parent = User::getAttributesById($userId, 'user_parent');
@@ -2892,10 +2893,10 @@ class User extends MyAppModel
         $srch = new SearchBase(User::DB_TBL, 'u');
         $srch->joinTable(Shop::DB_TBL, 'LEFT OUTER JOIN', 'shop_user_id = if(u.user_parent > 0, user_parent, u.user_id)', 'shop');
         $srch->addDirectCondition('(user_id = '. $userId. ' or user_parent = ' . $userId .')');
-        If (true == $active){
+        if (true == $active) {
             $srch->joinTable(static::DB_TBL_CRED, 'LEFT OUTER JOIN', 'uc.' . static::DB_TBL_CRED_PREFIX . 'user_id = u.user_id', 'uc');
             $srch->addCondition('uc.' . static::DB_TBL_CRED_PREFIX . 'active', '=', applicationConstants::ACTIVE);
-            $srch->addCondition('uc.' . static::DB_TBL_CRED_PREFIX . 'verified', '=', applicationConstants::YES);                
+            $srch->addCondition('uc.' . static::DB_TBL_CRED_PREFIX . 'verified', '=', applicationConstants::YES);
         }
         $srch->doNotCalculateRecords();
         $srch->doNotLimitRecords();

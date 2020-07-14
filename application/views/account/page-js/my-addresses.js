@@ -32,8 +32,8 @@ $(document).ready(function(){
 		if (!$(frm).validate()) return;
 		var data = fcom.frmData(frm);
 		fcom.updateWithAjax(fcom.makeUrl('Addresses', 'setUpAddress'), data, function(t) {
-			if($(frm.ua_id).val() == 0){
-				setDefaultAddress(t.ua_id);
+			if($(frm.addr_id).val() == 0){
+				setDefaultAddress(t.addr_id);
 			}
 			searchAddresses();
 		});

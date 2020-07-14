@@ -345,11 +345,11 @@ class Tax extends MyAppModel
                 $countryCode = array_key_exists('country_code', $address) ? $address['country_code'] : $countryCode;
                 break;
             default:
-                $postalCode = array_key_exists('ua_zip', $address) ? $address['ua_zip'] : $postalCode;
-                $line1 = array_key_exists('ua_address1', $address) ? $address['ua_address1'] : $line1;
-                $line2 = array_key_exists('ua_address2', $address) ? $address['ua_address2'] : $line2;
+                $postalCode = array_key_exists('addr_zip', $address) ? $address['addr_zip'] : $postalCode;
+                $line1 = array_key_exists('addr_address1', $address) ? $address['addr_address1'] : $line1;
+                $line2 = array_key_exists('addr_address2', $address) ? $address['addr_address2'] : $line2;
                 $city = array_key_exists('city', $address) ? $address['city'] : $city;
-                $city = array_key_exists('ua_city', $address) ? $address['ua_city'] : $city;
+                $city = array_key_exists('addr_city', $address) ? $address['addr_city'] : $city;
                 $state = array_key_exists('state', $address) ? $address['state'] : $state;
                 $state = array_key_exists('state_name', $address) ? $address['state_name'] : $state;
                 $stateCode = array_key_exists('state_code', $address) ? $address['state_code'] : $stateCode;
@@ -395,12 +395,12 @@ class Tax extends MyAppModel
         $shipToStateId = 0;
         $shipToCountryId = 0;
 
-        if (isset($extraInfo['shippingAddress']['ua_country_id'])) {
-            $shipToCountryId = FatUtility::int($extraInfo['shippingAddress']['ua_country_id']);
+        if (isset($extraInfo['shippingAddress']['addr_country_id'])) {
+            $shipToCountryId = FatUtility::int($extraInfo['shippingAddress']['addr_country_id']);
         }
 
-        if (isset($extraInfo['shippingAddress']['ua_state_id'])) {
-            $shipToStateId = FatUtility::int($extraInfo['shippingAddress']['ua_state_id']);
+        if (isset($extraInfo['shippingAddress']['addr_state_id'])) {
+            $shipToStateId = FatUtility::int($extraInfo['shippingAddress']['addr_state_id']);
         }
 
         if (array_key_exists('shippingAddress', $extraInfo)) {
