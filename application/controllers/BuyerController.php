@@ -343,42 +343,6 @@ class BuyerController extends BuyerBaseController
         FatUtility::dieJsonSuccess($message);
     }
 
-    /* public function myAddresses(){
-    $this->_template->render(true,false);
-    } */
-
-    /* public function searchAddresses(){
-    $addresses = UserAddress::getUserAddresses( UserAuthentication::getLoggedUserId(), $this->siteLangId );
-    if($addresses){
-    $this->set('addresses',$addresses);
-    } else {
-    $this->set('noRecordsHtml',$this->_template->render( false, false, '_partial/no-record-found.php', true));
-    }
-    $this->_template->render(false,false);
-    } */
-
-    /* public function addAddressForm($ua_id){
-    $ua_id =  FatUtility::int($ua_id);
-    $addressFrm = $this->getUserAddressForm($this->siteLangId);
-
-    $stateId = 0;
-
-    if($ua_id > 0){
-    $data =  UserAddress::getUserAddresses( UserAuthentication::getLoggedUserId(), $this->siteLangId, 0, $ua_id );
-    if ($data === false) {
-                Message::addErrorMessage(Labels::getLabel('MSG_Invalid_request',$this->siteLangId));
-                FatUtility::dieJsonError( Message::getHtml() );
-    }
-    $stateId =  $data['ua_state_id'];
-    $addressFrm->fill($data);
-    }
-
-
-    $this->set('stateId',$stateId);
-    $this->set('addressFrm',$addressFrm);
-    $this->_template->render(false,false);
-    } */
-
     public function orders()
     {
         $frmOrderSrch = $this->getOrderSearchForm($this->siteLangId);

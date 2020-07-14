@@ -7,12 +7,12 @@ $addressFrm->setFormTagAttribute('onsubmit', 'setupAddress(this); return(false);
 $addressFrm->developerTags['colClassPrefix'] = 'col-md-';
 $addressFrm->developerTags['fld_default_col'] = 12;
 
-$countryFld = $addressFrm->getField('ua_country_id');
-$countryFld->setFieldTagAttribute('id','ua_country_id');
-$countryFld->setFieldTagAttribute('onChange','getCountryStates(this.value,'.$stateId.',\'#ua_state_id\')');
+$countryFld = $addressFrm->getField('addr_country_id');
+$countryFld->setFieldTagAttribute('id','addr_country_id');
+$countryFld->setFieldTagAttribute('onChange','getCountryStates(this.value,'.$stateId.',\'#addr_state_id\')');
 
-$stateFld = $addressFrm->getField('ua_state_id');
-$stateFld->setFieldTagAttribute('id','ua_state_id');
+$stateFld = $addressFrm->getField('addr_state_id');
+$stateFld->setFieldTagAttribute('id','addr_state_id');
 
 ?>
 
@@ -38,6 +38,6 @@ $stateFld->setFieldTagAttribute('id','ua_state_id');
 
 <script language="javascript">
 $(document).ready(function(){
-	getCountryStates($( "#ua_country_id" ).val(),<?php echo $stateId ;?>,'#ua_state_id');
+	getCountryStates($( "#addr_country_id" ).val(),<?php echo $stateId ;?>,'#addr_state_id');
 });	
 </script>

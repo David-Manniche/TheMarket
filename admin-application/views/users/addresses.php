@@ -13,9 +13,9 @@
 				<?php 
 				$arr_flds = array(
 						'listserial'=> Labels::getLabel('LBL_Sr._No',$adminLangId),
-						'ua_identifier'=> Labels::getLabel('LBL_Identifier',$adminLangId),
+						'addr_title'=> Labels::getLabel('LBL_Identifier',$adminLangId),
 						'user_address'=> Labels::getLabel('LBL_Address',$adminLangId),						
-						'ua_is_default' => Labels::getLabel('LBL_Default',$adminLangId),
+						'addr_is_default' => Labels::getLabel('LBL_Default',$adminLangId),
 						'action' => Labels::getLabel('LBL_Action',$adminLangId),
 					);
 				$tbl = new HtmlElement('table', array('width'=>'100%', 'class'=>'table table-responsive'));
@@ -35,19 +35,19 @@
 								$td->appendElement('plaintext', array(), $sr_no);
 							break;
 							case 'user_address':
-								$address = $row['ua_name'].'<br>';
-								$address.= $row['ua_address1'];
-								$address.= (strlen($row['ua_address2'])>0)?','.$row['ua_address2'].'<br>':'<br>';
-								$address.= (strlen($row['ua_city'])>0)?$row['ua_city'].',':'';
-								$address.= (strlen($row['state_name'])>0)?$row['state_name'].'<br>':'';
-								$address.= (strlen($row['country_name'])>0)?$row['country_name'].'<br>':'';
-								$address.= (strlen($row['ua_zip'])>0) ? 'Postal Code: '.$row['ua_zip'].'<br>':'';
-								$address.= (strlen($row['ua_phone'])>0) ? 'Phone: '.$row['ua_phone'].'<br>':'';
+								$address = $row['addr_name'].'<br>';
+								$address.= $row['addr_address1'];
+								$address.= (!empty($row['add_address2']))?','.$row['addr_address2'].'<br>':'<br>';
+								$address.= (!empty($row['addr_city']))?$row['addr_city'].',':'';
+								$address.= (!empty($row['state_name']))?$row['state_name'].'<br>':'';
+								$address.= (!empty($row['country_name']))?$row['country_name'].'<br>':'';
+								$address.= (!empty($row['addr_zip'])) ? 'Postal Code: '.$row['addr_zip'].'<br>':'';
+								$address.= (!empty($row['addr_phone'])) ? 'Phone: '.$row['addr_phone'].'<br>':'';
 								
 								$td->appendElement('plaintext',array(),$address,true);
 							break;
-							case 'ua_is_default':
-								$str = ($row['ua_is_default']== 1)? Labels::getLabel('LBL_Yes', $adminLangId) : Labels::getLabel('LBL_No', $adminLangId);
+							case 'addr_is_default':
+								$str = ($row['addr_is_default']== 1)? Labels::getLabel('LBL_Yes', $adminLangId) : Labels::getLabel('LBL_No', $adminLangId);
 								$td->appendElement('plaintext', array(), $str, true);
 							break;	
 							case 'action':								
@@ -58,9 +58,9 @@
 									$innerDiv=$li->appendElement('div',array('class'=>'dropwrap'));	
 									$innerUl=$innerDiv->appendElement('ul',array('class'=>'linksvertical'));
 									$innerLi=$innerUl->appendElement('li');
-									$innerLi->appendElement('a', array('href'=>'javascript:void(0)','class'=>'button small green','title'=>Labels::getLabel('LBL_Edit',$adminLangId),"onclick"=>"addOneAddress(".$row['ua_user_id'].",".$row['ua_id'].")"),Labels::getLabel('LBL_Edit',$adminLangId), true);		
+									$innerLi->appendElement('a', array('href'=>'javascript:void(0)','class'=>'button small green','title'=>Labels::getLabel('LBL_Edit',$adminLangId),"onclick"=>"addOneAddress(".$row['addr_record_id'].",".$row['addr_id'].")"),Labels::getLabel('LBL_Edit',$adminLangId), true);		
 									$innerLi=$innerUl->appendElement('li');
-									$innerLi->appendElement('a', array('href'=>'javascript:void(0)','class'=>'button small green','title'=>Labels::getLabel('LBL_Delete',$adminLangId),"onclick"=>"deleteAddress(".$row['ua_user_id'].",".$row['ua_id'].")"),Labels::getLabel('LBL_Delete',$adminLangId), true);						
+									$innerLi->appendElement('a', array('href'=>'javascript:void(0)','class'=>'button small green','title'=>Labels::getLabel('LBL_Delete',$adminLangId),"onclick"=>"deleteAddress(".$row['addr_record_id'].",".$row['addr_id'].")"),Labels::getLabel('LBL_Delete',$adminLangId), true);						
 								}
 							break;							
 							default:

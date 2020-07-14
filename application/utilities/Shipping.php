@@ -180,7 +180,7 @@ class Shipping
         }
 
         $carriers = $this->shippingApiObj->getCarriers();
-        $this->shippingApiObj->setAddress($shippingAddressDetail['ua_name'], $shippingAddressDetail['ua_address1'], $shippingAddressDetail['ua_address2'], $shippingAddressDetail['ua_city'], $shippingAddressDetail['state_name'], $shippingAddressDetail['ua_zip'], $shippingAddressDetail['country_code'], $shippingAddressDetail['ua_phone']);
+        $this->shippingApiObj->setAddress($shippingAddressDetail['addr_name'], $shippingAddressDetail['addr_address1'], $shippingAddressDetail['addr_address2'], $shippingAddressDetail['addr_city'], $shippingAddressDetail['state_name'], $shippingAddressDetail['addr_zip'], $shippingAddressDetail['country_code'], $shippingAddressDetail['addr_phone']);
         
         $weightUnitsArr = applicationConstants::getWeightUnitsArr($this->langId);
         $dimensionUnits = ShippingPackage::getUnitTypes($this->langId);
@@ -338,11 +338,11 @@ class Shipping
     public function calculateCharges(array $physicalSelProdIdArr, array $shippingAddressDetail, array $productInfo): array
     {
         if (!empty($shippingAddressDetail)) {
-            $shipToCountryId = isset($shippingAddressDetail['ua_country_id']) ? $shippingAddressDetail['ua_country_id'] : 0;
+            $shipToCountryId = isset($shippingAddressDetail['addr_country_id']) ? $shippingAddressDetail['addr_country_id'] : 0;
         }
 
         if (!empty($shippingAddressDetail)) {
-            $shipToStateId = isset($shippingAddressDetail['ua_state_id']) ? $shippingAddressDetail['ua_state_id'] : 0;
+            $shipToStateId = isset($shippingAddressDetail['addr_state_id']) ? $shippingAddressDetail['addr_state_id'] : 0;
         }
        
         $this->selProdShipRates = $this->getSellerProductShippingRates($physicalSelProdIdArr, $shipToCountryId, $shipToStateId);

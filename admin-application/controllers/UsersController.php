@@ -89,10 +89,10 @@ class UsersController extends AdminBaseController
                 $srch->addCondition('u.user_parent', '=', 0);
                 break;
             case User::USER_TYPE_AFFILIATE:
-                $srch->addCondition('u.user_is_affiliate', '=', applicationConstants::YES);               
+                $srch->addCondition('u.user_is_affiliate', '=', applicationConstants::YES);
                 break;
             case User::USER_TYPE_SUB_USER:
-                $srch->addCondition('u.user_parent', '>', 0);               
+                $srch->addCondition('u.user_parent', '>', 0);
                 break;
             case User::USER_TYPE_BUYER_SELLER:
                 $srch->addCondition('u.user_is_supplier', '=', applicationConstants::YES);
@@ -187,7 +187,7 @@ class UsersController extends AdminBaseController
         $this->objPrivilege->canEditUsers();
         $user_id = FatUtility::int($user_id);
         $frmUser = $this->getForm($user_id);
-		$userParent = 0;
+        $userParent = 0;
         $stateId = 0;
         if (0 < $user_id) {
             $userObj = new User($user_id);
@@ -210,9 +210,9 @@ class UsersController extends AdminBaseController
             } */
             $stateId = $data['user_state_id'];
             $frmUser->fill($data);
-			$userParent = $data['user_parent'];
+            $userParent = $data['user_parent'];
         }
-		$this->set('userParent', $userParent);
+        $this->set('userParent', $userParent);
         $this->set('user_id', $user_id);
         $this->set('stateId', $stateId);
         $this->set('frmUser', $frmUser);
@@ -496,14 +496,14 @@ class UsersController extends AdminBaseController
         $userObj = new User($user_id);
         $srch = $userObj->getUserSearchObj(array('user_parent'));
         $rs = $srch->getResultSet();
-		$data = FatApp::getDb()->fetch($rs, 'user_id');
+        $data = FatApp::getDb()->fetch($rs, 'user_id');
 
         if ($data === false || 0 < $data['user_parent']) {
             Message::addErrorMessage($this->str_invalid_request);
             FatUtility::dieJsonError(Message::getHtml());
         }
-		
-		if (!$userObj->updateBankInfo($post)) {
+        
+        if (!$userObj->updateBankInfo($post)) {
             Message::addErrorMessage($userObj->getError());
             FatUtility::dieJsonError(Message::getHtml());
         }
@@ -522,17 +522,17 @@ class UsersController extends AdminBaseController
         }
 
         $this->set('user_id', $userId);
-
-        $addresses = UserAddress::getUserAddresses($userId, $this->adminLangId);
+        $address =  new Address(0, $this->adminLangId);
+        $addresses = $address->getData(Address::TYPE_USER, $userId);
         $this->set('addresses', $addresses);
         $this->_template->render(false, false);
     }
 
-    public function addressForm($userId, $ua_id = 0)
+    public function addressForm($userId, $addr_id = 0)
     {
         $this->objPrivilege->canViewUsers();
         $userId = FatUtility::int($userId);
-        $ua_id = FatUtility::int($ua_id);
+        $addr_id = FatUtility::int($addr_id);
 
         if (1 > $userId) {
             FatUtility::dieWithError($this->str_invalid_request);
@@ -541,15 +541,16 @@ class UsersController extends AdminBaseController
         $addressFrm = $this->getUserAddressForm($this->adminLangId);
 
         $stateId = 0;
-        if ($ua_id > 0) {
-            $data = UserAddress::getUserAddresses($userId, $this->adminLangId, 0, $ua_id);
-            if ($data === false) {
+        if ($addr_id > 0) {
+            $address =  new Address($addr_id, $this->adminLangId);
+            $data = $address->getData(Address::TYPE_USER, $userId);
+            if (empty($data)) {
                 FatUtility::dieWithError($this->str_invalid_request);
             }
-            $stateId = $data['ua_state_id'];
+            $stateId = $data['addr_state_id'];
             $addressFrm->fill($data);
         } else {
-            $addressFrm->fill(array('ua_user_id' => $userId));
+            $addressFrm->fill(array('addr_record_id' => $userId));
         }
 
         $this->set('addressFrm', $addressFrm);
@@ -568,7 +569,7 @@ class UsersController extends AdminBaseController
             FatUtility::dieWithError(Message::getHtml());
         }
 
-        $ua_state_id = FatUtility::int($post['ua_state_id']);
+        $addr_state_id = FatUtility::int($post['addr_state_id']);
         $post = $frm->getFormDataFromArray($post);
 
         if (false === $post) {
@@ -576,30 +577,32 @@ class UsersController extends AdminBaseController
             FatUtility::dieWithError(Message::getHtml());
         }
 
-        $post['ua_state_id'] = $ua_state_id;
+        $post['addr_state_id'] = $addr_state_id;
 
-        $user_id = FatUtility::int($post['ua_user_id']);
-        $ua_id = FatUtility::int($post['ua_id']);
+        $user_id = FatUtility::int($post['addr_record_id']);
+        $addr_id = FatUtility::int($post['addr_id']);
 
         if (1 > $user_id) {
             Message::addErrorMessage($this->str_invalid_request_id);
             FatUtility::dieWithError(Message::getHtml());
         }
-		
-		$userObj = new User($user_id);
-		$srch = $userObj->getUserSearchObj(array('user_parent'));
+        
+        $userObj = new User($user_id);
+        $srch = $userObj->getUserSearchObj(array('user_parent'));
         $rs = $srch->getResultSet();
-		$data = FatApp::getDb()->fetch($rs, 'user_id');
+        $data = FatApp::getDb()->fetch($rs, 'user_id');
 
         if ($data === false || 0 < $data['user_parent']) {
             Message::addErrorMessage($this->str_invalid_request);
             FatUtility::dieJsonError(Message::getHtml());
         }
 
-        $addressObj = new UserAddress($ua_id);
+        $addressObj = new Address($addr_id);
 
         $data_to_be_save = $post;
-        $data_to_be_save['ua_user_id'] = $user_id;
+        $data_to_be_save['addr_record_id'] = $user_id;
+        $data_to_be_save['addr_type'] = Address::TYPE_USER;
+        $data_to_be_save['addr_lang_id'] = $this->adminLangId;
         $addressObj->assignValues($data_to_be_save, true);
         if (!$addressObj->save()) {
             Message::addErrorMessage($addressObj->getError());
@@ -619,23 +622,22 @@ class UsersController extends AdminBaseController
             FatUtility::dieJsonError(Message::getHtml());
         }
 
-        $ua_id = FatUtility::int($post['id']);
+        $addrId = FatUtility::int($post['id']);
         $user_id = FatUtility::int($post['user_id']);
 
-        if (1 > $ua_id || 1 > $user_id) {
+        if (1 > $addrId || 1 > $user_id) {
             Message::addErrorMessage($this->str_invalid_request_id);
             FatUtility::dieJsonError(Message::getHtml());
         }
-
-        $data = UserAddress::getUserAddresses($user_id, $this->adminLangId, 0, $ua_id);
-        if ($data === false) {
+        $address = new Address($addrId, $this->adminLangId);
+        $data = $address->getData(Address::TYPE_USER, $user_id);
+        if (empty($data)) {
             Message::addErrorMessage($this->str_invalid_request);
             FatUtility::dieJsonError(Message::getHtml());
         }
 
-        $addressObj = new UserAddress($ua_id);
-        if (!$addressObj->deleteRecord()) {
-            Message::addErrorMessage($addressObj->getError());
+        if (!$address->deleteRecord()) {
+            Message::addErrorMessage($address->getError());
             FatUtility::dieJsonError(Message::getHtml());
         }
 
@@ -1823,15 +1825,15 @@ class UsersController extends AdminBaseController
             'user_name' => trim($user['user_name']),
             'mail_subject' => trim($post['mail_subject']),
             'mail_message' => nl2br($post["mail_message"]),
-			'credential_email' => $user['credential_email'],
-			'user_phone' => $user['user_phone']
+            'credential_email' => $user['credential_email'],
+            'user_phone' => $user['user_phone']
         );
-		
-		$email = new EmailHandler();
-		if(!$email->sendEmailToUser($this->adminLangId, $data)){
-			Message::addErrorMessage($email->getError());
+        
+        $email = new EmailHandler();
+        if (!$email->sendEmailToUser($this->adminLangId, $data)) {
+            Message::addErrorMessage($email->getError());
             FatUtility::dieWithError(Message::getHtml());
-		}
+        }
         
         $this->set('msg', Labels::getLabel('LBL_Your_Message_Sent_To', $this->adminLangId) . ' - ' . $user["credential_email"]);
         $this->_template->render(false, false, 'json-success.php');
@@ -2107,24 +2109,24 @@ class UsersController extends AdminBaseController
     {
         $langId = FatUtility::int($langId);
         $frm = new Form('frmAddress');
-        $fld = $frm->addTextBox(Labels::getLabel('LBL_Address_Label', $this->adminLangId), 'ua_identifier');
+        $fld = $frm->addTextBox(Labels::getLabel('LBL_Address_Label', $this->adminLangId), 'addr_title');
         $fld->setFieldTagAttribute('placeholder', Labels::getLabel('LBL_E.g:_My_Office_Address', $langId));
-        $frm->addRequiredField(Labels::getLabel('LBL_Name', $this->adminLangId), 'ua_name');
-        $frm->addRequiredField(Labels::getLabel('LBL_Address_Line1', $this->adminLangId), 'ua_address1');
-        $frm->addTextBox(Labels::getLabel('LBL_Address_Line2', $this->adminLangId), 'ua_address2');
-        $frm->addRequiredField(Labels::getLabel('LBL_City', $this->adminLangId), 'ua_city');
+        $frm->addRequiredField(Labels::getLabel('LBL_Name', $this->adminLangId), 'addr_name');
+        $frm->addRequiredField(Labels::getLabel('LBL_Address_Line1', $this->adminLangId), 'addr_address1');
+        $frm->addTextBox(Labels::getLabel('LBL_Address_Line2', $this->adminLangId), 'addr_address2');
+        $frm->addRequiredField(Labels::getLabel('LBL_City', $this->adminLangId), 'addr_city');
 
         $countryObj = new Countries();
         $countriesArr = $countryObj->getCountriesArr($langId);
-        $fld = $frm->addSelectBox(Labels::getLabel('LBL_Country', $this->adminLangId), 'ua_country_id', $countriesArr, FatApp::getConfig('CONF_COUNTRY'));
+        $fld = $frm->addSelectBox(Labels::getLabel('LBL_Country', $this->adminLangId), 'addr_country_id', $countriesArr, FatApp::getConfig('CONF_COUNTRY'));
         $fld->requirement->setRequired(true);
 
-        $frm->addSelectBox(Labels::getLabel('LBL_State', $this->adminLangId), 'ua_state_id', array())->requirement->setRequired(true);
-        $frm->addTextBox(Labels::getLabel('LBL_Postal_Code', $this->adminLangId), 'ua_zip');
-        $phnFld = $frm->addTextBox(Labels::getLabel('LBL_Phone', $this->adminLangId), 'ua_phone', '', array('class' => 'phone-js ltr-right', 'placeholder' => ValidateElement::PHONE_NO_FORMAT, 'maxlength' => ValidateElement::PHONE_NO_LENGTH));
+        $frm->addSelectBox(Labels::getLabel('LBL_State', $this->adminLangId), 'addr_state_id', array())->requirement->setRequired(true);
+        $frm->addTextBox(Labels::getLabel('LBL_Postal_Code', $this->adminLangId), 'addr_zip');
+        $phnFld = $frm->addTextBox(Labels::getLabel('LBL_Phone', $this->adminLangId), 'addr_phone', '', array('class' => 'phone-js ltr-right', 'placeholder' => ValidateElement::PHONE_NO_FORMAT, 'maxlength' => ValidateElement::PHONE_NO_LENGTH));
         $phnFld->requirements()->setRegularExpressionToValidate(ValidateElement::PHONE_REGEX);
-        $frm->addHiddenField('', 'ua_user_id');
-        $frm->addHiddenField('', 'ua_id');
+        $frm->addHiddenField('', 'addr_record_id');
+        $frm->addHiddenField('', 'addr_id');
         $frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_Save_Changes', $this->adminLangId));
         return $frm;
     }

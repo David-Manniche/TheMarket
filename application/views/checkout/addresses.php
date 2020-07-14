@@ -13,28 +13,28 @@
     <?php if ($addresses) { ?>
     <div class="row">
         <?php foreach ($addresses as $address) {
-                $selected_billing_address_id = (!$selected_billing_address_id && $address['ua_is_default']) ? $address['ua_id'] : $selected_billing_address_id; ?>
-        <div class="col-lg-6 col-md-6 col-xs-12 address-<?php echo $address['ua_id'];?>">
-            <label id="address_<?php echo $address['ua_id']; ?>" class="address address-billing <?php echo ($selected_billing_address_id == $address['ua_id']) ? 'is--selected' : ''; ?> ">
+                $selected_billing_address_id = (!$selected_billing_address_id && $address['addr_is_default']) ? $address['addr_id'] : $selected_billing_address_id; ?>
+        <div class="col-lg-6 col-md-6 col-xs-12 address-<?php echo $address['addr_id'];?>">
+            <label id="address_<?php echo $address['addr_id']; ?>" class="address address-billing <?php echo ($selected_billing_address_id == $address['addr_id']) ? 'is--selected' : ''; ?> ">
                 <div class="address-inner">
                     <span class="radio">
-                        <input <?php echo ($selected_billing_address_id == $address['ua_id']) ? 'checked="checked"' : ''; ?> name="billing_address_id" value="<?php echo $address['ua_id']; ?>" type="radio"><i class="input-helper"></i>
+                        <input <?php echo ($selected_billing_address_id == $address['addr_id']) ? 'checked="checked"' : ''; ?> name="billing_address_id" value="<?php echo $address['addr_id']; ?>" type="radio"><i class="input-helper"></i>
                     </span>
                     <p>
-                        <strong><?php echo ($address['ua_identifier'] != '') ? $address['ua_identifier'].': '.$address['ua_name'] : $address['ua_name']; ?></strong>
-                        <?php echo $address['ua_address1'];?><br>
-                        <?php echo (strlen($address['ua_address2'])>0)?$address['ua_address2'].'<br>':'';?>
-                        <?php echo (strlen($address['ua_city'])>0)?$address['ua_city'].',':'';?>
+                        <strong><?php echo ($address['addr_title'] != '') ? $address['addr_title'].': '.$address['addr_name'] : $address['addr_name']; ?></strong>
+                        <?php echo $address['addr_address1'];?><br>
+                        <?php echo (strlen($address['addr_address2'])>0)?$address['addr_address2'].'<br>':'';?>
+                        <?php echo (strlen($address['addr_city'])>0)?$address['addr_city'].',':'';?>
                         <?php echo (strlen($address['state_name'])>0)?$address['state_name'].'<br>':'';?>
                         <?php echo (strlen($address['country_name'])>0)?$address['country_name'].'<br>':'';?>
-                        <?php echo (strlen($address['ua_zip'])>0) ? Labels::getLabel('LBL_Zip:', $siteLangId).$address['ua_zip'].'<br>':'';?>
-                        <?php echo (strlen($address['ua_phone'])>0) ? Labels::getLabel('LBL_Phone:', $siteLangId).$address['ua_phone'].'<br>':'';?>
+                        <?php echo (strlen($address['addr_zip'])>0) ? Labels::getLabel('LBL_Zip:', $siteLangId).$address['addr_zip'].'<br>':'';?>
+                        <?php echo (strlen($address['addr_phone'])>0) ? Labels::getLabel('LBL_Phone:', $siteLangId).$address['addr_phone'].'<br>':'';?>
                     </p>
                     <div class="gap"></div>
                     <?php if (!commonhelper::isAppUser()) { ?>
                     <div class="">
-                        <a class="editLink action btn btn--primary btn--sm " href="javascript:void(0)" onClick="editAddress('<?php echo $address['ua_id']; ?>')"><?php echo Labels::getLabel('LBL_Edit', $siteLangId)?></a>
-                        <a title="<?php echo Labels::getLabel('LBL_Delete', $siteLangId)?>" class="action btn btn-outline-primary btn--sm" onclick="removeAddress('<?php echo $address['ua_id']; ?>')" href="javascript:void(0)">
+                        <a class="editLink action btn btn--primary btn--sm " href="javascript:void(0)" onClick="editAddress('<?php echo $address['addr_id']; ?>')"><?php echo Labels::getLabel('LBL_Edit', $siteLangId)?></a>
+                        <a title="<?php echo Labels::getLabel('LBL_Delete', $siteLangId)?>" class="action btn btn-outline-primary btn--sm" onclick="removeAddress('<?php echo $address['addr_id']; ?>')" href="javascript:void(0)">
                             <?php echo Labels::getLabel('LBL_Delete', $siteLangId)?></a>
                     </div>
                     <?php } ?>
@@ -69,26 +69,26 @@
 <div class="address-wrapper step__body box box--white box--radius p-4" id="shippingAddressContainer">
     <div class="row">
         <?php foreach ($addresses as $address) {
-                $selected_shipping_address_id = (!$selected_shipping_address_id && $address['ua_is_default']) ? $address['ua_id'] : $selected_shipping_address_id; ?>
+                $selected_shipping_address_id = (!$selected_shipping_address_id && $address['addr_is_default']) ? $address['addr_id'] : $selected_shipping_address_id; ?>
         <div class="col-lg-6 col-md-6 col-xs-12">
-            <label class="address address-shipping <?php echo ($selected_shipping_address_id == $address['ua_id']) ? 'is--selected' : ''; ?>">
+            <label class="address address-shipping <?php echo ($selected_shipping_address_id == $address['addr_id']) ? 'is--selected' : ''; ?>">
                 <div class="address-inner">
                     <span class="radio">
-                        <input <?php echo ($selected_shipping_address_id == $address['ua_id']) ? 'checked="checked"' : ''; ?> name="shipping_address_id" value="<?php echo $address['ua_id']; ?>" type="radio"><i class="input-helper"></i>
+                        <input <?php echo ($selected_shipping_address_id == $address['addr_id']) ? 'checked="checked"' : ''; ?> name="shipping_address_id" value="<?php echo $address['addr_id']; ?>" type="radio"><i class="input-helper"></i>
                     </span>
-                    <p><strong><?php echo ($address['ua_identifier'] != '') ? $address['ua_identifier'].': '.$address['ua_name'] : $address['ua_name']; ?></strong>
-                        <?php echo $address['ua_address1'];?><br>
-                        <?php echo (strlen($address['ua_address2'])>0)?$address['ua_address2'].'<br>':'';?>
-                        <?php echo (strlen($address['ua_city'])>0)?$address['ua_city'].',':'';?>
+                    <p><strong><?php echo ($address['addr_title'] != '') ? $address['addr_title'].': '.$address['addr_name'] : $address['addr_name']; ?></strong>
+                        <?php echo $address['addr_address1'];?><br>
+                        <?php echo (strlen($address['addr_address2'])>0)?$address['addr_address2'].'<br>':'';?>
+                        <?php echo (strlen($address['addr_city'])>0)?$address['addr_city'].',':'';?>
                         <?php echo (strlen($address['state_name'])>0)?$address['state_name'].'<br>':'';?>
                         <?php echo (strlen($address['country_name'])>0)?$address['country_name'].'<br>':'';?>
-                        <?php echo (strlen($address['ua_zip'])>0) ? Labels::getLabel('LBL_Zip:', $siteLangId).$address['ua_zip'].'<br>':'';?>
-                        <?php echo (strlen($address['ua_phone'])>0) ? Labels::getLabel('LBL_Phone:', $siteLangId).$address['ua_phone'].'<br>':'';?>
+                        <?php echo (strlen($address['addr_zip'])>0) ? Labels::getLabel('LBL_Zip:', $siteLangId).$address['addr_zip'].'<br>':'';?>
+                        <?php echo (strlen($address['addr_phone'])>0) ? Labels::getLabel('LBL_Phone:', $siteLangId).$address['addr_phone'].'<br>':'';?>
                     </p>
                     <div class="gap"></div>
                     <div class="">
-                        <a class="editLink action btn btn--primary btn--sm " href="javascript:void(0)" onClick="editAddress('<?php echo $address['ua_id']; ?>')"><?php echo Labels::getLabel('LBL_Edit', $siteLangId)?></a>
-                        <a title="<?php echo Labels::getLabel('LBL_Delete', $siteLangId)?>" class="action btn btn-outline-primary btn--sm" onclick="removeAddress('<?php echo $address['ua_id']; ?>')" href="javascript:void(0)">
+                        <a class="editLink action btn btn--primary btn--sm " href="javascript:void(0)" onClick="editAddress('<?php echo $address['addr_id']; ?>')"><?php echo Labels::getLabel('LBL_Edit', $siteLangId)?></a>
+                        <a title="<?php echo Labels::getLabel('LBL_Delete', $siteLangId)?>" class="action btn btn-outline-primary btn--sm" onclick="removeAddress('<?php echo $address['addr_id']; ?>')" href="javascript:void(0)">
                             <?php echo Labels::getLabel('LBL_Delete', $siteLangId)?></a>
                     </div>
                 </div>

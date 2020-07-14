@@ -368,3 +368,54 @@ INSERT INTO `tbl_email_templates` (`etpl_code`, `etpl_lang_id`, `etpl_name`, `et
 ('vendor_bank_transfer_order_email', 1, 'Vendor Bank Transfer Order Email', 'Order Received From {website_name}', '<table width=\"100%\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\" bgcolor=\"#ecf0f1\" style=\"font-family:Arial; color:#333; line-height:26px;\">\r\n <tbody>\r\n   <tr>\r\n      <td style=\"background:#ff3a59;padding:30px 0 10px;\">\r\n        <!--\r\n        header start here\r\n       -->\r\n          \r\n       <table width=\"600\" border=\"0\" align=\"center\" cellpadding=\"0\" cellspacing=\"0\">\r\n         <tbody>\r\n           <tr>\r\n              <td><a href=\"{website_url}\">{Company_Logo}</a></td>\r\n             <td style=\"text-align:right;\">{social_media_icons}</td>\r\n           </tr>\r\n         </tbody>\r\n        </table>\r\n        <!--\r\n        header end here\r\n       -->\r\n          </td>\r\n    </tr>\r\n   <tr>\r\n      <td style=\"background:#ff3a59;\">\r\n        <!--\r\n        page title start here\r\n       -->\r\n          \r\n       <table width=\"600\" border=\"0\" align=\"center\" cellpadding=\"0\" cellspacing=\"0\">\r\n         <tbody>\r\n           <tr>\r\n              <td style=\"background:#fff;padding:20px 0 10px; text-align:center;\">\r\n                <h4 style=\"font-weight:normal; text-transform:uppercase; color:#999;margin:0; padding:10px 0; font-size:18px;\">Order Placed</h4>\r\n                <h2 style=\"margin:0; font-size:34px; padding:0;\">Bank Transfer</h2></td>\r\n            </tr>\r\n         </tbody>\r\n        </table>\r\n        <!--\r\n        page title end here\r\n       -->\r\n          </td>\r\n    </tr>\r\n   <tr>\r\n      <td>\r\n        <!--\r\n        page body start here\r\n        -->\r\n          \r\n       <table width=\"600\" border=\"0\" align=\"center\" cellpadding=\"0\" cellspacing=\"0\">\r\n         <tbody>\r\n           <tr>\r\n              <td style=\"background:#fff;padding:0 30px; text-align:center; color:#999;vertical-align:top;\">\r\n                <table width=\"100%\" border=\"0\" align=\"center\" cellpadding=\"0\" cellspacing=\"0\">\r\n                  <tbody>\r\n                   <tr>\r\n                      <td style=\"padding:20px 0 30px;\"><strong style=\"font-size:18px;color:#333;\">Dear {vendor_name} </strong><br />\r\n                        An order has been placed for your product(s) at <a href=\"{website_url}\">{website_name}</a>.<br />\r\n                       Order details &amp; Shipping information are given below:</td>\r\n                    </tr>\r\n                   <tr>\r\n                      <td style=\"padding:5px 0 30px;\">{order_items_table_format}</td>\r\n                   </tr>\r\n                   <!--\r\n                    section footer\r\n                    -->\r\n                      \r\n                   <tr>\r\n                      <td style=\"padding:30px 0;border-top:1px solid #ddd;\">Get in touch in you have any questions regarding our Services.<br />\r\n                        Feel free to contact us 24/7. We are here to help.<br />\r\n                        <br />\r\n                        All the best,<br />\r\n                       The {website_name} Team<br />\r\n                       </td>\r\n                   </tr>\r\n                   <!--\r\n                    section footer\r\n                    -->\r\n                      \r\n                 </tbody>\r\n                </table></td>\r\n           </tr>\r\n         </tbody>\r\n        </table>\r\n        <!--\r\n        page body end here\r\n        -->\r\n          </td>\r\n    </tr>\r\n   <tr>\r\n      <td>\r\n        <!--\r\n        page footer start here\r\n        -->\r\n          \r\n       <table width=\"600\" border=\"0\" align=\"center\" cellpadding=\"0\" cellspacing=\"0\">\r\n         <tbody>\r\n           <tr>\r\n              <td style=\"height:30px;\"></td>\r\n            </tr>\r\n           <tr>\r\n              <td style=\"background:rgba(0,0,0,0.04);padding:0 30px; text-align:center; color:#999;vertical-align:top;\">\r\n                <table width=\"100%\" border=\"0\" align=\"center\" cellpadding=\"0\" cellspacing=\"0\">\r\n                  <tbody>\r\n                   <tr>\r\n                      <td style=\"padding:30px 0; font-size:20px; color:#000;\">Need more help?<br />\r\n                        <a href=\"{contact_us_url}\" style=\"color:#ff3a59;\">We are here, ready to talk</a></td>\r\n                    </tr>\r\n                 </tbody>\r\n                </table></td>\r\n           </tr>\r\n           <tr>\r\n              <td style=\"padding:0; color:#999;vertical-align:top; line-height:20px;\">\r\n                <table width=\"100%\" border=\"0\" align=\"center\" cellpadding=\"0\" cellspacing=\"0\">\r\n                  <tbody>\r\n                   <tr>\r\n                      <td style=\"padding:20px 0 30px; text-align:center; font-size:13px; color:#999;\">{website_name} Inc.\r\n                       <!--\r\n                        if these emails get annoying, please feel free to  <a href=\"#\" style=\"text-decoration:underline; color:#666;\">unsubscribe</a>.\r\n                        -->\r\n                       </td>\r\n                   </tr>\r\n                 </tbody>\r\n                </table></td>\r\n           </tr>\r\n           <tr>\r\n              <td style=\"padding:0; height:50px;\"></td>\r\n           </tr>\r\n         </tbody>\r\n        </table>\r\n        <!--\r\n        page footer end here\r\n        -->\r\n          </td>\r\n    </tr>\r\n </tbody>\r\n</table>', '{vendor_name} Name of the vendor<br/>\r\n{website_name} Name of our website<br>\r\n{website_url} URL of our website<br>\r\n{order_items_table_format} Order items in Tabular Format.<br>\r\n{social_media_icons} <br>\r\n{contact_us_url} <br>', 1);
 
 -- End --
+
+-- Addresses Start--------------------------
+--
+-- Table structure for table `tbl_addresses`
+--
+
+CREATE TABLE `tbl_addresses` (
+  `addr_id` int(11) NOT NULL,
+  `addr_type` int(11) NOT NULL,
+  `addr_record_id` int(11) NOT NULL,
+  `addr_added_by` int(11) NOT NULL,
+  `addr_lang_id` int(11) NOT NULL,
+  `addr_title` varchar(255) NOT NULL,
+  `addr_name` varchar(255) NOT NULL,
+  `addr_address1` varchar(255) NOT NULL,
+  `addr_address2` varchar(255) NOT NULL,
+  `addr_city` varchar(255) NOT NULL,
+  `addr_state_id` int(11) NOT NULL,
+  `addr_country_id` int(11) NOT NULL,
+  `addr_phone` varchar(100) NOT NULL,
+  `addr_zip` varchar(20) NOT NULL,
+  `addr_lat` varchar(150) NOT NULL,
+  `addr_lng` varchar(150) NOT NULL,
+  `addr_is_default` tinyint(1) NOT NULL,
+  `addr_deleted` tinyint(1) NOT NULL,
+  `addr_updated_on` datetime NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- Indexes for dumped tables
+--
+
+--
+-- Indexes for table `tbl_addresses`
+--
+ALTER TABLE `tbl_addresses`
+  ADD PRIMARY KEY (`addr_id`);
+
+--
+-- AUTO_INCREMENT for dumped tables
+--
+
+--
+-- AUTO_INCREMENT for table `tbl_addresses`
+--
+ALTER TABLE `tbl_addresses`
+  MODIFY `addr_id` int(11) NOT NULL AUTO_INCREMENT;
+
+INSERT into `tbl_addresses` (`addr_type`, `addr_record_id`, `addr_lang_id`, `addr_title`, `addr_name`, `addr_address1`, `addr_address2`, `addr_city`, `addr_state_id`, `addr_country_id`, `addr_phone`, `addr_zip`, `addr_is_default`, `addr_deleted`) select * from (SELECT 1 as addr_type, `ua_user_id`, 1 as addr_lang_id, `ua_identifier`, `ua_name`, `ua_address1`, `ua_address2`, `ua_city`, `ua_state_id`, `ua_country_id`, `ua_phone`, `ua_zip`, `ua_is_default`, `ua_deleted` from `tbl_user_address`) as temp;
+DROP TABLE tbl_user_address; 
+-- Addresses End--------------------------  
