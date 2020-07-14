@@ -28,19 +28,19 @@ $clearFld->setFieldTagAttribute('class', 'btn btn-outline-primary btn-block');
         </div>
         <div class="content-body">
             <div class="row">
-                <div class="col-md-12">
+                <div class="col-md-6 mb-3 mb-md-0">
                     <div class="cards">
                         <div class="cards-content">
                             <div>
                                 <?php echo $frmSearch->getFormTag(); ?>
                                     <div class="row">
-                                        <div class="col-12 col-md-8">
+                                        <div class="col-12 col-md-6">
                                             <div class="field-set"><?php echo $frmSearch->getFieldHTML('keyword');?></div>
                                         </div>
-                                        <div class="col-6 col-md-2">
+                                        <div class="col-6 col-md-3">
                                             <div class="field-set"><?php echo $frmSearch->getFieldHTML('btn_submit'); ?></div>
                                         </div>
-                                        <div class="col-6 col-md-2">
+                                        <div class="col-6 col-md-3">
                                             <div class="field-set"><?php echo $frmSearch->getFieldHTML('btn_clear');?></div>
                                         </div>
                                     </div>
@@ -51,6 +51,18 @@ $clearFld->setFieldTagAttribute('class', 'btn btn-outline-primary btn-block');
                             <div id="listing">
                                 <?php echo Labels::getLabel('LBL_Loading..', $siteLangId); ?>
                             </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="cards">
+                        <div class="cards-content h-100">
+                            <div id="dvForm">
+                             <div class="cards-message" role="alert">
+                                    <div class="cards-message-icon"><i class="fas fa-exclamation-triangle"></i></div>
+                                    <div class="cards-message-text"><?php echo Labels::getLabel('LBL_Select_a_product_to_update_url', $siteLangId); ?></div>
+                                </div>
+                            </div>                           
                         </div>
                     </div>
                 </div>

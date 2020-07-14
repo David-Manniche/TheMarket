@@ -1489,6 +1489,51 @@ trait SellerProducts
         $this->_template->render(true, true);
     }
 
+    public function productUrlForm($selprodId)
+    {
+        $this->userPrivilege->canViewUrlRewriting(UserAuthentication::getLoggedUserId());
+        $selprodId = FatUtility::int($selprodId);
+       
+        $sellerProductRow = SellerProduct::getAttributesById($selprodId);
+        if ($sellerProductRow['selprod_user_id'] != $this->userParentId) {
+            Message::addErrorMessage(Labels::getLabel('MSG_Invalid_Access', $this->siteLangId));
+            FatUtility::dieWithError(Message::getHtml());
+        }
+        $frm = $this->getUrlRewriteForm();
+
+        $tabsArr = MetaTag::getTabsArr();
+        $metaType = MetaTag::META_GROUP_PRODUCT_DETAIL;
+
+        if ($metaType == '' || !isset($tabsArr[$metaType])) {
+            Message::addErrorMessage(Labels::getLabel("MSG_INVALID_ACCESS", $this->siteLangId));
+            FatUtility::dieWithError(Message::getHtml());
+        }
+        $url = $tabsArr[$metaType]['controller'] . '/' . $tabsArr[$metaType]['action'] . '/' . $selprodId;
+        $url = trim($url, '/\\');
+
+        if (0 < $selprodId) {
+            $srch = UrlRewrite::getSearchObject();
+            $srch->joinTable(UrlRewrite::DB_TBL, 'LEFT OUTER JOIN', 'temp.urlrewrite_original = ur.urlrewrite_original', 'temp');
+            $srch->addCondition('ur.urlrewrite_original', '=', $url);
+            $rs = $srch->getResultSet();
+            $data = [
+                'selprod_id' => $selprodId
+            ];
+            while ($row = FatApp::getDb()->fetch($rs)) {
+                $data['urlrewrite_original'] = $row['urlrewrite_original'];
+                $data['urlrewrite_custom'][$row['urlrewrite_lang_id']] = $row['urlrewrite_custom'];
+            }
+          
+            if (empty($data)) {
+                FatUtility::dieWithError($this->str_invalid_request);
+            }
+            $frm->fill($data);
+        }
+        $this->set('frm', $frm);
+        $this->set('selprodId', $selprodId);
+        $this->_template->render(false, false);
+    }
+
     public function searchUrlRewritingProducts()
     {
         $userId = $this->userParentId;
@@ -1537,17 +1582,20 @@ trait SellerProducts
         $this->_template->render(false, false);
     }
 
-    public function setupCustomUrl($selprod_id, $url_rewriting_id, $custom_url)
+    public function setupCustomUrl()
     {
-        $this->userPrivilege->canViewUrlRewriting(UserAuthentication::getLoggedUserId());
-        $selprod_id = FatUtility::int($selprod_id);
-        $url_rewriting_id = FatUtility::int($url_rewriting_id);
+        $this->userPrivilege->canEditUrlRewriting(UserAuthentication::getLoggedUserId());
+        $frm = $this->getUrlRewriteForm();
+        $post = $frm->getFormDataFromArray(FatApp::getPostedData());
 
-        if ($custom_url == '') {
-            Message::addErrorMessage(Labels::getLabel("MSG_CUSTOM_URL_CAN'T_BE_EMPTY", $this->siteLangId));
+        if (false === $post) {
+            Message::addErrorMessage(current($frm->getValidationErrors()));
             FatUtility::dieJsonError(Message::getHtml());
         }
-        if (!UserPrivilege::canEditSellerProduct($this->userParentId, $selprod_id)) {
+        
+        $selprodId = $post['selprod_id'];
+
+        if (!UserPrivilege::canEditSellerProduct($this->userParentId, $selprodId)) {
             Message::addErrorMessage(Labels::getLabel("MSG_INVALID_ACCESS", $this->siteLangId));
             FatUtility::dieJsonError(Message::getHtml());
         }
@@ -1557,24 +1605,70 @@ trait SellerProducts
 
         if ($metaType == '' || !isset($tabsArr[$metaType])) {
             Message::addErrorMessage(Labels::getLabel("MSG_INVALID_ACCESS", $this->siteLangId));
-            FatUtility::dieJsonError(Message::getHtml());
+            FatUtility::dieWithError(Message::getHtml());
         }
-        $url = $tabsArr[$metaType]['controller'] . '/' . $tabsArr[$metaType]['action'] . '/' . $selprod_id;
-        $urlRewriteData_Save['urlrewrite_original'] = trim($url, '/\\');
-        $urlRewriteData_Save['urlrewrite_custom'] = trim(CommonHelper::seoUrl($custom_url), '/\\');
+        $url = $tabsArr[$metaType]['controller'] . '/' . $tabsArr[$metaType]['action'] . '/' . $selprodId;
+        $originalUrl = trim(strtolower($url), '/\\');
+        
+        $srch = UrlRewrite::getSearchObject();
+        $srch->joinTable(UrlRewrite::DB_TBL, 'LEFT OUTER JOIN', 'temp.urlrewrite_original = ur.urlrewrite_original', 'temp');
+        $srch->addCondition('ur.urlrewrite_original', '=', $originalUrl);
+        $srch->addMultipleFields(array('temp.*'));
+        $rs = $srch->getResultSet();
+        $row = FatApp::getDb()->fetchAll($rs, 'urlrewrite_lang_id');
 
-        $record = new UrlRewrite($url_rewriting_id);
-        $record->assignValues($urlRewriteData_Save);
+        $langArr = Language::getAllNames();
+        foreach ($langArr as $langId => $langName) {
+            if (!FatApp::getConfig('CONF_LANG_SPECIFIC_URL', FatUtility::VAR_INT, 0) && $langId != FatApp::getConfig('CONF_DEFAULT_SITE_LANG', FatUtility::VAR_INT, 1)) {
+                continue;
+            }
 
-        if (!$record->save()) {
-            Message::addErrorMessage($record->getError());
-            FatUtility::dieJsonError(Message::getHtml());
+            $recordId = 0;
+            if (array_key_exists($langId, $row)) {
+                $recordId = $row[$langId]['urlrewrite_id'];
+            }
+            $url = $post['urlrewrite_custom'][$langId];
+            $data = [
+                'urlrewrite_original' => $originalUrl,
+                'urlrewrite_lang_id' => $langId,
+                'urlrewrite_custom' => CommonHelper::seoUrl($url)
+            ];
+            $record = new UrlRewrite($recordId);
+            $record->assignValues($data);
+
+            if (!$record->save()) {
+                Message::addErrorMessage($record->getError());
+                FatUtility::dieJsonError(Message::getHtml());
+            }
         }
 
         $this->set('msg', Labels::getLabel("MSG_Setup_Successful", $this->siteLangId));
         $this->_template->render(false, false, 'json-success.php');
     }
 
+    private function getUrlRewriteForm()
+    {
+        $frm = new Form('frmUrlRewrite');
+        $frm->addHiddenField('', 'selprod_id');
+        $frm->addRequiredField(Labels::getLabel('LBL_Original_URL', $this->siteLangId), 'urlrewrite_original');
+        $langArr = Language::getAllNames();
+        foreach ($langArr as $langId => $langName) {
+            if (!FatApp::getConfig('CONF_LANG_SPECIFIC_URL', FatUtility::VAR_INT, 0) && $langId != FatApp::getConfig('CONF_DEFAULT_SITE_LANG', FatUtility::VAR_INT, 1)) {
+                continue;
+            }
+
+            $fieldName = Labels::getLabel('LBL_Custom_URL', $this->siteLangId);
+            if (FatApp::getConfig('CONF_LANG_SPECIFIC_URL', FatUtility::VAR_INT, 0)) {
+                $fieldName .=  '(' . $langName . ')';
+            }
+            $frm->addRequiredField($fieldName, 'urlrewrite_custom[' .$langId. ']');
+        }
+        $fld =  $frm->addHTML('', '', '');
+        //$fld = $frm->addRequiredField(Labels::getLabel('LBL_Custom_URL', $this->siteLangId), 'urlrewrite_custom');
+        $fld->htmlAfterField = '<small>' . Labels::getLabel('LBL_Example:_Custom_URL_Example', $this->siteLangId) . '</small>';
+        $frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_Save_Changes', $this->siteLangId));
+        return $frm;
+    }
     /*  --- ] Seller Product URL Rewriting  ----   */
 
     /*  ---- Seller Product Links  ----- [*/
