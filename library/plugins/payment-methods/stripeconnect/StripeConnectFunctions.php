@@ -204,6 +204,16 @@ die; */
     }
 
     /**
+     * retrieveCustomer
+     *
+     * @return object
+     */
+    private function retrieveCustomer(): object
+    {
+        return $this->stripe->customers->retrieve($this->getCustomerId());
+    }
+
+    /**
      * updateCustomer
      *
      * @param array $requestParam
