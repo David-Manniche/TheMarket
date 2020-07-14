@@ -44,17 +44,18 @@ class StripeConnect extends PaymentMethodBase
     public const REQUEST_CREATE_SESSION = 11;
     public const REQUEST_CREATE_PRICE = 12;
     public const REQUEST_CREATE_CUSTOMER = 13;
-    public const REQUEST_UPDATE_CUSTOMER = 14;
-    public const REQUEST_CREATE_LOGIN_LINK = 15;
-    public const REQUEST_ALL_CONNECT_ACCOUNTS = 16;
-    public const REQUEST_INITIATE_REFUND = 17;
-    public const REQUEST_TRANSFER_AMOUNT = 18;
-    public const REQUEST_REVERSE_TRANSFER = 19;
-    public const REQUEST_ADD_CARD = 20;
-    public const REQUEST_REMOVE_CARD = 21;
-    public const REQUEST_LIST_ALL_CARDS = 22;
-    public const REQUEST_CREATE_CARD_TOKEN = 23;
-    public const REQUEST_CHARGE = 24;
+    public const REQUEST_RETRIEVE_CUSTOMER = 14;
+    public const REQUEST_UPDATE_CUSTOMER = 15;
+    public const REQUEST_CREATE_LOGIN_LINK = 16;
+    public const REQUEST_ALL_CONNECT_ACCOUNTS = 17;
+    public const REQUEST_INITIATE_REFUND = 18;
+    public const REQUEST_TRANSFER_AMOUNT = 19;
+    public const REQUEST_REVERSE_TRANSFER = 20;
+    public const REQUEST_ADD_CARD = 21;
+    public const REQUEST_REMOVE_CARD = 22;
+    public const REQUEST_LIST_ALL_CARDS = 23;
+    public const REQUEST_CREATE_CARD_TOKEN = 24;
+    public const REQUEST_CHARGE = 25;
 
     /**
      * __construct
@@ -828,6 +829,18 @@ class StripeConnect extends PaymentMethodBase
     }
 
     /**
+     * updateCustomerInfo
+     *
+     * @param array $requestParam
+     * @return bool
+     */
+    public function updateCustomerInfo(array $requestParam): bool
+    {
+        $this->resp = $this->doRequest(self::REQUEST_UPDATE_CUSTOMER, $requestParam);
+        return (false === $this->resp) ? false : true;
+    }
+
+    /**
      * createCustomerObject
      *
      * @param array $requestParam
@@ -842,7 +855,7 @@ class StripeConnect extends PaymentMethodBase
 
         $requestParam = $this->formatCustomerDataFromOrder($requestParam);
         if (!empty($this->getCustomerId())) {
-            $this->resp = $this->doRequest(self::REQUEST_UPDATE_CUSTOMER, $requestParam);
+            $this->resp = $this->updateCustomerInfo($requestParam);
         } else {
             $this->resp = $this->doRequest(self::REQUEST_CREATE_CUSTOMER, $requestParam);
         }
@@ -852,6 +865,17 @@ class StripeConnect extends PaymentMethodBase
         }
         $this->customerId = $this->resp->id;
         return $this->updateUserMeta('stripe_customer_id', $this->customerId);
+    }
+
+    /**
+     * loadCustomer
+     *
+     * @return bool
+     */
+    public function loadCustomer(): bool
+    {
+        $this->resp = $this->doRequest(self::REQUEST_RETRIEVE_CUSTOMER);
+        return (false === $this->resp) ? false : true;
     }
 
     /**
@@ -1141,6 +1165,9 @@ class StripeConnect extends PaymentMethodBase
                     break;
                 case self::REQUEST_CREATE_CUSTOMER:
                     return $this->createCustomer($requestParam);
+                    break;
+                case self::REQUEST_RETRIEVE_CUSTOMER:
+                    return $this->retrieveCustomer();
                     break;
                 case self::REQUEST_UPDATE_CUSTOMER:
                     return $this->updateCustomer($requestParam);

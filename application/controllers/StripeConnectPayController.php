@@ -8,8 +8,14 @@ class StripeConnectPayController extends PaymentController
     private $paymentAmount = 0;
     private $sourceId = '';
     private $orderInfo = [];
-    
-    public function __construct($action)
+        
+    /**
+     * __construct
+     *
+     * @param  string $action
+     * @return void
+     */
+    public function __construct(string $action)
     {
         parent::__construct($action);
         
@@ -20,7 +26,12 @@ class StripeConnectPayController extends PaymentController
         }
         $this->init();
     }
-
+    
+    /**
+     * init
+     *
+     * @return void
+     */
     public function init()
     {
         $userId = UserAuthentication::getLoggedUserId(true);
@@ -43,15 +54,25 @@ class StripeConnectPayController extends PaymentController
             $this->liveMode = "live_";
         }
     }
-
-    protected function allowedCurrenciesArr()
+    
+    /**
+     * allowedCurrenciesArr
+     *
+     * @return array
+     */
+    protected function allowedCurrenciesArr(): array
     {
         return [
             'USD', 'AED', 'AFN', 'ALL', 'AMD', 'ANG', 'AOA', 'ARS', 'AUD', 'AWG', 'AZN', 'BAM', 'BBD', 'BDT', 'BGN', 'BIF', 'BMD', 'BND', 'BOB', 'BRL', 'BSD', 'BWP', 'BZD', 'CAD', 'CDF', 'CHF', 'CLP', 'CNY', 'COP', 'CRC', 'CVE', 'CZK', 'DJF', 'DKK', 'DOP', 'DZD', 'EGP', 'ETB', 'EUR', 'FJD', 'FKP', 'GBP', 'GEL', 'GIP', 'GMD', 'GNF', 'GTQ', 'GYD', 'HKD', 'HNL', 'HRK', 'HTG', 'HUF', 'IDR', 'ILS', 'INR', 'ISK', 'JMD', 'JPY', 'KES', 'KGS', 'KHR', 'KMF', 'KRW', 'KYD', 'KZT', 'LAK', 'LBP', 'LKR', 'LRD', 'LSL', 'MAD', 'MDL', 'MGA', 'MKD', 'MMK', 'MNT', 'MOP', 'MRO', 'MUR', 'MVR', 'MWK', 'MXN', 'MYR', 'MZN', 'NAD', 'NGN', 'NIO', 'NOK', 'NPR', 'NZD', 'PAB', 'PEN', 'PGK', 'PHP', 'PKR', 'PLN', 'PYG', 'QAR', 'RON', 'RSD', 'RUB', 'RWF', 'SAR', 'SBD', 'SCR', 'SEK', 'SGD', 'SHP', 'SLL', 'SOS', 'SRD', 'STD', 'SZL', 'THB', 'TJS', 'TOP', 'TRY', 'TTD', 'TWD', 'TZS', 'UAH', 'UGX', 'UYU', 'UZS', 'VND', 'VUV', 'WST', 'XAF', 'XCD', 'XOF', 'XPF', 'YER', 'ZAR', 'ZMW'
         ];
     }
-
-    private function getCardForm()
+    
+    /**
+     * getCardForm
+     *
+     * @return object
+     */
+    private function getCardForm(): object
     {
         $frm = new Form('frmPaymentForm');
         $frm->addRequiredField(Labels::getLabel('LBL_ENTER_CREDIT_CARD_NUMBER', $this->siteLangId), 'number');
@@ -70,8 +91,13 @@ class StripeConnectPayController extends PaymentController
 
         return $frm;
     }
-
-    private function getSavedCardPaymentForm()
+    
+    /**
+     * getSavedCardPaymentForm
+     *
+     * @return object
+     */
+    private function getSavedCardPaymentForm(): object
     {
         $frm = new Form('frmCardPaymentForm');
         $frm->addHiddenField('', 'card_id');
@@ -79,7 +105,12 @@ class StripeConnectPayController extends PaymentController
         $frm->addButton('', 'btn_addnew', Labels::getLabel('LBL_ADD_NEW_?', $this->siteLangId));
         return $frm;
     }
-
+    
+    /**
+     * checkCardType
+     *
+     * @return void
+     */
     public function checkCardType()
     {
         $post = FatApp::getPostedData();
@@ -87,7 +118,13 @@ class StripeConnectPayController extends PaymentController
         echo json_encode($res);
         exit;
     }
-
+    
+    /**
+     * addCardForm
+     *
+     * @param  mixed $orderId
+     * @return void
+     */
     public function addCardForm($orderId)
     {
         $orderPaymentObj = new OrderPayment($orderId, $this->siteLangId);
@@ -103,8 +140,14 @@ class StripeConnectPayController extends PaymentController
         $this->set('orderId', $orderId);
         $this->_template->render(false, false);
     }
-
-    public function removeCard($cardId)
+    
+    /**
+     * removeCard
+     *
+     * @param  mixed $cardId
+     * @return void
+     */
+    public function removeCard(string $cardId)
     {
         if (false === $this->stripeConnect->removeCard(['cardId' => $cardId])) {
             $this->setErrorAndRedirect();
@@ -128,8 +171,14 @@ class StripeConnectPayController extends PaymentController
         }
         return $this->orderInfo;
     }
-    
-    public function charge($orderId)
+        
+    /**
+     * charge
+     *
+     * @param  string $orderId
+     * @return void
+     */
+    public function charge(string $orderId)
     {
         $this->orderId = $orderId;
         if (empty(trim($this->orderId))) {
@@ -211,13 +260,24 @@ class StripeConnectPayController extends PaymentController
         $this->set('exculdeMainHeaderDiv', true);
         $this->_template->render(true, false);
     }
-
+    
+    /**
+     * convertInPaisa
+     *
+     * @param  mixed $amount
+     * @return void
+     */
     private function convertInPaisa($amount)
     {
         $amount = number_format($amount, 2, '.', '');
         return $amount * 100;
     }
-    
+        
+    /**
+     * doPayment
+     *
+     * @return void
+     */
     private function doPayment()
     {
         if (empty($this->sourceId)) {
@@ -247,7 +307,12 @@ class StripeConnectPayController extends PaymentController
         $this->distribute();
         return true;
     }
-
+    
+    /**
+     * distribute
+     *
+     * @return void
+     */
     private function distribute()
     {
         $chargeResponse = $this->stripeConnect->getResponse();
