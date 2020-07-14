@@ -419,3 +419,54 @@ ALTER TABLE `tbl_addresses`
 INSERT into `tbl_addresses` (`addr_type`, `addr_record_id`, `addr_lang_id`, `addr_title`, `addr_name`, `addr_address1`, `addr_address2`, `addr_city`, `addr_state_id`, `addr_country_id`, `addr_phone`, `addr_zip`, `addr_is_default`, `addr_deleted`) select * from (SELECT 1 as addr_type, `ua_user_id`, 1 as addr_lang_id, `ua_identifier`, `ua_name`, `ua_address1`, `ua_address2`, `ua_city`, `ua_state_id`, `ua_country_id`, `ua_phone`, `ua_zip`, `ua_is_default`, `ua_deleted` from `tbl_user_address`) as temp;
 DROP TABLE tbl_user_address; 
 -- Addresses End--------------------------  
+
+-- Pickup Location start-----------------
+
+--
+-- Table structure for table `tbl_user_collections`
+--
+
+CREATE TABLE `tbl_user_collections` (
+  `uc_user_id` int(11) NOT NULL,
+  `uc_type` int(11) NOT NULL,
+  `uc_record_id` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Indexes for dumped tables
+--
+
+--
+-- Indexes for table `tbl_user_collections`
+--
+ALTER TABLE `tbl_user_collections`
+  ADD PRIMARY KEY (`uc_user_id`,`uc_type`,`uc_record_id`);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `tbl_time_slots`
+--
+
+CREATE TABLE `tbl_time_slots` (
+  `tslot_id` int(11) NOT NULL,
+  `tslot_type` int(11) NOT NULL,
+  `tslot_record_id` int(11) NOT NULL,
+  `tslot_subrecord_id` int(11) NOT NULL,
+  `tslot_day` int(11) NOT NULL,
+  `tslot_from_time` time NOT NULL,
+  `tslot_to_time` time NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Indexes for dumped tables
+--
+
+--
+-- Indexes for table `tbl_time_slots`
+--
+ALTER TABLE `tbl_time_slots`
+  ADD UNIQUE KEY `tslot_type` (`tslot_type`,`tslot_record_id`,`tslot_subrecord_id`,`tslot_day`,`tslot_from_time`,`tslot_to_time`);
+
+-- pickup location end
+

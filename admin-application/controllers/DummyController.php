@@ -4,8 +4,8 @@ class DummyController extends AdminBaseController
 {
     public function index()
     {
-        $address =  new Address(1, $this->adminLangId);
-        $addresses = $address->getData(Address::TYPE_USER, 7);
+        $address =  new UserCollection(4, UserCollection::TYPE_SAVED_FOR_LATER);
+        $addresses = $address->deleteRecords(4);
         var_dump($addresses);
     }
 

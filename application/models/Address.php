@@ -6,7 +6,8 @@ class Address extends MyAppModel
     public const DB_TBL_PREFIX = 'addr_';
 
     public const TYPE_USER = 1;
-    public const TYPE_PICKUP = 2;
+    public const TYPE_SHOP_PICKUP = 2;
+    public const TYPE_SHOP_REUTRN = 3;
 
     private const GOOGLE_GEOCODE_URL = 'https://maps.googleapis.com/maps/api/geocode/json?';
     private $langId;
@@ -35,7 +36,7 @@ class Address extends MyAppModel
     {
         return [
             self::TYPE_USER => Labels::getLabel('LBL_USER_ADDRESS', $langId),
-            self::TYPE_PICKUP => Labels::getLabel('LBL_PICKUP_ADDRESS', $langId)
+            self::TYPE_SHOP_PICKUP => Labels::getLabel('LBL_SHOP_PICKUP_ADDRESS', $langId)
         ];
     }
     
