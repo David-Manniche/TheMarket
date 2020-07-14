@@ -460,6 +460,9 @@ class StripeConnectController extends PaymentMethodBaseController
      */
     public function getCustomer()
     {
+        if (empty($this->stripeConnect->getCustomerId())) {
+            $this->setError(Labels::getLabel('MSG_INVALID_CUSTOMER', $this->siteLangId));
+        }
         $this->stripeConnect->loadCustomer();
         $customerInfo = $this->stripeConnect->getResponse()->toArray();
         $this->set('customerInfo', $customerInfo);
