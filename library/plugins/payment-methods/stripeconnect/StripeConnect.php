@@ -852,7 +852,6 @@ class StripeConnect extends PaymentMethodBase
         }
         $this->customerId = $this->resp->id;
         return $this->updateUserMeta('stripe_customer_id', $this->customerId);
-        ;
     }
 
     /**
@@ -862,8 +861,7 @@ class StripeConnect extends PaymentMethodBase
      */
     public function getCustomerId(): string
     {
-        $customerId = $this->getUserMeta('stripe_customer_id');
-        return !empty($customerId) ? $customerId : $this->customerId;
+        return empty($this->customerId) ? $this->getUserMeta('stripe_customer_id') : $this->customerId;
     }
 
     /**
@@ -1061,7 +1059,7 @@ class StripeConnect extends PaymentMethodBase
     }
 
     /**
-     * getCardToken
+     * generateCardToken
      *
      * @param array $requestParam : [
      *           'number' => '4242424242424242',
@@ -1071,7 +1069,7 @@ class StripeConnect extends PaymentMethodBase
      *       ]
      * @return bool
      */
-    public function getCardToken(array $requestParam): bool
+    public function generateCardToken(array $requestParam): bool
     {
         $this->resp = $this->doRequest(self::REQUEST_CREATE_CARD_TOKEN, $requestParam);
         if (false === $this->resp) {

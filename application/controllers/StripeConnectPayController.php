@@ -4,10 +4,10 @@ class StripeConnectPayController extends PaymentController
 {
     public const KEY_NAME = 'StripeConnect';
     private $stripeConnect;
-    private $settings;
     private $liveMode = '';
     private $paymentAmount = 0;
     private $sourceId = '';
+    private $orderInfo = [];
     
     public function __construct($action)
     {
@@ -112,7 +112,23 @@ class StripeConnectPayController extends PaymentController
         $msg = Labels::getLabel("MSG_REMOVED_SUCCESSFULLY", $this->siteLangId);
         FatUtility::dieJsonSuccess($msg);
     }
-
+    
+    /**
+     * getOrderInfo
+     *
+     * @param  string $orderId
+     * @return array
+     */
+    private function getOrderInfo(string $orderId): array
+    {
+        if (empty($this->orderInfo)) {
+            $orderPaymentObj = new OrderPayment($orderId, $this->siteLangId);
+            $this->paymentAmount = $orderPaymentObj->getOrderPaymentGatewayAmount();
+            $this->orderInfo = $orderPaymentObj->getOrderPrimaryinfo();
+        }
+        return $this->orderInfo;
+    }
+    
     public function charge($orderId)
     {
         $this->orderId = $orderId;
@@ -121,39 +137,33 @@ class StripeConnectPayController extends PaymentController
             $this->setErrorAndRedirect($msg);
         }
 
-        $orderPaymentObj = new OrderPayment($this->orderId, $this->siteLangId);
-        $this->paymentAmount = $orderPaymentObj->getOrderPaymentGatewayAmount();
-        $orderInfo = $orderPaymentObj->getOrderPrimaryinfo();
+        $this->orderInfo = $this->getOrderInfo($this->orderId);
 
-        $orderObj = new Orders();
-        $orderProducts = $orderObj->getChildOrders(array('order_id' => $orderInfo['id']), $orderInfo['order_type'], $orderInfo['order_language_id']);
-
-        if (!$orderInfo['id']) {
+        if (!$this->orderInfo['id']) {
             $msg = Labels::getLabel('MSG_Invalid_Access', $this->siteLangId);
             $this->setErrorAndRedirect($msg);
         }
         
-        if ($orderInfo["order_is_paid"] != Orders::ORDER_IS_PENDING) {
+        if ($this->orderInfo["order_is_paid"] != Orders::ORDER_IS_PENDING) {
             $msg = Labels::getLabel('MSG_INVALID_ORDER._ALREADY_PAID_OR_CANCELLED', $this->siteLangId);
             $this->setErrorAndRedirect($msg);
         }
 
         $frm = $this->getSavedCardPaymentForm();
         if (strtolower($_SERVER['REQUEST_METHOD']) == 'post') {
-            if (false === $this->stripeConnect->createCustomerObject($orderInfo)) {
-                $this->setErrorAndRedirect();
-            }
-
             $cardId = FatApp::getPostedData('card_id', FatUtility::VAR_STRING, '');
             if (!empty($cardId)) {
                 $this->sourceId = $cardId;
             } else {
                 $frm = $this->getCardForm();
                 $cardData = $frm->getFormDataFromArray(FatApp::getPostedData());
+                if (false === $cardData) {
+                    $this->setErrorAndRedirect(current($frm->getValidationErrors()));
+                }
                 $saveCard = FatApp::getPostedData('cc_save_card', FatUtility::VAR_INT, 0);
                 unset($cardData['btn_submit'], $cardData['cc_save_card']);
 
-                if (false === $this->stripeConnect->getCardToken($cardData)) {
+                if (false === $this->stripeConnect->generateCardToken($cardData)) {
                     $this->setErrorAndRedirect();
                 }
                 $cardTokenResponse = $this->stripeConnect->getResponse();
@@ -172,6 +182,12 @@ class StripeConnectPayController extends PaymentController
             $json['msg'] = Labels::getLabel('MSG_SUCCESS', $this->siteLangId);
             $json['redirectUrl'] = UrlHelper::generateFullUrl('custom', 'paymentSuccess', array($this->orderId));
             FatUtility::dieJsonSuccess($json);
+        } else {
+            if (false === $this->stripeConnect->createCustomerObject($this->orderInfo)) {
+                $this->setErrorAndRedirect();
+            }
+            $this->customerId = $this->stripeConnect->getCustomerId();   
+            $this->set('customerId', $this->customerId);
         }
 
         $this->stripeConnect->loadSavedCards();
@@ -179,14 +195,19 @@ class StripeConnectPayController extends PaymentController
         $this->set('savedCards', $savedCards);
 
         $cancelBtnUrl = CommonHelper::getPaymentCancelPageUrl();
-        if ($orderInfo['order_type'] == Orders::ORDER_WALLET_RECHARGE) {
+        if ($this->orderInfo['order_type'] == Orders::ORDER_WALLET_RECHARGE) {
             $cancelBtnUrl = CommonHelper::getPaymentFailurePageUrl();
+        }
+        
+        $this->set('paymentAmount', $this->paymentAmount);
+        $this->set('orderInfo', $this->orderInfo);
+        
+        if (true === MOBILE_APP_API_CALL) {
+            $this->_template->render();
         }
 
         $this->set('frm', $frm);
         $this->set('cancelBtnUrl', $cancelBtnUrl);
-        $this->set('paymentAmount', $this->paymentAmount);
-        $this->set('orderInfo', $orderInfo);
         $this->set('exculdeMainHeaderDiv', true);
         $this->_template->render(true, false);
     }
