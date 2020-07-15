@@ -294,7 +294,7 @@
 
 .shipping-section {
     border: $border;
-    border-radius: 4px;
+    border-radius: $radius4;
     margin-bottom: 1rem;
     .shipping-option {
         padding: 1rem;
@@ -310,7 +310,7 @@
 
 .pick-section {
     border: $border;
-    border-radius: 4px;
+    border-radius: $radius4;
     margin-bottom: 1rem;
     .pickup-option {
         padding: 1rem;
@@ -358,7 +358,7 @@
                 .control-label {
                     background: $bg-white;
                     border: $border;
-                    border-radius: 2px;
+                    border-radius: $radius2;
                     position: relative;
                     cursor: pointer;
                     font-size: 12px;
@@ -378,7 +378,7 @@
     .nav-payments {
         display: flex;
         border: solid 1px $brand-color;
-        border-radius: 4px;
+        border-radius: $radius4;
         margin: 1rem 0;
         li {
             flex: 1;
@@ -419,7 +419,7 @@
 
 .rewards {
     background-color: $gray-color;
-    border-radius: 4px;
+    border-radius: $radius4;
     padding: 1.5rem;
     margin: 2rem 0;
     &__points {
@@ -431,7 +431,7 @@
             align-items: center;
             li {
                 text-align: center;
-                border-radius: 4px;
+                border-radius: $radius4;
                 padding: 1rem;
                 border: $border;
                 background-color: $bg-white;
@@ -453,7 +453,7 @@
 
 .earn-points {
     background-color: $gray-color;
-    border-radius: 4px;
+    border-radius: $radius4;
     padding: 0.7rem;
     text-align: center;
     .svg {

@@ -7,7 +7,7 @@
     font-family: inherit;
     font-size: 0.9em;
     font-weight: normal;
-    border-radius: 4px;
+    border-radius: $radius4;
     input {
         &[type="text"] {
             border: none;
@@ -27,7 +27,7 @@
             background-color: $gray-light;
             border: $border;
             padding: 8px;
-            border-radius: 3px;
+            border-radius: $radius3;
             display: -webkit-box;
             display: -ms-flexbox;
             display: flex;

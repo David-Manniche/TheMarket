@@ -135,7 +135,7 @@
 }
 
 .shop-profile {
-	border-radius: 4px;
+	border-radius: $radius4;
 	border: solid 1px var(--border-color);
 }
 

@@ -1,9 +1,12 @@
 /* Main ul container */
+
 .ml-container {
     margin: 0px;
 }
 
+
 /* List */
+
 .ml-ul {
     overflow: auto;
     list-style-type: none;
@@ -17,7 +20,6 @@
     font-size: 13px;
     font-family: sans-serif;
     cursor: pointer;
-
     /* Non selectable */
     -webkit-user-select: none;
     /* Chrome/Safari */
@@ -25,13 +27,15 @@
     /* Firefox */
     -ms-user-select: none;
     /* IE10+ */
-
     /* Rules below not implemented in browsers yet */
     -o-user-select: none;
     user-select: none;
 }
 
+
 /* List input item */
+
+
 /* .ml-input-container .ml-input-filter {
 	width: 100%;
 	height: 34px;
@@ -42,10 +46,12 @@
 	background-color: #FFFFFF;
 	background-image: none;
 	border: 1px solid #CCCCCC;
-	border-radius: 4px;
+	border-radius: $radius4;
 } */
 
+
 /* List item */
+
 .ml-li {
     /* border-bottom: 1px solid #D0DBE0; */
     padding: 0px 0px 6px 0px;

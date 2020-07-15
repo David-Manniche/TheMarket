@@ -211,7 +211,7 @@
     background: $brand-color;
     color: $brand-color-inverse;
     margin: 0 0 0 3px;
-    border-radius: 4px;
+    border-radius: $radius4;
     -webkit-transition: width 250ms;
     transition: width 250ms;
 }
@@ -492,7 +492,7 @@
     width: 40px;
     height: 31px;
     padding: 1px 2px;
-    border-radius: 4px;
+    border-radius: $radius4;
     border: $border;
     color: #fff;
     cursor: pointer;
@@ -577,7 +577,7 @@
         align-items: center;
         background: #fff;
         border: $border;
-        border-radius: 4px;
+        border-radius: $radius4;
         input[type="text"] {
             background: none;
             border: none;
@@ -618,7 +618,7 @@
         max-width: 610px;
         margin: 0 15px;
         img {
-            border-radius: 4px;
+            border-radius: $radius4;
         }
     }
     figure {
@@ -626,7 +626,7 @@
     }
     .overlay-content {
         background: rgba(255, 255, 255, 0.8);
-        border-radius: 2px;
+        border-radius: $radius2;
         position: absolute;
         bottom: 10px;
         #{$end-direction}: 10px;
@@ -656,7 +656,7 @@
         list-style: none;
         margin-bottom: 5px;
         margin-right: 5px;
-        border-radius: 3px;
+        border-radius: $radius3;
         padding-left: 10px;
         background: #8c8c8c;
         border: solid 1px var(--border-color);

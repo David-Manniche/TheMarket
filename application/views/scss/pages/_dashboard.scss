@@ -387,7 +387,7 @@
 
 .dropdown {
     .dropdown__target {
-        border-radius: 4px;
+        border-radius: $radius4;
         z-index: 10;
         #{$start-direction}: 0;
         top: 110%;
@@ -568,7 +568,7 @@
             transform: rotate(0deg);
             -webkit-transition: .2s ease all;
             transition: .2s ease all;
-            border-radius: 2px;
+            border-radius: $radius2;
             height: 2px;
             width: 24px;
             margin-bottom: 4px;
@@ -608,8 +608,8 @@
 }
 
 .dashboard-menu {
-    color: lighten($body-color, 20%);
-    fill: lighten($body-color, 30%);
+    color: $body-color;
+    fill: currentColor;
     .menu__item {
         overflow: hidden;
         -webkit-transition: all 0.5s ease-in-out;
@@ -935,7 +935,7 @@
     width: 100%;
     padding: 1rem;
     position: relative;
-    border-radius: 4px;
+    border-radius: $radius4;
     color: #fff !important;
     height: 100%;
     position: relative;
@@ -1059,7 +1059,7 @@
     .msg_db {
         width: 70px;
         height: 70px;
-        border-radius: 4px;
+        border-radius: $radius4;
         overflow: hidden;
         margin-#{$end-direction}: 30px;
         -webkit-box-flex: 0;
@@ -1131,7 +1131,7 @@
     background: $secondary-color;
     color: $secondary-color-inverse;
     padding: 5px 0 5px 10px;
-    border-radius: 4px;
+    border-radius: $radius4;
     >a {
         display: block;
         position: relative;
@@ -1156,7 +1156,7 @@
 
 .dashboard-options {
     background: #fff;
-    border-radius: 2px;
+    border-radius: $radius2;
     overflow: hidden;
     li {
         a {
@@ -1311,7 +1311,7 @@
     margin: 10px 0 10px;
     border: 1px dashed rgba(0, 0, 0, 0.2);
     padding: 20px;
-    border-radius: 4px;
+    border-radius: $radius4;
     height: 100%;
     -webkit-transition: all 0.2s linear;
     transition: all 0.2s linear;
@@ -1323,7 +1323,7 @@
         height: 100%;
         background: rgba(0, 0, 0, 0.04);
         padding: 10px;
-        border-radius: 4px;
+        border-radius: $radius4;
         position: relative;
         display: -webkit-box;
         display: -ms-flexbox;
@@ -1396,7 +1396,7 @@
 .highlighted-note {
     background: #ffc;
     border: 1px solid #f2f2ce;
-    border-radius: 2px;
+    border-radius: $radius2;
     font-size: 0.8em;
     color: #575702;
     margin-top: 5px;
@@ -1407,7 +1407,7 @@
 
 .preview {
     background: #f5f5f5;
-    border-radius: 4px;
+    border-radius: $radius4;
     padding: 20px;
     margin-bottom: 1rem;
     .avtar--large {
@@ -1487,7 +1487,7 @@
             position: relative;
             width: 100%;
             border: $border;
-            border-radius: 4px;
+            border-radius: $radius4;
             height: 100px;
             padding: 10px;
             background: #fff;
@@ -1522,7 +1522,7 @@
 
 .items {
     width: 100%;
-    border-radius: 4px;
+    border-radius: $radius4;
     border: $border;
     margin: 0 0 20px;
     position: relative;
@@ -1577,7 +1577,7 @@
         background: #fff;
         width: auto;
         border: $border;
-        border-radius: 4px;
+        border-radius: $radius4;
         padding: 0;
         margin: 0;
         img {
@@ -1618,7 +1618,7 @@
     -webkit-box-align: center;
     -ms-flex-align: center;
     align-items: center;
-    border-radius: 2px;
+    border-radius: $radius2;
     margin: 0 5px;
     .icn {
         svg {
@@ -1640,7 +1640,7 @@
         -webkit-box-align: center;
         -ms-flex-align: center;
         align-items: center;
-        border-radius: 4px;
+        border-radius: $radius4;
         padding: 15px 0;
         background: #fff;
         border-bottom: $border;
@@ -1716,7 +1716,7 @@
     position: relative;
     .box-border {
         border: $border;
-        border-radius: 4px;
+        border-radius: $radius4;
     }
     .slick-arrow {
         position: absolute;
@@ -1725,7 +1725,7 @@
         background-color: rgba(0, 0, 0, 0.10);
         width: 2.5rem;
         height: 100%;
-        border-radius: 2px;
+        border-radius: $radius2;
         border: none;
         text-indent: -999999px;
         z-index: 1;
@@ -1794,7 +1794,7 @@ input.sp-input {
 .address-block {
     border: $border;
     padding: 1rem;
-    border-radius: 4px;
+    border-radius: $radius4;
     display: block;
     height: 100%;
     .radio {

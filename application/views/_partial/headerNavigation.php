@@ -30,17 +30,17 @@
                     }
                 } ?>
             <ul class="navigations <?php echo ($navLinkCount > 4) ? 'justify-content-between' : '' ; ?>">
-                <li class="navchild categories active">
+                <li class="navchild categories ">
                     <a href="#">
-                        <i class="c-hamburger js-hamburger"> <span
+                        Categories <i class="c-hamburger js-hamburger"> <span
                                 class="c-hamburger__line c-hamburger__line--top"></span>
                             <span class="c-hamburger__line c-hamburger__line--middle"></span>
                             <span class="c-hamburger__line c-hamburger__line--bottom"></span>
-                        </i> Categories</a>
+                        </i></a>
 
                     <div class="vertical-menu">
                         <ul class="menu">
-                            <li><a href="#">MEGA MENU 1</a>
+                            <li class="has-child"><a href="#">Mega menu 01</a>
                                 <div class="megadrop">
                                     <ul class="sublinks">
                                         <li class="head"><a data-org-url="/yokart/category/view/123"
@@ -92,12 +92,11 @@
                                                 </li>
                                             </ul>
                                         </li>
-                                    </ul> 
+                                    </ul>
 
                                 </div>
-
-                            </li> 
-                            <li><a href="#">MEGA MENU 1</a>
+                            </li>
+                            <li class="has-child"><a href="#">Mega menu 01</a>
                                 <div class="megadrop">
                                     <ul class="sublinks">
                                         <li class="head"><a data-org-url="/yokart/category/view/123"
@@ -149,11 +148,12 @@
                                                 </li>
                                             </ul>
                                         </li>
-                                    </ul> 
+                                    </ul>
 
                                 </div>
 
-                            </li>   <li><a href="#">MEGA MENU 1</a>
+                            </li>
+                            <li class="has-child"><a href="#">Mega menu 01</a>
                                 <div class="megadrop">
                                     <ul class="sublinks">
                                         <li class="head"><a data-org-url="/yokart/category/view/123"
@@ -205,11 +205,12 @@
                                                 </li>
                                             </ul>
                                         </li>
-                                    </ul> 
+                                    </ul>
 
                                 </div>
 
-                            </li>   <li><a href="#">MEGA MENU 1</a>
+                            </li>
+                            <li class="has-child"><a href="#">Mega menu 01</a>
                                 <div class="megadrop">
                                     <ul class="sublinks">
                                         <li class="head"><a data-org-url="/yokart/category/view/123"
@@ -261,11 +262,12 @@
                                                 </li>
                                             </ul>
                                         </li>
-                                    </ul> 
+                                    </ul>
 
                                 </div>
 
-                            </li>   <li><a href="#">MEGA MENU 1</a>
+                            </li>
+                            <li class="has-child"><a href="#">Mega menu 01</a>
                                 <div class="megadrop">
                                     <ul class="sublinks">
                                         <li class="head"><a data-org-url="/yokart/category/view/123"
@@ -317,67 +319,13 @@
                                                 </li>
                                             </ul>
                                         </li>
-                                    </ul> 
+                                    </ul>
 
                                 </div>
 
-                            </li>   <li><a href="#">MEGA MENU 1</a>
-                                <div class="megadrop">
-                                    <ul class="sublinks">
-                                        <li class="head"><a data-org-url="/yokart/category/view/123"
-                                                href="/yokart/clothing">Clothing</a>
-                                            <ul>
-                                                <li><a data-org-url="/yokart/category/view/123"
-                                                        href="/yokart/jeans">Jeans</a>
-                                                </li>
-                                                <li><a data-org-url="/yokart/category/view/123"
-                                                        href="/yokart/shirts">Shirts</a>
-                                                </li>
-                                                <li><a data-org-url="/yokart/category/view/123"
-                                                        href="/yokart/clothing-trousers">Trousers</a>
-                                                </li>
-                                                <li><a data-org-url="/yokart/category/view/123"
-                                                        href="/yokart/clothing-jackets">Jackets</a>
-                                                </li>
-                                                <li><a data-org-url="/yokart/category/view/123"
-                                                        href="/yokart/clothing-fragrances-180">Fragrances</a>
-                                                </li>
-                                            </ul>
-                                        </li>
-                                        <li class="head"><a data-org-url="/yokart/category/view/124"
-                                                href="/yokart/men-footwears">Footwears</a>
-                                            <ul>
-                                                <li><a data-org-url="/yokart/category/view/124"
-                                                        href="/yokart/men-footwears-casual-shoes">Casual shoes</a>
-                                                </li>
-                                                <li><a data-org-url="/yokart/category/view/124"
-                                                        href="/yokart/men-footwears-formal-shoes">Formal shoes</a>
-                                                </li>
-                                                <li><a data-org-url="/yokart/category/view/124"
-                                                        href="/yokart/men-sports">Sports shoes</a>
-                                                </li>
-                                            </ul>
-                                        </li>
-                                        <li class="head"><a data-org-url="/yokart/category/view/160"
-                                                href="/yokart/men-sports-wear">Sports Wear</a>
-                                            <ul>
-                                                <li><a data-org-url="/yokart/category/view/160"
-                                                        href="/yokart/men-sports-wear-sports-t-shirts">Sports
-                                                        T-Shirts</a>
-                                                </li>
-                                                <li><a data-org-url="/yokart/category/view/160"
-                                                        href="/yokart/men-sports-wear-track-pants">Track Pants</a>
-                                                </li>
-                                                <li><a data-org-url="/yokart/category/view/160"
-                                                        href="/yokart/men-sports-wear-track-suits">Track Suits</a>
-                                                </li>
-                                            </ul>
-                                        </li>
-                                    </ul> 
-
-                                </div>
-
-                            </li> 
+                            </li>
+                            <li><a href="#">Mega menu 01</a></li>
+                            <li class="all-categories"><a href="#">All Categories</a></li>
 
                         </ul>
                     </div>
@@ -421,7 +369,7 @@
                                             $subCatUrl = CommonHelper::generateUrl('category', 'view', array($children['prodcat_id']));
                                             $subCatOrgUrl = CommonHelper::generateUrl('category', 'view', array($children['prodcat_id']), '', null, false, $getOrgUrl);
                                             ?>
-                                        <li><a data-org-url="<?php echo $subCatOrgUrl; ?>"
+                                        <li class="head"><a data-org-url="<?php echo $subCatOrgUrl; ?>"
                                                 href="<?php echo $subCatUrl;?>"><?php echo $children['prodcat_name'];?></a>
                                             <?php if (isset($children['children']) && count($children['children'])>0) { ?>
                                             <ul>

@@ -6,27 +6,24 @@
     right: 0;
     margin: 0 auto;
     text-align: center;
-
     li {
         vertical-align: middle;
         display: inline-block;
         margin: 0 3px;
         width: 13px;
         height: 3px;
-        border-radius: 1px;
+        border-radius: $radius1;
         cursor: pointer;
         background: #d2d2d2;
         -webkit-transition: all 0.5s ease-in-out;
         transition: all 0.5s ease-in-out;
-
         button {
             background: none;
             border: none;
             text-indent: -9999999px;
         }
-
         &.slick-active {
-            background:$brand-color;
+            background: $brand-color;
             width: 30px;
             border-radius: 15px;
         }

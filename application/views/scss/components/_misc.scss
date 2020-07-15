@@ -26,6 +26,10 @@ body {
     font-family: $family-secondary;
 }
 
+:focus {
+    outline: 0 !important;
+}
+
 h1,
 h2,
 h3,
@@ -85,14 +89,11 @@ a:hover {
     vertical-align: top;
 }
 
-.divider,
-{
+.divider {
     height: 1px;
     background: $border-color;
     margin: 15px 0;
 }
-
-hr {}
 
 .note {
     font-weight: 300;
@@ -220,7 +221,7 @@ hr {}
     color: #6c6c6c;
     font-size: 0.85em;
     line-height: 1.2;
-    border-radius: 4px;
+    border-radius: $radius4;
     padding: 0.8rem;
 }
 
@@ -237,7 +238,7 @@ hr {}
     overflow: hidden;
     overflow-y: auto;
     box-shadow: 0 0 35px 10px rgba(0, 0, 0, 0.1);
-    border-radius: 4px;
+    border-radius: $radius4;
     font-size: 0.8rem !important;
     border: $border;
     .ui-menu-item {
@@ -245,7 +246,6 @@ hr {}
         .ui-menu-item-wrapper {
             padding: 0.5rem;
             border: none !important;
-            &.ui-state-active {}
         }
         &:last-child {
             border-bottom: none;

@@ -1,4 +1,5 @@
 /*! nouislider - 14.1.1 - 12/15/2019 */
+
 .noUi-target,
 .noUi-target * {
     -webkit-touch-callout: none;
@@ -117,7 +118,7 @@
 
 .noUi-target {
     background: #FAFAFA;
-    border-radius: 2px;
+    border-radius: $radius2;
     border: 1px solid #D3D3D3;
     box-shadow: inset 0 1px 1px #F0F0F0, 0 3px 6px -5px #BBB
 }
@@ -291,7 +292,7 @@
     display: block;
     position: absolute;
     border: 1px solid #D9D9D9;
-    border-radius: 3px;
+    border-radius: $radius3;
     background: #fff;
     color: #000;
     padding: 5px;
