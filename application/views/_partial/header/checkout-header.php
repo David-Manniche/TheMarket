@@ -43,7 +43,7 @@
                 } ?>
 
                 <a href="<?php echo $backUrl; ?>"
-                    class="btn btn-outline-primary btn--sm back-store"><?php echo Labels::getLabel('LBL_Back', $siteLangId); ?></a>
+                    class="btn btn-outline-primary btn-sm back-store"><?php echo Labels::getLabel('LBL_Back', $siteLangId); ?></a>
                 <?php if ($controllerName == 'checkout' || $controllerName == 'subscriptioncheckout') {   ?>
                 <div class="checkout-flow">
                     <ul>

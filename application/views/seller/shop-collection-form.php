@@ -3,13 +3,13 @@
     $shopLogoFrm->developerTags['colClassPrefix'] = 'col-md-';
     $shopLogoFrm->developerTags['fld_default_col'] = 12;
     $fld = $shopLogoFrm->getField('shop_logo');
-    $fld->addFieldTagAttribute('class', 'btn btn-primary btn--sm');
+    $fld->addFieldTagAttribute('class', 'btn btn-primary btn-sm');
 
     $shopBannerFrm->setFormTagAttribute('onsubmit', 'setupShopMedia(this); return(false);');
     $shopBannerFrm->developerTags['colClassPrefix'] = 'col-md-';
     $shopBannerFrm->developerTags['fld_default_col'] = 12;
     $fld = $shopBannerFrm->getField('shop_banner');
-    $fld->addFieldTagAttribute('class', 'btn btn-primary btn--sm');
+    $fld->addFieldTagAttribute('class', 'btn btn-primary btn-sm');
 
 ?>
 <div class="col-lg-12 col-md-12">
@@ -17,7 +17,7 @@
         <div class="col"><h5 class="cards-title"><?php echo Labels::getLabel('LBL_Shop_Collections', $siteLangId); ?></h5></div>
         <div class="content-header-right col-auto">
             <div class="btn-group">
-                <a href="javascript:void(0)" onClick="shopCollections(this)" class="btn btn-outline-primary btn--sm"><?php echo Labels::getLabel('LBL_Back_to_Collections', $siteLangId);?></a>
+                <a href="javascript:void(0)" onClick="shopCollections(this)" class="btn btn-outline-primary btn-sm"><?php echo Labels::getLabel('LBL_Back_to_Collections', $siteLangId);?></a>
             </div>
         </div>
     </div>
@@ -39,7 +39,7 @@
                             </div>
                             <small class="form-text text-muted"><?php echo $bannerTypeArr[$img['afile_lang_id']];?></small>
                             <div class="btngroup--fix">
-                                <a class="btn btn-primary btn--sm" href="javascript:void(0);"
+                                <a class="btn btn-primary btn-sm" href="javascript:void(0);"
                                     onClick="removeShopBanner(<?php echo $img['afile_record_id']; ?>,<?php echo $img['afile_lang_id']; ?>)"><?php echo Labels::getLabel('LBL_Remove', $siteLangId);?></a>
                             </div>
 
@@ -58,7 +58,7 @@
                                             alt="<?php echo Labels::getLabel('LBL_Shop_Logo', $siteLangId);?>"></div>
                                     <small class="form-text text-muted"><?php echo $bannerTypeArr[$img['afile_lang_id']];?></small>
                                     <div class="btngroup--fix">
-                                        <a class="btn btn-primary btn--sm" href="javascript:void(0);"
+                                        <a class="btn btn-primary btn-sm" href="javascript:void(0);"
                                             onClick="removeShopLogo(<?php echo $img['afile_record_id']; ?>,<?php echo $img['afile_lang_id']; ?>)"><?php echo Labels::getLabel('LBL_Remove', $siteLangId);?></a>
                                     </div>
                                 </div>

@@ -21,7 +21,7 @@
                     </div>
                 </div>
                 <div class="col-md-auto col-sm-auto mt-3 mt-md-0"><a href="<?php echo CommonHelper::generateUrl('Products', 'view', array($product['selprod_id'])); ?>"
-                        class="btn btn-outline-white btn--sm"><?php echo Labels::getLabel('Lbl_Back_to_Product', $siteLangId); ?></a></div>
+                        class="btn btn-outline-white btn-sm"><?php echo Labels::getLabel('Lbl_Back_to_Product', $siteLangId); ?></a></div>
 
 
             </div>

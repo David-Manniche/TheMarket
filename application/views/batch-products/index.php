@@ -11,7 +11,7 @@
 			<div class="cards">
 				<div class="cards-header">
 					<h5 class="cards-title"><?php echo Labels::getLabel('LBL_Batch_Listing',$siteLangId); ?></h5>
-					<div class="action">	<a href="javascript:void(0)" class="btn btn-primary btn--sm" title="<?php echo Labels::getLabel('LBL_Add/Create_New_Batch', $siteLangId); ?>" onclick="batchForm(0)"><?php echo Labels::getLabel('LBL_Add/Create_New_Batch', $siteLangId); ?> </a>
+					<div class="action">	<a href="javascript:void(0)" class="btn btn-primary btn-sm" title="<?php echo Labels::getLabel('LBL_Add/Create_New_Batch', $siteLangId); ?>" onclick="batchForm(0)"><?php echo Labels::getLabel('LBL_Add/Create_New_Batch', $siteLangId); ?> </a>
 					</div>
 				</div>
 				<div class="cards-content ">

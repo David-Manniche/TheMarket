@@ -22,6 +22,7 @@ $border-color:#dee2e6;
 $border-dark-color: var(--border-dark-color);
 $border-light-color: var(--border-light-color);
 $border: solid 1px $border-color;
+$border-light: solid 1px lighten($border-color, 5);
 $border-transparent: solid 1px transparent;
 $font-color:var(--font-color);
 $font-color2:var(--font-color2);

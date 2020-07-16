@@ -99,7 +99,7 @@ defined('SYSTEM_INIT') or die('Invalid Usage.'); ?>
                     <span>
                         <?php echo Labels::getLabel("LBL_Coupon", $siteLangId); ?> "<strong><?php echo $cartSummary['cartDiscounts']['coupon_code']; ?></strong>" <?php echo Labels::getLabel("LBL_Applied", $siteLangId); ?>
                     </span>
-                    <a href="javascript:void(0)" onClick="removePromoCode()" class="btn btn-primary btn--sm">
+                    <a href="javascript:void(0)" onClick="removePromoCode()" class="btn btn-primary btn-sm">
                         <?php echo Labels::getLabel("LBL_Remove", $siteLangId); ?>
                     </a>
                 </div>

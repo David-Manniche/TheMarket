@@ -499,10 +499,10 @@
 }
 
 .actions {
-    display: flex;
+    display: inline-flex;
     align-items: center;
     vertical-align: top;
-    margin: 0 0;
+    margin: 0;
     @include media-breakpoint-down(md) {
         & {
             flex-wrap: wrap;
@@ -515,24 +515,17 @@
         a {
             display: block;
             background: none;
-            border-radius: $radius4;
             padding: 5px;
-            width: 26px;
-            height: 26px;
+            width: 30px;
+            height: 30px;
             line-height: 1.4;
             text-align: center;
             color: $body-color;
-            font-size: 1em;
+            font-size: 0.8rem;
             border: $border;
             border-radius: $radius2;
-            display: -webkit-box;
-            display: -ms-flexbox;
             display: flex;
-            -webkit-box-align: center;
-            -ms-flex-align: center;
             align-items: center;
-            -webkit-box-pack: center;
-            -ms-flex-pack: center;
             justify-content: center;
             &.icn-highlighted {
                 border: none;

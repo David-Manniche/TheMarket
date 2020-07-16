@@ -15,7 +15,7 @@
 					<div class="cards-header">
 						<h5 class="cards-title "><?php echo ucfirst($promotionDetails['promotion_name']);?></h5>
 						<div class="btn-group">
-							<a href="<?php echo CommonHelper::generateUrl('advertiser','promotions');?>" class="btn btn-outline-primary btn--sm"><?php echo Labels::getLabel('LBL_My_promotions',$siteLangId);?></a>
+							<a href="<?php echo CommonHelper::generateUrl('advertiser','promotions');?>" class="btn btn-outline-primary btn-sm"><?php echo Labels::getLabel('LBL_My_promotions',$siteLangId);?></a>
 						</div>
 					</div>
 					<div class="cards-content ">

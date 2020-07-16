@@ -21,7 +21,7 @@ $this->includeTemplate('_partial/dashboardNavigation.php'); ?>
                         </div>
                         <div class="cards-content ">
                             <div class="stats">
-                                <a href="javascript:void(0)" class="btn btn-outline-primary btn--sm" title="<?php echo $referralTrackingUrl; ?>" onclick="copy($(this))"><?php echo Labels::getLabel('LBL_Click_to_copy', $siteLangId)?></a>
+                                <a href="javascript:void(0)" class="btn btn-outline-primary btn-sm" title="<?php echo $referralTrackingUrl; ?>" onclick="copy($(this))"><?php echo Labels::getLabel('LBL_Click_to_copy', $siteLangId)?></a>
                             </div>
                         </div>
                     </div>

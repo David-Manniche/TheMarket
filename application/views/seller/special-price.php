@@ -65,7 +65,7 @@
                                 <div class="col-auto"></div>
                                  <div class="col-auto">
                                     <div class="btn-group">
-                                        <a class="btn btn-primary btn--sm formActionBtn-js formActions-css" title="<?php echo Labels::getLabel('LBL_Delete_Special_Price', $siteLangId); ?>" onclick="deleteSpecialPriceRows()" href="javascript:void(0)">							
+                                        <a class="btn btn-primary btn-sm formActionBtn-js formActions-css" title="<?php echo Labels::getLabel('LBL_Delete_Special_Price', $siteLangId); ?>" onclick="deleteSpecialPriceRows()" href="javascript:void(0)">							
 										<i class="fa fa-trash"></i>
 										</a>
                                     </div>

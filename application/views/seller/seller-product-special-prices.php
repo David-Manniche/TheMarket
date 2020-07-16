@@ -8,10 +8,10 @@
             <h5 class="cards-title"><?php echo Labels::getLabel('LBL_Special_price', $siteLangId); ?>
             </h5>
             <div class="action">
-                <a class="btn btn-primary btn--sm" href="javascript:void(0);" onClick='sellerProductSpecialPriceForm(<?php echo $selprod_id; ?>, 0);'>
+                <a class="btn btn-primary btn-sm" href="javascript:void(0);" onClick='sellerProductSpecialPriceForm(<?php echo $selprod_id; ?>, 0);'>
                     <?php echo Labels::getLabel('LBL_Add_New_Special_Price', $siteLangId); ?>
                 </a>
-                <!-- <a class="btn btn-outline-primary btn--sm" href="<?php echo CommonHelper::generateUrl('Seller', 'specialPrice', array($selprod_id)); ?>">
+                <!-- <a class="btn btn-outline-primary btn-sm" href="<?php echo CommonHelper::generateUrl('Seller', 'specialPrice', array($selprod_id)); ?>">
                     <?php echo Labels::getLabel('LBL_MANAGE_SPECIAL_PRICES', $siteLangId)?>
                 </a> -->
             </div>

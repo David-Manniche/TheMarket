@@ -16,6 +16,13 @@
             min-height: 170px;
         }
     }
+    &-justified {
+        tr {
+            td:last-child {
+                text-align: #{$end-direction};
+            }
+        }
+    }
     tr {
         &:last-child {
             td {
@@ -64,7 +71,6 @@
             border-bottom: $border;
         }
     }
-    tfooter {}
     table {
         font-size: 100%;
     }

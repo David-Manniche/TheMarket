@@ -439,10 +439,10 @@ $buyQuantity->addFieldTagAttribute('data-page', 'product-view');
                                     <div class="col-auto">
                                         <?php if (!UserAuthentication::isUserLogged() || (UserAuthentication::isUserLogged() && ((User::isBuyer()) || (User::isSeller())) && (UserAuthentication::getLoggedUserId()!=$shop['shop_user_id']))) { ?>
                                         <a href="<?php echo CommonHelper::generateUrl('shops', 'sendMessage', array($shop['shop_id'],$product['selprod_id'])); ?>"
-                                            class="btn btn-primary btn--secondary btn-outline-primary  btn--sm"><?php echo Labels::getLabel('LBL_Ask_Question', $siteLangId); ?></a>
+                                            class="btn btn-primary btn--secondary btn-outline-primary  btn-sm"><?php echo Labels::getLabel('LBL_Ask_Question', $siteLangId); ?></a>
                                         <?php }?>
                                         <?php if (count($product['moreSellersArr'])>0) { ?>
-                                        <a href="<?php echo CommonHelper::generateUrl('products', 'sellers', array($product['selprod_id']));?>" class="btn btn-primary btn--sm "><?php echo Labels::getLabel('LBL_All_Sellers', $siteLangId);?></a>
+                                        <a href="<?php echo CommonHelper::generateUrl('products', 'sellers', array($product['selprod_id']));?>" class="btn btn-primary btn-sm "><?php echo Labels::getLabel('LBL_All_Sellers', $siteLangId);?></a>
                                         <?php } ?>
                                     </div>
                                 </div>

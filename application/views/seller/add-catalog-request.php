@@ -9,7 +9,7 @@ $frm->setFormTagAttribute('class','form form--horizontal'); */
 <div class="box__head">
    <h4><?php echo Labels::getLabel('LBL_Catalog_request_form', $siteLangId );?></h4>
 	<div class="btn-group">
-		<a href="javascript:void(0);" onClick="reloadList()" class="btn btn-outline-primary btn--sm"><?php echo Labels::getLabel('LBL_Back',$siteLangId); ?></a>
+		<a href="javascript:void(0);" onClick="reloadList()" class="btn btn-outline-primary btn-sm"><?php echo Labels::getLabel('LBL_Back',$siteLangId); ?></a>
 	</div>
 </div>
 <div class="box__body">

@@ -7,7 +7,7 @@
         <?php if ($canEdit) { ?>
         <div class="content-header-right col-auto">
             <div class="btn-group">
-                <a href="javascript:void(0)" class="btn btn-outline-primary btn--sm" onclick="addForm(0)"><?php echo Labels::getLabel('LBL_Add_Social_Platform', $siteLangId);?></a>
+                <a href="javascript:void(0)" class="btn btn-outline-primary btn-sm" onclick="addForm(0)"><?php echo Labels::getLabel('LBL_Add_Social_Platform', $siteLangId);?></a>
             </div>
         </div>
         <?php }?>

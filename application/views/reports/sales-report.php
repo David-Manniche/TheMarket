@@ -20,7 +20,7 @@
                     <div class="cards">
                         <div class="cards-header">
                             <h5 class="cards-title"><?php echo Labels::getLabel('LBL_Sales_Report', $siteLangId);?></h5>
-                            <div class="action"><?php echo '<a href="javascript:void(0)" onClick="exportSalesReport()" class="btn btn--secondary btn-block btn--sm">'.Labels::getLabel('LBL_Export', $siteLangId).'</a>'; ?></div>
+                            <div class="action"><?php echo '<a href="javascript:void(0)" onClick="exportSalesReport()" class="btn btn--secondary btn-block btn-sm">'.Labels::getLabel('LBL_Export', $siteLangId).'</a>'; ?></div>
                         </div>
                         <div class="cards-content">
                             <?php if (empty($orderDate)) { ?>

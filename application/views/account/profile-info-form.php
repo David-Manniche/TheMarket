@@ -48,7 +48,7 @@ $userCompFld->developerTags['col'] = 12;
 $imgFrm->setFormTagAttribute('action', CommonHelper::generateUrl('Account', 'uploadProfileImage'));
 /* $imgFrm->setFormTagAttribute('id', 'imageFrm');
 $fld = $imgFrm->getField('user_profile_image');
-$fld->addFieldTagAttribute('class','btn btn-primary btn--sm'); */
+$fld->addFieldTagAttribute('class','btn btn-primary btn-sm'); */
 ?>
 <div class="row">
     <div class="col-xl-4">
@@ -71,15 +71,15 @@ $fld->addFieldTagAttribute('class','btn btn-primary btn--sm'); */
 						  <div class="btn-group">
                             <?php echo $imgFrm->getFormTag(); ?>
                             <?php if ($mode == 'Edit') { ?>
-                                <a class="btn btn-primary btn--sm" href="javascript:void(0)" onClick="popupImage()"><?php echo Labels::getLabel('LBL_Change', $siteLangId);?></a>
+                                <a class="btn btn-primary btn-sm" href="javascript:void(0)" onClick="popupImage()"><?php echo Labels::getLabel('LBL_Change', $siteLangId);?></a>
                             <?php } else { ?>
-                                <label class="btn btn-primary btn--sm" title="Upload image file">
+                                <label class="btn btn-primary btn-sm" title="Upload image file">
                                   <input type="file" class="sr-only" id="profileInputImage" name="file" accept="image/*" onChange="popupImage(this)">
                                   <?php echo Labels::getLabel('LBL_Upload', $siteLangId); ?>
                                 </label>
                             <?php } ?>
                             <?php if ($mode == 'Edit') { ?>
-                            <a class="btn btn-outline-primary btn--sm" href="javascript:void(0)" onClick="removeProfileImage()"><?php echo Labels::getLabel('LBL_Remove', $siteLangId);?></a>
+                            <a class="btn btn-outline-primary btn-sm" href="javascript:void(0)" onClick="removeProfileImage()"><?php echo Labels::getLabel('LBL_Remove', $siteLangId);?></a>
                             <?php }?>
                             </form>
                             <?php echo $imgFrm->getExternalJS();?>

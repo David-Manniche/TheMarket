@@ -4,18 +4,35 @@ $searchFrm->setFormTagAttribute('onSubmit', 'searchProfile(this); return false;'
 $searchFrm->setFormTagAttribute('class', 'form ');
 $searchFrm->developerTags['colClassPrefix'] = 'col-md-';
 $searchFrm->developerTags['fld_default_col'] = 6;
+
+$keywordFld = $searchFrm->getField('keyword');
+$keywordFld->setWrapperAttribute('class', 'col-lg-4');
+$keywordFld->developerTags['col'] = 4;
+$keywordFld->developerTags['noCaptionTag'] = true;
+
+$submitBtnFld = $searchFrm->getField('btn_submit');
+$submitBtnFld->setFieldTagAttribute('class', 'btn btn-primary btn-block ');
+$submitBtnFld->setWrapperAttribute('class', 'col-lg-2');
+$submitBtnFld->developerTags['col'] = 2;
+$submitBtnFld->developerTags['noCaptionTag'] = true;
+
+$cancelBtnFld = $searchFrm->getField('btn_clear');
+$cancelBtnFld->setFieldTagAttribute('class', 'btn btn-outline-primary btn-block');
+$cancelBtnFld->setWrapperAttribute('class', 'col-lg-2');
+$cancelBtnFld->developerTags['col'] = 2;
+$cancelBtnFld->developerTags['noCaptionTag'] = true;
 ?>
 <main id="main-area" class="main" role="main">
     <div class="content-wrapper content-space">
-        <div class="content-header row justify-content-between mb-3">
-            <div class="col-md-auto">
-                <h2 class="cards-title"><?php echo Labels::getLabel('LBL_Shipping_Profiles', $siteLangId);?>
+        <div class="content-header row ">
+            <div class="col">
+                <h2 class="content-header-title"><?php echo Labels::getLabel('LBL_Shipping_Profiles', $siteLangId);?>
                 </h2>
             </div>
             <div class="col-auto">
                 <div class="content-header-right">
                     <a href="<?php echo CommonHelper::generateUrl('shippingProfile', 'form',[0]);?>"
-                        class="btn btn-outline-primary btn--sm"><?php echo Labels::getLabel('LBL_Create_Profile', $siteLangId);?></a>
+                        class="btn btn-outline-primary btn-sm"><?php echo Labels::getLabel('LBL_Create_Profile', $siteLangId);?></a>
                 </div>
             </div>
         </div>
@@ -25,16 +42,11 @@ $searchFrm->developerTags['fld_default_col'] = 6;
                     <div class="cards">
                         <div class="cards-content">
                             <div class="replaced">
-
                                 <?php
                                 $submitFld = $searchFrm->getField('btn_submit');
-                                $submitFld->setFieldTagAttribute('class', 'btn btn-primary');
-								$submitFld->developerTags['col'] = 3;
 
                                 $fldClear= $searchFrm->getField('btn_clear');
-                                $fldClear->setFieldTagAttribute('class', 'btn  btn-primary ml-2');
                                 $fldClear->setFieldTagAttribute('onclick', 'clearSearch()');
-								$submitFld->developerTags['col'] = 3;
                                 echo $searchFrm->getFormHtml();
                                 ?>
                             </div>
@@ -48,7 +60,7 @@ $searchFrm->developerTags['fld_default_col'] = 6;
                     <div class="cards">
                         <div class="cards-content">
                             <div id="profilesListing">
-                                <hr />
+                              
                             </div>
                         </div>
                     </div>

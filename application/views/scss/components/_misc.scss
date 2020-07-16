@@ -159,6 +159,13 @@ a:hover {
     }
 }
 
+.list-inline {
+    display: flex;
+    li {
+        margin-#{$end-direction}: 10px;
+    }
+}
+
 .focused-div {
     height: auto;
     cursor: text;
@@ -272,4 +279,55 @@ a:hover {
     height: 100%;
     display: flex;
     align-items: center;
+}
+
+.list-shipping {
+    .list-group-item {
+        padding: 1rem;
+    }
+    .shipping-states {
+        display: flex;
+        .box-icon {
+            border-radius: $radius3;
+            background-color: $bg-gray;
+            padding: 5px 7px;
+            margin-#{$end-direction}: 8px;
+        }
+        .detail {
+            h6 {
+                margin: 0;
+                font-size: 0.85rem;
+            }
+            p {
+                font-size: 0.75rem;
+            }
+        }
+    }
+    .table-rates {
+        td {
+            padding: 0.6rem;
+        }
+    }
+}
+
+.list-country-zone {
+    li {
+        margin: 5px 0;
+        padding: 5px 0;
+        border-bottom: $border-light;
+        font-size: 0.8rem;
+        &:last-child {
+            padding-bottom: 0;
+            border-bottom: 0;
+            margin-bottom: 0;
+        }
+        ul {
+            font-size: 0.75rem;
+            margin-#{$start-direction}: 1rem;
+            color: $txt-gray;
+        }
+    }
+    .checkbox {
+        font-size: inherit;
+    }
 }

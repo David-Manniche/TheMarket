@@ -6,7 +6,7 @@ $arr_flds = array(
     'actions' => ''
 );
 
-$tbl = new HtmlElement('table', array('width' => '100%', 'class' => 'table'));
+$tbl = new HtmlElement('table', array('width' => '100%', 'class' => 'table table-justified '));
 $th = $tbl->appendElement('thead')->appendElement('tr', array('class' => ''));
 foreach ($arr_flds as $key => $val) {
     $th->appendElement('th', array(), $val);

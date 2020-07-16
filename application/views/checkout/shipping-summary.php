@@ -10,7 +10,7 @@
     $shippingapi_idFld->developerTags['col'] = 6;
 
     $btnSubmit = $frmShippingApi->getField('btn_submit');
-    $btnSubmit->setFieldTagAttribute('class','btn btn-primary btn--sm btn--h-large');
+    $btnSubmit->setFieldTagAttribute('class','btn btn-primary btn-sm btn--h-large');
     echo $frmShippingApi->getFormHtml(); ?>
 </div>
 <div id="shipping-summary-inner"></div>

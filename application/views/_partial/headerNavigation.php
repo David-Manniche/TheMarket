@@ -401,7 +401,7 @@
                                         } ?>
                                     </ul>
                                     <?php if (count($link['children']) > 8) { ?>
-                                    <a class="btn btn--sm btn--secondary ripplelink "
+                                    <a class="btn btn-sm btn--secondary ripplelink "
                                         data-org-url="<?php echo $OrgnavUrl; ?>"
                                         href="<?php echo $navUrl; ?>"><?php echo Labels::getLabel('LBL_View_All', $siteLangId);?></a>
                                     <?php } ?>
@@ -488,7 +488,7 @@
                                     </ul>
                                     <?php /* <a data-org-url="<?php echo CommonHelper::generateUrl('category', '', array(), '', null, false, $getOrgUrl); ?>"
                                     href="<?php echo CommonHelper::generateUrl('category');?>"
-                                    class="btn btn--sm btn--secondary ripplelink
+                                    class="btn btn-sm btn--secondary ripplelink
                                     "><?php Labels::getLabel('LBL_View_All_Categories', $siteLangId);?></a> */ ?>
                                 </div>
                             </div>
