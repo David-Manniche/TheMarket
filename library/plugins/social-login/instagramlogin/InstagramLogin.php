@@ -49,7 +49,7 @@ class InstagramLogin extends SocialMediaAuthBase
      */
     public function getRedirectUri(): string
     {
-        return !empty($this->redirectUri) ? $this->redirectUri : UrlHelper::generateFullUrl() . '/public/instalogin.php';
+        return !empty($this->redirectUri) ? $this->redirectUri : UrlHelper::generateFullUrl('','', [], CONF_WEBROOT_URL) . 'public/instalogin.php';
     }
 
     /**

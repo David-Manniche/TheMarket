@@ -1,20 +1,120 @@
 <?php
 
-class Address
+class Address extends MyAppModel
 {
+    public const DB_TBL = 'tbl_addresses';
+    public const DB_TBL_PREFIX = 'addr_';
+
+    public const TYPE_USER = 1;
+    public const TYPE_SHOP_PICKUP = 2;
+    public const TYPE_SHOP_REUTRN = 3;
+
     private const GOOGLE_GEOCODE_URL = 'https://maps.googleapis.com/maps/api/geocode/json?';
     private $langId;
-
+    
     /**
-    * __construct
-    *
-    * @return void
-    */
-    public function __contruct(int $langId = 0)
+     * __contruct
+     *
+     * @param  int $addressId
+     * @param  int $langId
+     * @return void
+     */
+    public function __construct(int $addressId = 0, int $langId = 0)
     {
         $this->langId = 0 < $langId ? $langId : CommonHelper::getLangId();
+        parent::__construct(self::DB_TBL, self::DB_TBL_PREFIX . 'id', $addressId);
+        $this->objMainTableRecord->setSensitiveFields([self::DB_TBL_PREFIX . 'id']);
     }
+    
+    /**
+     * getTypeArr
+     *
+     * @param  int $langId
+     * @return array
+     */
+    public static function getTypeArr(int $langId): array
+    {
+        return [
+            self::TYPE_USER => Labels::getLabel('LBL_USER_ADDRESS', $langId),
+            self::TYPE_SHOP_PICKUP => Labels::getLabel('LBL_SHOP_PICKUP_ADDRESS', $langId)
+        ];
+    }
+    
+    /**
+     * getDefaultByRecordId
+     *
+     * @param  int $type
+     * @param  int $recordId
+     * @param  int $langId
+     * @return array
+     */
+    public static function getDefaultByRecordId(int $type, int $recordId, int $langId = 0): array
+    {
+        $srch = new AddressSearch($langId);
+        $srch->addCondition(self::tblFld('type'), '=', $type);
+        $srch->addCondition(self::tblFld('record_id'), '=', $recordId);
+        $srch->setPageSize(1);
+        $srch->doNotCalculateRecords();
+        $srch->addOrder(self::tblFld('is_default'), 'DESC');
+        $rs = $srch->getResultSet();
+        return (array) FatApp::getDb()->fetch($rs);
+    }
+    
+    /**
+     * getData
+     *
+     * @param  int $type
+     * @param  int $recordId
+     * @param  int $isDefault
+     * @return array
+     */
+    public function getData(int $type, int $recordId, int $isDefault = 0) : array
+    {
+        $srch = new AddressSearch($this->langId);
+        $srch->joinCountry();
+        $srch->joinState();
+        $srch->doNotCalculateRecords();
+        $srch->doNotLimitRecords();
+        $srch->addMultipleFields(array('addr.*', 'state_code', 'country_code','IFNULL(country_name, country_code) as country_name', 'IFNULL(state_name, state_identifier) as state_name'));
+        $srch->addCondition('country_active', '=', applicationConstants::ACTIVE);
+        $srch->addCondition('state_active', '=', applicationConstants::ACTIVE);
+        $srch->addCondition(self::tblFld('type'), '=', $type);
+        $srch->addCondition(self::tblFld('record_id'), '=', $recordId);
 
+        if (0 > $isDefault) {
+            $srch->addCondition(self::tblFld('is_default'), '=', $isDefault);
+        }
+        $srch->addOrder(static::tblFld('is_default'), 'DESC');
+
+        if (0 < $this->mainTableRecordId) {
+            $srch->addCondition(self::tblFld('id'), '=', $this->mainTableRecordId);
+
+            $rs = $srch->getResultSet();
+            return (array) FatApp::getDb()->fetch($rs);
+        }
+
+        $rs = $srch->getResultSet();
+        return FatApp::getDb()->fetchAll($rs);
+    }
+    
+    /**
+     * deleteByRecordId
+     *
+     * @param  int $type
+     * @param  int $recordId
+     * @return bool
+     */
+    public function deleteByRecordId(int $type, int $recordId): bool
+    {
+        $db = FatApp::getDb();
+
+        if (!$db->deleteRecords(self::DB_TBL, array('smt' => 'addr_type = ? and addr_record_id = ?', 'vals' => array($type, $recordId)))) {
+            $this->error = $db->getError();
+            return false;
+        }
+        return true;
+    }
+    
     /**
     * getGeoData
     *

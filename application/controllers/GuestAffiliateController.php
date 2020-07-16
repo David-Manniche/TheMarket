@@ -173,25 +173,7 @@ class GuestAffiliateController extends MyAppController
                 Message::addErrorMessage($userObj->getError());
                 FatUtility::dieJsonError(Message::getHtml());
             }
-            /* $ua_id = FatUtility::int(UserAuthentication::getSessionAffiliateByKey('ua_id'));
-            $addressObj = new UserAddress( $ua_id );
-            $dataToSave = array(
-            'ua_user_id'    =>    $user_id,
-            'user_address1'    =>    $post['user_address1'],
-            'user_address2'    =>    $post['user_address2'],
-            'user_country_id'    =>    $post['user_country_id'],
-            'user_state_id'    =>    $post['user_state_id'],
-            'user_city'        =>    $post['user_city'],
-            'user_zip'        =>    $post['user_zip']
-            );
-            $addressObj->assignValues($dataToSave, true);
-            if (!$addressObj->save()) {
-            Message::addErrorMessage($addressObj->getError());
-            FatUtility::dieWithError(Message::getHtml());
-            }
-            $ua_id = $addressObj->getMainTableRecordId(); */
-            /* ] */
-
+           
             UserAuthentication::setSessionAffiliateRegistering(array( 'affiliate_register_step_number' => UserAuthentication::AFFILIATE_REG_STEP3));
             $msg = UserAuthentication::getAffiliateRegisterationStepArr($this->siteLangId)[UserAuthentication::AFFILIATE_REG_STEP2];
             break;
@@ -260,7 +242,7 @@ class GuestAffiliateController extends MyAppController
 
         $affiliate_register_step_number = (UserAuthentication::getSessionAffiliateByKey('affiliate_register_step_number')) ? UserAuthentication::getSessionAffiliateByKey('affiliate_register_step_number') : UserAuthentication::AFFILIATE_REG_STEP1;
 
-        //$ua_id = FatUtility::int(UserAuthentication::getSessionAffiliateByKey('ua_id'));
+        //$addr_id = FatUtility::int(UserAuthentication::getSessionAffiliateByKey('addr_id'));
         $user_id = FatUtility::int(UserAuthentication::getSessionAffiliateByKey('user_id'));
 
         switch ($affiliate_register_step_number) {

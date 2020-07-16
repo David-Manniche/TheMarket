@@ -51,13 +51,15 @@ class CartController extends MyAppController
                 $billingAddressDetail = array();
                 $billingAddressId = $cartObj->getCartBillingAddress();
                 if ($billingAddressId > 0) {
-                    $billingAddressDetail = UserAddress::getUserAddresses($loggedUserId, 0, 0, $billingAddressId);
+                    $address = new Address($billingAddressId);
+                    $billingAddressDetail = $address->getData(Address::TYPE_USER, $loggedUserId);
                 }
 
                 $shippingddressDetail = array();
                 $shippingAddressId = $cartObj->getCartShippingAddress();
                 if ($shippingAddressId > 0) {
-                    $shippingddressDetail = UserAddress::getUserAddresses($loggedUserId, 0, 0, $shippingAddressId);
+                    $address = new Address($shippingAddressId);
+                    $shippingddressDetail = $address->getData(Address::TYPE_USER, $loggedUserId);
                 }
 
                 $cartHasPhysicalProduct = false;

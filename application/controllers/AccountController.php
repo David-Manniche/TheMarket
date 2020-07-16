@@ -393,9 +393,9 @@ class AccountController extends LoggedUserController
         }
         $txnObj = new Transactions();
 
-		$payoutPlugins = Plugin::getNamesWithCode(Plugin::TYPE_PAYOUTS, $this->siteLangId);
+        $payoutPlugins = Plugin::getNamesWithCode(Plugin::TYPE_PAYOUTS, $this->siteLangId);
         $accountSummary = $txnObj->getTransactionSummary($userId);
-		$payouts = [-1 => Labels::getLabel("LBL_BANK_PAYOUT", $this->siteLangId)] + $payoutPlugins;
+        $payouts = [-1 => Labels::getLabel("LBL_BANK_PAYOUT", $this->siteLangId)] + $payoutPlugins;
 
         $this->set('payouts', $payouts);
         $this->set('userWalletBalance', User::getUserBalance(UserAuthentication::getLoggedUserId()));
@@ -409,7 +409,7 @@ class AccountController extends LoggedUserController
 
     public function creditsInfo()
     {
-		$this->set('userWalletBalance', User::getUserBalance(UserAuthentication::getLoggedUserId()));
+        $this->set('userWalletBalance', User::getUserBalance(UserAuthentication::getLoggedUserId()));
         $this->set('userTotalWalletBalance', User::getUserBalance(UserAuthentication::getLoggedUserId(), false, false));
         $this->set('promotionWalletToBeCharged', Promotion::getPromotionWalleToBeCharged(UserAuthentication::getLoggedUserId()));
         $this->set('withdrawlRequestAmount', User::getUserWithdrawnRequestAmount(UserAuthentication::getLoggedUserId()));
@@ -2270,8 +2270,8 @@ class AccountController extends LoggedUserController
         $srch->joinMessagePostedToUser(true, $this->siteLangId);
         $srch->joinThreadStartedByUser();
         $srch->addMultipleFields(array('tth.*',
-         'ttm.message_id', 'ttm.message_text', 'ttm.message_date', 'ttm.message_is_unread', 
-         'ttm.message_to', 'IFNULL(tfrs_l.shop_name, tfrs.shop_identifier) as message_from_shop_name', 
+         'ttm.message_id', 'ttm.message_text', 'ttm.message_date', 'ttm.message_is_unread',
+         'ttm.message_to', 'IFNULL(tfrs_l.shop_name, tfrs.shop_identifier) as message_from_shop_name',
          'tfrs.shop_id as message_from_shop_id', 'tftos.shop_id as message_to_shop_id',
          'IFNULL(tftos_l.shop_name, tftos.shop_identifier) as message_to_shop_name'));
         $srch->addCondition('ttm.message_deleted', '=', 0);
@@ -2312,7 +2312,7 @@ class AccountController extends LoggedUserController
         $this->set('loggedUserId', $userId);
         $this->set('page', $page);
         $this->set('pageSize', $pagesize);
-        $this->set('parentAndTheirChildIds', $parentAndTheirChildIds);        
+        $this->set('parentAndTheirChildIds', $parentAndTheirChildIds);
         $this->set('postedData', $post);
 
         if (true === MOBILE_APP_API_CALL) {
@@ -2390,7 +2390,7 @@ class AccountController extends LoggedUserController
             $frm->fill(array('message_thread_id' => $threadId, 'message_id' => $messageId));
         }
 
-        $threadObj = new Thread($threadId);        
+        $threadObj = new Thread($threadId);
         if (!$threadObj->markMessageReadFromUserArr($threadId, $parentAndThierChildIds)) {
             if (true === MOBILE_APP_API_CALL) {
                 Message::addErrorMessage(strip_tags(current($threadObj->getError())));
@@ -2443,7 +2443,7 @@ class AccountController extends LoggedUserController
         $srch->joinMessagePostedToUser(true, $this->siteLangId);
         $srch->joinThreadStartedByUser();
         $srch->addMultipleFields(array(
-            'tth.*','ttm.message_id', 'ttm.message_text', 'ttm.message_date', 'ttm.message_is_unread' , 
+            'tth.*','ttm.message_id', 'ttm.message_text', 'ttm.message_date', 'ttm.message_is_unread' ,
             'IFNULL(tfrs_l.shop_name, tfrs.shop_identifier) as message_from_shop_name' , 'tfrs.shop_id as message_from_shop_id',
             'tftos.shop_id as message_to_shop_id', 'IFNULL(tftos_l.shop_name, tftos.shop_identifier) as message_to_shop_name'));
         $srch->addCondition('ttm.message_deleted', '=', 0);
@@ -2743,7 +2743,7 @@ class AccountController extends LoggedUserController
             $zipFld->requirements()->setRegularExpressionToValidate(ValidateElement::ZIP_REGEX);
             $zipFld->requirements()->setCustomErrorMessage(Labels::getLabel('LBL_Only_alphanumeric_value_is_allowed.', $this->siteLangId));
         }
-		$parent = User::getAttributesById(UserAuthentication::getLoggedUserId(true), 'user_parent');
+        $parent = User::getAttributesById(UserAuthentication::getLoggedUserId(true), 'user_parent');
         if (User::isAdvertiser() && $parent == 0) {
             $fld = $frm->addTextBox(Labels::getLabel('L_Company', $this->siteLangId), 'user_company');
             $fld = $frm->addTextArea(Labels::getLabel('L_Brief_Profile', $this->siteLangId), 'user_profile_info');
@@ -3251,7 +3251,9 @@ class AccountController extends LoggedUserController
 
     public function searchAddresses()
     {
-        $addresses = UserAddress::getUserAddresses(UserAuthentication::getLoggedUserId(), $this->siteLangId);
+        $address = new Address(0, $this->siteLangId);
+        $addresses = $address->getData(Address::TYPE_USER, UserAuthentication::getLoggedUserId());
+
         if ($addresses) {
             $this->set('addresses', $addresses);
         } else {
@@ -3269,24 +3271,25 @@ class AccountController extends LoggedUserController
         $this->_template->render(false, false);
     }
 
-    public function addAddressForm($ua_id)
+    public function addAddressForm($addr_id)
     {
-        $ua_id = FatUtility::int($ua_id);
+        $addr_id = FatUtility::int($addr_id);
         $addressFrm = $this->getUserAddressForm($this->siteLangId);
 
         $stateId = 0;
 
-        if ($ua_id > 0) {
-            $data = UserAddress::getUserAddresses(UserAuthentication::getLoggedUserId(), $this->siteLangId, 0, $ua_id);
-            if ($data === false) {
+        if ($addr_id > 0) {
+            $address = new Address($addr_id, $this->siteLangId);
+            $data = $address->getData(Address::TYPE_USER, UserAuthentication::getLoggedUserId());
+            if (empty($data)) {
                 Message::addErrorMessage(Labels::getLabel('MSG_Invalid_request', $this->siteLangId));
                 FatUtility::dieJsonError(Message::getHtml());
             }
-            $stateId = $data['ua_state_id'];
+            $stateId = $data['addr_state_id'];
             $addressFrm->fill($data);
         }
 
-        $this->set('ua_id', $ua_id);
+        $this->set('addr_id', $addr_id);
         $this->set('stateId', $stateId);
         $this->set('addressFrm', $addressFrm);
         $this->_template->render(false, false);
@@ -3566,7 +3569,7 @@ class AccountController extends LoggedUserController
             $rs = $srch->getResultSet();
             $row = $db->fetch($rs);
             if (!empty($row)) {
-                LibHelper::dieJsonError(Labels::getLabel('MSG_THIS_PHONE_NUMBER_IS_ALREADY_EXISTS.', $this->siteLangId));       
+                LibHelper::dieJsonError(Labels::getLabel('MSG_THIS_PHONE_NUMBER_IS_ALREADY_EXISTS.', $this->siteLangId));
             }
         }
 

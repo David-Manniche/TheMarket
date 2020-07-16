@@ -895,8 +895,8 @@ class UserAuthentication extends FatModel
             $_SESSION[$affiliateSessionElementName]['user_id'] = $data['user_id'];
         }
 
-        /* if( isset($data['ua_id']) ){
-        $_SESSION[$affiliateSessionElementName]['ua_id'] = $data['ua_id'];
+        /* if( isset($data['addr_id']) ){
+        $_SESSION[$affiliateSessionElementName]['addr_id'] = $data['addr_id'];
         } */
 
         if (isset($data['affiliate_register_step_number'])) {
