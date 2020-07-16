@@ -22,6 +22,8 @@
 /bkup
 /application/views/.sass-cache
 /testcases/bootstrap.php
+/error_log
+/application/views/designer
 
 # zip files
 /*.zip

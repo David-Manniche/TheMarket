@@ -11,7 +11,7 @@ if (strpos($_SERVER ['REQUEST_URI'], '/mobile-app-api/') !== false) {
 } else {
    define('CONF_THEME_PATH', CONF_VIEW_DIR_PATH);
 }
-
+define('CONF_MAIN_CSS_DIR_PATH', 'css');
 define('CONF_WEBROOT_URL', CONF_WEBROOT_FRONTEND);
 define('SYSTEM_FRONT', true);
 define('CONF_WEBROOT_FRONT_URL', CONF_WEBROOT_URL);

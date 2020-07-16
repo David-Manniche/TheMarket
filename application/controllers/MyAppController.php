@@ -21,7 +21,7 @@ class MyAppController extends FatController
         CommonHelper::initCommonVariables();
         $this->initCommonVariables();
         $this->tempTokenLogin();
-        $this->_template->addCss('css/main-' . CommonHelper::getLayoutDirection() . '.css');
+        $this->_template->addCss(CONF_MAIN_CSS_DIR_PATH . '/main-' . CommonHelper::getLayoutDirection() . '.css');
     }
 
     public function initCommonVariables()
