@@ -144,11 +144,15 @@ class StripeConnectPayController extends PaymentController
     /**
      * removeCard
      *
-     * @param  mixed $cardId
      * @return void
      */
-    public function removeCard(string $cardId)
+    public function removeCard()
     {
+        $cardId = FatApp::getPostedData('cardId', FatUtility::VAR_STRING, '');
+        if (empty($cardId)) {
+            $this->setError(Labels::getLabel('MSG_INVALID_REQUEST', $this->siteLangId));
+        }
+
         if (false === $this->stripeConnect->removeCard(['cardId' => $cardId])) {
             $this->setErrorAndRedirect();
         }
@@ -178,7 +182,7 @@ class StripeConnectPayController extends PaymentController
      * @param  string $orderId
      * @return void
      */
-    public function charge(string $orderId)
+    public function charge($orderId)
     {
         $this->orderId = $orderId;
         if (empty(trim($this->orderId))) {
@@ -399,5 +403,57 @@ class StripeConnectPayController extends PaymentController
             Transactions::debitWallet($op['op_selprod_user_id'], Transactions::TYPE_TRANSFER_TO_THIRD_PARTY_ACCOUNT, $amountToBePaidToSeller, $this->siteLangId, $comments, $op['op_id'], $resp->id);
         }
         return true;
+    }
+
+    /**
+     * setError
+     *
+     * @param  mixed $msg
+     * @return void
+     */
+    private function setError(string $msg = "")
+    {
+        $msg = !empty($msg) ? $msg : $this->stripeConnect->getError();
+        LibHelper::exitWithError($msg, true);
+    }
+
+
+    /**
+     * getCustomer
+     *
+     * @return void
+     */
+    public function getCustomer()
+    {
+        if (empty($this->stripeConnect->getCustomerId())) {
+            $this->setError(Labels::getLabel('MSG_INVALID_CUSTOMER', $this->siteLangId));
+        }
+        $this->stripeConnect->loadCustomer();
+        $customerInfo = $this->stripeConnect->getResponse()->toArray();
+        $this->set('customerInfo', $customerInfo);
+        $this->_template->render();
+    }
+
+    /**
+     * markCardAsDefault
+     *
+     * @return void
+     */
+    public function markCardAsDefault()
+    {
+        $source = FatApp::getPostedData('source', FatUtility::VAR_STRING, '');
+        if (empty($source)) {
+            $this->setError(Labels::getLabel('MSG_INVALID_REQUEST', $this->siteLangId));
+        }
+
+        if (empty($this->stripeConnect->getCustomerId())) {
+            $this->setError(Labels::getLabel('MSG_INVALID_CUSTOMER', $this->siteLangId));
+        }
+        
+        $requestParam['default_source'] = $source;
+        if (false === $this->stripeConnect->updateCustomerInfo($requestParam)) {
+            $this->setError();
+        }
+        FatUtility::dieJsonSuccess(Labels::getLabel('MSG_SUCCESSFULLY_UPDATED', $this->siteLangId));
     }
 }
