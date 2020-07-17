@@ -8,7 +8,7 @@ class GoogleShoppingFeedController extends AdvertisementFeedBaseController
     public const SCOPE = 'https://www.googleapis.com/auth/content';
 
     private $client;
-    private $pluginData;
+    private $googleShoppingFeed;
 
     public $requiredKeys = [
         'client_id',
@@ -19,28 +19,34 @@ class GoogleShoppingFeedController extends AdvertisementFeedBaseController
     public function __construct($action)
     {
         parent::__construct($action);
-        $error = '';
-        if (false === PluginHelper::includePlugin(self::KEY_NAME, 'advertisement-feed', $error, $this->siteLangId)) {
+        $this->init();
+    }
+
+    private function init()
+    {
+        $this->googleShoppingFeed = PluginHelper::callPlugin(self::KEY_NAME, [$this->siteLangId], $error, $this->siteLangId);
+        if (false === $this->googleShoppingFeed) {
             Message::addErrorMessage($error);
-            $this->redirectBack();
+            $this->redirectBack('Seller');
         }
+
+        if (false === $this->googleShoppingFeed->validateSettings($this->siteLangId)) {
+            Message::addErrorMessage($this->googleShoppingFeed->getError());
+            $this->redirectBack('Seller');
+        }
+        $this->settings = $this->googleShoppingFeed->getKeys();
     }
 
     public function index()
     {
         $this->set('userData', $this->getUserMeta());
         $this->set('keyName', self::KEY_NAME);
-        $this->set('pluginName', $this->getPluginData('plugin_name'));
+        $this->set('pluginName', $this->settings['plugin_name']);
         $this->_template->render();
     }
 
     private function setupConfiguration()
     {
-        if (false == $this->validateSettings($this->siteLangId)) {
-            $this->redirectBack();
-            return false;
-        }
-        
         $this->client = new Google_Client();
         $this->client->setApplicationName(FatApp::getConfig('CONF_WEBSITE_NAME_' . $this->siteLangId)); // Set your application name
         $this->client->setScopes(self::SCOPE);
@@ -60,11 +66,10 @@ class GoogleShoppingFeedController extends AdvertisementFeedBaseController
         if (isset($get['code'])) {
             $this->client->authenticate($get['code']);
             $accessToken = $this->client->getAccessToken();
-            $merchantId = $this->getUserMeta(self::KEY_NAME . '_merchantId');
             if (!empty($accessToken)) {
                 $this->setupMerchantDetail($accessToken);
             }
-            CommonHelper::redirectUserReferer();
+            $this->redirectBack();
         }
         $authUrl = $this->client->createAuthUrl();
         FatApp::redirectUser($authUrl);
@@ -89,7 +94,7 @@ class GoogleShoppingFeedController extends AdvertisementFeedBaseController
         $frm = new Form('frmServiceAccount');
         $privateKey = $frm->addTextArea(Labels::getLabel('LBL_SERVICE_ACCOUNT_DETAIL', $this->siteLangId), 'service_account');
         $privateKey->requirements()->setRequired();
-        $privateKey->htmlAfterField = $this->getPluginData('plugin_description');
+        $privateKey->htmlAfterField = $this->settings['plugin_description'];
         $frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_Save_Changes', $this->siteLangId));
         return $frm;
     }
@@ -400,13 +405,7 @@ class GoogleShoppingFeedController extends AdvertisementFeedBaseController
     public function getProductCategory($returnFullArray = false)
     {
         $keyword = FatApp::getPostedData('keyword', FatUtility::VAR_STRING, '');
-        try {
-            $class = self::KEY_NAME;
-            $obj = new $class();
-            $data = $obj->getProductCategory($keyword, $returnFullArray);
-        } catch (\Error $e) {
-            LibHelper::dieJsonError($e->getMessage());
-        }
+        $data = $this->googleShoppingFeed->getProductCategory($keyword, $returnFullArray);
         if (true === $returnFullArray) {
             return $data;
         }
@@ -454,21 +453,16 @@ class GoogleShoppingFeedController extends AdvertisementFeedBaseController
         }
 
         $productData = $this->getData($adsBatchId);
-        try {
-            $class = self::KEY_NAME;
-            $obj = new $class();
-            $data = [
-                'batchId' => $adsBatchId,
-                'currency_code' => strtoupper(Currency::getAttributesById($this->siteCurrencyId, 'currency_code')),
-                'data' => $productData
-            ];
-            $response = $obj->publishBatch($data);
-            if (false === $response['status']) {
-                LibHelper::dieJsonError($obj->getError());
-            }
-        } catch (\Error $e) {
-            LibHelper::dieJsonError($e->getMessage());
+        $data = [
+            'batchId' => $adsBatchId,
+            'currency_code' => strtoupper(Currency::getAttributesById($this->siteCurrencyId, 'currency_code')),
+            'data' => $productData
+        ];
+        $response = $this->googleShoppingFeed->publishBatch($data);
+        if (false === $response['status']) {
+            LibHelper::dieJsonError($this->googleShoppingFeed->getError());
         }
+
         $dataToUpdate = [
             'adsbatch_status' => AdsBatch::STATUS_PUBLISHED,
             'adsbatch_synced_on' => date('Y-m-d H:i:s')

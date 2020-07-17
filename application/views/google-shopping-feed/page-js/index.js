@@ -9,6 +9,9 @@ $(document).ready(function() {
 	var batchSetup = '#batchSetup';
     
 	search = function(){
+        if (1 > $(dv).length) {
+            return false;
+        }
 		$(dv).html(fcom.getLoader());
 		fcom.ajax(fcom.makeUrl(keyName,'search'),'',function(res){
 			$(dv).html(res);
@@ -16,6 +19,9 @@ $(document).ready(function() {
     };
     
 	batchForm = function(adsBatchId = 0){
+        if (1 > $(batchSetup).length) {
+            return false;
+        }
         $(batchSetup).html(fcom.getLoader());
         $('html, body').animate({scrollTop: $(batchSetup).offset().top - 150 }, 'slow');
 		fcom.ajax(fcom.makeUrl(keyName, 'batchForm', [adsBatchId]),'',function(res){

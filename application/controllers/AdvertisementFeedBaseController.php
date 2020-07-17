@@ -12,15 +12,12 @@ class AdvertisementFeedBaseController extends SellerPluginBaseController
             FatApp::redirectUser(UrlHelper::generateUrl('Seller'));
         }
         $this->keyName = $class::KEY_NAME;
-        if (false === Plugin::isActive($this->keyName)) {
-            Message::addErrorMessage(Labels::getLabel('MSG_NO_ADVERTISEMENT_PLUGIN_ACTIVE', $this->siteLangId));
-            FatApp::redirectUser(UrlHelper::generateUrl('Seller'));
-        }
     }
 
-    protected function redirectBack()
+    protected function redirectBack(string $controller = '', string $action = '')
     {
-        FatApp::redirectUser(UrlHelper::generateUrl($this->keyName));
+        $controller = empty($controller) ? $this->keyName : $controller;
+        FatApp::redirectUser(UrlHelper::generateUrl($controller, $action));
     }
 
     protected function updateMerchantInfo($detail = [], $redirect = true)
@@ -42,12 +39,6 @@ class AdvertisementFeedBaseController extends SellerPluginBaseController
             FatUtility::dieJsonSuccess(Message::getHtml());
         }
         $this->redirectBack();
-    }
-
-    protected function getPluginData($attr = '')
-    {
-        $attr = empty($attr) ? Plugin::ATTRS : $attr;
-        return Plugin::getAttributesByCode($this->keyName, $attr, $this->siteLangId);
     }
 
     protected function getUserMeta($key = '')
