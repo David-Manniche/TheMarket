@@ -354,7 +354,7 @@
                                 $target = '';
                             }
                             ?>
-                <li class="<?php echo $navchild; ?>">
+                <li class=" <?php echo $navchild; ?>">
                     <a target="<?php echo $target; ?>" data-org-url="<?php echo $OrgnavUrl; ?>"
                         href="<?php echo $href; ?>"><?php echo $link['nlink_caption']; ?></a>
                     <?php if (isset($link['children']) && count($link['children']) > 0) { ?>

@@ -8421,7 +8421,10 @@ a.text-dark:hover, .shop-nav ul li.is--active a.text-dark, a.text-dark:focus {
       flex-direction: column; } }
   .sublinks .head > a {
     color: #222;
-    font-weight: 600; }
+    font-weight: 600;
+    text-transform: uppercase; }
+    .sublinks .head > a:hover, .sublinks .shop-nav ul li.is--active .head > a, .shop-nav ul li.is--active .sublinks .head > a {
+      color: var(--brand-color); }
   .sublinks a {
     color: currentColor;
     display: inline-block;
@@ -8467,6 +8470,7 @@ a.text-dark:hover, .shop-nav ul li.is--active a.text-dark, a.text-dark:focus {
             -o-transition: all .2s linear;
             transition: all .2s linear; }
           .sublinks > li ul li a:hover, .sublinks > li .shop-nav ul li.is--active a, .shop-nav .sublinks > li ul li.is--active a {
+            margin-right: 10px;
             color: var(--brand-color); }
             .sublinks > li ul li a:hover:before, .sublinks > li .shop-nav ul li.is--active a:before, .shop-nav .sublinks > li ul li.is--active a:before {
               right: -12px;

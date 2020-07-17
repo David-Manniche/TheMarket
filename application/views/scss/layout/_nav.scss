@@ -276,6 +276,10 @@
         >a {
             color: #222;
             font-weight: 600;
+            text-transform: uppercase;
+            &:hover {
+                color: $brand-color;
+            }
         }
     }
     a {
@@ -327,6 +331,7 @@
                         transition: all .2s linear;
                     }
                     &:hover {
+                        margin-#{$start-direction}: 10px;
                         color: $brand-color;
                         &:before {
                             #{$start-direction}: -12px;
