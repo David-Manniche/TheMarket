@@ -996,7 +996,7 @@ class EmailHandler extends FatModel
         return true;
     }
 
-    public function newOrderVendor($orderId, $langId = 0, $paymentType = 0)
+    public function newOrderVendor($orderId, $langId = 0, $paymentType = '')
     {
         $langId = FatApp::getConfig('conf_default_site_lang');
         $orderObj = new Orders();
@@ -1045,9 +1045,9 @@ class EmailHandler extends FatModel
                             '{order_id}' => $orderId,
                             );
 
-                if ($paymentType == PaymentSettings::PAYMENT_TYPE_COD) {
+                if (!empty($paymentType) && strtolower($paymentType) == 'cashondelivery') {
                     $tpl = "vendor_cod_order_email";
-                } else if ($paymentType = PaymentSettings::PAYMENT_TYPE_BANK_TRANSFER) {
+                } else if (!empty($paymentType) && strtolower($paymentType) == 'transferbank') {
                     $tpl = "vendor_bank_transfer_order_email";
                 } else {
                     if ($val['op_product_type'] == Product::PRODUCT_TYPE_DIGITAL) {
@@ -1061,7 +1061,7 @@ class EmailHandler extends FatModel
                 $bccEmails = $receipentsInfo['email'];
                 self::sendMailTpl($val["op_shop_owner_email"], $tpl, $langId, $arrReplacements, '', 0, array(), $bccEmails);
 
-                if (!in_array($paymentType, [PaymentSettings::PAYMENT_TYPE_COD, PaymentSettings::PAYMENT_TYPE_BANK_TRANSFER])) {
+                if (!in_array(strtolower($paymentType), ['cashondelivery', 'transferbank'])) {
                     $phoneNumbers = $receipentsInfo['phone'];
                     $userPhone = !empty($userInfo['user_phone']) ? $userInfo['user_dial_code'] . $userInfo['user_phone'] : '';
                     $phoneNumbers[] = $userPhone;
