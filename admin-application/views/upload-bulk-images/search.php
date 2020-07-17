@@ -37,7 +37,7 @@ foreach ($arr_listing as $sn => $row) {
                 break;
             case 'user':
                 if ($canViewUsers) {
-                    !empty($row['credential_username']) ? $td->appendElement('a', array('href' => 'javascript:void(0)', 'onClick' => 'redirectfunc("'.CommonHelper::generateUrl('Users').'",'.$row['afile_record_id'].')'), $row['credential_username'].'( '.$row['credential_email'].' )') : $td->appendElement('plaintext', array(), 'Admin', true);
+                    !empty($row['credential_username']) ? $td->appendElement('a', array('href' => 'javascript:void(0)', 'onClick' => 'redirectfunc("'.UrlHelper::generateUrl('Users').'",'.$row['afile_record_id'].')'), $row['credential_username'].'( '.$row['credential_email'].' )') : $td->appendElement('plaintext', array(), 'Admin', true);
                 } else {
                     $userDetail = !empty($row['credential_username']) ? $row['credential_username'].'('.$row['credential_email'].')' : 'Admin';
                     $td->appendElement('plaintext', array(), $userDetail, true);

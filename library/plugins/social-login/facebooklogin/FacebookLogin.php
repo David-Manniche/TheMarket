@@ -63,7 +63,7 @@ class FacebookLogin extends SocialMediaAuthBase
     public function getRequestUri(): string
     {
         $permissions = ['email', 'public_profile'];
-        return $this->helper->getLoginUrl(CommonHelper::generateFullUrl(static::KEY_NAME, 'index', [], '', false), $permissions);
+        return $this->helper->getLoginUrl(UrlHelper::generateFullUrl(static::KEY_NAME, 'index', [], '', false), $permissions);
     }
     
     /**

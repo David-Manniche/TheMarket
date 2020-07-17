@@ -28,7 +28,7 @@
 			$loginFrm->developerTags['fld_default_col'] = 12;
 			$loginFrm->removeField($loginFrm->getField('remember_me'));
 			$fldforgot = $loginFrm->getField('forgot');
-			$fldforgot->value='<a href="'.CommonHelper::generateUrl('GuestUser', 'forgotPasswordForm').'"
+			$fldforgot->value='<a href="'.UrlHelper::generateUrl('GuestUser', 'forgotPasswordForm').'"
 			class="forgot">'.Labels::getLabel('LBL_Forgot_Password?',$siteLangId).'</a>';
 			$fldSubmit = $loginFrm->getField('btn_submit');
 			$fldSubmit->addFieldTagAttribute("class","btn-block");
@@ -62,7 +62,7 @@
 						if (!empty($socialLoginApis) && 0 < count($socialLoginApis)) {
                             foreach ($socialLoginApis as $plugin) { ?>
                                 <li>
-                                    <a href="<?php echo CommonHelper::generateUrl($plugin['plugin_code']); ?>" class="btn btn--social btn--<?php echo $plugin['plugin_code'];?>">
+                                    <a href="<?php echo UrlHelper::generateUrl($plugin['plugin_code']); ?>" class="btn btn--social btn--<?php echo $plugin['plugin_code'];?>">
                                         <i class="icn">
                                             <img src="<?php echo CONF_WEBROOT_URL; ?>images/retina/social-icons/<?php echo $plugin['plugin_code']; ?>.svg">
                                         </i>
@@ -77,7 +77,7 @@
 		<div class="gap"></div>
 		<div class="term">
 			<?php if( $showSignUpLink ){ ?><p class="text--dark"> <a href="" class="text text--uppercase"></a></p><?php } ?>
-			<h6><?php echo sprintf(Labels::getLabel('LBL_New_to',$siteLangId),FatApp::getConfig('CONF_WEBSITE_NAME_'.$siteLangId));?>? <a href="<?php echo CommonHelper::generateUrl('GuestUser', 'loginForm', array(applicationConstants::YES)); ?>" class="link"><?php echo Labels::getLabel('LBL_Sign_Up',$siteLangId);?></a></h6>
+			<h6><?php echo sprintf(Labels::getLabel('LBL_New_to',$siteLangId),FatApp::getConfig('CONF_WEBSITE_NAME_'.$siteLangId));?>? <a href="<?php echo UrlHelper::generateUrl('GuestUser', 'loginForm', array(applicationConstants::YES)); ?>" class="link"><?php echo Labels::getLabel('LBL_Sign_Up',$siteLangId);?></a></h6>
 			<!-- <p>If this is your first time shopping with us, please enter an email address to use as your Newegg ID and create a password for your account. Your Newegg account allows you to conveniently place orders, create wishlists, check the status of your recent orders and much more.</p> -->
 		</div>
 	</div>

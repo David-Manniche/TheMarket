@@ -42,7 +42,7 @@ $("document").ready(function(){
         },
 		'source': function(request, response) {
 			$.ajax({
-				url: '<?php echo CommonHelper::generateUrl('Products','autoComplete'); ?>',
+				url: '<?php echo UrlHelper::generateUrl('Products','autoComplete'); ?>',
 				data: {keyword: request['term'],fIsAjax:1},
 				dataType: 'json',
 				type: 'post',
@@ -65,7 +65,7 @@ $("document").ready(function(){
         },
 		'source': function(request, response) {
 			$.ajax({
-				url: '<?php echo CommonHelper::generateUrl('ProductCategories','autoComplete'); ?>',
+				url: '<?php echo UrlHelper::generateUrl('ProductCategories','autoComplete'); ?>',
 				data: {keyword: request['term'],fIsAjax:1},
 				dataType: 'json',
 				type: 'post',

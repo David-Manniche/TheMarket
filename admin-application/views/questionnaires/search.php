@@ -51,7 +51,7 @@ foreach ($arr_listing as $sn=>$row){
 					$li->appendElement('a', array('href'=>'javascript:void(0)','class'=>'button small green', 'title'=>Labels::getLabel('LBL_Edit',$adminLangId),
 						"onclick"=>"questionnaireForm(".$row['questionnaire_id'].")"),'<i class="far fa-edit icon"></i>', true);
 					$li = $ul->appendElement("li");
-					$li->appendElement('a', array('href'=>CommonHelper::generateUrl('Questionnaires','questions',array($row['questionnaire_id'])),'class'=>'button small green', 'title'=>Labels::getLabel('LBL_Link_Questions',$adminLangId)),
+					$li->appendElement('a', array('href'=>UrlHelper::generateUrl('Questionnaires','questions',array($row['questionnaire_id'])),'class'=>'button small green', 'title'=>Labels::getLabel('LBL_Link_Questions',$adminLangId)),
 						'<i class="ion-levels icon"></i>', true);
 					$li = $ul->appendElement("li");
 					$li->appendElement('a', array(
@@ -59,7 +59,7 @@ foreach ($arr_listing as $sn=>$row){
 						'<i class="ion-link icon"></i>', true);
 					$li = $ul->appendElement("li");
 					$li->appendElement('a', array(
-						'href'=>CommonHelper::generateUrl('Questionnaires','viewReport',array($row['questionnaire_id'])), 'class'=>'button small green','title'=>Labels::getLabel('LBL_View_Report',$adminLangId)),
+						'href'=>UrlHelper::generateUrl('Questionnaires','viewReport',array($row['questionnaire_id'])), 'class'=>'button small green','title'=>Labels::getLabel('LBL_View_Report',$adminLangId)),
 						'<i class="far fa-eye icon"></i>', true);
 					$li = $ul->appendElement("li");
 					$li->appendElement('a', array(

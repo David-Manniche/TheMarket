@@ -24,7 +24,7 @@ class SystemRestoreController extends AdminBaseController
                 CommonHelper::fullCopy($source, $target);
                 $settingsObj->backupDatabase("database", false, false, CONF_INSTALLATION_PATH . "restore/database");
                 Message::addMessage("Restore Point Updated Successfully!!");
-                /* FatApp::redirectUser(CommonHelper::generateUrl('systemRestore')); */
+                /* FatApp::redirectUser(UrlHelper::generateUrl('systemRestore')); */
             }
         }
         $this->set('restore_point_frm', $restore_point_frm);

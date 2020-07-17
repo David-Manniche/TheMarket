@@ -85,7 +85,7 @@ if (count($arr_listing) == 0) {
 $frm = new Form('frmShpApiListing', array('id'=>'frmShpApiListing'));
 $frm->setFormTagAttribute('class', 'web_form last_td_nowrap actionButtons-js');
 $frm->setFormTagAttribute('onsubmit', 'formAction(this, reloadList ); return(false);');
-$frm->setFormTagAttribute('action', CommonHelper::generateUrl('ShippingMethods', 'toggleBulkStatuses'));
+$frm->setFormTagAttribute('action', UrlHelper::generateUrl('ShippingMethods', 'toggleBulkStatuses'));
 $frm->addHiddenField('', 'status');
 
 echo $frm->getFormTag();

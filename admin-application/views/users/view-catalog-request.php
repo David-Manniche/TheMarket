@@ -54,7 +54,7 @@
 					<?php if(!empty($attachedFile)){?>
 					<dl class="list">
 						<dt><?php echo Labels::getLabel('LBL_Attached_File',$adminLangId); ?></dt>
-						<dd><a target="_new" href="<?php echo CommonHelper::generateUrl('Users','downloadAttachedFileForCatalogRequest',array($catalogRequest['scatrequest_id']));?>" ><?php echo $attachedFile; ?></a></dd>
+						<dd><a target="_new" href="<?php echo UrlHelper::generateUrl('Users','downloadAttachedFileForCatalogRequest',array($catalogRequest['scatrequest_id']));?>" ><?php echo $attachedFile; ?></a></dd>
 					</dl>			
 					<?php }?>
 					<?php if($catalogRequest['scatrequest_comments']!=''){?>

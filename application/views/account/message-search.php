@@ -64,7 +64,7 @@ if (!empty($arr_listing) && is_array($arr_listing)) { ?>
                         <span class="msg__date"><?php echo FatDate::format($row['message_date'], true); ?></span>
                     </div>
                     <ul class="actions">
-                        <li><a href="<?php echo CommonHelper::generateUrl('Account', 'viewMessages', array($row['thread_id'],$row['message_id'])); ?>"><i class="fa fa-eye"></i></a></li>
+                        <li><a href="<?php echo UrlHelper::generateUrl('Account', 'viewMessages', array($row['thread_id'],$row['message_id'])); ?>"><i class="fa fa-eye"></i></a></li>
                     </ul>
                 </li>
             <?php } ?>

@@ -395,7 +395,8 @@ class Cart extends FatModel
                     }
 
                     if (UserAuthentication::isUserLogged() || UserAuthentication::isGuestUserLogged()) {
-                        $this->products[$key]['shipping_address'] = UserAddress::getUserAddresses(UserAuthentication::getLoggedUserId(), $siteLangId, 0, $this->getCartShippingAddress());
+                        $address = new Address($this->getCartShippingAddress(), $siteLangId);
+                        $this->products[$key]['shipping_address'] = $address->getData(Address::TYPE_USER, UserAuthentication::getLoggedUserId());
                     }
                     /*]*/
                     $extraData = array(
@@ -409,12 +410,12 @@ class Cart extends FatModel
                         $shipToStateId = 0;
                         $shipToCountryId = 0;
 
-                        if (isset($extraData['shippingAddress']['ua_country_id'])) {
-                            $shipToCountryId = FatUtility::int($extraData['shippingAddress']['ua_country_id']);
+                        if (isset($extraData['shippingAddress']['addr_country_id'])) {
+                            $shipToCountryId = FatUtility::int($extraData['shippingAddress']['addr_country_id']);
                         }
 
-                        if (isset($extraData['shippingAddress']['ua_state_id'])) {
-                            $shipToStateId = FatUtility::int($extraData['shippingAddress']['ua_state_id']);
+                        if (isset($extraData['shippingAddress']['addr_state_id'])) {
+                            $shipToStateId = FatUtility::int($extraData['shippingAddress']['addr_state_id']);
                         }
                         $tax = new Tax();
                         $taxCategoryRow = $tax->getTaxRates($sellerProductRow['product_id'], $sellerProductRow['selprod_user_id'], $siteLangId, $shipToCountryId, $shipToStateId);
@@ -482,7 +483,8 @@ class Cart extends FatModel
                 } else {
                     $is_cod_enabled = false;
                     if (UserAuthentication::isUserLogged() || UserAuthentication::isGuestUserLogged()) {
-                        $this->products[$key]['shipping_address'] = UserAddress::getUserAddresses(UserAuthentication::getLoggedUserId(), $siteLangId, 0, $this->getCartShippingAddress());
+                        $address = new Address($this->getCartShippingAddress(), $siteLangId);
+                        $this->products[$key]['shipping_address'] =  $address->getData(Address::TYPE_USER, UserAuthentication::getLoggedUserId());
                     }
                 }
                 /* ] */
@@ -835,9 +837,9 @@ class Cart extends FatModel
     {
         $address_id = FatUtility::int($address_id);
         if (1 > $address_id) {
-            $address = UserAddress::getDefaultAddressId($this->cart_user_id);
+            $address = Address::getDefaultByRecordId(Address::TYPE_USER, $this->cart_user_id);
             if (!empty($address)) {
-                $address_id = $address['ua_id'];
+                $address_id = $address['addr_id'];
             }
         }
         $this->SYSTEM_ARR['shopping_cart']['billing_address_id'] = $address_id;
@@ -1635,7 +1637,7 @@ class Cart extends FatModel
                 LibHelper::dieJsonError($error);
             }
 
-            $this->shippingService->setAddress($productShippingAddress['ua_name'], $productShippingAddress['ua_address1'], $productShippingAddress['ua_address2'], $productShippingAddress['ua_city'], $productShippingAddress['state_code'], $productShippingAddress['ua_zip'], $productShippingAddress['country_code'], $productShippingAddress['ua_phone']);
+            $this->shippingService->setAddress($productShippingAddress['addr_name'], $productShippingAddress['addr_address1'], $productShippingAddress['addr_address2'], $productShippingAddress['addr_city'], $productShippingAddress['state_code'], $productShippingAddress['addr_zip'], $productShippingAddress['country_code'], $productShippingAddress['addr_phone']);
 
             $this->shippingService->setWeight($productWeightInOunce);
 
@@ -1689,8 +1691,8 @@ class Cart extends FatModel
 
         $shipToCountryId = 0;
         $shipToStateId = 0;
-
-        $shippingAddressDetail = UserAddress::getUserAddresses($this->cart_user_id, $this->cart_lang_id, 0, $this->getCartShippingAddress());
+        $address = new Address($this->getCartShippingAddress(), $this->cart_lang_id);
+        $shippingAddressDetail =  $address->getData(Address::TYPE_USER, $this->cart_user_id);
 
         $physicalSelProdIdArr = [];
         $digitalSelProdIdArr = [];

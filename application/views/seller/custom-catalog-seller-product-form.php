@@ -25,7 +25,7 @@
                     $selprod_threshold_stock_levelFld->setWrapperAttribute('class', 'selprod_threshold_stock_level_fld');
                     $urlFld = $frmSellerProduct->getField('selprod_url_keyword');
                     $urlFld->setFieldTagAttribute('id', "urlrewrite_custom");
-                    $urlFld->htmlAfterField = "<small class='form-text text-muted'>".Labels::getLabel('LBL_Example:', $siteLangId) . ' ' . CommonHelper::generateFullUrl('yourKeyword').'</small>';
+                    $urlFld->htmlAfterField = "<small class='form-text text-muted'>".Labels::getLabel('LBL_Example:', $siteLangId) . ' ' . UrlHelper::generateFullUrl('yourKeyword').'</small>';
                     /* $selprodCodEnabledFld = $frmSellerProduct->getField('selprod_cod_enabled');
                     $selprodCodEnabledFld->setWrapperAttribute( 'class' , 'selprod_cod_enabled_fld'); */
                     // $frmSellerProduct->getField('selprod_price')->addFieldtagAttribute('placeholder', CommonHelper::getPlaceholderForAmtField($siteLangId));

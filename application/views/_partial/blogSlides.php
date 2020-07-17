@@ -4,7 +4,7 @@
             <div class="post-item">
                 <?php $fileRow = CommonHelper::getImageAttributes(AttachedFile::FILETYPE_BLOG_POST_IMAGE, $blogPost['post_id']);?>
                 <div class="post-media"><img
-                        src="<?php echo CommonHelper::generateUrl('image', 'blogPostFront', array($blogPost['post_id'],$siteLangId, "BANNER"), CONF_WEBROOT_URL); ?>"
+                        src="<?php echo UrlHelper::generateUrl('image', 'blogPostFront', array($blogPost['post_id'],$siteLangId, "BANNER"), CONF_WEBROOT_URL); ?>"
                         data-ratio="16:9"
                         alt="<?php echo (!empty($fileRow['afile_attribute_alt'])) ? $fileRow['afile_attribute_alt'] : $blogPost['post_title'];?>"
                         title="<?php echo (!empty($fileRow['afile_attribute_title'])) ? $fileRow['afile_attribute_title'] : $blogPost['post_title'];?>"
@@ -16,7 +16,7 @@
                         <h2><?php echo $blogPost['post_title']; ?>
                         </h2>
                     </div>
-                    <a href="<?php echo CommonHelper::generateUrl('Blog', 'postDetail', array($blogPost['post_id'])); ?>"
+                    <a href="<?php echo UrlHelper::generateUrl('Blog', 'postDetail', array($blogPost['post_id'])); ?>"
                         class="links"><?php echo Labels::getLabel('Lbl_Read_More', $siteLangId); ?></a>
                 </div>
             </div>

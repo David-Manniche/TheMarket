@@ -6,7 +6,7 @@
         $uploadedTime = AttachedFile::setTimeParam($row['afile_updated_at']); ?>
         <li id="<?php echo $row['afile_id']; ?>">
             <div class="logoWrap">
-                <div class="logothumb"> <img src="<?php echo CommonHelper::generateFullUrl('Banner', 'Thumb', array($row['afile_record_id'],$row['afile_lang_id'],$row['afile_screen']), CONF_WEBROOT_FRONT_URL).$uploadedTime; ?>"
+                <div class="logothumb"> <img src="<?php echo UrlHelper::generateFullUrl('Banner', 'Thumb', array($row['afile_record_id'],$row['afile_lang_id'],$row['afile_screen']), CONF_WEBROOT_FRONT_URL).$uploadedTime; ?>"
                         title="<?php echo $row['afile_name']; ?>" alt="<?php echo $row['afile_name']; ?>"> <?php if ($canEdit) { ?> <a class="deleteLink white" href="javascript:void(0);" title="Delete <?php echo $row['afile_name'];?>"
                         onclick="removeBanner(<?php echo $blocation_id; ?>, <?php echo $row['afile_record_id']; ?>, <?php echo $row['afile_lang_id']; ?>, <?php echo $row['afile_screen']; ?>);" class="delete"><i class="ion-close-round"></i></a>
                     <?php } ?>

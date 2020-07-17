@@ -5,17 +5,17 @@ trait CustomProducts
     public function customProduct()
     {
         if (!$this->isShopActive($this->userParentId, 0, true)) {
-            FatApp::redirectUser(CommonHelper::generateUrl('Seller', 'shop'));
+            FatApp::redirectUser(UrlHelper::generateUrl('Seller', 'shop'));
         }
 
         if (!UserPrivilege::isUserHasValidSubsription($this->userParentId)) {
             Message::addInfo(Labels::getLabel("MSG_Please_buy_subscription", $this->siteLangId));
-            FatApp::redirectUser(CommonHelper::generateUrl('Seller', 'Packages'));
+            FatApp::redirectUser(UrlHelper::generateUrl('Seller', 'Packages'));
         }
 
         if (!User::canAddCustomProduct()) {
             Message::addErrorMessage(Labels::getLabel("MSG_Invalid_Access", $this->siteLangId));
-            FatApp::redirectUser(CommonHelper::generateUrl('Seller', 'catalog'));
+            FatApp::redirectUser(UrlHelper::generateUrl('Seller', 'catalog'));
         }
 
         $frmSearchCustomProduct = $this->getCustomProductSearchForm();
@@ -1745,18 +1745,18 @@ trait CustomProducts
         $prodId = FatUtility::int($prodId);
         if (0 == $prodId && FatApp::getConfig('CONF_ENABLE_SELLER_SUBSCRIPTION_MODULE', FatUtility::VAR_INT, 0) && Product::getActiveCount($this->userParentId) >= SellerPackages::getAllowedLimit($this->userParentId, $this->siteLangId, 'spackage_products_allowed')) {
             Message::addErrorMessage(Labels::getLabel("MSG_You_have_crossed_your_package_limit.", $this->siteLangId));
-            FatApp::redirectUser(CommonHelper::generateUrl('Seller', 'Packages'));
+            FatApp::redirectUser(UrlHelper::generateUrl('Seller', 'Packages'));
         }
         if (!$this->isShopActive($this->userParentId, 0, true)) {
-            FatApp::redirectUser(CommonHelper::generateUrl('Seller', 'shop'));
+            FatApp::redirectUser(UrlHelper::generateUrl('Seller', 'shop'));
         }
         if (!User::canAddCustomProduct()) {
             Message::addErrorMessage(Labels::getLabel('MSG_Invalid_Access', $this->siteLangId));
-            FatApp::redirectUser(CommonHelper::generateUrl('Seller', 'customProduct'));
+            FatApp::redirectUser(UrlHelper::generateUrl('Seller', 'customProduct'));
         }
         if (!UserPrivilege::isUserHasValidSubsription($this->userParentId)) {
             Message::addInfo(Labels::getLabel("MSG_Please_buy_subscription", $this->siteLangId));
-            FatApp::redirectUser(CommonHelper::generateUrl('Seller', 'Packages'));
+            FatApp::redirectUser(UrlHelper::generateUrl('Seller', 'Packages'));
         }
 
         $productType = Product::getAttributesById($prodId, 'product_type');
@@ -1925,7 +1925,7 @@ trait CustomProducts
             $email = new EmailHandler();
             if (!$email->sendNewCatalogNotification($this->siteLangId, $mailData)) {
                 Message::addErrorMessage(Labels::getLabel('MSG_Email_could_not_be_sent', $this->siteLangId));
-                FatApp::redirectUser(CommonHelper::generateUrl('Seller', 'customProduct'));
+                FatApp::redirectUser(UrlHelper::generateUrl('Seller', 'customProduct'));
             }
             
             /* send notification to admin [ */
@@ -1954,15 +1954,15 @@ trait CustomProducts
     public function productAttributeAndSpecificationsFrm($productId)
     {
         if (!$this->isShopActive($this->userParentId, 0, true)) {
-            FatApp::redirectUser(CommonHelper::generateUrl('Seller', 'shop'));
+            FatApp::redirectUser(UrlHelper::generateUrl('Seller', 'shop'));
         }
         if (!User::canAddCustomProduct()) {
             Message::addErrorMessage(Labels::getLabel('MSG_Invalid_Access', $this->siteLangId));
-            FatApp::redirectUser(CommonHelper::generateUrl('Seller', 'customProduct'));
+            FatApp::redirectUser(UrlHelper::generateUrl('Seller', 'customProduct'));
         }
         if (!UserPrivilege::isUserHasValidSubsription($this->userParentId)) {
             Message::addInfo(Labels::getLabel("MSG_Please_buy_subscription", $this->siteLangId));
-            FatApp::redirectUser(CommonHelper::generateUrl('Seller', 'Packages'));
+            FatApp::redirectUser(UrlHelper::generateUrl('Seller', 'Packages'));
         }
         $productId = FatUtility::int($productId);
         if ($productId < 1) {
@@ -2143,15 +2143,15 @@ trait CustomProducts
     public function productOptionsAndTag($productId)
     {
         if (!$this->isShopActive($this->userParentId, 0, true)) {
-            FatApp::redirectUser(CommonHelper::generateUrl('Seller', 'shop'));
+            FatApp::redirectUser(UrlHelper::generateUrl('Seller', 'shop'));
         }
         if (!User::canAddCustomProduct()) {
             Message::addErrorMessage(Labels::getLabel('MSG_Invalid_Access', $this->siteLangId));
-            FatApp::redirectUser(CommonHelper::generateUrl('Seller', 'customProduct'));
+            FatApp::redirectUser(UrlHelper::generateUrl('Seller', 'customProduct'));
         }
         if (!UserPrivilege::isUserHasValidSubsription($this->userParentId)) {
             Message::addInfo(Labels::getLabel("MSG_Please_buy_subscription", $this->siteLangId));
-            FatApp::redirectUser(CommonHelper::generateUrl('Seller', 'Packages'));
+            FatApp::redirectUser(UrlHelper::generateUrl('Seller', 'Packages'));
         }
         $productId = FatUtility::int($productId);
         if ($productId < 1) {
@@ -2242,15 +2242,15 @@ trait CustomProducts
     public function productShippingFrm($productId)
     {
         if (!$this->isShopActive($this->userParentId, 0, true)) {
-            FatApp::redirectUser(CommonHelper::generateUrl('Seller', 'shop'));
+            FatApp::redirectUser(UrlHelper::generateUrl('Seller', 'shop'));
         }
         if (!User::canAddCustomProduct()) {
             Message::addErrorMessage(Labels::getLabel('MSG_Invalid_Access', $this->siteLangId));
-            FatApp::redirectUser(CommonHelper::generateUrl('Seller', 'customProduct'));
+            FatApp::redirectUser(UrlHelper::generateUrl('Seller', 'customProduct'));
         }
         if (!UserPrivilege::isUserHasValidSubsription($this->userParentId)) {
             Message::addInfo(Labels::getLabel("MSG_Please_buy_subscription", $this->siteLangId));
-            FatApp::redirectUser(CommonHelper::generateUrl('Seller', 'Packages'));
+            FatApp::redirectUser(UrlHelper::generateUrl('Seller', 'Packages'));
         }
         $productId = FatUtility::int($productId);
         if ($productId < 1) {

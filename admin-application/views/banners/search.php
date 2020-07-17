@@ -58,7 +58,7 @@ foreach ($arr_listing as $sn => $row) {
             case 'action':
                 if ($canEdit) {
                     $td->appendElement('a', array('href'=>'javascript:void(0)', 'class'=>'btn btn-clean btn-sm btn-icon', 'title'=>Labels::getLabel('LBL_Edit', $adminLangId),"onclick"=>"addBannerLocation(".$row['blocation_id'].")"), "<i class='far fa-edit icon'></i>", true);
-                    $url=CommonHelper::generateUrl('banners', 'listing', array($row['blocation_id']));
+                    $url=UrlHelper::generateUrl('banners', 'listing', array($row['blocation_id']));
                     $td->appendElement('a', array('href'=>'javascript:void(0)', 'class'=>'btn btn-clean btn-sm btn-icon', 'title'=>Labels::getLabel('LBL_Banners', $adminLangId),'onclick'=>'redirecrt("'.$url.'")'), "<i class='ion-images icon'></i>", true);
                 }
                 break;
@@ -75,7 +75,7 @@ if (count($arr_listing) == 0) {
 $frm = new Form('frmBannersLocListing', array('id'=>'frmBannersLocListing'));
 $frm->setFormTagAttribute('class', 'web_form last_td_nowrap actionButtons-js');
 $frm->setFormTagAttribute('onsubmit', 'formAction(this, reloadList ); return(false);');
-$frm->setFormTagAttribute('action', CommonHelper::generateUrl('Banners', 'toggleBulkStatuses'));
+$frm->setFormTagAttribute('action', UrlHelper::generateUrl('Banners', 'toggleBulkStatuses'));
 $frm->addHiddenField('', 'status');
 
 echo $frm->getFormTag();

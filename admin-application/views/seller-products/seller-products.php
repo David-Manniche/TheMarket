@@ -57,14 +57,14 @@ foreach ($arrListing as $sn => $row) {
                 }
                 $td->appendElement('plaintext', array(), $variantStr, true);
                 if ($canViewProducts) {
-                    $td->appendElement('a', array('href' => 'javascript:void(0)', 'onClick' => 'redirectfunc("'.CommonHelper::generateUrl('Products').'", '.$row['selprod_product_id'].')'), $row['product_name'], true);
+                    $td->appendElement('a', array('href' => 'javascript:void(0)', 'onClick' => 'redirectfunc("'.UrlHelper::generateUrl('Products').'", '.$row['selprod_product_id'].')'), $row['product_name'], true);
                 } else {
                     $td->appendElement('plaintext', array(), $row['product_name'], true);
                 }
                 break;
             case 'user':
                 if ($canViewUsers) {
-                    $td->appendElement('a', array('href' => 'javascript:void(0)', 'onClick' => 'redirectfunc("'.CommonHelper::generateUrl('Users').'", '.$row['selprod_user_id'].')'), '<strong>'.Labels::getLabel('LBL_N:', $adminLangId).' </strong>'.$row['user_name'], true);
+                    $td->appendElement('a', array('href' => 'javascript:void(0)', 'onClick' => 'redirectfunc("'.UrlHelper::generateUrl('Users').'", '.$row['selprod_user_id'].')'), '<strong>'.Labels::getLabel('LBL_N:', $adminLangId).' </strong>'.$row['user_name'], true);
                 } else {
                     $td->appendElement('plaintext', array(), '<strong>'.Labels::getLabel('LBL_N:', $adminLangId).' </strong>'.$row['user_name'], true);
                 }
@@ -120,7 +120,7 @@ if (count($arrListing) == 0) {
 $frm = new Form('frmSelProdListing', array('id'=>'frmSelProdListing'));
 $frm->setFormTagAttribute('class', 'web_form last_td_nowrap actionButtons-js');
 $frm->setFormTagAttribute('onsubmit', 'formAction(this, reloadList ); return(false);');
-$frm->setFormTagAttribute('action', CommonHelper::generateUrl('SellerProducts', 'toggleBulkStatuses'));
+$frm->setFormTagAttribute('action', UrlHelper::generateUrl('SellerProducts', 'toggleBulkStatuses'));
 $frm->addHiddenField('', 'status');
 
 echo $frm->getFormTag();

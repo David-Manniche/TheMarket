@@ -8,7 +8,7 @@ if( !empty($list) ){  ?>
         <div class="col-lg-4 col-md-6 col-sm-12 h-100">
           <div class="testimonials-item">
             <div class="user">
-              <img alt="<?php echo $listItem['testimonial_user_name'];?>" src="<?php echo CommonHelper::generateFullUrl('Image','testimonial',array($listItem['testimonial_id'],0,'THUMB')); ?>" >
+              <img alt="<?php echo $listItem['testimonial_user_name'];?>" src="<?php echo UrlHelper::generateFullUrl('Image','testimonial',array($listItem['testimonial_id'],0,'THUMB')); ?>" >
             </div>
             <div class="testimonials-content">
               <h3 class="user-name"><?php echo $listItem['testimonial_user_name']; ?></h3>

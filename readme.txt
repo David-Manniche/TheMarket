@@ -13,11 +13,15 @@ Bugs:
     => 036604 - if product having some offer or special price then on all seller screen> strike is not there on original amount
     => 036596 - Admin is unable to make payment for cod order
     => 037316 - iOS- label issue on using existing number
-
+    => 039438 - Case sensitive product type identifier is not accepted while importing catalog.
+    => 039437 - when digital item is added using import/export then there is error for shipping profile and package
+    => 039426 - Category - parent identifier having case sensitive issue
+    
 Enhancements:
     => Tax module upgrade
     => Test cases classes enhancements.
-    => Compatiblility with php 7.4    
+    => Compatiblility with php 7.4 
+    => User Addresses DB changes.    
 Notes:
    ==========Stripe Connect Installation Notes[:=========
    Composer should be installed on server to run the stripe connect module: composer.json on root of the project has details to download the required libraries in root's vendor folder.

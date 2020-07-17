@@ -116,7 +116,7 @@
             <path class="cls-7" d="M1021.29,654l-17.73,6.15,1.72,5.59-31.41,82.36c-19.35,32.53-66.3,36.72-75.56,16.68l-7.09-21.5L879,747.1l3.28,10.09-94.65,33.95c-11.49,2.29-11.85,15.79-2.61,17.84,0,0,39.11,3.66,103,9.5a92.75,92.75,0,0,0,40.89-5.29c44.32-16.56,57.73-50.67,57.73-50.67l26.82-67.26a1.37,1.37,0,0,1,2.53,0l1.42,3.33,17.75-7.62Z"/>
           </g>
           </svg>
-          <div class="align--center"><a href="<?php echo CommonHelper::generateUrl(''); ?>" class="btn btn--secondary ripplelink"><?php echo Labels::getLabel('MSG_Back_To_Home',$siteLangId);?></a></div>
+          <div class="align--center"><a href="<?php echo UrlHelper::generateUrl(''); ?>" class="btn btn--secondary ripplelink"><?php echo Labels::getLabel('MSG_Back_To_Home',$siteLangId);?></a></div>
         </div>
         <div class="gap"></div>
       </div>

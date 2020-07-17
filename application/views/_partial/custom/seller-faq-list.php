@@ -33,7 +33,7 @@ foreach($list as $listItem){
 if(isset($showViewAllButton) && $showViewAllButton == true){
 ?>
 <div class="gap"> </div>
-<a href="<?php echo CommonHelper::generateUrl('Custom','faq'); ?>" class="btn btn-primary ripplelink"><?php echo Labels::getLabel( 'LBL_View_All', $siteLangId)?></a>
+<a href="<?php echo UrlHelper::generateUrl('Custom','faq'); ?>" class="btn btn-primary ripplelink"><?php echo Labels::getLabel( 'LBL_View_All', $siteLangId)?></a>
 <div class="gap"> </div>
 <?php
 }

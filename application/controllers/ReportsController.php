@@ -7,7 +7,7 @@ class ReportsController extends SellerBaseController
         parent::__construct($action);
         $_SESSION[UserAuthentication::SESSION_ELEMENT_NAME]['activeTab'] = 'S';
         if (!User::canAccessSupplierDashboard()) {
-            FatApp::redirectUser(CommonHelper::generateUrl('Account', 'supplierApprovalForm'));
+            FatApp::redirectUser(UrlHelper::generateUrl('Account', 'supplierApprovalForm'));
         }
         $this->set('bodyClass', 'is--dashboard');
     }
@@ -15,11 +15,11 @@ class ReportsController extends SellerBaseController
     public function index()
     {
         if (User::isSeller()) {
-            FatApp::redirectUser(CommonHelper::generateUrl('seller'));
+            FatApp::redirectUser(UrlHelper::generateUrl('seller'));
         } elseif (User::isBuyer()) {
-            FatApp::redirectUser(CommonHelper::generateUrl('buyer'));
+            FatApp::redirectUser(UrlHelper::generateUrl('buyer'));
         } else {
-            FatApp::redirectUser(CommonHelper::generateUrl(''));
+            FatApp::redirectUser(UrlHelper::generateUrl(''));
         }
     }
 
@@ -27,7 +27,7 @@ class ReportsController extends SellerBaseController
     {
         $this->userPrivilege->canViewPerformanceReport(UserAuthentication::getLoggedUserId());
         if (!User::canAccessSupplierDashboard() || !User::isSellerVerified($this->userParentId)) {
-            FatApp::redirectUser(CommonHelper::generateUrl('Account', 'supplierApprovalForm'));
+            FatApp::redirectUser(UrlHelper::generateUrl('Account', 'supplierApprovalForm'));
         }
         $srchFrm = $this->getProdPerformanceSrchForm();
         $this->set('srchFrm', $srchFrm);
@@ -218,7 +218,7 @@ class ReportsController extends SellerBaseController
     {
         $this->userPrivilege->canViewInventoryReport(UserAuthentication::getLoggedUserId());
         if (!User::canAccessSupplierDashboard()) {
-            FatApp::redirectUser(CommonHelper::generateUrl('Account', 'supplierApprovalForm'));
+            FatApp::redirectUser(UrlHelper::generateUrl('Account', 'supplierApprovalForm'));
         }
         $frmSrch = $this->getProductInventorySearchForm($this->siteLangId);
         $this->set('frmSrch', $frmSrch);
@@ -297,7 +297,7 @@ class ReportsController extends SellerBaseController
     {
         $this->userPrivilege->canViewInventoryReport(UserAuthentication::getLoggedUserId());
         if (!User::canAccessSupplierDashboard()) {
-            FatApp::redirectUser(CommonHelper::generateUrl('Account', 'supplierApprovalForm'));
+            FatApp::redirectUser(UrlHelper::generateUrl('Account', 'supplierApprovalForm'));
         }
         $frmSrch = $this->getProductInventoryStockStatusSearchForm($this->siteLangId);
         $this->set('frmSrch', $frmSrch);
@@ -419,7 +419,7 @@ class ReportsController extends SellerBaseController
     {
         $this->userPrivilege->canViewSalesReport(UserAuthentication::getLoggedUserId());
         if (!User::canAccessSupplierDashboard()) {
-            FatApp::redirectUser(CommonHelper::generateUrl('Account', 'supplierApprovalForm'));
+            FatApp::redirectUser(UrlHelper::generateUrl('Account', 'supplierApprovalForm'));
         }
         $frmSrch = $this->getSalesReportSearchForm($orderDate);
         $this->set('frmSrch', $frmSrch);

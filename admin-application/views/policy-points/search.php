@@ -78,7 +78,7 @@ if (count($arr_listing) == 0) {
 $frm = new Form('frmPolicyPointListing', array('id'=>'frmPolicyPointListing'));
 $frm->setFormTagAttribute('class', 'web_form last_td_nowrap actionButtons-js');
 $frm->setFormTagAttribute('onsubmit', 'formAction(this, reloadList ); return(false);');
-$frm->setFormTagAttribute('action', CommonHelper::generateUrl('PolicyPoints', 'toggleBulkStatuses'));
+$frm->setFormTagAttribute('action', UrlHelper::generateUrl('PolicyPoints', 'toggleBulkStatuses'));
 $frm->addHiddenField('', 'status');
 
 echo $frm->getFormTag();

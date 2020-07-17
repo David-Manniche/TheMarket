@@ -75,7 +75,7 @@ if($totReviews){
 /* <div class="col-md-4 border--left">
 	<h4><?php echo Labels::getLabel('Lbl_Share_your_thoughts',$siteLangId); ?></h4>
 	<h6><?php echo Labels::getLabel('Lbl_With_other_customers',$siteLangId); ?></h6>
-	<a class="btn btn-primary btn--h-large" href="<?php echo CommonHelper::generateUrl('Reviews','write',array($shop_id)); ?>"><?php echo Labels::getLabel('Lbl_Write_a_Review',$siteLangId); ?></a>
+	<a class="btn btn-primary btn--h-large" href="<?php echo UrlHelper::generateUrl('Reviews','write',array($shop_id)); ?>"><?php echo Labels::getLabel('Lbl_Write_a_Review',$siteLangId); ?></a>
    </div> */
 ?>
 

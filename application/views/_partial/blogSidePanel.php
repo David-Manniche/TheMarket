@@ -29,10 +29,10 @@
                                 $categoryNames = !empty($blogPost['categoryNames'])?explode('~', $blogPost['categoryNames']):array();
                                 $categories = array_combine($categoryIds, $categoryNames);
                                 foreach ($categories as $id => $name) { ?>
-                                    <li><a href="<?php echo CommonHelper::generateUrl('Blog', 'category', array($id)); ?>"><?php echo $name; ?></a></li>
+                                    <li><a href="<?php echo UrlHelper::generateUrl('Blog', 'category', array($id)); ?>"><?php echo $name; ?></a></li>
                                 <?php } ?>
                             </ul>
-                            <h2 class="post_title"><a href="<?php echo CommonHelper::generateUrl('Blog', 'postDetail', array($blogPost['post_id'])); ?>"><?php echo mb_substr($blogPost['post_title'], 0, 80); ?></a></h2>
+                            <h2 class="post_title"><a href="<?php echo UrlHelper::generateUrl('Blog', 'postDetail', array($blogPost['post_id'])); ?>"><?php echo mb_substr($blogPost['post_title'], 0, 80); ?></a></h2>
                         </div>
                     </li>
                     <?php }?>
@@ -50,10 +50,10 @@
                                 $categoryNames = !empty($blogPost['categoryNames'])?explode('~', $blogPost['categoryNames']):array();
                                 $categories = array_combine($categoryIds, $categoryNames);
                                 foreach ($categories as $id => $name) { ?>
-                                    <li><a href="<?php echo CommonHelper::generateUrl('Blog', 'category', array($id)); ?>"><?php echo $name; ?></a></li>
+                                    <li><a href="<?php echo UrlHelper::generateUrl('Blog', 'category', array($id)); ?>"><?php echo $name; ?></a></li>
                                 <?php } ?>
                             </ul>
-                            <h2 class="post_title"><a href="<?php echo CommonHelper::generateUrl('Blog', 'postDetail', array($blogPost['post_id'])); ?>"><?php echo mb_substr($blogPost['post_title'], 0, 80); ?></a></h2>
+                            <h2 class="post_title"><a href="<?php echo UrlHelper::generateUrl('Blog', 'postDetail', array($blogPost['post_id'])); ?>"><?php echo mb_substr($blogPost['post_title'], 0, 80); ?></a></h2>
                         </div>
                     </li>
                     <?php }?>
@@ -65,7 +65,7 @@
     <?php }?>
 </div>
 <div class="gap"></div>
-<a href="<?php echo CommonHelper::generateUrl('Blog', 'contributionForm'); ?>" class="btn btn-primary btn--lg btn-block ripplelink btn--contribute"> <?php echo Labels::getLabel('Lbl_Contribute', $siteLangId); ?> </a>
+<a href="<?php echo UrlHelper::generateUrl('Blog', 'contributionForm'); ?>" class="btn btn-primary btn--lg btn-block ripplelink btn--contribute"> <?php echo Labels::getLabel('Lbl_Contribute', $siteLangId); ?> </a>
 <div class="gap"></div>
 <?php /*if (!empty($categoriesArr)) { ?>
 <h3 class="widget__title -style-uppercase"><?php echo Labels::getLabel('Lbl_categories', $siteLangId); ?></h3>
@@ -74,18 +74,18 @@
         <ul class="blog_lnks accordion">
             <?php foreach ($categoriesArr as $cat) { ?>
             <li class="<?php echo (count($cat['children'])>0) ? "has-child" : "" ?>"><a
-                    href="<?php echo CommonHelper::generateUrl('Blog', 'category', array($cat['bpcategory_id'])); ?>"><?php echo $cat['bpcategory_name']; echo !empty($cat['countChildBlogPosts'])?" <span class='badge'>($cat[countChildBlogPosts])</span>":''; ?></a>
+                    href="<?php echo UrlHelper::generateUrl('Blog', 'category', array($cat['bpcategory_id'])); ?>"><?php echo $cat['bpcategory_name']; echo !empty($cat['countChildBlogPosts'])?" <span class='badge'>($cat[countChildBlogPosts])</span>":''; ?></a>
                 <?php if (count($cat['children'])) { ?>
                 <span class="link--toggle link--toggle-js"></span>
                 <ul style="display:none">
                     <?php foreach ($cat['children'] as $children) { ?>
                     <li><a
-                            href="<?php echo CommonHelper::generateUrl('Blog', 'category', array($children['bpcategory_id'])); ?>"><?php echo $children['bpcategory_name']; echo !empty($children['countChildBlogPosts'])?" <span class='badge'>($children[countChildBlogPosts])</span>":''; ?></a>
+                            href="<?php echo UrlHelper::generateUrl('Blog', 'category', array($children['bpcategory_id'])); ?>"><?php echo $children['bpcategory_name']; echo !empty($children['countChildBlogPosts'])?" <span class='badge'>($children[countChildBlogPosts])</span>":''; ?></a>
                         <?php if (count($children['children'])) { ?>
                         <ul class="">
                             <?php foreach ($children['children'] as $subChildren) { ?>
                             <li class="">
-                                <a href="<?php echo CommonHelper::generateUrl('Blog', 'category', array($subChildren['bpcategory_id'])); ?>"><?php echo $subChildren['bpcategory_name']; ?></a>
+                                <a href="<?php echo UrlHelper::generateUrl('Blog', 'category', array($subChildren['bpcategory_id'])); ?>"><?php echo $subChildren['bpcategory_name']; ?></a>
                             </li>
                             <?php } ?>
                         </ul>

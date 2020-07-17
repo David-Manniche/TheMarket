@@ -38,7 +38,7 @@ foreach ($records as $sn => $row) {
                 $td->appendElement('plaintext', array(), $sr_no);
                 break;
             case 'user':
-                !empty($row['credential_username']) ? $td->appendElement('a', array('href' => 'javascript:void(0)', 'onClick' => 'redirectfunc("'.CommonHelper::generateUrl('Users').'",'.$row['afile_record_id'].')'), $row['credential_username'].'( '.$row['credential_email'].' )') : $td->appendElement('plaintext', array(), 'Admin', true);
+                !empty($row['credential_username']) ? $td->appendElement('a', array('href' => 'javascript:void(0)', 'onClick' => 'redirectfunc("'.UrlHelper::generateUrl('Users').'",'.$row['afile_record_id'].')'), $row['credential_username'].'( '.$row['credential_email'].' )') : $td->appendElement('plaintext', array(), 'Admin', true);
                 break;
             case 'afile_physical_path':
                 $path = AttachedFile::FILETYPE_BULK_IMAGES_PATH . $row['afile_physical_path'];

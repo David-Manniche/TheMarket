@@ -22,7 +22,7 @@ class BlogController extends MyAppController
         if ($action == 'index') {
             $nodes[] = array('title' => $className);
         } else {
-            $nodes[] = array('title' => $className, 'href' => CommonHelper::generateUrl($urlController));
+            $nodes[] = array('title' => $className, 'href' => UrlHelper::generateUrl($urlController));
         }
         $parameters = FatApp::getParameters();
 
@@ -201,7 +201,7 @@ class BlogController extends MyAppController
                 LibHelper::dieJsonError($message);
             }
             Message::addErrorMessage($message);
-            FatApp::redirectUser(CommonHelper::generateUrl('Blog'));
+            FatApp::redirectUser(UrlHelper::generateUrl('Blog'));
         }
 
         $post_images = AttachedFile::getMultipleAttachments(AttachedFile::FILETYPE_BLOG_POST_IMAGE, $blogPostId, 0, $this->siteLangId);
@@ -218,7 +218,7 @@ class BlogController extends MyAppController
                 LibHelper::dieJsonError($message);
             }
             Message::addErrorMessage($message);
-            FatApp::redirectUser(CommonHelper::generateUrl('Blog'));
+            FatApp::redirectUser(UrlHelper::generateUrl('Blog'));
         }
         $this->set('blogPostData', $blogPostData);
 
@@ -245,14 +245,14 @@ class BlogController extends MyAppController
         }
         $title = $blogPostData['post_title'];
         $post_description = trim(CommonHelper::subStringByWords(strip_tags(CommonHelper::renderHtml($blogPostData["post_description"], true)), 500));
-        $post_description .= ' - ' . Labels::getLabel('LBL_See_more_at', $this->siteLangId) . ": " . CommonHelper::getCurrUrl();
-        $postImageUrl = CommonHelper::generateFullUrl('Image', 'blogPostFront', array($blogPostData['post_id'], $this->siteLangId, ''));
+        $post_description .= ' - ' . Labels::getLabel('LBL_See_more_at', $this->siteLangId) . ": " . UrlHelper::getCurrUrl();
+        $postImageUrl = UrlHelper::generateFullUrl('Image', 'blogPostFront', array($blogPostData['post_id'], $this->siteLangId, ''));
         $socialShareContent = array(
             'type' => 'Blog Post',
             'title' => $title,
             'description' => $post_description,
             'image' => $postImageUrl,
-            'blogLink' => CommonHelper::generateFullUrl('Blog', 'postDetail', array($blogPostData['post_id']))
+            'blogLink' => UrlHelper::generateFullUrl('Blog', 'postDetail', array($blogPostData['post_id']))
         );
 
         /* View Count functionality [ */
@@ -423,7 +423,7 @@ class BlogController extends MyAppController
         Message::addErrorMessage($message);
         /* $this->contributionForm();
         return false; */
-        FatApp::redirectUser(CommonHelper::generateUrl('Blog', 'contributionForm'));
+        FatApp::redirectUser(UrlHelper::generateUrl('Blog', 'contributionForm'));
     }
     public function setupContribution()
     {
@@ -498,7 +498,7 @@ class BlogController extends MyAppController
         }
 
         Message::addMessage(Labels::getLabel('Lbl_Contributed_Successfully', $this->siteLangId));
-        FatApp::redirectUser(CommonHelper::generateUrl('Blog', 'contributionForm'));
+        FatApp::redirectUser(UrlHelper::generateUrl('Blog', 'contributionForm'));
     }
 
     private function getContributionForm()

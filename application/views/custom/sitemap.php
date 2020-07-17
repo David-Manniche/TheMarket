@@ -31,7 +31,7 @@
 										<?php
                         foreach($contentPages as $contentId=> $contentPageName){
                         ?> <li>
-											<a href="<?php echo CommonHelper::generateUrl('cms','view',array($contentId));?>">
+											<a href="<?php echo UrlHelper::generateUrl('cms','view',array($contentId));?>">
 												<?php echo $contentPageName;?>
 											</a>
 										</li>
@@ -69,7 +69,7 @@
 										<?php foreach($allShops as $shop){
 					?>
 										<li>
-											<a href="<?php echo CommonHelper::generateUrl('Shops','view',array($shop['shop_id']));?>">
+											<a href="<?php echo UrlHelper::generateUrl('Shops','view',array($shop['shop_id']));?>">
 												<?php echo $shop['shop_name'];?>
 											</a>
 										</li>
@@ -92,7 +92,7 @@
 										<?php foreach($allBrands as $brands){
 					?>
 										<li>
-											<a href="<?php echo CommonHelper::generateUrl('Brands','view',array($brands['brand_id']));?>">
+											<a href="<?php echo UrlHelper::generateUrl('Brands','view',array($brands['brand_id']));?>">
 												<?php echo $brands['brand_name'];?>
 											</a>
 										</li>

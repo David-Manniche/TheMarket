@@ -3,12 +3,12 @@
 	$onSubmitFunctionName = isset($onSubmitFunctionName) ? $onSubmitFunctionName : 'defaultSetUpLogin';
 	$loginFrm->setFormTagAttribute('class', 'form seller-login');
 	$loginFrm->setValidatorJsObjectName('loginValObj');
-	$loginFrm->setFormTagAttribute('action', CommonHelper::generateUrl('GuestUser', 'login')); 
+	$loginFrm->setFormTagAttribute('action', UrlHelper::generateUrl('GuestUser', 'login')); 
 	$loginFrm->setFormTagAttribute('onsubmit', $onSubmitFunctionName . '(this, loginValObj); return(false);');
 	$loginFrm->developerTags['colClassPrefix'] = 'col-lg-4 col-md-4 col-sm-';
 	$loginFrm->developerTags['fld_default_col'] = 4;
 	$loginFrm->removeField($loginFrm->getField('remember_me'));
-	$loginFrm->addHtml('','forgotPassword','<a class="link forgot" href="'.CommonHelper::generateUrl('GuestUser', 'forgotPasswordForm').'">'.Labels::getLabel('LBL_Forgot_Password?',$siteLangId).'</a>');
+	$loginFrm->addHtml('','forgotPassword','<a class="link forgot" href="'.UrlHelper::generateUrl('GuestUser', 'forgotPasswordForm').'">'.Labels::getLabel('LBL_Forgot_Password?',$siteLangId).'</a>');
 	$fldSubmit = $loginFrm->getField('btn_submit');
 
 echo $loginFrm->getFormTag();

@@ -8,7 +8,7 @@ $IDFld = $frm->getField('bpcategory_id');
 $IDFld->setFieldTagAttribute('id', "bpcategory_id");
 $urlFld = $frm->getField('urlrewrite_custom');
 $urlFld->setFieldTagAttribute('id', "urlrewrite_custom");
-$urlFld->htmlAfterField = "<small class='text--small'>" . CommonHelper::generateFullUrl('Blog', 'Category', array($bpcategory_id), CONF_WEBROOT_FRONT_URL).'</small>';
+$urlFld->htmlAfterField = "<small class='text--small'>" . UrlHelper::generateFullUrl('Blog', 'Category', array($bpcategory_id), CONF_WEBROOT_FRONT_URL).'</small>';
 $urlFld->setFieldTagAttribute('onkeyup', "getSlugUrl(this,this.value)");
 $frm->developerTags['colClassPrefix'] = 'col-md-';
 $frm->developerTags['fld_default_col'] = 12;

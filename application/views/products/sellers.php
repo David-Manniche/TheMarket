@@ -6,12 +6,12 @@
                 <div class="col-md-8">
                     <div class="prod-info">
                         <div class="prod-info__left">
-                            <div class="product-avtar"><a title="<?php echo $product['selprod_title'];?>" href="<?php echo CommonHelper::generateUrl('products', 'view', array($product['selprod_id']));?>"><img alt="" src="<?php echo UrlHelper::getCachedUrl(UrlHelper::generateFileUrl('image', 'product', array($product['product_id'], "SMALL", $product['selprod_id'], 0, $siteLangId), CONF_WEBROOT_URL), CONF_IMG_CACHE_TIME, '.jpg'); ?>"></a>
+                            <div class="product-avtar"><a title="<?php echo $product['selprod_title'];?>" href="<?php echo UrlHelper::generateUrl('products', 'view', array($product['selprod_id']));?>"><img alt="" src="<?php echo UrlHelper::getCachedUrl(UrlHelper::generateFileUrl('image', 'product', array($product['product_id'], "SMALL", $product['selprod_id'], 0, $siteLangId), CONF_WEBROOT_URL), CONF_IMG_CACHE_TIME, '.jpg'); ?>"></a>
                             </div>
                         </div>
                         <div class="prod-info__right">
                             <div class="avtar__info">
-                                <h5><a title="<?php echo $product['selprod_title'];?>" href="<?php echo CommonHelper::generateUrl('products', 'view', array($product['selprod_id']));?>"><?php echo $product['selprod_title'];?></a></h5>
+                                <h5><a title="<?php echo $product['selprod_title'];?>" href="<?php echo UrlHelper::generateUrl('products', 'view', array($product['selprod_id']));?>"><?php echo $product['selprod_title'];?></a></h5>
                                 <?php if (round($product['prod_rating'])>0  && FatApp::getConfig("CONF_ALLOW_REVIEWS", FatUtility::VAR_INT, 0)) {
                                     ?> <div class="products__rating"><i class="icn"><svg class="svg">
                                 <use xlink:href="<?php echo CONF_WEBROOT_URL; ?>images/retina/sprite.svg#star-yellow" href="<?php echo CONF_WEBROOT_URL; ?>images/retina/sprite.svg#star-yellow"></use>
@@ -60,9 +60,9 @@
                     $td = $tr->appendElement('td');
                     switch ($key) {
                         case 'shop_name':
-                        $txt = '<div class=""><h6 class="ftshops_name"><a title="'.$moresellers[$key].'" href="'.CommonHelper::generateUrl('shops', 'view', array($moresellers['shop_id'])).'">';
+                        $txt = '<div class=""><h6 class="ftshops_name"><a title="'.$moresellers[$key].'" href="'.UrlHelper::generateUrl('shops', 'view', array($moresellers['shop_id'])).'">';
                         $txt .= $moresellers[$key];
-                        $txt .= '</a></h6><a href="'.CommonHelper::generateUrl('shops', 'view', array($moresellers['shop_id'])).'"><div class="">'.$moresellers['shop_state_name'].",".$moresellers['shop_country_name'].'</div></a></div>';
+                        $txt .= '</a></h6><a href="'.UrlHelper::generateUrl('shops', 'view', array($moresellers['shop_id'])).'"><div class="">'.$moresellers['shop_state_name'].",".$moresellers['shop_country_name'].'</div></a></div>';
                         if (isset($product['rating'][$moresellers['selprod_user_id']]) && $product['rating'][$moresellers['selprod_user_id']]>0) {
                             $txt.='<div class="products-reviews"><span class="rate"><i class="icn"><svg class="svg"> <use xlink:href="'.CONF_WEBROOT_URL.'images/retina/sprite.svg#star-yellow" href="'.CONF_WEBROOT_URL.'images/retina/sprite.svg#star-yellow"></use></svg> </i>'.round($product['rating'][$moresellers['selprod_user_id']], 1).'</span> </div>';
                             }
@@ -88,7 +88,7 @@
                         case 'viewDetails':
                                 $td->appendElement(
                                     'a',
-                                    array('href'=>CommonHelper::generateUrl('products', 'view', array($moresellers['selprod_id'])), 'class'=>'link--arrow','title'=>Labels::getLabel('LBL_View_Details', $siteLangId),true),
+                                    array('href'=>UrlHelper::generateUrl('products', 'view', array($moresellers['selprod_id'])), 'class'=>'link--arrow','title'=>Labels::getLabel('LBL_View_Details', $siteLangId),true),
                                     Labels::getLabel('LBL_View_Details', $siteLangId),
                                     true
                                 );

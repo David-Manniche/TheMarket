@@ -23,24 +23,24 @@ class AccountController extends LoggedUserController
     public function index()
     {
         if (UserAuthentication::isGuestUserLogged()) {
-            FatApp::redirectUser(CommonHelper::generateUrl('home'));
+            FatApp::redirectUser(UrlHelper::generateUrl('home'));
         }
 
         switch ($_SESSION[UserAuthentication::SESSION_ELEMENT_NAME]['activeTab']) {
             case 'B':
-                FatApp::redirectUser(CommonHelper::generateUrl('buyer'));
+                FatApp::redirectUser(UrlHelper::generateUrl('buyer'));
                 break;
             case 'S':
-                FatApp::redirectUser(CommonHelper::generateUrl('seller'));
+                FatApp::redirectUser(UrlHelper::generateUrl('seller'));
                 break;
             case 'Ad':
-                FatApp::redirectUser(CommonHelper::generateUrl('advertiser'));
+                FatApp::redirectUser(UrlHelper::generateUrl('advertiser'));
                 break;
             case 'AFFILIATE':
-                FatApp::redirectUser(CommonHelper::generateUrl('affiliate'));
+                FatApp::redirectUser(UrlHelper::generateUrl('affiliate'));
                 break;
             default:
-                FatApp::redirectUser(CommonHelper::generateUrl(''));
+                FatApp::redirectUser(UrlHelper::generateUrl(''));
                 break;
         }
 
@@ -56,7 +56,7 @@ class AccountController extends LoggedUserController
 
         if ($userId < 1 || $requestId < 1) {
             Message::addErrorMessage(Labels::getLabel('MSG_INVALID_REQUEST', $this->siteLangId));
-            FatApp::redirectUser(CommonHelper::generateUrl('Account', 'SupplierApprovalForm'));
+            FatApp::redirectUser(UrlHelper::generateUrl('Account', 'SupplierApprovalForm'));
             //FatUtility::dieJsonError( Message::getHtml() );
         }
 
@@ -74,7 +74,7 @@ class AccountController extends LoggedUserController
 
         if (!$supplierRequest || $supplierRequest['usuprequest_id'] != $requestId) {
             Message::addErrorMessage(Labels::getLabel('MSG_INVALID_REQUEST', $this->siteLangId));
-            FatApp::redirectUser(CommonHelper::generateUrl('Account', 'SupplierApprovalForm'));
+            FatApp::redirectUser(UrlHelper::generateUrl('Account', 'SupplierApprovalForm'));
         }
         $maxAttempts = FatApp::getConfig('CONF_MAX_SUPPLIER_REQUEST_ATTEMPT', FatUtility::VAR_INT, 3);
         if ($supplierRequest && $supplierRequest['usuprequest_attempts'] >= $maxAttempts) {
@@ -91,13 +91,13 @@ class AccountController extends LoggedUserController
         if (!User::canViewSupplierTab()) {
             Message::addErrorMessage(Labels::getLabel('MSG_INVALID_REQUEST_FOR_SUPPLIER_DASHBOARD', $this->siteLangId));
             if (User::isBuyer()) {
-                FatApp::redirectUser(CommonHelper::generateUrl('buyer'));
+                FatApp::redirectUser(UrlHelper::generateUrl('buyer'));
             } elseif (User::isAdvertiser()) {
-                FatApp::redirectUser(CommonHelper::generateUrl('advertiser'));
+                FatApp::redirectUser(UrlHelper::generateUrl('advertiser'));
             } elseif (User::isAffiliate()) {
-                FatApp::redirectUser(CommonHelper::generateUrl('affiliate'));
+                FatApp::redirectUser(UrlHelper::generateUrl('affiliate'));
             } else {
-                FatApp::redirectUser(CommonHelper::generateUrl('Account', 'ProfileInfo'));
+                FatApp::redirectUser(UrlHelper::generateUrl('Account', 'ProfileInfo'));
             }
         }
         $userId = UserAuthentication::getLoggedUserId();
@@ -116,11 +116,11 @@ class AccountController extends LoggedUserController
         $maxAttempts = FatApp::getConfig('CONF_MAX_SUPPLIER_REQUEST_ATTEMPT', FatUtility::VAR_INT, 3);
         if ($supplierRequest && $supplierRequest['usuprequest_attempts'] >= $maxAttempts) {
             Message::addErrorMessage(Labels::getLabel('MSG_You_have_already_consumed_max_attempts', $this->siteLangId));
-            FatApp::redirectUser(CommonHelper::generateUrl('account', 'viewSupplierRequest', array($supplierRequest["usuprequest_id"])));
+            FatApp::redirectUser(UrlHelper::generateUrl('account', 'viewSupplierRequest', array($supplierRequest["usuprequest_id"])));
         }
 
         if ($supplierRequest && ($p != "reopen")) {
-            FatApp::redirectUser(CommonHelper::generateUrl('account', 'viewSupplierRequest', array($supplierRequest["usuprequest_id"])));
+            FatApp::redirectUser(UrlHelper::generateUrl('account', 'viewSupplierRequest', array($supplierRequest["usuprequest_id"])));
         }
 
         $data = array('id' => $supplierRequest['usuprequest_id']);
@@ -393,9 +393,9 @@ class AccountController extends LoggedUserController
         }
         $txnObj = new Transactions();
 
-		$payoutPlugins = Plugin::getNamesWithCode(Plugin::TYPE_PAYOUTS, $this->siteLangId);
+        $payoutPlugins = Plugin::getNamesWithCode(Plugin::TYPE_PAYOUTS, $this->siteLangId);
         $accountSummary = $txnObj->getTransactionSummary($userId);
-		$payouts = [-1 => Labels::getLabel("LBL_BANK_PAYOUT", $this->siteLangId)] + $payoutPlugins;
+        $payouts = [-1 => Labels::getLabel("LBL_BANK_PAYOUT", $this->siteLangId)] + $payoutPlugins;
 
         $this->set('payouts', $payouts);
         $this->set('userWalletBalance', User::getUserBalance(UserAuthentication::getLoggedUserId()));
@@ -409,7 +409,7 @@ class AccountController extends LoggedUserController
 
     public function creditsInfo()
     {
-		$this->set('userWalletBalance', User::getUserBalance(UserAuthentication::getLoggedUserId()));
+        $this->set('userWalletBalance', User::getUserBalance(UserAuthentication::getLoggedUserId()));
         $this->set('userTotalWalletBalance', User::getUserBalance(UserAuthentication::getLoggedUserId(), false, false));
         $this->set('promotionWalletToBeCharged', Promotion::getPromotionWalleToBeCharged(UserAuthentication::getLoggedUserId()));
         $this->set('withdrawlRequestAmount', User::getUserWithdrawnRequestAmount(UserAuthentication::getLoggedUserId()));
@@ -517,7 +517,7 @@ class AccountController extends LoggedUserController
             $this->set('orderType', Orders::ORDER_WALLET_RECHARGE);
             $this->_template->render();
         }
-        $this->set('redirectUrl', CommonHelper::generateUrl('WalletPay', 'Recharge', array($order_id)));
+        $this->set('redirectUrl', UrlHelper::generateUrl('WalletPay', 'Recharge', array($order_id)));
         $this->set('msg', Labels::getLabel('MSG_Redirecting', $this->siteLangId));
         $this->_template->render(false, false, 'json-success.php');
     }
@@ -1107,7 +1107,7 @@ class AccountController extends LoggedUserController
                 if (FatUtility::isAjaxCall()) {
                     FatUtility::dieWithError(Message::getHtml());
                 }
-                FatApp::redirectUser(CommonHelper::generateUrl('Account', 'ProfileInfo'));
+                FatApp::redirectUser(UrlHelper::generateUrl('Account', 'ProfileInfo'));
             }
         }
         /* ] */
@@ -2270,8 +2270,8 @@ class AccountController extends LoggedUserController
         $srch->joinMessagePostedToUser(true, $this->siteLangId);
         $srch->joinThreadStartedByUser();
         $srch->addMultipleFields(array('tth.*',
-         'ttm.message_id', 'ttm.message_text', 'ttm.message_date', 'ttm.message_is_unread', 
-         'ttm.message_to', 'IFNULL(tfrs_l.shop_name, tfrs.shop_identifier) as message_from_shop_name', 
+         'ttm.message_id', 'ttm.message_text', 'ttm.message_date', 'ttm.message_is_unread',
+         'ttm.message_to', 'IFNULL(tfrs_l.shop_name, tfrs.shop_identifier) as message_from_shop_name',
          'tfrs.shop_id as message_from_shop_id', 'tftos.shop_id as message_to_shop_id',
          'IFNULL(tftos_l.shop_name, tftos.shop_identifier) as message_to_shop_name'));
         $srch->addCondition('ttm.message_deleted', '=', 0);
@@ -2312,7 +2312,7 @@ class AccountController extends LoggedUserController
         $this->set('loggedUserId', $userId);
         $this->set('page', $page);
         $this->set('pageSize', $pagesize);
-        $this->set('parentAndTheirChildIds', $parentAndTheirChildIds);        
+        $this->set('parentAndTheirChildIds', $parentAndTheirChildIds);
         $this->set('postedData', $post);
 
         if (true === MOBILE_APP_API_CALL) {
@@ -2390,7 +2390,7 @@ class AccountController extends LoggedUserController
             $frm->fill(array('message_thread_id' => $threadId, 'message_id' => $messageId));
         }
 
-        $threadObj = new Thread($threadId);        
+        $threadObj = new Thread($threadId);
         if (!$threadObj->markMessageReadFromUserArr($threadId, $parentAndThierChildIds)) {
             if (true === MOBILE_APP_API_CALL) {
                 Message::addErrorMessage(strip_tags(current($threadObj->getError())));
@@ -2443,7 +2443,7 @@ class AccountController extends LoggedUserController
         $srch->joinMessagePostedToUser(true, $this->siteLangId);
         $srch->joinThreadStartedByUser();
         $srch->addMultipleFields(array(
-            'tth.*','ttm.message_id', 'ttm.message_text', 'ttm.message_date', 'ttm.message_is_unread' , 
+            'tth.*','ttm.message_id', 'ttm.message_text', 'ttm.message_date', 'ttm.message_is_unread' ,
             'IFNULL(tfrs_l.shop_name, tfrs.shop_identifier) as message_from_shop_name' , 'tfrs.shop_id as message_from_shop_id',
             'tftos.shop_id as message_to_shop_id', 'IFNULL(tftos_l.shop_name, tftos.shop_identifier) as message_to_shop_name'));
         $srch->addCondition('ttm.message_deleted', '=', 0);
@@ -2743,7 +2743,7 @@ class AccountController extends LoggedUserController
             $zipFld->requirements()->setRegularExpressionToValidate(ValidateElement::ZIP_REGEX);
             $zipFld->requirements()->setCustomErrorMessage(Labels::getLabel('LBL_Only_alphanumeric_value_is_allowed.', $this->siteLangId));
         }
-		$parent = User::getAttributesById(UserAuthentication::getLoggedUserId(true), 'user_parent');
+        $parent = User::getAttributesById(UserAuthentication::getLoggedUserId(true), 'user_parent');
         if (User::isAdvertiser() && $parent == 0) {
             $fld = $frm->addTextBox(Labels::getLabel('L_Company', $this->siteLangId), 'user_company');
             $fld = $frm->addTextArea(Labels::getLabel('L_Brief_Profile', $this->siteLangId), 'user_profile_info');
@@ -2928,7 +2928,7 @@ class AccountController extends LoggedUserController
         } else {
             Message::addErrorMessage(Labels::getLabel('MSG_No_File_Uploaded', $this->siteLangId));
         }
-        FatApp::redirectUser(CommonHelper::generateUrl('member', 'account'));
+        FatApp::redirectUser(UrlHelper::generateUrl('member', 'account'));
     }
 
     public function escalateOrderReturnRequest($orrequest_id)
@@ -3088,10 +3088,10 @@ class AccountController extends LoggedUserController
             Message::addErrorMessage(Labels::getLabel("LBL_Your_referral_code_is_not_generated,_Please_contact_admin.", $this->siteLangId));
             FatUtility::dieWithError(Message::getHtml());
         }
-        $productUrl = CommonHelper::generateUrl('products', 'view', array($selprod_id ));
+        $productUrl = UrlHelper::generateUrl('products', 'view', array($selprod_id ));
         $productUrl = CommonHelper::base64encode(ltrim($productUrl, '/'));
 
-        $productSharingUrl = CommonHelper::generateFullUrl("custom", "referral", array( $user_referral_code, $productUrl));
+        $productSharingUrl = UrlHelper::generateFullUrl("custom", "referral", array( $user_referral_code, $productUrl));
 
         $userInfo = User::getAttributesById($userId, array('user_fb_access_token'));
         if ($userInfo['user_fb_access_token'] == '') {
@@ -3152,7 +3152,7 @@ class AccountController extends LoggedUserController
             FatUtility::dieWithError(Message::getHtml());
         }
 
-        $_SESSION[UserAuthentication::SESSION_ELEMENT_NAME]['redirect_user'] = CommonHelper::generateUrl('products', 'view', array($selprod_id));
+        $_SESSION[UserAuthentication::SESSION_ELEMENT_NAME]['redirect_user'] = UrlHelper::generateUrl('products', 'view', array($selprod_id));
 
         /*FB API to share [*/
         include_once CONF_INSTALLATION_PATH . 'library/Fbapi.php';
@@ -3167,7 +3167,7 @@ class AccountController extends LoggedUserController
         $fbLoginUrl = '';
         $friendList = array();
         if ($userInfo['user_fb_access_token'] == '') {
-            $redirectUrl = CommonHelper::generateFullUrl('Buyer', 'getFbToken', array(), '', false);
+            $redirectUrl = UrlHelper::generateFullUrl('Buyer', 'getFbToken', array(), '', false);
             $fbLoginUrl = $fb->getLoginUrl($redirectUrl);
         } else {
             $fbAccessToken = $userInfo['user_fb_access_token'];
@@ -3251,7 +3251,9 @@ class AccountController extends LoggedUserController
 
     public function searchAddresses()
     {
-        $addresses = UserAddress::getUserAddresses(UserAuthentication::getLoggedUserId(), $this->siteLangId);
+        $address = new Address(0, $this->siteLangId);
+        $addresses = $address->getData(Address::TYPE_USER, UserAuthentication::getLoggedUserId());
+
         if ($addresses) {
             $this->set('addresses', $addresses);
         } else {
@@ -3269,24 +3271,25 @@ class AccountController extends LoggedUserController
         $this->_template->render(false, false);
     }
 
-    public function addAddressForm($ua_id)
+    public function addAddressForm($addr_id)
     {
-        $ua_id = FatUtility::int($ua_id);
+        $addr_id = FatUtility::int($addr_id);
         $addressFrm = $this->getUserAddressForm($this->siteLangId);
 
         $stateId = 0;
 
-        if ($ua_id > 0) {
-            $data = UserAddress::getUserAddresses(UserAuthentication::getLoggedUserId(), $this->siteLangId, 0, $ua_id);
-            if ($data === false) {
+        if ($addr_id > 0) {
+            $address = new Address($addr_id, $this->siteLangId);
+            $data = $address->getData(Address::TYPE_USER, UserAuthentication::getLoggedUserId());
+            if (empty($data)) {
                 Message::addErrorMessage(Labels::getLabel('MSG_Invalid_request', $this->siteLangId));
                 FatUtility::dieJsonError(Message::getHtml());
             }
-            $stateId = $data['ua_state_id'];
+            $stateId = $data['addr_state_id'];
             $addressFrm->fill($data);
         }
 
-        $this->set('ua_id', $ua_id);
+        $this->set('addr_id', $addr_id);
         $this->set('stateId', $stateId);
         $this->set('addressFrm', $addressFrm);
         $this->_template->render(false, false);
@@ -3363,7 +3366,7 @@ class AccountController extends LoggedUserController
         $cpage = FatApp::getDb()->fetch($cPageSrch->getResultSet());
         $gdprPolicyLinkHref = '';
         if (!empty($cpage) && is_array($cpage)) {
-            $gdprPolicyLinkHref = CommonHelper::generateUrl('Cms', 'view', array($cpage['cpage_id']));
+            $gdprPolicyLinkHref = UrlHelper::generateUrl('Cms', 'view', array($cpage['cpage_id']));
         }
 
         $frm = $this->getRequestDataForm();
@@ -3566,7 +3569,7 @@ class AccountController extends LoggedUserController
             $rs = $srch->getResultSet();
             $row = $db->fetch($rs);
             if (!empty($row)) {
-                LibHelper::dieJsonError(Labels::getLabel('MSG_THIS_PHONE_NUMBER_IS_ALREADY_EXISTS.', $this->siteLangId));       
+                LibHelper::dieJsonError(Labels::getLabel('MSG_THIS_PHONE_NUMBER_IS_ALREADY_EXISTS.', $this->siteLangId));
             }
         }
 

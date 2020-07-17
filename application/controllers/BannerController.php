@@ -11,7 +11,7 @@ class BannerController extends MyAppController
         $bannerId = FatUtility::int($bannerId);
         if (1 > $bannerId) {
             Message::addErrorMessage(Labels::getLabel('MSG_Invalid_Access', $this->siteLangId));
-            FatApp::redirectUser(CommonHelper::generateUrl('home'));
+            FatApp::redirectUser(UrlHelper::generateUrl('home'));
         }
         $srch = new BannerSearch($this->siteLangId, true);
         $srch->joinLocations($this->siteLangId, true);
@@ -25,10 +25,10 @@ class BannerController extends MyAppController
         $row = FatApp::getDb()->fetch($rs);
         if ($row == false) {
             Message::addErrorMessage(Labels::getLabel('MSG_Invalid_Access', $this->siteLangId));
-            FatApp::redirectUser(CommonHelper::generateUrl('home'));
+            FatApp::redirectUser(UrlHelper::generateUrl('home'));
         }
 
-        $url = str_replace('{SITEURL}', CommonHelper::generateFullUrl(), $row['banner_url']);
+        $url = str_replace('{SITEURL}', UrlHelper::generateFullUrl(), $row['banner_url']);
 
         $userId = 0;
         if (UserAuthentication::isUserLogged()) {
@@ -81,7 +81,7 @@ class BannerController extends MyAppController
             FatApp::redirectUser($url);
         }
 
-        FatApp::redirectUser(CommonHelper::generateUrl(''));
+        FatApp::redirectUser(UrlHelper::generateUrl(''));
     }
 
     public function HomePageBannerTopLayout($bannerId, $langId = 0, $screen = 0)

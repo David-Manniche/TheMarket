@@ -34,7 +34,7 @@ foreach ($arr_listing as $sn => $row){
 			case 'action':
 				/* $ul = $td->appendElement("ul",array('class'=>'actions'),'<span class="caption--td">'.$val.'</span>',true);
 				$li = $ul->appendElement("li"); */
-				$td->appendElement('a', array('href'=>CommonHelper::generateUrl('sellerProducts','index',array($row['product_id'])), 'class'=>'btn btn--primary btn--sm','title'=>Labels::getLabel('LBL_Pick_to_Sell',$adminLangId)),
+				$td->appendElement('a', array('href'=>UrlHelper::generateUrl('sellerProducts','index',array($row['product_id'])), 'class'=>'btn btn--primary btn--sm','title'=>Labels::getLabel('LBL_Pick_to_Sell',$adminLangId)),
 				Labels::getLabel('LBL_Pick_to_Sell',$adminLangId), true);
 			break;
 			default:

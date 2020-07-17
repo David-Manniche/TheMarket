@@ -26,11 +26,11 @@ foreach ($ordersList as $sn=>$row){
 				$td->appendElement('plaintext', array(), $sr_no);
 			break;
 			case 'order_id':
-				$td->appendElement('a', array('target' => '_blank', 'href' => CommonHelper::generateUrl('SubscriptionOrders','view',array($row['order_id']))), $row[$key], true);
+				$td->appendElement('a', array('target' => '_blank', 'href' => UrlHelper::generateUrl('SubscriptionOrders','view',array($row['order_id']))), $row[$key], true);
 			break;
 			case 'buyer_user_name':
 				if($canViewUsers){
-						$td->appendElement('a', array('href' => 'javascript:void(0)', 'onClick' => 'redirectfunc("'.CommonHelper::generateUrl('Users').'", '.$row['user_id'].')'), $row[$key], true);
+						$td->appendElement('a', array('href' => 'javascript:void(0)', 'onClick' => 'redirectfunc("'.UrlHelper::generateUrl('Users').'", '.$row['user_id'].')'), $row[$key], true);
 				} else {
 					$td->appendElement('plaintext', array(), $row[$key], true);
 				}
@@ -60,7 +60,7 @@ foreach ($ordersList as $sn=>$row){
 				$td->appendElement('span', array('class'=>'label '.$cls), Orders::getOrderPaymentStatusArr($adminLangId)[$row[$key]] );
 			break;
 			case 'action':
-				$td->appendElement('a', array('href'=>CommonHelper::generateUrl('SubscriptionOrders','view',array($row['order_id'])),'class'=>'btn btn-clean btn-sm btn-icon','title'=>Labels::getLabel('LBL_View_Order_Detail',$adminLangId)),"<i class='far fa-eye icon'></i>", true);
+				$td->appendElement('a', array('href'=>UrlHelper::generateUrl('SubscriptionOrders','view',array($row['order_id'])),'class'=>'btn btn-clean btn-sm btn-icon','title'=>Labels::getLabel('LBL_View_Order_Detail',$adminLangId)),"<i class='far fa-eye icon'></i>", true);
 			break;
 			default:
 				$td->appendElement('plaintext', array(), $row[$key], true);

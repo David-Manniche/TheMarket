@@ -21,7 +21,7 @@
                             $srchFrm->setFormTagAttribute('onsubmit', 'searchUrls(this); return(false);');
                             $srchFrm->setFormTagAttribute('class', 'web_form');
                             $srchFrm->developerTags['colClassPrefix'] = 'col-md-';
-                            $srchFrm->developerTags['fld_default_col'] = 6;
+                            $srchFrm->developerTags['fld_default_col'] = 4;
                             echo  $srchFrm->getFormHtml();
                         ?>
                     </div>

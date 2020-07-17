@@ -937,7 +937,7 @@ class DiscountCouponsController extends AdminBaseController
         $frm = new Form('frmCouponCategory');
         $frm->addHtml('', 'coupon_name', '');
         $fld1 = $frm->addTextBox(Labels::getLabel('LBL_Add_Category', $this->adminLangId), 'category_name');
-        $fld2 = $frm->addHtml('', 'addNewCategoryLink', '<a target="_blank" href="' . CommonHelper::generateUrl('productCategories') . '">' . Labels::getLabel('LBL_Category_Not_Found?_Click_here_to_add_new_category', $this->adminLangId) . '</a>');
+        $fld2 = $frm->addHtml('', 'addNewCategoryLink', '<a target="_blank" href="' . UrlHelper::generateUrl('productCategories') . '">' . Labels::getLabel('LBL_Category_Not_Found?_Click_here_to_add_new_category', $this->adminLangId) . '</a>');
         $fld1->attachField($fld2);
         $frm->addHiddenField('', 'coupon_id');
         return $frm;
@@ -949,7 +949,7 @@ class DiscountCouponsController extends AdminBaseController
         $frm = new Form('frmCouponProduct');
         $frm->addHtml('', 'coupon_name', '');
         $fld1 = $frm->addTextBox(Labels::getLabel('LBL_Add_Product', $this->adminLangId), 'product_name');
-        $fld2 = $frm->addHtml('', 'addNewProductLink', '<a target="_blank" href="' . CommonHelper::generateUrl('products') . '">' . Labels::getLabel('LBL_Product_Not_Found?_Click_here_to_add_new_product', $this->adminLangId) . '</a>');
+        $fld2 = $frm->addHtml('', 'addNewProductLink', '<a target="_blank" href="' . UrlHelper::generateUrl('products') . '">' . Labels::getLabel('LBL_Product_Not_Found?_Click_here_to_add_new_product', $this->adminLangId) . '</a>');
         $fld1->attachField($fld2);
         $frm->addHiddenField('', 'coupon_id');
         return $frm;
@@ -960,7 +960,7 @@ class DiscountCouponsController extends AdminBaseController
         $frm = new Form('frmCouponProduct');
         $frm->addHtml('', 'coupon_name', '');
         $fld1 = $frm->addTextBox(Labels::getLabel('LBL_Add_Plan', $this->adminLangId), 'plan_name');
-        $fld2 = $frm->addHtml('', 'addNewPlanLink', '<br/><a target="_blank" href="' . CommonHelper::generateUrl('sellerPackages') . '">' . Labels::getLabel('LBL_Plan_Not_Found?_Click_here_to_add_new_plan', $this->adminLangId) . '</a>');
+        $fld2 = $frm->addHtml('', 'addNewPlanLink', '<br/><a target="_blank" href="' . UrlHelper::generateUrl('sellerPackages') . '">' . Labels::getLabel('LBL_Plan_Not_Found?_Click_here_to_add_new_plan', $this->adminLangId) . '</a>');
         $fld1->attachField($fld2);
         $frm->addHiddenField('', 'coupon_id');
         return $frm;

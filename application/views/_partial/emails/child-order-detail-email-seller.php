@@ -45,9 +45,9 @@ $str='<table cellspacing="0" cellpadding="0" border="0" width="100%" style="bord
 
     $prodOrBatchUrl = 'javascript:void(0)';
     /* if($orderProducts["op_is_batch"]){
-        $prodOrBatchUrl  = CommonHelper::generateFullUrl('products','batch',array($orderProducts["op_selprod_id"]),"/");
+        $prodOrBatchUrl  = UrlHelper::generateFullUrl('products','batch',array($orderProducts["op_selprod_id"]),"/");
     }else{
-        $prodOrBatchUrl  = CommonHelper::generateFullUrl('products','view',array($orderProducts["op_selprod_id"]),"/");
+        $prodOrBatchUrl  = UrlHelper::generateFullUrl('products','view',array($orderProducts["op_selprod_id"]),"/");
     }     */
 
     $str .= '<tr>

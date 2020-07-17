@@ -49,7 +49,7 @@ if (count($arr_listing) == 0) {
                     $td->appendElement('plaintext', array(), $str, true);
                     break;
                 case 'action':
-                        $td->appendElement('a', array('href' => CommonHelper::generateUrl('shippingProfile', 'form', array($row['shipprofile_id'])),  'class' => 'btn btn-clean btn-sm btn-icon', 'title' => Labels::getLabel('LBL_Edit', $siteLangId)), '<i class="far fa-edit icon"></i>', true);
+                        $td->appendElement('a', array('href' => UrlHelper::generateUrl('shippingProfile', 'form', array($row['shipprofile_id'])),  'class' => 'btn btn-clean btn-sm btn-icon', 'title' => Labels::getLabel('LBL_Edit', $siteLangId)), '<i class="far fa-edit icon"></i>', true);
                        
                     break;
                 default:

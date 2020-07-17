@@ -15,13 +15,13 @@ class MyAppController extends FatController
             if (true === MOBILE_APP_API_CALL) {
                 FatUtility::dieJsonError(Labels::getLabel('MSG_Site_under_maintenance', CommonHelper::getLangId()));
             }
-            FatApp::redirectUser(CommonHelper::generateUrl('maintenance'));
+            FatApp::redirectUser(UrlHelper::generateUrl('maintenance'));
         }
 
         CommonHelper::initCommonVariables();
         $this->initCommonVariables();
         $this->tempTokenLogin();
-        $this->_template->addCss('css/main-' . CommonHelper::getLayoutDirection() . '.css');
+        $this->_template->addCss(CONF_MAIN_CSS_DIR_PATH . '/main-' . CommonHelper::getLayoutDirection() . '.css');
     }
 
     public function initCommonVariables()
@@ -82,7 +82,7 @@ class MyAppController extends FatController
             'setMainProduct' => Labels::getLabel('LBL_Set_as_main_product', $this->siteLangId),
             'layoutDirection' => CommonHelper::getLayoutDirection(),
             'selectPlan' => Labels::getLabel('LBL_Please_Select_any_Plan_From_The_Above_Plans', $this->siteLangId),
-            'alreadyHaveThisPlan' => str_replace("{clickhere}", '<a href="' . CommonHelper::generateUrl('seller', 'subscriptions') . '">' . Labels::getLabel('LBL_Click_Here', $this->siteLangId) . '</a>', Labels::getLabel('LBL_You_have_already_Bought_this_plan._Please_choose_some_other_Plan_or_renew_it_from_{clickhere}', $this->siteLangId)),
+            'alreadyHaveThisPlan' => str_replace("{clickhere}", '<a href="' . UrlHelper::generateUrl('seller', 'subscriptions') . '">' . Labels::getLabel('LBL_Click_Here', $this->siteLangId) . '</a>', Labels::getLabel('LBL_You_have_already_Bought_this_plan._Please_choose_some_other_Plan_or_renew_it_from_{clickhere}', $this->siteLangId)),
             'processing' => Labels::getLabel('LBL_Processing...', $this->siteLangId),
             'requestProcessing' => Labels::getLabel('LBL_Request_Processing...', $this->siteLangId),
             'selectLocation' => Labels::getLabel('LBL_Select_Location_to_view_Wireframe', $this->siteLangId),
@@ -295,7 +295,7 @@ class MyAppController extends FatController
         if ($action == 'index') {
             $nodes[] = array('title' => Labels::getLabel('LBL_' . ucwords($className), $this->siteLangId));
         } else {
-            $nodes[] = array('title' => ucwords($className), 'href' => CommonHelper::generateUrl($urlController));
+            $nodes[] = array('title' => ucwords($className), 'href' => UrlHelper::generateUrl($urlController));
             $nodes[] = array('title' => Labels::getLabel('LBL_' . ucwords($action), $this->siteLangId));
         }
         return $nodes;
@@ -444,30 +444,30 @@ class MyAppController extends FatController
     {
         $siteLangId = FatUtility::int($siteLangId);
         $frm = new Form('frmAddress');
-        $fld = $frm->addTextBox(Labels::getLabel('LBL_Address_Label', $siteLangId), 'ua_identifier');
+        $fld = $frm->addTextBox(Labels::getLabel('LBL_Address_Label', $siteLangId), 'addr_title');
         $fld->setFieldTagAttribute('placeholder', Labels::getLabel('LBL_E.g:_My_Office_Address', $siteLangId));
-        $frm->addRequiredField(Labels::getLabel('LBL_Name', $siteLangId), 'ua_name');
-        $frm->addRequiredField(Labels::getLabel('LBL_Address_Line1', $siteLangId), 'ua_address1');
-        $frm->addTextBox(Labels::getLabel('LBL_Address_Line2', $siteLangId), 'ua_address2');
+        $frm->addRequiredField(Labels::getLabel('LBL_Name', $siteLangId), 'addr_name');
+        $frm->addRequiredField(Labels::getLabel('LBL_Address_Line1', $siteLangId), 'addr_address1');
+        $frm->addTextBox(Labels::getLabel('LBL_Address_Line2', $siteLangId), 'addr_address2');
 
         $countryObj = new Countries();
         $countriesArr = $countryObj->getCountriesArr($siteLangId);
-        $fld = $frm->addSelectBox(Labels::getLabel('LBL_Country', $siteLangId), 'ua_country_id', $countriesArr, FatApp::getConfig('CONF_COUNTRY'), array(), Labels::getLabel('LBL_Select', $siteLangId));
+        $fld = $frm->addSelectBox(Labels::getLabel('LBL_Country', $siteLangId), 'addr_country_id', $countriesArr, FatApp::getConfig('CONF_COUNTRY'), array(), Labels::getLabel('LBL_Select', $siteLangId));
         $fld->requirement->setRequired(true);
 
-        $frm->addSelectBox(Labels::getLabel('LBL_State', $siteLangId), 'ua_state_id', array(), '', array(), Labels::getLabel('LBL_Select', $siteLangId))->requirement->setRequired(true);
-        $frm->addRequiredField(Labels::getLabel('LBL_City', $siteLangId), 'ua_city');
+        $frm->addSelectBox(Labels::getLabel('LBL_State', $siteLangId), 'addr_state_id', array(), '', array(), Labels::getLabel('LBL_Select', $siteLangId))->requirement->setRequired(true);
+        $frm->addRequiredField(Labels::getLabel('LBL_City', $siteLangId), 'addr_city');
 
-        $zipFld = $frm->addRequiredField(Labels::getLabel('LBL_Postalcode', $this->siteLangId), 'ua_zip');
+        $zipFld = $frm->addRequiredField(Labels::getLabel('LBL_Postalcode', $this->siteLangId), 'addr_zip');
         $zipFld->requirements()->setRegularExpressionToValidate(ValidateElement::ZIP_REGEX);
         $zipFld->requirements()->setCustomErrorMessage(Labels::getLabel('LBL_Only_alphanumeric_value_is_allowed.', $this->siteLangId));
 
-        $phnFld = $frm->addRequiredField(Labels::getLabel('LBL_Phone', $siteLangId), 'ua_phone', '', array('class' => 'phone-js ltr-right', 'placeholder' => ValidateElement::PHONE_NO_FORMAT, 'maxlength' => ValidateElement::PHONE_NO_LENGTH));
+        $phnFld = $frm->addRequiredField(Labels::getLabel('LBL_Phone', $siteLangId), 'addr_phone', '', array('class' => 'phone-js ltr-right', 'placeholder' => ValidateElement::PHONE_NO_FORMAT, 'maxlength' => ValidateElement::PHONE_NO_LENGTH));
         $phnFld->requirements()->setRegularExpressionToValidate(ValidateElement::PHONE_REGEX);
         // $phnFld->htmlAfterField='<small class="text--small">'.Labels::getLabel('LBL_e.g.', $this->siteLangId).': '.implode(', ', ValidateElement::PHONE_FORMATS).'</small>';
         $phnFld->requirements()->setCustomErrorMessage(Labels::getLabel('LBL_Please_enter_valid_phone_number_format.', $this->siteLangId));
 
-        $frm->addHiddenField('', 'ua_id');
+        $frm->addHiddenField('', 'addr_id');
         $fldSubmit = $frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_SAVE_CHANGES', $siteLangId));
         $fldCancel = $frm->addButton('', 'btn_cancel', Labels::getLabel('LBL_Cancel', $siteLangId));
         //$fldCancel->attachField($fldSubmit);
@@ -604,7 +604,7 @@ class MyAppController extends FatController
             $verificationCode = $userObj->prepareUserVerificationCode($data['user_email']);
         }
 
-        $link = CommonHelper::generateFullUrl('GuestUser', 'changeEmailVerification', array('verify' => $verificationCode));
+        $link = UrlHelper::generateFullUrl('GuestUser', 'changeEmailVerification', array('verify' => $verificationCode));
 
         $email = new EmailHandler();
         $dataArr = array(

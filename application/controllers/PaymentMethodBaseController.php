@@ -8,13 +8,15 @@ class PaymentMethodBaseController extends SellerPluginBaseController
 
         $class = get_called_class();
         if (!defined($class . '::KEY_NAME')) {
-            Message::addErrorMessage(Labels::getLabel('MSG_INVALID_PLUGIN', $this->siteLangId));
-            FatApp::redirectUser(CommonHelper::generateUrl('Seller'));
+            $msg = Labels::getLabel('MSG_INVALID_PLUGIN', $this->siteLangId);
+            LibHelper::exitWithError($msg, false, true);
+            FatApp::redirectUser(UrlHelper::generateUrl('Seller'));
         }
         $this->keyName = $class::KEY_NAME;
         if (false === Plugin::isActive($this->keyName)) {
-            Message::addErrorMessage(Labels::getLabel('MSG_NO_PAYMENT_METHOD_PLUGIN_ACTIVE', $this->siteLangId));
-            FatApp::redirectUser(CommonHelper::generateUrl('Seller'));
+            $msg = Labels::getLabel('MSG_NO_PAYMENT_METHOD_PLUGIN_ACTIVE', $this->siteLangId);
+            LibHelper::exitWithError($msg, false, true);
+            FatApp::redirectUser(UrlHelper::generateUrl('Seller'));
         }
     }
     

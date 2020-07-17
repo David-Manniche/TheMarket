@@ -138,7 +138,7 @@ class StripePayController extends PaymentController
 
     private function getPaymentForm($orderId)
     {
-        $frm = new Form('frmPaymentForm', array('id' => 'frmPaymentForm', 'action' => CommonHelper::generateUrl('StripePay', 'charge', array($orderId)), 'class' => "form form--normal"));
+        $frm = new Form('frmPaymentForm', array('id' => 'frmPaymentForm', 'action' => UrlHelper::generateUrl('StripePay', 'charge', array($orderId)), 'class' => "form form--normal"));
         $frm->addRequiredField(Labels::getLabel('LBL_ENTER_CREDIT_CARD_NUMBER', $this->siteLangId), 'cc_number');
         $frm->addRequiredField(Labels::getLabel('LBL_CARD_HOLDER_NAME', $this->siteLangId), 'cc_owner');
         $data['months'] = applicationConstants::getMonthsArr($this->siteLangId);
@@ -267,12 +267,12 @@ class StripePayController extends PaymentController
             $orderPaymentObj->addOrderPayment($this->settings["plugin_code"], $charge['id'], ($payment_amount / 100), Labels::getLabel("MSG_Received_Payment", $this->siteLangId), $message);
             /* End Recording Payment in DB */
             if (false === MOBILE_APP_API_CALL) {
-                FatApp::redirectUser(CommonHelper::generateUrl('custom', 'paymentSuccess', array($_POST['order_id'])));
+                FatApp::redirectUser(UrlHelper::generateUrl('custom', 'paymentSuccess', array($_POST['order_id'])));
             }
         } else {
             $orderPaymentObj->addOrderPaymentComments($message);
             if (false === MOBILE_APP_API_CALL) {
-                FatApp::redirectUser(CommonHelper::generateUrl('custom', 'paymentFailed'));
+                FatApp::redirectUser(UrlHelper::generateUrl('custom', 'paymentFailed'));
             }
         }
     }

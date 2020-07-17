@@ -83,7 +83,7 @@ class PaytmPayController extends PaymentController
 
                 if ($txnInfo['STATUS'] == "TXN_SUCCESS" && $totalPaidMatch) {
                     $orderPaymentObj->addOrderPayment($this->settings["plugin_code"], $post['TXNID'], $paymentGatewayCharge, Labels::getLabel("MSG_Received_Payment", $this->siteLangId), $request);
-                    FatApp::redirectUser(CommonHelper::generateUrl('custom', 'paymentSuccess', array($orderId)));
+                    FatApp::redirectUser(UrlHelper::generateUrl('custom', 'paymentSuccess', array($orderId)));
                 } else {
                     $orderPaymentObj->addOrderPaymentComments($request);
                     if (isset($post['PAYMENTMODE'])) {
@@ -163,7 +163,7 @@ class PaytmPayController extends PaymentController
         "WEBSITE" => $this->settings['merchant_website'],
         "MOBILE_NO" => $orderInfo['customer_phone'],
         "EMAIL" => $orderInfo['customer_email'],
-        "CALLBACK_URL" => CommonHelper::generateFullUrl('PaytmPay', 'callback'),
+        "CALLBACK_URL" => UrlHelper::generateFullUrl('PaytmPay', 'callback'),
         "ORDER_DETAILS" => $orderPaymentGatewayDescription,
         );
 

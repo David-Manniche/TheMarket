@@ -15,7 +15,7 @@ $stateFld->setFieldTagAttribute('class', 'addressSelection-js');
 $urlFld = $shopFrm->getField('urlrewrite_custom');
 $urlFld->setFieldTagAttribute('id', "urlrewrite_custom");
 $urlFld->setFieldTagAttribute('onkeyup', "getSlugUrl(this,this.value)");
-$urlFld->htmlAfterField = "<p class='note' id='shopurl'>" . CommonHelper::generateFullUrl('Shops', 'View', array($shop_id), '/') . '</p>';
+$urlFld->htmlAfterField = "<p class='note' id='shopurl'>" . UrlHelper::generateFullUrl('Shops', 'View', array($shop_id), '/') . '</p>';
 $IDFld = $shopFrm->getField('shop_id');
 $IDFld->setFieldTagAttribute('id', "shop_id");
 $identiFierFld = $shopFrm->getField('shop_identifier');

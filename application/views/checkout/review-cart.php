@@ -22,8 +22,8 @@
                     <?php
         if (count($products)) {
             foreach ($products as $product) {
-                $productUrl = !$isAppUser?CommonHelper::generateUrl('Products', 'View', array($product['selprod_id'])):'javascript:void(0)';
-                $shopUrl = !$isAppUser?CommonHelper::generateUrl('Shops', 'View', array($product['shop_id'])):'javascript:void(0)';
+                $productUrl = !$isAppUser?UrlHelper::generateUrl('Products', 'View', array($product['selprod_id'])):'javascript:void(0)';
+                $shopUrl = !$isAppUser?UrlHelper::generateUrl('Shops', 'View', array($product['shop_id'])):'javascript:void(0)';
                 $imageUrl = UrlHelper::getCachedUrl(UrlHelper::generateFileUrl('image', 'product', array($product['product_id'], "THUMB", $product['selprod_id'], 0, $siteLangId)), CONF_IMG_CACHE_TIME, '.jpg'); ?>
                     <tr class="<?php echo (!$product['in_stock']) ? 'disabled' : '';
                 echo ($product['is_digital_product'])?'digital_product_tab-js':'physical_product_tab-js'; ?>">

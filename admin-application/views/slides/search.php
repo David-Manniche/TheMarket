@@ -61,7 +61,7 @@ foreach ($arrListing as $sn => $row) {
             /* case 'slide_image':
                 if( $languages ){
                     foreach($languages as $lang_id=>$lang_name){
-                        $img = "<strong>".$lang_name.'</strong><br/><img src="'.CommonHelper::generateFullUrl('Image','slide',array($row['slide_id'],$lang_id,'THUMB'),CONF_WEBROOT_FRONT_URL).'" /><br/>';
+                        $img = "<strong>".$lang_name.'</strong><br/><img src="'.UrlHelper::generateFullUrl('Image','slide',array($row['slide_id'],$lang_id,'THUMB'),CONF_WEBROOT_FRONT_URL).'" /><br/>';
                         $td->appendElement('plaintext', array(), $img ,true);
                     }
                 }
@@ -102,7 +102,7 @@ if (count($arrListing) == 0) {
 $frm = new Form('frmSlidesListing', array('id'=>'frmSlidesListing'));
 $frm->setFormTagAttribute('class', 'web_form last_td_nowrap actionButtons-js');
 $frm->setFormTagAttribute('onsubmit', 'formAction(this, reloadList ); return(false);');
-$frm->setFormTagAttribute('action', CommonHelper::generateUrl('Slides', 'toggleBulkStatuses'));
+$frm->setFormTagAttribute('action', UrlHelper::generateUrl('Slides', 'toggleBulkStatuses'));
 $frm->addHiddenField('', 'status');
 
 echo $frm->getFormTag();

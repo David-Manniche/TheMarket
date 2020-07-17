@@ -41,22 +41,22 @@ class SavedSearchProduct extends MyAppModel
         $url = '';
         switch ($type) {
             case static::PAGE_CATEGORY:
-                $url = CommonHelper::generateFullUrl('Category', 'view', array($recordId));
+                $url = UrlHelper::generateFullUrl('Category', 'view', array($recordId));
                 break;
             case static::PAGE_PRODUCT:
-                $url = CommonHelper::generateFullUrl('Products', 'search');
+                $url = UrlHelper::generateFullUrl('Products', 'search');
                 break;
             case static::PAGE_PRODUCT_INDEX:
-                $url = CommonHelper::generateFullUrl('Products', 'index');
+                $url = UrlHelper::generateFullUrl('Products', 'index');
                 break;
             case static::PAGE_BRAND:
-                $url = CommonHelper::generateFullUrl('Brands', 'view', array($recordId));
+                $url = UrlHelper::generateFullUrl('Brands', 'view', array($recordId));
                 break;
             case static::PAGE_SHOP:
-                $url = CommonHelper::generateFullUrl('Shops', 'view', array($recordId));
+                $url = UrlHelper::generateFullUrl('Shops', 'view', array($recordId));
                 break;
             case static::PAGE_FEATURED_PRODUCT:
-                $url = CommonHelper::generateFullUrl('Products', 'featured');
+                $url = UrlHelper::generateFullUrl('Products', 'featured');
                 break;
         }
         return $url;

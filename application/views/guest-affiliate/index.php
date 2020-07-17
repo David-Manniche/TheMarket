@@ -2,7 +2,7 @@
 <div class="after-header"></div>
 <div id="body" class="body">
 	<?php $haveBgImage =AttachedFile::getAttachment( AttachedFile::FILETYPE_AFFILIATE_PAGE_SLOGAN_BG_IMAGE, $bannerSlogan['epage_id'], 0, $siteLangId );
-	$bgImageUrl = ($haveBgImage) ? "background-image:url(" . CommonHelper::generateUrl( 'Image', 'cblockBackgroundImage', array($bannerSlogan['epage_id'], $siteLangId, 'DEFAULT', AttachedFile::FILETYPE_AFFILIATE_PAGE_SLOGAN_BG_IMAGE) ) . ")" : "background-image:url(".CONF_WEBROOT_URL."images/seller-bg.png);"; ?>
+	$bgImageUrl = ($haveBgImage) ? "background-image:url(" . UrlHelper::generateUrl( 'Image', 'cblockBackgroundImage', array($bannerSlogan['epage_id'], $siteLangId, 'DEFAULT', AttachedFile::FILETYPE_AFFILIATE_PAGE_SLOGAN_BG_IMAGE) ) . ")" : "background-image:url(".CONF_WEBROOT_URL."images/seller-bg.png);"; ?>
 	<div  class="banner" style="<?php echo $bgImageUrl; ?>">
 		<div class="container">
 			<div class="row">

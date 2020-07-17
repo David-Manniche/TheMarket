@@ -74,10 +74,10 @@ $this->includeTemplate( '_partial/header/commonHeadBottom.php', $commonHeadData,
                     $fileData = AttachedFile::getAttachment(AttachedFile::FILETYPE_FRONT_LOGO, 0, 0, $siteLangId, false);
                     $aspectRatioArr = AttachedFile::getRatioTypeArray($siteLangId);
                     ?>
-					<a href="<?php echo CommonHelper::generateUrl(); ?>">
+					<a href="<?php echo UrlHelper::generateUrl(); ?>">
 					    <img <?php if ($fileData['afile_aspect_ratio'] > 0) { ?>
                             data-ratio= "<?php echo $aspectRatioArr[$fileData['afile_aspect_ratio']]; ?>"
-                            <?php } ?> src="<?php echo CommonHelper::generateFullUrl('Image','siteLogo',array($siteLangId), CONF_WEBROOT_FRONT_URL); ?>" alt="<?php echo FatApp::getConfig('CONF_WEBSITE_NAME_'.$siteLangId) ?>" title="<?php echo FatApp::getConfig('CONF_WEBSITE_NAME_'.$siteLangId) ?>">
+                            <?php } ?> src="<?php echo UrlHelper::generateFullUrl('Image','siteLogo',array($siteLangId), CONF_WEBROOT_FRONT_URL); ?>" alt="<?php echo FatApp::getConfig('CONF_WEBSITE_NAME_'.$siteLangId) ?>" title="<?php echo FatApp::getConfig('CONF_WEBSITE_NAME_'.$siteLangId) ?>">
                     </a>
 						</div>
 						<div class="d-flex"><a class="seller_login_toggle" href="javascript:void(0)" data-trigger="yk-login--wrapper"><i class="fa fa-user-circle"></i></a> 

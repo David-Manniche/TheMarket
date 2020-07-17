@@ -15,11 +15,11 @@
             <div class="section__action"><a href="#" class="btn btn-outline-primary btn-sm" onClick="showAddressList()"><?php echo Labels::getLabel('LBL_Change_Address', $siteLangId); ?></a> </div>
         </div>
         <div class="shipping-address">
-            <?php echo $defaultAddress['ua_identifier']; ?><br>
-            <?php echo $defaultAddress['ua_name']; ?><br>
-            <?php echo $defaultAddress['ua_address1'];?><br>
-            <?php echo $defaultAddress['ua_city'];?>,  <?php echo $defaultAddress['state_name'];?>, <?php echo (strlen($defaultAddress['ua_zip']) > 0) ? Labels::getLabel('LBL_Zip:', $siteLangId) . ' ' . $defaultAddress['ua_zip'] . '<br>' : '';?>
-            <?php echo (strlen($defaultAddress['ua_phone']) > 0) ? Labels::getLabel('LBL_Phone:', $siteLangId) . ' ' . $defaultAddress['ua_phone'] . '<br>' : '';?>
+            <?php echo $defaultAddress['addr_title']; ?><br>
+            <?php echo $defaultAddress['addr_name']; ?><br>
+            <?php echo $defaultAddress['addr_address1'];?><br>
+            <?php echo $defaultAddress['addr_city'];?>,  <?php echo $defaultAddress['state_name'];?>, <?php echo (strlen($defaultAddress['addr_zip']) > 0) ? Labels::getLabel('LBL_Zip:', $siteLangId) . ' ' . $defaultAddress['addr_zip'] . '<br>' : '';?>
+            <?php echo (strlen($defaultAddress['addr_phone']) > 0) ? Labels::getLabel('LBL_Phone:', $siteLangId) . ' ' . $defaultAddress['addr_phone'] . '<br>' : '';?>
         </div>
     </div>
     <div class="divider"></div>
@@ -37,7 +37,7 @@
                     <?php foreach ($products as $product) { ?>
                     <tr class="physical_product_tab-js">
                         <td>
-                            <?php $productUrl = CommonHelper::generateUrl('Products', 'View', array($product['selprod_id'])); ?>
+                            <?php $productUrl = UrlHelper::generateUrl('Products', 'View', array($product['selprod_id'])); ?>
                             <div class="item__pic"><a href="<?php echo $productUrl;?>"><img src=<?php echo UrlHelper::getCachedUrl(UrlHelper::generateFileUrl('image', 'product', array($product['product_id'], "THUMB", $product['selprod_id'], 0, $siteLangId)), CONF_IMG_CACHE_TIME, '.jpg'); ?>" alt="<?php echo $product['product_name']; ?>" title="<?php echo $product['product_name']; ?>"></a></div>
                         </td>
                         <td>

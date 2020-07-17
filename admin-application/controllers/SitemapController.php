@@ -23,7 +23,7 @@ class SitemapController extends AdminBaseController
         $categoriesArr = productCategory::getProdCatParentChildWiseArr($this->adminLangId, 0, true, false, true, $catSrch);
 
         foreach ($categoriesArr as $key => $val) {
-            $this->writeSitemapUrl(CommonHelper::generateFullUrl('category', 'view', array($val['prodcat_id']), CONF_WEBROOT_FRONT_URL), $freq = 'daily');
+            $this->writeSitemapUrl(UrlHelper::generateFullUrl('category', 'view', array($val['prodcat_id']), CONF_WEBROOT_FRONT_URL), $freq = 'daily');
         }
         /* ]*/
 
@@ -38,7 +38,7 @@ class SitemapController extends AdminBaseController
         $rs = $prodSrch->getResultSet();
         $productsList = FatApp::getDb()->fetchAll($rs);
         foreach ($productsList as $key => $val) {
-            $this->writeSitemapUrl(CommonHelper::generateFullUrl('products', 'view', array($val['selprod_id']), CONF_WEBROOT_FRONT_URL), $freq = 'daily');
+            $this->writeSitemapUrl(UrlHelper::generateFullUrl('products', 'view', array($val['selprod_id']), CONF_WEBROOT_FRONT_URL), $freq = 'daily');
         }
         /* ]*/
 
@@ -53,7 +53,7 @@ class SitemapController extends AdminBaseController
         $brandsArr = FatApp::getDb()->fetchAll($brandRs);
 
         foreach ($brandsArr as $key => $val) {
-            $this->writeSitemapUrl(CommonHelper::generateFullUrl('brands', 'view', array($val['brand_id']), CONF_WEBROOT_FRONT_URL), $freq = 'daily');
+            $this->writeSitemapUrl(UrlHelper::generateFullUrl('brands', 'view', array($val['brand_id']), CONF_WEBROOT_FRONT_URL), $freq = 'daily');
         }
         /* ]*/
 
@@ -70,7 +70,7 @@ class SitemapController extends AdminBaseController
         $rs = $shopSrch->getResultSet();
         $shopsList = FatApp::getDb()->fetchAll($rs);
         foreach ($shopsList as $key => $val) {
-            $this->writeSitemapUrl(CommonHelper::generateFullUrl('shops', 'view', array($val['shop_id']), CONF_WEBROOT_FRONT_URL), $freq = 'daily');
+            $this->writeSitemapUrl(UrlHelper::generateFullUrl('shops', 'view', array($val['shop_id']), CONF_WEBROOT_FRONT_URL), $freq = 'daily');
         }
         /* ]*/
 
@@ -91,7 +91,7 @@ class SitemapController extends AdminBaseController
         $linksList = FatApp::getDb()->fetchAll($rs);
         foreach ($linksList as $key => $link) {
             if ($link['nlink_type'] == NavigationLinks::NAVLINK_TYPE_CMS && $link['nlink_cpage_id']) {
-                $this->writeSitemapUrl(CommonHelper::generateFullUrl('Cms', 'view', array($link['nlink_cpage_id']), CONF_WEBROOT_FRONT_URL), $freq = 'monthly');
+                $this->writeSitemapUrl(UrlHelper::generateFullUrl('Cms', 'view', array($link['nlink_cpage_id']), CONF_WEBROOT_FRONT_URL), $freq = 'monthly');
             }
         }
         /* ]*/
@@ -145,7 +145,7 @@ class SitemapController extends AdminBaseController
         echo "<?xml version='1.0' encoding='UTF-8'?>
 		<sitemapindex xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' xsi:schemaLocation='http://www.sitemaps.org/schemas/sitemap/0.9 http://www.sitemaps.org/schemas/sitemap/0.9/siteindex.xsd' xmlns='http://www.sitemaps.org/schemas/sitemap/0.9'>\n";
         for ($i = 1; $i <= $sitemapListInc; $i++) {
-            echo "<sitemap><loc>" . CommonHelper::getUrlScheme() . "/sitemap/list_" . $i . ".xml</loc></sitemap>\n";
+            echo "<sitemap><loc>" . UrlHelper::getUrlScheme() . "/sitemap/list_" . $i . ".xml</loc></sitemap>\n";
         }
         echo "</sitemapindex>";
         $contents = ob_get_clean();

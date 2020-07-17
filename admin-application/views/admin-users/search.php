@@ -44,7 +44,7 @@ foreach ($arr_listing as $sn => $row) {
                     $td->appendElement('a', array('href' => 'javascript:void(0)', 'class' => 'btn btn-clean btn-sm btn-icon', 'title' => Labels::getLabel('LBL_Change_Password', $adminLangId), "onclick" => "changePasswordForm(" . $row['admin_id'] . ")"), "<i class='ion-locked icon'></i>", true);
 
                     if ($row['admin_id'] > 1 && $row['admin_id'] != $adminLoggedInId) {
-                        $td->appendElement('a', array('href' => CommonHelper::generateUrl('AdminUsers', 'permissions', array($row['admin_id'])), 'class' => 'btn btn-clean btn-sm btn-icon', 'title' => Labels::getLabel('LBL_Permissions', $adminLangId)), '<i class="fas fa-gavel"></i>', true);
+                        $td->appendElement('a', array('href' => UrlHelper::generateUrl('AdminUsers', 'permissions', array($row['admin_id'])), 'class' => 'btn btn-clean btn-sm btn-icon', 'title' => Labels::getLabel('LBL_Permissions', $adminLangId)), '<i class="fas fa-gavel"></i>', true);
                     }
                 }
                 break;
@@ -75,7 +75,7 @@ if (count($arr_listing) == 0) {
 $frm = new Form('frmAdmUsersListing', array('id' => 'frmAdmUsersListing'));
 $frm->setFormTagAttribute('class', 'web_form last_td_nowrap actionButtons-js');
 $frm->setFormTagAttribute('onsubmit', 'formAction(this, reloadList ); return(false);');
-$frm->setFormTagAttribute('action', CommonHelper::generateUrl('AdminUsers', 'toggleBulkStatuses'));
+$frm->setFormTagAttribute('action', UrlHelper::generateUrl('AdminUsers', 'toggleBulkStatuses'));
 $frm->addHiddenField('', 'status');
 
 echo $frm->getFormTag();

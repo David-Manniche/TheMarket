@@ -59,7 +59,7 @@ if (isset($prodcat_code)) {
 <div id="accordian" class="cat-accordion toggle-target scrollbar-filters">  
     <ul class="">
         <?php foreach ($categoriesArr as $cat) {
-                $catUrl = CommonHelper::generateUrl('category', 'view', array($cat['prodcat_id'])); ?>
+                $catUrl = UrlHelper::generateUrl('category', 'view', array($cat['prodcat_id'])); ?>
         <li>
             <?php if (count($cat['children']) > 0) {
                     echo '<span class="acc-trigger" ripple="ripple" ripple-color="#000"></span>';
@@ -73,7 +73,7 @@ if (isset($prodcat_code)) {
             <?php if (isset($children['children']) && count($children['children']) > 0) {
                             echo '<span class="acc-trigger" ripple="ripple" ripple-color="#000"></span>';
                         } ?>
-            <a class="filter_categories" data-id="<?php echo $children['prodcat_id']; ?>" href="<?php echo CommonHelper::generateUrl('category', 'view', array($children['prodcat_id'])); ?>"><?php echo $children['prodcat_name']; ?></a>
+            <a class="filter_categories" data-id="<?php echo $children['prodcat_id']; ?>" href="<?php echo UrlHelper::generateUrl('category', 'view', array($children['prodcat_id'])); ?>"><?php echo $children['prodcat_name']; ?></a>
             <?php if (isset($children['children']) && count($children['children']) > 0) {
                             echo '<ul>';
                             foreach ($children['children'] as $subChildren) {
@@ -82,7 +82,7 @@ if (isset($prodcat_code)) {
             <?php if (isset($subChildren['children']) && count($subChildren['children']) > 0) {
                                     echo '<span class="acc-trigger" ripple="ripple" ripple-color="#000"></span>';
                                 } ?>
-            <a class="filter_categories" data-id="<?php echo $subChildren['prodcat_id']; ?>" href="<?php echo CommonHelper::generateUrl('category', 'view', array($subChildren['prodcat_id'])); ?>"><?php echo $subChildren['prodcat_name']; ?></a>
+            <a class="filter_categories" data-id="<?php echo $subChildren['prodcat_id']; ?>" href="<?php echo UrlHelper::generateUrl('category', 'view', array($subChildren['prodcat_id'])); ?>"><?php echo $subChildren['prodcat_name']; ?></a>
 
             <?php if (isset($subChildren['children']) && count($subChildren['children']) > 0) {
                                     echo '<ul>';
@@ -94,7 +94,7 @@ if (isset($prodcat_code)) {
                                             echo '<span class="acc-trigger" ripple="ripple" ripple-color="#000"></span>';
                                         } ?>
             <a class="filter_categories" data-id="<?php echo $subSubChildren['prodcat_id']; ?>"
-                href="<?php echo CommonHelper::generateUrl('category', 'view', array($subSubChildren['prodcat_id'])); ?>"><?php echo $subSubChildren['prodcat_name']; ?></a>
+                href="<?php echo UrlHelper::generateUrl('category', 'view', array($subSubChildren['prodcat_id'])); ?>"><?php echo $subSubChildren['prodcat_name']; ?></a>
         </li>
         <?php
                                     }

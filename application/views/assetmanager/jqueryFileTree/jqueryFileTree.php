@@ -50,9 +50,9 @@ if( file_exists($root . $_POST['dir']) ) {
 				
 				if (!$isImg || ($isImg && ($ext == "jpeg" || $ext == "jpg" || $ext == "png" || $ext == "gif"))) {
 					if(trim($dirPath) !=''){
-						echo "<li class=\"file ext_$ext\"><a href=\"#\" rel=\"" . CommonHelper::generateUrl("editor","editor-image",array( $dirPath,$file),"/") . "\">" . htmlentities($file) . "</a></li>";
+						echo "<li class=\"file ext_$ext\"><a href=\"#\" rel=\"" . UrlHelper::generateUrl("editor","editor-image",array( $dirPath,$file),"/") . "\">" . htmlentities($file) . "</a></li>";
 					}else{
-						echo "<li class=\"file ext_$ext\"><a href=\"#\" rel=\"" . CommonHelper::generateUrl("editor","editor-image",array($file),"/") . "\">" . htmlentities($file) . "</a></li>";
+						echo "<li class=\"file ext_$ext\"><a href=\"#\" rel=\"" . UrlHelper::generateUrl("editor","editor-image",array($file),"/") . "\">" . htmlentities($file) . "</a></li>";
 					}					
 				}
 			}

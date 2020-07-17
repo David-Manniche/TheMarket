@@ -30,7 +30,7 @@ foreach ($arr_listing as $sn=>$row){
 			case 'action':
 				$ul = $td->appendElement("ul",array("class"=>"actions"));
 				$li = $ul->appendElement("li");
-				$li->appendElement('a', array('href'=>CommonHelper::generateUrl('SentEmails','view',
+				$li->appendElement('a', array('href'=>UrlHelper::generateUrl('SentEmails','view',
 				array($row['emailarchive_id'])), 'class'=>'button small green', 'title'=>Labels::getLabel('LBL_View_Details',$adminLangId)),
 				'<i class="far fa-eye icon"></i>',true);
 			break;

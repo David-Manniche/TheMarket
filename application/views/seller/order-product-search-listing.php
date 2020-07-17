@@ -20,7 +20,7 @@ $processingStatuses = $orderObj->getVendorAllowedUpdateOrderStatuses();
 foreach ($orders as $sn => $order) {
     $sr_no++;
     $tr = $tbl->appendElement('tr', array('class' =>'' ));
-    $orderDetailUrl = CommonHelper::generateUrl('seller', 'viewOrder', array($order['op_id']));
+    $orderDetailUrl = UrlHelper::generateUrl('seller', 'viewOrder', array($order['op_id']));
 
     foreach ($arr_flds as $key => $val) {
         $td = $tr->appendElement('td');
@@ -78,7 +78,7 @@ foreach ($orders as $sn => $order) {
                     $li = $ul->appendElement("li");
                     $li->appendElement(
                         'a',
-                        array('href'=> CommonHelper::generateUrl('seller', 'cancelOrder', array($order['op_id'])), 'class'=>'',
+                        array('href'=> UrlHelper::generateUrl('seller', 'cancelOrder', array($order['op_id'])), 'class'=>'',
                         'title'=>Labels::getLabel('LBL_Cancel_Order', $siteLangId)),
                         '<i class="fas fa-times"></i>',
                         true

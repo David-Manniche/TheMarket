@@ -11,7 +11,7 @@
                     </div>
                     <div class="products__rating"> <i class="icn"><svg class="svg">
                                 <use xlink:href="<?php echo CONF_WEBROOT_URL; ?>images/retina/sprite.svg#star-yellow" href="<?php echo CONF_WEBROOT_URL; ?>images/retina/sprite.svg#star-yellow"></use>
-                            </svg></i> <span class="rate"><?php echo round($shopRating,1),' ',Labels::getLabel('Lbl_Out_of',$siteLangId),' ', '5';  if($shopTotalReviews){ ?> - <a href="<?php echo CommonHelper::generateUrl('Reviews','shop',array($shop['shop_id'])); ?>"><?php echo $shopTotalReviews , ' ' , Labels::getLabel('Lbl_Reviews',$siteLangId); ?></a><?php } ?> </span>
+                            </svg></i> <span class="rate"><?php echo round($shopRating,1),' ',Labels::getLabel('Lbl_Out_of',$siteLangId),' ', '5';  if($shopTotalReviews){ ?> - <a href="<?php echo UrlHelper::generateUrl('Reviews','shop',array($shop['shop_id'])); ?>"><?php echo $shopTotalReviews , ' ' , Labels::getLabel('Lbl_Reviews',$siteLangId); ?></a><?php } ?> </span>
                     </div>
                     <div class="share-this">
                         <span><i class="icn share"><svg class="svg">
@@ -51,12 +51,12 @@
                         <?php if($showMoreButtons){ 
 							$shopRepData = ShopReport::getReportDetail($shop['shop_id'], UserAuthentication::getLoggedUserId(true), 'sreport_id');
 							if (false === UserAuthentication::isUserLogged() || empty($shopRepData)) { ?>
-								<a href="<?php echo CommonHelper::generateUrl('Shops','ReportSpam', array($shop['shop_id'])); ?>" class="btn btn-outline-primary btn-sm"><i class="icn"><svg class="svg">
+								<a href="<?php echo UrlHelper::generateUrl('Shops','ReportSpam', array($shop['shop_id'])); ?>" class="btn btn-outline-primary btn--sm"><i class="icn"><svg class="svg">
                                         <use xlink:href="<?php echo CONF_WEBROOT_URL; ?>images/retina/sprite.svg#report" href="<?php echo CONF_WEBROOT_URL; ?>images/retina/sprite.svg#report"></use>
                                     </svg></i><?php echo Labels::getLabel('LBL_Report_Spam',$siteLangId); ?></a>
 							<?php } ?>
 
-                            <a href="<?php echo CommonHelper::generateUrl('shops','sendMessage',array($shop['shop_id'])); ?>" class="btn btn-outline-primary btn-sm"><i class="icn"><svg class="svg">
+                            <a href="<?php echo UrlHelper::generateUrl('shops','sendMessage',array($shop['shop_id'])); ?>" class="btn btn-outline-primary btn--sm"><i class="icn"><svg class="svg">
                                         <use xlink:href="<?php echo CONF_WEBROOT_URL; ?>images/retina/sprite.svg#send-msg" href="<?php echo CONF_WEBROOT_URL; ?>images/retina/sprite.svg#send-msg"></use>
                                     </svg></i><?php echo Labels::getLabel('LBL_Send_Message', $siteLangId); ?></a>
                         <?php }?>
@@ -77,7 +77,7 @@
                             $fileData = AttachedFile::getAttachment(AttachedFile::FILETYPE_SHOP_LOGO, $shop['shop_id'], 0, 0, false);
                             $aspectRatioArr = AttachedFile::getRatioTypeArray($siteLangId);
                             ?>
-                            <img <?php if ($fileData['afile_aspect_ratio'] > 0) { ?> data-ratio= "<?php echo $aspectRatioArr[$fileData['afile_aspect_ratio']]; ?>" <?php } ?> src="<?php echo CommonHelper::generateUrl('image','shopLogo',array($shop['shop_id'],$siteLangId,'SMALL')); ?>" alt="<?php echo $shop['shop_name']; ?>">
+                            <img <?php if ($fileData['afile_aspect_ratio'] > 0) { ?> data-ratio= "<?php echo $aspectRatioArr[$fileData['afile_aspect_ratio']]; ?>" <?php } ?> src="<?php echo UrlHelper::generateUrl('image','shopLogo',array($shop['shop_id'],$siteLangId,'SMALL')); ?>" alt="<?php echo $shop['shop_name']; ?>">
                         </div>
                         <div class="shop-nav">
                             <?php
@@ -90,7 +90,7 @@
                     <?php if( $haveBannerImage ){ ?>
                       <div class="shops-sliders" dir="<?php echo CommonHelper::getLayoutDirection();?>">
                         <?php foreach($haveBannerImage as $banner){ ?>
-                        <div class="item"><img src="<?php echo CommonHelper::generateUrl('image','shopBanner',array($banner['afile_record_id'],$siteLangId,'TEMP2',$banner['afile_id'])); ?>" alt="<?php echo Labels::getLabel('LBL_Shop_Banner', $siteLangId); ?>"></div>
+                        <div class="item"><img src="<?php echo UrlHelper::generateUrl('image','shopBanner',array($banner['afile_record_id'],$siteLangId,'TEMP2',$banner['afile_id'])); ?>" alt="<?php echo Labels::getLabel('LBL_Shop_Banner', $siteLangId); ?>"></div>
                         <?php } ?>
                       </div>
                       <?php } ?>
@@ -103,7 +103,7 @@
             <div class="row">
                 <div class="col-md-12">
                     <div class="box box--space shop-avatar">
-                        <div class="shoper__dp"><img src="<?php echo CommonHelper::generateUrl('image','User',array($shop['shop_user_id'])); ?>"></div>
+                        <div class="shoper__dp"><img src="<?php echo UrlHelper::generateUrl('image','User',array($shop['shop_user_id'])); ?>"></div>
                         <div class="profile__bio">
                             <div class="title">
                                 <h6><?php echo $shop['user_name'];?> <span class="deg blk-txt"> <?php echo Labels::getLabel('LBL_Shop_Owner', $siteLangId); ?></span></h6>
@@ -124,5 +124,5 @@
     </div>
 </section>
 <script type="text/javascript">
-$currentPageUrl = '<?php echo CommonHelper::generateFullUrl('Shops','view',array($shopId)); ?>';
+$currentPageUrl = '<?php echo UrlHelper::generateFullUrl('Shops','view',array($shopId)); ?>';
 </script>

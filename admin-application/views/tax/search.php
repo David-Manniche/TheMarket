@@ -66,7 +66,7 @@ foreach ($arr_listing as $sn => $row) {
 					$td->appendElement('a', array('href'=>'javascript:void(0)', 'class'=>'btn btn-clean btn-sm btn-icon', 'title'=>Labels::getLabel('LBL_Edit',$adminLangId),"onclick"=>"addTaxForm(".$row['taxcat_id'].")"),'<i class="far fa-edit icon"></i>', true);
 					
 					if (0 == $activatedTaxServiceId) {
-						$td->appendElement('a', array('href'=>CommonHelper::generateUrl('Tax','ruleForm',array($row['taxcat_id'])), 'class'=>'btn btn-clean btn-sm btn-icon', 'title'=>Labels::getLabel('LBL_Add_Rule',$adminLangId)),'<i class="ion-navicon-round icon"></i>', true);
+						$td->appendElement('a', array('href'=>UrlHelper::generateUrl('Tax','ruleForm',array($row['taxcat_id'])), 'class'=>'btn btn-clean btn-sm btn-icon', 'title'=>Labels::getLabel('LBL_Add_Rule',$adminLangId)),'<i class="ion-navicon-round icon"></i>', true);
 					}
 					
 					$td->appendElement('a', array('href'=>"javascript:void(0)", 'class'=>'btn btn-clean btn-sm btn-icon', 'title'=>Labels::getLabel('LBL_Delete',$adminLangId),"onclick"=>"deleteRecord(".$row['taxcat_id'].")"),'<i class="fa fa-trash  icon"></i>', true);
@@ -87,7 +87,7 @@ if (count($arr_listing) == 0) {
 $frm = new Form('frmTaxListing', array('id'=>'frmTaxListing'));
 $frm->setFormTagAttribute('class', 'web_form last_td_nowrap actionButtons-js');
 $frm->setFormTagAttribute('onsubmit', 'formAction(this, reloadList ); return(false);');
-$frm->setFormTagAttribute('action', CommonHelper::generateUrl('Tax', 'toggleBulkStatuses'));
+$frm->setFormTagAttribute('action', UrlHelper::generateUrl('Tax', 'toggleBulkStatuses'));
 $frm->addHiddenField('', 'status');
 
 echo $frm->getFormTag();

@@ -97,7 +97,7 @@ foreach ($arr_listing as $sn => $row) {
                 $li->appendElement(
                     'a',
                     array(
-                    'href'=>CommonHelper::generateUrl('advertiser', 'analytics', array($row['promotion_id'])),
+                    'href'=>UrlHelper::generateUrl('advertiser', 'analytics', array($row['promotion_id'])),
                     'class'=>'button small green', 'title'=>Labels::getLabel('LBL_Analytics', $siteLangId)),
                     '<i class="far fa-file-alt"></i>',
                     true

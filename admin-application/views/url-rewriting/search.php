@@ -3,6 +3,7 @@ $arr_flds = array(
         'select_all'=>Labels::getLabel('LBL_Select_all', $adminLangId),
         'listserial'=> Labels::getLabel('LBL_Sr._No', $adminLangId),
         'urlrewrite_original'=> Labels::getLabel('LBL_Original', $adminLangId),
+        'language_code'=> Labels::getLabel('LBL_Language', $adminLangId),
         'urlrewrite_custom'=>Labels::getLabel('LBL_Custom', $adminLangId),
         'action' => '',
     );
@@ -53,7 +54,7 @@ if (count($arr_listing) == 0) {
 $frm = new Form('frmUrlRewritingListing', array('id'=>'frmUrlRewritingListing'));
 $frm->setFormTagAttribute('class', 'web_form last_td_nowrap actionButtons-js');
 $frm->setFormTagAttribute('onsubmit', 'formAction(this, reloadList ); return(false);');
-$frm->setFormTagAttribute('action', CommonHelper::generateUrl('UrlRewriting', 'deleteSelected'));
+$frm->setFormTagAttribute('action', UrlHelper::generateUrl('UrlRewriting', 'deleteSelected'));
 $frm->addHiddenField('', 'status');
 
 echo $frm->getFormTag();

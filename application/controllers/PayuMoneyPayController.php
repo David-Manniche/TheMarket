@@ -83,7 +83,7 @@ class PayuMoneyPayController extends PaymentController
             }
             if ($order_payment_status == 1) {
                 $orderPaymentObj->addOrderPayment($this->settings["plugin_code"], $post["mihpayid"], $paymentGatewayCharge, Labels::getLabel("LBL_Received_Payment", $this->siteLangId), $request);
-                FatApp::redirectUser(CommonHelper::generateUrl('custom', 'paymentSuccess', array($orderId)));
+                FatApp::redirectUser(UrlHelper::generateUrl('custom', 'paymentSuccess', array($orderId)));
             } else {
                 $orderPaymentObj->addOrderPaymentComments($request);
                 FatApp::redirectUser(CommonHelper::getPaymentFailurePageUrl());
@@ -125,8 +125,8 @@ class PayuMoneyPayController extends PaymentController
         $frm->addHiddenField('Zipcode', 'Zipcode', $zip_code);
         $frm->addHiddenField('email', 'email', $email);
         $frm->addHiddenField('phone', 'phone', $phone_number);
-        $frm->addHiddenField('surl', 'surl', CommonHelper::generateFullUrl('PayuMoneyPay', 'callback'));
-        $frm->addHiddenField('furl', 'furl', CommonHelper::generateFullUrl('PayuMoneyPay', 'callback'));
+        $frm->addHiddenField('surl', 'surl', UrlHelper::generateFullUrl('PayuMoneyPay', 'callback'));
+        $frm->addHiddenField('furl', 'furl', UrlHelper::generateFullUrl('PayuMoneyPay', 'callback'));
         $frm->addHiddenField('curl', 'curl', CommonHelper::getPaymentCancelPageUrl());
         $key = $this->settings["merchant_key"];
         $amount = $paymentGatewayCharge;

@@ -41,7 +41,7 @@
                     if ($inc >1) {
                         echo "";
                     } ?>
-                    <li><a href="<?php echo CommonHelper::generateUrl('products', 'search', array( 'keyword-'.$record['searchitem_keyword'])); ?>"><?php echo $record['searchitem_keyword']?> </a> </li>
+                    <li><a href="<?php echo UrlHelper::generateUrl('products', 'search', array( 'keyword-'.$record['searchitem_keyword'])); ?>"><?php echo $record['searchitem_keyword']?> </a> </li>
                 <?php } ?>
             </ul>
             <?php endif; ?>

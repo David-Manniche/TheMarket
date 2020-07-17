@@ -21,7 +21,7 @@
 						<a href="javascript:void(0)" class="button small green" title="Edit"><i class="ion-android-more-horizontal icon"></i></a>
 						<div class="dropwrap">
 							<ul class="linksvertical">
-								<li><a href="javascript:void(0)" class="button small green" title="<?php echo Labels::getLabel('LBL_Download',$adminLangId); ?>" onclick="window.open('<?php echo CommonHelper::generateUrl('DatabaseBackupRestore', 'download', array($row)) ?>');"><?php echo Labels::getLabel('LBL_Download',$adminLangId); ?></a></li>
+								<li><a href="javascript:void(0)" class="button small green" title="<?php echo Labels::getLabel('LBL_Download',$adminLangId); ?>" onclick="window.open('<?php echo UrlHelper::generateUrl('DatabaseBackupRestore', 'download', array($row)) ?>');"><?php echo Labels::getLabel('LBL_Download',$adminLangId); ?></a></li>
 								<li><a href="javascript:void(0)" class="button small green" title="<?php echo Labels::getLabel('LBL_Restore',$adminLangId); ?>" onclick="restoreBackup('<?php echo $row; ?>')"><?php echo Labels::getLabel('LBL_Restore',$adminLangId); ?></a></li>
 								<li><a href="javascript:void(0)" class="button small green" title="<?php echo Labels::getLabel('LBL_Delete',$adminLangId); ?>" onclick="deleteBackup('<?php echo $row; ?>')"><?php echo Labels::getLabel('LBL_Delete',$adminLangId); ?></a></li>
 							</ul>

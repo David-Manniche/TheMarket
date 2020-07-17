@@ -99,7 +99,7 @@ $this->includeTemplate('_partial/affiliate/affiliateDashboardNavigation.php'); ?
                 method: 'feed',
                 name: "<?php echo sprintf(FatApp::getConfig("CONF_SOCIAL_FEED_FACEBOOK_POST_TITLE_$siteLangId",FatUtility::VAR_STRING,''),FatApp::getConfig("CONF_WEBSITE_NAME_$siteLangId"))?>",
                 link: "<?php echo $affiliateTrackingUrl?>",
-                picture: "<?php echo CommonHelper::generateFullUrl('image', 'socialFeed',array($siteLangId ,''),"/")?>",
+                picture: "<?php echo UrlHelper::generateFullUrl('image', 'socialFeed',array($siteLangId ,''),"/")?>",
                 caption: "<?php echo sprintf(FatApp::getConfig("CONF_SOCIAL_FEED_FACEBOOK_POST_CAPTION_$siteLangId",FatUtility::VAR_STRING,''),FatApp::getConfig("CONF_WEBSITE_NAME_$siteLangId"))?>",
                 description: "<?php echo str_replace(array("\n","\r","\r\n"),' ',sprintf(FatApp::getConfig("CONF_SOCIAL_FEED_FACEBOOK_POST_DESCRIPTION_".$siteLangId,FatUtility::VAR_STRING,''),FatApp::getConfig("CONF_WEBSITE_NAME_".$siteLangId)))?>",
 
@@ -119,7 +119,7 @@ $this->includeTemplate('_partial/affiliate/affiliateDashboardNavigation.php'); ?
 </script>
 
 <?php
-$_SESSION["TWITTER_URL"]=CommonHelper::generateFullUrl('Affiliate','twitterCallback',array(),'',false);
+$_SESSION["TWITTER_URL"]=UrlHelper::generateFullUrl('Affiliate','twitterCallback',array(),'',false);
 $twitteroauth = new TwitterOAuth(FatApp::getConfig("CONF_TWITTER_API_KEY"), FatApp::getConfig("CONF_TWITTER_API_SECRET"));
 $get_twitter_url=$_SESSION["TWITTER_URL"];
 $request_token = $twitteroauth->getRequestToken($get_twitter_url);

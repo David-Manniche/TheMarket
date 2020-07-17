@@ -65,20 +65,20 @@ foreach ($arr_listing as $sn=>$row) {
                         $uploadedTime = AttachedFile::setTimeParam($slideScreen['afile_updated_at']);
                         switch ($slideScreen['afile_screen']) {
                             case applicationConstants::SCREEN_MOBILE:
-                                $mobile_url = '<480:' .CommonHelper::generateFullUrl('Banner', 'Thumb', array($row['banner_id'], $adminLangId, applicationConstants::SCREEN_MOBILE)).$uploadedTime.",";
+                                $mobile_url = '<480:' .UrlHelper::generateFullUrl('Banner', 'Thumb', array($row['banner_id'], $adminLangId, applicationConstants::SCREEN_MOBILE)).$uploadedTime.",";
                                 break;
                             case applicationConstants::SCREEN_IPAD:
-                                $tablet_url = ' <768:' .CommonHelper::generateFullUrl('Banner', 'Thumb', array($row['banner_id'], $adminLangId, applicationConstants::SCREEN_IPAD)).$uploadedTime.','.'  <1024:' .CommonHelper::generateFullUrl('Banner', 'Thumb', array($row['banner_id'], $adminLangId, applicationConstants::SCREEN_IPAD)).$uploadedTime.",";
+                                $tablet_url = ' <768:' .UrlHelper::generateFullUrl('Banner', 'Thumb', array($row['banner_id'], $adminLangId, applicationConstants::SCREEN_IPAD)).$uploadedTime.','.'  <1024:' .UrlHelper::generateFullUrl('Banner', 'Thumb', array($row['banner_id'], $adminLangId, applicationConstants::SCREEN_IPAD)).$uploadedTime.",";
                                 break;
                             case applicationConstants::SCREEN_DESKTOP:
-                                $desktop_url = ' >1024:' .CommonHelper::generateFullUrl('Banner', 'Thumb', array($row['banner_id'], $adminLangId, applicationConstants::SCREEN_DESKTOP)).$uploadedTime.",";
+                                $desktop_url = ' >1024:' .UrlHelper::generateFullUrl('Banner', 'Thumb', array($row['banner_id'], $adminLangId, applicationConstants::SCREEN_DESKTOP)).$uploadedTime.",";
                                 break;
                         }
                     }
                 }
 
                 $uploadedTime = AttachedFile::setTimeParam($row['banner_img_updated_on']);
-                $img = '<img src="'.CommonHelper::generateFullUrl('Banner', 'Thumb', array($row['banner_id'] , $adminLangId), CONF_WEBROOT_FRONT_URL).$uploadedTime.'" />';
+                $img = '<img src="'.UrlHelper::generateFullUrl('Banner', 'Thumb', array($row['banner_id'] , $adminLangId), CONF_WEBROOT_FRONT_URL).$uploadedTime.'" />';
                 $td->appendElement('plaintext', array(), $img, true);
             break;
             case 'action':

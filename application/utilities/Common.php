@@ -314,7 +314,7 @@ class Common
     {
         $siteLangId = CommonHelper::getLangId();
         $blogSrchFrm = static::getBlogSearchForm();
-        $blogSrchFrm->setFormTagAttribute('action', CommonHelper::generateUrl('Blog'));
+        $blogSrchFrm->setFormTagAttribute('action', UrlHelper::generateUrl('Blog'));
 
         /* to fill the posted data into form[ */
         $postedData = FatApp::getPostedData();

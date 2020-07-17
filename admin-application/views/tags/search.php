@@ -32,7 +32,7 @@ foreach ($arr_listing as $sn => $row) {
             case 'product_identifier':
                 $td->appendElement(
                     'a',
-                    array('href' => 'javascript:void(0)', 'class' => '', 'title' => 'Links', "onclick" => 'redirectfunc("' . CommonHelper::generateUrl('Products') . '", ' . $row['product_id'] . ')'),
+                    array('href' => 'javascript:void(0)', 'class' => '', 'title' => 'Links', "onclick" => 'redirectfunc("' . UrlHelper::generateUrl('Products') . '", ' . $row['product_id'] . ')'),
                     $row['product_name'],
                     true
                 );
@@ -61,7 +61,7 @@ if (count($arr_listing) == 0) {
 $frm = new Form('frmTagsListing', array('id' => 'frmTagsListing'));
 $frm->setFormTagAttribute('class', 'web_form last_td_nowrap');
 $frm->setFormTagAttribute('onsubmit', 'formAction(this, reloadList ); return(false);');
-$frm->setFormTagAttribute('action', CommonHelper::generateUrl('Tags', 'deleteSelected'));
+$frm->setFormTagAttribute('action', UrlHelper::generateUrl('Tags', 'deleteSelected'));
 $frm->addHiddenField('', 'status');
 
 echo $frm->getFormTag();

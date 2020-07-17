@@ -193,7 +193,7 @@ class AbandonedCart extends MyAppModel
         $discount = ($couponData['coupon_discount_in_percent'] == applicationConstants::PERCENTAGE) ? $couponData['coupon_discount_value'] . '%' : CommonHelper::displayMoneyFormat($couponData['coupon_discount_value']);
         $arrReplacements = array(
             '{user_full_name}' => trim($abandonedData['user_name']),
-            '{checkout_now}' => CommonHelper::generateFullUrl('GuestUser', 'redirectAbandonedCartUser', array($abandonedData['user_id'], $abandonedData['selprod_id']), CONF_WEBROOT_FRONTEND),
+            '{checkout_now}' => UrlHelper::generateFullUrl('GuestUser', 'redirectAbandonedCartUser', array($abandonedData['user_id'], $abandonedData['selprod_id']), CONF_WEBROOT_FRONTEND),
             '{coupon_code}' => $couponData['coupon_code'],
             '{discount}' => $discount,
             '{product_name}' => trim($abandonedData['selprod_title'])
@@ -201,7 +201,7 @@ class AbandonedCart extends MyAppModel
         
         $tpl = "";
         if ($abandonedData['abandonedcart_action'] == static::ACTION_ADDED) {
-            $prodImage = CommonHelper::generateFullUrl('image', 'product', array($abandonedData['selprod_product_id'], "THUMB", $abandonedData['selprod_id'], 0, $this->commonLangId), CONF_WEBROOT_FRONTEND);
+            $prodImage = UrlHelper::generateFullUrl('image', 'product', array($abandonedData['selprod_product_id'], "THUMB", $abandonedData['selprod_id'], 0, $this->commonLangId), CONF_WEBROOT_FRONTEND);
             $arrReplacements['{product_image}'] = $prodImage;
             $arrReplacements['{product_price}'] = CommonHelper::displayMoneyFormat($abandonedData['selprod_price']);
             $tpl = "abandoned_cart_discount_notification";

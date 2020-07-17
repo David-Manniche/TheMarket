@@ -14,7 +14,7 @@
                             $innerDiv=$li->appendElement('div', array('class'=>'dropwrap'));
                             $innerUl=$innerDiv->appendElement('ul', array('class'=>'linksvertical'));
                             $innerLi=$innerUl->appendElement('li');
-                            $innerLi->appendElement('a', array('href'=>CommonHelper::generateUrl('Messages'),'class'=>'button small green redirect--js','title'=>Labels::getLabel('LBL_Back_to_Messages', $adminLangId)), Labels::getLabel('LBL_Back_to_Messages', $adminLangId), true);
+                            $innerLi->appendElement('a', array('href'=>UrlHelper::generateUrl('Messages'),'class'=>'button small green redirect--js','title'=>Labels::getLabel('LBL_Back_to_Messages', $adminLangId)), Labels::getLabel('LBL_Back_to_Messages', $adminLangId), true);
                             echo $ul->getHtml();
                         ?>
                     </div>

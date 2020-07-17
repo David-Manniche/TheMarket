@@ -15,15 +15,15 @@
           <ul class="nav nav-block">
                 <?php if (User::canViewSupplierTab()) { ?>
                 <li class="nav__item <?php echo ($activeTab == 'S') ? 'is-active' : ''; ?>">
-                    <a class="dropdown-item nav__link" href="<?php echo CommonHelper::generateUrl('Seller'); ?>"><?php echo Labels::getLabel('Lbl_Seller', $siteLangId);?></a></li>
+                    <a class="dropdown-item nav__link" href="<?php echo UrlHelper::generateUrl('Seller'); ?>"><?php echo Labels::getLabel('Lbl_Seller', $siteLangId);?></a></li>
                 <?php }?>
                 <?php if (User::canViewBuyerTab()) { ?>
                 <li class="nav__item <?php echo ($activeTab == 'B') ? 'is-active' : ''; ?>">
-                    <a class="dropdown-item nav__link" href="<?php echo CommonHelper::generateUrl('Buyer'); ?>"><?php echo Labels::getLabel('Lbl_Buyer', $siteLangId);?></a></li>
+                    <a class="dropdown-item nav__link" href="<?php echo UrlHelper::generateUrl('Buyer'); ?>"><?php echo Labels::getLabel('Lbl_Buyer', $siteLangId);?></a></li>
                 <?php }?>
                 <?php if (User::canViewAdvertiserTab() && $userPrivilege->canViewPromotions(0, true)) { ?>
                 <li class="nav__item <?php echo ($activeTab == 'Ad') ? 'is-active' : ''; ?>">
-                    <a class="dropdown-item nav__link" href="<?php echo CommonHelper::generateUrl('Advertiser'); ?>"><?php echo Labels::getLabel('Lbl_Advertiser', $siteLangId);?></a></li>
+                    <a class="dropdown-item nav__link" href="<?php echo UrlHelper::generateUrl('Advertiser'); ?>"><?php echo Labels::getLabel('Lbl_Advertiser', $siteLangId);?></a></li>
                 <?php }?>
             </ul>
           </div>
@@ -32,18 +32,18 @@
         <div class="header-icons-group">
             <?php $getOrgUrl = (CONF_DEVELOPMENT_MODE) ? true : false; ?>
             <ul class="c-header-links">
-                <li class="<?php /* echo (($controllerName == 'Seller' || $controllerName == 'Buyer' || $controllerName == 'Advertiser' || $controllerName == 'Affiliate') && $action == 'index') ? 'is-active' : ''; */ ?>"><a title="<?php echo Labels::getLabel('LBL_Dashboard', $siteLangId);?>" data-org-url="<?php echo CommonHelper::generateUrl('home', 'index', array(), '', null, false, $getOrgUrl); ?>" href="<?php echo CommonHelper::generateUrl($controllerName); ?>"><i class="icn icn--dashboard">
+                <li class="<?php /* echo (($controllerName == 'Seller' || $controllerName == 'Buyer' || $controllerName == 'Advertiser' || $controllerName == 'Affiliate') && $action == 'index') ? 'is-active' : ''; */ ?>"><a title="<?php echo Labels::getLabel('LBL_Dashboard', $siteLangId);?>" data-org-url="<?php echo UrlHelper::generateUrl('home', 'index', array(), '', null, false, $getOrgUrl); ?>" href="<?php echo UrlHelper::generateUrl($controllerName); ?>"><i class="icn icn--dashboard">
                 <svg class="svg"><use xlink:href="<?php echo CONF_WEBROOT_URL;?>images/retina/sprite.svg#dashboard" href="<?php echo CONF_WEBROOT_URL;?>images/retina/sprite.svg#dashboard"></use></svg></i></a></li>
-                <li><a title="<?php echo Labels::getLabel('LBL_Home', $siteLangId);?>" target="_blank" href="<?php echo CommonHelper::generateUrl('Home'); ?>"><i class="icn icn--home">
+                <li><a title="<?php echo Labels::getLabel('LBL_Home', $siteLangId);?>" target="_blank" href="<?php echo UrlHelper::generateUrl('Home'); ?>"><i class="icn icn--home">
                 <svg class="svg"><use xlink:href="<?php echo CONF_WEBROOT_URL;?>images/retina/sprite.svg#back-home" href="<?php echo CONF_WEBROOT_URL;?>images/retina/sprite.svg#back-home"></use></svg></i></a></li>
                 <?php if ($isShopActive && $shop_id > 0 && $activeTab == 'S') { ?>
-                <li><a title="<?php echo Labels::getLabel('LBL_Shop', $siteLangId);?>" data-org-url="<?php echo CommonHelper::generateUrl('Shops', 'view', array($shop_id), '', null, false, $getOrgUrl); ?>" target="_blank" href="<?php echo CommonHelper::generateUrl('Shops', 'view', array($shop_id)); ?>"><i class="icn icn--home">
+                <li><a title="<?php echo Labels::getLabel('LBL_Shop', $siteLangId);?>" data-org-url="<?php echo UrlHelper::generateUrl('Shops', 'view', array($shop_id), '', null, false, $getOrgUrl); ?>" target="_blank" href="<?php echo UrlHelper::generateUrl('Shops', 'view', array($shop_id)); ?>"><i class="icn icn--home">
                 <svg class="svg"><use xlink:href="<?php echo CONF_WEBROOT_URL;?>images/retina/sprite.svg#manage-shop" href="<?php echo CONF_WEBROOT_URL;?>images/retina/sprite.svg#manage-shop"></use></svg></i></a></li>
                 <?php } ?>
             </ul>
             <?php if($userPrivilege->canViewMessages(0, true)) { ?>
             <div class="c-header-icon bell">
-                <a data-org-url="<?php echo CommonHelper::generateUrl('Account', 'Messages', array(), '', null, false, $getOrgUrl); ?>" href="<?php echo CommonHelper::generateUrl('Account', 'Messages'); ?>" title="<?php echo Labels::getLabel('LBL_Messages', $siteLangId);?>">
+                <a data-org-url="<?php echo UrlHelper::generateUrl('Account', 'Messages', array(), '', null, false, $getOrgUrl); ?>" href="<?php echo UrlHelper::generateUrl('Account', 'Messages'); ?>" title="<?php echo Labels::getLabel('LBL_Messages', $siteLangId);?>">
                 <i class="icn"><svg class="svg bell-shake-delay">
                         <use xlink:href="<?php echo CONF_WEBROOT_URL;?>images/retina/sprite.svg#notification" href="<?php echo CONF_WEBROOT_URL;?>images/retina/sprite.svg#notification"></use>
                     </svg>
@@ -65,6 +65,6 @@
         $fileData = AttachedFile::getAttachment(AttachedFile::FILETYPE_INVOICE_LOGO, 0, 0, $siteLangId, false);
         $aspectRatioArr = AttachedFile::getRatioTypeArray($siteLangId);
         ?>
-        <img <?php if ($fileData['afile_aspect_ratio'] > 0) { ?> data-ratio= "<?php echo $aspectRatioArr[$fileData['afile_aspect_ratio']]; ?>" <?php } ?> src="<?php echo CommonHelper::generateFullUrl('Image', 'invoiceLogo', array($siteLangId), CONF_WEBROOT_FRONT_URL); ?>" alt="<?php echo FatApp::getConfig('CONF_WEBSITE_NAME_'.$siteLangId, FatUtility::VAR_STRING, '') ?>"
+        <img <?php if ($fileData['afile_aspect_ratio'] > 0) { ?> data-ratio= "<?php echo $aspectRatioArr[$fileData['afile_aspect_ratio']]; ?>" <?php } ?> src="<?php echo UrlHelper::generateFullUrl('Image', 'invoiceLogo', array($siteLangId), CONF_WEBROOT_FRONT_URL); ?>" alt="<?php echo FatApp::getConfig('CONF_WEBSITE_NAME_'.$siteLangId, FatUtility::VAR_STRING, '') ?>"
             title="<?php echo FatApp::getConfig('CONF_WEBSITE_NAME_'.$siteLangId, FatUtility::VAR_STRING, '') ?>">
     </div>

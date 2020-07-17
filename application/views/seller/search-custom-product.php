@@ -46,7 +46,7 @@ foreach ($arr_listing as $sn => $row) {
                 $li = $ul->appendElement("li");
                 $li->appendElement(
                     'a',
-                    array( 'class'=>'', 'title'=>Labels::getLabel('LBL_Edit', $siteLangId),"href"=>CommonHelper::generateUrl('seller', 'customProductForm', array($row['product_id']))),
+                    array( 'class'=>'', 'title'=>Labels::getLabel('LBL_Edit', $siteLangId),"href"=>UrlHelper::generateUrl('seller', 'customProductForm', array($row['product_id']))),
                     '<i class="fa fa-edit"></i>',
                     true
                 );

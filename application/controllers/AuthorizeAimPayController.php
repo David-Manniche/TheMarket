@@ -79,7 +79,7 @@ class AuthorizeAimPayController extends PaymentController
 
     private function getPaymentForm($orderId = '')
     {
-        $frm = new Form('frmPaymentForm', array('id' => 'frmPaymentForm', 'action' => CommonHelper::generateUrl('AuthorizeAimPay', 'send', array($orderId)), 'class' => "form form--normal"));
+        $frm = new Form('frmPaymentForm', array('id' => 'frmPaymentForm', 'action' => UrlHelper::generateUrl('AuthorizeAimPay', 'send', array($orderId)), 'class' => "form form--normal"));
         $frm->addRequiredField(Labels::getLabel('LBL_ENTER_CREDIT_CARD_NUMBER', $this->siteLangId), 'cc_number');
         $frm->addRequiredField(Labels::getLabel('LBL_CARD_HOLDER_NAME', $this->siteLangId), 'cc_owner');
         $data['months'] = applicationConstants::getMonthsArr($this->siteLangId);
@@ -224,7 +224,7 @@ class AuthorizeAimPayController extends PaymentController
                         } else {
                             $json['msg'] = $message;
                             $json['description'] = $decription;
-                            $json['redirect'] = CommonHelper::generateUrl('custom', 'paymentSuccess', array($orderId));
+                            $json['redirect'] = UrlHelper::generateUrl('custom', 'paymentSuccess', array($orderId));
                         }
                     } else {
                         $json['errorMsg'] = Labels::getLabel('Transaction Failed', $this->siteLangId);

@@ -82,7 +82,7 @@ class PayFortStartPayController extends PaymentController
                 } else {
                     $msg = "Charge was not processed.";
                 }
-                $failUrl = CommonHelper::generateUrl('custom', 'paymentFailed');
+                $failUrl = UrlHelper::generateUrl('custom', 'paymentFailed');
                 FatApp::redirectUser($failUrl);
             }
         }
@@ -122,7 +122,7 @@ class PayFortStartPayController extends PaymentController
                 }
                 if ($order_payment_status == 1 && $total_paid_match) {
                     $orderPaymentObj->addOrderPayment($payment_settings["plugin_code"], $response['id'], $payment_gateway_charge, Labels::getLabel("LBL_Received_Payment", $this->siteLangId), $request . "#" . print_r($response, true));
-                    FatApp::redirectUser(CommonHelper::generateUrl('custom', 'paymentSuccess', array($order_id)));
+                    FatApp::redirectUser(UrlHelper::generateUrl('custom', 'paymentSuccess', array($order_id)));
                 } else {
                     $orderPaymentObj->addOrderPaymentComments($request);
                 }

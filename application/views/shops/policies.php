@@ -14,7 +14,7 @@ $shopLocation = $shop_city . $shop_state. $shop_country; ?>
           </div>
         </div>
       </div>
-      <div class="col-md-4 col-sm-4 align--right"><a href="<?php echo CommonHelper::generateUrl('Shops', 'View', array($shop['shop_id'])); ?>" class="btn btn-outline-white btn-sm"><?php echo Labels::getLabel('LBL_Back_to_Shop', $siteLangId); ?></a></div>
+      <div class="col-md-4 col-sm-4 align--right"><a href="<?php echo UrlHelper::generateUrl('Shops', 'View', array($shop['shop_id'])); ?>" class="btn btn-outline-white btn-sm"><?php echo Labels::getLabel('LBL_Back_to_Shop', $siteLangId); ?></a></div>
     </div>
   </div>
 </div>

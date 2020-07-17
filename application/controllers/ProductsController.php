@@ -44,26 +44,26 @@ class ProductsController extends MyAppController
             case 'index':
                 $arr = array(
                     'pageTitle' => Labels::getLabel('LBL_All_PRODUCTS', $this->siteLangId),
-                    'canonicalUrl' => CommonHelper::generateFullUrl('Products', 'index'),
+                    'canonicalUrl' => UrlHelper::generateFullUrl('Products', 'index'),
                     'productSearchPageType' => SavedSearchProduct::PAGE_PRODUCT_INDEX,
-                    'bannerListigUrl' => CommonHelper::generateFullUrl('Banner', 'allProducts'),
+                    'bannerListigUrl' => UrlHelper::generateFullUrl('Banner', 'allProducts'),
                 );
                 break;
             case 'search':
                 $arr = array(
                     'pageTitle' => Labels::getLabel('LBL_Search_results_for', $this->siteLangId),
-                    'canonicalUrl' => CommonHelper::generateFullUrl('Products', 'search'),
+                    'canonicalUrl' => UrlHelper::generateFullUrl('Products', 'search'),
                     'productSearchPageType' => SavedSearchProduct::PAGE_PRODUCT,
-                    'bannerListigUrl' => CommonHelper::generateFullUrl('Banner', 'searchListing'),
+                    'bannerListigUrl' => UrlHelper::generateFullUrl('Banner', 'searchListing'),
                     'keyword' => $keyword,
                 );
                 break;
             case 'featured':
                 $arr = array(
                     'pageTitle' => Labels::getLabel('LBL_FEATURED_PRODUCTS', $this->siteLangId),
-                    'canonicalUrl' => CommonHelper::generateFullUrl('Products', 'featured'),
+                    'canonicalUrl' => UrlHelper::generateFullUrl('Products', 'featured'),
                     'productSearchPageType' => SavedSearchProduct::PAGE_FEATURED_PRODUCT,
-                    'bannerListigUrl' => CommonHelper::generateFullUrl('Banner', 'searchListing'),
+                    'bannerListigUrl' => UrlHelper::generateFullUrl('Banner', 'searchListing'),
                 );
                 $get['featured'] = 1;
                 break;
@@ -886,12 +886,12 @@ class ProductsController extends MyAppController
         }
 
         $product_description = trim(CommonHelper::subStringByWords(strip_tags(CommonHelper::renderHtml($product["product_description"], true)), 500));
-        $product_description .= ' - ' . Labels::getLabel('LBL_See_more_at', $this->siteLangId) . ": " . CommonHelper::getCurrUrl();
+        $product_description .= ' - ' . Labels::getLabel('LBL_See_more_at', $this->siteLangId) . ": " . UrlHelper::getCurrUrl();
 
         $productImageUrl = '';
-        /* $productImageUrl = CommonHelper::generateFullUrl('Image','product', array($product['product_id'],'', $product['selprod_id'],0,$this->siteLangId )); */
+        /* $productImageUrl = UrlHelper::generateFullUrl('Image','product', array($product['product_id'],'', $product['selprod_id'],0,$this->siteLangId )); */
         if (0 < $afile_id) {
-            $productImageUrl = CommonHelper::generateFullUrl('Image', 'product', array($product['product_id'], 'FB_RECOMMEND', 0, $afile_id ));
+            $productImageUrl = UrlHelper::generateFullUrl('Image', 'product', array($product['product_id'], 'FB_RECOMMEND', 0, $afile_id ));
         }
         $socialShareContent = array(
         'type' => 'Product',
@@ -1085,7 +1085,7 @@ class ProductsController extends MyAppController
                                 $code = FatUtility::int($code);
                                 if (isset($prodCategories[$code]['prodcat_name'])) {
                                     $prodCategories[$code]['prodcat_name'];
-                                    $nodes[] = array('title' => $prodCategories[$code]['prodcat_name'], 'href' => CommonHelper::generateUrl('category', 'view', array($code)));
+                                    $nodes[] = array('title' => $prodCategories[$code]['prodcat_name'], 'href' => UrlHelper::generateUrl('category', 'view', array($code)));
                                 }
                             }
                             $nodes[] = array('title' => ($row['selprod_title']) ? $row['selprod_title'] : $row['product_name']);
@@ -1169,7 +1169,7 @@ class ProductsController extends MyAppController
         $bannerId = FatUtility::int($productId);
         if (1 > $productId) {
             Message::addErrorMessage(Labels::getLabel('MSG_Invalid_Access', $this->siteLangId));
-            FatApp::redirectUser(CommonHelper::generateUrl(''));
+            FatApp::redirectUser(UrlHelper::generateUrl(''));
         }
         $loggedUserId = 0;
         if (UserAuthentication::isUserLogged()) {
@@ -1223,7 +1223,7 @@ class ProductsController extends MyAppController
         $rs = $productSrchObj->getResultSet();
         $row = FatApp::getDb()->fetch($rs);
 
-        $url = CommonHelper::generateFullUrl('products', 'view', array($productId));
+        $url = UrlHelper::generateFullUrl('products', 'view', array($productId));
         if ($row == false) {
             if (!filter_var($url, FILTER_VALIDATE_URL) === false) {
                 FatApp::redirectUser($url);
@@ -1270,7 +1270,7 @@ class ProductsController extends MyAppController
             FatApp::redirectUser($url);
         }
 
-        FatApp::redirectUser(CommonHelper::generateUrl(''));
+        FatApp::redirectUser(UrlHelper::generateUrl(''));
     }
 
     public function setUrlString()
@@ -1529,13 +1529,13 @@ class ProductsController extends MyAppController
             }
 
             $product_description = trim(CommonHelper::subStringByWords(strip_tags(CommonHelper::renderHtml($product["product_description"], true)), 500));
-            $product_description .= ' - ' . Labels::getLabel('LBL_See_more_at', $this->siteLangId) . ": " . CommonHelper::getCurrUrl();
+            $product_description .= ' - ' . Labels::getLabel('LBL_See_more_at', $this->siteLangId) . ": " . UrlHelper::getCurrUrl();
 
             $productImageUrl = '';
-            /* $productImageUrl = CommonHelper::generateFullUrl('Image','product', array($product['product_id'],'', $product['selprod_id'],0,$this->siteLangId )); */
+            /* $productImageUrl = UrlHelper::generateFullUrl('Image','product', array($product['product_id'],'', $product['selprod_id'],0,$this->siteLangId )); */
             if ($productImagesArr) {
                 $afile_id = array_keys($productImagesArr)[0];
-                $productImageUrl = CommonHelper::generateFullUrl('Image', 'product', array($product['product_id'], 'MEDIUM', 0, $afile_id ));
+                $productImageUrl = UrlHelper::generateFullUrl('Image', 'product', array($product['product_id'], 'MEDIUM', 0, $afile_id ));
             }
         }
         $this->set('product', $product);

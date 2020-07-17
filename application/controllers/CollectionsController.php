@@ -158,7 +158,7 @@ class CollectionsController extends MyAppController
                     foreach ($collections as &$product) {
                         $product['selprod_price'] = CommonHelper::displayMoneyFormat($product['selprod_price'], false, false, false);
                         $product['theprice'] = CommonHelper::displayMoneyFormat($product['theprice'], false, false, false);
-                        $product['product_image_url'] = CommonHelper::generateFullUrl('image', 'product', array($product['product_id'], "CLAYOUT3", $product['selprod_id'], 0, $this->siteLangId));
+                        $product['product_image_url'] = UrlHelper::generateFullUrl('image', 'product', array($product['product_id'], "CLAYOUT3", $product['selprod_id'], 0, $this->siteLangId));
                     }
                 }
 
@@ -249,8 +249,8 @@ class CollectionsController extends MyAppController
                     $products = $db->fetchAll($prodRs);
 
                     if (true === MOBILE_APP_API_CALL) {
-                        $collections[$val['shop_id']]['shop_logo'] = CommonHelper::generateFullUrl('image', 'shopLogo', array($val['shop_id'], $this->siteLangId));
-                        $collections[$val['shop_id']]['shop_banner'] = CommonHelper::generateFullUrl('image', 'shopBanner', array($val['shop_id'], $this->siteLangId));
+                        $collections[$val['shop_id']]['shop_logo'] = UrlHelper::generateFullUrl('image', 'shopLogo', array($val['shop_id'], $this->siteLangId));
+                        $collections[$val['shop_id']]['shop_banner'] = UrlHelper::generateFullUrl('image', 'shopBanner', array($val['shop_id'], $this->siteLangId));
                         array_walk($products, function (&$value, &$key) {
                             $uploadedTime = AttachedFile::setTimeParam($value['product_updated_on']);
                             $value['product_image_url'] = UrlHelper::getCachedUrl(UrlHelper::generateFullFileUrl('image', 'product', array($value['product_id'], "THUMB", $value['selprod_id'], 0, $this->siteLangId)) . $uploadedTime, CONF_IMG_CACHE_TIME, '.jpg');
@@ -339,7 +339,7 @@ class CollectionsController extends MyAppController
                 unset($blogSearchTempObj);
                 if (true === MOBILE_APP_API_CALL) {
                     array_walk($collectionsArr, function (&$value, &$key) {
-                        $value['post_image'] = CommonHelper::generateFullUrl('Image', 'blogPostFront', array($value['post_id'], $this->siteLangId, ''));
+                        $value['post_image'] = UrlHelper::generateFullUrl('Image', 'blogPostFront', array($value['post_id'], $this->siteLangId, ''));
                     });
                     $this->set('collections', $collectionsArr);
                 } else {

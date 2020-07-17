@@ -11,7 +11,7 @@ class CashOnDeliveryPayController extends MyAppController
         $orderInfo = $orderPaymentObj->getOrderPrimaryinfo();
         if (!$orderInfo || $orderInfo["order_is_paid"] == Orders::ORDER_IS_PAID) {
             Message::addErrorMessage(Labels::getLabel('MSG_INVALID_ORDER_PAID_CANCELLED', $this->siteLangId));
-            FatApp::redirectUser(CommonHelper::generateUrl('Buyer', 'ViewOrder', array($orderInfo['id'])));
+            FatApp::redirectUser(UrlHelper::generateUrl('Buyer', 'ViewOrder', array($orderInfo['id'])));
         }
 
         /* Partial Payment is not allowed, Wallet + COD, So, disabling COD in case of Partial Payment Wallet Selected. [ */
@@ -19,14 +19,14 @@ class CashOnDeliveryPayController extends MyAppController
             $str = Labels::getLabel('MSG_Wallet_can_not_be_used_along_with_{COD}', $this->siteLangId);
             $str = str_replace('{cod}', $this->keyName, $str);
             Message::addErrorMessage($str);
-            FatApp::redirectUser(CommonHelper::generateUrl('Buyer', 'ViewOrder', array($orderInfo['id'])));
+            FatApp::redirectUser(UrlHelper::generateUrl('Buyer', 'ViewOrder', array($orderInfo['id'])));
         }
         /* ] */
 
         $token = FatApp::getPostedData('_token', FatUtility::VAR_STRING, '');
         if (!empty($token) && !UserAuthentication::isUserLogged('', $token)) {
             Message::addErrorMessage(Labels::getLabel('L_Invalid_Token', $this->siteLangId));
-            FatApp::redirectUser(CommonHelper::generateUrl('Buyer', 'ViewOrder', array($orderInfo['id'])));
+            FatApp::redirectUser(UrlHelper::generateUrl('Buyer', 'ViewOrder', array($orderInfo['id'])));
         }
         /* Avoid payment for digital products [ */
 
@@ -44,13 +44,13 @@ class CashOnDeliveryPayController extends MyAppController
                 $str = Labels::getLabel('MSG_Digital_Products_can_not_be_processed_along_with_{COD}', $this->siteLangId);
                 $str = str_replace('{cod}', $this->keyName, $str);
                 Message::addErrorMessage($str);
-                FatApp::redirectUser(CommonHelper::generateUrl('Buyer', 'ViewOrder', array($orderInfo['id'])));
+                FatApp::redirectUser(UrlHelper::generateUrl('Buyer', 'ViewOrder', array($orderInfo['id'])));
             }
         }
         /* ] */
 
         $orderPaymentObj->confirmCodOrder($orderId, $this->siteLangId);
 
-        FatApp::redirectUser(CommonHelper::generateFullUrl('custom', 'paymentSuccess', array( $orderInfo['id'])));
+        FatApp::redirectUser(UrlHelper::generateFullUrl('custom', 'paymentSuccess', array( $orderInfo['id'])));
     }
 }

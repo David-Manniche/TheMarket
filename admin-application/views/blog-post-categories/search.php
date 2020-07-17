@@ -62,7 +62,7 @@ foreach ($arr_listing as $sn => $row) {
                 if ($row[$key]==0) {
                     $td->appendElement('plaintext', array(), $row[$key], true);
                 } else {
-                    $td->appendElement('a', array('href'=>CommonHelper::generateUrl('BlogPostCategories', 'index', array($row['bpcategory_id'])),'title'=>Labels::getLabel('LBL_View_Categories', $adminLangId)), $row[$key]);
+                    $td->appendElement('a', array('href'=>UrlHelper::generateUrl('BlogPostCategories', 'index', array($row['bpcategory_id'])),'title'=>Labels::getLabel('LBL_View_Categories', $adminLangId)), $row[$key]);
                 }
                 break;
             case 'bpcategory_active':
@@ -100,7 +100,7 @@ if (count($arr_listing) == 0) {
 $frm = new Form('frmBlogPostCatListing', array('id'=>'frmBlogPostCatListing'));
 $frm->setFormTagAttribute('class', 'web_form last_td_nowrap actionButtons-js');
 $frm->setFormTagAttribute('onsubmit', 'formAction(this, reloadList ); return(false);');
-$frm->setFormTagAttribute('action', CommonHelper::generateUrl('BlogPostCategories', 'toggleBulkStatuses'));
+$frm->setFormTagAttribute('action', UrlHelper::generateUrl('BlogPostCategories', 'toggleBulkStatuses'));
 $frm->addHiddenField('', 'status');
 
 echo $frm->getFormTag();

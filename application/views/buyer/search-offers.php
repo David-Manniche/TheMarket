@@ -7,7 +7,7 @@ if (!empty($offers)) {
 				<div class="row">
 					<div class="col-md-4 mb-4 mb-md-0">
 						<div class="offer">
-							<div class="offer__logo"><img src="<?php echo CommonHelper::generateFullUrl('Image', 'coupon', array($row['coupon_id'],$siteLangId,'NORMAL'))?>"
+							<div class="offer__logo"><img src="<?php echo UrlHelper::generateFullUrl('Image', 'coupon', array($row['coupon_id'],$siteLangId,'NORMAL'))?>"
 									alt="<?php echo ($row['coupon_title'] == '')?$row['coupon_identifier']:$row['coupon_title']; ?>"></div>
 						</div>
 					</div>

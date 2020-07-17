@@ -38,7 +38,7 @@
                             $otherButtons = [
                                 [
                                     'attr' => [
-                                        'href' => CommonHelper::generateUrl('shippingProfile', 'form', array(0)),
+                                        'href' => UrlHelper::generateUrl('shippingProfile', 'form', array(0)),
                                         'title' => Labels::getLabel('LBL_Create_New_Profile', $adminLangId)
                                     ],
                                     'label' => '<i class="fas fa-plus"></i>'

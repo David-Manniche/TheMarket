@@ -7,6 +7,7 @@ class UserWishList extends MyAppModel
 
     public const DB_TBL_LIST_PRODUCTS = 'tbl_user_wish_list_products';
     public const DB_TBL_LIST_PRODUCTS_PREFFIX = 'uwlp_';
+    
     public const TYPE_FAVOURITE = '1';
 
     public function __construct($uwlistId = 0)

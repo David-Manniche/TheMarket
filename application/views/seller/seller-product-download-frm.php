@@ -98,7 +98,7 @@ $selprodDownloadFrm->developerTags['fld_default_col'] = 4; ?>
                                         $td->appendElement('plaintext', array(), $lang_name, true);
                                         break;
                                     case 'afile_name':
-                                        $fileName = '<a target="_blank" href="'.CommonHelper::generateUrl('seller', 'downloadDigitalFile', array($row['afile_id'],$row['afile_record_id'])).'">'.$row[$key].'</a>';
+                                        $fileName = '<a target="_blank" href="'.UrlHelper::generateUrl('seller', 'downloadDigitalFile', array($row['afile_id'],$row['afile_record_id'])).'">'.$row[$key].'</a>';
                                         $td->appendElement('plaintext', array(), $fileName, true);
                                         break;
                                     case 'action':

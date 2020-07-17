@@ -2,7 +2,7 @@
 
 if (!empty($postList)) {
     array_walk($postList, function (&$value, &$key) use ($siteLangId) {
-        $value['post_image'] = CommonHelper::generateFullUrl('Image', 'blogPostFront', array($value['post_id'], $siteLangId, ''));
+        $value['post_image'] = UrlHelper::generateFullUrl('Image', 'blogPostFront', array($value['post_id'], $siteLangId, ''));
     });
 }
 

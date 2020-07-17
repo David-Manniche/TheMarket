@@ -30,7 +30,7 @@ class ProfileController extends AdminBaseController
 
     public function imgCropper()
     {
-        $this->set('image', CommonHelper::generateFullUrl('Image', 'profileImage', array($this->_adminId)));
+        $this->set('image', UrlHelper::generateFullUrl('Image', 'profileImage', array($this->_adminId)));
         $this->_template->render(false, false, 'cropper/index.php');
     }
 
@@ -82,12 +82,12 @@ class ProfileController extends AdminBaseController
     $post = $pwdFrm->getFormDataFromArray(FatApp::getPostedData());
     if(!$pwdFrm->validate($post)){
     Message::addErrorMessage($pwdFrm->getValidationErrors());
-    FatApp::redirectUser(CommonHelper::generateUrl('profile', 'changePassword'));
+    FatApp::redirectUser(UrlHelper::generateUrl('profile', 'changePassword'));
     }
 
     if(!$curDbPassword = AdminUsers::getAttributesById($this->_adminId, 'admin_password')){
     Message::addErrorMessage($this->_adminProfileObj->getError());
-    FatApp::redirectUser(CommonHelper::generateUrl('profile', 'changePassword'));
+    FatApp::redirectUser(UrlHelper::generateUrl('profile', 'changePassword'));
     }
 
     $newPassword = UserAuthentication::encryptPassword(FatApp::getPostedData('new_password'));
@@ -95,7 +95,7 @@ class ProfileController extends AdminBaseController
 
     if($curDbPassword != $currentPassword){
     Message::addErrorMessage(Labels::getLabel('LBL_Your_current_Password_mis-matched!',$this->adminLangId));
-    FatApp::redirectUser(CommonHelper::generateUrl('profile', 'changePassword'));
+    FatApp::redirectUser(UrlHelper::generateUrl('profile', 'changePassword'));
     }
 
     $data = array( 'admin_password' => $newPassword);
@@ -103,11 +103,11 @@ class ProfileController extends AdminBaseController
     $this->_adminProfileObj->assignValues($data);
     if(!$this->_adminProfileObj->save()){
     Message::addErrorMessage($this->_adminProfileObj->getError());
-    FatApp::redirectUser(CommonHelper::generateUrl('profile', 'changePassword'));
+    FatApp::redirectUser(UrlHelper::generateUrl('profile', 'changePassword'));
     }
 
     Message::addMessage(Labels::getLabel('LBL_Password_Updated_Successfully',$this->adminLangId));
-    FatApp::redirectUser(CommonHelper::generateUrl('profile','changePassword'));
+    FatApp::redirectUser(UrlHelper::generateUrl('profile','changePassword'));
     } */
 
     private function getProfileInfoForm()
@@ -158,7 +158,7 @@ class ProfileController extends AdminBaseController
                 Message::addErrorMessage($fileHandlerObj->getError());
                 FatUtility::dieJsonError(Message::getHtml());
             }
-            $this->set('file', CommonHelper::generateFullUrl('Image', 'profileImage', array($this->_adminId)));
+            $this->set('file', UrlHelper::generateFullUrl('Image', 'profileImage', array($this->_adminId)));
         }
 
         if (isset($_FILES['cropped_image']['tmp_name'])) {
@@ -177,7 +177,7 @@ class ProfileController extends AdminBaseController
 
             /*$data = json_decode(stripslashes($post['img_data']));
             CommonHelper::crop($data, CONF_UPLOADS_PATH .$res, $this->adminLangId);*/
-            $this->set('file', CommonHelper::generateFullUrl('Account', 'userProfileImage', array($this->_adminId, 'croped', true)));
+            $this->set('file', UrlHelper::generateFullUrl('Account', 'userProfileImage', array($this->_adminId, 'croped', true)));
         }
 
 
@@ -213,7 +213,7 @@ class ProfileController extends AdminBaseController
         if ($action == 'index') {
             $nodes[] = array('title' => $className);
         } else {
-            // $nodes[] = array('title'=>$className, 'href'=>CommonHelper::generateUrl($urlController));
+            // $nodes[] = array('title'=>$className, 'href'=>UrlHelper::generateUrl($urlController));
             $nodes[] = array('title' => $action);
         }
         return $nodes;
@@ -237,12 +237,12 @@ class ProfileController extends AdminBaseController
         $post = $pwdFrm->getFormDataFromArray(FatApp::getPostedData());
         if (!$pwdFrm->validate($post)) {
             Message::addErrorMessage($pwdFrm->getValidationErrors());
-            FatApp::redirectUser(CommonHelper::generateUrl('profile', 'changePassword'));
+            FatApp::redirectUser(UrlHelper::generateUrl('profile', 'changePassword'));
         }
 
         if (!$curDbPassword = AdminUsers::getAttributesById($this->_adminId, 'admin_password')) {
             Message::addErrorMessage($this->_adminProfileObj->getError());
-            FatApp::redirectUser(CommonHelper::generateUrl('profile', 'changePassword'));
+            FatApp::redirectUser(UrlHelper::generateUrl('profile', 'changePassword'));
         }
 
         $newPassword = UserAuthentication::encryptPassword(FatApp::getPostedData('new_password'));
@@ -250,7 +250,7 @@ class ProfileController extends AdminBaseController
 
         if ($curDbPassword != $currentPassword) {
             Message::addErrorMessage(Labels::getLabel('LBL_Your_current_Password_mis-matched!', $this->adminLangId));
-            FatApp::redirectUser(CommonHelper::generateUrl('profile', 'changePassword'));
+            FatApp::redirectUser(UrlHelper::generateUrl('profile', 'changePassword'));
         }
 
         $data = array( 'admin_password' => $newPassword);
@@ -258,11 +258,11 @@ class ProfileController extends AdminBaseController
         $this->_adminProfileObj->assignValues($data);
         if (!$this->_adminProfileObj->save()) {
             Message::addErrorMessage($this->_adminProfileObj->getError());
-            FatApp::redirectUser(CommonHelper::generateUrl('profile', 'changePassword'));
+            FatApp::redirectUser(UrlHelper::generateUrl('profile', 'changePassword'));
         }
 
         Message::addMessage(Labels::getLabel('LBL_Password_Updated_Successfully', $this->adminLangId));
-        FatApp::redirectUser(CommonHelper::generateUrl('profile', 'changePassword'));
+        FatApp::redirectUser(UrlHelper::generateUrl('profile', 'changePassword'));
     }
 
     public function logout()
@@ -270,7 +270,7 @@ class ProfileController extends AdminBaseController
         AdminAuthentication::clearLoggedAdminLoginCookie();
         session_destroy();
         Message::addMessage(Labels::getLabel('LBL_You_Are_Logged_Out_Successfully', $this->adminLangId));
-        FatApplication::redirectUser(CommonHelper::generateUrl('adminGuest', 'loginForm'));
+        FatApplication::redirectUser(UrlHelper::generateUrl('adminGuest', 'loginForm'));
     }
 
     public function themeSetup()
@@ -289,7 +289,7 @@ class ProfileController extends AdminBaseController
     private function getPwdFrm()
     {
         $frm = new Form('getPwdFrm');
-        $frm->setFormTagAttribute('action', CommonHelper::generateUrl('profile', 'updatePassword'));
+        $frm->setFormTagAttribute('action', UrlHelper::generateUrl('profile', 'updatePassword'));
         $frm->setFormTagAttribute('method', 'post');
         $frm->setFormTagAttribute('id', 'getPwdFrm');
 

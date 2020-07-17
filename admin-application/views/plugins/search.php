@@ -117,7 +117,7 @@ $function = !empty($otherPluginTypes) ? 'changeBulkStatusByType' : 'toggleBulkSt
 $frm = new Form('frmPluginListing', array('id' => 'frmPluginListing'));
 $frm->setFormTagAttribute('class', 'web_form last_td_nowrap actionButtons-js');
 $frm->setFormTagAttribute('onsubmit', 'formAction(this, reloadList ); return(false);');
-$frm->setFormTagAttribute('action', CommonHelper::generateUrl('plugins', $function));
+$frm->setFormTagAttribute('action', UrlHelper::generateUrl('plugins', $function));
 $frm->addHiddenField('', 'status');
 $frm->addHiddenField('', 'plugin_type', $pluginType);?>
 <section class="section">

@@ -7,7 +7,7 @@ class SlidesController extends MyAppController
         $slideId = FatUtility::int($slideId);
         if (1 > $slideId) {
             Message::addErrorMessage(Labels::getLabel('MSG_Invalid_Access', $this->siteLangId));
-            FatApp::redirectUser(CommonHelper::generateUrl(''));
+            FatApp::redirectUser(UrlHelper::generateUrl(''));
         }
 
         /* Track Click */
@@ -46,7 +46,7 @@ class SlidesController extends MyAppController
         $row = FatApp::getDb()->fetch($rs, 'slide_id');
         if ($row == false) {
             Message::addErrorMessage(Labels::getLabel('MSG_Invalid_Access', $this->siteLangId));
-            FatApp::redirectUser(CommonHelper::generateUrl(''));
+            FatApp::redirectUser(UrlHelper::generateUrl(''));
         }
 
         $url = $row['slide_url'];
@@ -94,6 +94,6 @@ class SlidesController extends MyAppController
             FatApp::redirectUser($url);
         }
 
-        FatApp::redirectUser(CommonHelper::generateUrl(''));
+        FatApp::redirectUser(UrlHelper::generateUrl(''));
     }
 }

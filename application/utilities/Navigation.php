@@ -191,7 +191,7 @@ class Navigation
     public static function customPageLeft($template)
     {
         $siteLangId = CommonHelper::getLangId();
-        $contentBlockUrlArr = array(Extrapage::CONTACT_US_CONTENT_BLOCK => CommonHelper::generateUrl('Custom', 'ContactUs'));
+        $contentBlockUrlArr = array(Extrapage::CONTACT_US_CONTENT_BLOCK => UrlHelper::generateUrl('Custom', 'ContactUs'));
 
         $srch = Extrapage::getSearchObject($siteLangId);
         $srch->addCondition('epage_default', '=', 1);

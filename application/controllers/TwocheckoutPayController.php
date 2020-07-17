@@ -106,7 +106,7 @@ class TwocheckoutPayController extends PaymentController
                 /* Recording Payment in DB */
                 $orderPaymentObj->addOrderPayment($this->settings["plugin_code"], $post['invoice_id'], $orderPaymentAmount, Labels::getLabel("LBL_Received_Payment", $this->siteLangId), $message);
                 /* End Recording Payment in DB */
-                FatApp::redirectUser(CommonHelper::generateUrl('custom', 'paymentSuccess', array($orderId)));
+                FatApp::redirectUser(UrlHelper::generateUrl('custom', 'paymentSuccess', array($orderId)));
             }
         }
         Message::addErrorMessage(Labels::getLabel('MSG_ERROR_INVALID_ACCESS', $this->siteLangId));
@@ -171,7 +171,7 @@ class TwocheckoutPayController extends PaymentController
             curl_setopt($curl, CURLOPT_POSTFIELDS, $params);
             $result = curl_exec($curl);
             $json = array();
-            $json['redirect'] = CommonHelper::generateUrl('custom', 'paymentFailed');
+            $json['redirect'] = UrlHelper::generateUrl('custom', 'paymentFailed');
             if (curl_error($curl)) {
                 $json['error'] = 'CURL ERROR: ' . curl_errno($curl) . '::' . curl_error($curl);
             } elseif ($result) {
@@ -212,7 +212,7 @@ class TwocheckoutPayController extends PaymentController
                         if ($responseCode == 'APPROVED') {
                             /* Recording Payment in DB */
                             $orderPaymentObj->addOrderPayment($this->settings["plugin_code"], $transactionId, $orderPaymentAmount, Labels::getLabel("LBL_Received_Payment", $this->siteLangId), $message);
-                            $json['redirect'] = CommonHelper::generateUrl('custom', 'paymentSuccess', array($orderId));
+                            $json['redirect'] = UrlHelper::generateUrl('custom', 'paymentSuccess', array($orderId));
                             /* End Recording Payment in DB */
                         }
                     } else {
@@ -264,7 +264,7 @@ class TwocheckoutPayController extends PaymentController
         $frm->addHiddenField('currency_code', 'currency_code', $orderInfo["order_currency_code"]);
         $frm->addHiddenField('merchant_order_id', 'merchant_order_id', $txnid);
         $frm->addHiddenField('purchase_step', 'purchase_step', 'payment-method');
-        $frm->addHiddenField('x_receipt_link_url', 'x_receipt_link_url', CommonHelper::generateNoAuthUrl('TwocheckoutPay', 'callback'));
+        $frm->addHiddenField('x_receipt_link_url', 'x_receipt_link_url', UrlHelper::generateNoAuthUrl('TwocheckoutPay', 'callback'));
         /**
 * Pre-populate Billing Information
 **/
@@ -293,7 +293,7 @@ class TwocheckoutPayController extends PaymentController
 
     private function getAPICheckoutForm($orderId)
     {
-        $frm = new Form('frmTwoCheckout', array('id' => 'frmTwoCheckout', 'action' => CommonHelper::generateUrl('TwocheckoutPay', 'send', array($orderId)), 'class' => "form form--normal"));
+        $frm = new Form('frmTwoCheckout', array('id' => 'frmTwoCheckout', 'action' => UrlHelper::generateUrl('TwocheckoutPay', 'send', array($orderId)), 'class' => "form form--normal"));
 
         $frm->addRequiredField(Labels::getLabel('LBL_ENTER_CREDIT_CARD_NUMBER', $this->siteLangId), 'ccNo');
         $frm->addHiddenField('', 'token', '');

@@ -29,11 +29,11 @@ foreach ($ordersList as $sn => $row) {
                 $td->appendElement('plaintext', array(), $sr_no);
                 break;
             case 'order_id':
-                $td->appendElement('a', array('target' => '_blank', 'href' => CommonHelper::generateUrl('Orders', 'view', array($row[$key]))), $row[$key], true);
+                $td->appendElement('a', array('target' => '_blank', 'href' => UrlHelper::generateUrl('Orders', 'view', array($row[$key]))), $row[$key], true);
                 break;
             case 'buyer_user_name':
                 if ($canViewUsers) {
-                    $td->appendElement('a', array('href' => 'javascript:void(0)', 'onClick' => 'redirectfunc("'.CommonHelper::generateUrl('Users').'", '.$row['user_id'].')'), $row[$key], true);
+                    $td->appendElement('a', array('href' => 'javascript:void(0)', 'onClick' => 'redirectfunc("'.UrlHelper::generateUrl('Users').'", '.$row['user_id'].')'), $row[$key], true);
                 } else {
                     $td->appendElement('plaintext', array(), $row[$key], true);
                 }
@@ -80,12 +80,12 @@ foreach ($ordersList as $sn => $row) {
                 $innerUl=$innerDiv->appendElement('ul', array('class'=>'linksvertical'));
 
                 $innerLi=$innerUl->appendElement('li');
-                $innerLi->appendElement('a', array('href'=>CommonHelper::generateUrl('Orders', 'view', array($row['order_id'])),'class'=>'button small green redirect--js','title'=>Labels::getLabel('LBL_View_Order_Detail', $adminLangId)), Labels::getLabel('LBL_View_Order_Detail', $adminLangId), true);
+                $innerLi->appendElement('a', array('href'=>UrlHelper::generateUrl('Orders', 'view', array($row['order_id'])),'class'=>'button small green redirect--js','title'=>Labels::getLabel('LBL_View_Order_Detail', $adminLangId)), Labels::getLabel('LBL_View_Order_Detail', $adminLangId), true);
 
 
                 if (!$row['order_deleted'] && $canViewSellerOrders) {
                     $innerLi=$innerUl->appendElement('li');
-                    $innerLi->appendElement('a', array('href'=>CommonHelper::generateUrl('SellerOrders', 'index', array($row['order_id'])),'class'=>'button small green redirect--js','title'=>Labels::getLabel('LBL_View_seller_Order', $adminLangId),'target'=>'_new'), Labels::getLabel('LBL_View_seller_Order', $adminLangId), true);
+                    $innerLi->appendElement('a', array('href'=>UrlHelper::generateUrl('SellerOrders', 'index', array($row['order_id'])),'class'=>'button small green redirect--js','title'=>Labels::getLabel('LBL_View_seller_Order', $adminLangId),'target'=>'_new'), Labels::getLabel('LBL_View_seller_Order', $adminLangId), true);
                 }
                 if (!$row['order_deleted'] && $canEdit) {
                     if ($row['order_is_paid'] == Orders::ORDER_IS_PAID) {

@@ -21,7 +21,7 @@ foreach($data as $lists){
 		switch ($field){
 			case 'category_image':
 				$td = $tr->appendElement('td',array('align'=>'center'));
-				$td->appendElement('img',array('src'=>CommonHelper::generateFullUrl('category','photo',array($lists['category_id'],100,100))));
+				$td->appendElement('img',array('src'=>UrlHelper::generateFullUrl('category','photo',array($lists['category_id'],100,100))));
 				break;
 			case 'category_status':
 				$tr->appendElement('td',array('align'=>'center'),$lists[$field]==1?'Active':'Inactive');
@@ -31,7 +31,7 @@ foreach($data as $lists){
 				break;*/
 			case 'action':
 				$td = $tr->appendElement('td',array('align'=>'center'));
-				$td->appendElement('a',array('href'=>CommonHelper::generateFullUrl('category','edit-form',array('category_id'=>$lists['category_id']))),'Edit');
+				$td->appendElement('a',array('href'=>UrlHelper::generateFullUrl('category','edit-form',array('category_id'=>$lists['category_id']))),'Edit');
 				break;
 			
 			default:

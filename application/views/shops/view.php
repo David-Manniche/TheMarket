@@ -1,5 +1,5 @@
 <?php defined('SYSTEM_INIT') or die('Invalid Usage');
-$bgUrl = CommonHelper::generateFullUrl('Image', 'shopBackgroundImage', array($shop['shop_id'], $siteLangId, 0, 0, $template_id)); ?>
+$bgUrl = UrlHelper::generateFullUrl('Image', 'shopBackgroundImage', array($shop['shop_id'], $siteLangId, 0, 0, $template_id)); ?>
 <div id="body" class="body template-<?php echo $template_id;?>" role="main">
     <?php
         $userParentId = (isset($userParentId)) ? $userParentId : 0;
@@ -13,11 +13,11 @@ $bgUrl = CommonHelper::generateFullUrl('Image', 'shopBackgroundImage', array($sh
         <div class="js-shop-slider shop-slider">
             <?php foreach ($collectionData as $collection) {?>
             <div class="item">
-                <figure><img class="" src="<?php echo CommonHelper::generateUrl('Image', 'shopCollectionImage', array($collection['scollection_id'], $siteLangId,'SHOP'));?>" alt="" data-ratio="16:9"></figure>
+                <figure><img class="" src="<?php echo UrlHelper::generateUrl('Image', 'shopCollectionImage', array($collection['scollection_id'], $siteLangId,'SHOP'));?>" alt="" data-ratio="16:9"></figure>
                 <div class="overlay-content">
                     <h4><?php echo $collection['scollection_name'];?></h4>
                     <!--<p>From the runway to your wardrobe</p>-->
-                    <a href="<?php echo CommonHelper::generateUrl('Shops', 'collection', array($shop['shop_id'], $collection['scollection_id']))?>" class="link"><?php echo Labels::getLabel('MSG_Explore', $siteLangId)?></a>
+                    <a href="<?php echo UrlHelper::generateUrl('Shops', 'collection', array($shop['shop_id'], $collection['scollection_id']))?>" class="link"><?php echo Labels::getLabel('MSG_Explore', $siteLangId)?></a>
                 </div>
             </div>
             <?php } ?>

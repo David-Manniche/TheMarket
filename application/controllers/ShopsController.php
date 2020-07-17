@@ -131,7 +131,7 @@ class ShopsController extends MyAppController
             $allShops[$val['shop_id']]['totalProducts'] = $productShopSrchTempObj->recordCount();
             $allShops[$val['shop_id']]['shopRating'] = SelProdRating::getSellerRating($val['shop_user_id']);
             $allShops[$val['shop_id']]['shopTotalReviews'] = SelProdReview::getSellerTotalReviews($val['shop_user_id']);
-            $allShops[$val['shop_id']]['shop_logo'] = CommonHelper::generateFullUrl('image', 'shopLogo', [$val['shop_id'], $this->siteLangId, 'SMALL']);
+            $allShops[$val['shop_id']]['shop_logo'] = UrlHelper::generateFullUrl('image', 'shopLogo', [$val['shop_id'], $this->siteLangId, 'SMALL']);
         }
         /* CommonHelper::printArray($allShops[4]['products']); */
         $this->set('allShops', $allShops);
@@ -208,10 +208,10 @@ class ShopsController extends MyAppController
 
             $arr = array(
                 'frmProductSearch' => $frm,
-                'canonicalUrl' => CommonHelper::generateFullUrl('Shops', 'view', array($shop_id)),
+                'canonicalUrl' => UrlHelper::generateFullUrl('Shops', 'view', array($shop_id)),
                 'productSearchPageType' => SavedSearchProduct::PAGE_SHOP,
                 'recordId' => $shop_id,
-                'bannerListigUrl' => CommonHelper::generateFullUrl('Banner', 'categories'),
+                'bannerListigUrl' => UrlHelper::generateFullUrl('Banner', 'categories'),
             );
             $data = array_merge($data, $arr);
 
@@ -244,7 +244,7 @@ class ShopsController extends MyAppController
             if (FatApp::getConfig("CONF_ALLOW_REVIEWS", FatUtility::VAR_INT, 0)) {
                 $data['shop']['rating'] = SelProdRating::getSellerRating($data['shop']['shop_user_id']);
             }
-            $data['shop']['shop_logo'] = CommonHelper::generateFullUrl('image', 'shopLogo', array($data['shop']['shop_id'], $this->siteLangId));
+            $data['shop']['shop_logo'] = UrlHelper::generateFullUrl('image', 'shopLogo', array($data['shop']['shop_id'], $this->siteLangId));
             $data['shop']['shop_banner'] = UrlHelper::getCachedUrl(UrlHelper::generateFullFileUrl('image', 'shopBanner', array($data['shop']['shop_id'], $this->siteLangId, 'MOBILE', 0, applicationConstants::SCREEN_MOBILE)), CONF_IMG_CACHE_TIME, '.jpg');
         }
 
@@ -277,13 +277,13 @@ class ShopsController extends MyAppController
         $shop_id = FatUtility::int($shop_id);
 
         if ($shop_id <= 0) {
-            FatApp::redirectUser(CommonHelper::generateUrl('Seller', 'Shop'));
+            FatApp::redirectUser(UrlHelper::generateUrl('Seller', 'Shop'));
         }
 
         $shopDetails = Shop::getAttributesByid($shop_id);
         if (UserAuthentication::isUserLogged() && UserAuthentication::getLoggedUserId() == $shopDetails['shop_user_id'] && !UserPrivilege::isUserHasValidSubsription(UserAuthentication::getLoggedUserId())) {
             Message::addInfo(Labels::getLabel("MSG_Please_buy_subscription", $this->siteLangId));
-            FatApp::redirectUser(CommonHelper::generateUrl('Seller', 'Packages'));
+            FatApp::redirectUser(UrlHelper::generateUrl('Seller', 'Packages'));
         }
 
         $srch = new ShopSearch($this->siteLangId);
@@ -344,13 +344,13 @@ class ShopsController extends MyAppController
         $this->set('shopTotalReviews', SelProdReview::getSellerTotalReviews($shop['shop_user_id']));
 
         $description = trim(CommonHelper::subStringByWords(strip_tags(CommonHelper::renderHtml($shop['shop_description'], true)), 500));
-        $description .= ' - ' . Labels::getLabel('LBL_See_more_at', $this->siteLangId) . ": " . CommonHelper::getCurrUrl();
+        $description .= ' - ' . Labels::getLabel('LBL_See_more_at', $this->siteLangId) . ": " . UrlHelper::getCurrUrl();
 
         if ($shop) {
             $socialShareContent = array(
             'title' => $shop['shop_name'],
             'description' => $description,
-            'image' => CommonHelper::generateUrl('image', 'shopBanner', array($shop['shop_id'], $this->siteLangId, 'wide')),
+            'image' => UrlHelper::generateUrl('image', 'shopBanner', array($shop['shop_id'], $this->siteLangId, 'wide')),
             );
             $this->set('socialShareContent', $socialShareContent);
         }
@@ -388,7 +388,7 @@ class ShopsController extends MyAppController
         $collectionData = ShopCollection::getShopCollectionsDetail($shop_id, $this->siteLangId);
         if (!empty($collectionData)) {
             foreach ($collectionData as $key => $collection) {
-                $collectionData[$key]['shopCollectionImage'] = CommonHelper::generateFullUrl('Image', 'shopCollectionImage', array($collection['scollection_id'], $this->siteLangId, 'SHOP'));
+                $collectionData[$key]['shopCollectionImage'] = UrlHelper::generateFullUrl('Image', 'shopCollectionImage', array($collection['scollection_id'], $this->siteLangId, 'SHOP'));
             }
         }
 
@@ -441,10 +441,10 @@ class ShopsController extends MyAppController
 
         $arr = array(
             'frmProductSearch' => $frm,
-            'canonicalUrl' => CommonHelper::generateFullUrl('Shops', 'topProducts', array($shop_id)),
+            'canonicalUrl' => UrlHelper::generateFullUrl('Shops', 'topProducts', array($shop_id)),
             'productSearchPageType' => SavedSearchProduct::PAGE_SHOP,
             'recordId' => $shop_id,
-            'bannerListigUrl' => CommonHelper::generateFullUrl('Banner', 'categories'),
+            'bannerListigUrl' => UrlHelper::generateFullUrl('Banner', 'categories'),
         );
 
         $data = array_merge($data, $arr);
@@ -497,7 +497,7 @@ class ShopsController extends MyAppController
             if (true === MOBILE_APP_API_CALL) {
                 LibHelper::dieJsonError(Labels::getLabel('LBL_INVALID_REQUEST', $this->siteLangId));
             }
-            FatApp::redirectUser(CommonHelper::generateUrl(''));
+            FatApp::redirectUser(UrlHelper::generateUrl(''));
         }
         $this->shopDetail($shop_id);
 
@@ -527,10 +527,10 @@ class ShopsController extends MyAppController
 
         $arr = array(
             'scollection_name' => $shopcolDetails['scollection_name'],
-            'canonicalUrl' => CommonHelper::generateFullUrl('Shops', 'collection', array($shop_id, $scollectionId)),
+            'canonicalUrl' => UrlHelper::generateFullUrl('Shops', 'collection', array($shop_id, $scollectionId)),
             'productSearchPageType' => SavedSearchProduct::PAGE_SHOP,
             'recordId' => $shop_id,
-            'bannerListigUrl' => CommonHelper::generateFullUrl('Banner', 'categories'),
+            'bannerListigUrl' => UrlHelper::generateFullUrl('Banner', 'categories'),
         );
 
         if (false === MOBILE_APP_API_CALL) {
@@ -571,7 +571,7 @@ class ShopsController extends MyAppController
         $shop = $this->getShopInfo($shop_id);
         if (!$shop) {
             Message::addErrorMessage(Labels::getLabel('LBL_Invalid_Request', $this->siteLangId));
-            FatApp::redirectUser(CommonHelper::generateUrl('Home'));
+            FatApp::redirectUser(UrlHelper::generateUrl('Home'));
         }
 
         $frm = $this->getSendMessageForm($this->siteLangId);
@@ -689,13 +689,13 @@ class ShopsController extends MyAppController
         $shop = $this->getShopInfo($shop_id);
         if (!$shop) {
             Message::addErrorMessage(Labels::getLabel('LBL_Invalid_Request', $this->siteLangId));
-            FatApp::redirectUser(CommonHelper::generateUrl('Home'));
+            FatApp::redirectUser(UrlHelper::generateUrl('Home'));
         }
 
         $shopRepData = ShopReport::getReportDetail($shop['shop_id'], UserAuthentication::getLoggedUserId(), 'sreport_id');
         if (!empty($shopRepData)) {
             Message::addErrorMessage(Labels::getLabel('LBL_YOU_ALREADY_REPORTED_FOR_THIS_SHOP', $this->siteLangId));
-            FatApp::redirectUser(CommonHelper::generateUrl('Shops', 'View', array($shop_id)));
+            FatApp::redirectUser(UrlHelper::generateUrl('Shops', 'View', array($shop_id)));
         }
 
         $frm = $this->getReportSpamForm($this->siteLangId);
@@ -785,7 +785,7 @@ class ShopsController extends MyAppController
         if (true === MOBILE_APP_API_CALL) {
             $this->_template->render();
         }
-        $this->set('redirectUri', CommonHelper::generateUrl('Shops', 'View', [$shop_id]));
+        $this->set('redirectUri', UrlHelper::generateUrl('Shops', 'View', [$shop_id]));
         $this->_template->render(false, false, 'json-success.php');
     }
 
@@ -876,7 +876,7 @@ class ShopsController extends MyAppController
     $shopData = $this->getShopInfo($shop_id);
     if( !$shopData ){
     Message::addErrorMessage( Labels::getLabel('LBL_Invalid_Request', $this->siteLangId) );
-    FatApp::redirectUser(CommonHelper::generateUrl('Home'));
+    FatApp::redirectUser(UrlHelper::generateUrl('Home'));
     }
 
     $srch = new UserFavoriteShopSearch($this->siteLangId);
@@ -899,7 +899,7 @@ class ShopsController extends MyAppController
         $shop = $this->getShopInfo($shop_id);
         if (!$shop) {
             Message::addErrorMessage(Labels::getLabel('LBL_Invalid_Request', $this->siteLangId));
-            FatApp::redirectUser(CommonHelper::generateUrl('Home'));
+            FatApp::redirectUser(UrlHelper::generateUrl('Home'));
         }
 
         $this->set('shop', $shop);
@@ -1028,7 +1028,7 @@ class ShopsController extends MyAppController
         $shopId = FatUtility::int($shopId);
         if (1 > $shopId) {
             Message::addErrorMessage(Labels::getLabel('MSG_Invalid_Access', $this->siteLangId));
-            FatApp::redirectUser(CommonHelper::generateUrl(''));
+            FatApp::redirectUser(UrlHelper::generateUrl(''));
         }
 
         /* Track Click */
@@ -1052,15 +1052,15 @@ class ShopsController extends MyAppController
 
         if ($row == false) {
             Message::addErrorMessage(Labels::getLabel('MSG_Invalid_Access', $this->siteLangId));
-            FatApp::redirectUser(CommonHelper::generateUrl(''));
+            FatApp::redirectUser(UrlHelper::generateUrl(''));
         }
 
         if ($redirectType == PROMOTION::REDIRECT_PRODUCT) {
-            $url = CommonHelper::generateFullUrl('products', 'view', array($recordId));
+            $url = UrlHelper::generateFullUrl('products', 'view', array($recordId));
         } elseif ($redirectType == PROMOTION::REDIRECT_CATEGORY) {
-            $url = CommonHelper::generateFullUrl('category', 'view', array($recordId));
+            $url = UrlHelper::generateFullUrl('category', 'view', array($recordId));
         } else {
-            $url = CommonHelper::generateFullUrl('shops', 'view', array($recordId));
+            $url = UrlHelper::generateFullUrl('shops', 'view', array($recordId));
         }
 
         $userId = 0;
@@ -1106,7 +1106,7 @@ class ShopsController extends MyAppController
             FatApp::redirectUser(CommonHelper::processURLString($url));
         }
 
-        FatApp::redirectUser(CommonHelper::generateUrl(''));
+        FatApp::redirectUser(UrlHelper::generateUrl(''));
     }
 
     /* private function getProductSearchForm(){

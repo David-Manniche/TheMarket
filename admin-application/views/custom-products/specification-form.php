@@ -46,7 +46,7 @@
                                                 type="button" 
                                                 value="<?php echo Labels::getLabel('LBL_AUTOFILL_LANGUAGE_DATA', $adminLangId); ?>" 
                                                 onClick="autofillLangData($(this), $('form#frm_fat_id_frmProductSpec'))"
-                                                data-action="<?php echo CommonHelper::generateUrl('CustomProducts', 'getTranslatedData'); ?>">
+                                                data-action="<?php echo UrlHelper::generateUrl('CustomProducts', 'getTranslatedData'); ?>">
                                         </div>
                                     </div>
                                 <?php }

@@ -25,7 +25,7 @@ class FaqController extends AdminBaseController
         $faqcat_id = FatUtility::int($faqcat_id);
         if (1 > $faqcat_id) {
             Message::addErrorMessage($this->str_invalid_request_id);
-            FatApp::redirectUser(CommonHelper::generateUrl('FaqCategories'));
+            FatApp::redirectUser(UrlHelper::generateUrl('FaqCategories'));
         }
         
         $srchFrm = $this->getSearchForm();

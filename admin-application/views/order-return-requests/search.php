@@ -94,7 +94,7 @@ foreach ($arrListing as $sn=>$row){
 				$td->appendElement('label', array('class'=>'label label--'.$requestTypeClassArr[$row[$key]].''), $requestStatusArr[$row[$key]]);
 			break;
 			case 'action':
-				$td->appendElement('a', array('href'=>CommonHelper::generateUrl('OrderReturnRequests','view',array($row['orrequest_id'])),'class'=>'btn btn-clean btn-sm btn-icon','title'=>Labels::getLabel('LBL_View',$adminLangId)),"<i class='ion-eye'></i>", true);					
+				$td->appendElement('a', array('href'=>UrlHelper::generateUrl('OrderReturnRequests','view',array($row['orrequest_id'])),'class'=>'btn btn-clean btn-sm btn-icon','title'=>Labels::getLabel('LBL_View',$adminLangId)),"<i class='ion-eye'></i>", true);					
 			break;
 			default:
 				$td->appendElement('plaintext', array(), $row[$key], true);

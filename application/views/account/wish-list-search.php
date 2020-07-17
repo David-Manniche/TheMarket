@@ -27,7 +27,7 @@
                 <div class="items__group clearfix">
                     <div class="items__row">
                         <?php foreach ($wishlist['products'] as $product) {
-                    $productUrl = CommonHelper::generateUrl('Products', 'View', array($product['selprod_id'])); ?>
+                    $productUrl = UrlHelper::generateUrl('Products', 'View', array($product['selprod_id'])); ?>
                         <div
                             class="item <?php echo (!$product['in_stock']) ? 'item--sold' : ''; ?>">
                             <span class="overlay--collection"></span>

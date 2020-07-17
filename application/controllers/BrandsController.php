@@ -73,7 +73,7 @@ class BrandsController extends MyAppController
 
     public function all()
     {
-        FatApp::redirectUser(CommonHelper::generateUrl('Brands'));
+        FatApp::redirectUser(UrlHelper::generateUrl('Brands'));
     }
 
     public function view($brandId)
@@ -144,10 +144,10 @@ class BrandsController extends MyAppController
             'postedData' => $get,
             'recordCount' => $srch->recordCount(),
             'pageTitle' => $brand['brand_name'],
-            'canonicalUrl' => CommonHelper::generateFullUrl('Brands', 'view', array($brandId)),
+            'canonicalUrl' => UrlHelper::generateFullUrl('Brands', 'view', array($brandId)),
             'productSearchPageType' => SavedSearchProduct::PAGE_BRAND,
             'recordId' => $brandId,
-            'bannerListigUrl' => CommonHelper::generateFullUrl('Banner', 'brands'),
+            'bannerListigUrl' => UrlHelper::generateFullUrl('Banner', 'brands'),
             'siteLangId' => $this->siteLangId,
             'showBreadcrumb' => true,
         );
@@ -234,7 +234,7 @@ class BrandsController extends MyAppController
         $parameters = FatApp::getParameters();
         switch ($action) {
         case 'view':
-            $nodes[] = array('title' => Labels::getLabel('LBL_Brands', $this->siteLangId), 'href' => CommonHelper::generateUrl('brands'));
+            $nodes[] = array('title' => Labels::getLabel('LBL_Brands', $this->siteLangId), 'href' => UrlHelper::generateUrl('brands'));
             if (isset($parameters[0]) && $parameters[0] > 0) {
                 $brandId = FatUtility::int($parameters[0]);
                 if ($brandId > 0) {

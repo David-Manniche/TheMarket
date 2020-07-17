@@ -58,6 +58,6 @@ class AppleLogin extends SocialMediaAuthBase
      */
     public function getRedirectUri(): string
     {
-        return CommonHelper::generateFullUrl(static::KEY_NAME, 'index', array(), '', false);
+        return UrlHelper::generateFullUrl(static::KEY_NAME, 'index', array(), '', false);
     }
 }

@@ -2,7 +2,7 @@
 
 <?php if (CommonHelper::demoUrl()) { ?>
 <div class="feedback-btn">
-    <a href="https://www.yo-kart.com/yokart-marketing-website-feedback.html<?php /* echo CommonHelper::generateUrl('Custom','feedback'); */?>" class="crcle-btn" data-toggle="tooltip" data-placement="left"  title="Give Feedback">
+    <a href="https://www.yo-kart.com/yokart-marketing-website-feedback.html<?php /* echo UrlHelper::generateUrl('Custom','feedback'); */?>" class="crcle-btn" data-toggle="tooltip" data-placement="left"  title="Give Feedback">
        <svg aria-hidden="true" focusable="false" data-prefix="fas" data-icon="comments-alt" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><path d="M416 224V64c0-35.3-28.7-64-64-64H64C28.7 0 0 28.7 0 64v160c0 35.3 28.7 64 64 64v54.2c0 8 9.1 12.6 15.5 7.8l82.8-62.1H352c35.3.1 64-28.6 64-63.9zm96-64h-64v64c0 52.9-43.1 96-96 96H192v64c0 35.3 28.7 64 64 64h125.7l82.8 62.1c6.4 4.8 15.5.2 15.5-7.8V448h32c35.3 0 64-28.7 64-64V224c0-35.3-28.7-64-64-64z" class=""></path></svg>
     </a>
      
@@ -33,7 +33,7 @@
                         <h5 class="toggle__trigger toggle__trigger-js"><?php echo Labels::getLabel('LBL_Sell_With', $siteLangId)." ".FatApp::getConfig('CONF_WEBSITE_NAME_'.$siteLangId, FatUtility::VAR_STRING, ''); ?></h5>
                         <div class="toggle__target toggle__target-js">
                             <div class="store-button">
-                                <a href="<?php echo CommonHelper::generateUrl('supplier');?>" class="btn btn-primary storeBtn-js"><i class="icn icn-1"><img src="<?php echo CONF_WEBROOT_URL; ?>images/store-icn.png" alt=""></i>
+                                <a href="<?php echo UrlHelper::generateUrl('supplier');?>" class="btn btn-primary storeBtn-js"><i class="icn icn-1"><img src="<?php echo CONF_WEBROOT_URL; ?>images/store-icn.png" alt=""></i>
                                     <?php echo Labels::getLabel('LBL_Open_a_store', $siteLangId); ?> </a>
                             </div>
                             <?php /* <div class="gap"></div>
@@ -104,7 +104,7 @@
     <div class="box-cookies">
         <span id="cookieconsent:desc" class="cc-message">
             <?php echo FatUtility::decodeHtmlEntities(mb_substr(FatApp::getConfig('CONF_COOKIES_TEXT_'.$siteLangId, FatUtility::VAR_STRING, ''), 0, 500));?>
-            <a href="<?php echo CommonHelper::generateUrl('cms', 'view', array(FatApp::getConfig('CONF_COOKIES_BUTTON_LINK', FatUtility::VAR_INT)));?>"><?php echo Labels::getLabel('LBL_Read_More', $siteLangId);?></a></span>
+            <a href="<?php echo UrlHelper::generateUrl('cms', 'view', array(FatApp::getConfig('CONF_COOKIES_BUTTON_LINK', FatUtility::VAR_INT)));?>"><?php echo Labels::getLabel('LBL_Read_More', $siteLangId);?></a></span>
         <span class="cc-close cc-cookie-accept-js"><?php echo Labels::getLabel('LBL_Accept_Cookies', $siteLangId);?></span>
     </div>
     <?php } ?>

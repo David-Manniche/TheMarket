@@ -34,12 +34,12 @@ $combTaxCount = 0;
                     </div>
                     <?php
                     $countryFld = $frm->getField("taxruleloc_country_id[]");
-                    $countryFld->setFieldTagAttribute("id", "ua_country_id");
+                    $countryFld->setFieldTagAttribute("id", "addr_country_id");
                     $countryFld->setFieldTagAttribute("onChange", "getCountryStatesTaxInTaxForm(this, this.value,0)");
                     $typeFld=$frm->getField("taxruleloc_type[]");
                     $stateFld=$frm->getField("taxruleloc_state_id[]");
                     $stateFld->addFieldTagAttribute("multiple", "true");
-                    $stateFld->addFieldTagAttribute("id", "ua_state_id");
+                    $stateFld->addFieldTagAttribute("id", "addr_state_id");
                     $stateFld->addFieldTagAttribute("class", "selectpicker");
                     $stateFld->addFieldTagAttribute("data-style", "bg-white rounded-pill px-4 py-2 shadow-sm");
                     $comFld = $frm->getField("taxrule_is_combined[]");

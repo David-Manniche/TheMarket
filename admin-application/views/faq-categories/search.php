@@ -74,7 +74,7 @@ foreach ($arr_listing as $sn => $row) {
                 }
 
                 if ($canViewFaq) {
-                    $url=CommonHelper::generateUrl('Faq', 'index', array($row['faqcat_id']));
+                    $url=UrlHelper::generateUrl('Faq', 'index', array($row['faqcat_id']));
                     $td->appendElement('a', array('href'=>'javascript:void(0)','onclick'=>'redirectUrl("'.$url.'")', 'class'=>'btn btn-clean btn-sm btn-icon', 'title'=>Labels::getLabel('LBL_FAQ_Listing', $adminLangId)), "<i class='ion-chatboxes icon'></i>", true);
                 }
 
@@ -95,7 +95,7 @@ if (count($arr_listing) == 0) {
 $frm = new Form('frmFaqCatListing', array('id'=>'frmFaqCatListing'));
 $frm->setFormTagAttribute('class', 'web_form last_td_nowrap actionButtons-js');
 $frm->setFormTagAttribute('onsubmit', 'formAction(this, reloadList ); return(false);');
-$frm->setFormTagAttribute('action', CommonHelper::generateUrl('FaqCategories', 'toggleBulkStatuses'));
+$frm->setFormTagAttribute('action', UrlHelper::generateUrl('FaqCategories', 'toggleBulkStatuses'));
 $frm->addHiddenField('', 'status');
 
 echo $frm->getFormTag();

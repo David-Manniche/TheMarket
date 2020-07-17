@@ -77,7 +77,7 @@ foreach ($arrListing as $sn => $row) {
                 $li = $ul->appendElement("li");
                 $li->appendElement(
                     'a',
-                    array('href' => CommonHelper::generateUrl('Seller', 'UserPermissions', array($row['user_id'])), 'title' => Labels::getLabel('LBL_Permissions', $siteLangId)),
+                    array('href' => UrlHelper::generateUrl('Seller', 'UserPermissions', array($row['user_id'])), 'title' => Labels::getLabel('LBL_Permissions', $siteLangId)),
                     '<i class="fa fa-lock"></i>',
                     true
                 );
@@ -97,7 +97,7 @@ if (count($arrListing) == 0) {
     $frm = new Form('frmSellerUsersListing', array('id' => 'frmSellerUsersListing'));
     $frm->setFormTagAttribute('class', 'form');
     $frm->setFormTagAttribute('onsubmit', 'formAction(this, reloadList ); return(false);');
-    $frm->setFormTagAttribute('action', CommonHelper::generateUrl('Seller', 'toggleSellerUserStatus'));
+    $frm->setFormTagAttribute('action', UrlHelper::generateUrl('Seller', 'toggleSellerUserStatus'));
     $frm->addHiddenField('', 'status');
 
     echo $frm->getFormTag();

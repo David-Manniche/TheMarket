@@ -59,7 +59,7 @@ class CitrusPayController extends PaymentController
                 $respSig = $post['signature'];
                 if (hash_hmac('sha1', $str, $this->settings['merchant_secret_key']) == $respSig) {
                     $orderPaymentObj->addOrderPayment($this->settings["plugin_code"], $post['pgTxnNo'], $paymentGatewayCharge, Labels::getLabel("LBL_Received_Payment", $this->siteLangId), $request);
-                    FatApp::redirectUser(CommonHelper::generateUrl('custom', 'paymentSuccess', array($orderId)));
+                    FatApp::redirectUser(UrlHelper::generateUrl('custom', 'paymentSuccess', array($orderId)));
                 } else {
                     $request .= "\n\n Citrus :: Invalid or forged transactiond.  \n\n";
                     $orderPaymentObj->addOrderPaymentComments($request);
@@ -103,7 +103,7 @@ class CitrusPayController extends PaymentController
         $frm->addHiddenField('', 'orderAmount', $paymentGatewayCharge);
         $frm->addHiddenField('', 'currency', "INR");
         $frm->addHiddenField('', 'secSignature', $secSignature);
-        $frm->addHiddenField('', 'returnUrl', CommonHelper::generateFullUrl('CitrusPay', 'callback'));
+        $frm->addHiddenField('', 'returnUrl', UrlHelper::generateFullUrl('CitrusPay', 'callback'));
         $frm->addHiddenField('', 'email', $orderInfo["customer_email"]);
         $frm->addHiddenField('', 'phoneNumber', $orderInfo["customer_phone"]);
         $frm->addHiddenField('', 'addressState', $orderInfo["customer_billing_state"]);

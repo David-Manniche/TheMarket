@@ -11,7 +11,7 @@
             <div class="cards">
                 <div class="cards-header">
                     <h5 class="cards-title "><?php echo Labels::getLabel('LBL_Order_Details', $siteLangId);?></h5>
-                    <div class="btn-group"><a href="<?php echo CommonHelper::generateUrl('Seller', 'sales');?>" class="btn btn-outline-primary btn-sm"><?php echo Labels::getLabel('LBL_Back_to_order', $siteLangId);?></a></div>
+                    <div class="btn-group"><a href="<?php echo UrlHelper::generateUrl('Seller', 'sales');?>" class="btn btn-outline-primary btn--sm"><?php echo Labels::getLabel('LBL_Back_to_order', $siteLangId);?></a></div>
                 </div>
                 <div class="cards-content ">
                     <div class="box__body">
@@ -55,11 +55,11 @@
                                         <?php
                      $prodOrBatchUrl = 'javascript:void(0)';
                     if ($orderDetail['op_is_batch']) {
-                        $prodOrBatchUrl = CommonHelper::generateUrl('Products', 'batch', array($orderDetail['op_selprod_id']));
+                        $prodOrBatchUrl = UrlHelper::generateUrl('Products', 'batch', array($orderDetail['op_selprod_id']));
                         $prodOrBatchImgUrl = UrlHelper::getCachedUrl(UrlHelper::generateFileUrl('image', 'BatchProduct', array($orderDetail['op_selprod_id'],$siteLangId, "SMALL"), CONF_WEBROOT_URL), CONF_IMG_CACHE_TIME, '.jpg');
                     } else {
                         if (Product::verifyProductIsValid($orderDetail['op_selprod_id']) == true) {
-                            $prodOrBatchUrl = CommonHelper::generateUrl('Products', 'view', array($orderDetail['op_selprod_id']));
+                            $prodOrBatchUrl = UrlHelper::generateUrl('Products', 'view', array($orderDetail['op_selprod_id']));
                         }
                         $prodOrBatchImgUrl = UrlHelper::getCachedUrl(UrlHelper::generateFileUrl('image', 'product', array($orderDetail['selprod_product_id'], "SMALL", $orderDetail['op_selprod_id'], 0, $siteLangId), CONF_WEBROOT_URL), CONF_IMG_CACHE_TIME, '.jpg');
                     }  ?>

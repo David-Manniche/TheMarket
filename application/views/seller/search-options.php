@@ -53,7 +53,7 @@ foreach ($arr_listing as $sn => $row) {
                 /* if(!in_array($row['option_type'],$ignoreOptionValues)){
                     $li = $ul->appendElement("li");
                     $li->appendElement('a',array(
-                    'href'=>CommonHelper::generateUrl('OptionValues',
+                    'href'=>UrlHelper::generateUrl('OptionValues',
                     'index',array($row['option_id'])),
                     'class'=>'button small green',
                     'title'=>'Option Values'
@@ -90,7 +90,7 @@ foreach ($arr_listing as $sn => $row) {
 $frm = new Form('frmOptionListing', array('id'=>'frmOptionListing'));
 $frm->setFormTagAttribute('class', 'form actionButtons-js');
 $frm->setFormTagAttribute('onsubmit', 'formAction(this, reloadList ); return(false);');
-$frm->setFormTagAttribute('action', CommonHelper::generateUrl('Seller', 'bulkOptionsDelete'));
+$frm->setFormTagAttribute('action', UrlHelper::generateUrl('Seller', 'bulkOptionsDelete'));
 $frm->addHiddenField('', 'status');
 
 echo $frm->getFormTag();

@@ -2,7 +2,7 @@
 
 $frm->setFormTagAttribute('onsubmit', 'doPayment(this, "' . $orderId . '"); return(false);');
 $frm->setFormTagAttribute('class', 'form form--normal');
-$frm->setFormTagAttribute('action', CommonHelper::generateUrl('StripeConnectPay', 'charge', [$orderId]));
+$frm->setFormTagAttribute('action', UrlHelper::generateUrl('StripeConnectPay', 'charge', [$orderId]));
 
 $fld = $frm->getField('number');
 $fld->addFieldTagAttribute('class', 'p-cards');

@@ -86,7 +86,7 @@
         $frm = new Form('frmNavListing', array('id'=>'frmNavListing'));
         $frm->setFormTagAttribute('class', 'web_form last_td_nowrap actionButtons-js');
         $frm->setFormTagAttribute('onsubmit', 'formAction(this, reloadList ); return(false);');
-        $frm->setFormTagAttribute('action', CommonHelper::generateUrl('Navigations', 'toggleBulkStatuses'));
+        $frm->setFormTagAttribute('action', UrlHelper::generateUrl('Navigations', 'toggleBulkStatuses'));
         $frm->addHiddenField('', 'status');
 
         echo $frm->getFormTag();

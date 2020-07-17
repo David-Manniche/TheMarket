@@ -5,9 +5,9 @@
     <div class="logo-wrapper">
         <?php
         if (CommonHelper::isThemePreview() && isset($_SESSION['preview_theme'])) {
-            $logoUrl = CommonHelper::generateUrl('home', 'index');
+            $logoUrl = UrlHelper::generateUrl('home', 'index');
         } else {
-            $logoUrl = CommonHelper::generateUrl();
+            $logoUrl = UrlHelper::generateUrl();
         } ?>
         <?php
         $fileData = AttachedFile::getAttachment(AttachedFile::FILETYPE_FRONT_LOGO, 0, 0, $siteLangId, false);
@@ -15,7 +15,7 @@
         ?>
         <div class="logo-dashboard">
             <a href="<?php echo $logoUrl; ?>">
-                <img <?php if ($fileData['afile_aspect_ratio'] > 0) { ?> data-ratio= "<?php echo $aspectRatioArr[$fileData['afile_aspect_ratio']]; ?>" <?php } ?> src="<?php echo CommonHelper::generateFullUrl('Image', 'siteLogo', array($siteLangId), CONF_WEBROOT_FRONT_URL); ?>" alt="<?php echo FatApp::getConfig('CONF_WEBSITE_NAME_' . $siteLangId) ?>" title="<?php echo FatApp::getConfig('CONF_WEBSITE_NAME_' . $siteLangId) ?>">
+                <img <?php if ($fileData['afile_aspect_ratio'] > 0) { ?> data-ratio= "<?php echo $aspectRatioArr[$fileData['afile_aspect_ratio']]; ?>" <?php } ?> src="<?php echo UrlHelper::generateFullUrl('Image', 'siteLogo', array($siteLangId), CONF_WEBROOT_FRONT_URL); ?>" alt="<?php echo FatApp::getConfig('CONF_WEBSITE_NAME_' . $siteLangId) ?>" title="<?php echo FatApp::getConfig('CONF_WEBSITE_NAME_' . $siteLangId) ?>">
             </a>
         </div>
 
@@ -35,7 +35,7 @@
                 </li>
                 <li class="menu__item <?php echo ($controller == 'buyer' && ($action == 'orders' || $action == 'vieworder')) ? 'is-active' : ''; ?>">
                     <div class="menu__item__inner">
-                        <a title="<?php echo Labels::getLabel("LBL_Orders", $siteLangId); ?>" href="<?php echo CommonHelper::generateUrl('Buyer', 'Orders'); ?>">
+                        <a title="<?php echo Labels::getLabel("LBL_Orders", $siteLangId); ?>" href="<?php echo UrlHelper::generateUrl('Buyer', 'Orders'); ?>">
                             <i class="icn shop">
                                 <svg class="svg">
                                     <use xlink:href="<?php echo CONF_WEBROOT_URL; ?>images/retina/sprite.svg#dash-order" href="<?php echo CONF_WEBROOT_URL; ?>images/retina/sprite.svg#dash-order"></use>
@@ -47,7 +47,7 @@
                 </li>
                 <li class="menu__item <?php echo ($controller == 'buyer' && ($action == 'mydownloads')) ? 'is-active' : ''; ?>">
                     <div class="menu__item__inner">
-                        <a title="<?php echo Labels::getLabel("LBL_Downloads", $siteLangId); ?>" href="<?php echo CommonHelper::generateUrl('Buyer', 'MyDownloads'); ?>">
+                        <a title="<?php echo Labels::getLabel("LBL_Downloads", $siteLangId); ?>" href="<?php echo UrlHelper::generateUrl('Buyer', 'MyDownloads'); ?>">
                             <i class="icn shop">
                                 <svg class="svg">
                                     <use xlink:href="<?php echo CONF_WEBROOT_URL; ?>images/retina/sprite.svg#dash-downloads" href="<?php echo CONF_WEBROOT_URL; ?>images/retina/sprite.svg#dash-downloads"></use>
@@ -59,7 +59,7 @@
                 </li>
                 <li class="menu__item <?php echo ($controller == 'buyer' && $action == 'ordercancellationrequests') ? 'is-active' : ''; ?>">
                     <div class="menu__item__inner">
-                        <a title="<?php echo Labels::getLabel("LBL_Order_Cancellation_Requests", $siteLangId); ?>" href="<?php echo CommonHelper::generateUrl('Buyer', 'orderCancellationRequests'); ?>" >
+                        <a title="<?php echo Labels::getLabel("LBL_Order_Cancellation_Requests", $siteLangId); ?>" href="<?php echo UrlHelper::generateUrl('Buyer', 'orderCancellationRequests'); ?>" >
                             <i class="icn shop">
                                 <svg class="svg">
                                     <use xlink:href="<?php echo CONF_WEBROOT_URL; ?>images/retina/sprite.svg#dash-cancellation-request" href="<?php echo CONF_WEBROOT_URL; ?>images/retina/sprite.svg#dash-cancellation-request"></use>
@@ -71,7 +71,7 @@
                 </li>
                 <li class="menu__item <?php echo ($controller == 'buyer' && ($action == 'orderreturnrequests' || $action == 'vieworderreturnrequest')) ? 'is-active' : ''; ?>">
                     <div class="menu__item__inner">
-                        <a title="<?php echo Labels::getLabel("LBL_Return_Requests", $siteLangId); ?>" href="<?php echo CommonHelper::generateUrl('Buyer', 'orderReturnRequests'); ?>" >
+                        <a title="<?php echo Labels::getLabel("LBL_Return_Requests", $siteLangId); ?>" href="<?php echo UrlHelper::generateUrl('Buyer', 'orderReturnRequests'); ?>" >
                             <i class="icn shop">
                                 <svg class="svg">
                                     <use xlink:href="<?php echo CONF_WEBROOT_URL; ?>images/retina/sprite.svg#dash-return-request" href="<?php echo CONF_WEBROOT_URL; ?>images/retina/sprite.svg#dash-return-request"></use>
@@ -88,7 +88,7 @@
                 </li>
                 <li class="menu__item <?php echo ($controller == 'buyer' && $action == 'offers') ? 'is-active' : ''; ?>">
                     <div class="menu__item__inner">
-                        <a title="<?php echo Labels::getLabel("LBL_My_Offers", $siteLangId); ?>" href="<?php echo CommonHelper::generateUrl('Buyer', 'offers'); ?>">
+                        <a title="<?php echo Labels::getLabel("LBL_My_Offers", $siteLangId); ?>" href="<?php echo UrlHelper::generateUrl('Buyer', 'offers'); ?>">
                             <i class="icn shop">
                                 <svg class="svg">
                                     <use xlink:href="<?php echo CONF_WEBROOT_URL; ?>images/retina/sprite.svg#dash-offers" href="<?php echo CONF_WEBROOT_URL; ?>images/retina/sprite.svg#dash-offers"></use>
@@ -100,7 +100,7 @@
                 </li>
                 <li class="menu__item <?php echo ($controller == 'buyer' && $action == 'rewardpoints') ? 'is-active' : ''; ?>">
                     <div class="menu__item__inner">
-                        <a title="<?php echo Labels::getLabel("LBL_Reward_Points", $siteLangId); ?>" href="<?php echo CommonHelper::generateUrl('Buyer', 'rewardPoints'); ?>">
+                        <a title="<?php echo Labels::getLabel("LBL_Reward_Points", $siteLangId); ?>" href="<?php echo UrlHelper::generateUrl('Buyer', 'rewardPoints'); ?>">
                             <i class="icn shop">
                                 <svg class="svg">
                                     <use xlink:href="<?php echo CONF_WEBROOT_URL; ?>images/retina/sprite.svg#dash-reward-points" href="<?php echo CONF_WEBROOT_URL; ?>images/retina/sprite.svg#dash-reward-points"></use>
@@ -113,7 +113,7 @@
                     <?php if (FatApp::getConfig('CONF_ENABLE_REFERRER_MODULE', FatUtility::VAR_INT, 1)) { ?>
                     <li class="menu__item <?php echo ($controller == 'buyer' && $action == 'shareearn') ? 'is-active' : ''; ?>">
                         <div class="menu__item__inner">
-                            <a title="<?php echo Labels::getLabel("LBL_Share_and_Earn", $siteLangId); ?>" href="<?php echo CommonHelper::generateUrl('Buyer', 'shareEarn'); ?>">
+                            <a title="<?php echo Labels::getLabel("LBL_Share_and_Earn", $siteLangId); ?>" href="<?php echo UrlHelper::generateUrl('Buyer', 'shareEarn'); ?>">
                                 <i class="icn shop">
                                     <svg class="svg">
                                         <use xlink:href="<?php echo CONF_WEBROOT_URL; ?>images/retina/sprite.svg#dash-share-earn" href="<?php echo CONF_WEBROOT_URL; ?>images/retina/sprite.svg#dash-share-earn"></use>
@@ -131,7 +131,7 @@
                 </li>
                 <li class="menu__item <?php echo ($controller == 'account' && $action == 'messages') ? 'is-active' : ''; ?>">
                     <div class="menu__item__inner">
-                        <a title="<?php echo Labels::getLabel("LBL_Messages", $siteLangId); ?>" href="<?php echo CommonHelper::generateUrl('Account', 'Messages'); ?>">
+                        <a title="<?php echo Labels::getLabel("LBL_Messages", $siteLangId); ?>" href="<?php echo UrlHelper::generateUrl('Account', 'Messages'); ?>">
                             <i class="icn shop">
                                 <svg class="svg">
                                     <use xlink:href="<?php echo CONF_WEBROOT_URL; ?>images/retina/sprite.svg#dash-messages" href="<?php echo CONF_WEBROOT_URL; ?>images/retina/sprite.svg#dash-messages"></use>
@@ -146,7 +146,7 @@
                 </li>
                 <li class="menu__item <?php echo ($controller == 'account' && $action == 'credits') ? 'is-active' : ''; ?>">
                     <div class="menu__item__inner">
-                        <a title="<?php echo Labels::getLabel("LBL_My_Credits", $siteLangId); ?>" href="<?php echo CommonHelper::generateUrl('Account', 'credits');?>">
+                        <a title="<?php echo Labels::getLabel("LBL_My_Credits", $siteLangId); ?>" href="<?php echo UrlHelper::generateUrl('Account', 'credits');?>">
                             <i class="icn shop">
                                 <svg class="svg">
                                     <use xlink:href="<?php echo CONF_WEBROOT_URL; ?>images/retina/sprite.svg#dash-credits" href="<?php echo CONF_WEBROOT_URL; ?>images/retina/sprite.svg#dash-credits"></use>
@@ -164,7 +164,7 @@
                                 $label = Labels::getLabel("LBL_WISHLIST", $siteLangId);
                             }
                         ?>
-                        <a title="<?php echo $label; ?>" href="<?php echo CommonHelper::generateUrl('Account', 'wishlist');?>">
+                        <a title="<?php echo $label; ?>" href="<?php echo UrlHelper::generateUrl('Account', 'wishlist');?>">
                             <i class="icn shop">
                                 <svg class="svg">
                                     <use xlink:href="<?php echo CONF_WEBROOT_URL; ?>images/retina/sprite.svg#dash-wishlist-favorite" href="<?php echo CONF_WEBROOT_URL; ?>images/retina/sprite.svg#dash-wishlist-favorite"></use>
@@ -176,7 +176,7 @@
                 </li>
                 <li class="menu__item <?php echo ($controller == 'savedproductssearch' && $action == 'listing') ? 'is-active' : ''; ?>">
                     <div class="menu__item__inner">
-                        <a title="<?php echo Labels::getLabel("LBL_Saved_Searches", $siteLangId); ?>" href="<?php echo CommonHelper::generateUrl('SavedProductsSearch', 'listing');?>">
+                        <a title="<?php echo Labels::getLabel("LBL_Saved_Searches", $siteLangId); ?>" href="<?php echo UrlHelper::generateUrl('SavedProductsSearch', 'listing');?>">
                             <i class="icn shop">
                                 <svg class="svg">
                                     <use xlink:href="<?php echo CONF_WEBROOT_URL; ?>images/retina/sprite.svg#dash-saved-searches" href="<?php echo CONF_WEBROOT_URL; ?>images/retina/sprite.svg#dash-saved-searches"></use>
@@ -192,7 +192,7 @@
                 </li>
                 <li class="menu__item <?php echo ($controller == 'account' && $action == 'profileinfo') ? 'is-active' : ''; ?>">
                     <div class="menu__item__inner">
-                        <a title="<?php echo Labels::getLabel("LBL_Account_Settings", $siteLangId); ?>" href="<?php echo CommonHelper::generateUrl('Account', 'ProfileInfo'); ?>">
+                        <a title="<?php echo Labels::getLabel("LBL_Account_Settings", $siteLangId); ?>" href="<?php echo UrlHelper::generateUrl('Account', 'ProfileInfo'); ?>">
                             <i class="icn shop">
                                 <svg class="svg">
                                     <use xlink:href="<?php echo CONF_WEBROOT_URL; ?>images/retina/sprite.svg#dash-account" href="<?php echo CONF_WEBROOT_URL; ?>images/retina/sprite.svg#dash-account"></use>
@@ -204,7 +204,7 @@
                 </li>
                 <li class="menu__item <?php echo ($controller == 'account' && $action == 'myaddresses') ? 'is-active' : ''; ?>">
                     <div class="menu__item__inner">
-                        <a title="<?php echo Labels::getLabel("LBL_Manage_Addresses", $siteLangId); ?>" href="<?php echo CommonHelper::generateUrl('Account', 'myAddresses'); ?>">
+                        <a title="<?php echo Labels::getLabel("LBL_Manage_Addresses", $siteLangId); ?>" href="<?php echo UrlHelper::generateUrl('Account', 'myAddresses'); ?>">
                             <i class="icn shop">
                                 <svg class="svg">
                                     <use xlink:href="<?php echo CONF_WEBROOT_URL; ?>images/retina/sprite.svg#dash-my-address" href="<?php echo CONF_WEBROOT_URL; ?>images/retina/sprite.svg#dash-my-address"></use>
@@ -216,7 +216,7 @@
                 </li>
                 <li class="menu__item <?php echo ($controller == 'account' && $action == 'changeemailpassword') ? 'is-active' : ''; ?>">
                     <div class="menu__item__inner">
-                        <a title="<?php echo Labels::getLabel("LBL_UPDATE_CREDENTIALS", $siteLangId); ?>" href="<?php echo CommonHelper::generateUrl('Account', 'changeEmailPassword');?>">
+                        <a title="<?php echo Labels::getLabel("LBL_UPDATE_CREDENTIALS", $siteLangId); ?>" href="<?php echo UrlHelper::generateUrl('Account', 'changeEmailPassword');?>">
                             <i class="icn shop">
                                 <svg class="svg">
                                     <use xlink:href="<?php echo CONF_WEBROOT_URL; ?>images/retina/sprite.svg#dash-change-email" href="<?php echo CONF_WEBROOT_URL; ?>images/retina/sprite.svg#dash-change-password"></use>

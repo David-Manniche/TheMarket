@@ -101,7 +101,7 @@ class ShippingCompanyUsersController extends AdminBaseController
 
         if (!$userRow || $userRow['user_is_shipping_company'] == applicationConstants::NO) {
             Message::addErrorMessage("Invalid User or User is not of Shipping Company");
-            FatApplication::redirectUser(CommonHelper::generateUrl('ShippingCompanyUsers'));
+            FatApplication::redirectUser(UrlHelper::generateUrl('ShippingCompanyUsers'));
         }
         $this->_template->addJs('seller-orders/page-js/index.js');
 

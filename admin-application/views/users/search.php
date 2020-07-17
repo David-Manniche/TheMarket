@@ -48,7 +48,7 @@ foreach ($arr_listing as $sn => $row) {
             case 'shop_name':
                 if ($row[$key]!='') {
                     if ($canViewShops) {
-                        $td->appendElement('a', array('href' => 'javascript:void(0)', 'onClick' => 'redirectfunc("'.CommonHelper::generateUrl('Shops').'", '.$row['shop_id'].')'), $row[$key], true);
+                        $td->appendElement('a', array('href' => 'javascript:void(0)', 'onClick' => 'redirectfunc("'.UrlHelper::generateUrl('Shops').'", '.$row['shop_id'].')'), $row[$key], true);
                     } else {
                         $td->appendElement('plaintext', array(), $row[$key], true);
                     }
@@ -131,7 +131,7 @@ foreach ($arr_listing as $sn => $row) {
                     $innerLi->appendElement('a', array('href'=>'javascript:void(0)','class'=>'button small green','title'=>Labels::getLabel('LBL_Change_Password', $adminLangId),"onclick"=>"changePasswordForm(".$row['user_id'].")"), Labels::getLabel('LBL_Change_Password', $adminLangId), true);
 
                     $innerLi=$innerUl->appendElement('li');
-                    $innerLi->appendElement('a', array('href'=>CommonHelper::generateUrl('Users', 'login', array($row['user_id'])),'target'=>'_blank','class'=>'button small green redirect--js','title'=>Labels::getLabel('LBL_Login_to_user_profile', $adminLangId)), Labels::getLabel('LBL_Login_to_user_profile', $adminLangId), true);
+                    $innerLi->appendElement('a', array('href'=>UrlHelper::generateUrl('Users', 'login', array($row['user_id'])),'target'=>'_blank','class'=>'button small green redirect--js','title'=>Labels::getLabel('LBL_Login_to_user_profile', $adminLangId)), Labels::getLabel('LBL_Login_to_user_profile', $adminLangId), true);
 
                     $innerLi=$innerUl->appendElement('li');
                     $innerLi->appendElement('a', array('href'=>'javascript:void(0)','class'=>'button small green','title'=>Labels::getLabel('LBL_Email_User', $adminLangId),"onclick"=>"sendMailForm(".$row['user_id'].")"), Labels::getLabel('LBL_Email_User', $adminLangId), true);
@@ -152,7 +152,7 @@ if (count($arr_listing) == 0) {
 $frm = new Form('frmUsersListing', array('id'=>'frmUsersListing'));
 $frm->setFormTagAttribute('class', 'web_form last_td_nowrap actionButtons-js');
 $frm->setFormTagAttribute('onsubmit', 'formAction(this, reloadUserList ); return(false);');
-$frm->setFormTagAttribute('action', CommonHelper::generateUrl('Users', 'toggleBulkStatuses'));
+$frm->setFormTagAttribute('action', UrlHelper::generateUrl('Users', 'toggleBulkStatuses'));
 $frm->addHiddenField('', 'status');
 
 echo $frm->getFormTag();

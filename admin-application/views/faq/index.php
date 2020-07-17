@@ -37,7 +37,7 @@ defined('SYSTEM_INIT') or die('Invalid Usage.');
                         </h4>
 
                         <?php
-                            $url = CommonHelper::generateUrl('FaqCategories');
+                            $url = UrlHelper::generateUrl('FaqCategories');
                             $data = [
                                 'adminLangId' => $adminLangId,
                                 'statusButtons' => false,

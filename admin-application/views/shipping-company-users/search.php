@@ -50,7 +50,7 @@ foreach ($arr_listing as $sn => $row) {
                 if ($canEdit) {
                     $td->appendElement('a', array('href'=>'javascript:void(0)','class'=>'btn btn-clean btn-sm btn-icon','title'=>Labels::getLabel('LBL_Edit', $adminLangId),"onclick"=>"userForm(".$row['user_id'].")"), "<i class='far fa-edit icon'></i>", true);
 
-                    $td->appendElement('a', array('href'=>CommonHelper::generateUrl('ShippingCompanyUsers', 'Orders', array($row['user_id'])),'class'=>'btn btn-clean btn-sm btn-icon','title'=>Labels::getLabel('LBL_Assigned_COD_Orders', $adminLangId)), "<i class='ion-cash icon'></i>", true);
+                    $td->appendElement('a', array('href'=>UrlHelper::generateUrl('ShippingCompanyUsers', 'Orders', array($row['user_id'])),'class'=>'btn btn-clean btn-sm btn-icon','title'=>Labels::getLabel('LBL_Assigned_COD_Orders', $adminLangId)), "<i class='ion-cash icon'></i>", true);
 
                     $td->appendElement('a', array('href'=>'javascript:void(0)','class'=>'btn btn-clean btn-sm btn-icon','title'=>Labels::getLabel('LBL_Transactions', $adminLangId),"onclick"=>"transactions(".$row['user_id'].")"), "<i class='ion-arrow-swap icon'></i>", true);
                 }
@@ -68,7 +68,7 @@ if (count($arr_listing) == 0) {
 $frm = new Form('frmShpCompUsrListing', array('id'=>'frmShpCompUsrListing'));
 $frm->setFormTagAttribute('class', 'web_form last_td_nowrap actionButtons-js');
 $frm->setFormTagAttribute('onsubmit', 'formAction(this, reloadUserList ); return(false);');
-$frm->setFormTagAttribute('action', CommonHelper::generateUrl('Users', 'toggleBulkStatuses'));
+$frm->setFormTagAttribute('action', UrlHelper::generateUrl('Users', 'toggleBulkStatuses'));
 $frm->addHiddenField('', 'status');
 
 echo $frm->getFormTag();

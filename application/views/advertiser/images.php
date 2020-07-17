@@ -5,10 +5,10 @@
 		$imgUrl =  '';
 		switch($promotionType){
 			case Promotion::TYPE_BANNER:
-				$imgUrl = CommonHelper::generateFullUrl('Banner','Thumb',array($bannerImg['afile_record_id'],$bannerImg['afile_lang_id'],$bannerImg['afile_screen']),CONF_WEBROOT_FRONT_URL);
+				$imgUrl = UrlHelper::generateFullUrl('Banner','Thumb',array($bannerImg['afile_record_id'],$bannerImg['afile_lang_id'],$bannerImg['afile_screen']),CONF_WEBROOT_FRONT_URL);
 			break;
 			case Promotion::TYPE_SLIDES:
-				$imgUrl = CommonHelper::generateFullUrl('Image','Slide',array($bannerImg['afile_record_id'],$bannerImg['afile_screen'],$bannerImg['afile_lang_id'],'THUMB'),CONF_WEBROOT_FRONT_URL);
+				$imgUrl = UrlHelper::generateFullUrl('Image','Slide',array($bannerImg['afile_record_id'],$bannerImg['afile_screen'],$bannerImg['afile_lang_id'],'THUMB'),CONF_WEBROOT_FRONT_URL);
 			break;
 		}
 

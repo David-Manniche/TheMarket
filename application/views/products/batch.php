@@ -18,7 +18,7 @@
             <div class="box box--white box--rounded">
               <div class="box__head">
                 <h4><?php echo ($batch['prodgroup_name'])?$batch['prodgroup_name']:$batch['prodgroup_identifier'];?></h4>
-                <span class="text--normal"><?php echo Labels::getLabel('LBL_Sold_By',$siteLangId); ?>: <a href="<?php echo CommonHelper::generateUrl('Shops','view',array($batch['shop_id']));?>"><?php echo $batch['shop_name'];?></a></span> </div>
+                <span class="text--normal"><?php echo Labels::getLabel('LBL_Sold_By',$siteLangId); ?>: <a href="<?php echo UrlHelper::generateUrl('Shops','view',array($batch['shop_id']));?>"><?php echo $batch['shop_name'];?></a></span> </div>
               <div class="box__body">
                 <div class="wrap--repeated">
                   <?php if(!empty($batch)){?>
@@ -28,7 +28,7 @@
 											$productsTotalPrice = 0;
 											$batchInStock = true;
 											foreach($pg_products as $product){ 
-											$productUrl = CommonHelper::generateUrl('Products','View',array($product['selprod_id']));
+											$productUrl = UrlHelper::generateUrl('Products','View',array($product['selprod_id']));
 											$imgSrc = UrlHelper::getCachedUrl(UrlHelper::generateFileUrl('image','product', array($product['product_id'], "SMALL", $product['selprod_id'], 0, $siteLangId),CONF_WEBROOT_URL), CONF_IMG_CACHE_TIME, '.jpg');
 											$productsTotalPrice += $product['theprice'];
 											?>

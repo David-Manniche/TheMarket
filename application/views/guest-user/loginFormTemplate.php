@@ -16,7 +16,7 @@
     $remembermeField->developerTags['col'] = 6;
     $remembermeField->developerTags['cbHtmlAfterCheckbox'] = '<i class="input-helper"></i>';
     $fldforgot = $loginFrm->getField('forgot');
-    $fldforgot->value = '<a href="' . CommonHelper::generateUrl('GuestUser', 'forgotPasswordForm') . '"
+    $fldforgot->value = '<a href="' . UrlHelper::generateUrl('GuestUser', 'forgotPasswordForm') . '"
     class="link">' . Labels::getLabel('LBL_Forgot_Password?', $siteLangId) . '</a>';
     $fldforgot->developerTags['col'] = 6;
     $fldSubmit = $loginFrm->getField('btn_submit');
@@ -88,7 +88,7 @@
             <?php if ($showSignUpLink) { ?>
                 <div class="row justify-content-center">
                     <div class="col-auto text-center">
-                        <a class="link" href="<?php echo CommonHelper::generateUrl('GuestUser', 'loginForm', array(applicationConstants::YES)); ?>">
+                        <a class="link" href="<?php echo UrlHelper::generateUrl('GuestUser', 'loginForm', array(applicationConstants::YES)); ?>">
                             <?php echo sprintf(Labels::getLabel('LBL_Not_Registered_Yet?', $siteLangId), FatApp::getConfig('CONF_WEBSITE_NAME_' . $siteLangId));?>
                         </a>
                     </div>
@@ -110,7 +110,7 @@
                         <ul>
                             <?php foreach ($socialLoginApis as $plugin) { ?>
                                 <li>
-                                    <a href="<?php echo CommonHelper::generateUrl($plugin['plugin_code']); ?>" class="btn btn--social btn--<?php echo $plugin['plugin_code'];?>">
+                                    <a href="<?php echo UrlHelper::generateUrl($plugin['plugin_code']); ?>" class="btn btn--social btn--<?php echo $plugin['plugin_code'];?>">
                                         <i class="icn">
                                             <img src="<?php echo CONF_WEBROOT_URL; ?>images/retina/social-icons/<?php echo $plugin['plugin_code']; ?>.svg">
                                         </i>

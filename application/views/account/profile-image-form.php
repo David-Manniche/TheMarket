@@ -1,5 +1,5 @@
 <?php defined('SYSTEM_INIT') or die('Invalid Usage.');
-    $imgFrm->setFormTagAttribute('action', CommonHelper::generateUrl('Account', 'uploadProfileImage'));
+    $imgFrm->setFormTagAttribute('action', UrlHelper::generateUrl('Account', 'uploadProfileImage'));
 ?>
 <div class="col-md-6">
     <div class="avtar avtar--large">
@@ -11,7 +11,7 @@
             $profileImg = UrlHelper::getCachedUrl(UrlHelper::generateFileUrl('Image', 'user', array($userId,'thumb',true)).$uploadedTime, CONF_IMG_CACHE_TIME, '.jpg');
         ?>
         <img src="<?php echo $profileImg;?>" alt="<?php echo Labels::getLabel('LBL_Profile_Image', $siteLangId);?>">
-        <!--img src="<?php /* echo CommonHelper::generateUrl('Account','userProfileImage',array(UserAuthentication::getLoggedUserId(),'croped',true));?>" alt="<?php echo Labels::getLabel('LBL_Profile_Image', $siteLangId); */?>"-->
+        <!--img src="<?php /* echo UrlHelper::generateUrl('Account','userProfileImage',array(UserAuthentication::getLoggedUserId(),'croped',true));?>" alt="<?php echo Labels::getLabel('LBL_Profile_Image', $siteLangId); */?>"-->
     </div>
 </div>
 <div class="col-md-6">

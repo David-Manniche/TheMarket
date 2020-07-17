@@ -3,7 +3,7 @@ $searchFrm->setFormTagAttribute('onSubmit', 'searchProducts(this); return(false)
 $keywordFld = $searchFrm->getField('keyword');
 $keywordFld->addFieldTagAttribute('placeholder', Labels::getLabel('LBL_Search', $siteLangId));
 $keywordFld->htmlAfterField = '<input value="" type="submit" class="input-submit">';
-$bgUrl = CommonHelper::generateFullUrl('Image', 'shopBackgroundImage', array($shop['shop_id'],$siteLangId,0,0,$template_id));
+$bgUrl = UrlHelper::generateFullUrl('Image', 'shopBackgroundImage', array($shop['shop_id'],$siteLangId,0,0,$template_id));
 $haveBannerImage = AttachedFile::getMultipleAttachments(AttachedFile::FILETYPE_SHOP_BANNER, $shop['shop_id'], '', $siteLangId);
 $shopPolicyArr = array(
     'shop_payment_policy',

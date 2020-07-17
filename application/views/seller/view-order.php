@@ -21,7 +21,7 @@ if (!$print) {
                 <div class="btn-group">
                     <ul class="actions">
                         <li>
-                            <a href="<?php echo CommonHelper::generateUrl('seller', 'cancelOrder', array($orderDetail['op_id']));?>" class="icn-highlighted" title="<?php echo Labels::getLabel('LBL_Cancel_Order', $siteLangId);?>"><i
+                            <a href="<?php echo UrlHelper::generateUrl('seller', 'cancelOrder', array($orderDetail['op_id']));?>" class="icn-highlighted" title="<?php echo Labels::getLabel('LBL_Cancel_Order', $siteLangId);?>"><i
                                     class="fas fa-times"></i></a>
                         </li>
                     </ul>
@@ -37,8 +37,8 @@ if (!$print) {
                     <?php if (!$print) { ?>
                     <div class="">
                         <iframe src="<?php echo Fatutility::generateUrl('seller', 'viewOrder', $urlParts) . '/print'; ?>" name="frame" style="display:none"></iframe>
-                        <a href="javascript:void(0)" onclick="frames['frame'].print()" class="btn btn-primary btn-sm no-print"><?php echo Labels::getLabel('LBL_Print', $siteLangId); ?></a>
-                        <a href="<?php echo CommonHelper::generateUrl('Seller', 'sales');?>" class="btn btn-outline-primary  btn-sm no-print"><?php echo Labels::getLabel('LBL_Back_to_order', $siteLangId);?></a>
+                        <a href="javascript:void(0)" onclick="frames['frame'].print()" class="btn btn--primary btn--sm no-print"><?php echo Labels::getLabel('LBL_Print', $siteLangId); ?></a>
+                        <a href="<?php echo UrlHelper::generateUrl('Seller', 'sales');?>" class="btn btn-outline-primary  btn--sm no-print"><?php echo Labels::getLabel('LBL_Back_to_order', $siteLangId);?></a>
                     </div>
                     <?php } ?>
                 </div>
@@ -132,11 +132,11 @@ if (!$print) {
                                     <?php
                                     $prodOrBatchUrl = 'javascript:void(0)';
                                     if ($orderDetail['op_is_batch']) {
-                                        $prodOrBatchUrl = CommonHelper::generateUrl('Products', 'batch', array($orderDetail['op_selprod_id']));
+                                        $prodOrBatchUrl = UrlHelper::generateUrl('Products', 'batch', array($orderDetail['op_selprod_id']));
                                         $prodOrBatchImgUrl = UrlHelper::getCachedUrl(UrlHelper::generateFileUrl('image', 'BatchProduct', array($orderDetail['op_selprod_id'],$siteLangId, "SMALL"), CONF_WEBROOT_URL), CONF_IMG_CACHE_TIME, '.jpg');
                                     } else {
                                         if (Product::verifyProductIsValid($orderDetail['op_selprod_id']) == true) {
-                                            $prodOrBatchUrl = CommonHelper::generateUrl('Products', 'view', array($orderDetail['op_selprod_id']));
+                                            $prodOrBatchUrl = UrlHelper::generateUrl('Products', 'view', array($orderDetail['op_selprod_id']));
                                         }
                                         $prodOrBatchImgUrl = UrlHelper::getCachedUrl(UrlHelper::generateFileUrl('image', 'product', array($orderDetail['selprod_product_id'], "SMALL", $orderDetail['op_selprod_id'], 0, $siteLangId), CONF_WEBROOT_URL), CONF_IMG_CACHE_TIME, '.jpg');
                                     }  ?>
@@ -335,8 +335,8 @@ if (!$print) {
                                         $lang_name = $languages[$row['afile_lang_id']];
                                     }
 
-                                    $fileName = '<a href="'.CommonHelper::generateUrl('Seller', 'downloadDigitalFile', array($row['afile_id'],$row['afile_record_id'],AttachedFile::FILETYPE_ORDER_PRODUCT_DIGITAL_DOWNLOAD)).'">'.$row['afile_name'].'</a>';
-                                    $downloads = '<li><a href="'.CommonHelper::generateUrl('Seller', 'downloadDigitalFile', array($row['afile_id'],$row['afile_record_id'],AttachedFile::FILETYPE_ORDER_PRODUCT_DIGITAL_DOWNLOAD)).'"><i class="fa fa-download"></i></a></li>';
+                                    $fileName = '<a href="'.UrlHelper::generateUrl('Seller', 'downloadDigitalFile', array($row['afile_id'],$row['afile_record_id'],AttachedFile::FILETYPE_ORDER_PRODUCT_DIGITAL_DOWNLOAD)).'">'.$row['afile_name'].'</a>';
+                                    $downloads = '<li><a href="'.UrlHelper::generateUrl('Seller', 'downloadDigitalFile', array($row['afile_id'],$row['afile_record_id'],AttachedFile::FILETYPE_ORDER_PRODUCT_DIGITAL_DOWNLOAD)).'"><i class="fa fa-download"></i></a></li>';
 
                                     $expiry = Labels::getLabel('LBL_N/A', $siteLangId) ;
                                     if ($row['expiry_date']!='') {
@@ -378,8 +378,8 @@ if (!$print) {
                                 </tr>
                                 <?php $sr_no = 1;
                                 foreach ($digitalDownloadLinks as $key => $row) {
-                                    /* $fileName = '<a href="'.CommonHelper::generateUrl('Seller','downloadDigitalFile',array($row['afile_id'],$row['afile_record_id'],AttachedFile::FILETYPE_ORDER_PRODUCT_DIGITAL_DOWNLOAD)).'">'.$row['afile_name'].'</a>'; */
-                                    /* $downloads = '<li><a href="'.CommonHelper::generateUrl('Seller','downloadDigitalFile',array($row['afile_id'],$row['afile_record_id'],AttachedFile::FILETYPE_ORDER_PRODUCT_DIGITAL_DOWNLOAD)).'"><i class="fa fa-download"></i></a></li>'; */
+                                    /* $fileName = '<a href="'.UrlHelper::generateUrl('Seller','downloadDigitalFile',array($row['afile_id'],$row['afile_record_id'],AttachedFile::FILETYPE_ORDER_PRODUCT_DIGITAL_DOWNLOAD)).'">'.$row['afile_name'].'</a>'; */
+                                    /* $downloads = '<li><a href="'.UrlHelper::generateUrl('Seller','downloadDigitalFile',array($row['afile_id'],$row['afile_record_id'],AttachedFile::FILETYPE_ORDER_PRODUCT_DIGITAL_DOWNLOAD)).'"><i class="fa fa-download"></i></a></li>'; */
 
                                     $expiry = Labels::getLabel('LBL_N/A', $siteLangId) ;
                                     if ($row['expiry_date']!='') {

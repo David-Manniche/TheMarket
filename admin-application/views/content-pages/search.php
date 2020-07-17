@@ -48,7 +48,7 @@ foreach ($arr_listing as $sn => $row) {
                 }
 
                 /* $li = $ul->appendElement("li");
-                $li->appendElement('a', array('href'=>CommonHelper::generateFullUrl( "Cms", "View", array($row['cpage_id'] ), CONF_WEBROOT_FRONT_URL ), 'class'=>'button small green', 'title'=>Labels::getLabel('LBL_Preview',$adminLangId), 'target' => '_blank'),'<i class="ion-clipboard icon"></i>', true); */
+                $li->appendElement('a', array('href'=>UrlHelper::generateFullUrl( "Cms", "View", array($row['cpage_id'] ), CONF_WEBROOT_FRONT_URL ), 'class'=>'button small green', 'title'=>Labels::getLabel('LBL_Preview',$adminLangId), 'target' => '_blank'),'<i class="ion-clipboard icon"></i>', true); */
                 break;
             default:
                 $td->appendElement('plaintext', array(), $row[$key], true);
@@ -62,7 +62,7 @@ if (count($arr_listing) == 0) {
 $frm = new Form('frmContentPgListing', array('id'=>'frmContentPgListing'));
 $frm->setFormTagAttribute('class', 'web_form last_td_nowrap actionButtons-js');
 $frm->setFormTagAttribute('onsubmit', 'formAction(this, reloadList ); return(false);');
-$frm->setFormTagAttribute('action', CommonHelper::generateUrl('ContentPages', 'deleteSelected'));
+$frm->setFormTagAttribute('action', UrlHelper::generateUrl('ContentPages', 'deleteSelected'));
 $frm->addHiddenField('', 'status');
 
 echo $frm->getFormTag();

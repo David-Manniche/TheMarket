@@ -20,7 +20,7 @@
 	<h6 class="big-title"><?php echo $firstCharacter;?></h6>
 	<ul>
 	  <?php } ?>
-	  <li><a href="<?php echo CommonHelper::generateUrl('Brands','view',array($brands['brand_id']));?>"><?php echo $brands['brand_name'];?></a></li>
+	  <li><a href="<?php echo UrlHelper::generateUrl('Brands','view',array($brands['brand_id']));?>"><?php echo $brands['brand_name'];?></a></li>
 	  <?php } ?>
 	</ul>
   </div>

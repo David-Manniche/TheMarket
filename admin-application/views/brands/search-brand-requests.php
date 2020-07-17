@@ -46,7 +46,7 @@ foreach ($arr_listing as $sn=>$row) {
                 $td->appendElement(
                     'plaintext',
                     array('style' => 'text-align:center'),
-                    '<img  class="max-img"  src="'.CommonHelper::generateUrl('image', 'brand', array($row['brand_id'], $adminLangId, 'MINITHUMB'), CONF_WEBROOT_FRONT_URL).'">',
+                    '<img  class="max-img"  src="'.UrlHelper::generateUrl('image', 'brand', array($row['brand_id'], $adminLangId, 'MINITHUMB'), CONF_WEBROOT_FRONT_URL).'">',
                     true
                 );
             break;

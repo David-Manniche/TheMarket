@@ -3,7 +3,7 @@
     <div class="sectionhead">
     <h4><?php echo Labels::getLabel('LBL_Volume_Discount', $adminLangId); ?></h4>
         <a class=" btn-default btn-sm" href="javascript:void(0); " onClick="sellerProductVolumeDiscountForm(<?php echo $selprod_id; ?>, 0);"><?php echo Labels::getLabel( 'LBL_Add_New_Volume_Discount', $adminLangId)?></a>
-        <?php /* <a class="btn-default btn-sm" target='_blank' href="<?php echo CommonHelper::generateUrl('SellerProducts', 'volumeDiscount', array($selprod_id)); ?>" style='float:right;'><?php echo Labels::getLabel('LBL_Manage_Volume_Discount', $adminLangId)?></a> */ ?>        
+        <?php /* <a class="btn-default btn-sm" target='_blank' href="<?php echo UrlHelper::generateUrl('SellerProducts', 'volumeDiscount', array($selprod_id)); ?>" style='float:right;'><?php echo Labels::getLabel('LBL_Manage_Volume_Discount', $adminLangId)?></a> */ ?>        
     </div>
     <div class="sectionbody space">
             <div class="row">

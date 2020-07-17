@@ -46,6 +46,21 @@ $(document).ready(function(){
 		searchUrlRewritingProducts(frm);
 	}
 
+	editUrlForm = function(selprod_id){
+		fcom.ajax(fcom.makeUrl('seller', 'productUrlForm', [selprod_id]), '', function(t) {
+			$("#dvForm").html(t);			
+		});
+
+	};
+	
+	setupProductUrl = function (frm){
+		if (!$(frm).validate()) return;
+		var data = fcom.frmData(frm);
+		fcom.updateWithAjax(fcom.makeUrl('seller', 'setupCustomUrl'), data, function(t) {	
+
+		});
+	}
+
     $(document).on('change', "input[name='custom_url']", function(){
         var selprod_id =  $(this).attr('data-selprod_id');
         var url_rewriting_id =  $(this).attr('data-url_rewriting_id');

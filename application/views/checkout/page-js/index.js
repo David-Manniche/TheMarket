@@ -163,11 +163,11 @@ $("document").ready(function(){
 				if ($("#hasAddress").length > 0) {
                     $("#hasAddress").val(1);
                 }
-				if($(frm.ua_id).val() == 0){
+				if($(frm.addr_id).val() == 0){
 					loadAddressDiv();
-					setTimeout(function(){ setDefaultAddress(t.ua_id) }, 1000);
+					setTimeout(function(){ setDefaultAddress(t.addr_id) }, 1000);
 				}else{
-					showShippingSummaryDiv(t.ua_id);
+					showShippingSummaryDiv(t.addr_id);
 					loadFinancialSummary();
 				}
 			}
@@ -267,13 +267,13 @@ $("document").ready(function(){
 		});
 	};
 
-	loadAddressDiv = function(ua_id){
+	loadAddressDiv = function(addr_id){
 		// $(addressDiv).html( fcom.getLoader());
 		// fcom.ajax(fcom.makeUrl('Checkout', 'addresses'), '', function(ans) {
 		// 	$(addressDiv).html(ans);
 		// 	$('.section-checkout').removeClass('is-current');
 		// 	$(addressDiv).addClass('is-current');
-		// 	$(addressDiv).find(".address-"+ua_id +" label .radio").click();
+		// 	$(addressDiv).find(".address-"+addr_id +" label .radio").click();
 		// });
 		if(!checkLogin()){
 			return false;

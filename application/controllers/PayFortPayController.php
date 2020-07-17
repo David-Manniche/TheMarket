@@ -65,10 +65,10 @@ class PayFortPayController extends PaymentController
         }
         if (!$orderId) {
             Message::addErrorMessage(Labels::getLabel('PAYFORT_INVALID_REQUEST'));
-            FatApp::redirectUser(CommonHelper::generateUrl('Account', 'profileInfo'));
+            FatApp::redirectUser(UrlHelper::generateUrl('Account', 'profileInfo'));
         }
 
-        $paymentChargeUrl = CommonHelper::generateUrl('PayFortPay', 'charge', array( $orderId ));
+        $paymentChargeUrl = UrlHelper::generateUrl('PayFortPay', 'charge', array( $orderId ));
         if (!(isset($_REQUEST['signature']) and !empty($_REQUEST['signature']))) {
             Message::addErrorMessage(Labels::getLabel('PAYFORT_INVALID_REQUEST', $this->siteLangId));
             FatApp::redirectUser($paymentChargeUrl);
@@ -107,7 +107,7 @@ class PayFortPayController extends PaymentController
             $gateWayCharges = ($paymentGatewayCharge/100);
             $orderPaymentObj->addOrderPayment($this->settings["plugin_code"], $_REQUEST['fort_id'], $gateWayCharges, 'Received Payment', implode('&', $message));
 
-            FatApp::redirectUser(CommonHelper::generateUrl('custom', 'paymentSuccess', array($orderId)));
+            FatApp::redirectUser(UrlHelper::generateUrl('custom', 'paymentSuccess', array($orderId)));
         } else {
             $orderPaymentObj->addOrderPaymentComments('#' . $_REQUEST['response_code'] . ': ' . $_REQUEST['response_message']);
         }
@@ -138,7 +138,7 @@ class PayFortPayController extends PaymentController
         $orderPaymentGatewayDescription = sprintf(Labels::getLabel('MSG_Order_Payment_Gateway_Description', $this->siteLangId), $orderInfo["site_system_name"], $orderInfo['invoice']);
 
         if ($returnParams) {
-            $return_url = CommonHelper::generateFullUrl('PayFortPay', 'doPayment', array($orderId), '', false);
+            $return_url = UrlHelper::generateFullUrl('PayFortPay', 'doPayment', array($orderId), '', false);
 
             $paramsValues = array(
                                     'access_code' => $this->settings['access_code'],

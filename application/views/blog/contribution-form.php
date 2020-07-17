@@ -3,7 +3,7 @@ defined('SYSTEM_INIT') or die('Invalid Usage.');
 /* $this->includeTemplate('_partial/blogTopFeaturedCategories.php'); */
 $frm->setFormTagAttribute('class', 'form');
 /* $frm->setFormTagAttribute('onsubmit','setupContribution(this);return false;'); */
-$frm->setFormTagAttribute('action', CommonHelper::generateUrl('Blog', 'setupContribution'));
+$frm->setFormTagAttribute('action', UrlHelper::generateUrl('Blog', 'setupContribution'));
 $frm->developerTags['colClassPrefix'] = 'col-lg-12 col-md-12 col-sm-';
 $frm->developerTags['fld_default_col'] = 12;
 $fileFld = $frm->getField('file');
@@ -28,7 +28,7 @@ if ($isUserLogged) {
                         </div>
                      </div>
           </div>
-          <div class="col-auto"><a href="<?php echo CommonHelper::generateUrl('Blog'); ?>" class="btn btn-primary btn-sm"><?php echo Labels::getLabel('Lbl_Back_to_home', $siteLangId); ?></a></div>
+          <div class="col-auto"><a href="<?php echo UrlHelper::generateUrl('Blog'); ?>" class="btn btn-primary btn-sm"><?php echo Labels::getLabel('Lbl_Back_to_home', $siteLangId); ?></a></div>
         </div>
       </div>
     </div>

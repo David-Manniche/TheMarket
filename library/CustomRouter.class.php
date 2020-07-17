@@ -137,7 +137,7 @@ class CustomRouter
                     if (!empty($res) && $res['urlrewrite_custom'] != '') {
                         $redirectQueryString = (isset($customUrl[1]) && $customUrl[1] != '') ?  '?' . $customUrl[1] : '';
                         header("HTTP/1.1 301 Moved Permanently");
-                        header("Location: " . CommonHelper::generateFullUrl(CONF_WEBROOT_URL) . '/' . $res['urlrewrite_custom'] . $redirectQueryString);
+                        header("Location: " . UrlHelper::generateFullUrl(CONF_WEBROOT_URL) . '/' . $res['urlrewrite_custom'] . $redirectQueryString);
                         header("Connection: close");
                     }
                 }

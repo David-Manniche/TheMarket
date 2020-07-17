@@ -10,7 +10,7 @@ class GuestAffiliateController extends MyAppController
     public function index()
     {
         if ((UserAuthentication::isUserLogged() && (User::isAffiliate() || User::isSigningUpAffiliate()) ) || (UserAuthentication::isUserLogged() && !User::isSigningUpAffiliate())) {
-            FatApp::redirectUser(CommonHelper::generateUrl('affiliate'));
+            FatApp::redirectUser(UrlHelper::generateUrl('affiliate'));
         }
 
         $extraPageObj = new Extrapage();
@@ -35,7 +35,7 @@ class GuestAffiliateController extends MyAppController
             if (FatUtility::isAjaxCall()) {
                 FatUtility::dieWithError(Message::getHtml());
             }
-            FatApp::redirectUser(CommonHelper::generateUrl('GuestAffiliate'));
+            FatApp::redirectUser(UrlHelper::generateUrl('GuestAffiliate'));
         }
         $user_id = FatUtility::int(UserAuthentication::getSessionAffiliateByKey('user_id'));
         $userObj = new User($user_id);
@@ -51,7 +51,7 @@ class GuestAffiliateController extends MyAppController
                 if (FatUtility::isAjaxCall()) {
                     FatUtility::dieWithError(Message::getHtml());
                 }
-                FatApp::redirectUser(CommonHelper::generateUrl('GuestAffiliate'));
+                FatApp::redirectUser(UrlHelper::generateUrl('GuestAffiliate'));
             }
 
             if (!ValidateElement::password($post['user_password'])) {
@@ -59,7 +59,7 @@ class GuestAffiliateController extends MyAppController
                 if (FatUtility::isAjaxCall()) {
                     FatUtility::dieWithError(Message::getHtml());
                 }
-                FatApp::redirectUser(CommonHelper::generateUrl('GuestAffiliate'));
+                FatApp::redirectUser(UrlHelper::generateUrl('GuestAffiliate'));
             }
 
             $db = FatApp::getDb();
@@ -79,7 +79,7 @@ class GuestAffiliateController extends MyAppController
                 if (FatUtility::isAjaxCall()) {
                     FatUtility::dieWithError(Message::getHtml());
                 }
-                FatApp::redirectUser(CommonHelper::generateUrl('GuestAffiliate'));
+                FatApp::redirectUser(UrlHelper::generateUrl('GuestAffiliate'));
             }
 
             $user_id = $userObj->getMainTableRecordId();
@@ -93,7 +93,7 @@ class GuestAffiliateController extends MyAppController
                 if (FatUtility::isAjaxCall()) {
                     FatUtility::dieWithError(Message::getHtml());
                 }
-                FatApp::redirectUser(CommonHelper::generateUrl('GuestAffiliate'));
+                FatApp::redirectUser(UrlHelper::generateUrl('GuestAffiliate'));
             }
 
             if (FatApp::getConfig('CONF_NOTIFY_ADMIN_AFFILIATE_REGISTRATION', FatUtility::VAR_INT, 1) == 1) {
@@ -103,7 +103,7 @@ class GuestAffiliateController extends MyAppController
                     if (FatUtility::isAjaxCall()) {
                         FatUtility::dieWithError(Message::getHtml());
                     }
-                    FatApp::redirectUser(CommonHelper::generateUrl('GuestAffiliate'));
+                    FatApp::redirectUser(UrlHelper::generateUrl('GuestAffiliate'));
                 }
             }
 
@@ -114,18 +114,18 @@ class GuestAffiliateController extends MyAppController
                     if (FatUtility::isAjaxCall()) {
                         FatUtility::dieWithError(Message::getHtml());
                     }
-                    FatApp::redirectUser(CommonHelper::generateUrl('GuestAffiliate'));
+                    FatApp::redirectUser(UrlHelper::generateUrl('GuestAffiliate'));
                 }
             } else {
                 if (FatApp::getConfig('CONF_WELCOME_EMAIL_AFFILIATE_REGISTRATION', FatUtility::VAR_INT, 1) == 1) {
-                    $link = CommonHelper::generateFullUrl('GuestAffiliate');
+                    $link = UrlHelper::generateFullUrl('GuestAffiliate');
                     if (!$userObj->userWelcomeEmailRegistration($post, $link, $this->siteLangId)) {
                         Message::addErrorMessage(Labels::getLabel("MSG_WELCOME_EMAIL_COULD_NOT_BE_SENT", $this->siteLangId));
                         $db->rollbackTransaction();
                         if (FatUtility::isAjaxCall()) {
                             FatUtility::dieWithError(Message::getHtml());
                         }
-                        FatApp::redirectUser(CommonHelper::generateUrl('GuestAffiliate'));
+                        FatApp::redirectUser(UrlHelper::generateUrl('GuestAffiliate'));
                     }
                 }
             }
@@ -155,7 +155,7 @@ class GuestAffiliateController extends MyAppController
                 if (FatUtility::isAjaxCall()) {
                     FatUtility::dieWithError(Message::getHtml());
                 }
-                FatApp::redirectUser(CommonHelper::generateUrl('GuestAffiliate'));
+                FatApp::redirectUser(UrlHelper::generateUrl('GuestAffiliate'));
             }
             /* ] */
 
@@ -173,25 +173,7 @@ class GuestAffiliateController extends MyAppController
                 Message::addErrorMessage($userObj->getError());
                 FatUtility::dieJsonError(Message::getHtml());
             }
-            /* $ua_id = FatUtility::int(UserAuthentication::getSessionAffiliateByKey('ua_id'));
-            $addressObj = new UserAddress( $ua_id );
-            $dataToSave = array(
-            'ua_user_id'    =>    $user_id,
-            'user_address1'    =>    $post['user_address1'],
-            'user_address2'    =>    $post['user_address2'],
-            'user_country_id'    =>    $post['user_country_id'],
-            'user_state_id'    =>    $post['user_state_id'],
-            'user_city'        =>    $post['user_city'],
-            'user_zip'        =>    $post['user_zip']
-            );
-            $addressObj->assignValues($dataToSave, true);
-            if (!$addressObj->save()) {
-            Message::addErrorMessage($addressObj->getError());
-            FatUtility::dieWithError(Message::getHtml());
-            }
-            $ua_id = $addressObj->getMainTableRecordId(); */
-            /* ] */
-
+           
             UserAuthentication::setSessionAffiliateRegistering(array( 'affiliate_register_step_number' => UserAuthentication::AFFILIATE_REG_STEP3));
             $msg = UserAuthentication::getAffiliateRegisterationStepArr($this->siteLangId)[UserAuthentication::AFFILIATE_REG_STEP2];
             break;
@@ -212,7 +194,7 @@ class GuestAffiliateController extends MyAppController
                 if (FatUtility::isAjaxCall()) {
                     FatUtility::dieWithError(Message::getHtml());
                 }
-                FatApp::redirectUser(CommonHelper::generateUrl('GuestAffiliate'));
+                FatApp::redirectUser(UrlHelper::generateUrl('GuestAffiliate'));
             }
             /* ] */
 
@@ -229,7 +211,7 @@ class GuestAffiliateController extends MyAppController
                 if (FatUtility::isAjaxCall()) {
                     FatUtility::dieWithError(Message::getHtml());
                 }
-                FatApp::redirectUser(CommonHelper::generateUrl('GuestAffiliate'));
+                FatApp::redirectUser(UrlHelper::generateUrl('GuestAffiliate'));
             }
             /* ] */
 
@@ -260,7 +242,7 @@ class GuestAffiliateController extends MyAppController
 
         $affiliate_register_step_number = (UserAuthentication::getSessionAffiliateByKey('affiliate_register_step_number')) ? UserAuthentication::getSessionAffiliateByKey('affiliate_register_step_number') : UserAuthentication::AFFILIATE_REG_STEP1;
 
-        //$ua_id = FatUtility::int(UserAuthentication::getSessionAffiliateByKey('ua_id'));
+        //$addr_id = FatUtility::int(UserAuthentication::getSessionAffiliateByKey('addr_id'));
         $user_id = FatUtility::int(UserAuthentication::getSessionAffiliateByKey('user_id'));
 
         switch ($affiliate_register_step_number) {
@@ -270,7 +252,7 @@ class GuestAffiliateController extends MyAppController
             $cPageSrch->addCondition('cpage_id', '=', FatApp::getConfig('CONF_AFFILIATE_TERMS_AND_CONDITIONS_PAGE', FatUtility::VAR_INT, 0));
             $cpage = FatApp::getDb()->fetch($cPageSrch->getResultSet());
             if (!empty($cpage) && is_array($cpage)) {
-                $termsAndConditionsLinkHref = CommonHelper::generateUrl('Cms', 'view', array($cpage['cpage_id']));
+                $termsAndConditionsLinkHref = UrlHelper::generateUrl('Cms', 'view', array($cpage['cpage_id']));
             }
             $this->set('termsAndConditionsLinkHref', $termsAndConditionsLinkHref);
             break;

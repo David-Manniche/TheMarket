@@ -9,11 +9,11 @@ if (!$isUserLogged) {
 					<ul class="nav nav-block">
 						<?php $userName = User::getAttributesById(UserAuthentication::getLoggedUserId(), "user_name"); ?>
 						<li class="nav__item">
-							<a class="dropdown-item nav__link" href="<?php echo CommonHelper::generateUrl('account', 'profileInfo'); ?>">
+							<a class="dropdown-item nav__link" href="<?php echo UrlHelper::generateUrl('account', 'profileInfo'); ?>">
 								<?php echo Labels::getLabel('LBL_Hi,', $siteLangId).' '.$userName; ?>
 							</a>
 						</li>
-						<li class="nav__item logout"><a class="dropdown-item nav__link" data-org-url="<?php echo CommonHelper::generateUrl('GuestUser', 'logout', array(), '', null, false, $getOrgUrl); ?>" href="<?php echo CommonHelper::generateUrl('GuestUser', 'logout'); ?>"><?php echo Labels::getLabel('LBL_Logout', $siteLangId); ?>
+						<li class="nav__item logout"><a class="dropdown-item nav__link" data-org-url="<?php echo UrlHelper::generateUrl('GuestUser', 'logout', array(), '', null, false, $getOrgUrl); ?>" href="<?php echo UrlHelper::generateUrl('GuestUser', 'logout'); ?>"><?php echo Labels::getLabel('LBL_Logout', $siteLangId); ?>
 						</a></li>
 					</ul>
 				</div>
@@ -31,24 +31,24 @@ if (!$isUserLogged) {
     $userActiveTab = false;
     if (User::canViewSupplierTab() && (isset($_SESSION[UserAuthentication::SESSION_ELEMENT_NAME]['activeTab']) && $_SESSION[UserAuthentication::SESSION_ELEMENT_NAME]['activeTab'] =='S')) {
         $userActiveTab = true;
-        $dashboardUrl = CommonHelper::generateUrl('Seller');
-        $dashboardOrgUrl = CommonHelper::generateUrl('Seller', '', array(), '', null, false, $getOrgUrl);
+        $dashboardUrl = UrlHelper::generateUrl('Seller');
+        $dashboardOrgUrl = UrlHelper::generateUrl('Seller', '', array(), '', null, false, $getOrgUrl);
     } elseif (User::canViewBuyerTab()  && (isset($_SESSION[UserAuthentication::SESSION_ELEMENT_NAME]['activeTab']) && $_SESSION[UserAuthentication::SESSION_ELEMENT_NAME]['activeTab'] =='B')) {
         $userActiveTab = true;
-        $dashboardUrl = CommonHelper::generateUrl('Buyer');
-        $dashboardOrgUrl = CommonHelper::generateUrl('Buyer', '', array(), '', null, false, $getOrgUrl);
+        $dashboardUrl = UrlHelper::generateUrl('Buyer');
+        $dashboardOrgUrl = UrlHelper::generateUrl('Buyer', '', array(), '', null, false, $getOrgUrl);
     } elseif (User::canViewAdvertiserTab() && (isset($_SESSION[UserAuthentication::SESSION_ELEMENT_NAME]['activeTab']) && $_SESSION[UserAuthentication::SESSION_ELEMENT_NAME]['activeTab'] =='Ad')) {
         $userActiveTab = true;
-        $dashboardUrl = CommonHelper::generateUrl('Advertiser');
-        $dashboardOrgUrl = CommonHelper::generateUrl('Advertiser', '', array(), '', null, false, $getOrgUrl);
+        $dashboardUrl = UrlHelper::generateUrl('Advertiser');
+        $dashboardOrgUrl = UrlHelper::generateUrl('Advertiser', '', array(), '', null, false, $getOrgUrl);
     } elseif (User::canViewAffiliateTab()  && (isset($_SESSION[UserAuthentication::SESSION_ELEMENT_NAME]['activeTab']) && $_SESSION[UserAuthentication::SESSION_ELEMENT_NAME]['activeTab'] =='AFFILIATE')) {
         $userActiveTab = true;
-        $dashboardUrl = CommonHelper::generateUrl('Affiliate');
-        $dashboardOrgUrl = CommonHelper::generateUrl('Affiliate', '', array(), '', null, false, $getOrgUrl);
+        $dashboardUrl = UrlHelper::generateUrl('Affiliate');
+        $dashboardOrgUrl = UrlHelper::generateUrl('Affiliate', '', array(), '', null, false, $getOrgUrl);
     }
     if (!$userActiveTab) {
-        $dashboardUrl = CommonHelper::generateUrl('Account');
-        $dashboardOrgUrl = CommonHelper::generateUrl('Account', '', array(), '', null, false, $getOrgUrl);
+        $dashboardUrl = UrlHelper::generateUrl('Account');
+        $dashboardOrgUrl = UrlHelper::generateUrl('Account', '', array(), '', null, false, $getOrgUrl);
     } ?>
     <li class="">
 		<div class="dropdown">
@@ -65,12 +65,12 @@ if (!$isUserLogged) {
 				$userName = User::getAttributesById(UserAuthentication::getLoggedUserId(), "user_name");
 				?>
 				<li class="nav__item">
-					<a class="dropdown-item nav__link" href="<?php echo CommonHelper::generateUrl('account', 'profileInfo'); ?>">
+					<a class="dropdown-item nav__link" href="<?php echo UrlHelper::generateUrl('account', 'profileInfo'); ?>">
 						<?php echo Labels::getLabel('LBL_Hi,', $siteLangId).' '.$userName; ?>
 					</a>
 				</li>
 				<li class="nav__item <?php  if(isset($isUserDashboard) && ($isUserDashboard)) { ?> d-block d-md-none <?php }?>" ><a class="dropdown-item nav__link" data-org-url="<?php echo $dashboardOrgUrl; ?>" href="<?php echo $dashboardUrl; ?>"><?php echo Labels::getLabel("LBL_Dashboard", $siteLangId); ?></a></li>
-				<li class="nav__item logout"><a class="dropdown-item nav__link" data-org-url="<?php echo CommonHelper::generateUrl('GuestUser', 'logout', array(), '', null, false, $getOrgUrl); ?>" href="<?php echo CommonHelper::generateUrl('GuestUser', 'logout'); ?>"><?php echo Labels::getLabel('LBL_Logout', $siteLangId); ?>
+				<li class="nav__item logout"><a class="dropdown-item nav__link" data-org-url="<?php echo UrlHelper::generateUrl('GuestUser', 'logout', array(), '', null, false, $getOrgUrl); ?>" href="<?php echo UrlHelper::generateUrl('GuestUser', 'logout'); ?>"><?php echo Labels::getLabel('LBL_Logout', $siteLangId); ?>
 				</a></li>
 			</ul>
 		  </div>

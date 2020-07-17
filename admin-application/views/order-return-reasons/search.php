@@ -53,7 +53,7 @@ if (count($arr_listing) == 0) {
 $frm = new Form('frmReturnReasonListing', array('id'=>'frmReturnReasonListing'));
 $frm->setFormTagAttribute('class', 'web_form last_td_nowrap actionButtons-js');
 $frm->setFormTagAttribute('onsubmit', 'formAction(this, reloadList ); return(false);');
-$frm->setFormTagAttribute('action', CommonHelper::generateUrl('OrderReturnReasons', 'deleteSelected'));
+$frm->setFormTagAttribute('action', UrlHelper::generateUrl('OrderReturnReasons', 'deleteSelected'));
 $frm->addHiddenField('', 'status');
 
 echo $frm->getFormTag();

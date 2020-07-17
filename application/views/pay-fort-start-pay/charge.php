@@ -45,7 +45,7 @@
          * We add the token + email to the form, and then submit the form.
          */
         function submitFormWithToken(params) {
-            frm = $("<form action='<?php echo CommonHelper::generateFullUrl('PayFortStartPay','payFortCharge'); ?>' method='POST'></form>");
+            frm = $("<form action='<?php echo UrlHelper::generateFullUrl('PayFortStartPay','payFortCharge'); ?>' method='POST'></form>");
             frm.append("<input type='hidden' name='ord' id='ord' value='<?php echo $orderId ?>'>");
             frm.append("<input type='hidden' name='startToken' value='" + params.token.id + "'>");
             frm.append("<input type='hidden' name='startEmail' value='" + params.email + "'>");

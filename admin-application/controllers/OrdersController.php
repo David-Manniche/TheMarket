@@ -146,7 +146,7 @@ class OrdersController extends AdminBaseController
         $order = FatApp::getDb()->fetch($rs);
         if (!$order) {
             Message::addErrorMessage(Labels::getLabel('MSG_Order_Data_Not_Found', $this->adminLangId));
-            FatApp::redirectUser(CommonHelper::generateUrl("Orders"));
+            FatApp::redirectUser(UrlHelper::generateUrl("Orders"));
         }
 
 

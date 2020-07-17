@@ -6,11 +6,11 @@
         <ul class="footerSubCategories">
 			<?php $counter = 1;
 			foreach( $topBrands as $brand ){ ?>
-			<li><a href="<?php echo CommonHelper::generateUrl('Brands', 'view', array($brand['brand_id'])); ?>"><?php echo $brand['brand_name'];?></a>
+			<li><a href="<?php echo UrlHelper::generateUrl('Brands', 'view', array($brand['brand_id'])); ?>"><?php echo $brand['brand_name'];?></a>
 			<?php // echo ( count($topBrands) != $counter ) ? ',': ''; ?>
 			</li>
 			<?php $counter++; } ?>
-			<li><a href="<?php echo CommonHelper::generateUrl('brands'); ?>"><?php echo Labels::getLabel('LBL_View_All', $siteLangId)?></a></li>
+			<li><a href="<?php echo UrlHelper::generateUrl('brands'); ?>"><?php echo Labels::getLabel('LBL_View_All', $siteLangId)?></a></li>
 		</ul>
 	</div>
 <?php }  ?>

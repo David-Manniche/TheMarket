@@ -7,8 +7,8 @@
                 $fileData = AttachedFile::getAttachment(AttachedFile::FILETYPE_FRONT_LOGO, 0, 0, $siteLangId, false);
                 $aspectRatioArr = AttachedFile::getRatioTypeArray($siteLangId);
                 ?>
-                <a href="<?php echo CommonHelper::generateUrl('Blog'); ?>">
-                    <img <?php if ($fileData['afile_aspect_ratio'] > 0) { ?> data-ratio= "<?php echo $aspectRatioArr[$fileData['afile_aspect_ratio']]; ?>" <?php } ?> src="<?php echo CommonHelper::generateFullUrl('Image', 'siteLogo', array($siteLangId), CONF_WEBROOT_FRONT_URL); ?>" alt="<?php echo FatApp::getConfig('CONF_WEBSITE_NAME_'.$siteLangId); ?>" title="<?php echo FatApp::getConfig('CONF_WEBSITE_NAME_'.$siteLangId) ?>">
+                <a href="<?php echo UrlHelper::generateUrl('Blog'); ?>">
+                    <img <?php if ($fileData['afile_aspect_ratio'] > 0) { ?> data-ratio= "<?php echo $aspectRatioArr[$fileData['afile_aspect_ratio']]; ?>" <?php } ?> src="<?php echo UrlHelper::generateFullUrl('Image', 'siteLogo', array($siteLangId), CONF_WEBROOT_FRONT_URL); ?>" alt="<?php echo FatApp::getConfig('CONF_WEBSITE_NAME_'.$siteLangId); ?>" title="<?php echo FatApp::getConfig('CONF_WEBSITE_NAME_'.$siteLangId) ?>">
                 </a>
             </div>
             <div class="main-search">
@@ -33,7 +33,7 @@
                     </form>
                 </div>
             </div>
-            <div class="backto"><a href="<?php echo CommonHelper::generateUrl(); ?>"><?php echo Labels::getLabel('LBL_Shop', $siteLangId).' '. FatApp::getConfig('CONF_WEBSITE_NAME_'.$siteLangId);  ?> <svg class="icn-arrow" x="0px" y="0px" viewBox="0 0 31.49 31.49" style="enable-background:new 0 0 31.49 31.49;" xml:space="preserve" width="512px" height="512px">
+            <div class="backto"><a href="<?php echo UrlHelper::generateUrl(); ?>"><?php echo Labels::getLabel('LBL_Shop', $siteLangId).' '. FatApp::getConfig('CONF_WEBSITE_NAME_'.$siteLangId);  ?> <svg class="icn-arrow" x="0px" y="0px" viewBox="0 0 31.49 31.49" style="enable-background:new 0 0 31.49 31.49;" xml:space="preserve" width="512px" height="512px">
                 <path
                     d="M21.205,5.007c-0.429-0.444-1.143-0.444-1.587,0c-0.429,0.429-0.429,1.143,0,1.571l8.047,8.047H1.111  C0.492,14.626,0,15.118,0,15.737c0,0.619,0.492,1.127,1.111,1.127h26.554l-8.047,8.032c-0.429,0.444-0.429,1.159,0,1.587  c0.444,0.444,1.159,0.444,1.587,0l9.952-9.952c0.444-0.429,0.444-1.143,0-1.571L21.205,5.007z" />
             </svg></a></div>
@@ -58,10 +58,10 @@
         <div class="navigations__overlayx"></div>
         <div class="navigation-wrapper">
             <ul class="navigations <?php echo ($navLinkCount > 4) ? 'justify-content-between' : '' ; ?>">
-                <!--<li><a href="<?php /*echo CommonHelper::generateUrl('Blog'); ?>"><?php echo Labels::getLabel('LBL_Blog_Home', $siteLangId);*/ ?></a> </li>-->
+                <!--<li><a href="<?php /*echo UrlHelper::generateUrl('Blog'); ?>"><?php echo Labels::getLabel('LBL_Blog_Home', $siteLangId);*/ ?></a> </li>-->
                 <?php $mainNavigation = array_slice($categoriesArr, 0, $navLinkCount, true);
                 foreach ($mainNavigation as $id => $cat) { ?>
-                <li><a href="<?php echo CommonHelper::generateUrl('Blog', 'category', array($id)); ?>"><?php echo $cat; ?></a> </li>
+                <li><a href="<?php echo UrlHelper::generateUrl('Blog', 'category', array($id)); ?>"><?php echo $cat; ?></a> </li>
                 <?php }?>
             </ul>
         </div>

@@ -25,7 +25,8 @@ $(document).on("click", ".selectCard-js", function () {
     
     removeCard = function (cardId){
         if( !confirm( langLbl.confirmDelete ) ){ return false; };
-		fcom.ajax(fcom.makeUrl(controller, 'removeCard', [cardId]), '', function(t) {
+        var data = 'cardId=' + cardId; 
+		fcom.ajax(fcom.makeUrl(controller, 'removeCard', []), data, function(t) {
             t = $.parseJSON(t);
             if(1 > t.status){
                 $.systemMessage(t.msg,'alert--danger', false);

@@ -10,11 +10,11 @@ class GuestAdvertiserController extends MyAppController
     public function account()
     {
         if (UserAuthentication::isUserLogged() && (User::isAdvertiser() || User::isSigningUpAdvertiser())) {
-            FatApp::redirectUser(CommonHelper::generateUrl('advertiser'));
+            FatApp::redirectUser(UrlHelper::generateUrl('advertiser'));
         }
         if (UserAuthentication::isUserLogged()) {
             Message::addErrorMessage(Labels::getLabel('MSG_You_are_already_logged_in._Please_logout_and_register_for_advertiser.', $this->siteLangId));
-            FatApp::redirectUser(CommonHelper::generateUrl('account'));
+            FatApp::redirectUser(UrlHelper::generateUrl('account'));
         }
 
         $obj = new Extrapage();
@@ -41,7 +41,7 @@ class GuestAdvertiserController extends MyAppController
             $cPageSrch->addCondition('cpage_id', '=', FatApp::getConfig('CONF_TERMS_AND_CONDITIONS_PAGE', FatUtility::VAR_INT, 0));
             $cpage = FatApp::getDb()->fetch($cPageSrch->getResultSet());
             if (!empty($cpage) && is_array($cpage)) {
-                $termsAndConditionsLinkHref = CommonHelper::generateUrl('Cms', 'view', array($cpage['cpage_id']));
+                $termsAndConditionsLinkHref = UrlHelper::generateUrl('Cms', 'view', array($cpage['cpage_id']));
             } else {
                 $termsAndConditionsLinkHref = 'javascript:void(0)';
             }
@@ -166,7 +166,7 @@ class GuestAdvertiserController extends MyAppController
             }
         } else {
             if (FatApp::getConfig('CONF_WELCOME_EMAIL_REGISTRATION', FatUtility::VAR_INT, 1)) {
-                $link = CommonHelper::generateFullUrl('GuestUser', 'loginForm');
+                $link = UrlHelper::generateFullUrl('GuestUser', 'loginForm');
                 if (!$userObj->userWelcomeEmailRegistration($post, $link, $this->siteLangId)) {
                     Message::addErrorMessage(Labels::getLabel("MSG_WELCOME_EMAIL_COULD_NOT_BE_SENT", $this->siteLangId));
                     $db->rollbackTransaction();

@@ -194,78 +194,6 @@ class CommonHelper extends FatUtility
         return false;
     }
 
-
-    public static function generateUrl($controller = '', $action = '', $queryData = array(), $use_root_url = '', $url_rewriting = null, $encodeUrl = false, $getOriginalUrl = false)
-    {
-        if (self::isThemePreview()) {
-            array_push($queryData, '?theme-preview');
-        }
-        $url = FatUtility::generateUrl($controller, $action, $queryData, $use_root_url, $url_rewriting);
-
-        if (rtrim($use_root_url, '/') === $url) {
-            $url = $use_root_url;
-        }
-
-        if ($getOriginalUrl) {
-            return $url;
-        }
-
-        if (!$use_root_url) {
-            $use_root_url = CONF_WEBROOT_URL;
-        }
-
-        $urlString = trim(ltrim($url, CONF_WEBROOT_FRONTEND), '/');
-        if (FatApp::getConfig('CONF_LANG_SPECIFIC_URL', FatUtility::VAR_INT, 0) && count(LANG_CODES_ARR) > 0 && self::$_lang_id != FatApp::getConfig('CONF_DEFAULT_SITE_LANG', FatUtility::VAR_INT, 1)) {
-            $url = rtrim($url, '/') . '/' . strtolower(LANG_CODES_ARR[self::$_lang_id])  ;
-        }
-        
-        $srch = UrlRewrite::getSearchObject();
-        $srch->addFld('urlrewrite_custom');
-        if (FatApp::getConfig('CONF_LANG_SPECIFIC_URL', FatUtility::VAR_INT, 0)) {
-            $srch->joinTable(Language::DB_TBL, 'LEFT OUTER JOIN', 'urlrewrite_lang_id = language_id');
-            $srch->addMultipleFields(array('if(urlrewrite_lang_id = ' . self::$_lang_id . ', 99 , 1) as priority'));
-            $srch->addOrder('priority', 'desc');
-        }
-        
-        $srch->doNotCalculateRecords();
-        $srch->setPageSize(1);
-        $srch->addCondition(UrlRewrite::DB_TBL_PREFIX . 'original', 'LIKE', $urlString);
-        $rs = $srch->getResultSet();
-        if ($row = FatApp::getDb()->fetch($rs)) {
-            $url = $use_root_url ;
-            $seperator = '';
-            if (FatApp::getConfig('CONF_LANG_SPECIFIC_URL', FatUtility::VAR_INT, 0) && count(LANG_CODES_ARR) > 0 && self::$_lang_id != FatApp::getConfig('CONF_DEFAULT_SITE_LANG', FatUtility::VAR_INT, 1)) {
-                $url .= strtolower(LANG_CODES_ARR[self::$_lang_id]) ;
-                $seperator = '/';
-            }
-            
-            if ($encodeUrl) {
-                $url .=  $seperator . urlencode($row['urlrewrite_custom']);
-            } else {
-                $url .=  $seperator . $row['urlrewrite_custom'];
-            }
-        }
-        return $url;
-    }
-
-    public static function generateFullUrl($controller = '', $action = '', $queryData = array(), $use_root_url = '', $url_rewriting = null, $encodeUrl = false)
-    {
-        $url = static::generateUrl($controller, $action, $queryData, $use_root_url, $url_rewriting);
-        $protocol = (FatApp::getConfig('CONF_USE_SSL') == 1) ? 'https://' : 'http://';
-        if ($encodeUrl) {
-            $url = urlencode($url);
-        }
-        return $protocol . $_SERVER['SERVER_NAME'] . $url;
-    }
-
-    public static function generateNoAuthUrl($model = '', $action = '', $queryData = array(), $use_root_url = '')
-    {
-        $url = CommonHelper::generateUrl($model, $action, $queryData, $use_root_url, false);
-        $url = str_replace('index.php?', 'index_noauth.php?', $url);
-        $protocol = (FatApp::getConfig('CONF_USE_SSL') == 1) ? 'https://' : 'http://';
-        return $protocol . $_SERVER['SERVER_NAME'] . $url;
-    }
-
     public static function underMyDevelopment($sessionId = false)
     {
         if ($sessionId && $sessionId != session_id()) {
@@ -907,34 +835,6 @@ class CommonHelper extends FatUtility
         return trim(self::escapeStringAndAddQuote($string), "'");
     }
 
-    public static function parseYouTubeurl($url)
-    {
-        /*$pattern = '#^(?:https?://)?';    # Optional URL scheme. Either http or https.
-        $pattern .= '(?:www\.)?';         #  Optional www subdomain.
-        $pattern .= '(?:';                #  Group host alternatives:
-        $pattern .=   'youtu\.be/';       #    Either youtu.be,
-        $pattern .=   '|youtube\.com';    #    or youtube.com
-        $pattern .=   '(?:';              #    Group path alternatives:
-        $pattern .=     '/embed/';        #      Either /embed/,
-        $pattern .=     '|/v/';           #      or /v/,
-        $pattern .=     '|/watch\?v=';    #      or /watch?v=,
-        $pattern .=     '|/watch\?.+&v='; #      or /watch?other_param&v=
-        $pattern .=   ')';                #    End path alternatives.
-        $pattern .= ')';                  #  End host alternatives.
-        $pattern .= '([\w-]{11})';        # 11 characters (Length of Youtube video ids).
-        $pattern .= '(?:.+)?$#x';         # Optional other ending URL parameters.
-
-        preg_match($pattern, $url, $matches);*/
-
-        preg_match("/(?:[\/]|v=)([a-zA-Z0-9-_]{11})/", $url, $matches);
-
-        return (isset($matches[1])) ? $matches[1] : false;
-    }
-    public static function getCurrUrl()
-    {
-        return self::getUrlScheme() . $_SERVER["REQUEST_URI"];
-    }
-
     public static function isThemePreview()
     {
         if (strpos(urldecode($_SERVER['REQUEST_URI']), '?theme-preview') > 0) {
@@ -946,13 +846,13 @@ class CommonHelper extends FatUtility
     public static function getnavigationUrl($type, $nav_url = '', $nav_cpage_id = 0, $nav_category_id = 0, $getOriginalUrl = false)
     {
         if ($type == NavigationLinks::NAVLINK_TYPE_CMS) {
-            $url = CommonHelper::generateUrl('cms', 'view', array($nav_cpage_id), '', null, false, $getOriginalUrl);
+            $url = UrlHelper::generateUrl('cms', 'view', array($nav_cpage_id), '', null, false, $getOriginalUrl);
         } elseif ($type == NavigationLinks::NAVLINK_TYPE_EXTERNAL_PAGE) {
             $url = str_replace('{SITEROOT}', CONF_WEBROOT_URL, $nav_url);
             $url = str_replace('{siteroot}', CONF_WEBROOT_URL, $url);
             $url = CommonHelper::processURLString($url);
         } elseif ($type == NavigationLinks::NAVLINK_TYPE_CATEGORY_PAGE) {
-            $url = CommonHelper::generateUrl('category', 'view', array($nav_category_id), '', null, false, $getOriginalUrl);
+            $url = UrlHelper::generateUrl('category', 'view', array($nav_category_id), '', null, false, $getOriginalUrl);
         }
 
         if (self::isThemePreview()) {
@@ -962,26 +862,11 @@ class CommonHelper extends FatUtility
         return $url;
     }
 
-    public static function getUrlScheme()
-    {
-        $pageURL = 'http';
-        if (isset($_SERVER['HTTPS']) && $_SERVER["HTTPS"] == "on") {
-            $pageURL .= "s";
-        }
-        $pageURL .= "://";
-        if ($_SERVER["SERVER_PORT"] != "80") {
-            $pageURL .= $_SERVER["SERVER_NAME"] . ":" . $_SERVER["SERVER_PORT"];
-        } else {
-            $pageURL .= $_SERVER["SERVER_NAME"];
-        }
-        return $pageURL;
-    }
-
     public static function redirectUserReferer($returnUrl = false)
     {
         if (!defined('REFERER')) {
-            if (self::getCurrUrl() == $_SERVER['HTTP_REFERER'] || empty($_SERVER['HTTP_REFERER'])) {
-                define('REFERER', CommonHelper::generateUrl('/'));
+            if (UrlHelper::getCurrUrl() == $_SERVER['HTTP_REFERER'] || empty($_SERVER['HTTP_REFERER'])) {
+                define('REFERER', UrlHelper::generateUrl('/'));
             } else {
                 define('REFERER', $_SERVER['HTTP_REFERER']);
             }
@@ -1657,11 +1542,11 @@ class CommonHelper extends FatUtility
 
     public static function getPaymentCancelPageUrl()
     {
-        return  CommonHelper::generateFullUrl("Custom", "paymentCancel");
+        return  UrlHelper::generateFullUrl("Custom", "paymentCancel");
     }
     public static function getPaymentFailurePageUrl()
     {
-        return  CommonHelper::generateFullUrl("Custom", "paymentFailed");
+        return  UrlHelper::generateFullUrl("Custom", "paymentFailed");
     }
 
     public static function minifyHtml($input)
@@ -1950,7 +1835,7 @@ class CommonHelper extends FatUtility
         $originalUrl = $url;
         $url = preg_replace('/https:/', 'http:', $url, 1);
         /* [ Check url rewritten by the system and "/" discarded in url rewrite*/
-        $systemUrl = CommonHelper::generateFullUrl();
+        $systemUrl = UrlHelper::generateFullUrl();
         $systemUrl = preg_replace('/https:/', 'http:', $systemUrl, 1);
         $systemUrl = substr($url, strlen($systemUrl));
         $systemUrl = rtrim($systemUrl, '/');

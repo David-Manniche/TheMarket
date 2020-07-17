@@ -101,11 +101,15 @@ class FatTemplate
             }
         }
         /* Include CSS Ends */
+        $landCode = '';
+        if (FatApp::getConfig('CONF_LANG_SPECIFIC_URL', FatUtility::VAR_INT, 0) && count(LANG_CODES_ARR) > 0 && SYSTEM_LANG_ID  != FatApp::getConfig('CONF_DEFAULT_SITE_LANG', FatUtility::VAR_INT, 1)) {
+            $landCode = strtolower(LANG_CODES_ARR[SYSTEM_LANG_ID]) . '/';
+        }
 
         /* Include JS */
         $str .= '<script type="text/javascript">
 				var siteConstants = ' . json_encode(array(
-                'webroot' => CONF_WEBROOT_URL,
+                'webroot' => CONF_WEBROOT_URL. $landCode,
                 'webroot_traditional' => CONF_WEBROOT_URL_TRADITIONAL,
                 'rewritingEnabled' => (CONF_URL_REWRITING_ENABLED ? '1' : '0'),
         )) . ';

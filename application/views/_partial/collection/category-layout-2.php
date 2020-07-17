@@ -10,7 +10,7 @@
 
             <?php if ($row['totCategories'] > Collections::LIMIT_CATEGORY_LAYOUT2) { ?>
             <div class="section__action"> <a
-                    href="<?php echo CommonHelper::generateUrl('Collections', 'View', array($row['collection_id']));?>"
+                    href="<?php echo UrlHelper::generateUrl('Collections', 'View', array($row['collection_id']));?>"
                     class="link"><?php echo Labels::getLabel('LBL_View_More', $siteLangId); ?></a>
             </div>
             <?php }  ?>
@@ -26,7 +26,7 @@
                                 title="<?php echo (!empty($fileRow['afile_attribute_title'])) ? $fileRow['afile_attribute_title'] : $category['prodcat_name']; ?>">
                         </div>
                         <div class="cat-tittle"> <a
-                                href="<?php echo CommonHelper::generateUrl('Category', 'View', array($category['prodcat_id'] )); ?>">
+                                href="<?php echo UrlHelper::generateUrl('Category', 'View', array($category['prodcat_id'] )); ?>">
                                 <?php echo $category['prodcat_name']; ?></a>
                         </div>
                         <div class="cat-list">
@@ -34,14 +34,14 @@
                                 <?php $i=1; 
                                 foreach ($category['subCategories'] as $subCat) { ?>
                                     <li> <a
-                                            href="<?php echo CommonHelper::generateUrl('Category', 'View', array($subCat['prodcat_id'] )); ?>"><?php echo $subCat['prodcat_name']; ?></a>
+                                            href="<?php echo UrlHelper::generateUrl('Category', 'View', array($subCat['prodcat_id'] )); ?>"><?php echo $subCat['prodcat_name']; ?></a>
                                     </li>
                                     <?php $i++; if ($i > 5) {
                                         break;
                                     } 
                                 } ?>
                             <?php /* if($i > 5) { ?>
-                                                <li class="last-link"> <a href="<?php echo CommonHelper::generateUrl('Category'); ?>" class="link"><?php echo Labels::getLabel('LBL_View_More',$siteLangId); ?></a> </li>
+                                                <li class="last-link"> <a href="<?php echo UrlHelper::generateUrl('Category'); ?>" class="link"><?php echo Labels::getLabel('LBL_View_More',$siteLangId); ?></a> </li>
                                                 <?php } */ ?>
                         </ul>
                     </div>

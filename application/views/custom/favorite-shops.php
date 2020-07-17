@@ -4,7 +4,7 @@
                <div class="col-md-8 col-sm-7">
                    <div class="cell">
                        <div class="cell__left">
-                           <div class="avtar avtar--rounded"><img alt="<?php echo $userInfo['user_name'];?>" src="<?php echo CommonHelper::generateUrl('Image','user',array($userInfo['user_id'],'thumb','1'));?>"></div>
+                           <div class="avtar avtar--rounded"><img alt="<?php echo $userInfo['user_name'];?>" src="<?php echo UrlHelper::generateUrl('Image','user',array($userInfo['user_id'],'thumb','1'));?>"></div>
                        </div>
                        <div class="cell__right">
                            <div class="avtar__info">

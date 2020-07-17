@@ -40,16 +40,16 @@ if (isset($stripe)) {
                            
                              $.ajax({
                               type: "POST",
-                              url: '<?php echo CommonHelper::generateUrl('StripePay', 'StripeSuccess') ?>',
+                              url: '<?php echo UrlHelper::generateUrl('StripePay', 'StripeSuccess') ?>',
                               data: data,
                               success: function(data){
-                                location.href = '<?php echo CommonHelper::generateUrl('custom', 'paymentSuccess', array($order_id), CONF_WEBROOT_URL); ?>';
+                                location.href = '<?php echo UrlHelper::generateUrl('custom', 'paymentSuccess', array($order_id), CONF_WEBROOT_URL); ?>';
                               }
                             }); 
                             
                         } else if (result.paymentIntent.status === 'requires_payment_method') {
 							// Authentication failed, prompt the customer to enter another payment method
-							location.href = '<?php echo CommonHelper::generateUrl('custom', 'paymentFailed'); ?>';
+							location.href = '<?php echo UrlHelper::generateUrl('custom', 'paymentFailed'); ?>';
                         }
                     }
               }); 

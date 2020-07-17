@@ -3,7 +3,7 @@
 <ul class="mt-0" id="<?php if ($canEdit) { ?>sortable<?php } ?>">
     <li id="<?php echo $images['afile_id']; ?>">
         <div class="logoWrap">
-            <div class="logothumb"> <img src="<?php echo CommonHelper::generateUrl('Category', $imageFunction, array($images['afile_record_id'], $images['afile_lang_id'], "THUMB", $images['afile_screen']), CONF_WEBROOT_FRONT_URL); ?>"
+            <div class="logothumb"> <img src="<?php echo UrlHelper::generateUrl('Category', $imageFunction, array($images['afile_record_id'], $images['afile_lang_id'], "THUMB", $images['afile_screen']), CONF_WEBROOT_FRONT_URL); ?>"
                     title="<?php echo $images['afile_name'];?>" alt="<?php echo $images['afile_name'];?>"> <?php if ($canEdit) { ?> <a class="deleteLink white" href="javascript:void(0);" title="Delete <?php echo $images['afile_name'];?>"
                     onclick="deleteImage(<?php echo $images['afile_id']; ?>, <?php echo $images['afile_record_id']; ?>, '<?php echo $imageType; ?>', <?php echo $images['afile_lang_id']; ?>, <?php echo $images['afile_screen']; ?> );" class="delete"><i class="ion-close-round"></i></a>
                 <?php } ?>

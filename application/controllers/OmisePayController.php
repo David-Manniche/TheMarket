@@ -34,7 +34,7 @@ class OmisePayController extends PaymentController
 
     private function getPaymentForm($orderId)
     {
-        $frm = new Form('frmPaymentForm', array('id' => 'frmPaymentForm', 'action' => CommonHelper::generateUrl('OmisePay', 'send', array($orderId)), 'class' => "form form--normal"));
+        $frm = new Form('frmPaymentForm', array('id' => 'frmPaymentForm', 'action' => UrlHelper::generateUrl('OmisePay', 'send', array($orderId)), 'class' => "form form--normal"));
         $frm->addRequiredField(Labels::getLabel('LBL_ENTER_CREDIT_CARD_NUMBER', $this->siteLangId), 'cc_number');
         $frm->addRequiredField(Labels::getLabel('LBL_CARD_HOLDER_NAME', $this->siteLangId), 'cc_owner');
         $data['months'] = applicationConstants::getMonthsArr($this->siteLangId);
@@ -131,7 +131,7 @@ class OmisePayController extends PaymentController
                         'customer' => $customer->offsetGet('id'),
                         // 'card'        => $token_ref,
                         'livemode' => $livemode,
-                        'return_uri' => CommonHelper::generateFullUrl('OmisePay', 'success', array($orderId))
+                        'return_uri' => UrlHelper::generateFullUrl('OmisePay', 'success', array($orderId))
                     )
                 );
                 if (!$response) {
@@ -162,7 +162,7 @@ class OmisePayController extends PaymentController
                 if (!$orderPaymentObj->addOrderPayment($this->settings["plugin_code"], $response->offsetGet('transaction'), $orderPaymentAmount, Labels::getLabel("LBL_Received_Payment", $this->siteLangId), json_encode((array) $response))) {
                     $error = Labels::getLabel('LBL_INVALID_ACTION', $this->siteLangId);
                 } else {
-                    $json['redirect'] = CommonHelper::generateUrl('custom', 'paymentSuccess', array($orderId));
+                    $json['redirect'] = UrlHelper::generateUrl('custom', 'paymentSuccess', array($orderId));
                 }
                 /* End Recording Payment in DB */
             } catch (OmiseNotFoundException $e) {
@@ -202,7 +202,7 @@ class OmisePayController extends PaymentController
             if (!$orderPaymentObj->addOrderPayment($this->settings["plugin_code"], $charge->offsetGet('transaction'), $orderPaymentAmount, Labels::getLabel("LBL_Received_Payment", $this->siteLangId), json_encode((array) $charge))) {
                 $error = Labels::getLabel('LBL_INVALID_ACTION', $this->siteLangId);
             } else {
-                FatApp::redirectUser(CommonHelper::generateUrl('custom', 'paymentSuccess', array($orderId)));
+                FatApp::redirectUser(UrlHelper::generateUrl('custom', 'paymentSuccess', array($orderId)));
             }
             /* End Recording Payment in DB */
         } catch (OmiseNotFoundException $e) {

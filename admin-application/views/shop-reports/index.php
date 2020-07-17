@@ -31,7 +31,7 @@
                                     [
                                         'attr' => [
                                             'href' => 'javascript:void(0)',
-                                            'onclick' => "window.location.replace('" . CommonHelper::generateUrl('Shops') . "')",
+                                            'onclick' => "window.location.replace('" . UrlHelper::generateUrl('Shops') . "')",
                                             'title' => Labels::getLabel('LBL_Back_to_Shops', $adminLangId)
                                         ],
                                         'label' => '<i class="fas fa-arrow-left"></i>'

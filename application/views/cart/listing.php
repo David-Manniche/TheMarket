@@ -6,8 +6,8 @@ defined('SYSTEM_INIT') or die('Invalid Usage.'); ?>
             <?php if (count($products)) { ?>
             <ul class="cart-list">
                 <?php foreach ($products as $product) { 
-                        $productUrl = CommonHelper::generateUrl('Products', 'View', array($product['selprod_id']));
-                        $shopUrl = CommonHelper::generateUrl('Shops', 'View', array($product['shop_id']));
+                        $productUrl = UrlHelper::generateUrl('Products', 'View', array($product['selprod_id']));
+                        $shopUrl = UrlHelper::generateUrl('Shops', 'View', array($product['shop_id']));
                         $imageUrl = UrlHelper::getCachedUrl(UrlHelper::generateFileUrl('image', 'product', array($product['product_id'], "THUMB", $product['selprod_id'], 0, $siteLangId)), CONF_IMG_CACHE_TIME, '.jpg');               
                ?>
                 <li class="cart-list-item <?php echo md5($product['key']); ?> <?php echo (!$product['in_stock']) ? 'disabled' : ''; ?>">
@@ -129,7 +129,7 @@ defined('SYSTEM_INIT') or die('Invalid Usage.'); ?>
                         </tr>
                         <?php }?>
                         <?php $netChargeAmt = $cartSummary['cartTotal'] + $cartSummary['cartTaxTotal'] - ((0 < $cartSummary['cartVolumeDiscount'])?$cartSummary['cartVolumeDiscount']:0);?>
-                        <?php $netChargeAmt = $netChargeAmt - ((0 < $cartSummary['cartDiscounts']['coupon_discount_total'])?$cartSummary['cartDiscounts']['coupon_discount_total']:0);?>
+                        <?php $netChargeAmt = $netChargeAmt - ((isset($cartSummary['cartDiscounts']['coupon_discount_total']) && 0 < $cartSummary['cartDiscounts']['coupon_discount_total'])?$cartSummary['cartDiscounts']['coupon_discount_total']:0);?>
                         <?php if (isset($cartSummary['taxOptions']) && !empty($cartSummary['taxOptions'])) { 
                         foreach($cartSummary['taxOptions'] as $taxName => $taxVal){ ?>
                         <tr>
@@ -151,7 +151,7 @@ defined('SYSTEM_INIT') or die('Invalid Usage.'); ?>
                         <tr>
                             <td colspan="2">
                                 <div class="buy-group">
-                                    <a class="btn btn-primary" href="<?php echo CommonHelper::generateUrl(); ?>"><?php echo Labels::getLabel('LBL_Shop_More', $siteLangId); ?></a>
+                                    <a class="btn btn-primary" href="<?php echo UrlHelper::generateUrl(); ?>"><?php echo Labels::getLabel('LBL_Shop_More', $siteLangId); ?></a>
                                     <a class="btn btn-outline-primary" href="javascript:void(0)" onclick="goToCheckout()"><?php echo Labels::getLabel('LBL_Checkout', $siteLangId); ?></a>
 
                                 </div>

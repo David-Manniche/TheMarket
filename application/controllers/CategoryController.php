@@ -95,10 +95,10 @@ class CategoryController extends MyAppController
             'postedData' => $get,
             'recordCount' => $srch->recordCount(),
             'pageTitle' => $category['prodcat_name'],
-            'canonicalUrl' => CommonHelper::generateFullUrl('Category', 'view', array($categoryId)),
+            'canonicalUrl' => UrlHelper::generateFullUrl('Category', 'view', array($categoryId)),
             'productSearchPageType' => SavedSearchProduct::PAGE_CATEGORY,
             'recordId' => $categoryId,
-            'bannerListigUrl' => CommonHelper::generateFullUrl('Banner', 'categories'),
+            'bannerListigUrl' => UrlHelper::generateFullUrl('Banner', 'categories'),
             'siteLangId' => $this->siteLangId,
             'showBreadcrumb' => true,
         );
@@ -296,8 +296,8 @@ class CategoryController extends MyAppController
             $result[$key] = $val;
             $isLastChildCategory = ProductCategory::isLastChildCategory($val['prodcat_id']);
             $result[$key]['isLastChildCategory'] = $isLastChildCategory ? 1 : 0;
-            $result[$key]['icon'] = CommonHelper::generateFullUrl('Category', 'icon', array($val['prodcat_id'], $langId, 'COLLECTION_PAGE'));
-            $result[$key]['image'] = CommonHelper::generateFullUrl('Category', 'banner', array($val['prodcat_id'], $langId, 'MOBILE', applicationConstants::SCREEN_MOBILE));
+            $result[$key]['icon'] = UrlHelper::generateFullUrl('Category', 'icon', array($val['prodcat_id'], $langId, 'COLLECTION_PAGE'));
+            $result[$key]['image'] = UrlHelper::generateFullUrl('Category', 'banner', array($val['prodcat_id'], $langId, 'MOBILE', applicationConstants::SCREEN_MOBILE));
             $childernArr = array();
             if (!empty($val['children'])) {
                 $array = array_values($val['children']);
@@ -323,8 +323,8 @@ class CategoryController extends MyAppController
         
         /*  if (true ===  MOBILE_APP_API_CALL && 0 == $parentId) {
              foreach ($categoriesDataArr as $key => $value) {
-                 $categoriesDataArr[$key]['icon'] = CommonHelper::generateFullUrl('Category', 'icon', array($value['prodcat_id'], $this->siteLangId, 'COLLECTION_PAGE'));
-                 $categoriesDataArr[$key]['image'] = CommonHelper::generateFullUrl('Category', 'banner', array($value['prodcat_id'] , $this->siteLangId, 'MOBILE', applicationConstants::SCREEN_MOBILE));
+                 $categoriesDataArr[$key]['icon'] = UrlHelper::generateFullUrl('Category', 'icon', array($value['prodcat_id'], $this->siteLangId, 'COLLECTION_PAGE'));
+                 $categoriesDataArr[$key]['image'] = UrlHelper::generateFullUrl('Category', 'banner', array($value['prodcat_id'] , $this->siteLangId, 'MOBILE', applicationConstants::SCREEN_MOBILE));
              }
          } else {
              if (false ===  MOBILE_APP_API_CALL) {

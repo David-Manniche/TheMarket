@@ -10,7 +10,7 @@ class AffiliateBaseController extends LoggedUserController
                 Message::addErrorMessage(Labels::getLabel("LBL_Unauthorised_access", $this->siteLangId));
                 FatUtility::dieWithError(Message::getHtml());
             }
-            FatApp::redirectUser(CommonHelper::generateUrl('account'));
+            FatApp::redirectUser(UrlHelper::generateUrl('account'));
         }
         $_SESSION[UserAuthentication::SESSION_ELEMENT_NAME]['activeTab'] = 'AFFILIATE';
         $this->set('bodyClass', 'is--dashboard');

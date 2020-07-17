@@ -464,19 +464,19 @@ class SellerOrdersController extends AdminBaseController
 
         if (1 > $aFileId || 1 > $recordId) {
             Message::addErrorMessage(Labels::getLabel('LBL_Invalid_Request', $this->adminLangId));
-            FatApp::redirectUser(CommonHelper::generateUrl('SellerOrders'));
+            FatApp::redirectUser(UrlHelper::generateUrl('SellerOrders'));
         }
 
         $file_row = AttachedFile::getAttributesById($aFileId);
 
         if ($file_row == false || ($file_row['afile_record_id'] != $recordId)) {
             Message::addErrorMessage(Labels::getLabel("MSG_INVALID_ACCESS", $this->adminLangId));
-            FatApp::redirectUser(CommonHelper::generateUrl('SellerOrders'));
+            FatApp::redirectUser(UrlHelper::generateUrl('SellerOrders'));
         }
 
         if (!file_exists(CONF_UPLOADS_PATH . $file_row['afile_physical_path'])) {
             Message::addErrorMessage(Labels::getLabel('LBL_File_not_found', $this->adminLangId));
-            FatApp::redirectUser(CommonHelper::generateUrl('SellerOrders'));
+            FatApp::redirectUser(UrlHelper::generateUrl('SellerOrders'));
         }
 
         $fileName = isset($file_row['afile_physical_path']) ? $file_row['afile_physical_path'] : '';

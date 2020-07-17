@@ -4,12 +4,12 @@ $onSubmitFunctionName = isset($onSubmitFunctionName) ? $onSubmitFunctionName : '
 //$frm->setRequiredStarPosition(Form::FORM_REQUIRED_STAR_POSITION_NONE);
 $loginFrm->setFormTagAttribute('class', 'form');
 $loginFrm->setValidatorJsObjectName('loginValObj');
-$loginFrm->setFormTagAttribute('action', CommonHelper::generateUrl('GuestUser', 'login'));
+$loginFrm->setFormTagAttribute('action', UrlHelper::generateUrl('GuestUser', 'login'));
 $loginFrm->setFormTagAttribute('onsubmit', $onSubmitFunctionName . '(this, loginValObj); return(false);');
 $loginFrm->developerTags['colClassPrefix'] = 'col-lg-12 col-md-12 col-sm-';
 $loginFrm->developerTags['fld_default_col'] = 12;
 $fldforgot = $loginFrm->getField('forgot');
-$fldforgot->value = '<a href="' . CommonHelper::generateUrl('GuestUser', 'forgotPasswordForm') . '"
+$fldforgot->value = '<a href="' . UrlHelper::generateUrl('GuestUser', 'forgotPasswordForm') . '"
     class="link">' . Labels::getLabel('LBL_Forgot_Password?', $siteLangId) . '</a>';
 $fldSubmit = $loginFrm->getField('btn_submit');
 $fldSubmit->addFieldTagAttribute('class', 'btn-block'); ?> 
@@ -76,7 +76,7 @@ if (!empty($socialLoginApis) && 0 < count($socialLoginApis)) { ?>
         <ul> 
             <?php  foreach ($socialLoginApis as $plugin) { ?>
                 <li>
-                    <a href="<?php echo CommonHelper::generateUrl($plugin['plugin_code']); ?>" class="btn btn--social btn--<?php echo $plugin['plugin_code'];?>">
+                    <a href="<?php echo UrlHelper::generateUrl($plugin['plugin_code']); ?>" class="btn btn--social btn--<?php echo $plugin['plugin_code'];?>">
                         <i class="icn">
                             <img src="<?php echo CONF_WEBROOT_URL; ?>images/retina/social-icons/<?php echo $plugin['plugin_code']; ?>.svg">
                         </i>

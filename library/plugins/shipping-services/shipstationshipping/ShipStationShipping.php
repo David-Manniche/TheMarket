@@ -318,7 +318,7 @@ class ShipStationShipping extends ShippingServicesBase
         $this->item['lineItemKey'] = $op['op_product_name'];
         $this->item['sku'] = $op['op_selprod_sku'];
         $this->item['name'] = $op['op_selprod_title'];
-        $this->item['imageUrl'] = CommonHelper::generateFullUrl('image', 'product', array($op['selprod_product_id'], "THUMB", $op['op_selprod_id'], 0, $this->langId));
+        $this->item['imageUrl'] = UrlHelper::generateFullUrl('image', 'product', array($op['selprod_product_id'], "THUMB", $op['op_selprod_id'], 0, $this->langId));
         $this->item['weight'] = $this->order['weight'];
         $this->item['quantity'] = $op['op_qty'];
         $this->item['unitPrice'] = $op['op_unit_price'];

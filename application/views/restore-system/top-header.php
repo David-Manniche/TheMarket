@@ -37,7 +37,7 @@
 
         <li class="<?php echo $admin; ?>">
             <a title="Admin"
-                href="<?php echo CommonHelper::generateUrl($adminUrl); ?>">
+                href="<?php echo UrlHelper::generateUrl($adminUrl); ?>">
                 <i class="icn icn--admin">
                     <svg class="svg">
                         <use xlink:href="<?php echo CONF_WEBROOT_FRONTEND; ?>images/retina/sprite.svg#admin"
@@ -49,7 +49,7 @@
         </li>
         <li class="<?php echo $desktopSite; ?>">
             <a title="Marketplace" 
-                href="<?php echo CommonHelper::generateUrl('', '', array(), CONF_WEBROOT_FRONTEND); ?>">
+                href="<?php echo UrlHelper::generateUrl('', '', array(), CONF_WEBROOT_FRONTEND); ?>">
                 <i class="icn icn--desktop">
                     <svg class="svg">
                         <use xlink:href="<?php echo CONF_WEBROOT_FRONTEND; ?>images/retina/sprite.svg#desktop"
@@ -61,7 +61,7 @@
         </li>
        <?php /*  <li class="<?php echo $tabSite; ?>">
             <a title="Marketplace Tab View"
-                href="<?php echo CommonHelper::generateUrl('SiteDemo', 'tab', array(), CONF_WEBROOT_FRONTEND); ?>">
+                href="<?php echo UrlHelper::generateUrl('SiteDemo', 'tab', array(), CONF_WEBROOT_FRONTEND); ?>">
                 <i class="icn icn--tab">
                     <svg class="svg">
                         <use xlink:href="<?php echo CONF_WEBROOT_FRONTEND; ?>images/retina/sprite.svg#tab"
@@ -73,7 +73,7 @@
         </li> */ ?>
         <li class="<?php echo $mobileSite; ?>">
             <a title="Marketplace Mobile View"
-                href="<?php echo CommonHelper::generateUrl('SiteDemo', 'mobile', array(), CONF_WEBROOT_FRONTEND); ?>">
+                href="<?php echo UrlHelper::generateUrl('SiteDemo', 'mobile', array(), CONF_WEBROOT_FRONTEND); ?>">
                 <i class="icn icn--mobile">
                     <svg class="svg">
                         <use xlink:href="<?php echo CONF_WEBROOT_FRONTEND; ?>images/retina/sprite.svg#mobile"

@@ -16,7 +16,7 @@
                             'otherButtons' => [
                                 [
                                     'attr' => [
-                                        'href' => CommonHelper::generateUrl('SubscriptionOrders'),
+                                        'href' => UrlHelper::generateUrl('SubscriptionOrders'),
                                         'title' => Labels::getLabel('LBL_Back_To_Subscription_Orders', $adminLangId)
                                     ],
                                     'label' => '<i class="fas fa-arrow-left"></i>'

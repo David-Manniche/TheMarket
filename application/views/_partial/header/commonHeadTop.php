@@ -1,7 +1,7 @@
 <?php defined('SYSTEM_INIT') or die('Invalid Usage.');
 //$_SESSION['geo_location'] = true;
 if ($controllerName != 'GuestUser' && $controllerName != 'Error') {
-    $_SESSION['referer_page_url'] = CommonHelper::getCurrUrl();
+    $_SESSION['referer_page_url'] = UrlHelper::getCurrUrl();
 }
 $htmlClass = '';
 $actionName = FatApp::getAction();
@@ -24,7 +24,7 @@ $additionalAttributes = (CommonHelper::getLayoutDirection() == 'rtl') ? 'directi
 <!-- favicon ================================================== -->
 <meta name="theme-color" content="#<?php echo $themeDetail[ThemeColor::TYPE_PRIMARY]; ?>">
 <meta name="msapplication-TileColor" content="#ffffff">
-<meta name="msapplication-TileImage" content="<?php echo CommonHelper::generateUrl('Image', 'appleTouchIcon', array($siteLangId, '144-144')); ?>">
+<meta name="msapplication-TileImage" content="<?php echo UrlHelper::generateUrl('Image', 'appleTouchIcon', array($siteLangId, '144-144')); ?>">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">    
 <meta name="msapplication-navbutton-color" content="#<?php echo $themeDetail[ThemeColor::TYPE_PRIMARY]; ?>">
@@ -41,7 +41,7 @@ if (isset($socialShareContent) && !empty($socialShareContent)) { ?>
 <meta property="og:image"
     content="<?php echo $socialShareContent['image']; ?>" />
 <meta property="og:url"
-    content="<?php echo CommonHelper::getCurrUrl(); ?>" />
+    content="<?php echo UrlHelper::getCurrUrl(); ?>" />
 <meta property="og:description"
     content="<?php echo $socialShareContent['description']; ?>" />
 <!-- ]   -->

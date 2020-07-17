@@ -8,7 +8,7 @@ class AdvertiserBaseController extends LoggedUserController
 
         if (!User::isAdvertiser()) {
             Message::addErrorMessage(Labels::getLabel("LBL_Unauthorised_access", $this->siteLangId));
-            FatApp::redirectUser(CommonHelper::generateUrl('account'));
+            FatApp::redirectUser(UrlHelper::generateUrl('account'));
         }
         $_SESSION[UserAuthentication::SESSION_ELEMENT_NAME]['activeTab'] = 'Ad';
         $this->set('bodyClass', 'is--dashboard');

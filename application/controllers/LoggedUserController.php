@@ -17,7 +17,7 @@ class LoggedUserController extends MyAppController
                 Message::addErrorMessage(Labels::getLabel('MSG_Session_seems_to_be_expired', CommonHelper::getLangId()));
                 FatUtility::dieWithError(Message::getHtml());
             }
-            FatApp::redirectUser(CommonHelper::generateUrl('GuestUser', 'logout'));
+            FatApp::redirectUser(UrlHelper::generateUrl('GuestUser', 'logout'));
         }
 
         if (0 < $userInfo['user_parent']){
@@ -28,7 +28,7 @@ class LoggedUserController extends MyAppController
                     Message::addErrorMessage(Labels::getLabel('MSG_Session_seems_to_be_expired', CommonHelper::getLangId()));
                     FatUtility::dieWithError(Message::getHtml());
                 }
-                FatApp::redirectUser(CommonHelper::generateUrl('GuestUser', 'logout'));
+                FatApp::redirectUser(UrlHelper::generateUrl('GuestUser', 'logout'));
             }
         }
 
@@ -52,11 +52,11 @@ class LoggedUserController extends MyAppController
         }
 
         if ((!UserAuthentication::isGuestUserLogged() && $userInfo['credential_verified'] != 1) && !($_SESSION[User::ADMIN_SESSION_ELEMENT_NAME] && $_SESSION[User::ADMIN_SESSION_ELEMENT_NAME] > 0)) {
-            FatApp::redirectUser(CommonHelper::generateUrl('GuestUser', 'logout'));
+            FatApp::redirectUser(UrlHelper::generateUrl('GuestUser', 'logout'));
         }
 
         if (UserAuthentication::getLoggedUserId() < 1) {
-            FatApp::redirectUser(CommonHelper::generateUrl('GuestUser', 'logout'));
+            FatApp::redirectUser(UrlHelper::generateUrl('GuestUser', 'logout'));
         }
 
         /* Thease actions are used while configuring Phone from "Configure Email/Phone Page". */
@@ -76,7 +76,7 @@ class LoggedUserController extends MyAppController
                 LibHelper::dieJsonError($message);
             }
             Message::addErrorMessage($message);
-            FatApp::redirectUser(CommonHelper::generateUrl('GuestUser', 'configureEmail'));
+            FatApp::redirectUser(UrlHelper::generateUrl('GuestUser', 'configureEmail'));
         }
         
         $this->userParentId = (0 < $userInfo['user_parent']) ? $userInfo['user_parent'] : UserAuthentication::getLoggedUserId();

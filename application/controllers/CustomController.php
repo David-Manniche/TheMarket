@@ -27,7 +27,7 @@ class CustomController extends MyAppController
                 LibHelper::dieJsonError(current($message));
             }
             Message::addErrorMessage($message);
-            FatApp::redirectUser(CommonHelper::generateUrl('Custom', 'ContactUs'));
+            FatApp::redirectUser(UrlHelper::generateUrl('Custom', 'ContactUs'));
         }
 
         if (false === MOBILE_APP_API_CALL && !CommonHelper::verifyCaptcha()) {
@@ -36,7 +36,7 @@ class CustomController extends MyAppController
                 FatUtility::dieJsonError($message);
             }
             Message::addErrorMessage($message);
-            FatApp::redirectUser(CommonHelper::generateUrl('Custom', 'ContactUs'));
+            FatApp::redirectUser(UrlHelper::generateUrl('Custom', 'ContactUs'));
         }
 
         $email = explode(',', FatApp::getConfig("CONF_CONTACT_EMAIL"));
@@ -62,7 +62,7 @@ class CustomController extends MyAppController
                 $this->_template->render();
             }
 
-            FatApp::redirectUser(CommonHelper::generateUrl('Custom', 'ContactUs'));
+            FatApp::redirectUser(UrlHelper::generateUrl('Custom', 'ContactUs'));
         }
     }
 
@@ -377,13 +377,13 @@ class CustomController extends MyAppController
             $rs = $srch->getResultSet();
             $records = FatApp::getDb()->fetch($rs);
 
-            $nodes[] = array('title' => Labels::getLabel('LBL_Faq', $this->siteLangId), 'href' => CommonHelper::generateUrl('custom', 'Faq'));
+            $nodes[] = array('title' => Labels::getLabel('LBL_Faq', $this->siteLangId), 'href' => UrlHelper::generateUrl('custom', 'Faq'));
             $nodes[] = array('title' => $records['faqcat_name'] );
 
             break;
 
         case 'faq':
-            $nodes[] = array('title' => Labels::getLabel('LBL_Faq', $this->siteLangId), 'href' => CommonHelper::generateUrl('custom', 'Faq'));
+            $nodes[] = array('title' => Labels::getLabel('LBL_Faq', $this->siteLangId), 'href' => UrlHelper::generateUrl('custom', 'Faq'));
             break;
 
         default:
@@ -395,7 +395,7 @@ class CustomController extends MyAppController
 
     public function paymentFailed()
     {
-        $textMessage = sprintf(Labels::getLabel('MSG_customer_failure_order', $this->siteLangId), CommonHelper::generateUrl('custom', 'contactUs'));
+        $textMessage = sprintf(Labels::getLabel('MSG_customer_failure_order', $this->siteLangId), UrlHelper::generateUrl('custom', 'contactUs'));
         $this->set('textMessage', $textMessage);
         if (!FatApp::getConfig('CONF_MAINTAIN_CART_ON_PAYMENT_FAILURE', FatUtility::VAR_INT, applicationConstants::NO) && isset($_SESSION['cart_order_id']) && $_SESSION['cart_order_id'] != '') {
             $cartOrderId = $_SESSION['cart_order_id'];
@@ -408,7 +408,7 @@ class CustomController extends MyAppController
             $db = FatApp::getDb();
             if (!$db->deleteRecords('tbl_user_cart', array('smt' => '`usercart_user_id`=? and `usercart_type`=?', 'vals' => array(UserAuthentication::getLoggedUserId(), CART::TYPE_PRODUCT)))) {
                 Message::addErrorMessage($db->getError());
-                FatApp::redirectUser(CommonHelper::generateFullUrl('Checkout'));
+                FatApp::redirectUser(UrlHelper::generateFullUrl('Checkout'));
             }
             /* $cartObj = new Cart();
             foreach ($cartInfo as $key => $quantity) {
@@ -447,7 +447,7 @@ class CustomController extends MyAppController
             $db = FatApp::getDb();
             if (!$db->deleteRecords('tbl_user_cart', array('smt' => '`usercart_user_id`=? and `usercart_type`=?', 'vals' => array(UserAuthentication::getLoggedUserId(), CART::TYPE_PRODUCT)))) {
                 Message::addErrorMessage($db->getError());
-                FatApp::redirectUser(CommonHelper::generateFullUrl('Checkout'));
+                FatApp::redirectUser(UrlHelper::generateFullUrl('Checkout'));
             }
 
             /* $cartObj = new Cart();
@@ -465,10 +465,10 @@ class CustomController extends MyAppController
             $cartObj->updateUserCart(); */
         }
         if (isset($_SESSION['order_type']) && $_SESSION['order_type'] == Orders::ORDER_SUBSCRIPTION) {
-            FatApp::redirectUser(CommonHelper::generateFullUrl('SubscriptionCheckout'));
+            FatApp::redirectUser(UrlHelper::generateFullUrl('SubscriptionCheckout'));
         }
 
-        FatApp::redirectUser(CommonHelper::generateFullUrl('Checkout'));
+        FatApp::redirectUser(UrlHelper::generateFullUrl('Checkout'));
     }
 
     public function paymentSuccess($orderId)
@@ -494,23 +494,23 @@ class CustomController extends MyAppController
         
         if ($orderInfo['order_type'] == Orders::ORDER_PRODUCT) {
             $searchReplaceArray = array(
-              '{account}' => '<a href="' . CommonHelper::generateUrl('buyer') . '">' . Labels::getLabel('MSG_My_Account', $this->siteLangId) . '</a>',
-              '{history}' => '<a href="' . CommonHelper::generateUrl('buyer', 'orders') . '">' . Labels::getLabel('MSG_History', $this->siteLangId) . '</a>',
-              '{contactus}' => '<a href="' . CommonHelper::generateUrl('custom', 'contactUs') . '">' . Labels::getLabel('MSG_Store_Owner', $this->siteLangId) . '</a>',
+              '{account}' => '<a href="' . UrlHelper::generateUrl('buyer') . '">' . Labels::getLabel('MSG_My_Account', $this->siteLangId) . '</a>',
+              '{history}' => '<a href="' . UrlHelper::generateUrl('buyer', 'orders') . '">' . Labels::getLabel('MSG_History', $this->siteLangId) . '</a>',
+              '{contactus}' => '<a href="' . UrlHelper::generateUrl('custom', 'contactUs') . '">' . Labels::getLabel('MSG_Store_Owner', $this->siteLangId) . '</a>',
             );
             $textMessage = Labels::getLabel('MSG_customer_success_order_{account}_{history}_{contactus}', $this->siteLangId);
             $textMessage = str_replace(array_keys($searchReplaceArray), array_values($searchReplaceArray), $textMessage);
         } elseif ($orderInfo['order_type'] == Orders::ORDER_SUBSCRIPTION) {
             $searchReplaceArray = array(
-              '{account}' => '<a href="' . CommonHelper::generateUrl('seller') . '">' . Labels::getLabel('MSG_My_Account', $this->siteLangId) . '</a>',
-              '{subscription}' => '<a href="' . CommonHelper::generateUrl('seller', 'subscriptions') . '">' . Labels::getLabel('MSG_My_Subscription', $this->siteLangId) . '</a>',
+              '{account}' => '<a href="' . UrlHelper::generateUrl('seller') . '">' . Labels::getLabel('MSG_My_Account', $this->siteLangId) . '</a>',
+              '{subscription}' => '<a href="' . UrlHelper::generateUrl('seller', 'subscriptions') . '">' . Labels::getLabel('MSG_My_Subscription', $this->siteLangId) . '</a>',
             );
             $textMessage = Labels::getLabel('MSG_subscription_success_order_{account}_{subscription}', $this->siteLangId);
             $textMessage = str_replace(array_keys($searchReplaceArray), array_values($searchReplaceArray), $textMessage);
         } elseif ($orderInfo['order_type'] == Orders::ORDER_WALLET_RECHARGE) {
             $searchReplaceArray = array(
-              '{account}' => '<a href="' . CommonHelper::generateUrl('account') . '">' . Labels::getLabel('MSG_My_Account', $this->siteLangId) . '</a>',
-              '{credits}' => '<a href="' . CommonHelper::generateUrl('account', 'credits') . '">' . Labels::getLabel('MSG_My_Credits', $this->siteLangId) . '</a>',
+              '{account}' => '<a href="' . UrlHelper::generateUrl('account') . '">' . Labels::getLabel('MSG_My_Account', $this->siteLangId) . '</a>',
+              '{credits}' => '<a href="' . UrlHelper::generateUrl('account', 'credits') . '">' . Labels::getLabel('MSG_My_Credits', $this->siteLangId) . '</a>',
             );
             $textMessage = Labels::getLabel('MSG_wallet_success_order_{account}_{credits}', $this->siteLangId);
             $textMessage = str_replace(array_keys($searchReplaceArray), array_values($searchReplaceArray), $textMessage);
@@ -519,7 +519,7 @@ class CustomController extends MyAppController
         }
 
         if (!UserAuthentication::isUserLogged() && !UserAuthentication::isGuestUserLogged()) {
-            $textMessage = str_replace('{contactus}', '<a href="' . CommonHelper::generateUrl('custom', 'contactUs') . '">' . Labels::getLabel('MSG_Store_Owner', $this->siteLangId) . '</a>', Labels::getLabel('MSG_guest_success_order_{contactus}', $this->siteLangId));
+            $textMessage = str_replace('{contactus}', '<a href="' . UrlHelper::generateUrl('custom', 'contactUs') . '">' . Labels::getLabel('MSG_Store_Owner', $this->siteLangId) . '</a>', Labels::getLabel('MSG_guest_success_order_{contactus}', $this->siteLangId));
         }
 
         /* Clear cart upon successfull redirection from Payment gateway[ */
@@ -635,7 +635,7 @@ class CustomController extends MyAppController
 
         if (!FatApp::getConfig("CONF_ENABLE_REFERRER_MODULE")) {
             Message::addErrorMessage(Labels::getLabel("LBL_Refferal_module_no_longer_active", $this->siteLangId));
-            FatApp::redirectUser(CommonHelper::generateUrl());
+            FatApp::redirectUser(UrlHelper::generateUrl());
         }
         $userSrchObj = User::getSearchObject();
         $userSrchObj->doNotCalculateRecords();
@@ -766,9 +766,9 @@ class CustomController extends MyAppController
         $privacyPolicyLink = FatApp::getConfig('CONF_PRIVACY_POLICY_PAGE', FatUtility::VAR_STRING, '');
         $termsAndConditionsLink = FatApp::getConfig('CONF_TERMS_AND_CONDITIONS_PAGE', FatUtility::VAR_STRING, '');
         $data = array(
-            'privacyPolicyLink' => CommonHelper::generateFullUrl('cms', 'view', array($privacyPolicyLink)),
-            'faqLink' => CommonHelper::generateFullUrl('custom', 'faq'),
-            'termsAndConditionsLink' => CommonHelper::generateFullUrl('cms', 'view', array($termsAndConditionsLink)),
+            'privacyPolicyLink' => UrlHelper::generateFullUrl('cms', 'view', array($privacyPolicyLink)),
+            'faqLink' => UrlHelper::generateFullUrl('custom', 'faq'),
+            'termsAndConditionsLink' => UrlHelper::generateFullUrl('cms', 'view', array($termsAndConditionsLink)),
         );
         $this->set('data', $data);
         $this->_template->render();

@@ -26,7 +26,7 @@ class AdminBaseController extends FatController
         $urlController = implode('-', $arr);
         $controllerName = ucfirst(FatUtility::dashed2Camel($urlController));
         if ($controllerName != 'AdminGuest') {
-            $_SESSION['admin_referer_page_url'] = CommonHelper::getCurrUrl();
+            $_SESSION['admin_referer_page_url'] = UrlHelper::getCurrUrl();
         }
 
         if (!AdminAuthentication::isAdminLogged()) {
@@ -36,7 +36,7 @@ class AdminBaseController extends FatController
                 Message::addErrorMessage(Labels::getLabel('LBL_Your_session_seems_to_be_expired', CommonHelper::getLangId()));
                 FatUtility::dieWithError(Message::getHtml());
             }
-            FatApp::redirectUser(CommonHelper::generateUrl('AdminGuest', 'loginForm'));
+            FatApp::redirectUser(UrlHelper::generateUrl('AdminGuest', 'loginForm'));
         }
 
         $this->objPrivilege = AdminPrivilege::getInstance();
@@ -209,7 +209,7 @@ class AdminBaseController extends FatController
         } else {
             $arr = explode('-', FatUtility::camel2dashed($action));
             $action = ucwords(implode(' ', $arr));
-            $nodes[] = array('title' => $className, 'href' => CommonHelper::generateUrl($urlController));
+            $nodes[] = array('title' => $className, 'href' => UrlHelper::generateUrl($urlController));
             $nodes[] = array('title' => $action);
         }
         return $nodes;

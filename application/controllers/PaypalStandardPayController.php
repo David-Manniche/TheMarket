@@ -61,8 +61,8 @@ class PaypalStandardPayController extends PaymentController
         $frm->addHiddenField('', 'no_note', 1);
         $frm->addHiddenField('', 'no_shipping', 1);
         $frm->addHiddenField('', 'charset', "utf-8");
-        $frm->addHiddenField('', 'return', CommonHelper::generateFullUrl('custom', 'paymentSuccess', array($orderId)));
-        $frm->addHiddenField('', 'notify_url', CommonHelper::generateNoAuthUrl('PaypalStandardPay', 'callback'));
+        $frm->addHiddenField('', 'return', UrlHelper::generateFullUrl('custom', 'paymentSuccess', array($orderId)));
+        $frm->addHiddenField('', 'notify_url', UrlHelper::generateNoAuthUrl('PaypalStandardPay', 'callback'));
         $frm->addHiddenField('', 'cancel_return', CommonHelper::getPaymentCancelPageUrl());
         $frm->addHiddenField('', 'paymentaction', 'sale');  // authorization or sale
         $frm->addHiddenField('', 'custom', $orderId);

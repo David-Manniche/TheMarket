@@ -11,7 +11,7 @@ defined('SYSTEM_INIT') or die('Invalid Usage.');
 							//$frm->setFormTagAttribute ( 'onsubmit', 'submitForm(this); return(false);' );
 							$frm->setFormTagAttribute ( 'class', 'web_form' );
 							$frm->developerTags['fld_default_col'] = 6;
-							$frm->setFormTagAttribute ( 'action', CommonHelper::generateUrl("configurations","action") );
+							$frm->setFormTagAttribute ( 'action', UrlHelper::generateUrl("configurations","action") );
 							echo $frm->getFormTag();
 							echo $table->getHtml();
 							echo $frm->getExternalJS();

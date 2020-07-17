@@ -32,7 +32,7 @@
 							<?php echo Labels::getLabel('LBL_This_Month',$adminLangId); ?>- <strong>
 								<?php echo CommonHelper::displayMoneyFormat($dashboardInfo["stats"]["totalSales"][2]["totalsales"]);?></strong></p>
 						<?php if($objPrivilege->canViewOrders(AdminAuthentication::getLoggedAdminId(), true)){?>
-						<a href="<?php echo CommonHelper::generateUrl('orders');?>" class="stats__link"></a>
+						<a href="<?php echo UrlHelper::generateUrl('orders');?>" class="stats__link"></a>
 						<?php }?>
 
 					</div>
@@ -50,7 +50,7 @@
 							<?php echo Labels::getLabel('LBL_This_Month',$adminLangId); ?>- <strong>
 								<?php echo CommonHelper::displayMoneyFormat($dashboardInfo["stats"]["totalSales"][2]["totalcommission"])?></span></strong></p>
 						<?php if($objPrivilege->canViewSalesReport(AdminAuthentication::getLoggedAdminId(), true)){?>
-						<a href="<?php echo CommonHelper::generateUrl('salesReport');?>" class="stats__link"></a>
+						<a href="<?php echo UrlHelper::generateUrl('salesReport');?>" class="stats__link"></a>
 						<?php }?>
 					</div>
 				</div>
@@ -67,7 +67,7 @@
 							<?php echo Labels::getLabel('LBL_This_Month',$adminLangId); ?>- <strong>
 								<?php echo $dashboardInfo["stats"]["totalUsers"]['30']; ?></strong></p>
 						<?php if($objPrivilege->canViewUsers(AdminAuthentication::getLoggedAdminId(), true)){?>
-						<a href="<?php echo CommonHelper::generateUrl('users');?>" class="stats__link"></a>
+						<a href="<?php echo UrlHelper::generateUrl('users');?>" class="stats__link"></a>
 						<?php }?>
 					</div>
 				</div>
@@ -84,7 +84,7 @@
 							<?php echo Labels::getLabel('LBL_This_Month',$adminLangId); ?>- <strong>
 								<?php echo $dashboardInfo["stats"]["totalShops"]['30']?></strong></p>
 						<?php if($objPrivilege->canViewShops(AdminAuthentication::getLoggedAdminId(), true)){?>
-						<a href="<?php echo CommonHelper::generateUrl('shops');?>" class="stats__link"></a>
+						<a href="<?php echo UrlHelper::generateUrl('shops');?>" class="stats__link"></a>
 						<?php }?>
 					</div>
 				</div>
@@ -483,7 +483,7 @@
 				<div class="section box--white">
 					<div class="sectionhead">
 						<?php if($objPrivilege->canViewOrders(AdminAuthentication::getLoggedAdminId(), true)){?>
-						<a class="themebtn btn-default btn-sm" target='_new' href="<?php echo CommonHelper::generateUrl('Orders'); ?>">
+						<a class="themebtn btn-default btn-sm" target='_new' href="<?php echo UrlHelper::generateUrl('Orders'); ?>">
 							<?php echo Labels::getLabel('LBL_View_All',$adminLangId); ?></a>
 						<?php }?>
 						<h4>

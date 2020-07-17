@@ -15,7 +15,7 @@ $additionalAttributes = (CommonHelper::getLayoutDirection() == 'rtl') ? 'directi
 		$extendEditorJs	= 'false';
 	}
 	echo $str = '<script type="text/javascript">
-		var SITE_ROOT_URL = "' . CommonHelper::generateFullUrl('','',array(),CONF_WEBROOT_FRONT_URL) . '" ;
+		var SITE_ROOT_URL = "' . UrlHelper::generateFullUrl('','',array(),CONF_WEBROOT_FRONT_URL) . '" ;
 		var langLbl = ' . json_encode(
 			$jsVariables
 		) . ';
@@ -30,7 +30,7 @@ $additionalAttributes = (CommonHelper::getLayoutDirection() == 'rtl') ? 'directi
 
 
 	 if( AttachedFile::getAttachment( AttachedFile::FILETYPE_FAVICON, 0, 0, $adminLangId ) ){ ?>
-	<link rel="shortcut icon" href="<?php echo CommonHelper::generateUrl('image', 'favicon', array($adminLangId), CONF_WEBROOT_FRONT_URL) ?>">
+	<link rel="shortcut icon" href="<?php echo UrlHelper::generateUrl('image', 'favicon', array($adminLangId), CONF_WEBROOT_FRONT_URL) ?>">
 	<?php } ?>
 
 	<link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,500i,700,700i,900,900i" rel="stylesheet">

@@ -5,12 +5,12 @@ $addressFrm->developerTags['colClassPrefix'] = 'col-sm-4 col-md-';
 $addressFrm->developerTags['fld_default_col'] = 4;
 $addressFrm->setFormTagAttribute('onsubmit', 'setupAddress(this); return(false);');
 
-$countryFld = $addressFrm->getField('ua_country_id');
-$countryFld->setFieldTagAttribute('id', 'ua_country_id');
-$countryFld->setFieldTagAttribute('onChange', 'getCountryStates(this.value,'.$stateId.',\'#ua_state_id\')');
+$countryFld = $addressFrm->getField('addr_country_id');
+$countryFld->setFieldTagAttribute('id', 'addr_country_id');
+$countryFld->setFieldTagAttribute('onChange', 'getCountryStates(this.value,'.$stateId.',\'#addr_state_id\')');
 
-$stateFld = $addressFrm->getField('ua_state_id');
-$stateFld->setFieldTagAttribute('id', 'ua_state_id');
+$stateFld = $addressFrm->getField('addr_state_id');
+$stateFld->setFieldTagAttribute('id', 'addr_state_id');
 $cancelFld = $addressFrm->getField('btn_cancel');
 $cancelFld->setFieldTagAttribute('onclick', 'searchAddresses()');
 $cancelFld->setFieldTagAttribute('class', 'btn btn-outline-primary btn-block');
@@ -27,9 +27,9 @@ $submitFld->developerTags['noCaptionTag'] = true;
         <li>
             <a href="javascript:void(0);" onClick="searchAddresses()"><?php echo Labels::getLabel('LBL_My_Addresses', $siteLangId);?></a>
         </li>
-<?php //if ($ua_id > 0) { ?>
+<?php //if ($addr_id > 0) { ?>
         <li class="is-active">
-            <a href="javascript:void(0);" onClick="addAddressForm(<?php echo $ua_id; ?>)">
+            <a href="javascript:void(0);" onClick="addAddressForm(<?php echo $addr_id; ?>)">
             <?php echo Labels::getLabel('LBL_Update_Address', $siteLangId); ?>
             </a>
         </li>
@@ -45,6 +45,6 @@ $submitFld->developerTags['noCaptionTag'] = true;
 <div class="container--addresses"> <?php echo $addressFrm->getFormHtml();?> </div>
 <script language="javascript">
     $(document).ready(function() {
-        getCountryStates($("#ua_country_id").val(), <?php echo $stateId ;?>, '#ua_state_id');
+        getCountryStates($("#addr_country_id").val(), <?php echo $stateId ;?>, '#addr_state_id');
     });
 </script>

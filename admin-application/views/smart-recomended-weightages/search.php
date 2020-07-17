@@ -25,7 +25,7 @@ foreach ($arr_listing as $sn=>$row){
 			break;
 			/* case 'brand_logo':
 				$td->appendElement('plaintext', array(), 
-				'<img src="'.CommonHelper::generateUrl('image','brand',array($row['brand_id'],'THUMB'),CONF_WEBROOT_FRONT_URL).'">',true);
+				'<img src="'.UrlHelper::generateUrl('image','brand',array($row['brand_id'],'THUMB'),CONF_WEBROOT_FRONT_URL).'">',true);
 			break; */
 			case 'swsetting_name':				
 				$key = str_replace('#',' ',$row[$key]);
