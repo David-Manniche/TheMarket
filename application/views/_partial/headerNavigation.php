@@ -30,7 +30,7 @@
                     }
                 } ?>
             <ul class="navigations <?php echo ($navLinkCount > 4) ? 'justify-content-between' : '' ; ?>">
-                <li class="navchild categories ">
+                <?php /*?> <li class="navchild categories ">
                     <a href="#">
                         Categories <i class="c-hamburger js-hamburger"> <span
                                 class="c-hamburger__line c-hamburger__line--top"></span>
@@ -336,7 +336,7 @@
 
 
 
-                </li>
+                </li> <?php */?>
                 <?php
                 foreach ($headerNavigation as $nav) {
                     if ($nav['pages']) {
@@ -482,15 +482,8 @@
                                         </li>
                                         <?php } ?>
                                     </ul>
-<<<<<<< HEAD
-                                    <?php /* <a data-org-url="<?php echo CommonHelper::generateUrl('category', '', array(), '', null, false, $getOrgUrl); ?>"
-                                    href="<?php echo CommonHelper::generateUrl('category');?>"
-                                    class="btn btn-sm btn--secondary ripplelink
-                                    "><?php Labels::getLabel('LBL_View_All_Categories', $siteLangId);?></a> */ ?>
-=======
                                     <?php /* <a data-org-url="<?php echo UrlHelper::generateUrl('category', '', array(), '', null, false, $getOrgUrl); ?>" href="<?php echo UrlHelper::generateUrl('category');?>"
                                         class="btn btn--sm btn--secondary ripplelink "><?php Labels::getLabel('LBL_View_All_Categories', $siteLangId);?></a> */ ?>
->>>>>>> 655c819257168d0186dec6415eb3ee3918be66c8
                                 </div>
                             </div>
                         </div>

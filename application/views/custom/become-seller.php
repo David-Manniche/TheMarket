@@ -219,11 +219,7 @@
 				</div>
 				<span class="gap"></span>
 				<div class="align--center">
-<<<<<<< HEAD
-	<a href="<?php echo CommonHelper::generateUrl('Custom','faq'); ?>" class = "btn btn-primary btn--h-large"><?php echo Labels::getLabel( 'LBL_View_All', $siteLangId)?></a>
-=======
 	<a href="<?php echo UrlHelper::generateUrl('Custom','faq'); ?>" class = "btn btn--primary btn--h-large"><?php echo Labels::getLabel( 'LBL_View_All', $siteLangId)?></a>
->>>>>>> 655c819257168d0186dec6415eb3ee3918be66c8
 </div>
 			</div>
 		</div>
