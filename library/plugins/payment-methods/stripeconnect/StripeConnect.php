@@ -859,11 +859,13 @@ class StripeConnect extends PaymentMethodBase
         } else {
             $this->resp = $this->doRequest(self::REQUEST_CREATE_CUSTOMER, $requestParam);
         }
-
+        
         if (false === $this->resp) {
             return false;
         }
-        $this->customerId = $this->resp->id;
+        
+        $this->customerId = empty($this->getCustomerId()) ? $this->resp->id : $this->getCustomerId();
+
         return $this->updateUserMeta('stripe_customer_id', $this->customerId);
     }
 

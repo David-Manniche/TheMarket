@@ -420,7 +420,27 @@ trait SellerProducts
         $this->set('msg', Labels::getLabel('LBL_Product_Setup_Successful', $this->siteLangId));
         $this->_template->render(false, false, 'json-success.php');
     }
-
+    
+    private function deleteSelProdWithoutOptions($productId, $userId)
+    {
+        $productId = FatUtility::int($productId);
+        $userId = FatUtility::int($userId);
+        if (!$productId || !$userId) {
+            FatUtility::dieJsonError(Labels::getLabel('LBL_Invalid_Request', CommonHelper::getLangId()));
+        }
+        $srch = SellerProduct::getSearchObject();
+        $srch->joinTable(SellerProduct::DB_TBL_SELLER_PROD_OPTIONS, 'LEFT JOIN', 'selprod_id = selprodoption_selprod_id', 'tspo');
+        $srch->addCondition('selprod_product_id', '=', $productId);
+        $srch->addCondition('selprod_user_id', '=', $userId);
+        $srch->addCondition('selprod_deleted', '=', applicationConstants::NO);
+        $srch->addMultipleFields(array('selprod_id', 'selprodoption_optionvalue_id'));
+        $rs = $srch->getResultSet();
+        $row = FatApp::getDb()->fetch($rs);
+        if (empty($row['selprodoption_optionvalue_id'])) {
+            $this->deleteSellerProduct($row['selprod_id']);
+        }
+    }
+    
     public function setUpMultipleSellerProducts()
     {
         $this->userPrivilege->canEditProducts(UserAuthentication::getLoggedUserId());
@@ -435,8 +455,8 @@ trait SellerProducts
         unset($post['selprod_id']);
         $data_to_be_save = $post;
         $useShopPolicy = FatApp::getPostedData('use_shop_policy', FatUtility::VAR_INT, 0);
+        $this->deleteSelProdWithoutOptions($productId, $this->userParentId);
         $error = false;
-        
         $selprod_id = 0;
         foreach ($optionCombinations as $optionKey => $optionValue) {
             /* Check if product already added for this option [ */
