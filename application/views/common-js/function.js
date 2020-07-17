@@ -98,7 +98,7 @@ $(document).ready(function () {
 		setSlider();
 	});
 
-	if (CONF_ENABLE_GEO_LOCATION){
+	if (CONF_ENABLE_GEO_LOCATION && isUserDashboard == 0){
 		accessLocation();
 	}
 });
