@@ -33,6 +33,7 @@ $(document).on('keyup', "input[name='product_name']", function(){
 
 $(document).on('keyup', "input[name='google_product_category']", function(){
     var currObj = $(this);
+    var parentForm = currObj.closest('form').attr('id');
     if('' != currObj.val()){
         currObj.siblings('ul.dropdown-menu').remove();
         currObj.autocomplete({'source': function(request, response) {

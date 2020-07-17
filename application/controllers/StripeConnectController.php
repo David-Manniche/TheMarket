@@ -127,9 +127,16 @@ class StripeConnectController extends PaymentMethodBaseController
      */
     public function callback()
     {
-        $code = FatApp::getQueryStringData('code');
-        if (false == $this->stripeConnect->accessAccountId($code)) {
-            $this->setError();
+        $error = FatApp::getQueryStringData('error');
+        $errorDescription = FatApp::getQueryStringData('error_description');
+        if (!empty($error)) {
+            $msg = $error . ' : ' . $errorDescription; 
+            Message::addErrorMessage($msg);
+        } else {
+            $code = FatApp::getQueryStringData('code');
+            if (false == $this->stripeConnect->accessAccountId($code)) {
+                $this->setError();
+            }
         }
         FatApp::redirectUser(UrlHelper::generateUrl('seller', 'shop', [self::KEY_NAME]));
     }

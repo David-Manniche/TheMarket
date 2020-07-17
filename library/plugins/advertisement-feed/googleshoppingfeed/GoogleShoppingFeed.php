@@ -5,12 +5,22 @@ class GoogleShoppingFeed extends AdvertisementFeedBase
     public const KEY_NAME = 'GoogleShoppingFeed';
     private $merchantId;
 
-    public function __construct()
+    public $requiredKeys = [
+        'client_id',
+        'client_secret',
+        'developer_key',
+        'channel',
+    ];
+
+    public function __construct(int $langId)
     {
-        $this->merchantId = $this->getUserMeta(__CLASS__ . '_merchantId');
-        if (empty($this->merchantId)) {
-            $this->setupMerchantDetail();
-        }
+        $this->langId = $langId;
+        $this->merchantId = $this->getUserMeta(self::KEY_NAME . '_merchantId');
+    }
+
+    public function getKeys(string $column = '')
+    {
+        return !empty($column) && isset($this->settings[$column]) ? $this->settings[$column] : $this->settings;
     }
 
     public static function ageGroup($langId)
@@ -29,7 +39,7 @@ class GoogleShoppingFeed extends AdvertisementFeedBase
         $client = new Google_Client();
         $serviceAccountDetail = $this->getUserMeta('service_account');
         if (empty($serviceAccountDetail)) {
-            $this->error = Labels::getLabel('LBL_SERVICE_ACCOUNT_DETAIL_NOT_FOUND', CommonHelper::getLangId());
+            $this->error = Labels::getLabel('LBL_SERVICE_ACCOUNT_DETAIL_NOT_FOUND', $this->langId);
             return false;
         }
 
@@ -61,7 +71,7 @@ class GoogleShoppingFeed extends AdvertisementFeedBase
             $product->setItemGroupId($prodDetail['abprod_item_group_identifier']);
             $product->setBrand(ucfirst($prodDetail['brand_name']));
             $product->setLink(UrlHelper::generateFullUrl('Products', 'View', array($prodDetail['selprod_id'])));
-            $product->setImageLink(UrlHelper::generateFullUrl('image', 'product', array($prodDetail['product_id'], "MEDIUM", $prodDetail['selprod_id'], 0, CommonHelper::getLangId())));
+            $product->setImageLink(UrlHelper::generateFullUrl('image', 'product', array($prodDetail['product_id'], "MEDIUM", $prodDetail['selprod_id'], 0, $this->langId)));
             $product->setContentLanguage(strtolower($prodDetail['language_code']));
             $product->setTargetCountry(strtoupper($prodDetail['country_code']));
             $product->setChannel($channel);
@@ -136,7 +146,7 @@ class GoogleShoppingFeed extends AdvertisementFeedBase
     public function publishBatch($data)
     {
         $status = empty($data) || !is_array($data) ? false : true;
-        $msg = $status ? Labels::getLabel('MSG_PUBLISHED_SUCESSFULLY', CommonHelper::getLangId()) : Labels::getLabel('MSG_INVALID_REQUEST', CommonHelper::getLangId());
+        $msg = $status ? Labels::getLabel('MSG_PUBLISHED_SUCESSFULLY', $this->langId) : Labels::getLabel('MSG_INVALID_REQUEST', $this->langId);
         $data = $status ? $this->doRequest($data) : '';
 
         return [
