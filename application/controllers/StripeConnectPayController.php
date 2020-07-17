@@ -3,7 +3,7 @@
 class StripeConnectPayController extends PaymentController
 {
     public const KEY_NAME = 'StripeConnect';
-    private $stripeConnect;
+    public $stripeConnect;
     private $liveMode = '';
     private $paymentAmount = 0;
     private $sourceId = '';
