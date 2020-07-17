@@ -97,6 +97,10 @@ $(document).ready(function () {
 		return false;
 		setSlider();
 	});
+
+	if (CONF_ENABLE_GEO_LOCATION){
+		accessLocation();
+	}
 });
 
 /* for search form */
@@ -355,8 +359,7 @@ $(document).ready(function(){
         return;
       }
       if (!activated) h.classList.add('is-active') && (activated = true);
-
-      console.log('Step : '+(++count));
+     
       animating = true;
 
       setAnim('running');
