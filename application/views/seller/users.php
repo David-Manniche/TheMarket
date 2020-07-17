@@ -12,13 +12,13 @@
     $keyFld->developerTags['noCaptionTag'] = true;
 
     $submitBtnFld = $frmSearch->getField('btn_submit');
-    $submitBtnFld->setFieldTagAttribute('class', 'btn--block');
+    $submitBtnFld->setFieldTagAttribute('class', 'btn-block');
     $submitBtnFld->setWrapperAttribute('class', 'col-lg-3');
     $submitBtnFld->developerTags['col'] = 3;
     $submitBtnFld->developerTags['noCaptionTag'] = true;
 
     $cancelBtnFld = $frmSearch->getField('btn_clear');
-    $cancelBtnFld->setFieldTagAttribute('class', 'btn--block');
+    $cancelBtnFld->setFieldTagAttribute('class', 'btn-block');
     $cancelBtnFld->setWrapperAttribute('class', 'col-lg-3');
     $cancelBtnFld->developerTags['col'] = 3;
     $cancelBtnFld->developerTags['noCaptionTag'] = true;
@@ -42,10 +42,10 @@
                                     <div class="col-lg-8">
                                         <?php
                                         $submitFld = $frmSearch->getField('btn_submit');
-                                        $submitFld->setFieldTagAttribute('class', 'btn--block btn btn--primary');
+                                        $submitFld->setFieldTagAttribute('class', 'btn btn-primary btn-block ');
 
                                         $fldClear= $frmSearch->getField('btn_clear');
-                                        $fldClear->setFieldTagAttribute('class', 'btn--block btn btn-outline-primary');
+                                        $fldClear->setFieldTagAttribute('class', 'btn btn-outline-primary btn-block');
                                         echo $frmSearch->getFormHtml();
                                         ?>
                                     </div>
@@ -64,9 +64,9 @@
                                 </div>
                                 <div class="col-auto">
                                     <div class="btn-group">
-                                        <a class="btn btn-outline-primary btn--sm formActionBtn-js formActions-css" title="<?php echo Labels::getLabel('LBL_Activate', $siteLangId); ?>" onclick="toggleBulkStatues(1)" href="javascript:void(0)"><?php echo Labels::getLabel('LBL_Activate', $siteLangId); ?></a>
-                                        <a class="btn btn-outline-primary btn--sm formActionBtn-js formActions-css" title="<?php echo Labels::getLabel('LBL_Deactivate', $siteLangId); ?>" onclick="toggleBulkStatues(0)" href="javascript:void(0)"><?php echo Labels::getLabel('LBL_Deactivate', $siteLangId); ?></a>
-                                        <a class="btn btn-outline-primary btn--sm" title="<?php echo Labels::getLabel('LBL_Add_User', $siteLangId); ?>" onclick="addUserForm(0)" href="javascript:void(0)"><?php echo Labels::getLabel('LBL_Add_User', $siteLangId); ?></a>
+                                        <a class="btn btn-outline-primary btn-sm formActionBtn-js formActions-css" title="<?php echo Labels::getLabel('LBL_Activate', $siteLangId); ?>" onclick="toggleBulkStatues(1)" href="javascript:void(0)"><?php echo Labels::getLabel('LBL_Activate', $siteLangId); ?></a>
+                                        <a class="btn btn-outline-primary btn-sm formActionBtn-js formActions-css" title="<?php echo Labels::getLabel('LBL_Deactivate', $siteLangId); ?>" onclick="toggleBulkStatues(0)" href="javascript:void(0)"><?php echo Labels::getLabel('LBL_Deactivate', $siteLangId); ?></a>
+                                        <a class="btn btn-outline-primary btn-sm" title="<?php echo Labels::getLabel('LBL_Add_User', $siteLangId); ?>" onclick="addUserForm(0)" href="javascript:void(0)"><?php echo Labels::getLabel('LBL_Add_User', $siteLangId); ?></a>
                                     </div>
                                 </div>
                             </div>

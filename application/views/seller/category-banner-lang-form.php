@@ -1,6 +1,6 @@
 <?php defined('SYSTEM_INIT') or die('Invalid Usage.');
 $category_banner_fld = $mediaFrm->getField('category_banner');
-$category_banner_fld->addFieldTagAttribute('class','btn btn--primary btn--sm');
+$category_banner_fld->addFieldTagAttribute('class','btn btn-primary btn-sm');
 
 $langFld = $mediaFrm->getField('lang_id');
 $langFld->setfieldTagAttribute('onChange', "categoryBannerLangForm(" . $prodCatId . ", this.value);");
@@ -28,7 +28,7 @@ $haveImage = AttachedFile::getAttachment( AttachedFile::FILETYPE_CATEGORY_BANNER
 					<?php if( $haveImage ){ ?>
 					<div class="profile__pic"><img src="<?php echo UrlHelper::generateUrl( 'Category', 'sellerBanner', array( $shop_id, $prodCatId, $formLangId, 'WIDE'));?>" alt="<?php echo Labels::getLabel('LBL_Banner', $siteLangId);?>"></div>
 					<?php
-					$category_banner_fld->htmlAfterField = '<a class = "btn btn--primary btn--sm" href="javascript:void(0);" onClick="removeCategoryBanner('. $prodCatId .', ' . $formLangId . ')">'.Labels::getLabel('LBL_Remove',$siteLangId).'</a>';
+					$category_banner_fld->htmlAfterField = '<a class = "btn btn-primary btn-sm" href="javascript:void(0);" onClick="removeCategoryBanner('. $prodCatId .', ' . $formLangId . ')">'.Labels::getLabel('LBL_Remove',$siteLangId).'</a>';
 					} ?>
 
 					<div class="btngroup--fix">

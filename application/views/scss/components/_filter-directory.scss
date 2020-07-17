@@ -85,9 +85,7 @@
     overflow-y: auto;
     li {
         margin: 0.5rem 0;
-        -webkit-margin-end: 10px;
-        -moz-margin-end: 10px;
-        margin-inline-end: 10px;
+        margin-#{$end-direction}: 10px;
         font-size: 0.8rem;
     }
     .filter-directory_list_title {

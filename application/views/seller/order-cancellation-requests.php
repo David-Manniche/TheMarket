@@ -31,12 +31,12 @@ $ocrequestDateToFld->developerTags['noCaptionTag'] = true;
 
 $submitBtnFld = $frmOrderCancellationRequestsSrch->getField('btn_submit');
 $submitBtnFld->setWrapperAttribute('class', 'col-lg-2');
-$submitBtnFld->setFieldTagAttribute('class', 'btn--block');
+$submitBtnFld->setFieldTagAttribute('class', 'btn-block');
 $submitBtnFld->developerTags['col'] = 2;
 $submitBtnFld->developerTags['noCaptionTag'] = true;
 
 $cancelBtnFld = $frmOrderCancellationRequestsSrch->getField('btn_clear');
-$cancelBtnFld->setFieldTagAttribute('class', 'btn--block');
+$cancelBtnFld->setFieldTagAttribute('class', 'btn-block');
 $cancelBtnFld->setWrapperAttribute('class', 'col-lg-2');
 $cancelBtnFld->developerTags['col'] = 2;
 $cancelBtnFld->developerTags['noCaptionTag'] = true;
@@ -57,10 +57,10 @@ $cancelBtnFld->developerTags['noCaptionTag'] = true;
 					<div class="replaced">
 						<?php
 						$submitFld = $frmOrderCancellationRequestsSrch->getField('btn_submit');
-						$submitFld->setFieldTagAttribute('class', 'btn--block btn btn--primary');
+						$submitFld->setFieldTagAttribute('class', 'btn btn-primary btn-block ');
 
                         $fldClear= $frmOrderCancellationRequestsSrch->getField('btn_clear');
-                        $fldClear->setFieldTagAttribute('class', 'btn--block btn btn-outline-primary');
+                        $fldClear->setFieldTagAttribute('class', 'btn btn-outline-primary btn-block');
                         echo $frmOrderCancellationRequestsSrch->getFormHtml();
                         ?>
                     </div>

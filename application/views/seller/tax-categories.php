@@ -14,13 +14,13 @@
     $keyFld->developerTags['noCaptionTag'] = true;
 
     $submitBtnFld = $frmSearch->getField('btn_submit');
-    $submitBtnFld->setFieldTagAttribute('class', 'btn--block');
+    $submitBtnFld->setFieldTagAttribute('class', 'btn-block');
     $submitBtnFld->setWrapperAttribute('class', 'col-lg-3');
     $submitBtnFld->developerTags['col'] = 3;
     $submitBtnFld->developerTags['noCaptionTag'] = true;
 
     $cancelBtnFld = $frmSearch->getField('btn_clear');
-    $cancelBtnFld->setFieldTagAttribute('class', 'btn--block');
+    $cancelBtnFld->setFieldTagAttribute('class', 'btn-block');
     $cancelBtnFld->setWrapperAttribute('class', 'col-lg-3');
     $cancelBtnFld->developerTags['col'] = 3;
     $cancelBtnFld->developerTags['noCaptionTag'] = true;
@@ -45,10 +45,10 @@
                                     <div class="col-lg-8">
                                         <?php
                                         $submitFld = $frmSearch->getField('btn_submit');
-                                        $submitFld->setFieldTagAttribute('class', 'btn--block btn btn--primary');
+                                        $submitFld->setFieldTagAttribute('class', 'btn btn-primary btn-block ');
 
                                         $fldClear= $frmSearch->getField('btn_clear');
-                                        $fldClear->setFieldTagAttribute('class', 'btn--block btn btn-outline-primary');
+                                        $fldClear->setFieldTagAttribute('class', 'btn btn-outline-primary btn-block');
                                         echo $frmSearch->getFormHtml();
                                         echo $frmSearch->getExternalJS();?>
                                     </div>

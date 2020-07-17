@@ -55,7 +55,7 @@
         <div class="col-md-1 align--right">
             <button type="button"
                 onclick="removeSpecDiv(<?php echo $divCount ?>);"
-                class="btn btn--primary ripplelink"
+                class="btn btn-primary ripplelink"
                 title="<?php echo Labels::getLabel('LBL_Remove', $siteLangId)?>"><i
                     class="fa fa-minus"></i></button>
         </div>

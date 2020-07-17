@@ -31,13 +31,13 @@ $priceToFld = $frmOrderSrch->getField('price_to');
 $priceToFld->developerTags['col'] = 2; */
 
 $submitBtnFld = $frmOrderSrch->getField('btn_submit');
-$submitBtnFld->setFieldTagAttribute('class', 'btn--block');
+$submitBtnFld->setFieldTagAttribute('class', 'btn-block');
 $submitBtnFld->developerTags['col'] = 2;
 $submitBtnFld->setWrapperAttribute('class', 'col-6');
 $submitBtnFld->developerTags['noCaptionTag'] = true;
 
 $cancelBtnFld = $frmOrderSrch->getField('btn_clear');
-$cancelBtnFld->setFieldTagAttribute('class', 'btn btn-outline-primary btn--block');
+$cancelBtnFld->setFieldTagAttribute('class', 'btn btn-outline-primary btn-block');
 $cancelBtnFld->developerTags['col'] = 2;
 $cancelBtnFld->setWrapperAttribute('class', 'col-6');
 $cancelBtnFld->developerTags['noCaptionTag'] = true;

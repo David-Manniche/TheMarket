@@ -11,13 +11,13 @@ $keyFld->developerTags['col'] = 8;
 $keyFld->developerTags['noCaptionTag'] = true;
 
 $submitBtnFld = $frm->getField('btn_submit');
-$submitBtnFld->setFieldTagAttribute('class', 'btn--block');
+$submitBtnFld->setFieldTagAttribute('class', 'btn-block');
 $submitBtnFld->setWrapperAttribute('class', 'col-sm-3');
 $submitBtnFld->developerTags['col'] = 2;
 $submitBtnFld->developerTags['noCaptionTag'] = true;
 
 $cancelBtnFld = $frm->getField('btn_clear');
-$cancelBtnFld->setFieldTagAttribute('class', 'btn--block btn-outline-primary');
+$cancelBtnFld->setFieldTagAttribute('class', 'btn-block btn-outline-primary');
 $cancelBtnFld->setWrapperAttribute('class', 'col-sm-3');
 $cancelBtnFld->developerTags['col'] = 2;
 $cancelBtnFld->developerTags['noCaptionTag'] = true; ?>

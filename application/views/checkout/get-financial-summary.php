@@ -12,7 +12,7 @@
                 } ?>
                 </h6>
             </div>
-            <div class="section__action"><a href="#" class="btn btn-outline-primary btn--sm" onClick="showAddressList()"><?php echo Labels::getLabel('LBL_Change_Address', $siteLangId); ?></a> </div>
+            <div class="section__action"><a href="#" class="btn btn-outline-primary btn-sm" onClick="showAddressList()"><?php echo Labels::getLabel('LBL_Change_Address', $siteLangId); ?></a> </div>
         </div>
         <div class="shipping-address">
             <?php echo $defaultAddress['addr_title']; ?><br>
@@ -29,7 +29,7 @@
             <div class="section__heading">
                 <h6><?php echo Labels::getLabel('LBL_Order_Summary', $siteLangId); ?> - <?php echo count($products); ?> <?php echo Labels::getLabel('LBL_item(s)', $siteLangId); ?></h6>
             </div>
-            <div class="section__action js-editCart" style="display:block;"><a href="javascript:void(0);" onClick="editCart()" class="btn btn-outline-primary btn--sm"><?php echo Labels::getLabel('LBL_Edit_Cart', $siteLangId);?></a> </div>
+            <div class="section__action js-editCart" style="display:block;"><a href="javascript:void(0);" onClick="editCart()" class="btn btn-outline-primary btn-sm"><?php echo Labels::getLabel('LBL_Edit_Cart', $siteLangId);?></a> </div>
         </div>
         <div class="scrollbar-order-list" data-simplebar>
             <table class="table table--justify cart-summary order-table">
@@ -94,9 +94,9 @@
         <?php if (!empty($cartSummary['cartDiscounts']['coupon_code'])) { ?>
         <div class="applied-coupon">
             <span><?php echo Labels::getLabel("LBL_Coupon", $siteLangId); ?> "<strong><?php echo $cartSummary['cartDiscounts']['coupon_code']; ?></strong>" <?php echo Labels::getLabel("LBL_Applied", $siteLangId); ?></span> <a
-                href="javascript:void(0)" onClick="removePromoCode()" class="btn btn--primary btn--sm"><?php echo Labels::getLabel("LBL_Remove", $siteLangId); ?></a></div>
+                href="javascript:void(0)" onClick="removePromoCode()" class="btn btn-primary btn-sm"><?php echo Labels::getLabel("LBL_Remove", $siteLangId); ?></a></div>
         <?php } else { ?>
-        <div class="coupon"> <a class="coupon-input btn btn--primary btn--block" href="javascript:void(0)" onclick="getPromoCode()"><?php echo Labels::getLabel('LBL_I_have_a_coupon', $siteLangId); ?></a> </div>
+        <div class="coupon"> <a class="coupon-input btn btn-primary btn-block" href="javascript:void(0)" onclick="getPromoCode()"><?php echo Labels::getLabel('LBL_I_have_a_coupon', $siteLangId); ?></a> </div>
 
         <?php } ?>
     </div>

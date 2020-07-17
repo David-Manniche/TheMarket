@@ -6,7 +6,7 @@ $frm->developerTags['colClassPrefix'] = 'col-md-';
 $frm->developerTags['fld_default_col'] = 6;
 
 $btnFld = $frm->getField('btn_submit');
-$btnFld->addFieldTagAttribute('class', 'btn btn--primary');
+$btnFld->addFieldTagAttribute('class', 'btn btn-primary');
 
 $termFld = $frm->getField('tos_acceptance');
 if (null != $termFld) {

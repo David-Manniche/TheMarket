@@ -1,5 +1,5 @@
 .dropdown__target {
-    border-radius: 4px;
+    border-radius: $radius4;
     z-index: 10;
     #{$start-direction}: 0;
     top: 110%;
@@ -23,7 +23,6 @@
     display: block;
     border-bottom: 6px solid #fff;
     border-#{$start-direction}: 6px solid transparent;
-
     border-#{$end-direction}: 6px solid transparent;
     position: absolute;
     top: -6px;
@@ -55,7 +54,8 @@
 
 .dropdown__target-head {
     padding: 15px;
-    background: $brand-color; color:$brand-color-inverse;
+    background: $brand-color;
+    color: $brand-color-inverse;
 }
 
 .dropdown__target-head p {
@@ -107,14 +107,15 @@
     max-height: 350px;
 }
 
-
 .dropdown.is-active .dropdown__target .list-vertical li {
     -webkit-transform: translate3d(0, 0, 0);
     transform: translate3d(0, 0, 0);
     opacity: 1;
 }
 
+
 /**/
+
 .dropdown-menu {
     border: 0 !important;
     margin: 0;
@@ -124,30 +125,23 @@
     -webkit-box-shadow: 0 0 50px 0 rgba(82, 63, 105, 0.15);
     box-shadow: 0 0 50px 0 rgba(82, 63, 105, 0.15);
     padding: 1rem 0;
-    border-radius: 4px;
+    border-radius: $radius4;
     #{$start-direction}: 0;
     text-align: #{$start-direction};
-
-
     &-anim {
         -webkit-animation: dropdown-menu-fade-in .3s ease 1, dropdown-menu-move-up .3s ease-out 1;
         animation: dropdown-menu-fade-in .3s ease 1, dropdown-menu-move-up .3s ease-out 1
     }
-
     &-right {
         #{$end-direction}: 0;
         #{$start-direction}: auto;
     }
-
 }
-
-
 
 @-webkit-keyframes dropdown-menu-fade-in {
     from {
         opacity: 0
     }
-
     to {
         opacity: 1
     }
@@ -157,7 +151,6 @@
     from {
         opacity: 0
     }
-
     to {
         opacity: 1
     }
@@ -167,7 +160,6 @@
     from {
         margin-top: -10px
     }
-
     to {
         margin-top: 0
     }
@@ -177,7 +169,6 @@
     from {
         margin-top: -10px
     }
-
     to {
         margin-top: 0
     }
@@ -187,7 +178,6 @@
     from {
         margin-top: 10px
     }
-
     to {
         margin-top: 0
     }
@@ -197,7 +187,6 @@
     from {
         margin-top: 10px
     }
-
     to {
         margin-top: 0
     }
@@ -213,7 +202,6 @@
             -webkit-transform: rotate(-90deg);
             transform: rotate(-90deg);
         }
-
         &[aria-expanded=true] {
             &:after {
                 -webkit-transform: rotate(0deg);
@@ -223,27 +211,20 @@
     }
 }
 
-
-
-
 .nav-block {
     display: flex;
     flex-direction: column;
     padding: 1rem 0;
-
     .expand-heading {
         font-size: 0.8rem;
         text-transform: uppercase;
     }
-
     .nav__item {
         display: block;
         border: none;
-
         &.is-active {
             color: $brand-color;
         }
-
         .nav__link {
             display: -webkit-box;
             display: -ms-flexbox;
@@ -261,7 +242,6 @@
             font-size: 0.85rem;
         }
     }
-
 }
 
 .box--scroller {

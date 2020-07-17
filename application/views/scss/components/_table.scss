@@ -5,43 +5,41 @@
 .table {
     background-color: #fff;
     margin-bottom: 0;
-
     @include media-breakpoint-down(lg) {
         & {
             white-space: nowrap;
             display: block;
         }
     }
-
-
     @include media-breakpoint-down(md) {
         & {
             min-height: 170px;
         }
     }
-
+    &-justified {
+        tr {
+            td:last-child {
+                text-align: #{$end-direction};
+            }
+        }
+    }
     tr {
         &:last-child {
             td {
                 border-bottom: none;
             }
         }
-
-
         td {
             position: relative;
             /* word-break:break-word;*/
-
             &:first-child {
                 padding-left: 0;
             }
-
             &:last-child {
                 padding-right: 0;
             }
         }
     }
-
     th,
     td {
         font-weight: unset;
@@ -52,46 +50,36 @@
         border-bottom: $border;
         vertical-align: top;
     }
-
     th {
         font-weight: 600;
         vertical-align: top;
-
         &:first-child {
             padding-left: 0;
         }
-
         &:last-child {
             padding-right: 0;
         }
     }
-
-
-
     a {
         color: inherit;
-
         &:hover {
             text-decoration: underline;
         }
     }
-
     thead {
         th {
             border-bottom: $border;
         }
     }
-
-    tfooter {}
-
-
     table {
         font-size: 100%;
     }
 }
 
+
 /*==================================================================
 [ Ver1 ]*/
+
 .table.ver1 td {
     font-size: 14px;
     color: #808080;
@@ -123,8 +111,10 @@
     color: #fff;
 }
 
+
 /*==================================================================
 [ Ver2 ]*/
+
 .table.ver2 td {
     font-size: 14px;
     color: #808080;
@@ -158,8 +148,10 @@
     color: #fff;
 }
 
+
 /*==================================================================
 [ Ver2 ]*/
+
 .table.ver2 tbody tr:nth-child(even) {
     background-color: #eaf8e6;
 }
@@ -197,8 +189,10 @@
     color: #fff;
 }
 
+
 /*==================================================================
 [ Ver3 ]*/
+
 .table.ver3 tbody tr {
     border-bottom: $border;
 }
@@ -234,8 +228,10 @@
     color: #fff;
 }
 
+
 /*==================================================================
 [ Ver4 ]*/
+
 .table.ver4 td {
     font-size: 14px;
     color: #808080;
@@ -267,8 +263,10 @@
     color: #fa4251;
 }
 
+
 /*==================================================================
 [ Ver5 ]*/
+
 .table.ver5 tbody tr:nth-child(even) {
     background-color: #e9faff;
 }
@@ -306,7 +304,6 @@
     #{$start-direction}: 0;
     pointer-events: none;
     border-#{$start-direction}: 1px solid #f2f2f2;
-
     border-#{$end-direction}: 1px solid #f2f2f2;
 }
 
@@ -331,8 +328,10 @@
     border: 1px solid #fe3e64;
 }
 
+
 /*==================================================================
 [ Ver6 ]*/
+
 .table.ver6 {
     border-radius: 16px;
     overflow: hidden;
@@ -376,7 +375,6 @@
             &:first-child {
                 padding-#{$start-direction}: 0;
             }
-
             &:last-child {
                 padding-#{$end-direction}: 0;
                 text-align: #{$end-direction};
@@ -384,10 +382,6 @@
         }
     }
 }
-
-
-
-
 
 .table .btn {
     margin: 2px;
@@ -416,28 +410,24 @@
     border: 1px solid #ddd;
     max-width: 100px;
     min-width: 100px;
-    border-radius: 4px;
+    border-radius: $radius4;
     overflow: hidden;
 }
 
 .table-fixed-header {
     table-layout: fixed;
     border-collapse: collapse;
-
     thead {
-
         tr {
             display: table-row;
         }
     }
-
     tbody {
         display: block;
         width: 100%;
         overflow: auto;
         height: 350px;
     }
-
     thead,
     tbody tr,
     tfoot {
@@ -450,13 +440,11 @@
 .variants-wrap {
     margin-top: 1rem;
     border: $border;
-    border-radius: 4px;
-
+    border-radius: $radius4;
     table {
         th {
             font-weight: 600;
         }
-
         th,
         td {
             vertical-align: middle;
@@ -464,14 +452,11 @@
             font-size: 0.85rem;
             border-bottom: $border;
         }
-
         tr {
             &:last-child {
-
                 td {
                     border-bottom: none;
                 }
-
             }
         }
     }

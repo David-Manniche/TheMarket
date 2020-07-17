@@ -135,7 +135,7 @@
                     <strong><?php echo CommonHelper::displayMoneyFormat($cartSummary['orderNetAmount'], true, false, true, false, true); ?></strong>
                 </h6> <?php
                     $btnSubmitFld = $confirmForm->getField('btn_submit');
-                    $btnSubmitFld->addFieldTagAttribute('class', 'btn btn--primary btn--sm');
+                    $btnSubmitFld->addFieldTagAttribute('class', 'btn btn-primary btn-sm');
 
                     $confirmForm->developerTags['colClassPrefix'] = 'col-md-';
                     $confirmForm->developerTags['fld_default_col'] = 12;

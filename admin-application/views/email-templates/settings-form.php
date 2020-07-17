@@ -18,7 +18,7 @@ $ratioFld->addFieldTagAttribute('class', 'prefRatio-js');
 $ratioFld->addOptionListTagAttribute('class', 'list-inline');
 
 $fld = $settingFrm->getField('email_logo');
-$fld->addFieldTagAttribute('class', 'btn btn--primary btn--sm');
+$fld->addFieldTagAttribute('class', 'btn btn-primary btn-sm');
 $fld->addFieldTagAttribute('onChange', 'popupImage(this)');
 $langFld = $settingFrm->getField('lang_id');
 $langFld->addFieldTagAttribute('class', 'logo-language-js');

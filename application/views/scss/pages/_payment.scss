@@ -55,7 +55,6 @@ body {
 
 .payment-from .field {
     margin-bottom: 15px;
-
 }
 
 .cvv {
@@ -103,7 +102,6 @@ body {
     .payment-page {
         height: auto;
     }
-
     .cc-payment {
         -webkit-transform: none;
         transform: none;
@@ -114,23 +112,21 @@ body {
 .payment-wrapper {
     background: $gray-light;
     border: $border;
-    border-radius: 4px;
+    border-radius: $radius4;
 }
 
 .form--payment {
     background: #fff;
-    border-radius: 4px;
+    border-radius: $radius4;
     border: $border;
 }
-
-
 
 .make-payment-wrapper {
     border: 1px solid #ddd;
     padding: 30px 50px;
 }
 
-.make-payment-wrapper .row > .column {
+.make-payment-wrapper .row>.column {
     -webkit-padding-end: 30px;
     -moz-padding-end: 30px;
     padding-#{$end-direction}: 30px;
@@ -151,17 +147,14 @@ body {
 .make-payment-wrapper .payment_methods_list ul li a {
     padding: 15px 15px 15px 50px;
     display: block;
-
 }
 
 .make-payment-wrapper .payment_methods_list ul li.is-active:after {
     top: 17px;
 }
 
-
 .payment-load {
     position: relative;
-
     &:after {
         position: absolute;
         top: 0;

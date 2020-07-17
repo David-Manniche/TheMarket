@@ -19,8 +19,8 @@
                 <?php if (!$print) { ?>
                     <div class="">
                         <iframe src="<?php echo Fatutility::generateUrl('buyer', 'viewOrderReturnRequest', $urlParts) . '/print'; ?>" name="frame" style="display:none"></iframe>
-                        <a href="javascript:void(0)" onclick="frames['frame'].print()" class="btn btn--primary btn--sm no-print"><?php echo Labels::getLabel('LBL_Print', $siteLangId); ?></a>
-                        <a href="<?php echo UrlHelper::generateUrl('Buyer', 'orderReturnRequests');?>" class="btn btn-outline-primary btn--sm no-print"><?php echo Labels::getLabel('LBL_Back', $siteLangId);?></a>
+                        <a href="javascript:void(0)" onclick="frames['frame'].print()" class="btn btn-primary btn-sm no-print"><?php echo Labels::getLabel('LBL_Print', $siteLangId); ?></a>
+                        <a href="<?php echo UrlHelper::generateUrl('Buyer', 'orderReturnRequests');?>" class="btn btn-outline-primary btn-sm no-print"><?php echo Labels::getLabel('LBL_Back', $siteLangId);?></a>
                     </div>
                 <?php } ?>
             </div>
@@ -57,11 +57,11 @@
                             </div>
                         </div>
                     <?php if ($canEscalateRequest && !$print) { ?>
-                    <a class="btn btn--primary no-print" onClick="javascript: return confirm('<?php echo Labels::getLabel('MSG_Do_you_want_to_proceed?', $siteLangId); ?>')" href="<?php echo UrlHelper::generateUrl('Account', 'escalateOrderReturnRequest', array($request['orrequest_id'])); ?>"><?php echo str_replace("{websitename}", FatApp::getConfig('CONF_WEBSITE_NAME_'.$siteLangId), Labels::getLabel('LBL_Escalate_to_{websitename}', $siteLangId)); ?></a>
+                    <a class="btn btn-primary no-print" onClick="javascript: return confirm('<?php echo Labels::getLabel('MSG_Do_you_want_to_proceed?', $siteLangId); ?>')" href="<?php echo UrlHelper::generateUrl('Account', 'escalateOrderReturnRequest', array($request['orrequest_id'])); ?>"><?php echo str_replace("{websitename}", FatApp::getConfig('CONF_WEBSITE_NAME_'.$siteLangId), Labels::getLabel('LBL_Escalate_to_{websitename}', $siteLangId)); ?></a>
                     <?php } ?>
 
                     <?php if ($canWithdrawRequest && !$print) { ?>
-                    <a class="btn btn--primary btn--sm no-print" onClick="javascript: return confirm('<?php echo Labels::getLabel('MSG_Do_you_want_to_proceed?', $siteLangId); ?>')" href="<?php echo UrlHelper::generateUrl('Buyer', 'WithdrawOrderReturnRequest', array($request['orrequest_id'])); ?>"><?php echo Labels::getLabel('LBL_Withdraw_Request', $siteLangId); ?></a>
+                    <a class="btn btn-primary btn-sm no-print" onClick="javascript: return confirm('<?php echo Labels::getLabel('MSG_Do_you_want_to_proceed?', $siteLangId); ?>')" href="<?php echo UrlHelper::generateUrl('Buyer', 'WithdrawOrderReturnRequest', array($request['orrequest_id'])); ?>"><?php echo Labels::getLabel('LBL_Withdraw_Request', $siteLangId); ?></a>
                     <?php } ?>
 
 

@@ -3,13 +3,13 @@
 	$shopLogoFrm->developerTags['colClassPrefix'] = 'col-md-';
 	$shopLogoFrm->developerTags['fld_default_col'] = 12;
 	$fld = $shopLogoFrm->getField('shop_logo');
-	$fld->addFieldTagAttribute('class','btn btn--primary btn--sm');
+	$fld->addFieldTagAttribute('class','btn btn-primary btn-sm');
 
 	$shopBannerFrm->setFormTagAttribute('onsubmit', 'setupShopMedia(this); return(false);');
 	$shopBannerFrm->developerTags['colClassPrefix'] = 'col-md-';
 	$shopBannerFrm->developerTags['fld_default_col'] = 12;
 	$fld = $shopBannerFrm->getField('shop_banner');
-	$fld->addFieldTagAttribute('class','btn btn--primary btn--sm');
+	$fld->addFieldTagAttribute('class','btn btn-primary btn-sm');
 
 ?>
 
@@ -28,7 +28,7 @@
 						</div>
 						<small class="text--small"><?php echo $bannerTypeArr[$img['afile_lang_id']];?></small>
 						<div class="btngroup--fix">
-							<a class = "btn btn--secondary btn--sm" href="javascript:void(0);" onClick="removeShopBanner(<?php echo $img['afile_record_id']; ?>,<?php echo $img['afile_lang_id']; ?>)"><?php echo Labels::getLabel('LBL_Remove',$adminLangId);?></a>
+							<a class = "btn btn--secondary btn-sm" href="javascript:void(0);" onClick="removeShopBanner(<?php echo $img['afile_record_id']; ?>,<?php echo $img['afile_lang_id']; ?>)"><?php echo Labels::getLabel('LBL_Remove',$adminLangId);?></a>
 						</div>
 					</div>
 					<span class="gap"></span>
@@ -45,7 +45,7 @@
 							<div class="profile__pic"><img src="<?php echo UrlHelper::generateUrl('Image','shopLogo',array($img['afile_record_id'],$img['afile_lang_id'],'SMALL'));?>" alt=""></div>
 							<small class="text--small"><?php echo $bannerTypeArr[$img['afile_lang_id']];?></small>
 							<div class="btngroup--fix">
-								<a class = "btn btn--secondary btn--sm" href="javascript:void(0);" onClick="removeShopLogo(<?php echo $img['afile_record_id']; ?>,<?php echo $img['afile_lang_id']; ?>)"><?php echo Labels::getLabel('LBL_Remove',$adminLangId);?></a>
+								<a class = "btn btn--secondary btn-sm" href="javascript:void(0);" onClick="removeShopLogo(<?php echo $img['afile_record_id']; ?>,<?php echo $img['afile_lang_id']; ?>)"><?php echo Labels::getLabel('LBL_Remove',$adminLangId);?></a>
 							</div>
 						</div>
 						<?php if($count == 2) {$count = 1; echo "<span class='gap'></span>";}?>

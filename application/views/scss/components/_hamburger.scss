@@ -1,72 +1,48 @@
-.hamburger .lines {
-    #{$start-direction}: 0;
-    #{$end-direction}: 0;
-    margin: 0 auto;
-    position: absolute;
-    width: 16px;
-    height: 2px;
-    background: #fff;
-    -webkit-transition: 0.6s;
-    transition: 0.6s;
+$validArea: 20px;
+$menuBarWidth: 19px;
+$menuBarHeight: 2px;
+$menuBarGap: 6px;
+.c-hamburger {
+    position: relative;
     top: 0;
+    left: 0;
+    display: block;
+    margin-#{$start-direction}: 10px;
+    width: $validArea;
+    height: $validArea;
+    &.is-active {
+        .c-hamburger__line {
+            &--top {
+                transform: translateY(0px) rotate(45deg);
+            }
+            &--middle {
+                transform: translateX( $menuBarWidth / 3);
+                opacity: 0;
+            }
+            &--bottom {
+                transform: translateY(0px) rotate(-45deg);
+            }
+        }
+    }
 }
 
-.hamburger .line2 {
-    top: 5px;
-}
-
-.hamburger .line3 {
-    top: 5px;
-}
-
-.hamburger .line4 {
-    top: 10px;
-}
-
-.hamburger.cross .lines {
-    -webkit-transition: 0.6s;
-    transition: 0.6s;
-}
-
-.hamburger.cross .line1 {
-    -webkit-transform: translateY(45px);
-    transform: translateY(45px);
-    opacity: 0;
-}
-
-.hamburger.cross .line2 {
-    -webkit-transform: rotate(45deg);
-    transform: rotate(45deg);
-}
-
-.hamburger.cross .line3 {
-    -webkit-transform: rotate(-45deg);
-    transform: rotate(-45deg);
-}
-
-.hamburger.cross .line4 {
-    -webkit-transform: translateY(-45px);
-    transform: translateY(-45px);
-    opacity: 0;
-}
-
-.hamburger {}
-
-.hamburger path {
-    fill: none;
-    -webkit-transition: stroke-dashoffset 0.5s cubic-bezier(0.25, -0.25, 0.75, 1.25), stroke-dasharray 0.5s cubic-bezier(0.25, -0.25, 0.75, 1.25);
-    transition: stroke-dashoffset 0.5s cubic-bezier(0.25, -0.25, 0.75, 1.25), stroke-dasharray 0.5s cubic-bezier(0.25, -0.25, 0.75, 1.25);
-    stroke-width: 30px;
-    stroke-linecap: square;
-    stroke: #fff;
-    stroke-dashoffset: 0px;
-}
-
-.hamburger path#top,
-.hamburger path#bottom {
-    stroke-dasharray: 22.5rem 950px;
-}
-
-.hamburger path#middle {
-    stroke-dasharray: 22.5rem 22.5rem;
+.c-hamburger__line {
+    position: absolute;
+    display: block;
+    width: $menuBarWidth;
+    height: $menuBarHeight;
+    top: ( $validArea - $menuBarHeight) / 2;
+    left: 0;
+    right: 0;
+    margin: auto;
+    background-color: currentColor;
+    transition: .2s ease-out;
+    border-radius: $radius2;
+    &--top {
+        transform: translateY(-$menuBarGap);
+    }
+    &--middle {}
+    &--bottom {
+        transform: translateY($menuBarGap);
+    }
 }

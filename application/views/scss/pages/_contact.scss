@@ -1,13 +1,8 @@
-
 .bg-contact {
     position: relative;
-    background: $secondary-color; color:$secondary-color-inverse;
-
-
+    background: $secondary-color;
+    color: $secondary-color-inverse;
 }
-
-
-
 
 .contact-wrapper {
     position: relative;
@@ -17,7 +12,7 @@
 }
 
 .contact-box {
-    border-radius: 4px;
+    border-radius: $radius4;
     background: #fff;
     -webkit-box-shadow: 0 0px 10px 0 rgba(0, 0, 0, 0.20);
     box-shadow: 0 0px 10px 0 rgba(0, 0, 0, 0.20);
@@ -70,7 +65,8 @@
 }
 
 .contact-address {
-    background: $secondary-color; color:$secondary-color-inverse;
+    background: $secondary-color;
+    color: $secondary-color-inverse;
     position: relative;
 }
 
@@ -82,23 +78,24 @@
     width: 0;
     height: 0;
     border-#{$start-direction}: 30px solid transparent;
-    
     border-#{$end-direction}: 30px solid transparent;
     border-top: 40px solid $secondary-color;
 }
 
 .contact-phones {
-    background: $secondary-color; color:$secondary-color-inverse;
+    background: $secondary-color;
+    color: $secondary-color-inverse;
 }
 
 .contact-email {
-    background: $secondary-color; color:$secondary-color-inverse;
+    background: $secondary-color;
+    color: $secondary-color-inverse;
 }
 
 .g-map {
     position: relative;
     height: 490px;
-   /* z-index: 1;*/
+    /* z-index: 1;*/
 }
 
 .g-map iframe {

@@ -36,18 +36,18 @@ $this->includeTemplate('_partial/seller/sellerDashboardNavigation.php'); ?>
                                 $typeFld->developerTags['col'] = 2;
 
                                 $submitFld = $frmSearchCatalogProduct->getField('btn_submit');
-                                $submitFld->setFieldTagAttribute('class', 'btn--block btn btn--primary');
+                                $submitFld->setFieldTagAttribute('class', 'btn btn-primary btn-block ');
                                 $submitFld->setWrapperAttribute('class', 'col-lg-2');
                                 $submitFld->developerTags['col'] = 2;
 
                                 $fldClear = $frmSearchCatalogProduct->getField('btn_clear');
                                 $fldClear->setFieldTagAttribute('onclick', 'clearSearch()');
-                                $fldClear->setFieldTagAttribute('class', 'btn--block btn btn-outline-primary');
+                                $fldClear->setFieldTagAttribute('class', 'btn btn-outline-primary btn-block');
                                 $fldClear->setWrapperAttribute('class', 'col-lg-2');
                                 $fldClear->developerTags['col'] = 2;
                                     /* if( User::canAddCustomProductAvailableToAllSellers() ){
                                       $submitFld = $frmSearchCatalogProduct->getField('btn_submit');
-                                      $submitFld->setFieldTagAttribute('class','btn--block');
+                                      $submitFld->setFieldTagAttribute('class','btn-block');
                                       $submitFld->developerTags['col'] = 4;
                                     } */
                                 echo $frmSearchCatalogProduct->getFormHtml();

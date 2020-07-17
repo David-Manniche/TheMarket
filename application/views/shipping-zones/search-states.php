@@ -19,7 +19,7 @@ if (!empty($excludeLocations)) {
 }
 ?>
 <?php if (!empty($states)) { ?>
-	<ul class="child-checkbox-ul country_<?php echo $countryId;?>">
+	<ul class="child-checkbox-ul list-country-zone_states country_<?php echo $countryId;?>">
 	<?php foreach ($states as $key => $state) { 
 	$checked = '';
 	$disabled = '';
@@ -43,7 +43,7 @@ if (!empty($excludeLocations)) {
 		<li>
 			<div class="field-wraper">
 			<div class="field_cover">
-				<label><span class="checkbox" data-stateid="<?php echo $key;?>"><input type="checkbox" name="shiploc_state_ids[]" value="<?php echo $zoneId;?>-<?php echo $countryId;?>-<?php echo $key;?>" class="state--js" <?php echo $checked; ?> <?php echo $disabled;?>><i class="input-helper"></i></span><?php echo $state;?></label>
+				<label><span class="checkbox" data-stateid="<?php echo $key;?>"><input type="checkbox" name="shiploc_state_ids[]" value="<?php echo $zoneId;?>-<?php echo $countryId;?>-<?php echo $key;?>" class="state--js" <?php echo $checked; ?> <?php echo $disabled;?>><i class="input-helper"></i><?php echo $state;?></span></label>
 			</div>
 			</div>
 		</li>

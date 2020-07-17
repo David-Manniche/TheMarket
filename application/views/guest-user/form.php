@@ -21,7 +21,7 @@
             $fldSpace->value ='<a href="#" class="forgot">&nbsp;</a>';
 
             $fldSubmit = $frm->getField('btn_submit');
-            $fldSubmit->addFieldTagAttribute("class","btn--block");
+            $fldSubmit->addFieldTagAttribute("class","btn-block");
             echo $frm->getFormHtml(); ?>
             <div class="row">
                 <div class="col-md-12 col-xs-12 text-center">

@@ -75,7 +75,7 @@ if($totReviews){
 /* <div class="col-md-4 border--left">
 	<h4><?php echo Labels::getLabel('Lbl_Share_your_thoughts',$siteLangId); ?></h4>
 	<h6><?php echo Labels::getLabel('Lbl_With_other_customers',$siteLangId); ?></h6>
-	<a class="btn btn--primary btn--h-large" href="<?php echo UrlHelper::generateUrl('Reviews','write',array($shop_id)); ?>"><?php echo Labels::getLabel('Lbl_Write_a_Review',$siteLangId); ?></a>
+	<a class="btn btn-primary btn--h-large" href="<?php echo UrlHelper::generateUrl('Reviews','write',array($shop_id)); ?>"><?php echo Labels::getLabel('Lbl_Write_a_Review',$siteLangId); ?></a>
    </div> */
 ?>
 
@@ -87,7 +87,7 @@ if($totReviews){
         </div>
         <div class="row mt-5">
             <div class="col-md-6 mb-3 mb-md-0">
-                <a href="javascript:void(0);" class="btn btn--primary d-block" data-sort='most_recent' onclick="getSortedReviews(this);return false;"><?php echo Labels::getLabel('Lbl_Most_Recent', $siteLangId); ?></a>
+                <a href="javascript:void(0);" class="btn btn-primary d-block" data-sort='most_recent' onclick="getSortedReviews(this);return false;"><?php echo Labels::getLabel('Lbl_Most_Recent', $siteLangId); ?></a>
             </div>
             <div class="col-md-6">
                <a href="javascript:void(0);" class="btn btn--secondary d-block btn-outline-primary" data-sort='most_helpful' onclick="getSortedReviews(this);return false;"><?php echo Labels::getLabel('Lbl_Most_Helpful', $siteLangId); ?> </a>

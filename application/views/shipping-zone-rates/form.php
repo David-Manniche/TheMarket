@@ -8,8 +8,8 @@ $nameFld = $frm->getField('shiprate_identifier');
 $nameFld->htmlAfterField = "<span class='form-text text-muted'>".Labels::getLabel("LBL_Customers_will_see_this_at_checkout.", $siteLangId)."</span>";
 
 $costFld = $frm->getField('shiprate_cost');
-$costFld->htmlAfterField = "<div class='gap'></div><p class='add-condition--js'><a href='javascript:0;' onclick='modifyRateFields(1);'>".Labels::getLabel("LBL_Add_Condition", $siteLangId)."</a></p> <p class='remove-condition--js' style='display : none;'><a href='javascript:0;' onclick='modifyRateFields(0);'>".Labels::getLabel("LBL_Remove_Condition", $siteLangId)."</a></p>";
-$extraClass = 'hide-extra-fields';
+$costFld->htmlAfterField = "<div class='gap'></div><p class='add-condition--js'><a class='link' href='javascript:0;' onclick='modifyRateFields(1);'>".Labels::getLabel("LBL_Add_Condition", $siteLangId)."</a></p> <p class='remove-condition--js' style='display : none;'><a class='link' href='javascript:0;' onclick='modifyRateFields(0);'>".Labels::getLabel("LBL_Remove_Condition", $siteLangId)."</a></p>";
+$extraClass = 'd-none';
 if (!empty($rateData) && $rateData['shiprate_condition_type'] > 0) {
     $extraClass = '';
 }
@@ -23,16 +23,25 @@ $minFld->setWrapperAttribute('class', 'condition-field--js '. $extraClass);
 $maxFld = $frm->getField('shiprate_max_val');
 $maxFld->setWrapperAttribute('class', 'condition-field--js '. $extraClass);
 
-$cancelFld = $frm->getField('btn_cancel');
-$cancelFld->setFieldTagAttribute('onClick', 'searchProductsSection($(\'input[name="profile_id"]\').val()); return false;');
+$submitBtnFld = $frm->getField('btn_submit');
+$submitBtnFld->setFieldTagAttribute('class', 'btn btn-primary btn-block ');
+$submitBtnFld->setWrapperAttribute('class', 'col-lg-5');
+$submitBtnFld->developerTags['col'] = 5;
+$submitBtnFld->developerTags['noCaptionTag'] = true;
+
+$cancelBtnFld = $frm->getField('btn_cancel');
+$cancelBtnFld->setFieldTagAttribute('onClick', 'searchProductsSection($(\'input[name="profile_id"]\').val()); return false;');
+$cancelBtnFld->setFieldTagAttribute('class', 'btn btn-outline-primary btn-block');
+$cancelBtnFld->setWrapperAttribute('class', 'col-lg-5');
+$cancelBtnFld->developerTags['col'] = 5;
+$cancelBtnFld->developerTags['noCaptionTag'] = true;
 ?>
-<div class="sectionhead mb-3">
-	<h5 class="cards-title"><?php echo Labels::getLabel('LBL_Manage_Rates', $siteLangId); ?>
-	</h5>
+<div class="cards-header">
+	<h5 class="cards-title"><?php echo Labels::getLabel('LBL_Manage_Rates', $siteLangId); ?></h5>
 </div>
-<div class="sectionbody space">
+<div class="cards-content">
 	<div class="row">
-		<div class="col-sm-12">
+		<div class="col-md-12">
 			<div class="tabs">
 				<ul class="tabs_nav-js">
 					<li class="is-active">
