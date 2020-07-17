@@ -23,7 +23,7 @@
                         $relProdFld->setFieldTagAttribute('placeholder', Labels::getLabel('LBL_Add_Buy_Together_Products', $adminLangId));
 
                         $submitBtnFld = $relProdFrm->getField('btn_submit');
-                        $submitBtnFld->setFieldTagAttribute('class', 'btn--block btn btn--primary'); ?>
+                        $submitBtnFld->setFieldTagAttribute('class', 'btn-block btn btn-primary'); ?>
                         <?php echo $relProdFrm->getFormTag(); ?>
                         <div class="row">
                             <div class="col-md-3">

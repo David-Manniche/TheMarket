@@ -17,7 +17,7 @@ $edFld->htmlBeforeField = '<br/><a class="themebtn btn-primary" onClick="resetTo
 
 if (array_key_exists($epageData['epage_id'], $contentBlockArrWithBg)) {
     $fld = $blockLangFrm->getField('cblock_bg_image');
-    $fld->addFieldTagAttribute('class', 'btn btn--primary btn--sm');
+    $fld->addFieldTagAttribute('class', 'btn btn-primary btn-sm');
 
     $preferredDimensionsStr = '<small class="text--small"> ' . Labels::getLabel('LBL_This_will_be_displayed_on_Registration_Page', $adminLangId) . '</small>';
 

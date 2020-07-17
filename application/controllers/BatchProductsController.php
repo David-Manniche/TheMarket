@@ -520,7 +520,7 @@ class BatchProductsController extends LoggedUserController
         $frm->addHiddenField('', 'prodgroup_id', $prodgroup_id);
         $frm->addSelectBox('Language', 'lang_id', Language::getAllNames(), '', array(), '');
 
-        $fld = $frm->addButton('', 'prodgroup_image', Labels::getLabel('LBL_Upload_File', $lang_id), array('class' => 'prodgroup-Js btn btn-primary btn--sm', 'id' => 'prodgroup_image', 'data-prodgroup_id' => $prodgroup_id ));
+        $fld = $frm->addButton('', 'prodgroup_image', Labels::getLabel('LBL_Upload_File', $lang_id), array('class' => 'prodgroup-Js btn btn-primary btn-sm', 'id' => 'prodgroup_image', 'data-prodgroup_id' => $prodgroup_id ));
         return $frm;
     }
 

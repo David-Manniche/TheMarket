@@ -1,6 +1,6 @@
 	<div class="box__head">
 		<h4><?php echo Labels::getLabel('LBL_Add_Custom_Product',$adminLangId); ?></h4>
-		<div class="group--btns"><a onclick="searchCustomProducts()"  class="btn btn--secondary btn--sm"><?php echo Labels::getLabel('LBL_back', $adminLangId);?></a></div>
+		<div class="group--btns"><a onclick="searchCustomProducts()"  class="btn btn--secondary btn-sm"><?php echo Labels::getLabel('LBL_back', $adminLangId);?></a></div>
 	</div>
 	<div class="box__body">		
 		<div class="tabs tabs--small tabs--offset tabs--scroll clearfix">

@@ -3,7 +3,7 @@ $frm->setFormTagAttribute('onsubmit', 'uploadCollectionImage(this); return(false
 $frm->developerTags['colClassPrefix'] = 'col-md-';
 $frm->developerTags['fld_default_col'] = 6;
 $fld = $frm->getField('collection_image');
-$fld->addFieldTagAttribute('class', 'btn btn--primary btn--sm');
+$fld->addFieldTagAttribute('class', 'btn btn-primary btn-sm');
 $fld->addFieldTagAttribute('onChange', 'collectionPopupImage(this)');
 if (isset($scollection_id) && $scollection_id > 0) {
     $scollection_id = $scollection_id;

@@ -12,8 +12,8 @@
                 <div class="cards-header">
                     <h5 class="cards-title"><?php echo Labels::getLabel('LBL_Order_Details', $siteLangId);?></h5>
                     <div class="action">
-                        <?php /* <a href="javascript:window.print();" class="btn btn--primary btn--sm no-print"><?php echo Labels::getLabel('LBL_Print',$siteLangId);?></a> */?>
-                        <a href="<?php echo UrlHelper::generateUrl('Seller', 'subscriptions');?>" class="btn btn--primary btn--sm no-print"><?php echo Labels::getLabel('LBL_Back_to_Subscription', $siteLangId);?></a></div>
+                        <?php /* <a href="javascript:window.print();" class="btn btn-primary btn-sm no-print"><?php echo Labels::getLabel('LBL_Print',$siteLangId);?></a> */?>
+                        <a href="<?php echo UrlHelper::generateUrl('Seller', 'subscriptions');?>" class="btn btn-primary btn-sm no-print"><?php echo Labels::getLabel('LBL_Back_to_Subscription', $siteLangId);?></a></div>
                 </div>
                 <div class="cards-content ">
                     <div class="row">

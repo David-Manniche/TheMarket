@@ -87,8 +87,8 @@
                     </p>
                     <div class="gap"></div>
                     <div class="">
-                        <a class="editLink action btn btn--primary btn--sm " href="javascript:void(0)" onClick="editAddress('<?php echo $address['addr_id']; ?>')"><?php echo Labels::getLabel('LBL_Edit', $siteLangId)?></a>
-                        <a title="<?php echo Labels::getLabel('LBL_Delete', $siteLangId)?>" class="action btn btn-outline-primary btn--sm" onclick="removeAddress('<?php echo $address['addr_id']; ?>')" href="javascript:void(0)">
+                        <a class="editLink action btn btn-primary btn-sm " href="javascript:void(0)" onClick="editAddress('<?php echo $address['addr_id']; ?>')"><?php echo Labels::getLabel('LBL_Edit', $siteLangId)?></a>
+                        <a title="<?php echo Labels::getLabel('LBL_Delete', $siteLangId)?>" class="action btn btn-outline-primary btn-sm" onclick="removeAddress('<?php echo $address['addr_id']; ?>')" href="javascript:void(0)">
                             <?php echo Labels::getLabel('LBL_Delete', $siteLangId)?></a>
                     </div>
                 </div>

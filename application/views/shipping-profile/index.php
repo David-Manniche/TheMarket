@@ -32,7 +32,7 @@ $cancelBtnFld->developerTags['noCaptionTag'] = true;
             <div class="col-auto">
                 <div class="content-header-right">
                     <a href="<?php echo UrlHelper::generateUrl('shippingProfile', 'form',[0]);?>"
-                        class="btn btn-outline-primary btn--sm"><?php echo Labels::getLabel('LBL_Create_Profile', $siteLangId);?></a>
+                        class="btn btn-outline-primary btn-sm"><?php echo Labels::getLabel('LBL_Create_Profile', $siteLangId);?></a>
                 </div>
             </div>
         </div>

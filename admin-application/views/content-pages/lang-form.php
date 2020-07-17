@@ -5,7 +5,7 @@ $blockLangFrm->developerTags['fld_default_col'] = 12;
 
 if ($cpage_layout == ContentPage::CONTENT_PAGE_LAYOUT1_TYPE) {
     $fld = $blockLangFrm->getField('cpage_bg_image');
-    $fld->addFieldTagAttribute('class', 'btn btn--primary btn--sm');
+    $fld->addFieldTagAttribute('class', 'btn btn-primary btn-sm');
     $fld->addFieldTagAttribute('onChange', 'popupImage(this)');
     $preferredDimensionsStr = '<small class="text--small"> ' . Labels::getLabel('LBL_This_will_be_displayed_on_your_cms_Page.', $adminLangId) . ' ' . sprintf(Labels::getLabel('LBL_Preferred_Dimensions', $adminLangId), '1300*400') . '</small>';
 

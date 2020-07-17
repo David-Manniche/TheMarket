@@ -20,7 +20,7 @@ $optionValueFrm->developerTags['fld_default_col'] = 6;
 $btnSubmit = $optionValueFrm->getField('btn_submit');
 $btnSubmit->developerTags['col'] = '3';
 $btnSubmit->addWrapperAttribute('class', 'col-6');
-$btnSubmit->setFieldTagAttribute('class', 'btn btn-block btn--primary');
+$btnSubmit->setFieldTagAttribute('class', 'btn btn-block btn-primary');
 
 $btnClear = $optionValueFrm->getField('btn_clear');
 $btnClear->developerTags['col'] = '3';

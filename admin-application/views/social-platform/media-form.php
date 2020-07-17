@@ -4,7 +4,7 @@ $frm->developerTags['colClassPrefix'] = 'col-md-';
 $frm->developerTags['fld_default_col'] = 12;
 
 $fld1 = $frm->getField('image');
-$fld1->addFieldTagAttribute('class', 'btn btn--primary btn--sm');
+$fld1->addFieldTagAttribute('class', 'btn btn-primary btn-sm');
 $fld1->addFieldTagAttribute('onChange', 'popupImage(this)');
 
 $htmlAfterField = '<span class="uploadimage--info">'. Labels::getLabel('LBL_This_will_be_displayed_in_30x30_on_your_store.', $adminLangId).'<br/>'. Labels::getLabel('LBL_SVG_images_are_not_supported_in_emails.', $adminLangId) .'</span>';

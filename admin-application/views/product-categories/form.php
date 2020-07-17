@@ -14,12 +14,12 @@ $iconLangFld = $prodCatFrm->getField('icon_lang_id');
 $iconLangFld->addFieldTagAttribute('class', 'icon-language-js');
 
 $iconFld = $prodCatFrm->getField('cat_icon');
-$iconFld->addFieldTagAttribute('class', 'btn btn--primary btn--sm');
+$iconFld->addFieldTagAttribute('class', 'btn btn-primary btn-sm');
 $iconFld->addFieldTagAttribute('onChange', 'iconPopupImage(this)');
 $iconFld->htmlAfterField = '<small class="text--small">'.sprintf(Labels::getLabel('LBL_This_will_be_displayed_in_%s_on_your_store', $adminLangId), '60*60').'</small>';
 
 $bannerFld = $prodCatFrm->getField('cat_banner');
-$bannerFld->addFieldTagAttribute('class', 'btn btn--primary btn--sm');
+$bannerFld->addFieldTagAttribute('class', 'btn btn-primary btn-sm');
 $bannerFld->addFieldTagAttribute('onChange', 'bannerPopupImage(this)');
 $bannerFld->htmlAfterField = '<small class="text--small" class="preferredDimensions-js">'.sprintf(Labels::getLabel('LBL_Preferred_Dimensions_%s', $adminLangId), '2000 x 500').'</small>';
 

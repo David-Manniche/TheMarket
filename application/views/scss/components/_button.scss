@@ -113,6 +113,13 @@
      &:focus {
          outline: none !important;
      }
+     .icn {
+         svg {
+             width: 16px;
+             height: 16px;
+             fill: currentColor;
+         }
+     }
  }
  
  .btn-group>.btn:not(:last-child):not(.dropdown-toggle),

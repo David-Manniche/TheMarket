@@ -55,11 +55,11 @@
                         <?php if($showMoreButtons){ 
 								$shopRepData = ShopReport::getReportDetail($shop['shop_id'], UserAuthentication::getLoggedUserId(true), 'sreport_id');
 							if (false === UserAuthentication::isUserLogged() || empty($shopRepData)) { ?>
-                            <a href="<?php echo UrlHelper::generateUrl('Shops','ReportSpam', array($shop['shop_id'])); ?>" class="btn btn-outline-primary btn--sm"><i class="icn"><svg class="svg">
+                            <a href="<?php echo UrlHelper::generateUrl('Shops','ReportSpam', array($shop['shop_id'])); ?>" class="btn btn-outline-primary btn-sm"><i class="icn"><svg class="svg">
                                         <use xlink:href="<?php echo CONF_WEBROOT_URL; ?>images/retina/sprite.svg#report" href="<?php echo CONF_WEBROOT_URL; ?>images/retina/sprite.svg#report"></use>
                                     </svg></i><?php echo Labels::getLabel('LBL_Report_Spam',$siteLangId); ?></a>
 							<?php } ?>
-                            <a href="<?php echo UrlHelper::generateUrl('shops','sendMessage',array($shop['shop_id'])); ?>" class="btn btn-outline-primary btn--sm"><i class="icn"><svg class="svg">
+                            <a href="<?php echo UrlHelper::generateUrl('shops','sendMessage',array($shop['shop_id'])); ?>" class="btn btn-outline-primary btn-sm"><i class="icn"><svg class="svg">
                                         <use xlink:href="<?php echo CONF_WEBROOT_URL; ?>images/retina/sprite.svg#send-msg" href="<?php echo CONF_WEBROOT_URL; ?>images/retina/sprite.svg#send-msg"></use>
                                     </svg></i><?php echo Labels::getLabel('LBL_Send_Message', $siteLangId); ?></a>
                         <?php }?>

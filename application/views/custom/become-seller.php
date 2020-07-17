@@ -3,7 +3,7 @@
 	<section class="section section--slide" style="background-image:url(<?php echo CONF_WEBROOT_URL; ?>images/page-bg.jpg)">
 		<div class="slide__text">
 			<h2><?php echo Labels::getLabel('LBL_Sell_on_yokart', $siteLangId); ?></h2>
-			<a href="<?php echo UrlHelper::generateUrl('Supplier', 'Account'); ?>" class="btn btn--primary btn--h-large"><?php echo Labels::getLabel('LBL_Open_a_shop', $siteLangId); ?></a>
+			<a href="<?php echo UrlHelper::generateUrl('Supplier', 'Account'); ?>" class="btn btn-primary btn--h-large"><?php echo Labels::getLabel('LBL_Open_a_shop', $siteLangId); ?></a>
 		</div>
 		<div class="slide__caption">
 			<ul>
@@ -219,7 +219,7 @@
 				</div>
 				<span class="gap"></span>
 				<div class="align--center">
-	<a href="<?php echo UrlHelper::generateUrl('Custom','faq'); ?>" class = "btn btn--primary btn--h-large"><?php echo Labels::getLabel( 'LBL_View_All', $siteLangId)?></a>
+	<a href="<?php echo UrlHelper::generateUrl('Custom','faq'); ?>" class = "btn btn-primary btn--h-large"><?php echo Labels::getLabel( 'LBL_View_All', $siteLangId)?></a>
 </div>
 			</div>
 		</div>

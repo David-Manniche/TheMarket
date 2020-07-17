@@ -26,7 +26,7 @@
 
 				</div>
 
-				<div class="col-md-auto col-sm-auto"><a href="<?php echo UrlHelper::generateUrl('Reviews','product',array($product['selprod_id'])); ?>" class="btn btn-outline-white btn--sm"><?php echo Labels::getLabel('Lbl_View_All_Reviews',$siteLangId); ?></a></div>
+				<div class="col-md-auto col-sm-auto"><a href="<?php echo UrlHelper::generateUrl('Reviews','product',array($product['selprod_id'])); ?>" class="btn btn-outline-white btn-sm"><?php echo Labels::getLabel('Lbl_View_All_Reviews',$siteLangId); ?></a></div>
 
 
 			</div>
