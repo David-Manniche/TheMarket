@@ -226,7 +226,7 @@ class CheckoutController extends MyAppController
         $obj = new Extrapage();
         $headerData = $obj->getContentByPageType(Extrapage::CHECKOUT_PAGE_HEADER_BLOCK, $this->siteLangId);
 
-        $address = new Address(0, $this->siteLangId);
+        $address = new Address($this->cartObj->getCartShippingAddress(), $this->siteLangId);
         $addresses = $address->getData(Address::TYPE_USER, UserAuthentication::getLoggedUserId());
        
         // $products = $this->cartObj->getProducts($this->siteLangId);
