@@ -38,28 +38,23 @@
     display: none;
 }
 
-
 .grouplisting {
     margin: 20px 0 0;
-
     .group {
         border-radius: 5px;
         margin: 5px 0 0;
     }
 }
 
-
 .groups {
     .group__head {
         width: 100%;
         position: relative;
-        padding:1rem;
+        padding: 1rem;
         margin: 0.5rem 0;
         cursor: pointer;
-        border-radius: 4px;
-        border:$border;
-        
-
+        border-radius: $radius4;
+        border: $border;
         &:after {
             width: 20px;
             height: 20px;
@@ -68,23 +63,19 @@
             top: 6px;
             content: "+";
             pointer-events: none;
-            font-size: 1.6rem;            
+            font-size: 1.6rem;
             padding: 0 0 0 1px;
         }
-
         h5 {
             padding: 0;
             font-size: 0.95rem;
             margin: 0;
-
         }
     }
-
     .group__body {
         padding: 1rem;
         display: none;
     }
-
     &.is-active {
         .group__head {
             &:after {
@@ -95,11 +86,6 @@
         }
     }
 }
-
-
-
-
-
 
 .editor-container,
 .groups .group__body h5 {

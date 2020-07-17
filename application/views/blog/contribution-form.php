@@ -28,7 +28,7 @@ if ($isUserLogged) {
                         </div>
                      </div>
           </div>
-          <div class="col-auto"><a href="<?php echo UrlHelper::generateUrl('Blog'); ?>" class="btn btn--primary btn-sm"><?php echo Labels::getLabel('Lbl_Back_to_home', $siteLangId); ?></a></div>
+          <div class="col-auto"><a href="<?php echo UrlHelper::generateUrl('Blog'); ?>" class="btn btn-primary btn-sm"><?php echo Labels::getLabel('Lbl_Back_to_home', $siteLangId); ?></a></div>
         </div>
       </div>
     </div>

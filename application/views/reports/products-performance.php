@@ -3,7 +3,7 @@
         <div class="content-header row">
             <div class="col"> <?php $this->includeTemplate('_partial/dashboardTop.php'); ?> <h2 class="content-header-title"><?php echo Labels::getLabel('LBL_Products_Performance_Report', $siteLangId);?></h2>
             </div>
-            <div class="col-auto"><div class="btn-group"> <a href="javascript:void(0)" id="performanceReportExport" onclick="exportProdPerformanceReport('DESC')" class="btn btn-outline-primary btn--sm"><?php echo Labels::getLabel('LBL_Export', $siteLangId);?></a></div>
+            <div class="col-auto"><div class="btn-group"> <a href="javascript:void(0)" id="performanceReportExport" onclick="exportProdPerformanceReport('DESC')" class="btn btn-outline-primary btn-sm"><?php echo Labels::getLabel('LBL_Export', $siteLangId);?></a></div>
             </div>
         </div>
         <div class="content-body"> 

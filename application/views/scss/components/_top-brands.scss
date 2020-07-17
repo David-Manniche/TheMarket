@@ -1,6 +1,5 @@
 .top-brand-list {
     margin-top: 1rem;
-
     ul {
         display: -webkit-box;
         display: -ms-flexbox;
@@ -11,16 +10,12 @@
         justify-content: center;
         flex-wrap: nowrap;
         overflow-x: auto;
-
         @include media-breakpoint-down(md) {
             & {
                 justify-content: flex-start;
-
             }
         }
     }
-
-
     .brands-img {
         width: 240px;
         height: 240px;
@@ -28,7 +23,6 @@
         overflow: hidden;
         position: relative;
         margin-bottom: 1rem;
-
         &:before {
             content: "";
             background: #eef3f5 url(../images/retina/image.svg) no-repeat center;
@@ -39,7 +33,6 @@
             z-index: -1;
         }
     }
-
     .brands-logo {
         width: 160px;
         height: 90px;
@@ -55,11 +48,9 @@
         margin: 0 1rem;
         background-color: #fff;
         box-shadow: 0 0.25rem 0.25rem rgba(17, 17, 17, 0.03);
-        border-radius: 2px;
-
+        border-radius: $radius2;
         img {
             margin: auto;
         }
     }
-
 }

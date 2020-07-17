@@ -31,7 +31,7 @@
 			$fldforgot->value='<a href="'.UrlHelper::generateUrl('GuestUser', 'forgotPasswordForm').'"
 			class="forgot">'.Labels::getLabel('LBL_Forgot_Password?',$siteLangId).'</a>';
 			$fldSubmit = $loginFrm->getField('btn_submit');
-			$fldSubmit->addFieldTagAttribute("class","btn--block");
+			$fldSubmit->addFieldTagAttribute("class","btn-block");
 			echo $loginFrm->getFormHtml();
 			?>
 		</div>
@@ -50,7 +50,7 @@
 			$fldSpace->value ='<a href="#" class="forgot">&nbsp;</a>';
 
 			$fldSubmit = $guestLoginFrm->getField('btn_submit');
-			$fldSubmit->addFieldTagAttribute("class","btn--block");
+			$fldSubmit->addFieldTagAttribute("class","btn-block");
 			echo $guestLoginFrm->getFormHtml(); ?>
 		</div>
 		<div class="row justify-content-center">

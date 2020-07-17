@@ -23,21 +23,23 @@
 
 .block--empty {
     padding: 20px;
-	margin:2rem auto;
-
+    margin: 2rem auto;
     .block__img {
         display: block;
         margin: 20px auto 30px !important;
         opacity: 0.4;
     }
-
     .error__img {
         width: 449px;
         display: block;
         margin: 20px auto 0;
     }
+    &-sm {}
 }
 
-.no-product{ text-align:center;
-ul{ justify-content: center;}
+.no-product {
+    text-align: center;
+    ul {
+        justify-content: center;
+    }
 }

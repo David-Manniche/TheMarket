@@ -10,7 +10,7 @@ if (count($arr_listing) == 0) {
         'action' => Labels::getLabel('', $siteLangId)
     );
 
-    $tbl = new HtmlElement('table', array('width' => '100%', 'class' => 'table table--orders'));
+    $tbl = new HtmlElement('table', array('width' => '100%', 'class' => 'table table-justified'));
     $th = $tbl->appendElement('thead')->appendElement('tr');
     foreach ($arr_flds as $key => $val) {
         $th->appendElement('th', array(), $val);

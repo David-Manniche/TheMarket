@@ -9,7 +9,7 @@
             </div>
             <div class="col-auto">
                 <div class="btn-group">
-                    <a href="<?php echo UrlHelper::generateUrl('seller', 'products');?>" class="btn btn-outline-primary btn--sm">
+                    <a href="<?php echo UrlHelper::generateUrl('seller', 'products');?>" class="btn btn-outline-primary btn-sm">
                     <?php echo Labels::getLabel('LBL_Back_To_My_Inventory', $siteLangId)?>
                     </a>
                 </div>

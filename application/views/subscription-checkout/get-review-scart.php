@@ -10,6 +10,6 @@
             <?php }
         } ?>
         </div>
-        <div class="selected-panel-action"><a href="javascript:void(0)" class="btn btn--primary btn--sm ripplelink reviewOrder"><?php echo Labels::getLabel('LBL_Review_Subscription_Details', $siteLangId);?></a></div>
+        <div class="selected-panel-action"><a href="javascript:void(0)" class="btn btn-primary btn-sm ripplelink reviewOrder"><?php echo Labels::getLabel('LBL_Review_Subscription_Details', $siteLangId);?></a></div>
     </div>
 </section>

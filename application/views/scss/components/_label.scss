@@ -10,7 +10,7 @@
     text-transform: uppercase;
     height: 30px;
     line-height: 30px;
-    border-radius: 1px;
+    border-radius: $radius1;
 }
 
 .label.label-default {
@@ -19,11 +19,13 @@
 }
 
 .label.label--success {
-    background: $brand-color; color:$brand-color-inverse;
+    background: $brand-color;
+    color: $brand-color-inverse;
 }
 
 .label.label--primary {
-    background: $brand-color; color:$brand-color-inverse;
+    background: $brand-color;
+    color: $brand-color-inverse;
 }
 
 .label.label--info {

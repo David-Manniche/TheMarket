@@ -63,7 +63,7 @@ if (0 < $withPhone) {
                                     $frm->setValidatorJsObjectName('forgotValObj');
                                     $frm->setFormTagAttribute('action', UrlHelper::generateUrl('GuestUser', 'forgotPassword'));
                                     $btnFld = $frm->getField('btn_submit');
-                                    $btnFld->setFieldTagAttribute('class', 'btn--block');
+                                    $btnFld->setFieldTagAttribute('class', 'btn-block');
                                     if (1 > $withPhone) {
                                         $frmFld = $frm->getField('user_email_username');
                                         $frmFld->setFieldTagAttribute('placeholder', Labels::getLabel('LBL_EMAIL_ADDRESS', $siteLangId));

@@ -1,7 +1,7 @@
 <?php defined('SYSTEM_INIT') or die('Invalid Usage.'); ?>
 <div class="sectionhead">
 	<h4><?php echo Labels::getLabel('LBL_Catalog_Listing',$adminLangId); ?></h4>
-	<a href="javascript:void(0);" onClick="addNewCatalogRequest()" class="themebtn btn btn--primary btn--sm"><?php echo Labels::getLabel('LBL_Request_to_add_catalog',$adminLangId); ?></a>
+	<a href="javascript:void(0);" onClick="addNewCatalogRequest()" class="themebtn btn btn-primary btn-sm"><?php echo Labels::getLabel('LBL_Request_to_add_catalog',$adminLangId); ?></a>
 </div>
 <div class="sectionbody">																				
 <?php

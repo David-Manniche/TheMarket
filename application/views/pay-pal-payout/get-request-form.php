@@ -11,12 +11,12 @@ $amountFld->developerTags['col'] = 2;
 $submitBtnFld = $frm->getField('btn_submit');
 $submitBtnFld->developerTags['col'] = 2;
 $submitBtnFld->value = Labels::getLabel('LBL_Save', $siteLangId);
-$submitBtnFld->setFieldTagAttribute('class', 'btn btn--primary btn--block');  
+$submitBtnFld->setFieldTagAttribute('class', 'btn btn-primary btn-block');  
 
 $frm->addButton("", "btn_cancel", Labels::getLabel("LBL_Cancel", $siteLangId));
 $cancelBtnFld = $frm->getField('btn_cancel');
 $cancelBtnFld->setFieldTagAttribute('onClick', 'closeForm()');
-$cancelBtnFld->setFieldTagAttribute('class', 'btn btn-outline-primary btn--block');
+$cancelBtnFld->setFieldTagAttribute('class', 'btn btn-outline-primary btn-block');
 $cancelBtnFld->developerTags['col'] = 2;
 //$submitBtnFld->attachField($cancelBtnFld);
 ?>

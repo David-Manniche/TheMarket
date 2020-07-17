@@ -7,11 +7,11 @@
         <?php if ($canEdit) { ?>
         <div class="content-header-right col-auto">
             <div class="btn-group">
-                <a href="javascript:void(0)" onClick="toggleBulkCollectionStatues(1)" class="btn btn-outline-primary btn--sm formActionBtn-js formActions-css"><?php echo Labels::getLabel('LBL_Activate', $siteLangId);?></a>
-                <a href="javascript:void(0)" onClick="toggleBulkCollectionStatues(0)" class="btn btn-outline-primary btn--sm  formActionBtn-js formActions-css"><?php echo Labels::getLabel('LBL_Deactivate', $siteLangId);?></a>
-                <a href="javascript:void(0)" onClick="deleteSelectedCollection()" class="btn btn-outline-primary btn--sm formActionBtn-js formActions-css"><?php echo Labels::getLabel('LBL_Delete', $siteLangId);?></a>
+                <a href="javascript:void(0)" onClick="toggleBulkCollectionStatues(1)" class="btn btn-outline-primary btn-sm formActionBtn-js formActions-css"><?php echo Labels::getLabel('LBL_Activate', $siteLangId);?></a>
+                <a href="javascript:void(0)" onClick="toggleBulkCollectionStatues(0)" class="btn btn-outline-primary btn-sm  formActionBtn-js formActions-css"><?php echo Labels::getLabel('LBL_Deactivate', $siteLangId);?></a>
+                <a href="javascript:void(0)" onClick="deleteSelectedCollection()" class="btn btn-outline-primary btn-sm formActionBtn-js formActions-css"><?php echo Labels::getLabel('LBL_Delete', $siteLangId);?></a>
                 <?php if (count($arr_listing) > 0) { ?>
-                <a href="javascript:void(0)" onClick="getShopCollectionGeneralForm(0)" class="btn btn-outline-primary btn--sm  btn--sm"><?php echo Labels::getLabel('LBL_Add_Collection', $siteLangId);?></a>
+                <a href="javascript:void(0)" onClick="getShopCollectionGeneralForm(0)" class="btn btn-outline-primary btn-sm  btn-sm"><?php echo Labels::getLabel('LBL_Add_Collection', $siteLangId);?></a>
                 <?php }?>
             </div>
         </div>

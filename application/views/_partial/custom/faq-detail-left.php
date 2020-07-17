@@ -19,7 +19,7 @@ foreach($list as $listItem){
 	  <h3><?php echo $listItem['faq_title']; ?></h3>
 	  <div><?php echo $listItem['faq_content'];?></div>
 	  <div class="gap"> </div>
-	  <div class=""><!-- <a href="<?php echo UrlHelper::generateUrl('Custom','faq'); ?>" class="btn btn--primary ripplelink"><?php echo Labels::getLabel( 'LBL_Track_Refund', $siteLangId)?></a> --></div>
+	  <div class=""><!-- <a href="<?php echo UrlHelper::generateUrl('Custom','faq'); ?>" class="btn btn-primary ripplelink"><?php echo Labels::getLabel( 'LBL_Track_Refund', $siteLangId)?></a> --></div>
     </div>
 	
 	<?php

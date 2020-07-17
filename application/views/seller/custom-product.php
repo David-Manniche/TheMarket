@@ -11,13 +11,13 @@ $keyFld->developerTags['col'] = 8;
 
 $submitBtnFld = $frmSearchCustomProduct->getField('btn_submit');
 $submitBtnFld->value=Labels::getLabel('LBL_Search',$siteLangId);
-$submitBtnFld->setFieldTagAttribute('class','btn--block');
+$submitBtnFld->setFieldTagAttribute('class','btn-block');
 $submitBtnFld->setWrapperAttribute('class','col-sm-3');
 $submitBtnFld->developerTags['col'] = 2;
 
 $cancelBtnFld = $frmSearchCustomProduct->getField('btn_clear');
 $cancelBtnFld->value=Labels::getLabel("LBL_Clear", $siteLangId);
-$cancelBtnFld->setFieldTagAttribute('class','btn--block');
+$cancelBtnFld->setFieldTagAttribute('class','btn-block');
 $cancelBtnFld->setWrapperAttribute('class','col-sm-3');
 $cancelBtnFld->developerTags['col'] = 2;
 ?>
@@ -36,8 +36,8 @@ $cancelBtnFld->developerTags['col'] = 2;
 					<h5 class="cards-title"><?php echo Labels::getLabel('LBL_My_Products_list',$siteLangId); ?></h5>
 					<div class="action">
 						<div class="">
-							<a href="javascript:void(0)" onclick="addCatalogPopup()" class = "btn btn--primary btn--sm"><?php echo Labels::getLabel( 'LBL_Add_New_Product', $siteLangId);?></a>
-                            <a href="<?php echo UrlHelper::generateUrl('seller','catalog' );?>" class="btn btn-outline-primary btn--sm"><?php echo Labels::getLabel('LBL_Products_List', $siteLangId);?></a>
+							<a href="javascript:void(0)" onclick="addCatalogPopup()" class = "btn btn-primary btn-sm"><?php echo Labels::getLabel( 'LBL_Add_New_Product', $siteLangId);?></a>
+                            <a href="<?php echo UrlHelper::generateUrl('seller','catalog' );?>" class="btn btn-outline-primary btn-sm"><?php echo Labels::getLabel('LBL_Products_List', $siteLangId);?></a>
 						</div>
 					</div>
 				</div>

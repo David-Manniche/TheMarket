@@ -7,7 +7,7 @@ $prodCatLangFrm->developerTags['colClassPrefix'] = 'col-md-';
 $prodCatLangFrm->developerTags['fld_default_col'] = 12;
 /* [ */
 /* $cat_image_fld = $prodCatLangFrm->getField('cat_image');
-$cat_image_fld->addFieldTagAttribute('class','btn btn--primary btn--sm');
+$cat_image_fld->addFieldTagAttribute('class','btn btn-primary btn-sm');
 $htmlAfterField = '<span class="uploadimage--info">This will be displayed in 268x202 on Home Page Collections, while displaying categories.</span>';
 if( isset($catImages) && !empty($catImages) ){
     $htmlAfterField .= '
@@ -19,7 +19,7 @@ $cat_image_fld->htmlAfterField = $htmlAfterField; */
 
 /* [ */
 /* $cat_icon_fld = $prodCatLangFrm->getField('cat_icon');
-$cat_icon_fld->addFieldTagAttribute('class','btn btn--primary btn--sm');
+$cat_icon_fld->addFieldTagAttribute('class','btn btn-primary btn-sm');
 $htmlAfterField = '<span class="uploadimage--info">This will be displayed in 60x60 on your store.</span>';
 
 if( isset($catIcons) && !empty($catIcons) ){
@@ -31,7 +31,7 @@ $cat_icon_fld->htmlAfterField = $htmlAfterField; */
 
 /* [ */
 /* $fld1 = $prodCatLangFrm->getField('cat_banner');
-$fld1->addFieldTagAttribute('class','btn btn--primary btn--sm');
+$fld1->addFieldTagAttribute('class','btn btn-primary btn-sm');
 $htmlAfterField = '<span class="uploadimage--info">Preferred Dimesnion: Width = 1050PX, Height = 340PX</span>';
 if( isset($catBanners) && !empty($catBanners) ){
     $htmlAfterField .= '<div class="uploaded--image"><img src="'.UrlHelper::generateFullUrl('Category','banner',array($prodcat_id, $prodcat_lang_id,'THUMB'),CONF_WEBROOT_FRONT_URL).'"> <a href="javascript:void(0);" onClick="removeCatBanner('. $prodcat_id.', '.$prodcat_lang_id.')" class="remove--img"><i class="ion-close-round"></i></a></div>';

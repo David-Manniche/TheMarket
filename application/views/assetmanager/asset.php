@@ -12,8 +12,8 @@
             #inpFolder {
                 border: 1px inset #ddd;
                 font-size: 12px;
-                -moz-border-radius: 3px;
-                -webkit-border-radius: 3px;
+                -moz-border-radius: $radius3;
+                -webkit-border-radius: $radius3;
                 padding-left: 7px;
             }
         </style>

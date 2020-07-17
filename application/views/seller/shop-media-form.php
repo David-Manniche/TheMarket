@@ -6,7 +6,7 @@
     $ratioFld = $shopLogoFrm->getField('ratio_type');
     $ratioFld->addFieldTagAttribute('class', 'prefRatio-js');
     $fld = $shopLogoFrm->getField('shop_logo');
-    $fld->addFieldTagAttribute('class', 'btn btn--sm');
+    $fld->addFieldTagAttribute('class', 'btn btn-sm');
     $fld->addFieldTagAttribute('onChange', 'logoPopupImage(this)');
 
     $shopBannerFrm->setFormTagAttribute('onsubmit', 'setupShopMedia(this); return(false);');
@@ -16,14 +16,14 @@
     $screenFld = $shopBannerFrm->getField('slide_screen');
     $screenFld->addFieldTagAttribute('class', 'prefDimensions-js');
     $fld = $shopBannerFrm->getField('shop_banner');
-    $fld->addFieldTagAttribute('class', 'btn  btn--sm');
+    $fld->addFieldTagAttribute('class', 'btn  btn-sm');
     $fld->addFieldTagAttribute('onChange', 'bannerPopupImage(this)');
 
     $shopBackgroundImageFrm->setFormTagAttribute('onsubmit', 'setupShopMedia(this); return(false);');
     $shopBackgroundImageFrm->developerTags['colClassPrefix'] = 'col-md-';
     $shopBackgroundImageFrm->developerTags['fld_default_col'] = 12;
     $fld = $shopBackgroundImageFrm->getField('shop_background_image');
-    $fld->addFieldTagAttribute('class', 'btn btn--sm');
+    $fld->addFieldTagAttribute('class', 'btn btn-sm');
     // $bannerSize = applicationConstants::getShopBannerSize();
     // $shopLayout= ($shopDetails['shop_ltemplate_id'])?$shopDetails['shop_ltemplate_id']:SHOP::TEMPLATE_ONE;
     $shopLayout= SHOP::TEMPLATE_ONE;

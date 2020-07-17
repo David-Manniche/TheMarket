@@ -3,8 +3,11 @@
 // © Denis Ineshin, 2014    https://github.com/IonDen
 // © guybowden, 2014        https://github.com/guybowden
 // ===================================================================================================================*/
+
+
 /* =====================================================================================================================
 // Skin details */
+
 .irs {
     height: 55px;
     margin: -30px 0 0;
@@ -39,7 +42,8 @@
 .irs-bar {
     height: 6px;
     top: 35px;
-    background: $brand-color; color:$brand-color-inverse;
+    background: $brand-color;
+    color: $brand-color-inverse;
     /*  background: linear-gradient(to top, rgba(66,139,202,1) 0%,rgba(127,195,232,1) 100%);  W3C */
 }
 
@@ -83,12 +87,14 @@
     cursor: pointer;
 }
 
+
 /*
 
 .irs-slider.state_hover, .irs-slider:hover {
     background: #FFF;
 }
 */
+
 .irs-min,
 .irs-max {
     color: #333;
@@ -98,8 +104,8 @@
     top: 0;
     padding: 1px 5px;
     background: rgba(0, 0, 0, 0.1);
-    border-radius: 3px;
-    -moz-border-radius: 3px;
+    border-radius: $radius3;
+    -moz-border-radius: $radius3;
 }
 
 .lt-ie9 .irs-min,
@@ -116,11 +122,9 @@
     text-shadow: none;
     padding: 1px 5px;
     background: #0064ca;
-    border-radius: 3px;
-    -moz-border-radius: 3px;
+    border-radius: $radius3;
+    -moz-border-radius: $radius3;
 }
-
-
 
 .lt-ie9 .irs-from,
 .lt-ie9 .irs-to,

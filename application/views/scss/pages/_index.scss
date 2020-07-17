@@ -2,49 +2,37 @@
     position: relative;
     padding-top: 20px;
     margin: 0 -10px;
-
     @include media-breakpoint-up(xl) {
         & {
             /*overflow: visible !important;*/
-
         }
     }
-    
     @include media-breakpoint-down(lg) {
         & {
             overflow: hidden;
-
         }
     }
-
     .slick-list {
         @include media-breakpoint-up(xl) {
             & {
                 overflow: visible !important;
-
             }
         }
     }
-
-
     .hero-item {
         margin: 0;
         position: relative;
         padding: 0 10px;
     }
-
     .hero-media {
         /*background: #000;*/
-        border-radius: 4px;
+        border-radius: $radius4;
         overflow: hidden;
-
         img {
             /*  opacity: 0.5;*/
             margin: 0 auto;
         }
     }
-
-
     .slick-arrow {
         position: absolute;
         z-index: 5;
@@ -60,19 +48,16 @@
         text-indent: -9999px;
         border: none;
     }
-
     .slick-prev {
         background: #ffffff url(../images/arrow-left.png) no-repeat center;
         background-size: 36px;
         #{$start-direction}: calc(50% - 38vw);
     }
-
     .slick-next {
         background: #ffffff url(../images/arrow-right.png) no-repeat center;
         background-size: 36px;
         #{$end-direction}: calc(50% - 38vw);
     }
-
     .slick-dots {
         padding: 0;
         position: absolute;
@@ -81,27 +66,25 @@
         #{$end-direction}: 0;
         margin: 0 auto;
         text-align: center;
-
         li {
             vertical-align: middle;
             display: inline-block;
             margin: 0 3px;
             width: 13px;
             height: 3px;
-            border-radius: 1px;
+            border-radius: $radius1;
             cursor: pointer;
             background: #d2d2d2;
             -webkit-transition: all 0.5s ease-in-out;
             transition: all 0.5s ease-in-out;
-
             button {
                 background: none;
                 border: none;
                 text-indent: -9999999px;
             }
-
             &.slick-active {
-                background: $brand-color; color:$brand-color-inverse;
+                background: $brand-color;
+                color: $brand-color-inverse;
                 width: 30px;
                 border-radius: 15px;
             }
@@ -110,16 +93,12 @@
 }
 
 .banner-ppc {
-    border-radius: 4px;
+    border-radius: $radius4;
     overflow: hidden;
-
-
     .advertise__block {
         margin-bottom: 2rem;
         display: block;
     }
-
-
     img {
         margin: 0 auto;
         display: inline-block;
@@ -146,4 +125,3 @@
         margin: 0 1rem 1.5rem;
     }
 }
- 

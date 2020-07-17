@@ -10,10 +10,10 @@ $adsbatch_name = $frm->getField('adsbatch_name');
 $adsbatch_name->developerTags['col'] = 2;
 
 $btnFld = $frm->getField('btn_submit');
-$btnFld->addFieldTagAttribute('class', 'btn btn--block btn--primary');
+$btnFld->addFieldTagAttribute('class', 'btn btn-block btn-primary');
 
 $btnFld = $frm->getField('btn_clear');
-$btnFld->addFieldTagAttribute('class', 'btn btn--block btn-outline-primary');
+$btnFld->addFieldTagAttribute('class', 'btn btn-block btn-outline-primary');
 
 $fld = $frm->getField('adsbatch_expired_on');
 $fld->addFieldTagAttribute('class', 'date_js');

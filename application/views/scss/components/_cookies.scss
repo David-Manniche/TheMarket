@@ -1,4 +1,5 @@
 /*cookies*/
+
 .cc-window {
     background-color: rgba(0, 0, 0, 0.75);
     bottom: 0;
@@ -33,11 +34,9 @@
     font-weight: bold;
     height: 25px;
     line-height: 25px;
-    
-    
     margin-#{$start-direction}: 10px;
     padding: 0 10px;
     -webkit-transition: all 0.3s ease-in-out 0s;
     transition: all 0.3s ease-in-out 0s;
-    border-radius: 4px;
+    border-radius: $radius4;
 }

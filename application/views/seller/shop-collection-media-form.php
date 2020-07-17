@@ -13,7 +13,7 @@
         <div class="col"><h5 class="cards-title"><?php echo Labels::getLabel('LBL_Shop_Collections', $siteLangId); ?></h5></div>
         <div class="content-header-right col-auto">
             <div class="btn-group">
-                <a href="javascript:void(0)" onClick="shopCollections(this)" class="btn btn-outline-primary btn--sm"><?php echo Labels::getLabel('LBL_Back_to_Collections', $siteLangId);?></a>
+                <a href="javascript:void(0)" onClick="shopCollections(this)" class="btn btn-outline-primary btn-sm"><?php echo Labels::getLabel('LBL_Back_to_Collections', $siteLangId);?></a>
             </div>
         </div>
     </div>

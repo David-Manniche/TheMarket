@@ -10,7 +10,7 @@
 	<section class="">
         <div class="section-head">
             <div class="section__heading"><h4><?php echo Labels::getLabel('LBL_Options_Listing',$langId);?></h4></div>
-			<div class="section__action"> <a href="javascript:void(0)" class="btn btn--primary btn--sm ripplelink"
+			<div class="section__action"> <a href="javascript:void(0)" class="btn btn-primary btn-sm ripplelink"
   			onClick="optionValueForm(<?php echo $option_id;?>,0)";><?php echo Labels::getLabel('LBL_ADD_NEW',$langId);?></a> </div>
 		</div>
         <div class="sectionbody">

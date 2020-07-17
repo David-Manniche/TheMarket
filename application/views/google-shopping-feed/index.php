@@ -19,11 +19,11 @@ $serviceAccInfo = isset($userData['service_account']) ? $userData['service_accou
                                 <?php echo Labels::getLabel('Lbl_MERCHANT_ID', $siteLangId);?> : 
                                 <?php echo $merchantId;
                                 if (empty($merchantId)) { ?>
-                                    <a class="btn btn-outline-primary btn--sm" href="<?php echo UrlHelper::generateUrl($keyName, 'getAccessToken')?>" title="<?php echo Labels::getLabel('Lbl_SETUP_MERCHANT_ACCOUNT', $siteLangId); ?>"><?php echo Labels::getLabel('Lbl_SETUP_MERCHANT_ACCOUNT', $siteLangId); ?></a>
+                                    <a class="btn btn-outline-primary btn-sm" href="<?php echo UrlHelper::generateUrl($keyName, 'getAccessToken')?>" title="<?php echo Labels::getLabel('Lbl_SETUP_MERCHANT_ACCOUNT', $siteLangId); ?>"><?php echo Labels::getLabel('Lbl_SETUP_MERCHANT_ACCOUNT', $siteLangId); ?></a>
                                 <?php } ?>
                             </h6>
                             <?php if (!empty($merchantId)) { ?>
-                                <a class="btn btn--primary btn--sm" href="javascript:void(0)" onClick="serviceAccountForm();" id="userAccInfoBtn"><?php echo Labels::getLabel('Lbl_SERVICE_ACCOUNT_INFO', $siteLangId); ?></a>
+                                <a class="btn btn-primary btn-sm" href="javascript:void(0)" onClick="serviceAccountForm();" id="userAccInfoBtn"><?php echo Labels::getLabel('Lbl_SERVICE_ACCOUNT_INFO', $siteLangId); ?></a>
                             <?php } ?>
                         </div>
                     </div>

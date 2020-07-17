@@ -5,7 +5,7 @@ $brandReqMediaFrm->developerTags['fld_default_col'] = 12;
 $ratioFld = $brandReqMediaFrm->getField('ratio_type');
 $ratioFld->addFieldTagAttribute('class', 'prefRatio-js');
 $fld = $brandReqMediaFrm->getField('logo');
-$fld->addFieldTagAttribute('class', 'btn btn--primary btn--sm');
+$fld->addFieldTagAttribute('class', 'btn btn-primary btn-sm');
 $fld->addFieldTagAttribute('onChange', 'brandPopupImage(this)');
 
 $preferredDimensionsStr = ' <small class="form-text text-muted preferredDimensions-js">'. sprintf(Labels::getLabel('LBL_Preferred_Dimensions', $siteLangId), '500 x 500').'</small>';

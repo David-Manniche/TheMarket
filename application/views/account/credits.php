@@ -33,13 +33,13 @@ $keyFld->setWrapperAttribute('class','col-lg-6');
 $keyFld->developerTags['col'] = 6; */
 
 $submitBtnFld = $frmSrch->getField('btn_submit');
-$submitBtnFld->setFieldTagAttribute('class', 'btn--block');
+$submitBtnFld->setFieldTagAttribute('class', 'btn-block');
 $submitBtnFld->setWrapperAttribute('class', 'col-lg-2');
 $submitBtnFld->developerTags['col'] = 2;
 $submitBtnFld->developerTags['noCaptionTag'] = true;
 
 $cancelBtnFld = $frmSrch->getField('btn_clear');
-$cancelBtnFld->setFieldTagAttribute('class', 'btn--block');
+$cancelBtnFld->setFieldTagAttribute('class', 'btn-block');
 $cancelBtnFld->setWrapperAttribute('class', 'col-lg-2');
 $cancelBtnFld->developerTags['col'] = 2;
 $cancelBtnFld->developerTags['noCaptionTag'] = true;
@@ -82,7 +82,7 @@ $cancelBtnFld->developerTags['noCaptionTag'] = true;
 											   
 											</div>
 											<div class="col-md-4">
-												<a href="javascript:void(0)" onClick="withdrawalReqForm()" class="btn btn--secondary btn--block">
+												<a href="javascript:void(0)" onClick="withdrawalReqForm()" class="btn btn--secondary btn-block">
 													<?php echo Labels::getLabel('LBL_Withdraw', $siteLangId); ?>
 												</a>
 											</div>
@@ -108,7 +108,7 @@ $cancelBtnFld->developerTags['noCaptionTag'] = true;
                                             $amountFld->developerTags['noCaptionTag'] = true;
 											$amountFld->developerTags['col'] = 7;
                                             $buttonFld = $frmRechargeWallet->getField('btn_submit');
-                                            $buttonFld->setFieldTagAttribute('class', 'btn--block block-on-mobile');
+                                            $buttonFld->setFieldTagAttribute('class', 'btn-block block-on-mobile');
                                             $buttonFld->developerTags['noCaptionTag'] = true;
 											$buttonFld->developerTags['col'] = 5;
                                             echo $frmRechargeWallet->getFormHtml(); ?>
@@ -138,10 +138,10 @@ $cancelBtnFld->developerTags['noCaptionTag'] = true;
                                         <h5 class="cards-title mb-2"><?php echo Labels::getLabel('LBL_Search_Transactions', $siteLangId);?></h5>
                                         <?php
                                         $submitFld = $frmSrch->getField('btn_submit');
-                                        $submitFld->setFieldTagAttribute('class', 'btn--block btn btn--primary');
+                                        $submitFld->setFieldTagAttribute('class', 'btn btn-primary btn-block ');
 
                                         $fldClear= $frmSrch->getField('btn_clear');
-                                        $fldClear->setFieldTagAttribute('class', 'btn--block btn btn-outline-primary');
+                                        $fldClear->setFieldTagAttribute('class', 'btn btn-outline-primary btn-block');
                                         echo $frmSrch->getFormHtml();
                                         ?>
                                     </div>

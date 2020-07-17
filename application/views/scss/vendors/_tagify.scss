@@ -58,7 +58,7 @@
     cursor: default
 }
 
-.tagify[readonly] > .tagify__input {
+.tagify[readonly]>.tagify__input {
     visibility: hidden;
     width: 0;
     margin: 5px 0
@@ -68,12 +68,12 @@
     display: none
 }
 
-.tagify[readonly] .tagify__tag > div {
+.tagify[readonly] .tagify__tag>div {
     padding: .3em .5em;
     padding: var(--tag-pad)
 }
 
-.tagify[readonly] .tagify__tag > div::before {
+.tagify[readonly] .tagify__tag>div::before {
     background: linear-gradient(45deg, var(--tag-bg) 25%, transparent 25%, transparent 50%, var(--tag-bg) 50%, var(--tag-bg) 75%, transparent 75%, transparent) 0/5px 5px;
     box-shadow: none;
     filter: brightness(.95)
@@ -102,8 +102,8 @@
     margin-left: 0
 }
 
-.tagify + input,
-.tagify + textarea {
+.tagify+input,
+.tagify+textarea {
     display: none !important
 }
 
@@ -118,7 +118,7 @@
     transition: .13s ease-out
 }
 
-.tagify__tag > div {
+.tagify__tag>div {
     vertical-align: top;
     box-sizing: border-box;
     max-width: 100%;
@@ -127,13 +127,13 @@
     color: #000;
     color: var(--tag-text-color);
     line-height: inherit;
-    border-radius: 3px;
+    border-radius: $radius3;
     -webkit-user-select: none;
     user-select: none;
     transition: .13s ease-out
 }
 
-.tagify__tag > div > * {
+.tagify__tag>div>* {
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -144,7 +144,7 @@
     transition: .8s ease, .1s color
 }
 
-.tagify__tag > div > [contenteditable] {
+.tagify__tag>div>[contenteditable] {
     outline: 0;
     -webkit-user-select: text;
     user-select: text;
@@ -154,7 +154,7 @@
     max-width: 350px
 }
 
-.tagify__tag > div::before {
+.tagify__tag>div::before {
     content: '';
     position: absolute;
     border-radius: inherit;
@@ -179,7 +179,7 @@
     box-shadow: 0 0 0 var(--tag-inset-shadow-size) var(--tag-hover) inset
 }
 
-.tagify__tag.tagify--noAnim > div::before {
+.tagify__tag.tagify--noAnim>div::before {
     animation: none
 }
 
@@ -200,7 +200,7 @@
     animation: none
 }
 
-.tagify__tag.tagify--notAllowed:not(.tagify__tag--editable) div > span {
+.tagify__tag.tagify--notAllowed:not(.tagify__tag--editable) div>span {
     opacity: .5
 }
 
@@ -214,23 +214,23 @@
     display: none
 }
 
-.tagify__tag[readonly] > div::before {
+.tagify__tag[readonly]>div::before {
     background: linear-gradient(45deg, var(--tag-bg) 25%, transparent 25%, transparent 50%, var(--tag-bg) 50%, var(--tag-bg) 75%, transparent 75%, transparent) 0/5px 5px;
     box-shadow: none;
     filter: brightness(.95)
 }
 
-.tagify__tag--editable > div {
+.tagify__tag--editable>div {
     color: #000;
     color: var(--tag-text-color--edit)
 }
 
-.tagify__tag--editable > div::before {
+.tagify__tag--editable>div::before {
     box-shadow: 0 0 0 2px #d3e2e2 inset !important;
     box-shadow: 0 0 0 2px var(--tag-hover) inset !important
 }
 
-.tagify__tag--editable.tagify--invalid > div::before {
+.tagify__tag--editable.tagify--invalid>div::before {
     box-shadow: 0 0 0 2px #d39494 inset !important;
     box-shadow: 0 0 0 2px var(--tag-invalid-color) inset !important
 }
@@ -264,11 +264,11 @@
     background: var(--tag-remove-btn-bg--hover)
 }
 
-.tagify__tag__removeBtn:hover + div > span {
+.tagify__tag__removeBtn:hover+div>span {
     opacity: .5
 }
 
-.tagify__tag__removeBtn:hover + div::before {
+.tagify__tag__removeBtn:hover+div::before {
     box-shadow: 0 0 0 1.1em rgba(211, 148, 148, .3) inset !important;
     box-shadow: 0 0 0 var(--tag-inset-shadow-size) var(--tag-remove-bg) inset !important;
     transition: .2s
@@ -376,7 +376,7 @@
     margin: 0
 }
 
-.tagify__input .tagify__tag > div {
+.tagify__input .tagify__tag>div {
     padding-top: 0;
     padding-bottom: 0
 }
@@ -491,7 +491,7 @@
     padding: .3em .5em;
     margin: 1px;
     cursor: pointer;
-    border-radius: 2px;
+    border-radius: $radius2;
     position: relative;
     outline: 0
 }
