@@ -337,13 +337,9 @@ class Shipping
      */
     public function calculateCharges(array $physicalSelProdIdArr, array $shippingAddressDetail, array $productInfo): array
     {
-        if (!empty($shippingAddressDetail)) {
-            $shipToCountryId = isset($shippingAddressDetail['addr_country_id']) ? $shippingAddressDetail['addr_country_id'] : 0;
-        }
+        $shipToCountryId = isset($shippingAddressDetail['addr_country_id']) ? $shippingAddressDetail['addr_country_id'] : 0;
 
-        if (!empty($shippingAddressDetail)) {
-            $shipToStateId = isset($shippingAddressDetail['addr_state_id']) ? $shippingAddressDetail['addr_state_id'] : 0;
-        }
+        $shipToStateId = isset($shippingAddressDetail['addr_state_id']) ? $shippingAddressDetail['addr_state_id'] : 0;
        
         $this->selProdShipRates = $this->getSellerProductShippingRates($physicalSelProdIdArr, $shipToCountryId, $shipToStateId);
         

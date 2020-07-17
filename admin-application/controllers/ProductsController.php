@@ -1083,7 +1083,7 @@ class ProductsController extends AdminBaseController
 
         $productData = Product::getAttributesById($productId);
         $prodShippingDetails = Product::getProductShippingDetails($productId, $this->adminLangId, $productData['product_seller_id']);
-        $productData['ps_free'] = $prodShippingDetails['ps_free'];
+        $productData['ps_free'] = isset($prodShippingDetails['ps_free']) ? $prodShippingDetails['ps_free'] : 0;
         if ($productData['product_seller_id'] > 0) {
             $userShopName = User::getUserShopName($productData['product_seller_id']);
             $productData['selprod_user_shop_name'] = $userShopName['user_name'] . ' - ' . $userShopName['shop_identifier'];
@@ -1091,7 +1091,7 @@ class ProductsController extends AdminBaseController
             $productData['selprod_user_shop_name'] = 'Admin';
         }
         $prodSpecificsDetails = Product::getProductSpecificsDetails($productId);
-        $productData['product_warranty'] = $prodSpecificsDetails['product_warranty'];
+        $productData['product_warranty'] = isset($prodSpecificsDetails['product_warranty']) ? $prodSpecificsDetails['product_warranty'] : 0;
         $productFrm->fill($productData);
 
         $totalProducts = Product::getCatalogProductCount($productId);
