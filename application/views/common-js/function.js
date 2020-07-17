@@ -606,7 +606,7 @@ function accessLocation(force = false) {
     if ("" == location.lat || "" == location.lng || "" == location.countryCode || force) {
         $.facebox(function() {
             fcom.ajax(fcom.makeUrl('Home', 'accessLocation'), '', function(t) {
-                $.facebox(t, 'small-fb-width');
+                $.facebox(t, 'location-popup-width');
                 googleAddressAutocomplete();
             });
         });

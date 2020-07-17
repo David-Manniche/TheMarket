@@ -17491,6 +17491,82 @@ a:hover, .shop-nav ul li.is--active a {
 .bg-gray-dark {
   background: #f4f5fa; }
 
+.location-popup-width {
+  width: 630px !important;
+  padding: 0 !important; }
+
+.location-permission {
+  text-align: center;
+  background-image: url(images/retina/city-location.svg);
+  background-repeat: no-repeat;
+  background-position: bottom center;
+  padding-top: 30px;
+  padding-bottom: 100px;
+  font-family: "Poppins", sans-serif; }
+  .location-permission_head {
+    max-width: 450px;
+    margin: 0 auto; }
+    .location-permission_head h5 {
+      font-weight: 500;
+      margin-bottom: 1rem;
+      line-height: 1.5; }
+    .location-permission_head p {
+      font-size: 0.89rem;
+      margin-bottom: 2rem;
+      color: #888; }
+  .location-permission_body .default {
+    border: solid 1px #dee2e6;
+    border-radius: 4px;
+    padding: 1rem;
+    padding-left: 3rem;
+    display: inline-flex;
+    align-items: center;
+    color: #888;
+    margin: 0 auto;
+    position: relative;
+    min-width: 300px;
+    font-weight: 300; }
+    .location-permission_body .default:after {
+      position: absolute;
+      left: 1.2rem;
+      top: calc(50% - 5px);
+      content: "";
+      display: block;
+      margin: 0;
+      width: 10px;
+      height: 10px;
+      border-top: 2px solid var(--brand-color);
+      border-left: 2px solid var(--brand-color);
+      transform: rotate(45deg); }
+    .location-permission_body .default .icn {
+      max-width: 30px;
+      margin-left: 1rem; }
+    .location-permission_body .default .location-name {
+      font-size: 0.85rem; }
+      .location-permission_body .default .location-name strong {
+        font-weight: 600;
+        color: #525252; }
+    .location-permission_body .default:hover, .location-permission_body .shop-nav ul li.is--active a.default, .shop-nav ul li.is--active .location-permission_body a.default {
+      border-color: var(--brand-color); }
+  .location-permission_body .or {
+    max-width: none;
+    margin: 1.5rem auto;
+    font-weight: 400; }
+    .location-permission_body .or:after, .location-permission_body .or:before {
+      width: 45%;
+      background: #dee2e6; }
+  .location-permission_body .location-search {
+    max-width: 300px;
+    margin: 0 auto; }
+    .location-permission_body .location-search input, .location-permission_body .location-search .form select, .form .location-permission_body .location-search select, .location-permission_body .location-search .form .custom-select, .form .location-permission_body .location-search .custom-select, .location-permission_body .location-search .form textarea, .form .location-permission_body .location-search textarea {
+      font-size: 0.8rem;
+      background-image: url(images/retina/magni-gray.svg);
+      background-repeat: no-repeat;
+      background-position: 15px center;
+      background-size: 20px;
+      padding: 1.5rem;
+      padding-right: 45px; }
+
 .animated {
   -webkit-animation-duration: 1s;
   animation-duration: 1s;
