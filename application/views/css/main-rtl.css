@@ -16942,6 +16942,7 @@ body {
   font-family: "Open Sans", sans-serif; }
 
 :focus {
+  box-shadow: none !important;
   outline: 0 !important; }
 
 h1,
@@ -17500,6 +17501,7 @@ a:hover, .shop-nav ul li.is--active a {
   background-image: url(images/retina/city-location.svg);
   background-repeat: no-repeat;
   background-position: bottom center;
+  background-size: contain;
   padding-top: 30px;
   padding-bottom: 100px;
   font-family: "Poppins", sans-serif; }
