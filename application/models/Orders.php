@@ -1223,10 +1223,10 @@ class Orders extends MyAppModel
             $emailNotify = $emailObj->orderPaymentUpdateBuyerAdmin($orderId);
         } elseif (strtolower($paymentMethodCode) == 'cashondelivery') {
             $emailNotify = $emailObj->cashOnDeliveryOrderUpdateBuyerAdmin($orderId);
-            $emailObj->newOrderVendor($orderId, 0, PaymentSettings::PAYMENT_TYPE_COD);
-        } elseif ($orderInfo['order_pmethod_id'] == PaymentSettings::BANK_TRANSFER) {
+            $emailObj->newOrderVendor($orderId, 0, $paymentMethodCode);
+        } elseif (strtolower($paymentMethodCode) == 'transferbank') {
             $emailNotify = $emailObj->bankTranferOrderUpdateBuyerAdmin($orderId);
-            $emailObj->newOrderVendor($orderId, 0, PaymentSettings::PAYMENT_TYPE_BANK_TRANSFER);
+            $emailObj->newOrderVendor($orderId, 0, $paymentMethodCode);
         }
 
         // If order Payment status is 0 then becomes greater than 0 mail to Vendors and Update Child Order Status to Paid & Give Referral Reward Points
