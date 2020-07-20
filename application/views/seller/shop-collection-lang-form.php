@@ -62,6 +62,8 @@
                             $langFld = $shopColLangFrm->getField('lang_id');
                             $langFld->setfieldTagAttribute('onChange', "editShopCollectionLangForm(" . $scollection_id . ", this.value);");
                             
+                            $submitFld = $shopColLangFrm->getField('btn_submit');
+                            $submitFld->setFieldTagAttribute('class', "btn btn-primary btn-wide");
                             echo $shopColLangFrm->getFormHtml();
                         ?>
                     </div>

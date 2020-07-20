@@ -97,30 +97,30 @@
                                 <div class="info--order">
                                     <h5><?php echo Labels::getLabel('LBL_Billing_Details', $siteLangId);?></h5>
                                     <?php $billingAddress = $orderDetail['billingAddress']['oua_name'].'<br>';
-                        if ($orderDetail['billingAddress']['oua_address1']!='') {
-                            $billingAddress.=$orderDetail['billingAddress']['oua_address1'].'<br>';
-                        }
+                                        if ($orderDetail['billingAddress']['oua_address1']!='') {
+                                            $billingAddress.=$orderDetail['billingAddress']['oua_address1'].'<br>';
+                                        }
 
-                        if ($orderDetail['billingAddress']['oua_address2']!='') {
-                            $billingAddress.=$orderDetail['billingAddress']['oua_address2'].'<br>';
-                        }
+                                        if ($orderDetail['billingAddress']['oua_address2']!='') {
+                                            $billingAddress.=$orderDetail['billingAddress']['oua_address2'].'<br>';
+                                        }
 
-                        if ($orderDetail['billingAddress']['oua_city']!='') {
-                            $billingAddress.=$orderDetail['billingAddress']['oua_city'].',';
-                        }
+                                        if ($orderDetail['billingAddress']['oua_city']!='') {
+                                            $billingAddress.=$orderDetail['billingAddress']['oua_city'].',';
+                                        }
 
-                        if ($orderDetail['billingAddress']['oua_zip']!='') {
-                            $billingAddress.=$orderDetail['billingAddress']['oua_state'];
-                        }
+                                        if ($orderDetail['billingAddress']['oua_zip']!='') {
+                                            $billingAddress.=$orderDetail['billingAddress']['oua_state'];
+                                        }
 
-                        if ($orderDetail['billingAddress']['oua_zip']!='') {
-                            $billingAddress.= '-'.$orderDetail['billingAddress']['oua_zip'];
-                        }
+                                        if ($orderDetail['billingAddress']['oua_zip']!='') {
+                                            $billingAddress.= '-'.$orderDetail['billingAddress']['oua_zip'];
+                                        }
 
-                        if ($orderDetail['billingAddress']['oua_phone']!='') {
-                            $billingAddress.= '<br>'.$orderDetail['billingAddress']['oua_phone'];
-                        }
-                      ?>
+                                        if ($orderDetail['billingAddress']['oua_phone']!='') {
+                                            $billingAddress.= '<br>'.$orderDetail['billingAddress']['oua_phone'];
+                                        }
+                                    ?>
                                     <p><?php echo $billingAddress;?></p>
                                 </div>
                             </div>
@@ -129,30 +129,30 @@
                                 <div class="info--order">
                                     <h5><?php echo Labels::getLabel('LBL_Shipping_Detail', $siteLangId);?></h5>
                                     <?php $shippingAddress = $orderDetail['shippingAddress']['oua_name'].'<br>';
-                        if ($orderDetail['shippingAddress']['oua_address1']!='') {
-                            $shippingAddress.=$orderDetail['shippingAddress']['oua_address1'].'<br>';
-                        }
+                                        if ($orderDetail['shippingAddress']['oua_address1']!='') {
+                                            $shippingAddress.=$orderDetail['shippingAddress']['oua_address1'].'<br>';
+                                        }
 
-                        if ($orderDetail['shippingAddress']['oua_address2']!='') {
-                            $shippingAddress.=$orderDetail['shippingAddress']['oua_address2'].'<br>';
-                        }
+                                        if ($orderDetail['shippingAddress']['oua_address2']!='') {
+                                            $shippingAddress.=$orderDetail['shippingAddress']['oua_address2'].'<br>';
+                                        }
 
-                        if ($orderDetail['shippingAddress']['oua_city']!='') {
-                            $shippingAddress.=$orderDetail['shippingAddress']['oua_city'].',';
-                        }
+                                        if ($orderDetail['shippingAddress']['oua_city']!='') {
+                                            $shippingAddress.=$orderDetail['shippingAddress']['oua_city'].',';
+                                        }
 
-                        if ($orderDetail['shippingAddress']['oua_zip']!='') {
-                            $shippingAddress.=$orderDetail['shippingAddress']['oua_state'];
-                        }
+                                        if ($orderDetail['shippingAddress']['oua_zip']!='') {
+                                            $shippingAddress.=$orderDetail['shippingAddress']['oua_state'];
+                                        }
 
-                        if ($orderDetail['shippingAddress']['oua_zip']!='') {
-                            $shippingAddress.= '-'.$orderDetail['shippingAddress']['oua_zip'];
-                        }
+                                        if ($orderDetail['shippingAddress']['oua_zip']!='') {
+                                            $shippingAddress.= '-'.$orderDetail['shippingAddress']['oua_zip'];
+                                        }
 
-                        if ($orderDetail['shippingAddress']['oua_phone']!='') {
-                            $shippingAddress.= '<br>'.$orderDetail['shippingAddress']['oua_phone'];
-                        }
-                      ?>
+                                        if ($orderDetail['shippingAddress']['oua_phone']!='') {
+                                            $shippingAddress.= '<br>'.$orderDetail['shippingAddress']['oua_phone'];
+                                        }
+                                    ?>
                                     <p><?php echo $shippingAddress;?></p>
                                 </div>
                             </div>
@@ -173,18 +173,18 @@
                                         <th><?php echo Labels::getLabel('LBL_Comments', $siteLangId);?></th>
                                     </tr>
                                     <?php
-                  foreach ($orderDetail['comments'] as $row) {?>
-                                    <tr>
-                                        <td><?php echo FatDate::format($row['oshistory_date_added']);?></td>
-                                        <td><?php echo $yesNoArr[$row['oshistory_customer_notified']];?></td>
-                                        <td><?php echo $orderStatuses[$row['oshistory_orderstatus_id']];?></td>
-                                        <td><?php echo nl2br($row['oshistory_comments']);?></td>
-                                    </tr>
+                                    foreach ($orderDetail['comments'] as $row) {?>
+                                        <tr>
+                                            <td><?php echo FatDate::format($row['oshistory_date_added']);?></td>
+                                            <td><?php echo $yesNoArr[$row['oshistory_customer_notified']];?></td>
+                                            <td><?php echo $orderStatuses[$row['oshistory_orderstatus_id']];?></td>
+                                            <td><?php echo nl2br($row['oshistory_comments']);?></td>
+                                        </tr>
                                     <?php } ?>
                                 </tbody>
                             </table>
                         </div>
-                        <?php }?>
+                        <?php } ?>
                         <?php if (!$notEligible) {?>
                         <div class="gap"></div>
                         <div class="section--repeated no-print cancelReason-js">
@@ -194,12 +194,13 @@
                         $frm->setFormTagAttribute('class', 'form');
                         $frm->developerTags['colClassPrefix'] = 'col-lg-12 col-md-12 col-sm-';
                         $frm->developerTags['fld_default_col'] = 12;
-
+                            
+                        $btnSubmit = $frm->getField('btn_submit');
+                        $btnSubmit->setFieldTagAttribute('class', "btn btn-primary");
                         echo $frm->getFormHtml();?>
                         </div>
                         <?php }?>
                     </div>
-
                 </div>
             </div>
         </div>

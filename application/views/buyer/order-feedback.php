@@ -3,6 +3,8 @@ $frm->setFormTagAttribute('class', 'form form--horizontal');
 $frm->setFormTagAttribute('action', UrlHelper::generateUrl('Buyer', 'setupOrderFeedback'));
 $frm->developerTags['colClassPrefix'] = 'col-md-';
 $frm->developerTags['fld_default_col'] = 8;
+$btnSubmit = $frm->getField('btn_submit');
+$btnSubmit->setFieldTagAttribute('class', "btn btn-primary");
 ?>
 <?php $this->includeTemplate('_partial/dashboardNavigation.php'); ?>
 <main id="main-area" class="main" role="main">

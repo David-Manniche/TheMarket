@@ -29,6 +29,10 @@ $latFld->setFieldTagAttribute('id', "lat");
 $lngFld = $shopFrm->getField('shop_lng');
 $lngFld->setFieldTagAttribute('id', "lng");
 
+$btnSubmit = $shopFrm->getField('btn_submit');
+$btnSubmit->developerTags['noCaptionTag'] = true;
+$btnSubmit->setFieldTagAttribute('class', "btn btn-primary btn-wide");
+
 $variables= array('language'=>$language,'siteLangId'=>$siteLangId,'shop_id'=>$shop_id,'action'=>$action);
 $this->includeTemplate('seller/_partial/shop-navigation.php', $variables, false); ?>
 

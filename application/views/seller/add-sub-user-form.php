@@ -26,6 +26,8 @@
 			$usernameFld = $frm->getField('user_username');
             $usernameFld->setFieldTagAttribute('disabled', 'disabled');
         }
+        $submitFld = $frm->getField('btn_submit');
+        $submitFld->setFieldTagAttribute('class', "btn btn-primary");
         echo $frm->getFormHtml();
         ?>
  

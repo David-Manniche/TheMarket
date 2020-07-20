@@ -22,6 +22,10 @@ $paymentPolicyfld->htmlAfterField = '<small class="form-text text-muted">'.Label
 
 $langFld = $shopLangFrm->getField('lang_id');
 $langFld->setfieldTagAttribute('onChange', "shopLangForm(" . $shop_id . ", this.value);");
+
+$btnSubmit = $shopLangFrm->getField('btn_submit');
+$btnSubmit->developerTags['noCaptionTag'] = true;
+$btnSubmit->setFieldTagAttribute('class', "btn btn-primary btn-wide");
 ?>
 
 <?php     $variables= array('formLangId'=>$formLangId, 'language'=>$language,'siteLangId'=>$siteLangId,'shop_id'=>$shop_id,'action'=>$action);

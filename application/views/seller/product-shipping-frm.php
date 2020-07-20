@@ -30,10 +30,12 @@ $weightFld->developerTags['col'] = 6;
 $btnBackFld = $productFrm->getField('btn_back');
 $btnBackFld->developerTags['col'] = 6;
 $btnBackFld->setFieldTagAttribute('onClick', 'productOptionsAndTag('.$productId.')');
+$btnBackFld->setFieldTagAttribute('class', "btn btn-outline-primary");
 
 $btnSubmitFld = $productFrm->getField('btn_submit');
 $btnSubmitFld->developerTags['col'] = 6;
 $btnSubmitFld->setWrapperAttribute('class', 'text-right');
+$btnSubmitFld->setFieldTagAttribute('class', "btn btn-primary");
 
 ?>
 <div class="row justify-content-center">
