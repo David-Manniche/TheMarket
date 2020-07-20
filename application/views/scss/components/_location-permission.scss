@@ -1,5 +1,5 @@
 .location-popup-width {
-    width: 630px !important;
+    max-width: 630px;
     padding: 0 !important;
 }
 
@@ -15,6 +15,7 @@
     &_head {
         max-width: 450px;
         margin: 0 auto;
+        padding: 0 3rem;
         h5 {
             font-weight: 500;
             margin-bottom: 1rem;
@@ -49,8 +50,11 @@
                 width: 10px;
                 height: 10px;
                 border-top: 2px solid $brand-color;
-                border-#{$end-direction}: 2px solid $brand-color;
+                border-right: 2px solid $brand-color;
                 transform: rotate(45deg);
+                [dir="rtl"] & {
+                    transform: rotate(-135deg);
+                }
             }
             .icn {
                 max-width: 30px;
@@ -88,6 +92,9 @@
                 background-size: 20px;
                 padding: 1.5rem;
                 padding-#{$start-direction}: 45px;
+                [dir="rtl"] & {
+                    background-position: calc(100% - 10px) center;
+                }
             }
         }
     }

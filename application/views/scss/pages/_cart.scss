@@ -59,13 +59,31 @@
         display: flex;
         justify-content: space-between;
         padding: 1rem;
+        @include media-breakpoint-down(md) {
+            & {
+                flex-direction: column;
+            }
+        }
         .row {
             align-items: flex-start;
+        }
+        &.list-saved-later {
+            align-items: center;
+            @include media-breakpoint-down(md) {
+                & {
+                    flex-direction: row;
+                }
+            }
         }
     }
     .product-quantity {
         text-align: center;
         margin: 0 1rem;
+        @include media-breakpoint-down(md) {
+            & {
+                margin: 0;
+            }
+        }
         .remove {
             margin: 0.5rem 0;
             display: inline-block;
@@ -88,6 +106,14 @@
         text-align: #{$end-direction};
         flex: 0 0 110px;
         max-width: 110px;
+        @include media-breakpoint-down(md) {
+            & {
+                flex: 1;
+                max-width: none;
+                text-align: inherit;
+                margin: 0;
+            }
+        }
         del {
             color: $body-color;
             font-size: 0.8rem;
@@ -97,6 +123,15 @@
     .product-action {
         flex: 0 0 5%;
         max-width: 5%;
+        @include media-breakpoint-down(md) {
+            & {
+                position: absolute;
+                top: 0;
+                #{$end-direction}: 1rem;
+                flex: 1;
+                max-width: none;
+            }
+        }
         .list-actions {
             padding-top: 8px;
             justify-content: flex-end;
@@ -195,6 +230,12 @@
     flex-wrap: wrap;
     flex: 1;
     max-width: 300px;
+    @include media-breakpoint-down(md) {
+        & {
+            max-width: 80%;
+            margin-bottom: 1rem;
+        }
+    }
     &__thumbnail {
         position: relative;
         margin-#{$end-direction}: 15px;
@@ -218,7 +259,7 @@
             position: absolute;
             right: -0.25rem;
             top: -0.25rem;
-            z-index: 3;
+            z-index: 1;
         }
     }
     &__data {
@@ -497,10 +538,6 @@
         margin-#{$end-direction}: 10px;
         fill: $brand-color;
     }
-}
-
-.list-saved-later {
-    align-items: center;
 }
 
 .save-later {

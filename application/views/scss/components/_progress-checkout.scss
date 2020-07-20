@@ -64,7 +64,7 @@ $white: #fff;
             color: $blue;
             &:before {
                 border: 2px solid $grey;
-                animation: pulse 2s infinite;
+                animation: pulsex 2s infinite;
             }
         }
         // Step's complete state
@@ -87,9 +87,7 @@ $white: #fff;
     }
 }
 
-// Animations --------------------------------------
-// Pulse animation for Step's circle in active state
-@keyframes pulse {
+@keyframes pulsex {
     0% {
         box-shadow: 0 0 0 0 rgba(29, 201, 183, 0.4);
     }
@@ -101,7 +99,6 @@ $white: #fff;
     }
 }
 
-// Progressing to next step animation for Step's progress bar
 @keyframes nextStep {
     0% {
         width: 0%;

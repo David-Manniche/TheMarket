@@ -123,16 +123,16 @@ $buyQuantity->addFieldTagAttribute('data-page', 'product-view');
                                     <?php if(!empty($product['brand_name'])) { ?>
                                     <div class="brand-data"><span class="txt-gray-light"><?php echo Labels::getLabel('LBL_Brand', $siteLangId); ?>:</span> <?php echo $product['brand_name'];?></div>
                                     <?php } ?>
-                                    <div class="col products__price"><?php echo CommonHelper::displayMoneyFormat($product['theprice']); ?>
+                                    <div class="products__price"><?php echo CommonHelper::displayMoneyFormat($product['theprice']); ?>
                                         <?php if ($product['special_price_found']) { ?>
                                         <span class="products__price_old"><?php echo CommonHelper::displayMoneyFormat($product['selprod_price']); ?></span>
                                         <span class="product_off"><?php echo CommonHelper::showProductDiscountedText($product, $siteLangId); ?></span>
                                         <?php } ?>
                                     </div>
                                     <?php if (FatApp::getConfig("CONF_PRODUCT_INCLUSIVE_TAX", FatUtility::VAR_INT, 0) && 0 == Tax::getActivatedServiceId()) { ?>
-                                    <div class="detail-grouping">
-                                        <div class="products__category"><?php echo Labels::getLabel('LBL_Inclusive_All_Taxes', $siteLangId);?></div>
-                                    </div>
+                                    
+                                        <p class="tax-inclusive"><?php echo Labels::getLabel('LBL_Inclusive_All_Taxes', $siteLangId);?></p>
+                                   
                                     <?php } ?>
                                     <?php /* include(CONF_THEME_PATH.'_partial/product-listing-head-section.php'); */ ?>
 
@@ -349,7 +349,7 @@ $buyQuantity->addFieldTagAttribute('data-page', 'product-view');
                                             1023: 2,
                                             767:2,
                                             480: 2
-                                        }));
+                                        }, false));
                                     });
                                 </script>
                                 <?php } /* ] */ ?>

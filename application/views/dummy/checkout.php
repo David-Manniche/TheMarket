@@ -9,7 +9,7 @@
             <div id="step2" class="progress-step is-active">
                 Step Two
             </div>
-            <div id="step3" class="progress-step">
+            <div id="step3" class="progress-step"> 
                 Step Three
             </div>
             <div id="step4" class="progress-step">
@@ -30,7 +30,7 @@
                         </svg>
                     </span>
                     <span class="order-summary-toggle__text">
-                        <span>Order Summary <i class="arrow">
+                        <span>Order Summary <i class="arrow-right">
                                 <svg class="svg">
                                     <use xlink:href="../images/retina/sprite.svg#arrow-right"
                                         href="../images/retina/sprite.svg#arrow-right"></use>
@@ -322,8 +322,7 @@
                                         </svg></i>
                                     <span class="">Back </span></a>
 
-                                <button name="button" type="button" class="btn btn-primary btn-wide"><span
-                                        class="">Continue</span></button>
+                                <button name="button" type="button" class="btn btn-primary btn-wide">Continue</button>
 
                             </div>
                         </form>
@@ -748,25 +747,13 @@
                             <label class="checkbox"><input title="" type="checkbox" value="1">Send me electronic or mail
                                 offers from Nordstrom. You may opt out at any time.<i class="input-helper"></i>
                             </label>
-
-
                         </div>
-
                     </div>
-
-
                     <!-- end::Step -->
-
-
-
-
-
-
-
                 </main>
             </div>
-            <aside class="sidebar" role="complementary">
-                <div class="sidebar__content">
+            <aside class="aside" role="complementary">
+                <div class="aside__content">
                     <div id="order-summary" class="order-summary">
                         <h5 class="mb-2"> Order Summary</h5>
                         <div class="order-summary__sections">

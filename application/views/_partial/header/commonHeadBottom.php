@@ -21,7 +21,7 @@ if (!array_key_exists('screenWidth', $_COOKIE)) {
 }
 
 if (isset($isUserDashboard) && $isUserDashboard) {
-    $bodyClass = 'is-dashboard';
+    $bodyClass = 'is-dashboard my-dashboard';
     $expanded = 'sidebar-is-reduced';
     if (!array_key_exists('openSidebar', $_COOKIE)) {
         setcookie('openSidebar', 1, 0, CONF_WEBROOT_URL);

@@ -520,11 +520,12 @@ var screenResolutionForSlider = {
     375: 1
 };
 
-function getSlickSliderSettings(slidesToShow, slidesToScroll, layoutDirection, autoInfinitePlay, slidesToShowForDiffResolution) {
+function getSlickSliderSettings(slidesToShow, slidesToScroll, layoutDirection, autoInfinitePlay, slidesToShowForDiffResolution, adaptiveHeight) {
     slidesToShow = (typeof slidesToShow != "undefined") ? parseInt(slidesToShow) : 4;
     slidesToScroll = (typeof slidesToScroll != "undefined") ? parseInt(slidesToScroll) : 1;
     layoutDirection = (typeof layoutDirection != "undefined") ? layoutDirection : 'ltr';
     autoInfinitePlay = (typeof autoInfinitePlay != "undefined") ? autoInfinitePlay : true;
+	adaptiveHeight = (typeof adaptiveHeight != "undefined") ? adaptiveHeight : true;
     if (typeof slidesToShowForDiffResolution != "undefined") {
         slidesToShowForDiffResolution = $.extend(screenResolutionForSlider, slidesToShowForDiffResolution);
     } else {
@@ -537,6 +538,7 @@ function getSlickSliderSettings(slidesToShow, slidesToScroll, layoutDirection, a
         slidesToScroll: slidesToScroll,
         infinite: autoInfinitePlay,
         autoplay: autoInfinitePlay,
+		adaptiveHeight: adaptiveHeight,
         arrows: true,
         responsive: [{
                 breakpoint: 1199,

@@ -9,13 +9,21 @@
 
 .header-checkout {
     padding: 1.5rem 0;
-    background: transparent;
+    background: $bg-white;
     background-size: cover;
     display: block;
     border-bottom: $border;
     display: flex;
     flex-direction: column;
     justify-content: center;
+    position: sticky;
+    top: 0;
+    z-index: 2;
+    @include media-breakpoint-down(md) {
+        & {
+            padding: 0;
+        }
+    }
     .logo-checkout-main {
         max-width: 150px;
         display: block;
@@ -24,9 +32,8 @@
 }
 
 .order-summary-toggle {
-    background: #fafafa;
+    background: $bg-gray;
     border: none;
-    border-top: $border;
     border-bottom: $border;
     padding: 1.25em 0;
     -webkit-flex-shrink: 0;
@@ -66,9 +73,6 @@
 }
 
 .content {
-    display: -webkit-box;
-    display: -webkit-flex;
-    display: -ms-flexbox;
     display: flex;
     -webkit-box-orient: vertical;
     -webkit-box-direction: normal;
@@ -95,9 +99,6 @@
     }
     @include media-breakpoint-up(xl) {
         .main {
-            display: -webkit-box;
-            display: -webkit-flex;
-            display: -ms-flexbox;
             display: flex;
             -webkit-box-orient: vertical;
             -webkit-box-direction: normal;
@@ -110,7 +111,7 @@
             flex: 1 0 auto;
             background: none;
             height: auto;
-            padding: 0;
+            padding: 1rem 0;
             padding-top: 4rem;
             width: 50%;
             padding-#{$end-direction}: 5%;
@@ -125,7 +126,7 @@
         }
     }
     @include media-breakpoint-up(xl) {
-        .sidebar {
+        .aside {
             position: relative;
             color: #525252;
             width: 40%;
@@ -316,16 +317,32 @@
         padding: 1rem;
         display: flex;
         justify-content: space-between;
+        flex-wrap: wrap;
+        @include media-breakpoint-down(md) {
+            & {
+                flex-direction: column;
+            }
+        }
         &__list {
-            flex: 0 0 44%;
-            max-width: 44%;
+            flex: 1;
             padding-#{$end-direction}: 2rem;
+            @include media-breakpoint-down(md) {
+                & {
+                    flex: auto;
+                    max-width: none;
+                    padding: 0;
+                    padding-bottom: 2rem;
+                }
+            }
             li {
                 padding-bottom: 1rem;
                 .radio {
                     display: flex;
                 }
             }
+        }
+        .pickup-time {
+            flex: 1;
         }
         .lb-txt {
             font-size: 0.8rem;
@@ -544,19 +561,13 @@
     }
     &__photo {
         .svg {
-            width: 60px;
+            width: 3.5rem;
             height: 100%;
-        }
-    }
-    @include media-breakpoint-down(sm) {
-        &__name {
-            padding: 10px 0;
-        }
-        &__expiry {
-            padding-bottom: 10px;
-        }
-        &__number {
-            padding-top: 10px;
+            @include media-breakpoint-down(md) {
+                & {
+                    width: 2rem;
+                }
+            }
         }
     }
     &-view {
@@ -564,6 +575,13 @@
             padding: 1rem;
             .row {
                 align-items: center;
+                @include media-breakpoint-down(md) {
+                    & {
+                        flex-wrap: nowrap;
+                        overflow-x: auto;
+                        align-items: inherit;
+                    }
+                }
             }
         }
     }

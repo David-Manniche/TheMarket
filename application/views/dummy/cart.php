@@ -321,7 +321,7 @@
 
                                     <h5 class="cart-title">Saved For Later (2)</h5>
                                     <ul class="list-group list-cart">
-                                        <li class="list-group-item list-saved-later">
+                                        <li class="list-group-item">
                                             <div class="product-profile">
                                                 <div class="product-profile__thumbnail">
                                                     <a href="#">
@@ -359,7 +359,7 @@
 
 
                                         </li>
-                                        <li class="list-group-item list-saved-later">
+                                        <li class="list-group-item">
                                             <div class="product-profile">
                                                 <div class="product-profile__thumbnail">
                                                     <a href="#">
@@ -397,7 +397,7 @@
 
 
                                         </li>
-                                        <li class="list-group-item list-saved-later">
+                                        <li class="list-group-item ">
                                             <div class="product-profile">
                                                 <div class="product-profile__thumbnail">
                                                     <a href="#">
@@ -425,18 +425,8 @@
                                                             </svg>
                                                         </a></li>
                                                 </ul>
-
-
-
-
                                             </div>
-
-
-
-
                                         </li>
-
-
                                     </ul>
                                 </div>
 
