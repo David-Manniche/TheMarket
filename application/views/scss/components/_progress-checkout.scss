@@ -8,17 +8,20 @@ $white: #fff;
 .checkout-progress {
     width: 100%;
     max-width: 650px;
-    margin: 1rem auto;
+    margin: 1rem 0;
     position: relative;
     display: flex;
     // Background Track
     .progress-track {
         position: absolute;
         top: 7px;
-        width: 100%;
+        width: 76%;
         height: 2px;
         background-color: $grey2;
         z-index: -1;
+        left: 0;
+        right: 0;
+        margin: 0 auto;
     }
     // Each Step on the Progress Bar
     .progress-step {

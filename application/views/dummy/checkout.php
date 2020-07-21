@@ -1,19 +1,21 @@
 <section class="checkout">
     <header class="header-checkout" data-header="" role="header">
-        <a class="logo-checkout-main" href="index.php"><img src="../images/logo.png" alt=""></a>
-        <div class="checkout-progress">
-            <div class="progress-track"></div>
-            <div id="step1" class="progress-step is-complete">
-                Step One
-            </div>
-            <div id="step2" class="progress-step is-active">
-                Step Two
-            </div>
-            <div id="step3" class="progress-step"> 
-                Step Three
-            </div>
-            <div id="step4" class="progress-step">
-                Complete
+        <div class="container header-checkout_inner">
+            <a class="logo-checkout-main" href="index.php"><img src="../images/logo.png" alt=""></a>
+            <div class="checkout-progress">
+                <div class="progress-track"></div>
+                <div id="step1" class="progress-step is-complete">
+                    Step One
+                </div>
+                <div id="step2" class="progress-step is-active">
+                    Step Two
+                </div>
+                <div id="step3" class="progress-step">
+                    Step Three
+                </div>
+                <div id="step4" class="progress-step">
+                    Complete
+                </div>
             </div>
         </div>
     </header>
@@ -328,60 +330,276 @@
                         </form>
                     </div>
                     <!-- end::Step -->
-
-
                     <!-- begin::Step -->
                     <div class="step active" role="step:3">
                         <div class="step__section">
                             <div class="step__head">
                                 <h5 class="step-title">Shipping</h5>
                             </div>
-                            <div class="shipping-section">
-                                <div class="shipping-option">
-                                    <ul class="media-more media-more-sm show">
-                                        <li><span class="circle" data-toggle="tooltip" data-placement="top" title=""
-                                                data-original-title="product name"><img
-                                                    src="../images//products/product-thumb.jpg" alt=""></span></li>
-                                        <li><span class="circle" data-toggle="tooltip" data-placement="top" title=""
-                                                data-original-title="product name"><img
-                                                    src="../images//products/product-thumb.jpg" alt=""></span></li>
-                                        <li><span class="circle" data-toggle="tooltip" data-placement="top" title=""
-                                                data-original-title="product name"><img
-                                                    src="../images//products/product-thumb.jpg" alt=""></span></li>
-                                        <li><span class="circle" data-toggle="tooltip" data-placement="top" title=""
-                                                data-original-title="product name"><img
-                                                    src="../images//products/product-thumb.jpg" alt=""></span></li>
 
-                                        <li> <span class="circle plus-more">+5</span></li>
-                                    </ul>
-
-                                    <select class=" form-control custom-select YK-selectedShipping" name="" id="">
-                                        <option value="">Option</option>
-                                        <option value="">Option</option>
-                                        <option value="">Option</option>
-                                        <option value="">Option</option>
-                                        <option value="">Option</option>
+                            <ul class="list-group list-cart list-shippings">
+                                <li class="list-group-item">
+                                    <div class="product-profile">
+                                        <div class="product-profile__thumbnail">
+                                            <a href="#">
+                                                <img class="img-fluid" data-ratio="3:4"
+                                                    src="../images/products/product-thumb.jpg" alt="...">
+                                            </a></div>
+                                        <div class="product-profile__data">
+                                            <div class="shop">Kanwar's Shop</div>
+                                            <div class="title"><a class="" href="product.html">Cotton
+                                                    floral print</a></div>
+                                            <div class="options">
+                                                <p class="">Medium | red</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="product-price">$40.00 <del>$50.00</del></div>
+                                    <div class="product-action">
+                                        <ul class="list-actions">
+                                            <li>
+                                                <a href="#"><svg class="svg" width="24px" height="24px">
+                                                        <use xlink:href="../images/retina/sprite.svg#remove"
+                                                            href="../images/retina/sprite.svg#remove">
+                                                        </use>
+                                                    </svg>
+                                                </a></li>
+                                        </ul>
+                                    </div>
+                                </li>
+                                <li class="list-group-item">
+                                    <div class="product-profile">
+                                        <div class="product-profile__thumbnail">
+                                            <a href="#">
+                                                <img class="img-fluid" data-ratio="3:4"
+                                                    src="../images/products/product-thumb.jpg" alt="...">
+                                            </a></div>
+                                        <div class="product-profile__data">
+                                            <div class="title"><a class="" href="product.html">Cotton
+                                                    floral print</a></div>
+                                            <div class="options">
+                                                <p class="">Medium | red</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="product-price">$40.00 <del>$50.00</del></div>
+                                    <div class="product-action">
+                                        <ul class="list-actions">
+                                            <li>
+                                                <a href="#"><svg class="svg" width="24px" height="24px">
+                                                        <use xlink:href="../images/retina/sprite.svg#remove"
+                                                            href="../images/retina/sprite.svg#remove">
+                                                        </use>
+                                                    </svg>
+                                                </a></li>
+                                        </ul>
+                                    </div>
+                                </li>
+                                <li class="list-group-item">
+                                    <div class="product-profile">
+                                        <div class="product-profile__thumbnail">
+                                            <a href="#">
+                                                <img class="img-fluid" data-ratio="3:4"
+                                                    src="../images/products/product-thumb.jpg" alt="...">
+                                            </a></div>
+                                        <div class="product-profile__data">
+                                            <div class="title"><a class="" href="product.html">Cotton
+                                                    floral print</a></div>
+                                            <div class="options">
+                                                <p class="">Medium | red</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="product-price">$40.00 <del>$50.00</del></div>
+                                    <div class="product-action">
+                                        <ul class="list-actions">
+                                            <li>
+                                                <a href="#"><svg class="svg" width="24px" height="24px">
+                                                        <use xlink:href="../images/retina/sprite.svg#remove"
+                                                            href="../images/retina/sprite.svg#remove">
+                                                        </use>
+                                                    </svg>
+                                                </a></li>
+                                        </ul>
+                                    </div>
+                                </li>
+                                <li class="list-group-item">
+                                    <div class="product-profile">
+                                        <div class="product-profile__thumbnail">
+                                            <a href="#">
+                                                <img class="img-fluid" data-ratio="3:4"
+                                                    src="../images/products/product-thumb.jpg" alt="...">
+                                            </a></div>
+                                        <div class="product-profile__data">
+                                            <div class="title"><a class="" href="product.html">Cotton
+                                                    floral print</a></div>
+                                            <div class="options">
+                                                <p class="">Medium | red</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="product-price">$40.00 <del>$50.00</del></div>
+                                    <div class="product-action">
+                                        <ul class="list-actions">
+                                            <li>
+                                                <a href="#"><svg class="svg" width="24px" height="24px">
+                                                        <use xlink:href="../images/retina/sprite.svg#remove"
+                                                            href="../images/retina/sprite.svg#remove">
+                                                        </use>
+                                                    </svg>
+                                                </a></li>
+                                        </ul>
+                                    </div>
+                                </li>
+                                <li class="list-group-item">
+                                    <div class="product-profile">
+                                        <div class="product-profile__thumbnail">
+                                            <a href="#">
+                                                <img class="img-fluid" data-ratio="3:4"
+                                                    src="../images/products/product-thumb.jpg" alt="...">
+                                            </a></div>
+                                        <div class="product-profile__data">
+                                            <div class="title"><a class="" href="product.html">Cotton
+                                                    floral print</a></div>
+                                            <div class="options">
+                                                <p class="">Medium | red</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="product-price">$40.00 <del>$50.00</del></div>
+                                    <div class="product-action">
+                                        <ul class="list-actions">
+                                            <li>
+                                                <a href="#"><svg class="svg" width="24px" height="24px">
+                                                        <use xlink:href="../images/retina/sprite.svg#remove"
+                                                            href="../images/retina/sprite.svg#remove">
+                                                        </use>
+                                                    </svg>
+                                                </a></li>
+                                        </ul>
+                                    </div>
+                                </li>
+                                <li class="list-group-item shipping-select"><select class=" form-control custom-select"
+                                        name="" id="">
+                                        <option value="0">Select Shipping Method</option>
+                                        <option value="1">Flat Shipping By Seller</option>
+                                        <option value="2">ShipStation Api</option>
                                     </select>
-                                </div>
-                            </div>
-                            <div class="shipping-section">
-                                <div class="shipping-option">
-                                    <ul class="media-more media-more-sm show">
-                                        <li><span class="circle" data-toggle="tooltip" data-placement="top" title=""
-                                                data-original-title="product name"><img
-                                                    src="../images//products/product-thumb.jpg" alt=""></span></li>
 
-                                    </ul>
-                                    <select class=" form-control custom-select YK-selectedShipping" name="" id="">
+
+
+
+                                </li>
+                            </ul>
+
+                            <ul class="list-group list-cart list-shippings">
+                                <li class="list-group-item">
+                                    <div class="product-profile">
+                                        <div class="product-profile__thumbnail">
+                                            <a href="#">
+                                                <img class="img-fluid" data-ratio="3:4"
+                                                    src="../images/products/product-thumb.jpg" alt="...">
+                                            </a></div>
+                                        <div class="product-profile__data">
+                                            <div class="title"><a class="" href="product.html">Cotton
+                                                    floral print</a></div>
+                                            <div class="options">
+                                                <p class="">Medium | red</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="product-price">$40.00 <del>$50.00</del></div>
+                                    <div class="product-action">
+                                        <ul class="list-actions">
+                                            <li>
+                                                <a href="#"><svg class="svg" width="24px" height="24px">
+                                                        <use xlink:href="../images/retina/sprite.svg#remove"
+                                                            href="../images/retina/sprite.svg#remove">
+                                                        </use>
+                                                    </svg>
+                                                </a></li>
+                                        </ul>
+                                    </div>
+                                </li>
+                                <li class="list-group-item">
+                                    <div class="product-profile">
+                                        <div class="product-profile__thumbnail">
+                                            <a href="#">
+                                                <img class="img-fluid" data-ratio="3:4"
+                                                    src="../images/products/product-thumb.jpg" alt="...">
+                                            </a></div>
+                                        <div class="product-profile__data">
+                                            <div class="title"><a class="" href="product.html">Cotton
+                                                    floral print</a></div>
+                                            <div class="options">
+                                                <p class="">Medium | red</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="product-price">$40.00 <del>$50.00</del></div>
+                                    <div class="product-action">
+                                        <ul class="list-actions">
+                                            <li>
+                                                <a href="#"><svg class="svg" width="24px" height="24px">
+                                                        <use xlink:href="../images/retina/sprite.svg#remove"
+                                                            href="../images/retina/sprite.svg#remove">
+                                                        </use>
+                                                    </svg>
+                                                </a></li>
+                                        </ul>
+                                    </div>
+                                </li>
+                                <li class="list-group-item shipping-select"><select class=" form-control custom-select"
+                                        name="" id="">
                                         <option value="">Option</option>
                                         <option value="">Option</option>
                                         <option value="">Option</option>
                                         <option value="">Option</option>
                                         <option value="">Option</option>
-                                    </select>
-                                </div>
-                            </div>
+                                    </select></li>
+                            </ul>
+
+                            <ul class="list-group list-cart list-shippings">
+
+                                <li class="list-group-item">
+                                    <div class="product-profile">
+                                        <div class="product-profile__thumbnail">
+                                            <a href="#">
+                                                <img class="img-fluid" data-ratio="3:4"
+                                                    src="../images/products/product-thumb.jpg" alt="...">
+                                            </a></div>
+                                        <div class="product-profile__data">
+                                            <div class="title"><a class="" href="product.html">Cotton
+                                                    floral print</a></div>
+                                            <div class="options">
+                                                <p class="">Medium | red</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="product-price">$40.00 <del>$50.00</del></div>
+                                    <div class="product-action">
+                                        <ul class="list-actions">
+                                            <li>
+                                                <a href="#"><svg class="svg" width="24px" height="24px">
+                                                        <use xlink:href="../images/retina/sprite.svg#remove"
+                                                            href="../images/retina/sprite.svg#remove">
+                                                        </use>
+                                                    </svg>
+                                                </a></li>
+                                        </ul>
+                                    </div>
+                                </li>
+                                <li class="list-group-item shipping-select"><select class=" form-control custom-select"
+                                        name="" id="">
+                                        <option value="">Option</option>
+                                        <option value="">Option</option>
+                                        <option value="">Option</option>
+                                        <option value="">Option</option>
+                                        <option value="">Option</option>
+                                    </select></li>
+                            </ul>
                         </div>
+
                     </div>
                     <!-- end::Step -->
                     <div class="step active" role="step:3">
@@ -647,7 +865,7 @@
                                                     </div>
                                                     <div class="col-auto">
                                                         <div class="payment-card__actions ">
-                                                        <ul class="list-actions">
+                                                            <ul class="list-actions">
                                                                 <li>
                                                                     <a href="#"><svg class="svg" width="24px"
                                                                             height="24px">
@@ -752,8 +970,8 @@
                     <!-- end::Step -->
                 </main>
             </div>
-            <aside class="aside" role="complementary">
-                <div class="aside__content">
+            <aside class="sidebar" role="complementary">
+                <div class="sidebar__content">
                     <div id="order-summary" class="order-summary">
                         <h5 class="mb-2"> Order Summary</h5>
                         <div class="order-summary__sections">
@@ -762,14 +980,14 @@
                                 <div class="cart-total my-3">
                                     <div class="">
                                         <ul class="list-group list-group-flush list-group-flush-x">
-                                            <li class="list-group-item border-0">
+                                            <li class="list-group-item">
                                                 <span class="label">Subtotal</span> <span class="ml-auto">$89.00</span>
                                             </li>
                                             <li class="list-group-item ">
                                                 <span class="label">Estimated Tax</span> <span
                                                     class="ml-auto">$00.00</span>
                                             </li>
-                                            <li class="list-group-item hightlighted border-0">
+                                            <li class="list-group-item hightlighted">
                                                 <span class="label">Total</span> <span class="ml-auto">$89.00</span>
                                             </li>
                                         </ul>
@@ -868,25 +1086,11 @@
                                                     </div>
                                                 </div>
                                             </div>
-
                                             <div class="product-price">$40.00 <del>$50.00</del></div>
-
                                         </li>
-
-
                                     </ul>
-
-
-
-
                                 </div>
                             </div>
-                            <div class="place-order">
-                                <p>By placing an order, you agree to Yokart.com's <a href=""> Terms & Conditions</a> and
-                                    <a href=""> Privacy Policy </a></p>
-                                <button class="btn btn-primary btn-lg btn-block"></span>Place Order</button>
-                            </div>
-
                         </div>
                     </div>
                 </div>

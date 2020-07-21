@@ -8,10 +8,8 @@
 }
 
 .header-checkout {
-    padding: 1.5rem 0;
     background: $bg-white;
     background-size: cover;
-    display: block;
     border-bottom: $border;
     display: flex;
     flex-direction: column;
@@ -19,15 +17,21 @@
     position: sticky;
     top: 0;
     z-index: 2;
-    @include media-breakpoint-down(md) {
-        & {
-            padding: 0;
+    &_inner {
+        padding: 1.5rem 0;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        @include media-breakpoint-down(md) {
+            & {
+                padding: 0;
+            }
         }
     }
     .logo-checkout-main {
         max-width: 150px;
         display: block;
-        margin: 1rem auto;
+        margin: 1rem 0;
     }
 }
 
@@ -126,12 +130,12 @@
         }
     }
     @include media-breakpoint-up(xl) {
-        .aside {
+        .sidebar {
             position: relative;
             color: #525252;
             width: 40%;
             padding-top: 4rem;
-            padding-#{$start-direction}: 5%;
+            padding-#{$start-direction}: 4rem;
             background-position: left top;
             float: #{$end-direction};
             &:after {
@@ -583,6 +587,16 @@
                     }
                 }
             }
+        }
+    }
+}
+
+.list-shippings {
+    margin-bottom: 1.5rem;
+    .shipping-select {
+        background-color: $bg-gray;
+        .form-control {
+            font-size: 0.8rem;
         }
     }
 }
