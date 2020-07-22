@@ -16,6 +16,9 @@ $frmOptions->setFormTagAttribute('class', 'form form_horizontal');
 $frmOptions->developerTags['colClassPrefix'] = 'col-md-';
 $frmOptions->developerTags['fld_default_col'] = 6;
 $frmOptions->setFormTagAttribute('onsubmit', 'submitOptionForm(this); return(false);');
+
+$btnSubmit = $frmOptions->getField('btn_submit');
+$btnSubmit->setFieldTagAttribute('class', "btn btn-primary");
 echo $frmOptions->getFormHtml();
 ?>
 <script type="text/javascript">

@@ -25,7 +25,7 @@ class LibHelper extends FatUtility
         if (true === $json) {
             FatUtility::dieJsonError($message);
         }
-       
+        
         if (FatUtility::isAjaxCall() || $redirect === false) {
             FatUtility::dieWithError($message);
         }

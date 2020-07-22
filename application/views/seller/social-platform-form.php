@@ -34,6 +34,9 @@
                         $frm->developerTags['fld_default_col'] = 4;
                         $urlFld = $frm->getField('splatform_url');
                         $urlFld->htmlAfterField = '<span class="form-text text-muted">'.Labels::getLabel('LBL_Example_Url', $siteLangId).'</span>';
+                        
+                        $submitFld = $frm->getField('btn_submit');
+                        $submitFld->setFieldTagAttribute('class', "btn btn-primary btn-wide");
                         echo $frm->getFormHtml();
                         ?>
                     </div>

@@ -7,6 +7,9 @@ $frm->setFormTagAttribute('onsubmit', 'confirmOrder(this); return(false);');
 $pmethodName = $paymentMethod["plugin_name"];
 $pmethodDescription = $paymentMethod["plugin_description"];
 $pmethodCode = $paymentMethod["plugin_code"];
+
+$submitFld = $frm->getField('btn_submit');
+$submitFld->setFieldTagAttribute('class', "btn btn-primary");
 ?>
 <div class="">
     <p><strong><?php echo sprintf(Labels::getLabel('LBL_Pay_using_Payment_Method', $siteLangId), $pmethodName)?>:</strong></p><br />

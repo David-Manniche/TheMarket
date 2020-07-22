@@ -77,10 +77,12 @@ class SellerProduct extends MyAppModel
             ImportexportCommon::VALIDATE_POSITIVE_INT => array(
                 'selprod_id',
                 'selprod_product_id',
-                'selprod_price',
                 'selprod_stock',
                 'selprod_min_order_qty',
                 'selprod_condition'
+            ),
+            ImportexportCommon::VALIDATE_FLOAT => array(
+                'selprod_price',
             ),
             ImportexportCommon::VALIDATE_NOT_NULL => array(
                 'product_identifier',

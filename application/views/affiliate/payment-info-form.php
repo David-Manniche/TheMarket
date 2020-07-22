@@ -31,7 +31,9 @@ $PayPalEmailIdFld = $frm->getField('uextra_paypal_email_id');
 $PayPalEmailIdFld->setWrapperAttribute('class', 'paypal_payment_method_fld');
 
 $submitFld = $frm->getField('btn_submit');
-$submitFld->developerTags['noCaptionTag'] = true; ?>
+$submitFld->developerTags['noCaptionTag'] = true; 
+$submitFld->setFieldTagAttribute('class', 'btn btn-primary btn-wide');
+?>
 
 <div class="row">
     <div class="col-md-12">

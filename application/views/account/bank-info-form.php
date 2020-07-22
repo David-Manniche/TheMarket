@@ -5,9 +5,10 @@ $frm->developerTags['colClassPrefix'] = 'col-md-';
 $frm->developerTags['fld_default_col'] = 6;
 $fld = $frm->getField('ub_bank_address');
 $fld->developerTags['col'] = 12;
+$frm->setFormTagAttribute('onsubmit', 'setBankInfo(this); return(false);');
 $fld = $frm->getField('btn_submit');
 $fld->developerTags['col'] = 12;
-$frm->setFormTagAttribute('onsubmit', 'setBankInfo(this); return(false);');
+$fld->setFieldTagAttribute('class', "btn btn-primary");
 ?>
 <div class="row">
     <div class="col-md-8">

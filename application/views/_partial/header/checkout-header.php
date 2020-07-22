@@ -4,69 +4,38 @@
 	<?php if (FatApp::getConfig('CONF_AUTO_RESTORE_ON', FatUtility::VAR_INT, 1) && CommonHelper::demoUrl()) { 
         $this->includeTemplate('restore-system/top-header.php');   
         $this->includeTemplate('restore-system/page-content.php'); 
-	} ?>
-        <?php /*
-        <div class="top-bar">
-            <div class="container">
-                <div class="row">
-                    <div class="col-lg-4 col-xs-6 d-none d-xl-block d-lg-block hide--mobile">
-                        <div class="slogan">Instant Multi Vendor Ecommerce System Builder</div>
-                    </div>
-                    <div class="col-lg-8 col-xs-12">
-                    </div>
-                </div>
-            </div>
-        </div>
-        */ ?>
-        <div class="container">
-            <div class="header-checkout-inner">
-                <div class="logo">
-                       <?php
-                        $fileData = AttachedFile::getAttachment(AttachedFile::FILETYPE_FRONT_LOGO, 0, 0, $siteLangId, false);
-                        $aspectRatioArr = AttachedFile::getRatioTypeArray($siteLangId);
-                        ?>
-                       <a href="<?php echo UrlHelper::generateUrl(); ?>"
-                        class="">
-                           <img <?php if ($fileData['afile_aspect_ratio'] > 0) { ?>
+    } ?>
+    <section class="checkout">
+    <header class="header-checkout" data-header="" role="header">
+        <?php
+        $fileData = AttachedFile::getAttachment(AttachedFile::FILETYPE_FRONT_LOGO, 0, 0, $siteLangId, false);
+        $aspectRatioArr = AttachedFile::getRatioTypeArray($siteLangId);
+        ?>
+        <a class="logo-checkout-main" href="<?php echo UrlHelper::generateUrl(); ?>"><img <?php if ($fileData['afile_aspect_ratio'] > 0) { ?>
                             data-ratio= "<?php echo $aspectRatioArr[$fileData['afile_aspect_ratio']]; ?>"
                             <?php } ?> src="<?php echo UrlHelper::generateFullUrl('Image', 'siteLogo', array($siteLangId), CONF_WEBROOT_FRONT_URL); ?>"
                             alt="<?php echo FatApp::getConfig('CONF_WEBSITE_NAME_'.$siteLangId) ?>"
                             title="<?php echo FatApp::getConfig('CONF_WEBSITE_NAME_'.$siteLangId) ?>"></a>
-                </div>
-
-
-                <?php $backUrl = UrlHelper::generateUrl('Home');
-                if ($controllerName == 'subscriptioncheckout') {
-                    $backUrl = UrlHelper::generateUrl('Seller', 'Packages');
-                } elseif ($controllerName == 'walletpay') {
-                    $backUrl = UrlHelper::generateUrl('Account', 'Credits');
-                } ?>
-
-                <a href="<?php echo $backUrl; ?>"
-                    class="btn btn-outline-primary btn-sm back-store"><?php echo Labels::getLabel('LBL_Back', $siteLangId); ?></a>
-                <?php if ($controllerName == 'checkout' || $controllerName == 'subscriptioncheckout') {   ?>
-                <div class="checkout-flow">
-                    <ul>
-                        <?php if ($controllerName == 'checkout') {  ?>
-                        <li class="pending checkoutNav-js billing-js" data-count="1"><span><?php echo Labels::getLabel('LBL_Billing', $siteLangId); ?></span>
-                        </li>
-                        <li class="pending checkoutNav-js shipping-js" data-count="2"><span><?php echo Labels::getLabel('LBL_Shipping', $siteLangId); ?></span>
-                        </li>
-                        <li class="pending checkoutNav-js payment-js" data-count="3"><span><?php echo Labels::getLabel('LBL_Payment', $siteLangId); ?></span>
-                        </li>
-                        <?php /*?><li class="pending checkoutNav-js order-complete-js" data-count="4"><span><?php echo Labels::getLabel('LBL_Order_Completed', $siteLangId); ?></span></li><?php */?>
-                        <?php } else { ?>
-                        <li class="pending checkoutNav-js billing-js" data-count="1"><span><?php echo Labels::getLabel('LBL_Billing', $siteLangId); ?></span>
-                        </li>
-                        <li class="pending checkoutNav-js payment-js" data-count="2"><span><?php echo Labels::getLabel('LBL_Payment', $siteLangId); ?></span>
-                        </li>
-                        <?php /*?><li class="pending checkoutNav-js order-complete-js" data-count="3"><span><?php echo Labels::getLabel('LBL_Order_Completed', $siteLangId); ?></span></li><?php */?>
-                        <?php } ?>
-                    </ul>
-                </div>
-                <?php } ?>
-            </div>
+        <?php /* $backUrl = UrlHelper::generateUrl('Home');
+        if ($controllerName == 'subscriptioncheckout') {
+            $backUrl = UrlHelper::generateUrl('Seller', 'Packages');
+        } elseif ($controllerName == 'walletpay') {
+            $backUrl = UrlHelper::generateUrl('Account', 'Credits');
+        }  */?>
+        <?php if ($controllerName == 'checkout' || $controllerName == 'subscriptioncheckout') {   ?>
+        <div class="checkout-progress">
+            <div class="progress-track"></div>
+            <?php if ($controllerName == 'checkout') {  ?>
+                <div id="step1" class="progress-step checkoutNav-js billing-js"><?php echo Labels::getLabel('LBL_Billing', $siteLangId); ?></div>
+                <div id="step2" class="progress-step checkoutNav-js shipping-js"><?php echo Labels::getLabel('LBL_Shipping', $siteLangId); ?></div>
+                <div id="step3" class="progress-step checkoutNav-js payment-js"><?php echo Labels::getLabel('LBL_Payment', $siteLangId); ?></div>
+            <?php } else { ?>
+                <div id="step1" class="progress-step checkoutNav-js billing-js"><?php echo Labels::getLabel('LBL_Billing', $siteLangId); ?></div>
+                <div id="step2" class="progress-step checkoutNav-js payment-js"><?php echo Labels::getLabel('LBL_Payment', $siteLangId); ?></div>            
+            <?php } ?>            
         </div>
+        <?php }?>
     </header>
     <div class="after-checkout-header"></div>
-    <?php  /* echo FatUtility::decodeHtmlEntities( $headerData['epage_content'] ); */
+
+

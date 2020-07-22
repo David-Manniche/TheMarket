@@ -103,7 +103,7 @@ foreach ($arrListing as $sn => $row) {
                             'title' => Labels::getLabel('LBL_EDIT', $siteLangId),
                             'onclick' => "batchForm(" . $row['adsbatch_id'] . ")"
                         ],
-                        '<i class="fa fa-pencil"></i>',
+                        '<i class="fa fa-edit"></i>',
                         true
                     );
                     $li = $ul->appendElement('li');

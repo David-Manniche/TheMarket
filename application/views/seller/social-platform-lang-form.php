@@ -47,6 +47,8 @@
                         $langFrm->developerTags['fld_default_col'] = 4;
                         $langFld = $langFrm->getField('lang_id');
                         $langFld->setfieldTagAttribute('onChange', "addLangForm(" . $splatform_id . ", this.value);");
+                        $submitFld = $langFrm->getField('btn_submit');
+                        $submitFld->setFieldTagAttribute('class', "btn btn-primary btn-wide");
                         echo $langFrm->getFormHtml();
                         ?>
                     </div>

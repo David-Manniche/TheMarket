@@ -29,7 +29,6 @@ if (isset($stripe)) {
               stripe.confirmCardPayment(clientSecret, {
                 payment_method: '<?php echo $payment_method_id; ?>'
               }).then(function(result) {
-                    console.log(result);
                     if (result.error) {
 						// PaymentIntent client secret was invalid
 						location.href = '<?php echo $cancelBtnUrl; ?>';

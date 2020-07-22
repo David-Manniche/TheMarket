@@ -82,7 +82,7 @@ $cancelBtnFld->developerTags['noCaptionTag'] = true;
 											   
 											</div>
 											<div class="col-md-4">
-												<a href="javascript:void(0)" onClick="withdrawalReqForm()" class="btn btn--secondary btn-block">
+												<a href="javascript:void(0)" onClick="withdrawalReqForm()" class="btn btn-primary btn-block">
 													<?php echo Labels::getLabel('LBL_Withdraw', $siteLangId); ?>
 												</a>
 											</div>
@@ -111,6 +111,7 @@ $cancelBtnFld->developerTags['noCaptionTag'] = true;
                                             $buttonFld->setFieldTagAttribute('class', 'btn-block block-on-mobile');
                                             $buttonFld->developerTags['noCaptionTag'] = true;
 											$buttonFld->developerTags['col'] = 5;
+                                            $buttonFld->setFieldTagAttribute('class', "btn btn-primary");
                                             echo $frmRechargeWallet->getFormHtml(); ?>
                                         </div>
                                     </div>

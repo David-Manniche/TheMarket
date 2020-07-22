@@ -76,12 +76,16 @@ class StripeConnectController extends PaymentMethodBaseController
             if (true === $this->stripeConnect->isUserAccountRejected()) {
                 $this->setError();
             }
-
-            if (false === $this->stripeConnect->verifyInitialSetup()) {
-                $this->getInitialSetupForm();
-            }
         }
         $requiredFields = $this->stripeConnect->getRequiredFields();
+        $stripeUserData = [];
+        if (empty($requiredFields) && !empty($accountId)) {
+            if (false === $this->stripeConnect->loadRemoteUserInfo()) {
+                $this->setError();
+            }
+            $stripeUserData = $this->stripeConnect->getResponse()->toArray();
+            // CommonHelper::printArray($stripeUserData, true);
+        }
         // This will return url only for ExpressAccount connected to admin account.
         $this->stripeConnect->createLoginLink();
 
@@ -91,6 +95,7 @@ class StripeConnectController extends PaymentMethodBaseController
         $this->set('keyName', self::KEY_NAME);
         $this->set('pluginName', $this->getPluginData()['plugin_name']);
         $this->set('stripeAccountType', $this->stripeConnect->getAccountType());
+        $this->set('stripeUserData', $stripeUserData);
         $json['status'] = 1;
         $json['html'] = $this->_template->render(false, false, 'stripe-connect/index.php', true, false);
         FatUtility::dieJsonSuccess($json);
@@ -142,135 +147,31 @@ class StripeConnectController extends PaymentMethodBaseController
     }
     
     /**
-     * initialSetup
-     *
-     * @return void
-     */
-    public function initialSetup()
-    {
-        $post = array_filter(FatApp::getPostedData());
-        if (isset($post['fIsAjax'])) {
-            unset($post['fOutMode'], $post['fIsAjax']);
-        }
-
-        if (false === $this->stripeConnect->initialFieldsSetup($post)) {
-            $this->setError();
-        }
-        $msg = Labels::getLabel('MSG_SETUP_SUCCESSFULLY', $this->siteLangId);
-        FatUtility::dieJsonSuccess($msg);
-    }
-    
-    /**
-     * getInitialSetupForm
-     *
-     * @return void
-     */
-    private function getInitialSetupForm()
-    {
-        $initialFieldsStatus = $this->stripeConnect->verifyInitialSetup();
-
-        if (false === $initialFieldsStatus && !empty($this->stripeConnect->getError())) {
-            $this->setError();
-        }
-
-        if (true === $this->stripeConnect->verifyInitialSetup()) {
-            $msg = Labels::getLabel('MSG_NO_MORE_INITIAL_FIELDS_PENDING', $this->siteLangId);
-            $this->setError($msg);
-        }
-
-        $initialFieldsValue = $this->stripeConnect->initialFieldsValue();
-
-        $frm = $this->initialSetupForm();
-        $frm->fill($initialFieldsValue);
-
-        $pageTitle = Labels::getLabel('LBL_INITIAL_ACCOUNT_SETUP', $this->siteLangId);
-        $stateCode = isset($initialFieldsValue['business_profile']['support_address']['state']) ? $initialFieldsValue['business_profile']['support_address']['state'] : '';
-
-        $errors = $this->stripeConnect->getErrorWhileUpdate();
-        $this->set('errors', $errors);
-
-        $this->set('frm', $frm);
-        $this->set('stateCode', $stateCode);
-        $this->set('pageTitle', $pageTitle);
-        $this->set('keyName', self::KEY_NAME);
-        $this->set('termAndConditionsUrl', $this->stripeConnect::TERMS_AND_SERVICES_URI);
-        $json['status'] = 1;
-        $json['html'] = $this->_template->render(false, false, 'stripe-connect/get-initial-setup-form.php', true, false);
-        FatUtility::dieJsonSuccess($json);
-    }
-    
-    /**
-     * initialSetupForm
-     *
-     * @return object
-     */
-    private function initialSetupForm(): object
-    {
-        $initialFields = $this->stripeConnect->getInitialPendingFields();
-
-        $frm = new Form('frm' . self::KEY_NAME);
-
-        if (in_array('email', $initialFields)) {
-            $fld = $frm->addRequiredField(Labels::getLabel('LBL_EMAIL', $this->siteLangId), 'email');
-            $fld->requirement->setRequired(true);
-        }
-
-        if (in_array('business_profile', $initialFields)) {
-            $frm->addHiddenField('', 'business_profile[url]');
-            $frm->addHiddenField('', 'business_profile[support_url]');
-            $frm->addRequiredField(Labels::getLabel('LBL_SHOP_NAME', $this->siteLangId), 'business_profile[name]');
-            $frm->addRequiredField(Labels::getLabel('LBL_SUPPORT_PHONE', $this->siteLangId), 'business_profile[support_phone]');
-            $frm->addRequiredField(Labels::getLabel('LBL_SUPPORT_EMAIL', $this->siteLangId), 'business_profile[support_email]');
-
-            $frm->addRequiredField(Labels::getLabel('LBL_SUPPORT_ADDRESS_LINE_1', $this->siteLangId), 'business_profile[support_address][line1]');
-            $frm->addRequiredField(Labels::getLabel('LBL_SUPPORT_ADDRESS_LINE_2', $this->siteLangId), 'business_profile[support_address][line2]');
-            $frm->addRequiredField(Labels::getLabel('LBL_SUPPORT_ADDRESS_POSTAL_CODE', $this->siteLangId), 'business_profile[support_address][postal_code]');
-
-            $frm->addRequiredField(Labels::getLabel('LBL_SUPPORT_ADDRESS_CITY', $this->siteLangId), 'business_profile[support_address][city]');
-
-            $stateFldClass = 'state-' . time();
-            $countryObj = new Countries();
-            $countriesArr = $countryObj->getCountriesArr($this->siteLangId, true, 'country_code');
-            $frm->addSelectBox(Labels::getLabel('LBL_SUPPORT_ADDRESS_COUNTRY', $this->siteLangId), 'business_profile[support_address][country]', $countriesArr, '', ['class' => 'country', 'data-statefield' => $stateFldClass])->requirement->setRequired(true);
-
-            $frm->addSelectBox(Labels::getLabel('LBL_SUPPORT_ADDRESS_STATE', $this->siteLangId), 'business_profile[support_address][state]', [], '', ['class' => 'state ' . $stateFldClass, 'disabled' => 'disabled'])->requirement->setRequired(true);
-        }
-
-        if (in_array('relationship.representative', $initialFields)) {
-            $fld = $frm->addSelectBox(Labels::getLabel('LBL_RELATIONSHIP_REPRESENTATIVE', $this->siteLangId), 'relationship[representative]', applicationConstants::getYesNoArr($this->siteLangId));
-            $fld->requirement->setRequired(true);
-        }
-
-        if (in_array('tos_acceptance', $initialFields)) {
-            $fld = $frm->addCheckBox('', 'tos_acceptance', 1);
-            $fld->requirement->setRequired(true);
-            // $fld->htmlAfterField = '<a href="' . $this->stripeConnect::TERMS_AND_SERVICES_URI . '" target="_blank" class="tosLink-js">' . $label = Labels::getLabel('LBL_I_AGREE_TO_THE_TERMS_OF_SERVICE', $this->siteLangId) . '</a>';
-        }
-
-        if (0 < count($initialFields)) {
-            $frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_SAVE', $this->siteLangId));
-            return $frm;
-        }
-
-        return false;
-    }
-    
-    /**
      * requiredFieldsForm
      *
      * @return void
      */
     public function requiredFieldsForm()
     {
-        $frm = $this->getRequiredFieldsForm();
+        $businessType = FatApp::getPostedData('businessType', FatUtility::VAR_STRING, 'individual');
+        $businessType = 'undefined' == $businessType ? 'individual' : $businessType;
+
+        $frm = $this->getRequiredFieldsForm($businessType);
         if (false === $frm) {
             FatUtility::dieJsonSuccess($this->msg);
         }
 
+        $initialFieldsValue = $this->stripeConnect->initialFieldsValue();
+        $frm->fill($initialFieldsValue);
+
+        $stateCode = isset($initialFieldsValue['business_profile']['support_address']['state']) ? $initialFieldsValue['business_profile']['support_address']['state'] : '';
         $errors = $this->stripeConnect->getErrorWhileUpdate();
+
         $this->set('errors', $errors);
         $this->set('frm', $frm);
+        $this->set('stateCode', $stateCode);
         $this->set('keyName', self::KEY_NAME);
+        $this->set('termAndConditionsUrl', $this->stripeConnect::TERMS_AND_SERVICES_URI);
         $json['status'] = 0;
         $json['html'] = $this->_template->render(false, false, 'stripe-connect/required-fields-form.php', true, false);
         FatUtility::dieJsonSuccess($json);
@@ -316,10 +217,7 @@ class StripeConnectController extends PaymentMethodBaseController
             }
         }
 
-        $businessType = $this->getUserMeta('stripe_business_type');
-        $updateSubmittedFormFlag = empty($businessType) ? 0 : 1;
-
-        if (false === $this->stripeConnect->updateRequiredFields($post, $updateSubmittedFormFlag)) {
+        if (false === $this->stripeConnect->updateRequiredFields($post)) {
             $msg = $this->stripeConnect->getError();
             if (true === $redirect) {
                 Message::addErrorMessage($msg);
@@ -341,20 +239,17 @@ class StripeConnectController extends PaymentMethodBaseController
      *
      * @return object
      */
-    private function getRequiredFieldsForm(): object
+    private function getRequiredFieldsForm(string $businessType = 'individual')
     {
-        $fieldsData = $this->stripeConnect->getRequiredFields();
+        $fieldsData = $this->stripeConnect->getRequiredFields($businessType);
         if (empty($fieldsData)) {
             $this->msg = Labels::getLabel('MSG_SUCCESSFULLY_SUBMITTED_TO_REVIEW', $this->siteLangId);
             return false;
         }
+        
         $frm = new Form('frm' . self::KEY_NAME);
         $stateFldClass = '';
-        foreach ($fieldsData as $field) {
-            if ('business_type' == $field) {
-                return $this->getBusinessTypeForm($field);
-            }
-
+        foreach ($fieldsData as $field => $labelStr) {
             $name = $label = $field;
             $labelParts = [];
             if (false !== strpos($field, ".")) {
@@ -377,10 +272,22 @@ class StripeConnectController extends PaymentMethodBaseController
             if (isset($labelParts[0]) && 'individual' === $labelParts[0] && 'id_number' == end($labelParts)) {
                 continue;
             }
-
-            $labelStr = ucwords(str_replace("_", " ", $label));
-
-            if (in_array(end($labelParts), $this->stripeConnect->boolParams)) {
+            // $labelStr = ucwords(str_replace("_", " ", $label));
+            if ('business_type' === $field) {
+                $options = [
+                    'individual' => Labels::getLabel('LBL_INDIVIDUAL', $this->siteLangId),
+                    'company' => Labels::getLabel('LBL_COMPANY', $this->siteLangId),
+                    'non_profit' => Labels::getLabel('LBL_NON_PROFIT', $this->siteLangId),
+                    'government_entity' => Labels::getLabel('LBL_GOVERNMENT_ENTITY_(_US_ONLY_)', $this->siteLangId)
+                ];
+                // echo $businessType;
+                $fld = $frm->addSelectBox($labelStr, 'business_type', $options, $businessType);
+                $fld->requirement->setRequired(true);
+            } elseif ('business_profile.url' == $field || 'business_profile.support_url' == $field) {
+                $fld = $frm->addHiddenField('', $name);
+            } elseif (in_array($field, $this->stripeConnect->readonlyParams)) {
+                $fld = $frm->addTextBox($labelStr, $name, '', ['readonly' => 'readonly']);
+            } elseif (in_array(end($labelParts), $this->stripeConnect->boolParams)) {
                 $options = [
                     0 => Labels::getLabel('LBL_NO', $this->siteLangId),
                     1 => Labels::getLabel('LBL_YES', $this->siteLangId)
@@ -403,12 +310,32 @@ class StripeConnectController extends PaymentMethodBaseController
 
                 $frm->addFormTagAttribute('enctype', 'multipart/form-data');
             } elseif (false !== strpos($field, 'state')) {
-                $frm->addSelectBox($labelStr, $name, [], '', ['class' => $stateFldClass, 'disabled' => 'disabled'])->requirement->setRequired(true);
+                $fld = $frm->addSelectBox($labelStr, $name, [], '', ['class' => $stateFldClass, 'disabled' => 'disabled']);
+            } elseif (false !== strpos($field, 'month')) {
+                $months = [];
+                for ($i = 1; $i <= 12 ; $i++) { 
+                    $months[$i] = $i;
+                }
+                $fld = $frm->addSelectBox($labelStr, $name, $months);
+            } elseif (false !== strpos($field, 'day')) {
+                $days = [];
+                for ($i = 1; $i <= 31 ; $i++) { 
+                    $days[$i] = $i;
+                }
+                $fld = $frm->addSelectBox($labelStr, $name, $days);
+            } elseif (false !== strpos($field, 'year')) {
+                $years = [];
+                for ($i = 1900; $i <= (date('Y') - 13) ; $i++) { 
+                    $years[$i] = $i;
+                }
+                $fld = $frm->addSelectBox($labelStr, $name, $years);
             } elseif (false !== strpos($field, 'country')) {
                 $stateFldClass = md5($name);
                 $countryObj = new Countries();
                 $countriesArr = $countryObj->getCountriesArr($this->siteLangId, true, 'country_code');
-                $frm->addSelectBox($labelStr, $name, $countriesArr, '', ['class' => 'country', 'data-statefield' => $stateFldClass])->requirement->setRequired(true);
+                $fld = $frm->addSelectBox($labelStr, $name, $countriesArr, '', ['class' => 'country', 'data-statefield' => $stateFldClass]);
+            } elseif ('tos_acceptance' == $field){
+                $fld = $frm->addCheckBox('', 'tos_acceptance', 1);
             } else {
                 $fld = $frm->addTextBox($labelStr, $name);
             }
@@ -421,29 +348,6 @@ class StripeConnectController extends PaymentMethodBaseController
         $submitBtn = $frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_SAVE', $this->siteLangId));
         $cancelButton = $frm->addButton("", "btn_clear", Labels::getLabel('LBL_Clear', $this->siteLangId), array('onclick' => 'clearForm();'));
         $submitBtn->attachField($cancelButton);
-        return $frm;
-    }
-    
-    /**
-     * getBusinessTypeForm
-     *
-     * @param  string $type
-     * @return object
-     */
-    private function getBusinessTypeForm(string $type): object
-    {
-        $frm = new Form('frm' . self::KEY_NAME);
-        $frm->addHiddenField('', 'action_type', $type);
-        $options = [
-            'individual' => Labels::getLabel('LBL_INDIVIDUAL', $this->siteLangId),
-            'company' => Labels::getLabel('LBL_COMPANY', $this->siteLangId),
-            'non_profit' => Labels::getLabel('LBL_NON_PROFIT', $this->siteLangId),
-            'government_entity' => Labels::getLabel('LBL_GOVERNMENT_ENTITY_(_US_ONLY_)', $this->siteLangId)
-        ];
-
-        $fld = $frm->addSelectBox(Labels::getLabel('LBL_SELECT_BUSINESS_TYPE', $this->siteLangId), 'business_type', $options);
-        $fld->requirement->setRequired(true);
-        $frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_SAVE', $this->siteLangId));
         return $frm;
     }
     

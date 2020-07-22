@@ -7,6 +7,9 @@ $langFrm->developerTags['fld_default_col'] = 12;
 
 $langFld = $langFrm->getField('lang_id');
 $langFld->setfieldTagAttribute('onChange', "promotionLangForm(" . $promotionId . ", this.value);");
+
+$btnSubmitFld = $langFrm->getField('btn_submit');
+$btnSubmitFld->setFieldTagAttribute('class', 'btn btn-primary btn-wide');
 ?>
 <div class="tabs tabs--small   tabs--scroll clearfix setactive-js rtl">
     <ul>

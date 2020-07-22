@@ -37,6 +37,8 @@
             $sellerCollectionproductLinkFrm->developerTags['colClassPrefix'] = 'col-lg-12 col-md- ';
             $sellerCollectionproductLinkFrm->developerTags['fld_default_col'] = 12;
 
+            $submitFld = $sellerCollectionproductLinkFrm->getField('btn_submit');
+            $submitFld->setFieldTagAttribute('class', "btn btn-primary btn-wide");
             echo $sellerCollectionproductLinkFrm->getFormHtml(); ?>
         </div>
     </div>

@@ -1746,7 +1746,6 @@ class Importexport extends ImportexportCommon
                                 $columnKey = 'product_weight_unit';
                                 if (FatApp::getConfig('CONF_PRODUCT_DIMENSIONS_ENABLE', FatUtility::VAR_INT, 0) && $prodType == PRODUCT::PRODUCT_TYPE_PHYSICAL) {
                                     if (!array_key_exists($colValue, $weightUnitsArr)) {
-                                        die('herer');
                                         $invalid = true;
                                     } else {
                                         $colValue = $weightUnitsArr[$colValue];

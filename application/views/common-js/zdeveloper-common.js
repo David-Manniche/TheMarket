@@ -215,6 +215,8 @@ function getCountryStates(countryId, stateId, dv) {
 function getStatesByCountryCode(countryCode, stateCode, dv, idCol = 'state_id') {
     fcom.ajax(fcom.makeUrl('GuestUser', 'getStatesByCountryCode', [countryCode, stateCode, idCol]), '', function(res) {
         $(dv).empty();
+		console.log(dv);
+		console.log(res);
         $(dv).append(res).change();
     });
 };
@@ -1092,7 +1094,7 @@ $(document).ready(function() {
         }
         var key = $(this).parent().parent('div').find('input').attr('data-key');
         var page = $(this).parent().parent('div').find('input').attr('data-page');
-        val = parseInt(rval) + 1;
+        val = parseInt(rval) + 1; 
         if (val > $(this).parent().data('stock')) {
             val = $(this).parent().data('stock');
             $(this).addClass('not-allowed');
@@ -1101,9 +1103,9 @@ $(document).ready(function() {
             return false;
         }
         $(this).parent().parent('div').find('input').val(val);
-        if (page == 'product-view') {
+        if (page == 'product-view') { 
             return false;
-        }
+        }       
         cart.update(key, page);
     });
 
