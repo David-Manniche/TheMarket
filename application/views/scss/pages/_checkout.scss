@@ -187,12 +187,19 @@
         opacity: 1;
     }
     &__section {
-        .step-title {
-            font-size: 1rem;
-            font-weight: 400;
-            small {
-                display: block;
-                font-size: 0.8rem;
+        &__head {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.5rem;
+            &__title {
+                font-size: 1rem;
+                font-weight: 400;
+                margin: 0;
+                small {
+                    display: block;
+                    font-size: 0.8rem;
+                }
             }
         }
     }
@@ -350,6 +357,7 @@
         }
         .lb-txt {
             font-size: 0.8rem;
+            margin-top: -4px;
         }
     }
     .pickup-time {
@@ -493,7 +501,10 @@
             font-size: 0.85rem;
             color: $txt-gray;
             line-height: 1.5;
-            margin-bottom: 1rem;
+            margin: 0;
+        }
+        .list-actions {
+            margin-top: 0.5rem;
         }
     }
     &-view {
@@ -594,9 +605,29 @@
 .list-shippings {
     margin-bottom: 1.5rem;
     .shipping-select {
-        background-color: $bg-gray;
-        .form-control {
-            font-size: 0.8rem;
+        align-items: center;
+        padding: 0.5rem 1rem;
+        .shop-name {
+            font-size: 0.85rem;
+            color: $txt-gray;
+            font-weight: 600;
         }
+        background-color: $bg-gray;
+        .shipping-method {
+            max-width: 50%;
+            font-size: 0.8rem;
+            &_messages {
+                font-size: inherit;
+            }
+            .form-control {
+                font-size: inherit;
+            }
+        }
+    }
+    .product-profile__thumbnail img {
+        max-width: 90px;
+    }
+    .quantity {
+        margin-top: 0.5rem;
     }
 }

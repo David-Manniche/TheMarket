@@ -487,6 +487,7 @@
 .links--inline {
     color: $body-color;
     display: flex;
+    justify-content: center;
     width: 100%;
     li {
         font-size: 0.875rem;

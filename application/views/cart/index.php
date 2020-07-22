@@ -2,7 +2,7 @@
 <div id="body" class="body bg-gray-dark" role="main">
     <div class="section">
         <div class="container">
-            <div class="section-head">
+            <div class="section-head section--head--center">
                 <div class="section__heading"><h2><?php echo Labels::getLabel('LBL_Shopping_Cart', $siteLangId); ?></h2></div>
                     <div class="section__action">
                     <?php if($total > 0) { ?>
@@ -10,7 +10,7 @@
                     <?php } ?>
                     </div>
                 </div>
-            <div id="cartList"></div>
+            <div id="cartList"></div> 
         </div>
     </div>
 </div>

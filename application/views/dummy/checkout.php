@@ -153,79 +153,72 @@
                     <!-- begin::Step -->
                     <div class="step active" role="step:2">
 
-                        <form class="form form form-floating">
-                            <div class="step__section">
-                                <div class="step__head">
-                                    <h5 class="step-title">Delivery detail</h5>
-                                </div>
-                                <ul class="list-group list-addresses list-addresses-view">
-                                    <li class="list-group-item">
-                                        <div class="tags">
-                                            <div class="tags__inner">
-                                                <span class="tag address_lable">Home</span>
-                                            </div>
+                        <div class="step__section">
+                            <div class="step__section__head">
+                                <h5 class="step__section__head__title">Delivery detail</h5>
+                                <a class="link-text" href="">
+                                    <i class="icn"> <svg class="svg">
+                                            <use xlink:href="../images/retina/sprite.svg#add"
+                                                href="../images/retina/sprite.svg#add">
+                                            </use>
+                                        </svg> </i> Add a new address</a>
+                            </div>
+                            <ul class="list-group list-addresses list-addresses-view">
+                                <li class="list-group-item">
+                                    <div class="tags">
+                                        <div class="tags__inner">
+                                            <span class="tag address_lable">Home</span>
                                         </div>
-                                        <div class="row">
-                                            <div class="col-auto"><label class="checkbox"><input title=""
-                                                        type="checkbox" value="1"><i class="input-helper"></i>
-                                                </label></div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-auto"><label class="checkbox"><input title="" type="checkbox"
+                                                    value="1"><i class="input-helper"></i>
+                                            </label></div>
 
-                                            <div class="col">
-                                                <address class="">Plot 268, First Floor, <br>Sector 82, JLPL
-                                                    Industrial Area, Punjab 140308</address>
-                                            </div>
-
+                                        <div class="col">
+                                            <address class="">Plot 268, First Floor, <br>Sector 82, JLPL
+                                                Industrial Area, Punjab 140308</address>
                                         </div>
-                                    </li>
 
-                                    <li class="list-group-item">
-                                        <div class="tags">
-                                            <div class="tags__inner">
-                                                <span class="tag address_lable">Office</span>
-                                            </div>
+                                    </div>
+                                </li>
+
+                                <li class="list-group-item">
+                                    <div class="tags">
+                                        <div class="tags__inner">
+                                            <span class="tag address_lable">Office</span>
                                         </div>
-                                        <div class="row">
-                                            <div class="col-auto"><label class="checkbox"><input title=""
-                                                        type="checkbox" value="1" checked=""><i
-                                                        class="input-helper"></i>
-                                                </label></div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-auto"><label class="checkbox"><input title="" type="checkbox"
+                                                    value="1" checked=""><i class="input-helper"></i>
+                                            </label></div>
 
-                                            <div class="col">
-                                                <address class="">Plot 268, First Floor, <br>Sector 82, JLPL
-                                                    Industrial Area, Punjab 140308</address>
-                                                <ul class="list-actions">
-                                                    <li>
-                                                        <a href="#"><svg class="svg">
-                                                                <use xlink:href="../images/retina/sprite.svg#edit"
-                                                                    href="../images/retina/sprite.svg#edit">
-                                                                </use>
-                                                            </svg>
-                                                        </a></li>
-                                                    <li>
-                                                        <a href="#"><svg class="svg">
-                                                                <use xlink:href="../images/retina/sprite.svg#remove"
-                                                                    href="../images/retina/sprite.svg#remove">
-                                                                </use>
-                                                            </svg>
-                                                        </a></li>
-                                                </ul>
-                                            </div>
-
+                                        <div class="col">
+                                            <address class="">Plot 268, First Floor, <br>Sector 82, JLPL
+                                                Industrial Area, Punjab 140308</address>
+                                            <ul class="list-actions">
+                                                <li>
+                                                    <a href="#"><svg class="svg">
+                                                            <use xlink:href="../images/retina/sprite.svg#edit"
+                                                                href="../images/retina/sprite.svg#edit">
+                                                            </use>
+                                                        </svg>
+                                                    </a></li>
+                                                <li>
+                                                    <a href="#"><svg class="svg">
+                                                            <use xlink:href="../images/retina/sprite.svg#remove"
+                                                                href="../images/retina/sprite.svg#remove">
+                                                            </use>
+                                                        </svg>
+                                                    </a></li>
+                                            </ul>
                                         </div>
-                                    </li>
-                                </ul>
-                                <div class="my-3 text-right">
-                                    <a class="link-text" href="">
-                                        <i class="icn"> <svg class="svg">
-                                                <use xlink:href="../images/retina/sprite.svg#add"
-                                                    href="../images/retina/sprite.svg#add">
-                                                </use>
-                                            </svg> </i> Add a new address</a>
 
-                                </div>
-
-
-
+                                    </div>
+                                </li>
+                            </ul>
+                            <form class="form form form-floating mt-5">
                                 <div class="row">
                                     <div class="col-md-12">
                                         <div class="form-group form-floating__group">
@@ -312,32 +305,39 @@
                                         </div>
                                     </div>
                                 </div>
+                            </form>
+                        </div>
+                        <div class="step__footer">
+                            <a class="btn btn-outline-gray btn-arrow " href="#">
+                            <svg class="svg">
+                                        <use xlink:href="../images/retina/sprite.svg#arrow-left"
+                                            href="../images/retina/sprite.svg#arrow-left">
+                                        </use>
+                                    </svg>
+                                <span class="">Back </span></a>
+                            <button name="button" type="button" class="btn btn-primary btn-wide">Continue</button>
 
-                            </div>
-                            <div class="step__footer">
-                                <a class="btn btn-link" href="#">
-                                    <i class="arrow">
-                                        <svg class="svg">
-                                            <use xlink:href="../images/retina/sprite.svg#arrow-left"
-                                                href="../images/retina/sprite.svg#arrow-left">
-                                            </use>
-                                        </svg></i>
-                                    <span class="">Back </span></a>
+                        </div>
 
-                                <button name="button" type="button" class="btn btn-primary btn-wide">Continue</button>
-
-                            </div>
-                        </form>
                     </div>
                     <!-- end::Step -->
                     <!-- begin::Step -->
                     <div class="step active" role="step:3">
                         <div class="step__section">
-                            <div class="step__head">
-                                <h5 class="step-title">Shipping</h5>
+                            <div class="step__section__head">
+                                <h5 class="step__section__head__title">Shipping</h5>
                             </div>
-
                             <ul class="list-group list-cart list-shippings">
+                                <li class="list-group-item shipping-select">
+                                    <div class="shop-name">Kanwar's Shop</div>
+
+                                    <div class="shipping-method"><select class=" form-control custom-select" name=""
+                                            id="">
+                                            <option value="0">Select Shipping Method</option>
+                                            <option value="1">Flat Shipping By Seller</option>
+                                            <option value="2">ShipStation Api</option>
+                                        </select></div>
+                                </li>
                                 <li class="list-group-item">
                                     <div class="product-profile">
                                         <div class="product-profile__thumbnail">
@@ -346,14 +346,56 @@
                                                     src="../images/products/product-thumb.jpg" alt="...">
                                             </a></div>
                                         <div class="product-profile__data">
-                                            <div class="shop">Kanwar's Shop</div>
                                             <div class="title"><a class="" href="product.html">Cotton
                                                     floral print</a></div>
                                             <div class="options">
                                                 <p class="">Medium | red</p>
                                             </div>
+                                            <div class="quantity quantity-2">
+                                                <span class="decrease"><i class="fas fa-minus"></i></span>
+                                                <input class="qty-input no-focus" data-page="product-view"
+                                                    title="Available Quantity" type="text" name="quantity" value="22">
+                                                <span class="increase"><i class="fas fa-plus"></i></span>
+                                            </div>
                                         </div>
                                     </div>
+
+                                    <div class="product-price">$40.00 <del>$50.00</del></div>
+                                    <div class="product-action">
+                                        <ul class="list-actions">
+                                            <li>
+                                                <a href="#"><svg class="svg" width="24px" height="24px">
+                                                        <use xlink:href="../images/retina/sprite.svg#remove"
+                                                            href="../images/retina/sprite.svg#remove">
+                                                        </use>
+                                                    </svg>
+                                                </a></li>
+                                        </ul>
+                                    </div>
+                                </li>
+
+                                <li class="list-group-item">
+                                    <div class="product-profile">
+                                        <div class="product-profile__thumbnail">
+                                            <a href="#">
+                                                <img class="img-fluid" data-ratio="3:4"
+                                                    src="../images/products/product-thumb.jpg" alt="...">
+                                            </a></div>
+                                        <div class="product-profile__data">
+                                            <div class="title"><a class="" href="product.html">Cotton
+                                                    floral print</a></div>
+                                            <div class="options">
+                                                <p class="">Medium | red</p>
+                                            </div>
+                                            <div class="quantity quantity-2">
+                                                <span class="decrease"><i class="fas fa-minus"></i></span>
+                                                <input class="qty-input no-focus" data-page="product-view"
+                                                    title="Available Quantity" type="text" name="quantity" value="22">
+                                                <span class="increase"><i class="fas fa-plus"></i></span>
+                                            </div>
+                                        </div>
+                                    </div>
+
                                     <div class="product-price">$40.00 <del>$50.00</del></div>
                                     <div class="product-action">
                                         <ul class="list-actions">
@@ -380,36 +422,15 @@
                                             <div class="options">
                                                 <p class="">Medium | red</p>
                                             </div>
-                                        </div>
-                                    </div>
-                                    <div class="product-price">$40.00 <del>$50.00</del></div>
-                                    <div class="product-action">
-                                        <ul class="list-actions">
-                                            <li>
-                                                <a href="#"><svg class="svg" width="24px" height="24px">
-                                                        <use xlink:href="../images/retina/sprite.svg#remove"
-                                                            href="../images/retina/sprite.svg#remove">
-                                                        </use>
-                                                    </svg>
-                                                </a></li>
-                                        </ul>
-                                    </div>
-                                </li>
-                                <li class="list-group-item">
-                                    <div class="product-profile">
-                                        <div class="product-profile__thumbnail">
-                                            <a href="#">
-                                                <img class="img-fluid" data-ratio="3:4"
-                                                    src="../images/products/product-thumb.jpg" alt="...">
-                                            </a></div>
-                                        <div class="product-profile__data">
-                                            <div class="title"><a class="" href="product.html">Cotton
-                                                    floral print</a></div>
-                                            <div class="options">
-                                                <p class="">Medium | red</p>
+                                            <div class="quantity quantity-2">
+                                                <span class="decrease"><i class="fas fa-minus"></i></span>
+                                                <input class="qty-input no-focus" data-page="product-view"
+                                                    title="Available Quantity" type="text" name="quantity" value="22">
+                                                <span class="increase"><i class="fas fa-plus"></i></span>
                                             </div>
                                         </div>
                                     </div>
+
                                     <div class="product-price">$40.00 <del>$50.00</del></div>
                                     <div class="product-action">
                                         <ul class="list-actions">
@@ -423,144 +444,102 @@
                                         </ul>
                                     </div>
                                 </li>
-                                <li class="list-group-item">
-                                    <div class="product-profile">
-                                        <div class="product-profile__thumbnail">
-                                            <a href="#">
-                                                <img class="img-fluid" data-ratio="3:4"
-                                                    src="../images/products/product-thumb.jpg" alt="...">
-                                            </a></div>
-                                        <div class="product-profile__data">
-                                            <div class="title"><a class="" href="product.html">Cotton
-                                                    floral print</a></div>
-                                            <div class="options">
-                                                <p class="">Medium | red</p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="product-price">$40.00 <del>$50.00</del></div>
-                                    <div class="product-action">
-                                        <ul class="list-actions">
-                                            <li>
-                                                <a href="#"><svg class="svg" width="24px" height="24px">
-                                                        <use xlink:href="../images/retina/sprite.svg#remove"
-                                                            href="../images/retina/sprite.svg#remove">
-                                                        </use>
-                                                    </svg>
-                                                </a></li>
-                                        </ul>
-                                    </div>
-                                </li>
-                                <li class="list-group-item">
-                                    <div class="product-profile">
-                                        <div class="product-profile__thumbnail">
-                                            <a href="#">
-                                                <img class="img-fluid" data-ratio="3:4"
-                                                    src="../images/products/product-thumb.jpg" alt="...">
-                                            </a></div>
-                                        <div class="product-profile__data">
-                                            <div class="title"><a class="" href="product.html">Cotton
-                                                    floral print</a></div>
-                                            <div class="options">
-                                                <p class="">Medium | red</p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="product-price">$40.00 <del>$50.00</del></div>
-                                    <div class="product-action">
-                                        <ul class="list-actions">
-                                            <li>
-                                                <a href="#"><svg class="svg" width="24px" height="24px">
-                                                        <use xlink:href="../images/retina/sprite.svg#remove"
-                                                            href="../images/retina/sprite.svg#remove">
-                                                        </use>
-                                                    </svg>
-                                                </a></li>
-                                        </ul>
-                                    </div>
-                                </li>
-                                <li class="list-group-item shipping-select"><select class=" form-control custom-select"
-                                        name="" id="">
-                                        <option value="0">Select Shipping Method</option>
-                                        <option value="1">Flat Shipping By Seller</option>
-                                        <option value="2">ShipStation Api</option>
-                                    </select>
 
 
 
+                            </ul>
+                            <ul class="list-group list-cart list-shippings">
+                                <li class="list-group-item shipping-select">
+                                    <div class="shop-name">Kanwar's Shop</div>
+                                    <div class="shipping-method">
+                                        <div class="shipping-method_messages">
+                                            <p><i class="fas fa-info-circle"></i> Shipping messages</p>
+                                        </div>
+                                    </div>
+                                </li>
 
+                                <li class="list-group-item">
+                                    <div class="product-profile">
+                                        <div class="product-profile__thumbnail">
+                                            <a href="#">
+                                                <img class="img-fluid" data-ratio="3:4"
+                                                    src="../images/products/product-thumb.jpg" alt="...">
+                                            </a></div>
+                                        <div class="product-profile__data">
+                                            <div class="title"><a class="" href="product.html">Cotton
+                                                    floral print</a></div>
+                                            <div class="options">
+                                                <p class="">Medium | red</p>
+                                            </div>
+                                            <div class="quantity quantity-2">
+                                                <span class="decrease"><i class="fas fa-minus"></i></span>
+                                                <input class="qty-input no-focus" data-page="product-view"
+                                                    title="Available Quantity" type="text" name="quantity" value="22">
+                                                <span class="increase"><i class="fas fa-plus"></i></span>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="product-price">$40.00 <del>$50.00</del></div>
+                                    <div class="product-action">
+                                        <ul class="list-actions">
+                                            <li>
+                                                <a href="#"><svg class="svg" width="24px" height="24px">
+                                                        <use xlink:href="../images/retina/sprite.svg#remove"
+                                                            href="../images/retina/sprite.svg#remove">
+                                                        </use>
+                                                    </svg>
+                                                </a></li>
+                                        </ul>
+                                    </div>
+                                </li>
+                                <li class="list-group-item">
+                                    <div class="product-profile">
+                                        <div class="product-profile__thumbnail">
+                                            <a href="#">
+                                                <img class="img-fluid" data-ratio="3:4"
+                                                    src="../images/products/product-thumb.jpg" alt="...">
+                                            </a></div>
+                                        <div class="product-profile__data">
+                                            <div class="title"><a class="" href="product.html">Cotton
+                                                    floral print</a></div>
+                                            <div class="options">
+                                                <p class="">Medium | red</p>
+                                            </div>
+                                            <div class="quantity quantity-2">
+                                                <span class="decrease"><i class="fas fa-minus"></i></span>
+                                                <input class="qty-input no-focus" data-page="product-view"
+                                                    title="Available Quantity" type="text" name="quantity" value="22">
+                                                <span class="increase"><i class="fas fa-plus"></i></span>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="product-price">$40.00 <del>$50.00</del></div>
+                                    <div class="product-action">
+                                        <ul class="list-actions">
+                                            <li>
+                                                <a href="#"><svg class="svg" width="24px" height="24px">
+                                                        <use xlink:href="../images/retina/sprite.svg#remove"
+                                                            href="../images/retina/sprite.svg#remove">
+                                                        </use>
+                                                    </svg>
+                                                </a></li>
+                                        </ul>
+                                    </div>
                                 </li>
                             </ul>
-
                             <ul class="list-group list-cart list-shippings">
-                                <li class="list-group-item">
-                                    <div class="product-profile">
-                                        <div class="product-profile__thumbnail">
-                                            <a href="#">
-                                                <img class="img-fluid" data-ratio="3:4"
-                                                    src="../images/products/product-thumb.jpg" alt="...">
-                                            </a></div>
-                                        <div class="product-profile__data">
-                                            <div class="title"><a class="" href="product.html">Cotton
-                                                    floral print</a></div>
-                                            <div class="options">
-                                                <p class="">Medium | red</p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="product-price">$40.00 <del>$50.00</del></div>
-                                    <div class="product-action">
-                                        <ul class="list-actions">
-                                            <li>
-                                                <a href="#"><svg class="svg" width="24px" height="24px">
-                                                        <use xlink:href="../images/retina/sprite.svg#remove"
-                                                            href="../images/retina/sprite.svg#remove">
-                                                        </use>
-                                                    </svg>
-                                                </a></li>
-                                        </ul>
-                                    </div>
-                                </li>
-                                <li class="list-group-item">
-                                    <div class="product-profile">
-                                        <div class="product-profile__thumbnail">
-                                            <a href="#">
-                                                <img class="img-fluid" data-ratio="3:4"
-                                                    src="../images/products/product-thumb.jpg" alt="...">
-                                            </a></div>
-                                        <div class="product-profile__data">
-                                            <div class="title"><a class="" href="product.html">Cotton
-                                                    floral print</a></div>
-                                            <div class="options">
-                                                <p class="">Medium | red</p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="product-price">$40.00 <del>$50.00</del></div>
-                                    <div class="product-action">
-                                        <ul class="list-actions">
-                                            <li>
-                                                <a href="#"><svg class="svg" width="24px" height="24px">
-                                                        <use xlink:href="../images/retina/sprite.svg#remove"
-                                                            href="../images/retina/sprite.svg#remove">
-                                                        </use>
-                                                    </svg>
-                                                </a></li>
-                                        </ul>
-                                    </div>
-                                </li>
-                                <li class="list-group-item shipping-select"><select class=" form-control custom-select"
-                                        name="" id="">
-                                        <option value="">Option</option>
-                                        <option value="">Option</option>
-                                        <option value="">Option</option>
-                                        <option value="">Option</option>
-                                        <option value="">Option</option>
-                                    </select></li>
-                            </ul>
+                                <li class="list-group-item shipping-select">
+                                    <div class="shop-name">Kanwar's Shop</div>
 
-                            <ul class="list-group list-cart list-shippings">
-
+                                    <div class="shipping-method"><select class=" form-control custom-select" name=""
+                                            id="">
+                                            <option value="0">Select Shipping Method</option>
+                                            <option value="1">Flat Shipping By Seller</option>
+                                            <option value="2">ShipStation Api</option>
+                                        </select></div>
+                                </li>
                                 <li class="list-group-item">
                                     <div class="product-profile">
                                         <div class="product-profile__thumbnail">
@@ -574,8 +553,15 @@
                                             <div class="options">
                                                 <p class="">Medium | red</p>
                                             </div>
+                                            <div class="quantity quantity-2">
+                                                <span class="decrease"><i class="fas fa-minus"></i></span>
+                                                <input class="qty-input no-focus" data-page="product-view"
+                                                    title="Available Quantity" type="text" name="quantity" value="22">
+                                                <span class="increase"><i class="fas fa-plus"></i></span>
+                                            </div>
                                         </div>
                                     </div>
+
                                     <div class="product-price">$40.00 <del>$50.00</del></div>
                                     <div class="product-action">
                                         <ul class="list-actions">
@@ -589,23 +575,14 @@
                                         </ul>
                                     </div>
                                 </li>
-                                <li class="list-group-item shipping-select"><select class=" form-control custom-select"
-                                        name="" id="">
-                                        <option value="">Option</option>
-                                        <option value="">Option</option>
-                                        <option value="">Option</option>
-                                        <option value="">Option</option>
-                                        <option value="">Option</option>
-                                    </select></li>
                             </ul>
                         </div>
-
                     </div>
                     <!-- end::Step -->
                     <div class="step active" role="step:3">
                         <div class="step__section">
-                            <div class="step__head">
-                                <h5 class="step-title">Pick Up</h5>
+                            <div class="step__section__head">
+                                <h5 class="step__section__head__title">Pick Up</h5>
                             </div>
                             <div class="pick-section">
                                 <div class="pickup-option">
@@ -706,8 +683,8 @@
                     <!-- begin::Step -->
                     <div class="step active" role="step:4">
                         <div class="step__section">
-                            <div class="step__head">
-                                <h5 class="step-title">Payment & Billing </h5>
+                            <div class="step__section__head">
+                                <h5 class="step__section__head__title">Payment & Billing </h5>
                             </div>
                             <label class="checkbox"><input title="" type="checkbox" value="1">My billing address is the
                                 same as my delivery address <i class="input-helper"></i>
@@ -1005,27 +982,7 @@
                                     <!-- List group -->
 
                                     <ul class="list-group list-cart list-cart-checkout">
-                                        <li class="list-group-item">
-                                            <div class="product-profile">
-                                                <div class="product-profile__thumbnail">
-                                                    <a href="#">
-                                                        <img class="img-fluid" data-ratio="3:4"
-                                                            src="../images//products/product-thumb.jpg" alt="...">
-                                                    </a>
-                                                    <span class="product-qty">2</span>
-                                                </div>
-                                                <div class="product-profile__data">
-                                                    <div class="title"><a class="" href="product.html">Cotton
-                                                            floral print</a></div>
-                                                    <div class="options">
-                                                        <p class="">Medium | red</p>
-                                                    </div>
-                                                </div>
-                                            </div>
 
-                                            <div class="product-price">$40.00 <del>$50.00</del></div>
-
-                                        </li>
 
                                         <li class="list-group-item">
                                             <div class="product-profile">

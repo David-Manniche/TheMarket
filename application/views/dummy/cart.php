@@ -2,10 +2,11 @@
 <section class="section cart-page">
             <div class="container">
                 <div class="row justify-content-center">
-                    <div class="col-md-10">
+                    <div class="col-xl-10">
+                       
                         <div class="row">
-                            <div class="col-md-8">
-                                <div class="shiporpickup">
+                            <div class="col-lg-8">
+                            <div class="shiporpickup">
                                     <ul>
                                         <li><input class="control-input" type="radio" id="shipping" name="shippingType" checked="">
                                             <label class="control-label" for="shipping">
@@ -16,8 +17,8 @@
                                             </label>
 
                                         </li>
-                                        <li><input class="control-input" type="radio" id="pickup" name="shippingType">
-                                            <label class="control-label" for="pickup">
+                                        <li ><input class="control-input" type="radio" id="pickup" name="shippingType" disabled>
+                                            <label class="control-label disabled" for="pickup">
                                                 <svg class="svg">
                                                     <use xlink:href="../images/retina/sprite.svg#pickup" href="../images/retina/sprite.svg#pickup">
                                                     </use>
@@ -26,10 +27,6 @@
                                         </li>
                                     </ul>
                                 </div>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-8">
                                 <div class="cart-blocks">
                                     <ul class="list-group list-cart">
                                         <li class="list-group-item">
@@ -431,7 +428,7 @@
                                 </div>
 
                             </div>
-                            <div class="col-md-4">
+                            <div class="col-lg-4">
                                 <div class="sticky-summary">
                                     <div class="card">
                                         <div class="card__section">
