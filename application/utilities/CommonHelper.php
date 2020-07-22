@@ -39,11 +39,11 @@ class CommonHelper extends FatUtility
                         self::$_lang_id = FatUtility::int(trim($_COOKIE['defaultSiteLang']));
                     }
                 }
-            
+
                 if (SYSTEM_LANG_ID > 0 && count(LANG_CODES_ARR) > 1 && 0 < FatApp::getConfig('CONF_LANG_SPECIFIC_URL', FatUtility::VAR_INT, 0)) {
                     self::$_lang_id = SYSTEM_LANG_ID;
                 }
-                
+
                 if (isset($_COOKIE['defaultSiteCurrency'])) {
                     $currencies = Currency::getCurrencyAssoc(self::$_lang_id);
                     if (array_key_exists($_COOKIE['defaultSiteCurrency'], $currencies)) {
@@ -70,7 +70,7 @@ class CommonHelper extends FatUtility
             self::$_currency_id,
             array('currency_code', 'currency_symbol_left', 'currency_symbol_right', 'currency_value')
         );
-       
+
         self::$_lang_code = Language::getAttributesById(
             self::$_lang_id,
             'language_code'
@@ -217,7 +217,7 @@ class CommonHelper extends FatUtility
         }
     }
 
-    public static function combinationOfElementsOfArr($arr = array(), $useKey = '', $separater = '|')
+    public static function combinationOfElementsOfArr($arr = array(), $useKey = '', $separater = '|', $sortKeys = true)
     {
         $tempArr = array();
         $loopCount = count($arr);
@@ -244,6 +244,17 @@ class CommonHelper extends FatUtility
                 }
             }
             $count++;
+        }
+
+        if(!$sortKeys) {
+            return $tempArr;
+        }
+        foreach ($tempArr as $key => $val) {
+            $codeArr = explode($separater, $key);
+            sort($codeArr);
+            $selProdCode = implode($separater, $codeArr);
+            unset($tempArr[$key]);
+            $tempArr[$selProdCode] = $val;
         }
         return $tempArr;
     }
@@ -580,11 +591,11 @@ class CommonHelper extends FatUtility
 
         if ($displaySymbol) {
             $sign .= ' ';
-            
+
             if (true === MOBILE_APP_API_CALL || false === $withHtml) {
                 return trim($sign . $currencySymbolLeft . $val . $currencySymbolRight);
             }
-            
+
             $currencySymbolLeft = !empty($currencySymbolLeft) ? "<span class='currency-symbol'>" . $currencySymbolLeft . "</span>" : $currencySymbolLeft;
             $currencySymbolRight = !empty($currencySymbolRight) ? "<span class='currency-symbol'>" . $currencySymbolRight . "</span>" : $currencySymbolRight;
             return "<span class='currency-value' dir='ltr'>" . trim($sign . $currencySymbolLeft . $val . $currencySymbolRight) . "</span>";
@@ -1917,7 +1928,7 @@ class CommonHelper extends FatUtility
             'extra' => $extra
         );
     }
-    
+
     public static function getImageAttributes($fileType, $recordId, $recordSubId = 0, $afileId = 0, $screen = 0, $langId = 0)
     {
         $fileType = FatUtility::int($fileType);
@@ -1926,7 +1937,7 @@ class CommonHelper extends FatUtility
         $screen = FatUtility::int($screen);
         $recordSubId = FatUtility::int($recordSubId);
         $langId = FatUtility::int($langId);
-        
+
         if ($langId == 0) {
             $langId = self::$_lang_id;
         }
