@@ -540,12 +540,6 @@ class Orders extends MyAppModel
                             continue;
                         }
 
-                        /* Remove this code. Added just for testing. */
-                        if (3 == $chargeType) {
-                            $prodCharges[$selprodId][$chargeType]['amount'] = 0;
-                        }
-                        /* Remove this code. Added just for testing. */
-
                         $assignValues = array(
                             OrderProduct::DB_TBL_CHARGES_PREFIX . 'op_id' => $op_id,
                             OrderProduct::DB_TBL_CHARGES_PREFIX . 'order_type' => ORDERS::ORDER_PRODUCT,
