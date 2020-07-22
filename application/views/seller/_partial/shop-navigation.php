@@ -18,6 +18,10 @@ $splitPaymentMethodsPlugins = Plugin::getDataByType(Plugin::TYPE_SPLIT_PAYMENT_M
             echo 'is-active';
         } ?>"><a href="javascript:void(0);" onClick="returnAddressForm()"><?php echo Labels::getLabel('LBL_Return_Address', $siteLangId);?></a>
         </li>
+		<li class="<?php if ((!empty($action) && ($action == 'pickupAddressForm'))) {
+            echo 'is-active';
+        } ?>"><a href="javascript:void(0);" onClick="pickupAddressForm()"><?php echo Labels::getLabel('LBL_Pickup_Address', $siteLangId);?></a>
+        </li>
         <?php /* <li class="<?php echo !empty($action) && ($action=='shopTemplate' || $action=='shopThemeColor')?'is-active' : ''; echo $inactive?>"><a href="javascript:void(0)" <?php if($shop_id>0){?> onClick="shopTemplates(this)"
             <?php }?>><?php echo Labels::getLabel('LBL_Layout',$siteLangId); ?></a></li> */ ?>
         <li class="<?php echo !empty($action) && $action == 'shopMediaForm' ? 'is-active' : ''; echo $inactive?>">

@@ -500,7 +500,22 @@ $(document).on("change", ".state", function () {
             }
         });
     };
-
+	
+	pickupAddressForm = function () {
+        $(dv).html(fcom.getLoader());
+        fcom.ajax(fcom.makeUrl('Seller', 'pickupAddressForm'), '', function (t) {
+            $(dv).html(t);
+        });
+    };
+	
+	setPickupAddress = function (frm) {
+        if (!$(frm).validate()) return;
+        var data = fcom.frmData(frm);
+        fcom.updateWithAjax(fcom.makeUrl('Seller', 'setPickupAddress'), data, function (t) {
+            shopMediaForm();
+        });
+    };
+	
     collectionMediaForm = function (el, scollection_id) {
         $(dvt).html(fcom.getLoader());
         fcom.ajax(fcom.makeUrl('Seller', 'shopCollectionMediaForm', [scollection_id]), '', function (t) {
