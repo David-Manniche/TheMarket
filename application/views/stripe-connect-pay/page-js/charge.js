@@ -10,9 +10,11 @@ $(document).on("click", ".selectCard-js", function () {
 		if (!$(frm).validate()) return;
         var data = fcom.frmData(frm);
 		fcom.updateWithAjax(fcom.makeUrl(controller, 'charge', [orderId]), data, function(t) {
-			if(t.redirectUrl){
+			if('undefined' != typeof t.redirectUrl){
 				window.location = t.redirectUrl;
-			}
+			} else {
+                $(".payment-page").html(t.html);
+            }
 		});
     };
     

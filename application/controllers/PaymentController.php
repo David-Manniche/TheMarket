@@ -45,10 +45,10 @@ abstract class PaymentController extends MyAppController
         }
     }
 
-    protected function setErrorAndRedirect(string $msg = "")
+    protected function setErrorAndRedirect(string $msg = "", bool $json = false, $redirect = true)
     {
         $msg = !empty($msg) ? $msg : $this->stripeConnect->getError();
-        LibHelper::exitWithError($msg, false, true);
+        LibHelper::exitWithError($msg, $json, $redirect);
         CommonHelper::redirectUserReferer();
     }
 }

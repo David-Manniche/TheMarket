@@ -15,6 +15,17 @@ trait StripeConnectFunctions
     ];
 
     /**
+     * readonlyParams - Used to get bool type request params
+     *
+     * @var array
+     */
+    public $readonlyParams = [
+        "business_profile.name",
+        "business_profile.support_phone",
+        "business_profile.support_email",
+    ];
+
+    /**
      * convertToBool
      *
      * @param  array $requestParam
@@ -100,9 +111,6 @@ trait StripeConnectFunctions
     private function createPerson(array $requestParam): object
     {
         $this->convertToBool($requestParam);
-        /* var_dump($requestParam);
-CommonHelper::printArray($requestParam);
-die; */
         return $this->stripe->accounts->createPerson(
             $this->getAccountId(),
             $requestParam
@@ -119,8 +127,8 @@ die; */
     {
         $this->convertToBool($requestParam);
         /* var_dump($requestParam);
-CommonHelper::printArray($requestParam);
-die; */
+        CommonHelper::printArray($requestParam);
+        die; */
         return $this->stripe->accounts->updatePerson(
             $this->getAccountId(),
             $this->getRelationshipPersonId(),
@@ -357,6 +365,9 @@ die; */
      *           'exp_year' => 2021,
      *           'cvc' => '314',
      *       ]
+     * For backwards compatibility, you can alternatively provide a Stripe token 
+     * (e.g., for Apple Pay, Amex Express Checkout, or legacy Checkout) into the card hash with 
+     * format card: {token: "tok_visa"}.
      * @return object
      */
     private function createCardToken(array $requestParam): object
@@ -375,5 +386,50 @@ die; */
     private function charge(array $requestParam): object
     {
         return $this->stripe->charges->create([$requestParam]);
+    }
+
+    /**
+     * paymentIntent
+     *
+     * @param array $requestParam : [
+     *       'amount' => 2000,
+     *       'currency' => 'usd',
+     *       'payment_method_types' => ['card'],
+     *     ]
+     * @return object
+     */
+    private function paymentIntent(array $requestParam): object
+    {
+        return $this->stripe->paymentIntents->create($requestParam);
+    }
+
+    /**
+     * retrievePaymentIntent
+     *
+     * @param array $requestParam : ['pi_1Gk5ipCvMMMb9OAZM7tWDFiS']
+     * @return object
+     */
+    private function retrievePaymentIntent(array $requestParam): object
+    {
+        return $this->stripe->paymentIntents->retrieve(current($requestParam));
+    }
+
+    /**
+     * createPaymentMethod
+     *
+     * @param array $requestParam : [
+     *      'number' => '4242424242424242',
+     *      'exp_month' => 7,
+     *      'exp_year' => 2021,
+     *      'cvc' => '314',
+     *   ]
+     * @return object
+     */
+    private function createPaymentMethod(array $requestParam): object
+    {
+        return $this->stripe->paymentMethods->create([
+            'type' => 'card',
+            'card' => $requestParam
+        ]);
     }
 }
