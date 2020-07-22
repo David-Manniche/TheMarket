@@ -11,7 +11,6 @@ class StripeConnect extends PaymentMethodBase
     private $stripeAccountId = '';
     private $stripeAccountType;
     private $requiredFields = [];
-    private $initialPendingFields = [];
     private $userInfoObj;
     private $resp = [];
     private $liveMode = '';
@@ -36,26 +35,28 @@ class StripeConnect extends PaymentMethodBase
     public const REQUEST_UPDATE_ACCOUNT = 3;
     public const REQUEST_PERSON_TOKEN = 4;
     public const REQUEST_ADD_BANK_ACCOUNT = 5;
-    public const REQUEST_UPDATE_BUSINESS_TYPE = 6;
-    public const REQUEST_CREATE_PERSON = 7;
-    public const REQUEST_UPDATE_PERSON = 8;
-    public const REQUEST_UPLOAD_VERIFICATION_FILE = 9;
-    public const REQUEST_DELETE_ACCOUNT = 10;
-    public const REQUEST_CREATE_SESSION = 11;
-    public const REQUEST_CREATE_PRICE = 12;
-    public const REQUEST_CREATE_CUSTOMER = 13;
-    public const REQUEST_RETRIEVE_CUSTOMER = 14;
-    public const REQUEST_UPDATE_CUSTOMER = 15;
-    public const REQUEST_CREATE_LOGIN_LINK = 16;
-    public const REQUEST_ALL_CONNECT_ACCOUNTS = 17;
-    public const REQUEST_INITIATE_REFUND = 18;
-    public const REQUEST_TRANSFER_AMOUNT = 19;
-    public const REQUEST_REVERSE_TRANSFER = 20;
-    public const REQUEST_ADD_CARD = 21;
-    public const REQUEST_REMOVE_CARD = 22;
-    public const REQUEST_LIST_ALL_CARDS = 23;
-    public const REQUEST_CREATE_CARD_TOKEN = 24;
-    public const REQUEST_CHARGE = 25;
+    public const REQUEST_CREATE_PERSON = 6;
+    public const REQUEST_UPDATE_PERSON = 7;
+    public const REQUEST_UPLOAD_VERIFICATION_FILE = 8;
+    public const REQUEST_DELETE_ACCOUNT = 9;
+    public const REQUEST_CREATE_SESSION = 10;
+    public const REQUEST_CREATE_PRICE = 11;
+    public const REQUEST_CREATE_CUSTOMER = 12;
+    public const REQUEST_RETRIEVE_CUSTOMER = 13;
+    public const REQUEST_UPDATE_CUSTOMER = 14;
+    public const REQUEST_CREATE_LOGIN_LINK = 15;
+    public const REQUEST_ALL_CONNECT_ACCOUNTS = 16;
+    public const REQUEST_INITIATE_REFUND = 17;
+    public const REQUEST_TRANSFER_AMOUNT = 18;
+    public const REQUEST_REVERSE_TRANSFER = 19;
+    public const REQUEST_ADD_CARD = 20;
+    public const REQUEST_REMOVE_CARD = 21;
+    public const REQUEST_LIST_ALL_CARDS = 22;
+    public const REQUEST_CREATE_CARD_TOKEN = 23;
+    public const REQUEST_CHARGE = 24;
+    public const REQUEST_PAYMENT_INTENT = 25;
+    public const REQUEST_RETRIEVE_PAYMENT_INTENT = 26;
+    public const REQUEST_CREATE_PAYMENT_METHOD = 27;
 
     /**
      * __construct
@@ -380,102 +381,122 @@ class StripeConnect extends PaymentMethodBase
         }
         return true;
     }
-
+    
     /**
      * getBusinessTypeFields
      *
+     * @param  string $businessType
      * @return array
      */
     public function getBusinessTypeFields(string $businessType): array
     {
         $businessType = 'individual' == $businessType ? $businessType : 'other';
 
+        $commonPreFields = [
+            'business_type' => Labels::getLabel("MSG_BUSINESS_TYPE", $this->langId),
+            'business_profile.url' => Labels::getLabel("MSG_URL", $this->langId),
+            'business_profile.support_url' => Labels::getLabel("MSG_SUPPORT_URL", $this->langId),
+            'business_profile.name' => Labels::getLabel("MSG_BUSINESS_PROFILE_NAME", $this->langId),
+            'business_profile.support_phone' => Labels::getLabel("MSG_SUPPORT_PHONE", $this->langId),
+            'business_profile.support_email' => Labels::getLabel("MSG_SUPPORT_EMAIL", $this->langId),
+            'business_profile.support_address.line1' => Labels::getLabel("MSG_SUPPORT_ADDRESS_LINE_1", $this->langId),
+            'business_profile.support_address.line2' => Labels::getLabel("MSG_SUPPORT_ADDRESS_LINE_2", $this->langId),
+            'business_profile.support_address.postal_code' => Labels::getLabel("MSG_SUPPORT_ADDRESS_POSTAL_CODE", $this->langId),
+            'business_profile.support_address.city' => Labels::getLabel("MSG_SUPPORT_ADDRESS_CITY", $this->langId),
+            'business_profile.support_address.country' => Labels::getLabel("MSG_SUPPORT_ADDRESS_COUNTRY", $this->langId),
+            'business_profile.support_address.state' => Labels::getLabel("MSG_SUPPORT_ADDRESS_STATE", $this->langId),
+        ];
+
         $bussinessTypeFileds = [
             'individual' => [
-                'individual.first_name',
-                'individual.last_name',
-                'individual.email',
-                'individual.phone',
-                'individual.dob.day',
-                'individual.dob.month',
-                'individual.dob.year',
-                'individual.address.line1',
-                'individual.address.city',
-                'individual.address.postal_code',
-                'individual.address.country',
-                'individual.address.state',
-                'individual.verification.document',
+                'individual.first_name' => Labels::getLabel("MSG_FIRST_NAME", $this->langId),
+                'individual.last_name' => Labels::getLabel("MSG_LAST_NAME", $this->langId),
+                'individual.email' => Labels::getLabel("MSG_EMAIL", $this->langId),
+                'individual.phone' => Labels::getLabel("MSG_PHONE", $this->langId),
+                'individual.dob.month' => Labels::getLabel("MSG_BIRTH_MONTH", $this->langId),
+                'individual.dob.day' => Labels::getLabel("MSG_BIRTH_DAY", $this->langId),
+                'individual.dob.year' => Labels::getLabel("MSG_BIRTH_YEAR", $this->langId),
+                'individual.address.line1' => Labels::getLabel("MSG_ADDRESS_LINE1", $this->langId),
+                'individual.address.city' => Labels::getLabel("MSG_CITY", $this->langId),
+                'individual.address.postal_code' => Labels::getLabel("MSG_POSTAL_CODE", $this->langId),
+                'individual.address.country' => Labels::getLabel("MSG_COUNTRY", $this->langId),
+                'individual.address.state' => Labels::getLabel("MSG_STATE", $this->langId),
+                'individual.verification.document' => Labels::getLabel("MSG_DOCUMENT", $this->langId),
             ],
             'other' => [
-                'company.address.line1',
-                'company.address.city',
-                'company.address.postal_code',
-                'company.address.country',
-                'company.address.state',
-                'company.name',
-                'company.phone',
-                'company.tax_id',
-                'relationship_person.address.line1',
-                'relationship_person.address.city',
-                'relationship_person.address.postal_code',
-                'relationship_person.address.country',
-                'relationship_person.address.state',
-                'relationship_person.dob.day',
-                'relationship_person.dob.month',
-                'relationship_person.dob.year',
-                'relationship_person.email',
-                'relationship_person.first_name',
-                'relationship_person.last_name',
-                'relationship_person.phone',
-                'relationship_person.ssn_last_4',
-                'relationship.title',
-                'relationship.owner',
-                'relationship.representative'
+                'company.address.line1' => Labels::getLabel("MSG_ADDRESS_LINE1", $this->langId),
+                'company.address.city' => Labels::getLabel("MSG_CITY", $this->langId),
+                'company.address.postal_code' => Labels::getLabel("MSG_POSTAL_CODE", $this->langId),
+                'company.address.country' => Labels::getLabel("MSG_COUNTRY", $this->langId),
+                'company.address.state' => Labels::getLabel("MSG_STATE", $this->langId),
+                'company.name' => Labels::getLabel("MSG_NAME", $this->langId),
+                'company.phone' => Labels::getLabel("MSG_PHONE", $this->langId),
+                'company.tax_id' => Labels::getLabel("MSG_TAX_ID", $this->langId),
+                'relationship_person.address.line1' => Labels::getLabel("MSG_RELATIONSHIP_PERSON_ADDRESS_LINE1", $this->langId),
+                'relationship_person.address.city' => Labels::getLabel("MSG_RELATIONSHIP_PERSON_CITY", $this->langId),
+                'relationship_person.address.postal_code' => Labels::getLabel("MSG_RELATIONSHIP_PERSON_POSTAL_CODE", $this->langId),
+                'relationship_person.address.country' => Labels::getLabel("MSG_RELATIONSHIP_PERSON_COUNTRY", $this->langId),
+                'relationship_person.address.state' => Labels::getLabel("MSG_RELATIONSHIP_PERSON_STATE", $this->langId),
+                'relationship_person.dob.month' => Labels::getLabel("MSG_RELATIONSHIP_PERSON_BIRTH_MONTH", $this->langId),
+                'relationship_person.dob.day' => Labels::getLabel("MSG_RELATIONSHIP_PERSON_BIRTH_DAY", $this->langId),
+                'relationship_person.dob.year' => Labels::getLabel("MSG_RELATIONSHIP_PERSON_BIRTH_YEAR", $this->langId),
+                'relationship_person.email' => Labels::getLabel("MSG_RELATIONSHIP_PERSON_EMAIL", $this->langId),
+                'relationship_person.first_name' => Labels::getLabel("MSG_RELATIONSHIP_PERSON_FIRST_NAME", $this->langId),
+                'relationship_person.last_name' => Labels::getLabel("MSG_RELATIONSHIP_PERSON_LAST_NAME", $this->langId),
+                'relationship_person.phone' => Labels::getLabel("MSG_RELATIONSHIP_PERSON_PHONE", $this->langId),
+                'relationship_person.ssn_last_4' => Labels::getLabel("MSG_RELATIONSHIP_PERSON_SSN_LAST_4", $this->langId),
+                'relationship.title' => Labels::getLabel("MSG_TITLE", $this->langId),
+                'relationship.owner' => Labels::getLabel("MSG_OWNER", $this->langId),
+                'relationship.representative' => Labels::getLabel("MSG_REPRESENTATIVE", $this->langId),
             ]
         ];
 
-        $common = [
-            'business_profile.mcc',
-            'external_account.account_holder_name',
-            'external_account.account_number',
-            'external_account.routing_number',
+        $commonPostFields = [
+            'business_profile.mcc' => Labels::getLabel("MSG_MERCHANT_CATEGORY_CODE", $this->langId),
+            'external_account.account_holder_name' => Labels::getLabel("MSG_BANK_ACCOUNT_HOLDER_NAME", $this->langId),
+            'external_account.account_number' => Labels::getLabel("MSG_BANK_ACCOUNT_NUMBER", $this->langId),
+            'external_account.routing_number' => Labels::getLabel("MSG_BANK_ROUTING_NUMBER", $this->langId),
+            'tos_acceptance' => Labels::getLabel("LBL_I_AGREE_TO_THE_TERMS_OF_SERVICE", $this->langId),
         ];
 
-        return array_merge($bussinessTypeFileds[$businessType], $common);
+        return array_merge($commonPreFields, $bussinessTypeFileds[$businessType], $commonPostFields);
     }
-
+    
     /**
      * getRequiredFields
      *
+     * @param  string $businessType
      * @return array
      */
-    public function getRequiredFields(): array
+    public function getRequiredFields(string $businessType = 'individual'): array
     {
         if (empty($this->getAccountId()) || false === $this->loadRemoteUserInfo()) {
             return [];
         }
-
-        if (!empty($this->requiredFields)) {
-            return $this->requiredFields;
-        }
-        
-        $this->userInfoObj = $this->getResponse();
-        // CommonHelper::printArray($this->userInfoObj);
-        $errors = $this->userInfoObj->requirements->errors;
-        $businessType = (string) $this->getUserMeta('stripe_business_type');
-        $currentlyDue = $this->userInfoObj->requirements->currently_due;
-        if (empty($currentlyDue)) {
-            return [];
-        }
-
-        $this->requiredFields = $this->getBusinessTypeFields($businessType);
-        
         $formSubmittedFlag = $this->getUserMeta('stripe_form_submitted');
+        
+        if (!empty($formSubmittedFlag)) {
+            $this->userInfoObj = $this->getResponse();
+            $currentlyDue = $this->userInfoObj->requirements->currently_due;
+            $arr = [];
+            array_walk($currentlyDue, function($value, $key) use (&$arr) {
+                $label = $value;
+                if (false !== strpos($value, ".")) {
+                    $label = str_replace(".", " ", $value);
+                }
 
-        if (!empty($formSubmittedFlag) || empty($businessType)) {
-            $this->requiredFields  = $currentlyDue;
+                if (false !== strpos($label, 'person_')) {
+                    $personId = $this->getUserMeta('stripe_person_id');
+                    $label = str_replace($personId, "Person", $label);
+                }
+
+                $arr[$value] = ucwords($label);
+            });
+            $this->requiredFields = $arr;
+        } else {
+            $this->requiredFields = $this->getBusinessTypeFields($businessType);
         }
-        // CommonHelper::printArray($currentlyDue);
+
         return $this->requiredFields;
     }
     
@@ -487,59 +508,15 @@ class StripeConnect extends PaymentMethodBase
      * @param int $updateSubmittedFormFlag
      * @return bool
      */
-    public function updateRequiredFields(array $requestParam, int $updateSubmittedFormFlag = 0): bool
-    {
-        $requestType = '';
-        $actionType = 'N/A';
-        if (isset($requestParam['action_type'])) {
-            $actionType = $requestParam['action_type'];
-            unset($requestParam['action_type']);
-        }
-        
-        switch ($actionType) {
-            case 'business_type':
-                $requestType = self::REQUEST_UPDATE_BUSINESS_TYPE;
-                break;
-            case 'external_account':
-                $requestType = self::REQUEST_ADD_BANK_ACCOUNT;
-                break;
-            default:
-                $requestType = self::REQUEST_UPDATE_ACCOUNT;
-                break;
-        }
-        
+    public function updateRequiredFields(array $requestParam): bool
+    {        
         if (array_key_exists('external_account', $requestParam)) {
             $this->getBaseCurrencyCode();
             $requestParam['external_account']['object'] = 'bank_account';
             $requestParam['external_account']['country'] = strtoupper($this->userData['country_code']);
             $requestParam['external_account']['currency'] = $this->systemCurrencyCode;
         }
-        
-        $formSubmittedFlag = $this->getUserMeta('stripe_form_submitted');
-        if (empty($formSubmittedFlag) && 0 < $updateSubmittedFormFlag) {
-            $this->updateUserMeta('stripe_form_submitted', 1);
-        }
-        return $this->doRequest($requestType, $requestParam);
-    }
-
-    /**
-     * updateBusinessType
-     *
-     * @param array $requestParam
-     * @return bool
-     */
-    private function updateBusinessType(array $requestParam): bool
-    {
-        if ('individual' == $requestParam['business_type']) {
-            $requestParam['individual']['id_number'] = $this->doRequest(self::REQUEST_PERSON_TOKEN);
-        }
-
-        if (false === $this->update($requestParam)) {
-            return false;
-        }
-
-        $this->updateUserMeta('stripe_business_type', $requestParam['business_type']);
-        return true;
+        return $this->doRequest(self::REQUEST_UPDATE_ACCOUNT, $requestParam);
     }
 
     /**
@@ -599,9 +576,29 @@ class StripeConnect extends PaymentMethodBase
             $personData = $requestParam[$personId];
             unset($requestParam[$personId]);
         }
-
-        if (in_array('individual.id_number', $this->getRequiredFields())) {
+        $businessType = (string) $this->getUserMeta('stripe_business_type');
+        if (array_key_exists('individual.id_number', $this->getRequiredFields($businessType))) {
             $requestParam['individual']['id_number'] = $this->doRequest(self::REQUEST_PERSON_TOKEN);
+        }
+
+        if (array_key_exists('tos_acceptance', $requestParam)) {
+            $requestParam['tos_acceptance'] =  [
+                'date' => time(),
+                'ip' => CommonHelper::getClientIp(),
+                'user_agent' => CommonHelper::userAgent(),
+            ];
+        }
+
+        if (array_key_exists('business_type', $requestParam) && 'individual' == $requestParam['business_type']) {
+            $requestParam['individual']['id_number'] = $this->doRequest(self::REQUEST_PERSON_TOKEN);
+        }
+
+        if (!empty($requestParam) && false === $this->update($requestParam)) {
+            return false;
+        }
+
+        if (array_key_exists('business_type', $requestParam)) {
+            $this->updateUserMeta('stripe_business_type', $requestParam['business_type']);
         }
 
         if (!empty($requestParam)) {
@@ -618,11 +615,15 @@ class StripeConnect extends PaymentMethodBase
         } elseif (!empty($personId) && (!empty($relationship) || !empty($personData))) {
             $relationship = !empty($relationship) ? ['relationship' => $relationship] : [];
             $requestParam = array_merge($relationship, $personData);
-            // CommonHelper::printArray($requestParam, true);
             $this->resp = $this->doRequest(self::REQUEST_UPDATE_PERSON, $requestParam);
             if (false === $this->resp) {
                 return false;
             }
+        }
+
+        $formSubmittedFlag = $this->getUserMeta('stripe_form_submitted');
+        if (empty($formSubmittedFlag)) {
+            $this->updateUserMeta('stripe_form_submitted', 1);
         }
 
         return true;
@@ -665,72 +666,6 @@ class StripeConnect extends PaymentMethodBase
         ];
         $this->resp = $this->doRequest(self::REQUEST_UPDATE_PERSON, $requestParam);
         return (false === $this->resp) ? false : true;
-    }
-
-    /**
-     * getInitialPendingFields
-     *
-     * @return array
-     */
-    public function getInitialPendingFields(): array
-    {
-        return $this->initialPendingFields;
-    }
-
-    /**
-     * verifyInitialSetup
-     *
-     * @return bool
-     */
-    public function verifyInitialSetup(): bool
-    {
-        if (false === $this->loadRemoteUserInfo()) {
-            return false;
-        }
-        
-        $this->userInfoObj = $this->getResponse();
-        $initialElements = $this->userInfoObj->toArray();
-        
-        $this->initialPendingFields = [];
-
-        if (!$this->userInfoObj->offsetExists('email') || empty($initialElements['email'])) {
-            $this->initialPendingFields[] = 'email';
-        }
-
-        if (!$this->userInfoObj->offsetExists('business_profile') || empty(array_filter($initialElements['business_profile']))) {
-            $this->initialPendingFields[] = 'business_profile';
-        }
-
-        $this->requiredFields = $initialElements['requirements']['currently_due'];
-        
-        if (in_array('tos_acceptance.date', $this->requiredFields) || in_array('tos_acceptance.ip', $this->requiredFields)) {
-            $this->initialPendingFields[] = 'tos_acceptance';
-        }
-
-        return (1 > count($this->initialPendingFields));
-    }
-
-    /**
-     * initialFieldsSetup
-     *
-     * @param array $post
-     * @return bool
-     */
-    public function initialFieldsSetup(array $post): bool
-    {
-        if (array_key_exists('tos_acceptance', $post)) {
-            $post['tos_acceptance'] =  [
-                'date' => time(),
-                'ip' => CommonHelper::getClientIp(),
-                'user_agent' => CommonHelper::userAgent(),
-            ];
-        }
-
-        if (false === $this->updateRequiredFields($post)) {
-            return false;
-        }
-
-        return true;
     }
 
     /**
@@ -1120,6 +1055,51 @@ class StripeConnect extends PaymentMethodBase
     }
 
     /**
+     * createPaymentIntent
+     *
+     * @param array $requestParam
+     * @return bool
+     */
+    public function createPaymentIntent(array $requestParam): bool
+    {
+        $this->resp = $this->doRequest(self::REQUEST_PAYMENT_INTENT, $requestParam);
+        if (false === $this->resp) {
+            return false;
+        }
+        return true;
+    }
+    
+    /**
+     * loadPaymentIntent
+     *
+     * @param string $paymentIntentId
+     * @return bool
+     */
+    public function loadPaymentIntent(string $paymentIntentId): bool
+    {
+        $this->resp = $this->doRequest(self::REQUEST_RETRIEVE_PAYMENT_INTENT, [$paymentIntentId]);
+        if (false === $this->resp) {
+            return false;
+        }
+        return true;
+    }
+
+    /**
+     * addPaymentMethod
+     *
+     * @param array $requestParam
+     * @return bool
+     */
+    public function addPaymentMethod(array $requestParam): bool
+    {
+        $this->resp = $this->doRequest(self::REQUEST_CREATE_PAYMENT_METHOD, $requestParam);
+        if (false === $this->resp) {
+            return false;
+        }
+        return true;
+    }
+
+    /**
      * doRequest
      *
      * @param  mixed $requestType
@@ -1143,9 +1123,6 @@ class StripeConnect extends PaymentMethodBase
                     break;
                 case self::REQUEST_ADD_BANK_ACCOUNT:
                     return $this->addFinancialInfo($requestParam);
-                    break;
-                case self::REQUEST_UPDATE_BUSINESS_TYPE:
-                    return $this->updateBusinessType($requestParam);
                     break;
                 case self::REQUEST_CREATE_PERSON:
                     return $this->createPerson($requestParam);
@@ -1203,6 +1180,15 @@ class StripeConnect extends PaymentMethodBase
                     break;
                 case self::REQUEST_CHARGE:
                     return $this->charge($requestParam);
+                    break;
+                case self::REQUEST_PAYMENT_INTENT:
+                    return $this->paymentIntent($requestParam);
+                    break;
+                case self::REQUEST_RETRIEVE_PAYMENT_INTENT:
+                    return $this->retrievePaymentIntent($requestParam);
+                    break;
+                case self::REQUEST_CREATE_PAYMENT_METHOD:
+                    return $this->createPaymentMethod($requestParam);
                     break;
             }
         } catch (\Stripe\Exception\CardException $e) {

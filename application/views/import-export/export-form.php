@@ -25,6 +25,8 @@ $tabsAllowedFor = [
     Importexport::TYPE_PRODUCTS,
     Importexport::TYPE_BRANDS
 ];
+$submitFld = $frm->getField('btn_submit');
+$submitFld->setFieldTagAttribute('class', "btn btn-primary");
 ?>
 <?php if (in_array($actionType, $tabsAllowedFor)) { ?>
     <div class="tabs tabs-sm tabs--scroll clearfix">
