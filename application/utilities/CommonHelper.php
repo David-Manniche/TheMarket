@@ -266,7 +266,7 @@ class CommonHelper extends FatUtility
         }
     }
 
-    public static function combinationOfElementsOfArr($arr = array(), $useKey = '', $separater = '|')
+    public static function combinationOfElementsOfArr($arr = array(), $useKey = '', $separater = '|', $sortKeys = true)
     {
         $tempArr = array();
         $loopCount = count($arr);
@@ -293,6 +293,17 @@ class CommonHelper extends FatUtility
                 }
             }
             $count++;
+        }
+
+        if(!$sortKeys) {
+            return $tempArr;
+        }
+        foreach ($tempArr as $key => $val) {
+            $codeArr = explode($separater, $key);
+            sort($codeArr);
+            $selProdCode = implode($separater, $codeArr);
+            unset($tempArr[$key]);
+            $tempArr[$selProdCode] = $val;
         }
         return $tempArr;
     }
@@ -629,11 +640,11 @@ class CommonHelper extends FatUtility
 
         if ($displaySymbol) {
             $sign .= ' ';
-            
+
             if (true === MOBILE_APP_API_CALL || false === $withHtml) {
                 return trim($sign . $currencySymbolLeft . $val . $currencySymbolRight);
             }
-            
+
             $currencySymbolLeft = !empty($currencySymbolLeft) ? "<span class='currency-symbol'>" . $currencySymbolLeft . "</span>" : $currencySymbolLeft;
             $currencySymbolRight = !empty($currencySymbolRight) ? "<span class='currency-symbol'>" . $currencySymbolRight . "</span>" : $currencySymbolRight;
             return "<span class='currency-value' dir='ltr'>" . trim($sign . $currencySymbolLeft . $val . $currencySymbolRight) . "</span>";
@@ -1830,7 +1841,7 @@ class CommonHelper extends FatUtility
     }
 
     public static function demoUrl()
-    { 
+    {
         if (strpos($_SERVER ['SERVER_NAME'], 'demo.yo-kart.com') !== false) {
             return true;
         }
@@ -1889,7 +1900,7 @@ class CommonHelper extends FatUtility
     }
 
     public static function displayTaxPercantage($taxVal, $displayPercentage = false)
-    {        
+    {
         if (false == $displayPercentage) {
             return $taxVal['name'];
         }

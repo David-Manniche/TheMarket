@@ -177,4 +177,22 @@ class PatchUpdateController extends AdminBaseController
             }
         }
     }
+
+    public function changeSelprodCode()
+    {
+        $srch = SellerProduct::getSearchObject();
+        $srch->doNotCalculateRecords();
+        $srch->addMultipleFields(array('selprod_id','selprod_code'));
+        $rs = $srch->getResultSet();
+        $rows = FatApp::getDb()->fetchAll($rs);
+        $db = FatApp::getDb();
+        foreach ($rows as $row) {
+            $codeArr = explode("_",$row['selprod_code']);
+            sort($codeArr);
+            $selProdCode = implode("_", $codeArr);
+            if ($db->updateFromArray(SellerProduct::DB_TBL, array('selprod_code' => $selProdCode), array('smt' => 'selprod_id = ?', 'vals' => array($row['selprod_id'])))) {
+                echo $row['selprod_id'] . "<br>";
+            }
+        }
+    }
 }
