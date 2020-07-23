@@ -10,7 +10,7 @@ var alreadyLoginDiv = '#alreadyLoginDiv';
 var shippingSummaryDiv = '#shipping-summary';
 var cartReviewDiv = '#cart-review';
 var paymentDiv = '#payment';
-var financialSummary = '.summary-listing';
+var financialSummary = '.summary-listing-js';
 
 function checkLogin(){
 	if( isUserLogged() == 0 ){
@@ -200,13 +200,10 @@ $("document").ready(function(){
 		if(!checkLogin()){
 			return false;
 		}
-		var shipping_address_id = $(elm).parent().parent().parent().find('input[name="shipping_address_id"]:checked').val();
-		var billing_address_id = $(elm).parent().parent().parent().parent().find('input[name="billing_address_id"]:checked').val();
-		var isShippingSameAsBilling = $('input[name="isShippingSameAsBilling"]:checked').val();
-		if(isShippingSameAsBilling == 1){
-			shipping_address_id = billing_address_id;
-		}
-		var data = 'shipping_address_id='+shipping_address_id+'&billing_address_id='+billing_address_id+'&isShippingSameAsBilling='+isShippingSameAsBilling;
+
+		var shipping_address_id = $('input[name="shipping_address_id"]:checked').val();
+		var isShippingSameAsBilling = 1;
+		var data = 'shipping_address_id='+shipping_address_id+'&billing_address_id='+shipping_address_id+'&isShippingSameAsBilling='+isShippingSameAsBilling;
 		fcom.updateWithAjax(fcom.makeUrl('Checkout', 'setUpAddressSelection'), data , function(t) {
 			if( t.status == 1 ){
 				if( t.loadAddressDiv ){
@@ -492,33 +489,33 @@ $("document").ready(function(){
 	};
 
 	setCheckoutFlow = function(type){
-		var obj = $('.checkout-flow');
-		obj.find('li').removeClass('completed');
-		obj.find('li').removeClass('inprogress');
-		obj.find('li').removeClass('pending');
+		var obj = $('.checkout-progress');
+		obj.find('div').removeClass('is-complete');
+		obj.find('div').removeClass('is-active');
+		obj.find('div').removeClass('pending');
 		switch(type) {
 		  case 'BILLING':
-			obj.find('.billing-js').addClass('inprogress');
+			obj.find('.billing-js').addClass('is-active');
 			obj.find('.shipping-js').addClass('pending');
 			obj.find('.payment-js').addClass('pending');
 			obj.find('.order-complete-js').addClass('pending');
 		    break;
 		  case 'SHIPPING': 
-			obj.find('.billing-js').addClass('completed');
-			obj.find('.shipping-js').addClass('inprogress');
+			obj.find('.billing-js').addClass('is-complete');
+			obj.find('.shipping-js').addClass('is-active');
 			obj.find('.payment-js').addClass('pending');
 			obj.find('.order-complete-js').addClass('pending');
 		    break;
 		  case 'PAYMENT':
-			  obj.find('.billing-js').addClass('completed');
-			  obj.find('.shipping-js').addClass('completed');
-			  obj.find('.payment-js').addClass('inprogress');
+			  obj.find('.billing-js').addClass('is-complete');
+			  obj.find('.shipping-js').addClass('is-complete');
+			  obj.find('.payment-js').addClass('is-active');
 			  obj.find('.order-complete-js').addClass('pending');
 		    break;
 		  case 'COMPLETED':
-			  obj.find('.billing-js').addClass('completed');
-			  obj.find('.shipping-js').addClass('completed');
-			  obj.find('.payment-js').addClass('completed');
+			  obj.find('.billing-js').addClass('is-complete');
+			  obj.find('.shipping-js').addClass('is-complete');
+			  obj.find('.payment-js').addClass('is-complete');
 			  obj.find('.order-complete-js').addClass('pending');
 		    break;
 		  default:

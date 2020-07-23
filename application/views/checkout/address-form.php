@@ -31,6 +31,8 @@
     $cancelFld->setFieldTagAttribute('class','btn btn-outline-primary');
     $cancelFld->setFieldTagAttribute('onclick','resetAddress()');
 ?>
+<?php echo $addressFrm->getFormHtml(); ?>
+<?php /*?>
 <div class="section-head">
 	<div class="section__heading">
 		<h2><?php
@@ -51,6 +53,7 @@
     </section>
     <?php echo $addressFrm->getFormHtml(); ?>
 </div>
+<?php */?>
 <script language="javascript">
     $(document).ready(function() {
         getCountryStates($("#addr_country_id").val(), <?php echo $stateId ;?>, '#addr_state_id');

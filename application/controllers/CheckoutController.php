@@ -472,9 +472,9 @@ class CheckoutController extends MyAppController
             FatUtility::dieWithError($this->errMessage);
         }
 
-        $user_id = UserAuthentication::getLoggedUserId();
+        /* $user_id = UserAuthentication::getLoggedUserId();
 
-        $shippingMethods = Shipping::getShippingMethods($this->siteLangId);
+        $shippingMethods = Shipping::getShippingMethods($this->siteLangId); */
 
         $cartProducts = $this->cartObj->getProducts($this->siteLangId);
 
@@ -498,13 +498,21 @@ class CheckoutController extends MyAppController
             $this->_template->render();
         }
 
-        $address = new Address($this->cartObj->getCartShippingAddress(), $this->siteLangId);
-        $shippingAddressDetail = $address->getData(Address::TYPE_USER, UserAuthentication::getLoggedUserId());
+        $hasPhysicalProd = $this->cartObj->hasPhysicalProduct();
+        if (!$hasPhysicalProd) {
+            $selected_shipping_address_id = $this->cartObj->getCartBillingAddress();
+        } else {
+            $selected_shipping_address_id = $this->cartObj->getCartShippingAddress();
+        }
 
+        $address = new Address($selected_shipping_address_id, $this->siteLangId);
+        $addresses = $address->getData(Address::TYPE_USER, UserAuthentication::getLoggedUserId());
+        
         $this->set('cartSummary', $this->cartObj->getCartFinancialSummary($this->siteLangId));
-        $this->set('shippingAddressDetail', $shippingAddressDetail);
+        $this->set('addresses', $addresses);
         $this->set('products', $cartProducts);
         $this->set('shippingRates', $shippingRates);
+        $this->set('hasPhysicalProd', $hasPhysicalProd);
         $this->_template->render(false, false, 'checkout/shipping-summary-inner.php');
     }
 
@@ -1963,20 +1971,8 @@ class CheckoutController extends MyAppController
         $cartSummary = $this->cartObj->getCartFinancialSummary($this->siteLangId);
         $products = $this->cartObj->getProducts($this->siteLangId);
 
-        $hasPhysicalProd = $this->cartObj->hasPhysicalProduct();
-        if (!$hasPhysicalProd) {
-            $selected_shipping_address_id = $this->cartObj->getCartBillingAddress();
-        } else {
-            $selected_shipping_address_id = $this->cartObj->getCartShippingAddress();
-        }
-
-        $address = new Address($selected_shipping_address_id, $this->siteLangId);
-        $addresses = $address->getData(Address::TYPE_USER, UserAuthentication::getLoggedUserId());
-
         $this->set('products', $products);
         $this->set('cartSummary', $cartSummary);
-        $this->set('defaultAddress', $addresses);
-        $this->set('hasPhysicalProd', $hasPhysicalProd);
         $this->_template->render(false, false);
     }
 

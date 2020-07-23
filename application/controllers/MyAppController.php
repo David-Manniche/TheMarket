@@ -148,6 +148,8 @@ class MyAppController extends FatController
             'processing_counter' => Labels::getLabel('LBL_{counter}_OUT_OF_{count}_RECORD_BATCHES.', $this->siteLangId),
             'loadingCaptcha' => Labels::getLabel('LBL_Loading_Captcha...', $this->siteLangId),
             'confirmPayment' => Labels::getLabel('LBL_CONFIRM_PAYMENT', $this->siteLangId),
+            'currentPrice' => Labels::getLabel('LBL_Current_Price', $this->siteLangId),
+            'discountPercentage' => Labels::getLabel('LBL_Discount_Percentage', $this->siteLangId),
             );
 
             $languages = Language::getAllNames(false);

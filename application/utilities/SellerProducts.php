@@ -1977,7 +1977,7 @@ trait SellerProducts
         $srch->addCondition('selprod_deleted', '=', applicationConstants::NO);
         $srch->addMultipleFields(
             array(
-            'selprod_id as id', 'IFNULL(selprod_title ,product_name) as product_name', 'product_identifier')
+            'selprod_id as id', 'IFNULL(selprod_title ,product_name) as product_name', 'product_identifier', 'selprod_price')
         );
         $srch->setPageSize($pagesize);
         $srch->addOrder('selprod_active', 'DESC');
@@ -1989,7 +1989,8 @@ trait SellerProducts
             $json[] = array(
             'id' => $key,
             'name' => strip_tags(html_entity_decode($option['product_name'], ENT_QUOTES, 'UTF-8')),
-            'product_identifier' => strip_tags(html_entity_decode($option['product_identifier'], ENT_QUOTES, 'UTF-8'))
+            'product_identifier' => strip_tags(html_entity_decode($option['product_identifier'], ENT_QUOTES, 'UTF-8')),
+            'price' => $option['selprod_price']
             );
         }
         die(json_encode($json));

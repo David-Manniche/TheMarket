@@ -1,168 +1,114 @@
 <?php defined('SYSTEM_INIT') or die('Invalid Usage.');?>
-<div class="box box--white box--radius order-summary">
-    <?php if(!empty($defaultAddress)) {?>
-    <div class="p-4">
-        <div class="section-head">
-            <div class="section__heading">
-                <h6>
-                <?php if ($hasPhysicalProd) {
-                    echo Labels::getLabel('LBL_Shipping_to:', $siteLangId);
-                } else {
-                    echo Labels::getLabel('LBL_Billing_to:', $siteLangId);
-                } ?>
-                </h6>
-            </div>
-            <div class="section__action"><a href="#" class="btn btn-outline-primary btn-sm" onClick="showAddressList()"><?php echo Labels::getLabel('LBL_Change_Address', $siteLangId); ?></a> </div>
-        </div>
-        <div class="shipping-address">
-            <?php echo $defaultAddress['addr_title']; ?><br>
-            <?php echo $defaultAddress['addr_name']; ?><br>
-            <?php echo $defaultAddress['addr_address1'];?><br>
-            <?php echo $defaultAddress['addr_city'];?>,  <?php echo $defaultAddress['state_name'];?>, <?php echo (strlen($defaultAddress['addr_zip']) > 0) ? Labels::getLabel('LBL_Zip:', $siteLangId) . ' ' . $defaultAddress['addr_zip'] . '<br>' : '';?>
-            <?php echo (strlen($defaultAddress['addr_phone']) > 0) ? Labels::getLabel('LBL_Phone:', $siteLangId) . ' ' . $defaultAddress['addr_phone'] . '<br>' : '';?>
-        </div>
-    </div>
-    <div class="divider"></div>
-    <?php }?>
-    <div class="p-4">
-        <div class="section-head">
-            <div class="section__heading">
-                <h6><?php echo Labels::getLabel('LBL_Order_Summary', $siteLangId); ?> - <?php echo count($products); ?> <?php echo Labels::getLabel('LBL_item(s)', $siteLangId); ?></h6>
-            </div>
-            <div class="section__action js-editCart" style="display:block;"><a href="javascript:void(0);" onClick="editCart()" class="btn btn-outline-primary btn-sm"><?php echo Labels::getLabel('LBL_Edit_Cart', $siteLangId);?></a> </div>
-        </div>
-        <div class="scrollbar-order-list" data-simplebar>
-            <table class="table table--justify cart-summary order-table">
-                <tbody>
-                    <?php foreach ($products as $product) { ?>
-                    <tr class="physical_product_tab-js">
-                        <td>
-                            <?php $productUrl = UrlHelper::generateUrl('Products', 'View', array($product['selprod_id'])); ?>
-                            <div class="item__pic"><a href="<?php echo $productUrl;?>"><img src=<?php echo UrlHelper::getCachedUrl(UrlHelper::generateFileUrl('image', 'product', array($product['product_id'], "THUMB", $product['selprod_id'], 0, $siteLangId)), CONF_IMG_CACHE_TIME, '.jpg'); ?>" alt="<?php echo $product['product_name']; ?>" title="<?php echo $product['product_name']; ?>"></a></div>
-                        </td>
-                        <td>
-                            <div class="item__description">
-                                <div class="item__title"><a title="<?php echo $product['product_name']?>" href="<?php echo $productUrl; ?>"><?php echo $product['product_name']?></a></div>
-                                <div class="item__title"><a title="<?php echo $product['product_name']?>" href="<?php echo $productUrl; ?>"><?php echo $product['selprod_title']?></a></div>
-                                <div class="item__specification  js-editCart" style="display:block;">
-                                    <?php if (isset($product['options']) && count($product['options'])) {
-                                        foreach ($product['options'] as $key => $option) {
-                                            /*if (0 < $key){
-                                                echo ' | ';
-                                            }*/
-                                            echo $option['option_name'].':'; ?> <span class="text--dark"><?php echo $option['optionvalue_name']; ?> |</span>
-                                        <?php }
-                                    } ?>  <?php echo Labels::getLabel('LBL_Quantity', $siteLangId); ?>: <?php echo $product['quantity']; ?> </div>
-                                <div class="product_qty js-editCart" style="display:none;">
-                                    <div class="qty-wrapper">
-                                        <div class="quantity" data-stock="<?php echo $product['selprod_stock']; ?>">
-                                            <span class="decrease decrease-js">-</span>
-                                            <div class="qty-input-wrapper" data-stock="<?php echo $product['selprod_stock']; ?>">
-                                                <input name="qty_<?php echo md5($product['key']); ?>" data-key="<?php echo md5($product['key']); ?>" data-page="checkout" class="qty-input cartQtyTextBox productQty-js"
-                                                    value="<?php echo $product['quantity']; ?>" type="text" />
-                                            </div>
-                                            <span class="increase increase-js">+</span>
-                                        </div>
-                                    </div>
-                                    <ul class="actions js-editCart" style="display:none;">
-                                        <li><a href="javascript:void(0)" class="" onclick="cart.remove('<?php echo md5($product['key']); ?>','checkout','')" title="<?php echo Labels::getLabel("LBL_Remove", $siteLangId); ?>"
-                                                class="icons-wrapper"><i class="icn"><svg class="svg">
-                                                        <use xlink:href="<?php echo CONF_WEBROOT_URL; ?>images/retina/sprite.svg#bin" href="<?php echo CONF_WEBROOT_URL; ?>images/retina/sprite.svg#bin"></use>
-                                                    </svg></i></a>
-                                        </li>
-                                    </ul>
+<h5 class="mb-2"><?php echo Labels::getLabel('LBL_Order_Summary', $siteLangId); ?> - <?php echo count($products); ?> <?php echo Labels::getLabel('LBL_item(s)', $siteLangId); ?></h5>
+<?php /* ?>  <div class="section__action js-editCart" style="display:block;"><a href="javascript:void(0);" onClick="editCart()" class="btn btn-outline-primary btn-sm"><?php echo Labels::getLabel('LBL_Edit_Cart', $siteLangId);?></a> </div> <?php */ ?>
+<?php /*  if (!empty($cartSummary['cartDiscounts']['coupon_code'])) { ?>
+<div class="applied-coupon">
+    <span><?php echo Labels::getLabel("LBL_Coupon", $siteLangId); ?> "<strong><?php echo $cartSummary['cartDiscounts']['coupon_code']; ?></strong>" <?php echo Labels::getLabel("LBL_Applied", $siteLangId); ?></span> <a
+        href="javascript:void(0)" onClick="removePromoCode()" class="btn btn-primary btn-sm"><?php echo Labels::getLabel("LBL_Remove", $siteLangId); ?></a></div>
+<?php } else { ?>
+<div class="coupon"> <a class="coupon-input btn btn-primary btn-block" href="javascript:void(0)" onclick="getPromoCode()"><?php echo Labels::getLabel('LBL_I_have_a_coupon', $siteLangId); ?></a> </div>
 
-                                    <!--<a class="refresh" title="<?php /* echo Labels::getLabel("LBL_Update_Quantity", $siteLangId); */ ?>" href="javascript:void(0)" onclick="cart.update('<?php /* echo md5($product['key']); */ ?>','loadFinancialSummary')"><i class="fa fa-refresh"></i></a>-->
-
-                                </div>
-                            </div>
-                        </td>
-                        <td>
-                            <div class="product_price"><span class="item__price"><?php echo CommonHelper::displayMoneyFormat($product['theprice']*$product['quantity']); ?></span>
-
-                            </div>
-                        </td>
-                    </tr>
-                    <?php } ?>
-                </tbody>
-            </table>
-
-        </div>
-    </div>
-    <div class="divider"></div>
-    <div class="p-4">
-        <?php if (!empty($cartSummary['cartDiscounts']['coupon_code'])) { ?>
-        <div class="applied-coupon">
-            <span><?php echo Labels::getLabel("LBL_Coupon", $siteLangId); ?> "<strong><?php echo $cartSummary['cartDiscounts']['coupon_code']; ?></strong>" <?php echo Labels::getLabel("LBL_Applied", $siteLangId); ?></span> <a
-                href="javascript:void(0)" onClick="removePromoCode()" class="btn btn-primary btn-sm"><?php echo Labels::getLabel("LBL_Remove", $siteLangId); ?></a></div>
-        <?php } else { ?>
-        <div class="coupon"> <a class="coupon-input btn btn-primary btn-block" href="javascript:void(0)" onclick="getPromoCode()"><?php echo Labels::getLabel('LBL_I_have_a_coupon', $siteLangId); ?></a> </div>
-
-        <?php } ?>
-    </div>
-    <div class="divider"></div>
-    <div class="p-4">
-        <div class="cartdetail__footer">
-            <table  class="table--justify">
-                <tbody>
-                    <tr>
-                        <td><?php echo Labels::getLabel('LBL_Sub_Total', $siteLangId); ?></td>
-                        <td> <?php echo CommonHelper::displayMoneyFormat($cartSummary['cartTotal']); ?></td>
-                    </tr>
+<?php } */ ?>
+<div class="order-summary__sections">
+    <div class="order-summary__section order-summary__section--total-lines">
+        <!-- Total -->
+        <div class="cart-total my-3">
+            <div class="">
+                <ul class="list-group list-group-flush list-group-flush-x">
+                    <li class="list-group-item">
+                        <span class="label"><?php echo Labels::getLabel('LBL_Sub_Total', $siteLangId); ?></span> <span class="ml-auto"><?php echo CommonHelper::displayMoneyFormat($cartSummary['cartTotal']); ?></span>
+                    </li>
                     <?php if ($cartSummary['cartVolumeDiscount']) { ?>
-                    <tr>
-                        <td><?php echo Labels::getLabel('LBL_Loyalty/Volume_Discount', $siteLangId); ?></td>
-                        <td><?php echo CommonHelper::displayMoneyFormat($cartSummary['cartVolumeDiscount']); ?></td>
-                    </tr>
+                    <li class="list-group-item">
+                        <span class="label"><?php echo Labels::getLabel('LBL_Loyalty/Volume_Discount', $siteLangId); ?></span> <span class="ml-auto"><?php echo CommonHelper::displayMoneyFormat($cartSummary['cartVolumeDiscount']); ?></span>
+                    </li>
                     <?php } ?>
                     <?php if (FatApp::getConfig('CONF_TAX_AFTER_DISOCUNT', FatUtility::VAR_INT, 0) && !empty($cartSummary['cartDiscounts'])) { ?>
-                    <tr>
-                        <td><?php echo Labels::getLabel('LBL_Discount', $siteLangId); ?></td>
-                        <td><?php echo CommonHelper::displayMoneyFormat($cartSummary['cartDiscounts']['coupon_discount_total']); ?></td>
-                    </tr>
-                    <?php } ?>   
-
+                    <li class="list-group-item ">
+                        <span class="label"><?php echo Labels::getLabel('LBL_Discount', $siteLangId); ?></span> <span
+                            class="ml-auto"><?php echo CommonHelper::displayMoneyFormat($cartSummary['cartDiscounts']['coupon_discount_total']); ?></span>
+                    </li>
+                    <?php } ?>
                     <?php if ($cartSummary['taxOptions']){
                         foreach($cartSummary['taxOptions'] as $taxName => $taxVal){ ?>
-                        <tr>
-                            <td><?php echo $taxVal['title']; ?></td>
-                            <td><?php echo CommonHelper::displayMoneyFormat($taxVal['value']); ?></td>
-                        </tr>
+                       <li class="list-group-item ">
+                          <span class="label"><?php echo $taxVal['title']; ?></span>
+                          <span class="ml-auto"><?php echo CommonHelper::displayMoneyFormat($taxVal['value']); ?></span>
+                        </li>
                       <?php }
                     }?>
                     <?php if (!FatApp::getConfig('CONF_TAX_AFTER_DISOCUNT', FatUtility::VAR_INT, 0) && !empty($cartSummary['cartDiscounts'])) { ?>
-                    <tr>
-                        <td><?php echo Labels::getLabel('LBL_Discount', $siteLangId); ?></td>
-                        <td><?php echo CommonHelper::displayMoneyFormat($cartSummary['cartDiscounts']['coupon_discount_total']); ?></td>
-                    </tr>
-                    <?php } ?>                    
-                   
+                        <li class="list-group-item ">
+                          <span class="label"><?php echo Labels::getLabel('LBL_Discount', $siteLangId); ?></span>
+                          <span class="ml-auto"><?php echo CommonHelper::displayMoneyFormat($cartSummary['cartDiscounts']['coupon_discount_total']); ?></span>
+                        </li>
+                    <?php }?>     
                     <?php if ($cartSummary['originalShipping']) { ?>
-                    <tr>
-                        <td><?php echo Labels::getLabel('LBL_Delivery_Charges', $siteLangId); ?></td>
-                        <td><?php echo CommonHelper::displayMoneyFormat($cartSummary['shippingTotal']); ?></td>
-                    </tr>
+                        <li class="list-group-item ">
+                          <span class="label"><?php echo Labels::getLabel('LBL_Delivery_Charges', $siteLangId); ?></span>
+                          <span class="ml-auto"><?php echo CommonHelper::displayMoneyFormat($cartSummary['shippingTotal']); ?></span>
+                        </li>
                     <?php  } ?>
                     <?php if (!empty($cartSummary['cartRewardPoints'])) {
-                        $appliedRewardPointsDiscount = CommonHelper::convertRewardPointToCurrency($cartSummary['cartRewardPoints']); ?>
-                    <tr>
-                        <td><?php echo Labels::getLabel('LBL_Reward_point_discount', $siteLangId); ?></td>
-                        <td><?php echo CommonHelper::displayMoneyFormat($appliedRewardPointsDiscount); ?></td>
-                    </tr>
-                    <?php } ?>
-                    <tr>
-                        <td class="hightlighted"><?php echo Labels::getLabel('LBL_Net_Payable', $siteLangId); ?></td>
-                        <td class="hightlighted"><?php echo CommonHelper::displayMoneyFormat($cartSummary['orderNetAmount']); ?></td>
-                    </tr>
-                </tbody>
-            </table>
+                        $appliedRewardPointsDiscount = CommonHelper::convertRewardPointToCurrency($cartSummary['cartRewardPoints']);
+                    ?>
+                         <li class="list-group-item ">
+                          <span class="label"><?php echo Labels::getLabel('LBL_Reward_point_discount', $siteLangId); ?></span>
+                          <span class="ml-auto"><?php echo CommonHelper::displayMoneyFormat($appliedRewardPointsDiscount); ?></span>
+                        </li>
+                    <?php }?>  
+                    <li class="list-group-item hightlighted">
+                        <span class="label"><?php echo Labels::getLabel('LBL_Net_Payable', $siteLangId); ?></span> 
+                        <span class="ml-auto"><?php echo CommonHelper::displayMoneyFormat($cartSummary['orderNetAmount']); ?></span>
+                    </li>
+                </ul>
+                <?php /*  ?><p class="earn-points"><svg class="svg" width="20px" height="20px">
+                        <use xlink:href="../images/retina/sprite.svg#rewards"
+                            href="../images/retina/sprite.svg#rewards">
+                        </use>
+                    </svg> You will earn 575 points </p> <?php */ ?>
+
+            </div>
         </div>
     </div>
+    <div class="order-summary__section order-summary__section--product-list">
+        <div class="order-summary__section__content scroll">
+            <!-- List group -->
+
+            <ul class="list-group list-cart list-cart-checkout">
+            <?php foreach ($products as $product) { 
+                $productUrl = UrlHelper::generateUrl('Products', 'View', array($product['selprod_id']));
+                ?>
+                <li class="list-group-item">
+                    <div class="product-profile">
+                        <div class="product-profile__thumbnail">
+                            <a href="<?php echo $productUrl;?>">
+                                <img class="img-fluid" data-ratio="3:4"
+                                    src="<?php echo UrlHelper::getCachedUrl(UrlHelper::generateFileUrl('image', 'product', array($product['product_id'], "THUMB", $product['selprod_id'], 0, $siteLangId)), CONF_IMG_CACHE_TIME, '.jpg'); ?>" alt="<?php echo $product['product_name']; ?>" title="<?php echo $product['product_name']; ?>">
+                            </a>
+                            <span class="product-qty"><?php echo $product['quantity']; ?></span>
+                        </div>
+                        <div class="product-profile__data">
+                            <div class="title"><a class="" href="<?php echo $productUrl; ?>" title="<?php echo $product['product_name']?>"><?php echo $product['selprod_title']?></a></div>
+                            <div class="options">
+                                <p class=""><?php if (isset($product['options']) && count($product['options'])) {
+                                        foreach ($product['options'] as $key => $option) {                                            
+                                            echo $option['option_name'].':'; ?> <span class="text--dark"><?php echo $option['optionvalue_name']; ?> |</span>
+                                        <?php }
+                                    } ?></p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="product-price"><?php echo CommonHelper::displayMoneyFormat($product['theprice']*$product['quantity']); ?></div>
+
+                </li>
+            <?php }?>
+            </ul>
+        </div>
+    </div>
+    <?php /*?><div class="place-order">
+        <p>By placing an order, you agree to Yokart.com's <a href=""> Terms & Conditions</a> and
+            <a href=""> Privacy Policy </a></p>
+        <button class="btn btn-primary btn-lg btn-block"></span>Place Order</button>
+    </div> <?php */ ?>
 </div>
-<?php /* if (count($products) > 2) {  ?>
-<script>
-    new SimpleBar(document.getElementById('simplebar'), {
-        autoHide: false
-    });
-</script>
-<?php } */ ?>

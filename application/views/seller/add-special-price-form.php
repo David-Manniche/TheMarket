@@ -17,7 +17,8 @@
     $splPrice = $frm->getField('splprice_price');
     $splPrice->setFieldTagAttribute('placeholder', Labels::getLabel('LBL_Special_Price', $siteLangId));
     $splPrice->setFieldTagAttribute('disabled', 'disabled');
-
+    $splPrice->setFieldTagAttribute('class', 'js-special-price');
+    
     $frm->setFormTagAttribute('class', 'form');
     $frm->setFormTagAttribute('onsubmit', 'updateSpecialPriceRow(this, ' . $selProdId . '); return(false);');
     $frm->addHiddenField('', 'addMultiple');
@@ -51,6 +52,7 @@ if (!empty($data) && 0 < count($data)) {
                     <div class="field-set">
                         <div class="field-wraper">
                             <?php echo $frm->getFieldHtml('product_name'); ?>
+                            <div class="js-prod-price"></div>
                         </div>
                     </div>
                 </div>
@@ -72,6 +74,7 @@ if (!empty($data) && 0 < count($data)) {
                     <div class="field-set">
                         <div class="field-wraper">
                             <?php echo $frm->getFieldHtml('splprice_price'); ?>
+                             <div class="js-discount-percentage"></div>
                         </div>
                     </div>
                 </div>
