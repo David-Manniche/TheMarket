@@ -347,13 +347,14 @@ if($prodCatId > 0){
 <script type="text/javascript">
 $(document).ready(function(){
 	$('input[name=\'brand_name\']').autocomplete({
+        minLength : 0, 
         'classes': {
             "ui-autocomplete": "custom-ui-autocomplete"
         },
 		'source': function(request, response) {
 			$.ajax({
 				url: fcom.makeUrl('brands', 'autoComplete'),
-				data: {keyword: request['term'],fIsAjax:1},
+				data: {keyword: request['term'],fIsAjax:1, 'fetchAllRecords' : 1},
 				dataType: 'json',
 				type: 'post',
 				success: function(json) {
@@ -366,7 +367,9 @@ $(document).ready(function(){
 		select: function(event, ui) {
 			$('input[name=\'product_brand_id\']').val(ui.item.id);
 		}
-	});
+	}).focus(function() {
+        $('input[name=\'brand_name\']').autocomplete('search');
+    });
 	
     $('input[name=\'brand_name\']').change(function() {
         if ($(this).val() == '') {
