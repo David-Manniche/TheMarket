@@ -14,8 +14,8 @@ class PatchUpdateController extends AdminBaseController
         if (false === PluginHelper::includePlugin('TaxJarTax', 'tax', $error, $this->adminLangId)) {
             FatUtility::dieWithError($error);
         }
-        
-        $taxJarObj = new TaxJarTax($this->adminLangId); 
+
+        $taxJarObj = new TaxJarTax($this->adminLangId);
         $codesArr = $taxJarObj->getCodes(null, null, null, array(), false);
 
         $pluginId = Plugin::getAttributesByCode(TaxJarTax::KEY_NAME, 'plugin_id');
@@ -23,17 +23,17 @@ class PatchUpdateController extends AdminBaseController
         $parentArr = [];
         foreach ($codesArr as $code) {
             $parentId = 0;
-           
+
            $arr = [
                'taxcat_identifier' => ($code->name != '') ? $code->name : $code->product_tax_code,
                'taxcat_code' => $code->product_tax_code,
-               'taxcat_parent' => $parentId,   
+               'taxcat_parent' => $parentId,
                'taxcat_plugin_id' => $pluginId,
                'taxcat_active' => applicationConstants::ACTIVE ,
                'taxcat_deleted' => applicationConstants::NO ,
                'taxcat_last_updated' => date('Y-m-d H:i:s')
            ];
-           
+
            $db->insertFromArray(Tax::DB_TBL, $arr, false, array(), $arr);
            $taxCatId = $db->getInsertId();
 
@@ -42,7 +42,7 @@ class PatchUpdateController extends AdminBaseController
             'taxcatlang_lang_id' => $this->adminLangId,
             'taxcat_name' => ($code->description != '') ? $code->description : $code->taxCode,
             );
-    
+
             $taxObj = new Tax($taxCatId);
             $taxObj->updateLangData($this->adminLangId, $data);
 
@@ -56,9 +56,9 @@ class PatchUpdateController extends AdminBaseController
 		if (false === PluginHelper::includePlugin('AvalaraTax', 'tax', $error, $this->adminLangId)) {
             FatUtility::dieWithError($error);
 		}
-        $avalaraObj = new AvalaraTax($this->adminLangId); 
+        $avalaraObj = new AvalaraTax($this->adminLangId);
         $codesArr = $avalaraObj->getCodes(null, null, null, array('id ASC'), false);
-        
+
         $pluginId = Plugin::getAttributesByCode(AvalaraTax::KEY_NAME, 'plugin_id');
         $db = FatApp::getDb();
         $parentArr = [];
@@ -71,18 +71,18 @@ class PatchUpdateController extends AdminBaseController
                     $parentId = Tax::getAttributesByCode($code->parentTaxCode, 'taxcat_id', $pluginId);
                     $parentArr[$code->parentTaxCode] = $parentId;
                 }
-            }    
-            
+            }
+
            $arr = [
                'taxcat_identifier' => ($code->description != '') ? $code->description : $code->taxCode,
                'taxcat_code' => $code->taxCode,
-               'taxcat_parent' => $parentId,   
+               'taxcat_parent' => $parentId,
                'taxcat_plugin_id' => $pluginId,
                'taxcat_active' => $code->isActive ? applicationConstants::ACTIVE : applicationConstants::INACTIVE ,
                'taxcat_deleted' => applicationConstants::NO ,
                'taxcat_last_updated' => date('Y-m-d H:i:s')
            ];
-           
+
            $db->insertFromArray(Tax::DB_TBL, $arr, false, array(), $arr);
            $taxCatId = $db->getInsertId();
 
@@ -91,7 +91,7 @@ class PatchUpdateController extends AdminBaseController
             'taxcatlang_lang_id' => $this->adminLangId,
             'taxcat_name' => ($code->description != '') ? $code->description : $code->taxCode,
             );
-    
+
             $taxObj = new Tax($taxCatId);
             $taxObj->updateLangData($this->adminLangId, $data);
 
@@ -266,6 +266,24 @@ class PatchUpdateController extends AdminBaseController
             $url = str_replace("/", "-", $row['urlrewrite_custom']);
             if ($db->updateFromArray(UrlRewrite::DB_TBL, array('urlrewrite_custom' => $url), array('smt' => 'urlrewrite_id = ?', 'vals' => array($row['urlrewrite_id'])))) {
                 echo $row['urlrewrite_id'] . "<br>";
+            }
+        }
+    }
+
+    public function changeSelprodCode()
+    {
+        $srch = SellerProduct::getSearchObject();
+        $srch->doNotCalculateRecords();
+        $srch->addMultipleFields(array('selprod_id','selprod_code'));
+        $rs = $srch->getResultSet();
+        $rows = FatApp::getDb()->fetchAll($rs);
+        $db = FatApp::getDb();
+        foreach ($rows as $row) {
+            $codeArr = explode("_",$row['selprod_code']);
+            sort($codeArr);
+            $selProdCode = implode("_", $codeArr);
+            if ($db->updateFromArray(SellerProduct::DB_TBL, array('selprod_code' => $selProdCode), array('smt' => 'selprod_id = ?', 'vals' => array($row['selprod_id'])))) {
+                echo $row['selprod_id'] . "<br>";
             }
         }
     }
