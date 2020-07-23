@@ -33286,6 +33286,39 @@ input.sp-input,
   margin-left: -4.66667px;
   margin-right: 4.66667px; }
 
+.features-block {
+  font-size: 0.85rem; }
+  .features-block_head {
+    text-align: center; }
+  .features-block_list {
+    margin: 1.5rem 0;
+    display: flex; }
+    .features-block_list li {
+      border: solid 1px #dee2e6;
+      position: relative;
+      margin: -1px;
+      background: #fff;
+      padding: 1rem;
+      flex: 0 0 33%;
+      max-width: 33%;
+      font-size: 0.8rem;
+      color: #888;
+      /*&:before {
+          content: "";
+          position: absolute;
+          width: 6px;
+          height: 6px;
+          left: 8px;
+          top: 10px;
+          border-radius: 50%;
+          background: $body-color;
+      }*/ }
+      .features-block_list li strong {
+        color: #525252;
+        font-size: 0.85rem;
+        font-weight: 600;
+        margin-bottom: 0.5rem; }
+
 .detail-page {
   position: relative; }
   .detail-page:after {

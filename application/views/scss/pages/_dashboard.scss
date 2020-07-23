@@ -1847,3 +1847,41 @@ input.sp-input {
     margin-#{$start-direction}: -4.66667px;
     margin-#{$end-direction}: 4.66667px;
 }
+
+.features-block {
+    font-size: 0.85rem;
+    &_head {
+        text-align: center;
+    }
+    &_list {
+        margin: 1.5rem 0;
+        display: flex;
+        li {
+            border: $border;
+            position: relative;
+            margin: -1px;
+            background: $bg-white;
+            padding: 1rem;
+            flex: 0 0 33%;
+            max-width: 33%;
+            font-size: 0.8rem;
+            color: $txt-gray;
+            /*&:before {
+                content: "";
+                position: absolute;
+                width: 6px;
+                height: 6px;
+                left: 8px;
+                top: 10px;
+                border-radius: 50%;
+                background: $body-color;
+            }*/
+            strong {
+                color: $body-color;
+                font-size: 0.85rem;
+                font-weight: 600;
+                margin-bottom: 0.5rem;
+            }
+        }
+    }
+}
