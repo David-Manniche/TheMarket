@@ -10,6 +10,9 @@
         <?php echo html_entity_decode($data['product_name']); ?>
     </td>
     <td>
+        <?php echo CommonHelper::displayMoneyFormat($data['selprod_price']); ?>
+    </td>
+    <td>
         <?php echo $data['credential_username']; ?>
     </td>
     <td>
@@ -51,21 +54,17 @@
     <td>
         <div class="js--editCol edit-hover"><?php echo CommonHelper::displayMoneyFormat($data['splprice_price']); ?></div>
         <input type="text" data-displayoldval="<?php echo CommonHelper::displayMoneyFormat($data['splprice_price'], true, true); ?>" data-id="<?php echo $splPriceId; ?>" value="<?php echo $data['splprice_price']; ?>" data-selprodid="<?php echo $data['splprice_selprod_id']; ?>" data-oldval="<?php echo $data['splprice_price']; ?>" name="splprice_price" class="js--splPriceCol hide sp-input"/>
+        <div class="ml-3">
+        <?php
+            $discountPrice = $data['selprod_price'] - $data['splprice_price'];
+            $discountPercentage = round(($discountPrice/$data['selprod_price'])*100, 2);
+            $discountPercentage = $discountPercentage."% ".Labels::getLabel('LBL_off', $adminLangId);
+            echo $discountPercentage; 
+        ?>
+        </div>
+             
     </td>
     <td>
-        <ul class="actions actions--centered">
-            <li class="droplink">
-                <a href="javascript:void(0)" class="button small green" title="<?php echo Labels::getLabel('LBL_Edit', $adminLangId); ?>">
-                    <i class="ion-android-more-horizontal icon"></i>
-                </a>
-                <div class="dropwrap">
-                    <ul class="linksvertical">
-                        <li>
-                            <a href="javascript:void(0)" title="<?php echo Labels::getLabel('LBL_Delete', $adminLangId); ?>" onclick="deleteSellerProductSpecialPrice(<?php echo $splPriceId; ?>)"><?php echo Labels::getLabel('LBL_Delete', $adminLangId); ?></a>
-                        </li>
-                    </ul>
-                </div>
-            </li>
-        </ul>
+        <a href="javascript:void(0)" class="btn btn-clean btn-sm btn-icon" title="<?php echo Labels::getLabel('LBL_Delete', $adminLangId); ?>" onclick="deleteSellerProductSpecialPrice(<?php echo $splPriceId; ?>)"><i class='fa fa-trash  icon'></i></a>
     </td>
 </tr>
