@@ -63,7 +63,7 @@ class PayPalPayoutController extends PayoutBaseController
 
     private function getPayoutUrl()
     {
-        return  (false === $this->envoirment) ? static::PRODUCTION_PAYOUT_SANDBOX_URL : static::PRODUCTION_ACCESS_TOKEN_LIVE_URL;
+        return  (false === $this->envoirment) ? static::PRODUCTION_PAYOUT_SANDBOX_URL : static::PRODUCTION_PAYOUT_LIVE_URL;
     }
 
     private function getAccessToken()
