@@ -6,7 +6,7 @@
 
             </div>
             <div class="col-lg-4 ">
-                <div class="summary-listing"></div>
+                <div class="summary-listing-js"></div>
                 <?php echo FatUtility::decodeHtmlEntities(nl2br($pageData['epage_content']));?>
             </div>
         </div>
