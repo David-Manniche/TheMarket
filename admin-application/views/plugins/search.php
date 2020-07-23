@@ -63,7 +63,7 @@ foreach ($arr_listing as $sn => $row) {
                 $defaultCurrConvAPI = FatApp::getConfig('CONF_DEFAULT_PLUGIN_' . $row['plugin_type'], FatUtility::VAR_INT, 0);
                 $htm = '';
                 if (!empty($defaultCurrConvAPI) && $row['plugin_id'] == $defaultCurrConvAPI) {
-                    $htm = ' <span class="badge badge-info">'  . Labels::getLabel('LBL_DEFAULT', $adminLangId) . '</span>';
+                    $htm = ' <span class="badge badge--unified-brand badge--inline badge--pill">'  . Labels::getLabel('LBL_DEFAULT', $adminLangId) . '</span>';
                 }
                 if ($row['plugin_name'] != '') {
                     $td->appendElement('plaintext', array(), $row['plugin_name'] . $htm, true);
