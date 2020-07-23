@@ -7,6 +7,9 @@ $frm->setFormTagAttribute('action', UrlHelper::generateUrl($keyName, 'setup'));
 $frm->developerTags['colClassPrefix'] = 'col-md-';
 $frm->developerTags['fld_default_col'] = 12; 
 
+$btnSubmit = $frm->getField('btn_submit');
+$btnSubmit->setFieldTagAttribute('class', "btn btn-primary");
+
 $serviceAccount = $frm->getField('service_account');
 ?>
 

@@ -3,6 +3,9 @@
     $frm->developerTags['colClassPrefix'] = 'col-lg-12 col-md-12 col-sm-';
     $frm->developerTags['fld_default_col'] = 12;
     $frm->setFormTagAttribute('onsubmit', 'setupRequestData(this); return(false);');
+    
+    $submitFld = $frm->getField('btn_submit');
+    $submitFld->setFieldTagAttribute('class', 'btn btn-primary btn-wide');
 ?>
 <div class="cols--group">
     <div class="box__head">

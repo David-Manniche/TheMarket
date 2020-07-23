@@ -13,6 +13,7 @@ $fld->developerTags['col'] = 6;
 $submitFld = $frm->getField('btn_submit');
 $submitFld->developerTags['col'] = 12;
 $submitFld->developerTags['noCaptionTag'] = true;
+$submitFld->setFieldTagAttribute('class', "btn btn-primary");
 
 $frm->setFormTagAttribute('onsubmit', 'updateProfileInfo(this); return(false);');
 

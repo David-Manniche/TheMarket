@@ -53,6 +53,9 @@
                         $IDFld->setFieldTagAttribute('id', "scollection_id");
                         $identiFierFld = $colectionForm->getField('scollection_identifier');
                         $identiFierFld->setFieldTagAttribute('onkeyup', "Slugify(this.value,'urlrewrite_custom','scollection_id')");
+                        
+                        $submitFld = $colectionForm->getField('btn_submit');
+                        $submitFld->setFieldTagAttribute('class', "btn btn-primary btn-wide");
                         echo $colectionForm->getFormHtml();
                         ?>
                     </div>

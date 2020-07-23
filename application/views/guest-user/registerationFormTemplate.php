@@ -17,7 +17,7 @@ if ($onSubmitFunctionName) {
 <?php
 $registerFrm->setFormTagAttribute('class', 'form');
 $fldSubmit = $registerFrm->getField('btn_submit');
-$fldSubmit->addFieldTagAttribute('class', 'btn-block');
+$fldSubmit->addFieldTagAttribute('class', 'btn btn-primary btn-wide');
 $registerFrm->developerTags['colClassPrefix'] = 'col-lg-12 col-md-12 col-sm-';
 $registerFrm->developerTags['fld_default_col'] = 12;
 

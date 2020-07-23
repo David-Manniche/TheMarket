@@ -19,6 +19,8 @@ if ($actionType == Importexport::TYPE_PRODUCTS || $actionType == Importexport::T
     $rangeTypeFld = $frm->getField('export_data_range');
     $rangeTypeFld->setfieldTagAttribute('onchange', "showHideExtraFld(this.value,".Importexport::BY_ID_RANGE.",".Importexport::BY_BATCHES.");");
 }
+$submitFld = $frm->getField('btn_submit');
+$submitFld->setFieldTagAttribute('class', "btn btn-primary");
 ?>
      <div class="tabs tabs-sm tabs--scroll clearfix">
         <ul>

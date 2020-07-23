@@ -106,6 +106,8 @@ class Product extends MyAppModel
                 'product_id',
                 'category_Id',
                 'tax_category_id',
+            ),
+            ImportexportCommon::VALIDATE_FLOAT => array(
                 'product_min_selling_price',
             ),
             ImportexportCommon::VALIDATE_NOT_NULL => array(

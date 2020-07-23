@@ -7,7 +7,11 @@ $fld->developerTags['cbLabelAttributes'] = array('class' => 'checkbox');
 $fld->developerTags['cbHtmlAfterCheckbox'] = '<i class="input-helper"></i>';
 
 $btnBackFld = $productFrm->getField('btn_back');
+$btnBackFld->setFieldTagAttribute('class', "btn btn-outline-primary");
 $btnBackFld->setFieldTagAttribute('onClick', 'customProductForm('.$productId.');');
+
+$btnSubmit = $productFrm->getField('btn_submit');
+$btnSubmit->setFieldTagAttribute('class', "btn btn-primary");
 ?>
 <div class="row justify-content-center">
      <div class="col-md-12">

@@ -9,9 +9,6 @@ class PayPalPayoutController extends PayoutBaseController
     private const PRODUCTION_ACCESS_TOKEN_SANDBOX_URL = 'https://api.sandbox.paypal.com/v1/oauth2/token';
     private const PRODUCTION_ACCESS_TOKEN_LIVE_URL = 'https://api.paypal.com/v1/oauth2/token';
 
-    private const MODE_SANDBOX = 0;
-    private const MODE_LIVE = 1;
-
     private const COMMISSION = [
         'AUD' => 0.30,
         'NZD' => 0.45,
@@ -59,7 +56,7 @@ class PayPalPayoutController extends PayoutBaseController
 
     private function getPayoutUrl()
     {
-        return  (false === $this->envoirment) ? static::PRODUCTION_PAYOUT_SANDBOX_URL : static::PRODUCTION_ACCESS_TOKEN_LIVE_URL;
+        return  (false === $this->envoirment) ? static::PRODUCTION_PAYOUT_SANDBOX_URL : static::PRODUCTION_PAYOUT_LIVE_URL;
     }
 
     private function getAccessToken()
@@ -144,7 +141,6 @@ class PayPalPayoutController extends PayoutBaseController
         curl_setopt($ch, CURLOPT_POST, 1);
         curl_setopt($ch, CURLOPT_TIMEOUT, 60);
         curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 60);
-        // curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
         curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
         
         $headers = array();

@@ -12,7 +12,7 @@ $fldforgot = $loginFrm->getField('forgot');
 $fldforgot->value = '<a href="' . UrlHelper::generateUrl('GuestUser', 'forgotPasswordForm') . '"
     class="link">' . Labels::getLabel('LBL_Forgot_Password?', $siteLangId) . '</a>';
 $fldSubmit = $loginFrm->getField('btn_submit');
-$fldSubmit->addFieldTagAttribute('class', 'btn-block'); ?> 
+$fldSubmit->addFieldTagAttribute('class', 'btn btn-primary btn-wide'); ?> 
 <?php echo $loginFrm->getFormTag(); ?> 
     <div class="row">
         <div class="col-md-12">

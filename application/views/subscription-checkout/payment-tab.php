@@ -2,7 +2,10 @@
 <?php $frm->setFormTagAttribute('class', 'form form--normal');
 $frm->developerTags['colClassPrefix'] = 'col-lg-12 col-md-12 col-sm-';
 $frm->developerTags['fld_default_col'] = 12;
-$frm->setFormTagAttribute('onsubmit', 'confirmOrder(this); return(false);'); ?>
+$frm->setFormTagAttribute('onsubmit', 'confirmOrder(this); return(false);');
+$submitFld = $frm->getField('btn_submit');
+$submitFld->setFieldTagAttribute('class', "btn btn-primary");
+?>
 <div class="">
     <p><strong><?php echo sprintf(Labels::getLabel('LBL_Pay_using_Payment_Method', $siteLangId), $paymentMethod["plugin_name"])?>:</strong></p><br />
     <p><?php echo $paymentMethod["plugin_description"]?></p><br />

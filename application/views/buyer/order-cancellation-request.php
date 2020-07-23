@@ -3,6 +3,8 @@ $frmOrderCancel->setFormTagAttribute( 'class', 'form form--horizontal' );
 $frmOrderCancel->setFormTagAttribute('onsubmit', 'setupOrderCancelRequest(this); return(false);');
 $frmOrderCancel->developerTags['colClassPrefix'] = 'col-md-';
 $frmOrderCancel->developerTags['fld_default_col'] = 12;
+$btnSubmit = $frmOrderCancel->getField('btn_submit');
+$btnSubmit->setFieldTagAttribute('class', "btn btn-primary");
 ?>
 <?php $this->includeTemplate('_partial/dashboardNavigation.php'); ?>
 <main id="main-area" class="main" role="main">

@@ -51,6 +51,9 @@ if (User::isSeller()) {
 
     /* $bannerTargetUrlFld = $frm->getField('banner_target');Request Products Which Is Availble To All Sellers
     $bannerTargetUrlFld->setWrapperAttribute( 'class' , 'banner_url_fld'); */
+
+    $btnSubmitFld = $frm->getField('btn_submit');
+    $btnSubmitFld->setFieldTagAttribute('class', 'btn btn-primary btn-wide');
 ?>
 <div class="tabs">
     <ul>

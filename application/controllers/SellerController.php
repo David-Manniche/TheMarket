@@ -5027,4 +5027,80 @@ class SellerController extends SellerBaseController
         }
         $this->_template->render(false, false, 'json-success.php');
     }
+	
+	public function pickupAddressForm()
+    {
+		$userId = $this->userParentId;
+		$shopDetails = Shop::getAttributesByUserId($userId, null, false);
+
+        if (!false == $shopDetails && $shopDetails['shop_active'] != applicationConstants::ACTIVE) {
+            Message::addErrorMessage(Labels::getLabel('MSG_Your_shop_deactivated_contact_admin', $this->siteLangId));
+            FatUtility::dieWithError(Message::getHtml());
+        }
+		$shop_id = 0;
+
+        if (!false == $shopDetails) {
+            $shop_id = $shopDetails['shop_id'];
+        }
+		
+        $frm = $this->getUserAddressForm($this->siteLangId);
+        $stateId = 0;
+		
+		$address = new Address(0, $this->siteLangId);
+        $data = $address->getData(Address::TYPE_SHOP_PICKUP, $shop_id);
+		$data = array_shift($data);
+		if (!empty($data)) {
+			$stateId = $data['addr_state_id'];
+			$frm->fill($data);
+		}
+
+        $this->set('shop_id', $shop_id);
+        $this->set('language', Language::getAllNames());
+        $this->set('siteLangId', $this->siteLangId);
+        $this->set('frm', $frm);
+        $this->set('stateId', $stateId);
+        $this->set('languages', Language::getAllNames());
+        $this->_template->render(false, false);
+    }
+
+    public function setPickupAddress()
+    {
+        $this->userPrivilege->canEditShop(UserAuthentication::getLoggedUserId());
+        $userId = $this->userParentId;
+		$shopId = Shop::getAttributesByUserId($userId, 'shop_id');
+		
+        $post = FatApp::getPostedData();
+		$post['addr_phone'] = !empty($post['addr_phone']) ? ValidateElement::convertPhone($post['addr_phone']) : '';
+        $addr_state_id = FatUtility::int($post['addr_state_id']);
+        $frm = $this->getUserAddressForm($this->siteLangId);
+        $post = $frm->getFormDataFromArray($post);
+
+        if (false === $post) {
+            Message::addErrorMessage(current($frm->getValidationErrors()));
+            FatUtility::dieJsonError(Message::getHtml());
+        }
+        $post['addr_state_id'] = $addr_state_id;
+
+        $addr_id = FatUtility::int($post['addr_id']);
+        unset($post['addr_id']);
+
+		$addressObj = new Address($addr_id);
+        $data_to_be_save = $post;
+        $data_to_be_save['addr_record_id'] = $shopId;
+        $data_to_be_save['addr_type'] = Address::TYPE_SHOP_PICKUP;
+        $data_to_be_save['addr_lang_id'] = $this->siteLangId;
+        $addressObj->assignValues($data_to_be_save, true);
+        if (!$addressObj->save()) {
+            if (true === MOBILE_APP_API_CALL) {
+                LibHelper::dieJsonError($addressObj->getError());
+            }
+            Message::addErrorMessage($addressObj->getError());
+            FatUtility::dieWithError(Message::getHtml());
+        }
+        if (0 <= $addr_id) {
+            $addr_id = $addressObj->getMainTableRecordId();
+        }
+        $this->set('msg', Labels::getLabel('MSG_Setup_successful', $this->siteLangId));
+        $this->_template->render(false, false, 'json-success.php');
+    }
 }

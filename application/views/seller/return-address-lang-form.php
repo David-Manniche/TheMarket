@@ -12,7 +12,7 @@ $address2 = $frm->getField('ura_address_line_2');
 $address2->developerTags['col'] = 6;
 
 $submitFld = $frm->getField('btn_submit');
-$submitFld->developerTags['noCaptionTag'] = true;
+$submitFld->setFieldTagAttribute('class', "btn btn-primary btn-wide");
 
 $langFld = $frm->getField('lang_id');
 $langFld->setfieldTagAttribute('onChange', "returnAddressLangForm(this.value);");
