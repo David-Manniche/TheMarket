@@ -781,6 +781,7 @@ class BrandsController extends AdminBaseController
         $pagesize = 10;
         $post = FatApp::getPostedData();
         $this->objPrivilege->canViewBrands();
+        $fetchAllRecords = FatApp::getPostedData('fetchAllRecords', FatUtility::VAR_INT, 0);
         $brandObj = new Brand();
         $srch = $brandObj->getSearchObject();
         $srch->joinTable(
@@ -796,7 +797,13 @@ class BrandsController extends AdminBaseController
         }
         $srch->addCondition('brand_active', '=', applicationConstants::YES);
         $srch->addCondition('brand_deleted', '=', applicationConstants::NO);
-        $srch->setPageSize($pagesize);
+        //$srch->setPageSize($pagesize);
+        if($fetchAllRecords == 1){
+            $srch->doNotCalculateRecords();
+            $srch->doNotLimitRecords();
+        }else{
+            $srch->setPageSize($pagesize);
+        }
         $rs = $srch->getResultSet();
         $db = FatApp::getDb();
         $brands = $db->fetchAll($rs, 'brand_id');

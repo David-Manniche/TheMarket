@@ -173,7 +173,7 @@ class BrandsController extends MyAppController
     {
         $pagesize = FatApp::getConfig('CONF_PAGE_SIZE');
         $post = FatApp::getPostedData();
-
+        $fetchAllRecords = FatApp::getPostedData('fetchAllRecords', FatUtility::VAR_INT, 0);
         $brandObj = new Brand();
         $srch = $brandObj->getSearchObject($this->siteLangId, true, true);
 
@@ -185,7 +185,13 @@ class BrandsController extends MyAppController
         }
         $srch->addCondition('brand_status', '=', Brand::BRAND_REQUEST_APPROVED);
 
-        $srch->setPageSize($pagesize);
+        //$srch->setPageSize($pagesize);
+        if($fetchAllRecords == 1){
+            $srch->doNotCalculateRecords();
+            $srch->doNotLimitRecords();
+        }else{
+            $srch->setPageSize($pagesize);
+        }
         $rs = $srch->getResultSet();
         $db = FatApp::getDb();
         $brands = $db->fetchAll($rs, 'brand_id');
