@@ -17,7 +17,7 @@
 					<div class="seller-register-form">
 					<div class="section-head">
 			<div class="section__heading">
-				<h2><?php echo Labels::getLabel('LBL_Affiliate_Registeration', $siteLangId); ?></h2>
+				<h2><?php echo Labels::getLabel('LBL_Affiliate_Registration', $siteLangId); ?></h2>
 			</div>
 					</div>
 						<div id="register-form-div"></div>
