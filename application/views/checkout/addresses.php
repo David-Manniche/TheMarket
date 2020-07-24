@@ -2,8 +2,14 @@
 <div class="step active" role="step:2">
 <form class="form form form-floating">
     <div class="step__section">
-        <div class="step__head">
-            <h5 class="step-title"> <?php echo Labels::getLabel('LBL_Delivery_Address', $siteLangId); ?> </h5>
+        <div class="step__section__head">
+            <h5 class="step__section__head__title"> <?php echo Labels::getLabel('LBL_Delivery_Address', $siteLangId); ?> </h5>
+            <a onClick="showAddressFormDiv();" name="addNewAddress"  class="link-text" href="javascript:void(0)">
+                <i class="icn"> <svg class="svg">
+                        <use xlink:href="<?php echo CONF_WEBROOT_URL;?>images/retina/sprite.svg#add"
+                            href="<?php echo CONF_WEBROOT_URL;?>images/retina/sprite.svg#add">
+                        </use>
+                    </svg> </i><?php echo Labels::getLabel('LBL_Add_New_Address', $siteLangId);?></a> 
         </div>
         <?php if ($addresses) { ?>
         <ul class="list-group list-addresses list-addresses-view">
@@ -52,15 +58,7 @@
             </li>
         <?php }?>            
         </ul>
-        <?php }?>        
-        <div class="my-3 text-right">            
-            <a onClick="showAddressFormDiv();" name="addNewAddress"  class="link-text" href="javascript:void(0)">
-                <i class="icn"> <svg class="svg">
-                        <use xlink:href="<?php echo CONF_WEBROOT_URL;?>images/retina/sprite.svg#add"
-                            href="<?php echo CONF_WEBROOT_URL;?>images/retina/sprite.svg#add">
-                        </use>
-                    </svg> </i><?php echo Labels::getLabel('LBL_Add_New_Address', $siteLangId);?></a>                    
-        </div>
+        <?php }?>               
 
         <div id="addressFormDiv" style="display:none">
         <?php $tplDataArr = array(
@@ -74,7 +72,7 @@
         </div>               
     </div>
     <div class="step__footer">
-        <a class="btn btn-link" href="#">
+        <a class="btn btn-link" href="<?php echo UrlHelper::generateUrl('cart');?>">
             <i class="arrow">
                 <svg class="svg">
                     <use xlink:href="<?php echo CONF_WEBROOT_URL;?>images/retina/sprite.svg#arrow-left"

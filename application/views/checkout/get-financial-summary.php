@@ -92,14 +92,16 @@
                             <div class="title"><a class="" href="<?php echo $productUrl; ?>" title="<?php echo $product['product_name']?>"><?php echo $product['selprod_title']?></a></div>
                             <div class="options">
                                 <p class=""><?php if (isset($product['options']) && count($product['options'])) {
-                                        foreach ($product['options'] as $key => $option) {                                            
-                                            echo $option['option_name'].':'; ?> <span class="text--dark"><?php echo $option['optionvalue_name']; ?> |</span>
-                                        <?php }
+                                        $optionStr = '';
+                                        foreach ($product['options'] as $key => $option) {
+                                            $optionStr .= $option['optionvalue_name'] . '|' ;
+                                        }
+                                        echo rtrim($optionStr, '|');
                                     } ?></p>
                             </div>
                         </div>
                     </div>
-                    <div class="product-price"><?php echo CommonHelper::displayMoneyFormat($product['theprice']*$product['quantity']); ?></div>
+                    <div class="product-price"><?php echo CommonHelper::displayMoneyFormat($product['theprice'] * $product['quantity']); ?></div>
 
                 </li>
             <?php }?>

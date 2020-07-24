@@ -31,7 +31,9 @@
     $cancelFld->setFieldTagAttribute('class','btn btn-outline-primary');
     $cancelFld->setFieldTagAttribute('onclick','resetAddress()');
 ?>
-<?php echo $addressFrm->getFormHtml(); ?>
+<div class="step active" role="step:2">
+    <?php echo $addressFrm->getFormHtml(); ?>
+</div>
 <?php /*?>
 <div class="section-head">
 	<div class="section__heading">
