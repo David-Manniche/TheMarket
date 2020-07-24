@@ -350,7 +350,7 @@ $(document).on("change", ".state", function() {
 
     sellerCollectionProducts = function(scollection_id) {
         $(dvt).html(fcom.getLoader());
-        fcom.ajax(fcom.makeUrl('Seller', 'sellerCollectionProductLinkFrm', [scollection_id]), '', function(t) {
+        fcom.ajax(fcom.makeUrl('Seller', 'shopCollectionProductLinkFrm', [scollection_id]), '', function(t) {
             $(dvt).html(t);
             bindAutoComplete();
         });
@@ -735,13 +735,13 @@ $(document).on("change", ".state", function() {
     }
 
     pluginPlatform = function(el) {
-        $(dv + " .tabs__content").html(fcom.getLoader());
+        $(dv + " .cards-js").html(fcom.getLoader());
         var platformUrl = $(el).data('platformurl');
         fcom.ajax(platformUrl, '', function(t) {
             t = $.parseJSON(t);
             htm = (1 > t.status) ? t.msg : t.html;
 
-            $(dv + " .tabs__content").html(htm);
+            $(dv + " .cards-js").html(htm);
             $(el).parent().siblings().removeClass('is-active');
             $(el).parent().addClass('is-active');
         });
@@ -749,7 +749,7 @@ $(document).on("change", ".state", function() {
 
     requiredFieldsForm = function() {
         var businessType = $("select[name='business_type']").val();
-        var contentDv = dv + " .tabs__content .row .requiredFieldsForm-js";
+        var contentDv = dv + " .cards-js .row .requiredFieldsForm-js";
         $(contentDv).html(fcom.getLoader());
         var data = 'businessType=' + businessType;
         fcom.ajax(fcom.makeUrl(keyName, 'requiredFieldsForm'), data, function(res) {

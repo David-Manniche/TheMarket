@@ -382,7 +382,7 @@ trait SellerCollections
 
     /*  - --- Seller Product Links  ----- [*/
 
-    public function sellerCollectionProductLinkFrm($scollection_id)
+    public function shopCollectionProductLinkFrm($scollection_id)
     {
         $post = FatApp::getPostedData();
         $scollection_id = FatUtility::int($scollection_id);
@@ -394,10 +394,10 @@ trait SellerCollections
         $sellProdObj = new ShopCollection();
         $products = $sellProdObj->getShopCollectionProducts($scollection_id, $this->siteLangId);
 
-        $sellerCollectionproductLinkFrm = $this->getCollectionLinksFrm();
+        $collectionLinkFrm = $this->getCollectionLinksFrm();
         $data['scp_scollection_id'] = $scollection_id;
-        $sellerCollectionproductLinkFrm->fill($data);
-        $this->set('sellerCollectionproductLinkFrm', $sellerCollectionproductLinkFrm);
+        $collectionLinkFrm->fill($data);
+        $this->set('collectionLinkFrm', $collectionLinkFrm);
         $this->set('scollection_id', $scollection_id);
         $this->set('products', $products);
 
