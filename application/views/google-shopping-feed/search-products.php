@@ -57,7 +57,7 @@ foreach ($arrListing as $sn => $row) {
                         'href' => 'javascript:void(0)',
                         'title' => Labels::getLabel('LBL_EDIT', $siteLangId), "onclick" => "bindproductform(" . $row['abprod_selprod_id'] . ")"
                     ],
-                    '<i class="fa fa-pencil"></i>',
+                    '<i class="fa fa-edit"></i>',
                     true
                 );
                 break;

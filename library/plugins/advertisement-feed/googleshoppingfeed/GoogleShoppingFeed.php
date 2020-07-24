@@ -11,19 +11,26 @@ class GoogleShoppingFeed extends AdvertisementFeedBase
         'developer_key',
         'channel',
     ];
-
+    
+    /**
+     * __construct
+     *
+     * @param  mixed $langId
+     * @return void
+     */
     public function __construct(int $langId)
     {
         $this->langId = $langId;
         $this->merchantId = $this->getUserMeta(self::KEY_NAME . '_merchantId');
     }
-
-    public function getKeys(string $column = '')
-    {
-        return !empty($column) && isset($this->settings[$column]) ? $this->settings[$column] : $this->settings;
-    }
-
-    public static function ageGroup($langId)
+    
+    /**
+     * ageGroup
+     *
+     * @param  mixed $langId
+     * @return array
+     */
+    public static function ageGroup(int $langId): array
     {
         return [
             'newborn' => Labels::getLabel('LBL_UP_TO_3_MONTHS_OLD', $langId) . ' - ' . Labels::getLabel('LBL_NEWBORN', $langId),
@@ -33,8 +40,14 @@ class GoogleShoppingFeed extends AdvertisementFeedBase
             'adult' => Labels::getLabel('LBL_TYPICALLY_TEENS_OR_OLDER', $langId) . ' - ' . Labels::getLabel('LBL_ADULT', $langId),
         ];
     }
-    
-    private function doRequest($data)
+        
+    /**
+     * doRequest
+     *
+     * @param  array $data
+     * @return void
+     */
+    private function doRequest(array $data)
     {
         $client = new Google_Client();
         $serviceAccountDetail = $this->getUserMeta('service_account');
@@ -90,31 +103,21 @@ class GoogleShoppingFeed extends AdvertisementFeedBase
             $price->setValue($prodDetail['selprod_price']);
             $price->setCurrency($data['currency_code']);
             $product->setPrice($price);
-            
-            /* $shipping_price = new Google_Service_ShoppingContent_Price();
-            $shipping_price->setValue('0.99');
-            $shipping_price->setCurrency('GBP');
-
-            $shipping = new Google_Service_ShoppingContent_ProductShipping();
-            $shipping->setPrice($shipping_price);
-            $shipping->setCountry('GB');
-            $shipping->setService('Standard shipping');
-
-            $shipping_weight = new Google_Service_ShoppingContent_ProductShippingWeight();
-            $shipping_weight->setValue(200);
-            $shipping_weight->setUnit('grams');
-
-            $product->setPrice($price);
-            $product->setShipping(array($shipping));
-            $product->setShippingWeight($shipping_weight); */
         
             $request = $service->products->insert($this->merchantId, $product);
             $batch->add($request, $product->getOfferId());
         }
         return $batch->execute();
     }
-
-    public function getProductCategory($keyword = '', $returnFullArray = false)
+    
+    /**
+     * getProductCategory
+     *
+     * @param  string $keyword
+     * @param  bool $returnFullArray
+     * @return array
+     */
+    public function getProductCategory(string $keyword = '1', bool $returnFullArray = false): array
     {
         $arr = [];
         if ($fh = fopen(__DIR__ . '/googleProductCategory.txt', 'r')) {
@@ -142,12 +145,22 @@ class GoogleShoppingFeed extends AdvertisementFeedBase
 
         return empty($keyword) ? $arr : preg_grep("/" . preg_quote($keyword) . "/i", $arr);
     }
-
-    public function publishBatch($data)
+    
+    /**
+     * publishBatch
+     *
+     * @param  mixed $data
+     * @return array
+     */
+    public function publishBatch(array $data): array
     {
-        $status = empty($data) || !is_array($data) ? false : true;
-        $msg = $status ? Labels::getLabel('MSG_PUBLISHED_SUCESSFULLY', $this->langId) : Labels::getLabel('MSG_INVALID_REQUEST', $this->langId);
-        $data = $status ? $this->doRequest($data) : '';
+        $status = empty($data) ? Plugin::RETURN_FALSE : Plugin::RETURN_TRUE;
+        $msg = Labels::getLabel('MSG_PUBLISHED_SUCESSFULLY', $this->langId);
+        $data = ($status == Plugin::RETURN_TRUE ? $this->doRequest($data) : '');
+        if (false === $data) {
+            $status = Plugin::RETURN_FALSE;
+        }
+        $msg = ($status == Plugin::RETURN_FALSE ? Labels::getLabel('MSG_INVALID_REQUEST', $this->langId) : $msg);
 
         return [
             'status' => $status,

@@ -9,34 +9,63 @@ class GoogleShoppingFeedController extends AdvertisementFeedBaseController
 
     private $client;
     private $googleShoppingFeed;
-
-    public $requiredKeys = [
-        'client_id',
-        'client_secret',
-        'developer_key'
-    ];
-
-    public function __construct($action)
+    private $accessToken;
+    private $adsBatchId;
+        
+    /**
+     * __construct
+     *
+     * @param  mixed $action
+     * @return void
+     */
+    public function __construct(string $action)
     {
         parent::__construct($action);
         $this->init();
     }
-
+    
+    /**
+     * init
+     *
+     * @return void
+     */
     private function init()
     {
         $this->googleShoppingFeed = PluginHelper::callPlugin(self::KEY_NAME, [$this->siteLangId], $error, $this->siteLangId);
         if (false === $this->googleShoppingFeed) {
-            Message::addErrorMessage($error);
-            $this->redirectBack('Seller');
+            $this->setError($error, 'Seller');
         }
 
         if (false === $this->googleShoppingFeed->validateSettings($this->siteLangId)) {
-            Message::addErrorMessage($this->googleShoppingFeed->getError());
-            $this->redirectBack('Seller');
+            $this->setError('', 'Seller');
         }
-        $this->settings = $this->googleShoppingFeed->getKeys();
-    }
 
+        $this->settings = $this->googleShoppingFeed->getSettings();
+        if (empty($this->settings)) {
+            $this->setError('', 'Seller');
+        }
+    }
+    
+    /**
+     * setError
+     *
+     * @param  string $msg
+     * @param  string $controller
+     * @param  string $action
+     * @return void
+     */
+    private function setError(string $msg = '', string $controller = '', string $action = '')
+    {
+        $msg = !empty($msg) ? $msg : $this->googleShoppingFeed->getError();
+        Message::addErrorMessage($msg);
+        $this->redirectBack($controller, $action);
+    }
+    
+    /**
+     * index
+     *
+     * @return void
+     */
     public function index()
     {
         $this->set('userData', $this->getUserMeta());
@@ -44,8 +73,13 @@ class GoogleShoppingFeedController extends AdvertisementFeedBaseController
         $this->set('pluginName', $this->settings['plugin_name']);
         $this->_template->render();
     }
-
-    private function setupConfiguration()
+    
+    /**
+     * setupConfiguration
+     *
+     * @return void
+     */
+    private function setupConfiguration(): void
     {
         $this->client = new Google_Client();
         $this->client->setApplicationName(FatApp::getConfig('CONF_WEBSITE_NAME_' . $this->siteLangId)); // Set your application name
@@ -57,7 +91,12 @@ class GoogleShoppingFeedController extends AdvertisementFeedBaseController
         $this->client->setAccessType('offline');
         $this->client->setApprovalPrompt('force');
     }
-
+    
+    /**
+     * getAccessToken
+     *
+     * @return void
+     */
     public function getAccessToken()
     {
         $this->setupConfiguration();
@@ -65,31 +104,41 @@ class GoogleShoppingFeedController extends AdvertisementFeedBaseController
         $get = FatApp::getQueryStringData();
         if (isset($get['code'])) {
             $this->client->authenticate($get['code']);
-            $accessToken = $this->client->getAccessToken();
-            if (!empty($accessToken)) {
-                $this->setupMerchantDetail($accessToken);
+            $this->accessToken = $this->client->getAccessToken();
+            if (!empty($this->accessToken)) {
+                $this->setupMerchantDetail();
             }
             $this->redirectBack();
         }
         $authUrl = $this->client->createAuthUrl();
         FatApp::redirectUser($authUrl);
     }
-
-    private function setupMerchantDetail($accessToken)
+    
+    /**
+     * setupMerchantDetail
+     *
+     * @return void
+     */
+    private function setupMerchantDetail()
     {
-        $this->client->setAccessToken($accessToken);
+        $this->client->setAccessToken($this->accessToken);
         $service = new Google_Service_ShoppingContent($this->client);
         $authDetail = $service->accounts->authinfo();
         $accountDetail = $authDetail->accountIdentifiers;
         if (empty($accountDetail)) {
-            Message::addErrorMessage(Labels::getLabel("MSG_MERCHANT_ACCOUNT_DETAIL_NOT_FOUND", $this->siteLangId));
-            $this->redirectBack();
+            $msg = Labels::getLabel("MSG_MERCHANT_ACCOUNT_DETAIL_NOT_FOUND", $this->siteLangId);
+            $this->setError($msg, 'Seller');
         }
         $merchantId = array_shift($accountDetail)->merchantId;
         $this->updateMerchantInfo([self::KEY_NAME . '_merchantId' => $merchantId]);
     }
-
-    private function getServiceAccountForm()
+    
+    /**
+     * getServiceAccountForm
+     *
+     * @return object
+     */
+    private function getServiceAccountForm(): object
     {
         $frm = new Form('frmServiceAccount');
         $privateKey = $frm->addTextArea(Labels::getLabel('LBL_SERVICE_ACCOUNT_DETAIL', $this->siteLangId), 'service_account');
@@ -98,7 +147,12 @@ class GoogleShoppingFeedController extends AdvertisementFeedBaseController
         $frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_Save_Changes', $this->siteLangId));
         return $frm;
     }
-
+    
+    /**
+     * serviceAccountForm
+     *
+     * @return void
+     */
     public function serviceAccountForm()
     {
         $data = $this->getUserMeta();
@@ -110,7 +164,12 @@ class GoogleShoppingFeedController extends AdvertisementFeedBaseController
         $this->set('keyName', self::KEY_NAME);
         $this->_template->render(false, false);
     }
-
+    
+    /**
+     * setupServiceAccountForm
+     *
+     * @return void
+     */
     public function setupServiceAccountForm()
     {
         $frm = $this->getServiceAccountForm();
@@ -118,19 +177,29 @@ class GoogleShoppingFeedController extends AdvertisementFeedBaseController
         unset($post['btn_submit']);
         $this->updateMerchantInfo($post, false);
     }
-
-    private function validateBatchRequest($adsBatchId)
+    
+    /**
+     * validateBatchRequest
+     *
+     * @return void
+     */
+    private function validateBatchRequest()
     {
-        $recordData = AdsBatch::getBatchesByUserId(UserAuthentication::getLoggedUserId(), $adsBatchId);
-        $status = AdsBatch::getAttributesById($adsBatchId, 'adsbatch_status');
-        if (1 > $adsBatchId || empty($recordData) || AdsBatch::STATUS_PENDING != $status) {
+        $recordData = AdsBatch::getBatchesByUserId(UserAuthentication::getLoggedUserId(), $this->adsBatchId);
+        $status = AdsBatch::getAttributesById($this->adsBatchId, 'adsbatch_status');
+        if (1 > $this->adsBatchId || empty($recordData) || AdsBatch::STATUS_PENDING != $status) {
             $this->error = Labels::getLabel("LBL_INVALID_REQUEST", $this->siteLangId);
             return false;
         }
         return true;
     }
-
-    private function getBatchForm()
+    
+    /**
+     * getBatchForm
+     *
+     * @return object
+     */
+    private function getBatchForm(): object
     {
         $frm = new Form('frmAdsBatch');
         $frm->addHiddenField('', 'adsbatch_id');
@@ -149,8 +218,13 @@ class GoogleShoppingFeedController extends AdvertisementFeedBaseController
         $frm->addButton("", "btn_clear", Labels::getLabel('LBL_Clear', $this->siteLangId), array('onclick' => 'clearForm();'));
         return $frm;
     }
-
-    private function getBindProductForm()
+    
+    /**
+     * getBindProductForm
+     *
+     * @return object
+     */
+    private function getBindProductForm(): object
     {
         $frm = new Form('frm');
         $frm->addHiddenField('', 'abprod_selprod_id');
@@ -168,10 +242,15 @@ class GoogleShoppingFeedController extends AdvertisementFeedBaseController
         $frm->addButton("", "btn_clear", Labels::getLabel('LBL_Clear', $this->siteLangId));
         return $frm;
     }
-    
-    public function batchForm($adsBatchId = 0)
+        
+    /**
+     * batchForm
+     *
+     * @param  int $adsBatchId
+     * @return void
+     */
+    public function batchForm(int $adsBatchId = 0)
     {
-        $adsBatchId = FatUtility::int($adsBatchId);
         $prodBatchAdsFrm = $this->getBatchForm($adsBatchId);
 
         if (0 < $adsBatchId) {
@@ -185,28 +264,39 @@ class GoogleShoppingFeedController extends AdvertisementFeedBaseController
         $this->set('frm', $prodBatchAdsFrm);
         $this->_template->render(false, false);
     }
-
-    public function bindProducts($adsBatchId)
+    
+    /**
+     * bindProducts
+     *
+     * @param  int $adsBatchId
+     * @return void
+     */
+    public function bindProducts(int $adsBatchId)
     {
         $adsBatchId = FatUtility::int($adsBatchId);
         $this->set('adsBatchId', $adsBatchId);
         $this->_template->render();
     }
-
-    public function bindProductForm($adsBatchId, $selProdId = 0)
+    
+    /**
+     * bindProductForm
+     *
+     * @param  int $adsBatchId
+     * @param  int $selProdId
+     * @return void
+     */
+    public function bindProductForm(int $adsBatchId, int $selProdId = 0)
     {
-        $adsBatchId = FatUtility::int($adsBatchId);
-        $selProdId = FatUtility::int($selProdId);
-        if (false === $this->validateBatchRequest($adsBatchId)) {
-            Message::addErrorMessage($this->error);
-            $this->redirectBack();
+        $this->adsBatchId = $adsBatchId;
+        if (false === $this->validateBatchRequest()) {
+            $this->setError($this->error, 'Seller');
         }
 
         $frm = $this->getBindProductForm();
-        $data = ['abprod_adsbatch_id' => $adsBatchId];
+        $data = ['abprod_adsbatch_id' => $this->adsBatchId];
         if (1 < $selProdId) {
-            $data = AdsBatch::getBatchProdDetail($adsBatchId, $selProdId);
-            $categoryArr = $this->getProductCategory(true);
+            $data = AdsBatch::getBatchProdDetail($this->adsBatchId, $selProdId);
+            $categoryArr = $this->getProductCategory();
             $selProdData = SellerProduct::getSelProdDataById($selProdId, $this->siteLangId);
             $data['google_product_category'] = $categoryArr[$data['abprod_cat_id']];
             $data['product_name'] = $selProdData['selprod_title'];
@@ -215,7 +305,12 @@ class GoogleShoppingFeedController extends AdvertisementFeedBaseController
         $this->set('frm', $frm);
         $this->_template->render(false, false);
     }
-
+    
+    /**
+     * setupBatch
+     *
+     * @return void
+     */
     public function setupBatch()
     {
         $frm = $this->getBatchForm();
@@ -225,15 +320,15 @@ class GoogleShoppingFeedController extends AdvertisementFeedBaseController
             LibHelper::dieJsonError(current($frm->getValidationErrors()));
         }
 
-        $adsBatchId = $post['adsbatch_id'];
-        if (0 < $adsBatchId) {
-            if (false === $this->validateBatchRequest($adsBatchId)) {
+        $this->adsBatchId = $post['adsbatch_id'];
+        if (0 < $this->adsBatchId) {
+            if (false === $this->validateBatchRequest()) {
                 LibHelper::dieJsonError($this->error);
             }
         }
         unset($post['adsbatch_id']);
         $post['adsbatch_user_id'] = UserAuthentication::getLoggedUserId();
-        $adsBatchObj = new AdsBatch($adsBatchId);
+        $adsBatchObj = new AdsBatch($this->adsBatchId);
         $adsBatchObj->assignValues($post);
 
         if (!$adsBatchObj->save()) {
@@ -242,7 +337,12 @@ class GoogleShoppingFeedController extends AdvertisementFeedBaseController
 
         FatUtility::dieJsonSuccess(Labels::getLabel('MSG_ADS_BATCH_SETUP_SUCCESSFULLY', $this->siteLangId));
     }
-
+    
+    /**
+     * setupProductsToBatch
+     *
+     * @return void
+     */
     public function setupProductsToBatch()
     {
         $frm = $this->getBindProductForm();
@@ -265,7 +365,12 @@ class GoogleShoppingFeedController extends AdvertisementFeedBaseController
 
         FatUtility::dieJsonSuccess(Labels::getLabel('MSG_ADS_BATCH_SETUP_SUCCESSFULLY', $this->siteLangId));
     }
-
+    
+    /**
+     * search
+     *
+     * @return void
+     */
     public function search()
     {
         $page = FatApp::getPostedData('page', FatUtility::VAR_INT, 1);
@@ -298,16 +403,21 @@ class GoogleShoppingFeedController extends AdvertisementFeedBaseController
         $this->set('pageSize', FatApp::getConfig('CONF_PAGE_SIZE', FatUtility::VAR_INT, 10));
         $this->_template->render(false, false);
     }
-
-    public function deleteBatch($adsBatchId)
+    
+    /**
+     * deleteBatch
+     *
+     * @param  int $adsBatchId
+     * @return void
+     */
+    public function deleteBatch(int $adsBatchId)
     {
-        $adsBatchId = FatUtility::int($adsBatchId);
-
-        if (false === $this->validateBatchRequest($adsBatchId)) {
+        $this->adsBatchId = $adsBatchId;
+        if (false === $this->validateBatchRequest()) {
             LibHelper::dieJsonError($this->error);
         }
 
-        $adsBatchObj = new adsBatch($adsBatchId);
+        $adsBatchObj = new AdsBatch($this->adsBatchId);
         $adsBatchObj->assignValues(['adsbatch_status' => AdsBatch::STATUS_DELETED]);
 
         if (!$adsBatchObj->save()) {
@@ -316,19 +426,30 @@ class GoogleShoppingFeedController extends AdvertisementFeedBaseController
 
         FatUtility::dieJsonSuccess(Labels::getLabel('MSG_SUCCESSFULLY_DELETED', $this->siteLangId));
     }
-
-    private function getBatchProductsObj($adsBatchId)
+    
+    /**
+     * getBatchProductsObj
+     *
+     * @return void
+     */
+    private function getBatchProductsObj()
     {
         $srch = AdsBatch::getSearchObject(true);
-        $srch->addCondition(AdsBatch::DB_TBL_BATCH_PRODS_PREFIX . 'adsbatch_id', '=', $adsBatchId);
+        $srch->addCondition(AdsBatch::DB_TBL_BATCH_PRODS_PREFIX . 'adsbatch_id', '=', $this->adsBatchId);
         $srch->addCondition(AdsBatch::DB_TBL_PREFIX . 'user_id', '=', UserAuthentication::getLoggedUserId());
         return $srch;
     }
-
-    public function searchProducts($adsBatchId)
+    
+    /**
+     * searchProducts
+     *
+     * @param  int $adsBatchId
+     * @return void
+     */
+    public function searchProducts(int $adsBatchId)
     {
-        $adsBatchId = FatUtility::int($adsBatchId);
-        if (1 > $adsBatchId) {
+        $this->adsBatchId = $adsBatchId;
+        if (1 > $this->adsBatchId) {
             LibHelper::dieJsonError(Labels::getLabel('LBL_INVALID_REQUEST', $this->siteLangId));
         }
 
@@ -346,7 +467,7 @@ class GoogleShoppingFeedController extends AdvertisementFeedBaseController
             'abprod_item_group_identifier',
         ];
 
-        $srch = $this->getBatchProductsObj($adsBatchId);
+        $srch = $this->getBatchProductsObj();
         $srch->addMultipleFields($attr);
 
         if (!empty($keyword)) {
@@ -367,18 +488,24 @@ class GoogleShoppingFeedController extends AdvertisementFeedBaseController
         $this->set('catIdArr', $this->getProductCategory(true));
         $this->_template->render(false, false);
     }
-
-    public function unlinkProduct($adsBatchId, $selProdId, $return = false)
+    
+    /**
+     * unlinkProduct
+     *
+     * @param  int $adsBatchId
+     * @param  int $selProdId
+     * @param  bool $return
+     * @return void
+     */
+    public function unlinkProduct(int $adsBatchId, int $selProdId, bool $return = false)
     {
-        $adsBatchId = FatUtility::int($adsBatchId);
-        $selProdId = FatUtility::int($selProdId);
-
-        if (false === $this->validateBatchRequest($adsBatchId)) {
+        $this->adsBatchId = $adsBatchId;
+        if (false === $this->validateBatchRequest()) {
             LibHelper::dieJsonError($this->error);
         }
 
         $db = FatApp::getDb();
-        if (!$db->deleteRecords(AdsBatch::DB_TBL_BATCH_PRODS, ['smt' => 'abprod_adsbatch_id = ? AND abprod_selprod_id = ?', 'vals' => [$adsBatchId, $selProdId]])) {
+        if (!$db->deleteRecords(AdsBatch::DB_TBL_BATCH_PRODS, ['smt' => 'abprod_adsbatch_id = ? AND abprod_selprod_id = ?', 'vals' => [$this->adsBatchId, $selProdId]])) {
             LibHelper::dieJsonError($db->getError());
         }
 
@@ -387,8 +514,14 @@ class GoogleShoppingFeedController extends AdvertisementFeedBaseController
         }
         FatUtility::dieJsonSuccess(Labels::getLabel('MSG_SUCCESSFULLY_DELETED', $this->siteLangId));
     }
-
-    public function unlinkProducts($adsBatchId)
+    
+    /**
+     * unlinkProducts
+     *
+     * @param  mixed $adsBatchId
+     * @return void
+     */
+    public function unlinkProducts(int $adsBatchId)
     {
         $adsBatchId = FatUtility::int($adsBatchId);
         $sellerProducts = FatApp::getPostedData('selprod_ids');
@@ -401,22 +534,32 @@ class GoogleShoppingFeedController extends AdvertisementFeedBaseController
         }
         FatUtility::dieJsonSuccess(Labels::getLabel('MSG_SUCCESSFULLY_DELETED', $this->siteLangId));
     }
-
-    public function getProductCategory($returnFullArray = false)
+    
+    /**
+     * getProductCategory
+     *
+     * @param  bool $returnFullArray
+     * @return void
+     */
+    public function getProductCategory(bool $returnFullArray = false)
     {
         $keyword = FatApp::getPostedData('keyword', FatUtility::VAR_STRING, '');
         $data = $this->googleShoppingFeed->getProductCategory($keyword, $returnFullArray);
         if (true === $returnFullArray) {
             return $data;
         }
-        echo json_encode($data);
-        exit;
+        CommonHelper::jsonEncodeUnicode($data, true);
     }
-
-    private function getData($adsBatchId)
+    
+    /**
+     * getData
+     *
+     * @return void
+     */
+    private function getData()
     {
         $db = FatApp::getDb();
-        $srch = $this->getBatchProductsObj($adsBatchId);
+        $srch = $this->getBatchProductsObj();
         
         $srch->addMultipleFields(
             [
@@ -444,17 +587,23 @@ class GoogleShoppingFeedController extends AdvertisementFeedBaseController
         }
         return $productData;
     }
-
-    public function publishBatch($adsBatchId)
+    
+    /**
+     * publishBatch
+     *
+     * @param  int $adsBatchId
+     * @return void
+     */
+    public function publishBatch(int $adsBatchId)
     {
-        $adsBatchId = FatUtility::int($adsBatchId);
-        if (false === $this->validateBatchRequest($adsBatchId)) {
+        $this->adsBatchId = $adsBatchId;
+        if (false === $this->validateBatchRequest()) {
             LibHelper::dieJsonError($this->error);
         }
 
-        $productData = $this->getData($adsBatchId);
+        $productData = $this->getData();
         $data = [
-            'batchId' => $adsBatchId,
+            'batchId' => $this->adsBatchId,
             'currency_code' => strtoupper(Currency::getAttributesById($this->siteCurrencyId, 'currency_code')),
             'data' => $productData
         ];
@@ -467,7 +616,7 @@ class GoogleShoppingFeedController extends AdvertisementFeedBaseController
             'adsbatch_status' => AdsBatch::STATUS_PUBLISHED,
             'adsbatch_synced_on' => date('Y-m-d H:i:s')
         ];
-        if (false === AdsBatch::updateDetail($adsBatchId, $dataToUpdate)) {
+        if (false === AdsBatch::updateDetail($this->adsBatchId, $dataToUpdate)) {
             LibHelper::dieJsonError(Labels::getLabel("MSG_UNABLE_TO_UPDATE", $this->siteLangId));
         }
 
