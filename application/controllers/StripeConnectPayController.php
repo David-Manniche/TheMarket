@@ -286,6 +286,7 @@ class StripeConnectPayController extends PaymentController
         $this->set('orderInfo', $this->orderInfo);
         
         if (true === MOBILE_APP_API_CALL) {
+            $this->set('confirmationRequired', $confirmationRequired);
             $this->_template->render();
         }
         
