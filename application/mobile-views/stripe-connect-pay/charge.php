@@ -1,5 +1,6 @@
 <?php defined('SYSTEM_INIT') or die('Invalid Usage.');
 $paymentIntendId = isset($paymentIntendId) ? $paymentIntendId : '';
+$clientSecret = isset($clientSecret) ? $clientSecret : '';
 $confirmationRequired = $confirmationRequired ? Plugin::RETURN_TRUE : Plugin::RETURN_FALSE;
 $data = array(
     'paymentAmount' => $paymentAmount,
