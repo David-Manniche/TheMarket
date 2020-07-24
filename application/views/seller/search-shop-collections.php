@@ -1,11 +1,11 @@
 <?php defined('SYSTEM_INIT') or die('Invalid Usage.'); ?>
 <div class="col-lg-12 col-md-12">
-    <div class="content-header row">
-        <div class="col">
+    <div class="cards-header">
+        
             <h5 class="cards-title"><?php echo Labels::getLabel('LBL_Shop_Collections', $siteLangId); ?></h5>
-        </div>
+         
         <?php if ($canEdit) { ?>
-        <div class="content-header-right col-auto">
+        <div class="action">
             <div class="btn-group">
                 <a href="javascript:void(0)" onClick="toggleBulkCollectionStatues(1)" class="btn btn-outline-primary btn-sm formActionBtn-js formActions-css"><?php echo Labels::getLabel('LBL_Activate', $siteLangId);?></a>
                 <a href="javascript:void(0)" onClick="toggleBulkCollectionStatues(0)" class="btn btn-outline-primary btn-sm  formActionBtn-js formActions-css"><?php echo Labels::getLabel('LBL_Deactivate', $siteLangId);?></a>

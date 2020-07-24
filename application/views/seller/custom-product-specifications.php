@@ -5,7 +5,7 @@
 <div class="cards">
     <div class="cards-content ">
         <div class="tabs__content">
-            <div class="row row justify-content-between">
+            <div class="row justify-content-between">
                 <div class="col-md-auto">
                     <h5 class="cards-title"><?php echo Labels::getLabel('LBL_Product_Specifications', $siteLangId); ?></h5>
                 </div>
