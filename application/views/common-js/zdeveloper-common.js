@@ -1089,7 +1089,7 @@ $(document).ready(function() {
             return false;
         }
         var key = $(this).parent().parent('div').find('input').attr('data-key');
-        var page = $(this).parent().parent('div').find('input').attr('data-page');
+        var page = $(this).parent().parent('div').find('input').attr('data-page');        
         val = parseInt(rval) + 1; 
         if (val > $(this).parent().data('stock')) {
             val = $(this).parent().data('stock');
