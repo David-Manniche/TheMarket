@@ -347,7 +347,6 @@ class StripeConnectController extends PaymentMethodBaseController
 
         $submitBtn = $frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_SAVE', $this->siteLangId));
         $cancelButton = $frm->addButton("", "btn_clear", Labels::getLabel('LBL_Clear', $this->siteLangId), array('onclick' => 'clearForm();'));
-        $submitBtn->attachField($cancelButton);
         return $frm;
     }
     
