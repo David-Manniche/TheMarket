@@ -1,13 +1,4 @@
-<?php defined('SYSTEM_INIT') or die('Invalid Usage.');
-    $frm->setFormTagAttribute('onsubmit', 'uploadCollectionImage(this); return(false);');
-    $frm->setFormTagAttribute('class', 'form');
-    $frm->developerTags['colClassPrefix'] = 'col-md-';
-    $frm->developerTags['fld_default_col'] = 12;
-
-    $fld = $frm->getField('collection_image');
-    $fld->addFieldTagAttribute('class', '');
-    $fld->addFieldTagAttribute('onChange', 'collectionPopupImage(this)');
-?>
+<?php defined('SYSTEM_INIT') or die('Invalid Usage.');?>
 <div class="cards">
     <div class="cards-header">
         <h5 class="cards-title"><?php echo Labels::getLabel('LBL_Shop_Collections', $siteLangId); ?></h5>
@@ -16,7 +7,7 @@
         </div>
     </div>
     <div class="cards-content">
-        <div class="col-md-6">
+        <div class="col-lg-12 col-md-12">
             <div class="">
                 <div class="tabs tabs-sm tabs--scroll clearfix">
                     <ul>
@@ -26,27 +17,48 @@
                                 <?php echo Labels::getLabel('LBL_Language_Data', $siteLangId); ?>
                             </a>
                         </li>
-                        <li>
+                        <li class="is-active">
                             <a onclick="sellerCollectionProducts(<?php echo $scollection_id ?>)" href="javascript:void(0);"> <?php echo Labels::getLabel('TXT_LINK', $siteLangId);?> </a>
                         </li>
-                        <li class="is-active"><a
+                        <li class=""><a
                         <?php if ($scollection_id > 0) {?>
                             onclick="collectionMediaForm(this, <?php echo $scollection_id; ?>);"
                         <?php } ?> href="javascript:void(0);"><?php echo Labels::getLabel('TXT_Media', $siteLangId);?></a></li>
                     </ul>
                 </div>
             </div>
-            <div class="form__subcontent">
-                <div class="preview" id="shopFormBlock">
-                    <small class="form-text text-muted"><?php echo sprintf(Labels::getLabel('MSG_Upload_shop_collection_image_text', $siteLangId), '610*343')?></small>
-                    <?php echo $frm->getFormHtml();?>
-                       <div id="imageListing" class="row" ></div>
+            <div class="row form__subcontent">
+                <div class="col-lg-6 col-md-6">
+                    <?php
+                    $collectionLinkFrm->setFormTagAttribute('onsubmit', 'setUpSellerCollectionProductLinks(this); return(false);');
+                    $collectionLinkFrm->setFormTagAttribute('class', 'form form--horizontal');
+                    $collectionLinkFrm->developerTags['colClassPrefix'] = 'col-lg-12 col-md- ';
+                    $collectionLinkFrm->developerTags['fld_default_col'] = 12;
+
+                    $submitFld = $collectionLinkFrm->getField('btn_submit');
+                    $submitFld->setFieldTagAttribute('class', "btn btn-primary btn-wide");
+                    echo $collectionLinkFrm->getFormHtml(); ?>
                 </div>
             </div>
         </div>
     </div>
 </div>
-<script>
-    var collectionMediaWidth = '610';
-    var collectionMediaHeight = '343';
+<script type="text/javascript">
+$("document").ready(function(){
+
+    $('#selprod-products').on('click', '.remove_link', function() {
+
+        $(this).parent().remove();
+    });
+
+});
+
+    <?php
+    if (isset($products) && !empty($products)) {
+        foreach ($products as $key => $val) { ?>
+        $('#selprod-products ul').append("<li id=\"selprod-products<?php echo $val['selprod_id'];?>\"> <?php echo $val['product_name'];?>[<?php echo $val['product_identifier'];?>] <i class=\"fa fa-times remove_param remove_link\"></i> <input type=\"hidden\"  name=\"product_ids[]\" value=\"<?php echo $val['selprod_id'];?>\" /></li>");
+        <?php }
+    } ?>
+
+
 </script>

@@ -350,7 +350,7 @@ $(document).on("change", ".state", function() {
 
     sellerCollectionProducts = function(scollection_id) {
         $(dvt).html(fcom.getLoader());
-        fcom.ajax(fcom.makeUrl('Seller', 'sellerCollectionProductLinkFrm', [scollection_id]), '', function(t) {
+        fcom.ajax(fcom.makeUrl('Seller', 'shopCollectionProductLinkFrm', [scollection_id]), '', function(t) {
             $(dvt).html(t);
             bindAutoComplete();
         });
