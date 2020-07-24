@@ -273,8 +273,10 @@ class StripeConnectPayController extends PaymentController
             $this->set('customerId', $this->customerId);
         }
 
-        $this->stripeConnect->loadSavedCards();
-        $savedCards = $this->stripeConnect->getResponse()->toArray();
+        $this->stripeConnect->loadCustomer();
+        $customerInfo = $this->stripeConnect->getResponse()->toArray();
+        $savedCards = $customerInfo['sources']['data'];
+        $this->set('defaultSource', $customerInfo['default_source']);
         $this->set('savedCards', $savedCards);
 
         $cancelBtnUrl = CommonHelper::getPaymentCancelPageUrl();

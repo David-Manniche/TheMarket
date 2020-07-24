@@ -6,6 +6,7 @@ $data = array(
     'paymentAmount' => $paymentAmount,
     'customerId' => isset($customerId) ? $customerId : '',
     'orderInfo' => $orderInfo,
+    'defaultSource' => $defaultSource,
     'savedCards' => $savedCards,
     'paymentIntendId' => $paymentIntendId,
     'clientSecret' => $clientSecret,
