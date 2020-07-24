@@ -47,6 +47,10 @@ var  productCatId  =  <?php echo $prodCatId ;?>; */
 					 <i class="tabs-icon fa fa-info-circle" data-toggle="tooltip" data-placement="right" title="<?php echo Labels::getLabel('LBL_Add_Option_Based_Media', $siteLangId); ?>"></i>
                              
                          </a></li>
+                     <?php if($displayInventoryTab == true) { ?>
+                     <li><a rel="tabs_006" class="tabs_006" href="javascript:void(0)"> <?php echo Labels::getLabel('LBL_Inventory', $siteLangId); ?>
+					 <i class="tabs-icon fa fa-info-circle" data-toggle="tooltip" data-placement="right" title="<?php echo Labels::getLabel('LBL_Add_Inventory', $siteLangId); ?>"></i></a></li>
+                     <?php } ?>
                  </ul>
 				 </div>   
 				 
@@ -58,6 +62,9 @@ var  productCatId  =  <?php echo $prodCatId ;?>; */
                     <div id="tabs_003" class="tabs_panel" style="display: none;"></div>
                     <div id="tabs_004" class="tabs_panel" style="display: none;"></div>
                     <div id="tabs_005" class="tabs_panel" style="display: none;"></div>
+                    <?php if($displayInventoryTab == true) { ?>
+                    <div id="tabs_006" class="tabs_panel" style="display: none;"> </div>
+                    <?php } ?>
                  </div>
 				 </div>
 				 </div>

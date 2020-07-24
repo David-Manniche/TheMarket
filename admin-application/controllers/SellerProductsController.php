@@ -918,7 +918,7 @@ class SellerProductsController extends AdminBaseController
         $srch->addCondition(Product::DB_TBL_PREFIX . 'deleted', '=', applicationConstants::NO);
         $srch->addCondition('selprod_deleted', '=', applicationConstants::NO);
         $srch->addCondition('selprod_active', '=', applicationConstants::ACTIVE);
-        $srch->addMultipleFields(array('selprod_id as id', 'IFNULL(selprod_title ,product_name) as product_name', 'product_identifier', 'credential_username'));
+        $srch->addMultipleFields(array('selprod_id as id', 'IFNULL(selprod_title ,product_name) as product_name', 'product_identifier', 'credential_username', 'selprod_price'));
 
         $srch->addOrder('selprod_active', 'DESC');
         $db = FatApp::getDb();
@@ -933,7 +933,8 @@ class SellerProductsController extends AdminBaseController
             $json[] = array(
                 'id' => $key,
                 'name' => strip_tags(html_entity_decode($option['product_name'], ENT_QUOTES, 'UTF-8')) . $userName,
-                'product_identifier' => strip_tags(html_entity_decode($option['product_identifier'], ENT_QUOTES, 'UTF-8'))
+                'product_identifier' => strip_tags(html_entity_decode($option['product_identifier'], ENT_QUOTES, 'UTF-8')),
+                'price' => $option['selprod_price']
             );
         }
         die(json_encode($json));
@@ -2666,13 +2667,14 @@ class SellerProductsController extends AdminBaseController
 
         $srch = SellerProduct::getSearchObject();
         $srch->joinTable(User::DB_TBL_CRED, 'LEFT OUTER JOIN', 'tuc.credential_user_id = sp.selprod_user_id', 'tuc');
-        $srch->addMultipleFields(array('credential_username'));
+        $srch->addMultipleFields(array('credential_username', 'selprod_price'));
         $srch->addCondition('selprod_id', '=', $data['splprice_selprod_id']);
         $srch->setPageSize(1);
         $rs = $srch->getResultSet();
         $row = FatApp::getDb()->fetch($rs);
 
         $data['credential_username'] = $row['credential_username'];
+        $data['selprod_price'] = $row['selprod_price'];
         $data['product_name'] = $productName;
 
         $this->set('data', $data);

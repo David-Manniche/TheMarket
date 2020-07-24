@@ -2,6 +2,7 @@
 $arr_flds = array(
     'select_all' => '',
     'product_name' => Labels::getLabel('LBL_Name', $siteLangId),
+    'selprod_price' => Labels::getLabel('LBL_Original_Price', $siteLangId),
     'splprice_start_date' => Labels::getLabel('LBL_Start_Date', $siteLangId),
     'splprice_end_date' => Labels::getLabel('LBL_End_Date', $siteLangId),
     'splprice_price' => Labels::getLabel('LBL_Special_Price', $siteLangId)
@@ -39,6 +40,10 @@ foreach ($arrListing as $sn => $row) {
                 $productName = SellerProduct::getProductDisplayTitle($selProdId, $siteLangId, true);
                 $td->appendElement('plaintext', array(), $productName, true);
                 break;
+            case 'selprod_price':
+                $price = CommonHelper::displayMoneyFormat($row[$column], true, true);
+                $td->appendElement('plaintext', array(), $price, true);
+                break;
             case 'splprice_start_date':
             case 'splprice_end_date':
                 $date = date('Y-m-d', strtotime($row[$column]));
@@ -60,6 +65,11 @@ foreach ($arrListing as $sn => $row) {
                 $input = '<input type="text" data-id="' . $splPriceId . '" value="' . $row[$column] . '" data-selprodid="' . $selProdId . '" name="' . $column . '" data-oldval="' . $row[$column] . '" data-displayoldval="' . CommonHelper::displayMoneyFormat($row[$column], true, true) . '" class="js--splPriceCol hidden sp-input"/>';
                 $td->appendElement('div', array("class" => 'js--editCol edit-hover', "title" => Labels::getLabel('LBL_Click_To_Edit', $siteLangId)), CommonHelper::displayMoneyFormat($row[$column], true, true), true);
                 $td->appendElement('plaintext', array(), $input, true);
+                
+                $discountPrice = $row['selprod_price'] - $row[$column];
+                $discountPercentage = round(($discountPrice/$row['selprod_price'])*100, 2);
+                $discountPercentage = $discountPercentage."% ".Labels::getLabel('LBL_off', $siteLangId);
+                $td->appendElement('div', array("class" => 'ml-3'), $discountPercentage, true);
                 break;
             case 'action':
                 $ul = $td->appendElement("ul", array("class" => "actions actions--centered"), '', true);

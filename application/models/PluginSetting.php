@@ -5,6 +5,7 @@ class PluginSetting
     private $error;
     private $pluginId;
     private $pluginKey;
+    private $langId;
 
     public const DB_TBL = 'tbl_plugin_settings';
     public const DB_TBL_PREFIX = 'pluginsetting_';
@@ -18,10 +19,7 @@ class PluginSetting
     {
         $this->pluginId = empty($pluginKey) ? $id : Plugin::getAttributesByCode($pluginKey, 'plugin_id');
         $this->pluginKey = $pluginKey;
-        if (1 > $this->pluginId) {
-            $this->error = 'MSG_INVALID_REQUEST';
-            return false;
-        }
+        $this->langId = CommonHelper::getLangId();
     }
 
     public function getError()
@@ -32,7 +30,7 @@ class PluginSetting
     private function delete(): bool
     {
         if (1 > $this->pluginId) {
-            $this->error = 'MSG_INVALID_REQUEST';
+            $this->error = Labels::getLabel('MSG_INVALID_REQUEST', $this->langId);
             return false;
         }
         $statement = [
@@ -51,7 +49,7 @@ class PluginSetting
     public function get(int $langId = 0, string $column = '')
     {
         if (empty($this->pluginKey)) {
-            $this->error = 'MSG_PLUGIN_KEY_NOT_FOUND';
+            $this->error = Labels::getLabel('MSG_PLUGIN_KEY_NOT_FOUND', $this->langId);
             return false;
         }
 
@@ -76,7 +74,7 @@ class PluginSetting
     public function save(array $data): bool
     {
         if (empty($data) || !is_array($data)) {
-            $this->error = 'MSG_PLEASE_PROVIDE_DATA_TO_SAVE_SETTINGS';
+            $this->error = Labels::getLabel('MSG_PLEASE_PROVIDE_DATA_TO_SAVE_SETTINGS', $this->langId);
             return false;
         }
         unset($data['keyName'], $data['btn_submit'], $data["plugin_id"]);

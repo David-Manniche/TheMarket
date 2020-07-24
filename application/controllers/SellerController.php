@@ -5103,4 +5103,17 @@ class SellerController extends SellerBaseController
         $this->set('msg', Labels::getLabel('MSG_Setup_successful', $this->siteLangId));
         $this->_template->render(false, false, 'json-success.php');
     }
+    
+    public function checkIfNotAnyInventory($productId)
+    {
+        $productId = FatUtility::int($productId);
+        if (0 == $productId) {
+            FatUtility::dieJsonError(Labels::getLabel('LBL_Invalid_Request', $this->siteLangId));
+        }
+        $available = SellerProduct::getCatelogFromProductId($productId);
+        if (count($available)>0) {
+            FatUtility::dieJsonSuccess(array());
+        }
+        FatUtility::dieJsonError(Labels::getLabel('LBL_Not_any_Inventory_yet', $this->siteLangId));
+    }
 }

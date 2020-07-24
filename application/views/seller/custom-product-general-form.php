@@ -339,6 +339,7 @@ $btnDiscardFld->setFieldTagAttribute('class', "btn btn-outline-primary");
 <script type="text/javascript">
     $(document).ready(function() {
         $('input[name=\'brand_name\']').autocomplete({
+             minLength : 0, 
             'classes': {
                 "ui-autocomplete": "custom-ui-autocomplete"
             },
@@ -347,7 +348,8 @@ $btnDiscardFld->setFieldTagAttribute('class', "btn btn-outline-primary");
                     url: fcom.makeUrl('brands', 'autoComplete'),
                     data: {
                         keyword: request['term'],
-                        fIsAjax: 1
+                        fIsAjax: 1,
+                        'fetchAllRecords' : 1
                     },
                     dataType: 'json',
                     type: 'post',
@@ -365,6 +367,8 @@ $btnDiscardFld->setFieldTagAttribute('class', "btn btn-outline-primary");
             'select': function(event, ui) {
                 $("input[name='product_brand_id']").val(ui.item.id);
             }
+        }).focus(function() {
+            $('input[name=\'brand_name\']').autocomplete('search');
         });
 
         $('input[name=\'brand_name\']').change(function() {

@@ -1758,12 +1758,27 @@ trait CustomProducts
             Message::addInfo(Labels::getLabel("MSG_Please_buy_subscription", $this->siteLangId));
             FatApp::redirectUser(UrlHelper::generateUrl('Seller', 'Packages'));
         }
-
+        
+        $displayInventoryTab = false;
+        if($prodId == 0){
+            $displayInventoryTab = true;
+        }
+        if($prodId > 0){
+            $inventories = SellerProduct::getCatelogFromProductId($prodId);
+            if (count($inventories) == 0) {
+                $available = Product::availableForAddToStore($prodId, $this->userParentId);
+                if ($available) {
+                    $displayInventoryTab = true;
+                }
+            }
+        }
+        
         $productType = Product::getAttributesById($prodId, 'product_type');
         $this->set('productId', $prodId);
         $this->set('productType', $productType);
         $this->_template->addJs(array('js/tagify.min.js', 'js/tagify.polyfills.min.js', 'js/cropper.js', 'js/cropper-main.js'));
         $this->set("includeEditor", true);
+        $this->set('displayInventoryTab', $displayInventoryTab);
         $this->_template->render();
     }
 

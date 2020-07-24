@@ -215,8 +215,6 @@ function getCountryStates(countryId, stateId, dv) {
 function getStatesByCountryCode(countryCode, stateCode, dv, idCol = 'state_id') {
     fcom.ajax(fcom.makeUrl('GuestUser', 'getStatesByCountryCode', [countryCode, stateCode, idCol]), '', function(res) {
         $(dv).empty();
-		console.log(dv);
-		console.log(res);
         $(dv).append(res).change();
     });
 };
