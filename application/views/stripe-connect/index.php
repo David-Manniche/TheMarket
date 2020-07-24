@@ -44,15 +44,16 @@
 
 
             <?php } else { ?>
-           
+
             <div class="text-center">
                 <h5><?php echo Labels::getLabel('LBL_ACCOUNT_ID', $siteLangId); ?> : <?php echo $accountId; ?>
-            <?php if ('custom' == $stripeAccountType) { ?>
-            <a class="btn btn-primary btn-sm" onClick="deleteAccount(this)" href="javascript:void(0)"
-                data-href="<?php echo UrlHelper::generateUrl($keyName, 'deleteAccount') ?>"
-                title="<?php echo Labels::getLabel('LBL_DELETE_ACCOUNT', $siteLangId); ?>">
-                <i class="fa fa-trash"></i>
-            </a></h5></div>
+                    <?php if ('custom' == $stripeAccountType) { ?>
+                    <a class="btn btn-primary btn-sm" onClick="deleteAccount(this)" href="javascript:void(0)"
+                        data-href="<?php echo UrlHelper::generateUrl($keyName, 'deleteAccount') ?>"
+                        title="<?php echo Labels::getLabel('LBL_DELETE_ACCOUNT', $siteLangId); ?>">
+                        <i class="fa fa-trash"></i>
+                    </a></h5>
+            </div>
 
 
             <?php } ?>
@@ -74,14 +75,15 @@
 requiredFieldsForm();
 </script>
 <?php } elseif (!empty($accountId) && !empty($stripeUserData)) { ?>
-<div class="row mt-4">
-    <div class="col">
+
+<ul class="stripe-stats">
+    <li>
         <div class="stats">
             <span class="title"><?php echo Labels::getLabel('MSG_BUSINESS_PROFILE_NAME', $siteLangId); ?></span>
             <p><?php echo $stripeUserData['business_profile']['name']; ?></p>
         </div>
-    </div>
-    <div class="col">
+    </li>
+    <li>
         <div class="stats">
             <p>
                 <?php echo Labels::getLabel('MSG_CHARGES', $siteLangId); ?> :
@@ -92,20 +94,20 @@ requiredFieldsForm();
                 <?php echo ucwords($stripeUserData['settings']['payouts']['schedule']['interval']); ?>
             </p>
         </div>
-    </div>
-    <div class="col">
+    </li>
+    <li>
         <div class="stats">
             <span class="title"><?php echo Labels::getLabel('MSG_SUPPORT_EMAIL', $siteLangId); ?></span>
             <p><?php echo $stripeUserData['business_profile']['support_email']; ?></p>
         </div>
-    </div>
-    <div class="col">
+    </li>
+    <li>
         <div class="stats">
             <span class="title"><?php echo Labels::getLabel('MSG_SUPPORT_PHONE', $siteLangId); ?></span>
             <p><?php echo $stripeUserData['business_profile']['support_phone']; ?></p>
         </div>
-    </div>
-    <div class="col">
+    </li>
+    <li>
         <div class="stats">
             <span class="title"><?php echo Labels::getLabel('MSG_SUPPORT_ADDRESS', $siteLangId); ?></span>
             <?php $address = $stripeUserData['business_profile']['support_address']; ?>
@@ -117,8 +119,8 @@ requiredFieldsForm();
                     $address['country'] . ' ' . $address['postal_code'] . ''; ?>
             </p>
         </div>
-    </div>
-    <div class="col">
+    </li>
+    <li>
         <div class="stats">
             <span class="title"><?php echo Labels::getLabel('MSG_BANK_DETAIL', $siteLangId); ?></span>
             <?php foreach ($stripeUserData['external_accounts']['data'] as $index => $bank) { ?>
@@ -130,10 +132,11 @@ requiredFieldsForm();
             <p><?php echo Labels::getLabel('MSG_ROUTING_NUMBER', $siteLangId); ?> :
                 <?php echo $bank['routing_number']; ?></p>
             <?php if (($index + 1) < count($stripeUserData['external_accounts']['data'])) { ?>
-            <div class="gap"></div>
+            
             <?php } ?>
             <?php } ?>
         </div>
-    </div>
-</div>
+    </li>
+</ul>
+
 <?php } ?>
