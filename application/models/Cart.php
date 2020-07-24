@@ -431,7 +431,7 @@ class Cart extends FatModel
 
                     $taxObj = new Tax();
                     $taxData = $taxObj->calculateTaxRates($sellerProductRow['product_id'], $taxableProdPrice, $sellerProductRow['selprod_user_id'], $siteLangId, $quantity, $extraData, $this->cartCache);
-                    if (false == $taxData['status'] && $taxData['msg'] != '') {
+                    if (false == $taxData['status'] && $taxData['msg'] != '') { 
                         $this->error = $taxData['msg'];
                     }
 
@@ -624,7 +624,7 @@ class Cart extends FatModel
         $taxObj = new Tax();
         $taxData = $taxObj->calculateTaxRates($sellerProductRow['product_id'], $taxableProdPrice, $sellerProductRow['selprod_user_id'], $siteLangId, $quantity);
         if (false == $taxData['status'] && $taxData['msg'] != '') {
-            $this->error = $taxData['msg'];
+            //$this->error = $taxData['msg'];
         }
         $tax = $taxData['tax'];
         $sellerProductRow['tax'] = $tax;
@@ -1036,7 +1036,7 @@ class Cart extends FatModel
                     'buyerId' => $this->cart_user_id
                 );
                 $taxData = $taxObj->calculateTaxRates($product['product_id'], $taxableProdPrice, $product['selprod_user_id'], $langId, $product['quantity'], $extraData, $this->cartCache);
-                if (false == $taxData['status'] && $taxData['msg'] != '') {
+                if (false == $taxData['status'] && $taxData['msg'] != '') { 
                     $this->error = $taxData['msg'];
                 }
                 if (array_key_exists('options', $taxData)) {

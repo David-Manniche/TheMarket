@@ -685,7 +685,7 @@ class CheckoutController extends MyAppController
             );
         }
 
-        if (!$json) {
+        if (!$json) { 
             $this->cartObj->setProductShippingMethod($productToShippingMethods);
             if (!$this->cartObj->isProductShippingMethodSet()) {
                 $this->errMessage = Labels::getLabel('MSG_Shipping_Method_is_not_selected_on_products_in_cart', $this->siteLangId);
@@ -838,7 +838,7 @@ class CheckoutController extends MyAppController
             $criteria['hasShippingAddress'] = true;
             $criteria['isProductShippingMethodSet'] = true;
         }
-
+        
         if (!$this->isEligibleForNextStep($criteria)) {
             $this->errMessage = Labels::getLabel('MSG_Something_went_wrong,_please_try_after_some_time.', $this->siteLangId);
             if (true === MOBILE_APP_API_CALL) {
@@ -858,7 +858,7 @@ class CheckoutController extends MyAppController
             Message::addErrorMessage($this->cartObj->getError());
             FatUtility::dieWithError(Message::getHtml());
         }
-
+        
         $cartSummary = $this->cartObj->getCartFinancialSummary($this->siteLangId);
         $userId = UserAuthentication::getLoggedUserId();
         $userWalletBalance = User::getUserBalance($userId, true);
@@ -1910,7 +1910,7 @@ class CheckoutController extends MyAppController
     {
         $langId = FatUtility::int($langId);
         $frm = new Form('frmRewards');
-        $fld = $frm->addTextBox(Labels::getLabel('LBL_Reward_Points', $langId), 'redeem_rewards', '', array('placeholder' => Labels::getLabel('LBL_Use_Reward_Point', $langId)));
+        $fld = $frm->addTextBox(Labels::getLabel('LBL_Reward_Points', $langId), 'redeem_rewards', '', array());
         $fld->requirements()->setRequired();
         $frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_Apply', $langId));
         return $frm;

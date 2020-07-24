@@ -297,7 +297,7 @@ class Tax extends MyAppModel
             }
             $srch->addOrder('taxrule_id', 'ASC');
         }
-        $res = $srch->getResultSet();
+        $res = $srch->getResultSet();       
         $row = FatApp::getDb()->fetch($res);
         if (!is_array($row)) {
             return array();
@@ -407,9 +407,10 @@ class Tax extends MyAppModel
             $shopInfo = Shop::getAttributesByUserId($sellerId, array('shop_state_id', 'shop_id'));
             $shipFromStateId = $shopInfo['shop_state_id'];
         }
-
+        
         $taxCategoryRow = $this->getTaxRates($productId, $sellerId, $langId, $shipToCountryId, $shipToStateId);
-        /* CommonHelper::printArray($taxCategoryRow); die; */
+        /* echo $productId .'-'. $sellerId .'-'. $langId .'-'. $shipToCountryId .'-'. $shipToStateId;
+        CommonHelper::printArray($taxCategoryRow);  */
         if (empty($taxCategoryRow)) {
             return $data = [
                 'status' => false,
