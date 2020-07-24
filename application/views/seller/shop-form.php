@@ -35,10 +35,9 @@ $btnSubmit->setFieldTagAttribute('class', "btn btn-primary btn-wide");
 
 $variables= array('language'=>$language,'siteLangId'=>$siteLangId,'shop_id'=>$shop_id,'action'=>$action);
 $this->includeTemplate('seller/_partial/shop-navigation.php', $variables, false); ?>
-
-<div class="cards">
-    <div class="cards-content ">
-        <div class="tabs__content">
+<div class="tabs__content tabs__content-js">
+    <div class="cards">
+        <div class="cards-content ">
             <div class="row">
                 <div class="col-lg-12 col-md-12" id="shopFormBlock"> <?php echo $shopFrm->getFormHtml(); ?>
                 <?php if (FatApp::getConfig('CONF_ENABLE_GEO_LOCATION', FatUtility::VAR_INT, 0)) { ?>
