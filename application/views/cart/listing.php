@@ -81,6 +81,7 @@ defined('SYSTEM_INIT') or die('Invalid Usage.'); ?>
                             </p>
                         </div>
                     </div>
+					<button class="btn btn-outline-primary btn-sm" type="button" onClick="cart.remove('<?php echo md5($product['key']); ?>','cart', 1)"><?php echo Labels::getLabel('LBL_Save_For_later', $siteLangId);?></button>
                     <div class="product-quantity">
                         <div class="quantity" data-stock="<?php echo $product['selprod_stock']; ?>">
                             <span class="decrease decrease-js <?php echo ($product['quantity']<=$product['selprod_min_order_qty']) ? 'not-allowed' : '' ;?>"><i class="fas fa-minus"></i></span>
