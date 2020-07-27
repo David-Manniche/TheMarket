@@ -431,7 +431,7 @@ class Cart extends FatModel
 
                     $taxObj = new Tax();
                     $taxData = $taxObj->calculateTaxRates($sellerProductRow['product_id'], $taxableProdPrice, $sellerProductRow['selprod_user_id'], $siteLangId, $quantity, $extraData, $this->cartCache);
-                    if (false == $taxData['status'] && $taxData['msg'] != '') {
+                    if (false == $taxData['status'] && $taxData['msg'] != '') { 
                         $this->error = $taxData['msg'];
                     }
 
@@ -624,7 +624,7 @@ class Cart extends FatModel
         $taxObj = new Tax();
         $taxData = $taxObj->calculateTaxRates($sellerProductRow['product_id'], $taxableProdPrice, $sellerProductRow['selprod_user_id'], $siteLangId, $quantity);
         if (false == $taxData['status'] && $taxData['msg'] != '') {
-            $this->error = $taxData['msg'];
+            //$this->error = $taxData['msg'];
         }
         $tax = $taxData['tax'];
         $sellerProductRow['tax'] = $tax;
@@ -657,7 +657,7 @@ class Cart extends FatModel
         return true;
     }
 
-    public function remove($key)
+    public function remove($key, $saveForLater = false)
     {
         $this->products = array();
         $cartProducts = $this->getProducts($this->cart_lang_id);
@@ -665,6 +665,14 @@ class Cart extends FatModel
         if (is_array($cartProducts)) {
             foreach ($cartProducts as $cartKey => $product) {
                 if (($key == 'all' || (md5($product['key']) == $key) && !$product['is_batch'])) {
+					if ($saveForLater) {
+						$wishList = new UserWishList();
+						$wishListId = $wishList->getWishListId($this->cart_user_id);
+						if (!$wishList->addUpdateListProducts($wishListId, $product['selprod_id'])) {
+							$this->error = Labels::getLabel('ERR_Unable_to_save_in_save_for_later_list', $this->cart_lang_id);
+							return false;
+						}
+					}
                     $found = true;
                     unset($this->SYSTEM_ARR['cart'][$cartKey]);
                     $this->updateTempStockHold($product['selprod_id'], 0, 0);
@@ -1036,7 +1044,7 @@ class Cart extends FatModel
                     'buyerId' => $this->cart_user_id
                 );
                 $taxData = $taxObj->calculateTaxRates($product['product_id'], $taxableProdPrice, $product['selprod_user_id'], $langId, $product['quantity'], $extraData, $this->cartCache);
-                if (false == $taxData['status'] && $taxData['msg'] != '') {
+                if (false == $taxData['status'] && $taxData['msg'] != '') { 
                     $this->error = $taxData['msg'];
                 }
                 if (array_key_exists('options', $taxData)) {

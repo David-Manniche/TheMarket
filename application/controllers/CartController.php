@@ -356,7 +356,10 @@ class CartController extends MyAppController
             if (true === MOBILE_APP_API_CALL) {
                 $key = md5($key);
             }
-            if (!$cartObj->remove($key)) {
+			
+			$saveForLater = (isset($post['saveForLater']) && $post['saveForLater'] == applicationConstants::YES) ? true : false;
+			
+            if (!$cartObj->remove($key, $saveForLater)) {
                 if (true === MOBILE_APP_API_CALL) {
                     LibHelper::dieJsonError($cartObj->getError());
                 }
@@ -368,7 +371,7 @@ class CartController extends MyAppController
             $cartObj->removeCartDiscountCoupon();
         }
         $total = $cartObj->countProducts();
-        $this->set('msg', Labels::getLabel("MSG_Item_removed_successfully", $this->siteLangId));
+        $this->set('msg', Labels::getLabel("MSG_Item_removed_from_cart", $this->siteLangId));
         if (true === MOBILE_APP_API_CALL) {
             $this->set('data', array('cartItemsCount' => $total));
             $this->_template->render();

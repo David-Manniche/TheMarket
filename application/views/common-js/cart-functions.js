@@ -27,9 +27,9 @@ var cart = {
 		});
 	},
 
-	remove: function (key, page){
+	remove: function (key, page, saveForLater){
 		if(confirm( langLbl.confirmRemove )){
-			var data = 'key=' + key ;
+			var data = 'key=' + key + '&saveForLater=' + saveForLater;
 			fcom.updateWithAjax(fcom.makeUrl('Cart','remove'), data ,function(ans){
 				if(page == 'checkout')
 				{

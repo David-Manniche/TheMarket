@@ -8,7 +8,8 @@ class UserWishList extends MyAppModel
     public const DB_TBL_LIST_PRODUCTS = 'tbl_user_wish_list_products';
     public const DB_TBL_LIST_PRODUCTS_PREFFIX = 'uwlp_';
     
-    public const TYPE_FAVOURITE = '1';
+    public const TYPE_FAVOURITE = 1;
+	public const TYPE_SAVE_FOR_LATER = 2;
 
     public function __construct($uwlistId = 0)
     {
@@ -68,7 +69,7 @@ class UserWishList extends MyAppModel
         $db->deleteRecords(static::DB_TBL, array( 'smt' => 'uwlist_id = ?', 'vals' => array( $uwlist_id ) ));
     }
 
-    public static function getUserWishLists($userId = 0, $fetchProducts = false, $excludeWishList = 0)
+    public static function getUserWishLists($userId = 0, $fetchProducts = false, $excludeWishList = 0, $type = -1)
     {
         $excludeWishList = FatUtility::int($excludeWishList);
         $userId = FatUtility::int($userId);
@@ -97,11 +98,19 @@ class UserWishList extends MyAppModel
         if (0 < $excludeWishList) {
             $srch->addCondition('uwlist_id', '!=', $excludeWishList);
         }
+		if($type == self::TYPE_SAVE_FOR_LATER) {
+			$srch->addCondition('uwlist_type', '=', self::TYPE_SAVE_FOR_LATER);
+		}
         $srch->doNotCalculateRecords();
         $srch->doNotLimitRecords();
         $srch->addOrder('uwlist_title');
 
         $rs = $srch->getResultSet();
+		
+		if($type == self::TYPE_SAVE_FOR_LATER) {
+			return FatApp::getDb()->fetch($rs);
+		}
+		
         $wishLists = array();
         if ($fetchProducts) {
             while ($row = FatApp::getDb()->fetch($rs)) {
@@ -113,6 +122,23 @@ class UserWishList extends MyAppModel
         return FatApp::getDb()->fetchAll($rs);
     }
 
+	public function getWishListId(int $userId): int
+	{
+		if ($wishList = $this->getUserWishLists($userId, false, 0, self::TYPE_SAVE_FOR_LATER)){
+			return $wishList['uwlist_id'];
+		}
+		$data = [
+			'uwlist_type' => self::TYPE_SAVE_FOR_LATER,
+			'uwlist_user_id' => $userId,
+			'uwlist_title' => Labels::getLabel('LBL_Save_For_Later', CommonHelper::getLangId()),
+		];
+        $this->assignValues($data);
+        if (!$this->save()) {
+            return 0;
+        }
+		return $this->getMainTableRecordId();
+	}
+	
     public static function getListProductsByListId($uwlp_uwlist_id = 0, $selprod_id = 0)
     {
         $uwlp_uwlist_id = FatUtility::int($uwlp_uwlist_id);

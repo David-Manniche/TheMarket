@@ -1,71 +1,88 @@
 <?php defined('SYSTEM_INIT') or die('Invalid Usage.');
+$rewardPoints = UserRewardBreakup::rewardPointBalance(UserAuthentication::getLoggedUserId());
 ?>
-<div class="section-head">
-    <div class="section__heading">
-        <h2><?php echo Labels::getLabel('LBL_Payment_Summary', $siteLangId); ?>
-        </h2>
-    </div>
-</div>
-<?php $rewardPoints = UserRewardBreakup::rewardPointBalance(UserAuthentication::getLoggedUserId()); ?>
-<div class="box box--white box--radius p-4">
-    <section id="payment" class="section-checkout">
-        <div class="row align-items-center mb-4">
+<main class="main__content">   
+    <div class="step active" role="step:4">
+        <div class="step__section">
+             <div class="step__section__head">
+                <h5 class="step__section__head__title"><?php echo Labels::getLabel('LBL_Payment_Summary', $siteLangId); ?></h5>
+            </div>
+            <label class="checkbox"><input type="checkbox" checked='checked' name="isShippingSameAsBilling" value="1"><?php echo Labels::getLabel('LBL_MY_BILLING_IS_SAME_AS_SHIPPING_ADDRESS', $siteLangId); ?> <i class="input-helper"></i>
+            </label>
             <?php if (empty($cartSummary['cartRewardPoints'])) { ?>
             <?php if ($rewardPoints > 0) { ?>
-            <div class="col-md-6 mb-3 mb-md-0">
-                <?php
-                    $redeemRewardFrm->setFormTagAttribute('class', 'form form--secondary form--singlefield');
+            <div class="rewards">
+                    <div class="rewards__points">
+                        <ul>
+                            <li>
+                                <p><?php echo Labels::getLabel('LBL_AVAILABLE_REWARDS_POINTS', $siteLangId); ?></p>
+                                <span class="count"><?php echo $rewardPoints; ?></span>
+                            </li>
+                            <li>
+                                <p><?php echo Labels::getLabel('LBL_POINTS_WORTH', $siteLangId); ?></p>
+                                <span class="count"><?php echo CommonHelper::displayMoneyFormat(CommonHelper::convertRewardPointToCurrency($rewardPoints), true, false, true, false, true); ?></span>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="info">
+                    <span> <svg class="svg">
+                            <use xlink:href="<?php echo CONF_WEBROOT_URL;?>images/retina/sprite.svg#info"
+                                href="<?php echo CONF_WEBROOT_URL;?>images/retina/sprite.svg#info">
+                            </use>
+                        </svg> <?php $canBeUsed = min(min($rewardPoints, CommonHelper::convertCurrencyToRewardPoint($cartSummary['cartTotal']-$cartSummary["cartDiscounts"]["coupon_discount_total"])), FatApp::getConfig('CONF_MAX_REWARD_POINT', FatUtility::VAR_INT, 0));?> <?php
+                        $str = Labels::getLabel('LBL_MAXIMUM_{REWARDS}_REWARDS_POINT_REDEEM_FOR_THIS_ORDER', $siteLangId);
+                        echo CommonHelper::replaceStringData($str, ['{REWARDS}' => $canBeUsed]);
+                        ?> </span>
+                    </div>
+                    <?php
+                    $redeemRewardFrm->setFormTagAttribute('class', 'form form-floating');
                     $redeemRewardFrm->setFormTagAttribute('onsubmit', 'useRewardPoints(this); return false;');
                     $redeemRewardFrm->setJsErrorDisplay('afterfield');
-                    echo $redeemRewardFrm->getFormTag();
-                    echo $redeemRewardFrm->getFieldHtml('redeem_rewards');
-                    echo $redeemRewardFrm->getFieldHtml('btn_submit');
-                    echo $redeemRewardFrm->getExternalJs(); ?>
-                </form>
-                <p class="note">
-                    <strong><?php
-                    $canBeUsed = min(min($rewardPoints, CommonHelper::convertCurrencyToRewardPoint($cartSummary['cartTotal']-$cartSummary["cartDiscounts"]["coupon_discount_total"])), FatApp::getConfig('CONF_MAX_REWARD_POINT', FatUtility::VAR_INT, 0));
-                    echo $canBeUsed; ?></strong>
-                    <?php echo Labels::getLabel('LBL_of', $siteLangId); ?>
-                    <strong>
-                        <?php echo $rewardPoints; ?>
-                    </strong>
-                    <?php echo Labels::getLabel('LBL_reward_points_available_for_this_order', $siteLangId); ?>
-                    (<?php echo CommonHelper::displayMoneyFormat(CommonHelper::convertRewardPointToCurrency($canBeUsed), true, false, true, false, true); ?>)
-                </p>
-            </div>
-            <?php } ?>
-            <?php } else { ?>
-            <div class="col-md-6 mb-3 mb-md-0">
-                <div class="alert alert--success">
-                    <a href="javascript:void(0)" class="close" onClick="removeRewardPoints()"
-                        title="<?php echo Labels::getLabel('LBL_Remove_Reward_Points', $siteLangId); ?>"></a>
-                    <p><?php echo Labels::getLabel('LBL_Reward_Points', $siteLangId); ?>
-                        <strong><?php echo $cartSummary['cartRewardPoints']; ?>
-                            (<?php echo CommonHelper::displayMoneyFormat(CommonHelper::convertRewardPointToCurrency($cartSummary['cartRewardPoints']), true, false, true, false, true); ?>)</strong>
-                        <?php echo Labels::getLabel('LBL_Successfully_Used', $siteLangId); ?>
-                    </p>
+                    $fld = $redeemRewardFrm->getField('redeem_rewards');
+                    $fld->setFieldTagAttribute('class', 'form-control form-floating__field');
+                    $fld = $redeemRewardFrm->getField('btn_submit');
+                    $fld->setFieldTagAttribute('class', 'btn btn-primary btn-wide');
+                    echo $redeemRewardFrm->getFormTag();  ?>                    
+                        <div class="row form-row">
+                            <div class="col">
+                                <div class="form-group form-floating__group">
+                                    <?php echo $redeemRewardFrm->getFieldHtml('redeem_rewards');?>                                    
+                                    <label class="form-floating__label"><?php echo Labels::getLabel('LBL_Use_Reward_Point', $siteLangId);?></label>
+                                </div>
+                            </div>
+                            <div class="col-auto">
+                                <!-- Button -->
+                                <?php echo $redeemRewardFrm->getFieldHtml('btn_submit');?>
+                            </div>
+                        </div>
+                    </form>
+                    <?php echo  $redeemRewardFrm->getExternalJs();?>
                 </div>
-            </div>
-            <?php } ?>
-            <div class="col-md-6 mb-3">
-                <?php if ($canUseWalletForPayment && $userWalletBalance > 0 && $cartSummary['orderNetAmount'] > 0) { ?>
-                <label class="checkbox brand" id="brand_95">
-                    <input onChange="walletSelection(this)" type="checkbox" <?php echo ($cartSummary["cartWalletSelected"]) ? 'checked="checked"' : ''; ?>
-                    name="pay_from_wallet" id="pay_from_wallet" />
-                    <i class="input-helper"></i>
-                    <?php if ($cartSummary["cartWalletSelected"]) {
-                        echo ''.Labels::getLabel('MSG_Applied_Wallet_Credits', $siteLangId)?>:
-                    <?php echo CommonHelper::displayMoneyFormat($cartSummary["WalletAmountCharge"], true, false, true, false, true);
-                    } else {
-                        echo ''.Labels::getLabel('MSG_Apply_Wallet_Credits', $siteLangId)?>:
-                    <?php echo CommonHelper::displayMoneyFormat($userWalletBalance, true, false, true, false, true)?>
-                    <?php
-                    } ?>
-                </label>
-                <?php }?>
-            </div>
+            <?php }?> 
+            <?php } else {?>  
+                <div class="info">
+                    <span> <svg class="svg">
+                            <use xlink:href="<?php echo CONF_WEBROOT_URL;?>images/retina/sprite.svg#info" href="<?php echo CONF_WEBROOT_URL;?>images/retina/sprite.svg#info">
+                            </use>
+                        </svg> <?php echo Labels::getLabel('LBL_Reward_Points', $siteLangId); ?> <strong><?php echo $cartSummary['cartRewardPoints']; ?>
+                            (<?php echo CommonHelper::displayMoneyFormat(CommonHelper::convertRewardPointToCurrency($cartSummary['cartRewardPoints']), true, false, true, false, true); ?>)</strong>
+                        <?php echo Labels::getLabel('LBL_Successfully_Used', $siteLangId); ?></span>
+                    <ul class="list-actions">
+                        <li>
+                        <a href="javascript:void(0)" onClick="removeRewardPoints()"><svg class="svg" width="24px" height="24px">
+                                <use xlink:href="<?php echo CONF_WEBROOT_URL;?>images/retina/sprite.svg#remove" href="<?php echo CONF_WEBROOT_URL;?>images/retina/sprite.svg#remove">
+                                </use>
+                            </svg>
+                        </a></li>
+                    </ul>
+                </div>                 
+            <?php }?>
         </div>
+    </div>
+</main>    
+<div class="box box--white box--radius p-4">
+    <section id="payment" class="section-checkout">
+       
         <div class="align-items-center mb-4">
             <?php if ($userWalletBalance > 0 && $cartSummary['orderNetAmount'] > 0) { ?>
             <div>
