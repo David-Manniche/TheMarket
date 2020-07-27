@@ -461,8 +461,8 @@ class StripeConnectPayController extends PaymentController
 
         $successUrl = UrlHelper::generateFullUrl('custom', 'paymentSuccess', array($this->orderId));
         $successMsg = Labels::getLabel('MSG_SUCCESS', $this->siteLangId);
-        if (FatUtility::isAjaxCall()) {
-            $json['status'] = applicationConstants::ACTIVE;
+        if (FatUtility::isAjaxCall() || true === MOBILE_APP_API_CALL) {
+            $json['status'] = Plugin::RETURN_TRUE;
             $json['msg'] = $successMsg;
             $json['redirectUrl'] = $successUrl;
             FatUtility::dieJsonSuccess($json);
