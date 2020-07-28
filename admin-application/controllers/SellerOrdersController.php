@@ -430,6 +430,27 @@ class SellerOrdersController extends AdminBaseController
             Message::addErrorMessage($this->str_invalid_request);
             FatUtility::dieJsonError(Message::getHtml());
         }
+        
+        if ($orderDetail['pmethod_code'] == 'CashOnDelivery' && (orderStatus::ORDER_DELIVERED == $post["op_status_id"] || orderStatus::ORDER_COMPLETED == $post["op_status_id"]) && Orders::ORDER_IS_PAID != $orderDetail['order_is_paid']) {
+            $orderProducts = new OrderProductSearch($this->adminLangId, true, true);
+            $orderProducts->joinPaymentMethod();
+            $orderProducts->addMultipleFields(['op_status_id']);
+            $orderProducts->addCondition('op_order_id', '=', $orderDetail['order_id']);
+            $orderProducts->addCondition('op_status_id', '!=', orderStatus::ORDER_DELIVERED);
+            $orderProducts->addCondition('op_status_id', '!=', orderStatus::ORDER_COMPLETED);
+            $rs = $orderProducts->getResultSet();
+            if ($rs) {
+                $childOrders = FatApp::getDb()->fetchAll($rs);
+                if (empty($childOrders)) {
+                    $updateArray = array('order_is_paid' => Orders::ORDER_IS_PAID);
+                    $whr = array('smt' => 'order_id = ?', 'vals' => array($orderDetail['order_id']));
+                    if (!FatApp::getDb()->updateFromArray(Orders::DB_TBL, $updateArray, $whr)) {
+                        Message::addErrorMessage(Labels::getLabel('MSG_Invalid_Access', $this->adminLangId));
+                        FatUtility::dieWithError(Message::getHtml());
+                    }
+                }
+            }
+        }
 
         if (strtolower($orderDetail['plugin_code']) == 'cashondelivery' && (OrderStatus::ORDER_DELIVERED == $post["op_status_id"] || OrderStatus::ORDER_COMPLETED == $post["op_status_id"]) && Orders::ORDER_IS_PAID != $orderDetail['order_is_paid']) {
             $orderProducts = new OrderProductSearch($this->adminLangId, true, true);

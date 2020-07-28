@@ -50,7 +50,20 @@ class CashOnDeliveryPayController extends MyAppController
         /* ] */
 
         $orderPaymentObj->confirmCodOrder($orderId, $this->siteLangId);
+        foreach ($childOrderDetail as $opID => $opDetail) {
+            if ($opDetail['op_is_batch']) {
+                $opSelprodCodeArr = explode('|', $opDetail['op_selprod_code']);
+            } else {
+                $opSelprodCodeArr = array($opDetail['op_selprod_code']);
+            }
 
+            foreach ($opSelprodCodeArr as $opSelprodCode) {
+                if (empty($opSelprodCode)) {
+                    continue;
+                }
+                Product::recordProductWeightage($opSelprodCode, SmartWeightageSettings::PRODUCT_ORDER_PAID);
+            }
+        }
         FatApp::redirectUser(UrlHelper::generateFullUrl('custom', 'paymentSuccess', array( $orderInfo['id'])));
     }
 }
