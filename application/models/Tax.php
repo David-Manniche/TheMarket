@@ -290,7 +290,8 @@ class Tax extends MyAppModel
             $srch->joinTable(TaxRule::DB_TBL, 'LEFT JOIN', 'taxRule.taxrule_id = taxLoc.taxruleloc_taxrule_id', 'taxRule');
 
             if ($userCountry > 0) {
-                $srch->addCondition('taxruleloc_country_id', '=', $userCountry, 'AND');
+                $cond = $srch->addCondition('taxruleloc_country_id', '=', $userCountry, 'AND');
+                $cond->attachCondition('taxruleloc_country_id', '=', -1, 'OR');
             }
             if ($userState > 0) {
                 $srch->addDirectCondition('((taxruleloc_type = '. TaxRule::TYPE_INCLUDE_STATES .' AND taxruleloc_state_id= '. $userState .') OR (taxruleloc_type = '. TaxRule::TYPE_ALL_STATES .' AND taxruleloc_state_id = -1) OR (taxruleloc_type = '. TaxRule::TYPE_EXCLUDE_STATES .' AND taxruleloc_state_id != '. $userState .'))', 'AND');

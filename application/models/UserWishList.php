@@ -10,11 +10,20 @@ class UserWishList extends MyAppModel
     
     public const TYPE_FAVOURITE = 1;
 	public const TYPE_SAVE_FOR_LATER = 2;
-
+    public const TYPE_DEFAULT_WISHLIST = 3;
     public function __construct($uwlistId = 0)
     {
         parent::__construct(static::DB_TBL, static::DB_TBL_PREFIX . 'id', $uwlistId);
         $this->objMainTableRecord->setSensitiveFields(array());
+    }
+    
+    public static function getTypeArr(int $langId): array
+    {
+        return [
+            self::TYPE_FAVOURITE => Labels::getLabel('LBL_Favorite', $langId),
+            self::TYPE_SAVE_FOR_LATER => Labels::getLabel('LBL_Save_For_Later', $langId),
+            self::TYPE_DEFAULT_WISHLIST => Labels::getLabel('LBL_Default_list', $langId)
+        ];
     }
 
     public static function wishlistOrFavtArr($langId)
@@ -100,7 +109,9 @@ class UserWishList extends MyAppModel
         }
 		if($type == self::TYPE_SAVE_FOR_LATER) {
 			$srch->addCondition('uwlist_type', '=', self::TYPE_SAVE_FOR_LATER);
-		}
+		}else{
+            $srch->addCondition('uwlist_type', '!=', self::TYPE_SAVE_FOR_LATER);
+        }
         $srch->doNotCalculateRecords();
         $srch->doNotLimitRecords();
         $srch->addOrder('uwlist_title');
@@ -130,10 +141,21 @@ class UserWishList extends MyAppModel
         if (!empty($row)) {
             return $row['uwlist_id'];
         }
+        
+        $typeArr = static::getTypeArr(CommonHelper::getLangId());
+        switch ($type) {
+            case self::TYPE_DEFAULT_WISHLIST:
+                $title = $typeArr[self::TYPE_DEFAULT_WISHLIST];
+                break;
+            case Transactions::TYPE_SAVE_FOR_LATER:
+                $title = $typeArr[self::TYPE_SAVE_FOR_LATER];
+                break;
+        }
 		$data = [
 			'uwlist_type' => $type,
 			'uwlist_user_id' => $userId,
-			'uwlist_title' => Labels::getLabel('LBL_Save_For_Later', CommonHelper::getLangId()),
+			'uwlist_title' => $title,
+            'uwlist_added_on' => date('Y-m-d H:i:s')
 		];
         $this->assignValues($data);
         if (!$this->save()) {
