@@ -1343,6 +1343,18 @@ class AccountController extends LoggedUserController
         $uwlist_id = $wListObj->getMainTableRecordId();
         return $uwlist_id;
     }
+    
+    public function moveToSaveForLater($selProdId)
+    {
+        $loggedUserId = UserAuthentication::getLoggedUserId();
+        $wishList = new UserWishList();
+        $wishListId = $wishList->getWishListId($loggedUserId, UserWishList::TYPE_SAVE_FOR_LATER);
+        if (!$wishList->addUpdateListProducts($wishListId, $selProdId)) {
+            Message::addErrorMessage(Labels::getLabel("LBL_Invalid_Request", $this->siteLangId));
+            FatUtility::dieWithError(Message::getHtml());
+        }
+        $this->_template->render(false, false, 'json-success.php');
+    }
 
     /* called from products listing page */
     public function viewWishList($selprod_id, $excludeWishList = 0)

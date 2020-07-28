@@ -77,7 +77,8 @@ defined('SYSTEM_INIT') or die('Invalid Usage.'); ?>
                                                 echo Labels::getLabel('LBL_Already_added_to_your_wishlist.', $siteLangId);
                                             }
                                         }
-                                    } ?>                                                                                                 
+                                    } ?>
+                                / <a href="javascript:void(0)" class="" onClick="moveToSaveForLater( '<?php echo md5($product['key']); ?>',<?php echo $product['selprod_id']; ?> );" title="<?php echo Labels::getLabel('LBL_Move_to_wishlist', $siteLangId); ?>"><?php echo Labels::getLabel('LBL_Save_For_later', $siteLangId); ?></a>                                                                                           
                             </p>
                         </div>
                     </div>
@@ -106,10 +107,53 @@ defined('SYSTEM_INIT') or die('Invalid Usage.'); ?>
                 <?php }?>
 
             </ul>
-            <?php } ?>    
-           
+            <?php } ?> 
+            <?php if(0 < count($saveForLaterProducts)) { ?>
+            <h5 class="cart-title"><?php echo Labels::getLabel('LBL_Save_For_later', $siteLangId); ?> (<?php echo count($saveForLaterProducts); ?>)</h5>                
+            <ul class="list-group list-cart">
+                <?php foreach ($saveForLaterProducts as $product) {
+                    $productUrl = UrlHelper::generateUrl('Products', 'View', array($product['selprod_id']));
+                    $imageUrl = UrlHelper::getCachedUrl(UrlHelper::generateFileUrl('image', 'product', array($product['product_id'], "THUMB",$product['selprod_id'], 0, $siteLangId)), CONF_IMG_CACHE_TIME, '.jpg');               
+                    $productTitle =  ($product['selprod_title']) ? $product['selprod_title'] : $product['product_name'];
+                ?>
+                <li class="list-group-item <?php echo md5($product['key']); ?> <?php echo (!$product['in_stock']) ? 'disabled' : ''; ?>">
+                    <div class="product-profile">
+                        <div class="product-profile__thumbnail">
+                            <a href="<?php echo $productUrl; ?>">
+                                <img class="img-fluid" data-ratio="3:4" src="<?php echo $imageUrl; ?>" alt="<?php echo $product['product_name']; ?>" title="<?php echo $product['product_name']; ?>">
+                            </a></div>
+                        <div class="product-profile__data">
+                            <div class="title"><a class="" href="<?php echo $productUrl; ?>"><?php echo $productTitle;?></a></div>
+                            <div class="options">
+                                <p class=""> <?php 
+                                if (isset($product['options']) && count($product['options'])) {
+                                    foreach ($product['options'] as $key => $option) {
+                                        if (0 < $key){
+                                            echo ' | ';
+                                        }
+                                        echo $option['option_name'].':'; ?> <span class="text--dark"><?php echo $option['optionvalue_name']; ?></span>
+                                        <?php }
+                                } ?></p>
+                            </div>
+                            <button class="btn btn-outline-primary btn-sm product-profile__btn" type="button" onclick="moveToCart(<?php echo $product['selprod_id']; ?>, <?php echo $product['uwlp_uwlist_id']; ?>, event)"><?php echo Labels::getLabel('LBL_Move_To_Bag', $siteLangId);?></button>
+                        </div>
+                    </div>
+                    <div class="product-price"><?php echo CommonHelper::displayMoneyFormat($product['theprice']); ?></div>
+                    <div class="product-action">
+                        <ul class="list-actions">
+                            <li>
+                                <a href="javascript:void(0)" onclick="removeFromWishlist(<?php echo $product['selprod_id']; ?>, <?php echo $product['uwlp_uwlist_id']; ?>, event)"><svg class="svg" width="24px" height="24px" title="<?php echo Labels::getLabel('LBL_Remove', $siteLangId); ?>">
+                                        <use xlink:href="../images/retina/sprite.svg#remove" href="../images/retina/sprite.svg#remove">
+                                        </use>
+                                    </svg>
+                                </a></li>
+                        </ul>
+                    </div>
+                </li>
+                <?php }?>
+            </ul>
+            <?php } ?>
         </div>
-
     </div>
     <div class="col-md-4">
         <div class="sticky-summary">

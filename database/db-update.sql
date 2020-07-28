@@ -474,3 +474,5 @@ ALTER TABLE `tbl_seller_products` ADD `selprod_pickup_enabled` TINYINT(1) NOT NU
 
 
 DELETE FROM `tbl_language_labels` WHERE `label_key` LIKE 'LBL_Affiliate_Registeration';
+
+ALTER TABLE `tbl_user_wish_lists` ADD `uwlist_type` INT NOT NULL AFTER `uwlist_id`;

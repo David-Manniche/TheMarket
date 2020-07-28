@@ -77,7 +77,38 @@ class CartController extends MyAppController
             
             $cartSummary = $cartObj->getCartFinancialSummary($this->siteLangId);
             $PromoCouponsFrm = $this->getPromoCouponsForm($this->siteLangId);
+            
+            /* Save For Later Products Listing [ */
+            $srch = new UserWishListProductSearch($this->siteLangId);
+            $srch->joinWishLists();
+            $srch->joinSellerProducts();
+            $srch->joinProducts();
+            $srch->joinBrands();
+            $srch->joinSellers();
+            $srch->joinShops();
+            $srch->joinProductToCategory();
+            $srch->joinSellerSubscription($this->siteLangId, true);
+            $srch->addSubscriptionValidCondition();
+            $srch->joinSellerProductSpecialPrice();
+            $srch->addCondition('uwlist_type', '=', UserWishList::TYPE_SAVE_FOR_LATER);
+            $srch->addCondition('selprod_deleted', '=', applicationConstants::NO);
+            $srch->addCondition('selprod_active', '=', applicationConstants::YES);
 
+            /* groupby added, beacause if same product is linked with multiple categories, then showing in repeat for each category[ */
+            $srch->addGroupBy('selprod_id');
+            /* ] */
+
+            $srch->addMultipleFields(array('uwlp_uwlist_id', 'selprod_id', 'IFNULL(selprod_title  ,IFNULL(product_name, product_identifier)) as selprod_title', 'product_id', 'IFNULL(product_name, product_identifier) as product_name', 'IF(selprod_stock > 0, 1, 0) AS in_stock', 'IFNULL(splprice_price, selprod_price) AS theprice'));
+            $srch->addOrder('uwlp_added_on', 'DESC');
+            $rs = $srch->getResultSet();
+            $saveForLaterProducts = FatApp::getDb()->fetchAll($rs);
+            if (count($saveForLaterProducts)) {
+                foreach ($saveForLaterProducts as &$arr) {
+                    $arr['options'] = SellerProduct::getSellerProductOptions($arr['selprod_id'], true, $this->siteLangId);
+                }
+            }
+            /* ] */
+            $this->set('saveForLaterProducts', $saveForLaterProducts);
             $this->set('products', $productsArr);
             $this->set('prodGroupIds', $prodGroupIds);
             $this->set('PromoCouponsFrm', $PromoCouponsFrm);
@@ -368,7 +399,7 @@ class CartController extends MyAppController
             $cartObj->removeCartDiscountCoupon();
         }
         $total = $cartObj->countProducts();
-        $this->set('msg', Labels::getLabel("MSG_Item_removed_successfully", $this->siteLangId));
+        $this->set('msg', Labels::getLabel("MSG_Item_removed_from_cart", $this->siteLangId));
         if (true === MOBILE_APP_API_CALL) {
             $this->set('data', array('cartItemsCount' => $total));
             $this->_template->render();
