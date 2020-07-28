@@ -468,6 +468,8 @@ CREATE TABLE `tbl_time_slots` (
 ALTER TABLE `tbl_time_slots`
   ADD UNIQUE KEY `tslot_type` (`tslot_type`,`tslot_record_id`,`tslot_subrecord_id`,`tslot_day`,`tslot_from_time`,`tslot_to_time`);
 
+ALTER TABLE `tbl_products` ADD `product_pickup_enabled` TINYINT(1) NOT NULL AFTER `product_cod_enabled`;
+ALTER TABLE `tbl_seller_products` ADD `selprod_pickup_enabled` TINYINT(1) NOT NULL AFTER `selprod_cod_enabled`;
 -- pickup location end
 
 

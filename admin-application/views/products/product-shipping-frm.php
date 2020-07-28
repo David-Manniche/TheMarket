@@ -21,6 +21,9 @@ if (FatApp::getConfig("CONF_PRODUCT_DIMENSIONS_ENABLE", FatUtility::VAR_INT, 1))
 $codFld = $productFrm->getField('product_cod_enabled');
 $codFld->developerTags['col'] = 6;
 
+$fld = $productFrm->getField('product_pickup_enabled');
+$fld->developerTags['col'] = 6;
+
 $btnbackFld = $productFrm->getField('btn_back');
 $btnbackFld->developerTags['col'] = 6;
 

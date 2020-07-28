@@ -17,8 +17,11 @@ if (!FatApp::getConfig('CONF_SHIPPED_BY_ADMIN_ONLY', FatUtility::VAR_INT, 0)) {
     $codFld = $productFrm->getField('product_cod_enabled');
     $codFld->developerTags['col'] = 6;
 
+    $fld = $productFrm->getField('product_pickup_enabled');
+    $fld->developerTags['col'] = 6;
+
     $codFld = $productFrm->getField('shipping_country');
-    $codFld->developerTags['col'] = 6;
+    $codFld->developerTags['col'] = 12;
 }
 
 $weightUnitFld = $productFrm->getField('product_weight_unit');
