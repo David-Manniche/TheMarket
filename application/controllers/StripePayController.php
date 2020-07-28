@@ -23,7 +23,7 @@ class StripePayController extends PaymentController
     private function init(): void
     {
         if (false === $this->plugin->validateSettings($this->siteLangId)) {
-            $this->setErrorAndRedirect($this->plugin->getError());
+            $this->setErrorAndRedirect($this->plugin->getError(), FatUtility::isAjaxCall());
         }
 
         $this->settings = $this->plugin->getSettings();
@@ -33,11 +33,7 @@ class StripePayController extends PaymentController
     {
         if (empty(trim($orderId))) {
             $message = Labels::getLabel('MSG_Invalid_Access', $this->siteLangId);
-            if (true === MOBILE_APP_API_CALL) {
-                FatUtility::dieJsonError($message);
-            }
-            Message::addErrorMessage($message);
-            CommonHelper::redirectUserReferer();
+            $this->setErrorAndRedirect($message, FatUtility::isAjaxCall());
         }
 
         $stripe = array(
@@ -47,8 +43,8 @@ class StripePayController extends PaymentController
         $this->set('stripe', $stripe);
 
         if (!isset($this->settings['privateKey']) && !isset($this->settings['publishableKey'])) {
-            Message::addErrorMessage(Labels::getLabel('STRIPE_INVALID_PAYMENT_GATEWAY_SETUP_ERROR', $this->siteLangId));
-            CommonHelper::redirectUserReferer();
+            $message = Labels::getLabel('STRIPE_INVALID_PAYMENT_GATEWAY_SETUP_ERROR', $this->siteLangId);
+            $this->setErrorAndRedirect($message, FatUtility::isAjaxCall());
         }
 
         if (strlen(trim($this->settings['privateKey'])) > 0 && strlen(trim($this->settings['publishableKey'])) > 0) {
@@ -65,17 +61,14 @@ class StripePayController extends PaymentController
         $orderInfo = $orderPaymentObj->getOrderPrimaryinfo();
 
         if (!$orderInfo['id']) {
-            if (true === MOBILE_APP_API_CALL) {
-                $message = Labels::getLabel('MSG_Invalid_Access', $this->siteLangId);
-                FatUtility::dieJsonError($message);
-            }
-            FatUtility::exitWithErrorCode(404);
+            $message = Labels::getLabel('MSG_Invalid_Access', $this->siteLangId);
+            $this->setErrorAndRedirect($message, FatUtility::isAjaxCall());
         } elseif ($orderInfo && $orderInfo["order_is_paid"] == Orders::ORDER_IS_PENDING) {
             /* $checkPayment = $this->doPayment($payableAmount, $orderInfo); */
             $frm = $this->getPaymentForm($orderId);
             $this->set('frm', $frm);
             
-            if (strtolower($_SERVER['REQUEST_METHOD']) == 'post') {
+            if (!empty($_POST['cc_number']) && 1 < count($_POST)) {
                 $charge = $this->stripeAuthentication($orderId);
                 if (isset($charge['id']) && $charge['id']) {
                     $payment_method = \Stripe\PaymentMethod::create([
@@ -116,7 +109,12 @@ class StripePayController extends PaymentController
         }
         $this->set('cancelBtnUrl', $cancelBtnUrl);
         $this->set('exculdeMainHeaderDiv', true);
-        $this->_template->render(true, false);
+        if (FatUtility::isAjaxCall()) {
+            $json['html'] = $this->_template->render(false, false, 'stripe-pay/charge.php', true, false);
+            FatUtility::dieJsonSuccess($json);
+        } else {
+            $this->_template->render(true, false);
+        }
     }
 
     public function checkCardType()
@@ -162,7 +160,7 @@ class StripePayController extends PaymentController
         
         if (empty($stripeToken)) {
             $message = Labels::getLabel('MSG_The_Stripe_Token_was_not_generated_correctly', $this->siteLangId);
-            if (true === MOBILE_APP_API_CALL) {
+            if (true === MOBILE_APP_API_CALL || FatUtility::isAjaxCall()) {
                 FatUtility::dieJsonError($message);
             }
             throw new Exception($message);
@@ -173,8 +171,8 @@ class StripePayController extends PaymentController
         $paymentAmount = $this->formatPayableAmount($paymentAmount);
         
         $stripe = array(
-        'secret_key' => $this->settings['privateKey'],
-        'publishable_key' => $this->settings['publishableKey']
+            'secret_key' => $this->settings['privateKey'],
+            'publishable_key' => $this->settings['publishableKey']
         );
         
         $this->set('stripe', $stripe);
@@ -212,9 +210,7 @@ class StripePayController extends PaymentController
         }
         
         if ($this->error) {
-            return $this->error;
-            Message::addErrorMessage($this->error);
-            CommonHelper::redirectUserReferer();
+            $this->setErrorAndRedirect($this->error, FatUtility::isAjaxCall());
         }
     }
     
@@ -275,5 +271,14 @@ class StripePayController extends PaymentController
                 FatApp::redirectUser(UrlHelper::generateUrl('custom', 'paymentFailed'));
             }
         }
+    }
+
+    public function getExternalLibraries()
+    {
+        $json['libraries'] = [
+            'https://js.stripe.com/v3/',
+            'https://js.stripe.com/v2/',
+        ];
+        FatUtility::dieJsonSuccess($json);
     }
 }

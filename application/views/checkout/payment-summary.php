@@ -256,14 +256,14 @@ if (!empty($siteKey) && !empty($secretKey)) {?>
     var containerId = '#tabs-container';
     var tabsId = '#payment_methods_tab';
     $(document).ready(function() {
-        if ($(tabsId + ' LI A.is-active').length > 0) {
-            loadTab($(tabsId + ' LI A.is-active'));
+        if ($(tabsId + ' li a.is-active').length > 0) {
+            loadTab($(tabsId + ' li a.is-active'));
         }
         $(tabsId + ' A').click(function() {
             if ($(this).hasClass('is-active')) {
                 return false;
             }
-            $(tabsId + ' LI A.is-active').removeClass('is-active');
+            $(tabsId + ' li a.is-active').removeClass('is-active');
             $('li').removeClass('is-active');
             $(this).parent().addClass('is-active');
             loadTab($(this));

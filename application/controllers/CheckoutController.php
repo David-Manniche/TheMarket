@@ -1412,6 +1412,13 @@ class CheckoutController extends MyAppController
         $frm = $this->getPaymentTabForm($this->siteLangId, $methodCode);
         $controller = $methodCode . 'Pay';
         $frm->setFormTagAttribute('action', UrlHelper::generateUrl($controller, 'charge', array($order_id)));
+        
+        switch ($methodCode) {
+            case 'Stripe':
+                $frm->setFormTagAttribute('data-external', UrlHelper::generateUrl($controller, 'getExternalLibraries'));
+                break;
+        }
+        
         $frm->fill(
             array(
                 'order_type' => $orderInfo['order_type'],
