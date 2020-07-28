@@ -5027,9 +5027,46 @@ class SellerController extends SellerBaseController
         }
         $this->_template->render(false, false, 'json-success.php');
     }
-	
-	public function pickupAddressForm()
+    
+    public function pickupAddress()
     {
+        $this->userPrivilege->canEditShop(UserAuthentication::getLoggedUserId());
+        $userId = $this->userParentId;
+        $shopDetails = Shop::getAttributesByUserId($userId, null, false);
+        
+        if (!false == $shopDetails && $shopDetails['shop_active'] != applicationConstants::ACTIVE) {
+            Message::addErrorMessage(Labels::getLabel('MSG_Your_shop_deactivated_contact_admin', $this->siteLangId));
+            FatUtility::dieWithError(Message::getHtml());
+        }
+        if (!false == $shopDetails) {
+            $shop_id = $shopDetails['shop_id'];
+        }
+		$address = new Address(0, $this->siteLangId);
+        $addresses = $address->getData(Address::TYPE_SHOP_PICKUP, $shopDetails['shop_id']);
+        
+        if ($addresses) {
+            $this->set('addresses', $addresses);
+        } else {
+            if (true === MOBILE_APP_API_CALL) {
+                $this->set('addresses', array());
+            }
+            $this->set('noRecordsHtml', $this->_template->render(false, false, '_partial/no-record-found.php', true));
+        }
+        if (true === MOBILE_APP_API_CALL) {
+            $cartObj = new Cart($userId);
+            $shipping_address_id = $cartObj->getCartShippingAddress();
+            $this->set('shippingAddressId', $shipping_address_id);
+            $this->_template->render();
+        }
+        $this->set('canEdit', $this->userPrivilege->canEditShop(UserAuthentication::getLoggedUserId(), true));
+        $this->set('shop_id', $shop_id);
+        $this->set('language', Language::getAllNames());
+        $this->_template->render(false, false);
+    }
+	
+	public function pickupAddressForm(int $addrId = 0)
+    {
+        $this->userPrivilege->canEditShop(UserAuthentication::getLoggedUserId());
 		$userId = $this->userParentId;
 		$shopDetails = Shop::getAttributesByUserId($userId, null, false);
 
@@ -5045,15 +5082,17 @@ class SellerController extends SellerBaseController
 		
         $frm = $this->getUserAddressForm($this->siteLangId);
         $stateId = 0;
+        
+        if ($addrId > 0) {
+            $address = new Address($addrId, $this->siteLangId);
+            $data = $address->getData(Address::TYPE_SHOP_PICKUP, $shop_id);
+            $data = array_shift($data);
+            if (!empty($data)) {
+                $stateId = $data['addr_state_id'];
+                $frm->fill($data);
+            }
+        }
 		
-		$address = new Address(0, $this->siteLangId);
-        $data = $address->getData(Address::TYPE_SHOP_PICKUP, $shop_id);
-		$data = array_shift($data);
-		if (!empty($data)) {
-			$stateId = $data['addr_state_id'];
-			$frm->fill($data);
-		}
-
         $this->set('shop_id', $shop_id);
         $this->set('language', Language::getAllNames());
         $this->set('siteLangId', $this->siteLangId);

@@ -24,6 +24,18 @@ $this->includeTemplate('seller/_partial/shop-navigation.php', $variables, false)
     <div class="cards-content ">    
         <div class="tabs__content form">
             <div class="row">
+                <div class="col-lg-12 col-md-12">
+                    <div class="content-header row">
+                        <div class="col">
+                            <h5 class="cards-title"><?php echo Labels::getLabel('LBL_Shop_Pickup_Addresses', $siteLangId); ?></h5>
+                        </div>
+                        <div class="content-header-right col-auto">
+                            <div class="btn-group">
+                                <a href="javascript:void(0)" onClick="pickupAddress()" class="btn btn-outline-primary btn-sm  btn-sm"><?php echo Labels::getLabel('LBL_Back', $siteLangId);?></a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
                 <div class="col-md-12">
                     <?php echo $frm->getFormHtml();?>
                 </div>
@@ -33,6 +45,6 @@ $this->includeTemplate('seller/_partial/shop-navigation.php', $variables, false)
 </div>
 <script language="javascript">
     $(document).ready(function() {
-        getCountryStates($("#addr_country_id").val(), <?php echo $stateId ;?>, '#addr_state_id');
+        getCountryStates($("#addr_country_id").val(), <?php echo ($stateId) ? $stateId : 0 ;?>, '#addr_state_id');
     });
 </script>
