@@ -421,6 +421,8 @@ class AdminBaseController extends FatController
             $codFld->addFieldTagAttribute('disabled', 'disabled');
             $codFld->htmlAfterField = '<br/><small>' . Labels::getLabel('LBL_COD_option_is_disabled_in_payment_gateway_settings', $this->adminLangId) . '</small>';
         }
+        
+        $frm->addSelectBox(Labels::getLabel('LBL_Available_for_Pickup', $this->adminLangId), 'product_pickup_enabled', $yesNoArr, applicationConstants::NO, array(), '');
 
         if ($type == 'REQUESTED_CATALOG_PRODUCT') {
             $fld1 = $frm->addTextBox(Labels::getLabel('LBL_Add_Option_Groups', $this->adminLangId), 'option_name');
@@ -525,7 +527,7 @@ class AdminBaseController extends FatController
                 $fld->requirements()->setRequired();
             }
         } else {
-            $productData = Product::getAttributesById($product_id, array('product_type', 'product_min_selling_price'));
+            $productData = Product::getAttributesById($product_id, array('product_type', 'product_min_selling_price', 'product_pickup_enabled'));
             if ($productData['product_type'] == Product::PRODUCT_TYPE_DIGITAL) {
                 $defaultProductCond = Product::CONDITION_NEW;
             }
@@ -636,6 +638,12 @@ class AdminBaseController extends FatController
             $codFld->addFieldTagAttribute('disabled', 'disabled');
             $codFld->htmlAfterField = '<br/><small>' . Labels::getLabel('LBL_COD_option_is_disabled_in_payment_gateway_settings', $this->adminLangId) . '</small>';
         }
+
+        $disabled = array();
+        if ($productData['product_pickup_enabled'] != applicationConstants::YES) {
+            $disabled = array('disabled' => 'disabled');
+        }
+        $frm->addSelectBox(Labels::getLabel('LBL_Available_for_Pickup', $this->adminLangId), 'selprod_pickup_enabled', $yesNoArr, applicationConstants::NO, $disabled, '');
         $frm->addRequiredField(Labels::getLabel('LBL_Title', $this->adminLangId), 'selprod_title' . FatApp::getConfig('conf_default_site_lang', FatUtility::VAR_INT, 1));
         $frm->addTextArea(Labels::getLabel('LBL_Any_Extra_Comment_for_buyer', $this->adminLangId), 'selprod_comments' . FatApp::getConfig('conf_default_site_lang', FatUtility::VAR_INT, 1));
 
