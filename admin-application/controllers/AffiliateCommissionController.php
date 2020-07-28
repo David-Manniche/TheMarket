@@ -134,7 +134,7 @@ class AffiliateCommissionController extends AdminBaseController
                 FatUtility::dieWithError(Message::getHtml());
             }
         }
-
+        unset($post['afcommsetting_id']);
         $affCommSetObj = new AffiliateCommission($afcommsetting_id);
 
         $affCommSetObj->assignValues($post);
