@@ -1359,6 +1359,8 @@ class ProductsController extends AdminBaseController
                 $codFld->htmlAfterField = '<br/><small>' . Labels::getLabel('LBL_COD_option_is_disabled_in_payment_gateway_settings', $this->adminLangId) . '</small>';
             }
             /* ] */
+
+           $frm->addCheckBox(Labels::getLabel('LBL_Product_Is_Available_for_Pickup?', $this->adminLangId), 'product_pickup_enabled', 1, array(), false, 0);
         }
 
         $frm->addTextBox(Labels::getLabel('LBL_Country_of_Origin', $this->adminLangId), 'shipping_country');

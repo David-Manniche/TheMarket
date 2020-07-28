@@ -116,6 +116,12 @@ function checkStatesDefault(parentIndex, countryId, stateIds) {
 function getCountryStatesTaxInTaxForm(currentSel, countryId, stateId) {
 	var parentIndex = $(currentSel).parents('.tax-rule-form--js').data('index');
 	var dv = '.tax-rule-form-'+ parentIndex + ' .selectpicker';
+    if(countryId == -1) {
+        $(dv).selectpicker('refresh');
+        $(dv).attr('disabled', true);
+        $('.tax-rule-form-'+ parentIndex + ' select[name="taxruleloc_type[]"]').attr('disabled', true);
+        return;
+    }
     fcom.displayProcessing();
     fcom.ajax(fcom.makeUrl('Users', 'getStates', [countryId, stateId]), '', function(res) {
         $(dv).empty();

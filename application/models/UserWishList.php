@@ -107,10 +107,6 @@ class UserWishList extends MyAppModel
 
         $rs = $srch->getResultSet();
 		
-		if($type == self::TYPE_SAVE_FOR_LATER) {
-			return FatApp::getDb()->fetch($rs);
-		}
-		
         $wishLists = array();
         if ($fetchProducts) {
             while ($row = FatApp::getDb()->fetch($rs)) {
@@ -122,13 +118,20 @@ class UserWishList extends MyAppModel
         return FatApp::getDb()->fetchAll($rs);
     }
 
-	public function getWishListId(int $userId): int
+	public function getWishListId(int $userId, int $type): int
 	{
-		if ($wishList = $this->getUserWishLists($userId, false, 0, self::TYPE_SAVE_FOR_LATER)){
-			return $wishList['uwlist_id'];
-		}
+		$srch = static::getSearchObject($userId, true);
+        $srch->addCondition('uwlist_type', '=', $type);
+        $srch->addMultipleFields(array( 'uwlist_id'));
+        $srch->setPageSize(1);
+        $rs = $srch->getResultSet();
+        $row = FatApp::getDb()->fetch($rs);
+
+        if (!empty($row)) {
+            return $row['uwlist_id'];
+        }
 		$data = [
-			'uwlist_type' => self::TYPE_SAVE_FOR_LATER,
+			'uwlist_type' => $type,
 			'uwlist_user_id' => $userId,
 			'uwlist_title' => Labels::getLabel('LBL_Save_For_Later', CommonHelper::getLangId()),
 		];

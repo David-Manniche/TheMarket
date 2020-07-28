@@ -3980,6 +3980,8 @@ class SellerController extends SellerBaseController
             $codFld->addFieldTagAttribute('disabled', 'disabled');
             $codFld->htmlAfterField = '<small class="text--small">' . Labels::getLabel('LBL_COD_option_is_disabled_in_payment_gateway_settings', $langId) . '</small>';
         }
+        $frm->addSelectBox(Labels::getLabel('LBL_Available_for_Picup', $langId), 'product_pickup_enabled', $yesNoArr, applicationConstants::NO, array(), '');
+
         $fld = $frm->addCheckBox(Labels::getLabel('LBL_Free_Shipping', $langId), 'ps_free', 1);
 
         $fld = $frm->addTextBox(Labels::getLabel('LBL_Shipping_country', $langId), 'shipping_country');
@@ -4039,7 +4041,7 @@ class SellerController extends SellerBaseController
                 $fld->requirements()->setRequired();
             }
         } else {
-            $productData = Product::getAttributesById($product_id, array('product_type', 'product_min_selling_price', 'product_cod_enabled'));
+            $productData = Product::getAttributesById($product_id, array('product_type', 'product_min_selling_price', 'product_cod_enabled', 'product_pickup_enabled'));
             if ($productData['product_type'] == Product::PRODUCT_TYPE_DIGITAL) {
                 $defaultProductCond = Product::CONDITION_NEW;
             }
@@ -4111,6 +4113,12 @@ class SellerController extends SellerBaseController
                     $codFld->htmlAfterField = '<small class="text--small">' . Labels::getLabel('LBL_COD_option_is_disabled_in_payment_gateway_settings', $this->siteLangId) . '</small>';
                 }
             }
+
+            $disabled = array();
+            if ($productData['product_pickup_enabled'] != applicationConstants::YES) {
+                $disabled = array('disabled' => 'disabled');
+            }
+            $frm->addSelectBox(Labels::getLabel('LBL_Available_for_Picup', $this->siteLangId), 'selprod_pickup_enabled', $yesNoArr, applicationConstants::NO, $disabled, '');
             $frm->addRequiredField(Labels::getLabel('LBL_Url_Keyword', $this->siteLangId), 'selprod_url_keyword');
             $productOptions = Product::getProductOptions($product_id, $this->siteLangId, true);
             if (!empty($productOptions) && $selprod_id == 0) {
@@ -4977,8 +4985,10 @@ class SellerController extends SellerBaseController
                     $codFld->addFieldTagAttribute('disabled', 'disabled');
                     $codFld->htmlAfterField = '<br/><small>' . Labels::getLabel('LBL_COD_option_is_disabled_in_payment_gateway_settings', $this->siteLangId) . '</small>';
                 }
-            }
 
+                $frm->addCheckBox(Labels::getLabel('LBL_Product_Is_Available_for_Pickup?', $this->siteLangId), 'product_pickup_enabled', 1, array(), false, 0);
+            }
+            
             /* ] */
         }
         if ($preqId == 0 && !FatApp::getConfig('CONF_SHIPPED_BY_ADMIN_ONLY', FatUtility::VAR_INT, 0)) {

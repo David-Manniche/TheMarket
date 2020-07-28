@@ -93,5 +93,32 @@ $(document).ready(function(){
 			}
 		});
 	};
+    
+    moveToSaveForLater = function( key, selProdId ){
+		if( isUserLogged() == 0 ){
+			loginPopUpBox();
+			return false;
+		}
+		$.mbsmessage.close();
+		fcom.updateWithAjax(fcom.makeUrl('Account', 'moveToSaveForLater', [selProdId]), '', function(ans) {
+			if( ans.status ){
+				removeFromCart( key );
+			}
+		});
+	};
+    
+    removeFromWishlist = function( selprod_id, wish_list_id, event){
+		if( !confirm( langLbl.confirmDelete ) ){ return false; };
+		addRemoveWishListProduct(selprod_id, wish_list_id, event);
+		listCartProducts();
+	};
+    
+    moveToCart = function(selprod_id, wish_list_id){
+        var data = 'selprod_id[0]='+selprod_id;
+        fcom.updateWithAjax(fcom.makeUrl('cart', 'addSelectedToCart' ), data, function(ans) {
+            addRemoveWishListProduct(selprod_id, wish_list_id, event);
+            listCartProducts();
+		});
+	};
 
 })();
