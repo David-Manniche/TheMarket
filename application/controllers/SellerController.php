@@ -5096,7 +5096,7 @@ class SellerController extends SellerBaseController
         if ($addrId > 0) {
             $address = new Address($addrId, $this->siteLangId);
             $data = $address->getData(Address::TYPE_SHOP_PICKUP, $shop_id);
-            $data = array_shift($data);
+			/* CommonHelper::printArray($data); die; */
             if (!empty($data)) {
                 $stateId = $data['addr_state_id'];
                 $frm->fill($data);
