@@ -773,17 +773,18 @@ var infowindow;
 function initMap(lat = 40.72, lng = -73.96, elementId = 'map') {
 	var lat = parseInt(lat);
 	var lng = parseInt(lng);
+    var myLatLng = {lat: lat, lng: lng};
 	var address = '';
 	if (1 > $("#" + elementId).length) {
         return;
 	}
   	map = new google.maps.Map(document.getElementById(elementId), {
 		zoom: 8,
-		center: {lat: lat, lng: lng}
+		center: myLatLng
   	});
   	geocoder = new google.maps.Geocoder;
   	infowindow = new google.maps.InfoWindow;
-
+   
 	address = document.getElementById('postal_code').value;
 	/*address = {lat: parseFloat(lat), lng: parseFloat(lat)};*/
 	geocodeAddress(geocoder, map, infowindow, address);
