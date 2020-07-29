@@ -771,39 +771,39 @@ var geocoder;
 var infowindow;
 // Initialize the map.
 function initMap(lat = 40.72, lng = -73.96, elementId = 'map') {
-	var lat = parseInt(lat);
-	var lng = parseInt(lng);
-    var myLatLng = {lat: lat, lng: lng};
+	var lat = parseFloat(lat);
+	var lng = parseFloat(lng);
+    var latlng = {lat: lat, lng: lng};
 	var address = '';
 	if (1 > $("#" + elementId).length) {
         return;
 	}
   	map = new google.maps.Map(document.getElementById(elementId), {
 		zoom: 8,
-		center: myLatLng
+		center: latlng
   	});
   	geocoder = new google.maps.Geocoder;
   	infowindow = new google.maps.InfoWindow;
    
-	address = document.getElementById('postal_code').value;
+	// address = document.getElementById('postal_code').value;
 	/*address = {lat: parseFloat(lat), lng: parseFloat(lat)};*/
-	geocodeAddress(geocoder, map, infowindow, address);
+	geocodeAddress(geocoder, map, infowindow, {'location': latlng});
 
   	document.getElementById('postal_code').addEventListener('blur', function() {
 		address = document.getElementById('postal_code').value;
-		geocodeAddress(geocoder, map, infowindow, address);
+		geocodeAddress(geocoder, map, infowindow, {'address': 'postalcode ' + address});
   	});
 
 	for (i = 0; i < document.getElementsByClassName('addressSelection-js').length; i++) {
 	    document.getElementsByClassName('addressSelection-js')[i].addEventListener("change", function(e) {
 			address = e.target.options[e.target.selectedIndex].text;
-			geocodeAddress(geocoder, map, infowindow, address);
+			geocodeAddress(geocoder, map, infowindow, {'address': address});
 	  	});
 	}
 }
 
 function geocodeAddress(geocoder, resultsMap, infowindow, address) {
-    geocoder.geocode({'address': address}, function(results, status) {
+    geocoder.geocode(address, function(results, status) {
       if (status === 'OK') {
         resultsMap.setCenter(results[0].geometry.location);
 		if (marker && marker.setMap) {
@@ -862,7 +862,7 @@ function geocodePosition(pos) {
 						var state = 0;
 						$('#shop_state option').each(function(){
 							if (this.text == data.state) {
-								state = this.value;
+								return state = this.value;
 							}
 						});
 						getCountryStates(this.value, state, '#shop_state');
