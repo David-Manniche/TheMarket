@@ -37,9 +37,13 @@ $submitFld->setFieldTagAttribute('class', "btn btn-primary");
             if ('undefined' != typeof getExternalLibraryUrl) {
                 fcom.ajax(getExternalLibraryUrl, '', function(t) {
                     var json = $.parseJSON(t);
-                    $.each(json.libraries, function(key, src) {
-                        loadScript(src, loadChargeForm, [action]);
-                    });
+                    if (0 < (json.libraries).length) {
+                        $.each(json.libraries, function(key, src) {
+                            loadScript(src, loadChargeForm, [action]);
+                        });
+                    } else {
+                        loadChargeForm(action);        
+                    }
                 });
             } else {
                 loadChargeForm(action);

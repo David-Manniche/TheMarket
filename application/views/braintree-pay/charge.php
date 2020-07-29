@@ -30,7 +30,13 @@
 									$payNowButton = $frm->getField('btn_submit');
 									echo $payNowButton->getHTML();
 								?>
-								<a href="<?php echo $cancelBtnUrl; ?>" id="cancelLink" class="link link--normal"><?php echo Labels::getLabel('LBL_Cancel',$siteLangId);?></a>
+                                <?php if (FatUtility::isAjaxCall()) { ?>
+                                    <a href="javascript:void(0);" onclick="loadPaymentSummary()" class="btn btn-outline-primary">
+                                        <?php echo Labels::getLabel('LBL_Cancel', $siteLangId); ?>
+                                    </a>
+                                <?php } else { ?>
+                                    <a href="<?php echo $cancelBtnUrl; ?>" class="btn btn-outline-primary"><?php echo Labels::getLabel('LBL_Cancel',$siteLangId);?></a>
+                                <?php } ?>
 							</div>
 						</div>
 					</div>

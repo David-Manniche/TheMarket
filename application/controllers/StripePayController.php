@@ -112,9 +112,8 @@ class StripePayController extends PaymentController
         if (FatUtility::isAjaxCall()) {
             $json['html'] = $this->_template->render(false, false, 'stripe-pay/charge.php', true, false);
             FatUtility::dieJsonSuccess($json);
-        } else {
-            $this->_template->render(true, false);
         }
+        $this->_template->render(true, false);
     }
 
     public function checkCardType()

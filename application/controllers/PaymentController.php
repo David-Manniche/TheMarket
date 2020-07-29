@@ -28,7 +28,7 @@ abstract class PaymentController extends MyAppController
         if (!in_array($this->systemCurrencyCode, $this->allowedCurrenciesArr())) {
             $this->setErrorAndRedirect(Labels::getLabel('MSG_INVALID_ORDER_CURRENCY_PASSED_TO_GATEWAY', $this->siteLangId));
         }
-
+        $this->set('systemCurrencyCode', $this->systemCurrencyCode);
         $this->loadPaymenMethod();
     }
 
@@ -50,5 +50,14 @@ abstract class PaymentController extends MyAppController
         $msg = !empty($msg) ? $msg : $this->stripeConnect->getError();
         LibHelper::exitWithError($msg, $json, $redirect);
         CommonHelper::redirectUserReferer();
+    }
+
+    /* 
+     * You can override this function in child class if that class required any external js library.
+     */
+    public function getExternalLibraries()
+    {
+        $json['libraries'] = [];
+        FatUtility::dieJsonSuccess($json);
     }
 }

@@ -40,6 +40,10 @@ class CitrusPayController extends PaymentController
         }
         $this->set('orderInfo', $orderInfo);
         $this->set('exculdeMainHeaderDiv', true);
+        if (FatUtility::isAjaxCall()) {
+            $json['html'] = $this->_template->render(false, false, 'citrus-pay/charge.php', true, false);
+            FatUtility::dieJsonSuccess($json);
+        }
         $this->_template->render(true, false);
     }
 

@@ -66,6 +66,10 @@ class AuthorizeAimPayController extends PaymentController
         $this->set('orderInfo', $orderInfo);
         $this->set('paymentAmount', $paymentAmount);
         $this->set('exculdeMainHeaderDiv', true);
+        if (FatUtility::isAjaxCall()) {
+            $json['html'] = $this->_template->render(false, false, 'authorize-aim-pay/charge.php', true, false);
+            FatUtility::dieJsonSuccess($json);
+        }
         $this->_template->render(true, false);
     }
 

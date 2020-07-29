@@ -29,12 +29,8 @@ class PayFortPayController extends PaymentController
         $this->settings = $this->plugin->getSettings();
     }
 
-    public function charge($orderId = '')
+    public function charge($orderId)
     {
-        if (empty($orderId)) {
-            FatUtility::exitWIthErrorCode(404);
-        }
-
         $orderPaymentObj = new OrderPayment($orderId, $this->siteLangId);
         $paymentGatewayCharge = 0.00;
         $orderInfo  = array();
@@ -46,7 +42,7 @@ class PayFortPayController extends PaymentController
             $this->set('orderInfo', $orderInfo);
             $this->set('requestParams', $requestParams);
         } else {
-            $this->error = Labels::getLabel('PAYFORT_Invalid_request_parameters', $this->siteLangId);
+            $this->error = Labels::getLabel('MSG_INVALID_REQUEST_PARAMETERS', $this->siteLangId);
         }
 
         if ($this->error) {
@@ -55,22 +51,26 @@ class PayFortPayController extends PaymentController
         $this->set('paymentAmount', $paymentGatewayCharge);
         $this->set('orderInfo', $orderInfo);
         $this->set('exculdeMainHeaderDiv', true);
+        if (FatUtility::isAjaxCall()) {
+            $json['html'] = $this->_template->render(false, false, 'pay-fort-pay/charge.php', true, false);
+            FatUtility::dieJsonSuccess($json);
+        }
         $this->_template->render(true, false);
     }
 
     public function doPayment($orderId = '')
     {
         if (empty($orderId) && !empty($_REQUEST['merchant_reference'])) {
-            $orderId = $arrData['merchant_reference'];
+            $orderId = $_REQUEST['merchant_reference'];
         }
         if (!$orderId) {
-            Message::addErrorMessage(Labels::getLabel('PAYFORT_INVALID_REQUEST'));
+            Message::addErrorMessage(Labels::getLabel('MSG_INVALID_REQUEST', $this->siteLangId));
             FatApp::redirectUser(UrlHelper::generateUrl('Account', 'profileInfo'));
         }
 
         $paymentChargeUrl = UrlHelper::generateUrl('PayFortPay', 'charge', array( $orderId ));
         if (!(isset($_REQUEST['signature']) and !empty($_REQUEST['signature']))) {
-            Message::addErrorMessage(Labels::getLabel('PAYFORT_INVALID_REQUEST', $this->siteLangId));
+            Message::addErrorMessage(Labels::getLabel('MSG_INVALID_REQUEST', $this->siteLangId));
             FatApp::redirectUser($paymentChargeUrl);
         }
 
