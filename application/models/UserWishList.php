@@ -147,7 +147,7 @@ class UserWishList extends MyAppModel
             case self::TYPE_DEFAULT_WISHLIST:
                 $title = $typeArr[self::TYPE_DEFAULT_WISHLIST];
                 break;
-            case Transactions::TYPE_SAVE_FOR_LATER:
+            case self::TYPE_SAVE_FOR_LATER:
                 $title = $typeArr[self::TYPE_SAVE_FOR_LATER];
                 break;
         }
