@@ -766,10 +766,9 @@ class SellerController extends SellerBaseController
         $this->_template->render(false, false, 'json-success.php');
     }
 
-    public function catalog($displayDefaultListing = false)
+    public function catalog($type = 1)
     {
         $this->userPrivilege->canViewProducts(UserAuthentication::getLoggedUserId());
-        $displayDefaultListing = FatUtility::int($displayDefaultListing);
 
         if (!$this->isShopActive($this->userParentId, 0, true)) {
             FatApp::redirectUser(UrlHelper::generateUrl('Seller', 'shop'));
@@ -779,13 +778,13 @@ class SellerController extends SellerBaseController
             FatApp::redirectUser(UrlHelper::generateUrl('Seller', 'Packages'));
         }
 
-        $frmSearchCatalogProduct = $this->getCatalogProductSearchForm();
+        $frmSearchCatalogProduct = $this->getCatalogProductSearchForm($type);
         $this->set('canEdit', $this->userPrivilege->canEditProducts(UserAuthentication::getLoggedUserId(), true));
         $this->set("frmSearchCatalogProduct", $frmSearchCatalogProduct);
-        $this->set("displayDefaultListing", $displayDefaultListing);
         $this->set('canRequestProduct', User::canRequestProduct());
         $this->set('canAddCustomProduct', User::canAddCustomProduct());
         $this->set('canAddCustomProductAvailableToAllSellers', User::canAddCustomProductAvailableToAllSellers());
+        $this->set('type', $type);
         $this->_template->addJs(array('js/cropper.js', 'js/cropper-main.js'));
         $this->_template->render(true, true);
     }
@@ -3449,16 +3448,17 @@ class SellerController extends SellerBaseController
         return $frm;
     }
 
-    private function getCatalogProductSearchForm()
+    private function getCatalogProductSearchForm($type = '')
     {
         $frm = new Form('frmSearchCatalogProduct');
         $frm->addTextBox(Labels::getLabel('LBL_Search_By', $this->siteLangId), 'keyword');
 
         /* if( !User::canAddCustomProductAvailableToAllSellers() ){ */
         if (FatApp::getConfig('CONF_ENABLED_SELLER_CUSTOM_PRODUCT')) {
-            $frm->addSelectBox(Labels::getLabel('LBL_Product', $this->siteLangId), 'type', array(-1 => Labels::getLabel('LBL_All', $this->siteLangId)) + applicationConstants::getCatalogTypeArrForFrontEnd($this->siteLangId), '-1', array('id' => 'type'), '');
-        }
-
+            //$frm->addSelectBox(Labels::getLabel('LBL_Product', $this->siteLangId), 'type', array(-1 => Labels::getLabel('LBL_All', $this->siteLangId)) + applicationConstants::getCatalogTypeArrForFrontEnd($this->siteLangId), '-1', array('id' => 'type'), '');
+           $frm->addHiddenField('', 'type', $type);
+        }        
+            
         $frm->addSelectBox(Labels::getLabel('LBL_Product_Type', $this->siteLangId), 'product_type', array(-1 => Labels::getLabel('LBL_All', $this->siteLangId)) + Product::getProductTypes($this->siteLangId), '-1', array(), '');
         /* }  */
 
