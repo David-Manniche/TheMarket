@@ -10,6 +10,7 @@ $(document).ready(function(){
 		var frm = document.frmAdvertiserRegistration;
 		fcom.ajax(fcom.makeUrl('GuestAdvertiser', 'form'), '', function(t) {
 			$(dv).html(t);
+            stylePhoneNumberFld();
 		});		
 	};
 

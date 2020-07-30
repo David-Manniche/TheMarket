@@ -106,7 +106,8 @@ class GuestAdvertiserController extends MyAppController
         }
 
         $frm = $this->getCompanyDetailsForm();
-        $post = $frm->getFormDataFromArray(FatApp::getPostedData());
+        $post = FatApp::getPostedData();
+        /* $post = $frm->getFormDataFromArray(FatApp::getPostedData()); */
         if ($post == false) {
             Message::addErrorMessage(current($frm->getValidationErrors()));
             FatUtility::dieJsonError(Message::getHtml());
