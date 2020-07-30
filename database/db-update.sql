@@ -470,6 +470,10 @@ ALTER TABLE `tbl_time_slots`
 
 ALTER TABLE `tbl_products` ADD `product_pickup_enabled` TINYINT(1) NOT NULL AFTER `product_cod_enabled`;
 ALTER TABLE `tbl_seller_products` ADD `selprod_pickup_enabled` TINYINT(1) NOT NULL AFTER `selprod_cod_enabled`;
+ALTER TABLE `tbl_shops` ADD `shop_pickup_enabled` TINYINT(1) NOT NULL AFTER `shop_lng`;
+ALTER TABLE `tbl_products` DROP `product_pickup_enabled`;
+ALTER TABLE `tbl_seller_products` CHANGE `selprod_pickup_enabled` `selprod_fulfillment_type` TINYINT(4) NOT NULL;
+ALTER TABLE `tbl_shops` CHANGE `shop_pickup_enabled` `shop_fulfillment_type` TINYINT(4) NOT NULL;
 -- pickup location end
 
 

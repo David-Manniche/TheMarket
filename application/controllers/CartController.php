@@ -14,7 +14,7 @@ class CartController extends MyAppController
         $this->_template->render();
     }
 
-    public function listing()
+    public function listing($fulfilmentType = Shipping::FULFILMENT_SHIP)
     {
         $templateName = 'cart/listing.php';
         $products['groups'] = array();
@@ -22,9 +22,26 @@ class CartController extends MyAppController
         $loggedUserId = UserAuthentication::getLoggedUserId(true);
         $cartObj = new Cart($loggedUserId, $this->siteLangId, $this->app_user['temp_user_id']);
         $productsArr = $cartObj->getProducts($this->siteLangId);
+        //CommonHelper::printArray($productsArr); exit;
         $prodGroupIds = array();
 
+        $fulfillmentProdArr = [];
+
         if (0 < count($productsArr) || true === MOBILE_APP_API_CALL) {
+            foreach ($productsArr as $product) {
+                switch ($product['fulfillment_Type']) {
+                    case Shipping::FULFILMENT_SHIP:
+                        $fulfillmentProdArr[Shipping::FULFILMENT_SHIP][] = $product['selprod_id'];
+                    break;
+                    case Shipping::FULFILMENT_PICKUP:
+                        $fulfillmentProdArr[Shipping::FULFILMENT_PICKUP][] = $product['selprod_id'];
+                    break;
+                    default:
+                        $fulfillmentProdArr[Shipping::FULFILMENT_SHIP][] = $product['selprod_id'];
+                        $fulfillmentProdArr[Shipping::FULFILMENT_PICKUP][] = $product['selprod_id'];
+                    break;
+                }
+            }
             /* foreach( $productsArr as $product ) {
                 if( $product['prodgroup_id'] > 0 ){
                 $prodGroupIds[$product['prodgroup_id']] = $product['prodgroup_id'];
@@ -113,7 +130,14 @@ class CartController extends MyAppController
             $this->set('products', $productsArr);
             $this->set('prodGroupIds', $prodGroupIds);
             $this->set('PromoCouponsFrm', $PromoCouponsFrm);
+            $this->set('fulfilmentType', $fulfilmentType);
+            $this->set('fulfillmentProdArr', $fulfillmentProdArr);
             $this->set('cartSummary', $cartSummary);
+
+            $templateName = 'cart/ship-listing.php';
+            if ($fulfilmentType == Shipping::FULFILMENT_PICKUP) {
+                $templateName = 'cart/pickup-listing.php';
+            }
         } else {
             $srch = EmptyCartItems::getSearchObject($this->siteLangId);
             $srch->doNotCalculateRecords();

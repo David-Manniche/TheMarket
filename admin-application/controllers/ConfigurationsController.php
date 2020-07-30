@@ -732,6 +732,11 @@ class ConfigurationsController extends AdminBaseController
                 $brandFld = $frm->addCheckBox(Labels::getLabel("LBL_Product's_Brand_Mandatory", $this->adminLangId), 'CONF_PRODUCT_BRAND_MANDATORY', 1, array(), false, 0);
                 $brandFld->htmlAfterField = "<br><small>" . Labels::getLabel("LBL_This_will_make_Product's_brand_mandatory", $this->adminLangId) . "</small>";
 
+                $fulFillmentArr = Shipping::getFulFillmentArr($this->adminLangId);
+                $frm->addSelectBox(Labels::getLabel('LBL_FULFILLMENT_METHOD', $this->adminLangId), 'CONF_FULFILLMENT_TYPE', $fulFillmentArr, applicationConstants::NO, array(), '');
+                
+                $brandFld->htmlAfterField = "<br><small>" . Labels::getLabel("LBL_This_will_make_Product's_brand_mandatory", $this->adminLangId) . "</small>";
+
                 $fld3 = $frm->addTextBox(Labels::getLabel("LBL_Default_Items_Per_Page_(Catalog)", $this->adminLangId), "CONF_ITEMS_PER_PAGE_CATALOG");
                 $fld3->requirements()->setInt();
                 $fld3->requirements()->setRange('1', '2000');
