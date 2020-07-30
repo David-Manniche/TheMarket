@@ -6,8 +6,8 @@ class Ccavenue extends PaymentMethodBase
 
     public $requiredKeys = [
         'merchant_id',
-        'public_key',
-        'private_key',
+        'access_code',
+        'working_key',
     ];
 
     /**

@@ -55,7 +55,7 @@ class KhipuPayController extends PaymentController
             $payments = new PaymentsApi($client);
             try {
                 $response = $payments->paymentsPost(
-                    FatApp::getConfig('CONF_WEBSITE_NAME_' . $siteLangId), // Reason for purchase
+                    FatApp::getConfig('CONF_WEBSITE_NAME_' . $this->siteLangId), // Reason for purchase
                     "CLP", // Currency
                     ceil($payment_amount), // Amount
                     $transaction_id, // transaction ID in trade
@@ -76,6 +76,10 @@ class KhipuPayController extends PaymentController
                     null, // Personal identifier of the payer, if used only you are paid with this
                     null // Commission for the integrator
                 );
+                if (FatUtility::isAjaxCall()) {
+                    $json['redirect'] = $response->getPaymentUrl();
+                    FatUtility::dieJsonSuccess($json);
+                }
                 FatApp::redirectUser($response->getPaymentUrl());
             } catch (exception $e) {
                 Message::addErrorMessage($e->getMessage());
@@ -93,8 +97,8 @@ class KhipuPayController extends PaymentController
         try {
             if ($api_version == '1.3') {
                 $configuration = new Configuration();
-                $configuration-> setSecret($this->settings['secret_key']);
-                $configuration-> setReceiverId($this->settings['receiver_id']);
+                $configuration->setSecret($this->settings['secret_key']);
+                $configuration->setReceiverId($this->settings['receiver_id']);
                 $client = new ApiClient($configuration);
                 $payments = new PaymentsApi($client);
                 $response = $payments->paymentsGet($notification_token);
@@ -111,19 +115,19 @@ class KhipuPayController extends PaymentController
                     if (!$response) {
                         throw new Exception(Labels::getLabel('MSG_EMPTY_GATEWAY_RESPONSE', $this->siteLangId));
                     }
-                    if ($response-> getReceiverId() == $this->settings['receiver_id']) {
-                        if (strtolower($response-> getStatus()) == 'done') {
+                    if ($response->getReceiverId() == $this->settings['receiver_id']) {
+                        if (strtolower($response->getStatus()) == 'done') {
                             if ($response->getAmount() == $order_actual_paid) {
                                 // Make payment as complete and deliver the good or service
                                 if (!$orderPaymentObj->addOrderPayment($this->settings["plugin_code"], $response->getTransactionId(), $response->getAmount(), Labels::getLabel("LBL_Received_Payment", $this->siteLangId), $response->__toString())) {
                                 }
                             } else {
-                                $request = $response->__toString() . "\n\n KHIPU :: TOTAL PAID MISMATCH! " . $response-> getAmount() . "\n\n";
+                                $request = $response->__toString() . "\n\n KHIPU :: TOTAL PAID MISMATCH! " . $response->getAmount() . "\n\n";
                                 $orderPaymentObj->addOrderPaymentComments($request);
                             }
                         }
                     } else {
-                        $request = $response->__toString() . "\n\n KHIPU :: RECEIVER MISMATCH! " . $response-> getReceiverId() . "\n\n";
+                        $request = $response->__toString() . "\n\n KHIPU :: RECEIVER MISMATCH! " . $response->getReceiverId() . "\n\n";
                         $orderPaymentObj->addOrderPaymentComments($request);
                     }
                 } else {

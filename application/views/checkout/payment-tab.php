@@ -22,7 +22,7 @@ $submitFld->setFieldTagAttribute('class', "btn btn-primary");
 <script type="text/javascript">
     $("document").ready(function() {
         <?php if (isset($error)) { ?>
-            $.systemMessage(<?php echo $error; ?>);
+            $.mbsmessage(<?php echo $error; ?>,true,'alert--danger');
         <?php } ?>
     });
     var containerId = '#payment';
@@ -37,6 +37,11 @@ $submitFld->setFieldTagAttribute('class', "btn btn-primary");
             if ('undefined' != typeof getExternalLibraryUrl) {
                 fcom.ajax(getExternalLibraryUrl, '', function(t) {
                     var json = $.parseJSON(t);
+                    if (1 > json.status) {
+                        $.mbsmessage(json.msg, true, 'alert--danger');
+                        return;
+                    }
+
                     if (0 < (json.libraries).length) {
                         $.each(json.libraries, function(key, src) {
                             loadScript(src, loadChargeForm, [action]);
@@ -59,6 +64,8 @@ $submitFld->setFieldTagAttribute('class', "btn btn-primary");
                 if (1 > ans.status) {
                     $.mbsmessage(ans.msg, true, 'alert--danger');
                     return false;
+                } else if ('undefined' != typeof ans.redirect) {
+                    location.href = ans.redirect;
                 } else {
                     $(containerId).html(ans.html);
                 }

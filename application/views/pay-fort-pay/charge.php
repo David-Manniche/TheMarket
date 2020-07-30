@@ -1,4 +1,12 @@
 <?php defined('SYSTEM_INIT') or die('Invalid Usage.'); ?>
+<?php 
+    $btn = $frm->getField('btn_submit'); 
+    $btn->addFieldTagAttribute('class', 'btn btn-primary btn-wide');
+    $btn->addFieldTagAttribute('data-processing-text', Labels::getLabel('LBL_PLEASE_WAIT..', $siteLangId));
+    $cancelBtn = $frm->getField('btn_cancel'); 
+    $cancelBtn->addFieldTagAttribute('class', 'btn btn-outline-primary btn-wide');
+    $cancelBtn->addFieldTagAttribute('onclick', 'cancel();');
+?>
 <div class="payment-page">
     <div class="cc-payment">
         <?php $this->includeTemplate('_partial/paymentPageLogo.php', array('siteLangId' => $siteLangId)); ?>
@@ -13,7 +21,7 @@
         <div class="payment-from">
             <?php if (!isset($error)) { ?>
                 <p>
-                    <?php echo Labels::getLabel('MSG_We_are_redirecting_to_payment_page', $siteLangId); ?>
+                    <?php echo Labels::getLabel('MSG_PROCEED_TO_PAYMENT_PAGE_?', $siteLangId); ?>
                 </p>
             <?php echo  $frm->getFormHtml();
             } else { ?>
@@ -22,10 +30,12 @@
         </div>
     </div>
 </div>
-<script type="text/javascript">
-    $(function() {
-        setTimeout(function() {
-            $('form[name="frmPayFort"]').submit()
-        }, 5000);
-    });
+<script>
+    function cancel() {
+        <?php if (FatUtility::isAjaxCall()) { ?>
+            loadPaymentSummary();
+        <?php } else { ?>
+            location.href = "<?php echo $cancelBtnUrl; ?>";
+        <?php } ?>
+    }
 </script>

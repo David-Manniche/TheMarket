@@ -3,7 +3,7 @@
 class CitrusPayController extends PaymentController
 {
     public const KEY_NAME = "Citrus";
-    
+
     public function __construct($action)
     {
         parent::__construct($action);
