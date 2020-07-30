@@ -6,7 +6,7 @@ class PaytmPayController extends PaymentController
     public const KEY_NAME = "Paytm";
     private $testEnvironmentUrl = 'https://securegw-stage.paytm.in/order';
     private $liveEnvironmentUrl = 'https://securegw.paytm.in/order';
-   
+
     public function __construct($action)
     {
         parent::__construct($action);
@@ -15,11 +15,9 @@ class PaytmPayController extends PaymentController
 
     protected function allowedCurrenciesArr()
     {
-        return [
-            'INR'
-        ];
+        return ['INR'];
     }
-    
+
     private function init(): void
     {
         if (false === $this->plugin->validateSettings($this->siteLangId)) {
@@ -28,7 +26,7 @@ class PaytmPayController extends PaymentController
 
         $this->settings = $this->plugin->getSettings();
     }
-                         
+
     public function charge($orderId)
     {
         if (empty(trim($orderId))) {
@@ -39,7 +37,7 @@ class PaytmPayController extends PaymentController
         $orderPaymentObj = new OrderPayment($orderId, $this->siteLangId);
         $paymentAmount = $orderPaymentObj->getOrderPaymentGatewayAmount();
         $orderInfo = $orderPaymentObj->getOrderPrimaryinfo();
-        
+
         if (!$orderInfo['id']) {
             FatUtility::exitWIthErrorCode(404);
         } elseif ($orderInfo && $orderInfo["order_is_paid"] == Orders::ORDER_IS_PENDING) {
@@ -52,6 +50,10 @@ class PaytmPayController extends PaymentController
 
         $this->set('orderInfo', $orderInfo);
         $this->set('exculdeMainHeaderDiv', true);
+        if (FatUtility::isAjaxCall()) {
+            $json['html'] = $this->_template->render(false, false, 'paytm-pay/charge.php', true, false);
+            FatUtility::dieJsonSuccess($json);
+        }
         $this->_template->render(true, false);
     }
 
@@ -75,7 +77,7 @@ class PaytmPayController extends PaymentController
         $paymentGatewayCharge = $orderPaymentObj->getOrderPaymentGatewayAmount();
         if ($paymentGatewayCharge > 0) {
             if ($isValidChecksum) {
-                $paid_amount = (float)$txnInfo['TXNAMOUNT'];
+                $paid_amount = (float) $txnInfo['TXNAMOUNT'];
                 $totalPaidMatch = ($paid_amount == $paymentGatewayCharge);
                 if (!$totalPaidMatch) {
                     $request .= "\n\n Paytm :: TOTAL PAID MISMATCH! " . strtolower($paid_amount) . "\n\n";
@@ -154,17 +156,17 @@ class PaytmPayController extends PaymentController
         $frm = new Form('frmPaytm', array('id' => 'frmPaytm', 'action' => $action_url, 'class' => "form form--normal"));
 
         $parameters = array(
-        "MID" => $this->settings["merchant_id"],
-        "ORDER_ID" => date("ymdhis") . "_" . $orderId,
-        "CUST_ID" => $orderInfo['customer_id'],
-        "TXN_AMOUNT" => $paymentGatewayCharge,
-        "CHANNEL_ID" => $this->settings['merchant_channel_id'],
-        "INDUSTRY_TYPE_ID" => $this->settings['merchant_industry_type'],
-        "WEBSITE" => $this->settings['merchant_website'],
-        "MOBILE_NO" => $orderInfo['customer_phone'],
-        "EMAIL" => $orderInfo['customer_email'],
-        "CALLBACK_URL" => UrlHelper::generateFullUrl('PaytmPay', 'callback'),
-        "ORDER_DETAILS" => $orderPaymentGatewayDescription,
+            "MID" => $this->settings["merchant_id"],
+            "ORDER_ID" => date("ymdhis") . "_" . $orderId,
+            "CUST_ID" => $orderInfo['customer_id'],
+            "TXN_AMOUNT" => $paymentGatewayCharge,
+            "CHANNEL_ID" => $this->settings['merchant_channel_id'],
+            "INDUSTRY_TYPE_ID" => $this->settings['merchant_industry_type'],
+            "WEBSITE" => $this->settings['merchant_website'],
+            "MOBILE_NO" => $orderInfo['customer_phone'],
+            "EMAIL" => $orderInfo['customer_email'],
+            "CALLBACK_URL" => UrlHelper::generateFullUrl('PaytmPay', 'callback'),
+            "ORDER_DETAILS" => $orderPaymentGatewayDescription,
         );
 
         $checkSumHash = getChecksumFromArray($parameters, $this->settings['merchant_key']);

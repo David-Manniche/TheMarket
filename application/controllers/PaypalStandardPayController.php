@@ -19,7 +19,7 @@ class PaypalStandardPayController extends PaymentController
         ];
     }
 
-    
+
     private function init(): void
     {
         if (false === $this->plugin->validateSettings($this->siteLangId)) {
@@ -91,13 +91,17 @@ class PaypalStandardPayController extends PaymentController
         $this->set('orderInfo', $orderInfo);
         $this->set('paymentAmount', $paymentAmount);
         $this->set('exculdeMainHeaderDiv', true);
+        if (FatUtility::isAjaxCall()) {
+            $json['html'] = $this->_template->render(false, false, 'paypal-standard-pay/charge.php', true, false);
+            FatUtility::dieJsonSuccess($json);
+        }
         $this->_template->render(true, false);
     }
 
     private function toArray($obj)
     {
         if (is_object($obj)) {
-            $obj = (array)$obj;
+            $obj = (array) $obj;
         }
         if (is_array($obj)) {
             $new = array();
@@ -157,7 +161,7 @@ class PaypalStandardPayController extends PaymentController
 
                 $receiverMatch = (strtolower($post['receiver_email']) == strtolower($this->settings['merchant_email']));
 
-                $totalPaidMatch = ((float)$post['mc_gross'] == $paymentGatewayCharge);
+                $totalPaidMatch = ((float) $post['mc_gross'] == $paymentGatewayCharge);
 
                 if (!$receiverMatch) {
                     $request .= "\n\n PP_STANDARD :: RECEIVER EMAIL MISMATCH! " . strtolower($post['receiver_email']) . "\n\n";

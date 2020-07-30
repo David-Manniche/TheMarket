@@ -25,6 +25,25 @@ trait SellerProducts
         $this->set('canEdit', $this->userPrivilege->canEditProducts(UserAuthentication::getLoggedUserId(), true));
         $this->set('frmSearch', $this->getSellerProductSearchForm($product_id));
         $this->set('product_id', $product_id);
+        
+        $srch = new ProductSearch($this->siteLangId, null, null, false, false);
+        $srch->joinProductShippedBySeller($this->userParentId);
+        $srch->joinTable(AttributeGroup::DB_TBL, 'LEFT OUTER JOIN', 'product_attrgrp_id = attrgrp_id', 'attrgrp');
+        $srch->joinTable(UpcCode::DB_TBL, 'LEFT OUTER JOIN', 'upc_product_id = product_id', 'upc');
+        $srch->addDirectCondition(
+            '((CASE
+                    WHEN product_seller_id = 0 THEN product_active = 1
+                    WHEN product_seller_id > 0 THEN product_active IN (1, 0)
+                    END ) )'
+        );
+        $srch->addCondition('product_deleted', '=', applicationConstants::NO);
+        $cnd = $srch->addCondition('product_seller_id', '=', 0);
+        $cnd->attachCondition('product_added_by_admin_id', '=', applicationConstants::YES, 'AND');
+        $srch->addGroupBy('product_id');
+        $rs = $srch->getResultSet();
+        $adminCatalogs = $srch->recordCount();
+        $this->set('adminCatalogs', $adminCatalogs);
+
         $this->_template->render(true, true);
     }
 

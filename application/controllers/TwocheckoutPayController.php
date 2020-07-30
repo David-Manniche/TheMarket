@@ -27,7 +27,7 @@ class TwocheckoutPayController extends PaymentController
             'USD', 'EUR', 'GBP', 'JPY', 'CAD', 'RON', 'CZK', 'HUF', 'TRY', 'ZAR', 'EGP', 'MXN', 'PEN'
         ];
     }
-    
+
     private function init(): void
     {
         if (false === $this->plugin->validateSettings($this->siteLangId)) {
@@ -51,8 +51,8 @@ class TwocheckoutPayController extends PaymentController
 
             if ($this->paymentType != 'HOSTED') {
                 /***
-* Adding here because we want these values in the js script
-**/
+                 * Adding here because we want these values in the js script
+                 **/
                 $this->set('sellerId', $this->settings['sellerId']);
                 $this->set('publishableKey', $this->settings['publishableKey']);
                 if (FatApp::getConfig('CONF_TRANSACTION_MODE', FatUtility::VAR_BOOLEAN, false) == true) {
@@ -76,6 +76,10 @@ class TwocheckoutPayController extends PaymentController
         $this->set('paymentType', $this->paymentType);
         $this->set('orderInfo', $orderInfo);
         $this->set('exculdeMainHeaderDiv', true);
+        if (FatUtility::isAjaxCall()) {
+            $json['html'] = $this->_template->render(false, false, 'twocheckout-pay/charge.php', true, false);
+            FatUtility::dieJsonSuccess($json);
+        }
         $this->_template->render(true, false);
     }
 
@@ -85,7 +89,7 @@ class TwocheckoutPayController extends PaymentController
     public function callback()
     {
         $post = FatApp::getPostedData();
-        $orderId = $post['li_0_product_id'];//in our case it is order id (hosted checkout case)
+        $orderId = $post['li_0_product_id']; //in our case it is order id (hosted checkout case)
         //$orderPaymentAmount = $request['total'];
         $orderPaymentObj = new OrderPayment($orderId, $this->siteLangId);
         $orderPaymentAmount = $orderPaymentObj->getOrderPaymentGatewayAmount();
@@ -127,30 +131,30 @@ class TwocheckoutPayController extends PaymentController
             $orderInfo = $orderPaymentObj->getOrderPrimaryinfo();
             $order_actual_paid = number_format(round($orderPaymentAmount, 2), 2, ".", "");
             $params = array(
-            "merchantOrderId" => $orderId,
-            "token" => $post['token'],
-            "currency" => $orderInfo["order_currency_code"],
-            "total" => $order_actual_paid,
-            "billingAddr" => array(
-            "name" => FatUtility::decodeHtmlEntities($orderInfo['customer_name'], ENT_QUOTES, 'UTF-8'),
-            "addrLine1" => FatUtility::decodeHtmlEntities($orderInfo['customer_billing_address_1'], ENT_QUOTES, 'UTF-8') . ' ' . FatUtility::decodeHtmlEntities($orderInfo['customer_billing_address_2'], ENT_QUOTES, 'UTF-8'),
-            "city" => FatUtility::decodeHtmlEntities($orderInfo['customer_billing_city'], ENT_QUOTES, 'UTF-8'),
-            "state" => FatUtility::decodeHtmlEntities($orderInfo['customer_billing_state'], ENT_QUOTES, 'UTF-8'),
-            "zipCode" => FatUtility::decodeHtmlEntities($orderInfo['customer_billing_postcode'], ENT_QUOTES, 'UTF-8'),
-            "country" => FatUtility::decodeHtmlEntities($orderInfo['customer_billing_country'], ENT_QUOTES, 'UTF-8'),
-            "email" => $orderInfo['customer_email'],
-            "phoneNumber" => $orderInfo['customer_phone']
-            ),
-            "shippingAddr" => array(
-            "name" => FatUtility::decodeHtmlEntities($orderInfo['customer_shipping_name'], ENT_QUOTES, 'UTF-8'),
-            "addrLine1" => FatUtility::decodeHtmlEntities($orderInfo['customer_shipping_address_1'], ENT_QUOTES, 'UTF-8') . ' ' . FatUtility::decodeHtmlEntities($orderInfo['customer_shipping_address_2'], ENT_QUOTES, 'UTF-8'),
-            "city" => FatUtility::decodeHtmlEntities($orderInfo['customer_shipping_city'], ENT_QUOTES, 'UTF-8'),
-            "state" => FatUtility::decodeHtmlEntities($orderInfo['customer_shipping_state'], ENT_QUOTES, 'UTF-8'),
-            "zipCode" => FatUtility::decodeHtmlEntities($orderInfo['customer_shipping_postcode'], ENT_QUOTES, 'UTF-8'),
-            "country" => FatUtility::decodeHtmlEntities($orderInfo['customer_shipping_country'], ENT_QUOTES, 'UTF-8'),
-            "email" => $orderInfo['customer_email'],
-            "phoneNumber" => $orderInfo['customer_phone']
-            )
+                "merchantOrderId" => $orderId,
+                "token" => $post['token'],
+                "currency" => $orderInfo["order_currency_code"],
+                "total" => $order_actual_paid,
+                "billingAddr" => array(
+                    "name" => FatUtility::decodeHtmlEntities($orderInfo['customer_name'], ENT_QUOTES, 'UTF-8'),
+                    "addrLine1" => FatUtility::decodeHtmlEntities($orderInfo['customer_billing_address_1'], ENT_QUOTES, 'UTF-8') . ' ' . FatUtility::decodeHtmlEntities($orderInfo['customer_billing_address_2'], ENT_QUOTES, 'UTF-8'),
+                    "city" => FatUtility::decodeHtmlEntities($orderInfo['customer_billing_city'], ENT_QUOTES, 'UTF-8'),
+                    "state" => FatUtility::decodeHtmlEntities($orderInfo['customer_billing_state'], ENT_QUOTES, 'UTF-8'),
+                    "zipCode" => FatUtility::decodeHtmlEntities($orderInfo['customer_billing_postcode'], ENT_QUOTES, 'UTF-8'),
+                    "country" => FatUtility::decodeHtmlEntities($orderInfo['customer_billing_country'], ENT_QUOTES, 'UTF-8'),
+                    "email" => $orderInfo['customer_email'],
+                    "phoneNumber" => $orderInfo['customer_phone']
+                ),
+                "shippingAddr" => array(
+                    "name" => FatUtility::decodeHtmlEntities($orderInfo['customer_shipping_name'], ENT_QUOTES, 'UTF-8'),
+                    "addrLine1" => FatUtility::decodeHtmlEntities($orderInfo['customer_shipping_address_1'], ENT_QUOTES, 'UTF-8') . ' ' . FatUtility::decodeHtmlEntities($orderInfo['customer_shipping_address_2'], ENT_QUOTES, 'UTF-8'),
+                    "city" => FatUtility::decodeHtmlEntities($orderInfo['customer_shipping_city'], ENT_QUOTES, 'UTF-8'),
+                    "state" => FatUtility::decodeHtmlEntities($orderInfo['customer_shipping_state'], ENT_QUOTES, 'UTF-8'),
+                    "zipCode" => FatUtility::decodeHtmlEntities($orderInfo['customer_shipping_postcode'], ENT_QUOTES, 'UTF-8'),
+                    "country" => FatUtility::decodeHtmlEntities($orderInfo['customer_shipping_country'], ENT_QUOTES, 'UTF-8'),
+                    "email" => $orderInfo['customer_email'],
+                    "phoneNumber" => $orderInfo['customer_phone']
+                )
             );
             if (FatApp::getConfig('CONF_TRANSACTION_MODE', FatUtility::VAR_BOOLEAN, false) == true) {
                 $url = 'https://www.2checkout.com/checkout/api/1/' . $this->settings['sellerId'] . '/rs/authService';
@@ -181,15 +185,15 @@ class TwocheckoutPayController extends PaymentController
                     $result_array[$member] = $data;
                 }
                 /**
-                * "validationErrors": null,
-                * "exception": {
-                * "errorMsg": "Payment Authorization Failed:  Please verify your Credit Card details are entered correctly and try again, or try another payment method.",
-                * "httpStatus": "400",
-                * "exception": false,
-                * "errorCode": "602"
-                * },
-                * "response": null
-                **/
+                 * "validationErrors": null,
+                 * "exception": {
+                 * "errorMsg": "Payment Authorization Failed:  Please verify your Credit Card details are entered correctly and try again, or try another payment method.",
+                 * "httpStatus": "400",
+                 * "exception": false,
+                 * "errorCode": "602"
+                 * },
+                 * "response": null
+                 **/
                 /* CommonHelper::printArray($result_array); die; */
                 $exception = $result_array['exception']; //must be null in case of successful orders
                 $response = $result_array['response'];
@@ -199,10 +203,10 @@ class TwocheckoutPayController extends PaymentController
                     $validationErrors = !empty($response['validationErrors']) ? $response['validationErrors'] : ''; // '' or null
                     if (is_null($errors)) {
                         $responseCode = $response['responseCode']; //APPROVED : Code indicating the result of the authorization attempt.
-                        $responseMsg = $response['responseMsg'];//Message indicating the result of the authorization attempt.
-                        $orderNumber = $response['orderNumber'];//2Checkout Order Number
-                        $merchantOrderId = $response['merchantOrderId'];//must be equal to order id sent
-                        $transactionId = $response['transactionId'];//2Checkout Invoice ID
+                        $responseMsg = $response['responseMsg']; //Message indicating the result of the authorization attempt.
+                        $orderNumber = $response['orderNumber']; //2Checkout Order Number
+                        $merchantOrderId = $response['merchantOrderId']; //must be equal to order id sent
+                        $transactionId = $response['transactionId']; //2Checkout Invoice ID
                         $message .= 'Response Code: ' . $responseCode . "\n";
                         $message .= 'Order Number: ' . $orderNumber . "\n";
                         $message .= 'Merchant Order Id: ' . $merchantOrderId . "\n";
@@ -255,19 +259,19 @@ class TwocheckoutPayController extends PaymentController
         $frm = new Form('frmTwoCheckout', array('id' => 'frmTwoCheckout', 'action' => $actionUrl, 'class' => "form form--normal"));
 
         $frm->addHiddenField('sid', 'sid', $this->settings["sellerId"]);
-        $frm->addHiddenField('mode', 'mode', '2CO');//it should always be 2CO (We're using hosted payment approach)
+        $frm->addHiddenField('mode', 'mode', '2CO'); //it should always be 2CO (We're using hosted payment approach)
         $txnid = $orderInfo["invoice"];
         $frm->addHiddenField('li_0_name', 'li_0_name', 'Payment for Order - Invoice #' . $txnid);
         $frm->addHiddenField('li_0_price', 'li_0_price', $payment_gateway_charge);
-        $frm->addHiddenField('li_0_product_id', 'li_0_product_id', $orderId);//in our case it is order id
-        $frm->addHiddenField('li_0_tangible', 'li_0_tangible', 'N');//no need of charging or calculating shipping as we have already handled the same at our end.
+        $frm->addHiddenField('li_0_product_id', 'li_0_product_id', $orderId); //in our case it is order id
+        $frm->addHiddenField('li_0_tangible', 'li_0_tangible', 'N'); //no need of charging or calculating shipping as we have already handled the same at our end.
         $frm->addHiddenField('currency_code', 'currency_code', $orderInfo["order_currency_code"]);
         $frm->addHiddenField('merchant_order_id', 'merchant_order_id', $txnid);
         $frm->addHiddenField('purchase_step', 'purchase_step', 'payment-method');
         $frm->addHiddenField('x_receipt_link_url', 'x_receipt_link_url', UrlHelper::generateNoAuthUrl('TwocheckoutPay', 'callback'));
         /**
-* Pre-populate Billing Information
-**/
+         * Pre-populate Billing Information
+         **/
         $frm->addHiddenField('card_holder_name', 'card_holder_name', FatUtility::decodeHtmlEntities($orderInfo['customer_name'], ENT_QUOTES, 'UTF-8'));
         $frm->addHiddenField('street_address', 'street_address', FatUtility::decodeHtmlEntities($orderInfo['customer_billing_address_1'], ENT_QUOTES, 'UTF-8'));
         $frm->addHiddenField('street_address2', 'street_address2', FatUtility::decodeHtmlEntities($orderInfo['customer_billing_address_2'], ENT_QUOTES, 'UTF-8'));
@@ -279,8 +283,8 @@ class TwocheckoutPayController extends PaymentController
         $frm->addHiddenField('phone', 'phone', FatUtility::decodeHtmlEntities($orderInfo['customer_phone'], ENT_QUOTES, 'UTF-8'));
 
         /**
-* Pre-populate Shipping Information
-**/
+         * Pre-populate Shipping Information
+         **/
         $frm->addHiddenField('ship_name', 'ship_name', FatUtility::decodeHtmlEntities($orderInfo['customer_shipping_name'], ENT_QUOTES, 'UTF-8'));
         $frm->addHiddenField('ship_street_address', 'ship_street_address', FatUtility::decodeHtmlEntities($orderInfo['customer_shipping_address_1'], ENT_QUOTES, 'UTF-8'));
         $frm->addHiddenField('ship_street_address2', 'ship_street_address2', FatUtility::decodeHtmlEntities($orderInfo['customer_shipping_address_2'], ENT_QUOTES, 'UTF-8'));
@@ -312,5 +316,13 @@ class TwocheckoutPayController extends PaymentController
         $frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_Pay_Now', $this->siteLangId));
 
         return $frm;
+    }
+
+    public function getExternalLibraries()
+    {
+        $json['libraries'] = [
+            "https://www.2checkout.com/checkout/api/2co.min.js",
+        ];
+        FatUtility::dieJsonSuccess($json);
     }
 }

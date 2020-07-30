@@ -11,6 +11,13 @@ class PayFortStartPayController extends PaymentController
         $this->init();
     }
     
+    protected function allowedCurrenciesArr()
+    {
+        return [
+            'AED', 'USD', 'JOD', 'KWD', 'OMR', 'TND', 'BHD', 'LYD', 'IQD', 'SAR'
+        ];
+    }
+
     private function init(): void
     {
         if (false === $this->plugin->validateSettings($this->siteLangId)) {
@@ -44,7 +51,12 @@ class PayFortStartPayController extends PaymentController
         $this->set('customer_email', $orderInfo['customer_email']);
         $this->set('orderPaymentGatewayDescription', $orderPaymentGatewayDescription);
         $this->set('exculdeMainHeaderDiv', true);
-        $this->_template->render(true, false);
+        if (FatUtility::isAjaxCall()) {
+            $json['html'] = $this->_template->render(false, false, 'pay-fort-start-pay/charge.php', true, false);
+            FatUtility::dieJsonSuccess($json);
+        } else {
+            $this->_template->render(true, false);
+        }
     }
 
     public function payFortCharge()

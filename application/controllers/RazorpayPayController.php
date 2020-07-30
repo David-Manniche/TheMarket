@@ -51,6 +51,10 @@ class RazorpayPayController extends PaymentController
         $this->set('orderInfo', $orderInfo);
         $this->set('paymentSettings', $this->settings);
         $this->set('exculdeMainHeaderDiv', true);
+        if (FatUtility::isAjaxCall()) {
+            $json['html'] = $this->_template->render(false, false, 'razorpay-pay/charge.php', true, false);
+            FatUtility::dieJsonSuccess($json);
+        }
         $this->_template->render(true, false);
     }
 
@@ -125,5 +129,14 @@ class RazorpayPayController extends PaymentController
         $frm->addHiddenField('', 'razorpay_payment_id', '', array('id' => 'razorpay_payment_id'));
         $frm->addHiddenField('', 'merchant_order_id', $orderId, array('id' => 'merchant_order_id'));
         return $frm;
+    }
+
+    
+    public function getExternalLibraries()
+    {
+        $json['libraries'] = [
+            'https://checkout.razorpay.com/v1/checkout.js',
+        ];
+        FatUtility::dieJsonSuccess($json);
     }
 }

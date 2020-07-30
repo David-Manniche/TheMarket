@@ -766,10 +766,9 @@ class SellerController extends SellerBaseController
         $this->_template->render(false, false, 'json-success.php');
     }
 
-    public function catalog($displayDefaultListing = false)
+    public function catalog($type = 1)
     {
         $this->userPrivilege->canViewProducts(UserAuthentication::getLoggedUserId());
-        $displayDefaultListing = FatUtility::int($displayDefaultListing);
 
         if (!$this->isShopActive($this->userParentId, 0, true)) {
             FatApp::redirectUser(UrlHelper::generateUrl('Seller', 'shop'));
@@ -779,13 +778,13 @@ class SellerController extends SellerBaseController
             FatApp::redirectUser(UrlHelper::generateUrl('Seller', 'Packages'));
         }
 
-        $frmSearchCatalogProduct = $this->getCatalogProductSearchForm();
+        $frmSearchCatalogProduct = $this->getCatalogProductSearchForm($type);
         $this->set('canEdit', $this->userPrivilege->canEditProducts(UserAuthentication::getLoggedUserId(), true));
         $this->set("frmSearchCatalogProduct", $frmSearchCatalogProduct);
-        $this->set("displayDefaultListing", $displayDefaultListing);
         $this->set('canRequestProduct', User::canRequestProduct());
         $this->set('canAddCustomProduct', User::canAddCustomProduct());
         $this->set('canAddCustomProductAvailableToAllSellers', User::canAddCustomProductAvailableToAllSellers());
+        $this->set('type', $type);
         $this->_template->addJs(array('js/cropper.js', 'js/cropper-main.js'));
         $this->_template->render(true, true);
     }
@@ -1617,9 +1616,12 @@ class SellerController extends SellerBaseController
             $shopLayoutTemplateId = 10001;
         }
         $this->set('shopLayoutTemplateId', $shopLayoutTemplateId);
-
         $shopFrm = $this->getShopInfoForm($shop_id);
-
+		
+		$stateObj = new States();
+        $statesArr = $stateObj->getStatesByCountryId($shopDetails['shop_country_id'], $this->siteLangId);
+		
+		$shopFrm->getField('shop_state')->options = $statesArr;
         /* url data[ */
         $urlSrch = UrlRewrite::getSearchObject();
         $urlSrch->doNotCalculateRecords();
@@ -3322,10 +3324,7 @@ class SellerController extends SellerBaseController
         $frm->addRequiredField(Labels::getLabel('Lbl_Identifier', $this->siteLangId), 'shop_identifier');
         $fld = $frm->addTextBox(Labels::getLabel('LBL_Shop_SEO_Friendly_URL', $this->siteLangId), 'urlrewrite_custom');
         $fld->requirements()->setRequired();
-        $zipFld = $frm->addTextBox(Labels::getLabel('Lbl_Postalcode', $this->siteLangId), 'shop_postalcode');
-        $zipFld->requirements()->setRegularExpressionToValidate(ValidateElement::ZIP_REGEX);
-        $zipFld->requirements()->setCustomErrorMessage(Labels::getLabel('LBL_Only_alphanumeric_value_is_allowed.', $this->siteLangId));
-
+        
         $phnFld = $frm->addTextBox(Labels::getLabel('Lbl_phone', $this->siteLangId), 'shop_phone', '', array('class' => 'phone-js ltr-right', 'placeholder' => ValidateElement::PHONE_NO_FORMAT, 'maxlength' => ValidateElement::PHONE_NO_LENGTH));
         $phnFld->requirements()->setRegularExpressionToValidate(ValidateElement::PHONE_REGEX);
         // $phnFld->htmlAfterField='<small class="text--small">'.Labels::getLabel('LBL_e.g.', $this->siteLangId).': '.implode(', ', ValidateElement::PHONE_FORMATS).'</small>';
@@ -3337,7 +3336,11 @@ class SellerController extends SellerBaseController
         $fld->requirement->setRequired(true);
 
         $frm->addSelectBox(Labels::getLabel('Lbl_State', $this->siteLangId), 'shop_state', array(), '', array(), Labels::getLabel('Lbl_Select', $this->siteLangId))->requirement->setRequired(true);
-
+		
+		$zipFld = $frm->addTextBox(Labels::getLabel('Lbl_Postalcode', $this->siteLangId), 'shop_postalcode');
+        $zipFld->requirements()->setRegularExpressionToValidate(ValidateElement::ZIP_REGEX);
+        $zipFld->requirements()->setCustomErrorMessage(Labels::getLabel('LBL_Only_alphanumeric_value_is_allowed.', $this->siteLangId));
+		
         $onOffArr = applicationConstants::getOnOffArr($this->siteLangId);
 
         $frm->addSelectBox(Labels::getLabel('Lbl_Display_Status', $this->siteLangId), 'shop_supplier_display_status', $onOffArr, '', array(), '');
@@ -3450,16 +3453,17 @@ class SellerController extends SellerBaseController
         return $frm;
     }
 
-    private function getCatalogProductSearchForm()
+    private function getCatalogProductSearchForm($type = '')
     {
         $frm = new Form('frmSearchCatalogProduct');
         $frm->addTextBox(Labels::getLabel('LBL_Search_By', $this->siteLangId), 'keyword');
 
         /* if( !User::canAddCustomProductAvailableToAllSellers() ){ */
         if (FatApp::getConfig('CONF_ENABLED_SELLER_CUSTOM_PRODUCT')) {
-            $frm->addSelectBox(Labels::getLabel('LBL_Product', $this->siteLangId), 'type', array(-1 => Labels::getLabel('LBL_All', $this->siteLangId)) + applicationConstants::getCatalogTypeArrForFrontEnd($this->siteLangId), '-1', array('id' => 'type'), '');
-        }
-
+            //$frm->addSelectBox(Labels::getLabel('LBL_Product', $this->siteLangId), 'type', array(-1 => Labels::getLabel('LBL_All', $this->siteLangId)) + applicationConstants::getCatalogTypeArrForFrontEnd($this->siteLangId), '-1', array('id' => 'type'), '');
+           $frm->addHiddenField('', 'type', $type);
+        }        
+            
         $frm->addSelectBox(Labels::getLabel('LBL_Product_Type', $this->siteLangId), 'product_type', array(-1 => Labels::getLabel('LBL_All', $this->siteLangId)) + Product::getProductTypes($this->siteLangId), '-1', array(), '');
         /* }  */
 
@@ -5100,7 +5104,7 @@ class SellerController extends SellerBaseController
         if ($addrId > 0) {
             $address = new Address($addrId, $this->siteLangId);
             $data = $address->getData(Address::TYPE_SHOP_PICKUP, $shop_id);
-            $data = array_shift($data);
+			/* CommonHelper::printArray($data); die; */
             if (!empty($data)) {
                 $stateId = $data['addr_state_id'];
                 $frm->fill($data);

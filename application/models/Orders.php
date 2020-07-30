@@ -914,6 +914,8 @@ class Orders extends MyAppModel
 
         $ocSrch->addGroupBy('opc.' . OrderProduct::DB_TBL_CHARGES_PREFIX . 'op_id');
         $qryOtherCharges = $ocSrch->getQuery();
+        
+        $childOrders = array();
         if ($orderType == Orders::ORDER_PRODUCT) {
             $srch = self::searchOrderProducts($criterias, $langId);
             $srch->joinTable('(' . $qryOtherCharges . ')', 'LEFT OUTER JOIN', 'op.op_id = opcc.' . OrderProduct::DB_TBL_CHARGES_PREFIX . 'op_id', 'opcc');
@@ -922,7 +924,6 @@ class Orders extends MyAppModel
             $srch->joinTable(OrderProduct::DB_TBL_SETTINGS, 'LEFT OUTER JOIN', 'op.op_id = opst.opsetting_op_id', 'opst');
             $srch->addOrder("op_id", "desc");
             $rs = $srch->getResultSet();
-            $childOrders = array();
 
             $oObj = new Orders();
             while ($row = FatApp::getDb()->fetch($rs)) {
@@ -937,7 +938,6 @@ class Orders extends MyAppModel
 
             $srch->addOrder(OrderSubscription::DB_TBL_PREFIX . "id", "desc");
             $rs = $srch->getResultSet();
-            $childOrders = array();
 
             $osObj = new OrderSubscription();
             while ($row = FatApp::getDb()->fetch($rs)) {

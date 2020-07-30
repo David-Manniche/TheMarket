@@ -6,13 +6,13 @@ class PayFortPayController extends PaymentController
     private $testEnvironmentUrl = 'https://sbcheckout.payfort.com/FortAPI/paymentPage';
     private $liveEnvironmentUrl = 'https://checkout.payfort.com/FortAPI/paymentPage';
     private $error = false;
-    
+
     public function __construct($action)
     {
         parent::__construct($action);
         $this->init();
     }
-    
+
     protected function allowedCurrenciesArr()
     {
         return [
@@ -29,12 +29,8 @@ class PayFortPayController extends PaymentController
         $this->settings = $this->plugin->getSettings();
     }
 
-    public function charge($orderId = '')
+    public function charge($orderId)
     {
-        if (empty($orderId)) {
-            FatUtility::exitWIthErrorCode(404);
-        }
-
         $orderPaymentObj = new OrderPayment($orderId, $this->siteLangId);
         $paymentGatewayCharge = 0.00;
         $orderInfo  = array();
@@ -46,31 +42,40 @@ class PayFortPayController extends PaymentController
             $this->set('orderInfo', $orderInfo);
             $this->set('requestParams', $requestParams);
         } else {
-            $this->error = Labels::getLabel('PAYFORT_Invalid_request_parameters', $this->siteLangId);
+            $this->error = Labels::getLabel('MSG_INVALID_REQUEST_PARAMETERS', $this->siteLangId);
         }
 
         if ($this->error) {
             $this->set('error', $this->error);
         }
+        $cancelBtnUrl = CommonHelper::getPaymentCancelPageUrl();
+        if ($orderInfo['order_type'] == Orders::ORDER_WALLET_RECHARGE) {
+            $cancelBtnUrl = CommonHelper::getPaymentFailurePageUrl();
+        }
+        $this->set('cancelBtnUrl', $cancelBtnUrl);
         $this->set('paymentAmount', $paymentGatewayCharge);
         $this->set('orderInfo', $orderInfo);
         $this->set('exculdeMainHeaderDiv', true);
+        if (FatUtility::isAjaxCall()) {
+            $json['html'] = $this->_template->render(false, false, 'pay-fort-pay/charge.php', true, false);
+            FatUtility::dieJsonSuccess($json);
+        }
         $this->_template->render(true, false);
     }
 
     public function doPayment($orderId = '')
     {
         if (empty($orderId) && !empty($_REQUEST['merchant_reference'])) {
-            $orderId = $arrData['merchant_reference'];
+            $orderId = $_REQUEST['merchant_reference'];
         }
         if (!$orderId) {
-            Message::addErrorMessage(Labels::getLabel('PAYFORT_INVALID_REQUEST'));
+            Message::addErrorMessage(Labels::getLabel('MSG_INVALID_REQUEST', $this->siteLangId));
             FatApp::redirectUser(UrlHelper::generateUrl('Account', 'profileInfo'));
         }
 
-        $paymentChargeUrl = UrlHelper::generateUrl('PayFortPay', 'charge', array( $orderId ));
+        $paymentChargeUrl = UrlHelper::generateUrl('PayFortPay', 'charge', array($orderId));
         if (!(isset($_REQUEST['signature']) and !empty($_REQUEST['signature']))) {
-            Message::addErrorMessage(Labels::getLabel('PAYFORT_INVALID_REQUEST', $this->siteLangId));
+            Message::addErrorMessage(Labels::getLabel('MSG_INVALID_REQUEST', $this->siteLangId));
             FatApp::redirectUser($paymentChargeUrl);
         }
 
@@ -101,10 +106,10 @@ class PayFortPayController extends PaymentController
 
             foreach ($_REQUEST as $key => $value) {
                 $key = str_replace('_', ' ', $key);
-                $message[] = ucwords($key) . ': '.(string)$value;
+                $message[] = ucwords($key) . ': ' . (string) $value;
             }
 
-            $gateWayCharges = ($paymentGatewayCharge/100);
+            $gateWayCharges = ($paymentGatewayCharge / 100);
             $orderPaymentObj->addOrderPayment($this->settings["plugin_code"], $_REQUEST['fort_id'], $gateWayCharges, 'Received Payment', implode('&', $message));
 
             FatApp::redirectUser(UrlHelper::generateUrl('custom', 'paymentSuccess', array($orderId)));
@@ -141,17 +146,17 @@ class PayFortPayController extends PaymentController
             $return_url = UrlHelper::generateFullUrl('PayFortPay', 'doPayment', array($orderId), '', false);
 
             $paramsValues = array(
-                                    'access_code' => $this->settings['access_code'],
-                                    'amount' => $paymentGatewayCharge,
-                                    'command' => 'PURCHASE',
-                                    'currency' => strtoupper($this->systemCurrencyCode),
-                                    'customer_email' => $orderInfo['customer_email'],
-                                    'language' => strtolower($orderInfo['order_language']),
-                                    'merchant_identifier' => $this->settings['merchant_id'],
-                                    'merchant_reference' => $orderInfo['id'],
-                                    'order_description' => $orderPaymentGatewayDescription,
-                                    'return_url' => $return_url,
-                                );
+                'access_code' => $this->settings['access_code'],
+                'amount' => $paymentGatewayCharge,
+                'command' => 'PURCHASE',
+                'currency' => mb_strtoupper($this->systemCurrencyCode),
+                'customer_email' => $orderInfo['customer_email'],
+                'language' => mb_strtolower($orderInfo['order_language']),
+                'merchant_identifier' => $this->settings['merchant_id'],
+                'merchant_reference' => $orderInfo['id'],
+                'order_description' => $orderPaymentGatewayDescription,
+                'return_url' => $return_url,
+            );
 
             $payfortIntegration = new PayfortIntegration();
             $signature      = $payfortIntegration->calculateSignature($paramsValues, $this->settings['sha_request_phrase'], $this->settings['sha_type']);
@@ -169,18 +174,19 @@ class PayFortPayController extends PaymentController
             return false;
         }
         $amount = number_format($amount, 2, '.', '');
-        return $amount*100;
+        return $amount * 100;
     }
 
     private function getPaymentForm($requestParams = array())
     {
-        $actionUrl = (FatApp::getConfig('CONF_TRANSACTION_MODE', FatUtility::VAR_BOOLEAN, false) == true)?$this->liveEnvironmentUrl:$this->testEnvironmentUrl;
+        $actionUrl = (FatApp::getConfig('CONF_TRANSACTION_MODE', FatUtility::VAR_BOOLEAN, false) == true) ? $this->liveEnvironmentUrl : $this->testEnvironmentUrl;
 
-        $frm = new Form('frmPayFort', array('id'=>'frmPayFort','class'=>'form','action'=>$actionUrl));
+        $frm = new Form('frmPayFort', array('id' => 'frmPayFort', 'class' => 'form', 'action' => $actionUrl));
         foreach ($requestParams as $a => $b) {
             $frm->addHiddenField('', htmlentities($a), htmlentities($b));
         }
-        $frm->addSubmitButton('', '', Labels::getLabel('LBL_CONFIRM_PAYMENT', $this->siteLangId));
+        $frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_CONFIRM', $this->siteLangId));
+        $frm->addButton('', 'btn_cancel', Labels::getLabel('LBL_CANCEL', $this->siteLangId));
         return $frm;
     }
 }
