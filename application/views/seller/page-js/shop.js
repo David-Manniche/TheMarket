@@ -1,6 +1,3 @@
-$(document).ready(function () {
-    shopForm();
-});
 $(document).on('change', '.logo-language-js', function () {
     var lang_id = $(this).val();
     shopImages('logo', 0, lang_id);
@@ -500,10 +497,17 @@ $(document).on("change", ".state", function () {
             }
         });
     };
-	
-	pickupAddressForm = function () {
+    
+    pickupAddress = function () {
         $(dv).html(fcom.getLoader());
-        fcom.ajax(fcom.makeUrl('Seller', 'pickupAddressForm'), '', function (t) {
+        fcom.ajax(fcom.makeUrl('Seller', 'pickupAddress'), '', function (t) {
+            $(dv).html(t);
+        });
+    };
+	
+	pickupAddressForm = function (id) {
+        $(dv).html(fcom.getLoader());
+        fcom.ajax(fcom.makeUrl('Seller', 'pickupAddressForm', [id]), '', function (t) {
             $(dv).html(t);
         });
     };
@@ -512,9 +516,20 @@ $(document).on("change", ".state", function () {
         if (!$(frm).validate()) return;
         var data = fcom.frmData(frm);
         fcom.updateWithAjax(fcom.makeUrl('Seller', 'setPickupAddress'), data, function (t) {
-            shopMediaForm();
+            pickupAddress();
         });
     };
+    
+    removeAddress = function(id, type){
+		var agree = confirm(langLbl.confirmDelete);
+		if( !agree ){
+			return false;
+		}
+		data='id='+id+'&type='+type;
+		fcom.updateWithAjax(fcom.makeUrl('Addresses','deleteRecord'),data,function(res){
+			pickupAddress();
+		});
+	};
 	
     collectionMediaForm = function (el, scollection_id) {
         $(dvt).html(fcom.getLoader());

@@ -144,8 +144,9 @@ class AddressesController extends LoggedUserController
 
     public function deleteRecord()
     {
-        $addr_id = FatApp::getPostedData('id', FatUtility::VAR_INT, 0);
-        if (1 > $addr_id) {
+        $addrId = FatApp::getPostedData('id', FatUtility::VAR_INT, 0);
+        $type = FatApp::getPostedData('type', FatUtility::VAR_STRING, '');
+        if (1 > $addrId) {
             $message = Labels::getLabel('MSG_Invalid_Access', $this->siteLangId);
             if (true === MOBILE_APP_API_CALL) {
                 FatUtility::dieJsonError($message);
@@ -153,16 +154,27 @@ class AddressesController extends LoggedUserController
             Message::addErrorMessage($message);
             FatUtility::dieWithError(Message::getHtml());
         }
-
-        $userId = UserAuthentication::getLoggedUserId();
-        $userDefaultAddress = Address::getDefaultByRecordId(Address::TYPE_USER, $userId);
-        if ($userDefaultAddress['addr_id'] == $addr_id) {
-            $message = Labels::getLabel('MSG_Select_another_address', $this->siteLangId);
-            FatUtility::dieJsonError($message);
+        
+        if($type == Address::TYPE_SHOP_PICKUP) {
+            $userId = $this->userParentId;
+            $shopDetails = Shop::getAttributesByUserId($userId, null, false);
+            if (!false == $shopDetails && $shopDetails['shop_active'] != applicationConstants::ACTIVE) {
+                Message::addErrorMessage(Labels::getLabel('MSG_Your_shop_deactivated_contact_admin', $this->siteLangId));
+                FatUtility::dieWithError(Message::getHtml());
+            }
+            $recordId = $shopDetails['shop_id'];
+        } else {
+            $userId = UserAuthentication::getLoggedUserId();
+            $userDefaultAddress = Address::getDefaultByRecordId(Address::TYPE_USER, $userId);
+            if ($userDefaultAddress['addr_id'] == $addrId) {
+                $message = Labels::getLabel('MSG_Select_another_address', $this->siteLangId);
+                FatUtility::dieJsonError($message);
+            }
+            $recordId = $userId;
         }
 
         $db = FatApp::getDb();
-        if (!$db->deleteRecords(Address::DB_TBL, array('smt' => 'addr_record_id = ? AND addr_id = ?', 'vals' => array($userId, $addr_id)))) {
+        if (!$db->deleteRecords(Address::DB_TBL, array('smt' => 'addr_record_id = ? AND addr_id = ?', 'vals' => array($recordId, $addrId)))) {
             LibHelper::dieJsonError($db->getError());
         }
         $msg = Labels::getLabel('MSG_Removed_Successfully', $this->siteLangId);

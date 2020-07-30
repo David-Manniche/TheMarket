@@ -35,6 +35,7 @@ $combTaxCount = 0;
                     <?php
                     $countryFld = $frm->getField("taxruleloc_country_id[]");
                     $countryFld->setFieldTagAttribute("id", "addr_country_id");
+                    $countryFld->setFieldTagAttribute("class", "addr_country_id");
                     $countryFld->setFieldTagAttribute("onChange", "getCountryStatesTaxInTaxForm(this, this.value,0)");
                     $typeFld=$frm->getField("taxruleloc_type[]");
                     $stateFld=$frm->getField("taxruleloc_state_id[]");

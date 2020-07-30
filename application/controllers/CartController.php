@@ -90,6 +90,7 @@ class CartController extends MyAppController
             $srch->joinSellerSubscription($this->siteLangId, true);
             $srch->addSubscriptionValidCondition();
             $srch->joinSellerProductSpecialPrice();
+            $srch->addCondition('uwlist_user_id', '=', $loggedUserId);
             $srch->addCondition('uwlist_type', '=', UserWishList::TYPE_SAVE_FOR_LATER);
             $srch->addCondition('selprod_deleted', '=', applicationConstants::NO);
             $srch->addCondition('selprod_active', '=', applicationConstants::YES);
