@@ -8,25 +8,66 @@ $langFld = $frm->getField('lang_id');
 $langFld->addFieldTagAttribute('class', 'language-js');
 
 $btn = $frm->getField('btn_submit');
-$btn->setFieldTagAttribute('class', "btn-clean btn-sm btn-icon btn-secondary");
+$btn->setFieldTagAttribute('class', "btn-block");
 
 $btn = $frm->getField('btn_discard');
 $btn->addFieldTagAttribute('onClick', "discardForm()");
-$btn->setFieldTagAttribute('class', "btn-clean btn-sm btn-icon btn-secondary");
+$btn->setFieldTagAttribute('class', "btn-block");
 ?>
 <?php echo $frm->getFormTag(); ?>
 <div class="sectionhead">
     <h4><?php echo $title; ?><br/>
-	<?php echo $frm->getFieldHtml('lang_id'); ?></h4>
-    <div class="section__toolbar">
-    <?php echo $frm->getFieldHtml('btn_discard'); ?>
-    <?php echo $frm->getFieldHtml('btn_submit'); ?>
-    </div>
+	</h4>
+   
 </div>
 <div class="sectionbody space">
     <div class="row">
+        <div class="col-md-6">
+            <div class="field-set">
+                <div class="caption-wraper">
+                    <label class="field_label">
+                    <?php
+                        $fld = $frm->getField('lang_id');
+                        echo $fld->getCaption();
+                    ?></label>
+                </div>
+                <div class="field-wraper">
+                    <div class="field_cover">
+                    <?php echo $frm->getFieldHtml('lang_id'); ?>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="field-set">
+                <div class="caption-wraper">
+                    <label class="field_label">
+                    </label>
+                </div>
+                <div class="field-wraper">
+                    <div class="field_cover">
+                    <?php echo $frm->getFieldHtml('btn_submit'); ?>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="field-set">
+                <div class="caption-wraper">
+                    <label class="field_label">
+                    </label>
+                </div>
+                <div class="field-wraper">
+                    <div class="field_cover">
+                    <?php echo $frm->getFieldHtml('btn_discard'); ?>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row mt-4">
         <div class="col-lg-12 col-md-12">
-            <div class="row justify-content-center">
+            <div class="">
 				<?php if(!empty($images)) { ?>
 					<?php foreach($images as $afileId => $afileData) {
 						$frm->getField('image_title'.$afileId)->value = $afileData['afile_attribute_title'];
@@ -52,10 +93,12 @@ $btn->setFieldTagAttribute('class', "btn-clean btn-sm btn-icon btn-secondary");
 								break;
 						} ?>
 					<div class="row">
-						<div class="col-md-4">
+						<div class="col-md-2">
+                        <div class="field-set">
 							<img src="<?php echo $imageUrl; ?>">
 						</div>
-						<div class="col-md-4">
+						</div>
+						<div class="col-md-5">
 							<div class="field-set">
 								<div class="caption-wraper">
 									<label class="field_label">
@@ -71,7 +114,7 @@ $btn->setFieldTagAttribute('class', "btn-clean btn-sm btn-icon btn-secondary");
 								</div>
 							</div>
 						</div>
-						<div class="col-md-4">
+						<div class="col-md-5">
 							<div class="field-set">
 								<div class="caption-wraper">
 									<label class="field_label">

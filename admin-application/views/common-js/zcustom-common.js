@@ -546,10 +546,14 @@ function initMap(lat = 40.72, lng = -73.96, elementId = 'map') {
 	// address = document.getElementById('postal_code').value;
 	/*address = {lat: parseFloat(lat), lng: parseFloat(lat)};*/
 	geocodeAddress(geocoder, map, infowindow, {'location': latlng});
-
+    
+    var country = document.getElementById('shop_country_id').value;
+    var state = document.getElementById('shop_state').value;
   	document.getElementById('postal_code').addEventListener('blur', function() {
 		address = document.getElementById('postal_code').value;
-		geocodeAddress(geocoder, map, infowindow, {'address': 'postalcode ' + address});
+        address = country +' '+ state +' '+ address;
+        alert(address);
+		geocodeAddress(geocoder, map, infowindow, {'address': address});
   	});
 
 	for (i = 0; i < document.getElementsByClassName('addressSelection-js').length; i++) {

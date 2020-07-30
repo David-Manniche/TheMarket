@@ -765,6 +765,12 @@ function googleAddressAutocomplete(elementId = 'ga-autoComplete', field = 'forma
     });
 }
 
+function getSelectedCountry(){  
+   var country = document.getElementById('shop_country_id');
+   console.log(country[0].selectedOptions[0].innerText);
+   return country[0].selectedOptions[0].innerText;
+}
+
 var map;
 var marker;
 var geocoder;
@@ -789,17 +795,41 @@ function initMap(lat = 40.72, lng = -73.96, elementId = 'map') {
 	/*address = {lat: parseFloat(lat), lng: parseFloat(lat)};*/
 	geocodeAddress(geocoder, map, infowindow, {'location': latlng});
 
-  	document.getElementById('postal_code').addEventListener('blur', function() {
+    document.getElementById('postal_code').addEventListener('blur', function() {
+        var sel = document.getElementById('shop_country_id');
+        var country = sel.options[sel.selectedIndex].text;
+        
 		address = document.getElementById('postal_code').value;
-		geocodeAddress(geocoder, map, infowindow, {'address': 'postalcode ' + address});
+        address = country +' '+ address;
+        
+		geocodeAddress(geocoder, map, infowindow, {'address': address});
+  	});
+    
+    document.getElementById('shop_state').addEventListener('change', function() {
+        var sel = document.getElementById('shop_country_id');
+        var country = sel.options[sel.selectedIndex].text;
+        
+        var sel = document.getElementById('shop_state');
+        var state = sel.options[sel.selectedIndex].text;
+		
+        address = country +' '+ state;
+        
+		geocodeAddress(geocoder, map, infowindow, {'address': address});
+  	});
+    
+    document.getElementById('shop_country_id').addEventListener('change', function() {
+        var sel = document.getElementById('shop_country_id');
+        var country = sel.options[sel.selectedIndex].text;
+        
+		geocodeAddress(geocoder, map, infowindow, {'address': country});
   	});
 
-	for (i = 0; i < document.getElementsByClassName('addressSelection-js').length; i++) {
+	/* for (i = 0; i < document.getElementsByClassName('addressSelection-js').length; i++) {
 	    document.getElementsByClassName('addressSelection-js')[i].addEventListener("change", function(e) {
 			address = e.target.options[e.target.selectedIndex].text;
 			geocodeAddress(geocoder, map, infowindow, {'address': address});
 	  	});
-	}
+	} */
 }
 
 function geocodeAddress(geocoder, resultsMap, infowindow, address) {
