@@ -10,15 +10,16 @@ class CashOnDeliveryPayController extends MyAppController
         $paymentAmount = $orderPaymentObj->getOrderPaymentGatewayAmount();
         $orderInfo = $orderPaymentObj->getOrderPrimaryinfo();
         if (!$orderInfo || $orderInfo["order_is_paid"] == Orders::ORDER_IS_PAID) {
-            Message::addErrorMessage(Labels::getLabel('MSG_INVALID_ORDER_PAID_CANCELLED', $this->siteLangId));
+            $msg = Labels::getLabel('MSG_INVALID_ORDER_PAID_CANCELLED', $this->siteLangId);
+            LibHelper::exitWithError($msg, FatUtility::isAjaxCall(), true);
             FatApp::redirectUser(UrlHelper::generateUrl('Buyer', 'ViewOrder', array($orderInfo['id'])));
         }
 
         /* Partial Payment is not allowed, Wallet + COD, So, disabling COD in case of Partial Payment Wallet Selected. [ */
         if ($orderInfo['order_wallet_amount_charge'] > 0 && $paymentAmount > 0) {
-            $str = Labels::getLabel('MSG_Wallet_can_not_be_used_along_with_{COD}', $this->siteLangId);
-            $str = str_replace('{cod}', $this->keyName, $str);
-            Message::addErrorMessage($str);
+            $msg = Labels::getLabel('MSG_Wallet_can_not_be_used_along_with_{COD}', $this->siteLangId);
+            $msg = str_replace('{cod}', $this->keyName, $msg);
+            LibHelper::exitWithError($msg, FatUtility::isAjaxCall(), true);
             FatApp::redirectUser(UrlHelper::generateUrl('Buyer', 'ViewOrder', array($orderInfo['id'])));
         }
         /* ] */
@@ -43,7 +44,7 @@ class CashOnDeliveryPayController extends MyAppController
             if ($opDetail["op_product_type"] == Product::PRODUCT_TYPE_DIGITAL) {
                 $str = Labels::getLabel('MSG_Digital_Products_can_not_be_processed_along_with_{COD}', $this->siteLangId);
                 $str = str_replace('{cod}', $this->keyName, $str);
-                Message::addErrorMessage($str);
+                LibHelper::exitWithError($msg, FatUtility::isAjaxCall(), true);
                 FatApp::redirectUser(UrlHelper::generateUrl('Buyer', 'ViewOrder', array($orderInfo['id'])));
             }
         }
@@ -64,6 +65,11 @@ class CashOnDeliveryPayController extends MyAppController
                 Product::recordProductWeightage($opSelprodCode, SmartWeightageSettings::PRODUCT_ORDER_PAID);
             }
         }
-        FatApp::redirectUser(UrlHelper::generateFullUrl('custom', 'paymentSuccess', array( $orderInfo['id'])));
+        $successUrl = UrlHelper::generateFullUrl('custom', 'paymentSuccess', array( $orderInfo['id']));
+        if (FatUtility::isAjaxCall()) {
+            $json['redirect'] = $successUrl;
+            FatUtility::dieJsonSuccess($json);
+        }
+        FatApp::redirectUser($successUrl);
     }
 }

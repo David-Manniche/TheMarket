@@ -123,12 +123,18 @@
                             </div>
                             <div class="field-wraper">
                                 <div class="field_cover">
-                                    <?php
-                                    $frm->getField('btn_submit')->addFieldTagAttribute('data-processing-text', Labels::getLabel('L_Please_Wait..', $siteLangId));
+                                    <?php 
+                                        $btn = $frm->getField('btn_submit'); 
+                                        $btn->addFieldTagAttribute('class', 'btn btn-primary');
+                                        $btn->addFieldTagAttribute('data-processing-text', Labels::getLabel('LBL_PLEASE_WAIT..', $siteLangId));
                                     echo $frm->getFieldHtml('btn_submit'); ?>
-                                    <a href="<?php echo $cancelBtnUrl; ?>" class="link link--normal">
-                                        <?php echo Labels::getLabel('LBL_Cancel', $siteLangId);?>
-                                    </a>
+                                    <?php if (FatUtility::isAjaxCall()) { ?>
+                                        <a href="javascript:void(0);" onclick="loadPaymentSummary()" class="btn btn-outline-primary">
+                                            <?php echo Labels::getLabel('LBL_Cancel', $siteLangId); ?>
+                                        </a>
+                                    <?php } else { ?>
+                                        <a href="<?php echo $cancelBtnUrl; ?>" class="btn btn-outline-primary"><?php echo Labels::getLabel('LBL_Cancel',$siteLangId);?></a>
+                                    <?php } ?>
                                 </div>
                             </div>
                         </div>

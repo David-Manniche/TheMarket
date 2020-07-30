@@ -30,7 +30,7 @@
  * Do not edit the class manually.
  */
 
-// namespace Khipu;
+namespace Khipu;
 
 use \Exception;
 

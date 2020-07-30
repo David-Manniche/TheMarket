@@ -3,6 +3,7 @@
 class EbsPayController extends PaymentController
 {
     public const KEY_NAME = "Ebs";
+    public const PRODUCTION_URL = "https://secure.ebs.in/pg/ma/payment/request";
     private $error = false;
 
     public function __construct($action)
@@ -14,7 +15,7 @@ class EbsPayController extends PaymentController
     protected function allowedCurrenciesArr()
     {
         return [
-            'INR', 'USD', 'GBP', 'Eur', 'AED', 'QAR', 'OMR', 'CAD', 'HKD', 'SGD', 'AUD'
+            'INR', 'USD', 'GBP', 'EUR', 'AED', 'QAR', 'OMR', 'CAD', 'HKD', 'SGD', 'AUD'
         ];
     }
 
@@ -70,6 +71,10 @@ class EbsPayController extends PaymentController
         }
         $this->set('cancelBtnUrl', $cancelBtnUrl);
         $this->set('exculdeMainHeaderDiv', true);
+        if (FatUtility::isAjaxCall()) {
+            $json['html'] = $this->_template->render(false, false, 'ebs-pay/charge.php', true, false);
+            FatUtility::dieJsonSuccess($json);
+        }
         $this->_template->render(true, false);
     }
 
@@ -88,42 +93,59 @@ class EbsPayController extends PaymentController
         $paymentAmount = $orderPaymentObj->getOrderPaymentGatewayAmount();
         $orderInfo = $orderPaymentObj->getOrderPrimaryinfo();
 
-        $frm = new Form('frmPaymentForm', array('id' => 'frmPaymentForm', 'action' => 'https://secure.ebs.in/pg/ma/sale/pay/', 'class' => "form form--normal"));
+        /* $frm = new Form('frmPaymentForm', array('id' => 'frmPaymentForm', 'action' => 'https://secure.ebs.in/pg/ma/sale/pay/', 'class' => "form form--normal")); */
+        $frm = new Form('payment', array('id' => 'frmPaymentForm', 'action' => self::PRODUCTION_URL, 'class' => "form form--normal"));
         if (FatApp::getConfig('CONF_TRANSACTION_MODE', FatUtility::VAR_BOOLEAN, false) == true) {
             $mode = "LIVE";
         } else {
             $mode = "TEST";
         }
-        $frm->addHiddenField('', 'mode', $mode);
-        $frm->addHiddenField('', 'account_id', $this->settings["accountId"]);
-        $frm->addHiddenField('', 'reference_no', $orderId);
 
-        $frm->addHiddenField('', 'amount', $paymentAmount);
         $order_payment_gateway_description = sprintf(Labels::getLabel('M_Order_Payment_Gateway_Description', $this->siteLangId), $orderInfo["site_system_name"], $orderInfo['invoice']);
-        $frm->addHiddenField('', 'description', $order_payment_gateway_description);
-        $frm->addHiddenField('', 'name', $orderInfo["customer_name"]);
-        $frm->addHiddenField('', 'address', $orderInfo["customer_billing_address_1"] . ' ' . $orderInfo["customer_billing_address_2"]);
-        $frm->addHiddenField('', 'city', $orderInfo["customer_billing_city"]);
-        $frm->addHiddenField('', 'state', $orderInfo["customer_billing_state"]);
-        $frm->addHiddenField('', 'postal_code', $orderInfo["customer_billing_postcode"]);
-        $frm->addHiddenField('', 'country', $orderInfo["customer_billing_country_code"]);
-        $frm->addHiddenField('', 'email', $orderInfo['customer_email']);
-        $frm->addHiddenField('', 'phone', $orderInfo['customer_billing_phone']);
-
-        $frm->addHiddenField('', 'ship_name', $orderInfo["customer_shipping_name"]);
-        $frm->addHiddenField('', 'ship_address', $orderInfo["customer_shipping_address_1"] . ' ' . $orderInfo["customer_shipping_address_2"]);
-        $frm->addHiddenField('', 'ship_city', $orderInfo["customer_shipping_city"]);
-        $frm->addHiddenField('', 'ship_state', $orderInfo["customer_shipping_state"]);
-        $frm->addHiddenField('', 'ship_postal_code', $orderInfo["customer_shipping_postcode"]);
-        $frm->addHiddenField('', 'ship_country', $orderInfo["customer_shipping_country_code"]);
-        $frm->addHiddenField('', 'ship_phone', $orderInfo['customer_shipping_phone']);
         $return_url = UrlHelper::generateFullUrl('ebsPay', 'callback');
-        $string = $this->settings["secretKey"] . "|" . $this->settings["accountId"] . "|" . $paymentAmount . "|" . $orderId . "|" . $return_url . "|" . $mode;
-        /* echo $string; die; */
-        $secure_hash = md5($string);
 
-        $frm->addHiddenField('', 'secure_hash', $secure_hash);
-        $frm->addHiddenField('', 'return_url', $return_url . '?DR={DR}');
+        $dataToPost = [
+            'account_id' => $this->settings["accountId"],
+            'address' => $orderInfo["customer_billing_address_1"] . ' ' . $orderInfo["customer_billing_address_2"],
+            'amount' => $paymentAmount,
+            'channel' => 0,
+            'city' => $orderInfo["customer_billing_city"],
+            'country' => $orderInfo["customer_billing_country_code"],
+            'currency' => $this->systemCurrencyCode,
+            'description' => $order_payment_gateway_description,
+            'display_currency' => $this->systemCurrencyCode,
+            'display_currency_rates' => applicationConstants::YES,
+            'email' => $orderInfo['customer_email'],
+            'mode' => $mode,
+            'name' => $orderInfo["customer_name"],
+            'phone' => $orderInfo['customer_billing_phone'],
+            'postal_code' => $orderInfo["customer_billing_postcode"],
+            'reference_no' => $orderId,
+            'return_url' => $return_url . '?DR={DR}',
+            'ship_address' => $orderInfo["customer_shipping_address_1"] . ' ' . $orderInfo["customer_shipping_address_2"],
+            'ship_city' => $orderInfo["customer_shipping_city"],
+            'ship_country' => $orderInfo["customer_shipping_country_code"],
+            'ship_name' => $orderInfo["customer_shipping_name"],
+            'ship_phone' => $orderInfo['customer_shipping_phone'],
+            'ship_postal_code' => $orderInfo["customer_shipping_postcode"],
+            'ship_state' => $orderInfo["customer_shipping_state"],
+            'state' => $orderInfo["customer_billing_state"],
+        ];
+
+        $hashData = $this->settings["secretKey"]; //Pass your Registered Secret Key
+        foreach ($dataToPost as $key => $value) {
+            if (strlen($value) > 0) {
+                $hashData .= '|'.$value;
+            }
+            $frm->addHiddenField('', $key, $value);
+        }
+        $secure_hash = '';
+        if (strlen($hashData) > 0) {
+            $secure_hash = strtoupper(hash("sha512",$hashData));//for SHA512
+            //$secure_hash = strtoupper(hash("sha1",$hashData));//for SHA1
+            //$secure_hash = strtoupper(md5($hashData));//for MD5
+            $frm->addHiddenField('', 'secure_hash', $secure_hash);
+        }
         $frm->setJsErrorDisplay('afterfield');
         return $frm;
     }

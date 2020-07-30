@@ -10,7 +10,7 @@ class CcavenuePayController extends PaymentController
         parent::__construct($action);
         $this->init();
     }
-    
+
     protected function allowedCurrenciesArr()
     {
         return ['INR'];
@@ -19,7 +19,7 @@ class CcavenuePayController extends PaymentController
     private function init(): void
     {
         if (false === $this->plugin->validateSettings($this->siteLangId)) {
-            $this->setErrorAndRedirect($this->plugin->getError());
+            $this->setErrorAndRedirect($this->plugin->getError(), FatUtility::isAjaxCall());
         }
 
         $this->settings = $this->plugin->getSettings();
@@ -30,7 +30,7 @@ class CcavenuePayController extends PaymentController
         if (empty($orderId)) {
             FatUtility::exitWIthErrorCode(404);
         }
-        
+
         $orderPaymentObj = new OrderPayment($orderId, $this->siteLangId);
         $paymentAmount = $orderPaymentObj->getOrderPaymentGatewayAmount();
         $orderInfo = $orderPaymentObj->getOrderPrimaryinfo();
@@ -47,6 +47,10 @@ class CcavenuePayController extends PaymentController
         $this->set('paymentAmount', $paymentAmount);
         $this->set('orderInfo', $orderInfo);
         $this->set('exculdeMainHeaderDiv', true);
+        if (FatUtility::isAjaxCall()) {
+            $json['html'] = $this->_template->render(false, false, 'ccavenue-pay/charge.php', true, false);
+            FatUtility::dieJsonSuccess($json);
+        }
         $this->_template->render(true, false);
     }
 
@@ -57,39 +61,36 @@ class CcavenuePayController extends PaymentController
         $orderInfo = $orderPaymentObj->getOrderPrimaryinfo();
 
         if (!$orderInfo['id']) {
-            FatUtility::exitWIthErrorCode(404);
+            $this->setErrorAndRedirect(Labels::getLabel("MSG_INVALID_REQUEST", $this->siteLangId), FatUtility::isAjaxCall());
         }
-
         $working_key = $this->settings['working_key'];
         $access_code = $this->settings['access_code'];
         $merchant_data = '';
         $post = FatApp::getPostedData();
-
         foreach ($post as $key => $value) {
             $merchant_data .= $key . '=' . $value . '&';
         }
+
         //$merchant_data= str_replace("#~#","&",$merchant_data);
-        $merchant_data .= "currency=INR";
-        $encrypted_data = encrypt($merchant_data, $working_key); // Method for encrypting the data.
+        $merchant_data .= "currency=" . $this->systemCurrencyCode;
+
+        $encrypted_data = $this->encrypt($merchant_data, $working_key); // Method for encrypting the data.
+
         if (FatApp::getConfig('CONF_TRANSACTION_MODE', FatUtility::VAR_BOOLEAN, false) == true) {
             $iframe_url = 'https://secure.ccavenue.com';
         } else {
             $iframe_url = 'https://test.ccavenue.com';
         }
-        $iframe_url .= '/transaction/transaction.do?command=initiateTransaction&encRequest=' . $encrypted_data . '&access_code=' . $access_code;
-        $this->set('url', $iframe_url);
-        if (CommonHelper::isAppUser()) {
-            $this->set('exculdeMainHeaderDiv', true);
-        }
 
-        $this->_template->render(true, false);
+        $iframe_url .= '/transaction/transaction.do?command=initiateTransaction&encRequest=' . $encrypted_data . '&access_code=' . $access_code;
+        FatApp::redirectUser($iframe_url);
     }
     public function callback()
     {
         $post = FatApp::getPostedData();
         $workingKey = $this->settings['working_key'];
         $encResponse = $post["encResp"];            //This is the response sent by the CCAvenue Server
-        $rcvdString = decrypt($encResponse, $workingKey);        //Crypto Decryption used as per the specified working key.
+        $rcvdString = $this->decrypt($encResponse, $workingKey);        //Crypto Decryption used as per the specified working key.
         $request = $rcvdString;
         $order_status = "";
         $decryptValues = explode('&', $rcvdString);
@@ -112,7 +113,7 @@ class CcavenuePayController extends PaymentController
         $orderPaymentObj = new OrderPayment($orderId);
         $paymentGatewayCharge = $orderPaymentObj->getOrderPaymentGatewayAmount();
         if ($paymentGatewayCharge > 0) {
-            $total_paid_match = ((float)$paid_amount == $paymentGatewayCharge);
+            $total_paid_match = ((float) $paid_amount == $paymentGatewayCharge);
             if (!$total_paid_match) {
                 $request .= "\n\n CCAvenue :: TOTAL PAID MISMATCH! " . strtolower($paid_amount) . "\n\n";
             }
@@ -161,5 +162,23 @@ class CcavenuePayController extends PaymentController
         $frm->addHiddenField('', 'delivery_tel', $orderInfo['customer_shipping_phone']);
         $frm->addHiddenField('', 'integration_type', 'iframe_normal');
         return $frm;
+    }
+
+    public function encrypt($plainText, $key)
+    {
+        $secretKey = hextobin(md5($key));
+        $initVector = pack("C*", 0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08, 0x09, 0x0a, 0x0b, 0x0c, 0x0d, 0x0e, 0x0f);
+        $encryptedText = openssl_encrypt($plainText, "AES-128-CBC", $secretKey, OPENSSL_RAW_DATA, $initVector);
+        $encryptedText = bin2hex($encryptedText);
+        return $encryptedText;
+    }
+
+    public function decrypt($encryptedText, $key)
+    {
+        $secretKey = hextobin(md5($key));
+        $initVector =  pack("C*", 0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08, 0x09, 0x0a, 0x0b, 0x0c, 0x0d, 0x0e, 0x0f);
+        $encryptedText = hextobin($encryptedText);
+        $decryptedText =  openssl_decrypt($encryptedText, "AES-128-CBC", $secretKey, OPENSSL_RAW_DATA, $initVector);
+        return $decryptedText;
     }
 }

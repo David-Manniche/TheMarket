@@ -45,6 +45,10 @@ class PayuIndiaPayController extends PaymentController
         }
         $this->set('orderInfo', $orderInfo);
         $this->set('exculdeMainHeaderDiv', true);
+        if (FatUtility::isAjaxCall()) {
+            $json['html'] = $this->_template->render(false, false, 'payu-india-pay/charge.php', true, false);
+            FatUtility::dieJsonSuccess($json);
+        }
         $this->_template->render(true, false);
     }
 
@@ -101,7 +105,7 @@ class PayuIndiaPayController extends PaymentController
         if (FatApp::getConfig('CONF_TRANSACTION_MODE', FatUtility::VAR_BOOLEAN, false) == true) {
             $actionUrl = 'https://secure.payu.in/_payment';
         } else {
-            $actionUrl = 'https://test.payu.in/_payment';
+            $actionUrl = 'https://sandboxsecure.payu.in/_payment';
         }
 
         $frm = new Form('frmPayuIndia', array('id' => 'frmPayuIndia', 'action' => $actionUrl, 'class' => "form form--normal"));

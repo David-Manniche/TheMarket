@@ -319,7 +319,11 @@ INSERT INTO `tbl_plugins` (`plugin_identifier`, `plugin_type`, `plugin_code`, `p
 INSERT INTO `tbl_plugins` (`plugin_identifier`, `plugin_type`, `plugin_code`, `plugin_active`, `plugin_display_order`) VALUES ('Khipu', '13', 'Khipu', '0', '1');
 INSERT INTO `tbl_plugins` (`plugin_identifier`, `plugin_type`, `plugin_code`, `plugin_active`, `plugin_display_order`) VALUES ('Omise', '13', 'Omise', '0', '1');
 INSERT INTO `tbl_plugins` (`plugin_identifier`, `plugin_type`, `plugin_code`, `plugin_active`, `plugin_display_order`) VALUES ('PayFort', '13', 'PayFort', '0', '1');
-INSERT INTO `tbl_plugins` (`plugin_identifier`, `plugin_type`, `plugin_code`, `plugin_active`, `plugin_display_order`) VALUES ('PayFortStart', '13', 'PayFortStart', '0', '1');
+
+-- PayFort Start not required -- 
+-- INSERT INTO `tbl_plugins` (`plugin_identifier`, `plugin_type`, `plugin_code`, `plugin_active`, `plugin_display_order`) VALUES ('PayFortStart', '13', 'PayFortStart', '0', '1'); --
+-- PayFort Start not required -- 
+
 INSERT INTO `tbl_plugins` (`plugin_identifier`, `plugin_type`, `plugin_code`, `plugin_active`, `plugin_display_order`) VALUES ('Paypal Standard', '13', 'PaypalStandard', '0', '1');
 INSERT INTO `tbl_plugins` (`plugin_identifier`, `plugin_type`, `plugin_code`, `plugin_active`, `plugin_display_order`) VALUES ('Paytm', '13', 'Paytm', '0', '1');
 INSERT INTO `tbl_plugins` (`plugin_identifier`, `plugin_type`, `plugin_code`, `plugin_active`, `plugin_display_order`) VALUES ('PayuIndia', '13', 'PayuIndia', '0', '1');
@@ -470,11 +474,17 @@ ALTER TABLE `tbl_time_slots`
 
 ALTER TABLE `tbl_products` ADD `product_pickup_enabled` TINYINT(1) NOT NULL AFTER `product_cod_enabled`;
 ALTER TABLE `tbl_seller_products` ADD `selprod_pickup_enabled` TINYINT(1) NOT NULL AFTER `selprod_cod_enabled`;
+ALTER TABLE `tbl_shops` ADD `shop_pickup_enabled` TINYINT(1) NOT NULL AFTER `shop_lng`;
+ALTER TABLE `tbl_products` DROP `product_pickup_enabled`;
+ALTER TABLE `tbl_seller_products` CHANGE `selprod_pickup_enabled` `selprod_fulfillment_type` TINYINT(4) NOT NULL;
+ALTER TABLE `tbl_shops` CHANGE `shop_pickup_enabled` `shop_fulfillment_type` TINYINT(4) NOT NULL;
 -- pickup location end
 
 
 DELETE FROM `tbl_language_labels` WHERE `label_key` LIKE 'LBL_Affiliate_Registeration';
 
 ALTER TABLE `tbl_user_wish_lists` ADD `uwlist_type` INT NOT NULL AFTER `uwlist_id`;
+DELETE FROM `tbl_language_labels` WHERE `label_key` LIKE 'MSG_PAYFORT_INVALID_REQUEST';
+DELETE FROM `tbl_language_labels` WHERE `label_key` LIKE 'PAYFORT_Invalid_request_parameters';
 ALTER TABLE `tbl_user_wish_lists` DROP `uwlist_default`;
 UPDATE `tbl_user_wish_lists` SET `uwlist_type`= 3 WHERE `uwlist_default` = 1
