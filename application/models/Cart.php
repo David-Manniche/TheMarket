@@ -275,7 +275,7 @@ class Cart extends FatModel
             }
         }
 
-        usort($this->products, function ($a, $b) {
+        uasort($this->products, function ($a, $b) {
             return $a['shop_id'] - $b['shop_id'];
         });
         return $this->products;
