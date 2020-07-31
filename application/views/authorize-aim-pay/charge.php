@@ -16,7 +16,7 @@
                 $frm->getField('cc_number')->addFieldTagAttribute('class', 'p-cards');
                 $frm->getField('cc_number')->addFieldTagAttribute('id', 'cc_number');
             ?>
-            <?php echo $frm->getFormTag(); ?>
+                <?php echo $frm->getFormTag(); ?>
                 <div class="row">
                     <div class="col-md-12">
                         <div class="field-set">
@@ -120,13 +120,17 @@
                             </div>
                             <div class="field-wraper">
                                 <div class="field_cover">
-                                    <?php echo $frm->getFieldHtml('btn_submit'); ?>
+                                    <?php 
+                                        $btn = $frm->getField('btn_submit'); 
+                                        $btn->addFieldTagAttribute('class', 'btn btn-primary');
+                                        $btn->addFieldTagAttribute('data-processing-text', Labels::getLabel('LBL_PLEASE_WAIT..', $siteLangId));
+                                    echo $frm->getFieldHtml('btn_submit'); ?>
                                     <?php if (FatUtility::isAjaxCall()) { ?>
                                         <a href="javascript:void(0);" onclick="loadPaymentSummary()" class="btn btn-outline-primary">
                                             <?php echo Labels::getLabel('LBL_Cancel', $siteLangId); ?>
                                         </a>
                                     <?php } else { ?>
-                                        <a href="<?php echo $cancelBtnUrl; ?>" class="btn btn-outline-primary"><?php echo Labels::getLabel('LBL_Cancel', $siteLangId); ?></a>
+                                        <a href="<?php echo $cancelBtnUrl; ?>" class="btn btn-outline-primary"><?php echo Labels::getLabel('LBL_Cancel',$siteLangId);?></a>
                                     <?php } ?>
                                     <span id="load"></span>
                                 </div>
@@ -134,8 +138,8 @@
                         </div>
                     </div>
                 </div>
-            </form>
-            <?php echo $frm->getExternalJs(); ?>
+                </form>
+                <?php echo $frm->getExternalJs(); ?>
             <?php else : ?>
                 <div class="alert alert--danger">
                     <h5><?php echo $error ?></h5>
