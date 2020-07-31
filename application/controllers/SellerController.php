@@ -766,10 +766,9 @@ class SellerController extends SellerBaseController
         $this->_template->render(false, false, 'json-success.php');
     }
 
-    public function catalog($displayDefaultListing = false)
+    public function catalog($type = 1)
     {
         $this->userPrivilege->canViewProducts(UserAuthentication::getLoggedUserId());
-        $displayDefaultListing = FatUtility::int($displayDefaultListing);
 
         if (!$this->isShopActive($this->userParentId, 0, true)) {
             FatApp::redirectUser(UrlHelper::generateUrl('Seller', 'shop'));
@@ -779,13 +778,13 @@ class SellerController extends SellerBaseController
             FatApp::redirectUser(UrlHelper::generateUrl('Seller', 'Packages'));
         }
 
-        $frmSearchCatalogProduct = $this->getCatalogProductSearchForm();
+        $frmSearchCatalogProduct = $this->getCatalogProductSearchForm($type);
         $this->set('canEdit', $this->userPrivilege->canEditProducts(UserAuthentication::getLoggedUserId(), true));
         $this->set("frmSearchCatalogProduct", $frmSearchCatalogProduct);
-        $this->set("displayDefaultListing", $displayDefaultListing);
         $this->set('canRequestProduct', User::canRequestProduct());
         $this->set('canAddCustomProduct', User::canAddCustomProduct());
         $this->set('canAddCustomProductAvailableToAllSellers', User::canAddCustomProductAvailableToAllSellers());
+        $this->set('type', $type);
         $this->_template->addJs(array('js/cropper.js', 'js/cropper-main.js'));
         $this->_template->render(true, true);
     }
@@ -3358,7 +3357,8 @@ class SellerController extends SellerBaseController
         $fld->requirements()->setInt();
         $fld->requirements()->setPositive();
 
-
+        $fulFillmentArr = Shipping::getFulFillmentArr($this->siteLangId);
+        $frm->addSelectBox(Labels::getLabel('LBL_FULFILLMENT_METHOD', $this->siteLangId), 'shop_fulfillment_type', $fulFillmentArr, applicationConstants::NO, array(), '');
 
         /* if($shop_id > 0){
           $fld = $frm->addButton(Labels::getLabel('Lbl_Logo',$this->siteLangId),'shop_logo',Labels::getLabel('LBL_Upload_File',$this->siteLangId),
@@ -3453,16 +3453,17 @@ class SellerController extends SellerBaseController
         return $frm;
     }
 
-    private function getCatalogProductSearchForm()
+    private function getCatalogProductSearchForm($type = '')
     {
         $frm = new Form('frmSearchCatalogProduct');
         $frm->addTextBox(Labels::getLabel('LBL_Search_By', $this->siteLangId), 'keyword');
 
         /* if( !User::canAddCustomProductAvailableToAllSellers() ){ */
         if (FatApp::getConfig('CONF_ENABLED_SELLER_CUSTOM_PRODUCT')) {
-            $frm->addSelectBox(Labels::getLabel('LBL_Product', $this->siteLangId), 'type', array(-1 => Labels::getLabel('LBL_All', $this->siteLangId)) + applicationConstants::getCatalogTypeArrForFrontEnd($this->siteLangId), '-1', array('id' => 'type'), '');
-        }
-
+            //$frm->addSelectBox(Labels::getLabel('LBL_Product', $this->siteLangId), 'type', array(-1 => Labels::getLabel('LBL_All', $this->siteLangId)) + applicationConstants::getCatalogTypeArrForFrontEnd($this->siteLangId), '-1', array('id' => 'type'), '');
+           $frm->addHiddenField('', 'type', $type);
+        }        
+            
         $frm->addSelectBox(Labels::getLabel('LBL_Product_Type', $this->siteLangId), 'product_type', array(-1 => Labels::getLabel('LBL_All', $this->siteLangId)) + Product::getProductTypes($this->siteLangId), '-1', array(), '');
         /* }  */
 
@@ -3984,8 +3985,7 @@ class SellerController extends SellerBaseController
             $codFld->addFieldTagAttribute('disabled', 'disabled');
             $codFld->htmlAfterField = '<small class="text--small">' . Labels::getLabel('LBL_COD_option_is_disabled_in_payment_gateway_settings', $langId) . '</small>';
         }
-        $frm->addSelectBox(Labels::getLabel('LBL_Available_for_Picup', $langId), 'product_pickup_enabled', $yesNoArr, applicationConstants::NO, array(), '');
-
+        
         $fld = $frm->addCheckBox(Labels::getLabel('LBL_Free_Shipping', $langId), 'ps_free', 1);
 
         $fld = $frm->addTextBox(Labels::getLabel('LBL_Shipping_country', $langId), 'shipping_country');
@@ -4026,7 +4026,7 @@ class SellerController extends SellerBaseController
         if ($type == 'CUSTOM_CATALOG') {
             $reqData = ProductRequest::getAttributesById($product_id, array('preq_content'));
             $productData = array_merge($reqData, json_decode($reqData['preq_content'], true));
-
+            $productData['sellerProduct'] = 0;
             $optionArr = isset($productData['product_option']) ? $productData['product_option'] : array();
             foreach ($optionArr as $val) {
                 $optionSrch = Option::getSearchObject($this->siteLangId);
@@ -4045,11 +4045,19 @@ class SellerController extends SellerBaseController
                 $fld->requirements()->setRequired();
             }
         } else {
-            $productData = Product::getAttributesById($product_id, array('product_type', 'product_min_selling_price', 'product_cod_enabled', 'product_pickup_enabled'));
+            $productData = Product::getAttributesById($product_id, array('product_type', 'product_min_selling_price', 'product_cod_enabled', 'if(product_seller_id > 0, 1, 0) as sellerProduct', 'product_seller_id'));
             if ($productData['product_type'] == Product::PRODUCT_TYPE_DIGITAL) {
                 $defaultProductCond = Product::CONDITION_NEW;
             }
         }
+
+        $fulfillmentType = -1;
+        if ($productData['sellerProduct'] > 0) {
+            $fulfillmentType = Shop::getAttributesByUserId($productData['product_seller_id'], 'shop_fulfillment_type');
+        } else {
+            $fulfillmentType = FatApp::getConfig('CONF_FULFILLMENT_TYPE', FatUtility::VAR_INT, -1);
+        }
+
         $frm->addRequiredField(Labels::getLabel('LBL_Title', $this->siteLangId), 'selprod_title' . FatApp::getConfig('conf_default_site_lang', FatUtility::VAR_INT, 1));
         $frm->addCheckBox(Labels::getLabel('LBL_System_Should_Maintain_Stock_Levels', $this->siteLangId), 'selprod_subtract_stock', applicationConstants::YES, array(), false, 0);
         $frm->addCheckBox(Labels::getLabel('LBL_System_Should_Track_Product_Inventory', $this->siteLangId), 'selprod_track_inventory', Product::INVENTORY_TRACK, array(), false, 0);
@@ -4118,11 +4126,8 @@ class SellerController extends SellerBaseController
                 }
             }
 
-            $disabled = array();
-            if ($productData['product_pickup_enabled'] != applicationConstants::YES) {
-                $disabled = array('disabled' => 'disabled');
-            }
-            $frm->addSelectBox(Labels::getLabel('LBL_Available_for_Picup', $this->siteLangId), 'selprod_pickup_enabled', $yesNoArr, applicationConstants::NO, $disabled, '');
+            $fulFillmentArr = Shipping::getFulFillmentArr($this->siteLangId, $fulfillmentType); 
+            $frm->addSelectBox(Labels::getLabel('LBL_FULFILLMENT_METHOD', $this->siteLangId), 'selprod_fulfillment_type', $fulFillmentArr, applicationConstants::NO, [], '');
             $frm->addRequiredField(Labels::getLabel('LBL_Url_Keyword', $this->siteLangId), 'selprod_url_keyword');
             $productOptions = Product::getProductOptions($product_id, $this->siteLangId, true);
             if (!empty($productOptions) && $selprod_id == 0) {
@@ -4990,7 +4995,6 @@ class SellerController extends SellerBaseController
                     $codFld->htmlAfterField = '<br/><small>' . Labels::getLabel('LBL_COD_option_is_disabled_in_payment_gateway_settings', $this->siteLangId) . '</small>';
                 }
 
-                $frm->addCheckBox(Labels::getLabel('LBL_Product_Is_Available_for_Pickup?', $this->siteLangId), 'product_pickup_enabled', 1, array(), false, 0);
             }
             
             /* ] */

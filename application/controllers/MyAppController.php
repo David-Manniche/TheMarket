@@ -809,4 +809,14 @@ class MyAppController extends FatController
         $frm->addTextBox('', 'location');
         return $frm;
     }
+
+    
+    /* 
+     * You can override this function in child class if that class required any external js library.
+     */
+    public function getExternalLibraries()
+    {
+        $json['libraries'] = [];
+        FatUtility::dieJsonSuccess($json);
+    }
 }

@@ -1,10 +1,10 @@
 $(document).ready(function(){
-	listCartProducts();
+	listCartProducts(2);
 });
 (function() {
-	listCartProducts = function(){
+	listCartProducts = function(fulfilmentType){
 		$('#cartList').html( fcom.getLoader() );
-		fcom.ajax(fcom.makeUrl('Cart','listing'),'',function(res){
+		fcom.ajax(fcom.makeUrl('Cart','listing', [fulfilmentType]),'',function(res){
 			$("#cartList").html(res);
 		});
 	};
