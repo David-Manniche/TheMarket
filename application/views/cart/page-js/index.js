@@ -56,11 +56,15 @@ $(document).ready(function(){
 	};
 
 	goToCheckout = function(){
-		if( isUserLogged() == 0 ){
-			loginPopUpBox(true);
-			return false;
-		}
-		document.location.href = fcom.makeUrl('Checkout');
+        var type = $('input[name="fulfillment_type"]:checked').val();
+        var data = "type="+type;
+        fcom.updateWithAjax(fcom.makeUrl('Cart','setCartCheckoutType'), data ,function(ans){
+            if( isUserLogged() == 0 ){
+                loginPopUpBox(true);
+                return false;
+            }
+            document.location.href = fcom.makeUrl('Checkout');
+        });
 	};
 
 	removePromoCode  = function(){
@@ -120,5 +124,34 @@ $(document).ready(function(){
             listCartProducts();
 		});
 	};
+    
+    removePickupOnlyProducts = function(){
+        if(confirm( langLbl.confirmRemove )){
+			fcom.updateWithAjax(fcom.makeUrl('Cart','removePickupOnlyProducts'), '' ,function(ans){
+				listCartProducts(2);
+                $('#cartSummary').load(fcom.makeUrl('cart', 'getCartSummary'));
+			});
+		}
+    }
+    
+    removeShippedOnlyProducts = function(){
+        if(confirm( langLbl.confirmRemove )){
+			fcom.updateWithAjax(fcom.makeUrl('Cart','removeShippedOnlyProducts'), '' ,function(ans){
+				listCartProducts(1);
+                $('#cartSummary').load(fcom.makeUrl('cart', 'getCartSummary'));
+			});
+		}
+    }
+    
+    setCheckoutType = function(type){
+        var data = "type="+type;
+        fcom.updateWithAjax(fcom.makeUrl('Cart','setCartCheckoutType'), data ,function(ans){
+            if( isUserLogged() == 0 ){
+                loginPopUpBox(true);
+                return false;
+            }
+            document.location.href = fcom.makeUrl('Checkout');
+        });
+    }
 
 })();

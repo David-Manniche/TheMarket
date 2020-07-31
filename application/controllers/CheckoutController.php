@@ -507,12 +507,12 @@ class CheckoutController extends MyAppController
 
         $address = new Address($selected_shipping_address_id, $this->siteLangId);
         $addresses = $address->getData(Address::TYPE_USER, UserAuthentication::getLoggedUserId());
-        
+
         $this->set('cartSummary', $this->cartObj->getCartFinancialSummary($this->siteLangId));
         $this->set('addresses', $addresses);
         $this->set('products', $cartProducts);
         $this->set('shippingRates', $shippingRates);
-        $this->set('hasPhysicalProd', $hasPhysicalProd);
+        $this->set('hasPhysicalProd', $hasPhysicalProd);            
         $this->_template->render(false, false, 'checkout/shipping-summary-inner.php');
     }
 

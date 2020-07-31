@@ -248,7 +248,7 @@ class Cart extends FatModel
                     $this->removeCartKey($key, $selprod_id, $quantity);
                     continue;
                 }
-
+                
                 $this->products[$key] = [
                     'shipping_cost' => 0,
                     'opshipping_rate_id' => 0,
@@ -321,7 +321,7 @@ class Cart extends FatModel
                 if (strpos($keyDecoded, static::CART_KEY_PREFIX_PRODUCT) !== false) {
                     $selprod_id = FatUtility::int(str_replace(static::CART_KEY_PREFIX_PRODUCT, '', $keyDecoded));
                 }
-
+                
                 //To rid of from invalid product detail in listing.
                 if (1 > $selprod_id) {
                     unset($this->SYSTEM_ARR['cart'][$key]);
@@ -355,6 +355,12 @@ class Cart extends FatModel
                         $this->removeCartKey($key, $selprod_id, $quantity);
                         continue;
                     }
+
+                    if(isset($this->SYSTEM_ARR['shopping_cart']['checkout_type']) && $sellerProductRow['selprod_fulfillment_type'] != Shipping::FULFILMENT_ALL && $sellerProductRow['selprod_fulfillment_type'] != $this->SYSTEM_ARR['shopping_cart']['checkout_type']){
+                        unset($this->products[$key]);
+                        continue;
+                    }
+                    
                     $this->products[$key] = $sellerProductRow;
 
                     /*[COD available*/
@@ -506,16 +512,17 @@ class Cart extends FatModel
                     $this->products[$key]['seller_address'] = Shop::getShopAddress($shopId, true, $siteLangId);
                 }
 
-                $fulfillmentType = $sellerProductRow['selprod_fulfillment_type'];
-                if ($isProductShippedBySeller) {
+                $fulfillmentType = $sellerProductRow['selprod_fulfillment_type'];                  
+                if (true == $isProductShippedBySeller) { 
                     if ($sellerProductRow['shop_fulfillment_type'] != Shipping::FULFILMENT_ALL) {
                         $fulfillmentType = $sellerProductRow['shop_fulfillment_type'];
                     }
-                } else {
+                } else { 
                     if (FatApp::getConfig('CONF_FULFILLMENT_TYPE', FatUtility::VAR_INT, -1) != Shipping::FULFILMENT_ALL) {
                         $fulfillmentType = FatApp::getConfig('CONF_FULFILLMENT_TYPE', FatUtility::VAR_INT, -1);
                     }
                 }
+                                
                 $this->products[$key]['fulfillment_Type'] = $fulfillmentType;
             }
 
@@ -531,7 +538,7 @@ class Cart extends FatModel
                 }
             } */
         }
-        /* CommonHelper::printArray($this->products); die(); */
+       
         return $this->products;
     }
 
@@ -1714,13 +1721,17 @@ class Cart extends FatModel
 
         $productInfo = [];
         foreach ($cartProducts as $key => $val) {
+            if(isset($this->SYSTEM_ARR['shopping_cart']['checkout_type']) && $val['selprod_fulfillment_type'] != Shipping::FULFILMENT_ALL && $val['selprod_fulfillment_type'] != $this->SYSTEM_ARR['shopping_cart']['checkout_type']){
+                continue;
+            }
+            
             $productInfo[$val['selprod_id']] = $val;
-
             if ($val['is_physical_product']) {
                 $physicalSelProdIdArr[$val['selprod_id']] = $val['selprod_id'];
             } else {
                 $digitalSelProdIdArr[$val['selprod_id']] = $val['selprod_id'];
             }
+       
         }
 
 
@@ -1791,4 +1802,61 @@ class Cart extends FatModel
     {
         $this->cartCache = false;
     }
+    
+    public function removePickupOnlyProducts()
+    {
+        $cartProducts = $this->getProducts($this->cart_lang_id);
+        foreach ($cartProducts as $cartKey => $product) {
+            if ($product['fulfillment_Type'] != Shipping::FULFILMENT_PICKUP) {
+                continue;                
+            }
+            
+            unset($this->SYSTEM_ARR['cart'][$cartKey]);
+            $this->updateTempStockHold($product['selprod_id'], 0, 0);
+            if (is_numeric($this->cart_user_id) && $this->cart_user_id > 0) {
+                AbandonedCart::saveAbandonedCart($this->cart_user_id, $product['selprod_id'], $product['quantity'], AbandonedCart::ACTION_DELETED);
+            }
+        }
+        $this->updateUserCart();
+        return true;
+    }
+    
+    public function removeShippedOnlyProducts()
+    {
+        $cartProducts = $this->getProducts($this->cart_lang_id);
+        foreach ($cartProducts as $cartKey => $product) {
+            if ($product['fulfillment_Type'] != Shipping::FULFILMENT_SHIP) {
+                continue;                
+            }
+            
+            unset($this->SYSTEM_ARR['cart'][$cartKey]);
+            $this->updateTempStockHold($product['selprod_id'], 0, 0);
+            if (is_numeric($this->cart_user_id) && $this->cart_user_id > 0) {
+                AbandonedCart::saveAbandonedCart($this->cart_user_id, $product['selprod_id'], $product['quantity'], AbandonedCart::ACTION_DELETED);
+            }
+        }
+        $this->updateUserCart();
+        return true;
+    }
+    
+    public function setCartCheckoutType($type)
+    {
+        $type = FatUtility::int($type);
+        $this->SYSTEM_ARR['shopping_cart']['checkout_type'] = $type;
+        $this->updateUserCart();
+        return true;
+    }
+    
+    public function getCartCheckoutType()
+    {
+        return isset($this->SYSTEM_ARR['shopping_cart']['checkout_type']) ? FatUtility::int($this->SYSTEM_ARR['shopping_cart']['checkout_type']) : 0;
+    }
+    
+    public function unsetCartCheckoutType()
+    {
+        unset($this->SYSTEM_ARR['shopping_cart']['checkout_type']);
+        $this->updateUserCart();
+        return true;
+    }
+    
 }
