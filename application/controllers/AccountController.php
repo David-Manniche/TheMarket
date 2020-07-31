@@ -2724,8 +2724,8 @@ class AccountController extends LoggedUserController
 
         if (User::isAffiliate()) {
             $zipFld = $frm->addRequiredField(Labels::getLabel('LBL_Postalcode', $this->siteLangId), 'user_zip');
-            $zipFld->requirements()->setRegularExpressionToValidate(ValidateElement::ZIP_REGEX);
-            $zipFld->requirements()->setCustomErrorMessage(Labels::getLabel('LBL_Only_alphanumeric_value_is_allowed.', $this->siteLangId));
+            /* $zipFld->requirements()->setRegularExpressionToValidate(ValidateElement::ZIP_REGEX);
+            $zipFld->requirements()->setCustomErrorMessage(Labels::getLabel('LBL_Only_alphanumeric_value_is_allowed.', $this->siteLangId)); */
         }
         $parent = User::getAttributesById(UserAuthentication::getLoggedUserId(true), 'user_parent');
         if (User::isAdvertiser() && $parent == 0) {
