@@ -490,5 +490,5 @@ DELETE FROM `tbl_language_labels` WHERE `label_key` LIKE 'LBL_Affiliate_Register
 ALTER TABLE `tbl_user_wish_lists` ADD `uwlist_type` INT NOT NULL AFTER `uwlist_id`;
 DELETE FROM `tbl_language_labels` WHERE `label_key` LIKE 'MSG_PAYFORT_INVALID_REQUEST';
 DELETE FROM `tbl_language_labels` WHERE `label_key` LIKE 'PAYFORT_Invalid_request_parameters';
+UPDATE `tbl_user_wish_lists` SET `uwlist_type`= 3 WHERE `uwlist_default` = 1;
 ALTER TABLE `tbl_user_wish_lists` DROP `uwlist_default`;
-UPDATE `tbl_user_wish_lists` SET `uwlist_type`= 3 WHERE `uwlist_default` = 1

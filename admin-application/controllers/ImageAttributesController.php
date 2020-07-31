@@ -237,6 +237,7 @@ class ImageAttributesController extends AdminBaseController
         $post = $frm->getFormDataFromArray(FatApp::getPostedData());
 		
         $db = FatApp::getDb();
+        $recordSaved = false;
 		foreach($images as $afileId => $afileData) {
 			if(empty($post['image_title'.$afileId]) && empty($post['image_alt'.$afileId])) {
 				continue;
@@ -246,8 +247,12 @@ class ImageAttributesController extends AdminBaseController
 				Message::addErrorMessage($db->getError());
                 FatUtility::dieWithError(Message::getHtml());
 			}
+            $recordSaved = true;
 		}
-
+        if (!$recordSaved) {
+            Message::addErrorMessage(Labels::getLabel('MSG_Please_fill_any_one', $this->adminLangId));
+            FatUtility::dieWithError(Message::getHtml());
+        }
         $this->set('msg', $this->str_setup_successful);
         $this->set('recordId', $recordId);
         $this->_template->render(false, false, 'json-success.php');

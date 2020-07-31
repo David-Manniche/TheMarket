@@ -28,7 +28,8 @@ class GuestAffiliateController extends MyAppController
     {
         $affiliate_register_step_number = (UserAuthentication::getSessionAffiliateByKey('affiliate_register_step_number')) ? UserAuthentication::getSessionAffiliateByKey('affiliate_register_step_number') : 1;
         $frm = $this->getAffiliateRegistrationForm($affiliate_register_step_number);
-        $post = $frm->getFormDataFromArray(FatApp::getPostedData());
+        $post = FatApp::getPostedData();
+        /* $post = $frm->getFormDataFromArray(FatApp::getPostedData()); */
         $post['user_state_id'] = FatApp::getPostedData('user_state_id', FatUtility::VAR_INT, 0);
         if ($post == false) {
             Message::addErrorMessage(current($frm->getValidationErrors()));

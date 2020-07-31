@@ -547,21 +547,41 @@ function initMap(lat = 40.72, lng = -73.96, elementId = 'map') {
 	/*address = {lat: parseFloat(lat), lng: parseFloat(lat)};*/
 	geocodeAddress(geocoder, map, infowindow, {'location': latlng});
     
-    var country = document.getElementById('shop_country_id').value;
-    var state = document.getElementById('shop_state').value;
-  	document.getElementById('postal_code').addEventListener('blur', function() {
+    document.getElementById('postal_code').addEventListener('blur', function() {
+        var sel = document.getElementById('shop_country_id');
+        var country = sel.options[sel.selectedIndex].text;
+        
 		address = document.getElementById('postal_code').value;
-        address = country +' '+ state +' '+ address;
-        alert(address);
+        address = country +' '+ address;
+        
 		geocodeAddress(geocoder, map, infowindow, {'address': address});
   	});
-
-	for (i = 0; i < document.getElementsByClassName('addressSelection-js').length; i++) {
+    
+    document.getElementById('shop_state').addEventListener('change', function() {
+        var sel = document.getElementById('shop_country_id');
+        var country = sel.options[sel.selectedIndex].text;
+        
+        var sel = document.getElementById('shop_state');
+        var state = sel.options[sel.selectedIndex].text;
+		
+        address = country +' '+ state;
+        
+		geocodeAddress(geocoder, map, infowindow, {'address': address});
+  	});
+    
+    document.getElementById('shop_country_id').addEventListener('change', function() {
+        var sel = document.getElementById('shop_country_id');
+        var country = sel.options[sel.selectedIndex].text;
+        
+		geocodeAddress(geocoder, map, infowindow, {'address': country});
+  	});
+    
+	/* for (i = 0; i < document.getElementsByClassName('addressSelection-js').length; i++) {
 	    document.getElementsByClassName('addressSelection-js')[i].addEventListener("change", function(e) {
 			address = e.target.options[e.target.selectedIndex].text;
 			geocodeAddress(geocoder, map, infowindow, {'address': address});
 	  	});
-	}
+	} */
 }
 
 function geocodeAddress(geocoder, resultsMap, infowindow, address) {
