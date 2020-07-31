@@ -728,6 +728,10 @@ class ConfigurationsController extends AdminBaseController
 
                 $fld = $frm->addCheckBox(Labels::getLabel("LBL_Brand_Request_Approval", $this->adminLangId), 'CONF_BRAND_REQUEST_APPROVAL', 1, array(), false, 0);
                 $fld->htmlAfterField = "<br><small>" . Labels::getLabel("LBL_On_Enabling_This_Feature,_Admin_Need_To_Approve_the_brand_requests_(User_Cannot_link_the_requested_brand_with_any_product_until_it_gets_approved_by_Admin)", $this->adminLangId) . "</small>";
+                
+                $fld = $frm->addCheckBox(Labels::getLabel("LBL_Product_Category_Request_Approval", $this->adminLangId), 'CONF_PRODUCT_CATEGORY_REQUEST_APPROVAL', 1, array(), false, 0);
+                $fld->htmlAfterField = "<br><small>" . Labels::getLabel("LBL_On_Enabling_This_Feature,_Admin_Need_To_Approve_the_Product_category_requests_(User_Cannot_link_the_requested_category_with_any_product_until_it_gets_approved_by_Admin)", $this->adminLangId) . "</small>";
+
 
                 $brandFld = $frm->addCheckBox(Labels::getLabel("LBL_Product's_Brand_Mandatory", $this->adminLangId), 'CONF_PRODUCT_BRAND_MANDATORY', 1, array(), false, 0);
                 $brandFld->htmlAfterField = "<br><small>" . Labels::getLabel("LBL_This_will_make_Product's_brand_mandatory", $this->adminLangId) . "</small>";

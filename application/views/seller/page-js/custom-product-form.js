@@ -614,6 +614,7 @@
 			$(document).trigger('close.facebox');
 		});
 	};
+    
 	addBrandReqForm = function(id) {
 		$.facebox(function() {
 			fcom.ajax(fcom.makeUrl('seller', 'addBrandReqForm', [id]), '', function(t) {
@@ -661,6 +662,7 @@
 			$(document).trigger('close.facebox');
 		});
 	};
+    
 	checkUniqueBrandName = function(obj,$langId,$brandId){
 
 		data ="brandName="+$(obj).val() + "&langId= "+$langId+ "&brandId= "+$brandId;
@@ -696,7 +698,93 @@
 		});
 	}
 
+    /* Product Category  request [*/
+    addCategoryReqForm = function (id) {
+        $.facebox(function () {
+            fcom.ajax(fcom.makeUrl('seller', 'addCategoryReqForm', [id]), '', function (t) {
+                $.facebox(t, 'faceboxWidth medium-fb-width');
+            });
+        });
+    };
 
+    setupCategoryReq = function (frm) {
+        if (!$(frm).validate())
+            return;
+        var data = fcom.frmData(frm);
+        fcom.updateWithAjax(fcom.makeUrl('seller', 'setupCategoryReq'), data, function (t) {
+            $.mbsmessage.close();
+
+            if (t.langId > 0) {
+                addCategoryReqLangForm(t.categoryReqId, t.langId);
+                return;
+            }
+            $(document).trigger('close.facebox');
+        });
+    };
+
+    addCategoryReqLangForm = function (categoryReqId, langId, autoFillLangData = 0) {
+        $.facebox(function () {
+            fcom.ajax(fcom.makeUrl('seller', 'categoryReqLangForm', [categoryReqId, langId, autoFillLangData = 0]), '', function (t) {
+                $.facebox(t);
+            });
+        });
+    };
+
+    setupCategoryReqLang = function (frm) {
+        if (!$(frm).validate())
+            return;
+        var data = fcom.frmData(frm);
+        fcom.updateWithAjax(fcom.makeUrl('seller', 'categoryReqLangSetup'), data, function (t) {
+
+            if (t.langId > 0) {
+                addCategoryReqLangForm(t.categoryReqId, t.langId);
+                return;
+            }
+            if (t.openMediaForm)
+            {
+                categoryMediaForm(t.categoryReqId);
+                return;
+            }
+            $(document).trigger('close.facebox');
+        });
+    };
+
+    categoryMediaForm = function (categoryReqId) {
+        $.facebox(function () {
+            fcom.ajax(fcom.makeUrl('seller', 'categoryMediaForm', [categoryReqId]), '', function (t) {
+                $.facebox(t);
+            });
+        });
+    };
+
+    removeCategoryLogo = function (categoryReqId, langId) {
+        if (!confirm(langLbl.confirmDelete)) {
+            return;
+        }
+        fcom.updateWithAjax(fcom.makeUrl('seller', 'removeCategoryLogo', [categoryReqId, langId]), '', function (t) {
+            categoryMediaForm(categoryReqId);
+            reloadList();
+        });
+    }
+
+    checkUniqueCategoryName = function (obj, $langId, $categoryId) {
+        data = "categoryName=" + $(obj).val() + "&langId= " + $langId + "&categoryId= " + $categoryId;
+        fcom.ajax(fcom.makeUrl('Category', 'checkUniqueCategoryName'), data, function (t) {
+            $.mbsmessage.close();
+            $res = $.parseJSON(t);
+
+            if ($res.status == 0) {
+                $(obj).val('');
+
+                $alertType = 'alert--danger';
+
+                $.mbsmessage($res.msg, true, $alertType);
+            }
+
+        });
+    };
+    /* ] */
+    
     displayProdInitialTab = function(){
         $(".tabs_panel").hide();
         $(".tabs_nav-js  > li").removeClass('is-active');
