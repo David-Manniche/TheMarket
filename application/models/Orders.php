@@ -2380,7 +2380,8 @@ class Orders extends MyAppModel
     public function changeOrderStatus()
     {
         $completedOrderStatus = FatApp::getConfig("CONF_DEFAULT_COMPLETED_ORDER_STATUS", FatUtility::VAR_INT, 0);
-        if (empty($completedOrderStatus)) {
+        $deliveredOrderStatus = FatApp::getConfig("CONF_DEFAULT_DEIVERED_ORDER_STATUS", FatUtility::VAR_INT, 0);
+        if (empty($completedOrderStatus) || empty($deliveredOrderStatus)) {
             return false;
         }
         $defaultReturnAge = FatApp::getConfig("CONF_DEFAULT_RETURN_AGE", FatUtility::VAR_INT, 7);
@@ -2399,7 +2400,7 @@ class Orders extends MyAppModel
         );
         $srch->joinOrderProductSpecifics();
         $srch->joinTable(OrderCancelRequest::DB_TBL, 'LEFT OUTER JOIN', 'ocr.ocrequest_op_id = op.op_id and ocr.ocrequest_id IS NULL', 'ocr');
-        $srch->addCondition('op.op_status_id', '=', FatApp::getConfig("CONF_DEFAULT_DEIVERED_ORDER_STATUS", FatUtility::VAR_INT, 0));
+        $srch->addCondition('op.op_status_id', '=', $deliveredOrderStatus);
         $srch->addHaving('daysSpent', '>=', 'mysql_func_return_age', 'AND', true);
 
         $rs = $srch->getResultSet();
