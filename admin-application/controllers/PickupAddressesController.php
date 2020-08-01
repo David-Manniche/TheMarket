@@ -1,6 +1,6 @@
 <?php
 
-class pickupAddressesController extends AdminBaseController
+class PickupAddressesController extends AdminBaseController
 {
     public function __construct($action)
     {
@@ -70,8 +70,8 @@ class pickupAddressesController extends AdminBaseController
         $frm->addRequiredField(Labels::getLabel('LBL_City', $langId), 'addr_city');
 
         $zipFld = $frm->addRequiredField(Labels::getLabel('LBL_Postalcode', $langId), 'addr_zip');
-        $zipFld->requirements()->setRegularExpressionToValidate(ValidateElement::ZIP_REGEX);
-        $zipFld->requirements()->setCustomErrorMessage(Labels::getLabel('LBL_Only_alphanumeric_value_is_allowed.', $langId));
+        /* $zipFld->requirements()->setRegularExpressionToValidate(ValidateElement::ZIP_REGEX);
+        $zipFld->requirements()->setCustomErrorMessage(Labels::getLabel('LBL_Only_alphanumeric_value_is_allowed.', $langId)); */
 
         $phnFld = $frm->addRequiredField(Labels::getLabel('LBL_Phone', $langId), 'addr_phone', '', array('class' => 'phone-js ltr-right', 'placeholder' => ValidateElement::PHONE_NO_FORMAT, 'maxlength' => ValidateElement::PHONE_NO_LENGTH));
         $phnFld->requirements()->setRegularExpressionToValidate(ValidateElement::PHONE_REGEX);        
@@ -124,5 +124,19 @@ class pickupAddressesController extends AdminBaseController
         }
         $this->set('msg', $this->str_delete_record);
         $this->_template->render(false, false, 'json-success.php');
+    }
+    
+    public function timeSlotForm($addressId)
+    {
+        $this->objPrivilege->canEditPickupAddresses();
+        $addressId = FatUtility::int($addressId);
+        if($addressId < 1){
+            FatUtility::dieWithError($this->str_invalid_request);
+        }
+        
+        $frm = $this->getTimeSlotForm($addressId);
+        $this->set('addressId', $addressId);
+        $this->set('frm', $frm);
+        $this->_template->render(false, false);
     }
 }

@@ -552,7 +552,7 @@ class AdminBaseController extends FatController
         if ($productData['sellerProduct'] > 0) {
             $isPickupEnabled = Shop::getAttributesByUserId($productData['product_seller_id'], 'shop_fulfillment_type');
         } else {
-            $isPickupEnabled = FatApp::getConfig('CONF_FULFILLMENT_TYPE', FatUtility::VAR_INT, 0);
+            $isPickupEnabled = FatApp::getConfig('CONF_FULFILLMENT_TYPE', FatUtility::VAR_INT, -1);
         }
         
         $frm->addHiddenField('', 'selprod_user_id');

@@ -42,6 +42,7 @@ foreach ($arr_listing as $sn => $row) {
                 if ($canEdit) {
                     $td->appendElement('a', array('href'=>'javascript:void(0)', 'class'=>'btn btn-clean btn-sm btn-icon', 'title'=>Labels::getLabel('LBL_Edit',$adminLangId),"onclick"=>"addAddressForm(".$row['addr_id'].",".$row['addr_lang_id'].")"),"<i class='far fa-edit icon'></i>", true);
 					$td->appendElement('a', array('href'=>"javascript:void(0)", 'class'=>'btn btn-clean btn-sm btn-icon', 'title'=>Labels::getLabel('LBL_Delete',$adminLangId),"onclick"=>"deleteRecord(".$row['addr_id'].")"),"<i class='fa fa-trash  icon'></i>", true);
+                    $td->appendElement('a', array('href'=>"javascript:void(0)", 'class'=>'btn btn-clean btn-sm btn-icon', 'title'=>Labels::getLabel('LBL_Add_Time_Slots',$adminLangId),"onclick"=>"addTimeSlots(".$row['addr_id'].")"),"<i class='fa fa-hourglass'></i>", true);
                 }
                 break;
             default:

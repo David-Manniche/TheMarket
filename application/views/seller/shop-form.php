@@ -30,7 +30,7 @@ $lngFld = $shopFrm->getField('shop_lng');
 $lngFld->setFieldTagAttribute('id', "lng");
 
 $btnSubmit = $shopFrm->getField('btn_submit');
-$btnSubmit->developerTags['noCaptionTag'] = true;
+/* $btnSubmit->developerTags['noCaptionTag'] = true; */
 $btnSubmit->setFieldTagAttribute('class', "btn btn-primary btn-wide");
 
 $variables= array('language'=>$language,'siteLangId'=>$siteLangId,'shop_id'=>$shop_id,'action'=>$action);
@@ -57,8 +57,8 @@ $this->includeTemplate('seller/_partial/shop-navigation.php', $variables, false)
 </script>
 <?php if (FatApp::getConfig('CONF_ENABLE_GEO_LOCATION', FatUtility::VAR_INT, 0)) { ?>
 <script>
-	var lat = $('#lat').val();
-    var lng = $('#lng').val();
+	var lat = (!$('#lat').val()) ? 0 : $('#lat').val();
+    var lng = (!$('#lng').val()) ? 0 : $('#lng').val();
     initMap(lat, lng);
 </script>
 <?php } ?>
