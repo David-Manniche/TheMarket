@@ -98,12 +98,7 @@ $(document).ready(function () {
             var ans = $.parseJSON(res);
             if (ans.status == 1) {
                 fcom.displaySuccessMessage(ans.msg);
-                if (0 < $("#pluginsListing .badge").length) {
-                    $(obj).toggleClass("active");
-				    setTimeout(function(){ reloadList(); }, 1000);
-                } else {
-                    $(obj).toggleClass("active").attr('onclick', 'toggleStatus(this, ' + (0 < status ? 0 : 1) + ')');
-                }
+                setTimeout(function(){ reloadList(); }, 200);
             } else {
                 fcom.displayErrorMessage(ans.msg);
             }
