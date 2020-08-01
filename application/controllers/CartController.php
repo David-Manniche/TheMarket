@@ -21,6 +21,7 @@ class CartController extends MyAppController
         $products['single'] = array();
         $loggedUserId = UserAuthentication::getLoggedUserId(true);
         $cartObj = new Cart($loggedUserId, $this->siteLangId, $this->app_user['temp_user_id']);
+        $cartObj->unsetCartCheckoutType();
         $productsArr = $cartObj->getProducts($this->siteLangId);
         //CommonHelper::printArray($productsArr); exit;
         $prodGroupIds = array();
@@ -36,10 +37,10 @@ class CartController extends MyAppController
                     case Shipping::FULFILMENT_PICKUP:
                         $fulfillmentProdArr[Shipping::FULFILMENT_PICKUP][] = $product['selprod_id'];
                     break;
-                    default:
-                        $fulfillmentProdArr[Shipping::FULFILMENT_SHIP][] = $product['selprod_id'];
-                        $fulfillmentProdArr[Shipping::FULFILMENT_PICKUP][] = $product['selprod_id'];
-                    break;
+                   default:
+                       $fulfillmentProdArr[Shipping::FULFILMENT_SHIP][] = $product['selprod_id'];
+                       $fulfillmentProdArr[Shipping::FULFILMENT_PICKUP][] = $product['selprod_id'];
+                   break;
                 }
             }
             /* foreach( $productsArr as $product ) {
@@ -707,4 +708,56 @@ class CartController extends MyAppController
         $this->set('totalCartItems', $cartObj->countProducts());
         $this->_template->render(false, false);
     }
+    
+    public function removePickupOnlyProducts()
+    {     
+        $cart = new Cart(UserAuthentication::getLoggedUserId(true), $this->siteLangId, $this->app_user['temp_user_id']);
+        if (!$cart->removePickupOnlyProducts()) {
+            if (true === MOBILE_APP_API_CALL) {
+                LibHelper::dieJsonError($cart->getError());
+            }
+            Message::addMessage($cart->getError());
+            FatUtility::dieWithError(Message::getHtml());
+        }
+        
+        $this->set('msg', Labels::getLabel("MSG_Pickup_only_Items_removed_from_cart", $this->siteLangId));
+        if (true === MOBILE_APP_API_CALL) {
+            $total = $cart->countProducts();
+            $this->set('data', array('cartItemsCount' => $total));
+            $this->_template->render();
+        }
+        $this->_template->render(false, false, 'json-success.php'); 
+    }
+    
+    public function removeShippedOnlyProducts()
+    {     
+        $cart = new Cart(UserAuthentication::getLoggedUserId(true), $this->siteLangId, $this->app_user['temp_user_id']);
+        if (!$cart->removeShippedOnlyProducts()) {
+            if (true === MOBILE_APP_API_CALL) {
+                LibHelper::dieJsonError($cart->getError());
+            }
+            Message::addMessage($cart->getError());
+            FatUtility::dieWithError(Message::getHtml());
+        }
+        
+        $this->set('msg', Labels::getLabel("MSG_Shipped_only_Items_removed_from_cart", $this->siteLangId));
+        if (true === MOBILE_APP_API_CALL) {
+            $total = $cart->countProducts();
+            $this->set('data', array('cartItemsCount' => $total));
+            $this->_template->render();
+        }
+        $this->_template->render(false, false, 'json-success.php'); 
+    }
+    
+    public function setCartCheckoutType()
+    {     
+        $type = FatApp::getPostedData('type', FatUtility::VAR_INT, 0);
+        $cart = new Cart(UserAuthentication::getLoggedUserId(true), $this->siteLangId, $this->app_user['temp_user_id']);
+        $cart->setCartCheckoutType($type);
+        if (true === MOBILE_APP_API_CALL) {
+            $this->_template->render();
+        }
+        $this->_template->render(false, false, 'json-success.php'); 
+    }
+    
 }

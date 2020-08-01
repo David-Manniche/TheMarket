@@ -3197,7 +3197,14 @@ class Importexport extends ImportexportCommon
                             $userId = $colValue = array_key_exists($colValue, $usernameArr) ? $usernameArr[$colValue] : 0;
                             break;
                         case 'selprod_condition_identifier':
-                            $colValue = array_key_exists($colValue, $prodConditionArr) ? $prodConditionArr[$colValue] : 0;
+                            $colValue = mb_strtolower($colValue);
+                            $prodConditions = $this->array_change_key_case_unicode($prodConditionArr, CASE_LOWER);
+                            $colValue = array_key_exists($colValue, $prodConditions) ? $prodConditions[$colValue] : 0;
+                            $productType = Product::getAttributesById($productId, 'product_type');
+                            
+                            if (0 < $productId && Product::PRODUCT_TYPE_PHYSICAL == $productType && 1 > $colValue) {
+                                $invalid = true;
+                            }
                             $columnKey = 'selprod_condition';
                             break;
                         case 'selprod_available_from':

@@ -25,7 +25,7 @@ $submitFld->setFieldTagAttribute('class', "btn btn-primary");
             $.mbsmessage(<?php echo $error; ?>,true,'alert--danger');
         <?php } ?>
     });
-    var containerId = '#payment';
+    var containerId = '#tabs-container';
 
     function confirmOrder(frm) {
         var data = fcom.frmData(frm);
@@ -38,6 +38,7 @@ $submitFld->setFieldTagAttribute('class', "btn btn-primary");
                 fcom.ajax(getExternalLibraryUrl, '', function(t) {
                     var json = $.parseJSON(t);
                     if (1 > json.status) {
+                        $("#tabs-container form input[type='submit']").val(langLbl.confirmPayment);
                         $.mbsmessage(json.msg, true, 'alert--danger');
                         return;
                     }
@@ -58,6 +59,7 @@ $submitFld->setFieldTagAttribute('class', "btn btn-primary");
 
     function loadChargeForm(action)
     {
+        $.mbsmessage.close();
         fcom.ajax(action, '', function(t) {
             try {
                 var ans = $.parseJSON(t);

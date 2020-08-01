@@ -25,13 +25,13 @@ $rewardPoints = UserRewardBreakup::rewardPointBalance(UserAuthentication::getLog
                             </ul>
                         </div>
                         <div class="info">
-                            <span> 
+                            <span>
                                 <svg class="svg">
                                     <use xlink:href="<?php echo CONF_WEBROOT_URL; ?>images/retina/sprite.svg#info" href="<?php echo CONF_WEBROOT_URL; ?>images/retina/sprite.svg#info"></use>
-                                </svg> 
-                                <?php $canBeUsed = min(min($rewardPoints, CommonHelper::convertCurrencyToRewardPoint($cartSummary['cartTotal'] - $cartSummary["cartDiscounts"]["coupon_discount_total"])), FatApp::getConfig('CONF_MAX_REWARD_POINT', FatUtility::VAR_INT, 0)); ?> 
+                                </svg>
+                                <?php $canBeUsed = min(min($rewardPoints, CommonHelper::convertCurrencyToRewardPoint($cartSummary['cartTotal'] - $cartSummary["cartDiscounts"]["coupon_discount_total"])), FatApp::getConfig('CONF_MAX_REWARD_POINT', FatUtility::VAR_INT, 0)); ?>
                                 <?php $str = Labels::getLabel('LBL_MAXIMUM_{REWARDS}_REWARDS_POINT_REDEEM_FOR_THIS_ORDER', $siteLangId);
-                                echo CommonHelper::replaceStringData($str, ['{REWARDS}' => $canBeUsed]);?>
+                                echo CommonHelper::replaceStringData($str, ['{REWARDS}' => $canBeUsed]); ?>
                             </span>
                         </div>
                         <?php
@@ -276,6 +276,16 @@ if (!empty($siteKey) && !empty($secretKey)) { ?>
                 var paymentMethod = tabObj.data('paymentmethod');
                 if ('cashondelivery' == paymentMethod.toLowerCase() && true == enableGcaptcha) {
                     googleCaptcha();
+                }
+
+                var form = '#tabs-container form';
+                if (0 < $(form).length) {
+                    if (0 < $(form + " input[type='submit']").length) {
+                        $(form + " input[type='submit']").val(langLbl.requestProcessing);
+                    }
+                    setTimeout(function() {
+                        $(form).submit()
+                    }, 100);
                 }
             });
         }

@@ -8,7 +8,7 @@ class BraintreePayController extends PaymentController
     public const KEY_NAME = "Braintree";
 
     private $error = false;
-    
+
     public function __construct($action)
     {
         parent::__construct($action);
@@ -58,11 +58,13 @@ class BraintreePayController extends PaymentController
             $this->error = Labels::getLabel('MSG_INVALID_ORDER_PAID_CANCELLED', $this->siteLangId);
         } else {
             $currencyCode = strtolower($orderInfo["order_currency_code"]);
-            $checkPayment = $this->doPayment($payableAmount, $orderInfo);
             $frm = $this->getPaymentForm($orderId);
             $this->set('frm', $frm);
-            if ($checkPayment) {
-                $this->set('success', true);
+            if (isset($_POST['paymentMethodNonce'])) {
+                $checkPayment = $this->doPayment($payableAmount, $orderInfo);
+                if ($checkPayment) {
+                    $this->set('success', true);
+                }
             }
         }
 
@@ -132,24 +134,24 @@ class BraintreePayController extends PaymentController
                     }
                     $charge = Braintree_Transaction::sale(
                         array(
-                                    'amount' => $_POST['amount'],
-                                    'paymentMethodNonce' => $_POST['paymentMethodNonce'],
-                                    'options' => [
-                                        'submitForSettlement' => true
-                                    ]
-                                )
+                            'amount' => $_POST['amount'],
+                            'paymentMethodNonce' => $_POST['paymentMethodNonce'],
+                            'options' => [
+                                'submitForSettlement' => true
+                            ]
+                        )
                     );
 
-                    $charge = (array)$charge;
+                    $charge = (array) $charge;
                     $message = Labels::getLabel("MSG_PAYMENT_FAILED", $this->siteLangId);
                     if (!empty($charge) && 0 < count($charge)) {
                         $orderPaymentObj = new OrderPayment($orderInfo['id']);
                         if (isset($charge['success']) && 0 < $charge['success'] || (isset($charge['transaction']) && !is_null($charge['transaction']))) {
-                            $message = 'Id: ' . (string)$charge['transaction']->id . "&";
-                            $message .= 'Object: ' . (string)$charge['transaction'] . "&";
-                            $message .= 'Amount: ' . (string)$charge['transaction']->amount . "&";
+                            $message = 'Id: ' . (string) $charge['transaction']->id . "&";
+                            $message .= 'Object: ' . (string) $charge['transaction'] . "&";
+                            $message .= 'Amount: ' . (string) $charge['transaction']->amount . "&";
 
-                            $message .= 'Status: ' . (string)$charge['transaction']->status . "&";
+                            $message .= 'Status: ' . (string) $charge['transaction']->status . "&";
                             /* Recording Payment in DB */
 
                             $orderPaymentObj->addOrderPayment($this->settings["plugin_code"], $charge['transaction']->id, ($payment_amount / 100), Labels::getLabel("MSG_Received_Payment", $this->siteLangId), $message);
@@ -200,19 +202,27 @@ class BraintreePayController extends PaymentController
             if (strpos($className, 'Braintree') !== 0) {
                 return;
             }
-        
+
             $fileName = CONF_INSTALLATION_PATH . 'library' . DIRECTORY_SEPARATOR . 'braintree' . DIRECTORY_SEPARATOR;
-        
+
             if ($lastNsPos = strripos($className, '\\')) {
                 $namespace = substr($className, 0, $lastNsPos);
                 $className = substr($className, $lastNsPos + 1);
                 $fileName .= str_replace('\\', DIRECTORY_SEPARATOR, $namespace) . DIRECTORY_SEPARATOR;
             }
-        
+
             $fileName .= str_replace('_', DIRECTORY_SEPARATOR, $className) . '.php';
             if (is_file($fileName)) {
                 require_once $fileName;
             }
         });
+    }
+
+    public function getExternalLibraries()
+    {
+        $json['libraries'] = [
+            'https://js.braintreegateway.com/web/dropin/1.14.1/js/dropin.min.js',
+        ];
+        FatUtility::dieJsonSuccess($json);
     }
 }

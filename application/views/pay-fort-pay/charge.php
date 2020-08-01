@@ -1,10 +1,10 @@
 <?php defined('SYSTEM_INIT') or die('Invalid Usage.'); ?>
 <?php 
     $btn = $frm->getField('btn_submit'); 
-    $btn->addFieldTagAttribute('class', 'btn btn-primary btn-wide');
+    $btn->addFieldTagAttribute('class', 'btn btn-primary');
     $btn->addFieldTagAttribute('data-processing-text', Labels::getLabel('LBL_PLEASE_WAIT..', $siteLangId));
     $cancelBtn = $frm->getField('btn_cancel'); 
-    $cancelBtn->addFieldTagAttribute('class', 'btn btn-outline-primary btn-wide');
+    $cancelBtn->addFieldTagAttribute('class', 'btn btn-outline-primary');
     $cancelBtn->addFieldTagAttribute('onclick', 'cancel();');
 ?>
 <div class="payment-page">
@@ -21,7 +21,7 @@
         <div class="payment-from">
             <?php if (!isset($error)) { ?>
                 <p>
-                    <?php echo Labels::getLabel('MSG_PROCEED_TO_PAYMENT_PAGE_?', $siteLangId); ?>
+                    <?php echo Labels::getLabel('MSG_CONFIRM_TO_PROCEED_FOR_PAYMENT_?', $siteLangId); ?>
                 </p>
             <?php echo  $frm->getFormHtml();
             } else { ?>

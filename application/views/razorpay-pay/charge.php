@@ -13,7 +13,7 @@
         <div class="payment-from">
             <?php $button_confirm = Labels::getLabel('LBL_CONFIRM', $siteLangId); ?>
             <?php if (!isset($error)) : ?>
-                <p><?php echo Labels::getLabel('MSG_Please_click_on_payment_button_below_to_proceed_with_the_payments.', $siteLangId); ?></p>
+                <p><?php echo Labels::getLabel('MSG_CONFIRM_TO_PROCEED_FOR_PAYMENT_?', $siteLangId); ?></p>
                 <?php echo $frm->getFormHtml(); ?>
                 <div class="gap"></div>
                 <input type="submit" onclick="razorpaySubmit(this);" value="<?php echo $button_confirm; ?>" data-processing-text='<?php echo Labels::getLabel('LBL_PLEASE_WAIT..', $siteLangId); ?>' class="btn btn-primary" />
