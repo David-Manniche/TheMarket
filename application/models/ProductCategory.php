@@ -10,7 +10,10 @@ class ProductCategory extends MyAppModel
     public const REMOVED_OLD_IMAGE_TIME = 4;
     private $db;
     private $categoryTreeArr = array();
-
+    
+    public const REQUEST_PENDING = 0;
+    public const REQUEST_APPROVED = 1;
+    public const REQUEST_CANCELLED = 2;
 
     public function __construct($id = 0)
     {
@@ -18,7 +21,7 @@ class ProductCategory extends MyAppModel
         $this->db = FatApp::getDb();
     }
 
-    public static function getSearchObject($includeChildCount = false, $langId = 0, $prodcat_active = true)
+    public static function getSearchObject($includeChildCount = false, $langId = 0, $prodcat_active = true, $prodcat_status = 1)
     {
         $langId = FatUtility::int($langId);
         $srch = new SearchBase(static::DB_TBL, 'm');
@@ -105,7 +108,7 @@ class ProductCategory extends MyAppModel
         }
 
         foreach ($categoryArray as $categoryId) {
-            $srch = ProductCategory::getSearchObject();
+            $srch = ProductCategory::getSearchObject(false, 0, false);
             $srch->doNotCalculateRecords();
             $srch->doNotLimitRecords();
             $srch->addMultipleFields(array('prodcat_id', 'GETCATCODE(`prodcat_id`) as prodcat_code', 'GETCATORDERCODE(`prodcat_id`) as prodcat_ordercode'));
@@ -1064,7 +1067,7 @@ class ProductCategory extends MyAppModel
             }
         }
 
-        if ($prodCatId == 0) {
+        if ($prodCatId == 0 && isset($post['cat_icon_image_id']) && isset($post['cat_banner_image_id'])) {
             $this->updateMedia($post['cat_icon_image_id']);
             $this->updateMedia($post['cat_banner_image_id']);
         }

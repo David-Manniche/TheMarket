@@ -320,9 +320,9 @@ INSERT INTO `tbl_plugins` (`plugin_identifier`, `plugin_type`, `plugin_code`, `p
 INSERT INTO `tbl_plugins` (`plugin_identifier`, `plugin_type`, `plugin_code`, `plugin_active`, `plugin_display_order`) VALUES ('Omise', '13', 'Omise', '0', '1');
 INSERT INTO `tbl_plugins` (`plugin_identifier`, `plugin_type`, `plugin_code`, `plugin_active`, `plugin_display_order`) VALUES ('PayFort', '13', 'PayFort', '0', '1');
 
--- PayFort Start not required -- 
+-- PayFort Start not required --
 -- INSERT INTO `tbl_plugins` (`plugin_identifier`, `plugin_type`, `plugin_code`, `plugin_active`, `plugin_display_order`) VALUES ('PayFortStart', '13', 'PayFortStart', '0', '1'); --
--- PayFort Start not required -- 
+-- PayFort Start not required --
 
 INSERT INTO `tbl_plugins` (`plugin_identifier`, `plugin_type`, `plugin_code`, `plugin_active`, `plugin_display_order`) VALUES ('Paypal Standard', '13', 'PaypalStandard', '0', '1');
 INSERT INTO `tbl_plugins` (`plugin_identifier`, `plugin_type`, `plugin_code`, `plugin_active`, `plugin_display_order`) VALUES ('Paytm', '13', 'Paytm', '0', '1');
@@ -421,8 +421,8 @@ ALTER TABLE `tbl_addresses`
   MODIFY `addr_id` int(11) NOT NULL AUTO_INCREMENT;
 
 INSERT into `tbl_addresses` (`addr_type`, `addr_record_id`, `addr_lang_id`, `addr_title`, `addr_name`, `addr_address1`, `addr_address2`, `addr_city`, `addr_state_id`, `addr_country_id`, `addr_phone`, `addr_zip`, `addr_is_default`, `addr_deleted`) select * from (SELECT 1 as addr_type, `ua_user_id`, 1 as addr_lang_id, `ua_identifier`, `ua_name`, `ua_address1`, `ua_address2`, `ua_city`, `ua_state_id`, `ua_country_id`, `ua_phone`, `ua_zip`, `ua_is_default`, `ua_deleted` from `tbl_user_address`) as temp;
-DROP TABLE tbl_user_address; 
--- Addresses End--------------------------  
+DROP TABLE tbl_user_address;
+-- Addresses End--------------------------
 
 -- Pickup Location start-----------------
 
@@ -488,3 +488,6 @@ DELETE FROM `tbl_language_labels` WHERE `label_key` LIKE 'MSG_PAYFORT_INVALID_RE
 DELETE FROM `tbl_language_labels` WHERE `label_key` LIKE 'PAYFORT_Invalid_request_parameters';
 UPDATE `tbl_user_wish_lists` SET `uwlist_type`= 3 WHERE `uwlist_default` = 1;
 ALTER TABLE `tbl_user_wish_lists` DROP `uwlist_default`;
+
+ALTER TABLE `tbl_product_categories` ADD `prodcat_seller_id` INT NOT NULL AFTER `prodcat_parent`;
+ALTER TABLE `tbl_product_categories` ADD `prodcat_status` TINYINT NOT NULL COMMENT 'Defined in productCategory Model' AFTER `prodcat_active`;
