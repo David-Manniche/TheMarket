@@ -359,17 +359,15 @@ class ProductCategory extends MyAppModel
         return false;
     }
 
-    public function getParentTreeStructure($prodCat_id = 0, $level = 0, $name_suffix = '', $langId = 0)
+    public function getParentTreeStructure($prodCat_id = 0, $level = 0, $name_suffix = '', $langId = 0, $active = true, $status = 1)
     {
         $langId = FatUtility::int($langId);
-        $srch = static::getSearchObject(false, $langId);
+        $srch = static::getSearchObject(false, $langId, $active, $status);
         $srch->addFld('m.prodcat_id,COALESCE(prodcat_name,m.prodcat_identifier) as prodcat_identifier,m.prodcat_parent');
         $srch->addCondition('m.prodcat_deleted', '=', applicationConstants::NO);
-        $srch->addCondition('m.prodcat_active', '=', applicationConstants::ACTIVE);
         $srch->addCondition('m.prodCat_id', '=', FatUtility::int($prodCat_id));
         $rs = $srch->getResultSet();
         $records = FatApp::getDb()->fetch($rs);
-
         $name = '';
         $seprator = '';
         if ($level > 0) {
