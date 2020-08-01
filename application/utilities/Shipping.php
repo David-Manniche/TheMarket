@@ -355,6 +355,7 @@ class Shipping
                     $this->shippedByArr[$shippingLevel]['rates'][$rates['shiprate_id']] = $shippingCost;
                     break;
             }
+            $this->shippedByArr[$shippingLevel]['pickup_options'] = [];
         }
 
         $this->setCombinedCharges();

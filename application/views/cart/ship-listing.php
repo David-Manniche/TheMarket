@@ -32,7 +32,7 @@ defined('SYSTEM_INIT') or die('Invalid Usage.'); ?>
             $productsCount = count($products);  
             if ($productsCount) { 
                 uasort($products, function ($a, $b) {
-                    return  $b['fulfillment_Type'] - $a['fulfillment_Type'];
+                    return  $b['fulfillment_type'] - $a['fulfillment_type'];
                 });
             ?>
             <ul class="list-group list-cart">
@@ -60,7 +60,7 @@ defined('SYSTEM_INIT') or die('Invalid Usage.'); ?>
                     </div>
                 </li>
                 <?php foreach ($products as $key => $product) { 
-                        if ($product['fulfillment_Type'] != Shipping::FULFILMENT_PICKUP) {
+                        if ($product['fulfillment_type'] != Shipping::FULFILMENT_PICKUP) {
                             continue;
                         } 
                         $productUrl = UrlHelper::generateUrl('Products', 'View', array($product['selprod_id']));
@@ -94,13 +94,12 @@ defined('SYSTEM_INIT') or die('Invalid Usage.'); ?>
                         </li>
                 <?php }?> 
                 </ul>
-                <ul class="list-group list-cart">   
-
+                <ul class="list-group list-cart">
                 <?php }?>    
 
                 <?php foreach ($products as $product) {
                     
-                    if ($product['fulfillment_Type'] == Shipping::FULFILMENT_PICKUP) {
+                    if ($product['fulfillment_type'] == Shipping::FULFILMENT_PICKUP) {
                         continue;
                     }
 
@@ -108,7 +107,6 @@ defined('SYSTEM_INIT') or die('Invalid Usage.'); ?>
                     $shopUrl = UrlHelper::generateUrl('Shops', 'View', array($product['shop_id']));
                     $imageUrl = UrlHelper::getCachedUrl(UrlHelper::generateFileUrl('image', 'product', array($product['product_id'], "THUMB",$product['selprod_id'], 0, $siteLangId)), CONF_IMG_CACHE_TIME, '.jpg');
                     $productTitle =  ($product['selprod_title']) ? $product['selprod_title'] : $product['product_name'];
-                   
                 ?>
 
                 <li class="list-group-item <?php echo md5($product['key']); ?> <?php echo (!$product['in_stock']) ? 'disabled' : ''; ?>">
@@ -123,7 +121,7 @@ defined('SYSTEM_INIT') or die('Invalid Usage.'); ?>
                                 <p class=""> <?php 
                                 if (isset($product['options']) && count($product['options'])) {
                                     foreach ($product['options'] as $key => $option) {
-                                        if (0 < $key){
+                                        if (0 < $key) {
                                             echo ' | ';
                                         }
                                         echo $option['option_name'].':'; ?> <span class="text--dark"><?php echo $option['optionvalue_name']; ?></span>

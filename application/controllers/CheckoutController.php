@@ -492,7 +492,22 @@ class CheckoutController extends MyAppController
             $this->cartObj->unsetCartShippingAddress();
         }
 
-        $shippingRates = $this->cartObj->getShippingOptions($this->siteLangId);
+        $fulfillmentType = $this->cartObj->getCartCheckoutType();
+        $template = 'checkout/shipping-summary-inner.php';
+        $shippingRates = [];
+
+        switch ($fulfillmentType) {
+            case Shipping::FULFILMENT_PICKUP:
+                $shippingRates = $this->cartObj->getPickupOptions($cartProducts);
+                $template = 'checkout/shipping-summary-pickup.php';
+                break;
+            case Shipping::FULFILMENT_SHIP:
+                $shippingRates = $this->cartObj->getShippingOptions();
+            break;
+        }
+
+        //$shippingRates = $this->cartObj->getShippingOptions();
+        //CommonHelper::printArray($shippingRates, true);
 
         if (true === MOBILE_APP_API_CALL) {
             $this->_template->render();
@@ -507,13 +522,15 @@ class CheckoutController extends MyAppController
 
         $address = new Address($selected_shipping_address_id, $this->siteLangId);
         $addresses = $address->getData(Address::TYPE_USER, UserAuthentication::getLoggedUserId());
+        
 
         $this->set('cartSummary', $this->cartObj->getCartFinancialSummary($this->siteLangId));
+        $this->set('fulfillmentType', $fulfillmentType);
         $this->set('addresses', $addresses);
         $this->set('products', $cartProducts);
         $this->set('shippingRates', $shippingRates);
-        $this->set('hasPhysicalProd', $hasPhysicalProd);            
-        $this->_template->render(false, false, 'checkout/shipping-summary-inner.php');
+        $this->set('hasPhysicalProd', $hasPhysicalProd);
+        $this->_template->render(false, false, $template);
     }
 
     public function getCarrierServicesList($product_key, $carrier_id = 0)
@@ -685,7 +702,7 @@ class CheckoutController extends MyAppController
             );
         }
 
-        if (!$json) { 
+        if (!$json) {
             $this->cartObj->setProductShippingMethod($productToShippingMethods);
             if (!$this->cartObj->isProductShippingMethodSet()) {
                 $this->errMessage = Labels::getLabel('MSG_Shipping_Method_is_not_selected_on_products_in_cart', $this->siteLangId);

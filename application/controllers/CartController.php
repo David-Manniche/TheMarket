@@ -30,7 +30,7 @@ class CartController extends MyAppController
 
         if (0 < count($productsArr) || true === MOBILE_APP_API_CALL) {
             foreach ($productsArr as $product) {
-                switch ($product['fulfillment_Type']) {
+                switch ($product['fulfillment_type']) {
                     case Shipping::FULFILMENT_SHIP:
                         $fulfillmentProdArr[Shipping::FULFILMENT_SHIP][] = $product['selprod_id'];
                     break;
