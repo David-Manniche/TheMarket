@@ -1,6 +1,6 @@
 <?php
 
-class pickupAddressesController extends AdminBaseController
+class PickupAddressesController extends AdminBaseController
 {
     public function __construct($action)
     {
@@ -124,5 +124,19 @@ class pickupAddressesController extends AdminBaseController
         }
         $this->set('msg', $this->str_delete_record);
         $this->_template->render(false, false, 'json-success.php');
+    }
+    
+    public function timeSlotForm($addressId)
+    {
+        $this->objPrivilege->canEditPickupAddresses();
+        $addressId = FatUtility::int($addressId);
+        if($addressId < 1){
+            FatUtility::dieWithError($this->str_invalid_request);
+        }
+        
+        $frm = $this->getTimeSlotForm($addressId);
+        $this->set('addressId', $addressId);
+        $this->set('frm', $frm);
+        $this->_template->render(false, false);
     }
 }
