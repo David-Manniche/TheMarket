@@ -10,7 +10,7 @@ $(document).ready(function() {
     searchAddresses = function() {
         var data = '';
         $(dv).html(fcom.getLoader());
-        fcom.ajax(fcom.makeUrl('pickupAddresses', 'search'), data, function(res) {
+        fcom.ajax(fcom.makeUrl('PickupAddresses', 'search'), data, function(res) {
             $(dv).html(res);
         });
     };
@@ -24,7 +24,7 @@ $(document).ready(function() {
 
     addressForm = function(id, langId) {
         fcom.displayProcessing();
-        fcom.ajax(fcom.makeUrl('pickupAddresses', 'form', [id, langId]), '', function(t) {
+        fcom.ajax(fcom.makeUrl('PickupAddresses', 'form', [id, langId]), '', function(t) {
             $.facebox(t, 'faceboxWidth');
             fcom.updateFaceboxContent(t);
         });
@@ -33,7 +33,7 @@ $(document).ready(function() {
     setup= function(frm) {
         if (!$(frm).validate()) return;
         var data = fcom.frmData(frm);
-        fcom.updateWithAjax(fcom.makeUrl('pickupAddresses', 'setup'), data, function(t) {
+        fcom.updateWithAjax(fcom.makeUrl('PickupAddresses', 'setup'), data, function(t) {
             searchAddresses();
             if (t.langId > 0) {
                 editAddressLangForm(t.addressId, t.langId);
@@ -46,7 +46,7 @@ $(document).ready(function() {
     deleteRecord = function(id){
 		if(!confirm(langLbl.confirmDelete)){return;}
 		data='id='+id;
-		fcom.updateWithAjax(fcom.makeUrl('pickupAddresses','deleteRecord'),data,function(res){
+		fcom.updateWithAjax(fcom.makeUrl('PickupAddresses','deleteRecord'),data,function(res){
 			searchAddresses();
 		});
 	};
@@ -57,5 +57,15 @@ $(document).ready(function() {
 			$(div).append(res);
 		});
 	};
+    
+    addTimeSlots = function(addressId){
+        $.facebox(function() {
+            fcom.displayProcessing();
+            fcom.ajax(fcom.makeUrl('PickupAddresses', 'timeSlotForm', [addressId]), '', function(t) {
+                $.facebox(t, 'faceboxWidth');
+                fcom.updateFaceboxContent(t);
+            });
+        });
+    }
 
 })();
