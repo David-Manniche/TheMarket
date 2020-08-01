@@ -37,10 +37,10 @@ class CartController extends MyAppController
                     case Shipping::FULFILMENT_PICKUP:
                         $fulfillmentProdArr[Shipping::FULFILMENT_PICKUP][] = $product['selprod_id'];
                     break;
-//                    default:
-//                        $fulfillmentProdArr[Shipping::FULFILMENT_SHIP][] = $product['selprod_id'];
-//                        $fulfillmentProdArr[Shipping::FULFILMENT_PICKUP][] = $product['selprod_id'];
-//                    break;
+                   default:
+                       $fulfillmentProdArr[Shipping::FULFILMENT_SHIP][] = $product['selprod_id'];
+                       $fulfillmentProdArr[Shipping::FULFILMENT_PICKUP][] = $product['selprod_id'];
+                   break;
                 }
             }
             /* foreach( $productsArr as $product ) {

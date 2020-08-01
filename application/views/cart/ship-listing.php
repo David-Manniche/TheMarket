@@ -36,7 +36,7 @@ defined('SYSTEM_INIT') or die('Invalid Usage.'); ?>
                 });
             ?>
             <ul class="list-group list-cart">
-                <?php if (isset($fulfillmentProdArr[Shipping::FULFILMENT_PICKUP]) && count($fulfillmentProdArr[Shipping::FULFILMENT_PICKUP]) > 0) { ?>
+                <?php if (count($fulfillmentProdArr[Shipping::FULFILMENT_PICKUP]) > 0 && count($fulfillmentProdArr[Shipping::FULFILMENT_PICKUP]) != $productsCount) { ?>
                 <li class="list-group-item">
                     <div class="info">
                         <span> <svg class="svg">
@@ -44,9 +44,9 @@ defined('SYSTEM_INIT') or die('Invalid Usage.'); ?>
                                     href="../images/retina/sprite.svg#info">
                                 </use>
                             </svg><?php echo Labels::getLabel('MSG_SOME_ITEMS_NOT_AVAILABLE_FOR_SHIPPING', $siteLangId); ?>
-                            <?php //if (count($fulfillmentProdArr[Shipping::FULFILMENT_PICKUP]) == $productsCount) {?>
+                            <?php if (count($fulfillmentProdArr[Shipping::FULFILMENT_PICKUP]) == $productsCount) {?>
                             <a href="javascript:void(0);" onClick="setCheckoutType(<?php echo Shipping::FULFILMENT_PICKUP; ?>);" class="link"><?php echo Labels::getLabel('LBL_Pickup_Entire_Order', $siteLangId); ?></a>
-                            <?php //} ?>
+                            <?php } ?>
                             </span>
                         <ul class="list-actions">
                             <li>
