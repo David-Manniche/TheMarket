@@ -35,10 +35,10 @@ $(document).ready(function() {
         var data = fcom.frmData(frm);
         fcom.updateWithAjax(fcom.makeUrl('PickupAddresses', 'setup'), data, function(t) {
             searchAddresses();
-            if (t.langId > 0) {
-                editAddressLangForm(t.addressId, t.langId);
-                return;
-            }
+//            if (t.langId > 0) {
+//                editAddressLangForm(t.addressId, t.langId);
+//                return;
+//            }
             $(document).trigger('close.facebox');
         });
     };
@@ -60,12 +60,29 @@ $(document).ready(function() {
     
     addTimeSlots = function(addressId){
         $.facebox(function() {
-            fcom.displayProcessing();
-            fcom.ajax(fcom.makeUrl('PickupAddresses', 'timeSlotForm', [addressId]), '', function(t) {
-                $.facebox(t, 'faceboxWidth');
-                fcom.updateFaceboxContent(t);
+            fcom.ajax(fcom.makeUrl('PickupAddresses', 'timeSlotForm', [addressId]), '', function(ans) {
+                $.facebox(ans, 'faceboxWidth');
             });
         });
     }
-
+    
+    setUpTimeSlot= function(frm) {
+        if (!$(frm).validate()) return;
+        var data = fcom.frmData(frm);
+        fcom.updateWithAjax(fcom.makeUrl('PickupAddresses', 'setUpTimeSlot'), data, function(t) {
+            searchAddresses();
+            $(document).trigger('close.facebox');
+        });
+    };
+    
+    addTimeSlotRow = function(){
+        var row  = $( "#frm_fat_id_frmTimeSlot .row" ).first().clone().find("select").val("").end();
+        $( "#frm_fat_id_frmTimeSlot .row" ).last().before(row);     
+        $( "#frm_fat_id_frmTimeSlot .js-to-time" ).last().after('<div class="col-md-2"><button class="js-remove-slot">x</button></div>');
+    }  
+    
 })();
+
+$(document).on('click', '.js-remove-slot', function(){
+    $(this).parent().parent('.row').remove();
+})
