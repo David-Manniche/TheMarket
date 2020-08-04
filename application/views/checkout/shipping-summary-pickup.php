@@ -35,13 +35,13 @@
             $levelNo = 0;
             foreach ($shippingRates as $level => $levelItems) { ?>
             <ul class="list-group list-cart list-shippings">
-            <?php if (count($levelItems['products']) > 0 && $level == -1) {
+            <?php if (count($levelItems['products']) > 0 && $level == 0) {
                 $productData = current($levelItems['products']);
                 ?>
                 <li class="list-group-item shipping-select">
                     <div class="shop-name"><?php echo ($level == Shipping::LEVEL_SHOP) ? $productData['shop_name'] : FatApp::getConfig('CONF_WEBSITE_NAME_' . $siteLangId, null, ''); ?></div>
                     <div class="shipping-method">
-                       <a href="javascript::void(0)" onclick="pickupAddress(<?php echo $level;?>)"><?php echo Labels::getLabel('LBL_SELECT_PICKUP', $siteLangId);?></a>
+                       <a href="javascript::void(0)" onclick="setPickupAddress(<?php echo $level;?>)"><?php echo Labels::getLabel('LBL_SELECT_PICKUP', $siteLangId);?></a>
                     </div>
                 </li> 
             <?php } ?>    
@@ -54,7 +54,7 @@
                     <li class="list-group-item shipping-select">
                         <div class="shop-name"><?php echo $product['shop_name']; ?></div>
                         <div class="shipping-method">
-                        <a href="javascript::void(0)" onclick="pickupAddress(<?php echo $level;?>)"><?php echo Labels::getLabel('LBL_SELECT_PICKUP', $siteLangId);?></a>
+                        <a href="javascript::void(0)" onclick="setPickupAddress(<?php echo $level;?>)"><?php echo Labels::getLabel('LBL_SELECT_PICKUP', $siteLangId);?></a>
                         </div>
                     </li> 
                 <?php } ?>   

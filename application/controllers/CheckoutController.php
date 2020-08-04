@@ -533,6 +533,14 @@ class CheckoutController extends MyAppController
         $this->_template->render(false, false, $template);
     }
 
+    public function pickupAddresses($shopId)
+    {
+        $address = new Address();
+        if ($shopId == 0) {
+            $addresses = $address->getData($shipType, $shopId);
+        }
+    }
+
     public function getCarrierServicesList($product_key, $carrier_id = 0)
     {
         if (empty($product_key)) {

@@ -1721,7 +1721,7 @@ class Cart extends FatModel
         $pickupAddress = [];
 
         foreach ($cartProducts as $product) {
-            $shippedById = -1;
+            $shippedById = 0;
             $shipType = Address::TYPE_ADMIN_PICKUP;
 
             if ($product['isProductShippedBySeller']) {

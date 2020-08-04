@@ -124,6 +124,10 @@ $("document").ready(function () {
         });
     };
 
+    setPickupAddress = function(shopId) {
+        
+    };
+
     removeAddress = function (id) {
         if (!checkLogin()) {
             return false;
