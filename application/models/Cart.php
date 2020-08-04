@@ -356,7 +356,7 @@ class Cart extends FatModel
                         continue;
                     }
 
-                    if(isset($this->SYSTEM_ARR['shopping_cart']['checkout_type']) && $sellerProductRow['selprod_fulfillment_type'] != Shipping::FULFILMENT_ALL && $sellerProductRow['selprod_fulfillment_type'] != $this->SYSTEM_ARR['shopping_cart']['checkout_type']){
+                    if (isset($this->SYSTEM_ARR['shopping_cart']['checkout_type']) && $sellerProductRow['selprod_fulfillment_type'] != Shipping::FULFILMENT_ALL && $sellerProductRow['selprod_fulfillment_type'] != $this->SYSTEM_ARR['shopping_cart']['checkout_type']) {
                         unset($this->products[$key]);
                         continue;
                     }
@@ -365,7 +365,8 @@ class Cart extends FatModel
 
                     /*[COD available*/
                     $codEnabled = false;
-                    $isProductShippedBySeller = Product::isProductShippedBySeller($sellerProductRow['product_id'], $sellerProductRow['product_seller_id'], $sellerProductRow['selprod_user_id']);
+                    // $isProductShippedBySeller = Product::isProductShippedBySeller($sellerProductRow['product_id'], $sellerProductRow['product_seller_id'], $sellerProductRow['selprod_user_id']);
+                    $isProductShippedBySeller = $sellerProductRow['isProductShippedBySeller'];
 
                     if ($is_cod_enabled && $isProductShippedBySeller) {
                         $walletBalance = User::getUserBalance($sellerProductRow['selprod_user_id']);
@@ -511,19 +512,7 @@ class Cart extends FatModel
                 if (UserAuthentication::isUserLogged() || UserAuthentication::isGuestUserLogged()) {
                     $this->products[$key]['seller_address'] = Shop::getShopAddress($shopId, true, $siteLangId);
                 }
-
-                $fulfillmentType = $sellerProductRow['selprod_fulfillment_type'];                  
-                if (true == $isProductShippedBySeller) { 
-                    if ($sellerProductRow['shop_fulfillment_type'] != Shipping::FULFILMENT_ALL) {
-                        $fulfillmentType = $sellerProductRow['shop_fulfillment_type'];
-                    }
-                } else { 
-                    if (FatApp::getConfig('CONF_FULFILLMENT_TYPE', FatUtility::VAR_INT, -1) != Shipping::FULFILMENT_ALL) {
-                        $fulfillmentType = FatApp::getConfig('CONF_FULFILLMENT_TYPE', FatUtility::VAR_INT, -1);
-                    }
-                }
-                                
-                $this->products[$key]['fulfillment_Type'] = $fulfillmentType;
+                $this->products[$key]['fulfillment_type'] = $sellerProductRow['fulfillment_type'];
             }
 
             /* $sellerPrice = $this->getSellersProductItemsPrice($this->products);
@@ -664,6 +653,21 @@ class Cart extends FatModel
         } else {
             $sellerProductRow['options'] = SellerProduct::getSellerProductOptions($selprod_id, false);
         }
+
+        $isProductShippedBySeller = Product::isProductShippedBySeller($sellerProductRow['product_id'], $sellerProductRow['product_seller_id'], $sellerProductRow['selprod_user_id']);
+        $sellerProductRow['isProductShippedBySeller'] = $isProductShippedBySeller;
+
+        $fulfillmentType = $sellerProductRow['selprod_fulfillment_type'];
+        if (true == $isProductShippedBySeller) {
+            if ($sellerProductRow['shop_fulfillment_type'] != Shipping::FULFILMENT_ALL) {
+                $fulfillmentType = $sellerProductRow['shop_fulfillment_type'];
+            }
+        } else {
+            if (FatApp::getConfig('CONF_FULFILLMENT_TYPE', FatUtility::VAR_INT, -1) != Shipping::FULFILMENT_ALL) {
+                $fulfillmentType = FatApp::getConfig('CONF_FULFILLMENT_TYPE', FatUtility::VAR_INT, -1);
+            }
+        }
+        $sellerProductRow['fulfillment_type'] = $fulfillmentType;
         return $sellerProductRow;
     }
 
@@ -1706,34 +1710,60 @@ class Cart extends FatModel
         return $shippingRates;
     }
 
+    public function getPickupOptions($cartProducts)
+    {
+        if (empty($cartProducts)) {
+            $cartProducts =  $this->getProducts($this->cart_lang_id);
+        }
+        
+        $shippedByArr = [];
+        $address = new Address();
+        $pickupAddress = [];
+
+        foreach ($cartProducts as $product) {
+            $shippedById = 0;
+            $shipType = Address::TYPE_ADMIN_PICKUP;
+
+            if ($product['isProductShippedBySeller']) {
+                $shippedById = $product['shop_id'];
+                $shipType = Address::TYPE_SHOP_PICKUP;
+            }
+
+            if (!in_array($shippedById, $pickupAddress)) {
+                $addresses = $address->getData($shipType, $shippedById);
+                $shippedByArr[$shippedById]['pickup_options'] = $addresses;
+            }
+            $pickupAddress[] = $shippedById;
+            
+            $shippedByArr[$shippedById]['products'][$product['selprod_id']] = $product;
+        }
+        return $shippedByArr;
+    }
+
     public function getShippingOptions()
     {
         $shippedByArr = [];
-
-        $shipToCountryId = 0;
-        $shipToStateId = 0;
+        
         $address = new Address($this->getCartShippingAddress(), $this->cart_lang_id);
         $shippingAddressDetail =  $address->getData(Address::TYPE_USER, $this->cart_user_id);
 
         $physicalSelProdIdArr = [];
         $digitalSelProdIdArr = [];
         $cartProducts = $this->getBasketProducts($this->cart_lang_id);
-
+        
         $productInfo = [];
         foreach ($cartProducts as $key => $val) {
-            if(isset($this->SYSTEM_ARR['shopping_cart']['checkout_type']) && $val['selprod_fulfillment_type'] != Shipping::FULFILMENT_ALL && $val['selprod_fulfillment_type'] != $this->SYSTEM_ARR['shopping_cart']['checkout_type']){
+            if ($val['fulfillment_type'] != $this->SYSTEM_ARR['shopping_cart']['checkout_type'] && $val['fulfillment_type'] != Shipping::FULFILMENT_ALL) {
                 continue;
             }
-            
+                     
             $productInfo[$val['selprod_id']] = $val;
             if ($val['is_physical_product']) {
                 $physicalSelProdIdArr[$val['selprod_id']] = $val['selprod_id'];
             } else {
                 $digitalSelProdIdArr[$val['selprod_id']] = $val['selprod_id'];
             }
-       
         }
-
 
         $shipping = new Shipping($this->cart_lang_id);
         $response =  $shipping->calculateCharges($physicalSelProdIdArr, $shippingAddressDetail, $productInfo);
@@ -1807,8 +1837,8 @@ class Cart extends FatModel
     {
         $cartProducts = $this->getProducts($this->cart_lang_id);
         foreach ($cartProducts as $cartKey => $product) {
-            if ($product['fulfillment_Type'] != Shipping::FULFILMENT_PICKUP) {
-                continue;                
+            if ($product['fulfillment_type'] != Shipping::FULFILMENT_PICKUP) {
+                continue;
             }
             
             unset($this->SYSTEM_ARR['cart'][$cartKey]);
@@ -1825,8 +1855,8 @@ class Cart extends FatModel
     {
         $cartProducts = $this->getProducts($this->cart_lang_id);
         foreach ($cartProducts as $cartKey => $product) {
-            if ($product['fulfillment_Type'] != Shipping::FULFILMENT_SHIP) {
-                continue;                
+            if ($product['fulfillment_type'] != Shipping::FULFILMENT_SHIP) {
+                continue;
             }
             
             unset($this->SYSTEM_ARR['cart'][$cartKey]);
@@ -1858,5 +1888,4 @@ class Cart extends FatModel
         $this->updateUserCart();
         return true;
     }
-    
 }

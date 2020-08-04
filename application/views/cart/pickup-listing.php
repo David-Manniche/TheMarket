@@ -32,7 +32,7 @@ defined('SYSTEM_INIT') or die('Invalid Usage.'); ?>
             $productsCount = count($products);
             if ($productsCount) { 
                 uasort($products, function ($a, $b) {
-                    return  $b['fulfillment_Type'] - $a['fulfillment_Type'];
+                    return  $b['fulfillment_type'] - $a['fulfillment_type'];
                 });
             ?>
             <ul class="list-group list-cart">
@@ -61,7 +61,7 @@ defined('SYSTEM_INIT') or die('Invalid Usage.'); ?>
                     </div>
                 </li>
                 <?php foreach ($products as $key => $product) { 
-                        if ($product['fulfillment_Type'] != Shipping::FULFILMENT_SHIP) {
+                        if ($product['fulfillment_type'] != Shipping::FULFILMENT_SHIP) {
                             continue;
                         } 
                         $productUrl = UrlHelper::generateUrl('Products', 'View', array($product['selprod_id']));
@@ -101,7 +101,7 @@ defined('SYSTEM_INIT') or die('Invalid Usage.'); ?>
 
                 <?php foreach ($products as $product) {
                     
-                    if ($product['fulfillment_Type'] == Shipping::FULFILMENT_SHIP) {
+                    if ($product['fulfillment_type'] == Shipping::FULFILMENT_SHIP) {
                         continue;
                     }
 
