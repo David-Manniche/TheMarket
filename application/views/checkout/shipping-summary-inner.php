@@ -170,15 +170,12 @@
             <?php }?>            
         </div>
         <div class="step__footer">
-            <a class="btn btn-link" href="javascript:void(0)" onclick="showAddressList();">
-                <i class="arrow">
-                    <svg class="svg">
-                        <use xlink:href="<?php echo CONF_WEBROOT_URL;?>images/retina/sprite.svg#arrow-left"
-                            href="<?php echo CONF_WEBROOT_URL;?>images/retina/sprite.svg#arrow-left">
-                        </use>
-                    </svg></i>
-                <span class=""><?php echo Labels::getLabel('LBL_Back', $siteLangId); ?></span></a>
-            <a class="btn btn-primary btn-wide " onClick="setUpShippingMethod();" href="javascript:void(0)"><?php echo Labels::getLabel('LBL_Continue', $siteLangId); ?></a>
+            <a class="btn btn-outline-primary btn-wide" href="javascript:void(0)" onclick="showAddressList();">
+                <?php echo Labels::getLabel('LBL_Back', $siteLangId); ?>
+            </a>
+            <a class="btn btn-primary btn-wide " onClick="setUpShippingMethod();" href="javascript:void(0)">
+                <?php echo Labels::getLabel('LBL_Continue', $siteLangId); ?>
+            </a>
         </div>
     </div>
 </main>
