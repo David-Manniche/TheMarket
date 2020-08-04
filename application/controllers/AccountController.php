@@ -1309,39 +1309,21 @@ class AccountController extends LoggedUserController
 
     public function moveToWishList($selProdId)
     {
-        $defaultWishListId = $this->getDefaultWishListId();
+        $wishList = new UserWishList();
+        $defaultWishListId = $wishList->getWishListId($loggedUserId, UserWishList::TYPE_DEFAULT_WISHLIST);
         $this->addRemoveWishListProduct($selProdId, $defaultWishListId);
     }
-
-    public function getDefaultWishListId()
+    
+    public function moveToSaveForLater($selProdId)
     {
         $loggedUserId = UserAuthentication::getLoggedUserId();
-        $srch = UserWishList::getSearchObject($loggedUserId, true);
-        $srch->addCondition('uwlist_default', '=', applicationConstants::YES);
-        $srch->addMultipleFields(array( 'uwlist_id'));
-        $srch->setPageSize(1);
-        $rs = $srch->getResultSet();
-        $row = FatApp::getDb()->fetch($rs);
-
-        if (!empty($row)) {
-            return $row['uwlist_id'];
-        }
-
-        $wListObj = new UserWishList();
-        $data_to_save_arr['uwlist_title'] = Labels::getLabel('LBL_Default_list', $this->siteLangId);
-        ;
-        $data_to_save_arr['uwlist_added_on'] = date('Y-m-d H:i:s');
-        $data_to_save_arr['uwlist_user_id'] = $loggedUserId;
-        $data_to_save_arr['uwlist_default'] = 1;
-        $wListObj->assignValues($data_to_save_arr);
-
-        /* create new List[ */
-        if (!$wListObj->save()) {
-            Message::addErrorMessage($wListObj->getError());
+        $wishList = new UserWishList();
+        $wishListId = $wishList->getWishListId($loggedUserId, UserWishList::TYPE_SAVE_FOR_LATER);
+        if (!$wishList->addUpdateListProducts($wishListId, $selProdId)) {
+            Message::addErrorMessage(Labels::getLabel("LBL_Invalid_Request", $this->siteLangId));
             FatUtility::dieWithError(Message::getHtml());
         }
-        $uwlist_id = $wListObj->getMainTableRecordId();
-        return $uwlist_id;
+        $this->_template->render(false, false, 'json-success.php');
     }
 
     /* called from products listing page */
@@ -1349,7 +1331,7 @@ class AccountController extends LoggedUserController
     {
         $excludeWishList = FatUtility::int($excludeWishList);
         $loggedUserId = UserAuthentication::getLoggedUserId();
-        $this->getDefaultWishListId();
+        
         $wishLists = UserWishList::getUserWishLists($loggedUserId, true, $excludeWishList);
         $frm = $this->getCreateWishListForm();
         $frm->fill(array('selprod_id' => $selprod_id));
@@ -1481,12 +1463,14 @@ class AccountController extends LoggedUserController
         $selprod_id = FatUtility::int($selprod_id);
         $wish_list_id = FatUtility::int($wish_list_id);
         $rowAction = ('' == $rowAction ? -1 : $rowAction);
-
-        if (1 > $wish_list_id) {
-            $wish_list_id = $this->getDefaultWishListId();
-        }
+        
         $loggedUserId = UserAuthentication::getLoggedUserId();
-
+        
+        if (1 > $wish_list_id) {
+            $wishList = new UserWishList();
+            $wish_list_id = $wishList->getWishListId($loggedUserId, UserWishList::TYPE_DEFAULT_WISHLIST);
+        }
+        
         if (1 > $selprod_id) {
             $message = Labels::getLabel('LBL_Invalid_Request', $this->siteLangId);
             if (true === MOBILE_APP_API_CALL) {
@@ -1930,7 +1914,7 @@ class AccountController extends LoggedUserController
         $srch->doNotCalculateRecords();
         $srch->doNotLimitRecords();
         $srch->addCondition('uwlist_id', '=', $uwlist_id);
-        $srch->addCondition('uwlist_default', '=', applicationConstants::NO);
+        $srch->addCondition('uwlist_type', '!=', UserWishList::TYPE_DEFAULT_WISHLIST);
         $rs = $srch->getResultSet();
         $row = FatApp::getDb()->fetch($rs);
         if (!$row) {
@@ -1961,7 +1945,7 @@ class AccountController extends LoggedUserController
         $loggedUserId = UserAuthentication::getLoggedUserId();
 
         $srch = UserWishList::getSearchObject($loggedUserId);
-        $srch->addMultipleFields(array('uwlist_id', 'uwlist_title', 'uwlist_default'));
+        $srch->addMultipleFields(array('uwlist_id', 'uwlist_title', 'uwlist_type'));
         $srch->doNotCalculateRecords();
         $srch->doNotLimitRecords();
         $srch->addCondition('uwlist_id', '=', $uwlist_id);
@@ -2740,8 +2724,8 @@ class AccountController extends LoggedUserController
 
         if (User::isAffiliate()) {
             $zipFld = $frm->addRequiredField(Labels::getLabel('LBL_Postalcode', $this->siteLangId), 'user_zip');
-            $zipFld->requirements()->setRegularExpressionToValidate(ValidateElement::ZIP_REGEX);
-            $zipFld->requirements()->setCustomErrorMessage(Labels::getLabel('LBL_Only_alphanumeric_value_is_allowed.', $this->siteLangId));
+            /* $zipFld->requirements()->setRegularExpressionToValidate(ValidateElement::ZIP_REGEX);
+            $zipFld->requirements()->setCustomErrorMessage(Labels::getLabel('LBL_Only_alphanumeric_value_is_allowed.', $this->siteLangId)); */
         }
         $parent = User::getAttributesById(UserAuthentication::getLoggedUserId(true), 'user_parent');
         if (User::isAdvertiser() && $parent == 0) {

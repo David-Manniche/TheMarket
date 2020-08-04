@@ -8,6 +8,7 @@ class Address extends MyAppModel
     public const TYPE_USER = 1;
     public const TYPE_SHOP_PICKUP = 2;
     public const TYPE_SHOP_REUTRN = 3;
+    public const TYPE_ADMIN_PICKUP = 4;
 
     private const GOOGLE_GEOCODE_URL = 'https://maps.googleapis.com/maps/api/geocode/json?';
     private $langId;

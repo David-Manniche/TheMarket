@@ -865,6 +865,13 @@
             $("a[rel='tabs_005']").parent().addClass('is-active');
             $("#tabs_005").html(res);
             productImages(productId);
+            if($("#tabs_006").length > 0){
+                var dataText = $("input[name='btn_Finish']").attr('data-text');
+                $("input[name='btn_Finish']").val(dataText);
+                $("input[name='btn_Finish']").attr('onClick', 'checkIfAvailableForInventory('+productId+')');
+            }else{
+                $("input[name='btn_Finish']").attr('onClick', 'goToCatalog()');
+            }
 		});
     }
 
@@ -1068,6 +1075,42 @@
     goToCatalog = function(){
         window.location.href = fcom.makeUrl('seller', 'catalog');
     }
+    
+    checkIfAvailableForInventory = function(product_id) {
+		fcom.ajax(fcom.makeUrl('Seller','checkIfNotAnyInventory', [product_id]), '', function(t){ 
+			$res = $.parseJSON(t);
+			if($res.status==0){
+				fcom.ajax(fcom.makeUrl('Seller','checkIfAvailableForInventory', [product_id]), '', function(t){ 
+					$res = $.parseJSON(t);
+					if($res.status==0){
+						$.mbsmessage($res.msg, true, 'alert--danger');
+						return false;
+					}
+                    fcom.ajax(fcom.makeUrl('Seller','sellerProductGeneralForm', [product_id]), '', function(res){ 
+                        $(".tabs_panel").html('');
+                        $(".tabs_panel").hide();
+                        $(".tabs_nav-js  > li").removeClass('is-active');
+                        $("#tabs_006").show();
+                        $("a[rel='tabs_006']").parent().addClass('is-active');
+                        $("#tabs_006").html(res);
+                        $('.js-cancel-inventory').attr('onClick', 'goToCatalog()');
+                    });
+				});				
+			}
+		});		
+		
+	}	
+    
+    setUpSellerProduct = function(frm){
+		if (!$(frm).validate()) return;
+        events.customizeProduct();
+		runningAjaxReq = true;
+		var data = fcom.frmData(frm);
+		fcom.updateWithAjax(fcom.makeUrl('Seller', 'setUpSellerProduct'), data, function(t) {
+			runningAjaxReq = false;
+            setTimeout(function() { window.location.href = fcom.makeUrl('Seller', 'catalog'); }, 1000);
+		});
+	};
 
 })();
 
@@ -1127,3 +1170,12 @@ $(document).on('click', '.tabs_005', function(){
         displayProdInitialTab();
     }
 });
+
+$(document).on('click', '.tabs_006', function(){    
+    var productId = $("input[name='product_id']").val();    
+    if(productId > 0){
+        checkIfAvailableForInventory(productId); 
+    }else{
+        displayProdInitialTab();
+    }
+}); 

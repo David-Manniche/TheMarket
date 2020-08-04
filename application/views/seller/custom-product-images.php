@@ -42,7 +42,12 @@ $img_fld->addFieldTagAttribute('onChange', 'popupImage(this)');
                 <div class="caption-wraper"><label class="field_label"></label></div>
                 <div class="field-wraper">
                     <div class="field_cover">
-                        <input onclick="goToCatalog();" type="button" class="btn btn-primary" name="btn_Finish" value="<?php echo Labels::getLabel('LBL_Finish', $siteLangId); ?>">
+                        <?php /* <input onclick="goToCatalog();" type="button" class="btn btn-primary" name="btn_Finish" value="<?php echo Labels::getLabel('LBL_Finish', $siteLangId); ?>"> */ ?>
+                        <input onclick="goToCatalog();" type="button" class="btn btn-primary" name="btn_Finish"  data-text="<?php echo Labels::getLabel('LBL_Save_And_Next', $siteLangId); ?>" value="<?php echo Labels::getLabel('LBL_Finish', $siteLangId); ?>">
+                    </div>
+                </div>
+            </div>
+
                     </div>
                 </div>
             </div>

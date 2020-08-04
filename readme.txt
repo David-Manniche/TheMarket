@@ -16,6 +16,7 @@ Bugs:
     => 039438 - Case sensitive product type identifier is not accepted while importing catalog.
     => 039437 - when digital item is added using import/export then there is error for shipping profile and package
     => 039426 - Category - parent identifier having case sensitive issue
+    => 040872 - Mark delivered order as completed automatically based on cancellation and return age of product/shop.
     
 Enhancements:
     => Tax module upgrade

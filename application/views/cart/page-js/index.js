@@ -1,10 +1,10 @@
 $(document).ready(function(){
-	listCartProducts();
+	listCartProducts(2);
 });
 (function() {
-	listCartProducts = function(){
+	listCartProducts = function(fulfilmentType){
 		$('#cartList').html( fcom.getLoader() );
-		fcom.ajax(fcom.makeUrl('Cart','listing'),'',function(res){
+		fcom.ajax(fcom.makeUrl('Cart','listing', [fulfilmentType]),'',function(res){
 			$("#cartList").html(res);
 		});
 	};
@@ -56,11 +56,15 @@ $(document).ready(function(){
 	};
 
 	goToCheckout = function(){
-		if( isUserLogged() == 0 ){
-			loginPopUpBox(true);
-			return false;
-		}
-		document.location.href = fcom.makeUrl('Checkout');
+        var type = $('input[name="fulfillment_type"]:checked').val();
+        var data = "type="+type;
+        fcom.updateWithAjax(fcom.makeUrl('Cart','setCartCheckoutType'), data ,function(ans){
+            if( isUserLogged() == 0 ){
+                loginPopUpBox(true);
+                return false;
+            }
+            document.location.href = fcom.makeUrl('Checkout');
+        });
 	};
 
 	removePromoCode  = function(){
@@ -93,5 +97,61 @@ $(document).ready(function(){
 			}
 		});
 	};
+    
+    moveToSaveForLater = function( key, selProdId ){
+		if( isUserLogged() == 0 ){
+			loginPopUpBox();
+			return false;
+		}
+		$.mbsmessage.close();
+		fcom.updateWithAjax(fcom.makeUrl('Account', 'moveToSaveForLater', [selProdId]), '', function(ans) {
+			if( ans.status ){
+				removeFromCart( key );
+			}
+		});
+	};
+    
+    removeFromWishlist = function( selprod_id, wish_list_id, event){
+		if( !confirm( langLbl.confirmDelete ) ){ return false; };
+		addRemoveWishListProduct(selprod_id, wish_list_id, event);
+		listCartProducts();
+	};
+    
+    moveToCart = function(selprod_id, wish_list_id){
+        var data = 'selprod_id[0]='+selprod_id;
+        fcom.updateWithAjax(fcom.makeUrl('cart', 'addSelectedToCart' ), data, function(ans) {
+            addRemoveWishListProduct(selprod_id, wish_list_id, event);
+            listCartProducts();
+		});
+	};
+    
+    removePickupOnlyProducts = function(){
+        if(confirm( langLbl.confirmRemove )){
+			fcom.updateWithAjax(fcom.makeUrl('Cart','removePickupOnlyProducts'), '' ,function(ans){
+				listCartProducts(2);
+                $('#cartSummary').load(fcom.makeUrl('cart', 'getCartSummary'));
+			});
+		}
+    }
+    
+    removeShippedOnlyProducts = function(){
+        if(confirm( langLbl.confirmRemove )){
+			fcom.updateWithAjax(fcom.makeUrl('Cart','removeShippedOnlyProducts'), '' ,function(ans){
+				listCartProducts(1);
+                $('#cartSummary').load(fcom.makeUrl('cart', 'getCartSummary'));
+			});
+		}
+    }
+    
+    setCheckoutType = function(type){
+        var data = "type="+type;
+        fcom.updateWithAjax(fcom.makeUrl('Cart','setCartCheckoutType'), data ,function(ans){
+            if( isUserLogged() == 0 ){
+                loginPopUpBox(true);
+                return false;
+            }
+            document.location.href = fcom.makeUrl('Checkout');
+        });
+    }
 
 })();

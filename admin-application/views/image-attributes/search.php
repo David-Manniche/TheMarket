@@ -1,9 +1,9 @@
 <?php defined('SYSTEM_INIT') or die('Invalid Usage.');
 $arr_flds = array(
         /* 'select_all'=>Labels::getLabel('LBL_Select_all', $adminLangId), */
-        'listserial'=> Labels::getLabel('LBL_Sr._No', $adminLangId),
+        'listserial'=> '#',
         'record_name'=> Labels::getLabel('LBL_Name', $adminLangId),
-        'action'=>Labels::getLabel('LBL_Action', $adminLangId),
+        'action'=>'',
     );
     if (!$canEdit) {
         unset($arr_flds['select_all'], $arr_flds['action']);

@@ -42,7 +42,7 @@ $submitBtnFld->setFieldTagAttribute('class', 'btn btn-primary');
 $submitBtnFld->developerTags['col'] = 12;
 
 $cancelBtnFld = $frmSellerProduct->getField('btn_cancel');
-$cancelBtnFld->setFieldTagAttribute('class', 'btn btn-outline-primary');
+$cancelBtnFld->setFieldTagAttribute('class', 'btn btn-outline-primary js-cancel-inventory');
 
 ?>
 <div class="row">
@@ -216,7 +216,17 @@ $cancelBtnFld->setFieldTagAttribute('class', 'btn btn-outline-primary');
                         </div>
                     </div>
                 </div>
-            </div>
+                <div class="selprod_fulfillment_type_fld col-md-6">
+                    <div class="field-set">
+                        <div class="caption-wraper"><label class="field_label"><?php echo $frmSellerProduct->getField('selprod_fulfillment_type')->getCaption(); ?></label>
+                        </div>
+                        <div class="field-wraper">
+                            <div class="field_cover"><?php echo $frmSellerProduct->getFieldHtml('selprod_fulfillment_type'); ?>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>           
             <div class="row">
                 <div class="col-md-12">
                     <table id="optionsTable-js" class="table">

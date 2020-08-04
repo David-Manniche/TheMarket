@@ -55,10 +55,16 @@ $action = strtolower($action);
                 <?php if ($userPrivilege->canViewProducts(UserAuthentication::getLoggedUserId(), true)) { ?>
                 <li
                     class="menu__item <?php echo ($controller == 'seller' && ($action == 'customcatalogproductform' || $action == 'customproductform'|| $action == 'catalog' || $action == 'products' || $action == 'customcatalogproducts')) ? 'is-active' : ''; ?>">
-                    <div class="menu__item__inner"><a title="<?php echo Labels::getLabel('LBL_Products', $siteLangId); ?>" href="<?php echo UrlHelper::generateUrl('seller', 'catalog'); ?>"><i class="icn shop"><svg class="svg">
+                    <div class="menu__item__inner">
+                        <a title="<?php echo Labels::getLabel('LBL_Products', $siteLangId); ?>" href="<?php echo UrlHelper::generateUrl('seller', 'products'); //echo UrlHelper::generateUrl('seller', 'catalog'); ?>">
+                            <i class="icn shop">
+                                <svg class="svg">
                                     <use xlink:href="<?php echo CONF_WEBROOT_URL; ?>images/retina/sprite.svg#dash-products" href="<?php echo CONF_WEBROOT_URL; ?>images/retina/sprite.svg#dash-products"></use>
                                 </svg>
-                            </i><span class="menu-item__title"><?php echo Labels::getLabel('LBL_Products', $siteLangId); ?></span></a></div>
+                            </i>
+                            <span class="menu-item__title"><?php echo Labels::getLabel('LBL_Inventories', $siteLangId); ?></span>
+                        </a>
+                    </div>
                 </li>
                 <?php } ?>
                 <?php if (User::canAddCustomProduct() && $userPrivilege->canViewProductTags(UserAuthentication::getLoggedUserId(), true)) { ?>

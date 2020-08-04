@@ -472,9 +472,9 @@ class CheckoutController extends MyAppController
             FatUtility::dieWithError($this->errMessage);
         }
 
-        $user_id = UserAuthentication::getLoggedUserId();
+        /* $user_id = UserAuthentication::getLoggedUserId();
 
-        $shippingMethods = Shipping::getShippingMethods($this->siteLangId);
+        $shippingMethods = Shipping::getShippingMethods($this->siteLangId); */
 
         $cartProducts = $this->cartObj->getProducts($this->siteLangId);
 
@@ -498,13 +498,21 @@ class CheckoutController extends MyAppController
             $this->_template->render();
         }
 
-        $address = new Address($this->cartObj->getCartShippingAddress(), $this->siteLangId);
-        $shippingAddressDetail = $address->getData(Address::TYPE_USER, UserAuthentication::getLoggedUserId());
+        $hasPhysicalProd = $this->cartObj->hasPhysicalProduct();
+        if (!$hasPhysicalProd) {
+            $selected_shipping_address_id = $this->cartObj->getCartBillingAddress();
+        } else {
+            $selected_shipping_address_id = $this->cartObj->getCartShippingAddress();
+        }
+
+        $address = new Address($selected_shipping_address_id, $this->siteLangId);
+        $addresses = $address->getData(Address::TYPE_USER, UserAuthentication::getLoggedUserId());
 
         $this->set('cartSummary', $this->cartObj->getCartFinancialSummary($this->siteLangId));
-        $this->set('shippingAddressDetail', $shippingAddressDetail);
+        $this->set('addresses', $addresses);
         $this->set('products', $cartProducts);
         $this->set('shippingRates', $shippingRates);
+        $this->set('hasPhysicalProd', $hasPhysicalProd);            
         $this->_template->render(false, false, 'checkout/shipping-summary-inner.php');
     }
 
@@ -677,7 +685,7 @@ class CheckoutController extends MyAppController
             );
         }
 
-        if (!$json) {
+        if (!$json) { 
             $this->cartObj->setProductShippingMethod($productToShippingMethods);
             if (!$this->cartObj->isProductShippingMethodSet()) {
                 $this->errMessage = Labels::getLabel('MSG_Shipping_Method_is_not_selected_on_products_in_cart', $this->siteLangId);
@@ -830,7 +838,7 @@ class CheckoutController extends MyAppController
             $criteria['hasShippingAddress'] = true;
             $criteria['isProductShippingMethodSet'] = true;
         }
-
+        
         if (!$this->isEligibleForNextStep($criteria)) {
             $this->errMessage = Labels::getLabel('MSG_Something_went_wrong,_please_try_after_some_time.', $this->siteLangId);
             if (true === MOBILE_APP_API_CALL) {
@@ -850,7 +858,7 @@ class CheckoutController extends MyAppController
             Message::addErrorMessage($this->cartObj->getError());
             FatUtility::dieWithError(Message::getHtml());
         }
-
+        
         $cartSummary = $this->cartObj->getCartFinancialSummary($this->siteLangId);
         $userId = UserAuthentication::getLoggedUserId();
         $userWalletBalance = User::getUserBalance($userId, true);
@@ -1404,6 +1412,8 @@ class CheckoutController extends MyAppController
         $frm = $this->getPaymentTabForm($this->siteLangId, $methodCode);
         $controller = $methodCode . 'Pay';
         $frm->setFormTagAttribute('action', UrlHelper::generateUrl($controller, 'charge', array($order_id)));
+        $frm->setFormTagAttribute('data-external', UrlHelper::generateUrl($controller, 'getExternalLibraries'));
+
         $frm->fill(
             array(
                 'order_type' => $orderInfo['order_type'],
@@ -1902,7 +1912,7 @@ class CheckoutController extends MyAppController
     {
         $langId = FatUtility::int($langId);
         $frm = new Form('frmRewards');
-        $fld = $frm->addTextBox(Labels::getLabel('LBL_Reward_Points', $langId), 'redeem_rewards', '', array('placeholder' => Labels::getLabel('LBL_Use_Reward_Point', $langId)));
+        $fld = $frm->addTextBox(Labels::getLabel('LBL_Reward_Points', $langId), 'redeem_rewards', '', array());
         $fld->requirements()->setRequired();
         $frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_Apply', $langId));
         return $frm;
@@ -1963,20 +1973,8 @@ class CheckoutController extends MyAppController
         $cartSummary = $this->cartObj->getCartFinancialSummary($this->siteLangId);
         $products = $this->cartObj->getProducts($this->siteLangId);
 
-        $hasPhysicalProd = $this->cartObj->hasPhysicalProduct();
-        if (!$hasPhysicalProd) {
-            $selected_shipping_address_id = $this->cartObj->getCartBillingAddress();
-        } else {
-            $selected_shipping_address_id = $this->cartObj->getCartShippingAddress();
-        }
-
-        $address = new Address($selected_shipping_address_id, $this->siteLangId);
-        $addresses = $address->getData(Address::TYPE_USER, UserAuthentication::getLoggedUserId());
-
         $this->set('products', $products);
         $this->set('cartSummary', $cartSummary);
-        $this->set('defaultAddress', $addresses);
-        $this->set('hasPhysicalProd', $hasPhysicalProd);
         $this->_template->render(false, false);
     }
 

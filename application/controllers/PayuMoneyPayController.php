@@ -45,6 +45,10 @@ class PayuMoneyPayController extends PaymentController
         }
         $this->set('orderInfo', $orderInfo);
         $this->set('exculdeMainHeaderDiv', true);
+        if (FatUtility::isAjaxCall()) {
+            $json['html'] = $this->_template->render(false, false, 'payu-money-pay/charge.php', true, false);
+            FatUtility::dieJsonSuccess($json);
+        }
         $this->_template->render(true, false);
     }
 
@@ -101,7 +105,7 @@ class PayuMoneyPayController extends PaymentController
         if (FatApp::getConfig('CONF_TRANSACTION_MODE', FatUtility::VAR_BOOLEAN, false) == true) {
             $actionUrl = 'https://secure.payu.in/_payment';
         } else {
-            $actionUrl = 'https://test.payu.in/_payment';
+            $actionUrl = 'https://sandboxsecure.payu.in/_payment';
         }
 
         $frm = new Form('frmPayuMoney', array('id' => 'frmPayuMoney', 'action' => $actionUrl, 'class' => "form form--normal"));
@@ -116,6 +120,12 @@ class PayuMoneyPayController extends PaymentController
         $email = $orderInfo["customer_email"];
         $orderPaymentGatewayDescription = sprintf(Labels::getLabel('MSG_Order_Payment_Gateway_Description', $this->siteLangId), $orderInfo["site_system_name"], $orderInfo['invoice']);
         $txnid = $orderInfo["invoice"];
+
+        $cancelBtnUrl = CommonHelper::getPaymentCancelPageUrl();
+        if ($orderInfo['order_type'] == Orders::ORDER_WALLET_RECHARGE) {
+            $cancelBtnUrl = CommonHelper::getPaymentFailurePageUrl();
+        }
+
         $frm->addHiddenField('key', 'key', $this->settings["merchant_key"]);
         $frm->addHiddenField('txnid', 'txnid', $txnid);
         $frm->addHiddenField('amount', 'amount', $paymentGatewayCharge);
@@ -127,7 +137,8 @@ class PayuMoneyPayController extends PaymentController
         $frm->addHiddenField('phone', 'phone', $phone_number);
         $frm->addHiddenField('surl', 'surl', UrlHelper::generateFullUrl('PayuMoneyPay', 'callback'));
         $frm->addHiddenField('furl', 'furl', UrlHelper::generateFullUrl('PayuMoneyPay', 'callback'));
-        $frm->addHiddenField('curl', 'curl', CommonHelper::getPaymentCancelPageUrl());
+
+        $frm->addHiddenField('curl', 'curl', $cancelBtnUrl);
         $key = $this->settings["merchant_key"];
         $amount = $paymentGatewayCharge;
         $salt = $this->settings["salt"];
@@ -142,8 +153,8 @@ class PayuMoneyPayController extends PaymentController
         $frm->addHiddenField('country', 'country', $orderInfo["customer_billing_country"]);
         $frm->addHiddenField('state', 'state', $orderInfo["customer_billing_state"]);
         $frm->addHiddenField('custom_note', 'custom_note', Labels::getLabel('MSG_ORDER_CUSTOM_NOTE', $this->siteLangId));
-        $frm->addHiddenField('api_version', 'api_version', 1);
-        $frm->addHiddenField('service_provider', 'service_provider', 'payu_paisa');
+        /* $frm->addHiddenField('api_version', 'api_version', 1);
+        $frm->addHiddenField('service_provider', 'service_provider', 'payu_paisa'); */
         $frm->setJsErrorDisplay('afterfield');
         return $frm;
     }

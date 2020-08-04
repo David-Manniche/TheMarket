@@ -1,17 +1,3 @@
-$(document).ready(function() {
-	relaodHeaderCartSummary();
-	//$('#list_cart_summary').load(generateUrl('cart', 'cart_summary'));
-});
-
-
-
-(function() {
-	relaodHeaderCartSummary = function(){
-
-	}
-
-})();
-
 var cart = {
 	add: function( selprod_id, quantity, isRedirectToCart ){
 		isRedirectToCart = (typeof(isRedirectToCart) != 'undefined') ? true : false;
@@ -41,9 +27,9 @@ var cart = {
 		});
 	},
 
-	remove: function (key, page){
+	remove: function (key, page, saveForLater){
 		if(confirm( langLbl.confirmRemove )){
-			var data = 'key=' + key ;
+			var data = 'key=' + key + '&saveForLater=' + saveForLater;
 			fcom.updateWithAjax(fcom.makeUrl('Cart','remove'), data ,function(ans){
 				if(page == 'checkout')
 				{
@@ -75,8 +61,7 @@ var cart = {
 	},
 
 	update: function (key,loadDiv){
-		var data = 'key=' + key + '&quantity=' + $("input[name='qty_" + key + "']").val();
-		/* alert(data); */
+		var data = 'key=' + key + '&quantity=' + $("input[name='qty_" + key + "']").val();		
 		fcom.updateWithAjax(fcom.makeUrl('Cart','update'), data ,function(ans){
 			if( ans.status ){
 				if(loadDiv!=undefined){

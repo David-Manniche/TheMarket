@@ -46,9 +46,12 @@ $tosFld->developerTags['col'] = 12;
         // getStatesByCountryCode($(".country").val(), '<?php echo $stateCode ;?>', '.state', 'state_code');
         
         if (0 < $(".tosLink-js").length && 0 < $(".tosCheckbox-js").length) {
-            /* $(".tosLink-js").siblings('label').children('span').append(function() {
-                return $(this).parent().siblings(".tosLink-js");
-            }); */
+            var parent = $(".tosLink-js").parent();
+            var label = parent.children('label');
+            label.remove();
+            var html = parent.html();
+            parent.html(label);
+            label.children('span').append(html);
         }
     });
 </script>

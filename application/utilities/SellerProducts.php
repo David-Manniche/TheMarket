@@ -25,6 +25,25 @@ trait SellerProducts
         $this->set('canEdit', $this->userPrivilege->canEditProducts(UserAuthentication::getLoggedUserId(), true));
         $this->set('frmSearch', $this->getSellerProductSearchForm($product_id));
         $this->set('product_id', $product_id);
+        
+        $srch = new ProductSearch($this->siteLangId, null, null, false, false);
+        $srch->joinProductShippedBySeller($this->userParentId);
+        $srch->joinTable(AttributeGroup::DB_TBL, 'LEFT OUTER JOIN', 'product_attrgrp_id = attrgrp_id', 'attrgrp');
+        $srch->joinTable(UpcCode::DB_TBL, 'LEFT OUTER JOIN', 'upc_product_id = product_id', 'upc');
+        $srch->addDirectCondition(
+            '((CASE
+                    WHEN product_seller_id = 0 THEN product_active = 1
+                    WHEN product_seller_id > 0 THEN product_active IN (1, 0)
+                    END ) )'
+        );
+        $srch->addCondition('product_deleted', '=', applicationConstants::NO);
+        $cnd = $srch->addCondition('product_seller_id', '=', 0);
+        $cnd->attachCondition('product_added_by_admin_id', '=', applicationConstants::YES, 'AND');
+        $srch->addGroupBy('product_id');
+        $rs = $srch->getResultSet();
+        $adminCatalogs = $srch->recordCount();
+        $this->set('adminCatalogs', $adminCatalogs);
+
         $this->_template->render(true, true);
     }
 
@@ -420,7 +439,7 @@ trait SellerProducts
         $this->set('msg', Labels::getLabel('LBL_Product_Setup_Successful', $this->siteLangId));
         $this->_template->render(false, false, 'json-success.php');
     }
-    
+
     private function deleteSelProdWithoutOptions($productId, $userId)
     {
         $productId = FatUtility::int($productId);
@@ -436,11 +455,14 @@ trait SellerProducts
         $srch->addMultipleFields(array('selprod_id', 'selprodoption_optionvalue_id'));
         $rs = $srch->getResultSet();
         $row = FatApp::getDb()->fetch($rs);
+        if(empty($row)) {
+            return true;
+        }
         if (empty($row['selprodoption_optionvalue_id'])) {
             $this->deleteSellerProduct($row['selprod_id']);
         }
     }
-    
+
     public function setUpMultipleSellerProducts()
     {
         $this->userPrivilege->canEditProducts(UserAuthentication::getLoggedUserId());
@@ -1513,7 +1535,7 @@ trait SellerProducts
     {
         $this->userPrivilege->canViewUrlRewriting(UserAuthentication::getLoggedUserId());
         $selprodId = FatUtility::int($selprodId);
-       
+
         $sellerProductRow = SellerProduct::getAttributesById($selprodId);
         if ($sellerProductRow['selprod_user_id'] != $this->userParentId) {
             Message::addErrorMessage(Labels::getLabel('MSG_Invalid_Access', $this->siteLangId));
@@ -1543,7 +1565,7 @@ trait SellerProducts
                 $data['urlrewrite_original'] = $row['urlrewrite_original'];
                 $data['urlrewrite_custom'][$row['urlrewrite_lang_id']] = $row['urlrewrite_custom'];
             }
-          
+
             if (empty($data)) {
                 FatUtility::dieWithError($this->str_invalid_request);
             }
@@ -1612,7 +1634,7 @@ trait SellerProducts
             Message::addErrorMessage(current($frm->getValidationErrors()));
             FatUtility::dieJsonError(Message::getHtml());
         }
-        
+
         $selprodId = $post['selprod_id'];
 
         if (!UserPrivilege::canEditSellerProduct($this->userParentId, $selprodId)) {
@@ -1629,7 +1651,7 @@ trait SellerProducts
         }
         $url = $tabsArr[$metaType]['controller'] . '/' . $tabsArr[$metaType]['action'] . '/' . $selprodId;
         $originalUrl = trim(strtolower($url), '/\\');
-        
+
         $srch = UrlRewrite::getSearchObject();
         $srch->joinTable(UrlRewrite::DB_TBL, 'LEFT OUTER JOIN', 'temp.urlrewrite_original = ur.urlrewrite_original', 'temp');
         $srch->addCondition('ur.urlrewrite_original', '=', $originalUrl);
@@ -1824,7 +1846,7 @@ trait SellerProducts
             Message::addErrorMessage(Labels::getLabel("MSG_INVALID_ACCESS", $this->siteLangId));
             FatUtility::dieJsonError(Message::getHtml());
         }
-        
+
         if (isset($_FILES['downloadable_file']) && is_uploaded_file($_FILES['downloadable_file']['tmp_name'])) {
             $fileHandlerObj = new AttachedFile();
             if (!$res = $fileHandlerObj->saveAttachment(
@@ -1844,7 +1866,7 @@ trait SellerProducts
             Message::addMessage(Labels::getLabel('MSG_File_Uploaded_Successfully.', $this->siteLangId));
             FatUtility::dieJsonSuccess(Message::getHtml());
         }
-        
+
         if (!empty($post['selprod_downloadable_link'.$selprod_id])) {
             $data_to_be_save = array();
             $data_to_be_save['selprod_downloadable_link'] = $post['selprod_downloadable_link'.$selprod_id];
@@ -1974,7 +1996,7 @@ trait SellerProducts
         $srch->addCondition('selprod_deleted', '=', applicationConstants::NO);
         $srch->addMultipleFields(
             array(
-            'selprod_id as id', 'IFNULL(selprod_title ,product_name) as product_name', 'product_identifier')
+            'selprod_id as id', 'IFNULL(selprod_title ,product_name) as product_name', 'product_identifier', 'selprod_price')
         );
         $srch->setPageSize($pagesize);
         $srch->addOrder('selprod_active', 'DESC');
@@ -1986,7 +2008,8 @@ trait SellerProducts
             $json[] = array(
             'id' => $key,
             'name' => strip_tags(html_entity_decode($option['product_name'], ENT_QUOTES, 'UTF-8')),
-            'product_identifier' => strip_tags(html_entity_decode($option['product_identifier'], ENT_QUOTES, 'UTF-8'))
+            'product_identifier' => strip_tags(html_entity_decode($option['product_identifier'], ENT_QUOTES, 'UTF-8')),
+            'price' => $option['selprod_price']
             );
         }
         die(json_encode($json));
@@ -2530,7 +2553,7 @@ trait SellerProducts
         }
 
         $status = ($sellerProductData['selprod_active'] == applicationConstants::ACTIVE) ? applicationConstants::INACTIVE : applicationConstants::ACTIVE;
-        
+
         $this->updateSellerProductStatus($selprodId, $status);
 
         $this->set('msg', Labels::getLabel('MSG_Status_changed_Successfully', $this->siteLangId));

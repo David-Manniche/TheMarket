@@ -43,6 +43,7 @@ function moveToTargetDiv(target, outer){
 		$("#register-form-div").html( fcom.getLoader() );
 		fcom.ajax( fcom.makeUrl( 'GuestAffiliate', 'affiliateRegistrationStep', [registeration_step_number] ), '', function(t){
 			$("#register-form-div").html( t );
+            stylePhoneNumberFld();
 		});
 	};
 })();

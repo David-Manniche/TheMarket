@@ -1,165 +1,181 @@
 <?php defined('SYSTEM_INIT') or die('Invalid Usage.'); ?>
-<div class="section-head">
-    <div class="section__heading">
-        <h2><?php echo Labels::getLabel('LBL_Shipping_Summary', $siteLangId); ?>
-        </h2>
-    </div>
-</div>
-<div class="box box--white box--radius p-4">
-    <section id="shipping-summary" class="section-checkout">
-        <div class="review-wrapper step__body">
+<main class="main__content">        
+    <div id="shipping-summary" class="step active" role="step:3">
+        <ul class="list-group review-block">
+            <li class="list-group-item">
+                <div class="review-block__label">
+                    <?php if ($hasPhysicalProd) {
+                    echo Labels::getLabel('LBL_Shipping_to:', $siteLangId);
+                } else {
+                    echo Labels::getLabel('LBL_Billing_to:', $siteLangId);
+                } ?>
+                </div>
+                <div class="review-block__content" role="cell">
+                    <?php echo $addresses['addr_title']; ?>
+                    <?php echo $addresses['addr_name']; ?>
+                    <?php echo $addresses['addr_address1'] . '<br>';?>
+                    <?php echo $addresses['addr_city'];?>,
+                    <?php echo $addresses['state_name'];?>,
+                    <?php echo (strlen($addresses['addr_zip']) > 0) ? Labels::getLabel('LBL_Zip:', $siteLangId) . ' ' . $addresses['addr_zip'] . ', ' : '';?>
+                    <?php echo (strlen($addresses['addr_phone']) > 0) ? Labels::getLabel('LBL_Phone:', $siteLangId) . ' ' . $addresses['addr_phone'] . '<br>' : '';?>
+                </div>
+                <div class="review-block__link" role="cell">
+                    <a class="link" href="#" onClick="showAddressList()"><span><?php echo Labels::getLabel('LBL_Change_Address', $siteLangId); ?></span></a>
+                </div>
+            </li>
+        </ul>   
+
+        <div class="step__section">
+            <div class="step__section__head">
+                <h5 class="step__section__head__title"><?php echo Labels::getLabel('LBL_Shipping_Summary', $siteLangId); ?>
+                </h5>
+            </div>
             <?php
             if (array_key_exists(Shipping::BY_ADMIN, $shippingRates)) {
                 ksort($shippingRates);
             }
+
             foreach ($shippingRates as $level => $levelItems) { ?>
-                <div class="short-detail">
-                    <?php if (count($levelItems['products']) > 1 && $level != Shipping::LEVEL_PRODUCT) {  ?>
-                        <div class="shipping-seller">
-                            <div class="row  justify-content-between">
-                                <div class="col-auto">
-                                    <div class="shipping-seller-title"></div>
-                                </div>
-                                <div class="col-auto">
-                                    <ul class="shipping-selectors">
-                                        <?php
-                                        $priceListCount = count($levelItems['rates']);
-                                        if ($priceListCount == 1 && current($levelItems['rates'])['cost'] == 0) {
-                                            echo '<li class="info-message">' . Labels::getLabel('LBL_Free_Shipping', $siteLangId) . '</li>';
-                                        } else {
-                                            if (count($levelItems['rates']) > 0) {
-                                                $name = current($levelItems['rates'])['code'];
-                                                echo '<li><select name="shipping_services[' . $name . ']">';
-                                                foreach ($levelItems['rates'] as $key => $shippingRate) {
-                                                    echo '<option value="' . $key . '">' . $shippingRate['title'] .' ( ' . $shippingRate['cost'] . ' ) </option>';
-                                                }
-                                                echo '</select></li>';
-                                            } elseif ($product['product_type'] == Product::PRODUCT_TYPE_PHYSICAL) {
-                                                echo '<li class="info-message">' . Labels::getLabel('MSG_Product_is_not_available_for_shipping', $siteLangId) . '</li>';
-                                            }
+            <ul class="list-group list-cart list-shippings">
+            <?php if (count($levelItems['products']) > 1 && $level != Shipping::LEVEL_PRODUCT) { 
+                $productData = current($levelItems['products']);
+                ?>
+                <li class="list-group-item shipping-select">
+                    <div class="shop-name"><?php echo ($level == Shipping::LEVEL_SHOP) ? $productData['shop_name'] : FatApp::getConfig('CONF_WEBSITE_NAME_' . $siteLangId, null, ''); ?></div>
+                    <div class="shipping-method">
+                        <?php 
+                        if ($level != Shipping::LEVEL_PRODUCT) {
+                            $priceListCount = count($levelItems['rates']);
+                            if ($priceListCount == 1 && current($levelItems['rates'])['cost'] == 0) {
+                                echo Labels::getLabel('LBL_Free_Shipping', $siteLangId) ;
+                            } else {
+                                if (count($levelItems['rates']) > 0) {
+                                    $name = current($levelItems['rates'])['code'];
+                                    echo '<select class="form-control custom-select" name="shipping_services[' . $name . ']">';
+                                    foreach ($levelItems['rates'] as $key => $shippingRate) {
+                                        echo '<option value="' . $key . '">' . $shippingRate['title'] .' ( ' . $shippingRate['cost'] . ' ) </option>';
+                                    }
+                                    echo '</select>';
+                                } elseif ($product['product_type'] == Product::PRODUCT_TYPE_PHYSICAL) {
+                                    echo Labels::getLabel('MSG_Product_is_not_available_for_shipping', $siteLangId);
+                                }
+                            }
+                        }
+                    ?> 
+                    </div>
+                </li> 
+            <?php }?>    
+            <?php foreach ($levelItems['products'] as $product) {
+                    $productUrl = !$isAppUser ? UrlHelper::generateUrl('Products', 'View', array($product['selprod_id'])) : 'javascript:void(0)';
+                    $shopUrl = !$isAppUser ? UrlHelper::generateUrl('Shops', 'View', array($product['shop_id'])) : 'javascript:void(0)';
+                    $imageUrl = UrlHelper::getCachedUrl(UrlHelper::generateFileUrl('image', 'product', array($product['product_id'], "THUMB", $product['selprod_id'], 0, $siteLangId)), CONF_IMG_CACHE_TIME, '.jpg'); ?>
+                <?php if (count($levelItems['products']) == 1 && count($levelItems['rates']) > 0 && $level != Shipping::LEVEL_PRODUCT) { ?>
+                    <li class="list-group-item shipping-select">
+                        <div class="shop-name"><?php echo $product['shop_name']; ?></div>
+                        <div class="shipping-method">
+                        <?php $priceListCount = count($levelItems['rates']);
+                            if ($priceListCount == 1 && current($levelItems['rates'])['cost'] == 0) {
+                                echo Labels::getLabel('LBL_Free_Shipping', $siteLangId) ;
+                            } else {
+                                if (count($levelItems['rates']) > 0) {
+                                    $name = current($levelItems['rates'])['code'];
+                                    echo '<select class="form-control custom-select" name="shipping_services[' . $name . ']">';
+                                    foreach ($levelItems['rates'] as $key => $shippingRate) {
+                                        echo '<option value="' . $key . '">' . $shippingRate['title'] .' ( ' . $shippingRate['cost'] . ' ) </option>';
+                                    }
+                                    echo '</select>';
+                                } elseif ($product['product_type'] == Product::PRODUCT_TYPE_PHYSICAL) {
+                                    echo Labels::getLabel('MSG_Product_is_not_available_for_shipping', $siteLangId);
+                                }
+                            } ?>
+                        </div>
+                    </li> 
+                <?php }?>    
+
+                <?php if ($level == Shipping::LEVEL_PRODUCT && isset($levelItems['rates'][$product['selprod_id']])) {  ?>
+                <li class="list-group-item shipping-select">
+                    <div class="shop-name"><?php echo $product['shop_name']; ?></div>
+                    <div class="shipping-method">
+                        <?php 
+                            $priceListCount = count($levelItems['rates'][$product['selprod_id']]);
+                            if ($priceListCount == 1 && current($levelItems['rates'][$product['selprod_id']])['cost'] == 0) {
+                                echo Labels::getLabel('LBL_Free_Shipping', $siteLangId) ;
+                            } else {
+                                if ($priceListCount > 0) {
+                                    $name = current($levelItems['rates'][$product['selprod_id']])['code'];
+                                    echo '<select class="form-control custom-select" name="shipping_services[' . $name . ']">';
+                                        foreach ($levelItems['rates'][$product['selprod_id']] as $key => $shippingRate) {
+                                            echo '<option value="' . $key . '">' . $shippingRate['title'] .' ( ' . $shippingRate['cost'] . ' ) </option>';
                                         }
-                                        ?>
-                                    </ul>
-                                </div>
+                                        echo '</select>';
+                                } elseif ($product['product_type'] == Product::PRODUCT_TYPE_PHYSICAL) {
+                                    echo Labels::getLabel('MSG_Product_is_not_available_for_shipping', $siteLangId);
+                                }
+                            }
+                       
+                    ?> 
+                    </div>
+                </li> 
+            <?php }?>                    
+                <li class="list-group-item">
+                    <div class="product-profile">
+                        <div class="product-profile__thumbnail">
+                            <a href="<?php echo $productUrl; ?>">
+                                <img class="img-fluid" data-ratio="3:4" src="<?php echo $imageUrl; ?>"
+                                    alt="<?php echo $product['product_name']; ?>" title="<?php echo $product['product_name']; ?>">
+                            </a></div>                                
+                        <div class="product-profile__data">
+                            <div class="title"><a class="" href="<?php echo $productUrl; ?>"><?php echo ($product['selprod_title']) ? $product['selprod_title'] : $product['product_name']; ?></a></div>
+                            <div class="options">
+                                <p class=""> <?php if (isset($product['options']) && count($product['options'])) {
+                                    $optionStr = '';
+                                    foreach ($product['options'] as $option) {
+                                        $optionStr .= $option['optionvalue_name'] . '|';
+                                    }
+                                    echo rtrim($optionStr, '|');
+                                } ?></p>
+                            </div>
+                            <div class="quantity quantity-2">
+                                <span class="decrease decrease-js"><i class="fas fa-minus"></i></span>
+                                <input class="qty-input no-focus cartQtyTextBox productQty-js" title="<?php echo Labels::getLabel('LBL_Quantity', $siteLangId) ?>" data-page="checkout"  type="text" name="qty_<?php echo md5($product['key']); ?>" data-key="<?php echo md5($product['key']); ?>" value="<?php echo $product['quantity']; ?>">
+                                <span class="increase increase-js"><i class="fas fa-plus"></i></span>
                             </div>
                         </div>
-                    
-                    <?php }
-                    foreach ($levelItems['products'] as $product) {
-                        $productUrl = !$isAppUser ? UrlHelper::generateUrl('Products', 'View', array($product['selprod_id'])) : 'javascript:void(0)';
-                        $shopUrl = !$isAppUser ? UrlHelper::generateUrl('Shops', 'View', array($product['shop_id'])) : 'javascript:void(0)';
-                        $imageUrl = UrlHelper::getCachedUrl(UrlHelper::generateFileUrl('image', 'product', array($product['product_id'], "THUMB", $product['selprod_id'], 0, $siteLangId)), CONF_IMG_CACHE_TIME, '.jpg'); ?>
+                    </div>
+                    <div class="product-price"><?php echo CommonHelper::displayMoneyFormat($product['theprice'] * $product['quantity']); ?> 
+                    <?php if ($product['special_price_found']) { ?>
+                        <del><?php echo CommonHelper::showProductDiscountedText($product, $siteLangId); ?></del>
+                    <?php }?>
+                    </div>
+                    <div class="product-action">
+                        <ul class="list-actions">
+                            <li>
+                                <a href="#" onclick="cart.remove('<?php echo md5($product['key']); ?>','checkout')">
+                                <svg class="svg" width="24px" height="24px"><use xlink:href="<?php echo CONF_WEBROOT_URL;?>images/retina/sprite.svg#remove"
+                                            href="<?php echo CONF_WEBROOT_URL;?>images/retina/sprite.svg#remove">
+                                        </use>
+                                    </svg>
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </li>
+                <?php if (count($levelItems['products']) == 1) { ?> </ul> <?php }?> 
+                <?php }?> 
 
-                        <table class="table table-shipping">
-                            <tbody>
-                                <tr
-                                    class="<?php echo (!$product['in_stock']) ? 'disabled' : ''; ?>">
-                                    <td width="10%">
-                                        <figure class="item__pic"><a
-                                                href="<?php echo $productUrl; ?>"><img
-                                                    src="<?php echo $imageUrl; ?>"
-                                                    alt="<?php echo $product['product_name']; ?>"
-                                                    title="<?php echo $product['product_name']; ?>"></a>
-                                        </figure>
-                                    </td>
-                                    <td width="30%">
-                                        <div class="item__description">
-                                            <div class="item__category"><?php echo Labels::getLabel('LBL_Shop', $siteLangId) ?>:
-                                                <span class="text-dark"><?php echo $product['shop_name']; ?></span>
-                                            </div>
-                                            <div class="item__title"><a
-                                                    title="<?php echo ($product['selprod_title']) ? $product['selprod_title'] : $product['product_name']; ?>"
-                                                    href="<?php echo $productUrl; ?>"><?php echo ($product['selprod_title']) ? $product['selprod_title'] : $product['product_name']; ?></a>
-                                            </div>
-                                            <div class="item__specification">
-                                                <?php if (isset($product['options']) && count($product['options'])) {
-                                                    foreach ($product['options'] as $option) {
-                                                        echo ' | ' . $option['option_name'] . ':'; ?>
-                                                            <span class="text-dark"><?php echo $option['optionvalue_name']; ?></span>
-                                                            <?php
-                                                    }
-                                                } ?>
-                                                | <?php echo Labels::getLabel('LBL_Quantity', $siteLangId) ?>
-                                                <?php echo $product['quantity']; ?>
-                                            </div>
-                                        </div>
-                                    </td>
-                                    <td width="40%">
-                                        <ul class="shipping-selectors">
-                                            <?php
-                                    if (count($levelItems['products']) == 1 && count($levelItems['rates']) > 0 && $level != Shipping::LEVEL_PRODUCT) {
-                                        $priceListCount = count($levelItems['rates']);
-                                        if ($priceListCount == 1 && current($levelItems['rates'])['cost'] == 0) {
-                                            echo '<li class="info-message">' . Labels::getLabel('LBL_Free_Shipping', $siteLangId) . '</li>';
-                                        } else {
-                                            if (count($levelItems['rates']) > 0) {
-                                                $name = current($levelItems['rates'])['code'];
-                                                echo '<li><select name="shipping_services[' . $name . ']">';
-                                                foreach ($levelItems['rates'] as $key => $shippingRate) {
-                                                    echo '<option value="' . $key . '">' . $shippingRate['title'] .' ( ' . $shippingRate['cost'] . ' ) </option>';
-                                                }
-                                                echo '</select></li>';
-                                            } elseif ($product['product_type'] == Product::PRODUCT_TYPE_PHYSICAL) {
-                                                echo '<li class="info-message">' . Labels::getLabel('MSG_Product_is_not_available_for_shipping', $siteLangId) . '</li>';
-                                            }
-                                        }
-                                    }
-                                    
-                                    if ($level == Shipping::LEVEL_PRODUCT && isset($levelItems['rates'][$product['selprod_id']])) {
-                                        $priceListCount = count($levelItems['rates'][$product['selprod_id']]);
-                                        if ($priceListCount == 1 && current($levelItems['rates'][$product['selprod_id']])['cost'] == 0) {
-                                            echo '<li class="info-message">' . Labels::getLabel('LBL_Free_Shipping', $siteLangId) . '</li>';
-                                        } else {
-                                            if ($priceListCount > 0) {
-                                                $name = current($levelItems['rates'][$product['selprod_id']])['code'];
-                                                echo '<li><select name="shipping_services[' . $name . ']">';
-                                                foreach ($levelItems['rates'][$product['selprod_id']] as $key => $shippingRate) {
-                                                    echo '<option value="' . $key . '">' . $shippingRate['title'] .' ( ' . $shippingRate['cost'] . ' ) </option>';
-                                                }
-                                                echo '</select></li>';
-                                            } elseif ($product['product_type'] == Product::PRODUCT_TYPE_PHYSICAL) {
-                                                echo '<li class="info-message">' . Labels::getLabel('MSG_Product_is_not_available_for_shipping', $siteLangId) . '</li>';
-                                            }
-                                        }
-                                    } ?>
-                                        </ul>
-                                    </td>
-                                    <td width="10%">
-                                        <span class="item__price"><?php echo CommonHelper::displayMoneyFormat($product['theprice'] * $product['quantity']); ?>
-                                        </span>
-                                        <?php if ($product['special_price_found']) { ?>
-                                        <span class="item__price_off text-nowrap"><?php echo CommonHelper::showProductDiscountedText($product, $siteLangId); ?></span>
-                                        <?php } ?>
-                                    </td>
-                                    <td width="10%">
-                                        <a href="javascript:void(0)"
-                                            onclick="cart.remove('<?php echo md5($product['key']); ?>','checkout')"
-                                            class="icons-wrapper"><i class="icn"><svg class="svg">
-                                                    <use xlink:href="<?php echo CONF_WEBROOT_URL; ?>images/retina/sprite.svg#bin"
-                                                        href="<?php echo CONF_WEBROOT_URL; ?>images/retina/sprite.svg#bin">
-                                                    </use>
-                                                </svg></i></a>
-                                    </td>
-                                <tr>
-
-                            </tbody>
-                        </table>
-
-                        <?php if ($level == Shipping::LEVEL_PRODUCT) {?>
-                            </div>
-                            <div class="short-detail">
-                        <?php }
-                    } ?>
-                </div>                
-            <?php } ?>
-        <div>
-    </section>
-    <div class="row align-items-center justify-content-between mt-4">
-        <div class="col"><a class="btn btn-outline-primary" onclick="showAddressList();"
-                href="javascript:void(0)"><?php echo Labels::getLabel('LBL_Back', $siteLangId); ?></a>
+                <?php if (count($levelItems['products']) > 1) { ?>
+                    </ul>
+                <?php }?>                                                             
+                
+            <?php }?>            
         </div>
-        <div class="col-auto">
-            <a class="btn btn-primary " onClick="setUpShippingMethod();" href="javascript:void(0)"><?php echo Labels::getLabel('LBL_Continue', $siteLangId); ?></a>
+        <div class="step__footer">
+            <a class="btn btn-outline-primary btn-wide" href="javascript:void(0)" onclick="showAddressList();">
+                <?php echo Labels::getLabel('LBL_Back', $siteLangId); ?>
+            </a>
+            <a class="btn btn-primary btn-wide " onClick="setUpShippingMethod();" href="javascript:void(0)">
+                <?php echo Labels::getLabel('LBL_Continue', $siteLangId); ?>
+            </a>
         </div>
     </div>
-</div>
+</main>

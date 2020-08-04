@@ -119,7 +119,7 @@ class ShippingZoneRatesController extends SellerBaseController
         $data = array(
             'shipratelang_lang_id' => $langId,
             'shipratelang_shiprate_id' => $rateId,
-            'rate_name' => $post['rate_name']
+            'shiprate_name' => $post['rate_name']
         );
         $srObj = new ShippingRate($rateId);
         if (!$srObj->updateLangData($langId, $data)) {
@@ -215,7 +215,7 @@ class ShippingZoneRatesController extends SellerBaseController
         $frm->addHiddenField('', 'zone_id', $zoneId);
         $frm->addHiddenField('', 'rate_id', $rateId);
         $frm->addHiddenField('', 'lang_id', $langId);
-        $frm->addRequiredField(Labels::getLabel('LBL_Rate_Name', $this->siteLangId), 'rate_name');
+        $frm->addRequiredField(Labels::getLabel('LBL_Rate_Name', $this->siteLangId), 'shiprate_name');
         $fld = $frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_Save_Changes', $this->siteLangId));
         $fldCancel = $frm->addButton('', 'btn_cancel', Labels::getLabel('LBL_Cancel', $this->siteLangId));
         $fld->attachField($fldCancel);

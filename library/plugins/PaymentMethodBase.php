@@ -54,11 +54,11 @@ class PaymentMethodBase extends pluginBase
     }
 
     /**
-     * getBaseCurrencyCode
+     * loadBaseCurrencyCode
      *
      * @return bool
      */
-    protected function getBaseCurrencyCode(): bool
+    protected function loadBaseCurrencyCode(): bool
     {
         $currency = Currency::getDefault();
         if (empty($currency)) {

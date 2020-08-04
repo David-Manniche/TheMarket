@@ -15,7 +15,7 @@ $(document).on('keyup', "input[name='product_name']", function(){
         			type: 'post',
         			success: function(json) {
         				response($.map(json, function(item) {
-        					return { label: item['name'], value: item['name'], id: item['id']	};
+        					return { label: item['name'], value: item['name'], id: item['id'], price: item['price']	};
         				}));
         			},
         		});
@@ -26,6 +26,9 @@ $(document).on('keyup', "input[name='product_name']", function(){
                 $("input[name='splprice_start_date']").removeAttr('disabled');
                 $("input[name='splprice_end_date']").removeAttr('disabled');
                 $("input[name='splprice_price']").removeAttr('disabled');
+                var currentPrice = langLbl.currentPrice+': '+ui.item.price;
+                $(".js-prod-price").html(currentPrice);
+                $(".js-prod-price").attr('data-price', ui.item.price);
                 return false;
         	}
         });
@@ -34,6 +37,24 @@ $(document).on('keyup', "input[name='product_name']", function(){
         $("input[name='splprice_start_date']").attr('disabled', 'disabled').val('');
         $("input[name='splprice_end_date']").attr('disabled', 'disabled').val('');
         $("input[name='splprice_price']").attr('disabled', 'disabled').val('');
+    }
+});
+
+$(document).on('keyup', ".js-special-price", function(){
+    var selProdPrice = $(".js-prod-price").attr('data-price');
+    var specialPrice = $(".js-special-price").val(); 
+    if(specialPrice != ''){ 
+        var discountAmt  = selProdPrice - specialPrice;
+        var percentage = ((discountAmt/selProdPrice)*100); 
+        if(percentage > 0){
+            percentage = Number(Number(percentage).toFixed(2)); 
+            var discountPercentage = langLbl.discountPercentage+': '+percentage+'%';
+            $(".js-discount-percentage").html(discountPercentage);
+        }else{  
+            $(".js-discount-percentage").html('');
+        }
+    }else{
+        $(".js-discount-percentage").html('');
     }
 });
 
@@ -177,6 +198,8 @@ $(document).on('blur', ".js--splPriceCol:not(.date_js)", function(){
                 if (0 < $('.noResult--js').length) {
                     $('.noResult--js').remove();
                 }
+                $(".js-discount-percentage").html('');
+                $(".js-prod-price").html('');
             }
 			$(document).trigger('close.facebox');
             if (0 < frm.addMultiple.value) {

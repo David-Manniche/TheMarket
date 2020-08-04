@@ -914,6 +914,8 @@ class Orders extends MyAppModel
 
         $ocSrch->addGroupBy('opc.' . OrderProduct::DB_TBL_CHARGES_PREFIX . 'op_id');
         $qryOtherCharges = $ocSrch->getQuery();
+        
+        $childOrders = array();
         if ($orderType == Orders::ORDER_PRODUCT) {
             $srch = self::searchOrderProducts($criterias, $langId);
             $srch->joinTable('(' . $qryOtherCharges . ')', 'LEFT OUTER JOIN', 'op.op_id = opcc.' . OrderProduct::DB_TBL_CHARGES_PREFIX . 'op_id', 'opcc');
@@ -922,7 +924,6 @@ class Orders extends MyAppModel
             $srch->joinTable(OrderProduct::DB_TBL_SETTINGS, 'LEFT OUTER JOIN', 'op.op_id = opst.opsetting_op_id', 'opst');
             $srch->addOrder("op_id", "desc");
             $rs = $srch->getResultSet();
-            $childOrders = array();
 
             $oObj = new Orders();
             while ($row = FatApp::getDb()->fetch($rs)) {
@@ -937,7 +938,6 @@ class Orders extends MyAppModel
 
             $srch->addOrder(OrderSubscription::DB_TBL_PREFIX . "id", "desc");
             $rs = $srch->getResultSet();
-            $childOrders = array();
 
             $osObj = new OrderSubscription();
             while ($row = FatApp::getDb()->fetch($rs)) {
@@ -2380,7 +2380,8 @@ class Orders extends MyAppModel
     public function changeOrderStatus()
     {
         $completedOrderStatus = FatApp::getConfig("CONF_DEFAULT_COMPLETED_ORDER_STATUS", FatUtility::VAR_INT, 0);
-        if (empty($completedOrderStatus)) {
+        $deliveredOrderStatus = FatApp::getConfig("CONF_DEFAULT_DEIVERED_ORDER_STATUS", FatUtility::VAR_INT, 0);
+        if (1 > $completedOrderStatus || 1 > $deliveredOrderStatus) {
             return false;
         }
         $defaultReturnAge = FatApp::getConfig("CONF_DEFAULT_RETURN_AGE", FatUtility::VAR_INT, 7);
@@ -2399,7 +2400,7 @@ class Orders extends MyAppModel
         );
         $srch->joinOrderProductSpecifics();
         $srch->joinTable(OrderCancelRequest::DB_TBL, 'LEFT OUTER JOIN', 'ocr.ocrequest_op_id = op.op_id and ocr.ocrequest_id IS NULL', 'ocr');
-        $srch->addCondition('op.op_status_id', '=', FatApp::getConfig("CONF_DEFAULT_DEIVERED_ORDER_STATUS", FatUtility::VAR_INT, 0));
+        $srch->addCondition('op.op_status_id', '=', $deliveredOrderStatus);
         $srch->addHaving('daysSpent', '>=', 'mysql_func_return_age', 'AND', true);
 
         $rs = $srch->getResultSet();

@@ -290,14 +290,15 @@ class Tax extends MyAppModel
             $srch->joinTable(TaxRule::DB_TBL, 'LEFT JOIN', 'taxRule.taxrule_id = taxLoc.taxruleloc_taxrule_id', 'taxRule');
 
             if ($userCountry > 0) {
-                $srch->addCondition('taxruleloc_country_id', '=', $userCountry, 'AND');
+                $cond = $srch->addCondition('taxruleloc_country_id', '=', $userCountry, 'AND');
+                $cond->attachCondition('taxruleloc_country_id', '=', -1, 'OR');
             }
             if ($userState > 0) {
                 $srch->addDirectCondition('((taxruleloc_type = '. TaxRule::TYPE_INCLUDE_STATES .' AND taxruleloc_state_id= '. $userState .') OR (taxruleloc_type = '. TaxRule::TYPE_ALL_STATES .' AND taxruleloc_state_id = -1) OR (taxruleloc_type = '. TaxRule::TYPE_EXCLUDE_STATES .' AND taxruleloc_state_id != '. $userState .'))', 'AND');
             }
             $srch->addOrder('taxrule_id', 'ASC');
         }
-        $res = $srch->getResultSet();
+        $res = $srch->getResultSet();       
         $row = FatApp::getDb()->fetch($res);
         if (!is_array($row)) {
             return array();
@@ -407,9 +408,10 @@ class Tax extends MyAppModel
             $shopInfo = Shop::getAttributesByUserId($sellerId, array('shop_state_id', 'shop_id'));
             $shipFromStateId = $shopInfo['shop_state_id'];
         }
-
+        
         $taxCategoryRow = $this->getTaxRates($productId, $sellerId, $langId, $shipToCountryId, $shipToStateId);
-        /* CommonHelper::printArray($taxCategoryRow); die; */
+        /* echo $productId .'-'. $sellerId .'-'. $langId .'-'. $shipToCountryId .'-'. $shipToStateId;
+        CommonHelper::printArray($taxCategoryRow);  */
         if (empty($taxCategoryRow)) {
             return $data = [
                 'status' => false,

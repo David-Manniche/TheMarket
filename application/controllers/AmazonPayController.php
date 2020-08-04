@@ -37,7 +37,6 @@ class AmazonPayController extends PaymentController
             'secret_key' => trim($this->settings['amazon_secretKey']),
             'client_id' => trim($this->settings['amazon_clientId'])
         );
-
         $this->set('amazon', $amazon);
         if (!(strlen($amazon['merchant_id']) > 0 && strlen($amazon['access_key']) > 0 && strlen($amazon['secret_key']) > 0 && strlen($amazon['client_id']) > 0 && strlen(FatApp::getConfig('CONF_TRANSACTION_MODE', FatUtility::VAR_STRING, '0')))) {
             $this->error = Labels::getLabel('AMAZON_INVALID_PAYMENT_GATEWAY_SETUP_ERROR', $this->siteLangId);
@@ -62,7 +61,7 @@ class AmazonPayController extends PaymentController
         }
 
         $this->set('exculdeMainHeaderDiv', true);
-        
+
         $queryStr = substr($_SERVER['REQUEST_URI'], strpos($_SERVER['REQUEST_URI'], '?') + 1);
         $queryStrArr = explode('&', $queryStr);
 
@@ -79,8 +78,13 @@ class AmazonPayController extends PaymentController
                 return;
             }
         }
+        if (FatUtility::isAjaxCall()) {
+            $json['html'] = $this->_template->render(false, false, 'amazon-pay/charge.php', true, false);
+            FatUtility::dieJsonSuccess($json);
+        }
         $this->_template->render(true, false);
     }
+
     public function get_details($orderId)
     {
         if (strtolower($_SERVER['REQUEST_METHOD']) != 'post') {
@@ -92,12 +96,12 @@ class AmazonPayController extends PaymentController
         } elseif (strlen($postedData['orderReferenceId']) <= 0) {
             FatUtility::dieJsonError(Labels::getLabel('MSG_INVALID_POST_REQUEST', $this->siteLangId));
         }
-        
+
         $config = array(
-        'merchant_id' => trim($this->settings['amazon_merchantId']),
-        'access_key' => trim($this->settings['amazon_accessKey']),
-        'secret_key' => trim($this->settings['amazon_secretKey']),
-        'client_id' => trim($this->settings['amazon_clientId'])
+            'merchant_id' => trim($this->settings['amazon_merchantId']),
+            'access_key' => trim($this->settings['amazon_accessKey']),
+            'secret_key' => trim($this->settings['amazon_secretKey']),
+            'client_id' => trim($this->settings['amazon_clientId'])
         );
         if (!(strlen($config['merchant_id']) > 0 && strlen($config['access_key']) > 0 && strlen($config['secret_key']) > 0 && strlen($config['client_id']) > 0)) {
             FatUtility::dieJsonError(Labels::getLabel('AMAZON_INVALID_PAYMENT_GATEWAY_SETUP_ERROR', $this->siteLangId));
@@ -145,12 +149,12 @@ class AmazonPayController extends PaymentController
         } elseif (strlen($postedData['amazon_order_reference_id']) <= 0) {
             FatUtility::dieJsonError(Labels::getLabel('MSG_INVALID_POST_REQUEST', $this->siteLangId));
         }
-        
+
         $config = array(
-        'merchant_id' => trim($this->settings['amazon_merchantId']),
-        'access_key' => trim($this->settings['amazon_accessKey']),
-        'secret_key' => trim($this->settings['amazon_secretKey']),
-        'client_id' => trim($this->settings['amazon_clientId'])
+            'merchant_id' => trim($this->settings['amazon_merchantId']),
+            'access_key' => trim($this->settings['amazon_accessKey']),
+            'secret_key' => trim($this->settings['amazon_secretKey']),
+            'client_id' => trim($this->settings['amazon_clientId'])
         );
         if (!(strlen($config['merchant_id']) > 0 && strlen($config['access_key']) > 0 && strlen($config['secret_key']) > 0 && strlen($config['client_id']) > 0)) {
             FatUtility::dieJsonError(Labels::getLabel('AMAZON_INVALID_PAYMENT_GATEWAY_SETUP_ERROR', $this->siteLangId));
@@ -191,8 +195,8 @@ class AmazonPayController extends PaymentController
                     if ($client->success) {
                         $response = $client->closeOrderReference(
                             array(
-                            'amazon_order_reference_id' => $postedData['amazon_order_reference_id'],
-                            'cancelation_reason' => 'My cancel reason.'
+                                'amazon_order_reference_id' => $postedData['amazon_order_reference_id'],
+                                'cancelation_reason' => 'My cancel reason.'
                             )
                         );
                         $responsearray['close'] = json_decode($response->toJson());
@@ -220,5 +224,13 @@ class AmazonPayController extends PaymentController
         }
         $amount = number_format($amount, 2, '.', '');
         return $amount * 100;
+    }
+
+    public function getExternalLibraries()
+    {
+        $json['libraries'] = [
+            'https://static-na.payments-amazon.com/OffAmazonPayments/us/sandbox/js/Widgets.js',
+        ];
+        FatUtility::dieJsonSuccess($json);
     }
 }

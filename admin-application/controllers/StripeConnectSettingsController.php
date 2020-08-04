@@ -2,7 +2,7 @@
 
 class StripeConnectSettingsController extends PaymentMethodSettingsController
 {
-    public static function form($langId)
+    public static function form(int $langId)
     {
         $frm = new Form('frmStripeConnect');
 

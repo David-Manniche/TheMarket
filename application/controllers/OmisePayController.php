@@ -5,7 +5,7 @@ require_once CONF_INSTALLATION_PATH . 'library/payment-plugins/omise/lib/Omise.p
 class OmisePayController extends PaymentController
 {
     public const KEY_NAME = "Omise";
-    
+
     public function __construct($action)
     {
         parent::__construct($action);
@@ -79,6 +79,10 @@ class OmisePayController extends PaymentController
         $this->set('paymentAmount', $paymentAmount);
         $this->set('orderInfo', $orderInfo);
         $this->set('exculdeMainHeaderDiv', true);
+        if (FatUtility::isAjaxCall()) {
+            $json['html'] = $this->_template->render(false, false, 'omise-pay/charge.php', true, false);
+            FatUtility::dieJsonSuccess($json);
+        }
         $this->_template->render(true, false);
     }
 

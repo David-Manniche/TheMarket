@@ -3,6 +3,7 @@
 $arr_flds = array(
     'select_all'=>Labels::getLabel('LBL_Select_all', $adminLangId),
     'product_name' => Labels::getLabel('LBL_Name', $adminLangId),
+    'selprod_price' => Labels::getLabel('LBL_Original_Price', $adminLangId),
     'credential_username' => Labels::getLabel('LBL_Seller', $adminLangId),
     'splprice_start_date' => Labels::getLabel('LBL_Start_Date', $adminLangId),
     'splprice_end_date' => Labels::getLabel('LBL_End_Date', $adminLangId),
@@ -39,6 +40,10 @@ foreach ($arrListing as $sn => $row) {
                 $productName = SellerProduct::getProductDisplayTitle($selProdId, $adminLangId, true);
                 $td->appendElement('plaintext', array(), $productName, true);
                 break;
+             case 'selprod_price':
+                $price = CommonHelper::displayMoneyFormat($row[$column], true, true);
+                $td->appendElement('plaintext', array(), $price, true);
+                break;
             case 'credential_username':
                 $td->appendElement('plaintext', array(), $row[$column], true);
                 break;
@@ -63,6 +68,12 @@ foreach ($arrListing as $sn => $row) {
                 $input = '<input type="text" data-id="'.$splPriceId.'" value="'.$row[$column].'" data-selprodid="'.$selProdId.'" name="'.$column.'" data-oldval="'.$row[$column].'" data-displayoldval="'.CommonHelper::displayMoneyFormat($row[$column], true, true).'" class="js--splPriceCol hide sp-input"/>';
                 $td->appendElement('div', array("class" => 'js--editCol edit-hover', "title" => Labels::getLabel('LBL_Click_To_Edit', $adminLangId)), CommonHelper::displayMoneyFormat($row[$column], true, true), true);
                 $td->appendElement('plaintext', array(), $input, true);
+                
+                $discountPrice = $row['selprod_price'] - $row[$column];
+                $discountPercentage = round(($discountPrice/$row['selprod_price'])*100, 2);
+                $discountPercentage = $discountPercentage."% ".Labels::getLabel('LBL_off', $adminLangId);
+                $td->appendElement('div', array("class" => 'ml-3'), $discountPercentage, true);
+                
                 break;
             case 'action':
                 if ($canEdit) {

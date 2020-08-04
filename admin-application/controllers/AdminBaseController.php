@@ -146,6 +146,8 @@ class AdminBaseController extends FatController
         'actionButtonsClass' => Labels::getLabel('LBL_PLEASE_ADD_"actionButtons-js"_CLASS_TO_FORM_TO_PERFORM_ACTION', $this->adminLangId),
         'allowedFileSize' => LibHelper::getMaximumFileUploadSize(),
         'fileSizeExceeded' => Labels::getLabel("MSG_FILE_SIZE_SHOULD_BE_LESSER_THAN_{SIZE-LIMIT}", $this->adminLangId),
+        'currentPrice' => Labels::getLabel('LBL_Current_Price', $this->adminLangId),
+        'discountPercentage' => Labels::getLabel('LBL_Discount_Percentage', $this->adminLangId),
         );
 
         $languages = Language::getAllNames(false);
@@ -215,13 +217,17 @@ class AdminBaseController extends FatController
         return $nodes;
     }
 
-    public function getStates($countryId, $stateId = 0)
+    public function getStates($countryId, $stateId = 0, $langId= 0)
     {
         $countryId = FatUtility::int($countryId);
         $stateId = FatUtility::int($stateId);
-
+        $langId = FatUtility::int($langId);
+        if($langId == 0){
+            $langId = $this->adminLangId;
+        }
+            
         $stateObj = new States();
-        $statesArr = $stateObj->getStatesByCountryId($countryId, $this->adminLangId);
+        $statesArr = $stateObj->getStatesByCountryId($countryId, $langId);
 
         $this->set('statesArr', $statesArr);
         $this->set('stateId', $stateId);
@@ -419,7 +425,7 @@ class AdminBaseController extends FatController
             $codFld->addFieldTagAttribute('disabled', 'disabled');
             $codFld->htmlAfterField = '<br/><small>' . Labels::getLabel('LBL_COD_option_is_disabled_in_payment_gateway_settings', $this->adminLangId) . '</small>';
         }
-
+        
         if ($type == 'REQUESTED_CATALOG_PRODUCT') {
             $fld1 = $frm->addTextBox(Labels::getLabel('LBL_Add_Option_Groups', $this->adminLangId), 'option_name');
             $fld1->htmlAfterField = '<div class="box--scroller"><ul class="columlist list--vertical" id="product-option-js"></ul></div>';
@@ -502,6 +508,7 @@ class AdminBaseController extends FatController
         if ($type == 'REQUESTED_CATALOG_PRODUCT') {
             $reqData = ProductRequest::getAttributesById($product_id, array('preq_content'));
             $productData = array_merge($reqData, json_decode($reqData['preq_content'], true));
+            $productData['sellerProduct'] = 0;
             $optionArr = isset($productData['product_option']) ? $productData['product_option'] : array();
             if (!empty($optionArr)) {
                 $frm->addHtml('', 'optionSectionHeading', '');
@@ -523,7 +530,7 @@ class AdminBaseController extends FatController
                 $fld->requirements()->setRequired();
             }
         } else {
-            $productData = Product::getAttributesById($product_id, array('product_type', 'product_min_selling_price'));
+            $productData = Product::getAttributesById($product_id, array('product_type', 'product_min_selling_price','if(product_seller_id > 0, 1, 0) as sellerProduct', 'product_seller_id'));
             if ($productData['product_type'] == Product::PRODUCT_TYPE_DIGITAL) {
                 $defaultProductCond = Product::CONDITION_NEW;
             }
@@ -540,6 +547,14 @@ class AdminBaseController extends FatController
             $frm->addTextBox(Labels::getLabel('LBL_User', $this->adminLangId), 'selprod_user_shop_name', '', array(' ' => ' '))->requirements()->setRequired();
             $frm->addHtml('', 'user_shop', '<div id="user_shop_name"></div>');
         }
+     
+        $isPickupEnabled = applicationConstants::NO;
+        if ($productData['sellerProduct'] > 0) {
+            $isPickupEnabled = Shop::getAttributesByUserId($productData['product_seller_id'], 'shop_fulfillment_type');
+        } else {
+            $isPickupEnabled = FatApp::getConfig('CONF_FULFILLMENT_TYPE', FatUtility::VAR_INT, -1);
+        }
+        
         $frm->addHiddenField('', 'selprod_user_id');
         $frm->addTextBox(Labels::getLabel('LBL_Url_Keyword', $this->adminLangId), 'selprod_url_keyword');
 
@@ -634,6 +649,9 @@ class AdminBaseController extends FatController
             $codFld->addFieldTagAttribute('disabled', 'disabled');
             $codFld->htmlAfterField = '<br/><small>' . Labels::getLabel('LBL_COD_option_is_disabled_in_payment_gateway_settings', $this->adminLangId) . '</small>';
         }
+
+        $fulFillmentArr = Shipping::getFulFillmentArr($this->adminLangId, $isPickupEnabled);
+        $frm->addSelectBox(Labels::getLabel('LBL_FULFILLMENT_METHOD', $this->adminLangId), 'selprod_fulfillment_type', $fulFillmentArr, applicationConstants::NO, array(), '');
         $frm->addRequiredField(Labels::getLabel('LBL_Title', $this->adminLangId), 'selprod_title' . FatApp::getConfig('conf_default_site_lang', FatUtility::VAR_INT, 1));
         $frm->addTextArea(Labels::getLabel('LBL_Any_Extra_Comment_for_buyer', $this->adminLangId), 'selprod_comments' . FatApp::getConfig('conf_default_site_lang', FatUtility::VAR_INT, 1));
 

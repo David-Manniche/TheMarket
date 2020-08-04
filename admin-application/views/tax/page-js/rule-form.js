@@ -1,3 +1,6 @@
+$("document").ready(function() {
+    $(".addr_country_id").trigger("change");
+});
 (function() {
 	setupTaxRule = function(frm) {
         if (!$(frm).validate()) return;
@@ -116,11 +119,21 @@ function checkStatesDefault(parentIndex, countryId, stateIds) {
 function getCountryStatesTaxInTaxForm(currentSel, countryId, stateId) {
 	var parentIndex = $(currentSel).parents('.tax-rule-form--js').data('index');
 	var dv = '.tax-rule-form-'+ parentIndex + ' .selectpicker';
+    
+    $(dv).empty();
+    var firstChild = '<option value = "-1" >All</option>';
+    $(dv).append(firstChild);
+    if(countryId == -1) {
+        $(dv).attr('disabled', true);
+        $('.tax-rule-form-'+ parentIndex + ' select[name="taxruleloc_type[]"]').val(-1);
+        $('.tax-rule-form-'+ parentIndex + ' select[name="taxruleloc_type[]"]').attr('disabled', true);
+        $(dv).selectpicker('refresh');
+        return;
+    }
     fcom.displayProcessing();
     fcom.ajax(fcom.makeUrl('Users', 'getStates', [countryId, stateId]), '', function(res) {
-        $(dv).empty();
-		var firstChild = '<option value = "-1" >'+ langLbl.All +'</option>';
-		$(dv).append(firstChild);
+        $(dv).removeAttr('disabled');
+        $('.tax-rule-form-'+ parentIndex + ' select[name="taxruleloc_type[]"]').removeAttr('disabled');
         $(dv).append(res);
 		$(dv).selectpicker('refresh');
     });

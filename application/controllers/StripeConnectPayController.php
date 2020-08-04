@@ -273,8 +273,10 @@ class StripeConnectPayController extends PaymentController
             $this->set('customerId', $this->customerId);
         }
 
-        $this->stripeConnect->loadSavedCards();
-        $savedCards = $this->stripeConnect->getResponse()->toArray();
+        $this->stripeConnect->loadCustomer();
+        $customerInfo = $this->stripeConnect->getResponse()->toArray();
+        $savedCards = $customerInfo['sources']['data'];
+        $this->set('defaultSource', $customerInfo['default_source']);
         $this->set('savedCards', $savedCards);
 
         $cancelBtnUrl = CommonHelper::getPaymentCancelPageUrl();
@@ -286,6 +288,7 @@ class StripeConnectPayController extends PaymentController
         $this->set('orderInfo', $this->orderInfo);
         
         if (true === MOBILE_APP_API_CALL) {
+            $this->set('confirmationRequired', $confirmationRequired);
             $this->_template->render();
         }
         
@@ -295,7 +298,7 @@ class StripeConnectPayController extends PaymentController
         $this->set('cancelBtnUrl', $cancelBtnUrl);
         $this->set('exculdeMainHeaderDiv', true);
         
-        if (true === $confirmationRequired) {
+        if (true === $confirmationRequired || FatUtility::isAjaxCall()) {
             $json['html'] = $this->_template->render(false, false, 'stripe-connect-pay/charge.php', true, false);
             FatUtility::dieJsonSuccess($json);
         }
@@ -458,8 +461,8 @@ class StripeConnectPayController extends PaymentController
 
         $successUrl = UrlHelper::generateFullUrl('custom', 'paymentSuccess', array($this->orderId));
         $successMsg = Labels::getLabel('MSG_SUCCESS', $this->siteLangId);
-        if (FatUtility::isAjaxCall()) {
-            $json['status'] = applicationConstants::ACTIVE;
+        if (FatUtility::isAjaxCall() || true === MOBILE_APP_API_CALL) {
+            $json['status'] = Plugin::RETURN_TRUE;
             $json['msg'] = $successMsg;
             $json['redirectUrl'] = $successUrl;
             FatUtility::dieJsonSuccess($json);

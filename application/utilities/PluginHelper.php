@@ -16,29 +16,55 @@ trait PluginHelper
     {
         return $this->error;
     }
-    
+        
+    /**
+     * getPluginSettingsObj
+     *
+     * @return void
+     */
+    private function loadPluginSettingsObj(): void
+    {
+        $this->langId = 0 < $this->langId ? $this->langId : CommonHelper::getLangId();
+        $this->pluginSetting = new PluginSetting(0, static::KEY_NAME);   
+    }
+
     /**
      * getSettings
      *
-     * @param  string $column
      * @return array
      */
-    public function getSettings(string $column = '')
+    public function getSettings(): array
     {
         if (!empty($this->settings)) {
             return $this->settings;
         }
 
-        $this->langId = 0 < $this->langId ? $this->langId : CommonHelper::getLangId();
-
-        try {
-            $this->keyName = get_called_class()::KEY_NAME;
-        } catch (\Error $e) {
-            $this->error = $e->getMessage();
-            return false;
+        $this->loadPluginSettingsObj();
+        if (false === $this->settings = $this->pluginSetting->get($this->langId)) {
+            $this->error = $this->pluginSetting->getError();
+            return [];
         }
-        $pluginSetting = new PluginSetting(0, $this->keyName);
-        return $this->settings = $pluginSetting->get($this->langId, $column);
+        return $this->settings;
+    }
+    
+    /**
+     * getKey
+     *
+     * @param  string $column
+     * @return string
+     */
+    public function getKey(string $column): string
+    {
+        if (!empty($this->settings)) {
+            return isset($this->settings[$column]) ? $this->settings[$column] : '';
+        }
+
+        $this->loadPluginSettingsObj();         
+        if (false === $this->settings = $this->pluginSetting->get($this->langId, $column)) {
+            $this->error = $this->pluginSetting->getError();
+            return '';
+        }
+        return $this->settings;
     }
     
     /**
@@ -52,14 +78,14 @@ trait PluginHelper
         $this->langId = 0 < $langId ? $langId : CommonHelper::getLangId();
         $this->settings = $this->getSettings();
         if (Plugin::INACTIVE == $this->settings['plugin_active']) {
-            $this->error = $this->keyName . ' : ' . Labels::getLabel('MSG_PLUGIN_NOT_ACTIVE', $langId);
+            $this->error = static::KEY_NAME . ' : ' . Labels::getLabel('MSG_PLUGIN_NOT_ACTIVE', $langId);
             return false;
         }
 
         if (isset($this->requiredKeys) && !empty($this->requiredKeys) && is_array($this->requiredKeys)) {
             foreach ($this->requiredKeys as $key) {
                 if (!array_key_exists($key, $this->settings) || '' == $this->settings[$key]) {
-                    $this->error = $this->keyName . ' : ' . ' "' . $key . '" ' . Labels::getLabel('MSG_SETTINGS_NOT_CONFIGURED', $langId);
+                    $this->error = static::KEY_NAME . ' : ' . ' "' . $key . '" ' . Labels::getLabel('MSG_SETTINGS_NOT_CONFIGURED', $langId);
                     return false;
                 }
             }
