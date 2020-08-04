@@ -71,7 +71,7 @@ class PaypalPayController extends PaymentController
         $this->set('exculdeMainHeaderDiv', true);
         $this->set('externalLibUrl', $this->externalLibUrl);
         if (FatUtility::isAjaxCall()) {
-            $json['html'] = $this->_template->render(false, false, 'paypal-pay/charge.php', true, false);
+            $json['html'] = $this->_template->render(false, false, 'paypal-pay/charge-ajax.php', true, false);
             FatUtility::dieJsonSuccess($json);
         }
         $this->_template->render(true, false);

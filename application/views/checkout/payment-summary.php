@@ -161,47 +161,22 @@ $rewardPoints = UserRewardBreakup::rewardPointBalance(UserAuthentication::getLog
             <?php } ?>
         </div>
         <?php
-        $gatewayCount = 0;
-        foreach ($paymentMethods as $key => $val) {
-            $pmethodCode = $val['plugin_code'];
-
-            if (in_array($pmethodCode, $excludePaymentGatewaysArr[applicationConstants::CHECKOUT_PRODUCT])) {
-                continue;
-            }
-            $gatewayCount++;
-        }
         if ($cartSummary['orderPaymentGatewayCharges']) { ?>
-            <div class="row">
-                <div class="col-md-4">
-                    <div class="payment_methods_list" <?php echo ($cartSummary['orderPaymentGatewayCharges'] <= 0) ? 'is--disabled' : ''; ?>>
-                        <?php if ($cartSummary['orderPaymentGatewayCharges'] && 0 < $gatewayCount && 0 < count($paymentMethods)) { ?>
-                            <ul id="payment_methods_tab" class="" data-simplebar>
-                                <?php $count = 0;
-                                foreach ($paymentMethods as $key => $val) {
+            
+                    <div class="payment-area" <?php echo ($cartSummary['orderPaymentGatewayCharges'] <= 0) ? 'is--disabled' : ''; ?>>
+                        <?php if ($cartSummary['orderPaymentGatewayCharges'] && 0 < count($paymentMethods)) { ?>
+                            <ul class="nav nav-payments" role="tablist" id="payment_methods_tab">
+                                <?php foreach ($paymentMethods as $key => $val) {
                                     $pmethodCode = $val['plugin_code'];
                                     $pmethodId = $val['plugin_id'];
                                     $pmethodName = $val['plugin_name'];
 
                                     if (in_array($pmethodCode, $excludePaymentGatewaysArr[applicationConstants::CHECKOUT_PRODUCT])) {
                                         continue;
-                                    }
-                                    $count++; ?>
-                                    <li>
-                                        <a href="<?php echo UrlHelper::generateUrl('Checkout', 'PaymentTab', array($orderInfo['order_id'], $pmethodId)); ?>" data-paymentmethod="<?php echo $pmethodCode; ?>">
+                                    }?>
+                                    <li class="nav-item">
+                                        <a class="nav-link" aria-selected="true" href="<?php echo UrlHelper::generateUrl('Checkout', 'PaymentTab', array($orderInfo['order_id'], $pmethodId)); ?>" data-paymentmethod="<?php echo $pmethodCode; ?>">
                                             <div class="payment-box">
-                                                <i class="payment-icn">
-                                                    <?php
-                                                    if (isset($val['plugin_id'])) {
-                                                        $fileData = AttachedFile::getAttachment(AttachedFile::FILETYPE_PLUGIN_LOGO, $pmethodId);
-                                                        $uploadedTime = AttachedFile::setTimeParam($fileData['afile_updated_at']);
-                                                        $imageUrl = UrlHelper::getCachedUrl(UrlHelper::generateFileUrl('Image', 'plugin', array($pmethodId, 'SMALL')) . $uploadedTime, CONF_IMG_CACHE_TIME, '.jpg');
-                                                    } else {
-                                                        $fileData = AttachedFile::getAttachment(AttachedFile::FILETYPE_PAYMENT_METHOD, $pmethodId, 0, 0, false);
-                                                        $imageUrl = UrlHelper::generateUrl('Image', 'paymentMethod', array($pmethodId, 'SMALL'));
-                                                    }
-                                                    $aspectRatioArr = AttachedFile::getRatioTypeArray($siteLangId); ?>
-                                                    <img <?php if ($fileData['afile_aspect_ratio'] > 0) { ?> data-ratio="<?php echo $aspectRatioArr[$fileData['afile_aspect_ratio']]; ?>" <?php } ?> src="<?php echo $imageUrl; ?>" alt="">
-                                                </i>
                                                 <span><?php echo $pmethodName; ?></span>
                                             </div>
                                         </a>
@@ -209,25 +184,18 @@ $rewardPoints = UserRewardBreakup::rewardPointBalance(UserAuthentication::getLog
                                 <?php
                                 } ?>
                             </ul>
+                            <div class="tab-content">
+                                <div class="tab-pane fade show active" role="tabpanel" >
+                                    <div id="tabs-container"></div>
+                                </div>
+                            </div>
                         <?php } else {
-                            echo Labels::getLabel("LBL_Payment_method_is_not_available._Please_contact_your_administrator.", $siteLangId);
+                            echo $cartSummary['orderPaymentGatewayCharges']  . ' < ' . count($paymentMethods);
+                            echo Labels::getLabel("LBL_PAYMENT_METHOD_IS_NOT_AVAILABLE._PLEASE_CONTACT_YOUR_ADMINISTRATOR.", $siteLangId);
                         } ?>
                     </div>
-                </div>
-                <div class="col-md-8">
-                    <div class="payment-from">
-                        <div class="you-pay">
-                            <?php echo Labels::getLabel('LBL_Net_Payable', $siteLangId); ?>
-                            :
-                            <?php echo CommonHelper::displayMoneyFormat($cartSummary['orderPaymentGatewayCharges'], true, false, true, false, true); ?>
-                            <?php if (CommonHelper::getCurrencyId() != FatApp::getConfig('CONF_CURRENCY', FatUtility::VAR_INT, 1)) { ?>
-                                <p><?php echo CommonHelper::currencyDisclaimer($siteLangId, $cartSummary['orderPaymentGatewayCharges']); ?>
-                                </p>
-                            <?php } ?>
-                        </div>
-                        <div class="gap"></div>
-                        <div id="tabs-container"></div>
-                    <?php } ?>
+               
+        <?php } ?>
     </section>
 </div>
 <script>
@@ -251,12 +219,11 @@ if (!empty($siteKey) && !empty($secretKey)) { ?>
                 loadTab($(tabsId + ' li a.is-active'));
             }
             $(tabsId + ' a').click(function() {
-                if ($(this).hasClass('is-active')) {
+                if ($(this).hasClass('active')) {
                     return false;
                 }
-                $(tabsId + ' li a.is-active').removeClass('is-active');
-                $('li').removeClass('is-active');
-                $(this).parent().addClass('is-active');
+                $(tabsId + ' li a.active').removeClass('active');
+                $(this).addClass('active');
                 loadTab($(this));
                 return false;
             });

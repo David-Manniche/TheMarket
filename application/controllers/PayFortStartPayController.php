@@ -52,7 +52,7 @@ class PayFortStartPayController extends PaymentController
         $this->set('orderPaymentGatewayDescription', $orderPaymentGatewayDescription);
         $this->set('exculdeMainHeaderDiv', true);
         if (FatUtility::isAjaxCall()) {
-            $json['html'] = $this->_template->render(false, false, 'pay-fort-start-pay/charge.php', true, false);
+            $json['html'] = $this->_template->render(false, false, 'pay-fort-start-pay/charge-ajax.php', true, false);
             FatUtility::dieJsonSuccess($json);
         } else {
             $this->_template->render(true, false);

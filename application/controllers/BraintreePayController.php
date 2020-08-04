@@ -85,7 +85,7 @@ class BraintreePayController extends PaymentController
         $this->set('exculdeMainHeaderDiv', true);
         $this->set('clientToken', $clientToken);
         if (FatUtility::isAjaxCall()) {
-            $json['html'] = $this->_template->render(false, false, 'braintree-pay/charge.php', true, false);
+            $json['html'] = $this->_template->render(false, false, 'braintree-pay/charge-ajax.php', true, false);
             FatUtility::dieJsonSuccess($json);
         }
         $this->_template->render(true, false);

@@ -399,7 +399,7 @@ $("document").ready(function () {
             $(pageContent).html(ans);
             $(paymentDiv).addClass('is-current');
             setTimeout(function () {
-                $("#payment_methods_tab li:first a").trigger('click');
+                $("#payment_methods_tab li:first a").trigger('click').addClass('active');
             }, 500);
         });
     };
