@@ -790,8 +790,16 @@ function initMap(lat = 40.72, lng = -73.96, elementId = 'map') {
     infowindow = new google.maps.InfoWindow;
 
     // address = document.getElementById('postal_code').value;
-    /*address = {lat: parseFloat(lat), lng: parseFloat(lat)};*/
-    geocodeAddress(geocoder, map, infowindow, { 'location': latlng });
+    /*address = {lat: parseFloat(lat), lng: parseFloat(lat)};
+	geocodeAddress(geocoder, map, infowindow, { 'location': latlng });*/
+	
+	var sel = document.getElementById('shop_country_id');
+	var country = sel.options[sel.selectedIndex].text;
+
+	address = document.getElementById('postal_code').value;
+	address = country + ' ' + address;
+	
+    geocodeAddress(geocoder, map, infowindow, { 'address': address });
 
     document.getElementById('postal_code').addEventListener('blur', function () {
         var sel = document.getElementById('shop_country_id');
@@ -832,7 +840,7 @@ function initMap(lat = 40.72, lng = -73.96, elementId = 'map') {
 
 function geocodeAddress(geocoder, resultsMap, infowindow, address) {
     geocoder.geocode(address, function (results, status) {
-        if (status === 'OK') {
+        if (status === google.maps.GeocoderStatus.OK) {
             resultsMap.setCenter(results[0].geometry.location);
             if (marker && marker.setMap) {
                 marker.setMap(null);
@@ -842,10 +850,13 @@ function geocodeAddress(geocoder, resultsMap, infowindow, address) {
                 position: results[0].geometry.location,
                 draggable: true
             });
-
-            geocodePosition(marker.getPosition());
+			geocodeSetData(results);
             google.maps.event.addListener(marker, 'dragend', function () {
-                geocodePosition(marker.getPosition());
+				geocoder.geocode({ 'latLng': marker.getPosition() }, function (results, status) {
+					if (status == google.maps.GeocoderStatus.OK) {
+						geocodeSetData(results);
+					}
+				});
             });
         } else {
             /*console.log('Geocode was not successful for the following reason: ' + status);*/
@@ -853,53 +864,49 @@ function geocodeAddress(geocoder, resultsMap, infowindow, address) {
     });
 }
 
-function geocodePosition(pos) {
-    document.getElementById('lat').value = pos.lat().toFixed(6);
-    document.getElementById('lng').value = pos.lng().toFixed(6);
-    geocoder.geocode({ 'latLng': pos }, function (results, status) {
-        if (status == google.maps.GeocoderStatus.OK) {
-            if (results[0]) {
-                infowindow.setContent(results[0].formatted_address);
-                infowindow.open(map, marker);
-                var address_components = results[0].address_components;
-                var data = {};
-                data['lat'] = pos.lat().toFixed(6);
-                data['lng'] = pos.lng().toFixed(6);
-                data['formatted_address'] = results[0].formatted_address;
-                if (0 < address_components.length) {
-                    var addressComponents = address_components;
-                    for (var i = 0; i < addressComponents.length; i++) {
-                        var key = address_components[i].types[0];
-                        var value = address_components[i].long_name;
-                        data[key] = value;
-                        if ('country' == key) {
-                            data['country_code'] = address_components[i].short_name;
-                            data['country'] = value;
-                        } else if ('administrative_area_level_1' == key) {
-                            data['state_code'] = address_components[i].short_name;
-                            data['state'] = value;
-                        } else if ('administrative_area_level_2' == key) {
-                            data['city'] = value;
-                        }
-                    }
-                }
-                $('#postal_code').val(data.postal_code);
-                $('#shop_country_id option').each(function () {
-                    if (this.text == data.country) {
-                        $('#shop_country_id').val(this.value);
-                        var state = 0;
-                        $('#shop_state option').each(function () {
-                            if (this.text == data.state) {
-                                return state = this.value;
-                            }
-                        });
-                        getCountryStates(this.value, state, '#shop_state');
-                        return false;
-                    }
-                });
-            }
-        }
-    });
+function geocodeSetData(results) {
+	document.getElementById('lat').value = marker.getPosition().lat();
+	document.getElementById('lng').value = marker.getPosition().lng();
+	if (results[0]) {
+		infowindow.setContent(results[0].formatted_address);
+		infowindow.open(map, marker);
+		var address_components = results[0].address_components;
+		var data = {};
+		/* data['lat'] = pos.lat().toFixed(6);
+		data['lng'] = pos.lng().toFixed(6); */
+		data['formatted_address'] = results[0].formatted_address;
+		if (0 < address_components.length) {
+			var addressComponents = address_components;
+			for (var i = 0; i < addressComponents.length; i++) {
+				var key = address_components[i].types[0];
+				var value = address_components[i].long_name;
+				data[key] = value;
+				if ('country' == key) {
+					data['country_code'] = address_components[i].short_name;
+					data['country'] = value;
+				} else if ('administrative_area_level_1' == key) {
+					data['state_code'] = address_components[i].short_name;
+					data['state'] = value;
+				} else if ('administrative_area_level_2' == key) {
+					data['city'] = value;
+				}
+			}
+		}
+		$('#postal_code').val(data.postal_code);
+		$('#shop_country_id option').each(function () {
+			if (this.text == data.country) {
+				$('#shop_country_id').val(this.value);
+				var state = 0;
+				$('#shop_state option').each(function () {
+					if (this.text == data.state) {
+						return state = this.value;
+					}
+				});
+				getCountryStates(this.value, state, '#shop_state');
+				return false;
+			}
+		});
+	}
 }
 
 function loadScript(src, callback = '', params = []) {
