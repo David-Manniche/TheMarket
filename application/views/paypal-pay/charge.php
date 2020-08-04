@@ -36,6 +36,7 @@
             },
             //=== Call your server to create an order
             createOrder: function(data, actions) {
+                $.mbsmessage(langLbl.requestProcessing,true,'alert--process');
                 return fetch(fcom.makeUrl('PaypalPay', 'createOrder', ['<?php echo $orderInfo['id']; ?>']), {
                     method: "POST",
                 }).then(function(res) {
@@ -46,6 +47,7 @@
                         $.mbsmessage(msg, true, 'alert--danger');
                         return;
                     }
+                    $.mbsmessage.close();
                     return data.id;
                 });
             },
