@@ -30,9 +30,9 @@
                     }
                 } ?>
             <ul class="navigations <?php echo ($navLinkCount > 4) ? 'justify-content-between' : '' ; ?>">
-                <?php /*?> <li class="navchild categories ">
-                    <a href="#">
-                        Categories <i class="c-hamburger js-hamburger"> <span
+                <li class="navchild categories ">
+                    <a href="javascript:void()">
+                        <?php echo Labels::getLabel('LBL_Categories', $siteLangId);?> <i class="c-hamburger js-hamburger"> <span
                                 class="c-hamburger__line c-hamburger__line--top"></span>
                             <span class="c-hamburger__line c-hamburger__line--middle"></span>
                             <span class="c-hamburger__line c-hamburger__line--bottom"></span>
@@ -40,329 +40,26 @@
 
                     <div class="vertical-menu">
                         <ul class="menu">
-                            <li class="has-child"><a href="#">Mega menu 01</a>
-                                <div class="megadrop">
-                                    <ul class="sublinks">
-                                        <li class="head"><a data-org-url="/yokart/category/view/123"
-                                                href="/yokart/clothing">Clothing</a>
-                                            <ul>
-                                                <li><a data-org-url="/yokart/category/view/123"
-                                                        href="/yokart/jeans">Jeans</a>
-                                                </li>
-                                                <li><a data-org-url="/yokart/category/view/123"
-                                                        href="/yokart/shirts">Shirts</a>
-                                                </li>
-                                                <li><a data-org-url="/yokart/category/view/123"
-                                                        href="/yokart/clothing-trousers">Trousers</a>
-                                                </li>
-                                                <li><a data-org-url="/yokart/category/view/123"
-                                                        href="/yokart/clothing-jackets">Jackets</a>
-                                                </li>
-                                                <li><a data-org-url="/yokart/category/view/123"
-                                                        href="/yokart/clothing-fragrances-180">Fragrances</a>
-                                                </li>
-                                            </ul>
-                                        </li>
-                                        <li class="head"><a data-org-url="/yokart/category/view/124"
-                                                href="/yokart/men-footwears">Footwears</a>
-                                            <ul>
-                                                <li><a data-org-url="/yokart/category/view/124"
-                                                        href="/yokart/men-footwears-casual-shoes">Casual shoes</a>
-                                                </li>
-                                                <li><a data-org-url="/yokart/category/view/124"
-                                                        href="/yokart/men-footwears-formal-shoes">Formal shoes</a>
-                                                </li>
-                                                <li><a data-org-url="/yokart/category/view/124"
-                                                        href="/yokart/men-sports">Sports shoes</a>
-                                                </li>
-                                            </ul>
-                                        </li>
-                                        <li class="head"><a data-org-url="/yokart/category/view/160"
-                                                href="/yokart/men-sports-wear">Sports Wear</a>
-                                            <ul>
-                                                <li><a data-org-url="/yokart/category/view/160"
-                                                        href="/yokart/men-sports-wear-sports-t-shirts">Sports
-                                                        T-Shirts</a>
-                                                </li>
-                                                <li><a data-org-url="/yokart/category/view/160"
-                                                        href="/yokart/men-sports-wear-track-pants">Track Pants</a>
-                                                </li>
-                                                <li><a data-org-url="/yokart/category/view/160"
-                                                        href="/yokart/men-sports-wear-track-suits">Track Suits</a>
-                                                </li>
-                                            </ul>
-                                        </li>
-                                    </ul>
+                        <?php
+                        foreach ($headerNavigation as $nav) {
+                        if ($nav['pages']) {
+                            $mainNavigation = array_slice($nav['pages'], 0, $navLinkCount);
+                            foreach ($mainNavigation as $link) {
+                                $navUrl = CommonHelper::getnavigationUrl($link['nlink_type'], $link['nlink_url'], $link['nlink_cpage_id'], $link['nlink_category_id']);
+                                $OrgnavUrl = CommonHelper::getnavigationUrl($link['nlink_type'], $link['nlink_url'], $link['nlink_cpage_id'], $link['nlink_category_id'], $getOrgUrl);
 
-                                </div>
-                            </li>
-                            <li class="has-child"><a href="#">Mega menu 01</a>
-                                <div class="megadrop">
-                                    <ul class="sublinks">
-                                        <li class="head"><a data-org-url="/yokart/category/view/123"
-                                                href="/yokart/clothing">Clothing</a>
-                                            <ul>
-                                                <li><a data-org-url="/yokart/category/view/123"
-                                                        href="/yokart/jeans">Jeans</a>
-                                                </li>
-                                                <li><a data-org-url="/yokart/category/view/123"
-                                                        href="/yokart/shirts">Shirts</a>
-                                                </li>
-                                                <li><a data-org-url="/yokart/category/view/123"
-                                                        href="/yokart/clothing-trousers">Trousers</a>
-                                                </li>
-                                                <li><a data-org-url="/yokart/category/view/123"
-                                                        href="/yokart/clothing-jackets">Jackets</a>
-                                                </li>
-                                                <li><a data-org-url="/yokart/category/view/123"
-                                                        href="/yokart/clothing-fragrances-180">Fragrances</a>
-                                                </li>
-                                            </ul>
-                                        </li>
-                                        <li class="head"><a data-org-url="/yokart/category/view/124"
-                                                href="/yokart/men-footwears">Footwears</a>
-                                            <ul>
-                                                <li><a data-org-url="/yokart/category/view/124"
-                                                        href="/yokart/men-footwears-casual-shoes">Casual shoes</a>
-                                                </li>
-                                                <li><a data-org-url="/yokart/category/view/124"
-                                                        href="/yokart/men-footwears-formal-shoes">Formal shoes</a>
-                                                </li>
-                                                <li><a data-org-url="/yokart/category/view/124"
-                                                        href="/yokart/men-sports">Sports shoes</a>
-                                                </li>
-                                            </ul>
-                                        </li>
-                                        <li class="head"><a data-org-url="/yokart/category/view/160"
-                                                href="/yokart/men-sports-wear">Sports Wear</a>
-                                            <ul>
-                                                <li><a data-org-url="/yokart/category/view/160"
-                                                        href="/yokart/men-sports-wear-sports-t-shirts">Sports
-                                                        T-Shirts</a>
-                                                </li>
-                                                <li><a data-org-url="/yokart/category/view/160"
-                                                        href="/yokart/men-sports-wear-track-pants">Track Pants</a>
-                                                </li>
-                                                <li><a data-org-url="/yokart/category/view/160"
-                                                        href="/yokart/men-sports-wear-track-suits">Track Suits</a>
-                                                </li>
-                                            </ul>
-                                        </li>
-                                    </ul>
-
-                                </div>
-
-                            </li>
-                            <li class="has-child"><a href="#">Mega menu 01</a>
-                                <div class="megadrop">
-                                    <ul class="sublinks">
-                                        <li class="head"><a data-org-url="/yokart/category/view/123"
-                                                href="/yokart/clothing">Clothing</a>
-                                            <ul>
-                                                <li><a data-org-url="/yokart/category/view/123"
-                                                        href="/yokart/jeans">Jeans</a>
-                                                </li>
-                                                <li><a data-org-url="/yokart/category/view/123"
-                                                        href="/yokart/shirts">Shirts</a>
-                                                </li>
-                                                <li><a data-org-url="/yokart/category/view/123"
-                                                        href="/yokart/clothing-trousers">Trousers</a>
-                                                </li>
-                                                <li><a data-org-url="/yokart/category/view/123"
-                                                        href="/yokart/clothing-jackets">Jackets</a>
-                                                </li>
-                                                <li><a data-org-url="/yokart/category/view/123"
-                                                        href="/yokart/clothing-fragrances-180">Fragrances</a>
-                                                </li>
-                                            </ul>
-                                        </li>
-                                        <li class="head"><a data-org-url="/yokart/category/view/124"
-                                                href="/yokart/men-footwears">Footwears</a>
-                                            <ul>
-                                                <li><a data-org-url="/yokart/category/view/124"
-                                                        href="/yokart/men-footwears-casual-shoes">Casual shoes</a>
-                                                </li>
-                                                <li><a data-org-url="/yokart/category/view/124"
-                                                        href="/yokart/men-footwears-formal-shoes">Formal shoes</a>
-                                                </li>
-                                                <li><a data-org-url="/yokart/category/view/124"
-                                                        href="/yokart/men-sports">Sports shoes</a>
-                                                </li>
-                                            </ul>
-                                        </li>
-                                        <li class="head"><a data-org-url="/yokart/category/view/160"
-                                                href="/yokart/men-sports-wear">Sports Wear</a>
-                                            <ul>
-                                                <li><a data-org-url="/yokart/category/view/160"
-                                                        href="/yokart/men-sports-wear-sports-t-shirts">Sports
-                                                        T-Shirts</a>
-                                                </li>
-                                                <li><a data-org-url="/yokart/category/view/160"
-                                                        href="/yokart/men-sports-wear-track-pants">Track Pants</a>
-                                                </li>
-                                                <li><a data-org-url="/yokart/category/view/160"
-                                                        href="/yokart/men-sports-wear-track-suits">Track Suits</a>
-                                                </li>
-                                            </ul>
-                                        </li>
-                                    </ul>
-
-                                </div>
-
-                            </li>
-                            <li class="has-child"><a href="#">Mega menu 01</a>
-                                <div class="megadrop">
-                                    <ul class="sublinks">
-                                        <li class="head"><a data-org-url="/yokart/category/view/123"
-                                                href="/yokart/clothing">Clothing</a>
-                                            <ul>
-                                                <li><a data-org-url="/yokart/category/view/123"
-                                                        href="/yokart/jeans">Jeans</a>
-                                                </li>
-                                                <li><a data-org-url="/yokart/category/view/123"
-                                                        href="/yokart/shirts">Shirts</a>
-                                                </li>
-                                                <li><a data-org-url="/yokart/category/view/123"
-                                                        href="/yokart/clothing-trousers">Trousers</a>
-                                                </li>
-                                                <li><a data-org-url="/yokart/category/view/123"
-                                                        href="/yokart/clothing-jackets">Jackets</a>
-                                                </li>
-                                                <li><a data-org-url="/yokart/category/view/123"
-                                                        href="/yokart/clothing-fragrances-180">Fragrances</a>
-                                                </li>
-                                            </ul>
-                                        </li>
-                                        <li class="head"><a data-org-url="/yokart/category/view/124"
-                                                href="/yokart/men-footwears">Footwears</a>
-                                            <ul>
-                                                <li><a data-org-url="/yokart/category/view/124"
-                                                        href="/yokart/men-footwears-casual-shoes">Casual shoes</a>
-                                                </li>
-                                                <li><a data-org-url="/yokart/category/view/124"
-                                                        href="/yokart/men-footwears-formal-shoes">Formal shoes</a>
-                                                </li>
-                                                <li><a data-org-url="/yokart/category/view/124"
-                                                        href="/yokart/men-sports">Sports shoes</a>
-                                                </li>
-                                            </ul>
-                                        </li>
-                                        <li class="head"><a data-org-url="/yokart/category/view/160"
-                                                href="/yokart/men-sports-wear">Sports Wear</a>
-                                            <ul>
-                                                <li><a data-org-url="/yokart/category/view/160"
-                                                        href="/yokart/men-sports-wear-sports-t-shirts">Sports
-                                                        T-Shirts</a>
-                                                </li>
-                                                <li><a data-org-url="/yokart/category/view/160"
-                                                        href="/yokart/men-sports-wear-track-pants">Track Pants</a>
-                                                </li>
-                                                <li><a data-org-url="/yokart/category/view/160"
-                                                        href="/yokart/men-sports-wear-track-suits">Track Suits</a>
-                                                </li>
-                                            </ul>
-                                        </li>
-                                    </ul>
-
-                                </div>
-
-                            </li>
-                            <li class="has-child"><a href="#">Mega menu 01</a>
-                                <div class="megadrop">
-                                    <ul class="sublinks">
-                                        <li class="head"><a data-org-url="/yokart/category/view/123"
-                                                href="/yokart/clothing">Clothing</a>
-                                            <ul>
-                                                <li><a data-org-url="/yokart/category/view/123"
-                                                        href="/yokart/jeans">Jeans</a>
-                                                </li>
-                                                <li><a data-org-url="/yokart/category/view/123"
-                                                        href="/yokart/shirts">Shirts</a>
-                                                </li>
-                                                <li><a data-org-url="/yokart/category/view/123"
-                                                        href="/yokart/clothing-trousers">Trousers</a>
-                                                </li>
-                                                <li><a data-org-url="/yokart/category/view/123"
-                                                        href="/yokart/clothing-jackets">Jackets</a>
-                                                </li>
-                                                <li><a data-org-url="/yokart/category/view/123"
-                                                        href="/yokart/clothing-fragrances-180">Fragrances</a>
-                                                </li>
-                                            </ul>
-                                        </li>
-                                        <li class="head"><a data-org-url="/yokart/category/view/124"
-                                                href="/yokart/men-footwears">Footwears</a>
-                                            <ul>
-                                                <li><a data-org-url="/yokart/category/view/124"
-                                                        href="/yokart/men-footwears-casual-shoes">Casual shoes</a>
-                                                </li>
-                                                <li><a data-org-url="/yokart/category/view/124"
-                                                        href="/yokart/men-footwears-formal-shoes">Formal shoes</a>
-                                                </li>
-                                                <li><a data-org-url="/yokart/category/view/124"
-                                                        href="/yokart/men-sports">Sports shoes</a>
-                                                </li>
-                                            </ul>
-                                        </li>
-                                        <li class="head"><a data-org-url="/yokart/category/view/160"
-                                                href="/yokart/men-sports-wear">Sports Wear</a>
-                                            <ul>
-                                                <li><a data-org-url="/yokart/category/view/160"
-                                                        href="/yokart/men-sports-wear-sports-t-shirts">Sports
-                                                        T-Shirts</a>
-                                                </li>
-                                                <li><a data-org-url="/yokart/category/view/160"
-                                                        href="/yokart/men-sports-wear-track-pants">Track Pants</a>
-                                                </li>
-                                                <li><a data-org-url="/yokart/category/view/160"
-                                                        href="/yokart/men-sports-wear-track-suits">Track Suits</a>
-                                                </li>
-                                            </ul>
-                                        </li>
-                                    </ul>
-
-                                </div>
-
-                            </li>
-                            <li><a href="#">Mega menu 01</a></li>
-                            <li class="all-categories"><a href="#">All Categories</a></li>
-
-                        </ul>
-                    </div>
-
-
-
-
-
-
-
-                </li> <?php */?>
-                <?php
-                foreach ($headerNavigation as $nav) {
-                    if ($nav['pages']) {
-                        $mainNavigation = array_slice($nav['pages'], 0, $navLinkCount);
-                        foreach ($mainNavigation as $link) {
-                            $navUrl = CommonHelper::getnavigationUrl($link['nlink_type'], $link['nlink_url'], $link['nlink_cpage_id'], $link['nlink_category_id']);
-                            $OrgnavUrl = CommonHelper::getnavigationUrl($link['nlink_type'], $link['nlink_url'], $link['nlink_cpage_id'], $link['nlink_category_id'], $getOrgUrl);
-
-                            $href = $navUrl;
-                            $navchild = '';
-                            $target = $link['nlink_target'];
-                            if (0 < count($link['children'])) {
-                                $href = 'javascript:void(0)';
-                                $navchild = 'navchild';
-                                $target = '';
-                            }
-                            ?>
-                <li class=" <?php echo $navchild; ?>">
-                    <a target="<?php echo $target; ?>" data-org-url="<?php echo $OrgnavUrl; ?>"
+                                $href = $navUrl;
+                                $navchild = '';
+                                $target = $link['nlink_target'];
+                                if (0 < count($link['children'])) {
+                                    $href = 'javascript:void(0)';
+                                    $navchild = 'navchild';
+                                    $target = '';
+                                } ?>
+                            <li class="has-child"><a target="<?php echo $target; ?>" data-org-url="<?php echo $OrgnavUrl; ?>"
                         href="<?php echo $href; ?>"><?php echo $link['nlink_caption']; ?></a>
-                    <?php if (isset($link['children']) && count($link['children']) > 0) { ?>
-                    <span class="link__mobilenav"></span>
-                    <div class="subnav">
-                        <div class="subnav__wrapper ">
-                            <div class="container">
-                                <div class="subnav_row">
+                            <?php if (isset($link['children']) && count($link['children']) > 0) { ?>
+                                <div class="megadrop">
                                     <ul class="sublinks">
                                         <?php $subyChild=0;
                                         foreach ($link['children'] as $children) {
@@ -406,16 +103,27 @@
                                         href="<?php echo $navUrl; ?>"><?php echo Labels::getLabel('LBL_View_All', $siteLangId);?></a>
                                     <?php } ?>
                                 </div>
-                            </div>
-                        </div>
+                                <?php }?>
+                            </li>
+                            
+                            <?php }?>
+                            <?php }?>
+                            <?php }?>
+                            <li class="all-categories"><a data-org-url="<?php echo UrlHelper::generateUrl('category', '', array(), '', null, false, $getOrgUrl); ?>" href="<?php echo UrlHelper::generateUrl('category');?>"
+                                        class=""><?php echo Labels::getLabel('LBL_View_All_Categories', $siteLangId);?></a></li>
+                        </ul>
                     </div>
-                    <?php } ?>
                 </li>
+                
+                
+                
+                
+                
+                
+                
+                    
+                    
                 <?php
-                        }
-                    }
-                }
-
                 foreach ($headerNavigation as $nav) {
                     $subMoreNavigation = ( count($nav['pages']) > $navLinkCount ) ? array_slice($nav['pages'], $navLinkCount) : array();
 
