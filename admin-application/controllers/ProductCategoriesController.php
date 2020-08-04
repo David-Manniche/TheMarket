@@ -318,6 +318,39 @@ class ProductCategoriesController extends AdminBaseController
         $this->set('msg', $this->str_update_record);
         $this->_template->render(false, false, 'json-success.php');
     }
+    
+    public function changeRequestStatus()
+    {
+        $this->objPrivilege->canEditProductCategories();
+        $prodCatId = FatApp::getPostedData('prodCatId', FatUtility::VAR_INT, 0);
+        
+        if ($prodCatId < 1) {
+            Message::addErrorMessage($this->str_invalid_request_id);
+            FatUtility::dieJsonError(Message::getHtml());
+        }
+        
+        $catData = ProductCategory::getAttributesById($prodCatId, array('prodcat_status'));
+        if (!$catData) {
+            Message::addErrorMessage($this->str_invalid_request_id);
+            FatUtility::dieJsonError(Message::getHtml());
+        }
+
+        $prodCat = new ProductCategory($prodCatId);
+        $prodCat->assignValues(
+            array(
+                ProductCategory::tblFld('status') => ProductCategory::REQUEST_APPROVED,
+                ProductCategory::tblFld('active') => applicationConstants::ACTIVE,
+                ProductCategory::tblFld('updated_on') => date('Y-m-d H:i:s')
+            )
+        );
+        if (!$prodCat->save()) {
+            Message::addErrorMessage($prodCat->getError());
+            FatUtility::dieJsonError(Message::getHtml());
+        }
+
+        $this->set('msg', $this->str_update_record);
+        $this->_template->render(false, false, 'json-success.php');
+    }
 
     public function deleteRecord()
     {

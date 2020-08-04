@@ -48,18 +48,14 @@ foreach ($arr_listing as $sn => $row) {
                     $td->appendElement('plaintext', array(), $row[$key], true);
                 }
                 break;
-            case 'prodcat_active':
-                    $active = "";
-                    if ($row['prodcat_active']) {
-                        $active = 'checked';
-                    }
-                    $statucAct = ($canEdit === true) ? 'toggleStatus(this)' : '';
-                    $str = '<div class="checkbox-switch"><input '.$active.' type="checkbox" id="switch'.$row['prodcat_id'].'" value="'.$row['prodcat_id'].'" onclick="'.$statucAct.'"/><label for="switch'.$row['prodcat_id'].'">Toggle</label></div>';
-                    $td->appendElement('plaintext', array(), $str, true);
-            break;
             case 'action':
                 if ($canEdit) {
-                    $td->appendElement('a', array('href'=>'javascript:void(0)', 'class'=>'btn btn-clean btn-sm btn-icon', 'title'=>Labels::getLabel('LBL_Edit', $adminLangId),"onclick"=>"categoryRequestForm(".$row['prodcat_id'].")"), "<i class='far fa-edit icon'></i>", true);
+                    $statucAct = ($canEdit === true) ? 'toggleStatus(this)' : '';
+                    $str='<label class="statustab -txt-uppercase" title="'.Labels::getLabel('LBL_Approve_Request', $adminLangId).'">
+                          <input type="checkbox" id="switch'.$row['prodcat_id'].'" value="'.$row['prodcat_id'].'" onclick="'.$statucAct.'" class="switch-labels"/>
+                          <i class="switch-handles"></i>
+                        </label>';
+                    $td->appendElement('plaintext', array(), $str, true);
                 }
             break;
             default:
