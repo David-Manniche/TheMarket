@@ -299,7 +299,7 @@ class StripeConnectPayController extends PaymentController
         $this->set('exculdeMainHeaderDiv', true);
         
         if (true === $confirmationRequired || FatUtility::isAjaxCall()) {
-            $json['html'] = $this->_template->render(false, false, 'stripe-connect-pay/charge.php', true, false);
+            $json['html'] = $this->_template->render(false, false, 'stripe-connect-pay/charge-ajax.php', true, false);
             FatUtility::dieJsonSuccess($json);
         }
 

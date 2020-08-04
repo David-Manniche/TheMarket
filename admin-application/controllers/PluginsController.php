@@ -27,7 +27,8 @@ class PluginsController extends AdminBaseController
         $srch->addCondition('plugin_type', '=', $type);
         $srch->doNotCalculateRecords();
         $srch->doNotLimitRecords();
-        $srch->addOrder(Plugin::DB_TBL_PREFIX . 'id', 'DESC');
+        $srch->addOrder(Plugin::DB_TBL_PREFIX . 'active', 'DESC');
+        $srch->addOrder(Plugin::DB_TBL_PREFIX . 'display_order', 'ASC');
         $rs = $srch->getResultSet();
         $records = FatApp::getDb()->fetchAll($rs);
 
@@ -416,14 +417,15 @@ class PluginsController extends AdminBaseController
         if (empty($pluginIdsArr) || -1 == $status || 1 > $pluginType) {
             FatUtility::dieJsonError(Labels::getLabel('MSG_INVALID_REQUEST', $this->adminLangId));
         }
-
+        $error = '';
         foreach ($pluginIdsArr as $pluginId) {
             if (1 > $pluginId) {
                 continue;
             }
-            Plugin::updateStatus($pluginType, $status, $pluginId);
+            Plugin::updateStatus($pluginType, $status, $pluginId, $error);
         }
-        $this->set('msg', $this->str_update_record);
+        $msg = !empty($error) ? $error : $this->str_update_record;
+        $this->set('msg', $msg);
         $this->_template->render(false, false, 'json-success.php');
     }
 

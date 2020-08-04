@@ -1,25 +1,8 @@
 <?php defined('SYSTEM_INIT') or die('Invalid Usage.'); ?>
-<div class="payment-page">
-    <div class="cc-payment">
-        <?php $this->includeTemplate('_partial/paymentPageLogo.php', array('siteLangId' => $siteLangId)); ?>
-        <div class="reff row">
-            <div class="col-lg-6 col-md-6 col-sm-12">
-                <p>
-                    <?php echo Labels::getLabel('LBL_PAYABLE_AMOUNT', $siteLangId); ?> : <strong><?php echo CommonHelper::displayMoneyFormat($paymentAmount) ?></strong>
-                </p>
-            </div>
-            <div class="col-lg-6 col-md-6 col-sm-12">
-                <p>
-                    <?php echo Labels::getLabel('LBL_Order_Invoice', $siteLangId); ?> : <strong><?php echo $orderInfo["invoice"]; ?></strong>
-                </p>
-            </div>
-        </div>
-        <div class="payment-from">
-            <p><?php echo Labels::getLabel('MSG_PAYMENT_OPTIONS', $siteLangId); ?></p>
-            <div id="paypal-buttons"></div>
-        </div>
-    </div>
-</div>
+
+<p><?php echo Labels::getLabel('MSG_PAYMENT_OPTIONS', $siteLangId); ?></p>
+<div id="paypal-buttons"></div>
+
 <?php if (!FatUtility::isAjaxCall()) { ?>
     <script type="text/javascript" src="<?php echo $externalLibUrl; ?>"></script>
 <?php } ?>
@@ -36,7 +19,7 @@
             },
             //=== Call your server to create an order
             createOrder: function(data, actions) {
-                $.mbsmessage(langLbl.requestProcessing,true,'alert--process');
+                $.mbsmessage(langLbl.requestProcessing, true, 'alert--process');
                 return fetch(fcom.makeUrl('PaypalPay', 'createOrder', ['<?php echo $orderInfo['id']; ?>']), {
                     method: "POST",
                 }).then(function(res) {
@@ -70,7 +53,9 @@
                                 $.mbsmessage(resp.msg, true, 'alert--danger');
                             } else {
                                 $.mbsmessage(resp.msg, true, 'alert--success');
-                                setTimeout(function() { window.location.href = resp.redirecUrl; }, 100);
+                                setTimeout(function() {
+                                    window.location.href = resp.redirecUrl;
+                                }, 100);
                             }
                         }
                     });

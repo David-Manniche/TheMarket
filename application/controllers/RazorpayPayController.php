@@ -52,7 +52,7 @@ class RazorpayPayController extends PaymentController
         $this->set('paymentSettings', $this->settings);
         $this->set('exculdeMainHeaderDiv', true);
         if (FatUtility::isAjaxCall()) {
-            $json['html'] = $this->_template->render(false, false, 'razorpay-pay/charge.php', true, false);
+            $json['html'] = $this->_template->render(false, false, 'razorpay-pay/charge-ajax.php', true, false);
             FatUtility::dieJsonSuccess($json);
         }
         $this->_template->render(true, false);
