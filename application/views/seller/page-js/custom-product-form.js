@@ -614,6 +614,7 @@
 			$(document).trigger('close.facebox');
 		});
 	};
+
 	addBrandReqForm = function(id) {
 		$.facebox(function() {
 			fcom.ajax(fcom.makeUrl('seller', 'addBrandReqForm', [id]), '', function(t) {
@@ -661,6 +662,7 @@
 			$(document).trigger('close.facebox');
 		});
 	};
+
 	checkUniqueBrandName = function(obj,$langId,$brandId){
 
 		data ="brandName="+$(obj).val() + "&langId= "+$langId+ "&brandId= "+$brandId;
@@ -696,6 +698,25 @@
 		});
 	}
 
+    /* Product Category  request [*/
+    addCategoryReqForm = function (id) {
+        $.facebox(function () {
+            fcom.ajax(fcom.makeUrl('seller', 'categoryReqForm', [id]), '', function (t) {
+                $.facebox(t, 'faceboxWidth medium-fb-width');
+            });
+        });
+    };
+
+    setupCategoryReq = function (frm) {
+        if (!$(frm).validate())
+            return;
+        var data = fcom.frmData(frm);
+        fcom.updateWithAjax(fcom.makeUrl('seller', 'setupCategoryReq'), data, function (t) {
+			$(document).trigger('close.facebox');
+        });
+    };
+
+    /* ] */
 
     displayProdInitialTab = function(){
         $(".tabs_panel").hide();
@@ -1075,18 +1096,18 @@
     goToCatalog = function(){
         window.location.href = fcom.makeUrl('seller', 'catalog');
     }
-    
+
     checkIfAvailableForInventory = function(product_id) {
-		fcom.ajax(fcom.makeUrl('Seller','checkIfNotAnyInventory', [product_id]), '', function(t){ 
+		fcom.ajax(fcom.makeUrl('Seller','checkIfNotAnyInventory', [product_id]), '', function(t){
 			$res = $.parseJSON(t);
 			if($res.status==0){
-				fcom.ajax(fcom.makeUrl('Seller','checkIfAvailableForInventory', [product_id]), '', function(t){ 
+				fcom.ajax(fcom.makeUrl('Seller','checkIfAvailableForInventory', [product_id]), '', function(t){
 					$res = $.parseJSON(t);
 					if($res.status==0){
 						$.mbsmessage($res.msg, true, 'alert--danger');
 						return false;
 					}
-                    fcom.ajax(fcom.makeUrl('Seller','sellerProductGeneralForm', [product_id]), '', function(res){ 
+                    fcom.ajax(fcom.makeUrl('Seller','sellerProductGeneralForm', [product_id]), '', function(res){
                         $(".tabs_panel").html('');
                         $(".tabs_panel").hide();
                         $(".tabs_nav-js  > li").removeClass('is-active');
@@ -1095,12 +1116,12 @@
                         $("#tabs_006").html(res);
                         $('.js-cancel-inventory').attr('onClick', 'goToCatalog()');
                     });
-				});				
+				});
 			}
-		});		
-		
-	}	
-    
+		});
+
+	}
+
     setUpSellerProduct = function(frm){
 		if (!$(frm).validate()) return;
         events.customizeProduct();
@@ -1171,11 +1192,11 @@ $(document).on('click', '.tabs_005', function(){
     }
 });
 
-$(document).on('click', '.tabs_006', function(){    
-    var productId = $("input[name='product_id']").val();    
+$(document).on('click', '.tabs_006', function(){
+    var productId = $("input[name='product_id']").val();
     if(productId > 0){
-        checkIfAvailableForInventory(productId); 
+        checkIfAvailableForInventory(productId);
     }else{
         displayProdInitialTab();
     }
-}); 
+});

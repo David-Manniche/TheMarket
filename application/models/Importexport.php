@@ -1114,7 +1114,7 @@ class Importexport extends ImportexportCommon
         $srch->doNotCalculateRecords();
         $srch->doNotLimitRecords();
         $srch->addMultipleFields(array('brand_id', 'brand_identifier', 'afile_record_id', 'afile_record_subid', 'afile_lang_id', 'afile_screen', 'afile_physical_path', 'afile_name', 'afile_display_order', 'afile_type'));
-        $srch->addCondition('brand_status', '=', applicationConstants::ACTIVE);
+        $srch->addCondition('brand_status', '=', Brand::BRAND_REQUEST_APPROVED);
         $rs = $srch->getResultSet();
 
         $sheetData = array();

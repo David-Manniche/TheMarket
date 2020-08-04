@@ -171,7 +171,7 @@ class ProductCategoriesController extends AdminBaseController
         }
 
         $prodCatId = FatUtility::int($post['prodcat_id']);
-        
+        $post['prodcat_status'] = ProductCategory::REQUEST_APPROVED;
         $productCategory = new ProductCategory($prodCatId);
         if (!$productCategory->saveCategoryData($post)) {
             Message::addErrorMessage($productCategory->getError());
@@ -319,6 +319,39 @@ class ProductCategoriesController extends AdminBaseController
         $this->_template->render(false, false, 'json-success.php');
     }
 
+    public function changeRequestStatus()
+    {
+        $this->objPrivilege->canEditProductCategories();
+        $prodCatId = FatApp::getPostedData('prodCatId', FatUtility::VAR_INT, 0);
+
+        if ($prodCatId < 1) {
+            Message::addErrorMessage($this->str_invalid_request_id);
+            FatUtility::dieJsonError(Message::getHtml());
+        }
+
+        $catData = ProductCategory::getAttributesById($prodCatId, array('prodcat_status'));
+        if (!$catData) {
+            Message::addErrorMessage($this->str_invalid_request_id);
+            FatUtility::dieJsonError(Message::getHtml());
+        }
+
+        $prodCat = new ProductCategory($prodCatId);
+        $prodCat->assignValues(
+            array(
+                ProductCategory::tblFld('status') => ProductCategory::REQUEST_APPROVED,
+                ProductCategory::tblFld('active') => applicationConstants::ACTIVE,
+                ProductCategory::tblFld('updated_on') => date('Y-m-d H:i:s')
+            )
+        );
+        if (!$prodCat->save()) {
+            Message::addErrorMessage($prodCat->getError());
+            FatUtility::dieJsonError(Message::getHtml());
+        }
+
+        $this->set('msg', $this->str_update_record);
+        $this->_template->render(false, false, 'json-success.php');
+    }
+
     public function deleteRecord()
     {
         $this->objPrivilege->canEditProductCategories();
@@ -333,7 +366,7 @@ class ProductCategoriesController extends AdminBaseController
             Message::addErrorMessage($this->str_invalid_request_id);
             FatUtility::dieJsonError(Message::getHtml());
         }
-        
+
         /* Sub-Categories have products[ */
         if (true === $prodCateObj->haveProducts()) {
             FatUtility::dieJsonError(Labels::getLabel('LBL_Products_are_associated_with_its_category/sub-categories_so_we_are_not_able_to_delete_this_category', $this->adminLangId));
@@ -391,5 +424,123 @@ class ProductCategoriesController extends AdminBaseController
             );
         }
         die(json_encode($json));
+    }
+
+    public function requests()
+    {
+        $this->objPrivilege->canViewProductCategories();
+        $search = $this->getSearchForm(true);
+        $data = FatApp::getPostedData();
+        if ($data) {
+            $data['prodcat_id'] = $data['id'];
+            unset($data['id']);
+            $search->fill($data);
+        }
+        $this->_template->addCss('css/cropper.css');
+        $this->_template->addJs('js/cropper.js');
+        $this->_template->addJs('js/cropper-main.js');
+        $this->set("search", $search);
+        $this->_template->render();
+    }
+
+    private function getSearchForm($request = false)
+    {
+        $frm = new Form('frmSearch', array('id' => 'frmSearch'));
+        $f1 = $frm->addTextBox(Labels::getLabel('LBL_Keyword', $this->adminLangId), 'keyword', '', array('class' => 'search-input'));
+        if ($request) {
+            $frm->addTextBox(Labels::getLabel('LBL_Seller_Name_Or_Email', $this->adminLangId), 'user_name', '', array('id' => 'keyword', 'autocomplete' => 'off'));
+            $frm->addHiddenField('', 'user_id');
+        }
+        $fld_submit = $frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_Search', $this->adminLangId));
+        $fld_cancel = $frm->addButton("", "btn_clear", Labels::getLabel('LBL_Clear_Search', $this->adminLangId), array('onclick' => 'clearSearch();'));
+        $frm->addHiddenField('', 'prodcat_id');
+        $fld_submit->attachField($fld_cancel);
+        return $frm;
+    }
+
+    public function searchRequests()
+    {
+        $canEdit = $this->objPrivilege->canEditProductCategories(0, true);
+
+        $pagesize = FatApp::getConfig('CONF_ADMIN_PAGESIZE', FatUtility::VAR_INT, 10);
+        $searchForm = $this->getSearchForm(true);
+        $data = FatApp::getPostedData();
+        $page = (empty($data['page']) || $data['page'] <= 0) ? 1 : $data['page'];
+        $post = $searchForm->getFormDataFromArray($data);
+
+        $srch = ProductCategory::getSearchObject(false, $this->adminLangId, false, ProductCategory::REQUEST_PENDING);
+        $srch->joinTable(User::DB_TBL, 'LEFT OUTER JOIN', 'u.user_id = prodcat_seller_id', 'u');
+        $srch->joinTable(Shop::DB_TBL, 'LEFT OUTER JOIN', 'shop_user_id = if(u.user_parent > 0, user_parent, u.user_id)', 'shop');
+        $srch->joinTable(Shop::DB_TBL_LANG, 'LEFT OUTER JOIN', 'shop.shop_id = s_l.shoplang_shop_id AND shoplang_lang_id = ' . $this->adminLangId, 's_l');
+        $srch->addMultipleFields(array('m.*','prodcat_name', 'u.user_name', 'ifnull(shop_name, shop_identifier) as shop_name'));
+        $srch->addCondition('prodcat_seller_id', '>', 0);
+        $srch->addOrder('prodcat_id', 'desc');
+        if (!empty($post['keyword'])) {
+            $condition = $srch->addCondition('prodcat_identifier', 'like', '%' . $post['keyword'] . '%');
+            $condition->attachCondition('prodcat_name', 'like', '%' . $post['keyword'] . '%', 'OR');
+        }
+        if (!empty($post['prodcat_id'])) {
+            $srch->addCondition('prodcat_id', '=', $post['prodcat_id']);
+        }
+        $user_id = FatApp::getPostedData('user_id', FatUtility::VAR_INT, 0);
+        if ($user_id > 0) {
+            $srch->addCondition('prodcat_seller_id', '=', $user_id);
+        }
+        $page = (empty($page) || $page <= 0) ? 1 : $page;
+        $page = FatUtility::int($page);
+        $srch->setPageNumber($page);
+        $srch->setPageSize($pagesize);
+        $rs = $srch->getResultSet();
+        $records = FatApp::getDb()->fetchAll($rs);
+
+        $this->set("arr_listing", $records);
+        $this->set("canEdit", $canEdit);
+        $this->set('pageCount', $srch->pages());
+        $this->set('recordCount', $srch->recordCount());
+        $this->set('page', $page);
+        $this->set('pageSize', $pagesize);
+        $this->set('postedData', $post);
+        $this->_template->render(false, false);
+    }
+
+    public function toggleBulkStatuses()
+    {
+        $this->objPrivilege->canEditBrands();
+
+        $status = FatApp::getPostedData('status', FatUtility::VAR_INT, -1);
+        $brandIdsArr = FatUtility::int(FatApp::getPostedData('brandIds'));
+        if (empty($brandIdsArr) || -1 == $status) {
+            FatUtility::dieWithError(
+                Labels::getLabel('MSG_INVALID_REQUEST', $this->adminLangId)
+            );
+        }
+
+        foreach ($brandIdsArr as $brandId) {
+            if (1 > $brandId) {
+                continue;
+            }
+
+            $this->updateBrandStatus($brandId, $status);
+        }
+        Product::updateMinPrices();
+        $this->set('msg', $this->str_update_record);
+        $this->_template->render(false, false, 'json-success.php');
+    }
+
+    private function updateCategoryStatus($brandId, $status)
+    {
+        $status = FatUtility::int($status);
+        $brandId = FatUtility::int($brandId);
+        if (1 > $brandId || -1 == $status) {
+            FatUtility::dieWithError(
+                Labels::getLabel('MSG_INVALID_REQUEST', $this->adminLangId)
+            );
+        }
+
+        $brandObj = new Brand($brandId);
+        if (!$brandObj->changeStatus($status)) {
+            Message::addErrorMessage($brandObj->getError());
+            FatUtility::dieWithError(Message::getHtml());
+        }
     }
 }

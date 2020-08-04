@@ -656,6 +656,26 @@ class EmailHandler extends FatModel
         $this->sendSms($tpl, $userInfo['user_phone'], $vars, $langId);
         return true;
     }
+    
+    public function sendCategoryRequestAdminNotification($langId, $data)
+    {
+        $tpl = 'seller_category_request_admin_email';
+
+
+        $userObj = new User($data['prodcat_seller_id']);
+        $userInfo = $userObj->getUserInfo(array('user_name', 'user_dial_code', 'user_phone', 'credential_email'));
+
+        $vars = array(
+        '{user_full_name}' => $userInfo['user_name'],
+        '{prodcat_name}' => $data['prodcat_identifier'],
+        );
+        if (!$this->sendMailToAdminAndAdditionalEmails($tpl, $vars, static::NO_ADDITIONAL_ALERT, static::NOT_ONLY_SUPER_ADMIN, $langId)) {
+            return false;
+        }
+        $phone = !empty($userInfo['user_phone']) ? $userInfo['user_dial_code'] . $userInfo['user_phone'] : '';
+        $this->sendSms($tpl, $userInfo['user_phone'], $vars, $langId);
+        return true;
+    }
 
     public function sendContactRequestEmailToAdmin($langId, &$d)
     {

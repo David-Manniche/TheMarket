@@ -78,13 +78,16 @@ $btnDiscardFld->setFieldTagAttribute('class', "btn btn-outline-primary");
             </div>
             <div class="col-md-6">
                 <div class="field-set">
-                    <div class="caption-wraper">
+                    <div class="caption-wraper d-flex justify-content-between">
                         <label class="field_label">
-                            <?php $fld = $productFrm->getField('category_name');
-                              echo $fld->getCaption();
+                            <?php
+                            $fld = $productFrm->getField('category_name');
+                            echo $fld->getCaption();
                             ?>
+                            <span class="spn_must_field">*</span>
                         </label>
-                        <span class="spn_must_field">*</span>
+                        <small><a class="form-text text-muted" href="javascript:void(0)"
+                                onClick="addCategoryReqForm(0);"><?php echo Labels::getLabel('LBL_Request_For_Category', $siteLangId) ; ?></a></small>
                     </div>
                     <div class="field-wraper">
                         <div class="field_cover">
