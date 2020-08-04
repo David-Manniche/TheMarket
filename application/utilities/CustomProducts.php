@@ -1247,7 +1247,6 @@ trait CustomProducts
 
         $frm->addHiddenField('', 'prodcat_id', $prodCatId);
         $frm->addSubmitButton('', 'btn_submit', Labels::getLabel("LBL_Save_Changes", $this->siteLangId));
-        $frm->addSubmitButton('', 'btn_cancel', Labels::getLabel("LBL_Cancel", $this->siteLangId));
         return $frm;
     }
 
@@ -1284,11 +1283,11 @@ trait CustomProducts
 
         $categoryReqId = $productCategory->getMainTableRecordId();
 
-        /*$notificationData = array(
-        'notification_record_type' => Notification::TYPE_CATEGORY,
+        $notificationData = array(
+        'notification_record_type' => Notification::TYPE_PRODUCT_CATEGORY,
         'notification_record_id' => $categoryReqId,
         'notification_user_id' => UserAuthentication::getLoggedUserId(true),
-        'notification_label_key' => Notification::CATEGORY_REQUEST_NOTIFICATION,
+        'notification_label_key' => Notification::PRODUCT_CATEGORY_REQUEST_NOTIFICATION,
         'notification_added_on' => date('Y-m-d H:i:s'),
         );
 
@@ -1297,13 +1296,12 @@ trait CustomProducts
             FatUtility::dieJsonError(Message::getHtml());
         }
 
-        if ($categoryReqId == 0) {
-            $categoryReqId = $record->getMainTableRecordId();
-            $categoryData = ProductCategory::getAttributesById($categoryReqId);
-            $email = new EmailHandler();
-            if (!$email->sendProdRequestAdminNotification($this->siteLangId, $categoryData)) {
-            }
-        }*/
+        $categoryData = ProductCategory::getAttributesById($categoryReqId);
+        $email = new EmailHandler();
+        if (!$email->sendCategoryRequestAdminNotification($this->siteLangId, $categoryData)) {
+            Message::addErrorMessage(Labels::getLabel("MSG_NOTIFICATION_COULD_NOT_BE_SENT", $this->siteLangId));
+            FatUtility::dieJsonError(Message::getHtml());
+        }
 
         $this->set('msg', Labels::getLabel("MSG_Category_Setup_Successful", $this->siteLangId));
         $this->set('categoryReqId', $categoryReqId);

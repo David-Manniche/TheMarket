@@ -318,17 +318,17 @@ class ProductCategoriesController extends AdminBaseController
         $this->set('msg', $this->str_update_record);
         $this->_template->render(false, false, 'json-success.php');
     }
-    
+
     public function changeRequestStatus()
     {
         $this->objPrivilege->canEditProductCategories();
         $prodCatId = FatApp::getPostedData('prodCatId', FatUtility::VAR_INT, 0);
-        
+
         if ($prodCatId < 1) {
             Message::addErrorMessage($this->str_invalid_request_id);
             FatUtility::dieJsonError(Message::getHtml());
         }
-        
+
         $catData = ProductCategory::getAttributesById($prodCatId, array('prodcat_status'));
         if (!$catData) {
             Message::addErrorMessage($this->str_invalid_request_id);
@@ -366,7 +366,7 @@ class ProductCategoriesController extends AdminBaseController
             Message::addErrorMessage($this->str_invalid_request_id);
             FatUtility::dieJsonError(Message::getHtml());
         }
-        
+
         /* Sub-Categories have products[ */
         if (true === $prodCateObj->haveProducts()) {
             FatUtility::dieJsonError(Labels::getLabel('LBL_Products_are_associated_with_its_category/sub-categories_so_we_are_not_able_to_delete_this_category', $this->adminLangId));
@@ -425,7 +425,7 @@ class ProductCategoriesController extends AdminBaseController
         }
         die(json_encode($json));
     }
-    
+
     public function requests()
     {
         $this->objPrivilege->canViewProductCategories();
@@ -442,7 +442,7 @@ class ProductCategoriesController extends AdminBaseController
         $this->set("search", $search);
         $this->_template->render();
     }
-    
+
     private function getSearchForm($request = false)
     {
         $frm = new Form('frmSearch', array('id' => 'frmSearch'));
@@ -457,7 +457,7 @@ class ProductCategoriesController extends AdminBaseController
         $fld_submit->attachField($fld_cancel);
         return $frm;
     }
-    
+
     public function searchRequests()
     {
         $canEdit = $this->objPrivilege->canEditProductCategories(0, true);
@@ -467,7 +467,7 @@ class ProductCategoriesController extends AdminBaseController
         $data = FatApp::getPostedData();
         $page = (empty($data['page']) || $data['page'] <= 0) ? 1 : $data['page'];
         $post = $searchForm->getFormDataFromArray($data);
-        
+
         $srch = ProductCategory::getSearchObject(false, $this->adminLangId, false, ProductCategory::REQUEST_PENDING);
         $srch->joinTable(User::DB_TBL, 'LEFT OUTER JOIN', 'u.user_id = prodcat_seller_id', 'u');
         $srch->joinTable(Shop::DB_TBL, 'LEFT OUTER JOIN', 'shop_user_id = if(u.user_parent > 0, user_parent, u.user_id)', 'shop');
@@ -492,7 +492,7 @@ class ProductCategoriesController extends AdminBaseController
         $srch->setPageSize($pagesize);
         $rs = $srch->getResultSet();
         $records = FatApp::getDb()->fetchAll($rs);
-        
+
         $this->set("arr_listing", $records);
         $this->set("canEdit", $canEdit);
         $this->set('pageCount', $srch->pages());

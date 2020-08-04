@@ -47,7 +47,7 @@
                     <?php
                     if ($objPrivilege->canViewProductCategories(AdminAuthentication::getLoggedAdminId(), true)) {?>
                     <li><a href="<?php echo UrlHelper::generateUrl('ProductCategories');?>"><?php echo Labels::getLabel('LBL_Categories', $adminLangId);?></a></li>
-                    <li><a href="<?php echo UrlHelper::generateUrl('ProductCategories', 'requests');?>"><?php echo Labels::getLabel('LBL_Categories_Requests', $adminLangId);?></a></li>
+                    <li><a href="<?php echo UrlHelper::generateUrl('ProductCategories', 'requests');?>"><?php echo Labels::getLabel('LBL_Categories_Requests', $adminLangId);?><?php if ($categoryReqCount) { ?><span class='badge'>(<?php echo $categoryReqCount; ?>)</span><?php } ?></a></li>
                     <?php } ?>
                     <?php
                     if ($objPrivilege->canViewProducts(AdminAuthentication::getLoggedAdminId(), true)) {?>

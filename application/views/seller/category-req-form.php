@@ -3,6 +3,7 @@ $frm->setFormTagAttribute('class', 'form form--horizontal');
 $frm->setFormTagAttribute('onsubmit', 'setupCategoryReq(this); return(false);');
 $submitFld = $frm->getField('btn_submit');
 $submitFld->setFieldTagAttribute('class', 'btn btn-primary');
+$submitFld->developerTags['noCaptionTag'] = true;
 ?>
 <div class="box__head">
 <h4><?php echo Labels::getLabel('LBL_Request_New_Category', $langId); ?></h4>
@@ -88,22 +89,11 @@ $submitFld->setFieldTagAttribute('class', 'btn btn-primary');
                     </div>
                 </div>
                 <div class="row">
-                    <div class="col-6 text-right">
+                    <div class="col-6">
                         <div class="field-set">
-                            <div class="caption-wraper"><label class="field_label"></label></div>
                             <div class="field-wraper">
                                 <div class="field_cover">
                                     <?php echo $frm->getFieldHtml('btn_submit'); ?>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-6">
-                        <div class="field-set">
-                            <div class="caption-wraper"><label class="field_label"></label></div>
-                            <div class="field-wraper">
-                                <div class="field_cover">
-                                    <?php echo $frm->getFieldHtml('btn_cancel'); ?>
                                 </div>
                             </div>
                         </div>

@@ -21,6 +21,7 @@ class Notification extends MyAppModel
     public const TYPE_ADMIN = 15;
     public const TYPE_ORDER_RETURN_REQUEST_MESSAGE = 16;
     public const TYPE_BLOG = 17;
+    public const TYPE_PRODUCT_CATEGORY = 18;
 
     public const NEW_USER_REGISTERATION_NOTIFICATION = 1;
     public const NEW_SUPPLIER_REGISTERATION_NOTIFICATION = 2;
@@ -46,6 +47,7 @@ class Notification extends MyAppModel
     public const PRODUCT_REVIEW_NOTIFICATION = 28;
     public const BLOG_COMMENT_NOTIFICATION = 29;
     public const BLOG_CONTRIBUTION_NOTIFICATION = 30;
+    public const PRODUCT_CATEGORY_REQUEST_NOTIFICATION = 31;
 
     public const GUEST_AFFILIATE_REGISTERATION = 3;
     public const GUEST_ADVISER_REGISTERATION = 4;
@@ -106,6 +108,7 @@ class Notification extends MyAppModel
         Notification::NEW_CUSTOM_CATALOG_REQUEST_NOTIFICATION => array(Labels::getLabel('LBL_admin_custom_catalog_request_notification', $langId), 'custom-products'),
         Notification::BLOG_COMMENT_NOTIFICATION => array(Labels::getLabel('LBL_user_blog_comment_notification', $langId), 'blog-comments'),
         Notification::BLOG_CONTRIBUTION_NOTIFICATION => array(Labels::getLabel('LBL_user_blog_contibution_notification', $langId), 'blog-contributions'),
+        Notification::PRODUCT_CATEGORY_REQUEST_NOTIFICATION => array(Labels::getLabel('LBL_Product_category_request_notification', $langId), 'product-categories/requests'),
         );
 
         return $labelArr;
@@ -163,6 +166,7 @@ class Notification extends MyAppModel
         static::TYPE_PROMOTION => AdminPrivilege::SECTION_PROMOTIONS,
         static::TYPE_ORDER_RETURN_REQUEST_MESSAGE => AdminPrivilege::SECTION_ORDER_RETURN_REQUESTS,
         static::TYPE_BLOG => AdminPrivilege::SECTION_BLOG_POSTS,
+        static::TYPE_PRODUCT_CATEGORY => AdminPrivilege::SECTION_PRODUCT_CATEGORIES,
         static::TYPE_ADMIN => AdminPrivilege::SECTION_ADMIN_USERS,
         );
     }
