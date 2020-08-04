@@ -27,6 +27,7 @@ class PluginsController extends AdminBaseController
         $srch->addCondition('plugin_type', '=', $type);
         $srch->doNotCalculateRecords();
         $srch->doNotLimitRecords();
+        $srch->addOrder(Plugin::DB_TBL_PREFIX . 'id', 'DESC');
         $rs = $srch->getResultSet();
         $records = FatApp::getDb()->fetchAll($rs);
 

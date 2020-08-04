@@ -386,7 +386,6 @@ class Shop extends MyAppModel
         if (1 > $this->mainTableRecordId) {
             return 0;
         }
-
         if (null != $this->active) {
             return $this->active;
         }

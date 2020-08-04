@@ -260,7 +260,7 @@ class StripeConnect extends PaymentMethodBase
             ]
         ];
 
-        if (true === $this->getBaseCurrencyCode()) {
+        if (true === $this->loadBaseCurrencyCode()) {
             $data['default_currency'] = $this->systemCurrencyCode;
         }
 
@@ -511,7 +511,7 @@ class StripeConnect extends PaymentMethodBase
     public function updateRequiredFields(array $requestParam): bool
     {        
         if (array_key_exists('external_account', $requestParam)) {
-            $this->getBaseCurrencyCode();
+            $this->loadBaseCurrencyCode();
             $requestParam['external_account']['object'] = 'bank_account';
             $requestParam['external_account']['country'] = strtoupper($this->userData['country_code']);
             $requestParam['external_account']['currency'] = $this->systemCurrencyCode;
@@ -529,7 +529,7 @@ class StripeConnect extends PaymentMethodBase
     {
         $businessType = $this->getUserMeta('stripe_business_type');
 
-        $this->getBaseCurrencyCode();
+        $this->loadBaseCurrencyCode();
         $requestParam = [
                 'external_account' => [
                     'object' => 'bank_account',

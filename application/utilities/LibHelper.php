@@ -14,22 +14,22 @@ class LibHelper extends FatUtility
     {
         FatUtility::dieWithError($message);
     }
-    
+
     public static function exitWithError($message, $json = false, $redirect = false)
     {
         if (true === MOBILE_APP_API_CALL) {
             $message = strip_tags($message);
             FatUtility::dieJsonError($message);
         }
-       
+
         if (true === $json) {
             FatUtility::dieJsonError($message);
         }
-        
+
         if (FatUtility::isAjaxCall() || $redirect === false) {
             FatUtility::dieWithError($message);
         }
-        
+
         if (true === $redirect) {
             Message::addErrorMessage($message);
         }
@@ -48,26 +48,26 @@ class LibHelper extends FatUtility
     }
 
     /**
-    * This function returns the maximum files size that can be uploaded
-    * in PHP
-    * @returns int File size in bytes
-    **/
+     * This function returns the maximum files size that can be uploaded
+     * in PHP
+     * @returns int File size in bytes
+     **/
     public static function getMaximumFileUploadSize()
     {
         return min(static::convertPHPSizeToBytes(ini_get('post_max_size')), static::convertPHPSizeToBytes(ini_get('upload_max_filesize')));
     }
 
     /**
-    * This function transforms the php.ini notation for numbers (like '2M') to an integer (2*1024*1024 in this case)
-    *
-    * @param string $sSize
-    * @return integer The value in bytes
-    */
+     * This function transforms the php.ini notation for numbers (like '2M') to an integer (2*1024*1024 in this case)
+     *
+     * @param string $sSize
+     * @return integer The value in bytes
+     */
     public static function convertPHPSizeToBytes($sSize)
     {
         $sSuffix = strtoupper(substr($sSize, -1));
-        if (!in_array($sSuffix, array('P','T','G','M','K'))) {
-            return (int)$sSize;
+        if (!in_array($sSuffix, array('P', 'T', 'G', 'M', 'K'))) {
+            return (int) $sSize;
         }
         $iValue = substr($sSize, 0, -1);
         switch ($sSuffix) {
@@ -91,7 +91,7 @@ class LibHelper extends FatUtility
                 $iValue *= 1024;
                 break;
         }
-        return (int)$iValue;
+        return (int) $iValue;
     }
 
     public static function bytesToSize($bytes)
@@ -111,5 +111,11 @@ class LibHelper extends FatUtility
         }
 
         return $bytes;
+    }
+
+    public static function isJson($string): bool
+    {
+        json_decode($string);
+        return (json_last_error() == JSON_ERROR_NONE);
     }
 }

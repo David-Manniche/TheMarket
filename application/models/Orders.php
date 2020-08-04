@@ -2381,7 +2381,7 @@ class Orders extends MyAppModel
     {
         $completedOrderStatus = FatApp::getConfig("CONF_DEFAULT_COMPLETED_ORDER_STATUS", FatUtility::VAR_INT, 0);
         $deliveredOrderStatus = FatApp::getConfig("CONF_DEFAULT_DEIVERED_ORDER_STATUS", FatUtility::VAR_INT, 0);
-        if (empty($completedOrderStatus) || empty($deliveredOrderStatus)) {
+        if (1 > $completedOrderStatus || 1 > $deliveredOrderStatus) {
             return false;
         }
         $defaultReturnAge = FatApp::getConfig("CONF_DEFAULT_RETURN_AGE", FatUtility::VAR_INT, 7);

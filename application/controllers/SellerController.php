@@ -1605,7 +1605,7 @@ class SellerController extends SellerBaseController
 
         $shop_id = 0;
         $stateId = 0;
-
+        $countryId = (isset($shopDetails['shop_country_id'])) ? $shopDetails['shop_country_id'] : FatApp::getConfig('CONF_COUNTRY', FatUtility::VAR_INT, 223);
         if (!false == $shopDetails) {
             $shop_id = $shopDetails['shop_id'];
             $stateId = $shopDetails['shop_state_id'];
@@ -1619,7 +1619,7 @@ class SellerController extends SellerBaseController
         $shopFrm = $this->getShopInfoForm($shop_id);
 		
 		$stateObj = new States();
-        $statesArr = $stateObj->getStatesByCountryId($shopDetails['shop_country_id'], $this->siteLangId);
+        $statesArr = $stateObj->getStatesByCountryId($countryId, $this->siteLangId);
 		
 		$shopFrm->getField('shop_state')->options = $statesArr;
         /* url data[ */
@@ -1979,12 +1979,17 @@ class SellerController extends SellerBaseController
     {
         $this->userPrivilege->canEditShop(UserAuthentication::getLoggedUserId());
         $userId = $this->userParentId;
-
-        if (!$this->isShopActive($userId)) {
-            Message::addErrorMessage(Labels::getLabel('MSG_Your_shop_deactivated_contact_admin', $this->siteLangId));
-            FatUtility::dieJsonError(Message::getHtml());
-        }
         $post = FatApp::getPostedData();
+        $shop_id = FatUtility::int($post['shop_id']);
+        unset($post['shop_id']);
+        
+        if ($shop_id > 0) {
+            if (!$this->isShopActive($userId, $shop_id)) {
+                Message::addErrorMessage(Labels::getLabel('MSG_Your_shop_deactivated_contact_admin', $this->siteLangId));
+                FatUtility::dieJsonError(Message::getHtml());
+            }
+        }
+        
         $state_id = FatUtility::int($post['shop_state']);
 
         $frm = $this->getShopInfoForm();
@@ -1994,9 +1999,6 @@ class SellerController extends SellerBaseController
             Message::addErrorMessage(current($frm->getValidationErrors()));
             FatUtility::dieJsonError(Message::getHtml());
         }
-
-        $shop_id = FatUtility::int($post['shop_id']);
-        unset($post['shop_id']);
 
         $post['shop_user_id'] = $userId;
         $post['shop_state_id'] = $state_id;
@@ -2089,11 +2091,6 @@ class SellerController extends SellerBaseController
         $this->userPrivilege->canEditShop(UserAuthentication::getLoggedUserId());
         $userId = $this->userParentId;
 
-        if (!$this->isShopActive($userId)) {
-            Message::addErrorMessage(Labels::getLabel('MSG_Your_shop_deactivated_contact_admin', $this->siteLangId));
-            FatUtility::dieJsonError(Message::getHtml());
-        }
-
         $frm = $this->getShopLangInfoForm();
         $post = $frm->getFormDataFromArray(FatApp::getPostedData());
 
@@ -2102,11 +2099,9 @@ class SellerController extends SellerBaseController
             FatUtility::dieJsonError(Message::getHtml());
         }
 
-        $shopDetails = Shop::getAttributesByUserId($userId, null, false);
-
-        if (!false == $shopDetails && $shopDetails['shop_active'] != applicationConstants::ACTIVE) {
+        if (!$shopDetails = $this->isShopActive($userId, 0, true)) {
             Message::addErrorMessage(Labels::getLabel('MSG_Your_shop_deactivated_contact_admin', $this->siteLangId));
-            FatUtility::dieWithError(Message::getHtml());
+            FatUtility::dieJsonError(Message::getHtml());
         }
         $shop_id = FatUtility::int($shopDetails['shop_id']);
         $lang_id = FatApp::getPostedData('lang_id', FatUtility::VAR_INT, 0);
@@ -3338,8 +3333,8 @@ class SellerController extends SellerBaseController
         $frm->addSelectBox(Labels::getLabel('Lbl_State', $this->siteLangId), 'shop_state', array(), '', array(), Labels::getLabel('Lbl_Select', $this->siteLangId))->requirement->setRequired(true);
 		
 		$zipFld = $frm->addTextBox(Labels::getLabel('Lbl_Postalcode', $this->siteLangId), 'shop_postalcode');
-        $zipFld->requirements()->setRegularExpressionToValidate(ValidateElement::ZIP_REGEX);
-        $zipFld->requirements()->setCustomErrorMessage(Labels::getLabel('LBL_Only_alphanumeric_value_is_allowed.', $this->siteLangId));
+        /* $zipFld->requirements()->setRegularExpressionToValidate(ValidateElement::ZIP_REGEX);
+        $zipFld->requirements()->setCustomErrorMessage(Labels::getLabel('LBL_Only_alphanumeric_value_is_allowed.', $this->siteLangId)); */
 		
         $onOffArr = applicationConstants::getOnOffArr($this->siteLangId);
 
@@ -4461,8 +4456,8 @@ class SellerController extends SellerBaseController
         $frm->addSelectBox(Labels::getLabel('LBL_State', $this->siteLangId), 'ura_state_id', array(), '', array(), Labels::getLabel('LBL_Select', $this->siteLangId))->requirement->setRequired(true);
         /* $frm->addTextBox(Labels::getLabel('LBL_City',$this->siteLangId), 'ura_city');     */
         $zipFld = $frm->addTextBox(Labels::getLabel('LBL_Postalcode', $this->siteLangId), 'ura_zip');
-        $zipFld->requirements()->setRegularExpressionToValidate(ValidateElement::ZIP_REGEX);
-        $zipFld->requirements()->setCustomErrorMessage(Labels::getLabel('LBL_Only_alphanumeric_value_is_allowed.', $this->siteLangId));
+        /* $zipFld->requirements()->setRegularExpressionToValidate(ValidateElement::ZIP_REGEX);
+        $zipFld->requirements()->setCustomErrorMessage(Labels::getLabel('LBL_Only_alphanumeric_value_is_allowed.', $this->siteLangId)); */
 
         $phnFld = $frm->addTextBox(Labels::getLabel('LBL_Phone', $this->siteLangId), 'ura_phone', '', array('class' => 'phone-js ltr-right', 'placeholder' => ValidateElement::PHONE_NO_FORMAT, 'maxlength' => ValidateElement::PHONE_NO_LENGTH));
         $phnFld->requirements()->setRegularExpressionToValidate(ValidateElement::PHONE_REGEX);

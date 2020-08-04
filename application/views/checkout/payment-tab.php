@@ -22,7 +22,7 @@ $submitFld->setFieldTagAttribute('class', "btn btn-primary");
 <script type="text/javascript">
     $("document").ready(function() {
         <?php if (isset($error)) { ?>
-            $.mbsmessage(<?php echo $error; ?>,true,'alert--danger');
+            $.mbsmessage(<?php echo $error; ?>, true, 'alert--danger');
         <?php } ?>
     });
     var containerId = '#tabs-container';
@@ -48,7 +48,7 @@ $submitFld->setFieldTagAttribute('class', "btn btn-primary");
                             loadScript(src, loadChargeForm, [action]);
                         });
                     } else {
-                        loadChargeForm(action);        
+                        loadChargeForm(action);
                     }
                 });
             } else {
@@ -57,8 +57,7 @@ $submitFld->setFieldTagAttribute('class', "btn btn-primary");
         });
     }
 
-    function loadChargeForm(action)
-    {
+    function loadChargeForm(action) {
         $.mbsmessage.close();
         fcom.ajax(action, '', function(t) {
             try {

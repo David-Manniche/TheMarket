@@ -30,7 +30,7 @@
                     } ?>
                     </ul>
                     <div id="pluginsListing" class="tabs_panel_wrap">
-                        <div class="tabs_panel"><?php echo Labels::getLabel('LBL_Processing...', $adminLangId); ?></div>
+                        <?php echo Labels::getLabel('LBL_Processing...', $adminLangId); ?>
                     </div>
                 </div>
             </div>
