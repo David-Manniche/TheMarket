@@ -48,7 +48,9 @@ class ProductCategory extends MyAppModel
             );
         }
 
-        $srch->addCondition('m.prodcat_status', '=', $prodcatStatus);
+        if (-1 != $prodcatStatus) {
+            $srch->addCondition('m.prodcat_status', '=', $prodcatStatus);
+        }
 
         if ($prodcatActive) {
             $srch->addCondition('m.prodcat_active', '=', applicationConstants::ACTIVE);
@@ -111,7 +113,7 @@ class ProductCategory extends MyAppModel
         }
 
         foreach ($categoryArray as $categoryId) {
-            $srch = ProductCategory::getSearchObject(false, 0, false);
+            $srch = ProductCategory::getSearchObject(false, 0, false, -1);
             $srch->doNotCalculateRecords();
             $srch->doNotLimitRecords();
             $srch->addMultipleFields(array('prodcat_id', 'GETCATCODE(`prodcat_id`) as prodcat_code', 'GETCATORDERCODE(`prodcat_id`) as prodcat_ordercode'));
