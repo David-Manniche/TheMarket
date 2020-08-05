@@ -525,7 +525,7 @@ function getSlickSliderSettings(slidesToShow, slidesToScroll, layoutDirection, a
     slidesToScroll = (typeof slidesToScroll != "undefined") ? parseInt(slidesToScroll) : 1;
     layoutDirection = (typeof layoutDirection != "undefined") ? layoutDirection : 'ltr';
     autoInfinitePlay = (typeof autoInfinitePlay != "undefined") ? autoInfinitePlay : true;
-	adaptiveHeight = (typeof adaptiveHeight != "undefined") ? adaptiveHeight : true;
+    adaptiveHeight = (typeof adaptiveHeight != "undefined") ? adaptiveHeight : true;
     if (typeof slidesToShowForDiffResolution != "undefined") {
         slidesToShowForDiffResolution = $.extend(screenResolutionForSlider, slidesToShowForDiffResolution);
     } else {
@@ -538,7 +538,7 @@ function getSlickSliderSettings(slidesToShow, slidesToScroll, layoutDirection, a
         slidesToScroll: slidesToScroll,
         infinite: autoInfinitePlay,
         autoplay: autoInfinitePlay,
-		adaptiveHeight: adaptiveHeight,
+        adaptiveHeight: adaptiveHeight,
         arrows: true,
         responsive: [{
                 breakpoint: 1199,
@@ -1091,8 +1091,8 @@ $(document).ready(function() {
             return false;
         }
         var key = $(this).parent().parent('div').find('input').attr('data-key');
-        var page = $(this).parent().parent('div').find('input').attr('data-page');        
-        val = parseInt(rval) + 1; 
+        var page = $(this).parent().parent('div').find('input').attr('data-page');
+        val = parseInt(rval) + 1;
         if (val > $(this).parent().data('stock')) {
             val = $(this).parent().data('stock');
             $(this).addClass('not-allowed');
@@ -1101,9 +1101,9 @@ $(document).ready(function() {
             return false;
         }
         $(this).parent().parent('div').find('input').val(val);
-        if (page == 'product-view') { 
+        if (page == 'product-view') {
             return false;
-        }       
+        }
         cart.update(key, page);
     });
 
@@ -1648,4 +1648,9 @@ $('.form-floating').find('input, textarea, select').each(function() {
     } else {
         $(this).removeClass('filled')
     }
+});
+
+
+$('.dropdown-menu').on('click', function(e) {
+    e.stopPropagation();
 });

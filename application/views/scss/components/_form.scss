@@ -233,6 +233,15 @@
      -moz-appearance: none;
      -webkit-appearance: none;
      appearance: none;
+     padding-#{$end-direction}: 35px;
+     background-image: url(../images/retina/down-arrow.svg);
+     background-size: 10px;
+     background-color: $bg-white;
+     background-repeat: no-repeat;
+     background-position: calc(100% - 11px) center;
+     [dir="rtl"] & {
+         background-position: calc(0% - -11px) center;
+     }
      &-sm {
          font-size: 0.8rem;
      }
