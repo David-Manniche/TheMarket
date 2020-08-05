@@ -120,12 +120,12 @@ echo $frm->getFormTag(); ?>
                 <div class="field-wraper">
                     <div class="field_cover">
                         <?php 
-                            $frm->getField('btn_submit')->addFieldTagAttribute('data-processing-text', Labels::getLabel('L_Please_Wait..', $siteLangId));
+                            $btn = $frm->getField('btn_submit');
+                            $btn->addFieldTagAttribute('data-processing-text', Labels::getLabel('L_Please_Wait..', $siteLangId));
+                            $btn->addFieldTagAttribute('class', "btn btn-primary");
                             echo $frm->getFieldHtml('btn_submit');
                         ?>
-                        <a href="<?php echo $cancelBtnUrl; ?>" class="link link--normal">
-                            <?php echo Labels::getLabel('LBL_Cancel', $siteLangId);?>
-                        </a>
+                        <a href="javascript:void(0);" class="btn btn-outline-primary cancelCardForm-js"><?php echo Labels::getLabel('LBL_Cancel', $siteLangId); ?></a>
                     </div>
                 </div>
             </div>

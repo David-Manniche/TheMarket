@@ -1,4 +1,8 @@
-<?php defined('SYSTEM_INIT') or die('Invalid Usage.');
+<?php
+
+use Stripe\PaymentMethod;
+
+defined('SYSTEM_INIT') or die('Invalid Usage.');
 $rewardPoints = UserRewardBreakup::rewardPointBalance(UserAuthentication::getLoggedUserId());
 ?>
 <main class="main__content">
@@ -204,7 +208,8 @@ $rewardPoints = UserRewardBreakup::rewardPointBalance(UserAuthentication::getLog
 <?php
 $siteKey = FatApp::getConfig('CONF_RECAPTCHA_SITEKEY', FatUtility::VAR_STRING, '');
 $secretKey = FatApp::getConfig('CONF_RECAPTCHA_SECRETKEY', FatUtility::VAR_STRING, '');
-if (!empty($siteKey) && !empty($secretKey)) { ?>
+$paymentMethods = new PaymentMethods();
+if (!empty($siteKey) && !empty($secretKey) && true === $paymentMethods->cashOnDeliveryIsActive()) { ?>
     <script src='https://www.google.com/recaptcha/api.js?render=<?php echo $siteKey; ?>'></script>
     <script>
         var enableGcaptcha = true;
