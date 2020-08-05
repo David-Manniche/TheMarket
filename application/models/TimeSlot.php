@@ -5,14 +5,16 @@ class TimeSlot extends MyAppModel
     public const DB_TBL = 'tbl_time_slots';
     public const DB_TBL_PREFIX = 'tslot_';
     
-    public const DAY_ALL = 0;
-    public const DAY_SUNDAY = 1;
-    public const DAY_MONDAY = 2;
-    public const DAY_TUESDAY = 3;
-    public const DAY_WEDNESDAY = 4;
-    public const DAY_THRUSDAY = 5;
-    public const DAY_FRIDAY = 6;
-    public const DAY_SATURDAY = 7;
+    public const DAY_INDIVIDUAL_DAYS = 1; 
+    public const DAY_ALL_DAYS = 2;  
+    
+    public const DAY_MONDAY = 1;
+    public const DAY_TUESDAY = 2;
+    public const DAY_WEDNESDAY = 3;
+    public const DAY_THRUSDAY = 4;
+    public const DAY_FRIDAY = 5;
+    public const DAY_SATURDAY = 6;
+    public const DAY_SUNDAY = 7;
     
     
     
@@ -26,36 +28,42 @@ class TimeSlot extends MyAppModel
     {
         parent::__construct(self::DB_TBL, self::DB_TBL_PREFIX . 'id', $timeSlotId);
     }
-
+    
+    public static function getSlotTypeArr(int $langId): array
+    {
+        return [
+            self::DAY_INDIVIDUAL_DAYS => Labels::getLabel('LBL_Individual_Days', $langId),
+            self::DAY_ALL_DAYS => Labels::getLabel('LBL_All_Days', $langId)
+        ];
+    }
+    
     public static function getDaysArr(int $langId): array
     {     
         return [
-            self::DAY_ALL => Labels::getLabel('LBL_ALL', $langId),
-            self::DAY_SUNDAY => Labels::getLabel('LBL_Sunday', $langId),
             self::DAY_MONDAY => Labels::getLabel('LBL_Monday', $langId),
             self::DAY_TUESDAY => Labels::getLabel('LBL_Tuesday', $langId),
             self::DAY_WEDNESDAY => Labels::getLabel('LBL_Wednesday', $langId),
             self::DAY_THRUSDAY => Labels::getLabel('LBL_Thrusday', $langId),
             self::DAY_FRIDAY => Labels::getLabel('LBL_Friday', $langId),
             self::DAY_SATURDAY => Labels::getLabel('LBL_Saturday', $langId),
+            self::DAY_SUNDAY => Labels::getLabel('LBL_Sunday', $langId),
         ];
     }
-    
+
     public static function getTimeSlotsArr(): array
     {
         $timeSlots = [];
-        for($i = 0; $i<=24; $i++){
-            if($i < 10){
-                $timeSlots["0".$i.":00:00"] = $i.":00:00";
-            }else{
-                $timeSlots[$i.":00:00"] = $i.":00:00";   
-            }            
+        $startTime          = "00:00";			
+        $endTime            = "24:00"; 			
+        $frequency           = 30;   	
+        for($i = strtotime($startTime); $i<= strtotime($endTime); $i = $i + $frequency * 60) {
+            $timeSlots[date("H:i", $i)] = date("H:i", $i);  
         }
         return $timeSlots;
     }
     
     
-    public function getTimeSlotByAddressId($addressId)
+    public function getTimeSlotByAddressId(int $addressId) : array
     {
         $addressId = FatUtility::int($addressId);
         $srch = new SearchBase(static::DB_TBL, 'ts');

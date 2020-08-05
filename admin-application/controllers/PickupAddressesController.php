@@ -27,11 +27,13 @@ class PickupAddressesController extends AdminBaseController
     {
         $this->objPrivilege->canEditPickupAddresses();
         $stateId = 0;
+        $slotData = [];
         $langId = FatUtility::int($langId);
         if($langId == 0){
             $langId = FatApp::getConfig('CONF_ADMIN_DEFAULT_LANG', FatUtility::VAR_INT, 1);
         }        
         $addressId = FatUtility::int($addressId);
+        
         $frm = $this->getForm($addressId, $langId);
         if (0 < $addressId) {
             $address = new Address($addressId, $langId);  
@@ -39,8 +41,18 @@ class PickupAddressesController extends AdminBaseController
             if ($data === false) {
                 FatUtility::dieWithError($this->str_invalid_request);
             }
-            $stateId = $data['addr_state_id'];
             $frm->fill($data);
+            $stateId = $data['addr_state_id'];
+
+            $timeSlot = new TimeSlot();
+            $timeSlots = $timeSlot->getTimeSlotByAddressId($addressId);
+            if(!empty($timeSlots)){     
+                foreach($timeSlots as $key=>$slot){
+                    $slotData['tslot_day'][$slot['tslot_day']] = $slot['tslot_day'];
+                    $slotData['tslot_from_time'][$slot['tslot_day']][] = $slot['tslot_from_time'];
+                    $slotData['tslot_to_time'][$slot['tslot_day']][] = $slot['tslot_to_time'];
+                } 
+            }
         }
 
         $this->set('addressId', $addressId);
@@ -48,7 +60,8 @@ class PickupAddressesController extends AdminBaseController
         $this->set('stateId', $stateId);
         $this->set('langId', $langId);
         $this->set('formLayout', Language::getLayoutDirection($langId));
-        $this->_template->render(false, false);
+        $this->set('slotData', $slotData);
+         $this->_template->render(false, false);
     }
     
     private function getForm($addressId = 0, $langId)
@@ -77,25 +90,51 @@ class PickupAddressesController extends AdminBaseController
         $phnFld->requirements()->setRegularExpressionToValidate(ValidateElement::PHONE_REGEX);        
         $phnFld->requirements()->setCustomErrorMessage(Labels::getLabel('LBL_Please_enter_valid_phone_number_format.', $langId));
         
-             
+        $slotTimingsTypeArr = TimeSlot::getSlotTypeArr($this->adminLangId);
+        $frm->addRadioButtons(Labels::getLabel('LBL_Slot_Timings', $this->adminLangId), 'slot_type', $slotTimingsTypeArr, TimeSlot::DAY_INDIVIDUAL_DAYS);        
+
+        $daysArr = TimeSlot::getDaysArr($this->adminLangId);        
+        for($i = 1; $i<=count($daysArr); $i++){  
+            $frm->addCheckBox($daysArr[$i], 'tslot_day['.$i.']', $i, array(), false);
+            $frm->addSelectBox(Labels::getLabel('LBL_From', $this->adminLangId), 'tslot_from_time['.$i.'][]', TimeSlot::getTimeSlotsArr(), '', array(), Labels::getLabel('LBL_Select', $this->adminLangId));
+            $frm->addSelectBox(Labels::getLabel('LBL_To', $this->adminLangId), 'tslot_to_time['.$i.'][]', TimeSlot::getTimeSlotsArr(), '', array(), Labels::getLabel('LBL_Select', $this->adminLangId));       
+            $frm->addButton('', 'btn_add_row['.$i.']', '+');           
+        }
         
-        
+        $frm->addSelectBox(Labels::getLabel('LBL_From', $this->adminLangId), 'tslot_from_all', TimeSlot::getTimeSlotsArr(), '', array(), Labels::getLabel('LBL_Select', $this->adminLangId));
+        $frm->addSelectBox(Labels::getLabel('LBL_To', $this->adminLangId), 'tslot_to_all', TimeSlot::getTimeSlotsArr(), '', array(), Labels::getLabel('LBL_Select', $this->adminLangId));       
+            
         $frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_Save_Changes', $langId));
         return $frm;
     }
     
     public function setup()
-    {
+    {   
         $this->objPrivilege->canEditPickupAddresses();
-        $post = FatApp::getPostedData();
+        $post = FatApp::getPostedData();    
         $post['addr_phone'] = !empty($post['addr_phone']) ? ValidateElement::convertPhone($post['addr_phone']) : '';
         $addrStateId = FatUtility::int($post['addr_state_id']);
-        $frm = $this->getForm($post['addr_id'], $post['lang_id']);
-        $post = $frm->getFormDataFromArray($post);
-        if (false === $post) {
+
+        $slotFromAll = '';
+        $slotToAll = '';
+        $slotDays = [];
+        $slotType = FatUtility::int($post['slot_type']);
+        if($slotType == TimeSlot::DAY_ALL_DAYS){
+            $slotFromAll = $post['tslot_from_all'];
+            $slotToAll = $post['tslot_to_all'];
+        }else{
+            $slotDays = isset($post['tslot_day']) ? $post['tslot_day'] : array();
+            $slotFromTime = $post['tslot_from_time'];
+            $slotToTime = $post['tslot_to_time'];
+        }
+        
+        $frm = $this->getForm($post['addr_id'], $post['lang_id']); 
+        $postedData = $frm->getFormDataFromArray($post);      
+        if (false === $postedData) {
             Message::addErrorMessage(current($frm->getValidationErrors()));
             FatUtility::dieJsonError(Message::getHtml());
-        }
+        }   
+        
         $addressId = $post['addr_id'];
         unset($post['addr_id']);
         
@@ -109,7 +148,55 @@ class PickupAddressesController extends AdminBaseController
             Message::addErrorMessage($address->getError());
             FatUtility::dieJsonError(Message::getHtml());
         }
-
+        
+        $updatedAddressId = $address->getMainTableRecordId();
+        if(!empty($slotDays) && $slotType == TimeSlot::DAY_INDIVIDUAL_DAYS){
+            if(!FatApp::getDb()->deleteRecords(TimeSlot::DB_TBL, array('smt'=>'tslot_type = ? and tslot_record_id = ?', 'vals' => array(Address::TYPE_ADMIN_PICKUP, $updatedAddressId)))){
+                Message::addErrorMessage(FatApp::getDb()->getError());
+                FatUtility::dieWithError(Message::getHtml());
+            }
+        
+            foreach($slotDays as $day){   
+                foreach($slotFromTime[$day] as $key=>$fromTime){
+                    if(!empty($fromTime) && !empty($slotToTime[$day][$key])){
+                        $slotData['tslot_type'] = Address::TYPE_ADMIN_PICKUP;
+                        $slotData['tslot_record_id'] = $updatedAddressId;
+                        $slotData['tslot_day'] = $day;
+                        $slotData['tslot_from_time'] = $fromTime;
+                        $slotData['tslot_to_time'] = $post['tslot_to_time'][$day][$key];
+                        $timeSlot = new TimeSlot();
+                        $timeSlot->assignValues($slotData);
+                        if (!$timeSlot->save()) {
+                            Message::addErrorMessage($timeSlot->getError());
+                            FatUtility::dieJsonError(Message::getHtml());
+                        }
+                    }
+                }
+            }
+        }
+        
+        if($slotType == TimeSlot::DAY_ALL_DAYS && !empty($slotFromAll) && !empty($slotToAll)){
+            if(!FatApp::getDb()->deleteRecords(TimeSlot::DB_TBL, array('smt'=>'tslot_type = ? and tslot_record_id = ?', 'vals' => array(Address::TYPE_ADMIN_PICKUP, $updatedAddressId)))){
+                Message::addErrorMessage(FatApp::getDb()->getError());
+                FatUtility::dieWithError(Message::getHtml());
+            }
+            
+            $daysArr = TimeSlot::getDaysArr($this->adminLangId);        
+            for($i = 1; $i<=count($daysArr); $i++){  
+                $slotData['tslot_type'] = Address::TYPE_ADMIN_PICKUP;
+                $slotData['tslot_record_id'] = $updatedAddressId;
+                $slotData['tslot_day'] = $i;
+                $slotData['tslot_from_time'] = $slotFromAll;
+                $slotData['tslot_to_time'] = $slotToAll;
+                $timeSlot = new TimeSlot();
+                $timeSlot->assignValues($slotData);
+                if (!$timeSlot->save()) {
+                    Message::addErrorMessage($timeSlot->getError());
+                    FatUtility::dieJsonError(Message::getHtml());
+                }
+            }
+        }
+        
         $this->set('msg', Labels::getLabel('LBL_Updated_Successfully', $this->adminLangId));
         $this->_template->render(false, false, 'json-success.php');
     }
@@ -128,80 +215,6 @@ class PickupAddressesController extends AdminBaseController
         $this->set('msg', $this->str_delete_record);
         $this->_template->render(false, false, 'json-success.php');
     }
-    
-    public function timeSlotForm($addressId)
-    {
-        $this->objPrivilege->canEditPickupAddresses();
-        $addressId = FatUtility::int($addressId);
-        if($addressId < 1){
-            FatUtility::dieWithError($this->str_invalid_request);
-        }
-           
-        $timeSlot = new TimeSlot();
-        $timeSlots = $timeSlot->getTimeSlotByAddressId($addressId);
-        $timeSlotsCount = (count($timeSlots) == 0) ? 1 : count($timeSlots) ;    
-        $frm = $this->getTimeSlotForm($addressId, $timeSlotsCount);   
-        if(!empty($timeSlots)){ 
-            foreach($timeSlots as $key=>$data){
-               $slotData['tslot_day'][$key] = $timeSlots[$key]['tslot_day'];
-               $slotData['tslot_from_time'][$key] = $timeSlots[$key]['tslot_from_time'];
-               $slotData['tslot_to_time'][$key] = $timeSlots[$key]['tslot_to_time'];
-               $slotData['tslot_record_id'] = $addressId;
-            }
-            $frm->fill($slotData);
-        } 
-        $this->set('addressId', $addressId);
-        $this->set('frm', $frm);
-        $this->set('timeSlotsCount', $timeSlotsCount);
-        $this->_template->render(false, false);
-    }
-    
-    private function getTimeSlotForm($addressId, $timeSlotsCount = 0)
-    {
-        $addressId = FatUtility::int($addressId);
-        $timeSlotsCount = FatUtility::int($timeSlotsCount);
-        $frm = new Form('frmTimeSlot');
-        for($i = 0; $i< $timeSlotsCount; $i++){
-            $frm->addSelectBox(Labels::getLabel('LBL_Day', $this->adminLangId), 'tslot_day['.$i.']', TimeSlot::getDaysArr($this->adminLangId), '', array(), Labels::getLabel('LBL_Select', $this->adminLangId))->requirement->setRequired(true);
-            $frm->addSelectBox(Labels::getLabel('LBL_From', $this->adminLangId), 'tslot_from_time['.$i.']', TimeSlot::getTimeSlotsArr(), '', array(), Labels::getLabel('LBL_Select', $this->adminLangId))->requirement->setRequired(true);
-            $frm->addSelectBox(Labels::getLabel('LBL_To', $this->adminLangId), 'tslot_to_time['.$i.']', TimeSlot::getTimeSlotsArr(), '', array(), Labels::getLabel('LBL_Select', $this->adminLangId))->requirement->setRequired(true);
-            //$frm->addRequiredField(Labels::getLabel('LBL_From', $this->adminLangId), 'tslot_from_time['.$i.']');
-            //$frm->addRequiredField(Labels::getLabel('LBL_To', $this->adminLangId), 'tslot_to_time['.$i.']');
-        }
-        $frm->addHiddenField('', 'tslot_record_id', $addressId); 
-        $frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_Save_Changes', $this->adminLangId));
-        $frm->addButton('', 'btn_add_row', '+');
-        return $frm;
-    }
-    
-    public function setUpTimeSlot()
-    {
-        $this->objPrivilege->canEditPickupAddresses();
-        $post = FatApp::getPostedData();            
-        if(empty($post['tslot_day']) || empty($post['tslot_from_time']) || empty($post['tslot_to_time'])){
-            Message::addErrorMessage($this->str_invalid_request);
-            FatUtility::dieWithError(Message::getHtml());
-        }
 
-        if(!FatApp::getDb()->deleteRecords(TimeSlot::DB_TBL, array('smt'=>'tslot_type = ? and tslot_record_id = ?', 'vals' => array(Address::TYPE_ADMIN_PICKUP, $post['tslot_record_id'])))){
-            Message::addErrorMessage(FatApp::getDb()->getError());
-            FatUtility::dieWithError(Message::getHtml());
-        }
-        foreach($post['tslot_day'] as $key=>$slot){
-            $timeSlot = new TimeSlot();
-            $data['tslot_type'] = Address::TYPE_ADMIN_PICKUP;
-            $data['tslot_record_id'] = $post['tslot_record_id'];
-            $data['tslot_day'] = $post['tslot_day'][$key];
-            $data['tslot_from_time'] = $post['tslot_from_time'][$key];
-            $data['tslot_to_time'] = $post['tslot_to_time'][$key];
-            $timeSlot->assignValues($data);
-            if (!$timeSlot->save()) {
-                Message::addErrorMessage($timeSlot->getError());
-                FatUtility::dieJsonError(Message::getHtml());
-            }
-        }
-        $this->set('msg', Labels::getLabel('LBL_Updated_Successfully', $this->adminLangId));
-        $this->_template->render(false, false, 'json-success.php');
-        
-    }
+    
 }
