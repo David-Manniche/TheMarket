@@ -5,6 +5,8 @@ $frmBrandReq->developerTags['fld_default_col'] = 12;
 $frmBrandReq->setFormTagAttribute('onsubmit', 'setupBrandReq(this); return(false);');
 $identifierFld = $frmBrandReq->getField(Brand::DB_TBL_PREFIX.'id');
 $identifierFld->setFieldTagAttribute('id', Brand::DB_TBL_PREFIX.'id');
+$submitFld = $frmBrandReq->getField('btn_submit');
+$submitFld->setFieldTagAttribute('class', 'btn btn-primary');
 ?>
 
 <div class="box__head">

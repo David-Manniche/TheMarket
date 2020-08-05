@@ -344,4 +344,31 @@ class CategoryController extends MyAppController
         $this->set('categoriesData', $categoriesArr);
         $this->_template->render();
     }
+    
+    public function checkUniqueCategoryName()
+    {
+        $post = FatApp::getPostedData();
+
+        $langId = FatUtility::int($post['langId']);
+
+        $categoryName = $post['categoryName'];
+        $categoryId = FatUtility::int($post['categoryId']);
+        if (1 > $langId) {
+            trigger_error(Labels::getLabel('LBL_Lang_Id_not_Specified', CommonHelper::getLangId()), E_USER_ERROR);
+        }
+        if (1 > $categoryId) {
+            trigger_error(Labels::getLabel('LBL_Brand_Id_not_Specified', CommonHelper::getLangId()), E_USER_ERROR);
+        }
+        $srch = productCategory::getSearchObject($langId);
+        $srch->addCondition('prodcat_name', '=', $categoryName);
+        if ($categoryId) {
+            $srch->addCondition('prodcat_id', '!=', $categoryId);
+        }
+        $rs = $srch->getResultSet();
+        $records = $srch->recordCount();
+        if ($records > 0) {
+            FatUtility::dieJsonError(sprintf(Labels::getLabel('LBL_%s_not_available', $this->siteLangId), $categoryName));
+        }
+        FatUtility::dieJsonSuccess(array());
+    }
 }

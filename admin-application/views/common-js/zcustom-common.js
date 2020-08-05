@@ -537,7 +537,7 @@ function initMap(lat = 40.72, lng = -73.96, elementId = 'map') {
         return;
     }
     map = new google.maps.Map(document.getElementById(elementId), {
-        zoom: 8,
+        zoom: 12,
         center: latlng
     });
     geocoder = new google.maps.Geocoder;

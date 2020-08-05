@@ -11,6 +11,9 @@ class ProductCategory extends MyAppModel
     private $db;
     private $categoryTreeArr = array();
 
+    public const REQUEST_PENDING = 0;
+    public const REQUEST_APPROVED = 1;
+    public const REQUEST_CANCELLED = 2;
 
     public function __construct($id = 0)
     {
@@ -18,9 +21,10 @@ class ProductCategory extends MyAppModel
         $this->db = FatApp::getDb();
     }
 
-    public static function getSearchObject($includeChildCount = false, $langId = 0, $prodcat_active = true)
+    public static function getSearchObject($includeChildCount = false, $langId = 0, $prodcatActive = true, $prodcatStatus = 1)
     {
         $langId = FatUtility::int($langId);
+        $prodcatStatus = FatUtility::int($prodcatStatus);
         $srch = new SearchBase(static::DB_TBL, 'm');
         $srch->addOrder('m.prodcat_active', 'DESC');
 
@@ -44,7 +48,11 @@ class ProductCategory extends MyAppModel
             );
         }
 
-        if ($prodcat_active) {
+        if (-1 != $prodcatStatus) {
+            $srch->addCondition('m.prodcat_status', '=', $prodcatStatus);
+        }
+
+        if ($prodcatActive) {
             $srch->addCondition('m.prodcat_active', '=', applicationConstants::ACTIVE);
         }
 
@@ -105,7 +113,7 @@ class ProductCategory extends MyAppModel
         }
 
         foreach ($categoryArray as $categoryId) {
-            $srch = ProductCategory::getSearchObject();
+            $srch = ProductCategory::getSearchObject(false, 0, false, -1);
             $srch->doNotCalculateRecords();
             $srch->doNotLimitRecords();
             $srch->addMultipleFields(array('prodcat_id', 'GETCATCODE(`prodcat_id`) as prodcat_code', 'GETCATORDERCODE(`prodcat_id`) as prodcat_ordercode'));
@@ -185,7 +193,7 @@ class ProductCategory extends MyAppModel
             $cnd = $prodCatSrch->addCondition('prodcat_identifier', 'like', '%' . $keywords . '%');
             $cnd->attachCondition('prodcat_name', 'like', '%' . $keywords . '%');
         }
-        
+
         $prodCatSrch->doNotCalculateRecords();
         $prodCatSrch->doNotLimitRecords();
         $prodCatSrch->addMultipleFields(array( 'prodcat_id', 'COALESCE(prodcat_name,prodcat_identifier ) as prodcat_name', 'substr(prodcat_code,1,6) AS prodrootcat_code',  'prodcat_content_block', 'prodcat_active', 'prodcat_parent', 'prodcat_code', 'prodcat_ordercode'));
@@ -353,17 +361,15 @@ class ProductCategory extends MyAppModel
         return false;
     }
 
-    public function getParentTreeStructure($prodCat_id = 0, $level = 0, $name_suffix = '', $langId = 0)
+    public function getParentTreeStructure($prodCat_id = 0, $level = 0, $name_suffix = '', $langId = 0, $active = true, $status = 1)
     {
         $langId = FatUtility::int($langId);
-        $srch = static::getSearchObject(false, $langId);
+        $srch = static::getSearchObject(false, $langId, $active, $status);
         $srch->addFld('m.prodcat_id,COALESCE(prodcat_name,m.prodcat_identifier) as prodcat_identifier,m.prodcat_parent');
         $srch->addCondition('m.prodcat_deleted', '=', applicationConstants::NO);
-        $srch->addCondition('m.prodcat_active', '=', applicationConstants::ACTIVE);
         $srch->addCondition('m.prodCat_id', '=', FatUtility::int($prodCat_id));
         $rs = $srch->getResultSet();
         $records = FatApp::getDb()->fetch($rs);
-
         $name = '';
         $seprator = '';
         if ($level > 0) {
@@ -957,10 +963,10 @@ class ProductCategory extends MyAppModel
         $prodSrchObj->joinProductToCategory();
         $prodSrchObj->doNotCalculateRecords();
         $prodSrchObj->setPageSize(1);
-       
+
         //$prodSrchObj->addGroupBy('prodcat_id');
         $prodSrchObj->addMultipleFields(array('substr(prodcat_code,1,6) AS prodrootcat_code','count(selprod_id) as productCounts', 'prodcat_id'));
-        
+
         if (0 < $this->mainTableRecordId) {
             $prodSrchObj->addHaving('prodrootcat_code', 'LIKE', '%' . str_pad($this->mainTableRecordId, 6, '0', STR_PAD_LEFT) . '%', 'AND', true);
         }
@@ -1009,7 +1015,7 @@ class ProductCategory extends MyAppModel
         $where = array('smt' => 'prodcat_id = ?', 'vals' => array($userId));
         FatApp::getDb()->updateFromArray(static::DB_TBL, array('prodcat_img_updated_on' => date('Y-m-d  H:i:s')), $where);
     }
-    
+
     public function saveCategoryData($post)
     {
         $parentCatId = FatUtility::int($post['prodcat_parent']);
@@ -1024,7 +1030,7 @@ class ProductCategory extends MyAppModel
         if ($this->mainTableRecordId == 0) {
             $post['prodcat_display_order'] = $this->getMaxOrder($parentCatId);
         }
-        
+
         if ($post['prodcat_parent'] == $this->mainTableRecordId) {
             $post['prodcat_parent'] = 0;
         }
@@ -1052,7 +1058,7 @@ class ProductCategory extends MyAppModel
             $this->mainTableRecordId = $record->getMainTableRecordId();
             $this->updateCatCode();
         }
-        
+
         $this->saveLangData($siteDefaultLangId, $post['prodcat_name'][$siteDefaultLangId]); // For site default language
         $catNameArr = $post['prodcat_name'];
         unset($catNameArr[$siteDefaultLangId]);
@@ -1064,13 +1070,13 @@ class ProductCategory extends MyAppModel
             }
         }
 
-        if ($prodCatId == 0) {
+        if ($prodCatId == 0 && isset($post['cat_icon_image_id']) && isset($post['cat_banner_image_id'])) {
             $this->updateMedia($post['cat_icon_image_id']);
             $this->updateMedia($post['cat_banner_image_id']);
         }
         return true;
     }
-    
+
     public function saveLangData($langId, $prodCatName)
     {
         $langId = FatUtility::int($langId);
@@ -1090,7 +1096,7 @@ class ProductCategory extends MyAppModel
         }
         return true;
     }
-    
+
     public function saveTranslatedLangData($langId)
     {
         $langId = FatUtility::int($langId);
@@ -1098,7 +1104,7 @@ class ProductCategory extends MyAppModel
             $this->error = Labels::getLabel('ERR_Invalid_Request', $this->commonLangId);
             return false;
         }
-        
+
         $translateLangobj = new TranslateLangData(static::DB_TBL_LANG);
         if (false === $translateLangobj->updateTranslatedData($this->mainTableRecordId, 0, $langId)) {
             $this->error = $translateLangobj->getError();
@@ -1121,7 +1127,7 @@ class ProductCategory extends MyAppModel
         }
         return true;
     }
-    
+
     public function getTranslatedCategoryData($data, $toLangId)
     {
         $toLangId = FatUtility::int($toLangId);
@@ -1129,7 +1135,7 @@ class ProductCategory extends MyAppModel
             $this->error = Labels::getLabel('ERR_Invalid_Request', $this->commonLangId);
             return false;
         }
-        
+
         $translateLangobj = new TranslateLangData(static::DB_TBL_LANG);
         $translatedData = $translateLangobj->directTranslate($data, $toLangId);
         if (false === $translatedData) {
@@ -1138,7 +1144,7 @@ class ProductCategory extends MyAppModel
         }
         return $translatedData;
     }
-    
+
     public function getCategories($includeProductCount = true, $includeSubCategoriesCount = true)
     {
         $srch = static::getSearchObject(false, $this->commonLangId, false);
@@ -1158,7 +1164,7 @@ class ProductCategory extends MyAppModel
         $srch->addMultipleFields(array('m.*', 'COALESCE(prodcat_name,prodcat_identifier ) as prodcat_name'));
         $rs = $srch->getResultSet();
         $records = FatApp::getDb()->fetchAll($rs);
-        
+
         if ($includeSubCategoriesCount === true) {
             foreach ($records as $key => $data) {
                 $records[$key]['subcategory_count'] = $this->getSubCategoriesCount($data[static::DB_TBL_PREFIX . 'id']);
@@ -1166,7 +1172,7 @@ class ProductCategory extends MyAppModel
         }
         return $records;
     }
-    
+
     public function getSubCategoriesCount($prodCatId)
     {
         $prodCatId = FatUtility::int($prodCatId);
@@ -1178,7 +1184,7 @@ class ProductCategory extends MyAppModel
         $record = FatApp::getDb()->fetch($rs);
         return $record['subcategory_count'];
     }
-    
+
     public static function getActiveInactiveCategoriesCount($active)
     {
         $srch = static::getSearchObject(false, 0, false);
@@ -1190,14 +1196,14 @@ class ProductCategory extends MyAppModel
         $rs = $srch->getResultSet();
         return FatApp::getDb()->fetch($rs);
     }
-    
+
     public static function deleteImagesWithOutCategoryId($fileType)
     {
         $allowedFileTypes = [AttachedFile::FILETYPE_CATEGORY_ICON, AttachedFile::FILETYPE_CATEGORY_BANNER];
         if (empty($fileType) || !in_array($fileType, $allowedFileTypes)) {
             return false;
         }
-        
+
         $currentDate = date('Y-m-d  H:i:s');
         $prevDate = strtotime('-' . static::REMOVED_OLD_IMAGE_TIME . ' hour', strtotime($currentDate));
         $prevDate = date('Y-m-d  H:i:s', $prevDate);
@@ -1207,7 +1213,7 @@ class ProductCategory extends MyAppModel
         }
         return true;
     }
-    
+
     public function updateCatParent($parentCatId)
     {
         if ($this->mainTableRecordId < 1) {

@@ -444,6 +444,27 @@ $(document).on('change', '.language-js', function () {
 
         });
     };
+    
+    /* Product Category  request [*/
+    addCategoryReqForm = function (id) {
+        $.facebox(function () {
+            fcom.ajax(fcom.makeUrl('seller', 'categoryReqForm', [id]), '', function (t) {
+                $.facebox(t, 'faceboxWidth medium-fb-width');
+            });
+        });
+    };
+
+    setupCategoryReq = function (frm) {
+        if (!$(frm).validate())
+            return;
+        var data = fcom.frmData(frm);
+        fcom.updateWithAjax(fcom.makeUrl('seller', 'setupCategoryReq'), data, function (t) {
+			$(document).trigger('close.facebox');
+        });
+    };
+
+    /* ] */
+    
     /*Product Options*/
     searchOptions = function (form) {
         /*[ this block should be written before overriding html of 'form's parent div/element, otherwise it will through exception in ie due to form being removed from div */
