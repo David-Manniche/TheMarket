@@ -50,13 +50,15 @@
 
                                 $href = $navUrl;
                                 $navchild = '';
+                                $class = '';
                                 $target = $link['nlink_target'];
                                 if (0 < count($link['children'])) {
                                     $href = 'javascript:void(0)';
                                     $navchild = 'navchild';
                                     $target = '';
+                                    $class = 'has-child';
                                 } ?>
-                            <li class="has-child"><a target="<?php echo $target; ?>" data-org-url="<?php echo $OrgnavUrl; ?>"
+                            <li class="<?php echo $class; ?>"><a target="<?php echo $target; ?>" data-org-url="<?php echo $OrgnavUrl; ?>"
                         href="<?php echo $href; ?>"><?php echo $link['nlink_caption']; ?></a>
                             <?php if (isset($link['children']) && count($link['children']) > 0) { ?>
                                 <div class="megadrop">
