@@ -93,7 +93,7 @@ class ProductSearch extends SearchBase
 
         if (!empty($this->geoAddress)) {
             $this->geoAddress['ykGeoCountryId'] = Countries::getCountryByCode($this->geoAddress['ykGeoCountryCode'], 'country_id');
-            $this->geoAddress['ykGeoStateId'] = States::getByCode($this->geoAddress['ykGeoStateCode'], 'state_id');
+            $this->geoAddress['ykGeoStateId'] = States::getStateByCode($this->geoAddress['ykGeoStateCode'], 'state_id');
         }
     }
 

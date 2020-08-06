@@ -734,7 +734,7 @@ class MyAppController extends FatController
         $otpFrm = $this->getOtpForm();
         $post = $otpFrm->getFormDataFromArray(FatApp::getPostedData());
         if (false === $post) {
-            LibHelper::dieJsonError(current($frm->getValidationErrors()));
+            LibHelper::dieJsonError(current($otpFrm->getValidationErrors()));
         }
         if (true === MOBILE_APP_API_CALL) {
             if (User::OTP_LENGTH != strlen($post['upv_otp'])) {
