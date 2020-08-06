@@ -764,7 +764,7 @@ function googleAddressAutocomplete(elementId = 'ga-autoComplete', field = 'forma
 }
 
 function getSelectedCountry() {
-    var country = document.getElementById('shop_country_id');
+    var country = document.getElementById('shop_country_code');
     console.log(country[0].selectedOptions[0].innerText);
     return country[0].selectedOptions[0].innerText;
 }
@@ -793,16 +793,16 @@ function initMap(lat = 40.72, lng = -73.96, elementId = 'map') {
     /*address = {lat: parseFloat(lat), lng: parseFloat(lat)};
 	geocodeAddress(geocoder, map, infowindow, { 'location': latlng });*/
 	
-	var sel = document.getElementById('shop_country_id');
+	var sel = document.getElementById('shop_country_code');
 	var country = sel.options[sel.selectedIndex].text;
-
+    
 	address = document.getElementById('postal_code').value;
 	address = country + ' ' + address;
 	
     geocodeAddress(geocoder, map, infowindow, { 'address': address });
 
     document.getElementById('postal_code').addEventListener('blur', function () {
-        var sel = document.getElementById('shop_country_id');
+        var sel = document.getElementById('shop_country_code');
         var country = sel.options[sel.selectedIndex].text;
 
         address = document.getElementById('postal_code').value;
@@ -812,7 +812,7 @@ function initMap(lat = 40.72, lng = -73.96, elementId = 'map') {
     });
 
     document.getElementById('shop_state').addEventListener('change', function () {
-        var sel = document.getElementById('shop_country_id');
+        var sel = document.getElementById('shop_country_code');
         var country = sel.options[sel.selectedIndex].text;
 
         var sel = document.getElementById('shop_state');
@@ -823,8 +823,8 @@ function initMap(lat = 40.72, lng = -73.96, elementId = 'map') {
         geocodeAddress(geocoder, map, infowindow, { 'address': address });
     });
 
-    document.getElementById('shop_country_id').addEventListener('change', function () {
-        var sel = document.getElementById('shop_country_id');
+    document.getElementById('shop_country_code').addEventListener('change', function () {
+        var sel = document.getElementById('shop_country_code');
         var country = sel.options[sel.selectedIndex].text;
 
         geocodeAddress(geocoder, map, infowindow, { 'address': country });
@@ -872,8 +872,8 @@ function geocodeSetData(results) {
 		infowindow.open(map, marker);
 		var address_components = results[0].address_components;
 		var data = {};
-		/* data['lat'] = pos.lat().toFixed(6);
-		data['lng'] = pos.lng().toFixed(6); */
+		/* data['lat'] = pos.lat();
+		data['lng'] = pos.lng(); */
 		data['formatted_address'] = results[0].formatted_address;
 		if (0 < address_components.length) {
 			var addressComponents = address_components;
@@ -893,16 +893,17 @@ function geocodeSetData(results) {
 			}
 		}
 		$('#postal_code').val(data.postal_code);
-		$('#shop_country_id option').each(function () {
+        console.log(data);
+		$('#shop_country_code option').each(function () {
 			if (this.text == data.country) {
-				$('#shop_country_id').val(this.value);
+				$('#shop_country_code').val(this.value);
 				var state = 0;
 				$('#shop_state option').each(function () {
-					if (this.text == data.state) {
+					if (this.value == data.state_code || this.text == data.state) {
 						return state = this.value;
 					}
 				});
-				getCountryStates(this.value, state, '#shop_state');
+				getStatesByCountryCode(this.value, state, '#shop_state', 'state_code');
 				return false;
 			}
 		});

@@ -1610,16 +1610,16 @@ class SellerController extends SellerBaseController
             $shop_id = $shopDetails['shop_id'];
             $stateId = $shopDetails['shop_state_id'];
         }
-
+        $shopDetails['shop_country_code'] = Countries::getCountryById($countryId, $this->siteLangId, 'country_code');
         $shopLayoutTemplateId = $shopDetails['shop_ltemplate_id'];
         if ($shopLayoutTemplateId == 0) {
             $shopLayoutTemplateId = 10001;
         }
         $this->set('shopLayoutTemplateId', $shopLayoutTemplateId);
         $shopFrm = $this->getShopInfoForm($shop_id);
-		
+        
 		$stateObj = new States();
-        $statesArr = $stateObj->getStatesByCountryId($countryId, $this->siteLangId);
+        $statesArr = $stateObj->getStatesByCountryId($countryId, $this->siteLangId, true, 'state_code');
 		
 		$shopFrm->getField('shop_state')->options = $statesArr;
         /* url data[ */
@@ -1994,7 +1994,7 @@ class SellerController extends SellerBaseController
 
         $frm = $this->getShopInfoForm();
         $post = $frm->getFormDataFromArray($post);
-
+        $post['shop_country_id'] = Countries::getCountryByCode($post['shop_country_code'], 'country_id');
         if (false == $post) {
             Message::addErrorMessage(current($frm->getValidationErrors()));
             FatUtility::dieJsonError(Message::getHtml());
@@ -2009,8 +2009,7 @@ class SellerController extends SellerBaseController
         } else {
             $post['shop_created_on'] = date('Y-m-d H:i:s');
         }
-
-
+        
         $shopObj = new Shop($shop_id);
         $shopObj->assignValues($post);
 
@@ -2020,7 +2019,6 @@ class SellerController extends SellerBaseController
         }
 
         $post['ss_shop_id'] = $shop_id;
-
         $shopSpecificsObj = new ShopSpecifics($shop_id);
         $shopSpecificsObj->assignValues($post);
         $data = $shopSpecificsObj->getFlds();
@@ -3326,8 +3324,8 @@ class SellerController extends SellerBaseController
         $phnFld->requirements()->setCustomErrorMessage(Labels::getLabel('LBL_Please_enter_valid_phone_number_format.', $this->siteLangId));
 
         $countryObj = new Countries();
-        $countriesArr = $countryObj->getCountriesArr($this->siteLangId);
-        $fld = $frm->addSelectBox(Labels::getLabel('Lbl_Country', $this->siteLangId), 'shop_country_id', $countriesArr, FatApp::getConfig('CONF_COUNTRY', FatUtility::VAR_INT, 223), array(), Labels::getLabel('Lbl_Select', $this->siteLangId));
+        $countriesArr = $countryObj->getCountriesArr($this->siteLangId, true, 'country_code');
+        $fld = $frm->addSelectBox(Labels::getLabel('Lbl_Country', $this->siteLangId), 'shop_country_code', $countriesArr, FatApp::getConfig('CONF_COUNTRY', FatUtility::VAR_INT, 223), array(), Labels::getLabel('Lbl_Select', $this->siteLangId));
         $fld->requirement->setRequired(true);
 
         $frm->addSelectBox(Labels::getLabel('Lbl_State', $this->siteLangId), 'shop_state', array(), '', array(), Labels::getLabel('Lbl_Select', $this->siteLangId))->requirement->setRequired(true);

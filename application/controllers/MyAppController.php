@@ -279,10 +279,10 @@ class MyAppController extends FatController
         $this->_template->render(false, false, '_partial/states-list.php');
     }
 
-    public function getStatesByCountryCode($countryCode, $stateCode = '')
+    public function getStatesByCountryCode($countryCode, $stateCode = '', $idCol = 'state_id')
     {
         $countryId = Countries::getCountryByCode($countryCode, 'country_id');
-        $this->getStates($countryId, $stateCode, false, 'state_code');
+        $this->getStates($countryId, $stateCode, false, $idCol);
     }
 
     public function getBreadcrumbNodes($action)

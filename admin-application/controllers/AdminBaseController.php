@@ -217,7 +217,7 @@ class AdminBaseController extends FatController
         return $nodes;
     }
 
-    public function getStates($countryId, $stateId = 0, $langId= 0)
+    public function getStates($countryId, $stateId = 0, $langId = 0, $idCol = 'state_id')
     {
         $countryId = FatUtility::int($countryId);
         $stateId = FatUtility::int($stateId);
@@ -232,6 +232,12 @@ class AdminBaseController extends FatController
         $this->set('statesArr', $statesArr);
         $this->set('stateId', $stateId);
         $this->_template->render(false, false, '_partial/states-list.php');
+    }
+    
+    public function getStatesByCountryCode($countryCode, $stateCode = '', $idCol = 'state_id')
+    {
+        $countryId = Countries::getCountryByCode($countryCode, 'country_id');
+        $this->getStates($countryId, $stateCode, $this->adminLangId, $idCol);
     }
 
     protected function getUserSearchForm()

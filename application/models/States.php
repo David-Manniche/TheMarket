@@ -114,14 +114,14 @@ class States extends MyAppModel
         return $row;
     }
 
-    public static function getStateByCode($countryCode, $attr = null)
+    public static function getStateByCode($stateCode, $attr = null)
     {
-        if (!$countryCode) {
+        if (!$stateCode) {
             return false;
         }
 
         $srch = static::getSearchObject();
-        $srch->addCondition('state_code', '=', strtoupper($countryCode));
+        $srch->addCondition('state_code', '=', strtoupper($stateCode));
 
         if (null != $attr) {
             if (is_array($attr)) {
