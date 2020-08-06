@@ -892,9 +892,7 @@ function geocodeSetData(results) {
 				}
 			}
 		}
-        if(data.postal_code) {
-            $('#postal_code').val(data.postal_code);
-        }
+        $('#postal_code').val(data.postal_code);
 		
 		$('#shop_country_code option').each(function () {
 			if (this.text == data.country) {
