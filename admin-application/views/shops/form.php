@@ -5,8 +5,8 @@ $frmShop->setFormTagAttribute('class', 'web_form form_horizontal');
 $frmShop->setFormTagAttribute('onsubmit', 'setupShop(this); return(false);');
 $frmShop->developerTags['colClassPrefix'] = 'col-md-';
 $frmShop->developerTags['fld_default_col'] = 12;
-$countryFld = $frmShop->getField('shop_country_id');
-$countryFld->setFieldTagAttribute('id', 'shop_country_id');
+$countryFld = $frmShop->getField('shop_country_code');
+$countryFld->setFieldTagAttribute('id', 'shop_country_code');
 $countryFld->setFieldTagAttribute('class', 'addressSelection-js');
 $countryFld->setFieldTagAttribute('onChange', 'getCountryStates(this.value,' . $stateId . ',\'#shop_state\')');
 

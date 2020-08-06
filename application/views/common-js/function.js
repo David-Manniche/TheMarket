@@ -893,7 +893,6 @@ function geocodeSetData(results) {
 			}
 		}
 		$('#postal_code').val(data.postal_code);
-        console.log(data);
 		$('#shop_country_code option').each(function () {
 			if (this.text == data.country) {
 				$('#shop_country_code').val(this.value);

@@ -216,18 +216,18 @@ class AdminBaseController extends FatController
         }
         return $nodes;
     }
-
+    
     public function getStates($countryId, $stateId = 0, $langId = 0, $idCol = 'state_id')
     {
         $countryId = FatUtility::int($countryId);
-        $stateId = FatUtility::int($stateId);
         $langId = FatUtility::int($langId);
+        
         if($langId == 0){
             $langId = $this->adminLangId;
         }
-            
+        
         $stateObj = new States();
-        $statesArr = $stateObj->getStatesByCountryId($countryId, $langId);
+        $statesArr = $stateObj->getStatesByCountryId($countryId, $this->adminLangId, true, $idCol);
 
         $this->set('statesArr', $statesArr);
         $this->set('stateId', $stateId);
