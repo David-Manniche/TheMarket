@@ -1,60 +1,117 @@
-.filters-top {
-    flex-direction: column;
-    .filters {
-        width: 100%;
-        margin-bottom: 2rem;
-        .filters_body {
-            display: flex;
-            flex-wrap: wrap;
-            .sidebar-widget {
-                flex: 0 0 calc(25% - 10px);
-                max-width: calc(25% - 10px);
-                border-radius: $radius4;
-                padding: 0;
-                margin: 0;
-                margin-#{$end-direction}: 10px;
-                margin-bottom: 1rem;
-                background-color: $bg-white;
-                border: none;
-                position: relative;
-                &:after {
-                    content: normal;
-                }
-                &:last-child {
-                    margin-#{$end-direction}: 0;
-                }
-                &__head {
-                    padding: 1rem;
-                    &::before {
-                        content: "";
-                        position: absolute;
-                        top: calc(50% - 4px);
-                        #{$end-direction}: 1rem;
-                        display: inline-block;
-                        border-right: 1px solid black;
-                        border-bottom: 1px solid black;
-                        width: 8px;
-                        height: 8px;
-                        transform: rotate(45deg);
-                        transform-origin: center;
-                        transition: all 0.5s ease;
+        .filters-top {
+            flex-direction: column;
+            .collection-sidebar {
+                margin-bottom: 2rem;
+                @include media-breakpoint-down(md) {
+                    & {
+                        margin-bottom: 0;
                     }
-                    &[aria-expanded='true'] {
-                        &::before {
-                            transform: rotate(-134deg);
+                }
+            }
+            .filters {
+                width: 100%;
+                &_body {
+                    display: flex;
+                    flex-wrap: wrap;
+                    .sidebar-widget {
+                        flex: 0 0 calc(25% - 10px);
+                        max-width: calc(25% - 10px);
+                        border-radius: $radius4;
+                        padding: 0;
+                        margin: 0;
+                        margin-#{$end-direction}: 10px;
+                        margin-bottom: 1rem;
+                        background-color: $bg-white;
+                        border: none;
+                        position: relative;
+                        @include media-breakpoint-down(md) {
+                            & {
+                                flex: 1;
+                                max-width: none;
+                            }
+                        }
+                        &:after {
+                            content: normal;
+                        }
+                        &:last-child {
+                            margin-#{$end-direction}: 0;
+                        }
+                        &__head {
+                            padding: 1rem;
+                            padding-#{$end-direction}: 35px;
+                            &::before {
+                                content: "";
+                                position: absolute;
+                                top: calc(50% - 6px);
+                                #{$end-direction}: 1rem;
+                                display: inline-block;
+                                border-right: 1px solid black;
+                                border-bottom: 1px solid black;
+                                width: 8px;
+                                height: 8px;
+                                transform: rotate(45deg);
+                                transform-origin: center;
+                                transition: all 0.5s ease;
+                            }
+                            &[aria-expanded='true'] {
+                                &::before {
+                                    top: calc(50% - 1px);
+                                    transform: rotate(-134deg);
+                                }
+                            }
+                        }
+                        &__body {
+                            padding: 1rem;
+                            position: absolute;
+                            z-index: 1;
+                            top: 100%;
+                            left: 0;
+                            right: 0;
+                            background-color: $bg-white;
                         }
                     }
                 }
-                &__body {
-                    padding: 1rem;
-                    position: absolute;
-                    z-index: 1;
-                    top: 100%;
-                    left: 0;
-                    right: 0;
-                    background-color: $bg-white;
+            }
+            .shop-information {
+                display: flex;
+                align-items: center;
+                @include media-breakpoint-down(md) {
+                    & {
+                        flex-direction: column;
+                        padding: 1rem;
+                        align-items: inherit;
+                    }
+                }
+                .shop-logo {
+                    margin: 0;
+                }
+                .shop-info {
+                    display: flex;
+                    align-items: flex-start;
+                    justify-content: space-between;
+                    flex: 1;
+                    text-align: #{$start-direction};
+                    @include media-breakpoint-down(md) {
+                        & {
+                            flex-direction: column;
+                        }
+                    }
+                    .shop-name {
+                        margin: 0 10px;
+                        @include media-breakpoint-down(md) {
+                            & {
+                                margin: 1rem 0;
+                            }
+                        }
+                        .products__rating {
+                            margin: 0;
+                            padding: 0;
+                            justify-content: flex-start;
+                        }
+                    }
+                    .shop-btn-group {
+                        margin: 0 10px;
+                    }
                 }
             }
         }
-    }
-}

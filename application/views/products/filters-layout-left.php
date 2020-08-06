@@ -157,7 +157,7 @@
                             <ul>
                                 <li class="list__item">
                                     <?php if (!(UserAuthentication::isUserLogged()) || (UserAuthentication::isUserLogged() && (User::isBuyer()))) { ?>
-                                    <a href="javascript:void(0)" onclick="saveProductSearch()" class="links btn--filters-control saveSearch-js"><i class="icn">
+                                    <a href="javascript:void(0)" onclick="saveProductSearch()" class="btn btn-primary btn--filters-control saveSearch-js"><i class="icn">
                                         </i><span class="txt"><?php echo Labels::getLabel('LBL_Save_Search', $siteLangId); ?></span></a>
                                     <?php } ?>
                                 </li>
@@ -165,10 +165,7 @@
                                     <?php echo $frmProductSearch->getFieldHtml('sortBy'); ?></li>
                                 <li>
                                     <?php echo $frmProductSearch->getFieldHtml('pageSize'); ?></li>
-                                    <li class="d-none d-md-block">
-                                        <button class="btn btn-filters" type="button" onclick="this.classList.toggle('active')">
-                                       Filters
-                                    </button></li>
+                                   
                                 <li class="d-none d-md-block">
                                     <div class="list-grid-toggle switch--link-js">
                                         <div class="icon">

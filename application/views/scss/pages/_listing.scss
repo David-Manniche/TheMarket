@@ -1,10 +1,12 @@
 .collection-sidebar {
     flex-grow: 0;
     flex-basis: 0;
-    margin-#{$end-direction}: 2rem;
+    background: $bg-gray;
+    border-radius: $radius4;
+    display: block;
     @include media-breakpoint-down(md) {
         & {
-            background-color: #fff;
+            border-radius: 0;
             position: fixed;
             -webkit-overflow-scrolling: touch;
             top: 0;
@@ -19,7 +21,6 @@
             transition: left 0.3s ease, right 0.3s ease;
         }
         .collection-sidebar--on & {
-            background: $gray-light;
             padding: 0;
             #{$start-direction}: 0;
             visibility: visible;
@@ -217,10 +218,11 @@
         border: none;
     }
     ul li a {
-        font-size: 0.875em;
+        font-size: 0.875rem;
         position: relative;
         color: $body-color;
         margin: 0px 0;
+        padding: 0;
         display: inline-block;
         &:hover {
             color: $brand-color;
@@ -351,6 +353,7 @@
 }
 
 .prices {
+    padding: 0 1rem;
     padding-bottom: 60px;
     font-size: 0.8rem;
 }

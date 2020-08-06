@@ -50,9 +50,7 @@
     <div class="content" data-content="">
         <div class="container">
             <div class="main">
-
                 <main class="main__content">
-
                     <!-- begin::Step -->
                     <div class="step active" role="step:1">
                         <div class="step__section">
@@ -152,7 +150,6 @@
                     <!-- end::Step -->
                     <!-- begin::Step -->
                     <div class="step active" role="step:2">
-
                         <div class="step__section">
                             <div class="step__section__head">
                                 <h5 class="step__section__head__title">Delivery detail</h5>
@@ -164,39 +161,58 @@
                                         </svg> </i> Add a new address</a>
                             </div>
                             <ul class="list-group list-addresses list-addresses-view">
-                                <li class="list-group-item">
-                                    <div class="tags">
-                                        <div class="tags__inner">
-                                            <span class="tag address_lable">Home</span>
-                                        </div>
-                                    </div>
+                                <li class="list-group-item ">
                                     <div class="row">
                                         <div class="col-auto"><label class="checkbox"><input title="" type="checkbox"
                                                     value="1"><i class="input-helper"></i>
                                             </label></div>
 
                                         <div class="col">
-                                            <address class="">Plot 268, First Floor, <br>Sector 82, JLPL
-                                                Industrial Area, Punjab 140308</address>
+                                            <div class="delivery-address">
+                                                <h5>Pawan <span class="tag">Home</span></h5>
+                                                <p>Plot 268, First Floor, <br>Sector 82, JLPL
+                                                    Industrial Area, Punjab 140308</p>
+
+                                                <p class="phone-txt">9888881405</p>
+                                            </div>
                                         </div>
 
                                     </div>
                                 </li>
-
                                 <li class="list-group-item">
-                                    <div class="tags">
-                                        <div class="tags__inner">
-                                            <span class="tag address_lable">Office</span>
-                                        </div>
-                                    </div>
                                     <div class="row">
                                         <div class="col-auto"><label class="checkbox"><input title="" type="checkbox"
-                                                    value="1" checked=""><i class="input-helper"></i>
+                                                    value="1"><i class="input-helper"></i>
                                             </label></div>
 
                                         <div class="col">
-                                            <address class="">Plot 268, First Floor, <br>Sector 82, JLPL
-                                                Industrial Area, Punjab 140308</address>
+                                            <div class="delivery-address">
+                                                <h5>Pawan <span class="tag">Factory</span></h5>
+                                                <p>Plot 268, First Floor, <br>Sector 82, JLPL
+                                                    Industrial Area, Punjab 140308</p>
+
+                                                <p class="phone-txt">9888881405</p>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                </li>
+                                <li class="list-group-item selected">
+                                    <div class="row">
+                                        <div class="col-auto"><label class="checkbox"><input title="" type="checkbox"
+                                                    value="1" checked><i class="input-helper"></i>
+                                            </label></div>
+
+                                        <div class="col">
+                                            <div class="delivery-address">
+                                                <h5>Anup <span class="tag">Office</span></h5>
+                                                <p>Plot 268, First Floor, <br>Sector 82, JLPL
+                                                    Industrial Area, Punjab 140308</p>
+
+                                                <p class="phone-txt">9888881405</p>
+                                            </div>
+                                        </div>
+                                        <div class="col-auto">
                                             <ul class="list-actions">
                                                 <li>
                                                     <a href="#"><svg class="svg">
@@ -213,8 +229,8 @@
                                                         </svg>
                                                     </a></li>
                                             </ul>
-                                        </div>
 
+                                        </div>
                                     </div>
                                 </li>
                             </ul>
@@ -309,11 +325,11 @@
                         </div>
                         <div class="step__footer">
                             <a class="btn btn-outline-gray btn-arrow " href="#">
-                            <svg class="svg">
-                                        <use xlink:href="../images/retina/sprite.svg#arrow-left"
-                                            href="../images/retina/sprite.svg#arrow-left">
-                                        </use>
-                                    </svg>
+                                <svg class="svg">
+                                    <use xlink:href="../images/retina/sprite.svg#arrow-left"
+                                        href="../images/retina/sprite.svg#arrow-left">
+                                    </use>
+                                </svg>
                                 <span class="">Back </span></a>
                             <button name="button" type="button" class="btn btn-primary btn-wide">Continue</button>
 
@@ -661,7 +677,7 @@
                                             data-original-title="product name"><img
                                                 src="../images//products/product-thumb.jpg" alt=""></span></li>
 
-                                    <li> <span class="circle plus-more">+5 more</span></li>
+                                    <li> <span class="circle plus-more">+5</span></li>
                                 </ul>
                             </div>
                             <div class="review-block__link" role="cell">
@@ -747,13 +763,9 @@
                                             role="tab" aria-controls="paycash" aria-selected="false">Paycash</a>
                                     </li>
                                 </ul>
-
-
-
                                 <div class="tab-content" id="">
                                     <div class="tab-pane fade show active" id="credit" role="tabpanel"
                                         aria-labelledby="credit-tab">
-
                                         <ul class="list-group payment-card payment-card-view">
                                             <li class="list-group-item">
                                                 <div class="row">
@@ -763,20 +775,14 @@
                                                         </label></div>
                                                     <div class="col">
                                                         <div class="payment-card__photo">
-                                                            <svg class="svg payment-list__item" viewBox="0 0 38 24"
-                                                                xmlns="http://www.w3.org/2000/svg" role="img" width="38"
-                                                                height="24" aria-labelledby="pi-visa">
-                                                                <title id="pi-visa">Visa</title>
-                                                                <path opacity=".07"
-                                                                    d="M35 0H3C1.3 0 0 1.3 0 3v18c0 1.7 1.4 3 3 3h32c1.7 0 3-1.3 3-3V3c0-1.7-1.4-3-3-3z">
-                                                                </path>
-                                                                <path fill="#fff"
-                                                                    d="M35 1c1.1 0 2 .9 2 2v18c0 1.1-.9 2-2 2H3c-1.1 0-2-.9-2-2V3c0-1.1.9-2 2-2h32">
-                                                                </path>
-                                                                <path
-                                                                    d="M28.3 10.1H28c-.4 1-.7 1.5-1 3h1.9c-.3-1.5-.3-2.2-.6-3zm2.9 5.9h-1.7c-.1 0-.1 0-.2-.1l-.2-.9-.1-.2h-2.4c-.1 0-.2 0-.2.2l-.3.9c0 .1-.1.1-.1.1h-2.1l.2-.5L27 8.7c0-.5.3-.7.8-.7h1.5c.1 0 .2 0 .2.2l1.4 6.5c.1.4.2.7.2 1.1.1.1.1.1.1.2zm-13.4-.3l.4-1.8c.1 0 .2.1.2.1.7.3 1.4.5 2.1.4.2 0 .5-.1.7-.2.5-.2.5-.7.1-1.1-.2-.2-.5-.3-.8-.5-.4-.2-.8-.4-1.1-.7-1.2-1-.8-2.4-.1-3.1.6-.4.9-.8 1.7-.8 1.2 0 2.5 0 3.1.2h.1c-.1.6-.2 1.1-.4 1.7-.5-.2-1-.4-1.5-.4-.3 0-.6 0-.9.1-.2 0-.3.1-.4.2-.2.2-.2.5 0 .7l.5.4c.4.2.8.4 1.1.6.5.3 1 .8 1.1 1.4.2.9-.1 1.7-.9 2.3-.5.4-.7.6-1.4.6-1.4 0-2.5.1-3.4-.2-.1.2-.1.2-.2.1zm-3.5.3c.1-.7.1-.7.2-1 .5-2.2 1-4.5 1.4-6.7.1-.2.1-.3.3-.3H18c-.2 1.2-.4 2.1-.7 3.2-.3 1.5-.6 3-1 4.5 0 .2-.1.2-.3.2M5 8.2c0-.1.2-.2.3-.2h3.4c.5 0 .9.3 1 .8l.9 4.4c0 .1 0 .1.1.2 0-.1.1-.1.1-.1l2.1-5.1c-.1-.1 0-.2.1-.2h2.1c0 .1 0 .1-.1.2l-3.1 7.3c-.1.2-.1.3-.2.4-.1.1-.3 0-.5 0H9.7c-.1 0-.2 0-.2-.2L7.9 9.5c-.2-.2-.5-.5-.9-.6-.6-.3-1.7-.5-1.9-.5L5 8.2z"
-                                                                    fill="#142688"></path>
+                                                            <svg class="svg">
+                                                                <use xlink:href="../images/retina/sprite.svg#visa"
+                                                                    href="../images/retina/sprite.svg#visa">
+                                                                </use>
                                                             </svg>
+
+
+
                                                         </div>
                                                     </div>
                                                     <div class="col">
@@ -813,20 +819,12 @@
                                                         </label></div>
                                                     <div class="col">
                                                         <div class="payment-card__photo">
-                                                            <svg class="svg payment-list__item" viewBox="0 0 38 24"
-                                                                xmlns="http://www.w3.org/2000/svg" role="img" width="38"
-                                                                height="24" aria-labelledby="pi-visa">
-                                                                <title id="pi-visa">Visa</title>
-                                                                <path opacity=".07"
-                                                                    d="M35 0H3C1.3 0 0 1.3 0 3v18c0 1.7 1.4 3 3 3h32c1.7 0 3-1.3 3-3V3c0-1.7-1.4-3-3-3z">
-                                                                </path>
-                                                                <path fill="#fff"
-                                                                    d="M35 1c1.1 0 2 .9 2 2v18c0 1.1-.9 2-2 2H3c-1.1 0-2-.9-2-2V3c0-1.1.9-2 2-2h32">
-                                                                </path>
-                                                                <path
-                                                                    d="M28.3 10.1H28c-.4 1-.7 1.5-1 3h1.9c-.3-1.5-.3-2.2-.6-3zm2.9 5.9h-1.7c-.1 0-.1 0-.2-.1l-.2-.9-.1-.2h-2.4c-.1 0-.2 0-.2.2l-.3.9c0 .1-.1.1-.1.1h-2.1l.2-.5L27 8.7c0-.5.3-.7.8-.7h1.5c.1 0 .2 0 .2.2l1.4 6.5c.1.4.2.7.2 1.1.1.1.1.1.1.2zm-13.4-.3l.4-1.8c.1 0 .2.1.2.1.7.3 1.4.5 2.1.4.2 0 .5-.1.7-.2.5-.2.5-.7.1-1.1-.2-.2-.5-.3-.8-.5-.4-.2-.8-.4-1.1-.7-1.2-1-.8-2.4-.1-3.1.6-.4.9-.8 1.7-.8 1.2 0 2.5 0 3.1.2h.1c-.1.6-.2 1.1-.4 1.7-.5-.2-1-.4-1.5-.4-.3 0-.6 0-.9.1-.2 0-.3.1-.4.2-.2.2-.2.5 0 .7l.5.4c.4.2.8.4 1.1.6.5.3 1 .8 1.1 1.4.2.9-.1 1.7-.9 2.3-.5.4-.7.6-1.4.6-1.4 0-2.5.1-3.4-.2-.1.2-.1.2-.2.1zm-3.5.3c.1-.7.1-.7.2-1 .5-2.2 1-4.5 1.4-6.7.1-.2.1-.3.3-.3H18c-.2 1.2-.4 2.1-.7 3.2-.3 1.5-.6 3-1 4.5 0 .2-.1.2-.3.2M5 8.2c0-.1.2-.2.3-.2h3.4c.5 0 .9.3 1 .8l.9 4.4c0 .1 0 .1.1.2 0-.1.1-.1.1-.1l2.1-5.1c-.1-.1 0-.2.1-.2h2.1c0 .1 0 .1-.1.2l-3.1 7.3c-.1.2-.1.3-.2.4-.1.1-.3 0-.5 0H9.7c-.1 0-.2 0-.2-.2L7.9 9.5c-.2-.2-.5-.5-.9-.6-.6-.3-1.7-.5-1.9-.5L5 8.2z"
-                                                                    fill="#142688"></path>
+                                                            <svg class="svg">
+                                                                <use xlink:href="../images/retina/sprite.svg#dinersclub"
+                                                                    href="../images/retina/sprite.svg#dinersclub">
+                                                                </use>
                                                             </svg>
+
                                                         </div>
                                                     </div>
                                                     <div class="col">
@@ -856,6 +854,90 @@
                                                     </div>
                                                 </div>
                                             </li>
+                                            <li class="list-group-item">
+                                                <div class="row">
+                                                    <div class="col-auto"><label class="checkbox"><input title=""
+                                                                type="checkbox" value="1"><i class="input-helper"></i>
+                                                        </label></div>
+                                                    <div class="col">
+                                                        <div class="payment-card__photo">
+                                                            <svg class="svg">
+                                                                <use xlink:href="../images/retina/sprite.svg#mastercard"
+                                                                    href="../images/retina/sprite.svg#mastercard">
+                                                                </use>
+                                                            </svg>
+
+                                                        </div>
+                                                    </div>
+                                                    <div class="col">
+                                                        <div class="payment-card__number">Ending in
+                                                            <strong>4506</strong></div>
+                                                    </div>
+                                                    <div class="col">
+                                                        <div class="payment-card__name">Pawan kumar</div>
+                                                    </div>
+                                                    <div class="col">
+                                                        <div class="payment-card__expiry">Expiry
+                                                            <strong>02/2023</strong></div>
+                                                    </div>
+                                                    <div class="col-auto">
+                                                        <div class="payment-card__actions ">
+                                                            <ul class="list-actions">
+                                                                <li>
+                                                                    <a href="#"><svg class="svg" width="24px"
+                                                                            height="24px">
+                                                                            <use xlink:href="../images/retina/sprite.svg#remove"
+                                                                                href="../images/retina/sprite.svg#remove">
+                                                                            </use>
+                                                                        </svg>
+                                                                    </a></li>
+                                                            </ul>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </li>
+                                            <li class="list-group-item">
+                                                <div class="row">
+                                                    <div class="col-auto"><label class="checkbox"><input title=""
+                                                                type="checkbox" value="1"><i class="input-helper"></i>
+                                                        </label></div>
+                                                    <div class="col">
+                                                        <div class="payment-card__photo">
+                                                            <svg class="svg">
+                                                                <use xlink:href="../images/retina/sprite.svg#americanexpress"
+                                                                    href="../images/retina/sprite.svg#americanexpress">
+                                                                </use>
+                                                            </svg>
+
+                                                        </div>
+                                                    </div>
+                                                    <div class="col">
+                                                        <div class="payment-card__number">Ending in
+                                                            <strong>4506</strong></div>
+                                                    </div>
+                                                    <div class="col">
+                                                        <div class="payment-card__name">Pawan kumar</div>
+                                                    </div>
+                                                    <div class="col">
+                                                        <div class="payment-card__expiry">Expiry
+                                                            <strong>02/2023</strong></div>
+                                                    </div>
+                                                    <div class="col-auto">
+                                                        <div class="payment-card__actions ">
+                                                            <ul class="list-actions">
+                                                                <li>
+                                                                    <a href="#"><svg class="svg" width="24px"
+                                                                            height="24px">
+                                                                            <use xlink:href="../images/retina/sprite.svg#remove"
+                                                                                href="../images/retina/sprite.svg#remove">
+                                                                            </use>
+                                                                        </svg>
+                                                                    </a></li>
+                                                            </ul>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </li>                                       
 
                                         </ul>
                                         <div class="my-3 text-right">
@@ -865,10 +947,7 @@
                                                             href="../images/retina/sprite.svg#add">
                                                         </use>
                                                     </svg> </i> Add a new card</a>
-
                                         </div>
-
-
                                         <div class="bg-gray p-4">
                                             <form class="form form form-floating" action="">
                                                 <div class="row">
@@ -968,11 +1047,7 @@
                                                 <span class="label">Total</span> <span class="ml-auto">$89.00</span>
                                             </li>
                                         </ul>
-                                        <p class="earn-points"><svg class="svg" width="20px" height="20px">
-                                                <use xlink:href="../images/retina/sprite.svg#rewards"
-                                                    href="../images/retina/sprite.svg#rewards">
-                                                </use>
-                                            </svg> You will earn 575 points </p>
+
 
                                     </div>
                                 </div>

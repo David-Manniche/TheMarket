@@ -26,6 +26,7 @@ if (isset($prodcat_code)) {
         <input name="btnSrchSubmit" value="" class="input-submit" type="submit">
     </form>-->
     <?php
+    $searchFrm->addFormTagAttribute('class', 'form');
     echo $searchFrm->getFormTag();
     $fld = $searchFrm->getField('keyword');
     $fld->addFieldTagAttribute("class", "input-field nofocus");
@@ -43,15 +44,15 @@ if (isset($prodcat_code)) {
 
 <!--Categories Filters[ resetAll-->
 <div class="filters_body"> 
-    <?php if (isset($categoriesArr) && $categoriesArr) { ?>
+<?php if (isset($categoriesArr) && $categoriesArr) { ?>
     <div class="sidebar-widget dropdown">
         <div class="sidebar-widget__head " data-toggle="dropdown">
-            <?php echo Labels::getLabel('LBL_Categories', $siteLangId); ?> </div>
-        <?php if (!$shopCatFilters) { 
-                ?>
-        <div class="sidebar-widget__body dropdown-menu dropdown-menu-anim" >
-            <div id="accordian" class="cat-accordion toggle-target scrollbar-filters">
-                <ul class="">
+            <?php echo Labels::getLabel('LBL_Categories', $siteLangId); ?> 
+        </div>
+        <?php if (!$shopCatFilters) { ?>
+            <div class="sidebar-widget__body dropdown-menu dropdown-menu-anim" >
+                <div id="accordian" class="cat-accordion toggle-target scrollbar-filters">
+                <ul >
                     <?php foreach ($categoriesArr as $cat) {
                     $catUrl = UrlHelper::generateUrl('category', 'view', array($cat['prodcat_id'])); ?>
                     <li>
@@ -112,49 +113,44 @@ if (isset($prodcat_code)) {
                     <?php
                 } ?>
                 </ul>
-                <!--<a onClick="alert('Pending')" class="btn btn--link ripplelink"><?php echo Labels::getLabel('LBL_View_more', $siteLangId); ?> </a> -->
+                </div>
             </div>
-        </div>
-    </div>
-<?php
-        } else { //Work in Progress?>
-    <div class="brands-list toggle-target scrollbar-filters" id="scrollbar-filters">
-        <ul>
-            <?php
-            $seprator = '&raquo;&raquo;&nbsp;&nbsp;';
-                foreach ($categoriesArr as $cat) {
-                    $catName = $cat['prodcat_name'];
-                    $productCatCode = explode("_", $cat['prodcat_code']);
-                    $productCatName = '';
-                    $seprator = '';
-                    foreach ($productCatCode as $code) {
-                        $code = FatUtility::int($code);
-                        if ($code) {
-                            if (isset($categoriesArr[$code]['prodcat_name'])) {
-                                $productCatName .= $seprator . $categoriesArr[$code]['prodcat_name'];
-                                $seprator = '&raquo;&raquo;&nbsp;&nbsp;';
-                            }
-                        }
-                    } ?>
-            <li>
-                <label class="checkbox brand" id="prodcat_<?php echo $cat['prodcat_id']; ?>"><input name="category"
-                        value="<?php echo $cat['prodcat_id']; ?>" type="checkbox" data-title="<?php echo $catName; ?>" <?php if (in_array($cat['prodcat_id'], $prodcatArr)) {
-                        echo "checked";
-                    } ?>><i class="input-helper"></i><?php echo $productCatName; ?></label></a>
-            </li>
+        <?php } else {?>  
+            <div class="sidebar-widget__body dropdown-menu dropdown-menu-anim" >  
+                <div class="scrollbar-filters" id="scrollbar-filters">
+                    <ul class="list-vertical">
+                        <?php
+                        $seprator = '&raquo;&raquo;&nbsp;&nbsp;';
+                            foreach ($categoriesArr as $cat) {
+                                $catName = $cat['prodcat_name'];
+                                $productCatCode = explode("_", $cat['prodcat_code']);
+                                $productCatName = '';
+                                $seprator = '';
+                                foreach ($productCatCode as $code) {
+                                    $code = FatUtility::int($code);
+                                    if ($code) {
+                                        if (isset($categoriesArr[$code]['prodcat_name'])) {
+                                            $productCatName .= $seprator . $categoriesArr[$code]['prodcat_name'];
+                                            $seprator = '&raquo;&raquo;&nbsp;&nbsp;';
+                                        }
+                                    }
+                                } ?>
+                        <li>
+                            <label class="checkbox brand" id="prodcat_<?php echo $cat['prodcat_id']; ?>"><input name="category"
+                                    value="<?php echo $cat['prodcat_id']; ?>" type="checkbox" data-title="<?php echo $catName; ?>" <?php if (in_array($cat['prodcat_id'], $prodcatArr)) {
+                                    echo "checked";
+                                } ?>><i class="input-helper"></i><?php echo $productCatName; ?></label></a>
+                        </li>
 
-            <?php
-                } ?>
-        </ul>
-        <!--<a onClick="alert('Pending')" class="btn btn--link ripplelink"><?php echo Labels::getLabel('LBL_View_More', $siteLangId); ?> </a> -->
-    </div>
-
-<?php
-        } ?>
-
-<?php
-    }
-  ?>
+                        <?php
+                            } ?>
+                    </ul>
+                    <!--<a onClick="alert('Pending')" class="btn btn--link ripplelink"><?php echo Labels::getLabel('LBL_View_More', $siteLangId); ?> </a> -->
+                </div>
+            </div>
+        <?php }?>   
+    </div>    
+<?php }?>    
 <!-- ] -->
 
 <!--Price Filters[ -->
@@ -336,9 +332,10 @@ if (isset($prodcat_code)) {
     </div>
             <!-- ] -->
 			<div class="selected-filters" id="filters">
+            <span class="chip more">+10</span>
 				<a href="javascript:void(0)" class="resetAll link" id="resetAll" onClick="resetListingFilter()"
 					style="display:none;">
-					<?php echo Labels::getLabel('LBL_Reset_All', $siteLangId);?>
+					<?php echo Labels::getLabel('LBL_Clear_All', $siteLangId);?>
 				</a>
 			</div>
             <script language="javascript">
@@ -481,5 +478,8 @@ if (isset($prodcat_code)) {
                     closest_ul.slideDown();
                     link.addClass("is--active");
                 }
+            });
+            $('.dropdown-menu').on('click', function(e) {
+                e.stopPropagation();
             });
             </script>

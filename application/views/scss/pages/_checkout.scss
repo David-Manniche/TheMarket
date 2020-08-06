@@ -191,7 +191,7 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 0.5rem;
+            margin-bottom: 0.8rem;
             &__title {
                 margin: 0;
                 small {
@@ -229,7 +229,7 @@
         flex: 1;
         padding-#{$end-direction}: 1rem;
         .selected-slot {
-            font-weight: 500;
+            font-weight: 600;
             padding-top: 0.5rem;
             display: block;
         }
@@ -368,10 +368,13 @@
         .time-slot {
             display: flex;
             flex-wrap: wrap;
+            justify-content: space-between;
             li {
                 padding-right: 10px;
                 margin-bottom: 10px;
                 position: relative;
+                flex: 0 0 50%;
+                max-width: 50%;
                 .control-input {
                     position: absolute;
                     opacity: 0;
@@ -383,6 +386,7 @@
                     }
                 }
                 .control-label {
+                    display: block;
                     background: $bg-white;
                     border: $border;
                     border-radius: $radius2;
@@ -394,6 +398,7 @@
                     .time {
                         padding: 0.5rem 0.7rem;
                         display: block;
+                        text-align: center;
                     }
                 }
             }
@@ -490,27 +495,36 @@
 
 .list-addresses {
     .list-group-item {
-        padding: 2rem;
+        padding: 1rem;
         position: relative;
-        .row {
-            align-items: flex-end;
-        }
-        address {
+        .delivery-address {
             font-size: 0.85rem;
             color: $txt-gray;
             line-height: 1.5;
             margin: 0;
+            h5 {
+                font-weight: 600;
+                font-size: 0.9rem;
+                margin-bottom: 10px;
+            }
+            .tag {
+                margin: 0 5px;
+                border: solid 1px $success-color;
+                border-radius: 40px;
+                color: $success-color;
+                padding: 2px 0.6rem;
+                line-height: 1;
+                font-size: 0.75rem;
+                font-weight: 400;
+                text-transform: uppercase;
+            }
+            .phone-txt {
+                margin-top: 5px;
+                font-weight: 600;
+            }
         }
         .list-actions {
             margin-top: 0.5rem;
-        }
-    }
-    &-view {
-        .list-group-item {
-            padding: 1rem;
-            .row {
-                align-items: center;
-            }
         }
     }
     .tags-addresses {
@@ -574,13 +588,8 @@
     }
     &__photo {
         .svg {
-            width: 3.5rem;
-            height: 100%;
-            @include media-breakpoint-down(md) {
-                & {
-                    width: 2rem;
-                }
-            }
+            width: 38px;
+            height: 24px;
         }
     }
     &-view {
