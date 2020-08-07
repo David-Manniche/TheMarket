@@ -8,25 +8,36 @@
 }
 
 .header-checkout {
-    padding: 1.5rem 0;
-    background: transparent;
+    background: $bg-white;
     background-size: cover;
-    display: block;
     border-bottom: $border;
     display: flex;
     flex-direction: column;
     justify-content: center;
+    position: sticky;
+    top: 0;
+    z-index: 2;
+    &_inner {
+        padding: 1.5rem 0;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        @include media-breakpoint-down(md) {
+            & {
+                padding: 0;
+            }
+        }
+    }
     .logo-checkout-main {
         max-width: 150px;
         display: block;
-        margin: 1rem auto;
+        margin: 1rem 0;
     }
 }
 
 .order-summary-toggle {
-    background: #fafafa;
+    background: $bg-gray;
     border: none;
-    border-top: $border;
     border-bottom: $border;
     padding: 1.25em 0;
     -webkit-flex-shrink: 0;
@@ -66,9 +77,6 @@
 }
 
 .content {
-    display: -webkit-box;
-    display: -webkit-flex;
-    display: -ms-flexbox;
     display: flex;
     -webkit-box-orient: vertical;
     -webkit-box-direction: normal;
@@ -95,9 +103,6 @@
     }
     @include media-breakpoint-up(xl) {
         .main {
-            display: -webkit-box;
-            display: -webkit-flex;
-            display: -ms-flexbox;
             display: flex;
             -webkit-box-orient: vertical;
             -webkit-box-direction: normal;
@@ -110,7 +115,7 @@
             flex: 1 0 auto;
             background: none;
             height: auto;
-            padding: 0;
+            padding: 1rem 0;
             padding-top: 4rem;
             width: 50%;
             padding-#{$end-direction}: 5%;
@@ -130,7 +135,7 @@
             color: #525252;
             width: 40%;
             padding-top: 4rem;
-            padding-#{$start-direction}: 5%;
+            padding-#{$start-direction}: 4rem;
             background-position: left top;
             float: #{$end-direction};
             &:after {
@@ -165,29 +170,42 @@
     }
 }
 
+.steps-wrapper {
+    position: relative;
+}
+
 .step {
     width: 100%;
-    height: 0;
-    transition: all 1s ease-out;
-    overflow: hidden;
-    transform: translateY(-100%);
     opacity: 0;
     visibility: hidden;
-    margin-bottom: 8rem;
+    height: 0;
+    overflow: hidden;
+    -webkit-transform: translateX(-72px);
+    transform: translateX(-72px);
+    -webkit-transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+    transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
     &.active {
-        height: auto;
-        overflow: visible;
-        visibility: visible;
-        transform: translateY(0);
         opacity: 1;
+        visibility: visible;
+        height: auto;
+        overflow: inherit;
+        -webkit-transform: translateX(0) scale(1);
+        transform: translateX(0) scale(1);
+        -webkit-transition-delay: 0.4s;
+        transition-delay: 0.4s;
     }
     &__section {
-        .step-title {
-            font-size: 1rem;
-            font-weight: 400;
-            small {
-                display: block;
-                font-size: 0.8rem;
+        &__head {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.8rem;
+            &__title {
+                margin: 0;
+                small {
+                    display: block;
+                    font-size: 0.8rem;
+                }
             }
         }
     }
@@ -200,6 +218,14 @@
             order: 2;
         }
     }
+}
+
+.checkout-actions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 2rem;
+    width: 100%;
 }
 
 .review-block {
@@ -219,7 +245,7 @@
         flex: 1;
         padding-#{$end-direction}: 1rem;
         .selected-slot {
-            font-weight: 500;
+            font-weight: 600;
             padding-top: 0.5rem;
             display: block;
         }
@@ -316,10 +342,23 @@
         padding: 1rem;
         display: flex;
         justify-content: space-between;
+        flex-wrap: wrap;
+        @include media-breakpoint-down(md) {
+            & {
+                flex-direction: column;
+            }
+        }
         &__list {
-            flex: 0 0 44%;
-            max-width: 44%;
+            flex: 1;
             padding-#{$end-direction}: 2rem;
+            @include media-breakpoint-down(md) {
+                & {
+                    flex: auto;
+                    max-width: none;
+                    padding: 0;
+                    padding-bottom: 2rem;
+                }
+            }
             li {
                 padding-bottom: 1rem;
                 .radio {
@@ -327,8 +366,12 @@
                 }
             }
         }
+        .pickup-time {
+            flex: 1;
+        }
         .lb-txt {
             font-size: 0.8rem;
+            margin-top: -4px;
         }
     }
     .pickup-time {
@@ -341,10 +384,13 @@
         .time-slot {
             display: flex;
             flex-wrap: wrap;
+            justify-content: space-between;
             li {
                 padding-right: 10px;
                 margin-bottom: 10px;
                 position: relative;
+                flex: 0 0 50%;
+                max-width: 50%;
                 .control-input {
                     position: absolute;
                     opacity: 0;
@@ -356,6 +402,7 @@
                     }
                 }
                 .control-label {
+                    display: block;
                     background: $bg-white;
                     border: $border;
                     border-radius: $radius2;
@@ -367,6 +414,7 @@
                     .time {
                         padding: 0.5rem 0.7rem;
                         display: block;
+                        text-align: center;
                     }
                 }
             }
@@ -463,24 +511,39 @@
 
 .list-addresses {
     .list-group-item {
-        padding: 2rem;
+        padding: 1rem;
         position: relative;
-        .row {
-            align-items: flex-end;
+        &.selected {
+            box-shadow: 0 0 5px rgba(40, 44, 63, .15);
         }
-        address {
+        .delivery-address {
             font-size: 0.85rem;
             color: $txt-gray;
             line-height: 1.5;
-            margin-bottom: 1rem;
-        }
-    }
-    &-view {
-        .list-group-item {
-            padding: 1rem;
-            .row {
-                align-items: center;
+            margin: 0;
+            h5 {
+                font-weight: 600;
+                font-size: 0.9rem;
+                margin-bottom: 10px;
             }
+            .tag {
+                margin: 0 5px;
+                border: solid 1px $success-color;
+                border-radius: 40px;
+                color: $success-color;
+                padding: 2px 0.6rem;
+                line-height: 1;
+                font-size: 0.75rem;
+                font-weight: 400;
+                text-transform: uppercase;
+            }
+            .phone-txt {
+                margin-top: 5px;
+                font-weight: 600;
+            }
+        }
+        .list-actions {
+            margin-top: 0.5rem;
         }
     }
     .tags-addresses {
@@ -544,19 +607,8 @@
     }
     &__photo {
         .svg {
-            width: 60px;
-            height: 100%;
-        }
-    }
-    @include media-breakpoint-down(sm) {
-        &__name {
-            padding: 10px 0;
-        }
-        &__expiry {
-            padding-bottom: 10px;
-        }
-        &__number {
-            padding-top: 10px;
+            width: 38px;
+            height: 24px;
         }
     }
     &-view {
@@ -564,7 +616,44 @@
             padding: 1rem;
             .row {
                 align-items: center;
+                @include media-breakpoint-down(md) {
+                    & {
+                        flex-wrap: nowrap;
+                        overflow-x: auto;
+                        align-items: inherit;
+                    }
+                }
             }
         }
+    }
+}
+
+.list-shippings {
+    margin-bottom: 1.5rem;
+    .shipping-select {
+        align-items: center;
+        padding: 0.5rem 1rem;
+        .shop-name {
+            font-size: 0.85rem;
+            color: $txt-gray;
+            font-weight: 600;
+        }
+        background-color: $bg-gray;
+        .shipping-method {
+            max-width: 50%;
+            font-size: 0.8rem;
+            &_messages {
+                font-size: inherit;
+            }
+            .form-control {
+                font-size: inherit;
+            }
+        }
+    }
+    .product-profile__thumbnail img {
+        max-width: 90px;
+    }
+    .quantity {
+        margin-top: 0.5rem;
     }
 }

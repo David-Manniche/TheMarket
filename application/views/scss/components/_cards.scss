@@ -6,15 +6,12 @@
     border-radius: 6px;
     /*margin-bottom: 1rem;*/
     height: 100%;
-
     @include media-breakpoint-down(md) {
         & {
             word-break: normal;
         }
     }
-
-
-    .cards-header {
+    &-header {
         display: -webkit-box;
         display: -ms-flexbox;
         display: flex;
@@ -25,25 +22,21 @@
         -ms-flex-align: center;
         align-items: center;
         padding: 1.5rem;
-		color: $body-color;
-
+        color: $body-color;
         .cards-title {
             margin-bottom: 0;
             font-weight: 400;
             font-size: 1.1rem;
-
             a {
                 color: $body-color;
             }
         }
-
-        & ~ .cards-content {
+        &~.cards-content {
             padding-top: 0;
         }
     }
-
-    .cards-content {
-        padding:1rem 1.5rem;
+    &-content {
+        padding: 1rem;
         /*height: inherit;*/
     }
 }

@@ -1,7 +1,7 @@
 <?php defined('SYSTEM_INIT') or die('Invalid Usage.');?>
 <section class="checkout">
     <header class="header-checkout" data-header="" role="header-checkout">
-        <?php if (FatApp::getConfig('CONF_AUTO_RESTORE_ON', FatUtility::VAR_INT, 1) && CommonHelper::demoUrl()) {
+       <div class="container header-checkout_inner"> <?php if (FatApp::getConfig('CONF_AUTO_RESTORE_ON', FatUtility::VAR_INT, 1) && CommonHelper::demoUrl()) {
                     $this->includeTemplate('restore-system/top-header.php');
                     $this->includeTemplate('restore-system/page-content.php');
                 }
@@ -31,6 +31,7 @@
             <div id="step2" class="progress-step checkoutNav-js payment-js"><?php echo Labels::getLabel('LBL_Payment', $siteLangId); ?>
             </div>
             <?php } ?>
+        </div>
         </div>
         <?php }?>
     </header>

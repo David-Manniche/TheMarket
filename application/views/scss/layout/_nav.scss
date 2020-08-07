@@ -28,6 +28,41 @@
             }
         }
     }
+    .more {
+        cursor: pointer;
+        z-index: 1;
+        @include media-breakpoint-down(lg) {
+            & {
+                width: auto;
+                padding: 15px 10px;
+                height: auto;
+            }
+        }
+        span {
+            display: none;
+            @include media-breakpoint-down(lg) {
+                & {
+                    display: block;
+                    &:after,
+                    &:before {
+                        content: normal;
+                    }
+                }
+            }
+        }
+        i.icn {
+            @include media-breakpoint-down(lg) {
+                & {
+                    display: none;
+                }
+            }
+            svg {
+                width: 28px;
+                height: auto;
+                fill: $brand-color;
+            }
+        }
+    }
 }
 
 .navigations {
@@ -403,6 +438,8 @@
     }
 }
 
+
+/*
 .arrow {
     display: inline-block;
     height: 0px;
@@ -435,39 +472,4 @@
         }
     }
 }
-
-.more {
-    cursor: pointer;
-    z-index: 1;
-    @include media-breakpoint-down(lg) {
-        & {
-            width: auto;
-            padding: 15px 10px;
-            height: auto;
-        }
-    }
-    span {
-        display: none;
-        @include media-breakpoint-down(lg) {
-            & {
-                display: block;
-                &:after,
-                &:before {
-                    content: normal;
-                }
-            }
-        }
-    }
-    i.icn {
-        @include media-breakpoint-down(lg) {
-            & {
-                display: none;
-            }
-        }
-        svg {
-            width: 28px;
-            height: auto;
-            fill: $brand-color;
-        }
-    }
-}
+*/

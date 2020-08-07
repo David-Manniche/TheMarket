@@ -3,15 +3,8 @@
     <section class="section cart-page">
         <div class="container">
             <div class="row justify-content-center">
-                <div class="col-md-10" id="cartList">
-         <?php /* <div class="section-head">
-                <div class="section__heading"><h2><?php echo Labels::getLabel('LBL_Shopping_Cart', $siteLangId); ?></h2></div>
-                    <div class="section__action">
-                    <?php /* if($total > 0) { ?>
-                        <a href="javascript:void(0)" onclick="cart.remove('all','cart')" class="btn btn-outline-primary btn-sm emtyCartBtn-js"><?php echo Labels::getLabel('LBL_Empty_Cart', $siteLangId); ?></a>
-                    <?php } /?>
-                    </div>
-                </div> <?php */?>            
+                <div class="col-md-10" id="cartList"></div>
+            </div>
         </div>
     </section>
 </div>

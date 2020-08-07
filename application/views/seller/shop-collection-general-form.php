@@ -1,16 +1,12 @@
 <?php defined('SYSTEM_INIT') or die('Invalid Usage.'); ?>
-<div class="col-lg-12 col-md-12">
-    <div class="content-header row">
-        <div class="col"><h5 class="cards-title"><?php echo Labels::getLabel('LBL_Shop_Collections', $siteLangId); ?></h5></div>
-        <div class="content-header-right col-auto">
-            <div class="btn-group">
-                <a href="javascript:void(0)" onClick="shopCollections(this)" class="btn btn-outline-primary btn-sm"><?php echo Labels::getLabel('LBL_Back_to_Collections', $siteLangId);?></a>
-            </div>
+<div class="cards">
+    <div class="cards-header">
+        <h5 class="cards-title"><?php echo Labels::getLabel('LBL_Shop_Collections', $siteLangId); ?></h5>
+        <div class="">
+            <a href="javascript:void(0)" onClick="shopCollections(this)" class="btn btn-outline-primary btn-sm"><?php echo Labels::getLabel('LBL_Back_to_Collections', $siteLangId);?></a>
         </div>
     </div>
-</div>
-<div class="col-lg-12 col-md-12">
-    <div class="tabs__content">
+    <div class="cards-content">
         <div class="row ">
             <div class="col-md-12">
                 <div class="">
@@ -53,7 +49,7 @@
                         $IDFld->setFieldTagAttribute('id', "scollection_id");
                         $identiFierFld = $colectionForm->getField('scollection_identifier');
                         $identiFierFld->setFieldTagAttribute('onkeyup', "Slugify(this.value,'urlrewrite_custom','scollection_id')");
-                        
+
                         $submitFld = $colectionForm->getField('btn_submit');
                         $submitFld->setFieldTagAttribute('class', "btn btn-primary btn-wide");
                         echo $colectionForm->getFormHtml();

@@ -149,9 +149,7 @@
                                             </ul>
                                         </li>
                                     </ul>
-
                                 </div>
-
                             </li>
                             <li class="has-child"><a href="#">Mega menu 01</a>
                                 <div class="megadrop">
@@ -206,9 +204,7 @@
                                             </ul>
                                         </li>
                                     </ul>
-
                                 </div>
-
                             </li>
                             <li class="has-child"><a href="#">Mega menu 01</a>
                                 <div class="megadrop">
@@ -263,9 +259,7 @@
                                             </ul>
                                         </li>
                                     </ul>
-
                                 </div>
-
                             </li>
                             <li class="has-child"><a href="#">Mega menu 01</a>
                                 <div class="megadrop">
@@ -320,22 +314,12 @@
                                             </ul>
                                         </li>
                                     </ul>
-
                                 </div>
-
                             </li>
                             <li><a href="#">Mega menu 01</a></li>
                             <li class="all-categories"><a href="#">All Categories</a></li>
-
                         </ul>
                     </div>
-
-
-
-
-
-
-
                 </li> <?php */?>
                 <?php
                 foreach ($headerNavigation as $nav) {

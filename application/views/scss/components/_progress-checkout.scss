@@ -8,17 +8,20 @@ $white: #fff;
 .checkout-progress {
     width: 100%;
     max-width: 650px;
-    margin: 1rem auto;
+    margin: 1rem 0;
     position: relative;
     display: flex;
     // Background Track
     .progress-track {
         position: absolute;
         top: 7px;
-        width: 100%;
+        width: 76%;
         height: 2px;
         background-color: $grey2;
         z-index: -1;
+        left: 0;
+        right: 0;
+        margin: 0 auto;
     }
     // Each Step on the Progress Bar
     .progress-step {
@@ -64,7 +67,7 @@ $white: #fff;
             color: $blue;
             &:before {
                 border: 2px solid $grey;
-                animation: pulse 2s infinite;
+                animation: pulsex 2s infinite;
             }
         }
         // Step's complete state
@@ -87,9 +90,7 @@ $white: #fff;
     }
 }
 
-// Animations --------------------------------------
-// Pulse animation for Step's circle in active state
-@keyframes pulse {
+@keyframes pulsex {
     0% {
         box-shadow: 0 0 0 0 rgba(29, 201, 183, 0.4);
     }
@@ -101,7 +102,6 @@ $white: #fff;
     }
 }
 
-// Progressing to next step animation for Step's progress bar
 @keyframes nextStep {
     0% {
         width: 0%;
