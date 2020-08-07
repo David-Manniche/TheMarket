@@ -295,14 +295,14 @@ $(document).on('click','.csvFile-Js',function(){
 				//$('.text-danger').remove();
 				/* $.systemMessage.close();				 */
                 if(ans.status == true){
-					$.mbsmessage(ans.msg,true,'alert--success');
+					$.mbsmessage(ans.msg, true,'alert--success');
 					loadForm('inventoryUpdate');
 				} else {
-					$.mbsmessage(ans.msg,true,'alert--danger');
+					$.mbsmessage(ans.msg, true,'alert--danger');
 				}
-                /*if (typeof ans.CSVfileUrl !== 'undefined') {
+                if (typeof ans.CSVfileUrl !== 'undefined') {
                     location.href = ans.CSVfileUrl;
-                }*/
+                }
 			},
 			error: function( xhr, ajaxOptions, thrownError ) {
 				alert(thrownError + "\r\n" + xhr.statusText + "\r\n" + xhr.responseText);

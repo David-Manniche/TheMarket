@@ -7,27 +7,39 @@
                     <div class="row">
                         <div class="col--first col-lg-6">
                             <span class="page__icon"><i class="ion-android-star"></i></span>
-                            <h5><?php echo Labels::getLabel('LBL_Manage_Pickup_Addresses', $adminLangId); ?></h5> <?php $this->includeTemplate('_partial/header/header-breadcrumb.php'); ?>
+                            <h5><?php echo Labels::getLabel('LBL_Pickup_Addresses', $adminLangId); ?></h5>
+                            <?php $this->includeTemplate('_partial/header/header-breadcrumb.php'); ?>
                         </div>
                     </div>
                 </div>
                 <h1> </h1>
                 <section class="section">
                     <div class="sectionhead">
-                        <h4><?php echo Labels::getLabel('LBL_Pickup_Addresses_Listing', $adminLangId); ?></h4>
+                        <h4></h4>
                         <?php
                         if ($canEdit) {
                             $data = [
                                 'adminLangId' => $adminLangId,
+                                'statusButtons' => false,
                                 'deleteButton' => false,
                                 'otherButtons' => [
                                     [
                                         'attr' => [
                                             'href' => 'javascript:void(0)',
                                             'onclick' => 'addAddressForm(0)',
+                                            'class' => 'js-add-pickup-addr',
                                             'title' => Labels::getLabel('LBL_Add_Pickup_Address', $adminLangId)
                                         ],
                                         'label' => '<i class="fas fa-plus"></i>'
+                                    ],
+                                    [
+                                        'attr' => [
+                                            'href' => 'javascript:void(0)',
+                                            'onclick' => 'searchAddresses()',
+                                            'class' => 'js-pickup-addr d-none',
+                                            'title' => Labels::getLabel('LBL_Back_To_pickup_Addresses', $adminLangId)
+                                        ],
+                                        'label' => '<i class="fas fa-arrow-left"></i>'
                                     ],
                                 ]
                             ];

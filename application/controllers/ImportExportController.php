@@ -777,26 +777,22 @@ class ImportExportController extends SellerBaseController
         $loggedUserId = $this->userParentId;
         $lang_id = FatApp::getPostedData('lang_id', FatUtility::VAR_INT, 0);
         if (!isset($_FILES['file'])) {
-            /* Message::addErrorMessage(Labels::getLabel('MSG_Invalid_File_Upload',$this->siteLangId)); */
             FatUtility::dieJsonError(Labels::getLabel('MSG_Invalid_File_Upload', $this->siteLangId));
         }
 
         if (!is_uploaded_file($_FILES['file']['tmp_name'])) {
-            /* Message::addErrorMessage(Labels::getLabel('MSG_Please_select_a_file',$this->siteLangId)); */
             FatUtility::dieJsonError(Labels::getLabel('MSG_Please_select_a_file', $this->siteLangId));
         }
 
         $uploadedFile = $_FILES['file']['tmp_name'];
         $fileHandle = fopen($uploadedFile, 'r');
         if ($fileHandle == false) {
-            /* Message::addErrorMessage(Labels::getLabel('MSG_Invalid_File_Upload',$this->siteLangId)); */
             FatUtility::dieJsonError(Labels::getLabel('MSG_Invalid_File_Upload', $this->siteLangId));
         }
 
         /* validate file extension[ */
         $mimes = array('application/vnd.ms-excel', 'text/plain', 'text/csv', 'text/tsv', 'application/octet-stream');
         if (!in_array($_FILES['file']['type'], $mimes)) {
-            /* Message::addErrorMessage(Labels::getLabel('MSG_Invalid_File_Upload',$this->siteLangId)); */
             FatUtility::dieJsonError(Labels::getLabel('MSG_Invalid_File_Upload', $this->siteLangId));
         }
         /* ] */
@@ -804,14 +800,18 @@ class ImportExportController extends SellerBaseController
         $firstLine = fgetcsv($fileHandle);
         $defaultColArr = $this->getInventorySheetColoum($this->siteLangId);
         if ($firstLine != $defaultColArr) {
-            /* Message::addErrorMessage(Labels::getLabel('LBL_Sheet_seems_to_be_empty', $this->siteLangId )); */
             FatUtility::dieJsonError(Labels::getLabel('MSG_Invalid_Coloum_CSV_File', $this->siteLangId));
         }
-        $processFile = false;
+        
         $db = FatApp::getDb();
+        $error = false;
+        $row = 1;
 
+        $importExport = new ImportexportCommon();
+        $sheetName = Labels::getLabel('LBL_INVENTORY_UPDATE_ERROR', $this->siteLangId);
+        $CSVfileObj = $importExport->openCSVfileToWrite($sheetName, $this->siteLangId, true);
         while (($dataArray = fgetcsv($fileHandle)) !== false) {
-            //
+            $row++;
             $selprod_id = FatUtility::int($dataArray[0]);
             $selprod_sku = $dataArray[1];
             $selprod_cost_price = FatUtility::float($dataArray[3]);
@@ -820,33 +820,63 @@ class ImportExportController extends SellerBaseController
 
             $productId = SellerProduct::getAttributesById($selprod_id, 'selprod_product_id', false);
             $prodData = Product::getAttributesById($productId, array('product_min_selling_price'));
-            if ($selprod_price < $prodData['product_min_selling_price']) {
-                $selprod_price = $prodData['product_min_selling_price'];
+
+            if ($selprod_cost_price <= 0) {
+                $msg = Labels::getLabel('MSG_PRODUCT_COST_PRICE_MUST_BE_GREATER_THAN_0',$this->siteLangId);
+                $err = array($row, 4, $msg);
+                CommonHelper::writeToCSVFile($CSVfileObj, $err);
+                $error = true;
+                continue;
             }
+
+            if ($selprod_price < $prodData['product_min_selling_price']) {
+                $msg = Labels::getLabel('MSG_SELLING_PRICE_SHOULD_BE_GREATER_THAN_EQUALS_TO_PRODUCT_MIN_SELLING_PRICE',$this->siteLangId);
+                $err = array($row, 5, $msg);
+                CommonHelper::writeToCSVFile($CSVfileObj, $err);
+                $error = true;
+                continue;
+            }
+            
+            if ($selprod_price <= 0) {
+                $msg = Labels::getLabel('MSG_PRODUCT_SELLING_PRICE_MUST_BE_GREATER_THAN_0',$this->siteLangId);
+                $err = array($row, 5, $msg);
+                CommonHelper::writeToCSVFile($CSVfileObj, $err);
+                $error = true;
+                continue;
+            }
+            
+            if ($selprod_stock <= 0) {
+                $msg = Labels::getLabel('MSG_STOCK_VALUE_MUST_BE_GREATER_THAN_0',$this->siteLangId);
+                $err = array($row, 6, $msg);
+                CommonHelper::writeToCSVFile($CSVfileObj, $err);
+                $error = true;
+                continue;
+            }     
 
             $assignValues = array();
             if ($selprod_price != '') {
                 $assignValues['selprod_price'] = $selprod_price;
             }
-            if ($selprod_stock < 0 || $selprod_price < 0 || $selprod_cost_price <= 0) {
-                continue;
-            }
+
             $assignValues['selprod_cost'] = $selprod_cost_price;
             $assignValues['selprod_stock'] = $selprod_stock;
             if ($selprod_id > 0) {
                 $whereSmt = array('smt' => 'selprod_user_id = ? and selprod_id = ?', 'vals' => array($loggedUserId, $selprod_id));
                 $db->updateFromArray(SellerProduct::DB_TBL, $assignValues, $whereSmt);
             }
-            $processFile = true;
+        }
+        // Close File
+        CommonHelper::writeToCSVFile($CSVfileObj, array(), true);
+        if (CommonHelper::checkCSVFile($importExport->getCsvFileName())) {
+            $success['CSVfileUrl'] = FatUtility::generateFullUrl('custom', 'downloadLogFile', array($importExport->getCsvFileName()), CONF_WEBROOT_FRONTEND);
         }
 
-        if (!$processFile) {
-            /* Message::addErrorMessage(Labels::getLabel('MSG_Uploaded_file_seems_to_be_empty,_please_upload_a_valid_file_or_records_skipped',$this->siteLangId)); */
-            FatUtility::dieJsonError(Labels::getLabel('MSG_Uploaded_file_seems_to_be_empty,_please_upload_a_valid_file_or_records_skipped', $this->siteLangId));
+        if ($error) {
+            $success['msg'] = Labels::getLabel('LBL_Error!_Please_check_error_log_sheet.', $this->siteLangId);
+            FatUtility::dieJsonError($success);
         }
 
         Product::updateMinPrices();
-        /* Message::addMessage(  Labels::getLabel('MSG_Inventory_has_been_updated_successfully',$this->siteLangId) ); */
         FatUtility::dieJsonSuccess(Labels::getLabel('MSG_Inventory_has_been_updated_successfully', $this->siteLangId));
     }
 
