@@ -480,6 +480,20 @@ class Orders extends MyAppModel
                     }
                 }
                 /*]*/
+                
+                /* saving of products Pickup data[ */
+                $productPickUpData = $product['productPickUpData'];
+                if (!empty($productPickUpData)) {
+                    $productPickUpData['opshipping_op_id'] = $op_id;
+
+                    $opShippingRecordObj->assignValues($productPickUpData);
+                    if (!$opShippingRecordObj->addNew()) {
+                        $db->rollbackTransaction();
+                        $this->error = $opShippingRecordObj->getError();
+                        return false;
+                    }
+                }
+                /*]*/
 
                 /* saving of products Shipping lang data[ */
                 $productsShippingLangData = $product['productShippingLangData'];

@@ -20,6 +20,9 @@ class OrderProduct extends MyAppModel
     public const CHARGE_TYPE_REWARD_POINT_DISCOUNT = 5;
     public const CHARGE_TYPE_VOLUME_DISCOUNT = 6;
     public const CHARGE_TYPE_ADJUST_SUBSCRIPTION_PRICE = 7;
+    
+    public const TYPE_SHIP = 1;    
+    public const TYPE_PICKUP = 2;
 
     public function __construct($id = 0)
     {

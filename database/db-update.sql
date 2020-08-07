@@ -505,6 +505,12 @@ INSERT INTO `tbl_email_templates` (`etpl_code`, `etpl_lang_id`, `etpl_name`, `et
 
 ALTER TABLE `tbl_time_slots` ADD PRIMARY KEY( `tslot_id`);
 ALTER TABLE `tbl_time_slots` CHANGE `tslot_id` `tslot_id` INT(11) NOT NULL AUTO_INCREMENT;
+
 ALTER TABLE `tbl_order_user_address` ADD `oua_op_id` INT(11) NOT NULL AFTER `oua_order_id`;
 ALTER TABLE `tbl_order_user_address` DROP PRIMARY KEY;
 ALTER TABLE `tbl_order_user_address` ADD PRIMARY KEY( `oua_order_id`, `oua_op_id`, `oua_type`);
+
+INSERT INTO `tbl_configurations` (`conf_name`, `conf_val`, `conf_common`) VALUES ('CONF_TIME_SLOT_ADDITION', '2', '');
+
+ALTER TABLE `tbl_order_product_shipping` ADD `opshipping_type` INT(11) NOT NULL DEFAULT '1' COMMENT 'Defined in model' AFTER `opshipping_op_id`;
+ALTER TABLE `tbl_order_product_shipping` ADD `opshipping_date` DATE NOT NULL AFTER `opshipping_service_code`, ADD `opshipping_time_slot_from` TIME NOT NULL AFTER `opshipping_date`, ADD `opshipping_time_slot_to` TIME NOT NULL AFTER `opshipping_time_slot_from`;

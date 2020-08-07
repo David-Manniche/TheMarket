@@ -33,8 +33,7 @@ foreach ($arr_listing as $sn => $row) {
                 $addrZip = (strlen($row['addr_zip'])>0) ? Labels::getLabel('LBL_Zip:', $adminLangId).$row['addr_zip'] : '';
                 $addrPhone = (strlen($row['addr_phone'])>0) ? ', '.Labels::getLabel('LBL_Phone:', $adminLangId).$row['addr_phone'] : '';
                 $address = "<address>
-                                <h6>".$row['addr_title']."</h6>
-                                <p>".$row['addr_name']."<br> ".$row['addr_address1'].$addr2.$addrCity.$addrState.$addrCountry.$addrZip.$addrPhone.  
+                                <p>".$row['addr_address1'].$addr2.$addrCity.$addrState.$addrCountry.$addrZip.$addrPhone.  
                             "</address>";
                 $td->appendElement('plaintext', array(), $address, true);
                 break;

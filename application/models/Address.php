@@ -85,8 +85,11 @@ class Address extends MyAppModel
         if (0 > $isDefault) {
             $srch->addCondition(self::tblFld('is_default'), '=', $isDefault);
         }
-        $srch->addOrder(static::tblFld('is_default'), 'DESC');
-
+        if($recordId == 0){
+             $srch->addOrder(static::tblFld('id'), 'DESC');
+        }else{
+             $srch->addOrder(static::tblFld('is_default'), 'DESC');
+        }
         if (0 < $this->mainTableRecordId) {
             $srch->addCondition(self::tblFld('id'), '=', $this->mainTableRecordId);
 
@@ -230,5 +233,6 @@ class Address extends MyAppModel
             'data' => $data
         ];
     }
+
 
 }

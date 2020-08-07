@@ -36,7 +36,10 @@ defined('SYSTEM_INIT') or die('Invalid Usage.'); ?>
                 });
             ?>
             <ul class="list-group list-cart">
-                <?php if (count($fulfillmentProdArr[Shipping::FULFILMENT_PICKUP]) > 0 && count($fulfillmentProdArr[Shipping::FULFILMENT_PICKUP]) != $productsCount) { ?>
+                <?php 
+                //if (count($fulfillmentProdArr[Shipping::FULFILMENT_PICKUP]) > 0 && count($fulfillmentProdArr[Shipping::FULFILMENT_PICKUP]) != $productsCount) { 
+                if (count($fulfillmentProdArr[Shipping::FULFILMENT_SHIP]) > 0 && count($fulfillmentProdArr[Shipping::FULFILMENT_SHIP]) != $productsCount) { 
+                ?>
                 <li class="list-group-item">
                     <div class="info">
                         <span> <svg class="svg">

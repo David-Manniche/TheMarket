@@ -360,7 +360,7 @@ class Cart extends FatModel
                         unset($this->products[$key]);
                         continue;
                     }
-                    
+                 
                     $this->products[$key] = $sellerProductRow;
 
                     /*[COD available*/
@@ -513,7 +513,7 @@ class Cart extends FatModel
                     $this->products[$key]['seller_address'] = Shop::getShopAddress($shopId, true, $siteLangId);
                 }
                 $this->products[$key]['fulfillment_type'] = $sellerProductRow['fulfillment_type'];
-            }
+            } 
 
             /* $sellerPrice = $this->getSellersProductItemsPrice($this->products);
             foreach ($this->products as $cartkey => $cartval) {
@@ -527,7 +527,6 @@ class Cart extends FatModel
                 }
             } */
         }
-       
         return $this->products;
     }
 
@@ -1888,4 +1887,34 @@ class Cart extends FatModel
         $this->updateUserCart();
         return true;
     }
+    
+    public function setProductPickUpMethod($arr)
+    {
+        $this->SYSTEM_ARR['shopping_cart']['product_pickup_methods'] = $arr;
+        $this->updateUserCart();
+        return true;
+    }
+    
+    public function getProductPickUpMethod()
+    {
+        return isset($this->SYSTEM_ARR['shopping_cart']['product_pickup_methods']) ? $this->SYSTEM_ARR['shopping_cart']['product_pickup_methods'] : array();
+    }
+    
+    public function removeProductPickUpMethod()
+    {
+        unset($this->SYSTEM_ARR['shopping_cart']['product_pickup_methods']);
+        $this->updateUserCart();
+        return true;
+    }
+    
+    public function isProductPickUpMethodSet()
+    {
+        foreach ($this->getProducts($this->cart_lang_id) as $product) {
+            if (!isset($this->SYSTEM_ARR['shopping_cart']['product_pickup_methods']['product'][$product['selprod_id']])) {
+                return false;
+            }
+        }
+        return true;
+    }
+    
 }

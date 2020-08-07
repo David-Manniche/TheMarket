@@ -257,9 +257,9 @@ $("document").ready(function () {
     };
 
     setUpShippingMethod = function () {
-        if (!checkLogin()) {
-            return false;
-        }
+//        if (!checkLogin()) {
+//            return false;
+//        }
         var data = $("#shipping-summary select").serialize();
         fcom.updateWithAjax(fcom.makeUrl('Checkout', 'setUpShippingMethod'), data, function (t) {
             if (t.status == 1) {
@@ -543,4 +543,41 @@ $("document").ready(function () {
             }
         });
     };
+    
+    displayPickupAddress = function(level, recordId){
+        $.facebox(function () {
+            var data = 'level='+level+'&recordId='+recordId;
+            fcom.ajax(fcom.makeUrl('Addresses', 'getPickupAddresses'), data, function (rsp) {
+                $.facebox(rsp, 'faceboxWidth medium-fb-width');
+                $("input[name='coupon_code']").focus();
+            });
+        });
+    }
+    
+    selectTimeSlot = function(ele, level){ 
+        var slot_id =  $(ele).attr('id');
+        var slot_date = $('.js-datepicker').val();
+        $("input[name='slot_id["+level+"]']").val(slot_id);
+        $("input[name='slot_date["+level+"]']").val(slot_date);
+        
+        var slot_time = $(ele).next().children('.time').html();
+        var html = slot_date+' '+slot_time;     
+        $(".js-slot-addr_"+level).html(html);
+        $("#facebox .close").trigger('click');
+    }
+    
+    setUpPickup = function(){
+        if (!checkLogin()) {
+            return false;
+        }
+        
+        var slotIds = $(".js-slot-id").serialize();
+        var slotDates = $(".js-slot-date").serialize();
+        var data = slotIds+'&'+slotDates;
+        fcom.updateWithAjax(fcom.makeUrl('Checkout', 'setUpPickUp'), data, function (t) {
+            loadPaymentSummary();
+            setCheckoutFlow('PAYMENT');
+        });
+    }
+    
 })();

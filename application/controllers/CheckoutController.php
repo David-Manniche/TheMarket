@@ -186,6 +186,14 @@ class CheckoutController extends MyAppController
                         return false;
                     }
                     break;
+                case 'isProductPickUpMethodSet':
+                    if (!$this->cartObj->isProductPickUpMethodSet()) {
+                        $key = false;
+                        $this->errMessage = Labels::getLabel('MSG_Pickup_Method_is_not_selected_on_products_in_cart.', $this->siteLangId);
+                        Message::addErrorMessage($this->errMessage);
+                        return false;
+                    }
+                    break;  
             }
         }
         return true;
@@ -232,6 +240,7 @@ class CheckoutController extends MyAppController
         // $products = $this->cartObj->getProducts($this->siteLangId);
         // $this->set('products', $products);
         $this->cartObj->removeProductShippingMethod();
+        $this->cartObj->removeProductPickUpMethod();
         $this->set('cartHasPhysicalProduct', $cartHasPhysicalProduct);
         // $this->set('cartSummary', $this->cartObj->getCartFinancialSummary($this->siteLangId));
 
@@ -447,6 +456,7 @@ class CheckoutController extends MyAppController
         }
 
         $this->cartObj->removeProductShippingMethod();
+        $this->cartObj->removeProductPickUpMethod();
         $this->set('hasPhysicalProduct', $hasPhysicalProduct);
         if (true === MOBILE_APP_API_CALL) {
             $this->_template->render();
@@ -584,24 +594,24 @@ class CheckoutController extends MyAppController
         if (true === MOBILE_APP_API_CALL) {
             $post['data'] = (!empty($post['data']) ? json_decode($post['data'], true) : array());
         }
-
-        $shippingRates = $this->cartObj->getShippingRates();
+        
+        $cartProducts = $this->cartObj->getProducts($this->siteLangId);    
+        $shippingRates = $this->cartObj->getShippingRates();    
         if (false == $shippingRates) {
             LibHelper::exitWithError($this->cartObj->getError(), true);
         }
-        
+   
         $selectedShippingMethods = [];
         $shipProducts = [];
 
         $basketProducts = $this->cartObj->getBasketProducts($this->siteLangId);
-
         foreach ($post['shipping_services'] as $prodIdCobination => $rateId) {
             if (empty($rateId)) {
                 $message = Labels::getLabel('MSG_Shipping_Method_is_not_selected_on_products_in_cart', $this->siteLangId);
                 LibHelper::exitWithError($message, true);
             }
 
-            if (!array_key_exists($prodIdCobination, $shippingRates)) {
+            if (!array_key_exists($prodIdCobination, $shippingRates)) { 
                 $message = Labels::getLabel('MSG_Shipping_Method_is_not_selected_on_products_in_cart', $this->siteLangId);
                 LibHelper::exitWithError($message, true);
             }
@@ -652,11 +662,10 @@ class CheckoutController extends MyAppController
                 }
                 $counter++;
             }
-        }
+        } 
 
         $userId = UserAuthentication::getLoggedUserId();
-
-        $cartProducts = $this->cartObj->getProducts($this->siteLangId);
+      //  $cartProducts = $this->cartObj->getProducts($this->siteLangId);    
         if (empty($cartProducts)) {
             $message = Labels::getLabel('MSG_Something_went_wrong,_please_try_after_some_time.', $this->siteLangId);
             LibHelper::exitWithError($message, true);
@@ -667,7 +676,7 @@ class CheckoutController extends MyAppController
         $json = array();
         $prodSrchObj = new ProductSearch();
 
-        foreach ($cartProducts as $cartkey => $cartval) {
+        foreach ($cartProducts as $cartkey => $cartval) {   
             $sn++;
             if ($cartval['product_type'] != Product::PRODUCT_TYPE_PHYSICAL) {
                 continue;
@@ -859,9 +868,13 @@ class CheckoutController extends MyAppController
         }
 
         $criteria = array( 'isUserLogged' => true, 'hasProducts' => true, 'hasStock' => true, 'hasBillingAddress' => true );
-        if ($this->cartObj->hasPhysicalProduct()) {
+        $fulfillmentType = $this->cartObj->getCartCheckoutType();
+        if ($this->cartObj->hasPhysicalProduct() && $fulfillmentType == Shipping::FULFILMENT_SHIP) {
             $criteria['hasShippingAddress'] = true;
             $criteria['isProductShippingMethodSet'] = true;
+        }
+        if ($fulfillmentType == Shipping::FULFILMENT_PICKUP) {
+            $criteria['isProductPickUpMethodSet'] = true;
         }
         
         if (!$this->isEligibleForNextStep($criteria)) {
@@ -875,7 +888,7 @@ class CheckoutController extends MyAppController
             Message::addErrorMessage($this->errMessage);
             FatUtility::dieWithError(Message::getHtml());
         }
-        
+            
         if ($this->cartObj->getError() != '') {
             if (true === MOBILE_APP_API_CALL) {
                 LibHelper::dieJsonError($this->cartObj->getError());
@@ -887,7 +900,7 @@ class CheckoutController extends MyAppController
         $cartSummary = $this->cartObj->getCartFinancialSummary($this->siteLangId);
         $userId = UserAuthentication::getLoggedUserId();
         $userWalletBalance = User::getUserBalance($userId, true);
-        
+ 
         /* Payment Methods[ */
         $splitPaymentMethodsPlugins = Plugin::getDataByType(Plugin::TYPE_SPLIT_PAYMENT_METHOD, $this->siteLangId);
         $regularPaymentMethodsPlugins = Plugin::getDataByType(Plugin::TYPE_REGULAR_PAYMENT_METHOD, $this->siteLangId);
@@ -1067,6 +1080,7 @@ class CheckoutController extends MyAppController
 
         $allLanguages = Language::getAllNames();
         $productSelectedShippingMethodsArr = $this->cartObj->getProductShippingMethod();
+        $productSelectedPickUpMethodsArr = $this->cartObj->getProductPickUpMethod();
         $orderLangData = array();
         foreach ($allLanguages as $lang_id => $language_name) {
             $order_shippingapi_name = '';
@@ -1097,6 +1111,7 @@ class CheckoutController extends MyAppController
 
         if ($cartProducts) {
             $productShippingData = array();
+            $productPickUpData = array();
             foreach ($cartProducts as $cartProduct) {
                 $productTaxChargesData = array();
                 $productInfo = $this->getCartProductInfo($cartProduct['selprod_id']);
@@ -1122,6 +1137,16 @@ class CheckoutController extends MyAppController
                         $productShippingData['opshipping_service_code'] = $shippingDurationRow['mshipapi_id'];
                         $productShippingData['opshipping_carrier_code'] = $shippingDurationRow['mshipapi_carrier'];
                     }
+                }
+                
+                if (!empty($productSelectedPickUpMethodsArr['product']) && isset($productSelectedPickUpMethodsArr['product'][$productInfo['selprod_id']])) {
+                    $pickUpDataRow = $productSelectedPickUpMethodsArr['product'][$productInfo['selprod_id']];
+                    $productPickUpData = array(
+                        'opshipping_type' => OrderProduct::TYPE_PICKUP,
+                        'opshipping_date' => $pickUpDataRow['time_slot_date'],
+                        'opshipping_time_slot_from' => $pickUpDataRow['time_slot_from_time'],
+                        'opshipping_time_slot_to' => $pickUpDataRow['time_slot_to_time'],
+                        );
                 }
 
                 $productTaxOption = array();
@@ -1262,6 +1287,7 @@ class CheckoutController extends MyAppController
                     // 'op_volume_discount_percentage'    =>    $cartProduct['volume_discount_percentage'],
                     'productsLangData' => $productsLangData,
                     'productShippingData' => $productShippingData,
+                    'productPickUpData' => $productPickUpData,
                     'productShippingLangData' => $productShippingLangData,
                     'productChargesLogData' => $productTaxChargesData,
                     /* 'op_tax_collected_by_seller'    =>    $taxCollectedBySeller, */
@@ -1703,10 +1729,15 @@ class CheckoutController extends MyAppController
 
         /* ConfirmOrder function is called for both wallet payments and for paymentgateway selection as well. */
         $criteria = array( 'isUserLogged' => true, 'hasProducts' => true, 'hasStock' => true, 'hasBillingAddress' => true );
-        if ($this->cartObj->hasPhysicalProduct()) {
+        $fulfillmentType = $this->cartObj->getCartCheckoutType();
+        if ($this->cartObj->hasPhysicalProduct() && $fulfillmentType == Shipping::FULFILMENT_SHIP) {
             $criteria['hasShippingAddress'] = true;
             $criteria['isProductShippingMethodSet'] = true;
         }
+        if ($fulfillmentType == Shipping::FULFILMENT_PICKUP) {
+            $criteria['isProductPickUpMethodSet'] = true;
+        }
+        
         if (!$this->isEligibleForNextStep($criteria)) {
             $this->errMessage = Labels::getLabel('MSG_Something_went_wrong,_please_try_after_some_time.', $this->siteLangId);
             if (true === MOBILE_APP_API_CALL) {
@@ -2028,4 +2059,67 @@ class CheckoutController extends MyAppController
         $frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_Apply', $langId));
         return $frm;
     }
+    
+     public function setUpPickUp()
+    {
+        $post = FatApp::getPostedData();    
+        if (true === MOBILE_APP_API_CALL) {
+            $post['data'] = (!empty($post['data']) ? json_decode($post['data'], true) : array());
+        }
+        
+        $productToPickUpMethods = array();
+        $basketProducts = $this->cartObj->getBasketProducts($this->siteLangId);
+        $pickupOptions = $this->cartObj->getPickupOptions($basketProducts);
+        
+        foreach ($post['slot_id'] as $level => $slotId) {
+            if (empty($slotId) || empty($post['slot_date'][$level])) {
+                $message = Labels::getLabel('MSG_Pickup_Method_is_not_selected_on_products_in_cart', $this->siteLangId);
+                LibHelper::exitWithError($message, true);
+            }
+       
+            $slotData = TimeSlot::getAttributesById($slotId);
+            if (empty($slotData)) {
+                $message = Labels::getLabel('MSG_Something_went_wrong,_please_try_after_some_time.', $this->siteLangId);
+                LibHelper::exitWithError($message, true);
+            }
+            
+            $selectedDay = date('w', strtotime($post['slot_date'][$level]));        
+            if($selectedDay != $slotData['tslot_day']){  
+                $message = Labels::getLabel('MSG_Something_went_wrong,_please_try_after_some_time.', $this->siteLangId);
+                LibHelper::exitWithError($message, true);
+            }    
+               
+            if (array_search($slotData['tslot_record_id'], array_column($pickupOptions[$level]['pickup_options'], 'addr_id')) === false){
+                $message = Labels::getLabel('MSG_Something_went_wrong,_please_try_after_some_time.', $this->siteLangId);
+                LibHelper::exitWithError($message, true);
+            }
+            
+            $cartProducts = $this->cartObj->getProducts($this->siteLangId);
+            if (empty($cartProducts)) {
+                $message = Labels::getLabel('MSG_Something_went_wrong,_please_try_after_some_time.', $this->siteLangId);
+                LibHelper::exitWithError($message, true);
+            }
+        
+            foreach ($pickupOptions[$level]['products'] as $pickupProduct) {
+                foreach ($cartProducts as $cartKey => $cartval) {
+                    if ($cartval['selprod_id'] != $pickupProduct['selprod_id']) {
+                        continue;
+                    }
+                    
+                    $productToPickUpMethods['product'][$cartval['selprod_id']] = array(
+                        'selprod_id' => $cartval['selprod_id'],
+                        'time_slot_from_time' => $slotData['tslot_from_time'],
+                        'time_slot_to_time' => $slotData['tslot_to_time'],
+                        'time_slot_date' => $post['slot_date'][$level],
+                    );
+                }
+            }
+        }
+
+        $this->cartObj->setProductPickUpMethod($productToPickUpMethods);
+        $this->set('msg', Labels::getLabel('MSG_Pickup_Method_selected_successfully.', $this->siteLangId));
+        $this->_template->render(false, false, 'json-success.php');
+    }
+
+
 }
