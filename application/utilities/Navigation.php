@@ -46,11 +46,17 @@ class Navigation
             $headerTopNavigation = unserialize($headerTopNavigationCache);
         } else {
             $headerTopNavigation = self::getNavigation(Navigations::NAVTYPE_TOP_HEADER);
-            FatCache::set('headerTopNavigationCache_' . $siteLangId, serialize($headerTopNavigation), '.txt');
+            FatCache::set('headerTopNavigation_' . $siteLangId, serialize($headerTopNavigation), '.txt');
         }
         $headerCategories = [];
         if ($layout == Navigations::LAYOUT_MEGA_MENU) {
-            $headerCategories = ProductCategory::getTreeArr($siteLangId);
+            $headerCategoriesCache = FatCache::get('headerCategories_' . $siteLangId, CONF_HOME_PAGE_CACHE_TIME, '.txt');
+            if ($headerCategoriesCache) {
+                $headerCategories = unserialize($headerCategoriesCache);
+            } else {
+                $headerCategories = ProductCategory::getTreeArr($siteLangId);
+                FatCache::set('headerCategories_' . $siteLangId, serialize($headerCategories), '.txt');
+            }
         }
         $template->set('headerCategories', $headerCategories);
         $template->set('top_header_navigation', $headerTopNavigation);
