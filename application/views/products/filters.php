@@ -57,10 +57,10 @@ if (isset($prodcat_code)) {
 <div class="filters_body"> 
 <?php if (isset($categoriesArr) && $categoriesArr) { ?>
     <div class="sidebar-widget">
-        <div class="sidebar-widget__head collapsed" data-toggle="collapse" data-target="#category" aria-expanded="false">
+        <div class="sidebar-widget__head" data-toggle="collapse" data-target="#category" aria-expanded="true">
             <?php echo Labels::getLabel('LBL_Categories', $siteLangId); ?> 
         </div>
-        <div class="sidebar-widget__body" id="category" data-parent="#collection-sidebar">
+        <div class="sidebar-widget__body collapse show" id="category" data-parent="#collection-sidebar">
         <?php if (!$shopCatFilters) { ?>
             <div id="accordian" class="cat-accordion toggle-target scrollbar-filters">
             <ul>
@@ -168,10 +168,10 @@ if (isset($prodcat_code)) {
 <?php if (isset($priceArr) && $priceArr) { ?>
 
 <div class="sidebar-widget">
-    <div class="sidebar-widget__head filter-head-js collapsed" data-toggle="collapse" data-target="#price" aria-expanded="false">
+    <div class="sidebar-widget__head filter-head-js collapsed" data-toggle="collapse" data-target="#price" aria-expanded="true">
         <?php echo Labels::getLabel('LBL_Price', $siteLangId) . ' (' . (CommonHelper::getCurrencySymbolRight() ? CommonHelper::getCurrencySymbolRight() : CommonHelper::getCurrencySymbolLeft()) . ')'; ?>
     </div>
-    <div class="sidebar-widget__body" id="price" data-parent="#collection-sidebar">
+    <div class="sidebar-widget__body collapse show" id="price" data-parent="#collection-sidebar">
         <div class="filter-content toggle-target">
             <div class="prices" id="perform_price">
                 <div id="rangeSlider"></div>
@@ -210,9 +210,9 @@ if (isset($prodcat_code)) {
       $brandsCheckedArr = (isset($brandsCheckedArr) && !empty($brandsCheckedArr)) ? $brandsCheckedArr : array(); ?>
 
 <div class="sidebar-widget">
-    <div class="sidebar-widget__head collapsed" data-toggle="collapse" data-target="#brand" aria-expanded="false" >
+    <div class="sidebar-widget__head" data-toggle="collapse" data-target="#brand" aria-expanded="true" >
         <?php echo Labels::getLabel('LBL_Brand', $siteLangId); ?></div>
-    <div class="sidebar-widget__body" id="brand" data-parent="#collection-sidebar">
+    <div class="sidebar-widget__body collapse show" id="brand" data-parent="#collection-sidebar">
         <div class="scrollbar-filters" id="scrollbar-filters">
             <ul class="list-vertical brandFilter-js">
                 <?php foreach ($brandsArr as $brand) {
@@ -266,9 +266,9 @@ if (isset($prodcat_code)) {
                     $optionName = ($optionRow['option_name']) ? $optionRow['option_name'] : $optionRow['option_identifier']; ?>
 
 <div class="sidebar-widget">
-    <div class="sidebar-widget__head collapsed" data-toggle="collapse" data-target="#option<?php echo $optionRow['option_id'];?>" aria-expanded="false">
+    <div class="sidebar-widget__head" data-toggle="collapse" data-target="#option<?php echo $optionRow['option_id'];?>" aria-expanded="true">
         <?php echo ($optionRow['option_name']) ? $optionRow['option_name'] : $optionRow['option_identifier']; ?></div>
-    <div class="sidebar-widget__body" id="option<?php echo $optionRow['option_id'];?>" data-parent="#collection-sidebar">
+    <div class="sidebar-widget__body collapse show" id="option<?php echo $optionRow['option_id'];?>" data-parent="#collection-sidebar">
         <ul class="list-vertical"><?php
                 }
                 $optionValueId = $optionRow['option_id'] . '_' . $optionRow['optionvalue_id'];
@@ -292,9 +292,9 @@ if (isset($prodcat_code)) {
             $conditionsCheckedArr = (isset($conditionsCheckedArr) && !empty($conditionsCheckedArr)) ? $conditionsCheckedArr : array(); ?>
             
             <div class="sidebar-widget">
-                <div class="sidebar-widget__head collapsed" data-toggle="collapse" data-target="#condition" aria-expanded="false">
+                <div class="sidebar-widget__head" data-toggle="collapse" data-target="#condition" aria-expanded="true">
                     <?php echo Labels::getLabel('LBL_Condition', $siteLangId); ?></div>
-                <div class="sidebar-widget__body"  id="condition" data-parent="#collection-sidebar">
+                <div class="sidebar-widget__body collapse show"  id="condition" data-parent="#collection-sidebar">
                     <ul class="list-vertical">
                         <?php foreach ($conditionsArr as $condition) {
                 if (empty($condition) || $condition['selprod_condition'] == 0) {
@@ -323,10 +323,10 @@ if (isset($prodcat_code)) {
             $availability = isset($availability) ? $availability : 0; ?>
             
             <div class="sidebar-widget">
-                <div class="sidebar-widget__head  collapsed" data-toggle="collapse" data-target="#availability" aria-expanded="false">
+                <div class="sidebar-widget__head  collapsed" data-toggle="collapse" data-target="#availability" aria-expanded="true">
                     <?php echo Labels::getLabel('LBL_Availability', $siteLangId); ?>
                 </div>
-                <div class="sidebar-widget__body" id="availability" data-parent="#collection-sidebar">
+                <div class="sidebar-widget__body collapse show" id="availability" data-parent="#collection-sidebar">
                     <div class="toggle-target">
                         <ul class="listing--vertical listing--vertical-chcek">
                             <li><label class="checkbox availability" id="availability_1"><input name="out_of_stock"

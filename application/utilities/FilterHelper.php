@@ -3,7 +3,7 @@
 class FilterHelper extends FatUtility
 {
     public const LAYOUT_DEFAULT = 1;
-    public const LAYOUT_TOP = 1;
+    public const LAYOUT_TOP = 2;
 
     public static function getSearchObj($langId, $headerFormParamsAssocArr)
     {

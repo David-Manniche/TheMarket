@@ -51,6 +51,7 @@
         <div class="container">
             <div class="main">
                 <main class="main__content">
+                    <div class="steps-wrapper ">
                     <!-- begin::Step -->
                     <div class="step active" role="step:1">
                         <div class="step__section">
@@ -234,106 +235,8 @@
                                     </div>
                                 </li>
                             </ul>
-                            <form class="form form form-floating mt-5">
-                                <div class="row">
-                                    <div class="col-md-12">
-                                        <div class="form-group form-floating__group">
-                                            <input type="email" class="form-control form-floating__field">
-                                            <label class="form-floating__label">Email</label>
-
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-md-6">
-                                        <div class="form-group form-floating__group">
-                                            <input type="text" class="form-control form-floating__field" placeholder="">
-                                            <label class="form-floating__label">First name</label>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <div class="form-group form-floating__group">
-                                            <input type="text" class="form-control form-floating__field" placeholder="">
-                                            <label class="form-floating__label">Last name</label>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-md-12">
-                                        <div class="form-group form-floating__group">
-                                            <input type="text" class="form-control form-floating__field" placeholder="">
-                                            <label class="form-floating__label">Address</label>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-md-12">
-                                        <div class="form-group form-floating__group">
-                                            <input type="text" class="form-control form-floating__field" placeholder="">
-                                            <label class="form-floating__label">Apartment, suite, etc.l</label>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-md-6">
-                                        <div class="form-group form-floating__group">
-                                            <input type="text" class="form-control form-floating__field" placeholder="">
-                                            <label class="form-floating__label">City</label>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <div class="form-group form-floating__group">
-                                            <input type="text" class="form-control form-floating__field" placeholder="">
-                                            <label class="form-floating__label">Phone</label>
-                                        </div>
-                                    </div>
-
-                                </div>
-                                <div class="row">
-                                    <div class="col-md-4">
-                                        <div class="form-group form-floating__group">
-                                            <select class="form-control form-floating__field" autocomplete="">
-                                                <option data-code="IL" value="Israel">Israel</option>
-                                                <option disabled="disabled" value="---">---</option>
-                                                <option data-code="AF" value="Afghanistan">Afghanistan</option>
-                                                <option data-code="AX" value="Aland Islands">Åland Islands</option>
-
-                                            </select>
-                                            <label class="form-floating__label">shipping country</label>
-
-                                        </div>
-                                    </div>
-                                    <div class="col-md-4">
-                                        <div class="form-group form-floating__group">
-                                            <select class="form-control form-floating__field" placeholder="">
-                                                <option disabled="">State</option>
-                                                <option data-alternate-values="[&quot;Andaman and Nicobar&quot;]"
-                                                    value="AN">Andaman and Nicobar</option>
-
-                                            </select>
-                                            <label class="form-floating__label">State</label>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-4">
-                                        <div class="form-group form-floating__group">
-                                            <input type="text" class="form-control form-floating__field" placeholder="">
-                                            <label class="form-floating__label">PIN code</label>
-                                        </div>
-                                    </div>
-                                </div>
-                            </form>
                         </div>
-                        <div class="step__footer">
-                            <a class="btn btn-outline-gray btn-arrow " href="#">
-                                <svg class="svg">
-                                    <use xlink:href="../images/retina/sprite.svg#arrow-left"
-                                        href="../images/retina/sprite.svg#arrow-left">
-                                    </use>
-                                </svg>
-                                <span class="">Back </span></a>
-                            <button name="button" type="button" class="btn btn-primary btn-wide">Continue</button>
-
-                        </div>
+                  
 
                     </div>
                     <!-- end::Step -->
@@ -937,7 +840,7 @@
                                                         </div>
                                                     </div>
                                                 </div>
-                                            </li>                                       
+                                            </li>
 
                                         </ul>
                                         <div class="my-3 text-right">
@@ -958,7 +861,6 @@
                                                             <label class="form-floating__label">Card number</label>
                                                         </div>
                                                     </div>
-
                                                 </div>
                                                 <div class="row">
                                                     <div class="col-md-12">
@@ -1018,12 +920,24 @@
                                     </div>
                                 </div>
                             </div>
-                            <label class="checkbox"><input title="" type="checkbox" value="1">Send me electronic or mail
-                                offers from Nordstrom. You may opt out at any time.<i class="input-helper"></i>
-                            </label>
+
                         </div>
                     </div>
                     <!-- end::Step -->
+                    </div>
+
+                    <div class="checkout-actions">
+                            <a class="btn btn-outline-gray btn-arrow " href="#">
+                                <svg class="svg">
+                                    <use xlink:href="../images/retina/sprite.svg#arrow-left"
+                                        href="../images/retina/sprite.svg#arrow-left">
+                                    </use>
+                                </svg>
+                                <span class="">Back </span></a>
+                                
+                            <button name="button" type="button" class="btn btn-primary btn-wide">Continue</button>
+
+                        </div>
                 </main>
             </div>
             <aside class="sidebar" role="complementary">
