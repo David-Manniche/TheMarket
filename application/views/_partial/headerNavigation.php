@@ -1,47 +1,118 @@
 <?php  defined('SYSTEM_INIT') or die('Invalid Usage'); ?>
-<?php if ($headerNavigation && count($headerNavigation)) { ?>
+<?php if ($headerNavigation || $headerCategories) {
+$getOrgUrl = (CONF_DEVELOPMENT_MODE) ? true : false;
+?>
 <div class="last-bar">
     <div class="container">
         <div class="navigations__overlayx"></div>
         <div class="navigation-wrapper">
-            <?php
-                $getOrgUrl = (CONF_DEVELOPMENT_MODE) ? true : false;
-                $noOfCharAllowedInNav = 90;
-                $rightNavCharCount = 5;
-                if (!$isUserLogged) {
-                    $rightNavCharCount = $rightNavCharCount + mb_strlen(html_entity_decode(Labels::getLabel('LBL_Sign_In', $siteLangId), ENT_QUOTES, 'UTF-8'));
-                } else {
-                    $rightNavCharCount = $rightNavCharCount + mb_strlen(html_entity_decode(Labels::getLabel('LBL_Hi,', $siteLangId).' '.$userName, ENT_QUOTES, 'UTF-8'));
-                }
-                $rightNavCharCount = $rightNavCharCount + mb_strlen(html_entity_decode(Labels::getLabel("LBL_Cart", $siteLangId), ENT_QUOTES, 'UTF-8'));
-                $noOfCharAllowedInNav = $noOfCharAllowedInNav - $rightNavCharCount;
+            <ul class="navigations <?php echo ($navLinkCount > 4) ? 'justify-content-between' : '' ; ?>">
+                <?php if(count($headerCategories)) { ?>
+                    <li class="navchild categories ">
+                        <a href="javascript:void()">
+                            <?php echo Labels::getLabel('LBL_Categories', $siteLangId);?> <i class="c-hamburger js-hamburger"> <span
+                                    class="c-hamburger__line c-hamburger__line--top"></span>
+                                <span class="c-hamburger__line c-hamburger__line--middle"></span>
+                                <span class="c-hamburger__line c-hamburger__line--bottom"></span>
+                            </i>
+                        </a>
+                        <div class="vertical-menu">
+                            <ul class="menu">
+                            <?php
+                            foreach ($headerCategories as $link) {
+                                $navUrl = UrlHelper::generateUrl('category', 'view', array($link['prodcat_id']));
+                                $OrgnavUrl = UrlHelper::generateUrl('category', 'view', array($link['prodcat_id']), '', null, false, $getOrgUrl);
 
-                $navLinkCount = 0;
-                foreach ($headerNavigation as $nav) {
-                    if (!$nav['pages']) {
-                        break;
+                                $href = $navUrl;
+                                $navchild = '';
+                                $class = '';
+                                if (0 < count($link['children'])) {
+                                    $href = 'javascript:void(0)';
+                                    $navchild = 'navchild';
+                                    $class = 'has-child';
+                                } ?> 
+                                <li class="<?php echo $class; ?>"><a data-org-url="<?php echo $OrgnavUrl; ?>"
+                            href="<?php echo $href; ?>"><?php echo $link['prodcat_name']; ?></a>
+                                <?php if (isset($link['children']) && count($link['children']) > 0) { ?>
+                                    <div class="megadrop">
+                                        <ul class="sublinks">
+                                            <?php $subyChild=0;
+                                            foreach ($link['children'] as $children) {
+                                                $subCatUrl = UrlHelper::generateUrl('category', 'view', array($children['prodcat_id']));
+                                                $subCatOrgUrl = UrlHelper::generateUrl('category', 'view', array($children['prodcat_id']), '', null, false, $getOrgUrl);
+                                                ?>
+                                            <li class="head"><a data-org-url="<?php echo $subCatOrgUrl; ?>"
+                                                    href="<?php echo $subCatUrl;?>"><?php echo $children['prodcat_name'];?></a>
+                                                <?php if (isset($children['children']) && count($children['children'])>0) { ?>
+                                                <ul>
+                                                    <?php $subChild = 0;
+                                                    foreach ($children['children'] as $childCat) {
+                                                        $catUrl = UrlHelper::generateUrl('category', 'view', array($childCat['prodcat_id']));
+                                                        $catOrgUrl = UrlHelper::generateUrl('category', 'view', array($children['prodcat_id']), '', null, false, $getOrgUrl);
+                                                        ?>
+                                                    <li><a data-org-url="<?php echo $catOrgUrl; ?>"
+                                                            href="<?php echo $catUrl; ?>"><?php echo $childCat['prodcat_name'];?></a>
+                                                    </li>
+                                                    <?php
+                                                        if ($subChild++ == 4) {
+                                                            break;
+                                                        }
+                                                    }
+                                                    if (count($children['children']) > 5) { ?>
+                                                    <li class="seemore"><a data-org-url="<?php echo $subCatOrgUrl; ?>"
+                                                            href="<?php echo $subCatUrl;?>"><?php echo Labels::getLabel('LBL_View_All', $siteLangId);?></a>
+                                                    </li>
+                                                    <?php } ?>
+                                                </ul>
+                                                <?php } ?>
+                                            </li>
+                                            <?php
+                                                if ($subyChild++ == 7) {
+                                                    break;
+                                                }
+                                            } ?>
+                                        </ul>
+                                        <?php if (count($link['children']) > 8) { ?>
+                                        <a class="btn btn-sm btn--secondary ripplelink "
+                                            data-org-url="<?php echo $OrgnavUrl; ?>"
+                                            href="<?php echo $navUrl; ?>"><?php echo Labels::getLabel('LBL_View_All', $siteLangId);?></a>
+                                        <?php } ?>
+                                    </div>
+                                    <?php }?>
+                                </li>
+                                <?php }?>
+                                <li class="all-categories"><a data-org-url="<?php echo UrlHelper::generateUrl('category', '', array(), '', null, false, $getOrgUrl); ?>" href="<?php echo UrlHelper::generateUrl('category');?>" class=""><?php echo Labels::getLabel('LBL_View_All_Categories', $siteLangId);?></a></li>
+                            </ul>
+                        </div>
+                    </li>
+                <?php } ?>
+                <?php
+                if(count($headerNavigation)) {
+                    $noOfCharAllowedInNav = 90;
+                    $rightNavCharCount = 5;
+                    if (!$isUserLogged) {
+                        $rightNavCharCount = $rightNavCharCount + mb_strlen(html_entity_decode(Labels::getLabel('LBL_Sign_In', $siteLangId), ENT_QUOTES, 'UTF-8'));
+                    } else {
+                        $rightNavCharCount = $rightNavCharCount + mb_strlen(html_entity_decode(Labels::getLabel('LBL_Hi,', $siteLangId).' '.$userName, ENT_QUOTES, 'UTF-8'));
                     }
-                    foreach ($nav['pages'] as $link) {
-                        $noOfCharAllowedInNav = $noOfCharAllowedInNav - mb_strlen(html_entity_decode($link['nlink_caption'], ENT_QUOTES, 'UTF-8'));
-                        if ($noOfCharAllowedInNav < 0) {
+                    $rightNavCharCount = $rightNavCharCount + mb_strlen(html_entity_decode(Labels::getLabel("LBL_Cart", $siteLangId), ENT_QUOTES, 'UTF-8'));
+                    $noOfCharAllowedInNav = $noOfCharAllowedInNav - $rightNavCharCount;
+
+                    $navLinkCount = 0;
+                    foreach ($headerNavigation as $nav) {
+                        if (!$nav['pages']) {
                             break;
                         }
-                        $navLinkCount++;
+                        foreach ($nav['pages'] as $link) {
+                            $noOfCharAllowedInNav = $noOfCharAllowedInNav - mb_strlen(html_entity_decode($link['nlink_caption'], ENT_QUOTES, 'UTF-8'));
+                            if ($noOfCharAllowedInNav < 0) {
+                                break;
+                            }
+                            $navLinkCount++;
+                        }
                     }
-                } ?>
-            <ul class="navigations <?php echo ($navLinkCount > 4) ? 'justify-content-between' : '' ; ?>">
-                <li class="navchild categories ">
-                    <a href="javascript:void()">
-                        <?php echo Labels::getLabel('LBL_Categories', $siteLangId);?> <i class="c-hamburger js-hamburger"> <span
-                                class="c-hamburger__line c-hamburger__line--top"></span>
-                            <span class="c-hamburger__line c-hamburger__line--middle"></span>
-                            <span class="c-hamburger__line c-hamburger__line--bottom"></span>
-                        </i></a>
-
-                    <div class="vertical-menu">
-                        <ul class="menu">
-                        <?php
-                        foreach ($headerNavigation as $nav) {
+                    
+                    foreach ($headerNavigation as $nav) {
                         if ($nav['pages']) {
                             $mainNavigation = array_slice($nav['pages'], 0, $navLinkCount);
                             foreach ($mainNavigation as $link) {
@@ -50,81 +121,81 @@
 
                                 $href = $navUrl;
                                 $navchild = '';
-                                $class = '';
                                 $target = $link['nlink_target'];
                                 if (0 < count($link['children'])) {
                                     $href = 'javascript:void(0)';
                                     $navchild = 'navchild';
                                     $target = '';
-                                    $class = 'has-child';
-                                } ?>
-                            <li class="<?php echo $class; ?>"><a target="<?php echo $target; ?>" data-org-url="<?php echo $OrgnavUrl; ?>"
-                        href="<?php echo $href; ?>"><?php echo $link['nlink_caption']; ?></a>
-                            <?php if (isset($link['children']) && count($link['children']) > 0) { ?>
-                                <div class="megadrop">
-                                    <ul class="sublinks">
-                                        <?php $subyChild=0;
-                                        foreach ($link['children'] as $children) {
-                                            $subCatUrl = UrlHelper::generateUrl('category', 'view', array($children['prodcat_id']));
-                                            $subCatOrgUrl = UrlHelper::generateUrl('category', 'view', array($children['prodcat_id']), '', null, false, $getOrgUrl);
-                                            ?>
-                                        <li class="head"><a data-org-url="<?php echo $subCatOrgUrl; ?>"
-                                                href="<?php echo $subCatUrl;?>"><?php echo $children['prodcat_name'];?></a>
-                                            <?php if (isset($children['children']) && count($children['children'])>0) { ?>
-                                            <ul>
-                                                <?php $subChild = 0;
-                                                foreach ($children['children'] as $childCat) {
-                                                    $catUrl = UrlHelper::generateUrl('category', 'view', array($childCat['prodcat_id']));
-                                                    $catOrgUrl = UrlHelper::generateUrl('category', 'view', array($children['prodcat_id']), '', null, false, $getOrgUrl);
-                                                    ?>
-                                                <li><a data-org-url="<?php echo $catOrgUrl; ?>"
-                                                        href="<?php echo $catUrl; ?>"><?php echo $childCat['prodcat_name'];?></a>
-                                                </li>
-                                                <?php
-                                                    if ($subChild++ == 4) {
-                                                        break;
+                                }
+                                ?>
+                    <li class=" <?php echo $navchild; ?>">
+                        <a target="<?php echo $target; ?>" data-org-url="<?php echo $OrgnavUrl; ?>"
+                            href="<?php echo $href; ?>"><?php echo $link['nlink_caption']; ?></a>
+                        <?php if (isset($link['children']) && count($link['children']) > 0) { ?>
+                        <span class="link__mobilenav"></span>
+                        <div class="subnav">
+                            <div class="subnav__wrapper ">
+                                <div class="container">
+                                    <div class="subnav_row">
+                                        <ul class="sublinks">
+                                            <?php $subyChild=0;
+                                            foreach ($link['children'] as $children) {
+                                                $subCatUrl = UrlHelper::generateUrl('category', 'view', array($children['prodcat_id']));
+                                                $subCatOrgUrl = UrlHelper::generateUrl('category', 'view', array($children['prodcat_id']), '', null, false, $getOrgUrl);
+                                                ?>
+                                            <li class="head"><a data-org-url="<?php echo $subCatOrgUrl; ?>"
+                                                    href="<?php echo $subCatUrl;?>"><?php echo $children['prodcat_name'];?></a>
+                                                <?php if (isset($children['children']) && count($children['children'])>0) { ?>
+                                                <ul>
+                                                    <?php $subChild = 0;
+                                                    foreach ($children['children'] as $childCat) {
+                                                        $catUrl = UrlHelper::generateUrl('category', 'view', array($childCat['prodcat_id']));
+                                                        $catOrgUrl = UrlHelper::generateUrl('category', 'view', array($children['prodcat_id']), '', null, false, $getOrgUrl);
+                                                        ?>
+                                                    <li><a data-org-url="<?php echo $catOrgUrl; ?>"
+                                                            href="<?php echo $catUrl; ?>"><?php echo $childCat['prodcat_name'];?></a>
+                                                    </li>
+                                                    <?php
+                                                        if ($subChild++ == 4) {
+                                                            break;
+                                                        }
                                                     }
-                                                }
-                                                if (count($children['children']) > 5) { ?>
-                                                <li class="seemore"><a data-org-url="<?php echo $subCatOrgUrl; ?>"
-                                                        href="<?php echo $subCatUrl;?>"><?php echo Labels::getLabel('LBL_View_All', $siteLangId);?></a>
-                                                </li>
+                                                    if (count($children['children']) > 5) { ?>
+                                                    <li class="seemore"><a data-org-url="<?php echo $subCatOrgUrl; ?>"
+                                                            href="<?php echo $subCatUrl;?>"><?php echo Labels::getLabel('LBL_View_All', $siteLangId);?></a>
+                                                    </li>
+                                                    <?php } ?>
+                                                </ul>
                                                 <?php } ?>
-                                            </ul>
-                                            <?php } ?>
-                                        </li>
-                                        <?php
-                                            if ($subyChild++ == 7) {
-                                                break;
-                                            }
-                                        } ?>
-                                    </ul>
-                                    <?php if (count($link['children']) > 8) { ?>
-                                    <a class="btn btn-sm btn--secondary ripplelink "
-                                        data-org-url="<?php echo $OrgnavUrl; ?>"
-                                        href="<?php echo $navUrl; ?>"><?php echo Labels::getLabel('LBL_View_All', $siteLangId);?></a>
-                                    <?php } ?>
+                                            </li>
+                                            <?php
+                                                if ($subyChild++ == 7) {
+                                                    break;
+                                                }
+                                            } ?>
+                                        </ul>
+                                        <?php if (count($link['children']) > 8) { ?>
+                                        <a class="btn btn-sm btn--secondary ripplelink "
+                                            data-org-url="<?php echo $OrgnavUrl; ?>"
+                                            href="<?php echo $navUrl; ?>"><?php echo Labels::getLabel('LBL_View_All', $siteLangId);?></a>
+                                        <?php } ?>
+                                    </div>
                                 </div>
-                                <?php }?>
-                            </li>
-                            
-                            <?php }?>
-                            <?php }?>
-                            <?php }?>
-                            <li class="all-categories"><a data-org-url="<?php echo UrlHelper::generateUrl('category', '', array(), '', null, false, $getOrgUrl); ?>" href="<?php echo UrlHelper::generateUrl('category');?>"
-                                        class=""><?php echo Labels::getLabel('LBL_View_All_Categories', $siteLangId);?></a></li>
-                        </ul>
-                    </div>
-                </li>
+                            </div>
+                        </div>
+                        <?php } ?>
+                    </li>
+                    <?php
+                            }
+                        }
+                    }
+                } ?>
                 
+
+
+
+
                 
-                
-                
-                
-                
-                
-                    
-                    
                 <?php
                 foreach ($headerNavigation as $nav) {
                     $subMoreNavigation = ( count($nav['pages']) > $navLinkCount ) ? array_slice($nav['pages'], $navLinkCount) : array();

@@ -13,6 +13,10 @@ class Navigations extends MyAppModel
     public const NAVTYPE_HEADER = 3;
     public const NAVTYPE_SELLER_LEFT = 4;
     public const NAVTYPE_SELLER_RIGHT = 5;
+    
+    public const LAYOUT_MEGA_MENU = 1;
+    public const LAYOUT_SIMPLE_MENU = 2;
+    
     public function __construct($id = 0)
     {
         parent::__construct(static::DB_TBL, static::DB_TBL_PREFIX . 'id', $id);
