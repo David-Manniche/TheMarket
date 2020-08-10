@@ -439,31 +439,33 @@ class StripeConnectPayController extends PaymentController
             $comments = CommonHelper::replaceStringData($comments, ['{invoice-no}' => $op['op_invoice_number'], '{commission-amount}' => $op['op_commission_charged']]);
             Transactions::creditWallet($op['op_selprod_user_id'], Transactions::TYPE_PRODUCT_SALE, $amountToBePaidToSeller, $this->siteLangId, $comments, $op['op_id']);
             
-            $charge = [
-                'amount' => $this->convertInPaisa($amountToBePaidToSeller),
-                'currency' => $orderInfo['order_currency_code'],
-                'destination' => $accountId,
-                // 'transfer_group' => $op['op_invoice_number'],
-                'description' => $comments,
-                'metadata' => [
-                    'op_id' => $op['op_id']
-                ],
-                'source_transaction' => $chargeId
-            ];
-            
-            if (false === $this->stripeConnect->doTransfer($charge)) {
-                $this->setErrorAndRedirect($this->stripeConnect->getError());
-            }
+            if (!empty($accountId)) {
+                $charge = [
+                    'amount' => $this->convertInPaisa($amountToBePaidToSeller),
+                    'currency' => $orderInfo['order_currency_code'],
+                    'destination' => $accountId,
+                    // 'transfer_group' => $op['op_invoice_number'],
+                    'description' => $comments,
+                    'metadata' => [
+                        'op_id' => $op['op_id']
+                    ],
+                    'source_transaction' => $chargeId
+                ];
+                
+                if (false === $this->stripeConnect->doTransfer($charge)) {
+                    $this->setErrorAndRedirect($this->stripeConnect->getError());
+                }
 
-            $resp = $this->stripeConnect->getResponse();
-            if (empty($resp->id)) {
-                continue;
-            }
+                $resp = $this->stripeConnect->getResponse();
+                if (empty($resp->id)) {
+                    continue;
+                }
 
-            // Debit sold product amount to seller wallet.
-            $comments = Labels::getLabel('MSG_TRANSFERED_TO_ACCOUNT_{account-id}.', $this->siteLangId);
-            $comments = CommonHelper::replaceStringData($comments, ['{account-id}' => $accountId]);
-            Transactions::debitWallet($op['op_selprod_user_id'], Transactions::TYPE_TRANSFER_TO_THIRD_PARTY_ACCOUNT, $amountToBePaidToSeller, $this->siteLangId, $comments, $op['op_id'], $resp->id);
+                // Debit sold product amount from seller wallet.
+                $comments = $comments . ' ' . Labels::getLabel('MSG_TRANSFERED_TO_ACCOUNT_{account-id}.', $this->siteLangId);
+                $comments = CommonHelper::replaceStringData($comments, ['{account-id}' => $accountId]);
+                Transactions::debitWallet($op['op_selprod_user_id'], Transactions::TYPE_TRANSFER_TO_THIRD_PARTY_ACCOUNT, $amountToBePaidToSeller, $this->siteLangId, $comments, $op['op_id'], $resp->id);
+            }
 
             if (0 < $discount) {
                 // Credit sold product discount amount to seller wallet.
@@ -486,7 +488,7 @@ class StripeConnectPayController extends PaymentController
 
                 // Debit sold product discount amount from seller wallet.
                 $comments = Labels::getLabel('MSG_AMOUNT_DEBITED_FOR_DISCOUNT_APPLIED_ON_PRODUCT_SOLD_#{invoice-no}._TRANSFERED_TO_ACCOUNT_{account-id}.', $this->siteLangId);
-                $comments = CommonHelper::replaceStringData($comments, ['{account-id}' => $accountId]);
+                $comments = CommonHelper::replaceStringData($comments, ['{invoice-no}' => $op['op_invoice_number'], '{account-id}' => $accountId]);
                 Transactions::debitWallet($op['op_selprod_user_id'], Transactions::TYPE_TRANSFER_TO_THIRD_PARTY_ACCOUNT, $discount, $this->siteLangId, $comments, $op['op_id'], $resp->id);
             }
         }
