@@ -360,7 +360,7 @@ class Cart extends FatModel
                         unset($this->products[$key]);
                         continue;
                     }
-                 
+
                     $this->products[$key] = $sellerProductRow;
 
                     /*[COD available*/
@@ -1751,8 +1751,9 @@ class Cart extends FatModel
         $cartProducts = $this->getBasketProducts($this->cart_lang_id);
         
         $productInfo = [];
+        $fulfillmentType = $this->getCartCheckoutType();
         foreach ($cartProducts as $key => $val) {
-            if ($val['fulfillment_type'] != $this->SYSTEM_ARR['shopping_cart']['checkout_type'] && $val['fulfillment_type'] != Shipping::FULFILMENT_ALL) {
+            if ($val['fulfillment_type'] != $fulfillmentType && $val['fulfillment_type'] != Shipping::FULFILMENT_ALL) {
                 continue;
             }
                      
@@ -1877,8 +1878,8 @@ class Cart extends FatModel
     }
     
     public function getCartCheckoutType()
-    {
-        return isset($this->SYSTEM_ARR['shopping_cart']['checkout_type']) ? FatUtility::int($this->SYSTEM_ARR['shopping_cart']['checkout_type']) : 0;
+    {  
+        return isset($this->SYSTEM_ARR['shopping_cart']['checkout_type']) ? FatUtility::int($this->SYSTEM_ARR['shopping_cart']['checkout_type']) : Shipping::FULFILMENT_SHIP;
     }
     
     public function unsetCartCheckoutType()

@@ -26,7 +26,10 @@ class CartController extends MyAppController
         //CommonHelper::printArray($productsArr); exit;
         $prodGroupIds = array();
 
-        $fulfillmentProdArr = [];
+        $fulfillmentProdArr = [
+           Shipping::FULFILMENT_SHIP => [],
+           Shipping::FULFILMENT_PICKUP => [],
+       ];
 
         if (0 < count($productsArr) || true === MOBILE_APP_API_CALL) {
             foreach ($productsArr as $product) {
