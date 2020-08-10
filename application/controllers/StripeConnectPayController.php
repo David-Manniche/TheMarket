@@ -41,11 +41,11 @@ class StripeConnectPayController extends PaymentController
         }
 
         if (false === $this->stripeConnect->init($userId)) {
-            $this->setErrorAndRedirect();
+            $this->setErrorAndRedirect($this->stripeConnect->getError());
         }
 
         if (!empty($this->stripeConnect->getError())) {
-            $this->setErrorAndRedirect();
+            $this->setErrorAndRedirect($this->stripeConnect->getError());
         }
 
         $this->settings = $this->stripeConnect->getSettings();
@@ -152,7 +152,7 @@ class StripeConnectPayController extends PaymentController
         }
 
         if (false === $this->stripeConnect->removeCard(['cardId' => $cardId])) {
-            $this->setErrorAndRedirect();
+            $this->setErrorAndRedirect($this->stripeConnect->getError());
         }
         $msg = Labels::getLabel("MSG_REMOVED_SUCCESSFULLY", $this->siteLangId);
         FatUtility::dieJsonSuccess($msg);
@@ -222,14 +222,14 @@ class StripeConnectPayController extends PaymentController
 
                 /* It will generate card temp token. */
                 if (false === $this->stripeConnect->generateCardToken($cardData)) {
-                    $this->setErrorAndRedirect();
+                    $this->setErrorAndRedirect($this->stripeConnect->getError());
                 }
                 $cardTokenResponse = $this->stripeConnect->getResponse();
 
                 if (0 < $saveCard) {
                     /* Bind Card with customer. */
                     if (false === $this->stripeConnect->addCard(['cardToken' => $cardTokenResponse->id])) {
-                        $this->setErrorAndRedirect();
+                        $this->setErrorAndRedirect($this->stripeConnect->getError());
                     }
                     $cardTokenResponse = $this->stripeConnect->getResponse();
                 } else {
@@ -238,7 +238,7 @@ class StripeConnectPayController extends PaymentController
                     ];
                     /* Create method with temp card token if customer don't want to save card. */
                     if (false === $this->stripeConnect->addPaymentMethod($card)) {
-                        $this->setErrorAndRedirect();
+                        $this->setErrorAndRedirect($this->stripeConnect->getError());
                     }
                     $cardTokenResponse = $this->stripeConnect->getResponse();
                 }
@@ -269,7 +269,7 @@ class StripeConnectPayController extends PaymentController
             }
         } else {
             if (false === $this->stripeConnect->createCustomerObject($this->orderInfo)) {
-                $this->setErrorAndRedirect();
+                $this->setErrorAndRedirect($this->stripeConnect->getError());
             }
             $this->customerId = $this->stripeConnect->getCustomerId();   
             $this->set('customerId', $this->customerId);
@@ -349,7 +349,7 @@ class StripeConnectPayController extends PaymentController
             'payment_method' => $this->sourceId,
         ];
         if (false === $this->stripeConnect->createPaymentIntent($chargeData)) {
-            $this->setErrorAndRedirect();
+            $this->setErrorAndRedirect($this->stripeConnect->getError());
         }
         return true;
     }
@@ -374,7 +374,7 @@ class StripeConnectPayController extends PaymentController
         }
 
         if (false === $this->stripeConnect->loadPaymentIntent($paymentIntendId)) {
-            $this->setErrorAndRedirect();
+            $this->setErrorAndRedirect($this->stripeConnect->getError());
         }
 
         $paymentIntentResponse = $this->stripeConnect->getResponse()->toArray();
@@ -427,7 +427,11 @@ class StripeConnectPayController extends PaymentController
         
         foreach ($orderProducts as $op) {
             $amountToBePaidToSeller = CommonHelper::orderProductAmount($op, 'NETAMOUNT', false, User::USER_TYPE_SELLER);
-            $amountToBePaidToSeller = ($amountToBePaidToSeller - $op['op_commission_charged']);
+            $discount = CommonHelper::orderProductAmount($op, 'DISCOUNT');
+            $rewardPoint = CommonHelper::orderProductAmount($op, 'REWARDPOINT');
+            $discount = abs($discount) + abs($rewardPoint);
+            
+            $amountToBePaidToSeller = ($amountToBePaidToSeller - $op['op_commission_charged']) - $discount;
 
             $accountId = User::getUserMeta($op['op_selprod_user_id'], 'stripe_account_id');
             // Credit sold product amount to seller wallet.
@@ -448,7 +452,7 @@ class StripeConnectPayController extends PaymentController
             ];
             
             if (false === $this->stripeConnect->doTransfer($charge)) {
-                $this->setErrorAndRedirect();
+                $this->setErrorAndRedirect($this->stripeConnect->getError());
             }
 
             $resp = $this->stripeConnect->getResponse();
@@ -460,6 +464,31 @@ class StripeConnectPayController extends PaymentController
             $comments = Labels::getLabel('MSG_TRANSFERED_TO_ACCOUNT_{account-id}.', $this->siteLangId);
             $comments = CommonHelper::replaceStringData($comments, ['{account-id}' => $accountId]);
             Transactions::debitWallet($op['op_selprod_user_id'], Transactions::TYPE_TRANSFER_TO_THIRD_PARTY_ACCOUNT, $amountToBePaidToSeller, $this->siteLangId, $comments, $op['op_id'], $resp->id);
+
+            if (0 < $discount) {
+                // Credit sold product discount amount to seller wallet.
+                $discountComments = Labels::getLabel('MSG_AMOUNT_CREDITED_FOR_DISCOUNT_APPLIED_ON_PRODUCT_SOLD_#{invoice-no}.', $this->siteLangId);
+                $discountComments = CommonHelper::replaceStringData($discountComments, ['{invoice-no}' => $op['op_invoice_number']]);
+                Transactions::creditWallet($op['op_selprod_user_id'], Transactions::TYPE_PRODUCT_SALE, $discount, $this->siteLangId, $discountComments, $op['op_id']);
+
+                unset($charge['source_transaction']);
+                $charge['amount'] = $this->convertInPaisa($discount);
+                $charge['description'] = $discountComments;
+                $charge['metadata']['source_transaction'] = $chargeId;
+                if (false === $this->stripeConnect->doTransfer($charge)) {
+                    $this->setErrorAndRedirect($this->stripeConnect->getError());
+                }
+
+                $resp = $this->stripeConnect->getResponse();
+                if (empty($resp->id)) {
+                    continue;
+                }
+
+                // Debit sold product discount amount from seller wallet.
+                $comments = Labels::getLabel('MSG_AMOUNT_DEBITED_FOR_DISCOUNT_APPLIED_ON_PRODUCT_SOLD_#{invoice-no}._TRANSFERED_TO_ACCOUNT_{account-id}.', $this->siteLangId);
+                $comments = CommonHelper::replaceStringData($comments, ['{account-id}' => $accountId]);
+                Transactions::debitWallet($op['op_selprod_user_id'], Transactions::TYPE_TRANSFER_TO_THIRD_PARTY_ACCOUNT, $discount, $this->siteLangId, $comments, $op['op_id'], $resp->id);
+            }
         }
 
         $successUrl = UrlHelper::generateFullUrl('custom', 'paymentSuccess', array($this->orderId));

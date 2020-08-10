@@ -236,12 +236,11 @@ class OrderReturnRequest extends MyAppModel
         }
         if (true == $oObj->addChildProductOrderHistory($requestRow['orrequest_op_id'], $orderLangId, FatApp::getConfig("CONF_RETURN_REQUEST_APPROVED_ORDER_STATUS"), $approvedByLabel, 1, '', 0, $moveRefundInWallet)) {
             if (true === $canRefundToCard) {
-                $paymentMethodObj = new PaymentMethods();
                 $pluginKey = Plugin::getAttributesById($requestRow['order_pmethod_id'], 'plugin_code');
 
                 $paymentMethodObj = new PaymentMethods();
                 if (true === $paymentMethodObj->canRefundToCard($pluginKey, $orderLangId)) {
-                    if (false == $paymentMethodObj->initiateRefund($requestRow['orrequest_op_id'])) {
+                    if (false == $paymentMethodObj->initiateRefund($requestRow)) {
                         $this->error = $paymentMethodObj->getError();
                         $db->rollbackTransaction();
                         return false;

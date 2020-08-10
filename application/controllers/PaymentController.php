@@ -47,9 +47,8 @@ abstract class PaymentController extends MyAppController
         }
     }
 
-    protected function setErrorAndRedirect(string $msg = "", bool $json = false, $redirect = true)
+    protected function setErrorAndRedirect(string $msg, bool $json = false, $redirect = true)
     {
-        $msg = !empty($msg) ? $msg : $this->stripeConnect->getError();
         $json = FatUtility::isAjaxCall() ? true : $json;
         LibHelper::exitWithError($msg, $json, $redirect);
         CommonHelper::redirectUserReferer();

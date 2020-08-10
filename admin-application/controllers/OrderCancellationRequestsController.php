@@ -135,6 +135,7 @@ class OrderCancellationRequestsController extends AdminBaseController
         $srch->addMultipleFields(array('order_reward_point_used', 'order_pmethod_id'));
         $rs = $srch->getResultSet();
         $row = FatApp::getDb()->fetch($rs);
+
         $orderRewardUsed = 0;
         if (!empty($row) && $row['order_reward_point_used'] > 0) {
             $orderRewardUsed = $row['order_reward_point_used'];
@@ -199,18 +200,16 @@ class OrderCancellationRequestsController extends AdminBaseController
                 }
 
                 $transferTo = FatApp::getPostedData('ocrequest_refund_in_wallet', FatUtility::VAR_INT, 0);
-                $canRefundToCard = (PaymentMethods::MOVE_TO_CUSTOMER_CARD == $transferTo);
-
                 $dataToUpdate = array( 'ocrequest_status' => OrderCancelRequest::CANCELLATION_REQUEST_STATUS_APPROVED, 'ocrequest_refund_in_wallet' => $transferTo, 'ocrequest_admin_comment' => $post['ocrequest_admin_comment'] );
                 $successMsgString = str_replace(strToLower('{updatedStatus}'), OrderCancelRequest::getRequestStatusArr($this->adminLangId)[OrderCancelRequest::CANCELLATION_REQUEST_STATUS_APPROVED], $msgString);
                 $oObj = new Orders();
                 if (true == $oObj->addChildProductOrderHistory($row['ocrequest_op_id'], $row['order_language_id'], FatApp::getConfig("CONF_DEFAULT_CANCEL_ORDER_STATUS"), Labels::getLabel('MSG_Your_Cancellation_Request_Approved', $row['order_language_id']), true, '', 0, $transferTo)) {
-                    if (true === $canRefundToCard) {
+                    if ((PaymentMethods::MOVE_TO_CUSTOMER_CARD == $transferTo)) {
 						$pluginKey = Plugin::getAttributesById($row['order_pmethod_id'], 'plugin_code');
 	
 						$paymentMethodObj = new PaymentMethods();
 						if (true === $paymentMethodObj->canRefundToCard($pluginKey, $row['order_language_id'])) {
-							if (false == $paymentMethodObj->initiateRefund($row['ocrequest_op_id'], PaymentMethods::REFUND_TYPE_CANCEL)) {
+							if (false == $paymentMethodObj->initiateRefund($row, PaymentMethods::REFUND_TYPE_CANCEL)) {
 								$db->rollbackTransaction();
 								FatUtility::dieJsonError($paymentMethodObj->getError());
 							}
@@ -243,6 +242,7 @@ class OrderCancellationRequestsController extends AdminBaseController
                 break;
         }
         $whereArr = array( 'smt' => 'ocrequest_id = ?', 'vals' => array( $row['ocrequest_id'] ) );
+        $db = FatApp::getDb();
         if (!empty($dataToUpdate)) {
             if (!$db->updateFromArray(OrderCancelRequest::DB_TBL, $dataToUpdate, $whereArr)) {
                 $db->rollbackTransaction();
