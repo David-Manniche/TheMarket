@@ -304,7 +304,7 @@ function addFilter(id, obj) {
     $filter = $(obj).parent().text();
     $filterVal = htmlEncode($(obj).parent().text());
     if (!$('#filters').find('a').hasClass(id)) {
-		$('#filters').prepend("<span class='chip'>"+$filterVal+" <a href='javascript:void(0);' class='remove "+id+"' "+click+ "><i class='fas fa-times'></i></a></span>");
+		$('#filters').prepend("<span class='chip'>"+$filterVal+" <a href='javascript:void(0);' data-yk='"+id+"' class='remove "+id+"' "+click+ "><i class='fas fa-times'></i></a></span>");
     }
     showSelectedFilters();
 }
@@ -323,7 +323,7 @@ function resetListingFilter() {
     document.frmProductSearchPaging.reset();
     var frm = document.frmProductSearch;
     $('#filters a').each(function() {
-        id = $(this).attr('class');
+        id = $(this).attr('data-yk');
         clearFilters(id, this);
     });
 
@@ -358,7 +358,8 @@ function removePageSideFromLink() {
 }
 
 function showSelectedFilters() {
-    if (($("#filters a").length) > 0) {
+    console.log($("#filters a").length);
+    if (($("#filters a").length) > 1) {
         $('#resetAll').css('display', 'block');
     } else {
         $('#resetAll').css('display', 'none');
@@ -382,7 +383,7 @@ function removeFilter(id, obj) {
 }
 
 function clearFilters(id, obj) {
-    $('.' + id).parent().remove();
+    $('.' + id).parent('span').remove();
     $('#' + id).find('input[type=\'checkbox\']').prop('checked', false);
     $("input:checkbox[name=brands]").each(function() {
         if ($(this).attr('data-id') == id) {
@@ -499,7 +500,7 @@ function addPricefilter(reloadPage) {
     }
     $('.price').parent().remove();
     if (!$('#filters').find('a').hasClass('price')) {
-		$('#filters').prepend("<span class='chip'> " + currencySymbolLeft + $("input[name=priceFilterMinValue]").val() + currencySymbolRight + ' - ' + currencySymbolLeft + $("input[name=priceFilterMaxValue]").val() + currencySymbolRight + " <a href='javascript:void(0);' class='remove price' onclick='removePriceFilter(this)'><i class='fas fa-times'></i></a></span>");
+		$('#filters').prepend("<span class='chip'> " + currencySymbolLeft + $("input[name=priceFilterMinValue]").val() + currencySymbolRight + ' - ' + currencySymbolLeft + $("input[name=priceFilterMaxValue]").val() + currencySymbolRight + " <a href='javascript:void(0);' data-yk='price' class='remove price' onclick='removePriceFilter(this)'><i class='fas fa-times'></i></a></span>");
 		
     }
     searchArr['price_min_range'] = $("input[name=priceFilterMinValue]").val();

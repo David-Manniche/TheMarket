@@ -332,8 +332,8 @@ if (isset($prodcat_code)) {
     </div>
             <!-- ] -->
 			<div class="selected-filters" id="filters">
-            <span class="chip more">+10</span>
-				<a href="javascript:void(0)" class="resetAll link" id="resetAll" onClick="resetListingFilter()"
+            <?php /*?><span class="chip more">+10</span><?php */?>
+				<a href="javascript:void(0)" data-yk='link' class="resetAll link" id="resetAll" onClick="resetListingFilter()"
 					style="display:none;">
 					<?php echo Labels::getLabel('LBL_Clear_All', $siteLangId);?>
 				</a>
