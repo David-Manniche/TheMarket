@@ -66,4 +66,6 @@ class AddressSearch extends SearchBase
     public function joinUser(int $langId)
     {
     }
+
+    
 }

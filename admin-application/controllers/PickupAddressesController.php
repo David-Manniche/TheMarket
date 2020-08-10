@@ -94,7 +94,7 @@ class PickupAddressesController extends AdminBaseController
         $frm->addRadioButtons(Labels::getLabel('LBL_Slot_Timings', $this->adminLangId), 'slot_type', $slotTimingsTypeArr, TimeSlot::DAY_INDIVIDUAL_DAYS);        
 
         $daysArr = TimeSlot::getDaysArr($this->adminLangId);        
-        for($i = 1; $i<=count($daysArr); $i++){  
+        for($i = 0; $i< count($daysArr); $i++){  
             $frm->addCheckBox($daysArr[$i], 'tslot_day['.$i.']', $i, array(), false);
             $frm->addSelectBox(Labels::getLabel('LBL_From', $this->adminLangId), 'tslot_from_time['.$i.'][]', TimeSlot::getTimeSlotsArr(), '', array(), Labels::getLabel('LBL_Select', $this->adminLangId));
             $frm->addSelectBox(Labels::getLabel('LBL_To', $this->adminLangId), 'tslot_to_time['.$i.'][]', TimeSlot::getTimeSlotsArr(), '', array(), Labels::getLabel('LBL_Select', $this->adminLangId));       
@@ -182,7 +182,7 @@ class PickupAddressesController extends AdminBaseController
             }
             
             $daysArr = TimeSlot::getDaysArr($this->adminLangId);        
-            for($i = 1; $i<=count($daysArr); $i++){  
+            for($i = 0; $i< count($daysArr); $i++){ 
                 $slotData['tslot_type'] = Address::TYPE_ADMIN_PICKUP;
                 $slotData['tslot_record_id'] = $updatedAddressId;
                 $slotData['tslot_day'] = $i;

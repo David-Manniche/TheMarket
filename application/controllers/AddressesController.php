@@ -184,4 +184,45 @@ class AddressesController extends LoggedUserController
         }
         FatUtility::dieJsonSuccess($msg);
     }
+
+    public function getPickupAddresses()
+    {   
+        $level = FatApp::getPostedData('level', FatUtility::VAR_INT, -1);
+        $recordId = FatApp::getPostedData('recordId', FatUtility::VAR_INT, -1);
+        if($level < 0 || $recordId < 0){
+            Message::addErrorMessage(Labels::getLabel('LBL_Invalid_request', $this->siteLangId));
+            FatUtility::dieWithError(Message::getHtml());
+        }
+        
+        $type = ($level == 0) ? Address::TYPE_ADMIN_PICKUP : Address::TYPE_SHOP_PICKUP;
+        $address = new Address();
+        $addresses = $address->getData($type, $recordId);
+
+        $frm = new Form('frmSlotDate');
+        $frm->addDateField('', 'slot_date');
+        $this->set('frm', $frm);
+        $this->set('addresses', $addresses);
+        $this->set('level', $level);
+        $this->_template->render(false, false);
+    }
+    
+    public function timeSlotsByAddressIdAndDate()
+    {
+        $addressId = FatApp::getPostedData('addressId', FatUtility::VAR_INT, 0);
+        $selectedDate = FatApp::getPostedData('selectedDate', FatUtility::VAR_DATE, '');
+        $level = FatApp::getPostedData('level', FatUtility::VAR_INT, -1);
+        if($addressId < 1 || empty($selectedDate)){
+            Message::addErrorMessage(Labels::getLabel('LBL_Invalid_request', $this->siteLangId));
+            FatUtility::dieWithError(Message::getHtml());
+        }
+        
+        $day = date('w', strtotime($selectedDate)); 
+        $timeSlot = new TimeSlot();
+        $timeSlots = $timeSlot->timeSlotsByAddressIdAndDate($addressId, $day);
+        $this->set('timeSlots', $timeSlots);
+        $this->set('selectedDate', $selectedDate);
+        $this->set('level', $level);
+        $this->_template->render(false, false, 'addresses/time-slots.php');
+    }
+    
 }

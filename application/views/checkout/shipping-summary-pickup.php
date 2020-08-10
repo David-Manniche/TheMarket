@@ -4,11 +4,13 @@
         <ul class="list-group review-block">
             <li class="list-group-item">
                 <div class="review-block__label">
-                    <?php if ($hasPhysicalProd) {
+                <?php /*if ($hasPhysicalProd) {
                     echo Labels::getLabel('LBL_Shipping_to:', $siteLangId);
                 } else {
                     echo Labels::getLabel('LBL_Billing_to:', $siteLangId);
-                } ?>
+                }*/
+                echo Labels::getLabel('LBL_Billing_to:', $siteLangId);
+                ?>
                 </div>
                 <div class="review-block__content" role="cell">
                     <?php echo $addresses['addr_title']; ?>
@@ -31,7 +33,7 @@
                 </h5>
             </div>
             <?php
-            ksort($shippingRates);
+            ksort($shippingRates);  
             $levelNo = 0;
             foreach ($shippingRates as $level => $levelItems) { ?>
             <ul class="list-group list-cart list-shippings">
@@ -40,8 +42,11 @@
                 ?>
                 <li class="list-group-item shipping-select">
                     <div class="shop-name"><?php echo ($level == Shipping::LEVEL_SHOP) ? $productData['shop_name'] : FatApp::getConfig('CONF_WEBSITE_NAME_' . $siteLangId, null, ''); ?></div>
+                    <div class="js-slot-addr_<?php echo $level; ?>"></div>
                     <div class="shipping-method">
-                       <a href="javascript::void(0)" onclick="setPickupAddress(<?php echo $level;?>)"><?php echo Labels::getLabel('LBL_SELECT_PICKUP', $siteLangId);?></a>
+                        <input type="hidden" name="slot_id[<?php echo $level; ?>]" class="js-slot-id" data-level="<?php echo $level; ?>">
+                        <input type="hidden" name="slot_date[<?php echo $level; ?>]" class="js-slot-date" data-level="<?php echo $level; ?>">
+                        <a href="javascript:void(0)" onclick="displayPickupAddress(<?php echo $level;?>, 0)"><?php echo Labels::getLabel('LBL_SELECT_PICKUP', $siteLangId);?></a>
                     </div>
                 </li> 
             <?php } ?>    
@@ -49,12 +54,17 @@
                     $productUrl = !$isAppUser ? UrlHelper::generateUrl('Products', 'View', array($product['selprod_id'])) : 'javascript:void(0)';
                     $shopUrl = !$isAppUser ? UrlHelper::generateUrl('Shops', 'View', array($product['shop_id'])) : 'javascript:void(0)';
                     $imageUrl = UrlHelper::getCachedUrl(UrlHelper::generateFileUrl('image', 'product', array($product['product_id'], "THUMB", $product['selprod_id'], 0, $siteLangId)), CONF_IMG_CACHE_TIME, '.jpg'); ?>
-                <?php if ($levelNo != $level) {
-                    if (count($levelItems['products']) > 0 && count($levelItems['pickup_options']) > 0 && $level != 0) { ?>
+                <?php if ($levelNo != $level) { 
+                    //if (count($levelItems['products']) > 0 && count($levelItems['pickup_options']) > 0 && $level != 0) { 
+                    if (count($levelItems['products']) > 0 && $level != 0) { 
+                ?>
                     <li class="list-group-item shipping-select">
                         <div class="shop-name"><?php echo $product['shop_name']; ?></div>
+                        <div class="js-slot-addr_<?php echo $level; ?>"></div>
                         <div class="shipping-method">
-                        <a href="javascript::void(0)" onclick="setPickupAddress(<?php echo $level;?>)"><?php echo Labels::getLabel('LBL_SELECT_PICKUP', $siteLangId);?></a>
+                        <input type="hidden" name="slot_id[<?php echo $level; ?>]" class="js-slot-id" data-level="<?php echo $level; ?>">
+                        <input type="hidden" name="slot_date[<?php echo $level; ?>]" class="js-slot-date" data-level="<?php echo $level; ?>">
+                        <a href="javascript:void(0)" onclick="displayPickupAddress(<?php echo $level;?>, <?php echo $product['shop_id']; ?>)"><?php echo Labels::getLabel('LBL_SELECT_PICKUP', $siteLangId);?></a>
                         </div>
                     </li> 
                 <?php } ?>   
@@ -121,7 +131,7 @@
                         </use>
                     </svg></i>
                 <span class=""><?php echo Labels::getLabel('LBL_Back', $siteLangId); ?></span></a>
-            <a class="btn btn-primary btn-wide " onClick="setUpShippingMethod();" href="javascript:void(0)"><?php echo Labels::getLabel('LBL_Continue', $siteLangId); ?></a>
+            <a class="btn btn-primary btn-wide " onClick="setUpPickup();" href="javascript:void(0)"><?php echo Labels::getLabel('LBL_Continue', $siteLangId); ?></a>
         </div>
     </div>
 </main>

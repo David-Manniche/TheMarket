@@ -11,8 +11,10 @@ $rewardPoints = UserRewardBreakup::rewardPointBalance(UserAuthentication::getLog
             <div class="step__section__head">
                 <h5 class="step__section__head__title"><?php echo Labels::getLabel('LBL_Payment_Summary', $siteLangId); ?></h5>
             </div>
+            <?php if ($fulfillmentType == Shipping::FULFILMENT_SHIP) { ?>
             <label class="checkbox"><input type="checkbox" checked='checked' name="isShippingSameAsBilling" value="1"><?php echo Labels::getLabel('LBL_MY_BILLING_IS_SAME_AS_SHIPPING_ADDRESS', $siteLangId); ?> <i class="input-helper"></i>
             </label>
+            <?php } ?>
             <?php if (empty($cartSummary['cartRewardPoints'])) { ?>
                 <?php if ($rewardPoints > 0) { ?>
                     <div class="rewards">

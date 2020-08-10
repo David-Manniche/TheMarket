@@ -31,6 +31,7 @@ class Orders extends MyAppModel
 
     public const BILLING_ADDRESS_TYPE = 1;
     public const SHIPPING_ADDRESS_TYPE = 2;
+    public const PICKUP_ADDRESS_TYPE = 3;
 
     public const ORDER_IS_CANCELLED = -1;
     public const ORDER_IS_PENDING = 0;
@@ -373,6 +374,7 @@ class Orders extends MyAppModel
                 $db->deleteRecords(OrderProductChargeLog::DB_TBL, array('smt' => 'opchargelog_op_id = ?', 'vals' => array($opId)));
                 $db->deleteRecords(OrderProductChargeLog::DB_TBL_LANG, array('smt' => 'opchargeloglang_op_id = ?', 'vals' => array($opId)));
                 $db->deleteRecords(OrderProductSpecifics::DB_TBL, array('smt' => 'ops_op_id = ?', 'vals' => array($opId)));
+                $db->deleteRecords(static::DB_TBL_ORDER_USER_ADDRESS, array('smt' => 'oua_op_id = ?', 'vals' => array($opId )));
             }
         }
         $db->deleteRecords(static::DB_TBL_ORDER_PRODUCTS, array('smt' => 'op_order_id = ?', 'vals' => array($this->getOrderId())));
@@ -480,6 +482,36 @@ class Orders extends MyAppModel
                     }
                 }
                 /*]*/
+                
+                /* saving of products Pickup data[ */
+                $productPickUpData = $product['productPickUpData'];
+                if (!empty($productPickUpData)) {
+                    $productPickUpData['opshipping_op_id'] = $op_id;
+
+                    $opShippingRecordObj->assignValues($productPickUpData);
+                    if (!$opShippingRecordObj->addNew()) {
+                        $db->rollbackTransaction();
+                        $this->error = $opShippingRecordObj->getError();
+                        return false;
+                    }
+                }
+                /*]*/
+                
+                /* saving of products Pickup address[ */
+                $productPickupAddress = $product['productPickupAddress'];
+                if (!empty($productPickupAddress)) {
+                    $productPickupAddress['oua_order_id'] = $this->getOrderId();
+                    $productPickupAddress['oua_op_id'] = $op_id;
+                    
+                    $ouaRecordObj = new TableRecord(static::DB_TBL_ORDER_USER_ADDRESS);
+                    $ouaRecordObj->assignValues($productPickupAddress);
+                    if (!$ouaRecordObj->addNew()) {
+                        $db->rollbackTransaction();
+                        $this->error = $ouaRecordObj->getError();
+                        return false;
+                    }
+                }
+                /*]*/
 
                 /* saving of products Shipping lang data[ */
                 $productsShippingLangData = $product['productShippingLangData'];
@@ -571,7 +603,8 @@ class Orders extends MyAppModel
             }
         }
         /* CommonHelper::printArray($addresses);die; */
-        $db->deleteRecords(static::DB_TBL_ORDER_USER_ADDRESS, array('smt' => 'oua_order_id = ?', 'vals' => array($this->getOrderId())));
+       // $db->deleteRecords(static::DB_TBL_ORDER_USER_ADDRESS, array('smt' => 'oua_order_id = ?', 'vals' => array($this->getOrderId())));
+        $db->deleteRecords(static::DB_TBL_ORDER_USER_ADDRESS, array('smt' => 'oua_order_id = ? and oua_op_id = ?', 'vals' => array($this->getOrderId(), 0 )));
         if (!empty($addresses)) {
             $ouaRecordObj = new TableRecord(static::DB_TBL_ORDER_USER_ADDRESS);
             foreach ($addresses as $address) {
