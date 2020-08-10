@@ -4,11 +4,13 @@
         <ul class="list-group review-block">
             <li class="list-group-item">
                 <div class="review-block__label">
-                    <?php if ($hasPhysicalProd) {
+                <?php /*if ($hasPhysicalProd) {
                     echo Labels::getLabel('LBL_Shipping_to:', $siteLangId);
                 } else {
                     echo Labels::getLabel('LBL_Billing_to:', $siteLangId);
-                } ?>
+                }*/
+                echo Labels::getLabel('LBL_Billing_to:', $siteLangId);
+                ?>
                 </div>
                 <div class="review-block__content" role="cell">
                     <?php echo $addresses['addr_title']; ?>

@@ -3,7 +3,14 @@
 <form class="form form form-floating">
     <div class="step__section">
         <div class="step__section__head">
-            <h5 class="step__section__head__title"> <?php echo Labels::getLabel('LBL_Delivery_Address', $siteLangId); ?> </h5>
+            <h5 class="step__section__head__title"> 
+            <?php if ($fulfillmentType == Shipping::FULFILMENT_PICKUP) {
+                    echo Labels::getLabel('LBL_Billing_Address', $siteLangId); 
+                } else {
+                    echo Labels::getLabel('LBL_Delivery_Address', $siteLangId);  
+                }
+            ?>
+            </h5>
             <a onClick="showAddressFormDiv();" name="addNewAddress"  class="link-text" href="javascript:void(0)">
                 <i class="icn"> <svg class="svg">
                         <use xlink:href="<?php echo CONF_WEBROOT_URL;?>images/retina/sprite.svg#add"

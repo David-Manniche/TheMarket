@@ -326,9 +326,11 @@ class CheckoutController extends MyAppController
 
         $selected_billing_address_id = $cartObj->getCartBillingAddress();
         $selected_shipping_address_id = $cartObj->getCartShippingAddress();
-
+        $fulfillmentType = $cartObj->getCartCheckoutType();
+        
         $this->set('selected_billing_address_id', $selected_billing_address_id);
         $this->set('selected_shipping_address_id', $selected_shipping_address_id);
+        $this->set('fulfillmentType', $fulfillmentType);
 
         $isShippingSameAsBilling = $cartObj->getShippingAddressSameAsBilling();
         $this->set('isShippingSameAsBilling', $isShippingSameAsBilling);
@@ -954,7 +956,7 @@ class CheckoutController extends MyAppController
         'oua_zip' => $billingAddressArr['addr_zip'],
         );
 
-        if (!empty($shippingAddressArr)) {
+        if (!empty($shippingAddressArr) && $fulfillmentType == Shipping::FULFILMENT_SHIP) {
             $userAddresses[1] = array(
             'oua_order_id' => $order_id,
             'oua_type' => Orders::SHIPPING_ADDRESS_TYPE,
@@ -970,6 +972,7 @@ class CheckoutController extends MyAppController
             'oua_zip' => $shippingAddressArr['addr_zip'],
             );
         }
+
         $orderData['userAddresses'] = $userAddresses;
         /* ] */
 
@@ -1111,7 +1114,6 @@ class CheckoutController extends MyAppController
 
         if ($cartProducts) {
             $productShippingData = array();
-            $productPickUpData = array();
             foreach ($cartProducts as $cartProduct) {
                 $productTaxChargesData = array();
                 $productInfo = $this->getCartProductInfo($cartProduct['selprod_id']);
@@ -1139,6 +1141,8 @@ class CheckoutController extends MyAppController
                     }
                 }
                 
+                $productPickUpData = array();
+                $productPickupAddress = array();
                 if (!empty($productSelectedPickUpMethodsArr['product']) && isset($productSelectedPickUpMethodsArr['product'][$productInfo['selprod_id']])) {
                     $pickUpDataRow = $productSelectedPickUpMethodsArr['product'][$productInfo['selprod_id']];
                     $productPickUpData = array(
@@ -1147,6 +1151,26 @@ class CheckoutController extends MyAppController
                         'opshipping_time_slot_from' => $pickUpDataRow['time_slot_from_time'],
                         'opshipping_time_slot_to' => $pickUpDataRow['time_slot_to_time'],
                         );
+                    
+                    $addressRecordId = Address::getAttributesById($pickUpDataRow['time_slot_addr_id'], 'addr_record_id');
+                    $addr = new Address($pickUpDataRow['time_slot_addr_id'], $this->siteLangId);
+                    $pickUpAddressArr = $addr->getData($pickUpDataRow['time_slot_type'], $addressRecordId);
+                    $productPickupAddress = array(
+                        'oua_order_id' => $order_id,
+                        'oua_op_id' => '',
+                        'oua_type' => Orders::PICKUP_ADDRESS_TYPE,
+                        'oua_name' => $pickUpAddressArr['addr_name'],
+                        'oua_address1' => $pickUpAddressArr['addr_address1'],
+                        'oua_address2' => $pickUpAddressArr['addr_address2'],
+                        'oua_city' => $pickUpAddressArr['addr_city'],
+                        'oua_state' => $pickUpAddressArr['state_name'],
+                        'oua_country' => $pickUpAddressArr['country_name'],
+                        'oua_country_code' => $pickUpAddressArr['country_code'],
+                        'oua_state_code' => $pickUpAddressArr['state_code'],
+                        'oua_phone' => $pickUpAddressArr['addr_phone'],
+                        'oua_zip' => $pickUpAddressArr['addr_zip'],
+                    ); 
+                        
                 }
 
                 $productTaxOption = array();
@@ -1288,6 +1312,7 @@ class CheckoutController extends MyAppController
                     'productsLangData' => $productsLangData,
                     'productShippingData' => $productShippingData,
                     'productPickUpData' => $productPickUpData,
+                    'productPickupAddress' => $productPickupAddress,
                     'productShippingLangData' => $productShippingLangData,
                     'productChargesLogData' => $productTaxChargesData,
                     /* 'op_tax_collected_by_seller'    =>    $taxCollectedBySeller, */
@@ -1405,6 +1430,7 @@ class CheckoutController extends MyAppController
         $this->set('paymentMethods', $paymentMethods);
         $this->set('userWalletBalance', $userWalletBalance);
         $this->set('cartSummary', $cartSummary);
+        $this->set('fulfillmentType', $fulfillmentType);
         if (false === MOBILE_APP_API_CALL) {
             $excludePaymentGatewaysArr = applicationConstants::getExcludePaymentGatewayArr();
             $cartHasPhysicalProduct = false;
@@ -2108,6 +2134,8 @@ class CheckoutController extends MyAppController
                     
                     $productToPickUpMethods['product'][$cartval['selprod_id']] = array(
                         'selprod_id' => $cartval['selprod_id'],
+                        'time_slot_addr_id' => $slotData['tslot_record_id'],
+                        'time_slot_type' => $slotData['tslot_type'],
                         'time_slot_from_time' => $slotData['tslot_from_time'],
                         'time_slot_to_time' => $slotData['tslot_to_time'],
                         'time_slot_date' => $post['slot_date'][$level],
