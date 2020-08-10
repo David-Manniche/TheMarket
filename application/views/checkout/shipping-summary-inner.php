@@ -45,20 +45,15 @@
                     <div class="shipping-method">
                         <?php 
                         if ($level != Shipping::LEVEL_PRODUCT) {
-                            $priceListCount = count($levelItems['rates']);
-                            if ($priceListCount == 1 && current($levelItems['rates'])['cost'] == 0) {
-                                echo Labels::getLabel('LBL_Free_Shipping', $siteLangId) ;
-                            } else {
-                                if (count($levelItems['rates']) > 0) {
-                                    $name = current($levelItems['rates'])['code'];
-                                    echo '<select class="form-control custom-select" name="shipping_services[' . $name . ']">';
-                                    foreach ($levelItems['rates'] as $key => $shippingRate) {
-                                        echo '<option value="' . $key . '">' . $shippingRate['title'] .' ( ' . $shippingRate['cost'] . ' ) </option>';
-                                    }
-                                    echo '</select>';
-                                } else {
-                                    echo Labels::getLabel('MSG_Product_is_not_available_for_shipping', $siteLangId);
+                            if (count($levelItems['rates']) > 0) {
+                                $name = current($levelItems['rates'])['code'];
+                                echo '<select class="form-control custom-select" name="shipping_services[' . $name . ']">';
+                                foreach ($levelItems['rates'] as $key => $shippingRate) {
+                                    echo '<option value="' . $key . '">' . $shippingRate['title'] .' ( ' . $shippingRate['cost'] . ' ) </option>';
                                 }
+                                echo '</select>';
+                            } else {
+                                echo Labels::getLabel('MSG_Product_is_not_available_for_shipping', $siteLangId);
                             }
                         }
                     ?> 
@@ -73,44 +68,57 @@
                     <li class="list-group-item shipping-select">
                         <div class="shop-name"><?php echo $product['shop_name']; ?></div>
                         <div class="shipping-method">
-                        <?php $priceListCount = count($levelItems['rates']);
-                            if ($priceListCount == 1 && current($levelItems['rates'])['cost'] == 0) {
-                                echo Labels::getLabel('LBL_Free_Shipping', $siteLangId) ;
-                            } else {
-                                if (count($levelItems['rates']) > 0) {
-                                    $name = current($levelItems['rates'])['code'];
-                                    echo '<select class="form-control custom-select" name="shipping_services[' . $name . ']">';
-                                    foreach ($levelItems['rates'] as $key => $shippingRate) {
-                                        echo '<option value="' . $key . '">' . $shippingRate['title'] .' ( ' . $shippingRate['cost'] . ' ) </option>';
-                                    }
-                                    echo '</select>';
-                                } elseif ($product['product_type'] == Product::PRODUCT_TYPE_PHYSICAL) {
-                                    echo Labels::getLabel('MSG_Product_is_not_available_for_shipping', $siteLangId);
+                        <?php if (count($levelItems['rates']) > 0) {
+                                $name = current($levelItems['rates'])['code'];
+                                echo '<select class="form-control custom-select" name="shipping_services[' . $name . ']">';
+                                foreach ($levelItems['rates'] as $key => $shippingRate) {
+                                    echo '<option value="' . $key . '">' . $shippingRate['title'] .' ( ' . $shippingRate['cost'] . ' ) </option>';
                                 }
+                                echo '</select>';
+                            } elseif ($product['product_type'] == Product::PRODUCT_TYPE_PHYSICAL) {
+                                echo Labels::getLabel('MSG_Product_is_not_available_for_shipping', $siteLangId);
                             } ?>
                         </div>
                     </li> 
                 <?php }?>    
 
                 <?php if ($level == Shipping::LEVEL_PRODUCT && isset($levelItems['rates'][$product['selprod_id']])) {  ?>
-                <li class="list-group-item shipping-select">
+                </ul><ul class="list-group list-cart list-shippings">
+                    <li class="list-group-item shipping-select">
                     <div class="shop-name"><?php echo $product['shop_name']; ?></div>
                     <div class="shipping-method">
-                        <?php 
-                            $priceListCount = count($levelItems['rates'][$product['selprod_id']]);
+                        <?php $priceListCount = count($levelItems['rates'][$product['selprod_id']]);
+                            /* 
+                            $freeShiping =  false;
                             if ($priceListCount == 1 && current($levelItems['rates'][$product['selprod_id']])['cost'] == 0) {
-                                echo Labels::getLabel('LBL_Free_Shipping', $siteLangId) ;
-                            } else {
-                                if ($priceListCount > 0) {
-                                    $name = current($levelItems['rates'][$product['selprod_id']])['code'];
-                                    echo '<select class="form-control custom-select" name="shipping_services[' . $name . ']">';
-                                        foreach ($levelItems['rates'][$product['selprod_id']] as $key => $shippingRate) {
-                                            echo '<option value="' . $key . '">' . $shippingRate['title'] .' ( ' . $shippingRate['cost'] . ' ) </option>';
-                                        }
-                                        echo '</select>';
-                                } elseif ($product['product_type'] == Product::PRODUCT_TYPE_PHYSICAL) {
-                                    echo Labels::getLabel('MSG_Product_is_not_available_for_shipping', $siteLangId);
+                                $freeShiping =  true;
+                            }
+
+                            if ($priceListCount > 0) {
+                                $displayOption = '';
+                                if (true == $freeShiping) {
+                                    echo Labels::getLabel('LBL_Free_Shipping', $siteLangId) ;
+                                    $displayOption = 'style="display:none"';
                                 }
+                                $name = current($levelItems['rates'][$product['selprod_id']])['code'];
+                                echo '<select class="form-control custom-select" name="shipping_services[' . $name . ']" ' . $displayOption . '>';
+                                    foreach ($levelItems['rates'][$product['selprod_id']] as $key => $shippingRate) {
+                                        echo '<option value="' . $key . '">' . $shippingRate['title'] .' ( ' . $shippingRate['cost'] . ' ) </option>';
+                                    }
+                                    echo '</select>';
+                            } elseif ($product['product_type'] == Product::PRODUCT_TYPE_PHYSICAL) {
+                                echo Labels::getLabel('MSG_Product_is_not_available_for_shipping', $siteLangId);
+                            } */
+
+                            if ($priceListCount > 0) {
+                                $name = current($levelItems['rates'][$product['selprod_id']])['code'];
+                                echo '<select class="form-control custom-select" name="shipping_services[' . $name . ']">';
+                                    foreach ($levelItems['rates'][$product['selprod_id']] as $key => $shippingRate) {
+                                        echo '<option value="' . $key . '">' . $shippingRate['title'] .' ( ' . $shippingRate['cost'] . ' ) </option>';
+                                    }
+                                    echo '</select>';
+                            } elseif ($product['product_type'] == Product::PRODUCT_TYPE_PHYSICAL) {
+                                echo Labels::getLabel('MSG_Product_is_not_available_for_shipping', $siteLangId);
                             }
                        
                     ?> 

@@ -513,7 +513,7 @@ class Cart extends FatModel
                     $this->products[$key]['seller_address'] = Shop::getShopAddress($shopId, true, $siteLangId);
                 }
                 $this->products[$key]['fulfillment_type'] = $sellerProductRow['fulfillment_type'];
-            } 
+            }
 
             /* $sellerPrice = $this->getSellersProductItemsPrice($this->products);
             foreach ($this->products as $cartkey => $cartval) {
@@ -1751,8 +1751,8 @@ class Cart extends FatModel
         $cartProducts = $this->getBasketProducts($this->cart_lang_id);
         
         $productInfo = [];
-        foreach ($cartProducts as $key => $val) {
-            if ($val['fulfillment_type'] != $this->SYSTEM_ARR['shopping_cart']['checkout_type'] && $val['fulfillment_type'] != Shipping::FULFILMENT_ALL) {
+        foreach ($cartProducts as $val) {
+            if (isset($this->SYSTEM_ARR['shopping_cart']['checkout_type']) && $val['selprod_fulfillment_type'] != Shipping::FULFILMENT_ALL && $val['selprod_fulfillment_type'] != $this->SYSTEM_ARR['shopping_cart']['checkout_type']) {
                 continue;
             }
                      
@@ -1916,5 +1916,4 @@ class Cart extends FatModel
         }
         return true;
     }
-    
 }
