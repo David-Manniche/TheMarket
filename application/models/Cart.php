@@ -360,7 +360,7 @@ class Cart extends FatModel
                         unset($this->products[$key]);
                         continue;
                     }
-                 
+
                     $this->products[$key] = $sellerProductRow;
 
                     /*[COD available*/
@@ -1878,8 +1878,8 @@ class Cart extends FatModel
     }
     
     public function getCartCheckoutType()
-    {
-        return isset($this->SYSTEM_ARR['shopping_cart']['checkout_type']) ? FatUtility::int($this->SYSTEM_ARR['shopping_cart']['checkout_type']) : 0;
+    {  
+        return isset($this->SYSTEM_ARR['shopping_cart']['checkout_type']) ? FatUtility::int($this->SYSTEM_ARR['shopping_cart']['checkout_type']) : Shipping::FULFILMENT_SHIP;
     }
     
     public function unsetCartCheckoutType()
@@ -1887,6 +1887,11 @@ class Cart extends FatModel
         unset($this->SYSTEM_ARR['shopping_cart']['checkout_type']);
         $this->updateUserCart();
         return true;
+    }
+    
+    public function checkCartCheckoutType()
+    {
+        return isset($this->SYSTEM_ARR['shopping_cart']['checkout_type']) ? FatUtility::int($this->SYSTEM_ARR['shopping_cart']['checkout_type']) : 0;
     }
     
     public function setProductPickUpMethod($arr)

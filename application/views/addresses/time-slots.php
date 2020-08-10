@@ -1,7 +1,7 @@
 <?php defined('SYSTEM_INIT') or die('Invalid Usage.'); 
 if(!empty($timeSlots)){
     foreach($timeSlots as $slot) { 
-        $displayTime = date("H:i:s", strtotime('+'.FatApp::getConfig("CONF_TIME_SLOT_ADDITION").' hour'));
+        $displayTime = date("H:i:s", strtotime('+'.FatApp::getConfig('CONF_TIME_SLOT_ADDITION', FatUtility::VAR_INT, 2).' hour'));
         if($selectedDate == date('Y-m-d') && $displayTime > $slot['tslot_from_time']){
             continue;
         }
