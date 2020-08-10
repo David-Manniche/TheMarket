@@ -826,7 +826,6 @@ function initMap(lat = 40.72, lng = -73.96, elementId = 'map') {
     document.getElementById('shop_country_id').addEventListener('change', function () {
         var sel = document.getElementById('shop_country_id');
         var country = sel.options[sel.selectedIndex].text;
-
         geocodeAddress(geocoder, map, infowindow, { 'address': country });
     });
 
@@ -859,7 +858,7 @@ function geocodeAddress(geocoder, resultsMap, infowindow, address) {
 				});
             });
         } else {
-            /*console.log('Geocode was not successful for the following reason: ' + status);*/
+            console.log('Geocode was not successful for the following reason: ' + status);
         }
     });
 }
@@ -892,6 +891,7 @@ function geocodeSetData(results) {
 				}
 			}
 		}
+        console.log(data);
 		$('#postal_code').val(data.postal_code);
 		$('#shop_country_id option').each(function () {
 			if (this.text == data.country) {

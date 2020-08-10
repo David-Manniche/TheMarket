@@ -429,6 +429,9 @@ class HomeController extends MyAppController
         $productCatSrchObj->addMultipleFields(array('prodcat_id', 'IFNULL(prodcat_name, prodcat_identifier) as prodcat_name', 'prodcat_description'));
 
         $collectionObj = new CollectionSearch();
+        $collectionObj->joinCollectionRecords();
+        $collectionObj->addMultipleFields(array( 'ctr_record_id' ));
+        $collectionObj->addCondition('ctr_record_id', '!=', 'NULL');
         $i = 0;
         foreach ($collectionsArr as $collection_id => $collection) {
             if (!$collection['collection_primary_records']) {
@@ -448,14 +451,9 @@ class HomeController extends MyAppController
             switch ($collection['collection_type']) {
                 case Collections::COLLECTION_TYPE_PRODUCT:
                     $tempObj = clone $collectionObj;
-                    $tempObj->joinCollectionProducts();
                     $tempObj->addCondition('collection_id', '=', $collection_id);
-                    /* $tempObj->setPageSize( $collection['collection_primary_records']); */
-                    $tempObj->addMultipleFields(array( 'ctsp_selprod_id' ));
-                    $tempObj->addCondition('ctsp_selprod_id', '!=', 'NULL');
                     $rs = $tempObj->getResultSet();
-
-                    if (!$productIds = $db->fetchAll($rs, 'ctsp_selprod_id')) {
+                    if (!$productIds = $db->fetchAll($rs, 'ctr_record_id')) {
                         continue 2;
                     }
 
@@ -499,9 +497,6 @@ class HomeController extends MyAppController
                     }
                     $tempObj = clone $collectionObj;
                     $tempObj->addCondition('collection_id', '=', $collection_id);
-                    $tempObj->joinCollectionCategories($langId);
-                    $tempObj->addMultipleFields(array( 'ctpc_prodcat_id'));
-                    $tempObj->addCondition('ctpc_prodcat_id', '!=', 'NULL');
                     $tempObj->setPageSize($collection['collection_primary_records']);
 
                     /* Exclude categories having no product [ */
@@ -514,7 +509,7 @@ class HomeController extends MyAppController
                     /* ] */
 
                     $rs = $tempObj->getResultSet();
-                    if (!$categoryIds = $db->fetchAll($rs, 'ctpc_prodcat_id')) {
+                    if (!$categoryIds = $db->fetchAll($rs, 'ctr_record_id')) {
                         continue 2;
                     }
 
@@ -581,13 +576,10 @@ class HomeController extends MyAppController
                 case Collections::COLLECTION_TYPE_SHOP:
                     $tempObj = clone $collectionObj;
                     $tempObj->addCondition('collection_id', '=', $collection_id);
-                    $tempObj->joinCollectionShops();
-                    $tempObj->addMultipleFields(array( 'ctps_shop_id' ));
-                    $tempObj->addCondition('ctps_shop_id', '!=', 'NULL');
                     // $tempObj->setPageSize( $collection['collection_primary_records'] );
                     $rs = $tempObj->getResultSet();
 
-                    if (!$shopIds = $db->fetchAll($rs, 'ctps_shop_id')) {
+                    if (!$shopIds = $db->fetchAll($rs, 'ctr_record_id')) {
                         continue 2;
                     }
 
@@ -644,11 +636,8 @@ class HomeController extends MyAppController
                 case Collections::COLLECTION_TYPE_BRAND:
                     $tempObj = clone $collectionObj;
                     $tempObj->addCondition('collection_id', '=', $collection_id);
-                    $tempObj->joinCollectionBrands($langId);
-                    $tempObj->addMultipleFields(array('ctpb_brand_id'));
-                    $tempObj->addCondition('ctpb_brand_id', '!=', 'NULL');
                     $rs = $tempObj->getResultSet();
-                    $brandIds = $db->fetchAll($rs, 'ctpb_brand_id');
+                    $brandIds = $db->fetchAll($rs, 'ctr_record_id');
 
                     if (empty($brandIds)) {
                         continue 2;
@@ -680,11 +669,8 @@ class HomeController extends MyAppController
                 case Collections::COLLECTION_TYPE_BLOG:
                     $tempObj = clone $collectionObj;
                     $tempObj->addCondition('collection_id', '=', $collection_id);
-                    $tempObj->joinCollectionBlogs();
-                    $tempObj->addMultipleFields(array('ctb_post_id'));
-                    $tempObj->addCondition('ctb_post_id', '!=', 'NULL');
                     $rs = $tempObj->getResultSet();
-                    $blogPostIds = $db->fetchAll($rs, 'ctb_post_id');
+                    $blogPostIds = $db->fetchAll($rs, 'ctr_record_id');
                     if (empty($blogPostIds)) {
                         continue 2;
                     }

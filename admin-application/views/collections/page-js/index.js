@@ -245,31 +245,31 @@ $(document).ready(function() {
     }
 
     updateProduct = function(collection_id, selprod_id) {
-        fcom.updateWithAjax(fcom.makeUrl('Collections', 'updateSelProd'), 'collection_id=' + collection_id + '&selprod_id=' + selprod_id, function(t) {
+        fcom.updateWithAjax(fcom.makeUrl('Collections', 'updateCollectionRecords'), 'collection_id=' + collection_id + '&record_id=' + selprod_id, function(t) {
             reloadProducts(collection_id);
         });
     };
 
     updateCollectionCategories = function(collection_id, prodcat_id) {
-        fcom.updateWithAjax(fcom.makeUrl('Collections', 'updateCollectionCategories'), 'collection_id=' + collection_id + '&prodcat_id=' + prodcat_id, function(t) {
+        fcom.updateWithAjax(fcom.makeUrl('Collections', 'updateCollectionRecords'), 'collection_id=' + collection_id + '&record_id=' + prodcat_id, function(t) {
             reloadCollectionCategories(collection_id);
         });
     };
 
     updateCollectionShops = function(collection_id, shop_id) {
-        fcom.updateWithAjax(fcom.makeUrl('Collections', 'updateCollectionShops'), 'collection_id=' + collection_id + '&shop_id=' + shop_id, function(t) {
+        fcom.updateWithAjax(fcom.makeUrl('Collections', 'updateCollectionRecords'), 'collection_id=' + collection_id + '&record_id=' + shop_id, function(t) {
             reloadCollectionShops(collection_id);
         });
     };
 
     updateCollectionBrands = function(collection_id, brand_id) {
-        fcom.updateWithAjax(fcom.makeUrl('Collections', 'updateCollectionBrands'), 'collection_id=' + collection_id + '&brand_id=' + brand_id, function(t) {
+        fcom.updateWithAjax(fcom.makeUrl('Collections', 'updateCollectionRecords'), 'collection_id=' + collection_id + '&record_id=' + brand_id, function(t) {
             reloadCollectionBrands(collection_id);
         });
     };
 
     updateCollectionBlogs = function(collection_id, post_id) {
-        fcom.updateWithAjax(fcom.makeUrl('Collections', 'updateCollectionBlogs'), 'collection_id=' + collection_id + '&post_id=' + post_id, function(t) {
+        fcom.updateWithAjax(fcom.makeUrl('Collections', 'updateCollectionRecords'), 'collection_id=' + collection_id + '&record_id=' + post_id, function(t) {
             reloadCollectionBlogs(collection_id);
         });
     };
@@ -279,7 +279,7 @@ $(document).ready(function() {
         if (!agree) {
             return false;
         }
-        fcom.updateWithAjax(fcom.makeUrl('Collections', 'removeCollectionSelprod'), 'collection_id=' + collection_id + '&selprod_id=' + selprod_id, function(t) {
+        fcom.updateWithAjax(fcom.makeUrl('Collections', 'removeCollectionRecord'), 'collection_id=' + collection_id + '&record_id=' + selprod_id, function(t) {
             reloadProducts(collection_id);
         });
     };
@@ -289,7 +289,7 @@ $(document).ready(function() {
         if (!agree) {
             return false;
         }
-        fcom.updateWithAjax(fcom.makeUrl('Collections', 'removeCollectionCategory'), 'collection_id=' + collection_id + '&prodcat_id=' + prodcat_id, function(t) {
+        fcom.updateWithAjax(fcom.makeUrl('Collections', 'removeCollectionRecord'), 'collection_id=' + collection_id + '&record_id=' + prodcat_id, function(t) {
             reloadCollectionCategories(collection_id);
         });
     }
@@ -299,7 +299,7 @@ $(document).ready(function() {
         if (!agree) {
             return false;
         }
-        fcom.updateWithAjax(fcom.makeUrl('Collections', 'removeCollectionShop'), 'collection_id=' + collection_id + '&shop_id=' + shop_id, function(t) {
+        fcom.updateWithAjax(fcom.makeUrl('Collections', 'removeCollectionRecord'), 'collection_id=' + collection_id + '&record_id=' + shop_id, function(t) {
             reloadCollectionShops(collection_id);
         });
     }
@@ -309,7 +309,7 @@ $(document).ready(function() {
         if (!agree) {
             return false;
         }
-        fcom.updateWithAjax(fcom.makeUrl('Collections', 'removeCollectionBrand'), 'collection_id=' + collection_id + '&brand_id=' + brand_id, function(t) {
+        fcom.updateWithAjax(fcom.makeUrl('Collections', 'removeCollectionRecord'), 'collection_id=' + collection_id + '&record_id=' + brand_id, function(t) {
             reloadCollectionBrands(collection_id);
         });
     }
@@ -319,7 +319,7 @@ $(document).ready(function() {
         if (!agree) {
             return false;
         }
-        fcom.updateWithAjax(fcom.makeUrl('Collections', 'removeCollectionBlog'), 'collection_id=' + collection_id + '&post_id=' + post_id, function(t) {
+        fcom.updateWithAjax(fcom.makeUrl('Collections', 'removeCollectionRecord'), 'collection_id=' + collection_id + '&record_id=' + post_id, function(t) {
             reloadCollectionBlogs(collection_id);
         });
     }

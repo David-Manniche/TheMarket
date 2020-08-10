@@ -513,8 +513,8 @@ class CollectionsController extends AdminBaseController
             FatUtility::dieWithError(Message::getHtml());
         }
     }
-
-    public function updateSelProd()
+    
+    public function updateCollectionRecords()
     {
         $this->objPrivilege->canEditCollections();
         $post = FatApp::getPostedData();
@@ -522,21 +522,45 @@ class CollectionsController extends AdminBaseController
             Message::addErrorMessage(current($frm->getValidationErrors()));
             FatUtility::dieWithError(Message::getHtml());
         }
+
         $collection_id = FatUtility::int($post['collection_id']);
-        $selprod_id = FatUtility::int($post['selprod_id']);
-        if (!$collection_id || !$selprod_id) {
+        $record_id = FatUtility::int($post['record_id']);
+        if (!$collection_id || !$record_id) {
             Message::addErrorMessage(Labels::getLabel('MSG_Invalid_Request', $this->adminLangId));
             FatUtility::dieWithError(Message::getHtml());
         }
         $collectionObj = new Collections($collection_id);
-        if (!$collectionObj->addUpdateCollectionSelProd($collection_id, $selprod_id)) {
+        if (!$collectionObj->addUpdateCollectionRecord($collection_id, $record_id)) {
             Message::addErrorMessage(Labels::getLabel($collectionObj->getError(), $this->adminLangId));
             FatUtility::dieWithError(Message::getHtml());
         }
         $this->set('msg', Labels::getLabel('MSG_Record_Updated_Successfully', $this->adminLangId));
         $this->_template->render(false, false, 'json-success.php');
     }
-
+    
+    public function removeCollectionRecord()
+    {
+        $this->objPrivilege->canEditCollections();
+        $post = FatApp::getPostedData();
+        if (false === $post) {
+            Message::addErrorMessage(current($frm->getValidationErrors()));
+            FatUtility::dieWithError(Message::getHtml());
+        }
+        $collectionId = FatUtility::int($post['collection_id']);
+        $recordId = FatUtility::int($post['record_id']);
+        if (1 > $collectionId || 1 > $recordId) {
+            Message::addErrorMessage(Labels::getLabel('MSG_Invalid_Request', $this->adminLangId));
+            FatUtility::dieWithError(Message::getHtml());
+        }
+        $collectionObj = new Collections();
+        if (!$collectionObj->removeCollectionRecord($collectionId, $recordId)) {
+            Message::addErrorMessage(Labels::getLabel($collectionObj->getError(), $this->adminLangId));
+            FatUtility::dieWithError(Message::getHtml());
+        }
+        $this->set('msg', Labels::getLabel('MSG_Brand_Removed_Successfully', $this->adminLangId));
+        $this->_template->render(false, false, 'json-success.php');
+    }
+    
     public function collectionSelprods($collection_id)
     {
         $this->objPrivilege->canViewCollections();
@@ -549,31 +573,7 @@ class CollectionsController extends AdminBaseController
         $this->set('collection_id', $collection_id);
         $this->_template->render(false, false);
     }
-
-    public function updateCollectionCategories()
-    {
-        $this->objPrivilege->canEditCollections();
-        $post = FatApp::getPostedData();
-        if (false === $post) {
-            Message::addErrorMessage(Labels::getLabel('MSG_Invalid_Request', $this->adminLangId));
-            FatUtility::dieWithError(Message::getHtml());
-        }
-
-        $collection_id = FatUtility::int($post['collection_id']);
-        $prodcat_id = FatUtility::int($post['prodcat_id']);
-        if (!$collection_id || !$prodcat_id) {
-            Message::addErrorMessage(Labels::getLabel('MSG_Invalid_Request', $this->adminLangId));
-            FatUtility::dieWithError(Message::getHtml());
-        }
-        $collectionObj = new Collections($collection_id);
-        if (!$collectionObj->addUpdateCollectionCategories($collection_id, $prodcat_id)) {
-            Message::addErrorMessage(Labels::getLabel($collectionObj->getError(), $this->adminLangId));
-            FatUtility::dieWithError(Message::getHtml());
-        }
-        $this->set('msg', Labels::getLabel('MSG_Record_Updated_Successfully', $this->adminLangId));
-        $this->_template->render(false, false, 'json-success.php');
-    }
-
+    
     public function collectionCategories($collection_id)
     {
         $this->objPrivilege->canViewCollections();
@@ -586,30 +586,7 @@ class CollectionsController extends AdminBaseController
         $this->set('collection_id', $collection_id);
         $this->_template->render(false, false);
     }
-    public function updateCollectionShops()
-    {
-        $this->objPrivilege->canEditCollections();
-        $post = FatApp::getPostedData();
-        if (false === $post) {
-            Message::addErrorMessage(current($frm->getValidationErrors()));
-            FatUtility::dieWithError(Message::getHtml());
-        }
-
-        $collection_id = FatUtility::int($post['collection_id']);
-        $shop_id = FatUtility::int($post['shop_id']);
-        if (!$collection_id || !$shop_id) {
-            Message::addErrorMessage(Labels::getLabel('MSG_Invalid_Request', $this->adminLangId));
-            FatUtility::dieWithError(Message::getHtml());
-        }
-        $collectionObj = new Collections($collection_id);
-        if (!$collectionObj->addUpdateCollectionShops($collection_id, $shop_id)) {
-            Message::addErrorMessage(Labels::getLabel($collectionObj->getError(), $this->adminLangId));
-            FatUtility::dieWithError(Message::getHtml());
-        }
-        $this->set('msg', Labels::getLabel('MSG_Record_Updated_Successfully', $this->adminLangId));
-        $this->_template->render(false, false, 'json-success.php');
-    }
-
+    
     public function collectionShops($collection_id)
     {
         $this->objPrivilege->canViewCollections();
@@ -619,110 +596,11 @@ class CollectionsController extends AdminBaseController
         }
 
         $collectionShops = Collections::getShops($collection_id, $this->adminLangId);
-        $this->set('collectionshops', $collectionShops);
+        $this->set('collectionShops', $collectionShops);
         $this->set('collection_id', $collection_id);
         $this->_template->render(false, false);
     }
-
-    public function updateCollectionBrands()
-    {
-        $this->objPrivilege->canEditCollections();
-        $frm = $this->getCollectionBrandsForm();
-        $post = FatApp::getPostedData();
-        if (false === $post) {
-            Message::addErrorMessage(current($frm->getValidationErrors()));
-            FatUtility::dieWithError(Message::getHtml());
-        }
-        $collectionId = FatUtility::int($post['collection_id']);
-        $brandId = FatUtility::int($post['brand_id']);
-        if (!$collectionId || !$brandId) {
-            Message::addErrorMessage(Labels::getLabel('MSG_Invalid_Request', $this->adminLangId));
-            FatUtility::dieWithError(Message::getHtml());
-        }
-        $collectionObj = new Collections($collectionId);
-        if (!$collectionObj->addUpdateCollectionBrands($collectionId, $brandId)) {
-            Message::addErrorMessage(Labels::getLabel($collectionObj->getError(), $this->adminLangId));
-            FatUtility::dieWithError(Message::getHtml());
-        }
-        $this->set('msg', Labels::getLabel('MSG_Record_Updated_Successfully', $this->adminLangId));
-        $this->_template->render(false, false, 'json-success.php');
-    }
-
-    public function updateCollectionBlogs()
-    {
-        $this->objPrivilege->canEditCollections();
-        $frm = $this->getCollectionBlogsForm();
-        $post = FatApp::getPostedData();
-        if (false === $post) {
-            FatUtility::dieWithError(current($frm->getValidationErrors()));
-        }
-
-        $collectionId = FatUtility::int($post['collection_id']);
-        $collectionBlogs = Collections::getBlogs($collectionId, $this->adminLangId);
-        if (!empty($collectionBlogs) && Collections::LIMIT_BLOG_LAYOUT1 <= count($collectionBlogs)) {
-            $message = Labels::getLabel('MSG_A_MAXIMUM_OF_{LIMIT}_BLOGS_CAN_BE_ADDED_TO_THE_COLLECTION.', $this->adminLangId);
-            $message = CommonHelper::replaceStringData($message, ['{LIMIT}' => Collections::LIMIT_BLOG_LAYOUT1]);
-            FatUtility::dieWithError($message);
-        }
-
-        $blogPostId = FatApp::getPostedData('post_id', FatUtility::VAR_INT, 0);
-        if (!$collectionId || !$blogPostId) {
-            FatUtility::dieWithError(Labels::getLabel('MSG_Invalid_Request', $this->adminLangId));
-        }
-        $collectionObj = new Collections($collectionId);
-        if (!$collectionObj->addUpdateCollectionBlogs($collectionId, $blogPostId)) {
-            FatUtility::dieWithError($collectionObj->getError());
-        }
-        $this->set('msg', Labels::getLabel('MSG_Record_Updated_Successfully', $this->adminLangId));
-        $this->_template->render(false, false, 'json-success.php');
-    }
-
-    public function removeCollectionBrand()
-    {
-        $this->objPrivilege->canEditCollections();
-        $post = FatApp::getPostedData();
-        if (false === $post) {
-            Message::addErrorMessage(current($frm->getValidationErrors()));
-            FatUtility::dieWithError(Message::getHtml());
-        }
-        $collectionId = FatUtility::int($post['collection_id']);
-        $brandId = FatUtility::int($post['brand_id']);
-        if (1 > $collectionId || 1 > $brandId) {
-            Message::addErrorMessage(Labels::getLabel('MSG_Invalid_Request', $this->adminLangId));
-            FatUtility::dieWithError(Message::getHtml());
-        }
-        $collectionObj = new Collections();
-        if (!$collectionObj->removeCollectionBrands($collectionId, $brandId)) {
-            Message::addErrorMessage(Labels::getLabel($collectionObj->getError(), $this->adminLangId));
-            FatUtility::dieWithError(Message::getHtml());
-        }
-        $this->set('msg', Labels::getLabel('MSG_Brand_Removed_Successfully', $this->adminLangId));
-        $this->_template->render(false, false, 'json-success.php');
-    }
-
-    public function removeCollectionBlog()
-    {
-        $this->objPrivilege->canEditCollections();
-        $post = FatApp::getPostedData();
-        if (false === $post) {
-            Message::addErrorMessage(current($frm->getValidationErrors()));
-            FatUtility::dieWithError(Message::getHtml());
-        }
-        $collectionId = FatUtility::int($post['collection_id']);
-        $blogPostId = FatUtility::int($post['post_id']);
-        if (1 > $collectionId || 1 > $blogPostId) {
-            Message::addErrorMessage(Labels::getLabel('MSG_Invalid_Request', $this->adminLangId));
-            FatUtility::dieWithError(Message::getHtml());
-        }
-        $collectionObj = new Collections();
-        if (!$collectionObj->removeCollectionBlogs($collectionId, $blogPostId)) {
-            Message::addErrorMessage(Labels::getLabel($collectionObj->getError(), $this->adminLangId));
-            FatUtility::dieWithError(Message::getHtml());
-        }
-        $this->set('msg', Labels::getLabel('MSG_Blog_Removed_Successfully', $this->adminLangId));
-        $this->_template->render(false, false, 'json-success.php');
-    }
-
+    
     public function collectionBrands($collectionId)
     {
         $this->objPrivilege->canViewCollections();
@@ -749,74 +627,6 @@ class CollectionsController extends AdminBaseController
         $this->set('collectionBlogs', $collectionBlogs);
         $this->set('collectionId', $collectionId);
         $this->_template->render(false, false);
-    }
-
-    public function removeCollectionSelProd()
-    {
-        $this->objPrivilege->canEditCollections();
-        $post = FatApp::getPostedData();
-        if (false === $post) {
-            Message::addErrorMessage(current($frm->getValidationErrors()));
-            FatUtility::dieWithError(Message::getHtml());
-        }
-        $collection_id = FatUtility::int($post['collection_id']);
-        $selprod_id = FatUtility::int($post['selprod_id']);
-        if (!$collection_id || !$selprod_id) {
-            Message::addErrorMessage(Labels::getLabel('MSG_Invalid_Request', $this->adminLangId));
-            FatUtility::dieWithError(Message::getHtml());
-        }
-        $collectionObj = new Collections();
-        if (!$collectionObj->removeCollectionSelProd($collection_id, $selprod_id)) {
-            Message::addErrorMessage(Labels::getLabel($collectionObj->getError(), $this->adminLangId));
-            FatUtility::dieWithError(Message::getHtml());
-        }
-        $this->set('msg', Labels::getLabel('MSG_Product_Removed_Successfully', $this->adminLangId));
-        $this->_template->render(false, false, 'json-success.php');
-    }
-
-    public function removeCollectionCategory()
-    {
-        $this->objPrivilege->canEditCollections();
-        $post = FatApp::getPostedData();
-        if (false === $post) {
-            Message::addErrorMessage(current($frm->getValidationErrors()));
-            FatUtility::dieWithError(Message::getHtml());
-        }
-        $collection_id = FatUtility::int($post['collection_id']);
-        $prodcat_id = FatUtility::int($post['prodcat_id']);
-        if (!$collection_id || !$prodcat_id) {
-            Message::addErrorMessage(Labels::getLabel('MSG_Invalid_Request', $this->adminLangId));
-            FatUtility::dieWithError(Message::getHtml());
-        }
-        $collectionObj = new Collections();
-        if (!$collectionObj->removeCollectionCategories($collection_id, $prodcat_id)) {
-            Message::addErrorMessage(Labels::getLabel($collectionObj->getError(), $this->adminLangId));
-            FatUtility::dieWithError(Message::getHtml());
-        }
-        $this->set('msg', Labels::getLabel('MSG_Category_Removed_Successfully', $this->adminLangId));
-        $this->_template->render(false, false, 'json-success.php');
-    }
-    public function removeCollectionShop()
-    {
-        $this->objPrivilege->canEditCollections();
-        $post = FatApp::getPostedData();
-        if (false === $post) {
-            Message::addErrorMessage(current($frm->getValidationErrors()));
-            FatUtility::dieWithError(Message::getHtml());
-        }
-        $collection_id = FatUtility::int($post['collection_id']);
-        $shop_id = FatUtility::int($post['shop_id']);
-        if (!$collection_id || !$shop_id) {
-            Message::addErrorMessage(Labels::getLabel('MSG_Invalid_Request', $this->adminLangId));
-            FatUtility::dieWithError(Message::getHtml());
-        }
-        $collectionObj = new Collections();
-        if (!$collectionObj->removeCollectionShops($collection_id, $shop_id)) {
-            Message::addErrorMessage(Labels::getLabel($collectionObj->getError(), $this->adminLangId));
-            FatUtility::dieWithError(Message::getHtml());
-        }
-        $this->set('msg', Labels::getLabel('MSG_Shop_Removed_Successfully', $this->adminLangId));
-        $this->_template->render(false, false, 'json-success.php');
     }
 
     public function autoCompleteSelprods()
