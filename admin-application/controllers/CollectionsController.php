@@ -23,6 +23,8 @@ class CollectionsController extends AdminBaseController
         $this->_template->addJs('js/cropper-main.js');
         $search = $this->getSearchForm();
         $this->set("search", $search);
+        $layouts = Collections::getLayoutTypeArr($this->adminLangId);
+        $this->set('layouts', $layouts);
         $this->_template->render();
     }
 
@@ -74,7 +76,7 @@ class CollectionsController extends AdminBaseController
             $srch->addCondition('collection_layout_type', '=', $collection_layout_type);
             $srch->addOrder('collection_display_order', 'ASC');
         } else {
-            $srch->addOrder('collection_id', 'DESC');
+            $srch->addOrder('collection_display_order', 'ASC');
         }
 
         $srch->addMultipleFields(array('c.*', 'c_l.collection_name'));
