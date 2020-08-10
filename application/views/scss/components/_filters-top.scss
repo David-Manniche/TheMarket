@@ -1,0 +1,100 @@
+        .filters-top {
+            flex-direction: column;
+            .collection-sidebar {
+                margin-bottom: 2rem;
+                @include media-breakpoint-down(md) {
+                    & {
+                        margin-bottom: 0;
+                    }
+                }
+            }
+            .filters {
+                width: 100%;
+                &_body {
+                    display: flex;
+                    flex-wrap: wrap;
+                    .sidebar-widget {
+                        flex: 0 0 calc(25% - 10px);
+                        max-width: calc(25% - 10px);
+                        border-radius: $radius4;
+                        padding: 0;
+                        margin: 0;
+                        margin-#{$end-direction}: 10px;
+                        margin-bottom: 1rem;
+                        background-color: $bg-white;
+                        border: none;
+                        position: relative;
+                        @include media-breakpoint-down(md) {
+                            & {
+                                flex: 1;
+                                max-width: none;
+                            }
+                        }
+                        &:after {
+                            content: normal;
+                        }
+                        &:last-child {
+                            margin-#{$end-direction}: 0;
+                        }
+                        &__head {
+                            padding: 1rem;
+                            padding-#{$end-direction}: 35px;
+                            &:before {
+                                #{$end-direction}: 1rem;
+                            }
+                        }
+                        &__body {
+                            padding: 1rem;
+                            position: absolute;
+                            z-index: 1;
+                            top: 100%;
+                            left: 0;
+                            right: 0;
+                            background-color: $bg-white;
+                        }
+                    }
+                }
+            }
+            .shop-information {
+                display: flex;
+                align-items: center;
+                @include media-breakpoint-down(md) {
+                    & {
+                        flex-direction: column;
+                        padding: 1rem;
+                        align-items: inherit;
+                    }
+                }
+                .shop-logo {
+                    margin: 0;
+                }
+                .shop-info {
+                    display: flex;
+                    align-items: flex-start;
+                    justify-content: space-between;
+                    flex: 1;
+                    text-align: #{$start-direction};
+                    @include media-breakpoint-down(md) {
+                        & {
+                            flex-direction: column;
+                        }
+                    }
+                    .shop-name {
+                        margin: 0 10px;
+                        @include media-breakpoint-down(md) {
+                            & {
+                                margin: 1rem 0;
+                            }
+                        }
+                        .products__rating {
+                            margin: 0;
+                            padding: 0;
+                            justify-content: flex-start;
+                        }
+                    }
+                    .shop-btn-group {
+                        margin: 0 10px;
+                    }
+                }
+            }
+        }

@@ -1,6 +1,6 @@
  .form {
      .field-set {
-         margin: 0.7rem 0;
+         margin-bottom: 1rem;
      }
      .form__cover {
          padding: 1rem;
@@ -9,7 +9,7 @@
      }
      .field_label {
          font-size: 0.9em;
-         color: #555;
+         color: $txt-gray;
          margin: 0;
          margin-bottom: 5px;
          display: inline-block;
@@ -233,6 +233,15 @@
      -moz-appearance: none;
      -webkit-appearance: none;
      appearance: none;
+     padding-#{$end-direction}: 35px;
+     background-image: url(../images/retina/down-arrow.svg);
+     background-size: 10px;
+     background-color: $bg-white;
+     background-repeat: no-repeat;
+     background-position: calc(100% - 11px) center;
+     [dir="rtl"] & {
+         background-position: calc(0% - -11px) center;
+     }
      &-sm {
          font-size: 0.8rem;
      }
@@ -379,6 +388,7 @@
          line-height: 50px;
          margin: 0;
          color: $txt-gray;
+         font-size: 0.85rem;
          transform: scale(1);
          transform-origin: left top;
          transition: transform 0.2s ease-in-out;
@@ -387,7 +397,7 @@
      &__field {
          padding-top: 16px !important;
          width: 100%;
-         height: 50px;
+         height: 50px !important;
          line-height: normal;
          -webkit-appearance: none;
          resize: none;

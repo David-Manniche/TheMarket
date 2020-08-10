@@ -123,8 +123,14 @@ $(document).on('change','.collection-language-js',function(){
 	};
 
 	getCountryStates = function(countryId, stateId, dv){
-		fcom.displayProcessing();
 		fcom.ajax(fcom.makeUrl('Shops','getStates',[countryId,stateId]),'',function(res){
+			$(dv).empty();
+			$(dv).append(res);
+		});
+	};
+    
+    getStatesByCountryCode = function(countryCode, stateCode, dv, idCol = 'state_id'){
+		fcom.ajax(fcom.makeUrl('Shops','getStatesByCountryCode',[countryCode,stateCode,idCol]),'',function(res){
 			$(dv).empty();
 			$(dv).append(res);
 		});

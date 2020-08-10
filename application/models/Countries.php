@@ -116,7 +116,7 @@ class Countries extends MyAppModel
         }
 
         $srch = static::getSearchObject(true, $langId, $attr);
-        $srch->addCondition('country_id', '=', strtoupper($countryId));
+        $srch->addCondition('country_id', '=', $countryId);
 
         if (null != $attr) {
             if (is_array($attr)) {

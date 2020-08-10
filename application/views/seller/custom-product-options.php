@@ -5,7 +5,7 @@
 <div class="cards">
     <div class="cards-content ">
         <div class="tabs__content">
-            <div class="row row">
+            <div class="row">
                 <div class="col-md-12">
                     <?php
                     $customProductOptionFrm->setFormTagAttribute('class', 'form form--horizontal');

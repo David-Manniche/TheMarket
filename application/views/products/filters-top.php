@@ -21,7 +21,7 @@ if (isset($prodcat_code)) {
     /*$keywordFld = $frmProductSearch->getField('keyword');
     $keywordFld->overrideFldType("hidden");*/ ?>
 <div class="product-search">
-    <!--<form class="form">
+    <!--<form>
         <input placeholder="Search" class="input-field nofocus" value="" type="text">
         <input name="btnSrchSubmit" value="" class="input-submit" type="submit">
     </form>-->
@@ -39,168 +39,157 @@ if (isset($prodcat_code)) {
 <?php
 } ?>
 <!--Filters[ -->
-<div class="filters_head">    
-<div class="widgets-head">
-    <div class="filter-head filter-head-js">
-        <h6 class="m-0"><?php echo Labels::getLabel('LBL_FILTERS', $siteLangId);?></h6>
-        <a href="javascript:void(0)" class="resetAll link" id="resetAll" onClick="resetListingFilter()"
-            style="display:none;">
-            <?php echo Labels::getLabel('LBL_Clear_All', $siteLangId);?>
-        </a>
-    </div>
-</div> 
-<div class="selected-filters" id="filters"></div>
-</div>
+ 
 <!-- ] -->
 
 <!--Categories Filters[ resetAll-->
 <div class="filters_body"> 
 <?php if (isset($categoriesArr) && $categoriesArr) { ?>
-    <div class="sidebar-widget">
-        <div class="sidebar-widget__head" data-toggle="collapse" data-target="#category" aria-expanded="true">
+    <div class="sidebar-widget dropdown">
+        <div class="sidebar-widget__head " data-toggle="dropdown">
             <?php echo Labels::getLabel('LBL_Categories', $siteLangId); ?> 
         </div>
-        <div class="sidebar-widget__body collapse show" id="category" data-parent="#collection-sidebar">
         <?php if (!$shopCatFilters) { ?>
-            <div id="accordian" class="cat-accordion toggle-target scrollbar-filters">
-            <ul>
-                <?php foreach ($categoriesArr as $cat) {
-                $catUrl = UrlHelper::generateUrl('category', 'view', array($cat['prodcat_id'])); ?>
-                <li>
-                    <?php if (count($cat['children']) > 0) {
-                    echo '<span class="acc-trigger" ripple="ripple" ripple-color="#000"></span>';
-                } ?>
-                    <a class="filter_categories" data-id="<?php echo $cat['prodcat_id']; ?>"
-                        href="<?php echo $catUrl; ?>"><?php echo $cat['prodcat_name']; ?></a>
-                    <?php if (count($cat['children']) > 0) {
-                    echo '<ul>';
-                    foreach ($cat['children'] as $children) {
-                        ?>
-                <li>
-                    <?php if (isset($children['children']) && count($children['children']) > 0) {
-                            echo '<span class="acc-trigger" ripple="ripple" ripple-color="#000"></span>';
-                        } ?>
-                    <a class="filter_categories" data-id="<?php echo $children['prodcat_id']; ?>"
-                        href="<?php echo UrlHelper::generateUrl('category', 'view', array($children['prodcat_id'])); ?>"><?php echo $children['prodcat_name']; ?></a>
-                    <?php if (isset($children['children']) && count($children['children']) > 0) {
-                            echo '<ul>';
-                            foreach ($children['children'] as $subChildren) {
-                                ?>
-                <li>
-                    <?php if (isset($subChildren['children']) && count($subChildren['children']) > 0) {
-                                    echo '<span class="acc-trigger" ripple="ripple" ripple-color="#000"></span>';
-                                } ?>
-                    <a class="filter_categories" data-id="<?php echo $subChildren['prodcat_id']; ?>"
-                        href="<?php echo UrlHelper::generateUrl('category', 'view', array($subChildren['prodcat_id'])); ?>"><?php echo $subChildren['prodcat_name']; ?></a>
+            <div class="sidebar-widget__body dropdown-menu dropdown-menu-anim" >
+                <div id="accordian" class="cat-accordion toggle-target scrollbar-filters">
+                <ul >
+                    <?php foreach ($categoriesArr as $cat) {
+                    $catUrl = UrlHelper::generateUrl('category', 'view', array($cat['prodcat_id'])); ?>
+                    <li>
+                        <?php if (count($cat['children']) > 0) {
+                        echo '<span class="acc-trigger" ripple="ripple" ripple-color="#000"></span>';
+                    } ?>
+                        <a class="filter_categories" data-id="<?php echo $cat['prodcat_id']; ?>"
+                            href="<?php echo $catUrl; ?>"><?php echo $cat['prodcat_name']; ?></a>
+                        <?php if (count($cat['children']) > 0) {
+                        echo '<ul>';
+                        foreach ($cat['children'] as $children) {
+                            ?>
+                    <li>
+                        <?php if (isset($children['children']) && count($children['children']) > 0) {
+                                echo '<span class="acc-trigger" ripple="ripple" ripple-color="#000"></span>';
+                            } ?>
+                        <a class="filter_categories" data-id="<?php echo $children['prodcat_id']; ?>"
+                            href="<?php echo UrlHelper::generateUrl('category', 'view', array($children['prodcat_id'])); ?>"><?php echo $children['prodcat_name']; ?></a>
+                        <?php if (isset($children['children']) && count($children['children']) > 0) {
+                                echo '<ul>';
+                                foreach ($children['children'] as $subChildren) {
+                                    ?>
+                    <li>
+                        <?php if (isset($subChildren['children']) && count($subChildren['children']) > 0) {
+                                        echo '<span class="acc-trigger" ripple="ripple" ripple-color="#000"></span>';
+                                    } ?>
+                        <a class="filter_categories" data-id="<?php echo $subChildren['prodcat_id']; ?>"
+                            href="<?php echo UrlHelper::generateUrl('category', 'view', array($subChildren['prodcat_id'])); ?>"><?php echo $subChildren['prodcat_name']; ?></a>
 
-                    <?php if (isset($subChildren['children']) && count($subChildren['children']) > 0) {
-                                    echo '<ul>';
-                                    foreach ($subChildren['children'] as $subSubChildren) {
-                                        ?>
+                        <?php if (isset($subChildren['children']) && count($subChildren['children']) > 0) {
+                                        echo '<ul>';
+                                        foreach ($subChildren['children'] as $subSubChildren) {
+                                            ?>
 
-                <li>
-                    <?php if (isset($subSubChildren['children']) && count($subSubChildren['children']) > 0) {
-                                            echo '<span class="acc-trigger" ripple="ripple" ripple-color="#000"></span>';
-                                        } ?>
-                    <a class="filter_categories" data-id="<?php echo $subSubChildren['prodcat_id']; ?>"
-                        href="<?php echo UrlHelper::generateUrl('category', 'view', array($subSubChildren['prodcat_id'])); ?>"><?php echo $subSubChildren['prodcat_name']; ?></a>
-                </li>
-                <?php
-                                    }
-                                    echo '</ul>';
-                                } ?>
-                </li>
-                <?php
-                            }
-                            echo '</ul>';
-                        } ?>
-                </li>
-                <?php
-                    }
-                    echo '</ul>';
-                } ?>
-
-                </li>
-                <?php
-            } ?>
-            </ul>
-            <!--<a onClick="alert('Pending')" class="btn btn--link ripplelink"><?php echo Labels::getLabel('LBL_View_more', $siteLangId); ?> </a> -->
-        </div>
-        <?php } else {?>    
-            <div class="scrollbar-filters" id="scrollbar-filters">
-                <ul class="list-vertical">
-        <?php
-        $seprator = '&raquo;&raquo;&nbsp;&nbsp;';
-            foreach ($categoriesArr as $cat) {
-                $catName = $cat['prodcat_name'];
-                $productCatCode = explode("_", $cat['prodcat_code']);
-                $productCatName = '';
-                $seprator = '';
-                foreach ($productCatCode as $code) {
-                    $code = FatUtility::int($code);
-                    if ($code) {
-                        if (isset($categoriesArr[$code]['prodcat_name'])) {
-                            $productCatName .= $seprator . $categoriesArr[$code]['prodcat_name'];
-                            $seprator = '&raquo;&raquo;&nbsp;&nbsp;';
+                    <li>
+                        <?php if (isset($subSubChildren['children']) && count($subSubChildren['children']) > 0) {
+                                                echo '<span class="acc-trigger" ripple="ripple" ripple-color="#000"></span>';
+                                            } ?>
+                        <a class="filter_categories" data-id="<?php echo $subSubChildren['prodcat_id']; ?>"
+                            href="<?php echo UrlHelper::generateUrl('category', 'view', array($subSubChildren['prodcat_id'])); ?>"><?php echo $subSubChildren['prodcat_name']; ?></a>
+                    </li>
+                    <?php
+                                        }
+                                        echo '</ul>';
+                                    } ?>
+                    </li>
+                    <?php
+                                }
+                                echo '</ul>';
+                            } ?>
+                    </li>
+                    <?php
                         }
-                    }
-                } ?>
-        <li>
-            <label class="checkbox brand" id="prodcat_<?php echo $cat['prodcat_id']; ?>"><input name="category"
-                    value="<?php echo $cat['prodcat_id']; ?>" type="checkbox" data-title="<?php echo $catName; ?>" <?php if (in_array($cat['prodcat_id'], $prodcatArr)) {
-                    echo "checked";
-                } ?>><i class="input-helper"></i><?php echo $productCatName; ?></label></a>
-        </li>
+                        echo '</ul>';
+                    } ?>
 
-        <?php
-            } ?>
-    </ul>
-    <!--<a onClick="alert('Pending')" class="btn btn--link ripplelink"><?php echo Labels::getLabel('LBL_View_More', $siteLangId); ?> </a> -->
-</div> 
-                
-             
-        <?php }?>  
-        </div>   
-    </div>   
+                    </li>
+                    <?php
+                } ?>
+                </ul>
+                </div>
+            </div>
+        <?php } else {?>  
+            <div class="sidebar-widget__body dropdown-menu dropdown-menu-anim" >  
+                <div class="scrollbar-filters" id="scrollbar-filters">
+                    <ul class="list-vertical">
+                        <?php
+                        $seprator = '&raquo;&raquo;&nbsp;&nbsp;';
+                            foreach ($categoriesArr as $cat) {
+                                $catName = $cat['prodcat_name'];
+                                $productCatCode = explode("_", $cat['prodcat_code']);
+                                $productCatName = '';
+                                $seprator = '';
+                                foreach ($productCatCode as $code) {
+                                    $code = FatUtility::int($code);
+                                    if ($code) {
+                                        if (isset($categoriesArr[$code]['prodcat_name'])) {
+                                            $productCatName .= $seprator . $categoriesArr[$code]['prodcat_name'];
+                                            $seprator = '&raquo;&raquo;&nbsp;&nbsp;';
+                                        }
+                                    }
+                                } ?>
+                        <li>
+                            <label class="checkbox brand" id="prodcat_<?php echo $cat['prodcat_id']; ?>"><input name="category"
+                                    value="<?php echo $cat['prodcat_id']; ?>" type="checkbox" data-title="<?php echo $catName; ?>" <?php if (in_array($cat['prodcat_id'], $prodcatArr)) {
+                                    echo "checked";
+                                } ?>><i class="input-helper"></i><?php echo $productCatName; ?></label></a>
+                        </li>
+
+                        <?php
+                            } ?>
+                    </ul>
+                    <!--<a onClick="alert('Pending')" class="btn btn--link ripplelink"><?php echo Labels::getLabel('LBL_View_More', $siteLangId); ?> </a> -->
+                </div>
+            </div>
+        <?php }?>   
+    </div>    
 <?php }?>    
+<!-- ] -->
 
 <!--Price Filters[ -->
 <?php if (isset($priceArr) && $priceArr) { ?>
 
-<div class="sidebar-widget">
-    <div class="sidebar-widget__head filter-head-js collapsed" data-toggle="collapse" data-target="#price" aria-expanded="true">
-        <?php echo Labels::getLabel('LBL_Price', $siteLangId) . ' (' . (CommonHelper::getCurrencySymbolRight() ? CommonHelper::getCurrencySymbolRight() : CommonHelper::getCurrencySymbolLeft()) . ')'; ?>
-    </div>
-    <div class="sidebar-widget__body collapse show" id="price" data-parent="#collection-sidebar">
-        <div class="filter-content toggle-target">
-            <div class="prices" id="perform_price">
-                <div id="rangeSlider"></div>
+    <div class="sidebar-widget dropdown">
+            <div class="sidebar-widget__head filter-head-js" data-toggle="dropdown">
+                <?php echo Labels::getLabel('LBL_Price', $siteLangId) . ' (' . (CommonHelper::getCurrencySymbolRight() ? CommonHelper::getCurrencySymbolRight() : CommonHelper::getCurrencySymbolLeft()) . ')'; ?>
             </div>
-            <div class="clear"></div>
-            <div class="slide__fields form">
-                <?php $symbol = CommonHelper::getCurrencySymbolRight() ? CommonHelper::getCurrencySymbolRight() : CommonHelper::getCurrencySymbolLeft(); ?>
-                <div class="price-input">
-                    <div class="price-text-box">
-                        <input class="input-filter form-control" value="<?php echo floor($priceArr['minPrice']); ?>"
-                            data-defaultvalue="<?php echo $filterDefaultMinValue; ?>" name="priceFilterMinValue"
-                            type="text" id="priceFilterMinValue">
-                        <span class="rsText"><?php echo $symbol; ?></span>
+            <div class="sidebar-widget__body dropdown-menu dropdown-menu-anim">
+                <div class="filter-content toggle-target">
+                    <div class="prices" id="perform_price">
+                        <div id="rangeSlider"></div>
                     </div>
-                </div>
-                <span class="dash"> - </span>
-                <div class="price-input">
-                    <div class="price-text-box">
-                        <input class="input-filter form-control" value="<?php echo ceil($priceArr['maxPrice']); ?>"
-                            data-defaultvalue="<?php echo $filterDefaultMaxValue; ?>" name="priceFilterMaxValue"
-                            type="text" id="priceFilterMaxValue">
-                        <span class="rsText"><?php echo $symbol; ?></span>
+                    <div class="clear"></div>
+                    <div class="slide__fields form">
+                        <?php $symbol = CommonHelper::getCurrencySymbolRight() ? CommonHelper::getCurrencySymbolRight() : CommonHelper::getCurrencySymbolLeft(); ?>
+                        <div class="price-input">
+                            <div class="price-text-box">
+                                <input class="input-filter form-control" value="<?php echo floor($priceArr['minPrice']); ?>"
+                                    data-defaultvalue="<?php echo $filterDefaultMinValue; ?>" name="priceFilterMinValue"
+                                    type="text" id="priceFilterMinValue">
+                                <span class="rsText"><?php echo $symbol; ?></span>
+                            </div>
+                        </div>
+                        <span class="dash"> - </span>
+                        <div class="price-input">
+                            <div class="price-text-box">
+                                <input class="input-filter form-control" value="<?php echo ceil($priceArr['maxPrice']); ?>"
+                                    data-defaultvalue="<?php echo $filterDefaultMaxValue; ?>" name="priceFilterMaxValue"
+                                    type="text" id="priceFilterMaxValue">
+                                <span class="rsText"><?php echo $symbol; ?></span>
+                            </div>
+                        </div>
                     </div>
+                    
                 </div>
             </div>
-            
-        </div>
     </div>
-</div>
 <?php
   } ?>
 <!-- ] -->
@@ -209,35 +198,35 @@ if (isset($prodcat_code)) {
 <?php if (isset($brandsArr) && count($brandsArr) > 1) {
       $brandsCheckedArr = (isset($brandsCheckedArr) && !empty($brandsCheckedArr)) ? $brandsCheckedArr : array(); ?>
 
-<div class="sidebar-widget">
-    <div class="sidebar-widget__head" data-toggle="collapse" data-target="#brand" aria-expanded="true" >
-        <?php echo Labels::getLabel('LBL_Brand', $siteLangId); ?></div>
-    <div class="sidebar-widget__body collapse show" id="brand" data-parent="#collection-sidebar">
-        <div class="scrollbar-filters" id="scrollbar-filters">
-            <ul class="list-vertical brandFilter-js">
-                <?php foreach ($brandsArr as $brand) {
-          if ($brand['brand_id'] == null) {
-              continue;
-          } ?>
-                <li><label class="checkbox brand" id="brand_<?php echo $brand['brand_id']; ?>"><input name="brands"
-                            data-id="brand_<?php echo $brand['brand_id']; ?>" value="<?php echo $brand['brand_id']; ?>"
-                            data-title="<?php echo $brand['brand_name']; ?>" type="checkbox" <?php if (in_array($brand['brand_id'], $brandsCheckedArr)) {
-              echo "checked='true'";
-          } ?>><i class="input-helper"></i><span class="lb-txt"><?php echo $brand['brand_name']; ?></span> </label>
-                </li>
-                <?php
-      } ?>
-            </ul>
+    <div class="sidebar-widget dropdown">
+        <div class="sidebar-widget__head" data-toggle="dropdown">
+            <?php echo Labels::getLabel('LBL_Brand', $siteLangId); ?></div>
+        <div class="sidebar-widget__body dropdown-menu dropdown-menu-anim">
+            <div class="scrollbar-filters" id="scrollbar-filters">
+                <ul class="list-vertical brandFilter-js">
+                    <?php foreach ($brandsArr as $brand) {
+            if ($brand['brand_id'] == null) {
+                continue;
+            } ?>
+                    <li><label class="checkbox brand" id="brand_<?php echo $brand['brand_id']; ?>"><input name="brands"
+                                data-id="brand_<?php echo $brand['brand_id']; ?>" value="<?php echo $brand['brand_id']; ?>"
+                                data-title="<?php echo $brand['brand_name']; ?>" type="checkbox" <?php if (in_array($brand['brand_id'], $brandsCheckedArr)) {
+                echo "checked='true'";
+            } ?>><i class="input-helper"></i><span class="lb-txt"><?php echo $brand['brand_name']; ?></span> </label>
+                    </li>
+                    <?php
+        } ?>
+                </ul>
         </div>
-    
+        
 
-    <?php if (count($brandsArr) >= 10) {?>
-    <div class="text-right">
-        <a href="javascript:void(0)" onClick="brandFilters()"
-            class="link"><?php echo Labels::getLabel('LBL_View_More', $siteLangId); ?> </a>
+        <?php if (count($brandsArr) >= 10) {?>
+        <div class="pt-3">
+            <a href="javascript:void(0)" onClick="brandFilters()"
+                class="link"><?php echo Labels::getLabel('LBL_View_More', $siteLangId); ?> </a>
+        </div>
+    <?php } ?>
     </div>
-<?php } ?>
-</div>
 </div>
 <?php
   }?>
@@ -265,10 +254,10 @@ if (isset($prodcat_code)) {
                     }
                     $optionName = ($optionRow['option_name']) ? $optionRow['option_name'] : $optionRow['option_identifier']; ?>
 
-<div class="sidebar-widget">
-    <div class="sidebar-widget__head" data-toggle="collapse" data-target="#option<?php echo $optionRow['option_id'];?>" aria-expanded="true">
+<div class="sidebar-widget dropdown">
+    <div class="sidebar-widget__head" data-toggle="dropdown">
         <?php echo ($optionRow['option_name']) ? $optionRow['option_name'] : $optionRow['option_identifier']; ?></div>
-    <div class="sidebar-widget__body collapse show" id="option<?php echo $optionRow['option_id'];?>" data-parent="#collection-sidebar">
+    <div class="sidebar-widget__body dropdown-menu dropdown-menu-anim">
         <ul class="list-vertical"><?php
                 }
                 $optionValueId = $optionRow['option_id'] . '_' . $optionRow['optionvalue_id'];
@@ -291,10 +280,10 @@ if (isset($prodcat_code)) {
             <?php if (isset($conditionsArr) && count($conditionsArr) > 1) {
             $conditionsCheckedArr = (isset($conditionsCheckedArr) && !empty($conditionsCheckedArr)) ? $conditionsCheckedArr : array(); ?>
             
-            <div class="sidebar-widget">
-                <div class="sidebar-widget__head" data-toggle="collapse" data-target="#condition" aria-expanded="true">
+            <div class="sidebar-widget dropdown">
+                <div class="sidebar-widget__head" data-toggle="dropdown" >
                     <?php echo Labels::getLabel('LBL_Condition', $siteLangId); ?></div>
-                <div class="sidebar-widget__body collapse show"  id="condition" data-parent="#collection-sidebar">
+                <div class="sidebar-widget__body dropdown-menu dropdown-menu-anim">
                     <ul class="list-vertical">
                         <?php foreach ($conditionsArr as $condition) {
                 if (empty($condition) || $condition['selprod_condition'] == 0) {
@@ -322,12 +311,11 @@ if (isset($prodcat_code)) {
         if (isset($availabilityArr) && count($availabilityArr) > 1) {
             $availability = isset($availability) ? $availability : 0; ?>
             
-            <div class="sidebar-widget">
-                <div class="sidebar-widget__head  collapsed" data-toggle="collapse" data-target="#availability" aria-expanded="true">
+            <div class="sidebar-widget dropdown">
+                <div class="sidebar-widget__head   collapsed" data-toggle="dropdown">
                     <?php echo Labels::getLabel('LBL_Availability', $siteLangId); ?>
                 </div>
-                <div class="sidebar-widget__body collapse show" id="availability" data-parent="#collection-sidebar">
-                    <div class="toggle-target">
+                <div class="sidebar-widget__body dropdown-menu dropdown-menu-anim">                  
                         <ul class="listing--vertical listing--vertical-chcek">
                             <li><label class="checkbox availability" id="availability_1"><input name="out_of_stock"
                                         value="1" type="checkbox" <?php if ($availability == 1) {
@@ -335,7 +323,7 @@ if (isset($prodcat_code)) {
             } ?>><i class="input-helper"></i><?php echo Labels::getLabel('LBL_Exclude_out_of_stock', $siteLangId); ?>
                                 </label></li>
                         </ul>
-                    </div>
+                 
                 </div>
             </div>
             <?php
@@ -343,7 +331,13 @@ if (isset($prodcat_code)) {
 
     </div>
             <!-- ] -->
- 
+			<div class="selected-filters" id="filters">
+            <?php /*?><span class="chip more">+10</span><?php */?>
+				<a href="javascript:void(0)" data-yk='link' class="resetAll link" id="resetAll" onClick="resetListingFilter()"
+					style="display:none;">
+					<?php echo Labels::getLabel('LBL_Clear_All', $siteLangId);?>
+				</a>
+			</div>
             <script language="javascript">
             var catCodeArr = <?php echo json_encode($catCodeArr); ?> ;
             $.each(catCodeArr, function(key, value) {

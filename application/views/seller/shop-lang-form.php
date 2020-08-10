@@ -31,19 +31,19 @@ $btnSubmit->setFieldTagAttribute('class', "btn btn-primary btn-wide");
 <?php     $variables= array('formLangId'=>$formLangId, 'language'=>$language,'siteLangId'=>$siteLangId,'shop_id'=>$shop_id,'action'=>$action);
 
 $this->includeTemplate('seller/_partial/shop-navigation.php', $variables, false); ?>
-<div class="cards">
-    <div class="cards-content ">
-        <div class="tabs__content">
+<div class="tabs__content tabs__content-js">
+    <div class="cards">
+        <div class="cards-content ">
             <div class="row ">
                 <?php
                     $translatorSubscriptionKey = FatApp::getConfig('CONF_TRANSLATOR_SUBSCRIPTION_KEY', FatUtility::VAR_STRING, '');
                     $siteDefaultLangId = FatApp::getConfig('conf_default_site_lang', FatUtility::VAR_INT, 1);
-                    if (!empty($translatorSubscriptionKey) && $formLangId != $siteDefaultLangId) { ?> 
-                        <div class="row justify-content-end"> 
+                    if (!empty($translatorSubscriptionKey) && $formLangId != $siteDefaultLangId) { ?>
+                        <div class="row justify-content-end">
                             <div class="col-auto mb-4">
-                                <input class="btn btn-primary" 
-                                    type="button" 
-                                    value="<?php echo Labels::getLabel('LBL_AUTOFILL_LANGUAGE_DATA', $siteLangId); ?>" 
+                                <input class="btn btn-primary"
+                                    type="button"
+                                    value="<?php echo Labels::getLabel('LBL_AUTOFILL_LANGUAGE_DATA', $siteLangId); ?>"
                                     onClick="shopLangForm( <?php echo $shop_id; ?>, <?php echo $formLangId; ?>, 1)">
                             </div>
                         </div>

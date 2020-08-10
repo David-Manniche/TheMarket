@@ -59,13 +59,31 @@
         display: flex;
         justify-content: space-between;
         padding: 1rem;
+        @include media-breakpoint-down(md) {
+            & {
+                flex-direction: column;
+            }
+        }
         .row {
             align-items: flex-start;
+        }
+        &.list-saved-later {
+            align-items: center;
+            @include media-breakpoint-down(md) {
+                & {
+                    flex-direction: row;
+                }
+            }
         }
     }
     .product-quantity {
         text-align: center;
         margin: 0 1rem;
+        @include media-breakpoint-down(md) {
+            & {
+                margin: 0;
+            }
+        }
         .remove {
             margin: 0.5rem 0;
             display: inline-block;
@@ -88,6 +106,14 @@
         text-align: #{$end-direction};
         flex: 0 0 110px;
         max-width: 110px;
+        @include media-breakpoint-down(md) {
+            & {
+                flex: 1;
+                max-width: none;
+                text-align: inherit;
+                margin: 0;
+            }
+        }
         del {
             color: $body-color;
             font-size: 0.8rem;
@@ -97,6 +123,15 @@
     .product-action {
         flex: 0 0 5%;
         max-width: 5%;
+        @include media-breakpoint-down(md) {
+            & {
+                position: absolute;
+                top: 0;
+                #{$end-direction}: 1rem;
+                flex: 1;
+                max-width: none;
+            }
+        }
         .list-actions {
             padding-top: 8px;
             justify-content: flex-end;
@@ -195,6 +230,12 @@
     flex-wrap: wrap;
     flex: 1;
     max-width: 300px;
+    @include media-breakpoint-down(md) {
+        & {
+            max-width: 80%;
+            margin-bottom: 1rem;
+        }
+    }
     &__thumbnail {
         position: relative;
         margin-#{$end-direction}: 15px;
@@ -218,7 +259,7 @@
             position: absolute;
             right: -0.25rem;
             top: -0.25rem;
-            z-index: 3;
+            z-index: 1;
         }
     }
     &__data {
@@ -255,6 +296,7 @@
             .label {
                 color: $txt-gray;
                 padding: 0;
+                font-size: 0.85rem;
             }
         }
     }
@@ -292,7 +334,8 @@
     }
     .hightlighted {
         font-weight: 600;
-        padding: 2rem 0;
+        padding: 1.5rem 0;
+        border: none;
     }
     .included {
         text-align: center;
@@ -427,16 +470,25 @@
 .shiporpickup {
     position: relative;
     z-index: 1;
-    top: 2px;
+    margin-bottom: -2px;
+    border-radius: $radius4;
     ul {
         display: flex;
         align-items: center;
         justify-content: center;
         margin: 0 auto;
         border: $border;
-        border-radius: 4px 4px 0px 0px;
+        border-radius: $radius4 $radius4 0 0;
         li {
+            background: $bg-white;
+            color: $txt-gray;
             flex: 1;
+            &:first-child {
+                border-top-left-radius: $radius4;
+            }
+            &:last-child {
+                border-top-right-radius: $radius4;
+            }
         }
     }
     .control-label {
@@ -444,8 +496,6 @@
         margin: 0;
         display: block;
         cursor: pointer;
-        background: $bg-white;
-        color: $txt-gray;
         font-size: 0.9rem;
         text-align: center;
         position: relative;
@@ -499,10 +549,6 @@
     }
 }
 
-.list-saved-later {
-    align-items: center;
-}
-
 .save-later {
     margin-top: 0.5rem;
     line-height: 1;
@@ -521,38 +567,4 @@
 
 .txt-success {
     color: $success-color;
-}
-
-.quantity {
-    background: #fff;
-    border: $border;
-    height: 34px;
-    display: flex;
-    align-items: center;
-    max-width: 108px;
-    border-radius: $radius2;
-    span {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        cursor: pointer;
-        min-width: 32px;
-        flex: 0 0 32px;
-        width: 32px;
-        height: 100%;
-        font-size: 0.7rem;
-        color: $txt-gray;
-        &:hover {
-            color: $body-color;
-        }
-    }
-    input {
-        border: none;
-        text-align: center;
-        padding: 0 8px;
-        width: 100%;
-        height: 100%;
-        font-size: 0.85rem;
-        min-width: 0px;
-    }
 }
