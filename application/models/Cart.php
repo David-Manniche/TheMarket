@@ -1888,6 +1888,11 @@ class Cart extends FatModel
         return true;
     }
     
+    public function checkCartCheckoutType()
+    {
+        return isset($this->SYSTEM_ARR['shopping_cart']['checkout_type']) ? FatUtility::int($this->SYSTEM_ARR['shopping_cart']['checkout_type']) : 0;
+    }
+    
     public function setProductPickUpMethod($arr)
     {
         $this->SYSTEM_ARR['shopping_cart']['product_pickup_methods'] = $arr;

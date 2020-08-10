@@ -487,9 +487,11 @@ class CheckoutController extends MyAppController
         /* $user_id = UserAuthentication::getLoggedUserId();
 
         $shippingMethods = Shipping::getShippingMethods($this->siteLangId); */
-
+        
+        $fulfillmentType = $this->cartObj->getCartCheckoutType();  
+        $this->cartObj->setCartCheckoutType($fulfillmentType); 
+        
         $cartProducts = $this->cartObj->getProducts($this->siteLangId);
-
         if (count($cartProducts) == 0) {
             $this->errMessage = Labels::getLabel('MSG_Your_Cart_is_empty', $this->siteLangId);
             if (true === MOBILE_APP_API_CALL) {
@@ -504,7 +506,7 @@ class CheckoutController extends MyAppController
             $this->cartObj->unsetCartShippingAddress();
         }
 
-        $fulfillmentType = $this->cartObj->getCartCheckoutType();
+         
         $template = 'checkout/shipping-summary-inner.php';
         $shippingRates = [];
 
