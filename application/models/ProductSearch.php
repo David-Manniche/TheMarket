@@ -624,7 +624,9 @@ class ProductSearch extends SearchBase
             $categoryDeletedCondition = 'and c.prodcat_deleted = ' . applicationConstants::NO;
             $this->addCondition('c.prodcat_deleted', '=', applicationConstants::NO);
         }
-
+        
+        $this->addCondition('c.prodcat_status', '=', ProductCategory::REQUEST_APPROVED);
+        
         $this->joinTable(ProductCategory::DB_TBL, $join, 'c.prodcat_id = ptc.ptc_prodcat_id ' . $categoryActiveCondition . ' ' . $categoryDeletedCondition, 'c');
 
         if ($langId) {

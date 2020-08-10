@@ -176,6 +176,10 @@ class Shipping
 
     public function getSellerProductShippingRates(array $selProdIdArr, int $countryId, int $stateId): array
     {
+        if (empty($selProdIdArr)) {
+            return [];
+        }
+        
         $countryId = FatUtility::int($countryId);
         $stateId = FatUtility::int($stateId);
 

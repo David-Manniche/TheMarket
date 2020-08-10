@@ -67,6 +67,11 @@ class ImportexportCommon extends FatModel
         return $handle;
     }
 
+    public function getCsvFileName()
+    {
+        return $this->CSVfileName;
+    }
+
     public static function deleteErrorLogFiles($hoursBefore = '4')
     {
         if (empty($hoursBefore)) {

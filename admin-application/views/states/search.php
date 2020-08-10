@@ -4,6 +4,7 @@ $arr_flds = array(
         'listserial'=> Labels::getLabel('LBL_Sr._No', $adminLangId),
         'state_identifier'=> Labels::getLabel('LBL_State_Identifier', $adminLangId),
         'state_name'=> Labels::getLabel('LBL_State_Name', $adminLangId),
+        'state_code'=> Labels::getLabel('LBL_State_Code', $adminLangId),
         'country_name'=> Labels::getLabel('LBL_Country_Name', $adminLangId),
         'state_active'=> Labels::getLabel('LBL_Status', $adminLangId),
         'action' => '',

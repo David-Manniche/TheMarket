@@ -74,7 +74,7 @@ class StripeConnectPayController extends PaymentController
      */
     private function getCardForm(): object
     {
-        $frm = new Form('frmPaymentForm');
+        $frm = new Form('frmCardForm');
         $frm->addRequiredField(Labels::getLabel('LBL_ENTER_CREDIT_CARD_NUMBER', $this->siteLangId), 'number');
         $frm->addRequiredField(Labels::getLabel('LBL_CARD_HOLDER_FULL_NAME', $this->siteLangId), 'name');
         $data['months'] = applicationConstants::getMonthsArr($this->siteLangId);
@@ -100,9 +100,7 @@ class StripeConnectPayController extends PaymentController
     private function getSavedCardPaymentForm(): object
     {
         $frm = new Form('frmCardPaymentForm');
-        $frm->addHiddenField('', 'card_id');
-        $frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_Pay_Now', $this->siteLangId));
-        $frm->addButton('', 'btn_addnew', Labels::getLabel('LBL_ADD_NEW_?', $this->siteLangId));
+        $frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_PAY_NOW', $this->siteLangId));
         return $frm;
     }
     
@@ -204,15 +202,20 @@ class StripeConnectPayController extends PaymentController
 
         $confirmationRequired = false;
         $frm = $this->getSavedCardPaymentForm();
-        if (strtolower($_SERVER['REQUEST_METHOD']) == 'post') {
+        $post = FatApp::getPostedData();
+        if (isset($post['fIsAjax'])) {
+            unset($post['fIsAjax'], $post['fOutMode']);
+        }
+
+        if (!empty($post)) {
             $cardId = FatApp::getPostedData('card_id', FatUtility::VAR_STRING, '');
             if (!empty($cardId)) {
                 $this->sourceId = $cardId;
             } else {
-                $frm = $this->getCardForm();
-                $cardData = $frm->getFormDataFromArray(FatApp::getPostedData());
+                $cardFrm = $this->getCardForm();
+                $cardData = $cardFrm->getFormDataFromArray($post);
                 if (false === $cardData) {
-                    $this->setErrorAndRedirect(current($frm->getValidationErrors()));
+                    $this->setErrorAndRedirect(current($cardFrm->getValidationErrors()));
                 }
                 $saveCard = FatApp::getPostedData('cc_save_card', FatUtility::VAR_INT, 0);
                 unset($cardData['btn_submit'], $cardData['cc_save_card']);
@@ -241,7 +244,6 @@ class StripeConnectPayController extends PaymentController
                 }
                 $this->sourceId = $cardTokenResponse->id;
             }
-
             $this->createPaymentIntent();
             $response = $this->stripeConnect->getResponse();
             $paymentIntendId = $response->id;
@@ -276,6 +278,7 @@ class StripeConnectPayController extends PaymentController
         $this->stripeConnect->loadCustomer();
         $customerInfo = $this->stripeConnect->getResponse()->toArray();
         $savedCards = $customerInfo['sources']['data'];
+
         $this->set('defaultSource', $customerInfo['default_source']);
         $this->set('savedCards', $savedCards);
 

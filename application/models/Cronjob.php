@@ -487,7 +487,7 @@ class Cronjob extends FatModel
                 if ($balance < $promotionClicks['total_cost']) {
                     $emailObj = new EmailHandler();
                     $emailObj->sendLowBalancePromotionalNotification(FatApp::getConfig('CONF_DEFAULT_SITE_LANG'), $pVal['promotion_user_id'], $balance);
-                    break;
+                    continue;
                 }
 
 
@@ -585,8 +585,7 @@ class Cronjob extends FatModel
             if ($userBalance < $activeSub['ossubs_price']) {
                 $emailObj = new EmailHandler();
                 $emailObj->sendLowBalanceSubscriptionNotification($activeSub['order_language_id'], $userId, $activeSub['ossubs_price']);
-                break;
-
+                continue;
                 //Send Less Balance Email
             }
 

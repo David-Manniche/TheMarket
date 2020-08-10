@@ -4,11 +4,11 @@ class ProductCategorySearch extends SearchBase
 {
     private $langId;
 
-    public function __construct($langId = 0, $isActive = true, $isDeleted = true, $isOrderByCatCode = true, $doNotLimitRecords = true, $doNotCalculateRecords = true)
+    public function __construct($langId = 0, $isActive = true, $isDeleted = true, $isOrderByCatCode = true, $doNotLimitRecords = true, $doNotCalculateRecords = true, $prodcatStatus = 1)
     {
         parent::__construct(ProductCategory::DB_TBL, 'c');
         $this->langId = FatUtility::int($langId);
-
+        $prodcatStatus = FatUtility::int($prodcatStatus);
         if ($this->langId > 0) {
             $this->joinTable(
                 ProductCategory::DB_TBL_LANG,
@@ -26,6 +26,10 @@ class ProductCategorySearch extends SearchBase
 
         if ($isDeleted) {
             $this->addCondition('c.prodcat_deleted', '=', applicationConstants::NO);
+        }
+        
+        if (-1 != $prodcatStatus) {
+            $this->addCondition('c.prodcat_status', '=', $prodcatStatus);
         }
 
         if ($isOrderByCatCode) {

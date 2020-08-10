@@ -174,9 +174,10 @@ class ShopsController extends AdminBaseController
             if ($urlRow) {
                 $data['urlrewrite_custom'] = $urlRow['urlrewrite_custom'];
             }
+            $data['shop_country_code'] = Countries::getCountryById($data['shop_country_id'], $this->adminLangId, 'country_code');
             /* ] */
 			$stateObj = new States();
-			$statesArr = $stateObj->getStatesByCountryId($data['shop_country_id'], $this->adminLangId);
+			$statesArr = $stateObj->getStatesByCountryId($data['shop_country_id'], $this->adminLangId, true, 'state_code');
 			$frm->getField('shop_state')->options = $statesArr;
             $frm->fill($data);
             $stateId = $data['shop_state_id'];
@@ -207,7 +208,7 @@ class ShopsController extends AdminBaseController
 
         $shop_id = FatUtility::int($post['shop_id']);
         unset($post['shop_id']);
-
+        $post['shop_country_id'] = Countries::getCountryByCode($post['shop_country_code'], 'country_id');
         $shop = new Shop($shop_id);
         $shop->assignValues($post);
 
@@ -561,8 +562,8 @@ class ShopsController extends AdminBaseController
         $phnFld = $frm->addTextBox(Labels::getLabel('LBL_Phone', $this->adminLangId), 'shop_phone', '', array('class' => 'phone-js ltr-right', 'placeholder' => ValidateElement::PHONE_NO_FORMAT, 'maxlength' => ValidateElement::PHONE_NO_LENGTH));
         $phnFld->requirements()->setRegularExpressionToValidate(ValidateElement::PHONE_REGEX);
         $countryObj = new Countries();
-        $countriesArr = $countryObj->getCountriesArr($this->adminLangId);
-        $fld = $frm->addSelectBox(Labels::getLabel('LBL_Country', $this->adminLangId), 'shop_country_id', $countriesArr, FatApp::getConfig('CONF_COUNTRY', FatUtility::VAR_INT, 223));
+        $countriesArr = $countryObj->getCountriesArr($this->adminLangId, true, 'country_code');
+        $fld = $frm->addSelectBox(Labels::getLabel('LBL_Country', $this->adminLangId), 'shop_country_code', $countriesArr, FatApp::getConfig('CONF_COUNTRY', FatUtility::VAR_INT, 223));
         $fld->requirement->setRequired(true);
 
         $frm->addSelectBox(Labels::getLabel('LBL_State', $this->adminLangId), 'shop_state', array())->requirement->setRequired(true);
