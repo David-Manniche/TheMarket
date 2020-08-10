@@ -36,7 +36,7 @@ $(document).on("change", ".country", function() {
     }
     $state = $(this).data("statefield");
     $("." + $state).removeAttr("disabled");
-    getStatesByCountryCode($(this).val(), '', "." + $state, 'state_code');
+    getStatesByCountryCode($(this).val(), 0, "." + $state, 'state_code');
 });
 
 $(document).on("change", ".state", function() {
