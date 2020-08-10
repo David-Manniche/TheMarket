@@ -1078,10 +1078,10 @@ class Cart extends FatModel
 
                 $originalShipping += $product['shipping_cost'];
                 $totalSiteCommission += $product['commission'];
-
-                if (/* !$product['shop_eligible_for_free_shipping'] ||  */$product['psbs_user_id'] == 0) {
+                $shippingTotal += $product['shipping_cost'];
+                /* if (!$product['shop_eligible_for_free_shipping'] ||  $product['psbs_user_id'] == 0) {
                     $shippingTotal += $product['shipping_cost'];
-                }
+                } */
             }
         }
 
@@ -1128,6 +1128,7 @@ class Cart extends FatModel
             'taxOptions' => $taxOptions,
             'prodTaxOptions' => $prodTaxOptions,
         );
+        
         return $cartSummary;
     }
 
@@ -1886,6 +1887,11 @@ class Cart extends FatModel
         unset($this->SYSTEM_ARR['shopping_cart']['checkout_type']);
         $this->updateUserCart();
         return true;
+    }
+    
+    public function checkCartCheckoutType()
+    {
+        return isset($this->SYSTEM_ARR['shopping_cart']['checkout_type']) ? FatUtility::int($this->SYSTEM_ARR['shopping_cart']['checkout_type']) : 0;
     }
     
     public function setProductPickUpMethod($arr)

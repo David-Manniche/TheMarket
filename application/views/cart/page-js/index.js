@@ -2,7 +2,7 @@ $(document).ready(function(){
 	listCartProducts(2);
 });
 (function() {
-	listCartProducts = function(fulfilmentType){
+	listCartProducts = function(fulfilmentType = 2){
 		$('#cartList').html( fcom.getLoader() );
 		fcom.ajax(fcom.makeUrl('Cart','listing', [fulfilmentType]),'',function(res){
 			$("#cartList").html(res);
@@ -122,6 +122,7 @@ $(document).ready(function(){
         fcom.updateWithAjax(fcom.makeUrl('cart', 'addSelectedToCart' ), data, function(ans) {
             addRemoveWishListProduct(selprod_id, wish_list_id, event);
             listCartProducts();
+            $('#cartSummary').load(fcom.makeUrl('cart', 'getCartSummary'));
 		});
 	};
     

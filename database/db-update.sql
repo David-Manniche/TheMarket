@@ -515,3 +515,5 @@ ALTER TABLE `tbl_order_user_address` ADD PRIMARY KEY( `oua_order_id`, `oua_op_id
 
 ALTER TABLE `tbl_order_product_shipping` ADD `opshipping_type` INT(11) NOT NULL DEFAULT '1' COMMENT 'Defined in model' AFTER `opshipping_op_id`;
 ALTER TABLE `tbl_order_product_shipping` ADD `opshipping_date` DATE NOT NULL AFTER `opshipping_service_code`, ADD `opshipping_time_slot_from` TIME NOT NULL AFTER `opshipping_date`, ADD `opshipping_time_slot_to` TIME NOT NULL AFTER `opshipping_time_slot_from`;
+
+update `tbl_seller_products` set selprod_fulfillment_type = 2;

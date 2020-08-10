@@ -130,6 +130,12 @@ class CartController extends MyAppController
                 }
             }
             /* ] */
+
+            $fulFillmentArr = Shipping::getFulFillmentArr($this->siteLangId);
+            if (!array_key_exists($fulfilmentType, $fulFillmentArr)) {
+                $fulfilmentType = Shipping::FULFILMENT_SHIP;
+            }
+
             $this->set('saveForLaterProducts', $saveForLaterProducts);
             $this->set('products', $productsArr);
             $this->set('prodGroupIds', $prodGroupIds);
@@ -713,7 +719,7 @@ class CartController extends MyAppController
     }
     
     public function removePickupOnlyProducts()
-    {     
+    {
         $cart = new Cart(UserAuthentication::getLoggedUserId(true), $this->siteLangId, $this->app_user['temp_user_id']);
         if (!$cart->removePickupOnlyProducts()) {
             if (true === MOBILE_APP_API_CALL) {
@@ -729,11 +735,11 @@ class CartController extends MyAppController
             $this->set('data', array('cartItemsCount' => $total));
             $this->_template->render();
         }
-        $this->_template->render(false, false, 'json-success.php'); 
+        $this->_template->render(false, false, 'json-success.php');
     }
     
     public function removeShippedOnlyProducts()
-    {     
+    {
         $cart = new Cart(UserAuthentication::getLoggedUserId(true), $this->siteLangId, $this->app_user['temp_user_id']);
         if (!$cart->removeShippedOnlyProducts()) {
             if (true === MOBILE_APP_API_CALL) {
@@ -749,18 +755,17 @@ class CartController extends MyAppController
             $this->set('data', array('cartItemsCount' => $total));
             $this->_template->render();
         }
-        $this->_template->render(false, false, 'json-success.php'); 
+        $this->_template->render(false, false, 'json-success.php');
     }
     
     public function setCartCheckoutType()
-    {     
+    {
         $type = FatApp::getPostedData('type', FatUtility::VAR_INT, 0);
         $cart = new Cart(UserAuthentication::getLoggedUserId(true), $this->siteLangId, $this->app_user['temp_user_id']);
         $cart->setCartCheckoutType($type);
         if (true === MOBILE_APP_API_CALL) {
             $this->_template->render();
         }
-        $this->_template->render(false, false, 'json-success.php'); 
+        $this->_template->render(false, false, 'json-success.php');
     }
-    
 }
