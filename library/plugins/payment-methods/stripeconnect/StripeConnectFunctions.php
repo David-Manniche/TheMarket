@@ -323,7 +323,7 @@ trait StripeConnectFunctions
     {
         return $this->stripe->customers->createSource(
             $this->getCustomerId(),
-            ["source" => $requestParam['cardToken']]
+            $requestParam
         );
     }
 
