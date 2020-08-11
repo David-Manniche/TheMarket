@@ -100,6 +100,15 @@ if (!$print) {
                             <div class="info--order">
                                 <p><strong><?php echo Labels::getLabel('LBL_Invoice', $siteLangId);?> #: </strong><?php echo $orderDetail['op_invoice_number'];?></p>
                                 <p><strong><?php echo Labels::getLabel('LBL_Date', $siteLangId);?>: </strong><?php echo FatDate::format($orderDetail['order_date_added']);?></p>
+                                <?php if($orderDetail["opshipping_type"] == OrderProduct::TYPE_PICKUP){ ?>
+                                <p><strong><?php echo Labels::getLabel('LBL_Pickup_Date', $siteLangId); ?>: </strong>
+                                    <?php 
+                                       $fromTime = date('H:i', strtotime($orderDetail["opshipping_time_slot_from"]));
+                                       $toTime = date('H:i', strtotime($orderDetail["opshipping_time_slot_to"]));
+                                       echo FatDate::format($orderDetail["opshipping_date"]).' '.$fromTime.' - '.$toTime; 
+                                    ?>
+                                 </p>
+                                 <?php } ?>
                                 <span class="gap"></span>
                             </div>
                         </div>
@@ -257,6 +266,38 @@ if (!$print) {
                             } ?>
                             <div class="info--order">
                                 <p><?php echo $shippingAddress;?></p>
+                            </div>
+                        </div>
+                        <?php } ?>
+                        <?php if (!empty($orderDetail['pickupAddress'])) {?>
+                        <div class="col-lg-6 col-md-6 mb-4">
+                            <h5><?php echo Labels::getLabel('LBL_Pickup_Details', $siteLangId);?></h5>
+                            <?php $pickupAddress = $orderDetail['pickupAddress']['oua_name'].'<br>';
+                            if ($orderDetail['pickupAddress']['oua_address1']!='') {
+                                $pickupAddress.=$orderDetail['pickupAddress']['oua_address1'].'<br>';
+                            }
+
+                            if ($orderDetail['pickupAddress']['oua_address2']!='') {
+                                $pickupAddress.=$orderDetail['pickupAddress']['oua_address2'].'<br>';
+                            }
+
+                            if ($orderDetail['pickupAddress']['oua_city']!='') {
+                                $pickupAddress.=$orderDetail['pickupAddress']['oua_city'].',';
+                            }
+
+                            if ($orderDetail['pickupAddress']['oua_zip']!='') {
+                                $pickupAddress.=$orderDetail['pickupAddress']['oua_state'];
+                            }
+
+                            if ($orderDetail['pickupAddress']['oua_zip']!='') {
+                                $pickupAddress.= '-'.$orderDetail['pickupAddress']['oua_zip'];
+                            }
+
+                            if ($orderDetail['pickupAddress']['oua_phone']!='') {
+                                $pickupAddress.= '<br>'.$orderDetail['pickupAddress']['oua_phone'];
+                            } ?>
+                            <div class="info--order">
+                                <p><?php echo $pickupAddress;?></p>
                             </div>
                         </div>
                         <?php } ?>
