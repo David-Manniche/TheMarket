@@ -228,7 +228,7 @@ class StripeConnectPayController extends PaymentController
 
                 if (0 < $saveCard) {
                     /* Bind Card with customer. */
-                    if (false === $this->stripeConnect->addCard(['cardToken' => $cardTokenResponse->id])) {
+                    if (false === $this->stripeConnect->addCard(['source' => $cardTokenResponse->id])) {
                         $this->setErrorAndRedirect($this->stripeConnect->getError());
                     }
                     $cardTokenResponse = $this->stripeConnect->getResponse();
@@ -244,6 +244,11 @@ class StripeConnectPayController extends PaymentController
                 }
                 $this->sourceId = $cardTokenResponse->id;
             }
+
+            if (false === $this->stripeConnect->updateCustomerInfo(['default_source' => $this->sourceId])) {
+                $this->setErrorAndRedirect($this->stripeConnect->getError());
+            }
+
             $this->createPaymentIntent();
             $response = $this->stripeConnect->getResponse();
             $paymentIntendId = $response->id;
@@ -451,12 +456,13 @@ class StripeConnectPayController extends PaymentController
                     ],
                     'source_transaction' => $chargeId
                 ];
-                
+
                 if (false === $this->stripeConnect->doTransfer($charge)) {
                     $this->setErrorAndRedirect($this->stripeConnect->getError());
                 }
 
                 $resp = $this->stripeConnect->getResponse();
+                
                 if (empty($resp->id)) {
                     continue;
                 }
