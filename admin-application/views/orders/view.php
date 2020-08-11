@@ -199,8 +199,8 @@ if ($order['order_reward_point_used'] > 0) {
                                             <strong>
                                                 <?php echo Labels::getLabel('LBL_TRACKING_NUMBER', $adminLangId); ?>:
                                             </strong>
-                                            <!-- <a href="javascript::void(0);" onclick="track('<?php /* echo $op['opship_op_id']; */ ?>')"> -->
-                                            <a href="javascript::void(0);">
+                                            <!-- <a href="javascript:void(0)" onclick="track('<?php /* echo $op['opship_op_id']; */ ?>')"> -->
+                                            <a href="javascript:void(0)">
                                                 <?php echo $op["opship_tracking_number"]; ?>
                                             </a>
                                         <?php } ?>
