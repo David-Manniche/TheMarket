@@ -309,7 +309,7 @@ class CheckoutController extends MyAppController
             Message::addErrorMessage(Labels::getLabel('MSG_Your_Session_seems_to_be_expired.', $this->siteLangId));
             FatUtility::dieWithError(Message::getHtml());
         }
-
+        
         $addressFrm = $this->getUserAddressForm($this->siteLangId);
         $address = new Address(0, $this->siteLangId);
         $addresses = $address->getData(Address::TYPE_USER, UserAuthentication::getLoggedUserId());
@@ -327,7 +327,7 @@ class CheckoutController extends MyAppController
         $selected_billing_address_id = $cartObj->getCartBillingAddress();
         $selected_shipping_address_id = $cartObj->getCartShippingAddress();
         $fulfillmentType = $cartObj->getCartCheckoutType();
-        
+
         $this->set('selected_billing_address_id', $selected_billing_address_id);
         $this->set('selected_shipping_address_id', $selected_shipping_address_id);
         $this->set('fulfillmentType', $fulfillmentType);
@@ -339,6 +339,9 @@ class CheckoutController extends MyAppController
         $this->set('stateId', 0);
         $this->set('addressFrm', $addressFrm);
         $this->set('checkoutAddressFrm', $this->getCheckoutAddressForm($this->siteLangId));
+        
+        $addressType = FatApp::getPostedData('address_type', FatUtility::VAR_INT, 0);
+        $this->set('addressType', $addressType);
         $this->_template->render(false, false);
     }
 
@@ -861,7 +864,7 @@ class CheckoutController extends MyAppController
         $fields = array( 'IFNULL(product_name, product_identifier) as product_name', 'IFNULL(selprod_title  ,IFNULL(product_name, product_identifier)) as selprod_title', 'IFNULL(brand_name, brand_identifier) as brand_name', 'IFNULL(shop_name, shop_identifier) as shop_name' );
         $langProdSrch->addMultipleFields($fields);
         $langProdRs = $langProdSrch->getResultSet();
-        return $langSpecificProductInfo = FatApp::getDb()->fetch($langProdRs);
+        return FatApp::getDb()->fetch($langProdRs);
     }
 
     public function paymentSummary()
@@ -1447,7 +1450,10 @@ class CheckoutController extends MyAppController
         }
 
         $this->set('canUseWalletForPayment', PaymentMethods::canUseWalletForPayment());
-
+        $this->set('shippingAddressId', $shippingAddressId);
+        $this->set('billingAddressId', $billingAddressId);
+        $this->set('billingAddressArr', $billingAddressArr);
+        
         if (true === MOBILE_APP_API_CALL) {
             $this->set('products', $cartProducts);
             $this->set('orderId', $order_id);
@@ -1916,6 +1922,8 @@ class CheckoutController extends MyAppController
         $this->set('cartHasPhysicalProduct', $cartHasPhysicalProduct);
         $this->set('labelHeading', $labelHeading);
         $this->set('stateId', $stateId);
+        $addressType = FatApp::getPostedData('address_type', FatUtility::VAR_INT, 0);
+        $this->set('addressType', $addressType);
         $this->_template->render(false, false, 'checkout/address-form.php');
     }
 
@@ -2148,6 +2156,65 @@ class CheckoutController extends MyAppController
 
         $this->cartObj->setProductPickUpMethod($productToPickUpMethods);
         $this->set('msg', Labels::getLabel('MSG_Pickup_Method_selected_successfully.', $this->siteLangId));
+        $this->_template->render(false, false, 'json-success.php');
+    }
+    
+    public function setUpBillingAddressSelection()
+    {
+        if (!UserAuthentication::isUserLogged() && !UserAuthentication::isGuestUserLogged()) {
+            $this->errMessage = Labels::getLabel('MSG_Your_Session_seems_to_be_expired.', $this->siteLangId);
+            if (true === MOBILE_APP_API_CALL) {
+                FatUtility::dieJsonError($this->errMessage);
+            }
+            $this->set('redirectUrl', UrlHelper::generateUrl('GuestUser', 'LoginForm'));
+            Message::addErrorMessage($this->errMessage);
+            FatUtility::dieWithError(Message::getHtml());
+        }
+
+        $billing_address_id = FatApp::getPostedData('billing_address_id', FatUtility::VAR_INT, 0);
+        $isShippingSameAsBilling = FatApp::getPostedData('isShippingSameAsBilling', FatUtility::VAR_INT, 0);
+
+        $hasProducts = $this->cartObj->hasProducts();
+        $hasStock = $this->cartObj->hasStock();
+        if ((!$hasProducts) || (!$hasStock)) {
+            $this->errMessage = Labels::getLabel('MSG_Cart_seems_to_be_empty_or_products_are_out_of_stock.', $this->siteLangId);
+            if (true === MOBILE_APP_API_CALL) {
+                FatUtility::dieJsonError($this->errMessage);
+            }
+            $this->set('redirectUrl', UrlHelper::generateUrl('cart'));
+            Message::addErrorMessage($this->errMessage);
+            FatUtility::dieWithError(Message::getHtml());
+        }
+
+        if (1 > $billing_address_id) {
+            $this->errMessage = Labels::getLabel('MSG_Please_select_Billing_address.', $this->siteLangId);
+            if (true === MOBILE_APP_API_CALL) {
+                FatUtility::dieJsonError($this->errMessage);
+            }
+            Message::addErrorMessage($this->errMessage);
+            FatUtility::dieWithError(Message::getHtml());
+        }
+
+        $address = new Address($billing_address_id);
+        $billingAddressDetail = $address->getData(Address::TYPE_USER, UserAuthentication::getLoggedUserId());
+        if (!$billingAddressDetail) {
+            $this->errMessage = Labels::getLabel('MSG_Invalid_Billing_Address.', $this->siteLangId);
+            if (true === MOBILE_APP_API_CALL) {
+                FatUtility::dieJsonError($this->errMessage);
+            }
+            Message::addErrorMessage($this->errMessage);
+            FatUtility::dieWithError(Message::getHtml());
+        }
+        $this->cartObj->setCartBillingAddress($billingAddressDetail['addr_id']);
+
+        if ($isShippingSameAsBilling == 0) {
+            $this->cartObj->unSetShippingAddressSameAsBilling();
+        }
+
+        if (true === MOBILE_APP_API_CALL) {
+            $this->_template->render();
+        }
+        $this->set('msg', Labels::getLabel('MSG_Address_Selection_Successfull', $this->siteLangId));
         $this->_template->render(false, false, 'json-success.php');
     }
 

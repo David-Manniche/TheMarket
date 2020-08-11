@@ -37,8 +37,11 @@ function editCart() {
     $('.js-editCart').toggle();
 }
 
-function showAddressFormDiv() {
-    editAddress();
+function showAddressFormDiv(address_type) {
+    if (typeof address_type == 'undefined') {
+        address_type = 0;
+    }
+    editAddress(0, address_type);
     setCheckoutFlow('BILLING');
 }
 function showAddressList() {
@@ -128,7 +131,7 @@ $("document").ready(function () {
         
     };
 
-    removeAddress = function (id) {
+    removeAddress = function (id, address_type) {
         if (!checkLogin()) {
             return false;
         }
@@ -136,20 +139,27 @@ $("document").ready(function () {
         if (!agree) {
             return false;
         }
+        if (typeof address_type == 'undefined') {
+            address_type = 0;
+        }
         data = 'id=' + id;
         fcom.updateWithAjax(fcom.makeUrl('Addresses', 'deleteRecord'), data, function (res) {
-            loadAddressDiv();
+            loadAddressDiv(address_type);
         });
     };
 
-    editAddress = function (address_id) {
+    editAddress = function (address_id, address_type) {
         if (!checkLogin()) {
             return false;
         }
         if (typeof address_id == 'undefined') {
             address_id = 0;
         }
-        fcom.ajax(fcom.makeUrl('Checkout', 'editAddress'), 'address_id=' + address_id, function (ans) {
+        if (typeof address_type == 'undefined') {
+            address_type = 0;
+        }
+        var data = 'address_id=' + address_id + '&address_type='+address_type;
+        fcom.ajax(fcom.makeUrl('Checkout', 'editAddress'), data, function (ans) {
             $(pageContent).html(ans);
             setCheckoutFlow('BILLING');
             // $(addressFormDiv).html( ans ).show();
@@ -160,7 +170,7 @@ $("document").ready(function () {
         });
     };
 
-    setUpAddress = function (frm) {
+    setUpAddress = function (frm, address_type) {
         if (!checkLogin()) {
             return false;
         }
@@ -172,7 +182,7 @@ $("document").ready(function () {
                     $("#hasAddress").val(1);
                 }
                 if ($(frm.addr_id).val() == 0) {
-                    loadAddressDiv();
+                    loadAddressDiv(address_type);
                     setTimeout(function () { setDefaultAddress(t.addr_id) }, 1000);
                 } else {
                     showShippingSummaryDiv(t.addr_id);
@@ -272,7 +282,8 @@ $("document").ready(function () {
         });
     };
 
-    loadAddressDiv = function (addr_id) {
+    //loadAddressDiv = function (addr_id) {
+    loadAddressDiv = function (address_type) {
         // $(addressDiv).html( fcom.getLoader());
         // fcom.ajax(fcom.makeUrl('Checkout', 'addresses'), '', function(ans) {
         // 	$(addressDiv).html(ans);
@@ -284,7 +295,11 @@ $("document").ready(function () {
             return false;
         }
         $(pageContent).html(fcom.getLoader());
-        fcom.ajax(fcom.makeUrl('Checkout', 'addresses'), '', function (ans) {
+        if (typeof address_type == 'undefined') {
+            address_type = 0;
+        }
+        var data = 'address_type='+address_type;
+        fcom.ajax(fcom.makeUrl('Checkout', 'addresses'), data, function (ans) {
             $(pageContent).html(ans);
         });
 
@@ -579,5 +594,28 @@ $("document").ready(function () {
             setCheckoutFlow('PAYMENT');
         });
     }
+    
+    billingAddress = function(ele){
+        if($(ele).prop("checked") == false){
+            loadAddressDiv(1);
+        }
+    }
+    
+    setUpBillingAddressSelection = function (elm) {
+        if (!checkLogin()) {
+            return false;
+        }
+
+        var billing_address_id = $('input[name="shipping_address_id"]:checked').val();
+        var isShippingSameAsBilling = 0;
+        var data = 'billing_address_id=' + billing_address_id + '&isShippingSameAsBilling=' + isShippingSameAsBilling;
+        fcom.updateWithAjax(fcom.makeUrl('Checkout', 'setUpBillingAddressSelection'), data, function (t) {
+            if (t.status == 1) {
+                loadFinancialSummary();
+                loadPaymentSummary();
+                setCheckoutFlow('PAYMENT');
+            }
+        });
+    };
     
 })();

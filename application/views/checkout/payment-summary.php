@@ -8,10 +8,36 @@ $rewardPoints = UserRewardBreakup::rewardPointBalance(UserAuthentication::getLog
             <div class="step__section__head">
                 <h5 class="step__section__head__title"><?php echo Labels::getLabel('LBL_Payment_Summary', $siteLangId); ?></h5>
             </div>
-            <?php if ($fulfillmentType == Shipping::FULFILMENT_SHIP) { ?>
-            <label class="checkbox"><input type="checkbox" checked='checked' name="isShippingSameAsBilling" value="1"><?php echo Labels::getLabel('LBL_MY_BILLING_IS_SAME_AS_SHIPPING_ADDRESS', $siteLangId); ?> <i class="input-helper"></i>
-            </label>
-            <?php } ?>
+            <?php 
+            if ($fulfillmentType == Shipping::FULFILMENT_SHIP) {
+                if ($shippingAddressId == $billingAddressId) { 
+            ?>
+                <label class="checkbox"><input onClick="billingAddress(this);" type="checkbox" checked='checked' name="isShippingSameAsBilling" value="1"><?php echo Labels::getLabel('LBL_MY_BILLING_IS_SAME_AS_SHIPPING_ADDRESS', $siteLangId); ?> <i class="input-helper"></i>
+                </label>
+            <?php }else{ ?>
+                <ul class="list-group review-block">
+                    <li class="list-group-item">
+                        <div class="review-block__label">
+                            <?php echo Labels::getLabel('LBL_Billing_to:', $siteLangId); ?>
+                        </div>
+                        <div class="review-block__content" role="cell">
+                            <?php echo $billingAddressArr['addr_title']; ?>
+                            <?php echo $billingAddressArr['addr_name']; ?>
+                            <?php echo $billingAddressArr['addr_address1'] . '<br>';?>
+                            <?php echo $billingAddressArr['addr_city'];?>,
+                            <?php echo $billingAddressArr['state_name'];?>,
+                            <?php echo (strlen($billingAddressArr['addr_zip']) > 0) ? Labels::getLabel('LBL_Zip:', $siteLangId) . ' ' . $billingAddressArr['addr_zip'] . ', ' : '';?>
+                            <?php echo (strlen($billingAddressArr['addr_phone']) > 0) ? Labels::getLabel('LBL_Phone:', $siteLangId) . ' ' . $billingAddressArr['addr_phone'] . '<br>' : '';?>
+                        </div>
+                        <div class="review-block__link" role="cell">
+                            <a class="link" href="javascript:void(0);" onClick="loadAddressDiv(<?php echo Address::Address_TYPE_BILLING; ?>)"><span><?php echo Labels::getLabel('LBL_Change_Address', $siteLangId); ?></span></a>
+                        </div>
+                    </li>
+                </ul> 
+            <?php } 
+            }
+            ?>
+            
             <?php if (empty($cartSummary['cartRewardPoints'])) { ?>
                 <?php if ($rewardPoints > 0) { ?>
                     <div class="rewards">
@@ -80,6 +106,17 @@ $rewardPoints = UserRewardBreakup::rewardPointBalance(UserAuthentication::getLog
                     </ul>
                 </div>
             <?php } ?>
+
+            <?php if ($userWalletBalance > 0 && $cartSummary['orderNetAmount'] > 0) { ?>
+            <label class="checkbox"><input onChange="walletSelection(this)" type="checkbox" <?php echo ($cartSummary["cartWalletSelected"]) ? 'checked="checked"' : ''; ?> name="pay_from_wallet" id="pay_from_wallet" value="1"><?php if ($cartSummary["cartWalletSelected"]) {
+                echo ''.Labels::getLabel('MSG_Applied_Wallet_Credits', $siteLangId)?>: <?php echo CommonHelper::displayMoneyFormat($cartSummary["WalletAmountCharge"], true, false, true, false, true);
+            } else {
+                echo ''.Labels::getLabel('MSG_Apply_Wallet_Credits', $siteLangId)?>: <?php echo CommonHelper::displayMoneyFormat($userWalletBalance, true, false, true, false, true)?>
+            <?php } ?> <i class="input-helper"></i>            
+
+            </label>
+            <?php } ?>
+
         </div>
     </div>
 </main>
