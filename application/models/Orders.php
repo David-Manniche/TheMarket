@@ -870,10 +870,14 @@ class Orders extends MyAppModel
         return $row;
     }
 
-    public function getOrderAddresses($order_id)
+    public function getOrderAddresses($order_id, $opId = 0)
     {
+        $opId = FatUtility::int($opId);
         $srch = new SearchBase(static::DB_TBL_ORDER_USER_ADDRESS);
         $srch->addCondition('oua_order_id', '=', $order_id);
+        if($opId > 0){
+            $srch->addCondition('oua_op_id', '=', $opId);
+        }
         $srch->doNotCalculateRecords();
         $srch->doNotLimitRecords();
         $rs = $srch->getResultSet();
