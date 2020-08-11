@@ -3,7 +3,7 @@
     $addressFrm->developerTags['fld_default_col'] = 12;
     $addressFrm->developerTags['colClassPrefix'] = 'col-md-';
     $addressFrm->setFormTagAttribute('class', 'form form--normal');
-    $addressFrm->setFormTagAttribute('onsubmit', 'setUpAddress(this); return(false);');
+    $addressFrm->setFormTagAttribute('onsubmit', 'setUpAddress(this, '.$addressType.'); return(false);');
 
     $addr_titleFld = $addressFrm->getField('addr_title');
     $addr_titleFld->developerTags['col'] = 6;
