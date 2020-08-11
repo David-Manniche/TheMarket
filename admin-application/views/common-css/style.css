@@ -4522,25 +4522,25 @@ fieldset[disabled] .field_control.disabled {
     border-bottom: 1px solid rgba(0, 0, 0, 0.05);
 }
 
-.tabs_nav_container.vertical>.tabs_nav li a {
+.tabs_nav_container.vertical>.tabs_nav li > a {
     text-align: left;
     background: none;
     border-radius: 0;
     border: none;
 }
 
-.tabs_nav_container.vertical>.tabs_nav li a.active {
+.tabs_nav_container.vertical>.tabs_nav li > a.active {
     background: #fff;
     -webkit-box-shadow: none;
     box-shadow: none;
     margin: 0;
 }
 
-.tabs_nav_container.vertical>.tabs_nav li a.active:before {
+.tabs_nav_container.vertical>.tabs_nav li > a.active:before {
     display: none;
 }
 
-.tabs_nav_container.vertical>.tabs_nav li a.active:after {
+.tabs_nav_container.vertical>.tabs_nav li > a.active:after {
     background: #fff;
     display: block;
     left: auto;
@@ -11943,5 +11943,9 @@ form[name="frmShippingProfile"] {
     display: none;
 }
 
-
 /*shipping end*/
+.vertical-actions li{     display: flex !important;
+    justify-content: space-between;
+    align-items: center;
+    padding:10px 0 !important;}
+    .vertical-actions .actions{ margin-right:10px;}

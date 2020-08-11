@@ -51,16 +51,9 @@ $(document).ready(function() {
         });
     };
 
-    addCollectionForm = function(id) {
-
-        $.facebox(function() {
-            collectionForm(0);
-        });
-    };
-
-    collectionForm = function(id) {
+    collectionForm = function(type, layoutType, id) {
         fcom.displayProcessing();
-        fcom.ajax(fcom.makeUrl('Collections', 'form', [id]), '', function(t) {
+        fcom.ajax(fcom.makeUrl('Collections', 'form', [type, layoutType, id]), '', function(t) {
             fcom.updateFaceboxContent(t);
         });
     };
@@ -71,63 +64,18 @@ $(document).ready(function() {
         });
     };
 
-
-    editCollectionFormNew = function(collectionId) {
-        $.facebox(function() {
-            editCollectionForm(collectionId);
-
-        });
-    };
-    editCollectionForm = function(collectionId) {
-        fcom.displayProcessing();
-        fcom.ajax(fcom.makeUrl('Collections', 'form', [collectionId]), '', function(t) {
-            fcom.updateFaceboxContent(t);
-        });
-    };
-
     setupCollection = function(frm) {
         if (!$(frm).validate()) return;
         var data = fcom.frmData(frm);
         fcom.updateWithAjax(fcom.makeUrl('Collections', 'setup'), data, function(t) {
             reloadList();
-
-            if (t.langId > 0 && t.collectionId > 0) {
-                editCollectionLangForm(t.collectionId, t.langId);
-                return;
-            }
-            /* if(t.openMediaForm)
-            {
+            if(t.openMediaForm) {
             	collectionMediaForm(t.collectionId);
             	return;
-            } */
+            }
             $(document).trigger('close.facebox');
         });
     }
-
-    editCollectionLangForm = function(collectionId, langId, autoFillLangData = 0) {
-        fcom.displayProcessing();
-        fcom.ajax(fcom.makeUrl('Collections', 'langForm', [collectionId, langId, autoFillLangData]), '', function(t) {
-            fcom.updateFaceboxContent(t);
-        });
-    };
-
-    setupLangCollection = function(frm) {
-        if (!$(frm).validate()) return;
-        var data = fcom.frmData(frm);
-        fcom.updateWithAjax(fcom.makeUrl('Collections', 'langSetup'), data, function(t) {
-            reloadList();
-            if (t.langId > 0) {
-                editCollectionLangForm(t.collectionId, t.langId);
-                return;
-            }
-            /* if(t.openMediaForm)
-            {
-            	collectionMediaForm(t.collectionId);
-            	return;
-            } */
-            $(document).trigger('close.facebox');
-        });
-    };
 
     deleteRecord = function(id) {
         if (!confirm(langLbl.confirmDelete)) {
@@ -451,6 +399,23 @@ $(document).ready(function() {
             }
         });
 	}
+    
+    translateData = function(item){
+        var autoTranslate = $("input[name='auto_update_other_langs_data']:checked").length;
+        var defaultLang = $(item).attr('defaultLang');
+        var catName = $("input[name='collection_name["+defaultLang+"]']").val();
+        var toLangId = $(item).attr('language');
+        var alreadyOpen = $('#collapse_'+toLangId).hasClass('active');
+        if(autoTranslate == 0 || catName == "" || alreadyOpen == true){
+            return false;
+        }
+        var data = "collectionName="+catName+"&toLangId="+toLangId ;
+        fcom.updateWithAjax(fcom.makeUrl('Collections', 'translatedData'), data, function(t) {
+            if(t.status == 1){
+                $("input[name='collection_name["+toLangId+"]']").val(t.collectionName);
+            }
+        });
+    }
 
 })();
 

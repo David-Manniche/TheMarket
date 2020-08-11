@@ -2,7 +2,7 @@
 $arr_flds = array(
     'dragdrop' => '',
     'select_all' => Labels::getLabel('LBL_Select_all', $adminLangId),
-    'listserial' => Labels::getLabel('LBL_Sr._No', $adminLangId),
+    'listserial' => '#',
     'collection_identifier' => Labels::getLabel('LBL_Collection_Identifier/Name', $adminLangId),
     'collection_type' => Labels::getLabel('LBL_Type', $adminLangId),
     'collection_layout_type' => Labels::getLabel('LBL_Layout_Type', $adminLangId),
@@ -70,7 +70,7 @@ foreach ($arr_listing as $sn => $row) {
                     $innerLiEdit->appendElement(
                         'a',
                         array('href' => 'javascript:void(0)', 'class' => 'button small green',
-                        'title' => Labels::getLabel('LBL_Edit', $adminLangId) , "onclick" => "editCollectionFormNew(" . $row['collection_id'] . ")"),
+                        'title' => Labels::getLabel('LBL_Edit', $adminLangId) , "onclick" => "collectionForm(".$row['collection_type'].",".$row['collection_layout_type']."," . $row['collection_id'] . ")"),
                         Labels::getLabel('LBL_Edit', $adminLangId),
                         true
                     );

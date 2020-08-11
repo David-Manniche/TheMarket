@@ -13,13 +13,19 @@
                     </div>
                 </div>
                 <div class="tabs_nav_container vertical">
-                    <ul class="tabs_nav outerul"> <?php
-                    foreach ($layouts as $type => $tabName) { ?>
-                        <li>
-                            <a href="javascript:void(0)"><?php echo $tabName; ?></a>
-                            <a href="javascript:void(0)" onclick="addCollectionForm(0)" title="<?php echo Labels::getLabel('LBL_Add_Collection', $adminLangId); ?>" class="btn-clean btn-sm btn-icon btn-secondary "><i class="fas fa-plus"></i></a>
-                            <a href="javascript:void(0)" onclick="collectionLayouts()" title="Banner Layouts Instructions" class="btn-clean btn-sm btn-icon btn-secondary "><i class="fas fa-file-image"></i></a>
-                        </li> 
+                    <ul class="tabs_nav outerul vertical-actions"> <?php
+                    foreach ($typeLayouts as $type => $layouts) {
+                           foreach ($layouts as $layoutType => $layout) { ?>
+                            <li>
+                                <a href="javascript:void(0)"><?php echo $layout; ?></a>                                
+                                <div class="actions">
+                                <?php if (!in_array($type, Collections::SYSTEM_COLLECTIONS)) { ?>
+                                <a href="javascript:void(0)" onclick="collectionForm(<?php echo $type; ?>, <?php echo $layoutType; ?>, 0)" title="<?php echo Labels::getLabel('LBL_Add_Collection', $adminLangId); ?>" class="btn-clean btn-sm btn-icon btn-secondary "><i class="fas fa-plus"></i></a>
+                                <?php } ?>
+                                <a rel="facebox" onClick="displayImageInFacebox('<?php echo CONF_WEBROOT_URL; ?>images/collection_layouts/<?php echo Collections::getLayoutImagesArr()[$layoutType]; ?>');" href="javascript:void(0)" title="Banner Layouts Instructions" class="btn-clean btn-sm btn-icon btn-secondary "><i class="fas fa-file-image"></i></a>
+                                </div>
+                            </li> 
+                        <?php }?>
                     <?php }?>
                     </ul>
                     <div id="frmBlock" class="tabs_panel_wrap">
@@ -54,16 +60,16 @@
                                     'adminLangId' => $adminLangId
                                 ];
                                 
-                                if ($canEdit) {
+                                /* if ($canEdit) {
                                     $data['otherButtons'][] = [
                                         'attr' => [
                                             'href' => 'javascript:void(0)',
-                                            'onclick' => 'addCollectionForm(0)',
+                                            'onclick' => 'collectionForm(0)',
                                             'title' => Labels::getLabel('Lbl_Add_Collection', $adminLangId)
                                         ],
                                         'label' => '<i class="fas fa-plus"></i>'
                                     ];
-                                }
+                                } */
 
                                 $data['otherButtons'][] = [
                                     'attr' => [

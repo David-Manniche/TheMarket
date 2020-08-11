@@ -16,6 +16,9 @@ class Collections extends MyAppModel
     public const COLLECTION_TYPE_SHOP = 3;
     public const COLLECTION_TYPE_BRAND = 4;
     public const COLLECTION_TYPE_BLOG = 5;
+    public const COLLECTION_TYPE_SPONSORED_PRODUCTS = 6;
+    public const COLLECTION_TYPE_SPONSORED_SHOPS = 7;
+    public const COLLECTION_TYPE_BANNER = 8;
 
     public const TYPE_PRODUCT_LAYOUT1 = 1;
     public const TYPE_PRODUCT_LAYOUT2 = 2;
@@ -25,6 +28,11 @@ class Collections extends MyAppModel
     public const TYPE_SHOP_LAYOUT1 = 6;
     public const TYPE_BRAND_LAYOUT1 = 7;
     public const TYPE_BLOG_LAYOUT1 = 8;
+    public const TYPE_SPONSORED_PRODUCT_LAYOUT = 9;
+    public const TYPE_SPONSORED_SHOP_LAYOUT = 10;
+    public const TYPE_BANNER_LAYOUT1 = 11;
+    public const TYPE_BANNER_LAYOUT2 = 12;
+    public const TYPE_BANNER_LAYOUT3 = 13;
 
     public const LIMIT_PRODUCT_LAYOUT1 = 12;
     public const LIMIT_PRODUCT_LAYOUT2 = 6;
@@ -42,6 +50,12 @@ class Collections extends MyAppModel
         self::COLLECTION_TYPE_SHOP,
         self::COLLECTION_TYPE_BRAND,
         self::COLLECTION_TYPE_BLOG,
+    ];
+    
+    public const SYSTEM_COLLECTIONS = [
+        self::COLLECTION_TYPE_SPONSORED_PRODUCTS,
+        self::COLLECTION_TYPE_SPONSORED_SHOPS,
+        self::COLLECTION_TYPE_BANNER,
     ];
     
     /**
@@ -101,7 +115,10 @@ class Collections extends MyAppModel
             self::COLLECTION_TYPE_CATEGORY => Labels::getLabel('LBL_Category', $langId),
             self::COLLECTION_TYPE_SHOP => Labels::getLabel('LBL_Shop', $langId),
             self::COLLECTION_TYPE_BRAND => Labels::getLabel('LBL_Brand', $langId),
-            self::COLLECTION_TYPE_BLOG => Labels::getLabel('LBL_BLOG', $langId),
+            self::COLLECTION_TYPE_BLOG => Labels::getLabel('LBL_Blog', $langId),
+            self::COLLECTION_TYPE_SPONSORED_PRODUCTS => Labels::getLabel('LBL_Sponsored_Products', $langId),
+            self::COLLECTION_TYPE_SPONSORED_SHOPS => Labels::getLabel('LBL_Sponsored_Shops', $langId),
+            self::COLLECTION_TYPE_BANNER => Labels::getLabel('LBL_Banner', $langId),
         ];
     }
     
@@ -125,7 +142,78 @@ class Collections extends MyAppModel
             self::TYPE_CATEGORY_LAYOUT2 => Labels::getLabel('LBL_Category_Layout2', $langId),
             self::TYPE_SHOP_LAYOUT1 => Labels::getLabel('LBL_Shop_Layout1', $langId),
             self::TYPE_BRAND_LAYOUT1 => Labels::getLabel('LBL_Brand_Layout1', $langId),
-            self::TYPE_BLOG_LAYOUT1 => Labels::getLabel('LBL_BLOG_LAYOUT1', $langId),
+            self::TYPE_BLOG_LAYOUT1 => Labels::getLabel('LBL_Blog_Layout1', $langId),
+            self::TYPE_SPONSORED_PRODUCT_LAYOUT => Labels::getLabel('LBL_Sponsored_Products', $langId),
+            self::TYPE_SPONSORED_SHOP_LAYOUT => Labels::getLabel('LBL_Sponsored_Shops', $langId),
+            self::TYPE_BANNER_LAYOUT1 => Labels::getLabel('LBL_Banner_Layout1', $langId),
+            self::TYPE_BANNER_LAYOUT2 => Labels::getLabel('LBL_Banner_Layout2', $langId),
+            self::TYPE_BANNER_LAYOUT3 => Labels::getLabel('LBL_Banner_Layout3', $langId),
+        ];
+    }
+    
+    /**
+     * getTypeSpecificLayouts
+     *
+     * @param  int $langId
+     * @return array
+     */
+    public static function getTypeSpecificLayouts(int $langId): array
+    {
+        $collectionLayouts = [
+            Collections::COLLECTION_TYPE_PRODUCT => [
+                Collections::TYPE_PRODUCT_LAYOUT1 => Labels::getLabel('LBL_Product_Layout1', $langId),
+                Collections::TYPE_PRODUCT_LAYOUT2 => Labels::getLabel('LBL_Product_Layout2', $langId),
+                Collections::TYPE_PRODUCT_LAYOUT3 => Labels::getLabel('LBL_Product_Layout3', $langId),
+            ],
+            Collections::COLLECTION_TYPE_CATEGORY => [
+                Collections::TYPE_CATEGORY_LAYOUT1 => Labels::getLabel('LBL_Category_Layout1', $langId),
+                Collections::TYPE_CATEGORY_LAYOUT2 => Labels::getLabel('LBL_Category_Layout2', $langId),
+            ],
+            Collections::COLLECTION_TYPE_SHOP => [
+                Collections::TYPE_SHOP_LAYOUT1 => Labels::getLabel('LBL_Shop_Layout1', $langId),
+            ],
+            Collections::COLLECTION_TYPE_BRAND => [
+                Collections::TYPE_BRAND_LAYOUT1 => Labels::getLabel('LBL_Brand_Layout1', $langId),
+            ],
+            Collections::COLLECTION_TYPE_BLOG => [
+                Collections::TYPE_BLOG_LAYOUT1 => Labels::getLabel('LBL_Blog_Layout1', $langId),
+            ],
+            Collections::COLLECTION_TYPE_SPONSORED_PRODUCTS => [
+                Collections::TYPE_SPONSORED_PRODUCT_LAYOUT => Labels::getLabel('LBL_Sponsored_Products', $langId),
+            ],
+            Collections::COLLECTION_TYPE_SPONSORED_SHOPS => [
+                Collections::TYPE_SPONSORED_SHOP_LAYOUT => Labels::getLabel('LBL_Sponsored_Shops', $langId),
+            ],
+            Collections::COLLECTION_TYPE_BANNER => [
+                Collections::TYPE_BANNER_LAYOUT1 => Labels::getLabel('LBL_Banner_Layout1', $langId),
+                Collections::TYPE_BANNER_LAYOUT2 => Labels::getLabel('LBL_Banner_Layout2', $langId),
+                Collections::TYPE_BANNER_LAYOUT3 => Labels::getLabel('LBL_Banner_Layout3', $langId),
+            ]
+        ];
+        return $collectionLayouts;
+    }
+    
+    /**
+     * getLayoutImagesArr
+     *
+     * @return array
+     */
+    public static function getLayoutImagesArr(): array
+    {
+        return [
+            self::TYPE_PRODUCT_LAYOUT1 => 'product-layout-1.jpg',
+            self::TYPE_PRODUCT_LAYOUT2 => 'product-layout-2.jpg',
+            self::TYPE_PRODUCT_LAYOUT3 => 'product-layout-3.jpg',
+            self::TYPE_CATEGORY_LAYOUT1 => 'category-layout-1.jpg',
+            self::TYPE_CATEGORY_LAYOUT2 => 'category-layout-2.jpg',
+            self::TYPE_SHOP_LAYOUT1 => 'shop-layout-1.jpg',
+            self::TYPE_BRAND_LAYOUT1 => 'brand-layout-1.jpg',
+            self::TYPE_BLOG_LAYOUT1 => 'blog-layout-1.jpg',
+            self::TYPE_SPONSORED_PRODUCT_LAYOUT => 'sponsored-product-layout-1.jpg',
+            self::TYPE_SPONSORED_SHOP_LAYOUT => 'sponsored-shop-layout-1.jpg',
+            self::TYPE_BANNER_LAYOUT1 => 'banner-layout-1.jpg',
+            self::TYPE_BANNER_LAYOUT2 => 'banner-layout-2.jpg',
+            self::TYPE_BANNER_LAYOUT3 => 'banner-layout-3.jpg',
         ];
     }
     
@@ -396,6 +484,56 @@ class Collections extends MyAppModel
 
         $collectionObj = new Collections($collectionId);
         $collectionObj->addUpdateData(array('collection_img_updated_on' => date('Y-m-d H:i:s')));
+        return true;
+    }
+       
+    /**
+     * saveLangData
+     *
+     * @param  int $langId
+     * @param  string $prodCatName
+     * @return bool
+     */
+    public function saveLangData(int $langId, string $collectionName): bool
+    {
+        $langId = FatUtility::int($langId);
+        if ($this->mainTableRecordId < 1 || $langId < 1) {
+            $this->error = Labels::getLabel('ERR_Invalid_Request', $this->commonLangId);
+            return false;
+        }
+
+        $data = array(
+            'collectionlang_collection_id' => $this->mainTableRecordId,
+            'collectionlang_lang_id' => $langId,
+            'collection_name' => $collectionName,
+        );
+
+        if (!$this->updateLangData($langId, $data)) {
+            $this->error = $this->getError();
+            return false;
+        }
+        return true;
+    }
+    
+    /**
+     * saveTranslatedLangData
+     *
+     * @param  int $langId
+     * @return bool
+     */
+    public function saveTranslatedLangData(int $langId): bool
+    {
+        $langId = FatUtility::int($langId);
+        if ($this->mainTableRecordId < 1 || $langId < 1) {
+            $this->error = Labels::getLabel('ERR_Invalid_Request', $this->commonLangId);
+            return false;
+        }
+
+        $translateLangobj = new TranslateLangData(static::DB_TBL_LANG);
+        if (false === $translateLangobj->updateTranslatedData($this->mainTableRecordId, 0, $langId)) {
+            $this->error = $translateLangobj->getError();
+            return false;
+        }
         return true;
     }
 }
