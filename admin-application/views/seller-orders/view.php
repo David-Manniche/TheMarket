@@ -99,6 +99,18 @@ if ($order['order_reward_point_used'] > 0) {
                                 <td><strong><?php echo Labels::getLabel('LBL_Total_Paid', $adminLangId); ?>:</strong><?php echo CommonHelper::displayMoneyFormat(CommonHelper::orderProductAmount($order, 'netamount', false, User::USER_TYPE_SELLER), true, true);?>
                                 </td>
                             </tr>
+                            <?php if($order["opshipping_type"] == OrderProduct::TYPE_PICKUP){ ?>
+                            <tr>
+                                <td>
+                                    <strong><?php echo Labels::getLabel('LBL_Pickup_Date', $adminLangId); ?>: </strong>
+                                    <?php 
+                                        $fromTime = date('H:i', strtotime($order["opshipping_time_slot_from"]));
+                                        $toTime = date('H:i', strtotime($order["opshipping_time_slot_to"]));
+                                        echo FatDate::format($order["opshipping_date"]).' '.$fromTime.' - '.$toTime; 
+                                    ?>
+                                </td>
+                            </tr>
+                            <?php } ?>
                         </table>
                     </div>
                 </section>
@@ -127,7 +139,15 @@ if ($order['order_reward_point_used'] > 0) {
                     <div class="col-lg-6 col-md-6 col-sm-6">
                         <section class="section">
                             <div class="sectionhead">
-                                <h4><?php echo Labels::getLabel('LBL_Billing_/_Shipping_Details', $adminLangId); ?></h4>
+                                <h4>
+                                    <?php 
+                                    if (!empty($order['pickupAddress'])) {
+                                        echo Labels::getLabel('LBL_Billing_/_Pickup_Details', $adminLangId); 
+                                    }else{
+                                        echo Labels::getLabel('LBL_Billing_/_Shipping_Details', $adminLangId); 
+                                    }
+                                    ?>
+                                </h4>
                             </div>
                             <div class="row space">
                                 <div class="col-lg-6 col-md-6 col-sm-12">
@@ -194,6 +214,39 @@ if ($order['order_reward_point_used'] > 0) {
                                             }
 
                                             echo $shippingAddress;
+                                    } ?>
+                                    
+                                    <?php if (!empty($order['pickupAddress'])) { ?>
+                                        <h5><?php echo Labels::getLabel('LBL_Pickup_Details', $adminLangId); ?></h5>
+                                        <p>
+                                            <strong>
+                                            <?php echo $order['pickupAddress']['oua_name']; ?></strong><br>
+                                            <?php
+                                            $pickupAddress = '';
+                                            if ($order['pickupAddress']['oua_address1']!='') {
+                                                $pickupAddress.=$order['pickupAddress']['oua_address1'].'<br>';
+                                            }
+
+                                            if ($order['pickupAddress']['oua_address2']!='') {
+                                                $pickupAddress.=$order['pickupAddress']['oua_address2'].'<br>';
+                                            }
+
+                                            if ($order['pickupAddress']['oua_city']!='') {
+                                                $pickupAddress.=$order['pickupAddress']['oua_city'].',';
+                                            }
+
+                                            if ($order['pickupAddress']['oua_zip']!='') {
+                                                $pickupAddress .= ' '.$order['pickupAddress']['oua_state'];
+                                            }
+
+                                            if ($order['pickupAddress']['oua_zip']!='') {
+                                                $pickupAddress.= '-'.$order['pickupAddress']['oua_zip'];
+                                            }
+
+                                            if ($order['pickupAddress']['oua_phone']!='') {
+                                                $pickupAddress.= '<br>Phone: '.$order['pickupAddress']['oua_phone'];
+                                            }
+                                            echo $pickupAddress;
                                     } ?>
                                 </div>
                             </div>
