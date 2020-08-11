@@ -22,34 +22,31 @@
         <ul class="list-group list-addresses list-addresses-view">
         <?php foreach ($addresses as $address) {
                 $selected_shipping_address_id = (!$selected_shipping_address_id && $address['addr_is_default']) ? $address['addr_id'] : $selected_shipping_address_id; ?>
-            <li class="list-group-item address-<?php echo $address['addr_id'];?>"">                
-                <div class="row">
+                <?php $checked = false;
+                if ($addressType == 0 && $selected_shipping_address_id == $address['addr_id']) { 
+                    $checked = true;
+                }
+                if ($addressType == Address::Address_TYPE_BILLING && $selected_billing_address_id == $address['addr_id']) { 
+                    $checked = true;
+                }
+                ?>
+            <li class="list-group-item address-<?php echo $address['addr_id'];?> <?php echo ($checked == true) ? 'selected' : ''?>">                 <div class="row">
                     <div class="col-auto">
-                        <label class="checkbox">
-                            <?php $checked = '';
-                            if ($addressType == 0 && $selected_shipping_address_id == $address['addr_id']) { 
-                                $checked = 'checked="checked"';
-                            }
-                            if ($addressType == Address::Address_TYPE_BILLING && $selected_billing_address_id == $address['addr_id']) { 
-                                $checked = 'checked="checked"';
-                            }
-                            ?>
-                            <input <?php echo $checked; ?> name="shipping_address_id" value="<?php echo $address['addr_id']; ?>" type="radio"><i class="input-helper"></i>
+                        <label class="checkbox">                            
+                            <input <?php echo ($checked == true) ? 'checked="checked"' : ''; ?> name="shipping_address_id" value="<?php echo $address['addr_id']; ?>" type="radio"><i class="input-helper"></i>
                         </label>
                     </div>
-
                     <div class="col">
-                        <address class="">
-                        <h5><?php echo $address['addr_name']; ?><span class="tag"><?php echo ($address['addr_title'] != '') ? $address['addr_title'] : $address['addr_name']; ?></span></h5>
-                        <p><?php echo ( mb_strlen($address['addr_address1'] ) > 0 ) ? $address['addr_address1'] : '';?>
-                        <?php echo ( mb_strlen($address['addr_address2'] ) > 0 ) ? $address['addr_address2'] . '<br>' : '';?>
-                        <?php echo ( mb_strlen($address['addr_city']) > 0 ) ? $address['addr_city'] . ',' : '';?>
-                        <?php echo ( mb_strlen($address['state_name']) > 0 ) ? $address['state_name'] . '<br>' : '';?>
-                        <?php echo ( mb_strlen($address['country_name']) > 0 ) ? $address['country_name'] . ',' : '';?>
-                        <?php echo ( mb_strlen($address['addr_zip']) > 0 ) ?  $address['addr_zip'] . '<br>' : '';?></p>
-                        <p class="phone-txt"><?php echo ( mb_strlen($address['addr_phone']) > 0 ) ? $address['addr_phone'] . '' : '';?></p>
-                        </address>
-                        
+                        <div class="delivery-address">
+                            <h5><?php echo $address['addr_name']; ?><span class="tag"><?php echo ($address['addr_title'] != '') ? $address['addr_title'] : $address['addr_name']; ?></span></h5>
+                            <p><?php echo ( mb_strlen($address['addr_address1'] ) > 0 ) ? $address['addr_address1'] : '';?>
+                            <?php echo ( mb_strlen($address['addr_address2'] ) > 0 ) ? $address['addr_address2'] . '<br>' : '';?>
+                            <?php echo ( mb_strlen($address['addr_city']) > 0 ) ? $address['addr_city'] . ',' : '';?>
+                            <?php echo ( mb_strlen($address['state_name']) > 0 ) ? $address['state_name'] . '<br>' : '';?>
+                            <?php echo ( mb_strlen($address['country_name']) > 0 ) ? $address['country_name'] . ',' : '';?>
+                            <?php echo ( mb_strlen($address['addr_zip']) > 0 ) ?  $address['addr_zip'] . '<br>' : '';?></p>
+                            <p class="phone-txt"><?php echo ( mb_strlen($address['addr_phone']) > 0 ) ? $address['addr_phone'] . '' : '';?></p>
+                        </div>
                     </div>                    
                     <div class="col-auto">
                     <?php if (!commonhelper::isAppUser()) { ?>
