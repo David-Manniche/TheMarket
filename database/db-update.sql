@@ -517,3 +517,8 @@ ALTER TABLE `tbl_order_product_shipping` ADD `opshipping_type` INT(11) NOT NULL 
 ALTER TABLE `tbl_order_product_shipping` ADD `opshipping_date` DATE NOT NULL AFTER `opshipping_service_code`, ADD `opshipping_time_slot_from` TIME NOT NULL AFTER `opshipping_date`, ADD `opshipping_time_slot_to` TIME NOT NULL AFTER `opshipping_time_slot_from`;
 
 update `tbl_seller_products` set selprod_fulfillment_type = 2;
+
+-- ShipStation --
+ALTER TABLE `tbl_order_product_shipment` CHANGE `opship_order_id` `opship_orderid` VARCHAR(150) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT 'From third party';
+ALTER TABLE `tbl_order_product_shipment` ADD `opship_order_number` VARCHAR(150) NOT NULL COMMENT 'From third party' AFTER `opship_orderid`;
+-- ShipStation --

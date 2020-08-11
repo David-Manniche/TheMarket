@@ -14,6 +14,9 @@ class ShipStationShipping extends ShippingServicesBase
     private const REQUEST_SHIPPING_RATES = 2;
     private const REQUEST_CREATE_ORDER = 3;
     private const REQUEST_CREATE_LABEL = 4;
+    private const REQUEST_FULFILLMENTS = 5;
+    private const REQUEST_GET_ORDER = 6;
+    private const REQUEST_MARK_AS_SHIPPED = 7;
     
     private $resp;
     private $endpoint = '';
@@ -68,7 +71,7 @@ class ShipStationShipping extends ShippingServicesBase
      * @param  string $carrierCode
      * @param  string $shipFromPostalCode
      * @param  int $langId
-     * @return void
+     * @return array
      */
     public function getRates(string $carrierCode, string $shipFromPostalCode): array
     {
@@ -96,7 +99,7 @@ class ShipStationShipping extends ShippingServicesBase
      *
      * @param  string $orderId
      * @param  int $opId
-     * @return void
+     * @return bool
      */
     public function addOrder(string $orderId, int $opId): bool
     {
@@ -179,7 +182,7 @@ class ShipStationShipping extends ShippingServicesBase
     /**
      * bindLabel - This function should be called after addOrder
      *
-     * @return void
+     * @return bool
      */
     public function bindLabel(array $requestParam): bool
     {
@@ -267,7 +270,7 @@ class ShipStationShipping extends ShippingServicesBase
     /**
      * getWeight
      *
-     * @return object
+     * @return array
      */
     public function getWeight(): array
     {
@@ -298,7 +301,7 @@ class ShipStationShipping extends ShippingServicesBase
     /**
      * getDimensions
      *
-     * @return object
+     * @return array
      */
     public function getDimensions(): array
     {
@@ -333,5 +336,92 @@ class ShipStationShipping extends ShippingServicesBase
     public function getItem(): array
     {
         return empty($this->item) ? [] : $this->item;
+    }
+
+    /**
+     * getFulfillments - This function return order shipment detail
+     *
+     * @param  mixed $requestParam
+     * @return bool
+     */
+    public function getFulfillments(array $requestParam): bool
+    {
+        return $this->doRequest(self::REQUEST_FULFILLMENTS, $requestParam);
+    }
+        
+    /**
+     * loadOrder
+     *
+     * @param  string $orderId
+     * @return bool
+     */
+    public function loadOrder(string $orderId): bool
+    {
+        return $this->doRequest(self::REQUEST_GET_ORDER, [$orderId]);
+    }
+
+    /**
+     * proceedToShipment
+     *
+     * @param  array $requestParam
+     * @return bool
+     */
+    public function proceedToShipment(array $requestParam): bool
+    {
+        return $this->doRequest(self::REQUEST_MARK_AS_SHIPPED, $requestParam);
+    }
+        
+    /**
+     * doRequest
+     *
+     * @param  int $requestType
+     * @param  mixed $requestParam
+     * @param  bool $formatError
+     * @return bool
+     */
+    private function doRequest(int $requestType, $requestParam = [], bool $formatError = true): bool
+    {
+        try {
+            switch ($requestType) {
+                case self::REQUEST_CARRIER_LIST:
+                    $this->carrierList();
+                    break;
+                case self::REQUEST_SHIPPING_RATES:
+                    $this->shippingRates($requestParam);
+                    break;
+                case self::REQUEST_CREATE_ORDER:
+                    $this->createOrder($requestParam);
+                    break;
+                case self::REQUEST_CREATE_LABEL:
+                    $this->createLabel($requestParam);
+                    break;
+                case self::REQUEST_FULFILLMENTS:
+                    $this->fulfillments($requestParam);
+                    break;
+                case self::REQUEST_GET_ORDER:
+                    $this->getOrder($requestParam);
+                    break;
+                case self::REQUEST_MARK_AS_SHIPPED:
+                    $this->markAsShipped($requestParam);
+                    break;
+            }
+            
+            if (array_key_exists('Message', $this->getResponse(true))) {
+                $this->error = (true === $formatError) ? $this->getResponse(true) : $this->resp;
+                if (true === $formatError) {
+                    $this->error = $this->formatError();
+                }
+                return false;
+            }
+
+            return true;
+        } catch (Exception $e) {
+            $this->error = $e->getMessage();
+        } catch (Error $e) {
+            $this->error = $e->getMessage();
+        }
+
+        $this->error =  (true === $formatError ? $this->formatError() : $this->error);
+        return false;
     }
 }
