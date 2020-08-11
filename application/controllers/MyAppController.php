@@ -447,6 +447,7 @@ class MyAppController extends FatController
         $siteLangId = FatUtility::int($siteLangId);
         $frm = new Form('frmAddress');
         $fld = $frm->addTextBox(Labels::getLabel('LBL_Address_Label', $siteLangId), 'addr_title');
+        $fld->requirement->setRequired(true);
         $fld->setFieldTagAttribute('placeholder', Labels::getLabel('LBL_E.g:_My_Office_Address', $siteLangId));
         $frm->addRequiredField(Labels::getLabel('LBL_Name', $siteLangId), 'addr_name');
         $frm->addRequiredField(Labels::getLabel('LBL_Address_Line1', $siteLangId), 'addr_address1');
