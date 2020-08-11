@@ -1,7 +1,4 @@
 <?php
-
-use Stripe\PaymentMethod;
-
 defined('SYSTEM_INIT') or die('Invalid Usage.');
 $rewardPoints = UserRewardBreakup::rewardPointBalance(UserAuthentication::getLoggedUserId());
 ?>
