@@ -4,14 +4,14 @@
     <div class="step__section">
         <div class="step__section__head">
             <h5 class="step__section__head__title"> 
-            <?php if ($fulfillmentType == Shipping::FULFILMENT_PICKUP) {
+            <?php if ($fulfillmentType == Shipping::FULFILMENT_PICKUP || $addressType == Address::Address_TYPE_BILLING) {
                     echo Labels::getLabel('LBL_Billing_Address', $siteLangId); 
                 } else {
                     echo Labels::getLabel('LBL_Delivery_Address', $siteLangId);  
                 }
             ?>
             </h5>
-            <a onClick="showAddressFormDiv();" name="addNewAddress"  class="link-text" href="javascript:void(0)">
+            <a onClick="showAddressFormDiv(<?php echo $addressType; ?>);" name="addNewAddress"  class="link-text" href="javascript:void(0)">
                 <i class="icn"> <svg class="svg">
                         <use xlink:href="<?php echo CONF_WEBROOT_URL;?>images/retina/sprite.svg#add"
                             href="<?php echo CONF_WEBROOT_URL;?>images/retina/sprite.svg#add">
@@ -29,8 +29,19 @@
                     </div>
                 </div>
                 <div class="row">
-                    <div class="col-auto"><label class="checkbox"><input <?php echo ($selected_shipping_address_id == $address['addr_id']) ? 'checked="checked"' : ''; ?> name="shipping_address_id" value="<?php echo $address['addr_id']; ?>" type="radio"><i class="input-helper"></i>
-                        </label></div>
+                    <div class="col-auto">
+                        <label class="checkbox">
+                            <?php $checked = '';
+                            if($addressType == 0 && $selected_shipping_address_id == $address['addr_id']){ 
+                                $checked = 'checked="checked"';
+                            } 
+                            if($addressType == Address::Address_TYPE_BILLING && $selected_billing_address_id == $address['addr_id']){ 
+                                $checked = 'checked="checked"';
+                            }
+                            ?>
+                            <input <?php echo $checked; ?> name="shipping_address_id" value="<?php echo $address['addr_id']; ?>" type="radio"><i class="input-helper"></i>
+                        </label>
+                    </div>
 
                     <div class="col">
                         <address class="">
@@ -45,14 +56,14 @@
                         <?php if (!commonhelper::isAppUser()) { ?>
                         <ul class="list-actions">
                             <li>
-                                <a href="javascript:void(0)" onClick="editAddress('<?php echo $address['addr_id']; ?>')"><svg class="svg">
+                                <a href="javascript:void(0)" onClick="editAddress('<?php echo $address['addr_id']; ?>', '<?php echo $addressType; ?>')"><svg class="svg">
                                         <use xlink:href="<?php echo CONF_WEBROOT_URL;?>images/retina/sprite.svg#edit"
                                             href="<?php echo CONF_WEBROOT_URL;?>images/retina/sprite.svg#edit">
                                         </use>
                                     </svg>
                                 </a></li>
                             <li>
-                                <a href="javascript:void(0)" onclick="removeAddress('<?php echo $address['addr_id']; ?>')"><svg class="svg">
+                                <a href="javascript:void(0)" onclick="removeAddress('<?php echo $address['addr_id']; ?>', '<?php echo $addressType; ?>')"><svg class="svg">
                                         <use xlink:href="<?php echo CONF_WEBROOT_URL;?>images/retina/sprite.svg#remove"
                                             href="<?php echo CONF_WEBROOT_URL;?>images/retina/sprite.svg#remove">
                                         </use>
@@ -87,8 +98,11 @@
                     </use>
                 </svg></i>
             <span class=""> </span></a>
-       
+       <?php if($addressType == Address::Address_TYPE_BILLING) { ?>
+        <a href="javascript:void(0)" id="btn-continue-js" onClick="setUpBillingAddressSelection(this);" class="btn btn-primary btn-wide"><?php echo Labels::getLabel('LBL_Continue', $siteLangId); ?></a>
+       <?php } else{ ?>
         <a href="javascript:void(0)" id="btn-continue-js" onClick="setUpAddressSelection(this);" class="btn btn-primary btn-wide"><?php echo Labels::getLabel('LBL_Continue', $siteLangId); ?></a>
+       <?php } ?>        
     </div>
 </form>
 </div>

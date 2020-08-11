@@ -20,7 +20,7 @@
                     <?php echo (strlen($addresses['addr_phone']) > 0) ? Labels::getLabel('LBL_Phone:', $siteLangId) . ' ' . $addresses['addr_phone'] . '<br>' : '';?>
                 </div>
                 <div class="review-block__link" role="cell">
-                    <a class="link" href="#" onClick="showAddressList()"><span><?php echo Labels::getLabel('LBL_Change_Address', $siteLangId); ?></span></a>
+                    <a class="link" href="javascript:void(0);" onClick="showAddressList()"><span><?php echo Labels::getLabel('LBL_Change_Address', $siteLangId); ?></span></a>
                 </div>
             </li>
         </ul>   
