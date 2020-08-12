@@ -17,4 +17,26 @@ $(document).ready(function () {
             window.location.reload();
         });
     }
+
+    proceedToShipment = function (opId) {
+        $.systemMessage(langLbl.processing,'alert--process', false);
+        fcom.ajax(fcom.makeUrl('ShippingServices', 'prceedToShipment', [opId]), '', function (t) {
+            $.systemMessage.close();
+            t = $.parseJSON(t);
+            var classname = 'alert--success';
+            if(1 > t.status){
+                classname = 'alert--danger';
+            }
+            $.systemMessage(t.msg, classname, false);
+            location.reload();
+        });
+    }
+
+    track = function (opId) {
+        $.systemMessage(langLbl.processing,'alert--process', false);
+        fcom.ajax(fcom.makeUrl('ShippingServices', 'track', [opId]), '', function (t) {
+            $.systemMessage.close();
+            $.facebox(t, 'faceboxWidth fbminwidth');
+        });
+    }
 })();

@@ -67,7 +67,7 @@ class ShippingServicesController extends AdminBaseController
             'carrierCode' => $order['carrierCode'],
             'serviceCode' => $order['serviceCode'],
             'confirmation' => $order['confirmation'],
-            'shipDate' => date('Y-m-d', strtotime('+7 day')),
+            'shipDate' => date('Y-m-d'),// date('Y-m-d', strtotime('+7 day')),
             'weight' => $order['weight'],
             'dimensions' => $order['dimensions'],
         ];
@@ -81,7 +81,7 @@ class ShippingServicesController extends AdminBaseController
         $recordCol = ['opship_op_id' => $opId];
 
         $dataToSave = [
-            'opship_order_id' => $shipmentApiOrderId,
+            'opship_orderid' => $shipmentApiOrderId,
             'opship_shipment_id' => $responseArr['shipmentId'],
             'opship_tracking_number' => $responseArr['trackingNumber'],
             'opship_response' => $response,
@@ -142,5 +142,92 @@ class ShippingServicesController extends AdminBaseController
             LibHelper::dieJsonError($this->error);
         }
         $this->shippingService->downloadLabel($this->labelData, $this->filename, true);
+    }
+
+    /**
+     * prceedToShipment
+     *
+     * @param  int $opId
+     * @return void
+     */
+    public function prceedToShipment(int $opId)
+    {
+        $db = FatApp::getDb();
+        $opSrch = new OrderProductSearch($this->adminLangId, false, true, true);
+        $opSrch->joinShippingCharges();
+        $opSrch->joinTable(OrderProductShipment::DB_TBL, 'LEFT JOIN', OrderProductShipment::DB_TBL_PREFIX . 'op_id = op.op_id', 'opship');
+        $opSrch->addCountsOfOrderedProducts();
+        $opSrch->addOrderProductCharges();
+        $opSrch->doNotCalculateRecords();
+        $opSrch->doNotLimitRecords();
+        $opSrch->addCondition('op.op_id', '=', $opId);
+
+        $opSrch->addMultipleFields(
+            array('opshipping_label', 'opshipping_carrier_code', 'opshipping_service_code', 'opship.*')
+        );
+
+        $opRs = $opSrch->getResultSet();
+        $data = $db->fetch($opRs);
+
+        $requestParam = [
+            "orderId" => $data['opship_orderid'],
+            "carrierCode" => $data['opshipping_carrier_code'],
+            "shipDate" => date('Y-m-d'),
+            "trackingNumber" => $data['opship_tracking_number'],
+            "notifyCustomer" => true,
+            "notifySalesChannel" => true,
+        ];
+
+        if (false === $this->shippingService->proceedToShipment($requestParam)) {
+            LibHelper::dieJsonError($this->shippingService->getError());
+        }
+
+        $orderInfo = $this->shippingService->getResponse();
+        $updateData = [
+            'opship_op_id' => $opId,
+            'opship_order_number' => $orderInfo['orderNumber'],
+            "opship_tracking_number" => $data['opship_tracking_number'],
+        ];
+
+       
+        if (!$db->insertFromArray(OrderProductShipment::DB_TBL, $updateData, false, array(), $updateData)) {
+            LibHelper::dieJsonError($db->getError());
+        }
+        LibHelper::dieJsonSuccess(Labels::getLabel('LBL_SUCCESS', $this->adminLangId));
+    }
+
+    /**
+     * track - Not Working Yet
+     *
+     * @param  int $opId
+     * @return void
+     */
+    public function track(int $opId)
+    {
+        $orderData = OrderProductShipment::getAttributesById($opId);
+        if (false === $this->shippingService->loadOrder($orderData["opship_orderid"])) {
+            LibHelper::dieWithError($this->shippingService->getError());
+        }
+        $orderInfo = $this->shippingService->getResponse();
+        if (empty($orderInfo)) {
+            $msg = Labels::getLabel("MSG_ORDER_NOT_GENERATED", $this->adminLangId);
+            LibHelper::dieWithError($msg);
+        }
+
+        if (!isset($orderInfo['orderStatus']) || 'awaiting_shipment' == $orderInfo['orderStatus']) { 
+            $msg = Labels::getLabel("MSG_NOT_SHIPPED_YET", $this->adminLangId);
+            LibHelper::dieWithError($msg);    
+        }
+
+        $requestParam = [
+            'orderId' => $orderData['opship_orderid'],
+            'orderNumber' => $orderData['opship_order_number'],
+            'trackingNumber' => $orderData['opship_tracking_number'],
+        ];
+        if (false === $this->shippingService->getFulfillments($requestParam)) {
+            LibHelper::dieWithError($this->shippingService->getError());
+        }
+        $data = $this->shippingService->getResponse();
+        CommonHelper::printArray($data);
     }
 }
