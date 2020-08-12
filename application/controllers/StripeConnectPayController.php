@@ -431,22 +431,34 @@ class StripeConnectPayController extends PaymentController
         $orderProducts = $orderObj->getChildOrders(array('order_id' => $orderInfo['id']), $orderInfo['order_type'], $orderInfo['order_language_id']);
         
         foreach ($orderProducts as $op) {
-            $amountToBePaidToSeller = CommonHelper::orderProductAmount($op, 'NETAMOUNT', false, User::USER_TYPE_SELLER);
+            $netSellerAmount = CommonHelper::orderProductAmount($op, 'NET_VENDOR_AMOUNT', false, User::USER_TYPE_SELLER);
             $discount = CommonHelper::orderProductAmount($op, 'DISCOUNT');
             $rewardPoint = CommonHelper::orderProductAmount($op, 'REWARDPOINT');
-            $discount = abs($discount) + abs($rewardPoint);
+            $totalDiscount = abs($discount) + abs($rewardPoint);
             
-            $amountToBePaidToSeller = ($amountToBePaidToSeller - $op['op_commission_charged']) - $discount;
+            $firstTransferAmount = $netSellerAmount - $totalDiscount;
+            $pendingTransferAmount = $totalDiscount;
+
+            if (0 == $pendingTransferAmount) {
+                $firstTransferAmount = $firstTransferAmount - $op['op_commission_charged'];
+            } else {
+                if ($op['op_commission_charged'] <= $pendingTransferAmount) {
+                    $pendingTransferAmount = $pendingTransferAmount - $op['op_commission_charged'];
+                } else {
+                    $pendingTransferAmount = $op['op_commission_charged'] - $pendingTransferAmount;
+                    $firstTransferAmount = $firstTransferAmount - $pendingTransferAmount;
+                }
+            }
 
             $accountId = User::getUserMeta($op['op_selprod_user_id'], 'stripe_account_id');
             // Credit sold product amount to seller wallet.
             $comments = Labels::getLabel('MSG_PRODUCT_SOLD._#{invoice-no}._COMMISSION_CHARGED_{commission-amount}', $this->siteLangId);
             $comments = CommonHelper::replaceStringData($comments, ['{invoice-no}' => $op['op_invoice_number'], '{commission-amount}' => $op['op_commission_charged']]);
-            Transactions::creditWallet($op['op_selprod_user_id'], Transactions::TYPE_PRODUCT_SALE, $amountToBePaidToSeller, $this->siteLangId, $comments, $op['op_id']);
+            Transactions::creditWallet($op['op_selprod_user_id'], Transactions::TYPE_PRODUCT_SALE, $netSellerAmount, $this->siteLangId, $comments, $op['op_id']);
             
             if (!empty($accountId)) {
                 $charge = [
-                    'amount' => $this->convertInPaisa($amountToBePaidToSeller),
+                    'amount' => $this->convertInPaisa($firstTransferAmount),
                     'currency' => $orderInfo['order_currency_code'],
                     'destination' => $accountId,
                     // 'transfer_group' => $op['op_invoice_number'],
@@ -470,17 +482,18 @@ class StripeConnectPayController extends PaymentController
                 // Debit sold product amount from seller wallet.
                 $comments = $comments . ' ' . Labels::getLabel('MSG_TRANSFERED_TO_ACCOUNT_{account-id}.', $this->siteLangId);
                 $comments = CommonHelper::replaceStringData($comments, ['{account-id}' => $accountId]);
-                Transactions::debitWallet($op['op_selprod_user_id'], Transactions::TYPE_TRANSFER_TO_THIRD_PARTY_ACCOUNT, $amountToBePaidToSeller, $this->siteLangId, $comments, $op['op_id'], $resp->id);
+                Transactions::debitWallet($op['op_selprod_user_id'], Transactions::TYPE_TRANSFER_TO_THIRD_PARTY_ACCOUNT, $firstTransferAmount, $this->siteLangId, $comments, $op['op_id'], $resp->id);
+                Transactions::debitWallet($op['op_selprod_user_id'], Transactions::TYPE_ADMIN_COMMISSION, $op['op_commission_charged'], $this->siteLangId, $comments, $op['op_id'], $resp->id);
             }
 
-            if (0 < $discount) {
+            if (0 < $pendingTransferAmount) {
                 // Credit sold product discount amount to seller wallet.
                 $discountComments = Labels::getLabel('MSG_AMOUNT_CREDITED_FOR_DISCOUNT_APPLIED_ON_PRODUCT_SOLD_#{invoice-no}.', $this->siteLangId);
                 $discountComments = CommonHelper::replaceStringData($discountComments, ['{invoice-no}' => $op['op_invoice_number']]);
-                Transactions::creditWallet($op['op_selprod_user_id'], Transactions::TYPE_PRODUCT_SALE, $discount, $this->siteLangId, $discountComments, $op['op_id']);
+               /*  Transactions::creditWallet($op['op_selprod_user_id'], Transactions::TYPE_PRODUCT_SALE, $discount, $this->siteLangId, $discountComments, $op['op_id']); */
 
                 unset($charge['source_transaction']);
-                $charge['amount'] = $this->convertInPaisa($discount);
+                $charge['amount'] = $this->convertInPaisa($pendingTransferAmount);
                 $charge['description'] = $discountComments;
                 $charge['metadata']['source_transaction'] = $chargeId;
                 if (false === $this->stripeConnect->doTransfer($charge)) {
@@ -495,7 +508,7 @@ class StripeConnectPayController extends PaymentController
                 // Debit sold product discount amount from seller wallet.
                 $comments = Labels::getLabel('MSG_AMOUNT_DEBITED_FOR_DISCOUNT_APPLIED_ON_PRODUCT_SOLD_#{invoice-no}._TRANSFERED_TO_ACCOUNT_{account-id}.', $this->siteLangId);
                 $comments = CommonHelper::replaceStringData($comments, ['{invoice-no}' => $op['op_invoice_number'], '{account-id}' => $accountId]);
-                Transactions::debitWallet($op['op_selprod_user_id'], Transactions::TYPE_TRANSFER_TO_THIRD_PARTY_ACCOUNT, $discount, $this->siteLangId, $comments, $op['op_id'], $resp->id);
+                Transactions::debitWallet($op['op_selprod_user_id'], Transactions::TYPE_TRANSFER_TO_THIRD_PARTY_ACCOUNT, $pendingTransferAmount, $this->siteLangId, $comments, $op['op_id'], $resp->id);
             }
         }
 
