@@ -1,5 +1,4 @@
 <?php
-
 class UserRewardBreakup extends MyAppModel
 {
     public const DB_TBL = 'tbl_user_reward_point_breakup';
@@ -23,7 +22,7 @@ class UserRewardBreakup extends MyAppModel
         if (1 > $userId) {
             return 0;
         }
-
+        $db = FatApp::getDb();
         $totalBalance = 0;
 
         $srch = new UserRewardSearch();
@@ -35,9 +34,8 @@ class UserRewardBreakup extends MyAppModel
         $srch->addMultipleFields(array('sum(urpbreakup_points) as balance'));
         $srch->doNotCalculateRecords();
         $srch->doNotLimitRecords();
-        /* die($srch->getQuery()); */
         $rs = $srch->getResultSet();
-        $row = FatApp::getDb()->fetch($rs);
+        $row = $db->fetch($rs);
         if ($row != false) {
             $totalBalance = $totalBalance + FatUtility::int($row['balance']);
         }
@@ -54,12 +52,15 @@ class UserRewardBreakup extends MyAppModel
         $date = date('Y-m-d H:i:s', strtotime(date('Y-m-d H:i:s') . ' - 2 hours'));
         //$srch->addDirectCondition('DATE(o.order_date_added) = DATE(NOW())');
         $srch->addCondition('o.order_date_added', '>=', $date);
-        $srch->addMultipleFields(array('sum(order_reward_point_used) as usedRewards'));
+        $srch->addMultipleFields(array('order_reward_point_used'));
         if ($orderId != '') {
             $srch->addCondition('order_id', '!=', $orderId);
         }
-        $rs = $srch->getResultSet();
-        $row = FatApp::getDb()->fetch($rs);
+        $srch->addGroupBy('order_id');
+        $srch->addCondition('order_user_id', '=', $userId);
+        
+        $rs = $db->query('SELECT SUM(order_reward_point_used) as usedRewards from (' . $srch->getQuery() . ') as temp');
+        $row = $db->fetch($rs);
 
         if ($row == false || $totalBalance < $row['usedRewards']) {
             return 0;
