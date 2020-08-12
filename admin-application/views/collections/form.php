@@ -29,6 +29,13 @@ $siteDefaultLangId = FatApp::getConfig('conf_default_site_lang', FatUtility::VAR
                                 <?php echo Labels::getLabel('LBL_General', $adminLangId);?></a>
                         </li>
                         <?php $inactive = ($collection_id == 0) ? 'fat-inactive' : ''; ?>
+                        <?php if (!in_array($collection_type, Collections::COLLECTION_WITHOUT_RECORDS)) { ?>
+                        <li><a class="<?php  echo $inactive; ?>"
+                                href="javascript:void(0)"
+                                onclick="recordForm(<?php echo $collection_id ?>, <?php echo $collection_type ?>);">
+                                <?php echo Labels::getLabel('LBL_Link_Records', $adminLangId);?></a>
+                        </li>
+                        <?php } ?>
                         <?php if (!in_array($collection_type, Collections::COLLECTION_WITHOUT_MEDIA)) { ?>
                         <li>
                             <a class="<?php  echo $inactive; ?>"

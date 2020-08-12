@@ -150,58 +150,6 @@ class CollectionsController extends AdminBaseController
         $this->_template->render(false, false, 'json-success.php');
     }
 
-    public function selprodForm($collectionId)
-    {
-        $this->objPrivilege->canViewCollections();
-
-        $collectionId = FatUtility::int($collectionId);
-
-        $frm = $this->getSelProdForm($collectionId);
-
-        $this->set('collection_id', $collectionId);
-        $this->set('frm', $frm);
-        $this->_template->render(false, false);
-    }
-
-    public function collectionCategoryForm($collectionId)
-    {
-        $this->objPrivilege->canViewCollections();
-        $collectionId = FatUtility::int($collectionId);
-        $frm = $this->getCollectionCategoryForm($collectionId);
-        $this->set('collection_id', $collectionId);
-        $this->set('frm', $frm);
-        $this->_template->render(false, false);
-    }
-    public function collectionShopForm($collectionId)
-    {
-        $this->objPrivilege->canViewCollections();
-        $collectionId = FatUtility::int($collectionId);
-        $frm = $this->getCollectionShopForm($collectionId);
-        $this->set('collection_id', $collectionId);
-        $this->set('frm', $frm);
-        $this->_template->render(false, false);
-    }
-
-    public function collectionBrandsForm($collectionId)
-    {
-        $this->objPrivilege->canViewCollections();
-        $collectionId = FatUtility::int($collectionId);
-        $frm = $this->getCollectionBrandsForm($collectionId);
-        $this->set('collection_id', $collectionId);
-        $this->set('frm', $frm);
-        $this->_template->render(false, false);
-    }
-
-    public function collectionBlogsForm($collectionId)
-    {
-        $this->objPrivilege->canViewCollections();
-        $collectionId = FatUtility::int($collectionId);
-        $frm = $this->getCollectionBlogsForm($collectionId);
-        $this->set('collection_id', $collectionId);
-        $this->set('frm', $frm);
-        $this->_template->render(false, false);
-    }
-
     public function setup()
     {
         $this->objPrivilege->canEditCollections();
@@ -242,9 +190,18 @@ class CollectionsController extends AdminBaseController
                 $collection->saveLangData($langId, $catName);
             }
         }
-
+        
+        if (!in_array($post['collection_type'], Collections::COLLECTION_WITHOUT_RECORDS)) {
+            $this->set('openRecordForm', true);
+        }
+        
+        if (!in_array($post['collection_type'], Collections::COLLECTION_WITHOUT_MEDIA)) {
+            $this->set('openMediaForm', true);
+        }
+        
         $this->set('msg', Labels::getLabel('MSG_Setup_Successful', $this->adminLangId));
         $this->set('collectionId', $collectionId);
+        $this->set('collectionType', $post['collection_type']);
         $this->_template->render(false, false, 'json-success.php');
     }
 
@@ -376,11 +333,20 @@ class CollectionsController extends AdminBaseController
             Message::addErrorMessage(Labels::getLabel('MSG_Invalid_Request', $this->adminLangId));
             FatUtility::dieWithError(Message::getHtml());
         }
+        
+        $collectionDetails = Collections::getAttributesById($collection_id);
+        if (!false == $collectionDetails && ($collectionDetails['collection_active'] != applicationConstants::ACTIVE || $collectionDetails['collection_deleted'] == applicationConstants::YES)) {
+            Message::addErrorMessage($this->str_invalid_request_id);
+            FatUtility::dieWithError(Message::getHtml());
+        }
+        
         $collectionObj = new Collections($collection_id);
         if (!$collectionObj->addUpdateCollectionRecord($collection_id, $record_id)) {
             Message::addErrorMessage(Labels::getLabel($collectionObj->getError(), $this->adminLangId));
             FatUtility::dieWithError(Message::getHtml());
         }
+        $this->set('collection_id', $collection_id);
+        $this->set('collection_type', $collectionDetails['collection_type']);
         $this->set('msg', Labels::getLabel('MSG_Record_Updated_Successfully', $this->adminLangId));
         $this->_template->render(false, false, 'json-success.php');
     }
@@ -399,12 +365,20 @@ class CollectionsController extends AdminBaseController
             Message::addErrorMessage(Labels::getLabel('MSG_Invalid_Request', $this->adminLangId));
             FatUtility::dieWithError(Message::getHtml());
         }
+        
+        $collectionDetails = Collections::getAttributesById($collectionId);
+        if (!false == $collectionDetails && ($collectionDetails['collection_active'] != applicationConstants::ACTIVE || $collectionDetails['collection_deleted'] == applicationConstants::YES)) {
+            Message::addErrorMessage($this->str_invalid_request_id);
+            FatUtility::dieWithError(Message::getHtml());
+        }
+        
         $collectionObj = new Collections();
         if (!$collectionObj->removeCollectionRecord($collectionId, $recordId)) {
             Message::addErrorMessage(Labels::getLabel($collectionObj->getError(), $this->adminLangId));
             FatUtility::dieWithError(Message::getHtml());
         }
-        $this->set('msg', Labels::getLabel('MSG_Brand_Removed_Successfully', $this->adminLangId));
+        $this->set('msg', Labels::getLabel('MSG_Record_Removed_Successfully', $this->adminLangId));
+        $this->set('collection_type', $collectionDetails['collection_type']);
         $this->_template->render(false, false, 'json-success.php');
     }
     
@@ -420,10 +394,11 @@ class CollectionsController extends AdminBaseController
                 $records = Collections::getSellProds($collectionId, $this->adminLangId);
             break;
             case Collections::COLLECTION_TYPE_CATEGORY:
-                $records = Collections::getCategories($collection_id, $this->adminLangId);
+                $records = Collections::getCategories($collectionId, $this->adminLangId);
             break;
             case Collections::COLLECTION_TYPE_SHOP:
-                $records = Collections::getShops($collection_id, $this->adminLangId);
+                $records = Collections::getShops($collectionId, $this->adminLangId);
+            break;
             case Collections::COLLECTION_TYPE_BRAND:
                 $records = Collections::getBrands($collectionId, $this->adminLangId);
             break;
@@ -439,6 +414,28 @@ class CollectionsController extends AdminBaseController
         $this->_template->render(false, false);
     }
     
+    public function recordForm($collectionId, $collectionType)
+    {
+        $this->objPrivilege->canViewCollections();
+
+        $collectionId = FatUtility::int($collectionId);
+        $collectionType = FatUtility::int($collectionType);
+        
+        $collectionDetails = Collections::getAttributesById($collectionId);
+        if (!false == $collectionDetails && ($collectionDetails['collection_active'] != applicationConstants::ACTIVE || $collectionDetails['collection_deleted'] == applicationConstants::YES)) {
+            Message::addErrorMessage($this->str_invalid_request_id);
+            FatUtility::dieWithError(Message::getHtml());
+        }
+        
+        $frm = $this->getRecordsForm($collectionId, $collectionType);
+
+        $this->set('collection_id', $collectionId);
+        $this->set('collection_type', $collectionType);
+        $this->set('collection_layout_type', $collectionDetails['collection_layout_type']);
+        $this->set('frm', $frm);
+        $this->_template->render(false, false);
+    }
+    
     private function getRecordsForm($collectionId = 0, $collectionType = 0)
     {
         $this->objPrivilege->canViewCollections();
@@ -449,21 +446,21 @@ class CollectionsController extends AdminBaseController
         $fld = $frm->addHiddenField('', 'collection_id', $collectionId);
         $fld->requirements()->setInt();
         $fld->requirements()->setIntPositive();
-        
         switch ($collectionType) {
             case Collections::COLLECTION_TYPE_PRODUCT:
-                $frm->addTextbox(Labels::getLabel('LBL_Products', $this->adminLangId), 'products');
+                $frm->addTextbox(Labels::getLabel('LBL_Products', $this->adminLangId), 'collection_records');
             break;
             case Collections::COLLECTION_TYPE_CATEGORY:
-                $frm->addTextbox(Labels::getLabel('LBL_Categories', $this->adminLangId), 'categories');
+                $frm->addTextbox(Labels::getLabel('LBL_Categories', $this->adminLangId), 'collection_records');
             break;
             case Collections::COLLECTION_TYPE_SHOP:
-                $frm->addTextbox(Labels::getLabel('LBL_Shops', $this->adminLangId), 'shops');
+                $frm->addTextbox(Labels::getLabel('LBL_Shops', $this->adminLangId), 'collection_records');
+            break;
             case Collections::COLLECTION_TYPE_BRAND:
-                $frm->addTextbox(Labels::getLabel('LBL_Brands', $this->adminLangId), 'brands');
+                $frm->addTextbox(Labels::getLabel('LBL_Brands', $this->adminLangId), 'collection_records');
             break;
             case Collections::COLLECTION_TYPE_BLOG:
-                $frm->addTextbox(Labels::getLabel('LBL_Blogs', $this->adminLangId), 'blogs');
+                $frm->addTextbox(Labels::getLabel('LBL_Blogs', $this->adminLangId), 'collection_records');
             break;
         }
         return $frm;

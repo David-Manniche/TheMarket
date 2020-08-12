@@ -59,84 +59,13 @@ foreach ($arr_listing as $sn => $row) {
                 $td->appendElement('plaintext', array(), Collections::getLayoutTypeArr($adminLangId)[$row[$key]]);
                 break;
             case 'action':
-                $ul = $td->appendElement("ul", array("class" => "actions actions--centered"));
-                $li = $ul->appendElement("li", array('class' => 'droplink'));
-                $li->appendElement('a', array('href' => 'javascript:void(0)', 'class' => 'button small green','title' => Labels::getLabel('LBL_Edit', $adminLangId)), '<i class="ion-android-more-horizontal icon"></i>', true);
-                $innerDiv = $li->appendElement('div', array('class' => 'dropwrap'));
-                $innerUl = $innerDiv->appendElement('ul', array('class' => 'linksvertical'));
-                if ($canEdit) {
-                    $innerLiEdit = $innerUl->appendElement('li');
-
-                    $innerLiEdit->appendElement(
-                        'a',
-                        array('href' => 'javascript:void(0)', 'class' => 'button small green',
-                        'title' => Labels::getLabel('LBL_Edit', $adminLangId) , "onclick" => "collectionForm(".$row['collection_type'].",".$row['collection_layout_type']."," . $row['collection_id'] . ")"),
-                        Labels::getLabel('LBL_Edit', $adminLangId),
-                        true
-                    );
-
-                    if ($row['collection_type'] == Collections::COLLECTION_TYPE_PRODUCT) {
-                        $innerLiCollectionTypeProduct = $innerUl->appendElement('li');
-
-                        $innerLiCollectionTypeProduct->appendElement(
-                            'a',
-                            array('href' => 'javascript:void(0)', 'class' => 'button small green',
-                            'title' => Labels::getLabel('LBL_Seller_Products', $adminLangId) , "onclick" => "selprodForm(" . $row['collection_id'] . ")"),
-                            Labels::getLabel('LBL_Seller_Products', $adminLangId),
-                            true
-                        );
+                if($canEdit){
+                    $td->appendElement('a', array('href' => 'javascript:void(0)', 'class' => 'btn btn-clean btn-sm btn-icon',
+                        'title' => Labels::getLabel('LBL_Edit', $adminLangId) , "onclick" => "collectionForm(".$row['collection_type'].",".$row['collection_layout_type']."," . $row['collection_id'] . ")"),'<i class="far fa-edit icon"></i>', true);
+                    if (!in_array($row['collection_type'], Collections::DEFAULT_COLLECTIONS)) {
+                        $td->appendElement('a', array('href' => 'javascript:void(0)', 'class' => 'btn btn-clean btn-sm btn-icon',
+                        'title' => Labels::getLabel('LBL_Delete', $adminLangId) , "onclick" => "deleteRecord(" . $row['collection_id'] . ")"),'<i class="fa fa-trash  icon"></i>', true);
                     }
-
-                    if ($row['collection_type'] == Collections::COLLECTION_TYPE_CATEGORY) {
-                        $innerLiCollectionTypeCat = $innerUl->appendElement('li');
-                        $innerLiCollectionTypeCat->appendElement(
-                            'a',
-                            array('href' => 'javascript:void(0)', 'class' => 'button small green',
-                            'title' => Labels::getLabel('LBL_Categories', $adminLangId) , "onclick" => "collectionCategoryForm(" . $row['collection_id'] . ")"),
-                            Labels::getLabel('LBL_Categories', $adminLangId),
-                            true
-                        );
-                    }
-                    if ($row['collection_type'] == Collections::COLLECTION_TYPE_SHOP) {
-                        $innerLiCollectionTypeShop = $innerUl->appendElement('li');
-                        $innerLiCollectionTypeShop->appendElement(
-                            'a',
-                            array('href' => 'javascript:void(0)', 'class' => 'button small green',
-                            'title' => Labels::getLabel('LBL_Shops', $adminLangId) , "onclick" => "collectionShopForm(" . $row['collection_id'] . ")"),
-                            Labels::getLabel('LBL_Shops', $adminLangId),
-                            true
-                        );
-                    }
-
-                    if ($row['collection_type'] == Collections::COLLECTION_TYPE_BRAND) {
-                        $innerLiCollectionTypeBrand = $innerUl->appendElement('li');
-                        $innerLiCollectionTypeBrand->appendElement(
-                            'a',
-                            array('href' => 'javascript:void(0)', 'class' => 'button small green',
-                            'title' => Labels::getLabel('LBL_Brands', $adminLangId) , "onclick" => "collectionBrandsForm(" . $row['collection_id'] . ")"),
-                            Labels::getLabel('LBL_Brands', $adminLangId),
-                            true
-                        );
-                    }
-                    if ($row['collection_type'] == Collections::COLLECTION_TYPE_BLOG) {
-                        $innerLiCollectionTypeBrand = $innerUl->appendElement('li');
-                        $innerLiCollectionTypeBrand->appendElement(
-                            'a',
-                            array('href' => 'javascript:void(0)', 'class' => 'button small green',
-                            'title' => Labels::getLabel('LBL_BLOGS', $adminLangId) , "onclick" => "collectionBlogsForm(" . $row['collection_id'] . ")"),
-                            Labels::getLabel('LBL_BLOGS', $adminLangId),
-                            true
-                        );
-                    }
-
-                    $innerLiDelete = $innerUl->appendElement('li');
-                    $innerLiDelete->appendElement(
-                        'a',
-                        array('href' => 'javascript:void(0)', 'class' => 'button small green',
-                        'title' => Labels::getLabel('LBL_Delete', $adminLangId) , "onclick" => "deleteRecord(" . $row['collection_id'] . ")"),
-                        Labels::getLabel('LBL_Delete', $adminLangId),
-                        true
-                    );
                 }
                 break;
             case 'collection_active':

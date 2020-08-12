@@ -65,13 +65,13 @@ $("document").ready(function(){
         },
 		'source': function(request, response) {
 			$.ajax({
-				url: '<?php echo UrlHelper::generateUrl('ProductCategories','autoComplete'); ?>',
+				url: fcom.makeUrl('ProductCategories', 'autoComplete'),
 				data: {keyword: request['term'],fIsAjax:1},
 				dataType: 'json',
 				type: 'post',
 				success: function(json) {
 					response($.map(json, function(item) {
-						return { label: item['prodcat_identifier'], value: item['prodcat_identifier'], id: item['prodcat_id'] };
+						return { label: item['name'], value: item['name'], id: item['id'] };
 					}));
 				},
 			});

@@ -69,6 +69,10 @@ $(document).ready(function() {
         var data = fcom.frmData(frm);
         fcom.updateWithAjax(fcom.makeUrl('Collections', 'setup'), data, function(t) {
             reloadList();
+            if(t.openRecordForm) {
+            	recordForm(t.collectionId, t.collectionType);
+            	return;
+            }
             if(t.openMediaForm) {
             	collectionMediaForm(t.collectionId);
             	return;
@@ -112,165 +116,38 @@ $(document).ready(function() {
         });
     };
 
-    selprodForm = function(id) {
+    recordForm = function(id, type) {
         $.facebox(function() {
-            fcom.ajax(fcom.makeUrl('Collections', 'selprodForm', [id]), '', function(t) {
+            fcom.ajax(fcom.makeUrl('Collections', 'recordForm', [id, type]), '', function(t) {
                 $.facebox(t, 'faceboxWidth');
-                reloadProducts(id);
+                reloadRecordsList(id, type);
             });
         });
     };
 
-    collectionCategoryForm = function(collection_id) {
-        $.facebox(function() {
-            fcom.ajax(fcom.makeUrl('Collections', 'collectionCategoryForm', [collection_id]), '', function(t) {
-                $.facebox(t, 'faceboxWidth');
-                reloadCollectionCategories(collection_id);
-            });
+    reloadRecordsList = function(collection_id, collection_type) {
+        $("#records_list").html(fcom.getLoader());
+        fcom.ajax(fcom.makeUrl('Collections', 'collectionRecords', [collection_id, collection_type]), '', function(t) {
+            $("#records_list").html(t);
         });
     };
 
-    collectionShopForm = function(collection_id) {
-        $.facebox(function() {
-            fcom.ajax(fcom.makeUrl('Collections', 'collectionShopForm', [collection_id]), '', function(t) {
-                $.facebox(t, 'faceboxWidth');
-                reloadCollectionShops(collection_id);
-            });
+
+    updateRecord = function(collection_id, record_id) {
+        fcom.updateWithAjax(fcom.makeUrl('Collections', 'updateCollectionRecords'), 'collection_id=' + collection_id + '&record_id=' + record_id, function(t) {
+            reloadRecordsList(t.collection_id, t.collection_type);
         });
     };
 
-    collectionBrandsForm = function(collection_id) {
-        $.facebox(function() {
-            fcom.ajax(fcom.makeUrl('Collections', 'collectionBrandsForm', [collection_id]), '', function(t) {
-                $.facebox(t, 'faceboxWidth');
-                reloadCollectionBrands(collection_id);
-            });
-        });
-    };
-
-    collectionBlogsForm = function(collection_id) {
-        $.facebox(function() {
-            fcom.ajax(fcom.makeUrl('Collections', 'collectionBlogsForm', [collection_id]), '', function(t) {
-                $.facebox(t, 'faceboxWidth');
-                reloadCollectionBlogs(collection_id);
-            });
-        });
-    };
-
-    reloadProducts = function(collection_id) {
-        $("#products_list").html(fcom.getLoader());
-        fcom.ajax(fcom.makeUrl('Collections', 'collectionSelprods', [collection_id]), '', function(t) {
-            $("#products_list").html(t);
-        });
-    };
-
-    reloadCollectionCategories = function(collection_id) {
-        $("#categories_list").html(fcom.getLoader());
-        fcom.ajax(fcom.makeUrl('Collections', 'collectionCategories', [collection_id]), '', function(t) {
-            $("#categories_list").html(t);
-        });
-    }
-
-    reloadCollectionShops = function(collection_id) {
-        $("#shops_list").html(fcom.getLoader());
-        fcom.ajax(fcom.makeUrl('Collections', 'collectionShops', [collection_id]), '', function(t) {
-            $("#shops_list").html(t);
-        });
-    }
-
-    reloadCollectionBrands = function(collection_id) {
-        $("#brands_list").html(fcom.getLoader());
-        fcom.ajax(fcom.makeUrl('Collections', 'collectionBrands', [collection_id]), '', function(t) {
-            $("#brands_list").html(t);
-        });
-    }
-
-    reloadCollectionBlogs = function(collection_id) {
-        $("#blogs_list").html(fcom.getLoader());
-        fcom.ajax(fcom.makeUrl('Collections', 'collectionBlogs', [collection_id]), '', function(t) {
-            $("#blogs_list").html(t);
-        });
-    }
-
-    updateProduct = function(collection_id, selprod_id) {
-        fcom.updateWithAjax(fcom.makeUrl('Collections', 'updateCollectionRecords'), 'collection_id=' + collection_id + '&record_id=' + selprod_id, function(t) {
-            reloadProducts(collection_id);
-        });
-    };
-
-    updateCollectionCategories = function(collection_id, prodcat_id) {
-        fcom.updateWithAjax(fcom.makeUrl('Collections', 'updateCollectionRecords'), 'collection_id=' + collection_id + '&record_id=' + prodcat_id, function(t) {
-            reloadCollectionCategories(collection_id);
-        });
-    };
-
-    updateCollectionShops = function(collection_id, shop_id) {
-        fcom.updateWithAjax(fcom.makeUrl('Collections', 'updateCollectionRecords'), 'collection_id=' + collection_id + '&record_id=' + shop_id, function(t) {
-            reloadCollectionShops(collection_id);
-        });
-    };
-
-    updateCollectionBrands = function(collection_id, brand_id) {
-        fcom.updateWithAjax(fcom.makeUrl('Collections', 'updateCollectionRecords'), 'collection_id=' + collection_id + '&record_id=' + brand_id, function(t) {
-            reloadCollectionBrands(collection_id);
-        });
-    };
-
-    updateCollectionBlogs = function(collection_id, post_id) {
-        fcom.updateWithAjax(fcom.makeUrl('Collections', 'updateCollectionRecords'), 'collection_id=' + collection_id + '&record_id=' + post_id, function(t) {
-            reloadCollectionBlogs(collection_id);
-        });
-    };
-
-    removeCollectionSelprod = function(collection_id, selprod_id) {
+    removeCollectionRecord = function(collection_id, record_id) {
         var agree = confirm(langLbl.confirmRemoveProduct);
         if (!agree) {
             return false;
         }
-        fcom.updateWithAjax(fcom.makeUrl('Collections', 'removeCollectionRecord'), 'collection_id=' + collection_id + '&record_id=' + selprod_id, function(t) {
-            reloadProducts(collection_id);
+        fcom.updateWithAjax(fcom.makeUrl('Collections', 'removeCollectionRecord'), 'collection_id=' + collection_id + '&record_id=' + record_id, function(t) {
+            reloadRecordsList(collection_id, t.collection_type);
         });
     };
-
-    removeCollectionCategory = function(collection_id, prodcat_id) {
-        var agree = confirm(langLbl.confirmRemoveCategory);
-        if (!agree) {
-            return false;
-        }
-        fcom.updateWithAjax(fcom.makeUrl('Collections', 'removeCollectionRecord'), 'collection_id=' + collection_id + '&record_id=' + prodcat_id, function(t) {
-            reloadCollectionCategories(collection_id);
-        });
-    }
-
-    removeCollectionShop = function(collection_id, shop_id) {
-        var agree = confirm(langLbl.confirmRemoveShop);
-        if (!agree) {
-            return false;
-        }
-        fcom.updateWithAjax(fcom.makeUrl('Collections', 'removeCollectionRecord'), 'collection_id=' + collection_id + '&record_id=' + shop_id, function(t) {
-            reloadCollectionShops(collection_id);
-        });
-    }
-
-    removeCollectionBrand = function(collection_id, brand_id) {
-        var agree = confirm(langLbl.confirmRemoveBrand);
-        if (!agree) {
-            return false;
-        }
-        fcom.updateWithAjax(fcom.makeUrl('Collections', 'removeCollectionRecord'), 'collection_id=' + collection_id + '&record_id=' + brand_id, function(t) {
-            reloadCollectionBrands(collection_id);
-        });
-    }
-
-    removeCollectionBlog = function(collection_id, post_id) {
-        var agree = confirm(langLbl.confirmRemoveBlog);
-        if (!agree) {
-            return false;
-        }
-        fcom.updateWithAjax(fcom.makeUrl('Collections', 'removeCollectionRecord'), 'collection_id=' + collection_id + '&record_id=' + post_id, function(t) {
-            reloadCollectionBlogs(collection_id);
-        });
-    }
 
     collectionMediaForm = function(collectionId) {
         fcom.ajax(fcom.makeUrl('Collections', 'mediaForm', [collectionId]), '', function(t) {

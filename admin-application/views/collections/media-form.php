@@ -110,6 +110,13 @@ $collectionMediaFrm->developerTags['fld_default_col'] = 12;
     <div class="tabs_nav_container responsive flat">
         <ul class="tabs_nav">
             <li><a href="javascript:void(0)" onclick="collectionForm(<?php echo $collection_type ?>, <?php echo $collection_layout_type ?>, <?php echo $collection_id ?>);"><?php echo Labels::getLabel('LBL_General', $adminLangId); ?></a></li>
+            <?php if (!in_array($collection_type, Collections::COLLECTION_WITHOUT_RECORDS)) { ?>
+            <li><a class=""
+                    href="javascript:void(0)"
+                    onclick="recordForm(<?php echo $collection_id ?>, <?php echo $collection_type ?>);">
+                    <?php echo Labels::getLabel('LBL_Link_Records', $adminLangId);?></a>
+            </li>
+            <?php } ?>
             <li><a class="active" href="javascript:void(0)" onclick="collectionMediaForm(<?php echo $collection_id ?>);"><?php echo Labels::getLabel('LBL_Media', $adminLangId); ?></a></li>
         </ul>
         <div class="tabs_panel_wrap">

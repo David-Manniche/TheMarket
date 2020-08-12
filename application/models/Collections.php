@@ -32,7 +32,6 @@ class Collections extends MyAppModel
     public const TYPE_SPONSORED_SHOP_LAYOUT = 10;
     public const TYPE_BANNER_LAYOUT1 = 11;
     public const TYPE_BANNER_LAYOUT2 = 12;
-    public const TYPE_BANNER_LAYOUT3 = 13;
 
     public const LIMIT_PRODUCT_LAYOUT1 = 12;
     public const LIMIT_PRODUCT_LAYOUT2 = 6;
@@ -50,12 +49,20 @@ class Collections extends MyAppModel
         self::COLLECTION_TYPE_SHOP,
         self::COLLECTION_TYPE_BRAND,
         self::COLLECTION_TYPE_BLOG,
-    ];
-    
-    public const SYSTEM_COLLECTIONS = [
         self::COLLECTION_TYPE_SPONSORED_PRODUCTS,
         self::COLLECTION_TYPE_SPONSORED_SHOPS,
         self::COLLECTION_TYPE_BANNER,
+    ];
+    
+    public const COLLECTION_WITHOUT_RECORDS = [
+        self::COLLECTION_TYPE_SPONSORED_PRODUCTS,
+        self::COLLECTION_TYPE_SPONSORED_SHOPS,
+        self::COLLECTION_TYPE_BANNER
+    ];
+    
+    public const DEFAULT_COLLECTIONS = [
+        self::COLLECTION_TYPE_SPONSORED_PRODUCTS,
+        self::COLLECTION_TYPE_SPONSORED_SHOPS
     ];
     
     /**
@@ -147,7 +154,6 @@ class Collections extends MyAppModel
             self::TYPE_SPONSORED_SHOP_LAYOUT => Labels::getLabel('LBL_Sponsored_Shops', $langId),
             self::TYPE_BANNER_LAYOUT1 => Labels::getLabel('LBL_Banner_Layout1', $langId),
             self::TYPE_BANNER_LAYOUT2 => Labels::getLabel('LBL_Banner_Layout2', $langId),
-            self::TYPE_BANNER_LAYOUT3 => Labels::getLabel('LBL_Banner_Layout3', $langId),
         ];
     }
     
@@ -178,16 +184,15 @@ class Collections extends MyAppModel
             Collections::COLLECTION_TYPE_BLOG => [
                 Collections::TYPE_BLOG_LAYOUT1 => Labels::getLabel('LBL_Blog_Layout1', $langId),
             ],
+            Collections::COLLECTION_TYPE_BANNER => [
+                Collections::TYPE_BANNER_LAYOUT1 => Labels::getLabel('LBL_Banner_Layout1', $langId),
+                Collections::TYPE_BANNER_LAYOUT2 => Labels::getLabel('LBL_Banner_Layout2', $langId),
+            ],
             Collections::COLLECTION_TYPE_SPONSORED_PRODUCTS => [
                 Collections::TYPE_SPONSORED_PRODUCT_LAYOUT => Labels::getLabel('LBL_Sponsored_Products', $langId),
             ],
             Collections::COLLECTION_TYPE_SPONSORED_SHOPS => [
                 Collections::TYPE_SPONSORED_SHOP_LAYOUT => Labels::getLabel('LBL_Sponsored_Shops', $langId),
-            ],
-            Collections::COLLECTION_TYPE_BANNER => [
-                Collections::TYPE_BANNER_LAYOUT1 => Labels::getLabel('LBL_Banner_Layout1', $langId),
-                Collections::TYPE_BANNER_LAYOUT2 => Labels::getLabel('LBL_Banner_Layout2', $langId),
-                Collections::TYPE_BANNER_LAYOUT3 => Labels::getLabel('LBL_Banner_Layout3', $langId),
             ]
         ];
         return $collectionLayouts;
@@ -213,7 +218,6 @@ class Collections extends MyAppModel
             self::TYPE_SPONSORED_SHOP_LAYOUT => 'sponsored-shop-layout-1.jpg',
             self::TYPE_BANNER_LAYOUT1 => 'banner-layout-1.jpg',
             self::TYPE_BANNER_LAYOUT2 => 'banner-layout-2.jpg',
-            self::TYPE_BANNER_LAYOUT3 => 'banner-layout-3.jpg',
         ];
     }
     
@@ -342,7 +346,7 @@ class Collections extends MyAppModel
 
         $srch->joinTable(SellerProduct::DB_TBL . '_lang', 'LEFT JOIN', 'lang.selprodlang_selprod_id = ' . SellerProduct::DB_TBL_PREFIX . 'id AND selprodlang_lang_id = ' . $lang_id, 'lang');
 
-        $srch->addMultipleFields(array('selprod_id', 'IFNULL(selprod_title,product_identifier) as selprod_title'));
+        $srch->addMultipleFields(array('selprod_id as record_id', 'IFNULL(selprod_title,product_identifier) as record_title'));
 
         $rs = $srch->getResultSet();
         $db = FatApp::getDb();
@@ -375,7 +379,7 @@ class Collections extends MyAppModel
         $srch->joinTable(ProductCategory::DB_TBL, 'INNER JOIN', ProductCategory::DB_TBL_PREFIX . 'id = ' . static::DB_TBL_COLLECTION_TO_RECORDS_PREFIX . 'record_id');
 
         $srch->joinTable(ProductCategory::DB_TBL_LANG, 'LEFT JOIN', 'lang.prodcatlang_prodcat_id = ' . ProductCategory::DB_TBL_PREFIX . 'id AND prodcatlang_lang_id = ' . $lang_id, 'lang');
-        $srch->addMultipleFields(array('prodcat_id', 'IFNULL(prodcat_name, prodcat_identifier) as prodcat_name'));
+        $srch->addMultipleFields(array('prodcat_id as record_id', 'IFNULL(prodcat_name, prodcat_identifier) as record_title'));
         $rs = $srch->getResultSet();
         $db = FatApp::getDb();
         $data = $db->fetchAll($rs);
@@ -404,7 +408,7 @@ class Collections extends MyAppModel
         $srch->joinTable(Shop::DB_TBL, 'INNER JOIN', Shop::DB_TBL_PREFIX . 'id = ' . static::DB_TBL_COLLECTION_TO_RECORDS_PREFIX . 'record_id');
 
         $srch->joinTable(Shop::DB_TBL_LANG, 'LEFT JOIN', 'lang.shoplang_shop_id = ' . Shop::DB_TBL_PREFIX . 'id AND shoplang_lang_id = ' . $lang_id, 'lang');
-        $srch->addMultipleFields(array('shop_id', 'IFNULL(shop_name, shop_identifier) as shop_name'));
+        $srch->addMultipleFields(array('shop_id as record_id', 'IFNULL(shop_name, shop_identifier) as record_title'));
         $rs = $srch->getResultSet();
 
         $db = FatApp::getDb();
@@ -432,7 +436,7 @@ class Collections extends MyAppModel
         $srch->addCondition(static::DB_TBL_COLLECTION_TO_RECORDS_PREFIX . 'collection_id', '=', $collectionId);
         $srch->joinTable(Brand::DB_TBL, 'INNER JOIN', Brand::DB_TBL_PREFIX . 'id = ' . static::DB_TBL_COLLECTION_TO_RECORDS_PREFIX . 'record_id');
         $srch->joinTable(Brand::DB_TBL_LANG, 'LEFT JOIN', 'lang.brandlang_brand_id = ' . Brand::DB_TBL_PREFIX . 'id AND brandlang_lang_id = ' . $langId, 'lang');
-        $srch->addMultipleFields(array('brand_id', 'IFNULL(brand_name, brand_identifier) as brand_name'));
+        $srch->addMultipleFields(array('brand_id as record_id', 'IFNULL(brand_name, brand_identifier) as record_title'));
         $rs = $srch->getResultSet();
 
         $db = FatApp::getDb();
@@ -462,7 +466,7 @@ class Collections extends MyAppModel
         $srch->joinTable(BlogPost::DB_TBL, 'INNER JOIN', BlogPost::DB_TBL_PREFIX . 'id = ' . static::DB_TBL_COLLECTION_TO_RECORDS_PREFIX . 'record_id');
 
         $srch->joinTable(BlogPost::DB_TBL_LANG, 'LEFT JOIN', 'lang.postlang_post_id = ' . BlogPost::DB_TBL_PREFIX . 'id AND postlang_lang_id = ' . $langId, 'lang');
-        $srch->addMultipleFields(array('post_id', 'IFNULL(post_title, post_identifier) as post_title'));
+        $srch->addMultipleFields(array('post_id as record_id', 'IFNULL(post_title, post_identifier) as record_title'));
         $rs = $srch->getResultSet();
         $db = FatApp::getDb();
         $data = $db->fetchAll($rs);
