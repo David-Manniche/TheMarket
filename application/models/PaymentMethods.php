@@ -124,7 +124,7 @@ class PaymentMethods
                 break;
             
             case self::REFUND_TYPE_CANCEL:
-                $this->opId = $requestRow['ocrequest_op_id'];
+                $this->opId = $requestRow['op_id'];
                 break;
             
             default:
