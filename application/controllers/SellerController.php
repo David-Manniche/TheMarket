@@ -711,7 +711,7 @@ class SellerController extends SellerBaseController
         $userId = $this->userParentId;
 
         $orderObj = new Orders();
-        $processingStatuses = $orderObj->getVendorAllowedUpdateOrderStatuses();
+        // $processingStatuses = $orderObj->getVendorAllowedUpdateOrderStatuses();
 
         $srch = new OrderProductSearch($this->siteLangId, true, true);
         $srch->addStatusCondition(unserialize(FatApp::getConfig("CONF_VENDOR_ORDER_STATUS")));
@@ -722,7 +722,6 @@ class SellerController extends SellerBaseController
         $rs = $srch->getResultSet();
 
         $orderDetail = FatApp::getDb()->fetch($rs);
-
         if (empty($orderDetail)) {
             Message::addErrorMessage(Labels::getLabel('MSG_Invalid_Access', $this->siteLangId));
             FatUtility::dieJsonError(Message::getHtml());
@@ -745,7 +744,7 @@ class SellerController extends SellerBaseController
 
         $paymentMethodObj = new PaymentMethods();
         if (true === $paymentMethodObj->canRefundToCard($pluginKey, $this->siteLangId)) {
-            if (false == $paymentMethodObj->initiateRefund($op_id, PaymentMethods::REFUND_TYPE_CANCEL)) {
+            if (false == $paymentMethodObj->initiateRefund($orderDetail, PaymentMethods::REFUND_TYPE_CANCEL)) {
                 FatUtility::dieJsonError($paymentMethodObj->getError());
             }
 
