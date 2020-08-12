@@ -412,7 +412,7 @@ class HomeController extends MyAppController
         $srch->doNotCalculateRecords();
         $srch->doNotLimitRecords();
         $srch->addOrder('collection_display_order', 'ASC');
-        $srch->addMultipleFields(array('collection_id', 'IFNULL(collection_name,collection_identifier) as collection_name', 'IFNULL( collection_description, "" ) as collection_description', 'IFNULL(collection_link_caption, "") as collection_link_caption', 'collection_link_url', 'collection_layout_type', 'collection_type', 'collection_criteria', 'collection_child_records', 'collection_primary_records', 'collection_display_media_only', 'collection_for_app', 'collection_for_web'));
+        $srch->addMultipleFields(array('collection_id', 'IFNULL(collection_name,collection_identifier) as collection_name', 'IFNULL( collection_description, "" ) as collection_description', 'IFNULL(collection_link_caption, "") as collection_link_caption', 'collection_link_url', 'collection_layout_type', 'collection_type', 'collection_criteria', 'collection_child_records', 'collection_primary_records', 'collection_display_media_only', 'collection_for_app', 'collection_for_web', 'collection_display_order'));
 
         $applicableForCol = (true === MOBILE_APP_API_CALL) ? 'collection_for_app' : 'collection_for_web';
         $srch->addCondition($applicableForCol, '=', applicationConstants::YES);
@@ -422,6 +422,7 @@ class HomeController extends MyAppController
         if (empty($collectionsArr)) {
             return array();
         }
+        
         $collections = array();
 
         $productCatSrchObj = ProductCategory::getSearchObject(false, $langId);
@@ -482,9 +483,9 @@ class HomeController extends MyAppController
                         $collections[$i]['products'] = $db->fetchAll($rs);
                         $collections[$i]['totProducts'] = $productSrchTempObj->recordCount();
                     } else {
-                        $collections[$collection['collection_layout_type']][$collection['collection_id']] = $collection;
-                        $collections[$collection['collection_layout_type']][$collection['collection_id']]['products'] = $db->fetchAll($rs, 'selprod_id');
-                        $collections[$collection['collection_layout_type']][$collection['collection_id']]['totProducts'] = $productSrchTempObj->recordCount();
+                        $collections[$collection['collection_id']] = $collection;
+                        $collections[$collection['collection_id']]['products'] = $db->fetchAll($rs, 'selprod_id');
+                        $collections[$collection['collection_id']]['totProducts'] = $productSrchTempObj->recordCount();
                     }
                     /* ] */
                     unset($tempObj);
@@ -522,7 +523,7 @@ class HomeController extends MyAppController
                     if (true === MOBILE_APP_API_CALL) {
                         $collections[$i] = $collection;
                     } else {
-                        $collections[$collection['collection_layout_type']][$collection['collection_id']] = $collection;
+                        $collections[$collection['collection_id']] = $collection;
                     }
                     $counter = 0;
                     if ($collection['collection_layout_type'] == Collections::TYPE_CATEGORY_LAYOUT2) {
@@ -537,8 +538,8 @@ class HomeController extends MyAppController
                                 $collections[$i]['categories'][$counter] = $catData;
                             // $collections[$i]['categories'][$counter]['subCategories'] = $db->fetchAll($Catrs);
                             } else {
-                                $collections[$collection['collection_layout_type']][$collection['collection_id']]['categories'][$catData['prodcat_id']] = $catData;
-                                $collections[$collection['collection_layout_type']][$collection['collection_id']]['categories'][$catData['prodcat_id']]['subCategories'] = $db->fetchAll($Catrs);
+                                $collections[$collection['collection_id']]['categories'][$catData['prodcat_id']] = $catData;
+                                $collections[$collection['collection_id']]['categories'][$catData['prodcat_id']]['subCategories'] = $db->fetchAll($Catrs);
                             }
                             /* ] */
                             $counter++;
@@ -559,8 +560,8 @@ class HomeController extends MyAppController
                                 $collections[$i]['categories'][$counter] = $catData;
                             // $collections[$i]['categories'][$counter]['products'] = $db->fetchAll($Prs);
                             } else {
-                                $collections[$collection['collection_layout_type']][$collection['collection_id']]['categories'][$catData['prodcat_id']]['catData'] = $catData;
-                                $collections[$collection['collection_layout_type']][$collection['collection_id']]['categories'][$catData['prodcat_id']]['products'] = $db->fetchAll($Prs);
+                                $collections[$collection['collection_id']]['categories'][$catData['prodcat_id']]['catData'] = $catData;
+                                $collections[$collection['collection_id']]['categories'][$catData['prodcat_id']]['products'] = $db->fetchAll($Prs);
                             }
                             /* ] */
                             $counter++;
@@ -569,7 +570,7 @@ class HomeController extends MyAppController
                     if (true === MOBILE_APP_API_CALL) {
                         $collections[$i]['totCategories'] = $tempObj->recordCount();
                     } else {
-                        $collections[$collection['collection_layout_type']][$collection['collection_id']]['totCategories'] = $tempObj->recordCount();
+                        $collections[$collection['collection_id']]['totCategories'] = $tempObj->recordCount();
                     }
                     unset($tempObj);
                     break;
@@ -597,8 +598,8 @@ class HomeController extends MyAppController
                         $collections[$i] = $collection;
                         $collections[$i]['totShops'] = $shopObj->recordCount();
                     } else {
-                        $collections[$collection['collection_layout_type']][$collection['collection_id']] = $collection;
-                        $collections[$collection['collection_layout_type']][$collection['collection_id']]['totShops'] = $shopObj->recordCount();
+                        $collections[$collection['collection_id']] = $collection;
+                        $collections[$collection['collection_id']]['totShops'] = $shopObj->recordCount();
                     }
 
                     $counter = 0;
@@ -621,9 +622,9 @@ class HomeController extends MyAppController
 
                             $collections[$i]['shops'][$counter]['rating'] = $rating;
                         } else {
-                            $collections[$collection['collection_layout_type']][$collection['collection_id']]['shops'][$shopsData['shop_id']]['shopData'] = $shopsData;
+                            $collections[$collection['collection_id']]['shops'][$shopsData['shop_id']]['shopData'] = $shopsData;
 
-                            $collections[$collection['collection_layout_type']][$collection['collection_id']]['rating'][$shopsData['shop_id']] = $rating;
+                            $collections[$collection['collection_id']]['rating'][$shopsData['shop_id']] = $rating;
                         }
 
 
@@ -658,9 +659,9 @@ class HomeController extends MyAppController
                         $collections[$i]['totBrands'] = $brandSearchTempObj->recordCount();
                         $collections[$i]['brands'] = $db->fetchAll($rs);
                     } else {
-                        $collections[$collection['collection_layout_type']][$collection['collection_id']] = $collection;
-                        $collections[$collection['collection_layout_type']][$collection['collection_id']]['totBrands'] = $brandSearchTempObj->recordCount();
-                        $collections[$collection['collection_layout_type']][$collection['collection_id']]['brands'] = $db->fetchAll($rs);
+                        $collections[$collection['collection_id']] = $collection;
+                        $collections[$collection['collection_id']]['totBrands'] = $brandSearchTempObj->recordCount();
+                        $collections[$collection['collection_id']]['brands'] = $db->fetchAll($rs);
                     }
 
                     unset($brandSearchTempObj);
@@ -705,9 +706,9 @@ class HomeController extends MyAppController
                         $collections[$i]['totBlogs'] = $blogSearchTempObj->recordCount();
                         $collections[$i]['blogs'] = $blogPostsDetail;
                     } else {
-                        $collections[$collection['collection_layout_type']][$collection['collection_id']] = $collection;
-                        $collections[$collection['collection_layout_type']][$collection['collection_id']]['totBlogs'] = $blogSearchTempObj->recordCount();
-                        $collections[$collection['collection_layout_type']][$collection['collection_id']]['blogs'] = $blogPostsDetail;
+                        $collections[$collection['collection_id']] = $collection;
+                        $collections[$collection['collection_id']]['totBlogs'] = $blogSearchTempObj->recordCount();
+                        $collections[$collection['collection_id']]['blogs'] = $blogPostsDetail;
                     }
 
                     unset($blogSearchTempObj);
@@ -718,6 +719,7 @@ class HomeController extends MyAppController
         }
 
         FatCache::set('collectionCache_' . $langId . '_' . $apiCall, serialize($collections), '.txt');
+        CommonHelper::printArray($collections); die;
         return $collections;
     }
 

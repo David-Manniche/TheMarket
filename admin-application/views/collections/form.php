@@ -32,7 +32,7 @@ $siteDefaultLangId = FatApp::getConfig('conf_default_site_lang', FatUtility::VAR
                         <?php if (!in_array($collection_type, Collections::COLLECTION_WITHOUT_RECORDS)) { ?>
                         <li><a class="<?php  echo $inactive; ?>"
                                 href="javascript:void(0)"
-                                onclick="recordForm(<?php echo $collection_id ?>, <?php echo $collection_type ?>);">
+                                <?php if($collection_id > 0){?> onclick="recordForm(<?php echo $collection_id ?>, <?php echo $collection_type ?>);" <?php } ?>>
                                 <?php echo Labels::getLabel('LBL_Link_Records', $adminLangId);?></a>
                         </li>
                         <?php } ?>
