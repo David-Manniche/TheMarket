@@ -135,49 +135,40 @@ trait ShipStationFunctions
         $requestParam['testLabel'] = isset($this->settings['environment']) && 0 < $this->settings['environment'] ? false : true;
         return $this->post($requestParam);
     }
-        
+    
     /**
-     * doRequest
+     * fulfillments
      *
-     * @param  int $requestType
-     * @param  mixed $requestParam
-     * @param  bool $formatError
+     * @param  array $requestParam
      * @return bool
      */
-    private function doRequest(int $requestType, $requestParam = [], bool $formatError = true): bool
+    private function fulfillments(array $requestParam): bool
     {
-        try {
-            switch ($requestType) {
-                case self::REQUEST_CARRIER_LIST:
-                    $this->carrierList();
-                    break;
-                case self::REQUEST_SHIPPING_RATES:
-                    $this->shippingRates($requestParam);
-                    break;
-                case self::REQUEST_CREATE_ORDER:
-                    $this->createOrder($requestParam);
-                    break;
-                case self::REQUEST_CREATE_LABEL:
-                    $this->createLabel($requestParam);
-                    break;
-            }
-            
-            if (array_key_exists('Message', $this->getResponse(true))) {
-                $this->error = (true === $formatError) ? $this->getResponse(true) : $this->resp;
-                if (true === $formatError) {
-                    $this->error = $this->formatError();
-                }
-                return false;
-            }
+        $this->endpoint = 'fulfillments?' . http_build_query($requestParam);
+        return $this->get();
+    }
+    
+    /**
+     * getOrder
+     *
+     * @param  array $requestParam
+     * @return bool
+     */
+    private function getOrder(array $requestParam): bool
+    {
+        $this->endpoint = 'orders/' . current($requestParam);
+        return $this->get();
+    }
 
-            return true;
-        } catch (Exception $e) {
-            $this->error = $e->getMessage();
-        } catch (Error $e) {
-            $this->error = $e->getMessage();
-        }
-
-        $this->error =  (true === $formatError ? $this->formatError() : $this->error);
-        return false;
+    /**
+     * markAsShipped
+     *
+     * @param  array $requestParam
+     * @return bool
+     */
+    private function markAsShipped(array $requestParam): bool
+    {
+        $this->endpoint = 'orders/markasshipped';
+        return $this->post($requestParam);
     }
 }

@@ -27,35 +27,22 @@
     $phoneFld->developerTags['col'] = 6;
 
     $submitFld = $addressFrm->getField('btn_submit');
-    $cancelFld = $addressFrm->getField('btn_cancel');
+    $submitFld->developerTags['col'] = 6;
+    $submitFld->addFieldTagAttribute('class', 'btn btn-primary');
+
+    $cancelFld = $addressFrm->getField('btn_cancel');  
+    $cancelFld->developerTags['col'] = 6;  
     $cancelFld->setFieldTagAttribute('class','btn btn-outline-primary');
     $cancelFld->setFieldTagAttribute('onclick','resetAddress()');
 ?>
 <div class="step active" role="step:2">
-    <?php echo $addressFrm->getFormHtml(); ?>
+    <div class="step__section">
+        <div class="step__section__head">
+            <h5 class="step__section__head__title"><?php echo Labels::getLabel('LBL_ADDRESS_DETAILS', $siteLangId);?></h5>            
+        </div>
+    </div>
+    <?php echo $addressFrm->getFormHtml(); ?>        
 </div>
-<?php /*?>
-<div class="section-head">
-	<div class="section__heading">
-		<h2><?php
-        $heading = Labels::getLabel('LBL_Billing_Address', $siteLangId);
-        if ($cartHasPhysicalProduct) {
-            $heading = Labels::getLabel('LBL_Billing/Delivery_Address', $siteLangId);
-        }
-        echo $heading; ?></h2>
-	</div>
-</div>
-<div class="box box--white box--radius p-4">
-    <section id="billing" class="section-checkout">
-        <div class="section-head">
-    		<div class="section__heading">
-    			<h6><?php echo $labelHeading; ?></h6>
-    		</div>
-    	</div>
-    </section>
-    <?php echo $addressFrm->getFormHtml(); ?>
-</div>
-<?php */?>
 <script language="javascript">
     $(document).ready(function() {
         getCountryStates($("#addr_country_id").val(), <?php echo $stateId ;?>, '#addr_state_id');

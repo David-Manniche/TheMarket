@@ -1,13 +1,13 @@
 <?php
 defined('SYSTEM_INIT') or die('Invalid Usage.'); ?>
 <div class="row">
-    <div class="col-md-8">
-        <div class="shiporpickup">
+    <div class="col-md-8"> 
+    <div class="shiporpickup">
             <ul>
                 <li onclick="listCartProducts(<?php echo Shipping::FULFILMENT_SHIP;?>)"><input class="control-input" type="radio" id="shipping" name="fulfillment_type" <?php echo ($fulfilmentType == Shipping::FULFILMENT_SHIP) ? 'checked':'';?> value="<?php echo Shipping::FULFILMENT_SHIP;?>">
                     <label class="control-label" for="shipping">
                         <svg class="svg">
-                            <use xlink:href="<?php echo CONF_WEBROOT_URL;?>/retina/sprite.svg#shipping" href="<?php echo CONF_WEBROOT_URL;?>/retina/sprite.svg#shipping">
+                            <use xlink:href="<?php echo CONF_WEBROOT_URL;?>images/retina/sprite.svg#shipping" href="<?php echo CONF_WEBROOT_URL;?>images/retina/sprite.svg#shipping">
                             </use>
                         </svg> <?php echo Labels::getLabel('LBL_SHIP_MY_ORDER', $siteLangId);?>
                     </label>
@@ -16,17 +16,13 @@ defined('SYSTEM_INIT') or die('Invalid Usage.'); ?>
                 <li onclick="listCartProducts(<?php echo Shipping::FULFILMENT_PICKUP;?>)"><input class="control-input" type="radio" id="pickup" name="fulfillment_type" value="<?php echo Shipping::FULFILMENT_PICKUP;?>" <?php echo ($fulfilmentType == Shipping::FULFILMENT_PICKUP) ? 'checked':'';?>>
                     <label class="control-label" for="pickup">
                         <svg class="svg">
-                            <use xlink:href="<?php echo CONF_WEBROOT_URL;?>/retina/sprite.svg#pickup" href="<?php echo CONF_WEBROOT_URL;?>/retina/sprite.svg#pickup">
+                            <use xlink:href="<?php echo CONF_WEBROOT_URL;?>images/retina/sprite.svg#pickup" href="<?php echo CONF_WEBROOT_URL;?>images/retina/sprite.svg#pickup">
                             </use>
                         </svg> <?php echo Labels::getLabel('LBL_PICKUP_IN_STORE', $siteLangId);?> </label>
 
                 </li>
             </ul>
         </div>
-    </div>
-</div>
-<div class="row">
-    <div class="col-md-8"> 
         <div class="cart-blocks">            
             <?php 
             $productsCount = count($products);

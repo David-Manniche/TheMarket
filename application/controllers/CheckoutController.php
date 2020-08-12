@@ -864,7 +864,7 @@ class CheckoutController extends MyAppController
         $fields = array( 'IFNULL(product_name, product_identifier) as product_name', 'IFNULL(selprod_title  ,IFNULL(product_name, product_identifier)) as selprod_title', 'IFNULL(brand_name, brand_identifier) as brand_name', 'IFNULL(shop_name, shop_identifier) as shop_name' );
         $langProdSrch->addMultipleFields($fields);
         $langProdRs = $langProdSrch->getResultSet();
-        return $langSpecificProductInfo = FatApp::getDb()->fetch($langProdRs);
+        return FatApp::getDb()->fetch($langProdRs);
     }
 
     public function paymentSummary()

@@ -2,6 +2,7 @@
 
 class OrdersController extends AdminBaseController
 {
+    private $shippingService = '';
     public function __construct($action)
     {
         $ajaxCallArray = array();
@@ -14,6 +15,31 @@ class OrdersController extends AdminBaseController
         $this->canEdit = $this->objPrivilege->canEditOrders($this->admin_id, true);
         $this->set("canView", $this->canView);
         $this->set("canEdit", $this->canEdit);
+    }
+
+    /**
+     * loadShippingService
+     *
+     * @return void
+     */
+    private function loadShippingService()
+    {
+        // Return if already loaded.
+        if (!empty($this->shippingService)) { return; }
+
+        $plugin = new Plugin();
+        $this->keyName = $plugin->getDefaultPluginKeyName(Plugin::TYPE_SHIPPING_SERVICES);
+
+        $this->shippingService = PluginHelper::callPlugin($this->keyName, [$this->adminLangId], $error, $this->adminLangId);
+        if (false === $this->shippingService) {
+            Message::addErrorMessage($error);
+            FatApp::redirectUser(UrlHelper::generateUrl("Orders"));
+        }
+
+        if (false === $this->shippingService->init()) {
+            Message::addErrorMessage($this->shippingService->getError());
+            FatApp::redirectUser(UrlHelper::generateUrl("Orders"));
+        }
     }
 
     public function index()
@@ -151,6 +177,8 @@ class OrdersController extends AdminBaseController
 
 
         $opSrch = new OrderProductSearch($this->adminLangId, false, true, true);
+        $opSrch->joinShippingCharges();
+        $opSrch->joinTable(OrderProductShipment::DB_TBL, 'LEFT JOIN', OrderProductShipment::DB_TBL_PREFIX . 'op_id = op.op_id', 'opship');
         $opSrch->addCountsOfOrderedProducts();
         $opSrch->addOrderProductCharges();
         $opSrch->doNotCalculateRecords();
@@ -158,10 +186,10 @@ class OrdersController extends AdminBaseController
         $opSrch->addCondition('op.op_order_id', '=', $order['order_id']);
 
         $opSrch->addMultipleFields(
-            array('op_id', 'op_invoice_number', 'op_selprod_title', 'op_product_name',
+            array('op_id', 'op_selprod_user_id', 'op_invoice_number', 'op_selprod_title', 'op_product_name',
             'op_qty', 'op_brand_name', 'op_selprod_options', 'op_selprod_sku', 'op_product_model',
             'op_shop_name', 'op_shop_owner_name', 'op_shop_owner_email', 'op_shop_owner_phone', 'op_unit_price',
-            'totCombinedOrders as totOrders', 'op_shipping_duration_name', 'op_shipping_durations',  'IFNULL(orderstatus_name, orderstatus_identifier) as orderstatus_name', 'op_other_charges', 'op_product_tax_options')
+            'totCombinedOrders as totOrders', 'op_shipping_duration_name', 'op_shipping_durations',  'IFNULL(orderstatus_name, orderstatus_identifier) as orderstatus_name', 'op_other_charges', 'op_product_tax_options', 'opshipping_label', 'opshipping_carrier_code', 'opshipping_service_code', 'opship.*')
         );
 
         $opRs = $opSrch->getResultSet();
@@ -176,6 +204,14 @@ class OrdersController extends AdminBaseController
             $opChargesLog = new OrderProductChargeLog($opId);
             $taxOptions = $opChargesLog->getData($this->adminLangId);
             $order['products'][$opId]['taxOptions'] = $taxOptions;
+            if (!empty($opVal["opship_orderid"])) {
+                $this->loadShippingService();
+                if (false === $this->shippingService->loadOrder($opVal["opship_orderid"])) {
+                    Message::addErrorMessage($this->shippingService->getError());
+                    FatApp::redirectUser(UrlHelper::generateUrl("Orders"));
+                }
+                $order['products'][$opId]['thirdPartyorderInfo'] = $this->shippingService->getResponse();
+            }
         }
 
         $addresses = $orderObj->getOrderAddresses($order['order_id']);
@@ -186,7 +222,7 @@ class OrdersController extends AdminBaseController
         $order['payments'] = $orderObj->getOrderPayments(array("order_id" => $order['order_id']));
 
         $frm = $this->getPaymentForm($this->adminLangId, $order['order_id']);
-
+        // CommonHelper::printArray($order, true);
         $this->set('frm', $frm);
         $this->set('yesNoArr', applicationConstants::getYesNoArr($this->adminLangId));
         $this->set('order', $order);

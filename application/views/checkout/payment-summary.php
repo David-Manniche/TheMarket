@@ -106,6 +106,17 @@ $rewardPoints = UserRewardBreakup::rewardPointBalance(UserAuthentication::getLog
                     </ul>
                 </div>
             <?php } ?>
+
+            <?php if ($userWalletBalance > 0 && $cartSummary['orderNetAmount'] > 0) { ?>
+            <label class="checkbox"><input onChange="walletSelection(this)" type="checkbox" <?php echo ($cartSummary["cartWalletSelected"]) ? 'checked="checked"' : ''; ?> name="pay_from_wallet" id="pay_from_wallet" value="1"><?php if ($cartSummary["cartWalletSelected"]) {
+                echo ''.Labels::getLabel('MSG_Applied_Wallet_Credits', $siteLangId)?>: <?php echo CommonHelper::displayMoneyFormat($cartSummary["WalletAmountCharge"], true, false, true, false, true);
+            } else {
+                echo ''.Labels::getLabel('MSG_Apply_Wallet_Credits', $siteLangId)?>: <?php echo CommonHelper::displayMoneyFormat($userWalletBalance, true, false, true, false, true)?>
+            <?php } ?> <i class="input-helper"></i>            
+
+            </label>
+            <?php } ?>
+
         </div>
     </div>
 </main>
