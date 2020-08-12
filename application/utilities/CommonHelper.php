@@ -328,6 +328,7 @@ class CommonHelper extends FatUtility
     {
         $volumeDiscount = isset($requestRow['charges'][OrderProduct::CHARGE_TYPE_VOLUME_DISCOUNT]['opcharge_amount']) ? abs($requestRow['charges'][OrderProduct::CHARGE_TYPE_VOLUME_DISCOUNT]['opcharge_amount']) : 0;
         $shipCharges = isset($requestRow['charges'][OrderProduct::CHARGE_TYPE_SHIPPING][OrderProduct::DB_TBL_CHARGES_PREFIX . 'amount']) ? $requestRow['charges'][OrderProduct::CHARGE_TYPE_SHIPPING][OrderProduct::DB_TBL_CHARGES_PREFIX . 'amount'] : 0;
+        $rewardAmountUsed = isset($requestRow['charges'][OrderProduct::CHARGE_TYPE_REWARD_POINT_DISCOUNT][OrderProduct::DB_TBL_CHARGES_PREFIX . 'amount']) ? $requestRow['charges'][OrderProduct::CHARGE_TYPE_REWARD_POINT_DISCOUNT][OrderProduct::DB_TBL_CHARGES_PREFIX . 'amount'] : 0;
 
         $productAvaliedFreeShip = false;
         if (0 < $requestRow["op_free_ship_upto"] && array_key_exists(OrderProduct::CHARGE_TYPE_SHIPPING, $requestRow['charges']) && $requestRow["op_actual_shipping_charges"] != $requestRow['charges'][OrderProduct::CHARGE_TYPE_SHIPPING]['opcharge_amount']) {
@@ -386,6 +387,11 @@ class CommonHelper extends FatUtility
             $deductCouponDiscountFromRefund = ($couponDiscountPerQty * $requestRow['orrequest_qty']);
         }
 
+        $rewardAmountPerQty = 0;
+        if (abs($rewardAmountUsed) > 0) {
+            $rewardAmountPerQty = abs($rewardAmountUsed) / $requestRow['op_qty'];
+        }
+
         $totalPaidAmtBuyer = ($requestRow["op_unit_price"] * $requestRow['op_qty']) + $requestRow["op_other_charges"];
         if (!$productAvaliedFreeShip) {
             $totalPaidAmtBuyer = $totalPaidAmtBuyer - $shipCharges;
@@ -394,7 +400,7 @@ class CommonHelper extends FatUtility
         if ($requestRow['op_qty'] == $requestRow['orrequest_qty']) {
             $op_refund_amount = $totalPaidAmtBuyer;
         } else {
-            $op_refund_amount = $cartAmount + $taxToRefund - $deductVolumeDiscountFromRefund - $deductCouponDiscountFromRefund;
+            $op_refund_amount = $cartAmount - ($rewardAmountPerQty * $requestRow['orrequest_qty']) + $taxToRefund - $deductVolumeDiscountFromRefund - $deductCouponDiscountFromRefund;
         }
 
         $op_refund_shipping = 0;
