@@ -80,7 +80,15 @@ $str='<table cellspacing="0" cellpadding="0" border="0" width="100%" style="bord
         </tr>';
 
 /*     $str .= '<tr><td colspan="4" style="padding:10px;font-size:13px; color:#333;border:1px solid #ddd;" align="right">'.Labels::getLabel('L_TOTAL', $siteLangId).'</td><td style="padding:10px;font-size:13px; color:#333;border:1px solid #ddd;" align="right">'.CommonHelper::displayMoneyFormat($total).'</td></tr>'; */
-
+    
+        if($orderProducts["opshipping_type"] == OrderProduct::TYPE_PICKUP){
+        $fromTime = date('H:i', strtotime($orderProducts["opshipping_time_slot_from"]));
+        $toTime = date('H:i', strtotime($orderProducts["opshipping_time_slot_to"]));
+        $pickupDateAndTime =  FatDate::format($orderProducts["opshipping_date"]).' '.$fromTime.' - '.$toTime;         
+        $str .= '<tr><td colspan="6" style="padding:10px;font-size:13px; color:#333;border:1px solid #ddd;" align="left">'.Labels::getLabel('LBL_Pickup_Date', $siteLangId).': '.$pickupDateAndTime.'</td></tr>';
+    }
+     
+     
     $colCount = 6;
     if (!$shippingHanldedBySeller) {
         $colCount = $colCount - 1;
@@ -168,33 +176,70 @@ if ($orderProducts['op_product_type'] == Product::PRODUCT_TYPE_DIGITAL) {
         $billingInfo.= '<br>'.$billingAddress['oua_phone'];
     }
 
-    $str.='</table><br/><br/><table cellspacing="0" cellpadding="0" border="0" width="100%" style="border:1px solid #ddd; border-collapse:collapse;"><tr><td style="padding:10px;background:#eee;font-size:13px;border:1px solid #ddd; color:#333; font-weight:bold;"  bgcolor="#f0f0f0"><strong>'.Labels::getLabel('LBL_Order_Billing_Details', $siteLangId).'</strong></td><td style="padding:10px;background:#eee;font-size:13px;border:1px solid #ddd; color:#333; font-weight:bold;" bgcolor="#f0f0f0"><strong>'.Labels::getLabel('L_Order_Shipping_Details', $siteLangId).'</strong></td></tr><tr><td valign="top" style="padding:10px;font-size:13px; color:#333;border:1px solid #ddd;" >'.$billingInfo.'</td>';
-
-    $shippingInfo = $shippingAddress['oua_name'].'<br>';
-    if ($shippingAddress['oua_address1']!='') {
-        $shippingInfo.=$shippingAddress['oua_address1'].'<br>';
+    $str.='</table><br/><br/><table cellspacing="0" cellpadding="0" border="0" width="100%" style="border:1px solid #ddd; border-collapse:collapse;"><tr><td style="padding:10px;background:#eee;font-size:13px;border:1px solid #ddd; color:#333; font-weight:bold;"  bgcolor="#f0f0f0"><strong>'.Labels::getLabel('LBL_Order_Billing_Details', $siteLangId).'</strong></td>';
+    if(!empty($shippingAddress)){
+        $str.='<td style="padding:10px;background:#eee;font-size:13px;border:1px solid #ddd; color:#333; font-weight:bold;" bgcolor="#f0f0f0"><strong>'.Labels::getLabel('L_Order_Shipping_Details', $siteLangId).'</strong></td>';
     }
-
-    if ($shippingAddress['oua_address2']!='') {
-        $shippingInfo.=$shippingAddress['oua_address2'].'<br>';
+    if(!empty($orderProducts['pickupAddress'])){
+        $str.='<td style="padding:10px;background:#eee;font-size:13px;border:1px solid #ddd; color:#333; font-weight:bold;" bgcolor="#f0f0f0"><strong>'.Labels::getLabel('L_Order_Pickup_Details', $siteLangId).'</strong></td>';
     }
+    $str.='</tr><tr><td valign="top" style="padding:10px;font-size:13px; color:#333;border:1px solid #ddd;" >'.$billingInfo.'</td>';
+    
+    if(!empty($shippingAddress)){
+        $shippingInfo = $shippingAddress['oua_name'].'<br>';
+        if ($shippingAddress['oua_address1']!='') {
+            $shippingInfo.=$shippingAddress['oua_address1'].'<br>';
+        }
 
-    if ($shippingAddress['oua_city']!='') {
-        $shippingInfo.=$shippingAddress['oua_city'].',';
+        if ($shippingAddress['oua_address2']!='') {
+            $shippingInfo.=$shippingAddress['oua_address2'].'<br>';
+        }
+
+        if ($shippingAddress['oua_city']!='') {
+            $shippingInfo.=$shippingAddress['oua_city'].',';
+        }
+
+        if ($shippingAddress['oua_zip']!='') {
+            $shippingInfo.=$shippingAddress['oua_state'];
+        }
+
+        if ($shippingAddress['oua_zip']!='') {
+            $shippingInfo.= '-'.$shippingAddress['oua_zip'];
+        }
+
+        if ($shippingAddress['oua_phone']!='') {
+            $shippingInfo.= '<br>'.$shippingAddress['oua_phone'];
+        }
+        $str.='<td style="padding:10px;font-size:13px; color:#333;border:1px solid #ddd;">'.$shippingInfo.'</td>';
     }
+    
+    if(!empty($orderProducts['pickupAddress'])){
+        $pickUpAddressInfo = $orderProducts['pickupAddress']['oua_name'].'<br>';
+        if ($orderProducts['pickupAddress']['oua_address1']!='') {
+            $pickUpAddressInfo.=$orderProducts['pickupAddress']['oua_address1'].'<br>';
+        }
 
-    if ($shippingAddress['oua_zip']!='') {
-        $shippingInfo.=$shippingAddress['oua_state'];
+        if ($orderProducts['pickupAddress']['oua_address2']!='') {
+            $pickUpAddressInfo.=$orderProducts['pickupAddress']['oua_address2'].'<br>';
+        }
+
+        if ($orderProducts['pickupAddress']['oua_city']!='') {
+            $pickUpAddressInfo.=$orderProducts['pickupAddress']['oua_city'].',';
+        }
+
+        if ($orderProducts['pickupAddress']['oua_zip']!='') {
+            $pickUpAddressInfo.=$orderProducts['pickupAddress']['oua_state'];
+        }
+
+        if ($orderProducts['pickupAddress']['oua_zip']!='') {
+            $pickUpAddressInfo.= '-'.$orderProducts['pickupAddress']['oua_zip'];
+        }
+
+        if ($orderProducts['pickupAddress']['oua_phone']!='') {
+            $pickUpAddressInfo.= '<br>'.$orderProducts['pickupAddress']['oua_phone'];
+        }
+        $str.='<td style="padding:10px;font-size:13px; color:#333;border:1px solid #ddd;">'.$pickUpAddressInfo.'</td>';
     }
-
-    if ($shippingAddress['oua_zip']!='') {
-        $shippingInfo.= '-'.$shippingAddress['oua_zip'];
-    }
-
-    if ($shippingAddress['oua_phone']!='') {
-        $shippingInfo.= '<br>'.$shippingAddress['oua_phone'];
-    }
-
-    $str.='<td style="padding:10px;font-size:13px; color:#333;border:1px solid #ddd;">'.$shippingInfo.'</td></tr></table>';
+    $str.='</tr></table>';
     echo $str;
 }

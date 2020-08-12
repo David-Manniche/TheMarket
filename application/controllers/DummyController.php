@@ -704,4 +704,10 @@ class DummyController extends MyAppController
         PushNotification::send($error);
         echo $error;
     }
+    
+    public function buyerEmail()
+    {
+        $this->_template->render(false, false);
+    }
+    
 }
