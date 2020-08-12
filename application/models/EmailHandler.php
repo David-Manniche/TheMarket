@@ -743,14 +743,20 @@ class EmailHandler extends FatModel
             $shippingArr = array();
             if (!empty($addresses[Orders::SHIPPING_ADDRESS_TYPE])) {
                 $shippingArr = $addresses[Orders::SHIPPING_ADDRESS_TYPE];
-            } else {
+            } /*else {
                 $shippingArr = $billingArr;
-            }
+            }*/
 
             foreach ($orderProducts as $opID => $val) {
                 $opChargesLog = new OrderProductChargeLog($opID);
                 $taxOptions = $opChargesLog->getData($langId);
                 $orderProducts[$opID]['taxOptions'] = $taxOptions;
+                $pickUpAddress = $orderObj->getOrderAddresses($orderInfo['order_id'], $opID);
+                if(!empty($pickUpAddress[Orders::PICKUP_ADDRESS_TYPE])){
+                    $orderProducts[$opID]['pickupAddress'] = $pickUpAddress[Orders::PICKUP_ADDRESS_TYPE];
+                }else{
+                    $orderProducts[$opID]['pickupAddress'] = array();
+                }
             }
 
             $tpl = new FatTemplate('', '');
@@ -1035,9 +1041,9 @@ class EmailHandler extends FatModel
             $shippingArr = array();
             if (!empty($addresses[Orders::SHIPPING_ADDRESS_TYPE])) {
                 $shippingArr = $addresses[Orders::SHIPPING_ADDRESS_TYPE];
-            } else {
+            } /*else {
                 $shippingArr = $billingArr;
-            }
+            }*/
             $orderVendors = $orderObj->getChildOrders(array("order" => $orderId), $orderDetail['order_type'], $orderDetail['order_language_id']);
             foreach ($orderVendors as $key => $val) :
                 $shippingHanldedBySeller = CommonHelper::canAvailShippingChargesBySeller($val['op_selprod_user_id'], $val['opshipping_by_seller_user_id']);
@@ -1045,6 +1051,13 @@ class EmailHandler extends FatModel
                 $opChargesLog = new OrderProductChargeLog($val['op_id']);
                 $taxOptions = $opChargesLog->getData($langId);
                 $val['taxOptions'] = $taxOptions;
+                
+                $pickUpAddress = $orderObj->getOrderAddresses($orderId, $val['op_id']);
+                if(!empty($pickUpAddress[Orders::PICKUP_ADDRESS_TYPE])){
+                    $val['pickupAddress'] = $pickUpAddress[Orders::PICKUP_ADDRESS_TYPE];
+                }else{
+                    $val['pickupAddress'] = array();
+                }
 
                 $tpl = new FatTemplate('', '');
                 //$tpl->set('orderInfo', $orderDetail);

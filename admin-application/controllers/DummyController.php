@@ -32,4 +32,9 @@ class DummyController extends AdminBaseController
         $query = PaymentMethods::getSearchObject();
         echo $query->getQuery();
     }
+    
+    public function buyerEmail()
+    {
+       $this->_template->render(true, true);
+    }
 }
