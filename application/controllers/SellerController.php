@@ -1636,7 +1636,10 @@ class SellerController extends SellerBaseController
             $shopDetails['urlrewrite_custom'] = $urlRow['urlrewrite_custom'];
         }
         /* ] */
-
+        
+        $stateCode = States::getAttributesById($shopDetails['shop_state_id'], 'state_code');
+        $shopDetails['shop_state'] = $stateCode;
+        
         $shopFrm->fill($shopDetails);
         $shopFrm->addSecurityToken();
 
@@ -1993,7 +1996,8 @@ class SellerController extends SellerBaseController
             }
         }
         
-        $state_id = FatUtility::int($post['shop_state']);
+        $stateCode = FatApp::getPostedData('shop_state', FatUtility::VAR_STRING, '');
+        $stateId = States::getStateByCode($stateCode, 'state_id');
 
         $frm = $this->getShopInfoForm();
         $post = $frm->getFormDataFromArray($post);
@@ -2012,7 +2016,7 @@ class SellerController extends SellerBaseController
         $frm->expireSecurityToken($token);
 
         $post['shop_user_id'] = $userId;
-        $post['shop_state_id'] = $state_id;
+        $post['shop_state_id'] = $stateId;
 
 
         if ($shop_id > 0) {
