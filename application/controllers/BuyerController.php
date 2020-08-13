@@ -2544,4 +2544,17 @@ class BuyerController extends BuyerBaseController
         $this->set('msg', Labels::getLabel('MSG_Email_Sent', $this->siteLangId));
         $this->_template->render();
     }
+    
+    public function orderTrackingInfo($trackingNumber, $courier)
+	{
+		if (empty($trackingNumber) || empty($courier)) {
+			Message::addErrorMessage(Labels::getLabel('MSG_Invalid_request',$this->siteLangId));
+			FatUtility::dieWithError( Message::getHtml() );
+        }
+
+		$shipmentTracking = new ShipmentTracking();
+		$trackingInfo = $shipmentTracking->getTrackingInfo($trackingNumber, $courier, $this->siteLangId);
+		$this->set('trackingInfo', $trackingInfo);
+		$this->_template->render(false, false);
+	}
 }
