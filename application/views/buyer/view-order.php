@@ -401,7 +401,10 @@ if (true == $primaryOrder) {
                                     <td><?php echo FatDate::format($row['oshistory_date_added']); ?></td>
                                     <td><?php echo $yesNoArr[$row['oshistory_customer_notified']]; ?></td>
                                     <td><?php echo ($row['oshistory_orderstatus_id'] > 0) ? $orderStatuses[$row['oshistory_orderstatus_id']] : CommonHelper::displayNotApplicable($siteLangId, '');
-                                        echo ($row['oshistory_tracking_number']) ? ': ' . Labels::getLabel('LBL_Tracking_Number', $siteLangId) . ' ' . $row['oshistory_tracking_number'] . " VIA <em>" . $row['op_shipping_duration_name'] . "</em>" :'' ?></td>
+                                        //echo ($row['oshistory_tracking_number']) ? ': ' . Labels::getLabel('LBL_Tracking_Number', $siteLangId) . ' ' . $row['oshistory_tracking_number'] . " VIA <em>" . $row['op_shipping_duration_name'] . "</em>" :'' 
+                                         $trackOrder = "trackOrder('".$row['oshistory_tracking_number']."','".$row['oshistory_courier']."')";
+                                         echo ($row['oshistory_tracking_number']) ? ': ' . Labels::getLabel('LBL_Tracking_Number', $siteLangId) . ' ' . '<a onClick="'.$trackOrder.'">'.$row['oshistory_tracking_number'] . "</a> VIA <em>" . $row['op_shipping_duration_name'] . "</em>" :'';
+                                            ?></td>
                                     <td><?php echo !empty(trim(($row['oshistory_comments']))) ? nl2br($row['oshistory_comments']) : Labels::getLabel('LBL_N/A', $siteLangId) ; ?></td>
                                 </tr> <?php
                                     } ?>
@@ -551,4 +554,12 @@ if (true == $primaryOrder) {
             return true;
         });
     }
+    
+    trackOrder = function(trackingNumber, courier){
+        $.facebox(function() {
+            fcom.ajax(fcom.makeUrl('Buyer','orderTrackingInfo', [trackingNumber, courier]), '', function(res){
+                $.facebox( res,'faceboxWidth');
+            });
+        });
+    };
 </script>

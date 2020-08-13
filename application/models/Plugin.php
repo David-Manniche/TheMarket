@@ -28,6 +28,7 @@ class Plugin extends MyAppModel
     public const TYPE_TAX_SERVICES  = 10;
     public const TYPE_SPLIT_PAYMENT_METHOD  = 11;
     public const TYPE_REGULAR_PAYMENT_METHOD  = 13;
+    public const TYPE_SHIPMENT_TRACKING = 14;
 
     /* Define here :  if system can activate only one plugin from any group.*/
     public const EITHER_GROUP_TYPE = [
@@ -85,6 +86,7 @@ class Plugin extends MyAppModel
             self::TYPE_SPLIT_PAYMENT_METHOD => Labels::getLabel('LBL_SPLIT_PAYMENT_METHODS', $langId),
             self::TYPE_REGULAR_PAYMENT_METHOD => Labels::getLabel('LBL_REGULAR_PAYMENT_METHODS', $langId),
             self::TYPE_SHIPPING_SERVICES => Labels::getLabel('LBL_SHIPPING_SERVICES', $langId),
+            self::TYPE_SHIPMENT_TRACKING => Labels::getLabel('LBL_SHIPPING_TRACKING', $langId),
         ];
     }
     
