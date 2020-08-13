@@ -72,7 +72,7 @@
         </div>
     </div>
     <div class="order-summary__section order-summary__section--product-list">
-        <div class="order-summary__section__content scroll">
+        <div class="order-summary__section__content scroll" data-simplebar>
             <!-- List group -->
 
             <ul class="list-group list-cart list-cart-checkout">

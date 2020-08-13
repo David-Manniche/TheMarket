@@ -50,8 +50,8 @@ defined('SYSTEM_INIT') or die('Invalid Usage.'); ?>
                         <ul class="list-actions">
                             <li>
                                 <a href="javascript:void(0);" onClick="removeShippedOnlyProducts();"><svg class="svg" width="24px" height="24px">
-                                        <use xlink:href="../images/retina/sprite.svg#remove"
-                                            href="../images/retina/sprite.svg#remove">
+                                        <use xlink:href="<?php echo CONF_WEBROOT_URL;?>images/retina/sprite.svg#remove"
+                                            href="<?php echo CONF_WEBROOT_URL;?>images/retina/sprite.svg#remove">
                                         </use>
                                     </svg>
                                 </a></li>

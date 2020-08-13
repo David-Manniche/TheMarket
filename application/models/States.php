@@ -144,4 +144,19 @@ class States extends MyAppModel
 
         return $row;
     }
+    
+     public static function getStateByCountryAndCode($countryId, $stateCode)
+    {
+        $countryId = FatUtility::int($countryId);
+        if ($countryId < 1 || !$stateCode) {
+            return false;
+        }
+
+        $srch = static::getSearchObject();
+        $srch->addCondition('state_code', '=', strtoupper($stateCode));
+        $srch->addCondition('state_country_id', '=', $countryId);
+        $rs = $srch->getResultSet();
+        $row = FatApp::getDb()->fetch($rs);
+        return $row;
+    }
 }

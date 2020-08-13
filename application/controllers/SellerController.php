@@ -593,7 +593,7 @@ class SellerController extends SellerBaseController
         }
 
         if (in_array($orderDetail["op_status_id"], $processingStatuses) && in_array($post["op_status_id"], $processingStatuses)) {
-            if (!$orderObj->addChildProductOrderHistory($op_id, $orderDetail["order_language_id"], $post["op_status_id"], $post["comments"], $post["customer_notified"], $post["tracking_number"])) {
+            if (!$orderObj->addChildProductOrderHistory($op_id, $orderDetail["order_language_id"], $post["op_status_id"], $post["comments"], $post["customer_notified"], $post["tracking_number"], 0, true, $post["tracking_courier"])) {
                 Message::addErrorMessage(Labels::getLabel('M_ERROR_INVALID_REQUEST', $this->siteLangId));
                 FatUtility::dieJsonError(Message::getHtml());
             }
@@ -1636,9 +1636,12 @@ class SellerController extends SellerBaseController
             $shopDetails['urlrewrite_custom'] = $urlRow['urlrewrite_custom'];
         }
         /* ] */
-
+        
+        $stateCode = States::getAttributesById($shopDetails['shop_state_id'], 'state_code');
+        $shopDetails['shop_state'] = $stateCode;
+        
         $shopFrm->fill($shopDetails);
-        $shopFrm->addSecurityToken();
+        //$shopFrm->addSecurityToken();
 
         $plugin = new Plugin();
         $keyName = $plugin->getDefaultPluginKeyName(Plugin::TYPE_SPLIT_PAYMENT_METHOD);
@@ -1993,26 +1996,27 @@ class SellerController extends SellerBaseController
             }
         }
         
-        $state_id = FatUtility::int($post['shop_state']);
-
+        $stateCode = $post['shop_state'];
         $frm = $this->getShopInfoForm();
         $post = $frm->getFormDataFromArray($post);
         $post['shop_country_id'] = Countries::getCountryByCode($post['shop_country_code'], 'country_id');
+
         if (false == $post) {
             Message::addErrorMessage(current($frm->getValidationErrors()));
             FatUtility::dieJsonError(Message::getHtml());
         }
 
-        $token = ['fatpostsectkn' => FatApp::getPostedData('fatpostsectkn', null, '')];
-        $csrf = $frm->validateSecurityToken($token);
-        if (false == $csrf) {
-            Message::addErrorMessage(current($frm->getValidationErrors()));
-            FatUtility::dieJsonError(Message::getHtml());
-        }
-        $frm->expireSecurityToken($token);
+//        $token = ['fatpostsectkn' => FatApp::getPostedData('fatpostsectkn', null, '')];
+//        $csrf = $frm->validateSecurityToken($token);
+//        if (false == $csrf) {
+//            Message::addErrorMessage(current($frm->getValidationErrors()));
+//            FatUtility::dieJsonError(Message::getHtml());
+//        }
+//        $frm->expireSecurityToken($token);
 
         $post['shop_user_id'] = $userId;
-        $post['shop_state_id'] = $state_id;
+        $stateData = States::getStateByCountryAndCode($post['shop_country_id'], $stateCode);
+        $post['shop_state_id'] = $stateData['state_id'];
 
 
         if ($shop_id > 0) {
@@ -3529,7 +3533,26 @@ class SellerController extends SellerBaseController
 
         $trackingReqObj = new FormFieldRequirement('tracking_number', Labels::getLabel('LBL_Tracking_Number', $this->siteLangId));
         $trackingReqObj->setRequired(true);
+        
+        $shipmentTracking = new ShipmentTracking();
+        $trackingCouriers = $shipmentTracking->getTrackingCouriers($this->siteLangId);
+        $couriers = array();
+        if($trackingCouriers['meta']['code'] == 200 ) {
+            foreach($trackingCouriers['data']['couriers'] as $key=>$courier){
+                $couriers[$courier['slug']] = $courier['name'];
+            }
+        }
+        $frm->addSelectBox(Labels::getLabel('LBL_Tracking_Courier', $this->siteLangId), 'tracking_courier', $couriers, '', array(), '');
 
+        $trackingCourierUnReqObj = new FormFieldRequirement('tracking_courier', Labels::getLabel('LBL_Tracking_Courier', $this->siteLangId));
+        $trackingCourierUnReqObj->setRequired(false);
+
+        $trackingCourierReqObj = new FormFieldRequirement('tracking_courier', Labels::getLabel('LBL_Tracking_Courier', $this->siteLangId));
+        $trackingCourierReqObj->setRequired(true);
+
+        $fld->requirements()->addOnChangerequirementUpdate(FatApp::getConfig("CONF_DEFAULT_SHIPPING_ORDER_STATUS"), 'eq', 'tracking_number', $trackingReqObj);
+        $fld->requirements()->addOnChangerequirementUpdate(FatApp::getConfig("CONF_DEFAULT_SHIPPING_ORDER_STATUS"), 'ne', 'tracking_number', $trackingUnReqObj);
+        
         $fld->requirements()->addOnChangerequirementUpdate(FatApp::getConfig("CONF_DEFAULT_SHIPPING_ORDER_STATUS"), 'eq', 'tracking_number', $trackingReqObj);
         $fld->requirements()->addOnChangerequirementUpdate(FatApp::getConfig("CONF_DEFAULT_SHIPPING_ORDER_STATUS"), 'ne', 'tracking_number', $trackingUnReqObj);
         $frm->addHiddenField('', 'op_id', 0);

@@ -85,20 +85,21 @@
        
         </div>               
     </div>
-    <div class="step__footer">
-        <a class="btn btn-link" href="<?php echo UrlHelper::generateUrl('cart');?>">
+	<div class="checkout-actions">
+		<a class="btn btn-link" href="<?php echo UrlHelper::generateUrl('cart');?>">
             <i class="arrow">
                 <svg class="svg">
                     <use xlink:href="<?php echo CONF_WEBROOT_URL;?>images/retina/sprite.svg#arrow-left"
                         href="<?php echo CONF_WEBROOT_URL;?>images/retina/sprite.svg#arrow-left">
                     </use>
                 </svg></i>
-            <span class=""> </span></a>
-       <?php if($addressType == Address::Address_TYPE_BILLING) { ?>
-        <a href="javascript:void(0)" id="btn-continue-js" onClick="setUpBillingAddressSelection(this);" class="btn btn-primary btn-wide"><?php echo Labels::getLabel('LBL_Continue', $siteLangId); ?></a>
-       <?php } else{ ?>
-        <a href="javascript:void(0)" id="btn-continue-js" onClick="setUpAddressSelection(this);" class="btn btn-primary btn-wide"><?php echo Labels::getLabel('LBL_Continue', $siteLangId); ?></a>
-       <?php } ?>        
-    </div>
+            <span class=""><?php echo Labels::getLabel('LBL_Back', $siteLangId); ?></span>
+		</a>
+		<?php if($addressType == Address::Address_TYPE_BILLING) { ?>
+		<a href="javascript:void(0)" id="btn-continue-js" onClick="setUpBillingAddressSelection(this);" class="btn btn-primary btn-wide"><?php echo Labels::getLabel('LBL_Continue', $siteLangId); ?></a>
+	   <?php } else{ ?>
+		<a href="javascript:void(0)" id="btn-continue-js" onClick="setUpAddressSelection(this);" class="btn btn-primary btn-wide"><?php echo Labels::getLabel('LBL_Continue', $siteLangId); ?></a>
+	   <?php } ?>
+	</div>
 </form>
 </div>

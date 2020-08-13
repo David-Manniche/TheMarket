@@ -100,7 +100,7 @@
     }
     .product-price {
         font-weight: 600;
-        padding-top: 8px;
+        /*  padding-top: 8px;*/
         margin: 0 1rem;
         color: $brand-color;
         text-align: #{$end-direction};
@@ -126,20 +126,15 @@
         @include media-breakpoint-down(md) {
             & {
                 position: absolute;
-                top: 0;
+                top: 1rem;
                 #{$end-direction}: 1rem;
                 flex: 1;
                 max-width: none;
             }
         }
         .list-actions {
-            padding-top: 8px;
+            /* padding-top: 8px;*/
             justify-content: flex-end;
-            .svg {
-                width: 1.5rem;
-                height: 1.5rem;
-                fill: currentColor;
-            }
         }
     }
     .list-add {
@@ -190,9 +185,12 @@
             background: none;
             border: none;
             padding: 1rem 0;
+            flex-direction: row;
             .product-price {
                 margin-#{$end-direction}: 0;
                 padding-top: 0;
+                text-align: #{$end-direction};
+                flex: initial;
             }
         }
     }
@@ -230,6 +228,7 @@
     flex-wrap: wrap;
     flex: 1;
     max-width: 300px;
+    min-width: 0;
     @include media-breakpoint-down(md) {
         & {
             max-width: 80%;
@@ -297,6 +296,7 @@
                 color: $txt-gray;
                 padding: 0;
                 font-size: 0.85rem;
+                text-transform: none;
             }
         }
     }

@@ -17,8 +17,8 @@
                 <span class="order-summary-toggle__text">
                     <span>Order Summary <i class="arrow">
                             <svg class="svg">
-                                <use xlink:href="../images/retina/sprite.svg#arrow-right"
-                                    href="../images/retina/sprite.svg#arrow-right"></use>
+                                <use xlink:href="<?php echo CONF_WEBROOT_URL; ?>images/retina/sprite.svg#arrow-right"
+                                    href="<?php echo CONF_WEBROOT_URL; ?>images/retina/sprite.svg#arrow-right"></use> 
                             </svg>
 
                         </i></span>
