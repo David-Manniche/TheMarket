@@ -129,8 +129,8 @@ class CollectionsController extends AdminBaseController
         $this->set('otherLangData', $langData);
         $this->set('languages', Language::getAllNames());
         $this->set('collection_id', $collectionId);
-        $this->set('collection_type', (isset($data['collection_type'])) ? $data['collection_type'] : Collections::COLLECTION_TYPE_PRODUCT);
-        $this->set('collection_layout_type', (isset($data['collection_layout_type'])) ? $data['collection_layout_type'] : Collections::TYPE_PRODUCT_LAYOUT1);
+        $this->set('collection_type', $type);
+        $this->set('collection_layout_type', $layoutType);
         $this->set('frm', $frm);
         $this->_template->render(false, false);
     }
