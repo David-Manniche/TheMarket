@@ -39,8 +39,8 @@ defined('SYSTEM_INIT') or die('Invalid Usage.'); ?>
                 <li class="list-group-item">
                     <div class="info">
                         <span> <svg class="svg">
-                                <use xlink:href="../images/retina/sprite.svg#info"
-                                    href="../images/retina/sprite.svg#info">
+                                <use xlink:href="<?php echo CONF_WEBROOT_URL;?>images/retina/sprite.svg#info"
+                                    href="<?php echo CONF_WEBROOT_URL;?>images/retina/sprite.svg#info">
                                 </use>
                             </svg><?php echo Labels::getLabel('MSG_SOME_ITEMS_NOT_AVAILABLE_FOR_PICKUP', $siteLangId); ?>
                             <?php if (count($fulfillmentProdArr[Shipping::FULFILMENT_SHIP]) == $productsCount) {?>
@@ -171,7 +171,7 @@ defined('SYSTEM_INIT') or die('Invalid Usage.'); ?>
                         <ul class="list-actions">
                             <li>
                                 <a href="javascript:void(0)" onclick="cart.remove('<?php echo md5($product['key']); ?>','cart')"><svg class="svg" width="24px" height="24px" title="<?php echo Labels::getLabel('LBL_Remove', $siteLangId); ?>">
-                                        <use xlink:href="<?php echo CONF_WEBROOT_URL;?>/retina/sprite.svg#remove" href="<?php echo CONF_WEBROOT_URL;?>/retina/sprite.svg#remove">
+                                        <use xlink:href="<?php echo CONF_WEBROOT_URL;?>images/retina/sprite.svg#remove" href="<?php echo CONF_WEBROOT_URL;?>images/retina/sprite.svg#remove">
                                         </use>
                                     </svg>
                                 </a></li>
@@ -217,7 +217,7 @@ defined('SYSTEM_INIT') or die('Invalid Usage.'); ?>
                         <ul class="list-actions">
                             <li>
                                 <a href="javascript:void(0)" onclick="removeFromWishlist(<?php echo $product['selprod_id']; ?>, <?php echo $product['uwlp_uwlist_id']; ?>, event)"><svg class="svg" width="24px" height="24px" title="<?php echo Labels::getLabel('LBL_Remove', $siteLangId); ?>">
-                                        <use xlink:href="<?php echo CONF_WEBROOT_URL;?>/retina/sprite.svg#remove" href="<?php echo CONF_WEBROOT_URL;?>/retina/sprite.svg#remove">
+                                        <use xlink:href="<?php echo CONF_WEBROOT_URL;?>images/retina/sprite.svg#remove" href="<?php echo CONF_WEBROOT_URL;?>images/retina/sprite.svg#remove">
                                         </use>
                                     </svg>
                                 </a></li>

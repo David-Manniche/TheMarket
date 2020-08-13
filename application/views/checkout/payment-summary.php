@@ -98,7 +98,7 @@ $rewardPoints = UserRewardBreakup::rewardPointBalance(UserAuthentication::getLog
                 </div>
             <?php } ?>
 
-            <?php if ($userWalletBalance > 0 && $cartSummary['orderNetAmount'] > 0) { ?>
+            <?php /* if ($userWalletBalance > 0 && $cartSummary['orderNetAmount'] > 0) { ?>
             <label class="checkbox"><input onChange="walletSelection(this)" type="checkbox" <?php echo ($cartSummary["cartWalletSelected"]) ? 'checked="checked"' : ''; ?> name="pay_from_wallet" id="pay_from_wallet" value="1"><?php if ($cartSummary["cartWalletSelected"]) {
                 echo ''.Labels::getLabel('MSG_Applied_Wallet_Credits', $siteLangId)?>: <?php echo CommonHelper::displayMoneyFormat($cartSummary["WalletAmountCharge"], true, false, true, false, true);
             } else {
@@ -106,31 +106,42 @@ $rewardPoints = UserRewardBreakup::rewardPointBalance(UserAuthentication::getLog
             <?php } ?> <i class="input-helper"></i>            
 
             </label>
-            <?php } ?>
+            <?php } */ ?>
 
         </div>
     </div>
 </main>
+<?php if ($userWalletBalance > 0 && $cartSummary['orderNetAmount'] > 0) { ?>
     <div class="wallet-balance">
-        
          <label class="checkbox wallet">
-            <input type="checkbox" checked="checked" value="1">
+            <input onChange="walletSelection(this)" type="checkbox" <?php echo ($cartSummary["cartWalletSelected"]) ? 'checked="checked"' : ''; ?> name="pay_from_wallet" id="pay_from_wallet" value="1">
             <i class="input-helper"></i>
-            <span class="wallet__txt">My Wallet
-            <p>Available Balance <span class="currency-value" dir="ltr"><span class="currency-symbol">$</span>587.00</span></p>
+            <span class="wallet__txt"><p><?php echo Labels::getLabel('LBL_AVAILABLE_BALANCE', $siteLangId); ?> <span class="currency-value" dir="ltr"><?php echo CommonHelper::displayMoneyFormat($userWalletBalance, true, false, true, false, true); ?></p>
             </span>
-           
         </label>
-
-        <button class="btn btn-primary btn-wide" type="button">Pay $ 587.00</button>
-   
-
-
-
+        <?php if ($cartSummary["cartWalletSelected"] && $userWalletBalance >= $cartSummary['orderNetAmount']) { 
+            $btnSubmitFld = $WalletPaymentForm->getField('btn_submit');
+            $btnSubmitFld->addFieldTagAttribute('class', 'btn btn-primary btn-wide');
+            $btnSubmitFld->value = Labels::getLabel('LBL_PAY', $siteLangId) . ' ' . CommonHelper::displayMoneyFormat($cartSummary['orderNetAmount'], true, false, true, false, false);
+            $WalletPaymentForm->developerTags['colClassPrefix'] = 'col-md-';
+            $WalletPaymentForm->developerTags['fld_default_col'] = 12;
+            echo $WalletPaymentForm->getFormHtml(); ?>
+            <script type="text/javascript">
+                function confirmOrder(frm) {
+                    var data = fcom.frmData(frm);
+                    var action = $(frm).attr('action');
+                    fcom.updateWithAjax(fcom.makeUrl('Checkout', 'ConfirmOrder'), data, function(ans) {
+                        $(location).attr("href", action);
+                    });
+                }
+            </script>            
+        <?php }?>
+        <!-- <button class="btn btn-primary btn-wide" type="button">Pay $ 587.00</button> -->
     </div> 
+<?php }?>
         <section id="payment" class="section-checkout">
             <div class="align-items-center mb-4">
-                <?php if ($userWalletBalance > 0 && $cartSummary['orderNetAmount'] > 0) { ?>
+                <?php /* if ($userWalletBalance > 0 && $cartSummary['orderNetAmount'] > 0) { ?>
                     <div>
                         <div id="wallet" class="wallet">
                             <?php if ($cartSummary["cartWalletSelected"]) { ?>
@@ -160,12 +171,7 @@ $rewardPoints = UserRewardBreakup::rewardPointBalance(UserAuthentication::getLog
                                                 </i>
                                             </p>
                                         </li>
-                                        <?php /* if( $userWalletBalance < $cartSummary['orderNetAmount'] ){ ?> <li>
-                                            <div class="boxwhite">
-                                                <p>Select an Option to pay balance</p>
-                                                <h5><?php echo CommonHelper::displayMoneyFormat($cartSummary['orderPaymentGatewayCharges']); ?></h5>
-                                            </div>
-                                        </li> <?php } */ ?>
+                                       
                                         <?php if ($userWalletBalance >= $cartSummary['orderNetAmount']) { ?>
                                             <li>
                                                 <?php $btnSubmitFld = $WalletPaymentForm->getField('btn_submit');
@@ -190,7 +196,7 @@ $rewardPoints = UserRewardBreakup::rewardPointBalance(UserAuthentication::getLog
                             <?php } ?>
                         </div>
                     </div>
-                <?php } ?>
+                <?php } */ ?>
                 <?php if ($cartSummary['orderNetAmount'] <= 0) { ?>
                     <div class="gap"></div>
                     <div id="wallet">
