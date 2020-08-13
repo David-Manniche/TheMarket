@@ -287,7 +287,6 @@ class OrdersController extends AdminBaseController
 
         $orderObj = new Orders();
         $order = $orderObj->getOrderById($order_id);
-
         if ($order == false) {
             Message::addErrorMessage(Labels::getLabel('LBL_Error:_Please_perform_this_action_on_valid_record.', $this->adminLangId));
             FatUtility::dieJsonError(Message::getHtml());
@@ -309,8 +308,32 @@ class OrdersController extends AdminBaseController
                 Message::addErrorMessage($orderObj->getError());
                 FatUtility::dieJsonError(Message::getHtml());
             }
+            $pluginKey = Plugin::getAttributesById($order['order_pmethod_id'], 'plugin_code');
 
-            if (!$orderObj->refundOrderPaidAmount($order_id, $order['order_language_id'])) {
+            $paymentMethodObj = new PaymentMethods();
+            if (true === $paymentMethodObj->canRefundToCard($pluginKey, $this->adminLangId)) {
+                $orderProducts = $orderObj->getChildOrders(array('order_id' => $order_id), $order['order_type'], $order['order_language_id']);
+
+                foreach ($orderProducts as $op) {
+                    if (false == $paymentMethodObj->initiateRefund($op, PaymentMethods::REFUND_TYPE_CANCEL)) {
+                        FatUtility::dieJsonError($paymentMethodObj->getError());
+                    }
+
+                    $resp = $paymentMethodObj->getResponse();
+                    if (empty($resp)) {
+                        FatUtility::dieJsonError(Labels::getLabel('LBL_UNABLE_TO_PLACE_GATEWAY_REFUND_REQUEST', $this->adminLangId));
+                    }
+
+                    // Debit from wallet if plugin/payment method support's direct payment to card of customer.
+                    if (!empty($resp->id)) {
+                        $childOrderInfo = $orderObj->getOrderProductsByOpId($op['op_id'], $this->adminLangId);
+                        $txnAmount = $paymentMethodObj->getTxnAmount();
+                        $comments = Labels::getLabel('LBL_TRANSFERED_TO_YOUR_CARD._INVOICE_#{invoice-no}', $this->adminLangId);
+                        $comments = CommonHelper::replaceStringData($comments, ['{invoice-no}' => $childOrderInfo['op_invoice_number']]);
+                        Transactions::debitWallet($childOrderInfo['order_user_id'], Transactions::TYPE_ORDER_REFUND, $txnAmount, $this->adminLangId, $comments, $op['op_id'], $resp->id);
+                    }
+                }
+            } elseif (!$orderObj->refundOrderPaidAmount($order_id, $order['order_language_id'])) {
                 Message::addErrorMessage($orderObj->getError());
                 FatUtility::dieJsonError(Message::getHtml());
             }

@@ -124,7 +124,7 @@ class PaymentMethods
                 break;
             
             case self::REFUND_TYPE_CANCEL:
-                $this->opId = $requestRow['ocrequest_op_id'];
+                $this->opId = $requestRow['op_id'];
                 break;
             
             default:
@@ -148,25 +148,19 @@ class PaymentMethods
             }
         });
 
+        $this->txnAmount = CommonHelper::orderProductAmount($childOrderInfo, 'NETAMOUNT');
         switch ($refundType) {
             case self::REFUND_TYPE_RETURN:
-                $txnAmount = (CommonHelper::orderProductAmount($childOrderInfo, 'NETAMOUNT') / $childOrderInfo['op_qty']) * $requestRow['orrequest_qty'];
-
+                if ($childOrderInfo['op_qty'] != $requestRow['orrequest_qty']) {
+                    $this->txnAmount = ($this->txnAmount / $childOrderInfo['op_qty']) * $requestRow['orrequest_qty'];
+                }
+               
                 $amountToBePaidToSeller = CommonHelper::orderProductAmount($childOrderInfo, 'NETAMOUNT', false, User::USER_TYPE_SELLER);
-                $discount = CommonHelper::orderProductAmount($childOrderInfo, 'DISCOUNT');
-                $rewardPoint = CommonHelper::orderProductAmount($childOrderInfo, 'REWARDPOINT');
-                $discount = abs($discount) + abs($rewardPoint);
-                
-                $txnAmount = ((($amountToBePaidToSeller - $childOrderInfo['op_commission_charged']) - $discount) / $childOrderInfo['op_qty']) * $requestRow['orrequest_qty'];
 
-                break;
-            
-            case self::REFUND_TYPE_CANCEL:
-                $txnAmount = CommonHelper::orderProductAmount($childOrderInfo, 'NETAMOUNT');
+                $deductableSellerAmount = (($amountToBePaidToSeller - $childOrderInfo['op_commission_charged']) / $childOrderInfo['op_qty']) * $requestRow['orrequest_qty'];
+
                 break;
         }
-
-        $this->txnAmount = $txnAmount;
 
         switch ($this->keyname) {
             case 'StripeConnect':
@@ -189,56 +183,60 @@ class PaymentMethods
                 }
                 
                 $txnData = $this->getTransferTxnData();
+                $transferAmtArr = [ ];
                 if (!empty($txnData)) {
                     foreach ($txnData as $txn) {
-                        if (!empty($txn['utxn_gateway_txn_id'])) {
-                            $this->transferId = $txn['utxn_gateway_txn_id'];
-
-                            if (self::REFUND_TYPE_RETURN == $refundType) {
-                                $qty = $requestRow['orrequest_qty'];
-                                /* $commissionCharged = ($childOrderInfo['op_commission_charged'] / $childOrderInfo['op_qty']);
-                                $sellerPrice = CommonHelper::orderProductAmount($childOrderInfo, 'NETAMOUNT', true, User::USER_TYPE_SELLER) - $commissionCharged;
-                                $this->sellerTxnAmount = ($sellerPrice * $qty); */
-                                $this->sellerTxnAmount = ($txn['utxn_debit'] / $childOrderInfo['op_qty']) * $qty;
-                            } elseif (self::REFUND_TYPE_CANCEL == $refundType) {
-                                /* REFUND_TYPE_CANCEL */
-                                $this->sellerTxnAmount = $txn['utxn_debit'];
+                        if (empty($txn['utxn_gateway_txn_id'])) {
+                            continue;
+                        }
+                        
+                        $transferAmtArr[$txn['utxn_gateway_txn_id']] = $txn['utxn_debit'];
+                        if (self::REFUND_TYPE_RETURN == $refundType) {
+                            if ($txn['utxn_debit'] >= $deductableSellerAmount) {
+                                $transferAmtArr[$txn['utxn_gateway_txn_id']] = $deductableSellerAmount;
+                                $deductableSellerAmount = 0;
+                            } else {
+                                $deductableSellerAmount = $deductableSellerAmount - $transferAmtArr[$txn]['utxn_gateway_txn_id'];
                             }
-
-                            // Debit from wallet until not getting debited from user remote account.
-                            $this->refundFromWallet();
-
-                            if (!empty($this->transferId)) {
-                                $comments = Labels::getLabel('MSG_REFUND_INITIATE_-', $this->langId) .  $txn['utxn_comments'];
-                                $requestParam = [
-                                    'transferId' => $this->transferId,
-                                    'data' => [
-                                        'amount' => $this->convertInPaisa($this->sellerTxnAmount), // In Paisa
-                                        'description' => $comments,
-                                        'metadata' => [
-                                            'op_id' => $this->opId
-                                        ],
-                                    ],
-                                ];
-                                $respStatus = $this->paymentPlugin->revertTransfer($requestParam);
-                                if (false == $respStatus) {
-                                    $this->error = $this->paymentPlugin->getError();
-                                    return false;
-                                }
-
-                                //To get response object
-                                $this->resp = $this->paymentPlugin->getResponse();
-                                if (!empty($this->resp->id)) {
-                                    $this->remoteTxnId = $this->resp->id;
-                                    // Credit to wallet if successfully refund from remote account
-                                    $this->returnRefundAmount($comments);
-                                }
-                            }
-
                         }
                     }
                 }
-                break;
+
+                if (!empty($transferAmtArr)) {
+                    foreach ($transferAmtArr as $transferId => $txnAmt) {
+                        $this->transferId = $transferId;
+                        $this->sellerTxnAmount = $txnAmt;
+
+                        $this->refundFromWallet();
+
+                        $comments = Labels::getLabel('MSG_REFUND_INITIATE_-', $this->langId) .  $txnData[$transferId]['utxn_comments'];
+                        $requestParam = [
+                            'transferId' => $this->transferId,
+                            'data' => [
+                                'amount' => $this->convertInPaisa($this->sellerTxnAmount), // In Paisa
+                                'description' => $comments,
+                                'metadata' => [
+                                    'op_id' => $this->opId
+                                ],
+                            ],
+                        ];
+                        $respStatus = $this->paymentPlugin->revertTransfer($requestParam);
+                        if (false == $respStatus) {
+                            $this->error = $this->paymentPlugin->getError();
+                            return false;
+                        }
+
+                        //To get response object
+                        $this->resp = $this->paymentPlugin->getResponse();
+                        if (!empty($this->resp->id)) {
+                            $this->remoteTxnId = $this->resp->id;
+                            // Credit to wallet if successfully refund from remote account
+                            $this->returnRefundAmount($comments);
+                        }
+                    }
+                }
+
+            break;
         }
         return true;
     }
@@ -277,9 +275,9 @@ class PaymentMethods
         $srch = Transactions::getUserTransactionsObj($sellerId);
         $srch->addCondition('utxn.utxn_type', '=', Transactions::TYPE_TRANSFER_TO_THIRD_PARTY_ACCOUNT);
         $srch->addCondition('utxn.utxn_op_id', '=', $opId);
-        $srch->addOrder('utxn_id', 'ASC');
+        $srch->addOrder('utxn_debit', 'DESC');
         $rs = $srch->getResultSet();
-        $records = $db->fetchAll($rs);
+        $records = $db->fetchAll($rs, 'utxn_gateway_txn_id');
         if (!$records) {
             $this->error = $db->getError();
             return false;

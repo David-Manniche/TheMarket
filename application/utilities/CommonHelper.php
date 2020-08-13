@@ -277,6 +277,26 @@ class CommonHelper extends FatUtility
         $cartTotal = $opArr['op_qty'] * $opArr['op_unit_price'];
 
         switch (strtoupper($amountType)) {
+            case 'NET_VENDOR_AMOUNT':
+                $amount = $cartTotal + $opArr['op_other_charges'];
+                if ($userType == User::USER_TYPE_SELLER) {
+                    if ($opArr['op_tax_collected_by_seller'] == 0) {
+                        $tax = isset($opArr['charges'][OrderProduct::CHARGE_TYPE_TAX]['opcharge_amount']) ? $opArr['charges'][OrderProduct::CHARGE_TYPE_TAX]['opcharge_amount'] : 0;
+                        $amount = $amount - $tax;
+                    }
+
+                    if (!CommonHelper::canAvailShippingChargesBySeller($opArr['op_selprod_user_id'], $opArr['opshipping_by_seller_user_id'])) {
+                        $shippingCharges = isset($opArr['charges'][OrderProduct::CHARGE_TYPE_SHIPPING]['opcharge_amount']) ? $opArr['charges'][OrderProduct::CHARGE_TYPE_SHIPPING]['opcharge_amount'] : 0;
+                        $amount = $amount - $shippingCharges;
+                    }
+
+                    $discount = isset($opArr['charges'][OrderProduct::CHARGE_TYPE_DISCOUNT]['opcharge_amount']) ? abs($opArr['charges'][OrderProduct::CHARGE_TYPE_DISCOUNT]['opcharge_amount']) : 0;
+                    $amount = $amount + abs($discount);
+
+                    $rewardDiscount = isset($opArr['charges'][OrderProduct::CHARGE_TYPE_REWARD_POINT_DISCOUNT]['opcharge_amount']) ? abs($opArr['charges'][OrderProduct::CHARGE_TYPE_REWARD_POINT_DISCOUNT]['opcharge_amount']) : 0;
+                    $amount = $amount + abs($rewardDiscount);
+                }
+                break;
             case 'NETAMOUNT':
                 $amount = $cartTotal + $opArr['op_other_charges'];
                 if ($userType == User::USER_TYPE_SELLER) {
