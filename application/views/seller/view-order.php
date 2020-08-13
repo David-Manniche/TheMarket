@@ -321,6 +321,10 @@ if (!$print) {
                           $fldTracking = $frm->getField('tracking_number');
                           $fldTracking->setWrapperAttribute('class', 'div_tracking_number');
                           $fldTracking->developerTags['col'] = 6;
+                          
+                          $fldTrackingCourier = $frm->getField('tracking_courier');
+                          $fldTrackingCourier->setWrapperAttribute('class', 'div_tracking_number');
+                          $fldTrackingCourier->developerTags['col'] = 6;
 
                           $fldBtn = $fldTracking = $frm->getField('btn_submit');
                           $fldBtn->developerTags['col'] = 6;
@@ -343,7 +347,10 @@ if (!$print) {
                                 <tr>
                                     <td><?php echo FatDate::format($row['oshistory_date_added'], true);?></td>
                                     <td><?php echo $yesNoArr[$row['oshistory_customer_notified']];?></td>
-                                    <td><?php echo $orderStatuses[$row['oshistory_orderstatus_id']]; echo ($row['oshistory_tracking_number'])? ': '.Labels::getLabel('LBL_Tracking_Number', $siteLangId).' '.$row['oshistory_tracking_number']." VIA <em>".$row['op_shipping_duration_name']."</em>" :''?>
+                                    <td><?php //echo $orderStatuses[$row['oshistory_orderstatus_id']]; echo ($row['oshistory_tracking_number'])? ': '.Labels::getLabel('LBL_Tracking_Number', $siteLangId).' '.$row['oshistory_tracking_number']." VIA <em>".$row['op_shipping_duration_name']."</em>" :'';
+                                    $trackOrder = "trackOrder('".$row['oshistory_tracking_number']."','".$row['oshistory_courier']."')";
+                                    echo $orderStatuses[$row['oshistory_orderstatus_id']]; echo ($row['oshistory_tracking_number'])? ': '.Labels::getLabel('LBL_Tracking_Number', $siteLangId).' <a onClick="'.$trackOrder.'">'.$row['oshistory_tracking_number']."</a> VIA <em>".$row['op_shipping_duration_name']."</em>" :'';
+                                    ?>
                                     </td>
                                     <td><?php echo !empty($row['oshistory_comments']) ? nl2br($row['oshistory_comments']) : Labels::getLabel('LBL_N/A', $siteLangId);?></td>
                                 </tr>

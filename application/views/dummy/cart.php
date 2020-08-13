@@ -11,8 +11,8 @@
                                             checked="">
                                         <label class="control-label" for="shipping">
                                             <svg class="svg">
-                                                <use xlink:href="../images/retina/sprite.svg#shipping"
-                                                    href="../images/retina/sprite.svg#shipping">
+                                                <use xlink:href="<?php echo CONF_WEBROOT_URL;?>images/retina/sprite.svg#shipping"
+                                                    href="<?php echo CONF_WEBROOT_URL;?>images/retina/sprite.svg#shipping">
                                                 </use>
                                             </svg> Ship My Order
                                         </label>
@@ -22,8 +22,8 @@
                                             disabled>
                                         <label class="control-label disabled" for="pickup">
                                             <svg class="svg">
-                                                <use xlink:href="../images/retina/sprite.svg#pickup"
-                                                    href="../images/retina/sprite.svg#pickup">
+                                                <use xlink:href="<?php echo CONF_WEBROOT_URL;?>images/retina/sprite.svg#pickup"
+                                                    href="<?php echo CONF_WEBROOT_URL;?>images/retina/sprite.svg#pickup">
                                                 </use>
                                             </svg> Pickup In Store </label>
 
@@ -35,16 +35,16 @@
                                     <li class="list-group-item">
                                         <div class="info">
                                             <span> <svg class="svg">
-                                                    <use xlink:href="../images/retina/sprite.svg#info"
-                                                        href="../images/retina/sprite.svg#info">
+                                                    <use xlink:href="<?php echo CONF_WEBROOT_URL;?>images/retina/sprite.svg#info"
+                                                        href="<?php echo CONF_WEBROOT_URL;?>images/retina/sprite.svg#info">
                                                     </use>
                                                 </svg> Some of your items are not available for pickup <a href="#"
                                                     class="link">Ship Entire Order</a></span>
                                             <ul class="list-actions">
                                                 <li>
                                                     <a href="#"><svg class="svg" width="24px" height="24px">
-                                                            <use xlink:href="../images/retina/sprite.svg#remove"
-                                                                href="../images/retina/sprite.svg#remove">
+                                                            <use xlink:href="<?php echo CONF_WEBROOT_URL;?>images/retina/sprite.svg#remove"
+                                                                href="<?php echo CONF_WEBROOT_URL;?>images/retina/sprite.svg#remove">
                                                             </use>
                                                         </svg>
                                                     </a></li>
@@ -56,7 +56,7 @@
                                             <div class="product-profile__thumbnail">
                                                 <a href="#">
                                                     <img class="img-fluid" data-ratio="3:4"
-                                                        src="../images/products/product-thumb.jpg" alt="...">
+                                                        src="<?php echo CONF_WEBROOT_URL;?>images/products/product-thumb.jpg" alt="...">
                                                 </a></div>
                                             <div class="product-profile__data">
                                                 <div class="title"><a class="" href="product.html">Cotton
@@ -76,7 +76,7 @@
                                             <div class="product-profile__thumbnail">
                                                 <a href="#">
                                                     <img class="img-fluid" data-ratio="3:4"
-                                                        src="../images/products/product-thumb.jpg" alt="...">
+                                                        src="<?php echo CONF_WEBROOT_URL;?>images/products/product-thumb.jpg" alt="...">
                                                 </a></div>
                                             <div class="product-profile__data">
                                                 <div class="title"><a class="" href="product.html">Cotton
@@ -96,7 +96,7 @@
                                             <div class="product-profile__thumbnail">
                                                 <a href="#">
                                                     <img class="img-fluid" data-ratio="3:4"
-                                                        src="../images/products/product-thumb.jpg" alt="...">
+                                                        src="<?php echo CONF_WEBROOT_URL;?>images/products/product-thumb.jpg" alt="...">
                                                 </a></div>
                                             <div class="product-profile__data">
                                                 <div class="title"><a class="" href="product.html">Cotton
@@ -119,7 +119,7 @@
                                             <div class="product-profile__thumbnail">
                                                 <a href="#">
                                                     <img class="img-fluid" data-ratio="3:4"
-                                                        src="../images/products/product-thumb.jpg" alt="...">
+                                                        src="<?php echo CONF_WEBROOT_URL;?>images/products/product-thumb.jpg" alt="...">
                                                 </a></div>
                                             <div class="product-profile__data">
                                                 <div class="title"><a class="" href="product.html">Cotton
@@ -146,8 +146,8 @@
                                             <ul class="list-actions">
                                                 <li>
                                                     <a href="#"><svg class="svg" width="24px" height="24px">
-                                                            <use xlink:href="../images/retina/sprite.svg#remove"
-                                                                href="../images/retina/sprite.svg#remove">
+                                                            <use xlink:href="<?php echo CONF_WEBROOT_URL;?>images/retina/sprite.svg#remove"
+                                                                href="<?php echo CONF_WEBROOT_URL;?>images/retina/sprite.svg#remove">
                                                             </use>
                                                         </svg>
                                                     </a></li>
@@ -164,7 +164,7 @@
                                             <div class="product-profile__thumbnail">
                                                 <a href="#">
                                                     <img class="img-fluid" data-ratio="3:4"
-                                                        src="../images/products/product-thumb.jpg" alt="...">
+                                                        src="<?php echo CONF_WEBROOT_URL;?>images/products/product-thumb.jpg" alt="...">
                                                 </a></div>
                                             <div class="product-profile__data">
                                                 <div class="title"><a class="" href="product.html">Cotton
@@ -191,8 +191,8 @@
                                             <ul class="list-actions">
                                                 <li>
                                                     <a href="#"><svg class="svg" width="24px" height="24px">
-                                                            <use xlink:href="../images/retina/sprite.svg#remove"
-                                                                href="../images/retina/sprite.svg#remove">
+                                                            <use xlink:href="<?php echo CONF_WEBROOT_URL;?>images/retina/sprite.svg#remove"
+                                                                href="<?php echo CONF_WEBROOT_URL;?>images/retina/sprite.svg#remove">
                                                             </use>
                                                         </svg>
                                                     </a></li>
@@ -208,7 +208,7 @@
                                             <div class="product-profile__thumbnail">
                                                 <a href="#">
                                                     <img class="img-fluid" data-ratio="3:4"
-                                                        src="../images/products/product-thumb.jpg" alt="...">
+                                                        src="<?php echo CONF_WEBROOT_URL;?>images/products/product-thumb.jpg" alt="...">
                                                 </a></div>
                                             <div class="product-profile__data">
                                                 <div class="title"><a class="" href="product.html">Cotton
@@ -235,8 +235,8 @@
                                             <ul class="list-actions">
                                                 <li>
                                                     <a href="#"><svg class="svg" width="24px" height="24px">
-                                                            <use xlink:href="../images/retina/sprite.svg#remove"
-                                                                href="../images/retina/sprite.svg#remove">
+                                                            <use xlink:href="<?php echo CONF_WEBROOT_URL;?>images/retina/sprite.svg#remove"
+                                                                href="<?php echo CONF_WEBROOT_URL;?>images/retina/sprite.svg#remove">
                                                             </use>
                                                         </svg>
                                                     </a></li>
@@ -252,7 +252,7 @@
                                             <div class="product-profile__thumbnail">
                                                 <a href="#">
                                                     <img class="img-fluid" data-ratio="3:4"
-                                                        src="../images/products/product-thumb.jpg" alt="...">
+                                                        src="<?php echo CONF_WEBROOT_URL;?>images/products/product-thumb.jpg" alt="...">
                                                 </a></div>
                                             <div class="product-profile__data">
                                                 <div class="title"><a class="" href="product.html">Cotton
@@ -279,8 +279,8 @@
                                             <ul class="list-actions">
                                                 <li>
                                                     <a href="#"><svg class="svg" width="24px" height="24px">
-                                                            <use xlink:href="../images/retina/sprite.svg#remove"
-                                                                href="../images/retina/sprite.svg#remove">
+                                                            <use xlink:href="<?php echo CONF_WEBROOT_URL;?>images/retina/sprite.svg#remove"
+                                                                href="<?php echo CONF_WEBROOT_URL;?>images/retina/sprite.svg#remove">
                                                             </use>
                                                         </svg>
                                                     </a></li>
@@ -296,7 +296,7 @@
                                             <div class="product-profile__thumbnail">
                                                 <a href="#">
                                                     <img class="img-fluid" data-ratio="3:4"
-                                                        src="../images/products/product-thumb.jpg" alt="...">
+                                                        src="<?php echo CONF_WEBROOT_URL;?>images/products/product-thumb.jpg" alt="...">
                                                 </a></div>
                                             <div class="product-profile__data">
                                                 <div class="title"><a class="" href="product.html">Sony XBR-65A1E
@@ -325,8 +325,8 @@
                                             <ul class="list-actions">
                                                 <li>
                                                     <a href="#"><svg class="svg" width="24px" height="24px">
-                                                            <use xlink:href="../images/retina/sprite.svg#remove"
-                                                                href="../images/retina/sprite.svg#remove">
+                                                            <use xlink:href="<?php echo CONF_WEBROOT_URL;?>images/retina/sprite.svg#remove"
+                                                                href="<?php echo CONF_WEBROOT_URL;?>images/retina/sprite.svg#remove">
                                                             </use>
                                                         </svg>
                                                     </a></li>
@@ -347,7 +347,7 @@
                                             <div class="product-profile__thumbnail">
                                                 <a href="#">
                                                     <img class="img-fluid" data-ratio="3:4"
-                                                        src="../images/products/product-thumb.jpg" alt="...">
+                                                        src="<?php echo CONF_WEBROOT_URL;?>images/products/product-thumb.jpg" alt="...">
                                                 </a></div>
                                             <div class="product-profile__data">
                                                 <div class="title"><a class="" href="product.html">Cotton
@@ -367,8 +367,8 @@
                                             <ul class="list-actions">
                                                 <li>
                                                     <a href="#"><svg class="svg" width="24px" height="24px">
-                                                            <use xlink:href="../images/retina/sprite.svg#remove"
-                                                                href="../images/retina/sprite.svg#remove">
+                                                            <use xlink:href="<?php echo CONF_WEBROOT_URL;?>images/retina/sprite.svg#remove"
+                                                                href="<?php echo CONF_WEBROOT_URL;?>images/retina/sprite.svg#remove">
                                                             </use>
                                                         </svg>
                                                     </a></li>
@@ -388,7 +388,7 @@
                                             <div class="product-profile__thumbnail">
                                                 <a href="#">
                                                     <img class="img-fluid" data-ratio="3:4"
-                                                        src="../images/products/product-thumb.jpg" alt="...">
+                                                        src="<?php echo CONF_WEBROOT_URL;?>images/products/product-thumb.jpg" alt="...">
                                                 </a></div>
                                             <div class="product-profile__data">
                                                 <div class="title"><a class="" href="product.html">Cotton
@@ -408,8 +408,8 @@
                                             <ul class="list-actions">
                                                 <li>
                                                     <a href="#"><svg class="svg" width="24px" height="24px">
-                                                            <use xlink:href="../images/retina/sprite.svg#remove"
-                                                                href="../images/retina/sprite.svg#remove">
+                                                            <use xlink:href="<?php echo CONF_WEBROOT_URL;?>images/retina/sprite.svg#remove"
+                                                                href="<?php echo CONF_WEBROOT_URL;?>images/retina/sprite.svg#remove">
                                                             </use>
                                                         </svg>
                                                     </a></li>
@@ -429,7 +429,7 @@
                                             <div class="product-profile__thumbnail">
                                                 <a href="#">
                                                     <img class="img-fluid" data-ratio="3:4"
-                                                        src="../images/products/product-thumb.jpg" alt="...">
+                                                        src="<?php echo CONF_WEBROOT_URL;?>images/products/product-thumb.jpg" alt="...">
                                                 </a></div>
                                             <div class="product-profile__data">
                                                 <div class="title"><a class="" href="product.html">Cotton
@@ -449,8 +449,8 @@
                                             <ul class="list-actions">
                                                 <li>
                                                     <a href="#"><svg class="svg" width="24px" height="24px">
-                                                            <use xlink:href="../images/retina/sprite.svg#remove"
-                                                                href="../images/retina/sprite.svg#remove">
+                                                            <use xlink:href="<?php echo CONF_WEBROOT_URL;?>images/retina/sprite.svg#remove"
+                                                                href="<?php echo CONF_WEBROOT_URL;?>images/retina/sprite.svg#remove">
                                                             </use>
                                                         </svg>
                                                     </a></li>

@@ -1895,7 +1895,7 @@ class CheckoutController extends MyAppController
     {
         $post = FatApp::getPostedData();
         $address_id = isset($post['address_id']) ? FatUtility::int($post['address_id']) : 0;
-        $addressFrm = $this->getUserAddressForm($this->siteLangId);
+        $addressFrm = $this->getUserAddressForm($this->siteLangId, true);
 
         $address = new Address($address_id, $this->siteLangId);
         $addresses = $address->getData(Address::TYPE_USER, UserAuthentication::getLoggedUserId());
