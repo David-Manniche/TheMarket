@@ -30787,8 +30787,8 @@ a.ui-button:active,
     margin: 0 1rem;
     color: var(--brand-color);
     text-align: left;
-    flex: 0 0 110px;
-    max-width: 110px; }
+    /*flex: 0 0 110px;
+    max-width: 110px;*/ }
     @media (max-width: 991.98px) {
       .list-cart .product-price {
         flex: 1;
@@ -30875,7 +30875,7 @@ a.ui-button:active,
   display: flex;
   flex-wrap: wrap;
   flex: 1;
-  max-width: 300px;
+  /*max-width: 300px;*/
   min-width: 0; }
   @media (max-width: 991.98px) {
     .product-profile {
@@ -31671,7 +31671,8 @@ a.ui-button:active,
   .rewards .info {
     margin-bottom: 1.5rem;
     padding: 0;
-    background: none; }
+    background: none;
+    line-height: 1; }
 
 .earn-points {
   background-color: var(--gray-color);
