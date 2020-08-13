@@ -194,8 +194,8 @@ class SellerOrdersController extends AdminBaseController
         if($opRow["opshipping_type"] == OrderProduct::TYPE_PICKUP){
             $processingStatuses = array_diff($processingStatuses, (array) FatApp::getConfig("CONF_DEFAULT_SHIPPING_ORDER_STATUS"));
             $processingStatuses = array_diff($processingStatuses, (array) FatApp::getConfig("CONF_DEFAULT_DEIVERED_ORDER_STATUS"));
-        }
-        $frm = $this->getOrderCommentsForm($opRow, $processingStatuses);
+        }   
+        $frm = $this->getOrderCommentsForm($opRow, $processingStatuses);    
         $frm->fill($data);
 
         $orderStatuses = Orders::getOrderProductStatusArr($this->adminLangId);
@@ -433,7 +433,7 @@ class SellerOrdersController extends AdminBaseController
 
 
         if (in_array($orderDetail["op_status_id"], $processingStatuses) && in_array($post["op_status_id"], $processingStatuses)) {
-            if (!$orderObj->addChildProductOrderHistory($op_id, $orderDetail["order_language_id"], $post["op_status_id"], $post["comments"], $post["customer_notified"], $post["tracking_number"])) {
+            if (!$orderObj->addChildProductOrderHistory($op_id, $orderDetail["order_language_id"], $post["op_status_id"], $post["comments"], $post["customer_notified"], $post["tracking_number"], 0, true, $post["tracking_courier"])) {
                 Message::addErrorMessage($this->str_invalid_request);
                 FatUtility::dieJsonError(Message::getHtml());
             }
@@ -681,6 +681,26 @@ class SellerOrdersController extends AdminBaseController
 
         $trackingReqObj = new FormFieldRequirement('tracking_number', Labels::getLabel('LBL_Tracking_Number', $this->adminLangId));
         $trackingReqObj->setRequired(true);
+        
+        $shipmentTracking = new ShipmentTracking();        
+        $trackingCouriers = $shipmentTracking->getTrackingCouriers($this->adminLangId); 
+
+        $couriers = array();
+        if($trackingCouriers['meta']['code'] == 200 ) { 
+            foreach($trackingCouriers['data']['couriers'] as $key=>$courier){
+                $couriers[$courier['slug']] = $courier['name'];
+            }
+        }
+        $frm->addSelectBox(Labels::getLabel('LBL_Tracking_Courier', $this->adminLangId), 'tracking_courier', $couriers, '', array(), '');
+
+        $trackingCourierUnReqObj = new FormFieldRequirement('tracking_courier', Labels::getLabel('LBL_Tracking_Courier', $this->adminLangId));
+        $trackingCourierUnReqObj->setRequired(false);
+
+        $trackingCourierReqObj = new FormFieldRequirement('tracking_courier', Labels::getLabel('LBL_Tracking_Courier', $this->adminLangId));
+        $trackingCourierReqObj->setRequired(true);
+        
+        $fld->requirements()->addOnChangerequirementUpdate(FatApp::getConfig("CONF_DEFAULT_SHIPPING_ORDER_STATUS"), 'eq', 'tracking_number', $trackingCourierReqObj);
+        $fld->requirements()->addOnChangerequirementUpdate(FatApp::getConfig("CONF_DEFAULT_SHIPPING_ORDER_STATUS"), 'ne', 'tracking_number', $trackingCourierUnReqObj);
 
         $fld->requirements()->addOnChangerequirementUpdate(FatApp::getConfig("CONF_DEFAULT_SHIPPING_ORDER_STATUS"), 'eq', 'tracking_number', $trackingReqObj);
         $fld->requirements()->addOnChangerequirementUpdate(FatApp::getConfig("CONF_DEFAULT_SHIPPING_ORDER_STATUS"), 'ne', 'tracking_number', $trackingUnReqObj);
@@ -726,4 +746,17 @@ class SellerOrdersController extends AdminBaseController
         $fld_submit->attachField($fld_cancel);
         return $frm;
     }
+    
+    public function orderTrackingInfo($trackingNumber, $courier)
+	{
+		if (empty($trackingNumber) || empty($courier)) {
+			Message::addErrorMessage(Labels::getLabel('MSG_Invalid_request',$this->adminLangId));
+			FatUtility::dieWithError( Message::getHtml() );
+        }
+
+		$shipmentTracking = new ShipmentTracking();
+		$trackingInfo = $shipmentTracking->getTrackingInfo($trackingNumber, $courier, $this->adminLangId);
+		$this->set('trackingInfo', $trackingInfo);
+		$this->_template->render(false, false);
+	}
 }

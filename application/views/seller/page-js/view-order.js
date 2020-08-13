@@ -23,6 +23,15 @@ $(document).ready(function(){
 			setTimeout("pageRedirect("+t.op_id+")", 1000);
 		});
 	};	
+    
+    trackOrder = function(trackingNumber, courier){
+        $.facebox(function() {
+            fcom.ajax(fcom.makeUrl('Buyer','orderTrackingInfo', [trackingNumber, courier]), '', function(res){
+                $.facebox( res,'faceboxWidth');
+            });
+        });
+    };
+    
 })();
 
 function pageRedirect(op_id) {
