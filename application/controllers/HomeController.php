@@ -48,7 +48,25 @@ class HomeController extends MyAppController
         } else {
             $this->_template->addJs('js/slick.min.js');
             $cacheKey = $this->siteLangId . '-' . $this->siteCurrencyId;
-
+            
+            /* CommonHelper::printArray($collections); die; */
+            
+            foreach($collections as $collection) {
+                switch ($collection['collection_layout_type']) {
+                    case Collections::TYPE_PRODUCT_LAYOUT1:
+                        $productLayout1 = FatCache::get('productLayout1' . $cacheKey, CONF_HOME_PAGE_CACHE_TIME, '.txt');
+                        if (!$productLayout1) {
+                            $tpl = new FatTemplate('', '');
+                            $tpl->set('siteLangId', $this->siteLangId);
+                            $tpl->set('collection', $collection);
+                            $productLayout1 = $tpl->render(false, false, '_partial/collection/product-layout-1.php', true, true);
+                        }
+                        FatCache::set('productLayout1' . $collection['collection_id'] . $cacheKey, $productLayout1, '.txt');
+                        $this->set('productLayout1', $productLayout1);
+                    break;
+                }
+            }
+            
             /*[ As all layout in sequence so added in one cache]*/
             $homePageFirstLayout = FatCache::get('homePageFirstLayout' . $cacheKey, CONF_HOME_PAGE_CACHE_TIME, '.txt');
             if (!$homePageFirstLayout) {
@@ -719,7 +737,6 @@ class HomeController extends MyAppController
         }
 
         FatCache::set('collectionCache_' . $langId . '_' . $apiCall, serialize($collections), '.txt');
-        CommonHelper::printArray($collections); die;
         return $collections;
     }
 
