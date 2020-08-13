@@ -111,23 +111,16 @@ $rewardPoints = UserRewardBreakup::rewardPointBalance(UserAuthentication::getLog
         </div>
     </div>
 </main>
-    <div class="wallet-balance">
-        
+    <div class="wallet-balance">        
          <label class="checkbox wallet">
             <input type="checkbox" checked="checked" value="1">
             <i class="input-helper"></i>
             <span class="wallet__txt">My Wallet
             <p>Available Balance <span class="currency-value" dir="ltr"><span class="currency-symbol">$</span>587.00</span></p>
-            </span>
-           
+            </span>           
         </label>
-
         <button class="btn btn-primary btn-wide" type="button">Pay $ 587.00</button>
-   
-
-
-
-    </div> 
+        </div> 
         <section id="payment" class="section-checkout">
             <div class="align-items-center mb-4">
                 <?php if ($userWalletBalance > 0 && $cartSummary['orderNetAmount'] > 0) { ?>
