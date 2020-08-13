@@ -62,10 +62,8 @@ foreach ($arr_listing as $sn => $row) {
                 if($canEdit){
                     $td->appendElement('a', array('href' => 'javascript:void(0)', 'class' => 'btn btn-clean btn-sm btn-icon',
                         'title' => Labels::getLabel('LBL_Edit', $adminLangId) , "onclick" => "collectionForm(".$row['collection_type'].",".$row['collection_layout_type']."," . $row['collection_id'] . ")"),'<i class="far fa-edit icon"></i>', true);
-                    if (!in_array($row['collection_type'], Collections::DEFAULT_COLLECTIONS)) {
                         $td->appendElement('a', array('href' => 'javascript:void(0)', 'class' => 'btn btn-clean btn-sm btn-icon',
                         'title' => Labels::getLabel('LBL_Delete', $adminLangId) , "onclick" => "deleteRecord(" . $row['collection_id'] . ")"),'<i class="fa fa-trash  icon"></i>', true);
-                    }
                 }
                 break;
             case 'collection_active':

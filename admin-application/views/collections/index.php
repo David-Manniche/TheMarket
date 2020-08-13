@@ -19,9 +19,7 @@
                             <li>
                                 <a href="javascript:void(0)"><?php echo $layout; ?></a>                                
                                 <div class="actions">
-                                <?php if (!in_array($type, Collections::DEFAULT_COLLECTIONS)) { ?>
                                 <a href="javascript:void(0)" onclick="collectionForm(<?php echo $type; ?>, <?php echo $layoutType; ?>, 0)" title="<?php echo Labels::getLabel('LBL_Add_Collection', $adminLangId); ?>" class="btn-clean btn-sm btn-icon btn-secondary "><i class="fas fa-plus"></i></a>
-                                <?php } ?>
                                 <a rel="facebox" onClick="displayImageInFacebox('<?php echo CONF_WEBROOT_URL; ?>images/collection_layouts/<?php echo Collections::getLayoutImagesArr()[$layoutType]; ?>');" href="javascript:void(0)" title="Banner Layouts Instructions" class="btn-clean btn-sm btn-icon btn-secondary "><i class="fas fa-file-image"></i></a>
                                 </div>
                             </li> 

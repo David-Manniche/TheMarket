@@ -60,11 +60,6 @@ class Collections extends MyAppModel
         self::COLLECTION_TYPE_BANNER
     ];
     
-    public const DEFAULT_COLLECTIONS = [
-        self::COLLECTION_TYPE_SPONSORED_PRODUCTS,
-        self::COLLECTION_TYPE_SPONSORED_SHOPS
-    ];
-    
     /**
      * __construct
      *
