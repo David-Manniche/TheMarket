@@ -1,9 +1,17 @@
+.is-checkout {
+    overflow-x: hidden;
+}
+
 .checkout {
+    height: 100%;
     @include media-breakpoint-up(xl) {
         .container {
             max-width: 1000px;
             padding: inherit;
         }
+    }
+    .content {
+        height: calc(100% - 80px);
     }
 }
 
@@ -25,13 +33,20 @@
         @include media-breakpoint-down(md) {
             & {
                 padding: 0;
+                flex-direction: column;
             }
         }
     }
-    .logo-checkout-main {
-        max-width: 150px;
-        display: block;
-        margin: 1rem 0;
+}
+
+.logo-checkout-main {
+    max-width: 150px;
+    display: block;
+    margin: 1rem 0;
+    @include media-breakpoint-down(md) {
+        & {
+            max-width: 100px;
+        }
     }
 }
 
@@ -78,54 +93,56 @@
 
 .content {
     display: flex;
-    -webkit-box-orient: vertical;
-    -webkit-box-direction: normal;
-    -webkit-flex-direction: column;
-    -ms-flex-direction: column;
     flex-direction: column;
-    -webkit-box-flex: 1;
-    -webkit-flex: 1 0 auto;
-    -ms-flex: 1 0 auto;
     flex: 1 0 auto;
-    overflow: hidden;
     .container {
         display: flex;
-        -webkit-box-flex: 1;
-        -webkit-flex: 1 0 auto;
-        -ms-flex: 1 0 auto;
         flex: 1 0 auto;
         flex-direction: column-reverse;
-    }
-    @include media-breakpoint-up(xl) {
-        .container {
-            flex-direction: row;
+        @include media-breakpoint-up(xl) {
+            & {
+                flex-direction: row;
+            }
+        }
+        @include media-breakpoint-down(md) {
+            & {
+                padding: 0;
+            }
         }
     }
-    @include media-breakpoint-up(xl) {
-        .main {
-            display: flex;
-            -webkit-box-orient: vertical;
-            -webkit-box-direction: normal;
-            -webkit-flex-direction: column;
-            -ms-flex-direction: column;
-            flex-direction: column;
-            -webkit-box-flex: 1;
-            -webkit-flex: 1 0 auto;
-            -ms-flex: 1 0 auto;
-            flex: 1 0 auto;
-            background: none;
-            height: auto;
-            padding: 1rem 0;
-            padding-top: 4rem;
-            width: 50%;
-            padding-#{$end-direction}: 5%;
-            float: #{$start-direction};
-            &__content {
-                position: relative;
-                overflow: hidden;
+    .main {
+        @include media-breakpoint-up(xl) {
+            & {
                 display: flex;
-                align-items: center;
                 flex-direction: column;
+                flex: 1 0 auto;
+                background: none;
+                height: auto;
+                padding: 1rem 0;
+                padding-top: 4rem;
+                width: 50%;
+                padding-#{$end-direction}: 5%;
+                float: #{$start-direction};
+                &__content {
+                    position: relative;
+                    overflow: hidden;
+                    display: flex;
+                    align-items: center;
+                    flex-direction: column;
+                }
+            }
+        }
+        @include media-breakpoint-down(lg) {
+            & {
+                padding: 1rem;
+            }
+        }
+    }
+    .sidebar {
+        @include media-breakpoint-down(lg) {
+            & {
+                padding: 0 1rem;
+                background: $bg-gray;
             }
         }
     }
@@ -146,7 +163,7 @@
                 top: 0;
                 left: -100%;
                 bottom: 0;
-                background: #fff;
+                background: #fdfdfd;
                 z-index: -1;
                 -webkit-box-shadow: 0 -1px 0 $border-color inset;
                 box-shadow: 0 -1px 0 $border-color inset;
@@ -202,6 +219,7 @@
             margin-bottom: 0.8rem;
             &__title {
                 margin: 0;
+                font-weight: 400;
                 small {
                     display: block;
                     font-size: 0.8rem;
@@ -229,21 +247,29 @@
 }
 
 .review-block {
-    margin: 2rem 0;
+    margin-bottom: 2rem;
     font-size: 0.8rem;
     li {
         display: flex;
         align-items: center;
+        @include media-breakpoint-down(md) {
+            & {
+                display: block;
+                font-size: 1rem;
+            }
+        }
     }
     &__label {
         flex: 0 0 125px;
         max-width: 125px;
         padding-#{$end-direction}: 1rem;
         color: $txt-gray;
+        margin-bottom: 0.5rem;
     }
     &__content {
         flex: 1;
         padding-#{$end-direction}: 1rem;
+        margin-bottom: 0.5rem;
         .selected-slot {
             font-weight: 600;
             padding-top: 0.5rem;
@@ -254,14 +280,12 @@
 
 @include media-breakpoint-up(xs) {
     .order-summary {
-        height: 0;
-        visibility: hidden;
-    }
-    .order-summary--on {
-        .order-summary {
-            height: auto;
-            visibility: visible;
-            padding-top: 1rem;
+        display: none;
+        &--on {
+            .order-summary {
+                display: block;
+                padding-top: 1rem;
+            }
         }
     }
 }
@@ -270,38 +294,24 @@
     .order-summary {
         height: auto;
         visibility: visible;
+        display: block;
     }
 }
 
 .order-summary__sections {
-    display: -webkit-box;
-    display: -webkit-flex;
-    display: -ms-flexbox;
-    display: flex;
-    -webkit-box-orient: vertical;
-    -webkit-box-direction: normal;
-    -webkit-flex-direction: column;
-    -ms-flex-direction: column;
-    flex-direction: column;
-    height: calc(100vh - 8em);
-    width: 100%;
     .order-summary__section--product-list {
-        display: -webkit-box;
-        display: -webkit-flex;
-        display: -ms-flexbox;
         display: flex;
         -webkit-box-flex: 0;
         -webkit-flex: 0 1 auto;
         -ms-flex: 0 1 auto;
         flex: 0 1 auto;
-        min-height: 7em;
         overflow: hidden;
         padding: 0;
         position: relative;
         .order-summary__section__content {
             min-width: 100%;
-            min-height: 300px;
             position: relative;
+            max-height: 300px;
         }
     }
 }
@@ -425,7 +435,7 @@
 .payment-area {
     .nav-payments {
         display: flex;
-        border: solid 1px $brand-color;
+        border: solid 1px #888;
         border-radius: $radius4;
         margin: 1rem 0;
         li {
@@ -435,8 +445,8 @@
             a {
                 padding: 0.6rem 0.8rem;
                 &.active {
-                    background: $brand-color;
-                    color: $brand-color-inverse;
+                    background: #888;
+                    color: #fff;
                 }
             }
         }
@@ -466,7 +476,7 @@
 }
 
 .rewards {
-    background-color: $gray-color;
+    background-color: $bg-gray;
     border-radius: $radius4;
     padding: 1.5rem;
     margin: 2rem 0;
@@ -496,6 +506,7 @@
     .info {
         margin-bottom: 1.5rem;
         padding: 0;
+        background: none;
     }
 }
 
@@ -514,7 +525,7 @@
         padding: 1rem;
         position: relative;
         &.selected {
-            box-shadow: 0 0 5px rgba(40, 44, 63, .15);
+            /* box-shadow: 0 0 5px rgba(40, 44, 63, .15);*/
         }
         .delivery-address {
             font-size: 0.85rem;
@@ -522,7 +533,7 @@
             line-height: 1.5;
             margin: 0;
             h5 {
-                font-weight: 600;
+                font-weight: 500;
                 font-size: 0.9rem;
                 margin-bottom: 10px;
             }
@@ -541,9 +552,6 @@
                 margin-top: 5px;
                 font-weight: 600;
             }
-        }
-        .list-actions {
-            margin-top: 0.5rem;
         }
     }
     .tags-addresses {
@@ -575,7 +583,7 @@
             color: $success-color;
             padding: 6px 1rem;
             line-height: 1;
-            font-weight: 600;
+            font-weight: 500;
             font-size: 0.75rem;
             text-transform: uppercase;
             &.address_lable {
@@ -633,10 +641,11 @@
     .shipping-select {
         align-items: center;
         padding: 0.5rem 1rem;
+        flex-direction: initial;
         .shop-name {
             font-size: 0.85rem;
             color: $txt-gray;
-            font-weight: 600;
+            font-weight: 500;
         }
         background-color: $bg-gray;
         .shipping-method {
@@ -650,10 +659,56 @@
             }
         }
     }
-    .product-profile__thumbnail img {
-        max-width: 90px;
-    }
     .quantity {
         margin-top: 0.5rem;
+    }
+}
+
+.wallet-balance {
+    border-radius: $radius4;
+    padding: 1.5rem;
+    background-color: $bg-gray;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    .wallet {
+        display: flex;
+        margin-bottom: 1.5rem;
+        &__txt {
+            display: flex;
+            flex-direction: column;
+            font-weight: 700;
+            p {
+                margin-top: 5px;
+                font-size: 0.8rem;
+                font-weight: 300;
+                color: $txt-gray;
+            }
+        }
+    }
+}
+
+.form-inline {
+    position: relative;
+    input {
+        &[type="text"] {
+            width: 100%;
+        }
+    }
+    .btn-submit {
+        background: none;
+        position: absolute;
+        top: 0;
+        #{$end-direction}: 0;
+        color: $brand-color;
+        font-weight: 500;
+        border: none;
+        &:focus {
+            outline: none;
+            border: none;
+        }
+        &:hover {
+            box-shadow: none;
+        }
     }
 }

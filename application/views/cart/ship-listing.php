@@ -39,8 +39,8 @@ defined('SYSTEM_INIT') or die('Invalid Usage.'); ?>
                 <li class="list-group-item">
                     <div class="info">
                         <span> <svg class="svg">
-                                <use xlink:href="../images/retina/sprite.svg#info"
-                                    href="../images/retina/sprite.svg#info">
+                                <use xlink:href="<?php echo CONF_WEBROOT_URL;?>images/retina/sprite.svg#info"
+                                    href="<?php echo CONF_WEBROOT_URL;?>images/retina/sprite.svg#info">
                                 </use>
                             </svg><?php echo Labels::getLabel('MSG_SOME_ITEMS_NOT_AVAILABLE_FOR_SHIPPING', $siteLangId); ?>
                             <?php if (count($fulfillmentProdArr[Shipping::FULFILMENT_PICKUP]) == $productsCount) {?>
@@ -50,8 +50,8 @@ defined('SYSTEM_INIT') or die('Invalid Usage.'); ?>
                         <ul class="list-actions">
                             <li>
                                 <a href="javascript:void(0);" onClick="removePickupOnlyProducts();"><svg class="svg" width="24px" height="24px">
-                                        <use xlink:href="../images/retina/sprite.svg#remove"
-                                            href="../images/retina/sprite.svg#remove">
+                                        <use xlink:href="<?php echo CONF_WEBROOT_URL;?>images/retina/sprite.svg#remove"
+                                            href="<?php echo CONF_WEBROOT_URL;?>images/retina/sprite.svg#remove">
                                         </use>
                                     </svg>
                                 </a></li>

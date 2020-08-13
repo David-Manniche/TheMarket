@@ -11,11 +11,8 @@ if(!empty($addresses)){
     $dateFld->setFieldTagAttribute('placeholder', Labels::getLabel('LBL_Choose_Time_Slot_Date', $siteLangId));
     
 ?>
-<div class="step active">
-    <div class="step__section">
-        <div class="step__head">
-            <h5 class="step-title"><?php echo Labels::getLabel('LBL_Pick_Up', $siteLangId); ?></h5>
-        </div>
+
+        <div class="pop-up-title"><?php echo Labels::getLabel('LBL_Pick_Up', $siteLangId); ?></div>
         <div class="pick-section">
             <div class="pickup-option">
                 <ul class="pickup-option__list">
@@ -47,8 +44,7 @@ if(!empty($addresses)){
                 </div>
             </div>
         </div>
-    </div>
-</div>
+ 
 <?php }else{ ?>
 <h5 class="step-title"><?php echo Labels::getLabel('LBL_No_Pick_Up_address_added', $siteLangId); ?></h5>
 <?php } ?>

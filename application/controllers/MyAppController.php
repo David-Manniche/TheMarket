@@ -442,7 +442,7 @@ class MyAppController extends FatController
         return $frm;
     }
 
-    protected function getUserAddressForm($siteLangId)
+    protected function getUserAddressForm($siteLangId, $btnOrderFlip = false)
     {
         $siteLangId = FatUtility::int($siteLangId);
         $frm = new Form('frmAddress');
@@ -471,6 +471,11 @@ class MyAppController extends FatController
         $phnFld->requirements()->setCustomErrorMessage(Labels::getLabel('LBL_Please_enter_valid_phone_number_format.', $this->siteLangId));
 
         $frm->addHiddenField('', 'addr_id');
+		if ($btnOrderFlip) {
+			$fldCancel = $frm->addButton('', 'btn_cancel', Labels::getLabel('LBL_Cancel', $siteLangId));
+			$fldSubmit = $frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_SAVE_CHANGES', $siteLangId));
+			return $frm;
+		}
         $fldSubmit = $frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_SAVE_CHANGES', $siteLangId));
         $fldCancel = $frm->addButton('', 'btn_cancel', Labels::getLabel('LBL_Cancel', $siteLangId));
         //$fldCancel->attachField($fldSubmit);
