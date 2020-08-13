@@ -11944,8 +11944,12 @@ form[name="frmShippingProfile"] {
 }
 
 /*shipping end*/
-.vertical-actions li{     display: flex !important;
+.vertical-actions li{
+    display: flex !important;
     justify-content: space-between;
     align-items: center;
-    padding:10px 0 !important;}
+    padding: 12px 0 !important;}
+    
+    .vertical-actions .lable{ padding:0 15px;}
+    
     .vertical-actions .actions{ margin-right:10px;}

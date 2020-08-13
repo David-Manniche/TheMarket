@@ -209,8 +209,8 @@ class Collections extends MyAppModel
             self::TYPE_SHOP_LAYOUT1 => 'shop-layout-1.jpg',
             self::TYPE_BRAND_LAYOUT1 => 'brand-layout-1.jpg',
             self::TYPE_BLOG_LAYOUT1 => 'blog-layout-1.jpg',
-            self::TYPE_SPONSORED_PRODUCT_LAYOUT => 'sponsored-product-layout-1.jpg',
-            self::TYPE_SPONSORED_SHOP_LAYOUT => 'sponsored-shop-layout-1.jpg',
+            self::TYPE_SPONSORED_PRODUCT_LAYOUT => 'product-layout-1.jpg',
+            self::TYPE_SPONSORED_SHOP_LAYOUT => 'shop-layout-1.jpg',
             self::TYPE_BANNER_LAYOUT1 => 'banner-layout-1.jpg',
             self::TYPE_BANNER_LAYOUT2 => 'banner-layout-2.jpg',
         ];
