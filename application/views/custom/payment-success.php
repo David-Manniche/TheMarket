@@ -1,37 +1,20 @@
 <?php defined('SYSTEM_INIT') or die('Invalid Usage.'); ?>
 <script>
-var data = {
-    value: < ? php echo $orderInfo['order_net_amount']; ? > ,
-    currency : '<?php echo $orderInfo['
-    order_currency_code '];?>'
-};
-events.purchase(data);
+    var data = {
+        value: <?php echo $orderInfo['order_net_amount']; ?> ,
+        currency : '<?php echo $orderInfo['order_currency_code']; ?>'
+    };
+    events.purchase(data);
 </script>
+<?php 
+    $products = $orderInfo['orderProducts'];
+    $shippingMethod = '';
+    foreach ($products as $op) {
+        $shippingMethod .= '<li>' . $op['opshipping_label'] . '</li>';
+    }
+?>
 <div id="body" class="body">
     <div class="section">
-        <div class="container">
-            <div class="row justify-content-center">
-                <div class="col-lg-6">
-                    <div class="message message--success cms">
-                        <i class="fa fa-check-circle"></i>
-                        <div class="section-head  section--head--center">
-                            <div class="section__heading">
-                                <h2><?php echo Labels::getLabel('LBL_Congratulations', $siteLangId);?>
-                                </h2>
-                            </div>
-                        </div>
-
-
-                        <?php if (!CommonHelper::isAppUser()) { ?>
-                        <p><?php echo CommonHelper::renderHtml($textMessage); ?>
-                        </p>
-                        <?php } ?>
-                        <span class="gap"></span>
-                    </div>
-                </div>
-            </div>
-        </div>
-
         <div class="order-completed">
             <div class="container">
                 <div class="row justify-content-center">
@@ -45,72 +28,106 @@ events.purchase(data);
                                 </svg>
                             </div>
 
-                            <!-- Heading -->
-                            <h2>Thank You! </h2>
-                            <h3>Your order #1560788996 has been placed! </h3>
+                            <h2><?php echo Labels::getLabel('LBL_THANK_YOU!', $siteLangId); ?></h2>
+                            <h3>
+                                <?php 
+                                    $msg = Labels::getLabel('LBL_YOUR_ORDER_#{ORDER-ID}_HAS_BEEN_PLACED!', $siteLangId);
+                                    $msg = CommonHelper::replaceStringData($msg, ['{ORDER-ID}' => $orderInfo['order_id']]);
+                                    echo $msg;
+                                ?> 
+                            </h3>
 
-                            <!-- Text -->
                             <p>
-                                We sent an email to <strong>pawan1985chd@gmail.com</strong> with your order confirmation
-                                and receipt.
-                                If the email hasn't arrived within two minutes, please check your spam folder to see if
-                                the
-                                email was routed there.
+                                <?php if (!CommonHelper::isAppUser()) { ?>
+                                    <p><?php echo CommonHelper::renderHtml($textMessage); ?>
+                                    </p>
+                                <?php } ?>
                             </p>
-                            <p> <svg class="svg" width="22px" height="22px">
-                                    <use xlink:href="<?php echo CONF_WEBROOT_URL;?>/images/retina/sprite.svg#TimePlaced"
-                                        href="<?php echo CONF_WEBROOT_URL;?>/images/retina/sprite.svg#TimePlaced">
-                                    </use>
-                                </svg> <strong>Time Placed:</strong> 16/00/2013 13:35 CEST
-                                &nbsp;&nbsp;&nbsp;
+                            <p> 
                                 <svg class="svg" width="22px" height="22px">
-                                    <use xlink:href="<?php echo CONF_WEBROOT_URL;?>/images/retina/sprite.svg#print"
-                                        href="<?php echo CONF_WEBROOT_URL;?>/images/retina/sprite.svg#print">
+                                    <use xlink:href="<?php echo CONF_WEBROOT_URL; ?>/images/retina/sprite.svg#TimePlaced" href="<?php echo CONF_WEBROOT_URL; ?>/images/retina/sprite.svg#TimePlaced">
                                     </use>
-                                </svg> <a href="#">Print</a></p>
+                                </svg> 
+                                <?php 
+                                    $replace = [
+                                        '{TIME-PLACED}' => '<strong>' . Labels::getLabel('LBL_TIME_PLACED', $siteLangId) . '</strong>',
+                                        '{DATE-TIME}' => $orderInfo['order_date_added'],
+                                    ];
+                                    $msg = Labels::getLabel('LBL_{TIME-PLACED}:_{DATE-TIME}', $siteLangId);
+                                    $msg = CommonHelper::replaceStringData($msg, $replace);
+                                    echo $msg;
+                                ?>
+                                &nbsp;&nbsp;&nbsp;
+                                <span class="no-print">
+                                    <svg class="svg" width="22px" height="22px">
+                                        <use xlink:href="<?php echo CONF_WEBROOT_URL; ?>/images/retina/sprite.svg#print" href="<?php echo CONF_WEBROOT_URL; ?>/images/retina/sprite.svg#print">
+                                        </use>
+                                    </svg>
+                                    <a href="<?php echo UrlHelper::generateUrl('Custom', 'PaymentSuccess', [$orderInfo['order_id'], 'print']);?>"><?php echo Labels::getLabel("LBL_PRINT", $siteLangId); ?></a>
+                                </span>
+                            </p>
                         </div>
 
                         <ul class="completed-detail">
+                            <?php if (!empty($orderInfo['shippingAddress'])) { 
+                                $shippingAddress = $orderInfo['shippingAddress']; ?>
+                                <li>
+                                    <h4>
+                                        <svg class="svg" width="22px" height="22px">
+                                            <use xlink:href="<?php echo CONF_WEBROOT_URL; ?>/images/retina/sprite.svg#shipping" href="<?php echo CONF_WEBROOT_URL; ?>/images/retina/sprite.svg#shipping">
+                                            </use>
+                                        </svg>
+                                        <?php echo Labels::getLabel("LBL_SHIPPING_ADDRESS", $siteLangId); ?>
+                                    </h4>
+                                    <p>
+                                        <strong><?php echo $shippingAddress['oua_name']; ?></strong><br>
+                                        <?php 
+                                            echo $shippingAddress['oua_address1']; 
+                                            if (!empty($shippingAddress['oua_address2'])) {
+                                                echo ', ' . $shippingAddress['oua_address2'];
+                                            }
+                                            echo '<br>' . $shippingAddress['oua_city'] . ', '. $shippingAddress['oua_state_code'] . ' ' . $shippingAddress['oua_zip'];
+                                            echo '<br>' . $shippingAddress['oua_country_code'];
+                                            echo '<br>' . $shippingAddress['oua_phone'];
+                                        ?>
+                                    </p>
+                                </li>
+                            <?php }
+                            if (!empty($shippingMethod)) { ?>
+                                <li>
+                                    <h4> 
+                                        <svg class="svg" width="22px" height="22px">
+                                            <use xlink:href="<?php echo CONF_WEBROOT_URL; ?>/images/retina/sprite.svg#shipping-method" href="<?php echo CONF_WEBROOT_URL; ?>/images/retina/sprite.svg#shipping-method">
+                                            </use>
+                                        </svg> Shipping Method </h4>
+                                        <p>Preferred Method: <br>
+                                        <ol>
+                                            <?php echo $shippingMethod; ?>
+                                        </ol>
+                                    </p>
+                                </li>
+                            <?php } ?>
                             <li>
-                                <h4> <svg class="svg" width="22px" height="22px">
-                                        <use xlink:href="<?php echo CONF_WEBROOT_URL;?>/images/retina/sprite.svg#shipping"
-                                            href="<?php echo CONF_WEBROOT_URL;?>/images/retina/sprite.svg#shipping">
+                                <?php $billingAddress = $orderInfo['billingAddress']; ?>
+                                <h4>
+                                    <svg class="svg" width="22px" height="22px">
+                                        <use xlink:href="<?php echo CONF_WEBROOT_URL; ?>/images/retina/sprite.svg#billing-detail" href="<?php echo CONF_WEBROOT_URL; ?>/images/retina/sprite.svg#billing-detail">
                                         </use>
-                                    </svg> Shipping Address </h4>
-                                <p> <strong>John Newman</strong> <br> Ches. str <br>Sacramento, CA 54203 <br> US
-                                    <br>.17687654332 </p>
-                            </li>
-
-
-
-                            <li>
-                                <h4> <svg class="svg" width="22px" height="22px">
-                                        <use xlink:href="<?php echo CONF_WEBROOT_URL;?>/images/retina/sprite.svg#shipping-method"
-                                            href="<?php echo CONF_WEBROOT_URL;?>/images/retina/sprite.svg#shipping-method">
-                                        </use>
-                                    </svg> Shipping Method </h4>
-                                <p>Preferred Method: <br> Standard (normally 45 business days, unless Mei-wise noted/
+                                    </svg>
+                                    <?php echo Labels::getLabel("LBL_BILLING_ADDRESS", $siteLangId); ?>
+                                </h4>
+                                <p>
+                                    <strong><?php echo $billingAddress['oua_name']; ?></strong><br>
+                                    <?php 
+                                        echo $billingAddress['oua_address1']; 
+                                        if (!empty($billingAddress['oua_address2'])) {
+                                            echo ', ' . $billingAddress['oua_address2'];
+                                        }
+                                        echo '<br>' . $billingAddress['oua_city'] . ', '. $billingAddress['oua_state_code'] . ' ' . $billingAddress['oua_zip'];
+                                        echo '<br>' . $billingAddress['oua_country_code'];
+                                        echo '<br>' . $billingAddress['oua_phone'];
+                                    ?>
                                 </p>
-                            </li>
-                            <li>
-                                <h4> <svg class="svg" width="22px" height="22px">
-                                        <use xlink:href="<?php echo CONF_WEBROOT_URL;?>/images/retina/sprite.svg#billing-detail"
-                                            href="<?php echo CONF_WEBROOT_URL;?>/images/retina/sprite.svg#billing-detail">
-                                        </use>
-                                    </svg> Billing Details</h4>
-                                <p> <strong>John Newman</strong> <br> Ches. str <br>Sacramento, CA 54203 <br> US
-                                    <br>.17687654332 </p>
-                            </li>
-                            <li>
-                                <h4> <svg class="svg" width="22px" height="22px">
-                                        <use xlink:href="<?php echo CONF_WEBROOT_URL;?>/images/retina/sprite.svg#payment-detail"
-                                            href="<?php echo CONF_WEBROOT_URL;?>/images/retina/sprite.svg#payment-detail">
-                                        </use>
-                                    </svg> Payment Details </h4>
-
-                                <p> <strong>Payment type:</strong> MasterCard</p>
-                                <p> <strong>Card Number:</strong> **** **** **** 4586 <small> (Partial number displayed
-                                        for security purposes)</small> </p>
                             </li>
                         </ul>
 
@@ -119,75 +136,92 @@ events.purchase(data);
                                 <div class="completed-cart">
                                     <div class="row justify-content-between">
                                         <div class="col-md-7">
-                                            <h5>Order List</h5>
-                                            <ul
-                                                class="list-group list-group-flush-x list-group-flush-y  list-cart list-cart-checkout">
-                                                <li class="list-group-item">
-                                                    <div class="product-profile">
-                                                        <div class="product-profile__thumbnail">
-                                                            <a href="#">
-                                                                <img class="img-fluid" data-ratio="3:4"
-                                                                    src="<?php echo CONF_WEBROOT_URL;?>/imagesproducts/pro-1.jpg" alt="...">
-                                                            </a>
-                                                            <span class="product-qty">2</span>
-                                                        </div>
-                                                        <div class="product-profile__data">
-                                                            <div class="title"><a class="" href="product.html">Mini-Max
-                                                                    Mini
-                                                                    Bean Bag Plush - Big Hero 6: The Series</a></div>
-                                                            <div class="options">
-                                                                <p class="">Medium | red</p>
+                                            <h5><?php Labels::getLabel('LBL_ORDER_DETAIL', $siteLangId); ?></h5>
+                                            <ul class="list-group list-group-flush-x list-group-flush-y  list-cart list-cart-checkout">
+                                                <?php 
+                                                $shippingCharges = $subTotal = 0;
+                                                foreach ($products as $key => $product) { 
+                                                    $productUrl = UrlHelper::generateUrl('Products', 'View', array($product['op_selprod_id']));
+                                                    $shopUrl = UrlHelper::generateUrl('Shops', 'View', array($product['op_shop_id']));
+                                                    $imageUrl = UrlHelper::getCachedUrl(UrlHelper::generateFileUrl('image', 'product', array($product['selprod_product_id'], "THUMB",$product['op_selprod_id'], 0, $siteLangId)), CONF_IMG_CACHE_TIME, '.jpg');
+                                                    $productTitle =  ($product['op_selprod_title']) ? $product['op_selprod_title'] : $product['op_product_name'];
+                                                ?>
+                                                    <li class="list-group-item">
+                                                        <div class="product-profile">
+                                                            <div class="product-profile__thumbnail">
+                                                                <a href="<?php echo $productUrl; ?>">
+                                                                    <img class="img-fluid" data-ratio="3:4" src="<?php echo $imageUrl; ?>" alt="<?php echo $product['op_product_name']; ?>" title="<?php echo $product['op_product_name']; ?>">
+                                                                </a>
+                                                                <span class="product-qty"><?php echo $product['op_qty']; ?></span>
+                                                            </div>
+                                                            <div class="product-profile__data">
+                                                                <div class="title"><a class="" href="<?php echo $productUrl; ?>"><?php echo $productTitle;?></a> </div>
+                                                                <div class="options">
+                                                                <p class=""> <?php echo $product['op_selprod_options']; ?></p>
+                                                                </div>
                                                             </div>
                                                         </div>
-                                                    </div>
+                                                        <div class="product-price">
+                                                            <?php 
+                                                                $subTotal += $txnAmount = ($product["op_unit_price"] * $product["op_qty"]);
+                                                                echo CommonHelper::displayMoneyFormat($txnAmount);
 
-                                                    <div class="product-price">$40.00</div>
-
-                                                </li>
-                                                <li class="list-group-item">
-                                                    <div class="product-profile">
-                                                        <div class="product-profile__thumbnail">
-                                                            <a href="#">
-                                                                <img class="img-fluid" data-ratio="3:4"
-                                                                    src="<?php echo CONF_WEBROOT_URL;?>/imagesproducts/pro-1.jpg" alt="...">
-                                                            </a>
-                                                            <span class="product-qty">2</span>
+                                                                $shippingCharges += $product['op_actual_shipping_charges'];
+                                                            ?>
                                                         </div>
-                                                        <div class="product-profile__data">
-                                                            <div class="title"><a class="" href="product.html">Mini-Max
-                                                                    Mini
-                                                                    Bean Bag Plush - Big Hero 6: The Series</a></div>
-                                                            <div class="options">
-                                                                <p class="">Medium | red</p>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                    <div class="product-price">$40.00</div>
-                                                </li>
+                                                    </li>
+                                                <?php } ?> 
                                             </ul>
                                         </div>
                                         <div class="col-md-4">
-                                            <h5>Order Summary</h5>
+                                            <h5><?php echo Labels::getLabel('LBL_ORDER_SUMMARY', $siteLangId); ?></h5>
                                             <div class="cart-total mt-5">
                                                 <ul class="list-group list-group-flush-x list-group-flush-y">
                                                     <li class="list-group-item">
-                                                        <span class="label">Subtotal</span> <span
-                                                            class="ml-auto">$89.00</span>
+                                                        <span class="label">
+                                                            <?php echo Labels::getLabel('LBL_Sub_Total', $siteLangId); ?>
+                                                        </span> 
+                                                        <span class="ml-auto">
+                                                            <?php echo CommonHelper::displayMoneyFormat($subTotal); ?>
+                                                        </span>
                                                     </li>
-                                                    <li class="list-group-item ">
-                                                        <span class="label">Estimated Tax</span> <span
-                                                            class="ml-auto">$00.00</span>
-                                                    </li>
+                                                    <?php if (!empty($orderInfo['order_reward_point_value']) || !empty($orderInfo['order_discount_total']) || !empty($orderInfo['order_volume_discount_total'])) { 
+                                                            $msg = "LBL_REWARD_POINTS";
+                                                            $totalDiscount = $orderInfo['order_reward_point_value'];
+                                                            if (!empty($orderInfo['order_discount_total']) && 0 < $orderInfo['order_discount_total']) {
+                                                                $msg .= "_&_DISCOUNT";
+                                                                $totalDiscount += $orderInfo['order_discount_total'];
+                                                            }
+                                                            if (!empty($orderInfo['order_volume_discount_total']) && 0 < $orderInfo['order_volume_discount_total']) {
+                                                                $totalDiscount += $orderInfo['order_volume_discount_total'];
+                                                            }
+                                                        ?>
+                                                        <li class="list-group-item ">
+                                                        <span class="label"><?php echo Labels::getLabel($msg, $siteLangId); ?></span>
+                                                        <span class="ml-auto"><?php echo CommonHelper::displayMoneyFormat($totalDiscount); ?></span>
+                                                        </li>
+                                                    <?php } ?>  
+                                                    <?php if ($orderInfo['order_tax_charged']){ ?>
+                                                        <li class="list-group-item ">
+                                                            <span class="label"><?php echo Labels::getLabel('LBL_TAX', $siteLangId); ?></span>
+                                                            <span class="ml-auto"><?php echo CommonHelper::displayMoneyFormat($orderInfo['order_tax_charged']); ?></span>
+                                                        </li>
+                                                    <?php } ?>    
+                                                    <?php if (0 < $shippingCharges) { ?>
+                                                        <li class="list-group-item ">
+                                                        <span class="label"><?php echo Labels::getLabel('LBL_Delivery_Charges', $siteLangId); ?></span>
+                                                        <span class="ml-auto"><?php echo CommonHelper::displayMoneyFormat($shippingCharges); ?></span>
+                                                        </li>
+                                                    <?php  } ?>
                                                     <li class="list-group-item hightlighted">
-                                                        <span class="label">Total</span> <span
-                                                            class="ml-auto">$89.00</span>
+                                                        <span class="label"><?php echo Labels::getLabel('LBL_NET_AMOUNT', $siteLangId); ?></span> 
+                                                        <span class="ml-auto"><?php echo CommonHelper::displayMoneyFormat($orderInfo['order_net_amount']); ?></span>
                                                     </li>
                                                 </ul>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
-
                             </div>
                         </div>
                     </div>
@@ -195,10 +229,16 @@ events.purchase(data);
             </div>
         </div>
     </div>
-
 </div>
-<script>
-/*window.setTimeout(function() {
-    window.location.href = fcom.makeUrl('Home');
-}, 15000);*/
-</script>
+<?php if (true === $print) { ?>    
+    <script>
+        $(document).ready(function(){
+            setTimeout(() => {
+                window.print();
+            }, 1000);
+            window.onafterprint = function() {
+                location.href = history.back();
+            }
+        });
+    </script>
+<?php } ?>    
