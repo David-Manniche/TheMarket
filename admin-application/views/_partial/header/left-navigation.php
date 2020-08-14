@@ -490,7 +490,8 @@
                 $objPrivilege->canViewManualShippingApi(AdminAuthentication::getLoggedAdminId(), true) || */
                 $objPrivilege->canViewShippingPackages(AdminAuthentication::getLoggedAdminId(), true) ||
                 $objPrivilege->canViewShippingManagement(AdminAuthentication::getLoggedAdminId(), true) ||
-                $objPrivilege->canViewPickupAddresses(AdminAuthentication::getLoggedAdminId(), true)
+                $objPrivilege->canViewPickupAddresses(AdminAuthentication::getLoggedAdminId(), true) ||
+                $objPrivilege->canViewTrackingRelationCode()
             ) { ?>
             <li class="haschild"><a href="javascript:void(0);"><?php echo Labels::getLabel('LBL_Shipping_Api', $adminLangId);?></a>
                 <ul>
@@ -521,6 +522,11 @@
                     <?php /* if($objPrivilege->canViewManualShippingApi(AdminAuthentication::getLoggedAdminId(), true)){?>
                         <li><a href="<?php echo UrlHelper::generateUrl('ManualShippingApi'); ?>"><?php echo Labels::getLabel('LBL_Manual_Shipping_Api',$adminLangId);?></a></li>
                     <?php } */ ?>
+                    
+                    <?php 
+                    if ($objPrivilege->canViewTrackingRelationCode()) { ?>
+                    <li><a href="<?php echo UrlHelper::generateUrl('TrackingCodeRelation'); ?>"><?php echo Labels::getLabel('LBL_Tracking_Code_Relation', $adminLangId);?></a></li>
+                    <?php } ?>
                     
                     <?php if ($objPrivilege->canViewPickupAddresses(AdminAuthentication::getLoggedAdminId(), true)) { ?>
                         <li><a href="<?php echo UrlHelper::generateUrl('PickupAddresses'); ?>"><?php echo Labels::getLabel('LBL_Pickup_Addresses', $adminLangId);?></a></li>

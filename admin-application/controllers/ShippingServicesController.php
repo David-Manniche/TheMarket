@@ -162,13 +162,13 @@ class ShippingServicesController extends AdminBaseController
         $opSrch->doNotLimitRecords();
         $opSrch->addCondition('op.op_id', '=', $opId);
 
-        $opSrch->addMultipleFields(
-            array('opshipping_label', 'opshipping_carrier_code', 'opshipping_service_code', 'opship.*')
-        );
+//        $opSrch->addMultipleFields(
+//            array('opshipping_label', 'opshipping_carrier_code', 'opshipping_service_code', 'opship.*')
+//        );
 
         $opRs = $opSrch->getResultSet();
         $data = $db->fetch($opRs);
-
+   
         $requestParam = [
             "orderId" => $data['opship_orderid'],
             "carrierCode" => $data['opshipping_carrier_code'],
@@ -193,6 +193,7 @@ class ShippingServicesController extends AdminBaseController
         if (!$db->insertFromArray(OrderProductShipment::DB_TBL, $updateData, false, array(), $updateData)) {
             LibHelper::dieJsonError($db->getError());
         }
+  
         LibHelper::dieJsonSuccess(Labels::getLabel('LBL_SUCCESS', $this->adminLangId));
     }
 

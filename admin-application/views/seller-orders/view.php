@@ -428,9 +428,12 @@ if ($order['order_reward_point_used'] > 0) {
                                     <td><?php echo $orderStatuses[$row['oshistory_orderstatus_id']]; ?></td>
                                     <td><?php echo nl2br($row['oshistory_comments']); ?>
                                         <?php   echo ($row['oshistory_orderstatus_id']>0)?$orderStatuses[$row['oshistory_orderstatus_id']]:CommonHelper::displayNotApplicable($adminLangId, '');
-                                        //echo ($row['oshistory_tracking_number'])? ': '.Labels::getLabel('LBL_Tracking_Number', $adminLangId).' '.$row['oshistory_tracking_number']." VIA <em>".$row['op_shipping_duration_name']."</em>" :''; 
-                                        $trackOrder = "trackOrder('".$row['oshistory_tracking_number']."','".$row['oshistory_courier']."')";
-                                        echo ($row['oshistory_tracking_number'])? ': '.Labels::getLabel('LBL_Tracking_Number', $adminLangId).' <a onClick="'.$trackOrder.'">'.$row['oshistory_tracking_number']."</a> VIA <em>".$row['op_shipping_duration_name']."</em>" :'';
+                                        if(empty($row['oshistory_courier'])){
+                                            echo ($row['oshistory_tracking_number'])? ': '.Labels::getLabel('LBL_Tracking_Number', $adminLangId).' '.$row['oshistory_tracking_number']." VIA <em>".$row['op_shipping_duration_name']."</em>" :''; 
+                                        }else{
+                                            $trackOrder = "trackOrder('".$row['oshistory_tracking_number']."','".$row['oshistory_courier']."')";
+                                            echo ($row['oshistory_tracking_number'])? ': '.Labels::getLabel('LBL_Tracking_Number', $adminLangId).' <a onClick="'.$trackOrder.'">'.$row['oshistory_tracking_number']."</a> VIA <em>".$row['op_shipping_duration_name']."</em>" :'';
+                                        }
                                         ?>
                                         
                                     </td>
@@ -470,9 +473,6 @@ if ($order['order_reward_point_used'] > 0) {
 
                             $fldTracking = $frm->getField('tracking_number');
                             $fldTracking->setWrapperAttribute('class', 'div_tracking_number');
-                            
-                            $fldTrackingCourier = $frm->getField('tracking_courier');
-                            $fldTrackingCourier->setWrapperAttribute('class', 'div_tracking_number');
                             
                             echo $frm->getFormHtml(); ?>
                         </div>

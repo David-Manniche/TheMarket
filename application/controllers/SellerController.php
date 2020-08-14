@@ -593,7 +593,7 @@ class SellerController extends SellerBaseController
         }
 
         if (in_array($orderDetail["op_status_id"], $processingStatuses) && in_array($post["op_status_id"], $processingStatuses)) {
-            if (!$orderObj->addChildProductOrderHistory($op_id, $orderDetail["order_language_id"], $post["op_status_id"], $post["comments"], $post["customer_notified"], $post["tracking_number"], 0, true, $post["tracking_courier"])) {
+            if (!$orderObj->addChildProductOrderHistory($op_id, $orderDetail["order_language_id"], $post["op_status_id"], $post["comments"], $post["customer_notified"], $post["tracking_number"], 0, true)) {
                 Message::addErrorMessage(Labels::getLabel('M_ERROR_INVALID_REQUEST', $this->siteLangId));
                 FatUtility::dieJsonError(Message::getHtml());
             }
@@ -3534,25 +3534,6 @@ class SellerController extends SellerBaseController
         $trackingReqObj = new FormFieldRequirement('tracking_number', Labels::getLabel('LBL_Tracking_Number', $this->siteLangId));
         $trackingReqObj->setRequired(true);
         
-        $shipmentTracking = new ShipmentTracking();
-        $trackingCouriers = $shipmentTracking->getTrackingCouriers($this->siteLangId);
-        $couriers = array();
-        if($trackingCouriers['meta']['code'] == 200 ) {
-            foreach($trackingCouriers['data']['couriers'] as $key=>$courier){
-                $couriers[$courier['slug']] = $courier['name'];
-            }
-        }
-        $frm->addSelectBox(Labels::getLabel('LBL_Tracking_Courier', $this->siteLangId), 'tracking_courier', $couriers, '', array(), '');
-
-        $trackingCourierUnReqObj = new FormFieldRequirement('tracking_courier', Labels::getLabel('LBL_Tracking_Courier', $this->siteLangId));
-        $trackingCourierUnReqObj->setRequired(false);
-
-        $trackingCourierReqObj = new FormFieldRequirement('tracking_courier', Labels::getLabel('LBL_Tracking_Courier', $this->siteLangId));
-        $trackingCourierReqObj->setRequired(true);
-
-        $fld->requirements()->addOnChangerequirementUpdate(FatApp::getConfig("CONF_DEFAULT_SHIPPING_ORDER_STATUS"), 'eq', 'tracking_number', $trackingReqObj);
-        $fld->requirements()->addOnChangerequirementUpdate(FatApp::getConfig("CONF_DEFAULT_SHIPPING_ORDER_STATUS"), 'ne', 'tracking_number', $trackingUnReqObj);
-        
         $fld->requirements()->addOnChangerequirementUpdate(FatApp::getConfig("CONF_DEFAULT_SHIPPING_ORDER_STATUS"), 'eq', 'tracking_number', $trackingReqObj);
         $fld->requirements()->addOnChangerequirementUpdate(FatApp::getConfig("CONF_DEFAULT_SHIPPING_ORDER_STATUS"), 'ne', 'tracking_number', $trackingUnReqObj);
         $frm->addHiddenField('', 'op_id', 0);
@@ -5199,4 +5180,17 @@ class SellerController extends SellerBaseController
         }
         FatUtility::dieJsonError(Labels::getLabel('LBL_Not_any_Inventory_yet', $this->siteLangId));
     }
+    
+    public function orderTrackingInfo($trackingNumber, $courier)
+	{
+		if (empty($trackingNumber) || empty($courier)) {
+			Message::addErrorMessage(Labels::getLabel('MSG_Invalid_request',$this->siteLangId));
+			FatUtility::dieWithError( Message::getHtml() );
+        }
+
+		$shipmentTracking = new ShipmentTracking();
+		$trackingInfo = $shipmentTracking->getTrackingInfo($trackingNumber, $courier);
+		$this->set('trackingInfo', $trackingInfo);
+		$this->_template->render(false, false);
+	}
 }

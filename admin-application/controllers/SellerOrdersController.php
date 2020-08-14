@@ -433,7 +433,7 @@ class SellerOrdersController extends AdminBaseController
 
 
         if (in_array($orderDetail["op_status_id"], $processingStatuses) && in_array($post["op_status_id"], $processingStatuses)) {
-            if (!$orderObj->addChildProductOrderHistory($op_id, $orderDetail["order_language_id"], $post["op_status_id"], $post["comments"], $post["customer_notified"], $post["tracking_number"], 0, true, $post["tracking_courier"])) {
+            if (!$orderObj->addChildProductOrderHistory($op_id, $orderDetail["order_language_id"], $post["op_status_id"], $post["comments"], $post["customer_notified"], $post["tracking_number"], 0, true)) {
                 Message::addErrorMessage($this->str_invalid_request);
                 FatUtility::dieJsonError(Message::getHtml());
             }
@@ -681,26 +681,6 @@ class SellerOrdersController extends AdminBaseController
 
         $trackingReqObj = new FormFieldRequirement('tracking_number', Labels::getLabel('LBL_Tracking_Number', $this->adminLangId));
         $trackingReqObj->setRequired(true);
-        
-        $shipmentTracking = new ShipmentTracking();        
-        $trackingCouriers = $shipmentTracking->getTrackingCouriers($this->adminLangId); 
-
-        $couriers = array();
-        if($trackingCouriers['meta']['code'] == 200 ) { 
-            foreach($trackingCouriers['data']['couriers'] as $key=>$courier){
-                $couriers[$courier['slug']] = $courier['name'];
-            }
-        }
-        $frm->addSelectBox(Labels::getLabel('LBL_Tracking_Courier', $this->adminLangId), 'tracking_courier', $couriers, '', array(), '');
-
-        $trackingCourierUnReqObj = new FormFieldRequirement('tracking_courier', Labels::getLabel('LBL_Tracking_Courier', $this->adminLangId));
-        $trackingCourierUnReqObj->setRequired(false);
-
-        $trackingCourierReqObj = new FormFieldRequirement('tracking_courier', Labels::getLabel('LBL_Tracking_Courier', $this->adminLangId));
-        $trackingCourierReqObj->setRequired(true);
-        
-        $fld->requirements()->addOnChangerequirementUpdate(FatApp::getConfig("CONF_DEFAULT_SHIPPING_ORDER_STATUS"), 'eq', 'tracking_number', $trackingCourierReqObj);
-        $fld->requirements()->addOnChangerequirementUpdate(FatApp::getConfig("CONF_DEFAULT_SHIPPING_ORDER_STATUS"), 'ne', 'tracking_number', $trackingCourierUnReqObj);
 
         $fld->requirements()->addOnChangerequirementUpdate(FatApp::getConfig("CONF_DEFAULT_SHIPPING_ORDER_STATUS"), 'eq', 'tracking_number', $trackingReqObj);
         $fld->requirements()->addOnChangerequirementUpdate(FatApp::getConfig("CONF_DEFAULT_SHIPPING_ORDER_STATUS"), 'ne', 'tracking_number', $trackingUnReqObj);
@@ -755,7 +735,7 @@ class SellerOrdersController extends AdminBaseController
         }
 
 		$shipmentTracking = new ShipmentTracking();
-		$trackingInfo = $shipmentTracking->getTrackingInfo($trackingNumber, $courier, $this->adminLangId);
+		$trackingInfo = $shipmentTracking->getTrackingInfo($trackingNumber, $courier);
 		$this->set('trackingInfo', $trackingInfo);
 		$this->_template->render(false, false);
 	}

@@ -1,47 +1,60 @@
 <?php
 class ShipmentTracking
 {    
-
-    public function getTrackingInfo($trackingNumber, $courier, $langId)
-    {
-        $shipmentTracking = FatApp::getConfig('CONF_DEFAULT_PLUGIN_' . Plugin::TYPE_SHIPMENT_TRACKING, FatUtility::VAR_INT, 0);
-        if (empty($shipmentTracking) || 1 > $langId) {		
-			Message::addErrorMessage(Labels::getLabel('MSG_INVALID_REQUEST', $langId));
-			FatUtility::dieWithError( Message::getHtml() );
-        }
-
-        $pluginKey = Plugin::getAttributesById($shipmentTracking, 'plugin_code');
-        if (1 > Plugin::isActive($pluginKey)) {
-			Message::addErrorMessage(Labels::getLabel('MSG_PLUGIN_NOT_ACTIVE', $langId));
-			FatUtility::dieWithError( Message::getHtml() );
-        }
-        
-        require_once CONF_PLUGIN_DIR . '/shipment-tracking/' . strtolower($pluginKey) . '/' . $pluginKey . '.php';
-
-        $tracking = new $pluginKey($langId);
-        $response = $tracking->getTrackingInfo($trackingNumber, $courier);
-        return $response;
+    private $keyName; 
+    private $shipmentTracking;
+   // private $error;
+    /**
+     * __construct
+     *
+     * @return void
+     */   
+    public function __construct()
+    {   
+        $this->init();
     }
     
-    public function getTrackingCouriers($langId)
+    /**
+     * init
+     *
+     * @return void
+     */
+    private function init()
     {
-        $shipmentTracking = FatApp::getConfig('CONF_DEFAULT_PLUGIN_' . Plugin::TYPE_SHIPMENT_TRACKING, FatUtility::VAR_INT, 0);
-        if (empty($shipmentTracking) || 1 > $langId) {		
-			Message::addErrorMessage(Labels::getLabel('MSG_INVALID_REQUEST', $langId));
-			FatUtility::dieWithError( Message::getHtml() );
+        $plugin = new Plugin();
+        $this->keyName = $plugin->getDefaultPluginKeyName(Plugin::TYPE_SHIPMENT_TRACKING);
+        $langId = CommonHelper::getLangId();
+        $this->shipmentTracking = PluginHelper::callPlugin($this->keyName, [$langId], $error, $langId);
+        if (false === $this->shipmentTracking) {
+            FatUtility::dieJsonError($error);
         }
 
-        $pluginKey = Plugin::getAttributesById($shipmentTracking, 'plugin_code');
-        if (1 > Plugin::isActive($pluginKey)) {
-			Message::addErrorMessage(Labels::getLabel('MSG_PLUGIN_NOT_ACTIVE', $langId));
-			FatUtility::dieWithError( Message::getHtml() );
+        if (false === $this->shipmentTracking->init()) {
+            FatUtility::dieJsonError($this->shipmentTracking->getError());
         }
-        
-        require_once CONF_PLUGIN_DIR . '/shipment-tracking/' . strtolower($pluginKey) . '/' . $pluginKey . '.php';
-
-        $tracking = new $pluginKey($langId);
-        $response = $tracking->getTrackingCouriers();
-        return $response;
+    }
+    
+    public function getTrackingInfo($trackingNumber, $courierCode)
+    {
+        if (false === $this->shipmentTracking->getTrackingInfo($trackingNumber, $courierCode)) {
+            $this->error = $this->shipmentTracking->getError();
+            return false;
+        }        
+        return $this->shipmentTracking->getResponse();
+    }
+    
+    public function getTrackingCouriers()
+    {   
+        if (false === $this->shipmentTracking->getTrackingCouriers()) {
+            $this->error = $this->shipmentTracking->getError();
+            return false;
+        }
+        return $this->shipmentTracking->getResponse();
+    }
+    
+    public function getError()
+    {
+        return $this->error;
     }
 	
 }

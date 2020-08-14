@@ -1526,5 +1526,16 @@ class AdminPrivilege
         return $this->checkPermission($adminId, static::SECTION_PICKUP_ADDRESSES, static::PRIVILEGE_WRITE, $returnResult);
     }
     
+    public function canViewTrackingRelationCode()
+    {
+        $plugin = new Plugin();
+        $shipApiPluginKey = $plugin->getDefaultPluginKeyName(Plugin::TYPE_SHIPPING_SERVICES);                    
+        $trackingApiPluginKey = $plugin->getDefaultPluginKeyName(Plugin::TYPE_SHIPMENT_TRACKING);
+        if(Plugin::isActive($shipApiPluginKey) === true && Plugin::isActive($trackingApiPluginKey) === true){
+            return true;
+        }
+        return false;
+    }
+    
     
 }

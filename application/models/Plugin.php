@@ -48,6 +48,7 @@ class Plugin extends MyAppModel
         self::TYPE_FULL_TEXT_SEARCH,
         self::TYPE_SPLIT_PAYMENT_METHOD,
         self::TYPE_SHIPPING_SERVICES,
+        self::TYPE_SHIPMENT_TRACKING,
     ];
 
     public const ATTRS = [
@@ -109,6 +110,7 @@ class Plugin extends MyAppModel
             self::TYPE_SPLIT_PAYMENT_METHOD => "payment-methods",
             self::TYPE_REGULAR_PAYMENT_METHOD => "payment-methods",
             self::TYPE_SHIPPING_SERVICES => "shipping-services",
+            self::TYPE_SHIPMENT_TRACKING => "shipment-tracking",
         ];
 
         if (array_key_exists($pluginType, $pluginDir)) {
