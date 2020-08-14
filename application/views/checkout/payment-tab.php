@@ -10,9 +10,14 @@ $pmethodCode = $paymentMethod["plugin_code"];
 
 $submitFld = $frm->getField('btn_submit');
 $submitFld->setFieldTagAttribute('class', "btn btn-primary");
+
+$class = '';
+if ('cashondelivery' != strtolower($pmethodCode)) {
+    $class = 'd-none';
+}
 ?>
-<div class="">
-    <p><strong><?php echo sprintf(Labels::getLabel('LBL_Pay_using_Payment_Method', $siteLangId), $pmethodName) ?>:</strong></p><br />
+<div class="<?php echo $class; ?>">
+    <p><strong><?php echo sprintf(Labels::getLabel('LBL_PAY_USING_PAYMENT_METHOD', $siteLangId), $pmethodName) ?>:</strong></p><br />
     <p><?php echo $pmethodDescription; ?></p><br />
     <?php if (!isset($error)) {
         echo $frm->getFormHtml();
@@ -25,15 +30,12 @@ $submitFld->setFieldTagAttribute('class', "btn btn-primary");
             $.mbsmessage(<?php echo $error; ?>, true, 'alert--danger');
         <?php } ?>
     });
-    var containerId = '#tabs-container';
 
     function confirmOrder(frm) {
         var data = fcom.frmData(frm);
         var action = $(frm).attr('action')
         var getExternalLibraryUrl = $(frm).data('external');
-        fcom.updateWithAjax(fcom.makeUrl('Checkout', 'ConfirmOrder'), data, function(res) {
-            // $(location).attr("href", action);
-
+        fcom.ajax(fcom.makeUrl('Checkout', 'ConfirmOrder'), data, function(res) {
             if ('undefined' != typeof getExternalLibraryUrl) {
                 fcom.ajax(getExternalLibraryUrl, '', function(t) {
                     var json = $.parseJSON(t);
@@ -58,8 +60,8 @@ $submitFld->setFieldTagAttribute('class', "btn btn-primary");
     }
 
     function loadChargeForm(action) {
-        $.mbsmessage.close();
         fcom.ajax(action, '', function(t) {
+            $.mbsmessage.close();
             try {
                 var ans = $.parseJSON(t);
                 if (1 > ans.status) {
@@ -68,7 +70,7 @@ $submitFld->setFieldTagAttribute('class', "btn btn-primary");
                 } else if ('undefined' != typeof ans.redirect) {
                     location.href = ans.redirect;
                 } else {
-                    $(containerId).html(ans.html);
+                    $('#tabs-container').html(ans.html);
                 }
             } catch (e) {
                 // console.log(e);
