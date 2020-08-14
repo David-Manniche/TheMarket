@@ -220,7 +220,7 @@ $rewardPoints = UserRewardBreakup::rewardPointBalance(UserAuthentication::getLog
                 
                         <div class="payment-area" <?php echo ($cartSummary['orderPaymentGatewayCharges'] <= 0) ? 'is--disabled' : ''; ?>>
                             <?php if ($cartSummary['orderPaymentGatewayCharges'] && 0 < count($paymentMethods)) { ?>
-                                <ul class="nav nav-payments" role="tablist" id="payment_methods_tab">
+                                <ul class="nav nav-payments <?php echo 1 == count($paymentMethods) ? 'd-none' : ''; ?>" role="tablist" id="payment_methods_tab">
                                     <?php foreach ($paymentMethods as $key => $val) {
                                         $pmethodCode = $val['plugin_code'];
                                         $pmethodId = $val['plugin_id'];
@@ -293,22 +293,26 @@ if (!empty($siteKey) && !empty($secretKey) && true === $paymentMethods->cashOnDe
             if (!tabObj || !tabObj.length) {
                 return;
             }
-            $('#tabs-container').html(fcom.getLoader());
+
             fcom.ajax(tabObj.attr('href'), '', function(response) {
                 $('#tabs-container').html(response);
                 var paymentMethod = tabObj.data('paymentmethod');
-                if ('cashondelivery' == paymentMethod.toLowerCase() && true == enableGcaptcha) {
-                    googleCaptcha();
-                }
-
-                var form = '#tabs-container form';
-                if (0 < $(form).length) {
-                    if (0 < $(form + " input[type='submit']").length) {
-                        $(form + " input[type='submit']").val(langLbl.requestProcessing);
+                if ('cashondelivery' == paymentMethod.toLowerCase()) {
+                    if (true == enableGcaptcha) {
+                        googleCaptcha();
                     }
-                    setTimeout(function() {
-                        $(form).submit()
-                    }, 100);
+                    $.mbsmessage.close();
+                } else {
+                    var form = '#tabs-container form';
+                    if (0 < $(form).length) {
+                        $('#tabs-container').append(fcom.getLoader());
+                        if (0 < $(form + " input[type='submit']").length) {
+                            $(form + " input[type='submit']").val(langLbl.requestProcessing);
+                        }
+                        setTimeout(function() {
+                            $(form).submit()
+                        }, 100);
+                    }
                 }
             });
         }
