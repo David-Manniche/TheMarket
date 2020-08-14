@@ -525,3 +525,13 @@ ALTER TABLE `tbl_order_product_shipment` ADD `opship_order_number` VARCHAR(150) 
 
 INSERT INTO `tbl_plugins` (`plugin_id`, `plugin_identifier`, `plugin_type`, `plugin_code`, `plugin_active`, `plugin_display_order`) VALUES (NULL, 'AfterShip Shipment', '14', 'AfterShipShipment', '1', '12'); 
 ALTER TABLE `tbl_orders_status_history` ADD `oshistory_courier` VARCHAR(255) NOT NULL AFTER `oshistory_tracking_number`;
+
+CREATE TABLE `tbl_tracking_courier_code_relation` (
+  `tccr_shipapi_plugin_id` int(11) NOT NULL,
+  `tccr_shipapi_courier_code` varchar(255) NOT NULL,
+  `tccr_tracking_plugin_id` int(11) NOT NULL,
+  `tccr_tracking_courier_code` varchar(255) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+ALTER TABLE `tbl_tracking_courier_code_relation`
+  ADD UNIQUE KEY `UNIQUE` (`tccr_shipapi_plugin_id`,`tccr_shipapi_courier_code`,`tccr_tracking_plugin_id`);

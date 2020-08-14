@@ -7,6 +7,7 @@ New Features:
     => Shipstation api for shiping rates.  
     => CDN handling based on configuration. 
     => Url Rewritting based on language. 
+    => After Ship API.
 Bugs:
     => 036750 - Seller Shop - Custom URL for shop collections
     => 036504 - wrong stats are displaying on buyer dashboard - pending and total orders
