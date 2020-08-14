@@ -452,8 +452,12 @@ class StripeConnectPayController extends PaymentController
 
             $accountId = User::getUserMeta($op['op_selprod_user_id'], 'stripe_account_id');
             // Credit sold product amount to seller wallet.
-            $comments = Labels::getLabel('MSG_PRODUCT_SOLD._#{invoice-no}._COMMISSION_CHARGED_{commission-amount}', $this->siteLangId);
-            $comments = CommonHelper::replaceStringData($comments, ['{invoice-no}' => $op['op_invoice_number'], '{commission-amount}' => $op['op_commission_charged']]);
+            $msg = 'MSG_PRODUCT_SOLD_#{invoice-no}.';
+            if (0 < $pendingTransferAmount) {
+                $msg .= "_DISCOUNT/REWARD_POINTS_INCLUSIVE.";
+            }
+            $comments = Labels::getLabel($msg, $this->siteLangId);
+            $comments = CommonHelper::replaceStringData($comments, ['{invoice-no}' => $op['op_invoice_number']]);
             Transactions::creditWallet($op['op_selprod_user_id'], Transactions::TYPE_PRODUCT_SALE, $netSellerAmount, $this->siteLangId, $comments, $op['op_id']);
             
             if (!empty($accountId)) {
@@ -483,7 +487,10 @@ class StripeConnectPayController extends PaymentController
                 $comments = $comments . ' ' . Labels::getLabel('MSG_TRANSFERED_TO_ACCOUNT_{account-id}.', $this->siteLangId);
                 $comments = CommonHelper::replaceStringData($comments, ['{account-id}' => $accountId]);
                 Transactions::debitWallet($op['op_selprod_user_id'], Transactions::TYPE_TRANSFER_TO_THIRD_PARTY_ACCOUNT, $firstTransferAmount, $this->siteLangId, $comments, $op['op_id'], $resp->id);
-                Transactions::debitWallet($op['op_selprod_user_id'], Transactions::TYPE_ADMIN_COMMISSION, $op['op_commission_charged'], $this->siteLangId, $comments, $op['op_id'], $resp->id);
+                
+                $comments = Labels::getLabel('MSG_COMMISSION_CHARGED._#{invoice-no}', $this->siteLangId);
+                $comments = CommonHelper::replaceStringData($comments, ['{invoice-no}' => $op['op_invoice_number']]);
+                Transactions::debitWallet($op['op_selprod_user_id'], Transactions::TYPE_ADMIN_COMMISSION, $op['op_commission_charged'], $this->siteLangId, $comments, $op['op_id']);
             }
 
             if (0 < $pendingTransferAmount) {

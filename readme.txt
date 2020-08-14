@@ -7,6 +7,7 @@ New Features:
     => Shipstation api for shiping rates.  
     => CDN handling based on configuration. 
     => Url Rewritting based on language. 
+    => Security Headers for clickjacking, XSS and MIME types. 
     => After Ship API.
 Bugs:
     => 036750 - Seller Shop - Custom URL for shop collections

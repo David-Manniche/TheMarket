@@ -43,7 +43,7 @@
 		<?php if (FatApp::getConfig('CONF_AUTO_RESTORE_ON', FatUtility::VAR_INT, 1) && CommonHelper::demoUrl()) {
 			$this->includeTemplate('restore-system/top-header.php');
 		} ?>
-        <div class="top-bar">
+        <div class="top-bar no-print">
             <div class="container">
                 <div class="row align-items-center">
                     <div class="col">
@@ -76,7 +76,7 @@
                 </div>
             </div>
         </div>
-        <div class="main-bar">
+        <div class="main-bar no-print">
             <div class="container">
                 <div class="logo-bar">
                     <a class="navs_toggle" href="javascript:void(0)"><span></span></a>

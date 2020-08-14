@@ -1,6 +1,6 @@
 <?php  defined('SYSTEM_INIT') or die('Invalid Usage'); ?>
 <?php if ($headerNavigation && count($headerNavigation)) { ?>
-<div class="last-bar">
+<div class="last-bar no-print">
     <div class="container">
         <div class="navigations__overlayx"></div>
         <div class="navigation-wrapper">

@@ -10,14 +10,16 @@
                     echo Labels::getLabel('LBL_Billing_to:', $siteLangId);
                 } ?>
                 </div>
-                <div class="review-block__content" role="cell">
-                    <?php echo $addresses['addr_title']; ?>
-                    <?php echo $addresses['addr_name']; ?>
-                    <?php echo $addresses['addr_address1'] . '<br>';?>
-                    <?php echo $addresses['addr_city'];?>,
-                    <?php echo $addresses['state_name'];?>,
-                    <?php echo (strlen($addresses['addr_zip']) > 0) ? Labels::getLabel('LBL_Zip:', $siteLangId) . ' ' . $addresses['addr_zip'] . ', ' : '';?>
-                    <?php echo (strlen($addresses['addr_phone']) > 0) ? Labels::getLabel('LBL_Phone:', $siteLangId) . ' ' . $addresses['addr_phone'] . '<br>' : '';?>
+                <div class="review-block__content" role="cell">  
+                    <div class="delivery-address">             
+                        <p><?php echo ( mb_strlen($addresses['addr_address1'] ) > 0 ) ? $addresses['addr_address1'] : '';?>
+                        <?php echo ( mb_strlen($addresses['addr_address2'] ) > 0 ) ? $addresses['addr_address2'] . '<br>' : '';?>
+                        <?php echo ( mb_strlen($addresses['addr_city']) > 0 ) ? $addresses['addr_city'] . ',' : '';?>
+                        <?php echo ( mb_strlen($addresses['state_name']) > 0 ) ? $addresses['state_name'] . '<br>' : '';?>
+                        <?php echo ( mb_strlen($addresses['country_name']) > 0 ) ? $addresses['country_name'] . ',' : '';?>
+                        <?php echo ( mb_strlen($addresses['addr_zip']) > 0 ) ?  $addresses['addr_zip'] . '<br>' : '';?></p>
+                        <p class="phone-txt"><?php echo ( mb_strlen($addresses['addr_phone']) > 0 ) ? $addresses['addr_phone'] . '' : '';?></p>
+                    </div>
                 </div>
                 <div class="review-block__link" role="cell">
                     <a class="link" href="javascript:void(0);" onClick="showAddressList()"><span><?php echo Labels::getLabel('LBL_Change_Address', $siteLangId); ?></span></a>

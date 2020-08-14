@@ -169,7 +169,7 @@ defined('SYSTEM_INIT') or die('Invalid Usage.'); ?>
                         <ul class="list-actions">
                             <li>
                                 <a href="javascript:void(0)" onclick="cart.remove('<?php echo md5($product['key']); ?>','cart')"><svg class="svg" width="24px" height="24px" title="<?php echo Labels::getLabel('LBL_Remove', $siteLangId); ?>">
-                                        <use xlink:href="<?php echo CONF_WEBROOT_URL;?>/retina/sprite.svg#remove" href="<?php echo CONF_WEBROOT_URL;?>/retina/sprite.svg#remove">
+                                        <use xlink:href="<?php echo CONF_WEBROOT_URL;?>images/retina/sprite.svg#remove" href="<?php echo CONF_WEBROOT_URL;?>images/retina/sprite.svg#remove">
                                         </use>
                                     </svg>
                                 </a></li>
@@ -185,7 +185,7 @@ defined('SYSTEM_INIT') or die('Invalid Usage.'); ?>
             <ul class="list-group list-cart">
                 <?php foreach ($saveForLaterProducts as $product) {
                     $productUrl = UrlHelper::generateUrl('Products', 'View', array($product['selprod_id']));
-                    $imageUrl = UrlHelper::getCachedUrl(UrlHelper::generateFileUrl('image', 'product', array($product['product_id'], "THUMB",$product['selprod_id'], 0, $siteLangId)), CONF_IMG_CACHE_TIME, '.jpg');               
+                    $imageUrl = UrlHelper::getCachedUrl(UrlHelper::generateFileUrl('image', 'product', array($product['product_id'], "THUMB",$product['selprod_id'], 0, $siteLangId)), CONF_IMG_CACHE_TIME, '.jpg');
                     $productTitle =  ($product['selprod_title']) ? $product['selprod_title'] : $product['product_name'];
                 ?>
                 <li class="list-group-item <?php echo md5($product['key']); ?> <?php echo (!$product['in_stock']) ? 'disabled' : ''; ?>">
@@ -215,7 +215,7 @@ defined('SYSTEM_INIT') or die('Invalid Usage.'); ?>
                         <ul class="list-actions">
                             <li>
                                 <a href="javascript:void(0)" onclick="removeFromWishlist(<?php echo $product['selprod_id']; ?>, <?php echo $product['uwlp_uwlist_id']; ?>, event)"><svg class="svg" width="24px" height="24px" title="<?php echo Labels::getLabel('LBL_Remove', $siteLangId); ?>">
-                                        <use xlink:href="<?php echo CONF_WEBROOT_URL;?>/retina/sprite.svg#remove" href="<?php echo CONF_WEBROOT_URL;?>/retina/sprite.svg#remove">
+                                        <use xlink:href="<?php echo CONF_WEBROOT_URL;?>images/retina/sprite.svg#remove" href="<?php echo CONF_WEBROOT_URL;?>images/retina/sprite.svg#remove">
                                         </use>
                                     </svg>
                                 </a></li>

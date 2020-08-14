@@ -104,8 +104,8 @@
         margin: 0 1rem;
         color: $brand-color;
         text-align: #{$end-direction};
-        flex: 0 0 110px;
-        max-width: 110px;
+        /*flex: 0 0 110px;
+        max-width: 110px;*/
         @include media-breakpoint-down(md) {
             & {
                 flex: 1;
@@ -227,7 +227,7 @@
     display: flex;
     flex-wrap: wrap;
     flex: 1;
-    max-width: 300px;
+    /*max-width: 300px;*/
     min-width: 0;
     @include media-breakpoint-down(md) {
         & {
