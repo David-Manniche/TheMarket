@@ -6,7 +6,8 @@ New Features:
     => Configuration to on/off seller shipping.
     => Shipstation api for shiping rates.  
     => CDN handling based on configuration. 
-    => Url Rewritting based on language. 
+    => Url Rewritting based on language.
+    => Security Headers for clickjacking, XSS and MIME types. 
 Bugs:
     => 036750 - Seller Shop - Custom URL for shop collections
     => 036504 - wrong stats are displaying on buyer dashboard - pending and total orders

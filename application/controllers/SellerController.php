@@ -1641,7 +1641,7 @@ class SellerController extends SellerBaseController
         $shopDetails['shop_state'] = $stateCode;
         
         $shopFrm->fill($shopDetails);
-        $shopFrm->addSecurityToken();
+        //$shopFrm->addSecurityToken();
 
         $plugin = new Plugin();
         $keyName = $plugin->getDefaultPluginKeyName(Plugin::TYPE_SPLIT_PAYMENT_METHOD);
@@ -1996,27 +1996,27 @@ class SellerController extends SellerBaseController
             }
         }
         
-        $stateCode = FatApp::getPostedData('shop_state', FatUtility::VAR_STRING, '');
-        $stateId = States::getStateByCode($stateCode, 'state_id');
-
+        $stateCode = $post['shop_state'];
         $frm = $this->getShopInfoForm();
         $post = $frm->getFormDataFromArray($post);
         $post['shop_country_id'] = Countries::getCountryByCode($post['shop_country_code'], 'country_id');
+
         if (false == $post) {
             Message::addErrorMessage(current($frm->getValidationErrors()));
             FatUtility::dieJsonError(Message::getHtml());
         }
 
-        $token = ['fatpostsectkn' => FatApp::getPostedData('fatpostsectkn', null, '')];
-        $csrf = $frm->validateSecurityToken($token);
-        if (false == $csrf) {
-            Message::addErrorMessage(current($frm->getValidationErrors()));
-            FatUtility::dieJsonError(Message::getHtml());
-        }
-        $frm->expireSecurityToken($token);
+//        $token = ['fatpostsectkn' => FatApp::getPostedData('fatpostsectkn', null, '')];
+//        $csrf = $frm->validateSecurityToken($token);
+//        if (false == $csrf) {
+//            Message::addErrorMessage(current($frm->getValidationErrors()));
+//            FatUtility::dieJsonError(Message::getHtml());
+//        }
+//        $frm->expireSecurityToken($token);
 
         $post['shop_user_id'] = $userId;
-        $post['shop_state_id'] = $stateId;
+        $stateData = States::getStateByCountryAndCode($post['shop_country_id'], $stateCode);
+        $post['shop_state_id'] = $stateData['state_id'];
 
 
         if ($shop_id > 0) {
