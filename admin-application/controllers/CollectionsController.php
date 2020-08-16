@@ -191,7 +191,11 @@ class CollectionsController extends AdminBaseController
             }
         }
         
-        if (!in_array($post['collection_type'], Collections::COLLECTION_WITHOUT_RECORDS)) {
+        if ($post['collection_type'] == Collections::COLLECTION_TYPE_BANNER) {
+            $this->set('openBannersForm', true);
+        }
+		
+		if (!in_array($post['collection_type'], Collections::COLLECTION_WITHOUT_RECORDS)) {
             $this->set('openRecordForm', true);
         }
         
@@ -434,6 +438,141 @@ class CollectionsController extends AdminBaseController
         $this->set('collection_layout_type', $collectionDetails['collection_layout_type']);
         $this->set('frm', $frm);
         $this->_template->render(false, false);
+    }
+	
+	public function bannerForm($collectionId, $bannerId = 0)
+    {
+        $this->objPrivilege->canViewCollections();
+
+        $collectionId = FatUtility::int($collectionId);
+        $bannerId = FatUtility::int($bannerId);
+        
+        $collectionDetails = Collections::getAttributesById($collectionId);
+        if (!false == $collectionDetails && ($collectionDetails['collection_active'] != applicationConstants::ACTIVE || $collectionDetails['collection_deleted'] == applicationConstants::YES)) {
+            Message::addErrorMessage($this->str_invalid_request_id);
+            FatUtility::dieWithError(Message::getHtml());
+        }
+        
+        $frm = $this->getBannerForm($collectionId, $bannerId);
+		
+		$siteDefaultLangId = FatApp::getConfig('conf_default_site_lang', FatUtility::VAR_INT, 1);
+		
+		$langData = Language::getAllNames();
+        unset($langData[$siteDefaultLangId]);
+        $this->set('otherLangData', $langData);
+        $this->set('languages', Language::getAllNames());
+		
+        $this->set('collection_id', $collectionId);
+        $this->set('collection_type', $collectionDetails['collection_type']);
+        $this->set('collection_layout_type', $collectionDetails['collection_layout_type']);
+        $this->set('frm', $frm);
+        $this->_template->render(false, false);
+    }
+	
+	public function setupBanner()
+    {
+        $this->objPrivilege->canEditBanners();
+
+        $frm = $this->getBannerForm();
+        $post = $frm->getFormDataFromArray(FatApp::getPostedData());
+
+        if (false === $post) {
+            Message::addErrorMessage(current($frm->getValidationErrors()));
+            FatUtility::dieJsonError(Message::getHtml());
+        }
+
+        $collection_id = $post['collection_id'];
+        $banner_id = $post['banner_id'];
+		
+		$collectionDetails = Collections::getAttributesById($collection_id);
+        if (!false == $collectionDetails && ($collectionDetails['collection_active'] != applicationConstants::ACTIVE || $collectionDetails['collection_deleted'] == applicationConstants::YES)) {
+            Message::addErrorMessage($this->str_invalid_request_id);
+            FatUtility::dieWithError(Message::getHtml());
+        }
+		
+		if ($collectionDetails['collection_layout_type'] == Collections::TYPE_BANNER_LAYOUT1) {
+			$post['banner_blocation_id'] = Collections::HOME_PAGE_TOP_BANNER;
+		} else {
+			$post['banner_blocation_id'] = Collections::HOME_PAGE_BOTTOM_BANNER;
+		}
+		
+		$post['banner_record_id'] = $collection_id;
+		$post['banner_type'] = Banner::TYPE_BANNER;;
+		
+        $record = new Banner($banner_id);
+        $record->assignValues($post);
+
+        if (!$record->save()) {
+            Message::addErrorMessage($record->getError());
+            FatUtility::dieJsonError(Message::getHtml());
+        }
+
+        $banner_id = $record->getMainTableRecordId();
+		
+		$autoUpdateOtherLangsData = FatApp::getPostedData('auto_update_other_langs_data', FatUtility::VAR_INT, 0);
+        $siteDefaultLangId = FatApp::getConfig('conf_default_site_lang', FatUtility::VAR_INT, 1);
+
+		$data = array(
+        'bannerlang_banner_id' => $banner_id,
+        'bannerlang_lang_id' => $siteDefaultLangId,
+        'banner_title' => $post['banner_title'][$siteDefaultLangId],
+        );
+
+        $bannerObj = new Banner($banner_id);
+        if (!$bannerObj->updateLangData($siteDefaultLangId, $data)) {
+            Message::addErrorMessage($bannerObj->getError());
+            FatUtility::dieWithError(Message::getHtml());
+        }
+
+        $autoUpdateOtherLangsData = FatApp::getPostedData('auto_update_other_langs_data', FatUtility::VAR_INT, 0);
+        if (0 < $autoUpdateOtherLangsData) {
+            $updateLangDataobj = new TranslateLangData(Banner::DB_TBL_LANG);
+            if (false === $updateLangDataobj->updateTranslatedData($banner_id)) {
+                Message::addErrorMessage($updateLangDataobj->getError());
+                FatUtility::dieWithError(Message::getHtml());
+            }
+        }
+		
+        $this->set('msg', Labels::getLabel('MSG_Setup_Successful', $this->adminLangId));
+        $this->set('banner_id', $banner_id);
+        $this->set('langId', $newTabLangId);
+        $this->set('blocation_id', $post['banner_blocation_id']);
+        $this->_template->render(false, false, 'json-success.php');
+    }
+	
+	private function getBannerForm($collectionId = 0, $banner_id = 0)
+    {
+        $this->objPrivilege->canViewCollections();
+        $collectionId = FatUtility::int($collectionId);
+        $bannerId = FatUtility::int($banner_id);
+		
+		$siteDefaultLangId = FatApp::getConfig('conf_default_site_lang', FatUtility::VAR_INT, 1);
+		$frm = new Form('frmBanner');
+        
+		$frm->addRequiredField(Labels::getLabel('LBL_Banner_Title', $this->adminLangId), 'banner_title[' . $siteDefaultLangId . ']');
+		
+		$fld = $frm->addHiddenField('', 'collection_id', $collectionId);
+		$fld = $frm->addHiddenField('', 'banner_id', $bannerId);
+        $fld->requirements()->setInt();
+        $fld->requirements()->setIntPositive();
+		
+        $frm->addTextBox(Labels::getLabel('LBL_Url', $this->adminLangId), 'banner_url')->requirements()->setRequired(true);
+
+        $linkTargetsArr = applicationConstants::getLinkTargetsArr($this->adminLangId);
+        $frm->addSelectBox(Labels::getLabel('LBL_Open_In', $this->adminLangId), 'banner_target', $linkTargetsArr, '', array(), '');
+		
+		$translatorSubscriptionKey = FatApp::getConfig('CONF_TRANSLATOR_SUBSCRIPTION_KEY', FatUtility::VAR_STRING, '');
+        $langData = Language::getAllNames();
+        unset($langData[$siteDefaultLangId]);
+        if (!empty($translatorSubscriptionKey) && count($langData) > 0) {
+            $frm->addCheckBox(Labels::getLabel('LBL_Translate_To_Other_Languages', $this->adminLangId), 'auto_update_other_langs_data', 1, array(), false, 0);
+        }
+        foreach ($langData as $langId => $data) {
+            $frm->addTextBox(Labels::getLabel('LBL_Banner_Title', $this->adminLangId), 'banner_title[' . $langId . ']');
+        }
+		
+        $frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_Save_Changes', $this->adminLangId));
+        return $frm;
     }
     
     private function getRecordsForm($collectionId = 0, $collectionType = 0)

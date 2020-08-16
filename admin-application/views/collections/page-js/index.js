@@ -69,6 +69,10 @@ $(document).ready(function() {
         var data = fcom.frmData(frm);
         fcom.updateWithAjax(fcom.makeUrl('Collections', 'setup'), data, function(t) {
             reloadList();
+			if(t.openBannersForm) {
+            	bannerForm(t.collectionId);
+            	return;
+            }
             if(t.openRecordForm) {
             	recordForm(t.collectionId, t.collectionType);
             	return;
@@ -119,6 +123,15 @@ $(document).ready(function() {
     recordForm = function(id, type) {
         $.facebox(function() {
             fcom.ajax(fcom.makeUrl('Collections', 'recordForm', [id, type]), '', function(t) {
+                $.facebox(t, 'faceboxWidth');
+                reloadRecordsList(id, type);
+            });
+        });
+    };
+	
+	bannerForm = function(id) {
+        $.facebox(function() {
+            fcom.ajax(fcom.makeUrl('Collections', 'bannerForm', [id]), '', function(t) {
                 $.facebox(t, 'faceboxWidth');
                 reloadRecordsList(id, type);
             });

@@ -390,7 +390,7 @@ class BannersController extends AdminBaseController
 
         $bannerObj = new Banner($banner_id);
         if (!$bannerObj->updateLangData($lang_id, $data)) {
-            Message::addErrorMessage($taxObj->getError());
+            Message::addErrorMessage($bannerObj->getError());
             FatUtility::dieWithError(Message::getHtml());
         }
 
