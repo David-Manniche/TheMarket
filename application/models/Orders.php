@@ -935,7 +935,7 @@ class Orders extends MyAppModel
         return true;
     }
 
-    public function getChildOrders($criterias, $orderType = Orders::ORDER_PRODUCT, $langId = 0)
+    public function getChildOrders($criterias, $orderType = Orders::ORDER_PRODUCT, $langId = 0, $joinSellerProducts = false)
     {
         $langId = FatUtility::int($langId);
 
@@ -959,6 +959,14 @@ class Orders extends MyAppModel
             $srch->joinTable(OrderProduct::DB_TBL_OP_TO_SHIPPING_USERS, 'LEFT OUTER JOIN', 'optosu.optsu_op_id = op.op_id', 'optosu');
             $srch->joinTable(Orders::DB_TBL_ORDER_PRODUCTS_SHIPPING, 'LEFT OUTER JOIN', 'ops.opshipping_op_id = op.op_id', 'ops');
             $srch->joinTable(OrderProduct::DB_TBL_SETTINGS, 'LEFT OUTER JOIN', 'op.op_id = opst.opsetting_op_id', 'opst');
+
+            if (true === $joinSellerProducts) {
+                $srch->joinTable(SellerProduct::DB_TBL, 'LEFT OUTER JOIN', 'sp.selprod_id = op.op_selprod_id and op.op_is_batch = 0', 'sp');
+                if ($langId) {
+                    $srch->joinTable(SellerProduct::DB_TBL_LANG, 'LEFT OUTER JOIN', 'sp_l.selprodlang_selprod_id = sp.selprod_id AND sp_l.selprodlang_lang_id = ' . $langId, 'sp_l');
+                }
+            }
+
             $srch->addOrder("op_id", "desc");
             $rs = $srch->getResultSet();
 

@@ -98,16 +98,18 @@ $rewardPoints = UserRewardBreakup::rewardPointBalance(UserAuthentication::getLog
                 </div>
             <?php } ?>
 
-            <?php /* if ($userWalletBalance > 0 && $cartSummary['orderNetAmount'] > 0) { ?>
-            <label class="checkbox"><input onChange="walletSelection(this)" type="checkbox" <?php echo ($cartSummary["cartWalletSelected"]) ? 'checked="checked"' : ''; ?> name="pay_from_wallet" id="pay_from_wallet" value="1"><?php if ($cartSummary["cartWalletSelected"]) {
-                echo ''.Labels::getLabel('MSG_Applied_Wallet_Credits', $siteLangId)?>: <?php echo CommonHelper::displayMoneyFormat($cartSummary["WalletAmountCharge"], true, false, true, false, true);
-            } else {
-                echo ''.Labels::getLabel('MSG_Apply_Wallet_Credits', $siteLangId)?>: <?php echo CommonHelper::displayMoneyFormat($userWalletBalance, true, false, true, false, true)?>
-            <?php } ?> <i class="input-helper"></i>            
+            <?php 
+			/* if ($canUseWalletForPayment) {
+				if ($userWalletBalance > 0 && $cartSummary['orderNetAmount'] > 0) { ?>
+				<label class="checkbox"><input onChange="walletSelection(this)" type="checkbox" <?php echo ($cartSummary["cartWalletSelected"]) ? 'checked="checked"' : ''; ?> name="pay_from_wallet" id="pay_from_wallet" value="1"><?php if ($cartSummary["cartWalletSelected"]) {
+					echo ''.Labels::getLabel('MSG_Applied_Wallet_Credits', $siteLangId)?>: <?php echo CommonHelper::displayMoneyFormat($cartSummary["WalletAmountCharge"], true, false, true, false, true);
+				} else {
+					echo ''.Labels::getLabel('MSG_Apply_Wallet_Credits', $siteLangId)?>: <?php echo CommonHelper::displayMoneyFormat($userWalletBalance, true, false, true, false, true)?>
+				<?php } ?> <i class="input-helper"></i>            
 
-            </label>
-            <?php } */ ?>
-
+				</label>
+				<?php }
+			} */ ?>
         </div>
     </div>
 </main>
@@ -218,7 +220,7 @@ $rewardPoints = UserRewardBreakup::rewardPointBalance(UserAuthentication::getLog
                 
                         <div class="payment-area" <?php echo ($cartSummary['orderPaymentGatewayCharges'] <= 0) ? 'is--disabled' : ''; ?>>
                             <?php if ($cartSummary['orderPaymentGatewayCharges'] && 0 < count($paymentMethods)) { ?>
-                                <ul class="nav nav-payments" role="tablist" id="payment_methods_tab">
+                                <ul class="nav nav-payments <?php echo 1 == count($paymentMethods) ? 'd-none' : ''; ?>" role="tablist" id="payment_methods_tab">
                                     <?php foreach ($paymentMethods as $key => $val) {
                                         $pmethodCode = $val['plugin_code'];
                                         $pmethodId = $val['plugin_id'];
@@ -291,22 +293,26 @@ if (!empty($siteKey) && !empty($secretKey) && true === $paymentMethods->cashOnDe
             if (!tabObj || !tabObj.length) {
                 return;
             }
-            $('#tabs-container').html(fcom.getLoader());
+
             fcom.ajax(tabObj.attr('href'), '', function(response) {
                 $('#tabs-container').html(response);
                 var paymentMethod = tabObj.data('paymentmethod');
-                if ('cashondelivery' == paymentMethod.toLowerCase() && true == enableGcaptcha) {
-                    googleCaptcha();
-                }
-
-                var form = '#tabs-container form';
-                if (0 < $(form).length) {
-                    if (0 < $(form + " input[type='submit']").length) {
-                        $(form + " input[type='submit']").val(langLbl.requestProcessing);
+                if ('cashondelivery' == paymentMethod.toLowerCase()) {
+                    if (true == enableGcaptcha) {
+                        googleCaptcha();
                     }
-                    setTimeout(function() {
-                        $(form).submit()
-                    }, 100);
+                    $.mbsmessage.close();
+                } else {
+                    var form = '#tabs-container form';
+                    if (0 < $(form).length) {
+                        $('#tabs-container').append(fcom.getLoader());
+                        if (0 < $(form + " input[type='submit']").length) {
+                            $(form + " input[type='submit']").val(langLbl.requestProcessing);
+                        }
+                        setTimeout(function() {
+                            $(form).submit()
+                        }, 100);
+                    }
                 }
             });
         }

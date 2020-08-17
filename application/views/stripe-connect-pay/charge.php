@@ -164,7 +164,7 @@ $paymentIntendId = isset($paymentIntendId) ? $paymentIntendId : '';
         doPayment = function(frm, orderId) {
             if (!$(frm).validate()) return;
             var data = fcom.frmData(frm);
-            fcom.updateWithAjax(fcom.makeUrl(controller, 'charge', [orderId]), data, function(t) {
+            fcom.ajax(fcom.makeUrl(controller, 'charge', [orderId]), data, function(t) {
                 if ('undefined' != typeof t.redirectUrl) {
                     window.location = t.redirectUrl;
                 } else {

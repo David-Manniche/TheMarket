@@ -414,6 +414,8 @@ $("document").ready(function () {
             return false;
         }
         $(pageContent).html(fcom.getLoader());
+        
+        $.mbsmessage(langLbl.requestProcessing, false, 'alert--process');
         fcom.ajax(fcom.makeUrl('Checkout', 'PaymentSummary'), '', function (ans) {
             $(pageContent).html(ans);
             $(paymentDiv).addClass('is-current');

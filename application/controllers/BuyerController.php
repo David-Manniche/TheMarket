@@ -2553,7 +2553,7 @@ class BuyerController extends BuyerBaseController
         }
 
 		$shipmentTracking = new ShipmentTracking();
-		$trackingInfo = $shipmentTracking->getTrackingInfo($trackingNumber, $courier, $this->siteLangId);
+		$trackingInfo = $shipmentTracking->getTrackingInfo($trackingNumber, $courier);
 		$this->set('trackingInfo', $trackingInfo);
 		$this->_template->render(false, false);
 	}

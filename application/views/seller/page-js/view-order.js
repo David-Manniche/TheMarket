@@ -26,7 +26,7 @@ $(document).ready(function(){
     
     trackOrder = function(trackingNumber, courier){
         $.facebox(function() {
-            fcom.ajax(fcom.makeUrl('Buyer','orderTrackingInfo', [trackingNumber, courier]), '', function(res){
+            fcom.ajax(fcom.makeUrl('Seller','orderTrackingInfo', [trackingNumber, courier]), '', function(res){
                 $.facebox( res,'faceboxWidth');
             });
         });

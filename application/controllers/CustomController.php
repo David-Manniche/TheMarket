@@ -170,7 +170,7 @@ class CustomController extends MyAppController
         $searchFrm = $this->getSearchFaqForm();
         $faqMainCat = FatApp::getConfig("CONF_FAQ_PAGE_MAIN_CATEGORY", null, '');
         if (!empty($catId) && $catId > 0) {
-            $faqCatId = array( $catId );
+            $faqCatId = array($catId);
         } elseif ($faqMainCat) {
             $faqCatId = array($faqMainCat);
         } else {
@@ -325,7 +325,7 @@ class CustomController extends MyAppController
         $storiesSrch->doNotLimitRecords();
         $storiesSrch->addCondition('sstory_featured', '=', applicationConstants::YES);
         $storiesSrch->addOrder('RAND()');
-        $storiesSrch->addMultipleFields(array( 'sstory_content', 'sstory_name', 'sstory_site_domain' ));
+        $storiesSrch->addMultipleFields(array('sstory_content', 'sstory_name', 'sstory_site_domain'));
         $sroriesRs = $storiesSrch->getResultSet();
         $stories = FatApp::getDb()->fetchAll($sroriesRs);
         /* ] */
@@ -333,13 +333,13 @@ class CustomController extends MyAppController
 
         /* content Blocks[ */
         $becomeSellerPageBlock = array(
-        Extrapage::BECOME_SELLER_PAGE_BLOCK1,
-        Extrapage::BECOME_SELLER_PAGE_BLOCK2,
-        Extrapage::BECOME_SELLER_PAGE_BLOCK3,
-        Extrapage::BECOME_SELLER_PAGE_BLOCK4,
-        Extrapage::BECOME_SELLER_PAGE_BLOCK5,
-        Extrapage::BECOME_SELLER_PAGE_BLOCK6,
-        Extrapage::BECOME_SELLER_PAGE_BLOCK7,
+            Extrapage::BECOME_SELLER_PAGE_BLOCK1,
+            Extrapage::BECOME_SELLER_PAGE_BLOCK2,
+            Extrapage::BECOME_SELLER_PAGE_BLOCK3,
+            Extrapage::BECOME_SELLER_PAGE_BLOCK4,
+            Extrapage::BECOME_SELLER_PAGE_BLOCK5,
+            Extrapage::BECOME_SELLER_PAGE_BLOCK6,
+            Extrapage::BECOME_SELLER_PAGE_BLOCK7,
         );
 
         $srch = Extrapage::getSearchObject($this->siteLangId);
@@ -366,29 +366,29 @@ class CustomController extends MyAppController
 
         switch ($action) {
 
-        case 'faqDetail':
+            case 'faqDetail':
 
-            $srch = FaqCategory::getSearchObject($this->siteLangId);
-            $srch->addCondition('faqcat_active', '=', applicationConstants::ACTIVE);
-            $srch->addCondition('faqcat_type', '=', FaqCategory::FAQ_PAGE);
-            $srch->addCondition('faqcat_id', '=', $parameters[0]);
-            $srch->setPageSize(1);
+                $srch = FaqCategory::getSearchObject($this->siteLangId);
+                $srch->addCondition('faqcat_active', '=', applicationConstants::ACTIVE);
+                $srch->addCondition('faqcat_type', '=', FaqCategory::FAQ_PAGE);
+                $srch->addCondition('faqcat_id', '=', $parameters[0]);
+                $srch->setPageSize(1);
 
-            $rs = $srch->getResultSet();
-            $records = FatApp::getDb()->fetch($rs);
+                $rs = $srch->getResultSet();
+                $records = FatApp::getDb()->fetch($rs);
 
-            $nodes[] = array('title' => Labels::getLabel('LBL_Faq', $this->siteLangId), 'href' => UrlHelper::generateUrl('custom', 'Faq'));
-            $nodes[] = array('title' => $records['faqcat_name'] );
+                $nodes[] = array('title' => Labels::getLabel('LBL_Faq', $this->siteLangId), 'href' => UrlHelper::generateUrl('custom', 'Faq'));
+                $nodes[] = array('title' => $records['faqcat_name']);
 
-            break;
+                break;
 
-        case 'faq':
-            $nodes[] = array('title' => Labels::getLabel('LBL_Faq', $this->siteLangId), 'href' => UrlHelper::generateUrl('custom', 'Faq'));
-            break;
+            case 'faq':
+                $nodes[] = array('title' => Labels::getLabel('LBL_Faq', $this->siteLangId), 'href' => UrlHelper::generateUrl('custom', 'Faq'));
+                break;
 
-        default:
-            $nodes[] = array('title' => FatUtility::camel2dashed($action));
-            break;
+            default:
+                $nodes[] = array('title' => FatUtility::camel2dashed($action));
+                break;
         }
         return $nodes;
     }
@@ -424,7 +424,6 @@ class CustomController extends MyAppController
             }
             $cartObj->updateUserCart(); */
         }
-        $this->set('textMessage', $textMessage);
         if (CommonHelper::isAppUser()) {
             $this->set('exculdeMainHeaderDiv', true);
             $this->_template->render(false, false);
@@ -471,15 +470,24 @@ class CustomController extends MyAppController
         FatApp::redirectUser(UrlHelper::generateFullUrl('Checkout'));
     }
 
-    public function paymentSuccess($orderId)
+    public function paymentSuccess($orderId, $print = '')
     {
         if (!$orderId) {
             FatUtility::exitWithErrorCode(404);
         }
-        
+
+        $userId = UserAuthentication::getLoggedUserId();
+        $userObj = new User($userId);
+        $srch = $userObj->getUserSearchObj(['credential_email']);
+        $rs = $srch->getResultSet();
+        if (!$rs) {
+            FatUtility::exitWithErrorCode(404);
+        }
+        $user = FatApp::getDb()->fetch($rs);
+
         $orderObj = new Orders();
         $orderInfo = $orderObj->getOrderById($orderId, $this->siteLangId);
-        
+
         if ($orderInfo['order_user_id'] > 0) {
             $orderProdData = OrderProduct::getOpArrByOrderId($orderId);
             foreach ($orderProdData as $data) {
@@ -487,30 +495,35 @@ class CustomController extends MyAppController
                 AbandonedCart::saveAbandonedCart($orderInfo['order_user_id'], $data['op_selprod_id'], $data['op_qty'], AbandonedCart::ACTION_PURCHASED, $amount);
             }
         }
-        
-        $cartObj = new Cart(UserAuthentication::getLoggedUserId(), $this->siteLangId, $this->app_user['temp_user_id']);
+
+        $cartObj = new Cart($userId, $this->siteLangId, $this->app_user['temp_user_id']);
         $cartObj->clear();
         $cartObj->updateUserCart();
-        
+
         if ($orderInfo['order_type'] == Orders::ORDER_PRODUCT) {
-            $searchReplaceArray = array(
-              '{account}' => '<a href="' . UrlHelper::generateUrl('buyer') . '">' . Labels::getLabel('MSG_My_Account', $this->siteLangId) . '</a>',
-              '{history}' => '<a href="' . UrlHelper::generateUrl('buyer', 'orders') . '">' . Labels::getLabel('MSG_History', $this->siteLangId) . '</a>',
-              '{contactus}' => '<a href="' . UrlHelper::generateUrl('custom', 'contactUs') . '">' . Labels::getLabel('MSG_Store_Owner', $this->siteLangId) . '</a>',
+            /* $searchReplaceArray = array(
+                '{account}' => '<a href="' . UrlHelper::generateUrl('buyer') . '">' . Labels::getLabel('MSG_My_Account', $this->siteLangId) . '</a>',
+                '{history}' => '<a href="' . UrlHelper::generateUrl('buyer', 'orders') . '">' . Labels::getLabel('MSG_History', $this->siteLangId) . '</a>',
+                '{contactus}' => '<a href="' . UrlHelper::generateUrl('custom', 'contactUs') . '">' . Labels::getLabel('MSG_Store_Owner', $this->siteLangId) . '</a>',
+                '{buyer-email}' => '<strong>' . $user['credential_email'] . '</strong>',
             );
-            $textMessage = Labels::getLabel('MSG_customer_success_order_{account}_{history}_{contactus}', $this->siteLangId);
-            $textMessage = str_replace(array_keys($searchReplaceArray), array_values($searchReplaceArray), $textMessage);
+            $textMessage = Labels::getLabel('MSG_customer_success_order_{account}_{history}_{contactus}', $this->siteLangId); */
+            $searchReplaceArray = array(
+                '{BUYER-EMAIL}' => '<strong>' . $user['credential_email'] . '</strong>',
+            );
+            $textMessage = Labels::getLabel('MSG_CUSTOMER_SUCCESS_ORDER_{BUYER-EMAIL}', $this->siteLangId);
+            $textMessage = CommonHelper::replaceStringData($textMessage, $searchReplaceArray);
         } elseif ($orderInfo['order_type'] == Orders::ORDER_SUBSCRIPTION) {
             $searchReplaceArray = array(
-              '{account}' => '<a href="' . UrlHelper::generateUrl('seller') . '">' . Labels::getLabel('MSG_My_Account', $this->siteLangId) . '</a>',
-              '{subscription}' => '<a href="' . UrlHelper::generateUrl('seller', 'subscriptions') . '">' . Labels::getLabel('MSG_My_Subscription', $this->siteLangId) . '</a>',
+                '{account}' => '<a href="' . UrlHelper::generateUrl('seller') . '">' . Labels::getLabel('MSG_My_Account', $this->siteLangId) . '</a>',
+                '{subscription}' => '<a href="' . UrlHelper::generateUrl('seller', 'subscriptions') . '">' . Labels::getLabel('MSG_My_Subscription', $this->siteLangId) . '</a>',
             );
             $textMessage = Labels::getLabel('MSG_subscription_success_order_{account}_{subscription}', $this->siteLangId);
             $textMessage = str_replace(array_keys($searchReplaceArray), array_values($searchReplaceArray), $textMessage);
         } elseif ($orderInfo['order_type'] == Orders::ORDER_WALLET_RECHARGE) {
             $searchReplaceArray = array(
-              '{account}' => '<a href="' . UrlHelper::generateUrl('account') . '">' . Labels::getLabel('MSG_My_Account', $this->siteLangId) . '</a>',
-              '{credits}' => '<a href="' . UrlHelper::generateUrl('account', 'credits') . '">' . Labels::getLabel('MSG_My_Credits', $this->siteLangId) . '</a>',
+                '{account}' => '<a href="' . UrlHelper::generateUrl('account') . '">' . Labels::getLabel('MSG_My_Account', $this->siteLangId) . '</a>',
+                '{credits}' => '<a href="' . UrlHelper::generateUrl('account', 'credits') . '">' . Labels::getLabel('MSG_My_Credits', $this->siteLangId) . '</a>',
             );
             $textMessage = Labels::getLabel('MSG_wallet_success_order_{account}_{credits}', $this->siteLangId);
             $textMessage = str_replace(array_keys($searchReplaceArray), array_values($searchReplaceArray), $textMessage);
@@ -536,8 +549,18 @@ class CustomController extends MyAppController
             unset($_SESSION[UserAuthentication::SESSION_ELEMENT_NAME]);
         }
 
+        $address = $orderObj->getOrderAddresses($orderInfo['order_id']);
+        $orderInfo['billingAddress'] = $address[Orders::BILLING_ADDRESS_TYPE];
+        $orderInfo['shippingAddress'] = (!empty($address[Orders::SHIPPING_ADDRESS_TYPE]) ? $address[Orders::SHIPPING_ADDRESS_TYPE] : []);
+        
+        $orderInfo['orderProducts'] = $orderObj->getChildOrders(['order_id' => $orderInfo['order_id']], $orderInfo['order_type'], $orderInfo['order_language_id'], true);
+
         $this->set('textMessage', $textMessage);
         $this->set('orderInfo', $orderInfo);
+        
+        $print = ('print' == $print);
+        $this->set('print', $print);
+        // CommonHelper::printArray($orderInfo, true);
         if (CommonHelper::isAppUser()) {
             $this->set('exculdeMainHeaderDiv', true);
             $this->_template->render(false, false);
@@ -641,7 +664,7 @@ class CustomController extends MyAppController
         $userSrchObj->doNotCalculateRecords();
         $userSrchObj->doNotLimitRecords();
         $userSrchObj->addCondition('user_referral_code', '=', $userReferralCode);
-        $userSrchObj->addMultipleFields(array('user_id', 'user_referral_code' ));
+        $userSrchObj->addMultipleFields(array('user_id', 'user_referral_code'));
         $rs = $userSrchObj->getResultSet();
         $row = FatApp::getDb()->fetch($rs);
 
@@ -653,7 +676,7 @@ class CustomController extends MyAppController
 
         $cookieExpiryDays = FatApp::getConfig("CONF_REFERRER_URL_VALIDITY", FatUtility::VAR_INT, 10);
 
-        $cookieValue = array( 'data' => $row['user_referral_code'], 'creation_time' => time() );
+        $cookieValue = array('data' => $row['user_referral_code'], 'creation_time' => time());
         $cookieValue = serialize($cookieValue);
 
         CommonHelper::setCookie('referrer_code_signup', $cookieValue, time() + 3600 * 24 * $cookieExpiryDays);
@@ -700,14 +723,14 @@ class CustomController extends MyAppController
 
     public function sitemap()
     {
-        $brandSrch = Brand::getListingObj($this->siteLangId, array( 'brand_id', 'IFNULL(brand_name, brand_identifier) as brand_name'), true);
+        $brandSrch = Brand::getListingObj($this->siteLangId, array('brand_id', 'IFNULL(brand_name, brand_identifier) as brand_name'), true);
         $brandSrch->doNotCalculateRecords();
         $brandSrch->doNotLimitRecords();
         $brandSrch->addOrder('brand_name', 'asc');
         $brandRs = $brandSrch->getResultSet();
         $brandsArr = FatApp::getDb()->fetchAll($brandRs);
         $categoriesArr = ProductCategory::getProdCatParentChildWiseArr($this->siteLangId, '', true, false, true);
-        $contentPages = ContentPage:: getPagesForSelectBox($this->siteLangId);
+        $contentPages = ContentPage::getPagesForSelectBox($this->siteLangId);
         $srch = new ShopSearch($this->siteLangId);
         $srch->setDefinedCriteria($this->siteLangId);
         $srch->joinShopCountry();

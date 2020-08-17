@@ -66,9 +66,10 @@ class PluginSettingController extends AdminBaseController
         
         $pluginSetting = new PluginSetting($post["plugin_id"]);
         if (!$pluginSetting->save($post)) {
-            Message::addErrorMessage(Labels::getLabel($plugin->getError()));
+            Message::addErrorMessage(Labels::getLabel($pluginSetting->getError()));
             FatUtility::dieWithError(Message::getHtml());
         }
+
         $this->set('msg', $this->str_setup_successful);
         $this->_template->render(false, false, 'json-success.php');
     }
