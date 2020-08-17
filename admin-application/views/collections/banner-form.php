@@ -7,6 +7,10 @@ $frm->developerTags['fld_default_col'] = 12;
 $extUrlField = $frm->getField('banner_url');
 $extUrlField->addFieldTagAttribute('placeholder', 'http://');
 
+$fld = $frm->getField('auto_update_other_langs_data');
+$fld->developerTags['cbLabelAttributes'] = array('class' => 'checkbox');
+$fld->developerTags['cbHtmlAfterCheckbox'] = '<i class="input-helper"></i>';
+
 $siteDefaultLangId = FatApp::getConfig('conf_default_site_lang', FatUtility::VAR_INT, 1);
 ?>
 <section class="section">
@@ -63,7 +67,9 @@ $siteDefaultLangId = FatApp::getConfig('conf_default_site_lang', FatUtility::VAR
                                         </div>
                                     </div>
                                 </div>
-								<div class="col-md-6">
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
                                     <div class="field-set">
                                         <div class="caption-wraper">
                                             <label class="field_label">
@@ -80,13 +86,11 @@ $siteDefaultLangId = FatApp::getConfig('conf_default_site_lang', FatUtility::VAR
                                         </div>
                                     </div>
                                 </div>
-                            </div>
-                            <div class="row">
                                 <?php
                                     $translatorSubscriptionKey = FatApp::getConfig('CONF_TRANSLATOR_SUBSCRIPTION_KEY', FatUtility::VAR_STRING, '');
                                     if(!empty($translatorSubscriptionKey) && count($otherLangData) > 0){
                                 ?>
-                                <div class="col-md-4">
+                                <div class="col-md-6">
                                     <div class="field-set d-flex align-items-center">
                                         <div class="field-wraper w-auto">
                                             <div class="field_cover">
@@ -100,7 +104,7 @@ $siteDefaultLangId = FatApp::getConfig('conf_default_site_lang', FatUtility::VAR
                             <?php if(!empty($otherLangData)){
                             foreach($otherLangData as $langId=>$data) { 
                             ?>
-                            <div class="accordians_container accordians_container-categories" defaultLang= "<?php echo $siteDefaultLangId; ?>" language="<?php echo $langId; ?>" id="accordion-language_<?php echo $langId; ?>" onClick="translateData(this)">
+                            <div class="accordians_container accordians_container-categories" defaultLang= "<?php echo $siteDefaultLangId; ?>" language="<?php echo $langId; ?>" id="accordion-language_<?php echo $langId; ?>" onClick="translateBannerData(this)">
                                  <div class="accordian_panel">
                                      <span class="accordian_title accordianhead accordian_title" id="collapse_<?php echo $langId; ?>">
                                      <?php echo $data." "; echo Labels::getLabel('LBL_Language_Data', $adminLangId); ?>

@@ -129,11 +129,11 @@ $(document).ready(function() {
         });
     };
 	
-	bannerForm = function(id) {
+	bannerForm = function(collection_id) {
         $.facebox(function() {
-            fcom.ajax(fcom.makeUrl('Collections', 'bannerForm', [id]), '', function(t) {
+            fcom.ajax(fcom.makeUrl('Collections', 'bannerForm', [collection_id]), '', function(t) {
                 $.facebox(t, 'faceboxWidth');
-                reloadRecordsList(id, type);
+                reloadRecordsList(t.collection_id, t.collection_type);
             });
         });
     };
@@ -303,6 +303,23 @@ $(document).ready(function() {
         fcom.updateWithAjax(fcom.makeUrl('Collections', 'translatedData'), data, function(t) {
             if(t.status == 1){
                 $("input[name='collection_name["+toLangId+"]']").val(t.collectionName);
+            }
+        });
+    }
+    
+    translateBannerData = function(item){
+        var autoTranslate = $("input[name='auto_update_other_langs_data']:checked").length;
+        var defaultLang = $(item).attr('defaultLang');
+        var title = $("input[name='banner_title["+defaultLang+"]']").val();
+        var toLangId = $(item).attr('language');
+        var alreadyOpen = $('#collapse_'+toLangId).hasClass('active');
+        if(autoTranslate == 0 || title == "" || alreadyOpen == true){
+            return false;
+        }
+        var data = "collectionName="+title+"&toLangId="+toLangId ;
+        fcom.updateWithAjax(fcom.makeUrl('Collections', 'translatedData'), data, function(t) {
+            if(t.status == 1){
+                $("input[name='banner_title["+toLangId+"]']").val(t.collectionName);
             }
         });
     }
