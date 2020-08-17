@@ -19,7 +19,17 @@ class TrackingCodeRelationController extends AdminBaseController
     public function search()
     {
         $shipmentTracking = new ShipmentTracking(); 
-        $trackingCourier = $shipmentTracking->getTrackingCouriers();
+		if (false === $shipmentTracking->init($this->adminLangId)) {
+			Message::addErrorMessage($shipmentTracking->getError());
+            FatUtility::dieWithError(Message::getHtml());
+		}
+		
+        if(false === $shipmentTracking->getTrackingCouriers()) {
+			Message::addErrorMessage($shipmentTracking->getError());
+            FatUtility::dieWithError(Message::getHtml());
+		}
+		
+        $trackingCourier = $shipmentTracking->getResponse();
         if($trackingCourier == false){
             Message::addErrorMessage($shipmentTracking->getError());
             FatUtility::dieWithError(Message::getHtml());

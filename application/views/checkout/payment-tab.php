@@ -35,6 +35,7 @@ if ('cashondelivery' != strtolower($pmethodCode)) {
         var data = fcom.frmData(frm);
         var action = $(frm).attr('action')
         var getExternalLibraryUrl = $(frm).data('external');
+        $.mbsmessage(langLbl.processing,false,'alert--process alert');
         fcom.ajax(fcom.makeUrl('Checkout', 'ConfirmOrder'), data, function(res) {
             if ('undefined' != typeof getExternalLibraryUrl) {
                 fcom.ajax(getExternalLibraryUrl, '', function(t) {

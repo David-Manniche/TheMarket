@@ -87,7 +87,7 @@ class Plugin extends MyAppModel
             self::TYPE_SPLIT_PAYMENT_METHOD => Labels::getLabel('LBL_SPLIT_PAYMENT_METHODS', $langId),
             self::TYPE_REGULAR_PAYMENT_METHOD => Labels::getLabel('LBL_REGULAR_PAYMENT_METHODS', $langId),
             self::TYPE_SHIPPING_SERVICES => Labels::getLabel('LBL_SHIPPING_SERVICES', $langId),
-            self::TYPE_SHIPMENT_TRACKING => Labels::getLabel('LBL_SHIPPING_TRACKING', $langId),
+            self::TYPE_SHIPMENT_TRACKING => Labels::getLabel('LBL_SHIPMENT_TRACKING', $langId),
         ];
     }
     

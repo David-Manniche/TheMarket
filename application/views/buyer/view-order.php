@@ -400,14 +400,21 @@ if (true == $primaryOrder) {
                                         ?> <tr>
                                     <td><?php echo FatDate::format($row['oshistory_date_added']); ?></td>
                                     <td><?php echo $yesNoArr[$row['oshistory_customer_notified']]; ?></td>
-                                    <td><?php echo ($row['oshistory_orderstatus_id'] > 0) ? $orderStatuses[$row['oshistory_orderstatus_id']] : CommonHelper::displayNotApplicable($siteLangId, '');
+                                    <td>
+                                        <?php echo ($row['oshistory_orderstatus_id'] > 0) ? $orderStatuses[$row['oshistory_orderstatus_id']] : CommonHelper::displayNotApplicable($siteLangId, '');
                                         if(empty($row['oshistory_courier'])){
-                                            echo ($row['oshistory_tracking_number']) ? ': ' . Labels::getLabel('LBL_Tracking_Number', $siteLangId) . ' ' . $row['oshistory_tracking_number'] . " VIA <em>" . $row['op_shipping_duration_name'] . "</em>" :'' ;
-                                        }else{
-                                            $trackOrder = "trackOrder('".$row['oshistory_tracking_number']."','".$row['oshistory_courier']."')";
-                                            echo ($row['oshistory_tracking_number']) ? ': ' . Labels::getLabel('LBL_Tracking_Number', $siteLangId) . ' ' . '<a onClick="'.$trackOrder.'">'.$row['oshistory_tracking_number'] . "</a> VIA <em>" . $row['op_shipping_duration_name'] . "</em>" :'';
-                                        }
-                                            ?></td>
+                                            echo ($row['oshistory_tracking_number']) ? ': ' . Labels::getLabel('LBL_Tracking_Number', $siteLangId) . ' ' . $row['oshistory_tracking_number'] . " VIA <em>" . CommonHelper::displayNotApplicable($siteLangId, $childOrderDetail["opshipping_label"]) . "</em>" :'' ;
+                                        } else {
+                                            echo ($row['oshistory_tracking_number']) ? ': ' . Labels::getLabel('LBL_Tracking_Number', $siteLangId) : '';
+                                            $trackingNumber = $row['oshistory_tracking_number'];
+                                            $carrier = $row['oshistory_courier'];
+                                            ?>
+                                            <a href="javascript:void(0)" title="<?php echo Labels::getLabel('LBL_TRACK', $siteLangId); ?>" onClick="trackOrder('<?php echo trim($trackingNumber); ?>', '<?php echo trim($carrier); ?>')">
+                                                <?php echo $trackingNumber; ?>
+                                            </a>
+                                            <?php echo Labels::getLabel('LBL_VIA', $siteLangId); ?> <em><?php echo CommonHelper::displayNotApplicable($siteLangId, $childOrderDetail["opshipping_label"]); ?></em>
+                                        <?php } ?>
+                                        </td>
                                     <td><?php echo !empty(trim(($row['oshistory_comments']))) ? nl2br($row['oshistory_comments']) : Labels::getLabel('LBL_N/A', $siteLangId) ; ?></td>
                                 </tr> <?php
                                     } ?>

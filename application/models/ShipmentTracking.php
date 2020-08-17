@@ -1,60 +1,107 @@
 <?php
 class ShipmentTracking
-{    
-    private $keyName; 
+{
+    private $keyName;
     private $shipmentTracking;
-   // private $error;
-    /**
-     * __construct
-     *
-     * @return void
-     */   
-    public function __construct()
-    {   
-        $this->init();
-    }
-    
+    private $langId;
+    private $response;
+    private $error;
+        
     /**
      * init
      *
+     * @param  int $langId
      * @return void
      */
-    private function init()
+    public function init(int $langId)
     {
+        $this->langId = $langId;
+        
         $plugin = new Plugin();
         $this->keyName = $plugin->getDefaultPluginKeyName(Plugin::TYPE_SHIPMENT_TRACKING);
-        $langId = CommonHelper::getLangId();
-        $this->shipmentTracking = PluginHelper::callPlugin($this->keyName, [$langId], $error, $langId);
+        if (false === $this->keyName) {
+            $this->error = $plugin->getError();
+            return false;
+        }
+
+        $this->shipmentTracking = PluginHelper::callPlugin($this->keyName, [$this->langId], $this->error, $this->langId, false);
         if (false === $this->shipmentTracking) {
-            FatUtility::dieJsonError($error);
+            return false;
         }
 
         if (false === $this->shipmentTracking->init()) {
-            FatUtility::dieJsonError($this->shipmentTracking->getError());
+            $this->error = $this->shipmentTracking->getError();
+            return false;
+        }
+
+        return true;
+    }
+    
+    /**
+     * validateRequest
+     *
+     * @return void
+     */
+    private function validateRequest()
+    {
+        if (NULL === $this->shipmentTracking) {
+            trigger_error(Labels::getLabel('LBL_MISSING_INITIAL_STEPS', $this->langId), E_USER_ERROR);
         }
     }
     
-    public function getTrackingInfo($trackingNumber, $courierCode)
+    /**
+     * getTrackingInfo
+     *
+     * @param  string $trackingNumber
+     * @param  string $courierCode
+     * @return bool
+     */
+    public function getTrackingInfo(string $trackingNumber, string $courierCode): bool
     {
+        $this->validateRequest();
+
         if (false === $this->shipmentTracking->getTrackingInfo($trackingNumber, $courierCode)) {
             $this->error = $this->shipmentTracking->getError();
             return false;
-        }        
-        return $this->shipmentTracking->getResponse();
+        }
+        $this->response = $this->shipmentTracking->getResponse();
+        return true;
     }
     
-    public function getTrackingCouriers()
-    {   
+    /**
+     * getTrackingCouriers
+     *
+     * @return bool
+     */
+    public function getTrackingCouriers(): bool
+    {
+        $this->validateRequest();
+
         if (false === $this->shipmentTracking->getTrackingCouriers()) {
             $this->error = $this->shipmentTracking->getError();
             return false;
         }
-        return $this->shipmentTracking->getResponse();
+        $this->response = $this->shipmentTracking->getResponse();
+        return true;
     }
     
+    /**
+     * getResponse
+     *
+     * @return mixed
+     */
+    public function getResponse()
+    {
+        return $this->response;
+    }
+
+    /**
+     * getError
+     *
+     * @return void
+     */
     public function getError()
     {
         return $this->error;
     }
-	
 }

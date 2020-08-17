@@ -523,7 +523,8 @@ ALTER TABLE `tbl_order_product_shipment` CHANGE `opship_order_id` `opship_orderi
 ALTER TABLE `tbl_order_product_shipment` ADD `opship_order_number` VARCHAR(150) NOT NULL COMMENT 'From third party' AFTER `opship_orderid`;
 -- ShipStation --
 
-INSERT INTO `tbl_plugins` (`plugin_id`, `plugin_identifier`, `plugin_type`, `plugin_code`, `plugin_active`, `plugin_display_order`) VALUES (NULL, 'AfterShip Shipment', '14', 'AfterShipShipment', '1', '12'); 
+-- AfterShip --
+INSERT INTO `tbl_plugins` (`plugin_identifier`, `plugin_type`, `plugin_code`, `plugin_active`, `plugin_display_order`) VALUES ('AfterShip Shipment', '14', 'AfterShipShipment', '0', '1');
 ALTER TABLE `tbl_orders_status_history` ADD `oshistory_courier` VARCHAR(255) NOT NULL AFTER `oshistory_tracking_number`;
 
 CREATE TABLE `tbl_tracking_courier_code_relation` (
@@ -535,6 +536,7 @@ CREATE TABLE `tbl_tracking_courier_code_relation` (
 
 ALTER TABLE `tbl_tracking_courier_code_relation`
   ADD UNIQUE KEY `UNIQUE` (`tccr_shipapi_plugin_id`,`tccr_shipapi_courier_code`,`tccr_tracking_plugin_id`);
+-- AfterShip --
 
 -- Payment Success Page --
 DELETE FROM `tbl_language_labels` WHERE `label_key` LIKE 'MSG_CUSTOMER_SUCCESS_ORDER_{ACCOUNT}_{HISTORY}_{CONTACTUS}';
