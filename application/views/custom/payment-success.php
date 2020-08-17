@@ -67,7 +67,7 @@ events.purchase(data);
                                     <use xlink:href="<?php echo CONF_WEBROOT_URL;?>/images/retina/sprite.svg#print"
                                         href="<?php echo CONF_WEBROOT_URL;?>/images/retina/sprite.svg#print">
                                     </use>
-                                </svg> <a href="#">Print</a></p>
+                                </svg> <a href="#" class="link">Print</a></p>
                         </div>
 
                         <ul class="completed-detail">

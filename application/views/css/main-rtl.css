@@ -35976,6 +35976,8 @@ body {
 .order-completed p {
   margin-bottom: 0.8rem; }
 .order-completed .svg {
+  width: 1rem;
+  height: 1rem;
   fill: var(--secondary-color); }
 
 .completed-detail {
@@ -36002,7 +36004,8 @@ body {
         max-width: 100%; } }
   .completed-detail h4 {
     font-weight: 500;
-    font-size: 1rem; }
+    font-size: 1rem;
+    margin-bottom: 1.5rem; }
     .completed-detail h4 .svg {
       display: block;
       margin-bottom: 4px;
