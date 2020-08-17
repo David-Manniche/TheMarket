@@ -60,7 +60,7 @@ class CheckoutController extends MyAppController
             $this->cartObj->setShippingAddressSameAsBilling();
         }
 
-        $this->set('exculdeMainHeaderDiv', true);
+        $this->set('exculdeMainHeaderDiv', true);      
     }
 
     private function isEligibleForNextStep(&$criteria = array())
