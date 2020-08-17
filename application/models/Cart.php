@@ -631,18 +631,8 @@ class Cart extends FatModel
         $totalPrice = $sellerProductRow['theprice'] * $quantity;
         $taxableProdPrice = $sellerProductRow['theprice'] - $sellerProductRow['volume_discount'];
         
-        /* $this->products */
-        
-        $extraData = array(
-            'billingAddress' => isset($this->products[$key]['billing_address']) ? $this->products[$key]['billing_address'] : '',
-            'shippingAddress' => isset($this->products[$key]['shipping_address']) ? $this->products[$key]['shipping_address'] : '',
-            'shippedBySeller' => $isProductShippedBySeller,
-            'shippingCost' => $shippingCost,
-            'buyerId' => $this->cart_user_id
-        );
-        CommonHelper::printArray($extraData); die;
         $taxObj = new Tax();
-        $taxData = $taxObj->calculateTaxRates($sellerProductRow['product_id'], $taxableProdPrice, $sellerProductRow['selprod_user_id'], $siteLangId, $quantity, $extraData);
+        $taxData = $taxObj->calculateTaxRates($sellerProductRow['product_id'], $taxableProdPrice, $sellerProductRow['selprod_user_id'], $siteLangId, $quantity);
         if (false == $taxData['status'] && $taxData['msg'] != '') {
             //$this->error = $taxData['msg'];
         }

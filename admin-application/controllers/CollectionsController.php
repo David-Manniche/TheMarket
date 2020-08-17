@@ -440,7 +440,65 @@ class CollectionsController extends AdminBaseController
         $this->_template->render(false, false);
     }
 	
-	public function bannerForm($collectionId, $bannerId = 0)
+	public function banners($collectionId)
+    {
+        $this->objPrivilege->canViewBanners();
+
+        $collectionId = FatUtility::int($collectionId);
+        
+        $collectionDetails = Collections::getAttributesById($collectionId);
+        if (!false == $collectionDetails && ($collectionDetails['collection_active'] != applicationConstants::ACTIVE || $collectionDetails['collection_deleted'] == applicationConstants::YES)) {
+            Message::addErrorMessage($this->str_invalid_request_id);
+            FatUtility::dieWithError(Message::getHtml());
+        }
+        
+        $this->set('collection_id', $collectionId);
+        $this->set('collection_type', $collectionDetails['collection_type']);
+        $this->set('collection_layout_type', $collectionDetails['collection_layout_type']);
+        $this->_template->render(false, false);
+    }
+    
+    public function searchBanners($collectionId)
+    {
+        $this->objPrivilege->canViewBanners();
+        $collectionId = FatUtility::int($collectionId);
+        
+        $collectionDetails = Collections::getAttributesById($collectionId);
+        if (!false == $collectionDetails && ($collectionDetails['collection_active'] != applicationConstants::ACTIVE || $collectionDetails['collection_deleted'] == applicationConstants::YES)) {
+            Message::addErrorMessage($this->str_invalid_request_id);
+            FatUtility::dieWithError(Message::getHtml());
+        }
+        
+        if ($collectionDetails['collection_layout_type'] == Collections::TYPE_BANNER_LAYOUT1) {
+			$blocation_id = BannerLocation::HOME_PAGE_TOP_BANNER;
+		} else {
+			$blocation_id = BannerLocation::HOME_PAGE_BOTTOM_BANNER;
+		}
+
+        $srch = new BannerSearch($this->adminLangId, false);
+        $srch->joinLocations();
+        $srch->joinPromotions($this->adminLangId, true);
+        $srch->addPromotionTypeCondition();
+        $srch->addMultipleFields(array('IFNULL(promotion_name,promotion_identifier) as promotion_name', 'banner_id', 'banner_type', 'banner_url', 'banner_target', 'banner_active', 'banner_blocation_id', 'banner_title', 'banner_img_updated_on'));
+        $srch->addCondition('b.banner_blocation_id', '=', $blocation_id);
+
+        $srch->addOrder('banner_active', 'DESC');
+
+        $rs = $srch->getResultSet();
+        $records = array();
+        if ($rs) {
+            $records = FatApp::getDb()->fetchAll($rs);
+        }
+
+        $this->set('collection_id', $collectionId);
+        $this->set('arr_listing', $records);
+        $this->set('bannerTypeArr', Banner::getBannerTypesArr($this->adminLangId));
+        $this->set('linkTargetsArr', applicationConstants::getLinkTargetsArr($this->adminLangId));
+        $this->set('activeInactiveArr', applicationConstants::getActiveInactiveArr($this->adminLangId));
+        $this->_template->render(false, false);
+    }
+    
+    public function bannerForm($collectionId, $bannerId = 0)
     {
         $this->objPrivilege->canViewCollections();
 
@@ -454,6 +512,23 @@ class CollectionsController extends AdminBaseController
         }
         
         $frm = $this->getBannerForm($collectionId, $bannerId);
+        
+        if(0 < $bannerId) {
+            $srch = new BannerSearch($this->adminLangId, false);
+            $srch->joinLocations();
+            $srch->joinPromotions($this->adminLangId, true);
+            $srch->addPromotionTypeCondition();
+            $srch->addMultipleFields(array('IFNULL(promotion_name,promotion_identifier) as promotion_name', 'banner_id', 'banner_type', 'banner_url', 'banner_target', 'banner_active', 'banner_blocation_id', 'banner_title', 'banner_img_updated_on'));
+            $srch->addCondition('b.banner_blocation_id', '=', $blocation_id);
+
+            $srch->addOrder('banner_active', 'DESC');
+
+            $rs = $srch->getResultSet();
+            $records = array();
+            if ($rs) {
+                $records = FatApp::getDb()->fetchAll($rs);
+            }
+        }
 		
 		$siteDefaultLangId = FatApp::getConfig('conf_default_site_lang', FatUtility::VAR_INT, 1);
 		
@@ -491,9 +566,9 @@ class CollectionsController extends AdminBaseController
         }
 		
 		if ($collectionDetails['collection_layout_type'] == Collections::TYPE_BANNER_LAYOUT1) {
-			$post['banner_blocation_id'] = Collections::HOME_PAGE_TOP_BANNER;
+			$post['banner_blocation_id'] = BannerLocation::HOME_PAGE_TOP_BANNER;
 		} else {
-			$post['banner_blocation_id'] = Collections::HOME_PAGE_BOTTOM_BANNER;
+			$post['banner_blocation_id'] = BannerLocation::HOME_PAGE_BOTTOM_BANNER;
 		}
 		
 		$post['banner_record_id'] = $collection_id;

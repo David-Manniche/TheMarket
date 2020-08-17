@@ -128,16 +128,64 @@ $(document).ready(function() {
             });
         });
     };
-	
-	bannerForm = function(collection_id) {
+    
+    banners = function(collection_id) {
         $.facebox(function() {
-            fcom.ajax(fcom.makeUrl('Collections', 'bannerForm', [collection_id]), '', function(t) {
+            fcom.ajax(fcom.makeUrl('Collections', 'banners', [collection_id]), '', function(t) {
                 $.facebox(t, 'faceboxWidth');
-                reloadRecordsList(t.collection_id, t.collection_type);
+                reloadBannersList(t.collection_id);
             });
         });
     };
-
+    
+    reloadBannersList = function(collection_id) {
+        $("#banners_list-js").html(fcom.getLoader());
+        fcom.ajax(fcom.makeUrl('Collections', 'searchBanners', [collection_id]), '', function(t) {
+            $("#banners_list-js").html(t);
+        });
+    };
+    
+    toggleBannerStatus = function( e,obj,canEdit ){
+		if(canEdit == 0){
+			e.preventDefault();
+			return;
+		}
+		if(!confirm(langLbl.confirmUpdateStatus)){
+			e.preventDefault();
+			return;
+		}
+		var bannerId = parseInt(obj.value);
+		if( bannerId < 1 ){
+			$.mbsmessage(langLbl.invalidRequest,true,'alert--danger');
+			return false;
+		}
+		data = 'bannerId='+bannerId;
+		fcom.ajax(fcom.makeUrl('Banners','changeStatus'),data,function(res){
+			var ans =$.parseJSON(res);
+			if(ans.status == 1){
+				$.mbsmessage(ans.msg,true,'alert--success');
+				$(obj).toggleClass("active");
+			}else{
+				$.mbsmessage(ans.msg,true,'alert--danger');
+			}
+		});
+	};
+    
+    /* goToBannerSearchPage = function(page) {
+        if (typeof page == undefined || page == null) {
+            page = 1;
+        }
+        var frm = document.frmCollectionSearchPaging;
+        $(frm.page).val(page);
+        searchBanners(frm);
+    }; */
+    
+	bannerForm = function(collection_id, banner_id) {
+        fcom.ajax(fcom.makeUrl('Collections', 'bannerForm', [collection_id, banner_id]), '', function(t) {
+            $("#banners_list-js").html(t);
+        });
+    };
+    
     reloadRecordsList = function(collection_id, collection_type) {
         $("#records_list").html(fcom.getLoader());
         fcom.ajax(fcom.makeUrl('Collections', 'collectionRecords', [collection_id, collection_type]), '', function(t) {
@@ -145,7 +193,15 @@ $(document).ready(function() {
         });
     };
 
-
+    goToBannersSearchPage = function(page) {
+        if (typeof page == undefined || page == null) {
+            page = 1;
+        }
+        var frm = document.frmCollectionSearchPaging;
+        $(frm.page).val(page);
+        searchCollection(frm);
+    };
+    
     updateRecord = function(collection_id, record_id) {
         fcom.updateWithAjax(fcom.makeUrl('Collections', 'updateCollectionRecords'), 'collection_id=' + collection_id + '&record_id=' + record_id, function(t) {
             reloadRecordsList(t.collection_id, t.collection_type);
