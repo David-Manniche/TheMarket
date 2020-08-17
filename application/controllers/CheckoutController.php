@@ -2148,7 +2148,7 @@ class CheckoutController extends MyAppController
                         'time_slot_type' => $slotData['tslot_type'],
                         'time_slot_from_time' => $slotData['tslot_from_time'],
                         'time_slot_to_time' => $slotData['tslot_to_time'],
-                        'time_slot_date' => $post['slot_date'][$level],
+                        'time_slot_date' => date('Y-m-d', strtotime($post['slot_date'][$level])),
                     );
                 }
             }
