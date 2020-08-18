@@ -39,7 +39,7 @@ $siteDefaultLangId = FatApp::getConfig('conf_default_site_lang', FatUtility::VAR
 						<?php if ($collection_type == Collections::COLLECTION_TYPE_BANNER) { ?>
                         <li><a class="<?php  echo $inactive; ?>"
                                 href="javascript:void(0)"
-                                <?php if($collection_id > 0){?> onclick="bannerForm(<?php echo $collection_id ?>);" <?php } ?>>
+                                <?php if($collection_id > 0){?> onclick="banners(<?php echo $collection_id ?>);" <?php } ?>>
                                 <?php echo Labels::getLabel('LBL_Banners', $adminLangId);?></a>
                         </li>
                         <?php } ?>

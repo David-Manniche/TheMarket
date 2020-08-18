@@ -64,9 +64,10 @@ class BannerLocation extends MyAppModel
         return $bannerDimensions = FatApp::getDb()->fetch($rs);
     }
 
-    public static function getPromotionalBanners($blocationId, $langId, $pageSize = 0)
+    public static function getPromotionalBanners($blocationId, $langId, $collectionId = 0, $pageSize = 0)
     {
         $blocationId = FatUtility::int($blocationId);
+        $collectionId = FatUtility::int($collectionId);
         $db = FatApp::getDb();
 
         $bannerSrch = Banner::getBannerLocationSrchObj(true);
@@ -89,8 +90,9 @@ class BannerLocation extends MyAppModel
             $bsrch->doNotCalculateRecords();
             //$bsrch->doNotLimitRecords();
             $bsrch->joinAttachedFile();
-            $bsrch->addCondition('banner_blocation_id', '=', $val['blocation_id']);
-
+			$bsrch->addCondition('banner_blocation_id', '=', $val['blocation_id']);
+			$bsrch->addDirectCondition('((banner_type = '.Banner::TYPE_BANNER.' AND banner_record_id = ' . $collectionId . ') OR banner_type = '.Banner::TYPE_PPC.')');
+            
             $srch = new SearchBase('(' . $bsrch->getQuery() . ') as t');
             $srch->doNotCalculateRecords();
             $srch->addDirectCondition(

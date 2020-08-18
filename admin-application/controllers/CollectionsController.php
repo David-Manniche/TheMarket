@@ -440,7 +440,65 @@ class CollectionsController extends AdminBaseController
         $this->_template->render(false, false);
     }
 	
-	public function bannerForm($collectionId, $bannerId = 0)
+	public function banners($collectionId)
+    {
+        $this->objPrivilege->canViewBanners();
+
+        $collectionId = FatUtility::int($collectionId);
+        
+        $collectionDetails = Collections::getAttributesById($collectionId);
+        if (!false == $collectionDetails && ($collectionDetails['collection_active'] != applicationConstants::ACTIVE || $collectionDetails['collection_deleted'] == applicationConstants::YES)) {
+            Message::addErrorMessage($this->str_invalid_request_id);
+            FatUtility::dieWithError(Message::getHtml());
+        }
+        
+        $this->set('collection_id', $collectionId);
+        $this->set('collection_type', $collectionDetails['collection_type']);
+        $this->set('collection_layout_type', $collectionDetails['collection_layout_type']);
+        $this->_template->render(false, false);
+    }
+    
+    public function searchBanners($collectionId)
+    {
+        $this->objPrivilege->canViewBanners();
+        $collectionId = FatUtility::int($collectionId);
+        $collectionDetails = Collections::getAttributesById($collectionId);
+        if (!false == $collectionDetails && ($collectionDetails['collection_active'] != applicationConstants::ACTIVE || $collectionDetails['collection_deleted'] == applicationConstants::YES)) {
+            Message::addErrorMessage($this->str_invalid_request_id);
+            FatUtility::dieWithError(Message::getHtml());
+        }
+        
+        if ($collectionDetails['collection_layout_type'] == Collections::TYPE_BANNER_LAYOUT1) {
+			$blocation_id = BannerLocation::HOME_PAGE_TOP_BANNER;
+		} else {
+			$blocation_id = BannerLocation::HOME_PAGE_BOTTOM_BANNER;
+		}
+
+        $srch = new BannerSearch($this->adminLangId, false);
+        $srch->joinLocations();
+        $srch->joinPromotions($this->adminLangId, true);
+        $srch->addPromotionTypeCondition();
+        $srch->addMultipleFields(array('IFNULL(promotion_name,promotion_identifier) as promotion_name', 'banner_id', 'banner_type', 'banner_url', 'banner_target', 'banner_active', 'banner_blocation_id', 'banner_title', 'banner_img_updated_on'));
+        $srch->addCondition('b.banner_record_id', '=', $collectionId);
+        $srch->addCondition('b.banner_blocation_id', '=', $blocation_id);
+
+        $srch->addOrder('banner_active', 'DESC');
+
+        $rs = $srch->getResultSet();
+        $records = array();
+        if ($rs) {
+            $records = FatApp::getDb()->fetchAll($rs);
+        }
+
+        $this->set('collection_id', $collectionId);
+        $this->set('arr_listing', $records);
+        $this->set('bannerTypeArr', Banner::getBannerTypesArr($this->adminLangId));
+        $this->set('linkTargetsArr', applicationConstants::getLinkTargetsArr($this->adminLangId));
+        $this->set('activeInactiveArr', applicationConstants::getActiveInactiveArr($this->adminLangId));
+        $this->_template->render(false, false);
+    }
+    
+    public function bannerForm($collectionId, $bannerId = 0)
     {
         $this->objPrivilege->canViewCollections();
 
@@ -453,20 +511,122 @@ class CollectionsController extends AdminBaseController
             FatUtility::dieWithError(Message::getHtml());
         }
         
-        $frm = $this->getBannerForm($collectionId, $bannerId);
-		
+        if ($collectionDetails['collection_layout_type'] == Collections::TYPE_BANNER_LAYOUT1) {
+			$blocationId = BannerLocation::HOME_PAGE_TOP_BANNER;
+		} else {
+			$blocationId = BannerLocation::HOME_PAGE_BOTTOM_BANNER;
+        }
+        $frm = $this->getBannerForm($collectionId, $bannerId, $blocationId);
+        
+        if(0 < $bannerId) {
+            $srch = new BannerSearch($this->adminLangId, false);
+            $srch->joinLocations();
+            $srch->joinPromotions($this->adminLangId, true);
+            $srch->addPromotionTypeCondition();
+            $srch->addMultipleFields(array('IFNULL(promotion_name,promotion_identifier) as promotion_name', 'banner_id', 'banner_type', 'banner_url', 'banner_target', 'banner_active', 'banner_blocation_id', 'banner_title', 'banner_img_updated_on'));
+            $srch->addCondition('banner_id', '=', $bannerId);
+            $srch->addOrder('banner_active', 'DESC');
+
+            $rs = $srch->getResultSet();
+            $data = FatApp::getDb()->fetch($rs);
+
+            if ($data === false) {
+                FatUtility::dieWithError($this->str_invalid_request);
+            }
+            $langData = Banner::getLangDataArr($bannerId, array(Banner::DB_TBL_LANG_PREFIX . 'lang_id', Banner::DB_TBL_PREFIX . 'title'));
+            $bannerTitleArr = array();
+            foreach ($langData as $value) {
+                $bannerTitleArr[Banner::DB_TBL_PREFIX . 'title'][$value[Banner::DB_TBL_LANG_PREFIX . 'lang_id']] = $value[Banner::DB_TBL_PREFIX . 'title'];
+            }
+            
+            $data = array_merge($data, $bannerTitleArr);
+            $frm->fill($data);
+        }
+        
+        $mediaLanguages = applicationConstants::bannerTypeArr();
+        $screenArr = applicationConstants::getDisplaysArr($this->adminLangId);
+
 		$siteDefaultLangId = FatApp::getConfig('conf_default_site_lang', FatUtility::VAR_INT, 1);
 		
 		$langData = Language::getAllNames();
         unset($langData[$siteDefaultLangId]);
         $this->set('otherLangData', $langData);
         $this->set('languages', Language::getAllNames());
-		
+        $this->set('mediaLanguages', $mediaLanguages);
+        $this->set('screenArr', $screenArr);
         $this->set('collection_id', $collectionId);
+        $this->set('bannerId', $bannerId);
+        $this->set('blocationId', $blocationId);
         $this->set('collection_type', $collectionDetails['collection_type']);
         $this->set('collection_layout_type', $collectionDetails['collection_layout_type']);
         $this->set('frm', $frm);
         $this->_template->render(false, false);
+    }
+	
+	public function bannerImages($collection_id, $banner_id, $lang_id = 0, $screen = 0)
+    {
+        $collection_id = FatUtility::int($collection_id);
+        $banner_id = FatUtility::int($banner_id);
+
+        if (1 > $collection_id) {
+            FatUtility::dieWithError($this->str_invalid_request);
+        }
+		
+		$collectionDetails = Collections::getAttributesById($collection_id);
+        if (!false == $collectionDetails && ($collectionDetails['collection_active'] != applicationConstants::ACTIVE || $collectionDetails['collection_deleted'] == applicationConstants::YES)) {
+            Message::addErrorMessage($this->str_invalid_request_id);
+            FatUtility::dieWithError(Message::getHtml());
+        }
+		
+		if ($collectionDetails['collection_layout_type'] == Collections::TYPE_BANNER_LAYOUT1) {
+			$blocation_id = BannerLocation::HOME_PAGE_TOP_BANNER;
+		} else {
+			$blocation_id = BannerLocation::HOME_PAGE_BOTTOM_BANNER;
+		}
+
+        $bannerDetail = Banner::getAttributesById($banner_id);
+		$bannerImgArr = AttachedFile::getAttachment(AttachedFile::FILETYPE_BANNER, $banner_id, 0, $lang_id, false, $screen);
+		/* $bannerImgArr = [];
+        if (!false == $bannerDetail) {
+            $bannerImgArr = AttachedFile::getAttachment(AttachedFile::FILETYPE_BANNER, $banner_id, 0, $lang_id, false, $screen); 
+        } */
+		$this->set('images', $bannerImgArr);
+        $this->set('languages', Language::getAllNames());
+        $this->set('screenTypeArr', $this->getDisplayScreenName());
+        $this->set('blocation_id', $blocation_id);
+        $this->set('banner_id', $banner_id);
+        $this->_template->render(false, false);
+    }
+	
+	public function removeBanner($afileId, $bannerId, $langId = 0, $slide_screen = 0)
+    {
+        $this->objPrivilege->canEditProductCategories();
+        $afileId = FatUtility::int($afileId);
+        $bannerId = FatUtility::int($bannerId);
+        $langId = FatUtility::int($langId);
+        if (!$afileId) {
+            Message::addErrorMessage(Labels::getLabel('MSG_INVALID_REQUEST', $this->adminLangId));
+            FatUtility::dieJsonError(Message::getHtml());
+        }
+        $fileType = AttachedFile::FILETYPE_BANNER;
+        $fileHandlerObj = new AttachedFile();
+        if (!$fileHandlerObj->deleteFile($fileType, $bannerId, $afileId, 0, $langId, $slide_screen)) {
+            Message::addErrorMessage($fileHandlerObj->getError());
+            FatUtility::dieJsonError(Message::getHtml());
+        }
+        $this->set('msg', Labels::getLabel('MSG_Image_deleted_successfully', $this->adminLangId));
+        $this->_template->render(false, false, 'json-success.php');
+    }
+	
+	private function bannerTypeArr()
+    {
+        return applicationConstants::bannerTypeArr();
+    }
+
+    private function getDisplayScreenName()
+    {
+        $screenTypesArr = applicationConstants::getDisplaysArr($this->adminLangId);
+        return array( 0 => '' ) + $screenTypesArr;
     }
 	
 	public function setupBanner()
@@ -491,13 +651,14 @@ class CollectionsController extends AdminBaseController
         }
 		
 		if ($collectionDetails['collection_layout_type'] == Collections::TYPE_BANNER_LAYOUT1) {
-			$post['banner_blocation_id'] = Collections::HOME_PAGE_TOP_BANNER;
+			$post['banner_blocation_id'] = BannerLocation::HOME_PAGE_TOP_BANNER;
 		} else {
-			$post['banner_blocation_id'] = Collections::HOME_PAGE_BOTTOM_BANNER;
+			$post['banner_blocation_id'] = BannerLocation::HOME_PAGE_BOTTOM_BANNER;
 		}
 		
 		$post['banner_record_id'] = $collection_id;
-		$post['banner_type'] = Banner::TYPE_BANNER;;
+        $post['banner_type'] = Banner::TYPE_BANNER;
+        $post['banner_active'] = applicationConstants::ACTIVE;
 		
         $record = new Banner($banner_id);
         $record->assignValues($post);
@@ -533,26 +694,77 @@ class CollectionsController extends AdminBaseController
             }
         }
 		
+		if ($post['banner_id'] == 0 && isset($post['banner_image_id'])) {
+			$banner = new Banner($banner_id);
+            $banner->updateMedia($post['banner_image_id']);
+        }
+		
         $this->set('msg', Labels::getLabel('MSG_Setup_Successful', $this->adminLangId));
+        $this->set('collection_id', $collection_id);
         $this->set('banner_id', $banner_id);
-        $this->set('langId', $newTabLangId);
-        $this->set('blocation_id', $post['banner_blocation_id']);
         $this->_template->render(false, false, 'json-success.php');
     }
 	
-	private function getBannerForm($collectionId = 0, $banner_id = 0)
+	public function setupBannerImage()
+    {
+        $this->objPrivilege->canEditProductCategories();
+        $banner_id = FatApp::getPostedData('banner_id', FatUtility::VAR_INT, 0);
+        $lang_id = FatApp::getPostedData('lang_id', FatUtility::VAR_INT, 0);
+        $slide_screen = FatApp::getPostedData('banner_screen', FatUtility::VAR_INT, 0);
+        $afileId = FatApp::getPostedData('afile_id', FatUtility::VAR_INT, 0);
+
+        $allowedFileTypeArr = array(AttachedFile::FILETYPE_BANNER);
+
+        if (!is_uploaded_file($_FILES['cropped_image']['tmp_name'])) {
+            Message::addErrorMessage(Labels::getLabel('LBL_Please_Select_A_File', $this->adminLangId));
+            FatUtility::dieJsonError(Message::getHtml());
+        }
+		
+		$file_type = AttachedFile::FILETYPE_BANNER;
+        Banner::deleteImagesWithoutBannerId($file_type);
+
+        $fileHandlerObj = new AttachedFile($afileId);
+        if (!$res = $fileHandlerObj->saveImage(
+            $_FILES['cropped_image']['tmp_name'],
+            $file_type,
+            $banner_id,
+            0,
+            $_FILES['cropped_image']['name'],
+            -1,
+            $unique_record = false,
+            $lang_id,
+            $_FILES['cropped_image']['type'],
+            $slide_screen
+        )) {
+            Message::addErrorMessage($fileHandlerObj->getError());
+            FatUtility::dieJsonError(Message::getHtml());
+        }
+        ProductCategory::setImageUpdatedOn($banner_id);
+        $this->set('file', $_FILES['cropped_image']['name']);
+        $this->set('banner_id', $banner_id);
+        $this->set('msg', $_FILES['cropped_image']['name'].' '.Labels::getLabel('LBL_Uploaded_Successfully', $this->adminLangId));
+        $this->_template->render(false, false, 'json-success.php');
+    }
+	
+	private function getBannerForm($collectionId = 0, $bannerId = 0, $bannerLocationId = 0)
     {
         $this->objPrivilege->canViewCollections();
         $collectionId = FatUtility::int($collectionId);
-        $bannerId = FatUtility::int($banner_id);
+        $bannerId = FatUtility::int($bannerId);
+        $bannerLocationId = FatUtility::int($bannerLocationId);
 		
 		$siteDefaultLangId = FatApp::getConfig('conf_default_site_lang', FatUtility::VAR_INT, 1);
 		$frm = new Form('frmBanner');
         
 		$frm->addRequiredField(Labels::getLabel('LBL_Banner_Title', $this->adminLangId), 'banner_title[' . $siteDefaultLangId . ']');
 		
-		$fld = $frm->addHiddenField('', 'collection_id', $collectionId);
+        $fld = $frm->addHiddenField('', 'collection_id', $collectionId);
+        $fld->requirements()->setInt();
+        $fld->requirements()->setIntPositive();
 		$fld = $frm->addHiddenField('', 'banner_id', $bannerId);
+        $fld->requirements()->setInt();
+        $fld->requirements()->setIntPositive();
+        $fld = $frm->addHiddenField('', 'blocation_id', $bannerLocationId);
         $fld->requirements()->setInt();
         $fld->requirements()->setIntPositive();
 		
@@ -569,6 +781,18 @@ class CollectionsController extends AdminBaseController
         }
         foreach ($langData as $langId => $data) {
             $frm->addTextBox(Labels::getLabel('LBL_Banner_Title', $this->adminLangId), 'banner_title[' . $langId . ']');
+        }
+        $mediaLanguages = applicationConstants::bannerTypeArr();
+        $frm->addSelectBox(Labels::getLabel('LBL_Language', $this->adminLangId), 'banner_lang_id', $mediaLanguages, '', array(), '');
+        $screenArr = applicationConstants::getDisplaysArr($this->adminLangId);
+        $frm->addSelectBox(Labels::getLabel("LBL_Device", $this->adminLangId), 'banner_screen', $screenArr, '', array(), '');
+        $frm->addHiddenField('', 'banner_min_width');
+        $frm->addHiddenField('', 'banner_min_height');
+        $frm->addFileUpload(Labels::getLabel('LBL_Upload', $this->adminLangId), 'banner', array('accept' => 'image/*', 'data-frm' => 'frmCategoryBanner'));
+        foreach ($mediaLanguages as $key => $data) {
+            foreach ($screenArr as $key1 => $screen) {
+                $frm->addHiddenField('', 'banner_image_id[' . $key . '_' . $key1 . ']');
+            }
         }
 		
         $frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_Save_Changes', $this->adminLangId));

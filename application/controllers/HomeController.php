@@ -471,8 +471,6 @@ class HomeController extends MyAppController
         $i = 0;
         $sponsoredShops = $this->getSponsoredShops($productSrchObj);
         $sponsoredProds = $this->getSponsoredProducts($productSrchObj);
-        $banners = $this->getBanners();
-        
         
         foreach ($collectionsArr as $collection_id => $collection) {
             /* if (!$collection['collection_primary_records']) {
@@ -517,15 +515,14 @@ class HomeController extends MyAppController
                     }
                     break;
                 case Collections::COLLECTION_TYPE_BANNER:
-                    if (count($sponsoredShops) > 0) {
-                       if (true === MOBILE_APP_API_CALL) {
-                            $collections[$i] = $collection;
-                            $collections[$i]['banners'] = $banners;
-                        } else {
-                            $collections[$collection['collection_id']] = $collection;
-                            $collections[$collection['collection_id']]['banners'] = $banners;
-                        } 
-                    }
+					$banners = $this->getBanners($collection_id);
+                    if (true === MOBILE_APP_API_CALL) {
+						$collections[$i] = $collection;
+						$collections[$i]['banners'] = $banners;
+					} else {
+						$collections[$collection['collection_id']] = $collection;
+						$collections[$collection['collection_id']]['banners'] = $banners;
+					} 
                     break;
                 case Collections::COLLECTION_TYPE_PRODUCT:
                     $tempObj = clone $collectionObj;
@@ -856,19 +853,36 @@ class HomeController extends MyAppController
         return $slides;
     }
 
-    private function getBanners()
+    private function getBanners($collectionId)
     {
         $langId = $this->siteLangId;
-        $top_banners = BannerLocation::getPromotionalBanners(BannerLocation::HOME_PAGE_TOP_BANNER, $langId);
+        $top_banners = BannerLocation::getPromotionalBanners(BannerLocation::HOME_PAGE_TOP_BANNER, $langId, $collectionId);
         $middle_banners = array();
         $pageSize = 0;
         if (true === MOBILE_APP_API_CALL) {
             $pageSize = BannerLocation::MOBILE_API_BANNER_PAGESIZE;
-            $middle_banners = BannerLocation::getPromotionalBanners(BannerLocation::HOME_PAGE_MIDDLE_BANNER, $langId, $pageSize);
+            $middle_banners = BannerLocation::getPromotionalBanners(BannerLocation::HOME_PAGE_MIDDLE_BANNER, $langId, $collectionId, $pageSize);
         }
-        $bottom_banners = BannerLocation::getPromotionalBanners(BannerLocation::HOME_PAGE_BOTTOM_BANNER, $langId, $pageSize);
+        $bottom_banners = BannerLocation::getPromotionalBanners(BannerLocation::HOME_PAGE_BOTTOM_BANNER, $langId, $collectionId, $pageSize);
         $banners = array_merge($top_banners, $middle_banners, $bottom_banners);
         return $banners;
+		
+		/* $srch = new BannerSearch($this->adminLangId, false);
+        $srch->joinLocations();
+        $srch->joinPromotions($this->adminLangId, true);
+        $srch->addPromotionTypeCondition();
+        $srch->addMultipleFields(array('IFNULL(promotion_name,promotion_identifier) as promotion_name', 'banner_id', 'banner_type', 'banner_url', 'banner_target', 'banner_active', 'banner_blocation_id', 'banner_title', 'banner_img_updated_on'));
+        $srch->addCondition('b.banner_record_id', '=', $collectionId);
+        $srch->addCondition('b.banner_type', '=', Banner::TYPE_BANNER);
+
+        $srch->addOrder('banner_active', 'DESC');
+
+        $rs = $srch->getResultSet();
+		$records = array();
+        if ($rs) {
+            $records = FatApp::getDb()->fetchAll($rs);
+        }
+		return $records; */
     }
 
     private function getSponsoredShops($productSrchObj)
