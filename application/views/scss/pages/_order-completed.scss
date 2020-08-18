@@ -91,7 +91,7 @@
     display: flex;
     flex-wrap: wrap;
     margin-top: 2rem;
-    li {
+    >li {
         /*flex: 0 0 50%;
         max-width: 50%;*/
         flex: 1;
@@ -122,6 +122,16 @@
     }
     p {
         font-size: 0.8rem;
+    }
+    .preferred-shipping-list {
+        li {
+            background-color: $bg-gray;
+            border-radius: $radius2;
+            padding: 5px 8px;
+            margin-bottom: 5px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
     }
 }
 
