@@ -66,19 +66,19 @@ class HomeController extends MyAppController
                         $collectionTemplates[$collection['collection_id']]['html'] = $sponsoredShopsLayout;
                     break;
                     case Collections::TYPE_BANNER_LAYOUT1:
-                        if(isset($collection['banners']['Home_Page_Top_Banner'])) {
+                        if(isset($collection['banners']['Home_Page_Banner_Layout_1'])) {
                             $tpl = new FatTemplate('', '');
                             $tpl->set('siteLangId', $this->siteLangId);
-                            $tpl->set('bannerLayout1', $collection['banners']['Home_Page_Top_Banner']);
+                            $tpl->set('bannerLayout1', $collection['banners']['Home_Page_Banner_Layout_1']);
                             $bannerFirstLayout = $tpl->render(false, false, '_partial/banners/home-banner-first-layout.php', true, true);
                             $collectionTemplates[$collection['collection_id']]['html'] = $bannerFirstLayout; 
                         }
                     break;
                     case Collections::TYPE_BANNER_LAYOUT2:
-                        if(isset($collection['banners']['Home_Page_Bottom_Banner'])) {
+                        if(isset($collection['banners']['Home_Page_Banner_Layout_2'])) {
                             $tpl = new FatTemplate('', '');
                             $tpl->set('siteLangId', $this->siteLangId);
-                            $tpl->set('bannerLayout1', $collection['banners']['Home_Page_Bottom_Banner']);
+                            $tpl->set('bannerLayout1', $collection['banners']['Home_Page_Banner_Layout_2']);
                             $bannersecondLayout = $tpl->render(false, false, '_partial/banners/home-banner-second-layout.php', true, true);
                             $collectionTemplates[$collection['collection_id']]['html'] = $bannersecondLayout;
                         }

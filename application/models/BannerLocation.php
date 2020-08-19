@@ -15,6 +15,12 @@ class BannerLocation extends MyAppModel
     public const PRODUCT_DETAIL_PAGE_BANNER = 3;
     public const HOME_PAGE_MIDDLE_BANNER = 4;
 
+    public const HOME_PAGE_LAYOUTS = [
+        self::HOME_PAGE_TOP_BANNER,
+        self::HOME_PAGE_BOTTOM_BANNER,
+        self::HOME_PAGE_MIDDLE_BANNER
+    ];
+
     public const MOBILE_API_BANNER_PAGESIZE = 1;
 
     public function __construct($id = 0)

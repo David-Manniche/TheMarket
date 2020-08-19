@@ -13,7 +13,7 @@ $frmSearch->developerTags['fld_default_col'] = 4; */
                     <div class="row">
                         <div class="col--first col-lg-6">
                             <span class="page__icon"><i class="ion-android-star"></i></span>
-                            <h5><?php echo Labels::getLabel('LBL_Manage_Banner_Locations', $adminLangId); ?> </h5>
+                            <h5><?php echo Labels::getLabel('LBL_Manage_Banner_Layouts', $adminLangId); ?> </h5>
                             <?php $this->includeTemplate('_partial/header/header-breadcrumb.php'); ?>
                         </div>
                     </div>
@@ -25,7 +25,7 @@ $frmSearch->developerTags['fld_default_col'] = 4; */
                 </section> */ ?>
                 <section class="section">
                 <div class="sectionhead">
-                    <h4><?php echo Labels::getLabel('LBL_Banner_Locations_List', $adminLangId); ?> </h4>
+                    <h4><?php echo Labels::getLabel('LBL_Banner_Layouts', $adminLangId); ?> </h4>
                     <?php
                     $data = [
                         'statusButtons' => $canEdit,

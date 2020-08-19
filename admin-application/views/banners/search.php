@@ -58,8 +58,11 @@ foreach ($arr_listing as $sn => $row) {
             case 'action':
                 if ($canEdit) {
                     $td->appendElement('a', array('href'=>'javascript:void(0)', 'class'=>'btn btn-clean btn-sm btn-icon', 'title'=>Labels::getLabel('LBL_Edit', $adminLangId),"onclick"=>"addBannerLocation(".$row['blocation_id'].")"), "<i class='far fa-edit icon'></i>", true);
-                    $url=UrlHelper::generateUrl('banners', 'listing', array($row['blocation_id']));
-                    $td->appendElement('a', array('href'=>'javascript:void(0)', 'class'=>'btn btn-clean btn-sm btn-icon', 'title'=>Labels::getLabel('LBL_Banners', $adminLangId),'onclick'=>'redirecrt("'.$url.'")'), "<i class='ion-images icon'></i>", true);
+                    
+					if ($row['blocation_key'] == 'Product_Detail_Page_Banner') {
+						$url=UrlHelper::generateUrl('banners', 'listing', array($row['blocation_id']));
+						$td->appendElement('a', array('href'=>'javascript:void(0)', 'class'=>'btn btn-clean btn-sm btn-icon', 'title'=>Labels::getLabel('LBL_Banners', $adminLangId),'onclick'=>'redirecrt("'.$url.'")'), "<i class='ion-images icon'></i>", true);
+					}
                 }
                 break;
             default:

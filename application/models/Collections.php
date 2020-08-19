@@ -32,6 +32,7 @@ class Collections extends MyAppModel
     public const TYPE_SPONSORED_SHOP_LAYOUT = 10;
     public const TYPE_BANNER_LAYOUT1 = 11;
     public const TYPE_BANNER_LAYOUT2 = 12;
+    public const TYPE_BANNER_LAYOUT3 = 13;
 
     public const LIMIT_PRODUCT_LAYOUT1 = 12;
     public const LIMIT_PRODUCT_LAYOUT2 = 6;
@@ -149,6 +150,7 @@ class Collections extends MyAppModel
             self::TYPE_SPONSORED_SHOP_LAYOUT => Labels::getLabel('LBL_Sponsored_Shops', $langId),
             self::TYPE_BANNER_LAYOUT1 => Labels::getLabel('LBL_Banner_Layout1', $langId),
             self::TYPE_BANNER_LAYOUT2 => Labels::getLabel('LBL_Banner_Layout2', $langId),
+            self::TYPE_BANNER_LAYOUT3 => Labels::getLabel('LBL_Mobile_Banner_Layout', $langId),
         ];
     }
     
@@ -182,6 +184,7 @@ class Collections extends MyAppModel
             Collections::COLLECTION_TYPE_BANNER => [
                 Collections::TYPE_BANNER_LAYOUT1 => Labels::getLabel('LBL_Banner_Layout1', $langId),
                 Collections::TYPE_BANNER_LAYOUT2 => Labels::getLabel('LBL_Banner_Layout2', $langId),
+                Collections::TYPE_BANNER_LAYOUT3 => Labels::getLabel('LBL_Mobile_Banner_Layout', $langId),
             ],
             Collections::COLLECTION_TYPE_SPONSORED_PRODUCTS => [
                 Collections::TYPE_SPONSORED_PRODUCT_LAYOUT => Labels::getLabel('LBL_Sponsored_Products', $langId),
@@ -213,6 +216,7 @@ class Collections extends MyAppModel
             self::TYPE_SPONSORED_SHOP_LAYOUT => 'shop-layout-1.jpg',
             self::TYPE_BANNER_LAYOUT1 => 'banner-layout-1.jpg',
             self::TYPE_BANNER_LAYOUT2 => 'banner-layout-2.jpg',
+            self::TYPE_BANNER_LAYOUT3 => 'banner-layout-3.jpg',
         ];
     }
     

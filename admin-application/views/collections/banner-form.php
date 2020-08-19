@@ -19,8 +19,12 @@ $bannerFld->htmlAfterField = '<small class="text--small" class="preferredDimensi
 $bannerLangFld = $frm->getField('banner_lang_id');
 $bannerLangFld->addFieldTagAttribute('class', 'banner-language-js');
 
-$bannerFld = $frm->getField('banner_screen');
-$bannerFld->addFieldTagAttribute('class', 'prefDimensions-js');
+$screenFld = $frm->getField('banner_screen');
+$screenFld->addFieldTagAttribute('class', 'prefDimensions-js');
+
+if ($blocationId == BannerLocation::HOME_PAGE_MIDDLE_BANNER) {
+    $screenFld->setFieldTagAttribute('disabled', 'disabled');
+}
 
 $siteDefaultLangId = FatApp::getConfig('conf_default_site_lang', FatUtility::VAR_INT, 1);
 ?>
@@ -234,5 +238,8 @@ $(document).on('change','.prefDimensions-js',function(){
         $('input[name=banner_min_height]').val(360);
         aspectRatio = 16 / 9;
     }
+});
+$("document").ready(function() {
+	$(".prefDimensions-js").trigger('change');
 });
 </script>
