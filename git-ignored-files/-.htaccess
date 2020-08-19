@@ -7,7 +7,7 @@ RewriteRule ^sitemap.xml$ user-uploads/sitemap.xml [L]
 	Header unset ETag
     Header set X-Frame-Options "sameorigin"
     Header set X-XSS-Protection "1; mode=block"
-    Header set X-Content-Type-Options "nosniff"
+    #Header set X-Content-Type-Options "nosniff"
 </IfModule>
 FileETag None
 

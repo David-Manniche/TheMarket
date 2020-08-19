@@ -14,39 +14,50 @@ class EditorController extends FatController
     {
         ob_end_clean();
         if ($img == '') {
-            $pth = CONF_INSTALLATION_PATH . 'user-uploads/editor/' . ltrim($dir, '/');
+            $pth = CONF_UPLOADS_PATH . 'editor/' . ltrim($dir, '/');
         } else {
-            $pth = CONF_INSTALLATION_PATH . 'user-uploads/editor/' . ltrim($dir, '/') . '/' . ltrim($img, '/');
+            if (!empty($dir)) {
+                $dir = ltrim($dir, '/') . '/';
+            }
+            $pth = CONF_UPLOADS_PATH . 'editor/' . $dir . ltrim($img, '/');
         }
 
 
-        if (!is_file($pth)) {
-            $pth = 'images/defaults/no_image.jpg';
+        if (!file_exists($pth)) {
+            $pth =  'images/defaults/no_image.jpg';
+        }
+        
+        if (strpos(CONF_UPLOADS_PATH, 's3://') !== false) {
+            $ext = substr($pth, strlen($pth) - 3, strlen($pth));
+            if (in_array($ext, ['txt', 'pdf', 'zip' ])) {
+                $this->loadAttachment($pth);
+            }
+
+            if ($ext == "svg") {
+                header("Content-type: image/svg+xml");
+            } else {
+                header("content-type: image/jpeg");
+            }
+            $fileContent = file_get_contents($pth);
+            echo $fileContent;
+            exit;
         }
         $fileMimeType = mime_content_type($pth);
-        /*  if (isset($headers['If-Modified-Since']) && (strtotime($headers['If-Modified-Since']) == filemtime($pth))) {
-          header('Last-Modified: '.gmdate('D, d M Y H:i:s', filemtime($pth)).' GMT', true, 304);
-          exit;
-        }
-
-        header('Cache-Control: public');
-        header('Last-Modified: '.gmdate('D, d M Y H:i:s', filemtime($pth)).' GMT', true, 200);
-        */
-
+       
         $ext = pathinfo($pth, PATHINFO_EXTENSION);
         if ($ext == "svg") {
             CommonHelper::editorSvg($pth);
             exit;
         }
 
+        if (in_array($ext, ['txt', 'pdf', 'zip' ])) {
+            $this->loadAttachment($pth);
+        }
+
         $size = getimagesize($pth);
 
         if ($size) {
             list($w, $h) = getimagesize($pth);
-        } else {
-            /* $obj = new imageResize($pth);
-            $obj->setMaxDimensions($w, $h);
-            $obj->setResizeMethod(imageResize::IMG_RESIZE_EXTRA_ADDSPACE); */
         }
         $obj = new ImageResize($pth);
         $obj->setMaxDimensions($w, $h);
@@ -58,5 +69,14 @@ class EditorController extends FatController
             header("Content-Type: " . $size['mime']);
         }
         $obj->displayImage(80, false);
+    }
+
+    private function loadAttachment($pth)
+    {
+        header("Content-type: application/octet-stream");
+        header('Content-Disposition: attachement; filename="' . basename($pth) . '"');
+        header('Content-Length: ' . filesize($pth));
+        readfile($pth);
+        exit;
     }
 }

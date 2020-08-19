@@ -67,7 +67,7 @@
                         } catch (e) {}
                     } else {
                         if (ext.indexOf("/") == -1) {
-                            $("#preview_id").html("<table><tr><td><a id='idFile' target='_blank' href='" + file + "' style='color:#000000;background:#ffffff;margin-right:5px;'>" + filename +
+                            $("#preview_id").html("<table><tr><td><a id='idFile' target='_blank' href='" + file + "' style='color:#000000;background:#ffffff;margin-right:5px;' rel='" + filepath + "'>" + filename +
                                 "</a></td><td>&nbsp;&nbsp;<a id='lnkDelFile' style='font-weight:normal;font-size:10px;color:#c90000;word-spacing:2px;white-space:nowrap;' href='javascript:deleteFile()'>DELETE FILE</a></td></tr></table>");
                             if (fullpath) {
                                 fileurl = window.location.protocol + "//" + window.location.host + file
