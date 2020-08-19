@@ -356,6 +356,31 @@ class Collections extends MyAppModel
         return $data;
     }
     
+    
+    public static function getBanners(int $collection_id, int $lang_id): array
+    {
+        if (!$collection_id || !$lang_id) {
+            trigger_error(Labels::getLabel('MSG_Arguments_not_specified.', $lang_id), E_USER_ERROR);
+            return false;
+        }
+
+        $srch = new BannerSearch($lang_id, false);
+        $srch->joinCollection();
+        $srch->joinLocations();
+        $srch->joinPromotions($lang_id, true);
+        $srch->addPromotionTypeCondition();
+        $srch->addMultipleFields(array('IFNULL(promotion_name,promotion_identifier) as promotion_name', 'banner_id', 'banner_type', 'banner_url', 'banner_target', 'banner_active', 'banner_blocation_id', 'banner_title', 'banner_img_updated_on'));
+        $srch->addCondition(static::DB_TBL_COLLECTION_TO_RECORDS_PREFIX . 'collection_id', '=', $collection_id);
+
+        $srch->addOrder('banner_active', 'DESC');
+        $rs = $srch->getResultSet();
+        $records = array();
+        if ($rs) {
+            $records = FatApp::getDb()->fetchAll($rs);
+        }
+        return $records;
+    }
+    
     /**
      * getCategories
      *

@@ -213,29 +213,10 @@ class CollectionsController extends AdminBaseController
     {
         $this->objPrivilege->canViewCollections();
         $collectionId = FatUtility::int($collectionId);
-        /* $collectionData = Collections::getAttributesById($collectionId);
-        if ($collectionId) {
-            $collectionType = $collectionData['collection_type'];
-        } else {
-            $collectionType = Collections::COLLECTION_TYPE_PRODUCT;
-        } */
+
         $siteDefaultLangId = FatApp::getConfig('conf_default_site_lang', FatUtility::VAR_INT, 1);
         $frm = new Form('frmCollection');
         $frm->addRequiredField(Labels::getLabel('LBL_Collection_Name', $this->adminLangId), 'collection_name[' . $siteDefaultLangId . ']');
-
-        /* $frm->addSelectBox(Labels::getLabel('LBL_Type', $this->adminLangId), 'collection_type', Collections::getTypeArr($this->adminLangId), Collections::COLLECTION_TYPE_PRODUCT)->requirements()->setRequired();
-        $frm->addSelectBox(Labels::getLabel('LBL_Layout_Type', $this->adminLangId), 'collection_layout_type', $this->getLayoutAvailabale($collectionType))->requirements()->setRequired();
-
-        $fld = $frm->addRadioButtons(Labels::getLabel('LBL_Criteria', $this->adminLangId), 'collection_criteria', Collections::getCriteria(), 1);
-        $fld->html_after_field = '<br/><small>This is applicable only on category collections.</small>';
-
-        $frm->addTextBox(Labels::getLabel('LBL_Primary_Record', $this->adminLangId), 'collection_primary_records')->requirements()->setRequired();
-
-        if($collectionData['collection_type'] != Collections::COLLECTION_TYPE_SHOP){
-        $frm->addTextBox( Labels::getLabel('LBL_Child_Records',$this->adminLangId), 'collection_child_records' );
-        }
-
-        $frm->addTextBox( Labels::getLabel('LBL_Link_URL(If_Any)',$this->adminLangId), 'collection_link_url' ); */
 
         $frm->addCheckBox(Labels::getLabel("LBL_APPLICABLE_FOR_WEB", $this->adminLangId), 'collection_for_web', 1, array(), true, 0);
         $frm->addCheckBox(Labels::getLabel("LBL_APPLICABLE_FOR_APP", $this->adminLangId), 'collection_for_app', 1, array(), true, 0);
@@ -249,8 +230,7 @@ class CollectionsController extends AdminBaseController
         foreach ($langData as $langId => $data) {
             $frm->addTextBox(Labels::getLabel('LBL_Collection_Name', $this->adminLangId), 'collection_name[' . $langId . ']');
         }
-        /* $activeInactiveArr = applicationConstants::getActiveInactiveArr($this->adminLangId);
-        $frm->addSelectBox(Labels::getLabel('LBL_Status', $this->adminLangId), 'collection_active', $activeInactiveArr, '', array(), ''); */
+        
         $frm->addHiddenField('', 'collection_id', $collectionId);
         $frm->addHiddenField('', 'collection_active', applicationConstants::ACTIVE);
         $frm->addHiddenField('', 'collection_type', $type);
@@ -476,21 +456,7 @@ class CollectionsController extends AdminBaseController
             $blocation_id = BannerLocation::HOME_PAGE_MIDDLE_BANNER;
         }
 
-        $srch = new BannerSearch($this->adminLangId, false);
-        $srch->joinLocations();
-        $srch->joinPromotions($this->adminLangId, true);
-        $srch->addPromotionTypeCondition();
-        $srch->addMultipleFields(array('IFNULL(promotion_name,promotion_identifier) as promotion_name', 'banner_id', 'banner_type', 'banner_url', 'banner_target', 'banner_active', 'banner_blocation_id', 'banner_title', 'banner_img_updated_on'));
-        $srch->addCondition('b.banner_record_id', '=', $collectionId);
-        $srch->addCondition('b.banner_blocation_id', '=', $blocation_id);
-
-        $srch->addOrder('banner_active', 'DESC');
-
-        $rs = $srch->getResultSet();
-        $records = array();
-        if ($rs) {
-            $records = FatApp::getDb()->fetchAll($rs);
-        }
+        $records = Collections::getBanners($collectionId, $this->adminLangId);
 
         $this->set('collection_id', $collectionId);
         $this->set('arr_listing', $records);
@@ -525,6 +491,7 @@ class CollectionsController extends AdminBaseController
 
         if (0 < $bannerId) {
             $srch = new BannerSearch($this->adminLangId, false);
+            $srch->joinCollection();
             $srch->joinLocations();
             $srch->joinPromotions($this->adminLangId, true);
             $srch->addPromotionTypeCondition();
@@ -591,9 +558,9 @@ class CollectionsController extends AdminBaseController
             $blocation_id = BannerLocation::HOME_PAGE_MIDDLE_BANNER;
         }
 
-        $bannerDetail = Banner::getAttributesById($banner_id);
         $bannerImgArr = AttachedFile::getAttachment(AttachedFile::FILETYPE_BANNER, $banner_id, 0, $lang_id, false, $screen);
-        /* $bannerImgArr = [];
+        /* $bannerDetail = Banner::getAttributesById($banner_id);
+        $bannerImgArr = [];
         if (!false == $bannerDetail) {
             $bannerImgArr = AttachedFile::getAttachment(AttachedFile::FILETYPE_BANNER, $banner_id, 0, $lang_id, false, $screen); 
         } */
@@ -665,7 +632,7 @@ class CollectionsController extends AdminBaseController
             $post['banner_blocation_id'] = BannerLocation::HOME_PAGE_MIDDLE_BANNER;
         }
 
-        $post['banner_record_id'] = $collection_id;
+        // $post['banner_record_id'] = $collection_id;
         $post['banner_type'] = Banner::TYPE_BANNER;
         $post['banner_active'] = applicationConstants::ACTIVE;
 
@@ -701,6 +668,12 @@ class CollectionsController extends AdminBaseController
                 Message::addErrorMessage($updateLangDataobj->getError());
                 FatUtility::dieWithError(Message::getHtml());
             }
+        }
+
+        $collectionObj = new Collections($collection_id);
+        if (!$collectionObj->addUpdateCollectionRecord($collection_id, $banner_id)) {
+            Message::addErrorMessage(Labels::getLabel($collectionObj->getError(), $this->adminLangId));
+            FatUtility::dieWithError(Message::getHtml());
         }
 
         if ($post['banner_id'] == 0 && isset($post['banner_image_id'])) {

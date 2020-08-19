@@ -97,7 +97,7 @@ class BannerLocation extends MyAppModel
             //$bsrch->doNotLimitRecords();
             $bsrch->joinAttachedFile();
 			$bsrch->addCondition('banner_blocation_id', '=', $val['blocation_id']);
-			$bsrch->addDirectCondition('((banner_type = '.Banner::TYPE_BANNER.' AND banner_record_id = ' . $collectionId . ') OR banner_type = '.Banner::TYPE_PPC.')');
+			// $bsrch->addDirectCondition('((banner_type = '.Banner::TYPE_BANNER.' AND banner_record_id = ' . $collectionId . ') OR banner_type = '.Banner::TYPE_PPC.')');
             
             $srch = new SearchBase('(' . $bsrch->getQuery() . ') as t');
             $srch->doNotCalculateRecords();

@@ -25,10 +25,12 @@ class BannerSearch extends SearchBase
             $this->addCondition('b.banner_active', '=', applicationConstants::ACTIVE);
         }
     }
+    
     public function setDefinedCriteria()
     {
         $this->addCondition('promotion_deleted', '=', applicationConstants::NO);
     }
+    
     public function joinLocations($langId = 0)
     {
         $langId = FatUtility::int($langId);
@@ -40,6 +42,11 @@ class BannerSearch extends SearchBase
         if ($langId > 0) {
             $this->joinTable(Banner::DB_TBL_LANG_LOCATIONS, 'LEFT OUTER JOIN', 'bl_l.blocationlang_blocation_id = bl.blocation_id AND bl_l.blocationlang_lang_id = ' . $langId, 'bl_l');
         }
+    }
+
+    public function joinCollection()
+    {
+        $this->joinTable(Collections::DB_TBL_COLLECTION_TO_RECORDS, 'LEFT OUTER JOIN', 'c.ctr_record_id = b.banner_id', 'c');
     }
 
     public function joinLocationDimension($deviceType = 0)
