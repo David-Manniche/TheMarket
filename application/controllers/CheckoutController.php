@@ -1152,6 +1152,7 @@ class CheckoutController extends MyAppController
                     $pickUpDataRow = $productSelectedPickUpMethodsArr['product'][$productInfo['selprod_id']];
                     $productPickUpData = array(
                         'opshipping_type' => OrderProduct::TYPE_PICKUP,
+                        'opshipping_pickup_addr_id' => $pickUpDataRow['time_slot_addr_id'],
                         'opshipping_date' => $pickUpDataRow['time_slot_date'],
                         'opshipping_time_slot_from' => $pickUpDataRow['time_slot_from_time'],
                         'opshipping_time_slot_to' => $pickUpDataRow['time_slot_to_time'],

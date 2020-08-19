@@ -728,7 +728,7 @@ class EmailHandler extends FatModel
         if ($orderInfo) {
             $order_discount_coupon = $orderInfo['order_discount_coupon_code'] != "" ? $orderInfo['order_discount_coupon_code'] : Labels::getLabel("LBL_-NA-", $langId);
 
-            $orderProducts = $orderObj->getChildOrders(array('order_id' => $orderInfo['order_id']), $orderInfo['order_type'], $orderInfo['order_language_id']);
+            $orderProducts = $orderObj->getChildOrders(array('order_id' => $orderInfo['order_id']), $orderInfo['order_type'], $orderInfo['order_language_id'], true);
 
             $addresses = $orderObj->getOrderAddresses($orderInfo["order_id"]);
 
@@ -743,25 +743,29 @@ class EmailHandler extends FatModel
             $shippingArr = array();
             if (!empty($addresses[Orders::SHIPPING_ADDRESS_TYPE])) {
                 $shippingArr = $addresses[Orders::SHIPPING_ADDRESS_TYPE];
-            } /*else {
-                $shippingArr = $billingArr;
-            }*/
-
+            } 
+            
             foreach ($orderProducts as $opID => $val) {
                 $opChargesLog = new OrderProductChargeLog($opID);
                 $taxOptions = $opChargesLog->getData($langId);
                 $orderProducts[$opID]['taxOptions'] = $taxOptions;
+            }
+            
+            $orderProductsData = [];
+            foreach ($orderProducts as $opID => $val) {
+                $orderProductsData[$val["opshipping_pickup_addr_id"]][] = $val;
                 $pickUpAddress = $orderObj->getOrderAddresses($orderInfo['order_id'], $opID);
                 if(!empty($pickUpAddress[Orders::PICKUP_ADDRESS_TYPE])){
-                    $orderProducts[$opID]['pickupAddress'] = $pickUpAddress[Orders::PICKUP_ADDRESS_TYPE];
+                    $orderProductsData[$val["opshipping_pickup_addr_id"]]['pickupAddress'] = $pickUpAddress[Orders::PICKUP_ADDRESS_TYPE];
                 }else{
-                    $orderProducts[$opID]['pickupAddress'] = array();
+                    $orderProductsData[$val["opshipping_pickup_addr_id"]]['pickupAddress'] = array();
                 }
             }
 
             $tpl = new FatTemplate('', '');
             $tpl->set('orderInfo', $orderInfo);
-            $tpl->set('orderProducts', $orderProducts);
+           // $tpl->set('orderProducts', $orderProducts);
+            $tpl->set('orderProductsData', $orderProductsData);
             $tpl->set('siteLangId', $langId);
             $tpl->set('billingAddress', $billingArr);
             $tpl->set('shippingAddress', $shippingArr);

@@ -543,3 +543,4 @@ INSERT INTO `tbl_language_labels` (`label_key`, `label_lang_id`, `label_caption`
 ("MSG_CUSTOMER_SUCCESS_ORDER_{BUYER-EMAIL}", 2, "لقد أرسلنا بريدًا إلكترونيًا إلى {BUYER-EMAIL} مع تأكيد الطلب والإيصال. إذا لم يصل البريد الإلكتروني في غضون دقيقتين ، فيرجى التحقق من مجلد الرسائل غير المرغوب فيها لمعرفة ما إذا كان البريد الإلكتروني قد تم توجيهه هناك.", 1);
 -- Payment Success Page --
 
+ALTER TABLE `tbl_order_product_shipping` ADD `opshipping_pickup_addr_id` INT(11) NOT NULL AFTER `opshipping_service_code`;
