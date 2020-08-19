@@ -414,6 +414,8 @@ $("document").ready(function () {
             return false;
         }
         $(pageContent).html(fcom.getLoader());
+        
+        $.mbsmessage(langLbl.requestProcessing, false, 'alert--process');
         fcom.ajax(fcom.makeUrl('Checkout', 'PaymentSummary'), '', function (ans) {
             $(pageContent).html(ans);
             $(paymentDiv).addClass('is-current');
@@ -576,8 +578,10 @@ $("document").ready(function () {
         $("input[name='slot_date["+level+"]']").val(slot_date);
         
         var slot_time = $(ele).next().children('.time').html();
-        var html = slot_date+' '+slot_time;     
-        $(".js-slot-addr_"+level).html(html);
+        
+        var slotAddr = $("input[name='pickup_address']:checked").next().next('.js-addr').html();
+        var slotHtml = "<div>"+slotAddr+"<br/><strong>"+slot_date+' '+slot_time+"</strong></div>";     
+        $(".js-slot-addr_"+level).html(slotHtml);
         $("#facebox .close").trigger('click');
     }
     

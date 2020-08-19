@@ -48,6 +48,7 @@ class Plugin extends MyAppModel
         self::TYPE_FULL_TEXT_SEARCH,
         self::TYPE_SPLIT_PAYMENT_METHOD,
         self::TYPE_SHIPPING_SERVICES,
+        self::TYPE_SHIPMENT_TRACKING,
     ];
 
     public const ATTRS = [
@@ -86,7 +87,7 @@ class Plugin extends MyAppModel
             self::TYPE_SPLIT_PAYMENT_METHOD => Labels::getLabel('LBL_SPLIT_PAYMENT_METHODS', $langId),
             self::TYPE_REGULAR_PAYMENT_METHOD => Labels::getLabel('LBL_REGULAR_PAYMENT_METHODS', $langId),
             self::TYPE_SHIPPING_SERVICES => Labels::getLabel('LBL_SHIPPING_SERVICES', $langId),
-            self::TYPE_SHIPMENT_TRACKING => Labels::getLabel('LBL_SHIPPING_TRACKING', $langId),
+            self::TYPE_SHIPMENT_TRACKING => Labels::getLabel('LBL_SHIPMENT_TRACKING', $langId),
         ];
     }
     
@@ -109,6 +110,7 @@ class Plugin extends MyAppModel
             self::TYPE_SPLIT_PAYMENT_METHOD => "payment-methods",
             self::TYPE_REGULAR_PAYMENT_METHOD => "payment-methods",
             self::TYPE_SHIPPING_SERVICES => "shipping-services",
+            self::TYPE_SHIPMENT_TRACKING => "shipment-tracking",
         ];
 
         if (array_key_exists($pluginType, $pluginDir)) {

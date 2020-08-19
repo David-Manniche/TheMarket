@@ -1,61 +1,111 @@
 <?php
+use Curl\Curl;
+
 class AfterShipShipment extends ShipmentTrackingBase
 {
-    public const KEY_NAME = 'AfterShipShipment';
-    public $settings = [];
-    public $langId = 0;
-
-    public function __construct($langId = 0)
+    public const KEY_NAME = __CLASS__;
+    private const API_URI = 'https://api.aftership.com/v4/';
+    public $requiredKeys = ['api_key'];
+    private $response = [];
+        
+    /**
+     * __construct
+     *
+     * @param  int $langId
+     * @return void
+     */
+    public function __construct(int $langId)
     {
-        $this->langId = FatUtility::int($langId);
-        if (1 > $this->langId) {
-            $this->langId = CommonHelper::getLangId();
-        }
-
-        if (false == $this->validateSettings($this->langId)) {
-            return [
-                'status' => false,
-                'msg' => $this->error
-            ];
-        }
+        $this->langId = $langId;
     }
-	
-	public function getTrackingInfo($trackingNumber, $courier)
-	{	
-		$url = 'https://api.aftership.com/v4/trackings/'.$courier.'/'.$trackingNumber;    
-		$requestHeaders = array(
-						"aftership-api-key:" . $this->settings['api_key'],
-						"Content-Type:" . 'application/json'
-					);
-		$ch = curl_init();
-		curl_setopt($ch, CURLOPT_URL, $url);
-		curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-		curl_setopt($ch, CURLOPT_HTTPHEADER, $requestHeaders);
-		$rslt = curl_exec($ch);
-		curl_close($ch); 
-		$response = json_decode($rslt, true);
-        if($response['meta']['code'] == 200){
-            $response['data']['tracking']['checkpoints'] = array_reverse($response['data']['tracking']['checkpoints']);
+    
+    /**
+     * init
+     *
+     * @return bool
+     */
+    public function init(): bool
+    {
+        return $this->validateSettings($this->langId);
+    }
+    
+    /**
+     * doRequest
+     *
+     * @param  string $url
+     * @return bool
+     */
+    private function doRequest(string $url): bool
+    {
+        $curl = new Curl();
+        $curl->setOpt(CURLOPT_RETURNTRANSFER, true);
+        $curl->setHeader("aftership-api-key", $this->settings['api_key']);
+        $curl->setHeader("Content-Type", "application/json");
+        $curl->get($url);
+  
+        if ($curl->error) { 
+            $this->error = $curl->errorCode . ' : ' . $curl->errorMessage;
+            $this->error .= !empty($curl->getResponse()->error) ? $curl->getResponse()->error : '';
+            return false;
         }
-		return $response;
-	}
-    
-    public function getTrackingCouriers()
+        /* Converting Multidimensional object elements to array. */
+        $this->response = json_decode(json_encode($curl->getResponse()), true); 
+        return true; 
+    }
+        
+    /**
+     * getTrackingCouriers
+     *
+     * @return void
+     */
+    public function getTrackingCouriers(): bool
 	{	
-		$url = 'https://api.aftership.com/v4/couriers';    
-		$requestHeaders = array(
-						"aftership-api-key:" . $this->settings['api_key'],
-						"Content-Type:" . 'application/json'
-					);
-		$ch = curl_init();
-		curl_setopt($ch, CURLOPT_URL, $url);
-		curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-		curl_setopt($ch, CURLOPT_HTTPHEADER, $requestHeaders);
-		$rslt = curl_exec($ch);
-		curl_close($ch);
-		$response = json_decode($rslt, true);
-		return $response;	
+        $url = self::API_URI . 'couriers';
+
+        if (false === $this->doRequest($url)) {
+            return false;
+        } 
+
+        $couriers = [];
+        if(isset($this->response['meta']['code']) && $this->response['meta']['code'] == 200){
+            foreach($this->response['data']['couriers'] as  $courier){
+                  $couriers[$courier['slug']] = $courier['name'];
+            }
+        }
+        
+        $this->response = $couriers;
+        return true;
 	}
-    
+		
+	/**
+	 * getTrackingInfo
+	 *
+	 * @param  string $trackingNumber
+	 * @param  string $courierCode
+	 * @return bool
+	 */
+	public function getTrackingInfo(string $trackingNumber, string $courierCode): bool
+	{	
+        $url = self::API_URI . 'trackings/'.$courierCode.'/'.$trackingNumber;
+
+        if (false === $this->doRequest($url)) {
+            return false;
+        } 
+
+        if(isset($this->response['meta']['code']) && $this->response['meta']['code'] == 200){
+            $this->response['data']['tracking']['checkpoints'] = array_reverse($this->response['data']['tracking']['checkpoints']);
+        }
+        return true;    
+	}
+        
+    /**
+     * getResponse
+     *
+     * @return mixed
+     */
+    public function getResponse()
+    {
+        return $this->response;
+    }
     
 }

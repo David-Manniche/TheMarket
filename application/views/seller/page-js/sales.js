@@ -27,5 +27,13 @@ $(document).ready(function(){
 	clearSearch = function(){
 		document.frmOrderSrch.reset();
 		searchOrders(document.frmOrderSrch);
-	};
+    };
+    
+    /* ShipStation */
+    generateLabel = function (orderId, opId) {
+        fcom.updateWithAjax(fcom.makeUrl('ShippingServices', 'generateLabel', [orderId, opId]), '', function (t) {
+            window.location.reload();
+        });
+    }
+    /* ShipStation */
 })();

@@ -287,6 +287,7 @@ class OrdersController extends AdminBaseController
 
         $orderObj = new Orders();
         $order = $orderObj->getOrderById($order_id);
+
         if ($order == false) {
             Message::addErrorMessage(Labels::getLabel('LBL_Error:_Please_perform_this_action_on_valid_record.', $this->adminLangId));
             FatUtility::dieJsonError(Message::getHtml());
@@ -308,8 +309,13 @@ class OrdersController extends AdminBaseController
                 Message::addErrorMessage($orderObj->getError());
                 FatUtility::dieJsonError(Message::getHtml());
             }
-            $pluginKey = Plugin::getAttributesById($order['order_pmethod_id'], 'plugin_code');
 
+            if (!$orderObj->refundOrderPaidAmount($order_id, $order['order_language_id'])) {
+                Message::addErrorMessage($orderObj->getError());
+                FatUtility::dieJsonError(Message::getHtml());
+            }
+
+            $pluginKey = Plugin::getAttributesById($order['order_pmethod_id'], 'plugin_code');
             $paymentMethodObj = new PaymentMethods();
             if (true === $paymentMethodObj->canRefundToCard($pluginKey, $this->adminLangId)) {
                 $orderProducts = $orderObj->getChildOrders(array('order_id' => $order_id), $order['order_type'], $order['order_language_id']);
@@ -333,9 +339,6 @@ class OrdersController extends AdminBaseController
                         Transactions::debitWallet($childOrderInfo['order_user_id'], Transactions::TYPE_ORDER_REFUND, $txnAmount, $this->adminLangId, $comments, $op['op_id'], $resp->id);
                     }
                 }
-            } elseif (!$orderObj->refundOrderPaidAmount($order_id, $order['order_language_id'])) {
-                Message::addErrorMessage($orderObj->getError());
-                FatUtility::dieJsonError(Message::getHtml());
             }
         }
 

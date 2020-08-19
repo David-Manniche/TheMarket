@@ -377,4 +377,9 @@ class OrderProductSearch extends SearchBase
     {
         $this->joinTable(OrderProductSpecifics::DB_TBL, 'LEFT JOIN', 'ops.ops_op_id = op.op_id', 'ops');
     }
+
+    public function joinOrderProductShipment()
+    {
+        $this->joinTable(OrderProductShipment::DB_TBL, 'LEFT JOIN', OrderProductShipment::DB_TBL_PREFIX . 'op_id = op.op_id', 'opship');
+    }
 }

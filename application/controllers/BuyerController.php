@@ -151,7 +151,6 @@ class BuyerController extends BuyerBaseController
         $primaryOrderDisplay = false;
 
         $orderObj = new Orders();
-        $processingStatuses = $orderObj->getVendorAllowedUpdateOrderStatuses();
         $orderStatuses = Orders::getOrderProductStatusArr($this->siteLangId);
         $userId = UserAuthentication::getLoggedUserId();
 
@@ -2553,7 +2552,17 @@ class BuyerController extends BuyerBaseController
         }
 
 		$shipmentTracking = new ShipmentTracking();
-		$trackingInfo = $shipmentTracking->getTrackingInfo($trackingNumber, $courier, $this->siteLangId);
+		if (false === $shipmentTracking->init($this->siteLangId)) {
+			Message::addErrorMessage($shipmentTracking->getError());
+            FatUtility::dieWithError(Message::getHtml());
+		}
+		
+		if (false === $shipmentTracking->getTrackingInfo($trackingNumber, $courier)) {
+			Message::addErrorMessage($shipmentTracking->getError());
+            FatUtility::dieWithError(Message::getHtml());
+		}
+		$trackingInfo = $shipmentTracking->getResponse();
+		
 		$this->set('trackingInfo', $trackingInfo);
 		$this->_template->render(false, false);
 	}

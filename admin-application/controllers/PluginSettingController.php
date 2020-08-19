@@ -35,7 +35,7 @@ class PluginSettingController extends AdminBaseController
     {
         $this->frmObj = $this->getForm();
         if (false === $this->frmObj) {
-            LibHelper::dieJsonError($Labels::getLabel('LBL_REQUIREMENT_SETTINGS_ARE_NOT_DEFINED', $this->adminLangId));
+            LibHelper::dieJsonError(Labels::getLabel('LBL_REQUIREMENT_SETTINGS_ARE_NOT_DEFINED', $this->adminLangId));
         }
     }
 
@@ -45,8 +45,7 @@ class PluginSettingController extends AdminBaseController
         $pluginSetting = new PluginSetting(0, $this->keyName);
         $settings = $pluginSetting->get();
         if (false === $settings) {
-            Message::addErrorMessage(Labels::getLabel('LBL_SETTINGS_NOT_AVALIABLE_FOR_THIS_PLUGIN', $this->adminLangId));
-            FatUtility::dieJsonError(Message::getHtml());
+            FatUtility::dieJsonError(Labels::getLabel('LBL_SETTINGS_NOT_AVALIABLE_FOR_THIS_PLUGIN', $this->adminLangId));
         }
         $this->frmObj->fill($settings);
         $identifier = isset($settings['plugin_identifier']) ? $settings['plugin_identifier'] : '';
@@ -60,15 +59,14 @@ class PluginSettingController extends AdminBaseController
         $this->setFormObj();
         $post = $this->frmObj->getFormDataFromArray(FatApp::getPostedData());
         if (false === $post) {
-            Message::addErrorMessage(current($this->frmObj->getValidationErrors()));
-            FatUtility::dieJsonError(Message::getHtml());
+            FatUtility::dieJsonError(current($this->frmObj->getValidationErrors()));
         }
         
         $pluginSetting = new PluginSetting($post["plugin_id"]);
         if (!$pluginSetting->save($post)) {
-            Message::addErrorMessage(Labels::getLabel($plugin->getError()));
-            FatUtility::dieWithError(Message::getHtml());
+            FatUtility::dieWithError($pluginSetting->getError());
         }
+
         $this->set('msg', $this->str_setup_successful);
         $this->_template->render(false, false, 'json-success.php');
     }

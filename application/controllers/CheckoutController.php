@@ -60,7 +60,7 @@ class CheckoutController extends MyAppController
             $this->cartObj->setShippingAddressSameAsBilling();
         }
 
-        $this->set('exculdeMainHeaderDiv', true);
+        $this->set('exculdeMainHeaderDiv', true);      
     }
 
     private function isEligibleForNextStep(&$criteria = array())
@@ -1152,6 +1152,7 @@ class CheckoutController extends MyAppController
                     $pickUpDataRow = $productSelectedPickUpMethodsArr['product'][$productInfo['selprod_id']];
                     $productPickUpData = array(
                         'opshipping_type' => OrderProduct::TYPE_PICKUP,
+                        'opshipping_pickup_addr_id' => $pickUpDataRow['time_slot_addr_id'],
                         'opshipping_date' => $pickUpDataRow['time_slot_date'],
                         'opshipping_time_slot_from' => $pickUpDataRow['time_slot_from_time'],
                         'opshipping_time_slot_to' => $pickUpDataRow['time_slot_to_time'],
@@ -2148,7 +2149,7 @@ class CheckoutController extends MyAppController
                         'time_slot_type' => $slotData['tslot_type'],
                         'time_slot_from_time' => $slotData['tslot_from_time'],
                         'time_slot_to_time' => $slotData['tslot_to_time'],
-                        'time_slot_date' => $post['slot_date'][$level],
+                        'time_slot_date' => date('Y-m-d', strtotime($post['slot_date'][$level])),
                     );
                 }
             }

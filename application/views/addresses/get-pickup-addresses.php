@@ -1,27 +1,17 @@
 <?php defined('SYSTEM_INIT') or die('Invalid Usage.'); 
 if(!empty($addresses)){
-    
-    $frm->setFormTagAttribute('class', 'form');
-    $frm->developerTags['colClassPrefix'] = 'col-md-';
-    $frm->developerTags['fld_default_col'] = 12;
-
-    $dateFld = $frm->getField('slot_date');
-    $dateFld->setFieldTagAttribute('class', 'js-datepicker');
-    $dateFld->setFieldTagAttribute('readonly', 'readonly');
-    $dateFld->setFieldTagAttribute('placeholder', Labels::getLabel('LBL_Choose_Time_Slot_Date', $siteLangId));
-    
 ?>
 
         <div class="pop-up-title"><?php echo Labels::getLabel('LBL_Pick_Up', $siteLangId); ?></div>
         <div class="pick-section">
             <div class="pickup-option">
                 <ul class="pickup-option__list">
-                    <?php foreach($addresses as $address) { ?>
-                    <li class="">
+                    <?php foreach($addresses as $key=>$address) { ?>
+                    <li>
                         <label class="radio">
-                            <input name="pickup_address" onclick="hidedateAndSlots();" type="radio" value="<?php echo $address['addr_id']; ?>"> 
+                            <input name="pickup_address" <?php echo ($key == 0) ? 'checked=checked': ''; ?> onclick="displayDateSlots();" type="radio" value="<?php echo $address['addr_id']; ?>"> 
                             <i class="input-helper"></i> 
-                            <span class="lb-txt">  
+                            <span class="lb-txt js-addr">  
                                 <?php echo $address['addr_address1']; ?>
                                 <?php echo (strlen($address['addr_address2'])>0)? ", ".$address['addr_address2']:''; ?><br> 
                                 <?php echo (strlen($address['addr_city'])>0)?$address['addr_city'].',':''; ?> 
@@ -37,7 +27,7 @@ if(!empty($addresses)){
 
                 <div class="pickup-time">
                     <div class="calendar">
-                    <?php echo $frm->getFormHtml(); ?>
+                        <div class="js-datepicker calendar-pickup"></div>
                     </div>
                     <ul class="time-slot js-time-slots">
                     </ul>
@@ -50,27 +40,27 @@ if(!empty($addresses)){
 <?php } ?>
 
 <script>
-$(document).ready(function(){
+$(document).ready(function(){    
     var level = <?php echo $level; ?>;
-    $('.js-datepicker').datepicker('option', {
+    $('.js-datepicker').datepicker({
         minDate: new Date(),
         onSelect: function() {
-            var selectedDate = $(this).val(); 
-            var addressId = $('input[name="pickup_address"]:checked').val();
-            if(addressId != 'undefined' && selectedDate != ''){
-                var data = 'addressId='+addressId+'&selectedDate='+selectedDate+'&level='+level;
-                fcom.ajax(fcom.makeUrl('Addresses', 'timeSlotsByAddressIdAndDate'), data, function (rsp) {
-                    $(".js-time-slots").html(rsp);
-                });
-            }
+            displayDateSlots();
         }
-    });
-    
-    hidedateAndSlots = function(){
-        $('.js-datepicker').val('');
-        $('.js-time-slots').html('');
+    }).datepicker("show");
+
+    displayDateSlots = function(){
+        var selectedDate = $('.js-datepicker').val();
+        var addressId = $('input[name="pickup_address"]:checked').val();
+        if(addressId != 'undefined' && selectedDate != ''){ 
+            var data = 'addressId='+addressId+'&selectedDate='+selectedDate+'&level='+level;
+            fcom.ajax(fcom.makeUrl('Addresses', 'getTimeSlotsByAddressAndDate'), data, function (rsp) {
+                $(".js-time-slots").html(rsp);
+            });
+        }
     }
     
+    displayDateSlots(); 
 });
 
 </script>

@@ -86,6 +86,17 @@
         </div>               
     </div>
 	<div class="checkout-actions">
+        <?php if ($addressType == Address::Address_TYPE_BILLING) { ?>
+        <a class="btn btn-link" href="javascript:void(0);" onclick="loadPaymentSummary();">
+            <i class="arrow">
+                <svg class="svg">
+                    <use xlink:href="<?php echo CONF_WEBROOT_URL;?>images/retina/sprite.svg#arrow-left"
+                        href="<?php echo CONF_WEBROOT_URL;?>images/retina/sprite.svg#arrow-left">
+                    </use>
+                </svg></i>
+            <span class=""><?php echo Labels::getLabel('LBL_Back', $siteLangId); ?></span>
+		</a>
+        <?php }else{ ?>
 		<a class="btn btn-link" href="<?php echo UrlHelper::generateUrl('cart');?>">
             <i class="arrow">
                 <svg class="svg">
@@ -95,6 +106,7 @@
                 </svg></i>
             <span class=""><?php echo Labels::getLabel('LBL_Back', $siteLangId); ?></span>
 		</a>
+        <?php } ?>
 		<?php if($addressType == Address::Address_TYPE_BILLING) { ?>
 		<a href="javascript:void(0)" id="btn-continue-js" onClick="setUpBillingAddressSelection(this);" class="btn btn-primary btn-wide"><?php echo Labels::getLabel('LBL_Continue', $siteLangId); ?></a>
 	   <?php } else{ ?>
