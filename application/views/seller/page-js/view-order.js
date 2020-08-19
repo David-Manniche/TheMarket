@@ -16,12 +16,16 @@ $(document).ready(function(){
 
 (function() {
 	updateStatus = function(frm){
-		if ( !$(frm).validate() ) return;
-		var data = fcom.frmData(frm);		
-		fcom.updateWithAjax(fcom.makeUrl('Seller', 'changeOrderStatus'), data, function(t) {
-			/* setTimeout(location.reload.bind(location), 1000); */
-			setTimeout("pageRedirect("+t.op_id+")", 1000);
-		});
+        if ( !$(frm).validate() ) return;
+        var op_id = $(frm.op_id).val();		
+        var data = fcom.frmData(frm);
+        if (0 < canShipByPlugin) {
+            proceedToShipment(op_id);
+        } else {
+            fcom.updateWithAjax(fcom.makeUrl('Seller', 'changeOrderStatus'), data, function(t) {
+                setTimeout("pageRedirect("+op_id+")", 1000);
+            });
+        }
 	};	
     
     trackOrder = function(trackingNumber, courier){
@@ -31,6 +35,41 @@ $(document).ready(function(){
             });
         });
     };
+
+    /* ShipStation */
+    generateLabel = function (orderId, opId) {
+        fcom.updateWithAjax(fcom.makeUrl('ShippingServices', 'generateLabel', [orderId, opId]), '', function (t) {
+            window.location.reload();
+        });
+    }
+
+    proceedToShipment = function (opId) {
+        $.mbsmessage(langLbl.processing, false,'alert--process');
+        if ('' == $(".shippingUser-js").val()){
+            $.mbsmessage(langLbl.shippingUser, false,'alert--danger');
+            return;
+        }
+        fcom.ajax(fcom.makeUrl('ShippingServices', 'proceedToShipment', [opId]), '', function (t) {
+            $.mbsmessage.close();
+            t = $.parseJSON(t);
+            $.mbsmessage(t.msg, false, 'alert--success');
+            if(1 > t.status){
+                $.mbsmessage(t.msg, false, 'alert--danger');
+                return;
+            }
+
+            var form = "form.markAsShipped-js";
+            if (0 < $(form).length) {
+                $(form + " .status-js").val(orderShippedStatus).change();
+                $(form + " .notifyCustomer-js").val(1);
+                canShipByPlugin = 0;
+                setTimeout(function(){ $(form).submit(); }, 200);
+            } else {
+                window.location.reload();
+            }
+        });
+    }
+    /* ShipStation */
     
 })();
 

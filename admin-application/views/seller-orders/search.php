@@ -57,9 +57,9 @@ foreach ($vendorOrdersList as $sn=>$row){  /* CommonHelper::printArray($row); */
 			case 'op_status_id':
 				$td->appendElement('plaintext', array(), $row['orderstatus_name'], true);
 			break;
-			case 'order_date_added':
-				$td->appendElement('plaintext',array(),FatDate::format($row[$key],true,true,
-				FatApp::getConfig('CONF_TIMEZONE', FatUtility::VAR_STRING, date_default_timezone_get())));
+            case 'order_date_added':
+                $timeZone = FatApp::getConfig('CONF_TIMEZONE', FatUtility::VAR_STRING, date_default_timezone_get());
+				$td->appendElement('plaintext',array(), FatDate::format($row[$key], true, true, $timeZone));
 			break;
 			case 'action':
 				$td->appendElement('a', array('href'=>UrlHelper::generateUrl('SellerOrders','view',array($row['op_id'])),'class'=>'btn btn-clean btn-sm btn-icon','title'=>Labels::getLabel('LBL_View_Order_Detail',$adminLangId)),"<i class='far fa-eye icon'></i>", true);
@@ -68,10 +68,17 @@ foreach ($vendorOrdersList as $sn=>$row){  /* CommonHelper::printArray($row); */
                 $notAllowedStatues = $orderObj->getNotAllowedOrderCancellationStatuses();
 				if(!in_array($row["op_status_id"], $notAllowedStatues) && $canEdit){
 					$td->appendElement('a', array('href'=>UrlHelper::generateUrl('SellerOrders','CancelOrder',array($row['op_id'])),'class'=>'btn btn-clean btn-sm btn-icon','title'=>Labels::getLabel('LBL_Cancel_Order',$adminLangId)),"<i class='fas fa-times'></i>", true);
+                }
+                $shipBySeller = CommonHelper::canAvailShippingChargesBySeller($row['op_selprod_user_id'], $row['opshipping_by_seller_user_id']);
+                if (!$shipBySeller && true === $canShipByPlugin && ('CashOnDelivery' == $row['plugin_code'] || Orders::ORDER_IS_PAID == $row['order_is_paid'])) {
+                    $orderShipment = OrderProductShipment::getAttributesById($row['op_id'], 'opship_response');
+                    if (empty($orderShipment)) {
+                        $td->appendElement('a', array('href'=>'javascript:void(0)', 'onclick' => 'generateLabel("' . $row['order_id'] . '", ' . $row['op_id'] . ')','class'=>'btn btn-clean btn-sm btn-icon','title'=>Labels::getLabel('LBL_GENERATE_LABEL',$adminLangId)),'<i class="fas fa-file-download"></i>', true);
+                    } else {
+                        $td->appendElement('a', array('href'=>UrlHelper::generateUrl("ShippingServices", 'previewLabel', [$row['op_id']]), 'target' => '_blank', 'class'=>'btn btn-clean btn-sm btn-icon','title'=>Labels::getLabel('LBL_PREVIEW_LABEL',$adminLangId)),'<i class="fas fa-file-export"></i>', true);
+                    }
+                }
 
-					//$innerLi=$innerUl->appendElement('li');
-					//$innerLi->appendElement('a', array('href'=>'javascript:void(0)','onclick' => "cancelOrder('".$row['op_id']."')",'class'=>'button small green','title'=>Labels::getLabel('LBL_Cancel_Order',$adminLangId),'target'=>'_new'),Labels::getLabel('LBL_Cancel_Order',$adminLangId), true);
-				}
 			break;
 			default:
 				$td->appendElement('plaintext', array(), $row[$key], true);

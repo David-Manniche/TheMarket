@@ -27,7 +27,6 @@
                                     <path class="checkmark__check" fill="none" d="M14.1 27.2l7.1 7.2 16.7-16.8"></path>
                                 </svg>
                             </div>
-
                             <h2><?php echo Labels::getLabel('LBL_THANK_YOU!', $siteLangId); ?></h2>
                             <h3>
                                 <?php 
@@ -59,11 +58,11 @@
                                 ?>
                                 &nbsp;&nbsp;&nbsp;
                                 <span class="no-print">
-                                    <svg class="svg" width="22px" height="22px">
+                                    
+                                    <a class="btn btn-link" href="<?php echo UrlHelper::generateUrl('Custom', 'PaymentSuccess', [$orderInfo['order_id'], 'print']);?>"> <svg class="svg" width="22px" height="22px">
                                         <use xlink:href="<?php echo CONF_WEBROOT_URL; ?>/images/retina/sprite.svg#print" href="<?php echo CONF_WEBROOT_URL; ?>/images/retina/sprite.svg#print">
                                         </use>
-                                    </svg>
-                                    <a href="<?php echo UrlHelper::generateUrl('Custom', 'PaymentSuccess', [$orderInfo['order_id'], 'print']);?>"><?php echo Labels::getLabel("LBL_PRINT", $siteLangId); ?></a>
+                                    </svg> <?php echo Labels::getLabel("LBL_PRINT", $siteLangId); ?></a>
                                 </span>
                             </p>
                         </div>
@@ -101,7 +100,7 @@
                                             </use>
                                         </svg> Shipping Method </h4>
                                         <p>Preferred Method: <br>
-                                        <ol>
+                                        <ol class="preferred-shipping-list">
                                             <?php echo $shippingMethod; ?>
                                         </ol>
                                     </p>

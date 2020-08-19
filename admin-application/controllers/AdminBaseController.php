@@ -148,6 +148,7 @@ class AdminBaseController extends FatController
         'fileSizeExceeded' => Labels::getLabel("MSG_FILE_SIZE_SHOULD_BE_LESSER_THAN_{SIZE-LIMIT}", $this->adminLangId),
         'currentPrice' => Labels::getLabel('LBL_Current_Price', $this->adminLangId),
         'discountPercentage' => Labels::getLabel('LBL_Discount_Percentage', $this->adminLangId),
+        'shippingUser' => Labels::getLabel('MSG_Please_assign_shipping_user', $this->adminLangId),
         );
 
         $languages = Language::getAllNames(false);

@@ -121,9 +121,6 @@ if ($order['order_reward_point_used'] > 0) {
                                 </th>
                                 <th class="text-right"><?php echo Labels::getLabel('LBL_Total', $adminLangId); ?>
                                 </th>
-                                <?php if ('CashOnDelivery' == $order['plugin_code'] || Orders::ORDER_IS_PAID == $order['order_is_paid']) { ?>
-                                <th class="text-right"></th>
-                                <?php } ?>
                             </tr>
                             <?php
                             $k = 1;
@@ -183,7 +180,7 @@ if ($order['order_reward_point_used'] > 0) {
                                             <?php echo Labels::getLabel('LBL_SHIPPING_SERVICES:', $adminLangId); ?>
                                         </strong>
                                         <?php echo CommonHelper::displayNotApplicable($adminLangId, $op["opshipping_service_code"]); 
-                                            $orderStatus = '';
+                                            $orderStatusLbl = '';
                                             if (!empty($op["thirdPartyorderInfo"]) && isset($op["thirdPartyorderInfo"]['orderStatus'])) { 
                                                 $orderStatus = $op["thirdPartyorderInfo"]['orderStatus'];
                                                 $orderStatusLbl = strpos($orderStatus,"_") ? ucwords(str_replace('_', ' ', $orderStatus)) : $orderStatus;
@@ -199,10 +196,7 @@ if ($order['order_reward_point_used'] > 0) {
                                             <strong>
                                                 <?php echo Labels::getLabel('LBL_TRACKING_NUMBER', $adminLangId); ?>:
                                             </strong>
-                                            <!-- <a href="javascript:void(0)" onclick="track('<?php /* echo $op['opship_op_id']; */ ?>')"> -->
-                                            <a href="javascript:void(0)">
-                                                <?php echo $op["opship_tracking_number"]; ?>
-                                            </a>
+                                            <?php echo $op["opship_tracking_number"]; ?>
                                         <?php } ?>
                                     </td>
                                     <td>
@@ -220,37 +214,6 @@ if ($order['order_reward_point_used'] > 0) {
                                     <td class="text-right">
                                         <?php echo CommonHelper::displayMoneyFormat($total, true, true); ?>
                                     </td>
-                                    <?php 
-                                    $opshipping_by_seller_user_id = isset($op['opshipping_by_seller_user_id']) ? $op['opshipping_by_seller_user_id'] : 0;
-                                    if (false === CommonHelper::canAvailShippingChargesBySeller($op['op_selprod_user_id'], $opshipping_by_seller_user_id) && ('CashOnDelivery' == $order['plugin_code'] || Orders::ORDER_IS_PAID == $order['order_is_paid'])) {
-                                        $orderId = $order["order_id"]; ?>
-                                        <td class="text-right">
-                                            <a href="javascript:void(0)"
-                                                onclick="generateLabel('<?php echo $orderId; ?>', <?php echo $opId; ?>)"
-                                                title="<?php echo Labels::getLabel('LBL_GENERATE_LABEL', $adminLangId); ?>"
-                                                class="btn-clean btn-sm btn-icon btn-secondary ">
-                                                <i class="fas fa-image"></i>
-                                            </a>
-                                            <?php 
-                                            $orderShipment = OrderProductShipment::getAttributesById($opId, 'opship_response');
-                                            if (!empty($orderShipment)) { ?>
-                                                <a target="_blank" href="<?php echo UrlHelper::generateUrl("ShippingServices", 'previewLabel', [$opId]); ?>"
-                                                    title="<?php echo Labels::getLabel('LBL_PREVIEW_LABEL', $adminLangId); ?>"
-                                                    class="btn-clean btn-sm btn-icon btn-secondary ">
-                                                    <i class="fas fa-eye"></i>
-                                                </a>
-                                            <?php }
-                                            if (!empty($orderStatus) && 'awaiting_shipment' == $orderStatus) { ?>
-                                                <a href="javascript:void(0)"
-                                                    onclick="proceedToShipment(<?php echo $opId; ?>)"
-                                                    title="<?php echo Labels::getLabel('LBL_PROCEED_TO_SHIPMENT', $adminLangId); ?>"
-                                                    class="btn-clean btn-sm btn-icon btn-secondary ">
-                                                    <i class="fas fa-shipping-fast"></i>
-                                                </a>
-                                            <?php } ?>
-                                        </td>
-                                    <?php
-                                    } ?>
                                 </tr>
                             <?php
                                 $k++;

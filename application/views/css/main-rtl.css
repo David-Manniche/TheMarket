@@ -31548,8 +31548,8 @@ a.ui-button:active,
     font-size: 0.8rem; }
 
 .pick-section {
-  border: solid 1px #dee2e6;
-  border-radius: 4px;
+  /*border: $border;
+  border-radius: $radius4;*/
   margin-bottom: 1rem; }
   .pick-section .pickup-option {
     padding: 1rem;
@@ -31603,7 +31603,7 @@ a.ui-button:active,
         display: block;
         background: #fff;
         border: solid 1px #dee2e6;
-        border-radius: 2px;
+        border-radius: 4px;
         position: relative;
         cursor: pointer;
         font-size: 12px;
@@ -31613,6 +31613,14 @@ a.ui-button:active,
           padding: 0.5rem 0.7rem;
           display: block;
           text-align: center; }
+
+.calendar-pickup .ui-datepicker {
+  min-width: auto;
+  border: solid 1px #dee2e6 !important;
+  box-shadow: none;
+  font-size: 0.8rem; }
+  .calendar-pickup .ui-datepicker td .ui-state-default {
+    padding: 5px; }
 
 .payment-area .nav-payments {
   display: flex;
@@ -35976,6 +35984,8 @@ body {
 .order-completed p {
   margin-bottom: 0.8rem; }
 .order-completed .svg {
+  width: 1rem;
+  height: 1rem;
   fill: var(--secondary-color); }
 
 .completed-detail {
@@ -35984,7 +35994,7 @@ body {
   display: flex;
   flex-wrap: wrap;
   margin-top: 2rem; }
-  .completed-detail li {
+  .completed-detail > li {
     /*flex: 0 0 50%;
     max-width: 50%;*/
     flex: 1;
@@ -35993,16 +36003,17 @@ body {
     background: #fff;
     outline: solid 1px #dee2e6; }
     @media (max-width: 1199.98px) {
-      .completed-detail li {
+      .completed-detail > li {
         flex: 0 0 50%;
         max-width: 50%; } }
     @media (max-width: 1199.98px) {
-      .completed-detail li {
+      .completed-detail > li {
         flex: 0 0 100%;
         max-width: 100%; } }
   .completed-detail h4 {
     font-weight: 500;
-    font-size: 1rem; }
+    font-size: 1rem;
+    margin-bottom: 1.5rem; }
     .completed-detail h4 .svg {
       display: block;
       margin-bottom: 4px;
@@ -36011,6 +36022,13 @@ body {
       height: 32px; }
   .completed-detail p {
     font-size: 0.8rem; }
+  .completed-detail .preferred-shipping-list li {
+    background-color: #f4f5fa;
+    border-radius: 2px;
+    padding: 5px 8px;
+    margin-bottom: 5px;
+    font-size: 0.75rem;
+    font-weight: 600; }
 
 .completed-cart {
   margin-top: 2rem; }
