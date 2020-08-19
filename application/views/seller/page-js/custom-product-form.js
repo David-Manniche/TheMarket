@@ -1132,6 +1132,107 @@
             setTimeout(function() { window.location.href = fcom.makeUrl('Seller', 'catalog'); }, 1000);
 		});
 	};
+    
+    optionsAssocArr = function(formData) {
+	  var data = {};
+	  $.each( formData, function( key, obj ) {
+        if ('' != obj.value) {
+            var a = obj.name.match(/(.*?)\[(.*?)\]\[(.*?)\]/);
+            if(a !== null)
+            {
+                var subName = a[1];
+                var subKey = a[2];
+                var options = a[3];
+                
+                if( !data[subName]) {
+                    data[subName] = [];
+                }
+                
+                if (!data[subName][subKey]) {
+                    data[subName][subKey] = [];
+                }
+
+                if( data[subName][subKey][options] ) {
+                    if( $.isArray( data[subName][subKey][options] ) ) {
+                        data[subName][subKey][options] = obj.value;
+                    } else {
+                        data[subName][subKey][options] = obj.value;
+                    }
+                } else {
+                    data[subName][subKey][options] = obj.value;
+                }
+            } else {
+                if( data[obj.name] ) {
+                    if( $.isArray( data[obj.name] ) ) {
+                        data[obj.name].push( obj.value );
+                    } else {
+                        data[obj.name] = [ ];
+                        data[obj.name].push( obj.value );
+                    }
+                } else {
+                    data[obj.name] = obj.value;
+                }
+            }
+        }
+      });
+	  return data;
+	};
+    
+    setUpMultipleSellerProducts = function(frm, i = 0, orignalData = []){
+		if (!$(frm).validate()) return;
+
+        if (1 > orignalData.length) {
+            orignalData = optionsAssocArr($(frm).serializeArray());
+        }
+        var data = orignalData;
+        var varients = data.varients;
+        varients = varients.filter(function(){return true;});
+        
+        if(i < varients.length) {
+            var chunk = varients[i];
+            var final = {};
+            $.extend(final, data, chunk);
+            final.varients = [];
+            var data = jQuery.param( final );
+		
+            $('.optionFld-js').each(function(){
+                var $this = $(this);
+                var errorInRow = false;
+                $this.find('input').each(function(){
+                    if($(this).parent().hasClass('fldSku') && CONF_PRODUCT_SKU_MANDATORY != 1){
+                        return;
+                    }
+                    if($(this).val().length == 0 || $(this).val() == 0){
+                        errorInRow = true;
+                        return false;
+                    }
+                });
+                if (errorInRow) {
+                    $this.parent().addClass('invalid');
+                } else {
+                    $this.parent().removeClass('invalid');
+                }
+            });
+            if ($("#optionsTable-js > tbody > tr.invalid").length == $("#optionsTable-js > tbody > tr").length) {
+                $.systemMessage(LBL_MANDATORY_OPTION_FIELDS, 'alert--danger');
+                return false;
+            }
+
+            fcom.updateWithAjax(fcom.makeUrl('Seller', 'setUpMultipleSellerProducts'), data, function(t) {
+                i++;
+                if (i < varients.length) {
+                    setUpMultipleSellerProducts(frm, i, orignalData);
+                }
+            });
+            var counterString = langLbl.processing_counter.replace("{counter}", (i+1));
+            counterString = counterString.replace("{count}", varients.length);
+            counterString = langLbl.processing + " " + counterString;
+            $.mbsmessage(counterString, false, 'alert--process alert'); 
+        }
+        if (i == (varients.length - 1)) {
+            setTimeout(function() { window.location.href = fcom.makeUrl('Seller', 'products'); }, 1000);
+        }
+	};
 
 })();
 
