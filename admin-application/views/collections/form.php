@@ -2,15 +2,20 @@
 $frm->setFormTagAttribute('class', 'web_form');
 $frm->setFormTagAttribute('onsubmit', 'setupCollection(this); return(false);');
 
-$fld = $frm->getField('collection_for_web');
-$fld->setOptionListTagAttribute('class', 'list-inline-checkboxes'); 
-$fld->developerTags['cbLabelAttributes'] = array('class' => 'checkbox');
-$fld->developerTags['cbHtmlAfterCheckbox'] = '<i class="input-helper"></i>';
+if ($collection_layout_type != Collections::TYPE_BANNER_LAYOUT3) {
+	$fld = $frm->getField('collection_for_web');
+	$fld->setOptionListTagAttribute('class', 'list-inline-checkboxes'); 
+	$fld->developerTags['cbLabelAttributes'] = array('class' => 'checkbox');
+	$fld->developerTags['cbHtmlAfterCheckbox'] = '<i class="input-helper"></i>';
+}
 
 $fld = $frm->getField('collection_for_app');
 $fld->setOptionListTagAttribute('class', 'list-inline-checkboxes'); 
 $fld->developerTags['cbLabelAttributes'] = array('class' => 'checkbox');
 $fld->developerTags['cbHtmlAfterCheckbox'] = '<i class="input-helper"></i>';
+if ($collection_layout_type == Collections::TYPE_BANNER_LAYOUT3) {
+	$fld->setFieldTagAttribute('disabled', 'disabled'); 
+}
 
 $fld = $frm->getField('auto_update_other_langs_data');
 $fld->developerTags['cbLabelAttributes'] = array('class' => 'checkbox');
@@ -58,7 +63,7 @@ $siteDefaultLangId = FatApp::getConfig('conf_default_site_lang', FatUtility::VAR
                         <div class="tabs_panel">
                             <?php echo $frm->getFormTag(); ?>
                             <div class="row">
-                                <div class="col-md-12">
+                                <div class="col-md-4">
                                     <div class="field-set">
                                         <div class="caption-wraper">
                                             <label class="field_label">
@@ -75,8 +80,26 @@ $siteDefaultLangId = FatApp::getConfig('conf_default_site_lang', FatUtility::VAR
                                         </div>
                                     </div>
                                 </div>
+								<div class="col-md-4">
+                                    <div class="field-set">
+                                        <div class="caption-wraper">
+                                            <label class="field_label">
+                                            <?php
+                                                $fld = $frm->getField('blocation_promotion_cost');
+                                                echo $fld->getCaption();
+                                            ?>
+                                            <span class="spn_must_field">*</span></label>
+                                        </div>
+                                        <div class="field-wraper">
+                                            <div class="field_cover">
+                                            <?php echo $frm->getFieldHtml('blocation_promotion_cost'); ?>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                             <div class="row">
+								<?php if ($collection_layout_type != Collections::TYPE_BANNER_LAYOUT3) { ?>
                                 <div class="col-md-4">
                                     <div class="field-set d-flex align-items-center">
                                         <div class="field-wraper w-auto">
@@ -86,6 +109,7 @@ $siteDefaultLangId = FatApp::getConfig('conf_default_site_lang', FatUtility::VAR
                                         </div>
                                     </div>
                                 </div>
+								<?php }?>
                                 <div class="col-md-4">
                                     <div class="field-set d-flex align-items-center">
                                         <div class="field-wraper w-auto">

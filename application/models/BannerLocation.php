@@ -146,4 +146,22 @@ class BannerLocation extends MyAppModel
             }
         }
     }
+	
+	public static function getDataByCollectionId($collectionId, $fetch_attr = null) {
+		$srch = static::getSearchObject();
+		if (null != $fetch_attr) {
+            if (is_array($fetch_attr)) {
+                $srch->addMultipleFields($fetch_attr);
+            } elseif (is_string($fetch_attr)) {
+                $srch->addFld($fetch_attr);
+            }
+        }
+		$srch->addCondition('blocation_collection_id', '=', $collectionId);
+        $rs = $srch->getResultSet();
+        $row = FatApp::getDb()->fetch($rs);
+		if (!$row) {
+			return [];
+		}
+		return $row;
+	}
 }
