@@ -1,7 +1,7 @@
 <?php defined('SYSTEM_INIT') or die('Invalid Usage.');
 $frm->setFormTagAttribute('id', 'pickupAddressFrm');
 $frm->setFormTagAttribute('class', 'form form--horizontal');
-$frm->developerTags['colClassPrefix'] = 'col-lg-4 col-md-';
+$frm->developerTags['colClassPrefix'] = 'col-sm-4 col-md-';
 $frm->developerTags['fld_default_col'] = 4;
 $frm->setFormTagAttribute('onsubmit', 'setPickupAddress(this); return(false);');
 
@@ -13,10 +13,14 @@ $stateFld = $frm->getField('addr_state_id');
 $stateFld->setFieldTagAttribute('id', 'addr_state_id');
 
 $cancelFld = $frm->getField('btn_cancel');
-$cancelFld->setFieldTagAttribute('class', 'btn btn-outline-primary btn-wide');
+$cancelFld->setFieldTagAttribute('class', 'btn btn-outline-primary btn-block');
+$cancelFld->developerTags['col'] = 2;
+$cancelFld->developerTags['noCaptionTag'] = true;
 
 $btnSubmit = $frm->getField('btn_submit');
-$btnSubmit->setFieldTagAttribute('class', "btn btn-primary btn-wide");
+$btnSubmit->setFieldTagAttribute('class', "btn btn-primary btn-block");
+$btnSubmit->developerTags['col'] = 2;
+$btnSubmit->developerTags['noCaptionTag'] = true;
 
 $variables= array('language'=>$language,'siteLangId'=>$siteLangId,'shop_id'=>$shop_id,'action'=>$action);
 $this->includeTemplate('seller/_partial/shop-navigation.php', $variables, false); ?>

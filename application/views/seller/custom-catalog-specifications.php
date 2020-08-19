@@ -150,7 +150,7 @@
 						<div class="gap"></div>
                         <div class="row">
                             <div class="col-lg-12 col-md-12 col-sm-4 col-xm-12 align--right">
-                                <button type="button" class="btn btn--secondary ripplelink plusButton" title="<?php echo Labels::getLabel('LBL_Shipping', $siteLangId)?>" onclick="getCustomCatalogSpecificationForm();"><i
+                                <button type="button" class="btn btn-secondary ripplelink plusButton" title="<?php echo Labels::getLabel('LBL_Shipping', $siteLangId)?>" onclick="getCustomCatalogSpecificationForm();"><i
                                         class="fa fa-plus"></i></button>
                             </div>
                         </div>

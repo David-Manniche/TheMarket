@@ -37,7 +37,7 @@
 		<div class="divider"></div>
 		<div class="text-center  pt-5">
 		  <h3><?php echo Labels::getLabel( 'LBL_Still_need_help', $siteLangId)?> ?</h3>
-		  <a href="<?php echo UrlHelper::generateUrl('custom' , 'contact-us'); ?>" class="btn btn--secondary" ><?php echo Labels::getLabel( 'LBL_Contact_Customer_Care', $siteLangId)?> </a>
+		  <a href="<?php echo UrlHelper::generateUrl('custom' , 'contact-us'); ?>" class="btn btn-secondary" ><?php echo Labels::getLabel( 'LBL_Contact_Customer_Care', $siteLangId)?> </a>
 		</div>
 
 	  </div>

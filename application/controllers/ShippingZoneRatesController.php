@@ -204,7 +204,7 @@ class ShippingZoneRatesController extends SellerBaseController
         $cndFld->requirements()->addOnChangerequirementUpdate(1, 'eq', 'shiprate_condition_type', $fldCndTypeReq);
         $cndFld->requirements()->addOnChangerequirementUpdate(0, 'eq', 'shiprate_condition_type', $fldCndTypeUnReq);
         
-        $fld = $frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_Save_Changes', $this->siteLangId));
+        $fld = $frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_Save', $this->siteLangId));
         $fldCancel = $frm->addButton('', 'btn_cancel', Labels::getLabel('LBL_Cancel', $this->siteLangId));
         return $frm;
     }
@@ -216,9 +216,9 @@ class ShippingZoneRatesController extends SellerBaseController
         $frm->addHiddenField('', 'rate_id', $rateId);
         $frm->addHiddenField('', 'lang_id', $langId);
         $frm->addRequiredField(Labels::getLabel('LBL_Rate_Name', $this->siteLangId), 'shiprate_name');
-        $fld = $frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_Save_Changes', $this->siteLangId));
+        $fld = $frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_Save', $this->siteLangId));
         $fldCancel = $frm->addButton('', 'btn_cancel', Labels::getLabel('LBL_Cancel', $this->siteLangId));
-        $fld->attachField($fldCancel);
+        // $fld->attachField($fldCancel);
         return $frm;
     }
 }
