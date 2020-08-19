@@ -22,14 +22,14 @@
                     <?php echo (strlen($addresses['addr_phone']) > 0) ? Labels::getLabel('LBL_Phone:', $siteLangId) . ' ' . $addresses['addr_phone'] . '<br>' : '';?>
                 </div>
                 <div class="review-block__link" role="cell">
-                    <a class="link" href="#" onClick="showAddressList()"><span><?php echo Labels::getLabel('LBL_Change_Address', $siteLangId); ?></span></a>
+                    <a class="link" href="javascript:void(0);" onClick="showAddressList()"><span><?php echo Labels::getLabel('LBL_Change_Address', $siteLangId); ?></span></a>
                 </div>
             </li>
         </ul>   
 
         <div class="step__section">
             <div class="step__section__head">
-                <h5 class="step__section__head__title"><?php echo Labels::getLabel('LBL_Shipping_Summary', $siteLangId); ?>
+                <h5 class="step__section__head__title"><?php echo Labels::getLabel('LBL_Pickup_Summary', $siteLangId); ?>
                 </h5>
             </div>
             <?php
@@ -42,7 +42,7 @@
                 ?>
                 <li class="list-group-item shipping-select">
                     <div class="shop-name"><?php echo ($level == Shipping::LEVEL_SHOP) ? $productData['shop_name'] : FatApp::getConfig('CONF_WEBSITE_NAME_' . $siteLangId, null, ''); ?></div>
-                    <div class="js-slot-addr_<?php echo $level; ?>"></div>
+                    <div class="shop-name js-slot-addr_<?php echo $level; ?>"></div>
                     <div class="shipping-method">
                         <input type="hidden" name="slot_id[<?php echo $level; ?>]" class="js-slot-id" data-level="<?php echo $level; ?>">
                         <input type="hidden" name="slot_date[<?php echo $level; ?>]" class="js-slot-date" data-level="<?php echo $level; ?>">
@@ -60,7 +60,7 @@
                 ?>
                     <li class="list-group-item shipping-select">
                         <div class="shop-name"><?php echo $product['shop_name']; ?></div>
-                        <div class="js-slot-addr_<?php echo $level; ?>"></div>
+                        <div class="shop-name js-slot-addr_<?php echo $level; ?>"></div>
                         <div class="shipping-method">
                         <input type="hidden" name="slot_id[<?php echo $level; ?>]" class="js-slot-id" data-level="<?php echo $level; ?>">
                         <input type="hidden" name="slot_date[<?php echo $level; ?>]" class="js-slot-date" data-level="<?php echo $level; ?>">
@@ -103,7 +103,7 @@
                     <div class="product-action">
                         <ul class="list-actions">
                             <li>
-                                <a href="#" onclick="cart.remove('<?php echo md5($product['key']); ?>','checkout')">
+                                <a href="javascript:void(0);" onclick="cart.remove('<?php echo md5($product['key']); ?>','checkout')">
                                 <svg class="svg" width="24px" height="24px"><use xlink:href="<?php echo CONF_WEBROOT_URL;?>images/retina/sprite.svg#remove"
                                             href="<?php echo CONF_WEBROOT_URL;?>images/retina/sprite.svg#remove">
                                         </use>
