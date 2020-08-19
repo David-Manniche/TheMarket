@@ -13,7 +13,7 @@ var  productCatId  =  <?php echo $prodCatId ;?>; */
             </div>
             <div class="col-auto">
                 <div class="btn-group">
-                    <a href="<?php echo UrlHelper::generateUrl('seller', 'products'); ?>" class="btn btn-outline-primary btn-sm"><?php echo Labels::getLabel('LBL_Back_To_Inventories', $siteLangId); ?></a>
+                    <a href="<?php echo UrlHelper::generateUrl('seller', 'products'); ?>" class="btn btn-outline-primary btn-sm"><?php echo Labels::getLabel('LBL_Back_To_Inventory', $siteLangId); ?></a>
                 </div>
             </div>
         </div>

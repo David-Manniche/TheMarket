@@ -8,7 +8,7 @@ $this->includeTemplate('_partial/seller/sellerDashboardNavigation.php'); ?>
                 <h2 class="content-header-title">
                     <?php 
                     if($type == 1){ 
-                        echo Labels::getLabel('LBL_Products', $siteLangId);
+                        echo Labels::getLabel('LBL_Seller_Products', $siteLangId);
                     }else{ 
                         echo Labels::getLabel('LBL_Marketplace_Products', $siteLangId); 
                     } 
