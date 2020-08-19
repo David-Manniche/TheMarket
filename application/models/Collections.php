@@ -356,7 +356,14 @@ class Collections extends MyAppModel
         return $data;
     }
     
-    
+        
+    /**
+     * getBanners
+     *
+     * @param  int $collection_id
+     * @param  int $lang_id
+     * @return array
+     */
     public static function getBanners(int $collection_id, int $lang_id): array
     {
         if (!$collection_id || !$lang_id) {

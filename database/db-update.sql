@@ -531,10 +531,20 @@ DROP TABLE `tbl_collection_to_shops`;
 DROP TABLE `tbl_collection_to_blogs`;
 
 
-TRUNCATE `tbl_banner_locations`;
-INSERT INTO `tbl_banner_locations` (`blocation_id`, `blocation_key`, `blocation_identifier`, `blocation_banner_count`, `blocation_promotion_cost`, `blocation_active`) VALUES
-(1, 'Home_Page_Banner_Layout_1', 'Home page banner layout 1', 1, '2.0000', 1),
-(2, 'Home_Page_Banner_Layout_2', 'Home page banner layout 2', 2, '20.0000', 1),
-(3, 'Product_Detail_Page_Banner', 'Product Detail page banner', 2, '3.0000', 1),
-(4, 'Home_Page_Mobile_Banner', 'Home page mobile banner (Only for Mobile API)', 1, '20.0000', 1);
+DROP TABLE `tbl_banner_locations`;
 
+CREATE TABLE `tbl_banner_locations` (
+  `blocation_id` int(11) NOT NULL,
+  `blocation_identifier` varchar(255) NOT NULL,
+  `blocation_collection_id` int(11) NOT NULL,
+  `blocation_banner_count` int(11) NOT NULL,
+  `blocation_promotion_cost` decimal(10,4) NOT NULL,
+  `blocation_active` tinyint(1) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+INSERT INTO `tbl_banner_locations` (`blocation_id`, `blocation_identifier`, `blocation_collection_id`, `blocation_banner_count`, `blocation_promotion_cost`, `blocation_active`) VALUES
+(1, 'Product Detail page banner', 0, 2, '3.0000', 1);
+ALTER TABLE `tbl_banner_locations`
+  ADD PRIMARY KEY (`blocation_id`);
+ALTER TABLE `tbl_banner_locations`
+  MODIFY `blocation_id` int(11) NOT NULL AUTO_INCREMENT;

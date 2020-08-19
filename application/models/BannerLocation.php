@@ -127,4 +127,23 @@ class BannerLocation extends MyAppModel
         }
         return $banners;
     }
+
+    public static function getBannerLocationArr($langId)
+    {
+        $srch = BannerLocation::getSearchObject($langId);
+        $srch->joinTable(Collections::DB_TBL, 'INNER JOIN', 'blocation_id = home_section_id AND home_section_type='. Collections::COLLECTION_TYPE_BANNER);
+        $srch->addMultipleFields(array(
+            'blocation_id',
+            'blocation_promotion_cost',
+            'ifnull(blocation_name,blocation_identifier) as blocation_name'
+        ));
+        $rs = $srch->getResultSet();
+        $row = FatApp::getDb()->fetchAll($rs, 'blocation_id');
+        $locationArr = array();
+        if (!empty($row)) {
+            foreach ($row as $key => $val) {
+                $locationArr[$key] = $val['blocation_name'] . ' ( ' . CommonHelper::displayMoneyFormat($val['blocation_promotion_cost']) . ' )';
+            }
+        }
+    }
 }
