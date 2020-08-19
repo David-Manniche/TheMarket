@@ -345,8 +345,8 @@
 }
 
 .pick-section {
-    border: $border;
-    border-radius: $radius4;
+    /*border: $border;
+    border-radius: $radius4;*/
     margin-bottom: 1rem;
     .pickup-option {
         padding: 1rem;
@@ -415,7 +415,7 @@
                     display: block;
                     background: $bg-white;
                     border: $border;
-                    border-radius: $radius2;
+                    border-radius: $radius4;
                     position: relative;
                     cursor: pointer;
                     font-size: 12px;
@@ -428,6 +428,18 @@
                     }
                 }
             }
+        }
+    }
+}
+
+.calendar-pickup {
+    .ui-datepicker {
+        min-width: auto;
+        border: $border !important;
+        box-shadow: none;
+        font-size: 0.8rem;
+        td .ui-state-default {
+            padding: 5px;
         }
     }
 }
