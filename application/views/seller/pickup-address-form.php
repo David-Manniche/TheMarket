@@ -28,10 +28,14 @@ $toAllFld = $frm->getField('tslot_to_all');
 $toAllFld->setFieldTagAttribute('onChange', 'validateTimeFields()');
 
 $cancelFld = $frm->getField('btn_cancel');
-$cancelFld->setFieldTagAttribute('class', 'btn btn-outline-primary btn-wide');
+$cancelFld->setFieldTagAttribute('class', 'btn btn-outline-primary btn-block');
+$cancelFld->developerTags['col'] = 2;
+$cancelFld->developerTags['noCaptionTag'] = true;
 
 $btnSubmit = $frm->getField('btn_submit');
-$btnSubmit->setFieldTagAttribute('class', "btn btn-primary btn-wide");
+$btnSubmit->setFieldTagAttribute('class', "btn btn-primary btn-block");
+$btnSubmit->developerTags['col'] = 2;
+$btnSubmit->developerTags['noCaptionTag'] = true;
 
 $variables= array('language'=>$language,'siteLangId'=>$siteLangId,'shop_id'=>$shop_id,'action'=>$action);
 $this->includeTemplate('seller/_partial/shop-navigation.php', $variables, false); ?>

@@ -25,7 +25,7 @@
 			</div>
 			<div class="gap" ></div>
 			<div class="amazon-submit-wrap">
-				<a href="javascript:void(0);" class="amazon-submit btn btn--secondary" data-processing-txt='<?php echo Labels::getLabel('MSG_Please_Wait',$siteLangId); ?>' data-ready-txt='<?php echo Labels::getLabel('MSG_Confirm_Payment',$siteLangId); ?>' ><?php echo Labels::getLabel('MSG_Please_Wait',$siteLangId); ?></a>
+				<a href="javascript:void(0);" class="amazon-submit btn btn-secondary" data-processing-txt='<?php echo Labels::getLabel('MSG_Please_Wait',$siteLangId); ?>' data-ready-txt='<?php echo Labels::getLabel('MSG_Confirm_Payment',$siteLangId); ?>' ><?php echo Labels::getLabel('MSG_Please_Wait',$siteLangId); ?></a>
 				<a href="javascript:void(0);" onclick="logout();" class="btn btn--gray"><?php echo Labels::getLabel('LBL_Reset',$siteLangId); ?></a>
 			</div>
 			<?php 

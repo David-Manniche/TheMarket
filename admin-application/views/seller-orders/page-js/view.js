@@ -1,15 +1,15 @@
 $(document).ready(function(){
 	
-	$(".div_tracking_number").hide();		
+	$(".trackingDiv-js").hide();		
 	
 	$("select[name='op_status_id']").change(function(){
 		var data = 'val='+$(this).val();
 		fcom.ajax(fcom.makeUrl('SellerOrders', 'checkIsShippingMode'), data, function(t) {			
 			var response = $.parseJSON(t);
 			if (response["shipping"]){
-				$(".div_tracking_number").show();				
+				$(".trackingDiv-js").show();				
 			}else{
-				$(".div_tracking_number").hide();				
+				$(".trackingDiv-js").hide();				
 			}			
 		});
 	});
@@ -33,7 +33,12 @@ function pageRedirect(op_id) {
             return;
         }
 
-        if (0 < canShipByPlugin) {
+        var manualShipping = 0;
+        if (0 < $("input.manualShipping-js").length) {
+            manualShipping = $("input.manualShipping-js:checked").val();	
+        }
+
+        if (0 < canShipByPlugin && 1 != manualShipping) {
             proceedToShipment(op_id);
         } else {
             fcom.updateWithAjax(fcom.makeUrl('SellerOrders', 'changeOrderStatus'), data, function(t) {

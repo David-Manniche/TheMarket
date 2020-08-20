@@ -54,7 +54,7 @@
                         <h3><?php echo Labels::getLabel('LBL_Total_Price', $siteLangId); ?></h3>
                         <span class="item__price"><?php echo CommonHelper::displayMoneyFormat($batch['prodgroup_price']); ?></span> <span class="item__price--old"><?php echo CommonHelper::displayMoneyFormat($productsTotalPrice); ?></span>
                         <?php if($batchInStock){ ?>
-                       <?php /* <a href="javascript:void(0)" onclick="cart.addGroup('<?php echo $batch['prodgroup_id']; ?>',true);" class="btn btn--secondary btn--h-large"><?php echo Labels::getLabel('LBL_Buy_Now', $siteLangId); ?></a> */ ?>
+                       <?php /* <a href="javascript:void(0)" onclick="cart.addGroup('<?php echo $batch['prodgroup_id']; ?>',true);" class="btn btn-secondary"><?php echo Labels::getLabel('LBL_Buy_Now', $siteLangId); ?></a> */ ?>
                         <a href="javascript:void(0)" onclick="cart.addGroup('<?php echo $batch['prodgroup_id']; ?>');" class="btn btn-primary btn--h-large"><?php echo Labels::getLabel('LBL_Add_to_Cart', $siteLangId); ?></a>
                         <?php } ?>
                       </div>

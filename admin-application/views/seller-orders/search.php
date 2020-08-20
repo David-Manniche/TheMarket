@@ -71,10 +71,9 @@ foreach ($vendorOrdersList as $sn=>$row){  /* CommonHelper::printArray($row); */
                 }
                 $shipBySeller = CommonHelper::canAvailShippingChargesBySeller($row['op_selprod_user_id'], $row['opshipping_by_seller_user_id']);
                 if (!$shipBySeller && true === $canShipByPlugin && ('CashOnDelivery' == $row['plugin_code'] || Orders::ORDER_IS_PAID == $row['order_is_paid'])) {
-                    $orderShipment = OrderProductShipment::getAttributesById($row['op_id'], 'opship_response');
-                    if (empty($orderShipment)) {
+                    if (empty($row['opship_response']) && empty($row['opship_tracking_number'])) {
                         $td->appendElement('a', array('href'=>'javascript:void(0)', 'onclick' => 'generateLabel("' . $row['order_id'] . '", ' . $row['op_id'] . ')','class'=>'btn btn-clean btn-sm btn-icon','title'=>Labels::getLabel('LBL_GENERATE_LABEL',$adminLangId)),'<i class="fas fa-file-download"></i>', true);
-                    } else {
+                    } elseif (!empty($row['opship_response'])) {
                         $td->appendElement('a', array('href'=>UrlHelper::generateUrl("ShippingServices", 'previewLabel', [$row['op_id']]), 'target' => '_blank', 'class'=>'btn btn-clean btn-sm btn-icon','title'=>Labels::getLabel('LBL_PREVIEW_LABEL',$adminLangId)),'<i class="fas fa-file-export"></i>', true);
                     }
                 }

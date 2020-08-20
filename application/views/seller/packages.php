@@ -56,7 +56,7 @@
                                     </div>
                                     <?php /* if($package[SellerPackages::DB_TBL_PREFIX.'free_trial_days']>0 && $includeFreeSubscription){
                                     ?>
-                                    <a class="btn btn--secondary ripplelink buyFreeSubscription" data-id="<?php echo $package[SellerPackages::DB_TBL_PREFIX.'id'];?>"
+                                    <a class="btn btn-secondary ripplelink buyFreeSubscription" data-id="<?php echo $package[SellerPackages::DB_TBL_PREFIX.'id'];?>"
                                         href="javascript:void(0)"><?php echo Labels::getLabel('LBL_Free_Trial',$siteLangId);?></a> <?php
                                 } */ ?>
                                 </div>
@@ -82,7 +82,7 @@
                               } else {
                                   $buyPlanText = Labels::getLabel('LBL_Buy_Plan', $siteLangId);
                               } ?>
-                                    <a href="javascript:void(0)	" data-id="<?php echo $package[SellerPackages::DB_TBL_PREFIX.'id']; ?>" class="btn btn--secondary ripplelink buySubscription--js "><?php echo $buyPlanText; ?></a>
+                                    <a href="javascript:void(0)	" data-id="<?php echo $package[SellerPackages::DB_TBL_PREFIX.'id']; ?>" class="btn btn-secondary ripplelink buySubscription--js "><?php echo $buyPlanText; ?></a>
                                 </div>
                             </div>
                             <?php

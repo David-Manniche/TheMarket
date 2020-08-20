@@ -202,13 +202,17 @@ class SellerController extends SellerBaseController
     private function loadTrackingService()
     {
         /* Return if already loaded. */
-        if (!empty($this->trackingService)) { return; }
+        if (!empty($this->trackingService)) {
+            return;
+        }
 
         $plugin = new Plugin();
         $keyName = $plugin->getDefaultPluginKeyName(Plugin::TYPE_SHIPMENT_TRACKING);
 
         /* Carry on with default functionality if plugin not active. */
-        if (false === $keyName) { return; }
+        if (false === $keyName) {
+            return;
+        }
 
         $this->trackingService = PluginHelper::callPlugin($keyName, [$this->siteLangId], $error, $this->siteLangId, false);
         if (false === $this->trackingService) {
@@ -252,6 +256,7 @@ class SellerController extends SellerBaseController
         $srch->joinShippingUsers();
         $srch->joinShippingCharges();
         $srch->addCountsOfOrderedProducts();
+        $srch->joinOrderProductShipment();
         $srch->joinTable('(' . $qryOtherCharges . ')', 'LEFT OUTER JOIN', 'op.op_id = opcc.opcharge_op_id', 'opcc');
         $srch->addCondition('op_selprod_user_id', '=', $userId);
         $srch->addOrder("op_id", "DESC");
@@ -259,7 +264,7 @@ class SellerController extends SellerBaseController
         $srch->setPageSize($pagesize);
 
         $srch->addMultipleFields(
-            array('order_id', 'order_is_paid', 'order_user_id', 'op_selprod_id', 'op_is_batch', 'selprod_product_id', 'order_date_added', 'order_net_amount', 'op_invoice_number', 'totCombinedOrders as totOrders', 'op_selprod_title', 'op_product_name', 'op_id', 'op_qty', 'op_selprod_options', 'op_brand_name', 'op_shop_name', 'op_other_charges', 'op_unit_price', 'op_tax_collected_by_seller', 'op_selprod_user_id', 'opshipping_by_seller_user_id', 'orderstatus_id', 'IFNULL(orderstatus_name, orderstatus_identifier) as orderstatus_name', 'plugin_code', 'IFNULL(plugin_name, IFNULL(plugin_identifier, "Wallet")) as plugin_name')
+            array('order_id', 'order_is_paid', 'order_user_id', 'op_selprod_id', 'op_is_batch', 'selprod_product_id', 'order_date_added', 'order_net_amount', 'op_invoice_number', 'totCombinedOrders as totOrders', 'op_selprod_title', 'op_product_name', 'op_id', 'op_qty', 'op_selprod_options', 'op_brand_name', 'op_shop_name', 'op_other_charges', 'op_unit_price', 'op_tax_collected_by_seller', 'op_selprod_user_id', 'opshipping_by_seller_user_id', 'orderstatus_id', 'IFNULL(orderstatus_name, orderstatus_identifier) as orderstatus_name', 'plugin_code', 'IFNULL(plugin_name, IFNULL(plugin_identifier, "Wallet")) as plugin_name', 'opship.*')
         );
 
         $keyword = FatApp::getPostedData('keyword', null, '');
@@ -307,7 +312,7 @@ class SellerController extends SellerBaseController
 
         /* ShipStation */
         $this->loadShippingService();
-        $this->set('canShipByPlugin', (NULL !== $this->shippingService));
+        $this->set('canShipByPlugin', (null !== $this->shippingService));
         /* ShipStation */
 
         $this->set('canEdit', $this->userPrivilege->canEditSales(UserAuthentication::getLoggedUserId(), true));
@@ -465,20 +470,20 @@ class SellerController extends SellerBaseController
 
         /* ShipStation */
         $this->loadShippingService();
-        $this->set('canShipByPlugin', (NULL !== $this->shippingService));
+        $this->set('canShipByPlugin', (null !== $this->shippingService));
 
         if (!empty($orderDetail["opship_orderid"])) {
-            if (NULL != $this->shippingService && false === $this->shippingService->loadOrder($orderDetail["opship_orderid"])) {
+            if (null != $this->shippingService && false === $this->shippingService->loadOrder($orderDetail["opship_orderid"])) {
                 Message::addErrorMessage($this->shippingService->getError());
                 FatApp::redirectUser(UrlHelper::generateUrl("SellerOrders"));
             }
-            $orderDetail['thirdPartyorderInfo'] = (NULL != $this->shippingService ? $this->shippingService->getResponse() : []);
+            $orderDetail['thirdPartyorderInfo'] = (null != $this->shippingService ? $this->shippingService->getResponse() : []);
         }
         /* ShipStation */
 
         /* AfterShip */
         $this->loadTrackingService();
-        $this->set('canTrackByPlugin', (NULL !== $this->trackingService));
+        $this->set('canTrackByPlugin', (null !== $this->trackingService));
         /* AfterShip */
 
         $codOrder = false;
@@ -538,7 +543,7 @@ class SellerController extends SellerBaseController
         if ($orderDetail['op_product_type'] == Product::PRODUCT_TYPE_DIGITAL) {
             $digitalDownloadLinks = Orders::getOrderProductDigitalDownloadLinks($op_id);
         }
-
+        
         $this->set('orderDetail', $orderDetail);
         $this->set('orderStatuses', $orderStatuses);
         $this->set('shippedBySeller', $shippedBySeller);
@@ -689,9 +694,22 @@ class SellerController extends SellerBaseController
         }
 
         if (in_array($orderDetail["op_status_id"], $processingStatuses) && in_array($post["op_status_id"], $processingStatuses)) {
-            $trackingRelation = new TrackingCourierCodeRelation();
-            $trackData = $trackingRelation->getDataByShipCourierCode($orderDetail['opshipping_carrier_code']);
-            $trackingCourierCode = !empty($trackData['tccr_tracking_courier_code']) ? $trackData['tccr_tracking_courier_code'] : '';
+            $trackingCourierCode = '';
+            if (array_key_exists('manual_shipping', $post) && array_key_exists('opship_tracking_url', $post)) {
+                $updateData = [
+                    'opship_op_id' => $post['op_id'],
+                    "opship_tracking_number" => $post['tracking_number'],
+                    "opship_tracking_url" => $post['opship_tracking_url'],
+                ];
+            
+                if (!FatApp::getDb()->insertFromArray(OrderProductShipment::DB_TBL, $updateData, false, array(), $updateData)) {
+                    LibHelper::dieJsonError(FatApp::getDb()->getError());
+                }
+            } else {
+                $trackingRelation = new TrackingCourierCodeRelation();
+                $trackData = $trackingRelation->getDataByShipCourierCode($orderDetail['opshipping_carrier_code']);
+                $trackingCourierCode = !empty($trackData['tccr_tracking_courier_code']) ? $trackData['tccr_tracking_courier_code'] : '';
+            }
 
             if (!$orderObj->addChildProductOrderHistory($op_id, $orderDetail["order_language_id"], $post["op_status_id"], $post["comments"], $post["customer_notified"], $post["tracking_number"], 0, true, $trackingCourierCode)) {
                 Message::addErrorMessage(Labels::getLabel('M_ERROR_INVALID_REQUEST', $this->siteLangId));
@@ -1743,7 +1761,7 @@ class SellerController extends SellerBaseController
         $shopDetails['shop_state'] = $stateCode;
 
         $shopFrm->fill($shopDetails);
-        //$shopFrm->addSecurityToken();
+        $shopFrm->addSecurityToken();
 
         $plugin = new Plugin();
         $keyName = $plugin->getDefaultPluginKeyName(Plugin::TYPE_SPLIT_PAYMENT_METHOD);
@@ -2100,21 +2118,13 @@ class SellerController extends SellerBaseController
 
         $stateCode = $post['shop_state'];
         $frm = $this->getShopInfoForm();
-        $post = $frm->getFormDataFromArray($post);
-        $post['shop_country_id'] = Countries::getCountryByCode($post['shop_country_code'], 'country_id');
-
+        $post = $frm->getFormDataFromArray($post, [], true);
         if (false == $post) {
             Message::addErrorMessage(current($frm->getValidationErrors()));
             FatUtility::dieJsonError(Message::getHtml());
         }
-
-        //        $token = ['fatpostsectkn' => FatApp::getPostedData('fatpostsectkn', null, '')];
-        //        $csrf = $frm->validateSecurityToken($token);
-        //        if (false == $csrf) {
-        //            Message::addErrorMessage(current($frm->getValidationErrors()));
-        //            FatUtility::dieJsonError(Message::getHtml());
-        //        }
-        //        $frm->expireSecurityToken($token);
+        $frm->expireSecurityToken(FatApp::getPostedData());
+        $post['shop_country_id'] = Countries::getCountryByCode($post['shop_country_code'], 'country_id');
 
         $post['shop_user_id'] = $userId;
         $stateData = States::getStateByCountryAndCode($post['shop_country_id'], $stateCode);
@@ -3632,10 +3642,12 @@ class SellerController extends SellerBaseController
         $frm->addSelectBox(Labels::getLabel('LBL_Notify_Customer', $this->siteLangId), 'customer_notified', applicationConstants::getYesNoArr($this->siteLangId), '', array(), Labels::getLabel('Lbl_Select', $this->siteLangId))->requirements()->setRequired();
 
         $attr = [];
+        $labelGenerated = false;
         if (isset($orderData['opship_tracking_number']) && !empty($orderData['opship_tracking_number'])) {
             $attr = [
                 'disabled' => 'disabled'
             ];
+            $labelGenerated = true;
         }
 
         $frm->addTextBox(Labels::getLabel('LBL_Tracking_Number', $this->siteLangId), 'tracking_number', '', $attr);
@@ -3648,6 +3660,13 @@ class SellerController extends SellerBaseController
 
         $fld->requirements()->addOnChangerequirementUpdate(FatApp::getConfig("CONF_DEFAULT_SHIPPING_ORDER_STATUS"), 'eq', 'tracking_number', $trackingReqObj);
         $fld->requirements()->addOnChangerequirementUpdate(FatApp::getConfig("CONF_DEFAULT_SHIPPING_ORDER_STATUS"), 'ne', 'tracking_number', $trackingUnReqObj);
+
+        if (false === $labelGenerated) {
+            $fld = $frm->addTextBox(Labels::getLabel('LBL_TRACK_THROUGH', $this->siteLangId), 'opship_tracking_url', '', $attr);
+            $fld->htmlAfterField = '<small class="text--small">' . Labels::getLabel('LBL_ENTER_THE_URL_TO_TRACK_THE_SHIPMENT.', $this->siteLangId) . '</small>';
+            $frm->addCheckBox(Labels::getLabel('LBL_SELF_SHIPPING', $this->siteLangId), 'manual_shipping', 1, array(), false, 0);
+        }
+
         $frm->addHiddenField('', 'op_id', 0);
         $frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_Save_Changes', $this->siteLangId));
         return $frm;
@@ -4048,7 +4067,8 @@ class SellerController extends SellerBaseController
 
             /* weight unit[ */
             $weightUnitsArr = applicationConstants::getWeightUnitsArr($langId);
-            $pWeightUnitsFld = $frm->addSelectBox(Labels::getLabel('LBL_Weight_Unit', $langId), 'product_weight_unit', $weightUnitsArr, '', array(), Labels::getLabel('LBL_Select', $langId))->requirements()->setRequired();;
+            $pWeightUnitsFld = $frm->addSelectBox(Labels::getLabel('LBL_Weight_Unit', $langId), 'product_weight_unit', $weightUnitsArr, '', array(), Labels::getLabel('LBL_Select', $langId))->requirements()->setRequired();
+            ;
 
             $pWeightUnitUnReqObj = new FormFieldRequirement('product_weight_unit', Labels::getLabel('LBL_Weight_Unit', $langId));
             $pWeightUnitUnReqObj->setRequired(false);
@@ -4602,9 +4622,12 @@ class SellerController extends SellerBaseController
 
         $frm = new Form('frmReturnAddressLang');
         $frm->addSelectBox(Labels::getLabel('LBL_LANGUAGE', $this->siteLangId), 'lang_id', Language::getAllNames(), $formLangId, array(), '');
-        $frm->addTextBox(Labels::getLabel('LBL_Name', $formLangId), 'ura_name')->requirement->setRequired(true);;
-        $frm->addTextBox(Labels::getLabel('LBL_City', $formLangId), 'ura_city')->requirement->setRequired(true);;
-        $frm->addTextarea(Labels::getLabel('LBL_Address1', $formLangId), 'ura_address_line_1')->requirement->setRequired(true);;
+        $frm->addTextBox(Labels::getLabel('LBL_Name', $formLangId), 'ura_name')->requirement->setRequired(true);
+        ;
+        $frm->addTextBox(Labels::getLabel('LBL_City', $formLangId), 'ura_city')->requirement->setRequired(true);
+        ;
+        $frm->addTextarea(Labels::getLabel('LBL_Address1', $formLangId), 'ura_address_line_1')->requirement->setRequired(true);
+        ;
         $frm->addTextarea(Labels::getLabel('LBL_Address2', $formLangId), 'ura_address_line_2');
 
         $siteLangId = FatApp::getConfig('conf_default_site_lang', FatUtility::VAR_INT, 1);

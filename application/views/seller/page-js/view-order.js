@@ -1,14 +1,14 @@
 $(document).ready(function(){
-	$(".div_tracking_number").hide();		
+	$(".trackingDiv-js").hide();		
 	
 	$("select[name='op_status_id']").change(function(){
 		var data = 'val='+$(this).val();
 		fcom.ajax(fcom.makeUrl('Seller', 'checkIsShippingMode'), data, function(t) {			
 			var response = $.parseJSON(t);
 			if (response["shipping"]){
-				$(".div_tracking_number").show();				
+				$(".trackingDiv-js").show();				
 			}else{
-				$(".div_tracking_number").hide();				
+				$(".trackingDiv-js").hide();				
 			}			
 		});
 	});
@@ -17,9 +17,14 @@ $(document).ready(function(){
 (function() {
 	updateStatus = function(frm){
         if ( !$(frm).validate() ) return;
-        var op_id = $(frm.op_id).val();		
+        var op_id = $(frm.op_id).val();	
+        var manualShipping = 0;
+        if (0 < $("input.manualShipping-js").length) {
+            manualShipping = $("input.manualShipping-js:checked").val();	
+        }
+        
         var data = fcom.frmData(frm);
-        if (0 < canShipByPlugin) {
+        if (0 < canShipByPlugin && 1 != manualShipping) {
             proceedToShipment(op_id);
         } else {
             fcom.updateWithAjax(fcom.makeUrl('Seller', 'changeOrderStatus'), data, function(t) {

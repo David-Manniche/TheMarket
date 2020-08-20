@@ -2758,7 +2758,15 @@ class AccountController extends LoggedUserController
         $ifsc->requirements()->setRegularExpressionToValidate(ValidateElement::USERNAME_REGEX);
 
         $frm->addTextArea(Labels::getLabel('M_Bank_Address', $this->siteLangId), 'ub_bank_address', '');
-        $frm->addHtml('bank_info_safety_text', 'bank_info_safety_text', '<span class="text--small">' . Labels::getLabel('Lbl_Your_Bank/Card_info_is_safe_with_us', $this->siteLangId) . '</span>');
+        $htm = '<div class="info p-3">
+                    <span>
+                        <svg class="svg">
+                            <use xlink:href="' . CONF_WEBROOT_URL . 'images/retina/sprite.svg#info" href="' . CONF_WEBROOT_URL . 'images/retina/sprite.svg#info">
+                            </use>
+                        </svg>' . Labels::getLabel('Lbl_Your_Bank/Card_info_is_safe_with_us', $this->siteLangId) . '
+                    </span>
+                </div>';
+        $frm->addHtml('bank_info_safety_text', 'bank_info_safety_text', $htm);
         $frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_SAVE_CHANGES', $this->siteLangId));
         return $frm;
     }

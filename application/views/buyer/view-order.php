@@ -68,8 +68,12 @@ if (true == $primaryOrder) {
                     <div class="action">
                         <div class="">
                             <iframe src="<?php echo Fatutility::generateUrl('buyer', 'viewOrder', $urlParts) . '/print'; ?>" name="frame" style="display:none"></iframe>
-                            <a href="javascript:void(0)" onclick="frames['frame'].print()" class="btn btn-primary btn-sm no-print"><?php echo Labels::getLabel('LBL_Print', $siteLangId); ?></a>
-                            <a href="<?php echo UrlHelper::generateUrl('Buyer', 'orders'); ?>" class="btn btn-outline-primary btn-sm no-print"><?php echo Labels::getLabel('LBL_Back_to_order', $siteLangId); ?></a>
+                            <a href="<?php echo UrlHelper::generateUrl('Buyer', 'orders'); ?>" class="btn btn-outline-primary  btn-sm no-print" title="<?php echo Labels::getLabel('LBL_Back_to_order', $siteLangId); ?>">
+                                <i class="fas fa-arrow-left"></i>
+                            </a>
+                            <a href="javascript:void(0)" onclick="frames['frame'].print()" class="btn btn-outline-primary btn-sm no-print" title="<?php echo Labels::getLabel('LBL_Print', $siteLangId); ?>">
+                                <i class="fas fa-print"></i>
+                            </a>
                         </div>
                     </div> <?php
                     } ?>
@@ -403,7 +407,13 @@ if (true == $primaryOrder) {
                                     <td>
                                         <?php echo ($row['oshistory_orderstatus_id'] > 0) ? $orderStatuses[$row['oshistory_orderstatus_id']] : CommonHelper::displayNotApplicable($siteLangId, '');
                                         if(empty($row['oshistory_courier'])){
-                                            echo ($row['oshistory_tracking_number']) ? ': ' . Labels::getLabel('LBL_Tracking_Number', $siteLangId) . ' ' . $row['oshistory_tracking_number'] . " VIA <em>" . CommonHelper::displayNotApplicable($siteLangId, $childOrderDetail["opshipping_label"]) . "</em>" :'' ;
+                                            $str = !empty($row['oshistory_tracking_number']) ? ': ' . Labels::getLabel('LBL_Tracking_Number', $siteLangId) . ' ' . $row['oshistory_tracking_number'] :'' ;
+                                            if (empty($childOrderDetail['opship_tracking_url']) && !empty($row['oshistory_tracking_number'])) {
+                                                $str .=  " VIA <em>" . CommonHelper::displayNotApplicable($siteLangId, $childOrderDetail["opshipping_label"]) . "</em>";
+                                            } elseif (!empty($childOrderDetail['opship_tracking_url'])) {
+                                                $str .=  " <a class='btn btn-outline-secondary btn-sm' href='" . $childOrderDetail['opship_tracking_url'] . "' target='_blank'>" . Labels::getLabel("MSG_TRACK", $siteLangId) . "</a>";
+                                            }
+                                            echo $str;
                                         } else {
                                             echo ($row['oshistory_tracking_number']) ? ': ' . Labels::getLabel('LBL_Tracking_Number', $siteLangId) : '';
                                             $trackingNumber = $row['oshistory_tracking_number'];
