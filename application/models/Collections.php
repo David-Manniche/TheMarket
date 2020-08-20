@@ -11,6 +11,7 @@ class Collections extends MyAppModel
     public const DB_TBL_COLLECTION_TO_RECORDS = 'tbl_collection_to_records';
     public const DB_TBL_COLLECTION_TO_RECORDS_PREFIX = 'ctr_';
 
+    //public const TYPE_PRODUCT = 1;
     public const COLLECTION_TYPE_PRODUCT = 1;
     public const COLLECTION_TYPE_CATEGORY = 2;
     public const COLLECTION_TYPE_SHOP = 3;
@@ -20,6 +21,7 @@ class Collections extends MyAppModel
     public const COLLECTION_TYPE_SPONSORED_SHOPS = 7;
     public const COLLECTION_TYPE_BANNER = 8;
 
+    //public const SUBTYPE_PRODUCT_LAYOUT1 = 1;
     public const TYPE_PRODUCT_LAYOUT1 = 1;
     public const TYPE_PRODUCT_LAYOUT2 = 2;
     public const TYPE_PRODUCT_LAYOUT3 = 3;
@@ -69,8 +71,7 @@ class Collections extends MyAppModel
      */
     public function __construct(int $id = 0)
     {
-        parent::__construct(static::DB_TBL, static::DB_TBL_PREFIX . 'id', $id);
-        $this->db = FatApp::getDb();
+        parent::__construct(static::DB_TBL, static::DB_TBL_PREFIX . 'id', $id);        
     }
     
     /**
@@ -202,7 +203,7 @@ class Collections extends MyAppModel
      */
     public static function getBannersCount(): array
     {
-        return $bannerCounts = [
+        return [
             self::TYPE_BANNER_LAYOUT1 => 1,
             self::TYPE_BANNER_LAYOUT2 => 2,
             self::TYPE_BANNER_LAYOUT3 => 1
@@ -216,7 +217,7 @@ class Collections extends MyAppModel
      */
     public static function getBannersDimensions(): array
     {
-        return $bannerDimensions = [
+        return [
             self::TYPE_BANNER_LAYOUT1 => [
 				applicationConstants::SCREEN_DESKTOP => [
 					'width' => 1350,
@@ -411,8 +412,9 @@ class Collections extends MyAppModel
 
         $srch->joinTable(SellerProduct::DB_TBL . '_lang', 'LEFT JOIN', 'lang.selprodlang_selprod_id = ' . SellerProduct::DB_TBL_PREFIX . 'id AND selprodlang_lang_id = ' . $lang_id, 'lang');
 
-        $srch->addMultipleFields(array('selprod_id as record_id', 'IFNULL(selprod_title,product_identifier) as record_title'));
-
+        $srch->addMultipleFields(array('selprod_id as record_id', 'COALESCE(selprod_title,product_identifier) as record_title'));
+        $srch->doNotLimitRecords();
+        $srch->doNotCalculateRecords();
         $rs = $srch->getResultSet();
         $db = FatApp::getDb();
         $data = array();
@@ -442,16 +444,14 @@ class Collections extends MyAppModel
         $srch->joinLocations();
         $srch->joinPromotions($lang_id, true);
         $srch->addPromotionTypeCondition();
-        $srch->addMultipleFields(array('IFNULL(promotion_name,promotion_identifier) as promotion_name', 'banner_id', 'banner_type', 'banner_url', 'banner_target', 'banner_active', 'banner_blocation_id', 'banner_title', 'banner_img_updated_on'));
+        $srch->doNotLimitRecords();
+        $srch->doNotCalculateRecords();
+        $srch->addMultipleFields(array('COALESCE(promotion_name,promotion_identifier) as promotion_name', 'banner_id', 'banner_type', 'banner_url', 'banner_target', 'banner_active', 'banner_blocation_id', 'banner_title', 'banner_img_updated_on'));
         $srch->addCondition(static::DB_TBL_COLLECTION_TO_RECORDS_PREFIX . 'collection_id', '=', $collection_id);
 
         $srch->addOrder('banner_active', 'DESC');
         $rs = $srch->getResultSet();
-        $records = array();
-        if ($rs) {
-            $records = FatApp::getDb()->fetchAll($rs);
-        }
-        return $records;
+        return FatApp::getDb()->fetchAll($rs);
     }
     
     /**
@@ -537,8 +537,7 @@ class Collections extends MyAppModel
         $rs = $srch->getResultSet();
 
         $db = FatApp::getDb();
-        $data = $db->fetchAll($rs);
-        return $data;
+       return $db->fetchAll($rs);
     }
     
     /**
@@ -566,26 +565,7 @@ class Collections extends MyAppModel
         $srch->addMultipleFields(array('post_id as record_id', 'IFNULL(post_title, post_identifier) as record_title'));
         $rs = $srch->getResultSet();
         $db = FatApp::getDb();
-        $data = $db->fetchAll($rs);
-        return $data;
-    }
-    
-    /**
-     * setLastUpdatedOn
-     *
-     * @param  int $collectionId
-     * @return bool
-     */
-    public static function setLastUpdatedOn(int $collectionId): bool
-    {
-        $collectionId = FatUtility::int($collectionId);
-        if (1 > $collectionId) {
-            return false;
-        }
-
-        $collectionObj = new Collections($collectionId);
-        $collectionObj->addUpdateData(array('collection_img_updated_on' => date('Y-m-d H:i:s')));
-        return true;
+        return $db->fetchAll($rs);
     }
        
     /**

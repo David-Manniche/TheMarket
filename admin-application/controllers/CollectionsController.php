@@ -1,5 +1,7 @@
 <?php
 
+use Braintree\Collection;
+
 class CollectionsController extends AdminBaseController
 {
     private $canView;
@@ -70,15 +72,11 @@ class CollectionsController extends AdminBaseController
         }
 
         $srch->addOrder('collection_active', 'DESC');
-
         $collection_layout_type = FatApp::getPostedData('collection_layout_type', FatUtility::VAR_INT, '');
         if ($collection_layout_type > 0) {
             $srch->addCondition('collection_layout_type', '=', $collection_layout_type);
-            $srch->addOrder('collection_display_order', 'ASC');
-        } else {
-            $srch->addOrder('collection_display_order', 'ASC');
         }
-
+        $srch->addOrder('collection_display_order', 'ASC');
         $srch->addMultipleFields(array('c.*', 'c_l.collection_name'));
 
 
@@ -121,8 +119,12 @@ class CollectionsController extends AdminBaseController
                 $catNameArr[Collections::DB_TBL_PREFIX . 'name'][$value[Collections::DB_TBL_LANG_PREFIX . 'lang_id']] = $value[Collections::DB_TBL_PREFIX . 'name'];
             }
             $data = array_merge($data, $catNameArr);
-			$bannerLocation = BannerLocation::getDataByCollectionId($collectionId, 'blocation_promotion_cost');
-			$data['blocation_promotion_cost'] = (isset($bannerLocation['blocation_promotion_cost'])) ? $bannerLocation['blocation_promotion_cost'] : '';
+            
+            if ($type == Collections::COLLECTION_TYPE_BANNER) {
+                $bannerLocation = BannerLocation::getDataByCollectionId($collectionId, 'blocation_promotion_cost');
+                $data['blocation_promotion_cost'] = (isset($bannerLocation['blocation_promotion_cost'])) ? $bannerLocation['blocation_promotion_cost'] : '';
+            }
+            
             $frm->fill($data);
         }
 
@@ -194,9 +196,9 @@ class CollectionsController extends AdminBaseController
         }
         
         $post['collection_id'] = $collectionId;
-		$this->saveBannerLocation($post);
-
+		
         if ($post['collection_type'] == Collections::COLLECTION_TYPE_BANNER) {
+            $this->saveBannerLocation($post);
             $this->set('openBannersForm', true);
         }
 
@@ -306,14 +308,14 @@ class CollectionsController extends AdminBaseController
         $collectionId = FatApp::getPostedData('collectionId', FatUtility::VAR_INT, 0);
         if (0 >= $collectionId) {
             Message::addErrorMessage($this->str_invalid_request_id);
-            FatUtility::dieWithError(Message::getHtml());
+            FatUtility::dieJsonError(Message::getHtml());
         }
 
         $data = Collections::getAttributesById($collectionId, array('collection_id', 'collection_active'));
 
         if ($data == false) {
             Message::addErrorMessage($this->str_invalid_request);
-            FatUtility::dieWithError(Message::getHtml());
+            FatUtility::dieJsonError(Message::getHtml());
         }
 
         $status = ($data['collection_active'] == applicationConstants::ACTIVE) ? applicationConstants::INACTIVE : applicationConstants::ACTIVE;
@@ -380,7 +382,7 @@ class CollectionsController extends AdminBaseController
         }
 
         $collectionDetails = Collections::getAttributesById($collection_id);
-        if (!false == $collectionDetails && ($collectionDetails['collection_active'] != applicationConstants::ACTIVE || $collectionDetails['collection_deleted'] == applicationConstants::YES)) {
+        if (false != $collectionDetails && ($collectionDetails['collection_active'] != applicationConstants::ACTIVE || $collectionDetails['collection_deleted'] == applicationConstants::YES)) {
             Message::addErrorMessage($this->str_invalid_request_id);
             FatUtility::dieWithError(Message::getHtml());
         }
@@ -401,7 +403,7 @@ class CollectionsController extends AdminBaseController
         $this->objPrivilege->canEditCollections();
         $post = FatApp::getPostedData();
         if (false === $post) {
-            Message::addErrorMessage(current($frm->getValidationErrors()));
+            Message::addErrorMessage(Labels::getLabel('MSG_Invalid_Request', $this->adminLangId));
             FatUtility::dieWithError(Message::getHtml());
         }
         $collectionId = FatUtility::int($post['collection_id']);
@@ -412,7 +414,7 @@ class CollectionsController extends AdminBaseController
         }
 
         $collectionDetails = Collections::getAttributesById($collectionId);
-        if (!false == $collectionDetails && ($collectionDetails['collection_active'] != applicationConstants::ACTIVE || $collectionDetails['collection_deleted'] == applicationConstants::YES)) {
+        if (false != $collectionDetails && ($collectionDetails['collection_active'] != applicationConstants::ACTIVE || $collectionDetails['collection_deleted'] == applicationConstants::YES)) {
             Message::addErrorMessage($this->str_invalid_request_id);
             FatUtility::dieWithError(Message::getHtml());
         }
@@ -467,7 +469,7 @@ class CollectionsController extends AdminBaseController
         $collectionType = FatUtility::int($collectionType);
 
         $collectionDetails = Collections::getAttributesById($collectionId);
-        if (!false == $collectionDetails && ($collectionDetails['collection_active'] != applicationConstants::ACTIVE || $collectionDetails['collection_deleted'] == applicationConstants::YES)) {
+        if (false != $collectionDetails && ($collectionDetails['collection_active'] != applicationConstants::ACTIVE || $collectionDetails['collection_deleted'] == applicationConstants::YES)) {
             Message::addErrorMessage($this->str_invalid_request_id);
             FatUtility::dieWithError(Message::getHtml());
         }
@@ -488,7 +490,7 @@ class CollectionsController extends AdminBaseController
         $collectionId = FatUtility::int($collectionId);
 
         $collectionDetails = Collections::getAttributesById($collectionId);
-        if (!false == $collectionDetails && ($collectionDetails['collection_active'] != applicationConstants::ACTIVE || $collectionDetails['collection_deleted'] == applicationConstants::YES)) {
+        if (false != $collectionDetails && ($collectionDetails['collection_active'] != applicationConstants::ACTIVE || $collectionDetails['collection_deleted'] == applicationConstants::YES)) {
             Message::addErrorMessage($this->str_invalid_request_id);
             FatUtility::dieWithError(Message::getHtml());
         }
@@ -504,7 +506,7 @@ class CollectionsController extends AdminBaseController
         $this->objPrivilege->canViewBanners();
         $collectionId = FatUtility::int($collectionId);
         $collectionDetails = Collections::getAttributesById($collectionId);
-        if (!false == $collectionDetails && ($collectionDetails['collection_active'] != applicationConstants::ACTIVE || $collectionDetails['collection_deleted'] == applicationConstants::YES)) {
+        if (false != $collectionDetails && ($collectionDetails['collection_active'] != applicationConstants::ACTIVE || $collectionDetails['collection_deleted'] == applicationConstants::YES)) {
             Message::addErrorMessage($this->str_invalid_request_id);
             FatUtility::dieWithError(Message::getHtml());
         }
@@ -527,18 +529,13 @@ class CollectionsController extends AdminBaseController
         $bannerId = FatUtility::int($bannerId);
 
         $collectionDetails = Collections::getAttributesById($collectionId);
-        if (!false == $collectionDetails && ($collectionDetails['collection_active'] != applicationConstants::ACTIVE || $collectionDetails['collection_deleted'] == applicationConstants::YES)) {
+        if (false != $collectionDetails && ($collectionDetails['collection_active'] != applicationConstants::ACTIVE || $collectionDetails['collection_deleted'] == applicationConstants::YES)) {
             Message::addErrorMessage($this->str_invalid_request_id);
             FatUtility::dieWithError(Message::getHtml());
         }
 
-        if ($collectionDetails['collection_layout_type'] == Collections::TYPE_BANNER_LAYOUT1) {
-            $blocationId = BannerLocation::HOME_PAGE_BANNER_LAYOUT_1;
-        } elseif ($collectionDetails['collection_layout_type'] == Collections::TYPE_BANNER_LAYOUT2) {
-            $blocationId = BannerLocation::HOME_PAGE_BANNER_LAYOUT_2;
-        } else {
-            $blocationId = BannerLocation::HOME_PAGE_MOBILE_BANNER;
-        }
+        $bannerLocation = BannerLocation::getDataByCollectionId($collectionId);
+        $blocationId = $bannerLocation['blocation_id'];
 
         $frm = $this->getBannerForm($collectionId, $bannerId, $blocationId);
 
@@ -551,7 +548,8 @@ class CollectionsController extends AdminBaseController
             $srch->addMultipleFields(array('IFNULL(promotion_name,promotion_identifier) as promotion_name', 'banner_id', 'banner_type', 'banner_url', 'banner_target', 'banner_active', 'banner_blocation_id', 'banner_title', 'banner_img_updated_on'));
             $srch->addCondition('banner_id', '=', $bannerId);
             $srch->addOrder('banner_active', 'DESC');
-
+            $srch->doNotCalculateRecords();
+            $srch->doNotLimitRecords();
             $rs = $srch->getResultSet();
             $data = FatApp::getDb()->fetch($rs);
 
@@ -598,18 +596,13 @@ class CollectionsController extends AdminBaseController
         }
 
         $collectionDetails = Collections::getAttributesById($collection_id);
-        if (!false == $collectionDetails && ($collectionDetails['collection_active'] != applicationConstants::ACTIVE || $collectionDetails['collection_deleted'] == applicationConstants::YES)) {
+        if (false != $collectionDetails && ($collectionDetails['collection_active'] != applicationConstants::ACTIVE || $collectionDetails['collection_deleted'] == applicationConstants::YES)) {
             Message::addErrorMessage($this->str_invalid_request_id);
             FatUtility::dieWithError(Message::getHtml());
         }
-
-        if ($collectionDetails['collection_layout_type'] == Collections::TYPE_BANNER_LAYOUT1) {
-            $blocation_id = BannerLocation::HOME_PAGE_BANNER_LAYOUT_1;
-        } elseif ($collectionDetails['collection_layout_type'] == Collections::TYPE_BANNER_LAYOUT2) {
-            $blocation_id = BannerLocation::HOME_PAGE_BANNER_LAYOUT_2;
-        } else {
-            $blocation_id = BannerLocation::HOME_PAGE_MOBILE_BANNER;
-        }
+        
+        $bannerLocation = BannerLocation::getDataByCollectionId($collection_id);
+        $blocation_id = $bannerLocation['blocation_id'];
 
         $bannerImgArr = AttachedFile::getAttachment(AttachedFile::FILETYPE_BANNER, $banner_id, 0, $lang_id, false, $screen);
         /* $bannerDetail = Banner::getAttributesById($banner_id);
@@ -674,7 +667,7 @@ class CollectionsController extends AdminBaseController
         unset($post['banner_id']);
 
         $collectionDetails = Collections::getAttributesById($collection_id);
-        if (!false == $collectionDetails && ($collectionDetails['collection_active'] != applicationConstants::ACTIVE || $collectionDetails['collection_deleted'] == applicationConstants::YES)) {
+        if (false != $collectionDetails && ($collectionDetails['collection_active'] != applicationConstants::ACTIVE || $collectionDetails['collection_deleted'] == applicationConstants::YES)) {
             Message::addErrorMessage($this->str_invalid_request_id);
             FatUtility::dieWithError(Message::getHtml());
         }
@@ -898,7 +891,7 @@ class CollectionsController extends AdminBaseController
         $collectionId = FatUtility::int($collectionId);
 
         $collectionDetails = Collections::getAttributesById($collectionId);
-        if (!false == $collectionDetails && ($collectionDetails['collection_active'] != applicationConstants::ACTIVE || $collectionDetails['collection_deleted'] == applicationConstants::YES)) {
+        if (false != $collectionDetails && ($collectionDetails['collection_active'] != applicationConstants::ACTIVE || $collectionDetails['collection_deleted'] == applicationConstants::YES)) {
             Message::addErrorMessage($this->str_invalid_request_id);
             FatUtility::dieWithError(Message::getHtml());
         }
@@ -999,7 +992,8 @@ class CollectionsController extends AdminBaseController
             FatUtility::dieJsonError(Message::getHtml());
         }
 
-        Collections::setLastUpdatedOn($collection_id);
+        $collection = new Collections($collection_id);
+        $collection->addUpdateData(array('collection_img_updated_on' => date('Y-m-d H:i:s')));
 
         $this->set('file', $_FILES['cropped_image']['name']);
         $this->set('collection_id', $collection_id);
@@ -1022,7 +1016,8 @@ class CollectionsController extends AdminBaseController
             FatUtility::dieJsonError(Message::getHtml());
         }
 
-        Collections::setLastUpdatedOn($collection_id);
+        $collection = new Collections($collection_id);
+        $collection->addUpdateData(array('collection_img_updated_on' => date('Y-m-d H:i:s')));
 
         $this->set('msg', Labels::getLabel('MSG_Deleted_Successfully', $this->adminLangId));
         $this->_template->render(false, false, 'json-success.php');
@@ -1127,23 +1122,12 @@ class CollectionsController extends AdminBaseController
     {
         $this->objPrivilege->canEditCollections();
         $this->set('collectionType', $collectionType);
-        $availableLayouts = $this->getLayoutAvailabale($collectionType);
+        $availableLayouts = Collections::getTypeSpecificLayouts($this->adminLangId)[$collectionType];
         if ($searchForm > 0) {
             $availableLayouts = array(-1 => Labels::getLabel('LBL_Does_Not_matter', $this->adminLangId)) + $availableLayouts;
         }
         $this->set('availableLayouts', $availableLayouts);
         $this->_template->render(false, false);
-    }
-
-    private function getLayoutAvailabale($collectionType = 0)
-    {
-        if (!$collectionType) {
-            return  Collections::getLayoutTypeArr($this->adminLangId);
-        }
-
-        $collectionLayouts = Collections::getTypeSpecificLayouts($this->adminLangId);
-
-        return $collectionLayouts[$collectionType];
     }
 
     public function getLayoutLimit($collection_layout_type)

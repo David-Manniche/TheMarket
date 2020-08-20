@@ -80,6 +80,7 @@ $siteDefaultLangId = FatApp::getConfig('conf_default_site_lang', FatUtility::VAR
                                         </div>
                                     </div>
                                 </div>
+                                <?php if ($collection_type == Collections::COLLECTION_TYPE_BANNER) { ?>
 								<div class="col-md-4">
                                     <div class="field-set">
                                         <div class="caption-wraper">
@@ -97,6 +98,7 @@ $siteDefaultLangId = FatApp::getConfig('conf_default_site_lang', FatUtility::VAR
                                         </div>
                                     </div>
                                 </div>
+                                <?php } ?>
                             </div>
                             <div class="row">
 								<?php if ($collection_layout_type != Collections::TYPE_BANNER_LAYOUT3) { ?>
