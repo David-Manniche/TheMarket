@@ -5,7 +5,11 @@ class TransferBank extends PaymentMethodBase
     public const KEY_NAME = __CLASS__;
 
     public $requiredKeys = [
-        'bank_details',
+        'business_name',
+        'bank_name',
+        'bank_branch',
+        'account_number',
+        'ifsc'
     ];
 
     /**

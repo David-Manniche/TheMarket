@@ -31632,12 +31632,16 @@ a.ui-button:active,
     font-size: 0.85rem;
     text-align: center; }
     .payment-area .nav-payments li a {
-      padding: 0.6rem 0.8rem; }
+      padding: 0.6rem 0.8rem;
+      color: #888; }
       .payment-area .nav-payments li a.active {
         background: #888;
         color: #fff; }
 .payment-area .tab-content {
-  margin-bottom: 1.5rem; }
+  margin-bottom: 1.5rem;
+  border: solid 1px #dee2e6;
+  border-radius: 4px;
+  padding: 1.5rem; }
 .payment-area .paypal-data {
   text-align: center; }
   .payment-area .paypal-data p {
@@ -31656,8 +31660,9 @@ a.ui-button:active,
 .rewards {
   background-color: #f4f5fa;
   border-radius: 4px;
+  border: solid 1px #dee2e6;
   padding: 1.5rem;
-  margin: 2rem 0; }
+  margin: 2rem 0 0 0; }
   .rewards__points {
     margin-bottom: 1.5rem; }
     .rewards__points ul {
@@ -31674,7 +31679,7 @@ a.ui-button:active,
         .rewards__points ul li p {
           font-size: 0.8rem; }
         .rewards__points ul li .count {
-          font-weight: 500;
+          font-weight: 600;
           font-size: 1.3rem; }
   .rewards .info {
     margin-bottom: 1.5rem;
@@ -31693,8 +31698,6 @@ a.ui-button:active,
 .list-addresses .list-group-item {
   padding: 1rem;
   position: relative; }
-  .list-addresses .list-group-item.selected {
-    /* box-shadow: 0 0 5px rgba(40, 44, 63, .15);*/ }
   .list-addresses .list-group-item .delivery-address {
     font-size: 0.85rem;
     color: #888;
@@ -31799,24 +31802,43 @@ a.ui-button:active,
     margin-top: 0.5rem; }
 
 .wallet-balance {
-  border-radius: 4px;
+  border: solid 1px #dee2e6;
+  border-radius: 0 0 4px 4px;
   padding: 1.5rem;
-  background-color: #f4f5fa;
+  margin-top: -4px;
+  /*background-color: $bg-gray;*/
   display: flex;
   align-items: center;
   justify-content: space-between; }
   .wallet-balance .wallet {
     display: flex;
-    margin-bottom: 1.5rem; }
+    align-items: center;
+    flex: 1; }
     .wallet-balance .wallet__txt {
       display: flex;
-      flex-direction: column;
-      font-weight: 700; }
+      align-items: center; }
+      .wallet-balance .wallet__txt .svg {
+        width: 40px;
+        height: 40px;
+        margin-left: 12px;
+        margin-right: 5px;
+        fill: #888; }
       .wallet-balance .wallet__txt p {
-        margin-top: 5px;
-        font-size: 0.8rem;
+        font-size: 0.75rem;
         font-weight: 300;
-        color: #888; }
+        color: #888;
+        margin-bottom: 5px;
+        line-height: 1;
+        text-transform: uppercase; }
+      .wallet-balance .wallet__txt .currency-value {
+        display: block;
+        font-weight: 600;
+        color: #525252;
+        font-size: 1.2rem; }
+  .wallet-balance_info {
+    flex: 1;
+    font-size: 0.8rem;
+    color: #888; }
 
 .form-inline {
   position: relative; }
@@ -31835,6 +31857,70 @@ a.ui-button:active,
       border: none; }
     .form-inline .btn-submit:hover {
       box-shadow: none; }
+
+.transfer-payment-detail {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  font-size: 0.8rem;
+  color: #888; }
+  .transfer-payment-detail li {
+    max-width: 33%;
+    flex: 0 0 33%;
+    display: flex;
+    margin-bottom: 1.5rem; }
+    .transfer-payment-detail li.notes {
+      max-width: none;
+      flex: auto; }
+  .transfer-payment-detail .svg {
+    display: none;
+    width: 1rem;
+    height: 1rem;
+    margin-left: 10px;
+    fill: #888; }
+  .transfer-payment-detail h6 {
+    margin-bottom: 4px;
+    font-size: 0.82rem;
+    color: #525252;
+    text-transform: uppercase; }
+
+.otp-block__head {
+  margin-bottom: 1.5rem;
+  text-align: center; }
+  .otp-block__head h5 {
+    margin: 0;
+    padding: 0; }
+.otp-block__footer {
+  margin-top: 1.5rem; }
+.otp-block p {
+  font-size: 0.8rem;
+  color: #888; }
+.otp-block .otp-enter {
+  margin: 0 auto;
+  text-align: center; }
+  .otp-block .otp-enter .otp-inputs {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 1rem; }
+    .otp-block .otp-enter .otp-inputs input.field-otp, .otp-block .otp-enter .otp-inputs .form select.field-otp, .form .otp-block .otp-enter .otp-inputs select.field-otp, .otp-block .otp-enter .otp-inputs .form .field-otp.custom-select, .form .otp-block .otp-enter .otp-inputs .field-otp.custom-select, .otp-block .otp-enter .otp-inputs .form textarea.field-otp, .form .otp-block .otp-enter .otp-inputs textarea.field-otp {
+      border: none;
+      border-radius: 0;
+      border-bottom: solid 1px #dee2e6;
+      max-width: 30px;
+      text-align: center;
+      padding: 5px;
+      margin: 0 3px; }
+      .otp-block .otp-enter .otp-inputs input.field-otp:focus, .otp-block .otp-enter .otp-inputs .form select.field-otp:focus, .form .otp-block .otp-enter .otp-inputs select.field-otp:focus, .otp-block .otp-enter .otp-inputs .form .field-otp.custom-select:focus, .form .otp-block .otp-enter .otp-inputs .field-otp.custom-select:focus, .otp-block .otp-enter .otp-inputs .form textarea.field-otp:focus, .form .otp-block .otp-enter .otp-inputs textarea.field-otp:focus {
+        border-color: #000; }
+.otp-block .otp-success {
+  text-align: center; }
+  .otp-block .otp-success .img {
+    max-width: 80px;
+    margin: 2rem auto; }
+  .otp-block .otp-success h5 {
+    margin: 0;
+    padding: 0; }
 
 .bg-contact {
   position: relative;
@@ -33633,9 +33719,12 @@ input.sp-input,
     font-weight: 400;
     margin-bottom: 0.5rem; }
 
+.buy-actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between; }
+
 .buy-group {
-  display: -webkit-box;
-  display: -ms-flexbox;
   display: flex;
   margin: 0;
   -webkit-box-align: center;

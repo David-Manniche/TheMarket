@@ -40,6 +40,7 @@ class TransferbankPayController extends PaymentController
         }
         $this->set('orderInfo', $orderInfo);
         $this->set('exculdeMainHeaderDiv', true);
+        $this->set('settings', $this->settings);
         if (FatUtility::isAjaxCall()) {
             $json['html'] = $this->_template->render(false, false, 'transferbank-pay/charge-ajax.php', true, false);
             FatUtility::dieJsonSuccess($json);
@@ -56,7 +57,7 @@ class TransferbankPayController extends PaymentController
             $cartObj->clear();
             $cartObj->updateUserCart();
             $comment = Labels::getLabel('MSG_PAYMENT_INSTRUCTIONS', $this->siteLangId) . "\n\n";
-            $comment .= $this->settings["bank_details"] . "\n\n";
+            $comment .= $this->settings["business_name"] . "\n\n";
             $comment .= Labels::getLabel('MSG_PAYMENT_NOTE', $this->siteLangId);
             $orderPaymentObj->addOrderPaymentComments($comment, true);
             $json['redirect'] = UrlHelper::generateUrl('custom', 'paymentSuccess', array($orderId));
@@ -71,7 +72,7 @@ class TransferbankPayController extends PaymentController
         $frm = new Form('frmPaymentForm', array('id' => 'frmPaymentForm', 'action' => UrlHelper::generateUrl('TransferbankPay', 'send', array($orderId)), 'class' => "form form--normal"));
 
         $frm->addHtml('', 'htmlNote', Labels::getLabel('MSG_Bank_Transfer_Note', $this->siteLangId));
-        $frm->addHtml('', 'htmlNote', '<div class="bank--details">' . nl2br($this->settings["bank_details"]) . '</div>');
+        $frm->addHtml('', 'htmlNote', '<div class="bank--details">' . nl2br($this->settings["business_name"]) . '</div>');
         $frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_Confirm_Order', $this->siteLangId), array('id' => 'button-confirm'));
         return $frm;
     }
