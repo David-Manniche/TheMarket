@@ -1821,7 +1821,11 @@ class User extends MyAppModel
 
     public function userWelcomeEmailRegistration($data, $link, $langId)
     {
-        $phone = !empty($data['user_phone']) ? $data['user_dial_code'] . $data['user_phone'] : '';
+        $phone = (array_key_exists('user_phone', $data) ? $data['user_phone'] : '');
+        if (!empty($phone)) {
+            $phone .= array_key_exists('user_dial_code', $data) ? $data['user_dial_code'] : '';
+        }
+        
         $data = array(
                     'user_name' => $data['user_name'],
                     'user_email' => $data['user_email'],

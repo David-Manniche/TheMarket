@@ -69,6 +69,10 @@ class GuestAdvertiserController extends MyAppController
         }
 
         $approvalFrm = $this->getCompanyDetailsForm();
+        
+        $post['user_country_iso'] = FatApp::getPostedData('user_country_iso', FatUtility::VAR_STRING, '');
+        $post['user_dial_code'] = FatApp::getPostedData('user_dial_code', FatUtility::VAR_STRING, '');
+        
         unset($post['btn_submit']);
         $approvalFrm->fill($post);
 
@@ -120,7 +124,6 @@ class GuestAdvertiserController extends MyAppController
         $post['user_is_advertiser'] = 1;
         $post['user_registered_initially_for'] = User::USER_TYPE_ADVERTISER;
         $post['user_preferred_dashboard'] = User::USER_ADVERTISER_DASHBOARD;
-
         $userObj->assignValues($post);
 
         if (!$userObj->save()) {
@@ -378,6 +381,8 @@ class GuestAdvertiserController extends MyAppController
         $frm->addHiddenField('', 'user_email');
         $frm->addHiddenField('', 'user_password');
         $frm->addHiddenField('', 'password1');
+        $frm->addHiddenField('', 'user_dial_code');
+        $frm->addHiddenField('', 'user_country_iso');
         $frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_Submit', $this->siteLangId));
         return $frm;
     }
