@@ -115,20 +115,20 @@
                 /* $fld = $frmBuyProduct->getField('btnAddToCart');
                 $fld->addFieldTagAttribute('class','quickView'); */
                 $qtyFieldName =  $qtyField->getCaption(); ?>
-                <div class="">
-                    <label class="h6"><?php echo $qtyFieldName; ?></label>
+                  <label class="h6"><?php echo $qtyFieldName; ?></label>
+                <div class="buy-actions">
+                  
                     <div class="qty-wrapper">
                         <div class="quantity" data-stock="<?php echo $product['selprod_stock']; ?>">
-                            <span class="decrease decrease-js not-allowed">-</span>
+                            <span class="decrease decrease-js not-allowed"><i class="fas fa-minus"></i></span>
                             <div class="qty-input-wrapper" data-stock="<?php echo $product['selprod_stock']; ?>">
                                 <?php echo $frmBuyProduct->getFieldHtml('quantity'); ?>
                             </div>
-                            <span class="increase increase-js">+</span>
+                            <span class="increase increase-js"><i class="fas fa-plus"></i></span>
                         </div>
                     </div>
-                </div>
-				<div class="gap"></div>
-                <div class="buy-group">
+
+                    <div class="buy-group">
                     <?php
                     if (strtotime($product['selprod_available_from'])<= strtotime(FatDate::nowInTimezone(FatApp::getConfig('CONF_TIMEZONE'), 'Y-m-d'))) {
                        // echo $frmBuyProduct->getFieldHtml('btnProductBuy');
@@ -136,6 +136,9 @@
                     }
                         echo $frmBuyProduct->getFieldHtml('selprod_id'); ?>
                 </div>
+                </div>
+				 
+                
                 </form>
                 <?php echo $frmBuyProduct->getExternalJs();
                 } else { ?>
