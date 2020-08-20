@@ -296,7 +296,7 @@ class GoogleShoppingFeedController extends AdvertisementFeedBaseController
         $data = ['abprod_adsbatch_id' => $this->adsBatchId];
         if (1 < $selProdId) {
             $data = AdsBatch::getBatchProdDetail($this->adsBatchId, $selProdId);
-            $categoryArr = $this->getProductCategory();
+            $categoryArr = $this->getProductCategory(true);
             $selProdData = SellerProduct::getSelProdDataById($selProdId, $this->siteLangId);
             $data['google_product_category'] = $categoryArr[$data['abprod_cat_id']];
             $data['product_name'] = $selProdData['selprod_title'];

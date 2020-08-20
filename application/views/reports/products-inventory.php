@@ -39,7 +39,7 @@ $cancelBtnFld->developerTags['noCaptionTag'] = true; ?>
                             <h5 class="cards-title"><?php echo Labels::getLabel('LBL_Products_Inventory_Report', $siteLangId);?></h5>
                             <div class="action">
                                 <?php
-                                    echo '<div class="btn-group"><a href="javascript:void(0)" onClick="exportProductsInventoryReport()" class="btn btn--secondary btn-sm btn-block">'.Labels::getLabel('LBL_Export', $siteLangId).'</a></div>';?>
+                                    echo '<div class="btn-group"><a href="javascript:void(0)" onClick="exportProductsInventoryReport()" class="btn btn-secondary btn-sm btn-block">'.Labels::getLabel('LBL_Export', $siteLangId).'</a></div>';?>
                             </div>
                         </div>
                         <div class="cards-content">

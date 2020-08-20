@@ -1,19 +1,26 @@
 <?php defined('SYSTEM_INIT') or die('Invalid Usage.');
 $langFrm->setFormTagAttribute('class', 'form');
 $langFrm->setFormTagAttribute('onsubmit', 'setupLangRate(this); return(false);');
-$langFrm->developerTags['colClassPrefix'] = 'col-md-';
+$langFrm->developerTags['colClassPrefix'] = 'col-sm-4 col-md-';
 $langFrm->developerTags['fld_default_col'] = 12;
 
 $cancelFld = $langFrm->getField('btn_cancel');
 $cancelFld->setFieldTagAttribute('onClick', 'searchProductsSection($(\'input[name="profile_id"]\').val()); return false;');
+$cancelFld->developerTags['col'] = 3;
+$cancelFld->setFieldTagAttribute('class', 'btn btn-outline-primary btn-block');
+$cancelFld->developerTags['noCaptionTag'] = true;
+
+$btnSubmit = $langFrm->getField('btn_submit');
+$btnSubmit->developerTags['col'] = 3;
+$btnSubmit->setFieldTagAttribute('class', "btn btn-primary btn-block");
+$btnSubmit->developerTags['noCaptionTag'] = true;
 
 ?>
 <div dir="<?php echo $formLayout; ?>">
-	<div class="sectionhead mb-3">
-		<h5 class="cards-title"><?php echo Labels::getLabel('LBL_Manage_Rates', $siteLangId); ?>
-		</h5>
-	</div>
-	<div class="sectionbody space">
+    <div class="cards-header">
+        <h5 class="cards-title"><?php echo Labels::getLabel('LBL_Manage_Rates', $siteLangId); ?></h5>
+    </div>
+	<div class="cards-content">
 		<div class="row">
 			<div class="col-sm-12">
 				<div class="tabs">

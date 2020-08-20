@@ -44,7 +44,7 @@ defined('SYSTEM_INIT') or die('Invalid Usage.'); ?>
                                 </use>
                             </svg><?php echo Labels::getLabel('MSG_SOME_ITEMS_NOT_AVAILABLE_FOR_SHIPPING', $siteLangId); ?>
                             <?php if (count($fulfillmentProdArr[Shipping::FULFILMENT_PICKUP]) == $productsCount) {?>
-                            <a href="javascript:void(0);" onClick="setCheckoutType(<?php echo Shipping::FULFILMENT_PICKUP; ?>);" class="link"><?php echo Labels::getLabel('LBL_Pickup_Entire_Order', $siteLangId); ?></a>
+                            <a href="javascript:void(0);" onClick="listCartProducts(<?php echo Shipping::FULFILMENT_PICKUP; ?>);" class="link"><?php echo Labels::getLabel('LBL_Pickup_Entire_Order', $siteLangId); ?></a>
                             <?php } ?>
                             </span>
                         <ul class="list-actions">

@@ -38,7 +38,7 @@
                         <p><?php echo nl2br($supplierRequest["usuprequest_comments"]);?></p>
                         <h4><?php echo Labels::getLabel('LBL_Hello', $siteLangId) ,' ', $supplierRequest["user_name"]?> , <?php echo Labels::getLabel('LBL_Your_Application_Declined', $siteLangId)?></h4>
                         <p><?php echo Labels::getLabel('LBL_Think_Error_Please_Contact_Us', $siteLangId)?></p>
-                        <a class="btn btn--secondary" href="<?php echo UrlHelper::generateUrl('account', 'supplierApprovalForm', array('reopen')); ?>">
+                        <a class="btn btn-secondary" href="<?php echo UrlHelper::generateUrl('account', 'supplierApprovalForm', array('reopen')); ?>">
                             <?php echo Labels::getLabel('LBL_Submit_Revised_Request', $siteLangId)?></a>
                         <div class="gap"></div>
                         <p><?php echo Labels::getLabel('LBL_Application_Reference', $siteLangId)?>: <strong><?php echo $supplierRequest["usuprequest_reference"]; ?></strong></p>

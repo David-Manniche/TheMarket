@@ -903,7 +903,7 @@ class CheckoutController extends MyAppController
             Message::addErrorMessage($this->cartObj->getError());
             FatUtility::dieWithError(Message::getHtml());
         }
-        
+
         $cartSummary = $this->cartObj->getCartFinancialSummary($this->siteLangId);
         $userId = UserAuthentication::getLoggedUserId();
         $userWalletBalance = User::getUserBalance($userId, true);

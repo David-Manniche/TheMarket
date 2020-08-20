@@ -37,7 +37,7 @@
                             <a class="readMore link--arrow" href="javascript:void(0);"> <?php echo Labels::getLabel('Lbl_SHOW_MORE', $siteLangId) ; ?> </a>
                             <?php } ?>
                         </p>
-                        <a class="btn btn--secondary btn-outline-primary mt-3"
+                        <a class="btn btn-primary mt-3"
                             href="<?php echo UrlHelper::generateUrl('Reviews', 'shopPermalink', array($review['spreview_seller_user_id'] , $review['spreview_id'])) ?>"><?php echo Labels::getLabel('Lbl_Permalink', $siteLangId); ?> </a>
                     </div>
                 </div>

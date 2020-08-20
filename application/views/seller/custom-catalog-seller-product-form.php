@@ -18,7 +18,7 @@
                     $submitBtn->setFieldTagAttribute('class','btn btn-primary btn-sm');
 
                     $cancelBtn = $frmSellerProduct->getField('btn_cancel');
-                    $cancelBtn->setFieldTagAttribute('class','btn btn--secondary btn-sm'); */
+                    $cancelBtn->setFieldTagAttribute('class','btn btn-secondary btn-sm'); */
 
                     $selprod_threshold_stock_levelFld = $frmSellerProduct->getField('selprod_threshold_stock_level');
                     $selprod_threshold_stock_levelFld->htmlAfterField = '<small class="form-text text-muted">'.Labels::getLabel('LBL_Alert_stock_level_hint_info', $siteLangId). '</small>';
