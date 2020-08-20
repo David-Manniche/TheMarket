@@ -35,7 +35,7 @@ $frmSearch->developerTags['fld_default_col'] = 4;
                             $innerDiv=$li->appendElement('div', array('class'=>'dropwrap'));
                             $innerUl=$innerDiv->appendElement('ul', array('class'=>'linksvertical'));
                             $innerLiAddNew=$innerUl->appendElement('li');
-                            $innerLiAddNew->appendElement('a', array('href'=>'javascript:void(0)','class'=>'button small green','title'=>Labels::getLabel('LBL_Add_New', $adminLangId),"onclick"=>"addBannerForm(".$data['blocation_id'].")"), Labels::getLabel('LBL_Add_New', $adminLangId), true);
+                            $innerLiAddNew->appendElement('a', array('href'=>'javascript:void(0)','class'=>'button small green','title'=>Labels::getLabel('LBL_Add_New', $adminLangId),"onclick"=>"addBannerForm(".$bLocationId.")"), Labels::getLabel('LBL_Add_New', $adminLangId), true);
 
                             $innerLiAddBack=$innerUl->appendElement('li');
 

@@ -37,10 +37,10 @@ class BannersController extends AdminBaseController
         $post = $searchForm->getFormDataFromArray($data); */
 
         $srch = BannerLocation::getSearchObject($this->adminLangId, false);
-        $srch->addMultipleFields(array('blocation_banner_count', 'blocation_key', 'blocation_banner_width', 'blocation_banner_height', 'blocation_id', 'blocation_promotion_cost', 'blocation_active', "IFNULL(blocation_name,blocation_identifier) as blocation_name"));
+        $srch->addMultipleFields(array('blocation_banner_count', 'blocation_collection_id', 'blocation_banner_width', 'blocation_banner_height', 'blocation_id', 'blocation_promotion_cost', 'blocation_active', "IFNULL(blocation_name,blocation_identifier) as blocation_name"));
 
         $srch->addOrder(Banner::DB_TBL_LOCATIONS_PREFIX . 'active', 'DESC');
-        /* $srch->addOrder(Banner::DB_TBL_LOCATIONS_PREFIX . 'id', 'DESC'); */
+        $srch->addOrder(Banner::DB_TBL_LOCATIONS_PREFIX . 'id', 'DESC');
         $page = (empty($page) || $page <= 0) ? 1 : $page;
         $page = FatUtility::int($page);
         $srch->setPageNumber($page);
@@ -134,15 +134,6 @@ class BannersController extends AdminBaseController
 
         $data = $this->getBannerLocationById($bLocationId);
 
-        /* $srch = Banner::getBannerLocationSrchObj(false);
-        $srch->addCondition('blocation_id','=',$bLocationId);
-        $srch->doNotCalculateRecords();
-        $srch->doNotLimitRecords();
-        $rs = $srch->getResultSet();
-        $data = array();
-        if($rs){
-        $data = FatApp::getDb()->fetch($rs);
-        } */
         $this->_template->addCss('css/cropper.css');
         $this->_template->addJs('js/cropper.js');
         $this->_template->addJs('js/cropper-main.js');
@@ -667,7 +658,6 @@ class BannersController extends AdminBaseController
         $srch->doNotCalculateRecords();
         $srch->doNotLimitRecords();
         $rs = $srch->getResultSet();
-
         $data = array();
 
         if ($rs) {
@@ -869,7 +859,7 @@ class BannersController extends AdminBaseController
         $bannerTypeArr = $this->bannerTypeArr();
         $frm->addSelectBox(Labels::getLabel('LBL_Language', $this->adminLangId), 'lang_id', $bannerTypeArr, '', array(), '');
         $screenArr = applicationConstants::getDisplaysArr($this->adminLangId);
-        $displayFor = ($blocation_id == BannerLocation::HOME_PAGE_MIDDLE_BANNER) ? applicationConstants::SCREEN_MOBILE : '';
+        $displayFor = ($blocation_id == BannerLocation::HOME_PAGE_MOBILE_BANNER) ? applicationConstants::SCREEN_MOBILE : '';
         $frm->addSelectBox(Labels::getLabel("LBL_Display_For", $this->adminLangId), 'banner_screen', $screenArr, $displayFor, array(), '');
         $frm->addHiddenField('', 'banner_min_width');
         $frm->addHiddenField('', 'banner_min_height');

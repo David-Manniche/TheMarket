@@ -856,14 +856,14 @@ class HomeController extends MyAppController
     private function getBanners($collectionId)
     {
         $langId = $this->siteLangId;
-        $top_banners = BannerLocation::getPromotionalBanners(BannerLocation::HOME_PAGE_TOP_BANNER, $langId, $collectionId);
+        $top_banners = BannerLocation::getPromotionalBanners(BannerLocation::HOME_PAGE_BANNER_LAYOUT_1, $langId, $collectionId);
         $middle_banners = array();
         $pageSize = 0;
         if (true === MOBILE_APP_API_CALL) {
             $pageSize = BannerLocation::MOBILE_API_BANNER_PAGESIZE;
-            $middle_banners = BannerLocation::getPromotionalBanners(BannerLocation::HOME_PAGE_MIDDLE_BANNER, $langId, $collectionId, $pageSize);
+            $middle_banners = BannerLocation::getPromotionalBanners(BannerLocation::HOME_PAGE_MOBILE_BANNER, $langId, $collectionId, $pageSize);
         }
-        $bottom_banners = BannerLocation::getPromotionalBanners(BannerLocation::HOME_PAGE_BOTTOM_BANNER, $langId, $collectionId, $pageSize);
+        $bottom_banners = BannerLocation::getPromotionalBanners(BannerLocation::HOME_PAGE_BANNER_LAYOUT_2, $langId, $collectionId, $pageSize);
         $banners = array_merge($top_banners, $middle_banners, $bottom_banners);
         return $banners;
 		

@@ -20,10 +20,6 @@ class Banner extends MyAppModel
     public const TYPE_BANNER = 1;
     public const TYPE_PPC = 2;
 	
-    public const BANNER_HOME_PAGE_LAYOUT_1 = 1;
-    public const BANNER_HOME_PAGE_LAYOUT_2 = 2;
-    public const BANNER_PRODUCT_PAGE_LAYOUT_1 = 3;
-	
 	public const REMOVED_OLD_IMAGE_TIME = 4;
 
     public function __construct($id = 0)
@@ -75,8 +71,6 @@ class Banner extends MyAppModel
         }
 
         $srch->joinTable(BannerLocation::DB_DIMENSIONS_TBL, 'LEFT OUTER JOIN', 'bldim.bldimension_blocation_id = bl.blocation_id AND bldim.bldimension_device_type = ' . $deviceType, 'bldim');
-
-        $srch->addOrder('blocation_key', 'ASC');
         return $srch;
     }
 

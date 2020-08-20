@@ -82,13 +82,13 @@ foreach ($banners as $location => $bannerLocationDetail) {
         $uploadedTime = AttachedFile::setTimeParam($bannerDetail['banner_img_updated_on']);
 
         switch ($bannerDetail['banner_blocation_id']) {
-            case BannerLocation::HOME_PAGE_TOP_BANNER:
+            case BannerLocation::HOME_PAGE_BANNER_LAYOUT_1:
                 $bannerUrl = UrlHelper::getCachedUrl(UrlHelper::generateFullFileUrl('Banner', 'HomePageBannerTopLayout', array($bannerDetail['banner_id'], $siteLangId, applicationConstants::SCREEN_MOBILE)).$uploadedTime, CONF_IMG_CACHE_TIME, '.jpg');
                 break;
-            case BannerLocation::HOME_PAGE_MIDDLE_BANNER:
+            case BannerLocation::HOME_PAGE_MOBILE_BANNER:
                 $bannerUrl = UrlHelper::getCachedUrl(UrlHelper::generateFullFileUrl('Banner', 'HomePageBannerMiddleLayout', array($bannerDetail['banner_id'], $siteLangId, applicationConstants::SCREEN_MOBILE)).$uploadedTime, CONF_IMG_CACHE_TIME, '.jpg');
                 break;
-            case BannerLocation::HOME_PAGE_BOTTOM_BANNER:
+            case BannerLocation::HOME_PAGE_BANNER_LAYOUT_2:
                 $bannerUrl = UrlHelper::getCachedUrl(UrlHelper::generateFullFileUrl('Banner', 'HomePageBannerBottomLayout', array($bannerDetail['banner_id'], $siteLangId, applicationConstants::SCREEN_MOBILE)).$uploadedTime, CONF_IMG_CACHE_TIME, '.jpg');
                 break;
             default:

@@ -548,3 +548,20 @@ ALTER TABLE `tbl_banner_locations`
   ADD PRIMARY KEY (`blocation_id`);
 ALTER TABLE `tbl_banner_locations`
   MODIFY `blocation_id` int(11) NOT NULL AUTO_INCREMENT;
+  
+CREATE TABLE `tbl_banner_location_dimensions` (
+  `bldimension_blocation_id` int(11) NOT NULL,
+  `bldimension_device_type` int(11) NOT NULL,
+  `blocation_banner_width` decimal(10,0) NOT NULL,
+  `blocation_banner_height` decimal(10,0) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+INSERT INTO `tbl_banner_location_dimensions` (`bldimension_blocation_id`, `bldimension_device_type`, `blocation_banner_width`, `blocation_banner_height`) VALUES
+(1, 1, '660', '198'),
+(1, 2, '660', '198'),
+(1, 3, '640', '360');
+ALTER TABLE `tbl_banner_location_dimensions`
+  ADD PRIMARY KEY (`bldimension_blocation_id`,`bldimension_device_type`);
+
+TRUNCATE `yokartv8`.`tbl_banners`;
+TRUNCATE `yokartv8`.`tbl_banners_lang`;
+DELETE FROM `tbl_attached_files` WHERE `afile_type` = 18;

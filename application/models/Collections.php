@@ -592,7 +592,7 @@ class Collections extends MyAppModel
      * saveLangData
      *
      * @param  int $langId
-     * @param  string $prodCatName
+     * @param  string $collectionName
      * @return bool
      */
     public function saveLangData(int $langId, string $collectionName): bool

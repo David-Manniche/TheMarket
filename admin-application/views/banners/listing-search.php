@@ -34,7 +34,7 @@ foreach ($arr_listing as $sn=>$row) {
                 $td->appendElement('plaintext', array(), $linkTargetsArr[$row[$key]], true);
             break;
             case 'banner_title':
-                $title = ($row['banner_title'] !='')?$row['banner_title']:$row['promotion_name'];
+                $title = ($row['banner_title'] !='') ? $row['banner_title'] : $row['promotion_name'];
                 $td->appendElement('plaintext', array(), $title, true);
             break;
             case 'banner_type':

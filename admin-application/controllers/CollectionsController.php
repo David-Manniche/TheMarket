@@ -122,7 +122,7 @@ class CollectionsController extends AdminBaseController
             }
             $data = array_merge($data, $catNameArr);
 			$bannerLocation = BannerLocation::getDataByCollectionId($collectionId, 'blocation_promotion_cost');
-			$data['blocation_promotion_cost'] = $bannerLocation['blocation_promotion_cost'];
+			$data['blocation_promotion_cost'] = (isset($bannerLocation['blocation_promotion_cost'])) ? $bannerLocation['blocation_promotion_cost'] : '';
             $frm->fill($data);
         }
 
@@ -183,16 +183,17 @@ class CollectionsController extends AdminBaseController
 
         $collection = new Collections($collectionId);
         $collection->saveLangData($siteDefaultLangId, $post['collection_name'][$siteDefaultLangId]); // For site default language
-        $catNameArr = $post['collection_name'];
-        unset($catNameArr[$siteDefaultLangId]);
-        foreach ($catNameArr as $langId => $catName) {
+        $nameArr = $post['collection_name'];
+        unset($nameArr[$siteDefaultLangId]);
+        foreach ($nameArr as $langId => $catName) {
             if (empty($catName) && $autoUpdateOtherLangsData > 0) {
                 $collection->saveTranslatedLangData($langId);
             } elseif (!empty($catName)) {
                 $collection->saveLangData($langId, $catName);
             }
         }
-		$post['collection_id'] = $collectionId;
+        
+        $post['collection_id'] = $collectionId;
 		$this->saveBannerLocation($post);
 
         if ($post['collection_type'] == Collections::COLLECTION_TYPE_BANNER) {
@@ -213,7 +214,8 @@ class CollectionsController extends AdminBaseController
         $this->_template->render(false, false, 'json-success.php');
     }
 	
-	private function saveBannerLocation($post) {
+    private function saveBannerLocation($post)
+    {
 		$siteDefaultLangId = FatApp::getConfig('conf_default_site_lang', FatUtility::VAR_INT, 1);
 		$blocationId = 0;
 		$bannerLocation = BannerLocation::getDataByCollectionId($post['collection_id'], 'blocation_id');
@@ -233,10 +235,22 @@ class CollectionsController extends AdminBaseController
             Message::addErrorMessage($bannerLoc->getError());
             FatUtility::dieJsonError(Message::getHtml());
         }
-		/* if (0 < $blocationId) {
-			return;
-		} */
-		$blocationId = $bannerLoc->getMainTableRecordId();
+        
+        $blocationId = $bannerLoc->getMainTableRecordId();
+        $autoUpdateOtherLangsData = FatApp::getPostedData('auto_update_other_langs_data', FatUtility::VAR_INT, 0);
+
+        $bannerLoc = new BannerLocation($blocationId);
+        $bannerLoc->saveLangData($siteDefaultLangId, $post['collection_name'][$siteDefaultLangId]); // For site default language
+        $nameArr = $post['collection_name'];
+        unset($nameArr[$siteDefaultLangId]);
+        foreach ($nameArr as $langId => $name) {
+            if (empty($name) && $autoUpdateOtherLangsData > 0) {
+                $bannerLoc->saveTranslatedLangData($langId);
+            } elseif (!empty($name)) {
+                $bannerLoc->saveLangData($langId, $name);
+            }
+        }
+
 		$bannerDimensions = Collections::getBannersDimensions();
 		foreach ($bannerDimensions[$post['collection_layout_type']] as $key => $val) {
 			$dataToSave = [
@@ -495,14 +509,6 @@ class CollectionsController extends AdminBaseController
             FatUtility::dieWithError(Message::getHtml());
         }
 
-        if ($collectionDetails['collection_layout_type'] == Collections::TYPE_BANNER_LAYOUT1) {
-            $blocation_id = BannerLocation::HOME_PAGE_TOP_BANNER;
-        } elseif ($collectionDetails['collection_layout_type'] == Collections::TYPE_BANNER_LAYOUT2) {
-            $blocation_id = BannerLocation::HOME_PAGE_BOTTOM_BANNER;
-        } else {
-            $blocation_id = BannerLocation::HOME_PAGE_MIDDLE_BANNER;
-        }
-
         $records = Collections::getBanners($collectionId, $this->adminLangId);
 
         $this->set('collection_id', $collectionId);
@@ -527,11 +533,11 @@ class CollectionsController extends AdminBaseController
         }
 
         if ($collectionDetails['collection_layout_type'] == Collections::TYPE_BANNER_LAYOUT1) {
-            $blocationId = BannerLocation::HOME_PAGE_TOP_BANNER;
+            $blocationId = BannerLocation::HOME_PAGE_BANNER_LAYOUT_1;
         } elseif ($collectionDetails['collection_layout_type'] == Collections::TYPE_BANNER_LAYOUT2) {
-            $blocationId = BannerLocation::HOME_PAGE_BOTTOM_BANNER;
+            $blocationId = BannerLocation::HOME_PAGE_BANNER_LAYOUT_2;
         } else {
-            $blocationId = BannerLocation::HOME_PAGE_MIDDLE_BANNER;
+            $blocationId = BannerLocation::HOME_PAGE_MOBILE_BANNER;
         }
 
         $frm = $this->getBannerForm($collectionId, $bannerId, $blocationId);
@@ -598,11 +604,11 @@ class CollectionsController extends AdminBaseController
         }
 
         if ($collectionDetails['collection_layout_type'] == Collections::TYPE_BANNER_LAYOUT1) {
-            $blocation_id = BannerLocation::HOME_PAGE_TOP_BANNER;
+            $blocation_id = BannerLocation::HOME_PAGE_BANNER_LAYOUT_1;
         } elseif ($collectionDetails['collection_layout_type'] == Collections::TYPE_BANNER_LAYOUT2) {
-            $blocation_id = BannerLocation::HOME_PAGE_BOTTOM_BANNER;
+            $blocation_id = BannerLocation::HOME_PAGE_BANNER_LAYOUT_2;
         } else {
-            $blocation_id = BannerLocation::HOME_PAGE_MIDDLE_BANNER;
+            $blocation_id = BannerLocation::HOME_PAGE_MOBILE_BANNER;
         }
 
         $bannerImgArr = AttachedFile::getAttachment(AttachedFile::FILETYPE_BANNER, $banner_id, 0, $lang_id, false, $screen);
@@ -664,6 +670,8 @@ class CollectionsController extends AdminBaseController
 
         $collection_id = $post['collection_id'];
         $banner_id = $post['banner_id'];
+        $bannerId = $post['banner_id'];
+        unset($post['banner_id']);
 
         $collectionDetails = Collections::getAttributesById($collection_id);
         if (!false == $collectionDetails && ($collectionDetails['collection_active'] != applicationConstants::ACTIVE || $collectionDetails['collection_deleted'] == applicationConstants::YES)) {
@@ -671,15 +679,9 @@ class CollectionsController extends AdminBaseController
             FatUtility::dieWithError(Message::getHtml());
         }
 
-        if ($collectionDetails['collection_layout_type'] == Collections::TYPE_BANNER_LAYOUT1) {
-            $post['banner_blocation_id'] = BannerLocation::HOME_PAGE_TOP_BANNER;
-        } elseif ($collectionDetails['collection_layout_type'] == Collections::TYPE_BANNER_LAYOUT2) {
-            $post['banner_blocation_id'] = BannerLocation::HOME_PAGE_BOTTOM_BANNER;
-        } else {
-            $post['banner_blocation_id'] = BannerLocation::HOME_PAGE_MIDDLE_BANNER;
-        }
+        $bannerLocation = BannerLocation::getDataByCollectionId($collection_id);
+        $post['banner_blocation_id'] = $bannerLocation['blocation_id'];
 
-        // $post['banner_record_id'] = $collection_id;
         $post['banner_type'] = Banner::TYPE_BANNER;
         $post['banner_active'] = applicationConstants::ACTIVE;
 
@@ -723,7 +725,7 @@ class CollectionsController extends AdminBaseController
             FatUtility::dieWithError(Message::getHtml());
         }
 
-        if ($post['banner_id'] == 0 && isset($post['banner_image_id'])) {
+        if ($bannerId == 0 && isset($post['banner_image_id'])) {
             $banner = new Banner($banner_id);
             $banner->updateMedia($post['banner_image_id']);
         }
@@ -814,7 +816,7 @@ class CollectionsController extends AdminBaseController
         $mediaLanguages = applicationConstants::bannerTypeArr();
         $frm->addSelectBox(Labels::getLabel('LBL_Language', $this->adminLangId), 'banner_lang_id', $mediaLanguages, '', array(), '');
         $screenArr = applicationConstants::getDisplaysArr($this->adminLangId);
-		$displayFor = ($bannerLocationId == BannerLocation::HOME_PAGE_MIDDLE_BANNER) ? applicationConstants::SCREEN_MOBILE : '';
+		$displayFor = ($bannerLocationId == BannerLocation::HOME_PAGE_MOBILE_BANNER) ? applicationConstants::SCREEN_MOBILE : '';
         $frm->addSelectBox(Labels::getLabel("LBL_Device", $this->adminLangId), 'banner_screen', $screenArr, $displayFor, array(), '');
         $frm->addHiddenField('', 'banner_min_width');
         $frm->addHiddenField('', 'banner_min_height');

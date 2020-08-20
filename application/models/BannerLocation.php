@@ -10,15 +10,15 @@ class BannerLocation extends MyAppModel
     public const DB_DIMENSIONS_TBL = 'tbl_banner_location_dimensions';
     public const DB_DIMENSIONS_TBL_PREFIX = 'bldimensions_';
 
-    public const HOME_PAGE_TOP_BANNER = 1;
-    public const HOME_PAGE_BOTTOM_BANNER = 2;
+    public const HOME_PAGE_BANNER_LAYOUT_1 = 1;
+    public const HOME_PAGE_BANNER_LAYOUT_2 = 2;
     public const PRODUCT_DETAIL_PAGE_BANNER = 3;
-    public const HOME_PAGE_MIDDLE_BANNER = 4;
+    public const HOME_PAGE_MOBILE_BANNER = 4;
 
     public const HOME_PAGE_LAYOUTS = [
-        self::HOME_PAGE_TOP_BANNER,
-        self::HOME_PAGE_BOTTOM_BANNER,
-        self::HOME_PAGE_MIDDLE_BANNER
+        self::HOME_PAGE_BANNER_LAYOUT_1,
+        self::HOME_PAGE_BANNER_LAYOUT_2,
+        self::HOME_PAGE_MOBILE_BANNER
     ];
 
     public const MOBILE_API_BANNER_PAGESIZE = 1;
@@ -79,7 +79,7 @@ class BannerLocation extends MyAppModel
         $bannerSrch = Banner::getBannerLocationSrchObj(true);
         $bannerSrch->addCondition('blocation_id', '=', $blocationId);
         $rs = $bannerSrch->getResultSet();
-        $bannerLocation = $db->fetchAll($rs, 'blocation_key');
+        $bannerLocation = $db->fetchAll($rs, 'blocation_collection_id');
 
         $banners = $bannerLocation;
         $i = 0;
@@ -122,7 +122,7 @@ class BannerLocation extends MyAppModel
             } else {
                 $bannerListing = $db->fetchAll($rs, 'banner_id');
             }
-            $banners[$val['blocation_key']]['banners'] = $bannerListing;
+            $banners[$val['blocation_collection_id']]['banners'] = $bannerListing;
             $i++;
         }
         return $banners;
@@ -147,7 +147,8 @@ class BannerLocation extends MyAppModel
         }
     }
 	
-	public static function getDataByCollectionId($collectionId, $fetch_attr = null) {
+    public static function getDataByCollectionId($collectionId, $fetch_attr = null) 
+    {
 		$srch = static::getSearchObject();
 		if (null != $fetch_attr) {
             if (is_array($fetch_attr)) {
@@ -163,5 +164,55 @@ class BannerLocation extends MyAppModel
 			return [];
 		}
 		return $row;
-	}
+    }
+    
+    /**
+     * saveLangData
+     *
+     * @param  int $langId
+     * @param  string $collectionName
+     * @return bool
+     */
+    public function saveLangData(int $langId, string $collectionName): bool
+    {
+        $langId = FatUtility::int($langId);
+        if ($this->mainTableRecordId < 1 || $langId < 1) {
+            $this->error = Labels::getLabel('ERR_Invalid_Request', $this->commonLangId);
+            return false;
+        }
+
+        $data = array(
+            'blocationlang_blocation_id' => $this->mainTableRecordId,
+            'blocationlang_lang_id' => $langId,
+            'blocation_name' => $collectionName,
+        );
+
+        if (!$this->updateLangData($langId, $data)) {
+            $this->error = $this->getError();
+            return false;
+        }
+        return true;
+    }
+
+    /**
+     * saveTranslatedLangData
+     *
+     * @param  int $langId
+     * @return bool
+     */
+    public function saveTranslatedLangData(int $langId): bool
+    {
+        $langId = FatUtility::int($langId);
+        if ($this->mainTableRecordId < 1 || $langId < 1) {
+            $this->error = Labels::getLabel('ERR_Invalid_Request', $this->commonLangId);
+            return false;
+        }
+
+        $translateLangobj = new TranslateLangData(static::DB_TBL_LANG);
+        if (false === $translateLangobj->updateTranslatedData($this->mainTableRecordId, 0, $langId)) {
+            $this->error = $translateLangobj->getError();
+            return false;
+        }
+        return true;
+    }
 }
