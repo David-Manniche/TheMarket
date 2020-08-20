@@ -126,6 +126,7 @@ class AccountController extends LoggedUserController
         $data = array('id' => $supplierRequest['usuprequest_id']);
         $approvalFrm = $this->getSupplierForm();
         $approvalFrm->fill($data);
+        $approvalFrm->addSecurityToken();
 
         $this->set('approvalFrm', $approvalFrm);
         $this->_template->render();
@@ -156,12 +157,13 @@ class AccountController extends LoggedUserController
         /* ] */
 
         $frm = $this->getSupplierForm();
-        $post = $frm->getFormDataFromArray(FatApp::getPostedData());
+        $post = $frm->getFormDataFromArray(FatApp::getPostedData(), [], true);
 
         if (false === $post) {
             Message::addErrorMessage(current($frm->getValidationErrors()));
             FatUtility::dieJsonError(Message::getHtml());
         }
+		$frm->expireSecurityToken(FatApp::getPostedData());
 
         $supplier_form_fields = $userObj->getSupplierFormFields($this->siteLangId);
 

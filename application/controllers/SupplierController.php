@@ -419,9 +419,9 @@ class SupplierController extends MyAppController
         }
 
         if (/* $userdata['credential_active'] == 1 &&  */$userdata['credential_verified'] == applicationConstants::YES) {
-            $success_message = Labels::getLabel('MSG_SUCCESS_SELLER_SIGNUP_VERIFIED', $this->siteLangId);
+            $success_message = Labels::getLabel('MSG_SELLER_SIGNUP_VERIFIED_SUCCESSFULLY', $this->siteLangId);
         } else {
-            $success_message = Labels::getLabel('MSG_SUCCESS_SELLER_SIGNUP', $this->siteLangId);
+            $success_message = Labels::getLabel('MSG_SELLER_SIGNUP_SUCCESSFULLY', $this->siteLangId);
         }
 
         unset($_SESSION['registered_supplier']['id']);

@@ -10,5 +10,8 @@
     $approvalFrm->setFormTagAttribute('class', 'form form--normal');
     $approvalFrm->developerTags['colClassPrefix'] = 'col-lg-12 col-md-12 col-sm-';
     $approvalFrm->developerTags['fld_default_col'] = 12;
+    
+    $btn = $approvalFrm->getField('btn_submit');
+    $btn->setFieldTagAttribute('class', 'btn btn-primary btn-wide');
     echo $approvalFrm->getFormHtml();
 ?>

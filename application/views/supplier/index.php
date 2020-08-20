@@ -4,6 +4,9 @@ $faqSearchFrm->setFormTagAttribute('id', 'frmSearchFaqs');
 $faqSearchFrm->setFormTagAttribute('onSubmit', 'searchFaqs(this);return false;');
 $faqSearchFrm->getField('question')->setFieldTagAttribute('placeholder', Labels::getLabel('Lbl_Search', $siteLangId));
 $faqSearchFrm->getField('question')->setFieldTagAttribute('class', "faq-input no-focus");
+
+$btn = $sellerFrm->getField('btn_submit');
+$btn->setFieldTagAttribute('class', "btn btn-primary btn-wide");
 ?>
 <div class="after-header"></div>
 <div id="body" class="body">
