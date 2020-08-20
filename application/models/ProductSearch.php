@@ -311,7 +311,7 @@ class ProductSearch extends SearchBase
         $this->joinTable('(' . $tmpQry . ')', 'INNER JOIN', 'pricetbl.selprod_product_id = msellprod.selprod_product_id AND (splprice_price = theprice OR selprod_price = theprice)', 'pricetbl');
     }
 
-    public function joinSellerProducts($bySeller = 0, $splPriceForDate = '', $criteria = array(), $checkAvailableFrom = true)
+    public function joinSellerProducts($bySeller = 0, $splPriceForDate = '', $criteria = array(), $checkAvailableFrom = true, $isProductActive = true)
     {
         if ($this->sellerProductsJoined) {
             trigger_error(Labels::getLabel('ERR_SellerProducts_can_be_joined_only_once.', $this->commonLangId), E_USER_ERROR);
@@ -352,8 +352,9 @@ class ProductSearch extends SearchBase
             );
 
             $srch->addCondition('s.splprice_selprod_id', 'IS', 'mysql_func_NULL', 'AND', true);
-
-            $srch->addCondition('selprod_active', '=', applicationConstants::ACTIVE);
+            if($isProductActive == true){
+                $srch->addCondition('selprod_active', '=', applicationConstants::ACTIVE);
+            }
             $srch->addCondition('selprod_deleted', '=', applicationConstants::NO);
             if ($checkAvailableFrom) {
                 $srch->addCondition('selprod_available_from', '<=', $now);
