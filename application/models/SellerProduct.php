@@ -830,7 +830,7 @@ class SellerProduct extends MyAppModel
     public static function getProductDisplayTitle($selProdId, $langId, $toHtml = false)
     {
         $prodSrch = new ProductSearch($langId, null, null, false, false);
-        $prodSrch->joinSellerProducts(0, '', array(), false);
+        $prodSrch->joinSellerProducts(0, '', array(), false, false);
         if (is_array($selProdId) && 0 < count($selProdId)) {
             $prodSrch->addCondition('selprod_id', 'IN', $selProdId);
         } else {
