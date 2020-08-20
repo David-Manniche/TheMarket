@@ -5233,73 +5233,40 @@ class SellerController extends SellerBaseController
             Message::addErrorMessage(Labels::getLabel('MSG_Your_shop_deactivated_contact_admin', $this->siteLangId));
             FatUtility::dieWithError(Message::getHtml());
         }
-        $shop_id = 0;
-
-        if (!false == $shopDetails) {
-            $shop_id = $shopDetails['shop_id'];
-        }
-
-        $frm = $this->getUserAddressForm($this->siteLangId);
+        $shopId = 0;
         $stateId = 0;
-
+        $slotData = [];
+        if (!false == $shopDetails) {
+            $shopId = $shopDetails['shop_id'];
+        }
+        $frm = $this->getPickUpAddressForm($addrId);
         if ($addrId > 0) {
             $address = new Address($addrId, $this->siteLangId);
-            $data = $address->getData(Address::TYPE_SHOP_PICKUP, $shop_id);
-            /* CommonHelper::printArray($data); die; */
+            $data = $address->getData(Address::TYPE_SHOP_PICKUP, $shopId);
             if (!empty($data)) {
                 $stateId = $data['addr_state_id'];
                 $frm->fill($data);
+                
+                $timeSlot = new TimeSlot();
+                $timeSlots = $timeSlot->getTimeSlotByAddressId($addrId);
+                if(!empty($timeSlots)){     
+                    foreach($timeSlots as $key=>$slot){
+                        $slotData['tslot_day'][$slot['tslot_day']] = $slot['tslot_day'];
+                        $slotData['tslot_from_time'][$slot['tslot_day']][] = $slot['tslot_from_time'];
+                        $slotData['tslot_to_time'][$slot['tslot_day']][] = $slot['tslot_to_time'];
+                    } 
+                }
             }
         }
 
-        $this->set('shop_id', $shop_id);
+        $this->set('shop_id', $shopId);
         $this->set('language', Language::getAllNames());
         $this->set('siteLangId', $this->siteLangId);
         $this->set('frm', $frm);
         $this->set('stateId', $stateId);
         $this->set('languages', Language::getAllNames());
+        $this->set('slotData', $slotData);
         $this->_template->render(false, false);
-    }
-
-    public function setPickupAddress()
-    {
-        $this->userPrivilege->canEditShop(UserAuthentication::getLoggedUserId());
-        $userId = $this->userParentId;
-        $shopId = Shop::getAttributesByUserId($userId, 'shop_id');
-
-        $post = FatApp::getPostedData();
-        $post['addr_phone'] = !empty($post['addr_phone']) ? ValidateElement::convertPhone($post['addr_phone']) : '';
-        $addr_state_id = FatUtility::int($post['addr_state_id']);
-        $frm = $this->getUserAddressForm($this->siteLangId);
-        $post = $frm->getFormDataFromArray($post);
-
-        if (false === $post) {
-            Message::addErrorMessage(current($frm->getValidationErrors()));
-            FatUtility::dieJsonError(Message::getHtml());
-        }
-        $post['addr_state_id'] = $addr_state_id;
-
-        $addr_id = FatUtility::int($post['addr_id']);
-        unset($post['addr_id']);
-
-        $addressObj = new Address($addr_id);
-        $data_to_be_save = $post;
-        $data_to_be_save['addr_record_id'] = $shopId;
-        $data_to_be_save['addr_type'] = Address::TYPE_SHOP_PICKUP;
-        $data_to_be_save['addr_lang_id'] = $this->siteLangId;
-        $addressObj->assignValues($data_to_be_save, true);
-        if (!$addressObj->save()) {
-            if (true === MOBILE_APP_API_CALL) {
-                LibHelper::dieJsonError($addressObj->getError());
-            }
-            Message::addErrorMessage($addressObj->getError());
-            FatUtility::dieWithError(Message::getHtml());
-        }
-        if (0 <= $addr_id) {
-            $addr_id = $addressObj->getMainTableRecordId();
-        }
-        $this->set('msg', Labels::getLabel('MSG_Setup_successful', $this->siteLangId));
-        $this->_template->render(false, false, 'json-success.php');
     }
 
     public function checkIfNotAnyInventory($productId)
@@ -5336,5 +5303,150 @@ class SellerController extends SellerBaseController
 
         $this->set('trackingInfo', $trackingInfo);
         $this->_template->render(false, false);
+    }
+    
+    private function getPickUpAddressForm($addressId = 0)
+    {
+        $addressId = FatUtility::int($addressId);
+        $frm = new Form('frmPickUpAddress');
+        $frm->addHiddenField('', 'addr_id', $addressId);
+        $frm->addTextBox(Labels::getLabel('LBL_Address_Label', $this->siteLangId), 'addr_title');
+        $frm->addRequiredField(Labels::getLabel('LBL_Name', $this->siteLangId), 'addr_name');
+        $frm->addRequiredField(Labels::getLabel('LBL_Address_Line1', $this->siteLangId), 'addr_address1');
+        $frm->addTextBox(Labels::getLabel('LBL_Address_Line2', $this->siteLangId), 'addr_address2');
+
+        $countryObj = new Countries();
+        $countriesArr = $countryObj->getCountriesArr($this->siteLangId);
+        $frm->addSelectBox(Labels::getLabel('LBL_Country', $this->siteLangId), 'addr_country_id', $countriesArr, '', array(), Labels::getLabel('LBL_Select', $this->siteLangId))->requirement->setRequired(true);
+
+        $frm->addSelectBox(Labels::getLabel('LBL_State', $this->siteLangId), 'addr_state_id', array(), '', array(), Labels::getLabel('LBL_Select', $this->siteLangId))->requirement->setRequired(true);
+        $frm->addRequiredField(Labels::getLabel('LBL_City', $this->siteLangId), 'addr_city');
+
+        $zipFld = $frm->addRequiredField(Labels::getLabel('LBL_Postalcode', $this->siteLangId), 'addr_zip');
+        $phnFld = $frm->addRequiredField(Labels::getLabel('LBL_Phone', $this->siteLangId), 'addr_phone', '', array('class' => 'phone-js ltr-right', 'placeholder' => ValidateElement::PHONE_NO_FORMAT, 'maxlength' => ValidateElement::PHONE_NO_LENGTH));
+        $phnFld->requirements()->setRegularExpressionToValidate(ValidateElement::PHONE_REGEX);        
+        $phnFld->requirements()->setCustomErrorMessage(Labels::getLabel('LBL_Please_enter_valid_phone_number_format.', $this->siteLangId));
+        
+        $slotTimingsTypeArr = TimeSlot::getSlotTypeArr($this->siteLangId);
+        $frm->addRadioButtons(Labels::getLabel('LBL_Slot_Timings', $this->siteLangId), 'slot_type', $slotTimingsTypeArr, TimeSlot::DAY_INDIVIDUAL_DAYS);        
+
+        $daysArr = TimeSlot::getDaysArr($this->siteLangId);        
+        for($i = 0; $i< count($daysArr); $i++){  
+            $frm->addCheckBox($daysArr[$i], 'tslot_day['.$i.']', $i, array(), false);
+            $frm->addSelectBox(Labels::getLabel('LBL_From', $this->siteLangId), 'tslot_from_time['.$i.'][]', TimeSlot::getTimeSlotsArr(), '', array(), Labels::getLabel('LBL_Select', $this->siteLangId));
+            $frm->addSelectBox(Labels::getLabel('LBL_To', $this->siteLangId), 'tslot_to_time['.$i.'][]', TimeSlot::getTimeSlotsArr(), '', array(), Labels::getLabel('LBL_Select', $this->siteLangId));       
+            $frm->addButton('', 'btn_add_row['.$i.']', '+');           
+        }
+        
+        $frm->addSelectBox(Labels::getLabel('LBL_From', $this->siteLangId), 'tslot_from_all', TimeSlot::getTimeSlotsArr(), '', array(), Labels::getLabel('LBL_Select', $this->siteLangId));
+        $frm->addSelectBox(Labels::getLabel('LBL_To', $this->siteLangId), 'tslot_to_all', TimeSlot::getTimeSlotsArr(), '', array(), Labels::getLabel('LBL_Select', $this->siteLangId));       
+            
+        $frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_Save_Changes', $this->siteLangId));
+        $fldCancel = $frm->addButton('', 'btn_cancel', Labels::getLabel('LBL_Cancel', $this->siteLangId));
+        return $frm;
+    }
+    
+    public function setPickupAddress()
+    {
+        $this->userPrivilege->canEditShop(UserAuthentication::getLoggedUserId());
+        $userId = $this->userParentId;
+        $shopId = Shop::getAttributesByUserId($userId, 'shop_id');
+
+        $post = FatApp::getPostedData();    
+        $post['addr_phone'] = !empty($post['addr_phone']) ? ValidateElement::convertPhone($post['addr_phone']) : '';
+        $addrStateId = FatUtility::int($post['addr_state_id']);
+
+        $slotFromAll = '';
+        $slotToAll = '';
+        $slotDays = [];
+        $slotType = FatUtility::int($post['slot_type']);
+        if($slotType == TimeSlot::DAY_ALL_DAYS){
+            $slotFromAll = $post['tslot_from_all'];
+            $slotToAll = $post['tslot_to_all'];
+        }else{
+            $slotDays = isset($post['tslot_day']) ? $post['tslot_day'] : array();
+            $slotFromTime = $post['tslot_from_time'];
+            $slotToTime = $post['tslot_to_time'];
+        }
+        
+        $frm = $this->getPickUpAddressForm($post['addr_id']); 
+        $postedData = $frm->getFormDataFromArray($post);      
+        if (false === $postedData) {
+            Message::addErrorMessage(current($frm->getValidationErrors()));
+            FatUtility::dieJsonError(Message::getHtml());
+        }   
+        
+        $addressId = $post['addr_id'];
+        unset($post['addr_id']);
+        
+		$address = new Address($addressId);
+        $data = $post;
+        $data['addr_state_id'] = $addrStateId;
+        $data['addr_record_id'] = $shopId;
+        $data['addr_lang_id'] = $this->siteLangId;
+        $data['addr_type'] =  Address::TYPE_SHOP_PICKUP;;
+        $address->assignValues($data);
+        if (!$address->save()) {
+            if (true === MOBILE_APP_API_CALL) {
+                LibHelper::dieJsonError($address->getError());
+            }
+            Message::addErrorMessage($address->getError());
+            FatUtility::dieJsonError(Message::getHtml());
+        }
+        
+        $addrId = $address->getMainTableRecordId();
+        if(!FatApp::getDb()->deleteRecords(TimeSlot::DB_TBL, array('smt'=>'tslot_type = ? and tslot_record_id = ?', 'vals' => array(Address::TYPE_SHOP_PICKUP, $addrId)))){
+            if (true === MOBILE_APP_API_CALL) {
+                LibHelper::dieJsonError(FatApp::getDb()->getError());
+            }
+            Message::addErrorMessage(FatApp::getDb()->getError());
+            FatUtility::dieJsonError(Message::getHtml());
+        }
+            
+        if(!empty($slotDays) && $slotType == TimeSlot::DAY_INDIVIDUAL_DAYS){
+            foreach($slotDays as $day){   
+                foreach($slotFromTime[$day] as $key=>$fromTime){
+                    if(!empty($fromTime) && !empty($slotToTime[$day][$key])){
+                        $slotData['tslot_type'] = Address::TYPE_SHOP_PICKUP;
+                        $slotData['tslot_record_id'] = $addrId;
+                        $slotData['tslot_day'] = $day;
+                        $slotData['tslot_from_time'] = $fromTime;
+                        $slotData['tslot_to_time'] = $post['tslot_to_time'][$day][$key];
+                        $timeSlot = new TimeSlot();
+                        $timeSlot->assignValues($slotData);
+                        if (!$timeSlot->save()) {
+                            if (true === MOBILE_APP_API_CALL) {
+                                LibHelper::dieJsonError($timeSlot->getError());
+                            }
+                            Message::addErrorMessage($timeSlot->getError());
+                            FatUtility::dieJsonError(Message::getHtml());
+                        }
+                    }
+                }
+            }
+        }
+        
+        if($slotType == TimeSlot::DAY_ALL_DAYS && !empty($slotFromAll) && !empty($slotToAll)){
+            $daysArr = TimeSlot::getDaysArr($this->siteLangId);        
+            for($i = 0; $i< count($daysArr); $i++){ 
+                $slotData['tslot_type'] = Address::TYPE_SHOP_PICKUP;
+                $slotData['tslot_record_id'] = $addrId;
+                $slotData['tslot_day'] = $i;
+                $slotData['tslot_from_time'] = $slotFromAll;
+                $slotData['tslot_to_time'] = $slotToAll;
+                $timeSlot = new TimeSlot();
+                $timeSlot->assignValues($slotData);
+                if (!$timeSlot->save()) {
+                    if (true === MOBILE_APP_API_CALL) {
+                        LibHelper::dieJsonError($timeSlot->getError());
+                    }
+                    Message::addErrorMessage($timeSlot->getError());
+                    FatUtility::dieJsonError(Message::getHtml());
+                }
+            }
+        }
+        
+        $this->set('msg', Labels::getLabel('MSG_Setup_successful', $this->siteLangId));
+        $this->_template->render(false, false, 'json-success.php');
     }
 }

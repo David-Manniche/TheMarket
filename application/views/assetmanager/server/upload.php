@@ -30,29 +30,26 @@ require_once $_SESSION['WYSIWYGFileManagerRequirements'];
 
 
 if (!empty($_FILES)) {
-	$tempFile = $_FILES['Filedata']['tmp_name'];
-//	$targetPath = WEBSITEROOT_LOCALPATH . $_REQUEST['folder'] . '/';
-	//$targetPath = WEBSITEROOT_LOCALPATH ."/user-uploads/backend" . '/';
-	$targetPath = WEBSITEROOT_LOCALPATH .$path_for_images . '/';
-	
-	$targetFile =  str_replace('//','/',$targetPath) . $_FILES['Filedata']['name'];
+    $tempFile = $_FILES['Filedata']['tmp_name'];
+    $targetPath = WEBSITEROOT_LOCALPATH .$path_for_images . '/';
+    
+    $targetFile =  str_replace('//', '/', $targetPath) . $_FILES['Filedata']['name'];
 
-     $allowedExt = UPLOAD_FILE_TYPES;
+    $allowedExt = UPLOAD_FILE_TYPES;
 
-	 $fileTypes = str_replace('*.','',$allowedExt);
-	 $fileTypes  = str_replace(';','|',$fileTypes);
-	 $typesArray = explode('|',$fileTypes);
-	 $fileParts  = pathinfo($_FILES['Filedata']['name']);
+    $fileTypes = str_replace('*.', '', $allowedExt);
+    $fileTypes  = str_replace(';', '|', $fileTypes);
+    $typesArray = explode('|', $fileTypes);
+    $fileParts  = pathinfo($_FILES['Filedata']['name']);
 
-	 if ($allowedExt=="" || in_array(strtolower($fileParts['extension']),$typesArray)) {
-		// Uncomment the following line if you want to make the directory if it doesn't exist
-		// mkdir(str_replace('//','/',$targetPath), 0755, true);
+    if ($allowedExt=="" || in_array(strtolower($fileParts['extension']), $typesArray)) {
+        // Uncomment the following line if you want to make the directory if it doesn't exist
+        // mkdir(str_replace('//','/',$targetPath), 0755, true);
 
-		move_uploaded_file($tempFile,$targetFile);
-		echo str_replace(WEBSITEROOT_LOCALPATH,'', urlencode($targetFile));
-		echo "<script>parent.refresh();</script>";
-	 } else {
-	 	echo 'Invalid file type.';
-	 }
+        move_uploaded_file($tempFile, $targetFile);
+        echo str_replace(WEBSITEROOT_LOCALPATH, '', urlencode($targetFile));
+        echo "<script>parent.refresh();</script>";
+    } else {
+        echo 'Invalid file type.';
+    }
 }
-?>

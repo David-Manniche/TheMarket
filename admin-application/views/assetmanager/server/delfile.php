@@ -4,12 +4,9 @@ $path_for_images = '';
 require_once $_SESSION['WYSIWYGFileManagerRequirements'];
 
 $root = WEBSITEROOT_LOCALPATH .$path_for_images ;
-$file = $root . $_POST["file"]; 
+$file = $root . $_POST["file"];
 
-if(file_exists ($file)) {
-	unlink($file);
+if (file_exists($file)) {
+    unlink($file);
 } else {
-
 }
-
-?>

@@ -62,7 +62,7 @@ $action = strtolower($action);
                                     <use xlink:href="<?php echo CONF_WEBROOT_URL; ?>images/retina/sprite.svg#dash-products" href="<?php echo CONF_WEBROOT_URL; ?>images/retina/sprite.svg#dash-products"></use>
                                 </svg>
                             </i>
-                            <span class="menu-item__title"><?php echo Labels::getLabel('LBL_Inventories', $siteLangId); ?></span>
+                            <span class="menu-item__title"><?php echo Labels::getLabel('LBL_Shop_Inventory', $siteLangId); ?></span>
                         </a>
                     </div>
                 </li>

@@ -18,7 +18,7 @@ $splitPaymentMethodsPlugins = Plugin::getDataByType(Plugin::TYPE_SPLIT_PAYMENT_M
             echo 'is-active';
         } ?>"><a href="javascript:void(0);" onClick="returnAddressForm()"><?php echo Labels::getLabel('LBL_Return_Address', $siteLangId);?></a>
         </li>
-		<li class="<?php if ((!empty($action) && ($action == 'pickupAddress'))) {
+		<li class="<?php if ((!empty($action) && ($action == 'pickupAddress' || $action == 'pickupAddressForm'))) {
             echo 'is-active';
         } ?>"><a href="javascript:void(0);" onClick="pickupAddress()"><?php echo Labels::getLabel('LBL_Pickup_Address', $siteLangId);?></a>
         </li>

@@ -8,7 +8,7 @@ $this->includeTemplate('_partial/seller/sellerDashboardNavigation.php'); ?>
                 <h2 class="content-header-title">
                     <?php 
                     if($type == 1){ 
-                        echo Labels::getLabel('LBL_Products', $siteLangId);
+                        echo Labels::getLabel('LBL_Seller_Products', $siteLangId);
                     }else{ 
                         echo Labels::getLabel('LBL_Marketplace_Products', $siteLangId); 
                     } 
@@ -16,7 +16,7 @@ $this->includeTemplate('_partial/seller/sellerDashboardNavigation.php'); ?>
                     <i class="fa fa-question-circle" onClick="productInstructions(<?php echo Extrapage::MARKETPLACE_PRODUCT_INSTRUCTIONS; ?>)"></i>
                 </h2>                
             </div>   
-            <?php $this->includeTemplate('_partial/productPagesTabs.php', array('siteLangId'=>$siteLangId, 'controllerName'=>$controllerName, 'action'=>$action, 'canEdit'=>$canEdit), false); ?>
+            <?php $this->includeTemplate('_partial/productPagesTabs.php', array('siteLangId'=>$siteLangId, 'controllerName'=>$controllerName, 'action'=>$action, 'canEdit'=>$canEdit, 'type' =>$type), false); ?>
         </div>
         <div class="content-body">
             <div class="row mb-4">

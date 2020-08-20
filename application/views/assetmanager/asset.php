@@ -24,7 +24,8 @@
         <link href="http://fonts.googleapis.com/css?family=Arvo" rel="stylesheet" type="text/css" />
         <script src="jquery/jquery.form.js" type="text/javascript"></script> <?php /* <link href="uploadify/uploadify.css" rel="stylesheet" type="text/css" />
     <script src="uploadify/jquery.uploadify.v2.1.4.min.js" type="text/javascript"></script>
-    <script src="uploadify/swfobject.js" type="text/javascript"></script> */ ?> <script language="javascript" type="text/javascript">
+    <script src="uploadify/swfobject.js" type="text/javascript"></script> */ ?> 
+    <script language="javascript" type="text/javascript">
             var base = "<?php echo $path_for_images; ?>"; /*Relative to Root*/
             var readonly = false;
             var fullpath = false;
@@ -67,7 +68,7 @@
                         } catch (e) {}
                     } else {
                         if (ext.indexOf("/") == -1) {
-                            $("#preview_id").html("<table><tr><td><a id='idFile' target='_blank' href='" + file + "' style='color:#000000;background:#ffffff;margin-right:5px;'>" + filename +
+                            $("#preview_id").html("<table><tr><td><a id='idFile' target='_blank' href='" + file + "' style='color:#000000;background:#ffffff;margin-right:5px;' rel='" + filepath + "'>" + filename +
                                 "</a></td><td>&nbsp;&nbsp;<a id='lnkDelFile' style='font-weight:normal;font-size:10px;color:#c90000;word-spacing:2px;white-space:nowrap;' href='javascript:deleteFile()'>DELETE FILE</a></td></tr></table>");
                             if (fullpath) {
                                 fileurl = window.location.protocol + "//" + window.location.host + file

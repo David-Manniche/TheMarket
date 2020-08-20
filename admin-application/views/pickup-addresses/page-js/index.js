@@ -54,6 +54,8 @@ $(document).ready(function() {
         var toTimeHtml = $(".js-to_time_"+day).html();
         var html = "<div class='row js-added-rows-"+day+"'><div class='col-md-2'></div><div class='col-md-4 js-from_time_"+day+"'>"+fromTimeHtml+"</div><div class='col-md-4 js-to_time_"+day+"'>"+toTimeHtml+"</div><div class='col-md-2'><input class='mt-4' type='button' name='btn_remove_row' value='x'></div></div>";
         $(".js-from_time_"+day).last().parent().after(html);
+        $('.js-slot-from-'+day).last().val('');
+        $('.js-slot-to-'+day).last().val('');
     }  
     
     displayFields = function(day, ele){

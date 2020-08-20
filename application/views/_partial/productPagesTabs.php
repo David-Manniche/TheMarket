@@ -34,7 +34,7 @@
                     <?php echo Labels::getLabel('LBL_Add_New_Product', $siteLangId);?>
                 </a>
                 <a href="<?php echo UrlHelper::generateUrl('seller', 'catalog');?>" class="btn btn-outline-primary btn-sm">
-                    <?php echo Labels::getLabel('LBL_Products', $siteLangId); ?>
+                    <?php echo Labels::getLabel('LBL_Seller_Products', $siteLangId); ?>
                 </a>
                 <?php if($adminCatalogs > 0){ ?>
                     <a href="<?php echo UrlHelper::generateUrl('seller', 'catalog', [0]);?>" class="btn btn-outline-primary btn-sm">
@@ -42,8 +42,14 @@
                     </a>
                 <?php } ?>                
             <?php } ?>
+            
+            <?php if (User::canAddCustomProduct() && $action == 'catalog' && $type == 1) { ?>
+                <a href="<?php echo UrlHelper::generateUrl('seller', 'customProductForm');?>" class="btn btn-outline-primary btn-sm">
+                    <?php echo Labels::getLabel('LBL_Add_New_Product', $siteLangId);?>
+                </a>                
+            <?php } ?>
                 
-            <?php if (User::canAddCustomProductAvailableToAllSellers() && User::canAddCustomProduct() && $action == 'catalog') { ?>
+            <?php if (User::canAddCustomProductAvailableToAllSellers() && User::canAddCustomProduct() && $action == 'catalog' && $type == 0) { ?>
                 <a href="<?php echo UrlHelper::generateUrl('seller', 'customCatalogProducts');?>" class="btn btn-outline-primary btn-sm">
                     <?php echo Labels::getLabel('LBL_Send_Products_Request', $siteLangId); ?>
                 </a>
@@ -58,7 +64,7 @@
             
             <?php if (User::canAddCustomProduct() && ($action == 'catalog' || $action == 'customCatalogProducts')) { ?>
                 <a href="<?php echo UrlHelper::generateUrl('seller', 'products');?>" class="btn btn-outline-primary btn-sm">
-                    <?php echo Labels::getLabel('LBL_Back_To_Inventories', $siteLangId); ?>
+                    <?php echo Labels::getLabel('LBL_Back_To_Inventory', $siteLangId); ?>
                 </a>
             <?php } ?>
         </div>

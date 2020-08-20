@@ -1,8 +1,8 @@
 <?php defined('SYSTEM_INIT') or die('Invalid Usage.');
 $frm->setFormTagAttribute('class', 'web_form  layout--' . $formLayout);
 $frm->setFormTagAttribute('onsubmit', 'setup(this); return(false);');
-$frm->developerTags['colClassPrefix'] = 'col-md-';
-$frm->developerTags['fld_default_col'] = 6;
+//$frm->developerTags['colClassPrefix'] = 'col-md-';
+//$frm->developerTags['fld_default_col'] = 6;
 
 $langFld = $frm->getField('lang_id');
 $langFld->setFieldTagAttribute('onChange', "addAddressForm(" . $addressId . ", this.value);");
@@ -246,7 +246,7 @@ $toAllFld->setFieldTagAttribute('onChange', 'validateTimeFields()');
                             $addRowFld->setFieldTagAttribute('onClick', 'addTimeSlotRow('.$i.')');
                             $addRowFld->setFieldTagAttribute('class', 'js-slot-add-'.$i);
        
-                            if(!empty($slotData) && !empty($slotData['tslot_day'][$i])){   
+                            if(!empty($slotData) && isset($slotData['tslot_day'][$i])){   
                                 $dayFld->setFieldTagAttribute('checked', 'true');
                                 foreach($slotData['tslot_from_time'][$i] as $key=>$time){   
                                     $fromTime = date('H:i', strtotime($time));
