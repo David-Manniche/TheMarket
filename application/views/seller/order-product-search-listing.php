@@ -88,10 +88,9 @@ foreach ($orders as $sn => $order) {
                 $shipBySeller = CommonHelper::canAvailShippingChargesBySeller($order['op_selprod_user_id'], $order['opshipping_by_seller_user_id']);
                 if ($shipBySeller && true === $canShipByPlugin && ('CashOnDelivery' == $order['plugin_code'] || Orders::ORDER_IS_PAID == $order['order_is_paid'])) {
                     $li = $ul->appendElement("li");
-                    $orderShipment = OrderProductShipment::getAttributesById($order['op_id'], 'opship_response');
-                    if (empty($orderShipment)) {
+                    if (empty($order['opship_response']) && empty($order['opship_tracking_number'])) {
                         $li->appendElement('a', array('href'=>'javascript:void(0)', 'onclick' => 'generateLabel("' . $order['order_id'] . '", ' . $order['op_id'] . ')', 'title'=>Labels::getLabel('LBL_GENERATE_LABEL',$siteLangId)),'<i class="fas fa-file-download"></i>', true);
-                    } else {
+                    } elseif (!empty($order['opship_response'])) {
                         $li->appendElement('a', array('href'=>UrlHelper::generateUrl("ShippingServices", 'previewLabel', [$order['op_id']]), 'target' => '_blank','title'=>Labels::getLabel('LBL_PREVIEW_LABEL',$siteLangId)),'<i class="fas fa-file-export"></i>', true);
                     }
                 }
