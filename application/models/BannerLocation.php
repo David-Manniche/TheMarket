@@ -92,13 +92,13 @@ class BannerLocation extends MyAppModel
             $bsrch->addMinimiumWalletbalanceCondition();
             $bsrch->addSkipExpiredPromotionAndBannerCondition();
             $bsrch->joinBudget();
-            $bsrch->addMultipleFields(array('banner_id', 'banner_blocation_id', 'banner_type', 'banner_record_id', 'banner_url', 'banner_target', 'banner_title', 'promotion_id', 'daily_cost', 'weekly_cost', 'monthly_cost', 'total_cost', 'banner_img_updated_on'));
+            $bsrch->addMultipleFields(array('banner_id', 'banner_blocation_id', 'banner_type', 'banner_record_id', 'banner_url', 'banner_target', 'banner_title', 'promotion_id', 'daily_cost', 'weekly_cost', 'monthly_cost', 'total_cost', 'banner_updated_on'));
             $bsrch->doNotCalculateRecords();
             //$bsrch->doNotLimitRecords();
             $bsrch->joinAttachedFile();
 			$bsrch->addCondition('banner_blocation_id', '=', $val['blocation_id']);
 			// $bsrch->addDirectCondition('((banner_type = '.Banner::TYPE_BANNER.' AND banner_record_id = ' . $collectionId . ') OR banner_type = '.Banner::TYPE_PPC.')');
-            
+            /* echo $bsrch->getQuery(); die; */
             $srch = new SearchBase('(' . $bsrch->getQuery() . ') as t');
             $srch->doNotCalculateRecords();
             $srch->addDirectCondition(
@@ -109,14 +109,15 @@ class BannerLocation extends MyAppModel
 					WHEN promotion_duration=' . Promotion::DURATION_NOT_AVAILABALE . ' THEN promotion_budget = -1
 				  END ) )'
             );
-            $srch->addMultipleFields(array('banner_id', 'banner_blocation_id', 'banner_type', 'banner_record_id', 'banner_url', 'banner_target', 'banner_title', 'promotion_id', 'userBalance', 'daily_cost', 'weekly_cost', 'monthly_cost', 'total_cost', 'promotion_budget', 'promotion_duration', 'banner_img_updated_on'));
+            $srch->addMultipleFields(array('banner_id', 'banner_blocation_id', 'banner_type', 'banner_record_id', 'banner_url', 'banner_target', 'banner_title', 'promotion_id', 'userBalance', 'daily_cost', 'weekly_cost', 'monthly_cost', 'total_cost', 'promotion_budget', 'promotion_duration', 'banner_updated_on'));
             if ($pageSize == 0) {
                 $pageSize = $val['blocation_banner_count'];
             }
             $srch->setPageSize($pageSize);
             $srch->addOrder('', 'rand()');
             $rs = $srch->getResultSet();
-
+			
+			
             if (true === MOBILE_APP_API_CALL) {
                 $bannerListing = $db->fetchAll($rs);
             } else {

@@ -14,7 +14,7 @@ $fld->developerTags['cbHtmlAfterCheckbox'] = '<i class="input-helper"></i>';
 $bannerFld = $frm->getField('banner');
 $bannerFld->addFieldTagAttribute('class', 'btn btn-primary btn-sm');
 $bannerFld->addFieldTagAttribute('onChange', 'bannerPopupImage(this)');
-$bannerFld->htmlAfterField = '<small class="text--small" class="preferredDimensions-js">'.sprintf(Labels::getLabel('LBL_Preferred_Dimensions_%s', $adminLangId), '2000 x 500').'</small>';
+$bannerFld->htmlAfterField = '<small class="text--small preferredDimensions-js">'.sprintf(Labels::getLabel('LBL_Preferred_Dimensions_%s', $adminLangId), '2000 x 500').'</small>';
 
 $bannerLangFld = $frm->getField('banner_lang_id');
 $bannerLangFld->addFieldTagAttribute('class', 'banner-language-js');

@@ -473,9 +473,6 @@ class HomeController extends MyAppController
         $sponsoredProds = $this->getSponsoredProducts($productSrchObj);
         
         foreach ($collectionsArr as $collection_id => $collection) {
-            /* if (!$collection['collection_primary_records']) {
-                continue;
-            } */
 
             if (true === MOBILE_APP_API_CALL && 0 < $collection['collection_display_media_only'] && !in_array($collection['collection_type'], Collections::COLLECTION_WITHOUT_MEDIA)) {
                 $imgUpdatedOn = Collections::getAttributesById($collection_id, 'collection_img_updated_on');
@@ -573,15 +570,6 @@ class HomeController extends MyAppController
                     $tempObj = clone $collectionObj;
                     $tempObj->addCondition('collection_id', '=', $collection_id);
                     $tempObj->setPageSize($collection['collection_primary_records']);
-
-                    /* Exclude categories having no product [ */
-                    /* $productSrchTempObj = clone $productSrchObj;
-                    $productSrchTempObj->addGroupBy( 'prodcat_id' );
-                    $productSrchTempObj->addMultipleFields( array('count(selprod_id) as productCounts', 'prodcat_id as qryProducts_prodcat_id') );
-                    $productSrchTempObj->addCondition('selprod_deleted','=',applicationConstants::NO);
-                    $tempObj->joinTable( '('.$productSrchTempObj->getQuery().')', 'LEFT OUTER JOIN', 'qryProducts.qryProducts_prodcat_id = prodcat_id', 'qryProducts' );
-                    $tempObj->addCondition( 'qryProducts.productCounts', '>', 0 ); */
-                    /* ] */
 
                     $rs = $tempObj->getResultSet();
                     if (!$categoryIds = $db->fetchAll($rs, 'ctr_record_id')) {
@@ -871,7 +859,7 @@ class HomeController extends MyAppController
         $srch->joinLocations();
         $srch->joinPromotions($this->adminLangId, true);
         $srch->addPromotionTypeCondition();
-        $srch->addMultipleFields(array('IFNULL(promotion_name,promotion_identifier) as promotion_name', 'banner_id', 'banner_type', 'banner_url', 'banner_target', 'banner_active', 'banner_blocation_id', 'banner_title', 'banner_img_updated_on'));
+        $srch->addMultipleFields(array('IFNULL(promotion_name,promotion_identifier) as promotion_name', 'banner_id', 'banner_type', 'banner_url', 'banner_target', 'banner_active', 'banner_blocation_id', 'banner_title', 'banner_updated_on'));
         $srch->addCondition('b.banner_record_id', '=', $collectionId);
         $srch->addCondition('b.banner_type', '=', Banner::TYPE_BANNER);
 

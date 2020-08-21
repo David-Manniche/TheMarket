@@ -43,6 +43,7 @@ class BannersController extends AdminBaseController
         $srch->addOrder(Banner::DB_TBL_LOCATIONS_PREFIX . 'id', 'DESC');
         $page = (empty($page) || $page <= 0) ? 1 : $page;
         $page = FatUtility::int($page);
+        $srch->addCondition('blocation_collection_id', '=', '0');
         $srch->setPageNumber($page);
         $srch->setPageSize($pagesize);
 
@@ -163,7 +164,7 @@ class BannersController extends AdminBaseController
         $srch->joinLocations();
         $srch->joinPromotions($this->adminLangId, true);
         $srch->addPromotionTypeCondition();
-        $srch->addMultipleFields(array('IFNULL(promotion_name,promotion_identifier) as promotion_name', 'banner_id', 'banner_type', 'banner_url', 'banner_target', 'banner_active', 'banner_blocation_id', 'banner_title', 'banner_img_updated_on'));
+        $srch->addMultipleFields(array('IFNULL(promotion_name,promotion_identifier) as promotion_name', 'banner_id', 'banner_type', 'banner_url', 'banner_target', 'banner_active', 'banner_blocation_id', 'banner_title', 'banner_updated_on'));
         $srch->addCondition('b.banner_blocation_id', '=', $blocation_id);
 
         $srch->addOrder('banner_active', 'DESC');

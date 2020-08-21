@@ -532,6 +532,7 @@ DROP TABLE `tbl_collection_to_blogs`;
 
 
 DROP TABLE `tbl_banner_locations`;
+DROP TABLE `tbl_banner_location_dimensions`;
 
 CREATE TABLE `tbl_banner_locations` (
   `blocation_id` int(11) NOT NULL,
@@ -562,6 +563,8 @@ INSERT INTO `tbl_banner_location_dimensions` (`bldimension_blocation_id`, `bldim
 ALTER TABLE `tbl_banner_location_dimensions`
   ADD PRIMARY KEY (`bldimension_blocation_id`,`bldimension_device_type`);
 
-TRUNCATE `yokartv8`.`tbl_banners`;
-TRUNCATE `yokartv8`.`tbl_banners_lang`;
+TRUNCATE `tbl_banners`;
+TRUNCATE `tbl_banners_lang`;
 DELETE FROM `tbl_attached_files` WHERE `afile_type` = 18;
+
+ALTER TABLE `tbl_banners` CHANGE `banner_img_updated_on` `banner_updated_on` DATETIME NOT NULL;

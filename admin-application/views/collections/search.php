@@ -2,7 +2,7 @@
 $arr_flds = array(
     'dragdrop' => '',
     'select_all' => Labels::getLabel('LBL_Select_all', $adminLangId),
-    'listserial' => '#',
+    'listserial' => Labels::getLabel('LBL_Display_Order', $adminLangId),
     'collection_identifier' => Labels::getLabel('LBL_Collection_Identifier/Name', $adminLangId),
     'collection_type' => Labels::getLabel('LBL_Type', $adminLangId),
     'collection_layout_type' => Labels::getLabel('LBL_Layout_Type', $adminLangId),

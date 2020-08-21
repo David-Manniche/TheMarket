@@ -115,7 +115,7 @@ class Banner extends MyAppModel
     public static function setLastModified($banner_id)
     {
         $where = array('smt' => 'banner_id = ?', 'vals' => array($banner_id));
-        FatApp::getDb()->updateFromArray(static::DB_TBL, array('banner_img_updated_on' => date('Y-m-d  H:i:s')), $where);
+        FatApp::getDb()->updateFromArray(static::DB_TBL, array('banner_updated_on' => date('Y-m-d  H:i:s')), $where);
     }
 	
 	public static function deleteImagesWithoutBannerId($fileType)

@@ -157,27 +157,30 @@ class CollectionsController extends AdminBaseController
     public function setup()
     {
         $this->objPrivilege->canEditCollections();
-        $data = FatApp::getPostedData();
         $siteDefaultLangId = FatApp::getConfig('conf_default_site_lang', FatUtility::VAR_INT, 1);
-
-        $frm = $this->getForm();
-        $post = FatApp::getPostedData();
+        
+        $data = FatApp::getPostedData();
+        
+        $frm = $this->getForm($data['collection_type'], $data['collection_layout_type']);
+        $post = $frm->getFormDataFromArray(FatApp::getPostedData());
 
         if (false === $post) {
             Message::addErrorMessage(current($frm->getValidationErrors()));
-            FatUtility::dieJsonError(Message::getHtml());
+            FatUtility::dieWithError(Message::getHtml());
         }
 
         $collectionId = $post['collection_id'];
-
-        $post['collection_layout_type'] = $data['collection_layout_type'];
+        unset($post['collection_id']);
         unset($post['btn_submit']);
+        
         $post['collection_identifier'] = $post['collection_name'][$siteDefaultLangId];
-        $collection = new Collections($collectionId);
         $post['collection_primary_records'] = $this->getLayoutLimit($post['collection_layout_type']);
-        if (!$collection->addUpdateData($post)) {
+
+        $collection = new Collections($collectionId);
+        $collection->assignValues($post);
+        if (!$collection->save()) {
             Message::addErrorMessage($collection->getError());
-            FatUtility::dieJsonError(Message::getHtml());
+            FatUtility::dieWithError(Message::getHtml());
         }
 
         $collectionId = $collection->getMainTableRecordId();
@@ -262,13 +265,13 @@ class CollectionsController extends AdminBaseController
 				'blocation_banner_height' => $val['height']
 			];
 			if (!FatApp::getDb()->insertFromArray(BannerLocation::DB_DIMENSIONS_TBL, $dataToSave, false, array())) {
-				Message::addErrorMessage('LBL_Unable_to_save_location', $this->adminLangId);
+				Message::addErrorMessage(Labels::getLabel('LBL_Unable_to_save_banner_dimensions', $this->adminLangId));
 				FatUtility::dieJsonError(Message::getHtml());
 			}
 		}
 	}
 
-    private function getForm($type = 0, $layoutType = 0, $collectionId = 0)
+    private function getForm($type, $layoutType, $collectionId = 0)
     {
         $this->objPrivilege->canViewCollections();
         $collectionId = FatUtility::int($collectionId);
@@ -545,7 +548,7 @@ class CollectionsController extends AdminBaseController
             $srch->joinLocations();
             $srch->joinPromotions($this->adminLangId, true);
             $srch->addPromotionTypeCondition();
-            $srch->addMultipleFields(array('IFNULL(promotion_name,promotion_identifier) as promotion_name', 'banner_id', 'banner_type', 'banner_url', 'banner_target', 'banner_active', 'banner_blocation_id', 'banner_title', 'banner_img_updated_on'));
+            $srch->addMultipleFields(array('IFNULL(promotion_name,promotion_identifier) as promotion_name', 'banner_id', 'banner_type', 'banner_url', 'banner_target', 'banner_active', 'banner_blocation_id', 'banner_title', 'banner_updated_on'));
             $srch->addCondition('banner_id', '=', $bannerId);
             $srch->addOrder('banner_active', 'DESC');
             $srch->doNotCalculateRecords();
@@ -658,7 +661,7 @@ class CollectionsController extends AdminBaseController
 
         if (false === $post) {
             Message::addErrorMessage(current($frm->getValidationErrors()));
-            FatUtility::dieJsonError(Message::getHtml());
+            FatUtility::dieWithError(Message::getHtml());
         }
 
         $collection_id = $post['collection_id'];
@@ -683,7 +686,7 @@ class CollectionsController extends AdminBaseController
 
         if (!$record->save()) {
             Message::addErrorMessage($record->getError());
-            FatUtility::dieJsonError(Message::getHtml());
+            FatUtility::dieWithError(Message::getHtml());
         }
 
         $banner_id = $record->getMainTableRecordId();

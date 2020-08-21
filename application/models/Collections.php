@@ -446,7 +446,7 @@ class Collections extends MyAppModel
         $srch->addPromotionTypeCondition();
         $srch->doNotLimitRecords();
         $srch->doNotCalculateRecords();
-        $srch->addMultipleFields(array('COALESCE(promotion_name,promotion_identifier) as promotion_name', 'banner_id', 'banner_type', 'banner_url', 'banner_target', 'banner_active', 'banner_blocation_id', 'banner_title', 'banner_img_updated_on'));
+        $srch->addMultipleFields(array('COALESCE(promotion_name,promotion_identifier) as promotion_name', 'banner_id', 'banner_type', 'banner_url', 'banner_target', 'banner_active', 'banner_blocation_id', 'banner_title', 'banner_updated_on'));
         $srch->addCondition(static::DB_TBL_COLLECTION_TO_RECORDS_PREFIX . 'collection_id', '=', $collection_id);
 
         $srch->addOrder('banner_active', 'DESC');

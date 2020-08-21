@@ -79,7 +79,7 @@ $data = array(
 
 foreach ($banners as $location => $bannerLocationDetail) {
     foreach ($bannerLocationDetail['banners'] as $index => $bannerDetail) {
-        $uploadedTime = AttachedFile::setTimeParam($bannerDetail['banner_img_updated_on']);
+        $uploadedTime = AttachedFile::setTimeParam($bannerDetail['banner_updated_on']);
 
         switch ($bannerDetail['banner_blocation_id']) {
             case BannerLocation::HOME_PAGE_BANNER_LAYOUT_1:

@@ -32,18 +32,6 @@ $frmSearch->developerTags['fld_default_col'] = 4; */
                         'deleteButton' => false,
                         'adminLangId' => $adminLangId
                     ];
-
-                    $data['otherButtons'] = [
-                        [
-                            'attr' => [
-                                'href' => 'javascript:void(0)',
-                                'onclick' => 'addBannersLayouts(1)',
-                                'title' => Labels::getLabel('Lbl_Banner_Layouts_Instructions', $adminLangId)
-                            ],
-                            'label' => '<i class="fas fa-file-image"></i>'
-                        ],
-                    ];
-
                     $this->includeTemplate('_partial/action-buttons.php', $data, false);
                     ?>
                 </div>
