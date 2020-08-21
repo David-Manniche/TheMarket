@@ -831,8 +831,8 @@ class SellerProduct extends MyAppModel
 
     public static function getProductDisplayTitle($selProdId, $langId, $toHtml = false)
     {
-        $prodSrch = new ProductSearch($langId, null, null, true, false);
-        $prodSrch->joinSellerProducts(0, '', array(), false);
+        $prodSrch = new ProductSearch($langId, null, null, false, false);
+        $prodSrch->joinSellerProducts(0, '', array(), false, false);
         if (is_array($selProdId) && 0 < count($selProdId)) {
             $prodSrch->addCondition('selprod_id', 'IN', $selProdId);
         } else {
@@ -1147,7 +1147,7 @@ class SellerProduct extends MyAppModel
             $metaObj = new MetaTag($metaId);
 
             if (!$metaObj->updateLangData($langId, $selProdMeta)) {
-                $this->error = $meta->getError();
+                $this->error = $metaObj->getError();
                 return false;
             }
         }

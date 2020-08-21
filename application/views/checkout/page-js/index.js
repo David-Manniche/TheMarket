@@ -53,8 +53,8 @@ function showAddressList() {
     // resetShippingSummary();
     // resetPaymentSummary();
 }
-function resetAddress() {
-    loadAddressDiv();
+function resetAddress(address_type) {
+    loadAddressDiv(address_type);
 }
 function showShippingSummaryDiv() {
     return loadShippingSummaryDiv();
@@ -180,8 +180,9 @@ $("document").ready(function () {
             if (t.status == 1) {
                 if ($("#hasAddress").length > 0) {
                     $("#hasAddress").val(1);
-                }
-                if ($(frm.addr_id).val() == 0) {
+                }                
+                //if ($(frm.addr_id).val() == 0 ) {
+                if ($(frm.addr_id).val() == 0 || address_type == 1) {
                     loadAddressDiv(address_type);
                     setTimeout(function () { setDefaultAddress(t.addr_id) }, 1000);
                 } else {
@@ -621,5 +622,11 @@ $("document").ready(function () {
             }
         });
     };
+    
+    displaySelectedPickUpAddresses = function(){
+        fcom.ajax(fcom.makeUrl('Checkout', 'selectedPickUpAddresses'), '', function (rsp) {
+            $.facebox(rsp, 'faceboxWidth medium-fb-width');
+        });
+    }
     
 })();

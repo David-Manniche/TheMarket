@@ -456,6 +456,7 @@
             text-align: center;
             a {
                 padding: 0.6rem 0.8rem;
+                color: #888;
                 &.active {
                     background: #888;
                     color: #fff;
@@ -465,6 +466,9 @@
     }
     .tab-content {
         margin-bottom: 1.5rem;
+        border: $border;
+        border-radius: $radius4;
+        padding: 1.5rem;
     }
     .paypal-data {
         text-align: center;
@@ -490,8 +494,9 @@
 .rewards {
     background-color: $bg-gray;
     border-radius: $radius4;
+    border: $border;
     padding: 1.5rem;
-    margin: 2rem 0;
+    margin: 2rem 0 0 0;
     &__points {
         margin-bottom: 1.5rem;
         ul {
@@ -509,7 +514,7 @@
                     font-size: 0.8rem;
                 }
                 .count {
-                    font-weight: 500;
+                    font-weight: 600;
                     font-size: 1.3rem;
                 }
             }
@@ -537,9 +542,6 @@
     .list-group-item {
         padding: 1rem;
         position: relative;
-        &.selected {
-            /* box-shadow: 0 0 5px rgba(40, 44, 63, .15);*/
-        }
         .delivery-address {
             font-size: 0.85rem;
             color: $txt-gray;
@@ -624,12 +626,33 @@
     }
     .list-group-item {
         padding: 1rem;
-        padding-#{$start-direction}: 5rem;
     }
     &__photo {
         .svg {
             width: 38px;
             height: 24px;
+        }
+    }
+    &-double {
+        flex-wrap: wrap;
+        flex-direction: row;
+        justify-content: space-between;
+        @include media-breakpoint-down(md) {
+            & {
+                flex-direction: column;
+            }
+        }
+        li {
+            max-width: 49%;
+            flex: 49%;
+            margin-bottom: 1rem;
+            border-radius: $radius4;
+            @include media-breakpoint-down(md) {
+                & {
+                    max-width: auto;
+                    flex: auto;
+                }
+            }
         }
     }
     &-view {
@@ -678,26 +701,48 @@
 }
 
 .wallet-balance {
-    border-radius: $radius4;
+    border: $border;
+    border-radius: 0 0 $radius4 $radius4;
     padding: 1.5rem;
-    background-color: $bg-gray;
+    margin-top: -4px;
+    /*background-color: $bg-gray;*/
     display: flex;
     align-items: center;
     justify-content: space-between;
     .wallet {
         display: flex;
-        margin-bottom: 1.5rem;
+        align-items: center;
+        flex: 1;
         &__txt {
             display: flex;
-            flex-direction: column;
-            font-weight: 700;
+            align-items: center;
+            .svg {
+                width: 40px;
+                height: 40px;
+                margin-#{$end-direction}: 12px;
+                margin-#{$start-direction}: 5px;
+                fill: $txt-gray;
+            }
             p {
-                margin-top: 5px;
-                font-size: 0.8rem;
+                font-size: 0.75rem;
                 font-weight: 300;
                 color: $txt-gray;
+                margin-bottom: 5px;
+                line-height: 1;
+                text-transform: uppercase;
+            }
+            .currency-value {
+                display: block;
+                font-weight: 600;
+                color: $body-color;
+                font-size: 1.2rem;
             }
         }
+    }
+    &_info {
+        flex: 1;
+        font-size: 0.8rem;
+        color: $txt-gray;
     }
 }
 
@@ -722,6 +767,88 @@
         }
         &:hover {
             box-shadow: none;
+        }
+    }
+}
+
+.transfer-payment-detail {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    font-size: 0.8rem;
+    color: $txt-gray;
+    li {
+        max-width: 33%;
+        flex: 0 0 33%;
+        display: flex;
+        margin-bottom: 1.5rem;
+        &.notes {
+            max-width: none;
+            flex: auto;
+        }
+    }
+    .svg {
+        display: none;
+        width: 1rem;
+        height: 1rem;
+        margin-#{$end-direction}: 10px;
+        fill: $txt-gray;
+    }
+    h6 {
+        margin-bottom: 4px;
+        font-size: 0.82rem;
+        color: $body-color;
+        text-transform: uppercase;
+    }
+}
+
+.otp-block {
+    &__head {
+        margin-bottom: 1.5rem;
+        text-align: center;
+        h5 {
+            margin: 0;
+            padding: 0;
+        }
+    }
+    &__footer {
+        margin-top: 1.5rem;
+    }
+    p {
+        font-size: 0.8rem;
+        color: $txt-gray;
+    }
+    .otp-enter {
+        margin: 0 auto;
+        text-align: center;
+        .otp-inputs {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 1rem;
+            input.field-otp {
+                border: none;
+                border-radius: 0;
+                border-bottom: $border;
+                max-width: 30px;
+                text-align: center;
+                padding: 5px;
+                margin: 0 3px;
+                &:focus {
+                    border-color: #000;
+                }
+            }
+        }
+    }
+    .otp-success {
+        text-align: center;
+        .img {
+            max-width: 80px;
+            margin: 2rem auto;
+        }
+        h5 {
+            margin: 0;
+            padding: 0;
         }
     }
 }

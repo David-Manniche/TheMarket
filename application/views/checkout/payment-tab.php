@@ -16,9 +16,53 @@ if ('cashondelivery' != strtolower($pmethodCode)) {
     $class = 'd-none';
 }
 ?>
-<div class="<?php echo $class; ?>">
-    <p><strong><?php echo sprintf(Labels::getLabel('LBL_PAY_USING_PAYMENT_METHOD', $siteLangId), $pmethodName) ?>:</strong></p><br />
-    <p><?php echo $pmethodDescription; ?></p><br />
+
+
+<div class="otp-block">
+                                                <div class="otp-block__head">
+                                                    <h5>OTP Verification</h5>
+                                                    <p>Enter OTP sent to <strong>+91 9888881405</strong></p>
+                                                </div>
+                                                <div class="otp-block__body">
+                                                    <div class="otp-enter">
+                                                        <div class="otp-inputs">
+                                                            <input class="field-otp" type="text" maxlength="1" placeholder="*">
+                                                            <input class="field-otp" type="text" maxlength="1" placeholder="*">
+                                                            <input class="field-otp" type="text" maxlength="1" placeholder="*">
+                                                            <input class="field-otp" type="text" maxlength="1" placeholder="*">
+                                                            <input class="field-otp" type="text" maxlength="1" placeholder="*">
+                                                            <input class="field-otp" type="text" maxlength="1" placeholder="*">
+                                                        </div>
+                                                        <button class="btn btn-primary btn-wide" type="button">Verify</button>
+                                                    </div>
+                                                </div>
+                                                <div class="otp-block__footer">
+
+                                                    <div class="row">
+                                                        <div class="col">
+                                                            <p class="">Code Expire in:<span class="txt-success font-weight-bold">
+                                                                    00:50</span></p>
+                                                        </div>
+                                                        <div class="col-auto">
+                                                            <p class="">Didn’t get code <a class="txt-success font-weight-bold" href="">
+                                                                    RESEND!</a> </p>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="otp-block">
+                                                <div class="otp-success">
+                                                    <img class="img" src="<?php echo CONF_WEBROOT_URL; ?>images/retina/otp-complete.svg" alt="">
+                                                    <h5>Success</h5>
+                                                    <p>Lorem ipsum dolor sit amet consectetur  </p>
+
+                                                </div>
+
+                                            </div>
+
+ <div class="text-center <?php echo $class; ?>">
+    <p><strong><?php echo sprintf(Labels::getLabel('LBL_PAY_USING_PAYMENT_METHOD', $siteLangId), $pmethodName) ?>:</strong></p>
+    <p><?php echo $pmethodDescription; ?></p>
     <?php if (!isset($error)) {
         echo $frm->getFormHtml();
     }

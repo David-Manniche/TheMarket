@@ -19,7 +19,6 @@ class StripeConnectPayController extends PaymentController
     {
         parent::__construct($action);
         
-        $error = '';
         $this->stripeConnect = PluginHelper::callPlugin(self::KEY_NAME, [$this->siteLangId], $error, $this->siteLangId);
         if (false === $this->stripeConnect) {
             $this->setErrorAndRedirect($error);

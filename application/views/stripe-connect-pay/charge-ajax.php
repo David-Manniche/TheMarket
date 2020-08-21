@@ -22,7 +22,7 @@ echo $frm->getFormTag(); ?>
                             <div class="col">
                                 <div class="payment-card__photo">
                                     <svg class="svg">
-                                        <use xlink:href="<?php echo CONF_WEBROOT_URL; ?>images/retina/sprite.svg#<?php echo strtolower($cardDetail['brand']); ?>" href="<?php echo CONF_WEBROOT_URL; ?>images/retina/sprite.svg#remove">
+                                        <use xlink:href="<?php echo CONF_WEBROOT_URL; ?>images/retina/sprite.svg#<?php echo strtolower($cardDetail['brand']); ?>" href="<?php echo CONF_WEBROOT_URL; ?>images/retina/sprite.svg#<?php echo strtolower($cardDetail['brand']); ?>">
                                         </use>
                                     </svg>
                                 </div>
