@@ -169,14 +169,22 @@ $rewardPoints = UserRewardBreakup::rewardPointBalance(UserAuthentication::getLog
                 </div>
             <?php } ?>
         </div>
-    </div>
+    </div> 
 </main>
 <?php if ($userWalletBalance > 0 && $cartSummary['orderNetAmount'] > 0 && $canUseWalletForPayment) { ?>
     <div class="wallet-balance">
          <label class="checkbox wallet">
             <input onChange="walletSelection(this)" type="checkbox" <?php echo ($cartSummary["cartWalletSelected"]) ? 'checked="checked"' : ''; ?> name="pay_from_wallet" id="pay_from_wallet" value="1">
             <i class="input-helper"></i>
-            <span class="wallet__txt"><p><?php echo Labels::getLabel('LBL_AVAILABLE_BALANCE', $siteLangId); ?> <span class="currency-value" dir="ltr"><?php echo CommonHelper::displayMoneyFormat($userWalletBalance, true, false, true, false, true); ?></p>
+            <span class="wallet__txt">           
+                <svg class="svg">
+                    <use xlink:href="<?php echo CONF_WEBROOT_URL; ?>images/retina/sprite.svg#wallet" href="<?php echo CONF_WEBROOT_URL; ?>images/retina/sprite.svg#wallet">
+                    </use>
+                </svg>
+                <div class="">
+                    <p><?php echo Labels::getLabel('LBL_AVAILABLE_BALANCE', $siteLangId); ?></p>
+                    <span class="currency-value" dir="ltr"><?php echo CommonHelper::displayMoneyFormat($userWalletBalance, true, false, true, false, true); ?></span>
+                </div>
             </span>
         </label>
         <?php if ($cartSummary["cartWalletSelected"] && $userWalletBalance >= $cartSummary['orderNetAmount']) { 
@@ -196,6 +204,8 @@ $rewardPoints = UserRewardBreakup::rewardPointBalance(UserAuthentication::getLog
                 }
             </script>            
         <?php }?>
+        <div class="wallet-balance_info">Lorem, ipsum dolor sit amet consectetur adipisicing elit.</div>
+
         <!-- <button class="btn btn-primary btn-wide" type="button">Pay $ 587.00</button> -->
     </div> 
 <?php }?>
