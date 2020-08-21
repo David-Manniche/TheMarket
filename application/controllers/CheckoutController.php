@@ -267,12 +267,12 @@ class CheckoutController extends MyAppController
     {
         $socialLoginApis = Plugin::getDataByType(Plugin::TYPE_SOCIAL_LOGIN, $this->siteLangId);
         $loginFormData = array(
-        'loginFrm' => $this->getLoginForm(),
-        'guestLoginFrm' => $this->getGuestUserForm($this->siteLangId),
-        'siteLangId' => $this->siteLangId,
-        'showSignUpLink' => true,
-        'socialLoginApis' => $socialLoginApis,
-        'onSubmitFunctionName' => 'setUpLogin'
+            'loginFrm' => $this->getLoginForm(),
+            'guestLoginFrm' => $this->getGuestUserForm($this->siteLangId),
+            'siteLangId' => $this->siteLangId,
+            'showSignUpLink' => true,
+            'socialLoginApis' => $socialLoginApis,
+            'onSubmitFunctionName' => 'setUpLogin'
         );
         $this->set('loginFormData', $loginFormData);
 
@@ -1476,6 +1476,7 @@ class CheckoutController extends MyAppController
             FatUtility::dieWithError( Message::getHtml() ); */
             FatUtility::dieWithError(Labels::getLabel('MSG_Your_Session_seems_to_be_expired.', $this->siteLangId));
         }
+        $user_id = UserAuthentication::getLoggedUserId();
 
         $srch = Orders::getSearchObject();
         $srch->doNotCalculateRecords();
@@ -1495,6 +1496,48 @@ class CheckoutController extends MyAppController
         $methodCode = Plugin::getAttributesById($plugin_id, 'plugin_code');
         $paymentMethod = Plugin::getAttributesByCode($methodCode, Plugin::ATTRS, $this->siteLangId);
         
+        if ('cashondelivery' == strtolower($methodCode)) {
+            $userObj = new User($user_id);
+            $userData = $userObj->getUserInfo([], false, false);
+            $userDialCode = $userData['user_dial_code'];
+            $phoneNumber = $userData['user_phone'];
+            $phoneWithDial = $userDialCode . $phoneNumber;
+
+            $canSendSms = (!empty($phoneNumber) && !empty($userDialCode) && SmsArchive::canSendSms(SmsTemplate::COD_OTP_VERIFICATION));
+
+            if (true == $canSendSms) {
+                $countryIso = User::getUserMeta($user_id, 'user_country_iso');
+                $otp = $userObj->prepareUserPhoneOtp($countryIso, $userDialCode, $phoneNumber);
+                if (false === $canSendSms = $userObj->sendOtp($phoneWithDial, $userData['user_name'], $otp, $this->siteLangId, SmsTemplate::COD_OTP_VERIFICATION)) {
+                    FatUtility::dieWithError($userObj->getError());
+                }
+            } else {
+                $min = pow(10, User::OTP_LENGTH - 1);
+                $max = pow(10, User::OTP_LENGTH) - 1;
+                $otp = mt_rand($min, $max);
+
+                if (false === $userObj->prepareUserVerificationCode($userData['credential_email'], $otp)) {
+                    FatUtility::dieWithError($userObj->getError());
+                }
+
+                $replace = [
+                    'user_name' => $userData['user_name'],
+                    'otp' => $otp,
+                    'credential_email' => $userData['credential_email'],
+                ];
+                $email = new EmailHandler();
+                if (false === $email->sendCodOtpVerification($this->siteLangId, $replace)){
+                    FatUtility::dieWithError($userObj->getError());
+                }
+            }
+
+            $this->set('canSendSms', $canSendSms);
+            $this->set('userData', $userData);
+
+            $otpForm = $this->getOtpForm();
+            $this->set('otpForm', $otpForm);
+        }
+
         $frm = $this->getPaymentTabForm($this->siteLangId, $methodCode);
         $controller = $methodCode . 'Pay';
         $frm->setFormTagAttribute('action', UrlHelper::generateUrl($controller, 'charge', array($order_id)));

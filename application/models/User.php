@@ -1537,14 +1537,14 @@ class User extends MyAppModel
         //return $this->getAttributesById($this->mainTableRecordId);
     }
 
-    public function prepareUserVerificationCode($email = '')
+    public function prepareUserVerificationCode($email = '', $verificationCode = '')
     {
         if (($this->mainTableRecordId < 1)) {
             $this->error = Labels::getLabel('ERR_INVALID_REQUEST.', $this->commonLangId);
             return false;
         }
 
-        $verificationCode = $this->mainTableRecordId . '_' . FatUtility::getRandomString(15);
+        $verificationCode = empty($verificationCode) ? $this->mainTableRecordId . '_' . FatUtility::getRandomString(15) : $verificationCode;
         $data = array(
             static::DB_TBL_UEMV_PREFIX . 'user_id' => $this->mainTableRecordId,
             static::DB_TBL_UEMV_PREFIX . 'token' => $verificationCode,
@@ -1763,7 +1763,7 @@ class User extends MyAppModel
         return $this->sendOtp($phoneWithDial, $user_name, $otp, $langId);
     }
 
-    public function sendOtp($phone, $user_name, $otp, $langId)
+    public function sendOtp($phone, $user_name, $otp, $langId, $tpl = SmsTemplate::LOGIN)
     {
         $langId = FatUtility::int($langId);
         if (empty($phone) || empty($otp)) {
@@ -1777,7 +1777,7 @@ class User extends MyAppModel
         ];
         $smsArchive = new SmsArchive();
         $smsArchive->toPhone($phone);
-        $smsArchive->setTemplate($langId, SmsTemplate::LOGIN, $replacements);
+        $smsArchive->setTemplate($langId, $tpl, $replacements);
         if (!$smsArchive->send()) {
             $this->error = $smsArchive->getError();
             return false;
