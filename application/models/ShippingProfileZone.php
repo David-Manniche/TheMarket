@@ -16,6 +16,38 @@ class ShippingProfileZone extends MyAppModel
         return $srch;
     }
 
+    public static function getAttributesByProfileId($recordId, $attr = null)
+    {
+        $recordId = FatUtility::convertToType($recordId, FatUtility::VAR_INT);
+        $db = FatApp::getDb();
+
+        $srch = new SearchBase(static::DB_TBL);
+        $srch->doNotCalculateRecords();
+        $srch->setPageSize(1);
+        $srch->addCondition(static::tblFld('shipprofile_id'), '=', $recordId);
+
+        if (null != $attr) {
+            if (is_array($attr)) {
+                $srch->addMultipleFields($attr);
+            } elseif (is_string($attr)) {
+                $srch->addFld($attr);
+            }
+        }
+
+        $rs = $srch->getResultSet();
+        $row = $db->fetch($rs);
+
+        if (!is_array($row)) {
+            return false;
+        }
+
+        if (is_string($attr)) {
+            return $row[$attr];
+        }
+
+        return $row;
+    }
+
     /* public function addZone($data)
     {
         if (!FatApp::getDb()->insertFromArray(self::DB_TBL, $data, true, array(), $data)) {

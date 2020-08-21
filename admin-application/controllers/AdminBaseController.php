@@ -149,6 +149,8 @@ class AdminBaseController extends FatController
         'currentPrice' => Labels::getLabel('LBL_Current_Price', $this->adminLangId),
         'discountPercentage' => Labels::getLabel('LBL_Discount_Percentage', $this->adminLangId),
         'shippingUser' => Labels::getLabel('MSG_Please_assign_shipping_user', $this->adminLangId),
+        'saveProfileFirst' => Labels::getLabel('LBL_Save_Profile_First', $this->adminLangId),
+        'minimumOneLocationRequired' => Labels::getLabel('LBL_Minimum_one_location_is_required', $this->adminLangId),
         );
 
         $languages = Language::getAllNames(false);

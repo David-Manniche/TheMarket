@@ -181,19 +181,31 @@ class ShippingZonesController extends SellerBaseController
         $this->_template->render(false, false, 'json-success.php');
     }
     
-    public function deleteZone($zoneId)
+    public function deleteZone($shipprozoneId)
     {
         $this->userPrivilege->canEditShippingProfiles(UserAuthentication::getLoggedUserId());
-        
-        //== Remove zone from profile
-        $sObj = new ShippingProfileZone($zoneId);
+        $shipprozoneId = FatUtility::int($shipprozoneId);
+        $shippingProfData = ShippingProfileZone::getAttributesById($shipprozoneId);
+
+        if (false == $shippingProfData) {
+            Message::addErrorMessage(Labels::getLabel('MSG_INVALID_REQUEST', $this->siteLangId));
+            FatUtility::dieJsonError(Message::getHtml());
+        }
+
+        $sObj = new ShippingProfileZone($shipprozoneId);
         if (!$sObj->deleteRecord()) {
             Message::addErrorMessage($sObj->getError());
             FatUtility::dieJsonError(Message::getHtml());
         }
+       
         /* delete zone attached data[rates] */
-        $sObj = new ShippingZone();
-        if (!$sObj->deleteRates($zoneId)) {
+        $sObj = new ShippingZone($shippingProfData['shipprozone_shipzone_id']);
+        if (!$sObj->deleteRates($shipprozoneId)) {
+            Message::addErrorMessage($sObj->getError());
+            FatUtility::dieJsonError(Message::getHtml());
+        }
+
+        if (!$sObj->deleteRecord()) {
             Message::addErrorMessage($sObj->getError());
             FatUtility::dieJsonError(Message::getHtml());
         }
