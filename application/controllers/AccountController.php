@@ -3660,4 +3660,93 @@ class AccountController extends LoggedUserController
         $this->set('total_records', $srch->recordCount());
         $this->_template->render();
     }
+
+    private function setErrorAndRedirect(string $msg, bool $json = false, $redirect = true)
+    {
+        $json = FatUtility::isAjaxCall() ? true : $json;
+        LibHelper::exitWithError($msg, $json, $redirect);
+        CommonHelper::redirectUserReferer();
+    }
+
+    private function initStripeConnect()
+    {
+        $this->stripeConnect = PluginHelper::callPlugin('StripeConnect', [$this->siteLangId], $error, $this->siteLangId);
+        if (false === $this->stripeConnect) {
+            $this->setErrorAndRedirect($error);
+        }
+        $userId = UserAuthentication::getLoggedUserId(true);
+        if (false === $this->stripeConnect->init($userId)) {
+            $this->setErrorAndRedirect($this->stripeConnect->getError());
+        }
+    }
+
+    public function cards()
+    {
+        $this->initStripeConnect();
+
+        $this->stripeConnect->loadCustomer();
+        $customerInfo = $this->stripeConnect->getResponse()->toArray();
+        $savedCards = $customerInfo['sources']['data'];
+        $this->set('defaultSource', $customerInfo['default_source']);
+        $this->set('savedCards', $savedCards);
+        $this->_template->render();
+    }
+
+    /**
+     * removeCard
+     *
+     * @return void
+     */
+    public function removeCard()
+    {
+        $this->initStripeConnect();
+
+        $cardId = FatApp::getPostedData('cardId', FatUtility::VAR_STRING, '');
+        if (empty($cardId)) {
+            $this->setError(Labels::getLabel('MSG_INVALID_REQUEST', $this->siteLangId));
+        }
+
+        if (false === $this->stripeConnect->removeCard(['cardId' => $cardId])) {
+            $this->setErrorAndRedirect($this->stripeConnect->getError());
+        }
+        $msg = Labels::getLabel("MSG_REMOVED_SUCCESSFULLY", $this->siteLangId);
+        FatUtility::dieJsonSuccess($msg);
+    }
+
+    /**
+     * getCardForm
+     *
+     * @return object
+     */
+    private function getCardForm(): object
+    {
+        $frm = new Form('frmCardForm');
+        $frm->addRequiredField(Labels::getLabel('LBL_ENTER_CARD_NUMBER', $this->siteLangId), 'number');
+        $frm->addRequiredField(Labels::getLabel('LBL_CARD_HOLDER_FULL_NAME', $this->siteLangId), 'name');
+        $data['months'] = applicationConstants::getMonthsArr($this->siteLangId);
+        $today = getdate();
+        $data['year_expire'] = array();
+        for ($i = $today['year']; $i < $today['year'] + 11; $i++) {
+            $data['year_expire'][strftime('%Y', mktime(0, 0, 0, 1, 1, $i))] = strftime('%Y', mktime(0, 0, 0, 1, 1, $i));
+        }
+        $frm->addSelectBox(Labels::getLabel('LBL_EXPIRY_MONTH', $this->siteLangId), 'exp_month', $data['months'], '', array(), '');
+        $frm->addSelectBox(Labels::getLabel('LBL_EXPIRY_YEAR', $this->siteLangId), 'exp_year', $data['year_expire'], '', array(), '');
+        $frm->addPasswordField(Labels::getLabel('LBL_CVV_SECURITY_CODE', $this->siteLangId), 'cvc')->requirements()->setRequired();
+        $frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_SAVE', $this->siteLangId));
+
+        return $frm;
+    }
+
+    /**
+     * addCardForm
+     *
+     * @return void
+     */
+    public function addCardForm()
+    {
+        $frm = $this->getCardForm();
+
+        $this->set('frm', $frm);
+        $this->_template->render(false, false);
+    }
 }

@@ -626,12 +626,33 @@
     }
     .list-group-item {
         padding: 1rem;
-        padding-#{$start-direction}: 5rem;
     }
     &__photo {
         .svg {
             width: 38px;
             height: 24px;
+        }
+    }
+    &-double {
+        flex-wrap: wrap;
+        flex-direction: row;
+        justify-content: space-between;
+        @include media-breakpoint-down(md) {
+            & {
+                flex-direction: column;
+            }
+        }
+        li {
+            max-width: 49%;
+            flex: 49%;
+            margin-bottom: 1rem;
+            border-radius: $radius4;
+            @include media-breakpoint-down(md) {
+                & {
+                    max-width: auto;
+                    flex: auto;
+                }
+            }
         }
     }
     &-view {
