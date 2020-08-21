@@ -24,8 +24,9 @@ trait PluginHelper
      */
     private function loadPluginSettingsObj(): void
     {
+        $this->keyName = !empty($this->keyName) ? $this->keyName : static::KEY_NAME;
         $this->langId = 0 < $this->langId ? $this->langId : CommonHelper::getLangId();
-        $this->pluginSetting = new PluginSetting(0, static::KEY_NAME);   
+        $this->pluginSetting = new PluginSetting(0, $this->keyName);   
     }
 
     /**
