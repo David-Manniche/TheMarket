@@ -17184,7 +17184,7 @@ a:hover {
     -webkit-box-align: center;
     -ms-flex-align: center;
     align-items: center;
-    padding: 1.5rem;
+    padding: 1rem;
     color: #525252; }
     .cards-header .cards-title {
       margin-bottom: 0;
@@ -17902,7 +17902,7 @@ html.quick-view--open {
 .saved-cards {
   display: grid;
   grid-gap: 1rem;
-  grid-template-columns: repeat(3, 1fr); }
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); }
   .saved-cards li {
     border-radius: 4px;
     border: solid 1px #dee2e6;
