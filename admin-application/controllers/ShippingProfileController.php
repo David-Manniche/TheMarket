@@ -125,6 +125,71 @@ class ShippingProfileController extends AdminBaseController
         $this->set('profileId', $profileId);
         $this->_template->render(false, false, 'json-success.php');
     }
+
+    public function deleteRecord()
+    {
+        $this->objPrivilege->canEditShippingManagement();
+       
+        $shipprofileId = FatApp::getPostedData('id', FatUtility::VAR_INT, 0);
+        if ($shipprofileId < 1) {
+            Message::addErrorMessage($this->str_invalid_request_id);
+            FatUtility::dieJsonError(Message::getHtml());
+        }
+
+        $shippingProfile = ShippingProfile::getAttributesById($shipprofileId);
+        if (false == $shippingProfile) {
+            Message::addErrorMessage($this->str_invalid_request_id);
+            FatUtility::dieJsonError(Message::getHtml());
+        }
+
+        $whr = array('smt' => 'shipprofile_id = ? and shipprofile_default != ?', 'vals' => array($shipprofileId, applicationConstants::YES));
+        if (!FatApp::getDb()->deleteRecords(ShippingProfile::DB_TBL, $whr)) {
+            Message::addErrorMessage(FatApp::getDb()->getError());
+            FatUtility::dieJsonError(Message::getHtml());
+        }
+
+        $shippingProfData = ShippingProfileZone::getAttributesByProfileId($shipprofileId);
+        if (false == $shippingProfData) {
+            $this->set('msg', Labels::getLabel('LBL_Updated_Successfully', $this->adminLangId));
+            $this->_template->render(false, false, 'json-success.php');
+        }
+        
+        $shipprozoneId = $shippingProfData['shipprozone_id'];
+
+        $shippingProfileZone = new ShippingProfileZone($shipprozoneId);
+        if (!$shippingProfileZone->deleteRecord()) {
+            Message::addErrorMessage($shippingProfileZone->getError());
+            FatUtility::dieJsonError(Message::getHtml());
+        }
+
+        $shippingProfileZone = new ShippingZone($shippingProfData['shipprozone_shipzone_id']);
+        if (!$shippingProfileZone->deleteRates($shipprozoneId)) {
+            Message::addErrorMessage($shippingProfileZone->getError());
+            FatUtility::dieJsonError(Message::getHtml());
+        }
+
+        if (!$shippingProfileZone->deleteLocations($shippingProfData['shipprozone_shipzone_id'])) {
+            Message::addErrorMessage($shippingProfileZone->getError());
+            FatUtility::dieJsonError(Message::getHtml());
+        }
+
+        if (!$shippingProfileZone->deleteRecord()) {
+            Message::addErrorMessage($shippingProfileZone->getError());
+            FatUtility::dieJsonError(Message::getHtml());
+        }
+        
+        $defaultShipProfileId = ShippingProfile::getDefaultProfileId(0);
+        if (0 < $defaultShipProfileId) {
+            $data = [
+                'shippro_shipprofile_id' => $defaultShipProfileId
+            ];
+            $whr = array('smt' => 'shippro_shipprofile_id = ? and shippro_user_id = ?', 'vals' => array($shipprofileId, 0));
+            FatApp::getDb()->updateFromArray(ShippingProfileProduct::DB_TBL, $data, $whr);
+        }
+
+        $this->set('msg', Labels::getLabel('LBL_Updated_Successfully', $this->adminLangId));
+        $this->_template->render(false, false, 'json-success.php');
+    }
     
     private function getZones($profileIds)
     {

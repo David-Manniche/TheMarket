@@ -178,19 +178,32 @@ class ShippingZonesController extends AdminBaseController
         $this->_template->render(false, false, 'json-success.php');
     }
     
-    public function deleteZone($zoneId)
+    public function deleteZone($shipprozoneId)
     {
         //== Remove zone from profile
         $this->objPrivilege->canEditShippingManagement();
-        $sObj = new ShippingProfileZone($zoneId);
+        $shipprozoneId = FatUtility::int($shipprozoneId);
+        $shippingProfData = ShippingProfileZone::getAttributesById($shipprozoneId);
+       
+        if (false == $shippingProfData) {
+            Message::addErrorMessage($this->str_invalid_request);
+            FatUtility::dieJsonError(Message::getHtml());
+        }
+
+        $sObj = new ShippingProfileZone($shipprozoneId);
         if (!$sObj->deleteRecord()) {
             Message::addErrorMessage($sObj->getError());
             FatUtility::dieJsonError(Message::getHtml());
         }
-        
+       
         /* delete zone attached data[rates] */
-        $sObj = new ShippingZone();
-        if (!$sObj->deleteRates($zoneId)) {
+        $sObj = new ShippingZone($shippingProfData['shipprozone_shipzone_id']);
+        if (!$sObj->deleteRates($shipprozoneId)) {
+            Message::addErrorMessage($sObj->getError());
+            FatUtility::dieJsonError(Message::getHtml());
+        }
+
+        if (!$sObj->deleteRecord()) {
             Message::addErrorMessage($sObj->getError());
             FatUtility::dieJsonError(Message::getHtml());
         }
