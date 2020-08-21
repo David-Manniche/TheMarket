@@ -31,7 +31,7 @@ class BannerSearch extends SearchBase
         $this->addCondition('promotion_deleted', '=', applicationConstants::NO);
     }
     
-    public function joinLocations($langId = 0)
+    public function joinLocations($langId = 0, $joinCollection = false)
     {
         $langId = FatUtility::int($langId);
         if ($this->langId) {
@@ -42,11 +42,15 @@ class BannerSearch extends SearchBase
         if ($langId > 0) {
             $this->joinTable(Banner::DB_TBL_LANG_LOCATIONS, 'LEFT OUTER JOIN', 'bl_l.blocationlang_blocation_id = bl.blocation_id AND bl_l.blocationlang_lang_id = ' . $langId, 'bl_l');
         }
+		
+		if ($joinCollection) {
+			$this->joinTable(Collections::DB_TBL, 'LEFT OUTER JOIN', 'c.collection_id = bl.blocation_collection_id', 'c');
+		}
     }
 
-    public function joinCollection()
+    public function joinCollectionToRecords()
     {
-        $this->joinTable(Collections::DB_TBL_COLLECTION_TO_RECORDS, 'LEFT OUTER JOIN', 'c.ctr_record_id = b.banner_id', 'c');
+        $this->joinTable(Collections::DB_TBL_COLLECTION_TO_RECORDS, 'LEFT OUTER JOIN', 'ctr.ctr_record_id = b.banner_id', 'ctr');
     }
 
     public function joinLocationDimension($deviceType = 0)

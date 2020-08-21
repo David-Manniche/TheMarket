@@ -512,7 +512,8 @@ class HomeController extends MyAppController
                     }
                     break;
                 case Collections::COLLECTION_TYPE_BANNER:
-					$banners = $this->getBanners($collection_id);
+					/* $banners = $this->getBanners($collection_id); */
+					$banners = BannerLocation::getHomePageBanners($collection_id, $langId);
                     if (true === MOBILE_APP_API_CALL) {
 						$collections[$i] = $collection;
 						$collections[$i]['banners'] = $banners;

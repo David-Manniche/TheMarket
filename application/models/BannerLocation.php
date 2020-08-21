@@ -86,6 +86,7 @@ class BannerLocation extends MyAppModel
         foreach ($bannerLocation as $val) {
             $bsrch = new BannerSearch($langId, true);
             $bsrch->joinPromotions($langId, true, true, true);
+			$bsrch->joinLocations(true);
             $bsrch->addPromotionTypeCondition();
             $bsrch->joinActiveUser();
             $bsrch->joinUserWallet();
@@ -126,6 +127,59 @@ class BannerLocation extends MyAppModel
             $banners[$val['blocation_collection_id']]['banners'] = $bannerListing;
             $i++;
         }
+        return $banners;
+    }
+	
+	public static function getHomePageBanners($collectionId, $langId, $pageSize = 0)
+    {
+        $collectionId = FatUtility::int($collectionId);
+        $langId = FatUtility::int($langId);
+        $db = FatApp::getDb();
+
+        $bannerSrch = Banner::getBannerLocationSrchObj(true);
+        $bannerSrch->addCondition('blocation_collection_id', '=', $collectionId);
+        $rs = $bannerSrch->getResultSet();
+        $bannerLocation = $db->fetch($rs);
+
+        $banners = $bannerLocation;
+        $bsrch = new BannerSearch($langId, true);
+		$bsrch->joinPromotions($langId, true, true, true);
+		$bsrch->joinLocations(true);
+		$bsrch->addPromotionTypeCondition();
+		$bsrch->joinActiveUser();
+		$bsrch->joinUserWallet();
+		$bsrch->addMinimiumWalletbalanceCondition();
+		$bsrch->addSkipExpiredPromotionAndBannerCondition();
+		$bsrch->joinBudget();
+		$bsrch->addMultipleFields(array('banner_id', 'banner_blocation_id', 'banner_type', 'banner_record_id', 'banner_url', 'banner_target', 'banner_title', 'promotion_id', 'daily_cost', 'weekly_cost', 'monthly_cost', 'total_cost', 'banner_updated_on'));
+		$bsrch->doNotCalculateRecords();
+		$bsrch->joinAttachedFile();
+		$bsrch->addCondition('banner_blocation_id', '=', $bannerLocation['blocation_id']);
+		
+		$srch = new SearchBase('(' . $bsrch->getQuery() . ') as t');
+		$srch->doNotCalculateRecords();
+		$srch->addDirectCondition(
+			'((CASE
+				WHEN promotion_duration=' . Promotion::DAILY . ' THEN promotion_budget > COALESCE(daily_cost,0)
+				WHEN promotion_duration=' . Promotion::WEEKLY . ' THEN promotion_budget > COALESCE(weekly_cost,0)
+				WHEN promotion_duration=' . Promotion::MONTHLY . ' THEN promotion_budget > COALESCE(monthly_cost,0)
+				WHEN promotion_duration=' . Promotion::DURATION_NOT_AVAILABALE . ' THEN promotion_budget = -1
+			  END ) )'
+		);
+		$srch->addMultipleFields(array('banner_id', 'banner_blocation_id', 'banner_type', 'banner_record_id', 'banner_url', 'banner_target', 'banner_title', 'promotion_id', 'userBalance', 'daily_cost', 'weekly_cost', 'monthly_cost', 'total_cost', 'promotion_budget', 'promotion_duration', 'banner_updated_on'));
+		if ($pageSize == 0) {
+			$pageSize = $bannerLocation['blocation_banner_count'];
+		}
+		$srch->setPageSize($pageSize);
+		$srch->addOrder('', 'rand()');
+		$rs = $srch->getResultSet();
+		
+		if (true === MOBILE_APP_API_CALL) {
+			$bannerListing = $db->fetchAll($rs);
+		} else {
+			$bannerListing = $db->fetchAll($rs, 'banner_id');
+		}
+		$banners[$bannerLocation['blocation_collection_id']]['banners'] = $bannerListing;
         return $banners;
     }
 

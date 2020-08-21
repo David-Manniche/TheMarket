@@ -440,7 +440,7 @@ class Collections extends MyAppModel
         }
 
         $srch = new BannerSearch($lang_id, false);
-        $srch->joinCollection();
+        $srch->joinCollectionToRecords();
         $srch->joinLocations();
         $srch->joinPromotions($lang_id, true);
         $srch->addPromotionTypeCondition();
