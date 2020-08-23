@@ -264,7 +264,7 @@ class CollectionsController extends AdminBaseController
 				'blocation_banner_width' => $val['width'],
 				'blocation_banner_height' => $val['height']
 			];
-			if (!FatApp::getDb()->insertFromArray(BannerLocation::DB_DIMENSIONS_TBL, $dataToSave, false, array())) {
+			if (!FatApp::getDb()->insertFromArray(BannerLocation::DB_DIMENSIONS_TBL, $dataToSave, false, array(), $dataToSave)) {
 				Message::addErrorMessage(Labels::getLabel('LBL_Unable_to_save_banner_dimensions', $this->adminLangId));
 				FatUtility::dieJsonError(Message::getHtml());
 			}
