@@ -215,6 +215,9 @@ class NavigationsController extends AdminBaseController
             array( 'nlink_id', 'nlink_nav_id', 'nlink_cpage_id', 'nlink_target', 'nlink_type', 'nlink_parent_id',
             'nlink_caption', 'nlink_identifier' )
         );
+		if (FatApp::getConfig('CONF_LAYOUT_MEGA_MENU', FatUtility::VAR_INT, 1) == applicationConstants::YES) {
+			$srch->addCondition('nlink_category_id', '=', 0);
+		}
         $srch->addCondition('nav_id', '=', $nav_id);
         $srch->addOrder('nlink_display_order', 'asc');
         $rs = $srch->getResultSet();
@@ -558,7 +561,11 @@ class NavigationsController extends AdminBaseController
     {
         $frm = new Form('frmNavigationLink');
         $frm->addRequiredField(Labels::getLabel('LBL_Caption_Identifier', $this->adminLangId), 'nlink_identifier');
-        $frm->addSelectBox(Labels::getLabel('LBL_Type', $this->adminLangId), 'nlink_type', NavigationLinks::getLinkTypeArr($this->adminLangId), '', array(), '')->requirements()->setRequired();
+		$linkTypes = NavigationLinks::getLinkTypeArr($this->adminLangId);
+		if (FatApp::getConfig('CONF_LAYOUT_MEGA_MENU', FatUtility::VAR_INT, 1) == applicationConstants::YES) {
+			unset($linkTypes[NavigationLinks::NAVLINK_TYPE_CATEGORY_PAGE]);
+		}
+        $frm->addSelectBox(Labels::getLabel('LBL_Type', $this->adminLangId), 'nlink_type', $linkTypes, '', array(), '')->requirements()->setRequired();
         $frm->addSelectBox(Labels::getLabel('LBL_Link_Target', $this->adminLangId), 'nlink_target', NavigationLinks::getLinkTargetArr($this->adminLangId), '', array(), '')->requirements()->setRequired();
         $frm->addSelectBox(Labels::getLabel('LBL_Login_Protected', $this->adminLangId), 'nlink_login_protected', NavigationLinks::getLinkLoginTypeArr($this->adminLangId), '', array(), '')->requirements()->setRequired();
 
