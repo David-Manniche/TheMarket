@@ -623,3 +623,6 @@ TRUNCATE `tbl_banners_lang`;
 DELETE FROM `tbl_attached_files` WHERE `afile_type` = 18;
 
 ALTER TABLE `tbl_banners` CHANGE `banner_img_updated_on` `banner_updated_on` DATETIME NOT NULL;
+
+
+DELETE FROM `tbl_language_labels` WHERE `label_key` LIKE 'LBL_Shipping_Api';
