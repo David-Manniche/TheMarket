@@ -571,10 +571,10 @@ $buyQuantity->addFieldTagAttribute('data-page', 'product-view');
             </div>
         </section>
         <section class="">
-            <?php if (isset($banners['Product_Detail_Page_Banner']) && $banners['Product_Detail_Page_Banner']['blocation_active'] && count($banners['Product_Detail_Page_Banner']['banners'])) { ?>
+            <?php if (isset($banners) && $banners['blocation_active'] && count($banners['banners'])) { ?>
             <div class="gap"></div>
             <div class="row">
-                <?php foreach ($banners['Product_Detail_Page_Banner']['banners'] as $val) {
+                <?php foreach ($banners['banners'] as $val) {
                         $desktop_url = '';
                         $tablet_url = '';
                         $mobile_url = '';

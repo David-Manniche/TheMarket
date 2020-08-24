@@ -514,7 +514,7 @@ class HomeController extends MyAppController
                     break;
                 case Collections::COLLECTION_TYPE_BANNER:
 					/* $banners = $this->getBanners($collection_id); */
-					$banners = BannerLocation::getHomePageBanners($collection_id, $langId);
+					$banners = BannerLocation::getPromotionalBanners($collection_id, $langId);
                     if (true === MOBILE_APP_API_CALL) {
 						$collections[$i] = $collection;
 						$collections[$i]['banners'] = $banners;
@@ -843,7 +843,7 @@ class HomeController extends MyAppController
         return $slides;
     }
 
-    private function getBanners($collectionId)
+    /* private function getBanners($collectionId)
     {
         $langId = $this->siteLangId;
         $top_banners = BannerLocation::getPromotionalBanners(BannerLocation::HOME_PAGE_BANNER_LAYOUT_1, $langId, $collectionId);
@@ -856,24 +856,7 @@ class HomeController extends MyAppController
         $bottom_banners = BannerLocation::getPromotionalBanners(BannerLocation::HOME_PAGE_BANNER_LAYOUT_2, $langId, $collectionId, $pageSize);
         $banners = array_merge($top_banners, $middle_banners, $bottom_banners);
         return $banners;
-		
-		/* $srch = new BannerSearch($this->adminLangId, false);
-        $srch->joinLocations();
-        $srch->joinPromotions($this->adminLangId, true);
-        $srch->addPromotionTypeCondition();
-        $srch->addMultipleFields(array('IFNULL(promotion_name,promotion_identifier) as promotion_name', 'banner_id', 'banner_type', 'banner_url', 'banner_target', 'banner_active', 'banner_blocation_id', 'banner_title', 'banner_updated_on'));
-        $srch->addCondition('b.banner_record_id', '=', $collectionId);
-        $srch->addCondition('b.banner_type', '=', Banner::TYPE_BANNER);
-
-        $srch->addOrder('banner_active', 'DESC');
-
-        $rs = $srch->getResultSet();
-		$records = array();
-        if ($rs) {
-            $records = FatApp::getDb()->fetchAll($rs);
-        }
-		return $records; */
-    }
+    } */
 
     private function getSponsoredShops($productSrchObj)
     {

@@ -69,68 +69,8 @@ class BannerLocation extends MyAppModel
         $rs = $srch->getResultSet();
         return $bannerDimensions = FatApp::getDb()->fetch($rs);
     }
-
-    public static function getPromotionalBanners($blocationId, $langId, $collectionId = 0, $pageSize = 0)
-    {
-        $blocationId = FatUtility::int($blocationId);
-        $collectionId = FatUtility::int($collectionId);
-        $db = FatApp::getDb();
-
-        $bannerSrch = Banner::getBannerLocationSrchObj(true);
-        $bannerSrch->addCondition('blocation_id', '=', $blocationId);
-        $rs = $bannerSrch->getResultSet();
-        $bannerLocation = $db->fetchAll($rs, 'blocation_collection_id');
-
-        $banners = $bannerLocation;
-        $i = 0;
-        foreach ($bannerLocation as $val) {
-            $bsrch = new BannerSearch($langId, true);
-            $bsrch->joinPromotions($langId, true, true, true);
-			$bsrch->joinLocations(true);
-            $bsrch->addPromotionTypeCondition();
-            $bsrch->joinActiveUser();
-            $bsrch->joinUserWallet();
-            $bsrch->addMinimiumWalletbalanceCondition();
-            $bsrch->addSkipExpiredPromotionAndBannerCondition();
-            $bsrch->joinBudget();
-            $bsrch->addMultipleFields(array('banner_id', 'banner_blocation_id', 'banner_type', 'banner_record_id', 'banner_url', 'banner_target', 'banner_title', 'promotion_id', 'daily_cost', 'weekly_cost', 'monthly_cost', 'total_cost', 'banner_updated_on'));
-            $bsrch->doNotCalculateRecords();
-            //$bsrch->doNotLimitRecords();
-            $bsrch->joinAttachedFile();
-			$bsrch->addCondition('banner_blocation_id', '=', $val['blocation_id']);
-			// $bsrch->addDirectCondition('((banner_type = '.Banner::TYPE_BANNER.' AND banner_record_id = ' . $collectionId . ') OR banner_type = '.Banner::TYPE_PPC.')');
-            /* echo $bsrch->getQuery(); die; */
-            $srch = new SearchBase('(' . $bsrch->getQuery() . ') as t');
-            $srch->doNotCalculateRecords();
-            $srch->addDirectCondition(
-                '((CASE
-					WHEN promotion_duration=' . Promotion::DAILY . ' THEN promotion_budget > COALESCE(daily_cost,0)
-					WHEN promotion_duration=' . Promotion::WEEKLY . ' THEN promotion_budget > COALESCE(weekly_cost,0)
-					WHEN promotion_duration=' . Promotion::MONTHLY . ' THEN promotion_budget > COALESCE(monthly_cost,0)
-					WHEN promotion_duration=' . Promotion::DURATION_NOT_AVAILABALE . ' THEN promotion_budget = -1
-				  END ) )'
-            );
-            $srch->addMultipleFields(array('banner_id', 'banner_blocation_id', 'banner_type', 'banner_record_id', 'banner_url', 'banner_target', 'banner_title', 'promotion_id', 'userBalance', 'daily_cost', 'weekly_cost', 'monthly_cost', 'total_cost', 'promotion_budget', 'promotion_duration', 'banner_updated_on'));
-            if ($pageSize == 0) {
-                $pageSize = $val['blocation_banner_count'];
-            }
-            $srch->setPageSize($pageSize);
-            $srch->addOrder('', 'rand()');
-            $rs = $srch->getResultSet();
-			
-			
-            if (true === MOBILE_APP_API_CALL) {
-                $bannerListing = $db->fetchAll($rs);
-            } else {
-                $bannerListing = $db->fetchAll($rs, 'banner_id');
-            }
-            $banners[$val['blocation_collection_id']]['banners'] = $bannerListing;
-            $i++;
-        }
-        return $banners;
-    }
 	
-	public static function getHomePageBanners($collectionId, $langId, $pageSize = 0)
+	public static function getPromotionalBanners($collectionId, $langId, $pageSize = 0)
     {
         $collectionId = FatUtility::int($collectionId);
         $langId = FatUtility::int($langId);

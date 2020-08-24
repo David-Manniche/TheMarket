@@ -640,7 +640,7 @@ class ProductsController extends MyAppController
         }
 
         /*   [ Promotional Banner   */
-        $banners = BannerLocation::getPromotionalBanners(BannerLocation::PRODUCT_DETAIL_PAGE_BANNER, $this->siteLangId);
+        $banners = BannerLocation::getPromotionalBanners(0, $this->siteLangId);
         /* End of Prmotional Banner  ]*/
 
         /* Get Product Specifications */
