@@ -22,7 +22,7 @@ foreach ($slides as $index => $slideDetail) {
             break;
     }
 }
-foreach ($sponsoredProds as $index => $product) {
+/* foreach ($sponsoredProds as $index => $product) {
     $uploadedTime = AttachedFile::setTimeParam($product['product_updated_on']);
     $sponsoredProds[$index]['product_image_url'] = UrlHelper::getCachedUrl(UrlHelper::generateFullFileUrl('image', 'product', array($product['product_id'], "CLAYOUT3", $product['selprod_id'], 0, $siteLangId)).$uploadedTime, CONF_IMG_CACHE_TIME, '.jpg');
     $sponsoredProds[$index]['selprod_price'] = CommonHelper::displayMoneyFormat($product['selprod_price'], false, false, false);
@@ -35,7 +35,7 @@ foreach ($sponsoredShops as $shopIndex => $shopData) {
         $sponsoredShops[$shopIndex]['products'][$index]['selprod_price'] = CommonHelper::displayMoneyFormat($shopProduct['selprod_price'], false, false, false);
         $sponsoredShops[$shopIndex]['products'][$index]['theprice'] = CommonHelper::displayMoneyFormat($shopProduct['theprice'], false, false, false);
     }
-}
+} */
 foreach ($collections as $collectionIndex => $collectionData) {
     if (array_key_exists('products', $collectionData)) {
         foreach ($collectionData['products'] as $index => $product) {
@@ -68,12 +68,6 @@ foreach ($collections as $collectionIndex => $collectionData) {
 
 $data = array(
     'isWishlistEnable' => $isWishlistEnable,
-    'sponsoredProds' => array(
-                        'title' => FatApp::getConfig('CONF_PPC_PRODUCTS_HOME_PAGE_CAPTION_'.$siteLangId, FatUtility::VAR_STRING, Labels::getLabel('LBL_SPONSORED_PRODUCTS', $siteLangId)),
-                        'data'=> $sponsoredProds),
-    'sponsoredShops' => array(
-                        'title' => FatApp::getConfig('CONF_PPC_SHOPS_HOME_PAGE_CAPTION_'.$siteLangId, FatUtility::VAR_STRING, Labels::getLabel('LBL_SPONSORED_SHOPS', $siteLangId)),
-                        'data'=> $sponsoredShops),
     'slides' => $slides,
     'collections' => $collections,
 );
