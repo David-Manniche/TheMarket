@@ -86,6 +86,26 @@ class ShipmentTracking
     }
     
     /**
+     * createTracking
+     *
+     * @param  string $trackingNumber
+     * @param  string $courierCode
+     * @param  string $orderId
+     * @return bool
+     */
+    public function createTracking(string $trackingNumber, string $courierCode, string $orderId): bool
+    {
+        $this->validateRequest();
+
+        if (false === $this->shipmentTracking->createTracking($trackingNumber, $courierCode, $orderId)) {
+            $this->error = $this->shipmentTracking->getError();
+            return false;
+        }
+        $this->response = $this->shipmentTracking->getResponse();
+        return true;
+    }
+    
+    /**
      * getResponse
      *
      * @return mixed
