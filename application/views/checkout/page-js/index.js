@@ -42,7 +42,9 @@ function showAddressFormDiv(address_type) {
         address_type = 0;
     }
     editAddress(0, address_type);
-    setCheckoutFlow('BILLING');
+    if($(".payment-js").hasClass('is-active') == false){
+        setCheckoutFlow('BILLING');
+    }
 }
 function showAddressList() {
     if (!checkLogin()) {
@@ -53,8 +55,8 @@ function showAddressList() {
     // resetShippingSummary();
     // resetPaymentSummary();
 }
-function resetAddress() {
-    loadAddressDiv();
+function resetAddress(address_type) {
+    loadAddressDiv(address_type);
 }
 function showShippingSummaryDiv() {
     return loadShippingSummaryDiv();
@@ -161,7 +163,9 @@ $("document").ready(function () {
         var data = 'address_id=' + address_id + '&address_type=' + address_type;
         fcom.ajax(fcom.makeUrl('Checkout', 'editAddress'), data, function (ans) {
             $(pageContent).html(ans);
-            setCheckoutFlow('BILLING');
+            if($(".payment-js").hasClass('is-active') == false){
+                setCheckoutFlow('BILLING');
+            }
             // $(addressFormDiv).html( ans ).show();
             // $(addressWrapper).hide();
             // $(addressWrapperContainer).hide();
@@ -180,13 +184,15 @@ $("document").ready(function () {
             if (t.status == 1) {
                 if ($("#hasAddress").length > 0) {
                     $("#hasAddress").val(1);
-                }
-                if ($(frm.addr_id).val() == 0) {
+                }                
+                //if ($(frm.addr_id).val() == 0 ) {
+                if ($(frm.addr_id).val() == 0 || address_type == 1) {
                     loadAddressDiv(address_type);
                     setTimeout(function () { setDefaultAddress(t.addr_id) }, 1000);
-                } else {
-                    showShippingSummaryDiv(t.addr_id);
-                    loadFinancialSummary();
+                } else{
+                    //showShippingSummaryDiv(t.addr_id);
+                    setUpAddressSelection(t.addr_id);
+                    //loadFinancialSummary();
                 }
             }
         });
@@ -198,12 +204,19 @@ $("document").ready(function () {
 		}
 		data='id='+id;
 		alert(id);*/
-        $('.address-billing').removeClass("is--selected");
+        
+        /*$('.address-billing').removeClass("is--selected");
         $("input[name='billing_address_id']").each(function () {
             $(this).removeAttr("checked");
         });
         $('#address_' + id + ' input[name=billing_address_id]').attr('checked', 'checked');
-        $('#address_' + id).addClass("is--selected");
+        $('#address_' + id).addClass("is--selected");*/
+
+        $("input[name='shipping_address_id']").each(function () {
+            $(this).removeAttr("checked");
+        }); 
+        $('.address-' + id + ' input[name=shipping_address_id]').attr('checked', 'checked');
+        
         // $("#btn-continue-js").trigger("click");
         // setUpAddressSelection($('#btn-continue-js'));
 
@@ -214,19 +227,26 @@ $("document").ready(function () {
 		});*/
     };
 
-    setUpAddressSelection = function (elm) {
+    setUpAddressSelection = function (addr_id) {
         if (!checkLogin()) {
             return false;
         }
-
-        var shipping_address_id = $('input[name="shipping_address_id"]:checked').val();
+        
+        if (typeof addr_id == 'undefined') {
+            var shipping_address_id = $('input[name="shipping_address_id"]:checked').val();
+        }else{
+            var shipping_address_id = addr_id;
+        }
         var isShippingSameAsBilling = 1;
         var data = 'shipping_address_id=' + shipping_address_id + '&billing_address_id=' + shipping_address_id + '&isShippingSameAsBilling=' + isShippingSameAsBilling;
         fcom.updateWithAjax(fcom.makeUrl('Checkout', 'setUpAddressSelection'), data, function (t) {
             if (t.status == 1) {
                 if (t.loadAddressDiv) {
                     loadAddressDiv();
-                } else {
+                } else if($(".payment-js").hasClass('is-active')){
+                    loadPaymentSummary();
+                    loadFinancialSummary();
+                }else {
                     if (t.hasPhysicalProduct) {
                         $(shippingSummaryDiv).show();
                         loadShippingSummaryDiv();
@@ -654,6 +674,20 @@ $("document").ready(function () {
         });
         return false;
     };
-
     /* Phone Verification for COD */
+
+    displaySelectedPickUpAddresses = function(){
+        fcom.ajax(fcom.makeUrl('Checkout', 'displaySelectedPickUpAddresses'), '', function (rsp) {
+            $.facebox(rsp, 'faceboxWidth medium-fb-width');
+        });
+    }
+    
+    goToBack = function(){
+        if($(".payment-js").hasClass('is-active')){
+            loadPaymentSummary();
+        }else{
+            window.location.href = fcom.makeUrl('Cart');
+        }
+    }
+    
 })();

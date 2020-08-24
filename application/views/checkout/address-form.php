@@ -33,7 +33,7 @@
     $cancelFld = $addressFrm->getField('btn_cancel');  
     $cancelFld->developerTags['col'] = 2;  
     $cancelFld->setFieldTagAttribute('class','btn btn-outline-primary');
-    $cancelFld->setFieldTagAttribute('onclick','resetAddress()');
+    $cancelFld->setFieldTagAttribute('onclick','resetAddress('.$addressType.')');
 ?>
 <div class="step active" role="step:2">
     <div class="step__section">

@@ -47,16 +47,28 @@ $this->includeTemplate('_partial/dashboardNavigation.php');
                                 <ul class="saved-cards">
                                     <?php foreach ($savedCards as $cardDetail) { ?>
                                         <li class="<?php echo $defaultSource == $cardDetail['id'] ? "selected" : ""; ?>">
+                                            <ul class="list-actions">
+                                                <li>
+                                                    <label class="radio">
+                                                        <input name="card_id" type="radio" value="<?php echo $cardDetail['id']; ?>" <?php echo $defaultSource == $cardDetail['id'] ? "checked='checked'" : ""; ?>>
+                                                        <i class="input-helper"></i>
+                                                    </label>
+                                                </li>
+                                                <li>
+                                                    <a href="#">
+                                                        <svg class="svg">
+                                                            <use xlink:href="<?php echo CONF_WEBROOT_URL; ?>images/retina/sprite.svg#bin" href="/yokart/images/retina/sprite.svg#bin">
+                                                            </use>
+                                                        </svg>
+                                                    </a>
+                                                </li>
+                                            </ul>
                                             <div class="payment-card__photo">
                                                 <svg class="svg">
                                                     <use xlink:href="<?php echo CONF_WEBROOT_URL; ?>images/retina/sprite.svg#<?php echo strtolower($cardDetail['brand']); ?>" href="<?php echo CONF_WEBROOT_URL; ?>images/retina/sprite.svg#<?php echo strtolower($cardDetail['brand']); ?>">
                                                     </use>
                                                 </svg>
                                             </div>
-                                            <label class="radio">
-                                                <input name="card_id" type="radio" value="<?php echo $cardDetail['id']; ?>" <?php echo $defaultSource == $cardDetail['id'] ? "checked='checked'" : ""; ?>>
-                                                <i class="input-helper"></i>
-                                            </label>
                                             <div class="cards-detail my-4">
                                                 <h6><?php echo Labels::getLabel('LBL_CARD_NUMBER', $siteLangId); ?></h6>
                                                 <p>**** **** **** <?php echo $cardDetail['last4']; ?></p>
@@ -69,7 +81,6 @@ $this->includeTemplate('_partial/dashboardNavigation.php');
                                                         <p><?php echo $cardDetail['name']; ?></p>
                                                     </div>
                                                 </div>
-
                                                 <div class="col-auto">
                                                     <div class="cards-detail">
                                                         <h6><?php echo Labels::getLabel('LBL_EXPIRY_DATE', $siteLangId); ?></h6>
@@ -92,8 +103,9 @@ $this->includeTemplate('_partial/dashboardNavigation.php');
     $(document).ready(function() {
         <?php
         if (empty($savedCards)) {
-            ?>
-            addNewCard('<?php echo $orderInfo["id"]; ?>'); <?php
+        ?>
+            addNewCard('<?php echo $orderInfo["id"]; ?>');
+        <?php
         } ?>
     });
 </script>

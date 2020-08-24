@@ -2205,7 +2205,7 @@ class SellerController extends SellerBaseController
           {
           $this->set('openMediaForm', true);
           } */
-
+        ShippingProfile::getDefaultProfileId($this->userParentId);
         $this->set('shopId', $shop_id);
         $this->set('langId', $newTabLangId);
         $this->set('msg', Labels::getLabel('MSG_SET_UP_SUCCESSFULLY', $this->siteLangId));

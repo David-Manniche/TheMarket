@@ -34,5 +34,12 @@ $(document).ready(function() {
         document.frmSearch.reset();
         searchProfile(document.frmSearch);
     };
+
+    deleteRecord = function(shippingProfileId){
+        data = 'id='+shippingProfileId;
+        fcom.updateWithAjax(fcom.makeUrl('shippingProfile', 'deleteRecord'), data, function() { 
+            reloadList();           
+        });
+    };
 	
 })(); 

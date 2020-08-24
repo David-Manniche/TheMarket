@@ -51,7 +51,8 @@
                                 $name = current($levelItems['rates'])['code'];
                                 echo '<select class="form-control custom-select" name="shipping_services[' . $name . ']">';
                                 foreach ($levelItems['rates'] as $key => $shippingRate) {
-                                    echo '<option value="' . $key . '">' . $shippingRate['title'] .' ( ' . $shippingRate['cost'] . ' ) </option>';
+                                    $selected = (array_key_exists($name, $selectedShippingIds) && ($selectedShippingIds[$name] == $key)) ? 'selected="selected"' : '';
+                                    echo '<option '.$selected.' value="' . $key . '">' . $shippingRate['title'] .' ( ' . $shippingRate['cost'] . ' ) </option>';
                                 }
                                 echo '</select>';
                             } else {
@@ -61,7 +62,7 @@
                     ?> 
                     </div>
                 </li> 
-            <?php }?>    
+            <?php } ?>    
             <?php foreach ($levelItems['products'] as $product) {
                     $productUrl = !$isAppUser ? UrlHelper::generateUrl('Products', 'View', array($product['selprod_id'])) : 'javascript:void(0)';
                     $shopUrl = !$isAppUser ? UrlHelper::generateUrl('Shops', 'View', array($product['shop_id'])) : 'javascript:void(0)';
@@ -74,7 +75,8 @@
                                 $name = current($levelItems['rates'])['code'];
                                 echo '<select class="form-control custom-select" name="shipping_services[' . $name . ']">';
                                 foreach ($levelItems['rates'] as $key => $shippingRate) {
-                                    echo '<option value="' . $key . '">' . $shippingRate['title'] .' ( ' . $shippingRate['cost'] . ' ) </option>';
+                                    $selected = (array_key_exists($name, $selectedShippingIds) && ($selectedShippingIds[$name] == $key)) ? 'selected="selected"' : '';
+                                    echo '<option '.$selected.' value="' . $key . '">' . $shippingRate['title'] .' ( ' . $shippingRate['cost'] . ' ) </option>';
                                 }
                                 echo '</select>';
                             } elseif ($product['product_type'] == Product::PRODUCT_TYPE_PHYSICAL) {
@@ -116,7 +118,8 @@
                                 $name = current($levelItems['rates'][$product['selprod_id']])['code'];
                                 echo '<select class="form-control custom-select" name="shipping_services[' . $name . ']">';
                                     foreach ($levelItems['rates'][$product['selprod_id']] as $key => $shippingRate) {
-                                        echo '<option value="' . $key . '">' . $shippingRate['title'] .' ( ' . $shippingRate['cost'] . ' ) </option>';
+                                        $selected = (array_key_exists($name, $selectedShippingIds) && ($selectedShippingIds[$name] == $key)) ? 'selected="selected"' : '';
+                                        echo '<option '.$selected.' value="' . $key . '">' . $shippingRate['title'] .' ( ' . $shippingRate['cost'] . ' ) </option>';
                                     }
                                     echo '</select>';
                             } elseif ($product['product_type'] == Product::PRODUCT_TYPE_PHYSICAL) {
