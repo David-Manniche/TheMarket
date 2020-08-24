@@ -239,8 +239,8 @@ class CheckoutController extends MyAppController
        
         // $products = $this->cartObj->getProducts($this->siteLangId);
         // $this->set('products', $products);
-        $this->cartObj->removeProductShippingMethod();
-        //$this->cartObj->removeProductPickUpAddresses();
+        /*$this->cartObj->removeProductShippingMethod();
+        $this->cartObj->removeProductPickUpAddresses();*/
         $this->set('cartHasPhysicalProduct', $cartHasPhysicalProduct);
         // $this->set('cartSummary', $this->cartObj->getCartFinancialSummary($this->siteLangId));
 
@@ -460,8 +460,8 @@ class CheckoutController extends MyAppController
             $this->cartObj->unsetCartShippingAddress();
         }
 
-        $this->cartObj->removeProductShippingMethod();
-        $this->cartObj->removeProductPickUpAddresses();
+        //$this->cartObj->removeProductShippingMethod();
+        //$this->cartObj->removeProductPickUpAddresses();
         $this->set('hasPhysicalProduct', $hasPhysicalProduct);
         if (true === MOBILE_APP_API_CALL) {
             $this->_template->render();
@@ -536,10 +536,20 @@ class CheckoutController extends MyAppController
         } else {
             $selected_shipping_address_id = $this->cartObj->getCartShippingAddress();
         }
-
         $address = new Address($selected_shipping_address_id, $this->siteLangId);
         $addresses = $address->getData(Address::TYPE_USER, UserAuthentication::getLoggedUserId());
-
+        
+        $selectedShippingData = $this->cartObj->getProductShippingMethod();
+        $selectedShippingIds = array();
+        if(!empty($selectedShippingData)){
+            foreach($selectedShippingData['product'] as $val) { 
+                if (!in_array($val['mshipapi_id'], $selectedShippingIds)) { 
+                    $selectedShippingIds[$val['mshipapi_code']] = $val['mshipapi_id']; 
+                }  
+            }   
+        }           
+        $this->set('selectedShippingIds', $selectedShippingIds);
+            
         $this->set('cartSummary', $this->cartObj->getCartFinancialSummary($this->siteLangId));
         $this->set('fulfillmentType', $fulfillmentType);
         $this->set('addresses', $addresses);
@@ -1430,21 +1440,7 @@ class CheckoutController extends MyAppController
             $this->set('redeemRewardFrm', $redeemRewardFrm);
         }
 
-        $pickUpAddrData= [] ;
-        if(!empty($productSelectedPickUpAddresses)){
-            foreach($productSelectedPickUpAddresses as $data) {
-                $addrId = $data['time_slot_addr_id'];                                
-                $addressRecordId = Address::getAttributesById($addrId, 'addr_record_id');
-                $addr = new Address($addrId, $this->siteLangId);
-                $pickUpAddr = $addr->getData($data['time_slot_type'], $addressRecordId);
-                
-                $pickUpAddrData[$addrId] = $pickUpAddr;  
-                $pickUpAddrData[$addrId]['shop_name'] = $data['shop_name'];    
-                $pickUpAddrData[$addrId]['time_slot_date'] = $data['time_slot_date'];    
-                $pickUpAddrData[$addrId]['time_slot_from'] = $data['time_slot_from_time'];    
-                $pickUpAddrData[$addrId]['time_slot_to'] = $data['time_slot_to_time']; 
-            }
-        }
+        $pickUpAddrData = $this->getSelectedPickUpAddresses();
         $this->set('pickUpAddrData', $pickUpAddrData);
 
         $this->set('paymentMethods', $paymentMethods);
@@ -2237,7 +2233,14 @@ class CheckoutController extends MyAppController
         $this->_template->render(false, false, 'json-success.php');
     }
     
-    public function selectedPickUpAddresses()
+    public function displaySelectedPickUpAddresses()
+    {
+        $pickUpAddrData = $this->getSelectedPickUpAddresses();
+        $this->set('pickUpAddrData', $pickUpAddrData);
+        $this->_template->render(false, false);
+    }
+    
+    private function getSelectedPickUpAddresses()
     {
         $pickUpAddrData= [] ;
         $productSelectedPickUpAddresses = $this->cartObj->getProductPickUpAddresses();
@@ -2255,8 +2258,7 @@ class CheckoutController extends MyAppController
                 $pickUpAddrData[$addrId]['time_slot_to'] = $data['time_slot_to_time']; 
             }
         }
-        $this->set('pickUpAddrData', $pickUpAddrData);
-        $this->_template->render(false, false);
+        return $pickUpAddrData;
     }
 
 

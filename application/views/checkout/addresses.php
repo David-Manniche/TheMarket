@@ -30,7 +30,7 @@
                     $checked = true;
                 }
                 ?>
-            <li class="list-group-item address-<?php echo $address['addr_id'];?> <?php echo ($checked == true) ? 'selected' : ''?>">                 <div class="row">
+            <li class="list-group-item address-<?php echo $address['addr_id'];?> <?php //echo ($checked == true) ? 'selected' : ''?>">                 <div class="row">
                     <div class="col-auto">
                         <label class="checkbox">                            
                             <input <?php echo ($checked == true) ? 'checked="checked"' : ''; ?> name="shipping_address_id" value="<?php echo $address['addr_id']; ?>" type="radio"><i class="input-helper"></i>
@@ -97,7 +97,7 @@
             <span class=""><?php echo Labels::getLabel('LBL_Back', $siteLangId); ?></span>
 		</a>
         <?php }else{ ?>
-		<a class="btn btn-link" href="<?php echo UrlHelper::generateUrl('cart');?>">
+        <a class="btn btn-link" href="javascript:void(0);" onclick="goToBack();">
             <i class="arrow">
                 <svg class="svg">
                     <use xlink:href="<?php echo CONF_WEBROOT_URL;?>images/retina/sprite.svg#arrow-left"
@@ -110,7 +110,7 @@
 		<?php if($addressType == Address::Address_TYPE_BILLING) { ?>
 		<a href="javascript:void(0)" id="btn-continue-js" onClick="setUpBillingAddressSelection(this);" class="btn btn-primary btn-wide"><?php echo Labels::getLabel('LBL_Continue', $siteLangId); ?></a>
 	   <?php } else{ ?>
-		<a href="javascript:void(0)" id="btn-continue-js" onClick="setUpAddressSelection(this);" class="btn btn-primary btn-wide"><?php echo Labels::getLabel('LBL_Continue', $siteLangId); ?></a>
+		<a href="javascript:void(0)" id="btn-continue-js" onClick="setUpAddressSelection();" class="btn btn-primary btn-wide"><?php echo Labels::getLabel('LBL_Continue', $siteLangId); ?></a>
 	   <?php } ?>
 	</div>
 </form>
