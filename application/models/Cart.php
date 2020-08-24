@@ -1719,8 +1719,9 @@ class Cart extends FatModel
         $shippedByArr = [];
         $address = new Address();
         $pickupAddress = [];
-
-        foreach ($cartProducts as $product) {
+        $selectedPickUpAddresses = [];
+        $pickUpData = $this->getProductPickUpAddresses(); 
+        foreach ($cartProducts as $product) { 
             $shippedById = 0;
             $shipType = Address::TYPE_ADMIN_PICKUP;
 
@@ -1735,8 +1736,21 @@ class Cart extends FatModel
             }
             $pickupAddress[] = $shippedById;
             
+            if (!in_array($shippedById, $selectedPickUpAddresses) && !empty($pickUpData[$product['selprod_id']])) {
+                $selProdId = $product['selprod_id'];
+                $addressObj = new Address($pickUpData[$selProdId]['time_slot_addr_id']);
+                $pickUpAddr = $addressObj->getData($shipType, $shippedById);
+                $shippedByArr[$shippedById]['pickup_address'] = $pickUpAddr;
+                $shippedByArr[$shippedById]['pickup_address']['time_slot_id'] = $pickUpData[$selProdId]['time_slot_id'];  
+                $shippedByArr[$shippedById]['pickup_address']['time_slot_date'] = $pickUpData[$selProdId]['time_slot_date'];    
+                $shippedByArr[$shippedById]['pickup_address']['time_slot_from'] = $pickUpData[$selProdId]['time_slot_from_time'];    
+                $shippedByArr[$shippedById]['pickup_address']['time_slot_to'] = $pickUpData[$selProdId]['time_slot_to_time'];    
+            }
+            $selectedPickUpAddresses[] = $shippedById;
+            
+            
             $shippedByArr[$shippedById]['products'][$product['selprod_id']] = $product;
-        }
+        }   
         return $shippedByArr;
     }
 
@@ -1894,29 +1908,29 @@ class Cart extends FatModel
         return isset($this->SYSTEM_ARR['shopping_cart']['checkout_type']) ? FatUtility::int($this->SYSTEM_ARR['shopping_cart']['checkout_type']) : 0;
     }
     
-    public function setProductPickUpMethod($arr)
+    public function setProductPickUpAddresses($arr)
     {
-        $this->SYSTEM_ARR['shopping_cart']['product_pickup_methods'] = $arr;
+        $this->SYSTEM_ARR['shopping_cart']['product_pickup_Addresses'] = $arr;
         $this->updateUserCart();
         return true;
     }
     
-    public function getProductPickUpMethod()
+    public function getProductPickUpAddresses()
     {
-        return isset($this->SYSTEM_ARR['shopping_cart']['product_pickup_methods']) ? $this->SYSTEM_ARR['shopping_cart']['product_pickup_methods'] : array();
+        return isset($this->SYSTEM_ARR['shopping_cart']['product_pickup_Addresses']) ? $this->SYSTEM_ARR['shopping_cart']['product_pickup_Addresses'] : array();
     }
     
-    public function removeProductPickUpMethod()
+    public function removeProductPickUpAddresses()
     {
-        unset($this->SYSTEM_ARR['shopping_cart']['product_pickup_methods']);
+        unset($this->SYSTEM_ARR['shopping_cart']['product_pickup_Addresses']);
         $this->updateUserCart();
         return true;
     }
     
-    public function isProductPickUpMethodSet()
+    public function isProductPickUpAddrSet()
     {
         foreach ($this->getProducts($this->cart_lang_id) as $product) {
-            if (!isset($this->SYSTEM_ARR['shopping_cart']['product_pickup_methods']['product'][$product['selprod_id']])) {
+            if (!isset($this->SYSTEM_ARR['shopping_cart']['product_pickup_Addresses'][$product['selprod_id']])) {
                 return false;
             }
         }

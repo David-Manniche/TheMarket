@@ -4,6 +4,77 @@ $rewardPoints = UserRewardBreakup::rewardPointBalance(UserAuthentication::getLog
 ?>
 <main class="main__content">
     <div class="step active" role="step:4">
+        
+        <ul class="list-group review-block">
+            <li class="list-group-item">
+                <div class="review-block__label">
+                    <?php 
+                    if ($fulfillmentType == Shipping::FULFILMENT_PICKUP || $cartHasPhysicalProduct == false) { 
+                        echo Labels::getLabel('LBL_Billing_to:', $siteLangId);
+                        $address = $billingAddressArr;
+                    }else{
+                        echo Labels::getLabel('LBL_Shipping_to:', $siteLangId);
+                        $address = $shippingAddressArr;
+                    }
+                    ?>
+                </div>
+                <div class="review-block__content" role="cell">  
+                    <div class="delivery-address">             
+                        <p><?php echo ( mb_strlen($address['addr_address1'] ) > 0 ) ? $address['addr_address1'] : '';?>
+                        <?php echo ( mb_strlen($address['addr_address2'] ) > 0 ) ? $address['addr_address2'] . '<br>' : '';?>
+                        <?php echo ( mb_strlen($address['addr_city']) > 0 ) ? $address['addr_city'] . ',' : '';?>
+                        <?php echo ( mb_strlen($address['state_name']) > 0 ) ? $address['state_name'] . '<br>' : '';?>
+                        <?php echo ( mb_strlen($address['country_name']) > 0 ) ? $address['country_name'] . ',' : '';?>
+                        <?php echo ( mb_strlen($address['addr_zip']) > 0 ) ?  $address['addr_zip'] . '<br>' : '';?></p>
+                        <p class="phone-txt"><?php echo ( mb_strlen($address['addr_phone']) > 0 ) ? $address['addr_phone'] . '' : '';?></p>
+                    </div>
+                </div>
+                <div class="review-block__link" role="cell">
+                    <?php 
+                    if ($fulfillmentType == Shipping::FULFILMENT_PICKUP || $cartHasPhysicalProduct == false) {
+                        $onclick = 'loadAddressDiv('.Address::Address_TYPE_BILLING.');';
+                    }else{ 
+                        $onclick = 'loadAddressDiv();';
+                    } 
+                    ?>
+                    <a class="link" href="javascript:void(0);" onClick="<?php echo $onclick; ?>"><span><?php echo Labels::getLabel('LBL_Change_Address', $siteLangId); ?></span></a>
+                </div>
+            </li>
+            
+            <?php if ($fulfillmentType == Shipping::FULFILMENT_PICKUP && !empty($pickUpAddrData)) { ?>
+            <li class="list-group-item">
+                <div class="review-block__label">
+                <?php echo Labels::getLabel('LBL_Pickup_Address:', $siteLangId); ?>
+                </div>
+                <div class="review-block__content" role="cell">  
+                    <div class="delivery-address"> 
+                        <?php foreach($pickUpAddrData as $address) { ?>
+                            <p><strong><?php echo $address['shop_name']; ?></strong></p>
+                            <p><?php echo ( mb_strlen($address['addr_address1'] ) > 0 ) ? $address['addr_address1'] : '';?>
+                            <?php echo ( mb_strlen($address['addr_address2'] ) > 0 ) ? $address['addr_address2'] . '<br>' : '';?>
+                            <?php echo ( mb_strlen($address['addr_city']) > 0 ) ? $address['addr_city'] . ',' : '';?>
+                            <?php echo ( mb_strlen($address['state_name']) > 0 ) ? $address['state_name'] . '<br>' : '';?>
+                            <?php echo ( mb_strlen($address['country_name']) > 0 ) ? $address['country_name'] . ',' : '';?>
+                            <?php echo ( mb_strlen($address['addr_zip']) > 0 ) ?  $address['addr_zip'] . '<br>' : '';?></p>
+                            <p class="phone-txt"><?php echo ( mb_strlen($address['addr_phone']) > 0 ) ? $address['addr_phone'] . '' : '';?></p>
+                            <?php 
+                            $fromTime = date('H:i', strtotime($address["time_slot_from"]));
+                            $toTime = date('H:i', strtotime($address["time_slot_to"]));
+                            ?>
+                            <p><?php echo "<strong>".FatDate::format($address["time_slot_date"]).' '.$fromTime.' - '.$toTime.'</strong>'; ?></p>
+                            <?php if (count($pickUpAddrData) > 1) { ?>
+                            <a class="plus-more" href="javascript:void(0);" onClick="displaySelectedPickUpAddresses()"><?php echo '+'.(count($pickUpAddrData) - 1).' '.Labels::getLabel('LBL_More_', $siteLangId); ?></a>
+                            <?php break; } ?>
+                        <?php } ?>
+                    </div>
+                </div>
+                <div class="review-block__link" role="cell">
+                    <a class="link" href="javascript:void(0);" onClick="loadShippingSummaryDiv();"><span><?php echo Labels::getLabel('LBL_Change_Address', $siteLangId); ?></span></a>
+                </div>
+            </li>
+            <?php } ?>
+        </ul> 
+        
         <div class="step__section">
             <div class="step__section__head">
                 <h5 class="step__section__head__title"><?php echo Labels::getLabel('LBL_Payment_Summary', $siteLangId); ?></h5>
@@ -98,14 +169,22 @@ $rewardPoints = UserRewardBreakup::rewardPointBalance(UserAuthentication::getLog
                 </div>
             <?php } ?>
         </div>
-    </div>
+    </div> 
 </main>
 <?php if ($userWalletBalance > 0 && $cartSummary['orderNetAmount'] > 0 && $canUseWalletForPayment) { ?>
     <div class="wallet-balance">
          <label class="checkbox wallet">
             <input onChange="walletSelection(this)" type="checkbox" <?php echo ($cartSummary["cartWalletSelected"]) ? 'checked="checked"' : ''; ?> name="pay_from_wallet" id="pay_from_wallet" value="1">
             <i class="input-helper"></i>
-            <span class="wallet__txt"><p><?php echo Labels::getLabel('LBL_AVAILABLE_BALANCE', $siteLangId); ?> <span class="currency-value" dir="ltr"><?php echo CommonHelper::displayMoneyFormat($userWalletBalance, true, false, true, false, true); ?></p>
+            <span class="wallet__txt">           
+                <svg class="svg">
+                    <use xlink:href="<?php echo CONF_WEBROOT_URL; ?>images/retina/sprite.svg#wallet" href="<?php echo CONF_WEBROOT_URL; ?>images/retina/sprite.svg#wallet">
+                    </use>
+                </svg>
+                <div class="">
+                    <p><?php echo Labels::getLabel('LBL_AVAILABLE_BALANCE', $siteLangId); ?></p>
+                    <span class="currency-value" dir="ltr"><?php echo CommonHelper::displayMoneyFormat($userWalletBalance, true, false, true, false, true); ?></span>
+                </div>
             </span>
         </label>
         <?php if ($cartSummary["cartWalletSelected"] && $userWalletBalance >= $cartSummary['orderNetAmount']) { 
@@ -125,6 +204,8 @@ $rewardPoints = UserRewardBreakup::rewardPointBalance(UserAuthentication::getLog
                 }
             </script>            
         <?php }?>
+        <div class="wallet-balance_info">Lorem, ipsum dolor sit amet consectetur adipisicing elit.</div>
+
         <!-- <button class="btn btn-primary btn-wide" type="button">Pay $ 587.00</button> -->
     </div> 
 <?php }?>

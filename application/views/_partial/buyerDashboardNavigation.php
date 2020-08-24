@@ -156,6 +156,23 @@
                         </a>
                     </div>
                 </li>
+                <?php 
+                    $kingPin = FatApp::getConfig('CONF_DEFAULT_PLUGIN_' . Plugin::TYPE_SPLIT_PAYMENT_METHOD, FatUtility::VAR_INT, 0);
+                    if (0 < $kingPin) {
+                ?>
+                    <li class="menu__item <?php echo ($controller == 'account' && $action == 'cards') ? 'is-active' : ''; ?>">
+                        <div class="menu__item__inner">
+                            <a title="<?php echo Labels::getLabel("LBL_MY_CARDS", $siteLangId); ?>" href="<?php echo UrlHelper::generateUrl('Account', 'cards');?>">
+                                <i class="icn shop">
+                                    <svg class="svg">
+                                        <use xlink:href="<?php echo CONF_WEBROOT_URL; ?>images/retina/sprite.svg#dash-credits" href="<?php echo CONF_WEBROOT_URL; ?>images/retina/sprite.svg#dash-credits"></use>
+                                    </svg>
+                                </i>
+                                <span class="menu-item__title"><?php echo Labels::getLabel('LBL_MY_CARDS', $siteLangId);?></span>
+                            </a>
+                        </div>
+                    </li>
+                <?php } ?>
                 <li class="menu__item <?php echo ($controller == 'account' && $action == 'wishlist') ? 'is-active' : ''; ?>">
                     <div class="menu__item__inner">
                         <?php 

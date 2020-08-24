@@ -32,32 +32,68 @@
             foreach ($shippingRates as $level => $levelItems) { ?>
             <ul class="list-group list-cart list-shippings">
             <?php if (count($levelItems['products']) > 0 && $level == 0) {
-                $productData = current($levelItems['products']);
+                $productData = current($levelItems['products']); 
                 ?>
                 <li class="list-group-item shipping-select">
                     <div class="shop-name"><?php echo ($level == Shipping::LEVEL_SHOP) ? $productData['shop_name'] : FatApp::getConfig('CONF_WEBSITE_NAME_' . $siteLangId, null, ''); ?></div>
-                    <div class="shop-name js-slot-addr_<?php echo $level; ?>"></div>
+                    <div class="shop-name js-slot-addr_<?php echo $level; ?>">
+                    <?php $seletedSlotId = '';
+                        $seletedSlotDate = '';
+                    if(!empty($levelItems['pickup_address'])) {
+                        $address = $levelItems['pickup_address'];
+                        $seletedSlotId = $address['time_slot_id'];
+                        $seletedSlotDate = $address['time_slot_date'];
+                        echo $address['addr_address1']; 
+                        echo (strlen($address['addr_address2'])>0) ? ", ".$address['addr_address2'] : ''; 
+                        echo (strlen($address['addr_city'])>0) ? '<br>'.$address['addr_city'].',' : ''; 
+                        echo (strlen($address['state_name'])>0) ? $address['state_name'].',' : ''; 
+                        echo (strlen($address['country_name'])>0) ? $address['country_name'].'<br>' : ''; 
+                        echo (strlen($address['addr_zip'])>0) ? Labels::getLabel('LBL_Zip:', $siteLangId).$address['addr_zip'].',' : ''; 
+                        echo (strlen($address['addr_phone'])>0) ? Labels::getLabel('LBL_Phone:', $siteLangId).$address['addr_phone'] : ''; 
+                        $fromTime = date('H:i', strtotime($address["time_slot_from"]));
+                        $toTime = date('H:i', strtotime($address["time_slot_to"]));
+                        echo "<br/><strong>".FatDate::format($address["time_slot_date"]).' '.$fromTime.' - '.$toTime.'</strong>'; 
+                    } ?>
+                    </div>
                     <div class="shipping-method">
-                        <input type="hidden" name="slot_id[<?php echo $level; ?>]" class="js-slot-id" data-level="<?php echo $level; ?>">
-                        <input type="hidden" name="slot_date[<?php echo $level; ?>]" class="js-slot-date" data-level="<?php echo $level; ?>">
+                        <input type="hidden" name="slot_id[<?php echo $level; ?>]" class="js-slot-id" data-level="<?php echo $level; ?>" value="<?php echo $seletedSlotId; ?>">
+                        <input type="hidden" name="slot_date[<?php echo $level; ?>]" class="js-slot-date" data-level="<?php echo $level; ?>" value="<?php echo $seletedSlotDate; ?>">
                         <a class="btn btn-secondary btn-sm" href="javascript:void(0)" onclick="displayPickupAddress(<?php echo $level;?>, 0)"><?php echo Labels::getLabel('LBL_SELECT_PICKUP', $siteLangId);?></a>
                     </div>
                 </li> 
             <?php } ?>    
-            <?php foreach ($levelItems['products'] as $product) {
+            <?php foreach ($levelItems['products'] as $product) {   
                     $productUrl = !$isAppUser ? UrlHelper::generateUrl('Products', 'View', array($product['selprod_id'])) : 'javascript:void(0)';
                     $shopUrl = !$isAppUser ? UrlHelper::generateUrl('Shops', 'View', array($product['shop_id'])) : 'javascript:void(0)';
                     $imageUrl = UrlHelper::getCachedUrl(UrlHelper::generateFileUrl('image', 'product', array($product['product_id'], "THUMB", $product['selprod_id'], 0, $siteLangId)), CONF_IMG_CACHE_TIME, '.jpg'); ?>
                 <?php if ($levelNo != $level) { 
                     //if (count($levelItems['products']) > 0 && count($levelItems['pickup_options']) > 0 && $level != 0) { 
-                    if (count($levelItems['products']) > 0 && $level != 0) { 
+                    if (count($levelItems['products']) > 0 && $level != 0) {
                 ?>
                     <li class="list-group-item shipping-select">
                         <div class="shop-name"><?php echo $product['shop_name']; ?></div>
-                        <div class="shop-name js-slot-addr_<?php echo $level; ?>"></div>
+                        <div class="shop-name js-slot-addr_<?php echo $level; ?>">
+                        <?php $seletedSlotId = '';
+                        $seletedSlotDate = '';
+                        if(!empty($levelItems['pickup_address'])) {
+                            $address = $levelItems['pickup_address'];
+                            $seletedSlotId = $address['time_slot_id'];
+                            $seletedSlotDate = $address['time_slot_date'];
+                            echo $address['addr_address1']; 
+                            echo (strlen($address['addr_address2'])>0) ? ", ".$address['addr_address2'] : ''; 
+                            echo (strlen($address['addr_city'])>0) ? '<br>'.$address['addr_city'].',' : ''; 
+                            echo (strlen($address['state_name'])>0) ? $address['state_name'].',' : ''; 
+                            echo (strlen($address['country_name'])>0) ? $address['country_name'].'<br>' : ''; 
+                            echo (strlen($address['addr_zip'])>0) ? Labels::getLabel('LBL_Zip:', $siteLangId).$address['addr_zip'].',' : ''; 
+                            echo (strlen($address['addr_phone'])>0) ? Labels::getLabel('LBL_Phone:', $siteLangId).$address['addr_phone'] : ''; 
+                            $fromTime = date('H:i', strtotime($address["time_slot_from"]));
+                            $toTime = date('H:i', strtotime($address["time_slot_to"]));
+                             echo "<br/><strong>".FatDate::format($address["time_slot_date"]).' '.$fromTime.' - '.$toTime.'</strong>'; 
+                        } ?>
+                        </div>
                         <div class="shipping-method">
-                        <input type="hidden" name="slot_id[<?php echo $level; ?>]" class="js-slot-id" data-level="<?php echo $level; ?>">
-                        <input type="hidden" name="slot_date[<?php echo $level; ?>]" class="js-slot-date" data-level="<?php echo $level; ?>">
+                        <input type="hidden" name="slot_id[<?php echo $level; ?>]" class="js-slot-id" data-level="<?php echo $level; ?>" value="<?php echo $seletedSlotId; ?>">
+                        <input type="hidden" name="slot_date[<?php echo $level; ?>]" class="js-slot-date" data-level="<?php echo $level; ?>" value="<?php echo $seletedSlotDate;?>">
                         <a class="btn btn-secondary btn-sm" href="javascript:void(0)" onclick="displayPickupAddress(<?php echo $level;?>, <?php echo $product['shop_id']; ?>)"><?php echo Labels::getLabel('LBL_SELECT_PICKUP', $siteLangId);?></a>
                         </div>
                     </li> 

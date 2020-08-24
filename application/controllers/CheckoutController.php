@@ -186,8 +186,8 @@ class CheckoutController extends MyAppController
                         return false;
                     }
                     break;
-                case 'isProductPickUpMethodSet':
-                    if (!$this->cartObj->isProductPickUpMethodSet()) {
+                case 'isProductPickUpAddrSet':
+                    if (!$this->cartObj->isProductPickUpAddrSet()) {
                         $key = false;
                         $this->errMessage = Labels::getLabel('MSG_Pickup_Method_is_not_selected_on_products_in_cart.', $this->siteLangId);
                         Message::addErrorMessage($this->errMessage);
@@ -239,8 +239,8 @@ class CheckoutController extends MyAppController
        
         // $products = $this->cartObj->getProducts($this->siteLangId);
         // $this->set('products', $products);
-        $this->cartObj->removeProductShippingMethod();
-        $this->cartObj->removeProductPickUpMethod();
+        /*$this->cartObj->removeProductShippingMethod();
+        $this->cartObj->removeProductPickUpAddresses();*/
         $this->set('cartHasPhysicalProduct', $cartHasPhysicalProduct);
         // $this->set('cartSummary', $this->cartObj->getCartFinancialSummary($this->siteLangId));
 
@@ -460,8 +460,8 @@ class CheckoutController extends MyAppController
             $this->cartObj->unsetCartShippingAddress();
         }
 
-        $this->cartObj->removeProductShippingMethod();
-        $this->cartObj->removeProductPickUpMethod();
+        //$this->cartObj->removeProductShippingMethod();
+        //$this->cartObj->removeProductPickUpAddresses();
         $this->set('hasPhysicalProduct', $hasPhysicalProduct);
         if (true === MOBILE_APP_API_CALL) {
             $this->_template->render();
@@ -536,11 +536,20 @@ class CheckoutController extends MyAppController
         } else {
             $selected_shipping_address_id = $this->cartObj->getCartShippingAddress();
         }
-
         $address = new Address($selected_shipping_address_id, $this->siteLangId);
         $addresses = $address->getData(Address::TYPE_USER, UserAuthentication::getLoggedUserId());
         
-
+        $selectedShippingData = $this->cartObj->getProductShippingMethod();
+        $selectedShippingIds = array();
+        if(!empty($selectedShippingData)){
+            foreach($selectedShippingData['product'] as $val) { 
+                if (!in_array($val['mshipapi_id'], $selectedShippingIds)) { 
+                    $selectedShippingIds[$val['mshipapi_code']] = $val['mshipapi_id']; 
+                }  
+            }   
+        }           
+        $this->set('selectedShippingIds', $selectedShippingIds);
+            
         $this->set('cartSummary', $this->cartObj->getCartFinancialSummary($this->siteLangId));
         $this->set('fulfillmentType', $fulfillmentType);
         $this->set('addresses', $addresses);
@@ -881,7 +890,7 @@ class CheckoutController extends MyAppController
             $criteria['isProductShippingMethodSet'] = true;
         }
         if ($fulfillmentType == Shipping::FULFILMENT_PICKUP) {
-            $criteria['isProductPickUpMethodSet'] = true;
+            $criteria['isProductPickUpAddrSet'] = true;
         }
         
         if (!$this->isEligibleForNextStep($criteria)) {
@@ -1088,7 +1097,7 @@ class CheckoutController extends MyAppController
 
         $allLanguages = Language::getAllNames();
         $productSelectedShippingMethodsArr = $this->cartObj->getProductShippingMethod();
-        $productSelectedPickUpMethodsArr = $this->cartObj->getProductPickUpMethod();
+        $productSelectedPickUpAddresses = $this->cartObj->getProductPickUpAddresses();
         $orderLangData = array();
         foreach ($allLanguages as $lang_id => $language_name) {
             $order_shippingapi_name = '';
@@ -1148,15 +1157,15 @@ class CheckoutController extends MyAppController
                 
                 $productPickUpData = array();
                 $productPickupAddress = array();
-                if (!empty($productSelectedPickUpMethodsArr['product']) && isset($productSelectedPickUpMethodsArr['product'][$productInfo['selprod_id']])) {
-                    $pickUpDataRow = $productSelectedPickUpMethodsArr['product'][$productInfo['selprod_id']];
+                if (!empty($productSelectedPickUpAddresses) && isset($productSelectedPickUpAddresses[$productInfo['selprod_id']])) {
+                    $pickUpDataRow = $productSelectedPickUpAddresses[$productInfo['selprod_id']];
                     $productPickUpData = array(
                         'opshipping_type' => OrderProduct::TYPE_PICKUP,
                         'opshipping_pickup_addr_id' => $pickUpDataRow['time_slot_addr_id'],
                         'opshipping_date' => $pickUpDataRow['time_slot_date'],
                         'opshipping_time_slot_from' => $pickUpDataRow['time_slot_from_time'],
                         'opshipping_time_slot_to' => $pickUpDataRow['time_slot_to_time'],
-                        );
+                    );
                     
                     $addressRecordId = Address::getAttributesById($pickUpDataRow['time_slot_addr_id'], 'addr_record_id');
                     $addr = new Address($pickUpDataRow['time_slot_addr_id'], $this->siteLangId);
@@ -1431,7 +1440,8 @@ class CheckoutController extends MyAppController
             $this->set('redeemRewardFrm', $redeemRewardFrm);
         }
 
-
+        $pickUpAddrData = $this->getSelectedPickUpAddresses();
+        $this->set('pickUpAddrData', $pickUpAddrData);
 
         $this->set('paymentMethods', $paymentMethods);
         $this->set('userWalletBalance', $userWalletBalance);
@@ -1454,13 +1464,15 @@ class CheckoutController extends MyAppController
         $this->set('shippingAddressId', $shippingAddressId);
         $this->set('billingAddressId', $billingAddressId);
         $this->set('billingAddressArr', $billingAddressArr);
-        
+        $this->set('shippingAddressArr', $shippingAddressArr);
+
         if (true === MOBILE_APP_API_CALL) {
             $this->set('products', $cartProducts);
             $this->set('orderId', $order_id);
             $this->set('orderType', $orderInfo['order_type']);
             $this->_template->render();
         }
+
         $this->_template->render(false, false);
     }
 
@@ -1770,7 +1782,7 @@ class CheckoutController extends MyAppController
             $criteria['isProductShippingMethodSet'] = true;
         }
         if ($fulfillmentType == Shipping::FULFILMENT_PICKUP) {
-            $criteria['isProductPickUpMethodSet'] = true;
+            $criteria['isProductPickUpAddrSet'] = true;
         }
         
         if (!$this->isEligibleForNextStep($criteria)) {
@@ -2104,10 +2116,10 @@ class CheckoutController extends MyAppController
             $post['data'] = (!empty($post['data']) ? json_decode($post['data'], true) : array());
         }
         
-        $productToPickUpMethods = array();
+        $pickupAddressArr = array();
         $basketProducts = $this->cartObj->getBasketProducts($this->siteLangId);
         $pickupOptions = $this->cartObj->getPickupOptions($basketProducts);
-        
+      
         foreach ($post['slot_id'] as $level => $slotId) {
             if (empty($slotId) || empty($post['slot_date'][$level])) {
                 $message = Labels::getLabel('MSG_Pickup_Method_is_not_selected_on_products_in_cart', $this->siteLangId);
@@ -2143,9 +2155,11 @@ class CheckoutController extends MyAppController
                         continue;
                     }
                     
-                    $productToPickUpMethods['product'][$cartval['selprod_id']] = array(
+                    $pickupAddressArr[$cartval['selprod_id']] = array(
                         'selprod_id' => $cartval['selprod_id'],
+                        'shop_name' =>  ($level == Shipping::LEVEL_SHOP) ? $cartval['shop_name'] : FatApp::getConfig('CONF_WEBSITE_NAME_' . $this->siteLangId, null, ''),
                         'time_slot_addr_id' => $slotData['tslot_record_id'],
+                        'time_slot_id' => $slotData['tslot_id'],
                         'time_slot_type' => $slotData['tslot_type'],
                         'time_slot_from_time' => $slotData['tslot_from_time'],
                         'time_slot_to_time' => $slotData['tslot_to_time'],
@@ -2155,7 +2169,7 @@ class CheckoutController extends MyAppController
             }
         }
 
-        $this->cartObj->setProductPickUpMethod($productToPickUpMethods);
+        $this->cartObj->setProductPickUpAddresses($pickupAddressArr);
         $this->set('msg', Labels::getLabel('MSG_Pickup_Method_selected_successfully.', $this->siteLangId));
         $this->_template->render(false, false, 'json-success.php');
     }
@@ -2217,6 +2231,34 @@ class CheckoutController extends MyAppController
         }
         $this->set('msg', Labels::getLabel('MSG_Address_Selection_Successfull', $this->siteLangId));
         $this->_template->render(false, false, 'json-success.php');
+    }
+    
+    public function displaySelectedPickUpAddresses()
+    {
+        $pickUpAddrData = $this->getSelectedPickUpAddresses();
+        $this->set('pickUpAddrData', $pickUpAddrData);
+        $this->_template->render(false, false);
+    }
+    
+    private function getSelectedPickUpAddresses()
+    {
+        $pickUpAddrData= [] ;
+        $productSelectedPickUpAddresses = $this->cartObj->getProductPickUpAddresses();
+        if(!empty($productSelectedPickUpAddresses)){
+            foreach($productSelectedPickUpAddresses as $data) {
+                $addrId = $data['time_slot_addr_id'];                                
+                $addressRecordId = Address::getAttributesById($addrId, 'addr_record_id');
+                $addr = new Address($addrId, $this->siteLangId);
+                $pickUpAddr = $addr->getData($data['time_slot_type'], $addressRecordId);
+                
+                $pickUpAddrData[$addrId] = $pickUpAddr;  
+                $pickUpAddrData[$addrId]['shop_name'] = $data['shop_name'];    
+                $pickUpAddrData[$addrId]['time_slot_date'] = $data['time_slot_date'];    
+                $pickUpAddrData[$addrId]['time_slot_from'] = $data['time_slot_from_time'];    
+                $pickUpAddrData[$addrId]['time_slot_to'] = $data['time_slot_to_time']; 
+            }
+        }
+        return $pickUpAddrData;
     }
 
 

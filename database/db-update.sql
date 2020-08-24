@@ -556,6 +556,7 @@ INSERT INTO `tbl_language_labels` (`label_key`, `label_lang_id`, `label_caption`
 ("LBL_Seller_Products", 1, "My Products", 1),
 ("LBL_Seller_Products", 2, "My Products", 1);
 
+-- ----------------- TV-9.1.3.20200820 -----------------------
 
 -- Collections Management --
 
