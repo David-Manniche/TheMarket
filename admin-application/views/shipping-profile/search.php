@@ -50,7 +50,10 @@ if (count($arr_listing) == 0) {
                     break;
                 case 'action':
                         if ($canEdit) {
-                            $td->appendElement('a', array('href' => UrlHelper::generateUrl('shippingProfile', 'form', array($row['shipprofile_id'])),  'class' => 'btn btn-clean btn-sm btn-icon', 'title' => Labels::getLabel('LBL_Edit', $adminLangId)), '<i class="far fa-edit icon"></i>', true);
+                            $td->appendElement('a', array('href' => UrlHelper::generateUrl('shippingProfile', 'form', array($row['shipprofile_id'])),  'class' => 'btn btn-clean btn-sm btn-icon', 'title' => Labels::getLabel('LBL_Edit', $adminLangId)), '<i class="fa fa-edit icon"></i>', true);
+                            if ($row['shipprofile_default'] != applicationConstants::YES) {
+                                $td->appendElement('a', array('href' => 'javascript:void(0)',  'class' => 'btn btn-clean btn-sm btn-icon', 'title' => Labels::getLabel('LBL_Edit', $adminLangId), "onclick"=>"deleteRecord(".$row['shipprofile_id'].")"), '<i class="fa fa-trash icon"></i>', true);
+                            }
                         }
                     break;
                 default:

@@ -76,12 +76,14 @@ class ShippingZone extends MyAppModel
         }
         return true;
     }
-    public function deleteRates($zoneId)
+
+    public function deleteRates($shipprozoneId)
     {
-        if (!FatApp::getDb()->query('DELETE rates, rateLang FROM '. ShippingRate::DB_TBL .' rates INNER JOIN '. ShippingRate::DB_TBL_LANG .' rateLang ON rateLang.shipratelang_shiprate_id  = rates.shiprate_id  WHERE rates.shiprate_shipprozone_id = '. $zoneId)) {
+        if (!FatApp::getDb()->query('DELETE rates, rateLang FROM '. ShippingRate::DB_TBL .' rates LEFT JOIN '. ShippingRate::DB_TBL_LANG .' rateLang ON rateLang.shipratelang_shiprate_id  = rates.shiprate_id  WHERE rates.shiprate_shipprozone_id = '. $shipprozoneId)) {
             $this->error = FatApp::getDb()->getError();
             return false;
         };
         return true;
     }
+    
 }

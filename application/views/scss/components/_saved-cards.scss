@@ -2,16 +2,22 @@
     display: grid;
     grid-gap: 1rem;
     grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-    li {
+    >li {
         border-radius: $radius4;
         border: $border;
         background: #fff;
         padding: 1rem;
         position: relative;
-        &.selected {
-            background: #4862e2 url(images/visa-bg.jpg) no-repeat center;
-            border-color: #4862e2;
+        &.selected,
+        &:hover {
+            background: #005eff url(images/visa-bg.jpg) no-repeat center;
+            border-color: #005eff;
             box-shadow: 0 2px 4px 0 #cfd7df;
+            .list-actions {
+                opacity: 1;
+                -webkit-transform: translateY(0);
+                transform: translateY(0);
+            }
             .cards-detail {
                 h6,
                 p {
@@ -20,9 +26,15 @@
             }
         }
         .radio {
-            position: absolute;
-            top: 21px;
-            #{$end-direction}: 21px;
+            input {
+                width: 20px !important;
+                height: 20px !important;
+                max-width: 20px;
+                flex: 0 0 20px;
+                border-color: #fff;
+                background: none;
+                vertical-align: inherit;
+            }
         }
         .cards-detail {
             h6 {
@@ -36,6 +48,35 @@
                 color: $body-color;
                 font-size: 0.9rem;
                 font-weight: 600;
+            }
+        }
+        .list-actions {
+            position: absolute;
+            top: 19px;
+            #{$end-direction}: 1.5rem;
+            opacity: 0;
+            -webkit-transform: translateY(0.5rem);
+            transform: translateY(0.5rem);
+            -webkit-transition: all .1s ease-in-out;
+            transition: all .1s ease-in-out;
+            transition-property: -webkit-transform, transform, opacity;
+            li {
+                margin: 0;
+                display: flex;
+                a {
+                    color: #fff;
+                    .svg {
+                        width: 20px;
+                        height: 20px;
+                        opacity: 1;
+                        vertical-align: inherit;
+                    }
+                    &:hover {
+                        .svg {
+                            fill: #fff;
+                        }
+                    }
+                }
             }
         }
     }
