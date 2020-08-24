@@ -7,9 +7,13 @@ $autoUpdateFld = $productFrm->getField('auto_update_other_langs_data');
 $autoUpdateFld->developerTags['cbLabelAttributes'] = array('class' => 'checkbox');
 $autoUpdateFld->developerTags['cbHtmlAfterCheckbox'] = '<i class="input-helper"></i>';
 
+$btnSubmit = $productFrm->getField('btn_submit');
+$btnSubmit->setFieldTagAttribute('class', "btn btn-primary");
+
 $btnDiscardFld = $productFrm->getField('btn_discard');
 $btnDiscardFld->addFieldTagAttribute('onClick', 'goToCatalogRequest();');
 $btnDiscardFld->value = Labels::getLabel('LBL_Discard', $siteLangId);
+$btnDiscardFld->setFieldTagAttribute('class', "btn btn-outline-primary");
 ?>
 <div class="row justify-content-center">
     <div class="col-md-12">

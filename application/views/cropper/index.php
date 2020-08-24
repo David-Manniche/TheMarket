@@ -36,7 +36,7 @@
                   <span class="fa fa-sync-alt"></span> <?php echo Labels::getLabel('LBL_Reset', $siteLangId); ?>
                 </span>
               </button>
-              <label class="btn btn-secondary btn-upload" for="inputImage" title="<?php echo Labels::getLabel('LBL_Upload_image_file', $siteLangId); ?>">
+              <label class="btn btn-secondary btn-upload mb-0" for="inputImage" title="<?php echo Labels::getLabel('LBL_Upload_image_file', $siteLangId); ?>">
                 <input type="file" class="sr-only" id="inputImage" name="file" accept="image/*">
                 <span class="docs-tooltip" data-toggle="tooltip" data-placement="right">
                   <span class="fa fa-upload"></span> <?php echo Labels::getLabel('LBL_Browse', $siteLangId); ?>
