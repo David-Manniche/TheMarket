@@ -41,29 +41,28 @@ $this->includeTemplate('_partial/dashboardNavigation.php');
                                 <li class="selected">
                                     <ul class="list-actions">
                                         <li>
-                                        <label class="radio">
-                                        <input name="card_id" type="radio" value="card_1HEXlNCvMMMb9OAZN3P9NTHv"
-                                            checked="">
-                                        <i class="input-helper"></i>
-                                    </label>
-                                    </li>
+                                            <label class="radio">
+                                                <input name="card_id" type="radio" value="card_1HEXlNCvMMMb9OAZN3P9NTHv"
+                                                    checked="">
+                                                <i class="input-helper"></i>
+                                            </label>
+                                        </li>
                                         <li>
                                             <a href="#"><svg class="svg">
-                                                    <use xlink:href="/yokart/images/retina/sprite.svg#remove"
-                                                        href="/yokart/images/retina/sprite.svg#remove">
+                                                    <use xlink:href="/yokart/images/retina/sprite.svg#bin"
+                                                        href="/yokart/images/retina/sprite.svg#bin">
                                                     </use>
                                                 </svg>
                                             </a>
-                                            </li>
+                                        </li>
                                     </ul>
-
                                     <div class="payment-card__photo">
                                         <svg class="svg">
                                             <use xlink:href="/yokart/images/retina/sprite.svg#visa"
                                                 href="/yokart/images/retina/sprite.svg#visa">
                                             </use>
                                         </svg>
-                                    </div>                                    
+                                    </div>
                                     <div class="cards-detail my-4">
                                         <h6>Card Number</h6>
                                         <p>**** **** **** 2345</p>
@@ -86,61 +85,24 @@ $this->includeTemplate('_partial/dashboardNavigation.php');
                                     </div>
 
                                 </li>
-
                                 <li>
-                                    <div class="payment-card__photo">
-                                        <svg class="svg">
-                                            <use xlink:href="/yokart/images/retina/sprite.svg#visa"
-                                                href="/yokart/images/retina/sprite.svg#visa">
-                                            </use>
-                                        </svg>
-                                    </div>
-
-                                    <label class="radio">
-                                        <input name="card_id" type="radio" value="card_1HEXlNCvMMMb9OAZN3P9NTHv"
-                                            checked="">
-                                        <i class="input-helper"></i>
-                                    </label>
-
-                                    <div class="cards-detail my-4">
-                                        <h6>Card Number</h6>
-                                        <p>**** **** **** 2345</p>
-                                    </div>
-
-                                    <div class="row justify-content-between">
-                                        <div class="col-auto">
-                                            <div class="cards-detail">
-                                                <h6>Card Holder</h6>
-                                                <p>Pawan Yadhuwanshi</p>
-                                            </div>
-                                        </div>
-
-                                        <div class="col-auto">
-                                            <div class="cards-detail">
-                                                <h6>Expiry Date</h6>
-                                                <p>04/28</p>
-                                            </div>
-                                        </div>
-                                    </div>
-
                                     <ul class="list-actions">
                                         <li>
-                                            <a href="#"><svg class="svg">
-                                                    <use xlink:href="/yokart/images/retina/sprite.svg#edit"
-                                                        href="/yokart/images/retina/sprite.svg#edit">
-                                                    </use>
-                                                </svg>
-                                            </a></li>
+                                            <label class="radio">
+                                                <input name="card_id" type="radio" value="card_1HEXlNCvMMMb9OAZN3P9NTHv"
+                                                    checked="">
+                                                <i class="input-helper"></i>
+                                            </label>
+                                        </li>
                                         <li>
                                             <a href="#"><svg class="svg">
-                                                    <use xlink:href="/yokart/images/retina/sprite.svg#remove"
-                                                        href="/yokart/images/retina/sprite.svg#remove">
+                                                    <use xlink:href="/yokart/images/retina/sprite.svg#bin"
+                                                        href="/yokart/images/retina/sprite.svg#bin">
                                                     </use>
                                                 </svg>
-                                            </a></li>
+                                            </a>
+                                        </li>
                                     </ul>
-                                </li>
-                                <li>
                                     <div class="payment-card__photo">
                                         <svg class="svg">
                                             <use xlink:href="/yokart/images/retina/sprite.svg#visa"
@@ -148,13 +110,6 @@ $this->includeTemplate('_partial/dashboardNavigation.php');
                                             </use>
                                         </svg>
                                     </div>
-
-                                    <label class="radio">
-                                        <input name="card_id" type="radio" value="card_1HEXlNCvMMMb9OAZN3P9NTHv"
-                                            checked="">
-                                        <i class="input-helper"></i>
-                                    </label>
-
                                     <div class="cards-detail my-4">
                                         <h6>Card Number</h6>
                                         <p>**** **** **** 2345</p>
@@ -175,8 +130,26 @@ $this->includeTemplate('_partial/dashboardNavigation.php');
                                             </div>
                                         </div>
                                     </div>
-                                </li>
+
+                                </li> 
                                 <li>
+                                    <ul class="list-actions">
+                                        <li>
+                                            <label class="radio">
+                                                <input name="card_id" type="radio" value="card_1HEXlNCvMMMb9OAZN3P9NTHv"
+                                                    checked="">
+                                                <i class="input-helper"></i>
+                                            </label>
+                                        </li>
+                                        <li>
+                                            <a href="#"><svg class="svg">
+                                                    <use xlink:href="/yokart/images/retina/sprite.svg#bin"
+                                                        href="/yokart/images/retina/sprite.svg#bin">
+                                                    </use>
+                                                </svg>
+                                            </a>
+                                        </li>
+                                    </ul>
                                     <div class="payment-card__photo">
                                         <svg class="svg">
                                             <use xlink:href="/yokart/images/retina/sprite.svg#visa"
@@ -184,13 +157,6 @@ $this->includeTemplate('_partial/dashboardNavigation.php');
                                             </use>
                                         </svg>
                                     </div>
-
-                                    <label class="radio">
-                                        <input name="card_id" type="radio" value="card_1HEXlNCvMMMb9OAZN3P9NTHv"
-                                            checked="">
-                                        <i class="input-helper"></i>
-                                    </label>
-
                                     <div class="cards-detail my-4">
                                         <h6>Card Number</h6>
                                         <p>**** **** **** 2345</p>
@@ -211,7 +177,100 @@ $this->includeTemplate('_partial/dashboardNavigation.php');
                                             </div>
                                         </div>
                                     </div>
-                                </li>
+
+                                </li>   <li>
+                                    <ul class="list-actions">
+                                        <li>
+                                            <label class="radio">
+                                                <input name="card_id" type="radio" value="card_1HEXlNCvMMMb9OAZN3P9NTHv"
+                                                    checked="">
+                                                <i class="input-helper"></i>
+                                            </label>
+                                        </li>
+                                        <li>
+                                            <a href="#"><svg class="svg">
+                                                    <use xlink:href="/yokart/images/retina/sprite.svg#bin"
+                                                        href="/yokart/images/retina/sprite.svg#bin">
+                                                    </use>
+                                                </svg>
+                                            </a>
+                                        </li>
+                                    </ul>
+                                    <div class="payment-card__photo">
+                                        <svg class="svg">
+                                            <use xlink:href="/yokart/images/retina/sprite.svg#visa"
+                                                href="/yokart/images/retina/sprite.svg#visa">
+                                            </use>
+                                        </svg>
+                                    </div>
+                                    <div class="cards-detail my-4">
+                                        <h6>Card Number</h6>
+                                        <p>**** **** **** 2345</p>
+                                    </div>
+
+                                    <div class="row justify-content-between">
+                                        <div class="col-auto">
+                                            <div class="cards-detail">
+                                                <h6>Card Holder</h6>
+                                                <p>Pawan Yadhuwanshi</p>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-auto">
+                                            <div class="cards-detail">
+                                                <h6>Expiry Date</h6>
+                                                <p>04/28</p>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </li>   <li>
+                                    <ul class="list-actions">
+                                        <li>
+                                            <label class="radio">
+                                                <input name="card_id" type="radio" value="card_1HEXlNCvMMMb9OAZN3P9NTHv"
+                                                    checked="">
+                                                <i class="input-helper"></i>
+                                            </label>
+                                        </li>
+                                        <li>
+                                            <a href="#"><svg class="svg">
+                                                    <use xlink:href="/yokart/images/retina/sprite.svg#bin"
+                                                        href="/yokart/images/retina/sprite.svg#bin">
+                                                    </use>
+                                                </svg>
+                                            </a>
+                                        </li>
+                                    </ul>
+                                    <div class="payment-card__photo">
+                                        <svg class="svg">
+                                            <use xlink:href="/yokart/images/retina/sprite.svg#visa"
+                                                href="/yokart/images/retina/sprite.svg#visa">
+                                            </use>
+                                        </svg>
+                                    </div>
+                                    <div class="cards-detail my-4">
+                                        <h6>Card Number</h6>
+                                        <p>**** **** **** 2345</p>
+                                    </div>
+
+                                    <div class="row justify-content-between">
+                                        <div class="col-auto">
+                                            <div class="cards-detail">
+                                                <h6>Card Holder</h6>
+                                                <p>Pawan Yadhuwanshi</p>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-auto">
+                                            <div class="cards-detail">
+                                                <h6>Expiry Date</h6>
+                                                <p>04/28</p>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </li> 
                             </ul>
 
                             <ul class="list-group payment-card payment-card-double">

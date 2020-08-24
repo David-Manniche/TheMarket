@@ -25,6 +25,17 @@
                 }
             }
         }
+        .radio {
+            input {
+                width: 20px !important;
+                height: 20px !important;
+                max-width: 20px;
+                flex: 0 0 20px;
+                border-color: #fff;
+                background: none;
+                vertical-align: inherit;
+            }
+        }
         .cards-detail {
             h6 {
                 color: $txt-gray;
@@ -51,10 +62,20 @@
             transition-property: -webkit-transform, transform, opacity;
             li {
                 margin: 0;
-                -webkit-transition-delay: 75ms;
-                transition-delay: 75ms;
+                display: flex;
                 a {
                     color: #fff;
+                    .svg {
+                        width: 20px;
+                        height: 20px;
+                        opacity: 1;
+                        vertical-align: inherit;
+                    }
+                    &:hover {
+                        .svg {
+                            fill: #fff;
+                        }
+                    }
                 }
             }
         }
