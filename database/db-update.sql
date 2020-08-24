@@ -555,3 +555,70 @@ DELETE FROM `tbl_language_labels` WHERE `label_key` LIKE 'LBL_Seller_Products';
 INSERT INTO `tbl_language_labels` (`label_key`, `label_lang_id`, `label_caption`, `label_type`) VALUES
 ("LBL_Seller_Products", 1, "My Products", 1),
 ("LBL_Seller_Products", 2, "My Products", 1);
+
+
+-- Collections Management --
+
+CREATE TABLE `tbl_collection_to_records` (
+  `ctr_collection_id` int(11) NOT NULL,
+  `ctr_record_id` int(11) NOT NULL,
+  `ctr_display_order` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+ALTER TABLE `tbl_collection_to_records`
+  ADD PRIMARY KEY (`ctr_collection_id`,`ctr_record_id`);
+
+INSERT INTO tbl_collection_to_records ( ctr_collection_id, ctr_record_id , ctr_display_order ) SELECT ctb_collection_id, ctb_post_id, ctb_display_order FROM tbl_collection_to_blogs ORDER BY ctb_collection_id ASC;
+
+INSERT INTO tbl_collection_to_records ( ctr_collection_id, ctr_record_id , ctr_display_order ) SELECT ctpb_collection_id, ctpb_brand_id, ctpb_display_order FROM tbl_collection_to_brands ORDER BY ctpb_collection_id ASC;
+
+INSERT INTO tbl_collection_to_records ( ctr_collection_id, ctr_record_id , ctr_display_order ) SELECT ctpc_collection_id, ctpc_prodcat_id, ctpc_display_order FROM tbl_collection_to_product_categories ORDER BY ctpc_collection_id ASC;
+
+INSERT INTO tbl_collection_to_records ( ctr_collection_id, ctr_record_id , ctr_display_order ) SELECT ctsp_collection_id, ctsp_selprod_id, ctsp_display_order FROM tbl_collection_to_seller_products ORDER BY ctsp_collection_id ASC;
+
+INSERT INTO tbl_collection_to_records ( ctr_collection_id, ctr_record_id , ctr_display_order ) SELECT ctps_collection_id, ctps_shop_id, ctps_display_order FROM tbl_collection_to_shops ORDER BY ctps_collection_id ASC;
+
+DROP TABLE `tbl_collection_to_brands`;
+DROP TABLE `tbl_collection_to_product_categories`;
+DROP TABLE `tbl_collection_to_seller_products`;
+DROP TABLE `tbl_collection_to_shops`;
+DROP TABLE `tbl_collection_to_blogs`;
+
+
+DROP TABLE `tbl_banner_locations`;
+DROP TABLE `tbl_banner_location_dimensions`;
+
+CREATE TABLE `tbl_banner_locations` (
+  `blocation_id` int(11) NOT NULL,
+  `blocation_identifier` varchar(255) NOT NULL,
+  `blocation_collection_id` int(11) NOT NULL,
+  `blocation_banner_count` int(11) NOT NULL,
+  `blocation_promotion_cost` decimal(10,4) NOT NULL,
+  `blocation_active` tinyint(1) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+INSERT INTO `tbl_banner_locations` (`blocation_id`, `blocation_identifier`, `blocation_collection_id`, `blocation_banner_count`, `blocation_promotion_cost`, `blocation_active`) VALUES
+(1, 'Product Detail page banner', 0, 2, '3.0000', 1);
+ALTER TABLE `tbl_banner_locations`
+  ADD PRIMARY KEY (`blocation_id`);
+ALTER TABLE `tbl_banner_locations`
+  MODIFY `blocation_id` int(11) NOT NULL AUTO_INCREMENT;
+  
+CREATE TABLE `tbl_banner_location_dimensions` (
+  `bldimension_blocation_id` int(11) NOT NULL,
+  `bldimension_device_type` int(11) NOT NULL,
+  `blocation_banner_width` decimal(10,0) NOT NULL,
+  `blocation_banner_height` decimal(10,0) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+INSERT INTO `tbl_banner_location_dimensions` (`bldimension_blocation_id`, `bldimension_device_type`, `blocation_banner_width`, `blocation_banner_height`) VALUES
+(1, 1, '660', '198'),
+(1, 2, '660', '198'),
+(1, 3, '640', '360');
+ALTER TABLE `tbl_banner_location_dimensions`
+  ADD PRIMARY KEY (`bldimension_blocation_id`,`bldimension_device_type`);
+
+TRUNCATE `tbl_banners`;
+TRUNCATE `tbl_banners_lang`;
+DELETE FROM `tbl_attached_files` WHERE `afile_type` = 18;
+
+ALTER TABLE `tbl_banners` CHANGE `banner_img_updated_on` `banner_updated_on` DATETIME NOT NULL;

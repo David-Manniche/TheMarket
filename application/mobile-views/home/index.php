@@ -22,7 +22,7 @@ foreach ($slides as $index => $slideDetail) {
             break;
     }
 }
-foreach ($sponsoredProds as $index => $product) {
+/* foreach ($sponsoredProds as $index => $product) {
     $uploadedTime = AttachedFile::setTimeParam($product['product_updated_on']);
     $sponsoredProds[$index]['product_image_url'] = UrlHelper::getCachedUrl(UrlHelper::generateFullFileUrl('image', 'product', array($product['product_id'], "CLAYOUT3", $product['selprod_id'], 0, $siteLangId)).$uploadedTime, CONF_IMG_CACHE_TIME, '.jpg');
     $sponsoredProds[$index]['selprod_price'] = CommonHelper::displayMoneyFormat($product['selprod_price'], false, false, false);
@@ -35,7 +35,7 @@ foreach ($sponsoredShops as $shopIndex => $shopData) {
         $sponsoredShops[$shopIndex]['products'][$index]['selprod_price'] = CommonHelper::displayMoneyFormat($shopProduct['selprod_price'], false, false, false);
         $sponsoredShops[$shopIndex]['products'][$index]['theprice'] = CommonHelper::displayMoneyFormat($shopProduct['theprice'], false, false, false);
     }
-}
+} */
 foreach ($collections as $collectionIndex => $collectionData) {
     if (array_key_exists('products', $collectionData)) {
         foreach ($collectionData['products'] as $index => $product) {
@@ -55,8 +55,9 @@ foreach ($collections as $collectionIndex => $collectionData) {
         }
     } elseif (array_key_exists('shops', $collectionData)) {
         foreach ($collectionData['shops'] as $index => $shop) {
-            $collections[$collectionIndex]['shops'][$index]['shop_logo'] = UrlHelper::getCachedUrl(UrlHelper::generateFullFileUrl('image', 'shopLogo', array($shop['shop_id'], $siteLangId)), CONF_IMG_CACHE_TIME, '.jpg');
-            $collections[$collectionIndex]['shops'][$index]['shop_banner'] = UrlHelper::getCachedUrl(UrlHelper::generateFullFileUrl('image', 'shopBanner', array($shop['shop_id'], $siteLangId, 'MOBILE', 0, applicationConstants::SCREEN_MOBILE)), CONF_IMG_CACHE_TIME, '.jpg');
+            $shopId = isset($shop['shopData']['shop_id']) ? $shop['shopData']['shop_id'] : $shop['shop_id'];
+            $collections[$collectionIndex]['shops'][$index]['shop_logo'] = UrlHelper::getCachedUrl(UrlHelper::generateFullFileUrl('image', 'shopLogo', array($shopId, $siteLangId)), CONF_IMG_CACHE_TIME, '.jpg');
+            $collections[$collectionIndex]['shops'][$index]['shop_banner'] = UrlHelper::getCachedUrl(UrlHelper::generateFullFileUrl('image', 'shopBanner', array($shopId, $siteLangId, 'MOBILE', 0, applicationConstants::SCREEN_MOBILE)), CONF_IMG_CACHE_TIME, '.jpg');
         }
     } elseif (array_key_exists('brands', $collectionData)) {
         foreach ($collectionData['brands'] as $index => $shop) {
@@ -67,28 +68,22 @@ foreach ($collections as $collectionIndex => $collectionData) {
 
 $data = array(
     'isWishlistEnable' => $isWishlistEnable,
-    'sponsoredProds' => array(
-                        'title' => FatApp::getConfig('CONF_PPC_PRODUCTS_HOME_PAGE_CAPTION_'.$siteLangId, FatUtility::VAR_STRING, Labels::getLabel('LBL_SPONSORED_PRODUCTS', $siteLangId)),
-                        'data'=> $sponsoredProds),
-    'sponsoredShops' => array(
-                        'title' => FatApp::getConfig('CONF_PPC_SHOPS_HOME_PAGE_CAPTION_'.$siteLangId, FatUtility::VAR_STRING, Labels::getLabel('LBL_SPONSORED_SHOPS', $siteLangId)),
-                        'data'=> $sponsoredShops),
     'slides' => $slides,
     'collections' => $collections,
 );
 
-foreach ($banners as $location => $bannerLocationDetail) {
+/* foreach ($banners as $location => $bannerLocationDetail) {
     foreach ($bannerLocationDetail['banners'] as $index => $bannerDetail) {
-        $uploadedTime = AttachedFile::setTimeParam($bannerDetail['banner_img_updated_on']);
+        $uploadedTime = AttachedFile::setTimeParam($bannerDetail['banner_updated_on']);
 
         switch ($bannerDetail['banner_blocation_id']) {
-            case BannerLocation::HOME_PAGE_TOP_BANNER:
+            case BannerLocation::HOME_PAGE_BANNER_LAYOUT_1:
                 $bannerUrl = UrlHelper::getCachedUrl(UrlHelper::generateFullFileUrl('Banner', 'HomePageBannerTopLayout', array($bannerDetail['banner_id'], $siteLangId, applicationConstants::SCREEN_MOBILE)).$uploadedTime, CONF_IMG_CACHE_TIME, '.jpg');
                 break;
-            case BannerLocation::HOME_PAGE_MIDDLE_BANNER:
+            case BannerLocation::HOME_PAGE_MOBILE_BANNER:
                 $bannerUrl = UrlHelper::getCachedUrl(UrlHelper::generateFullFileUrl('Banner', 'HomePageBannerMiddleLayout', array($bannerDetail['banner_id'], $siteLangId, applicationConstants::SCREEN_MOBILE)).$uploadedTime, CONF_IMG_CACHE_TIME, '.jpg');
                 break;
-            case BannerLocation::HOME_PAGE_BOTTOM_BANNER:
+            case BannerLocation::HOME_PAGE_BANNER_LAYOUT_2:
                 $bannerUrl = UrlHelper::getCachedUrl(UrlHelper::generateFullFileUrl('Banner', 'HomePageBannerBottomLayout', array($bannerDetail['banner_id'], $siteLangId, applicationConstants::SCREEN_MOBILE)).$uploadedTime, CONF_IMG_CACHE_TIME, '.jpg');
                 break;
             default:
@@ -117,9 +112,10 @@ foreach ($banners as $location => $bannerLocationDetail) {
                 break;
         }
     }
-}
+} 
+$data = array_merge($data, $banners, $orderProducts); */
 
-$data = array_merge($data, $banners, $orderProducts);
+$data = array_merge($data, $orderProducts);
 
 if (empty($sponsoredProds) && empty($sponsoredShops) && empty($slides) && empty($collections) && empty($banners)) {
     $status = applicationConstants::OFF;

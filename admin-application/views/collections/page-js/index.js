@@ -51,16 +51,9 @@ $(document).ready(function() {
         });
     };
 
-    addCollectionForm = function(id) {
-
-        $.facebox(function() {
-            collectionForm(0);
-        });
-    };
-
-    collectionForm = function(id) {
+    collectionForm = function(type, layoutType, id) {
         fcom.displayProcessing();
-        fcom.ajax(fcom.makeUrl('Collections', 'form', [id]), '', function(t) {
+        fcom.ajax(fcom.makeUrl('Collections', 'form', [type, layoutType, id]), '', function(t) {
             fcom.updateFaceboxContent(t);
         });
     };
@@ -71,63 +64,26 @@ $(document).ready(function() {
         });
     };
 
-
-    editCollectionFormNew = function(collectionId) {
-        $.facebox(function() {
-            editCollectionForm(collectionId);
-
-        });
-    };
-    editCollectionForm = function(collectionId) {
-        fcom.displayProcessing();
-        fcom.ajax(fcom.makeUrl('Collections', 'form', [collectionId]), '', function(t) {
-            fcom.updateFaceboxContent(t);
-        });
-    };
-
     setupCollection = function(frm) {
         if (!$(frm).validate()) return;
         var data = fcom.frmData(frm);
         fcom.updateWithAjax(fcom.makeUrl('Collections', 'setup'), data, function(t) {
             reloadList();
-
-            if (t.langId > 0 && t.collectionId > 0) {
-                editCollectionLangForm(t.collectionId, t.langId);
-                return;
+			if(t.openBannersForm) {
+            	banners(t.collectionId);
+            	return;
             }
-            /* if(t.openMediaForm)
-            {
+            if(t.openRecordForm) {
+            	recordForm(t.collectionId, t.collectionType);
+            	return;
+            }
+            if(t.openMediaForm) {
             	collectionMediaForm(t.collectionId);
             	return;
-            } */
+            }
             $(document).trigger('close.facebox');
         });
     }
-
-    editCollectionLangForm = function(collectionId, langId, autoFillLangData = 0) {
-        fcom.displayProcessing();
-        fcom.ajax(fcom.makeUrl('Collections', 'langForm', [collectionId, langId, autoFillLangData]), '', function(t) {
-            fcom.updateFaceboxContent(t);
-        });
-    };
-
-    setupLangCollection = function(frm) {
-        if (!$(frm).validate()) return;
-        var data = fcom.frmData(frm);
-        fcom.updateWithAjax(fcom.makeUrl('Collections', 'langSetup'), data, function(t) {
-            reloadList();
-            if (t.langId > 0) {
-                editCollectionLangForm(t.collectionId, t.langId);
-                return;
-            }
-            /* if(t.openMediaForm)
-            {
-            	collectionMediaForm(t.collectionId);
-            	return;
-            } */
-            $(document).trigger('close.facebox');
-        });
-    };
 
     deleteRecord = function(id) {
         if (!confirm(langLbl.confirmDelete)) {
@@ -163,167 +119,104 @@ $(document).ready(function() {
             }
         });
     };
-
-    selprodForm = function(id) {
+	
+    recordForm = function(id, type) {
         $.facebox(function() {
-            fcom.ajax(fcom.makeUrl('Collections', 'selprodForm', [id]), '', function(t) {
+            fcom.ajax(fcom.makeUrl('Collections', 'recordForm', [id, type]), '', function(t) {
                 $.facebox(t, 'faceboxWidth');
-                reloadProducts(id);
+                reloadRecordsList(id, type);
             });
         });
     };
-
-    collectionCategoryForm = function(collection_id) {
-        $.facebox(function() {
-            fcom.ajax(fcom.makeUrl('Collections', 'collectionCategoryForm', [collection_id]), '', function(t) {
-                $.facebox(t, 'faceboxWidth');
-                reloadCollectionCategories(collection_id);
-            });
+	
+	updateRecord = function(collection_id, record_id) {
+        fcom.updateWithAjax(fcom.makeUrl('Collections', 'updateCollectionRecords'), 'collection_id=' + collection_id + '&record_id=' + record_id, function(t) {
+            reloadRecordsList(t.collection_id, t.collection_type);
         });
     };
 
-    collectionShopForm = function(collection_id) {
-        $.facebox(function() {
-            fcom.ajax(fcom.makeUrl('Collections', 'collectionShopForm', [collection_id]), '', function(t) {
-                $.facebox(t, 'faceboxWidth');
-                reloadCollectionShops(collection_id);
-            });
-        });
-    };
-
-    collectionBrandsForm = function(collection_id) {
-        $.facebox(function() {
-            fcom.ajax(fcom.makeUrl('Collections', 'collectionBrandsForm', [collection_id]), '', function(t) {
-                $.facebox(t, 'faceboxWidth');
-                reloadCollectionBrands(collection_id);
-            });
-        });
-    };
-
-    collectionBlogsForm = function(collection_id) {
-        $.facebox(function() {
-            fcom.ajax(fcom.makeUrl('Collections', 'collectionBlogsForm', [collection_id]), '', function(t) {
-                $.facebox(t, 'faceboxWidth');
-                reloadCollectionBlogs(collection_id);
-            });
-        });
-    };
-
-    reloadProducts = function(collection_id) {
-        $("#products_list").html(fcom.getLoader());
-        fcom.ajax(fcom.makeUrl('Collections', 'collectionSelprods', [collection_id]), '', function(t) {
-            $("#products_list").html(t);
-        });
-    };
-
-    reloadCollectionCategories = function(collection_id) {
-        $("#categories_list").html(fcom.getLoader());
-        fcom.ajax(fcom.makeUrl('Collections', 'collectionCategories', [collection_id]), '', function(t) {
-            $("#categories_list").html(t);
-        });
-    }
-
-    reloadCollectionShops = function(collection_id) {
-        $("#shops_list").html(fcom.getLoader());
-        fcom.ajax(fcom.makeUrl('Collections', 'collectionShops', [collection_id]), '', function(t) {
-            $("#shops_list").html(t);
-        });
-    }
-
-    reloadCollectionBrands = function(collection_id) {
-        $("#brands_list").html(fcom.getLoader());
-        fcom.ajax(fcom.makeUrl('Collections', 'collectionBrands', [collection_id]), '', function(t) {
-            $("#brands_list").html(t);
-        });
-    }
-
-    reloadCollectionBlogs = function(collection_id) {
-        $("#blogs_list").html(fcom.getLoader());
-        fcom.ajax(fcom.makeUrl('Collections', 'collectionBlogs', [collection_id]), '', function(t) {
-            $("#blogs_list").html(t);
-        });
-    }
-
-    updateProduct = function(collection_id, selprod_id) {
-        fcom.updateWithAjax(fcom.makeUrl('Collections', 'updateSelProd'), 'collection_id=' + collection_id + '&selprod_id=' + selprod_id, function(t) {
-            reloadProducts(collection_id);
-        });
-    };
-
-    updateCollectionCategories = function(collection_id, prodcat_id) {
-        fcom.updateWithAjax(fcom.makeUrl('Collections', 'updateCollectionCategories'), 'collection_id=' + collection_id + '&prodcat_id=' + prodcat_id, function(t) {
-            reloadCollectionCategories(collection_id);
-        });
-    };
-
-    updateCollectionShops = function(collection_id, shop_id) {
-        fcom.updateWithAjax(fcom.makeUrl('Collections', 'updateCollectionShops'), 'collection_id=' + collection_id + '&shop_id=' + shop_id, function(t) {
-            reloadCollectionShops(collection_id);
-        });
-    };
-
-    updateCollectionBrands = function(collection_id, brand_id) {
-        fcom.updateWithAjax(fcom.makeUrl('Collections', 'updateCollectionBrands'), 'collection_id=' + collection_id + '&brand_id=' + brand_id, function(t) {
-            reloadCollectionBrands(collection_id);
-        });
-    };
-
-    updateCollectionBlogs = function(collection_id, post_id) {
-        fcom.updateWithAjax(fcom.makeUrl('Collections', 'updateCollectionBlogs'), 'collection_id=' + collection_id + '&post_id=' + post_id, function(t) {
-            reloadCollectionBlogs(collection_id);
-        });
-    };
-
-    removeCollectionSelprod = function(collection_id, selprod_id) {
+    removeCollectionRecord = function(collection_id, record_id) {
         var agree = confirm(langLbl.confirmRemoveProduct);
         if (!agree) {
             return false;
         }
-        fcom.updateWithAjax(fcom.makeUrl('Collections', 'removeCollectionSelprod'), 'collection_id=' + collection_id + '&selprod_id=' + selprod_id, function(t) {
-            reloadProducts(collection_id);
+        fcom.updateWithAjax(fcom.makeUrl('Collections', 'removeCollectionRecord'), 'collection_id=' + collection_id + '&record_id=' + record_id, function(t) {
+            reloadRecordsList(collection_id, t.collection_type);
         });
     };
-
-    removeCollectionCategory = function(collection_id, prodcat_id) {
-        var agree = confirm(langLbl.confirmRemoveCategory);
-        if (!agree) {
-            return false;
-        }
-        fcom.updateWithAjax(fcom.makeUrl('Collections', 'removeCollectionCategory'), 'collection_id=' + collection_id + '&prodcat_id=' + prodcat_id, function(t) {
-            reloadCollectionCategories(collection_id);
+    
+    banners = function(collection_id) {
+        $.facebox(function() {
+            fcom.ajax(fcom.makeUrl('Collections', 'banners', [collection_id]), '', function(t) {
+                $.facebox(t, 'faceboxWidth');
+                reloadBannersList(collection_id);
+            });
+        });
+    };
+	
+	removeBanner = function(fileId, bannerId, langId, screen){
+		if( !confirm(langLbl.confirmDeleteImage) ){ return; }
+		fcom.updateWithAjax(fcom.makeUrl('Collections', 'removeBanner',[fileId, bannerId, langId, screen]), '', function(t) {
+			$("#banner-image-listing").html('');
+            $("[name='banner_image_id["+langId+"_"+screen+"]']").val('');
+		});
+    };
+    
+    reloadBannersList = function(collection_id) {
+        $("#banners_list-js").html(fcom.getLoader());
+        fcom.ajax(fcom.makeUrl('Collections', 'searchBanners', [collection_id]), '', function(t) {
+            $("#banners_list-js").html(t);
+        });
+    };
+    
+    toggleBannerStatus = function( e,obj,canEdit ){
+		if(canEdit == 0){
+			e.preventDefault();
+			return;
+		}
+		if(!confirm(langLbl.confirmUpdateStatus)){
+			e.preventDefault();
+			return;
+		}
+		var bannerId = parseInt(obj.value);
+		if( bannerId < 1 ){
+			$.mbsmessage(langLbl.invalidRequest,true,'alert--danger');
+			return false;
+		}
+		data = 'bannerId='+bannerId;
+		fcom.ajax(fcom.makeUrl('Banners','changeStatus'),data,function(res){
+			var ans =$.parseJSON(res);
+			if(ans.status == 1){
+				$.mbsmessage(ans.msg,true,'alert--success');
+				$(obj).toggleClass("active");
+			}else{
+				$.mbsmessage(ans.msg,true,'alert--danger');
+			}
+		});
+	};
+	
+	bannerForm = function(collection_id, banner_id) {
+        fcom.ajax(fcom.makeUrl('Collections', 'bannerForm', [collection_id, banner_id]), '', function(t) {
+            $("#banners_list-js").html(t);
+			bannerImages(collection_id,banner_id,0,1);
+        });
+    };
+	
+	setupBanners = function(frm) {
+        if (!$(frm).validate()) return;
+        var data = fcom.frmData(frm);
+        fcom.updateWithAjax(fcom.makeUrl('Collections', 'setupBanner'), data, function(t) {
+            reloadBannersList(t.collection_id);
         });
     }
-
-    removeCollectionShop = function(collection_id, shop_id) {
-        var agree = confirm(langLbl.confirmRemoveShop);
-        if (!agree) {
-            return false;
-        }
-        fcom.updateWithAjax(fcom.makeUrl('Collections', 'removeCollectionShop'), 'collection_id=' + collection_id + '&shop_id=' + shop_id, function(t) {
-            reloadCollectionShops(collection_id);
+	
+    reloadRecordsList = function(collection_id, collection_type) {
+        $("#records_list").html(fcom.getLoader());
+        fcom.ajax(fcom.makeUrl('Collections', 'collectionRecords', [collection_id, collection_type]), '', function(t) {
+            $("#records_list").html(t);
         });
-    }
-
-    removeCollectionBrand = function(collection_id, brand_id) {
-        var agree = confirm(langLbl.confirmRemoveBrand);
-        if (!agree) {
-            return false;
-        }
-        fcom.updateWithAjax(fcom.makeUrl('Collections', 'removeCollectionBrand'), 'collection_id=' + collection_id + '&brand_id=' + brand_id, function(t) {
-            reloadCollectionBrands(collection_id);
-        });
-    }
-
-    removeCollectionBlog = function(collection_id, post_id) {
-        var agree = confirm(langLbl.confirmRemoveBlog);
-        if (!agree) {
-            return false;
-        }
-        fcom.updateWithAjax(fcom.makeUrl('Collections', 'removeCollectionBlog'), 'collection_id=' + collection_id + '&post_id=' + post_id, function(t) {
-            reloadCollectionBlogs(collection_id);
-        });
-    }
-
+    };
+	
     collectionMediaForm = function(collectionId) {
         fcom.ajax(fcom.makeUrl('Collections', 'mediaForm', [collectionId]), '', function(t) {
             $.facebox(t);
@@ -451,8 +344,172 @@ $(document).ready(function() {
             }
         });
 	}
+    
+    translateData = function(item){
+        var autoTranslate = $("input[name='auto_update_other_langs_data']:checked").length;
+        var defaultLang = $(item).attr('defaultLang');
+        var catName = $("input[name='collection_name["+defaultLang+"]']").val();
+        var toLangId = $(item).attr('language');
+        var alreadyOpen = $('#collapse_'+toLangId).hasClass('active');
+        if(autoTranslate == 0 || catName == "" || alreadyOpen == true){
+            return false;
+        }
+        var data = "collectionName="+catName+"&toLangId="+toLangId ;
+        fcom.updateWithAjax(fcom.makeUrl('Collections', 'translatedData'), data, function(t) {
+            if(t.status == 1){
+                $("input[name='collection_name["+toLangId+"]']").val(t.collectionName);
+            }
+        });
+    }
+    
+    translateBannerData = function(item){
+        var autoTranslate = $("input[name='auto_update_other_langs_data']:checked").length;
+        var defaultLang = $(item).attr('defaultLang');
+        var title = $("input[name='banner_title["+defaultLang+"]']").val();
+        var toLangId = $(item).attr('language');
+        var alreadyOpen = $('#collapse_'+toLangId).hasClass('active');
+        if(autoTranslate == 0 || title == "" || alreadyOpen == true){
+            return false;
+        }
+        var data = "collectionName="+title+"&toLangId="+toLangId ;
+        fcom.updateWithAjax(fcom.makeUrl('Collections', 'translatedData'), data, function(t) {
+            if(t.status == 1){
+                $("input[name='banner_title["+toLangId+"]']").val(t.collectionName);
+            }
+        });
+    }
+
+    bannerImages = function(collectionId,bannerId=0,langId=0,screen=0){
+		fcom.ajax(fcom.makeUrl('Collections', 'bannerImages', [collectionId,bannerId,langId,screen]), '', function(t) {
+			$('#banner-image-listing').html(t);
+            var bannerImageId = $("#banner-image-listing li").attr('id');
+            var selectedLangId = $(".banner-language-js").val();
+            var screen = $(".prefDimensions-js").val();
+			$("[name='banner_image_id["+selectedLangId+"_"+screen+"]']").val(bannerImageId);
+			fcom.resetFaceboxHeight();
+		});
+	};
+
+    bannerPopupImage = function(inputBtn){
+		if (inputBtn.files && inputBtn.files[0]) {
+	        fcom.ajax(fcom.makeUrl('Collections', 'imgCropper'), '', function(t) {
+				$('#cropperBox-js').html(t);
+    			$("#mediaForm-js").css("display", "none");
+                var file = inputBtn.files[0];
+				var minWidth = document.frmBanner.banner_min_width.value;
+	            var minHeight = document.frmBanner.banner_min_height.value;
+	    		var options = {
+	                aspectRatio: aspectRatio,
+	                data: {
+	                    width: minWidth,
+	                    height: minHeight,
+	                },
+	                minCropBoxWidth: minWidth,
+	                minCropBoxHeight: minHeight,
+	                toggleDragModeOnDblclick: false,
+		        };
+				$(inputBtn).val('');
+		    	return cropImage(file, options, 'uploadBannerImages', inputBtn);
+	    	});
+		}
+    };
+    
+    uploadBannerImages = function(formData){
+        var frmName = formData.get("frmName");
+		
+		var collectionId = $("[name='collection_id']").val();
+		var bannerId = $("[name='banner_id']").val();
+		var blocationId = $("[name='blocation_id']").val();
+        var langId = $("[name='banner_lang_id']").val();
+        var bannerScreen = $("[name='banner_screen']").val();
+        var afileId = $("#banner-image-listing li").attr('id');
+		formData.append('banner_id', bannerId);
+		formData.append('blocation_id', blocationId);
+        formData.append('banner_screen', bannerScreen);
+        formData.append('lang_id', langId);
+        formData.append('afile_id', afileId);
+        $.ajax({
+            url: fcom.makeUrl('Collections', 'setupBannerImage'),
+            type: 'post',
+            dataType: 'json',
+            data: formData,
+            cache: false,
+            contentType: false,
+            processData: false,
+            beforeSend: function() {
+                $('#loader-js').html(fcom.getLoader());
+            },
+            complete: function() {
+                $('#loader-js').html(fcom.getLoader());
+            },
+			success: function(ans) {
+				if(ans.status==1)
+				{
+					$('#cropperBox-js').html('');
+					$("#mediaForm-js").css("display", "block");
+					fcom.displaySuccessMessage(ans.msg);
+					bannerImages(collectionId, bannerId, langId, bannerScreen);
+				} else {
+					fcom.displayErrorMessage(ans.msg);
+				}
+			},
+			error: function(xhr, ajaxOptions, thrownError) {
+				alert(thrownError + "\r\n" + xhr.statusText + "\r\n" + xhr.responseText);
+			}
+        });
+	}
+	
+	deleteImage = function(fileId, prodcatId, imageType, langId, slide_screen){
+		if( !confirm(langLbl.confirmDeleteImage) ){ return; }
+		fcom.updateWithAjax(fcom.makeUrl('productCategories', 'removeImage',[fileId,prodcatId,imageType,langId,slide_screen]), '', function(t) {
+			$("#banner-image-listing").html('');
+            $("[name='banner_image_id["+langId+"_"+slide_screen+"]']").val('');
+		});
+    };
 
 })();
+
+$(document).on('change','.prefDimensions-js',function(){
+	var banner_screen = $(this).val();
+	var banner_id = $("input[name='banner_id']").val();
+	var collection_id = $("input[name='collection_id']").val();
+	var lang_id = $(".banner-language-js").val();
+    var imageId = $("[name='banner_image_id["+lang_id+"_"+banner_screen+"]']").val();
+    if(banner_id == 0){
+        if(imageId > 0 ){
+            bannerImages(collection_id, banner_id, lang_id, banner_screen);
+        } else {
+            $("#banner-image-listing").html('');
+        }
+    } else {
+        bannerImages(collection_id, banner_id, lang_id, banner_screen);
+    }
+});
+
+$(document).on('change','.banner-language-js',function(){
+	var lang_id = $(this).val();
+	var banner_id = $("input[name='banner_id']").val();
+	var collection_id = $("input[name='collection_id']").val();
+	var banner_screen = $("input[name='banner_screen']").val();
+    var imageId = $("[name='banner_image_id["+lang_id+"_"+banner_screen+"]']").val();
+    if(banner_id == 0){
+        if(imageId > 0){
+            bannerImages(collection_id, banner_id, lang_id, banner_screen);
+        } else {
+            $("#banner-image-listing").html('');
+        }
+    } else {
+        bannerImages(collection_id, banner_id, lang_id, banner_screen);
+    }
+});
+
+/* $(document).on('change','.banner-language-js',function(){
+	var langId = $(this).val();
+	var bannerId = $("input[name='banner_id']").val();
+	var blocationId = $("input[name='blocation_id']").val();
+	var screen = $(".display-js").val();
+	images(blocationId,bannerId,langId,screen);
+}); */
 
 $(document).on('click', '.File-Js', function() {
     var node = this;

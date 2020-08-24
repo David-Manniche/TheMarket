@@ -1,9 +1,13 @@
 <?php defined('SYSTEM_INIT') or die('Invalid Usage.'); ?>
+<div class="sectionhead" style=" padding-bottom:20px">
+    <h4><?php echo Labels::getLabel('LBL_Banners_Listing', $adminLangId); ?>
+    </h4>
+    <a href="javascript:void(0)" class="themebtn btn-default btn-sm" onClick="bannerForm(<?php echo $collection_id;?>)";><?php echo Labels::getLabel('LBL_ADD_NEW', $adminLangId); ?></a>		
+</div>
 <?php
 $arr_flds = array(
     'listserial'=>Labels::getLabel('LBL_Sr._No', $adminLangId),
     'banner_title'=>Labels::getLabel('LBL_Title', $adminLangId),
-    'banner_type'=>Labels::getLabel('LBL_Type', $adminLangId),
     'banner_img' => Labels::getLabel('LBL_Image', $adminLangId),
     'banner_target' => Labels::getLabel('LBL_Target', $adminLangId),
     'banner_active' => Labels::getLabel('LBL_Status', $adminLangId),
@@ -12,17 +16,16 @@ $arr_flds = array(
 if (!$canEdit) {
     unset($arr_flds['action']);
 }
-        
+    
 $tbl = new HtmlElement('table', array('width'=>'100%', 'class'=>'table table-responsive table--hovered'));
 $th = $tbl->appendElement('thead')->appendElement('tr');
 foreach ($arr_flds as $val) {
     $e = $th->appendElement('th', array(), $val);
 }
-
-$sr_no = $page==1?0:$pageSize*($page-1);
-foreach ($arr_listing as $sn=>$row) {
+$sr_no = 0;
+/* $sr_no = $page==1?0:$pageSize*($page-1); */
+foreach ($arr_listing as $sn => $row) {
     $sr_no++;
-    /* $tr = $tbl->appendElement('tr',array('class' => ($row['banner_active'] != applicationConstants::ACTIVE) ? 'fat-inactive' : '' )); */
     $tr = $tbl->appendElement('tr', array());
     foreach ($arr_flds as $key=>$val) {
         $td = $tr->appendElement('td');
@@ -34,11 +37,8 @@ foreach ($arr_listing as $sn=>$row) {
                 $td->appendElement('plaintext', array(), $linkTargetsArr[$row[$key]], true);
             break;
             case 'banner_title':
-                $title = ($row['banner_title'] !='') ? $row['banner_title'] : $row['promotion_name'];
+                $title = ($row['banner_title'] !='')?$row['banner_title']:$row['promotion_name'];
                 $td->appendElement('plaintext', array(), $title, true);
-            break;
-            case 'banner_type':
-                $td->appendElement('plaintext', array(), $bannerTypeArr[$row[$key]], true);
             break;
             case 'banner_active':
                 /* $td->appendElement('plaintext', array(), $activeInactiveArr[$row[$key]], true); */
@@ -46,11 +46,11 @@ foreach ($arr_listing as $sn=>$row) {
                 if ($row['banner_active']) {
                     $active = 'checked';
                 }
-                $statusAct = ($canEdit === true) ? 'toggleStatus(event,this,' .applicationConstants::YES. ')' : 'toggleStatus(event,this,' .applicationConstants::NO. ')';
+                $statusAct = ($canEdit === true) ? 'toggleBannerStatus(event,this,' .applicationConstants::YES. ')' : 'toggleBannerStatus(event,this,' .applicationConstants::NO. ')';
                 $statusClass = ($canEdit === false) ? 'disabled' : '';
                 $str='<label class="statustab -txt-uppercase">
                      <input '.$active.' type="checkbox" id="switch'.$row['banner_id'].'" value="'.$row['banner_id'].'" onclick="'.$statusAct.'" class="switch-labels"/>
-                                      	<i class="switch-handles '.$statusClass.'"></i></label>';
+                     <i class="switch-handles '.$statusClass.'"></i></label>';
                     $td->appendElement('plaintext', array(), $str, true);
             break;
             case 'banner_img':
@@ -83,7 +83,7 @@ foreach ($arr_listing as $sn=>$row) {
             break;
             case 'action':
                 if ($canEdit) {
-                    $td->appendElement('a', array('href'=>'javascript:void(0)', 'class'=>'btn btn-clean btn-sm btn-icon', 'title'=>Labels::getLabel('LBL_Edit', $adminLangId),"onclick"=>"addBannerForm(".$row['banner_blocation_id'].",".$row['banner_id'].")"), "<i class='far fa-edit icon'></i>", true);
+                    $td->appendElement('a', array('href'=>'javascript:void(0)', 'class'=>'btn btn-clean btn-sm btn-icon', 'title'=>Labels::getLabel('LBL_Edit', $adminLangId),"onclick"=>"bannerForm(".$collection_id.",".$row['banner_id'].")"), "<i class='far fa-edit icon'></i>", true);
                     /* $li = $ul->appendElement("li");
                     $li->appendElement('a', array('href'=>"javascript:void(0)", 'class'=>'button small green', 'title'=>'Delete',"onclick"=>"deleteBanner(".$row['banner_id'].")"),'<i class="fa fa-trash  icon"></i>', true); */
                 }
@@ -98,10 +98,11 @@ if (count($arr_listing) == 0) {
     $tbl->appendElement('tr')->appendElement('td', array('colspan'=>count($arr_flds)), Labels::getLabel('LBL_No_Records_Found', $adminLangId));
 }
 echo $tbl->getHtml();
-$postedData['page']=$page;
+/* $postedData['page']=$page;
+$postedData['collection_id']=$collection_id;
 echo FatUtility::createHiddenFormFromData($postedData, array(
         'name' => 'frmListingSearchPaging'
 ));
-$pagingArr=array('pageCount'=>$pageCount,'page'=>$page,'recordCount'=>$recordCount,'adminLangId'=>$adminLangId);
-$this->includeTemplate('_partial/pagination.php', $pagingArr, false);
+$pagingArr=array('pageCount'=>$pageCount,'page'=>$page,'pageSize'=>$pageSize,'recordCount'=>$recordCount,'callBackJsFunc'=>'goToBannerSearchPage','adminLangId'=>$adminLangId);
+$this->includeTemplate('_partial/pagination.php', $pagingArr, false); */
 ?>

@@ -582,6 +582,9 @@ class ConfigurationsController extends AdminBaseController
                 $frm->addSelectBox(Labels::getLabel('LBL_Cookies_Policies_Page', $this->adminLangId), 'CONF_COOKIES_BUTTON_LINK', $cpagesArr);
                 $fld1 = $frm->addCheckBox(Labels::getLabel('LBL_Cookies_Policies', $this->adminLangId), 'CONF_ENABLE_COOKIES', 1, array(), false, 0);
                 $fld1->htmlAfterField = "<br><small>" . Labels::getLabel("LBL_cookies_policies_section_will_be_shown_on_frontend", $this->adminLangId) . "</small>";
+                
+                $frm->addCheckBox(Labels::getLabel("LBL_Header_Mega_Menu", $this->adminLangId), 'CONF_LAYOUT_MEGA_MENU', 1, array(), false, 0);
+                
                 $fld3 = $frm->addTextBox(Labels::getLabel("LBL_Admin_Default_Items_Per_Page", $this->adminLangId), "CONF_ADMIN_PAGESIZE");
                 $fld3->requirements()->setInt();
                 $fld3->requirements()->setRange('1', '2000');

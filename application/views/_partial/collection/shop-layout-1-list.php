@@ -1,5 +1,5 @@
 <div class="row">
-<?php $i=0; foreach( $row['shops'] as $shop ){ ?>
+<?php $i=0; foreach( $collection['shops'] as $shop ){ ?>
     <div class="col-xl-3 col-lg-4 col-md-6 mb-3">
         <div class="featured-item">
          <div class="featured_inner p-2 pt-4 pb-4">
@@ -10,10 +10,10 @@
                  </div>
 
              <div class="featured_footer mt-3">
-                 <?php if( round($row['rating'][$shop['shopData']['shop_id']])>0){?>
+                 <?php if( round($collection['rating'][$shop['shopData']['shop_id']])>0){?>
                  <div class="products__rating"> <i class="icn"><svg class="svg">
                              <use xlink:href="<?php echo CONF_WEBROOT_URL; ?>images/retina/sprite.svg#star-yellow" href="<?php echo CONF_WEBROOT_URL; ?>images/retina/sprite.svg#star-yellow"></use>
-                         </svg></i> <span class="rate"><?php echo  round($row['rating'][$shop['shopData']['shop_id']],1);?><span></span></span>
+                         </svg></i> <span class="rate"><?php echo  round($collection['rating'][$shop['shopData']['shop_id']],1);?><span></span></span>
                  </div>
                  <?php }?>
                  <a href="<?php echo (!isset($shop['shopData']['promotion_id'])?UrlHelper::generateUrl('shops','view', array($shop['shopData']['shop_id'])):UrlHelper::generateUrl('shops','track', array($shop['shopData']['promotion_record_id'],Promotion::REDIRECT_SHOP,$shop['shopData']['promotion_record_id']))); ?>" class="btn btn-primary" tabindex="0"><?php echo Labels::getLabel('LBL_Shop_Now',$siteLangId);?></a>

@@ -5,6 +5,7 @@ class Banner extends MyAppModel
     public const DB_TBL = 'tbl_banners';
     public const DB_TBL_PREFIX = 'banner_';
     public const DB_TBL_LANG = 'tbl_banners_lang';
+    public const DB_TBL_LANG_PREFIX = 'bannerlang_';
 
     public const DB_TBL_CLICKS = 'tbl_banners_clicks';
     public const DB_TBL_CLICKS_PREFIX = 'bclick_';
@@ -18,9 +19,8 @@ class Banner extends MyAppModel
 
     public const TYPE_BANNER = 1;
     public const TYPE_PPC = 2;
-    public const BANNER_HOME_PAGE_LAYOUT_1 = 1;
-    public const BANNER_HOME_PAGE_LAYOUT_2 = 2;
-    public const BANNER_PRODUCT_PAGE_LAYOUT_1 = 3;
+	
+	public const REMOVED_OLD_IMAGE_TIME = 4;
 
     public function __construct($id = 0)
     {
@@ -71,8 +71,6 @@ class Banner extends MyAppModel
         }
 
         $srch->joinTable(BannerLocation::DB_DIMENSIONS_TBL, 'LEFT OUTER JOIN', 'bldim.bldimension_blocation_id = bl.blocation_id AND bldim.bldimension_device_type = ' . $deviceType, 'bldim');
-
-        $srch->addOrder('blocation_key', 'ASC');
         return $srch;
     }
 
@@ -117,6 +115,38 @@ class Banner extends MyAppModel
     public static function setLastModified($banner_id)
     {
         $where = array('smt' => 'banner_id = ?', 'vals' => array($banner_id));
-        FatApp::getDb()->updateFromArray(static::DB_TBL, array('banner_img_updated_on' => date('Y-m-d  H:i:s')), $where);
+        FatApp::getDb()->updateFromArray(static::DB_TBL, array('banner_updated_on' => date('Y-m-d  H:i:s')), $where);
+    }
+	
+	public static function deleteImagesWithoutBannerId($fileType)
+    {
+        $allowedFileTypes = [AttachedFile::FILETYPE_BANNER];
+        if (empty($fileType) || !in_array($fileType, $allowedFileTypes)) {
+            return false;
+        }
+
+        $currentDate = date('Y-m-d  H:i:s');
+        $prevDate = strtotime('-' . static::REMOVED_OLD_IMAGE_TIME . ' hour', strtotime($currentDate));
+        $prevDate = date('Y-m-d  H:i:s', $prevDate);
+        $where = array('smt' => 'afile_type = ? AND afile_record_id = ? AND afile_updated_at <= ?', 'vals' => array($fileType, 0, $prevDate));
+        if (!FatApp::getDb()->deleteRecords(AttachedFile::DB_TBL, $where)) {
+            return false;
+        }
+        return true;
+    }
+	
+	public function updateMedia($ImageIds)
+    {
+        if (count($ImageIds) == 0) {
+            return false;
+        }
+        foreach ($ImageIds as $imageId) {
+            if ($imageId > 0) {
+                $data = array('afile_record_id' => $this->mainTableRecordId);
+                $where = array('smt' => 'afile_id = ?', 'vals' => array($imageId));
+                FatApp::getDb()->updateFromArray(AttachedFile::DB_TBL, $data, $where);
+            }
+        }
+        return true;
     }
 }

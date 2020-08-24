@@ -319,7 +319,7 @@ class ImageAttributesController extends AdminBaseController
         $frm = new Form('frmSearch');
 		$attachedFile = new AttachedFile();
         $attachementArr = $attachedFile->getImgAttrTypeArray($this->adminLangId);
-		$frm->addSelectBox(Labels::getLabel('LBL_Select_Module', $this->adminLangId), 'select_module', $attachementArr, AttachedFile::FILETYPE_PRODUCT_IMAGE, $attachementArr, Labels::getLabel('LBL_Select', $this->adminLangId));
+		$frm->addSelectBox(Labels::getLabel('LBL_Select_Type', $this->adminLangId), 'select_module', $attachementArr, AttachedFile::FILETYPE_PRODUCT_IMAGE, $attachementArr, Labels::getLabel('LBL_Select', $this->adminLangId));
         $f1 = $frm->addTextBox(Labels::getLabel('LBL_Keyword', $this->adminLangId), 'keyword');
         $fld_submit = $frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_Search', $this->adminLangId));
         $fld_cancel = $frm->addButton("", "btn_clear", Labels::getLabel('LBL_Clear_Search', $this->adminLangId), array('onclick' => 'clearSearch();'));
