@@ -10,11 +10,11 @@ class HomeController extends MyAppController
         $productSrchObj = $this->getProductSearchObj($loggedUserId);
         $collections = $this->getCollections($productSrchObj);
         
-        /* $sponsoredShops = $this->getSponsoredShops($productSrchObj);
-        $sponsoredProds = $this->getSponsoredProducts($productSrchObj); */
-        /* $this->set('sponsoredProds', $sponsoredProds);
+        $sponsoredShops = $this->getSponsoredShops($productSrchObj);
+        $sponsoredProds = $this->getSponsoredProducts($productSrchObj);
+        $this->set('sponsoredProds', $sponsoredProds);
         $this->set('sponsoredShops', $sponsoredShops);
-        $this->set('banners', $banners); */
+        /* $this->set('banners', $banners); */
         
         $slides = $this->getSlides();
         $this->set('slides', $slides);
@@ -174,8 +174,9 @@ class HomeController extends MyAppController
                     break;
                 }
             }
+            $this->set('collectionTemplates', $collectionTemplates);
         }
-        $this->set('collectionTemplates', $collectionTemplates);
+        
         $this->_template->render();
     }
 

@@ -55,8 +55,9 @@ foreach ($collections as $collectionIndex => $collectionData) {
         }
     } elseif (array_key_exists('shops', $collectionData)) {
         foreach ($collectionData['shops'] as $index => $shop) {
-            $collections[$collectionIndex]['shops'][$index]['shop_logo'] = UrlHelper::getCachedUrl(UrlHelper::generateFullFileUrl('image', 'shopLogo', array($shop['shop_id'], $siteLangId)), CONF_IMG_CACHE_TIME, '.jpg');
-            $collections[$collectionIndex]['shops'][$index]['shop_banner'] = UrlHelper::getCachedUrl(UrlHelper::generateFullFileUrl('image', 'shopBanner', array($shop['shop_id'], $siteLangId, 'MOBILE', 0, applicationConstants::SCREEN_MOBILE)), CONF_IMG_CACHE_TIME, '.jpg');
+            $shopId = isset($shop['shopData']['shop_id']) ? $shop['shopData']['shop_id'] : $shop['shop_id'];
+            $collections[$collectionIndex]['shops'][$index]['shop_logo'] = UrlHelper::getCachedUrl(UrlHelper::generateFullFileUrl('image', 'shopLogo', array($shopId, $siteLangId)), CONF_IMG_CACHE_TIME, '.jpg');
+            $collections[$collectionIndex]['shops'][$index]['shop_banner'] = UrlHelper::getCachedUrl(UrlHelper::generateFullFileUrl('image', 'shopBanner', array($shopId, $siteLangId, 'MOBILE', 0, applicationConstants::SCREEN_MOBILE)), CONF_IMG_CACHE_TIME, '.jpg');
         }
     } elseif (array_key_exists('brands', $collectionData)) {
         foreach ($collectionData['brands'] as $index => $shop) {
@@ -77,7 +78,7 @@ $data = array(
     'collections' => $collections,
 );
 
-foreach ($banners as $location => $bannerLocationDetail) {
+/* foreach ($banners as $location => $bannerLocationDetail) {
     foreach ($bannerLocationDetail['banners'] as $index => $bannerDetail) {
         $uploadedTime = AttachedFile::setTimeParam($bannerDetail['banner_updated_on']);
 
@@ -117,9 +118,10 @@ foreach ($banners as $location => $bannerLocationDetail) {
                 break;
         }
     }
-}
+} 
+$data = array_merge($data, $banners, $orderProducts); */
 
-$data = array_merge($data, $banners, $orderProducts);
+$data = array_merge($data, $orderProducts);
 
 if (empty($sponsoredProds) && empty($sponsoredShops) && empty($slides) && empty($collections) && empty($banners)) {
     $status = applicationConstants::OFF;
