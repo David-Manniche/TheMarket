@@ -27,6 +27,7 @@ function pageRedirect(op_id) {
 		if (!$(frm).validate()) return;
 		var op_id = $(frm.op_id).val();		
         var data = fcom.frmData(frm);
+        var orderStatusId = $(frm.op_status_id).val();
 
         if ('' == $(".shippingUser-js").val()){
             $.systemMessage(langLbl.shippingUser,'alert--danger', false);
@@ -38,7 +39,7 @@ function pageRedirect(op_id) {
             manualShipping = $("input.manualShipping-js:checked").val();	
         }
 
-        if (0 < canShipByPlugin && 1 != manualShipping) {
+        if (0 < canShipByPlugin && 1 != manualShipping && orderShippedStatus == orderStatusId) {
             proceedToShipment(op_id);
         } else {
             fcom.updateWithAjax(fcom.makeUrl('SellerOrders', 'changeOrderStatus'), data, function(t) {

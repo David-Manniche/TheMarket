@@ -486,10 +486,6 @@ class CheckoutController extends MyAppController
             }
             FatUtility::dieWithError($this->errMessage);
         }
-
-        /* $user_id = UserAuthentication::getLoggedUserId();
-
-        $shippingMethods = Shipping::getShippingMethods($this->siteLangId); */
         
         $fulfillmentType = $this->cartObj->getCartCheckoutType();  
         $this->cartObj->setCartCheckoutType($fulfillmentType); 
@@ -1496,6 +1492,7 @@ class CheckoutController extends MyAppController
         $methodCode = Plugin::getAttributesById($plugin_id, 'plugin_code');
         $paymentMethod = Plugin::getAttributesByCode($methodCode, Plugin::ATTRS, $this->siteLangId);
         
+        $frm = '';
         if ('cashondelivery' == strtolower($methodCode)) {
             $userObj = new User($user_id);
             $userData = $userObj->getUserInfo([], false, false);
@@ -1506,10 +1503,13 @@ class CheckoutController extends MyAppController
             $canSendSms = (!empty($phoneNumber) && !empty($userDialCode) && SmsArchive::canSendSms(SmsTemplate::COD_OTP_VERIFICATION));
 
             if (true == $canSendSms) {
-                $countryIso = User::getUserMeta($user_id, 'user_country_iso');
-                $otp = $userObj->prepareUserPhoneOtp($countryIso, $userDialCode, $phoneNumber);
-                if (false === $canSendSms = $userObj->sendOtp($phoneWithDial, $userData['user_name'], $otp, $this->siteLangId, SmsTemplate::COD_OTP_VERIFICATION)) {
-                    FatUtility::dieWithError($userObj->getError());
+                $data = $userObj->getOtpDetail();
+                if (empty($data) || strtotime($data['upv_expired_on']) < time()) {
+                    $countryIso = User::getUserMeta($user_id, 'user_country_iso');
+                    $otp = $userObj->prepareUserPhoneOtp($countryIso, $userDialCode, $phoneNumber);
+                    if (false === $canSendSms = $userObj->sendOtp($phoneWithDial, $userData['user_name'], $otp, $this->siteLangId, SmsTemplate::COD_OTP_VERIFICATION)) {
+                        FatUtility::dieWithError($userObj->getError());
+                    }
                 }
             } else {
                 $min = pow(10, User::OTP_LENGTH - 1);
@@ -1534,11 +1534,10 @@ class CheckoutController extends MyAppController
             $this->set('canSendSms', $canSendSms);
             $this->set('userData', $userData);
 
-            $otpForm = $this->getOtpForm();
-            $this->set('otpForm', $otpForm);
+            $frm = $this->getOtpForm();
         }
 
-        $frm = $this->getPaymentTabForm($this->siteLangId, $methodCode);
+        $frm = $this->getPaymentTabForm($this->siteLangId, $methodCode, $frm);
         $controller = $methodCode . 'Pay';
         $frm->setFormTagAttribute('action', UrlHelper::generateUrl($controller, 'charge', array($order_id)));
         $frm->setFormTagAttribute('data-external', UrlHelper::generateUrl($controller, 'getExternalLibraries'));
@@ -1990,43 +1989,25 @@ class CheckoutController extends MyAppController
         return $frm;
     }
 
-    private function getShippingApiForm($langId)
+    private function getPaymentTabForm($langId, $paymentMethodCode = '', $externalFrm = '')
     {
-        $srch = ShippingMethods::getListingObj($langId, array('shippingapi_id'));
-        $srch->doNotCalculateRecords();
-        $rs = $srch->getResultSet();
-        $shippingApis = FatApp::getDb()->fetchAllAssoc($rs);
-        $frm = new Form('frmShippingApi');
-        $frm->addSelectBox(Labels::getLabel('MSG_Select_Shipping_Type', $langId), 'shippingapi_id', $shippingApis, '', array(), '')->requirements()->setRequired();
-        /* $frm->addSubmitButton( '', 'btn_submit', Labels::getLabel('LBL_Continue', $langId) ); */
-        return $frm;
-    }
+        $frm = $externalFrm;
+        if (empty($externalFrm)) {
+            $frm = new Form('frmPaymentTabForm');
+        }
 
-    private function getShippingMethods($langId)
-    {
-        $srch = ShippingMethods::getListingObj($langId, array('shippingapi_id'));
-        $srch->doNotCalculateRecords();
-        $rs = $srch->getResultSet();
-        $shippingApis = FatApp::getDb()->fetchAllAssoc($rs);
-
-        return $shippingApis;
-    }
-
-    private function getPaymentTabForm($langId, $paymentMethodCode = '')
-    {
-        $frm = new Form('frmPaymentTabForm');
         $frm->setFormTagAttribute('id', 'frmPaymentTabForm');
 
         if (strtolower($paymentMethodCode) == "cashondelivery") {
             CommonHelper::addCaptchaField($frm);
         }
 
-        $frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_Confirm_Payment', $langId));
         $frm->addHiddenField('', 'order_type');
         $frm->addHiddenField('', 'order_id');
-        
         $frm->addHiddenField('', 'plugin_id');
-
+        if (empty($externalFrm)) {
+            $frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_CONFIRM_PAYMENT', $langId));
+        }
         return $frm;
     }
 
@@ -2262,5 +2243,20 @@ class CheckoutController extends MyAppController
         $this->_template->render(false, false, 'json-success.php');
     }
 
+    public function resendOtp()
+    {
+        $userId = UserAuthentication::getLoggedUserId();
+        $userObj = new User($userId);
+        if (false == $userObj->resendOtp()) {
+            FatUtility::dieJsonError($userObj->getError());
+        }
+        $this->set('msg', Labels::getLabel('MSG_OTP_SENT!_PLEASE_CHECK_YOUR_PHONE.', $this->siteLangId));
+        $this->_template->render(false, false, 'json-success.php');
+    }
 
+    public function validateOtp()
+    {
+        $this->validateOtpApi(0, false);
+        $this->_template->render(false, false, 'json-success.php');
+    }
 }

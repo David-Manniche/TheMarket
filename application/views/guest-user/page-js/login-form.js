@@ -46,15 +46,16 @@
     };
     
     resendOtp = function (userId, getOtpOnly = 0){
-        $.mbsmessage(langLbl.processing, false, 'alert--process');
+        $.systemMessage(langLbl.processing, 'alert--process', false);
 		fcom.ajax(fcom.makeUrl( 'GuestUser', 'resendOtp', [userId, getOtpOnly]), '', function(t) {
             t = $.parseJSON(t);
             if(typeof t.status != 'undefined' &&  1 > t.status){
-                $.mbsmessage(t.msg, false, 'alert--danger');
+                $.systemMessage(t.msg, 'alert--danger', false);
                 return false
             }
-            $.mbsmessage(t.msg, false, 'alert--success');
+            $.systemMessage(t.msg, 'alert--success', true);
             var parent = 0 < $('#facebox .loginpopup').length ? '.loginpopup' : '';
+            $('#sign-up').html(t.html);
             startOtpInterval(parent);
         });
         return false;

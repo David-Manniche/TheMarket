@@ -73,22 +73,26 @@ $(document).ready(function() {
     }
 });
 
-$(document).on('keyup', 'input.otpVal', function(e) {
-    if ('' != $(this).val()) {
-        $(this).removeClass('is-invalid');
-    }
 
-    var element = '';
+$(document).on('keyup', 'input.otpVal-js', function(e) {
+	if ('' != $(this).val()) {
+		$(this).removeClass('is-invalid');
+	}
 
-    /* 
-    # e.which = 8(Backspace)
-    */
-    if (8 != e.which && '' != $(this).val()) {
-        element = $(this).parent().nextAll();
-    } else {
-        element = $(this).parent().prevAll();
-    }
-    element.children("input.otpVal").eq(0).focus();
+	var element = '';
+
+	/* 
+	# e.which = 8(Backspace)
+	*/
+	if (8 != e.which && '' != $(this).val()) {
+		element = ($(this).parents('.otpCol-js').nextAll())[0];
+	} else {
+		element = ($(this).parents('.otpCol-js').prevAll())[0];
+	}
+	element = $(element).find("input.otpVal-js");
+	if ('undefined' != typeof element) {
+		element.focus();
+	}
 });
 
 unlinkSlick = function() {
@@ -106,7 +110,7 @@ slickWidgetScroll = function() {
 }
 
 invalidOtpField = function() {
-    $("input.otpVal").val('').addClass('is-invalid').attr('onkeyup', 'checkEmpty($(this))');
+    $("input.otpVal-js").val('').addClass('is-invalid').attr('onkeyup', 'checkEmpty($(this))');
 }
 
 checkEmpty = function(element) {
@@ -116,7 +120,7 @@ checkEmpty = function(element) {
 }
 
 var otpIntervalObj;
-startOtpInterval = function(parent = '') {
+startOtpInterval = function(parent = '', callback = '', params = []) {
     if ('undefined' != typeof otpIntervalObj) {
         clearInterval(otpIntervalObj);
     }
@@ -133,6 +137,9 @@ startOtpInterval = function(parent = '') {
             clearInterval(otpIntervalObj);
             $(parent + '.resendOtp-js').removeClass('d-none');
             element.parent().parent().hide();
+			if (eval("typeof " + callback) == 'function') {
+				window[callback](params);
+			}
         }
         element.text(counter);
     }, 1000);

@@ -4,7 +4,7 @@
     <div class="step__section">
         <div class="step__section__head">
             <h5 class="step__section__head__title"> 
-            <?php if ($fulfillmentType == Shipping::FULFILMENT_PICKUP || $addressType == Address::Address_TYPE_BILLING) {
+            <?php if ($fulfillmentType == Shipping::FULFILMENT_PICKUP || $addressType == Address::ADDRESS_TYPE_BILLING) {
                     echo Labels::getLabel('LBL_Billing_Address', $siteLangId); 
                 } else {
                     echo Labels::getLabel('LBL_Delivery_Address', $siteLangId);  
@@ -26,7 +26,7 @@
                 if ($addressType == 0 && $selected_shipping_address_id == $address['addr_id']) { 
                     $checked = true;
                 }
-                if ($addressType == Address::Address_TYPE_BILLING && $selected_billing_address_id == $address['addr_id']) { 
+                if ($addressType == Address::ADDRESS_TYPE_BILLING && $selected_billing_address_id == $address['addr_id']) { 
                     $checked = true;
                 }
                 ?>
@@ -86,7 +86,7 @@
         </div>               
     </div>
 	<div class="checkout-actions">
-        <?php if ($addressType == Address::Address_TYPE_BILLING) { ?>
+        <?php if ($addressType == Address::ADDRESS_TYPE_BILLING) { ?>
             <a class="btn btn-outline-secondary btn-wide" href="javascript:void(0);" onclick="loadPaymentSummary();">
                 <?php echo Labels::getLabel('LBL_Back', $siteLangId); ?>
             </a>
@@ -95,7 +95,7 @@
                 <?php echo Labels::getLabel('LBL_Back', $siteLangId); ?>
             </a>
         <?php } ?>
-		<?php if($addressType == Address::Address_TYPE_BILLING) { ?>
+		<?php if($addressType == Address::ADDRESS_TYPE_BILLING) { ?>
 		    <a href="javascript:void(0)" id="btn-continue-js" onClick="setUpBillingAddressSelection(this);" class="btn btn-primary btn-wide"><?php echo Labels::getLabel('LBL_Continue', $siteLangId); ?></a>
 	    <?php } else{ ?>
 		    <a href="javascript:void(0)" id="btn-continue-js" onClick="setUpAddressSelection(this);" class="btn btn-primary btn-wide"><?php echo Labels::getLabel('LBL_Continue', $siteLangId); ?></a>

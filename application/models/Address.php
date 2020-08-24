@@ -10,8 +10,8 @@ class Address extends MyAppModel
     public const TYPE_SHOP_REUTRN = 3;
     public const TYPE_ADMIN_PICKUP = 4;
     
-    public const Address_TYPE_BILLING = 1;
-    public const Address_TYPE_ShIPPING = 2;
+    public const ADDRESS_TYPE_BILLING = 1;
+    public const ADDRESS_TYPE_SHIPPING = 2;
     
     private const GOOGLE_GEOCODE_URL = 'https://maps.googleapis.com/maps/api/geocode/json?';
     private $langId;

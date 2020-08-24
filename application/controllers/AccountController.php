@@ -3668,24 +3668,30 @@ class AccountController extends LoggedUserController
         CommonHelper::redirectUserReferer();
     }
 
-    private function initStripeConnect()
+    private function initPaymentPlugin()
     {
-        $this->stripeConnect = PluginHelper::callPlugin('StripeConnect', [$this->siteLangId], $error, $this->siteLangId);
-        if (false === $this->stripeConnect) {
+        $pluginObj = new Plugin();
+        $keyName = $pluginObj->getDefaultPluginKeyName(Plugin::TYPE_SPLIT_PAYMENT_METHOD);
+        if (false === $keyName) {
+            $this->setErrorAndRedirect($pluginObj->getError());
+        }
+
+        $this->paymentPlugin = PluginHelper::callPlugin($keyName, [$this->siteLangId], $error, $this->siteLangId);
+        if (false === $this->paymentPlugin) {
             $this->setErrorAndRedirect($error);
         }
-        $userId = UserAuthentication::getLoggedUserId(true);
-        if (false === $this->stripeConnect->init($userId)) {
-            $this->setErrorAndRedirect($this->stripeConnect->getError());
+        $this->userId = UserAuthentication::getLoggedUserId(true);
+        if (false === $this->paymentPlugin->init($this->userId)) {
+            $this->setErrorAndRedirect($this->paymentPlugin->getError());
         }
     }
 
     public function cards()
     {
-        $this->initStripeConnect();
+        $this->initPaymentPlugin();
 
-        $this->stripeConnect->loadCustomer();
-        $customerInfo = $this->stripeConnect->getResponse()->toArray();
+        $this->paymentPlugin->loadCustomer();
+        $customerInfo = $this->paymentPlugin->getResponse()->toArray();
         $savedCards = $customerInfo['sources']['data'];
         $this->set('defaultSource', $customerInfo['default_source']);
         $this->set('savedCards', $savedCards);
@@ -3699,15 +3705,15 @@ class AccountController extends LoggedUserController
      */
     public function removeCard()
     {
-        $this->initStripeConnect();
+        $this->initPaymentPlugin();
 
         $cardId = FatApp::getPostedData('cardId', FatUtility::VAR_STRING, '');
         if (empty($cardId)) {
-            $this->setError(Labels::getLabel('MSG_INVALID_REQUEST', $this->siteLangId));
+            $this->setErrorAndRedirect(Labels::getLabel('MSG_INVALID_REQUEST', $this->siteLangId));
         }
 
-        if (false === $this->stripeConnect->removeCard(['cardId' => $cardId])) {
-            $this->setErrorAndRedirect($this->stripeConnect->getError());
+        if (false === $this->paymentPlugin->removeCard(['cardId' => $cardId])) {
+            $this->setErrorAndRedirect($this->paymentPlugin->getError());
         }
         $msg = Labels::getLabel("MSG_REMOVED_SUCCESSFULLY", $this->siteLangId);
         FatUtility::dieJsonSuccess($msg);
@@ -3748,5 +3754,71 @@ class AccountController extends LoggedUserController
 
         $this->set('frm', $frm);
         $this->_template->render(false, false);
+    }
+
+    /**
+     * createCustomer
+     *
+     * @return void
+     */
+    public function createCustomer()
+    {
+        $this->initPaymentPlugin();
+
+        if (!empty($this->paymentPlugin->getCustomerId())) {
+            $json['customerId'] = $this->paymentPlugin->getCustomerId();
+            $json['msg'] = Labels::getLabel('MSG_ALREADY_EXISTS', $this->siteLangId);
+            FatUtility::dieJsonSuccess($json);
+        }
+        $userObj = new User($this->userId);
+        $userData = $userObj->getUserInfo();
+        $requestParam = [
+            'email' => $userData['credential_email'],
+            'name' => $userData['user_name'],
+            'phone' => $userData['user_phone']
+        ];
+        if (false === $this->stripeConnect->createCustomerObject($requestParam)) {
+            $this->setErrorAndRedirect($this->stripeConnect->getError());
+        }
+
+        $msg = Labels::getLabel('MSG_SUCCESS', $this->siteLangId);
+        FatUtility::dieJsonSuccess($msg);
+    }
+
+    /**
+     * setupNewCard
+     *
+     * @return void
+     */
+    public function setupNewCard()
+    {
+        $this->initPaymentPlugin();
+        
+        $userObj = new User($this->userId);
+        if (empty($this->paymentPlugin->getCustomerId())) {
+            $this->createCustomer();
+        }
+
+        $cardFrm = $this->getCardForm();
+        $cardData = $cardFrm->getFormDataFromArray(FatApp::getPostedData());
+        if (false === $cardData) {
+            $this->setErrorAndRedirect(current($cardFrm->getValidationErrors()));
+        }
+        unset($cardData['btn_submit']);
+
+        /* It will generate card temp token. */
+        if (false === $this->stripeConnect->generateCardToken($cardData)) {
+            $this->setErrorAndRedirect($this->stripeConnect->getError());
+        }
+        $cardTempTokenResponse = $this->stripeConnect->getResponse();
+
+        if (false === $this->stripeConnect->addCard(['source' => $cardTempTokenResponse->id])) {
+            $this->setErrorAndRedirect($this->stripeConnect->getError());
+        }
+
+        $cardTokenResponse = $this->stripeConnect->getResponse();
+        $json['cardId'] = $cardTokenResponse->id;
+        $json['msg'] = Labels::getLabel('MSG_SUCESS', $this->siteLangId);
+        FatUtility::dieJsonSuccess($json);
     }
 }

@@ -70,9 +70,6 @@ class TransferbankPayController extends PaymentController
     private function getPaymentForm($orderId)
     {
         $frm = new Form('frmPaymentForm', array('id' => 'frmPaymentForm', 'action' => UrlHelper::generateUrl('TransferbankPay', 'send', array($orderId)), 'class' => "form form--normal"));
-
-        $frm->addHtml('', 'htmlNote', Labels::getLabel('MSG_Bank_Transfer_Note', $this->siteLangId));
-        $frm->addHtml('', 'htmlNote', '<div class="bank--details">' . nl2br($this->settings["business_name"]) . '</div>');
         $frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_Confirm_Order', $this->siteLangId), array('id' => 'button-confirm'));
         return $frm;
     }

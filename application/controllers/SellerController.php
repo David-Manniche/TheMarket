@@ -695,20 +695,21 @@ class SellerController extends SellerBaseController
 
         if (in_array($orderDetail["op_status_id"], $processingStatuses) && in_array($post["op_status_id"], $processingStatuses)) {
             $trackingCourierCode = '';
-            if (array_key_exists('manual_shipping', $post) && array_key_exists('opship_tracking_url', $post)) {
-                $updateData = [
-                    'opship_op_id' => $post['op_id'],
-                    "opship_tracking_number" => $post['tracking_number'],
-                    "opship_tracking_url" => $post['opship_tracking_url'],
-                ];
-            
-                if (!FatApp::getDb()->insertFromArray(OrderProductShipment::DB_TBL, $updateData, false, array(), $updateData)) {
-                    LibHelper::dieJsonError(FatApp::getDb()->getError());
+            if ($post["op_status_id"] == OrderStatus::ORDER_SHIPPED) {
+                if (array_key_exists('manual_shipping', $post) && 0 < $post['manual_shipping'] && array_key_exists('opship_tracking_url', $post)) {
+                    $updateData = [
+                        'opship_op_id' => $post['op_id'],
+                        "opship_tracking_number" => $post['tracking_number'],
+                        "opship_tracking_url" => $post['opship_tracking_url'],
+                    ];
+                    if (!FatApp::getDb()->insertFromArray(OrderProductShipment::DB_TBL, $updateData, false, array(), $updateData)) {
+                        LibHelper::dieJsonError(FatApp::getDb()->getError());
+                    }
+                } else {
+                    $trackingRelation = new TrackingCourierCodeRelation();
+                    $trackData = $trackingRelation->getDataByShipCourierCode($orderDetail['opshipping_carrier_code']);
+                    $trackingCourierCode = !empty($trackData['tccr_tracking_courier_code']) ? $trackData['tccr_tracking_courier_code'] : '';
                 }
-            } else {
-                $trackingRelation = new TrackingCourierCodeRelation();
-                $trackData = $trackingRelation->getDataByShipCourierCode($orderDetail['opshipping_carrier_code']);
-                $trackingCourierCode = !empty($trackData['tccr_tracking_courier_code']) ? $trackData['tccr_tracking_courier_code'] : '';
             }
 
             if (!$orderObj->addChildProductOrderHistory($op_id, $orderDetail["order_language_id"], $post["op_status_id"], $post["comments"], $post["customer_notified"], $post["tracking_number"], 0, true, $trackingCourierCode)) {
