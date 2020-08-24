@@ -10,10 +10,10 @@ class HomeController extends MyAppController
         $productSrchObj = $this->getProductSearchObj($loggedUserId);
         $collections = $this->getCollections($productSrchObj);
         
-        $sponsoredShops = $this->getSponsoredShops($productSrchObj);
+        /* $sponsoredShops = $this->getSponsoredShops($productSrchObj);
         $sponsoredProds = $this->getSponsoredProducts($productSrchObj);
         $this->set('sponsoredProds', $sponsoredProds);
-        $this->set('sponsoredShops', $sponsoredShops);
+        $this->set('sponsoredShops', $sponsoredShops); */
         /* $this->set('banners', $banners); */
         
         $slides = $this->getSlides();
