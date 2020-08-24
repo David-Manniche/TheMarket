@@ -27,12 +27,12 @@ if (!empty($bannerLayout1['banners']) && $bannerLayout1['blocation_active']) { ?
             foreach ($slideArr as $slideScreen) {
                 $uploadedTime = AttachedFile::setTimeParam($slideScreen['afile_updated_at']);
                 switch ($slideScreen['afile_screen']) {
-                    /* case applicationConstants::SCREEN_MOBILE:
+                    case applicationConstants::SCREEN_MOBILE:
                         $mobile_url = UrlHelper::getCachedUrl(UrlHelper::generateFileUrl('Banner', 'HomePageBannerTopLayout', array($val['banner_id'], $siteLangId, applicationConstants::SCREEN_MOBILE)).$uploadedTime, CONF_IMG_CACHE_TIME, '.jpg').",";
                         break;
                     case applicationConstants::SCREEN_IPAD:
                         $tablet_url = UrlHelper::getCachedUrl(UrlHelper::generateFileUrl('Banner', 'HomePageBannerTopLayout', array($val['banner_id'], $siteLangId, applicationConstants::SCREEN_IPAD)).$uploadedTime).",";
-                        break; */
+                        break;
                     case applicationConstants::SCREEN_DESKTOP:
                         $defaultImgUrl = UrlHelper::getCachedUrl(UrlHelper::generateFileUrl('Banner', 'HomePageBannerTopLayout', array($val['banner_id'], $siteLangId, applicationConstants::SCREEN_DESKTOP)).$uploadedTime, CONF_IMG_CACHE_TIME, '.jpg');
                         $desktop_url = $defaultImgUrl.",";

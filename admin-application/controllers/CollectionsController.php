@@ -585,6 +585,7 @@ class CollectionsController extends AdminBaseController
         $this->set('blocationId', $blocationId);
         $this->set('collection_type', $collectionDetails['collection_type']);
         $this->set('collection_layout_type', $collectionDetails['collection_layout_type']);
+        $this->set('dimensions', Collections::getBannersDimensions()[$collectionDetails['collection_layout_type']]);
         $this->set('frm', $frm);
         $this->_template->render(false, false);
     }

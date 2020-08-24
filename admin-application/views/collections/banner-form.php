@@ -14,7 +14,7 @@ $fld->developerTags['cbHtmlAfterCheckbox'] = '<i class="input-helper"></i>';
 $bannerFld = $frm->getField('banner');
 $bannerFld->addFieldTagAttribute('class', 'btn btn-primary btn-sm');
 $bannerFld->addFieldTagAttribute('onChange', 'bannerPopupImage(this)');
-$bannerFld->htmlAfterField = '<small class="text--small preferredDimensions-js">'.sprintf(Labels::getLabel('LBL_Preferred_Dimensions_%s', $adminLangId), '2000 x 500').'</small>';
+$bannerFld->htmlAfterField = '<small class="text--small preferredDimensions-js">'.sprintf(Labels::getLabel('LBL_Preferred_Dimensions_%s', $adminLangId), '1350 x 405').'</small>';
 
 $bannerLangFld = $frm->getField('banner_lang_id');
 $bannerLangFld->addFieldTagAttribute('class', 'banner-language-js');
@@ -211,33 +211,30 @@ $siteDefaultLangId = FatApp::getConfig('conf_default_site_lang', FatUtility::VAR
 </div>
 
 <script>
-$('input[name=banner_min_width]').val(2000);
-$('input[name=banner_min_height]').val(500);
-var aspectRatio = 4 / 1;
+var width = <?php echo $dimensions[applicationConstants::SCREEN_DESKTOP]['width']; ?>;
+var height = <?php echo $dimensions[applicationConstants::SCREEN_DESKTOP]['height']; ?>;
+var aspectRatio = <?php echo $dimensions[applicationConstants::SCREEN_DESKTOP]['width']; ?> / <?php echo $dimensions[applicationConstants::SCREEN_DESKTOP]['height']; ?>;
+
+$('input[name=banner_min_width]').val(width);
+$('input[name=banner_min_height]').val(height);
+
 $(document).on('change','.prefDimensions-js',function(){
     var screenDesktop = <?php echo applicationConstants::SCREEN_DESKTOP ?>;
     var screenIpad = <?php echo applicationConstants::SCREEN_IPAD ?>;
-
-    if($(this).val() == screenDesktop)
-    {
-        $('.preferredDimensions-js').html((langLbl.preferredDimensions).replace(/%s/g, '2000 x 500'));
-        $('input[name=banner_min_width]').val(2000);
-        $('input[name=banner_min_height]').val(500);
-        aspectRatio = 4 / 1;
+    if($(this).val() == screenDesktop) {
+		width = <?php echo $dimensions[applicationConstants::SCREEN_DESKTOP]['width']; ?>;
+		height = <?php echo $dimensions[applicationConstants::SCREEN_DESKTOP]['height']; ?>;
+    } else if($(this).val() == screenIpad) {
+        width = <?php echo $dimensions[applicationConstants::SCREEN_IPAD]['width']; ?>;
+		height = <?php echo $dimensions[applicationConstants::SCREEN_IPAD]['height']; ?>;
+    } else {
+		width = <?php echo $dimensions[applicationConstants::SCREEN_MOBILE]['width']; ?>;
+		height = <?php echo $dimensions[applicationConstants::SCREEN_MOBILE]['height']; ?>;
     }
-    else if($(this).val() == screenIpad)
-    {
-        $('.preferredDimensions-js').html((langLbl.preferredDimensions).replace(/%s/g, '1024 x 360'));
-        $('input[name=banner_min_width]').val(1024);
-        $('input[name=banner_min_height]').val(360);
-        aspectRatio = 128 / 45;
-    }
-    else{
-        $('.preferredDimensions-js').html((langLbl.preferredDimensions).replace(/%s/g, '640 x 360'));
-        $('input[name=banner_min_width]').val(640);
-        $('input[name=banner_min_height]').val(360);
-        aspectRatio = 16 / 9;
-    }
+	$('.preferredDimensions-js').html((langLbl.preferredDimensions).replace(/%s/g, width+' x '+height));
+	$('input[name=banner_min_width]').val(width);
+	$('input[name=banner_min_height]').val(height);
+	aspectRatio = width / height;
 });
 $("document").ready(function() {
 	$(".prefDimensions-js").trigger('change');
