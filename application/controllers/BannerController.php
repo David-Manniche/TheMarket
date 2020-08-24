@@ -86,7 +86,9 @@ class BannerController extends MyAppController
 
     public function HomePageBannerTopLayout($bannerId, $langId = 0, $screen = 0)
     {
-        $bannerDimensions = BannerLocation::getDimensions(BannerLocation::HOME_PAGE_BANNER_LAYOUT_1, $screen);
+		$bannerId = FatUtility::int($bannerId);
+		$blocationId = Banner::getAttributesById($bannerId, 'banner_blocation_id');
+        $bannerDimensions = BannerLocation::getDimensions($blocationId, $screen);
         $w = 1350;
         $h = 405;
         /*Desktop default value need to update in DB*/
@@ -102,7 +104,9 @@ class BannerController extends MyAppController
     // For Mobile API
     public function HomePageBannerMiddleLayout($bannerId, $langId = 0, $screen = 0)
     {
-        $bannerDimensions = BannerLocation::getDimensions(BannerLocation::HOME_PAGE_MOBILE_BANNER, $screen);
+		$bannerId = FatUtility::int($bannerId);
+		$blocationId = Banner::getAttributesById($bannerId, 'banner_blocation_id');
+        $bannerDimensions = BannerLocation::getDimensions($blocationId, $screen);
         $w = 600;
         $h = 338;
         /*Desktop default value need to update in DB*/
@@ -117,7 +121,9 @@ class BannerController extends MyAppController
 
     public function HomePageBannerBottomLayout($bannerId, $langId = 0, $screen = 0)
     {
-        $bannerDimensions = BannerLocation::getDimensions(BannerLocation::HOME_PAGE_BANNER_LAYOUT_2, $screen);
+        $bannerId = FatUtility::int($bannerId);
+		$blocationId = Banner::getAttributesById($bannerId, 'banner_blocation_id');
+        $bannerDimensions = BannerLocation::getDimensions($blocationId, $screen);
         $w = 600;
         $h = 198;
         /*Desktop default value need to update in DB*/
@@ -132,7 +138,9 @@ class BannerController extends MyAppController
 
     public function productDetailPageBanner($bannerId, $langId = 0, $screen = 0)
     {
-        $bannerDimensions = BannerLocation::getDimensions(BannerLocation::PRODUCT_DETAIL_PAGE_BANNER, $screen);
+        $bannerId = FatUtility::int($bannerId);
+		$blocationId = Banner::getAttributesById($bannerId, 'banner_blocation_id');
+        $bannerDimensions = BannerLocation::getDimensions($blocationId, $screen);
         $w = 600;
         $h = 198;
         /*Desktop default value need to update in DB*/

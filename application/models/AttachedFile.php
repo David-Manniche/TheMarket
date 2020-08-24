@@ -451,7 +451,7 @@ class AttachedFile extends MyAppModel
         } else {
             $no_image = 'images/defaults/' . $no_image;
         }
-
+		
         $originalImageName = $image_name;
 
         if (trim($uploadedFilePath) != '') {

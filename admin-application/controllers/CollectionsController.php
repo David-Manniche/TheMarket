@@ -544,7 +544,7 @@ class CollectionsController extends AdminBaseController
 
         if (0 < $bannerId) {
             $srch = new BannerSearch($this->adminLangId, false);
-            $srch->joinCollectionRecords();
+            $srch->joinCollectionToRecords();
             $srch->joinLocations();
             $srch->joinPromotions($this->adminLangId, true);
             $srch->addPromotionTypeCondition();
