@@ -22,7 +22,7 @@ $bannerLangFld->addFieldTagAttribute('class', 'banner-language-js');
 $screenFld = $frm->getField('banner_screen');
 $screenFld->addFieldTagAttribute('class', 'prefDimensions-js');
 
-if ($blocationId == BannerLocation::HOME_PAGE_MOBILE_BANNER) {
+if ($collection_layout_type == Collections::TYPE_BANNER_LAYOUT3) {
     $screenFld->setFieldTagAttribute('disabled', 'disabled');
 }
 
