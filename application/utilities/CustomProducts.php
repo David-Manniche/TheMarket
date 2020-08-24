@@ -1271,9 +1271,6 @@ trait CustomProducts
             $post['prodcat_status'] = ProductCategory::REQUEST_APPROVED;
         }
 
-        $post['prodcat_status'] = ProductCategory::REQUEST_PENDING;
-        $post['prodcat_active'] = applicationConstants::INACTIVE;
-
         $post['prodcat_seller_id'] = UserAuthentication::getLoggedUserId();
         $productCategory = new ProductCategory($categoryReqId);
         if (!$productCategory->saveCategoryData($post)) {
