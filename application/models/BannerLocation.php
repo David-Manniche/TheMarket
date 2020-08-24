@@ -179,7 +179,7 @@ class BannerLocation extends MyAppModel
 		} else {
 			$bannerListing = $db->fetchAll($rs, 'banner_id');
 		}
-		$banners[$bannerLocation['blocation_collection_id']]['banners'] = $bannerListing;
+		$banners['banners'] = $bannerListing;
         return $banners;
     }
 
