@@ -81,6 +81,10 @@ class BannerLocation extends MyAppModel
         $rs = $bannerSrch->getResultSet();
         $bannerLocation = $db->fetch($rs);
 
+        if (empty($bannerLocation)) {
+            return [];
+        }
+        
         $banners = $bannerLocation;
         $bsrch = new BannerSearch($langId, true);
 		$bsrch->joinPromotions($langId, true, true, true);
