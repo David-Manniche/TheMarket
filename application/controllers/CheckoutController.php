@@ -1528,7 +1528,7 @@ class CheckoutController extends MyAppController
                 $max = pow(10, User::OTP_LENGTH) - 1;
                 $otp = mt_rand($min, $max);
 
-                if (false === $userObj->prepareUserVerificationCode($userData['credential_email'], $otp)) {
+                if (false === $userObj->prepareUserVerificationCode($userData['credential_email'], $user_id . '_' . $otp)) {
                     FatUtility::dieWithError($userObj->getError());
                 }
 
@@ -2289,16 +2289,82 @@ class CheckoutController extends MyAppController
     {
         $userId = UserAuthentication::getLoggedUserId();
         $userObj = new User($userId);
-        if (false == $userObj->resendOtp()) {
-            FatUtility::dieJsonError($userObj->getError());
+        $userData = $userObj->getUserInfo([], false, false);
+        $userDialCode = $userData['user_dial_code'];
+        $phoneNumber = $userData['user_phone'];
+        $phoneWithDial = $userDialCode . $phoneNumber;
+
+        $canSendSms = (!empty($phoneNumber) && !empty($userDialCode) && SmsArchive::canSendSms(SmsTemplate::COD_OTP_VERIFICATION));
+
+        if (true == $canSendSms) {
+            if (false == $userObj->resendOtp()) {
+                FatUtility::dieJsonError($userObj->getError());
+            }
+            $this->set('msg', Labels::getLabel('MSG_OTP_SENT!_PLEASE_CHECK_YOUR_PHONE.', $this->siteLangId));
+        } else {
+            $min = pow(10, User::OTP_LENGTH - 1);
+            $max = pow(10, User::OTP_LENGTH) - 1;
+            $otp = mt_rand($min, $max);
+
+            if (false === $userObj->prepareUserVerificationCode($userData['credential_email'], $userId . '_' . $otp)) {
+                FatUtility::dieWithError($userObj->getError());
+            }
+
+            $replace = [
+                'user_name' => $userData['user_name'],
+                'otp' => $otp,
+                'credential_email' => $userData['credential_email'],
+            ];
+            $email = new EmailHandler();
+            if (false === $email->sendCodOtpVerification($this->siteLangId, $replace)){
+                FatUtility::dieWithError($userObj->getError());
+            }
+            $this->set('msg', Labels::getLabel('MSG_OTP_SENT!_PLEASE_CHECK_YOUR_EMAIL.', $this->siteLangId));
         }
-        $this->set('msg', Labels::getLabel('MSG_OTP_SENT!_PLEASE_CHECK_YOUR_PHONE.', $this->siteLangId));
         $this->_template->render(false, false, 'json-success.php');
     }
 
     public function validateOtp()
     {
-        $this->validateOtpApi(0, false);
+        $user_id = UserAuthentication::getLoggedUserId();
+        $userObj = new User($user_id);
+        $userData = $userObj->getUserInfo([], false, false);
+        $userDialCode = $userData['user_dial_code'];
+        $phoneNumber = $userData['user_phone'];
+
+        $canSendSms = (!empty($phoneNumber) && !empty($userDialCode) && SmsArchive::canSendSms(SmsTemplate::COD_OTP_VERIFICATION));
+
+        if (true == $canSendSms) {
+            $this->validateOtpApi(0, false);
+        } else {
+            $db = FatApp::getDb();
+            $db->startTransaction();
+
+            $otpFrm = $this->getOtpForm();
+            $post = $otpFrm->getFormDataFromArray(FatApp::getPostedData());
+            if (false === $post) {
+                LibHelper::dieJsonError(current($otpFrm->getValidationErrors()));
+            }
+
+            if (true === MOBILE_APP_API_CALL) {
+                if (User::OTP_LENGTH != strlen($post['upv_otp'])) {
+                    LibHelper::dieJsonError(Labels::getLabel('MSG_INVALID_OTP', $this->siteLangId));
+                }
+                $otp = $post['upv_otp'];
+            } else {
+                if (!is_array($post['upv_otp']) || User::OTP_LENGTH != count($post['upv_otp'])) {
+                    LibHelper::dieJsonError(Labels::getLabel('MSG_INVALID_OTP', $this->siteLangId));
+                }
+                $otp = implode("", $post['upv_otp']);
+            }
+
+            if (!$userObj->verifyUserEmailVerificationCode($user_id . '_' . $otp)) {
+                $db->rollbackTransaction();
+                LibHelper::dieJsonError($userObj->getError());
+            }
+            $db->commitTransaction();
+        }
+
         $this->_template->render(false, false, 'json-success.php');
     }
 }

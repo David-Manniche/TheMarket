@@ -654,6 +654,7 @@ $("document").ready(function () {
                 $('.otpBlock-js').addClass('d-none');
                 confirmOrder(frm);
             } else {
+                $.mbsmessage(t.msg, false, 'alert--danger');
                 invalidOtpField();
             }
         });	

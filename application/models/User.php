@@ -1609,6 +1609,7 @@ class User extends MyAppModel
             $this->error = Labels::getLabel('ERR_INVALID_CODE', $this->commonLangId);
             return false;
         }
+        
         $userId = FatUtility::int($arrCode[0]);
 
         $emvSrch = new SearchBase(static::DB_TBL_USER_EMAIL_VER);
@@ -1624,10 +1625,8 @@ class User extends MyAppModel
                 return true;
             }
             return $row['uev_email'];
-        } else {
-            $this->error = Labels::getLabel('ERR_INVALID_CODE.', $this->commonLangId);
-            return false;
         }
+        $this->error = Labels::getLabel('ERR_INVALID_CODE.', $this->commonLangId);
         return false;
     }
 
