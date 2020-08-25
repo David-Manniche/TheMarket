@@ -1,22 +1,19 @@
-<?php
-    if (isset($collections) && count($collections)) {
-        foreach ($collections as $collection_id => $row) {
-            /* category listing design [ */
-            if (isset($row['categories']) && count($row['categories'])) { ?>
+<?php defined('SYSTEM_INIT') or die('Invalid Usage.'); ?>
+<?php if (isset($collection['categories']) && count($collection['categories'])) { ?>
 <section class="section bg-gray">
     <div class="container">
         <div class="section-head">
-            <?php echo ($row['collection_name'] != '') ? ' <div class="section__heading"><h2>' . $row['collection_name'] .'</h2></div>' : ''; ?>
+            <?php echo ($collection['collection_name'] != '') ? ' <div class="section__heading"><h2>' . $collection['collection_name'] .'</h2></div>' : ''; ?>
 
-            <?php if ($row['totCategories'] > Collections::LIMIT_CATEGORY_LAYOUT2) { ?>
+            <?php if ($collection['totCategories'] > Collections::LIMIT_CATEGORY_LAYOUT2) { ?>
             <div class="section__action"> <a
-                    href="<?php echo UrlHelper::generateUrl('Collections', 'View', array($row['collection_id']));?>"
+                    href="<?php echo UrlHelper::generateUrl('Collections', 'View', array($collection['collection_id']));?>"
                     class="link"><?php echo Labels::getLabel('LBL_View_More', $siteLangId); ?></a>
             </div>
             <?php }  ?>
         </div>
         <div class="row">
-            <?php foreach ($row['categories'] as $category) { ?>
+            <?php foreach ($collection['categories'] as $category) { ?>
                 <div class="col-xl-3 col-lg-6 col-sm-6 column">
                     <div class="top-categories">
                         <?php $fileRow = CommonHelper::getImageAttributes(AttachedFile::FILETYPE_CATEGORY_BANNER, $category['prodcat_id']);?>
@@ -51,6 +48,4 @@
         </div>
     </div>
 </section>
-<?php }
-        }
-    }	/* ] */
+<?php } ?>

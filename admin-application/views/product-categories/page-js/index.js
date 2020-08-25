@@ -405,6 +405,23 @@ $(document).on('change','.icon-language-js',function(){
 
 });
 
+$(document).on('change','.banner-language-js',function(){
+	var lang_id = $(this).val();
+	var prodcat_id = $("input[name='prodcat_id']").val();
+	var slide_screen = $("input[name='slide_screen']").val();
+    var imageId = $("[name='cat_banner_image_id["+lang_id+"_"+slide_screen+"]']").val();
+    if(prodcat_id == 0){
+        if(imageId > 0){
+            categoryImages(prodcat_id,'banner',slide_screen,lang_id);
+        }else{
+            $("#banner-image-listing").html('');
+        }
+    }else{
+        categoryImages(prodcat_id,'banner',slide_screen,lang_id);
+    }
+
+});
+
 $(document).on('change','.prefDimensions-js',function(){
 	var slide_screen = $(this).val();
 	var prodcat_id = $("input[name='prodcat_id']").val();

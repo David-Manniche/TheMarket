@@ -1233,6 +1233,22 @@
             setTimeout(function() { window.location.href = fcom.makeUrl('Seller', 'products'); }, 1000);
         }
 	};
+	
+	goToCatalogRequest = function(){
+        window.location.href = fcom.makeUrl('seller', 'customCatalogProducts');
+    }
+	
+	shippingPackages = function (form) {
+		var data = '';
+        if (form) {
+            data = fcom.frmData(form);
+        }
+        $.facebox(function () {
+            fcom.ajax(fcom.makeUrl('shippingPackages', 'search'), data, function (t) {
+                $.facebox(t, 'faceboxWidth medium-fb-width');
+            });
+        });
+    };
 
 })();
 

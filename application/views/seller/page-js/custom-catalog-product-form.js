@@ -1004,6 +1004,27 @@ $(document).on('change', '.language-js', function () {
     goToCatalogRequest = function(){
         window.location.href = fcom.makeUrl('seller', 'customCatalogProducts');
     }
+	
+	shippingPackages = function (form) {
+		var data = '';
+        if (form) {
+            data = fcom.frmData(form);
+        }
+        $.facebox(function () {
+            fcom.ajax(fcom.makeUrl('shippingPackages', 'search'), data, function (t) {
+                $.facebox(t, 'faceboxWidth medium-fb-width');
+            });
+        });
+    };
+	
+	goToPackagesSearchPage = function(page) {
+        if (typeof page == undefined || page == null) {
+            page = 1;
+        }
+        var frm = document.frmPackageSearchPaging;
+        $(frm.page).val(page);
+        shippingPackages(frm);
+    };
 
 })();
 

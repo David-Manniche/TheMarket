@@ -96,20 +96,43 @@ $action = strtolower($action);
                                 </i><span class="menu-item__title"><?php echo Labels::getLabel('LBL_Tax_Categories', $siteLangId);?></span></a></div>
                     </li>
                 <?php }?>
-                <?php if ($userPrivilege->canViewShippingProfiles(UserAuthentication::getLoggedUserId(), true) && !FatApp::getConfig('CONF_SHIPPED_BY_ADMIN_ONLY', FatUtility::VAR_INT, 0)) { ?>
-                <li class="menu__item <?php echo ($controller == 'shippingprofile') ? 'is-active' : ''; ?>">
-                    <div class="menu__item__inner">
-						<a title="<?php echo Labels::getLabel('LBL_Manage_Shipping', $siteLangId); ?>" href="<?php echo UrlHelper::generateUrl('shippingProfile'); ?>">
-						<i class="icn shop">
-						<svg class="svg">
-							<use xlink:href="<?php echo CONF_WEBROOT_URL; ?>images/retina/sprite.svg#dash-products" href="<?php echo CONF_WEBROOT_URL; ?>images/retina/sprite.svg#dash-products"></use>
-                        </svg>
-                        </i><span class="menu-item__title"><?php echo Labels::getLabel('LBL_Manage_Shipping', $siteLangId); ?></span></a>
-					</div>
-                </li>
-                <?php }?>   
                 <li class="divider"></li>
                 <?php }?>
+
+                <?php if (
+                $userPrivilege->canViewShippingProfiles(UserAuthentication::getLoggedUserId(), true) ||
+                $userPrivilege->canViewShippingPackages(UserAuthentication::getLoggedUserId(), true)
+                ) { ?>
+                    <li class="menu__item">
+                        <div class="menu__item__inner"> <span class="menu-head"><?php echo Labels::getLabel('LBL_Shipping', $siteLangId);?></span></div>
+                    </li>
+                    <?php if ($userPrivilege->canViewShippingProfiles(UserAuthentication::getLoggedUserId(), true) && !FatApp::getConfig('CONF_SHIPPED_BY_ADMIN_ONLY', FatUtility::VAR_INT, 0)) { ?>
+                        <li class="menu__item <?php echo ($controller == 'shippingprofile') ? 'is-active' : ''; ?>">
+                            <div class="menu__item__inner">
+                                <a title="<?php echo Labels::getLabel('LBL_Shipping_Profiles', $siteLangId); ?>" href="<?php echo UrlHelper::generateUrl('shippingProfile'); ?>">
+                                <i class="icn shop">
+                                <svg class="svg">
+                                    <use xlink:href="<?php echo CONF_WEBROOT_URL; ?>images/retina/sprite.svg#shipping-profile" href="<?php echo CONF_WEBROOT_URL; ?>images/retina/sprite.svg#shipping-profile"></use>
+                                </svg>
+                                </i><span class="menu-item__title"><?php echo Labels::getLabel('LBL_Shipping_Profiles', $siteLangId); ?></span></a>
+                            </div>
+                        </li>
+                    <?php }?> 
+                    <?php if ($userPrivilege->canViewShippingPackages(UserAuthentication::getLoggedUserId(), true)) { ?>
+                        <li class="menu__item <?php echo ($controller == 'shippingpackages') ? 'is-active' : ''; ?>">
+                            <div class="menu__item__inner">
+                                <a title="<?php echo Labels::getLabel('LBL_Shipping_Packages', $siteLangId); ?>" href="<?php echo UrlHelper::generateUrl('shippingPackages'); ?>">
+                                <i class="icn shop">
+                                <svg class="svg">
+                                    <use xlink:href="<?php echo CONF_WEBROOT_URL; ?>images/retina/sprite.svg#shipping-package" href="<?php echo CONF_WEBROOT_URL; ?>images/retina/sprite.svg#shipping-package"></use>
+                                </svg>
+                                </i><span class="menu-item__title"><?php echo Labels::getLabel('LBL_Shipping_Packages', $siteLangId); ?></span></a>
+                            </div>
+                        </li>
+                    <?php }?>
+                    <li class="divider"></li>
+                <?php } ?>
+
                 <?php if (
                 $userPrivilege->canViewSales(UserAuthentication::getLoggedUserId(), true) ||
                 $userPrivilege->canViewCancellationRequests(UserAuthentication::getLoggedUserId(), true) ||

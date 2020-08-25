@@ -574,3 +574,73 @@ INSERT INTO `tbl_sms_templates` (`stpl_code`, `stpl_lang_id`, `stpl_name`, `stpl
 INSERT INTO `tbl_email_templates` (`etpl_code`, `etpl_lang_id`, `etpl_name`, `etpl_subject`, `etpl_body`, `etpl_replacements`, `etpl_status`) VALUES ('COD_OTP_VERIFICATION', '1', 'COD OTP Verification', 'COD OTP Verification', '<table width=\"100%\" align=\"center\" cellpadding=\"0\" cellspacing=\"0\">\r\n    <tr>\r\n        <td style=\"background:#ff3a59;\">\r\n            <!--\r\n            page title start here\r\n            -->\r\n\r\n            <table width=\"600\" border=\"0\" align=\"center\" cellpadding=\"0\" cellspacing=\"0\">\r\n                <tbody>\r\n                    <tr>\r\n                        <td style=\"background:#fff;padding:20px 0 10px; text-align:center;\">\r\n                            <h4\r\n                                style=\"font-weight:normal; text-transform:uppercase; color:#999;margin:0; padding:10px 0; font-size:18px;\">\r\n                            </h4>\r\n                            <h2 style=\"margin:0; font-size:34px; padding:0;\">COD OTP Verification</h2>\r\n                        </td>\r\n                    </tr>\r\n                </tbody>\r\n            </table>\r\n            <!--\r\n            page title end here\r\n            -->\r\n        </td>\r\n    </tr>\r\n    <tr>\r\n        <td>\r\n            <!--\r\n            page body start here\r\n            -->\r\n\r\n            <table width=\"600\" border=\"0\" align=\"center\" cellpadding=\"0\" cellspacing=\"0\">\r\n                <tbody>\r\n                    <tr>\r\n                        <td style=\"background:#fff;padding:0 30px; text-align:center; color:#999;vertical-align:top;\">\r\n                            <table width=\"100%\" border=\"0\" align=\"center\" cellpadding=\"0\" cellspacing=\"0\">\r\n                                <tbody>\r\n                                    <tr>\r\n                                        <td style=\"padding:20px 0 30px;\">\r\n                                            <strong style=\"font-size:18px;color:#333;\">Dear\r\n                                                {user_name}\r\n                                            </strong><br />\r\n                                            {OTP} is the OTP for cash on delivery order verification.<br />\r\n                                            <a href=\"{website_url}\">{website_name}</a>\r\n                                        </td>\r\n                                    </tr>\r\n                                </tbody>\r\n                            </table>\r\n                        </td>\r\n                    </tr>\r\n                </tbody>\r\n            </table>\r\n            <!--\r\n            page body end here\r\n            -->\r\n        </td>\r\n    </tr>\r\n</table>', '{user_name} Name of the email receiver.<br>\r\n{OTP} - One Time Password<br>\r\n{website_name} - Name of the website.\r\n{social_media_icons} <br>\r\n{contact_us_url} <br>', '1');
 -- COD Process --
 -- ----------------- TV-9.1.3.20200820 -----------------------
+
+
+-- Collections Management --
+
+CREATE TABLE `tbl_collection_to_records` (
+  `ctr_collection_id` int(11) NOT NULL,
+  `ctr_record_id` int(11) NOT NULL,
+  `ctr_display_order` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+ALTER TABLE `tbl_collection_to_records`
+  ADD PRIMARY KEY (`ctr_collection_id`,`ctr_record_id`);
+
+INSERT INTO tbl_collection_to_records ( ctr_collection_id, ctr_record_id , ctr_display_order ) SELECT ctb_collection_id, ctb_post_id, ctb_display_order FROM tbl_collection_to_blogs ORDER BY ctb_collection_id ASC;
+
+INSERT INTO tbl_collection_to_records ( ctr_collection_id, ctr_record_id , ctr_display_order ) SELECT ctpb_collection_id, ctpb_brand_id, ctpb_display_order FROM tbl_collection_to_brands ORDER BY ctpb_collection_id ASC;
+
+INSERT INTO tbl_collection_to_records ( ctr_collection_id, ctr_record_id , ctr_display_order ) SELECT ctpc_collection_id, ctpc_prodcat_id, ctpc_display_order FROM tbl_collection_to_product_categories ORDER BY ctpc_collection_id ASC;
+
+INSERT INTO tbl_collection_to_records ( ctr_collection_id, ctr_record_id , ctr_display_order ) SELECT ctsp_collection_id, ctsp_selprod_id, ctsp_display_order FROM tbl_collection_to_seller_products ORDER BY ctsp_collection_id ASC;
+
+INSERT INTO tbl_collection_to_records ( ctr_collection_id, ctr_record_id , ctr_display_order ) SELECT ctps_collection_id, ctps_shop_id, ctps_display_order FROM tbl_collection_to_shops ORDER BY ctps_collection_id ASC;
+
+DROP TABLE `tbl_collection_to_brands`;
+DROP TABLE `tbl_collection_to_product_categories`;
+DROP TABLE `tbl_collection_to_seller_products`;
+DROP TABLE `tbl_collection_to_shops`;
+DROP TABLE `tbl_collection_to_blogs`;
+
+
+DROP TABLE `tbl_banner_locations`;
+DROP TABLE `tbl_banner_location_dimensions`;
+
+CREATE TABLE `tbl_banner_locations` (
+  `blocation_id` int(11) NOT NULL,
+  `blocation_identifier` varchar(255) NOT NULL,
+  `blocation_collection_id` int(11) NOT NULL,
+  `blocation_banner_count` int(11) NOT NULL,
+  `blocation_promotion_cost` decimal(10,4) NOT NULL,
+  `blocation_active` tinyint(1) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+INSERT INTO `tbl_banner_locations` (`blocation_id`, `blocation_identifier`, `blocation_collection_id`, `blocation_banner_count`, `blocation_promotion_cost`, `blocation_active`) VALUES
+(1, 'Product Detail page banner', 0, 2, '3.0000', 1);
+ALTER TABLE `tbl_banner_locations`
+  ADD PRIMARY KEY (`blocation_id`);
+ALTER TABLE `tbl_banner_locations`
+  MODIFY `blocation_id` int(11) NOT NULL AUTO_INCREMENT;
+  
+CREATE TABLE `tbl_banner_location_dimensions` (
+  `bldimension_blocation_id` int(11) NOT NULL,
+  `bldimension_device_type` int(11) NOT NULL,
+  `blocation_banner_width` decimal(10,0) NOT NULL,
+  `blocation_banner_height` decimal(10,0) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+INSERT INTO `tbl_banner_location_dimensions` (`bldimension_blocation_id`, `bldimension_device_type`, `blocation_banner_width`, `blocation_banner_height`) VALUES
+(1, 1, '660', '198'),
+(1, 2, '660', '198'),
+(1, 3, '640', '360');
+ALTER TABLE `tbl_banner_location_dimensions`
+  ADD PRIMARY KEY (`bldimension_blocation_id`,`bldimension_device_type`);
+
+TRUNCATE `tbl_banners`;
+TRUNCATE `tbl_banners_lang`;
+DELETE FROM `tbl_attached_files` WHERE `afile_type` = 18;
+
+ALTER TABLE `tbl_banners` CHANGE `banner_img_updated_on` `banner_updated_on` DATETIME NOT NULL;
+
+
+DELETE FROM `tbl_language_labels` WHERE `label_key` LIKE 'LBL_Shipping_Api';

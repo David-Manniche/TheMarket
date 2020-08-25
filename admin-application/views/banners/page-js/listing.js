@@ -16,8 +16,6 @@ $(document).on('change','.display-js',function(){
 	images(blocationId,bannerId,langId,screen);
 });
 (function() {
-	var currentPage = 1;
-	var runningAjaxReq = false;
 	var dv = '#listing';
 
 	goToSearchPage = function(page) {

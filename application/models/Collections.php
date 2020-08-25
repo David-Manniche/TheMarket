@@ -7,28 +7,21 @@ class Collections extends MyAppModel
 
     public const DB_TBL_LANG = 'tbl_collections_lang';
     public const DB_TBL_LANG_PREFIX = 'collectionlang_';
+    
+    public const DB_TBL_COLLECTION_TO_RECORDS = 'tbl_collection_to_records';
+    public const DB_TBL_COLLECTION_TO_RECORDS_PREFIX = 'ctr_';
 
-    public const DB_TBL_COLLECTION_TO_SELPROD = 'tbl_collection_to_seller_products';
-    public const DB_TBL_COLLECTION_TO_SELPROD_PREFIX = 'ctsp_';
-
-    public const DB_TBL_COLLECTION_TO_BRANDS = 'tbl_collection_to_brands';
-    public const DB_TBL_COLLECTION_TO_BRANDS_PREFIX = 'ctpb_';
-
-    public const DB_TBL_COLLECTION_TO_BLOGS = 'tbl_collection_to_blogs';
-    public const DB_TBL_COLLECTION_TO_BLOGS_PREFIX = 'ctb_';
-
-    public const DB_TBL_COLLECTION_TO_PRODUCT_CATEGORIES = 'tbl_collection_to_product_categories';
-    public const DB_TBL_COLLECTION_TO_PRODUCT_CATEGORIES_PREFIX = 'ctpc_';
-
-    public const DB_TBL_COLLECTION_TO_SHOPS = 'tbl_collection_to_shops';
-    public const DB_TBL_COLLECTION_TO_SHOPS_PREFIX = 'ctps_';
-
+    //public const TYPE_PRODUCT = 1;
     public const COLLECTION_TYPE_PRODUCT = 1;
     public const COLLECTION_TYPE_CATEGORY = 2;
     public const COLLECTION_TYPE_SHOP = 3;
     public const COLLECTION_TYPE_BRAND = 4;
     public const COLLECTION_TYPE_BLOG = 5;
+    public const COLLECTION_TYPE_SPONSORED_PRODUCTS = 6;
+    public const COLLECTION_TYPE_SPONSORED_SHOPS = 7;
+    public const COLLECTION_TYPE_BANNER = 8;
 
+    //public const SUBTYPE_PRODUCT_LAYOUT1 = 1;
     public const TYPE_PRODUCT_LAYOUT1 = 1;
     public const TYPE_PRODUCT_LAYOUT2 = 2;
     public const TYPE_PRODUCT_LAYOUT3 = 3;
@@ -37,6 +30,11 @@ class Collections extends MyAppModel
     public const TYPE_SHOP_LAYOUT1 = 6;
     public const TYPE_BRAND_LAYOUT1 = 7;
     public const TYPE_BLOG_LAYOUT1 = 8;
+    public const TYPE_SPONSORED_PRODUCT_LAYOUT = 9;
+    public const TYPE_SPONSORED_SHOP_LAYOUT = 10;
+    public const TYPE_BANNER_LAYOUT1 = 11;
+    public const TYPE_BANNER_LAYOUT2 = 12;
+    public const TYPE_BANNER_LAYOUT3 = 13;
 
     public const LIMIT_PRODUCT_LAYOUT1 = 12;
     public const LIMIT_PRODUCT_LAYOUT2 = 6;
@@ -54,17 +52,37 @@ class Collections extends MyAppModel
         self::COLLECTION_TYPE_SHOP,
         self::COLLECTION_TYPE_BRAND,
         self::COLLECTION_TYPE_BLOG,
+        self::COLLECTION_TYPE_SPONSORED_PRODUCTS,
+        self::COLLECTION_TYPE_SPONSORED_SHOPS,
+        self::COLLECTION_TYPE_BANNER,
     ];
-
-    public function __construct($id = 0)
+    
+    public const COLLECTION_WITHOUT_RECORDS = [
+        self::COLLECTION_TYPE_SPONSORED_PRODUCTS,
+        self::COLLECTION_TYPE_SPONSORED_SHOPS,
+        self::COLLECTION_TYPE_BANNER
+    ];
+    
+    /**
+     * __construct
+     *
+     * @param  int $id
+     * @return void
+     */
+    public function __construct(int $id = 0)
     {
-        parent::__construct(static::DB_TBL, static::DB_TBL_PREFIX . 'id', $id);
-        $this->db = FatApp::getDb();
+        parent::__construct(static::DB_TBL, static::DB_TBL_PREFIX . 'id', $id);        
     }
-
-    public static function getSearchObject($isActive = true, $langId = 0)
+    
+    /**
+     * getSearchObject
+     *
+     * @param  bool $isActive
+     * @param  int $langId
+     * @return object
+     */
+    public static function getSearchObject(bool $isActive = true, int $langId = 0): object
     {
-        $langId = FatUtility::int($langId);
         $srch = new SearchBase(static::DB_TBL, 'c');
 
         $srch->addCondition('c.' . static::DB_TBL_PREFIX . 'deleted', '=', applicationConstants::NO);
@@ -84,29 +102,40 @@ class Collections extends MyAppModel
 
         return $srch;
     }
-
-    public static function getTypeArr($langId = 0)
+    
+    /**
+     * getTypeArr
+     *
+     * @param  int $langId
+     * @return array
+     */
+    public static function getTypeArr(int $langId): array
     {
-        $langId = FatUtility::convertToType($langId, FatUtility::VAR_INT);
-        if (!$langId) {
+        if (1 > $langId) {
             trigger_error(Labels::getLabel('MSG_Language_Id_not_specified.', $langId), E_USER_ERROR);
-            return false;
         }
         return [
             self::COLLECTION_TYPE_PRODUCT => Labels::getLabel('LBL_Product', $langId),
             self::COLLECTION_TYPE_CATEGORY => Labels::getLabel('LBL_Category', $langId),
             self::COLLECTION_TYPE_SHOP => Labels::getLabel('LBL_Shop', $langId),
             self::COLLECTION_TYPE_BRAND => Labels::getLabel('LBL_Brand', $langId),
-            self::COLLECTION_TYPE_BLOG => Labels::getLabel('LBL_BLOG', $langId),
+            self::COLLECTION_TYPE_BLOG => Labels::getLabel('LBL_Blog', $langId),
+            self::COLLECTION_TYPE_SPONSORED_PRODUCTS => Labels::getLabel('LBL_Sponsored_Products', $langId),
+            self::COLLECTION_TYPE_SPONSORED_SHOPS => Labels::getLabel('LBL_Sponsored_Shops', $langId),
+            self::COLLECTION_TYPE_BANNER => Labels::getLabel('LBL_Banner', $langId),
         ];
     }
-
-    public static function getLayoutTypeArr($langId = 0)
+    
+    /**
+     * getLayoutTypeArr
+     *
+     * @param  int $langId
+     * @return array
+     */
+    public static function getLayoutTypeArr(int $langId): array
     {
-        $langId = FatUtility::convertToType($langId, FatUtility::VAR_INT);
-        if (!$langId) {
+        if (1 > $langId) {
             trigger_error(Labels::getLabel('MSG_Language_Id_not_specified.', $langId), E_USER_ERROR);
-            return false;
         }
 
         return [
@@ -117,10 +146,152 @@ class Collections extends MyAppModel
             self::TYPE_CATEGORY_LAYOUT2 => Labels::getLabel('LBL_Category_Layout2', $langId),
             self::TYPE_SHOP_LAYOUT1 => Labels::getLabel('LBL_Shop_Layout1', $langId),
             self::TYPE_BRAND_LAYOUT1 => Labels::getLabel('LBL_Brand_Layout1', $langId),
-            self::TYPE_BLOG_LAYOUT1 => Labels::getLabel('LBL_BLOG_LAYOUT1', $langId),
+            self::TYPE_BLOG_LAYOUT1 => Labels::getLabel('LBL_Blog_Layout1', $langId),
+            self::TYPE_SPONSORED_PRODUCT_LAYOUT => Labels::getLabel('LBL_Sponsored_Products', $langId),
+            self::TYPE_SPONSORED_SHOP_LAYOUT => Labels::getLabel('LBL_Sponsored_Shops', $langId),
+            self::TYPE_BANNER_LAYOUT1 => Labels::getLabel('LBL_Banner_Layout1', $langId),
+            self::TYPE_BANNER_LAYOUT2 => Labels::getLabel('LBL_Banner_Layout2', $langId),
+            self::TYPE_BANNER_LAYOUT3 => Labels::getLabel('LBL_Mobile_Banner_Layout', $langId),
         ];
     }
-
+    
+    /**
+     * getTypeSpecificLayouts
+     *
+     * @param  int $langId
+     * @return array
+     */
+    public static function getTypeSpecificLayouts(int $langId): array
+    {
+        return $collectionLayouts = [
+            self::COLLECTION_TYPE_PRODUCT => [
+                self::TYPE_PRODUCT_LAYOUT1 => Labels::getLabel('LBL_Product_Layout1', $langId),
+                self::TYPE_PRODUCT_LAYOUT2 => Labels::getLabel('LBL_Product_Layout2', $langId),
+                self::TYPE_PRODUCT_LAYOUT3 => Labels::getLabel('LBL_Product_Layout3', $langId),
+            ],
+            self::COLLECTION_TYPE_CATEGORY => [
+                self::TYPE_CATEGORY_LAYOUT1 => Labels::getLabel('LBL_Category_Layout1', $langId),
+                self::TYPE_CATEGORY_LAYOUT2 => Labels::getLabel('LBL_Category_Layout2', $langId),
+            ],
+            self::COLLECTION_TYPE_SHOP => [
+                self::TYPE_SHOP_LAYOUT1 => Labels::getLabel('LBL_Shop_Layout1', $langId),
+            ],
+            self::COLLECTION_TYPE_BRAND => [
+                self::TYPE_BRAND_LAYOUT1 => Labels::getLabel('LBL_Brand_Layout1', $langId),
+            ],
+            self::COLLECTION_TYPE_BLOG => [
+                self::TYPE_BLOG_LAYOUT1 => Labels::getLabel('LBL_Blog_Layout1', $langId),
+            ],
+            self::COLLECTION_TYPE_BANNER => [
+                self::TYPE_BANNER_LAYOUT1 => Labels::getLabel('LBL_Banner_Layout1', $langId),
+                self::TYPE_BANNER_LAYOUT2 => Labels::getLabel('LBL_Banner_Layout2', $langId),
+                self::TYPE_BANNER_LAYOUT3 => Labels::getLabel('LBL_Mobile_Banner_Layout', $langId),
+            ],
+            self::COLLECTION_TYPE_SPONSORED_PRODUCTS => [
+                self::TYPE_SPONSORED_PRODUCT_LAYOUT => Labels::getLabel('LBL_Sponsored_Products', $langId),
+            ],
+            self::COLLECTION_TYPE_SPONSORED_SHOPS => [
+                self::TYPE_SPONSORED_SHOP_LAYOUT => Labels::getLabel('LBL_Sponsored_Shops', $langId),
+            ]
+        ];
+    }
+	
+	/**
+     * getBannersCount
+     *
+     * @return array
+     */
+    public static function getBannersCount(): array
+    {
+        return [
+            self::TYPE_BANNER_LAYOUT1 => 1,
+            self::TYPE_BANNER_LAYOUT2 => 2,
+            self::TYPE_BANNER_LAYOUT3 => 1
+        ];
+    }
+	
+	/**
+     * getBannersDimensions
+     *
+     * @return array
+     */
+    public static function getBannersDimensions(): array
+    {
+        return [
+            self::TYPE_BANNER_LAYOUT1 => [
+				applicationConstants::SCREEN_DESKTOP => [
+					'width' => 1350,
+					'height' => 405
+				],
+				applicationConstants::SCREEN_IPAD => [
+					'width' => 1024,
+					'height' => 307
+				],
+				applicationConstants::SCREEN_MOBILE => [
+					'width' => 640,
+					'height' => 360
+				],
+			],
+			self::TYPE_BANNER_LAYOUT2 => [
+				applicationConstants::SCREEN_DESKTOP => [
+					'width' => 660,
+					'height' => 198
+				],
+				applicationConstants::SCREEN_IPAD => [
+					'width' => 660,
+					'height' => 198
+				],
+				applicationConstants::SCREEN_MOBILE => [
+					'width' => 640,
+					'height' => 360
+				],
+			],
+			self::TYPE_BANNER_LAYOUT3 => [
+				applicationConstants::SCREEN_DESKTOP => [
+					'width' => 600,
+					'height' => 338
+				],
+				applicationConstants::SCREEN_IPAD => [
+					'width' => 660,
+					'height' => 198
+				],
+				applicationConstants::SCREEN_MOBILE => [
+					'width' => 640,
+					'height' => 360
+				],
+			]
+        ];
+    }
+    
+    /**
+     * getLayoutImagesArr
+     *
+     * @return array
+     */
+    public static function getLayoutImagesArr(): array
+    {
+        return [
+            self::TYPE_PRODUCT_LAYOUT1 => 'product-layout-1.jpg',
+            self::TYPE_PRODUCT_LAYOUT2 => 'product-layout-2.jpg',
+            self::TYPE_PRODUCT_LAYOUT3 => 'product-layout-3.jpg',
+            self::TYPE_CATEGORY_LAYOUT1 => 'category-layout-1.jpg',
+            self::TYPE_CATEGORY_LAYOUT2 => 'category-layout-2.jpg',
+            self::TYPE_SHOP_LAYOUT1 => 'shop-layout-1.jpg',
+            self::TYPE_BRAND_LAYOUT1 => 'brand-layout-1.jpg',
+            self::TYPE_BLOG_LAYOUT1 => 'blog-layout-1.jpg',
+            self::TYPE_SPONSORED_PRODUCT_LAYOUT => 'product-layout-1.jpg',
+            self::TYPE_SPONSORED_SHOP_LAYOUT => 'shop-layout-1.jpg',
+            self::TYPE_BANNER_LAYOUT1 => 'banner-layout-1.jpg',
+            self::TYPE_BANNER_LAYOUT2 => 'banner-layout-2.jpg',
+            self::TYPE_BANNER_LAYOUT3 => 'banner-layout-3.jpg',
+        ];
+    }
+    
+    /**
+     * getCriteria
+     *
+     * @return array
+     */
     public static function getCriteria()
     {
         return [
@@ -128,108 +299,40 @@ class Collections extends MyAppModel
             static::COLLECTION_CRITERIA_PRICE_HIGH_TO_LOW => "Price High to Low",
         ];
     }
-
-    public function addUpdateCollectionSelProd($collection_id, $selprod_id)
+    
+    /**
+     * addUpdateCollectionRecord
+     *
+     * @param  int $collectionId
+     * @param  int $recordId
+     * @return bool
+     */
+    public function addUpdateCollectionRecord(int $collectionId, int $recordId): bool
     {
-        $selprod_id = FatUtility::int($selprod_id);
-        $collection_id = FatUtility::int($collection_id);
-        if (!$selprod_id || !$collection_id) {
+        if (!$collectionId || !$recordId) {
             $this->error = Labels::getLabel('MSG_Invalid_Request', $this->commonLangId);
             return false;
         }
-        $record = new TableRecord(static::DB_TBL_COLLECTION_TO_SELPROD);
-        $to_save_arr = array();
-        $to_save_arr[static::DB_TBL_COLLECTION_TO_SELPROD_PREFIX . 'collection_id'] = $collection_id;
-        $to_save_arr[static::DB_TBL_COLLECTION_TO_SELPROD_PREFIX . 'selprod_id'] = $selprod_id;
-        $record->assignValues($to_save_arr);
-        if (!$record->addNew(array(), $to_save_arr)) {
+        
+        $record = new TableRecord(static::DB_TBL_COLLECTION_TO_RECORDS);
+        $dataToSave = array();
+        $dataToSave[static::DB_TBL_COLLECTION_TO_RECORDS_PREFIX . 'collection_id'] = $collectionId;
+        $dataToSave[static::DB_TBL_COLLECTION_TO_RECORDS_PREFIX . 'record_id'] = $recordId;
+        $record->assignValues($dataToSave);
+        if (!$record->addNew(array(), $dataToSave)) {
             $this->error = $record->getError();
             return false;
         }
         return true;
     }
-
-    public function addUpdateCollectionCategories($collection_id, $prodcat_id)
-    {
-        $prodcat_id = FatUtility::int($prodcat_id);
-        $collection_id = FatUtility::int($collection_id);
-        if (!$prodcat_id || !$collection_id) {
-            $this->error = Labels::getLabel('ERR_Invalid_Request', $this->commonLangId);
-            return false;
-        }
-        $record = new TableRecord(static::DB_TBL_COLLECTION_TO_PRODUCT_CATEGORIES);
-        $to_save_arr = array();
-        $to_save_arr[static::DB_TBL_COLLECTION_TO_PRODUCT_CATEGORIES_PREFIX . 'collection_id'] = $collection_id;
-        $to_save_arr[static::DB_TBL_COLLECTION_TO_PRODUCT_CATEGORIES_PREFIX . 'prodcat_id'] = $prodcat_id;
-        $record->assignValues($to_save_arr);
-        if (!$record->addNew(array(), $to_save_arr)) {
-            $this->error = $record->getError();
-            return false;
-        }
-        return true;
-    }
-
-    public function addUpdateCollectionShops($collection_id, $shop_id)
-    {
-        $shop_id = FatUtility::int($shop_id);
-        $collection_id = FatUtility::int($collection_id);
-        if (!$shop_id || !$collection_id) {
-            $this->error = Labels::getLabel('ERR_Invalid_Request', $this->commonLangId);
-            return false;
-        }
-        $record = new TableRecord(static::DB_TBL_COLLECTION_TO_SHOPS);
-        $to_save_arr = array();
-        $to_save_arr[static::DB_TBL_COLLECTION_TO_SHOPS_PREFIX . 'collection_id'] = $collection_id;
-        $to_save_arr[static::DB_TBL_COLLECTION_TO_SHOPS_PREFIX . 'shop_id'] = $shop_id;
-        $record->assignValues($to_save_arr);
-        if (!$record->addNew(array(), $to_save_arr)) {
-            $this->error = $record->getError();
-            return false;
-        }
-        return true;
-    }
-
-    public function addUpdateCollectionBrands($collectionId, $brandId)
-    {
-        $brandId = FatUtility::int($brandId);
-        $collectionId = FatUtility::int($collectionId);
-        if (!$brandId || !$collectionId) {
-            $this->error = Labels::getLabel('ERR_Invalid_Request', $this->commonLangId);
-            return false;
-        }
-        $record = new TableRecord(static::DB_TBL_COLLECTION_TO_BRANDS);
-
-        $brandData[static::DB_TBL_COLLECTION_TO_BRANDS_PREFIX . 'collection_id'] = $collectionId;
-        $brandData[static::DB_TBL_COLLECTION_TO_BRANDS_PREFIX . 'brand_id'] = $brandId;
-        $record->assignValues($brandData);
-        if (!$record->addNew(array(), $brandData)) {
-            $this->error = $record->getError();
-            return false;
-        }
-        return true;
-    }
-
-    public function addUpdateCollectionBlogs($collectionId, $blogPostId)
-    {
-        $blogPostId = FatUtility::int($blogPostId);
-        $collectionId = FatUtility::int($collectionId);
-        if (!$blogPostId || !$collectionId) {
-            $this->error = Labels::getLabel('ERR_Invalid_Request', $this->commonLangId);
-            return false;
-        }
-        $record = new TableRecord(static::DB_TBL_COLLECTION_TO_BLOGS);
-
-        $blogData[static::DB_TBL_COLLECTION_TO_BLOGS_PREFIX . 'collection_id'] = $collectionId;
-        $blogData[static::DB_TBL_COLLECTION_TO_BLOGS_PREFIX . 'post_id'] = $blogPostId;
-        $record->assignValues($blogData);
-        if (!$record->addNew(array(), $blogData)) {
-            $this->error = $record->getError();
-            return false;
-        }
-        return true;
-    }
-
-    public function addUpdateData($data)
+    
+    /**
+     * addUpdateData
+     *
+     * @param  array $data
+     * @return bool
+     */
+    public function addUpdateData(array $data): bool
     {
         unset($data['collection_id']);
         $assignValues = $data;
@@ -237,130 +340,44 @@ class Collections extends MyAppModel
         if ($this->mainTableRecordId > 0) {
             $assignValues['collection_id'] = $this->mainTableRecordId;
         }
-        $record = new TableRecord(self::DB_TBL);
-
-        $record->assignValues($assignValues);
-        if (!$record->addNew(array(), $assignValues)) {
-            $this->error = $record->getError();
+        
+        $this->assignValues($assignValues);
+        if (!$this->save()) {
+            $this->error = $this->getError();
             return false;
         }
 
-        $this->mainTableRecordId = $record->getId();
         return true;
     }
-
-    public static function getSellProds($collection_id, $lang_id)
-    {
-        $collection_id = FatUtility::convertToType($collection_id, FatUtility::VAR_INT);
-        $lang_id = FatUtility::convertToType($lang_id, FatUtility::VAR_INT);
-        if (!$collection_id || !$lang_id) {
-            trigger_error(Labels::getLabel('MSG_Arguments_not_specified.', $lang_id), E_USER_ERROR);
-            return false;
-        }
-
-        $srch = new SearchBase(static::DB_TBL_COLLECTION_TO_SELPROD);
-        $srch->addCondition(static::DB_TBL_COLLECTION_TO_SELPROD_PREFIX . 'collection_id', '=', $collection_id);
-        $srch->joinTable(SellerProduct::DB_TBL, 'INNER JOIN', SellerProduct::DB_TBL_PREFIX . 'id = ' . static::DB_TBL_COLLECTION_TO_SELPROD_PREFIX . 'selprod_id');
-        $srch->joinTable(Product::DB_TBL, 'INNER JOIN', SellerProduct::DB_TBL_PREFIX . 'product_id = ' . Product::DB_TBL_PREFIX . 'id');
-
-        $srch->joinTable(SellerProduct::DB_TBL . '_lang', 'LEFT JOIN', 'lang.selprodlang_selprod_id = ' . SellerProduct::DB_TBL_PREFIX . 'id AND selprodlang_lang_id = ' . $lang_id, 'lang');
-
-        $srch->addMultipleFields(array('selprod_id', 'IFNULL(selprod_title,product_identifier) as selprod_title'));
-
-        $rs = $srch->getResultSet();
-        $db = FatApp::getDb();
-        $data = array();
-        while ($row = $db->fetch($rs)) {
-            $data[] = $row;
-        }
-        return $data;
-    }
-
-    public function removeCollectionSelProd($collection_id, $selprod_id)
+    
+    /**
+     * removeCollectionRecord
+     *
+     * @param  int $collectionId
+     * @param  int $recordId
+     * @return bool
+     */
+    public function removeCollectionRecord(int $collectionId, int $recordId): bool
     {
         $db = FatApp::getDb();
-        $collection_id = FatUtility::int($collection_id);
-        $selprod_id = FatUtility::int($selprod_id);
-        if (!$collection_id || !$selprod_id) {
+        if (!$collectionId || !$recordId) {
             $this->error = Labels::getLabel('ERR_Invalid_Request', $this->commonLangId);
             return false;
         }
-        if (!$db->deleteRecords(static::DB_TBL_COLLECTION_TO_SELPROD, array('smt' => static::DB_TBL_COLLECTION_TO_SELPROD_PREFIX . 'collection_id = ? AND ' . static::DB_TBL_COLLECTION_TO_SELPROD_PREFIX . 'selprod_id = ?', 'vals' => array($collection_id, $selprod_id) ))) {
+        if (!$db->deleteRecords(static::DB_TBL_COLLECTION_TO_RECORDS, array('smt' => static::DB_TBL_COLLECTION_TO_RECORDS_PREFIX . 'collection_id = ? AND ' . static::DB_TBL_COLLECTION_TO_RECORDS_PREFIX . 'record_id = ?', 'vals' => array($collectionId, $recordId)))) {
             $this->error = $db->getError();
             return false;
         }
         return true;
     }
-
-    public function removeCollectionCategories($collection_id, $prodcat_id)
-    {
-        $db = FatApp::getDb();
-        $collection_id = FatUtility::int($collection_id);
-        $prodcat_id = FatUtility::int($prodcat_id);
-        if (!$collection_id || !$prodcat_id) {
-            $this->error = Labels::getLabel('ERR_Invalid_Request', $this->commonLangId);
-            ;
-            return false;
-        }
-        if (!$db->deleteRecords(static::DB_TBL_COLLECTION_TO_PRODUCT_CATEGORIES, array('smt' => static::DB_TBL_COLLECTION_TO_PRODUCT_CATEGORIES_PREFIX . 'collection_id = ? AND ' . static::DB_TBL_COLLECTION_TO_PRODUCT_CATEGORIES_PREFIX . 'prodcat_id = ?', 'vals' => array($collection_id, $prodcat_id) ))) {
-            $this->error = $db->getError();
-            return false;
-        }
-        return true;
-    }
-
-    public function removeCollectionShops($collection_id, $shop_id)
-    {
-        $db = FatApp::getDb();
-        $collection_id = FatUtility::int($collection_id);
-        $shop_id = FatUtility::int($shop_id);
-        if (!$collection_id || !$shop_id) {
-            $this->error = Labels::getLabel('ERR_Invalid_Request', $this->commonLangId);
-            ;
-            return false;
-        }
-        if (!$db->deleteRecords(static::DB_TBL_COLLECTION_TO_SHOPS, array('smt' => static::DB_TBL_COLLECTION_TO_SHOPS_PREFIX . 'collection_id = ? AND ' . static::DB_TBL_COLLECTION_TO_SHOPS_PREFIX . 'shop_id = ?', 'vals' => array($collection_id, $shop_id) ))) {
-            $this->error = $db->getError();
-            return false;
-        }
-        return true;
-    }
-
-    public function removeCollectionBrands($collectionId, $brandId)
-    {
-        $db = FatApp::getDb();
-        $collection_id = FatUtility::int($collectionId);
-        $brandId = FatUtility::int($brandId);
-        if (!$collectionId || !$brandId) {
-            $this->error = Labels::getLabel('ERR_Invalid_Request', $this->commonLangId);
-            ;
-            return false;
-        }
-        if (!$db->deleteRecords(static::DB_TBL_COLLECTION_TO_BRANDS, array('smt' => static::DB_TBL_COLLECTION_TO_BRANDS_PREFIX . 'collection_id = ? AND ' . static::DB_TBL_COLLECTION_TO_BRANDS_PREFIX . 'brand_id = ?', 'vals' => array($collectionId, $brandId)))) {
-            $this->error = $db->getError();
-            return false;
-        }
-        return true;
-    }
-
-    public function removeCollectionBlogs($collectionId, $blogPostId)
-    {
-        $db = FatApp::getDb();
-        $collection_id = FatUtility::int($collectionId);
-        $blogPostId = FatUtility::int($blogPostId);
-        if (!$collectionId || !$blogPostId) {
-            $this->error = Labels::getLabel('ERR_Invalid_Request', $this->commonLangId);
-            ;
-            return false;
-        }
-        if (!$db->deleteRecords(static::DB_TBL_COLLECTION_TO_BLOGS, array('smt' => static::DB_TBL_COLLECTION_TO_BLOGS_PREFIX . 'collection_id = ? AND ' . static::DB_TBL_COLLECTION_TO_BLOGS_PREFIX . 'post_id = ?', 'vals' => array($collectionId, $blogPostId)))) {
-            $this->error = $db->getError();
-            return false;
-        }
-        return true;
-    }
-
-    public function canRecordMarkDelete($collection_id)
+    
+    /**
+     * canRecordMarkDelete
+     *
+     * @param  int $collection_id
+     * @return bool
+     */
+    public function canRecordMarkDelete(int $collection_id): bool
     {
         $srch = static::getSearchObject(false);
         $srch->addCondition('collection_deleted', '=', applicationConstants::NO);
@@ -373,118 +390,231 @@ class Collections extends MyAppModel
         }
         return false;
     }
-
-    public static function getCategories($collection_id, $lang_id)
+    
+    /**
+     * getSellProds
+     *
+     * @param  int $collection_id
+     * @param  int $lang_id
+     * @return array
+     */
+    public static function getSellProds(int $collection_id, int $lang_id): array
     {
-        $collection_id = FatUtility::convertToType($collection_id, FatUtility::VAR_INT);
+        if (!$collection_id || !$lang_id) {
+            trigger_error(Labels::getLabel('MSG_Arguments_not_specified.', $lang_id), E_USER_ERROR);
+            return false;
+        }
 
-        $lang_id = FatUtility::convertToType($lang_id, FatUtility::VAR_INT);
+        $srch = new SearchBase(static::DB_TBL_COLLECTION_TO_RECORDS);
+        $srch->addCondition(static::DB_TBL_COLLECTION_TO_RECORDS_PREFIX . 'collection_id', '=', $collection_id);
+        $srch->joinTable(SellerProduct::DB_TBL, 'INNER JOIN', SellerProduct::DB_TBL_PREFIX . 'id = ' . static::DB_TBL_COLLECTION_TO_RECORDS_PREFIX . 'record_id');
+        $srch->joinTable(Product::DB_TBL, 'INNER JOIN', SellerProduct::DB_TBL_PREFIX . 'product_id = ' . Product::DB_TBL_PREFIX . 'id');
+
+        $srch->joinTable(SellerProduct::DB_TBL . '_lang', 'LEFT JOIN', 'lang.selprodlang_selprod_id = ' . SellerProduct::DB_TBL_PREFIX . 'id AND selprodlang_lang_id = ' . $lang_id, 'lang');
+
+        $srch->addMultipleFields(array('selprod_id as record_id', 'COALESCE(selprod_title,product_identifier) as record_title'));
+        $srch->doNotLimitRecords();
+        $srch->doNotCalculateRecords();
+        $rs = $srch->getResultSet();
+        $db = FatApp::getDb();
+        $data = array();
+        while ($row = $db->fetch($rs)) {
+            $data[] = $row;
+        }
+        return $data;
+    }
+    
+        
+    /**
+     * getBanners
+     *
+     * @param  int $collection_id
+     * @param  int $lang_id
+     * @return array
+     */
+    public static function getBanners(int $collection_id, int $lang_id): array
+    {
+        if (!$collection_id || !$lang_id) {
+            trigger_error(Labels::getLabel('MSG_Arguments_not_specified.', $lang_id), E_USER_ERROR);
+            return false;
+        }
+
+        $srch = new BannerSearch($lang_id, false);
+        $srch->joinCollectionToRecords();
+        $srch->joinLocations();
+        $srch->joinPromotions($lang_id, true);
+        $srch->addPromotionTypeCondition();
+        $srch->doNotLimitRecords();
+        $srch->doNotCalculateRecords();
+        $srch->addMultipleFields(array('COALESCE(promotion_name,promotion_identifier) as promotion_name', 'banner_id', 'banner_type', 'banner_url', 'banner_target', 'banner_active', 'banner_blocation_id', 'banner_title', 'banner_updated_on'));
+        $srch->addCondition(static::DB_TBL_COLLECTION_TO_RECORDS_PREFIX . 'collection_id', '=', $collection_id);
+
+        $srch->addOrder('banner_active', 'DESC');
+        $rs = $srch->getResultSet();
+        return FatApp::getDb()->fetchAll($rs);
+    }
+    
+    /**
+     * getCategories
+     *
+     * @param  int $collection_id
+     * @param  int $lang_id
+     * @return array
+     */
+    public static function getCategories(int $collection_id, int $lang_id): array
+    {
         if (!$collection_id || !$lang_id) {
             trigger_error(Labels::getLabel("ERR_Arguments_not_specified.", $lang_id), E_USER_ERROR);
             return false;
         }
 
-        $srch = new SearchBase(static::DB_TBL_COLLECTION_TO_PRODUCT_CATEGORIES);
+        $srch = new SearchBase(static::DB_TBL_COLLECTION_TO_RECORDS);
         $srch->doNotLimitRecords();
         $srch->doNotCalculateRecords();
-        $srch->addCondition(static::DB_TBL_COLLECTION_TO_PRODUCT_CATEGORIES_PREFIX . 'collection_id', '=', $collection_id);
+        $srch->addCondition(static::DB_TBL_COLLECTION_TO_RECORDS_PREFIX . 'collection_id', '=', $collection_id);
 
-        $srch->joinTable(ProductCategory::DB_TBL, 'INNER JOIN', ProductCategory::DB_TBL_PREFIX . 'id = ' . static::DB_TBL_COLLECTION_TO_PRODUCT_CATEGORIES_PREFIX . 'prodcat_id');
+        $srch->joinTable(ProductCategory::DB_TBL, 'INNER JOIN', ProductCategory::DB_TBL_PREFIX . 'id = ' . static::DB_TBL_COLLECTION_TO_RECORDS_PREFIX . 'record_id');
 
         $srch->joinTable(ProductCategory::DB_TBL_LANG, 'LEFT JOIN', 'lang.prodcatlang_prodcat_id = ' . ProductCategory::DB_TBL_PREFIX . 'id AND prodcatlang_lang_id = ' . $lang_id, 'lang');
-        $srch->addMultipleFields(array('prodcat_id', 'IFNULL(prodcat_name, prodcat_identifier) as prodcat_name'));
+        $srch->addMultipleFields(array('prodcat_id as record_id', 'IFNULL(prodcat_name, prodcat_identifier) as record_title'));
         $rs = $srch->getResultSet();
         $db = FatApp::getDb();
         $data = $db->fetchAll($rs);
         return $data;
     }
-
-    public static function getShops($collection_id, $lang_id)
+    
+    /**
+     * getShops
+     *
+     * @param  int $collection_id
+     * @param  int $lang_id
+     * @return array
+     */
+    public static function getShops(int $collection_id, int $lang_id): array
     {
-        $collection_id = FatUtility::convertToType($collection_id, FatUtility::VAR_INT);
-
-        $lang_id = FatUtility::convertToType($lang_id, FatUtility::VAR_INT);
         if (!$collection_id || !$lang_id) {
             trigger_error(Labels::getLabel("ERR_Arguments_not_specified.", $lang_id), E_USER_ERROR);
             return false;
         }
 
-        $srch = new SearchBase(static::DB_TBL_COLLECTION_TO_SHOPS);
+        $srch = new SearchBase(static::DB_TBL_COLLECTION_TO_RECORDS);
         $srch->doNotLimitRecords();
         $srch->doNotCalculateRecords();
-        $srch->addCondition(static::DB_TBL_COLLECTION_TO_SHOPS_PREFIX . 'collection_id', '=', $collection_id);
+        $srch->addCondition(static::DB_TBL_COLLECTION_TO_RECORDS_PREFIX . 'collection_id', '=', $collection_id);
 
-        $srch->joinTable(Shop::DB_TBL, 'INNER JOIN', Shop::DB_TBL_PREFIX . 'id = ' . static::DB_TBL_COLLECTION_TO_SHOPS_PREFIX . 'shop_id');
+        $srch->joinTable(Shop::DB_TBL, 'INNER JOIN', Shop::DB_TBL_PREFIX . 'id = ' . static::DB_TBL_COLLECTION_TO_RECORDS_PREFIX . 'record_id');
 
         $srch->joinTable(Shop::DB_TBL_LANG, 'LEFT JOIN', 'lang.shoplang_shop_id = ' . Shop::DB_TBL_PREFIX . 'id AND shoplang_lang_id = ' . $lang_id, 'lang');
-        $srch->addMultipleFields(array('shop_id', 'IFNULL(shop_name, shop_identifier) as shop_name'));
+        $srch->addMultipleFields(array('shop_id as record_id', 'IFNULL(shop_name, shop_identifier) as record_title'));
         $rs = $srch->getResultSet();
 
         $db = FatApp::getDb();
         $data = $db->fetchAll($rs);
         return $data;
     }
-
-    public static function getBrands($collectionId, $langId)
+    
+    /**
+     * getBrands
+     *
+     * @param  int $collectionId
+     * @param  int $langId
+     * @return array
+     */
+    public static function getBrands(int $collectionId, int $langId): array
     {
-        $collectionId = FatUtility::convertToType($collectionId, FatUtility::VAR_INT);
-
-        $langId = FatUtility::convertToType($langId, FatUtility::VAR_INT);
         if (!$collectionId || !$langId) {
             trigger_error(Labels::getLabel("ERR_Arguments_not_specified.", $langId), E_USER_ERROR);
             return false;
         }
 
-        $srch = new SearchBase(static::DB_TBL_COLLECTION_TO_BRANDS);
+        $srch = new SearchBase(static::DB_TBL_COLLECTION_TO_RECORDS);
         $srch->doNotLimitRecords();
         $srch->doNotCalculateRecords();
-        $srch->addCondition(static::DB_TBL_COLLECTION_TO_BRANDS_PREFIX . 'collection_id', '=', $collectionId);
-
-        $srch->joinTable(Brand::DB_TBL, 'INNER JOIN', Brand::DB_TBL_PREFIX . 'id = ' . static::DB_TBL_COLLECTION_TO_BRANDS_PREFIX . 'brand_id');
-
+        $srch->addCondition(static::DB_TBL_COLLECTION_TO_RECORDS_PREFIX . 'collection_id', '=', $collectionId);
+        $srch->joinTable(Brand::DB_TBL, 'INNER JOIN', Brand::DB_TBL_PREFIX . 'id = ' . static::DB_TBL_COLLECTION_TO_RECORDS_PREFIX . 'record_id');
         $srch->joinTable(Brand::DB_TBL_LANG, 'LEFT JOIN', 'lang.brandlang_brand_id = ' . Brand::DB_TBL_PREFIX . 'id AND brandlang_lang_id = ' . $langId, 'lang');
-        $srch->addMultipleFields(array('brand_id', 'IFNULL(brand_name, brand_identifier) as brand_name'));
+        $srch->addMultipleFields(array('brand_id as record_id', 'IFNULL(brand_name, brand_identifier) as record_title'));
         $rs = $srch->getResultSet();
 
         $db = FatApp::getDb();
-        $data = $db->fetchAll($rs);
-        return $data;
+       return $db->fetchAll($rs);
     }
-
-    public static function getBlogs($collectionId, $langId)
+    
+    /**
+     * getBlogs
+     *
+     * @param  int $collectionId
+     * @param  int $langId
+     * @return array
+     */
+    public static function getBlogs(int $collectionId, int $langId): array
     {
-        $collectionId = FatUtility::convertToType($collectionId, FatUtility::VAR_INT);
-
-        $langId = FatUtility::convertToType($langId, FatUtility::VAR_INT);
         if (!$collectionId || !$langId) {
             trigger_error(Labels::getLabel("ERR_Arguments_not_specified.", $langId), E_USER_ERROR);
             return false;
         }
 
-        $srch = new SearchBase(static::DB_TBL_COLLECTION_TO_BLOGS);
+        $srch = new SearchBase(static::DB_TBL_COLLECTION_TO_RECORDS);
         $srch->doNotLimitRecords();
         $srch->doNotCalculateRecords();
-        $srch->addCondition(static::DB_TBL_COLLECTION_TO_BLOGS_PREFIX . 'collection_id', '=', $collectionId);
+        $srch->addCondition(static::DB_TBL_COLLECTION_TO_RECORDS_PREFIX . 'collection_id', '=', $collectionId);
 
-        $srch->joinTable(BlogPost::DB_TBL, 'INNER JOIN', BlogPost::DB_TBL_PREFIX . 'id = ' . static::DB_TBL_COLLECTION_TO_BLOGS_PREFIX . 'post_id');
+        $srch->joinTable(BlogPost::DB_TBL, 'INNER JOIN', BlogPost::DB_TBL_PREFIX . 'id = ' . static::DB_TBL_COLLECTION_TO_RECORDS_PREFIX . 'record_id');
 
         $srch->joinTable(BlogPost::DB_TBL_LANG, 'LEFT JOIN', 'lang.postlang_post_id = ' . BlogPost::DB_TBL_PREFIX . 'id AND postlang_lang_id = ' . $langId, 'lang');
-        $srch->addMultipleFields(array('post_id', 'IFNULL(post_title, post_identifier) as post_title'));
+        $srch->addMultipleFields(array('post_id as record_id', 'IFNULL(post_title, post_identifier) as record_title'));
         $rs = $srch->getResultSet();
         $db = FatApp::getDb();
-        $data = $db->fetchAll($rs);
-        return $data;
+        return $db->fetchAll($rs);
     }
-
-    public static function setLastUpdatedOn($collectionId)
+       
+    /**
+     * saveLangData
+     *
+     * @param  int $langId
+     * @param  string $collectionName
+     * @return bool
+     */
+    public function saveLangData(int $langId, string $collectionName): bool
     {
-        $collectionId = FatUtility::int($collectionId);
-        if (1 > $collectionId) {
+        $langId = FatUtility::int($langId);
+        if ($this->mainTableRecordId < 1 || $langId < 1) {
+            $this->error = Labels::getLabel('ERR_Invalid_Request', $this->commonLangId);
             return false;
         }
 
-        $collectionObj = new Collections($collectionId);
-        $collectionObj->addUpdateData(array('collection_img_updated_on' => date('Y-m-d H:i:s')));
+        $data = array(
+            'collectionlang_collection_id' => $this->mainTableRecordId,
+            'collectionlang_lang_id' => $langId,
+            'collection_name' => $collectionName,
+        );
+
+        if (!$this->updateLangData($langId, $data)) {
+            $this->error = $this->getError();
+            return false;
+        }
+        return true;
+    }
+    
+    /**
+     * saveTranslatedLangData
+     *
+     * @param  int $langId
+     * @return bool
+     */
+    public function saveTranslatedLangData(int $langId): bool
+    {
+        $langId = FatUtility::int($langId);
+        if ($this->mainTableRecordId < 1 || $langId < 1) {
+            $this->error = Labels::getLabel('ERR_Invalid_Request', $this->commonLangId);
+            return false;
+        }
+
+        $translateLangobj = new TranslateLangData(static::DB_TBL_LANG);
+        if (false === $translateLangobj->updateTranslatedData($this->mainTableRecordId, 0, $langId)) {
+            $this->error = $translateLangobj->getError();
+            return false;
+        }
         return true;
     }
 }

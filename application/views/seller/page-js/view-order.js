@@ -34,10 +34,10 @@ $(document).ready(function(){
         }
 	};	
     
-    trackOrder = function(trackingNumber, courier){
+    trackOrder = function(trackingNumber, courier, orderNumber){
         $.facebox(function() {
-            fcom.ajax(fcom.makeUrl('Seller','orderTrackingInfo', [trackingNumber, courier]), '', function(res){
-                $.facebox( res,'faceboxWidth');
+            fcom.ajax(fcom.makeUrl('Seller','orderTrackingInfo', [trackingNumber, courier, orderNumber]), '', function(res){
+                $.facebox( res,'medium-fb-width');
             });
         });
     };

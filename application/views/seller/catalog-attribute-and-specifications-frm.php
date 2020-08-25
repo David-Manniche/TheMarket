@@ -17,11 +17,11 @@ $codFld->developerTags['cbHtmlAfterCheckbox'] = '<i class="input-helper"></i>'; 
 
 $btnBackFld = $productFrm->getField('btn_back');
 $btnBackFld->setFieldTagAttribute('onClick', 'customCatalogProductForm('.$preqId.');');
-$btnBackFld->setFieldTagAttribute('class', "btn btn-primary btn-block");
+$btnBackFld->setFieldTagAttribute('class', "btn btn-outline-primary");
 $btnBackFld->value = Labels::getLabel('LBL_Back', $siteLangId);
 
 $btnSubmit = $productFrm->getField('btn_submit');
-$btnSubmit->setFieldTagAttribute('class', "btn btn-primary btn-block");
+$btnSubmit->setFieldTagAttribute('class', "btn btn-primary");
 ?>
 <div class="row justify-content-center">
     <div class="col-md-12">

@@ -1,21 +1,20 @@
 <?php
-if (isset($sponsoredShops) && count($sponsoredShops)) {
-    /* category listing design [ */
-    if (isset($sponsoredShops['shops']) && count($sponsoredShops['shops'])) {
-        $row['shops'] = $sponsoredShops['shops'] ;
-        $row['rating'] = $sponsoredShops['rating'];
-        $track = true; ?>
-        <section class="section">
-            <div class="container">
-                <div class="section-head">
-                    <div class="section__heading">
-                        <h2><?php echo FatApp::getConfig('CONF_PPC_SHOPS_HOME_PAGE_CAPTION_'.$siteLangId, FatUtility::VAR_STRING, Labels::getLabel('LBL_SPONSORED_SHOPS', $siteLangId)); ?></h2>
-                    </div>
+if (isset($collection['shops']) && count($collection['shops'])) { ?>
+    <section class="section">
+        <div class="container">
+            <div class="section-head">
+                <div class="section__heading">
+                    <h2><?php echo ($collection['collection_name'] != '') ? $collection['collection_name'] : ''; ?></h2>
                 </div>
-                <?php include('shop-layout-1-list.php'); ?>
+                <?php if ($collection['totShops'] > Collections::LIMIT_SHOP_LAYOUT1) { ?>
+                <div class="section_action"> <a href="<?php echo UrlHelper::generateUrl('Collections', 'View', array($collection['collection_id']));?>" class="link"><?php echo Labels::getLabel('LBL_View_More', $siteLangId); ?></a> </div>
+                <?php }  ?>
             </div>
-        </section>
-        <?php
-    }
-    /* ] */
-} ?>
+            <?php $collection = $collection['shops'];
+            $collection['rating'] = $collection['rating'];
+            $track = true; 
+            include('shop-layout-1-list.php'); ?>
+        </div>
+    </section>
+<?php }
+/* ] */

@@ -4,14 +4,17 @@ class CollectionSearch extends SearchBase
 {
     private $langId;
 
-    private $joinCollectionProducts = false;
-    private $joinCollectionCategories = false;
-    private $joinCollectionShops = false;
-    private $joinCollectionBrands = false;
-    private $joinCollectionBlogs = false;
+    private $joinCollectionRecords = false;
 
     private $commonLangId;
-    public function __construct($langId = 0)
+    
+    /**
+     * __construct
+     *
+     * @param  int $langId
+     * @return void
+     */
+    public function __construct(int $langId = 0)
     {
         $langId = FatUtility::int($langId);
         $this->langId = $langId;
@@ -33,62 +36,37 @@ class CollectionSearch extends SearchBase
         $this->addCondition(Collections::tblFld('active'), '=', applicationConstants::ACTIVE);
         $this->addCondition(Collections::tblFld('deleted'), '=', 0);
     }
-
-    public function joinCollectionProducts()
+    
+    /**
+     * joinCollectionRecords
+     *
+     * @return void
+     */
+    public function joinCollectionRecords()
     {
-        $this->joinCollectionProducts = true;
+        $this->joinCollectionRecords = true;
 
         $this->joinTable(
-            Collections::DB_TBL_COLLECTION_TO_SELPROD,
+            Collections::DB_TBL_COLLECTION_TO_RECORDS,
             'LEFT OUTER JOIN',
-            'ctsp.' . Collections::DB_TBL_COLLECTION_TO_SELPROD_PREFIX . 'collection_id = c.' . Collections::tblFld('id'),
+            'ctsp.' . Collections::DB_TBL_COLLECTION_TO_RECORDS_PREFIX . 'collection_id = c.' . Collections::tblFld('id'),
             'ctsp'
         );
     }
-
-    public function joinCollectionCategories()
+       
+    /**
+     * joinSellerProductsForPrice
+     *
+     * @param  int $langId
+     * @param  string $forDate
+     * @return void
+     */
+    public function joinSellerProductsForPrice(int $langId = 0, string $forDate = ''): void
     {
-        $this->joinCollectionCategories = true;
-        $this->joinTable(
-            Collections::DB_TBL_COLLECTION_TO_PRODUCT_CATEGORIES,
-            'LEFT OUTER JOIN',
-            'ctpc.' . Collections::DB_TBL_COLLECTION_TO_PRODUCT_CATEGORIES_PREFIX . 'collection_id = c.' . Collections::tblFld('id'),
-            'ctpc'
-        );
-    }
-
-    public function joinCollectionShops()
-    {
-        $this->joinCollectionShops = true;
-        $this->joinTable(
-            Collections::DB_TBL_COLLECTION_TO_SHOPS,
-            'LEFT OUTER JOIN',
-            'ctps.' . Collections::DB_TBL_COLLECTION_TO_SHOPS_PREFIX . 'collection_id = c.' . Collections::tblFld('id'),
-            'ctps'
-        );
-    }
-
-    public function joinCollectionBrands()
-    {
-        $this->joinCollectionBrands = true;
-        $this->joinTable(Collections::DB_TBL_COLLECTION_TO_BRANDS, 'LEFT OUTER JOIN', 'ctpb.' . Collections::DB_TBL_COLLECTION_TO_BRANDS_PREFIX . 'collection_id = c.' . Collections::tblFld('id'), 'ctpb');
-    }
-
-    public function joinCollectionBlogs()
-    {
-        $this->joinCollectionBlogs = true;
-        $this->joinTable(Collections::DB_TBL_COLLECTION_TO_BLOGS, 'LEFT OUTER JOIN', 'ctb.' . Collections::DB_TBL_COLLECTION_TO_BLOGS_PREFIX . 'collection_id = c.' . Collections::tblFld('id'), 'ctb');
-    }
-
-    public function joinSellerProductsForPrice($langId = 0, $forDate = '')
-    {
-        $langId = FatUtility::int($langId);
-        if ($this->langId) {
-            $langId = $this->langId;
-        }
-
-        if (!$this->joinCollectionProducts) {
-            trigger_error(Labels::getLabel('ERR_joinCollectionProducts_must_be_joined.', $this->commonLangId), E_USER_ERROR);
+        $langId = (0 < $langId) ? $langId : $this->langId;
+        
+        if (!$this->joinCollectionRecords) {
+            trigger_error(Labels::getLabel('ERR_joinCollectionRecords_must_be_joined.', $this->commonLangId), E_USER_ERROR);
         }
 
         $now = FatDate::nowInTimezone(FatApp::getConfig('CONF_TIMEZONE'), 'Y-m-d');
@@ -96,7 +74,7 @@ class CollectionSearch extends SearchBase
             $forDate = $now;
         }
 
-        $this->joinTable(SellerProduct::DB_TBL, 'LEFT OUTER JOIN', SellerProduct::DB_TBL_PREFIX . 'id = ' . Collections::DB_TBL_COLLECTION_TO_SELPROD_PREFIX . 'selprod_id', 'sprods');
+        $this->joinTable(SellerProduct::DB_TBL, 'LEFT OUTER JOIN', SellerProduct::DB_TBL_PREFIX . 'id = ' . Collections::DB_TBL_COLLECTION_TO_RECORDS_PREFIX . 'selprod_id', 'sprods');
 
         if ($langId > 0) {
             $this->joinTable(SellerProduct::DB_TBL . '_lang', 'LEFT OUTER JOIN', 'sprods_l.selprodlang_selprod_id = ' . SellerProduct::DB_TBL_PREFIX . 'id AND sprods_l.selprodlang_lang_id = ' . $langId, 'sprods_l');
@@ -108,13 +86,16 @@ class CollectionSearch extends SearchBase
             'splprice_selprod_id = selprod_id AND \'' . $forDate . '\' BETWEEN splprice_start_date AND splprice_end_date'
         );
     }
-
-    public function joinProducts($langId = 0)
+    
+    /**
+     * joinProducts
+     *
+     * @param  int $langId
+     * @return void
+     */
+    public function joinProducts(int $langId = 0): void
     {
-        $langId = FatUtility::int($langId);
-        if ($this->langId) {
-            $langId = $this->langId;
-        }
+        $langId = (0 < $langId) ? $langId : $this->langId;
 
         $this->joinTable(Product::DB_TBL, 'LEFT OUTER JOIN', Product::DB_TBL_PREFIX . 'id = ' . SellerProduct::DB_TBL_PREFIX . 'product_id', 'p');
 

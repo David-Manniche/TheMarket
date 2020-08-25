@@ -1,49 +1,26 @@
 <?php defined('SYSTEM_INIT') or die('Invalid Usage . ');
 if ( $trackingInfo['meta']['code'] != 200 ){ ?>
-	<h4><?php echo $trackingInfo['meta']['code'].' : '.$trackingInfo['meta']['message']; ?></h4>
+<h4>
+    <?php echo $trackingInfo['meta']['code'].' : '.$trackingInfo['meta']['message']; ?>
+</h4>
+<?php }else if(!empty($trackingInfo['data']['tracking']['checkpoints'])) { ?>
+    <ul class="timeline" id= "timeline">
+    <?php foreach($trackingInfo['data']['tracking']['checkpoints'] as $data){ ?>
+        <li class="event" data-date="<?php echo FatDate::format($data['checkpoint_time'], true); ?>">
+            <div>
+                <p><strong><?php echo $data['tag']; ?></strong></p>
+                <p><?php echo $data['message']; ?></p>
+                <p><?php echo $data['location']; ?></p>
+            </div>
+        </li>
+    <?php } ?>
+    </ul>
 <?php }else{  ?>
-
-		<div><?php echo Labels::getLabel('LBL_Tracking_Number', $siteLangId).": ".$trackingInfo['data']['tracking']['tracking_number'];  ?></div>
-		<div><?php echo Labels::getLabel('LBL_Courier', $siteLangId).": ".$trackingInfo['data']['tracking']['slug'];  ?></div>
-		<div><?php echo Labels::getLabel('LBL_status', $siteLangId).": ".$trackingInfo['data']['tracking']['tag'];  ?></div>
-		<?php 
-		if(!empty($trackingInfo['data']['tracking']['order_promised_delivery_date'])) { 
-			echo "<div>".Labels::getLabel('LBL_order_promised_delivery_date', $siteLangId).": ".FatDate::format($trackingInfo['data']['tracking']['order_promised_delivery_date'])."</div>";
-		} 
-		
-		if(!empty($trackingInfo['data']['tracking']['courier_tracking_link'])) { 
-			echo "<div>".Labels::getLabel('LBL_courier_tracking_link', $siteLangId).": ".$trackingInfo['data']['tracking']['courier_tracking_link']."</div>";
-		}
-		
-		if(!empty($trackingInfo['data']['tracking']['checkpoints'])) { 
-			echo "<div><ul>";
-			foreach($trackingInfo['data']['tracking']['checkpoints'] as $data){
-				echo "<li class='mt-5'>";
-				echo "<div>".FatDate::format($data['checkpoint_time'], true)."</div>";
-				echo "<div>".$data['tag']."</div>";
-				echo "<div>".$data['slug']."</div>";
-				echo "<div>".$data['message']."</div>";
-				echo "<div>";
-				if(!empty($data['location'])){
-					echo $data['location'].", ";
-				}
-				if(!empty($data['city'])){
-					echo $data['city'].", ";
-				}
-				if(!empty($data['state'])){
-					echo $data['state'].", ";
-				}
-				if(!empty($data['country_name'])){
-					echo $data['country_name'].", ";
-				}
-				if(!empty($data['zip'])){
-					echo $data['zip'];
-				}
-				echo "</div>";
-				echo "</li>";
-			
-			}
-			echo "</ul></div>";
-		}
-	} 
-?>
+<ul class="timeline" id= "timeline">
+    <li class="event" data-date="<?php echo FatDate::format($trackingInfo['data']['tracking']['created_at'], true); ?>">
+        <div>
+            <p><strong><?php echo $trackingInfo['data']['tracking']['tag']; ?></strong></p>
+        </div>
+    </li>
+</ul>
+<?php } ?>

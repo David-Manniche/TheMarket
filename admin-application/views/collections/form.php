@@ -1,61 +1,192 @@
 <?php defined('SYSTEM_INIT') or die('Invalid Usage.');
-$frm->setFormTagAttribute('class', 'web_form form_horizontal');
+$frm->setFormTagAttribute('class', 'web_form');
 $frm->setFormTagAttribute('onsubmit', 'setupCollection(this); return(false);');
-$frmId = $frm->getFormTagAttribute('id');
-$fld = $frm->getField('collection_criteria');
-$fld->fieldWrapper = array('<div class="box--scroller">','</div>');
 
-$fld = $frm->getField('collection_type');
-$fld->fieldWrapper = array('<div class="box--scroller">','</div>');
-$fld->addFieldTagAttribute('onChange', 'getCollectionTypeLayout("' . $frmId . '",this.value); ');
+if ($collection_layout_type != Collections::TYPE_BANNER_LAYOUT3) {
+	$fld = $frm->getField('collection_for_web');
+	$fld->setOptionListTagAttribute('class', 'list-inline-checkboxes'); 
+	$fld->developerTags['cbLabelAttributes'] = array('class' => 'checkbox');
+	$fld->developerTags['cbHtmlAfterCheckbox'] = '<i class="input-helper"></i>';
+}
 
-$fld = $frm->getField('collection_layout_type');
-$fld->fieldWrapper = array('<div class="box--scroller">','</div>');
+$fld = $frm->getField('collection_for_app');
+$fld->setOptionListTagAttribute('class', 'list-inline-checkboxes'); 
+$fld->developerTags['cbLabelAttributes'] = array('class' => 'checkbox');
+$fld->developerTags['cbHtmlAfterCheckbox'] = '<i class="input-helper"></i>';
+if ($collection_layout_type == Collections::TYPE_BANNER_LAYOUT3) {
+	$fld->setFieldTagAttribute('disabled', 'disabled'); 
+}
 
-$criteria_fld = $frm->getField('collection_criteria');
-$criteria_fld->setWrapperAttribute('id', 'collection_criteria_div');
-$frm->developerTags['colClassPrefix'] = 'col-md-';
-$frm->developerTags['fld_default_col'] = 12;
+$fld = $frm->getField('auto_update_other_langs_data');
+$fld->developerTags['cbLabelAttributes'] = array('class' => 'checkbox');
+$fld->developerTags['cbHtmlAfterCheckbox'] = '<i class="input-helper"></i>';
 
+$siteDefaultLangId = FatApp::getConfig('conf_default_site_lang', FatUtility::VAR_INT, 1);
 ?>
 <section class="section">
-    <div class="sectionhead">
-        <h4><?php echo Labels::getLabel('LBL_Collection_Setup', $adminLangId); ?>
-        </h4>
-    </div>
     <div class="sectionbody space">
         <div class="row">
             <div class="col-sm-12">
                 <div class="tabs_nav_container responsive flat">
                     <ul class="tabs_nav">
                         <li><a class="active" href="javascript:void(0)"
-                                onclick="editCollectionForm(<?php echo $collection_id ?>);">
+                                onclick="collectionForm(<?php echo $collection_type ?>, <?php echo $collection_layout_type ?>, <?php echo $collection_id ?>, 0);">
                                 <?php echo Labels::getLabel('LBL_General', $adminLangId);?></a>
                         </li>
-                        <li
-                            class="<?php echo (0 == $collection_id) ? 'fat-inactive' : ''; ?>">
-                            <a href="javascript:void(0);" <?php echo (0 < $collection_id) ? "onclick='editCollectionLangForm(" . $collection_id . "," . FatApp::getConfig('conf_default_site_lang', FatUtility::VAR_INT, 1) . ");'" : ""; ?>>
-                                <?php echo Labels::getLabel('LBL_Language_Data', $adminLangId); ?>
-                            </a>
-                        </li>
                         <?php $inactive = ($collection_id == 0) ? 'fat-inactive' : ''; ?>
-                        <?php if (!in_array($collection_type, Collections::COLLECTION_WITHOUT_MEDIA)) {
-                            ?>
+                        <?php if (!in_array($collection_type, Collections::COLLECTION_WITHOUT_RECORDS)) { ?>
+                        <li><a class="<?php  echo $inactive; ?>"
+                                href="javascript:void(0)"
+                                <?php if($collection_id > 0){?> onclick="recordForm(<?php echo $collection_id ?>, <?php echo $collection_type ?>);" <?php } ?>>
+                                <?php echo Labels::getLabel('LBL_Link_Records', $adminLangId);?></a>
+                        </li>
+                        <?php } ?>
+						<?php if ($collection_type == Collections::COLLECTION_TYPE_BANNER) { ?>
+                        <li><a class="<?php  echo $inactive; ?>"
+                                href="javascript:void(0)"
+                                <?php if($collection_id > 0){?> onclick="banners(<?php echo $collection_id ?>);" <?php } ?>>
+                                <?php echo Labels::getLabel('LBL_Banners', $adminLangId);?></a>
+                        </li>
+                        <?php } ?>
+                        <?php if (!in_array($collection_type, Collections::COLLECTION_WITHOUT_MEDIA)) { ?>
                         <li>
                             <a class="<?php  echo $inactive; ?>"
-                                href="javascript:void(0)" <?php if ($collection_id > 0) {
-                                ?>
+                                href="javascript:void(0)" <?php if ($collection_id > 0) { ?>
                                 onclick="collectionMediaForm(<?php echo $collection_id ?>);"
-                                <?php
-                            } ?>>
+                                <?php } ?>>
                                 <?php echo Labels::getLabel('LBL_Media', $adminLangId); ?>
                             </a>
                         </li>
-                        <?php
-                        } ?>
+                        <?php } ?>
                     </ul>
                     <div class="tabs_panel_wrap">
-                        <div class="tabs_panel"> <?php echo $frm->getFormHtml(); ?>
+                        <div class="tabs_panel">
+                            <?php echo $frm->getFormTag(); ?>
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <div class="field-set">
+                                        <div class="caption-wraper">
+                                            <label class="field_label">
+                                            <?php
+                                                $fld = $frm->getField('collection_name['.$siteDefaultLangId.']');
+                                                echo $fld->getCaption();
+                                            ?>
+                                            <span class="spn_must_field">*</span></label>
+                                        </div>
+                                        <div class="field-wraper">
+                                            <div class="field_cover">
+                                            <?php echo $frm->getFieldHtml('collection_name['.$siteDefaultLangId.']'); ?>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <?php if ($collection_type == Collections::COLLECTION_TYPE_BANNER) { ?>
+								<div class="col-md-4">
+                                    <div class="field-set">
+                                        <div class="caption-wraper">
+                                            <label class="field_label">
+                                            <?php
+                                                $fld = $frm->getField('blocation_promotion_cost');
+                                                echo $fld->getCaption();
+                                            ?>
+                                            <span class="spn_must_field">*</span></label>
+                                        </div>
+                                        <div class="field-wraper">
+                                            <div class="field_cover">
+                                            <?php echo $frm->getFieldHtml('blocation_promotion_cost'); ?>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <?php } ?>
+                            </div>
+                            <div class="row">
+								<?php if ($collection_layout_type != Collections::TYPE_BANNER_LAYOUT3) { ?>
+                                <div class="col-md-4">
+                                    <div class="field-set d-flex align-items-center">
+                                        <div class="field-wraper w-auto">
+                                            <div class="field_cover">
+                                                <?php echo $frm->getFieldHtml('collection_for_web'); ?>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+								<?php }?>
+                                <div class="col-md-4">
+                                    <div class="field-set d-flex align-items-center">
+                                        <div class="field-wraper w-auto">
+                                            <div class="field_cover">
+                                                <?php echo $frm->getFieldHtml('collection_for_app'); ?>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <?php
+                                    $translatorSubscriptionKey = FatApp::getConfig('CONF_TRANSLATOR_SUBSCRIPTION_KEY', FatUtility::VAR_STRING, '');
+                                    if(!empty($translatorSubscriptionKey) && count($otherLangData) > 0){
+                                ?>
+                                <div class="col-md-4">
+                                    <div class="field-set d-flex align-items-center">
+                                        <div class="field-wraper w-auto">
+                                            <div class="field_cover">
+                                                <?php echo $frm->getFieldHtml('auto_update_other_langs_data'); ?>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <?php } ?>
+                            </div>
+                            
+                            <?php if(!empty($otherLangData)){
+                            foreach($otherLangData as $langId=>$data) { 
+                            ?>
+                            <div class="accordians_container accordians_container-categories" defaultLang= "<?php echo $siteDefaultLangId; ?>" language="<?php echo $langId; ?>" id="accordion-language_<?php echo $langId; ?>" onClick="translateData(this)">
+                                 <div class="accordian_panel">
+                                     <span class="accordian_title accordianhead accordian_title" id="collapse_<?php echo $langId; ?>">
+                                     <?php echo $data." "; echo Labels::getLabel('LBL_Language_Data', $adminLangId); ?>
+                                     </span>
+                                     <div class="accordian_body accordiancontent" style="display: none;">
+                                         <div class="row">
+                                            <div class="col-md-12">
+                                                <div class="field-set">
+                                                    <div class="caption-wraper">
+                                                        <label class="field_label">
+                                                        <?php  $fld = $frm->getField('collection_name['.$langId.']');
+                                                            echo $fld->getCaption(); ?>
+                                                        </label>
+                                                    </div>
+                                                    <div class="field-wraper">
+                                                        <div class="field_cover">
+                                                        <?php echo $frm->getFieldHtml('collection_name['.$langId.']'); ?>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                     </div>
+                                 </div>
+                             </div>
+                            <?php } 
+                            }
+                            ?>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="field-set d-flex align-items-center">
+                                        <div class="field-wraper w-auto">
+                                            <div class="field_cover">
+                                                <?php echo $frm->getFieldHtml('btn_submit'); ?>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <?php echo $frm->getFieldHtml('collection_id');
+                            echo $frm->getFieldHtml('collection_active');
+                            echo $frm->getFieldHtml('collection_type');
+                            echo $frm->getFieldHtml('collection_layout_type');
+                            ?>
+                            </form>
+                            <?php echo $frm->getExternalJS(); ?>
                         </div>
                     </div>
                 </div>

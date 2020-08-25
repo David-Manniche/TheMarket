@@ -404,8 +404,8 @@ class ProductCategoriesController extends AdminBaseController
         $matches = $categories;
         foreach ($matches as $key => $val) {
             $json[] = array(
-            'prodcat_id' => $key,
-            'prodcat_identifier' => strip_tags(html_entity_decode($val, ENT_QUOTES, 'UTF-8'))
+            'id' => $key,
+            'name' => strip_tags(html_entity_decode($val, ENT_QUOTES, 'UTF-8'))
             );
         }
         echo json_encode($json);

@@ -227,6 +227,7 @@ class AdvertiserController extends AdvertiserBaseController
             $srch->addCondition('promotion_duration', '=', $post['promotion_duration']);
             $srch->addCondition('promotion_start_date', '<=', $post['promotion_start_date']);
             $srch->addCondition('promotion_end_date', '>=', $post['promotion_end_date']);
+            $srch->addCondition('promotion_deleted', '=', applicationConstants::NO);
             /* $srch->addCondition('promotion_end_time','=',$post['promotion_end_time']); */
             $srch->addCondition('promotion_id', '!=', $promotionId);
             $rs = $srch->getResultSet();

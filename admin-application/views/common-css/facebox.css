@@ -95,3 +95,19 @@
 	width: auto;
 }
 }
+
+#facebox .content.small-fb-width {
+ width: 100%;
+ max-width: 350px;
+min-width:inherit;}
+
+#facebox .content.medium-fb-width {
+ width: 100%;
+ max-width: 650px; min-width:inherit;}
+
+#facebox .content.large-fb-width {
+ width: 100%;
+ max-width: 800px;
+ min-width: 350px; min-width:inherit;}
+
+.h-min-auto{ min-height:inherit !important;}

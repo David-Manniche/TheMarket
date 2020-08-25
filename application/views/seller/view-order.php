@@ -400,7 +400,7 @@ if (!empty($orderDetail["thirdPartyorderInfo"]) && isset($orderDetail["thirdPart
                                                         $trackingNumber = $row['oshistory_tracking_number'];
                                                         $carrier = $row['oshistory_courier'];
                                                     ?>
-                                                        <a href="javascript:void(0)" title="<?php echo Labels::getLabel('LBL_TRACK', $siteLangId); ?>" onClick="trackOrder('<?php echo trim($trackingNumber); ?>', '<?php echo trim($carrier); ?>')">
+                                                        <a href="javascript:void(0)" title="<?php echo Labels::getLabel('LBL_TRACK', $siteLangId); ?>" onClick="trackOrder('<?php echo trim($trackingNumber); ?>', '<?php echo trim($carrier); ?>', '<?php echo $orderDetail['op_invoice_number']; ?>')">
                                                             <?php echo $trackingNumber; ?>
                                                         </a>
                                                         <?php echo Labels::getLabel('LBL_VIA', $siteLangId); ?> <em><?php echo CommonHelper::displayNotApplicable($siteLangId, $orderDetail["opshipping_label"]); ?></em>

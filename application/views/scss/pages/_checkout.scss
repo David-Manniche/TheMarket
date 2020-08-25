@@ -837,6 +837,9 @@
                 &:focus {
                     border-color: #000;
                 }
+                &.is-invalid {
+                    border-color: red;
+                }
             }
         }
     }

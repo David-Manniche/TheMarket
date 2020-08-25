@@ -30,7 +30,7 @@
 					<div class="col-md-6">
 						<section class="section">
 							<div class="sectionhead">
-								<h4><?php echo Labels::getLabel('LBL_Image_Attributes', $adminLangId); ?> </h4>
+								<h4><?php echo Labels::getLabel('LBL_Records', $adminLangId); ?> </h4>
 								<?php
 								/* if ($canEdit) {
 									$data = [

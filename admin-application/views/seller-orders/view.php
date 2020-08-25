@@ -498,7 +498,7 @@ if (!empty($order["thirdPartyorderInfo"]) && isset($order["thirdPartyorderInfo"]
                                                 $trackingNumber = $row['oshistory_tracking_number'];
                                                 $carrier = $row['oshistory_courier'];
                                                 ?>
-                                                <a href="javascript:void(0)" title="<?php echo Labels::getLabel('LBL_TRACK', $adminLangId); ?>" onClick="trackOrder('<?php echo trim($trackingNumber); ?>', '<?php echo trim($carrier); ?>')">
+                                                <a href="javascript:void(0)" title="<?php echo Labels::getLabel('LBL_TRACK', $adminLangId); ?>" onClick="trackOrder('<?php echo trim($trackingNumber); ?>', '<?php echo trim($carrier); ?>', '<?php echo $order["op_invoice_number"];?>')">
                                                     <?php echo $trackingNumber; ?>
                                                 </a>
                                                 <?php echo Labels::getLabel('LBL_VIA', $adminLangId); ?> <em><?php echo CommonHelper::displayNotApplicable($adminLangId, $order["opshipping_label"]); ?></em>
@@ -584,10 +584,11 @@ if (!empty($order["thirdPartyorderInfo"]) && isset($order["thirdPartyorderInfo"]
 <script>
     var canShipByPlugin = <?php echo (true === $canShipByPlugin ? 1 : 0); ?>;
     var orderShippedStatus = <?php echo OrderStatus::ORDER_SHIPPED; ?>;
-    trackOrder = function(trackingNumber, courier){
+    trackOrder = function(trackingNumber, courier, orderNumber){
         $.facebox(function() {
-            fcom.ajax(fcom.makeUrl('SellerOrders','orderTrackingInfo', [trackingNumber, courier]), '', function(res){
-                $.facebox( res,'faceboxWidth');
+            fcom.ajax(fcom.makeUrl('SellerOrders','orderTrackingInfo', [trackingNumber, courier, orderNumber]), '', function(res){
+                $.facebox( res,'medium-fb-width');
+                $(".medium-fb-width").parent('.popup').addClass('h-min-auto');
             });
         });
     };
