@@ -2545,7 +2545,7 @@ class BuyerController extends BuyerBaseController
         $this->_template->render();
     }
     
-    public function orderTrackingInfo($trackingNumber, $courier)
+    public function orderTrackingInfo($trackingNumber, $courier, $orderNumber)
 	{
 		if (empty($trackingNumber) || empty($courier)) {
 			Message::addErrorMessage(Labels::getLabel('MSG_Invalid_request',$this->siteLangId));
@@ -2558,6 +2558,8 @@ class BuyerController extends BuyerBaseController
             FatUtility::dieWithError(Message::getHtml());
 		}
 		
+        $shipmentTracking->createTracking($trackingNumber, $courier, $orderNumber);
+        
 		if (false === $shipmentTracking->getTrackingInfo($trackingNumber, $courier)) {
 			Message::addErrorMessage($shipmentTracking->getError());
             FatUtility::dieWithError(Message::getHtml());

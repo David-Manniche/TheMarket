@@ -548,10 +548,6 @@ class SellerOrdersController extends AdminBaseController
                     $trackingRelation = new TrackingCourierCodeRelation();
                     $trackData = $trackingRelation->getDataByShipCourierCode($orderDetail['opshipping_carrier_code']);
                     $trackingCourierCode = !empty($trackData['tccr_tracking_courier_code']) ? $trackData['tccr_tracking_courier_code'] : '';
-                    
-                    $shipmentTracking = new ShipmentTracking(); 
-                    $shipmentTracking->init($this->adminLangId);
-                    $shipmentTracking->createTracking($post['tracking_number'], $trackingCourierCode, $orderDetail['op_invoice_number']);
                 }
             }
 
@@ -867,7 +863,7 @@ class SellerOrdersController extends AdminBaseController
         return $frm;
     }
     
-    public function orderTrackingInfo($trackingNumber, $courier)
+    public function orderTrackingInfo($trackingNumber, $courier, $orderNumber)
 	{
 		if (empty($trackingNumber) || empty($courier)) {
 			Message::addErrorMessage(Labels::getLabel('MSG_Invalid_request',$this->adminLangId));
@@ -879,7 +875,9 @@ class SellerOrdersController extends AdminBaseController
 			Message::addErrorMessage($shipmentTracking->getError());
             FatUtility::dieWithError(Message::getHtml());
 		}
-		
+        
+        $shipmentTracking->createTracking($trackingNumber, $courier, $orderNumber);
+
 		if (false === $shipmentTracking->getTrackingInfo($trackingNumber, $courier)) {
 			Message::addErrorMessage($shipmentTracking->getError());
             FatUtility::dieWithError(Message::getHtml());

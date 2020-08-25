@@ -48,11 +48,10 @@ class AfterShipShipment extends ShipmentTrackingBase
             $curl->get($url);
         }
 
-        if ($curl->error) {    
-            $this->error = $curl->errorCode . ' : ' . $curl->errorMessage;
-            $this->error .= !empty($curl->getResponse()->error) ? $curl->getResponse()->error : '';
+        if ($curl->error) {     
+            $this->error = !empty($curl->getResponse()->meta->message) ? $curl->getResponse()->meta->message : '';
             return false;
-        } 
+        }           
         /* Converting Multidimensional object elements to array. */
         $this->response = json_decode(json_encode($curl->getResponse()), true); 
         return true; 
@@ -124,7 +123,7 @@ class AfterShipShipment extends ShipmentTrackingBase
         ];
         if (false === $this->doRequest($url, $requestParam)) {
             return false;
-        }         
+        }
         return true;        
 	}
         

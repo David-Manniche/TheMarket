@@ -419,7 +419,7 @@ if (true == $primaryOrder) {
                                             $trackingNumber = $row['oshistory_tracking_number'];
                                             $carrier = $row['oshistory_courier'];
                                             ?>
-                                            <a href="javascript:void(0)" title="<?php echo Labels::getLabel('LBL_TRACK', $siteLangId); ?>" onClick="trackOrder('<?php echo trim($trackingNumber); ?>', '<?php echo trim($carrier); ?>')">
+                                            <a href="javascript:void(0)" title="<?php echo Labels::getLabel('LBL_TRACK', $siteLangId); ?>" onClick="trackOrder('<?php echo trim($trackingNumber); ?>', '<?php echo trim($carrier); ?>', '<?php echo $childOrderDetail['op_invoice_number']; ?>')">
                                                 <?php echo $trackingNumber; ?>
                                             </a>
                                             <?php echo Labels::getLabel('LBL_VIA', $siteLangId); ?> <em><?php echo CommonHelper::displayNotApplicable($siteLangId, $childOrderDetail["opshipping_label"]); ?></em>
@@ -575,9 +575,9 @@ if (true == $primaryOrder) {
         });
     }
     
-    trackOrder = function(trackingNumber, courier){
+    trackOrder = function(trackingNumber, courier, orderNumber){
         $.facebox(function() {
-            fcom.ajax(fcom.makeUrl('Buyer','orderTrackingInfo', [trackingNumber, courier]), '', function(res){
+            fcom.ajax(fcom.makeUrl('Buyer','orderTrackingInfo', [trackingNumber, courier, orderNumber]), '', function(res){
                 $.facebox( res,'medium-fb-width');
             });
         });

@@ -1,4 +1,4 @@
-<?php defined('SYSTEM_INIT') or die('Invalid Usage . ');
+<?php defined('SYSTEM_INIT') or die('Invalid Usage . ');    
 if ( $trackingInfo['meta']['code'] != 200 ){ ?>
 <h4>
     <?php echo $trackingInfo['meta']['code'].' : '.$trackingInfo['meta']['message']; ?>
@@ -15,4 +15,12 @@ if ( $trackingInfo['meta']['code'] != 200 ){ ?>
         </li>
     <?php } ?>
     </ul>
-<?php }  ?>
+<?php }else{  ?>
+<ul class="timeline" id= "timeline">
+    <li class="event" data-date="<?php echo FatDate::format($trackingInfo['data']['tracking']['created_at'], true); ?>">
+        <div>
+            <p><strong><?php echo $trackingInfo['data']['tracking']['tag']; ?></strong></p>
+        </div>
+    </li>
+</ul>
+<?php } ?>

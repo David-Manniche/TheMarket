@@ -15,4 +15,12 @@ if ( $trackingInfo['meta']['code'] != 200 ){ ?>
         </li>
     <?php } ?>
     </ul>
-<?php }  ?>
+<?php }else{  ?>
+<ul class="timeline" id= "timeline">
+    <li class="event" data-date="<?php echo FatDate::format($trackingInfo['data']['tracking']['created_at'], true); ?>">
+        <div>
+            <p><strong><?php echo $trackingInfo['data']['tracking']['tag']; ?></strong></p>
+        </div>
+    </li>
+</ul>
+<?php } ?>
