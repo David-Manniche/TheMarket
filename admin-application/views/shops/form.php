@@ -8,7 +8,7 @@ $frmShop->developerTags['fld_default_col'] = 12;
 $countryFld = $frmShop->getField('shop_country_code');
 $countryFld->setFieldTagAttribute('id', 'shop_country_code');
 $countryFld->setFieldTagAttribute('class', 'addressSelection-js');
-$countryFld->setFieldTagAttribute('onChange', 'getCountryStates(this.value,' . $stateId . ',\'#shop_state\')');
+$countryFld->setFieldTagAttribute('onChange', 'getStatesByCountryCode(this.value,' . $stateId . ',\'#shop_state\', \'state_code\')');
 
 $stateFld = $frmShop->getField('shop_state');
 $stateFld->setFieldTagAttribute('id', 'shop_state');
