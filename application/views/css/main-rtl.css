@@ -1,12 +1,12 @@
 @charset "UTF-8";
 /*** RTL websites ***/
+@import url("https://fonts.googleapis.com/css?family=Open+Sans:400,400i,600,700,800|Poppins:300,400,400i,500,600,700,800");
 /*!
  * Bootstrap v4.3.1 (https://getbootstrap.com/)
  * Copyright 2011-2019 The Bootstrap Authors
  * Copyright 2011-2019 Twitter, Inc.
  * Licensed under MIT (https://github.com/twbs/bootstrap/blob/master/LICENSE)
  */
-@import url("https://fonts.googleapis.com/css?family=Open+Sans:400,400i,600,700,800|Poppins:300,400,400i,500,600,700,800");
 :root {
   --blue: var(--brand-color);
   --indigo: #6610f2;
@@ -16949,6 +16949,9 @@ ul {
 img, .post .post_media iframe, .post .post_media .posted-content .posted-media .post__pic .media-wrapper img, .posted-content .posted-media .post__pic .media-wrapper .post .post_media img {
   max-width: 100%; }
 
+a {
+  color: inherit; }
+
 a:hover {
   text-decoration: none; }
 
@@ -17997,6 +18000,106 @@ html.quick-view--open {
     max-width: 100px; }
   .no-data-found.no-data-found--sm .data h2 {
     font-size: 1.2rem; }
+
+.timeline-orders {
+  margin: 2rem 0; }
+
+.timeline-comments {
+  display: flex; }
+  .timeline-comments .timeline-avatar {
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+    background: var(--brand-color);
+    color: var(--brand-color-inverse);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-left: 1rem;
+    overflow: hidden; }
+  .timeline-comments .timeline-comments-box {
+    flex: 1; }
+    @media (max-width: 767.98px) {
+      .timeline-comments .timeline-comments-box .input-group .form-control {
+        flex: 1;
+        margin-bottom: .875rem;
+        max-width: 100%; } }
+    @media (max-width: 767.98px) {
+      .timeline-comments .timeline-comments-box .input-group .input-group-append > .btn {
+        border-radius: 3px; } }
+
+/* Timeline */
+.timeline {
+  border-left: 2px solid var(--brand-color);
+  border-bottom-right-radius: 3px;
+  border-top-right-radius: 3px;
+  color: rgba(0, 0, 0, 0.8);
+  margin: 30px auto;
+  margin-right: 153px;
+  position: relative;
+  line-height: 1.4em;
+  font-size: 0.8rem;
+  padding: 0 50px;
+  list-style: none; }
+  @media (max-width: 767.98px) {
+    .timeline {
+      margin-right: 0px;
+      padding: 0 20px; } }
+  .timeline p {
+    font-size: 0.8rem; }
+  .timeline .dropdown-toggle {
+    font-weight: 400; }
+    @media (max-width: 767.98px) {
+      .timeline .dropdown-toggle {
+        white-space: normal; } }
+  .timeline .event {
+    border-bottom: 1px dashed rgba(255, 255, 255, 0.1);
+    padding-bottom: 1rem;
+    margin-bottom: 1rem;
+    position: relative;
+    color: #888; }
+    .timeline .event:last-of-type {
+      padding-bottom: 0;
+      margin-bottom: 0;
+      border: none; }
+    .timeline .event:before, .timeline .event:after {
+      position: absolute;
+      display: block;
+      top: 0; }
+    .timeline .event:before {
+      right: -200px;
+      color: #888;
+      content: attr(data-date);
+      text-align: left;
+      font-size: 0.75rem;
+      min-width: 120px; }
+      @media (max-width: 767.98px) {
+        .timeline .event:before {
+          right: 0px;
+          position: relative;
+          display: block;
+          text-align: right; } }
+    .timeline .event:after {
+      box-shadow: 0 0 0 2px var(--brand-color);
+      right: -57px;
+      background: #fff;
+      border-radius: 50%;
+      height: 11px;
+      width: 11px;
+      content: "";
+      top: 2px; }
+      @media (max-width: 767.98px) {
+        .timeline .event:after {
+          right: -27px; } }
+  .timeline .timeline_status {
+    font-size: 0.85rem;
+    font-weight: 500;
+    display: block;
+    color: #525252;
+    margin-bottom: 0.5rem; }
+    .timeline .timeline_status .svg {
+      fill: currentColor;
+      margin-left: 5px; }
 
 .animated {
   -webkit-animation-duration: 1s;
@@ -32027,6 +32130,8 @@ a.ui-button:active,
       margin: 0 3px; }
       .otp-block .otp-enter .otp-inputs input.field-otp:focus, .otp-block .otp-enter .otp-inputs .form select.field-otp:focus, .form .otp-block .otp-enter .otp-inputs select.field-otp:focus, .otp-block .otp-enter .otp-inputs .form .field-otp.custom-select:focus, .form .otp-block .otp-enter .otp-inputs .field-otp.custom-select:focus, .otp-block .otp-enter .otp-inputs .form textarea.field-otp:focus, .form .otp-block .otp-enter .otp-inputs textarea.field-otp:focus {
         border-color: #000; }
+      .otp-block .otp-enter .otp-inputs input.field-otp.is-invalid, .otp-block .otp-enter .otp-inputs .form select.field-otp.is-invalid, .form .otp-block .otp-enter .otp-inputs select.field-otp.is-invalid, .otp-block .otp-enter .otp-inputs .form .field-otp.is-invalid.custom-select, .form .otp-block .otp-enter .otp-inputs .field-otp.is-invalid.custom-select, .otp-block .otp-enter .otp-inputs .form textarea.field-otp.is-invalid, .form .otp-block .otp-enter .otp-inputs textarea.field-otp.is-invalid {
+        border-color: red; }
 .otp-block .otp-success {
   text-align: center; }
   .otp-block .otp-success .img {
