@@ -3661,6 +3661,7 @@ class AccountController extends LoggedUserController
         $this->_template->render();
     }
 
+    /* Cards Management */
     private function setErrorAndRedirect(string $msg, bool $json = false, $redirect = true)
     {
         $json = FatUtility::isAjaxCall() ? true : $json;
@@ -3668,79 +3669,41 @@ class AccountController extends LoggedUserController
         CommonHelper::redirectUserReferer();
     }
 
-    private function initPaymentPlugin()
-    {
-        $pluginObj = new Plugin();
-        $keyName = $pluginObj->getDefaultPluginKeyName(Plugin::TYPE_SPLIT_PAYMENT_METHOD);
-        if (false === $keyName) {
-            $this->setErrorAndRedirect($pluginObj->getError());
-        }
-
-        $this->paymentPlugin = PluginHelper::callPlugin($keyName, [$this->siteLangId], $error, $this->siteLangId);
-        if (false === $this->paymentPlugin) {
-            $this->setErrorAndRedirect($error);
-        }
-        $this->userId = UserAuthentication::getLoggedUserId(true);
-        if (false === $this->paymentPlugin->init($this->userId)) {
-            $this->setErrorAndRedirect($this->paymentPlugin->getError());
-        }
-    }
-
     public function cards()
     {
-        $this->initPaymentPlugin();
+        $userId = UserAuthentication::getLoggedUserId();
+        $paymentCard = new PaymentCard($this->siteLangId, $userId);
+        if (false === $paymentCard->fetchAll()) {
+            $this->setErrorAndRedirect($paymentCard->getError());
+        }
+        $this->set('savedCards', $paymentCard->getResponse());
 
-        $this->paymentPlugin->loadCustomer();
-        $customerInfo = $this->paymentPlugin->getResponse()->toArray();
-        $savedCards = $customerInfo['sources']['data'];
-        $this->set('defaultSource', $customerInfo['default_source']);
-        $this->set('savedCards', $savedCards);
+        if (false === $paymentCard->getDefault()) {
+            $this->setErrorAndRedirect($paymentCard->getError());
+        }
+        $this->set('defaultSource', $paymentCard->getResponse());
         $this->_template->render();
     }
-
+    
     /**
      * removeCard
      *
+     * @param  string $cardId
      * @return void
      */
-    public function removeCard()
+    public function removeCard(string $cardId)
     {
-        $this->initPaymentPlugin();
-
-        $cardId = FatApp::getPostedData('cardId', FatUtility::VAR_STRING, '');
         if (empty($cardId)) {
             $this->setErrorAndRedirect(Labels::getLabel('MSG_INVALID_REQUEST', $this->siteLangId));
         }
-
-        if (false === $this->paymentPlugin->removeCard(['cardId' => $cardId])) {
-            $this->setErrorAndRedirect($this->paymentPlugin->getError());
+        $userId = UserAuthentication::getLoggedUserId();
+        $paymentCard = new PaymentCard($this->siteLangId, $userId);
+        if (false === $paymentCard->delete($cardId)) {
+            $this->setErrorAndRedirect($paymentCard->getError());
         }
+
         $msg = Labels::getLabel("MSG_REMOVED_SUCCESSFULLY", $this->siteLangId);
         FatUtility::dieJsonSuccess($msg);
-    }
-
-    /**
-     * getCardForm
-     *
-     * @return object
-     */
-    private function getCardForm(): object
-    {
-        $frm = new Form('frmCardForm');
-        $frm->addRequiredField(Labels::getLabel('LBL_ENTER_CARD_NUMBER', $this->siteLangId), 'number');
-        $frm->addRequiredField(Labels::getLabel('LBL_CARD_HOLDER_FULL_NAME', $this->siteLangId), 'name');
-        $data['months'] = applicationConstants::getMonthsArr($this->siteLangId);
-        $today = getdate();
-        $data['year_expire'] = array();
-        for ($i = $today['year']; $i < $today['year'] + 11; $i++) {
-            $data['year_expire'][strftime('%Y', mktime(0, 0, 0, 1, 1, $i))] = strftime('%Y', mktime(0, 0, 0, 1, 1, $i));
-        }
-        $frm->addSelectBox(Labels::getLabel('LBL_EXPIRY_MONTH', $this->siteLangId), 'exp_month', $data['months'], '', array(), '');
-        $frm->addSelectBox(Labels::getLabel('LBL_EXPIRY_YEAR', $this->siteLangId), 'exp_year', $data['year_expire'], '', array(), '');
-        $frm->addPasswordField(Labels::getLabel('LBL_CVV_SECURITY_CODE', $this->siteLangId), 'cvc')->requirements()->setRequired();
-        $frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_SAVE', $this->siteLangId));
-
-        return $frm;
     }
 
     /**
@@ -3750,35 +3713,23 @@ class AccountController extends LoggedUserController
      */
     public function addCardForm()
     {
-        $frm = $this->getCardForm();
-
+        $frm = PaymentCard::getCardForm($this->siteLangId);
         $this->set('frm', $frm);
         $this->_template->render(false, false);
     }
 
+
     /**
-     * createCustomer
+     * bindCustomer
      *
      * @return void
      */
-    public function createCustomer()
+    public function bindCustomer()
     {
-        $this->initPaymentPlugin();
-
-        if (!empty($this->paymentPlugin->getCustomerId())) {
-            $json['customerId'] = $this->paymentPlugin->getCustomerId();
-            $json['msg'] = Labels::getLabel('MSG_ALREADY_EXISTS', $this->siteLangId);
-            FatUtility::dieJsonSuccess($json);
-        }
-        $userObj = new User($this->userId);
-        $userData = $userObj->getUserInfo();
-        $requestParam = [
-            'email' => $userData['credential_email'],
-            'name' => $userData['user_name'],
-            'phone' => $userData['user_phone']
-        ];
-        if (false === $this->stripeConnect->createCustomerObject($requestParam)) {
-            $this->setErrorAndRedirect($this->stripeConnect->getError());
+        $userId = UserAuthentication::getLoggedUserId();
+        $paymentCard = new PaymentCard($this->siteLangId, $userId);
+        if (false === $paymentCard->bindCustomer()) {
+            $this->setErrorAndRedirect($paymentCard->getError());
         }
 
         $msg = Labels::getLabel('MSG_SUCCESS', $this->siteLangId);
@@ -3792,33 +3743,45 @@ class AccountController extends LoggedUserController
      */
     public function setupNewCard()
     {
-        $this->initPaymentPlugin();
-        
-        $userObj = new User($this->userId);
-        if (empty($this->paymentPlugin->getCustomerId())) {
-            $this->createCustomer();
-        }
-
-        $cardFrm = $this->getCardForm();
+        $cardFrm = PaymentCard::getCardForm($this->siteLangId);
         $cardData = $cardFrm->getFormDataFromArray(FatApp::getPostedData());
         if (false === $cardData) {
             $this->setErrorAndRedirect(current($cardFrm->getValidationErrors()));
         }
         unset($cardData['btn_submit']);
-
-        /* It will generate card temp token. */
-        if (false === $this->stripeConnect->generateCardToken($cardData)) {
-            $this->setErrorAndRedirect($this->stripeConnect->getError());
-        }
-        $cardTempTokenResponse = $this->stripeConnect->getResponse();
-
-        if (false === $this->stripeConnect->addCard(['source' => $cardTempTokenResponse->id])) {
-            $this->setErrorAndRedirect($this->stripeConnect->getError());
+        
+        $userId = UserAuthentication::getLoggedUserId();
+        $paymentCard = new PaymentCard($this->siteLangId, $userId);
+        if (false === $paymentCard->create($cardData)) {
+            $this->setErrorAndRedirect($paymentCard->getError());
         }
 
-        $cardTokenResponse = $this->stripeConnect->getResponse();
+        $cardTokenResponse = $paymentCard->getResponse();
         $json['cardId'] = $cardTokenResponse->id;
+        $json['msg'] = Labels::getLabel('MSG_SUCCESS', $this->siteLangId);
+        FatUtility::dieJsonSuccess($json);
+    }
+    
+    /**
+     * markAsDefault
+     *
+     * @param  string $cardId
+     * @return void
+     */
+    public function markAsDefault(string $cardId)
+    {        
+        if (empty($cardId)) {
+            $this->setErrorAndRedirect(Labels::getLabel('MSG_INVALID_REQUEST', $this->siteLangId));
+        }
+
+        $userId = UserAuthentication::getLoggedUserId();
+        $paymentCard = new PaymentCard($this->siteLangId, $userId);
+        if (false === $paymentCard->markAsDefault($cardId)) {
+            $this->setErrorAndRedirect($paymentCard->getError());
+        }
+        
         $json['msg'] = Labels::getLabel('MSG_SUCESS', $this->siteLangId);
         FatUtility::dieJsonSuccess($json);
     }
+    /* Cards Management */
 }

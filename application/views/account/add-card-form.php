@@ -1,6 +1,6 @@
 <?php defined('SYSTEM_INIT') or die('Invalid Usage.');
 
-$frm->setFormTagAttribute('onsubmit', 'add(this); return(false);');
+$frm->setFormTagAttribute('onsubmit', 'addNewCard(this); return(false);');
 $frm->setFormTagAttribute('class', 'form form--normal');
 
 $fld = $frm->getField('number');
@@ -89,9 +89,6 @@ echo $frm->getFormTag(); ?>
     <div class="row">
         <div class="col-md-12">
             <div class="field-set">
-                <div class="caption-wraper">
-                    <label class="field_label"></label>
-                </div>
                 <div class="field-wraper">
                     <div class="field_cover">
                         <?php 

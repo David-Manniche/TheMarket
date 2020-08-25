@@ -273,7 +273,7 @@ class StripeConnectPayController extends PaymentController
             }
         } else {
             $requestParam = $this->stripeConnect->formatCustomerDataFromOrder($this->orderInfo);
-            if (false === $this->stripeConnect->createCustomerObject($requestParam)) {
+            if (false === $this->stripeConnect->bindCustomer($requestParam)) {
                 $this->setErrorAndRedirect($this->stripeConnect->getError());
             }
             $this->customerId = $this->stripeConnect->getCustomerId();   

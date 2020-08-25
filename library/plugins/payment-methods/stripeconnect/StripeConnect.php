@@ -19,6 +19,7 @@ class StripeConnect extends PaymentMethodBase
     private $customerId = '';
     private $loginUrl = '';
     private $connectedAccounts = [];
+    private $customerInfo = [];
 
     public $requiredKeys = [
         'env',
@@ -136,9 +137,9 @@ class StripeConnect extends PaymentMethodBase
     /**
      * getResponse
      *
-     * @return object
+     * @return mixed
      */
-    public function getResponse(): object
+    public function getResponse()
     {
         return empty($this->resp) ? (object) array() : $this->resp;
     }
@@ -776,12 +777,12 @@ class StripeConnect extends PaymentMethodBase
     }
 
     /**
-     * createCustomerObject
+     * bindCustomer
      *
      * @param array $requestParam
      * @return bool
      */
-    public function createCustomerObject(array $requestParam): bool
+    public function bindCustomer(array $requestParam): bool
     {
         if (empty($requestParam)) {
             $this->error = Labels::getLabel('MSG_INVALID_REQUEST', $this->langId);
@@ -810,7 +811,12 @@ class StripeConnect extends PaymentMethodBase
      */
     public function loadCustomer(): bool
     {
-        $this->resp = $this->doRequest(self::REQUEST_RETRIEVE_CUSTOMER);
+        if (!empty($this->customerInfo)) {
+            $this->resp = $this->customerInfo;
+            return true;
+        }
+
+        $this->resp = $this->customerInfo = $this->doRequest(self::REQUEST_RETRIEVE_CUSTOMER);
         return (false === $this->resp) ? false : true;
     }
 
@@ -1095,6 +1101,36 @@ class StripeConnect extends PaymentMethodBase
         if (false === $this->resp) {
             return false;
         }
+        return true;
+    }
+
+    /**
+     * fetchCards
+     *
+     * @return bool
+     */
+    public function fetchCards(): bool
+    {
+        if (false === $this->loadCustomer()) {
+            return false;
+        }
+        $customerInfo = $this->getResponse()->toArray();
+        $this->resp = $customerInfo['sources']['data'];
+        return true;
+    }
+
+    /**
+     * getDefaultCard
+     *
+     * @return bool
+     */
+    public function getDefaultCard(): bool
+    {
+        if (false === $this->loadCustomer()) {
+            return false;
+        }
+        $customerInfo = $this->getResponse()->toArray();
+        $this->resp = $customerInfo['default_source'];
         return true;
     }
 

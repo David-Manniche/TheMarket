@@ -19,8 +19,11 @@ echo $frm->getFormTag(); ?>
                     </div>
                     <div class="col">
                         <div class="payment-card__photo">
+                            <?php 
+                                $cardBrand = strtolower(str_replace(" ", "", $cardDetail['brand']));
+                            ?>
                             <svg class="svg">
-                                <use xlink:href="<?php echo CONF_WEBROOT_URL; ?>images/retina/sprite.svg#<?php echo strtolower($cardDetail['brand']); ?>" href="<?php echo CONF_WEBROOT_URL; ?>images/retina/sprite.svg#<?php echo strtolower($cardDetail['brand']); ?>">
+                                <use xlink:href="<?php echo CONF_WEBROOT_URL; ?>images/retina/sprite.svg#<?php echo $cardBrand; ?>" href="<?php echo CONF_WEBROOT_URL; ?>images/retina/sprite.svg#<?php echo $cardBrand; ?>">
                                 </use>
                             </svg>
                         </div>
