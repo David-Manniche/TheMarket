@@ -578,7 +578,7 @@ if (true == $primaryOrder) {
     trackOrder = function(trackingNumber, courier){
         $.facebox(function() {
             fcom.ajax(fcom.makeUrl('Buyer','orderTrackingInfo', [trackingNumber, courier]), '', function(res){
-                $.facebox( res,'faceboxWidth');
+                $.facebox( res,'medium-fb-width');
             });
         });
     };

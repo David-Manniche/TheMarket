@@ -587,7 +587,7 @@ if (!empty($order["thirdPartyorderInfo"]) && isset($order["thirdPartyorderInfo"]
     trackOrder = function(trackingNumber, courier){
         $.facebox(function() {
             fcom.ajax(fcom.makeUrl('SellerOrders','orderTrackingInfo', [trackingNumber, courier]), '', function(res){
-                $.facebox( res,'faceboxWidth');
+                $.facebox( res,'medium-fb-width');
             });
         });
     };
