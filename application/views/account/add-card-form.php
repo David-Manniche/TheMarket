@@ -16,7 +16,7 @@ echo $frm->getFormTag(); ?>
         <div class="col-md-12">
             <div class="field-set">
                 <div class="caption-wraper">
-                    <label class="field_label"><?php echo Labels::getLabel('LBL_ENTER_CREDIT_CARD_NUMBER', $siteLangId); ?></label>
+                    <label class="field_label"><?php echo Labels::getLabel('LBL_ENTER_CARD_NUMBER', $siteLangId); ?></label>
                 </div>
                 <div class="field-wraper">
                     <div class="field_cover">

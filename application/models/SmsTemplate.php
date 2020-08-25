@@ -6,6 +6,7 @@ class SmsTemplate extends MyAppModel
     public const DB_TBL_PREFIX = 'stpl_';
 
     public const LOGIN = 'LOGIN';
+    public const COD_OTP_VERIFICATION = 'COD_OTP_VERIFICATION';
 
     private $stplCode;
 

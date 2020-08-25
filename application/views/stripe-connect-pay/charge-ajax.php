@@ -6,70 +6,66 @@ $frm->setFormTagAttribute('onsubmit', 'doPayment(this, "' . $orderInfo["id"] . '
 $frm->setFormTagAttribute('class', 'form form--normal');
 
 echo $frm->getFormTag(); ?>
-    <div class="tab-content">
-        <div class="tab-pane fade show active">
-            <ul class="list-group payment-card payment-card-view">
-                <?php
-                foreach ($savedCards as $cardDetail) { ?>
-                    <li class="list-group-item">
-                        <div class="row">
-                            <div class="col-auto">
-                                <label class="radio">
-                                    <input name="card_id" type="radio" value="<?php echo $cardDetail['id']; ?>" <?php echo $defaultSource == $cardDetail['id'] ? "checked" : ""; ?>>
-                                    <i class="input-helper"></i>
-                                </label>
-                            </div>
-                            <div class="col">
-                                <div class="payment-card__photo">
-                                    <svg class="svg">
-                                        <use xlink:href="<?php echo CONF_WEBROOT_URL; ?>images/retina/sprite.svg#<?php echo strtolower($cardDetail['brand']); ?>" href="<?php echo CONF_WEBROOT_URL; ?>images/retina/sprite.svg#<?php echo strtolower($cardDetail['brand']); ?>">
-                                        </use>
-                                    </svg>
-                                </div>
-                            </div>
-                            <div class="col">
-                                <div class="payment-card__number">
-                                    <?php echo Labels::getLabel('LBL_ENDING_IN', $siteLangId); ?>
-                                    <strong><?php echo $cardDetail['last4']; ?></strong>
-                                </div>
-                            </div>
-                            <div class="col">
-                                <div class="payment-card__name"><?php echo $cardDetail['name']; ?></div>
-                            </div>
-                            <div class="col">
-                                <div class="payment-card__expiry"><?php echo Labels::getLabel('LBL_EXPIRY', $siteLangId); ?>
-                                    <strong><?php echo $cardDetail['exp_month'] . '/' . $cardDetail['exp_year']; ?></strong></div>
-                            </div>
-                            <div class="col-auto">
-                                <div class="payment-card__actions">
-                                    <ul class="list-actions">
-                                        <li>
-                                            <a href="javascript:void(0)" onClick="removeCard('<?php echo $cardDetail['id']; ?>');">
-                                                <svg class="svg" width="24px" height="24px">
-                                                    <use xlink:href="<?php echo CONF_WEBROOT_URL; ?>images/retina/sprite.svg#remove" href="<?php echo CONF_WEBROOT_URL; ?>images/retina/sprite.svg#remove">
-                                                    </use>
-                                                </svg>
-                                            </a>
-                                        </li>
-                                    </ul>
-                                </div>
-                            </div>
+    <ul class="list-group payment-card payment-card-view">
+        <?php
+        foreach ($savedCards as $cardDetail) { ?>
+            <li class="list-group-item">
+                <div class="row">
+                    <div class="col-auto">
+                        <label class="radio">
+                            <input name="card_id" type="radio" value="<?php echo $cardDetail['id']; ?>" <?php echo $defaultSource == $cardDetail['id'] ? "checked" : ""; ?>>
+                            <i class="input-helper"></i>
+                        </label>
+                    </div>
+                    <div class="col">
+                        <div class="payment-card__photo">
+                            <svg class="svg">
+                                <use xlink:href="<?php echo CONF_WEBROOT_URL; ?>images/retina/sprite.svg#<?php echo strtolower($cardDetail['brand']); ?>" href="<?php echo CONF_WEBROOT_URL; ?>images/retina/sprite.svg#<?php echo strtolower($cardDetail['brand']); ?>">
+                                </use>
+                            </svg>
                         </div>
-                    </li>
-                <?php } ?>
-            </ul>
-            <div class="my-3 text-right">
-                <a class="link-text" href="javascript:void(0);" onclick="addNewCard('<?php echo $orderInfo['id']; ?>')">
-                    <i class="icn"> 
-                        <svg class="svg">
-                            <use xlink:href="<?php echo CONF_WEBROOT_URL; ?>images/retina/sprite.svg#add" href="<?php echo CONF_WEBROOT_URL; ?>images/retina/sprite.svg#add">
-                            </use>
-                        </svg> 
-                    </i>
-                    <?php echo Labels::getLabel('LBL_ADD_NEW_CARD', $siteLangId); ?>
-                </a>
-            </div>
-        </div>
+                    </div>
+                    <div class="col">
+                        <div class="payment-card__number">
+                            <?php echo Labels::getLabel('LBL_ENDING_IN', $siteLangId); ?>
+                            <strong><?php echo $cardDetail['last4']; ?></strong>
+                        </div>
+                    </div>
+                    <div class="col">
+                        <div class="payment-card__name"><?php echo $cardDetail['name']; ?></div>
+                    </div>
+                    <div class="col">
+                        <div class="payment-card__expiry"><?php echo Labels::getLabel('LBL_EXPIRY', $siteLangId); ?>
+                            <strong><?php echo $cardDetail['exp_month'] . '/' . $cardDetail['exp_year']; ?></strong></div>
+                    </div>
+                    <div class="col-auto">
+                        <div class="payment-card__actions">
+                            <ul class="list-actions">
+                                <li>
+                                    <a href="javascript:void(0)" onClick="removeCard('<?php echo $cardDetail['id']; ?>');">
+                                        <svg class="svg" width="24px" height="24px">
+                                            <use xlink:href="<?php echo CONF_WEBROOT_URL; ?>images/retina/sprite.svg#remove" href="<?php echo CONF_WEBROOT_URL; ?>images/retina/sprite.svg#remove">
+                                            </use>
+                                        </svg>
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </li>
+        <?php } ?>
+    </ul>
+    <div class="my-3 text-right">
+        <a class="link-text" href="javascript:void(0);" onclick="addNewCard('<?php echo $orderInfo['id']; ?>')">
+            <i class="icn"> 
+                <svg class="svg">
+                    <use xlink:href="<?php echo CONF_WEBROOT_URL; ?>images/retina/sprite.svg#add" href="<?php echo CONF_WEBROOT_URL; ?>images/retina/sprite.svg#add">
+                    </use>
+                </svg> 
+            </i>
+            <?php echo Labels::getLabel('LBL_ADD_NEW_CARD', $siteLangId); ?>
+        </a>
     </div>
     <?php if (!empty($savedCards)) { ?>
         <div class="row">

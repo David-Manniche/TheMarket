@@ -2,8 +2,13 @@
 $approvalFrm->setFormTagAttribute('onsubmit', 'setupSupplierApproval(this); return(false);');
 $approvalFrm->setFormTagAttribute('class', 'form');
 $approvalFrm->developerTags['colClassPrefix'] = 'col-md-';
-$approvalFrm->developerTags['fld_default_col'] = '4'; ?>
-<?php $this->includeTemplate('_partial/dashboardNavigation.php'); ?>
+$approvalFrm->developerTags['fld_default_col'] = '4';
+
+$btn = $approvalFrm->getField('btn_submit');
+$btn->setFieldTagAttribute('class', "btn btn-primary btn-wide");
+
+$this->includeTemplate('_partial/dashboardNavigation.php'); ?>
+
 <main id="main-area" class="main" role="main">
     <div class="content-wrapper content-space">
         <div class="content-header row">

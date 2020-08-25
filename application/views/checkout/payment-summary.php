@@ -101,7 +101,7 @@ $rewardPoints = UserRewardBreakup::rewardPointBalance(UserAuthentication::getLog
                             <?php echo (strlen($billingAddressArr['addr_phone']) > 0) ? Labels::getLabel('LBL_Phone:', $siteLangId) . ' ' . $billingAddressArr['addr_phone'] . '<br>' : '';?>
                         </div>
                         <div class="review-block__link" role="cell">
-                            <a class="link" href="javascript:void(0);" onClick="loadAddressDiv(<?php echo Address::Address_TYPE_BILLING; ?>)"><span><?php echo Labels::getLabel('LBL_Change_Address', $siteLangId); ?></span></a>
+                            <a class="link" href="javascript:void(0);" onClick="loadAddressDiv(<?php echo Address::ADDRESS_TYPE_BILLING; ?>)"><span><?php echo Labels::getLabel('LBL_Change_Address', $siteLangId); ?></span></a>
                         </div>
                     </li>
                 </ul> 

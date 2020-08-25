@@ -19,12 +19,13 @@ $(document).ready(function(){
         if ( !$(frm).validate() ) return;
         var op_id = $(frm.op_id).val();	
         var manualShipping = 0;
+        var orderStatusId = $(frm.op_status_id).val();
         if (0 < $("input.manualShipping-js").length) {
             manualShipping = $("input.manualShipping-js:checked").val();	
         }
         
         var data = fcom.frmData(frm);
-        if (0 < canShipByPlugin && 1 != manualShipping) {
+        if (0 < canShipByPlugin && 1 != manualShipping && orderShippedStatus == orderStatusId) {
             proceedToShipment(op_id);
         } else {
             fcom.updateWithAjax(fcom.makeUrl('Seller', 'changeOrderStatus'), data, function(t) {

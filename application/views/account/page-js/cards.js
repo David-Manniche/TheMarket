@@ -4,7 +4,16 @@ $(document).ready(function() {});
     addNewCard = function() {
         $.facebox(function() {
             fcom.ajax(fcom.makeUrl(controller, 'addCardForm'), '', function(t) {
-                $.facebox(t, 'faceboxWidth');
+                $.facebox(t, 'medium-fb-width');
+            });
+        });
+
+    };
+
+    setupNewCard = function() {
+        $.facebox(function() {
+            fcom.ajax(fcom.makeUrl(controller, 'addCardForm'), '', function(t) {
+                $.facebox(t, 'medium-fb-width');
             });
         });
 

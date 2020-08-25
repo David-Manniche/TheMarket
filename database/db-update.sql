@@ -556,7 +556,25 @@ INSERT INTO `tbl_language_labels` (`label_key`, `label_lang_id`, `label_caption`
 ("LBL_Seller_Products", 1, "My Products", 1),
 ("LBL_Seller_Products", 2, "My Products", 1);
 
+
+DELETE FROM `tbl_language_labels` WHERE `label_key` LIKE 'MSG_SUCCESS_SELLER_SIGNUP_VERIFIED';
+DELETE FROM `tbl_language_labels` WHERE `label_key` LIKE 'MSG_SUCCESS_SELLER_SIGNUP';
+
+INSERT INTO `tbl_language_labels` (`label_key`, `label_lang_id`, `label_caption`, `label_type`) 
+VALUES ('LBL_IFSC_/_MICR', 1, 'IFSC / MICR', 1) 
+ON DUPLICATE KEY UPDATE `label_caption` = 'IFSC / MICR';
+
+INSERT INTO `tbl_language_labels` (`label_key`, `label_lang_id`, `label_caption`, `label_type`) 
+VALUES ('LBL_OTP_VERIFICATION', 1, 'OTP Verification', 1) 
+ON DUPLICATE KEY UPDATE `label_caption` = 'OTP Verification';
+
+-- COD Process --
+INSERT INTO `tbl_sms_templates` (`stpl_code`, `stpl_lang_id`, `stpl_name`, `stpl_body`, `stpl_replacements`, `stpl_status`) VALUES ('COD_OTP_VERIFICATION', '1', 'COD OTP Verification', 'Hello {USER_NAME},\r\n{OTP} is the OTP for cash on delivery order verification.\r\n\r\n{SITE_NAME} Team', '[{\"title\":\"Name\", \"variable\":\"{USER_NAME}\"},{\"title\":\"OTP\", \"variable\":\"{OTP}\"},{\"title\":\"Site Name\", \"variable\":\"{SITE_NAME}\"}]', '1');
+
+INSERT INTO `tbl_email_templates` (`etpl_code`, `etpl_lang_id`, `etpl_name`, `etpl_subject`, `etpl_body`, `etpl_replacements`, `etpl_status`) VALUES ('COD_OTP_VERIFICATION', '1', 'COD OTP Verification', 'COD OTP Verification', '<table width=\"100%\" align=\"center\" cellpadding=\"0\" cellspacing=\"0\">\r\n    <tr>\r\n        <td style=\"background:#ff3a59;\">\r\n            <!--\r\n            page title start here\r\n            -->\r\n\r\n            <table width=\"600\" border=\"0\" align=\"center\" cellpadding=\"0\" cellspacing=\"0\">\r\n                <tbody>\r\n                    <tr>\r\n                        <td style=\"background:#fff;padding:20px 0 10px; text-align:center;\">\r\n                            <h4\r\n                                style=\"font-weight:normal; text-transform:uppercase; color:#999;margin:0; padding:10px 0; font-size:18px;\">\r\n                            </h4>\r\n                            <h2 style=\"margin:0; font-size:34px; padding:0;\">COD OTP Verification</h2>\r\n                        </td>\r\n                    </tr>\r\n                </tbody>\r\n            </table>\r\n            <!--\r\n            page title end here\r\n            -->\r\n        </td>\r\n    </tr>\r\n    <tr>\r\n        <td>\r\n            <!--\r\n            page body start here\r\n            -->\r\n\r\n            <table width=\"600\" border=\"0\" align=\"center\" cellpadding=\"0\" cellspacing=\"0\">\r\n                <tbody>\r\n                    <tr>\r\n                        <td style=\"background:#fff;padding:0 30px; text-align:center; color:#999;vertical-align:top;\">\r\n                            <table width=\"100%\" border=\"0\" align=\"center\" cellpadding=\"0\" cellspacing=\"0\">\r\n                                <tbody>\r\n                                    <tr>\r\n                                        <td style=\"padding:20px 0 30px;\">\r\n                                            <strong style=\"font-size:18px;color:#333;\">Dear\r\n                                                {user_name}\r\n                                            </strong><br />\r\n                                            {OTP} is the OTP for cash on delivery order verification.<br />\r\n                                            <a href=\"{website_url}\">{website_name}</a>\r\n                                        </td>\r\n                                    </tr>\r\n                                </tbody>\r\n                            </table>\r\n                        </td>\r\n                    </tr>\r\n                </tbody>\r\n            </table>\r\n            <!--\r\n            page body end here\r\n            -->\r\n        </td>\r\n    </tr>\r\n</table>', '{user_name} Name of the email receiver.<br>\r\n{OTP} - One Time Password<br>\r\n{website_name} - Name of the website.\r\n{social_media_icons} <br>\r\n{contact_us_url} <br>', '1');
+-- COD Process --
 -- ----------------- TV-9.1.3.20200820 -----------------------
+
 
 -- Collections Management --
 

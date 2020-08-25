@@ -58,9 +58,9 @@ $this->includeTemplate('_partial/dashboardNavigation.php'); ?>
                                 </ul>
                             </div>
                             <?php } ?>
-                            <div id="profileInfoFrmBlock"> <?php echo Labels::getLabel('LBL_Loading..', $siteLangId); ?>
+                            <div id="profileInfoFrmBlock">
+                                <?php echo Labels::getLabel('LBL_Loading..', $siteLangId); ?>
                             </div>
-                             
                         </div>
                     </div>
                 </div>

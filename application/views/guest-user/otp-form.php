@@ -29,10 +29,10 @@ $btnFld->setFieldTagAttribute('class', 'btn-block');
                     <?php echo $frm->getFormTag(); ?>
                         <div class="otp-row">
                             <?php for ($i = 0; $i < User::OTP_LENGTH; $i++) { ?>
-                                <div class="otp-col">
+                                <div class="otp-col otpCol-js">
                                     <?php
                                     $fld = $frm->getField('upv_otp[' . $i . ']');
-                                    $fld->setFieldTagAttribute('class', 'otpVal');
+                                    $fld->setFieldTagAttribute('class', 'otpVal-js');
                                     echo $frm->getFieldHtml('upv_otp[' . $i . ']'); ?>
                                     <?php if ($i < (User::OTP_LENGTH - 1)) { ?>
                                         <span>-</span>

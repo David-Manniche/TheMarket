@@ -2938,4 +2938,18 @@ class EmailHandler extends FatModel
         }
         return CONF_VIEW_DIR_PATH . $directory . '/' . basename($fileName);
     }
+
+    public function sendCodOtpVerification($langId, $d)
+    {
+        $tpl = 'COD_OTP_VERIFICATION';
+        $vars = array(
+            '{USER_NAME}' => $d['user_name'],
+            '{OTP}' => $d['otp'],
+        );
+
+        if (!self::sendMailTpl($d['credential_email'], $tpl, $langId, $vars)) {
+            return false;
+        }
+        return true;
+    }
 }

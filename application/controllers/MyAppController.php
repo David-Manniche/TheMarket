@@ -595,12 +595,12 @@ class MyAppController extends FatController
         if (true === MOBILE_APP_API_CALL) {
             $frm->addRequiredField('', 'upv_otp');
         } else {
-            $attr = ['maxlength' => 1, 'size' => 1];
+            $attr = ['maxlength' => 1, 'size' => 1, 'placeholder' => '*'];
             for ($i = 0; $i < User::OTP_LENGTH; $i++) {
                 $frm->addTextBox('', 'upv_otp[' . $i . ']', '', $attr);
             }
         }
-        $frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_VALIDATE', $this->siteLangId));
+        $frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_VERIFY', $this->siteLangId));
         return $frm;
     }
 

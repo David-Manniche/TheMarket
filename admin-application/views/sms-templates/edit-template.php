@@ -21,7 +21,7 @@
         foreach ($replacementVariables as $val) {
             $htm .= '<li class="list-group-item">
                         <span>' . $val['title'] . '</span>
-                        <span class="badge badge-secondary" data-container="body" data-toggle="tooltip" data-placement="top" title="' . $val['title'] . '">
+                        <span class="badge badge--unified-brand badge--inline badge--pill" data-container="body" data-toggle="tooltip" data-placement="top" title="' . $val['title'] . '">
                         ' . $val['variable'] . '
                         </span>
                     </li>';

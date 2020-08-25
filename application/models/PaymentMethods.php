@@ -9,22 +9,32 @@ class PaymentMethods
     public const REFUND_TYPE_RETURN = 1;
     public const REFUND_TYPE_CANCEL = 2;
 
-    private $paymentPlugin = '';
+    private $paymentPlugin;
     private $keyname = '';
     private $langId = '';
     private $canRefundToCard = false;
     private $resp = [];
-    private $db;
     private $sellerId = '';
     private $opId = '';
-    private $transferAmount = '';
     private $transferId = '';
     private $invoiceNumber = '';
     private $remoteTxnId = '';
     private $sellerTxnAmount = '';
     private $error = '';
 
-    public static function getSearchObject($langId = 0, $isActive = true)
+    public function __construct()
+    {
+        $this->paymentPlugin = (object)[];
+    }
+    
+    /**
+     * getSearchObject
+     *
+     * @param  int $langId
+     * @param  bool $isActive
+     * @return object
+     */
+    public static function getSearchObject(int $langId = 0, bool $isActive = true): object
     {
         $srch = Plugin::getSearchObject($langId, $isActive);
         $cond = $srch->addCondition('plugin_type', '=', Plugin::TYPE_REGULAR_PAYMENT_METHOD);

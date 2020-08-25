@@ -788,7 +788,6 @@ class StripeConnect extends PaymentMethodBase
             return false;
         }
 
-        $requestParam = $this->formatCustomerDataFromOrder($requestParam);
         if (!empty($this->getCustomerId())) {
             $this->resp = $this->updateCustomerInfo($requestParam);
         } else {

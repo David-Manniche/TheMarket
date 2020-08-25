@@ -33,21 +33,26 @@ class AfterShipShipment extends ShipmentTrackingBase
      * doRequest
      *
      * @param  string $url
+     * @param  array $requestParam
      * @return bool
      */
-    private function doRequest(string $url): bool
+    private function doRequest(string $url, array $requestParam = []): bool
     {
         $curl = new Curl();
         $curl->setOpt(CURLOPT_RETURNTRANSFER, true);
         $curl->setHeader("aftership-api-key", $this->settings['api_key']);
         $curl->setHeader("Content-Type", "application/json");
-        $curl->get($url);
-  
-        if ($curl->error) { 
+        if (!empty($requestParam)) {
+            $curl->post($url, json_encode($requestParam));  
+        }else{
+            $curl->get($url);
+        }
+
+        if ($curl->error) {    
             $this->error = $curl->errorCode . ' : ' . $curl->errorMessage;
             $this->error .= !empty($curl->getResponse()->error) ? $curl->getResponse()->error : '';
             return false;
-        }
+        } 
         /* Converting Multidimensional object elements to array. */
         $this->response = json_decode(json_encode($curl->getResponse()), true); 
         return true; 
@@ -97,6 +102,31 @@ class AfterShipShipment extends ShipmentTrackingBase
         }
         return true;    
 	}
+    
+     /**
+	 * createTracking
+	 *
+	 * @param  string $trackingNumber
+	 * @param  string $courierCode
+     * @param  string $orderId
+	 * @return bool
+	 */
+    public function createTracking(string $trackingNumber, string $courierCode, string $orderId): bool
+	{	
+        $url = self::API_URI . 'trackings';
+        $requestParam = [
+            'tracking' => [
+                'slug' => $courierCode,
+                'tracking_number' => $trackingNumber,
+                'title' => $orderId,
+                'order_id' => $orderId
+            ]
+        ];
+        if (false === $this->doRequest($url, $requestParam)) {
+            return false;
+        }         
+        return true;        
+	}
         
     /**
      * getResponse
@@ -107,5 +137,4 @@ class AfterShipShipment extends ShipmentTrackingBase
     {
         return $this->response;
     }
-    
 }

@@ -3,13 +3,14 @@
 class LoggedUserController extends MyAppController
 {
     public $userParentId = 0 ;
+    public $userId = 0 ;
     public function __construct($action)
     {
         parent::__construct($action);
 
         UserAuthentication::checkLogin();
-
-        $userObj = new User(UserAuthentication::getLoggedUserId());
+        $this->userId = UserAuthentication::getLoggedUserId();
+        $userObj = new User($this->userId);
         $userInfo = $userObj->getUserInfo(array(), false, false);
 
         if (false == $userInfo || (!UserAuthentication::isGuestUserLogged() && $userInfo['credential_active'] != applicationConstants::ACTIVE)) {
@@ -55,7 +56,7 @@ class LoggedUserController extends MyAppController
             FatApp::redirectUser(UrlHelper::generateUrl('GuestUser', 'logout'));
         }
 
-        if (UserAuthentication::getLoggedUserId() < 1) {
+        if ($this->userId < 1) {
             FatApp::redirectUser(UrlHelper::generateUrl('GuestUser', 'logout'));
         }
 

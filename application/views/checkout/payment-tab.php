@@ -1,77 +1,99 @@
-<?php defined('SYSTEM_INIT') or die('Invalid Usage.'); ?>
-<?php $frm->setFormTagAttribute('class', 'form form--normal');
-$frm->developerTags['colClassPrefix'] = 'col-lg-12 col-md-12 col-sm-';
-$frm->developerTags['fld_default_col'] = 12;
-$frm->setFormTagAttribute('onsubmit', 'confirmOrder(this); return(false);');
-
+<?php defined('SYSTEM_INIT') or die('Invalid Usage.');
 $pmethodName = $paymentMethod["plugin_name"];
 $pmethodDescription = $paymentMethod["plugin_description"];
 $pmethodCode = $paymentMethod["plugin_code"];
 
-$submitFld = $frm->getField('btn_submit');
-$submitFld->setFieldTagAttribute('class', "btn btn-primary");
-
-$class = '';
+$frm->setFormTagAttribute('class', 'form');
 if ('cashondelivery' != strtolower($pmethodCode)) {
-    $class = 'd-none';
+    $frm->developerTags['colClassPrefix'] = 'col-lg-12 col-md-12 col-sm-';
+    $frm->developerTags['fld_default_col'] = 12;
+    $frm->setFormTagAttribute('onsubmit', 'confirmOrder(this); return(false);');
 }
-?>
 
+$submitFld = $frm->getField('btn_submit');
+$submitFld->setFieldTagAttribute('class', "btn btn-primary btn-wide");
 
-<div class="otp-block">
-                                                <div class="otp-block__head">
-                                                    <h5>OTP Verification</h5>
-                                                    <p>Enter OTP sent to <strong>+91 9888881405</strong></p>
-                                                </div>
-                                                <div class="otp-block__body">
-                                                    <div class="otp-enter">
-                                                        <div class="otp-inputs">
-                                                            <input class="field-otp" type="text" maxlength="1" placeholder="*">
-                                                            <input class="field-otp" type="text" maxlength="1" placeholder="*">
-                                                            <input class="field-otp" type="text" maxlength="1" placeholder="*">
-                                                            <input class="field-otp" type="text" maxlength="1" placeholder="*">
-                                                            <input class="field-otp" type="text" maxlength="1" placeholder="*">
-                                                            <input class="field-otp" type="text" maxlength="1" placeholder="*">
-                                                        </div>
-                                                        <button class="btn btn-primary btn-wide" type="button">Verify</button>
-                                                    </div>
-                                                </div>
-                                                <div class="otp-block__footer">
+if ('cashondelivery' == strtolower($pmethodCode)) { ?>
+    <div class="otp-block otpBlock-js">
+        <div class="otp-block__head">
+            <h5><?php echo Labels::getLabel('LBL_OTP_VERIFICATION', $siteLangId); ?></h5>
+            <p>
+                <?php
+                if (true == $canSendSms) {
+                    $userDialCode = $userData['user_dial_code'];
+                    $phone = $userData['user_phone'];
+                    $msg = Labels::getLabel('LBL_ENTER_OTP_SENT_TO_{PHONE}', $siteLangId);
+                    echo CommonHelper::replaceStringData($msg, ['{PHONE}' => '<strong>' . $userDialCode . $phone . '</strong>']);
+                } else {
+                    $msg = Labels::getLabel('LBL_ENTER_OTP_SENT_TO_{EMAIL}', $siteLangId);
+                    echo CommonHelper::replaceStringData($msg, ['{EMAIL}' => '<strong>' . $userData['credential_email'] . '</strong>']);
+                }
+                ?>
+            </p>
+        </div>
+        <div class="otp-block__body">
+            <div class="otp-enter">
+                <div class="otp-inputs">
+                    <?php
+                    $frm->setFormTagAttribute('class', 'form');
+                    $frm->setFormTagAttribute('onsubmit', 'validateOtp(this); return(false);');
 
-                                                    <div class="row">
-                                                        <div class="col">
-                                                            <p class="">Code Expire in:<span class="txt-success font-weight-bold">
-                                                                    00:50</span></p>
-                                                        </div>
-                                                        <div class="col-auto">
-                                                            <p class="">Didn’t get code <a class="txt-success font-weight-bold" href="">
-                                                                    RESEND!</a> </p>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="otp-block">
-                                                <div class="otp-success">
-                                                    <img class="img" src="<?php echo CONF_WEBROOT_URL; ?>images/retina/otp-complete.svg" alt="">
-                                                    <h5>Success</h5>
-                                                    <p>Lorem ipsum dolor sit amet consectetur  </p>
-
-                                                </div>
-
-                                            </div>
-
- <div class="text-center <?php echo $class; ?>">
-    <p><strong><?php echo sprintf(Labels::getLabel('LBL_PAY_USING_PAYMENT_METHOD', $siteLangId), $pmethodName) ?>:</strong></p>
-    <p><?php echo $pmethodDescription; ?></p>
-    <?php if (!isset($error)) {
-        echo $frm->getFormHtml();
-    }
-    ?>
-</div>
+                    for ($i = 0; $i < User::OTP_LENGTH; $i++) {
+                        $fld = $frm->getField('upv_otp[' . $i . ']');
+                        $fld->setFieldTagAttribute('class', 'field-otp otpVal-js');
+                        $fld->developerTags['noCaptionTag'] = true;
+                        $fld->setWrapperAttribute('class', 'otpCol-js');
+                    }
+                    
+                    $submitFld->developerTags['noCaptionTag'] = true;
+                    $submitFld->developerTags['col'] = 12;
+                    echo $frm->getFormHtml();
+                    ?>
+                </div>
+            </div>
+        </div>
+        <div class="otp-block__footer text-center">
+            <span>
+                <p>
+                    <?php
+                    $msg = Labels::getLabel('LBL_OTP_EXPIRES_IN_{TIMER}_SECONDS', $siteLangId);
+                    $htm = '<span class="txt-success font-weight-bold intervalTimer-js">
+                                        ' . User::OTP_INTERVAL . '
+                                    </span>';
+                    echo CommonHelper::replaceStringData($msg, ['{TIMER}' => $htm]);
+                    ?>
+                </p>
+            </span>
+            <p class="d-none resendOtpDiv-js">
+                <?php echo Labels::getLabel("LBL_DIDN'T_GET_OTP.", $siteLangId); ?>
+                <a href="javaScript:void(0)" class="txt-success font-weight-bold resendOtp-js" onClick="resendOtp()">
+                    <?php echo Labels::getLabel('LBL_RESEND_?', $siteLangId); ?>
+                </a>
+            </p>
+        </div>
+    </div>
+    <div class="otp-block successOtp-js d-none">
+        <div class="otp-success">
+            <img class="img" src="<?php echo CONF_WEBROOT_URL; ?>images/retina/otp-complete.svg" alt="">
+            <h5><?php echo Labels::getLabel('LBL_SUCCESS', $siteLangId); ?></h5>
+            <p>Lorem ipsum dolor sit amet consectetur </p>
+        </div>
+    </div>
+<?php } else { ?>
+    <div class="text-center paymentForm-js d-none">
+        <?php if (!isset($error)) {
+            echo $frm->getFormHtml();
+        }
+        ?>
+    </div>
+<?php } ?>
 <script type="text/javascript">
     $("document").ready(function() {
         <?php if (isset($error)) { ?>
             $.mbsmessage(<?php echo $error; ?>, true, 'alert--danger');
+        <?php } ?>
+        <?php if ('cashondelivery' == strtolower($pmethodCode)) { ?>
+            startOtpInterval('', "showElements");
         <?php } ?>
     });
 
@@ -79,7 +101,7 @@ if ('cashondelivery' != strtolower($pmethodCode)) {
         var data = fcom.frmData(frm);
         var action = $(frm).attr('action')
         var getExternalLibraryUrl = $(frm).data('external');
-        $.mbsmessage(langLbl.processing,false,'alert--process alert');
+        $.mbsmessage(langLbl.processing, false, 'alert--process alert');
         fcom.ajax(fcom.makeUrl('Checkout', 'ConfirmOrder'), data, function(res) {
             if ('undefined' != typeof getExternalLibraryUrl) {
                 fcom.ajax(getExternalLibraryUrl, '', function(t) {
@@ -121,5 +143,10 @@ if ('cashondelivery' != strtolower($pmethodCode)) {
                 // console.log(e);
             }
         });
+    }
+
+    function showElements() {
+        $(".resendOtpDiv-js").removeClass("d-none");
+        // $(".intervalTimer-js").parent().parent().show();
     }
 </script>
