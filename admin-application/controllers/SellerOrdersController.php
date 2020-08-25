@@ -548,6 +548,10 @@ class SellerOrdersController extends AdminBaseController
                     $trackingRelation = new TrackingCourierCodeRelation();
                     $trackData = $trackingRelation->getDataByShipCourierCode($orderDetail['opshipping_carrier_code']);
                     $trackingCourierCode = !empty($trackData['tccr_tracking_courier_code']) ? $trackData['tccr_tracking_courier_code'] : '';
+                    
+                    $shipmentTracking = new ShipmentTracking(); 
+                    $shipmentTracking->init($this->adminLangId);
+                    $shipmentTracking->createTracking($post['tracking_number'], $trackingCourierCode, $orderDetail['op_invoice_number']);
                 }
             }
 
