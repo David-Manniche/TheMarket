@@ -87,7 +87,7 @@ class PaymentCard
             $this->error = Labels::getLabel('MSG_INVALID_REQUEST', $this->langId);
             return false;
         }
-        
+
         if (false === $this->paymentPlugin->removeCard(['cardId' => $cardId])) {
             $this->error = $this->paymentPlugin->getError();
             return false;
@@ -177,7 +177,7 @@ class PaymentCard
         }
 
         if (!empty($this->getCustomerId())) {
-            $this->error = Labels::getLabel('MSG_ALREADY_EXISTS', $this->langId);
+            $this->error = Labels::getLabel('MSG_ALREADY_BOUND', $this->langId);
             return false;
         }
 
@@ -193,6 +193,7 @@ class PaymentCard
             $this->error = $this->paymentPlugin->getError();
             return false;
         }
+        $this->response = $this->paymentPlugin->getResponse();
         return true;
     }
 

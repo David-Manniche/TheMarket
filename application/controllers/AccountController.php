@@ -3732,8 +3732,10 @@ class AccountController extends LoggedUserController
             $this->setErrorAndRedirect($paymentCard->getError());
         }
 
-        $msg = Labels::getLabel('MSG_SUCCESS', $this->siteLangId);
-        FatUtility::dieJsonSuccess($msg);
+        $customer = $paymentCard->getResponse();
+        $json['customerId'] = $customer->id;
+        $json['msg'] = Labels::getLabel('MSG_SUCCESS', $this->siteLangId);
+        FatUtility::dieJsonSuccess($json);
     }
 
     /**
