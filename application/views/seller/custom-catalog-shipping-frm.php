@@ -7,6 +7,7 @@ $productFrm->developerTags['fld_default_col'] = 12;
 if (!FatApp::getConfig('CONF_SHIPPED_BY_ADMIN_ONLY', FatUtility::VAR_INT, 0)) {
     $spPackageFld = $productFrm->getField('product_ship_package');
     $spPackageFld->developerTags['col'] = 6;
+	$spPackageFld->htmlAfterField = '<br/><small> <a href="javascript:void(0)" onClick="shippingPackages()">'. Labels::getLabel('LBL_View', $siteLangId) .'</a> ' . Labels::getLabel('LBL_Shipping_Packages', $siteLangId) . ' </small>';
 
     $spProfileFld = $productFrm->getField('shipping_profile');
     $spProfileFld->developerTags['col'] = 6;
@@ -27,13 +28,13 @@ $btnBackFld = $productFrm->getField('btn_back');
 $btnBackFld->developerTags['col'] = 6;
 $btnBackFld->setFieldTagAttribute('onClick','productOptionsAndTag('.$preqId.');');
 $btnBackFld->value = Labels::getLabel('LBL_Back', $siteLangId);
-$btnBackFld->setFieldTagAttribute('class', "btn btn-outline-primary btn-block");
+$btnBackFld->setFieldTagAttribute('class', "btn btn-outline-primary");
 
 $btnSubmitFld = $productFrm->getField('btn_submit');
 $btnSubmitFld->developerTags['col'] = 6;
 $btnSubmitFld->setWrapperAttribute('class','text-right');
 
-$btnSubmitFld->setFieldTagAttribute('class', "btn btn-primary btn-block");
+$btnSubmitFld->setFieldTagAttribute('class', "btn btn-primary");
 ?>
 <div class="row justify-content-center">
      <div class="col-md-12">

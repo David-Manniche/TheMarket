@@ -58,6 +58,7 @@ foreach ($arr_listing as $sn => $row) {
             case 'action':
                 if ($canEdit) {
                     $td->appendElement('a', array('href'=>'javascript:void(0)', 'class'=>'btn btn-clean btn-sm btn-icon', 'title'=>Labels::getLabel('LBL_Edit', $adminLangId),"onclick"=>"addBannerLocation(".$row['blocation_id'].")"), "<i class='far fa-edit icon'></i>", true);
+                    $td->appendElement('a', array('href'=>'javascript:void(0)', 'href'=>'javascript:void(0)', 'onClick'=>"displayImageInFacebox('".CONF_WEBROOT_URL."images/banner_layouts/layout-3.jpg');", 'class'=>'btn btn-clean btn-sm btn-icon', 'title'=>Labels::getLabel('LBL_Product_Detail_page_layout', $adminLangId)), "<i class='fas fa-file-image'></i>", true);
                     $url=UrlHelper::generateUrl('banners', 'listing', array($row['blocation_id']));
                     $td->appendElement('a', array('href'=>'javascript:void(0)', 'class'=>'btn btn-clean btn-sm btn-icon', 'title'=>Labels::getLabel('LBL_Banners', $adminLangId),'onclick'=>'redirecrt("'.$url.'")'), "<i class='ion-images icon'></i>", true);
                 }

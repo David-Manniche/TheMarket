@@ -1,12 +1,12 @@
 <div id="tabUl" class="tabs tabs--flat-js justify-content-md-center">
     <ul>
-        <?php foreach ($row['categories'] as $key => $category) {?>
+        <?php foreach ($collection['categories'] as $key => $category) {?>
         <li class=""><a href="#tb-<?php echo $key; ?>"><?php echo $category['catData']['prodcat_name']; ?></a>
         </li>
         <?php }?>
     </ul>
 </div>
-<?php foreach ($row['categories'] as $key => $category) {?>
+<?php foreach ($collection['categories'] as $key => $category) {?>
 <div id="tb-<?php echo $key; ?>" class="tabs-content tabs-content-js"
     style="display: block;">
     <div class="ft-pro-wrapper">

@@ -49,7 +49,7 @@ $("document").ready(function(){
 				type: 'post',
 				success: function(json) {
 					response($.map(json, function(item) {
-						return { label: item['prodcat_identifier'],	value: item['prodcat_identifier'],	id: item['prodcat_id'] };
+						return { label: item['name'], value: item['name'], id: item['id'] };
 					}));
 				},
 			});

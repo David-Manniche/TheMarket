@@ -34,7 +34,7 @@ foreach ($arr_listing as $sn=>$row) {
                 $td->appendElement('plaintext', array(), $linkTargetsArr[$row[$key]], true);
             break;
             case 'banner_title':
-                $title = ($row['banner_title'] !='')?$row['banner_title']:$row['promotion_name'];
+                $title = ($row['banner_title'] !='') ? $row['banner_title'] : $row['promotion_name'];
                 $td->appendElement('plaintext', array(), $title, true);
             break;
             case 'banner_type':
@@ -77,7 +77,7 @@ foreach ($arr_listing as $sn=>$row) {
                     }
                 }
 
-                $uploadedTime = AttachedFile::setTimeParam($row['banner_img_updated_on']);
+                $uploadedTime = AttachedFile::setTimeParam($row['banner_updated_on']);
                 $img = '<img src="'.UrlHelper::generateFullUrl('Banner', 'Thumb', array($row['banner_id'] , $adminLangId), CONF_WEBROOT_FRONT_URL).$uploadedTime.'" />';
                 $td->appendElement('plaintext', array(), $img, true);
             break;
