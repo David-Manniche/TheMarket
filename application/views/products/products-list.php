@@ -18,6 +18,7 @@ if ($products) {
             <span class="tag--soldout"><?php echo Labels::getLabel('LBL_SOLD_OUT', $siteLangId);?></span>
         <?php  } ?>
         <div class="products__body"> 
+            
             <?php $this->includeTemplate('_partial/collection-ui.php', array('product'=>$product,'siteLangId'=>$siteLangId, 'showActionBtns'=> $showActionBtns, 'isWishList' => $isWishList), false); ?> 
         <div class="products__img">
                 <?php $uploadedTime = AttachedFile::setTimeParam($product['product_updated_on']);?>
