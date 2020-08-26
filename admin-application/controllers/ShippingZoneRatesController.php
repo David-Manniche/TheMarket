@@ -124,7 +124,7 @@ class ShippingZoneRatesController extends AdminBaseController
         $data = array(
             'shipratelang_lang_id' => $langId,
             'shipratelang_shiprate_id' => $rateId,
-            'shiprate_name' => $post['rate_name']
+            'shiprate_name' => $post['shiprate_name']
         );
         $srObj = new ShippingRate($rateId);
         if (!$srObj->updateLangData($langId, $data)) {
