@@ -471,11 +471,11 @@ class MyAppController extends FatController
         $phnFld->requirements()->setCustomErrorMessage(Labels::getLabel('LBL_Please_enter_valid_phone_number_format.', $this->siteLangId));
 
         $frm->addHiddenField('', 'addr_id');
-		if ($btnOrderFlip) {
-			$fldCancel = $frm->addButton('', 'btn_cancel', Labels::getLabel('LBL_Cancel', $siteLangId));
-			$fldSubmit = $frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_SAVE_CHANGES', $siteLangId));
-			return $frm;
-		}
+        if ($btnOrderFlip) {
+            $fldCancel = $frm->addButton('', 'btn_cancel', Labels::getLabel('LBL_Cancel', $siteLangId));
+            $fldSubmit = $frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_SAVE_CHANGES', $siteLangId));
+            return $frm;
+        }
         $fldSubmit = $frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_SAVE_CHANGES', $siteLangId));
         $fldCancel = $frm->addButton('', 'btn_cancel', Labels::getLabel('LBL_Cancel', $siteLangId));
         //$fldCancel->attachField($fldSubmit);
@@ -502,14 +502,7 @@ class MyAppController extends FatController
         }
 
         $pageSize = FatApp::getConfig('CONF_ITEMS_PER_PAGE_CATALOG', FatUtility::VAR_INT, 10);
-        //$pageSize = 10;
-        $itemsTxt = Labels::getLabel('LBL_Items', $this->siteLangId);
-
-        //$pageSizeArr[$pageSize] = $pageSize.' '.$itemsTxt;
-        $pageSizeArr[$pageSize] = Labels::getLabel('LBL_Default', $this->siteLangId);
-        $pageSizeArr[12] = 12 . ' ' . $itemsTxt;
-        $pageSizeArr[24] = 24 . ' ' . $itemsTxt;
-        $pageSizeArr[48] = 48 . ' ' . $itemsTxt;
+        $pageSizeArr = FilterHelper::getPageSizeArr($this->siteLangId);
         $frm = new Form('frmProductSearch');
         $frm->addTextBox('', 'keyword', '', array('id' => 'keyword'));
         $frm->addSelectBox('', 'sortBy', $sortByArr, $sortBy, array('id' => 'sortBy'), '');
@@ -817,7 +810,7 @@ class MyAppController extends FatController
     }
 
     
-    /* 
+    /*
      * You can override this function in child class if that class required any external js library.
      */
     public function getExternalLibraries()

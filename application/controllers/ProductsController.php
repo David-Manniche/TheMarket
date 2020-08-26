@@ -72,11 +72,11 @@ class ProductsController extends MyAppController
         $frm->fill($get);
         $data = $this->getListingData($get);
 
-		if (array_key_exists('keyword', $get) && count($data['products'])) {
-			$searchItemObj = new SearchItem();
-			$searchData = array('keyword'=>$get['keyword']);
-			$searchItemObj->addSearchResult($searchData);
-		}
+        if (array_key_exists('keyword', $get) && count($data['products'])) {
+            $searchItemObj = new SearchItem();
+            $searchData = array('keyword'=>$get['keyword']);
+            $searchItemObj->addSearchResult($searchData);
+        }
 
         $common = array(
             'frmProductSearch' => $frm,
@@ -319,7 +319,7 @@ class ProductsController extends MyAppController
         }
 
         $templateName = 'filters.php';
-        if(FatApp::getConfig('CONF_FILTERS_LAYOUT', FatUtility::VAR_INT, 1) != FilterHelper::LAYOUT_TOP) {
+        if (FatApp::getConfig('CONF_FILTERS_LAYOUT', FatUtility::VAR_INT, 1) != FilterHelper::LAYOUT_TOP) {
             $templateName = 'filters-top.php';
         }
         echo $this->_template->render(false, false, 'products/' . $templateName, true);
@@ -1129,7 +1129,7 @@ class ProductsController extends MyAppController
         $fld->requirements()->setIntPositive();
         // $frm->addSubmitButton(null, 'btnProductBuy', Labels::getLabel('LBL_Buy_Now', $formLangId ), array( 'id' => 'btnProductBuy' ) );
         //$frm->addSubmitButton(null, 'btnAddToCart', Labels::getLabel('LBL_Add_to_Cart', $formLangId), array( 'id' => 'btnAddToCart' ));
-       // $frm->addHTML(null, 'btnProductBuy', '<button name="btnProductBuy" type="submit" id="btnProductBuy" class="btn btn-primary block-on-mobile add-to-cart--js btnBuyNow"> ' . Labels::getLabel('LBL_Buy_Now', $formLangId) . '</button>');
+        // $frm->addHTML(null, 'btnProductBuy', '<button name="btnProductBuy" type="submit" id="btnProductBuy" class="btn btn-primary block-on-mobile add-to-cart--js btnBuyNow"> ' . Labels::getLabel('LBL_Buy_Now', $formLangId) . '</button>');
         $frm->addHTML(null, 'btnAddToCart', '<button name="btnAddToCart" type="submit" id="btnAddToCart" class="btn btn-primary btn-block add-to-cart--js "> ' . Labels::getLabel('LBL_Add_to_Cart', $formLangId) . '</button>');
         $frm->addHiddenField('', 'selprod_id');
         return $frm;
@@ -1582,19 +1582,20 @@ class ProductsController extends MyAppController
         $pageSize = FatApp::getConfig('CONF_ITEMS_PER_PAGE_CATALOG', FatUtility::VAR_INT, 10);
         if (array_key_exists('pageSize', $get)) {
             $pageSize = FatUtility::int($get['pageSize']);
-            if (0 >= $pageSize) {
+            $pageSizeArr = FilterHelper::getPageSizeArr($this->siteLangId);
+            if (0 >= $pageSize || !array_key_exists($pageSize, $pageSizeArr)) {
                 $pageSize = FatApp::getConfig('CONF_ITEMS_PER_PAGE_CATALOG', FatUtility::VAR_INT, 10);
             }
         }
-
+        
         if (FatApp::getConfig('CONF_DEFAULT_PLUGIN_' . Plugin::TYPE_FULL_TEXT_SEARCH, FatUtility::VAR_INT, 0)) {
             $srch = FullTextSearch::getListingObj($get, $this->siteLangId, $userId);
             $page = ($page - 1) * $pageSize;
             $srch->setPageNumber($page);
             $srch->setPageSize($pageSize);
-			$srch->setFields(array('brand', 'categories', 'general'));
+            $srch->setFields(array('brand', 'categories', 'general'));
             $records = $srch->fetch();
-			$products = [];
+            $products = [];
 
             if (isset($records['hits']) && count($records['hits']) > 0) {
                 foreach ($records['hits'] as $record) {
@@ -1772,14 +1773,14 @@ class ProductsController extends MyAppController
     {
         $pagesize = 10;
         $post = FatApp::getPostedData();
-        $srch = Tax::getSearchObject($this->siteLangId,true);
+        $srch = Tax::getSearchObject($this->siteLangId, true);
         $srch->addCondition('taxcat_deleted', '=', 0);
         $activatedTaxServiceId = Tax::getActivatedServiceId();
 
         $srch->addFld('taxcat_id');
         if ($activatedTaxServiceId) {
             $srch->addFld('concat(IFNULL(taxcat_name,taxcat_identifier), " (",taxcat_code,")")as taxcat_name');
-        }else{
+        } else {
             $srch->addFld('IFNULL(taxcat_name,taxcat_identifier)as taxcat_name');
         }
         $srch->addCondition('taxcat_plugin_id', '=', $activatedTaxServiceId);

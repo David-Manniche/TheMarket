@@ -300,4 +300,17 @@ class FilterHelper extends FatUtility
         }
         return unserialize($options);
     }
+
+    public static function getPageSizeArr($langId)
+    {
+        $pageSize = FatApp::getConfig('CONF_ITEMS_PER_PAGE_CATALOG', FatUtility::VAR_INT, 10);
+
+        $itemsTxt = Labels::getLabel('LBL_Items', $langId);
+
+        $pageSizeArr[$pageSize] = Labels::getLabel('LBL_Default', $langId);
+        $pageSizeArr[12] = 12 . ' ' . $itemsTxt;
+        $pageSizeArr[24] = 24 . ' ' . $itemsTxt;
+        $pageSizeArr[48] = 48 . ' ' . $itemsTxt;
+        return $pageSizeArr;
+    }
 }
