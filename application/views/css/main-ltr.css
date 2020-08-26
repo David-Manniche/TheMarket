@@ -17969,6 +17969,9 @@ html.quick-view--open {
             vertical-align: inherit; }
           .saved-cards > li .list-actions li a:hover .svg {
             fill: #fff; }
+    .saved-cards > li label {
+      display: block;
+      cursor: pointer; }
 
 .no-data-found {
   margin: 2rem auto;

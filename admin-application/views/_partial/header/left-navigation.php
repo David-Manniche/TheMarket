@@ -493,7 +493,7 @@
                 $objPrivilege->canViewPickupAddresses(AdminAuthentication::getLoggedAdminId(), true) ||
                 $objPrivilege->canViewTrackingRelationCode()
             ) { ?>
-            <li class="haschild"><a href="javascript:void(0);"><?php echo Labels::getLabel('LBL_Shipping', $adminLangId);?></a>
+            <li class="haschild"><a href="javascript:void(0);"><?php echo Labels::getLabel('LBL_Shipping/Pickup', $adminLangId);?></a>
                 <ul>
                     <?php /* if ($objPrivilege->canViewShippingMethods(AdminAuthentication::getLoggedAdminId(), true)) {?>
                     <li><a href="<?php echo UrlHelper::generateUrl('ShippingMethods'); ?>"><?php echo Labels::getLabel('LBL_Shipping_Methods', $adminLangId);?></a></li>
