@@ -61,40 +61,7 @@ class ProductSearch extends SearchBase
 
     public function setGeoAddress($address = [])
     {
-        if (!FatApp::getConfig('CONF_ENABLE_GEO_LOCATION', FatUtility::VAR_INT, 0)) {
-            return;
-        }
-       
-        if (!empty($address)) {
-            $this->geoAddress = $address;
-        } else {
-            if (false === MOBILE_APP_API_CALL) {
-                $this->geoAddress = [
-                    'ykGeoLat' => isset($_COOKIE['_ykGeoLat']) ? $_COOKIE['_ykGeoLat'] : '',
-                    'ykGeoLng' => isset($_COOKIE['_ykGeoLng']) ? $_COOKIE['_ykGeoLng'] : '',
-                    'ykGeoZip' => isset($_COOKIE['_ykGeoZip']) ? $_COOKIE['_ykGeoZip'] : '',
-                    'ykGeoStateCode' => isset($_COOKIE['_ykGeoStateCode']) ? $_COOKIE['_ykGeoStateCode'] : '',
-                    'ykGeoCountryCode' => isset($_COOKIE['_ykGeoCountryCode']) ? $_COOKIE['_ykGeoCountryCode'] : '',
-                    'ykGeoAddress' => isset($_COOKIE['_ykGeoAddress']) ? $_COOKIE['_ykGeoAddress'] : '',
-               ];
-            }
-                       
-            if (true === MOBILE_APP_API_CALL) {
-                $this->geoAddress = [
-                    'ykGeoLat' => isset($_SERVER['HTTP_X_YK_LAT']) ? $_SERVER['HTTP_X_YK_LAT'] : '',
-                    'ykGeoLng' => isset($_SERVER['HTTP_X_YK_LNG']) ? $_SERVER['HTTP_X_YK_LNG'] : '',
-                    'ykGeoZip' => isset($_SERVER['HTTP_X_YK_ZIP']) ? $_SERVER['HTTP_X_YK_ZIP'] : '',
-                    'ykGeoStateCode' => isset($_SERVER['HTTP_X_YK_STATE_CODE']) ? $_SERVER['HTTP_X_YK_STATE_CODE'] : '',
-                    'ykGeoCountryCode' => isset($_SERVER['HTTP_X_YK_COUNTRY_CODE']) ? $_SERVER['HTTP_X_YK_COUNTRY_CODE'] : '',
-                    'ykGeoAddress' => isset($_SERVER['HTTP_X_YK_ADDRESS']) ? $_SERVER['HTTP_X_YK_ADDRESS'] : '',
-               ];
-            }
-        }
-
-        if (!empty($this->geoAddress)) {
-            $this->geoAddress['ykGeoCountryId'] = Countries::getCountryByCode($this->geoAddress['ykGeoCountryCode'], 'country_id');
-            $this->geoAddress['ykGeoStateId'] = States::getStateByCode($this->geoAddress['ykGeoStateCode'], 'state_id');
-        }
+        $this->geoAddress = Address::getYkGeoData($address);
     }
 
     public function joinProductsLang($langId)
@@ -352,7 +319,7 @@ class ProductSearch extends SearchBase
             );
 
             $srch->addCondition('s.splprice_selprod_id', 'IS', 'mysql_func_NULL', 'AND', true);
-            if($isProductActive == true){
+            if ($isProductActive == true) {
                 $srch->addCondition('selprod_active', '=', applicationConstants::ACTIVE);
             }
             $srch->addCondition('selprod_deleted', '=', applicationConstants::NO);
@@ -1125,6 +1092,20 @@ class ProductSearch extends SearchBase
         $joinCondition = (true == $innerJoin) ? 'INNER JOIN' : 'LEFT OUTER JOIN' ;
 
         $this->joinTable('(' . $srch->getQuery() . ')', $joinCondition, 'shiploc.shiploc_shipzone_id = shippz.shipprozone_shipzone_id', 'shiploc');
+    }
+
+    public function validateAndJoinDeliveryLocation()
+    {
+        if (FatApp::getConfig('CONF_ENABLE_GEO_LOCATION', FatUtility::VAR_INT, 0)) {
+            $prodGeoCondition = FatApp::getConfig('CONF_PRODUCT_GEO_LOCATION', FatUtility::VAR_INT, 0);
+            switch ($prodGeoCondition) {
+                case applicationConstants::BASED_ON_DELIVERY_LOCATION:
+                    $this->joinDeliveryLocations();
+                    /* $srch->addFld('if(p.product_type = ' . Product::PRODUCT_TYPE_PHYSICAL . ', shipprofile.shippro_product_id, -1) as shippingProfile');
+                    $srch->addHaving('shippingProfile', 'IS NOT', 'mysql_func_null', 'and', true); */
+                    break;
+            }
+        }
     }
 
     public function joinDeliveryLocations($langId = 0)
