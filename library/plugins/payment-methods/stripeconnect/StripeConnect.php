@@ -1228,23 +1228,23 @@ class StripeConnect extends PaymentMethodBase
             }
         } catch (\Stripe\Exception\CardException $e) {
             // Since it's a decline, \Stripe\Exception\CardException will be caught
-            $this->error = $e->getError()->param . ' - ' . $e->getMessage();
+            $this->error = $e->getMessage();
         } catch (\Stripe\Exception\RateLimitException $e) {
             // Too many requests made to the API too quickly
-            $this->error = $e->getError()->param . ' - ' . $e->getMessage();
+            $this->error = $e->getMessage();
         } catch (\Stripe\Exception\InvalidRequestException $e) {
             // Invalid parameters were supplied to Stripe's API
-            $this->error = $e->getError()->param . ' - ' . $e->getMessage();
+            $this->error = $e->getMessage();
         } catch (\Stripe\Exception\AuthenticationException $e) {
             // Authentication with Stripe's API failed
-            $this->error = $e->getError()->param . ' - ' . $e->getMessage();
+            $this->error = $e->getMessage();
             // (maybe you changed API keys recently)
         } catch (\Stripe\Exception\ApiConnectionException $e) {
             // Network communication with Stripe failed
-            $this->error = $e->getError()->param . ' - ' . $e->getMessage();
+            $this->error = $e->getMessage();
         } catch (\Stripe\Exception\ApiErrorException $e) {
             // Display a very generic error to the user, and maybe send
-            $this->error = $e->getError()->param . ' - ' . $e->getMessage();
+            $this->error = $e->getMessage();
             // yourself an email
         } catch (\Stripe\Exception\SignatureVerificationException $e) {
             // Display a very generic error to the user, and maybe send
