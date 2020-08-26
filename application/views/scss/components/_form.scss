@@ -85,6 +85,17 @@
          &.is-invalid {
              border-color: $danger;
          }
+         &.field--calender {
+             padding-#{$end-direction}: 40px;
+             background-image: url(../images/retina/calendar.svg);
+             background-size: 20px;
+             background-color: $bg-white;
+             background-repeat: no-repeat;
+             background-position: calc(100% - 11px) center;
+             [dir="rtl"] & {
+                 background-position: calc(0% - -11px) center;
+             }
+         }
      }
      select {
          @extend input;
