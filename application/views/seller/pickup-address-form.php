@@ -315,7 +315,16 @@ $this->includeTemplate('seller/_partial/shop-navigation.php', $variables, false)
                                 </div>
                             </div>
                             <?php }else{ ?>
-                            <button class="mt-4 btn btn-outline-primary" type="button" name="btn_remove_row"><i class="fas fa-minus"></i></button>
+                            <div class="field-set">
+                                <div class="caption-wraper">
+                                   <label class="field_label"></label>
+                                </div>
+                                <div class="field-wraper">
+                                    <div class="field_cover">
+                                    <button class="btn btn-outline-primary" type="button" name="btn_remove_row" data-class="js-added-rows-<?php echo $i; ?>"><i class="fas fa-minus"></i></button>
+                                    </div>
+                                </div>
+                            </div>
                             <?php } ?>
                         </div>
                     </div>
@@ -463,7 +472,8 @@ $this->includeTemplate('seller/_partial/shop-navigation.php', $variables, false)
         addTimeSlotRow = function(day){
             var fromTimeHtml = $(".js-from_time_"+day).html();
             var toTimeHtml = $(".js-to_time_"+day).html();
-            var html = "<div class='row js-added-rows-"+day+"'><div class='col-md-2'></div><div class='col-md-4 js-from_time_"+day+"'>"+fromTimeHtml+"</div><div class='col-md-4 js-to_time_"+day+"'>"+toTimeHtml+"</div><div class='col-md-2'><button class='mt-4 btn btn-outline-primary' type='button' name='btn_remove_row'><i class='fas fa-minus'></i></button></div></div>";
+            var html = "<div class='row js-added-rows-"+day+"'><div class='col-md-2'></div><div class='col-md-4 js-from_time_"+day+"'>"+fromTimeHtml+"</div><div class='col-md-4 js-to_time_"+day+"'>"+toTimeHtml+"</div><div class='col-md-2'><div class='field-set'><div class='caption-wraper'><label class='field_label'></label></div><div class='field-wraper'><div class='field_cover'><button class='btn btn-outline-primary' type='button' name='btn_remove_row' data-class='js-added-rows-"+day+"'><i class='fas fa-minus'></i></button></div> </div></div></div></div>";
+			
             $(".js-from_time_"+day).last().parent().after(html);
             $('.js-slot-from-'+day).last().val('');
             $('.js-slot-to-'+day).last().val('');
@@ -523,7 +533,8 @@ $this->includeTemplate('seller/_partial/shop-navigation.php', $variables, false)
     });
     
     $(document).on("click", "[name='btn_remove_row']", function(){
-        $(this).parent().parent('.row').remove();
+		var cls = $(this).attr('data-class');
+        $("."+cls).remove();
     })
 
 </script>
