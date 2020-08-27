@@ -2,6 +2,73 @@
 class ShopTest extends YkModelTest
 {
     private $class = 'Shop';
+    private $shopId = 0;
+    
+    /**
+     * setUpBeforeClass
+     *
+     * @return void
+     */
+    public function setUpBeforeClass() :void
+    {
+        $this->setUpShop();
+        $this->setUpShopLang();
+    }
+    
+    /**
+     * setUpShop
+     *
+     * @return void
+     */
+    private function setUpShop() :void
+    {
+        $data = [
+            'shop_user_id' => '6',
+            'shop_identifier' => 'Unit Test Cases',
+            'shop_country_id' => '223',
+            'shop_state_id' => '2996',
+            'shop_phone' => '9876543210',
+            'shop_active' => '1',
+            'shop_featured' => '1',
+            'shop_supplier_display_status' => '1',
+            'shop_fulfillment_type' => '-1',
+        ];  
+        
+        $shop = new Shop($this->shopId);
+        $shop->assignValues($data);
+        if ($shop->save()) {
+           $this->shopId = $shop->getMainTableRecordId();
+        }
+    }
+    
+    /**
+     * setUpShopLang
+     *
+     * @return void
+     */
+    private function setUpShopLang() :void
+    {
+        $data = [
+            'shoplang_shop_id' => $this->shopId,
+            'shoplang_lang_id' => '1',
+            'shop_name' => 'Unit Test Cases',
+        ];  
+        
+        $shop = new Shop($this->shopId);
+        $shop->updateLangData(1, $data);
+    }
+    
+    /**
+     * tearDown
+     *
+     * @return void
+     */
+    public function tearDown() :void
+    {
+        FatApp::getDb()->deleteRecords(Shop::DB_TBL, array('smt' => 'shop_id = ?', 'vals' => array($this->shopId)));
+        FatApp::getDb()->deleteRecords(Shop::DB_TBL_LANG, array('smt' => 'shoplang_shop_id = ?', 'vals' => array($this->shopId)));
+    }
+    
     /**
      * testIsActive
      *
@@ -11,7 +78,7 @@ class ShopTest extends YkModelTest
      * @param  mixed $shopId
      * @return void
      */
-    public function testIsActive($expected, $shopId, $userId)
+    public function testIsActive($expected, $shopId, $userId) :void
     {
         $result = $this->execute($this->class, [$shopId, $userId, 0], 'isActive');
         $this->assertEquals($expected, $result);
