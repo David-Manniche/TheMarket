@@ -144,7 +144,7 @@ if (array_key_exists('brand_id', $postedData) && $postedData['brand_id'] > 0) {
         $currentPageUrl = '<?php echo $canonicalUrl; ?>';
         $productSearchPageType = '<?php echo $productSearchPageType; ?>';
         $recordId = <?php echo $recordId; ?>;
-        bannerAdds('<?php echo $bannerListigUrl;?>');
+        /* bannerAdds('<?php echo $bannerListigUrl;?>'); */
         loadProductListingfilters(document.frmProductSearch);
     });
 </script>

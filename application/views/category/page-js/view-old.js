@@ -1,5 +1,5 @@
 $(document).ready(function(){	
-	bannerAdds();
+	/* bannerAdds(); */
 	
 	searchProducts(document.frmProductSearch);
 	
