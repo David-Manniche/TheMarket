@@ -1580,8 +1580,12 @@ class SellerController extends SellerBaseController
 
     public function taxRules($taxCatId)
     {
-        $taxCatId = FatUtility::int($taxCatId);
         $this->userPrivilege->canViewTaxCategory(UserAuthentication::getLoggedUserId());
+        $taxCatId = FatUtility::int($taxCatId);
+        $data = Tax::getAttributesById($taxCatId);
+        if (empty($data)) {
+            FatUtility::dieWithError(Labels::getLabel('MSG_INVALID_REQUEST', $this->siteLangId));
+        }
         $taxObj = new TaxRule();
         $rulesData = $taxObj->getRules($taxCatId);
         if (!empty($rulesData)) {
@@ -1591,6 +1595,7 @@ class SellerController extends SellerBaseController
         }
         // CommonHelper::printArray($ruleLocations); die;
         $this->set("combinedRulesDetails", $combinedRulesDetails);
+        $this->set('taxCategory', $data['taxcat_identifier']);
         $this->set("rulesData", $rulesData);
         $this->set('ruleLocations', $ruleLocations);
         $this->_template->render(true, true);

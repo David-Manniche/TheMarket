@@ -2,8 +2,7 @@
 defined('SYSTEM_INIT') or die('Invalid Usage.');
 $arr_flds = array(
     'listserial' => 'Sr.',
-    'taxcat_name' => Labels::getLabel('LBL_Tax_Category', $siteLangId),
-    'tax_rates' => Labels::getLabel('LBL_Tax_Rates', $siteLangId),
+    'taxcat_name' => Labels::getLabel('LBL_Tax_Category', $siteLangId)
 );
 if ($activatedTaxServiceId) {
     $arr_flds['taxcat_code'] = Labels::getLabel('LBL_Tax_Code', $siteLangId);
@@ -12,6 +11,7 @@ if ($activatedTaxServiceId) {
     if (FatApp::getConfig('CONF_TAX_COLLECTED_BY_SELLER', FatUtility::VAR_INT, 0)) {
         //$arr_flds['action'] = Labels::getLabel('LBL_Action', $siteLangId);
     } */
+    $arr_flds['tax_rates'] = Labels::getLabel('LBL_Tax_Rates', $siteLangId);
 }
 
 $tbl = new HtmlElement('table', array('width'=>'100%', 'class'=>'table'));

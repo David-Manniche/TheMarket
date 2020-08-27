@@ -5,7 +5,7 @@
         <div class="content-header row">
             <div class="col">
                 <?php $this->includeTemplate('_partial/dashboardTop.php'); ?>
-                <h2 class="content-header-title"><?php echo Labels::getLabel('LBL_Tax_Rules', $siteLangId); ?></h2>
+                <h2 class="content-header-title"><?php echo $taxCategory; ?></h2>
             </div>
             <div class="col-auto">
                 <div class="btn-group">
