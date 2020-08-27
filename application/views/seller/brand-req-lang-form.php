@@ -8,6 +8,10 @@ $brandFld->setFieldTagAttribute('onblur', 'checkUniqueBrandName(this,$("input[na
 
 $langFld = $brandReqLangFrm->getField('lang_id');
 $langFld->setfieldTagAttribute('onChange', "addBrandReqLangForm(" . $brandReqId . ", this.value);");
+
+$submitFld = $brandReqLangFrm->getField('btn_submit');
+$submitFld->setFieldTagAttribute('class', 'btn btn-primary');
+$submitFld->developerTags['noCaptionTag'] = true;
 ?>
 <div class="box__head">
     <h4><?php echo Labels::getLabel('LBL_Request_New_Brand', $siteLangId); ?></h4>
