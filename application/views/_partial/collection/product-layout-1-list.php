@@ -4,6 +4,7 @@
 	<span class="tag--soldout"><?php echo Labels::getLabel('LBL_SOLD_OUT', $siteLangId);?></span>
 <?php  } ?>
     <div class="products__quickview">
+    
         <a onClick='quickDetail(<?php echo $product['selprod_id']; ?>)' class="modaal-inline-content">
             <span class="svg-icon">
                 <svg class="svg">
@@ -13,6 +14,7 @@
         </a>
     </div>
 	<div class="products__body">
+    <div class="not-available">Not Available For Your Location</div>
 		<?php include(CONF_THEME_PATH.'_partial/collection-ui.php'); ?>
         <?php $uploadedTime = AttachedFile::setTimeParam($product['product_updated_on']);?>
 		<div class="products__img">

@@ -88,10 +88,10 @@ class Address extends MyAppModel
         if (0 > $isDefault) {
             $srch->addCondition(self::tblFld('is_default'), '=', $isDefault);
         }
-        if($recordId == 0){
-             $srch->addOrder(static::tblFld('id'), 'DESC');
-        }else{
-             $srch->addOrder(static::tblFld('is_default'), 'DESC');
+        if ($recordId == 0) {
+            $srch->addOrder(static::tblFld('id'), 'DESC');
+        } else {
+            $srch->addOrder(static::tblFld('is_default'), 'DESC');
         }
         if (0 < $this->mainTableRecordId) {
             $srch->addCondition(self::tblFld('id'), '=', $this->mainTableRecordId);
@@ -237,5 +237,43 @@ class Address extends MyAppModel
         ];
     }
 
+    public static function getYkGeoData($address = [])
+    {
+        if (!FatApp::getConfig('CONF_ENABLE_GEO_LOCATION', FatUtility::VAR_INT, 0)) {
+            return [];
+        }
+       
+        if (!empty($address)) {
+            $address = $address;
+        } else {
+            if (false === MOBILE_APP_API_CALL) {
+                $address = [
+                    'ykGeoLat' => isset($_COOKIE['_ykGeoLat']) ? $_COOKIE['_ykGeoLat'] : '',
+                    'ykGeoLng' => isset($_COOKIE['_ykGeoLng']) ? $_COOKIE['_ykGeoLng'] : '',
+                    'ykGeoZip' => isset($_COOKIE['_ykGeoZip']) ? $_COOKIE['_ykGeoZip'] : '',
+                    'ykGeoStateCode' => isset($_COOKIE['_ykGeoStateCode']) ? $_COOKIE['_ykGeoStateCode'] : '',
+                    'ykGeoCountryCode' => isset($_COOKIE['_ykGeoCountryCode']) ? $_COOKIE['_ykGeoCountryCode'] : '',
+                    'ykGeoAddress' => isset($_COOKIE['_ykGeoAddress']) ? $_COOKIE['_ykGeoAddress'] : '',
+               ];
+            }
+                       
+            if (true === MOBILE_APP_API_CALL) {
+                $address = [
+                    'ykGeoLat' => isset($_SERVER['HTTP_X_YK_LAT']) ? $_SERVER['HTTP_X_YK_LAT'] : '',
+                    'ykGeoLng' => isset($_SERVER['HTTP_X_YK_LNG']) ? $_SERVER['HTTP_X_YK_LNG'] : '',
+                    'ykGeoZip' => isset($_SERVER['HTTP_X_YK_ZIP']) ? $_SERVER['HTTP_X_YK_ZIP'] : '',
+                    'ykGeoStateCode' => isset($_SERVER['HTTP_X_YK_STATE_CODE']) ? $_SERVER['HTTP_X_YK_STATE_CODE'] : '',
+                    'ykGeoCountryCode' => isset($_SERVER['HTTP_X_YK_COUNTRY_CODE']) ? $_SERVER['HTTP_X_YK_COUNTRY_CODE'] : '',
+                    'ykGeoAddress' => isset($_SERVER['HTTP_X_YK_ADDRESS']) ? $_SERVER['HTTP_X_YK_ADDRESS'] : '',
+               ];
+            }
+        }
 
+        if (!empty($address)) {
+            $address['ykGeoCountryId'] = Countries::getCountryByCode($address['ykGeoCountryCode'], 'country_id');
+            $address['ykGeoStateId'] = States::getStateByCode($address['ykGeoStateCode'], 'state_id');
+        }
+
+        return $address;
+    }
 }

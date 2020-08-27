@@ -5338,7 +5338,7 @@ class SellerController extends SellerBaseController
             $frm->addCheckBox($daysArr[$i], 'tslot_day['.$i.']', $i, array(), false);
             $frm->addSelectBox(Labels::getLabel('LBL_From', $this->siteLangId), 'tslot_from_time['.$i.'][]', TimeSlot::getTimeSlotsArr(), '', array(), Labels::getLabel('LBL_Select', $this->siteLangId));
             $frm->addSelectBox(Labels::getLabel('LBL_To', $this->siteLangId), 'tslot_to_time['.$i.'][]', TimeSlot::getTimeSlotsArr(), '', array(), Labels::getLabel('LBL_Select', $this->siteLangId));       
-            $frm->addButton('', 'btn_add_row['.$i.']', '+');           
+            //$frm->addButton('', 'btn_add_row['.$i.']', '+');                      
         }
         
         $frm->addSelectBox(Labels::getLabel('LBL_From', $this->siteLangId), 'tslot_from_all', TimeSlot::getTimeSlotsArr(), '', array(), Labels::getLabel('LBL_Select', $this->siteLangId));

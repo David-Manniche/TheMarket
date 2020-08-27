@@ -20,6 +20,7 @@ Bugs:
     => 039426 - Category - parent identifier having case sensitive issue
     => 040872 - Mark delivered order as completed automatically based on cancellation and return age of product/shop.
     => 041047 - Handling errors during Update Inventory.
+    => 042212 - Pagesize issue fixed and restricted to allowed numbers.
     
 Enhancements:
     => Tax module upgrade

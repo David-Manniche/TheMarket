@@ -8,12 +8,59 @@ class HomeController extends MyAppController
         $loggedUserId = UserAuthentication::getLoggedUserId(true);
 
         $productSrchObj = $this->getProductSearchObj($loggedUserId);
-        $collections = $this->getCollections($productSrchObj);
+        $sponsoredShopsInCollection = $sponsoredProdsInCollection = [];
+        $collections = $this->getCollections($productSrchObj, $sponsoredShopsInCollection, $sponsoredProdsInCollection);
+      
+        $sponShopLayoutCount = count($sponsoredShopsInCollection);
+        $sponProdLayoutCount = count($sponsoredProdsInCollection);
+        if (0 < $sponProdLayoutCount) {
+            foreach ($sponsoredProdsInCollection as $indexId => $collectionId) {
+                $sponsoredProds = $this->getSponsoredProducts($productSrchObj);
+                
+                if (empty($sponsoredProds)) {
+                    if (true === MOBILE_APP_API_CALL) {
+                        unset($collections[$indexId]);
+                    } else {
+                        unset($collections[$collectionId]);
+                    }
+                    continue;
+                }
+                
+                if (true === MOBILE_APP_API_CALL) {
+                    $collections[$indexId]['products'] = $sponsoredProds;
+                    $collections[$indexId]['totProducts'] = count($sponsoredProds);
+                } else {
+                    $collections[$collectionId]['products'] = $sponsoredProds;
+                    $collections[$collectionId]['totProducts'] = count($sponsoredProds);
+                }
+            }
+        }
+
+        if (0 < $sponShopLayoutCount) {
+            foreach ($sponsoredShopsInCollection as $indexId => $collectionId) {
+                $sponsoredShops = $this->getSponsoredShops($productSrchObj);
+                
+                if (empty($sponsoredShops)) {
+                    if (true === MOBILE_APP_API_CALL) {
+                        unset($collections[$indexId]);
+                    } else {
+                        unset($collections[$collectionId]);
+                    }
+                    continue;
+                }
+                
+                if (true === MOBILE_APP_API_CALL) {
+                    $collections[$indexId]['shops'] = $sponsoredShops;
+                    $collections[$indexId]['totShops'] = count($sponsoredShops);
+                } else {
+                    $collections[$collectionId]['shops'] = $sponsoredShops;
+                    $collections[$collectionId]['totShops'] = count($sponsoredShops);
+                }
+            }
+        }
         
-        /* $sponsoredShops = $this->getSponsoredShops($productSrchObj);
-        $sponsoredProds = $this->getSponsoredProducts($productSrchObj);
-        $this->set('sponsoredProds', $sponsoredProds);
-        $this->set('sponsoredShops', $sponsoredShops); */
+        /*  $this->set('sponsoredProds', $sponsoredProds);
+         $this->set('sponsoredShops', $sponsoredShops); */
         /* $this->set('banners', $banners); */
         
         $slides = $this->getSlides();
@@ -49,7 +96,7 @@ class HomeController extends MyAppController
             $this->_template->addJs('js/slick.min.js');
             $cacheKey = $this->siteLangId . '-' . $this->siteCurrencyId;
             $collectionTemplates = array();
-            foreach($collections as $collection) {
+            foreach ($collections as $collection) {
                 switch ($collection['collection_layout_type']) {
                     case Collections::TYPE_SPONSORED_PRODUCT_LAYOUT:
                         $tpl = new FatTemplate('', '');
@@ -66,16 +113,16 @@ class HomeController extends MyAppController
                         $collectionTemplates[$collection['collection_id']]['html'] = $sponsoredShopsLayout;
                     break;
                     case Collections::TYPE_BANNER_LAYOUT1:
-                        if(isset($collection['banners'])) {
+                        if (isset($collection['banners'])) {
                             $tpl = new FatTemplate('', '');
                             $tpl->set('siteLangId', $this->siteLangId);
                             $tpl->set('bannerLayout1', $collection['banners']);
                             $bannerFirstLayout = $tpl->render(false, false, '_partial/banners/home-banner-first-layout.php', true, true);
-                            $collectionTemplates[$collection['collection_id']]['html'] = $bannerFirstLayout; 
+                            $collectionTemplates[$collection['collection_id']]['html'] = $bannerFirstLayout;
                         }
                     break;
                     case Collections::TYPE_BANNER_LAYOUT2:
-                        if(isset($collection['banners'])) {
+                        if (isset($collection['banners'])) {
                             $tpl = new FatTemplate('', '');
                             $tpl->set('siteLangId', $this->siteLangId);
                             $tpl->set('bannerLayout1', $collection['banners']);
@@ -185,12 +232,14 @@ class HomeController extends MyAppController
         $loggedUserId = FatUtility::int($loggedUserId);
 
         $productSrchObj = new ProductSearch($this->siteLangId);
+        $productSrchObj->setGeoAddress();
         $productSrchObj->joinProductToCategory();
         /* $productSrchObj->doNotCalculateRecords();
         $productSrchObj->setPageSize( 10 ); */
         $productSrchObj->setDefinedCriteria();
         $productSrchObj->joinSellerSubscription($this->siteLangId, true);
         $productSrchObj->addSubscriptionValidCondition();
+        $productSrchObj->validateAndJoinDeliveryLocation();
         // $productSrchObj->joinProductRating();
 
         if (FatApp::getConfig('CONF_ADD_FAVORITES_TO_WISHLIST', FatUtility::VAR_INT, 1) == applicationConstants::NO) {
@@ -324,7 +373,6 @@ class HomeController extends MyAppController
         }
 
         $currencyId = FatUtility::int($currencyId);
-        $currencyObj = new Currency();
         if (0 < $currencyId) {
             $currencies = Currency::getCurrencyAssoc($this->siteLangId);
             if (array_key_exists($currencyId, $currencies)) {
@@ -432,12 +480,14 @@ class HomeController extends MyAppController
         FatApp::redirectUser(UrlHelper::generateUrl());
     }
 
-    private function getCollections($productSrchObj)
+    private function getCollections($productSrchObj, &$sponsoredShopsInCollection, &$sponsoredProdsInCollection)
     {
         $langId = $this->siteLangId;
-
         $apiCall = (true === MOBILE_APP_API_CALL) ? 1 : 0;
-        $collectionCache = FatCache::get('collectionCache_' . $langId . '_' . $apiCall, CONF_HOME_PAGE_CACHE_TIME, '.txt');
+        $geoAddress = Address::getYkGeoData();
+        $cacheKey = $langId . '_' . $this->siteCurrencyId . '_' . $apiCall . '_' . serialize($geoAddress);
+                
+        $collectionCache = FatCache::get('collectionCache_' . $cacheKey, CONF_HOME_PAGE_CACHE_TIME, '.txt');
 
         if ($collectionCache) {
             return  unserialize($collectionCache);
@@ -470,11 +520,10 @@ class HomeController extends MyAppController
         $collectionObj->addMultipleFields(array( 'ctr_record_id' ));
         $collectionObj->addCondition('ctr_record_id', '!=', 'NULL');
         $i = 0;
-        $sponsoredShops = $this->getSponsoredShops($productSrchObj);
-        $sponsoredProds = $this->getSponsoredProducts($productSrchObj);
+        /* $sponsoredShops = $this->getSponsoredShops($productSrchObj);
+        $sponsoredProds = $this->getSponsoredProducts($productSrchObj); */
         
         foreach ($collectionsArr as $collection_id => $collection) {
-
             if (true === MOBILE_APP_API_CALL && 0 < $collection['collection_display_media_only'] && !in_array($collection['collection_type'], Collections::COLLECTION_WITHOUT_MEDIA)) {
                 $imgUpdatedOn = Collections::getAttributesById($collection_id, 'collection_img_updated_on');
                 $uploadedTime = AttachedFile::setTimeParam($imgUpdatedOn);
@@ -487,41 +536,34 @@ class HomeController extends MyAppController
         
             switch ($collection['collection_type']) {
                 case Collections::COLLECTION_TYPE_SPONSORED_PRODUCTS:
-                    if (count($sponsoredProds) > 0) {
-                       if (true === MOBILE_APP_API_CALL) {
+                        if (true === MOBILE_APP_API_CALL) {
                             $collections[$i] = $collection;
-                            $collections[$i]['products'] = $sponsoredProds;
-                            $collections[$i]['totProducts'] = count($sponsoredProds);
+                            $sponsoredProdsInCollection[$i] = $collection['collection_id'];
                         } else {
                             $collections[$collection['collection_id']] = $collection;
-                            $collections[$collection['collection_id']]['products'] = $sponsoredProds;
-                            $collections[$collection['collection_id']]['totProducts'] = count($sponsoredProds);
-                        } 
-                    }
+                            $sponsoredProdsInCollection[$collection['collection_id']] = $collection['collection_id'];
+                        }
                     break;
                 case Collections::COLLECTION_TYPE_SPONSORED_SHOPS:
-                    if (count($sponsoredShops) > 0) {
-                       if (true === MOBILE_APP_API_CALL) {
+                        if (true === MOBILE_APP_API_CALL) {
                             $collections[$i] = $collection;
-                            $collections[$i]['shops'] = $sponsoredShops;
-                            $collections[$i]['totShops'] = count($sponsoredShops);
+                            $sponsoredShopsInCollection[$i] = $collection['collection_id'];
                         } else {
                             $collections[$collection['collection_id']] = $collection;
-                            $collections[$collection['collection_id']]['shops'] = $sponsoredShops;
-                            $collections[$collection['collection_id']]['totShops'] = count($sponsoredShops);
-                        } 
-                    }
+                            $sponsoredShopsInCollection[$collection['collection_id']] = $collection['collection_id'];
+                        }
+                    
                     break;
                 case Collections::COLLECTION_TYPE_BANNER:
-					/* $banners = $this->getBanners($collection_id); */
-					$banners = BannerLocation::getPromotionalBanners($collection_id, $langId);
+                    /* $banners = $this->getBanners($collection_id); */
+                    $banners = BannerLocation::getPromotionalBanners($collection_id, $langId);
                     if (true === MOBILE_APP_API_CALL) {
-						$collections[$i] = $collection;
-						$collections[$i]['banners'] = $banners;
-					} else {
-						$collections[$collection['collection_id']] = $collection;
-						$collections[$collection['collection_id']]['banners'] = $banners;
-					} 
+                        $collections[$i] = $collection;
+                        $collections[$i]['banners'] = $banners;
+                    } else {
+                        $collections[$collection['collection_id']] = $collection;
+                        $collections[$collection['collection_id']]['banners'] = $banners;
+                    }
                     break;
                 case Collections::COLLECTION_TYPE_PRODUCT:
                     $tempObj = clone $collectionObj;
@@ -782,7 +824,7 @@ class HomeController extends MyAppController
             $i++;
         }
 
-        FatCache::set('collectionCache_' . $langId . '_' . $apiCall, serialize($collections), '.txt');
+        FatCache::set('collectionCache_' . $cacheKey, serialize($collections), '.txt');
         return $collections;
     }
 

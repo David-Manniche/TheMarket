@@ -888,7 +888,12 @@ class ConfigurationsController extends AdminBaseController
                 $fld->htmlAfterField = "<br><small>" . Labels::getLabel("LBL_This_is_the_maximum_cash_on_delivery_order_total,_eligible_for_COD_payments._Default_is_0", $this->adminLangId) . "</small>";
                 $fld = $frm->addTextBox(Labels::getLabel('LBL_Minimum_Wallet_Balance', $this->adminLangId) . ' [' . $this->siteDefaultCurrencyCode . ']', 'CONF_COD_MIN_WALLET_BALANCE');
                 $fld->htmlAfterField = "<br><small>" . Labels::getLabel("LBL_seller_needs_to_maintain_to_accept_COD_orders._Default_is_-1", $this->adminLangId) . "</small>";
-
+                
+                $frm->addHtml('', 'Checkout', '<h3>' . Labels::getLabel('LBL_Pickup', $this->adminLangId) . '</h3>');
+                $fld = $frm->addTextBox(Labels::getLabel('LBL_Display_Time_Slots_After_Order', $this->adminLangId). ' ['.Labels::getLabel('LBL_Hours', $this->adminLangId).']', 'CONF_TIME_SLOT_ADDITION', 2);
+                $fld->requirements()->setInt();
+                $fld->requirements()->setRange('2', '9999999999');
+                
                 $frm->addHtml('', 'Checkout', '<h3>' . Labels::getLabel('LBL_Checkout_Process', $this->adminLangId) . '</h3>');
                 $fld1 = $frm->addCheckBox(Labels::getLabel('LBL_Activate_Live_Payment_Transaction_Mode', $this->adminLangId), 'CONF_TRANSACTION_MODE', 1, array(), false, 0);
                 $fld1->htmlAfterField = "<br><small>" . Labels::getLabel("LBL_Set_Transaction_Mode_to_live_environment", $this->adminLangId) . "</small>";

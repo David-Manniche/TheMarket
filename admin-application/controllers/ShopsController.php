@@ -179,6 +179,10 @@ class ShopsController extends AdminBaseController
 			$stateObj = new States();
 			$statesArr = $stateObj->getStatesByCountryId($data['shop_country_id'], $this->adminLangId, true, 'state_code');
 			$frm->getField('shop_state')->options = $statesArr;
+            
+            $stateCode = States::getAttributesById($data['shop_state_id'], 'state_code');
+            $data['shop_state'] = $stateCode;
+        
             $frm->fill($data);
             $stateId = $data['shop_state_id'];
         }
@@ -197,10 +201,9 @@ class ShopsController extends AdminBaseController
         $frm = $this->getForm();
 
         $post = FatApp::getPostedData();
-        $shop_state = FatUtility::int($post['shop_state']);
+        $stateCode = $post['shop_state'];
         $post = $frm->getFormDataFromArray($post);
-        $post['shop_state_id'] = $shop_state;
-
+        
         if (false === $post) {
             Message::addErrorMessage(current($frm->getValidationErrors()));
             FatUtility::dieJsonError(Message::getHtml());
@@ -209,6 +212,9 @@ class ShopsController extends AdminBaseController
         $shop_id = FatUtility::int($post['shop_id']);
         unset($post['shop_id']);
         $post['shop_country_id'] = Countries::getCountryByCode($post['shop_country_code'], 'country_id');
+        $stateData = States::getStateByCountryAndCode($post['shop_country_id'], $stateCode);
+        $post['shop_state_id'] = $stateData['state_id'];
+        
         $shop = new Shop($shop_id);
         $shop->assignValues($post);
 

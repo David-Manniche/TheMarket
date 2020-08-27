@@ -27,19 +27,10 @@ class FilterHelper extends FatUtility
         $prodSrchObj->joinProductToCategory($langId);
         $prodSrchObj->joinSellerSubscription(0, false, true);
         $prodSrchObj->addSubscriptionValidCondition();
-        if (FatApp::getConfig('CONF_ENABLE_GEO_LOCATION', FatUtility::VAR_INT, 0)) {
-            $prodGeoCondition = FatApp::getConfig('CONF_PRODUCT_GEO_LOCATION', FatUtility::VAR_INT, 0);
-            switch ($prodGeoCondition) {
-                case applicationConstants::BASED_ON_DELIVERY_LOCATION:
-                    $prodSrchObj->joinDeliveryLocations();
-                    break;
-            }
-        }
-        $categoryId = 0;
-        $categoriesArr = array();
+        $prodSrchObj->validateAndJoinDeliveryLocation();
+       
         if (array_key_exists('category', $post)) {
             $prodSrchObj->addCategoryCondition($post['category']);
-            $categoryId = FatUtility::int($post['category']);
         }
 
         $shopId = FatApp::getPostedData('shop_id', FatUtility::VAR_INT, 0);
@@ -299,5 +290,18 @@ class FilterHelper extends FatUtility
             return $options;
         }
         return unserialize($options);
+    }
+
+    public static function getPageSizeArr($langId)
+    {
+        $pageSize = FatApp::getConfig('CONF_ITEMS_PER_PAGE_CATALOG', FatUtility::VAR_INT, 10);
+
+        $itemsTxt = Labels::getLabel('LBL_Items', $langId);
+
+        $pageSizeArr[$pageSize] = Labels::getLabel('LBL_Default', $langId);
+        $pageSizeArr[12] = 12 . ' ' . $itemsTxt;
+        $pageSizeArr[24] = 24 . ' ' . $itemsTxt;
+        $pageSizeArr[48] = 48 . ' ' . $itemsTxt;
+        return $pageSizeArr;
     }
 }
