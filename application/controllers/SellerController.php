@@ -1578,6 +1578,24 @@ class SellerController extends SellerBaseController
         $this->_template->render(false, false);
     }
 
+    public function taxRules($taxCatId)
+    {
+        $taxCatId = FatUtility::int($taxCatId);
+        $this->userPrivilege->canViewTaxCategory(UserAuthentication::getLoggedUserId());
+        $taxObj = new TaxRule();
+        $rulesData = $taxObj->getRules($taxCatId);
+        if (!empty($rulesData)) {
+            $rulesIds = array_column($rulesData, 'taxrule_id');
+            $combinedRulesDetails = $taxObj->getCombinedRuleDetails($rulesIds);
+            $ruleLocations = $taxObj->getLocations($taxCatId, true, $this->siteLangId);
+        }
+        // CommonHelper::printArray($ruleLocations); die;
+        $this->set("combinedRulesDetails", $combinedRulesDetails);
+        $this->set("rulesData", $rulesData);
+        $this->set('ruleLocations', $ruleLocations);
+        $this->_template->render(true, true);
+    }
+
     public function changeTaxRates($taxcat_id)
     {
         $activatedTaxServiceId = Tax::getActivatedServiceId();
