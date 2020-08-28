@@ -145,7 +145,10 @@ $paymentIntendId = isset($paymentIntendId) ? $paymentIntendId : '';
                 location.href = '<?php echo $cancelBtnUrl; ?>';
             } else {
                 if (result.paymentIntent.status === 'succeeded') {
-                    location.href = '<?php echo UrlHelper::generateUrl('StripeConnectPay', 'distribute', [$orderId, $paymentIntendId]); ?>';
+                    $.mbsmessage(langLbl.paymentSucceeded, true, 'alert--success');
+                    setTimeout(function(){
+                        location.href = '<?php echo CommonHelper::generateFullUrl('custom', 'paymentSuccess', array($orderId)); ?>';
+                    }, 1000);
                 } else if (result.paymentIntent.status === 'requires_payment_method') {
                     // Authentication failed, prompt the customer to enter another payment method
                     location.href = '<?php echo UrlHelper::generateUrl('custom', 'paymentFailed'); ?>';

@@ -517,34 +517,45 @@
 		if (!str) return;
 		var arr = JSON.parse(str);
 		var v = el.val();
+		var fieldsVisibility = el.hasClass('fieldsVisibility-js');
 		if (el.attr('type') == 'checkbox' && !el.is(':checked')) {
 			v = '';
 		}
 		for (var i = arr.length - 1; i >=0; i--) {
 			var match = false;
 			switch (arr[i].operator) {
-			case 'eq':
-				match = (v == arr[i].val);
-				break;
-			case 'ne':
-				match = (v != arr[i].val);
-				break;
-			case 'gt':
-				match = (v > arr[i].val);
-				break;
-			case 'lt':
-				match = (v < arr[i].val);
-				break;
-			case 'ge':
-				match = (v >= arr[i].val);
-				break;
-			case 'le':
-				match = (v <= arr[i].val);
-				break;
+				case 'eq':
+					match = (v == arr[i].val);
+					break;
+				case 'ne':
+					match = (v != arr[i].val);
+					break;
+				case 'gt':
+					match = (v > arr[i].val);
+					break;
+				case 'lt':
+					match = (v < arr[i].val);
+					break;
+				case 'ge':
+					match = (v >= arr[i].val);
+					break;
+				case 'le':
+					match = (v <= arr[i].val);
+					break;
 			}
 			if (!match) continue;
-			$(el[0].form.elements[arr[i].fldname]).attr('data-fatreq', JSON.stringify(arr[i].requirement));
+			var elementObj = $(el[0].form.elements[arr[i].fldname]);
+			elementObj.attr('data-fatreq', JSON.stringify(arr[i].requirement));
+			if (true === fieldsVisibility) {
+				var elementRow = elementObj.closest('.row');
+				if (false == arr[i].requirement.required) {
+					elementRow.hide();
+				} else {
+					elementRow.show();
+				}
+			}
 		}
+		
 	};
 
 	checkUniqueErrorNotify = function (caption, value) {

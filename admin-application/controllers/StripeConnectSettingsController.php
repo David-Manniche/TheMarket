@@ -7,7 +7,7 @@ class StripeConnectSettingsController extends PaymentMethodSettingsController
         $frm = new Form('frmStripeConnect');
 
         $envoirment = Plugin::getEnvArr($langId);
-        $envFld = $frm->addSelectBox(Labels::getLabel('LBL_ENVOIRMENT', $langId), 'env', $envoirment, '', ['id' => 'setupEnvFields']);
+        $envFld = $frm->addSelectBox(Labels::getLabel('LBL_ENVOIRMENT', $langId), 'env', $envoirment, '', ['class' => 'fieldsVisibility-js'], '');
         $envFld->requirement->setRequired(true);
 
         $frm->addTextBox(Labels::getLabel('LBL_CLIENT_ID', $langId), 'client_id');
@@ -27,7 +27,6 @@ class StripeConnectSettingsController extends PaymentMethodSettingsController
         $secretKeyFld->setRequired(false);
         $reqSecretKeyFld = new FormFieldRequirement('secret_key', Labels::getLabel('LBL_SECRET_KEY', $langId));
         $reqSecretKeyFld->setRequired(true);
-        
 
         $frm->addTextBox(Labels::getLabel('LBL_CLIENT_ID', $langId), 'live_client_id');
         $liveClientIdFld = new FormFieldRequirement('live_client_id', Labels::getLabel('LBL_CLIENT_ID', $langId));
@@ -63,6 +62,30 @@ class StripeConnectSettingsController extends PaymentMethodSettingsController
         $envFld->requirements()->addOnChangerequirementUpdate(Plugin::ENV_PRODUCTION, 'eq', 'live_client_id', $reqLiveClientIdFld);
         $envFld->requirements()->addOnChangerequirementUpdate(Plugin::ENV_PRODUCTION, 'eq', 'live_publishable_key', $reqLivePublishableKeyFld);
         $envFld->requirements()->addOnChangerequirementUpdate(Plugin::ENV_PRODUCTION, 'eq', 'live_secret_key', $reqLiveSecretKeyFld);
+
+        $captureMethod = [
+            'automatic' => Labels::getLabel('LBL_AUTOMATIC_(DEFAULT)', $langId),
+            'manual' => Labels::getLabel('LBL_MANUAL', $langId)
+        ];
+        $condFld = $frm->addSelectBox(Labels::getLabel('LBL_CAPTURE_METHOD', $langId), 'capture_method', $captureMethod, 'automatic', ['class' => 'fieldsVisibility-js'], '');
+        $condFld->requirement->setRequired(true);
+
+        $orderStatusArr = Orders::getOrderProductStatusArr($langId);
+        $frm->addSelectBox(
+            Labels::getLabel("LBL_ORDER_STATUS", $langId),
+            'order_status',
+            $orderStatusArr,
+            OrderStatus::ORDER_SHIPPED,
+            array(),
+            ''
+        );
+        $orderStatus = new FormFieldRequirement('order_status', Labels::getLabel('LBL_ORDER_STATUS', $langId));
+        $orderStatus->setRequired(false);
+        $reqOrderStatus = new FormFieldRequirement('order_status', Labels::getLabel('LBL_ORDER_STATUS', $langId));
+        $reqOrderStatus->setRequired(true);
+
+        $condFld->requirements()->addOnChangerequirementUpdate('automatic', 'eq', 'order_status', $orderStatus);
+        $condFld->requirements()->addOnChangerequirementUpdate('manual', 'eq', 'order_status', $reqOrderStatus);
 
         $frm->addSubmitButton('&nbsp;', 'btn_submit', Labels::getLabel('LBL_Save_Changes', $langId));
         return $frm;
