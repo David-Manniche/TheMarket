@@ -43,7 +43,7 @@ class BuyerController extends BuyerBaseController
         /* CommonHelper::printArray($orders); die; */
 
         /* $getPurchasedsrch = clone $srch;
-        $getPurchasedsrch->addCondition('order_is_paid', '=', 1);
+        $getPurchasedsrch->addCondition('order_payment_status', '=', 1);
         $getPurchasedsrch->addfld('count(order_id) as totalPurchasedItems');
         $countPurchasedItemsRs = $getPurchasedsrch->getResultSet();
         $totalPurchasedItems = FatApp::getDb()->fetch($countPurchasedItemsRs, 'totalPurchasedItems'); */

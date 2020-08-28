@@ -17,7 +17,7 @@
 			  <td><?php echo $row['order_id'];?></td>
 			  <td><?php echo $row['buyer_user_name'];?></td>
 			  <td><?php echo CommonHelper::displayMoneyFormat($row['order_net_amount'], true, true) ; ?></td>
-			  <td><span ><?php echo $dashboardInfo['orderPaymentStatusArr'][$row['order_is_paid']]?></span></td>
+			  <td><span ><?php echo $dashboardInfo['orderPaymentStatusArr'][$row['order_payment_status']]?></span></td>
 			</tr>
 		   <?php }?>
 		</tbody>    

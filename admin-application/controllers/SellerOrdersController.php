@@ -114,7 +114,7 @@ class SellerOrdersController extends AdminBaseController
         $srch->setPageSize($pageSize);
         $srch->addOrder('op_id', 'DESC');
 
-        $srch->addMultipleFields(array('op_id', 'order_id', 'order_is_paid', 'op_order_id', 'op_invoice_number', 'order_net_amount', 'order_date_added', 'ou.user_id', 'ou.user_name as buyer_name', 'ouc.credential_username as buyer_username', 'ouc.credential_email as buyer_email', 'ou.user_phone as buyer_phone', 'op.op_shop_owner_name', 'op.op_shop_owner_username', 'op.op_shop_owner_email', 'op.op_shop_owner_phone', 'op_shop_name', 'op_other_charges', 'op.op_qty', 'op.op_unit_price', 'IFNULL(orderstatus_name, orderstatus_identifier) as orderstatus_name', 'op_status_id', 'op_tax_collected_by_seller', 'op_selprod_user_id', 'opshipping_by_seller_user_id', 'plugin_code', 'IFNULL(plugin_name, IFNULL(plugin_identifier, "Wallet")) as plugin_name', 'opship.*'));
+        $srch->addMultipleFields(array('op_id', 'order_id', 'order_payment_status', 'op_order_id', 'op_invoice_number', 'order_net_amount', 'order_date_added', 'ou.user_id', 'ou.user_name as buyer_name', 'ouc.credential_username as buyer_username', 'ouc.credential_email as buyer_email', 'ou.user_phone as buyer_phone', 'op.op_shop_owner_name', 'op.op_shop_owner_username', 'op.op_shop_owner_email', 'op.op_shop_owner_phone', 'op_shop_name', 'op_other_charges', 'op.op_qty', 'op.op_unit_price', 'IFNULL(orderstatus_name, orderstatus_identifier) as orderstatus_name', 'op_status_id', 'op_tax_collected_by_seller', 'op_selprod_user_id', 'opshipping_by_seller_user_id', 'plugin_code', 'IFNULL(plugin_name, IFNULL(plugin_identifier, "Wallet")) as plugin_name', 'opship.*'));
         if (isset($post['order_id']) && $post['order_id'] != '') {
             $srch->addCondition('op_order_id', '=', $post['order_id']);
         }
@@ -221,7 +221,7 @@ class SellerOrdersController extends AdminBaseController
         $srch->doNotLimitRecords();
         $srch->addMultipleFields(
             array(
-                'ops.*', 'order_id', 'order_is_paid', 'order_pmethod_id', 'order_tax_charged', 'order_date_added', 'op_id', 'op_qty', 'op_unit_price', 'op_selprod_user_id', 'op_invoice_number', 'IFNULL(orderstatus_name, orderstatus_identifier) as orderstatus_name', 'ou.user_name as buyer_user_name', 'ouc.credential_username as buyer_username', 'plugin_code', 'IFNULL(plugin_name, IFNULL(plugin_identifier, "Wallet")) as plugin_name', 'op_commission_charged', 'op_qty', 'op_commission_percentage', 'ou.user_name as buyer_name', 'ouc.credential_username as buyer_username', 'ouc.credential_email as buyer_email', 'ou.user_phone as buyer_phone', 'op.op_shop_owner_name', 'op.op_shop_owner_username', 'op_l.op_shop_name', 'op.op_shop_owner_email', 'op.op_shop_owner_phone',
+                'ops.*', 'order_id', 'order_payment_status', 'order_pmethod_id', 'order_tax_charged', 'order_date_added', 'op_id', 'op_qty', 'op_unit_price', 'op_selprod_user_id', 'op_invoice_number', 'IFNULL(orderstatus_name, orderstatus_identifier) as orderstatus_name', 'ou.user_name as buyer_user_name', 'ouc.credential_username as buyer_username', 'plugin_code', 'IFNULL(plugin_name, IFNULL(plugin_identifier, "Wallet")) as plugin_name', 'op_commission_charged', 'op_qty', 'op_commission_percentage', 'ou.user_name as buyer_name', 'ouc.credential_username as buyer_username', 'ouc.credential_email as buyer_email', 'ou.user_phone as buyer_phone', 'op.op_shop_owner_name', 'op.op_shop_owner_username', 'op_l.op_shop_name', 'op.op_shop_owner_email', 'op.op_shop_owner_phone',
                 'op_selprod_title', 'op_product_name', 'op_brand_name', 'op_selprod_options', 'op_selprod_sku', 'op_product_model', 'op_product_type',
                 'op_shipping_duration_name', 'op_shipping_durations', 'op_status_id', 'op_refund_qty', 'op_refund_amount', 'op_refund_commission', 'op_other_charges', 'optosu.optsu_user_id', 'ops.opshipping_by_seller_user_id', 'op_tax_collected_by_seller', 'order_is_wallet_selected', 'order_reward_point_used', 'op_product_tax_options', 'opship.*'
             )
@@ -306,7 +306,7 @@ class SellerOrdersController extends AdminBaseController
         $allowedShippingUserStatuses = $orderObj->getAdminAllowedUpdateShippingUser();
         $displayShippingUserForm = false;
 
-        if (((strtolower($opRow['plugin_code']) == 'cashondelivery') || (in_array($opRow['op_status_id'], $allowedShippingUserStatuses))) && $this->canEdit && !$shippingHanldedBySeller && ($opRow['op_product_type'] == Product::PRODUCT_TYPE_PHYSICAL && $opRow['order_is_paid'] != Orders::ORDER_IS_CANCELLED)) {
+        if (((strtolower($opRow['plugin_code']) == 'cashondelivery') || (in_array($opRow['op_status_id'], $allowedShippingUserStatuses))) && $this->canEdit && !$shippingHanldedBySeller && ($opRow['op_product_type'] == Product::PRODUCT_TYPE_PHYSICAL && $opRow['order_payment_status'] != Orders::ORDER_PAYMENT_CANCELLED)) {
             $displayShippingUserForm = true;
             if($opRow["opshipping_type"] == OrderProduct::TYPE_PICKUP){
                 $displayShippingUserForm = false;
@@ -339,7 +339,7 @@ class SellerOrdersController extends AdminBaseController
         $this->set('digitalDownloads', $digitalDownloads);
         $this->set('digitalDownloadLinks', $digitalDownloadLinks);
         $this->set('yesNoArr', applicationConstants::getYesNoArr($this->adminLangId));
-        $this->set('displayForm', (in_array($opRow['op_status_id'], $processingStatuses) && $this->canEdit && $opRow['order_is_paid'] != Orders::ORDER_IS_CANCELLED));
+        $this->set('displayForm', (in_array($opRow['op_status_id'], $processingStatuses) && $this->canEdit && $opRow['order_payment_status'] != Orders::ORDER_PAYMENT_CANCELLED));
         $this->set('displayShippingUserForm', $displayShippingUserForm);
 
         if ($print) {
@@ -560,7 +560,7 @@ class SellerOrdersController extends AdminBaseController
             FatUtility::dieJsonError(Message::getHtml());
         }
 
-        if (strtolower($orderDetail['plugin_code']) == 'cashondelivery' && (OrderStatus::ORDER_DELIVERED == $post["op_status_id"] || OrderStatus::ORDER_COMPLETED == $post["op_status_id"]) && Orders::ORDER_IS_PAID != $orderDetail['order_is_paid']) {
+        if (strtolower($orderDetail['plugin_code']) == 'cashondelivery' && (OrderStatus::ORDER_DELIVERED == $post["op_status_id"] || OrderStatus::ORDER_COMPLETED == $post["op_status_id"]) && Orders::ORDER_PAYMENT_PAID != $orderDetail['order_payment_status']) {
             $orderProducts = new OrderProductSearch($this->adminLangId, true, true);
             $orderProducts->joinPaymentMethod();
             $orderProducts->addMultipleFields(['op_status_id']);
@@ -571,7 +571,7 @@ class SellerOrdersController extends AdminBaseController
             if ($rs) {
                 $childOrders = FatApp::getDb()->fetchAll($rs);
                 if (empty($childOrders)) {
-                    $updateArray = array('order_is_paid' => Orders::ORDER_IS_PAID);
+                    $updateArray = array('order_payment_status' => Orders::ORDER_PAYMENT_PAID);
                     $whr = array('smt' => 'order_id = ?', 'vals' => array($orderDetail['order_id']));
                     if (!FatApp::getDb()->updateFromArray(Orders::DB_TBL, $updateArray, $whr)) {
                         Message::addErrorMessage(Labels::getLabel('MSG_Invalid_Access', $this->adminLangId));

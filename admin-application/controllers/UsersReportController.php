@@ -39,7 +39,7 @@ class UsersReportController extends AdminBaseController
 
         $srch = new OrderProductSearch(0, true);
         $srch->joinPaymentMethod();
-        $cnd = $srch->addCondition('o.order_is_paid', '=', Orders::ORDER_IS_PAID);
+        $cnd = $srch->addCondition('o.order_payment_status', '=', Orders::ORDER_PAYMENT_PAID);
         $cnd->attachCondition('plugin_code', '=', 'CashOnDelivery');
         $srch->addStatusCondition(unserialize(FatApp::getConfig('CONF_COMPLETED_ORDER_STATUS')));
         $srch->doNotCalculateRecords();
@@ -51,7 +51,7 @@ class UsersReportController extends AdminBaseController
         /*Get Order count,total order purchase*/
         $srch = new SearchBase(orders::DB_TBL, 'tord');
         $srch->joinTable(Plugin::DB_TBL, 'LEFT OUTER JOIN', 'tord.order_pmethod_id = pm.plugin_id', 'pm');
-        $cnd = $srch->addCondition('tord.order_is_paid', '=', Orders::ORDER_IS_PAID);
+        $cnd = $srch->addCondition('tord.order_payment_status', '=', Orders::ORDER_PAYMENT_PAID);
         $cnd->attachCondition('plugin_code', '=', 'CashOnDelivery');
         $srch->joinTable('(' . $qryOrderProductQty . ')', 'LEFT OUTER JOIN', 'tord.order_id = top.op_order_id', 'top');
         $srch->doNotCalculateRecords();
@@ -71,7 +71,7 @@ class UsersReportController extends AdminBaseController
         /*Vendor Orders*/
         $srch = new OrderProductSearch(0, true);
         $srch->joinPaymentMethod();
-        $cnd = $srch->addCondition('o.order_is_paid', '=', Orders::ORDER_IS_PAID);
+        $cnd = $srch->addCondition('o.order_payment_status', '=', Orders::ORDER_PAYMENT_PAID);
         $cnd->attachCondition('plugin_code', '=', 'CashOnDelivery');
         $srch->addStatusCondition(unserialize(FatApp::getConfig('CONF_COMPLETED_ORDER_STATUS')));
         $srch->doNotCalculateRecords();

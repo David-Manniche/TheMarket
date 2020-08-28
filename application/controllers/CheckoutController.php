@@ -947,7 +947,7 @@ class CheckoutController extends MyAppController
         /* $orderData['order_user_name'] = $userDataArr['user_name'];
         $orderData['order_user_email'] = $userDataArr['credential_email'];
         $orderData['order_user_phone'] = $userDataArr['user_phone']; */
-        $orderData['order_is_paid'] = Orders::ORDER_IS_PENDING;
+        $orderData['order_payment_status'] = Orders::ORDER_PAYMENT_PENDING;
         $orderData['order_date_added'] = date('Y-m-d H:i:s');
 
         /* addresses[ */
@@ -1055,7 +1055,7 @@ class CheckoutController extends MyAppController
         $srchOrder->doNotCalculateRecords();
         $srchOrder->doNotLimitRecords();
         $srchOrder->addCondition('order_user_id', '=', $userId);
-        $srchOrder->addCondition('order_is_paid', '=', Orders::ORDER_IS_PAID);
+        $srchOrder->addCondition('order_payment_status', '=', Orders::ORDER_PAYMENT_PAID);
         $srchOrder->addCondition('order_referrer_user_id', '!=', 0);
         $srchOrder->addMultipleFields(array( 'count(o.order_id) as totalOrders' ));
         $rs = $srchOrder->getResultSet();
@@ -1403,7 +1403,7 @@ class CheckoutController extends MyAppController
         $srch->doNotCalculateRecords();
         $srch->doNotLimitRecords();
         $srch->addCondition('order_id', '=', $order_id);
-        $srch->addCondition('order_is_paid', '=', Orders::ORDER_IS_PENDING);
+        $srch->addCondition('order_payment_status', '=', Orders::ORDER_PAYMENT_PENDING);
         $rs = $srch->getResultSet();
         $orderInfo = FatApp::getDb()->fetch($rs);
         /* $orderInfo = $orderObj->getOrderById( $order_id, $this->siteLangId, array('payment_status' => 0) ); */
@@ -1490,7 +1490,7 @@ class CheckoutController extends MyAppController
         $srch->doNotCalculateRecords();
         $srch->doNotLimitRecords();
         $srch->addCondition('order_id', '=', $order_id);
-        $srch->addCondition('order_is_paid', '=', Orders::ORDER_IS_PENDING);
+        $srch->addCondition('order_payment_status', '=', Orders::ORDER_PAYMENT_PENDING);
         $rs = $srch->getResultSet();
         $orderInfo = FatApp::getDb()->fetch($rs);
         /* $orderObj = new Orders();
@@ -1790,7 +1790,7 @@ class CheckoutController extends MyAppController
             $srch->doNotLimitRecords();
             $srch->addCondition('order_id', '=', $order_id);
             $srch->addCondition('order_user_id', '=', $user_id);
-            $srch->addCondition('order_is_paid', '=', Orders::ORDER_IS_PENDING);
+            $srch->addCondition('order_payment_status', '=', Orders::ORDER_PAYMENT_PENDING);
             $srch->addCondition('order_type', '=', Orders::ORDER_WALLET_RECHARGE);
             $rs = $srch->getResultSet();
             $orderInfo = FatApp::getDb()->fetch($rs);
@@ -1889,7 +1889,7 @@ class CheckoutController extends MyAppController
         $srch->doNotLimitRecords();
         $srch->addCondition('order_id', '=', $order_id);
         $srch->addCondition('order_user_id', '=', $user_id);
-        $srch->addCondition('order_is_paid', '=', Orders::ORDER_IS_PENDING);
+        $srch->addCondition('order_payment_status', '=', Orders::ORDER_PAYMENT_PENDING);
         $rs = $srch->getResultSet();
         $orderInfo = FatApp::getDb()->fetch($rs);
 

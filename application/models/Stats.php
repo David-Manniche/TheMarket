@@ -44,7 +44,7 @@ class Stats extends MyAppModel
                 break;
         }
 
-        $cnd = $srch->addCondition($alias . 'temp.order_is_paid', '=', Orders::ORDER_IS_PAID);
+        $cnd = $srch->addCondition($alias . 'temp.order_payment_status', '=', Orders::ORDER_PAYMENT_PAID);
         $cnd->attachCondition($alias . 'pm.plugin_code', '=', 'CashOnDelivery');
 
         return     $srch;
@@ -79,7 +79,7 @@ class Stats extends MyAppModel
                 $completedOrderStatus = 0;
             }
 
-            $rsSales = FatApp::getDb()->query("SELECT SUM((op_unit_price*op_qty) + COALESCE(opcharge_amount,0) - op_refund_amount) AS Sales FROM `tbl_order_products` t1 LEFT OUTER JOIN tbl_order_product_charges opc on opc.opcharge_op_id = t1.op_id and opc.opcharge_type = " . OrderProduct::CHARGE_TYPE_SHIPPING . " INNER JOIN tbl_orders t2 on t1.op_order_id=t2.order_id INNER JOIN tbl_shops ts on ts.shop_id=t1.op_shop_id  WHERE t2.order_is_paid = 1 and t1.op_status_id in (" . $completedOrderStatus . ") and month( t2.`order_date_added` )= $val[monthCount] and year( t2.`order_date_added` )= $val[year] and ts.shop_user_id=" . (int)$userId);
+            $rsSales = FatApp::getDb()->query("SELECT SUM((op_unit_price*op_qty) + COALESCE(opcharge_amount,0) - op_refund_amount) AS Sales FROM `tbl_order_products` t1 LEFT OUTER JOIN tbl_order_product_charges opc on opc.opcharge_op_id = t1.op_id and opc.opcharge_type = " . OrderProduct::CHARGE_TYPE_SHIPPING . " INNER JOIN tbl_orders t2 on t1.op_order_id=t2.order_id INNER JOIN tbl_shops ts on ts.shop_id=t1.op_shop_id  WHERE t2.order_payment_status = 1 and t1.op_status_id in (" . $completedOrderStatus . ") and month( t2.`order_date_added` )= $val[monthCount] and year( t2.`order_date_added` )= $val[year] and ts.shop_user_id=" . (int)$userId);
 
             $row = FatApp::getDb()->fetch($rsSales);
 

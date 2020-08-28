@@ -33,7 +33,7 @@ class KhipuPayController extends PaymentController
 
         if (!$orderInfo['id']) {
             FatUtility::exitWithErrorCode(404);
-        } elseif ($orderInfo && $orderInfo["order_is_paid"] == Orders::ORDER_IS_PENDING) {
+        } elseif ($orderInfo && $orderInfo["order_payment_status"] == Orders::ORDER_PAYMENT_PENDING) {
             $receiver_id = $this->settings['receiver_id'];
             $subject = Labels::getLabel('MSG_YoKart_Payment', $this->siteLangId);
             $body = '';

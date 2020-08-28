@@ -282,7 +282,7 @@ class HomeController extends AdminBaseController
         $srch->addOrder('order_date_added', 'DESC');
         $srch->addCondition('order_type', '=', Orders::ORDER_PRODUCT);
         $srch->setPageSize($limit);
-        $srch->addMultipleFields(array('order_id', 'order_date_added', 'order_is_paid', 'buyer.user_name as buyer_user_name',  'order_net_amount'));
+        $srch->addMultipleFields(array('order_id', 'order_date_added', 'order_payment_status', 'buyer.user_name as buyer_user_name',  'order_net_amount'));
         $rs = $srch->getResultSet();
         $ordersList = FatApp::getDb()->fetchAll($rs);
         $dashboardInfo['recentOrders'] = $ordersList;

@@ -37,7 +37,7 @@ class CcavenuePayController extends PaymentController
 
         if (!$orderInfo['id']) {
             FatUtility::exitWIthErrorCode(404);
-        } elseif ($orderInfo && $orderInfo["order_is_paid"] == Orders::ORDER_IS_PENDING) {
+        } elseif ($orderInfo && $orderInfo["order_payment_status"] == Orders::ORDER_PAYMENT_PENDING) {
             $frm = $this->getPaymentForm($orderId);
             $this->set('frm', $frm);
         } else {

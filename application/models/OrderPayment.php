@@ -75,7 +75,7 @@ class OrderPayment extends Orders
         "order_currency_code" => $orderCurrencyCode,
         "order_type" => $orderInfo['order_type'],
         "order_tax_charged" => $orderInfo["order_tax_charged"],
-        "order_is_paid" => $orderInfo["order_is_paid"],
+        "order_payment_status" => $orderInfo["order_payment_status"],
         "order_language" => $orderInfo["order_language_code"],
         "order_language_id" => $orderInfo["order_language_id"],
         "order_site_commission" => $orderInfo["order_site_commission"],
@@ -125,7 +125,7 @@ class OrderPayment extends Orders
         return $arrOrder;
     }
 
-    public function addOrderPayment($paymentMethodName, $txnId, $amount, $comments = '', $response = '', $isWallet = false, $opId = 0)
+    public function addOrderPayment($paymentMethodName, $txnId, $amount, $comments = '', $response = '', $isWallet = false, $opId = 0, $orderPaymentStatus = Orders::ORDER_PAYMENT_PAID)
     {
         $paymentOrderId = $this->paymentOrderId;
         $defaultSiteLangId = FatApp::getConfig('conf_default_site_lang');
@@ -160,7 +160,7 @@ class OrderPayment extends Orders
             $orderBalance = ($orderDetails['order_net_amount'] - $totalPaymentPaid);
 
             if ($orderBalance <= 0) {
-                $this->addOrderPaymentHistory($paymentOrderId, Orders::ORDER_IS_PAID, Labels::getLabel('LBL_Received_Payment', $defaultSiteLangId), 1);
+                $this->addOrderPaymentHistory($paymentOrderId, $orderPaymentStatus, Labels::getLabel('LBL_Received_Payment', $defaultSiteLangId), 1);
 
                 $notificationData = array(
                  'notification_record_type' => Notification::TYPE_ORDER,
@@ -301,7 +301,7 @@ class OrderPayment extends Orders
         $paymentOrderId = $this->paymentOrderId;
         $orderInfo = $this->attributes;
         if (!empty($orderInfo)) {
-            $this->addOrderPaymentHistory($paymentOrderId, Orders::ORDER_IS_PENDING, $comments, $notify);
+            $this->addOrderPaymentHistory($paymentOrderId, Orders::ORDER_PAYMENT_PENDING, $comments, $notify);
         } else {
             $this->error = Labels::getLabel('MSG_Invalid_Order', $this->commonLangId);
             return false;

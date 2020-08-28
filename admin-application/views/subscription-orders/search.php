@@ -6,7 +6,7 @@ $arr_flds = array(
 	'buyer_user_name'=>Labels::getLabel('LBL_Customer_Name',$adminLangId),
 	'order_date_added'=>Labels::getLabel('LBL_Order_Date',$adminLangId),
 	'order_net_amount'=>Labels::getLabel('LBL_Total',$adminLangId),
-	'order_is_paid'=>Labels::getLabel('LBL_Payment_Status',$adminLangId),
+	'order_payment_status'=>Labels::getLabel('LBL_Payment_Status',$adminLangId),
 	'action' => '',
 );
 $tbl = new HtmlElement('table', array('width'=>'100%', 'class'=>'table table--hovered table-responsive'));
@@ -43,16 +43,16 @@ foreach ($ordersList as $sn=>$row){
 				$td->appendElement('plaintext',array(),FatDate::format($row[$key],true,true,
 				FatApp::getConfig('CONF_TIMEZONE', FatUtility::VAR_STRING, date_default_timezone_get())));
 			break;
-			case 'order_is_paid':
+			case 'order_payment_status':
 				$cls = 'label-info';
 				switch ($row[$key]){
-					case Orders::ORDER_IS_PENDING :
+					case Orders::ORDER_PAYMENT_PENDING :
 						$cls = 'label-info';
 					break;
-					case Orders::ORDER_IS_PAID :
+					case Orders::ORDER_PAYMENT_PAID :
 						$cls = 'label-success';
 					break;
-					case Orders::ORDER_IS_CANCELLED :
+					case Orders::ORDER_PAYMENT_CANCELLED :
 						$cls = 'label-danger';
 					break;
 				}

@@ -59,7 +59,7 @@ if (!empty($order["thirdPartyorderInfo"]) && isset($order["thirdPartyorderInfo"]
                                 'label' => '<i class="fas fa-print"></i>'
                             ];
                             
-                            if (!$shippingHanldedBySeller && true === $canShipByPlugin && ('CashOnDelivery' == $order['plugin_code'] || Orders::ORDER_IS_PAID == $order['order_is_paid'])) {
+                            if (!$shippingHanldedBySeller && true === $canShipByPlugin && ('CashOnDelivery' == $order['plugin_code'] || Orders::ORDER_PAYMENT_PAID == $order['order_payment_status'])) {
                                 if (empty($order['opship_response']) && empty($order['opship_tracking_number'])) {
                                     $data['otherButtons'][] = [
                                         'attr' => [

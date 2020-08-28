@@ -33,10 +33,13 @@ class StripeConnectPayController extends PaymentController
      */
     public function init()
     {
-        $userId = UserAuthentication::getLoggedUserId(true);
-        if (1 > $userId) {
-            $msg = Labels::getLabel('MSG_INVALID_USER', $this->siteLangId);
-            $this->setErrorAndRedirect($msg);
+        $userId = 0;
+        if ('distribute' != $this->action) {
+            $userId = UserAuthentication::getLoggedUserId(true);
+            if (1 > $userId) {
+                $msg = Labels::getLabel('MSG_INVALID_USER', $this->siteLangId);
+                $this->setErrorAndRedirect($msg);
+            }
         }
 
         if (false === $this->stripeConnect->init($userId)) {
@@ -194,7 +197,7 @@ class StripeConnectPayController extends PaymentController
             $this->setErrorAndRedirect($msg);
         }
         
-        if ($this->orderInfo["order_is_paid"] != Orders::ORDER_IS_PENDING) {
+        if ($this->orderInfo["order_payment_status"] != Orders::ORDER_PAYMENT_PENDING) {
             $msg = Labels::getLabel('MSG_INVALID_ORDER._ALREADY_PAID_OR_CANCELLED', $this->siteLangId);
             $this->setErrorAndRedirect($msg);
         }
@@ -362,7 +365,7 @@ class StripeConnectPayController extends PaymentController
             'transfer_group' => $this->orderId,
             'payment_method' => $this->sourceId,
             'payment_method_types' => ['card'],
-            'capture_method' => $this->settings["plugin_code"],
+            'capture_method' => $this->settings["capture_method"],
         ];
         if (false === $this->stripeConnect->createPaymentIntent($chargeData)) {
             $this->setErrorAndRedirect($this->stripeConnect->getError());
@@ -390,7 +393,7 @@ class StripeConnectPayController extends PaymentController
         }
 
         $status = isset($payload['data']['object']['status']) ? $payload['data']['object']['status'] : Labels::getLabel("MSG_FAILURE", $this->siteLangId);
-        if ($payload['type'] != "payment_intent.succeeded") {
+        if ($payload['type'] != "payment_intent.succeeded" && $payload['type'] != "payment_intent.amount_capturable_updated") {
             // $msg = Labels::getLabel('MSG_UNABLE_TO_CHARGE_:_{STATUS}', $this->siteLangId);
             // $msg = CommonHelper::replaceStringData($msg, ['{STATUS}' => $status]);
             return;
@@ -406,7 +409,7 @@ class StripeConnectPayController extends PaymentController
 
         $this->orderId = $orderId;
         $this->orderInfo = $this->getOrderInfo($this->orderId);
-        if ($this->orderInfo["order_is_paid"] != Orders::ORDER_IS_PENDING) {
+        if ($this->orderInfo["order_is_paid"] != Orders::ORDER_IS_PENDING || $this->orderInfo["order_is_paid"] != Orders::ORDER_PAYMENT_DETAINED) {
             // $msg = Labels::getLabel('MSG_INVALID_ORDER._ALREADY_PAID_OR_CANCELLED', $this->siteLangId);
             return;
         }
@@ -448,8 +451,14 @@ class StripeConnectPayController extends PaymentController
 
         $this->paymentAmount = $orderPaymentObj->getOrderPaymentGatewayAmount();
 
-        if (false === $orderPaymentObj->addOrderPayment($this->settings["plugin_code"], $chargeId, $this->paymentAmount, Labels::getLabel("MSG_RECEIVED_PAYMENT", $this->siteLangId), $message)) {
+        $paymentStatus = ($payload['type'] == "payment_intent.amount_capturable_updated" ? Orders::ORDER_PAYMENT_DETAINED : Orders::ORDER_PAYMENT_PAID);
+
+        if (false === $orderPaymentObj->addOrderPayment($this->settings["plugin_code"], $chargeId, $this->paymentAmount, Labels::getLabel("MSG_RECEIVED_PAYMENT", $this->siteLangId), $message, false, 0, $paymentStatus)) {
             $orderPaymentObj->addOrderPaymentComments($message);
+        }
+
+        if (Orders::ORDER_PAYMENT_DETAINED == $paymentStatus) {
+            return;
         }
 
         $orderInfo = $orderPaymentObj->getOrderPrimaryinfo();

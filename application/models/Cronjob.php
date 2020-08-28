@@ -149,7 +149,7 @@ class Cronjob extends FatModel
 
         $srch = new OrderSearch();
         $srch->joinOrderBuyerUser();
-        $srch->addCondition('order_is_paid', '=', Orders::ORDER_IS_PAID);
+        $srch->addCondition('order_payment_status', '=', Orders::ORDER_PAYMENT_PAID);
         $srch->addCondition('order_user_id', '=', $userId);
         $srch->addCondition('order_id', '!=', $orderId);
         $srch->addCondition('order_date_added', '<=', $orderData['order_date_added']);
@@ -304,7 +304,7 @@ class Cronjob extends FatModel
         $srch = new OrderProductSearch(0, true);
         $srch->joinPaymentMethod();
         $srch->addCondition('o.order_id', '=', $orderId);
-        $cnd = $srch->addCondition('o.order_is_paid', '=', Orders::ORDER_IS_PAID);
+        $cnd = $srch->addCondition('o.order_payment_status', '=', Orders::ORDER_PAYMENT_PAID);
         $cnd->attachCondition('plugin_code', '=', 'cashondelivery');
         $srch->addCondition('op.op_status_id', 'not in', unserialize(FatApp::getConfig("CONF_COMPLETED_ORDER_STATUS")));
         $srch->doNotCalculateRecords();
@@ -319,7 +319,7 @@ class Cronjob extends FatModel
         $srch = new OrderSearch();
         $srch->joinOrderBuyerUser();
         $srch->joinOrderPaymentMethod();
-        $cnd = $srch->addCondition('order_is_paid', '=', Orders::ORDER_IS_PAID);
+        $cnd = $srch->addCondition('order_payment_status', '=', Orders::ORDER_PAYMENT_PAID);
         $cnd->attachCondition('plugin_code', '=', 'cashondelivery');
         $srch->addCondition('order_id', '=', $orderId);
         $rs = $srch->getResultSet();
@@ -397,7 +397,7 @@ class Cronjob extends FatModel
         $srch = new OrderProductSearch();
         $srch->joinOrders();
         $srch->joinOrderUser();
-        $srch->addCondition('order_is_paid', '=', ORDERS::ORDER_IS_PAID);
+        $srch->addCondition('order_payment_status', '=', ORDERS::ORDER_PAYMENT_PAID);
         $srch->addStatusCondition(array($statusArr));
         $srch->addCondition('order_user_id', '>', FatApp::getConfig("CONF_CRON_BUYING_YEAR_LAST_EXE_USERID"));
         $srch->addCondition('op_completion_date', '>=', $startDate . ' 00:00:00');
@@ -562,7 +562,7 @@ class Cronjob extends FatModel
         $srch = new OrderSubscriptionSearch();
         $srch->joinOrders();
         $srch->joinOrderUser();
-        $srch->addCondition('order_is_paid', '=', ORDERS::ORDER_IS_PAID);
+        $srch->addCondition('order_payment_status', '=', ORDERS::ORDER_PAYMENT_PAID);
         $srch->addCondition('ossubs_status_id', 'in', $statusArr);
         $srch->addCondition('ossubs_till_date', '<=', $endDate);
         $srch->addCondition('ossubs_till_date', '!=', '0000-00-00');
@@ -599,7 +599,7 @@ class Cronjob extends FatModel
             /* $orderData['order_user_name'] = $userDataArr['user_name'];
             $orderData['order_user_email'] = $userDataArr['credential_email'];
             $orderData['order_user_phone'] = $userDataArr['user_phone']; */
-            $orderData['order_is_paid'] = Orders::ORDER_IS_PENDING;
+            $orderData['order_payment_status'] = Orders::ORDER_PAYMENT_PENDING;
             $orderData['order_date_added'] = date('Y-m-d H:i:s');
             $orderData['order_type'] = Orders::ORDER_SUBSCRIPTION;
 

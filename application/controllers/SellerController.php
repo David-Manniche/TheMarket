@@ -264,7 +264,7 @@ class SellerController extends SellerBaseController
         $srch->setPageSize($pagesize);
 
         $srch->addMultipleFields(
-            array('order_id', 'order_is_paid', 'order_user_id', 'op_selprod_id', 'op_is_batch', 'selprod_product_id', 'order_date_added', 'order_net_amount', 'op_invoice_number', 'totCombinedOrders as totOrders', 'op_selprod_title', 'op_product_name', 'op_id', 'op_qty', 'op_selprod_options', 'op_brand_name', 'op_shop_name', 'op_other_charges', 'op_unit_price', 'op_tax_collected_by_seller', 'op_selprod_user_id', 'opshipping_by_seller_user_id', 'orderstatus_id', 'IFNULL(orderstatus_name, orderstatus_identifier) as orderstatus_name', 'plugin_code', 'IFNULL(plugin_name, IFNULL(plugin_identifier, "Wallet")) as plugin_name', 'opship.*')
+            array('order_id', 'order_payment_status', 'order_user_id', 'op_selprod_id', 'op_is_batch', 'selprod_product_id', 'order_date_added', 'order_net_amount', 'op_invoice_number', 'totCombinedOrders as totOrders', 'op_selprod_title', 'op_product_name', 'op_id', 'op_qty', 'op_selprod_options', 'op_brand_name', 'op_shop_name', 'op_other_charges', 'op_unit_price', 'op_tax_collected_by_seller', 'op_selprod_user_id', 'opshipping_by_seller_user_id', 'orderstatus_id', 'IFNULL(orderstatus_name, orderstatus_identifier) as orderstatus_name', 'plugin_code', 'IFNULL(plugin_name, IFNULL(plugin_identifier, "Wallet")) as plugin_name', 'opship.*')
         );
 
         $keyword = FatApp::getPostedData('keyword', null, '');
@@ -722,7 +722,7 @@ class SellerController extends SellerBaseController
         }
 
 
-        if (strtolower($orderDetail['plugin_code']) == 'cashondelivery' && (OrderStatus::ORDER_DELIVERED == $post["op_status_id"] || OrderStatus::ORDER_COMPLETED == $post["op_status_id"]) && Orders::ORDER_IS_PAID != $orderDetail['order_is_paid']) {
+        if (strtolower($orderDetail['plugin_code']) == 'cashondelivery' && (OrderStatus::ORDER_DELIVERED == $post["op_status_id"] || OrderStatus::ORDER_COMPLETED == $post["op_status_id"]) && Orders::ORDER_PAYMENT_PAID != $orderDetail['order_payment_status']) {
             $orderProducts = new OrderProductSearch($this->siteLangId, true, true);
             $orderProducts->joinPaymentMethod();
             $orderProducts->addMultipleFields(['op_status_id']);
@@ -733,7 +733,7 @@ class SellerController extends SellerBaseController
             if ($rs) {
                 $childOrders = FatApp::getDb()->fetchAll($rs);
                 if (empty($childOrders)) {
-                    $updateArray = array('order_is_paid' => Orders::ORDER_IS_PAID);
+                    $updateArray = array('order_payment_status' => Orders::ORDER_PAYMENT_PAID);
                     $whr = array('smt' => 'order_id = ?', 'vals' => array($orderDetail['order_id']));
                     if (!FatApp::getDb()->updateFromArray(Orders::DB_TBL, $updateArray, $whr)) {
                         Message::addErrorMessage(Labels::getLabel('MSG_Invalid_Access', $this->siteLangId));
