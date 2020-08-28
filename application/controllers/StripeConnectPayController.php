@@ -409,7 +409,7 @@ class StripeConnectPayController extends PaymentController
 
         $this->orderId = $orderId;
         $this->orderInfo = $this->getOrderInfo($this->orderId);
-        if ($this->orderInfo["order_is_paid"] != Orders::ORDER_IS_PENDING || $this->orderInfo["order_is_paid"] != Orders::ORDER_PAYMENT_DETAINED) {
+        if ($this->orderInfo["order_is_paid"] != Orders::ORDER_PAYMENT_PENDING && $this->orderInfo["order_is_paid"] != Orders::ORDER_PAYMENT_DETAINED) {
             // $msg = Labels::getLabel('MSG_INVALID_ORDER._ALREADY_PAID_OR_CANCELLED', $this->siteLangId);
             return;
         }
