@@ -677,8 +677,9 @@ $("document").ready(function () {
     };
     /* Phone Verification for COD */
 
-    displaySelectedPickUpAddresses = function(){
-        fcom.ajax(fcom.makeUrl('Checkout', 'displaySelectedPickUpAddresses'), '', function (rsp) {
+    orderPickUpData = function(order_id){
+        var data = 'order_id='+order_id;
+        fcom.ajax(fcom.makeUrl('Checkout', 'orderPickUpData'), data, function (rsp) {
             $.facebox(rsp, 'faceboxWidth medium-fb-width');
         });
     }

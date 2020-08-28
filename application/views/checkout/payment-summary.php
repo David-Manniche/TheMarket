@@ -41,29 +41,29 @@ $rewardPoints = UserRewardBreakup::rewardPointBalance(UserAuthentication::getLog
                 </div>
             </li>
             
-            <?php if ($fulfillmentType == Shipping::FULFILMENT_PICKUP && !empty($pickUpAddrData)) { ?>
+            <?php if ($fulfillmentType == Shipping::FULFILMENT_PICKUP && !empty($orderPickUpData)) { ?>
             <li class="list-group-item">
                 <div class="review-block__label">
                 <?php echo Labels::getLabel('LBL_Pickup_Address:', $siteLangId); ?>
                 </div>
                 <div class="review-block__content" role="cell">  
                     <div class="delivery-address"> 
-                        <?php foreach($pickUpAddrData as $address) { ?>
-                            <p><strong><?php echo $address['shop_name']; ?></strong></p>
-                            <p><?php echo ( mb_strlen($address['addr_address1'] ) > 0 ) ? $address['addr_address1'] : '';?>
-                            <?php echo ( mb_strlen($address['addr_address2'] ) > 0 ) ? $address['addr_address2'] . '<br>' : '';?>
-                            <?php echo ( mb_strlen($address['addr_city']) > 0 ) ? $address['addr_city'] . ',' : '';?>
-                            <?php echo ( mb_strlen($address['state_name']) > 0 ) ? $address['state_name'] . '<br>' : '';?>
-                            <?php echo ( mb_strlen($address['country_name']) > 0 ) ? $address['country_name'] . ',' : '';?>
-                            <?php echo ( mb_strlen($address['addr_zip']) > 0 ) ?  $address['addr_zip'] . '<br>' : '';?></p>
-                            <p class="phone-txt"><?php echo ( mb_strlen($address['addr_phone']) > 0 ) ? $address['addr_phone'] . '' : '';?></p>
+                        <?php foreach($orderPickUpData as $address) { ?>
+                            <p><strong><?php echo $address['op_shop_name']; ?></strong></p>
+                            <p><?php echo ( mb_strlen($address['oua_address1'] ) > 0 ) ? $address['oua_address1'] : '';?>
+                            <?php echo ( mb_strlen($address['oua_address2'] ) > 0 ) ? $address['oua_address2'] . '<br>' : '';?>
+                            <?php echo ( mb_strlen($address['oua_city']) > 0 ) ? $address['oua_city'] . ',' : '';?>
+                            <?php echo ( mb_strlen($address['oua_state']) > 0 ) ? $address['oua_state'] . '<br>' : '';?>
+                            <?php echo ( mb_strlen($address['oua_country']) > 0 ) ? $address['oua_country'] . ',' : '';?>
+                            <?php echo ( mb_strlen($address['oua_zip']) > 0 ) ?  $address['oua_zip'] . '<br>' : '';?></p>
+                            <p class="phone-txt"><?php echo ( mb_strlen($address['oua_phone']) > 0 ) ? $address['oua_phone'] . '' : '';?></p>
                             <?php 
-                            $fromTime = date('H:i', strtotime($address["time_slot_from"]));
-                            $toTime = date('H:i', strtotime($address["time_slot_to"]));
+                            $fromTime = date('H:i', strtotime($address["opshipping_time_slot_from"]));
+                            $toTime = date('H:i', strtotime($address["opshipping_time_slot_to"]));
                             ?>
-                            <p><?php echo "<strong>".FatDate::format($address["time_slot_date"]).' '.$fromTime.' - '.$toTime.'</strong>'; ?></p>
-                            <?php if (count($pickUpAddrData) > 1) { ?>
-                            <a class="plus-more" href="javascript:void(0);" onClick="displaySelectedPickUpAddresses()"><?php echo '+'.(count($pickUpAddrData) - 1).' '.Labels::getLabel('LBL_More_', $siteLangId); ?></a>
+                            <p><?php echo "<strong>".FatDate::format($address["opshipping_date"]).' '.$fromTime.' - '.$toTime.'</strong>'; ?></p>
+                            <?php if (count($orderPickUpData) > 1) { ?>
+                            <a class="plus-more" href="javascript:void(0);" onClick="orderPickUpData('<?php echo $orderId; ?>')"><?php echo '+'.(count($orderPickUpData) - 1).' '.Labels::getLabel('LBL_More_', $siteLangId); ?></a>
                             <?php break; } ?>
                         <?php } ?>
                     </div>

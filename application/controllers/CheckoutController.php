@@ -1423,9 +1423,9 @@ class CheckoutController extends MyAppController
             $redeemRewardFrm = $this->getRewardsForm($this->siteLangId);
             $this->set('redeemRewardFrm', $redeemRewardFrm);
         }
-
-        $pickUpAddrData = $this->getSelectedPickUpAddresses();
-        $this->set('pickUpAddrData', $pickUpAddrData);
+        
+        $orderPickUpData = $orderObj->getOrderPickUpData($order_id, $this->siteLangId);
+        $this->set('orderPickUpData', $orderPickUpData);
 
         $this->set('paymentMethods', $paymentMethods);
         $this->set('userWalletBalance', $userWalletBalance);
@@ -1449,10 +1449,10 @@ class CheckoutController extends MyAppController
         $this->set('billingAddressId', $billingAddressId);
         $this->set('billingAddressArr', $billingAddressArr);
         $this->set('shippingAddressArr', $shippingAddressArr);
-
+        $this->set('orderId', $order_id);
+        
         if (true === MOBILE_APP_API_CALL) {
             $this->set('products', $cartProducts);
-            $this->set('orderId', $order_id);
             $this->set('orderType', $orderInfo['order_type']);
             $this->_template->render();
         }
@@ -2246,34 +2246,15 @@ class CheckoutController extends MyAppController
         $this->_template->render(false, false, 'json-success.php');
     }
     
-    public function displaySelectedPickUpAddresses()
+    public function orderPickUpData()
     {
-        $pickUpAddrData = $this->getSelectedPickUpAddresses();
-        $this->set('pickUpAddrData', $pickUpAddrData);
+        $orderId = FatApp::getPostedData('order_id', FatUtility::VAR_STRING, '');
+        $order = new Orders();
+        $orderPickUpData = $order->getOrderPickUpData($orderId, $this->siteLangId);        
+        $this->set('orderPickUpData', $orderPickUpData);
         $this->_template->render(false, false);
     }
     
-    private function getSelectedPickUpAddresses()
-    {
-        $pickUpAddrData= [] ;
-        $productSelectedPickUpAddresses = $this->cartObj->getProductPickUpAddresses();
-        if(!empty($productSelectedPickUpAddresses)){
-            foreach($productSelectedPickUpAddresses as $data) {
-                $addrId = $data['time_slot_addr_id'];                                
-                $addressRecordId = Address::getAttributesById($addrId, 'addr_record_id');
-                $addr = new Address($addrId, $this->siteLangId);
-                $pickUpAddr = $addr->getData($data['time_slot_type'], $addressRecordId);
-                
-                $pickUpAddrData[$addrId] = $pickUpAddr;  
-                $pickUpAddrData[$addrId]['shop_name'] = $data['shop_name'];    
-                $pickUpAddrData[$addrId]['time_slot_date'] = $data['time_slot_date'];    
-                $pickUpAddrData[$addrId]['time_slot_from'] = $data['time_slot_from_time'];    
-                $pickUpAddrData[$addrId]['time_slot_to'] = $data['time_slot_to_time']; 
-            }
-        }
-        return $pickUpAddrData;
-    }
-
     public function resendOtp()
     {
         $userId = UserAuthentication::getLoggedUserId();
