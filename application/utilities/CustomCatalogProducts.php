@@ -4,7 +4,7 @@ trait CustomCatalogProducts
 {
     public function customCatalogProducts()
     {
-        $this->userPrivilege->canViewProducts(UserAuthentication::getLoggedUserId());
+        $this->userPrivilege->canViewSellerRequests(UserAuthentication::getLoggedUserId());
         if (!$this->isShopActive($this->userParentId, 0, true)) {
             FatApp::redirectUser(UrlHelper::generateUrl('Seller', 'shop'));
         }
@@ -20,7 +20,7 @@ trait CustomCatalogProducts
         }
 
         $frmSearchCustomCatalogProducts = $this->getCustomCatalogProductsSearchForm();
-        $this->set('canEdit', $this->userPrivilege->canEditProducts(UserAuthentication::getLoggedUserId(), true));
+        $this->set('canEdit', $this->userPrivilege->canEditSellerRequests(UserAuthentication::getLoggedUserId(), true));
         $this->set("frmSearchCustomCatalogProducts", $frmSearchCustomCatalogProducts);
         $this->_template->render(true, true);
     }
@@ -28,7 +28,7 @@ trait CustomCatalogProducts
     public function searchCustomCatalogProducts()
     {
         $userId = UserAuthentication::getLoggedUserId();
-        $this->userPrivilege->canViewProducts($userId);
+        $this->userPrivilege->canViewSellerRequests($userId);
         $this->canAddCustomCatalogProduct();
         $frmSearchCustomCatalogProducts = $this->getCustomCatalogProductsSearchForm();
         $post = $frmSearchCustomCatalogProducts->getFormDataFromArray(FatApp::getPostedData());
@@ -74,7 +74,7 @@ trait CustomCatalogProducts
             );
             $arr_listing[$key] = $arr;
         }
-        $this->set('canEdit', $this->userPrivilege->canEditProducts(UserAuthentication::getLoggedUserId(), true));
+        $this->set('canEdit', $this->userPrivilege->canEditSellerRequests(UserAuthentication::getLoggedUserId(), true));
         $this->set("arr_listing", $arr_listing);
         $this->set('pageCount', $srch->pages());
         $this->set('page', $page);
@@ -258,7 +258,7 @@ trait CustomCatalogProducts
 
     public function customCatalogSellerProductForm($preqId = 0)
     {
-        $this->userPrivilege->canViewProducts(UserAuthentication::getLoggedUserId());
+        $this->userPrivilege->canViewSellerRequests(UserAuthentication::getLoggedUserId());
         $this->canAddCustomCatalogProduct();
         $preqId = FatUtility::int($preqId);
 
@@ -345,7 +345,7 @@ trait CustomCatalogProducts
 
     public function setupCustomCatalogSpecification($preqId, $prodSpecId = 0)
     {
-        $this->userPrivilege->canEditProducts(UserAuthentication::getLoggedUserId());
+        $this->userPrivilege->canEditSellerRequests(UserAuthentication::getLoggedUserId());
         $this->canAddCustomCatalogProduct();
         $preqId = FatUtility::int($preqId);
 
@@ -410,7 +410,7 @@ trait CustomCatalogProducts
 
     public function setUpCustomSellerProduct()
     {
-        $this->userPrivilege->canEditProducts(UserAuthentication::getLoggedUserId());
+        $this->userPrivilege->canEditSellerRequests(UserAuthentication::getLoggedUserId());
         $this->canAddCustomCatalogProduct();
         $preqId = FatApp::getPostedData('selprod_product_id', FatUtility::VAR_INT, 0);
         if (!$preqId) {
@@ -464,7 +464,7 @@ trait CustomCatalogProducts
 
     public function customCatalogProductLangForm($preqId = 0, $lang_id = 0, $autoFillLangData = 0)
     {
-        $this->userPrivilege->canEditProducts(UserAuthentication::getLoggedUserId());
+        $this->userPrivilege->canEditSellerRequests(UserAuthentication::getLoggedUserId());
         $this->canAddCustomCatalogProduct();
 
         $preqId = FatUtility::int($preqId);
@@ -534,7 +534,7 @@ trait CustomCatalogProducts
 
     public function setupCustomCatalogProductLangForm()
     {
-        $this->userPrivilege->canEditProducts(UserAuthentication::getLoggedUserId());
+        $this->userPrivilege->canEditSellerRequests(UserAuthentication::getLoggedUserId());
         $this->canAddCustomCatalogProduct();
         $post = FatApp::getPostedData();
         $lang_id = $post['lang_id'];
@@ -613,7 +613,7 @@ trait CustomCatalogProducts
 
     public function customCatalogProductImages($preqId)
     {
-        $this->userPrivilege->canViewProducts(UserAuthentication::getLoggedUserId());
+        $this->userPrivilege->canViewSellerRequests(UserAuthentication::getLoggedUserId());
         $this->canAddCustomCatalogProduct();
         $preqId = FatUtility::int($preqId);
         $productReqRow = ProductRequest::getAttributesById($preqId, array('preq_user_id', 'preq_content'));
@@ -633,7 +633,7 @@ trait CustomCatalogProducts
 
     public function deleteCustomCatalogProductImage($preq_id, $image_id)
     {
-        $this->userPrivilege->canEditProducts(UserAuthentication::getLoggedUserId());
+        $this->userPrivilege->canEditSellerRequests(UserAuthentication::getLoggedUserId());
         $this->canAddCustomCatalogProduct();
         $preq_id = FatUtility :: int($preq_id);
         $image_id = FatUtility :: int($image_id);
@@ -661,7 +661,7 @@ trait CustomCatalogProducts
 
     public function customCatalogImages($preq_id, $option_id = 0, $lang_id = 0)
     {
-        $this->userPrivilege->canViewProducts(UserAuthentication::getLoggedUserId());
+        $this->userPrivilege->canViewSellerRequests(UserAuthentication::getLoggedUserId());
         $this->canAddCustomCatalogProduct();
         $preq_id = FatUtility::int($preq_id);
 
@@ -689,7 +689,7 @@ trait CustomCatalogProducts
 
     public function setCustomCatalogProductImagesOrder()
     {
-        $this->userPrivilege->canEditProducts(UserAuthentication::getLoggedUserId());
+        $this->userPrivilege->canEditSellerRequests(UserAuthentication::getLoggedUserId());
         $this->canAddCustomCatalogProduct();
 
         $preqObj = new ProductRequest();
@@ -718,7 +718,7 @@ trait CustomCatalogProducts
 
     public function setupCustomCatalogProductImages()
     {
-        if (!$this->userPrivilege->canEditProducts(UserAuthentication::getLoggedUserId(), true)) {
+        if (!$this->userPrivilege->canEditSellerRequests(UserAuthentication::getLoggedUserId(), true)) {
             Message::addErrorMessage(Labels::getLabel('LBL_Unauthorized_Access!', $this->siteLangId));
             FatUtility::dieJsonError(Message::getHtml());
         }
@@ -939,7 +939,7 @@ trait CustomCatalogProducts
 
     public function approveCustomCatalogProducts($preqId = 0)
     {
-        $this->userPrivilege->canEditProducts(UserAuthentication::getLoggedUserId());
+        $this->userPrivilege->canEditSellerRequests(UserAuthentication::getLoggedUserId());
         $this->canAddCustomCatalogProduct(true);
         $preqId = FatUtility::int($preqId);
         if (!$preqId) {
@@ -1085,7 +1085,7 @@ trait CustomCatalogProducts
 
     public function customCatalogProductForm($preqId = 0)
     {
-        $this->userPrivilege->canEditProducts(UserAuthentication::getLoggedUserId());
+        $this->userPrivilege->canEditSellerRequests(UserAuthentication::getLoggedUserId());
         $this->canAddCustomCatalogProduct(true);
         $preqId = FatUtility::int($preqId);
         $this->set('preqId', $preqId);
@@ -1141,7 +1141,7 @@ trait CustomCatalogProducts
 
     public function setupCustomCatalogProduct()
     {
-        $this->userPrivilege->canEditProducts(UserAuthentication::getLoggedUserId());
+        $this->userPrivilege->canEditSellerRequests(UserAuthentication::getLoggedUserId());
         $this->canAddCustomCatalogProduct();
         $preqId = FatApp::getPostedData('preq_id', FatUtility::VAR_INT, 0);
         $frm = $this->getCustomProductIntialSetUpFrm(0, $preqId);
@@ -1253,7 +1253,7 @@ trait CustomCatalogProducts
 
     public function setUpCatalogProductAttributes()
     {
-        $this->userPrivilege->canEditProducts(UserAuthentication::getLoggedUserId());
+        $this->userPrivilege->canEditSellerRequests(UserAuthentication::getLoggedUserId());
         $this->canAddCustomCatalogProduct();
         $preqId = FatApp::getPostedData('preq_id', FatUtility::VAR_INT, 0);
         $frm = $this->getProductAttributeAndSpecificationsFrm(0, $preqId);
@@ -1341,7 +1341,7 @@ trait CustomCatalogProducts
 
     public function deleteCustomCatalogSpecification($preqId)
     {
-        $this->userPrivilege->canEditProducts(UserAuthentication::getLoggedUserId());
+        $this->userPrivilege->canEditSellerRequests(UserAuthentication::getLoggedUserId());
         $this->canAddCustomCatalogProduct();
         $preqId = FatUtility::int($preqId);
         $prodReqData = ProductRequest::getAttributesById($preqId);
@@ -1378,7 +1378,7 @@ trait CustomCatalogProducts
 
     public function setUpCustomCatalogSpecifications()
     {
-        $this->userPrivilege->canEditProducts(UserAuthentication::getLoggedUserId());
+        $this->userPrivilege->canEditSellerRequests(UserAuthentication::getLoggedUserId());
         $this->canAddCustomCatalogProduct();
         $preqId = FatApp::getPostedData('preq_id', FatUtility::VAR_INT, 0);
         $prodReqData = ProductRequest::getAttributesById($preqId);
@@ -1443,7 +1443,7 @@ trait CustomCatalogProducts
 
     public function setUpCustomCatalogShipping()
     {
-        $this->userPrivilege->canEditProducts(UserAuthentication::getLoggedUserId());
+        $this->userPrivilege->canEditSellerRequests(UserAuthentication::getLoggedUserId());
         $this->canAddCustomCatalogProduct();
         $preqId = FatApp::getPostedData('preq_id', FatUtility::VAR_INT, 0);
         $frm = $this->getProductShippingFrm(0, $preqId, true);
@@ -1529,7 +1529,7 @@ trait CustomCatalogProducts
 
     public function updateCustomCatalogOption()
     {
-        $this->userPrivilege->canEditProducts(UserAuthentication::getLoggedUserId());
+        $this->userPrivilege->canEditSellerRequests(UserAuthentication::getLoggedUserId());
         $this->canAddCustomCatalogProduct();
         $preqId = FatApp::getPostedData('preq_id', FatUtility::VAR_INT, 0);
         $optionId = FatApp::getPostedData('option_id', FatUtility::VAR_INT, 0);
@@ -1573,7 +1573,7 @@ trait CustomCatalogProducts
 
     public function removeCustomCatalogOption()
     {
-        $this->userPrivilege->canEditProducts(UserAuthentication::getLoggedUserId());
+        $this->userPrivilege->canEditSellerRequests(UserAuthentication::getLoggedUserId());
         $this->canAddCustomCatalogProduct();
         $preqId = FatApp::getPostedData('preq_id', FatUtility::VAR_INT, 0);
         $optionId = FatApp::getPostedData('option_id', FatUtility::VAR_INT, 0);
@@ -1605,7 +1605,7 @@ trait CustomCatalogProducts
 
     public function updateCustomCatalogTag()
     {
-        $this->userPrivilege->canEditProducts(UserAuthentication::getLoggedUserId());
+        $this->userPrivilege->canEditSellerRequests(UserAuthentication::getLoggedUserId());
         $this->canAddCustomCatalogProduct();
         $preqId = FatApp::getPostedData('preq_id', FatUtility::VAR_INT, 0);
         $tagId = FatApp::getPostedData('tag_id', FatUtility::VAR_INT, 0);
@@ -1635,7 +1635,7 @@ trait CustomCatalogProducts
 
     public function removeCustomCatalogTag()
     {
-        $this->userPrivilege->canEditProducts(UserAuthentication::getLoggedUserId());
+        $this->userPrivilege->canEditSellerRequests(UserAuthentication::getLoggedUserId());
         $this->canAddCustomCatalogProduct();
         $preqId = FatApp::getPostedData('preq_id', FatUtility::VAR_INT, 0);
         $tagId = FatApp::getPostedData('tag_id', FatUtility::VAR_INT, 0);
@@ -1691,7 +1691,7 @@ trait CustomCatalogProducts
 
     public function setupEanUpcCode($preqId)
     {
-        $this->userPrivilege->canEditProducts(UserAuthentication::getLoggedUserId());
+        $this->userPrivilege->canEditSellerRequests(UserAuthentication::getLoggedUserId());
         $this->canAddCustomCatalogProduct();
         $preqId = FatUtility::int($preqId);
         $prodReqData = ProductRequest::getAttributesById($preqId);

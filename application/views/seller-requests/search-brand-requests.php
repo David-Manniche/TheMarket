@@ -5,9 +5,9 @@ $this->includeTemplate('seller-requests/_partial/requests-navigation.php', $vari
 defined('SYSTEM_INIT') or die('Invalid Usage.');
 $arr_flds = array(
     'listserial'=>'Sr.',
-    'product_identifier' => Labels::getLabel('LBL_Product', $siteLangId),
-    'preq_added_on' => Labels::getLabel('LBL_Added_on', $siteLangId),
-    'preq_status' => Labels::getLabel('LBL_Status', $siteLangId)
+    'brand_name' => Labels::getLabel('LBL_Brand_Name', $siteLangId),
+    'brand_updated_on' => Labels::getLabel('LBL_Updated_on', $siteLangId),
+    'brand_status' => Labels::getLabel('LBL_Status', $siteLangId)
 );
 if ($canEdit) {
     $arr_flds['action'] = '';
@@ -29,29 +29,26 @@ foreach ($arr_listing as $sn => $row) {
             case 'listserial':
                 $td->appendElement('plaintext', array(), $sr_no, true);
                 break;
-            case 'product_identifier':
-                $td->appendElement('plaintext', array(), $row['product_name'] . '<br>', true);
+            case 'brand_name':
+                $td->appendElement('plaintext', array(), (!empty($row['brand_name']) ? $row['brand_name'] : $row['brand_identifier']) . '<br>', true);
                 $td->appendElement('plaintext', array(), '('.$row[$key].')', true);
                 break;
-            case 'preq_status':
+            case 'brand_status':
                 $td->appendElement('plaintext', array(), $statusArr[$row[$key]], true);
                 break;
-            case 'preq_added_on':
+            case 'brand_updated_on':
                 $td->appendElement('plaintext', array(), FatDate::Format($row[$key]), true);
                 break;
             case 'action':
                 $ul = $td->appendElement("ul", array('class'=>'actions'), '', true);
                 $li = $ul->appendElement("li");
-                if ($row['preq_status'] == ProductRequest::STATUS_PENDING) {
+                if ($row['brand_status'] == Brand::BRAND_REQUEST_PENDING) {
                     $li->appendElement(
                         'a',
-                        array('href'=>UrlHelper::generateUrl('Seller', 'customCatalogProductForm', array($row['preq_id'])), 'class'=>'','title'=>Labels::getLabel('LBL_Edit', $siteLangId)),
+                        array('href'=>'javascript:void(0)', 'onclick' => "addBrandReqForm(".$row['brand_id'].")", 'class'=>'','title'=>Labels::getLabel('LBL_Edit', $siteLangId)),
                         '<i class="fa fa-edit"></i>',
                         true
                     );
-
-                    /* $li = $ul->appendElement("li");
-                    $li->appendElement("a", array('title' => Labels::getLabel('LBL_Product_Images', $siteLangId), 'onclick' => 'customCatalogProductImages('.$row['preq_id'].')', 'href'=>'javascript:void(0)'), '<i class="fas fa-images"></i>', true); */
                 }
                 break;
             default:
@@ -66,7 +63,7 @@ if (count($arr_listing) == 0) {
     $this->includeTemplate('_partial/no-record-found.php', array('siteLangId'=>$siteLangId,'message'=>$message));
 }
 $postedData['page'] = $page;
-echo FatUtility::createHiddenFormFromData($postedData, array('name' => 'frmCatalogProductSearchPaging'));
+echo FatUtility::createHiddenFormFromData($postedData, array('name' => 'frmSearchBrandRequest'));
 
-$pagingArr=array('pageCount'=>$pageCount,'page'=>$page,'callBackJsFunc' => 'goToCustomCatalogProductSearchPage');
+$pagingArr=array('pageCount'=>$pageCount,'page'=>$page,'callBackJsFunc' => 'goToBrandSearchPage');
 $this->includeTemplate('_partial/pagination.php', $pagingArr, false);

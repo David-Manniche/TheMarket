@@ -69,9 +69,11 @@
     </div>
 </main>
 <script>
-    $(document).ready(function () {
-        customCatalogProductForm(<?php echo $preqId; ?>);
-    });
+	var ratioTypeSquare = <?php echo AttachedFile::RATIO_TYPE_SQUARE; ?>;
+	var ratioTypeRectangular = <?php echo AttachedFile::RATIO_TYPE_RECTANGULAR; ?>;
+	$(document).ready(function () {
+		customCatalogProductForm(<?php echo $preqId; ?>);
+	});
 </script>
 
 
