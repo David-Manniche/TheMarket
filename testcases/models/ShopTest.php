@@ -152,12 +152,12 @@ class ShopTest extends YkModelTest
      * testIsActive
      *
      * @dataProvider providerIsActive
-     * @param  mixed $expected
+     * @param  bool $expected
      * @param  mixed $userId
      * @param  mixed $shopId
      * @return void
      */
-    public function testIsActive($expected, $shopId, $userId)
+    public function testIsActive(bool $expected, $shopId, $userId)
     {   
         $result = $this->execute($this->class, [$shopId, $userId, 0], 'isActive');
         $this->assertEquals($expected, $result);
@@ -244,12 +244,12 @@ class ShopTest extends YkModelTest
      * testSetFavorite
      *
      * @dataProvider providerSetFavorite
-     * @param  mixed $expected
+     * @param  bool $expected
      * @param  mixed $shopId
      * @param  mixed $userId
      * @return void
      */
-    public function testSetFavorite($expected, $shopId, $userId)
+    public function testSetFavorite(bool $expected, $shopId, $userId)
     {
         $result = $this->execute($this->class, [$shopId], 'setFavorite', [$userId]);
         $this->assertEquals($expected, $result);
