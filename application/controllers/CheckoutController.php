@@ -236,19 +236,8 @@ class CheckoutController extends MyAppController
 
         $address = new Address($this->cartObj->getCartShippingAddress(), $this->siteLangId);
         $addresses = $address->getData(Address::TYPE_USER, UserAuthentication::getLoggedUserId());
-       
-        // $products = $this->cartObj->getProducts($this->siteLangId);
-        // $this->set('products', $products);
-        /*$this->cartObj->removeProductShippingMethod();
-        $this->cartObj->removeProductPickUpAddresses();*/
         $this->set('cartHasPhysicalProduct', $cartHasPhysicalProduct);
-        // $this->set('cartSummary', $this->cartObj->getCartFinancialSummary($this->siteLangId));
-
-        // if ($this->cartObj->getError() != '') {
-        //     Message::addErrorMessage($this->cartObj->getError());
-        //     FatApp::redirectUser(UrlHelper::generateUrl('cart'));
-        // }
-
+        
         $obj = new Extrapage();
         $pageData = $obj->getContentByPageType(Extrapage::CHECKOUT_PAGE_RIGHT_BLOCK, $this->siteLangId);
         $this->set('pageData', $pageData);
@@ -460,8 +449,6 @@ class CheckoutController extends MyAppController
             $this->cartObj->unsetCartShippingAddress();
         }
 
-        //$this->cartObj->removeProductShippingMethod();
-        //$this->cartObj->removeProductPickUpAddresses();
         $this->set('hasPhysicalProduct', $hasPhysicalProduct);
         if (true === MOBILE_APP_API_CALL) {
             $this->_template->render();
@@ -602,6 +589,7 @@ class CheckoutController extends MyAppController
 
     public function setUpShippingMethod()
     {
+        $this->cartObj->removeProductPickUpAddresses();
         $post = FatApp::getPostedData();
         if (true === MOBILE_APP_API_CALL) {
             $post['data'] = (!empty($post['data']) ? json_decode($post['data'], true) : array());
@@ -2133,8 +2121,9 @@ class CheckoutController extends MyAppController
         return $frm;
     }
     
-     public function setUpPickUp()
+    public function setUpPickUp()
     {
+        $this->cartObj->removeProductShippingMethod();
         $post = FatApp::getPostedData();    
         if (true === MOBILE_APP_API_CALL) {
             $post['data'] = (!empty($post['data']) ? json_decode($post['data'], true) : array());

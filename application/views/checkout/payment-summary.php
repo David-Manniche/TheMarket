@@ -32,7 +32,7 @@ $rewardPoints = UserRewardBreakup::rewardPointBalance(UserAuthentication::getLog
                 <div class="review-block__link" role="cell">
                     <?php 
                     if ($fulfillmentType == Shipping::FULFILMENT_PICKUP || $cartHasPhysicalProduct == false) {
-                        $onclick = 'loadAddressDiv('.Address::Address_TYPE_BILLING.');';
+                        $onclick = 'loadAddressDiv('.Address::ADDRESS_TYPE_BILLING.');';
                     }else{ 
                         $onclick = 'loadAddressDiv();';
                     } 
