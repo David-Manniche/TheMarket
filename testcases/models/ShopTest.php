@@ -2,147 +2,221 @@
 class ShopTest extends YkModelTest
 {
     private $class = 'Shop';
-    private $shopId = 0;
-    
+
     /**
      * setUpBeforeClass
      *
      * @return void
      */
-    public function setUpBeforeClass() :void
-    {
-        $this->setUpShop();
-        $this->setUpShopLang();
+    public static function setUpBeforeClass() :void
+    { 
+        self::truncateDbData();
+        $obj = new self();
+        $obj->insertUserData();
+        $obj->insertShopData();
+        $obj->insertShopLangData(); 
+        $obj->insertShopRewriteUrl();
     }
-    
+
     /**
-     * setUpShop
+     * tearDownAfterClass
      *
      * @return void
      */
-    private function setUpShop() :void
-    {
-        $data = [
-            'shop_user_id' => '6',
-            'shop_identifier' => 'Unit Test Cases',
-            'shop_country_id' => '223',
-            'shop_state_id' => '2996',
-            'shop_phone' => '9876543210',
-            'shop_active' => '1',
-            'shop_featured' => '1',
-            'shop_supplier_display_status' => '1',
-            'shop_fulfillment_type' => '-1',
-        ];  
-        
-        $shop = new Shop($this->shopId);
-        $shop->assignValues($data);
-        if ($shop->save()) {
-           $this->shopId = $shop->getMainTableRecordId();
-        }
+    public static function tearDownAfterClass() :void
+    {   
+        self::truncateDbData();
     }
     
     /**
-     * setUpShopLang
+     * truncateDbData
      *
      * @return void
      */
-    private function setUpShopLang() :void
+    public static function truncateDbData()
     {
-        $data = [
-            'shoplang_shop_id' => $this->shopId,
-            'shoplang_lang_id' => '1',
-            'shop_name' => 'Unit Test Cases',
-        ];  
-        
-        $shop = new Shop($this->shopId);
-        $shop->updateLangData(1, $data);
+        FatApp::getDb()->query("TRUNCATE TABLE ".User::DB_TBL);
+        FatApp::getDb()->query("TRUNCATE TABLE ".Shop::DB_TBL);
+        FatApp::getDb()->query("TRUNCATE TABLE ".Shop::DB_TBL_LANG);
+        FatApp::getDb()->query("TRUNCATE TABLE ".UrlRewrite::DB_TBL); 
+        FatApp::getDb()->query("TRUNCATE TABLE ".Shop::DB_TBL_SHOP_FAVORITE); 
     }
     
     /**
-     * tearDown
-     *
-     * @return void
-     */
-    public function tearDown() :void
+    * insertUserData
+    *
+    * @return void
+    */
+    private function insertUserData()
     {
-        FatApp::getDb()->deleteRecords(Shop::DB_TBL, array('smt' => 'shop_id = ?', 'vals' => array($this->shopId)));
-        FatApp::getDb()->deleteRecords(Shop::DB_TBL_LANG, array('smt' => 'shoplang_shop_id = ?', 'vals' => array($this->shopId)));
+        $arr = [
+            [
+                'user_id' => 1,
+                'user_name' => 'Sammy',
+                'user_zip' => 85281,
+                'user_country_id' => 223,
+                'user_state_id' => 2996,
+                'user_is_buyer' => 1,               
+                'user_is_supplier' => 1,
+            ],
+            [
+                'user_id' => 2,
+                'user_name' => 'Samar',
+                'user_zip' => 85281,
+                'user_country_id' => 223,
+                'user_state_id' => 2996,
+                'user_is_buyer' => 1,               
+                'user_is_supplier' => 1,
+            ]
+        ];            
+        $this->InsertDbData(User::DB_TBL, $arr);
     }
     
+    /**
+    * insertShopData
+    *
+    * @return void
+    */
+    private function insertShopData()
+    {
+        $arr = [
+            [
+                'shop_id' => 1,
+                'shop_user_id' => 1,
+                'shop_identifier' => 'Sammy',
+                'shop_postalcode' => 85281,
+                'shop_country_id' => 223,
+                'shop_state_id' => 2996,
+                'shop_active' => 1,               
+            ],
+            [
+                'shop_id' => 2,
+                'shop_user_id' => 2,
+                'shop_identifier' => 'Samar',
+                'shop_postalcode' => 85281,
+                'shop_country_id' => 223,
+                'shop_state_id' => 2996,
+                'shop_active' => 0,               
+            ],
+        ];            
+        $this->InsertDbData(Shop::DB_TBL, $arr);
+    }
+    
+    /**
+    * insertShopLangData
+    *
+    * @return void
+    */
+    private function insertShopLangData()
+    {
+        $arr = [
+            [
+                'shoplang_shop_id' => 1,
+                'shoplang_lang_id' => 1,
+                'shop_name' => 'Sammy',              
+            ],
+            [
+                'shoplang_shop_id' => 2,
+                'shoplang_lang_id' => 1,
+                'shop_name' => 'Samar',            
+            ],
+        ];            
+        $this->InsertDbData(Shop::DB_TBL_LANG, $arr);
+    }
+    
+    /**
+    * insertShopRewriteUrl
+    *
+    * @return void
+    */
+    private function insertShopRewriteUrl()
+    {
+        $arr = [
+            [
+                'urlrewrite_id' => 1,
+                'urlrewrite_original' => 'shops/view/1',
+                'urlrewrite_custom' => 'sammy',
+                'urlrewrite_lang_id' => 1,              
+            ],
+            [
+                'urlrewrite_id' => 2,
+                'urlrewrite_original' => 'shops/view/2',
+                'urlrewrite_custom' => 'samar',
+                'urlrewrite_lang_id' => 1,                  
+            ],
+        ];            
+        $this->InsertDbData(UrlRewrite::DB_TBL, $arr);
+    }
+
     /**
      * testIsActive
      *
-     * @dataProvider dataIsActive
+     * @dataProvider providerIsActive
      * @param  mixed $expected
      * @param  mixed $userId
      * @param  mixed $shopId
      * @return void
      */
-    public function testIsActive($expected, $shopId, $userId) :void
-    {
+    public function testIsActive($expected, $shopId, $userId)
+    {   
         $result = $this->execute($this->class, [$shopId, $userId, 0], 'isActive');
         $this->assertEquals($expected, $result);
     }
         
     /**
-     * shopActiveData
+     * providerIsActive
      *
      * @return array
      */
-    public function dataIsActive()
-    {
-        return array(
-            array(false, 'test', '4'), // Invalid shopId and Invalid userId
-            array(false, 'test', 4), // Invalid shopId and valid userId
-            array(false, '1', 'test'), // Invalid userId and Invalid shopId
-            array(false, 1, 'test'), // Valid userId and Invalid shopId
-            array(false, 'test', 'test'), // Invalid shopId and userId
-            array(false, '1', '4'), // Invalid shopId and  Invalid userId as string
-            array(true, 1, 4), // Valid shopId and userId
-        );
+    public function providerIsActive()
+    {  
+        return [
+            [false, 'test', 'test'], // Invalid shopId and Invalid userId
+            [false, 'test', 1], // Invalid shopId and Valid userId
+            [false, 1, 'test'], // Valid shopId and Invalid userId
+            [false, 2, 2],  // Valid shopId and Valid userId having shop status Inactive
+            [true, 1, 1],  // Valid shopId and Valid userId having shop status Active          
+        ];
     }
     
     /**
      * testGetName
      *
-     * @dataProvider dataGetName
+     * @dataProvider providerGetName
      * @param  mixed $expected
      * @param  mixed $shopId
      * @param  mixed $langId
+     * @param  mixed $isActive
      * @return void
      */
-    public function testGetName($expected, $shopId, $langId)
+    public function testGetName($expected, $shopId, $langId, $isActive)
     {
-        $result = $this->execute($this->class, [], 'getName', [$shopId, $langId]);
+        $result = $this->execute($this->class, [], 'getName', [$shopId, $langId, $isActive]);
         $this->assertEquals($expected, $result);
     }
     
     /**
-     * dataGetName
+     * providerGetName
      *
      * @return array
      */
-    public function dataGetName()
-    {
-        return array(
-            array(false, 'test', '1'), // Invalid shopId and Invalid langId
-            array(false, 'test', 1), // Invalid shopId and valid langId
-            array(false, '1', 'test'), // Invalid shopId and Invalid langId
-            array(false, 1, 'test'), // Valid shopId and Invalid langId
-            array(false, 'test', 'test'), // Invalid shopId and langId
-            array(false, '1', '1'), // Invalid shopId and  Invalid langId as string
-            array(false, 99, 1), // Valid shopId and langId   
-            array("Kanwar's Shop", 1, 1), // Valid shopId and langId   
-        );
+    public function providerGetName()
+    {  
+       return [
+            [false, 'test', 'test', true], // Invalid shopId and Invalid langId
+            [false, 'test', 1, true], // Invalid shopId and Valid langId
+            [false, 1, 'test', true], // Valid shopId and Invalid langId            
+            ['Sammy', 1, 1, true],  // Valid shopId and Valid langId
+            ['Samar', 2, 1, false],  // Valid shopId and Valid langId        
+        ];
     }
     
     /**
      * getRewriteCustomUrl
      *
-     * @dataProvider dataGetRewriteCustomUrl
+     * @dataProvider providerGetRewriteCustomUrl
      * @param  mixed $expected
      * @param  mixed $shopId
-     * @param  mixed $arr
      * @return void
      */
     public function testGetRewriteCustomUrl($expected, $shopId)
@@ -152,23 +226,24 @@ class ShopTest extends YkModelTest
     }
     
     /**
-     * dataGetRewriteCustomUrl
+     * providerGetRewriteCustomUrl
      *
      * @return void
      */
-    public function dataGetRewriteCustomUrl()
+    public function providerGetRewriteCustomUrl()
     {
-        return array(
-            array(false, 'test'), // Invalid shopId
-            array(false, '1'), // Invalid shopId            
-            array('kanwar', 1), // Valid shopId
-        );
+        return [
+            [false, 'test'], // Invalid shopId 
+            [false, 1000], // Invalid shopId         
+            ['sammy', 1],  // Valid shopId 
+            ['samar', 2],  // Valid shopId     
+        ];
     }
     
     /**
      * testSetFavorite
      *
-     * @dataProvider dataSetFavorite
+     * @dataProvider providerSetFavorite
      * @param  mixed $expected
      * @param  mixed $shopId
      * @param  mixed $userId
@@ -179,17 +254,23 @@ class ShopTest extends YkModelTest
         $result = $this->execute($this->class, [$shopId], 'setFavorite', [$userId]);
         $this->assertEquals($expected, $result);
     }
-
-    public function dataSetFavorite()
+    
+    /**
+     * providerSetFavorite
+     *
+     * @return void
+     */
+    public function providerSetFavorite()
     {
-        return array(
-            array(false, 'test', '4'), // Invalid shopId and Invalid userId
-            array(false, 'test', 4), // Invalid shopId and valid userId
-            array(false, '1', 'test'), // Invalid shopId and Invalid userId
-            array(false, 1, 'test'), // Valid shopId and Invalid userId
-            array(false, 'test', 'test'), // Invalid shopId and userId
-            array(false, '1', '4'), // Invalid shopId and  Invalid userId as string
-            array(true, 1, 4), // Valid shopId and userId
-        );
+        return [
+            [false, 'test', 'test'], // Invalid shopId and Invalid userId
+            [false, 'test', 1], // Invalid shopId and Valid userId
+            [false, 1, 'test'], // Valid shopId and Invalid userId
+            [true, 1, 1],  // Valid shopId and Valid userId  
+            [true, 2, 1],  // Valid shopId and Valid userId       
+            [true, 1, 2],  // Valid shopId and Valid userId 
+            [true, 2, 2],  // Valid shopId and Valid userId
+        ];
     }
+    
 }

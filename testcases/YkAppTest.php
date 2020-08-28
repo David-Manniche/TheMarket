@@ -169,4 +169,21 @@ class YkAppTest extends TestCase
     {
         return $this->error;
     }
+    
+    /**
+     * InsertDbData
+     *
+     * @param  string $table
+     * @param  array $data
+     * @return void
+     */
+    protected function InsertDbData(string $table, array $arr)
+    {
+        if(!empty($table) && !empty($arr)){
+            foreach($arr as $data){
+                FatApp::getDb()->insertFromArray($table, $data, false, array(), $data);
+            }
+        }
+    }
+    
 }
