@@ -2169,8 +2169,7 @@ class CheckoutController extends MyAppController
                     }
                     
                     $pickupAddressArr[$cartval['selprod_id']] = array(
-                        'selprod_id' => $cartval['selprod_id'],
-                        'shop_name' =>  ($level == Shipping::LEVEL_SHOP) ? $cartval['shop_name'] : FatApp::getConfig('CONF_WEBSITE_NAME_' . $this->siteLangId, null, ''),
+                        'selprod_id' => $cartval['selprod_id'],                       
                         'time_slot_addr_id' => $slotData['tslot_record_id'],
                         'time_slot_id' => $slotData['tslot_id'],
                         'time_slot_type' => $slotData['tslot_type'],
