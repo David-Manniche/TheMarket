@@ -635,6 +635,18 @@ class SellerController extends SellerBaseController
         }
     }
 
+    /**
+     * convertInPaisa
+     *
+     * @param  mixed $amount
+     * @return void
+     */
+    private function convertInPaisa($amount)
+    {
+        $amount = number_format($amount, 2, '.', '');
+        return $amount * 100;
+    }
+
     public function changeOrderStatus()
     {
         $this->userPrivilege->canEditSales(UserAuthentication::getLoggedUserId());
@@ -745,7 +757,7 @@ class SellerController extends SellerBaseController
                 FatUtility::dieJsonError(Message::getHtml());
             }
 
-            $payments = $orderObj->getOrderPayments(["order_id" => $orderDetail['op_order_id']]);
+            $payments = current($orderObj->getOrderPayments(["order_id" => $orderDetail['op_order_id']]));
 
             $this->initPaymentPlugin();
             $settings = $this->paymentPlugin->getSettings();
@@ -759,7 +771,7 @@ class SellerController extends SellerBaseController
                 $amountToCapture = CommonHelper::orderProductAmount($childOrderInfo, 'netamount');
                 $requestParams = [
                     'paymentIntentId' => $resp['data']['object']['id'],
-                    'amount_to_capture' => $amountToCapture,
+                    'amount_to_capture' => $this->convertInPaisa($amountToCapture),
                     'statement_descriptor' => $childOrderInfo['op_invoice_number'],
                 ];
                 if (false === $this->paymentPlugin->captureDetainedAmount($requestParams)) {
