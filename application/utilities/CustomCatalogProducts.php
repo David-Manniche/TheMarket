@@ -25,71 +25,6 @@ trait CustomCatalogProducts
         $this->_template->render(true, true);
     }
 
-    public function searchCustomCatalogProducts()
-    {
-        $userId = UserAuthentication::getLoggedUserId();
-        $this->userPrivilege->canViewSellerRequests($userId);
-        $this->canAddCustomCatalogProduct();
-        $frmSearchCustomCatalogProducts = $this->getCustomCatalogProductsSearchForm();
-        $post = $frmSearchCustomCatalogProducts->getFormDataFromArray(FatApp::getPostedData());
-        $page = (empty($post['page']) || $post['page'] <= 0) ? 1 : intval($post['page']);
-        $pagesize = FatApp::getConfig('CONF_PAGE_SIZE', FatUtility::VAR_INT, 10);
-
-        $srch = ProductRequest::getSearchObject($this->siteLangId);
-        
-        $userArr = User::getAuthenticUserIds($userId, $this->userParentId);
-        $srch->addCondition('preq_user_id', 'in', $userArr);
-        $srch->addCondition('preq_deleted', '=', applicationConstants::NO);
-        
-        $keyword = FatApp::getPostedData('keyword', null, '');
-        if (!empty($keyword)) {
-            $cnd = $srch->addCondition('preq_content', 'like', '%' . $keyword . '%');
-            $cnd->attachCondition('preq_lang_data', 'like', '%' . $keyword . '%');
-        }
-
-        $srch->addOrder('preq_added_on', 'DESC');
-        $srch->setPageNumber($page);
-        $srch->setPageSize($pagesize);
-
-        $db = FatApp::getDb();
-        $rs = $srch->getResultSet();
-        $arr_listing = $db->fetchAll($rs);
-        $jsonDecodedContent = array();
-        foreach ($arr_listing as $key => $row) {
-            $content = (!empty($row['preq_content'])) ? json_decode($row['preq_content'], true) : array();
-            $langContent = (!empty($row['preq_lang_data'])) ? json_decode($row['preq_lang_data'], true) : array();
-
-            $row = array_merge($row, $content);
-            if (!empty($langContent)) {
-                $row = array_merge($row, $langContent);
-            }
-
-            $arr = array(
-                'preq_id' => $row['preq_id'],
-                'preq_user_id' => $row['preq_user_id'],
-                'preq_added_on' => $row['preq_added_on'],
-                'preq_status' => $row['preq_status'],
-                'product_identifier' => $row['product_identifier'],
-                'product_name' => (!empty($row['product_name'])) ? $row['product_name'] : '',
-            );
-            $arr_listing[$key] = $arr;
-        }
-        $this->set('canEdit', $this->userPrivilege->canEditSellerRequests(UserAuthentication::getLoggedUserId(), true));
-        $this->set("arr_listing", $arr_listing);
-        $this->set('pageCount', $srch->pages());
-        $this->set('page', $page);
-        $this->set('pageSize', $pagesize);
-        $this->set('postedData', $post);
-        $this->set('siteLangId', $this->siteLangId);
-        $this->set('statusArr', ProductRequest::getStatusArr($this->siteLangId));
-        $this->set('CONF_CUSTOM_PRODUCT_REQUIRE_ADMIN_APPROVAL', FatApp::getConfig("CONF_CUSTOM_PRODUCT_REQUIRE_ADMIN_APPROVAL", FatUtility::VAR_INT, 1));
-        unset($post['page']);
-        $frmSearchCustomCatalogProducts->fill($post);
-
-        $this->set('frmSearchCatalogProducts', $frmSearchCustomCatalogProducts);
-        $this->_template->render(false, false);
-    }
-
     /* public function customCatalogProductForm($preqId = 0, $preqCatId = 0)
       {
       $this->canAddCustomCatalogProduct(true);
@@ -944,22 +879,25 @@ trait CustomCatalogProducts
         $preqId = FatUtility::int($preqId);
         if (!$preqId) {
             Message::addErrorMessage(Labels::getLabel("MSG_Invalid_Access", $this->siteLangId));
-            FatApp::redirectUser(UrlHelper::generateUrl('Seller', 'customCatalogProducts'));
+            FatApp::redirectUser(UrlHelper::generateUrl('SellerRequests'));
         }
 
         if (!$productRow = ProductRequest::getAttributesById($preqId, array('preq_user_id', 'preq_content'))) {
             Message::addErrorMessage(Labels::getLabel("MSG_Invalid_Access", $this->siteLangId));
-            FatApp::redirectUser(UrlHelper::generateUrl('Seller', 'customCatalogProducts'));
+            FatApp::redirectUser(UrlHelper::generateUrl('SellerRequests'));
         }
 
         $content = (!empty($productRow['preq_content'])) ? json_decode($productRow['preq_content'], true) : array();
 
         $prodReqObj = new ProductRequest($preqId);
-        $data = array('preq_submitted_for_approval' => applicationConstants::YES);
+        $data = array(
+			'preq_submitted_for_approval' => applicationConstants::YES,
+			'preq_requested_on' => date('Y-m-d H:i:s'),
+		);
         $prodReqObj->assignValues($data);
         if (!$prodReqObj->save()) {
             Message::addErrorMessage(Labels::getLabel("MSG_Invalid_Access", $this->siteLangId));
-            FatApp::redirectUser(UrlHelper::generateUrl('Seller', 'customCatalogProducts'));
+            FatApp::redirectUser(UrlHelper::generateUrl('Seller', 'SellerRequests'));
         }
 
         $mailData = array(
@@ -971,7 +909,7 @@ trait CustomCatalogProducts
         $email = new EmailHandler();
         if (!$email->sendNewCustomCatalogNotification($this->siteLangId, $mailData)) {
             Message::addErrorMessage(Labels::getLabel('MSG_Email_could_not_be_sent', $this->siteLangId));
-            FatApp::redirectUser(UrlHelper::generateUrl('Seller', 'customCatalogProducts'));
+            FatApp::redirectUser(UrlHelper::generateUrl('SellerRequests'));
         }
 
         /* send notification to admin [ */
@@ -990,7 +928,7 @@ trait CustomCatalogProducts
         /* ] */
 
         Message::addMessage(Labels::getLabel('MSG_Your_catalog_request_submitted_for_approval', $this->siteLangId));
-        FatApp::redirectUser(UrlHelper::generateUrl('Seller', 'customCatalogProducts'));
+        FatApp::redirectUser(UrlHelper::generateUrl('SellerRequests'));
     }
 
     /* private function getCustomCatalogProductCategoryForm() {

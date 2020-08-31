@@ -6,8 +6,8 @@ defined('SYSTEM_INIT') or die('Invalid Usage.');
 $arr_flds = array(
     'listserial'=>'Sr.',
     'prodcat_name' => Labels::getLabel('LBL_Product_Category_Name', $siteLangId),
-    'prodcat_updated_on' => Labels::getLabel('LBL_Updated_on', $siteLangId),
-    'prodcat_status' => Labels::getLabel('LBL_Status', $siteLangId)
+    'prodcat_requested_on' => Labels::getLabel('LBL_Requested_on', $siteLangId),
+    'prodcat_status' => Labels::getLabel('LBL_Status', $siteLangId),
 );
 if ($canEdit) {
     $arr_flds['action'] = '';
@@ -34,10 +34,11 @@ foreach ($arr_listing as $sn => $row) {
                 $td->appendElement('plaintext', array(), '('.$row[$key].')', true);
                 break;
             case 'prodcat_status':
-                $td->appendElement('plaintext', array(), $statusArr[$row[$key]], true);
+                $td->appendElement('plaintext', array(), $statusArr[$row[$key]] . '<br>', true);
+                $td->appendElement('plaintext', array(), ($row['prodcat_status_updated_on'] != '0000-00-00 00:00:00') ? FatDate::Format($row['prodcat_status_updated_on']) : '', true);
                 break;
-            case 'prodcat_updated_on':
-                $td->appendElement('plaintext', array(), FatDate::Format($row[$key]), true);
+            case 'prodcat_requested_on':
+                $td->appendElement('plaintext', array(), ($row[$key] != '0000-00-00 00:00:00') ? FatDate::Format($row[$key]) : Labels::getLabel('LBL_NA', $siteLangId), true);
                 break;
             case 'action':
                 $ul = $td->appendElement("ul", array('class'=>'actions'), '', true);

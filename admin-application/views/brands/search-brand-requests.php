@@ -5,6 +5,7 @@ $arr_flds = array(
         'shop_name'=>Labels::getLabel('LBL_Requested_BY', $adminLangId),
         'brand_logo'=>Labels::getLabel('LBL_Logo', $adminLangId),
         'brand_identifier'=>Labels::getLabel('LBL_Brand_Name', $adminLangId),
+		'brand_requested_on'=>Labels::getLabel('LBL_Requested_On', $adminLangId),
         'action' => '',
     );
 
@@ -68,6 +69,9 @@ foreach ($arr_listing as $sn=>$row) {
                     $str = '<div class="checkbox-switch"><input '.$active.' type="checkbox" id="switch'.$row['brand_id'].'" value="'.$row['brand_id'].'" onclick="'.$statucAct.'"/><label for="switch'.$row['brand_id'].'">Toggle</label></div>';
                     $td->appendElement('plaintext', array(), $str, true);
             break;
+			case 'brand_requested_on':
+                $td->appendElement('plaintext', array(), FatDate::Format($row[$key]), true);
+                break;
             case 'action':
                 if ($canEdit) {
                     $td->appendElement('a', array('href'=>'javascript:void(0)', 'class'=>'btn btn-clean btn-sm btn-icon', 'title'=>Labels::getLabel('LBL_Edit', $adminLangId),"onclick"=>"addBrandRequestForm(".$row['brand_id'].")"), "<i class='far fa-edit icon'></i>", true);

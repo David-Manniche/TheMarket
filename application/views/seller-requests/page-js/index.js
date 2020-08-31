@@ -27,11 +27,19 @@ $(document).ready(function() {
 		checkRunningAjax();
 		var data = fcom.frmData(frm);
 		$(dv).html( fcom.getLoader() );
-		fcom.ajax(fcom.makeUrl('Seller','searchCustomCatalogProducts'),data,function(res){
+		fcom.ajax(fcom.makeUrl('SellerRequests','searchCustomCatalogProducts'),data,function(res){
 			runningAjaxReq = false;
 			$(dv).html(res);
 		});
-	};
+    };
+    
+    customCatalogInfo = function(prodreq_id) {
+		$.facebox(function() {
+			fcom.ajax(fcom.makeUrl('SellerRequests','customCatalogInfo',[prodreq_id]), '', function(t){
+				$.facebox(t,'faceboxWidth catalogInfo');
+			});
+		});
+	}
     
     goToBrandSearchPage = function(page) {
 		if(typeof page == undefined || page == null){

@@ -5,6 +5,7 @@ $arr_flds = array(
     'product_identifier' => Labels::getLabel('LBL_Product', $adminLangId),
     'shop_name' => Labels::getLabel('LBL_Shop', $adminLangId),
     'preq_added_on' => Labels::getLabel('LBL_Added_on', $adminLangId),
+    'preq_requested_on' => Labels::getLabel('LBL_Requested_on', $adminLangId),
     'preq_status' => Labels::getLabel('LBL_Status', $adminLangId),
     'action' => ''
 );
@@ -36,9 +37,13 @@ foreach ($arr_listing as $sn => $row) {
                 }                
                 break;
             case 'preq_status':
-                $td->appendElement('label', array('class'=>'label label-'.$reqStatusClassArr[$row[$key]].''), $reqStatusArr[$row[$key]], true);
+                $td->appendElement('label', array('class'=>'label label-'.$reqStatusClassArr[$row[$key]].''), $reqStatusArr[$row[$key]] . '<br>', true);
+				/* $td->appendElement('plaintext', array(), ($row['preq_status_updated_on'] != '0000-00-00 00:00:00') ? FatDate::Format($row['preq_status_updated_on']) : '', true); */
                 break;
             case 'preq_added_on':
+                $td->appendElement('plaintext', array(), FatDate::Format($row[$key]), true);
+                break;
+			case 'preq_requested_on':
                 $td->appendElement('plaintext', array(), FatDate::Format($row[$key]), true);
                 break;
             case 'action':

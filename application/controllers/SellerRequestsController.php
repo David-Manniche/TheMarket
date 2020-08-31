@@ -10,6 +10,23 @@ class SellerRequestsController extends SellerBaseController
     public function index()
     {
         $this->set('canEdit', $this->userPrivilege->canEditSellerRequests(0, true));
+        
+        $srch = $this->getRequestedbrandObj();
+        $rs = $srch->getResultSet();
+        $reqBrands = FatApp::getDb()->fetchAll($rs);
+
+        $srch = $this->getRequestedCatObj();
+        $rs = $srch->getResultSet();
+        $reqCategories = FatApp::getDb()->fetchAll($rs);
+
+        $srch = $this->getRequestedProdObj();
+        $rs = $srch->getResultSet();
+        $reqProducts = FatApp::getDb()->fetchAll($rs);
+
+        if (empty($reqBrands) && empty($reqCategories) && empty($reqProducts)) {
+            $this->set('noRecordsFound', true); 
+        }
+
         $this->_template->addJs(array('js/cropper.js', 'js/cropper-main.js'));
         $this->_template->render();
     }
@@ -22,22 +39,14 @@ class SellerRequestsController extends SellerBaseController
         $page = (empty($post['page']) || $post['page'] <= 0) ? 1 : intval($post['page']);
         $pagesize = FatApp::getConfig('CONF_PAGE_SIZE', FatUtility::VAR_INT, 10);
 
-        $srch = Brand::getSearchObject($this->siteLangId);
-        
-        $userArr = User::getAuthenticUserIds($userId, $this->userParentId);
-        $srch->addCondition('brand_seller_id', 'in', $userArr);
-        $srch->addCondition('brand_deleted', '=', applicationConstants::NO);
-
-        $srch->addOrder('brand_updated_on', 'DESC');
+        $srch = $this->getRequestedbrandObj();
         $srch->setPageNumber($page);
         $srch->setPageSize($pagesize);
-
-        $db = FatApp::getDb();
         $rs = $srch->getResultSet();
-        $arr_listing = $db->fetchAll($rs);
+        $requestedBrands = FatApp::getDb()->fetchAll($rs);
 
         $this->set('canEdit', $this->userPrivilege->canEditSellerRequests(UserAuthentication::getLoggedUserId(), true));
-        $this->set("arr_listing", $arr_listing);
+        $this->set("arr_listing", $requestedBrands);
         $this->set('pageCount', $srch->pages());
         $this->set('page', $page);
         $this->set('pageSize', $pagesize);
@@ -49,28 +58,18 @@ class SellerRequestsController extends SellerBaseController
 
     public function searchProdCategoryRequests()
     {
-        $userId = UserAuthentication::getLoggedUserId();
-        
         $post = FatApp::getPostedData();
         $page = (empty($post['page']) || $post['page'] <= 0) ? 1 : intval($post['page']);
         $pagesize = FatApp::getConfig('CONF_PAGE_SIZE', FatUtility::VAR_INT, 10);
 
-        $srch = ProductCategory::getSearchObject(false, $this->siteLangId, false, -1);
-        
-        $userArr = User::getAuthenticUserIds($userId, $this->userParentId);
-        $srch->addCondition('prodcat_seller_id', 'in', $userArr);
-        $srch->addCondition('prodcat_deleted', '=', applicationConstants::NO);
-
-        $srch->addOrder('prodcat_updated_on', 'DESC');
+        $srch = $this->getRequestedCatObj();
         $srch->setPageNumber($page);
         $srch->setPageSize($pagesize);
-
-        $db = FatApp::getDb();
         $rs = $srch->getResultSet();
-        $arr_listing = $db->fetchAll($rs);
+        $requestedCategories = FatApp::getDb()->fetchAll($rs);
 
         $this->set('canEdit', $this->userPrivilege->canEditSellerRequests(UserAuthentication::getLoggedUserId(), true));
-        $this->set("arr_listing", $arr_listing);
+        $this->set("arr_listing", $requestedCategories);
         $this->set('pageCount', $srch->pages());
         $this->set('page', $page);
         $this->set('pageSize', $pagesize);
@@ -78,6 +77,89 @@ class SellerRequestsController extends SellerBaseController
         $this->set('siteLangId', $this->siteLangId);
         $this->set('statusArr', Brand::getBrandReqStatusArr($this->siteLangId));
         $this->_template->render(false, false);
+    }
+
+    public function searchCustomCatalogProducts()
+    {
+        // $this->canAddCustomCatalogProduct();
+        $post = FatApp::getPostedData();
+        $page = (empty($post['page']) || $post['page'] <= 0) ? 1 : intval($post['page']);
+        $pagesize = FatApp::getConfig('CONF_PAGE_SIZE', FatUtility::VAR_INT, 10);
+
+        $srch = $this->getRequestedProdObj();
+        $srch->setPageNumber($page);
+        $srch->setPageSize($pagesize);
+        $rs = $srch->getResultSet();
+        $arr_listing = FatApp::getDb()->fetchAll($rs);
+
+        foreach ($arr_listing as $key => $row) {
+            $content = (!empty($row['preq_content'])) ? json_decode($row['preq_content'], true) : array();
+            $langContent = (!empty($row['preq_lang_data'])) ? json_decode($row['preq_lang_data'], true) : array();
+
+            $row = array_merge($row, $content);
+            if (!empty($langContent)) {
+                $row = array_merge($row, $langContent);
+            }
+
+            $arr = array(
+                'preq_id' => $row['preq_id'],
+                'preq_user_id' => $row['preq_user_id'],
+                'preq_added_on' => $row['preq_added_on'],
+				'preq_requested_on' => $row['preq_requested_on'],
+				'preq_status_updated_on' => $row['preq_status_updated_on'],
+                'preq_status' => $row['preq_status'],
+                'product_identifier' => $row['product_identifier'],
+                'product_name' => (!empty($row['product_name'])) ? $row['product_name'] : '',
+            );
+            $arr_listing[$key] = $arr;
+        }
+        $this->set('canEdit', $this->userPrivilege->canEditSellerRequests(UserAuthentication::getLoggedUserId(), true));
+        $this->set("arr_listing", $arr_listing);
+        $this->set('pageCount', $srch->pages());
+        $this->set('page', $page);
+        $this->set('pageSize', $pagesize);
+        $this->set('postedData', $post);
+        $this->set('siteLangId', $this->siteLangId);
+        $this->set('statusArr', ProductRequest::getStatusArr($this->siteLangId));
+        $this->set('CONF_CUSTOM_PRODUCT_REQUIRE_ADMIN_APPROVAL', FatApp::getConfig("CONF_CUSTOM_PRODUCT_REQUIRE_ADMIN_APPROVAL", FatUtility::VAR_INT, 1));
+        $this->_template->render(false, false);
+    }
+
+    private function getRequestedbrandObj ()
+    {
+        $srch = Brand::getSearchObject($this->siteLangId);
+        
+        $userArr = User::getAuthenticUserIds(UserAuthentication::getLoggedUserId(), $this->userParentId);
+        $srch->addCondition('brand_seller_id', 'in', $userArr);
+        $srch->addCondition('brand_deleted', '=', applicationConstants::NO);
+
+        $srch->addOrder('brand_updated_on', 'DESC');
+        
+        return $srch;
+    }
+
+    private function getRequestedCatObj ()
+    {
+        $srch = ProductCategory::getSearchObject(false, $this->siteLangId, false, -1);
+        
+        $userArr = User::getAuthenticUserIds(UserAuthentication::getLoggedUserId(), $this->userParentId);
+        $srch->addCondition('prodcat_seller_id', 'in', $userArr);
+        $srch->addCondition('prodcat_deleted', '=', applicationConstants::NO);
+
+        $srch->addOrder('prodcat_updated_on', 'DESC');
+        
+        return $srch;
+    }
+    
+    private function getRequestedProdObj () {
+        $srch = ProductRequest::getSearchObject($this->siteLangId);
+        
+        $userArr = User::getAuthenticUserIds(UserAuthentication::getLoggedUserId(), $this->userParentId);
+        $srch->addCondition('preq_user_id', 'in', $userArr);
+        $srch->addCondition('preq_deleted', '=', applicationConstants::NO);
+
+        $srch->addOrder('preq_added_on', 'DESC');
+        return $srch;        
     }
 
     /* ------Product Category Request [------*/
@@ -157,7 +239,10 @@ class SellerRequestsController extends SellerBaseController
         if (!FatApp::getConfig('CONF_PRODUCT_CATEGORY_REQUEST_APPROVAL', FatUtility::VAR_INT, 0)) {
             $post['prodcat_active'] = applicationConstants::ACTIVE;
             $post['prodcat_status'] = ProductCategory::REQUEST_APPROVED;
+            $post['prodcat_status_updated_on'] = date('Y-m-d H:i:s');
         }
+
+        $post['prodcat_requested_on'] = date('Y-m-d H:i:s');
 
         $post['prodcat_seller_id'] = UserAuthentication::getLoggedUserId();
         $productCategory = new ProductCategory($categoryReqId);
@@ -237,7 +322,10 @@ class SellerRequestsController extends SellerBaseController
         if (!FatApp::getConfig('CONF_BRAND_REQUEST_APPROVAL', FatUtility::VAR_INT, 0)) {
             $post['brand_active'] = applicationConstants::ACTIVE;
             $post['brand_status'] = applicationConstants::YES;
+            $post['brand_status_updated_on'] = date('Y-m-d H:i:s');
         }
+
+        $post['brand_requested_on'] = date('Y-m-d H:i:s');
 
         $post['brand_seller_id'] = UserAuthentication::getLoggedUserId();
         $record = new Brand($brandReqId);
@@ -534,5 +622,55 @@ class SellerRequestsController extends SellerBaseController
             return true;
         }
         return false;
+    }
+
+    public function customCatalogInfo($product_id)
+    {
+        $product_id = FatUtility::int($product_id);
+        $srch = $this->getRequestedProdObj();
+        $rs = $srch->getResultSet();
+        $arr_listing = FatApp::getDb()->fetchAll($rs);
+
+        foreach ($arr_listing as $key => $row) {
+            $content = (!empty($row['preq_content'])) ? json_decode($row['preq_content'], true) : array();
+            $langContent = (!empty($row['preq_lang_data'])) ? json_decode($row['preq_lang_data'], true) : array();
+
+            $row = array_merge($row, $content);
+            if (!empty($langContent)) {
+                $row = array_merge($row, $langContent);
+            }
+
+            $arr = array(
+                'preq_id' => $row['preq_id'],
+                'preq_user_id' => $row['preq_user_id'],
+                'preq_added_on' => $row['preq_added_on'],
+				'preq_requested_on' => $row['preq_requested_on'],
+				'preq_status_updated_on' => $row['preq_status_updated_on'],
+                'preq_status' => $row['preq_status'],
+                'product_identifier' => $row['product_identifier'],
+                'product_name' => (!empty($row['product_name'])) ? $row['product_name'] : '',
+            );
+            $arr_listing[$key] = $arr;
+        }
+        /* ] */
+
+        
+
+        /* Get Product Specifications [ */
+        /* $specSrchObj = clone $prodSrchObj;
+        $specSrchObj->doNotCalculateRecords();
+        $specSrchObj->doNotLimitRecords();
+        $specSrchObj->joinTable(Product::DB_PRODUCT_SPECIFICATION, 'LEFT OUTER JOIN', 'product_id = tcps.prodspec_product_id', 'tcps');
+        $specSrchObj->joinTable(Product::DB_PRODUCT_LANG_SPECIFICATION, 'INNER JOIN', 'tcps.prodspec_id = tcpsl.prodspeclang_prodspec_id and   prodspeclang_lang_id  = ' . $this->siteLangId, 'tcpsl');
+        $specSrchObj->addMultipleFields(array('prodspec_id', 'prodspec_name', 'prodspec_value'));
+        $specSrchObj->addGroupBy('prodspec_id');
+        $specSrchObj->addCondition('prodspec_product_id', '=', $product['product_id']);
+        $specSrchObjRs = $specSrchObj->getResultSet();
+        $productSpecifications = FatApp::getDb()->fetchAll($specSrchObjRs); */
+        /* ] */
+
+        $this->set('product', $product);
+        $this->set('productSpecifications', $productSpecifications);
+        $this->_template->render(false, false);
     }
 }

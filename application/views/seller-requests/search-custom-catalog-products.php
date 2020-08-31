@@ -7,7 +7,8 @@ $arr_flds = array(
     'listserial'=>'Sr.',
     'product_identifier' => Labels::getLabel('LBL_Product', $siteLangId),
     'preq_added_on' => Labels::getLabel('LBL_Added_on', $siteLangId),
-    'preq_status' => Labels::getLabel('LBL_Status', $siteLangId)
+    'preq_requested_on' => Labels::getLabel('LBL_Requested_on', $siteLangId),
+    'preq_status' => Labels::getLabel('LBL_Status', $siteLangId),
 );
 if ($canEdit) {
     $arr_flds['action'] = '';
@@ -34,10 +35,14 @@ foreach ($arr_listing as $sn => $row) {
                 $td->appendElement('plaintext', array(), '('.$row[$key].')', true);
                 break;
             case 'preq_status':
-                $td->appendElement('plaintext', array(), $statusArr[$row[$key]], true);
+                $td->appendElement('plaintext', array(), $statusArr[$row[$key]] . '<br>', true);
+                $td->appendElement('plaintext', array(), ($row['preq_status_updated_on'] != '0000-00-00 00:00:00') ? FatDate::Format($row['preq_status_updated_on']) : '', true);
                 break;
             case 'preq_added_on':
                 $td->appendElement('plaintext', array(), FatDate::Format($row[$key]), true);
+                break;
+            case 'preq_requested_on':
+                $td->appendElement('plaintext', array(), ($row[$key] != '0000-00-00 00:00:00') ? FatDate::Format($row[$key]) : Labels::getLabel('LBL_NA', $siteLangId), true);
                 break;
             case 'action':
                 $ul = $td->appendElement("ul", array('class'=>'actions'), '', true);
@@ -47,6 +52,14 @@ foreach ($arr_listing as $sn => $row) {
                         'a',
                         array('href'=>UrlHelper::generateUrl('Seller', 'customCatalogProductForm', array($row['preq_id'])), 'class'=>'','title'=>Labels::getLabel('LBL_Edit', $siteLangId)),
                         '<i class="fa fa-edit"></i>',
+                        true
+                    );
+
+                    $li = $ul->appendElement("li");
+                    $li->appendElement(
+                        'a',
+                        array('href' => 'javascript:void(0)', 'onclick' => 'customCatalogInfo(' . $row['preq_id'] . ')', 'class' => '', 'title' => Labels::getLabel('LBL_product_Info', $siteLangId), true),
+                        '<i class="fa fa-eye"></i>',
                         true
                     );
 
