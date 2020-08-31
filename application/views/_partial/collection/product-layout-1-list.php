@@ -14,7 +14,7 @@
         </a>
     </div>
     <div class="products__body">
-        <?php if (true == $displayProductNotAvailableLable && null == $product['shippingProfile']) { ?>
+        <?php if (true == $displayProductNotAvailableLable && null == $product['availableInLocation']) { ?>
             <div class="not-available"><?php echo Labels::getLabel('LBL_NOT_AVAILABLE_FOR_YOUR_LOCATION', $siteLangId); ?></div>
         <?php } ?>
         <?php include(CONF_THEME_PATH . '_partial/collection-ui.php'); ?>

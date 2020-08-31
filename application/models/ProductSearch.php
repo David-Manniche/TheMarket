@@ -21,6 +21,7 @@ class ProductSearch extends SearchBase
     private $sellerSubscriptionOrderJoined = false;
     private $joinProductShippedBy = false;
     private $geoAddress = [];
+    private $locationBasedInnerJoin = true;
 
     public function __construct($langId = 0, $otherTbl = null, $prodIdColumName = null, $isProductActive = true, $isProductApproved = true, $isProductDeleted = true)
     {
@@ -400,6 +401,11 @@ class ProductSearch extends SearchBase
         $this->joinTable(Product::DB_TBL_PRODUCT_SHIPPING, 'LEFT OUTER JOIN', 'ps.ps_product_id = p.product_id ' . $cond, 'ps');
     }
 
+    public function setLocationBasedInnerJoin($innerJoin = true)
+    {
+        $this->locationBasedInnerJoin = $innerJoin;
+    }
+
     public function joinShops($langId = 0, $isActive = true, $isDisplayStatus = true, $shopId = 0)
     {
         if (!$this->sellerUserJoined) {
@@ -439,8 +445,18 @@ class ProductSearch extends SearchBase
                         $shopSearch->addCondition('shop.shop_supplier_display_status', '=', applicationConstants::ON);
                         $shopSearch->addCondition(Shop::tblFld('active'), '=', applicationConstants::ACTIVE);
                         $shopSearch->addFld('*');
-                        $shopSearch->addFld('( 6371 * acos( cos( radians(' . $this->geoAddress['ykGeoLat'] . ') ) * cos( radians( `shop_lat` ) ) * cos( radians( `shop_lng` ) - radians(' . $this->geoAddress['ykGeoLng'] . ') ) + sin( radians(' . $this->geoAddress['ykGeoLat'] . ') ) * sin( radians( `shop_lat` ) ) ) ) AS distance');
+                        $shopSearch->addFld('( 6371 * acos( cos( radians(' . $this->geoAddress['ykGeoLat'] . ') ) * cos( radians( shop.`shop_lat` ) ) * cos( radians( shop.`shop_lng` ) - radians(' . $this->geoAddress['ykGeoLng'] . ') ) + sin( radians(' . $this->geoAddress['ykGeoLat'] . ') ) * sin( radians( shop.`shop_lat` ) ) ) ) AS distance');
                         $shopSearch->addHaving('distance', '<=', Product::DISTANCE_IN_MILES);
+                        if (false == $this->locationBasedInnerJoin) {
+                            $shopSubQuery = $shopSearch->getQuery();
+                            $shopSearch = new SearchBase(Shop::DB_TBL, 'sshop');
+                            $shopSearch->doNotCalculateRecords();
+                            $shopSearch->doNotLimitRecords();
+                            $shopSearch->addCondition('sshop.shop_supplier_display_status', '=', applicationConstants::ON);
+                            $shopSearch->addCondition('sshop.' . Shop::tblFld('active'), '=', applicationConstants::ACTIVE);
+                            $shopSearch->addMultipleFields(array('sshop.*', 'shop.distance'));
+                            $shopSearch->joinTable('(' . $shopSubQuery . ')', 'LEFT OUTER JOIN', 'shop.shop_id = sshop.shop_id', 'shop');
+                        }
                         $joinShopWithSubQuery = true;
                     }
                     break;
@@ -455,24 +471,33 @@ class ProductSearch extends SearchBase
                         $countryBased = $stateBased = $zipBased = true;
                     }
 
+                    $locCondition = '';
                     if ($countryBased && array_key_exists('ykGeoCountryId', $this->geoAddress) && $this->geoAddress['ykGeoCountryId'] > 0) {
-                        $shopCondition .= ' and shop.shop_country_id = ' . $this->geoAddress['ykGeoCountryId'];
+                        $locCondition .= ' and shop.shop_country_id = ' . $this->geoAddress['ykGeoCountryId'];
                     }
 
                     if ($stateBased && array_key_exists('ykGeoStateId', $this->geoAddress) && $this->geoAddress['ykGeoStateId'] > 0) {
-                        $shopCondition .= ' and shop.shop_state_id = ' . $this->geoAddress['ykGeoStateId'];
+                        $locCondition .= ' and shop.shop_state_id = ' . $this->geoAddress['ykGeoStateId'];
                     }
 
                     if ($zipBased && array_key_exists('ykGeoZip', $this->geoAddress) && $this->geoAddress['ykGeoZip'] > 0) {
-                        $shopCondition .= ' and shop.shop_postalcode = ' . $this->geoAddress['ykGeoZip'];
+                        $locCondition .= ' and shop.shop_postalcode = ' . $this->geoAddress['ykGeoZip'];
+                    }
+
+                    if (true == $this->locationBasedInnerJoin) {
+                        $shopCondition .= $locCondition;
+                    } else {
+                        $this->addFld('if ((1 ' . $locCondition . '), 1, null) as availableInLocation');
                     }
                     break;
             }
         }
 
+        $locationBasedInnerJoin = (true == $this->locationBasedInnerJoin) ? 'INNER JOIN' : 'LEFT OUTER JOIN';
         if ($joinShopWithSubQuery) {
-            $this->joinTable('(' . $shopSearch->getQuery() . ')', 'INNER JOIN', 'seller_user.user_id = shop.shop_user_id  ' . $shopCondition, 'shop');
+            $this->joinTable('(' . $shopSearch->getQuery() . ')', $locationBasedInnerJoin, 'seller_user.user_id = shop.shop_user_id  ' . $shopCondition, 'shop');
         } else {
+
             $this->joinTable(Shop::DB_TBL, 'INNER JOIN', 'seller_user.user_id = shop.shop_user_id ' . $shopCondition, 'shop');
         }
 
@@ -1105,7 +1130,12 @@ class ProductSearch extends SearchBase
                     $this->joinDeliveryLocations();
                     if (true == $includeShipingProfileCheck) {
                         $this->addHaving('shippingProfile', 'IS NOT', 'mysql_func_null', 'and', true);
+                    } else {
+                        $this->addFld('if(p.product_type = ' . Product::PRODUCT_TYPE_PHYSICAL . ', shipprofile.shippro_product_id, -1) as availableInLocation');
                     }
+                    break;
+                case applicationConstants::BASED_ON_RADIUS:
+                    $this->addFld('shop.distance as availableInLocation');
                     break;
             }
         }

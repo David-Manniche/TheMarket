@@ -69,13 +69,9 @@ class HomeController extends MyAppController
         $this->set('isWishlistEnable', FatApp::getConfig('CONF_ADD_FAVORITES_TO_WISHLIST', FatUtility::VAR_INT, 1));
 
         $displayProductNotAvailableLable = false;
+        //availableInLocation
         if (FatApp::getConfig('CONF_ENABLE_GEO_LOCATION', FatUtility::VAR_INT, 0)) {
-            $prodGeoCondition = FatApp::getConfig('CONF_PRODUCT_GEO_LOCATION', FatUtility::VAR_INT, 0);
-            switch ($prodGeoCondition) {
-                case applicationConstants::BASED_ON_DELIVERY_LOCATION:
-                    $displayProductNotAvailableLable = true;
-                    break;
-            }
+            $displayProductNotAvailableLable = true;
         }
 
         if (true === MOBILE_APP_API_CALL) {
@@ -195,7 +191,7 @@ class HomeController extends MyAppController
                             $tpl = new FatTemplate('', '');
                             $tpl->set('siteLangId', $this->siteLangId);
                             $tpl->set('collection', $collection);
-                            $tpl->set('displayProductNotAvailableLable', $displayProductNotAvailableLable);
+                            $tpl->set('`displayProductNotAvailableLable`', $displayProductNotAvailableLable);
                             $homePageCatLayout2 = $tpl->render(false, false, '_partial/collection/category-layout-2.php', true, true);
                         }
                         FatCache::set('homePageCatLayout2' . $collection['collection_id'] . $cacheKey, $homePageCatLayout2, '.txt');
@@ -248,6 +244,7 @@ class HomeController extends MyAppController
         $loggedUserId = FatUtility::int($loggedUserId);
 
         $productSrchObj = new ProductSearch($this->siteLangId);
+        $productSrchObj->setLocationBasedInnerJoin(false);
         $productSrchObj->setGeoAddress();
         $productSrchObj->joinProductToCategory();
         /* $productSrchObj->doNotCalculateRecords();
