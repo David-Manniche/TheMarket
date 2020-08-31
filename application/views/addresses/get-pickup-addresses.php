@@ -9,7 +9,7 @@ if(!empty($addresses)){
                     <?php foreach($addresses as $key=>$address) { ?>
                     <li>
                         <label class="radio">
-                            <input name="pickup_address" <?php echo ($key == 0) ? 'checked=checked': ''; ?> onclick="displayDateSlots();" type="radio" value="<?php echo $address['addr_id']; ?>"> 
+                            <input name="pickup_address" <?php echo (($key == 0 && $addrId == 0) || $addrId == $address['addr_id']) ? 'checked=checked': ''; ?> onclick="displayDateSlots();" type="radio" value="<?php echo $address['addr_id']; ?>"> 
                             <i class="input-helper"></i> 
                             <span class="lb-txt js-addr">  
                                 <?php echo $address['addr_address1']; ?>
@@ -44,23 +44,32 @@ $(document).ready(function(){
     var level = <?php echo $level; ?>;
     $('.js-datepicker').datepicker({
         minDate: new Date(),
+        dateFormat: 'yy-mm-dd',
         onSelect: function() {
-            displayDateSlots();
+            displayDateSlots(false);
         }
-    }).datepicker("show");
-
-    displayDateSlots = function(){
+    }).datepicker("show"); 
+    
+    <?php if(!empty($slotDate)) {?>
+    $('.js-datepicker').datepicker("setDate", new Date('<?php echo $slotDate; ?>') );
+    <?php } ?>
+        
+    displayDateSlots = function(displaySlotSelected){
+        $('input[name="timeSlot"]').prop("checked", displaySlotSelected);
         var selectedDate = $('.js-datepicker').val();
         var addressId = $('input[name="pickup_address"]:checked').val();
         if(addressId != 'undefined' && selectedDate != ''){ 
             var data = 'addressId='+addressId+'&selectedDate='+selectedDate+'&level='+level;
+            if(displaySlotSelected == true){
+                data = data +'&selectedSlot=<?php echo $slotId;?>';
+            }
             fcom.ajax(fcom.makeUrl('Addresses', 'getTimeSlotsByAddressAndDate'), data, function (rsp) {
                 $(".js-time-slots").html(rsp);
             });
         }
     }
     
-    displayDateSlots(); 
+    displayDateSlots(true); 
 });
 
 </script>
