@@ -60,7 +60,7 @@ foreach ($orders as $sn => $order) {
                 break;
             case 'status':
                 $txt = $order['orderstatus_name'];
-                if ($order['order_status'] == Orders::ORDER_PAYMENT_DETAINED) {
+                if ($order['order_payment_status'] == Orders::ORDER_PAYMENT_DETAINED) {
                     $txt .= ' (' . Labels::getLabel('MSG_DETAINED', $siteLangId) . ')';
                 }
                 $td->appendElement('plaintext', array(), $txt, true);

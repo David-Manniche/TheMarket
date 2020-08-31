@@ -54,8 +54,12 @@ foreach ($vendorOrdersList as $sn=>$row){  /* CommonHelper::printArray($row); */
 				$amt = CommonHelper::orderProductAmount($row,'netamount',false,User::USER_TYPE_SELLER);
 				$td->appendElement('plaintext', array(), CommonHelper::displayMoneyFormat($amt, true, true), true );
 			break;
-			case 'op_status_id':
-				$td->appendElement('plaintext', array(), $row['orderstatus_name'], true);
+            case 'op_status_id':
+                $status = $row['orderstatus_name'];
+                if ($order['order_payment_status'] == Orders::ORDER_PAYMENT_DETAINED) {
+                    $status .= ' (' . Labels::getLabel('MSG_DETAINED', $siteLangId) . ')';
+                }
+				$td->appendElement('plaintext', array(), $status, true);
 			break;
             case 'order_date_added':
                 $timeZone = FatApp::getConfig('CONF_TIMEZONE', FatUtility::VAR_STRING, date_default_timezone_get());
