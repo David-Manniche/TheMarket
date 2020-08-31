@@ -1649,7 +1649,8 @@ class User extends MyAppModel
             static::DB_TBL_UPV_PREFIX . 'country_iso',
             static::DB_TBL_UPV_PREFIX . 'dial_code',
             static::DB_TBL_UPV_PREFIX . 'phone',
-            static::DB_TBL_UPV_PREFIX . 'expired_on'
+            static::DB_TBL_UPV_PREFIX . 'expired_on',
+            static::DB_TBL_UPV_PREFIX . 'otp'
         ];
         $emvSrch->addMultipleFields($attr);
 
