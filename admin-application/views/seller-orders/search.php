@@ -56,8 +56,8 @@ foreach ($vendorOrdersList as $sn=>$row){  /* CommonHelper::printArray($row); */
 			break;
             case 'op_status_id':
                 $status = $row['orderstatus_name'];
-                if ($order['order_payment_status'] == Orders::ORDER_PAYMENT_DETAINED) {
-                    $status .= ' (' . Labels::getLabel('MSG_DETAINED', $siteLangId) . ')';
+                if ($row['order_payment_status'] == Orders::ORDER_PAYMENT_DETAINED) {
+                    $status .= ' (' . Labels::getLabel('MSG_DETAINED', $adminLangId) . ')';
                 }
 				$td->appendElement('plaintext', array(), $status, true);
 			break;
