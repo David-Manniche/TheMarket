@@ -443,7 +443,7 @@ class AccountController extends LoggedUserController
         $orderData['userAddresses'] = array(); //No Need of it
         $orderData['order_id'] = $order_id;
         $orderData['order_user_id'] = $loggedUserId;
-        $orderData['order_is_paid'] = Orders::ORDER_IS_PENDING;
+        $orderData['order_payment_status'] = Orders::ORDER_PAYMENT_PENDING;
         $orderData['order_date_added'] = date('Y-m-d H:i:s');
 
         /* order extras[ */

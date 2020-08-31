@@ -644,3 +644,5 @@ ALTER TABLE `tbl_banners` CHANGE `banner_img_updated_on` `banner_updated_on` DAT
 
 
 DELETE FROM `tbl_language_labels` WHERE `label_key` LIKE 'LBL_Shipping_Api';
+
+ALTER TABLE `tbl_orders` CHANGE `order_is_paid` `order_payment_status` TINYINT(1) NOT NULL COMMENT 'defined in order model';

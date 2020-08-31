@@ -29,7 +29,7 @@ class ConfirmPayController extends MyAppController
         $srch->doNotLimitRecords();
         $srch->addCondition('order_id', '=', $orderId);
         $srch->addCondition('order_user_id', '=', $user_id);
-        $srch->addCondition('order_is_paid', '=', Orders::ORDER_IS_PENDING);
+        $srch->addCondition('order_payment_status', '=', Orders::ORDER_PAYMENT_PENDING);
         if ($orderId == $_SESSION['subscription_shopping_cart']["order_id"]) {
             $srch->addCondition('order_type', '=', Orders::ORDER_SUBSCRIPTION);
         } else {

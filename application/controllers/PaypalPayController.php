@@ -62,7 +62,7 @@ class PaypalPayController extends PaymentController
         $orderPaymentObj = new OrderPayment($orderId, $this->siteLangId);
         $paymentAmount = $orderPaymentObj->getOrderPaymentGatewayAmount();
         $orderInfo = $orderPaymentObj->getOrderPrimaryinfo();
-        if (!empty($orderInfo) && $orderInfo["order_is_paid"] != Orders::ORDER_IS_PENDING) {
+        if (!empty($orderInfo) && $orderInfo["order_payment_status"] != Orders::ORDER_PAYMENT_PENDING) {
             $msg = Labels::getLabel('MSG_INVALID_ORDER_PAID_CANCELLED', $this->siteLangId);
             $this->setErrorAndRedirect($msg, FatUtility::isAjaxCall());
         }

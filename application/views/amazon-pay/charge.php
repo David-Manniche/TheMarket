@@ -17,13 +17,13 @@
                 echo '<div class="alert alert--danger"><p>' . $error . '</p></div>';
             if (isset($success))
                 echo '<div class="alert alert--success" ><p>Your payment has been successfull.</p></div>';
-            if (strlen($orderId) > 0 && $orderInfo["order_is_paid"] == Orders::ORDER_IS_PENDING) echo '<div class="text-center" style="margin-top:40px;" id="AmazonPayButton"></div>';
+            if (strlen($orderId) > 0 && $orderInfo["order_payment_status"] == Orders::ORDER_PAYMENT_PENDING) echo '<div class="text-center" style="margin-top:40px;" id="AmazonPayButton"></div>';
             ?>
         </div>
     </div>
 </div>
 <?php
-if (isset($amazon) && strlen($orderId) > 0 && $orderInfo["order_is_paid"] == Orders::ORDER_IS_PENDING) {
+if (isset($amazon) && strlen($orderId) > 0 && $orderInfo["order_payment_status"] == Orders::ORDER_PAYMENT_PENDING) {
     if (strlen($amazon['merchant_id']) > 0 && strlen($amazon['access_key']) > 0 && strlen($amazon['secret_key']) > 0 && strlen($amazon['client_id']) > 0 && strlen(FatApp::getConfig('CONF_TRANSACTION_MODE', FatUtility::VAR_STRING, '0'))) {
 ?>
         <?php if (!FatUtility::isAjaxCall()) { ?>

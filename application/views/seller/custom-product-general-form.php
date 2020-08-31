@@ -101,13 +101,15 @@ $btnDiscardFld->setFieldTagAttribute('class', "btn btn-outline-primary");
         <div class="row">
             <div class="col-md-6">
                 <div class="field-set">
-                    <div class="caption-wraper">
+					<div class="caption-wraper d-flex justify-content-between">
                         <label class="field_label">
-                            <?php $fld = $productFrm->getField('taxcat_name');
-                              echo $fld->getCaption();
+                            <?php
+                            $fld = $productFrm->getField('taxcat_name');
+                            echo $fld->getCaption();
                             ?>
+                            <span class="spn_must_field">*</span>
                         </label>
-                        <span class="spn_must_field">*</span>
+                        <small><a class="form-text text-muted" target="_blank" href="<?php echo UrlHelper::generateUrl('seller', 'taxCategories'); ?>"><?php echo Labels::getLabel('LBL_Tax_Categories', $siteLangId) ; ?></a></small>
                     </div>
                     <div class="field-wraper">
                         <div class="field_cover">

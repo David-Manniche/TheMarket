@@ -8,7 +8,7 @@ New Features:
     => CDN handling based on configuration. 
     => Url Rewritting based on language. 
     => Security Headers for clickjacking, XSS and MIME types. 
-    => After Ship API.
+    => After Ship API.    
 Bugs:
     => 036750 - Seller Shop - Custom URL for shop collections
     => 036504 - wrong stats are displaying on buyer dashboard - pending and total orders
@@ -21,12 +21,14 @@ Bugs:
     => 040872 - Mark delivered order as completed automatically based on cancellation and return age of product/shop.
     => 041047 - Handling errors during Update Inventory.
     => 042212 - Pagesize issue fixed and restricted to allowed numbers.
+    => 042361 - Product temp images are not getting imported.
     
 Enhancements:
     => Tax module upgrade
     => Test cases classes enhancements.
     => Compatiblility with php 7.4 
-    => User Addresses DB changes.    
+    => User Addresses DB changes.  
+    => Displayed "product not available " on home page collections based on location. 
 Notes:
    ==========Stripe Connect Installation Notes[:=========
    Composer should be installed on server to run the stripe connect module: composer.json on root of the project has details to download the required libraries in root's vendor folder.

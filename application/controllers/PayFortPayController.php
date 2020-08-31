@@ -135,7 +135,7 @@ class PayFortPayController extends PaymentController
         if (!$orderInfo['id']) {
             $this->error = Labels::getLabel('MSG_INVALID_ACCESS', $this->siteLangId);
             return false;
-        } elseif ($orderInfo["order_is_paid"] != Orders::ORDER_IS_PENDING) {
+        } elseif ($orderInfo["order_payment_status"] != Orders::ORDER_PAYMENT_PENDING) {
             $this->error = Labels::getLabel('MSG_INVALID_ORDER_PAID_CANCELLED', $this->siteLangId);
             return false;
         }

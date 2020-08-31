@@ -1,6 +1,6 @@
 $(document).ready(function(){
 	//searchBlogs(document.frmBlogSearch);
-	bannerAdds();
+	/* bannerAdds(); */
 });
 (function() {
 	bannerAdds = function(){

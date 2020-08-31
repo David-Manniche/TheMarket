@@ -38,11 +38,13 @@
                     <div class="shop-name"><?php echo ($level == Shipping::LEVEL_SHOP) ? $productData['shop_name'] : FatApp::getConfig('CONF_WEBSITE_NAME_' . $siteLangId, null, ''); ?></div>
                     <div class="shop-name js-slot-addr_<?php echo $level; ?>">
                     <?php $seletedSlotId = '';
-                        $seletedSlotDate = '';
+                        $seletedSlotDate = '';  
+                        $seletedAddrId = '';  
                     if(!empty($levelItems['pickup_address'])) {
                         $address = $levelItems['pickup_address'];
                         $seletedSlotId = $address['time_slot_id'];
                         $seletedSlotDate = $address['time_slot_date'];
+                        $seletedAddrId = $address['addr_id'];
                         echo $address['addr_address1']; 
                         echo (strlen($address['addr_address2'])>0) ? ", ".$address['addr_address2'] : ''; 
                         echo (strlen($address['addr_city'])>0) ? '<br>'.$address['addr_city'].',' : ''; 
@@ -55,7 +57,7 @@
                         echo "<br/><strong>".FatDate::format($address["time_slot_date"]).' '.$fromTime.' - '.$toTime.'</strong>'; 
                     } ?>
                     </div>
-                    <div class="shipping-method">
+                    <div class="shipping-method js-slot-addr-<?php echo $level; ?>" data-addr-id="<?php echo $seletedAddrId; ?>">
                         <input type="hidden" name="slot_id[<?php echo $level; ?>]" class="js-slot-id" data-level="<?php echo $level; ?>" value="<?php echo $seletedSlotId; ?>">
                         <input type="hidden" name="slot_date[<?php echo $level; ?>]" class="js-slot-date" data-level="<?php echo $level; ?>" value="<?php echo $seletedSlotDate; ?>">
                         <a class="btn btn-secondary btn-sm" href="javascript:void(0)" onclick="displayPickupAddress(<?php echo $level;?>, 0)"><?php echo Labels::getLabel('LBL_SELECT_PICKUP', $siteLangId);?></a>
@@ -75,10 +77,12 @@
                         <div class="shop-name js-slot-addr_<?php echo $level; ?>">
                         <?php $seletedSlotId = '';
                         $seletedSlotDate = '';
+                        $seletedAddrId = '';  
                         if(!empty($levelItems['pickup_address'])) {
                             $address = $levelItems['pickup_address'];
                             $seletedSlotId = $address['time_slot_id'];
                             $seletedSlotDate = $address['time_slot_date'];
+                            $seletedAddrId = $address['addr_id'];
                             echo $address['addr_address1']; 
                             echo (strlen($address['addr_address2'])>0) ? ", ".$address['addr_address2'] : ''; 
                             echo (strlen($address['addr_city'])>0) ? '<br>'.$address['addr_city'].',' : ''; 
@@ -91,7 +95,7 @@
                              echo "<br/><strong>".FatDate::format($address["time_slot_date"]).' '.$fromTime.' - '.$toTime.'</strong>'; 
                         } ?>
                         </div>
-                        <div class="shipping-method">
+                        <div class="shipping-method js-slot-addr-<?php echo $level; ?>" data-addr-id="<?php echo $seletedAddrId; ?>">
                         <input type="hidden" name="slot_id[<?php echo $level; ?>]" class="js-slot-id" data-level="<?php echo $level; ?>" value="<?php echo $seletedSlotId; ?>">
                         <input type="hidden" name="slot_date[<?php echo $level; ?>]" class="js-slot-date" data-level="<?php echo $level; ?>" value="<?php echo $seletedSlotDate;?>">
                         <a class="btn btn-secondary btn-sm" href="javascript:void(0)" onclick="displayPickupAddress(<?php echo $level;?>, <?php echo $product['shop_id']; ?>)"><?php echo Labels::getLabel('LBL_SELECT_PICKUP', $siteLangId);?></a>

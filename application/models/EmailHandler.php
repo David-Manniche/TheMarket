@@ -878,7 +878,7 @@ class EmailHandler extends FatModel
             $arrReplacements = array(
             '{user_full_name}' => trim($userInfo['user_name']),
             '{invoice_number}' => $orderDetail['order_id'],
-            '{new_order_status}' => $payementStatusArr[$orderDetail['order_is_paid']],
+            '{new_order_status}' => $payementStatusArr[$orderDetail['order_payment_status']],
             );
 
             $this->sendMailToAdminAndAdditionalEmails("primary_order_payment_status_change_admin", $arrReplacements, static::ADD_ADDITIONAL_ALERTS, static::NOT_ONLY_SUPER_ADMIN, $langId);
@@ -2471,7 +2471,7 @@ class EmailHandler extends FatModel
             '{user_full_name}' => trim($userInfo['user_name']),
             '{invoice_number}' => $orderDetail['order_id'],
             '{order_products_table_format}' => $orderItemsTableFormatHtml,
-            '{new_order_status}' => $payementStatusArr[$orderDetail['order_is_paid']],
+            '{new_order_status}' => $payementStatusArr[$orderDetail['order_payment_status']],
             );
 
             $this->sendMailToAdminAndAdditionalEmails("new_subscription_purchase_admin", $arrReplacements, static::ADD_ADDITIONAL_ALERTS, static::NOT_ONLY_SUPER_ADMIN, $langId);
@@ -2513,7 +2513,7 @@ class EmailHandler extends FatModel
             '{user_full_name}' => trim($userInfo['user_name']),
             '{invoice_number}' => $orderDetail['order_id'],
             '{order_products_table_format}' => $orderItemsTableFormatHtml,
-            '{new_order_status}' => $payementStatusArr[$orderDetail['order_is_paid']],
+            '{new_order_status}' => $payementStatusArr[$orderDetail['order_payment_status']],
             );
 
             $this->sendMailToAdminAndAdditionalEmails("subscription_renew_admin", $arrReplacements, static::ADD_ADDITIONAL_ALERTS, static::NOT_ONLY_SUPER_ADMIN, $langId);

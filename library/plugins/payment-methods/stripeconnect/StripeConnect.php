@@ -58,6 +58,7 @@ class StripeConnect extends PaymentMethodBase
     public const REQUEST_PAYMENT_INTENT = 25;
     public const REQUEST_RETRIEVE_PAYMENT_INTENT = 26;
     public const REQUEST_CREATE_PAYMENT_METHOD = 27;
+    public const REQUEST_CAPTURE_PAYMENT = 28;
 
     /**
      * __construct
@@ -1135,6 +1136,24 @@ class StripeConnect extends PaymentMethodBase
     }
 
     /**
+     * captureDetainedAmount
+     * @param array $requestParam : [
+     *      'paymentIntentId' => 'pi_JRXXXXXXXXXXXXX',
+     *      'amount_to_capture' => 750,
+     *      'statement_descriptor' => 'TEXT' // Description that appears on your customers’ statements. Length at least one letter, maximum 22 characters.
+     *   ]
+     * @return bool
+     */
+    public function captureDetainedAmount(array $requestParam): bool
+    {
+        $this->resp = $this->doRequest(self::REQUEST_CAPTURE_PAYMENT, $requestParam);
+        if (false === $this->resp) {
+            return false;
+        }
+        return true;
+    }
+
+    /**
      * doRequest
      *
      * @param  mixed $requestType
@@ -1225,26 +1244,29 @@ class StripeConnect extends PaymentMethodBase
                 case self::REQUEST_CREATE_PAYMENT_METHOD:
                     return $this->createPaymentMethod($requestParam);
                     break;
+                case self::REQUEST_CAPTURE_PAYMENT:
+                    return $this->capturePayment($requestParam);
+                    break;
             }
         } catch (\Stripe\Exception\CardException $e) {
             // Since it's a decline, \Stripe\Exception\CardException will be caught
-            $this->error = $e->getError()->param . ' - ' . $e->getMessage();
+            $this->error = $e->getMessage();
         } catch (\Stripe\Exception\RateLimitException $e) {
             // Too many requests made to the API too quickly
-            $this->error = $e->getError()->param . ' - ' . $e->getMessage();
+            $this->error = $e->getMessage();
         } catch (\Stripe\Exception\InvalidRequestException $e) {
             // Invalid parameters were supplied to Stripe's API
-            $this->error = $e->getError()->param . ' - ' . $e->getMessage();
+            $this->error = $e->getMessage();
         } catch (\Stripe\Exception\AuthenticationException $e) {
             // Authentication with Stripe's API failed
-            $this->error = $e->getError()->param . ' - ' . $e->getMessage();
+            $this->error = $e->getMessage();
             // (maybe you changed API keys recently)
         } catch (\Stripe\Exception\ApiConnectionException $e) {
             // Network communication with Stripe failed
-            $this->error = $e->getError()->param . ' - ' . $e->getMessage();
+            $this->error = $e->getMessage();
         } catch (\Stripe\Exception\ApiErrorException $e) {
             // Display a very generic error to the user, and maybe send
-            $this->error = $e->getError()->param . ' - ' . $e->getMessage();
+            $this->error = $e->getMessage();
             // yourself an email
         } catch (\Stripe\Exception\SignatureVerificationException $e) {
             // Display a very generic error to the user, and maybe send

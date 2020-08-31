@@ -74,7 +74,7 @@ class ProductsController extends MyAppController
 
         if (array_key_exists('keyword', $get) && count($data['products'])) {
             $searchItemObj = new SearchItem();
-            $searchData = array('keyword'=>$get['keyword']);
+            $searchData = array('keyword' => $get['keyword']);
             $searchItemObj->addSearchResult($searchData);
         }
 
@@ -337,6 +337,8 @@ class ProductsController extends MyAppController
 
         /* fetch requested product[ */
         $prodSrch = clone $prodSrchObj;
+        $prodSrch->setLocationBasedInnerJoin(false);
+        $prodSrch->setGeoAddress();
         $prodSrch->setDefinedCriteria(0, 0, array(), false);
         $prodSrch->joinProductToCategory();
         $prodSrch->joinShopSpecifics();
@@ -344,6 +346,7 @@ class ProductsController extends MyAppController
         $prodSrch->joinSellerProductSpecifics();
         $prodSrch->joinSellerSubscription();
         $prodSrch->addSubscriptionValidCondition();
+        $prodSrch->validateAndJoinDeliveryLocation(false);
         $prodSrch->doNotCalculateRecords();
         $prodSrch->addCondition('selprod_id', '=', $selprod_id);
         $prodSrch->addCondition('selprod_deleted', '=', applicationConstants::NO);
@@ -379,11 +382,12 @@ class ProductsController extends MyAppController
         $prodSrch->joinTable('(' . $selProdRviewSubQuery . ')', 'LEFT OUTER JOIN', 'sq_sprating.spreview_product_id = product_id', 'sq_sprating');
         $prodSrch->addMultipleFields(
             array(
-            'product_id','product_identifier', 'COALESCE(product_name,product_identifier) as product_name', 'product_seller_id', 'product_model','product_type', 'prodcat_id', 'COALESCE(prodcat_name,prodcat_identifier) as prodcat_name', 'product_upc', 'product_isbn', 'product_short_description', 'product_description',
-            'selprod_id', 'selprod_user_id', 'selprod_code', 'selprod_condition', 'selprod_price', 'special_price_found','splprice_start_date', 'splprice_end_date', 'COALESCE(selprod_title, product_name, product_identifier) as selprod_title', 'selprod_warranty', 'selprod_return_policy','selprodComments',
-            'theprice', 'selprod_stock' , 'selprod_threshold_stock_level', 'IF(selprod_stock > 0, 1, 0) AS in_stock', 'brand_id', 'COALESCE(brand_name, brand_identifier) as brand_name', 'brand_short_description', 'user_name',
-            'shop_id', 'COALESCE(shop_name, shop_identifier) as shop_name', 'COALESCE(sq_sprating.prod_rating,0) prod_rating ','COALESCE(sq_sprating.totReviews,0) totReviews',
-            'splprice_display_dis_type', 'splprice_display_dis_val', 'splprice_display_list_price', 'product_attrgrp_id', 'product_youtube_video', 'product_cod_enabled', 'selprod_cod_enabled','selprod_available_from', 'selprod_min_order_qty', 'product_updated_on', 'product_warranty', 'selprod_return_age', 'selprod_cancellation_age', 'shop_return_age', 'shop_cancellation_age')
+                'product_id', 'product_identifier', 'COALESCE(product_name,product_identifier) as product_name', 'product_seller_id', 'product_model', 'product_type', 'prodcat_id', 'COALESCE(prodcat_name,prodcat_identifier) as prodcat_name', 'product_upc', 'product_isbn', 'product_short_description', 'product_description',
+                'selprod_id', 'selprod_user_id', 'selprod_code', 'selprod_condition', 'selprod_price', 'special_price_found', 'splprice_start_date', 'splprice_end_date', 'COALESCE(selprod_title, product_name, product_identifier) as selprod_title', 'selprod_warranty', 'selprod_return_policy', 'selprodComments',
+                'theprice', 'selprod_stock', 'selprod_threshold_stock_level', 'IF(selprod_stock > 0, 1, 0) AS in_stock', 'brand_id', 'COALESCE(brand_name, brand_identifier) as brand_name', 'brand_short_description', 'user_name',
+                'shop_id', 'COALESCE(shop_name, shop_identifier) as shop_name', 'COALESCE(sq_sprating.prod_rating,0) prod_rating ', 'COALESCE(sq_sprating.totReviews,0) totReviews',
+                'splprice_display_dis_type', 'splprice_display_dis_val', 'splprice_display_list_price', 'product_attrgrp_id', 'product_youtube_video', 'product_cod_enabled', 'selprod_cod_enabled', 'selprod_available_from', 'selprod_min_order_qty', 'product_updated_on', 'product_warranty', 'selprod_return_age', 'selprod_cancellation_age', 'shop_return_age', 'shop_cancellation_age'
+            )
         );
 
         $productRs = $prodSrch->getResultSet();
@@ -535,14 +539,14 @@ class ProductsController extends MyAppController
         $optionSrchObj->joinTable(Option::DB_TBL, 'LEFT OUTER JOIN', 'opval.optionvalue_option_id = op.option_id', 'op');
         if (FatApp::getConfig('CONF_ENABLE_SELLER_SUBSCRIPTION_MODULE', FatUtility::VAR_INT, 0)) {
             $validDateCondition = " and oss.ossubs_till_date >= '" . date('Y-m-d') . "'";
-            $optionSrchObj->joinTable(Orders::DB_TBL, 'INNER JOIN', 'o.order_user_id=seller_user.user_id AND o.order_type=' . ORDERS::ORDER_SUBSCRIPTION . ' AND o.order_is_paid =1', 'o');
+            $optionSrchObj->joinTable(Orders::DB_TBL, 'INNER JOIN', 'o.order_user_id=seller_user.user_id AND o.order_type=' . ORDERS::ORDER_SUBSCRIPTION . ' AND o.order_payment_status =1', 'o');
             $optionSrchObj->joinTable(OrderSubscription::DB_TBL, 'INNER JOIN', 'o.order_id = oss.ossubs_order_id and oss.ossubs_status_id=' . FatApp::getConfig('CONF_DEFAULT_SUBSCRIPTION_PAID_ORDER_STATUS') . $validDateCondition, 'oss');
         }
         $optionSrchObj->addCondition('product_id', '=', $product['product_id']);
 
         $optionSrch = clone $optionSrchObj;
         $optionSrch->joinTable(Option::DB_TBL . '_lang', 'LEFT OUTER JOIN', 'op.option_id = op_l.optionlang_option_id AND op_l.optionlang_lang_id = ' . $this->siteLangId, 'op_l');
-        $optionSrch->addMultipleFields(array(  'option_id', 'option_is_color', 'COALESCE(option_name,option_identifier) as option_name' ));
+        $optionSrch->addMultipleFields(array('option_id', 'option_is_color', 'COALESCE(option_name,option_identifier) as option_name'));
         $optionSrch->addCondition('option_id', '!=', 'NULL');
         $optionSrch->addCondition('selprodoption_selprod_id', '=', $selprod_id);
         $optionSrch->addGroupBy('option_id');
@@ -560,7 +564,7 @@ class ProductsController extends MyAppController
                 $optionValueSrch->joinTable(OptionValue::DB_TBL . '_lang', 'LEFT OUTER JOIN', 'opval.optionvalue_id = opval_l.optionvaluelang_optionvalue_id AND opval_l.optionvaluelang_lang_id = ' . $this->siteLangId, 'opval_l');
                 $optionValueSrch->addCondition('product_id', '=', $product['product_id']);
                 $optionValueSrch->addCondition('option_id', '=', $option['option_id']);
-                $optionValueSrch->addMultipleFields(array( 'COALESCE(product_name, product_identifier) as product_name', 'selprod_id', 'selprod_user_id', 'selprod_code', 'option_id', 'COALESCE(optionvalue_name,optionvalue_identifier) as optionvalue_name ', 'theprice', 'optionvalue_id', 'optionvalue_color_code'));
+                $optionValueSrch->addMultipleFields(array('COALESCE(product_name, product_identifier) as product_name', 'selprod_id', 'selprod_user_id', 'selprod_code', 'option_id', 'COALESCE(optionvalue_name,optionvalue_identifier) as optionvalue_name ', 'theprice', 'optionvalue_id', 'optionvalue_color_code'));
                 $optionValueSrch->addGroupBy('optionvalue_id');
                 $optionValueRs = $optionValueSrch->getResultSet();
                 if (true === MOBILE_APP_API_CALL) {
@@ -632,7 +636,7 @@ class ProductsController extends MyAppController
         $srch->setDefinedCriteria($this->siteLangId);
         $srch->doNotCalculateRecords();
         $srch->addMultipleFields(
-            array( 'shop_id', 'shop_user_id', 'shop_ltemplate_id', 'shop_created_on', 'COALESCE(shop_name, shop_identifier) as shop_name', 'shop_description', 'shop_payment_policy', 'shop_delivery_policy', 'shop_refund_policy',  'COALESCE(shop_country_l.country_name,shop_country.country_code) as shop_country_name', 'COALESCE(shop_state_l.state_name,state_identifier) as shop_state_name', 'shop_city'/* , 'shop_free_ship_upto' */ )
+            array('shop_id', 'shop_user_id', 'shop_ltemplate_id', 'shop_created_on', 'COALESCE(shop_name, shop_identifier) as shop_name', 'shop_description', 'shop_payment_policy', 'shop_delivery_policy', 'shop_refund_policy',  'COALESCE(shop_country_l.country_name,shop_country.country_code) as shop_country_name', 'COALESCE(shop_state_l.state_name,state_identifier) as shop_state_name', 'shop_city'/* , 'shop_free_ship_upto' */)
         );
         $srch->addCondition('shop_id', '=', $product['shop_id']);
         $shopRs = $srch->getResultSet();
@@ -659,6 +663,10 @@ class ProductsController extends MyAppController
             }
         }
 
+        if (FatApp::getConfig('CONF_ENABLE_GEO_LOCATION', FatUtility::VAR_INT, 0)) {
+            $displayProductNotAvailableLable = true;
+        }
+        $this->set('displayProductNotAvailableLable', $displayProductNotAvailableLable);
         $this->set('canSubmitFeedback', $canSubmitFeedback);
         $this->set('upsellProducts', !empty($upsellProducts) ? $upsellProducts : array());
         $this->set('relatedProductsRs', !empty($relatedProductsRs) ? $relatedProductsRs : array());
@@ -805,12 +813,12 @@ class ProductsController extends MyAppController
         $srch->addCondition('selprod_deleted', '=', applicationConstants::NO);
         $srch->addMultipleFields(
             array(
-            'product_id','prodcat_id','substring_index(group_concat(COALESCE(prodcat_name, prodcat_identifier) ORDER BY COALESCE(prodcat_name, prodcat_identifier) ASC SEPARATOR "," ) , ",", 1) as prodcat_name', 'COALESCE(product_name, product_identifier) as product_name', 'product_model', 'product_short_description', 'product_updated_on',
-            'selprod_id', 'selprod_user_id',  'selprod_code', 'selprod_stock', 'selprod_condition', 'selprod_price', 'COALESCE(selprod_title, product_name, product_identifier) as selprod_title',
-            'special_price_found', 'splprice_display_list_price', 'splprice_display_dis_val', 'splprice_display_dis_type',
-            'theprice', 'brand_id', 'COALESCE(brand_name, brand_identifier) as brand_name', 'brand_short_description', 'user_name',
-            'IF(selprod_stock > 0, 1, 0) AS in_stock', 'selprod_sold_count', 'selprod_return_policy'
-                 )
+                'product_id', 'prodcat_id', 'substring_index(group_concat(COALESCE(prodcat_name, prodcat_identifier) ORDER BY COALESCE(prodcat_name, prodcat_identifier) ASC SEPARATOR "," ) , ",", 1) as prodcat_name', 'COALESCE(product_name, product_identifier) as product_name', 'product_model', 'product_short_description', 'product_updated_on',
+                'selprod_id', 'selprod_user_id',  'selprod_code', 'selprod_stock', 'selprod_condition', 'selprod_price', 'COALESCE(selprod_title, product_name, product_identifier) as selprod_title',
+                'special_price_found', 'splprice_display_list_price', 'splprice_display_dis_val', 'splprice_display_dis_type',
+                'theprice', 'brand_id', 'COALESCE(brand_name, brand_identifier) as brand_name', 'brand_short_description', 'user_name',
+                'IF(selprod_stock > 0, 1, 0) AS in_stock', 'selprod_sold_count', 'selprod_return_policy'
+            )
         );
 
         $dateToEquate = date('Y-m-d');
@@ -895,13 +903,13 @@ class ProductsController extends MyAppController
         $productImageUrl = '';
         /* $productImageUrl = UrlHelper::generateFullUrl('Image','product', array($product['product_id'],'', $product['selprod_id'],0,$this->siteLangId )); */
         if (0 < $afile_id) {
-            $productImageUrl = UrlHelper::generateFullUrl('Image', 'product', array($product['product_id'], 'FB_RECOMMEND', 0, $afile_id ));
+            $productImageUrl = UrlHelper::generateFullUrl('Image', 'product', array($product['product_id'], 'FB_RECOMMEND', 0, $afile_id));
         }
         $socialShareContent = array(
-        'type' => 'Product',
-        'title' => $title,
-        'description' => $product_description,
-        'image' => $productImageUrl,
+            'type' => 'Product',
+            'title' => $title,
+            'description' => $product_description,
+            'image' => $productImageUrl,
         );
         return $socialShareContent;
     }
@@ -940,9 +948,10 @@ class ProductsController extends MyAppController
         $prodSrch->addCondition('selprod_id', 'IN', $cookiesProductsArr);
         $prodSrch->addMultipleFields(
             array(
-            'product_id', 'COALESCE(product_name, product_identifier) as product_name', 'prodcat_id', 'COALESCE(prodcat_name, prodcat_identifier) as prodcat_name', 'product_updated_on',
-            'selprod_id', 'selprod_condition', 'IF(selprod_stock > 0, 1, 0) AS in_stock', 'theprice',
-            'special_price_found', 'splprice_display_list_price', 'splprice_display_dis_val', 'splprice_display_dis_type', 'selprod_sold_count', 'COALESCE(selprod_title, product_name, product_identifier) as selprod_title', 'selprod_price')
+                'product_id', 'COALESCE(product_name, product_identifier) as product_name', 'prodcat_id', 'COALESCE(prodcat_name, prodcat_identifier) as prodcat_name', 'product_updated_on',
+                'selprod_id', 'selprod_condition', 'IF(selprod_stock > 0, 1, 0) AS in_stock', 'theprice',
+                'special_price_found', 'splprice_display_list_price', 'splprice_display_dis_val', 'splprice_display_dis_type', 'selprod_sold_count', 'COALESCE(selprod_title, product_name, product_identifier) as selprod_title', 'selprod_price'
+            )
         );
         // echo $prodSrch->getQuery(); die;
 
@@ -1015,9 +1024,10 @@ class ProductsController extends MyAppController
             $prodSrch->addCondition('selprod_id', 'IN', $ids);
             $prodSrch->addMultipleFields(
                 array(
-                'product_id', 'COALESCE(product_name, product_identifier) as product_name', 'prodcat_id', 'COALESCE(prodcat_name, prodcat_identifier) as prodcat_name', 'product_updated_on', 'COALESCE(selprod_title,product_name, product_identifier) as selprod_title',
-                'selprod_id', 'selprod_condition', 'IF(selprod_stock > 0, 1, 0) AS in_stock', 'theprice',
-                'special_price_found', 'splprice_display_list_price', 'splprice_display_dis_val', 'splprice_display_dis_type', 'selprod_sold_count', 'selprod_price')
+                    'product_id', 'COALESCE(product_name, product_identifier) as product_name', 'prodcat_id', 'COALESCE(prodcat_name, prodcat_identifier) as prodcat_name', 'product_updated_on', 'COALESCE(selprod_title,product_name, product_identifier) as selprod_title',
+                    'selprod_id', 'selprod_condition', 'IF(selprod_stock > 0, 1, 0) AS in_stock', 'theprice',
+                    'special_price_found', 'splprice_display_list_price', 'splprice_display_dis_val', 'splprice_display_dis_type', 'selprod_sold_count', 'selprod_price'
+                )
             );
 
             $productRs = $prodSrch->getResultSet();
@@ -1053,7 +1063,7 @@ class ProductsController extends MyAppController
         $json = array();
         foreach ($tags as $key => $tag) {
             $json[] = array(
-            'value' => strip_tags(html_entity_decode($tag['value'], ENT_QUOTES, 'UTF-8'))
+                'value' => strip_tags(html_entity_decode($tag['value'], ENT_QUOTES, 'UTF-8'))
             );
         }
         die(json_encode($json));
@@ -1208,9 +1218,11 @@ class ProductsController extends MyAppController
         }
         $productSrchObj->joinProductRating();
         $productSrchObj->addMultipleFields(
-            array('product_id', 'selprod_id', 'COALESCE(product_name, product_identifier) as product_name', 'COALESCE(selprod_title, product_name, product_identifier) as selprod_title',
-            'special_price_found', 'splprice_display_list_price', 'splprice_display_dis_val', 'splprice_display_dis_type',
-            'theprice', 'selprod_price', 'selprod_stock', 'selprod_condition', 'prodcat_id', 'COALESCE(prodcat_name, prodcat_identifier) as prodcat_name', 'COALESCE(sq_sprating.prod_rating,0) prod_rating ', 'selprod_sold_count')
+            array(
+                'product_id', 'selprod_id', 'COALESCE(product_name, product_identifier) as product_name', 'COALESCE(selprod_title, product_name, product_identifier) as selprod_title',
+                'special_price_found', 'splprice_display_list_price', 'splprice_display_dis_val', 'splprice_display_dis_type',
+                'theprice', 'selprod_price', 'selprod_stock', 'selprod_condition', 'prodcat_id', 'COALESCE(prodcat_name, prodcat_identifier) as prodcat_name', 'COALESCE(sq_sprating.prod_rating,0) prod_rating ', 'selprod_sold_count'
+            )
         );
 
         $productCatSrchObj = ProductCategory::getSearchObject(false, $this->siteLangId);
@@ -1241,29 +1253,29 @@ class ProductsController extends MyAppController
 
         if (Promotion::isUserClickCountable($userId, $row['promotion_id'], $_SERVER['REMOTE_ADDR'], session_id())) {
             $promotionClickData = array(
-            'pclick_promotion_id' => $row['promotion_id'],
-            'pclick_user_id' => $userId,
-            'pclick_datetime' => date('Y-m-d H:i:s'),
-            'pclick_ip' => $_SERVER['REMOTE_ADDR'],
-            'pclick_cost' => Promotion::getPromotionCostPerClick(Promotion::TYPE_PRODUCT),
-            'pclick_session_id' => session_id(),
+                'pclick_promotion_id' => $row['promotion_id'],
+                'pclick_user_id' => $userId,
+                'pclick_datetime' => date('Y-m-d H:i:s'),
+                'pclick_ip' => $_SERVER['REMOTE_ADDR'],
+                'pclick_cost' => Promotion::getPromotionCostPerClick(Promotion::TYPE_PRODUCT),
+                'pclick_session_id' => session_id(),
             );
 
             FatApp::getDb()->insertFromArray(Promotion::DB_TBL_CLICKS, $promotionClickData, false, '', $promotionClickData);
             $clickId = FatApp::getDb()->getInsertId();
 
             $promotionClickChargesData = array(
-            'picharge_pclick_id' => $clickId,
-            'picharge_datetime' => date('Y-m-d H:i:s'),
-            'picharge_cost' => Promotion::getPromotionCostPerClick(Promotion::TYPE_PRODUCT),
+                'picharge_pclick_id' => $clickId,
+                'picharge_datetime' => date('Y-m-d H:i:s'),
+                'picharge_cost' => Promotion::getPromotionCostPerClick(Promotion::TYPE_PRODUCT),
             );
 
             FatApp::getDb()->insertFromArray(Promotion::DB_TBL_ITEM_CHARGES, $promotionClickChargesData, false);
 
             $promotionLogData = array(
-            'plog_promotion_id' => $row['promotion_id'],
-            'plog_date' => date('Y-m-d'),
-            'plog_clicks' => 1,
+                'plog_promotion_id' => $row['promotion_id'],
+                'plog_date' => date('Y-m-d'),
+                'plog_clicks' => 1,
             );
 
             $onDuplicatePromotionLogData = array_merge($promotionLogData, array('plog_clicks' => 'mysql_func_plog_clicks+1'));
@@ -1319,7 +1331,8 @@ class ProductsController extends MyAppController
 
         $prodSrch->addMultipleFields(
             array(
-            'product_id', 'COALESCE(product_name,product_identifier ) as product_name', 'product_seller_id', 'product_model', 'COALESCE(prodcat_name, prodcat_identifier) as prodcat_name', 'product_upc', 'product_isbn', 'product_short_description', 'product_description', 'selprod_id', 'selprod_user_id', 'selprod_code', 'selprod_condition', 'selprod_price', 'special_price_found', 'splprice_start_date', 'splprice_end_date', 'COALESCE(selprod_title,product_name,product_identifier) as selprod_title', 'selprod_warranty', 'selprod_return_policy', 'selprodComments', 'theprice', 'selprod_stock', 'selprod_threshold_stock_level', 'IF(selprod_stock > 0, 1, 0) AS in_stock', 'brand_id', 'COALESCE(brand_name, brand_identifier) as brand_name', 'brand_short_description', 'user_name', 'shop_id', 'shop_name', 'COALESCE(sq_sprating.prod_rating,0) prod_rating ', 'COALESCE(sq_sprating.totReviews,0) totReviews', 'splprice_display_dis_type', 'splprice_display_dis_val', 'splprice_display_list_price', 'product_attrgrp_id', 'product_youtube_video', 'product_cod_enabled', 'selprod_cod_enabled')
+                'product_id', 'COALESCE(product_name,product_identifier ) as product_name', 'product_seller_id', 'product_model', 'COALESCE(prodcat_name, prodcat_identifier) as prodcat_name', 'product_upc', 'product_isbn', 'product_short_description', 'product_description', 'selprod_id', 'selprod_user_id', 'selprod_code', 'selprod_condition', 'selprod_price', 'special_price_found', 'splprice_start_date', 'splprice_end_date', 'COALESCE(selprod_title,product_name,product_identifier) as selprod_title', 'selprod_warranty', 'selprod_return_policy', 'selprodComments', 'theprice', 'selprod_stock', 'selprod_threshold_stock_level', 'IF(selprod_stock > 0, 1, 0) AS in_stock', 'brand_id', 'COALESCE(brand_name, brand_identifier) as brand_name', 'brand_short_description', 'user_name', 'shop_id', 'shop_name', 'COALESCE(sq_sprating.prod_rating,0) prod_rating ', 'COALESCE(sq_sprating.totReviews,0) totReviews', 'splprice_display_dis_type', 'splprice_display_dis_val', 'splprice_display_list_price', 'product_attrgrp_id', 'product_youtube_video', 'product_cod_enabled', 'selprod_cod_enabled'
+            )
         );
 
         $productRs = $prodSrch->getResultSet();
@@ -1366,10 +1379,13 @@ class ProductsController extends MyAppController
 
         /* fetch requested product[ */
         $prodSrch = clone $prodSrchObj;
+        $prodSrch->setLocationBasedInnerJoin(false);
+        $prodSrch->setGeoAddress();
         $prodSrch->setDefinedCriteria(false, false, array(), false);
         $prodSrch->joinProductToCategory();
         $prodSrch->joinSellerSubscription();
         $prodSrch->addSubscriptionValidCondition();
+        $prodSrch->validateAndJoinDeliveryLocation(false);
         $prodSrch->doNotCalculateRecords();
         $prodSrch->addCondition('selprod_id', '=', $selprod_id);
         $prodSrch->doNotLimitRecords();
@@ -1491,14 +1507,14 @@ class ProductsController extends MyAppController
         $optionSrchObj->joinTable(Option::DB_TBL, 'LEFT OUTER JOIN', 'opval.optionvalue_option_id = op.option_id', 'op');
         if (FatApp::getConfig('CONF_ENABLE_SELLER_SUBSCRIPTION_MODULE', FatUtility::VAR_INT, 0)) {
             $validDateCondition = " and oss.ossubs_till_date >= '" . date('Y-m-d') . "'";
-            $optionSrchObj->joinTable(Orders::DB_TBL, 'INNER JOIN', 'o.order_user_id=seller_user.user_id AND o.order_type=' . ORDERS::ORDER_SUBSCRIPTION . ' AND o.order_is_paid =1', 'o');
+            $optionSrchObj->joinTable(Orders::DB_TBL, 'INNER JOIN', 'o.order_user_id=seller_user.user_id AND o.order_type=' . ORDERS::ORDER_SUBSCRIPTION . ' AND o.order_payment_status =1', 'o');
             $optionSrchObj->joinTable(OrderSubscription::DB_TBL, 'INNER JOIN', 'o.order_id = oss.ossubs_order_id and oss.ossubs_status_id=' . FatApp::getConfig('CONF_DEFAULT_SUBSCRIPTION_PAID_ORDER_STATUS') . $validDateCondition, 'oss');
         }
         $optionSrchObj->addCondition('product_id', '=', $product['product_id']);
 
         $optionSrch = clone $optionSrchObj;
         $optionSrch->joinTable(Option::DB_TBL . '_lang', 'LEFT OUTER JOIN', 'op.option_id = op_l.optionlang_option_id AND op_l.optionlang_lang_id = ' . $this->siteLangId, 'op_l');
-        $optionSrch->addMultipleFields(array(  'option_id', 'option_is_color', 'COALESCE(option_name,option_identifier) as option_name' ));
+        $optionSrch->addMultipleFields(array('option_id', 'option_is_color', 'COALESCE(option_name,option_identifier) as option_name'));
         $optionSrch->addCondition('option_id', '!=', 'NULL');
         $optionSrch->addCondition('selprodoption_selprod_id', '=', $selprod_id);
         $optionSrch->addGroupBy('option_id');
@@ -1512,7 +1528,7 @@ class ProductsController extends MyAppController
                 $optionValueSrch->joinTable(OptionValue::DB_TBL . '_lang', 'LEFT OUTER JOIN', 'opval.optionvalue_id = opval_l.optionvaluelang_optionvalue_id AND opval_l.optionvaluelang_lang_id = ' . $this->siteLangId, 'opval_l');
                 $optionValueSrch->addCondition('product_id', '=', $product['product_id']);
                 $optionValueSrch->addCondition('option_id', '=', $option['option_id']);
-                $optionValueSrch->addMultipleFields(array( 'COALESCE(product_name, product_identifier) as product_name', 'selprod_id', 'selprod_user_id', 'selprod_code', 'option_id', 'COALESCE(optionvalue_name,optionvalue_identifier) as optionvalue_name ', 'theprice', 'optionvalue_id', 'optionvalue_color_code'));
+                $optionValueSrch->addMultipleFields(array('COALESCE(product_name, product_identifier) as product_name', 'selprod_id', 'selprod_user_id', 'selprod_code', 'option_id', 'COALESCE(optionvalue_name,optionvalue_identifier) as optionvalue_name ', 'theprice', 'optionvalue_id', 'optionvalue_color_code'));
                 $optionValueSrch->addGroupBy('optionvalue_id');
                 $optionValueRs = $optionValueSrch->getResultSet();
                 $optionValueRows = FatApp::getDb()->fetchAll($optionValueRs, 'optionvalue_id');
@@ -1539,9 +1555,16 @@ class ProductsController extends MyAppController
             /* $productImageUrl = UrlHelper::generateFullUrl('Image','product', array($product['product_id'],'', $product['selprod_id'],0,$this->siteLangId )); */
             if ($productImagesArr) {
                 $afile_id = array_keys($productImagesArr)[0];
-                $productImageUrl = UrlHelper::generateFullUrl('Image', 'product', array($product['product_id'], 'MEDIUM', 0, $afile_id ));
+                $productImageUrl = UrlHelper::generateFullUrl('Image', 'product', array($product['product_id'], 'MEDIUM', 0, $afile_id));
             }
         }
+
+        $displayProductNotAvailableLable = false;
+        //availableInLocation
+        if (FatApp::getConfig('CONF_ENABLE_GEO_LOCATION', FatUtility::VAR_INT, 0)) {
+            $displayProductNotAvailableLable = true;
+        }
+        $this->set('displayProductNotAvailableLable', $displayProductNotAvailableLable);
         $this->set('product', $product);
         $this->set('productImagesArr', $productGroupImages);
         $this->_template->render(false, false);
@@ -1555,8 +1578,8 @@ class ProductsController extends MyAppController
         $json = array();
         foreach ($arr_options as $key => $product) {
             $json[] = array(
-            'id' => $key,
-            'name' => strip_tags(html_entity_decode($product, ENT_QUOTES, 'UTF-8'))
+                'id' => $key,
+                'name' => strip_tags(html_entity_decode($product, ENT_QUOTES, 'UTF-8'))
             );
         }
         die(json_encode($json));
@@ -1587,7 +1610,7 @@ class ProductsController extends MyAppController
                 $pageSize = FatApp::getConfig('CONF_ITEMS_PER_PAGE_CATALOG', FatUtility::VAR_INT, 10);
             }
         }
-        
+
         if (FatApp::getConfig('CONF_DEFAULT_PLUGIN_' . Plugin::TYPE_FULL_TEXT_SEARCH, FatUtility::VAR_INT, 0)) {
             $srch = FullTextSearch::getListingObj($get, $this->siteLangId, $userId);
             $page = ($page - 1) * $pageSize;
@@ -1651,7 +1674,7 @@ class ProductsController extends MyAppController
             if ($categoryId) {
                 $productCategorySearch = new ProductCategorySearch($this->siteLangId);
                 $productCategorySearch->addCondition('prodcat_id', '=', $categoryId);
-                $productCategorySearch->addMultipleFields(array('prodcat_id','COALESCE(prodcat_name, prodcat_identifier) as prodcat_name','prodcat_description','prodcat_code'));
+                $productCategorySearch->addMultipleFields(array('prodcat_id', 'COALESCE(prodcat_name, prodcat_identifier) as prodcat_name', 'prodcat_description', 'prodcat_code'));
                 $productCategorySearchRs = $productCategorySearch->getResultSet();
                 $category = $db->fetch($productCategorySearchRs);
                 $category['banner'] = AttachedFile::getAttachment(AttachedFile::FILETYPE_CATEGORY_BANNER, $categoryId);
@@ -1660,15 +1683,15 @@ class ProductsController extends MyAppController
         /* ] */
 
         $data = array(
-            'products'=>$products,
-            'category'=>$category,
-            'categoryId'=>$categoryId,
-            'postedData'=>$get,
-            'page'=>$page,
+            'products' => $products,
+            'category' => $category,
+            'categoryId' => $categoryId,
+            'postedData' => $get,
+            'page' => $page,
             'pageCount' => $srch->pages(),
-            'pageSize'=>$pageSize,
-            'recordCount'=>$srch->recordCount(),
-            'siteLangId'=>$this->siteLangId
+            'pageSize' => $pageSize,
+            'recordCount' => $srch->recordCount(),
+            'siteLangId' => $this->siteLangId
         );
         return $data;
     }
@@ -1732,7 +1755,7 @@ class ProductsController extends MyAppController
 
         $optionSrch = clone $optionSrchObj;
         $optionSrch->joinTable(Option::DB_TBL . '_lang', 'LEFT OUTER JOIN', 'op.option_id = op_l.optionlang_option_id AND op_l.optionlang_lang_id = ' . $this->siteLangId, 'op_l');
-        $optionSrch->addMultipleFields(array(  'option_id', 'option_is_color', 'COALESCE(option_name,option_identifier) as option_name' ));
+        $optionSrch->addMultipleFields(array('option_id', 'option_is_color', 'COALESCE(option_name,option_identifier) as option_name'));
         $optionSrch->addCondition('option_id', '!=', 'NULL');
         $optionSrch->addCondition('selprodoption_selprod_id', '=', $selProdId);
         $optionSrch->addGroupBy('option_id');
@@ -1746,7 +1769,7 @@ class ProductsController extends MyAppController
                 $optionValueSrch->joinTable(OptionValue::DB_TBL . '_lang', 'LEFT OUTER JOIN', 'opval.optionvalue_id = opval_l.optionvaluelang_optionvalue_id AND opval_l.optionvaluelang_lang_id = ' . $this->siteLangId, 'opval_l');
                 $optionValueSrch->addCondition('product_id', '=', $productId);
                 $optionValueSrch->addCondition('option_id', '=', $option['option_id']);
-                $optionValueSrch->addMultipleFields(array( 'COALESCE(product_name, product_identifier) as product_name', 'selprod_id', 'selprod_user_id', 'selprod_code', 'option_id', 'COALESCE(optionvalue_name,optionvalue_identifier) as optionvalue_name ', 'theprice', 'optionvalue_id', 'optionvalue_color_code'));
+                $optionValueSrch->addMultipleFields(array('COALESCE(product_name, product_identifier) as product_name', 'selprod_id', 'selprod_user_id', 'selprod_code', 'option_id', 'COALESCE(optionvalue_name,optionvalue_identifier) as optionvalue_name ', 'theprice', 'optionvalue_id', 'optionvalue_color_code'));
                 $optionValueSrch->addGroupBy('optionvalue_id');
                 $optionValueRs = $optionValueSrch->getResultSet();
                 $optionValueRows = FatApp::getDb()->fetchAll($optionValueRs);
@@ -1787,8 +1810,8 @@ class ProductsController extends MyAppController
 
         if (!empty($post['keyword'])) {
             $srch->addCondition('taxcat_name', 'LIKE', '%' . $post['keyword'] . '%')
-            ->attachCondition('taxcat_identifier', 'LIKE', '%' . $post['keyword'] . '%')
-            ->attachCondition('taxcat_code', 'LIKE', '%' . $post['keyword'] . '%');
+                ->attachCondition('taxcat_identifier', 'LIKE', '%' . $post['keyword'] . '%')
+                ->attachCondition('taxcat_code', 'LIKE', '%' . $post['keyword'] . '%');
         }
         $srch->setPageSize($pagesize);
         $rs = $srch->getResultSet();

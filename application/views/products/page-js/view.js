@@ -161,7 +161,7 @@ $("document").ready(function(){
 		fcom.scrollToTop( $("#itemRatings") );
 	});
 
-	bannerAdds();
+	/* bannerAdds(); */
 	reviews(document.frmReviewSearch);
 });
 

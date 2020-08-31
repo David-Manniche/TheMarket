@@ -92,7 +92,7 @@ if (true == $primaryOrder) {
                                     $paymentMethodName .= Labels::getLabel("LBL_Wallet", $siteLangId);
                                 } ?> <p><strong><?php echo Labels::getLabel('LBL_Payment_Method', $siteLangId); ?>: </strong><?php echo $paymentMethodName; ?></p>
                                 <p><strong><?php echo Labels::getLabel('LBL_Payment_Status', $siteLangId); ?>: </strong>
-                                <?php echo Orders::getOrderPaymentStatusArr($siteLangId)[$childOrderDetail['order_is_paid']];
+                                <?php echo Orders::getOrderPaymentStatusArr($siteLangId)[$childOrderDetail['order_payment_status']];
                                 if ('' != $childOrderDetail['plugin_name'] && 'CashOnDelivery' == $childOrderDetail['plugin_code']) {
                                     echo ' (' . $childOrderDetail['plugin_name'] . ' )';
                                 } ?>
