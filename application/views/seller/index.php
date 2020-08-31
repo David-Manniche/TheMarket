@@ -256,13 +256,15 @@ $this->includeTemplate('_partial/seller/sellerDashboardNavigation.php'); ?>
                             <?php } ?>
                         </div>
                         <div class="cards-content ">
-                            <table class="table ">
-                                <tbody>
+                            <table class="table   table-justified">
+                                <thead>                               
                                     <tr class="">
                                         <th colspan="2" width="60%"><?php echo Labels::getLabel('LBL_Order_Particulars', $siteLangId);?></th>
                                         <th width="20%"><?php echo Labels::getLabel('LBL_Amount', $siteLangId);?></th>
                                         <th width="20%"></th>
                                     </tr>
+                                    </thead>
+                                <tbody>
                                     <?php if (count($orders) > 0) {
                                         foreach ($orders as $orderId => $row) {
                                             $orderDetailUrl = UrlHelper::generateUrl('seller', 'viewOrder', array($row['op_id']));
@@ -346,8 +348,8 @@ $this->includeTemplate('_partial/seller/sellerDashboardNavigation.php'); ?>
                             <?php } ?>
                         </div>
                         <div class="cards-content ">
-                            <table class="table ">
-                                <tbody>
+                            <table class="table   table-justified">
+                            <thead>         
                                     <tr class="">
                                         <th><?php echo Labels::getLabel('LBL_Txn._Id', $siteLangId);?></th>
                                         <th><?php echo Labels::getLabel('LBL_Date', $siteLangId);?></th>
@@ -357,6 +359,8 @@ $this->includeTemplate('_partial/seller/sellerDashboardNavigation.php'); ?>
                                         <th><?php echo Labels::getLabel('LBL_Comments', $siteLangId);?></th>
                                         <th><?php echo Labels::getLabel('LBL_Status', $siteLangId);?></th>
                                     </tr>
+                            </thead>
+                                <tbody>
                                     <?php if (count($transactions) > 0) {
                                         foreach ($transactions as $row) { ?>
                                     <tr>
@@ -408,14 +412,18 @@ $this->includeTemplate('_partial/seller/sellerDashboardNavigation.php'); ?>
                             <?php } ?>
                         </div>
                         <div class="cards-content ">
-                            <table class="table ">
-                                <tbody>
+                            <table class="table   table-justified">
+                            
+                            <thead>
+                                
                                     <tr class="">
                                         <th width="60%"><?php echo Labels::getLabel('LBL_Order_Particulars', $siteLangId);?></th>
                                         <th width="10%"><?php echo Labels::getLabel('LBL_Qty', $siteLangId);?></th>
                                         <th width="20%"><?php echo Labels::getLabel('LBL_Status', $siteLangId);?></th>
                                         <th width="10%"></th>
                                     </tr>
+                                    </thead>
+                                    <tbody>
                                     <?php if (count($returnRequests) > 0) {
                                         foreach ($returnRequests as $row) {
                                             $orderDetailUrl = UrlHelper::generateUrl('seller', 'viewOrder', array($row['op_id']));
@@ -486,13 +494,15 @@ $this->includeTemplate('_partial/seller/sellerDashboardNavigation.php'); ?>
                             <?php } ?>
                         </div>
                         <div class="cards-content ">
-                            <table class="table ">
-                                <tbody>
+                            <table class="table  table-justified">
+                               <thead>
                                     <tr class="">
                                         <th width="40%"><?php echo Labels::getLabel('LBL_Order_Particulars', $siteLangId);?></th>
                                         <th width="50%"><?php echo Labels::getLabel('LBL_Request_detail', $siteLangId);?></th>
                                         <th width="10%"><?php echo Labels::getLabel('LBL_Status', $siteLangId);?></th>
                                     </tr>
+                                    </thead>
+                                    <tbody>
                                     <?php if (count($cancellationRequests) > 0) {
                                         foreach ($cancellationRequests as $row) {
                                             $orderDetailUrl = UrlHelper::generateUrl('seller', 'viewOrder', array($row['op_id']));

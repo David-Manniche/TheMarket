@@ -256,7 +256,7 @@ a:hover {
         border-bottom: $border;
         .ui-menu-item-wrapper {
             padding: 0.5rem;
-            border: none !important;
+            border-color: transparent !important;
         }
         &:last-child {
             border-bottom: none;

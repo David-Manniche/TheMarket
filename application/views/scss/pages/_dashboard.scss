@@ -1890,18 +1890,8 @@ input.sp-input {
 .stripe-stats {
     font-size: 0.8rem;
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
     grid-gap: 10px;
-    @include media-breakpoint-down(md) {
-        & {
-            grid-template-columns: repeat(2, 1fr);
-        }
-    }
-    @include media-breakpoint-down(sm) {
-        & {
-            grid-template-columns: repeat(1, 1fr);
-        }
-    }
     .stats {
         color: $txt-gray;
         border-radius: $radius4;
@@ -1945,5 +1935,36 @@ input.sp-input {
                 margin: 0;
             }
         }
+    }
+}
+
+.yk-stats {
+    >ul {
+        font-size: 0.85rem;
+        display: grid;
+        grid-gap: 1rem;
+        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    }
+    .title {
+        font-size: 1rem;
+        font-weight: 600;
+        margin-bottom: 1rem;
+    }
+    .title-sub {
+        font-size: 0.85rem;
+        margin-top: 25px;
+    }
+    p {
+        color: $txt-gray;
+    }
+    .stats {
+        margin: 5px 0;
+    }
+    .lable {
+        margin-#{$end-direction}: 0.5rem;
+        font-weight: 500;
+        color: $body-color;
+        min-width: 65px;
+        display: inline-block;
     }
 }
