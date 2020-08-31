@@ -12628,38 +12628,34 @@ form.custom-form {
 
 .label, .product-line-info .value {
   color: #fff;
-  display: inline;
-  font-size: 0.8em;
-  padding: 0 10px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  padding: 4px 8px;
   text-align: center;
-  vertical-align: baseline;
   white-space: nowrap;
   display: inline-block;
-  text-transform: uppercase;
-  height: 30px;
-  line-height: 30px;
-  border-radius: 1px; }
-
-.label.label-default, .product-line-info .label-default.value {
-  background: #fff;
-  border: solid 1px #dee2e6; }
-
-.label.label--success, .product-line-info .label--success.value {
-  background: var(--brand-color);
-  color: var(--brand-color-inverse); }
-
-.label.label--primary, .product-line-info .label--primary.value {
-  background: var(--brand-color);
-  color: var(--brand-color-inverse); }
-
-.label.label--info, .product-line-info .label--info.value {
-  background: #12afcb; }
-
-.label.label--danger, .product-line-info .label--danger.value {
-  background: #f15c5c; }
-
-.label.label--warning, .product-line-info .label--warning.value {
-  background: #f6d433; }
+  border-radius: 4px; }
+  .label.label-default, .product-line-info .label-default.value {
+    background: #fff;
+    border: solid 1px #dee2e6; }
+  .label.label-primary, .product-line-info .label-primary.value {
+    background: var(--brand-color);
+    color: var(--brand-color-inverse); }
+  .label.label-secondary, .product-line-info .label-secondary.value {
+    background: var(--secondary-color);
+    color: var(--secondary-color-inverse); }
+  .label.label-success, .product-line-info .label-success.value {
+    background: #bdf5ef;
+    color: #1dc9b7; }
+  .label.label-info, .product-line-info .label-info.value {
+    background: #dee5fb;
+    color: #5578eb; }
+  .label.label-danger, .product-line-info .label-danger.value {
+    background: #ffd0e0;
+    color: #fd397a; }
+  .label.label-warning, .product-line-info .label-warning.value {
+    background: #fff1d5;
+    color: #ffb822; }
 
 .loader-positon {
   position: absolute;
@@ -17201,15 +17197,13 @@ a:hover {
   box-shadow: 0px 0px 5px 0px rgba(0, 0, 0, 0.1);
   background: #fff;
   position: relative;
-  border-radius: 6px;
+  border-radius: 4px;
   /*margin-bottom: 1rem;*/
   height: 100%; }
   @media (max-width: 991.98px) {
     .cards {
       word-break: normal; } }
   .cards-header {
-    display: -webkit-box;
-    display: -ms-flexbox;
     display: flex;
     -webkit-box-pack: justify;
     -ms-flex-pack: justify;

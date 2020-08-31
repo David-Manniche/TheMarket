@@ -535,7 +535,19 @@ $this->includeTemplate('_partial/seller/sellerDashboardNavigation.php'); ?>
                                             <div class="request__comments"> <?php echo Labels::getLabel('Lbl_Comments', $siteLangId)?>: <?php echo $row['ocrequest_message']; ?> </div>
                                         </td>
                                         <td>
-                                            <div class="request__status"> <?php echo $OrderCancelRequestStatusArr[$row['ocrequest_status']]; ?> </div>
+                                            <?php 
+                                            $canReqClass = "label label-inline";
+                                            if (OrderCancelRequest::CANCELLATION_REQUEST_STATUS_PENDING == $row['ocrequest_status']) {
+                                                $canReqClass .= " label-info";
+                                            } else if (OrderCancelRequest::CANCELLATION_REQUEST_STATUS_APPROVED == $row['ocrequest_status']) {
+                                                $canReqClass .= " label-success";
+                                            } else if (OrderCancelRequest::CANCELLATION_REQUEST_STATUS_DECLINED == $row['ocrequest_status']) {
+                                                $canReqClass .= " label-danger";
+                                            }
+                                            ?>
+                                            <span class="<?php echo $canReqClass; ?>"> 
+                                                <?php echo $OrderCancelRequestStatusArr[$row['ocrequest_status']]; ?>
+                                            </span>
                                         </td>
                                     </tr>
                                     <?php } } else { ?>
