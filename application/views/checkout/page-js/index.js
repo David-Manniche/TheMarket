@@ -696,4 +696,11 @@ $("document").ready(function () {
         }
     }
     
+    orderShippingData = function(order_id){
+        var data = 'order_id='+order_id;
+        fcom.ajax(fcom.makeUrl('Checkout', 'orderShippingData'), data, function (rsp) {
+            $.facebox(rsp, 'faceboxWidth medium-fb-width');
+        });
+    }
+    
 })();

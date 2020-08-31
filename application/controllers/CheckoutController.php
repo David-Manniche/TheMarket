@@ -530,7 +530,7 @@ class CheckoutController extends MyAppController
                     $selectedShippingIds[$val['mshipapi_code']] = $val['mshipapi_id']; 
                 }  
             }   
-        }           
+        }      
         $this->set('selectedShippingIds', $selectedShippingIds);
             
         $this->set('cartSummary', $this->cartObj->getCartFinancialSummary($this->siteLangId));
@@ -1424,8 +1424,15 @@ class CheckoutController extends MyAppController
             $this->set('redeemRewardFrm', $redeemRewardFrm);
         }
         
-        $orderPickUpData = $orderObj->getOrderPickUpData($order_id, $this->siteLangId);
-        $this->set('orderPickUpData', $orderPickUpData);
+        $orderPickUpData = '';
+        $orderShippingData = '';
+        if ($fulfillmentType == Shipping::FULFILMENT_PICKUP) {
+            $orderPickUpData = $orderObj->getOrderPickUpData($order_id, $this->siteLangId);
+        }
+        if ($fulfillmentType == Shipping::FULFILMENT_SHIP) {
+            $orderShippingData = $orderObj->getOrderShippingData($order_id, $this->siteLangId);
+        }
+       
 
         $this->set('paymentMethods', $paymentMethods);
         $this->set('userWalletBalance', $userWalletBalance);
@@ -1450,7 +1457,9 @@ class CheckoutController extends MyAppController
         $this->set('billingAddressArr', $billingAddressArr);
         $this->set('shippingAddressArr', $shippingAddressArr);
         $this->set('orderId', $order_id);
-        
+        $this->set('orderPickUpData', $orderPickUpData);
+        $this->set('orderShippingData', $orderShippingData);
+         
         if (true === MOBILE_APP_API_CALL) {
             $this->set('products', $cartProducts);
             $this->set('orderType', $orderInfo['order_type']);
@@ -2335,5 +2344,14 @@ class CheckoutController extends MyAppController
         }
 
         $this->_template->render(false, false, 'json-success.php');
+    }
+    
+    public function orderShippingData()
+    {
+        $orderId = FatApp::getPostedData('order_id', FatUtility::VAR_STRING, '');
+        $order = new Orders();
+        $orderShippingData = $order->getOrderShippingData($orderId, $this->siteLangId);        
+        $this->set('orderShippingData', $orderShippingData);
+        $this->_template->render(false, false);
     }
 }
