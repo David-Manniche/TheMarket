@@ -64,10 +64,10 @@ class StripeConnectSettingsController extends PaymentMethodSettingsController
         $envFld->requirements()->addOnChangerequirementUpdate(Plugin::ENV_PRODUCTION, 'eq', 'live_secret_key', $reqLiveSecretKeyFld);
 
         $captureMethod = [
-            'automatic' => Labels::getLabel('LBL_AUTOMATIC_(DEFAULT)', $langId),
-            'manual' => Labels::getLabel('LBL_MANUAL', $langId)
+            'automatic' => Labels::getLabel('LBL_INSTANT_(_DEFAULT_)', $langId),
+            'manual' => Labels::getLabel('LBL_ON_ORDER_STATUS_UPDATE', $langId)
         ];
-        $condFld = $frm->addSelectBox(Labels::getLabel('LBL_CAPTURE_METHOD', $langId), 'capture_method', $captureMethod, 'automatic', ['class' => 'fieldsVisibility-js'], '');
+        $condFld = $frm->addSelectBox(Labels::getLabel('LBL_CAPTURE_PAYMENT', $langId), 'capture_method', $captureMethod, 'automatic', ['class' => 'fieldsVisibility-js'], '');
         $condFld->requirement->setRequired(true);
 
         $orderStatusArr = Orders::getOrderProductStatusArr($langId);

@@ -12,6 +12,7 @@ class SellerController extends SellerBaseController
 
     private $shippingService;
     private $trackingService;
+    private $paymentPlugin;
 
     public function __construct($action)
     {
@@ -264,7 +265,7 @@ class SellerController extends SellerBaseController
         $srch->setPageSize($pagesize);
 
         $srch->addMultipleFields(
-            array('order_id', 'order_payment_status', 'order_user_id', 'op_selprod_id', 'op_is_batch', 'selprod_product_id', 'order_date_added', 'order_net_amount', 'op_invoice_number', 'totCombinedOrders as totOrders', 'op_selprod_title', 'op_product_name', 'op_id', 'op_qty', 'op_selprod_options', 'op_brand_name', 'op_shop_name', 'op_other_charges', 'op_unit_price', 'op_tax_collected_by_seller', 'op_selprod_user_id', 'opshipping_by_seller_user_id', 'orderstatus_id', 'IFNULL(orderstatus_name, orderstatus_identifier) as orderstatus_name', 'plugin_code', 'IFNULL(plugin_name, IFNULL(plugin_identifier, "Wallet")) as plugin_name', 'opship.*')
+            array('order_id', 'order_status', 'order_payment_status', 'order_user_id', 'op_selprod_id', 'op_is_batch', 'selprod_product_id', 'order_date_added', 'order_net_amount', 'op_invoice_number', 'totCombinedOrders as totOrders', 'op_selprod_title', 'op_product_name', 'op_id', 'op_qty', 'op_selprod_options', 'op_brand_name', 'op_shop_name', 'op_other_charges', 'op_unit_price', 'op_tax_collected_by_seller', 'op_selprod_user_id', 'opshipping_by_seller_user_id', 'orderstatus_id', 'IFNULL(orderstatus_name, orderstatus_identifier) as orderstatus_name', 'plugin_code', 'IFNULL(plugin_name, IFNULL(plugin_identifier, "Wallet")) as plugin_name', 'opship.*')
         );
 
         $keyword = FatApp::getPostedData('keyword', null, '');
@@ -609,6 +610,31 @@ class SellerController extends SellerBaseController
         $this->_template->render(true, true);
     }
 
+    /**
+     * initPaymentPlugin
+     *
+     * @return void
+     */
+    private function initPaymentPlugin()
+    {
+        /* Return if already loaded. */
+        if (!empty($this->paymentPlugin)) { return; }
+
+        $plugin = new Plugin();
+        $keyName = $plugin->getDefaultPluginKeyName(Plugin::TYPE_SPLIT_PAYMENT_METHOD);
+
+        if (false === $keyName) { trigger_error($pluginObj->getError(), E_USER_ERROR); }
+
+        $this->paymentPlugin = PluginHelper::callPlugin($keyName, [$this->adminLangId], $error, $this->adminLangId, false);
+        if (false === $this->paymentPlugin) {
+            trigger_error($error, E_USER_ERROR);
+        }
+
+        if (false === $this->paymentPlugin->init()) {
+            trigger_error($this->paymentPlugin->getError(), E_USER_ERROR);
+        }
+    }
+
     public function changeOrderStatus()
     {
         $this->userPrivilege->canEditSales(UserAuthentication::getLoggedUserId());
@@ -617,6 +643,8 @@ class SellerController extends SellerBaseController
             Message::addErrorMessage(Labels::getLabel('MSG_Invalid_Access', $this->siteLangId));
             FatUtility::dieJsonError(Message::getHtml());
         }
+        $db = FatApp::getDb();
+        $db->startTransaction();
 
         $op_id = FatUtility::int($post['op_id']);
         if (1 > $op_id) {
@@ -716,6 +744,29 @@ class SellerController extends SellerBaseController
                 Message::addErrorMessage(Labels::getLabel('M_ERROR_INVALID_REQUEST', $this->siteLangId));
                 FatUtility::dieJsonError(Message::getHtml());
             }
+
+            $payments = $orderObj->getOrderPayments(["order_id" => $orderDetail['op_order_id']]);
+
+            $this->initPaymentPlugin();
+            $settings = $this->paymentPlugin->getSettings();
+            if ($payments['opayment_method'] == 'StripeConnect' && $settings['capture_method'] == $post["manual"] && $settings['order_status'] == $post["op_status_id"]) {
+                $resp = json_decode($payments['opayment_gateway_response'], true);
+                $childOrderInfo = $orderObj->getOrderProductsByOpId($op_id, $this->siteLangId);
+                if (empty($childOrderInfo)) {
+                    Message::addErrorMessage(Labels::getLabel("MSG_Invalid_Access", $this->siteLangId));
+                    FatUtility::dieJsonError(Message::getHtml());
+                }
+                $amountToCapture = CommonHelper::orderProductAmount($childOrderInfo, 'netamount');
+                $requestParams = [
+                    'paymentIntentId' => $resp['data']['object']['id'],
+                    'amount_to_capture' => $amountToCapture,
+                    'statement_descriptor' => $childOrderInfo['op_invoice_number'],
+                ];
+                if (false === $this->paymentPlugin->captureDetainedAmount($requestParam)) {
+                    $db->rollbackTransaction();
+                    FatUtility::dieJsonError($this->paymentPlugin->getError());
+                }
+            }
         } else {
             Message::addErrorMessage(Labels::getLabel('M_ERROR_INVALID_REQUEST', $this->siteLangId));
             FatUtility::dieJsonError(Message::getHtml());
@@ -743,6 +794,7 @@ class SellerController extends SellerBaseController
             }
         }
 
+        $db->commitTransaction();
         $this->set('op_id', $op_id);
         $this->set('msg', Labels::getLabel('MSG_Updated_Successfully', $this->siteLangId));
         $this->_template->render(false, false, 'json-success.php');

@@ -4,6 +4,7 @@ class SellerOrdersController extends AdminBaseController
 {
     private $shippingService;
     private $trackingService;
+    private $paymentPlugin;
 
     public function __construct($action)
     {
@@ -461,9 +462,37 @@ class SellerOrdersController extends AdminBaseController
         $this->_template->render(false, false, 'json-success.php');
     }
 
+    /**
+     * initPaymentPlugin
+     *
+     * @return void
+     */
+    private function initPaymentPlugin()
+    {
+        /* Return if already loaded. */
+        if (!empty($this->paymentPlugin)) { return; }
+
+        $plugin = new Plugin();
+        $keyName = $plugin->getDefaultPluginKeyName(Plugin::TYPE_SPLIT_PAYMENT_METHOD);
+
+        if (false === $keyName) { trigger_error($pluginObj->getError(), E_USER_ERROR); }
+
+        $this->paymentPlugin = PluginHelper::callPlugin($keyName, [$this->adminLangId], $error, $this->adminLangId, false);
+        if (false === $this->paymentPlugin) {
+            trigger_error($error, E_USER_ERROR);
+        }
+
+        if (false === $this->paymentPlugin->init()) {
+            trigger_error($this->paymentPlugin->getError(), E_USER_ERROR);
+        }
+    }
+
     public function changeOrderStatus()
     {
         $this->objPrivilege->canEditSellerOrders();
+        $db = FatApp::getDb();
+        $db->startTransaction();
+        
         $post = FatApp::getPostedData();
         if (!isset($post['op_id'])) {
             Message::addErrorMessage($this->str_invalid_request);
@@ -555,6 +584,29 @@ class SellerOrdersController extends AdminBaseController
                 Message::addErrorMessage($this->str_invalid_request);
                 FatUtility::dieJsonError(Message::getHtml());
             }
+
+            $payments = $orderObj->getOrderPayments(["order_id" => $orderDetail['op_order_id']]);
+
+            $this->initPaymentPlugin();
+            $settings = $this->paymentPlugin->getSettings();
+            if ($payments['opayment_method'] == 'StripeConnect' && $settings['capture_method'] == $post["manual"] && $settings['order_status'] == $post["op_status_id"]) {
+                $resp = json_decode($payments['opayment_gateway_response'], true);
+                $childOrderInfo = $orderObj->getOrderProductsByOpId($op_id, $this->adminLangId);
+                if (empty($childOrderInfo)) {
+                    Message::addErrorMessage(Labels::getLabel("MSG_Invalid_Access", $this->adminLangId));
+                    FatUtility::dieJsonError(Message::getHtml());
+                }
+                $amountToCapture = CommonHelper::orderProductAmount($childOrderInfo, 'netamount');
+                $requestParams = [
+                    'paymentIntentId' => $resp['data']['object']['id'],
+                    'amount_to_capture' => $amountToCapture,
+                    'statement_descriptor' => $childOrderInfo['op_invoice_number'],
+                ];
+                if (false === $this->paymentPlugin->captureDetainedAmount($requestParam)) {
+                    $db->rollbackTransaction();
+                    FatUtility::dieJsonError($this->paymentPlugin->getError());
+                }
+            }
         } else {
             Message::addErrorMessage($this->str_invalid_request);
             FatUtility::dieJsonError(Message::getHtml());
@@ -580,7 +632,8 @@ class SellerOrdersController extends AdminBaseController
                 }
             }
         }
-
+        
+        $db->commitTransaction();
         $this->set('msg', Labels::getLabel('LBL_Updated_Successfully', $this->adminLangId));
         $this->_template->render(false, false, 'json-success.php');
     }

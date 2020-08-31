@@ -384,8 +384,8 @@ class StripeConnectPayController extends PaymentController
             return;
         }
 
-        $payload = @file_get_contents('php://input');
-        $payload = json_decode($payload, true);
+        $payloadStr = @file_get_contents('php://input');
+        $payload = json_decode($payloadStr, true);
 
         if (empty($payload)) {
             // $msg = Labels::getLabel('MSG_INVALID_REQUEST', $this->siteLangId);
@@ -453,7 +453,7 @@ class StripeConnectPayController extends PaymentController
 
         $paymentStatus = ($payload['type'] == "payment_intent.amount_capturable_updated" ? Orders::ORDER_PAYMENT_DETAINED : Orders::ORDER_PAYMENT_PAID);
 
-        if (false === $orderPaymentObj->addOrderPayment($this->settings["plugin_code"], $chargeId, $this->paymentAmount, Labels::getLabel("MSG_RECEIVED_PAYMENT", $this->siteLangId), $message, false, 0, $paymentStatus)) {
+        if (false === $orderPaymentObj->addOrderPayment($this->settings["plugin_code"], $chargeId, $this->paymentAmount, Labels::getLabel("MSG_RECEIVED_PAYMENT", $this->siteLangId), $payloadStr, false, 0, $paymentStatus)) {
             $orderPaymentObj->addOrderPaymentComments($message);
         }
 
