@@ -7,7 +7,7 @@ class StripeConnectSettingsController extends PaymentMethodSettingsController
         $frm = new Form('frmStripeConnect');
 
         $envoirment = Plugin::getEnvArr($langId);
-        $envFld = $frm->addSelectBox(Labels::getLabel('LBL_ENVOIRMENT', $langId), 'env', $envoirment, '', ['id' => 'setupEnvFields']);
+        $envFld = $frm->addSelectBox(Labels::getLabel('LBL_ENVOIRMENT', $langId), 'env', $envoirment, '', ['class' => 'fieldsVisibility-js'], '');
         $envFld->requirement->setRequired(true);
 
         $frm->addTextBox(Labels::getLabel('LBL_CLIENT_ID', $langId), 'client_id');
@@ -27,7 +27,6 @@ class StripeConnectSettingsController extends PaymentMethodSettingsController
         $secretKeyFld->setRequired(false);
         $reqSecretKeyFld = new FormFieldRequirement('secret_key', Labels::getLabel('LBL_SECRET_KEY', $langId));
         $reqSecretKeyFld->setRequired(true);
-        
 
         $frm->addTextBox(Labels::getLabel('LBL_CLIENT_ID', $langId), 'live_client_id');
         $liveClientIdFld = new FormFieldRequirement('live_client_id', Labels::getLabel('LBL_CLIENT_ID', $langId));

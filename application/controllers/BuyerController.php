@@ -43,7 +43,7 @@ class BuyerController extends BuyerBaseController
         /* CommonHelper::printArray($orders); die; */
 
         /* $getPurchasedsrch = clone $srch;
-        $getPurchasedsrch->addCondition('order_is_paid', '=', 1);
+        $getPurchasedsrch->addCondition('order_payment_status', '=', 1);
         $getPurchasedsrch->addfld('count(order_id) as totalPurchasedItems');
         $countPurchasedItemsRs = $getPurchasedsrch->getResultSet();
         $totalPurchasedItems = FatApp::getDb()->fetch($countPurchasedItemsRs, 'totalPurchasedItems'); */
@@ -403,7 +403,7 @@ class BuyerController extends BuyerBaseController
         $srch->addMultipleFields(
             array('order_id', 'order_user_id', 'order_date_added', 'order_net_amount', 'op_invoice_number',
             'totCombinedOrders as totOrders', 'op_selprod_id', 'op_selprod_title', 'op_product_name', 'op_id', 'op_other_charges', 'op_unit_price',
-            'op_qty', 'op_selprod_options', 'op_brand_name', 'op_shop_name', 'op_status_id', 'op_product_type', 'IFNULL(orderstatus_name, orderstatus_identifier) as orderstatus_name', 'order_pmethod_id', 'order_status', 'plugin_name', 'IFNULL(orrequest_id, 0) as return_request', 'IFNULL(ocrequest_id, 0) as cancel_request', 'orderstatus_color_code', 'COALESCE(sps.selprod_return_age, ss.shop_return_age) as return_age', 'COALESCE(sps.selprod_cancellation_age, ss.shop_cancellation_age) as cancellation_age')
+            'op_qty', 'op_selprod_options', 'op_brand_name', 'op_shop_name', 'op_status_id', 'op_product_type', 'IFNULL(orderstatus_name, orderstatus_identifier) as orderstatus_name', 'order_pmethod_id', 'order_status', 'plugin_name', 'IFNULL(orrequest_id, 0) as return_request', 'IFNULL(ocrequest_id, 0) as cancel_request', 'orderstatus_color_code', 'COALESCE(sps.selprod_return_age, ss.shop_return_age) as return_age', 'COALESCE(sps.selprod_cancellation_age, ss.shop_cancellation_age) as cancellation_age', 'order_payment_status')
         );
 
         $keyword = FatApp::getPostedData('keyword', null, '');

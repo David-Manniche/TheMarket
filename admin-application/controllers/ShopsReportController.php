@@ -69,7 +69,7 @@ class ShopsReportController extends AdminBaseController
         $opSrch->joinPaymentMethod();
         $opSrch->doNotCalculateRecords();
         $opSrch->doNotLimitRecords();
-        $cnd = $opSrch->addCondition('o.order_is_paid', '=', Orders::ORDER_IS_PAID);
+        $cnd = $opSrch->addCondition('o.order_payment_status', '=', Orders::ORDER_PAYMENT_PAID);
         $cnd->attachCondition('plugin_code', '=', 'cashondelivery');
         $opSrch->addStatusCondition(unserialize(FatApp::getConfig("CONF_COMPLETED_ORDER_STATUS")));
         

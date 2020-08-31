@@ -54,7 +54,7 @@ class BraintreePayController extends PaymentController
             FatUtility::exitWithErrorCode(404);
         }
         $currencyCode = '';
-        if (count($orderInfo) < 1 || (count($orderInfo) > 1 && $orderInfo["order_is_paid"] != Orders::ORDER_IS_PENDING)) {
+        if (count($orderInfo) < 1 || (count($orderInfo) > 1 && $orderInfo["order_payment_status"] != Orders::ORDER_PAYMENT_PENDING)) {
             $this->error = Labels::getLabel('MSG_INVALID_ORDER_PAID_CANCELLED', $this->siteLangId);
         } else {
             $currencyCode = strtolower($orderInfo["order_currency_code"]);

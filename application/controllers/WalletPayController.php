@@ -44,7 +44,7 @@ class WalletPayController extends MyAppController
         $srch->doNotLimitRecords();
         $srch->addCondition('order_id', '=', $orderId);
         $srch->addCondition('order_user_id', '=', $user_id);
-        $srch->addCondition('order_is_paid', '=', Orders::ORDER_IS_PENDING);
+        $srch->addCondition('order_payment_status', '=', Orders::ORDER_PAYMENT_PENDING);
         if (isset($_SESSION['subscription_shopping_cart']["order_id"]) && $orderId == $_SESSION['subscription_shopping_cart']["order_id"]) {
             $srch->addCondition('order_type', '=', Orders::ORDER_SUBSCRIPTION);
         } else {
@@ -149,7 +149,7 @@ class WalletPayController extends MyAppController
         $srch->doNotLimitRecords();
         $srch->addCondition('order_id', '=', $orderId);
         $srch->addCondition('order_user_id', '=', $loggedUserId);
-        $srch->addCondition('order_is_paid', '=', Orders::ORDER_IS_PENDING);
+        $srch->addCondition('order_payment_status', '=', Orders::ORDER_PAYMENT_PENDING);
         $srch->addCondition('order_type', '=', Orders::ORDER_WALLET_RECHARGE);
         $rs = $srch->getResultSet();
         $orderInfo = FatApp::getDb()->fetch($rs);
@@ -203,7 +203,7 @@ class WalletPayController extends MyAppController
         $srch->doNotCalculateRecords();
         $srch->doNotLimitRecords();
         $srch->addCondition('order_id', '=', $order_id);
-        $srch->addCondition('order_is_paid', '=', Orders::ORDER_IS_PENDING);
+        $srch->addCondition('order_payment_status', '=', Orders::ORDER_PAYMENT_PENDING);
         $rs = $srch->getResultSet();
         $orderInfo = FatApp::getDb()->fetch($rs);
         /* $orderObj = new Orders();
@@ -297,7 +297,7 @@ class WalletPayController extends MyAppController
             $srch->doNotLimitRecords();
             $srch->addCondition('order_id', '=', $order_id);
             $srch->addCondition('order_user_id', '=', $user_id);
-            $srch->addCondition('order_is_paid', '=', Orders::ORDER_IS_PENDING);
+            $srch->addCondition('order_payment_status', '=', Orders::ORDER_PAYMENT_PENDING);
             $srch->addCondition('order_type', '=', Orders::ORDER_WALLET_RECHARGE);
             $rs = $srch->getResultSet();
             $orderInfo = FatApp::getDb()->fetch($rs);
@@ -353,7 +353,7 @@ class WalletPayController extends MyAppController
         $srch->doNotLimitRecords();
         $srch->addCondition('order_id', '=', $order_id);
         $srch->addCondition('order_user_id', '=', $user_id);
-        $srch->addCondition('order_is_paid', '=', Orders::ORDER_IS_PENDING);
+        $srch->addCondition('order_payment_status', '=', Orders::ORDER_PAYMENT_PENDING);
         $rs = $srch->getResultSet();
         $orderInfo = FatApp::getDb()->fetch($rs);
         if (!$orderInfo) {

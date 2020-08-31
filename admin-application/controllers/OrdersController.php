@@ -91,7 +91,7 @@ class OrdersController extends AdminBaseController
         $srch->setPageNumber($page);
         $srch->setPageSize($pageSize);
 
-        $srch->addMultipleFields(array('order_id', 'order_date_added', 'order_is_paid', 'order_status', 'buyer.user_id', 'buyer.user_name as buyer_user_name', 'buyer_cred.credential_email as buyer_email', 'order_net_amount', 'order_wallet_amount_charge', 'order_pmethod_id', 'IFNULL(plugin_name, plugin_identifier) as plugin_name', 'plugin_code', 'order_is_wallet_selected', 'order_deleted'));
+        $srch->addMultipleFields(array('order_id', 'order_date_added', 'order_payment_status', 'order_status', 'buyer.user_id', 'buyer.user_name as buyer_user_name', 'buyer_cred.credential_email as buyer_email', 'order_net_amount', 'order_wallet_amount_charge', 'order_pmethod_id', 'IFNULL(plugin_name, plugin_identifier) as plugin_name', 'plugin_code', 'order_is_wallet_selected', 'order_deleted'));
 
         $keyword = FatApp::getPostedData('keyword', null, '');
         if (!empty($keyword)) {
@@ -103,9 +103,9 @@ class OrdersController extends AdminBaseController
             $srch->addCondition('buyer.user_id', '=', $user_id);
         }
 
-        if (isset($post['order_is_paid']) && $post['order_is_paid'] != '') {
-            $order_is_paid = FatUtility::int($post['order_is_paid']);
-            $srch->addCondition('order_is_paid', '=', $order_is_paid);
+        if (isset($post['order_payment_status']) && $post['order_payment_status'] != '') {
+            $order_payment_status = FatUtility::int($post['order_payment_status']);
+            $srch->addCondition('order_payment_status', '=', $order_payment_status);
         }
 
         $dateFrom = FatApp::getPostedData('date_from', null, '');
@@ -163,7 +163,7 @@ class OrdersController extends AdminBaseController
         $srch->doNotLimitRecords();
         $srch->joinOrderBuyerUser();
         $srch->addMultipleFields(
-            array('order_id', 'order_user_id', 'order_date_added', 'order_is_paid', 'order_tax_charged', 'order_site_commission',
+            array('order_id', 'order_user_id', 'order_date_added', 'order_payment_status', 'order_tax_charged', 'order_site_commission',
             'order_reward_point_value', 'order_volume_discount_total', 'buyer.user_name as buyer_user_name', 'buyer_cred.credential_email as buyer_email', 'buyer.user_phone as buyer_phone', 'order_net_amount', 'order_shippingapi_name', 'order_pmethod_id', 'ifnull(plugin_name,plugin_identifier)as plugin_name', 'order_discount_total', 'plugin_code', 'order_is_wallet_selected', 'order_reward_point_used', 'order_deleted')
         );
         $srch->addCondition('order_id', '=', $order_id);
@@ -304,8 +304,8 @@ class OrdersController extends AdminBaseController
 			FatUtility::dieJsonError(Message::getHtml());
 		}
 
-        if ($order["order_is_paid"]) {
-            if (!$orderObj->addOrderPaymentHistory($order_id, Orders::ORDER_IS_CANCELLED, Labels::getLabel('MSG_Order_Cancelled', $order['order_language_id']), 1)) {
+        if ($order["order_payment_status"]) {
+            if (!$orderObj->addOrderPaymentHistory($order_id, Orders::ORDER_PAYMENT_CANCELLED, Labels::getLabel('MSG_Order_Cancelled', $order['order_language_id']), 1)) {
                 Message::addErrorMessage($orderObj->getError());
                 FatUtility::dieJsonError(Message::getHtml());
             }
@@ -358,7 +358,7 @@ class OrdersController extends AdminBaseController
             FatUtility::dieJsonError(Message::getHtml());
         }
 
-        if (!$order["order_is_paid"]) {
+        if (!$order["order_payment_status"]) {
             $updateArray = array( 'order_deleted' => applicationConstants::YES );
             $whr = array('smt' => 'order_id = ?', 'vals' => array($order_id));
 
@@ -395,7 +395,7 @@ class OrdersController extends AdminBaseController
 
         $frm->addTextBox(Labels::getLabel('LBL_Buyer', $this->adminLangId), 'buyer', '');
 
-        $frm->addSelectBox(Labels::getLabel('LBL_Payment_Status', $this->adminLangId), 'order_is_paid', Orders::getOrderPaymentStatusArr($langId), '', array(), Labels::getLabel('LBL_Select_Payment_Status', $this->adminLangId));
+        $frm->addSelectBox(Labels::getLabel('LBL_Payment_Status', $this->adminLangId), 'order_payment_status', Orders::getOrderPaymentStatusArr($langId), '', array(), Labels::getLabel('LBL_Select_Payment_Status', $this->adminLangId));
 
         $frm->addDateField('', 'date_from', '', array('placeholder' => 'Date From', 'readonly' => 'readonly' ));
         $frm->addDateField('', 'date_to', '', array('placeholder' => 'Date To', 'readonly' => 'readonly' ));

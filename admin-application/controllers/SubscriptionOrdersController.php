@@ -40,7 +40,7 @@ class SubscriptionOrdersController extends AdminBaseController
         $srch->addCondition('order_type', '=', Orders::ORDER_SUBSCRIPTION);
         $srch->setPageNumber($page);
         $srch->setPageSize($pageSize);
-        $srch->addMultipleFields(array('order_id', 'order_date_added', 'order_is_paid', 'buyer.user_id', 'buyer.user_name as buyer_user_name', 'buyer_cred.credential_email as buyer_email', 'order_net_amount'));
+        $srch->addMultipleFields(array('order_id', 'order_date_added', 'order_payment_status', 'buyer.user_id', 'buyer.user_name as buyer_user_name', 'buyer_cred.credential_email as buyer_email', 'order_net_amount'));
         
         $keyword = FatApp::getPostedData('keyword', null, '');
         if (!empty($keyword)) {
@@ -52,9 +52,9 @@ class SubscriptionOrdersController extends AdminBaseController
             $srch->addCondition('buyer.user_id', '=', $user_id);
         }
         
-        if (isset($post['order_is_paid']) && $post['order_is_paid'] != '') {
-            $order_is_paid = FatUtility::int($post['order_is_paid']);
-            $srch->addCondition('order_is_paid', '=', $order_is_paid);
+        if (isset($post['order_payment_status']) && $post['order_payment_status'] != '') {
+            $order_payment_status = FatUtility::int($post['order_payment_status']);
+            $srch->addCondition('order_payment_status', '=', $order_payment_status);
         }
         
         $dateFrom = FatApp::getPostedData('date_from', null, '');
@@ -104,7 +104,7 @@ class SubscriptionOrdersController extends AdminBaseController
         $srch->doNotLimitRecords();
         $srch->joinOrderUser();
         $srch->addMultipleFields(
-            array('order_id', 'order_user_id', 'order_date_added', 'order_is_paid', 'order_tax_charged', 'order_site_commission',
+            array('order_id', 'order_user_id', 'order_date_added', 'order_payment_status', 'order_tax_charged', 'order_site_commission',
             'ou.user_name as buyer_user_name', 'ouc.credential_email as buyer_email', 'ou.user_phone as buyer_phone', 'order_net_amount',   'order_pmethod_id', 'plugin_name', 'order_discount_total')
         );
         $srch->addCondition('order_id', '=', $order_id);
@@ -197,8 +197,8 @@ class SubscriptionOrdersController extends AdminBaseController
             FatUtility::dieJsonError(Message::getHtml());
         }
         
-        if (!$order["order_is_paid"]) {
-            if (!$orderObj->addOrderPaymentHistory($order_id, Orders::ORDER_IS_CANCELLED, Labels::getLabel('MSG_Order_Cancelled', $order['order_language_id']), 1)) {
+        if (!$order["order_payment_status"]) {
+            if (!$orderObj->addOrderPaymentHistory($order_id, Orders::ORDER_PAYMENT_CANCELLED, Labels::getLabel('MSG_Order_Cancelled', $order['order_language_id']), 1)) {
                 Message::addErrorMessage($orderObj->getError());
                 FatUtility::dieJsonError(Message::getHtml());
             }
@@ -236,7 +236,7 @@ class SubscriptionOrdersController extends AdminBaseController
         
         $frm->addTextBox(Labels::getLabel('LBL_Buyer', $this->adminLangId), 'buyer', '');
         
-        $frm->addSelectBox(Labels::getLabel('LBL_Payment_Status', $this->adminLangId), 'order_is_paid', Orders::getOrderPaymentStatusArr($langId), '', array(), 'Select Payment Status');
+        $frm->addSelectBox(Labels::getLabel('LBL_Payment_Status', $this->adminLangId), 'order_payment_status', Orders::getOrderPaymentStatusArr($langId), '', array(), 'Select Payment Status');
         
         $frm->addDateField('', 'date_from', '', array('placeholder' => 'Date From', 'readonly' => 'readonly' ));
         $frm->addDateField('', 'date_to', '', array('placeholder' => 'Date To', 'readonly' => 'readonly' ));

@@ -195,7 +195,7 @@ class SubscriptionCheckoutController extends LoggedUserController
         /* $orderData['order_user_name'] = $userDataArr['user_name'];
         $orderData['order_user_email'] = $userDataArr['credential_email'];
         $orderData['order_user_phone'] = $userDataArr['user_phone']; */
-        $orderData['order_is_paid'] = Orders::ORDER_IS_PENDING;
+        $orderData['order_payment_status'] = Orders::ORDER_PAYMENT_PENDING;
         $orderData['order_date_added'] = date('Y-m-d H:i:s');
         $orderData['order_type'] = Orders::ORDER_SUBSCRIPTION;
         $orderData['order_renew'] = 0;
@@ -353,7 +353,7 @@ class SubscriptionCheckoutController extends LoggedUserController
         $srch->doNotLimitRecords();
         $srch->addCondition('order_id', '=', $order_id);
         $srch->addCondition('order_type', '=', Orders::ORDER_SUBSCRIPTION);
-        $srch->addCondition('order_is_paid', '=', Orders::ORDER_IS_PENDING);
+        $srch->addCondition('order_payment_status', '=', Orders::ORDER_PAYMENT_PENDING);
         $rs = $srch->getResultSet();
         $orderInfo = FatApp::getDb()->fetch($rs);
         /* $orderInfo = $orderObj->getOrderById( $order_id, $this->siteLangId, array('payment_status' => 0) ); */
@@ -421,7 +421,7 @@ class SubscriptionCheckoutController extends LoggedUserController
         $srch->doNotCalculateRecords();
         $srch->doNotLimitRecords();
         $srch->addCondition('order_id', '=', $order_id);
-        $srch->addCondition('order_is_paid', '=', Orders::ORDER_IS_PENDING);
+        $srch->addCondition('order_payment_status', '=', Orders::ORDER_PAYMENT_PENDING);
         $rs = $srch->getResultSet();
         $orderInfo = FatApp::getDb()->fetch($rs);
         /* $orderObj = new Orders();
@@ -572,7 +572,7 @@ class SubscriptionCheckoutController extends LoggedUserController
         $srch->addCondition('order_id', '=', $order_id);
         $srch->addCondition('order_user_id', '=', $user_id);
         $srch->addCondition('order_type', '=', Orders::ORDER_SUBSCRIPTION);
-        $srch->addCondition('order_is_paid', '=', Orders::ORDER_IS_PENDING);
+        $srch->addCondition('order_payment_status', '=', Orders::ORDER_PAYMENT_PENDING);
         $rs = $srch->getResultSet();
         $orderInfo = FatApp::getDb()->fetch($rs);
         if (!$orderInfo) {
@@ -856,7 +856,7 @@ class SubscriptionCheckoutController extends LoggedUserController
         $srch = new OrderSubscriptionSearch();
         $srch->joinOrders();
         $srch->joinOrderUser();
-        $srch->addCondition('order_is_paid', '=', ORDERS::ORDER_IS_PAID);
+        $srch->addCondition('order_payment_status', '=', ORDERS::ORDER_PAYMENT_PAID);
         $srch->addCondition('ossubs_status_id', 'in', $statusArr);
         $srch->addCondition('ossubs_id', '=', $ossubs_id);
         $srch->addCondition('ossubs_type', '=', SellerPackages::PAID_TYPE);
@@ -894,7 +894,7 @@ class SubscriptionCheckoutController extends LoggedUserController
         /* $orderData['order_user_name'] = $userDataArr['user_name'];
         $orderData['order_user_email'] = $userDataArr['credential_email'];
         $orderData['order_user_phone'] = $userDataArr['user_phone']; */
-        $orderData['order_is_paid'] = Orders::ORDER_IS_PENDING;
+        $orderData['order_payment_status'] = Orders::ORDER_PAYMENT_PENDING;
         $orderData['order_date_added'] = date('Y-m-d H:i:s');
         $orderData['order_type'] = Orders::ORDER_SUBSCRIPTION;
 

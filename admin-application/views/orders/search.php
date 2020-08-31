@@ -6,11 +6,11 @@ $arr_flds = array(
     'buyer_user_name'=>Labels::getLabel('LBL_Customer_Name', $adminLangId),
     'order_date_added'=>Labels::getLabel('LBL_Order_Date', $adminLangId),
     'order_net_amount'=>Labels::getLabel('LBL_Total', $adminLangId),
-    'order_is_paid'=>Labels::getLabel('LBL_Payment_Status', $adminLangId),
+    'order_payment_status'=>Labels::getLabel('LBL_Payment_Status', $adminLangId),
     'action' => Labels::getLabel('LBL_Action', $adminLangId),
 );
 if ($deletedOrders) {
-    unset($arr_flds['order_is_paid']);
+    unset($arr_flds['order_payment_status']);
 }
 $tbl = new HtmlElement('table', array('width'=>'100%', 'class'=>'table table--hovered table-responsive'));
 $th = $tbl->appendElement('thead')->appendElement('tr');
@@ -50,16 +50,16 @@ foreach ($ordersList as $sn => $row) {
                     FatApp::getConfig('CONF_TIMEZONE', FatUtility::VAR_STRING, date_default_timezone_get())
                 ));
                 break;
-            case 'order_is_paid':
+            case 'order_payment_status':
                 $cls = 'label-info';
                 switch ($row[$key]) {
-                    case Orders::ORDER_IS_PENDING:
+                    case Orders::ORDER_PAYMENT_PENDING:
                         $cls = 'label-info';
                         break;
-                    case Orders::ORDER_IS_PAID:
+                    case Orders::ORDER_PAYMENT_PAID:
                         $cls = 'label-success';
                         break;
-                    case Orders::ORDER_IS_CANCELLED:
+                    case Orders::ORDER_PAYMENT_CANCELLED:
                         $cls = 'label-danger';
                         break;
                 }
@@ -88,12 +88,12 @@ foreach ($ordersList as $sn => $row) {
                     $innerLi->appendElement('a', array('href'=>UrlHelper::generateUrl('SellerOrders', 'index', array($row['order_id'])),'class'=>'button small green redirect--js','title'=>Labels::getLabel('LBL_View_seller_Order', $adminLangId),'target'=>'_new'), Labels::getLabel('LBL_View_seller_Order', $adminLangId), true);
                 }
                 if (!$row['order_deleted'] && $canEdit) {
-                    if ($row['order_is_paid'] == Orders::ORDER_IS_PAID) {
+                    if ($row['order_payment_status'] == Orders::ORDER_PAYMENT_PAID) {
                         $innerLi=$innerUl->appendElement('li');
                         $innerLi->appendElement('a', array('href'=>'javascript:void(0)','onclick' => "cancelOrder('".$row['order_id']."')",'class'=>'button small green','title'=>Labels::getLabel('LBL_Cancel_Order', $adminLangId),'target'=>'_new'), Labels::getLabel('LBL_Cancel_Order', $adminLangId), true);
                     }
                     $twoDaysAfter = date('Y-m-d H:i:s', strtotime($row['order_date_added'] . ' + 2 days'));
-                    if ($row['order_is_paid'] == Orders::ORDER_IS_PENDING && $twoDaysAfter < date('Y-m-d')) {
+                    if ($row['order_payment_status'] == Orders::ORDER_PAYMENT_PENDING && $twoDaysAfter < date('Y-m-d')) {
                         $innerLi=$innerUl->appendElement('li');
                         $innerLi->appendElement('a', array('href'=>'javascript:void(0)','onclick' => "deleteOrder('".$row['order_id']."')",'class'=>'button small green','title'=>Labels::getLabel('LBL_Delete_Order', $adminLangId),'target'=>'_new'), Labels::getLabel('LBL_Delete_Order', $adminLangId), true);
                     }

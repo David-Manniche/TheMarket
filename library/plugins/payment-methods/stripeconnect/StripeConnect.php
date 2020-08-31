@@ -58,6 +58,7 @@ class StripeConnect extends PaymentMethodBase
     public const REQUEST_PAYMENT_INTENT = 25;
     public const REQUEST_RETRIEVE_PAYMENT_INTENT = 26;
     public const REQUEST_CREATE_PAYMENT_METHOD = 27;
+    public const REQUEST_CAPTURE_PAYMENT = 28;
 
     /**
      * __construct
@@ -1135,6 +1136,24 @@ class StripeConnect extends PaymentMethodBase
     }
 
     /**
+     * captureDetainedAmount
+     * @param array $requestParam : [
+     *      'paymentIntentId' => 'pi_JRXXXXXXXXXXXXX',
+     *      'amount_to_capture' => 750,
+     *      'statement_descriptor' => 'TEXT' // Description that appears on your customers’ statements. Length at least one letter, maximum 22 characters.
+     *   ]
+     * @return bool
+     */
+    public function captureDetainedAmount(array $requestParam): bool
+    {
+        $this->resp = $this->doRequest(self::REQUEST_CAPTURE_PAYMENT, $requestParam);
+        if (false === $this->resp) {
+            return false;
+        }
+        return true;
+    }
+
+    /**
      * doRequest
      *
      * @param  mixed $requestType
@@ -1224,6 +1243,9 @@ class StripeConnect extends PaymentMethodBase
                     break;
                 case self::REQUEST_CREATE_PAYMENT_METHOD:
                     return $this->createPaymentMethod($requestParam);
+                    break;
+                case self::REQUEST_CAPTURE_PAYMENT:
+                    return $this->capturePayment($requestParam);
                     break;
             }
         } catch (\Stripe\Exception\CardException $e) {

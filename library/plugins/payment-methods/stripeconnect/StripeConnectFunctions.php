@@ -432,4 +432,21 @@ trait StripeConnectFunctions
             'card' => $requestParam
         ]);
     }
+
+    /**
+     * capturePayment
+     *
+     * @param array $requestParam : [
+     *      'paymentIntentId' => 'pi_JRXXXXXXXXXXXXX',
+     *      'amount_to_capture' => 750,
+     *      'statement_descriptor' => 'TEXT' // Description that appears on your customers’ statements. Length at least one letter, maximum 22 characters.
+     *   ]
+     * @return object
+     */
+    private function capturePayment(array $requestParam): object
+    {
+        $paymentIntentId = $requestParam['paymentIntentId'];
+        unset($requestParam['paymentIntentId']);
+        return $this->retrievePaymentIntent([$paymentIntentId])->capture($requestParam);
+    }
 }

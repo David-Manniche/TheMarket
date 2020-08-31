@@ -517,6 +517,7 @@
 		if (!str) return;
 		var arr = JSON.parse(str);
 		var v = el.val();
+		var fieldsVisibility = el.hasClass('fieldsVisibility-js');
 		if (el.attr('type') == 'checkbox' && !el.is(':checked')) {
 			v = '';
 		}
@@ -543,7 +544,16 @@
 				break;
 			}
 			if (!match) continue;
-			$(el[0].form.elements[arr[i].fldname]).attr('data-fatreq', JSON.stringify(arr[i].requirement));
+			var elementObj = $(el[0].form.elements[arr[i].fldname]);
+			elementObj.attr('data-fatreq', JSON.stringify(arr[i].requirement));
+			if (true === fieldsVisibility) {
+				var elementRow = elementObj.closest('.row');
+				if (false == arr[i].requirement.required) {
+					elementRow.hide();
+				} else {
+					elementRow.show();
+				}
+			}
 		}
 	};
 
