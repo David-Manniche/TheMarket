@@ -63,30 +63,6 @@ class StripeConnectSettingsController extends PaymentMethodSettingsController
         $envFld->requirements()->addOnChangerequirementUpdate(Plugin::ENV_PRODUCTION, 'eq', 'live_publishable_key', $reqLivePublishableKeyFld);
         $envFld->requirements()->addOnChangerequirementUpdate(Plugin::ENV_PRODUCTION, 'eq', 'live_secret_key', $reqLiveSecretKeyFld);
 
-        $captureMethod = [
-            'automatic' => Labels::getLabel('LBL_INSTANT_(_DEFAULT_)', $langId),
-            'manual' => Labels::getLabel('LBL_ON_ORDER_STATUS_UPDATE', $langId)
-        ];
-        $condFld = $frm->addSelectBox(Labels::getLabel('LBL_CAPTURE_PAYMENT', $langId), 'capture_method', $captureMethod, 'automatic', ['class' => 'fieldsVisibility-js'], '');
-        $condFld->requirement->setRequired(true);
-
-        $orderStatusArr = Orders::getOrderProductStatusArr($langId);
-        $frm->addSelectBox(
-            Labels::getLabel("LBL_ORDER_STATUS", $langId),
-            'order_status',
-            $orderStatusArr,
-            OrderStatus::ORDER_SHIPPED,
-            array(),
-            ''
-        );
-        $orderStatus = new FormFieldRequirement('order_status', Labels::getLabel('LBL_ORDER_STATUS', $langId));
-        $orderStatus->setRequired(false);
-        $reqOrderStatus = new FormFieldRequirement('order_status', Labels::getLabel('LBL_ORDER_STATUS', $langId));
-        $reqOrderStatus->setRequired(true);
-
-        $condFld->requirements()->addOnChangerequirementUpdate('automatic', 'eq', 'order_status', $orderStatus);
-        $condFld->requirements()->addOnChangerequirementUpdate('manual', 'eq', 'order_status', $reqOrderStatus);
-
         $frm->addSubmitButton('&nbsp;', 'btn_submit', Labels::getLabel('LBL_Save_Changes', $langId));
         return $frm;
     }

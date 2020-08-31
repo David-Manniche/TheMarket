@@ -365,7 +365,6 @@ class StripeConnectPayController extends PaymentController
             'transfer_group' => $this->orderId,
             'payment_method' => $this->sourceId,
             'payment_method_types' => ['card'],
-            'capture_method' => $this->settings["capture_method"],
         ];
         if (false === $this->stripeConnect->createPaymentIntent($chargeData)) {
             $this->setErrorAndRedirect($this->stripeConnect->getError());

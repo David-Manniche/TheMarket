@@ -610,43 +610,6 @@ class SellerController extends SellerBaseController
         $this->_template->render(true, true);
     }
 
-    /**
-     * initPaymentPlugin
-     *
-     * @return void
-     */
-    private function initPaymentPlugin()
-    {
-        /* Return if already loaded. */
-        if (!empty($this->paymentPlugin)) { return; }
-
-        $plugin = new Plugin();
-        $keyName = $plugin->getDefaultPluginKeyName(Plugin::TYPE_SPLIT_PAYMENT_METHOD);
-
-        if (false === $keyName) { trigger_error($plugin->getError(), E_USER_ERROR); }
-
-        $this->paymentPlugin = PluginHelper::callPlugin($keyName, [$this->siteLangId], $error, $this->siteLangId, false);
-        if (false === $this->paymentPlugin) {
-            trigger_error($error, E_USER_ERROR);
-        }
-
-        if (false === $this->paymentPlugin->init()) {
-            trigger_error($this->paymentPlugin->getError(), E_USER_ERROR);
-        }
-    }
-
-    /**
-     * convertInPaisa
-     *
-     * @param  mixed $amount
-     * @return void
-     */
-    private function convertInPaisa($amount)
-    {
-        $amount = number_format($amount, 2, '.', '');
-        return $amount * 100;
-    }
-
     public function changeOrderStatus()
     {
         $this->userPrivilege->canEditSales(UserAuthentication::getLoggedUserId());
@@ -755,29 +718,6 @@ class SellerController extends SellerBaseController
             if (!$orderObj->addChildProductOrderHistory($op_id, $orderDetail["order_language_id"], $post["op_status_id"], $post["comments"], $post["customer_notified"], $post["tracking_number"], 0, true, $trackingCourierCode)) {
                 Message::addErrorMessage(Labels::getLabel('M_ERROR_INVALID_REQUEST', $this->siteLangId));
                 FatUtility::dieJsonError(Message::getHtml());
-            }
-
-            $payments = current($orderObj->getOrderPayments(["order_id" => $orderDetail['op_order_id']]));
-
-            $this->initPaymentPlugin();
-            $settings = $this->paymentPlugin->getSettings();
-            if ($payments['opayment_method'] == 'StripeConnect' && isset($settings['capture_method']) && "manual" == $settings['capture_method'] && $settings['order_status'] == $post["op_status_id"]) {
-                $resp = json_decode($payments['opayment_gateway_response'], true);
-                $childOrderInfo = $orderObj->getOrderProductsByOpId($op_id, $this->siteLangId);
-                if (empty($childOrderInfo)) {
-                    Message::addErrorMessage(Labels::getLabel("MSG_Invalid_Access", $this->siteLangId));
-                    FatUtility::dieJsonError(Message::getHtml());
-                }
-                $amountToCapture = CommonHelper::orderProductAmount($childOrderInfo, 'netamount');
-                $requestParams = [
-                    'paymentIntentId' => $resp['data']['object']['id'],
-                    'amount_to_capture' => $this->convertInPaisa($amountToCapture),
-                    'statement_descriptor' => $childOrderInfo['op_invoice_number'],
-                ];
-                if (false === $this->paymentPlugin->captureDetainedAmount($requestParams)) {
-                    $db->rollbackTransaction();
-                    FatUtility::dieJsonError($this->paymentPlugin->getError());
-                }
             }
         } else {
             Message::addErrorMessage(Labels::getLabel('M_ERROR_INVALID_REQUEST', $this->siteLangId));
