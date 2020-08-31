@@ -475,7 +475,7 @@ class SellerOrdersController extends AdminBaseController
         $plugin = new Plugin();
         $keyName = $plugin->getDefaultPluginKeyName(Plugin::TYPE_SPLIT_PAYMENT_METHOD);
 
-        if (false === $keyName) { trigger_error($pluginObj->getError(), E_USER_ERROR); }
+        if (false === $keyName) { trigger_error($plugin->getError(), E_USER_ERROR); }
 
         $this->paymentPlugin = PluginHelper::callPlugin($keyName, [$this->adminLangId], $error, $this->adminLangId, false);
         if (false === $this->paymentPlugin) {

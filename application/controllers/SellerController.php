@@ -623,9 +623,9 @@ class SellerController extends SellerBaseController
         $plugin = new Plugin();
         $keyName = $plugin->getDefaultPluginKeyName(Plugin::TYPE_SPLIT_PAYMENT_METHOD);
 
-        if (false === $keyName) { trigger_error($pluginObj->getError(), E_USER_ERROR); }
+        if (false === $keyName) { trigger_error($plugin->getError(), E_USER_ERROR); }
 
-        $this->paymentPlugin = PluginHelper::callPlugin($keyName, [$this->adminLangId], $error, $this->adminLangId, false);
+        $this->paymentPlugin = PluginHelper::callPlugin($keyName, [$this->siteLangId], $error, $this->siteLangId, false);
         if (false === $this->paymentPlugin) {
             trigger_error($error, E_USER_ERROR);
         }
