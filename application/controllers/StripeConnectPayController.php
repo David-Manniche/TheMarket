@@ -386,7 +386,7 @@ class StripeConnectPayController extends PaymentController
 
         $payloadStr = @file_get_contents('php://input');
         $payload = json_decode($payloadStr, true);
-
+        
         if (empty($payload)) {
             // $msg = Labels::getLabel('MSG_INVALID_REQUEST', $this->siteLangId);
             return;
@@ -409,7 +409,7 @@ class StripeConnectPayController extends PaymentController
 
         $this->orderId = $orderId;
         $this->orderInfo = $this->getOrderInfo($this->orderId);
-        if ($this->orderInfo["order_is_paid"] != Orders::ORDER_PAYMENT_PENDING && $this->orderInfo["order_is_paid"] != Orders::ORDER_PAYMENT_DETAINED) {
+        if ($this->orderInfo["order_payment_status"] != Orders::ORDER_PAYMENT_PENDING && $this->orderInfo["order_payment_status"] != Orders::ORDER_PAYMENT_DETAINED) {
             // $msg = Labels::getLabel('MSG_INVALID_ORDER._ALREADY_PAID_OR_CANCELLED', $this->siteLangId);
             return;
         }
@@ -419,7 +419,7 @@ class StripeConnectPayController extends PaymentController
             // $msg = Labels::getLabel('MSG_INVALID_ORDER_CHARGE', $this->siteLangId);
             return;
         }
-
+        
         $chargeId = $chargeResponse['id'];
 
         $message = 'Id: ' . $chargeResponse['id'] . "&";
