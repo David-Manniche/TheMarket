@@ -642,7 +642,7 @@ $("document").ready(function () {
         });
     };
 
-    /* Phone Verification for COD */
+    /* Phone/Email Verification for COD */
     validateOtp = function (frm){
 		if (!$(frm).validate()) return;	
         var data = fcom.frmData(frm);
@@ -675,7 +675,7 @@ $("document").ready(function () {
         });
         return false;
     };
-    /* Phone Verification for COD */
+    /* Phone/Email Verification for COD */
 
     orderPickUpData = function(order_id){
         var data = 'order_id='+order_id;
