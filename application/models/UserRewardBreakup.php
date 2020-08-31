@@ -46,7 +46,7 @@ class UserRewardBreakup extends MyAppModel
         $srch->doNotCalculateRecords();
         $srch->doNotLimitRecords();
         $srch->addCondition('order_reward_point_used', '>', 0);
-        $cnd = $srch->addCondition('order_is_paid', '=', Orders::ORDER_IS_PENDING);
+        $cnd = $srch->addCondition('order_payment_status', '=', Orders::ORDER_PAYMENT_PENDING);
         $cnd->attachCondition('plugin_code', '=', 'CashOnDelivery');
         $srch->addCondition('op.op_status_id', '=', FatApp::getConfig("CONF_DEFAULT_ORDER_STATUS"));
         $date = date('Y-m-d H:i:s', strtotime(date('Y-m-d H:i:s') . ' - 2 hours'));

@@ -57,7 +57,7 @@ if ($order['order_reward_point_used'] > 0) {
                                     </strong> <?php echo FatDate::format($order['order_date_added'], true, true, FatApp::getConfig('CONF_TIMEZONE', FatUtility::VAR_STRING, date_default_timezone_get())); ?>
                                 </td>
                                 <td><strong><?php echo Labels::getLabel('LBL_Payment_Status', $adminLangId); ?>:</strong>
-                                    <?php echo Orders::getOrderPaymentStatusArr($adminLangId)[$order['order_is_paid']];
+                                    <?php echo Orders::getOrderPaymentStatusArr($adminLangId)[$order['order_payment_status']];
                                 if ('' != $order['plugin_name'] && 'CashOnDelivery' == $order['plugin_code']) {
                                     echo ' ('.$order['plugin_name'].' )';
                                 }
@@ -477,7 +477,7 @@ if ($order['order_reward_point_used'] > 0) {
                     </div>
                 </section>
                 <?php }?>
-                <?php if (!$order["order_is_paid"] && $canEdit && 'CashOnDelivery' != $order['plugin_code']) {?>
+                <?php if (!$order["order_payment_status"] && $canEdit && 'CashOnDelivery' != $order['plugin_code']) {?>
                 <section class="section">
                     <div class="sectionhead">
                         <h4><?php echo Labels::getLabel('LBL_Order_Payments', $adminLangId); ?>

@@ -48,7 +48,7 @@ class AmazonPayController extends PaymentController
 
         if (!$orderInfo['id']) {
             FatUtility::exitWIthErrorCode(404);
-        } elseif ($orderInfo && $orderInfo["order_is_paid"] == Orders::ORDER_IS_PENDING) {
+        } elseif ($orderInfo && $orderInfo["order_payment_status"] == Orders::ORDER_PAYMENT_PENDING) {
             $this->currencyCode = strtolower($orderInfo["order_currency_code"]);
         } else {
             $this->error = Labels::getLabel('MSG_INVALID_ORDER_PAID_CANCELLED', $this->siteLangId);
@@ -110,7 +110,7 @@ class AmazonPayController extends PaymentController
         $paymentAmount = $orderPaymentObj->getOrderPaymentGatewayAmount();
         $payableAmount = $this->formatPayableAmount($paymentAmount);
         $orderInfo = $orderPaymentObj->getOrderPrimaryinfo();
-        if ($orderInfo && $orderInfo["order_is_paid"] == Orders::ORDER_IS_PENDING) {
+        if ($orderInfo && $orderInfo["order_payment_status"] == Orders::ORDER_PAYMENT_PENDING) {
             $this->currencyCode = strtolower($orderInfo["order_currency_code"]);
             $config['region'] = 'us';
             $config['currency_Code'] = strtoupper($this->currencyCode);
@@ -163,7 +163,7 @@ class AmazonPayController extends PaymentController
         $paymentAmount = $orderPaymentObj->getOrderPaymentGatewayAmount();
         $payableAmount = $this->formatPayableAmount($paymentAmount);
         $orderInfo = $orderPaymentObj->getOrderPrimaryinfo();
-        if ($orderInfo && $orderInfo["order_is_paid"] == Orders::ORDER_IS_PENDING) {
+        if ($orderInfo && $orderInfo["order_payment_status"] == Orders::ORDER_PAYMENT_PENDING) {
             $this->currencyCode = strtolower($orderInfo["order_currency_code"]);
             $config['region'] = 'us';
             $config['currency_Code'] = strtoupper($this->currencyCode);

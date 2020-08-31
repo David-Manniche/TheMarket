@@ -56,7 +56,7 @@ class TopCategoriesReportController extends AdminBaseController
         $srch->joinTable( 'tbl_seller_products', 'LEFT OUTER JOIN', 'op_selprod_id = sp.selprod_id', 'sp' );
         $srch->addCondition( 'op_is_batch', '=', '0' );
         $srch->addStatusCondition( unserialize(FatApp::getConfig("CONF_COMPLETED_ORDER_STATUS")) );
-        $srch->addCondition( 'order_is_paid', '=', Orders::ORDER_IS_PAID );
+        $srch->addCondition( 'order_payment_status', '=', Orders::ORDER_PAYMENT_PAID );
         $srch->addGroupBy('pc.prodcat_id');
         $srch->addMultipleFields( array( 'pc.prodcat_id', 'IFNULL(pc_l.prodcat_name, pc.prodcat_identifier) as prodcat_name', 'count(op_id) as totSoldQty' , 'GROUP_CONCAT(op_id)') );
         $srch->addOrder ( 'totSoldQty', $orderBy ); */

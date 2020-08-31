@@ -33,7 +33,7 @@
 								$buyerFld->developerTags['col'] = 4;
 								$buyerFld->htmlAfterField = '<small></small>';
 								
-								$statusFld = $frmSearch->getField('order_is_paid');
+								$statusFld = $frmSearch->getField('order_payment_status');
 								$statusFld->developerTags['col'] = 4;
 								
 								$dateFromFld = $frmSearch->getField('date_from');

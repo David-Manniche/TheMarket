@@ -33,10 +33,13 @@ class StripeConnectPayController extends PaymentController
      */
     public function init()
     {
-        $userId = UserAuthentication::getLoggedUserId(true);
-        if (1 > $userId) {
-            $msg = Labels::getLabel('MSG_INVALID_USER', $this->siteLangId);
-            $this->setErrorAndRedirect($msg);
+        $userId = 0;
+        if ('distribute' != $this->action) {
+            $userId = UserAuthentication::getLoggedUserId(true);
+            if (1 > $userId) {
+                $msg = Labels::getLabel('MSG_INVALID_USER', $this->siteLangId);
+                $this->setErrorAndRedirect($msg);
+            }
         }
 
         if (false === $this->stripeConnect->init($userId)) {
@@ -194,7 +197,7 @@ class StripeConnectPayController extends PaymentController
             $this->setErrorAndRedirect($msg);
         }
         
-        if ($this->orderInfo["order_is_paid"] != Orders::ORDER_IS_PENDING) {
+        if ($this->orderInfo["order_payment_status"] != Orders::ORDER_PAYMENT_PENDING) {
             $msg = Labels::getLabel('MSG_INVALID_ORDER._ALREADY_PAID_OR_CANCELLED', $this->siteLangId);
             $this->setErrorAndRedirect($msg);
         }
@@ -254,7 +257,16 @@ class StripeConnectPayController extends PaymentController
             $clientSecret = $response->client_secret;
             switch ($response->status) {
                 case 'succeeded':
-                    $this->distribute($orderId, $paymentIntendId);
+                    $successUrl = CommonHelper::generateFullUrl('custom', 'paymentSuccess', array($this->orderId));
+                    $successMsg = Labels::getLabel('LBL_PAYMENT_SUCCEEDED._WAITING_FOR_CONFIRMATION', $this->siteLangId);
+                    if (FatUtility::isAjaxCall() || true === MOBILE_APP_API_CALL) {
+                        $json['status'] = Plugin::RETURN_TRUE;
+                        $json['msg'] = $successMsg;
+                        $json['redirectUrl'] = $successUrl;
+                        FatUtility::dieJsonSuccess($json);
+                    }
+                    Message::addMessage($successMsg);
+                    FatApp::redirectUser($successUrl);
                     break;
                 case 'requires_confirmation':
                     $this->set('paymentIntendId', $paymentIntendId);
@@ -352,6 +364,7 @@ class StripeConnectPayController extends PaymentController
             'statement_descriptor' => $this->orderId,
             'transfer_group' => $this->orderId,
             'payment_method' => $this->sourceId,
+            'payment_method_types' => ['card'],
         ];
         if (false === $this->stripeConnect->createPaymentIntent($chargeData)) {
             $this->setErrorAndRedirect($this->stripeConnect->getError());
@@ -364,32 +377,48 @@ class StripeConnectPayController extends PaymentController
      *
      * @return void
      */
-    public function distribute(string $orderId, string $paymentIntendId)
+    public function distribute()
     {
+        if (false === $this->stripeConnect->init()) {
+            return;
+        }
+
+        $payloadStr = @file_get_contents('php://input');
+        $payload = json_decode($payloadStr, true);
+        
+        if (empty($payload)) {
+            // $msg = Labels::getLabel('MSG_INVALID_REQUEST', $this->siteLangId);
+            return;
+        }
+
+        $status = isset($payload['data']['object']['status']) ? $payload['data']['object']['status'] : Labels::getLabel("MSG_FAILURE", $this->siteLangId);
+        if ($payload['type'] != "payment_intent.succeeded" && $payload['type'] != "payment_intent.amount_capturable_updated") {
+            // $msg = Labels::getLabel('MSG_UNABLE_TO_CHARGE_:_{STATUS}', $this->siteLangId);
+            // $msg = CommonHelper::replaceStringData($msg, ['{STATUS}' => $status]);
+            return;
+        }
+
+        $orderId = isset($payload['data']['object']['metadata']['order_id']) ? $payload['data']['object']['metadata']['order_id'] : '';
+        $paymentIntendId = isset($payload['data']['object']['id']) ? $payload['data']['object']['id'] : '';
+
         if (empty($orderId) || empty($paymentIntendId)) {
-            $msg = Labels::getLabel('MSG_INVALID_REQUEST', $this->siteLangId);
-            $this->setErrorAndRedirect($msg);
+            // $msg = Labels::getLabel('MSG_INVALID_REQUEST', $this->siteLangId);
+            return;
+        }
+
+        $this->orderId = $orderId;
+        $this->orderInfo = $this->getOrderInfo($this->orderId);
+        if ($this->orderInfo["order_payment_status"] != Orders::ORDER_PAYMENT_PENDING && $this->orderInfo["order_payment_status"] != Orders::ORDER_PAYMENT_DETAINED) {
+            // $msg = Labels::getLabel('MSG_INVALID_ORDER._ALREADY_PAID_OR_CANCELLED', $this->siteLangId);
+            return;
+        }
+
+        $chargeResponse = isset($payload['data']['object']['charges']['data']) ? current($payload['data']['object']['charges']['data']) : [];
+        if (empty($chargeResponse)) {
+            // $msg = Labels::getLabel('MSG_INVALID_ORDER_CHARGE', $this->siteLangId);
+            return;
         }
         
-        $this->orderId = $orderId;
-        $this->orderInfo = $this->getOrderInfo($this->orderId);        
-        if ($this->orderInfo["order_is_paid"] != Orders::ORDER_IS_PENDING) {
-            $msg = Labels::getLabel('MSG_INVALID_ORDER._ALREADY_PAID_OR_CANCELLED', $this->siteLangId);
-            $this->setErrorAndRedirect($msg);
-        }
-
-        if (false === $this->stripeConnect->loadPaymentIntent($paymentIntendId)) {
-            $this->setErrorAndRedirect($this->stripeConnect->getError());
-        }
-
-        $paymentIntentResponse = $this->stripeConnect->getResponse()->toArray();
-        if ('succeeded' != $paymentIntentResponse['status']) {
-            $msg = Labels::getLabel('MSG_UNABLE_TO_CHARGE_:_{STATUS}', $this->siteLangId);
-            $msg = CommonHelper::replaceStringData($msg, ['{STATUS}' => $paymentIntentResponse['status']]);
-            $this->setErrorAndRedirect($msg);
-        }
-        $chargeResponse = current($paymentIntentResponse['charges']['data']);
-
         $chargeId = $chargeResponse['id'];
 
         $message = 'Id: ' . $chargeResponse['id'] . "&";
@@ -421,8 +450,14 @@ class StripeConnectPayController extends PaymentController
 
         $this->paymentAmount = $orderPaymentObj->getOrderPaymentGatewayAmount();
 
-        if (false === $orderPaymentObj->addOrderPayment($this->settings["plugin_code"], $chargeId, $this->paymentAmount, Labels::getLabel("MSG_RECEIVED_PAYMENT", $this->siteLangId), $message)) {
+        $paymentStatus = ($payload['type'] == "payment_intent.amount_capturable_updated" ? Orders::ORDER_PAYMENT_DETAINED : Orders::ORDER_PAYMENT_PAID);
+
+        if (false === $orderPaymentObj->addOrderPayment($this->settings["plugin_code"], $chargeId, $this->paymentAmount, Labels::getLabel("MSG_RECEIVED_PAYMENT", $this->siteLangId), $payloadStr, false, 0, $paymentStatus)) {
             $orderPaymentObj->addOrderPaymentComments($message);
+        }
+
+        if (Orders::ORDER_PAYMENT_DETAINED == $paymentStatus) {
+            return;
         }
 
         $orderInfo = $orderPaymentObj->getOrderPrimaryinfo();
@@ -474,7 +509,7 @@ class StripeConnectPayController extends PaymentController
                 ];
 
                 if (false === $this->stripeConnect->doTransfer($charge)) {
-                    $this->setErrorAndRedirect($this->stripeConnect->getError());
+                    return;
                 }
 
                 $resp = $this->stripeConnect->getResponse();
@@ -504,7 +539,7 @@ class StripeConnectPayController extends PaymentController
                 $charge['description'] = $discountComments;
                 $charge['metadata']['source_transaction'] = $chargeId;
                 if (false === $this->stripeConnect->doTransfer($charge)) {
-                    $this->setErrorAndRedirect($this->stripeConnect->getError());
+                    return;
                 }
 
                 $resp = $this->stripeConnect->getResponse();
@@ -518,17 +553,6 @@ class StripeConnectPayController extends PaymentController
                 Transactions::debitWallet($op['op_selprod_user_id'], Transactions::TYPE_TRANSFER_TO_THIRD_PARTY_ACCOUNT, $pendingTransferAmount, $this->siteLangId, $comments, $op['op_id'], $resp->id);
             }
         }
-
-        $successUrl = UrlHelper::generateFullUrl('custom', 'paymentSuccess', array($this->orderId));
-        $successMsg = Labels::getLabel('MSG_SUCCESS', $this->siteLangId);
-        if (FatUtility::isAjaxCall() || true === MOBILE_APP_API_CALL) {
-            $json['status'] = Plugin::RETURN_TRUE;
-            $json['msg'] = $successMsg;
-            $json['redirectUrl'] = $successUrl;
-            FatUtility::dieJsonSuccess($json);
-        }
-        Message::addMessage($successMsg);
-        FatApp::redirectUser($successUrl);
     }
 
     /**

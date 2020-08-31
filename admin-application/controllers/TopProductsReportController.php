@@ -59,7 +59,7 @@ class TopProductsReportController extends AdminBaseController
         $srch->joinTable('(' . $uWsrch->getQuery() . ')', 'LEFT OUTER JOIN', 'tquwl.uwlp_selprod_id = op.op_selprod_id', 'tquwl');
         $srch->doNotCalculateRecords();
         $srch->addStatusCondition(unserialize(FatApp::getConfig("CONF_COMPLETED_ORDER_STATUS")));
-        $cnd = $srch->addCondition('order_is_paid', '=', Orders::ORDER_IS_PAID);
+        $cnd = $srch->addCondition('order_payment_status', '=', Orders::ORDER_PAYMENT_PAID);
         $cnd->attachCondition('plugin_code', '=', 'CashOnDelivery');
         $srch->addMultipleFields(array('op_selprod_title', 'op_product_name', 'op_shop_name', 'op_selprod_options', 'op_brand_name', 'SUM(op_refund_qty) as totRefundQty', 'SUM(op_qty - op_refund_qty) as totSoldQty', 'op.op_selprod_id', 'count(distinct tquwl.uwlist_user_id) as followers', 'IFNULL(tquwl.wishlist_user_counts, 0) as wishlistUserCounts'));
         $srch->addGroupBy('op.op_selprod_id');

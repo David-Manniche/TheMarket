@@ -81,7 +81,7 @@ class PaypalStandardPayController extends PaymentController
         $paymentAmount = $orderPaymentObj->getOrderPaymentGatewayAmount();
         $orderInfo = $orderPaymentObj->getOrderPrimaryinfo();
 
-        if ($orderInfo && $orderInfo["order_is_paid"] == Orders::ORDER_IS_PENDING) {
+        if ($orderInfo && $orderInfo["order_payment_status"] == Orders::ORDER_PAYMENT_PENDING) {
             $frm = $this->getPaymentForm($orderId);
             $this->set('frm', $frm);
             $this->set('paymentAmount', $paymentAmount);
@@ -171,7 +171,7 @@ class PaypalStandardPayController extends PaymentController
                     $request .= "\n\n PP_STANDARD :: TOTAL PAID MISMATCH! " . strtolower($post['mc_gross']) . "\n\n";
                 }
 
-                if ($orderPaymentStatus == Orders::ORDER_IS_PAID && $receiverMatch && $totalPaidMatch) {
+                if ($orderPaymentStatus == Orders::ORDER_PAYMENT_PAID && $receiverMatch && $totalPaidMatch) {
                     $orderPaymentObj->addOrderPayment($this->settings["plugin_code"], $post["txn_id"], $paymentGatewayCharge, Labels::getLabel('MSG_Payment_Received', $this->siteLangId), $request . "#" . $response);
                 } else {
                     $orderPaymentObj->addOrderPaymentComments($request);

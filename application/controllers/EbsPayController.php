@@ -52,7 +52,7 @@ class EbsPayController extends PaymentController
 
         if (!$orderInfo['id']) {
             FatUtility::exitWithErrorCode(404);
-        } elseif ($orderInfo && $orderInfo["order_is_paid"] == Orders::ORDER_IS_PENDING) {
+        } elseif ($orderInfo && $orderInfo["order_payment_status"] == Orders::ORDER_PAYMENT_PENDING) {
             $frm = $this->getPaymentForm($orderId);
             $this->set('frm', $frm);
             $this->set('success', true);

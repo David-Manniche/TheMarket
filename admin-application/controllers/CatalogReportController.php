@@ -41,7 +41,7 @@ class CatalogReportController extends AdminBaseController
         $opSrch->joinOrderProductCharges(OrderProduct::CHARGE_TYPE_SHIPPING, 'opship');
         $opSrch->doNotCalculateRecords();
         $opSrch->doNotLimitRecords();
-        $cnd = $opSrch->addCondition('order_is_paid', '=', Orders::ORDER_IS_PAID, 'OR');
+        $cnd = $opSrch->addCondition('order_payment_status', '=', Orders::ORDER_PAYMENT_PAID, 'OR');
         $cnd->attachCondition('plugin_code', '=', 'CashOnDelivery');
         
         $opSrch->addStatusCondition(unserialize(FatApp::getConfig("CONF_COMPLETED_ORDER_STATUS")));

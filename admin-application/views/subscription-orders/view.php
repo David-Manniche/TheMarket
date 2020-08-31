@@ -36,7 +36,7 @@
                                             <?php echo $order["order_id"]; ?>
                                         </td>
                                         <td><strong><?php echo Labels::getLabel('LBL_Payment_Status', $adminLangId); ?>:
-                                            </strong><?php echo Orders::getOrderPaymentStatusArr($adminLangId)[$order['order_is_paid']]?>
+                                            </strong><?php echo Orders::getOrderPaymentStatusArr($adminLangId)[$order['order_payment_status']]?>
                                         </td>
                                         <td><strong><?php echo Labels::getLabel('LBL_Customer', $adminLangId); ?>:</strong>
                                             <?php echo $order["buyer_user_name"]?>
@@ -249,7 +249,7 @@
                     </div>
                 </section>
                 <?php }?>
-                <?php if (!$order["order_is_paid"] && $canEdit) {?>
+                <?php if (!$order["order_payment_status"] && $canEdit) {?>
                 <section class="section">
                     <div class="sectionhead">
                         <h4><?php echo Labels::getLabel('LBL_Order_Payments', $adminLangId); ?>

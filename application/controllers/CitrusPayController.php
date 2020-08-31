@@ -31,7 +31,7 @@ class CitrusPayController extends PaymentController
         $orderInfo = $orderPaymentObj->getOrderPrimaryinfo();
         if (!$orderInfo['id']) {
             FatUtility::exitWIthErrorCode(404);
-        } elseif ($orderInfo["order_is_paid"] == Orders::ORDER_IS_PENDING) {
+        } elseif ($orderInfo["order_payment_status"] == Orders::ORDER_PAYMENT_PENDING) {
             $frm = $this->getPaymentForm($orderId);
             $this->set('frm', $frm);
             $this->set('paymentAmount', $paymentAmount);
