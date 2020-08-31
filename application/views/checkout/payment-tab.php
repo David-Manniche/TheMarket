@@ -4,30 +4,39 @@ $pmethodDescription = $paymentMethod["plugin_description"];
 $pmethodCode = $paymentMethod["plugin_code"];
 
 $frm->setFormTagAttribute('class', 'form');
-if ('cashondelivery' != strtolower($pmethodCode)) {
+
+if (0 == $otpSent) {
     $frm->developerTags['colClassPrefix'] = 'col-lg-12 col-md-12 col-sm-';
     $frm->developerTags['fld_default_col'] = 12;
+}
+
+if ('cashondelivery' != strtolower($pmethodCode)) {
     $frm->setFormTagAttribute('onsubmit', 'confirmOrder(this); return(false);');
+} else {
+    $frm->setFormTagAttribute('onsubmit', 'sendOtp(this); return(false);');
+    $btn = $frm->getField('btn_submit');
+    $btn->developerTags['noCaptionTag'] = true;
+    $btn->value = Labels::getLabel('LBL_PROCEED', $siteLangId);
 }
 
 $submitFld = $frm->getField('btn_submit');
 $submitFld->setFieldTagAttribute('class', "btn btn-primary btn-wide");
 
-if ('cashondelivery' == strtolower($pmethodCode)) { ?>
+if ('cashondelivery' == strtolower($pmethodCode) && 0 < $otpSent) { ?>
     <div class="otp-block otpBlock-js">
         <div class="otp-block__head">
             <h5><?php echo Labels::getLabel('LBL_OTP_VERIFICATION', $siteLangId); ?></h5>
             <p>
                 <?php
+                $msg = Labels::getLabel('LBL_ENTER_OTP_SENT_TO_{EMAIL}', $siteLangId);
                 if (true == $canSendSms) {
                     $userDialCode = $userData['user_dial_code'];
                     $phone = $userData['user_phone'];
-                    $msg = Labels::getLabel('LBL_ENTER_OTP_SENT_TO_{PHONE}', $siteLangId);
-                    echo CommonHelper::replaceStringData($msg, ['{PHONE}' => '<strong>' . $userDialCode . $phone . '</strong>']);
-                } else {
-                    $msg = Labels::getLabel('LBL_ENTER_OTP_SENT_TO_{EMAIL}', $siteLangId);
-                    echo CommonHelper::replaceStringData($msg, ['{EMAIL}' => '<strong>' . $userData['credential_email'] . '</strong>']);
+                    $msg = Labels::getLabel('LBL_ENTER_OTP_SENT_TO_{PHONE}_AND_{EMAIL}', $siteLangId);
+                    $msg =  CommonHelper::replaceStringData($msg, ['{PHONE}' => '<strong>' . $userDialCode . $phone . '</strong>']);
                 }
+
+                echo CommonHelper::replaceStringData($msg, ['{EMAIL}' => '<strong>' . $userData['credential_email'] . '</strong>']);
                 ?>
             </p>
         </div>
@@ -80,7 +89,8 @@ if ('cashondelivery' == strtolower($pmethodCode)) { ?>
         </div>
     </div>
 <?php } else { ?>
-    <div class="text-center paymentForm-js d-none">
+    <div class="text-center paymentForm-js <?php echo 'cashondelivery' != strtolower($pmethodCode) ? 'd-none' : 'text-center'; ?>">
+        <h6><?php echo $pmethodDescription; ?></h6>
         <?php if (!isset($error)) {
             echo $frm->getFormHtml();
         }
@@ -142,6 +152,14 @@ if ('cashondelivery' == strtolower($pmethodCode)) { ?>
             } catch (e) {
                 // console.log(e);
             }
+        });
+    }
+
+    function sendOtp() {
+        $.mbsmessage(langLbl.processing, false, 'alert--process alert');
+        fcom.ajax(fcom.makeUrl('Checkout', 'PaymentTab', ['<?php echo $orderId; ?>', '<?php echo $pluginId; ?>', 1]), '', function(res) {
+            $.mbsmessage(langLbl.otpSent, false, 'alert--success');
+            $('#tabs-container').html(res);
         });
     }
 

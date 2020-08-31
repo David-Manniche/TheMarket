@@ -73,6 +73,39 @@ $rewardPoints = UserRewardBreakup::rewardPointBalance(UserAuthentication::getLog
                 </div>
             </li>
             <?php } ?>
+            
+            <?php if ($fulfillmentType == Shipping::FULFILMENT_SHIP && !empty($orderShippingData)) { ?>
+            <li class="list-group-item">
+                <div class="review-block__label">
+                    <?php echo Labels::getLabel('LBL_Shipping:', $siteLangId); ?>
+                </div>
+                <div class="review-block__content" role="cell">  
+                    <div class="delivery-address"> 
+                    <?php foreach($orderShippingData as $data) { 
+                        $productUrl = UrlHelper::generateUrl('Products', 'View', array($data['op_selprod_id']));
+                    ?>
+                        <div class="product-profile">
+                            <div class="product-profile__thumbnail">
+                                <a href="<?php echo $productUrl;?>">
+                                    <img class="img-fluid" data-ratio="3:4"
+                                        src="<?php echo UrlHelper::getCachedUrl(UrlHelper::generateFileUrl('image', 'product', array($data['selprod_product_id'], "THUMB", $data['op_selprod_id'], 0, $siteLangId)), CONF_IMG_CACHE_TIME, '.jpg'); ?>" alt="<?php echo $data['op_selprod_title']; ?>" title="<?php echo $data['op_selprod_title']; ?>">
+                                </a>
+                            </div>
+                            <div class="product-profile__data">
+                                <div class="title"><?php echo $data['opshipping_label']; ?></div>
+                            </div>
+                        </div>
+                        <?php if (count($orderShippingData) > 1) { ?>
+                            <a class="plus-more" href="javascript:void(0);" onClick="orderShippingData('<?php echo $orderId; ?>')"><?php echo '+'.(count($orderShippingData) - 1).' '.Labels::getLabel('LBL_More_', $siteLangId); ?></a>
+                        <?php break; } ?>
+                    <?php } ?>
+                    </div>
+                </div>
+                <div class="review-block__link" role="cell">
+                    <a class="link" href="javascript:void(0);" onClick="loadShippingSummaryDiv();"><span><?php echo Labels::getLabel('LBL_Change_Shipping', $siteLangId); ?></span></a>
+                </div>
+            </li>
+            <?php } ?>
         </ul> 
         
         <div class="step__section">

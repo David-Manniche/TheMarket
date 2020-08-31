@@ -530,7 +530,7 @@ class CheckoutController extends MyAppController
                     $selectedShippingIds[$val['mshipapi_code']] = $val['mshipapi_id']; 
                 }  
             }   
-        }           
+        }      
         $this->set('selectedShippingIds', $selectedShippingIds);
             
         $this->set('cartSummary', $this->cartObj->getCartFinancialSummary($this->siteLangId));
@@ -1424,8 +1424,15 @@ class CheckoutController extends MyAppController
             $this->set('redeemRewardFrm', $redeemRewardFrm);
         }
         
-        $orderPickUpData = $orderObj->getOrderPickUpData($order_id, $this->siteLangId);
-        $this->set('orderPickUpData', $orderPickUpData);
+        $orderPickUpData = '';
+        $orderShippingData = '';
+        if ($fulfillmentType == Shipping::FULFILMENT_PICKUP) {
+            $orderPickUpData = $orderObj->getOrderPickUpData($order_id, $this->siteLangId);
+        }
+        if ($fulfillmentType == Shipping::FULFILMENT_SHIP) {
+            $orderShippingData = $orderObj->getOrderShippingData($order_id, $this->siteLangId);
+        }
+       
 
         $this->set('paymentMethods', $paymentMethods);
         $this->set('userWalletBalance', $userWalletBalance);
@@ -1450,7 +1457,9 @@ class CheckoutController extends MyAppController
         $this->set('billingAddressArr', $billingAddressArr);
         $this->set('shippingAddressArr', $shippingAddressArr);
         $this->set('orderId', $order_id);
-        
+        $this->set('orderPickUpData', $orderPickUpData);
+        $this->set('orderShippingData', $orderShippingData);
+         
         if (true === MOBILE_APP_API_CALL) {
             $this->set('products', $cartProducts);
             $this->set('orderType', $orderInfo['order_type']);
@@ -1460,9 +1469,10 @@ class CheckoutController extends MyAppController
         $this->_template->render(false, false);
     }
 
-    public function paymentTab($order_id, $plugin_id)
+    public function paymentTab($order_id, $plugin_id, $sendOtp = 0)
     {
         $plugin_id = FatUtility::int($plugin_id);
+        $sendOtp = FatUtility::int($sendOtp);
         if (!$plugin_id) {
             FatUtility::dieWithError(Labels::getLabel("MSG_Invalid_Request!", $this->siteLangId));
         }
@@ -1493,7 +1503,7 @@ class CheckoutController extends MyAppController
         $paymentMethod = Plugin::getAttributesByCode($methodCode, Plugin::ATTRS, $this->siteLangId);
         
         $frm = '';
-        if ('cashondelivery' == strtolower($methodCode)) {
+        if ('cashondelivery' == strtolower($methodCode) && 0 < $sendOtp) {
             $userObj = new User($user_id);
             $userData = $userObj->getUserInfo([], false, false);
             $userDialCode = $userData['user_dial_code'];
@@ -1502,6 +1512,7 @@ class CheckoutController extends MyAppController
 
             $canSendSms = (!empty($phoneNumber) && !empty($userDialCode) && SmsArchive::canSendSms(SmsTemplate::COD_OTP_VERIFICATION));
 
+            $otp = '';
             if (true == $canSendSms) {
                 $data = $userObj->getOtpDetail();
                 if (empty($data) || strtotime($data['upv_expired_on']) < time()) {
@@ -1510,25 +1521,29 @@ class CheckoutController extends MyAppController
                     if (false === $canSendSms = $userObj->sendOtp($phoneWithDial, $userData['user_name'], $otp, $this->siteLangId, SmsTemplate::COD_OTP_VERIFICATION)) {
                         FatUtility::dieWithError($userObj->getError());
                     }
+                } else {
+                    $otp = $data['upv_otp'];
                 }
-            } else {
+            }
+
+            if (empty($otp)) {
                 $min = pow(10, User::OTP_LENGTH - 1);
                 $max = pow(10, User::OTP_LENGTH) - 1;
                 $otp = mt_rand($min, $max);
+            }
 
-                if (false === $userObj->prepareUserVerificationCode($userData['credential_email'], $user_id . '_' . $otp)) {
-                    FatUtility::dieWithError($userObj->getError());
-                }
+            if (false === $userObj->prepareUserVerificationCode($userData['credential_email'], $user_id . '_' . $otp)) {
+                FatUtility::dieWithError($userObj->getError());
+            }
 
-                $replace = [
-                    'user_name' => $userData['user_name'],
-                    'otp' => $otp,
-                    'credential_email' => $userData['credential_email'],
-                ];
-                $email = new EmailHandler();
-                if (false === $email->sendCodOtpVerification($this->siteLangId, $replace)){
-                    FatUtility::dieWithError($userObj->getError());
-                }
+            $replace = [
+                'user_name' => $userData['user_name'],
+                'otp' => $otp,
+                'credential_email' => $userData['credential_email'],
+            ];
+            $email = new EmailHandler();
+            if (false === $email->sendCodOtpVerification($this->siteLangId, $replace)){
+                FatUtility::dieWithError($userObj->getError());
             }
 
             $this->set('canSendSms', $canSendSms);
@@ -1550,6 +1565,9 @@ class CheckoutController extends MyAppController
             )
         );
 
+        $this->set('otpSent', $sendOtp);
+        $this->set('orderId', $order_id);
+        $this->set('pluginId', $plugin_id);
         $this->set('orderInfo', $orderInfo);
         $this->set('paymentMethod', $paymentMethod);
         $this->set('frm', $frm);
@@ -2265,31 +2283,37 @@ class CheckoutController extends MyAppController
 
         $canSendSms = (!empty($phoneNumber) && !empty($userDialCode) && SmsArchive::canSendSms(SmsTemplate::COD_OTP_VERIFICATION));
 
+        $otp = '';
         if (true == $canSendSms) {
             if (false == $userObj->resendOtp()) {
                 FatUtility::dieJsonError($userObj->getError());
             }
-            $this->set('msg', Labels::getLabel('MSG_OTP_SENT!_PLEASE_CHECK_YOUR_PHONE.', $this->siteLangId));
-        } else {
+            $data = $userObj->getOtpDetail();
+            $otp = $data['upv_otp'];
+        }
+
+        if (empty($otp)) {
             $min = pow(10, User::OTP_LENGTH - 1);
             $max = pow(10, User::OTP_LENGTH) - 1;
             $otp = mt_rand($min, $max);
-
-            if (false === $userObj->prepareUserVerificationCode($userData['credential_email'], $userId . '_' . $otp)) {
-                FatUtility::dieWithError($userObj->getError());
-            }
-
-            $replace = [
-                'user_name' => $userData['user_name'],
-                'otp' => $otp,
-                'credential_email' => $userData['credential_email'],
-            ];
-            $email = new EmailHandler();
-            if (false === $email->sendCodOtpVerification($this->siteLangId, $replace)){
-                FatUtility::dieWithError($userObj->getError());
-            }
-            $this->set('msg', Labels::getLabel('MSG_OTP_SENT!_PLEASE_CHECK_YOUR_EMAIL.', $this->siteLangId));
         }
+
+        if (false === $userObj->prepareUserVerificationCode($userData['credential_email'], $userId . '_' . $otp)) {
+            FatUtility::dieWithError($userObj->getError());
+        }
+
+        $replace = [
+            'user_name' => $userData['user_name'],
+            'otp' => $otp,
+            'credential_email' => $userData['credential_email'],
+        ];
+
+        $email = new EmailHandler();
+        if (false === $email->sendCodOtpVerification($this->siteLangId, $replace)){
+            FatUtility::dieWithError($userObj->getError());
+        }
+
+        $this->set('msg', Labels::getLabel('MSG_OTP_SENT!', $this->siteLangId));
         $this->_template->render(false, false, 'json-success.php');
     }
 
@@ -2303,9 +2327,13 @@ class CheckoutController extends MyAppController
 
         $canSendSms = (!empty($phoneNumber) && !empty($userDialCode) && SmsArchive::canSendSms(SmsTemplate::COD_OTP_VERIFICATION));
 
+        $verified = false;
         if (true == $canSendSms) {
             $this->validateOtpApi(0, false);
-        } else {
+            $verified = true;
+        }
+
+        if (false === $verified) {
             $db = FatApp::getDb();
             $db->startTransaction();
 
@@ -2335,5 +2363,14 @@ class CheckoutController extends MyAppController
         }
 
         $this->_template->render(false, false, 'json-success.php');
+    }
+    
+    public function orderShippingData()
+    {
+        $orderId = FatApp::getPostedData('order_id', FatUtility::VAR_STRING, '');
+        $order = new Orders();
+        $orderShippingData = $order->getOrderShippingData($orderId, $this->siteLangId);        
+        $this->set('orderShippingData', $orderShippingData);
+        $this->_template->render(false, false);
     }
 }

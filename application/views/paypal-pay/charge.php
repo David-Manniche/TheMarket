@@ -15,7 +15,7 @@
             </div>
         </div>
         <div class="payment-from">
-            <p><?php echo Labels::getLabel('MSG_PAYMENT_OPTIONS', $siteLangId); ?></p>
+            <p class='loading-js'><?php echo Labels::getLabel('MSG_LOADING_PAYMENT_OPTIONS...', $siteLangId); ?></p>
             <div id="paypal-buttons"></div>
         </div>
     </div>
@@ -81,5 +81,8 @@
 
     $(document).ready(function() {
         loadPayPalButtons();
+        $(document).on("change", "#paypal-buttons", function() {
+            $(".loading-js").hide();
+        });
     });
 </script>

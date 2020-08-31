@@ -1,6 +1,6 @@
 <?php defined('SYSTEM_INIT') or die('Invalid Usage.'); ?>
 
-<p><?php echo Labels::getLabel('MSG_PAYMENT_OPTIONS', $siteLangId); ?></p>
+<p class='loading-js'><?php echo Labels::getLabel('MSG_LOADING_PAYMENT_OPTIONS...', $siteLangId); ?></p>
 <div id="paypal-buttons"></div>
 
 <?php if (!FatUtility::isAjaxCall()) { ?>
@@ -66,5 +66,10 @@
 
     $(document).ready(function() {
         loadPayPalButtons();
+        setTimeout(function(){
+            if ('' != $("#paypal-buttons").html()) {
+                $(".loading-js").hide();
+            }
+        }, 1000);
     });
 </script>

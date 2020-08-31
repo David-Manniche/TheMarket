@@ -2539,12 +2539,21 @@ class Orders extends MyAppModel
         $srch->joinTable(Orders::DB_TBL_ORDER_USER_ADDRESS, 'LEFT OUTER JOIN', 'oua.oua_op_id = op.op_id', 'oua');
         $srch->addCondition('order_id', '=', $orderId); 
         $srch->addCondition('oua_type', '=', Orders::PICKUP_ADDRESS_TYPE);
-        $srch->addMultipleFields(array('op_shop_name', 'opshipping_date', 'opshipping_time_slot_from', 'opshipping_time_slot_to', 'oua_name', 'oua_address1', 'oua_address2', 'oua_city', 'oua_state', 'oua_country', 'oua_phone', 'oua_zip'));
+        $srch->addGroupBy('opshipping_pickup_addr_id');       
         $rs = $srch->getResultSet();
         $records = FatApp::getDb()->fetchAll($rs);
-        if(!empty($records)){
-            $records = array_unique($records, SORT_REGULAR);
-        }
+        return $records;
+    }
+    
+    public function getOrderShippingData($orderId, $langId)
+    {
+        $srch = new OrderProductSearch($langId, true);
+        $srch->joinSellerProducts($langId);
+        $srch->joinShippingCharges();
+        $srch->addCondition('order_id', '=', $orderId); 
+        $srch->addGroupBy('opshipping_code');       
+        $rs = $srch->getResultSet();
+        $records = FatApp::getDb()->fetchAll($rs);
         return $records;
     }
 }
