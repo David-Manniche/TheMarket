@@ -7,29 +7,33 @@ $this->includeTemplate('_partial/seller/sellerDashboardNavigation.php');
             <div class="col">
                 <h2 class="content-header-title"><?php echo Labels::getLabel('LBL_Seller_Requests', $siteLangId); ?>
                 </h2>
-			</div>
-			<?php if ($canEdit) { ?>
-			<div class="col-auto">
-				<div class="dropdown dashboard-user">
-				  <button class="btn btn-outline-primary dropdown-toggle" type="button" id="dashboardDropdown" data-toggle="dropdown"  data-display="static"  aria-haspopup="true" aria-expanded="false" >
-					<?php echo Labels::getLabel('LBL_New_Request', $siteLangId); ?>
-				  </button>
-				  <div class="dropdown-menu dropdown-menu-fit dropdown-menu-anim" aria-labelledby="dashboardDropdown">
-				  <ul class="nav nav-block">
-						<li class="nav__item">
-							<a class="dropdown-item nav__link" href="<?php echo UrlHelper::generateUrl('Seller', 'customCatalogProductForm'); ?>"><?php echo Labels::getLabel('LBL_Product', $siteLangId);?></a>
-						</li>
-						<li class="nav__item">
-							<a class="dropdown-item nav__link" href="javascript:void(0);" onClick="addBrandReqForm(0)"><?php echo Labels::getLabel('LBL_Brand', $siteLangId);?></a>
-						</li>
-						<li class="nav__item">
-							<a class="dropdown-item nav__link" href="javascript:void(0);" onClick="addCategoryReqForm(0)"><?php echo Labels::getLabel('LBL_Category', $siteLangId);?></a>
-						</li>
-					</ul>
-				  </div>
-				</div>
             </div>
-			<?php } ?>
+            <?php if ($canEdit) { ?>
+            <div class="col-auto">
+                <div class="dropdown dashboard-user">
+                    <button class="btn btn-outline-primary dropdown-toggle" type="button" id="dashboardDropdown"
+                        data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        <?php echo Labels::getLabel('LBL_New_Request', $siteLangId); ?>
+                    </button>
+                    <div class="dropdown-menu dropdown-menu-fit dropdown-menu-right dropdown-menu-anim" aria-labelledby="dashboardDropdown">
+                        <ul class="nav nav-block">
+                            <li class="nav__item">
+                                <a class="dropdown-item nav__link"
+                                    href="<?php echo UrlHelper::generateUrl('Seller', 'customCatalogProductForm'); ?>"><?php echo Labels::getLabel('LBL_Product', $siteLangId);?></a>
+                            </li>
+                            <li class="nav__item">
+                                <a class="dropdown-item nav__link" href="javascript:void(0);"
+                                    onClick="addBrandReqForm(0)"><?php echo Labels::getLabel('LBL_Brand', $siteLangId);?></a>
+                            </li>
+                            <li class="nav__item">
+                                <a class="dropdown-item nav__link" href="javascript:void(0);"
+                                    onClick="addCategoryReqForm(0)"><?php echo Labels::getLabel('LBL_Category', $siteLangId);?></a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <?php } ?>
         </div>
         <div class="content-body">
             <div class="row">
@@ -37,15 +41,64 @@ $this->includeTemplate('_partial/seller/sellerDashboardNavigation.php');
                     <div class="cards">
                         <div class="cards-content">
                             <div id="listing"> <?php echo Labels::getLabel('LBL_Processing...', $siteLangId); ?></div>
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <div class="no-data-found">
+                                        <div class="img">
+                                            <img src="images/retina/no-order.svg" width="70px" height="70px">
+                                        </div>
+                                        <div class="data">
+                                            <h5>No Product Request</h5>
+                                            <p>Lorem ipsum dolor sit, amet consectetur adipisicing elit. Placeat eos
+                                                quis amet. </p>
+                                            <div class="action">
+                                                <a class="btn btn-outline-primary btn-wide" href="#">Action</a>
+                                            </div>
+                                        </div>
+                                    </div>
+								</div>
+								<div class="col-md-4">
+                                    <div class="no-data-found">
+                                        <div class="img">
+										<img src="images/retina/no-order.svg" width="70px" height="70px">
+                                        </div>
+                                        <div class="data">
+                                            <h5>No Brand Request</h5>
+                                            <p>Lorem ipsum dolor sit, amet consectetur adipisicing elit. Placeat eos
+                                                quis amet. </p>
+                                            <div class="action">
+                                                <a class="btn btn-outline-primary btn-wide" href="#">Action</a>
+                                            </div>
+                                        </div>
+                                    </div>
+								</div>
+								<div class="col-md-4">
+                                    <div class="no-data-found">
+                                        <div class="img">
+										<img src="images/retina/no-order.svg" width="70px" height="70px">
+                                        </div>
+                                        <div class="data">
+                                            <h5>No Category Request</h5>
+                                            <p>Lorem ipsum dolor sit, amet consectetur adipisicing elit. Placeat eos
+                                                quis amet. </p>
+                                            <div class="action">
+                                                <a class="btn btn-outline-primary btn-wide" href="#">Action</a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
                         </div>
                     </div>
                 </div>
             </div>
+
+
         </div>
     </div>
 </main>
 <script>
-	var ratioTypeSquare = <?php echo AttachedFile::RATIO_TYPE_SQUARE; ?>;
-	var ratioTypeRectangular = <?php echo AttachedFile::RATIO_TYPE_RECTANGULAR; ?>;
+var ratioTypeSquare = < ? php echo AttachedFile::RATIO_TYPE_SQUARE; ? > ;
+var ratioTypeRectangular = < ? php echo AttachedFile::RATIO_TYPE_RECTANGULAR; ? > ;
 </script>
-
