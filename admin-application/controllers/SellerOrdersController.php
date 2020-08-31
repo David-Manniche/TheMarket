@@ -589,7 +589,7 @@ class SellerOrdersController extends AdminBaseController
 
             $this->initPaymentPlugin();
             $settings = $this->paymentPlugin->getSettings();
-            if ($payments['opayment_method'] == 'StripeConnect' && $settings['capture_method'] == $post["manual"] && $settings['order_status'] == $post["op_status_id"]) {
+            if ($payments['opayment_method'] == 'StripeConnect' && isset($settings['capture_method']) && "manual" == $settings['capture_method'] && $settings['order_status'] == $post["op_status_id"]) {
                 $resp = json_decode($payments['opayment_gateway_response'], true);
                 $childOrderInfo = $orderObj->getOrderProductsByOpId($op_id, $this->adminLangId);
                 if (empty($childOrderInfo)) {
@@ -602,7 +602,7 @@ class SellerOrdersController extends AdminBaseController
                     'amount_to_capture' => $amountToCapture,
                     'statement_descriptor' => $childOrderInfo['op_invoice_number'],
                 ];
-                if (false === $this->paymentPlugin->captureDetainedAmount($requestParam)) {
+                if (false === $this->paymentPlugin->captureDetainedAmount($requestParams)) {
                     $db->rollbackTransaction();
                     FatUtility::dieJsonError($this->paymentPlugin->getError());
                 }
@@ -632,7 +632,7 @@ class SellerOrdersController extends AdminBaseController
                 }
             }
         }
-        
+
         $db->commitTransaction();
         $this->set('msg', Labels::getLabel('LBL_Updated_Successfully', $this->adminLangId));
         $this->_template->render(false, false, 'json-success.php');

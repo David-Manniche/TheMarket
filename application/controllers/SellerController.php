@@ -749,7 +749,7 @@ class SellerController extends SellerBaseController
 
             $this->initPaymentPlugin();
             $settings = $this->paymentPlugin->getSettings();
-            if ($payments['opayment_method'] == 'StripeConnect' && $settings['capture_method'] == $post["manual"] && $settings['order_status'] == $post["op_status_id"]) {
+            if ($payments['opayment_method'] == 'StripeConnect' && isset($settings['capture_method']) && "manual" == $settings['capture_method'] && $settings['order_status'] == $post["op_status_id"]) {
                 $resp = json_decode($payments['opayment_gateway_response'], true);
                 $childOrderInfo = $orderObj->getOrderProductsByOpId($op_id, $this->siteLangId);
                 if (empty($childOrderInfo)) {
@@ -762,7 +762,7 @@ class SellerController extends SellerBaseController
                     'amount_to_capture' => $amountToCapture,
                     'statement_descriptor' => $childOrderInfo['op_invoice_number'],
                 ];
-                if (false === $this->paymentPlugin->captureDetainedAmount($requestParam)) {
+                if (false === $this->paymentPlugin->captureDetainedAmount($requestParams)) {
                     $db->rollbackTransaction();
                     FatUtility::dieJsonError($this->paymentPlugin->getError());
                 }
