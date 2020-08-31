@@ -472,7 +472,7 @@ class Orders extends MyAppModel
 
                 /* saving of products Shipping data[ */
                 $productsShippingData = $product['productShippingData'];
-                if (!empty($productsShippingData)) {
+                if (!empty($productsShippingData)) {    
                     $productsShippingData['opshipping_op_id'] = $op_id;
 
                     $opShippingRecordObj->assignValues($productsShippingData);
@@ -486,11 +486,11 @@ class Orders extends MyAppModel
                 
                 /* saving of products Pickup data[ */
                 $productPickUpData = $product['productPickUpData'];
-                if (!empty($productPickUpData)) {
+                if (!empty($productPickUpData)) { 
                     $productPickUpData['opshipping_op_id'] = $op_id;
 
                     $opShippingRecordObj->assignValues($productPickUpData);
-                    if (!$opShippingRecordObj->addNew()) {
+                    if (!$opShippingRecordObj->addNew()) {  
                         $db->rollbackTransaction();
                         $this->error = $opShippingRecordObj->getError();
                         return false;
@@ -2530,5 +2530,21 @@ class Orders extends MyAppModel
         $order['comments'] = $orderObj->getOrderComments($langId, array("order_id" => $order['order_id']));
         $order['payments'] = $orderObj->getOrderPayments(array("order_id" => $order['order_id']));
         return $order;
+    }
+    
+    public function getOrderPickUpData($orderId, $langId)
+    {
+        $srch = new OrderProductSearch($langId, true);
+        $srch->joinShippingCharges();
+        $srch->joinTable(Orders::DB_TBL_ORDER_USER_ADDRESS, 'LEFT OUTER JOIN', 'oua.oua_op_id = op.op_id', 'oua');
+        $srch->addCondition('order_id', '=', $orderId); 
+        $srch->addCondition('oua_type', '=', Orders::PICKUP_ADDRESS_TYPE);
+        $srch->addMultipleFields(array('op_shop_name', 'opshipping_date', 'opshipping_time_slot_from', 'opshipping_time_slot_to', 'oua_name', 'oua_address1', 'oua_address2', 'oua_city', 'oua_state', 'oua_country', 'oua_phone', 'oua_zip'));
+        $rs = $srch->getResultSet();
+        $records = FatApp::getDb()->fetchAll($rs);
+        if(!empty($records)){
+            $records = array_unique($records, SORT_REGULAR);
+        }
+        return $records;
     }
 }

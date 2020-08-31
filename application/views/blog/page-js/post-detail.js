@@ -28,7 +28,7 @@ $(document).ready(function(){
 		});
 
 	}
-	bannerAdds();
+	/* bannerAdds(); */
 	if(boolLoadComments){
 		searchComments(document.frmSearchComments);
 	}

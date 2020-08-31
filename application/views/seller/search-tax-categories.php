@@ -2,15 +2,16 @@
 defined('SYSTEM_INIT') or die('Invalid Usage.');
 $arr_flds = array(
     'listserial' => 'Sr.',
-    'taxcat_name' => Labels::getLabel('LBL_Tax_Category', $siteLangId),
+    'taxcat_name' => Labels::getLabel('LBL_Tax_Category', $siteLangId)
 );
 if ($activatedTaxServiceId) {
     $arr_flds['taxcat_code'] = Labels::getLabel('LBL_Tax_Code', $siteLangId);
 } else {
-    $arr_flds['taxrule_rate'] = Labels::getLabel('LBL_Value', $siteLangId);
+    /* $arr_flds['taxrule_rate'] = Labels::getLabel('LBL_Value', $siteLangId);
     if (FatApp::getConfig('CONF_TAX_COLLECTED_BY_SELLER', FatUtility::VAR_INT, 0)) {
-        /* $arr_flds['action'] = Labels::getLabel('LBL_Action', $siteLangId); */
-    }
+        //$arr_flds['action'] = Labels::getLabel('LBL_Action', $siteLangId);
+    } */
+    $arr_flds['tax_rates'] = Labels::getLabel('LBL_Tax_Rates', $siteLangId);
 }
 
 $tbl = new HtmlElement('table', array('width'=>'100%', 'class'=>'table'));
@@ -48,33 +49,15 @@ foreach ($arr_listing as $sn => $row) {
                 $str = '<span class="item__price--old">'.CommonHelper::displayTaxFormat($row['taxval_is_percent'], $row['taxrule_rate']).'</span> ';
                 $td->appendElement('plaintext', array(), $str, true);
                 break;
-            case 'action':
+            case 'tax_rates':
                 $ul = $td->appendElement("ul", array("class"=>"actions"), '', true);
                 $li = $ul->appendElement("li");
-                if (FatApp::getConfig('CONF_TAX_COLLECTED_BY_SELLER', FatUtility::VAR_INT, 0)) {
-                    $li->appendElement(
-                        'a',
-                        array('href'=>'javascript:void(0)', 'class'=>'', 'title'=>Labels::getLabel('LBL_Edit', $siteLangId),"onclick"=>"changeTaxRates(".$row['taxcat_id'].")"),
-                        '<i class="fa fa-edit"></i>',
-                        true
-                    );
-
-                    /* Error Handling[ */
-                    if (!isset($row['taxval_seller_user_id'])) {
-                        $row['taxval_seller_user_id'] = 0;
-                    }
-                    /* ] */
-
-                    if ($row['taxval_seller_user_id'] == $userId) {
-                        $li = $ul->appendElement("li");
-                        $li->appendElement(
-                            'a',
-                            array('href'=>'javascript:void(0)', 'class'=>'', 'title'=>Labels::getLabel('LBL_Reset_to_Default', $siteLangId),"onclick"=>"resetCatTaxRates(".$row['taxcat_id'].")"),
-                            '<i class="fa fa-undo"></i>',
-                            true
-                        );
-                    }
-                }
+                $li->appendElement(
+                    'a',
+                    array('href'=>UrlHelper::generateUrl('Seller','taxRules', array($row['taxcat_id'])), 'class'=>'', 'title'=>Labels::getLabel('LBL_Tax_Rates', $siteLangId)),
+                    '<i class="fa fa-eye"></i>',
+                    true
+                );
                 break;
             default:
                 $td->appendElement('plaintext', array(), $row[$key], true);

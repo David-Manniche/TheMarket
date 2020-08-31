@@ -1,38 +1,177 @@
 <?php
 class TaxTest extends YkModelTest
 {
-
+    private $class = 'Tax';
+    
     /**
-     * @dataProvider setGetSaleTaxCatArr
+     * setUpBeforeClass
+     *
+     * @return void
      */
-    public function testGetSaleTaxCatArr($langId, $isActive)
+    public static function setUpBeforeClass() :void
+    { 
+        self::truncateDbData();
+        $obj = new self();
+        $obj->insertTaxCategories();
+        $obj->insertTaxCategoriesLang();
+        $obj->insertTaxValues();
+    }
+    
+    /**
+     * tearDownAfterClass
+     *
+     * @return void
+     */
+    public static function tearDownAfterClass() :void
+    {   
+        self::truncateDbData();
+    }
+    
+    /**
+     * truncateDbData
+     *
+     * @return void
+     */
+    public static function truncateDbData()
     {
-        $result = Tax::getSaleTaxCatArr($langId, $isActive);
+        FatApp::getDb()->query("TRUNCATE TABLE ".Tax::DB_TBL);
+        FatApp::getDb()->query("TRUNCATE TABLE ".Tax::DB_TBL_LANG);
+        FatApp::getDb()->query("TRUNCATE TABLE ".Tax::DB_TBL_VALUES); 
+    }
+    
+    /**
+    * insertTaxCategories
+    *
+    * @return void
+    */
+    private function insertTaxCategories()
+    {
+        $arr = [
+            [
+                'taxcat_id' => 1,
+                'taxcat_identifier' => 'Electronics',
+                'taxcat_active' => 1
+            ],
+            [
+                'taxcat_id' => 2,
+                'taxcat_identifier' => 'Clothing',
+                'taxcat_active' => 1
+            ],
+            [
+                'taxcat_id' => 3,
+                'taxcat_identifier' => 'Footwears',
+                'taxcat_active' => 0
+            ]
+        ];            
+        $this->InsertDbData(Tax::DB_TBL, $arr);
+    }
+    
+    /**
+    * insertTaxCategoriesLang
+    *
+    * @return void
+    */
+    private function insertTaxCategoriesLang()
+    {
+        $arr = [
+            [
+                'taxcatlang_taxcat_id' => 1,
+                'taxcatlang_lang_id' => 1,
+                'taxcat_name' => 'Electronics'
+            ],
+            [
+                'taxcatlang_taxcat_id' => 2,
+                'taxcatlang_lang_id' => 1,
+                'taxcat_name' => 'Clothing'
+            ],
+            [
+                'taxcatlang_taxcat_id' => 3,
+                'taxcatlang_lang_id' => 1,
+                'taxcat_name' => 'Footwears'
+            ]
+        ];            
+        $this->InsertDbData(Tax::DB_TBL_LANG, $arr);
+    }
+    
+    /**
+    * insertTaxValues
+    *
+    * @return void
+    */
+    private function insertTaxValues()
+    {
+        $arr = [
+            [
+                'taxval_taxcat_id' => 1,
+                'taxval_is_percent' => 1,
+                'taxval_value' => 5.00
+            ],
+            [
+                'taxval_taxcat_id' => 2,
+                'taxval_is_percent' => 1,
+                'taxval_value' => 12.00
+            ],
+            [
+                'taxval_taxcat_id' => 3,
+                'taxval_is_percent' => 1,
+                'taxval_value' => 18.00
+            ]
+        ];            
+        $this->InsertDbData(Tax::DB_TBL_VALUES, $arr);
+    }
+    
+    /**
+    * testGetSaleTaxCatArr
+    *
+    * @dataProvider providerGetSaleTaxCatArr
+    * @param  int $langId
+    * @param  bool $isActive
+    * @return void
+    */
+    public function testGetSaleTaxCatArr(int $langId, bool $isActive)
+    {   
+        $result = $this->execute($this->class, [], 'getSaleTaxCatArr', [$langId, $isActive]);     
         $this->assertIsArray($result);
     }
-
-    public function setGetSaleTaxCatArr()
-    {
+        
+    /**
+     * providerGetSaleTaxCatArr
+     *
+     * @return array
+     */
+    public function providerGetSaleTaxCatArr()
+    {  
         return [
             [-1, false],  // Invalid $langId
             [0, false],  // Invalid $langId
             [1, true],  // Valid $langId
+            [1, false],  // Valid $langId 
         ];
     }
 
     /**
-     * @dataProvider setGetTaxValuesByCatId
+     * testGetTaxValuesByCatId
+     *
+     * @dataProvider providerGetTaxValuesByCatId
+     * @param  int $taxcatId
+     * @param  int $userId
+     * @param  bool $defaultValue
+     * @return void
      */
-    public function testGetTaxCatObjByProductId($taxcatId, $userId, $defaultValue)
+    public function testGetTaxValuesByCatId(int $taxcatId, int $userId, bool $defaultValue)
     {
-        $tax = new Tax();
-        $result = $tax->getTaxValuesByCatId($taxcatId, $userId, $defaultValue);
+        $result = $this->execute($this->class, [], 'getTaxValuesByCatId', [$taxcatId, $userId, $defaultValue]);     
         $this->assertIsArray($result);
     }
-
-    public function setGetTaxValuesByCatId()
+    
+    /**
+     * providerGetTaxCatObjByProductId
+     *
+     * @return array
+     */
+    public function providerGetTaxValuesByCatId()
     {
-        return [
+        return [            
             [-1, -1, false],  // Invalid $taxcatId with Invalid $userId
             [-1, 0, false],  // Invalid $taxcatId with valid $userId
             [0, 4, false],  // Invalid $taxcatId with valid $userId
