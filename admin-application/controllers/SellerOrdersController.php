@@ -597,7 +597,7 @@ class SellerOrdersController extends AdminBaseController
                 FatUtility::dieJsonError(Message::getHtml());
             }
 
-            $payments = $orderObj->getOrderPayments(["order_id" => $orderDetail['op_order_id']]);
+            $payments = current($orderObj->getOrderPayments(["order_id" => $orderDetail['op_order_id']]));
 
             $this->initPaymentPlugin();
             $settings = $this->paymentPlugin->getSettings();
