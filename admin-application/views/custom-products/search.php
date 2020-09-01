@@ -39,7 +39,7 @@ foreach ($arr_listing as $sn => $row) {
             case 'preq_status':
 				$text = '<label class="label label-'.$reqStatusClassArr[$row[$key]].'">'.$reqStatusArr[$row[$key]].'</label>';
                 $text .= '<br>';
-				$text .= '<span class="date">'. ($row['preq_status_updated_on'] != '0000-00-00 00:00:00') ? FatDate::Format($row['preq_status_updated_on']) : '' .'</span>';
+				$text .= '<span class="date">'. FatDate::Format($row['preq_status_updated_on']) .'</span>';
 				$td->appendElement('plaintext', array(), $text, true);
                 break;
             case 'preq_added_on':
