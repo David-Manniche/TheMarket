@@ -231,4 +231,29 @@ class AddressesController extends LoggedUserController
         $this->_template->render(false, false, 'addresses/time-slots.php');
     }
     
+    public function slotDaysByAddr($addrId)
+    {
+        $addrId = FatUtility::int($addrId);
+        if (1 > $addrId) {
+            $message = Labels::getLabel('MSG_Invalid_Access', $this->siteLangId);
+            if (true === MOBILE_APP_API_CALL) {
+                LibHelper::dieJsonError($message);
+            }
+            Message::addErrorMessage($message);
+            LibHelper::dieJsonError(Message::getHtml());
+        }
+        
+        $timeSlot = new TimeSlot();
+        $slotData = $timeSlot->getTimeSlotByAddressId($addrId);
+        $slotDays = [];
+        foreach($slotData as $data){
+            if (!in_array($data['tslot_day'], $slotDays)) {
+                $slotDays[] = $data['tslot_day'];
+            }
+            
+        }
+        $this->set('slotDays', $slotDays);
+        $this->_template->render(false, false, 'json-success.php');
+    }
+    
 }
