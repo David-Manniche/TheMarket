@@ -1592,12 +1592,13 @@ class SellerController extends SellerBaseController
         }
         $taxObj = new TaxRule();
         $rulesData = $taxObj->getRules($taxCatId);
+		$combinedRulesDetails = [];
+		$ruleLocations = [];
         if (!empty($rulesData)) {
             $rulesIds = array_column($rulesData, 'taxrule_id');
             $combinedRulesDetails = $taxObj->getCombinedRuleDetails($rulesIds);
             $ruleLocations = $taxObj->getLocations($taxCatId, true, $this->siteLangId);
         }
-        // CommonHelper::printArray($ruleLocations); die;
         $this->set("combinedRulesDetails", $combinedRulesDetails);
         $this->set('taxCategory', $data['taxcat_identifier']);
         $this->set("rulesData", $rulesData);
