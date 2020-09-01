@@ -30,6 +30,7 @@ class UserPrivilege
     public const SECTION_SUBSCRIPTION = 28;
     public const SECTION_SHIPPING_PROFILE = 28;
     public const SECTION_SHIPPING_PACKAGES = 29;
+	public const SECTION_SELLER_REQUESTS = 30;
 
 
     public const MODULE_SHOP = 1;
@@ -848,5 +849,21 @@ class UserPrivilege
     public function canUploadBulkImages($sellerId = 0, $returnResult = false)
     {
         return $this->checkPermission($sellerId, static::SECTION_UPLOAD_BULK_IMAGES, static::PRIVILEGE_WRITE, $returnResult);
+    }
+	
+	public function canViewSellerRequests($sellerId = 0, $returnResult = false)
+    {
+        if (FatApp::getConfig('CONF_SHIPPED_BY_ADMIN_ONLY', FatUtility::VAR_INT, 0) == applicationConstants::YES) {
+            return $this->returnFalseOrDie($returnResult);
+        }
+        return $this->checkPermission($sellerId, static::SECTION_SELLER_REQUESTS, static::PRIVILEGE_READ, $returnResult);
+    }
+
+    public function canEditSellerRequests($sellerId = 0, $returnResult = false)
+    {
+        if (FatApp::getConfig('CONF_SHIPPED_BY_ADMIN_ONLY', FatUtility::VAR_INT, 0) == applicationConstants::YES) {
+            return $this->returnFalseOrDie($returnResult);
+        }
+        return $this->checkPermission($sellerId, static::SECTION_SELLER_REQUESTS, static::PRIVILEGE_WRITE, $returnResult);
     }
 }
