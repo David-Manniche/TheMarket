@@ -115,7 +115,9 @@ class BuyerController extends BuyerBaseController
         $this->set('returnRequests', $returnRequests);
         $this->set('cancellationRequests', $cancellationRequests);
         $this->set('OrderReturnRequestStatusArr', OrderReturnRequest::getRequestStatusArr($this->siteLangId));
+        $this->set('OrderRetReqStatusClassArr', OrderReturnRequest::getRequestStatusClassArr());
         $this->set('OrderCancelRequestStatusArr', OrderCancelRequest::getRequestStatusArr($this->siteLangId));
+        $this->set('cancelReqStatusClassArr', OrderCancelRequest::getStatusClassArr());
         $this->set('ordersCount', $srch->recordCount());
         $this->set('pendingOrderCount', FatUtility::int($ordersStats['pendingOrderCount']));
         $this->set('userBalance', User::getUserBalance($userId));
@@ -857,7 +859,7 @@ class BuyerController extends BuyerBaseController
         $this->set('recordCount', $srch->recordCount());
         $this->set('postedData', $post);
         $this->set('OrderCancelRequestStatusArr', OrderCancelRequest::getRequestStatusArr($this->siteLangId));
-
+        $this->set('cancelReqStatusClassArr', OrderCancelRequest::getStatusClassArr());
         if (true === MOBILE_APP_API_CALL) {
             $this->_template->render();
         }
@@ -950,6 +952,7 @@ class BuyerController extends BuyerBaseController
         $this->set('postedData', $post);
         $this->set('returnRequestTypeArr', OrderReturnRequest::getRequestTypeArr($this->siteLangId));
         $this->set('OrderReturnRequestStatusArr', OrderReturnRequest::getRequestStatusArr($this->siteLangId));
+        $this->set('OrderRetReqStatusClassArr', OrderReturnRequest::getRequestStatusClassArr());
         if (true === MOBILE_APP_API_CALL) {
             $this->_template->render();
         }

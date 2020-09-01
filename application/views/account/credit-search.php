@@ -35,7 +35,7 @@ foreach ($arrListing as $sn => $row) {
                 $td->appendElement('plaintext', array(), FatDate::format($row[$key]), true);
                 break;
             case 'utxn_status':
-                $td->appendElement('plaintext', array(), $statusArr[$row[$key]], true);
+                $td->appendElement('span', array('class' => 'label label-inline '.$statusClassArr[$row[$key]]), $statusArr[$row[$key]], true);
                 break;
             case 'utxn_credit':
                 $txt = CommonHelper::displayMoneyFormat($row[$key]);
