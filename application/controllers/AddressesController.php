@@ -205,7 +205,7 @@ class AddressesController extends LoggedUserController
         $this->set('addrId', $addrId);
         $this->set('slotId', $slotId);
         $this->set('slotDate', $slotDate);
-        $this->_template->addJs(array('js/jquery.datetimepicker.js'), false);      
+        $this->_template->addJs(array('js/jquery.datetimepicker.js'));      
         $this->_template->render(false, false);
     }
     
