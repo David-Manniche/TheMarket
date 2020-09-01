@@ -189,6 +189,9 @@ class AddressesController extends LoggedUserController
     {   
         $level = FatApp::getPostedData('level', FatUtility::VAR_INT, -1);
         $recordId = FatApp::getPostedData('recordId', FatUtility::VAR_INT, -1);
+        $addrId = FatApp::getPostedData('addrId', FatUtility::VAR_INT, 0);
+        $slotId = FatApp::getPostedData('slotId', FatUtility::VAR_INT, 0);
+        $slotDate = FatApp::getPostedData('slotDate', FatUtility::VAR_STRING, '');
         if($level < 0 || $recordId < 0){
             Message::addErrorMessage(Labels::getLabel('LBL_Invalid_request', $this->siteLangId));
             FatUtility::dieWithError(Message::getHtml());
@@ -199,6 +202,9 @@ class AddressesController extends LoggedUserController
         $addresses = $address->getData($type, $recordId);
         $this->set('addresses', $addresses);
         $this->set('level', $level);
+        $this->set('addrId', $addrId);
+        $this->set('slotId', $slotId);
+        $this->set('slotDate', $slotDate);
         $this->_template->addJs(array('js/jquery.datetimepicker.js'), false);      
         $this->_template->render(false, false);
     }
@@ -208,6 +214,7 @@ class AddressesController extends LoggedUserController
         $addressId = FatApp::getPostedData('addressId', FatUtility::VAR_INT, 0);
         $selectedDate = FatApp::getPostedData('selectedDate', FatUtility::VAR_STRING, '');
         $level = FatApp::getPostedData('level', FatUtility::VAR_INT, -1);
+        $selectedSlot = FatApp::getPostedData('selectedSlot', FatUtility::VAR_INT, 0);
         if($addressId < 1 || empty($selectedDate)){
             Message::addErrorMessage(Labels::getLabel('LBL_Invalid_request', $this->siteLangId));
             FatUtility::dieWithError(Message::getHtml());
@@ -220,6 +227,7 @@ class AddressesController extends LoggedUserController
         $this->set('timeSlots', $timeSlots);
         $this->set('selectedDate', $selectedDate);
         $this->set('level', $level);
+        $this->set('selectedSlot', $selectedSlot);
         $this->_template->render(false, false, 'addresses/time-slots.php');
     }
     

@@ -1,41 +1,38 @@
 .label {
     color: #fff;
-    display: inline;
-    font-size: 0.8em;
-    padding: 0 10px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    padding: 4px 8px;
     text-align: center;
-    vertical-align: baseline;
     white-space: nowrap;
     display: inline-block;
-    text-transform: uppercase;
-    height: 30px;
-    line-height: 30px;
-    border-radius: $radius1;
-}
-
-.label.label-default {
-    background: #fff;
-    border: $border;
-}
-
-.label.label--success {
-    background: $brand-color;
-    color: $brand-color-inverse;
-}
-
-.label.label--primary {
-    background: $brand-color;
-    color: $brand-color-inverse;
-}
-
-.label.label--info {
-    background: #12afcb;
-}
-
-.label.label--danger {
-    background: #f15c5c;
-}
-
-.label.label--warning {
-    background: #f6d433;
+    border-radius: $radius4;
+    &.label-default {
+        background: #fff;
+        border: $border;
+    }
+    &.label-primary {
+        background: $brand-color;
+        color: $brand-color-inverse;
+    }
+    &.label-secondary {
+        background: $secondary-color;
+        color: $secondary-color-inverse;
+    }
+    &.label-success {
+        background: lighten($success-color, 40);
+        color: $success-color;
+    }
+    &.label-info {
+        background: lighten($info-color, 30);
+        color: $info-color;
+    }
+    &.label-danger {
+        background: lighten($danger-color, 30);
+        color: $danger-color;
+    }
+    &.label-warning {
+        background: lighten($warning-color, 35);
+        color: $warning-color;
+    }
 }

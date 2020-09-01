@@ -309,6 +309,12 @@
     transition: height 0.3s ease 0s;
 }
 
+.filters-top {
+    .filter-content {
+        padding-top: 30px;
+    }
+}
+
 .filter-price-slider {
     background: #ccc;
     height: 2px;

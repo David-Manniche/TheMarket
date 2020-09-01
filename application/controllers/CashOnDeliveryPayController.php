@@ -9,7 +9,7 @@ class CashOnDeliveryPayController extends MyAppController
         $orderPaymentObj = new OrderPayment($orderId, $this->siteLangId);
         $paymentAmount = $orderPaymentObj->getOrderPaymentGatewayAmount();
         $orderInfo = $orderPaymentObj->getOrderPrimaryinfo();
-        if (!$orderInfo || $orderInfo["order_is_paid"] == Orders::ORDER_IS_PAID) {
+        if (!$orderInfo || $orderInfo["order_payment_status"] == Orders::ORDER_PAYMENT_PAID) {
             $msg = Labels::getLabel('MSG_INVALID_ORDER_PAID_CANCELLED', $this->siteLangId);
             LibHelper::exitWithError($msg, FatUtility::isAjaxCall(), true);
             FatApp::redirectUser(UrlHelper::generateUrl('Buyer', 'ViewOrder', array($orderInfo['id'])));

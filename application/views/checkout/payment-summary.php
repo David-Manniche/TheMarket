@@ -32,7 +32,7 @@ $rewardPoints = UserRewardBreakup::rewardPointBalance(UserAuthentication::getLog
                 <div class="review-block__link" role="cell">
                     <?php 
                     if ($fulfillmentType == Shipping::FULFILMENT_PICKUP || $cartHasPhysicalProduct == false) {
-                        $onclick = 'loadAddressDiv('.Address::Address_TYPE_BILLING.');';
+                        $onclick = 'loadAddressDiv('.Address::ADDRESS_TYPE_BILLING.');';
                     }else{ 
                         $onclick = 'loadAddressDiv();';
                     } 
@@ -41,35 +41,68 @@ $rewardPoints = UserRewardBreakup::rewardPointBalance(UserAuthentication::getLog
                 </div>
             </li>
             
-            <?php if ($fulfillmentType == Shipping::FULFILMENT_PICKUP && !empty($pickUpAddrData)) { ?>
+            <?php if ($fulfillmentType == Shipping::FULFILMENT_PICKUP && !empty($orderPickUpData)) { ?>
             <li class="list-group-item">
                 <div class="review-block__label">
                 <?php echo Labels::getLabel('LBL_Pickup_Address:', $siteLangId); ?>
                 </div>
                 <div class="review-block__content" role="cell">  
                     <div class="delivery-address"> 
-                        <?php foreach($pickUpAddrData as $address) { ?>
-                            <p><strong><?php echo $address['shop_name']; ?></strong></p>
-                            <p><?php echo ( mb_strlen($address['addr_address1'] ) > 0 ) ? $address['addr_address1'] : '';?>
-                            <?php echo ( mb_strlen($address['addr_address2'] ) > 0 ) ? $address['addr_address2'] . '<br>' : '';?>
-                            <?php echo ( mb_strlen($address['addr_city']) > 0 ) ? $address['addr_city'] . ',' : '';?>
-                            <?php echo ( mb_strlen($address['state_name']) > 0 ) ? $address['state_name'] . '<br>' : '';?>
-                            <?php echo ( mb_strlen($address['country_name']) > 0 ) ? $address['country_name'] . ',' : '';?>
-                            <?php echo ( mb_strlen($address['addr_zip']) > 0 ) ?  $address['addr_zip'] . '<br>' : '';?></p>
-                            <p class="phone-txt"><?php echo ( mb_strlen($address['addr_phone']) > 0 ) ? $address['addr_phone'] . '' : '';?></p>
+                        <?php foreach($orderPickUpData as $address) { ?>
+                            <p><strong><?php echo $address['op_shop_name']; ?></strong></p>
+                            <p><?php echo ( mb_strlen($address['oua_address1'] ) > 0 ) ? $address['oua_address1'] : '';?>
+                            <?php echo ( mb_strlen($address['oua_address2'] ) > 0 ) ? $address['oua_address2'] . '<br>' : '';?>
+                            <?php echo ( mb_strlen($address['oua_city']) > 0 ) ? $address['oua_city'] . ',' : '';?>
+                            <?php echo ( mb_strlen($address['oua_state']) > 0 ) ? $address['oua_state'] . '<br>' : '';?>
+                            <?php echo ( mb_strlen($address['oua_country']) > 0 ) ? $address['oua_country'] . ',' : '';?>
+                            <?php echo ( mb_strlen($address['oua_zip']) > 0 ) ?  $address['oua_zip'] . '<br>' : '';?></p>
+                            <p class="phone-txt"><?php echo ( mb_strlen($address['oua_phone']) > 0 ) ? $address['oua_phone'] . '' : '';?></p>
                             <?php 
-                            $fromTime = date('H:i', strtotime($address["time_slot_from"]));
-                            $toTime = date('H:i', strtotime($address["time_slot_to"]));
+                            $fromTime = date('H:i', strtotime($address["opshipping_time_slot_from"]));
+                            $toTime = date('H:i', strtotime($address["opshipping_time_slot_to"]));
                             ?>
-                            <p><?php echo "<strong>".FatDate::format($address["time_slot_date"]).' '.$fromTime.' - '.$toTime.'</strong>'; ?></p>
-                            <?php if (count($pickUpAddrData) > 1) { ?>
-                            <a class="plus-more" href="javascript:void(0);" onClick="displaySelectedPickUpAddresses()"><?php echo '+'.(count($pickUpAddrData) - 1).' '.Labels::getLabel('LBL_More_', $siteLangId); ?></a>
+                            <p><?php echo "<strong>".FatDate::format($address["opshipping_date"]).' '.$fromTime.' - '.$toTime.'</strong>'; ?></p>
+                            <?php if (count($orderPickUpData) > 1) { ?>
+                            <a class="plus-more" href="javascript:void(0);" onClick="orderPickUpData('<?php echo $orderId; ?>')"><?php echo '+'.(count($orderPickUpData) - 1).' '.Labels::getLabel('LBL_More_', $siteLangId); ?></a>
                             <?php break; } ?>
                         <?php } ?>
                     </div>
                 </div>
                 <div class="review-block__link" role="cell">
                     <a class="link" href="javascript:void(0);" onClick="loadShippingSummaryDiv();"><span><?php echo Labels::getLabel('LBL_Change_Address', $siteLangId); ?></span></a>
+                </div>
+            </li>
+            <?php } ?>
+            
+            <?php if ($fulfillmentType == Shipping::FULFILMENT_SHIP && !empty($orderShippingData)) { ?>
+            <li class="list-group-item">
+                <div class="review-block__label">
+                    <?php echo Labels::getLabel('LBL_Shipping:', $siteLangId); ?>
+                </div>
+                <div class="review-block__content" role="cell">  
+                    <div class="delivery-address"> 
+                    <?php foreach($orderShippingData as $data) { 
+                        $productUrl = UrlHelper::generateUrl('Products', 'View', array($data['op_selprod_id']));
+                    ?>
+                        <div class="product-profile">
+                            <div class="product-profile__thumbnail">
+                                <a href="<?php echo $productUrl;?>">
+                                    <img class="img-fluid" data-ratio="3:4"
+                                        src="<?php echo UrlHelper::getCachedUrl(UrlHelper::generateFileUrl('image', 'product', array($data['selprod_product_id'], "THUMB", $data['op_selprod_id'], 0, $siteLangId)), CONF_IMG_CACHE_TIME, '.jpg'); ?>" alt="<?php echo $data['op_selprod_title']; ?>" title="<?php echo $data['op_selprod_title']; ?>">
+                                </a>
+                            </div>
+                            <div class="product-profile__data">
+                                <div class="title"><?php echo $data['opshipping_label']; ?></div>
+                            </div>
+                        </div>
+                        <?php if (count($orderShippingData) > 1) { ?>
+                            <a class="plus-more" href="javascript:void(0);" onClick="orderShippingData('<?php echo $orderId; ?>')"><?php echo '+'.(count($orderShippingData) - 1).' '.Labels::getLabel('LBL_More_', $siteLangId); ?></a>
+                        <?php break; } ?>
+                    <?php } ?>
+                    </div>
+                </div>
+                <div class="review-block__link" role="cell">
+                    <a class="link" href="javascript:void(0);" onClick="loadShippingSummaryDiv();"><span><?php echo Labels::getLabel('LBL_Change_Shipping', $siteLangId); ?></span></a>
                 </div>
             </li>
             <?php } ?>
@@ -203,8 +236,9 @@ $rewardPoints = UserRewardBreakup::rewardPointBalance(UserAuthentication::getLog
                     });
                 }
             </script>            
-        <?php }?>
+        <?php } else {?>
         <div class="wallet-balance_info">Lorem, ipsum dolor sit amet consectetur adipisicing elit.</div>
+        <?php }?>
 
         <!-- <button class="btn btn-primary btn-wide" type="button">Pay $ 587.00</button> -->
     </div> 

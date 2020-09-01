@@ -44,7 +44,7 @@ class OrderSubscription extends MyAppModel
         $srch = new  OrderSearch($langId);
         $srch->joinTableOrderSellerSubscription();
         $srch ->addCondition(Orders::DB_TBL_PREFIX . 'type', '=', Orders::ORDER_SUBSCRIPTION);
-        $srch->addCondition(Orders::DB_TBL_PREFIX . 'is_paid', '=', Orders::ORDER_IS_PAID);
+        $srch->addCondition(Orders::DB_TBL_PREFIX . 'is_paid', '=', Orders::ORDER_PAYMENT_PAID);
         $srch->addCondition(Orders::DB_TBL_PREFIX . 'user_id', '=', $userId);
         $srch->setPageSize(1);
 
@@ -66,7 +66,7 @@ class OrderSubscription extends MyAppModel
 
         //$srch->addSubscriptionValidCondition();
         $srch ->addCondition(Orders::DB_TBL_PREFIX . 'type', '=', Orders::ORDER_SUBSCRIPTION);
-        $srch->addCondition(Orders::DB_TBL_PREFIX . 'is_paid', '=', Orders::ORDER_IS_PAID);
+        $srch->addCondition(Orders::DB_TBL_PREFIX . 'is_paid', '=', Orders::ORDER_PAYMENT_PAID);
         $srch->addCondition(Orders::DB_TBL_PREFIX . 'user_id', '=', $userId);
         $srch->addCondition('ossubs_status_id', 'IN ', Orders::getActiveSubscriptionStatusArr());
         $srch->addMultipleFields($flds);
@@ -199,7 +199,7 @@ class OrderSubscription extends MyAppModel
         $srch->joinOrders();
 
         $srch->joinOrderUser();
-        $srch->addCondition('order_is_paid', '=', ORDERS::ORDER_IS_PAID);
+        $srch->addCondition('order_payment_status', '=', ORDERS::ORDER_PAYMENT_PAID);
         $srch->addCondition('ossubs_status_id', 'in', $statusArr);
         $srch->addCondition('ossubs_till_date', '=', date('Y-m-d', strtotime('+' . FatApp::getConfig('CONF_BEFORE_EXIPRE_SUBSCRIPTION_REMINDER_EMAIL_DAYS', FatUtility::VAR_INT, 2) . ' days')));
 

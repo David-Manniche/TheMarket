@@ -17,9 +17,15 @@
         }
     }
     &-justified {
+        thead {
+            th:last-child {
+                text-align: #{$end-direction};
+            }
+        }
         tr {
             td:last-child {
                 text-align: #{$end-direction};
+                padding-#{$end-direction}: 0;
             }
         }
     }

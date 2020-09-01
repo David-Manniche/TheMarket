@@ -22,7 +22,7 @@ class Report extends MyAppModel
         $srch->joinOrderProductCharges(OrderProduct::CHARGE_TYPE_TAX, 'optax');
         $srch->joinOrderProductCharges(OrderProduct::CHARGE_TYPE_SHIPPING, 'opship');
 
-        $cnd = $srch->addCondition('o.order_is_paid', '=', Orders::ORDER_IS_PAID);
+        $cnd = $srch->addCondition('o.order_payment_status', '=', Orders::ORDER_PAYMENT_PAID);
         $cnd->attachCondition('plugin_code', '=', 'cashondelivery');
         $srch->addStatusCondition(unserialize(FatApp::getConfig('CONF_COMPLETED_ORDER_STATUS')));
 

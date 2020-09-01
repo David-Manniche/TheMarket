@@ -110,12 +110,15 @@ $this->includeTemplate('_partial/buyerDashboardNavigation.php'); ?>
                         </div>
                         <div class="cards-content ">
                             <table class="table ">
-                                <tbody>
+                              <thead>
                                     <tr class="">
                                         <th colspan="2" width="70%"><?php echo Labels::getLabel('LBL_Order_Particulars', $siteLangId);?></th>
                                         <th width="20%"><?php echo Labels::getLabel('LBL_Payment_Info', $siteLangId);?></th>
                                         <th width="10%"></th>
-                                    </tr> <?php if (count($orders)>0) {
+                                    </tr>
+                                </thead>
+                                    <tbody>
+                                         <?php if (count($orders)>0) {
                                         $canCancelOrder = true;
                                         $canReturnRefund = true;
                                         foreach ($orders as $orderId => $row) {
@@ -196,12 +199,16 @@ $this->includeTemplate('_partial/buyerDashboardNavigation.php'); ?>
                         </div>
                         <div class="cards-content ">
                             <table class="table ">
-                                <tbody>
+                               <thead>
                                     <tr class="">
                                         <th colspan="2" width="60%"><?php echo Labels::getLabel('LBL_Offer_Particulars', $siteLangId);?></th>
                                         <th width="20%"><?php echo Labels::getLabel('LBL_Expires_On', $siteLangId);?></th>
                                         <th width="20%"><?php echo Labels::getLabel('LBL_Min_order', $siteLangId);?></th>
-                                    </tr> <?php if (count($offers)>0) {
+                                    </tr>
+                                    </thead>
+                                <tbody>
+                                    
+                                    <?php if (count($offers)>0) {
                                         foreach ($offers as $row) {
                                             $discountValue = ($row['coupon_discount_in_percent'] == ApplicationConstants::PERCENTAGE)?$row['coupon_discount_value'].' %':CommonHelper::displayMoneyFormat($row['coupon_discount_value']); ?> <tr>
                                         <td>
@@ -238,13 +245,18 @@ $this->includeTemplate('_partial/buyerDashboardNavigation.php'); ?>
                         </div>
                         <div class="cards-content ">
                             <table class="table ">
-                                <tbody>
+                                <thead>
+                               
                                     <tr class="">
                                         <th width="60%"><?php echo Labels::getLabel('LBL_Order_Particulars', $siteLangId);?></th>
                                         <th width="10%"><?php echo Labels::getLabel('LBL_Qty', $siteLangId);?></th>
                                         <th width="20%"><?php echo Labels::getLabel('LBL_Status', $siteLangId);?></th>
                                         <th width="10%"></th>
-                                    </tr> <?php if (count($returnRequests) > 0) {
+                                    </tr>
+                                    </thead>
+                                    
+                                    <tbody>
+                                        <?php if (count($returnRequests) > 0) {
                                         foreach ($returnRequests as $row) {
                                             $orderDetailUrl = UrlHelper::generateUrl('buyer', 'viewOrder', array($row['order_id'],$row['op_id']));
                                             $prodOrBatchUrl = 'javascript:void(0)';
@@ -303,12 +315,15 @@ $this->includeTemplate('_partial/buyerDashboardNavigation.php'); ?>
                         </div>
                         <div class="cards-content ">
                             <table class="table ">
-                                <tbody>
+                                <thead>
                                     <tr class="">
                                         <th width="40%"><?php echo Labels::getLabel('LBL_Order_Particulars', $siteLangId);?></th>
                                         <th width="50%"><?php echo Labels::getLabel('LBL_Details', $siteLangId);?></th>
                                         <th width="10%"><?php echo Labels::getLabel('LBL_Status', $siteLangId);?></th>
-                                    </tr> <?php if (count($cancellationRequests) > 0) {
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                         <?php if (count($cancellationRequests) > 0) {
                                         foreach ($cancellationRequests as $row) {
                                             $orderDetailUrl = UrlHelper::generateUrl('buyer', 'viewOrder', array($row['order_id'],$row['op_id']));
                                             $prodOrBatchUrl = 'javascript:void(0)';

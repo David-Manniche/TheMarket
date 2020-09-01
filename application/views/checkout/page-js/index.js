@@ -583,7 +583,10 @@ $("document").ready(function () {
 
     displayPickupAddress = function (level, recordId) {
         $.facebox(function () {
-            var data = 'level=' + level + '&recordId=' + recordId;
+            var addrId = $(".js-slot-addr-"+level).attr('data-addr-id');
+            var slotId = $("input[name='slot_id[" + level + "]']").val();
+            var slotDate = $("input[name='slot_date[" + level + "]']").val();
+            var data = 'level=' + level + '&recordId=' + recordId +'&addrId=' + addrId + '&slotId=' + slotId + '&slotDate=' + slotDate;
             fcom.ajax(fcom.makeUrl('Addresses', 'getPickupAddresses'), data, function (rsp) {
                 $.facebox(rsp, 'faceboxWidth medium-fb-width');
                 $("input[name='coupon_code']").focus();
@@ -593,15 +596,16 @@ $("document").ready(function () {
 
     selectTimeSlot = function (ele, level) {
         var slot_id = $(ele).attr('id');
-        var slot_date = $('.js-datepicker').val();
+        var slot_date = $('.js-datepicker').val(); 
+        var addr_id = $("input[name='pickup_address']:checked").val();
         $("input[name='slot_id[" + level + "]']").val(slot_id);
         $("input[name='slot_date[" + level + "]']").val(slot_date);
+        $(".js-slot-addr-"+level).attr('data-addr-id', addr_id);
 
         var slot_time = $(ele).next().children('.time').html();
-
-        var slotAddr = $("input[name='pickup_address']:checked").next().next('.js-addr').html();
-        var slotHtml = "<div>" + slotAddr + "<br/><strong>" + slot_date + ' ' + slot_time + "</strong></div>";
-        $(".js-slot-addr_" + level).html(slotHtml);
+        var addrHtml = $("input[name='pickup_address']:checked").next().next('.js-addr').html();
+        var html = "<div>" + addrHtml + "<br/><strong>" + slot_date + ' ' + slot_time + "</strong></div>";
+        $(".js-slot-addr_" + level).html(html);
         $("#facebox .close").trigger('click');
     }
 
@@ -642,7 +646,7 @@ $("document").ready(function () {
         });
     };
 
-    /* Phone Verification for COD */
+    /* Phone/Email Verification for COD */
     validateOtp = function (frm){
 		if (!$(frm).validate()) return;	
         var data = fcom.frmData(frm);
@@ -675,10 +679,11 @@ $("document").ready(function () {
         });
         return false;
     };
-    /* Phone Verification for COD */
+    /* Phone/Email Verification for COD */
 
-    displaySelectedPickUpAddresses = function(){
-        fcom.ajax(fcom.makeUrl('Checkout', 'displaySelectedPickUpAddresses'), '', function (rsp) {
+    orderPickUpData = function(order_id){
+        var data = 'order_id='+order_id;
+        fcom.ajax(fcom.makeUrl('Checkout', 'orderPickUpData'), data, function (rsp) {
             $.facebox(rsp, 'faceboxWidth medium-fb-width');
         });
     }
@@ -689,6 +694,13 @@ $("document").ready(function () {
         }else{
             window.location.href = fcom.makeUrl('Cart');
         }
+    }
+    
+    orderShippingData = function(order_id){
+        var data = 'order_id='+order_id;
+        fcom.ajax(fcom.makeUrl('Checkout', 'orderShippingData'), data, function (rsp) {
+            $.facebox(rsp, 'faceboxWidth medium-fb-width');
+        });
     }
     
 })();

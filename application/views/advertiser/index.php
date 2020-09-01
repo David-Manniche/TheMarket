@@ -113,8 +113,8 @@
                             <?php } ?>
                         </div>
                         <div class="cards-content ">
-                            <table class="table">
-                                <tbody>
+                            <table class="table">                                
+                            <thead>
                                     <tr class="">
                                         <th colspan="2"><?php echo Labels::getLabel('LBL_Promotions', $siteLangId);?></th>
                                         <th ><?php echo Labels::getLabel('LBL_Type', $siteLangId);?></th>
@@ -125,6 +125,8 @@
                                         <th><?php echo Labels::getLabel('LBL_Approved', $siteLangId);?></th>
                                         <th></th>
                                     </tr>
+                                    </thead>
+                                    <tbody>
                                     <?php if (count($activePromotions) > 0) {
                                         $arrYesNo = applicationConstants::getYesNoArr($siteLangId);
                                         foreach ($activePromotions as $promotionId => $row) {
@@ -187,7 +189,8 @@
                         </div>
                         <div class="cards-content ">
                             <table class="table">
-                                <tbody>
+                                <thead>
+                               
                                     <tr class="">
                                         <th><?php echo Labels::getLabel('LBL_Txn._Id', $siteLangId);?></th>
                                         <th><?php echo Labels::getLabel('LBL_Date', $siteLangId);?></th>
@@ -197,6 +200,8 @@
                                         <th><?php echo Labels::getLabel('LBL_Comments', $siteLangId);?></th>
                                         <th><?php echo Labels::getLabel('LBL_Status', $siteLangId);?></th>
                                     </tr>
+                                    </thead>
+                                    <tbody>
                                     <?php if (count($transactions) > 0) {
                                         foreach ($transactions as $row) { ?>
                                     <tr>
