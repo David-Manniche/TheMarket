@@ -57,7 +57,7 @@
             <div class="gap"></div>
             <?php if (!empty($request)) { ?>
             <table class="table">
-              <tbody>
+             <thead>
                 <tr class="">
                   <th width="15%"><?php echo Labels::getLabel('LBL_ID', $siteLangId); ?></th>
                   <th width="20%"><?php echo Labels::getLabel('LBL_Order_Id/Invoice_Number', $siteLangId); ?></th>
@@ -65,6 +65,8 @@
                   <th width="15%"><?php echo Labels::getLabel('LBL_Return_Qty', $siteLangId); ?></th>
                   <th width="15%"><?php echo Labels::getLabel('LBL_Request_Type', $siteLangId); ?></th>
                 </tr>
+                </thead>
+                <tbody>
                 <tr>
                   <td><?php echo $request['orrequest_reference'] /* CommonHelper::formatOrderReturnRequestNumber($request['orrequest_id']) */; ?></td>
                   <td><?php echo $request['op_invoice_number']; ?>
@@ -100,8 +102,8 @@
 
            <div class="gap"></div>
             <table class="table">
-              <tbody>
-                <tr class="">
+              <thead>
+                              <tr class="">
                   <th width="15%"><?php echo Labels::getLabel('LBL_Reason', $siteLangId); ?></th>
                   <th><?php echo Labels::getLabel('LBL_Date', $siteLangId); ?></th>
                   <th width="15%"><?php echo Labels::getLabel('LBL_Product_Price', $siteLangId); ?></th>
@@ -110,6 +112,9 @@
                   <th width="15%"><?php echo Labels::getLabel('LBL_Status', $siteLangId); ?></th>
                   <th width="15%"><?php echo Labels::getLabel('LBL_Total_Amount', $siteLangId); ?></th>
                 </tr>
+                </thead>
+                <tbody>
+
                 <tr>
                   <?php $returnDataArr = CommonHelper::getOrderProductRefundAmtArr($request);?>
                   <td><?php echo $request['orreason_title']; ?></td>

@@ -1523,11 +1523,9 @@ class CheckoutController extends MyAppController
                 $max = pow(10, User::OTP_LENGTH) - 1;
                 $otp = mt_rand($min, $max);
             }
-
             if (false === $userObj->prepareUserVerificationCode($userData['credential_email'], $user_id . '_' . $otp)) {
                 FatUtility::dieWithError($userObj->getError());
             }
-
             $replace = [
                 'user_name' => $userData['user_name'],
                 'otp' => $otp,
@@ -1535,9 +1533,9 @@ class CheckoutController extends MyAppController
             ];
             $email = new EmailHandler();
             if (false === $email->sendCodOtpVerification($this->siteLangId, $replace)){
-                FatUtility::dieWithError($userObj->getError());
+                FatUtility::dieWithError($email->getError());
             }
-
+            
             $this->set('canSendSms', $canSendSms);
             $this->set('userData', $userData);
 

@@ -1,6 +1,6 @@
 <?php
 
-class TransferbankSettingsController extends PaymentMethodSettingsController
+class TransferBankSettingsController extends PaymentMethodSettingsController
 {
     /* public static function form($langId)
     {

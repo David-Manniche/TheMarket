@@ -256,13 +256,15 @@ $this->includeTemplate('_partial/seller/sellerDashboardNavigation.php'); ?>
                             <?php } ?>
                         </div>
                         <div class="cards-content ">
-                            <table class="table ">
-                                <tbody>
+                            <table class="table   table-justified">
+                                <thead>                               
                                     <tr class="">
                                         <th colspan="2" width="60%"><?php echo Labels::getLabel('LBL_Order_Particulars', $siteLangId);?></th>
                                         <th width="20%"><?php echo Labels::getLabel('LBL_Amount', $siteLangId);?></th>
                                         <th width="20%"></th>
                                     </tr>
+                                    </thead>
+                                <tbody>
                                     <?php if (count($orders) > 0) {
                                         foreach ($orders as $orderId => $row) {
                                             $orderDetailUrl = UrlHelper::generateUrl('seller', 'viewOrder', array($row['op_id']));
@@ -346,8 +348,8 @@ $this->includeTemplate('_partial/seller/sellerDashboardNavigation.php'); ?>
                             <?php } ?>
                         </div>
                         <div class="cards-content ">
-                            <table class="table ">
-                                <tbody>
+                            <table class="table   table-justified">
+                            <thead>         
                                     <tr class="">
                                         <th><?php echo Labels::getLabel('LBL_Txn._Id', $siteLangId);?></th>
                                         <th><?php echo Labels::getLabel('LBL_Date', $siteLangId);?></th>
@@ -357,6 +359,8 @@ $this->includeTemplate('_partial/seller/sellerDashboardNavigation.php'); ?>
                                         <th><?php echo Labels::getLabel('LBL_Comments', $siteLangId);?></th>
                                         <th><?php echo Labels::getLabel('LBL_Status', $siteLangId);?></th>
                                     </tr>
+                            </thead>
+                                <tbody>
                                     <?php if (count($transactions) > 0) {
                                         foreach ($transactions as $row) { ?>
                                     <tr>
@@ -408,14 +412,18 @@ $this->includeTemplate('_partial/seller/sellerDashboardNavigation.php'); ?>
                             <?php } ?>
                         </div>
                         <div class="cards-content ">
-                            <table class="table ">
-                                <tbody>
+                            <table class="table   table-justified">
+                            
+                            <thead>
+                                
                                     <tr class="">
                                         <th width="60%"><?php echo Labels::getLabel('LBL_Order_Particulars', $siteLangId);?></th>
                                         <th width="10%"><?php echo Labels::getLabel('LBL_Qty', $siteLangId);?></th>
                                         <th width="20%"><?php echo Labels::getLabel('LBL_Status', $siteLangId);?></th>
                                         <th width="10%"></th>
                                     </tr>
+                                    </thead>
+                                    <tbody>
                                     <?php if (count($returnRequests) > 0) {
                                         foreach ($returnRequests as $row) {
                                             $orderDetailUrl = UrlHelper::generateUrl('seller', 'viewOrder', array($row['op_id']));
@@ -486,13 +494,15 @@ $this->includeTemplate('_partial/seller/sellerDashboardNavigation.php'); ?>
                             <?php } ?>
                         </div>
                         <div class="cards-content ">
-                            <table class="table ">
-                                <tbody>
+                            <table class="table  table-justified">
+                               <thead>
                                     <tr class="">
                                         <th width="40%"><?php echo Labels::getLabel('LBL_Order_Particulars', $siteLangId);?></th>
                                         <th width="50%"><?php echo Labels::getLabel('LBL_Request_detail', $siteLangId);?></th>
                                         <th width="10%"><?php echo Labels::getLabel('LBL_Status', $siteLangId);?></th>
                                     </tr>
+                                    </thead>
+                                    <tbody>
                                     <?php if (count($cancellationRequests) > 0) {
                                         foreach ($cancellationRequests as $row) {
                                             $orderDetailUrl = UrlHelper::generateUrl('seller', 'viewOrder', array($row['op_id']));
@@ -525,7 +535,19 @@ $this->includeTemplate('_partial/seller/sellerDashboardNavigation.php'); ?>
                                             <div class="request__comments"> <?php echo Labels::getLabel('Lbl_Comments', $siteLangId)?>: <?php echo $row['ocrequest_message']; ?> </div>
                                         </td>
                                         <td>
-                                            <div class="request__status"> <?php echo $OrderCancelRequestStatusArr[$row['ocrequest_status']]; ?> </div>
+                                            <?php 
+                                            $canReqClass = "label label-inline";
+                                            if (OrderCancelRequest::CANCELLATION_REQUEST_STATUS_PENDING == $row['ocrequest_status']) {
+                                                $canReqClass .= " label-info";
+                                            } else if (OrderCancelRequest::CANCELLATION_REQUEST_STATUS_APPROVED == $row['ocrequest_status']) {
+                                                $canReqClass .= " label-success";
+                                            } else if (OrderCancelRequest::CANCELLATION_REQUEST_STATUS_DECLINED == $row['ocrequest_status']) {
+                                                $canReqClass .= " label-danger";
+                                            }
+                                            ?>
+                                            <span class="<?php echo $canReqClass; ?>"> 
+                                                <?php echo $OrderCancelRequestStatusArr[$row['ocrequest_status']]; ?>
+                                            </span>
                                         </td>
                                     </tr>
                                     <?php } } else { ?>
