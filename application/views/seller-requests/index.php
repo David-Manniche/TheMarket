@@ -45,7 +45,7 @@ $this->includeTemplate('_partial/seller/sellerDashboardNavigation.php');
                                     <div class="col-md-4">
                                         <div class="no-data-found">
                                             <div class="img">
-                                                <img src="images/retina/no-order.svg" width="70px" height="70px">
+                                                <img src="images/retina/no-product-requests.svg" width="70px" height="70px">
                                             </div>
                                             <div class="data">
                                                 <h5><?php echo Labels::getLabel('LBL_No_Product_Request', $siteLangId);?></h5>
@@ -60,10 +60,10 @@ $this->includeTemplate('_partial/seller/sellerDashboardNavigation.php');
                                     <div class="col-md-4">
                                         <div class="no-data-found">
                                             <div class="img">
-                                            <img src="images/retina/no-order.svg" width="70px" height="70px">
+                                                <img src="images/retina/no-brand-requests.svg" width="70px" height="70px">
                                             </div>
                                             <div class="data">
-                                                <h5><?php echo Labels::getLabel('LBL_No_Category_Request', $siteLangId);?></h5>
+                                                <h5><?php echo Labels::getLabel('LBL_No_Brand_Request', $siteLangId);?></h5>
                                                 <p>Lorem ipsum dolor sit, amet consectetur adipisicing elit. Placeat eos
                                                     quis amet. </p>
                                                 <div class="action">
@@ -75,10 +75,10 @@ $this->includeTemplate('_partial/seller/sellerDashboardNavigation.php');
                                     <div class="col-md-4">
                                         <div class="no-data-found">
                                             <div class="img">
-                                            <img src="images/retina/no-order.svg" width="70px" height="70px">
+                                                <img src="images/retina/no-category-requests.svg" width="70px" height="70px">
                                             </div>
                                             <div class="data">
-                                                <h5><?php echo Labels::getLabel('LBL_No_Brand_Request', $siteLangId);?></h5>
+                                                <h5><?php echo Labels::getLabel('LBL_No_Category_Request', $siteLangId);?></h5>
                                                 <p>Lorem ipsum dolor sit, amet consectetur adipisicing elit. Placeat eos
                                                     quis amet. </p>
                                                 <div class="action">
