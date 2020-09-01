@@ -1,10 +1,10 @@
 <?php defined('SYSTEM_INIT') or die('Invalid Usage.'); 
-if(!empty($orderShippingData)){
+if(!empty($orderShippingData)){ 
 ?>
         <div class="pop-up-title"><?php echo Labels::getLabel('LBL_Shipping', $siteLangId); ?></div>
         <div class="pick-section">
             <ul class="list-group review-block">
-                <?php foreach($orderShippingData as $data) { 
+                <?php foreach($orderShippingData as $key=>$data) { 
                     $productUrl = UrlHelper::generateUrl('Products', 'View', array($data['op_selprod_id']));
                 ?>
                  <li class="list-group-item">
@@ -20,7 +20,7 @@ if(!empty($orderShippingData)){
                                 <div class="product-profile__data">
                                     <div class="title"><?php echo $data['opshipping_label']; ?></div>
                                 </div>
-                            </div>                             
+                            </div>   
                         </div>
                     </div>
                     <div class="review-block__link" role="cell">
