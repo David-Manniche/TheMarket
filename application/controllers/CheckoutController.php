@@ -200,7 +200,7 @@ class CheckoutController extends MyAppController
     }
 
     public function index($appParam = '', $appLang = '1', $appCurrency = '1')
-    {
+    {   
         if ($appParam == 'api') {
             $langId = FatUtility::int($appLang);
             if (0 < $langId) {
