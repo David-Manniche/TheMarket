@@ -37,8 +37,10 @@ foreach ($arr_listing as $sn => $row) {
                 }                
                 break;
             case 'preq_status':
-                $td->appendElement('label', array('class'=>'label label-'.$reqStatusClassArr[$row[$key]].''), $reqStatusArr[$row[$key]] . '<br>', true);
-				/* $td->appendElement('plaintext', array(), ($row['preq_status_updated_on'] != '0000-00-00 00:00:00') ? FatDate::Format($row['preq_status_updated_on']) : '', true); */
+				$text = '<label class="label label-'.$reqStatusClassArr[$row[$key]].'">'.$reqStatusArr[$row[$key]].'</label>';
+                $text .= '<br>';
+				$text .= '<span class="date">'. ($row['preq_status_updated_on'] != '0000-00-00 00:00:00') ? FatDate::Format($row['preq_status_updated_on']) : '' .'</span>';
+				$td->appendElement('plaintext', array(), $text, true);
                 break;
             case 'preq_added_on':
                 $td->appendElement('plaintext', array(), FatDate::Format($row[$key]), true);

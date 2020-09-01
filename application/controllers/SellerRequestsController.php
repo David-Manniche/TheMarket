@@ -23,10 +23,12 @@ class SellerRequestsController extends SellerBaseController
         $rs = $srch->getResultSet();
         $reqProducts = FatApp::getDb()->fetchAll($rs);
 
+        $noRecordFound = false;
         if (empty($reqBrands) && empty($reqCategories) && empty($reqProducts)) {
-            $this->set('noRecordsFound', true); 
+            $noRecordFound = true;
         }
 
+        $this->set('noRecordFound', $noRecordFound); 
         $this->_template->addJs(array('js/cropper.js', 'js/cropper-main.js'));
         $this->_template->render();
     }

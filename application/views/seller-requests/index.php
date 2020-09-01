@@ -5,10 +5,10 @@ $this->includeTemplate('_partial/seller/sellerDashboardNavigation.php');
     <div class="content-wrapper content-space">
         <div class="content-header row ">
             <div class="col">
-                <h2 class="content-header-title"><?php echo Labels::getLabel('LBL_Seller_Requests', $siteLangId); ?>
+                <h2 class="content-header-title"><?php echo Labels::getLabel('LBL_Requests', $siteLangId); ?>
                 </h2>
             </div>
-            <?php if ($canEdit) { ?>
+            <?php if ($canEdit && !$noRecordFound) { ?>
             <div class="col-auto">
                 <div class="dropdown dashboard-user">
                     <button class="btn btn-outline-primary dropdown-toggle" type="button" id="dashboardDropdown"
@@ -40,61 +40,61 @@ $this->includeTemplate('_partial/seller/sellerDashboardNavigation.php');
                 <div class="col-lg-12">
                     <div class="cards">
                         <div class="cards-content">
-                            <div id="listing"> <?php echo Labels::getLabel('LBL_Processing...', $siteLangId); ?></div>
-                            <div class="row">
-                                <div class="col-md-4">
-                                    <div class="no-data-found">
-                                        <div class="img">
+                            <?php if ($noRecordFound) { ?>
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <div class="no-data-found">
+                                            <div class="img">
+                                                <img src="images/retina/no-order.svg" width="70px" height="70px">
+                                            </div>
+                                            <div class="data">
+                                                <h5><?php echo Labels::getLabel('LBL_No_Product_Request', $siteLangId);?></h5>
+                                                <p>Lorem ipsum dolor sit, amet consectetur adipisicing elit. Placeat eos
+                                                    quis amet. </p>
+                                                <div class="action">
+                                                    <a class="btn btn-outline-primary btn-wide" href="<?php echo UrlHelper::generateUrl('Seller', 'customCatalogProductForm'); ?>"><?php echo Labels::getLabel('LBL_New_Product_Request', $siteLangId);?></a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="no-data-found">
+                                            <div class="img">
                                             <img src="images/retina/no-order.svg" width="70px" height="70px">
-                                        </div>
-                                        <div class="data">
-                                            <h5>No Product Request</h5>
-                                            <p>Lorem ipsum dolor sit, amet consectetur adipisicing elit. Placeat eos
-                                                quis amet. </p>
-                                            <div class="action">
-                                                <a class="btn btn-outline-primary btn-wide" href="#">Action</a>
+                                            </div>
+                                            <div class="data">
+                                                <h5><?php echo Labels::getLabel('LBL_No_Category_Request', $siteLangId);?></h5>
+                                                <p>Lorem ipsum dolor sit, amet consectetur adipisicing elit. Placeat eos
+                                                    quis amet. </p>
+                                                <div class="action">
+                                                    <a class="btn btn-outline-primary btn-wide" href="javascript:void(0);" onClick="addBrandReqForm(0)"><?php echo Labels::getLabel('LBL_New_Brand_Request', $siteLangId);?></a>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
-								</div>
-								<div class="col-md-4">
-                                    <div class="no-data-found">
-                                        <div class="img">
-										<img src="images/retina/no-order.svg" width="70px" height="70px">
-                                        </div>
-                                        <div class="data">
-                                            <h5>No Brand Request</h5>
-                                            <p>Lorem ipsum dolor sit, amet consectetur adipisicing elit. Placeat eos
-                                                quis amet. </p>
-                                            <div class="action">
-                                                <a class="btn btn-outline-primary btn-wide" href="#">Action</a>
+                                    <div class="col-md-4">
+                                        <div class="no-data-found">
+                                            <div class="img">
+                                            <img src="images/retina/no-order.svg" width="70px" height="70px">
                                             </div>
-                                        </div>
-                                    </div>
-								</div>
-								<div class="col-md-4">
-                                    <div class="no-data-found">
-                                        <div class="img">
-										<img src="images/retina/no-order.svg" width="70px" height="70px">
-                                        </div>
-                                        <div class="data">
-                                            <h5>No Category Request</h5>
-                                            <p>Lorem ipsum dolor sit, amet consectetur adipisicing elit. Placeat eos
-                                                quis amet. </p>
-                                            <div class="action">
-                                                <a class="btn btn-outline-primary btn-wide" href="#">Action</a>
+                                            <div class="data">
+                                                <h5><?php echo Labels::getLabel('LBL_No_Brand_Request', $siteLangId);?></h5>
+                                                <p>Lorem ipsum dolor sit, amet consectetur adipisicing elit. Placeat eos
+                                                    quis amet. </p>
+                                                <div class="action">
+                                                    <a class="btn btn-outline-primary btn-wide" href="javascript:void(0);" onClick="addCategoryReqForm(0)"><?php echo Labels::getLabel('LBL_New_Category_Request', $siteLangId);?></a>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
-                            </div>
-
+                            <?php } else { ?>
+                                <div id="listing"> <?php echo Labels::getLabel('LBL_Processing...', $siteLangId); ?></div>
+                            <?php } ?>
                         </div>
                     </div>
                 </div>
             </div>
-
-
         </div>
     </div>
 </main>
