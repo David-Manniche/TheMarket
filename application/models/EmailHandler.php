@@ -2948,6 +2948,7 @@ class EmailHandler extends FatModel
         );
 
         if (!self::sendMailTpl($d['credential_email'], $tpl, $langId, $vars)) {
+            $this->error = Labels::getLabel("MSG_UNABLE_TO_SEND_EMAIL", $langId);
             return false;
         }
         return true;
