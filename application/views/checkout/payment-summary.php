@@ -236,8 +236,9 @@ $rewardPoints = UserRewardBreakup::rewardPointBalance(UserAuthentication::getLog
                     });
                 }
             </script>            
-        <?php }?>
+        <?php } else {?>
         <div class="wallet-balance_info">Lorem, ipsum dolor sit amet consectetur adipisicing elit.</div>
+        <?php }?>
 
         <!-- <button class="btn btn-primary btn-wide" type="button">Pay $ 587.00</button> -->
     </div> 

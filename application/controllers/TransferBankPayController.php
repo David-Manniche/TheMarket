@@ -1,6 +1,6 @@
 <?php
 
-class TransferbankPayController extends PaymentController
+class TransferBankPayController extends PaymentController
 {
     public const KEY_NAME = "TransferBank";
 
