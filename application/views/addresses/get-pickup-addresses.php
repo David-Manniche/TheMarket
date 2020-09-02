@@ -36,7 +36,12 @@ if(!empty($addresses)){
         </div>      
 <?php }else{ ?>
 <h5 class="step-title"><?php echo Labels::getLabel('LBL_No_Pick_Up_address_added', $siteLangId); ?></h5>
-<?php } ?>
+<?php } 
+$dateformat = FatDate::convertDateFormatFromPhp(
+    FatApp::getConfig('CONF_DATE_FORMAT', FatUtility::VAR_STRING, 'Y-m-d'),
+    FatDate::FORMAT_JQUERY_UI
+); 
+?>
 
 <script>
 var needToSeeDaysOfWeek = new Array();
@@ -45,9 +50,9 @@ $(document).ready(function(){
     
     $('.js-datepicker').datepicker({
         minDate: new Date(),
-        dateFormat: 'yy-mm-dd',
+        dateFormat: '<?php echo $dateformat; ?>',
         gotoCurrent : false,
-        beforeShowDay: daysWithSlots,
+        beforeShowDay: enableDaysWithSlots,
         onSelect: function() {
             displayDateSlots(false);
         }
@@ -91,7 +96,7 @@ displayCalendar = function(){
     });
 }
     
-daysWithSlots = function(date){ 
+enableDaysWithSlots = function(date){ 
     var day = date.getDay();   
     for(var i=0;i<needToSeeDaysOfWeek.length;i++){ 
          if(day == needToSeeDaysOfWeek[i]){
@@ -100,4 +105,20 @@ daysWithSlots = function(date){
     }   
     return [false];
 }
+
+selectTimeSlot = function (ele, level) {
+    var slot_id = $(ele).attr('id');
+    var slot_date = $('.js-datepicker').val(); 
+    var addr_id = $("input[name='pickup_address']:checked").val();
+    $("input[name='slot_id[" + level + "]']").val(slot_id);
+    $("input[name='slot_date[" + level + "]']").val(slot_date);
+    $(".js-slot-addr-"+level).attr('data-addr-id', addr_id);
+
+    var slot_time = $(ele).next().children('.time').html();
+    var addrHtml = $("input[name='pickup_address']:checked").next().next('.js-addr').html();
+    var html = "<div>" + addrHtml + "<br/><strong>" + slot_date + ' ' + slot_time + "</strong></div>";
+    $(".js-slot-addr_" + level).html(html);
+    $("#facebox .close").trigger('click');
+}
+
 </script>
