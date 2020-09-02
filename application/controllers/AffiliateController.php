@@ -79,6 +79,7 @@ class AffiliateController extends AffiliateBaseController
         $this->set('user_listing', $user_listing);
         $this->set('transactions', $transactions);
         $this->set('txnStatusArr', Transactions::getStatusArr($this->siteLangId));
+        $this->set('txnStatusClassArr', Transactions::getStatusClassArr());
         $this->set('affiliateTrackingUrl', $affiliateTrackingUrl);
         $this->set('userBalance', User::getUserBalance($loggedUserId));
         $this->set('userRevenue', User::getAffiliateUserRevenue($loggedUserId));

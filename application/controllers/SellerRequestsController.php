@@ -55,6 +55,7 @@ class SellerRequestsController extends SellerBaseController
         $this->set('postedData', $post);
         $this->set('siteLangId', $this->siteLangId);
         $this->set('statusArr', Brand::getBrandReqStatusArr($this->siteLangId));
+        $this->set('statusClassArr', Brand::getBrandReqStatusClassArr());
         $this->_template->render(false, false);
     }
 
@@ -77,7 +78,8 @@ class SellerRequestsController extends SellerBaseController
         $this->set('pageSize', $pagesize);
         $this->set('postedData', $post);
         $this->set('siteLangId', $this->siteLangId);
-        $this->set('statusArr', Brand::getBrandReqStatusArr($this->siteLangId));
+        $this->set('statusArr', ProductCategory::getStatusArr($this->siteLangId));
+        $this->set('statusClassArr', ProductCategory::getStatusClassArr());
         $this->_template->render(false, false);
     }
 
@@ -123,6 +125,7 @@ class SellerRequestsController extends SellerBaseController
         $this->set('postedData', $post);
         $this->set('siteLangId', $this->siteLangId);
         $this->set('statusArr', ProductRequest::getStatusArr($this->siteLangId));
+        $this->set('statusClassArr', ProductRequest::getStatusClassArr());
         $this->set('CONF_CUSTOM_PRODUCT_REQUIRE_ADMIN_APPROVAL', FatApp::getConfig("CONF_CUSTOM_PRODUCT_REQUIRE_ADMIN_APPROVAL", FatUtility::VAR_INT, 1));
         $this->_template->render(false, false);
     }

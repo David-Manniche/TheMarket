@@ -54,6 +54,7 @@ class AdvertiserController extends AdvertiserBaseController
         $this->set('activePromotionChargedAmount', Promotion::getTotalChargedAmount($userId, true));
         $this->set('transactions', $transactions);
         $this->set('txnStatusArr', Transactions::getStatusArr($this->siteLangId));
+        $this->set('txnStatusClassArr', Transactions::getStatusClassArr());
         $this->set('activePromotions', $records);
         $this->set('totPromotions', $totalPSrch->recordCount());
         $this->set('totActivePromotions', $activePSrch->recordCount());
@@ -591,7 +592,10 @@ class AdvertiserController extends AdvertiserBaseController
         $rs = $srch->getResultSet();
         $records = FatApp::getDb()->fetchAll($rs, 'promotion_id');
         $promotionBudgetDurationArr = Promotion::getPromotionBudgetDurationArr($this->siteLangId);
-        /* CommonHelper::printArray($records); die; */
+        
+        $this->set('arrYesNo', applicationConstants::getYesNoArr($this->siteLangId));
+        $this->set('arrYesNoClassArr', applicationConstants::getYesNoClassArr());
+        $this->set('activeInactiveArr', applicationConstants::getActiveInactiveArr($this->siteLangId));
         $this->set('canEdit', $this->userPrivilege->canEditPromotions(0, true));
         $this->set('promotionBudgetDurationArr', $promotionBudgetDurationArr);
         $this->set('arr_listing', $records);
@@ -1601,5 +1605,42 @@ class AdvertiserController extends AdvertiserBaseController
         $this->set('bannerWidth', $bannerDimensions['blocation_banner_width']);
         $this->set('bannerHeight', $bannerDimensions['blocation_banner_height']);
         $this->_template->render(false, false, 'json-success.php');
+    }
+
+    public function changePromotionStatus()
+    {
+        $this->userPrivilege->canEditPromotions();
+        $promotionId = FatApp::getPostedData('promotionId', FatUtility::VAR_INT, 0);
+        $userId = $this->userParentId;
+
+        $promotionData = Promotion::getAttributesById($promotionId, array('promotion_user_id', 'promotion_active'));
+        if (!$promotionData || ($promotionData && $promotionData['promotion_user_id'] != $userId)) {
+            Message::addErrorMessage(Labels::getLabel('MSG_Invalid_request', $this->siteLangId));
+            FatUtility::dieWithError(Message::getHtml());
+        }
+
+        $status = ($promotionData['promotion_active'] == applicationConstants::ACTIVE) ? applicationConstants::INACTIVE : applicationConstants::ACTIVE;
+
+        $this->updatePromotionStatus($promotionId, $status);
+
+        $this->set('msg', Labels::getLabel('MSG_Status_changed_Successfully', $this->siteLangId));
+        $this->_template->render(false, false, 'json-success.php');
+    }
+
+    private function updatePromotionStatus($promotionId, $status)
+    {
+        $this->userPrivilege->canEditPromotions();
+        $promotionId = FatUtility::int($promotionId);
+        $status = FatUtility::int($status);
+        if (1 > $promotionId || -1 == $status) {
+            FatUtility::dieWithError(
+                Labels::getLabel('MSG_INVALID_REQUEST', $this->siteLangId)
+            );
+        }
+        $promotion = new Promotion($promotionId);
+        if (!$promotion->changeStatus($status)) {
+            Message::addErrorMessage($promotion->getError());
+            FatUtility::dieWithError(Message::getHtml());
+        }
     }
 }

@@ -60,6 +60,15 @@ class Transactions extends MyAppModel
         return $arr;
     }
 
+    public static function getStatusClassArr()
+    {
+        return array(
+            static::STATUS_PENDING => applicationConstants::CLASS_INFO,
+            static::STATUS_COMPLETED => applicationConstants::CLASS_SUCCESS,
+            static::STATUS_DECLINED => applicationConstants::CLASS_DANGER
+        );
+    }
+
     public static function getWithdrawlStatusArr($langId)
     {
         $langId = FatUtility::int($langId);

@@ -35,7 +35,6 @@ class Orders extends MyAppModel
     public const ORDER_PAYMENT_CANCELLED = -1;
     public const ORDER_PAYMENT_PENDING = 0;
     public const ORDER_PAYMENT_PAID = 1;
-    public const ORDER_PAYMENT_DETAINED = 2;
 
     public const PAYMENT_GATEWAY_STATUS_PENDING = 0;
     public const PAYMENT_GATEWAY_STATUS_PAID = 1;
@@ -71,7 +70,6 @@ class Orders extends MyAppModel
             static::ORDER_PAYMENT_CANCELLED => Labels::getLabel('LBL_Order_Payment_Status_Cancelled', $langId),
             static::ORDER_PAYMENT_PENDING => Labels::getLabel('LBL_Order_Payment_Status_Pending', $langId),
             static::ORDER_PAYMENT_PAID => Labels::getLabel('LBL_Order_Payment_Status_Paid', $langId),
-            static::ORDER_PAYMENT_DETAINED => Labels::getLabel('LBL_ORDER_PAYMENT_DETAINED', $langId),
         );
     }
     public static function getActiveSubscriptionStatusArr()
@@ -863,6 +861,7 @@ class Orders extends MyAppModel
             trigger_error(Labels::getLabel('MSG_Order_Id_Is_Not_Passed', $this->commonLangId), E_USER_ERROR);
         }
         $srch = static::getSearchObject($langId);
+        $srch->joinTable(Plugin::DB_TBL, 'LEFT JOIN', 'order_pmethod_id = plugin_id');
         $srch->addCondition('order_id', '=', $order_id);
         $srch->doNotCalculateRecords();
         $srch->doNotLimitRecords();

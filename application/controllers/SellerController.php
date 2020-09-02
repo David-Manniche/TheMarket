@@ -143,9 +143,12 @@ class SellerController extends SellerBaseController
         $this->set('transactions', $transactions);
         $this->set('returnRequests', $returnRequests);
         $this->set('OrderReturnRequestStatusArr', OrderReturnRequest::getRequestStatusArr($this->siteLangId));
+        $this->set('OrderRetReqStatusClassArr', OrderReturnRequest::getRequestStatusClassArr());
         $this->set('cancellationRequests', $cancellationRequests);
         $this->set('txnStatusArr', Transactions::getStatusArr($this->siteLangId));
+        $this->set('txnStatusClassArr', Transactions::getStatusClassArr());
         $this->set('OrderCancelRequestStatusArr', OrderCancelRequest::getRequestStatusArr($this->siteLangId));
+        $this->set('cancelReqStatusClassArr', OrderCancelRequest::getStatusClassArr());
         $this->set('txnsSummary', $txnsSummary);
         $this->set('notAllowedStatues', $notAllowedStatues);
         $this->set('orders', $orders);
@@ -2711,6 +2714,7 @@ class SellerController extends SellerBaseController
         $this->set('recordCount', $srch->recordCount());
         $this->set('postedData', $post);
         $this->set('OrderCancelRequestStatusArr', OrderCancelRequest::getRequestStatusArr($this->siteLangId));
+        $this->set('cancelReqStatusClassArr', OrderCancelRequest::getStatusClassArr());
         $this->_template->render(false, false, 'buyer/order-cancellation-request-search.php');
     }
 
@@ -2799,6 +2803,7 @@ class SellerController extends SellerBaseController
         $this->set('postedData', $post);
         $this->set('returnRequestTypeArr', OrderReturnRequest::getRequestTypeArr($this->siteLangId));
         $this->set('OrderReturnRequestStatusArr', OrderReturnRequest::getRequestStatusArr($this->siteLangId));
+        $this->set('OrderRetReqStatusClassArr', OrderReturnRequest::getRequestStatusClassArr());
         $this->_template->render(false, false, 'buyer/order-return-request-search.php');
     }
 

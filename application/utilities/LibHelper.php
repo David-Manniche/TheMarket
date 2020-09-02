@@ -118,4 +118,20 @@ class LibHelper extends FatUtility
         json_decode($string);
         return (json_last_error() == JSON_ERROR_NONE);
     }
+
+    public static function emailAddressMasking(string $email): string
+    {
+        if (filter_var($email, FILTER_VALIDATE_EMAIL)) {
+            list($first, $last) = explode('@', $email);
+            $first = str_replace(substr($first, 1), str_repeat('*', strlen($first) - 2), $first) . substr($first, -1);
+            $last = explode('.', $last);
+            $last_domain = str_replace(substr($last['0'], '1'), str_repeat('*', strlen($last['0']) - 2), $last['0']) . substr($last[0], -1);
+            return $first . '@' . $last_domain . '.' . $last['1'];
+        }
+    }
+
+    public static function phoneNumberMasking(string $phone): string
+    {
+        return substr($phone, 0, 1) . str_repeat('*',(strlen($phone) - 2)) . substr($phone, -1);
+    }
 }

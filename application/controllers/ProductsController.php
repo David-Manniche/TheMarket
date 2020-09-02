@@ -25,7 +25,6 @@ class ProductsController extends MyAppController
 
     private function productsData($method)
     {
-        $db = FatApp::getDb();
         $get = Product::convertArrToSrchFiltersAssocArr(FatApp::getParameters());
         $includeKeywordRelevancy = false;
         $keyword = '';
