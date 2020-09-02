@@ -49,7 +49,7 @@ $rewardPoints = UserRewardBreakup::rewardPointBalance(UserAuthentication::getLog
                 <div class="review-block__content" role="cell">  
                     <div class="delivery-address"> 
                         <?php foreach($orderPickUpData as $address) { ?>
-                            <p><strong><?php echo $address['op_shop_name']; ?></strong></p>
+                            <p><strong><?php echo ($address['opshipping_by_seller_user_id'] > 0) ? $address['op_shop_name'] : FatApp::getConfig('CONF_WEBSITE_NAME_' . $siteLangId, null, ''); ?></strong></p>
                             <p><?php echo ( mb_strlen($address['oua_address1'] ) > 0 ) ? $address['oua_address1'] : '';?>
                             <?php echo ( mb_strlen($address['oua_address2'] ) > 0 ) ? $address['oua_address2'] . '<br>' : '';?>
                             <?php echo ( mb_strlen($address['oua_city']) > 0 ) ? $address['oua_city'] . ',' : '';?>

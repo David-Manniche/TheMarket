@@ -483,12 +483,12 @@ class Orders extends MyAppModel
                     }
                 }
                 /*]*/
-                
+
                 /* saving of products Pickup data[ */
-                $productPickUpData = $product['productPickUpData'];
+                $productPickUpData = $product['productPickUpData']; 
                 if (!empty($productPickUpData)) { 
                     $productPickUpData['opshipping_op_id'] = $op_id;
-
+                    $productPickUpData['opshipping_by_seller_user_id'] = !empty($productPickUpData['opshipping_by_seller_user_id']) ? $productPickUpData['opshipping_by_seller_user_id'] : 0;
                     $opShippingRecordObj->assignValues($productPickUpData);
                     if (!$opShippingRecordObj->addNew()) {  
                         $db->rollbackTransaction();

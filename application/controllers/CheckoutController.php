@@ -1137,12 +1137,13 @@ class CheckoutController extends MyAppController
                     $pickUpDataRow = $productSelectedPickUpAddresses[$productInfo['selprod_id']];
                     $productPickUpData = array(
                         'opshipping_type' => OrderProduct::TYPE_PICKUP,
+                        'opshipping_by_seller_user_id' => $pickUpDataRow['shipped_by_seller'],
                         'opshipping_pickup_addr_id' => $pickUpDataRow['time_slot_addr_id'],
                         'opshipping_date' => $pickUpDataRow['time_slot_date'],
                         'opshipping_time_slot_from' => $pickUpDataRow['time_slot_from_time'],
                         'opshipping_time_slot_to' => $pickUpDataRow['time_slot_to_time'],
                     );
-                    
+
                     $addressRecordId = Address::getAttributesById($pickUpDataRow['time_slot_addr_id'], 'addr_record_id');
                     $addr = new Address($pickUpDataRow['time_slot_addr_id'], $this->siteLangId);
                     $pickUpAddressArr = $addr->getData($pickUpDataRow['time_slot_type'], $addressRecordId);
@@ -2176,8 +2177,26 @@ class CheckoutController extends MyAppController
                         continue;
                     }
                     
+                    /* get Product Data[ */
+                    $prodSrch = new ProductSearch();
+                    $prodSrch->setDefinedCriteria();
+                    $prodSrch->joinProductToCategory();
+                    $prodSrch->joinProductShippedBy();
+                    $prodSrch->joinProductFreeShipping();
+                    $prodSrch->joinSellerSubscription();
+                    $prodSrch->addSubscriptionValidCondition();
+                    $prodSrch->doNotCalculateRecords();
+                    $prodSrch->doNotLimitRecords();
+                    $prodSrch->addCondition('selprod_deleted', '=', applicationConstants::NO);
+                    $prodSrch->addCondition('selprod_id', '=', $cartval['selprod_id']);                    
+                    $prodSrch->addMultipleFields(array('selprod_id', 'product_seller_id', 'psbs_user_id as shippedBySellerId'));
+                    $productRs = $prodSrch->getResultSet();
+                    $productInfo = FatApp::getDb()->fetch($productRs);
+                    /* ] */     
+                    
                     $pickupAddressArr[$cartval['selprod_id']] = array(
-                        'selprod_id' => $cartval['selprod_id'],                       
+                        'selprod_id' => $cartval['selprod_id'], 
+                        'shipped_by_seller' => Product::isShippedBySeller($cartval['selprod_user_id'], $productInfo['product_seller_id'], $productInfo['shippedBySellerId']),
                         'time_slot_addr_id' => $slotData['tslot_record_id'],
                         'time_slot_id' => $slotData['tslot_id'],
                         'time_slot_type' => $slotData['tslot_type'],

@@ -7,7 +7,7 @@ if(!empty($orderPickUpData)){
                 <?php foreach($orderPickUpData as $address) { ?>
                  <li class="list-group-item">
                      <div class="review-block__label">
-                         <strong><?php echo $address['op_shop_name']; ?></strong>
+                         <strong><?php echo ($address['opshipping_by_seller_user_id'] > 0) ? $address['op_shop_name'] : FatApp::getConfig('CONF_WEBSITE_NAME_' . $siteLangId, null, ''); ?></strong>
                      </div>
                     <div class="review-block__content" role="cell">  
                         <div class="delivery-address"> 
