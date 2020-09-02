@@ -14,7 +14,7 @@ $submitFld->setFieldTagAttribute('class', 'btn btn-primary');
 $submitFld->developerTags['noCaptionTag'] = true;
 ?>
 <div class="box__head">
-    <h4><?php echo Labels::getLabel('LBL_Request_New_Brand', $siteLangId); ?></h4>
+    <h4><?php echo (FatApp::getConfig('CONF_BRAND_REQUEST_APPROVAL', FatUtility::VAR_INT, 0)) ? Labels::getLabel('LBL_Request_New_Brand', $siteLangId) : Labels::getLabel('LBL_New_Brand', $siteLangId) ?></h4>
 </div>
 
 <div class="box__body">

@@ -629,14 +629,21 @@ class SellerRequestsController extends SellerBaseController
         return false;
     }
 
-    public function customCatalogInfo($product_id)
+    public function customCatalogInfo($prodReqId)
     {
-        $product_id = FatUtility::int($product_id);
+        $prodReqId = FatUtility::int($prodReqId);
         $srch = $this->getRequestedProdObj();
+		$srch->joinTable(Brand::DB_TBL, 'LEFT OUTER JOIN', 'tb.brand_id = preq_brand_id', 'tb');
+		$srch->joinTable(Brand::DB_TBL_LANG, 'LEFT OUTER JOIN', 'brandlang_brand_id = tb.brand_id	AND brandlang_lang_id = ' . $this->siteLangId, 'tb_l');
+		$srch->joinTable(ProductCategory::DB_TBL, 'INNER JOIN', 'tc.prodcat_id = preq_prodcat_id', 'tc');
+		$srch->joinTable(ProductCategory::DB_TBL_LANG, 'LEFT OUTER JOIN', 'prodcatlang_prodcat_id = tc.prodcat_id AND prodcatlang_lang_id = ' . $this->siteLangId, 'tc_l');
+		$srch->addMultipleFields(array('preq.*', 'IFNULL(brand_name, brand_identifier) as brand_name', 'IFNULL(prodcat_name, prodcat_identifier) as prodcat_name'));
+		$srch->addCondition('preq_id', '=', $prodReqId);
         $rs = $srch->getResultSet();
-        $arr_listing = FatApp::getDb()->fetchAll($rs);
-
-        foreach ($arr_listing as $key => $row) {
+        $product = FatApp::getDb()->fetchAll($rs);
+		
+		$productSpecData = [];
+        foreach ($product as $key => $row) {
             $content = (!empty($row['preq_content'])) ? json_decode($row['preq_content'], true) : array();
             $langContent = (!empty($row['preq_lang_data'])) ? json_decode($row['preq_lang_data'], true) : array();
 
@@ -644,38 +651,20 @@ class SellerRequestsController extends SellerBaseController
             if (!empty($langContent)) {
                 $row = array_merge($row, $langContent);
             }
-
             $arr = array(
                 'preq_id' => $row['preq_id'],
-                'preq_user_id' => $row['preq_user_id'],
-                'preq_added_on' => $row['preq_added_on'],
-				'preq_requested_on' => $row['preq_requested_on'],
-				'preq_status_updated_on' => $row['preq_status_updated_on'],
-                'preq_status' => $row['preq_status'],
-                'product_identifier' => $row['product_identifier'],
-                'product_name' => (!empty($row['product_name'])) ? $row['product_name'] : '',
+                'product_name' => (!empty($row['product_name'])) ? $row['product_name'] : $row['product_identifier'],
+                'product_min_selling_price' => $row['product_min_selling_price'],
+                'product_model' => (isset($row['product_model'])) ? $row['product_model'] : '',
+                'ptt_taxcat_id' => $row['ptt_taxcat_id'],
+                'brand_name' => $row['brand_name'],
+                'prodcat_name' => $row['prodcat_name'],
             );
-            $arr_listing[$key] = $arr;
+            $productInfo = $arr;
         }
         /* ] */
-
-        
-
-        /* Get Product Specifications [ */
-        /* $specSrchObj = clone $prodSrchObj;
-        $specSrchObj->doNotCalculateRecords();
-        $specSrchObj->doNotLimitRecords();
-        $specSrchObj->joinTable(Product::DB_PRODUCT_SPECIFICATION, 'LEFT OUTER JOIN', 'product_id = tcps.prodspec_product_id', 'tcps');
-        $specSrchObj->joinTable(Product::DB_PRODUCT_LANG_SPECIFICATION, 'INNER JOIN', 'tcps.prodspec_id = tcpsl.prodspeclang_prodspec_id and   prodspeclang_lang_id  = ' . $this->siteLangId, 'tcpsl');
-        $specSrchObj->addMultipleFields(array('prodspec_id', 'prodspec_name', 'prodspec_value'));
-        $specSrchObj->addGroupBy('prodspec_id');
-        $specSrchObj->addCondition('prodspec_product_id', '=', $product['product_id']);
-        $specSrchObjRs = $specSrchObj->getResultSet();
-        $productSpecifications = FatApp::getDb()->fetchAll($specSrchObjRs); */
-        /* ] */
-
-        $this->set('product', $product);
-        $this->set('productSpecifications', $productSpecifications);
+		
+        $this->set('product', $productInfo);
         $this->_template->render(false, false);
     }
 }

@@ -69,7 +69,7 @@ $btnDiscardFld->setFieldTagAttribute('class', "btn btn-outline-primary");
                             <span class="spn_must_field">*</span>
                             <?php } ?>
                         </label>
-                        <small><a class="form-text text-muted" href="javascript:void(0)" onClick="addBrandReqForm(0);"><?php echo Labels::getLabel('LBL_Request_For_Brand', $siteLangId) ; ?></a></small>
+                        <small><a class="form-text text-muted" href="javascript:void(0)" onClick="addBrandReqForm(0);"><?php echo (FatApp::getConfig('CONF_BRAND_REQUEST_APPROVAL', FatUtility::VAR_INT, 0)) ? Labels::getLabel('LBL_Request_For_Brand', $siteLangId) : Labels::getLabel('LBL_Add_Brand', $siteLangId) ?></a></small>
                     </div>
                     <div class="field-wraper">
                         <div class="field_cover">
@@ -89,7 +89,7 @@ $btnDiscardFld->setFieldTagAttribute('class', "btn btn-outline-primary");
                             <span class="spn_must_field">*</span>
                         </label>
                         <small><a class="form-text text-muted" href="javascript:void(0)"
-                                onClick="addCategoryReqForm(0);"><?php echo Labels::getLabel('LBL_Request_For_Category', $siteLangId) ; ?></a></small>
+                                onClick="addCategoryReqForm(0);"><?php echo (FatApp::getConfig('CONF_PRODUCT_CATEGORY_REQUEST_APPROVAL', FatUtility::VAR_INT, 0)) ? Labels::getLabel('LBL_Request_For_Category', $siteLangId) : Labels::getLabel('LBL_Add_Category', $siteLangId) ?></a></small>
                     </div>
                     <div class="field-wraper">
                         <div class="field_cover">

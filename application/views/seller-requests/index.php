@@ -20,17 +20,21 @@ $this->includeTemplate('_partial/seller/sellerDashboardNavigation.php');
                             <?php if (FatApp::getConfig('CONF_SELLER_CAN_REQUEST_CUSTOM_PRODUCT', FatUtility::VAR_INT, 0)) { ?>
                                 <li class="nav__item">
                                     <a class="dropdown-item nav__link"
-                                        href="<?php echo UrlHelper::generateUrl('Seller', 'customCatalogProductForm'); ?>"><?php echo Labels::getLabel('LBL_Product', $siteLangId);?></a>
+                                        href="<?php echo UrlHelper::generateUrl('Seller', 'customCatalogProductForm'); ?>"><?php echo Labels::getLabel('LBL_Marketplace_Product', $siteLangId);?></a>
                                 </li>
                             <?php } ?>
+                            <?php if (FatApp::getConfig('CONF_BRAND_REQUEST_APPROVAL', FatUtility::VAR_INT, 0)) { ?>
                             <li class="nav__item">
                                 <a class="dropdown-item nav__link" href="javascript:void(0);"
                                     onClick="addBrandReqForm(0)"><?php echo Labels::getLabel('LBL_Brand', $siteLangId);?></a>
                             </li>
+                            <?php } ?>
+                            <?php if (FatApp::getConfig('CONF_PRODUCT_CATEGORY_REQUEST_APPROVAL', FatUtility::VAR_INT, 0)) { ?>
                             <li class="nav__item">
                                 <a class="dropdown-item nav__link" href="javascript:void(0);"
                                     onClick="addCategoryReqForm(0)"><?php echo Labels::getLabel('LBL_Category', $siteLangId);?></a>
                             </li>
+                            <?php } ?>
                         </ul>
                     </div>
                 </div>
@@ -112,6 +116,5 @@ $(document).ready(function() {
     } else {
         searchBrandRequests(document.frmSearchBrandRequest);
     }
-    
 });
 </script>
