@@ -2551,8 +2551,8 @@ class Orders extends MyAppModel
         $srch = new OrderProductSearch($langId, true);
         $srch->joinSellerProducts($langId);
         $srch->joinShippingCharges();
-        $srch->addCondition('order_id', '=', $orderId); 
-        $srch->addGroupBy('opshipping_code');       
+        $srch->addCondition('order_id', '=', $orderId);  
+        $srch->addOrder('opshipping_op_id'); 
         $rs = $srch->getResultSet();
         $records = FatApp::getDb()->fetchAll($rs);
         return $records;

@@ -236,9 +236,7 @@
                                             </div>
                                         </td>
                                         <td>
-                                            <div class="txn__status">
-                                                <?php echo $txnStatusArr[$row['utxn_status']];?>
-                                            </div>
+                                        <span class="label label-inline <?php echo $txnStatusClassArr[$row['utxn_status']];?>"> <?php echo $txnStatusArr[$row['utxn_status']];?> </span>
                                         </td>
                                     </tr>
                                         <?php }

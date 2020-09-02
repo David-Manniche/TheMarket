@@ -21,4 +21,17 @@ class SellerBaseController extends LoggedUserController
 
         $this->set('bodyClass', 'is--dashboard');
     }
+    
+    public function imgCropper()
+    {
+        /* if ($imageType==AttachedFile::FILETYPE_SHOP_LOGO) {
+          $attachment = AttachedFile::getAttachment(AttachedFile::FILETYPE_SHOP_LOGO, $shop_id, 0, $lang_id, false);
+          $imageFunction = 'shopLogo';
+          } else {
+          $attachment = AttachedFile::getAttachment(AttachedFile::FILETYPE_SHOP_BANNER, $shop_id, 0, $lang_id, false, $slide_screen);
+          $imageFunction = 'shopBanner';
+          }
+          $this->set('image', UrlHelper::generateUrl('Image', $imageFunction, array($attachment['afile_record_id'], $attachment['afile_lang_id'], '', $attachment['afile_id']))); */
+        $this->_template->render(false, false, 'cropper/index.php');
+    }
 }

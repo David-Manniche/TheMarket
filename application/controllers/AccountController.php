@@ -589,6 +589,7 @@ class AccountController extends LoggedUserController
         $this->set('postedData', $post);
         $this->set('siteLangId', $this->siteLangId);
         $this->set('statusArr', Transactions::getStatusArr($this->siteLangId));
+        $this->set('statusClassArr', Transactions::getStatusClassArr());
         if (true === MOBILE_APP_API_CALL) {
             $this->creditsInfo();
             $this->_template->render();

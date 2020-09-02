@@ -9,7 +9,7 @@ if(!empty($addresses)){
                     <?php foreach($addresses as $key=>$address) { ?>
                     <li>
                         <label class="radio">
-                            <input name="pickup_address" <?php echo (($key == 0 && $addrId == 0) || $addrId == $address['addr_id']) ? 'checked=checked': ''; ?> onclick="displayDateSlots();" type="radio" value="<?php echo $address['addr_id']; ?>"> 
+                            <input name="pickup_address" <?php echo (($key == 0 && $addrId == 0) || $addrId == $address['addr_id']) ? 'checked=checked': ''; ?> onclick="displayCalendar();" type="radio" value="<?php echo $address['addr_id']; ?>"> 
                             <i class="input-helper"></i> 
                             <span class="lb-txt js-addr">  
                                 <?php echo $address['addr_address1']; ?>
@@ -33,43 +33,71 @@ if(!empty($addresses)){
                     </ul>
                 </div>
             </div>
-        </div>
- 
+        </div>      
 <?php }else{ ?>
 <h5 class="step-title"><?php echo Labels::getLabel('LBL_No_Pick_Up_address_added', $siteLangId); ?></h5>
 <?php } ?>
 
 <script>
-$(document).ready(function(){    
-    var level = <?php echo $level; ?>;
+var needToSeeDaysOfWeek = new Array();
+$(document).ready(function(){  
+    displayCalendar();
+    
     $('.js-datepicker').datepicker({
         minDate: new Date(),
         dateFormat: 'yy-mm-dd',
+        gotoCurrent : false,
+        beforeShowDay: daysWithSlots,
         onSelect: function() {
             displayDateSlots(false);
         }
-    }).datepicker("show"); 
-    
-    <?php if(!empty($slotDate)) {?>
-    $('.js-datepicker').datepicker("setDate", new Date('<?php echo $slotDate; ?>') );
-    <?php } ?>
-        
-    displayDateSlots = function(displaySlotSelected){
-        $('input[name="timeSlot"]').prop("checked", displaySlotSelected);
-        var selectedDate = $('.js-datepicker').val();
-        var addressId = $('input[name="pickup_address"]:checked').val();
-        if(addressId != 'undefined' && selectedDate != ''){ 
-            var data = 'addressId='+addressId+'&selectedDate='+selectedDate+'&level='+level;
-            if(displaySlotSelected == true){
-                data = data +'&selectedSlot=<?php echo $slotId;?>';
-            }
-            fcom.ajax(fcom.makeUrl('Addresses', 'getTimeSlotsByAddressAndDate'), data, function (rsp) {
-                $(".js-time-slots").html(rsp);
-            });
-        }
-    }
-    
-    displayDateSlots(true); 
+    })
+     
 });
 
+displayDateSlots = function(displaySlotSelected){
+    $('input[name="timeSlot"]').prop("checked", displaySlotSelected);
+    var selectedDate = $('.js-datepicker').val();
+    var addressId = $('input[name="pickup_address"]:checked').val();
+    var level = <?php echo $level; ?>;
+    if(addressId != 'undefined' && selectedDate != ''){ 
+        var data = 'addressId='+addressId+'&selectedDate='+selectedDate+'&level='+level;
+        if(displaySlotSelected == true){
+            data = data +'&selectedSlot=<?php echo $slotId;?>';
+        }
+        fcom.ajax(fcom.makeUrl('Addresses', 'getTimeSlotsByAddressAndDate'), data, function (rsp) {
+            $(".js-time-slots").html(rsp);
+        });
+    }
+}
+    
+displayCalendar = function(){
+    var checkedAddrId = $('input[name="pickup_address"]:checked').val(); 
+    fcom.updateWithAjax(fcom.makeUrl('Addresses', 'slotDaysByAddr', [checkedAddrId]), '', function (rsp) {
+        needToSeeDaysOfWeek.splice(0,needToSeeDaysOfWeek.length);  
+        for(i=0; i< rsp.slotDays.length; i++){  
+            needToSeeDaysOfWeek.push(rsp.slotDays[i]);
+        }
+        $('.js-datepicker').datepicker('refresh');
+        
+        var pickUpAddrId = <?php echo $addrId; ?>;
+        if(checkedAddrId == pickUpAddrId){
+            $('.js-datepicker').datepicker("setDate", new Date('<?php echo $slotDate; ?>'));
+            displayDateSlots(true);
+        }else{
+            $('.js-datepicker').datepicker("setDate", null);
+            $(".js-time-slots").html('');
+        }
+    });
+}
+    
+daysWithSlots = function(date){ 
+    var day = date.getDay();   
+    for(var i=0;i<needToSeeDaysOfWeek.length;i++){ 
+         if(day == needToSeeDaysOfWeek[i]){
+                 return [true];
+         }
+    }   
+    return [false];
+}
 </script>

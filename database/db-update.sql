@@ -642,6 +642,7 @@ DELETE FROM `tbl_attached_files` WHERE `afile_type` = 18;
 
 ALTER TABLE `tbl_banners` CHANGE `banner_img_updated_on` `banner_updated_on` DATETIME NOT NULL;
 
+DELETE FROM `tbl_language_labels` WHERE `label_key` LIKE 'LBL_Shipping_Api';
 
 DELETE FROM `tbl_language_labels` WHERE `label_key` LIKE 'LBL_Shipping_Api';
 
@@ -651,3 +652,31 @@ ALTER TABLE `tbl_orders` CHANGE `order_is_paid` `order_payment_status` TINYINT(1
 ALTER TABLE `tbl_order_payments` ADD `opayment_txn_status` TINYINT NOT NULL AFTER `opayment_amount`;
 UPDATE `tbl_order_payments` SET `opayment_txn_status` = '1';
 /* Transfer Bank Payment Status From Buyer */
+
+UPDATE `tbl_configurations` SET `conf_common` = '1' WHERE `tbl_configurations`.`conf_name` = 'conf_lang_specific_url';
+UPDATE `tbl_configurations` SET `conf_common` = '1' WHERE `tbl_configurations`.`conf_name` = 'CONF_DEFAULT_SITE_LANG';
+UPDATE `tbl_configurations` SET `conf_common` = '1' WHERE `tbl_configurations`.`conf_name` = 'CONF_ENABLE_301';
+UPDATE `tbl_configurations` SET `conf_common` = '1' WHERE `tbl_configurations`.`conf_name` = 'CONF_ENABLE_GEO_LOCATION';
+UPDATE `tbl_configurations` SET `conf_common` = '1' WHERE `tbl_configurations`.`conf_name` = 'CONF_ALLOW_REVIEWS';
+UPDATE `tbl_configurations` SET `conf_common` = '1' WHERE `tbl_configurations`.`conf_name` = 'CONF_CURRENCY';
+UPDATE `tbl_configurations` SET `conf_common` = '1' WHERE `tbl_configurations`.`conf_name` = 'CONF_MAINTENANCE';
+UPDATE `tbl_configurations` SET `conf_common` = '1' WHERE `tbl_configurations`.`conf_name` = 'CONF_RECAPTCHA_SITEKEY';
+UPDATE `tbl_configurations` SET `conf_common` = '1' WHERE `tbl_configurations`.`conf_name` = 'CONF_FRONT_THEME';
+UPDATE `tbl_configurations` SET `conf_common` = '1' WHERE `tbl_configurations`.`conf_name` = 'CONF_USE_SSL';
+UPDATE `tbl_configurations` SET `conf_common` = '1' WHERE `tbl_configurations`.`conf_name` = 'CONF_TIMEZONE';
+UPDATE `tbl_configurations` SET `conf_common` = '1' WHERE `tbl_configurations`.`conf_name` = 'CONF_AUTO_RESTORE_ON';
+UPDATE `tbl_configurations` SET `conf_common` = '1' WHERE `tbl_configurations`.`conf_name` = 'CONF_TWITTER_USERNAME';
+UPDATE `tbl_configurations` SET `conf_common` = '1' WHERE `tbl_configurations`.`conf_name` like 'CONF_WEBSITE_NAME_';
+UPDATE `tbl_configurations` SET `conf_common` = '1' WHERE `tbl_configurations`.`conf_name` = 'CONF_AUTO_CLOSE_SYSTEM_MESSAGES';
+UPDATE `tbl_configurations` SET `conf_common` = '1' WHERE `tbl_configurations`.`conf_name` = 'CONF_TIME_AUTO_CLOSE_SYSTEM_MESSAGES';
+UPDATE `tbl_configurations` SET `conf_common` = '1' WHERE `tbl_configurations`.`conf_name` = 'CONF_ENABLE_ENGAGESPOT_PUSH_NOTIFICATION';
+UPDATE `tbl_configurations` SET `conf_common` = '1' WHERE `tbl_configurations`.`conf_name` = 'CONF_GOOGLE_TAG_MANAGER_HEAD_SCRIPT';
+UPDATE `tbl_configurations` SET `conf_common` = '1' WHERE `tbl_configurations`.`conf_name` = 'CONF_HOTJAR_HEAD_SCRIPT';
+UPDATE `tbl_configurations` SET `conf_common` = '1' WHERE `tbl_configurations`.`conf_name` = 'CONF_DEFAULT_SCHEMA_CODES_SCRIPT';
+UPDATE `tbl_configurations` SET `conf_common` = '1' WHERE `tbl_configurations`.`conf_name` = 'CONF_GOOGLE_TAG_MANAGER_BODY_SCRIPT';
+UPDATE `tbl_configurations` SET `conf_common` = '1' WHERE `tbl_configurations`.`conf_name` = 'CONF_PRODUCT_BRAND_MANDATORY';
+ALTER TABLE `tbl_product_categories` ADD INDEX( `prodcat_code`);
+
+ALTER TABLE `tbl_product_requests` ADD `preq_requested_on` DATETIME NOT NULL AFTER `preq_added_on`, ADD `preq_status_updated_on` DATETIME NOT NULL AFTER `preq_requested_on`;
+ALTER TABLE `tbl_brands` ADD `brand_requested_on` DATETIME NOT NULL AFTER `brand_updated_on`, ADD `brand_status_updated_on` DATETIME NOT NULL AFTER `brand_requested_on`;
+ALTER TABLE `tbl_product_categories` ADD `prodcat_requested_on` DATETIME NOT NULL AFTER `prodcat_updated_on`, ADD `prodcat_status_updated_on` DATETIME NOT NULL AFTER `prodcat_requested_on`;

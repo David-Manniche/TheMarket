@@ -63,7 +63,7 @@ $rewardPoints = UserRewardBreakup::rewardPointBalance(UserAuthentication::getLog
                             ?>
                             <p><?php echo "<strong>".FatDate::format($address["opshipping_date"]).' '.$fromTime.' - '.$toTime.'</strong>'; ?></p>
                             <?php if (count($orderPickUpData) > 1) { ?>
-                            <a class="plus-more" href="javascript:void(0);" onClick="orderPickUpData('<?php echo $orderId; ?>')"><?php echo '+'.(count($orderPickUpData) - 1).' '.Labels::getLabel('LBL_More_', $siteLangId); ?></a>
+                            <a class="plus-more" href="javascript:void(0);" onClick="orderPickUpData('<?php echo $orderId; ?>')"><?php echo '+ '.Labels::getLabel('LBL_More', $siteLangId); ?></a>
                             <?php break; } ?>
                         <?php } ?>
                     </div>
@@ -96,7 +96,7 @@ $rewardPoints = UserRewardBreakup::rewardPointBalance(UserAuthentication::getLog
                             </div>
                         </div>
                         <?php if (count($orderShippingData) > 1) { ?>
-                            <a class="plus-more" href="javascript:void(0);" onClick="orderShippingData('<?php echo $orderId; ?>')"><?php echo '+'.(count($orderShippingData) - 1).' '.Labels::getLabel('LBL_More_', $siteLangId); ?></a>
+                            <a class="plus-more" href="javascript:void(0);" onClick="orderShippingData('<?php echo $orderId; ?>')"><?php echo '+ '.Labels::getLabel('LBL_More', $siteLangId); ?></a>
                         <?php break; } ?>
                     <?php } ?>
                     </div>

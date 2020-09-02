@@ -49,20 +49,11 @@
                 </a>                
             <?php } ?>
                 
-            <?php if (User::canAddCustomProductAvailableToAllSellers() && User::canAddCustomProduct() && $action == 'catalog' && $type == 0) { ?>
-                <a href="<?php echo UrlHelper::generateUrl('seller', 'customCatalogProducts');?>" class="btn btn-outline-primary btn-sm">
-                    <?php echo Labels::getLabel('LBL_Send_Products_Request', $siteLangId); ?>
-                </a>
-            <?php } ?>
-                
             <?php if ((isset($canAddCustomProduct) && $canAddCustomProduct==false) && (isset($canRequestProduct) && $canRequestProduct === true)) {?>
                 <a href="<?php echo UrlHelper::generateUrl('Seller', 'requestedCatalog');?>" class="btn btn-outline-primary btn-sm"><?php echo Labels::getLabel('LBL_Request_A_Product', $siteLangId);?></a>
             <?php } ?>
-            <?php if (User::canAddCustomProductAvailableToAllSellers() && $action == 'customCatalogProducts') {?>
-                <a href="<?php echo UrlHelper::generateUrl('Seller', 'customCatalogProductForm');?>" class="btn btn-outline-primary btn-sm"><?php echo Labels::getLabel('LBL_Request_New_Product', $siteLangId);?></a>
-            <?php }?>
-            
-            <?php if (User::canAddCustomProduct() && ($action == 'catalog' || $action == 'customCatalogProducts')) { ?>
+           
+            <?php if (User::canAddCustomProduct() && ($action == 'catalog')) { ?>
                 <a href="<?php echo UrlHelper::generateUrl('seller', 'products');?>" class="btn btn-outline-primary btn-sm">
                     <?php echo Labels::getLabel('LBL_Back_To_Inventory', $siteLangId); ?>
                 </a>
