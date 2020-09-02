@@ -8,7 +8,6 @@ class ProductCategory extends MyAppModel
     public const DB_TBL_LANG_PREFIX = 'prodcatlang_';
     public const REWRITE_URL_PREFIX = 'category/view/';
     public const REMOVED_OLD_IMAGE_TIME = 4;
-    private $db;
     private $categoryTreeArr = array();
 
     public const REQUEST_PENDING = 0;
@@ -18,7 +17,6 @@ class ProductCategory extends MyAppModel
     public function __construct($id = 0)
     {
         parent::__construct(static::DB_TBL, static::DB_TBL_PREFIX . 'id', $id);
-        $this->db = FatApp::getDb();
     }
 
     public static function getStatusArr($langId)
@@ -219,7 +217,7 @@ class ProductCategory extends MyAppModel
 
         $prodCatSrch->doNotCalculateRecords();
         $prodCatSrch->doNotLimitRecords();
-        $prodCatSrch->addMultipleFields(array( 'prodcat_id', 'COALESCE(prodcat_name,prodcat_identifier ) as prodcat_name', 'substr(prodcat_code,1,6) AS prodrootcat_code',  'prodcat_content_block', 'prodcat_active', 'prodcat_parent', 'prodcat_code', 'prodcat_ordercode'));
+        $prodCatSrch->addMultipleFields(array('prodcat_id', 'COALESCE(prodcat_name,prodcat_identifier ) as prodcat_name', 'substr(prodcat_code,1,6) AS prodrootcat_code',  'prodcat_content_block', 'prodcat_active', 'prodcat_parent', 'prodcat_code', 'prodcat_ordercode'));
 
         if (0 < $parentId) {
             $catCode = static::getAttributesById($parentId, 'prodcat_code');
@@ -262,7 +260,7 @@ class ProductCategory extends MyAppModel
 
     public static function addMissingParentDetails(&$categoriesArr, $langId)
     {
-        foreach ($categoriesArr as $categoryId => $category) {
+        foreach ($categoriesArr as $category) {
             if (!$category['prodcat_parent'] || array_key_exists($category['prodcat_parent'], $categoriesArr)) {
                 continue;
             }
@@ -278,7 +276,7 @@ class ProductCategory extends MyAppModel
                 $srch = new ProductCategorySearch($langId, true, true, false);
                 $srch->addCondition('prodcat_id', '=', $catId);
                 $srch->setPageSize(1);
-                $srch->addMultipleFields(array( 'prodcat_id', 'COALESCE(prodcat_name,prodcat_identifier ) as prodcat_name', 'substr(prodcat_code,1,6) AS prodrootcat_code',  'prodcat_content_block', 'prodcat_active', 'prodcat_parent', 'prodcat_code', 'prodcat_ordercode'));
+                $srch->addMultipleFields(array('prodcat_id', 'COALESCE(prodcat_name,prodcat_identifier ) as prodcat_name', 'substr(prodcat_code,1,6) AS prodrootcat_code',  'prodcat_content_block', 'prodcat_active', 'prodcat_parent', 'prodcat_code', 'prodcat_ordercode'));
                 $rs = $srch->getResultSet();
                 $data = FatApp::getDb()->fetch($rs);
                 $categoriesArr[$catId] = $data;
@@ -507,9 +505,10 @@ class ProductCategory extends MyAppModel
         $srch->joinTable(static::DB_TBL_LANG, 'LEFT OUTER JOIN', 'prodcatlang_prodcat_id = prodcat_id
 			AND prodcatlang_lang_id = ' . $langId);
         $srch->addCondition(static::DB_TBL_PREFIX . 'deleted', '=', 0);
-        $srch->addMultipleFields(array('prodcat_id',
-        'COALESCE(prodcat_name, prodcat_identifier) AS prodcat_name',
-        'prodcat_code'
+        $srch->addMultipleFields(array(
+            'prodcat_id',
+            'COALESCE(prodcat_name, prodcat_identifier) AS prodcat_name',
+            'prodcat_code'
         ));
 
         //$srch->addOrder('GETCATORDERCODE(prodcat_id)');
@@ -724,7 +723,7 @@ class ProductCategory extends MyAppModel
         $prodCatSrch->doNotCalculateRecords();
         $prodCatSrch->doNotLimitRecords();
 
-        $prodCatSrch->addMultipleFields(array( 'prodcat_id', 'COALESCE(prodcat_name,prodcat_identifier ) as prodcat_name', 'substr(prodcat_code,1,6) AS prodrootcat_code', 'prodcat_content_block', 'prodcat_active', 'prodcat_parent', 'prodcat_code as prodcat_code'));
+        $prodCatSrch->addMultipleFields(array('prodcat_id', 'COALESCE(prodcat_name,prodcat_identifier ) as prodcat_name', 'substr(prodcat_code,1,6) AS prodrootcat_code', 'prodcat_content_block', 'prodcat_active', 'prodcat_parent', 'prodcat_code as prodcat_code'));
 
         if ($excludeCategoriesHavingNoProducts) {
             $prodSrchObj = new ProductSearch();
@@ -872,7 +871,7 @@ class ProductCategory extends MyAppModel
             $catId = FatUtility::int($catId);
             if (!empty($attr) && is_array($attr)) {
                 $prodCatSrch = new ProductCategorySearch($siteLangId);
-                $prodCatSrch->addMultipleFields(array( 'prodcat_id', 'COALESCE(prodcat_name,prodcat_identifier ) as prodcat_name', 'substr(prodcat_code,1,6) AS prodrootcat_code', 'prodcat_content_block', 'prodcat_active', 'prodcat_parent', 'prodcat_code as prodcat_code'));
+                $prodCatSrch->addMultipleFields(array('prodcat_id', 'COALESCE(prodcat_name,prodcat_identifier ) as prodcat_name', 'substr(prodcat_code,1,6) AS prodrootcat_code', 'prodcat_content_block', 'prodcat_active', 'prodcat_parent', 'prodcat_code as prodcat_code'));
                 $prodCatSrch->addCondition('prodcat_id', '=', $catId);
                 $rs = $prodCatSrch->getResultSet();
                 $rows = FatApp::getDb()->fetch($rs);
@@ -909,7 +908,7 @@ class ProductCategory extends MyAppModel
 
             $parentId = FatUtility::int($prodCats[0]);
             if (!array_key_exists($parentId, $this->categoryTreeArr)) {
-                $this->categoryTreeArr [$parentId] = array();
+                $this->categoryTreeArr[$parentId] = array();
             }
             if (!empty($attr) && is_array($attr)) {
                 $prodCatSrch = new ProductCategorySearch($siteLangId);
@@ -918,7 +917,7 @@ class ProductCategory extends MyAppModel
                 $rs = $prodCatSrch->getResultSet();
                 $rows = FatApp::getDb()->fetch($rs);
                 foreach ($rows as $key => $val) {
-                    $this->categoryTreeArr [$parentId][$key] = $val;
+                    $this->categoryTreeArr[$parentId][$key] = $val;
                 }
             } else {
                 /* $this->categoryTreeArr [$parentId]['prodcat_name'] = productCategory::getAttributesByLangId($siteLangId,FatUtility::int($prodCats[0]),'prodcat_name'); */
@@ -928,12 +927,12 @@ class ProductCategory extends MyAppModel
                 $rs = $prodCatSrch->getResultSet();
                 $row = FatApp::getDb()->fetch($rs);
 
-                $this->categoryTreeArr [$parentId]['prodcat_name'] = $row['prodcat_name'];
-                $this->categoryTreeArr [$parentId]['prodcat_id'] = FatUtility::int($prodCats[0]);
+                $this->categoryTreeArr[$parentId]['prodcat_name'] = $row['prodcat_name'];
+                $this->categoryTreeArr[$parentId]['prodcat_id'] = FatUtility::int($prodCats[0]);
             }
 
-            if (!isset($this->categoryTreeArr [$parentId]['children'])) {
-                $this->categoryTreeArr [$parentId]['children'] = array();
+            if (!isset($this->categoryTreeArr[$parentId]['children'])) {
+                $this->categoryTreeArr[$parentId]['children'] = array();
             }
             productCategory::getCategoryTreeForSearch($siteLangId, $remaingCategories, $this->categoryTreeArr[$parentId]['children'], $attr);
         }
@@ -988,7 +987,7 @@ class ProductCategory extends MyAppModel
         $prodSrchObj->setPageSize(1);
 
         //$prodSrchObj->addGroupBy('prodcat_id');
-        $prodSrchObj->addMultipleFields(array('substr(prodcat_code,1,6) AS prodrootcat_code','count(selprod_id) as productCounts', 'prodcat_id'));
+        $prodSrchObj->addMultipleFields(array('substr(prodcat_code,1,6) AS prodrootcat_code', 'count(selprod_id) as productCounts', 'prodcat_id'));
 
         if (0 < $this->mainTableRecordId) {
             $prodSrchObj->addHaving('prodrootcat_code', 'LIKE', '%' . str_pad($this->mainTableRecordId, 6, '0', STR_PAD_LEFT) . '%', 'AND', true);
