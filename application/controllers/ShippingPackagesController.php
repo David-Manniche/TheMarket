@@ -11,7 +11,7 @@ class ShippingPackagesController extends SellerBaseController
     {
         $frmSearch = $this->getSearchForm();
         $this->set("frmSearch", $frmSearch);
-        $this->set('canEdit', $this->userPrivilege->canViewShippingPackages(0, true));
+        $this->set('canEdit', $this->userPrivilege->canEditShippingPackages(0, true));
         $this->_template->render();
     }
     
@@ -39,7 +39,7 @@ class ShippingPackagesController extends SellerBaseController
         $this->set('page', $page);
         $this->set('pageSize', $pagesize);
         $this->set('postedData', $post);
-        $this->set('canEdit', $this->userPrivilege->canViewShippingPackages(0, true));
+        $this->set('canEdit', $this->userPrivilege->canEditShippingPackages(0, true));
         $this->_template->render(false, false);
     }
     

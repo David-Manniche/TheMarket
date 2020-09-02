@@ -50,8 +50,16 @@
                             if (count($levelItems['rates']) > 0) {
                                 $name = current($levelItems['rates'])['code'];
                                 echo '<select class="form-control custom-select" name="shipping_services[' . $name . ']">';
-                                foreach ($levelItems['rates'] as $key => $shippingRate) {
-                                    $selected = (array_key_exists($name, $selectedShippingIds) && ($selectedShippingIds[$name] == $key)) ? 'selected="selected"' : '';
+                                foreach ($levelItems['rates'] as $key => $shippingRate) {                                    
+                                    $selected = ''; 
+                                    if(!empty($orderShippingData)){
+                                        foreach($orderShippingData as $shipdata){
+                                            if($shipdata['opshipping_code'] == $name && ($key == $shipdata['opshipping_carrier_code']."|".$shipdata['opshipping_label'] || $key == $shipdata['opshipping_rate_id'])){
+                                                $selected = 'selected=selected';  
+                                                break;
+                                            }
+                                        }
+                                    }
                                     echo '<option '.$selected.' value="' . $key . '">' . $shippingRate['title'] .' ( ' . $shippingRate['cost'] . ' ) </option>';
                                 }
                                 echo '</select>';
@@ -74,8 +82,16 @@
                         <?php if (count($levelItems['rates']) > 0) {
                                 $name = current($levelItems['rates'])['code'];
                                 echo '<select class="form-control custom-select" name="shipping_services[' . $name . ']">';
-                                foreach ($levelItems['rates'] as $key => $shippingRate) {
-                                    $selected = (array_key_exists($name, $selectedShippingIds) && ($selectedShippingIds[$name] == $key)) ? 'selected="selected"' : '';
+                                foreach ($levelItems['rates'] as $key => $shippingRate) {                                   
+                                    $selected = '';
+                                    if(!empty($orderShippingData)){
+                                        foreach($orderShippingData as $shipdata){
+                                            if($shipdata['opshipping_code'] == $name && ($key == $shipdata['opshipping_carrier_code']."|".$shipdata['opshipping_label'] || $key == $shipdata['opshipping_rate_id'])){
+                                                $selected = 'selected=selected';  
+                                                break;
+                                            }
+                                        }
+                                    }
                                     echo '<option '.$selected.' value="' . $key . '">' . $shippingRate['title'] .' ( ' . $shippingRate['cost'] . ' ) </option>';
                                 }
                                 echo '</select>';
@@ -117,8 +133,16 @@
                             if ($priceListCount > 0) {
                                 $name = current($levelItems['rates'][$product['selprod_id']])['code'];
                                 echo '<select class="form-control custom-select" name="shipping_services[' . $name . ']">';
-                                    foreach ($levelItems['rates'][$product['selprod_id']] as $key => $shippingRate) {
-                                        $selected = (array_key_exists($name, $selectedShippingIds) && ($selectedShippingIds[$name] == $key)) ? 'selected="selected"' : '';
+                                    foreach ($levelItems['rates'][$product['selprod_id']] as $key => $shippingRate) {                                       
+                                        $selected = '';  
+                                        if(!empty($orderShippingData)){
+                                            foreach($orderShippingData as $shipdata){
+                                                if($shipdata['opshipping_code'] == $name && ($key == $shipdata['opshipping_carrier_code']."|".$shipdata['opshipping_label'] || $key == $shipdata['opshipping_rate_id'])){
+                                                    $selected = 'selected=selected';  
+                                                    break;
+                                                }
+                                            }
+                                        }
                                         echo '<option '.$selected.' value="' . $key . '">' . $shippingRate['title'] .' ( ' . $shippingRate['cost'] . ' ) </option>';
                                     }
                                     echo '</select>';

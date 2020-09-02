@@ -73,6 +73,17 @@ class OrderReturnRequest extends MyAppModel
         );
     }
 
+    public static function getRequestStatusClassArr()
+    {
+        return array(
+        static::RETURN_REQUEST_STATUS_PENDING => applicationConstants::CLASS_INFO,
+        static::RETURN_REQUEST_STATUS_ESCALATED => applicationConstants::CLASS_INFO,
+        static::RETURN_REQUEST_STATUS_REFUNDED => applicationConstants::CLASS_SUCCESS,
+        static::RETURN_REQUEST_STATUS_WITHDRAWN => applicationConstants::CLASS_WARNING,
+        static::RETURN_REQUEST_STATUS_CANCELLED => applicationConstants::CLASS_DANGER,
+        );
+    }
+
     public function escalateRequest($orrequest_id, $user_id, $langId)
     {
         $orrequest_id = FatUtility::int($orrequest_id);

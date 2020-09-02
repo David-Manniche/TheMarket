@@ -19,6 +19,29 @@ class ProductCategory extends MyAppModel
         parent::__construct(static::DB_TBL, static::DB_TBL_PREFIX . 'id', $id);
     }
 
+    public static function getStatusArr($langId)
+    {
+        $langId = FatUtility::int($langId);
+        if ($langId == 0) {
+            trigger_error(Labels::getLabel('ERR_Language_Id_not_specified.', CommonHelper::getLangId()), E_USER_ERROR);
+        }
+        $arr = array(
+            static::REQUEST_PENDING => Labels::getLabel('LBL_Pending', $langId),
+            static::REQUEST_APPROVED => Labels::getLabel('LBL_Approved', $langId),
+            static::REQUEST_CANCELLED => Labels::getLabel('LBL_Cancelled', $langId)
+        );
+        return $arr;
+    }
+
+    public static function getStatusClassArr()
+    {
+        return array(
+            static::REQUEST_PENDING => applicationConstants::CLASS_INFO,
+            static::REQUEST_APPROVED => applicationConstants::CLASS_SUCCESS,
+            static::REQUEST_CANCELLED => applicationConstants::CLASS_DANGER
+        );
+    }
+
     public static function getSearchObject($includeChildCount = false, $langId = 0, $prodcatActive = true, $prodcatStatus = 1)
     {
         $langId = FatUtility::int($langId);

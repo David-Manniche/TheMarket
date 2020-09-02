@@ -143,9 +143,12 @@ class SellerController extends SellerBaseController
         $this->set('transactions', $transactions);
         $this->set('returnRequests', $returnRequests);
         $this->set('OrderReturnRequestStatusArr', OrderReturnRequest::getRequestStatusArr($this->siteLangId));
+        $this->set('OrderRetReqStatusClassArr', OrderReturnRequest::getRequestStatusClassArr());
         $this->set('cancellationRequests', $cancellationRequests);
         $this->set('txnStatusArr', Transactions::getStatusArr($this->siteLangId));
+        $this->set('txnStatusClassArr', Transactions::getStatusClassArr());
         $this->set('OrderCancelRequestStatusArr', OrderCancelRequest::getRequestStatusArr($this->siteLangId));
+        $this->set('cancelReqStatusClassArr', OrderCancelRequest::getStatusClassArr());
         $this->set('txnsSummary', $txnsSummary);
         $this->set('notAllowedStatues', $notAllowedStatues);
         $this->set('orders', $orders);
@@ -1592,12 +1595,13 @@ class SellerController extends SellerBaseController
         }
         $taxObj = new TaxRule();
         $rulesData = $taxObj->getRules($taxCatId);
+		$combinedRulesDetails = [];
+		$ruleLocations = [];
         if (!empty($rulesData)) {
             $rulesIds = array_column($rulesData, 'taxrule_id');
             $combinedRulesDetails = $taxObj->getCombinedRuleDetails($rulesIds);
             $ruleLocations = $taxObj->getLocations($taxCatId, true, $this->siteLangId);
         }
-        // CommonHelper::printArray($ruleLocations); die;
         $this->set("combinedRulesDetails", $combinedRulesDetails);
         $this->set('taxCategory', $data['taxcat_identifier']);
         $this->set("rulesData", $rulesData);
@@ -1730,20 +1734,7 @@ class SellerController extends SellerBaseController
         $this->set('siteLangId', $this->siteLangId);
         $this->_template->render(true, true);
     }
-
-    public function imgCropper()
-    {
-        /* if ($imageType==AttachedFile::FILETYPE_SHOP_LOGO) {
-          $attachment = AttachedFile::getAttachment(AttachedFile::FILETYPE_SHOP_LOGO, $shop_id, 0, $lang_id, false);
-          $imageFunction = 'shopLogo';
-          } else {
-          $attachment = AttachedFile::getAttachment(AttachedFile::FILETYPE_SHOP_BANNER, $shop_id, 0, $lang_id, false, $slide_screen);
-          $imageFunction = 'shopBanner';
-          }
-          $this->set('image', UrlHelper::generateUrl('Image', $imageFunction, array($attachment['afile_record_id'], $attachment['afile_lang_id'], '', $attachment['afile_id']))); */
-        $this->_template->render(false, false, 'cropper/index.php');
-    }
-
+	
     public function shopForm($callbackKeyName = '')
     {
         $userId = $this->userParentId;
@@ -2723,6 +2714,7 @@ class SellerController extends SellerBaseController
         $this->set('recordCount', $srch->recordCount());
         $this->set('postedData', $post);
         $this->set('OrderCancelRequestStatusArr', OrderCancelRequest::getRequestStatusArr($this->siteLangId));
+        $this->set('cancelReqStatusClassArr', OrderCancelRequest::getStatusClassArr());
         $this->_template->render(false, false, 'buyer/order-cancellation-request-search.php');
     }
 
@@ -2811,6 +2803,7 @@ class SellerController extends SellerBaseController
         $this->set('postedData', $post);
         $this->set('returnRequestTypeArr', OrderReturnRequest::getRequestTypeArr($this->siteLangId));
         $this->set('OrderReturnRequestStatusArr', OrderReturnRequest::getRequestStatusArr($this->siteLangId));
+        $this->set('OrderRetReqStatusClassArr', OrderReturnRequest::getRequestStatusClassArr());
         $this->_template->render(false, false, 'buyer/order-return-request-search.php');
     }
 

@@ -81,8 +81,6 @@ class TimeSlot extends MyAppModel
         $srch->addCondition(self::tblFld('day'), '=', $day);   
         $rs = $srch->getResultSet();
         return  FatApp::getDb()->fetchAll($rs);
-    }
-    
-    
+    } 
     
 }

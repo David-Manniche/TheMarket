@@ -21,8 +21,7 @@ $th = $tbl->appendElement('thead')->appendElement('tr');
 foreach ($arr_flds as $key => $val) {
     $th->appendElement('th', array(), $val);
 }
-$arrYesNo = applicationConstants::getYesNoArr($siteLangId);
-$activeInactiveArr = applicationConstants::getActiveInactiveArr($siteLangId);
+
 $sr_no = $page==1?0:$pageSize*($page-1);
 foreach ($arr_listing as $sn => $row) {
     $sr_no++;
@@ -48,10 +47,16 @@ foreach ($arr_listing as $sn => $row) {
                 $td->appendElement('plaintext', array(), $typeArr[$row[$key]], true);
                 break;
             case 'promotion_approved':
-                $td->appendElement('plaintext', array(), $arrYesNo[$row[$key]], true);
+                $td->appendElement('span', array('class' => 'label label-inline '.$arrYesNoClassArr[$row[$key]]), $arrYesNo[$row[$key]], true);
                 break;
             case 'promotion_active':
-                $td->appendElement('plaintext', array(), $activeInactiveArr[$row[$key]], true);
+                $active = "";
+                if (applicationConstants::ACTIVE == $row['promotion_active']) {
+                    $active = 'checked';
+                }
+                $str = '<label class="toggle-switch" for="switch' . $row['promotion_id'] . '"><input ' . $active . ' type="checkbox" value="' . $row['promotion_id'] . '" id="switch' . $row['promotion_id'] . '" onclick="togglePromotionStatus(event,this)"/><div class="slider round"></div></label>';
+
+                $td->appendElement('plaintext', array(), $str, true);
                 break;
             case 'promotion_end_date':
                 $txt = '';

@@ -35,7 +35,7 @@ foreach ($requests as $sn => $row) {
                 $td->appendElement('plaintext', array(), $txt, true);
                 break;
             case 'ocrequest_status':
-                $td->appendElement('plaintext', array(), $OrderCancelRequestStatusArr[$row[$key]], true);
+                $td->appendElement('span', array('class' => 'label label-inline '.$cancelReqStatusClassArr[$row[$key]]), $OrderCancelRequestStatusArr[$row[$key]], true);
                 break;
             default:
                 $td->appendElement('plaintext', array(), $row[$key], true);

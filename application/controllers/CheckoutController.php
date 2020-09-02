@@ -200,7 +200,7 @@ class CheckoutController extends MyAppController
     }
 
     public function index($appParam = '', $appLang = '1', $appCurrency = '1')
-    {
+    {   
         if ($appParam == 'api') {
             $langId = FatUtility::int($appLang);
             if (0 < $langId) {
@@ -458,7 +458,7 @@ class CheckoutController extends MyAppController
     }
 
     public function shippingSummary()
-    {
+    {      
         $criteria = array( 'isUserLogged' => true );
         if (!$this->isEligibleForNextStep($criteria)) {
             if (Message::getErrorCount()) {
@@ -495,6 +495,7 @@ class CheckoutController extends MyAppController
          
         $template = 'checkout/shipping-summary-inner.php';
         $shippingRates = [];
+        $orderShippingData = '';
 
         switch ($fulfillmentType) {
             case Shipping::FULFILMENT_PICKUP:
@@ -503,11 +504,12 @@ class CheckoutController extends MyAppController
                 break;
             case Shipping::FULFILMENT_SHIP:
                 $shippingRates = $this->cartObj->getShippingOptions();
+                if(!empty($_SESSION['order_id'])){
+                    $order = new Orders();
+                    $orderShippingData = $order->getOrderShippingData($_SESSION['order_id'], $this->siteLangId);
+                }
             break;
         }
-
-        //$shippingRates = $this->cartObj->getShippingOptions();
-        //CommonHelper::printArray($shippingRates, true);
 
         if (true === MOBILE_APP_API_CALL) {
             $this->_template->render();
@@ -521,24 +523,14 @@ class CheckoutController extends MyAppController
         }
         $address = new Address($selected_shipping_address_id, $this->siteLangId);
         $addresses = $address->getData(Address::TYPE_USER, UserAuthentication::getLoggedUserId());
-        
-        $selectedShippingData = $this->cartObj->getProductShippingMethod();
-        $selectedShippingIds = array();
-        if(!empty($selectedShippingData)){
-            foreach($selectedShippingData['product'] as $val) { 
-                if (!in_array($val['mshipapi_id'], $selectedShippingIds)) { 
-                    $selectedShippingIds[$val['mshipapi_code']] = $val['mshipapi_id']; 
-                }  
-            }   
-        }      
-        $this->set('selectedShippingIds', $selectedShippingIds);
-            
+
         $this->set('cartSummary', $this->cartObj->getCartFinancialSummary($this->siteLangId));
         $this->set('fulfillmentType', $fulfillmentType);
         $this->set('addresses', $addresses);
         $this->set('products', $cartProducts);
         $this->set('shippingRates', $shippingRates);
         $this->set('hasPhysicalProd', $hasPhysicalProd);
+        $this->set('orderShippingData', $orderShippingData);
         $this->_template->render(false, false, $template);
     }
 

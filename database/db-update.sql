@@ -642,6 +642,7 @@ DELETE FROM `tbl_attached_files` WHERE `afile_type` = 18;
 
 ALTER TABLE `tbl_banners` CHANGE `banner_img_updated_on` `banner_updated_on` DATETIME NOT NULL;
 
+DELETE FROM `tbl_language_labels` WHERE `label_key` LIKE 'LBL_Shipping_Api';
 
 DELETE FROM `tbl_language_labels` WHERE `label_key` LIKE 'LBL_Shipping_Api';
 
@@ -670,3 +671,7 @@ UPDATE `tbl_configurations` SET `conf_common` = '1' WHERE `tbl_configurations`.`
 UPDATE `tbl_configurations` SET `conf_common` = '1' WHERE `tbl_configurations`.`conf_name` = 'CONF_GOOGLE_TAG_MANAGER_BODY_SCRIPT';
 UPDATE `tbl_configurations` SET `conf_common` = '1' WHERE `tbl_configurations`.`conf_name` = 'CONF_PRODUCT_BRAND_MANDATORY';
 ALTER TABLE `tbl_product_categories` ADD INDEX( `prodcat_code`);
+
+ALTER TABLE `tbl_product_requests` ADD `preq_requested_on` DATETIME NOT NULL AFTER `preq_added_on`, ADD `preq_status_updated_on` DATETIME NOT NULL AFTER `preq_requested_on`;
+ALTER TABLE `tbl_brands` ADD `brand_requested_on` DATETIME NOT NULL AFTER `brand_updated_on`, ADD `brand_status_updated_on` DATETIME NOT NULL AFTER `brand_requested_on`;
+ALTER TABLE `tbl_product_categories` ADD `prodcat_requested_on` DATETIME NOT NULL AFTER `prodcat_updated_on`, ADD `prodcat_status_updated_on` DATETIME NOT NULL AFTER `prodcat_requested_on`;

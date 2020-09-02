@@ -340,7 +340,8 @@ class ProductCategoriesController extends AdminBaseController
             array(
                 ProductCategory::tblFld('status') => ProductCategory::REQUEST_APPROVED,
                 ProductCategory::tblFld('active') => applicationConstants::ACTIVE,
-                ProductCategory::tblFld('updated_on') => date('Y-m-d H:i:s')
+                ProductCategory::tblFld('updated_on') => date('Y-m-d H:i:s'),
+				ProductCategory::tblFld('status_updated_on') => date('Y-m-d H:i:s')
             )
         );
         if (!$prodCat->save()) {
