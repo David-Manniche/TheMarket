@@ -1469,10 +1469,9 @@ class CheckoutController extends MyAppController
         $this->_template->render(false, false);
     }
 
-    public function paymentTab($order_id, $plugin_id, $sendOtp = 0)
+    public function paymentTab($order_id, $plugin_id)
     {
         $plugin_id = FatUtility::int($plugin_id);
-        $sendOtp = FatUtility::int($sendOtp);
         if (!$plugin_id) {
             FatUtility::dieWithError(Labels::getLabel("MSG_Invalid_Request!", $this->siteLangId));
         }
@@ -1500,49 +1499,20 @@ class CheckoutController extends MyAppController
         }
 
         $methodCode = Plugin::getAttributesById($plugin_id, 'plugin_code');
-        $paymentMethod = Plugin::getAttributesByCode($methodCode, Plugin::ATTRS, $this->siteLangId);
-        
+        // $paymentMethod = Plugin::getAttributesByCode($methodCode, Plugin::ATTRS, $this->siteLangId);
+        $this->plugin = PluginHelper::callPlugin($methodCode, [$this->siteLangId], $error, $this->siteLangId);
+        if (false === $this->plugin) {
+            FatUtility::dieWithError($error);
+        }
+        $paymentMethod = $this->plugin->getSettings();
+
         $frm = '';
-        if ('cashondelivery' == strtolower($methodCode) && 0 < $sendOtp) {
+        if ('cashondelivery' == strtolower($methodCode) && isset($paymentMethod["otp_verification"]) && 0 < $paymentMethod["otp_verification"]) {
             $userObj = new User($user_id);
             $userData = $userObj->getUserInfo([], false, false);
             $userDialCode = $userData['user_dial_code'];
             $phoneNumber = $userData['user_phone'];
-            $phoneWithDial = $userDialCode . $phoneNumber;
-
             $canSendSms = (!empty($phoneNumber) && !empty($userDialCode) && SmsArchive::canSendSms(SmsTemplate::COD_OTP_VERIFICATION));
-
-            $otp = '';
-            if (true == $canSendSms) {
-                $data = $userObj->getOtpDetail();
-                if (empty($data) || strtotime($data['upv_expired_on']) < time()) {
-                    $countryIso = User::getUserMeta($user_id, 'user_country_iso');
-                    $otp = $userObj->prepareUserPhoneOtp($countryIso, $userDialCode, $phoneNumber);
-                    if (false === $canSendSms = $userObj->sendOtp($phoneWithDial, $userData['user_name'], $otp, $this->siteLangId, SmsTemplate::COD_OTP_VERIFICATION)) {
-                        FatUtility::dieWithError($userObj->getError());
-                    }
-                } else {
-                    $otp = $data['upv_otp'];
-                }
-            }
-
-            if (empty($otp)) {
-                $min = pow(10, User::OTP_LENGTH - 1);
-                $max = pow(10, User::OTP_LENGTH) - 1;
-                $otp = mt_rand($min, $max);
-            }
-            if (false === $userObj->prepareUserVerificationCode($userData['credential_email'], $user_id . '_' . $otp)) {
-                FatUtility::dieWithError($userObj->getError());
-            }
-            $replace = [
-                'user_name' => $userData['user_name'],
-                'otp' => $otp,
-                'credential_email' => $userData['credential_email'],
-            ];
-            $email = new EmailHandler();
-            if (false === $email->sendCodOtpVerification($this->siteLangId, $replace)){
-                FatUtility::dieWithError($email->getError());
-            }
             
             $this->set('canSendSms', $canSendSms);
             $this->set('userData', $userData);
@@ -1553,6 +1523,7 @@ class CheckoutController extends MyAppController
         $frm = $this->getPaymentTabForm($this->siteLangId, $methodCode, $frm);
         $controller = $methodCode . 'Pay';
         $frm->setFormTagAttribute('action', UrlHelper::generateUrl($controller, 'charge', array($order_id)));
+        $frm->setFormTagAttribute('data-method', $methodCode);
         $frm->setFormTagAttribute('data-external', UrlHelper::generateUrl($controller, 'getExternalLibraries'));
 
         $frm->fill(
@@ -1563,7 +1534,6 @@ class CheckoutController extends MyAppController
             )
         );
 
-        $this->set('otpSent', $sendOtp);
         $this->set('orderId', $order_id);
         $this->set('pluginId', $plugin_id);
         $this->set('orderInfo', $orderInfo);
@@ -2022,7 +1992,7 @@ class CheckoutController extends MyAppController
         $frm->addHiddenField('', 'order_id');
         $frm->addHiddenField('', 'plugin_id');
         if (empty($externalFrm)) {
-            $frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_CONFIRM_PAYMENT', $langId));
+            $frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_CONFIRM', $langId));
         }
         return $frm;
     }
@@ -2277,7 +2247,6 @@ class CheckoutController extends MyAppController
         $userData = $userObj->getUserInfo([], false, false);
         $userDialCode = $userData['user_dial_code'];
         $phoneNumber = $userData['user_phone'];
-        $phoneWithDial = $userDialCode . $phoneNumber;
 
         $canSendSms = (!empty($phoneNumber) && !empty($userDialCode) && SmsArchive::canSendSms(SmsTemplate::COD_OTP_VERIFICATION));
 

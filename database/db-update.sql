@@ -646,3 +646,8 @@ ALTER TABLE `tbl_banners` CHANGE `banner_img_updated_on` `banner_updated_on` DAT
 DELETE FROM `tbl_language_labels` WHERE `label_key` LIKE 'LBL_Shipping_Api';
 
 ALTER TABLE `tbl_orders` CHANGE `order_is_paid` `order_payment_status` TINYINT(1) NOT NULL COMMENT 'defined in order model';
+
+/* Transfer Bank Payment Status From Buyer */
+ALTER TABLE `tbl_order_payments` ADD `opayment_txn_status` TINYINT NOT NULL AFTER `opayment_amount`;
+UPDATE `tbl_order_payments` SET `opayment_txn_status` = '1';
+/* Transfer Bank Payment Status From Buyer */

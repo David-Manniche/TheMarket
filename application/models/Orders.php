@@ -863,6 +863,7 @@ class Orders extends MyAppModel
             trigger_error(Labels::getLabel('MSG_Order_Id_Is_Not_Passed', $this->commonLangId), E_USER_ERROR);
         }
         $srch = static::getSearchObject($langId);
+        $srch->joinTable(Plugin::DB_TBL, 'LEFT JOIN', 'order_pmethod_id = plugin_id');
         $srch->addCondition('order_id', '=', $order_id);
         $srch->doNotCalculateRecords();
         $srch->doNotLimitRecords();

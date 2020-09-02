@@ -32,7 +32,7 @@ class TransferBankPayController extends PaymentController
         if (!$orderInfo['id']) {
             FatUtility::exitWIthErrorCode(404);
         } elseif ($orderInfo && $orderInfo["order_payment_status"] == Orders::ORDER_PAYMENT_PENDING) {
-            $frm = $this->getPaymentForm($orderId);
+            $frm = $this->getTransferBankForm($this->siteLangId, $orderId);
             $this->set('frm', $frm);
             $this->set('paymentAmount', $paymentAmount);
         } else {
@@ -42,7 +42,7 @@ class TransferBankPayController extends PaymentController
         $this->set('exculdeMainHeaderDiv', true);
         $this->set('settings', $this->settings);
         if (FatUtility::isAjaxCall()) {
-            $json['html'] = $this->_template->render(false, false, 'transferbank-pay/charge-ajax.php', true, false);
+            $json['html'] = $this->_template->render(false, false, 'transfer-bank-pay/charge-ajax.php', true, false);
             FatUtility::dieJsonSuccess($json);
         }
         $this->_template->render(true, false);
@@ -50,27 +50,33 @@ class TransferBankPayController extends PaymentController
 
     public function send($orderId)
     {
+        $frm = $this->getTransferBankForm($this->siteLangId);
+        $post = $frm->getFormDataFromArray(FatApp::getPostedData());
+        if (false === $post) {
+            FatUtility::dieJsonError(current($frm->getValidationErrors()));
+        }
+        
         $orderPaymentObj = new OrderPayment($orderId, $this->siteLangId);
         $orderInfo = $orderPaymentObj->getOrderPrimaryinfo();
         if ($orderInfo) {
             $cartObj = new Cart();
             $cartObj->clear();
             $cartObj->updateUserCart();
-            $comment = Labels::getLabel('MSG_PAYMENT_INSTRUCTIONS', $this->siteLangId) . "\n\n";
-            $comment .= $this->settings["business_name"] . "\n\n";
-            $comment .= Labels::getLabel('MSG_PAYMENT_NOTE', $this->siteLangId);
-            $orderPaymentObj->addOrderPaymentComments($comment, true);
+            if (1 < count(array_filter($post))) {
+                if (!$orderPaymentObj->addOrderPayment($post["opayment_method"], $post['opayment_gateway_txn_id'], $post["opayment_amount"], $post["opayment_comments"], '', false, 0, Orders::ORDER_PAYMENT_PENDING)) {
+                    FatUtility::dieJsonError($orderPaymentObj->getError());
+                }
+            } else {   
+                $comment = Labels::getLabel('MSG_PAYMENT_INSTRUCTIONS', $this->siteLangId) . "\n\n";
+                $comment .= $this->settings["business_name"] . "\n\n";
+                $comment .= Labels::getLabel('MSG_PAYMENT_NOTE', $this->siteLangId);
+                $orderPaymentObj->addOrderPaymentComments($comment, true);
+            }
+
             $json['redirect'] = UrlHelper::generateUrl('custom', 'paymentSuccess', array($orderId));
         } else {
             $json['error'] = 'Invalid Request.';
         }
         echo json_encode($json);
-    }
-
-    private function getPaymentForm($orderId)
-    {
-        $frm = new Form('frmPaymentForm', array('id' => 'frmPaymentForm', 'action' => UrlHelper::generateUrl('TransferbankPay', 'send', array($orderId)), 'class' => "form form--normal"));
-        $frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_Confirm_Order', $this->siteLangId), array('id' => 'button-confirm'));
-        return $frm;
     }
 }

@@ -240,6 +240,11 @@ class BuyerController extends BuyerBaseController
             $orderDetail['comments'] = $orderObj->getOrderComments($this->siteLangId, array("op_id" => $childOrderDetail['op_id']));
         } else {
             $orderDetail['comments'] = $orderObj->getOrderComments($this->siteLangId, array("order_id" => $orderDetail['order_id']));
+        }
+
+        $childOrderProducts = $orderObj->getChildOrders(['order_id' => $orderDetail['order_id']]);
+        $childOrderProdCount = count($childOrderProducts);
+        if (1 > $opId || 1 == $childOrderProdCount) {
             $payments = $orderObj->getOrderPayments(array("order_id" => $orderDetail['order_id']));
             if (true === MOBILE_APP_API_CALL) {
                 $payments = array_values($payments);
@@ -257,11 +262,16 @@ class BuyerController extends BuyerBaseController
             $digitalDownloadLinks = Orders::getOrderProductDigitalDownloadLinks($childOrderDetail['op_id']);
         }
         $productType = !empty($childOrderDetail['selprod_product_id']) ? Product::getAttributesById($childOrderDetail['selprod_product_id'], 'product_type') : 0;
+        
         // CommonHelper::printArray($childOrderDetail, true);
+
+        $frm = $this->getTransferBankForm($this->siteLangId, $orderId);
+        $this->set('frm', $frm);
         $this->set('orderDetail', $orderDetail);
         $this->set('childOrderDetail', $childOrderDetail);
         $this->set('orderStatuses', $orderStatuses);
         $this->set('primaryOrder', $primaryOrderDisplay);
+        $this->set('childOrderProdCount', $childOrderProdCount);
         $this->set('digitalDownloads', $digitalDownloads);
         $this->set('digitalDownloadLinks', $digitalDownloadLinks);
         $this->set('productType', $productType);
@@ -2568,5 +2578,29 @@ class BuyerController extends BuyerBaseController
 		
 		$this->set('trackingInfo', $trackingInfo);
 		$this->_template->render(false, false);
-	}
+    }
+    
+    public function updatePayment()
+    {
+        $frm = $this->getTransferBankForm($this->siteLangId);
+        $post = $frm->getFormDataFromArray(FatApp::getPostedData());
+        if (false === $post) {
+            FatUtility::dieJsonError(current($frm->getValidationErrors()));
+        }
+        $orderId = $post['opayment_order_id'];
+
+        $orderPaymentObj = new OrderPayment($orderId, $this->siteLangId);
+        $orderInfo = $orderPaymentObj->getOrderPrimaryinfo();
+
+        if (empty($orderInfo) || 1 >= count(array_filter($post))) {
+            $msg = Labels::getLabel("MSG_INVALID_REQUEST", $this->siteLangId);
+            FatUtility::dieJsonError($msg);
+        }
+
+        if (!$orderPaymentObj->addOrderPayment($post["opayment_method"], $post['opayment_gateway_txn_id'], $post["opayment_amount"], $post["opayment_comments"], '', false, 0, Orders::ORDER_PAYMENT_PENDING)) {
+            FatUtility::dieJsonError($orderPaymentObj->getError());
+        }
+        $msg = Labels::getLabel("MSG_REQUEST_SUBMITTED_SUCCESSFULLY", $this->siteLangId);
+        FatUtility::dieJsonSuccess($msg);
+    }
 }
