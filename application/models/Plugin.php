@@ -82,7 +82,7 @@ class Plugin extends MyAppModel
             self::TYPE_PAYOUTS => Labels::getLabel('LBL_PAYOUT', $langId),
             self::TYPE_ADVERTISEMENT_FEED => Labels::getLabel('LBL_ADVERTISEMENT_FEED', $langId),
             self::TYPE_SMS_NOTIFICATION => Labels::getLabel('LBL_SMS_NOTIFICATION', $langId),
-            self::TYPE_TAX_SERVICES => Labels::getLabel('LBL_Tax_Services', $langId),
+            self::TYPE_TAX_SERVICES => Labels::getLabel('LBL_TAX_SERVICES', $langId),
             self::TYPE_FULL_TEXT_SEARCH => Labels::getLabel('LBL_FULL_TEXT_SEARCH', $langId),
             self::TYPE_SPLIT_PAYMENT_METHOD => Labels::getLabel('LBL_SPLIT_PAYMENT_METHODS', $langId),
             self::TYPE_REGULAR_PAYMENT_METHOD => Labels::getLabel('LBL_REGULAR_PAYMENT_METHODS', $langId),
@@ -117,6 +117,24 @@ class Plugin extends MyAppModel
             return $pluginDir[$pluginType];
         }
         return false;
+    }
+    
+    /**
+     * getActivatationLimit
+     *
+     * @param  int $typeId
+     * @return void
+     */
+    public static function getActivatationLimit(int $typeId): int
+    {
+        if (false === static::getDirectory($typeId)) {
+            return -1;
+        }
+
+        $pluginTypeArr = [
+            self::TYPE_REGULAR_PAYMENT_METHOD => 4,
+        ];
+        return array_key_exists($typeId, $pluginTypeArr) ? $pluginTypeArr[$typeId] : 0;
     }
     
     /**
@@ -482,23 +500,5 @@ class Plugin extends MyAppModel
             }
         }
         return true;
-    }
-    
-    /**
-     * getActivatationLimit
-     *
-     * @param  int $typeId
-     * @return void
-     */
-    public static function getActivatationLimit(int $typeId): int
-    {
-        if (false === static::getDirectory($typeId)) {
-            return -1;
-        }
-
-        $pluginTypeArr = [
-            self::TYPE_REGULAR_PAYMENT_METHOD => 4,
-        ];
-        return array_key_exists($typeId, $pluginTypeArr) ? $pluginTypeArr[$typeId] : 0;
     }
 }
