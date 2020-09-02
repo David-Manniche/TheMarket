@@ -17,7 +17,7 @@ $this->includeTemplate('_partial/seller/sellerDashboardNavigation.php');
                     </button>
                     <div class="dropdown-menu dropdown-menu-fit dropdown-menu-right dropdown-menu-anim" aria-labelledby="dashboardDropdown">
                         <ul class="nav nav-block">
-                            <?php if (FatApp::getConfig('CONF_ENABLED_SELLER_CUSTOM_PRODUCT', FatUtility::VAR_INT, 0)) { ?>
+                            <?php if (FatApp::getConfig('CONF_SELLER_CAN_REQUEST_CUSTOM_PRODUCT', FatUtility::VAR_INT, 0)) { ?>
                                 <li class="nav__item">
                                     <a class="dropdown-item nav__link"
                                         href="<?php echo UrlHelper::generateUrl('Seller', 'customCatalogProductForm'); ?>"><?php echo Labels::getLabel('LBL_Product', $siteLangId);?></a>
@@ -44,7 +44,7 @@ $this->includeTemplate('_partial/seller/sellerDashboardNavigation.php');
                         <div class="cards-content">
                             <?php if ($noRecordFound) { ?>
                                 <div class="row">
-                                    <?php if (FatApp::getConfig('CONF_ENABLED_SELLER_CUSTOM_PRODUCT', FatUtility::VAR_INT, 0)) { ?>
+                                    <?php if (FatApp::getConfig('CONF_SELLER_CAN_REQUEST_CUSTOM_PRODUCT', FatUtility::VAR_INT, 0)) { ?>
                                         <div class="col-md-4">
                                             <div class="no-data-found">
                                                 <div class="img">
