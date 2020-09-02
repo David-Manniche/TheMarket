@@ -103,6 +103,15 @@ $this->includeTemplate('_partial/seller/sellerDashboardNavigation.php');
     </div>
 </main>
 <script>
-var ratioTypeSquare = < ? php echo AttachedFile::RATIO_TYPE_SQUARE; ? > ;
-var ratioTypeRectangular = < ? php echo AttachedFile::RATIO_TYPE_RECTANGULAR; ? > ;
+var ratioTypeSquare = <?php echo AttachedFile::RATIO_TYPE_SQUARE; ?> ;
+var ratioTypeRectangular = <?php echo AttachedFile::RATIO_TYPE_RECTANGULAR; ?> ;
+var canRequestCustomProduct = <?php echo FatApp::getConfig('CONF_SELLER_CAN_REQUEST_CUSTOM_PRODUCT', FatUtility::VAR_INT, 0); ?>;
+$(document).ready(function() {
+    if (canRequestCustomProduct) {
+        searchCustomCatalogProducts(document.frmSearchCustomCatalogProducts);
+    } else {
+        searchBrandRequests(document.frmSearchBrandRequest);
+    }
+    
+});
 </script>
