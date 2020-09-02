@@ -680,3 +680,5 @@ ALTER TABLE `tbl_product_categories` ADD INDEX( `prodcat_code`);
 ALTER TABLE `tbl_product_requests` ADD `preq_requested_on` DATETIME NOT NULL AFTER `preq_added_on`, ADD `preq_status_updated_on` DATETIME NOT NULL AFTER `preq_requested_on`;
 ALTER TABLE `tbl_brands` ADD `brand_requested_on` DATETIME NOT NULL AFTER `brand_updated_on`, ADD `brand_status_updated_on` DATETIME NOT NULL AFTER `brand_requested_on`;
 ALTER TABLE `tbl_product_categories` ADD `prodcat_requested_on` DATETIME NOT NULL AFTER `prodcat_updated_on`, ADD `prodcat_status_updated_on` DATETIME NOT NULL AFTER `prodcat_requested_on`;
+
+ALTER TABLE `tbl_orders_status` CHANGE `orderstatus_color_code` `orderstatus_color_class` TINYINT(4) NULL DEFAULT NULL COMMENT 'Defined in applicationConstant';

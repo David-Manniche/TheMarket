@@ -60,7 +60,7 @@ foreach ($orders as $sn => $order) {
                 break;
             case 'status':
                 $txt = $order['orderstatus_name'];
-                $td->appendElement('plaintext', array(), $txt, true);
+                $td->appendElement('span', array('class' => 'label label-inline '. $classArr[$order['orderstatus_color_class']]), $txt . '<br>', true);
                 break;
             case 'action':
                 $ul = $td->appendElement("ul", array("class"=>"actions"), '', true);
