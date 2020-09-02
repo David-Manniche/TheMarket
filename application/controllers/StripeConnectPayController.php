@@ -392,7 +392,7 @@ class StripeConnectPayController extends PaymentController
         }
 
         $status = isset($payload['data']['object']['status']) ? $payload['data']['object']['status'] : Labels::getLabel("MSG_FAILURE", $this->siteLangId);
-        if ($payload['type'] != "payment_intent.succeeded" && $payload['type'] != "payment_intent.amount_capturable_updated") {
+        if ($payload['type'] != "payment_intent.succeeded") {
             // $msg = Labels::getLabel('MSG_UNABLE_TO_CHARGE_:_{STATUS}', $this->siteLangId);
             // $msg = CommonHelper::replaceStringData($msg, ['{STATUS}' => $status]);
             return;
@@ -408,7 +408,7 @@ class StripeConnectPayController extends PaymentController
 
         $this->orderId = $orderId;
         $this->orderInfo = $this->getOrderInfo($this->orderId);
-        if ($this->orderInfo["order_payment_status"] != Orders::ORDER_PAYMENT_PENDING && $this->orderInfo["order_payment_status"] != Orders::ORDER_PAYMENT_DETAINED) {
+        if ($this->orderInfo["order_payment_status"] != Orders::ORDER_PAYMENT_PENDING) {
             // $msg = Labels::getLabel('MSG_INVALID_ORDER._ALREADY_PAID_OR_CANCELLED', $this->siteLangId);
             return;
         }
@@ -450,14 +450,9 @@ class StripeConnectPayController extends PaymentController
 
         $this->paymentAmount = $orderPaymentObj->getOrderPaymentGatewayAmount();
 
-        $paymentStatus = ($payload['type'] == "payment_intent.amount_capturable_updated" ? Orders::ORDER_PAYMENT_DETAINED : Orders::ORDER_PAYMENT_PAID);
 
-        if (false === $orderPaymentObj->addOrderPayment($this->settings["plugin_code"], $chargeId, $this->paymentAmount, Labels::getLabel("MSG_RECEIVED_PAYMENT", $this->siteLangId), $payloadStr, false, 0, $paymentStatus)) {
+        if (false === $orderPaymentObj->addOrderPayment($this->settings["plugin_code"], $chargeId, $this->paymentAmount, Labels::getLabel("MSG_RECEIVED_PAYMENT", $this->siteLangId), $payloadStr, false, 0, Orders::ORDER_PAYMENT_PAID)) {
             $orderPaymentObj->addOrderPaymentComments($message);
-        }
-
-        if (Orders::ORDER_PAYMENT_DETAINED == $paymentStatus) {
-            return;
         }
 
         $orderInfo = $orderPaymentObj->getOrderPrimaryinfo();
