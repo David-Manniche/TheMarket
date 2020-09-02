@@ -648,6 +648,11 @@ DELETE FROM `tbl_language_labels` WHERE `label_key` LIKE 'LBL_Shipping_Api';
 
 ALTER TABLE `tbl_orders` CHANGE `order_is_paid` `order_payment_status` TINYINT(1) NOT NULL COMMENT 'defined in order model';
 
+/* Transfer Bank Payment Status From Buyer */
+ALTER TABLE `tbl_order_payments` ADD `opayment_txn_status` TINYINT NOT NULL AFTER `opayment_amount`;
+UPDATE `tbl_order_payments` SET `opayment_txn_status` = '1';
+/* Transfer Bank Payment Status From Buyer */
+
 UPDATE `tbl_configurations` SET `conf_common` = '1' WHERE `tbl_configurations`.`conf_name` = 'conf_lang_specific_url';
 UPDATE `tbl_configurations` SET `conf_common` = '1' WHERE `tbl_configurations`.`conf_name` = 'CONF_DEFAULT_SITE_LANG';
 UPDATE `tbl_configurations` SET `conf_common` = '1' WHERE `tbl_configurations`.`conf_name` = 'CONF_ENABLE_301';

@@ -7,7 +7,7 @@ class PaypalSettingsController extends PaymentMethodSettingsController
         $frm = new Form('frmPayPal');
 
         $envoirment = Plugin::getEnvArr($langId);
-        $envFld = $frm->addSelectBox(Labels::getLabel('LBL_ENVOIRMENT', $langId), 'env', $envoirment, '', ['id' => 'setupEnvFields']);
+        $envFld = $frm->addSelectBox(Labels::getLabel('LBL_ENVOIRMENT', $langId), 'env', $envoirment, '', ['class' => 'fieldsVisibility-js'], '');
         $envFld->requirement->setRequired(true);
 
         $frm->addTextBox(Labels::getLabel('LBL_CLIENT_ID', $langId), 'client_id');

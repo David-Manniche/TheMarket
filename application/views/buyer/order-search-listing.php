@@ -87,9 +87,6 @@ foreach ($orders as $sn => $order) {
                     $pMethod = " - " . $order['plugin_name'] ;
                 }
                 $txt = $order['orderstatus_name'] . $pMethod;
-                if ($order['order_payment_status'] == Orders::ORDER_PAYMENT_DETAINED) {
-                    $txt .= ' (' . Labels::getLabel('MSG_DETAINED', $siteLangId) . ')';
-                }
                 $td->appendElement('plaintext', array(), $txt, true);
                 break;
 

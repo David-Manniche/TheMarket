@@ -153,6 +153,7 @@ class MyAppController extends FatController
             'paymentSucceeded' => Labels::getLabel('LBL_PAYMENT_SUCCEEDED._WAITING_FOR_CONFIRMATION', $this->siteLangId),
             'paymentRequiredCapture' => Labels::getLabel('LBL_ORDER_PLACED._PAYMENT_ON_HOLD_TO_CAPTURE_LATER.', $this->siteLangId),
             'otpSent' => Labels::getLabel('MSG_OTP_SENT!', $this->siteLangId),
+            'proceed' => Labels::getLabel('MSG_PROCEED', $this->siteLangId),
             );
 
             $languages = Language::getAllNames(false);
@@ -820,5 +821,25 @@ class MyAppController extends FatController
     {
         $json['libraries'] = [];
         FatUtility::dieJsonSuccess($json);
+    }
+
+        
+    /**
+     * getTransferBankForm
+     *
+     * @param  mixed $langId
+     * @param  mixed $orderId
+     * @return object
+     */
+    public function getTransferBankForm(int $langId, string $orderId = ''): object
+    {
+        $frm = new Form('frmPayment');
+        $frm->addHiddenField('', 'opayment_order_id', $orderId);
+        $frm->addTextBox(Labels::getLabel('LBL_PAYMENT_METHOD', $langId), 'opayment_method');
+        $frm->addTextBox(Labels::getLabel('LBL_TXN_ID', $langId), 'opayment_gateway_txn_id');
+        $frm->addTextBox(Labels::getLabel('LBL_AMOUNT', $langId), 'opayment_amount')->requirements()->setFloatPositive(true);
+        $frm->addTextArea(Labels::getLabel('LBL_COMMENTS', $langId), 'opayment_comments', '');
+        $frm->addSubmitButton('&nbsp;', 'btn_submit', Labels::getLabel('LBL_CONFIRM_ORDER', $langId));
+        return $frm;
     }
 }

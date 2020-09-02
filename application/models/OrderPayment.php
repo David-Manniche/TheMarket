@@ -151,7 +151,18 @@ class OrderPayment extends Orders
 
             $orderDetails = $this->getOrderById($paymentOrderId);
 
-            if (!FatApp::getDb()->insertFromArray('tbl_order_payments', array('opayment_order_id' => $paymentOrderId, 'opayment_method' => $paymentMethodName, 'opayment_gateway_txn_id' => $txnId, 'opayment_amount' => $amount, 'opayment_comments' => $comments, 'opayment_gateway_response' => $response, 'opayment_date' => date('Y-m-d H:i:s')))) {
+            if (!FatApp::getDb()->insertFromArray(static::DB_TBL_ORDER_PAYMENTS,
+                    array(
+                        'opayment_order_id' => $paymentOrderId,
+                        'opayment_method' => $paymentMethodName,
+                        'opayment_gateway_txn_id' => $txnId,
+                        'opayment_amount' => $amount,
+                        'opayment_txn_status' => $orderPaymentStatus,
+                        'opayment_comments' => $comments,
+                        'opayment_gateway_response' => $response,
+                        'opayment_date' => date('Y-m-d H:i:s'))
+                    )
+                ) {
                 $this->error = FatApp::getDb()->getError();
                 return false;
             }
@@ -163,12 +174,12 @@ class OrderPayment extends Orders
                 $this->addOrderPaymentHistory($paymentOrderId, $orderPaymentStatus, Labels::getLabel('LBL_Received_Payment', $defaultSiteLangId), 1);
 
                 $notificationData = array(
-                 'notification_record_type' => Notification::TYPE_ORDER,
-                 'notification_record_id' => $paymentOrderId,
-                 'notification_user_id' => $orderInfo['order_user_id'],
-                 'notification_label_key' => Notification::NEW_ORDER_STATUS_NOTIFICATION,
-                 'notification_added_on' => date('Y-m-d H:i:s'),
-                                        );
+                    'notification_record_type' => Notification::TYPE_ORDER,
+                    'notification_record_id' => $paymentOrderId,
+                    'notification_user_id' => $orderInfo['order_user_id'],
+                    'notification_label_key' => Notification::NEW_ORDER_STATUS_NOTIFICATION,
+                    'notification_added_on' => date('Y-m-d H:i:s'),
+                );
 
                 Notification::saveNotifications($notificationData);
 

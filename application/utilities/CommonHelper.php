@@ -272,7 +272,7 @@ class CommonHelper extends FatUtility
         if (empty($opArr)) {
             trigger_error('Order Product Array should not be empty', E_USER_ERROR);
         }
-
+        
         $shippingAmount = isset($opArr['charges'][OrderProduct::CHARGE_TYPE_SHIPPING]['opcharge_amount']) ? $opArr['charges'][OrderProduct::CHARGE_TYPE_SHIPPING]['opcharge_amount'] : 0;
         $cartTotal = $opArr['op_qty'] * $opArr['op_unit_price'];
 
