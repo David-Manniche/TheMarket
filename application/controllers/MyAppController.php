@@ -151,7 +151,6 @@ class MyAppController extends FatController
             'currentPrice' => Labels::getLabel('LBL_Current_Price', $this->siteLangId),
             'discountPercentage' => Labels::getLabel('LBL_Discount_Percentage', $this->siteLangId),
             'paymentSucceeded' => Labels::getLabel('LBL_PAYMENT_SUCCEEDED._WAITING_FOR_CONFIRMATION', $this->siteLangId),
-            'paymentRequiredCapture' => Labels::getLabel('LBL_ORDER_PLACED._PAYMENT_ON_HOLD_TO_CAPTURE_LATER.', $this->siteLangId),
             'otpSent' => Labels::getLabel('MSG_OTP_SENT!', $this->siteLangId),
             'proceed' => Labels::getLabel('MSG_PROCEED', $this->siteLangId),
             );

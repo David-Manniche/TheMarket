@@ -680,3 +680,5 @@ ALTER TABLE `tbl_product_categories` ADD INDEX( `prodcat_code`);
 ALTER TABLE `tbl_product_requests` ADD `preq_requested_on` DATETIME NOT NULL AFTER `preq_added_on`, ADD `preq_status_updated_on` DATETIME NOT NULL AFTER `preq_requested_on`;
 ALTER TABLE `tbl_brands` ADD `brand_requested_on` DATETIME NOT NULL AFTER `brand_updated_on`, ADD `brand_status_updated_on` DATETIME NOT NULL AFTER `brand_requested_on`;
 ALTER TABLE `tbl_product_categories` ADD `prodcat_requested_on` DATETIME NOT NULL AFTER `prodcat_updated_on`, ADD `prodcat_status_updated_on` DATETIME NOT NULL AFTER `prodcat_requested_on`;
+
+DELETE FROM `tbl_language_labels` WHERE `label_key` LIKE 'LBL_ORDER_PLACED._PAYMENT_ON_HOLD_TO_CAPTURE_LATER.';
