@@ -59,7 +59,7 @@
 								$priceToFld->developerTags['col'] = 2;
 									
 								$submitBtnFld = $frmSearch->getField('btn_submit');
-								$submitBtnFld->setFieldTagAttribute('class','btn-block');
+								//$submitBtnFld->setFieldTagAttribute('class','btn-block');
 								$submitBtnFld->developerTags['col'] = 4;
 
 								$btn_clear = $frmSearch->getField('btn_clear');
