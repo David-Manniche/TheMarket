@@ -305,7 +305,7 @@ class ImportexportCommon extends FatModel
         return $arr;
     }
 
-    public function getProductsCatalogColoumArr($langId, $userId = 0)
+    public function getProductsCatalogColoumArr($langId, $userId = 0, $actionType = null)
     {
         $arr = array();
 
@@ -320,8 +320,8 @@ class ImportexportCommon extends FatModel
             }
             $arr['product_identifier'] = Labels::getLabel('LBL_Product_identifier', $langId);
         }
-
-        if ($this->isDefaultSheetData($langId)) {
+        
+        if ($this->isDefaultSheetData($langId) && $actionType != Importexport::ACTION_ADMIN_PRODUCTS) {
             if ($this->settings['CONF_USE_USER_ID']) {
                 $arr['product_seller_id'] = Labels::getLabel('LBL_User_ID', $langId);
             } else {

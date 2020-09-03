@@ -11,6 +11,12 @@ class DummyController extends AdminBaseController
 
     public function test123()
     {
+        $userId = -1;
+        if (0 < $userId) {
+            echo "here";
+        }
+die('dsdsdsdsdsd');
+
         $langId = 1;
         $spreviewId = 1;
         $schObj = new SelProdReviewSearch($langId);
@@ -19,7 +25,7 @@ class DummyController extends AdminBaseController
         $schObj->joinSellerProducts($langId);
         $schObj->addCondition('spreview_id', '=', $spreviewId);
         $schObj->addCondition('spreview_status', '!=', SelProdReview::STATUS_PENDING);
-        $schObj->addMultipleFields(array('spreview_selprod_id', 'spreview_status', 'product_name', 'selprod_title', 'user_name', 'credential_email', ));
+        $schObj->addMultipleFields(array('spreview_selprod_id', 'spreview_status', 'product_name', 'selprod_title', 'user_name', 'credential_email',));
         $spreviewData = FatApp::getDb()->fetch($schObj->getResultSet());
         $productUrl = UrlHelper::generateFullUrl('Products', 'View', array($spreviewData["spreview_selprod_id"]), CONF_WEBROOT_FRONT_URL);
         echo $prodTitleAnchor = "<a href='" . $productUrl . "'>" . $spreviewData['selprod_title'] . "</a>";
@@ -32,9 +38,9 @@ class DummyController extends AdminBaseController
         $query = PaymentMethods::getSearchObject();
         echo $query->getQuery();
     }
-    
+
     public function buyerEmail()
     {
-       $this->_template->render(true, true);
+        $this->_template->render(true, true);
     }
 }
