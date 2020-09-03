@@ -13,7 +13,7 @@
         $addresses[0]['addr_is_default'] = 1;
     }
     foreach ($addresses as $address) {
-        $address['addr_title'] = ($address['addr_title'] == '') ? '&nbsp;' : $address['addr_title']; ?> <div class="col-lg-4 col-md-6 mb-4">
+        $address['addr_title'] = ($address['addr_title'] == '') ? '&nbsp;' : $address['addr_title']; ?> <div class="col-lg-4 col-md-6 mb-4 mb-md-0">
             <label class="address-block <?php echo ($address['addr_is_default']==1)?'is-active':''; ?>">
                 <span class="radio">
                     <?php
