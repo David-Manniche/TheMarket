@@ -1251,9 +1251,7 @@ trait CustomProducts
 
         $frm = new Form('frmLinks', array('id' => 'frmLinks'));
         $frm->addTextBox(Labels::getLabel('LBL_Product_Name', $this->siteLangId), 'product_name');
-        /* $brndFld = $frm->addTextBox(Labels::getLabel('LBL_Brand/Manufacturer',$this->siteLangId),'brand_name');
-        $brndFld->htmlAfterField= '<div class="col-md-6"><small><a href="javascript:void(0);" onClick="addBrandReqForm(0);">'.Labels::getLabel('LBL_Brand_Not_Found?_Click_here_to_',$this->siteLangId).Labels::getLabel('LBL_Request_New_Brand',$this->siteLangId).'</a></small></div>'; */
-
+        
         $fld1 = $frm->addTextBox(Labels::getLabel('LBL_Category', $this->siteLangId), 'choose_links');
         $fld2 = $frm->addHtml('', 'addNewOptionLink', '</a><div id="product_links_list" class="col-xs-10" ></div>');
         $fld1->attachField($fld2);

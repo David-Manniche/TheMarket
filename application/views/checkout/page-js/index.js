@@ -594,21 +594,6 @@ $("document").ready(function () {
         });
     }
 
-    selectTimeSlot = function (ele, level) {
-        var slot_id = $(ele).attr('id');
-        var slot_date = $('.js-datepicker').val(); 
-        var addr_id = $("input[name='pickup_address']:checked").val();
-        $("input[name='slot_id[" + level + "]']").val(slot_id);
-        $("input[name='slot_date[" + level + "]']").val(slot_date);
-        $(".js-slot-addr-"+level).attr('data-addr-id', addr_id);
-
-        var slot_time = $(ele).next().children('.time').html();
-        var addrHtml = $("input[name='pickup_address']:checked").next().next('.js-addr').html();
-        var html = "<div>" + addrHtml + "<br/><strong>" + slot_date + ' ' + slot_time + "</strong></div>";
-        $(".js-slot-addr_" + level).html(html);
-        $("#facebox .close").trigger('click');
-    }
-
     setUpPickup = function () {
         if (!checkLogin()) {
             return false;

@@ -307,7 +307,7 @@ $this->includeTemplate('_partial/seller/sellerDashboardNavigation.php'); ?>
                                                 <?php if ($row['op_selprod_options'] != '') { ?>
                                                     <div class="item__specification"><?php echo $row['op_selprod_options']; ?></div>
                                                 <?php } ?>
-                                                <div class="item__specification"> <?php echo Labels::getLabel('Lbl_Payment_Status', $siteLangId)?>: <?php echo $row['orderstatus_name']; ?></div>
+                                                <div class="item__specification"> <span class="label label-inline <?php echo $classArr[$row['orderstatus_color_class']]; ?>"><?php echo $row['orderstatus_name']; ?></span></div>
                                             </div>
                                         </td>
                                         <td>

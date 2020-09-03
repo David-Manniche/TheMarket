@@ -56,17 +56,16 @@ foreach ($arr_listing as $sn => $row) {
                         true
                     );
 
-                    $li = $ul->appendElement("li");
-                    $li->appendElement(
-                        'a',
-                        array('href' => 'javascript:void(0)', 'onclick' => 'customCatalogInfo(' . $row['preq_id'] . ')', 'class' => '', 'title' => Labels::getLabel('LBL_product_Info', $siteLangId), true),
-                        '<i class="fa fa-eye"></i>',
-                        true
-                    );
-
                     /* $li = $ul->appendElement("li");
                     $li->appendElement("a", array('title' => Labels::getLabel('LBL_Product_Images', $siteLangId), 'onclick' => 'customCatalogProductImages('.$row['preq_id'].')', 'href'=>'javascript:void(0)'), '<i class="fas fa-images"></i>', true); */
                 }
+				$li = $ul->appendElement("li");
+				$li->appendElement(
+					'a',
+					array('href' => 'javascript:void(0)', 'onclick' => 'customCatalogInfo(' . $row['preq_id'] . ')', 'class' => '', 'title' => Labels::getLabel('LBL_product_Info', $siteLangId), true),
+					'<i class="fa fa-eye"></i>',
+					true
+				);
                 break;
             default:
                 $td->appendElement('plaintext', array(), $row[$key], true);

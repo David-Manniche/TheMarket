@@ -97,7 +97,7 @@ $action = strtolower($action);
                     </li>
                 <?php }?>
 				<?php if ($userPrivilege->canViewSellerRequests(UserAuthentication::getLoggedUserId(), true)) { ?>
-                    <li class="menu__item <?php echo ($controller == 'SellerRequests' && $action == 'index') ? 'is-active' : ''; ?>">
+                    <li class="menu__item <?php echo ($controller == 'sellerrequests' && $action == 'index') ? 'is-active' : ''; ?>">
                         <div class="menu__item__inner"><a title="<?php echo Labels::getLabel('LBL_Requests', $siteLangId);?>" href="<?php echo UrlHelper::generateUrl('SellerRequests'); ?>">
                                 <i class="icn shop"><svg class="svg">
                                         <use xlink:href="<?php echo CONF_WEBROOT_URL; ?>images/retina/sprite.svg#requests" href="<?php echo CONF_WEBROOT_URL; ?>images/retina/sprite.svg#requests"></use>

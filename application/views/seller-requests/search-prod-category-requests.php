@@ -6,6 +6,7 @@ defined('SYSTEM_INIT') or die('Invalid Usage.');
 $arr_flds = array(
     'listserial'=>'Sr.',
     'prodcat_name' => Labels::getLabel('LBL_Product_Category_Name', $siteLangId),
+	'prodcat_parent'=>Labels::getLabel('LBL_Parent_category', $siteLangId),
     'prodcat_requested_on' => Labels::getLabel('LBL_Requested_on', $siteLangId),
     'prodcat_status' => Labels::getLabel('LBL_Status', $siteLangId),
 );
@@ -33,6 +34,11 @@ foreach ($arr_listing as $sn => $row) {
                 $td->appendElement('plaintext', array(), (!empty($row['prodcat_name']) ? $row['prodcat_name'] : $row['prodcat_identifier']) . '<br>', true);
                 $td->appendElement('plaintext', array(), '('.$row[$key].')', true);
                 break;
+			case 'prodcat_parent':
+                $prodCat = new productCategory();
+                $name = $prodCat->getParentTreeStructure($row['prodcat_id'], 0, '', $siteLangId, false, -1);
+                $td->appendElement('plaintext', array(), $name, true);
+            break;
             case 'prodcat_status':
                 $td->appendElement('span', array('class' => 'label label-inline '. $statusClassArr[$row[$key]]), $statusArr[$row[$key]] . '<br>', true);
                 $td->appendElement('br', array());

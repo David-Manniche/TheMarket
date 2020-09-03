@@ -448,4 +448,14 @@ class applicationConstants
             static::LOCATION_ZIP => Labels::getLabel('LBL_POSTAL_CODE_LEVEL', $langId),
         );
     }
+
+    public static function getClassArr()
+    {
+        return array(
+            0 => applicationConstants::CLASS_INFO,
+            1 => applicationConstants::CLASS_SUCCESS,
+            2 => applicationConstants::CLASS_DANGER,
+            3 => applicationConstants::CLASS_WARNING
+        );
+    }
 }

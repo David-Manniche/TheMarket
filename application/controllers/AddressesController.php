@@ -219,11 +219,16 @@ class AddressesController extends LoggedUserController
             Message::addErrorMessage(Labels::getLabel('LBL_Invalid_request', $this->siteLangId));
             FatUtility::dieWithError(Message::getHtml());
         }
-        
-        $selectedDate = date('Y-m-d', strtotime($selectedDate));            
-        $day = date('w', strtotime($selectedDate)); 
+
+        $currentDateFormat = FatDate::convertDateFormatFromPhp(
+            FatApp::getConfig('CONF_DATE_FORMAT', FatUtility::VAR_STRING, 'Y-m-d'),
+            FatDate::FORMAT_PHP
+        );
+        $date=date_create_from_format($currentDateFormat, $selectedDate);  
+        $selectedDate = date_format($date, "Y-m-d");   
+        $day = date('w', strtotime($selectedDate));  
         $timeSlot = new TimeSlot();
-        $timeSlots = $timeSlot->timeSlotsByAddressIdAndDate($addressId, $day);
+        $timeSlots = $timeSlot->timeSlotsByAddressIdAndDate($addressId, $day);        
         $this->set('timeSlots', $timeSlots);
         $this->set('selectedDate', $selectedDate);
         $this->set('level', $level);

@@ -1424,6 +1424,10 @@ class CheckoutController extends MyAppController
         }
         if ($fulfillmentType == Shipping::FULFILMENT_SHIP) {
             $orderShippingData = $orderObj->getOrderShippingData($order_id, $this->siteLangId);
+            $shippingData = [];
+            foreach ($orderShippingData as $data){
+                $shippingData[$data['opshipping_code']][] = $data;
+            }   
         }
        
 
@@ -1451,7 +1455,7 @@ class CheckoutController extends MyAppController
         $this->set('shippingAddressArr', $shippingAddressArr);
         $this->set('orderId', $order_id);
         $this->set('orderPickUpData', $orderPickUpData);
-        $this->set('orderShippingData', $orderShippingData);
+        $this->set('orderShippingData', $shippingData);
          
         if (true === MOBILE_APP_API_CALL) {
             $this->set('products', $cartProducts);
@@ -2124,7 +2128,13 @@ class CheckoutController extends MyAppController
                 LibHelper::exitWithError($message, true);
             }
             
-            $selectedDay = date('w', strtotime($post['slot_date'][$level]));        
+            $currentDateFormat = FatDate::convertDateFormatFromPhp(
+                FatApp::getConfig('CONF_DATE_FORMAT', FatUtility::VAR_STRING, 'Y-m-d'),
+                FatDate::FORMAT_PHP
+            );     
+            $date=date_create_from_format($currentDateFormat, $post['slot_date'][$level]);  
+            $selectedDate = date_format($date, "Y-m-d");   
+            $selectedDay = date('w', strtotime($selectedDate)); 
             if($selectedDay != $slotData['tslot_day']){  
                 $message = Labels::getLabel('MSG_Something_went_wrong,_please_try_after_some_time.', $this->siteLangId);
                 LibHelper::exitWithError($message, true);
@@ -2172,11 +2182,11 @@ class CheckoutController extends MyAppController
                         'time_slot_type' => $slotData['tslot_type'],
                         'time_slot_from_time' => $slotData['tslot_from_time'],
                         'time_slot_to_time' => $slotData['tslot_to_time'],
-                        'time_slot_date' => date('Y-m-d', strtotime($post['slot_date'][$level])),
+                        'time_slot_date' => $selectedDate,
                     );
                 }
             }
-        }
+        } 
 
         $this->cartObj->setProductPickUpAddresses($pickupAddressArr);
         $this->set('msg', Labels::getLabel('MSG_Pickup_Method_selected_successfully.', $this->siteLangId));
@@ -2347,8 +2357,12 @@ class CheckoutController extends MyAppController
     {
         $orderId = FatApp::getPostedData('order_id', FatUtility::VAR_STRING, '');
         $order = new Orders();
-        $orderShippingData = $order->getOrderShippingData($orderId, $this->siteLangId);        
-        $this->set('orderShippingData', $orderShippingData);
+        $orderShippingData = $order->getOrderShippingData($orderId, $this->siteLangId);
+        $shippingData = [];
+        foreach ($orderShippingData as $data){
+            $shippingData[$data['opshipping_code']][] = $data;
+        }   
+        $this->set('orderShippingData', $shippingData);
         $this->_template->render(false, false);
     }
 }
