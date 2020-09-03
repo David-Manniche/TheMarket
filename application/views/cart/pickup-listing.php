@@ -23,7 +23,7 @@ defined('SYSTEM_INIT') or die('Invalid Usage.'); ?>
                 </li>
             </ul>
         </div>
-        <div class="cart-blocks">            
+        <div class="cart-blocks">             
             <?php 
             $productsCount = count($products);
             if ($productsCount) { 
