@@ -690,3 +690,4 @@ DELETE FROM `tbl_language_labels` WHERE `label_key` LIKE 'LBL_Catalog_Shipping';
 DELETE FROM `tbl_language_labels` WHERE `label_key` LIKE 'LBL_ORDER_PLACED._PAYMENT_ON_HOLD_TO_CAPTURE_LATER.';
 
 ALTER TABLE `tbl_orders_status` CHANGE `orderstatus_color_code` `orderstatus_color_class` TINYINT(4) NULL DEFAULT NULL COMMENT 'Defined in applicationConstant';
+-- ----------------- TV-9.1.3.20200903 -----------------------
