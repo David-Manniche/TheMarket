@@ -168,7 +168,7 @@ $this->includeTemplate('_partial/buyerDashboardNavigation.php'); ?>
                                             <div class="item__specification">
                                                 <span class="item__price"><?php echo CommonHelper::displayMoneyFormat(CommonHelper::orderProductAmount($row)) ; ?></span>
                                                 <br>
-                                                <span><?php echo $row['orderstatus_name']; ?>
+                                                <span class="label label-inline <?php echo $classArr[$row['orderstatus_color_class']]; ?>"><?php echo $row['orderstatus_name']; ?></span>
                                             </div>
                                         </td>
                                         <td>
@@ -282,7 +282,7 @@ $this->includeTemplate('_partial/buyerDashboardNavigation.php'); ?>
                                             <div class="request__qty"> <?php echo $row['orrequest_qty']; ?> </div>
                                         </td>
                                         <td>
-                                            <div class="request__status"> <?php echo $OrderReturnRequestStatusArr[$row['orrequest_status']]; ?> </div>
+                                            <span class="label label-inline <?php echo $OrderRetReqStatusClassArr[$row['orrequest_status']];?>"> <?php echo $OrderReturnRequestStatusArr[$row['orrequest_status']]; ?> </span>
                                         </td>
                                         <td>
                                             <ul class="actions">
@@ -349,7 +349,7 @@ $this->includeTemplate('_partial/buyerDashboardNavigation.php'); ?>
                                             <div class="request__comments"> <?php echo Labels::getLabel('Lbl_Comments', $siteLangId)?>: <?php echo $row['ocrequest_message']; ?> </div>
                                         </td>
                                         <td>
-                                            <div class="request__status"> <?php echo $OrderCancelRequestStatusArr[$row['ocrequest_status']]; ?> </div>
+                                            <span class="label label-inline <?php echo $cancelReqStatusClassArr[$row['ocrequest_status']];?>"> <?php echo $OrderCancelRequestStatusArr[$row['ocrequest_status']]; ?> </span>
                                         </td>
                                     </tr> <?php }
                                     } else { ?> <tr>

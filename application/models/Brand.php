@@ -180,6 +180,15 @@ class Brand extends MyAppModel
         return $arr;
     }
 
+    public static function getBrandReqStatusClassArr()
+    {
+        return array(
+            static::BRAND_REQUEST_PENDING => applicationConstants::CLASS_INFO,
+            static::BRAND_REQUEST_APPROVED => applicationConstants::CLASS_SUCCESS,
+            static::BRAND_REQUEST_CANCELLED => applicationConstants::CLASS_DANGER
+        );
+    }
+
     public static function getBrandName($brandId, $langId, $isActive = true)
     {
         $srch = static::getListingObj($langId, null, $isActive);

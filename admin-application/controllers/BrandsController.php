@@ -178,7 +178,11 @@ class BrandsController extends AdminBaseController
         if ($post['brand_status'] == applicationConstants::YES) {
             $post['brand_active'] = applicationConstants::ACTIVE;
         }
-
+		
+		if ($post['brand_status'] != Brand::BRAND_REQUEST_PENDING) {
+            $post['brand_status_updated_on'] = date('Y-m-d H:i:s');
+        }
+		
         unset($post['brand_id']);
 
         $record = new Brand($brand_id);

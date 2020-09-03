@@ -8,10 +8,6 @@ class OrderCancelRequest extends MyAppModel
     public const CANCELLATION_REQUEST_STATUS_PENDING = 0;
     public const CANCELLATION_REQUEST_STATUS_APPROVED = 1;
     public const CANCELLATION_REQUEST_STATUS_DECLINED = 2;
-    public const CLASS_PENDING = 'warning';
-    public const CLASS_COMPLETED = 'success';
-    public const CLASS_CANCELLED = 'danger';
-
 
     public function __construct($id = 0)
     {
@@ -27,9 +23,9 @@ class OrderCancelRequest extends MyAppModel
     public static function getStatusClassArr()
     {
         return array(
-        static::CANCELLATION_REQUEST_STATUS_PENDING => static::CLASS_PENDING,
-        static::CANCELLATION_REQUEST_STATUS_APPROVED => static::CLASS_COMPLETED,
-        static::CANCELLATION_REQUEST_STATUS_DECLINED => static::CLASS_CANCELLED,
+        static::CANCELLATION_REQUEST_STATUS_PENDING => applicationConstants::CLASS_INFO,
+        static::CANCELLATION_REQUEST_STATUS_APPROVED => applicationConstants::CLASS_SUCCESS,
+        static::CANCELLATION_REQUEST_STATUS_DECLINED => applicationConstants::CLASS_DANGER,
         );
     }
 

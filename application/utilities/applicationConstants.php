@@ -100,6 +100,11 @@ class applicationConstants
     public const LOCATION_STATE = 1;
     public const LOCATION_ZIP = 2;
 
+    public const CLASS_INFO = 'label-info';
+    public const CLASS_SUCCESS = 'label-success';
+    public const CLASS_DANGER = 'label-danger';
+    public const CLASS_WARNING = 'label-warning';
+
     public static function getWeightUnitsArr($langId)
     {
         $langId = FatUtility::int($langId);
@@ -156,6 +161,14 @@ class applicationConstants
             static::NO => Labels::getLabel('LBL_No', $langId)
         );
     }
+    
+    public static function getYesNoClassArr()
+    {
+        return array(
+            static::YES => applicationConstants::CLASS_SUCCESS,
+            static::NO => applicationConstants::CLASS_DANGER
+        );
+    }
 
     public static function getActiveInactiveArr($langId)
     {
@@ -167,6 +180,14 @@ class applicationConstants
         return array(
             static::ACTIVE => Labels::getLabel('LBL_Active', $langId),
             static::INACTIVE => Labels::getLabel('LBL_In-active', $langId)
+        );
+    }
+
+    public static function getActiveInactiveClassArr()
+    {
+        return array(
+            static::ACTIVE => static::CLASS_SUCCESS,
+            static::INACTIVE => static::CLASS_DANGER
         );
     }
 
@@ -425,6 +446,16 @@ class applicationConstants
             static::LOCATION_COUNTRY => Labels::getLabel('LBL_COUNTRY_LEVEL', $langId),
             static::LOCATION_STATE => Labels::getLabel('LBL_STATE_LEVEL', $langId),
             static::LOCATION_ZIP => Labels::getLabel('LBL_POSTAL_CODE_LEVEL', $langId),
+        );
+    }
+
+    public static function getClassArr()
+    {
+        return array(
+            0 => applicationConstants::CLASS_INFO,
+            1 => applicationConstants::CLASS_SUCCESS,
+            2 => applicationConstants::CLASS_DANGER,
+            3 => applicationConstants::CLASS_WARNING
         );
     }
 }

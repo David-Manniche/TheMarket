@@ -31,6 +31,15 @@ class ProductRequest extends MyAppModel
         );
     }
 
+    public static function getStatusClassArr()
+    {
+        return array(
+            static::STATUS_PENDING => applicationConstants::CLASS_INFO,
+            static::STATUS_APPROVED => applicationConstants::CLASS_SUCCESS,
+            static::STATUS_CANCELLED => applicationConstants::CLASS_DANGER,
+        );
+    }
+
     public static function getSearchObject($langId = 0, $deleted = false, $submittedForApproval = false)
     {
         $langId = FatUtility::int($langId);

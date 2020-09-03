@@ -205,7 +205,7 @@ class AddressesController extends LoggedUserController
         $this->set('addrId', $addrId);
         $this->set('slotId', $slotId);
         $this->set('slotDate', $slotDate);
-        $this->_template->addJs(array('js/jquery.datetimepicker.js'), false);      
+        $this->_template->addJs(array('js/jquery.datetimepicker.js'));      
         $this->_template->render(false, false);
     }
     
@@ -219,16 +219,46 @@ class AddressesController extends LoggedUserController
             Message::addErrorMessage(Labels::getLabel('LBL_Invalid_request', $this->siteLangId));
             FatUtility::dieWithError(Message::getHtml());
         }
-        
-        $selectedDate = date('Y-m-d', strtotime($selectedDate));            
-        $day = date('w', strtotime($selectedDate)); 
+
+        $currentDateFormat = FatDate::convertDateFormatFromPhp(
+            FatApp::getConfig('CONF_DATE_FORMAT', FatUtility::VAR_STRING, 'Y-m-d'),
+            FatDate::FORMAT_PHP
+        );
+        $date=date_create_from_format($currentDateFormat, $selectedDate);  
+        $selectedDate = date_format($date, "Y-m-d");   
+        $day = date('w', strtotime($selectedDate));  
         $timeSlot = new TimeSlot();
-        $timeSlots = $timeSlot->timeSlotsByAddressIdAndDate($addressId, $day);
+        $timeSlots = $timeSlot->timeSlotsByAddressIdAndDate($addressId, $day);        
         $this->set('timeSlots', $timeSlots);
         $this->set('selectedDate', $selectedDate);
         $this->set('level', $level);
         $this->set('selectedSlot', $selectedSlot);
         $this->_template->render(false, false, 'addresses/time-slots.php');
+    }
+    
+    public function slotDaysByAddr($addrId)
+    {
+        $addrId = FatUtility::int($addrId);
+        if (1 > $addrId) {
+            $message = Labels::getLabel('MSG_Invalid_Access', $this->siteLangId);
+            if (true === MOBILE_APP_API_CALL) {
+                LibHelper::dieJsonError($message);
+            }
+            Message::addErrorMessage($message);
+            LibHelper::dieJsonError(Message::getHtml());
+        }
+        
+        $timeSlot = new TimeSlot();
+        $slotData = $timeSlot->getTimeSlotByAddressId($addrId);
+        $slotDays = [];
+        foreach($slotData as $data){
+            if (!in_array($data['tslot_day'], $slotDays)) {
+                $slotDays[] = $data['tslot_day'];
+            }
+            
+        }
+        $this->set('slotDays', $slotDays);
+        $this->_template->render(false, false, 'json-success.php');
     }
     
 }

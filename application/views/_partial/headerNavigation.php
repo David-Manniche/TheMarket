@@ -19,7 +19,10 @@ $getOrgUrl = (CONF_DEVELOPMENT_MODE) ? true : false;
                         <div class="vertical-menu">
                             <ul class="menu">
                             <?php
+                            $count = 0;
                             foreach ($headerCategories as $link) {
+                                $count++;
+                                if ($count > 12) { break; }
                                 $navUrl = UrlHelper::generateUrl('category', 'view', array($link['prodcat_id']));
                                 $OrgnavUrl = UrlHelper::generateUrl('category', 'view', array($link['prodcat_id']), '', null, false, $getOrgUrl);
 

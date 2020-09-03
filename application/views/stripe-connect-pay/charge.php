@@ -152,11 +152,6 @@ $paymentIntendId = isset($paymentIntendId) ? $paymentIntendId : '';
                 } else if (result.paymentIntent.status === 'requires_payment_method') {
                     // Authentication failed, prompt the customer to enter another payment method
                     location.href = '<?php echo UrlHelper::generateUrl('custom', 'paymentFailed'); ?>';
-                } else if (result.paymentIntent.status === 'requires_capture') {
-                    $.mbsmessage(langLbl.paymentRequiredCapture, true, 'alert--success');
-                    setTimeout(function(){
-                        location.href = '<?php echo CommonHelper::generateFullUrl('custom', 'paymentSuccess', array($orderId)); ?>';
-                    }, 1500);
                 }
             }
         });

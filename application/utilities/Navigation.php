@@ -4,7 +4,6 @@ class Navigation
 {
     public static function headerTopNavigation($template)
     {
-        $db = FatApp::getDb();
         $siteLangId = CommonHelper::getLangId();
 
         $headerTopNavigationCache = FatCache::get('headerTopNavigation_' . $siteLangId, CONF_HOME_PAGE_CACHE_TIME, '.txt');
@@ -20,13 +19,12 @@ class Navigation
 
     public static function headerNavigation($template)
     {
-        $db = FatApp::getDb();
         $siteLangId = CommonHelper::getLangId();
         $template->set('siteLangId', $siteLangId);
 
         $layout = FatApp::getConfig('CONF_LAYOUT_MEGA_MENU', FatUtility::VAR_INT, 1);
         $includeCategories = ($layout == Navigations::LAYOUT_MEGA_MENU) ? false : true;
-        
+
         $headerNavigationCache = FatCache::get('headerNavigation_' . $siteLangId, CONF_HOME_PAGE_CACHE_TIME, '.txt');
         if ($headerNavigationCache) {
             $headerNavigation = unserialize($headerNavigationCache);
@@ -34,7 +32,7 @@ class Navigation
             $headerNavigation = self::getNavigation(Navigations::NAVTYPE_HEADER, $includeCategories);
             FatCache::set('headerNavigation_' . $siteLangId, serialize($headerNavigation), '.txt');
         }
-        
+
         $isUserLogged = UserAuthentication::isUserLogged();
         if ($isUserLogged) {
             $template->set('userName', ucfirst(CommonHelper::getUserFirstName(UserAuthentication::getLoggedUserAttribute('user_name'))));
@@ -193,8 +191,8 @@ class Navigation
         }
 
         $jsVariables = array(
-        'confirmDelete' => Labels::getLabel('LBL_Do_you_want_to_delete', $siteLangId),
-        'confirmDefault' => Labels::getLabel('LBL_Do_you_want_to_set_default', $siteLangId),
+            'confirmDelete' => Labels::getLabel('LBL_Do_you_want_to_delete', $siteLangId),
+            'confirmDefault' => Labels::getLabel('LBL_Do_you_want_to_set_default', $siteLangId),
         );
 
         $template->set('jsVariables', $jsVariables);
@@ -238,7 +236,7 @@ class Navigation
         if ($headerNavCache) {
             return  unserialize($headerNavCache);
         }
-        
+
         if ($includeCategories) {
             /* SubQuery, Category have products[ */
             $prodSrchObj = new ProductSearch();
@@ -276,24 +274,29 @@ class Navigation
 
             /* ] */
         }
-        
+
         $srch = new NavigationLinkSearch($siteLangId);
         if ($includeCategories) {
             $srch->joinTable('(' . $prodSrchObj->getQuery() . ')', 'LEFT OUTER JOIN', 'qryProducts.prodcat_id = nlink_category_id', 'qryProducts');
             $srch->joinProductCategory();
-            $srch->addMultipleFields(array('nav_id', 'IFNULL( nav_name, nav_identifier ) as nav_name',
-            'IFNULL( nlink_caption, nlink_identifier ) as nlink_caption', 'nlink_type', 'nlink_cpage_id', 'nlink_category_id', 'IFNULL( prodcat_active, ' . applicationConstants::ACTIVE . ' ) as filtered_prodcat_active', 'IFNULL(prodcat_deleted, ' . applicationConstants::NO . ') as filtered_prodcat_deleted', 'IFNULL( cpage_deleted, ' . applicationConstants::NO . ' ) as filtered_cpage_deleted', 'nlink_target', 'nlink_url', 'nlink_login_protected', '(qryProducts.productCounts) as totProductCounts' ));
-            $srch->addDirectCondition("((nlink_type = " . NavigationLinks::NAVLINK_TYPE_CATEGORY_PAGE . " AND nlink_category_id > 0 $catWithProductConditoon ) OR (nlink_type = " . NavigationLinks::NAVLINK_TYPE_CMS . " AND nlink_cpage_id > 0 ) OR  ( nlink_type = " . NavigationLinks::NAVLINK_TYPE_EXTERNAL_PAGE . " ))"); 
+            $srch->addMultipleFields(array(
+                'nav_id', 'IFNULL( nav_name, nav_identifier ) as nav_name',
+                'IFNULL( nlink_caption, nlink_identifier ) as nlink_caption', 'nlink_type', 'nlink_cpage_id', 'nlink_category_id', 'IFNULL( prodcat_active, ' . applicationConstants::ACTIVE . ' ) as filtered_prodcat_active', 'IFNULL(prodcat_deleted, ' . applicationConstants::NO . ') as filtered_prodcat_deleted', 'IFNULL( cpage_deleted, ' . applicationConstants::NO . ' ) as filtered_cpage_deleted', 'nlink_target', 'nlink_url', 'nlink_login_protected', '(qryProducts.productCounts) as totProductCounts'
+            ));
+            $srch->addDirectCondition("((nlink_type = " . NavigationLinks::NAVLINK_TYPE_CATEGORY_PAGE . " AND nlink_category_id > 0 $catWithProductConditoon ) OR (nlink_type = " . NavigationLinks::NAVLINK_TYPE_CMS . " AND nlink_cpage_id > 0 ) OR  ( nlink_type = " . NavigationLinks::NAVLINK_TYPE_EXTERNAL_PAGE . " ))");
             $srch->addHaving('filtered_prodcat_active', '=', applicationConstants::ACTIVE);
             $srch->addHaving('filtered_prodcat_deleted', '=', applicationConstants::NO);
+            $srch->doNotCalculateRecords();
+            $srch->doNotLimitRecords();
         } else {
-            $srch->addDirectCondition("((nlink_type != " . NavigationLinks::NAVLINK_TYPE_CATEGORY_PAGE ."  ) OR (nlink_type = " . NavigationLinks::NAVLINK_TYPE_CMS . " AND nlink_cpage_id > 0 ) OR  ( nlink_type = " . NavigationLinks::NAVLINK_TYPE_EXTERNAL_PAGE . " ))");
-            $srch->addMultipleFields(array('nav_id', 'IFNULL( nav_name, nav_identifier ) as nav_name',
-            'IFNULL( nlink_caption, nlink_identifier ) as nlink_caption', 'nlink_type', 'nlink_cpage_id', 'nlink_category_id', 'IFNULL( cpage_deleted, ' . applicationConstants::NO . ' ) as filtered_cpage_deleted', 'nlink_target', 'nlink_url', 'nlink_login_protected' ));
+            $srch->addDirectCondition("((nlink_type != " . NavigationLinks::NAVLINK_TYPE_CATEGORY_PAGE . "  ) OR (nlink_type = " . NavigationLinks::NAVLINK_TYPE_CMS . " AND nlink_cpage_id > 0 ) OR  ( nlink_type = " . NavigationLinks::NAVLINK_TYPE_EXTERNAL_PAGE . " ))");
+            $srch->addMultipleFields(array(
+                'nav_id', 'IFNULL( nav_name, nav_identifier ) as nav_name',
+                'IFNULL( nlink_caption, nlink_identifier ) as nlink_caption', 'nlink_type', 'nlink_cpage_id', 'nlink_category_id', 'IFNULL( cpage_deleted, ' . applicationConstants::NO . ' ) as filtered_cpage_deleted', 'nlink_target', 'nlink_url', 'nlink_login_protected'
+            ));
+            $srch->setPageSize(10);
         }
-        
-        $srch->doNotCalculateRecords();
-        $srch->doNotLimitRecords();
+
         $srch->joinNavigation();
         $srch->joinContentPages();
 
@@ -303,9 +306,9 @@ class Navigation
         $srch->addCondition('nav_type', '=', $type);
         $srch->addCondition('nlink_deleted', '=', applicationConstants::NO);
         $srch->addCondition('nav_active', '=', applicationConstants::ACTIVE);
-        
+
         $srch->addHaving('filtered_cpage_deleted', '=', applicationConstants::NO);
-        
+
         $isUserLogged = UserAuthentication::isUserLogged();
         if ($isUserLogged) {
             $cnd = $srch->addCondition('nlink_login_protected', '=', NavigationLinks::NAVLINK_LOGIN_BOTH);
@@ -335,7 +338,7 @@ class Navigation
                     $catObj = clone $prodSrchObj;
                     $catObj->addCategoryCondition($row['nlink_category_id']);
                     $categoriesDataArr = ProductCategory::getProdCatParentChildWiseArr($siteLangId, $row['nlink_category_id'], false, false, false, $catObj, false);
-                    $childrenCats = $productCategory ->getCategoryTreeArr($siteLangId, $categoriesDataArr);
+                    $childrenCats = $productCategory->getCategoryTreeArr($siteLangId, $categoriesDataArr);
                     $childrenCats = ($childrenCats) ? $childrenCats[$row['nlink_category_id']]['children'] : array();
                 }
                 $navigation[$previous_nav_id]['pages'][$key]['children'] = $childrenCats;

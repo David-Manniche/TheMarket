@@ -48,7 +48,7 @@ class SellerController extends SellerBaseController
         $srch->setPageSize(2);
 
         $srch->addMultipleFields(
-            array('order_id', 'order_user_id', 'op_selprod_id', 'op_is_batch', 'selprod_product_id', 'order_date_added', 'order_net_amount', 'op_invoice_number', 'totCombinedOrders as totOrders', 'op_selprod_title', 'op_product_name', 'op_id', 'op_qty', 'op_selprod_options', 'op_status_id', 'op_brand_name', 'op_shop_name', 'op_other_charges', 'op_unit_price', 'IFNULL(orderstatus_name, orderstatus_identifier) as orderstatus_name', 'op_tax_collected_by_seller', 'op_selprod_user_id', 'opshipping_by_seller_user_id')
+            array('order_id', 'order_user_id', 'op_selprod_id', 'op_is_batch', 'selprod_product_id', 'order_date_added', 'order_net_amount', 'op_invoice_number', 'totCombinedOrders as totOrders', 'op_selprod_title', 'op_product_name', 'op_id', 'op_qty', 'op_selprod_options', 'op_status_id', 'op_brand_name', 'op_shop_name', 'op_other_charges', 'op_unit_price', 'IFNULL(orderstatus_name, orderstatus_identifier) as orderstatus_name', 'op_tax_collected_by_seller', 'op_selprod_user_id', 'opshipping_by_seller_user_id', 'orderstatus_color_class')
         );
 
         $rs = $srch->getResultSet();
@@ -143,9 +143,12 @@ class SellerController extends SellerBaseController
         $this->set('transactions', $transactions);
         $this->set('returnRequests', $returnRequests);
         $this->set('OrderReturnRequestStatusArr', OrderReturnRequest::getRequestStatusArr($this->siteLangId));
+        $this->set('OrderRetReqStatusClassArr', OrderReturnRequest::getRequestStatusClassArr());
         $this->set('cancellationRequests', $cancellationRequests);
         $this->set('txnStatusArr', Transactions::getStatusArr($this->siteLangId));
+        $this->set('txnStatusClassArr', Transactions::getStatusClassArr());
         $this->set('OrderCancelRequestStatusArr', OrderCancelRequest::getRequestStatusArr($this->siteLangId));
+        $this->set('cancelReqStatusClassArr', OrderCancelRequest::getStatusClassArr());
         $this->set('txnsSummary', $txnsSummary);
         $this->set('notAllowedStatues', $notAllowedStatues);
         $this->set('orders', $orders);
@@ -157,6 +160,7 @@ class SellerController extends SellerBaseController
         $this->set('userParentId', $this->userParentId);
         $this->set('userPrivilege', $this->userPrivilege);
         $this->set('isShopActive', $isShopActive);
+        $this->set('classArr', applicationConstants::getClassArr());
         $this->_template->addJs(array('js/chartist.min.js'));
         $this->_template->addJs('js/slick.min.js');
         $this->_template->render(true, true);
@@ -265,7 +269,7 @@ class SellerController extends SellerBaseController
         $srch->setPageSize($pagesize);
 
         $srch->addMultipleFields(
-            array('order_id', 'order_status', 'order_payment_status', 'order_user_id', 'op_selprod_id', 'op_is_batch', 'selprod_product_id', 'order_date_added', 'order_net_amount', 'op_invoice_number', 'totCombinedOrders as totOrders', 'op_selprod_title', 'op_product_name', 'op_id', 'op_qty', 'op_selprod_options', 'op_brand_name', 'op_shop_name', 'op_other_charges', 'op_unit_price', 'op_tax_collected_by_seller', 'op_selprod_user_id', 'opshipping_by_seller_user_id', 'orderstatus_id', 'IFNULL(orderstatus_name, orderstatus_identifier) as orderstatus_name', 'plugin_code', 'IFNULL(plugin_name, IFNULL(plugin_identifier, "Wallet")) as plugin_name', 'opship.*')
+            array('order_id', 'order_status', 'order_payment_status', 'order_user_id', 'op_selprod_id', 'op_is_batch', 'selprod_product_id', 'order_date_added', 'order_net_amount', 'op_invoice_number', 'totCombinedOrders as totOrders', 'op_selprod_title', 'op_product_name', 'op_id', 'op_qty', 'op_selprod_options', 'op_brand_name', 'op_shop_name', 'op_other_charges', 'op_unit_price', 'op_tax_collected_by_seller', 'op_selprod_user_id', 'opshipping_by_seller_user_id', 'orderstatus_id', 'IFNULL(orderstatus_name, orderstatus_identifier) as orderstatus_name', 'orderstatus_color_class', 'plugin_code', 'IFNULL(plugin_name, IFNULL(plugin_identifier, "Wallet")) as plugin_name', 'opship.*')
         );
 
         $keyword = FatApp::getPostedData('keyword', null, '');
@@ -322,6 +326,7 @@ class SellerController extends SellerBaseController
         $this->set('pageCount', $srch->pages());
         $this->set('recordCount', $srch->recordCount());
         $this->set('postedData', $post);
+        $this->set('classArr', applicationConstants::getClassArr());
         $this->_template->render(false, false);
     }
 
@@ -1592,12 +1597,13 @@ class SellerController extends SellerBaseController
         }
         $taxObj = new TaxRule();
         $rulesData = $taxObj->getRules($taxCatId);
+		$combinedRulesDetails = [];
+		$ruleLocations = [];
         if (!empty($rulesData)) {
             $rulesIds = array_column($rulesData, 'taxrule_id');
             $combinedRulesDetails = $taxObj->getCombinedRuleDetails($rulesIds);
             $ruleLocations = $taxObj->getLocations($taxCatId, true, $this->siteLangId);
         }
-        // CommonHelper::printArray($ruleLocations); die;
         $this->set("combinedRulesDetails", $combinedRulesDetails);
         $this->set('taxCategory', $data['taxcat_identifier']);
         $this->set("rulesData", $rulesData);
@@ -1730,20 +1736,7 @@ class SellerController extends SellerBaseController
         $this->set('siteLangId', $this->siteLangId);
         $this->_template->render(true, true);
     }
-
-    public function imgCropper()
-    {
-        /* if ($imageType==AttachedFile::FILETYPE_SHOP_LOGO) {
-          $attachment = AttachedFile::getAttachment(AttachedFile::FILETYPE_SHOP_LOGO, $shop_id, 0, $lang_id, false);
-          $imageFunction = 'shopLogo';
-          } else {
-          $attachment = AttachedFile::getAttachment(AttachedFile::FILETYPE_SHOP_BANNER, $shop_id, 0, $lang_id, false, $slide_screen);
-          $imageFunction = 'shopBanner';
-          }
-          $this->set('image', UrlHelper::generateUrl('Image', $imageFunction, array($attachment['afile_record_id'], $attachment['afile_lang_id'], '', $attachment['afile_id']))); */
-        $this->_template->render(false, false, 'cropper/index.php');
-    }
-
+	
     public function shopForm($callbackKeyName = '')
     {
         $userId = $this->userParentId;
@@ -2723,6 +2716,7 @@ class SellerController extends SellerBaseController
         $this->set('recordCount', $srch->recordCount());
         $this->set('postedData', $post);
         $this->set('OrderCancelRequestStatusArr', OrderCancelRequest::getRequestStatusArr($this->siteLangId));
+        $this->set('cancelReqStatusClassArr', OrderCancelRequest::getStatusClassArr());
         $this->_template->render(false, false, 'buyer/order-cancellation-request-search.php');
     }
 
@@ -2811,6 +2805,7 @@ class SellerController extends SellerBaseController
         $this->set('postedData', $post);
         $this->set('returnRequestTypeArr', OrderReturnRequest::getRequestTypeArr($this->siteLangId));
         $this->set('OrderReturnRequestStatusArr', OrderReturnRequest::getRequestStatusArr($this->siteLangId));
+        $this->set('OrderRetReqStatusClassArr', OrderReturnRequest::getRequestStatusClassArr());
         $this->_template->render(false, false, 'buyer/order-return-request-search.php');
     }
 
@@ -4038,8 +4033,7 @@ class SellerController extends SellerBaseController
         }
 
         /* if($type == 'CATALOG_PRODUCT'){ */
-        $fld = $frm->addRequiredField(Labels::getLabel('LBL_Brand/Manfacturer', $this->siteLangId), 'brand_name');
-        $fld->htmlAfterField = '<br/><small class="text--small"><a href="javascript:void(0)" onClick="addBrandReqForm(0);">' . Labels::getLabel('LBL_Brand_not_found?_select_other_and_request_for_brand', $this->siteLangId) . '</a></small>';
+        $frm->addRequiredField(Labels::getLabel('LBL_Brand/Manfacturer', $this->siteLangId), 'brand_name');
         $frm->addHiddenField('', 'product_brand_id');
         /* } */
 
@@ -4424,7 +4418,6 @@ class SellerController extends SellerBaseController
         $specSrchObjRs = $specSrchObj->getResultSet();
         $productSpecifications = FatApp::getDb()->fetchAll($specSrchObjRs);
         /* ] */
-
         $this->set('product', $product);
         $this->set('productSpecifications', $productSpecifications);
         $this->_template->render(false, false);

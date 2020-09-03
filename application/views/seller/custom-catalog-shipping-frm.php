@@ -7,7 +7,7 @@ $productFrm->developerTags['fld_default_col'] = 12;
 if (!FatApp::getConfig('CONF_SHIPPED_BY_ADMIN_ONLY', FatUtility::VAR_INT, 0)) {
     $spPackageFld = $productFrm->getField('product_ship_package');
     $spPackageFld->developerTags['col'] = 6;
-	$spPackageFld->htmlAfterField = '<br/><small> <a href="javascript:void(0)" onClick="shippingPackages()">'. Labels::getLabel('LBL_View', $siteLangId) .'</a> ' . Labels::getLabel('LBL_Shipping_Packages', $siteLangId) . ' </small>';
+	$spPackageFld->htmlAfterField = '<br/><small> <a href="javascript:void(0)" onClick="shippingPackages()">'. Labels::getLabel('LBL_Shipping_Packages', $siteLangId) .'</a></small>';
 
     $spProfileFld = $productFrm->getField('shipping_profile');
     $spProfileFld->developerTags['col'] = 6;

@@ -84,6 +84,8 @@ class CustomProductsController extends AdminBaseController
             'preq_user_id' => $res['preq_user_id'],
             'preq_added_on' => $res['preq_added_on'],
             'preq_status' => $res['preq_status'],
+			'preq_requested_on' => $res['preq_requested_on'],
+			'preq_status_updated_on' => $res['preq_status_updated_on'],
             'user_id' => $res['user_id'],
             'user_name' => $res['user_name'],
             'user_parent' => $res['user_parent'],
@@ -563,7 +565,7 @@ class CustomProductsController extends AdminBaseController
         $db = FatApp::getDb();
         $db->startTransaction();
         $prodReqObj = new ProductRequest($preqId);
-        $updateData = array('preq_status' => $status, 'preq_comment' => $post['preq_comment']);
+        $updateData = array('preq_status' => $status, 'preq_comment' => $post['preq_comment'], 'preq_status_updated_on' => date('Y-m-d H:i:s'));
         $prodReqObj->assignValues($updateData);
 
         if (!$prodReqObj->save()) {

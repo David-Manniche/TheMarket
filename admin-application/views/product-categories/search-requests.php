@@ -5,6 +5,7 @@ $arr_flds = array(
         'prodcat_identifier'=>Labels::getLabel('LBL_Category_Name', $adminLangId),
         'prodcat_parent'=>Labels::getLabel('LBL_Parent_category', $adminLangId),
         'shop_name'=>Labels::getLabel('LBL_Requested_BY', $adminLangId),
+		'prodcat_requested_on'=>Labels::getLabel('LBL_Requested_On', $adminLangId),
         'action' => '',
     );
 
@@ -36,7 +37,7 @@ foreach ($arr_listing as $sn => $row) {
             break;
             case 'prodcat_parent':
                 $prodCat = new productCategory();
-                $name = $prodCat->getParentTreeStructure($row['prodcat_id'], 0, '', $adminLangId, false, ProductCategory::REQUEST_PENDING);
+                $name = $prodCat->getParentTreeStructure($row['prodcat_id'], 0, '', $adminLangId, false, -1);
                 $td->appendElement('plaintext', array(), $name, true);
             break;
             case 'prodcat_identifier':
@@ -47,6 +48,9 @@ foreach ($arr_listing as $sn => $row) {
                 } else {
                     $td->appendElement('plaintext', array(), $row[$key], true);
                 }
+                break;
+			case 'prodcat_requested_on':
+                $td->appendElement('plaintext', array(), FatDate::Format($row[$key]), true);
                 break;
             case 'action':
                 if ($canEdit) {

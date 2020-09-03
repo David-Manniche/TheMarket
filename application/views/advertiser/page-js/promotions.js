@@ -217,5 +217,26 @@ $(document).on('change',"select[name='banner_blocation_id']",function(){
             }
         });
 	}
+	
+	togglePromotionStatus = function(e,obj){
+		if(!confirm(langLbl.confirmUpdateStatus)){
+			e.preventDefault();
+			return;
+		}
+		var promotionId = parseInt(obj.value);
+		if( promotionId < 1 ){
+			return false;
+		}
+		data='promotionId='+promotionId;
+		fcom.ajax(fcom.makeUrl('Advertiser','changePromotionStatus'),data,function(res){
+			var ans = $.parseJSON(res);
+			if( ans.status == 1 ){
+				$.mbsmessage(ans.msg, true, 'alert--success');
+			} else {
+				$.mbsmessage(ans.msg, true, 'alert--danger');
+			}
+			/* loadSellerProducts(document.frmSearchSellerProducts); */
+		});
+	};
 
 })();

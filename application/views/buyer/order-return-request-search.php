@@ -60,7 +60,7 @@ foreach ($requests as $sn => $row) {
                 $td->appendElement('plaintext', array(), $txt, true);
                 break;
             case 'orrequest_status':
-                $td->appendElement('plaintext', array(), $OrderReturnRequestStatusArr[$row[$key]], true);
+                $td->appendElement('span', array('class' => 'label label-inline '.$OrderRetReqStatusClassArr[$row[$key]]), $OrderReturnRequestStatusArr[$row[$key]], true);
                 break;
             case 'action':
                 $ul = $td->appendElement("ul", array("class"=>"actions"), '', true);

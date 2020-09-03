@@ -1,4 +1,10 @@
 <?php defined('SYSTEM_INIT') or die('Invalid Usage'); ?>
+<?php 
+    $frm->setFormTagAttribute('action', UrlHelper::generateUrl('TransferbankPay', 'send', array($orderInfo['id'])));
+    $frm->setFormTagAttribute('class', 'form');
+    $frm->developerTags['colClassPrefix'] = 'col-lg-12 col-md-12 col-sm-12 col-xs-';
+    $frm->developerTags['fld_default_col'] = 12;
+?>
 <ul class="transfer-payment-detail">
     <li>
         <i class="icn">
@@ -60,6 +66,7 @@
         </div>
 
     </li>
+    <?php if (!empty($settings['routing'])) { ?>
     <li>
         <i class="icn">
             <svg class="svg">
@@ -72,18 +79,20 @@
         </div>
 
     </li>
-    <li class="notes">
-        <i class="icn">
-            <svg class="svg">
-                <use xlink:href="<?php echo CONF_WEBROOT_URL; ?>images/retina/bank.svg#bank-notes" href="<?php echo CONF_WEBROOT_URL; ?>images/retina/bank.svg#bank-notes"></use>
-            </svg>
-        </i>
-        <div class="lable">
-            <h6><?php echo Labels::getLabel('LBL_OTHER_NOTES', $siteLangId); ?></h6>
-            <?php echo $settings['bank_notes']; ?>
-        </div>
-
-    </li>
+    <?php } ?>
+    <?php if (!empty($settings['bank_notes'])) { ?>
+        <li class="notes">
+            <i class="icn">
+                <svg class="svg">
+                    <use xlink:href="<?php echo CONF_WEBROOT_URL; ?>images/retina/bank.svg#bank-notes" href="<?php echo CONF_WEBROOT_URL; ?>images/retina/bank.svg#bank-notes"></use>
+                </svg>
+            </i>
+            <div class="lable">
+                <h6><?php echo Labels::getLabel('LBL_OTHER_NOTES', $siteLangId); ?></h6>
+                <?php echo $settings['bank_notes']; ?>
+            </div>
+        </li>
+    <?php } ?>
 </ul>
 
 <?php if (!isset($error)) :

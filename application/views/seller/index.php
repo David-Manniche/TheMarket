@@ -307,7 +307,7 @@ $this->includeTemplate('_partial/seller/sellerDashboardNavigation.php'); ?>
                                                 <?php if ($row['op_selprod_options'] != '') { ?>
                                                     <div class="item__specification"><?php echo $row['op_selprod_options']; ?></div>
                                                 <?php } ?>
-                                                <div class="item__specification"> <?php echo Labels::getLabel('Lbl_Payment_Status', $siteLangId)?>: <?php echo $row['orderstatus_name']; ?></div>
+                                                <div class="item__specification"> <span class="label label-inline <?php echo $classArr[$row['orderstatus_color_class']]; ?>"><?php echo $row['orderstatus_name']; ?></span></div>
                                             </div>
                                         </td>
                                         <td>
@@ -348,7 +348,7 @@ $this->includeTemplate('_partial/seller/sellerDashboardNavigation.php'); ?>
                             <?php } ?>
                         </div>
                         <div class="cards-content ">
-                            <table class="table   table-justified">
+                            <table class="table table-justified">
                             <thead>         
                                     <tr class="">
                                         <th><?php echo Labels::getLabel('LBL_Txn._Id', $siteLangId);?></th>
@@ -383,7 +383,7 @@ $this->includeTemplate('_partial/seller/sellerDashboardNavigation.php'); ?>
                                             <div class="txn__comments"> <?php echo $row['utxn_comments']; ?> </div>
                                         </td>
                                         <td>
-                                            <div class="txn__status"> <?php echo $txnStatusArr[$row['utxn_status']]; ?> </div>
+                                            <div class="txn__status"><span class="label label-inline <?php echo $txnStatusClassArr[$row['utxn_status']]?>"><?php echo $txnStatusArr[$row['utxn_status']]; ?></span> </div>
                                         </td>
                                     </tr>
                                     <?php } } else { ?>
@@ -455,7 +455,7 @@ $this->includeTemplate('_partial/seller/sellerDashboardNavigation.php'); ?>
                                             <div class="request__qty"> <?php echo $row['orrequest_qty']; ?> </div>
                                         </td>
                                         <td>
-                                            <div class="request__status"> <?php echo $OrderReturnRequestStatusArr[$row['orrequest_status']]; ?> </div>
+                                            <div class="request__status"> <span class="label label-inline <?php echo $OrderRetReqStatusClassArr[$row['orrequest_status']];?>"><?php echo $OrderReturnRequestStatusArr[$row['orrequest_status']]; ?> </span></div>
                                         </td>
                                         <td> <?php
                                                     $url = UrlHelper::generateUrl('Seller', 'ViewOrderReturnRequest', array($row['orrequest_id'])); ?> <ul class="actions">
@@ -535,19 +535,7 @@ $this->includeTemplate('_partial/seller/sellerDashboardNavigation.php'); ?>
                                             <div class="request__comments"> <?php echo Labels::getLabel('Lbl_Comments', $siteLangId)?>: <?php echo $row['ocrequest_message']; ?> </div>
                                         </td>
                                         <td>
-                                            <?php 
-                                            $canReqClass = "label label-inline";
-                                            if (OrderCancelRequest::CANCELLATION_REQUEST_STATUS_PENDING == $row['ocrequest_status']) {
-                                                $canReqClass .= " label-info";
-                                            } else if (OrderCancelRequest::CANCELLATION_REQUEST_STATUS_APPROVED == $row['ocrequest_status']) {
-                                                $canReqClass .= " label-success";
-                                            } else if (OrderCancelRequest::CANCELLATION_REQUEST_STATUS_DECLINED == $row['ocrequest_status']) {
-                                                $canReqClass .= " label-danger";
-                                            }
-                                            ?>
-                                            <span class="<?php echo $canReqClass; ?>"> 
-                                                <?php echo $OrderCancelRequestStatusArr[$row['ocrequest_status']]; ?>
-                                            </span>
+                                            <span class="label label-inline <?php echo $cancelReqStatusClassArr[$row['ocrequest_status']];?>"> <?php echo $OrderCancelRequestStatusArr[$row['ocrequest_status']]; ?> </span>
                                         </td>
                                     </tr>
                                     <?php } } else { ?>
