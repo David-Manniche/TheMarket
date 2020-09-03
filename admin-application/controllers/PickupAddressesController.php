@@ -45,7 +45,7 @@ class PickupAddressesController extends AdminBaseController
             $stateId = $data['addr_state_id'];
 
             $timeSlot = new TimeSlot();
-            $timeSlots = $timeSlot->getTimeSlotByAddressId($addressId);
+            $timeSlots = $timeSlot->timeSlotsByAddrId($addressId);
             if(!empty($timeSlots)){     
                 foreach($timeSlots as $key=>$slot){
                     $slotData['tslot_day'][$slot['tslot_day']] = $slot['tslot_day'];

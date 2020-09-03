@@ -51,8 +51,7 @@ $(document).ready(function(){
     $('.js-datepicker').datepicker({
         minDate: new Date(),
         dateFormat: 'yy-mm-dd',
-        gotoCurrent : false,
-        beforeShowDay: enableDaysWithSlots,
+        beforeShowDay: availableDates,
         onSelect: function() {  
             calendarSelectedDate = $.datepicker.formatDate('<?php echo $displayDateformat; ?>', $(this).datepicker('getDate'));
             displayDateSlots(false);
@@ -61,10 +60,40 @@ $(document).ready(function(){
     
     displayCalendar();
 });
+    
+displayCalendar = function(){
+    var checkedAddrId = $('input[name="pickup_address"]:checked').val(); 
+    //fcom.updateWithAjax(fcom.makeUrl('Addresses', 'slotDaysByAddr', [checkedAddrId]), '', function (rsp) {
+    fcom.ajax(fcom.makeUrl('Addresses', 'slotDaysByAddr', [checkedAddrId]), '', function (rslt) {
+        var rsp = JSON.parse(rslt); 
+        if (rsp.status == 1) {
+            needToSeeDaysOfWeek.splice(0,needToSeeDaysOfWeek.length); 
+            $.each(rsp.slotDays, function( index, value ) {
+                needToSeeDaysOfWeek.push(value);
+            });
+            $('.js-datepicker').datepicker('refresh');
 
-displayDateSlots = function(displaySlotSelected){
+            var pickUpAddrId = <?php echo $addrId; ?>;
+            if(checkedAddrId == pickUpAddrId){ 
+                $('.js-datepicker').datepicker("setDate", new Date("<?php echo $slotDate; ?>"));
+                displayDateSlots(true);
+            }else{ 
+                if(rsp.activeDate == ''){
+                    $(".js-time-slots").html('');
+                    $('.js-datepicker').datepicker("setDate", null);
+                }else{
+                    $('.js-datepicker').datepicker('option', 'minDate', rsp.activeDate); 
+                    $('.js-datepicker').datepicker("setDate", new Date(rsp.activeDate));
+                    displayDateSlots(false);
+                }
+            }
+        }
+    });
+}
+
+displayDateSlots = function(displaySlotSelected){ 
     $('input[name="timeSlot"]').prop("checked", displaySlotSelected);
-    var selectedDate = $('.js-datepicker').val();
+    var selectedDate = $('.js-datepicker').val();  
     var addressId = $('input[name="pickup_address"]:checked').val();
     var level = <?php echo $level; ?>;
     if(addressId != 'undefined' && selectedDate != ''){ 
@@ -77,31 +106,11 @@ displayDateSlots = function(displaySlotSelected){
         });
     }
 }
-    
-displayCalendar = function(){
-    var checkedAddrId = $('input[name="pickup_address"]:checked').val(); 
-    fcom.updateWithAjax(fcom.makeUrl('Addresses', 'slotDaysByAddr', [checkedAddrId]), '', function (rsp) {
-        needToSeeDaysOfWeek.splice(0,needToSeeDaysOfWeek.length);  
-        for(i=0; i< rsp.slotDays.length; i++){  
-            needToSeeDaysOfWeek.push(rsp.slotDays[i]);
-        }
-        $('.js-datepicker').datepicker('refresh');
-        
-        var pickUpAddrId = <?php echo $addrId; ?>;
-        if(checkedAddrId == pickUpAddrId){ 
-            $('.js-datepicker').datepicker("setDate", new Date("<?php echo $slotDate; ?>"));
-            displayDateSlots(true);
-        }else{
-            $('.js-datepicker').datepicker("setDate", null);
-            $(".js-time-slots").html('');
-        }
-    });
-}
-    
-enableDaysWithSlots = function(date){ 
+
+availableDates = function(date){ 
     var day = date.getDay();   
     for(var i=0;i<needToSeeDaysOfWeek.length;i++){ 
-         if(day == needToSeeDaysOfWeek[i]){
+         if(day == needToSeeDaysOfWeek[i]){ 
                  return [true];
          }
     }   
