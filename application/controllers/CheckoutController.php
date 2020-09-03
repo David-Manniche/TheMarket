@@ -1419,12 +1419,12 @@ class CheckoutController extends MyAppController
         
         $orderPickUpData = '';
         $orderShippingData = '';
+        $shippingData = [];
         if ($fulfillmentType == Shipping::FULFILMENT_PICKUP) {
             $orderPickUpData = $orderObj->getOrderPickUpData($order_id, $this->siteLangId);
         }
         if ($fulfillmentType == Shipping::FULFILMENT_SHIP) {
             $orderShippingData = $orderObj->getOrderShippingData($order_id, $this->siteLangId);
-            $shippingData = [];
             foreach ($orderShippingData as $data){
                 $shippingData[$data['opshipping_code']][] = $data;
             }   
@@ -2127,13 +2127,8 @@ class CheckoutController extends MyAppController
                 $message = Labels::getLabel('MSG_Something_went_wrong,_please_try_after_some_time.', $this->siteLangId);
                 LibHelper::exitWithError($message, true);
             }
-            
-            $currentDateFormat = FatDate::convertDateFormatFromPhp(
-                FatApp::getConfig('CONF_DATE_FORMAT', FatUtility::VAR_STRING, 'Y-m-d'),
-                FatDate::FORMAT_PHP
-            );     
-            $date=date_create_from_format($currentDateFormat, $post['slot_date'][$level]);  
-            $selectedDate = date_format($date, "Y-m-d");   
+
+            $selectedDate = $post['slot_date'][$level];
             $selectedDay = date('w', strtotime($selectedDate)); 
             if($selectedDay != $slotData['tslot_day']){  
                 $message = Labels::getLabel('MSG_Something_went_wrong,_please_try_after_some_time.', $this->siteLangId);

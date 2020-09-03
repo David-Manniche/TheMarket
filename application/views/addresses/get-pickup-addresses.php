@@ -37,27 +37,29 @@ if(!empty($addresses)){
 <?php }else{ ?>
 <h5 class="step-title"><?php echo Labels::getLabel('LBL_No_Pick_Up_address_added', $siteLangId); ?></h5>
 <?php } 
-$dateformat = FatDate::convertDateFormatFromPhp(
+$displayDateformat = FatDate::convertDateFormatFromPhp(
     FatApp::getConfig('CONF_DATE_FORMAT', FatUtility::VAR_STRING, 'Y-m-d'),
     FatDate::FORMAT_JQUERY_UI
 ); 
+
 ?>
 
 <script>
 var needToSeeDaysOfWeek = new Array();
 $(document).ready(function(){  
-    displayCalendar();
     
     $('.js-datepicker').datepicker({
         minDate: new Date(),
-        dateFormat: '<?php echo $dateformat; ?>',
+        dateFormat: 'yy-mm-dd',
         gotoCurrent : false,
         beforeShowDay: enableDaysWithSlots,
-        onSelect: function() {
+        onSelect: function() {  
+            calendarSelectedDate = $.datepicker.formatDate('<?php echo $displayDateformat; ?>', $(this).datepicker('getDate'));
             displayDateSlots(false);
         }
-    })
-     
+    });
+    
+    displayCalendar();
 });
 
 displayDateSlots = function(displaySlotSelected){
@@ -86,8 +88,8 @@ displayCalendar = function(){
         $('.js-datepicker').datepicker('refresh');
         
         var pickUpAddrId = <?php echo $addrId; ?>;
-        if(checkedAddrId == pickUpAddrId){
-            $('.js-datepicker').datepicker("setDate", new Date('<?php echo $slotDate; ?>'));
+        if(checkedAddrId == pickUpAddrId){ 
+            $('.js-datepicker').datepicker("setDate", new Date("<?php echo $slotDate; ?>"));
             displayDateSlots(true);
         }else{
             $('.js-datepicker').datepicker("setDate", null);
@@ -108,7 +110,7 @@ enableDaysWithSlots = function(date){
 
 selectTimeSlot = function (ele, level) {
     var slot_id = $(ele).attr('id');
-    var slot_date = $('.js-datepicker').val(); 
+    var slot_date = $('.js-datepicker').val();
     var addr_id = $("input[name='pickup_address']:checked").val();
     $("input[name='slot_id[" + level + "]']").val(slot_id);
     $("input[name='slot_date[" + level + "]']").val(slot_date);
@@ -116,7 +118,8 @@ selectTimeSlot = function (ele, level) {
 
     var slot_time = $(ele).next().children('.time').html();
     var addrHtml = $("input[name='pickup_address']:checked").next().next('.js-addr').html();
-    var html = "<div>" + addrHtml + "<br/><strong>" + slot_date + ' ' + slot_time + "</strong></div>";
+    var html = "<div>" + addrHtml + "<br/><strong>" + calendarSelectedDate + ' ' + slot_time + "</strong></div>";
+    
     $(".js-slot-addr_" + level).html(html);
     $("#facebox .close").trigger('click');
 }
