@@ -17,18 +17,24 @@ $this->includeTemplate('_partial/seller/sellerDashboardNavigation.php');
                     </button>
                     <div class="dropdown-menu dropdown-menu-fit dropdown-menu-right dropdown-menu-anim" aria-labelledby="dashboardDropdown">
                         <ul class="nav nav-block">
-                            <li class="nav__item">
-                                <a class="dropdown-item nav__link"
-                                    href="<?php echo UrlHelper::generateUrl('Seller', 'customCatalogProductForm'); ?>"><?php echo Labels::getLabel('LBL_Product', $siteLangId);?></a>
-                            </li>
+                            <?php if (FatApp::getConfig('CONF_SELLER_CAN_REQUEST_CUSTOM_PRODUCT', FatUtility::VAR_INT, 0)) { ?>
+                                <li class="nav__item">
+                                    <a class="dropdown-item nav__link"
+                                        href="<?php echo UrlHelper::generateUrl('Seller', 'customCatalogProductForm'); ?>"><?php echo Labels::getLabel('LBL_Marketplace_Product', $siteLangId);?></a>
+                                </li>
+                            <?php } ?>
+                            <?php if (FatApp::getConfig('CONF_BRAND_REQUEST_APPROVAL', FatUtility::VAR_INT, 0)) { ?>
                             <li class="nav__item">
                                 <a class="dropdown-item nav__link" href="javascript:void(0);"
                                     onClick="addBrandReqForm(0)"><?php echo Labels::getLabel('LBL_Brand', $siteLangId);?></a>
                             </li>
+                            <?php } ?>
+                            <?php if (FatApp::getConfig('CONF_PRODUCT_CATEGORY_REQUEST_APPROVAL', FatUtility::VAR_INT, 0)) { ?>
                             <li class="nav__item">
                                 <a class="dropdown-item nav__link" href="javascript:void(0);"
                                     onClick="addCategoryReqForm(0)"><?php echo Labels::getLabel('LBL_Category', $siteLangId);?></a>
                             </li>
+                            <?php } ?>
                         </ul>
                     </div>
                 </div>
@@ -42,21 +48,23 @@ $this->includeTemplate('_partial/seller/sellerDashboardNavigation.php');
                         <div class="cards-content">
                             <?php if ($noRecordFound) { ?>
                                 <div class="row">
-                                    <div class="col-md-4">
-                                        <div class="no-data-found">
-                                            <div class="img">
-                                                <img src="images/retina/no-product-requests.svg" width="70px" height="70px">
-                                            </div>
-                                            <div class="data">
-                                                <h5><?php echo Labels::getLabel('LBL_No_Product_Request', $siteLangId);?></h5>
-                                                <p>Lorem ipsum dolor sit, amet consectetur adipisicing elit. Placeat eos
-                                                    quis amet. </p>
-                                                <div class="action">
-                                                    <a class="btn btn-outline-primary btn-wide" href="<?php echo UrlHelper::generateUrl('Seller', 'customCatalogProductForm'); ?>"><?php echo Labels::getLabel('LBL_New_Product_Request', $siteLangId);?></a>
+                                    <?php if (FatApp::getConfig('CONF_SELLER_CAN_REQUEST_CUSTOM_PRODUCT', FatUtility::VAR_INT, 0)) { ?>
+                                        <div class="col-md-4">
+                                            <div class="no-data-found">
+                                                <div class="img">
+                                                    <img src="images/retina/no-product-requests.svg" width="70px" height="70px">
+                                                </div>
+                                                <div class="data">
+                                                    <h5><?php echo Labels::getLabel('LBL_No_Product_Request', $siteLangId);?></h5>
+                                                    <p>Lorem ipsum dolor sit, amet consectetur adipisicing elit. Placeat eos
+                                                        quis amet. </p>
+                                                    <div class="action">
+                                                        <a class="btn btn-outline-primary btn-wide" href="<?php echo UrlHelper::generateUrl('Seller', 'customCatalogProductForm'); ?>"><?php echo Labels::getLabel('LBL_New_Product_Request', $siteLangId);?></a>
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
-                                    </div>
+                                    <?php } ?>
                                     <div class="col-md-4">
                                         <div class="no-data-found">
                                             <div class="img">
@@ -99,6 +107,14 @@ $this->includeTemplate('_partial/seller/sellerDashboardNavigation.php');
     </div>
 </main>
 <script>
-var ratioTypeSquare = < ? php echo AttachedFile::RATIO_TYPE_SQUARE; ? > ;
-var ratioTypeRectangular = < ? php echo AttachedFile::RATIO_TYPE_RECTANGULAR; ? > ;
+var ratioTypeSquare = <?php echo AttachedFile::RATIO_TYPE_SQUARE; ?> ;
+var ratioTypeRectangular = <?php echo AttachedFile::RATIO_TYPE_RECTANGULAR; ?> ;
+var canRequestCustomProduct = <?php echo FatApp::getConfig('CONF_SELLER_CAN_REQUEST_CUSTOM_PRODUCT', FatUtility::VAR_INT, 0); ?>;
+$(document).ready(function() {
+    if (canRequestCustomProduct) {
+        searchCustomCatalogProducts(document.frmSearchCustomCatalogProducts);
+    } else {
+        searchBrandRequests(document.frmSearchBrandRequest);
+    }
+});
 </script>

@@ -1137,12 +1137,13 @@ class CheckoutController extends MyAppController
                     $pickUpDataRow = $productSelectedPickUpAddresses[$productInfo['selprod_id']];
                     $productPickUpData = array(
                         'opshipping_type' => OrderProduct::TYPE_PICKUP,
+                        'opshipping_by_seller_user_id' => $pickUpDataRow['shipped_by_seller'],
                         'opshipping_pickup_addr_id' => $pickUpDataRow['time_slot_addr_id'],
                         'opshipping_date' => $pickUpDataRow['time_slot_date'],
                         'opshipping_time_slot_from' => $pickUpDataRow['time_slot_from_time'],
                         'opshipping_time_slot_to' => $pickUpDataRow['time_slot_to_time'],
                     );
-                    
+
                     $addressRecordId = Address::getAttributesById($pickUpDataRow['time_slot_addr_id'], 'addr_record_id');
                     $addr = new Address($pickUpDataRow['time_slot_addr_id'], $this->siteLangId);
                     $pickUpAddressArr = $addr->getData($pickUpDataRow['time_slot_type'], $addressRecordId);
@@ -1423,6 +1424,10 @@ class CheckoutController extends MyAppController
         }
         if ($fulfillmentType == Shipping::FULFILMENT_SHIP) {
             $orderShippingData = $orderObj->getOrderShippingData($order_id, $this->siteLangId);
+            $shippingData = [];
+            foreach ($orderShippingData as $data){
+                $shippingData[$data['opshipping_code']][] = $data;
+            }   
         }
        
 
@@ -1450,7 +1455,7 @@ class CheckoutController extends MyAppController
         $this->set('shippingAddressArr', $shippingAddressArr);
         $this->set('orderId', $order_id);
         $this->set('orderPickUpData', $orderPickUpData);
-        $this->set('orderShippingData', $orderShippingData);
+        $this->set('orderShippingData', $shippingData);
          
         if (true === MOBILE_APP_API_CALL) {
             $this->set('products', $cartProducts);
@@ -1461,10 +1466,9 @@ class CheckoutController extends MyAppController
         $this->_template->render(false, false);
     }
 
-    public function paymentTab($order_id, $plugin_id, $sendOtp = 0)
+    public function paymentTab($order_id, $plugin_id)
     {
         $plugin_id = FatUtility::int($plugin_id);
-        $sendOtp = FatUtility::int($sendOtp);
         if (!$plugin_id) {
             FatUtility::dieWithError(Labels::getLabel("MSG_Invalid_Request!", $this->siteLangId));
         }
@@ -1492,49 +1496,20 @@ class CheckoutController extends MyAppController
         }
 
         $methodCode = Plugin::getAttributesById($plugin_id, 'plugin_code');
-        $paymentMethod = Plugin::getAttributesByCode($methodCode, Plugin::ATTRS, $this->siteLangId);
-        
+        // $paymentMethod = Plugin::getAttributesByCode($methodCode, Plugin::ATTRS, $this->siteLangId);
+        $this->plugin = PluginHelper::callPlugin($methodCode, [$this->siteLangId], $error, $this->siteLangId);
+        if (false === $this->plugin) {
+            FatUtility::dieWithError($error);
+        }
+        $paymentMethod = $this->plugin->getSettings();
+
         $frm = '';
-        if ('cashondelivery' == strtolower($methodCode) && 0 < $sendOtp) {
+        if ('cashondelivery' == strtolower($methodCode) && isset($paymentMethod["otp_verification"]) && 0 < $paymentMethod["otp_verification"]) {
             $userObj = new User($user_id);
             $userData = $userObj->getUserInfo([], false, false);
             $userDialCode = $userData['user_dial_code'];
             $phoneNumber = $userData['user_phone'];
-            $phoneWithDial = $userDialCode . $phoneNumber;
-
             $canSendSms = (!empty($phoneNumber) && !empty($userDialCode) && SmsArchive::canSendSms(SmsTemplate::COD_OTP_VERIFICATION));
-
-            $otp = '';
-            if (true == $canSendSms) {
-                $data = $userObj->getOtpDetail();
-                if (empty($data) || strtotime($data['upv_expired_on']) < time()) {
-                    $countryIso = User::getUserMeta($user_id, 'user_country_iso');
-                    $otp = $userObj->prepareUserPhoneOtp($countryIso, $userDialCode, $phoneNumber);
-                    if (false === $canSendSms = $userObj->sendOtp($phoneWithDial, $userData['user_name'], $otp, $this->siteLangId, SmsTemplate::COD_OTP_VERIFICATION)) {
-                        FatUtility::dieWithError($userObj->getError());
-                    }
-                } else {
-                    $otp = $data['upv_otp'];
-                }
-            }
-
-            if (empty($otp)) {
-                $min = pow(10, User::OTP_LENGTH - 1);
-                $max = pow(10, User::OTP_LENGTH) - 1;
-                $otp = mt_rand($min, $max);
-            }
-            if (false === $userObj->prepareUserVerificationCode($userData['credential_email'], $user_id . '_' . $otp)) {
-                FatUtility::dieWithError($userObj->getError());
-            }
-            $replace = [
-                'user_name' => $userData['user_name'],
-                'otp' => $otp,
-                'credential_email' => $userData['credential_email'],
-            ];
-            $email = new EmailHandler();
-            if (false === $email->sendCodOtpVerification($this->siteLangId, $replace)){
-                FatUtility::dieWithError($email->getError());
-            }
             
             $this->set('canSendSms', $canSendSms);
             $this->set('userData', $userData);
@@ -1545,6 +1520,7 @@ class CheckoutController extends MyAppController
         $frm = $this->getPaymentTabForm($this->siteLangId, $methodCode, $frm);
         $controller = $methodCode . 'Pay';
         $frm->setFormTagAttribute('action', UrlHelper::generateUrl($controller, 'charge', array($order_id)));
+        $frm->setFormTagAttribute('data-method', $methodCode);
         $frm->setFormTagAttribute('data-external', UrlHelper::generateUrl($controller, 'getExternalLibraries'));
 
         $frm->fill(
@@ -1555,7 +1531,6 @@ class CheckoutController extends MyAppController
             )
         );
 
-        $this->set('otpSent', $sendOtp);
         $this->set('orderId', $order_id);
         $this->set('pluginId', $plugin_id);
         $this->set('orderInfo', $orderInfo);
@@ -2014,7 +1989,7 @@ class CheckoutController extends MyAppController
         $frm->addHiddenField('', 'order_id');
         $frm->addHiddenField('', 'plugin_id');
         if (empty($externalFrm)) {
-            $frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_CONFIRM_PAYMENT', $langId));
+            $frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_CONFIRM', $langId));
         }
         return $frm;
     }
@@ -2153,7 +2128,13 @@ class CheckoutController extends MyAppController
                 LibHelper::exitWithError($message, true);
             }
             
-            $selectedDay = date('w', strtotime($post['slot_date'][$level]));        
+            $currentDateFormat = FatDate::convertDateFormatFromPhp(
+                FatApp::getConfig('CONF_DATE_FORMAT', FatUtility::VAR_STRING, 'Y-m-d'),
+                FatDate::FORMAT_PHP
+            );     
+            $date=date_create_from_format($currentDateFormat, $post['slot_date'][$level]);  
+            $selectedDate = date_format($date, "Y-m-d");   
+            $selectedDay = date('w', strtotime($selectedDate)); 
             if($selectedDay != $slotData['tslot_day']){  
                 $message = Labels::getLabel('MSG_Something_went_wrong,_please_try_after_some_time.', $this->siteLangId);
                 LibHelper::exitWithError($message, true);
@@ -2176,18 +2157,36 @@ class CheckoutController extends MyAppController
                         continue;
                     }
                     
+                    /* get Product Data[ */
+                    $prodSrch = new ProductSearch();
+                    $prodSrch->setDefinedCriteria();
+                    $prodSrch->joinProductToCategory();
+                    $prodSrch->joinProductShippedBy();
+                    $prodSrch->joinProductFreeShipping();
+                    $prodSrch->joinSellerSubscription();
+                    $prodSrch->addSubscriptionValidCondition();
+                    $prodSrch->doNotCalculateRecords();
+                    $prodSrch->doNotLimitRecords();
+                    $prodSrch->addCondition('selprod_deleted', '=', applicationConstants::NO);
+                    $prodSrch->addCondition('selprod_id', '=', $cartval['selprod_id']);                    
+                    $prodSrch->addMultipleFields(array('selprod_id', 'product_seller_id', 'psbs_user_id as shippedBySellerId'));
+                    $productRs = $prodSrch->getResultSet();
+                    $productInfo = FatApp::getDb()->fetch($productRs);
+                    /* ] */     
+                    
                     $pickupAddressArr[$cartval['selprod_id']] = array(
-                        'selprod_id' => $cartval['selprod_id'],                       
+                        'selprod_id' => $cartval['selprod_id'], 
+                        'shipped_by_seller' => Product::isShippedBySeller($cartval['selprod_user_id'], $productInfo['product_seller_id'], $productInfo['shippedBySellerId']),
                         'time_slot_addr_id' => $slotData['tslot_record_id'],
                         'time_slot_id' => $slotData['tslot_id'],
                         'time_slot_type' => $slotData['tslot_type'],
                         'time_slot_from_time' => $slotData['tslot_from_time'],
                         'time_slot_to_time' => $slotData['tslot_to_time'],
-                        'time_slot_date' => date('Y-m-d', strtotime($post['slot_date'][$level])),
+                        'time_slot_date' => $selectedDate,
                     );
                 }
             }
-        }
+        } 
 
         $this->cartObj->setProductPickUpAddresses($pickupAddressArr);
         $this->set('msg', Labels::getLabel('MSG_Pickup_Method_selected_successfully.', $this->siteLangId));
@@ -2269,7 +2268,6 @@ class CheckoutController extends MyAppController
         $userData = $userObj->getUserInfo([], false, false);
         $userDialCode = $userData['user_dial_code'];
         $phoneNumber = $userData['user_phone'];
-        $phoneWithDial = $userDialCode . $phoneNumber;
 
         $canSendSms = (!empty($phoneNumber) && !empty($userDialCode) && SmsArchive::canSendSms(SmsTemplate::COD_OTP_VERIFICATION));
 
@@ -2359,8 +2357,12 @@ class CheckoutController extends MyAppController
     {
         $orderId = FatApp::getPostedData('order_id', FatUtility::VAR_STRING, '');
         $order = new Orders();
-        $orderShippingData = $order->getOrderShippingData($orderId, $this->siteLangId);        
-        $this->set('orderShippingData', $orderShippingData);
+        $orderShippingData = $order->getOrderShippingData($orderId, $this->siteLangId);
+        $shippingData = [];
+        foreach ($orderShippingData as $data){
+            $shippingData[$data['opshipping_code']][] = $data;
+        }   
+        $this->set('orderShippingData', $shippingData);
         $this->_template->render(false, false);
     }
 }

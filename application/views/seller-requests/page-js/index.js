@@ -1,7 +1,3 @@
-$(document).ready(function() {
-    searchCustomCatalogProducts(document.frmSearchCustomCatalogProducts);
-});
-
 (function() {	
     var runningAjaxReq = false;
 	var dv = '#listing';

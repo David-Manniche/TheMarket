@@ -37,7 +37,7 @@ foreach ($arr_listing as $sn => $row) {
             break;
             case 'prodcat_parent':
                 $prodCat = new productCategory();
-                $name = $prodCat->getParentTreeStructure($row['prodcat_id'], 0, '', $adminLangId, false, ProductCategory::REQUEST_PENDING);
+                $name = $prodCat->getParentTreeStructure($row['prodcat_id'], 0, '', $adminLangId, false, -1);
                 $td->appendElement('plaintext', array(), $name, true);
             break;
             case 'prodcat_identifier':

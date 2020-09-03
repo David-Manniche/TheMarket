@@ -853,7 +853,7 @@ class UserPrivilege
 	
 	public function canViewSellerRequests($sellerId = 0, $returnResult = false)
     {
-        if (FatApp::getConfig('CONF_SHIPPED_BY_ADMIN_ONLY', FatUtility::VAR_INT, 0) == applicationConstants::YES) {
+        if (!((FatApp::getConfig('CONF_SELLER_CAN_REQUEST_CUSTOM_PRODUCT', FatUtility::VAR_INT, 0)) || (FatApp::getConfig('CONF_BRAND_REQUEST_APPROVAL', FatUtility::VAR_INT, 0)) || (FatApp::getConfig('CONF_PRODUCT_CATEGORY_REQUEST_APPROVAL', FatUtility::VAR_INT, 0)))) {
             return $this->returnFalseOrDie($returnResult);
         }
         return $this->checkPermission($sellerId, static::SECTION_SELLER_REQUESTS, static::PRIVILEGE_READ, $returnResult);
@@ -861,7 +861,7 @@ class UserPrivilege
 
     public function canEditSellerRequests($sellerId = 0, $returnResult = false)
     {
-        if (FatApp::getConfig('CONF_SHIPPED_BY_ADMIN_ONLY', FatUtility::VAR_INT, 0) == applicationConstants::YES) {
+        if (!((FatApp::getConfig('CONF_SELLER_CAN_REQUEST_CUSTOM_PRODUCT', FatUtility::VAR_INT, 0)) || (FatApp::getConfig('CONF_BRAND_REQUEST_APPROVAL', FatUtility::VAR_INT, 0)) || (FatApp::getConfig('CONF_PRODUCT_CATEGORY_REQUEST_APPROVAL', FatUtility::VAR_INT, 0)))) {
             return $this->returnFalseOrDie($returnResult);
         }
         return $this->checkPermission($sellerId, static::SECTION_SELLER_REQUESTS, static::PRIVILEGE_WRITE, $returnResult);

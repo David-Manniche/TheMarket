@@ -56,9 +56,6 @@ foreach ($vendorOrdersList as $sn=>$row){  /* CommonHelper::printArray($row); */
 			break;
             case 'op_status_id':
                 $status = $row['orderstatus_name'];
-                if ($row['order_payment_status'] == Orders::ORDER_PAYMENT_DETAINED) {
-                    $status .= ' (' . Labels::getLabel('MSG_DETAINED', $adminLangId) . ')';
-                }
 				$td->appendElement('plaintext', array(), $status, true);
 			break;
             case 'order_date_added':
@@ -74,7 +71,7 @@ foreach ($vendorOrdersList as $sn=>$row){  /* CommonHelper::printArray($row); */
 					$td->appendElement('a', array('href'=>UrlHelper::generateUrl('SellerOrders','CancelOrder',array($row['op_id'])),'class'=>'btn btn-clean btn-sm btn-icon','title'=>Labels::getLabel('LBL_Cancel_Order',$adminLangId)),"<i class='fas fa-times'></i>", true);
                 }
                 $shipBySeller = CommonHelper::canAvailShippingChargesBySeller($row['op_selprod_user_id'], $row['opshipping_by_seller_user_id']);
-                if (!$shipBySeller && true === $canShipByPlugin && ('CashOnDelivery' == $row['plugin_code'] || Orders::ORDER_PAYMENT_PAID == $row['order_payment_status'] || Orders::ORDER_PAYMENT_DETAINED == $row['order_payment_status'])) {
+                if (!$shipBySeller && true === $canShipByPlugin && ('CashOnDelivery' == $row['plugin_code'] || Orders::ORDER_PAYMENT_PAID == $row['order_payment_status'])) {
                     if (empty($row['opship_response']) && empty($row['opship_tracking_number'])) {
                         $td->appendElement('a', array('href'=>'javascript:void(0)', 'onclick' => 'generateLabel("' . $row['order_id'] . '", ' . $row['op_id'] . ')','class'=>'btn btn-clean btn-sm btn-icon','title'=>Labels::getLabel('LBL_GENERATE_LABEL',$adminLangId)),'<i class="fas fa-file-download"></i>', true);
                     } elseif (!empty($row['opship_response'])) {

@@ -87,13 +87,8 @@ foreach ($orders as $sn => $order) {
                     $pMethod = " - " . $order['plugin_name'] ;
                 }
                 $txt = $order['orderstatus_name'] . $pMethod;
-                if ($order['order_payment_status'] == Orders::ORDER_PAYMENT_DETAINED) {
-                    $txt .= ' (' . Labels::getLabel('MSG_DETAINED', $siteLangId) . ')';
-                }
-                $td->appendElement('plaintext', array(), $txt, true);
+                $td->appendElement('span', array('class' => 'label label-inline '. $classArr[$order['orderstatus_color_class']]), $txt . '<br>', true);
                 break;
-
-
             case 'action':
                 $ul = $td->appendElement("ul", array("class"=>"actions"), '', true);
 

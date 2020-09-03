@@ -49,7 +49,7 @@ $rewardPoints = UserRewardBreakup::rewardPointBalance(UserAuthentication::getLog
                 <div class="review-block__content" role="cell">  
                     <div class="delivery-address"> 
                         <?php foreach($orderPickUpData as $address) { ?>
-                            <p><strong><?php echo $address['op_shop_name']; ?></strong></p>
+                            <p><strong><?php echo ($address['opshipping_by_seller_user_id'] > 0) ? $address['op_shop_name'] : FatApp::getConfig('CONF_WEBSITE_NAME_' . $siteLangId, null, ''); ?></strong></p>
                             <p><?php echo ( mb_strlen($address['oua_address1'] ) > 0 ) ? $address['oua_address1'] : '';?>
                             <?php echo ( mb_strlen($address['oua_address2'] ) > 0 ) ? $address['oua_address2'] . '<br>' : '';?>
                             <?php echo ( mb_strlen($address['oua_city']) > 0 ) ? $address['oua_city'] . ',' : '';?>
@@ -81,24 +81,26 @@ $rewardPoints = UserRewardBreakup::rewardPointBalance(UserAuthentication::getLog
                 </div>
                 <div class="review-block__content" role="cell">  
                     <div class="delivery-address"> 
-                    <?php foreach($orderShippingData as $data) { 
-                        $productUrl = UrlHelper::generateUrl('Products', 'View', array($data['op_selprod_id']));
-                    ?>
-                        <div class="product-profile">
-                            <div class="product-profile__thumbnail">
-                                <a href="<?php echo $productUrl;?>">
-                                    <img class="img-fluid" data-ratio="3:4"
-                                        src="<?php echo UrlHelper::getCachedUrl(UrlHelper::generateFileUrl('image', 'product', array($data['selprod_product_id'], "THUMB", $data['op_selprod_id'], 0, $siteLangId)), CONF_IMG_CACHE_TIME, '.jpg'); ?>" alt="<?php echo $data['op_selprod_title']; ?>" title="<?php echo $data['op_selprod_title']; ?>">
-                                </a>
-                            </div>
-                            <div class="product-profile__data">
-                                <div class="title"><?php echo $data['opshipping_label']; ?></div>
-                            </div>
+                         <div class="product-profile__thumbnail">
+                    <?php foreach($orderShippingData as $shipData) { ?>
+                        <?php foreach($shipData as $data) { 
+                            $productUrl = UrlHelper::generateUrl('Products', 'View', array($data['op_selprod_id']));
+                        ?>
+                            <a href="<?php echo $productUrl;?>">
+                                <img class="img-fluid" data-ratio="3:4"
+                                    src="<?php echo UrlHelper::getCachedUrl(UrlHelper::generateFileUrl('image', 'product', array($data['selprod_product_id'], "THUMB", $data['op_selprod_id'], 0, $siteLangId)), CONF_IMG_CACHE_TIME, '.jpg'); ?>" alt="<?php echo $data['op_selprod_title']; ?>" title="<?php echo $data['op_selprod_title']; ?>">
+                            </a>
+                        <?php } ?>
+                             </div>
+                        <div class="product-profile__data">
+                            <div class="title"><?php echo $data['opshipping_label']; ?></div>
                         </div>
                         <?php if (count($orderShippingData) > 1) { ?>
                             <a class="plus-more" href="javascript:void(0);" onClick="orderShippingData('<?php echo $orderId; ?>')"><?php echo '+ '.Labels::getLabel('LBL_More', $siteLangId); ?></a>
-                        <?php break; } ?>
-                    <?php } ?>
+                        <?php }                     
+                    break; 
+                    } 
+                    ?>
                     </div>
                 </div>
                 <div class="review-block__link" role="cell">

@@ -50,7 +50,7 @@ if (!empty($orderDetail["thirdPartyorderInfo"]) && isset($orderDetail["thirdPart
                             <a href="javascript:void(0)" onclick="frames['frame'].print()" class="btn btn-outline-primary btn-sm no-print" title="<?php echo Labels::getLabel('LBL_Print', $siteLangId); ?>">
                                 <i class="fas fa-print"></i>
                             </a>
-                            <?php if ($shippedBySeller && true === $canShipByPlugin && ('CashOnDelivery' == $orderDetail['plugin_code'] || Orders::ORDER_PAYMENT_PAID == $orderDetail['order_payment_status'] || Orders::ORDER_PAYMENT_DETAINED == $orderDetail['order_payment_status'])) {
+                            <?php if ($shippedBySeller && true === $canShipByPlugin && ('CashOnDelivery' == $orderDetail['plugin_code'] || Orders::ORDER_PAYMENT_PAID == $orderDetail['order_payment_status'])) {
                                 $opId = $orderDetail['op_id'];
                                 if (empty($orderDetail['opship_response']) && empty($orderDetail['opship_tracking_number'])) {
                                     $orderId = $orderDetail['order_id']; ?>

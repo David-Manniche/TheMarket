@@ -594,21 +594,6 @@ $("document").ready(function () {
         });
     }
 
-    selectTimeSlot = function (ele, level) {
-        var slot_id = $(ele).attr('id');
-        var slot_date = $('.js-datepicker').val(); 
-        var addr_id = $("input[name='pickup_address']:checked").val();
-        $("input[name='slot_id[" + level + "]']").val(slot_id);
-        $("input[name='slot_date[" + level + "]']").val(slot_date);
-        $(".js-slot-addr-"+level).attr('data-addr-id', addr_id);
-
-        var slot_time = $(ele).next().children('.time').html();
-        var addrHtml = $("input[name='pickup_address']:checked").next().next('.js-addr').html();
-        var html = "<div>" + addrHtml + "<br/><strong>" + slot_date + ' ' + slot_time + "</strong></div>";
-        $(".js-slot-addr_" + level).html(html);
-        $("#facebox .close").trigger('click');
-    }
-
     setUpPickup = function () {
         if (!checkLogin()) {
             return false;
@@ -648,11 +633,16 @@ $("document").ready(function () {
 
     /* Phone/Email Verification for COD */
     validateOtp = function (frm){
-		if (!$(frm).validate()) return;	
+        if (!$(frm).validate()) return;	
         var data = fcom.frmData(frm);
+        var method = $(frm).data('method');
+        var orderId = $(frm).find('input[name="order_id"]').val();
 		fcom.ajax(fcom.makeUrl('Checkout', 'validateOtp'), data, function(t) {
             t = $.parseJSON(t);						
             if (1 == t.status) {
+                if ('undefined' != typeof method) {
+                    $(frm).attr('action', fcom.makeUrl(method + 'Pay', 'charge', [orderId]));
+                }
                 $.mbsmessage(t.msg, false, 'alert--success');
                 $('.successOtp-js').removeClass('d-none');
                 $('.otpBlock-js').addClass('d-none');
@@ -661,17 +651,23 @@ $("document").ready(function () {
                 $.mbsmessage(t.msg, false, 'alert--danger');
                 invalidOtpField();
             }
-        });	
+        });
         return false;
     };
     
-    resendOtp = function (){
+    resendOtp = function (frm = ''){
         $.mbsmessage(langLbl.processing, false, 'alert--process');
-		fcom.ajax(fcom.makeUrl( 'Checkout', 'resendOtp'), '', function(t) {
+		fcom.ajax(fcom.makeUrl('Checkout', 'resendOtp'), '', function(t) {
             t = $.parseJSON(t);
             if(typeof t.status != 'undefined' &&  1 > t.status){
                 $.mbsmessage(t.msg, false, 'alert--danger');
                 return false
+            }
+            $(".otpVal-js").val('');
+            if ('' != frm) {
+               $(frm).attr('onsubmit', 'validateOtp(this); return(false);');
+                $('input[name="btn_submit"]', frm).val(langLbl.proceed);
+                $(".otpVal-js").removeAttr('disabled');
             }
             $.mbsmessage(t.msg, false, 'alert--success');
             startOtpInterval('', "showElements");

@@ -168,7 +168,7 @@ $this->includeTemplate('_partial/buyerDashboardNavigation.php'); ?>
                                             <div class="item__specification">
                                                 <span class="item__price"><?php echo CommonHelper::displayMoneyFormat(CommonHelper::orderProductAmount($row)) ; ?></span>
                                                 <br>
-                                                <span><?php echo $row['orderstatus_name']; ?>
+                                                <span class="label label-inline <?php echo $classArr[$row['orderstatus_color_class']]; ?>"><?php echo $row['orderstatus_name']; ?></span>
                                             </div>
                                         </td>
                                         <td>

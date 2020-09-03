@@ -2,7 +2,7 @@
 
 class OrdersController extends AdminBaseController
 {
-    private $shippingService = '';
+    private $shippingService;
     public function __construct($action)
     {
         $ajaxCallArray = array();
@@ -15,6 +15,8 @@ class OrdersController extends AdminBaseController
         $this->canEdit = $this->objPrivilege->canEditOrders($this->admin_id, true);
         $this->set("canView", $this->canView);
         $this->set("canEdit", $this->canEdit);
+
+        $this->shippingService = (object) [];
     }
 
     /**
@@ -410,5 +412,65 @@ class OrdersController extends AdminBaseController
         $fld_cancel = $frm->addButton("", "btn_clear", Labels::getLabel('LBL_Clear_Search', $this->adminLangId));
         $fld_submit->attachField($fld_cancel);
         return $frm;
+    }
+
+    public function approvePayment(int $orderPaymentId)
+    {
+        $orederObj = new Orders();
+        $result = current($orederObj->getOrderPayments(['id' => $orderPaymentId]));
+        if (!empty($result)) {
+            $db = FatApp::getDb();
+            $db->startTransaction();
+            if (!$db->updateFromArray(
+                Orders::DB_TBL,
+                array('order_payment_status' => Orders::ORDER_PAYMENT_PAID, 'order_date_updated' => date('Y-m-d H:i:s')),
+                array('smt' => 'order_id = ? ', 'vals' => array($result['opayment_order_id']))
+            )) {
+                $db->rollbackTransaction();
+                FatUtility::dieJsonError($db->getError());
+            } 
+
+            if (!$db->updateFromArray(
+                Orders::DB_TBL_ORDER_PAYMENTS,
+                array('opayment_txn_status' => Orders::ORDER_PAYMENT_PAID),
+                array('smt' => 'opayment_id = ? ', 'vals' => array($orderPaymentId))
+            )) {
+                $db->rollbackTransaction();
+                FatUtility::dieJsonError($db->getError());
+            } 
+        }
+        $db->commitTransaction();
+        $this->set('msg', Labels::getLabel("MSG_APPROVED", $this->adminLangId));
+        $this->_template->render(false, false, 'json-success.php');
+    }
+
+    public function rejectPayment(int $orderPaymentId)
+    {
+        $orederObj = new Orders();
+        $result = current($orederObj->getOrderPayments(['id' => $orderPaymentId]));
+        if (!empty($result)) {
+            $db = FatApp::getDb();
+            $db->startTransaction();
+            if (!$db->updateFromArray(
+                Orders::DB_TBL,
+                array('order_payment_status' => Orders::ORDER_PAYMENT_CANCELLED, 'order_date_updated' => date('Y-m-d H:i:s')),
+                array('smt' => 'order_id = ? ', 'vals' => array($result['opayment_order_id']))
+            )) {
+                $db->rollbackTransaction();
+                FatUtility::dieJsonError($db->getError());
+            } 
+
+            if (!$db->updateFromArray(
+                Orders::DB_TBL_ORDER_PAYMENTS,
+                array('opayment_txn_status' => Orders::ORDER_PAYMENT_CANCELLED),
+                array('smt' => 'opayment_id = ? ', 'vals' => array($orderPaymentId))
+            )) {
+                $db->rollbackTransaction();
+                FatUtility::dieJsonError($db->getError());
+            } 
+        }
+        $db->commitTransaction();
+        $this->set('msg', Labels::getLabel("MSG_REJECTED", $this->adminLangId));
+        $this->_template->render(false, false, 'json-success.php');
     }
 }
