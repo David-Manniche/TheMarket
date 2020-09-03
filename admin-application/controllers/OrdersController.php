@@ -431,14 +431,25 @@ class OrdersController extends AdminBaseController
             } 
 
             if (!$db->updateFromArray(
-                Orders::DB_TBL_ORDER_PAYMENTS,
-                array('opayment_txn_status' => Orders::ORDER_PAYMENT_PAID),
-                array('smt' => 'opayment_id = ? ', 'vals' => array($orderPaymentId))
+                    Orders::DB_TBL_ORDER_PAYMENTS,
+                    array('opayment_txn_status' => Orders::ORDER_PAYMENT_PAID),
+                    array('smt' => 'opayment_id = ? ', 'vals' => array($orderPaymentId))
+                )
+            ) {
+                $db->rollbackTransaction();
+                FatUtility::dieJsonError($db->getError());
+            }
+
+            if (!$db->updateFromArray(
+                Orders::DB_TBL_ORDER_PRODUCTS,
+                array('op_status_id' => FatApp::getConfig("CONF_DEFAULT_PAID_ORDER_STATUS")),
+                array('smt' => 'op_order_id = ? ', 'vals' => array($result['opayment_order_id']))
             )) {
                 $db->rollbackTransaction();
                 FatUtility::dieJsonError($db->getError());
-            } 
+            }
         }
+
         $db->commitTransaction();
         $this->set('msg', Labels::getLabel("MSG_APPROVED", $this->adminLangId));
         $this->_template->render(false, false, 'json-success.php');
@@ -467,7 +478,16 @@ class OrdersController extends AdminBaseController
             )) {
                 $db->rollbackTransaction();
                 FatUtility::dieJsonError($db->getError());
-            } 
+            }
+
+            if (!$db->updateFromArray(
+                Orders::DB_TBL_ORDER_PRODUCTS,
+                array('op_status_id' => FatApp::getConfig("CONF_DEFAULT_CANCEL_ORDER_STATUS")),
+                array('smt' => 'op_order_id = ? ', 'vals' => array($result['opayment_order_id']))
+            )) {
+                $db->rollbackTransaction();
+                FatUtility::dieJsonError($db->getError());
+            }
         }
         $db->commitTransaction();
         $this->set('msg', Labels::getLabel("MSG_REJECTED", $this->adminLangId));

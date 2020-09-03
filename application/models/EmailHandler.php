@@ -2953,4 +2953,31 @@ class EmailHandler extends FatModel
         }
         return true;
     }
+    
+    /**
+     * sendTransferBankNotification - This will trigger once buyer submitted bank transfer detail for order.
+     *
+     * @param  mixed $langId
+     * @param  mixed $d
+     * @return bool
+     */
+    public function sendTransferBankNotification($langId, $d)
+    {
+        $tpl = 'ADMIN_ORDER_PAYMENT_TRANSFERRED_TO_BANK';
+        $vars = array(
+            '{USER_NAME}' => $d['user_name'],
+            '{ORDER_ID}' => $d['order_id'],
+            '{PAYMENT_METHOD}' => $d['payment_method'],
+            '{TRANSACTION_ID}' => $d['transaction_id'],
+            '{AMOUNT}' => $d['amount'],
+            '{COMMENTS}' => $d['comments'],
+        );
+        
+        if (!$this->sendMailToAdminAndAdditionalEmails($tpl, $vars, static::NO_ADDITIONAL_ALERT, static::ONLY_SUPER_ADMIN, $langId)) {
+            return false;
+        }
+        
+        $this->sendSms($tpl, FatApp::getConfig('CONF_SITE_PHONE'), $vars, $langId);
+        return true;
+    }
 }

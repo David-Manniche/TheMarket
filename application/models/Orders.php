@@ -2090,7 +2090,6 @@ class Orders extends MyAppModel
         }
 
         $srch = new SearchBase(static::DB_TBL_ORDER_PAYMENTS, 'opayment');
-
         foreach ($criteria as $key => $val) {
             if (strval($val) == '') {
                 continue;

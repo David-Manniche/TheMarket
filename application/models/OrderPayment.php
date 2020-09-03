@@ -129,7 +129,6 @@ class OrderPayment extends Orders
     {
         $paymentOrderId = $this->paymentOrderId;
         $defaultSiteLangId = FatApp::getConfig('conf_default_site_lang');
-
         $orderInfo = $this->attributes;
         if (!empty($orderInfo)) {
             /* if(isset($_SESSION['subscription_shopping_cart']["order_id"]) && ($orderInfo['order_id'] == $_SESSION['subscription_shopping_cart']["order_id"])){
