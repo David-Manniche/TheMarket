@@ -503,7 +503,7 @@
 						<li><a class="active" rel="tabs_01" href="javascript:void(0)" onClick="searchStatistics('statistics',this)"><i class="icon ion-arrow-graph-up-right"></i>
 								<?php echo Labels::getLabel("LBL_Statistics", $adminLangId); ?></a></li>
 						<li><a rel="tabs_02" href="javascript:void(0)" onClick="searchStatistics('sellerproducts',this)"><i class="icon ion-bag"></i>
-								<?php echo Labels::getLabel("LBL_Seller_Products", $adminLangId); ?></a></li>
+								<?php echo Labels::getLabel("LBL_Product_Inventories", $adminLangId); ?></a></li>
 						<li><a rel="tabs_03" href="javascript:void(0)" onClick="searchStatistics('shops',this)"><i class="icon ion-ios-cart"></i>
 								<?php echo Labels::getLabel("LBL_Shops", $adminLangId); ?></a></li>
 						<li><a rel="tabs_04" href="javascript:void(0)" onClick="searchStatistics('signups',this)"><i class="icon ion-android-person"></i>
@@ -522,7 +522,7 @@
 						<!-- ] -->
 						<!-- Seller Products[ -->
 						<span class="togglehead" rel="tabs_02">
-							<?php echo Labels::getLabel("LBL_Seller_Products", $adminLangId); ?></span>
+							<?php echo Labels::getLabel("LBL_Product_Inventories", $adminLangId); ?></span>
 						<div id="tabs_02" class="tabs_panel"></div>
 						<!-- ] -->
 						<!--Shops List[ -->

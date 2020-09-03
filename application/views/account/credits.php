@@ -112,7 +112,7 @@ $cancelBtnFld->developerTags['noCaptionTag'] = true;
                                             $buttonFld->setFieldTagAttribute('class', 'btn-block block-on-mobile');
                                             $buttonFld->developerTags['noCaptionTag'] = true;
 											$buttonFld->developerTags['col'] = 5;
-                                            $buttonFld->setFieldTagAttribute('class', "btn btn-primary");
+                                            $buttonFld->setFieldTagAttribute('class', "btn btn-primary btn-block");
                                             echo $frmRechargeWallet->getFormHtml(); ?>
                                         </div>
                                     </div>
@@ -121,7 +121,7 @@ $cancelBtnFld->developerTags['noCaptionTag'] = true;
                             </div>
                         </div>
                     </div>
-                    <div class="gap"></div>
+                   
                 </div>
             </div>
             <div class="row mb-4 d-none withdrawForm">
@@ -135,9 +135,10 @@ $cancelBtnFld->developerTags['noCaptionTag'] = true;
             <div class="row">
                 <div class="col-md-12">
                                    <div class="cards">
+                                       <div class="cards-header"><h5 class="cards-title"><?php echo Labels::getLabel('LBL_Search_Transactions', $siteLangId);?></h5></div>
                                        <div class="cards-content">
                                        <div class="replaced">
-                                        <h5 class="cards-title mb-2"><?php echo Labels::getLabel('LBL_Search_Transactions', $siteLangId);?></h5>
+                                        
                                         <?php
                                         $submitFld = $frmSrch->getField('btn_submit');
                                         $submitFld->setFieldTagAttribute('class', 'btn btn-primary btn-block ');
@@ -158,7 +159,7 @@ $cancelBtnFld->developerTags['noCaptionTag'] = true;
 
                         <div class="cards-content">
                             <div id="creditListing"><?php echo Labels::getLabel('LBL_Loading..', $siteLangId); ?></div>
-                            <span class="gap"></span>
+                             
                         </div>
                     </div>
                 </div>
