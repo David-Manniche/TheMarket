@@ -146,9 +146,9 @@ $paymentIntendId = isset($paymentIntendId) ? $paymentIntendId : '';
                 if (result.paymentIntent.status === 'succeeded') {
                     $.mbsmessage(langLbl.paymentSucceeded, true, 'alert--success');
                     setTimeout(function(){
-                        location.href = '<?php echo CommonHelper::generateFullUrl('custom', 'paymentSuccess', array($orderId)); ?>';
-                    }, 1500);
-                } else if (result.paymentIntent.status === 'requires_payment_method') {
+                        location.href = '<?php echo UrlHelper::generateFullUrl('custom', 'paymentSuccess', array($orderId)); ?>';
+                    }, 1000);
+                } else if (result.paymentIntent.status === 'payment_failed' || result.paymentIntent.status === 'canceled') {
                     // Authentication failed, prompt the customer to enter another payment method
                     location.href = '<?php echo UrlHelper::generateUrl('custom', 'paymentFailed'); ?>';
                 }
