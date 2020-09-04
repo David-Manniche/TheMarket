@@ -691,6 +691,8 @@ DELETE FROM `tbl_language_labels` WHERE `label_key` LIKE 'LBL_ORDER_PLACED._PAYM
 
 ALTER TABLE `tbl_orders_status` CHANGE `orderstatus_color_code` `orderstatus_color_class` TINYINT(4) NULL DEFAULT NULL COMMENT 'Defined in applicationConstant';
 -- ----------------- TV-9.1.3.20200903 -----------------------
+UPDATE `tbl_language_labels` SET `label_caption` = 'Seller Products' WHERE `label_key` LIKE 'LBL_Seller_Products'; 
+UPDATE `tbl_language_labels` SET `label_caption` = 'My Products' WHERE `label_key` LIKE 'LBL_MY_PRODUCTS';  
 
 /* Transfer Bank */
 INSERT INTO `tbl_sms_templates` (`stpl_code`, `stpl_lang_id`, `stpl_name`, `stpl_body`, `stpl_replacements`, `stpl_status`) VALUES ('ADMIN_ORDER_PAYMENT_TRANSFERRED_TO_BANK', '1', 'Order Payment Transferred To Bank', 'Hello Admin,\r\n\r\nOrder Payment Detail Submitted BY {USER_NAME}\r\nFor #{ORDER_ID}.\r\n\r\n{SITE_NAME} Team', '[{\"title\":\"User Name\", \"variable\":\"{USER_NAME}\"},{\"title\":\"Order Id\", \"variable\":\"{ORDER_ID}\"}, {\"title\":\"Website Name\", \"variable\":\"{SITE_NAME}\"}]', '1');
