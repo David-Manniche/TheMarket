@@ -5269,7 +5269,7 @@ class SellerController extends SellerBaseController
                 $frm->fill($data);
                 
                 $timeSlot = new TimeSlot();
-                $timeSlots = $timeSlot->getTimeSlotByAddressId($addrId);
+                $timeSlots = $timeSlot->timeSlotsByAddrId($addrId);
                 if(!empty($timeSlots)){     
                     foreach($timeSlots as $key=>$slot){
                         $slotData['tslot_day'][$slot['tslot_day']] = $slot['tslot_day'];

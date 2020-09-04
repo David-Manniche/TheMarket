@@ -63,17 +63,17 @@ class TimeSlot extends MyAppModel
     }
     
     
-    public function getTimeSlotByAddressId(int $addressId) : array
-    {
+    public function timeSlotsByAddrId(int $addressId) : array
+    {     
         $addressId = FatUtility::int($addressId);
         $srch = new SearchBase(static::DB_TBL, 'ts');
         $srch->addCondition(self::tblFld('record_id'), '=', $addressId);
-        $srch->addOrder(self::tblFld('day'), 'ASC');
+        $srch->addOrder(self::tblFld('day'), 'ASC'); 
         $rs = $srch->getResultSet();
         return  FatApp::getDb()->fetchAll($rs);
     }
     
-    public function timeSlotsByAddressIdAndDate($addressId, $day)
+    public function timeSlotsByAddrIdAndDay($addressId, $day)
     {
         $addressId = FatUtility::int($addressId);
         $srch = new SearchBase(static::DB_TBL, 'ts');

@@ -24,6 +24,7 @@ if (!empty($orderDetail["thirdPartyorderInfo"]) && isset($orderDetail["thirdPart
                 <?php
                 $orderObj = new Orders();
                 $processingStatuses = $orderObj->getVendorAllowedUpdateOrderStatuses();
+                $processingStatuses = array_diff($processingStatuses, [OrderStatus::ORDER_DELIVERED]);
                 if (in_array($orderDetail['orderstatus_id'], $processingStatuses) && $canEdit) { ?>
                     <div class="col-auto">
                         <div class="btn-group">
