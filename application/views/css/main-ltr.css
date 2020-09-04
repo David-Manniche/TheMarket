@@ -17721,7 +17721,7 @@ html.quick-view--open {
   display: flex;
   align-items: center;
   max-width: 130px;
-  border-radius: 4px; }
+  border-radius: 3px; }
   .quantity span {
     display: flex;
     align-items: center;
