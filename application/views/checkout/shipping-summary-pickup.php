@@ -7,16 +7,19 @@
                 <?php echo Labels::getLabel('LBL_Billing_to:', $siteLangId); ?>
                 </div>
                 <div class="review-block__content" role="cell">
-                    <?php echo $addresses['addr_title']; ?>
-                    <?php echo $addresses['addr_name']; ?>
-                    <?php echo $addresses['addr_address1'] . '<br>';?>
-                    <?php echo $addresses['addr_city'];?>,
-                    <?php echo $addresses['state_name'];?>,
-                    <?php echo (strlen($addresses['addr_zip']) > 0) ? Labels::getLabel('LBL_Zip:', $siteLangId) . ' ' . $addresses['addr_zip'] . ', ' : '';?>
-                    <?php echo (strlen($addresses['addr_phone']) > 0) ? Labels::getLabel('LBL_Phone:', $siteLangId) . ' ' . $addresses['addr_phone'] . '<br>' : '';?>
+					<p><?php echo $addresses['addr_address1'] ;?> 
+					<?php if(strlen($addresses['addr_address2']) > 0) { 
+						echo ", ".$addresses['addr_address2'] ;?> 
+					<?php } ?>
+					</p>   
+					<p><?php echo $addresses['addr_city'].", ".$addresses['state_name'] ;?></p>    
+					<p><?php echo $addresses['country_name'].", ".$addresses['addr_zip'] ;?></p>    
+					<?php if(strlen($addresses['addr_phone']) > 0) { ?>
+					<p class="phone-txt"><i class="fas fa-mobile-alt"></i><?php echo $addresses['addr_phone'] ;?></p>    
+					<?php } ?>
                 </div>
                 <div class="review-block__link" role="cell">
-                    <a class="link" href="javascript:void(0);" onClick="showAddressList()"><span><?php echo Labels::getLabel('LBL_Change_Address', $siteLangId); ?></span></a>
+                    <a class="link" href="javascript:void(0);" onClick="showAddressList()"><span><?php echo Labels::getLabel('LBL_Edit', $siteLangId); ?></span></a>
                 </div>
             </li>
         </ul>   
@@ -36,26 +39,31 @@
                 ?>
                 <li class="list-group-item shipping-select">
                     <div class="shop-name"><?php echo ($level == Shipping::LEVEL_SHOP) ? $productData['shop_name'] : FatApp::getConfig('CONF_WEBSITE_NAME_' . $siteLangId, null, ''); ?></div>
-                    <div class="shop-name js-slot-addr_<?php echo $level; ?>">
+                    <div class="shop-address js-slot-addr_<?php echo $level; ?>">
                     <?php $seletedSlotId = '';
                         $seletedSlotDate = '';  
                         $seletedAddrId = '';  
                     if(!empty($levelItems['pickup_address'])) {
-                        $address = $levelItems['pickup_address'];
+						$address = $levelItems['pickup_address'];
                         $seletedSlotId = $address['time_slot_id'];
                         $seletedSlotDate = $address['time_slot_date'];
                         $seletedAddrId = $address['addr_id'];
-                        echo $address['addr_address1']; 
-                        echo (strlen($address['addr_address2'])>0) ? ", ".$address['addr_address2'] : ''; 
-                        echo (strlen($address['addr_city'])>0) ? '<br>'.$address['addr_city'].',' : ''; 
-                        echo (strlen($address['state_name'])>0) ? $address['state_name'].',' : ''; 
-                        echo (strlen($address['country_name'])>0) ? $address['country_name'].'<br>' : ''; 
-                        echo (strlen($address['addr_zip'])>0) ? Labels::getLabel('LBL_Zip:', $siteLangId).$address['addr_zip'].',' : ''; 
-                        echo (strlen($address['addr_phone'])>0) ? Labels::getLabel('LBL_Phone:', $siteLangId).$address['addr_phone'] : ''; 
-                        $fromTime = date('H:i', strtotime($address["time_slot_from"]));
+						$fromTime = date('H:i', strtotime($address["time_slot_from"]));
                         $toTime = date('H:i', strtotime($address["time_slot_to"]));
-                        echo "<br/><strong>".FatDate::format($address["time_slot_date"]).' '.$fromTime.' - '.$toTime.'</strong>'; 
-                    } ?>
+					?>
+						<p><?php echo $address['addr_address1'] ;?> 
+						<?php if(strlen($address['addr_address2']) > 0) { 
+							echo ", ".$address['addr_address2'] ;?> 
+						<?php } ?>
+						</p>   
+						<p><?php echo $address['addr_city'].", ".$address['state_name'] ;?></p>    
+						<p><?php echo $address['country_name'].", ".$address['addr_zip'] ;?></p>    
+						<?php if(strlen($address['addr_phone']) > 0) { ?>
+						<p class="phone-txt"><i class="fas fa-mobile-alt"></i><?php echo $address['addr_phone'] ;?></p>    
+						<?php } ?>
+						<p class="time-txt"><i class="fas fa-calendar-day"></i><?php echo FatDate::format($address["time_slot_date"]).' '.$fromTime.' - '.$toTime; ?></p>
+					<?php } ?>
+					
                     </div>
                     <div class="shipping-method js-slot-addr-<?php echo $level; ?>" data-addr-id="<?php echo $seletedAddrId; ?>">
                         <input type="hidden" name="slot_id[<?php echo $level; ?>]" class="js-slot-id" data-level="<?php echo $level; ?>" value="<?php echo $seletedSlotId; ?>">
@@ -74,7 +82,7 @@
                 ?>
                     <li class="list-group-item shipping-select">
                         <div class="shop-name"><?php echo $product['shop_name']; ?></div>
-                        <div class="shop-name js-slot-addr_<?php echo $level; ?>">
+                        <div class="shop-address js-slot-addr_<?php echo $level; ?>">
                         <?php $seletedSlotId = '';
                         $seletedSlotDate = '';
                         $seletedAddrId = '';  
@@ -83,17 +91,22 @@
                             $seletedSlotId = $address['time_slot_id'];
                             $seletedSlotDate = $address['time_slot_date'];
                             $seletedAddrId = $address['addr_id'];
-                            echo $address['addr_address1']; 
-                            echo (strlen($address['addr_address2'])>0) ? ", ".$address['addr_address2'] : ''; 
-                            echo (strlen($address['addr_city'])>0) ? '<br>'.$address['addr_city'].',' : ''; 
-                            echo (strlen($address['state_name'])>0) ? $address['state_name'].',' : ''; 
-                            echo (strlen($address['country_name'])>0) ? $address['country_name'].'<br>' : ''; 
-                            echo (strlen($address['addr_zip'])>0) ? Labels::getLabel('LBL_Zip:', $siteLangId).$address['addr_zip'].',' : ''; 
-                            echo (strlen($address['addr_phone'])>0) ? Labels::getLabel('LBL_Phone:', $siteLangId).$address['addr_phone'] : ''; 
-                            $fromTime = date('H:i', strtotime($address["time_slot_from"]));
-                            $toTime = date('H:i', strtotime($address["time_slot_to"]));
-                             echo "<br/><strong>".FatDate::format($address["time_slot_date"]).' '.$fromTime.' - '.$toTime.'</strong>'; 
-                        } ?>
+							$fromTime = date('H:i', strtotime($address["time_slot_from"]));
+							$toTime = date('H:i', strtotime($address["time_slot_to"]));
+                        ?>
+							<p><?php echo $address['addr_address1'] ;?> 
+							<?php if(strlen($address['addr_address2']) > 0) { 
+								echo ", ".$address['addr_address2'] ;?> 
+							<?php } ?>
+							</p>   
+							<p><?php echo $address['addr_city'].", ".$address['state_name'] ;?></p>    
+							<p><?php echo $address['country_name'].", ".$address['addr_zip'] ;?></p>    
+							<?php if(strlen($address['addr_phone']) > 0) { ?>
+							<p class="phone-txt"><i class="fas fa-mobile-alt"></i><?php echo $address['addr_phone'] ;?></p>    
+							<?php } ?>
+							<p class="time-txt"><i class="fas fa-calendar-day"></i><?php echo FatDate::format($address["time_slot_date"]).' '.$fromTime.' - '.$toTime; ?></p>
+						<?php } ?>
+							
                         </div>
                         <div class="shipping-method js-slot-addr-<?php echo $level; ?>" data-addr-id="<?php echo $seletedAddrId; ?>">
                         <input type="hidden" name="slot_id[<?php echo $level; ?>]" class="js-slot-id" data-level="<?php echo $level; ?>" value="<?php echo $seletedSlotId; ?>">
@@ -157,14 +170,9 @@
             <?php }?>            
         </div>
         <div class="step__footer">
-            <a class="btn btn-link" href="javascript:void(0)" onclick="showAddressList();">
-                <i class="arrow">
-                    <svg class="svg">
-                        <use xlink:href="<?php echo CONF_WEBROOT_URL;?>images/retina/sprite.svg#arrow-left"
-                            href="<?php echo CONF_WEBROOT_URL;?>images/retina/sprite.svg#arrow-left">
-                        </use>
-                    </svg></i>
-                <span class=""><?php echo Labels::getLabel('LBL_Back', $siteLangId); ?></span></a>
+            <a class="btn btn-outline-primary btn-wide" href="javascript:void(0)" onclick="showAddressList();">
+            
+            <?php echo Labels::getLabel('LBL_Back', $siteLangId); ?></a>
             <a class="btn btn-primary btn-wide " onClick="setUpPickup();" href="javascript:void(0)"><?php echo Labels::getLabel('LBL_Continue', $siteLangId); ?></a>
         </div>
     </div>

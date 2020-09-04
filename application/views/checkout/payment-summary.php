@@ -20,13 +20,16 @@ $rewardPoints = UserRewardBreakup::rewardPointBalance(UserAuthentication::getLog
                 </div>
                 <div class="review-block__content" role="cell">  
                     <div class="delivery-address">             
-                        <p><?php echo ( mb_strlen($address['addr_address1'] ) > 0 ) ? $address['addr_address1'] : '';?>
-                        <?php echo ( mb_strlen($address['addr_address2'] ) > 0 ) ? $address['addr_address2'] . '<br>' : '';?>
-                        <?php echo ( mb_strlen($address['addr_city']) > 0 ) ? $address['addr_city'] . ',' : '';?>
-                        <?php echo ( mb_strlen($address['state_name']) > 0 ) ? $address['state_name'] . '<br>' : '';?>
-                        <?php echo ( mb_strlen($address['country_name']) > 0 ) ? $address['country_name'] . ',' : '';?>
-                        <?php echo ( mb_strlen($address['addr_zip']) > 0 ) ?  $address['addr_zip'] . '<br>' : '';?></p>
-                        <p class="phone-txt"><?php echo ( mb_strlen($address['addr_phone']) > 0 ) ? $address['addr_phone'] . '' : '';?></p>
+						<p><?php echo $address['addr_address1'] ;?> 
+						<?php if(strlen($address['addr_address2']) > 0) { 
+							echo ", ".$address['addr_address2'] ;?> 
+						<?php } ?>
+						</p>   
+						<p><?php echo $address['addr_city'].", ".$address['state_name'] ;?></p>    
+						<p><?php echo $address['country_name'].", ".$address['addr_zip'] ;?></p>    
+						<?php if(strlen($address['addr_phone']) > 0) { ?>
+						<p class="phone-txt"><i class="fas fa-mobile-alt"></i><?php echo $address['addr_phone'] ;?></p>    
+						<?php } ?>
                     </div>
                 </div>
                 <div class="review-block__link" role="cell">
@@ -37,7 +40,7 @@ $rewardPoints = UserRewardBreakup::rewardPointBalance(UserAuthentication::getLog
                         $onclick = 'loadAddressDiv();';
                     } 
                     ?>
-                    <a class="link" href="javascript:void(0);" onClick="<?php echo $onclick; ?>"><span><?php echo Labels::getLabel('LBL_Change_Address', $siteLangId); ?></span></a>
+                    <a class="link" href="javascript:void(0);" onClick="<?php echo $onclick; ?>"><span><?php echo Labels::getLabel('LBL_Edit', $siteLangId); ?></span></a>
                 </div>
             </li>
             
@@ -50,26 +53,30 @@ $rewardPoints = UserRewardBreakup::rewardPointBalance(UserAuthentication::getLog
                     <div class="delivery-address"> 
                         <?php foreach($orderPickUpData as $address) { ?>
                             <p><strong><?php echo ($address['opshipping_by_seller_user_id'] > 0) ? $address['op_shop_name'] : FatApp::getConfig('CONF_WEBSITE_NAME_' . $siteLangId, null, ''); ?></strong></p>
-                            <p><?php echo ( mb_strlen($address['oua_address1'] ) > 0 ) ? $address['oua_address1'] : '';?>
-                            <?php echo ( mb_strlen($address['oua_address2'] ) > 0 ) ? $address['oua_address2'] . '<br>' : '';?>
-                            <?php echo ( mb_strlen($address['oua_city']) > 0 ) ? $address['oua_city'] . ',' : '';?>
-                            <?php echo ( mb_strlen($address['oua_state']) > 0 ) ? $address['oua_state'] . '<br>' : '';?>
-                            <?php echo ( mb_strlen($address['oua_country']) > 0 ) ? $address['oua_country'] . ',' : '';?>
-                            <?php echo ( mb_strlen($address['oua_zip']) > 0 ) ?  $address['oua_zip'] . '<br>' : '';?></p>
-                            <p class="phone-txt"><?php echo ( mb_strlen($address['oua_phone']) > 0 ) ? $address['oua_phone'] . '' : '';?></p>
+							<p><?php echo $address['oua_address1'] ;?> 
+							<?php if(strlen($address['oua_address2']) > 0) { 
+								echo ", ".$address['oua_address2'] ;?> 
+							<?php } ?>
+							</p>   
+							<p><?php echo $address['oua_city'].", ".$address['oua_state'] ;?></p>    
+							<p><?php echo $address['oua_country'].", ".$address['oua_zip'] ;?></p>    
+							<?php if(strlen($address['oua_phone']) > 0) { ?>
+							<p class="phone-txt"><i class="fas fa-mobile-alt"></i><?php echo $address['oua_phone'] ;?></p>    
+							<?php } ?>
+							
                             <?php 
                             $fromTime = date('H:i', strtotime($address["opshipping_time_slot_from"]));
                             $toTime = date('H:i', strtotime($address["opshipping_time_slot_to"]));
                             ?>
-                            <p><?php echo "<strong>".FatDate::format($address["opshipping_date"]).' '.$fromTime.' - '.$toTime.'</strong>'; ?></p>
+                            <p class="time-txt"><i class="fas fa-calendar-day"></i><?php echo FatDate::format($address["opshipping_date"]).' '.$fromTime.' - '.$toTime; ?></p>
                             <?php if (count($orderPickUpData) > 1) { ?>
-                            <a class="plus-more" href="javascript:void(0);" onClick="orderPickUpData('<?php echo $orderId; ?>')"><?php echo '+ '.Labels::getLabel('LBL_More', $siteLangId); ?></a>
+                            <a class="link plus-more" href="javascript:void(0);" onClick="orderPickUpData('<?php echo $orderId; ?>')"><?php echo '+ '.(count($orderPickUpData) - 1).' '.Labels::getLabel('LBL_More', $siteLangId); ?></a>
                             <?php break; } ?>
                         <?php } ?>
                     </div>
                 </div>
                 <div class="review-block__link" role="cell">
-                    <a class="link" href="javascript:void(0);" onClick="loadShippingSummaryDiv();"><span><?php echo Labels::getLabel('LBL_Change_Address', $siteLangId); ?></span></a>
+                    <a class="link" href="javascript:void(0);" onClick="loadShippingSummaryDiv();"><span><?php echo Labels::getLabel('LBL_Edit', $siteLangId); ?></span></a>
                 </div>
             </li>
             <?php } ?>
@@ -80,70 +87,66 @@ $rewardPoints = UserRewardBreakup::rewardPointBalance(UserAuthentication::getLog
                     <?php echo Labels::getLabel('LBL_Shipping:', $siteLangId); ?>
                 </div>
                 <div class="review-block__content" role="cell">  
-                    <div class="delivery-address"> 
-                         <div class="product-profile__thumbnail">
-                    <?php foreach($orderShippingData as $shipData) { ?>
-                        <?php foreach($shipData as $data) { 
-                            $productUrl = UrlHelper::generateUrl('Products', 'View', array($data['op_selprod_id']));
-                        ?>
-                            <a href="<?php echo $productUrl;?>">
-                                <img class="img-fluid" data-ratio="3:4"
-                                    src="<?php echo UrlHelper::getCachedUrl(UrlHelper::generateFileUrl('image', 'product', array($data['selprod_product_id'], "THUMB", $data['op_selprod_id'], 0, $siteLangId)), CONF_IMG_CACHE_TIME, '.jpg'); ?>" alt="<?php echo $data['op_selprod_title']; ?>" title="<?php echo $data['op_selprod_title']; ?>">
-                            </a>
-                        <?php } ?>
-                             </div>
-                        <div class="product-profile__data">
-                            <div class="title"><?php echo $data['opshipping_label']; ?></div>
-                        </div>
-                        <?php if (count($orderShippingData) > 1) { ?>
-                            <a class="plus-more" href="javascript:void(0);" onClick="orderShippingData('<?php echo $orderId; ?>')"><?php echo '+ '.Labels::getLabel('LBL_More', $siteLangId); ?></a>
-                        <?php }                     
-                    break; 
-                    } 
-                    ?>
-                    </div>
+					<div class="shipping-data">
+					<ul class="media-more media-more-sm show">
+					<?php foreach($orderShippingData as $shipData) { ?>
+						<?php foreach($shipData as $data) { ?>
+						<li>
+							<span class="circle" data-toggle="tooltip" data-placement="top" title="<?php echo $data['op_selprod_title']; ?>" data-original-title="<?php echo $data['op_selprod_title']; ?>">
+								<img src="<?php echo UrlHelper::getCachedUrl(UrlHelper::generateFileUrl('image', 'product', array($data['selprod_product_id'], "THUMB", $data['op_selprod_id'], 0, $siteLangId)), CONF_IMG_CACHE_TIME, '.jpg'); ?>" alt="<?php echo $data['op_selprod_title']; ?>">
+							</span>
+						</li>
+						<?php } ?>
+					<?php if (count($orderShippingData) > 1) { ?>
+						<li> <span class="circle plus-more" onClick="orderShippingData('<?php echo $orderId; ?>')"><?php echo '+ '.(count($orderShippingData) - 1); ?></span></li>
+					<?php }  ?>						
+					<?php break; 
+					} 
+					?>
+					</ul>
+                     
+						<div class="shipping-data_title"><?php echo $data['opshipping_label']; ?></div>
+					 
+					</div>
                 </div>
                 <div class="review-block__link" role="cell">
-                    <a class="link" href="javascript:void(0);" onClick="loadShippingSummaryDiv();"><span><?php echo Labels::getLabel('LBL_Change_Shipping', $siteLangId); ?></span></a>
+                    <a class="link" href="javascript:void(0);" onClick="loadShippingSummaryDiv();"><span><?php echo Labels::getLabel('LBL_Edit', $siteLangId); ?></span></a>
                 </div>
             </li>
             <?php } ?>
+			
+			<?php if ($fulfillmentType == Shipping::FULFILMENT_SHIP && $shippingAddressId != $billingAddressId) { ?>
+				<li class="list-group-item">
+					<div class="review-block__label">
+						<?php echo Labels::getLabel('LBL_Billing_to:', $siteLangId); ?>
+					</div>
+					<div class="review-block__content" role="cell">
+						<p><?php echo $billingAddressArr['addr_address1'] ;?> 
+						<?php if(strlen($billingAddressArr['addr_address2']) > 0) { 
+							echo ", ".$billingAddressArr['addr_address2'] ;?> 
+						<?php } ?>
+						</p>   
+						<p><?php echo $billingAddressArr['addr_city'].", ".$billingAddressArr['state_name'] ;?></p>    
+						<p><?php echo $billingAddressArr['country_name'].", ".$billingAddressArr['addr_zip'] ;?></p>    
+						<?php if(strlen($billingAddressArr['addr_phone']) > 0) { ?>
+						<p class="phone-txt"><i class="fas fa-mobile-alt"></i><?php echo $billingAddressArr['addr_phone'] ;?></p>    
+						<?php } ?>
+					</div>
+					<div class="review-block__link" role="cell">
+						<a class="link" href="javascript:void(0);" onClick="loadAddressDiv(<?php echo Address::ADDRESS_TYPE_BILLING; ?>)"><span><?php echo Labels::getLabel('LBL_Edit', $siteLangId); ?></span></a>
+					</div>
+				</li>
+            <?php  } ?>
         </ul> 
         
         <div class="step__section">
-            <div class="step__section__head">
+			<div class="step__section__head">
                 <h5 class="step__section__head__title"><?php echo Labels::getLabel('LBL_Payment_Summary', $siteLangId); ?></h5>
             </div>
-            <?php 
-            if ($fulfillmentType == Shipping::FULFILMENT_SHIP) {
-                if ($shippingAddressId == $billingAddressId) { 
-            ?>
-                <label class="checkbox"><input onClick="billingAddress(this);" type="checkbox" checked='checked' name="isShippingSameAsBilling" value="1"><?php echo Labels::getLabel('LBL_MY_BILLING_IS_SAME_AS_SHIPPING_ADDRESS', $siteLangId); ?> <i class="input-helper"></i>
+			<?php if ($fulfillmentType == Shipping::FULFILMENT_SHIP && $shippingAddressId == $billingAddressId) { ?>
+			 <label class="checkbox"><input onClick="billingAddress(this);" type="checkbox" checked='checked' name="isShippingSameAsBilling" value="1"><?php echo Labels::getLabel('LBL_MY_BILLING_IS_SAME_AS_SHIPPING_ADDRESS', $siteLangId); ?> <i class="input-helper"></i>
                 </label>
-            <?php }else{ ?>
-                <ul class="list-group review-block">
-                    <li class="list-group-item">
-                        <div class="review-block__label">
-                            <?php echo Labels::getLabel('LBL_Billing_to:', $siteLangId); ?>
-                        </div>
-                        <div class="review-block__content" role="cell">
-                            <?php echo $billingAddressArr['addr_title']; ?>
-                            <?php echo $billingAddressArr['addr_name']; ?>
-                            <?php echo $billingAddressArr['addr_address1'] . '<br>';?>
-                            <?php echo $billingAddressArr['addr_city'];?>,
-                            <?php echo $billingAddressArr['state_name'];?>,
-                            <?php echo (strlen($billingAddressArr['addr_zip']) > 0) ? Labels::getLabel('LBL_Zip:', $siteLangId) . ' ' . $billingAddressArr['addr_zip'] . ', ' : '';?>
-                            <?php echo (strlen($billingAddressArr['addr_phone']) > 0) ? Labels::getLabel('LBL_Phone:', $siteLangId) . ' ' . $billingAddressArr['addr_phone'] . '<br>' : '';?>
-                        </div>
-                        <div class="review-block__link" role="cell">
-                            <a class="link" href="javascript:void(0);" onClick="loadAddressDiv(<?php echo Address::ADDRESS_TYPE_BILLING; ?>)"><span><?php echo Labels::getLabel('LBL_Change_Address', $siteLangId); ?></span></a>
-                        </div>
-                    </li>
-                </ul> 
-            <?php } 
-            }
-            ?>
-            
+			<?php } ?>
             <?php if (empty($cartSummary['cartRewardPoints'])) { ?>
                 <?php if ($rewardPoints > 0) { ?>
                     <div class="rewards">
@@ -345,7 +348,7 @@ $rewardPoints = UserRewardBreakup::rewardPointBalance(UserAuthentication::getLog
                                 </ul>
                                 <div class="tab-content">
                                     <div class="tab-pane fade show active" role="tabpanel" >
-                                        <div id="tabs-container"></div>
+                                        <div class="tabs-container" id="tabs-container"></div>
                                     </div>
                                 </div>
                             <?php } else {

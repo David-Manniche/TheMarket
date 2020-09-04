@@ -249,9 +249,9 @@
 .review-block {
     margin-bottom: 2rem;
     font-size: 0.8rem;
-    li {
+    >li {
+        padding: 1rem;
         display: flex;
-        align-items: center;
         @include media-breakpoint-down(md) {
             & {
                 display: block;
@@ -260,20 +260,33 @@
         }
     }
     &__label {
-        flex: 0 0 125px;
-        max-width: 125px;
+        flex: 0 0 20%;
+        max-width: 20%;
         padding-#{$end-direction}: 1rem;
-        color: $txt-gray;
         margin-bottom: 0.5rem;
+        font-weight: 600;
     }
     &__content {
         flex: 1;
         padding-#{$end-direction}: 1rem;
         margin-bottom: 0.5rem;
+        color: $txt-gray;
+        overflow: hidden;
         .selected-slot {
             font-weight: 600;
             padding-top: 0.5rem;
             display: block;
+        }
+    }
+    .shipping-data {
+        display: flex;
+        align-items: center;
+        &_title {
+            font-size: 0.85rem;
+            margin-#{$start-direction}: 8px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
     }
 }
@@ -468,7 +481,9 @@
         margin-bottom: 1.5rem;
         border: $border;
         border-radius: $radius4;
-        padding: 1.5rem;
+        .tabs-container {
+            padding: 1rem;
+        }
     }
     .paypal-data {
         text-align: center;
@@ -496,7 +511,7 @@
     border-radius: $radius4;
     border: $border;
     padding: 1.5rem;
-    margin: 2rem 0 0 0;
+    margin: 1rem 0 0 0;
     &__points {
         margin-bottom: 1.5rem;
         ul {
@@ -674,19 +689,24 @@
 
 .list-shippings {
     margin-bottom: 1.5rem;
+    font-size: 0.8rem;
     .shipping-select {
-        align-items: center;
-        padding: 0.5rem 1rem;
+        padding: 1rem;
         flex-direction: initial;
+        /*background-color: $bg-gray;*/
         .shop-name {
             font-size: 0.85rem;
-            color: $txt-gray;
-            font-weight: 500;
+            font-weight: 600;
+            padding-#{$end-direction}: 1rem;
+            flex: 0 0 20%;
+            max-width: 20%;
         }
-        background-color: $bg-gray;
+        .shop-address {
+            flex: 1;
+            color: $txt-gray;
+        }
         .shipping-method {
             max-width: 50%;
-            font-size: 0.8rem;
             &_messages {
                 font-size: inherit;
             }
@@ -854,4 +874,23 @@
             padding: 0;
         }
     }
+}
+
+.phone-txt {
+    font-weight: 600;
+    font-size: 0.85rem;
+    margin-top: 8px;
+    i {
+        margin-#{$end-direction}: 5px;
+    }
+}
+
+.time-txt {
+    @extend .phone-txt
+}
+
+.payment-action {
+    display: flex;
+    justify-content: space-between;
+    padding: 1rem;
 }
