@@ -43,6 +43,8 @@ class EmailHandler extends FatModel
             $this->error = Labels::getLabel('MSG_INVALID_REQUEST', $langId);
             return false;
         }
+        $phone = 0 < strpos($phone, '+') ? $phone : '+' . $phone;
+
         $smsArchive = new SmsArchive();
         $smsArchive->toPhone($phone);
         $smsArchive->setTemplate($langId, $tpl, $arrReplacements);

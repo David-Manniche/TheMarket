@@ -48,6 +48,7 @@ class Notification extends MyAppModel
     public const BLOG_COMMENT_NOTIFICATION = 29;
     public const BLOG_CONTRIBUTION_NOTIFICATION = 30;
     public const PRODUCT_CATEGORY_REQUEST_NOTIFICATION = 31;
+    public const ORDER_PAYMENT_TRANSFERRED_TO_BANK = 32;
 
     public const GUEST_AFFILIATE_REGISTERATION = 3;
     public const GUEST_ADVISER_REGISTERATION = 4;
@@ -109,6 +110,7 @@ class Notification extends MyAppModel
         Notification::BLOG_COMMENT_NOTIFICATION => array(Labels::getLabel('LBL_user_blog_comment_notification', $langId), 'blog-comments'),
         Notification::BLOG_CONTRIBUTION_NOTIFICATION => array(Labels::getLabel('LBL_user_blog_contibution_notification', $langId), 'blog-contributions'),
         Notification::PRODUCT_CATEGORY_REQUEST_NOTIFICATION => array(Labels::getLabel('LBL_Product_category_request_notification', $langId), 'product-categories/requests'),
+        Notification::ORDER_PAYMENT_TRANSFERRED_TO_BANK => array(Labels::getLabel('LBL_ORDER_PAYMENT_TRANSFERRED_TO_BANK', $langId), 'orders'),
         );
 
         return $labelArr;

@@ -34,7 +34,6 @@ class OrderPayment extends Orders
     {
         $arrOrder = array();
         $orderInfo = $this->attributes;
-
         $userObj = new User($orderInfo["order_user_id"]);
         $userInfo = $userObj->getUserInfo(array('user_name', 'credential_email', 'user_phone'));
         $addresses = $this->getOrderAddresses($orderInfo["order_id"]);
@@ -76,6 +75,7 @@ class OrderPayment extends Orders
         "order_type" => $orderInfo['order_type'],
         "order_tax_charged" => $orderInfo["order_tax_charged"],
         "order_payment_status" => $orderInfo["order_payment_status"],
+        "plugin_code" => $orderInfo["plugin_code"],
         "order_language" => $orderInfo["order_language_code"],
         "order_language_id" => $orderInfo["order_language_id"],
         "order_site_commission" => $orderInfo["order_site_commission"],
@@ -149,7 +149,7 @@ class OrderPayment extends Orders
             }
 
             $orderDetails = $this->getOrderById($paymentOrderId);
-
+            
             if (!FatApp::getDb()->insertFromArray(static::DB_TBL_ORDER_PAYMENTS,
                     array(
                         'opayment_order_id' => $paymentOrderId,
@@ -164,6 +164,30 @@ class OrderPayment extends Orders
                 ) {
                 $this->error = FatApp::getDb()->getError();
                 return false;
+            }
+
+            if (isset($orderDetails['plugin_code']) && 'TransferBank' == $orderDetails['plugin_code'] && Orders::ORDER_PAYMENT_PENDING == $orderPaymentStatus) {
+                $userName = User::getAttributesById($orderDetails['order_user_id'], 'user_name');
+                $emailNotificationData = [
+                    'user_name' => $userName,
+                    'order_id' => $paymentOrderId,
+                    'payment_method' => $paymentMethodName,
+                    'transaction_id' => $txnId,
+                    'amount' => CommonHelper::displayMoneyFormat($amount, true, true),
+                    'comments' => $comments,
+                ];
+                $emailObj = new EmailHandler();
+                $emailObj->sendTransferBankNotification($defaultSiteLangId, $emailNotificationData);
+
+                $admNotificationData = array(
+                    'notification_record_type' => Notification::TYPE_ORDER,
+                    'notification_record_id' => $paymentOrderId,
+                    'notification_user_id' => $orderDetails['order_user_id'],
+                    'notification_label_key' => Notification::ORDER_PAYMENT_TRANSFERRED_TO_BANK,
+                    'notification_added_on' => date('Y-m-d H:i:s'),
+                );
+
+                Notification::saveNotifications($admNotificationData);
             }
 
             $totalPaymentPaid = $this->getOrderPaymentPaid($paymentOrderId);

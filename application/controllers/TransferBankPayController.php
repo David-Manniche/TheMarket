@@ -66,19 +66,6 @@ class TransferBankPayController extends PaymentController
                 if (!$orderPaymentObj->addOrderPayment($post["opayment_method"], $post['opayment_gateway_txn_id'], $post["opayment_amount"], $post["opayment_comments"], '', false, 0, Orders::ORDER_PAYMENT_PENDING)) {
                     FatUtility::dieJsonError($orderPaymentObj->getError());
                 }
-                
-                $userId = UserAuthentication::getLoggedUserId();
-                $userName = User::getAttributesById($userId, 'user_name');
-                $notificationData = [
-                    'user_name' => $userName,
-                    'order_id' => $orderId,
-                    'payment_method' => $post["opayment_method"],
-                    'transaction_id' => $post['opayment_gateway_txn_id'],
-                    'amount' => CommonHelper::displayMoneyFormat($post["opayment_amount"], true, true),
-                    'comments' => $post["opayment_comments"],
-                ];
-                $emailObj = new EmailHandler();
-                $emailObj->sendTransferBankNotification($this->siteLangId, $notificationData);
             } else {   
                 $comment = Labels::getLabel('MSG_PAYMENT_INSTRUCTIONS', $this->siteLangId) . "\n\n";
                 $comment .= $this->settings["business_name"] . "\n\n";
