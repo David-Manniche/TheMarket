@@ -1,11 +1,10 @@
 <?php defined('SYSTEM_INIT') or die('Invalid usage');
 /* reviews processing */
 $totReviews = 0 ;
+$rate_5_width = $rate_4_width = $rate_3_width = $rate_2_width = $rate_1_width = 0;
 if (!empty($reviews)) {
     $totReviews = (!empty($reviews['totReviews'])) ? FatUtility::int($reviews['totReviews']) : 0;
     
-    $rate_5_width = $rate_4_width = $rate_3_width = $rate_2_width = $rate_1_width = 0;
-
     if ($totReviews) {
         $rated_1 = FatUtility::int($reviews['rated_1']);
         $rated_2 = FatUtility::int($reviews['rated_2']);
