@@ -16,6 +16,7 @@ foreach ($arr_flds as $val) {
 $sr_no = 0;
 $orderObj = new Orders();
 $processingStatuses = $orderObj->getVendorAllowedUpdateOrderStatuses();
+$processingStatuses = array_diff($processingStatuses, [OrderStatus::ORDER_DELIVERED]);
 
 foreach ($orders as $sn => $order) {
     $sr_no++;

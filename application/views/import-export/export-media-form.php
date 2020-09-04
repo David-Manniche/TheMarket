@@ -3,7 +3,7 @@ $frm->setFormTagAttribute('class', 'form ');
 $frm->developerTags['colClassPrefix'] = 'col-md-';
 $frm->developerTags['fld_default_col'] = 6;
 $frm->setFormTagAttribute('onSubmit', 'exportMedia(this,'.$actionType.'); return false;');
-if ($actionType == Importexport::TYPE_PRODUCTS || $actionType == Importexport::TYPE_SELLER_PRODUCTS) {
+if ($actionType == Importexport::TYPE_PRODUCTS || $actionType == Importexport::TYPE_SELLER_PRODUCTS || $actionType == Importexport::TYPE_INVENTORIES) {
     $startIdFld = $frm->getField('start_id');
     $startIdFld->setWrapperAttribute('class', 'range_fld');
 

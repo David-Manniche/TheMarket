@@ -86,7 +86,7 @@ foreach ($orders as $sn => $order) {
                 if (strtolower($paymentMethodCode) == 'cashondelivery' && $order['order_status'] == FatApp::getConfig('CONF_DEFAULT_ORDER_STATUS')) {
                     $pMethod = " - " . $order['plugin_name'] ;
                 }
-                $txt = $order['orderstatus_name'] . $pMethod;
+                $txt = ucwords($order['orderstatus_name'] . $pMethod);
                 $td->appendElement('span', array('class' => 'label label-inline '. $classArr[$order['orderstatus_color_class']]), $txt . '<br>', true);
                 break;
             case 'action':
@@ -152,6 +152,19 @@ foreach ($orders as $sn => $order) {
                     '<i class="fa fa-cart-plus"></i>',
                     true
                 );
+
+                if (!$order['order_deleted'] && !$order["order_payment_status"] && 'TransferBank' == $order['plugin_code']) {
+                    $li = $ul->appendElement("li");
+                    $li->appendElement(
+                        'a',
+                        array(
+                            'href' => UrlHelper::generateUrl('Buyer', 'viewOrder', [$order['order_id']]),
+                            'title' => Labels::getLabel('LBL_ADD_PAYMENT_DETAIL', $siteLangId)
+                        ),
+                        '<i class="fas fa-box-open"></i>',
+                        true
+                    );
+                }
                 break;
             default:
                 $td->appendElement('plaintext', array(), $order[$key], true);

@@ -34,12 +34,13 @@ class ImportExportController extends AdminBaseController
                 $this->objPrivilege->canViewProductCategories();
                 break;
             case Importexport::TYPE_PRODUCTS:
+            case Importexport::TYPE_SELLER_PRODUCTS:
                 $this->objPrivilege->canViewProducts();
                 break;
             case Importexport::TYPE_BRANDS:
                 $this->objPrivilege->canViewBrands();
                 break;
-            case Importexport::TYPE_SELLER_PRODUCTS:
+            case Importexport::TYPE_INVENTORIES:
                 $this->objPrivilege->canViewSellerProducts();
                 break;
             case Importexport::TYPE_OPTIONS:
@@ -126,9 +127,10 @@ class ImportExportController extends AdminBaseController
                 $this->objPrivilege->canEditBrands();
                 break;
             case Importexport::TYPE_PRODUCTS:
+            case Importexport::TYPE_SELLER_PRODUCTS:
                 $this->objPrivilege->canEditProducts();
                 break;
-            case Importexport::TYPE_SELLER_PRODUCTS:
+            case Importexport::TYPE_INVENTORIES:
                 $this->objPrivilege->canEditSellerProducts();
                 break;
             case Importexport::TYPE_OPTIONS:
@@ -173,9 +175,10 @@ class ImportExportController extends AdminBaseController
                 $this->objPrivilege->canViewBrands();
                 break;
             case Importexport::TYPE_PRODUCTS:
+            case Importexport::TYPE_SELLER_PRODUCTS:
                 $this->objPrivilege->canViewProducts();
                 break;
-            case Importexport::TYPE_SELLER_PRODUCTS:
+            case Importexport::TYPE_INVENTORIES:
                 $this->objPrivilege->canViewSellerProducts();
                 break;
             default:
@@ -243,6 +246,7 @@ class ImportExportController extends AdminBaseController
                 $this->objPrivilege->canEditBrands();
                 break;
             case Importexport::TYPE_PRODUCTS:
+            case Importexport::TYPE_SELLER_PRODUCTS:
                 $this->objPrivilege->canEditProducts();
                 break;
             default:
@@ -268,6 +272,7 @@ class ImportExportController extends AdminBaseController
                 $frm = $this->getImportExportForm($langId, 'IMPORT_MEDIA', $actionType);
                 break;
             case Importexport::TYPE_PRODUCTS:
+            case Importexport::TYPE_SELLER_PRODUCTS:
                 $this->objPrivilege->canEditProducts();
                 $title = Labels::getLabel('LBL_Import_Catalog_Media', $langId);
                 $frm = $this->getImportExportForm($langId, 'IMPORT_MEDIA', $actionType);
@@ -298,11 +303,12 @@ class ImportExportController extends AdminBaseController
                 $frm = $this->getImportExportForm($langId, 'EXPORT_MEDIA', $actionType);
                 break;
             case Importexport::TYPE_PRODUCTS:
+            case Importexport::TYPE_SELLER_PRODUCTS:
                 $this->objPrivilege->canViewProducts();
                 $title = Labels::getLabel('LBL_Export_Catalogs_Media', $langId);
                 $frm = $this->getImportExportForm($langId, 'EXPORT_MEDIA', $actionType);
                 break;
-            case Importexport::TYPE_SELLER_PRODUCTS:
+            case Importexport::TYPE_INVENTORIES:
                 $this->objPrivilege->canViewSellerProducts();
                 $title = Labels::getLabel('LBL_Export_Digital_Files', $langId);
                 $frm = $this->getImportExportForm($langId, 'EXPORT_MEDIA', $actionType);
@@ -332,10 +338,11 @@ class ImportExportController extends AdminBaseController
                 $title = Labels::getLabel('LBL_Import_Brands', $langId);
                 break;
             case Importexport::TYPE_PRODUCTS:
+            case Importexport::TYPE_SELLER_PRODUCTS:
                 $this->objPrivilege->canViewProducts();
                 $title = Labels::getLabel('LBL_Import_Catalogs', $langId);
                 break;
-            case Importexport::TYPE_SELLER_PRODUCTS:
+            case Importexport::TYPE_INVENTORIES:
                 $this->objPrivilege->canViewSellerProducts();
                 $displayMediaTab = false;
                 $title = Labels::getLabel('LBL_Import_Seller_Products', $langId);
@@ -401,11 +408,12 @@ class ImportExportController extends AdminBaseController
                 $pageData = $obj->getContentByPageType(Extrapage::ADMIN_BRANDS_INSTRUCTIONS, $langId);
                 break;
             case Importexport::TYPE_PRODUCTS:
+            case Importexport::TYPE_SELLER_PRODUCTS:
                 $this->objPrivilege->canViewProducts();
                 $displayMediaTab = true;
                 $pageData = $obj->getContentByPageType(Extrapage::ADMIN_CATALOG_MANAGEMENT_INSTRUCTIONS, $langId);
                 break;
-            case Importexport::TYPE_SELLER_PRODUCTS:
+            case Importexport::TYPE_INVENTORIES:
                 $this->objPrivilege->canViewSellerProducts();
                    $pageData = $obj->getContentByPageType(Extrapage::ADMIN_PRODUCT_INVENTORY_INSTRUCTIONS, $langId);
                 break;
@@ -463,10 +471,11 @@ class ImportExportController extends AdminBaseController
                 $displayMediaTab = true;
                 break;
             case Importexport::TYPE_PRODUCTS:
+            case Importexport::TYPE_SELLER_PRODUCTS:
                 $this->objPrivilege->canViewProducts();
                 $displayMediaTab = true;
                 break;
-            case Importexport::TYPE_SELLER_PRODUCTS:
+            case Importexport::TYPE_INVENTORIES:
                 $this->objPrivilege->canViewSellerProducts();
                 $displayMediaTab = true;
                 break;
@@ -529,10 +538,11 @@ class ImportExportController extends AdminBaseController
             case 'EXPORT':
                 switch ($actionType) {
                     case Importexport::TYPE_PRODUCTS:
+                    case Importexport::TYPE_SELLER_PRODUCTS:
                         $displayRangeFields = true;
                         $frm->addSelectBox(Labels::getLabel('LBL_Select_Data', $langId), 'sheet_type', Importexport::getProductCatalogContentTypeArr($langId), '', array(), '')->requirements()->setRequired();
                         break;
-                    case Importexport::TYPE_SELLER_PRODUCTS:
+                    case Importexport::TYPE_INVENTORIES:
                         $displayRangeFields = true;
                         $frm->addSelectBox(Labels::getLabel('LBL_Select_Data', $langId), 'sheet_type', Importexport::getSellerProductContentTypeArr($langId), '', array(), '')->requirements()->setRequired();
                         break;
@@ -548,6 +558,7 @@ class ImportExportController extends AdminBaseController
                 switch ($actionType) {
                     case Importexport::TYPE_PRODUCTS:
                     case Importexport::TYPE_SELLER_PRODUCTS:
+                    case Importexport::TYPE_INVENTORIES:
                         $displayRangeFields = true;
                         break;
                 }
@@ -555,9 +566,10 @@ class ImportExportController extends AdminBaseController
             case 'IMPORT':
                 switch ($actionType) {
                     case Importexport::TYPE_PRODUCTS:
+                    case Importexport::TYPE_SELLER_PRODUCTS:
                         $frm->addSelectBox(Labels::getLabel('LBL_Select_Data', $langId), 'sheet_type', Importexport::getProductCatalogContentTypeArr($langId), '', array(), '')->requirements()->setRequired();
                         break;
-                    case Importexport::TYPE_SELLER_PRODUCTS:
+                    case Importexport::TYPE_INVENTORIES:
                         $frm->addSelectBox(Labels::getLabel('LBL_Select_Data', $langId), 'sheet_type', Importexport::getSellerProductContentTypeArr($langId), '', array(), '')->requirements()->setRequired();
                         break;
                     case Importexport::TYPE_OPTIONS:

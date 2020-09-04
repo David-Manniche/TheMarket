@@ -224,7 +224,7 @@ class SellerOrdersController extends AdminBaseController
             array(
                 'ops.*', 'order_id', 'order_payment_status', 'order_pmethod_id', 'order_tax_charged', 'order_date_added', 'op_id', 'op_qty', 'op_unit_price', 'op_selprod_user_id', 'op_invoice_number', 'IFNULL(orderstatus_name, orderstatus_identifier) as orderstatus_name', 'ou.user_name as buyer_user_name', 'ouc.credential_username as buyer_username', 'plugin_code', 'IFNULL(plugin_name, IFNULL(plugin_identifier, "Wallet")) as plugin_name', 'op_commission_charged', 'op_qty', 'op_commission_percentage', 'ou.user_name as buyer_name', 'ouc.credential_username as buyer_username', 'ouc.credential_email as buyer_email', 'ou.user_phone as buyer_phone', 'op.op_shop_owner_name', 'op.op_shop_owner_username', 'op_l.op_shop_name', 'op.op_shop_owner_email', 'op.op_shop_owner_phone',
                 'op_selprod_title', 'op_product_name', 'op_brand_name', 'op_selprod_options', 'op_selprod_sku', 'op_product_model', 'op_product_type',
-                'op_shipping_duration_name', 'op_shipping_durations', 'op_status_id', 'op_refund_qty', 'op_refund_amount', 'op_refund_commission', 'op_other_charges', 'optosu.optsu_user_id', 'ops.opshipping_by_seller_user_id', 'op_tax_collected_by_seller', 'order_is_wallet_selected', 'order_reward_point_used', 'op_product_tax_options', 'opship.*'
+                'op_shipping_duration_name', 'op_shipping_durations', 'op_status_id', 'op_refund_qty', 'op_refund_amount', 'op_refund_commission', 'op_other_charges', 'optosu.optsu_user_id', 'ops.opshipping_by_seller_user_id', 'op_tax_collected_by_seller', 'order_is_wallet_selected', 'order_reward_point_used', 'op_product_tax_options', 'ops.opshipping_type', 'opship.*'
             )
         );
         $srch->addCondition('op_id', '=', $op_id);
@@ -236,35 +236,39 @@ class SellerOrdersController extends AdminBaseController
             CommonHelper::redirectUserReferer();
         }
         
-        /* ShipStation */
-        $this->loadShippingService();
-        $this->set('canShipByPlugin', (NULL !== $this->shippingService));
+        if($opRow['opshipping_type'] == OrderProduct::TYPE_SHIP){
+            /* ShipStation */
+            $this->loadShippingService();
+            $this->set('canShipByPlugin', (NULL !== $this->shippingService));
 
-        if (!empty($opRow["opship_orderid"])) {
-            if (NULL != $this->shippingService && false === $this->shippingService->loadOrder($opRow["opship_orderid"])) {
-                Message::addErrorMessage($this->shippingService->getError());
-                FatApp::redirectUser(UrlHelper::generateUrl("SellerOrders"));
+            if (!empty($opRow["opship_orderid"])) {
+                if (NULL != $this->shippingService && false === $this->shippingService->loadOrder($opRow["opship_orderid"])) {
+                    Message::addErrorMessage($this->shippingService->getError());
+                    FatApp::redirectUser(UrlHelper::generateUrl("SellerOrders"));
+                }
+                $opRow['thirdPartyorderInfo'] = (NULL != $this->shippingService ? $this->shippingService->getResponse() : []);
             }
-            $opRow['thirdPartyorderInfo'] = (NULL != $this->shippingService ? $this->shippingService->getResponse() : []);
-        }
-        /* ShipStation */
+            /* ShipStation */
 
-        /* AfterShip */
-        $this->loadTrackingService();
-        $this->set('canTrackByPlugin', (NULL !== $this->trackingService));
-        /* AfterShip */
-        
-        if (NULL !== $this->shippingService && NULL !== $this->trackingService) {
-            $srch = TrackingCourierCodeRelation::getSearchObject();
-            $srch->addCondition("tccr_shipapi_courier_code", "=", $opRow['opshipping_carrier_code']);
-            $srch->doNotCalculateRecords();
-            $srch->setPageSize(1);
-            $rs = $srch->getResultSet();
-            $data = FatApp::getDb()->fetch($rs);
-            if (NULL === $data) {
-                Message::addErrorMessage(Labels::getLabel("MSG_PLEASE_MAP_YOUR_SHIPPING_CARRIER_CODE_WITH_TRACKING_CARRIER_CODE", $this->adminLangId));
-                FatApp::redirectUser(UrlHelper::generateUrl("TrackingCodeRelation"));
+            /* AfterShip */
+            $this->loadTrackingService();
+            $this->set('canTrackByPlugin', (NULL !== $this->trackingService));
+            /* AfterShip */
+
+            if (NULL !== $this->shippingService && NULL !== $this->trackingService) {
+                $srch = TrackingCourierCodeRelation::getSearchObject();
+                $srch->addCondition("tccr_shipapi_courier_code", "=", $opRow['opshipping_carrier_code']);
+                $srch->doNotCalculateRecords();
+                $srch->setPageSize(1);
+                $rs = $srch->getResultSet();
+                $data = FatApp::getDb()->fetch($rs);
+                if (NULL === $data) {
+                    Message::addErrorMessage(Labels::getLabel("MSG_PLEASE_MAP_YOUR_SHIPPING_CARRIER_CODE_WITH_TRACKING_CARRIER_CODE", $this->adminLangId));
+                    FatApp::redirectUser(UrlHelper::generateUrl("TrackingCodeRelation"));
+                }
             }
+        }else{
+            $this->set('canShipByPlugin', '');
         }
 
         $orderObj = new Orders($opRow['order_id']);

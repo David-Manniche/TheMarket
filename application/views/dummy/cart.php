@@ -32,7 +32,7 @@
                             </div>
                             <div class="cart-blocks">
                                 <ul class="list-group list-cart">
-                                    <li class="list-group-item">
+                                    <li class="list-group-item"> 
                                         <div class="info">
                                             <span> <svg class="svg">
                                                     <use xlink:href="<?php echo CONF_WEBROOT_URL;?>images/retina/sprite.svg#info"

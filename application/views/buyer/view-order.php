@@ -19,9 +19,9 @@ if (true == $primaryOrder) {
     $canSubmitFeedback = Orders::canSubmitFeedback($childOrderDetail['order_user_id'], $childOrderDetail['order_id'], $childOrderDetail['op_selprod_id']);
 }
 
-?>
-<?php if (!$print) {
-?>
+$orderStatusArr = Orders::getOrderPaymentStatusArr($siteLangId);
+
+if (!$print) { ?>
     <?php $this->includeTemplate('_partial/dashboardNavigation.php'); ?>
 <?php
 } ?>
@@ -90,7 +90,7 @@ if (true == $primaryOrder) {
                             <div class="">
                                 <iframe src="<?php echo Fatutility::generateUrl('buyer', 'viewOrder', $urlParts) . '/print'; ?>" name="frame" style="display:none">
                                 </iframe>
-                                <a href="<?php echo UrlHelper::generateUrl('Buyer', 'orders'); ?>" class="btn btn-outline-primary  btn-sm no-print" title="
+                                <a href="<?php echo UrlHelper::generateUrl('Buyer', 'orders'); ?>" class="btn btn-outline-primary btn-sm no-print" title="
                                     <?php echo Labels::getLabel('LBL_Back_to_order', $siteLangId); ?>">
                                     <i class="fas fa-arrow-left"></i>
                                 </a>
@@ -98,6 +98,14 @@ if (true == $primaryOrder) {
                                     <?php echo Labels::getLabel('LBL_Print', $siteLangId); ?>">
                                     <i class="fas fa-print"></i>
                                 </a>
+                                <?php if (0 < $opId && !$orderDetail['order_deleted'] && !$orderDetail["order_payment_status"] && 'TransferBank' == $orderDetail['plugin_code']) { ?>
+                                    <a 
+                                        href="<?php echo UrlHelper::generateUrl('Buyer', 'viewOrder', [$orderDetail['order_id']]); ?>" 
+                                        class="btn btn-outline-primary btn-sm no-print" 
+                                        title="<?php echo Labels::getLabel('LBL_ADD_PAYMENT_DETAIL', $siteLangId); ?>">
+                                        <i class="fas fa-box-open"></i>
+                                    </a>
+                                <?php } ?>
                             </div>
                         </div>
                     <?php
@@ -132,7 +140,7 @@ if (true == $primaryOrder) {
                                         <strong>
                                             <?php echo Labels::getLabel('LBL_Payment_Status', $siteLangId); ?>:
                                         </strong>
-                                        <?php echo Orders::getOrderPaymentStatusArr($siteLangId)[$childOrderDetail['order_payment_status']];
+                                        <?php echo $orderStatusArr[$childOrderDetail['order_payment_status']];
                                         if ('' != $childOrderDetail['plugin_name'] && 'CashOnDelivery' == $childOrderDetail['plugin_code']) {
                                             echo ' (' . $childOrderDetail['plugin_name'] . ' )';
                                         } ?>
@@ -693,6 +701,9 @@ if (true == $primaryOrder) {
                                         <th>
                                             <?php echo Labels::getLabel('LBL_Comments', $siteLangId); ?>
                                         </th>
+                                        <th>
+                                            <?php echo Labels::getLabel('LBL_STATUS', $siteLangId); ?>
+                                        </th>
                                     </tr>
                                     <?php foreach ($orderDetail['payments'] as $row) {
                                     ?>
@@ -711,6 +722,24 @@ if (true == $primaryOrder) {
                                             </td>
                                             <td>
                                                 <?php echo nl2br($row['opayment_comments']); ?>
+                                            </td>
+                                            <td>
+                                                <?php 
+                                                    $class = '';
+                                                    if (Orders::ORDER_PAYMENT_CANCELLED == $row['opayment_txn_status']) {
+                                                        $class = "label-danger";
+                                                    } elseif (Orders::ORDER_PAYMENT_PENDING == $row['opayment_txn_status']) {
+                                                        $class = "label-info";
+                                                    } elseif (Orders::ORDER_PAYMENT_PAID == $row['opayment_txn_status']) {
+                                                        $class = "label-success";
+                                                    }
+                                                ?>
+                                                <span class="label label-inline <?php echo $class; ?>">
+                                                    <?php 
+                                                        $orderStatusArr = Orders::getOrderPaymentStatusArr($siteLangId);
+                                                        echo $orderStatusArr[$row['opayment_txn_status']];
+                                                    ?>
+                                                </span>                                                
                                             </td>
                                         </tr>
                                     <?php
@@ -881,7 +910,7 @@ if (true == $primaryOrder) {
                         </div>
                     <?php } ?>
                     <?php
-                    if (!$orderDetail['order_deleted'] && (1 == $childOrderProdCount || !$primaryOrder) && !$orderDetail["order_payment_status"] && 'TransferBank' == $orderDetail['plugin_code']) { ?>
+                    if (!$orderDetail['order_deleted'] && !$primaryOrder && !$orderDetail["order_payment_status"] && 'TransferBank' == $orderDetail['plugin_code']) { ?>
                             <div class="divider"></div>
                             <span class="gap"></span>
                             <div class="section--repeated">

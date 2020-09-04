@@ -207,16 +207,16 @@ class BuyerController extends BuyerBaseController
             );
             $srch->addFld(array('*', 'IFNULL(orrequest_id, 0) as return_request', 'IFNULL(ocrequest_id, 0) as cancel_request'));
         }
-
+        
         $rs = $srch->getResultSet();
 
         $childOrderDetail = FatApp::getDb()->fetchAll($rs, 'op_id');
-        foreach ($childOrderDetail as $opID => $val) {
-            $childOrderDetail[$opID]['charges'] = $orderDetail['charges'][$opID];
+        foreach ($childOrderDetail as $op_id => $val) {
+            $childOrderDetail[$op_id]['charges'] = $orderDetail['charges'][$op_id];
 
-            $opChargesLog = new OrderProductChargeLog($opID);
+            $opChargesLog = new OrderProductChargeLog($op_id);
             $taxOptions = $opChargesLog->getData($this->siteLangId);
-            $childOrderDetail[$opID]['taxOptions'] = $taxOptions;
+            $childOrderDetail[$op_id]['taxOptions'] = $taxOptions;
         }
 
         if ($opId > 0) {
@@ -266,8 +266,6 @@ class BuyerController extends BuyerBaseController
         }
         $productType = !empty($childOrderDetail['selprod_product_id']) ? Product::getAttributesById($childOrderDetail['selprod_product_id'], 'product_type') : 0;
         
-        // CommonHelper::printArray($childOrderDetail, true);
-
         $frm = $this->getTransferBankForm($this->siteLangId, $orderId);
         $this->set('frm', $frm);
         $this->set('orderDetail', $orderDetail);
@@ -289,9 +287,7 @@ class BuyerController extends BuyerBaseController
         }
         $this->set('print', $print);
 
-        if (true === MOBILE_APP_API_CALL) {
-            $this->set('opId', $opId);
-        }
+        $this->set('opId', $opId);
 
         $this->_template->render();
     }
@@ -416,7 +412,7 @@ class BuyerController extends BuyerBaseController
         $srch->addMultipleFields(
             array('order_id', 'order_user_id', 'order_date_added', 'order_net_amount', 'op_invoice_number',
             'totCombinedOrders as totOrders', 'op_selprod_id', 'op_selprod_title', 'op_product_name', 'op_id', 'op_other_charges', 'op_unit_price',
-            'op_qty', 'op_selprod_options', 'op_brand_name', 'op_shop_name', 'op_status_id', 'op_product_type', 'IFNULL(orderstatus_name, orderstatus_identifier) as orderstatus_name', 'orderstatus_color_class', 'order_pmethod_id', 'order_status', 'plugin_name', 'IFNULL(orrequest_id, 0) as return_request', 'IFNULL(ocrequest_id, 0) as cancel_request', 'orderstatus_color_class', 'COALESCE(sps.selprod_return_age, ss.shop_return_age) as return_age', 'COALESCE(sps.selprod_cancellation_age, ss.shop_cancellation_age) as cancellation_age', 'order_payment_status')
+            'op_qty', 'op_selprod_options', 'op_brand_name', 'op_shop_name', 'op_status_id', 'op_product_type', 'IFNULL(orderstatus_name, orderstatus_identifier) as orderstatus_name', 'orderstatus_color_class', 'order_pmethod_id', 'order_status', 'plugin_name', 'IFNULL(orrequest_id, 0) as return_request', 'IFNULL(ocrequest_id, 0) as cancel_request', 'COALESCE(sps.selprod_return_age, ss.shop_return_age) as return_age', 'COALESCE(sps.selprod_cancellation_age, ss.shop_cancellation_age) as cancellation_age', 'order_payment_status', 'order_deleted', 'plugin_code')
         );
 
         $keyword = FatApp::getPostedData('keyword', null, '');
@@ -455,7 +451,6 @@ class BuyerController extends BuyerBaseController
         }
 
         $rs = $srch->getResultSet();
-
         $orders = FatApp::getDb()->fetchAll($rs);
 
         $oObj = new Orders();
@@ -2596,7 +2591,6 @@ class BuyerController extends BuyerBaseController
 
         $orderPaymentObj = new OrderPayment($orderId, $this->siteLangId);
         $orderInfo = $orderPaymentObj->getOrderPrimaryinfo();
-
         if (empty($orderInfo) || 1 >= count(array_filter($post))) {
             $msg = Labels::getLabel("MSG_INVALID_REQUEST", $this->siteLangId);
             FatUtility::dieJsonError($msg);
@@ -2605,6 +2599,7 @@ class BuyerController extends BuyerBaseController
         if (!$orderPaymentObj->addOrderPayment($post["opayment_method"], $post['opayment_gateway_txn_id'], $post["opayment_amount"], $post["opayment_comments"], '', false, 0, Orders::ORDER_PAYMENT_PENDING)) {
             FatUtility::dieJsonError($orderPaymentObj->getError());
         }
+
         $msg = Labels::getLabel("MSG_REQUEST_SUBMITTED_SUCCESSFULLY", $this->siteLangId);
         FatUtility::dieJsonSuccess($msg);
     }

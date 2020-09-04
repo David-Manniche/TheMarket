@@ -72,7 +72,7 @@ class Address extends MyAppModel
      * @param  int $isDefault
      * @return array
      */
-    public function getData(int $type, int $recordId, int $isDefault = 0) : array
+    public function getData(int $type, int $recordId, int $isDefault = 0, $joinTimeSlots = false) : array
     {
         $srch = new AddressSearch($this->langId);
         $srch->joinCountry();
@@ -92,6 +92,10 @@ class Address extends MyAppModel
             $srch->addOrder(static::tblFld('id'), 'DESC');
         } else {
             $srch->addOrder(static::tblFld('is_default'), 'DESC');
+        }        
+        if($joinTimeSlots == true){
+            $srch->joinTable(TimeSlot::DB_TBL, 'INNER JOIN', 'ts.tslot_record_id = addr.addr_id', 'ts');
+            $srch->addGroupBy(static::tblFld('id'));
         }
         if (0 < $this->mainTableRecordId) {
             $srch->addCondition(self::tblFld('id'), '=', $this->mainTableRecordId);
