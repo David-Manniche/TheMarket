@@ -1814,12 +1814,6 @@ input.sp-input {
     }
     address {
         margin-bottom: 1rem;
-        min-height: 200px;
-        @include media-breakpoint-down(md) {
-            & {
-                min-height: inherit;
-            }
-        }
         p {
             font-size: 0.88rem;
             color: lighten($body-color, 20%);

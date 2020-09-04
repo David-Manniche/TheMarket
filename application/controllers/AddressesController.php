@@ -199,7 +199,7 @@ class AddressesController extends LoggedUserController
         
         $type = ($level == 0) ? Address::TYPE_ADMIN_PICKUP : Address::TYPE_SHOP_PICKUP;
         $address = new Address();
-        $addresses = $address->getData($type, $recordId);
+        $addresses = $address->getData($type, $recordId, 0, true);
         $this->set('addresses', $addresses);
         $this->set('level', $level);
         $this->set('addrId', $addrId);
@@ -219,16 +219,10 @@ class AddressesController extends LoggedUserController
             Message::addErrorMessage(Labels::getLabel('LBL_Invalid_request', $this->siteLangId));
             FatUtility::dieWithError(Message::getHtml());
         }
-
-        $currentDateFormat = FatDate::convertDateFormatFromPhp(
-            FatApp::getConfig('CONF_DATE_FORMAT', FatUtility::VAR_STRING, 'Y-m-d'),
-            FatDate::FORMAT_PHP
-        );
-        $date=date_create_from_format($currentDateFormat, $selectedDate);  
-        $selectedDate = date_format($date, "Y-m-d");   
+        
         $day = date('w', strtotime($selectedDate));  
         $timeSlot = new TimeSlot();
-        $timeSlots = $timeSlot->timeSlotsByAddressIdAndDate($addressId, $day);        
+        $timeSlots = $timeSlot->timeSlotsByAddrIdAndDay($addressId, $day);        
         $this->set('timeSlots', $timeSlots);
         $this->set('selectedDate', $selectedDate);
         $this->set('level', $level);
@@ -249,15 +243,54 @@ class AddressesController extends LoggedUserController
         }
         
         $timeSlot = new TimeSlot();
-        $slotData = $timeSlot->getTimeSlotByAddressId($addrId);
-        $slotDays = [];
+        $slotData = $timeSlot->timeSlotsByAddrId($addrId);
+        $slotDays = [];        
         foreach($slotData as $data){
             if (!in_array($data['tslot_day'], $slotDays)) {
                 $slotDays[] = $data['tslot_day'];
             }
+        }
+        
+        $activeDate = '';
+        if(!empty($slotDays)){ 
+            $daysArr = TimeSlot::getDaysArr($this->siteLangId); 
+            $currentDay = date('w', strtotime(date('Y-m-d')));
             
+            if(in_array($currentDay, $slotDays)){   
+                $displayTime = date("H:i:s", strtotime('+'.FatApp::getConfig('CONF_TIME_SLOT_ADDITION', FatUtility::VAR_INT, 2).' hour'));
+                $currentDateSlots = $timeSlot->timeSlotsByAddrIdAndDay($addrId, $currentDay);
+                foreach($currentDateSlots as $data){
+                    if(strtotime($data['tslot_from_time']) > strtotime($displayTime)){
+                        $activeDate = date('Y-m-d');
+                        break;
+                    }
+                } 
+                if(empty($activeDate)){
+                    $index = array_search($currentDay, $slotDays);  
+                    if($index < count($slotDays)-1) {
+                        $next = $slotDays[$index+1];    
+                        $activeDate = date('Y-m-d', strtotime('+'.($next - $currentDay).' days'));
+                    }else{
+                        $activeDate = date('Y-m-d', strtotime('+'.(count($daysArr) - $currentDay).' days'));
+                    }
+                }
+            }
+            
+            if(!in_array($currentDay, $slotDays)){
+                foreach($slotDays as $slotDay){
+                    if($slotDay > $currentDay){
+                        $activeDate = date('Y-m-d', strtotime('+'.($slotDay - $currentDay).' days'));
+                        break;
+                    }
+                }
+                if(empty($activeDate)){
+                    $needToAddDays = count($daysArr) - $currentDay + min($slotDays);
+                    $activeDate = date('Y-m-d', strtotime('+'.$needToAddDays.' days'));
+                }
+            }            
         }
         $this->set('slotDays', $slotDays);
+        $this->set('activeDate', $activeDate);
         $this->_template->render(false, false, 'json-success.php');
     }
     

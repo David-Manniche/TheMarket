@@ -9,7 +9,7 @@ class Importexport extends ImportexportCommon
     public const TYPE_CATEGORIES = 1;
     public const TYPE_BRANDS = 2;
     public const TYPE_PRODUCTS = 3;
-    public const TYPE_SELLER_PRODUCTS = 4;
+    public const TYPE_INVENTORIES = 4;
     public const TYPE_OPTIONS = 5;
     public const TYPE_OPTION_VALUES = 6;
     public const TYPE_TAG = 7;
@@ -20,6 +20,7 @@ class Importexport extends ImportexportCommon
     public const TYPE_TAX_CATEGORY = 12;
     public const TYPE_LANGUAGE_LABELS = 13;
     public const TYPE_INVENTORY_UPDATE = 14;
+    public const TYPE_SELLER_PRODUCTS = 15;
 
 
     public const MAX_LIMIT = 1000;
@@ -48,13 +49,20 @@ class Importexport extends ImportexportCommon
     private $headingIndexArr = array();
     private $CSVfileObj;
 
+    public const ACTION_ALL_PRODUCTS = 1;
+    public const ACTION_ADMIN_PRODUCTS = 2;
+    public const ACTION_SELLER_PRODUCTS = 3;
+
+    private $actionType = self::ACTION_ALL_PRODUCTS;
+
     public static function getImportExportTypeArr($type, $langId, $sellerDashboard = false)
     {
         switch (strtoupper($type)) {
             case 'EXPORT':
                 $arr[static::TYPE_CATEGORIES] = Labels::getLabel('LBL_Categories', $langId);
-                $arr[static::TYPE_PRODUCTS] = Labels::getLabel('LBL_Catalogs', $langId);
+                $arr[static::TYPE_PRODUCTS] = Labels::getLabel('LBL_Marketplace_Products', $langId);
                 $arr[static::TYPE_SELLER_PRODUCTS] = Labels::getLabel('LBL_Seller_Products', $langId);
+                $arr[static::TYPE_INVENTORIES] = Labels::getLabel('LBL_Seller_Inventories', $langId);
                 // $arr[static::TYPE_INVENTORY_UPDATE] = Labels::getLabel('LBL_INVENTORY_UPDATE', $langId);
                 $arr[static::TYPE_BRANDS] = Labels::getLabel('LBL_Brands', $langId);
                 $arr[static::TYPE_OPTIONS] = Labels::getLabel('LBL_Options', $langId);
@@ -67,11 +75,14 @@ class Importexport extends ImportexportCommon
                 if (!$sellerDashboard) {
                     $arr[static::TYPE_USERS] = Labels::getLabel('LBL_users', $langId);
                     $arr[static::TYPE_LANGUAGE_LABELS] = Labels::getLabel('LBL_Language_Labels', $langId);
+                } else {
+                    $arr[static::TYPE_SELLER_PRODUCTS] = Labels::getLabel('LBL_My_Products', $langId);
                 }
                 break;
             case 'IMPORT':
-                $arr[static::TYPE_PRODUCTS] = Labels::getLabel('LBL_Catalogs', $langId);
+                $arr[static::TYPE_PRODUCTS] = Labels::getLabel('LBL_Marketplace_Products', $langId);
                 $arr[static::TYPE_SELLER_PRODUCTS] = Labels::getLabel('LBL_Seller_Products', $langId);
+                $arr[static::TYPE_INVENTORIES] = Labels::getLabel('LBL_Seller_Inventories', $langId);
                 // $arr[static::TYPE_INVENTORY_UPDATE] = Labels::getLabel('LBL_INVENTORY_UPDATE', $langId);
                 if (!$sellerDashboard) {
                     $arr[static::TYPE_CATEGORIES] = Labels::getLabel('LBL_Categories', $langId);
@@ -83,6 +94,10 @@ class Importexport extends ImportexportCommon
                     $arr[static::TYPE_STATE] = Labels::getLabel('LBL_States', $langId);
                     $arr[static::TYPE_LANGUAGE_LABELS] = Labels::getLabel('LBL_Language_Labels', $langId);
                     //$arr[static::TYPE_POLICY_POINTS] = Labels::getLabel('LBL_Policy_Points', $langId);
+                    $arr[static::TYPE_PRODUCTS] = Labels::getLabel('LBL_My_Products', $langId);
+                } else {
+                    unset($arr[static::TYPE_PRODUCTS]);
+                    $arr[static::TYPE_SELLER_PRODUCTS] = Labels::getLabel('LBL_My_Products', $langId);
                 }
                 break;
         }
@@ -203,29 +218,30 @@ class Importexport extends ImportexportCommon
                 $this->exportCategories($langId, $userId);
                 break;
             case Importexport::TYPE_PRODUCTS:
+                $this->actionType = self::ACTION_ADMIN_PRODUCTS;
                 switch ($sheetType) {
                     case Importexport::PRODUCT_CATALOG:
-                        $sheetName = Labels::getLabel('LBL_Product_Catalogs', $langId) . $sheetName;
+                        $sheetName = Labels::getLabel('LBL_Marketplace_Products', $langId) . $sheetName;
                         $this->CSVfileObj = $this->openCSVfileToWrite($sheetName, $langId);
                         $this->exportProductsCatalog($langId, $offset, $noOfRows, $minId, $maxId, $userId);
                         break;
                     case Importexport::PRODUCT_OPTION:
-                        $sheetName = Labels::getLabel('LBL_Catalog_Options', $langId) . $sheetName;
+                        $sheetName = Labels::getLabel('LBL_Marketplace_Product_Options', $langId) . $sheetName;
                         $this->CSVfileObj = $this->openCSVfileToWrite($sheetName, $langId);
                         $this->exportProductOptions($langId, $offset, $noOfRows, $minId, $maxId, $userId);
                         break;
                     case Importexport::PRODUCT_TAG:
-                        $sheetName = Labels::getLabel('LBL_Catalog_Tags', $langId) . $sheetName;
+                        $sheetName = Labels::getLabel('LBL_Marketplace_Product_Tags', $langId) . $sheetName;
                         $this->CSVfileObj = $this->openCSVfileToWrite($sheetName, $langId);
                         $this->exportProductTags($langId, $offset, $noOfRows, $minId, $maxId, $userId);
                         break;
                     case Importexport::PRODUCT_SPECIFICATION:
-                        $sheetName = Labels::getLabel('LBL_Catalog_Specification', $langId) . $sheetName;
+                        $sheetName = Labels::getLabel('LBL_Marketplace_Product_Specifications', $langId) . $sheetName;
                         $this->CSVfileObj = $this->openCSVfileToWrite($sheetName, $langId);
                         $this->exportProductSpecification($langId, $offset, $noOfRows, $minId, $maxId, $userId);
                         break;
                     case Importexport::PRODUCT_SHIPPING:
-                        $sheetName = Labels::getLabel('LBL_Catalog_Shipping', $langId) . $sheetName;
+                        $sheetName = Labels::getLabel('LBL_Marketplace_Product_Shipping', $langId) . $sheetName;
                         $this->CSVfileObj = $this->openCSVfileToWrite($sheetName, $langId);
                         $this->exportProductShipping($langId, $offset, $noOfRows, $minId, $maxId, $userId);
                         break;
@@ -235,6 +251,39 @@ class Importexport extends ImportexportCommon
                 }
                 break;
             case Importexport::TYPE_SELLER_PRODUCTS:
+                $this->actionType = self::ACTION_SELLER_PRODUCTS;
+                switch ($sheetType) {
+                    case Importexport::PRODUCT_CATALOG:
+                        $sheetName = Labels::getLabel('LBL_Seller_Products', $langId) . $sheetName;
+                        $this->CSVfileObj = $this->openCSVfileToWrite($sheetName, $langId);
+                        $this->exportProductsCatalog($langId, $offset, $noOfRows, $minId, $maxId, $userId);
+                        break;
+                    case Importexport::PRODUCT_OPTION:
+                        $sheetName = Labels::getLabel('LBL_Seller_Product_Options', $langId) . $sheetName;
+                        $this->CSVfileObj = $this->openCSVfileToWrite($sheetName, $langId);
+                        $this->exportProductOptions($langId, $offset, $noOfRows, $minId, $maxId, $userId);
+                        break;
+                    case Importexport::PRODUCT_TAG:
+                        $sheetName = Labels::getLabel('LBL_Seller_Product_Tags', $langId) . $sheetName;
+                        $this->CSVfileObj = $this->openCSVfileToWrite($sheetName, $langId);
+                        $this->exportProductTags($langId, $offset, $noOfRows, $minId, $maxId, $userId);
+                        break;
+                    case Importexport::PRODUCT_SPECIFICATION:
+                        $sheetName = Labels::getLabel('LBL_Seller_Product_Specifications', $langId) . $sheetName;
+                        $this->CSVfileObj = $this->openCSVfileToWrite($sheetName, $langId);
+                        $this->exportProductSpecification($langId, $offset, $noOfRows, $minId, $maxId, $userId);
+                        break;
+                    case Importexport::PRODUCT_SHIPPING:
+                        $sheetName = Labels::getLabel('LBL_Seller_Product_Shipping', $langId) . $sheetName;
+                        $this->CSVfileObj = $this->openCSVfileToWrite($sheetName, $langId);
+                        $this->exportProductShipping($langId, $offset, $noOfRows, $minId, $maxId, $userId);
+                        break;
+                    default:
+                        $default = true;
+                        break;
+                }
+                break;
+            case Importexport::TYPE_INVENTORIES:
                 switch ($sheetType) {
                     case Importexport::SELLER_PROD_GENERAL_DATA:
                         $sheetName = Labels::getLabel('LBL_Seller_Product_General', $langId) . $sheetName;
@@ -377,7 +426,7 @@ class Importexport extends ImportexportCommon
                 $this->CSVfileObj = $this->openCSVfileToWrite($sheetName, $langId);
                 $this->exportProductMedia($langId, $offset, $noOfRows, $minId, $maxId, $userId);
                 break;
-            case Importexport::TYPE_SELLER_PRODUCTS:
+            case Importexport::TYPE_INVENTORIES:
                 $sheetName = Labels::getLabel('LBL_Seller_Product_Digital_File', $langId) . $sheetName;
                 $this->CSVfileObj = $this->openCSVfileToWrite($sheetName, $langId);
                 $this->exportSellerProductMedia($langId, $offset, $noOfRows, $minId, $maxId, $userId);
@@ -407,6 +456,8 @@ class Importexport extends ImportexportCommon
                 Product::updateMinPrices();
                 break;
             case Importexport::TYPE_PRODUCTS:
+            case Importexport::TYPE_SELLER_PRODUCTS:
+                $this->actionType = ($type == self::TYPE_PRODUCTS) ? self::ACTION_ADMIN_PRODUCTS : self::ACTION_SELLER_PRODUCTS;
                 switch ($sheetType) {
                     case Importexport::PRODUCT_CATALOG:
                         $sheetName = Labels::getLabel('LBL_Products_catalog_Error', $langId);
@@ -439,7 +490,7 @@ class Importexport extends ImportexportCommon
                         break;
                 }
                 break;
-            case Importexport::TYPE_SELLER_PRODUCTS:
+            case Importexport::TYPE_INVENTORIES:
                 switch ($sheetType) {
                     case Importexport::SELLER_PROD_GENERAL_DATA:
                         $sheetName = Labels::getLabel('LBL_Seller_Product_General_Data_Error', $langId);
@@ -788,7 +839,7 @@ class Importexport extends ImportexportCommon
                 $errInSheet = true;
             }
         }
-        
+
         $ProductCategory = new ProductCategory();
         $ProductCategory->updateCatCode();
         // Close File
@@ -1307,7 +1358,7 @@ class Importexport extends ImportexportCommon
         FatUtility::dieJsonSuccess($success);
     }
 
-    public function exportProductsCatalog($langId, $offset = null, $noOfRows = null, $minId = null, $maxId = null, $userId = null)
+    private function exportProductsCatalog($langId, $offset = null, $noOfRows = null, $minId = null, $maxId = null, $userId = null)
     {
         $userId = FatUtility::int($userId);
         $useProductId = false;
@@ -1366,9 +1417,24 @@ class Importexport extends ImportexportCommon
         //$srch->joinTable(Countries::DB_TBL,'LEFT OUTER JOIN','c.country_id = tp.product_ship_country','c');
         $srch->doNotCalculateRecords();
         $srch->addMultipleFields(['tp.*', 'tp_l.*', 'ps.ps_from_country_id', 'ps.ps_free', 'user_id', 'credential_username', 'brand_id', 'brand_identifier', 'country_id', 'country_code', 'product_warranty', 'sppro.shippro_shipprofile_id']);
-        if ($userId) {
-            $cnd = $srch->addCondition('tp.product_seller_id', '=', $userId, 'OR');
-            $cnd->attachCondition('tp.product_seller_id', '=', 0);
+
+        switch ($this->actionType) {
+            case self::ACTION_ADMIN_PRODUCTS:
+                $srch->addCondition('tp.product_added_by_admin_id', '>', 0);
+                break;
+            case self::ACTION_SELLER_PRODUCTS:
+                if ($userId) {
+                    $srch->addCondition('tp.product_seller_id', '=', $userId);
+                } else {
+                    $srch->addCondition('tp.product_seller_id', '>', 0);
+                }
+                break;
+            default:
+                if ($userId) {
+                    $cnd = $srch->addCondition('tp.product_seller_id', '=', $userId, 'OR');
+                    $cnd->attachCondition('tp.product_seller_id', '=', 0);
+                }
+                break;
         }
 
         if (isset($offset) && isset($noOfRows)) {
@@ -1387,7 +1453,7 @@ class Importexport extends ImportexportCommon
 
         $sheetData = array();
         /* Sheet Heading Row [ */
-        $headingsArr = $this->getProductsCatalogColoumArr($langId, $userId);
+        $headingsArr = $this->getProductsCatalogColoumArr($langId, $userId, $this->actionType);
         CommonHelper::writeExportDataToCSV($this->CSVfileObj, $headingsArr);
         /* ] */
 
@@ -1495,8 +1561,7 @@ class Importexport extends ImportexportCommon
 
         $shippingProfileArr = ShippingProfile::getProfileArr(0, true, true, true);
         $adminDefaultShipProfileId =  array_key_first($shippingProfileArr);
-
-        $coloumArr = $this->getProductsCatalogColoumArr($langId, $sellerId);
+        $coloumArr = $this->getProductsCatalogColoumArr($langId, $sellerId, $this->actionType);
         $this->validateCSVHeaders($csvFilePointer, $coloumArr, $langId);
 
         $errInSheet = false;
@@ -1522,7 +1587,7 @@ class Importexport extends ImportexportCommon
 
                 $invalid = $errMsg = false;
 
-                if ($this->isDefaultSheetData($langId) && in_array($columnKey, array('product_seller_id', 'credential_username', 'product_id', 'product_identifier'))) {
+                if ($this->isDefaultSheetData($langId) && $this->actionType != Importexport::ACTION_ADMIN_PRODUCTS && in_array($columnKey, array('product_seller_id', 'credential_username'))) {
                     if ($this->settings['CONF_USE_USER_ID']) {
                         $colTitle = ('product_seller_id' != $columnKey) ? $coloumArr['product_seller_id'] : $columnTitle;
                         $colInd = $this->headingIndexArr[$colTitle];
@@ -1995,7 +2060,7 @@ class Importexport extends ImportexportCommon
         FatUtility::dieJsonSuccess($success);
     }
 
-    public function exportProductOptions($langId, $offset = null, $noOfRows = null, $minId = null, $maxId = null, $userId = null)
+    private function exportProductOptions($langId, $offset = null, $noOfRows = null, $minId = null, $maxId = null, $userId = null)
     {
         $userId = FatUtility::int($userId);
         $srch = Product::getSearchObject();
@@ -2003,9 +2068,23 @@ class Importexport extends ImportexportCommon
         $srch->joinTable(Option::DB_TBL, 'INNER JOIN', Option::DB_TBL_PREFIX . 'id = ' . Product::DB_PRODUCT_TO_OPTION_PREFIX . 'option_id');
         $srch->addMultipleFields(array('option_id', 'option_identifier', 'product_id', 'product_identifier'));
         $srch->doNotCalculateRecords();
-        if ($userId) {
-            $cnd = $srch->addCondition('tp.product_seller_id', '=', $userId, 'OR');
-            $cnd->attachCondition('tp.product_seller_id', '=', 0);
+        switch ($this->actionType) {
+            case self::ACTION_ADMIN_PRODUCTS:
+                $srch->addCondition('tp.product_added_by_admin_id', '>', 0);
+                break;
+            case self::ACTION_SELLER_PRODUCTS:
+                if ($userId) {
+                    $srch->addCondition('tp.product_seller_id', '=', $userId);
+                } else {
+                    $srch->addCondition('tp.product_seller_id', '>', 0);
+                }
+                break;
+            default:
+                if ($userId) {
+                    $cnd = $srch->addCondition('tp.product_seller_id', '=', $userId, 'OR');
+                    $cnd->attachCondition('tp.product_seller_id', '=', 0);
+                }
+                break;
         }
 
         if (isset($offset) && isset($noOfRows)) {
@@ -2143,7 +2222,7 @@ class Importexport extends ImportexportCommon
         FatUtility::dieJsonSuccess($success);
     }
 
-    public function exportProductTags($langId, $offset = null, $noOfRows = null, $minId = null, $maxId = null, $userId = null)
+    private function exportProductTags($langId, $offset = null, $noOfRows = null, $minId = null, $maxId = null, $userId = null)
     {
         $userId = FatUtility::int($userId);
         $srch = Product::getSearchObject();
@@ -2151,9 +2230,23 @@ class Importexport extends ImportexportCommon
         $srch->joinTable(Tag::DB_TBL, 'INNER JOIN', Tag::DB_TBL_PREFIX . 'id = ' . Product::DB_PRODUCT_TO_TAG_PREFIX . 'tag_id');
         $srch->addMultipleFields(array('tag_id', 'tag_identifier', 'product_id', 'product_identifier'));
         $srch->doNotCalculateRecords();
-        if ($userId) {
-            $cnd = $srch->addCondition('tp.product_seller_id', '=', $userId, 'OR');
-            $cnd->attachCondition('tp.product_seller_id', '=', 0);
+        switch ($this->actionType) {
+            case self::ACTION_ADMIN_PRODUCTS:
+                $srch->addCondition('tp.product_added_by_admin_id', '>', 0);
+                break;
+            case self::ACTION_SELLER_PRODUCTS:
+                if ($userId) {
+                    $srch->addCondition('tp.product_seller_id', '=', $userId);
+                } else {
+                    $srch->addCondition('tp.product_seller_id', '>', 0);
+                }
+                break;
+            default:
+                if ($userId) {
+                    $cnd = $srch->addCondition('tp.product_seller_id', '=', $userId, 'OR');
+                    $cnd->attachCondition('tp.product_seller_id', '=', 0);
+                }
+                break;
         }
 
         if (isset($offset) && isset($noOfRows)) {
@@ -2291,7 +2384,7 @@ class Importexport extends ImportexportCommon
         FatUtility::dieJsonSuccess($success);
     }
 
-    public function exportProductSpecification($langId, $offset = null, $noOfRows = null, $minId = null, $maxId = null, $userId = null)
+    private function exportProductSpecification($langId, $offset = null, $noOfRows = null, $minId = null, $maxId = null, $userId = null)
     {
         $userId = FatUtility::int($userId);
         $srch = Product::getSearchObject();
@@ -2300,9 +2393,23 @@ class Importexport extends ImportexportCommon
         $srch->addMultipleFields(array('prodspec_id', 'prodspeclang_lang_id', 'prodspec_name', 'prodspec_value', 'prodspec_group', 'product_id', 'product_identifier'));
         $srch->joinTable(Language::DB_TBL, 'INNER JOIN', 'language_id = prodspeclang_lang_id');
         $srch->doNotCalculateRecords();
-        if ($userId) {
-            $cnd = $srch->addCondition('tp.product_seller_id', '=', $userId, 'OR');
-            $cnd->attachCondition('tp.product_seller_id', '=', 0);
+        switch ($this->actionType) {
+            case self::ACTION_ADMIN_PRODUCTS:
+                $srch->addCondition('tp.product_added_by_admin_id', '>', 0);
+                break;
+            case self::ACTION_SELLER_PRODUCTS:
+                if ($userId) {
+                    $srch->addCondition('tp.product_seller_id', '=', $userId);
+                } else {
+                    $srch->addCondition('tp.product_seller_id', '>', 0);
+                }
+                break;
+            default:
+                if ($userId) {
+                    $cnd = $srch->addCondition('tp.product_seller_id', '=', $userId, 'OR');
+                    $cnd->attachCondition('tp.product_seller_id', '=', 0);
+                }
+                break;
         }
 
         if (isset($offset) && isset($noOfRows)) {
@@ -2481,7 +2588,7 @@ class Importexport extends ImportexportCommon
         FatUtility::dieJsonSuccess($success);
     }
 
-    public function exportProductShipping($langId, $offset = null, $noOfRows = null, $minId = null, $maxId = null, $userId = null)
+    private function exportProductShipping($langId, $offset = null, $noOfRows = null, $minId = null, $maxId = null, $userId = null)
     {
         $userId = FatUtility::int($userId);
         $srch = Product::getSearchObject();
@@ -2494,8 +2601,22 @@ class Importexport extends ImportexportCommon
         $srch->joinTable(User::DB_TBL_CRED, 'LEFT OUTER JOIN', 'tpsr.pship_user_id = uc.credential_user_id', 'uc');
         $srch->addMultipleFields(array('product_id', 'product_identifier', 'scompany_id', 'scompany_identifier', 'shippingapi_id', 'shippingapi_identifier', 'sduration_id', 'sduration_identifier', 'user_id', 'credential_username', 'country_id', 'country_code', 'pship_charges', 'pship_additional_charges'));
         $srch->doNotCalculateRecords();
-        if ($userId) {
-            $srch->addDirectCondition("( ( tp.product_seller_id = '" . $userId . "' and (tpsr.pship_user_id = '" . $userId . "' or tpsr.pship_user_id = 0)) or (tp.product_seller_id = 0 and (tpsr.pship_user_id = '" . $userId . "' or tpsr.pship_user_id = 0)))");
+        switch ($this->actionType) {
+            case self::ACTION_ADMIN_PRODUCTS:
+                $srch->addDirectCondition("( tp.product_seller_id = 0 and tpsr.pship_user_id = 0)");
+                break;
+            case self::ACTION_SELLER_PRODUCTS:
+                if ($userId) {
+                    $srch->addDirectCondition("( ( tp.product_seller_id = '" . $userId . "' and (tpsr.pship_user_id = '" . $userId . "' or tpsr.pship_user_id = 0)) )");
+                } else {
+                    $srch->addDirectCondition("( ( tp.product_seller_id > 0 and (tpsr.pship_user_id > 0 or tpsr.pship_user_id = 0)))");
+                }
+                break;
+            default:
+                if ($userId) {
+                    $srch->addDirectCondition("( ( tp.product_seller_id = '" . $userId . "' and (tpsr.pship_user_id = '" . $userId . "' or tpsr.pship_user_id = 0)) or (tp.product_seller_id = 0 and (tpsr.pship_user_id = '" . $userId . "' or tpsr.pship_user_id = 0)))");
+                }
+                break;
         }
 
         if (isset($offset) && isset($noOfRows)) {
@@ -3201,7 +3322,7 @@ class Importexport extends ImportexportCommon
                             $prodConditions = $this->array_change_key_case_unicode($prodConditionArr, CASE_LOWER);
                             $colValue = array_key_exists($colValue, $prodConditions) ? $prodConditions[$colValue] : 0;
                             $productType = Product::getAttributesById($productId, 'product_type');
-                            
+
                             if (0 < $productId && Product::PRODUCT_TYPE_PHYSICAL == $productType && 1 > $colValue) {
                                 $invalid = true;
                             }
@@ -5463,7 +5584,8 @@ class Importexport extends ImportexportCommon
         CommonHelper::writeExportDataToCSV($this->CSVfileObj, array(), true, $this->CSVfileName);
     }
 
-    public function array_change_key_case_unicode($arr, $c = MB_CASE_LOWER) {
+    public function array_change_key_case_unicode($arr, $c = MB_CASE_LOWER)
+    {
         $c = ($c == CASE_LOWER) ? MB_CASE_LOWER : MB_CASE_UPPER;
         $ret = [];
         foreach ($arr as $k => $v) {

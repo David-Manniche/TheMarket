@@ -43,7 +43,6 @@
 								$dateToFld->developerTags['col'] = 4;
    
 								$submitBtnFld = $frmSearch->getField('btn_submit');
-								$submitBtnFld->setFieldTagAttribute('class','btn-block');
 								$submitBtnFld->developerTags['col'] = 4;
 
 								$btn_clear = $frmSearch->getField('btn_clear');
