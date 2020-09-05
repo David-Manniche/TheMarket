@@ -704,3 +704,4 @@ INSERT INTO `tbl_email_templates` (`etpl_code`, `etpl_lang_id`, `etpl_name`, `et
 DELETE FROM `tbl_language_labels` WHERE `label_key` LIKE 'LBL_MOVE_TO_ADMIN_WALLET';
 DELETE FROM `tbl_language_labels` WHERE `label_key` LIKE 'LBL_MOVE_TO_CUSTOMER_WALLET';
 DELETE FROM `tbl_language_labels` WHERE `label_key` LIKE 'LBL_MOVE_TO_CUSTOMER_CARD';
+-- -----------------TV-9.2.1.20200905------------------
