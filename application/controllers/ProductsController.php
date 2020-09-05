@@ -662,6 +662,7 @@ class ProductsController extends MyAppController
             }
         }
 
+        $displayProductNotAvailableLable = false;
         if (FatApp::getConfig('CONF_ENABLE_GEO_LOCATION', FatUtility::VAR_INT, 0)) {
             $displayProductNotAvailableLable = true;
         }
