@@ -52,9 +52,9 @@
                                         <p><?php echo CommonHelper::currencyDisclaimer($siteLangId, $orderInfo['order_net_amount']);  ?></p>
                                         <?php } ?>
                                     </div>
-                                    <div class="gap"></div>
+                                   
                                     <!--<div class="heading4"><?php //echo Labels::getLabel('LBL_Pay_With_Credit_Card', $siteLangId);?></div>-->
-                                    <div id="tabs-container"></div>
+                                    <div class="tabs-container" id="tabs-container"></div>
                                 </div>
                             </div>
                             <?php } else {

@@ -157,7 +157,7 @@ defined('SYSTEM_INIT') or die('Invalid Usage.'); ?>
                         </div>
                     </div>
                     <div class="product-quantity">
-                        <div class="quantity" data-stock="<?php echo $product['selprod_stock']; ?>">
+                        <div class="quantity quantity-2" data-stock="<?php echo $product['selprod_stock']; ?>">
                             <span class="decrease decrease-js <?php echo ($product['quantity']<=$product['selprod_min_order_qty']) ? 'not-allowed' : '' ;?>"><i class="fas fa-minus"></i></span>
                             <div class="qty-input-wrapper" data-stock="<?php echo $product['selprod_stock']; ?>">
                                 <input name="qty_<?php echo md5($product['key']); ?>" data-key="<?php echo md5($product['key']); ?>" class="qty-input cartQtyTextBox productQty-js" value="<?php echo $product['quantity']; ?>" type="text" />

@@ -7816,6 +7816,11 @@ a.text-dark:hover, a.text-dark:focus {
             height: 15px;
             margin-left: 5px;
             fill: inherit; }
+      .header .top-bar .short-links .icon--img {
+        width: 16px;
+        height: 16px;
+        border-radius: 50%;
+        margin-left: 5px; }
     .header .top-bar .logout {
       font-weight: 600;
       border-top: solid 1px #dee2e6; }
@@ -8423,7 +8428,6 @@ a.text-dark:hover, a.text-dark:focus {
       flex-direction: column; } }
   .sublinks .head > a {
     color: #222;
-    font-weight: 600;
     text-transform: uppercase; }
     .sublinks .head > a:hover {
       color: var(--brand-color); }
@@ -8478,8 +8482,8 @@ a.text-dark:hover, a.text-dark:focus {
               right: -12px;
               visibility: visible;
               opacity: 1; }
-        .sublinks > li ul li .seemore a {
-          font-weight: 600; }
+  .sublinks .seemore a {
+    font-weight: 600; }
 
 .navs_toggle {
   cursor: pointer;
@@ -9072,14 +9076,15 @@ a.text-dark:hover, a.text-dark:focus {
     min-height: 100%;
     padding: 0 1rem;
     z-index: 99;
-    overflow: hidden;
+    overflow: auto;
+    max-height: 100%;
     background-color: #fff;
-    box-shadow: 5px 3px 4px rgba(0, 0, 0, 0.1); }
+    box-shadow: 2px 0px 3px rgba(0, 0, 0, 0.1); }
     .vertical-menu .menu > li > .megadrop > ul {
       display: flex;
       flex-wrap: wrap; }
       .vertical-menu .menu > li > .megadrop > ul > li {
-        flex: 1;
+        flex: 0 0 25%;
         padding: 1rem; }
   .vertical-menu .menu > li:hover .megadrop {
     opacity: 1;
@@ -9663,7 +9668,8 @@ a.link-arrow {
 .link-text {
   display: inline-flex;
   align-items: center;
-  font-size: 0.9rem; }
+  font-size: 0.9rem;
+  color: var(--primary-color); }
   .link-text .icn {
     width: 12px;
     height: 12px;
@@ -16205,7 +16211,7 @@ img.mfp-img, .post .post_media iframe.mfp-img, .post .post_media .posted-content
     border-bottom: solid 1px #dee2e6;
     vertical-align: top; }
   .table a {
-    color: inherit; }
+    color: var(--brand-color); }
     .table a:hover {
       text-decoration: underline; }
   .table table {
@@ -16954,7 +16960,7 @@ html {
     overflow: hidden; }
 
 body {
-  font-family: "Open Sans", sans-serif; }
+  font-family: "Poppins", sans-serif; }
 
 :focus {
   box-shadow: none !important;
@@ -17204,7 +17210,8 @@ a:hover {
   position: relative;
   border-radius: 4px;
   /*margin-bottom: 1rem;*/
-  height: 100%; }
+  height: 100%;
+  animation: dropdown-menu-fade-in 0.3s ease 1, dropdown-menu-move-up 0.3s ease-out 1; }
   @media (max-width: 991.98px) {
     .cards {
       word-break: normal; } }
@@ -17430,8 +17437,10 @@ a:hover {
 .media-more {
   transition: all 0.5s ease-out;
   display: flex;
-  align-items: center; }
+  align-items: center;
+  padding: 5px; }
   .media-more li {
+    padding: 0;
     opacity: 0;
     transition: all .1s ease-in-out;
     margin-right: -10px; }
@@ -17490,7 +17499,8 @@ a:hover {
         display: flex;
         align-items: center;
         justify-content: center;
-        line-height: 1; }
+        line-height: 1;
+        cursor: pointer; }
     .media-more li:hover {
       position: relative;
       z-index: 1; }
@@ -17716,7 +17726,7 @@ html.quick-view--open {
   display: flex;
   align-items: center;
   max-width: 130px;
-  border-radius: 4px; }
+  border-radius: 3px; }
   .quantity span {
     display: flex;
     align-items: center;
@@ -31712,27 +31722,38 @@ a.ui-button:active,
 .review-block {
   margin-bottom: 2rem;
   font-size: 0.8rem; }
-  .review-block li {
-    display: flex;
-    align-items: center; }
+  .review-block > li {
+    padding: 1rem;
+    display: flex; }
     @media (max-width: 991.98px) {
-      .review-block li {
+      .review-block > li {
         display: block;
         font-size: 1rem; } }
   .review-block__label {
-    flex: 0 0 125px;
-    max-width: 125px;
+    flex: 0 0 20%;
+    max-width: 20%;
     padding-left: 1rem;
-    color: #888;
-    margin-bottom: 0.5rem; }
+    margin-bottom: 0.5rem;
+    font-weight: 600; }
   .review-block__content {
     flex: 1;
     padding-left: 1rem;
-    margin-bottom: 0.5rem; }
+    margin-bottom: 0.5rem;
+    color: #888;
+    overflow: hidden; }
     .review-block__content .selected-slot {
       font-weight: 600;
       padding-top: 0.5rem;
       display: block; }
+  .review-block .shipping-data {
+    display: flex;
+    align-items: center; }
+    .review-block .shipping-data_title {
+      font-size: 0.85rem;
+      margin-right: 8px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis; }
 
 .order-summary {
   display: none; }
@@ -31874,8 +31895,9 @@ a.ui-button:active,
 .payment-area .tab-content {
   margin-bottom: 1.5rem;
   border: solid 1px #dee2e6;
-  border-radius: 4px;
-  padding: 1.5rem; }
+  border-radius: 4px; }
+  .payment-area .tab-content .tabs-container {
+    padding: 1rem; }
 .payment-area .paypal-data {
   text-align: center; }
   .payment-area .paypal-data p {
@@ -31896,7 +31918,7 @@ a.ui-button:active,
   border-radius: 4px;
   border: solid 1px #dee2e6;
   padding: 1.5rem;
-  margin: 2rem 0 0 0; }
+  margin: 1rem 0 0 0; }
   .rewards__points {
     margin-bottom: 1.5rem; }
     .rewards__points ul {
@@ -31951,7 +31973,7 @@ a.ui-button:active,
       font-size: 0.75rem;
       font-weight: 400;
       text-transform: uppercase; }
-    .list-addresses .list-group-item .delivery-address .phone-txt {
+    .list-addresses .list-group-item .delivery-address .phone-txt, .list-addresses .list-group-item .delivery-address .time-txt {
       margin-top: 5px;
       font-weight: 600; }
 .list-addresses .tags-addresses {
@@ -32030,19 +32052,23 @@ a.ui-button:active,
           align-items: inherit; } }
 
 .list-shippings {
-  margin-bottom: 1.5rem; }
+  margin-bottom: 1.5rem;
+  font-size: 0.8rem; }
   .list-shippings .shipping-select {
-    align-items: center;
-    padding: 0.5rem 1rem;
+    padding: 1rem;
     flex-direction: initial;
-    background-color: #f4f5fa; }
+    /*background-color: $bg-gray;*/ }
     .list-shippings .shipping-select .shop-name {
       font-size: 0.85rem;
-      color: #888;
-      font-weight: 500; }
+      font-weight: 600;
+      padding-left: 1rem;
+      flex: 0 0 20%;
+      max-width: 20%; }
+    .list-shippings .shipping-select .shop-address {
+      flex: 1;
+      color: #888; }
     .list-shippings .shipping-select .shipping-method {
-      max-width: 50%;
-      font-size: 0.8rem; }
+      max-width: 50%; }
       .list-shippings .shipping-select .shipping-method_messages {
         font-size: inherit; }
       .list-shippings .shipping-select .shipping-method .form-control {
@@ -32172,6 +32198,18 @@ a.ui-button:active,
   .otp-block .otp-success h5 {
     margin: 0;
     padding: 0; }
+
+.phone-txt, .time-txt {
+  font-weight: 600;
+  font-size: 0.85rem;
+  margin-top: 8px; }
+  .phone-txt i, .time-txt i {
+    margin-left: 5px; }
+
+.payment-action {
+  display: flex;
+  justify-content: space-between;
+  padding: 1rem; }
 
 .bg-contact {
   position: relative;
@@ -32895,8 +32933,8 @@ a.ui-button:active,
       -ms-flex-pack: center;
       justify-content: center;
       -webkit-box-flex: 0;
-      -ms-flex: 0 0 70px;
-      flex: 0 0 70px; }
+      -ms-flex: 0 0 60px;
+      flex: 0 0 60px; }
       .my-dashboard .sidebar .dashboard-menu .icn svg {
         width: 18px;
         height: 18px;
@@ -34311,7 +34349,8 @@ transform: rotate(-135deg);*/ }
     margin: 0 10px;
     font-size: 0.875em;
     font-weight: 600;
-    text-align: center; }
+    text-align: center;
+    min-width: 180px; }
   .discount-slider .item__price {
     color: #888;
     display: block;
@@ -34917,6 +34956,10 @@ transform: rotate(-135deg);*/ }
       text-transform: uppercase; }
       .certified-bar .certified-box p a {
         color: #575757; }
+
+.cart-tbl-addons {
+  border-radius: 2px;
+  border: solid 1px #dee2e6; }
 
 #faqquestions {
   margin: 40px auto 0;
@@ -36186,8 +36229,7 @@ body {
 .payment-from {
   border-top: solid 1px #e1dfdf;
   display: table;
-  width: 100%;
-  padding: 15px; }
+  width: 100%; }
 
 .payment-from .siteForm label {
   display: block; }

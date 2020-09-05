@@ -1,6 +1,6 @@
 <?php defined('SYSTEM_INIT') or die('Invalid Usage.'); ?>
 <div class="step active" role="step:2">
-    <form class="form form form-floating">
+    <form class="form ">
         <div class="step__section">
             <div class="step__section__head">
                 <h5 class="step__section__head__title">
@@ -31,6 +31,7 @@
                         ?>
                         <li class="list-group-item address-<?php echo $address['addr_id']; ?> <?php //echo ($checked == true) ? 'selected' : ''
                                                                                                 ?>">
+                               <label class="d-block" for="">
                             <div class="row">
                                 <div class="col-auto">
                                     <label class="checkbox">
@@ -40,13 +41,16 @@
                                 <div class="col">
                                     <div class="delivery-address">
                                         <h5><?php echo $address['addr_name']; ?><span class="tag"><?php echo ($address['addr_title'] != '') ? $address['addr_title'] : $address['addr_name']; ?></span></h5>
-                                        <p><?php echo (mb_strlen($address['addr_address1']) > 0) ? $address['addr_address1'] : ''; ?>
-                                            <?php echo (mb_strlen($address['addr_address2']) > 0) ? $address['addr_address2'] . '<br>' : ''; ?>
-                                            <?php echo (mb_strlen($address['addr_city']) > 0) ? $address['addr_city'] . ',' : ''; ?>
-                                            <?php echo (mb_strlen($address['state_name']) > 0) ? $address['state_name'] . '<br>' : ''; ?>
-                                            <?php echo (mb_strlen($address['country_name']) > 0) ? $address['country_name'] . ',' : ''; ?>
-                                            <?php echo (mb_strlen($address['addr_zip']) > 0) ?  $address['addr_zip'] . '<br>' : ''; ?></p>
-                                        <p class="phone-txt"><?php echo (mb_strlen($address['addr_phone']) > 0) ? $address['addr_phone'] . '' : ''; ?></p>
+                                        <p><?php echo $address['addr_address1'] ;?> 
+										<?php if(strlen($address['addr_address2']) > 0) { 
+											echo ", ".$address['addr_address2'] ;?> 
+										<?php } ?>
+										</p>   
+										<p><?php echo $address['addr_city'].", ".$address['state_name'] ;?></p>    
+										<p><?php echo $address['country_name'].", ".$address['addr_zip'] ;?></p>    
+										<?php if(strlen($address['addr_phone']) > 0) { ?>
+										<p class="phone-txt"><i class="fas fa-mobile-alt"></i><?php echo $address['addr_phone'] ;?></p>    
+										<?php } ?>
                                     </div>
                                 </div>
                                 <div class="col-auto">
@@ -67,7 +71,7 @@
                                         </ul>
                                     <?php } ?>
                                 </div>
-                            </div>
+                            </div></label>                                                                 
                         </li>
                     <?php } ?>
                 </ul>
@@ -86,17 +90,13 @@
         </div>
         <div class="checkout-actions">
             <?php if ($addressType == Address::ADDRESS_TYPE_BILLING) { ?>
-                <a class="btn btn-outline-secondary btn-wide" href="javascript:void(0);" onclick="loadPaymentSummary();">
+                <a class="btn btn-outline-primary btn-wide" href="javascript:void(0);" onclick="loadPaymentSummary();">
                     <?php echo Labels::getLabel('LBL_Back', $siteLangId); ?>
                 </a>
             <?php } else { ?>
-                <a class="btn btn-link" href="javascript:void(0);" onclick="goToBack();">
-                    <i class="arrow">
-                        <svg class="svg">
-                            <use xlink:href="<?php echo CONF_WEBROOT_URL; ?>images/retina/sprite.svg#arrow-left" href="<?php echo CONF_WEBROOT_URL; ?>images/retina/sprite.svg#arrow-left">
-                            </use>
-                        </svg></i>
-                    <span class=""><?php echo Labels::getLabel('LBL_Back', $siteLangId); ?></span>
+                <a class="btn btn-outline-primary btn-wide" href="javascript:void(0);" onclick="goToBack();">
+                    
+                    <?php echo Labels::getLabel('LBL_Back', $siteLangId); ?> 
                 </a>
             <?php } ?>
             <?php if ($addressType == Address::ADDRESS_TYPE_BILLING) { ?>

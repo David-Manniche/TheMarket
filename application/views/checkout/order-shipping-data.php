@@ -1,29 +1,35 @@
 <?php defined('SYSTEM_INIT') or die('Invalid Usage.'); 
 if(!empty($orderShippingData)){ 
 ?>
-        <div class="pop-up-title"><?php echo Labels::getLabel('LBL_Shipping', $siteLangId); ?></div>
-        <div class="pick-section">
-            <ul class="list-group review-block">
-                <?php foreach($orderShippingData as $shipData) { ?>
-                <li class="list-group-item">
-                <?php foreach($shipData as $data) { 
-                    $productUrl = UrlHelper::generateUrl('Products', 'View', array($data['op_selprod_id']));
-                ?>
-                    <div class="product-profile__thumbnail">
-                        <a href="<?php echo $productUrl;?>">
-                            <img class="img-fluid" data-ratio="3:4" src="<?php echo UrlHelper::getCachedUrl(UrlHelper::generateFileUrl('image', 'product', array($data['selprod_product_id'], "THUMB", $data['op_selprod_id'], 0, $siteLangId)), CONF_IMG_CACHE_TIME, '.jpg'); ?>" alt="<?php echo $data['op_selprod_title']; ?>" title="<?php echo $data['op_selprod_title']; ?>">
-                        </a>
-                    </div>
-                <?php } ?>
-                    <div class="title product-profile__data"><?php echo $data['opshipping_label']; ?></div>
-                    <a class="link" href="javascript:void(0);" onClick="ShippingSummaryData();"><span><?php echo Labels::getLabel('LBL_Change_Shipping', $siteLangId); ?></span></a>
-                </li>
-                <?php } ?>
-            </ul>
-        </div>
- 
+	<div class="pop-up-title"><?php echo Labels::getLabel('LBL_Shipping', $siteLangId); ?></div>
+	<ul class="list-group review-block">
+		<?php foreach($orderShippingData as $shipData) { ?>
+		<li class="list-group-item">
+			<div class="review-block__content" role="cell">  
+				<div class="shipping-data">
+					<ul class="media-more media-more-sm show">
+
+						<?php foreach($shipData as $data) { ?>
+						<li>
+							<span class="circle" data-toggle="tooltip" data-placement="top" title="<?php echo $data['op_selprod_title']; ?>" data-original-title="<?php echo $data['op_selprod_title']; ?>">
+								<img src="<?php echo UrlHelper::getCachedUrl(UrlHelper::generateFileUrl('image', 'product', array($data['selprod_product_id'], "THUMB", $data['op_selprod_id'], 0, $siteLangId)), CONF_IMG_CACHE_TIME, '.jpg'); ?>" alt="<?php echo $data['op_selprod_title']; ?>">
+							</span>
+						</li>
+						<div class="shipping-data_title"><?php echo $data['opshipping_label']; ?></div>
+						<?php } ?>
+					</ul>
+				</div>
+			</div>
+		</li>
+		<?php } ?>
+	</ul>
+		
+		<div class="d-flex"><button class="btn btn-outline-primary ml-auto" type="button" onClick="ShippingSummaryData();"><?php echo Labels::getLabel('LBL_Edit', $siteLangId); ?></button></div>
+	
+	
+	
 <?php }else{ ?>
-<h5 class="step-title"><?php echo Labels::getLabel('LBL_No_Pick_Up_address_added', $siteLangId); ?></h5>
+<div class="pop-up-title"><?php echo Labels::getLabel('LBL_No_Pick_Up_address_added', $siteLangId); ?></div>
 <?php } ?>
 
 <script>

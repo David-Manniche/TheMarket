@@ -98,14 +98,15 @@
         min-height: 100%;
         padding: 0 1rem;
         z-index: 99;
-        overflow: hidden;
+        overflow: auto;
+        max-height: 100%;
         background-color: #fff;
-        box-shadow: 5px 3px 4px rgba(0, 0, 0, 0.1);
+        box-shadow: 2px 0px 3px rgba(0, 0, 0, 0.1);
         >ul {
             display: flex;
             flex-wrap: wrap;
             >li {
-                flex: 1;
+                flex: 0 0 25%;
                 padding: 1rem;
             }
         }

@@ -186,8 +186,8 @@
                             <p><?php echo CommonHelper::currencyDisclaimer($siteLangId, $cartSummary['orderPaymentGatewayCharges']); ?></p>
                             <?php } ?>
                         </div>
-                        <div class="gap"></div>
-                        <div id="tabs-container"></div>
+                         
+                        <div class="tabs-container" id="tabs-container"></div>
                     </div>
                 </div>
             </div>

@@ -12,17 +12,20 @@
                 </div>
                 <div class="review-block__content" role="cell">  
                     <div class="delivery-address">             
-                        <p><?php echo ( mb_strlen($addresses['addr_address1'] ) > 0 ) ? $addresses['addr_address1'] : '';?>
-                        <?php echo ( mb_strlen($addresses['addr_address2'] ) > 0 ) ? $addresses['addr_address2'] . '<br>' : '';?>
-                        <?php echo ( mb_strlen($addresses['addr_city']) > 0 ) ? $addresses['addr_city'] . ',' : '';?>
-                        <?php echo ( mb_strlen($addresses['state_name']) > 0 ) ? $addresses['state_name'] . '<br>' : '';?>
-                        <?php echo ( mb_strlen($addresses['country_name']) > 0 ) ? $addresses['country_name'] . ',' : '';?>
-                        <?php echo ( mb_strlen($addresses['addr_zip']) > 0 ) ?  $addresses['addr_zip'] . '<br>' : '';?></p>
-                        <p class="phone-txt"><?php echo ( mb_strlen($addresses['addr_phone']) > 0 ) ? $addresses['addr_phone'] . '' : '';?></p>
+                        <p><?php echo $addresses['addr_address1'] ;?> 
+						<?php if(strlen($addresses['addr_address2']) > 0) { 
+							echo ", ".$addresses['addr_address2'] ;?> 
+						<?php } ?>
+						</p>   
+						<p><?php echo $addresses['addr_city'].", ".$addresses['state_name'] ;?></p>    
+						<p><?php echo $addresses['country_name'].", ".$addresses['addr_zip'] ;?></p>    
+						<?php if(strlen($addresses['addr_phone']) > 0) { ?>
+						<p class="phone-txt"><i class="fas fa-mobile-alt"></i><?php echo $addresses['addr_phone'] ;?></p>    
+						<?php } ?>
                     </div>
                 </div>
                 <div class="review-block__link" role="cell">
-                    <a class="link" href="javascript:void(0);" onClick="showAddressList()"><span><?php echo Labels::getLabel('LBL_Change_Address', $siteLangId); ?></span></a>
+                    <a class="link" href="javascript:void(0);" onClick="showAddressList()"><span><?php echo Labels::getLabel('LBL_Edit', $siteLangId); ?></span></a>
                 </div>
             </li>
         </ul>   
