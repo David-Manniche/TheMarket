@@ -986,7 +986,8 @@ class ProductCategory extends MyAppModel
         $prodSrchObj->doNotCalculateRecords();
         $prodSrchObj->setPageSize(1);
 
-        $prodSrchObj->addMultipleFields(array('substr(prodcat_code,1,6) AS prodrootcat_code','count(selprod_id) as productCounts', 'prodcat_id'));
+        $prodSrchObj->addMultipleFields(array('count(selprod_id) as productCounts', 'prodcat_id'));
+        /* $prodSrchObj->addMultipleFields(array('substr(prodcat_code,1,6) AS prodrootcat_code','count(selprod_id) as productCounts', 'prodcat_id')); */
 		
 		$cnd = $prodSrchObj->addCondition('c.prodcat_id', '=', $this->mainTableRecordId);
 		$cnd->attachCondition('c.prodcat_code', 'like', '%' . str_pad($this->mainTableRecordId, 6, '0', STR_PAD_LEFT) . '%');

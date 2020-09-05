@@ -21,7 +21,7 @@
 									<li>
 										<a href="javascript:void(0)" onclick="setImage('<?php echo $flagName;?>',<?php echo $language_id;?>)">
 										  <div class="flagWrap <?php echo ( $selectedFlag == $flagName ) ? 'is--active':'';?> " >
-											<div class="flagthumb"> <img  src="<?php echo CONF_WEBROOT_FRONT_URL;?>images/flags/<?php echo FatApp::getConfig('CONF_COUNTRY_FLAG_TYPE', FatUtility::VAR_STRING, 'square'); ?>/<?php echo $flagName;?>" title="<?php echo $flagName;?>" alt="<?php echo $flagName;?>">
+											<div class="flagthumb"> <img  src="<?php echo CONF_WEBROOT_FRONT_URL;?>images/flags/<?php echo FatApp::getConfig('CONF_COUNTRY_FLAG_TYPE', FatUtility::VAR_STRING, 'round'); ?>/<?php echo $flagName;?>" title="<?php echo $flagName;?>" alt="<?php echo $flagName;?>">
 											<span><?php echo $flagName;?></span>
 											</div>
 										  </div>
