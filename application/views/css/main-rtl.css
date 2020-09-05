@@ -8423,7 +8423,6 @@ a.text-dark:hover, a.text-dark:focus {
       flex-direction: column; } }
   .sublinks .head > a {
     color: #222;
-    font-weight: 600;
     text-transform: uppercase; }
     .sublinks .head > a:hover {
       color: var(--brand-color); }
@@ -8478,8 +8477,8 @@ a.text-dark:hover, a.text-dark:focus {
               right: -12px;
               visibility: visible;
               opacity: 1; }
-        .sublinks > li ul li .seemore a {
-          font-weight: 600; }
+  .sublinks .seemore a {
+    font-weight: 600; }
 
 .navs_toggle {
   cursor: pointer;
@@ -9080,7 +9079,7 @@ a.text-dark:hover, a.text-dark:focus {
       display: flex;
       flex-wrap: wrap; }
       .vertical-menu .menu > li > .megadrop > ul > li {
-        flex: 1;
+        flex: 0 0 25%;
         padding: 1rem; }
   .vertical-menu .menu > li:hover .megadrop {
     opacity: 1;
