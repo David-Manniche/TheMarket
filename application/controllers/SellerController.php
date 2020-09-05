@@ -3659,7 +3659,7 @@ class SellerController extends SellerBaseController
         $frm->addTextArea(Labels::getLabel('LBL_Your_Comments', $this->siteLangId), 'comments');
         $orderStatusArr = Orders::getOrderProductStatusArr($this->siteLangId, $processingOrderStatus, $orderData['op_status_id']);
 
-        $fld = $frm->addSelectBox(Labels::getLabel('LBL_Status', $this->siteLangId), 'op_status_id', $orderStatusArr, '', array(), Labels::getLabel('Lbl_Select', $this->siteLangId));
+        $fld = $frm->addSelectBox(Labels::getLabel('LBL_Status', $this->siteLangId), 'op_status_id', $orderStatusArr, '', [], Labels::getLabel('Lbl_Select', $this->siteLangId));
         $fld->requirements()->setRequired();
 
         $frm->addSelectBox(Labels::getLabel('LBL_Notify_Customer', $this->siteLangId), 'customer_notified', applicationConstants::getYesNoArr($this->siteLangId), '', array(), Labels::getLabel('Lbl_Select', $this->siteLangId))->requirements()->setRequired();
@@ -3671,6 +3671,17 @@ class SellerController extends SellerBaseController
                 'disabled' => 'disabled'
             ];
             $labelGenerated = true;
+        } else {
+            $manualFld = $frm->addCheckBox(Labels::getLabel('LBL_SELF_SHIPPING', $this->siteLangId), 'manual_shipping', 1, array(), false, 0);
+            $manualShipUnReqObj = new FormFieldRequirement('manual_shipping', Labels::getLabel('LBL_SELF_SHIPPING', $this->siteLangId));
+            $manualShipUnReqObj->setRequired(false);
+            $manualShipReqObj = new FormFieldRequirement('manual_shipping', Labels::getLabel('LBL_SELF_SHIPPING', $this->siteLangId));
+            $manualShipReqObj->setRequired(true);
+            
+            $fld->requirements()->addOnChangerequirementUpdate(FatApp::getConfig("CONF_DEFAULT_SHIPPING_ORDER_STATUS"), 'eq', 'manual_shipping', $manualShipReqObj);
+            $fld->requirements()->addOnChangerequirementUpdate(FatApp::getConfig("CONF_DEFAULT_SHIPPING_ORDER_STATUS"), 'ne', 'manual_shipping', $manualShipUnReqObj);
+
+            $fld = $manualFld;
         }
 
         $frm->addTextBox(Labels::getLabel('LBL_Tracking_Number', $this->siteLangId), 'tracking_number', '', $attr);
@@ -3681,13 +3692,21 @@ class SellerController extends SellerBaseController
         $trackingReqObj = new FormFieldRequirement('tracking_number', Labels::getLabel('LBL_Tracking_Number', $this->siteLangId));
         $trackingReqObj->setRequired(true);
 
-        $fld->requirements()->addOnChangerequirementUpdate(FatApp::getConfig("CONF_DEFAULT_SHIPPING_ORDER_STATUS"), 'eq', 'tracking_number', $trackingReqObj);
-        $fld->requirements()->addOnChangerequirementUpdate(FatApp::getConfig("CONF_DEFAULT_SHIPPING_ORDER_STATUS"), 'ne', 'tracking_number', $trackingUnReqObj);
+        $fld->requirements()->addOnChangerequirementUpdate(applicationConstants::YES, 'eq', 'tracking_number', $trackingReqObj);
+        $fld->requirements()->addOnChangerequirementUpdate(applicationConstants::NO, 'eq', 'tracking_number', $trackingUnReqObj);
 
         if (false === $labelGenerated) {
-            $fld = $frm->addTextBox(Labels::getLabel('LBL_TRACK_THROUGH', $this->siteLangId), 'opship_tracking_url', '', $attr);
-            $fld->htmlAfterField = '<small class="text--small">' . Labels::getLabel('LBL_ENTER_THE_URL_TO_TRACK_THE_SHIPMENT.', $this->siteLangId) . '</small>';
-            $frm->addCheckBox(Labels::getLabel('LBL_SELF_SHIPPING', $this->siteLangId), 'manual_shipping', 1, array(), false, 0);
+            $trackUrlFld = $frm->addTextBox(Labels::getLabel('LBL_TRACK_THROUGH', $this->siteLangId), 'opship_tracking_url', '', $attr);
+            $trackUrlFld->htmlAfterField = '<small class="text--small">' . Labels::getLabel('LBL_ENTER_THE_URL_TO_TRACK_THE_SHIPMENT.', $this->siteLangId) . '</small>';
+
+            $trackingUrlUnReqObj = new FormFieldRequirement('opship_tracking_url', Labels::getLabel('LBL_TRACK_THROUGH', $this->siteLangId));
+            $trackingUrlUnReqObj->setRequired(false);
+
+            $trackingurlReqObj = new FormFieldRequirement('opship_tracking_url', Labels::getLabel('LBL_TRACK_THROUGH', $this->siteLangId));
+            $trackingurlReqObj->setRequired(true);
+
+            $fld->requirements()->addOnChangerequirementUpdate(applicationConstants::YES, 'eq', 'opship_tracking_url', $trackingurlReqObj);
+            $fld->requirements()->addOnChangerequirementUpdate(applicationConstants::NO, 'eq', 'opship_tracking_url', $trackingUrlUnReqObj);
         }
 
         $frm->addHiddenField('', 'op_id', 0);

@@ -6,7 +6,11 @@ $frmOrderReturnRequest->developerTags['fld_default_col'] = 6;
 
 $orRequestTypeFld = $frmOrderReturnRequest->getField('orrequest_type');
 $orRequestTypeFld->setOptionListTagAttribute('class', 'list-inline');
-?> <?php $this->includeTemplate('_partial/dashboardNavigation.php'); ?> <main id="main-area" class="main" role="main">
+
+$btn = $frmOrderReturnRequest->getField('btn_submit');
+$btn->setFieldTagAttribute('class', 'btn btn-primary');
+
+$this->includeTemplate('_partial/dashboardNavigation.php'); ?> <main id="main-area" class="main" role="main">
     <div class="content-wrapper content-space">
         <div class="content-header row">
             <div class="col"> <?php $this->includeTemplate('_partial/dashboardTop.php'); ?>

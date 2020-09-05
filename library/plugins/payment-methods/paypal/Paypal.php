@@ -141,7 +141,7 @@ class Paypal extends PaymentMethodBase
 
         //=== Prepare amount & break down of amount for order
         $pu_amount["currency_code"] = $this->systemCurrencyCode;
-        $pu_amount["value"] = $paymentAmount;
+        $pu_amount["value"] =  number_format((float)$paymentAmount, 2, '.', '');
         $purchase_units["reference_id"] = $orderId;
         $purchase_units["amount"] = $pu_amount;
         $purchase_units["shipping"] = [

@@ -155,8 +155,9 @@ class LanguagesController extends AdminBaseController
 
     public function getLanguageFlags()
     {
+        $flagType = FatApp::getConfig('CONF_COUNTRY_FLAG_TYPE', FatUtility::VAR_STRING, 'square');
         $arrFlag = array();
-        $dir = CONF_INSTALLATION_PATH . 'public/images/flags';
+        $dir = CONF_INSTALLATION_PATH . 'public/images/flags/'.$flagType;
         $arrFlags = array_diff(scandir($dir, 1), array(".", ".."));
 
         return $arrFlags;
@@ -177,6 +178,7 @@ class LanguagesController extends AdminBaseController
         $this->set('language_id', $languageId);
         $this->_template->render(false, false);
     }
+
     public function changeStatus()
     {
         $this->objPrivilege->canEditLanguage();

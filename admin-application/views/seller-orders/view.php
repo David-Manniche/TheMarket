@@ -543,24 +543,24 @@ if (!empty($order["thirdPartyorderInfo"]) && isset($order["thirdPartyorderInfo"]
 
                             $frm->developerTags['colClassPrefix'] = 'col-md-';
                             $frm->developerTags['fld_default_col'] = 12;
+                            
+                            $manualFld = $frm->getField('manual_shipping');
 
                             $statusFld = $frm->getField('op_status_id');
-                            $statusFld->setFieldTagAttribute('class', 'status-js');
+                            $statusFld->setFieldTagAttribute('class', 'status-js fieldsVisibility-js');
+                            $statusFld->developerTags['col'] = (null != $manualFld) ? 4 : 6;
 
                             $notiFld = $frm->getField('customer_notified');
                             $notiFld->setFieldTagAttribute('class', 'notifyCustomer-js');
+                            $notiFld->developerTags['col'] = (null != $manualFld) ? 4 : 6;
 
                             $fldTracking = $frm->getField('tracking_number');
-                            $fldTracking->setWrapperAttribute('class', 'trackingDiv-js');
 
-                            $fld = $frm->getField('manual_shipping');
-                            if (null != $fld) {
-                                $fld->setWrapperAttribute('class', 'trackingDiv-js');
-                                $fld->setFieldTagAttribute('class', 'manualShipping-js');
-                                $fld->developerTags['col'] = 6;
+                            if (null != $manualFld) {
+                                $manualFld->setFieldTagAttribute('class', 'manualShipping-js fieldsVisibility-js');
+                                $manualFld->developerTags['col'] = 4;
 
                                 $fld = $frm->getField('opship_tracking_url');
-                                $fld->setWrapperAttribute('class', 'trackingDiv-js');
                                 $fld->developerTags['col'] = 6;
                             }
                             

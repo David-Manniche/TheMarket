@@ -373,7 +373,7 @@ class ProductCategoriesController extends AdminBaseController
             FatUtility::dieJsonError(Labels::getLabel('LBL_Products_are_associated_with_its_category/sub-categories_so_we_are_not_able_to_delete_this_category', $this->adminLangId));
         }
         /* ] */
-
+		
         $prodCateObj->assignValues(array(ProductCategory::tblFld('deleted') => 1));
         if (!$prodCateObj->save()) {
             FatUtility::dieJsonError($prodCateObj->getError());
