@@ -267,7 +267,7 @@ class CommissionController extends AdminBaseController
 
         $post = FatApp::getPostedData();
         if (!empty($post['keyword'])) {
-            /* $srch->addCondition('product_name', 'LIKE', '%' . $post['keyword'] . '%'); */
+            $srch->addCondition('product_name', 'LIKE', '%' . $post['keyword'] . '%');
         }
 
         // $srch->setPageSize(FatApp::getConfig('CONF_ADMIN_PAGESIZE', FatUtility::VAR_INT, 10));
