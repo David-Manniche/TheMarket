@@ -79,6 +79,13 @@ class CommissionController extends AdminBaseController
                 $row = $db->fetch($rs);
                 $data['product'] = isset($row['product_name']) ? $row['product_name'] : '';
             }
+
+            if ($data['commsetting_prodcat_id'] > 0) {
+                $prodCat = new ProductCategory();
+                $selectedCatName = $prodCat->getParentTreeStructure($data['commsetting_prodcat_id'], 0, '', $this->adminLangId);
+                $data['category_name'] = html_entity_decode($selectedCatName);
+            }
+
             $frm->fill($data);
         }
 
@@ -260,7 +267,7 @@ class CommissionController extends AdminBaseController
 
         $post = FatApp::getPostedData();
         if (!empty($post['keyword'])) {
-            $srch->addCondition('product_name', 'LIKE', '%' . $post['keyword'] . '%');
+            /* $srch->addCondition('product_name', 'LIKE', '%' . $post['keyword'] . '%'); */
         }
 
         // $srch->setPageSize(FatApp::getConfig('CONF_ADMIN_PAGESIZE', FatUtility::VAR_INT, 10));
@@ -289,18 +296,15 @@ class CommissionController extends AdminBaseController
         }
         $frm = new Form('frmCommission');
         $frm->addHiddenField('', 'commsetting_id', $commissionId);
-
+        
         if (!$isMandatory) {
-            $prodCatObj = new ProductCategory();
-            $arrCategories = $prodCatObj->getCategoriesForSelectBox($this->adminLangId);
-            $categories = $prodCatObj->makeAssociativeArray($arrCategories);
-            $frm->addSelectBox(Labels::getLabel('LBL_Category', $this->adminLangId), 'commsetting_prodcat_id', array( '' => 'Does not Matter' ) + $categories, '', array(), '');
-            $fld =$frm->addTextBox(Labels::getLabel('LBL_Seller', $this->adminLangId), 'user_name');
-            $fld->setWrapperAttribute('class', 'ui-front');
+            $frm->addTextBox(Labels::getLabel('LBL_Category_Name', $this->adminLangId), 'category_name');
+            $frm->addTextBox(Labels::getLabel('LBL_Seller', $this->adminLangId), 'user_name');
             $frm->addTextBox(Labels::getLabel('LBL_Product', $this->adminLangId), 'product');
 
             $frm->addHiddenField('', 'commsetting_user_id', 0);
             $frm->addHiddenField('', 'commsetting_product_id', 0);
+            $frm->addHiddenField('', 'commsetting_prodcat_id', 0);
         }
 
         $fld = $frm->addFloatField(Labels::getLabel('LBL_Commission_fees_(%)', $this->adminLangId), 'commsetting_fees');
