@@ -1,20 +1,28 @@
 $(document).ready(function(){
 		/* alert(singleFeaturedProduct); */
 		/* home page main slider */
+		
+		$('.navchild').hover(function() {
+			reinitSlick();
+		});
+		
+		reinitSlick = function() {
+			$('.js-hero-slider').slick("slickPause");
+			console.log('added');
+		}
 
         $('.js-collection-corner').slick( getSlickSliderSettings(5, 1, langLbl.layoutDirection) );
 
 		if(langLbl.layoutDirection == 'rtl'){
-
-			$('.js-hero-slider').slick({
-//				centerMode: true,
-//				centerPadding: '14%',
+			var slickOptions = {
 				slidesToShow: 1,
 				arrows: false,
 				dots: true,
 				rtl:true,
-                autoplay: true,
-			});
+				autoplay: true,
+			}
+
+			$('.js-hero-slider').slick(slickOptions);
 
 			$('.featured-item-js').slick({
 
@@ -94,15 +102,14 @@ $(document).ready(function(){
 			});
 
 		}else{
-
-			$('.js-hero-slider').slick({
-				/*centerMode: true,
-				centerPadding: '14%',*/
+			var slickOptions = {
 				slidesToShow: 1,
 				arrows: false,
 				dots: true,
                 autoplay: true,
-			});
+			}
+
+			$('.js-hero-slider').slick(slickOptions);
 
 		$('.featured-item-js').slick({
 		  centerMode: true,

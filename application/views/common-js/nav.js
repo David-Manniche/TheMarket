@@ -11,7 +11,7 @@ $(document).ready(function() {
 				$('.navchild').removeClass('active');
 				el.removeClass('nav_show'); 
 			}
-		   if($(window).width()>1025){ 
+			if($(window).width()>1025){ 
 				$(this).toggleClass("active");
 				el.toggleClass("nav_show");
 			}    
