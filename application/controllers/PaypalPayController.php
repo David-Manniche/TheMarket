@@ -88,6 +88,7 @@ class PaypalPayController extends PaymentController
         if (false === $this->plugin->createOrder($orderId)) {
             $error = $this->plugin->getError();
             $msg = is_array($error) && isset($error['error']) ? $error['error'] . ' : ' . $error['error_description'] : $error;
+            $msg = is_array($msg) && isset($msg['message']) ? $msg['message'] : $msg;
             $this->setErrorAndRedirect($msg, true);
         }
         $order = $this->plugin->getResponse();
