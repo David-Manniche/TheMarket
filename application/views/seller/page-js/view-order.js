@@ -1,14 +1,10 @@
-$(document).ready(function(){
-	$(".trackingDiv-js").hide();		
-	
+$(document).ready(function(){	
 	$("select[name='op_status_id']").change(function(){
 		var data = 'val='+$(this).val();
 		fcom.ajax(fcom.makeUrl('Seller', 'checkIsShippingMode'), data, function(t) {			
 			var response = $.parseJSON(t);
 			if (response["shipping"]){
-				$(".trackingDiv-js").show();				
-			}else{
-				$(".trackingDiv-js").hide();				
+                $('.manualShipping-js').attr('data-fatreq', '{"required":false}');
 			}			
 		});
 	});

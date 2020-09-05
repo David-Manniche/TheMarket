@@ -810,6 +810,17 @@ class SellerOrdersController extends AdminBaseController
                 'disabled' => 'disabled'
             ];
             $labelGenerated = true;
+        } else {
+            $manualFld = $frm->addCheckBox(Labels::getLabel('LBL_SELF_SHIPPING', $this->adminLangId), 'manual_shipping', 1, array(), false, 0);
+            $manualShipUnReqObj = new FormFieldRequirement('manual_shipping', Labels::getLabel('LBL_SELF_SHIPPING', $this->adminLangId));
+            $manualShipUnReqObj->setRequired(false);
+            $manualShipReqObj = new FormFieldRequirement('manual_shipping', Labels::getLabel('LBL_SELF_SHIPPING', $this->adminLangId));
+            $manualShipReqObj->setRequired(true);
+            
+            $fld->requirements()->addOnChangerequirementUpdate(FatApp::getConfig("CONF_DEFAULT_SHIPPING_ORDER_STATUS"), 'eq', 'manual_shipping', $manualShipReqObj);
+            $fld->requirements()->addOnChangerequirementUpdate(FatApp::getConfig("CONF_DEFAULT_SHIPPING_ORDER_STATUS"), 'ne', 'manual_shipping', $manualShipUnReqObj);
+
+            $fld = $manualFld;
         }
 
         $frm->addTextBox(Labels::getLabel('LBL_Tracking_Number', $this->adminLangId), 'tracking_number', '', $attr);
@@ -820,13 +831,21 @@ class SellerOrdersController extends AdminBaseController
         $trackingReqObj = new FormFieldRequirement('tracking_number', Labels::getLabel('LBL_Tracking_Number', $this->adminLangId));
         $trackingReqObj->setRequired(true);
 
-        $fld->requirements()->addOnChangerequirementUpdate(FatApp::getConfig("CONF_DEFAULT_SHIPPING_ORDER_STATUS"), 'eq', 'tracking_number', $trackingReqObj);
-        $fld->requirements()->addOnChangerequirementUpdate(FatApp::getConfig("CONF_DEFAULT_SHIPPING_ORDER_STATUS"), 'ne', 'tracking_number', $trackingUnReqObj);
+        $fld->requirements()->addOnChangerequirementUpdate(applicationConstants::YES, 'eq', 'tracking_number', $trackingReqObj);
+        $fld->requirements()->addOnChangerequirementUpdate(applicationConstants::NO, 'eq', 'tracking_number', $trackingUnReqObj);
 
         if (false === $labelGenerated) {
-            $fld = $frm->addTextBox(Labels::getLabel('LBL_TRACK_THROUGH', $this->adminLangId), 'opship_tracking_url', '', $attr);
-            $fld->htmlAfterField = '<small class="text--small">' . Labels::getLabel('LBL_ENTER_THE_URL_TO_TRACK_THE_SHIPMENT.', $this->adminLangId) . '</small>';
-            $frm->addCheckBox(Labels::getLabel('LBL_SELF_SHIPPING', $this->adminLangId), 'manual_shipping', 1, array(), false, 0);
+            $trackUrlFld = $frm->addTextBox(Labels::getLabel('LBL_TRACK_THROUGH', $this->adminLangId), 'opship_tracking_url', '', $attr);
+            $trackUrlFld->htmlAfterField = '<small class="text--small">' . Labels::getLabel('LBL_ENTER_THE_URL_TO_TRACK_THE_SHIPMENT.', $this->adminLangId) . '</small>';
+
+            $trackingUrlUnReqObj = new FormFieldRequirement('opship_tracking_url', Labels::getLabel('LBL_TRACK_THROUGH', $this->adminLangId));
+            $trackingUrlUnReqObj->setRequired(false);
+
+            $trackingurlReqObj = new FormFieldRequirement('opship_tracking_url', Labels::getLabel('LBL_TRACK_THROUGH', $this->adminLangId));
+            $trackingurlReqObj->setRequired(true);
+
+            $fld->requirements()->addOnChangerequirementUpdate(applicationConstants::YES, 'eq', 'opship_tracking_url', $trackingurlReqObj);
+            $fld->requirements()->addOnChangerequirementUpdate(applicationConstants::NO, 'eq', 'opship_tracking_url', $trackingUrlUnReqObj);
         }
 
         $frm->addHiddenField('', 'op_id', 0);
