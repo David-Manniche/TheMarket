@@ -1,7 +1,7 @@
 <?php
 defined('SYSTEM_INIT') or die('Invalid Usage.'); ?>
 <div class="row">
-    <div class="col-md-8"> 
+    <div class="col-xl-8 col-lg-7"> 
         <div class="shiporpickup">
                 <ul>
                     <li onclick="listCartProducts(<?php echo Shipping::FULFILMENT_SHIP;?>)"><input class="control-input" type="radio" id="shipping" name="fulfillment_type" <?php echo ($fulfilmentType == Shipping::FULFILMENT_SHIP) ? 'checked':'';?> value="<?php echo Shipping::FULFILMENT_SHIP;?>">

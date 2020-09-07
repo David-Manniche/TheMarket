@@ -149,7 +149,6 @@
     @include media-breakpoint-up(xl) {
         .sidebar {
             position: relative;
-            color: #525252;
             width: 40%;
             padding-top: 4rem;
             padding-#{$start-direction}: 4rem;
@@ -265,6 +264,12 @@
         padding-#{$end-direction}: 1rem;
         margin-bottom: 0.5rem;
         font-weight: 600;
+        @include media-breakpoint-down(md) {
+            & {
+                flex: 1;
+                max-width: none;
+            }
+        }
     }
     &__content {
         flex: 1;
@@ -520,6 +525,7 @@
             grid-template-columns: 50% 1fr;
             align-items: center;
             li {
+                height: 100%;
                 text-align: center;
                 border-radius: $radius4;
                 padding: 1rem;
@@ -544,7 +550,7 @@
 }
 
 .earn-points {
-    background-color: $gray-color;
+    background: $bg-gray;
     border-radius: $radius4;
     padding: 0.7rem;
     text-align: center;
@@ -698,8 +704,8 @@
             font-size: 0.85rem;
             font-weight: 600;
             padding-#{$end-direction}: 1rem;
-            flex: 0 0 20%;
-            max-width: 20%;
+            /* flex: 0 0 20%;
+            max-width: 20%;*/
         }
         .shop-address {
             flex: 1;
@@ -877,7 +883,7 @@
 }
 
 .phone-txt {
-    font-weight: 600;
+    font-weight: 500;
     font-size: 0.85rem;
     margin-top: 8px;
     i {

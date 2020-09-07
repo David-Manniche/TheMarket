@@ -120,7 +120,7 @@
             position: relative;
             text-overflow: ellipsis;
             white-space: nowrap;
-            font-weight: 600;
+            font-weight: 500;
             @include media-breakpoint-down(lg) {
                 & {
                     color: inherit;

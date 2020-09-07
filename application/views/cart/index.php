@@ -3,7 +3,7 @@
     <section class="section cart-page">
         <div class="container">
             <div class="row justify-content-center">
-                <div class="col-md-10" id="cartList"></div>
+                <div class="col-xl-10" id="cartList"></div>
             </div>
         </div>
     </section>

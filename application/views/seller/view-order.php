@@ -140,7 +140,8 @@ if (!empty($orderDetail["thirdPartyorderInfo"]) && isset($orderDetail["thirdPart
                     </div>
 
                     <table class="table">
-                        <tbody>
+                        <thead>
+                       
                             <tr class="">
                                 <th><?php echo Labels::getLabel('LBL_Order_Particulars', $siteLangId); ?></th>
                                 <?php if (!$print) { ?>
@@ -159,6 +160,8 @@ if (!empty($orderDetail["thirdPartyorderInfo"]) && isset($orderDetail["thirdPart
                                 <?php } ?>
                                 <th><?php echo Labels::getLabel('LBL_Total', $siteLangId); ?></th>
                             </tr>
+                            </thead>
+                            <tbody>
                             <tr>
                                 <?php if (!$print) { ?>
                                     <td>
@@ -370,13 +373,16 @@ if (!empty($orderDetail["thirdPartyorderInfo"]) && isset($orderDetail["thirdPart
                         <div class="section--repeated no-print">
                             <h5><?php echo Labels::getLabel('LBL_Posted_Comments', $siteLangId); ?></h5>
                             <table class="table  table--orders">
-                                <tbody>
+                                <thead>
+                               
                                     <tr class="">
                                         <th><?php echo Labels::getLabel('LBL_Date_Added', $siteLangId); ?></th>
                                         <th><?php echo Labels::getLabel('LBL_Customer_Notified', $siteLangId); ?></th>
                                         <th><?php echo Labels::getLabel('LBL_Status', $siteLangId); ?></th>
                                         <th><?php echo Labels::getLabel('LBL_Comments', $siteLangId); ?></th>
                                     </tr>
+                                    </thead>
+                                    <tbody>
                                     <?php 
                                     foreach ($orderDetail['comments'] as $row) { ?>
                                         <tr>

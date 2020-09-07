@@ -370,8 +370,6 @@
             animation: bell-shake 40s ease 3s infinite;
         }
         .my-account {
-            -webkit-margin-start: 15px;
-            -moz-margin-start: 15px;
             margin-#{$start-direction}: 15px;
             position: relative;
         }
@@ -862,13 +860,9 @@
         -ms-flex-align: center;
         align-items: center;
         li {
-            -webkit-margin-start: 5px;
-            -moz-margin-start: 5px;
             margin-#{$start-direction}: 5px;
             margin-#{$end-direction}: 5px;
             &:first-child {
-                -webkit-margin-start: 0;
-                -moz-margin-start: 0;
                 margin-#{$start-direction}: 0;
             }
             a {
@@ -989,7 +983,7 @@
 .stats-number {
     ul li {
         border-top: $border;
-        color: $body-color;
+        color: $txt-gray;
         display: -webkit-box;
         display: -ms-flexbox;
         display: flex;
@@ -1078,7 +1072,7 @@
         -webkit-box-flex: 0;
         -ms-flex: 0 0 70px;
         flex: 0 0 70px;
-        background: $gray-color;
+        background: $bg-gray;
         display: flex;
         align-items: center;
         justify-content: center;
@@ -1219,8 +1213,6 @@
 .slick-prev:after {
     -webkit-transform: rotate(135deg);
     transform: rotate(135deg);
-    -webkit-margin-start: -3px;
-    -moz-margin-start: -3px;
     margin-#{$start-direction}: -3px;
 }
 

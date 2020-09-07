@@ -234,7 +234,7 @@
 }
 
 .cat-accordion li a.is--active {
-    font-weight: 600;
+    font-weight: 500;
 }
 
 .cat-accordion ul ul li a {
@@ -330,8 +330,6 @@
     border-radius: 50%;
     cursor: pointer;
     height: 13px;
-    -webkit-margin-start: 0;
-    -moz-margin-start: 0;
     margin-#{$start-direction}: 0;
     outline: medium none;
     position: absolute;
@@ -348,7 +346,7 @@
 
 .from-price-text,
 .to-price-text {
-    font-weight: 600;
+    font-weight: 500;
     font-size: 0.8em;
     vertical-align: top;
 }

@@ -6,7 +6,7 @@
         #{$start-direction}: 0;
         #{$end-direction}: 0;
         top: 0;
-        background: $gray-light;
+        background: $bg-gray;
         height: 226px;
         z-index: -1;
     }
@@ -195,7 +195,7 @@
         box-shadow: 0 0px 1px 0 rgba(0, 0, 0, 0.30);
     }
     .is-active {
-        background: $gray-color;
+        background: $bg-gray;
         color: $body-color;
     }
 }
@@ -518,7 +518,7 @@
         font-size: 0.875em;
         font-weight: 600;
         text-align: center;
-        min-width: 180px;
+        min-width: 190px;
     }
     .item__price {
         color: $txt-gray;
@@ -1203,7 +1203,7 @@
 }
 
 .certified-bar {
-    background: $gray-light;
+    background: $bg-gray;
     border-top: $border;
     ul {
         display: flex;
