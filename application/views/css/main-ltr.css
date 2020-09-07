@@ -7816,6 +7816,11 @@ a.text-dark:hover, a.text-dark:focus {
             height: 15px;
             margin-right: 5px;
             fill: inherit; }
+      .header .top-bar .short-links .icon--img {
+        width: 16px;
+        height: 16px;
+        border-radius: 50%;
+        margin-right: 5px; }
     .header .top-bar .logout {
       font-weight: 600;
       border-top: solid 1px #dee2e6; }
@@ -17205,7 +17210,8 @@ a:hover {
   position: relative;
   border-radius: 4px;
   /*margin-bottom: 1rem;*/
-  height: 100%; }
+  height: 100%;
+  animation: dropdown-menu-fade-in 0.3s ease 1, dropdown-menu-move-up 0.3s ease-out 1; }
   @media (max-width: 991.98px) {
     .cards {
       word-break: normal; } }
@@ -32927,8 +32933,8 @@ a.ui-button:active,
       -ms-flex-pack: center;
       justify-content: center;
       -webkit-box-flex: 0;
-      -ms-flex: 0 0 70px;
-      flex: 0 0 70px; }
+      -ms-flex: 0 0 60px;
+      flex: 0 0 60px; }
       .my-dashboard .sidebar .dashboard-menu .icn svg {
         width: 18px;
         height: 18px;
@@ -34343,7 +34349,8 @@ transform: rotate(-135deg);*/ }
     margin: 0 10px;
     font-size: 0.875em;
     font-weight: 600;
-    text-align: center; }
+    text-align: center;
+    min-width: 180px; }
   .discount-slider .item__price {
     color: #888;
     display: block;
@@ -34949,6 +34956,10 @@ transform: rotate(-135deg);*/ }
       text-transform: uppercase; }
       .certified-bar .certified-box p a {
         color: #575757; }
+
+.cart-tbl-addons {
+  border-radius: 2px;
+  border: solid 1px #dee2e6; }
 
 #faqquestions {
   margin: 40px auto 0;

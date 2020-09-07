@@ -15,7 +15,7 @@ $frm->developerTags['fld_default_col'] = 12;
 					<ul class="tabs_nav">
 						<li><a class="active" href="javascript:void(0)" onclick="editLanguageForm(<?php echo $language_id ?>);"><?php echo Labels::getLabel('LBL_General',$adminLangId); ?></a></li>
 						<?php $inactive=($language_id==0)?'fat-inactive':''; ?>
-						<li  class="<?php echo $inactive;?>"><a href="javascript:void(0)" <?php if($language_id>0){?> onclick="mediaForm(<?php echo $language_id ?>);" <?php }?> ><?php echo Labels::getLabel('LBL_Media',$adminLangId); ?></a></li>
+						<?php /* <li  class="<?php echo $inactive;?>"><a href="javascript:void(0)" <?php if($language_id>0){?> onclick="mediaForm(<?php echo $language_id ?>);" <?php }?> ><?php echo Labels::getLabel('LBL_Media',$adminLangId); ?></a></li> */ ?>
 					</ul>
 					<div class="tabs_panel_wrap">
 						<div class="tabs_panel">

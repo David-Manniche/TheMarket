@@ -518,6 +518,7 @@
         font-size: 0.875em;
         font-weight: 600;
         text-align: center;
+        min-width: 180px;
     }
     .item__price {
         color: $txt-gray;
@@ -1256,4 +1257,9 @@
             }
         }
     }
+}
+
+.cart-tbl-addons {
+    border-radius: $radius2;
+    border: $border;
 }
