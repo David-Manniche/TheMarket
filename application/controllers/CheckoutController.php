@@ -2112,9 +2112,10 @@ class CheckoutController extends MyAppController
         }
         
         $pickupAddressArr = array();
-        $basketProducts = $this->cartObj->getBasketProducts($this->siteLangId);
+//        $basketProducts = $this->cartObj->getBasketProducts($this->siteLangId);
+        $basketProducts = [];
         $pickupOptions = $this->cartObj->getPickupOptions($basketProducts);
-      
+
         foreach ($post['slot_id'] as $level => $slotId) {
             if (empty($slotId) || empty($post['slot_date'][$level])) {
                 $message = Labels::getLabel('MSG_Pickup_Method_is_not_selected_on_products_in_cart', $this->siteLangId);
@@ -2144,13 +2145,12 @@ class CheckoutController extends MyAppController
                 $message = Labels::getLabel('MSG_Something_went_wrong,_please_try_after_some_time.', $this->siteLangId);
                 LibHelper::exitWithError($message, true);
             }
-        
+
             foreach ($pickupOptions[$level]['products'] as $pickupProduct) {
                 foreach ($cartProducts as $cartKey => $cartval) {
-                    if ($cartval['selprod_id'] != $pickupProduct['selprod_id']) {
+                    if ($cartval['selprod_id'] != $pickupProduct['selprod_id'] || $cartval['product_type'] == Product::PRODUCT_TYPE_DIGITAL) {
                         continue;
                     }
-                    
                     /* get Product Data[ */
                     $prodSrch = new ProductSearch();
                     $prodSrch->setDefinedCriteria();
@@ -2167,7 +2167,6 @@ class CheckoutController extends MyAppController
                     $productRs = $prodSrch->getResultSet();
                     $productInfo = FatApp::getDb()->fetch($productRs);
                     /* ] */     
-                    
                     $pickupAddressArr[$cartval['selprod_id']] = array(
                         'selprod_id' => $cartval['selprod_id'], 
                         'shipped_by_seller' => Product::isShippedBySeller($cartval['selprod_user_id'], $productInfo['product_seller_id'], $productInfo['shippedBySellerId']),
@@ -2180,8 +2179,8 @@ class CheckoutController extends MyAppController
                     );
                 }
             }
-        } 
-
+        }   
+                        
         $this->cartObj->setProductPickUpAddresses($pickupAddressArr);
         $this->set('msg', Labels::getLabel('MSG_Pickup_Method_selected_successfully.', $this->siteLangId));
         $this->_template->render(false, false, 'json-success.php');

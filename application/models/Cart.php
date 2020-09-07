@@ -1720,7 +1720,7 @@ class Cart extends FatModel
         if (empty($cartProducts)) {
             $cartProducts =  $this->getProducts($this->cart_lang_id);
         }
-        
+
         foreach ($cartProducts as $product) {
             $selProdId = $product['selprod_id'];
             $shippedById = 0;
@@ -1936,7 +1936,7 @@ class Cart extends FatModel
     public function isProductPickUpAddrSet()
     {
         foreach ($this->getProducts($this->cart_lang_id) as $product) {
-            if (!isset($this->SYSTEM_ARR['shopping_cart']['product_pickup_Addresses'][$product['selprod_id']])) {
+            if (!isset($this->SYSTEM_ARR['shopping_cart']['product_pickup_Addresses'][$product['selprod_id']]) && $product['product_type'] == Product::PRODUCT_TYPE_PHYSICAL) {
                 return false;
             }
         }
