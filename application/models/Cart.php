@@ -1730,11 +1730,10 @@ class Cart extends FatModel
                 $shippedById = $product['shop_id'];
                 $shipType = Address::TYPE_SHOP_PICKUP;
             }
-            $shippedByArr[$shippedById]['products'][$selProdId] = $product;
-            $shippedByArr[$shippedById]['pickup_options'] = [];
-            $shippedByArr[$shippedById]['pickup_address'] = [];
             
-            if ($val['is_physical_product']) {
+            if ($product['is_physical_product']) {
+                $shippedByArr[$shippedById]['products'][$selProdId] = $product;
+                
                 if (!in_array($shippedById, $pickupAddress)) {
                     $addresses = $address->getData($shipType, $shippedById);
                     $shippedByArr[$shippedById]['pickup_options'] = $addresses;
@@ -1751,8 +1750,10 @@ class Cart extends FatModel
                     $shippedByArr[$shippedById]['pickup_address']['time_slot_to'] = $pickUpData[$selProdId]['time_slot_to_time'];    
                 }
                 $selectedPickUpAddresses[] = $shippedById;
+            }else{
+                $shippedByArr[$shippedById]['digital_products'][$selProdId] = $product;
             }
-        }   
+        } 
         return $shippedByArr;
     }
 

@@ -1102,8 +1102,8 @@ class CheckoutController extends MyAppController
         $order_affiliate_total_commission = 0;
 
         if ($cartProducts) {
-            $productShippingData = array();
             foreach ($cartProducts as $cartProduct) {
+                $productShippingData = array();
                 $productTaxChargesData = array();
                 $productInfo = $this->getCartProductInfo($cartProduct['selprod_id']);
                 if (!$productInfo) {
@@ -1114,7 +1114,7 @@ class CheckoutController extends MyAppController
                 $shippingDurationTitle = '';
                 $shippingDurationRow = array();
 
-                if (!empty($productSelectedShippingMethodsArr['product']) && isset($productSelectedShippingMethodsArr['product'][$productInfo['selprod_id']])) {
+                if ($productInfo['product_type'] == Product::PRODUCT_TYPE_PHYSICAL && !empty($productSelectedShippingMethodsArr['product']) && isset($productSelectedShippingMethodsArr['product'][$productInfo['selprod_id']])) {
                     $shippingDurationRow = $productSelectedShippingMethodsArr['product'][$productInfo['selprod_id']];
                     $productShippingData = array(
                         'opshipping_code' => $shippingDurationRow['mshipapi_code'],
@@ -1132,7 +1132,7 @@ class CheckoutController extends MyAppController
                 
                 $productPickUpData = array();
                 $productPickupAddress = array();
-                if (!empty($productSelectedPickUpAddresses) && isset($productSelectedPickUpAddresses[$productInfo['selprod_id']])) {
+                if ($productInfo['product_type'] == Product::PRODUCT_TYPE_PHYSICAL && !empty($productSelectedPickUpAddresses) && isset($productSelectedPickUpAddresses[$productInfo['selprod_id']])) {
                     $pickUpDataRow = $productSelectedPickUpAddresses[$productInfo['selprod_id']];
                     $productPickUpData = array(
                         'opshipping_type' => OrderProduct::TYPE_PICKUP,
