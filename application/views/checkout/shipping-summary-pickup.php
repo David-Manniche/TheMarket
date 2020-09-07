@@ -34,7 +34,8 @@
             $levelNo = 0;
             foreach ($shippingRates as $level => $levelItems) { ?>
             <ul class="list-group list-cart list-shippings">
-            <?php if (count($levelItems['products']) > 0 && $level == 0) {
+            <?php //if (count($levelItems['products']) > 0 && $level == 0) {
+            if (count($levelItems['products']) > 0 && count($levelItems['pickup_options']) > 0 && $level == 0) {
                 $productData = current($levelItems['products']); 
                 ?>
                 <li class="list-group-item shipping-select">
@@ -77,8 +78,8 @@
                     $shopUrl = !$isAppUser ? UrlHelper::generateUrl('Shops', 'View', array($product['shop_id'])) : 'javascript:void(0)';
                     $imageUrl = UrlHelper::getCachedUrl(UrlHelper::generateFileUrl('image', 'product', array($product['product_id'], "THUMB", $product['selprod_id'], 0, $siteLangId)), CONF_IMG_CACHE_TIME, '.jpg'); ?>
                 <?php if ($levelNo != $level) { 
-                    //if (count($levelItems['products']) > 0 && count($levelItems['pickup_options']) > 0 && $level != 0) { 
-                    if (count($levelItems['products']) > 0 && $level != 0) {
+                    if (count($levelItems['products']) > 0 && count($levelItems['pickup_options']) > 0 && $level != 0) { 
+                    //if (count($levelItems['products']) > 0 && $level != 0) {
                 ?>
                     <li class="list-group-item shipping-select">
                         <div class="shop-name"><?php echo $product['shop_name']; ?></div>
@@ -174,6 +175,7 @@
             
             <?php echo Labels::getLabel('LBL_Back', $siteLangId); ?></a>
             <a class="btn btn-primary btn-wide " onClick="setUpPickup();" href="javascript:void(0)"><?php echo Labels::getLabel('LBL_Continue', $siteLangId); ?></a>
+            <a class="btn btn-primary btn-wide " onClick="loadPaymentSummary();" href="javascript:void(0)"><?php echo Labels::getLabel('LBL_Continue', $siteLangId); ?></a>
         </div>
     </div>
 </main>

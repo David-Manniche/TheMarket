@@ -476,7 +476,7 @@ class CheckoutController extends MyAppController
         
         $fulfillmentType = $this->cartObj->getCartCheckoutType();  
         $this->cartObj->setCartCheckoutType($fulfillmentType); 
-        
+
         $cartProducts = $this->cartObj->getProducts($this->siteLangId);
         if (count($cartProducts) == 0) {
             $this->errMessage = Labels::getLabel('MSG_Your_Cart_is_empty', $this->siteLangId);
@@ -502,13 +502,12 @@ class CheckoutController extends MyAppController
                 $shippingRates = $this->cartObj->getPickupOptions($cartProducts);
                 $template = 'checkout/shipping-summary-pickup.php';
                 break;
-            case Shipping::FULFILMENT_SHIP:
+            case Shipping::FULFILMENT_SHIP:            
                 $shippingRates = $this->cartObj->getShippingOptions();
                 if(!empty($_SESSION['order_id'])){
                     $order = new Orders();
                     $orderShippingData = $order->getOrderShippingData($_SESSION['order_id'], $this->siteLangId);
                 }
-            break;
         }
 
         if (true === MOBILE_APP_API_CALL) {

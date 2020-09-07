@@ -660,7 +660,9 @@ class AdminBaseController extends FatController
         }
 
         $fulFillmentArr = Shipping::getFulFillmentArr($this->adminLangId, $isPickupEnabled);
-        $frm->addSelectBox(Labels::getLabel('LBL_FULFILLMENT_METHOD', $this->adminLangId), 'selprod_fulfillment_type', $fulFillmentArr, applicationConstants::NO, array(), '');
+        if ($productData['product_type'] == Product::PRODUCT_TYPE_PHYSICAL) {
+            $frm->addSelectBox(Labels::getLabel('LBL_FULFILLMENT_METHOD', $this->adminLangId), 'selprod_fulfillment_type', $fulFillmentArr, applicationConstants::NO, array(), '');
+        }
         $frm->addRequiredField(Labels::getLabel('LBL_Title', $this->adminLangId), 'selprod_title' . FatApp::getConfig('conf_default_site_lang', FatUtility::VAR_INT, 1));
         $frm->addTextArea(Labels::getLabel('LBL_Any_Extra_Comment_for_buyer', $this->adminLangId), 'selprod_comments' . FatApp::getConfig('conf_default_site_lang', FatUtility::VAR_INT, 1));
 
