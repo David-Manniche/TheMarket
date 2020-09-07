@@ -3,6 +3,7 @@
 $arr_flds = array(
         'listserial' => Labels::getLabel('LBL_Sr._No', $adminLangId),
         'taxstr_identifier' => Labels::getLabel('LBL_Tax_Structure_Name', $adminLangId),
+        'taxstr_is_combined' => Labels::getLabel('LBL_Combined_Tax', $adminLangId),
         'action' => Labels::getLabel('LBL_Action', $adminLangId),
     );
     if (!$canEdit) {
@@ -38,7 +39,10 @@ foreach ($listing as $sn => $row) {
                 } else {
                     $td->appendElement('plaintext', array(), $row[$key], true);
                 }
-                break;            
+                break;
+			case 'taxstr_is_combined':
+                $td->appendElement('plaintext', array(), applicationConstants::getYesNoArr($adminLangId)[$row[$key]]);
+				break;
             case 'action':
                 $ul = $td->appendElement("ul", array("class"=>"actions actions--centered"));
                  if ($canEdit) {
@@ -48,7 +52,7 @@ foreach ($listing as $sn => $row) {
                     $innerUl=$innerDiv->appendElement('ul', array('class'=>'linksvertical'));
 
                     $innerLi=$innerUl->appendElement('li');
-                    $innerLi->appendElement('a', array('href'=>'javascript:void(0)','class'=>'button small green','title'=>Labels::getLabel('LBL_Edit', $adminLangId),"onclick"=>"addStructureForm(".$row['taxstr_id'].")"), Labels::getLabel('LBL_Edit', $adminLangId), true);    
+                    $innerLi->appendElement('a', array('href'=>'javascript:void(0)','class'=>'button small green','title'=>Labels::getLabel('LBL_Edit', $adminLangId),"onclick"=>"addStructureForm(".$row['taxstr_id'].")"), Labels::getLabel('LBL_Edit', $adminLangId), true);
                 }
                 break;
             default:

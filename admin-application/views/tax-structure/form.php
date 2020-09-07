@@ -42,12 +42,6 @@ $fld->developerTags['cbHtmlAfterCheckbox'] = '<i class="input-helper"></i>';
 						<div class="col-md-12">
 							<div class="field-set">
 								<div class="caption-wraper">
-									<label class="field_label">
-									<?php
-										$fld = $frm->getField('taxstr_is_combined');
-										echo $fld->getCaption();
-									?>
-									<span class="spn_must_field">*</span></label>
 								</div>
 								<div class="field-wraper">
 									<div class="field_cover">
@@ -57,7 +51,31 @@ $fld->developerTags['cbHtmlAfterCheckbox'] = '<i class="input-helper"></i>';
 							</div>
 						</div>
 					</div>
-
+					<div class="row" id="combinedTax-js" <?php echo (!array_key_exists('taxstr_is_combined', $taxStrData) || (!$taxStrData['taxstr_is_combined'])) ? 'style="display:none"' : '';?>>
+						<div class="col-md-10">
+							<div class="field-set">
+								<div class="caption-wraper">
+									<label class="field_label">
+									<?php
+										$fld = $frm->getField('taxstr_component_name['.$siteDefaultLangId.'][]');
+										echo $fld->getCaption();
+									?>
+									<span class="spn_must_field">*</span></label>
+								</div>
+								<div class="field-wraper">
+									<div class="field_cover">
+									<?php echo $frm->getFieldHtml('taxstr_component_name['.$siteDefaultLangId.'][]'); ?>
+									</div>
+								</div>
+							</div>
+						</div>
+						<div class="col-md-1">
+							<button type="button" class="btn btn--secondary ripplelink remove-combined-form--js" title="<?php echo Labels::getLabel('LBL_Remove', $adminLangId); ?>"><i class="ion-minus-round"></i></button>
+						</div>
+						<div class="col-md-1">
+							<button type="button" class="btn btn--secondary ripplelink add-combined-form--js" title="<?php echo Labels::getLabel('LBL_Add', $adminLangId); ?>"><i class="ion-plus-round"></i></button>
+						</div>
+					</div>
 					<?php 
 						$translatorSubscriptionKey = FatApp::getConfig('CONF_TRANSLATOR_SUBSCRIPTION_KEY', FatUtility::VAR_STRING, '');
 						if(!empty($translatorSubscriptionKey) && count($otherLanguages) > 0){
@@ -79,7 +97,7 @@ $fld->developerTags['cbHtmlAfterCheckbox'] = '<i class="input-helper"></i>';
 					<?php if(!empty($otherLangData)){
 					foreach($otherLangData as $langId=>$data) { 
 					?>
-					<div class="accordians_container accordians_container-categories" defaultLang= "<?php echo $siteDefaultLangId; ?>" language="<?php echo $langId; ?>" id="accordion-language_<?php echo $langId; ?>" onClick="translateBannerData(this)">
+					<div class="accordians_container accordians_container-categories" defaultLang= "<?php echo $siteDefaultLangId; ?>" language="<?php echo $langId; ?>" id="accordion-language_<?php echo $langId; ?>" onClick="translateData(this)">
 						<div class="accordian_panel">
 							<span class="accordian_title accordianhead accordian_title" id="collapse_<?php echo $langId; ?>">
 							<?php echo $data." "; echo Labels::getLabel('LBL_Language_Data', $adminLangId); ?>
@@ -97,6 +115,21 @@ $fld->developerTags['cbHtmlAfterCheckbox'] = '<i class="input-helper"></i>';
 											<div class="field-wraper">
 												<div class="field_cover">
 												<?php echo $frm->getFieldHtml('taxstr_name['.$langId.']'); ?>
+												</div>
+											</div>
+										</div>
+									</div>
+									<div class="col-md-12" id="combinedTaxLang-js" <?php echo (!array_key_exists('taxstr_is_combined', $taxStrData) || (!$taxStrData['taxstr_is_combined'])) ? 'style="display:none"' : '';?>>
+										<div class="field-set">
+											<div class="caption-wraper">
+												<label class="field_label">
+												<?php  $fld = $frm->getField('taxstr_component_name['.$langId.'][]');
+													echo $fld->getCaption(); ?>
+												</label>
+											</div>
+											<div class="field-wraper">
+												<div class="field_cover">
+												<?php echo $frm->getFieldHtml('taxstr_component_name['.$langId.'][]'); ?>
 												</div>
 											</div>
 										</div>
@@ -127,3 +160,29 @@ $fld->developerTags['cbHtmlAfterCheckbox'] = '<i class="input-helper"></i>';
 		</div>
 	</div>
 </section>
+<script>
+    $(document).ready(function(){
+        var combTaxCount = <?php echo $combTaxCount; ?>;
+        $('body').on('click', '.add-combined-form--js', function(){
+            combTaxCount++;
+            var parentIndex = $(this).parents('.tax-rule-form--js').data('index');
+            var rowHtml = '<tr class="rule-detail-row--js rule-detail-row'+combTaxCount+'"><td scope="row"> <?php $idFld = $frm->getField('taxruledet_id[]'); $idFld->value = ""; $nameFld = $frm->getField('taxruledet_name['.$adminLangId.'][]'); $nameFld->value = ""; $rateFld = $frm->getField('taxruledet_rate[]'); $rateFld->value = ""; echo $frm->getFieldHtml('taxruledet_id[]'); echo $frm->getFieldHtml('taxruledet_name['.$adminLangId.'][]');?></td><td> <?php echo $frm->getFieldHtml('taxruledet_rate[]');?></td><td> <button type="button" class="btn btn--secondary ripplelink remove-combined-form--js" title="<?php echo Labels::getLabel('LBL_Remove', $adminLangId); ?>"><i class="ion-minus-round"></i></button></td></tr>';
+            $('.tax-rule-form-'+ parentIndex +' .combined-tax-details--js tbody').append(rowHtml);
+
+            <?php foreach ($otherLanguages as $langId => $data) { ?>
+                var langRowHtml = '<div class="field-set rule-detail-row'+combTaxCount+'"><div class="caption-wraper"><label class="field_label"><?php echo Labels::getLabel('LBL_Tax_Name', $adminLangId);?><span class="replaceText--js"></span></label></div><div class="field-wraper"><div class="field_cover"><?php $nameFld = $frm->getField('taxruledet_name['.$langId.'][]'); $nameFld->value = ""; echo $frm->getFieldHtml('taxruledet_name['.$langId.'][]'); ?></div></div></div>';
+                $('.tax-rule-form-'+ parentIndex +' .combined-tax-lang-details--js'+<?php echo $langId; ?>).append(langRowHtml);
+            <?php } ?>
+            //$("table tbody").append(markup);
+        });
+        // Find and remove selected table rows
+        $('body').on('click', '.remove-combined-form--js', function(){
+            var rowCount = $(this).parents('tbody').find('tr').length;
+            if (rowCount > 1) {
+                var className = $(this).parents('tr').attr('class').split(' ').pop();
+                $('.'+className).remove();
+                $(this).parents('tr').remove();
+            }
+        });
+    });
+</script>

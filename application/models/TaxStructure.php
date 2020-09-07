@@ -64,6 +64,7 @@ class TaxStructure extends MyAppModel
             } else {
                 $frm->addTextBox(Labels::getLabel('LBL_Tax_name', $languageId), 'taxstr_name[' . $languageId . ']');
             }
+			$frm->addTextBox(Labels::getLabel('LBL_Tax_Component_Name', $languageId), 'taxstr_component_name[' . $languageId . '][]');
         }
 
         $translatorSubscriptionKey = FatApp::getConfig('CONF_TRANSLATOR_SUBSCRIPTION_KEY', FatUtility::VAR_STRING, '');
@@ -79,30 +80,63 @@ class TaxStructure extends MyAppModel
     /**
     * addUpdateData
     *
-    * @param  array $data
+    * @param  array $post
     * @return bool
     */
-    public function addUpdateData($data): bool
+    public function addUpdateData($post): bool
     {
-        unset($data['taxstr_id']);
-        $assignValues = array(
-        'taxstr_identifier' => $data['taxstr_identifier'],
-        'taxstr_state_dependent' => $data['taxstr_state_dependent']
-        );
-
-        if ($this->mainTableRecordId > 0) {
-            $assignValues['taxstr_id'] = $this->mainTableRecordId;
+		$siteDefaultLangId = FatApp::getConfig('conf_default_site_lang', FatUtility::VAR_INT, 1);
+		if (empty($post)) {
+            $this->error = Labels::getLabel('ERR_Invalid_Request', $siteDefaultLangId);
+            return false;
         }
-
-        $record = new TableRecord(self::DB_TBL);
-        $record->assignValues($assignValues);
-
-        if (!$record->addNew(array(), $assignValues)) {
-            $this->error = $record->getError();
+        
+		unset($post['taxstr_id']);
+		
+		$data = [
+			'taxstr_identifier' => $post['taxstr_name'][$siteDefaultLangId],
+			'taxstr_parent' => 0,
+			'taxstr_is_combined' => ($post['taxstr_is_combined']) ? $post['taxstr_is_combined'] : 0,
+		];
+        $this->assignValues($data);
+        if (!$this->save()) {
+            $this->error = $this->getError();
+            return false;
+        }
+		
+        $autoUpdateOtherLangsData = isset($post['auto_update_other_langs_data']) ? FatUtility::int($post['auto_update_other_langs_data']) : 0;
+        foreach ($post['taxstr_name'] as $langId => $taxStrName) {
+            if (empty($taxStrName) && $autoUpdateOtherLangsData > 0) {
+                $this->saveTranslatedLangData($langId);
+            } elseif (!empty($taxStrName)) {
+                $data = array(
+                     static::DB_TBL_LANG_PREFIX . 'taxstr_id' => $this->mainTableRecordId,
+                     static::DB_TBL_LANG_PREFIX . 'lang_id' => $langId,
+                    'taxstr_name' => $taxStrName,
+                );
+                if (!$this->updateLangData($langId, $data)) {
+                    $this->error = $this->getError();
+                    return false;
+                }
+            }
+        }
+		
+        return true;
+    }
+	
+	public function saveTranslatedLangData($langId)
+    {
+        $langId = FatUtility::int($langId);
+        if ($this->mainTableRecordId < 1 || $langId < 1) {
+            $this->error = Labels::getLabel('ERR_Invalid_Request', $this->commonLangId);
             return false;
         }
 
-        $this->mainTableRecordId = $record->getId();
+        $translateLangobj = new TranslateLangData(static::DB_TBL_LANG);
+        if (false === $translateLangobj->updateTranslatedData($this->mainTableRecordId, 0, $langId)) {
+            $this->error = $translateLangobj->getError();
+            return false;
+        }
         return true;
     }
 }
