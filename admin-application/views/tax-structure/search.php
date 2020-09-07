@@ -2,7 +2,7 @@
 <?php
 $arr_flds = array(
         'listserial' => Labels::getLabel('LBL_Sr._No', $adminLangId),
-        'taxstr_identifier' => Labels::getLabel('LBL_Tax_Structure_Name', $adminLangId),        
+        'taxstr_identifier' => Labels::getLabel('LBL_Tax_Structure_Name', $adminLangId),
         'action' => Labels::getLabel('LBL_Action', $adminLangId),
     );
     if (!$canEdit) {
