@@ -47,6 +47,9 @@
         }
     }
     tr {
+        &.selected-row {
+            background: #fdfdfd;
+        }
         &:last-child {
             td {
                 border-bottom: none;

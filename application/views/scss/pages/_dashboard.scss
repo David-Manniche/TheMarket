@@ -983,7 +983,7 @@
 .stats-number {
     ul li {
         border-top: $border;
-        color: $txt-gray;
+        border-color: lighten( $border-color, 05);
         display: -webkit-box;
         display: -ms-flexbox;
         display: flex;
@@ -996,7 +996,11 @@
         padding: 0.5rem 0;
     }
     .total {
-        font-size: 0.875rem;
+        font-size: 0.8rem;
+        color: $txt-gray;
+    }
+    .total-numbers {
+        font-size: 1rem;
     }
 }
 
@@ -1183,7 +1187,7 @@
 .slick-arrow {
     position: absolute;
     top: calc(50% - 20px);
-    background-color: #fff;
+    background-color: rgba(255, 255, 255, 0.7);
     width: 42px;
     height: 42px;
     border-radius: 50%;
