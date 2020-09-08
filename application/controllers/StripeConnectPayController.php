@@ -8,6 +8,7 @@ class StripeConnectPayController extends PaymentController
     private $paymentAmount = 0;
     private $sourceId = '';
     private $orderInfo = [];
+    private $userId = 0;
         
     /**
      * __construct
@@ -33,16 +34,15 @@ class StripeConnectPayController extends PaymentController
      */
     public function init()
     {
-        $userId = 0;
-        if ('distribute' != $this->action) {
-            $userId = UserAuthentication::getLoggedUserId(true);
-            if (1 > $userId) {
+        if ('distribute' != $this->action && (UserAuthentication::isUserLogged() || UserAuthentication::isGuestUserLogged())) {
+            $this->userId = UserAuthentication::getLoggedUserId(true);
+            if (1 > $this->userId) {
                 $msg = Labels::getLabel('MSG_INVALID_USER', $this->siteLangId);
                 $this->setErrorAndRedirect($msg);
             }
         }
-
-        if (false === $this->stripeConnect->init($userId)) {
+        
+        if (false === $this->stripeConnect->init($this->userId)) {
             $this->setErrorAndRedirect($this->stripeConnect->getError());
         }
 
@@ -88,7 +88,11 @@ class StripeConnectPayController extends PaymentController
         $frm->addSelectBox(Labels::getLabel('LBL_EXPIRY_MONTH', $this->siteLangId), 'exp_month', $data['months'], '', array(), '');
         $frm->addSelectBox(Labels::getLabel('LBL_EXPIRY_YEAR', $this->siteLangId), 'exp_year', $data['year_expire'], '', array(), '');
         $frm->addPasswordField(Labels::getLabel('LBL_CVV_SECURITY_CODE', $this->siteLangId), 'cvc')->requirements()->setRequired();
-        $frm->addCheckBox(Labels::getLabel('LBL_SAVE_THIS_CARD_FOR_FASTER_CHECKOUT', $this->siteLangId), 'cc_save_card', '1');
+
+        if (UserAuthentication::isUserLogged() || UserAuthentication::isGuestUserLogged()) {
+            $frm->addCheckBox(Labels::getLabel('LBL_SAVE_THIS_CARD_FOR_FASTER_CHECKOUT', $this->siteLangId), 'cc_save_card', '1');
+        }
+
         $frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_Pay_Now', $this->siteLangId));
 
         return $frm;
@@ -208,7 +212,7 @@ class StripeConnectPayController extends PaymentController
         if (isset($post['fIsAjax'])) {
             unset($post['fIsAjax'], $post['fOutMode']);
         }
-
+        
         if (!empty($post)) {
             $cardId = FatApp::getPostedData('card_id', FatUtility::VAR_STRING, '');
             if (!empty($cardId)) {
@@ -247,7 +251,7 @@ class StripeConnectPayController extends PaymentController
                 $this->sourceId = $cardTokenResponse->id;
             }
 
-            if (false === $this->stripeConnect->updateCustomerInfo(['default_source' => $this->sourceId])) {
+            if ((UserAuthentication::isUserLogged() || UserAuthentication::isGuestUserLogged()) && false === $this->stripeConnect->updateCustomerInfo(['default_source' => $this->sourceId])) {
                 $this->setErrorAndRedirect($this->stripeConnect->getError());
             }
 
@@ -257,7 +261,7 @@ class StripeConnectPayController extends PaymentController
             $clientSecret = $response->client_secret;
             switch ($response->status) {
                 case 'succeeded':
-                    $successUrl = CommonHelper::generateFullUrl('custom', 'paymentSuccess', array($this->orderId));
+                    $successUrl = CommonHelper::generateFullUrl('custom', 'paymentSuccess', [$this->orderId, $tempToken]);
                     $successMsg = Labels::getLabel('LBL_PAYMENT_SUCCEEDED._WAITING_FOR_CONFIRMATION', $this->siteLangId);
                     if (FatUtility::isAjaxCall() || true === MOBILE_APP_API_CALL) {
                         $json['status'] = Plugin::RETURN_TRUE;
@@ -283,7 +287,7 @@ class StripeConnectPayController extends PaymentController
                     $this->setErrorAndRedirect($msg);
                     break;
             }
-        } else {
+        } elseif (UserAuthentication::isUserLogged() || UserAuthentication::isGuestUserLogged()) {
             $requestParam = $this->stripeConnect->formatCustomerDataFromOrder($this->orderInfo);
             if (false === $this->stripeConnect->bindCustomer($requestParam)) {
                 $this->setErrorAndRedirect($this->stripeConnect->getError());
@@ -292,11 +296,15 @@ class StripeConnectPayController extends PaymentController
             $this->set('customerId', $this->customerId);
         }
 
-        $this->stripeConnect->loadCustomer();
-        $customerInfo = $this->stripeConnect->getResponse()->toArray();
-        $savedCards = $customerInfo['sources']['data'];
+        $savedCards = [];
+        if (!empty($this->customerId)) {
+            $this->stripeConnect->loadCustomer();
+            $customerInfo = $this->stripeConnect->getResponse()->toArray();
+            $savedCards = $customerInfo['sources']['data'];
 
-        $this->set('defaultSource', $customerInfo['default_source']);
+            $this->set('defaultSource', $customerInfo['default_source']);
+        }
+
         $this->set('savedCards', $savedCards);
 
         $cancelBtnUrl = CommonHelper::getPaymentCancelPageUrl();
@@ -356,7 +364,6 @@ class StripeConnectPayController extends PaymentController
         $chargeData = [
             'amount' => $this->convertInPaisa($this->paymentAmount),
             'currency' => $this->systemCurrencyCode,
-            'customer' => $customerId,
             'description' =>  $desc,
             'metadata' => [
                 'order_id' => $this->orderId
@@ -366,6 +373,11 @@ class StripeConnectPayController extends PaymentController
             'payment_method' => $this->sourceId,
             'payment_method_types' => ['card'],
         ];
+
+        if (!empty($customerId)) {
+            $chargeData['customer'] = $customerId; 
+        }
+
         if (false === $this->stripeConnect->createPaymentIntent($chargeData)) {
             $this->setErrorAndRedirect($this->stripeConnect->getError());
         }

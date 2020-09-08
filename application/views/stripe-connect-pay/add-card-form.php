@@ -87,25 +87,27 @@ echo $frm->getFormTag(); ?>
             </div>
         </div>
     </div>
-    <div class="row">
-        <div class="col-md-12">
-            <div class="field-set">
-              <div class="field-wraper">
-                    <div class="field_cover">
-                        <label class="checkbox">
-                            <?php
-                                $fld = $frm->getField('cc_save_card');
-                                $fldHtml = $fld->getHTML();
-                                $fldHtml = str_replace("<label >", "", $fldHtml);
-                                $fldHtml = str_replace("</label>", "", $fldHtml);
-                                echo $fldHtml;
-                            ?>
-                            <i class="input-helper"></i> </label>
+    <?php $fld = $frm->getField('cc_save_card'); 
+    if (null != $fld) { ?>
+        <div class="row">
+            <div class="col-md-12">
+                <div class="field-set">
+                <div class="field-wraper">
+                        <div class="field_cover">
+                            <label class="checkbox">
+                                <?php
+                                    $fldHtml = $fld->getHTML();
+                                    $fldHtml = str_replace("<label >", "", $fldHtml);
+                                    $fldHtml = str_replace("</label>", "", $fldHtml);
+                                    echo $fldHtml;
+                                ?>
+                                <i class="input-helper"></i> </label>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
+    <?php } ?>
     <div class="row">
         <div class="col-md-12">
             <div class="field-set">
