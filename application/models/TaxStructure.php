@@ -99,14 +99,23 @@ class TaxStructure extends MyAppModel
         foreach ($languages as $languageId => $lang) {
             if ($languageId == $siteDefaultLangId) {
                 $frm->addRequiredField(Labels::getLabel('LBL_Tax_name', $languageId), 'taxstr_name[' . $languageId . ']');
+				$frm->addRequiredField(Labels::getLabel('LBL_Tax_Component_Name', $languageId), 'taxstr_component_name[0][' . $languageId . ']');
             } else {
                 $frm->addTextBox(Labels::getLabel('LBL_Tax_name', $languageId), 'taxstr_name[' . $languageId . ']');
+				$frm->addTextBox(Labels::getLabel('LBL_Tax_Component_Name', $languageId), 'taxstr_component_name[0][' . $languageId . ']');
             }
-            if ($languageId == $siteDefaultLangId) {
-                $frm->addRequiredField(Labels::getLabel('LBL_Tax_Component_Name', $languageId), 'taxstr_component_name[0][' . $languageId . ']');
-            } else {
-                $frm->addTextBox(Labels::getLabel('LBL_Tax_Component_Name', $languageId), 'taxstr_component_name[0][' . $languageId . ']');
-            }
+			/* if (0 < $taxStrId) {
+				$combinedTaxes = $taxStructure->getCombinedTaxes($taxStrId);
+				foreach($combinedTaxes as $combTaxCount => $combinedTax){
+					$frm->addTextBox(Labels::getLabel('LBL_Tax_Component_Name', $languageId), 'taxstr_component_name['.$combTaxCount.'][' . $languageId . ']');
+				}
+			} else {
+				if ($languageId == $siteDefaultLangId) {
+					$frm->addRequiredField(Labels::getLabel('LBL_Tax_Component_Name', $languageId), 'taxstr_component_name[0][' . $languageId . ']');
+				} else {
+					$frm->addTextBox(Labels::getLabel('LBL_Tax_Component_Name', $languageId), 'taxstr_component_name[0][' . $languageId . ']');
+				}
+			} */
         }
 
         $translatorSubscriptionKey = FatApp::getConfig('CONF_TRANSLATOR_SUBSCRIPTION_KEY', FatUtility::VAR_STRING, '');
@@ -187,6 +196,13 @@ class TaxStructure extends MyAppModel
 		$siteDefaultLangId = FatApp::getConfig('conf_default_site_lang', FatUtility::VAR_INT, 1);
 		
         unset($post['taxstr_id']);
+		
+		$db = FatApp::getDb();
+        if (!$db->deleteRecords(static::DB_TBL, array('smt' => 'taxstr_parent = ?', 'vals' => array($parentId)))) {
+            $this->error = $db->getError();
+			return false;
+        }
+		
         foreach ($post['taxstr_component_name'] as $taxStrValues) {
             $this->mainTableRecordId = 0;
             $data = array(

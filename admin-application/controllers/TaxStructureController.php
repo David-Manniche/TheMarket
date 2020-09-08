@@ -61,7 +61,7 @@ class TaxStructureController extends AdminBaseController
             }
             $frm->fill($taxStrData);
         }
-		
+		/* CommonHelper::printArray($combinedTaxes); die; */
 		$langData = Language::getAllNames();
         unset($langData[$siteDefaultLangId]);
         $this->set('combinedTaxes', $combinedTaxes);
@@ -88,7 +88,7 @@ class TaxStructureController extends AdminBaseController
 
         $taxStrId = $post['taxstr_id'];
         unset($post['taxstr_id']);
-
+		
         $record = new TaxStructure($taxStrId);
         if (!$record->addUpdateData($post)) {
             Message::addErrorMessage($record->getError());
