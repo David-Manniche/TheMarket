@@ -170,6 +170,7 @@ $paymentIntendId = isset($paymentIntendId) ? $paymentIntendId : '';
         doPayment = function(frm, orderId) {
             if (!$(frm).validate()) return;
             var data = fcom.frmData(frm);
+            $.systemMessage(langLbl.processing,'alert--process', false);
             fcom.ajax(fcom.makeUrl(controller, 'charge', [orderId]), data, function(t) {
                 var ans = $.parseJSON(t);
                 if ('undefined' != typeof ans.redirectUrl) {

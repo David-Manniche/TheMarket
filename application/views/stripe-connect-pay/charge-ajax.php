@@ -139,6 +139,9 @@ echo $frm->getFormTag(); ?>
             fcom.updateWithAjax(fcom.makeUrl(controller, 'charge', [orderId]), data, function(t) {
                 if ('undefined' != typeof t.redirectUrl) {
                     window.location = t.redirectUrl;
+                } else if (1 > t.status) { 
+                    $.systemMessage(t.msg, 'alert--danger', false);
+                    return;
                 } else {
                     $(paymentForm).html(t.html);
                     $(".btnFields-js").html(fcom.getLoader());
