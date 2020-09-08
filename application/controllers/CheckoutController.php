@@ -486,8 +486,9 @@ class CheckoutController extends MyAppController
             Message::addErrorMessage($this->errMessage);
             FatUtility::dieWithError(Message::getHtml());
         }
-
-        if (!$this->cartObj->hasPhysicalProduct()) {
+ 
+        $hasPhysicalProd = $this->cartObj->hasPhysicalProduct();
+        if (!$hasPhysicalProd) {   
             $this->cartObj->unSetShippingAddressSameAsBilling();
             $this->cartObj->unsetCartShippingAddress();
         }
@@ -514,12 +515,11 @@ class CheckoutController extends MyAppController
             $this->_template->render();
         }
 
-        $hasPhysicalProd = $this->cartObj->hasPhysicalProduct();
-        if (!$hasPhysicalProd) {
-            $selected_shipping_address_id = $this->cartObj->getCartBillingAddress();
-        } else {
-            $selected_shipping_address_id = $this->cartObj->getCartShippingAddress();
-        }
+        if (!$hasPhysicalProd) {   
+            $selected_shipping_address_id = $this->cartObj->getCartBillingAddress();    
+        } else {    
+            $selected_shipping_address_id = $this->cartObj->getCartShippingAddress();   
+        }   
         $address = new Address($selected_shipping_address_id, $this->siteLangId);
         $addresses = $address->getData(Address::TYPE_USER, UserAuthentication::getLoggedUserId());
 
@@ -860,7 +860,8 @@ class CheckoutController extends MyAppController
 
         $criteria = array( 'isUserLogged' => true, 'hasProducts' => true, 'hasStock' => true, 'hasBillingAddress' => true );
         $fulfillmentType = $this->cartObj->getCartCheckoutType();
-        if ($this->cartObj->hasPhysicalProduct() && $fulfillmentType == Shipping::FULFILMENT_SHIP) {
+        $cartHasPhysicalProduct = $this->cartObj->hasPhysicalProduct();
+        if ($cartHasPhysicalProduct && $fulfillmentType == Shipping::FULFILMENT_SHIP) { 
             $criteria['hasShippingAddress'] = true;
             $criteria['isProductShippingMethodSet'] = true;
         }
@@ -1436,10 +1437,10 @@ class CheckoutController extends MyAppController
         $this->set('fulfillmentType', $fulfillmentType);
         if (false === MOBILE_APP_API_CALL) {
             $excludePaymentGatewaysArr = applicationConstants::getExcludePaymentGatewayArr();
-            $cartHasPhysicalProduct = false;
-            if ($this->cartObj->hasPhysicalProduct()) {
-                $cartHasPhysicalProduct = true;
-            }
+//            $cartHasPhysicalProduct = false;
+//            if ($this->cartObj->hasPhysicalProduct()) {
+//                $cartHasPhysicalProduct = true;
+//            }
             $this->set('cartHasPhysicalProduct', $cartHasPhysicalProduct);
             $this->set('excludePaymentGatewaysArr', $excludePaymentGatewaysArr);
             $this->set('orderInfo', $orderInfo);
