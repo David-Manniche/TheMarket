@@ -310,6 +310,7 @@ class HomeController extends AdminBaseController
         $dashboardInfoCache = FatCache::get("dashboardInfo_" . $type . '_' . $interval . '_' . $this->adminLangId, CONF_HOME_PAGE_CACHE_TIME, '.txt');
         //$result = $cache->get("dashboardInfo_" . $type . '_' . $interval . '_' . $this->adminLangId);
         if (!$dashboardInfoCache) {
+            $result = [];
             if (strtoupper($type) == 'TOP_PRODUCTS') {
                 $statsObj = new Statistics();
                 $result = $statsObj->getTopProducts($interval, $this->adminLangId, 10);
@@ -349,7 +350,9 @@ class HomeController extends AdminBaseController
                     echo $e->getMessage();
                 }
             }
-            FatCache::set("dashboardInfo_" . $type . '_' . $interval . '_' . $this->adminLangId, serialize($result), '.txt');
+            if (!empty($result)) {
+                FatCache::set("dashboardInfo_" . $type . '_' . $interval . '_' . $this->adminLangId, serialize($result), '.txt');   
+            }
            // $cache->set("dashboardInfo_" . $type . '_' . $interval . '_' . $this->adminLangId, $result, 6 * 60 * 60);
         } else {
             $result = unserialize($dashboardInfoCache);

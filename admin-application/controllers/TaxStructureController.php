@@ -21,6 +21,7 @@ class TaxStructureController extends AdminBaseController
         $srch = TaxStructure::getSearchObject($this->adminLangId);
         $srch->doNotCalculateRecords();
         $srch->doNotLimitRecords();
+        $srch->addCondition('taxstr_parent', '=', 0);
         $srch->addOrder('taxstr_id', 'ASC');
         $rs = $srch->getResultSet();
         $records = FatApp::getDb()->fetchAll($rs);
@@ -40,7 +41,8 @@ class TaxStructureController extends AdminBaseController
 		$languages = Language::getAllNames();
        
         $frm = TaxStructure::getForm($this->adminLangId, $taxStrId);
-		$taxStrData = [];
+        $taxStrData = [];
+        $combinedTaxes = [];
         if (0 < $taxStrId) {
 			$taxStrData = TaxStructure::getAttributesById($taxStrId);
             foreach ($languages as $langId => $data) {
@@ -48,6 +50,9 @@ class TaxStructureController extends AdminBaseController
                 $taxStrLangData = $taxStructure->getAttributesByLangId($langId, $taxStrId);
                 if (!empty($taxStrLangData)) {
                     $taxStrData['taxstr_name'][$langId] = $taxStrLangData['taxstr_name'];
+                }
+                if ($taxStrData['taxstr_is_combined']) {
+                    $combinedTaxes = $taxStructure->getCombinedTaxes($taxStrId);
                 }
             }
 			
@@ -59,6 +64,7 @@ class TaxStructureController extends AdminBaseController
 		
 		$langData = Language::getAllNames();
         unset($langData[$siteDefaultLangId]);
+        $this->set('combinedTaxes', $combinedTaxes);
         $this->set('taxStrData', $taxStrData);
         $this->set('otherLangData', $langData);
         $this->set('siteDefaultLangId', $siteDefaultLangId);
@@ -73,7 +79,7 @@ class TaxStructureController extends AdminBaseController
         $this->objPrivilege->canEditTax();
 
         $frm = TaxStructure::getForm($this->adminLangId);
-        $post = $frm->getFormDataFromArray(FatApp::getPostedData());
+        $post = FatApp::getPostedData();
 		
         if (false === $post) {
             Message::addErrorMessage(current($frm->getValidationErrors()));
@@ -99,7 +105,7 @@ class TaxStructureController extends AdminBaseController
         $toLangId = FatApp::getPostedData('toLangId', FatUtility::VAR_INT, 0);
         $data['taxstr_name'] = $taxstrName;
         $taxStructure = new TaxStructure();
-        $translatedData = $taxStructure->getTranslatedCategoryData($data, $toLangId);
+        $translatedData = $taxStructure->getTranslatedData($data, $toLangId);
         if (!$translatedData) {
             Message::addErrorMessage($taxStructure->getError());
             FatUtility::dieJsonError(Message::getHtml());
