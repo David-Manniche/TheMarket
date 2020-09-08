@@ -297,14 +297,15 @@ class StripeConnectPayController extends PaymentController
         }
 
         $savedCards = [];
-        if (!empty($this->customerId)) {
+        $defaultSource = "";
+        if (UserAuthentication::isUserLogged() || UserAuthentication::isGuestUserLogged()) {
             $this->stripeConnect->loadCustomer();
             $customerInfo = $this->stripeConnect->getResponse()->toArray();
             $savedCards = $customerInfo['sources']['data'];
-
-            $this->set('defaultSource', $customerInfo['default_source']);
+            $defaultSource = $customerInfo['default_source'];
         }
-
+        
+        $this->set('defaultSource', $defaultSource);
         $this->set('savedCards', $savedCards);
 
         $cancelBtnUrl = CommonHelper::getPaymentCancelPageUrl();
