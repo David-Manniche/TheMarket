@@ -10,7 +10,7 @@
     display: flex;
     position: relative;
     width: 100%;
-    color: lighten($body-color, 20%);
+    color: $body-color;
     ul {
         display: -webkit-box;
         display: -ms-flexbox;

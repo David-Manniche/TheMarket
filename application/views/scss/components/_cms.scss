@@ -9,7 +9,6 @@
     background: $gray-light;
     margin: 0 0 0;
     padding: 30px 0 !important;
-    color: #333;
     h1 {
         margin: 0;
     }
@@ -127,8 +126,6 @@
 }
 
 .section-head .section__action {
-    -webkit-margin-start: 1rem;
-    -moz-margin-start: 1rem;
     margin-#{$start-direction}: 1rem;
     margin-top: -12px;
 }
@@ -399,8 +396,6 @@
 .new__txt {
     position: relative;
     background-color: #fff;
-    -webkit-margin-start: 5px;
-    -moz-margin-start: 5px;
     margin-#{$start-direction}: 5px;
     display: -webkit-box;
     display: -ms-flexbox;

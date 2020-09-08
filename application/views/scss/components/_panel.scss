@@ -52,7 +52,6 @@
 }
 
 .box--tabled .box__cell:first-child {
-    
     border-#{$end-direction}: $border;
 }
 
@@ -126,8 +125,6 @@
 
 .panel__head .links--inline li:after {
     content: "|";
-    -webkit-margin-start: 5px;
-    -moz-margin-start: 5px;
     margin-#{$start-direction}: 5px;
 }
 

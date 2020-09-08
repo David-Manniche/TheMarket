@@ -1,5 +1,5 @@
 <?php defined('SYSTEM_INIT') or die('Invalid Usage.'); ?>
-<div class="col-md-4">
+<div class="col-xl-4 col-lg-5">
     <div class="sticky-summary">
         <div class="card">
             <div class="card__section">

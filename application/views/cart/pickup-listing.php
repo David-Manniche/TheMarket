@@ -1,7 +1,7 @@
 <?php
 defined('SYSTEM_INIT') or die('Invalid Usage.'); ?>
 <div class="row">
-    <div class="col-md-8"> 
+    <div class="col-xl-8 col-lg-7"> 
         <?php if($hasPhysicalProduct){ ?>
         <div class="shiporpickup">
             <ul>

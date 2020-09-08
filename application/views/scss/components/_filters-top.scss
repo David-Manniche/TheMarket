@@ -37,7 +37,9 @@
                             margin-#{$end-direction}: 0;
                         }
                         &__head {
-                            padding: 1rem;
+                            border-radius: $radius2;
+                            border: $border;
+                            padding: 0.7rem;
                             padding-#{$end-direction}: 35px;
                             &:before {
                                 #{$end-direction}: 1rem;
