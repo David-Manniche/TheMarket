@@ -170,13 +170,13 @@ $paymentIntendId = isset($paymentIntendId) ? $paymentIntendId : '';
         doPayment = function(frm, orderId) {
             if (!$(frm).validate()) return;
             var data = fcom.frmData(frm);
-            $.systemMessage(langLbl.processing,'alert--process', false);
+            $.mbsmessage(langLbl.processing, false, 'alert--process');
             fcom.ajax(fcom.makeUrl(controller, 'charge', [orderId]), data, function(t) {
                 var ans = $.parseJSON(t);
                 if ('undefined' != typeof ans.redirectUrl) {
                     window.location = ans.redirectUrl;
                 } else if (1 > ans.status) { 
-                    $.systemMessage(ans.msg, 'alert--danger', false);
+                    $.mbsmessage(ans.msg, false, 'alert--process');
                     return;
                 } else { 
                     $(".paymentIntent-js").html(ans.html);

@@ -9,7 +9,7 @@ class StripeConnectPayController extends PaymentController
     private $sourceId = '';
     private $orderInfo = [];
     private $userId = 0;
-        
+
     /**
      * __construct
      *
@@ -19,14 +19,14 @@ class StripeConnectPayController extends PaymentController
     public function __construct(string $action)
     {
         parent::__construct($action);
-        
+
         $this->stripeConnect = PluginHelper::callPlugin(self::KEY_NAME, [$this->siteLangId], $error, $this->siteLangId);
         if (false === $this->stripeConnect) {
             $this->setErrorAndRedirect($error);
         }
         $this->init();
     }
-    
+
     /**
      * init
      *
@@ -41,7 +41,7 @@ class StripeConnectPayController extends PaymentController
                 $this->setErrorAndRedirect($msg);
             }
         }
-        
+
         if (false === $this->stripeConnect->init($this->userId)) {
             $this->setErrorAndRedirect($this->stripeConnect->getError());
         }
@@ -56,7 +56,7 @@ class StripeConnectPayController extends PaymentController
             $this->liveMode = "live_";
         }
     }
-    
+
     /**
      * allowedCurrenciesArr
      *
@@ -68,7 +68,7 @@ class StripeConnectPayController extends PaymentController
             'USD', 'AED', 'AFN', 'ALL', 'AMD', 'ANG', 'AOA', 'ARS', 'AUD', 'AWG', 'AZN', 'BAM', 'BBD', 'BDT', 'BGN', 'BIF', 'BMD', 'BND', 'BOB', 'BRL', 'BSD', 'BWP', 'BZD', 'CAD', 'CDF', 'CHF', 'CLP', 'CNY', 'COP', 'CRC', 'CVE', 'CZK', 'DJF', 'DKK', 'DOP', 'DZD', 'EGP', 'ETB', 'EUR', 'FJD', 'FKP', 'GBP', 'GEL', 'GIP', 'GMD', 'GNF', 'GTQ', 'GYD', 'HKD', 'HNL', 'HRK', 'HTG', 'HUF', 'IDR', 'ILS', 'INR', 'ISK', 'JMD', 'JPY', 'KES', 'KGS', 'KHR', 'KMF', 'KRW', 'KYD', 'KZT', 'LAK', 'LBP', 'LKR', 'LRD', 'LSL', 'MAD', 'MDL', 'MGA', 'MKD', 'MMK', 'MNT', 'MOP', 'MRO', 'MUR', 'MVR', 'MWK', 'MXN', 'MYR', 'MZN', 'NAD', 'NGN', 'NIO', 'NOK', 'NPR', 'NZD', 'PAB', 'PEN', 'PGK', 'PHP', 'PKR', 'PLN', 'PYG', 'QAR', 'RON', 'RSD', 'RUB', 'RWF', 'SAR', 'SBD', 'SCR', 'SEK', 'SGD', 'SHP', 'SLL', 'SOS', 'SRD', 'STD', 'SZL', 'THB', 'TJS', 'TOP', 'TRY', 'TTD', 'TWD', 'TZS', 'UAH', 'UGX', 'UYU', 'UZS', 'VND', 'VUV', 'WST', 'XAF', 'XCD', 'XOF', 'XPF', 'YER', 'ZAR', 'ZMW'
         ];
     }
-    
+
     /**
      * getCardForm
      *
@@ -97,7 +97,7 @@ class StripeConnectPayController extends PaymentController
 
         return $frm;
     }
-    
+
     /**
      * getSavedCardPaymentForm
      *
@@ -109,7 +109,7 @@ class StripeConnectPayController extends PaymentController
         $frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_PAY_NOW', $this->siteLangId));
         return $frm;
     }
-    
+
     /**
      * checkCardType
      *
@@ -122,7 +122,7 @@ class StripeConnectPayController extends PaymentController
         echo json_encode($res);
         exit;
     }
-    
+
     /**
      * addCardForm
      *
@@ -144,7 +144,7 @@ class StripeConnectPayController extends PaymentController
         $this->set('orderId', $orderId);
         $this->_template->render(false, false);
     }
-    
+
     /**
      * removeCard
      *
@@ -163,7 +163,7 @@ class StripeConnectPayController extends PaymentController
         $msg = Labels::getLabel("MSG_REMOVED_SUCCESSFULLY", $this->siteLangId);
         FatUtility::dieJsonSuccess($msg);
     }
-    
+
     /**
      * getOrderInfo
      *
@@ -179,7 +179,7 @@ class StripeConnectPayController extends PaymentController
         }
         return $this->orderInfo;
     }
-        
+
     /**
      * charge
      *
@@ -200,7 +200,7 @@ class StripeConnectPayController extends PaymentController
             $msg = Labels::getLabel('MSG_Invalid_Access', $this->siteLangId);
             $this->setErrorAndRedirect($msg);
         }
-        
+
         if ($this->orderInfo["order_payment_status"] != Orders::ORDER_PAYMENT_PENDING) {
             $msg = Labels::getLabel('MSG_INVALID_ORDER._ALREADY_PAID_OR_CANCELLED', $this->siteLangId);
             $this->setErrorAndRedirect($msg);
@@ -212,7 +212,7 @@ class StripeConnectPayController extends PaymentController
         if (isset($post['fIsAjax'])) {
             unset($post['fIsAjax'], $post['fOutMode']);
         }
-        
+
         if (!empty($post)) {
             $cardId = FatApp::getPostedData('card_id', FatUtility::VAR_STRING, '');
             if (!empty($cardId)) {
@@ -292,7 +292,7 @@ class StripeConnectPayController extends PaymentController
             if (false === $this->stripeConnect->bindCustomer($requestParam)) {
                 $this->setErrorAndRedirect($this->stripeConnect->getError());
             }
-            $this->customerId = $this->stripeConnect->getCustomerId();   
+            $this->customerId = $this->stripeConnect->getCustomerId();
             $this->set('customerId', $this->customerId);
         }
 
@@ -311,21 +311,21 @@ class StripeConnectPayController extends PaymentController
         if ($this->orderInfo['order_type'] == Orders::ORDER_WALLET_RECHARGE) {
             $cancelBtnUrl = CommonHelper::getPaymentFailurePageUrl();
         }
-        
+
         $this->set('paymentAmount', $this->paymentAmount);
         $this->set('orderInfo', $this->orderInfo);
-        
+
         if (true === MOBILE_APP_API_CALL) {
             $this->set('confirmationRequired', $confirmationRequired);
             $this->_template->render();
         }
-        
+
         $this->set('settings', $this->settings);
         $this->set('orderId', $orderId);
         $this->set('frm', $frm);
         $this->set('cancelBtnUrl', $cancelBtnUrl);
         $this->set('exculdeMainHeaderDiv', true);
-        
+
         if (true === $confirmationRequired || FatUtility::isAjaxCall()) {
             $json['html'] = $this->_template->render(false, false, 'stripe-connect-pay/charge-ajax.php', true, false);
             FatUtility::dieJsonSuccess($json);
@@ -333,7 +333,7 @@ class StripeConnectPayController extends PaymentController
 
         $this->_template->render(true, false);
     }
-    
+
     /**
      * convertInPaisa
      *
@@ -345,7 +345,7 @@ class StripeConnectPayController extends PaymentController
         $amount = number_format($amount, 2, '.', '');
         return $amount * 100;
     }
-        
+
     /**
      * createPaymentIntent
      *
@@ -375,7 +375,7 @@ class StripeConnectPayController extends PaymentController
         ];
 
         if (!empty($customerId)) {
-            $chargeData['customer'] = $customerId; 
+            $chargeData['customer'] = $customerId;
         }
 
         if (false === $this->stripeConnect->createPaymentIntent($chargeData)) {
@@ -383,7 +383,7 @@ class StripeConnectPayController extends PaymentController
         }
         return true;
     }
-    
+
     /**
      * distribute
      *
@@ -397,7 +397,7 @@ class StripeConnectPayController extends PaymentController
 
         $payloadStr = @file_get_contents('php://input');
         $payload = json_decode($payloadStr, true);
-        
+
         if (empty($payload)) {
             // $msg = Labels::getLabel('MSG_INVALID_REQUEST', $this->siteLangId);
             return;
@@ -430,7 +430,7 @@ class StripeConnectPayController extends PaymentController
             // $msg = Labels::getLabel('MSG_INVALID_ORDER_CHARGE', $this->siteLangId);
             return;
         }
-        
+
         $chargeId = $chargeResponse['id'];
 
         $message = 'Id: ' . $chargeResponse['id'] . "&";
@@ -456,7 +456,7 @@ class StripeConnectPayController extends PaymentController
         $message .= 'Refunded: ' . $chargeResponse['refunded'] . "&";
         $message .= 'Statement Descriptor: ' . $chargeResponse['statement_descriptor'] . "&";
         $message .= 'Status: ' . $chargeResponse['status'] . "";
-        
+
         /* Recording Payment in DB */
         $orderPaymentObj = new OrderPayment($this->orderId, $this->siteLangId);
 
@@ -471,13 +471,13 @@ class StripeConnectPayController extends PaymentController
 
         $orderObj = new Orders();
         $orderProducts = $orderObj->getChildOrders(array('order_id' => $orderInfo['id']), $orderInfo['order_type'], $orderInfo['order_language_id']);
-        
+
         foreach ($orderProducts as $op) {
             $netSellerAmount = CommonHelper::orderProductAmount($op, 'NET_VENDOR_AMOUNT', false, User::USER_TYPE_SELLER);
             $discount = CommonHelper::orderProductAmount($op, 'DISCOUNT');
             $rewardPoint = CommonHelper::orderProductAmount($op, 'REWARDPOINT');
             $totalDiscount = abs($discount) + abs($rewardPoint);
-            
+
             $firstTransferAmount = $netSellerAmount - $totalDiscount;
             $pendingTransferAmount = $totalDiscount;
 
@@ -501,7 +501,7 @@ class StripeConnectPayController extends PaymentController
             $comments = Labels::getLabel($msg, $this->siteLangId);
             $comments = CommonHelper::replaceStringData($comments, ['{invoice-no}' => $op['op_invoice_number']]);
             Transactions::creditWallet($op['op_selprod_user_id'], Transactions::TYPE_PRODUCT_SALE, $netSellerAmount, $this->siteLangId, $comments, $op['op_id']);
-            
+
             if (!empty($accountId)) {
                 $charge = [
                     'amount' => $this->convertInPaisa($firstTransferAmount),
@@ -520,7 +520,7 @@ class StripeConnectPayController extends PaymentController
                 }
 
                 $resp = $this->stripeConnect->getResponse();
-                
+
                 if (empty($resp->id)) {
                     continue;
                 }
@@ -529,7 +529,7 @@ class StripeConnectPayController extends PaymentController
                 $comments = $comments . ' ' . Labels::getLabel('MSG_TRANSFERED_TO_ACCOUNT_{account-id}.', $this->siteLangId);
                 $comments = CommonHelper::replaceStringData($comments, ['{account-id}' => $accountId]);
                 Transactions::debitWallet($op['op_selprod_user_id'], Transactions::TYPE_TRANSFER_TO_THIRD_PARTY_ACCOUNT, $firstTransferAmount, $this->siteLangId, $comments, $op['op_id'], $resp->id);
-                
+
                 $comments = Labels::getLabel('MSG_COMMISSION_CHARGED._#{invoice-no}', $this->siteLangId);
                 $comments = CommonHelper::replaceStringData($comments, ['{invoice-no}' => $op['op_invoice_number']]);
                 Transactions::debitWallet($op['op_selprod_user_id'], Transactions::TYPE_ADMIN_COMMISSION, $op['op_commission_charged'], $this->siteLangId, $comments, $op['op_id']);
@@ -539,7 +539,7 @@ class StripeConnectPayController extends PaymentController
                 // Credit sold product discount amount to seller wallet.
                 $discountComments = Labels::getLabel('MSG_AMOUNT_CREDITED_FOR_DISCOUNT_APPLIED_ON_PRODUCT_SOLD_#{invoice-no}.', $this->siteLangId);
                 $discountComments = CommonHelper::replaceStringData($discountComments, ['{invoice-no}' => $op['op_invoice_number']]);
-               /*  Transactions::creditWallet($op['op_selprod_user_id'], Transactions::TYPE_PRODUCT_SALE, $discount, $this->siteLangId, $discountComments, $op['op_id']); */
+                /*  Transactions::creditWallet($op['op_selprod_user_id'], Transactions::TYPE_PRODUCT_SALE, $discount, $this->siteLangId, $discountComments, $op['op_id']); */
 
                 unset($charge['source_transaction']);
                 $charge['amount'] = $this->convertInPaisa($pendingTransferAmount);
@@ -606,7 +606,7 @@ class StripeConnectPayController extends PaymentController
         if (empty($this->stripeConnect->getCustomerId())) {
             $this->setError(Labels::getLabel('MSG_INVALID_CUSTOMER', $this->siteLangId));
         }
-        
+
         $requestParam['default_source'] = $source;
         if (false === $this->stripeConnect->updateCustomerInfo($requestParam)) {
             $this->setError();
