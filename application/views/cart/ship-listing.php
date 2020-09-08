@@ -1,7 +1,8 @@
 <?php
 defined('SYSTEM_INIT') or die('Invalid Usage.'); ?>
 <div class="row">
-    <div class="col-md-8"> 
+    <div class="col-xl-8 col-lg-7"> 
+        <?php if($hasPhysicalProduct){ ?>
         <div class="shiporpickup">
                 <ul>
                     <li onclick="listCartProducts(<?php echo Shipping::FULFILMENT_SHIP;?>)"><input class="control-input" type="radio" id="shipping" name="fulfillment_type" <?php echo ($fulfilmentType == Shipping::FULFILMENT_SHIP) ? 'checked':'';?> value="<?php echo Shipping::FULFILMENT_SHIP;?>">
@@ -22,7 +23,8 @@ defined('SYSTEM_INIT') or die('Invalid Usage.'); ?>
 
                     </li>
                 </ul>
-            </div>
+        </div>
+        <?php } ?>
         <div class="cart-blocks">            
             <?php 
             $productsCount = count($products);  
@@ -155,7 +157,7 @@ defined('SYSTEM_INIT') or die('Invalid Usage.'); ?>
                         </div>
                     </div>
                     <div class="product-quantity">
-                        <div class="quantity" data-stock="<?php echo $product['selprod_stock']; ?>">
+                        <div class="quantity quantity-2" data-stock="<?php echo $product['selprod_stock']; ?>">
                             <span class="decrease decrease-js <?php echo ($product['quantity']<=$product['selprod_min_order_qty']) ? 'not-allowed' : '' ;?>"><i class="fas fa-minus"></i></span>
                             <div class="qty-input-wrapper" data-stock="<?php echo $product['selprod_stock']; ?>">
                                 <input name="qty_<?php echo md5($product['key']); ?>" data-key="<?php echo md5($product['key']); ?>" class="qty-input cartQtyTextBox productQty-js" value="<?php echo $product['quantity']; ?>" type="text" />

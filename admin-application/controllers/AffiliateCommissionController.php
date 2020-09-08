@@ -82,6 +82,13 @@ class AffiliateCommissionController extends AdminBaseController
                 $userData = $userObj->getUserInfo();
                 $data['affiliate_name'] = isset($userData['credential_username']) ? $userData['credential_username'] : $userData['user_name'];
             }
+
+            if ($data['afcommsetting_prodcat_id'] > 0) {
+                $prodCat = new ProductCategory();
+                $selectedCatName = $prodCat->getParentTreeStructure($data['afcommsetting_prodcat_id'], 0, '', $this->adminLangId);
+                $data['category_name'] = html_entity_decode($selectedCatName);
+            }
+
             $frm->fill($data);
         }
 
@@ -259,14 +266,11 @@ class AffiliateCommissionController extends AdminBaseController
         }
 
         if (!$isMandatory) {
-            $prodCatObj = new ProductCategory();
-            $arrCategories = $prodCatObj->getCategoriesForSelectBox($this->adminLangId);
-            $categories = $prodCatObj->makeAssociativeArray($arrCategories);
-            $frm->addSelectBox(Labels::getLabel('LBL_Category', $this->adminLangId), 'afcommsetting_prodcat_id', array( '' => 'Does not Matter' ) + $categories, '', array(), '');
+            $frm->addTextBox(Labels::getLabel('LBL_Category_Name', $this->adminLangId), 'category_name');
+            $frm->addTextBox(Labels::getLabel('LBL_Affiliate_Name', $this->adminLangId), 'affiliate_name');
 
-            $fld = $frm->addTextBox(Labels::getLabel('LBL_Affiliate_Name', $this->adminLangId), 'affiliate_name');
-
-            $fld = $frm->addHiddenField(Labels::getLabel('LBL_Affiliate_Name', $this->adminLangId), 'afcommsetting_user_id');
+            $frm->addHiddenField('', 'afcommsetting_user_id', 0);
+            $frm->addHiddenField('', 'afcommsetting_prodcat_id', 0);
         }
 
         $frm->addFloatField(Labels::getLabel('LBL_Affiliate_Commission_fees', $this->adminLangId), 'afcommsetting_fees');

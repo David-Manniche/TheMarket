@@ -151,6 +151,9 @@ if ('cashondelivery' == strtolower($pmethodCode) && true === $otpVerification) {
                     location.href = ans.redirect;
                 } else {
                     $('#tabs-container').html(ans.html);
+                    <?php if ('stripeconnect' == strtolower($pmethodCode)) { ?>
+                        $('#tabs-container').addClass('p-0');
+                    <?php } ?>
                 }
             } catch (e) {
                 // console.log(e);

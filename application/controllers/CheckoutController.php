@@ -476,7 +476,7 @@ class CheckoutController extends MyAppController
         
         $fulfillmentType = $this->cartObj->getCartCheckoutType();  
         $this->cartObj->setCartCheckoutType($fulfillmentType); 
-        
+
         $cartProducts = $this->cartObj->getProducts($this->siteLangId);
         if (count($cartProducts) == 0) {
             $this->errMessage = Labels::getLabel('MSG_Your_Cart_is_empty', $this->siteLangId);
@@ -486,8 +486,9 @@ class CheckoutController extends MyAppController
             Message::addErrorMessage($this->errMessage);
             FatUtility::dieWithError(Message::getHtml());
         }
-
-        if (!$this->cartObj->hasPhysicalProduct()) {
+ 
+        $hasPhysicalProd = $this->cartObj->hasPhysicalProduct();
+        if (!$hasPhysicalProd) {   
             $this->cartObj->unSetShippingAddressSameAsBilling();
             $this->cartObj->unsetCartShippingAddress();
         }
@@ -502,25 +503,23 @@ class CheckoutController extends MyAppController
                 $shippingRates = $this->cartObj->getPickupOptions($cartProducts);
                 $template = 'checkout/shipping-summary-pickup.php';
                 break;
-            case Shipping::FULFILMENT_SHIP:
+            case Shipping::FULFILMENT_SHIP:            
                 $shippingRates = $this->cartObj->getShippingOptions();
                 if(!empty($_SESSION['order_id'])){
                     $order = new Orders();
                     $orderShippingData = $order->getOrderShippingData($_SESSION['order_id'], $this->siteLangId);
                 }
-            break;
         }
 
         if (true === MOBILE_APP_API_CALL) {
             $this->_template->render();
         }
 
-        $hasPhysicalProd = $this->cartObj->hasPhysicalProduct();
-        if (!$hasPhysicalProd) {
-            $selected_shipping_address_id = $this->cartObj->getCartBillingAddress();
-        } else {
-            $selected_shipping_address_id = $this->cartObj->getCartShippingAddress();
-        }
+        if (!$hasPhysicalProd) {   
+            $selected_shipping_address_id = $this->cartObj->getCartBillingAddress();    
+        } else {    
+            $selected_shipping_address_id = $this->cartObj->getCartShippingAddress();   
+        }   
         $address = new Address($selected_shipping_address_id, $this->siteLangId);
         $addresses = $address->getData(Address::TYPE_USER, UserAuthentication::getLoggedUserId());
 
@@ -861,7 +860,8 @@ class CheckoutController extends MyAppController
 
         $criteria = array( 'isUserLogged' => true, 'hasProducts' => true, 'hasStock' => true, 'hasBillingAddress' => true );
         $fulfillmentType = $this->cartObj->getCartCheckoutType();
-        if ($this->cartObj->hasPhysicalProduct() && $fulfillmentType == Shipping::FULFILMENT_SHIP) {
+        $cartHasPhysicalProduct = $this->cartObj->hasPhysicalProduct();
+        if ($cartHasPhysicalProduct && $fulfillmentType == Shipping::FULFILMENT_SHIP) { 
             $criteria['hasShippingAddress'] = true;
             $criteria['isProductShippingMethodSet'] = true;
         }
@@ -1103,8 +1103,8 @@ class CheckoutController extends MyAppController
         $order_affiliate_total_commission = 0;
 
         if ($cartProducts) {
-            $productShippingData = array();
             foreach ($cartProducts as $cartProduct) {
+                $productShippingData = array();
                 $productTaxChargesData = array();
                 $productInfo = $this->getCartProductInfo($cartProduct['selprod_id']);
                 if (!$productInfo) {
@@ -1115,7 +1115,7 @@ class CheckoutController extends MyAppController
                 $shippingDurationTitle = '';
                 $shippingDurationRow = array();
 
-                if (!empty($productSelectedShippingMethodsArr['product']) && isset($productSelectedShippingMethodsArr['product'][$productInfo['selprod_id']])) {
+                if ($productInfo['product_type'] == Product::PRODUCT_TYPE_PHYSICAL && !empty($productSelectedShippingMethodsArr['product']) && isset($productSelectedShippingMethodsArr['product'][$productInfo['selprod_id']])) {
                     $shippingDurationRow = $productSelectedShippingMethodsArr['product'][$productInfo['selprod_id']];
                     $productShippingData = array(
                         'opshipping_code' => $shippingDurationRow['mshipapi_code'],
@@ -1133,7 +1133,7 @@ class CheckoutController extends MyAppController
                 
                 $productPickUpData = array();
                 $productPickupAddress = array();
-                if (!empty($productSelectedPickUpAddresses) && isset($productSelectedPickUpAddresses[$productInfo['selprod_id']])) {
+                if ($productInfo['product_type'] == Product::PRODUCT_TYPE_PHYSICAL && !empty($productSelectedPickUpAddresses) && isset($productSelectedPickUpAddresses[$productInfo['selprod_id']])) {
                     $pickUpDataRow = $productSelectedPickUpAddresses[$productInfo['selprod_id']];
                     $productPickUpData = array(
                         'opshipping_type' => OrderProduct::TYPE_PICKUP,
@@ -1437,10 +1437,10 @@ class CheckoutController extends MyAppController
         $this->set('fulfillmentType', $fulfillmentType);
         if (false === MOBILE_APP_API_CALL) {
             $excludePaymentGatewaysArr = applicationConstants::getExcludePaymentGatewayArr();
-            $cartHasPhysicalProduct = false;
-            if ($this->cartObj->hasPhysicalProduct()) {
-                $cartHasPhysicalProduct = true;
-            }
+//            $cartHasPhysicalProduct = false;
+//            if ($this->cartObj->hasPhysicalProduct()) {
+//                $cartHasPhysicalProduct = true;
+//            }
             $this->set('cartHasPhysicalProduct', $cartHasPhysicalProduct);
             $this->set('excludePaymentGatewaysArr', $excludePaymentGatewaysArr);
             $this->set('orderInfo', $orderInfo);
@@ -2113,9 +2113,10 @@ class CheckoutController extends MyAppController
         }
         
         $pickupAddressArr = array();
-        $basketProducts = $this->cartObj->getBasketProducts($this->siteLangId);
+//        $basketProducts = $this->cartObj->getBasketProducts($this->siteLangId);
+        $basketProducts = [];
         $pickupOptions = $this->cartObj->getPickupOptions($basketProducts);
-      
+
         foreach ($post['slot_id'] as $level => $slotId) {
             if (empty($slotId) || empty($post['slot_date'][$level])) {
                 $message = Labels::getLabel('MSG_Pickup_Method_is_not_selected_on_products_in_cart', $this->siteLangId);
@@ -2145,13 +2146,12 @@ class CheckoutController extends MyAppController
                 $message = Labels::getLabel('MSG_Something_went_wrong,_please_try_after_some_time.', $this->siteLangId);
                 LibHelper::exitWithError($message, true);
             }
-        
+
             foreach ($pickupOptions[$level]['products'] as $pickupProduct) {
                 foreach ($cartProducts as $cartKey => $cartval) {
-                    if ($cartval['selprod_id'] != $pickupProduct['selprod_id']) {
+                    if ($cartval['selprod_id'] != $pickupProduct['selprod_id'] || $cartval['product_type'] == Product::PRODUCT_TYPE_DIGITAL) {
                         continue;
                     }
-                    
                     /* get Product Data[ */
                     $prodSrch = new ProductSearch();
                     $prodSrch->setDefinedCriteria();
@@ -2168,7 +2168,6 @@ class CheckoutController extends MyAppController
                     $productRs = $prodSrch->getResultSet();
                     $productInfo = FatApp::getDb()->fetch($productRs);
                     /* ] */     
-                    
                     $pickupAddressArr[$cartval['selprod_id']] = array(
                         'selprod_id' => $cartval['selprod_id'], 
                         'shipped_by_seller' => Product::isShippedBySeller($cartval['selprod_user_id'], $productInfo['product_seller_id'], $productInfo['shippedBySellerId']),
@@ -2181,8 +2180,8 @@ class CheckoutController extends MyAppController
                     );
                 }
             }
-        } 
-
+        }   
+                        
         $this->cartObj->setProductPickUpAddresses($pickupAddressArr);
         $this->set('msg', Labels::getLabel('MSG_Pickup_Method_selected_successfully.', $this->siteLangId));
         $this->_template->render(false, false, 'json-success.php');

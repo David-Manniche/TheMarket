@@ -120,7 +120,7 @@
             position: relative;
             text-overflow: ellipsis;
             white-space: nowrap;
-            font-weight: 600;
+            font-weight: 500;
             @include media-breakpoint-down(lg) {
                 & {
                     color: inherit;
@@ -310,7 +310,6 @@
     .head {
         >a {
             color: #222;
-            font-weight: 600;
             text-transform: uppercase;
             &:hover {
                 color: $brand-color;
@@ -375,12 +374,12 @@
                         }
                     }
                 }
-                .seemore {
-                    a {
-                        font-weight: 600;
-                    }
-                }
             }
+        }
+    }
+    .seemore {
+        a {
+            font-weight: 600;
         }
     }
 }

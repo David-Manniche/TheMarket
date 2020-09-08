@@ -34,7 +34,7 @@
             padding: 0.5rem 1rem;
             border-bottom: none;
             background: rgba(0, 0, 0, 0.05);
-            font-weight: 600;
+            font-weight: 500;
             vertical-align: top;
             &:first-child {
                 border-top-#{$start-direction}-radius: $radius4;
@@ -47,6 +47,9 @@
         }
     }
     tr {
+        &.selected-row {
+            background: #fdfdfd;
+        }
         &:last-child {
             td {
                 border-bottom: none;
@@ -74,7 +77,7 @@
         vertical-align: top;
     }
     a {
-        color: inherit;
+        color: $brand-color;
         &:hover {
             text-decoration: underline;
         }

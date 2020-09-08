@@ -22,6 +22,11 @@ $white: #fff;
         left: 0;
         right: 0;
         margin: 0 auto;
+        @include media-breakpoint-down(sm) {
+            & {
+                width: 100%;
+            }
+        }
     }
     // Each Step on the Progress Bar
     .progress-step {

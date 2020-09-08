@@ -44,7 +44,7 @@ class OrderSubscription extends MyAppModel
         $srch = new  OrderSearch($langId);
         $srch->joinTableOrderSellerSubscription();
         $srch ->addCondition(Orders::DB_TBL_PREFIX . 'type', '=', Orders::ORDER_SUBSCRIPTION);
-        $srch->addCondition(Orders::DB_TBL_PREFIX . 'is_paid', '=', Orders::ORDER_PAYMENT_PAID);
+        $srch->addCondition(Orders::DB_TBL_PREFIX . 'payment_status', '=', Orders::ORDER_PAYMENT_PAID);
         $srch->addCondition(Orders::DB_TBL_PREFIX . 'user_id', '=', $userId);
         $srch->setPageSize(1);
 
@@ -66,7 +66,7 @@ class OrderSubscription extends MyAppModel
 
         //$srch->addSubscriptionValidCondition();
         $srch ->addCondition(Orders::DB_TBL_PREFIX . 'type', '=', Orders::ORDER_SUBSCRIPTION);
-        $srch->addCondition(Orders::DB_TBL_PREFIX . 'is_paid', '=', Orders::ORDER_PAYMENT_PAID);
+        $srch->addCondition(Orders::DB_TBL_PREFIX . 'payment_status', '=', Orders::ORDER_PAYMENT_PAID);
         $srch->addCondition(Orders::DB_TBL_PREFIX . 'user_id', '=', $userId);
         $srch->addCondition('ossubs_status_id', 'IN ', Orders::getActiveSubscriptionStatusArr());
         $srch->addMultipleFields($flds);
@@ -119,7 +119,7 @@ class OrderSubscription extends MyAppModel
         $srch = new OrderSubscriptionSearch($langId);
         $srch->joinTable(Orders::DB_TBL, 'LEFT OUTER JOIN', 'o.' . Orders::DB_TBL_PREFIX . 'id = oss.' . OrderSubscription::DB_TBL_PREFIX . 'order_id', 'o');
         $srch->joinTable(Orders::DB_TBL_CHARGES, 'LEFT OUTER JOIN', 'oc.' . Orders::DB_TBL_CHARGES_PREFIX . 'op_id = oss.' . OrderSubscription::DB_TBL_PREFIX . 'id', 'oc');
-        $srch->addMultipleFields(array('oss.*', 'oss_l.*', 'o.' . Orders::DB_TBL_PREFIX . 'is_paid', 'o.' . Orders::DB_TBL_PREFIX . 'language_id', 'o.' . Orders::DB_TBL_PREFIX . 'user_id', 'sum(' . OrderProduct::DB_TBL_CHARGES_PREFIX . 'amount) as op_other_charges'));
+        $srch->addMultipleFields(array('oss.*', 'oss_l.*', 'o.' . Orders::DB_TBL_PREFIX . 'payment_status', 'o.' . Orders::DB_TBL_PREFIX . 'language_id', 'o.' . Orders::DB_TBL_PREFIX . 'user_id', 'sum(' . OrderProduct::DB_TBL_CHARGES_PREFIX . 'amount) as op_other_charges'));
         $srch->addCondition(OrderSubscription::DB_TBL_PREFIX . 'id', '=', $ossubs_id);
         $srch->doNotCalculateRecords();
         $srch->doNotLimitRecords();

@@ -2,7 +2,6 @@
 if(!empty($orderPickUpData)){
 ?>
         <div class="pop-up-title"><?php echo Labels::getLabel('LBL_Pick_Up', $siteLangId); ?></div>
-        <div class="pick-section">
             <ul class="list-group review-block">
                 <?php foreach($orderPickUpData as $address) { ?>
                  <li class="list-group-item">
@@ -11,30 +10,34 @@ if(!empty($orderPickUpData)){
                      </div>
                     <div class="review-block__content" role="cell">  
                         <div class="delivery-address"> 
-                            <p><?php echo ( mb_strlen($address['oua_address1'] ) > 0 ) ? $address['oua_address1'] : '';?>
-                            <?php echo ( mb_strlen($address['oua_address1'] ) > 0 ) ? $address['oua_address1'] . '<br>' : '';?>
-                            <?php echo ( mb_strlen($address['oua_city']) > 0 ) ? $address['oua_city'] . ',' : '';?>
-                            <?php echo ( mb_strlen($address['oua_state']) > 0 ) ? $address['oua_state'] . '<br>' : '';?>
-                            <?php echo ( mb_strlen($address['oua_country']) > 0 ) ? $address['oua_country'] . ',' : '';?>
-                            <?php echo ( mb_strlen($address['oua_zip']) > 0 ) ?  $address['oua_zip'] . '<br>' : '';?></p>
-                            <p class="phone-txt"><?php echo ( mb_strlen($address['oua_phone']) > 0 ) ? $address['oua_phone'] . '' : '';?></p>
-                            <?php 
-                            $fromTime = date('H:i', strtotime($address["opshipping_time_slot_from"]));
-                            $toTime = date('H:i', strtotime($address["opshipping_time_slot_to"]));
-                            ?>
-                            <p><?php echo "<strong>".FatDate::format($address["opshipping_date"]).' '.$fromTime.' - '.$toTime.'</strong>'; ?></p>
+							<p><?php echo $address['oua_address1'] ;?> 
+							<?php if(strlen($address['oua_address2']) > 0) { 
+								echo ", ".$address['oua_address2'] ;?> 
+							<?php } ?>
+							</p>   
+							<p><?php echo $address['oua_city'].", ".$address['oua_state'] ;?></p>    
+							<p><?php echo $address['oua_country'].", ".$address['oua_zip'] ;?></p>    
+							<?php if(strlen($address['oua_phone']) > 0) { ?>
+							<p class="phone-txt"><i class="fas fa-mobile-alt"></i><?php echo $address['oua_phone'] ;?></p>    
+							<?php } ?>
                         </div>
                     </div>
-                    <div class="review-block__link" role="cell">
-                        <a class="link" href="javascript:void(0);" onClick="ShippingSummaryData();"><span><?php echo Labels::getLabel('LBL_Change_Address', $siteLangId); ?></span></a>
-                    </div>
+					<div class="review-block__link">
+					<?php 
+					$fromTime = date('H:i', strtotime($address["opshipping_time_slot_from"]));
+					$toTime = date('H:i', strtotime($address["opshipping_time_slot_to"]));
+					?>
+					<p class="time-txt"><i class="fas fa-calendar-day"></i><?php echo FatDate::format($address["opshipping_date"]).' '.$fromTime.' - '.$toTime; ?></p>
+						
+					</div>
                 </li>
                 <?php } ?>
             </ul>
-        </div>
+			<div class="d-flex"><button class="btn btn-outline-primary btn-sm ml-auto" type="button" onClick="ShippingSummaryData();"><?php echo Labels::getLabel('LBL_Edit', $siteLangId); ?></button></div>
+        
  
 <?php }else{ ?>
-<h5 class="step-title"><?php echo Labels::getLabel('LBL_No_Pick_Up_address_added', $siteLangId); ?></h5>
+<div class="pop-up-title"><?php echo Labels::getLabel('LBL_No_Pick_Up_address_added', $siteLangId); ?></div>
 <?php } ?>
 
 <script>

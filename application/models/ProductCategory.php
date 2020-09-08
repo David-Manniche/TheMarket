@@ -986,13 +986,18 @@ class ProductCategory extends MyAppModel
         $prodSrchObj->doNotCalculateRecords();
         $prodSrchObj->setPageSize(1);
 
-        //$prodSrchObj->addGroupBy('prodcat_id');
-        $prodSrchObj->addMultipleFields(array('substr(prodcat_code,1,6) AS prodrootcat_code', 'count(selprod_id) as productCounts', 'prodcat_id'));
-
-        if (0 < $this->mainTableRecordId) {
+        $prodSrchObj->addMultipleFields(array('count(selprod_id) as productCounts', 'prodcat_id'));
+        /* $prodSrchObj->addMultipleFields(array('substr(prodcat_code,1,6) AS prodrootcat_code','count(selprod_id) as productCounts', 'prodcat_id')); */
+		
+		$cnd = $prodSrchObj->addCondition('c.prodcat_id', '=', $this->mainTableRecordId);
+		$cnd->attachCondition('c.prodcat_code', 'like', '%' . str_pad($this->mainTableRecordId, 6, '0', STR_PAD_LEFT) . '%');
+		
+		/*  if (0 < $this->mainTableRecordId) {
             $prodSrchObj->addHaving('prodrootcat_code', 'LIKE', '%' . str_pad($this->mainTableRecordId, 6, '0', STR_PAD_LEFT) . '%', 'AND', true);
-        }
-        $prodSrchObj->addHaving('productCounts', '>', 0);
+        } */
+        
+		$prodSrchObj->addHaving('productCounts', '>', 0);
+
         $rs = $prodSrchObj->getResultSet();
         $productRows = FatApp::getDb()->fetch($rs);
         if (!empty($productRows) && $productRows['productCounts'] > 0) {

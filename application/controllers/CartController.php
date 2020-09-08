@@ -46,24 +46,7 @@ class CartController extends MyAppController
                    break;
                 }
             }
-            /* foreach( $productsArr as $product ) {
-                if( $product['prodgroup_id'] > 0 ){
-                $prodGroupIds[$product['prodgroup_id']] = $product['prodgroup_id'];
-                //$products['groups'][$product['prodgroup_id']][] = $product;
-                $groupDetailArr = array(
-                'prodgroup_id' => $product['prodgroup_id'],
-                'prodgroup_name' => $product['prodgroup_name'],
-                'prodgroup_price' => $product['prodgroup_price'],
-                'prodgroup_total' => $product['prodgroup_total'],
-                );
-                $products['groups'][$product['prodgroup_id']]['group_detail'] = $groupDetailArr;
-                $products['groups'][$product['prodgroup_id']]['products'][] = $product;
-                //$products[$product['prodgroup_id']][] = $product;
-                } else {
-                $products['single'][] = $product;
-                }
-            } */
-
+            
             if (true === MOBILE_APP_API_CALL) {
                 $cartObj->removeProductShippingMethod();
 
@@ -82,19 +65,19 @@ class CartController extends MyAppController
                     $address = new Address($shippingAddressId);
                     $shippingddressDetail = $address->getData(Address::TYPE_USER, $loggedUserId);
                 }
-
-                $cartHasPhysicalProduct = false;
-                if ($cartObj->hasPhysicalProduct()) {
-                    $cartHasPhysicalProduct = true;
-                }
-
+                
                 $this->set('cartSelectedBillingAddress', $billingAddressDetail);
                 $this->set('cartSelectedShippingAddress', $shippingddressDetail);
-                $this->set('hasPhysicalProduct', $cartHasPhysicalProduct);
                 $this->set('isShippingSameAsBilling', $cartObj->getShippingAddressSameAsBilling());
                 $this->set('selectedBillingAddressId', $billingAddressId);
                 $this->set('selectedShippingAddressId', $shippingAddressId);
             }
+            
+            $cartHasPhysicalProduct = false;
+            if ($cartObj->hasPhysicalProduct()) {
+                $cartHasPhysicalProduct = true;
+            }
+            $this->set('hasPhysicalProduct', $cartHasPhysicalProduct);   
             
             $cartSummary = $cartObj->getCartFinancialSummary($this->siteLangId);
             $PromoCouponsFrm = $this->getPromoCouponsForm($this->siteLangId);
@@ -760,7 +743,13 @@ class CartController extends MyAppController
     
     public function setCartCheckoutType()
     {
-        $type = FatApp::getPostedData('type', FatUtility::VAR_INT, 0);
+        $loggedUserId = UserAuthentication::getLoggedUserId(true);
+        $cart = new Cart($loggedUserId, $this->siteLangId, $this->app_user['temp_user_id']);
+        if(!$cart->hasPhysicalProduct()){
+            $type = Shipping::FULFILMENT_SHIP;
+        }else{
+            $type = FatApp::getPostedData('type', FatUtility::VAR_INT, 0);
+        } 
         $cart = new Cart(UserAuthentication::getLoggedUserId(true), $this->siteLangId, $this->app_user['temp_user_id']);
         $cart->setCartCheckoutType($type);
         if (true === MOBILE_APP_API_CALL) {

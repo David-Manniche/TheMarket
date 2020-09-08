@@ -1,6 +1,8 @@
 .list-group-item {
     background: transparent;
     border: $border;
+    -webkit-animation: dropdown-menu-fade-in .3s ease 1, dropdown-menu-move-up .3s ease-out 1;
+    animation: dropdown-menu-fade-in 0.3s ease 1, dropdown-menu-move-up 0.3s ease-out 1;
 }
 
 .list-group-xl {

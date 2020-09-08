@@ -266,7 +266,8 @@ if (!$print) { ?>
                     <?php
                     } ?>
                     <table class="table  table--orders">
-                        <tbody>
+                        <thead>
+                      
                             <tr class="">
                                 <th>
                                     <?php echo Labels::getLabel('LBL_Order_Particulars', $siteLangId); ?>
@@ -298,6 +299,8 @@ if (!$print) { ?>
                                     <?php echo Labels::getLabel('LBL_Total', $siteLangId); ?>
                                 </th>
                             </tr>
+                            </thead>
+                            <tbody>
                             <?php
                             $cartTotal = 0;
                             $shippingCharges = 0;

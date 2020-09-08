@@ -9,7 +9,7 @@
         </div>
     </div>
     <div class="cards-content">
-        <div class="col-lg-12 col-md-12">
+        <div class="">
             <?php $arr_flds = array(
                 'listserial'=>'#',
                 'splatform_identifier'=>Labels::getLabel('LBL_Title', $siteLangId),

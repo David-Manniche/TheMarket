@@ -388,7 +388,7 @@ $buyQuantity->addFieldTagAttribute('data-page', 'product-view');
 
                                                             <td class="<?php echo $cancelClass; ?>">
                                                                 <div class="qty-wrapper">
-                                                                    <div class="quantity" data-stock="<?php echo $usproduct['selprod_stock']; ?>"><span class="decrease decrease-js"><i class="fas fa-minus"></i></span>
+                                                                    <div class="quantity quantity-2" data-stock="<?php echo $usproduct['selprod_stock']; ?>"><span class="decrease decrease-js"><i class="fas fa-minus"></i></span>
                                                                         <div class="qty-input-wrapper" data-stock="<?php echo $usproduct['selprod_stock']; ?>">
                                                                             <input type="text" value="1" data-page="product-view" placeholder="Qty" class="qty-input cartQtyTextBox productQty-js" lang="addons[<?php echo $usproduct['selprod_id'] ?>]" name="addons[<?php echo $usproduct['selprod_id'] ?>]">
                                                                         </div>

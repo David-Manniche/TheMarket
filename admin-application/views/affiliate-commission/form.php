@@ -44,5 +44,33 @@ $("document").ready(function(){
 	$('input[name=\'affiliate_name\']').keyup(function(){
 		$('input[name=\'afcommsetting_user_id\']').val('');
 	});
+
+	$('input[name=\'category_name\']').autocomplete({
+        'classes': {
+            "ui-autocomplete": "custom-ui-autocomplete"
+        },
+        'source': function(request, response) {
+			$.ajax({
+				url: fcom.makeUrl('productCategories', 'links_autocomplete'),
+				data: {keyword: request['term'],fIsAjax:1},
+				dataType: 'json',
+				type: 'post',
+				success: function(json) {
+					response($.map(json, function(item) {
+						return { label: item['name'], value: item['name'], id: item['id'] };
+					}));
+				},
+			});
+		},
+		select: function(event, ui) {
+			$('input[name=\'afcommsetting_prodcat_id\']').val(ui.item.id);
+		}
+	});
+
+    $('input[name=\'category_name\']').change(function() {
+        if ($(this).val() == '') {
+            $("input[name='afcommsetting_prodcat_id']").val(0);
+        }
+    });
 });
 </script>

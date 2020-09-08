@@ -83,7 +83,7 @@ class LanguagesController extends AdminBaseController
         $frm = $this->getForm($languageId);
 
         if (0 < $languageId) {
-            $data = Language::getAttributesById($languageId, array('language_id', 'language_code', 'language_name', 'language_active', 'language_layout_direction'));
+            $data = Language::getAttributesById($languageId, array('language_id', 'language_code', 'language_name', 'language_active', 'language_layout_direction', 'language_country_code'));
 
             if ($data === false) {
                 FatUtility::dieWithError($this->str_invalid_request);
@@ -139,8 +139,12 @@ class LanguagesController extends AdminBaseController
             '',
             array('class' => 'list-inline')
         );
-        $arrFlags = $this->getlanguageFlags();
-        /* $arrFlag= array();
+		$countryObj = new Countries();
+        $countriesArr = $countryObj->getCountriesArr($this->adminLangId, true, 'country_code');
+        $fld = $frm->addSelectBox(Labels::getLabel('LBL_Country', $this->adminLangId), 'language_country_code', $countriesArr, '', array(), Labels::getLabel('LBL_Select', $this->adminLangId));
+        $fld->requirement->setRequired(true);
+        /* $arrFlags = $this->getlanguageFlags();
+        $arrFlag= array();
         $dir    = '..'.CONF_WEBROOT_FRONT_URL.'public/images/flags/';
         foreach($arrFlags  as  $flag){
         $arrFlag []= '<img src ="'.$dir.$flag.'">';
@@ -155,8 +159,9 @@ class LanguagesController extends AdminBaseController
 
     public function getLanguageFlags()
     {
+        $flagType = FatApp::getConfig('CONF_COUNTRY_FLAG_TYPE', FatUtility::VAR_STRING, 'round');
         $arrFlag = array();
-        $dir = CONF_INSTALLATION_PATH . 'public/images/flags';
+        $dir = CONF_INSTALLATION_PATH . 'public/images/flags/'.$flagType;
         $arrFlags = array_diff(scandir($dir, 1), array(".", ".."));
 
         return $arrFlags;
@@ -177,6 +182,7 @@ class LanguagesController extends AdminBaseController
         $this->set('language_id', $languageId);
         $this->_template->render(false, false);
     }
+
     public function changeStatus()
     {
         $this->objPrivilege->canEditLanguage();
