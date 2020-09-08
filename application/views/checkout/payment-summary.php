@@ -81,7 +81,7 @@ $rewardPoints = UserRewardBreakup::rewardPointBalance(UserAuthentication::getLog
             </li>
             <?php } ?>
             
-            <?php if ($fulfillmentType == Shipping::FULFILMENT_SHIP && !empty($orderShippingData)) { ?>
+            <?php if ($cartHasPhysicalProduct && $fulfillmentType == Shipping::FULFILMENT_SHIP && !empty($orderShippingData)) { ?>
             <li class="list-group-item">
                 <div class="review-block__label">
                     <?php echo Labels::getLabel('LBL_Shipping:', $siteLangId); ?>
@@ -115,7 +115,7 @@ $rewardPoints = UserRewardBreakup::rewardPointBalance(UserAuthentication::getLog
             </li>
             <?php } ?>
 			
-			<?php if ($fulfillmentType == Shipping::FULFILMENT_SHIP && $shippingAddressId != $billingAddressId) { ?>
+			<?php if ($cartHasPhysicalProduct && $fulfillmentType == Shipping::FULFILMENT_SHIP && $shippingAddressId != $billingAddressId) { ?>
 				<li class="list-group-item">
 					<div class="review-block__label">
 						<?php echo Labels::getLabel('LBL_Billing_to:', $siteLangId); ?>

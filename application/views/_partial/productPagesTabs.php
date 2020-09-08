@@ -37,7 +37,7 @@
                     <?php echo Labels::getLabel('LBL_Seller_Products', $siteLangId); ?>
                 </a>           
             <?php } ?>
-            <?php if($adminCatalogs > 0){ ?>
+            <?php if(isset($adminCatalogs) && $adminCatalogs > 0){ ?>
 				<a href="<?php echo UrlHelper::generateUrl('seller', 'catalog', [0]);?>" class="btn btn-outline-primary btn-sm">
 					<?php echo Labels::getLabel('LBL_Marketplace_Products', $siteLangId); ?>
 				</a>
