@@ -106,7 +106,7 @@ $fld->developerTags['cbHtmlAfterCheckbox'] = '<i class="input-helper"></i>';
 								</div>
 							<?php } ?>
 							<div class="row">
-								<?php $translatorSubscriptionKey = FatApp::getConfig('CONF_TRANSLATOR_SUBSCRIPTION_KEY', FatUtility::VAR_STRING, '');
+								<?php /* $translatorSubscriptionKey = FatApp::getConfig('CONF_TRANSLATOR_SUBSCRIPTION_KEY', FatUtility::VAR_STRING, '');
 								if(!empty($translatorSubscriptionKey) && count($otherLangData) > 0) { ?>
 								<div class="col-md-12">
 									<div class="field-set">
@@ -118,7 +118,7 @@ $fld->developerTags['cbHtmlAfterCheckbox'] = '<i class="input-helper"></i>';
 									</div>
 								</div>
 							</div>
-							<?php } ?>
+							<?php } */ ?>
 							<?php if(!empty($otherLangData)){
 							foreach($otherLangData as $langId => $data) { ?>
 							<div class="accordians_container accordians_container-categories" defaultLang= "<?php echo $siteDefaultLangId; ?>" language="<?php echo $langId; ?>" id="accordion-language_<?php echo $langId; ?>" onClick="translateData(this)">

@@ -74,10 +74,10 @@ class TaxRule extends MyAppModel
         $fld = $frm->addFloatField(Labels::getLabel('LBL_Tax_Rate(%)', $langId), 'taxrule_rate[]', '');
         $fld->requirements()->setPositive();
 
-        $fld = $frm->addCheckBox(Labels::getLabel('LBL_Combined_Tax', $langId), 'taxrule_is_combined[]', 1);
+        // $fld = $frm->addCheckBox(Labels::getLabel('LBL_Combined_Tax', $langId), 'taxrule_is_combined[]', 1);
 		
-		/* $taxStructures = TaxStructure::getAllAssoc($langId);
-        $frm->addSelectBox(Labels::getLabel('LBL_Select_Tax', $langId), 'taxruledet_taxstr_id[]', $taxStructures, '', array(), Labels::getLabel('LBL_Select_Tax', $langId)); */
+		$taxStructures = TaxStructure::getAllAssoc($langId);
+        $frm->addSelectBox(Labels::getLabel('LBL_Select_Tax', $langId), 'taxrule_taxstr_id[]', $taxStructures, '', array(), Labels::getLabel('LBL_Select_Tax', $langId));
         /* ] */
 
         /* [ TAX CATEGORY RULE LOCATIONS FORM */

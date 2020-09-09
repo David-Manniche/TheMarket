@@ -449,11 +449,11 @@ class TaxController extends AdminBaseController
 
         if ($activatedTaxServiceId) {
             $frm->addHiddenField('', 'taxcat_plugin_id', $activatedTaxServiceId)->requirements()->setRequired();
-            $frm->addRequiredField(Labels::getLabel('LBL_Tax_Code', $this->adminLangId), 'taxcat_code');
         }
-
+       
+        $frm->addRequiredField(Labels::getLabel('LBL_Tax_Code', $this->adminLangId), 'taxcat_code');
+        
         $activeInactiveArr = applicationConstants::getActiveInactiveArr($this->adminLangId);
-
         $frm->addSelectBox(Labels::getLabel('LBL_Status', $this->adminLangId), 'taxcat_active', $activeInactiveArr, '', array(), '');
         $frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_Save_Changes', $this->adminLangId));
         return $frm;
@@ -504,7 +504,6 @@ class TaxController extends AdminBaseController
         $frm = TaxRule::getRuleForm($this->adminLangId, 0);
         $data = [];
         $rulesData = [];
-        $combinedRulesDetails = [];
         $ruleLocations = [];
 
         if ($taxCatId == 0) {
@@ -512,15 +511,11 @@ class TaxController extends AdminBaseController
         }
 
         $data = Tax::getAttributesById($taxCatId);
-        $data['taxrule_is_combined'] = 0;
         $frm->fill($data);
 
         $taxObj = new TaxRule();
         $rulesData = $taxObj->getRules($taxCatId);
-
         if (!empty($rulesData)) {
-            $rulesIds = array_column($rulesData, 'taxrule_id');
-            $combinedRulesDetails = $taxObj->getCombinedRuleDetails($rulesIds);
             $ruleLocations = $taxObj->getLocations($taxCatId);
         }
 
@@ -531,7 +526,6 @@ class TaxController extends AdminBaseController
         $this->set('taxCategory', $data['taxcat_identifier']);
         $this->set('frm', $frm);
         $this->set('rules', $rulesData);
-        $this->set('combinedRulesDetails', $combinedRulesDetails);
         $this->set('ruleLocations', $ruleLocations);
         $this->_template->render();
     }
@@ -717,10 +711,25 @@ class TaxController extends AdminBaseController
         return true;
     }
 
-    /* public function getCombinedValues($value)
+    public function getCombinedTaxes($taxStrId, $ruleId = 0)
     {
-        $this->objPrivilege->canViewTax();
-        $tax =  Tax::getCombinedValues($value);
-        FatUtility::dieJsonSuccess($tax);
-    } */
+        $ruleId = FatUtility::int($ruleId);
+        $taxStrId = FatUtility::int($taxStrId);
+
+        $taxStructure = new TaxStructure($taxStrId);
+        $combTaxes =  $taxStructure->getCombinedTaxesByParent($this->adminLangId);
+
+        foreach ($combTaxes as $taxStrId => $val) {
+            $srch = TaxRuleCombined::getSearchObject();
+            $srch->addFld('taxruledet_rate');
+            $srch->addCondition('taxruledet_taxrule_id', '=', $ruleId);
+            $srch->addCondition('taxruledet_taxstr_id', '=', $taxStrId);
+            $rs = $srch->getResultSet();
+            $row = FatApp::getDb()->fetch($rs);
+            $combTaxes[$taxStrId]['taxruledet_rate'] = $row['taxruledet_rate'];
+        }
+        $this->set('taxStrId', $taxStrId);
+        $this->set('combTaxes', $combTaxes);
+        $this->_template->render(false, false);
+    }
 }
