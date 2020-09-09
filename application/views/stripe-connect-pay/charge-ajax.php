@@ -6,7 +6,18 @@ $frm->setFormTagAttribute('onsubmit', 'doPayment(this, "' . $orderInfo["id"] . '
 $frm->setFormTagAttribute('class', 'form form--normal');
 
 echo $frm->getFormTag(); ?>
-    <ul class="list-group payment-card payment-card-view">
+  <div class="m-3 text-right">
+        <a class="link-text" href="javascript:void(0);" onclick="addNewCard('<?php echo $orderInfo['id']; ?>')">
+            <i class="icn"> 
+                <svg class="svg">
+                    <use xlink:href="<?php echo CONF_WEBROOT_URL; ?>images/retina/sprite.svg#add" href="<?php echo CONF_WEBROOT_URL; ?>images/retina/sprite.svg#add">
+                    </use>
+                </svg> 
+            </i>
+            <?php echo Labels::getLabel('LBL_ADD_NEW_CARD', $siteLangId); ?>
+        </a>
+    </div>
+    <ul class="list-group list-group-flush-x payment-card payment-card-view">
         <?php
         foreach ($savedCards as $cardDetail) { ?>
             <li class="list-group-item">
@@ -59,44 +70,31 @@ echo $frm->getFormTag(); ?>
             </li>
         <?php } ?>
     </ul>
-    <div class="my-3 text-right">
-        <a class="link-text" href="javascript:void(0);" onclick="addNewCard('<?php echo $orderInfo['id']; ?>')">
-            <i class="icn"> 
-                <svg class="svg">
-                    <use xlink:href="<?php echo CONF_WEBROOT_URL; ?>images/retina/sprite.svg#add" href="<?php echo CONF_WEBROOT_URL; ?>images/retina/sprite.svg#add">
-                    </use>
-                </svg> 
-            </i>
-            <?php echo Labels::getLabel('LBL_ADD_NEW_CARD', $siteLangId); ?>
-        </a>
-    </div>
+  
     <?php if (!empty($savedCards)) { ?>
-        <div class="row">
-            <div class="col-md-12">
-                <div class="field-set">
-                    <div class="caption-wraper">
-                        <label class="field_label"></label>
+        <div class="payment-action">
+                        
+                        <?php if (FatUtility::isAjaxCall()) { ?>
+                                            <a href="javascript:void(0);" onclick="loadPaymentSummary()" class="btn btn-outline-primary btn-wide">
+                                                <?php echo Labels::getLabel('LBL_Cancel', $siteLangId); ?>
+                                            </a>
+                                        <?php } else { ?>
+                                            <a href="<?php echo $cancelBtnUrl; ?>" class="btn btn-outline-primary btn-wide"><?php echo Labels::getLabel('LBL_Cancel', $siteLangId); ?></a>
+                                        <?php } ?>
+
+                       
+
+                    
+                        <?php
+                                        $btn = $frm->getField('btn_submit');
+                                        $btn->addFieldTagAttribute('class', 'btn btn-primary btn-wide');
+                                        $btn->addFieldTagAttribute('data-processing-text', Labels::getLabel('LBL_PLEASE_WAIT..', $siteLangId));
+                                        echo $frm->getFieldHtml('btn_submit');
+                                        ?>
+                     
+
                     </div>
-                    <div class="field-wraper">
-                        <div class="field_cover btnFields-js">
-                            <?php
-                            $btn = $frm->getField('btn_submit');
-                            $btn->addFieldTagAttribute('class', 'btn btn-primary');
-                            $btn->addFieldTagAttribute('data-processing-text', Labels::getLabel('LBL_PLEASE_WAIT..', $siteLangId));
-                            echo $frm->getFieldHtml('btn_submit');
-                            ?>
-                            <?php if (FatUtility::isAjaxCall()) { ?>
-                                <a href="javascript:void(0);" onclick="loadPaymentSummary()" class="btn btn-outline-primary">
-                                    <?php echo Labels::getLabel('LBL_Cancel', $siteLangId); ?>
-                                </a>
-                            <?php } else { ?>
-                                <a href="<?php echo $cancelBtnUrl; ?>" class="btn btn-outline-primary"><?php echo Labels::getLabel('LBL_CANCEL', $siteLangId); ?></a>
-                            <?php } ?>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
+     
     <?php } ?>
 </form>
 <?php echo $frm->getExternalJs(); ?>
@@ -139,6 +137,9 @@ echo $frm->getFormTag(); ?>
             fcom.updateWithAjax(fcom.makeUrl(controller, 'charge', [orderId]), data, function(t) {
                 if ('undefined' != typeof t.redirectUrl) {
                     window.location = t.redirectUrl;
+                } else if (1 > t.status) { 
+                    $.systemMessage(t.msg, 'alert--danger', false);
+                    return;
                 } else {
                     $(paymentForm).html(t.html);
                     $(".btnFields-js").html(fcom.getLoader());
@@ -150,7 +151,7 @@ echo $frm->getFormTag(); ?>
         addNewCard = function(orderId) {
             $(paymentForm).html(fcom.getLoader());
             fcom.ajax(fcom.makeUrl(controller, 'addCardForm', [orderId]), '', function(t) {
-                $(paymentForm).html(t);
+                $(paymentForm).html(t).removeClass('p-0');
             });
         };
 

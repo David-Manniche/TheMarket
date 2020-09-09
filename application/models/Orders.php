@@ -2538,6 +2538,7 @@ class Orders extends MyAppModel
         $srch->joinTable(Orders::DB_TBL_ORDER_USER_ADDRESS, 'LEFT OUTER JOIN', 'oua.oua_op_id = op.op_id', 'oua');
         $srch->addCondition('order_id', '=', $orderId); 
         $srch->addCondition('oua_type', '=', Orders::PICKUP_ADDRESS_TYPE);
+        $srch->addCondition('op_product_type', '=', product::PRODUCT_TYPE_PHYSICAL);  
         $srch->addGroupBy('opshipping_pickup_addr_id');       
         $rs = $srch->getResultSet();
         $records = FatApp::getDb()->fetchAll($rs);
@@ -2550,6 +2551,7 @@ class Orders extends MyAppModel
         $srch->joinSellerProducts($langId);
         $srch->joinShippingCharges();
         $srch->addCondition('order_id', '=', $orderId);  
+        $srch->addCondition('op_product_type', '=', product::PRODUCT_TYPE_PHYSICAL);  
         $srch->addOrder('opshipping_op_id'); 
         $rs = $srch->getResultSet();
         $records = FatApp::getDb()->fetchAll($rs);

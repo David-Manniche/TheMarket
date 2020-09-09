@@ -518,6 +518,7 @@
     display: inline-flex;
     align-items: center;
     vertical-align: top;
+    white-space: nowrap;
     margin: 0;
     @include media-breakpoint-down(md) {
         & {

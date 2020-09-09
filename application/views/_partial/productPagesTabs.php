@@ -35,14 +35,13 @@
                 </a>
                 <a href="<?php echo UrlHelper::generateUrl('seller', 'catalog');?>" class="btn btn-outline-primary btn-sm">
                     <?php echo Labels::getLabel('LBL_Seller_Products', $siteLangId); ?>
-                </a>
-                <?php if($adminCatalogs > 0){ ?>
-                    <a href="<?php echo UrlHelper::generateUrl('seller', 'catalog', [0]);?>" class="btn btn-outline-primary btn-sm">
-                        <?php echo Labels::getLabel('LBL_Marketplace_Products', $siteLangId); ?>
-                    </a>
-                <?php } ?>                
+                </a>           
             <?php } ?>
-            
+            <?php if(isset($adminCatalogs) && $adminCatalogs > 0){ ?>
+				<a href="<?php echo UrlHelper::generateUrl('seller', 'catalog', [0]);?>" class="btn btn-outline-primary btn-sm">
+					<?php echo Labels::getLabel('LBL_Marketplace_Products', $siteLangId); ?>
+				</a>
+			<?php } ?>
             <?php if (User::canAddCustomProduct() && $action == 'catalog' && $type == 1) { ?>
                 <a href="<?php echo UrlHelper::generateUrl('seller', 'customProductForm');?>" class="btn btn-outline-primary btn-sm">
                     <?php echo Labels::getLabel('LBL_Add_New_Product', $siteLangId);?>

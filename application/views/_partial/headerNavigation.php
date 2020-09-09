@@ -1,6 +1,33 @@
 <?php  defined('SYSTEM_INIT') or die('Invalid Usage'); ?>
 <?php if ($headerNavigation || $headerCategories) {
 $getOrgUrl = (CONF_DEVELOPMENT_MODE) ? true : false;
+
+if(count($headerNavigation)) {
+    $noOfCharAllowedInNav = 90;
+    $rightNavCharCount = 5;
+    if (!$isUserLogged) {
+        $rightNavCharCount = $rightNavCharCount + mb_strlen(html_entity_decode(Labels::getLabel('LBL_Sign_In', $siteLangId), ENT_QUOTES, 'UTF-8'));
+    } else {
+        $rightNavCharCount = $rightNavCharCount + mb_strlen(html_entity_decode(Labels::getLabel('LBL_Hi,', $siteLangId).' '.$userName, ENT_QUOTES, 'UTF-8'));
+    }
+    $rightNavCharCount = $rightNavCharCount + mb_strlen(html_entity_decode(Labels::getLabel("LBL_Cart", $siteLangId), ENT_QUOTES, 'UTF-8'));
+    $noOfCharAllowedInNav = $noOfCharAllowedInNav - $rightNavCharCount;
+
+    $navLinkCount = 0;
+    foreach ($headerNavigation as $nav) {
+        if (!$nav['pages']) {
+            break;
+        }
+        foreach ($nav['pages'] as $link) {
+            $noOfCharAllowedInNav = $noOfCharAllowedInNav - mb_strlen(html_entity_decode($link['nlink_caption'], ENT_QUOTES, 'UTF-8'));
+            if ($noOfCharAllowedInNav < 0) {
+                break;
+            }
+            $navLinkCount++;
+        }
+    }
+}
+    
 ?>
 <div class="last-bar no-print">
     <div class="container">
@@ -91,30 +118,6 @@ $getOrgUrl = (CONF_DEVELOPMENT_MODE) ? true : false;
                 <?php } ?>
                 <?php
                 if(count($headerNavigation)) {
-                    $noOfCharAllowedInNav = 90;
-                    $rightNavCharCount = 5;
-                    if (!$isUserLogged) {
-                        $rightNavCharCount = $rightNavCharCount + mb_strlen(html_entity_decode(Labels::getLabel('LBL_Sign_In', $siteLangId), ENT_QUOTES, 'UTF-8'));
-                    } else {
-                        $rightNavCharCount = $rightNavCharCount + mb_strlen(html_entity_decode(Labels::getLabel('LBL_Hi,', $siteLangId).' '.$userName, ENT_QUOTES, 'UTF-8'));
-                    }
-                    $rightNavCharCount = $rightNavCharCount + mb_strlen(html_entity_decode(Labels::getLabel("LBL_Cart", $siteLangId), ENT_QUOTES, 'UTF-8'));
-                    $noOfCharAllowedInNav = $noOfCharAllowedInNav - $rightNavCharCount;
-
-                    $navLinkCount = 0;
-                    foreach ($headerNavigation as $nav) {
-                        if (!$nav['pages']) {
-                            break;
-                        }
-                        foreach ($nav['pages'] as $link) {
-                            $noOfCharAllowedInNav = $noOfCharAllowedInNav - mb_strlen(html_entity_decode($link['nlink_caption'], ENT_QUOTES, 'UTF-8'));
-                            if ($noOfCharAllowedInNav < 0) {
-                                break;
-                            }
-                            $navLinkCount++;
-                        }
-                    }
-                    
                     foreach ($headerNavigation as $nav) {
                         if ($nav['pages']) {
                             $mainNavigation = array_slice($nav['pages'], 0, $navLinkCount);

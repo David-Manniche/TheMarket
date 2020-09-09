@@ -265,7 +265,7 @@
         flex: 1;
         min-width: 0px;
         .title {
-            font-weight: 600;
+            font-weight: 500;
             font-size: 0.88rem;
             margin-bottom: 4px;
             white-space: nowrap;
@@ -293,7 +293,8 @@
             display: flex;
             justify-content: space-between;
             .label {
-                color: $txt-gray;
+                color: $body-color;
+                font-weight: 500;
                 padding: 0;
                 font-size: 0.85rem;
                 text-transform: none;
@@ -474,7 +475,6 @@
     border-radius: $radius4;
     ul {
         display: flex;
-        align-items: center;
         justify-content: center;
         margin: 0 auto;
         border: $border;
@@ -492,7 +492,7 @@
         }
     }
     .control-label {
-        padding: 1rem 2rem;
+        padding: 1rem 1rem;
         margin: 0;
         display: block;
         cursor: pointer;
@@ -538,7 +538,7 @@
     justify-content: space-between;
     align-items: center;
     padding: 1.5rem;
-    background: $gray-color;
+    background: $bg-gray;
     border-radius: $radius4;
     font-size: 0.85rem;
     .svg {

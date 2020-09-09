@@ -201,8 +201,8 @@ class Cart extends FatModel
     }
 
     public function hasPhysicalProduct()
-    {
-        $isPhysical = false;
+    {   
+        $isPhysical = false;    
         foreach ($this->getBasketProducts($this->cart_lang_id) as $product) {
             if ($product['is_batch'] && !empty($product['products'])) {
                 foreach ($product['products'] as $pgproduct) {
@@ -212,7 +212,7 @@ class Cart extends FatModel
                     }
                 }
             } else {
-                if (!empty($product['is_physical_product'])) {
+                if (!empty($product['is_physical_product'])) {                    
                     $isPhysical = true;
                     break;
                 }
@@ -249,6 +249,11 @@ class Cart extends FatModel
                     continue;
                 }
                 
+                if (isset($this->SYSTEM_ARR['shopping_cart']['checkout_type']) && $sellerProductRow['selprod_fulfillment_type'] != Shipping::FULFILMENT_ALL && $sellerProductRow['selprod_fulfillment_type'] != $this->SYSTEM_ARR['shopping_cart']['checkout_type']) {
+                    unset($this->products[$key]);
+                    continue;
+                }
+                    
                 $this->products[$key] = [
                     'shipping_cost' => 0,
                     'opshipping_rate_id' => 0,
@@ -1697,7 +1702,7 @@ class Cart extends FatModel
             if (count($levelItems['rates']) > 0 && $level != Shipping::LEVEL_PRODUCT) {
                 $name = current($levelItems['rates'])['code'];
                 $shippingRates[$name] =  $levelItems['rates'];
-            } else {
+            } else if(isset($levelItems['products'])){
                 foreach ($levelItems['products'] as $product) {
                     if (count($levelItems['rates'][$product['selprod_id']]) <= 0) {
                         continue;
@@ -1712,60 +1717,59 @@ class Cart extends FatModel
 
     public function getPickupOptions($cartProducts)
     {
-        if (empty($cartProducts)) {
-            $cartProducts =  $this->getProducts($this->cart_lang_id);
-        }
-        
         $shippedByArr = [];
         $address = new Address();
         $pickupAddress = [];
         $selectedPickUpAddresses = [];
         $pickUpData = $this->getProductPickUpAddresses(); 
-        foreach ($cartProducts as $product) { 
+        if (empty($cartProducts)) {
+            $cartProducts =  $this->getProducts($this->cart_lang_id);
+        }
+
+        foreach ($cartProducts as $product) {
+            $selProdId = $product['selprod_id'];
             $shippedById = 0;
             $shipType = Address::TYPE_ADMIN_PICKUP;
-
+            
             if ($product['isProductShippedBySeller']) {
                 $shippedById = $product['shop_id'];
                 $shipType = Address::TYPE_SHOP_PICKUP;
             }
+            
+            if ($product['is_physical_product']) {
+                $shippedByArr[$shippedById]['products'][$selProdId] = $product;
+                
+                if (!in_array($shippedById, $pickupAddress)) {
+                    $addresses = $address->getData($shipType, $shippedById);
+                    $shippedByArr[$shippedById]['pickup_options'] = $addresses;
+                }
+                $pickupAddress[] = $shippedById;
 
-            if (!in_array($shippedById, $pickupAddress)) {
-                $addresses = $address->getData($shipType, $shippedById);
-                $shippedByArr[$shippedById]['pickup_options'] = $addresses;
+                if (!in_array($shippedById, $selectedPickUpAddresses) && !empty($pickUpData[$product['selprod_id']])) {
+                    $addressObj = new Address($pickUpData[$selProdId]['time_slot_addr_id']);
+                    $pickUpAddr = $addressObj->getData($shipType, $shippedById);
+                    $shippedByArr[$shippedById]['pickup_address'] = $pickUpAddr;
+                    $shippedByArr[$shippedById]['pickup_address']['time_slot_id'] = $pickUpData[$selProdId]['time_slot_id'];  
+                    $shippedByArr[$shippedById]['pickup_address']['time_slot_date'] = $pickUpData[$selProdId]['time_slot_date'];    
+                    $shippedByArr[$shippedById]['pickup_address']['time_slot_from'] = $pickUpData[$selProdId]['time_slot_from_time'];    
+                    $shippedByArr[$shippedById]['pickup_address']['time_slot_to'] = $pickUpData[$selProdId]['time_slot_to_time'];    
+                }
+                $selectedPickUpAddresses[] = $shippedById;
+            }else{
+                $shippedByArr[$shippedById]['digital_products'][$selProdId] = $product;
             }
-            $pickupAddress[] = $shippedById;
-            
-            if (!in_array($shippedById, $selectedPickUpAddresses) && !empty($pickUpData[$product['selprod_id']])) {
-                $selProdId = $product['selprod_id'];
-                $addressObj = new Address($pickUpData[$selProdId]['time_slot_addr_id']);
-                $pickUpAddr = $addressObj->getData($shipType, $shippedById);
-                $shippedByArr[$shippedById]['pickup_address'] = $pickUpAddr;
-                $shippedByArr[$shippedById]['pickup_address']['time_slot_id'] = $pickUpData[$selProdId]['time_slot_id'];  
-                $shippedByArr[$shippedById]['pickup_address']['time_slot_date'] = $pickUpData[$selProdId]['time_slot_date'];    
-                $shippedByArr[$shippedById]['pickup_address']['time_slot_from'] = $pickUpData[$selProdId]['time_slot_from_time'];    
-                $shippedByArr[$shippedById]['pickup_address']['time_slot_to'] = $pickUpData[$selProdId]['time_slot_to_time'];    
-            }
-            $selectedPickUpAddresses[] = $shippedById;
-            
-            
-            $shippedByArr[$shippedById]['products'][$product['selprod_id']] = $product;
-        }   
+        } 
         return $shippedByArr;
     }
 
     public function getShippingOptions()
-    {
+    {   
         $shippedByArr = [];
-        
-        $address = new Address($this->getCartShippingAddress(), $this->cart_lang_id);
-        $shippingAddressDetail =  $address->getData(Address::TYPE_USER, $this->cart_user_id);
-
         $physicalSelProdIdArr = [];
         $digitalSelProdIdArr = [];
+        $productInfo = [];
         $cartProducts = $this->getBasketProducts($this->cart_lang_id);
         
-        $productInfo = [];
         foreach ($cartProducts as $val) {
             if (isset($this->SYSTEM_ARR['shopping_cart']['checkout_type']) && $val['selprod_fulfillment_type'] != Shipping::FULFILMENT_ALL && $val['selprod_fulfillment_type'] != $this->SYSTEM_ARR['shopping_cart']['checkout_type']) {
                 continue;
@@ -1778,16 +1782,23 @@ class Cart extends FatModel
                 $digitalSelProdIdArr[$val['selprod_id']] = $val['selprod_id'];
             }
         }
-
-        $shipping = new Shipping($this->cart_lang_id);
-        $response =  $shipping->calculateCharges($physicalSelProdIdArr, $shippingAddressDetail, $productInfo);
-        $shippedByArr = $response['data'];
+        
+        if (!empty($physicalSelProdIdArr)) {
+            $address = new Address($this->getCartShippingAddress(), $this->cart_lang_id);
+            $shippingAddressDetail =  $address->getData(Address::TYPE_USER, $this->cart_user_id);
+            
+            $shipping = new Shipping($this->cart_lang_id);
+            $response =  $shipping->calculateCharges($physicalSelProdIdArr, $shippingAddressDetail, $productInfo);
+            $shippedByArr = $response['data'];
+        }
 
         /*Include digital products */
-        foreach ($digitalSelProdIdArr as $selProdId) {
-            $shippedByArr[Shipping::LEVEL_PRODUCT]['products'][$selProdId] = $productInfo[$selProdId];
-            $shippedByArr[Shipping::LEVEL_PRODUCT]['shipping_options'][$selProdId] = [];
-            $shippedByArr[Shipping::LEVEL_PRODUCT]['rates'][$selProdId] = [];
+        if (!empty($digitalSelProdIdArr)) {
+            foreach ($digitalSelProdIdArr as $selProdId) {
+                $shippedByArr[Shipping::LEVEL_PRODUCT]['digital_products'][$selProdId] = $productInfo[$selProdId];
+                $shippedByArr[Shipping::LEVEL_PRODUCT]['shipping_options'][$selProdId] = [];
+                $shippedByArr[Shipping::LEVEL_PRODUCT]['rates'][$selProdId] = [];
+            }
         }
 
         return $shippedByArr;
@@ -1930,10 +1941,11 @@ class Cart extends FatModel
     public function isProductPickUpAddrSet()
     {
         foreach ($this->getProducts($this->cart_lang_id) as $product) {
-            if (!isset($this->SYSTEM_ARR['shopping_cart']['product_pickup_Addresses'][$product['selprod_id']])) {
+            if (!isset($this->SYSTEM_ARR['shopping_cart']['product_pickup_Addresses'][$product['selprod_id']]) && $product['product_type'] == Product::PRODUCT_TYPE_PHYSICAL) {
                 return false;
             }
         }
         return true;
     }
+
 }

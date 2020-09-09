@@ -6,12 +6,17 @@ $(document).ready(function() {
     $(document).on("click", ".selectItem--js", function() {
         if ($(this).prop("checked") == false) {
             $(".selectAll-js").prop("checked", false);
+            $(this).closest("tr").removeClass('selected-row');
+        } else {
+            $(this).closest("tr").addClass('selected-row');
         }
+
         if ($(".selectItem--js").length == $(".selectItem--js:checked").length) {
             $(".selectAll-js").prop("checked", true);
         }
         showFormActionsBtns();
     });
+
     if (0 < $('.js-widget-scroll').length) {
         slickWidgetScroll();
     }
@@ -75,24 +80,24 @@ $(document).ready(function() {
 
 
 $(document).on('keyup', 'input.otpVal-js', function(e) {
-	if ('' != $(this).val()) {
-		$(this).removeClass('is-invalid');
-	}
+    if ('' != $(this).val()) {
+        $(this).removeClass('is-invalid');
+    }
 
-	var element = '';
+    var element = '';
 
-	/* 
-	# e.which = 8(Backspace)
-	*/
-	if (8 != e.which && '' != $(this).val()) {
-		element = ($(this).parents('.otpCol-js').nextAll())[0];
-	} else {
-		element = ($(this).parents('.otpCol-js').prevAll())[0];
-	}
-	element = $(element).find("input.otpVal-js");
-	if ('undefined' != typeof element) {
-		element.focus();
-	}
+    /* 
+    # e.which = 8(Backspace)
+    */
+    if (8 != e.which && '' != $(this).val()) {
+        element = ($(this).parents('.otpCol-js').nextAll())[0];
+    } else {
+        element = ($(this).parents('.otpCol-js').prevAll())[0];
+    }
+    element = $(element).find("input.otpVal-js");
+    if ('undefined' != typeof element) {
+        element.focus();
+    }
 });
 
 unlinkSlick = function() {
@@ -137,9 +142,9 @@ startOtpInterval = function(parent = '', callback = '', params = []) {
             clearInterval(otpIntervalObj);
             $(parent + '.resendOtp-js').removeClass('d-none');
             element.parent().parent().hide();
-			if (eval("typeof " + callback) == 'function') {
-				window[callback](params);
-			}
+            if (eval("typeof " + callback) == 'function') {
+                window[callback](params);
+            }
         }
         element.text(counter);
     }, 1000);
@@ -186,9 +191,9 @@ function showFormActionsBtns() {
 function selectAll(obj) {
     $(".selectItem--js").each(function() {
         if (obj.prop("checked") == false) {
-            $(this).prop("checked", false);
+            $(this).prop("checked", false).closest('tr').removeClass('selected-row');
         } else {
-            $(this).prop("checked", true);
+            $(this).prop("checked", true).closest('tr').addClass('selected-row');
         }
     });
     showFormActionsBtns();

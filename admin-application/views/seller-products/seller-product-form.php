@@ -188,6 +188,7 @@
                                     </div>
                                 </div>
                             </div>
+                            <?php if ($product_type == Product::PRODUCT_TYPE_PHYSICAL) { ?>
                             <div class="selprod_fulfillment_type_fld col-md-6">
                                 <div class="field-set">
                                     <div class="caption-wraper"><label class="field_label"><?php echo $frmSellerProduct->getField('selprod_fulfillment_type')->getCaption(); ?></label></div>
@@ -196,6 +197,7 @@
                                     </div>
                                 </div>
                             </div>
+                            <?php } ?>
                         </div>
                          <div class="row">
                              <div class="col-md-12">

@@ -249,12 +249,12 @@ $("document").ready(function () {
                 }else {
                     if (t.hasPhysicalProduct) {
                         $(shippingSummaryDiv).show();
-                        loadShippingSummaryDiv();
                     } else {
                         $(shippingSummaryDiv).hide();
                         loadShippingAddress();
-                        loadCartReviewDiv();
+                        //loadCartReviewDiv();                    
                     }
+                    loadShippingSummaryDiv();
                     loadFinancialSummary();
                 }
             }

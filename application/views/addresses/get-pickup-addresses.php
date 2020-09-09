@@ -11,14 +11,17 @@ if(!empty($addresses)){
                         <label class="radio">
                             <input name="pickup_address" <?php echo (($key == 0 && $addrId == 0) || $addrId == $address['addr_id']) ? 'checked=checked': ''; ?> onclick="displayCalendar();" type="radio" value="<?php echo $address['addr_id']; ?>"> 
                             <i class="input-helper"></i> 
-                            <span class="lb-txt js-addr">  
-                                <?php echo $address['addr_address1']; ?>
-                                <?php echo (strlen($address['addr_address2'])>0)? ", ".$address['addr_address2']:''; ?><br> 
-                                <?php echo (strlen($address['addr_city'])>0)?$address['addr_city'].',':''; ?> 
-                                <?php echo (strlen($address['state_name'])>0)?$address['state_name'].',':''; ?>
-                                <?php echo (strlen($address['country_name'])>0)?$address['country_name'].'<br>':''; ?> 
-                                <?php echo (strlen($address['addr_zip'])>0) ? Labels::getLabel('LBL_Zip:', $siteLangId).$address['addr_zip'].',':''; ?>
-                                <?php echo (strlen($address['addr_phone'])>0) ? Labels::getLabel('LBL_Phone:', $siteLangId).$address['addr_phone']:''; ?>
+                            <span class="lb-txt js-addr"> 
+								<p><?php echo $address['addr_address1'] ;?> 
+								<?php if(strlen($address['addr_address2']) > 0) { 
+									echo ", ".$address['addr_address2'] ;?> 
+								<?php } ?>
+								</p>   
+								<p><?php echo $address['addr_city'].", ".$address['state_name'] ;?></p>    
+								<p><?php echo $address['country_name'].", ".$address['addr_zip'] ;?></p>    
+								<?php if(strlen($address['addr_phone']) > 0) { ?>
+								<p class="phone-txt"><i class="fas fa-mobile-alt"></i><?php echo $address['addr_phone'] ;?></p>    
+								<?php } ?>
                             </span>
                         </label>
                     </li>
@@ -127,7 +130,7 @@ selectTimeSlot = function (ele, level) {
 
     var slot_time = $(ele).next().children('.time').html();
     var addrHtml = $("input[name='pickup_address']:checked").next().next('.js-addr').html();
-    var html = "<div>" + addrHtml + "<br/><strong>" + calendarSelectedDate + ' ' + slot_time + "</strong></div>";
+    var html = addrHtml + '<p class="time-txt"><i class="fas fa-calendar-day"></i>'+calendarSelectedDate+' '+slot_time+'</p>';
     
     $(".js-slot-addr_" + level).html(html);
     $("#facebox .close").trigger('click');

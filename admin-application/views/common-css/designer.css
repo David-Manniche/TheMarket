@@ -972,6 +972,7 @@ table.table-bordered tr:nth-child(odd) td {
     max-height: 200px;
     overflow: hidden;
     overflow-y: auto;
+	z-index:1000 !important;
 }
 
 .overlay-blur {
