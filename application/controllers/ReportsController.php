@@ -423,7 +423,6 @@ class ReportsController extends SellerBaseController
         }
         $frmSrch = $this->getSalesReportSearchForm($orderDate);
         $this->set('frmSrch', $frmSrch);
-        $this->set('frmSrch', $frmSrch);
         $this->set('orderDate', $orderDate);
         $this->_template->render(true, true);
     }
