@@ -126,18 +126,68 @@ $paymentIntendId = isset($paymentIntendId) ? $paymentIntendId : '';
     </div>
 </div>
 <script src="https://js.stripe.com/v3/"></script>
-<?php if (!empty($paymentIntendId)) { ?>
+<?php if (empty($paymentIntendId)) { ?>
     <script type="text/javascript">
+        (function() {
+            var controller = 'StripeConnectPay';
+            var paymentForm = '#tabs-container';
+            doPayment = function(frm, orderId) {
+                if (!$(frm).validate()) return;
+                var data = fcom.frmData(frm);
+                fcom.updateWithAjax(fcom.makeUrl(controller, 'charge', [orderId]), data, function(t) {
+                    if ('undefined' != typeof t.redirectUrl) {
+                        window.location = t.redirectUrl;
+                    } else if (1 > t.status) { 
+                        $.systemMessage(t.msg, 'alert--danger', false);
+                        return;
+                    } else {
+                        $(paymentForm).html(t.html);
+                        $(".btnFields-js").html(fcom.getLoader());
+                        $.mbsmessage(langLbl.processing, false, 'alert--process alert');
+                    }
+                });
+            };
+
+            addNewCard = function(orderId) {
+                $(paymentForm).html(fcom.getLoader());
+                fcom.ajax(fcom.makeUrl(controller, 'addCardForm', [orderId]), '', function(t) {
+                    $(paymentForm).html(t).removeClass('p-0');
+                });
+            };
+
+            removeCard = function(cardId) {
+                if (!confirm(langLbl.confirmDelete)) {
+                    return false;
+                };
+                var data = 'cardId=' + cardId;
+                fcom.ajax(fcom.makeUrl(controller, 'removeCard', []), data, function(t) {
+                    t = $.parseJSON(t);
+                    if (1 > t.status) {
+                        $.mbsmessage(t.msg, false, 'alert--danger');
+                        return false;
+                    }
+                    $.mbsmessage(t.msg, false, 'alert--success');
+                    loadPaymentSummary();
+                });
+            };
+        })();
         $(document).ready(function() {
-            $('.cc-payment').addClass('payment-load');
+            <?php if (empty($savedCards)) { ?>
+                addNewCard('<?php echo $orderInfo["id"]; ?>');
+            <?php } ?>
+            $(document).on("click", ".cancelCardForm-js", function(e){
+                e.preventDefault();
+                loadPaymentSummary();
+            });
         });
+    </script>
+<?php } else { ?>
+    <script type="text/javascript">
         var publishable_key = '<?php echo $settings['publishable_key']; ?>';
         var stripe = Stripe(publishable_key);
-
         var clientSecret = '<?php echo $clientSecret; ?>';
-
         stripe.confirmCardPayment(clientSecret, {
-            payment_method: $("input[name='card_id']").val()
+            payment_method: "<?php echo $sourceId; ?>"
         }).then(function(result) {
             if (result.error) {
                 // PaymentIntent client secret was invalid
@@ -156,63 +206,3 @@ $paymentIntendId = isset($paymentIntendId) ? $paymentIntendId : '';
         });
     </script>
 <?php } ?>
-
-<script>
-    $(document).on("click", ".selectCard-js", function() {
-        var cardId = $(this).data("cardid");
-        $("input[name='card_id']").val(cardId);
-    });
-
-    (function() {
-        var controller = 'StripeConnectPay';
-        var paymentForm = '.paymentFrom-js';
-        doPayment = function(frm, orderId) {
-            if (!$(frm).validate()) return;
-            var data = fcom.frmData(frm);
-            $.mbsmessage(langLbl.processing, false, 'alert--process');
-            fcom.ajax(fcom.makeUrl(controller, 'charge', [orderId]), data, function(t) {
-                var ans = $.parseJSON(t);
-                if ('undefined' != typeof ans.redirectUrl) {
-                    window.location = ans.redirectUrl;
-                } else if (1 > ans.status) { 
-                    $.mbsmessage(ans.msg, false, 'alert--process');
-                    return;
-                } else { 
-                    $(".paymentIntent-js").html(ans.html);
-                }
-            });
-        };
-
-        addNewCard = function(orderId) {
-            $(paymentForm).html(fcom.getLoader());
-            fcom.ajax(fcom.makeUrl(controller, 'addCardForm', [orderId]), '', function(t) {
-                $(paymentForm).html(t);
-            });
-        };
-
-        removeCard = function(cardId) {
-            if (!confirm(langLbl.confirmDelete)) {
-                return false;
-            };
-            var data = 'cardId=' + cardId;
-            fcom.ajax(fcom.makeUrl(controller, 'removeCard', []), data, function(t) {
-                t = $.parseJSON(t);
-                if (1 > t.status) {
-                    $.systemMessage(t.msg, 'alert--danger', false);
-                    return false;
-                }
-                $.systemMessage(t.msg, 'alert--success', false);
-                location.reload();
-            });
-        };
-    })();
-    $(document).ready(function() {
-        <?php if (empty($savedCards)) { ?>
-            addNewCard('<?php echo $orderInfo["id"]; ?>');
-        <?php } ?>
-        $(document).on("click", ".cancelCardForm-js", function(e){
-            e.preventDefault();
-            location.reload();
-        });
-    });
-</script>
