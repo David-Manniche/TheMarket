@@ -8,7 +8,7 @@
                     <div class="row">
                         <div class="col-xl-8 col-lg-7"> 
                             <?php if($hasPhysicalProduct){ ?>
-                            <div class="shiporpickup">
+                            <div class="shiporpickup" id="js-shiporpickup">
                                 <ul>
                                     <li onclick="listCartProducts(<?php echo Shipping::FULFILMENT_SHIP;?>)">
                                         <input class="control-input" type="radio" id="shipping" name="fulfillment_type" checked="checked" value="<?php echo Shipping::FULFILMENT_SHIP;?>">
