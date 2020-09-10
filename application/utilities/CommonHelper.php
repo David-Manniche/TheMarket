@@ -246,7 +246,7 @@ class CommonHelper extends FatUtility
             $count++;
         }
 
-        if(!$sortKeys) {
+        if (!$sortKeys) {
             return $tempArr;
         }
         foreach ($tempArr as $key => $val) {
@@ -272,7 +272,7 @@ class CommonHelper extends FatUtility
         if (empty($opArr)) {
             trigger_error('Order Product Array should not be empty', E_USER_ERROR);
         }
-        
+
         $shippingAmount = isset($opArr['charges'][OrderProduct::CHARGE_TYPE_SHIPPING]['opcharge_amount']) ? $opArr['charges'][OrderProduct::CHARGE_TYPE_SHIPPING]['opcharge_amount'] : 0;
         $cartTotal = $opArr['op_qty'] * $opArr['op_unit_price'];
 
@@ -341,7 +341,7 @@ class CommonHelper extends FatUtility
         if ($pricePerItem) {
             $amount = round($amount / $opArr['op_qty'], 2);
         }
-        return (float)$amount;
+        return (float) $amount;
     }
 
     public static function getOrderProductRefundAmtArr($requestRow = array())
@@ -694,6 +694,7 @@ class CommonHelper extends FatUtility
     {
         /** open raw memory as file, no need for temp files */
         $temp_memory = fopen('php://memory', 'w');
+        fputs($temp_memory, chr(0xEF) . chr(0xBB) . chr(0xBF));
         /** loop through array  */
         foreach ($input_array as $key => $line) {
             /** default php csv handler **/
@@ -727,7 +728,7 @@ class CommonHelper extends FatUtility
         if (!$handle) {
             return false;
         }
-
+        fputs($handle, chr(0xEF) . chr(0xBB) . chr(0xBF));
         if (is_array($fileContent) && 0 < count($fileContent)) {
             fputcsv($handle, $fileContent);
         }
@@ -998,8 +999,7 @@ class CommonHelper extends FatUtility
         if ($condition_id == 0 || $condition_field == "" || $condition_lang_field == "" || $lang_table == "" || empty($lang_flds)) {
             return array();
         }
-        $langs = Language::getAllNames();
-        ;
+        $langs = Language::getAllNames();;
         $array = array();
         $srch = new SearchBase($lang_table);
         $srch->addCondition($condition_field, '=', $condition_id);
@@ -1106,13 +1106,13 @@ class CommonHelper extends FatUtility
             $src_img_h -= 1;
         }
 
-        $tmp_img_w = $data -> width;
-        $tmp_img_h = $data -> height;
+        $tmp_img_w = $data->width;
+        $tmp_img_h = $data->height;
         $dst_img_w = 320;
         $dst_img_h = 320;
 
-        $src_x = $data -> x;
-        $src_y = $data -> y;
+        $src_x = $data->x;
+        $src_y = $data->y;
 
         if ($src_x <= -$tmp_img_w || $src_x > $src_img_w) {
             $src_x = $src_w = $dst_x = $dst_w = 0;
@@ -1168,7 +1168,7 @@ class CommonHelper extends FatUtility
     {
         $instance = FatApplication::getInstance();
         if ($template == '') {
-            $themeDirName = FatUtility::camel2dashed(substr($instance->getController(), 0, -(strlen('controller'))));
+            $themeDirName = FatUtility::camel2dashed(substr($instance->getController(), 0, - (strlen('controller'))));
             $actionName = FatUtility::camel2dashed($instance->getAction()) . '.php';
             $template = $themeDirName . '/' . $actionName;
         }
@@ -1204,7 +1204,7 @@ class CommonHelper extends FatUtility
                 $weight = $val * 453.592;
                 break;
 
-            /* case 'OU':
+                /* case 'OU':
             case 'OUNCE':
                 $weight = $val * 28.3495;
             break; */
@@ -1742,8 +1742,8 @@ class CommonHelper extends FatUtility
         }
         //Something to write to txt log
         $log = "User: " . $_SERVER['REMOTE_ADDR'] . ' - ' . date("F j, Y, g:i:s:u a") . PHP_EOL .
-                "data: " . $str . PHP_EOL .
-                "-------------------------" . PHP_EOL;
+            "data: " . $str . PHP_EOL .
+            "-------------------------" . PHP_EOL;
         $file = CONF_UPLOADS_PATH . './log_' . date("Y-m-d") . '.txt';
         //Save string to log, use FILE_APPEND to append.
         file_put_contents($file, $log, FILE_APPEND);
@@ -1777,7 +1777,7 @@ class CommonHelper extends FatUtility
 
     public static function demoUrl()
     {
-        if (strpos($_SERVER ['SERVER_NAME'], 'demo.yo-kart.com') !== false) {
+        if (strpos($_SERVER['SERVER_NAME'], 'demo.yo-kart.com') !== false) {
             return true;
         }
         return false;
@@ -1799,7 +1799,7 @@ class CommonHelper extends FatUtility
         // We want to preserve the object name to the array
         // So we get the object name in case it is an object before we convert to an array (which we lose the object name)
         if (is_object($obj)) {
-            $obj = (array)$obj;
+            $obj = (array) $obj;
             if (empty($obj)) {
                 return $orig_obj;
             }
@@ -1909,7 +1909,7 @@ class CommonHelper extends FatUtility
             $controller = 'Content';
         }
         $recordId = isset($queryString[0]) ? $queryString[0] : 0;
-        $extra = (object)[];
+        $extra = (object) [];
         switch ($controller . '/' . $action) {
             case 'category/view':
                 $urlType = applicationConstants::URL_TYPE_CATEGORY;

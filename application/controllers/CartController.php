@@ -9,21 +9,20 @@ class CartController extends MyAppController
 
     public function index()
     {
-        $cartObj = new Cart();
+        $cartObj = new Cart();  
         $this->set('total', $cartObj->countProducts());
+        $this->set('hasPhysicalProduct', $cartObj->hasPhysicalProduct());
         $this->_template->render();
     }
 
     public function listing($fulfilmentType = Shipping::FULFILMENT_SHIP)
     {
-        $templateName = 'cart/listing.php';
         $products['groups'] = array();
         $products['single'] = array();
         $loggedUserId = UserAuthentication::getLoggedUserId(true);
         $cartObj = new Cart($loggedUserId, $this->siteLangId, $this->app_user['temp_user_id']);
         $cartObj->unsetCartCheckoutType();
         $productsArr = $cartObj->getProducts($this->siteLangId);
-        //CommonHelper::printArray($productsArr); exit;
         $prodGroupIds = array();
 
         $fulfillmentProdArr = [
@@ -72,16 +71,7 @@ class CartController extends MyAppController
                 $this->set('selectedBillingAddressId', $billingAddressId);
                 $this->set('selectedShippingAddressId', $shippingAddressId);
             }
-            
-            $cartHasPhysicalProduct = false;
-            if ($cartObj->hasPhysicalProduct()) {
-                $cartHasPhysicalProduct = true;
-            }
-            $this->set('hasPhysicalProduct', $cartHasPhysicalProduct);   
-            
-            $cartSummary = $cartObj->getCartFinancialSummary($this->siteLangId);
-            $PromoCouponsFrm = $this->getPromoCouponsForm($this->siteLangId);
-            
+
             /* Save For Later Products Listing [ */
             $srch = new UserWishListProductSearch($this->siteLangId);
             $srch->joinWishLists();
@@ -122,10 +112,8 @@ class CartController extends MyAppController
             $this->set('saveForLaterProducts', $saveForLaterProducts);
             $this->set('products', $productsArr);
             $this->set('prodGroupIds', $prodGroupIds);
-            $this->set('PromoCouponsFrm', $PromoCouponsFrm);
             $this->set('fulfilmentType', $fulfilmentType);
             $this->set('fulfillmentProdArr', $fulfillmentProdArr);
-            $this->set('cartSummary', $cartSummary);
 
             $templateName = 'cart/ship-listing.php';
             if ($fulfilmentType == Shipping::FULFILMENT_PICKUP) {
@@ -143,7 +131,11 @@ class CartController extends MyAppController
         if (true === MOBILE_APP_API_CALL) {
             $this->_template->render(true, true, $templateName);
         }
-        $this->_template->render(false, false, $templateName);
+        
+        //$this->_template->render(false, false, $templateName);
+        $json['html'] = $this->_template->render(false, false, $templateName, true, false);
+        $json['cartProductsCount'] = count($productsArr);
+        FatUtility::dieJsonSuccess($json);
     }
 
     public function add()
@@ -756,5 +748,13 @@ class CartController extends MyAppController
             $this->_template->render();
         }
         $this->_template->render(false, false, 'json-success.php');
+    }
+    
+    public function getCartFinancialSummary()
+    {
+        $cart = new Cart();
+        $cartSummary = $cart->getCartFinancialSummary($this->siteLangId);
+        $this->set('cartSummary', $cartSummary);
+        $this->_template->render(false, false, 'cart/_partial/cartSummary.php');
     }
 }

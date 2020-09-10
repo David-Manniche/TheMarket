@@ -2,11 +2,25 @@ $(document).ready(function(){
 	listCartProducts(2);
 });
 (function() {
-	listCartProducts = function(fulfilmentType = 2){
+	listCartProducts = function(fulfilmentType = 2){  
+        if(fulfilmentType == 2){
+            $( "#shipping" ).prop( "checked", true );
+            $( "#pickup" ).prop( "checked", false );
+        }
+        if(fulfilmentType == 1){
+            $( "#pickup" ).prop( "checked", true );
+            $( "#shipping" ).prop( "checked", false );
+        }
 		$('#cartList').html( fcom.getLoader() );
 		fcom.ajax(fcom.makeUrl('Cart','listing', [fulfilmentType]),'',function(res){
-			$("#cartList").html(res);
-		});
+			var json = $.parseJSON(res);
+            if(json.cartProductsCount == 0){
+                $("#js-cart-listing").html(json.html);
+            }else{
+                $("#cartList").html(json.html);
+                getCartFinancialSummary();
+            }
+		}); 
 	};
 
 	getPromoCode = function(){
@@ -153,6 +167,12 @@ $(document).ready(function(){
             }
             document.location.href = fcom.makeUrl('Checkout');
         });
+    }
+    
+    getCartFinancialSummary = function(){
+        fcom.ajax(fcom.makeUrl('Cart','getCartFinancialSummary'),'',function(res){
+			$("#js-cartFinancialSummary").html(res);
+		});
     }
 
 })();

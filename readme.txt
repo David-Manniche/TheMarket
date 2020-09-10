@@ -23,6 +23,7 @@ Bugs:
     => 042212 - Pagesize issue fixed and restricted to allowed numbers.
     => 042361 - Product temp images are not getting imported.
     => 036754 - Seller/ Admin marks an order as delivered. But Seller has an option to "cancel" after delivery
+    => task-66150- Export content encoding issue with Excel.
     
 Enhancements:
     => Tax module upgrade

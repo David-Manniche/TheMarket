@@ -7,14 +7,14 @@ class ImportExportController extends AdminBaseController
         parent::__construct($action);
         $this->objPrivilege->canViewImportExport();
     }
-    
+
     public function index()
     {
         $this->_template->addJs('js/import-export.js');
         $this->set('action', 'generalInstructions');
         $this->_template->render();
     }
-    
+
     public function exportData($actionType)
     {
         $langId = FatApp::getPostedData('lang_id', FatUtility::VAR_INT, 0);
@@ -415,7 +415,7 @@ class ImportExportController extends AdminBaseController
                 break;
             case Importexport::TYPE_INVENTORIES:
                 $this->objPrivilege->canViewSellerProducts();
-                   $pageData = $obj->getContentByPageType(Extrapage::ADMIN_PRODUCT_INVENTORY_INSTRUCTIONS, $langId);
+                $pageData = $obj->getContentByPageType(Extrapage::ADMIN_PRODUCT_INVENTORY_INSTRUCTIONS, $langId);
                 break;
             case Importexport::TYPE_OPTIONS:
                 $this->objPrivilege->canViewOptions();
@@ -552,8 +552,8 @@ class ImportExportController extends AdminBaseController
                     case Importexport::TYPE_OPTIONS:
                         $frm->addSelectBox(Labels::getLabel('LBL_Select_Data', $langId), 'sheet_type', Importexport::getOptionContentTypeArr($langId), '', array(), '')->requirements()->setRequired();
                         break;
-                    }
-                    break;
+                }
+                break;
             case 'EXPORT_MEDIA':
                 switch ($actionType) {
                     case Importexport::TYPE_PRODUCTS:
@@ -652,8 +652,8 @@ class ImportExportController extends AdminBaseController
         $frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_Submit', $langId));
         return $frm;
     }
-    
-    
+
+
     public function loadForm($formType)
     {
         switch (strtoupper($formType)) {
@@ -674,7 +674,7 @@ class ImportExportController extends AdminBaseController
                 break;
         }
     }
-    
+
     public function generalInstructions()
     {
         $obj = new Extrapage();
@@ -683,7 +683,7 @@ class ImportExportController extends AdminBaseController
         $this->set('action', 'generalInstructions');
         $this->_template->render(false, false, 'import-export/general-instructions.php');
     }
-    
+
     public function export()
     {
         $frm = $this->getExportForm($this->adminLangId);
@@ -691,11 +691,11 @@ class ImportExportController extends AdminBaseController
         $this->set('frm', $frm);
         $this->_template->render(false, false, 'import-export/export.php');
     }
-    
+
     private function getExportForm($langId)
     {
         $frm = new Form('frmExport', array('id' => 'frmExport'));
-        $options = Importexport::getImportExportTypeArr('export', $langId, false);        
+        $options = Importexport::getImportExportTypeArr('export', $langId, false);
         $fld = $frm->addRadioButtons(
             '',
             'export_option',
@@ -706,7 +706,7 @@ class ImportExportController extends AdminBaseController
         );
         return $frm;
     }
-    
+
     public function import()
     {
         $frm = $this->getImportForm($this->adminLangId);
@@ -716,7 +716,7 @@ class ImportExportController extends AdminBaseController
         $this->set('sitelangId', $this->adminLangId);
         $this->_template->render(false, false, 'import-export/import.php');
     }
-    
+
     private function getImportForm($langId)
     {
         $frm = new Form('frmImport', array('id' => 'frmImport'));
@@ -732,10 +732,10 @@ class ImportExportController extends AdminBaseController
             array('class' => 'list-inline list-col-2'),
             array('onClick' => 'getInstructions(this.value)')
         );
-        
+
         return $frm;
     }
-    
+
     public function settings()
     {
         $frm = $this->getSettingForm();
@@ -825,13 +825,13 @@ class ImportExportController extends AdminBaseController
 
         $fld = $frm->addCheckBox(Labels::getLabel("LBL_Use_shipping_package_id_instead_of_shipping_package_identifier", $this->adminLangId), 'CONF_USE_SHIPPING_PACKAGE_ID', 1, array(), false, 0);
         $fld->htmlAfterField = '<br><small>' . Labels::getLabel("MSG_Use_shipping_package_id_instead_of_shipping_package_identifier_in_worksheets", $this->adminLangId) . '</small>';
-        
+
         $fld = $frm->addCheckBox(Labels::getLabel("LBL_Use_1_for_yes_0_for_no", $this->adminLangId), 'CONF_USE_O_OR_1', 1, array(), false, 0);
         $fld->htmlAfterField = '<br><small>' . Labels::getLabel("MSG_Use_1_for_yes_0_for_no_for_status_type_data", $this->adminLangId) . '</small>';
         $frm->addSubmitButton('', 'btn_submit', Labels::getLabel("LBL_Save_Changes", $this->adminLangId));
         return $frm;
     }
-    
+
     public function updateSettings()
     {
         $frm = $this->getSettingForm($this->adminLangId);
@@ -840,17 +840,17 @@ class ImportExportController extends AdminBaseController
             Message::addErrorMessage(current($frm->getValidationErrors()));
             FatUtility::dieJsonError(Message::getHtml());
         }
-        
+
         $record = new Configurations();
         if (!$record->update($post)) {
             Message::addErrorMessage($record->getError());
             FatUtility::dieJsonError(Message::getHtml());
         }
-        
+
         $this->set('msg', Labels::getLabel('MSG_Settings_Updated_Successful', $this->adminLangId));
         $this->_template->render(false, false, 'json-success.php');
     }
-    
+
     public function bulkMedia()
     {
         $frm = $this->getbulkMediaForm($this->adminLangId);
@@ -858,12 +858,12 @@ class ImportExportController extends AdminBaseController
         $this->set('frm', $frm);
         $this->_template->render(false, false, 'import-export/bulk-media.php');
     }
-    
+
     private function getbulkMediaForm()
     {
         $frm = new Form('uploadBulkImages', array('id' => 'uploadBulkImages'));
 
-        $fldImg = $frm->addFileUpload('', 'bulk_images', array('id' => 'bulk_images', 'accept' => '.zip' ));
+        $fldImg = $frm->addFileUpload('', 'bulk_images', array('id' => 'bulk_images', 'accept' => '.zip'));
         $fldImg->requirement->setRequired(true);
         $fldImg->setFieldTagAttribute('onChange', '$("#uploadFileName").html(this.value)');
         $fldImg->htmlBeforeField = '<div class="filefield"><span class="filename" id="uploadFileName">' . Labels::getLabel('LBL_Select_File_To_Upload', $this->adminLangId) . '</span>';
@@ -872,7 +872,7 @@ class ImportExportController extends AdminBaseController
         $frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_Submit', $this->adminLangId));
         return $frm;
     }
-    
+
     public function bulkMediaList()
     {
         $bulkImage = new UploadBulkImages();
@@ -883,7 +883,7 @@ class ImportExportController extends AdminBaseController
         $this->set("canEdit", $this->objPrivilege->canEditImportExport(0, true));
         $this->_template->render(false, false);
     }
-    
+
     public function upload()
     {
         $frm = $this->getbulkMediaForm();
@@ -915,7 +915,7 @@ class ImportExportController extends AdminBaseController
         ];
         FatUtility::dieJsonSuccess($json);
     }
-    
+
     public function downloadPathsFile($path)
     {
         if (empty($path)) {
@@ -931,7 +931,7 @@ class ImportExportController extends AdminBaseController
         Message::addErrorMessage(Labels::getLabel('MSG_No_File_Found', $this->adminLangId));
         CommonHelper::redirectUserReferer();
     }
-    
+
     public function removeDir($directory)
     {
         $directory = CONF_UPLOADS_PATH . base64_decode($directory);
@@ -939,7 +939,7 @@ class ImportExportController extends AdminBaseController
         $msg = $obj->deleteSingleBulkMediaDir($directory);
         FatUtility::dieJsonSuccess($msg);
     }
-    
+
     public function exportLabels()
     {
         $srch = new SearchBase(Labels::DB_TBL, 'lbl');
@@ -948,19 +948,19 @@ class ImportExportController extends AdminBaseController
         $srch->joinTable(Language::DB_TBL, 'INNER JOIN', 'label_lang_id = language_id AND language_active = ' . applicationConstants::ACTIVE);
         $srch->addOrder('label_key', 'DESC');
         $srch->addOrder('label_lang_id', 'ASC');
-        $srch->addMultipleFields(array( 'label_id', 'label_key', 'label_lang_id', 'label_caption' ));
+        $srch->addMultipleFields(array('label_id', 'label_key', 'label_lang_id', 'label_caption'));
         $rs = $srch->getResultSet();
 
         $langSrch = Language::getSearchObject();
         $langSrch->doNotCalculateRecords();
-        $langSrch->addMultipleFields(array( 'language_id', 'language_code', 'language_name' ));
+        $langSrch->addMultipleFields(array('language_id', 'language_code', 'language_name'));
         $langSrch->addOrder('language_id', 'ASC');
         $langRs = $langSrch->getResultSet();
         $languages = FatApp::getDb()->fetchAll($langRs);
         $sheetData = array();
 
         /* Sheet Heading Row[ */
-        $arr = array( Labels::getLabel('LBL_Key', $this->adminLangId) );
+        $arr = array(Labels::getLabel('LBL_Key', $this->adminLangId));
         if ($languages) {
             foreach ($languages as $lang) {
                 array_push($arr, $lang['language_code']);
@@ -977,7 +977,7 @@ class ImportExportController extends AdminBaseController
         while ($row = FatApp::getDb()->fetch($rs)) {
             if ($key != $row['label_key']) {
                 if (!empty($langArr)) {
-                    $arr[$counter] = array('label_key' => $key );
+                    $arr[$counter] = array('label_key' => $key);
                     foreach ($langArr as $k => $val) {
                         if (is_array($val)) {
                             foreach ($val as $key => $v) {
@@ -1001,7 +1001,7 @@ class ImportExportController extends AdminBaseController
 
         foreach ($arr as $a) {
             $sheetArr = array();
-            $sheetArr = array( $a['label_key'] );
+            $sheetArr = array($a['label_key']);
             if (!empty($a['data'])) {
                 foreach ($a['data'] as $langId => $caption) {
                     array_push($sheetArr, html_entity_decode($caption));
@@ -1011,14 +1011,14 @@ class ImportExportController extends AdminBaseController
         }
         CommonHelper::convertToCsv($sheetData, 'Labels_' . date("d-M-Y") . '.csv', ',');
     }
-    
+
     public function importLabelsForm()
     {
         $frm = $this->getImportLabelsForm();
         $this->set('frm', $frm);
         $this->_template->render(false, false);
     }
-    
+
     private function getImportLabelsForm()
     {
         $frm = new Form('frmImportLabels', array('id' => 'frmImportLabels'));
@@ -1031,7 +1031,7 @@ class ImportExportController extends AdminBaseController
 
         return $frm;
     }
-    
+
     public function uploadLabelsImportedFile()
     {
         if (!is_uploaded_file($_FILES['import_file']['tmp_name'])) {
@@ -1047,7 +1047,7 @@ class ImportExportController extends AdminBaseController
         /* All Languages[  */
         $langSrch = Language::getSearchObject();
         $langSrch->doNotCalculateRecords();
-        $langSrch->addMultipleFields(array( 'language_id', 'language_code', 'language_name' ));
+        $langSrch->addMultipleFields(array('language_id', 'language_code', 'language_name'));
         $langSrch->addOrder('language_id', 'ASC');
         $langRs = $langSrch->getResultSet();
         $languages = $db->fetchAll($langRs, 'language_code');
@@ -1070,12 +1070,18 @@ class ImportExportController extends AdminBaseController
         while (($line = fgetcsv($csvFilePointer)) !== false) {
             if ($line[0] != '') {
                 $labelKey = array_shift($line);
+                $type = Labels::TYPE_WEB;
+                if (strtoupper(substr($labelKey, 0, 3)) == 'APP') {
+                    $type = Labels::TYPE_APP;
+                }
+
                 foreach ($line as $key => $caption) {
                     $dataToSaveArr = array(
                         'label_key' => $labelKey,
                         'label_lang_id' => $langIndexLangIds[$key],
                         'label_caption' => $caption,
-                        );
+                        'label_type' => $type ,
+                    );
                     $db->insertFromArray(Labels::DB_TBL, $dataToSaveArr, false, array(), array('label_caption' => $caption));
                     /* $sql = "SELECT label_key FROM ". Labels::DB_TBL ." WHERE label_key = " . $db->quoteVariable($labelKey). " AND label_lang_id = " .  $langIndexLangIds[$key];
                     $rs = $db->query($sql);
