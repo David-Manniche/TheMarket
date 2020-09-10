@@ -97,10 +97,11 @@ class TaxStructure extends MyAppModel
      * @param  mixed $langId
      * @return array
      */
-    public function getCombinedTaxesByParent(int $langId): array
+    public function getCombinedTaxesByParent(int $langId, int $ruleId): array
     {
         $srch = static::getSearchObject($langId);
-        $srch->addMultipleFields(array('taxstr_id', 'IFNULL(taxstr_name, taxstr_identifier) as taxstr_name'));
+        $srch->joinTable(TaxRuleCombined::DB_TBL, 'LEFT JOIN', 'taxruledet_taxstr_id = taxstr_id and taxruledet_taxrule_id = ' . $ruleId);
+        $srch->addMultipleFields(array('taxstr_id', 'IFNULL(taxstr_name, taxstr_identifier) as taxstr_name', 'taxruledet_rate', 'taxruledet_id'));
         $srch->addCondition('taxstr_parent', '=', $this->mainTableRecordId);
         $srch->doNotCalculateRecords();
         $srch->doNotLimitRecords();
@@ -128,11 +129,10 @@ class TaxStructure extends MyAppModel
         foreach ($languages as $languageId => $lang) {
             if ($languageId == $siteDefaultLangId) {
                 $frm->addRequiredField(Labels::getLabel('LBL_Tax_name', $languageId), 'taxstr_name[' . $languageId . ']');
-				$frm->addRequiredField(Labels::getLabel('LBL_Tax_Component_Name', $languageId), 'taxstr_component_name[0][' . $languageId . ']');
             } else {
                 $frm->addTextBox(Labels::getLabel('LBL_Tax_name', $languageId), 'taxstr_name[' . $languageId . ']');
-				$frm->addTextBox(Labels::getLabel('LBL_Tax_Component_Name', $languageId), 'taxstr_component_name[0][' . $languageId . ']');
             }
+            $frm->addTextBox(Labels::getLabel('LBL_Tax_Component_Name', $languageId), 'taxstr_component_name[0][' . $languageId . ']');
 			/* if (0 < $taxStrId) {
 				$combinedTaxes = $taxStructure->getCombinedTaxes($taxStrId);
 				foreach($combinedTaxes as $combTaxCount => $combinedTax){

@@ -737,3 +737,6 @@ DELETE FROM `tbl_language_labels` WHERE `label_key` LIKE 'LBL_Sales_Tax';
 
 ALTER TABLE `tbl_tax_rules` ADD `taxrule_taxstr_id` INT NOT NULL AFTER `taxrule_taxcat_id`;
 ALTER TABLE `tbl_tax_rule_details` ADD `taxruledet_taxstr_id` INT NOT NULL AFTER `taxruledet_taxrule_id`;
+ALTER TABLE `tbl_tax_rule_details` DROP `taxruledet_identifier`;
+DROP TABLE `tbl_tax_rule_details_lang`;
+ALTER TABLE `tbl_tax_rules` DROP `taxrule_is_combined`;

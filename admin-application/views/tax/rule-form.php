@@ -79,6 +79,7 @@ $combTaxCount = 0;
                                                     $taxruleRateFld = $frm->getField('taxrule_rate[]');
                                                     $taxruleRateFld->value = $rule['taxrule_rate'];
                                                     $taxStrFld = $frm->getField('taxrule_taxstr_id[]');
+                                                    $taxStrFld->setFieldTagAttribute("onChange", "getCombinedTaxes(this, this.value)");
                                                     $taxStrFld->value = $rule['taxrule_taxstr_id'];
                                                     
                                                     echo $frm->getFieldHtml('taxrule_id[]'); ?>
@@ -94,7 +95,6 @@ $combTaxCount = 0;
                                                                 </div>
                                                                     <?php
                                                                     $countryFld = $frm->getField('taxruleloc_country_id[]');
-                                                                    $countryFld->setFieldTagAttribute('id', 'addr_country_id');
                                                                     $countryFld->setFieldTagAttribute("class", "addr_country_id");
                                                                     $countryFld->setFieldTagAttribute('onChange', 'getCountryStatesTaxInTaxForm(this, this.value,0)');
                                                                     $countryFld->value = $countryIds;
@@ -103,7 +103,6 @@ $combTaxCount = 0;
                                                                     $stateFld = $frm->getField('taxruleloc_state_id[]');
                                                                     $stateFld->value = $stateIds;
                                                                     $stateFld->addFieldTagAttribute('multiple', 'true');
-                                                                    $stateFld->addFieldTagAttribute('id', 'addr_state_id');
                                                                     $stateFld->addFieldTagAttribute('class', 'selectpicker');
                                                                     $stateFld->addFieldTagAttribute('data-style', 'bg-white rounded-pill px-4 py-2 shadow-sm'); ?>
                                                                 <div class="form-group">
@@ -166,10 +165,6 @@ $combTaxCount = 0;
                                                             } ?>
                                                         </div>
                                                         <div class="col-md-6 combined-tax-details--js"></div>
-
-                                                    </div>
-                                                    <div class="row taxrule-lang-form--js">
-                                                        
                                                     </div>
                                                 </div>
                                             </div>
@@ -208,14 +203,13 @@ $combTaxCount = 0;
                                                                 </div>
                                                                 <?php
                                                                 $countryFld = $frm->getField("taxruleloc_country_id[]");
-                                                                $countryFld->setFieldTagAttribute("id", "addr_country_id");
                                                                 $countryFld->setFieldTagAttribute("class", "addr_country_id");
                                                                 $countryFld->setFieldTagAttribute("onChange", "getCountryStatesTaxInTaxForm(this, this.value,0)");
                                                                 $taxStrFld = $frm->getField("taxrule_taxstr_id[]");
+                                                                $taxStrFld->setFieldTagAttribute("onChange", "getCombinedTaxes(this, this.value)");
                                                                 $typeFld = $frm->getField("taxruleloc_type[]");
                                                                 $stateFld = $frm->getField("taxruleloc_state_id[]");
                                                                 $stateFld->addFieldTagAttribute("multiple", "true");
-                                                                $stateFld->addFieldTagAttribute("id", "addr_state_id");
                                                                 $stateFld->addFieldTagAttribute("class", "selectpicker");
                                                                 $stateFld->addFieldTagAttribute("data-style", "bg-white rounded-pill px-4 py-2 shadow-sm"); ?>
                                                                 <div class="form-group">
@@ -282,11 +276,11 @@ $combTaxCount = 0;
                                                                 <?php
                                                                 }
                                                             } ?>
-                                                        </div></div>
-                                                        <div class="row combined-tax-details--js" style="display:none;"></div>
+                                                        </div>
+                                                        <div class="col-md-6 combined-tax-details--js"></div>
                                                     </div>
                                                 </div>
-
+                                            </div>
                                             <?php } ?>
                                         </div>
                                         <div class="p-4">

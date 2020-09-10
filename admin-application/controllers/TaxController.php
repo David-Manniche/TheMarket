@@ -676,7 +676,7 @@ class TaxController extends AdminBaseController
         return true;
     }
 
-    private function updateCombinedData($combinedTaxes, $ruleId, $langId)
+    private function updateCombinedData($combinedTaxes, $ruleId)
     {
         if (!empty($combinedTaxes)) {
             foreach ($combinedTaxes as $combinedTax) {
@@ -686,25 +686,7 @@ class TaxController extends AdminBaseController
                 $taxRuleComObj = new TaxRuleCombined($comTaxId);
                 $taxRuleComObj->assignValues($combinedTax);
                 if (!$taxRuleComObj->save()) {
-                    Message::addErrorMessage($taxRuleComObj->getError());
-                    //FatUtility::dieJsonError(Message::getHtml());
                     return false;
-                }
-
-                foreach ($combinedTax['taxruledet_name'] as $langId => $taxName) {
-                    if ($langId == 0) {
-                        continue;
-                    }
-                    $data_to_update = array(
-                        TaxRuleCombined::DB_TBL_LANG_PREFIX.'taxruledet_id' => $ruleId,
-                        TaxRuleCombined::DB_TBL_LANG_PREFIX.'lang_id' => $langId,
-                        TaxRuleCombined::DB_TBL_PREFIX.'name' => $taxName
-                    );
-
-                    if (!$taxRuleComObj->updateLangData($langId, $data_to_update)) {
-                        Message::addErrorMessage($taxRuleComObj->getError());
-                        FatUtility::dieJsonError(Message::getHtml());
-                    }
                 }
             }
         }
@@ -713,21 +695,12 @@ class TaxController extends AdminBaseController
 
     public function getCombinedTaxes($taxStrId, $ruleId = 0)
     {
-        $ruleId = FatUtility::int($ruleId);
         $taxStrId = FatUtility::int($taxStrId);
-
+        $ruleId = FatUtility::int($ruleId);
+        
         $taxStructure = new TaxStructure($taxStrId);
-        $combTaxes =  $taxStructure->getCombinedTaxesByParent($this->adminLangId);
-
-        foreach ($combTaxes as $taxStrId => $val) {
-            $srch = TaxRuleCombined::getSearchObject();
-            $srch->addFld('taxruledet_rate');
-            $srch->addCondition('taxruledet_taxrule_id', '=', $ruleId);
-            $srch->addCondition('taxruledet_taxstr_id', '=', $taxStrId);
-            $rs = $srch->getResultSet();
-            $row = FatApp::getDb()->fetch($rs);
-            $combTaxes[$taxStrId]['taxruledet_rate'] = $row['taxruledet_rate'];
-        }
+        $combTaxes =  $taxStructure->getCombinedTaxesByParent($this->adminLangId, $ruleId);
+        
         $this->set('taxStrId', $taxStrId);
         $this->set('combTaxes', $combTaxes);
         $this->_template->render(false, false);

@@ -32,16 +32,15 @@ $combTaxCount = 0;
                     </div>
                     <?php
                     $countryFld = $frm->getField("taxruleloc_country_id[]");
-                    $countryFld->setFieldTagAttribute("id", "addr_country_id");
                     $countryFld->setFieldTagAttribute("class", "addr_country_id");
                     $countryFld->setFieldTagAttribute("onChange", "getCountryStatesTaxInTaxForm(this, this.value,0)");
                     $typeFld = $frm->getField("taxruleloc_type[]");
                     $stateFld = $frm->getField("taxruleloc_state_id[]");
                     $stateFld->addFieldTagAttribute("multiple", "true");
-                    $stateFld->addFieldTagAttribute("id", "addr_state_id");
                     $stateFld->addFieldTagAttribute("class", "selectpicker");
                     $stateFld->addFieldTagAttribute("data-style", "bg-white rounded-pill px-4 py-2 shadow-sm");
                     $taxStrFld = $frm->getField("taxrule_taxstr_id[]");
+                    $taxStrFld->setFieldTagAttribute("onChange", "getCombinedTaxes(this, this.value)");
                     ?>
                     <div class="form-group">
                         <label for="example-text-input" class="">
@@ -106,7 +105,7 @@ $combTaxCount = 0;
                     <?php }
                 } ?>
             </div>
+            <div class="col-md-6 combined-tax-details--js"></div>
         </div>
-        <div class="row combined-tax-details--js" style="display:none;"></div>
     </div>
 </div>

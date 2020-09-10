@@ -576,7 +576,7 @@ class Tax extends MyAppModel
         $combinedData = FatApp::getDb()->fetchAll($srch->getResultSet());
         if (!empty($combinedData)) {
             foreach ($combinedData as $comData) {
-                $data['options'][$comData['taxruledet_id']]['name'] = $comData['taxruledet_name'];
+                $data['options'][$comData['taxruledet_id']]['name'] = isset($comData['taxruledet_name']) ? $comData['taxruledet_name'] : '';
                 $data['options'][$comData['taxruledet_id']]['percentageValue'] = $comData['taxruledet_rate'];
                 $data['options'][$comData['taxruledet_id']]['inPercentage'] = 1;
                 $data['options'][$comData['taxruledet_id']]['value'] = round((($prodPrice * $qty) * $comData['taxruledet_rate']) / 100, 2);

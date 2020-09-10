@@ -105,8 +105,7 @@ $fld->developerTags['cbHtmlAfterCheckbox'] = '<i class="input-helper"></i>';
 									</div>
 								</div>
 							<?php } ?>
-							<div class="row">
-								<?php /* $translatorSubscriptionKey = FatApp::getConfig('CONF_TRANSLATOR_SUBSCRIPTION_KEY', FatUtility::VAR_STRING, '');
+							<?php /* $translatorSubscriptionKey = FatApp::getConfig('CONF_TRANSLATOR_SUBSCRIPTION_KEY', FatUtility::VAR_STRING, '');
 								if(!empty($translatorSubscriptionKey) && count($otherLangData) > 0) { ?>
 								<div class="col-md-12">
 									<div class="field-set">
@@ -119,14 +118,14 @@ $fld->developerTags['cbHtmlAfterCheckbox'] = '<i class="input-helper"></i>';
 								</div>
 							</div>
 							<?php } */ ?>
-							<?php if(!empty($otherLangData)){
+						<?php if(!empty($otherLangData)){
 							foreach($otherLangData as $langId => $data) { ?>
 							<div class="accordians_container accordians_container-categories" defaultLang= "<?php echo $siteDefaultLangId; ?>" language="<?php echo $langId; ?>" id="accordion-language_<?php echo $langId; ?>" onClick="translateData(this)">
 								<div class="accordian_panel">
 									<span class="accordian_title accordianhead accordian_title" id="collapse_<?php echo $langId; ?>">
 									<?php echo $data." "; echo Labels::getLabel('LBL_Language_Data', $adminLangId); ?>
 									</span>
-									<div class="accordian_body accordiancontent" style="display: none;">
+									<div class="accordian_body accordiancontent p-0" style="display: none;">
 										<div class="row">
 											<div class="col-md-12">
 												<div class="field-set">
@@ -196,8 +195,7 @@ $fld->developerTags['cbHtmlAfterCheckbox'] = '<i class="input-helper"></i>';
 								</div>
 							</div>
 							<?php } 
-							}
-							?>
+							} ?>
 							<div class="row">
 								<div class="col-md-12">
 									<div class="field-set d-flex align-items-center">
@@ -222,7 +220,8 @@ $fld->developerTags['cbHtmlAfterCheckbox'] = '<i class="input-helper"></i>';
 <script>
     $(document).ready(function(){
         var combTaxCount = <?php echo $combTaxCount; ?>;
-        $('body').on('click', '.add-combined-form--js', function(){
+        $('body').on('click', '.add-combined-form--js', function( event ){
+			event.stopImmediatePropagation();
 			combTaxCount++;
 			var rowHtml = '<div class="col-md-12 combined-tax-row'+combTaxCount+'"><div class="field-set"><div class="field-wraper"><div class="field_cover d-flex"><input type="text" name="taxstr_component_name['+ combTaxCount +'][<?php echo $siteDefaultLangId; ?>]" value=""><button type="button" data-id="'+combTaxCount+'" class="btn btn--secondary ripplelink remove-combined-form--js ml-2" title="<?php echo Labels::getLabel('LBL_Remove', $adminLangId); ?>"><i class="ion-minus-round"></i></button><button type="button" class="btn btn--secondary ripplelink add-combined-form--js ml-2" title="<?php echo Labels::getLabel('LBL_Add', $adminLangId); ?>"><i class="ion-plus-round"></i></button></div></div></div></div>';
             $('.combined-tax--js').append(rowHtml);
@@ -231,13 +230,31 @@ $fld->developerTags['cbHtmlAfterCheckbox'] = '<i class="input-helper"></i>';
                 var langRowHtml = '<div class="col-md-12 combined-tax-row'+combTaxCount+'"><div class="field-set"><div class="field-wraper"><div class="field_cover"><input type="text" name="taxstr_component_name['+ combTaxCount +'][<?php echo $langId; ?>]" value=""></div></div></div></div>';
                 $('.combined-tax-lang--js'+<?php echo $langId; ?>).append(langRowHtml);
             <?php } ?>
+			fcom.resetFaceboxHeight();
         });
+		
+		
+		
+		/* $( ".add-combined-form--js" ).click(function( event ) {
+			event.preventDefault();
+			combTaxCount++;
+			var rowHtml = '<div class="col-md-12 combined-tax-row'+combTaxCount+'"><div class="field-set"><div class="field-wraper"><div class="field_cover d-flex"><input type="text" name="taxstr_component_name['+ combTaxCount +'][<?php echo $siteDefaultLangId; ?>]" value=""><button type="button" data-id="'+combTaxCount+'" class="btn btn--secondary ripplelink remove-combined-form--js ml-2" title="<?php echo Labels::getLabel('LBL_Remove', $adminLangId); ?>"><i class="ion-minus-round"></i></button><button type="button" class="btn btn--secondary ripplelink add-combined-form--js ml-2" title="<?php echo Labels::getLabel('LBL_Add', $adminLangId); ?>"><i class="ion-plus-round"></i></button></div></div></div></div>';
+            $('.combined-tax--js').append(rowHtml);
+
+            <?php foreach ($otherLangData as $langId => $data) { ?>
+                var langRowHtml = '<div class="col-md-12 combined-tax-row'+combTaxCount+'"><div class="field-set"><div class="field-wraper"><div class="field_cover"><input type="text" name="taxstr_component_name['+ combTaxCount +'][<?php echo $langId; ?>]" value=""></div></div></div></div>';
+                $('.combined-tax-lang--js'+<?php echo $langId; ?>).append(langRowHtml);
+            <?php } ?>
+			fcom.resetFaceboxHeight();
+		}); */
+
         // Find and remove selected table rows
         $('body').on('click', '.remove-combined-form--js', function(){
             var rowCount = $(this).data("id");
             if (rowCount > 0) {
                 var className = $('.combined-tax-row'+rowCount).remove();
             }
+			fcom.resetFaceboxHeight();
         });
     });
 </script>
