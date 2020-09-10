@@ -44,7 +44,7 @@
                             </p>
                             <p> 
                                 <svg class="svg" width="22px" height="22px">
-                                    <use xlink:href="<?php echo CONF_WEBROOT_URL; ?>/images/retina/sprite.svg#TimePlaced" href="<?php echo CONF_WEBROOT_URL; ?>/images/retina/sprite.svg#TimePlaced">
+                                    <use xlink:href="<?php echo CONF_WEBROOT_URL; ?>images/retina/sprite.svg#TimePlaced" href="<?php echo CONF_WEBROOT_URL; ?>images/retina/sprite.svg#TimePlaced">
                                     </use>
                                 </svg> 
                                 <?php 
@@ -60,7 +60,7 @@
                                 <span class="no-print">
                                     
                                     <a class="btn btn-link" href="<?php echo UrlHelper::generateUrl('Custom', 'PaymentSuccess', [$orderInfo['order_id'], 'print']);?>"> <svg class="svg" width="22px" height="22px">
-                                        <use xlink:href="<?php echo CONF_WEBROOT_URL; ?>/images/retina/sprite.svg#print" href="<?php echo CONF_WEBROOT_URL; ?>/images/retina/sprite.svg#print">
+                                        <use xlink:href="<?php echo CONF_WEBROOT_URL; ?>images/retina/sprite.svg#print" href="<?php echo CONF_WEBROOT_URL; ?>images/retina/sprite.svg#print">
                                         </use>
                                     </svg> <?php echo Labels::getLabel("LBL_PRINT", $siteLangId); ?></a>
                                 </span>
@@ -73,7 +73,7 @@
                                 <li>
                                     <h4>
                                         <svg class="svg" width="22px" height="22px">
-                                            <use xlink:href="<?php echo CONF_WEBROOT_URL; ?>/images/retina/sprite.svg#shipping" href="<?php echo CONF_WEBROOT_URL; ?>/images/retina/sprite.svg#shipping">
+                                            <use xlink:href="<?php echo CONF_WEBROOT_URL; ?>images/retina/sprite.svg#shipping" href="<?php echo CONF_WEBROOT_URL; ?>images/retina/sprite.svg#shipping">
                                             </use>
                                         </svg>
                                         <?php echo Labels::getLabel("LBL_SHIPPING_ADDRESS", $siteLangId); ?>
@@ -96,7 +96,7 @@
                                 <li>
                                     <h4> 
                                         <svg class="svg" width="22px" height="22px">
-                                            <use xlink:href="<?php echo CONF_WEBROOT_URL; ?>/images/retina/sprite.svg#shipping-method" href="<?php echo CONF_WEBROOT_URL; ?>/images/retina/sprite.svg#shipping-method">
+                                            <use xlink:href="<?php echo CONF_WEBROOT_URL; ?>images/retina/sprite.svg#shipping-method" href="<?php echo CONF_WEBROOT_URL; ?>images/retina/sprite.svg#shipping-method">
                                             </use>
                                         </svg> Shipping Method </h4>
                                         <p>Preferred Method: <br>
@@ -110,7 +110,7 @@
                                 <?php $billingAddress = $orderInfo['billingAddress']; ?>
                                 <h4>
                                     <svg class="svg" width="22px" height="22px">
-                                        <use xlink:href="<?php echo CONF_WEBROOT_URL; ?>/images/retina/sprite.svg#billing-detail" href="<?php echo CONF_WEBROOT_URL; ?>/images/retina/sprite.svg#billing-detail">
+                                        <use xlink:href="<?php echo CONF_WEBROOT_URL; ?>images/retina/sprite.svg#billing-detail" href="<?php echo CONF_WEBROOT_URL; ?>images/retina/sprite.svg#billing-detail">
                                         </use>
                                     </svg>
                                     <?php echo Labels::getLabel("LBL_BILLING_ADDRESS", $siteLangId); ?>
