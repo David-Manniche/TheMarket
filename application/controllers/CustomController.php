@@ -537,11 +537,13 @@ class CustomController extends MyAppController
         }
 
         $address = $orderObj->getOrderAddresses($orderInfo['order_id']);
-        $orderInfo['billingAddress'] = $address[Orders::BILLING_ADDRESS_TYPE];
-        $orderInfo['shippingAddress'] = (!empty($address[Orders::SHIPPING_ADDRESS_TYPE]) ? $address[Orders::SHIPPING_ADDRESS_TYPE] : []);
+        if (!empty($address)) {
+            $orderInfo['billingAddress'] = $address[Orders::BILLING_ADDRESS_TYPE];
+            $orderInfo['shippingAddress'] = (!empty($address[Orders::SHIPPING_ADDRESS_TYPE]) ? $address[Orders::SHIPPING_ADDRESS_TYPE] : []);
+        }
         
         $orderInfo['orderProducts'] = $orderObj->getChildOrders(['order_id' => $orderInfo['order_id']], $orderInfo['order_type'], $orderInfo['order_language_id'], true);
-
+        
         $this->set('textMessage', $textMessage);
         $this->set('orderInfo', $orderInfo);
         
