@@ -214,6 +214,7 @@ class StripeConnectPayController extends PaymentController
         }
 
         if (!empty($post)) {
+            $saveCard = applicationConstants::NO;
             $cardId = FatApp::getPostedData('card_id', FatUtility::VAR_STRING, '');
             if (!empty($cardId)) {
                 $this->sourceId = $cardId;
@@ -251,7 +252,7 @@ class StripeConnectPayController extends PaymentController
                 $this->sourceId = $cardTokenResponse->id;
             }
 
-            if ((UserAuthentication::isUserLogged() || UserAuthentication::isGuestUserLogged()) && false === $this->stripeConnect->updateCustomerInfo(['default_source' => $this->sourceId])) {
+            if ((UserAuthentication::isUserLogged() || UserAuthentication::isGuestUserLogged()) && 0 < $saveCard && false === $this->stripeConnect->updateCustomerInfo(['default_source' => $this->sourceId])) {
                 $this->setErrorAndRedirect($this->stripeConnect->getError());
             }
 
@@ -315,6 +316,7 @@ class StripeConnectPayController extends PaymentController
 
         $this->set('paymentAmount', $this->paymentAmount);
         $this->set('orderInfo', $this->orderInfo);
+        $this->set('sourceId', $this->sourceId);
 
         if (true === MOBILE_APP_API_CALL) {
             $this->set('confirmationRequired', $confirmationRequired);
@@ -613,5 +615,16 @@ class StripeConnectPayController extends PaymentController
             $this->setError();
         }
         FatUtility::dieJsonSuccess(Labels::getLabel('MSG_SUCCESSFULLY_UPDATED', $this->siteLangId));
+    }
+
+    /**
+     * getExternalLibraries
+     *
+     * @return void
+     */
+    public function getExternalLibraries()
+    {
+        $json['libraries'] = ['https://js.stripe.com/v3/'];
+        FatUtility::dieJsonSuccess($json);
     }
 }
