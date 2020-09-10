@@ -149,7 +149,7 @@ if (Orders::ORDER_PRODUCT == $orderInfo['order_type']) {
                                                     foreach ($products as $key => $product) {
                                                         $productUrl = UrlHelper::generateUrl('Products', 'View', array($product['op_selprod_id']));
                                                         $shopUrl = UrlHelper::generateUrl('Shops', 'View', array($product['op_shop_id']));
-                                                        $imageUrl = UrlHelper::getCachedUrl(UrlHelper::generateFileUrl('image', 'product', array($product['selprod_product_id'], "THUMB", $product['op_selprod_id'], 0, $siteLangId)), CONF_IMG_CACHE_TIME, '.jpg');
+                                                        $imageUrl = UrlHelper::getCachedUrl(UrlHelper::generateFileUrl('image', 'product', array($product['selprod_product_id'], "MINI", $product['op_selprod_id'], 0, $siteLangId)), CONF_IMG_CACHE_TIME, '.jpg');
                                                         $productTitle =  ($product['op_selprod_title']) ? $product['op_selprod_title'] : $product['op_product_name'];
                                                 ?>
                                                         <li class="list-group-item">
