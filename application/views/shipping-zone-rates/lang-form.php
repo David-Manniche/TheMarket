@@ -17,27 +17,25 @@ $btnSubmit->developerTags['noCaptionTag'] = true;
 
 ?>
 <div dir="<?php echo $formLayout; ?>">
-    <div class="cards-header">
-        <h5 class="cards-title"><?php echo Labels::getLabel('LBL_Manage_Rates', $siteLangId); ?></h5>
-    </div>
+	<div class="cards-header">
+		<h5 class="cards-title"><?php echo Labels::getLabel('LBL_Manage_Rates', $siteLangId); ?></h5>
+	</div>
 	<div class="cards-content">
 		<div class="row">
 			<div class="col-sm-12">
 				<div class="tabs">
 					<ul class="tabs_nav-js">
 						<li>
-							<a href="javascript:void(0);"
-								onclick="addEditShipRates(<?php echo $zoneId ?>, <?php echo $rateId ?>);"><?php echo Labels::getLabel('LBL_General', $siteLangId); ?></a>
+							<a href="javascript:void(0);" onclick="addEditShipRates(<?php echo $zoneId ?>, <?php echo $rateId ?>);"><?php echo Labels::getLabel('LBL_General', $siteLangId); ?></a>
 						</li>
 						<?php
-                        foreach ($languages as $key => $langName) {
-                            $class = ($langId == $key) ? 'is-active' : ''; ?>
-						<li class="<?php echo $class; ?>">
-							<a href="javascript:void(0);" <?php if ($rateId > 0) { ?>
-								onclick="editRateLangForm(<?php echo $zoneId ?>, <?php echo $rateId ?>, <?php echo $key;?>);" <?php } ?>><?php echo Labels::getLabel('LBL_'. $langName, $siteLangId); ?></a>
-						</li>
+						foreach ($languages as $key => $langName) {
+							$class = ($langId == $key) ? 'is-active' : ''; ?>
+							<li class="<?php echo $class; ?>">
+								<a href="javascript:void(0);" <?php if ($rateId > 0) { ?> onclick="editRateLangForm(<?php echo $zoneId ?>, <?php echo $rateId ?>, <?php echo $key; ?>);" <?php } ?>><?php echo Labels::getLabel('LBL_' . $langName, $siteLangId); ?></a>
+							</li>
 						<?php
-                        } ?>
+						} ?>
 					</ul>
 				</div>
 				<div class="tabs__content">

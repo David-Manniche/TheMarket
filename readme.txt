@@ -25,6 +25,7 @@ Bugs:
     => 036754 - Seller/ Admin marks an order as delivered. But Seller has an option to "cancel" after delivery
     => task-66150- Export content encoding issue with Excel.
     => 042958 - Seller >> shipping profile >> shipping to >> if there is no zone then some default image or some default text should be there.
+    => 042511 - Shipping rates are not getting display properly at front end.
     
 Enhancements:
     => Tax module upgrade
