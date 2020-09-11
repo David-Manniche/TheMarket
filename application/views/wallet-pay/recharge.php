@@ -8,98 +8,106 @@
 <section class="section bg-gray-dark">
     <div class="container">
         <div class="row justify-content-center">
-            <div class="col-lg-7">
+            <div class="col-lg-8">
                 <div class="section-head  section--head--center">
                     <div class="section__heading">
-                        <h2><?php echo Labels::getLabel('LBL_Add_Money_to_wallet', $siteLangId); ?></h2>
+                        <h2><?php echo Labels::getLabel('LBL_ADD_MONEY_TO_WALLET', $siteLangId); ?></h2>
                     </div>
                 </div>
-                <div class="box box--white box--radius p-4">
-                    <section id="payment" class="section-checkout">
-                        <?php if ($orderInfo['order_net_amount']) { ?>
-                        <div class="row">
-                            <?php if ($gatewayCount > 0) { ?>
-                            <div class="col-md-4 mb-4 mb-md-0 ">
-                                <div class="payment_methods_list" <?php echo (count($paymentMethods) <= 0) ? 'is--disabled' : ''; ?>>
-                                    <?php if ($paymentMethods) { ?>
-                                    <ul id="payment_methods_tab" class="simplebar-horizontal" data-simplebar>
-                                        <?php $count=0;
-                                        foreach ($paymentMethods as $key => $val) {
-                                            if (in_array($val['plugin_code'], $excludePaymentGatewaysArr[applicationConstants::CHECKOUT_ADD_MONEY_TO_WALLET])) {
-                                                continue;
+                <?php if ($orderInfo['order_net_amount']) { ?>
+                    <?php if ($gatewayCount > 0) { ?>
+                        <div class="col-md-8">
+                            <div class="you-pay">
+                                <?php echo Labels::getLabel('LBL_Net_Payable', $siteLangId); ?> : <?php echo CommonHelper::displayMoneyFormat($orderInfo['order_net_amount'], true, false, true, false, true); ?>
+                                <?php if (CommonHelper::getCurrencyId() != FatApp::getConfig('CONF_CURRENCY', FatUtility::VAR_INT, 1)) {?>
+                                <p><?php echo CommonHelper::currencyDisclaimer($siteLangId, $orderInfo['order_net_amount']);  ?></p>
+                                <?php } ?>
+                            </div>
+                        </div>
+                        <div class="col-md-12">
+                            <section id="payment" class="section-checkout">
+                                <div class="payment-area">
+                                    <ul class="nav nav-payments <?php echo 1 == count($paymentMethods) ? 'd-none' : ''; ?>" role="tablist" id="payment_methods_tab">
+                                        <?php foreach ($paymentMethods as $key => $val) {
+                                            $pmethodCode = $val['plugin_code'];
+                                            $pmethodId = $val['plugin_id'];
+                                            $pmethodName = $val['plugin_name'];
+                                            if(strtolower($val['plugin_code']) == 'cashondelivery' && $fulfillmentType == Shipping::FULFILMENT_PICKUP){
+                                                $pmethodName = Labels::getLabel('LBL_Pay_on_pickup', $siteLangId);
                                             }
-                                            $count++; ?>
-                                            <li>
-                                                <a href="<?php echo UrlHelper::generateUrl('Checkout', 'PaymentTab', array($orderInfo['order_id'], $val['plugin_id'])); ?>">
+
+                                            if (in_array($pmethodCode, $excludePaymentGatewaysArr[applicationConstants::CHECKOUT_PRODUCT])) {
+                                                continue;
+                                            }?>
+                                            <li class="nav-item">
+                                                <a class="nav-link" aria-selected="true" href="<?php echo UrlHelper::generateUrl('Checkout', 'PaymentTab', array($orderInfo['order_id'], $pmethodId)); ?>" data-paymentmethod="<?php echo $pmethodCode; ?>">
                                                     <div class="payment-box">
-                                                        <i class="payment-icn">
-                                                            <img src="<?php echo UrlHelper::generateUrl('Image', 'paymentMethod', array($val['plugin_id'],'SMALL')); ?>" alt="">
-                                                        </i>
-                                                        <span><?php echo $val['plugin_name']; ?></span>
+                                                        <span><?php echo $pmethodName; ?></span>
                                                     </div>
                                                 </a>
                                             </li>
-                                        <?php } ?>
+                                        <?php
+                                        } ?>
                                     </ul>
-                                    <?php } ?>
-                                </div>
-                            </div>
-                            <div class="col-md-8">
-                                <div class="payment-here">
-                                    <div class="you-pay">
-                                        <?php echo Labels::getLabel('LBL_Net_Payable', $siteLangId); ?> : <?php echo CommonHelper::displayMoneyFormat($orderInfo['order_net_amount'], true, false, true, false, true); ?>
-                                        <?php if (CommonHelper::getCurrencyId() != FatApp::getConfig('CONF_CURRENCY', FatUtility::VAR_INT, 1)) {?>
-                                        <p><?php echo CommonHelper::currencyDisclaimer($siteLangId, $orderInfo['order_net_amount']);  ?></p>
-                                        <?php } ?>
+                                    <div class="tab-content">
+                                        <div class="tab-pane fade show active" role="tabpanel" >
+                                            <div class="tabs-container" id="tabs-container"></div>
+                                        </div>
                                     </div>
-                                   
-                                    <!--<div class="heading4"><?php //echo Labels::getLabel('LBL_Pay_With_Credit_Card', $siteLangId);?></div>-->
-                                    <div class="tabs-container" id="tabs-container"></div>
                                 </div>
-                            </div>
-                            <?php } else {
-                                echo Labels::getLabel("LBL_Payment_method_is_not_available._Please_contact_your_administrator.", $siteLangId);
-                            } ?>
+                            </section>
                         </div>
-                        <?php } ?>
-                    </section>
-                </div>
+                    <?php } else {
+                        echo Labels::getLabel("LBL_Payment_method_is_not_available._Please_contact_your_administrator.", $siteLangId);
+                    } ?>
+                <?php } ?>
             </div>
         </div>
     </div>
 </section>
 <?php if ($orderInfo['order_net_amount']) { ?>
-<script type="text/javascript">
-    var containerId = '#tabs-container';
-    var tabsId = '#payment_methods_tab';
-    $(document).ready(function() {
-        if ($(tabsId + ' li a.is-active').length > 0) {
-            loadTab($(tabsId + ' li A.is-active'));
-        }
-        $(tabsId + ' a').click(function() {
-            if ($(this).hasClass('is-active')) {
+    <script type="text/javascript">
+
+        var tabsId = '#payment_methods_tab';
+        $(document).ready(function() {
+            $(tabsId + " li:first a").addClass('active');
+            if ($(tabsId + ' li a.active').length > 0) {
+                loadTab($(tabsId + ' li a.active'));
+            }
+            $(tabsId + ' a').click(function() {
+                if ($(this).hasClass('active')) {
+                    return false;
+                }
+                $(tabsId + ' li a.active').removeClass('active');
+                $(this).addClass('active');
+                loadTab($(this));
+                return false;
+            });
+        });
+        
+        function loadTab(tabObj) {
+            if (isUserLogged() == 0) {
+                loginPopUpBox();
                 return false;
             }
-            $(tabsId + ' li A.is-active').removeClass('is-active');
-            $('li').removeClass('is-active');
-            $(this).parent().addClass('is-active');
-            loadTab($(this));
-            return false;
-        });
-    });
+            if (!tabObj || !tabObj.length) {
+                return;
+            }
 
-    function loadTab(tabObj) {
-        if (!tabObj || !tabObj.length) {
-            return;
+            fcom.ajax(tabObj.attr('href'), '', function(response) {
+                $('#tabs-container').html(response);
+                var paymentMethod = tabObj.data('paymentmethod');
+                var form = '#tabs-container form';
+                if (0 < $(form).length) {
+                    $('#tabs-container').append(fcom.getLoader());
+                    if (0 < $(form + " input[type='submit']").length) {
+                        $(form + " input[type='submit']").val(langLbl.requestProcessing);
+                    }
+                    setTimeout(function() {
+                        $(form).submit()
+                    }, 100);
+                }
+            });
         }
-        $(containerId).html(fcom.getLoader());
-        //$(containerId).fadeOut('fast');
-        fcom.ajax(tabObj.attr('href'), '', function(response) {
-            $(containerId).html(response);
-        });
-        /* $(containerId).load( tabObj.attr('href'), function(){
-            //$(containerId).fadeIn('fast');
-        }); */
-    }
-</script>
+    </script>
 <?php } ?>

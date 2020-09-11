@@ -123,14 +123,16 @@ class Paypal extends PaymentMethodBase
         $orderPaymentObj = new OrderPayment($orderId, $this->langId);
         $paymentAmount = $orderPaymentObj->getOrderPaymentGatewayAmount();
         $orderInfo = $orderPaymentObj->getOrderPrimaryinfo();
-        $orderObj = new Orders();
-        $orderAddresses = $orderObj->getOrderAddresses($orderId);
-        $shippingAddress = $orderAddresses[Orders::SHIPPING_ADDRESS_TYPE];
-        $billingAddress = $orderAddresses[Orders::BILLING_ADDRESS_TYPE];
-
-        $cancelBtnUrl = CommonHelper::getPaymentCancelPageUrl();
+        
         if ($orderInfo['order_type'] == Orders::ORDER_WALLET_RECHARGE) {
             $cancelBtnUrl = CommonHelper::getPaymentFailurePageUrl();
+        } else {
+            $orderObj = new Orders();
+            $orderAddresses = $orderObj->getOrderAddresses($orderId);
+            $shippingAddress = $orderAddresses[Orders::SHIPPING_ADDRESS_TYPE];
+            $billingAddress = $orderAddresses[Orders::BILLING_ADDRESS_TYPE];
+
+            $cancelBtnUrl = CommonHelper::getPaymentCancelPageUrl();
         }
 
         $request_body = $purchase_units = $pu_amount = [];
@@ -140,27 +142,22 @@ class Paypal extends PaymentMethodBase
         $pu_amount["value"] =  number_format((float)$paymentAmount, 2, '.', '');
         $purchase_units["reference_id"] = $orderId;
         $purchase_units["amount"] = $pu_amount;
-        $purchase_units["shipping"] = [
-            "address_line_1" => $shippingAddress['oua_address1'],
-            "address_line_2" => $shippingAddress['oua_address2'],
-            "admin_area_1" => $shippingAddress['oua_state_code'],
-            "admin_area_2" => $shippingAddress['oua_city'],
-            "postal_code" => $shippingAddress['oua_zip'],
-            "country_code" => $shippingAddress['oua_country_code']
-        ];
+     
+        if ($orderInfo['order_type'] == Orders::ORDER_PRODUCT) {
+            $purchase_units["shipping"] = [
+                "address_line_1" => $shippingAddress['oua_address1'],
+                "address_line_2" => $shippingAddress['oua_address2'],
+                "admin_area_1" => $shippingAddress['oua_state_code'],
+                "admin_area_2" => $shippingAddress['oua_city'],
+                "postal_code" => $shippingAddress['oua_zip'],
+                "country_code" => $shippingAddress['oua_country_code']
+            ];
+        }
 
         $request_body["intent"] = "CAPTURE";
         $request_body["payer"] = [
             "name" => [
                 "given_name" => $orderInfo['customer_name'],
-            ],
-            "address" => [
-                "address_line_1" => $billingAddress['oua_address1'],
-                "address_line_2" => $billingAddress['oua_address2'],
-                "admin_area_1" => $billingAddress['oua_state_code'],
-                "admin_area_2" => $billingAddress['oua_city'],
-                "postal_code" => $billingAddress['oua_zip'],
-                "country_code" => $billingAddress['oua_country_code']
             ],
             "email_address" => $orderInfo['customer_email'],
             "phone" => [
@@ -170,6 +167,18 @@ class Paypal extends PaymentMethodBase
                 ]
             ]
         ];
+
+        if ($orderInfo['order_type'] == Orders::ORDER_PRODUCT) {
+            $request_body["payer"]['address'] = [
+                "address_line_1" => $billingAddress['oua_address1'],
+                "address_line_2" => $billingAddress['oua_address2'],
+                "admin_area_1" => $billingAddress['oua_state_code'],
+                "admin_area_2" => $billingAddress['oua_city'],
+                "postal_code" => $billingAddress['oua_zip'],
+                "country_code" => $billingAddress['oua_country_code']
+            ];
+        }
+
         $request_body["purchase_units"][] = $purchase_units;
         $request_body["application_context"] = [
             "cancel_url" => $cancelBtnUrl,

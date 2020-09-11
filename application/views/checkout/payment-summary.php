@@ -379,8 +379,9 @@ if (!empty($siteKey) && !empty($secretKey) && true === $paymentMethods->cashOnDe
     <script type="text/javascript">
         var tabsId = '#payment_methods_tab';
         $(document).ready(function() {
-            if ($(tabsId + ' li a.is-active').length > 0) {
-                loadTab($(tabsId + ' li a.is-active'));
+            $(tabsId + " li:first a").addClass('active');
+            if ($(tabsId + ' li a.active').length > 0) {
+                loadTab($(tabsId + ' li a.active'));
             }
             $(tabsId + ' a').click(function() {
                 if ($(this).hasClass('active')) {

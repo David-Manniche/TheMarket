@@ -58,6 +58,7 @@
                 }).then(function(res) {
                     return res.json();
                 }).then(function(data) {
+                    $.mbsmessage(langLbl.requestProcessing,true,'alert--process');
                     //=== Redirect to thank you/success page after saving transaction
                     $.ajax({
                         type: "POST",
@@ -65,7 +66,6 @@
                         data: data,
                         dataType: 'json',
                         success: function(resp) {
-                            console.log(resp);
                             if (1 > resp.status) {
                                 $.mbsmessage(resp.msg, true, 'alert--danger');
                             } else {
