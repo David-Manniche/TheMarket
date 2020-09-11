@@ -22,7 +22,7 @@
                 <?php if (!empty($rulesData)) { ?>
                     <div class="yk-stats">
                         <ul>
-                            <?php CommonHelper::printArray($rulesData, true);
+                            <?php
                             foreach($rulesData as $rule) {
                                 $combinedData = [];
                                 if (!empty($combinedRulesDetails) && isset($combinedRulesDetails[$rule['taxrule_id']])) {
@@ -70,7 +70,7 @@
                                         <li>
                                             <div class="stats">
                                                 <p><span class="lable"><?php echo Labels::getLabel('LBL_Tax_Name', $siteLangId); ?>:
-                                                    </span><?php echo $rule['taxrule_rate'];?></p>
+                                                    </span><?php echo $rule['taxstr_name'];?></p>
                                             </div>
                                         </li>
                                     <?php } ?>

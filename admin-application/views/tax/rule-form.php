@@ -129,10 +129,9 @@ $combTaxCount = 0;
                                                         </div>
                                                     </div>
                                                     <div class="row">
-                                                    <div class="col-md-6">
-                                                            <?php
-                                                            if (!empty($otherLanguages)) {
-                                                                foreach ($otherLanguages as $langId => $data) {
+                                                        <?php /* if (!empty($otherLanguages)) { ?>
+                                                            <div class="col-md-6">
+                                                                <?php foreach ($otherLanguages as $langId => $data) {
                                                                     $layout = Language::getLayoutDirection($langId); ?>
                                                                     <div class="accordians_container accordians_container-categories mt-4" defaultLang= "<?php echo $siteDefaultLangId; ?>" language="<?php echo $langId; ?>" id="accordion-language_<?php echo $langId; ?>" onClick="translateData(this)">
                                                                      <div class="accordian_panel">
@@ -160,10 +159,9 @@ $combTaxCount = 0;
                                                                          </div>
                                                                      </div>
                                                                     </div>
-                                                                <?php
-                                                                }
-                                                            } ?>
-                                                        </div>
+                                                                <?php }?>
+                                                                </div>
+                                                            <?php } */ ?>
                                                         <div class="col-md-6 combined-tax-details--js"></div>
                                                     </div>
                                                 </div>
@@ -241,42 +239,40 @@ $combTaxCount = 0;
                                                         </div>
                                                     </div>
                                                     <div class="row taxrule-lang-form--js">
-                                                        <div class="col-md-6">
-                                                            <?php
-                                                            if (!empty($otherLanguages)) {
-                                                                foreach ($otherLanguages as $langId => $data) {
-                                                                    $layout = Language::getLayoutDirection($langId); ?>
-                                                                    <div class="accordians_container accordians_container-categories mt-4" defaultLang= "<?php echo $siteDefaultLangId; ?>" language="<?php echo $langId; ?>" id="accordion-language_<?php echo $langId; ?>" onClick="translateData(this)">
-                                                                    <div class="accordian_panel">
-                                                                      <span class="accordian_title accordianhead accordian_title mb-0" id="collapse_<?php echo $langId; ?>">
-                                                                      <?php echo $data." "; echo Labels::getLabel('LBL_Language_Data', $adminLangId); ?>
-                                                                      </span>
-                                                                      <div class="accordian_body accordiancontent" style="display: none;">
-                                                                          <div class="row">
-                                                                             <div class="col-md-12">
-                                                                                 <div class="field-set">
-                                                                                     <div class="caption-wraper">
-                                                                                         <label class="field_label">
-                                                                                         <?php  $fld = $frm->getField('taxrule_name['.$langId.'][]');
-                                                                                            $fld->value = isset($rule['taxrule_name'][$langId]) ? $rule['taxrule_name'][$langId] : '';
-                                                                                            echo $fld->getCaption(); ?>
-                                                                                         </label>
-                                                                                     </div>
-                                                                                     <div class="field-wraper">
-                                                                                         <div class="field_cover">
-                                                                                         <?php echo $frm->getFieldHtml('taxrule_name['.$langId.'][]'); ?>
-                                                                                         </div>
-                                                                                     </div>
-                                                                                 </div>
-                                                                             </div>
-                                                                         </div>
-                                                                      </div>
-                                                                  </div>
-                                                              </div>
-                                                                <?php
-                                                                }
-                                                            } ?>
-                                                        </div>
+                                                        <?php /* if (!empty($otherLanguages)) { ?>
+                                                            <div class="col-md-6">
+                                                            <?php foreach ($otherLanguages as $langId => $data) {
+                                                                $layout = Language::getLayoutDirection($langId); ?>
+                                                                <div class="accordians_container accordians_container-categories mt-4" defaultLang= "<?php echo $siteDefaultLangId; ?>" language="<?php echo $langId; ?>" id="accordion-language_<?php echo $langId; ?>" onClick="translateData(this)">
+                                                                <div class="accordian_panel">
+                                                                    <span class="accordian_title accordianhead accordian_title mb-0" id="collapse_<?php echo $langId; ?>">
+                                                                    <?php echo $data." "; echo Labels::getLabel('LBL_Language_Data', $adminLangId); ?>
+                                                                    </span>
+                                                                    <div class="accordian_body accordiancontent" style="display: none;">
+                                                                        <div class="row">
+                                                                            <div class="col-md-12">
+                                                                                <div class="field-set">
+                                                                                    <div class="caption-wraper">
+                                                                                        <label class="field_label">
+                                                                                        <?php  $fld = $frm->getField('taxrule_name['.$langId.'][]');
+                                                                                        $fld->value = isset($rule['taxrule_name'][$langId]) ? $rule['taxrule_name'][$langId] : '';
+                                                                                        echo $fld->getCaption(); ?>
+                                                                                        </label>
+                                                                                    </div>
+                                                                                    <div class="field-wraper">
+                                                                                        <div class="field_cover">
+                                                                                        <?php echo $frm->getFieldHtml('taxrule_name['.$langId.'][]'); ?>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <?php } ?>
+                                                            </div>
+                                                        <?php } */ ?>
                                                         <div class="col-md-6 combined-tax-details--js"></div>
                                                     </div>
                                                 </div>

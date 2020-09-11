@@ -140,7 +140,7 @@ class TaxRule extends MyAppModel
     {
         $srch = TaxRule::getSearchObject();
         $srch->joinTable(TaxStructure::DB_TBL, 'LEFT JOIN', 'taxstr_id = taxrule_taxstr_id');
-        $srch->joinTable(TaxStructure::DB_TBL_LANG, 'LEFT JOIN', 'taxruledet_taxstr_id = taxstrlang_taxstr_id and taxstrlang_lang_id = '.$langId);
+        $srch->joinTable(TaxStructure::DB_TBL_LANG, 'LEFT JOIN', 'taxrule_taxstr_id = taxstrlang_taxstr_id and taxstrlang_lang_id = '.$langId);
         $srch->addCondition('taxrule_taxcat_id', '=', $taxCatId);
         $srch->addMultipleFields(array('taxrule_id', 'taxrule_name', 'taxrule_taxcat_id', 'taxrule_taxstr_id', 'taxrule_rate', 'taxstr_id', 'IFNULL(taxstr_name, taxstr_identifier) as taxstr_name', 'taxstr_parent', 'taxstr_is_combined'));
         $res = $srch->getResultSet();
@@ -165,6 +165,7 @@ class TaxRule extends MyAppModel
         $srch->joinTable(TaxStructure::DB_TBL_LANG, 'LEFT JOIN', 'taxruledet_taxstr_id = taxstrlang_taxstr_id and taxstrlang_lang_id = '.$langId);
         $srch->addCondition('taxruledet_taxrule_id', 'IN', $rulesIds);
         $srch->addMultipleFields(array('taxstr_id', 'taxruledet_taxrule_id', 'taxruledet_rate', 'IFNULL(taxstr_name, taxstr_identifier) as taxstr_name', 'taxstr_parent'));
+        $srch->doNotCalculateRecords();
         $rs = $srch->getResultSet();
         $combinedData = FatApp::getDb()->fetchAll($rs);
         return self::groupDataByKey($combinedData, 'taxruledet_taxrule_id');

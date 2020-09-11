@@ -514,7 +514,7 @@ class TaxController extends AdminBaseController
         $frm->fill($data);
 
         $taxObj = new TaxRule();
-        $rulesData = $taxObj->getRules($taxCatId);
+        $rulesData = $taxObj->getRules($taxCatId, $this->adminLangId);
         if (!empty($rulesData)) {
             $ruleLocations = $taxObj->getLocations($taxCatId);
         }
