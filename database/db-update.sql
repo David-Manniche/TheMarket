@@ -707,3 +707,5 @@ DELETE FROM `tbl_language_labels` WHERE `label_key` LIKE 'LBL_MOVE_TO_CUSTOMER_C
 -- -----------------TV-9.2.1.20200905------------------
 ALTER TABLE `tbl_seller_products` CHANGE `selprod_fulfillment_type` `selprod_fulfillment_type` TINYINT(4) NOT NULL DEFAULT '-1';
 ALTER TABLE `tbl_languages` CHANGE `language_flag` `language_country_code` VARCHAR(5) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL;
+UPDATE `tbl_languages` SET `language_country_code` = 'US' WHERE `tbl_languages`.`language_code` = 'EN';
+UPDATE `tbl_languages` SET `language_country_code` = 'AE' WHERE `tbl_languages`.`language_code` = 'AR';
