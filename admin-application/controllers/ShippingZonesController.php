@@ -129,6 +129,12 @@ class ShippingZonesController extends AdminBaseController
             Message::addErrorMessage(Labels::getLabel('LBL_Invalid_Request', $this->adminLangId));
             FatUtility::dieJsonError(Message::getHtml());
         }
+
+        if (isset($post['shipzone_name']) && empty(trim($post['shipzone_name']))) {
+            Message::addErrorMessage(Labels::getLabel('LBL_Invalid_Request', $this->adminLangId));
+            FatUtility::dieJsonError(Message::getHtml());
+        }
+
         $shipZoneId = (isset($post['shipzone_id']))? $post['shipzone_id'] : 0;
        
         if (!$this->checkForLocations($post['shipzone_profile_id'], $shipZoneId, $post)) {
