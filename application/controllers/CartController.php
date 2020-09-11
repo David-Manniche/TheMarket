@@ -8,8 +8,11 @@ class CartController extends MyAppController
     }
 
     public function index()
-    {
+    {  
         $cartObj = new Cart();  
+        $cartObj->unsetCartCheckoutType();
+        $cartObj->removeProductShippingMethod();
+        $cartObj->removeProductPickUpAddresses();
         $this->set('total', $cartObj->countProducts());
         $this->set('hasPhysicalProduct', $cartObj->hasPhysicalProduct());
         $this->_template->render();
@@ -21,7 +24,6 @@ class CartController extends MyAppController
         $products['single'] = array();
         $loggedUserId = UserAuthentication::getLoggedUserId(true);
         $cartObj = new Cart($loggedUserId, $this->siteLangId, $this->app_user['temp_user_id']);
-        $cartObj->unsetCartCheckoutType();
         $productsArr = $cartObj->getProducts($this->siteLangId);
         $prodGroupIds = array();
 
@@ -39,10 +41,10 @@ class CartController extends MyAppController
                     case Shipping::FULFILMENT_PICKUP:
                         $fulfillmentProdArr[Shipping::FULFILMENT_PICKUP][] = $product['selprod_id'];
                     break;
-                   default:
+                    default:
                        $fulfillmentProdArr[Shipping::FULFILMENT_SHIP][] = $product['selprod_id'];
                        $fulfillmentProdArr[Shipping::FULFILMENT_PICKUP][] = $product['selprod_id'];
-                   break;
+                    break;
                 }
             }
             
@@ -116,7 +118,7 @@ class CartController extends MyAppController
             $this->set('fulfillmentProdArr', $fulfillmentProdArr);
 
             $templateName = 'cart/ship-listing.php';
-            if ($fulfilmentType == Shipping::FULFILMENT_PICKUP) {
+            if ($fulfilmentType == Shipping::FULFILMENT_PICKUP || count($fulfillmentProdArr[Shipping::FULFILMENT_SHIP]) == 0) {
                 $templateName = 'cart/pickup-listing.php';
             }
         } else {
@@ -131,10 +133,12 @@ class CartController extends MyAppController
         if (true === MOBILE_APP_API_CALL) {
             $this->_template->render(true, true, $templateName);
         }
-        
-        //$this->_template->render(false, false, $templateName);
+    
         $json['html'] = $this->_template->render(false, false, $templateName, true, false);
         $json['cartProductsCount'] = count($productsArr);
+        $json['hasPhysicalProduct'] = $cartObj->hasPhysicalProduct();
+        $json['shipProductsCount'] = count($fulfillmentProdArr[Shipping::FULFILMENT_SHIP]);
+        $json['pickUpProductsCount'] = count($fulfillmentProdArr[Shipping::FULFILMENT_PICKUP]);
         FatUtility::dieJsonSuccess($json);
     }
 

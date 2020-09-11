@@ -1517,6 +1517,7 @@ $("document").ready(function() {
             }
             if ($btn.hasClass("quickView") == true) {
                 $(document).trigger('close.facebox');
+                $('body').addClass('side-cart--on');
             }
             if (9 < ans.total) {
                 ans.total = '9+';
