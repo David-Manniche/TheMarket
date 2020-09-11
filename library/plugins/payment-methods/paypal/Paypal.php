@@ -33,10 +33,9 @@ class Paypal extends PaymentMethodBase
     /**
      * init
      *
-     * @param int $userId
      * @return bool
      */
-    public function init(int $userId): bool
+    public function init(): bool
     {
         if (false == $this->validateSettings()) {
             return false;
@@ -48,9 +47,6 @@ class Paypal extends PaymentMethodBase
 
         $this->clientId = 0 < $this->settings['env'] ? $this->settings['live_client_id'] : $this->settings['client_id'];
         $this->secretKey = 0 < $this->settings['env'] ? $this->settings['live_secret_key'] : $this->settings['secret_key'];
-        if (false === $this->loadLoggedUserInfo($userId)) {
-            return false;
-        }
         return true;
     }
 

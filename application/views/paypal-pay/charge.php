@@ -81,8 +81,10 @@
 
     $(document).ready(function() {
         loadPayPalButtons();
-        $(document).on("change", "#paypal-buttons", function() {
-            $(".loading-js").hide();
-        });
+        setTimeout(function(){
+            if ('' != $("#paypal-buttons").html()) {
+                $(".loading-js").hide();
+            }
+        }, 1000);
     });
 </script>
