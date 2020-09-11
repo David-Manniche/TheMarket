@@ -81,7 +81,7 @@ $submitBtnFld->developerTags['noCaptionTag'] = true;
                                 </h5>
                                 <div class="action">
                                     <?php if ($canEdit) { ?>
-                                        <a class="btn btn-outline-primary btn-sm" href="javascript:void(0);" onClick="zoneForm(<?php echo $profile_id; ?>, 0)"><i class="fa fa-plus"></i> Add
+                                        <a class="btn btn-outline-primary btn-sm" href="javascript:void(0);" onClick="zoneForm(<?php echo $profile_id; ?>, 0)" title="<?php echo Labels::getLabel('LBL_ADD_ZONE', $siteLangId);?>"><i class="fa fa-plus"></i> <?php echo Labels::getLabel('LBL_ADD', $siteLangId);?>
                                         </a>
                                     <?php } ?>
                                 </div>

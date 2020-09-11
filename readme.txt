@@ -26,6 +26,7 @@ Bugs:
     => task-66150- Export content encoding issue with Excel.
     => 042958 - Seller >> shipping profile >> shipping to >> if there is no zone then some default image or some default text should be there.
     => 042511 - Shipping rates are not getting display properly at front end.
+    => 042954 - "Add zone" should be the tool tip for "add " button
     
 Enhancements:
     => Tax module upgrade
