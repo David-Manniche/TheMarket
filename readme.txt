@@ -29,6 +29,7 @@ Bugs:
     => 042986 - Seller >> request >> when user on that request listing page and he create another request then new request should reflect before we refresh the page.
     => 042985 - Seller >> brand request listing >> Language data gets display instead of identifier name.
     => 042765 - Admin dashboard >> top product >> height of "no record found " section should be same as others.
+    => 039093 - login popup having issue in maintenance mode
 
 Enhancements:
     => Tax module upgrade
