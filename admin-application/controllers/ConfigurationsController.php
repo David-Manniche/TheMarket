@@ -1062,7 +1062,20 @@ class ConfigurationsController extends AdminBaseController
                 $fld->htmlAfterField = "<br><small>Subtract stock when an order is placed.</small>"; */
 
                 break;
-
+            
+            case Configurations::FORM_INVOICE:
+                $frm->addHtml('', 'Invoice', '<h3>' . Labels::getLabel('LBL_Invoice', $this->adminLangId) . '</h3>');
+                $fld = $frm->addTextarea(Labels::getLabel("LBL_Government_Information_on_invoices", $this->adminLangId), 'CONF_DEFAULT_INVOICE_INFORMATION');
+                $fld->htmlAfterField = "<small>" . Labels::getLabel("LBL_Information_mandated_by_the_Government_on_invoices.", $this->adminLangId) . "</small>";
+                /* $alphanumericFld = $frm->addTextBox(Labels::getLabel('LBL_Invoice_number_starts_from', $this->adminLangId), 'CONF_INVOICE_START_FROM_ALPHANUMERIC', '', array('placeholder' => Labels::getLabel('LBL_Alphanumeric_value', $this->adminLangId)));
+                $numericFld = $frm->addTextBox(Labels::getLabel('LBL_Invoice_number_starts_from', $this->adminLangId), 'CONF_INVOICE_START_FROM_NUMERIC', '', array('placeholder' => Labels::getLabel('LBL_Integer_value', $this->adminLangId)));
+                $alphanumericFld->attachField($numericFld); */
+                $frm->addRadioButtons(Labels::getLabel("LBL_Tax_code_for_categories", $this->adminLangId), 'CONF_TAX_CATEGORIES_CODE', applicationConstants::getYesNoArr($this->adminLangId), applicationConstants::YES, array('class' => 'list-inline'));
+                
+                $frm->addHtml('', 'Invoice', '<h3>' . Labels::getLabel('LBL_Invoice_Additional_Information', $this->adminLangId) . '</h3>');
+                $frm->addTextBox(Labels::getLabel('LBL_Title', $this->adminLangId), 'CONF_INVOICE_ADDITIONAL_INFORMATION_TITLE');
+                $frm->addTextarea(Labels::getLabel("LBL_Description", $this->adminLangId), 'CONF_INVOICE_ADDITIONAL_INFORMATION_DESCRIPTION');
+                break;
             case Configurations::FORM_CART_WISHLIST:
                 $fld = $frm->addRadioButtons(Labels::getLabel("LBL_ADD_PRODUCTS_TO_WISHLIST_OR_FAVORITE?", $this->adminLangId), 'CONF_ADD_FAVORITES_TO_WISHLIST', UserWishList::wishlistOrFavtArr($this->adminLangId), applicationConstants::YES, array('class' => 'list-inline'));
 

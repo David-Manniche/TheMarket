@@ -29,6 +29,7 @@ class Configurations extends FatModel
     public const FORM_USER_ACCOUNT = 21;
     public const FORM_CART_WISHLIST = 22;
     public const FORM_COMMISSION = 23;
+    public const FORM_INVOICE = 24;
 
     public function __construct()
     {
@@ -63,6 +64,7 @@ class Configurations extends FatModel
             Configurations::FORM_PRODUCT => Labels::getLabel('MSG_Product', $adminLangId),
             Configurations::FORM_CART_WISHLIST => Labels::getLabel('MSG_Cart/Wishlist', $adminLangId),
             Configurations::FORM_CHECKOUT_PROCESS => Labels::getLabel('MSG_Checkout', $adminLangId),
+            Configurations::FORM_INVOICE => Labels::getLabel('MSG_Invoice', $adminLangId),
             Configurations::FORM_COMMISSION => Labels::getLabel('MSG_Commission', $adminLangId),
             Configurations::FORM_DISCOUNT => Labels::getLabel('MSG_Discount', $adminLangId),
             Configurations::FORM_REWARD_POINTS => Labels::getLabel('MSG_REWARD_POINTS', $adminLangId),

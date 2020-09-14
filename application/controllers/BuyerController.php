@@ -291,6 +291,170 @@ class BuyerController extends BuyerBaseController
 
         $this->_template->render();
     }
+	
+	public function viewInvoice($orderId, $opId = 0, $print = false)
+    {
+        if (!$orderId) {
+            $message = Labels::getLabel('MSG_Invalid_Access', $this->siteLangId);
+            if (true === MOBILE_APP_API_CALL) {
+                LibHelper::dieJsonError($message);
+            }
+            Message::addErrorMessage($message);
+            CommonHelper::redirectUserReferer();
+        }
+
+        $opId = FatUtility::int($opId);
+        if (0 < $opId) {
+            $opOrderId = OrderProduct::getAttributesById($opId, 'op_order_id');
+            if ($orderId != $opOrderId) {
+                $message = Labels::getLabel('MSG_Invalid_Order', $this->siteLangId);
+                if (true === MOBILE_APP_API_CALL) {
+                    LibHelper::dieJsonError($message);
+                }
+                Message::addErrorMessage($message);
+                CommonHelper::redirectUserReferer();
+            }
+        }
+        $primaryOrderDisplay = false;
+
+        $orderObj = new Orders();
+        $orderStatuses = Orders::getOrderProductStatusArr($this->siteLangId);
+        $userId = UserAuthentication::getLoggedUserId();
+
+        $orderDetail = $orderObj->getOrderById($orderId, $this->siteLangId);
+        if (!$orderDetail || ($orderDetail && $orderDetail['order_user_id'] != $userId)) {
+            $message = Labels::getLabel('MSG_Invalid_Access', $this->siteLangId);
+            if (true === MOBILE_APP_API_CALL) {
+                LibHelper::dieJsonError($message);
+            }
+            Message::addErrorMessage($message);
+            CommonHelper::redirectUserReferer();
+        }
+
+        $orderDetail['charges'] = $orderObj->getOrderProductChargesByOrderId($orderDetail['order_id']);
+
+        $srch = new OrderProductSearch($this->siteLangId, true, true);
+        $srch->joinOrderProductShipment();
+        $srch->joinPaymentMethod();
+        $srch->joinSellerProducts();
+        $srch->joinOrderUser();
+        //$srch->joinShippingUsers();
+        $srch->addOrderProductCharges();
+        $srch->joinShippingCharges();
+        $srch->addCondition('order_user_id', '=', $userId);
+        $srch->addCondition('order_id', '=', $orderId);
+
+
+        if (0 < $opId) {
+            if (true === MOBILE_APP_API_CALL) {
+                $srch->joinTable(SelProdReview::DB_TBL, 'LEFT OUTER JOIN', 'o.order_id = spr.spreview_order_id and op.op_selprod_id = spr.spreview_selprod_id', 'spr');
+                $srch->joinTable(SelProdRating::DB_TBL, 'LEFT OUTER JOIN', 'sprating.sprating_spreview_id = spr.spreview_id', 'sprating');
+                $srch->addFld(array('*', 'IFNULL(ROUND(AVG(sprating_rating),2),0) as prod_rating'));
+            }
+            $srch->addCondition('op_id', '=', $opId);
+            $srch->addStatusCondition(unserialize(FatApp::getConfig("CONF_BUYER_ORDER_STATUS")));
+            $primaryOrderDisplay = true;
+        }
+
+        if (true === MOBILE_APP_API_CALL) {
+            $srch->joinTable(
+                OrderReturnRequest::DB_TBL,
+                'LEFT OUTER JOIN',
+                'orr.orrequest_op_id = op.op_id',
+                'orr'
+            );
+            $srch->joinTable(
+                OrderCancelRequest::DB_TBL,
+                'LEFT OUTER JOIN',
+                'ocr.ocrequest_op_id = op.op_id',
+                'ocr'
+            );
+            $srch->addFld(array('*', 'IFNULL(orrequest_id, 0) as return_request', 'IFNULL(ocrequest_id, 0) as cancel_request'));
+        }
+        
+        $rs = $srch->getResultSet();
+
+        $childOrderDetail = FatApp::getDb()->fetchAll($rs, 'op_id');
+        foreach ($childOrderDetail as $op_id => $val) {
+            $childOrderDetail[$op_id]['charges'] = $orderDetail['charges'][$op_id];
+
+            $opChargesLog = new OrderProductChargeLog($op_id);
+            $taxOptions = $opChargesLog->getData($this->siteLangId);
+            $childOrderDetail[$op_id]['taxOptions'] = $taxOptions;
+        }
+
+        if ($opId > 0) {
+            $childOrderDetail = array_shift($childOrderDetail);
+        }
+
+        if (empty($childOrderDetail) || 1 > count($childOrderDetail)) {
+            $message = Labels::getLabel('MSG_Invalid_Access', $this->siteLangId);
+            if (true === MOBILE_APP_API_CALL) {
+                LibHelper::dieJsonError($message);
+            }
+            Message::addErrorMessage($message);
+            CommonHelper::redirectUserReferer();
+        }
+
+        $address = $orderObj->getOrderAddresses($orderDetail['order_id']);
+        $orderDetail['billingAddress'] = $address[Orders::BILLING_ADDRESS_TYPE];
+        $orderDetail['shippingAddress'] = (!empty($address[Orders::SHIPPING_ADDRESS_TYPE])) ? $address[Orders::SHIPPING_ADDRESS_TYPE] : array();
+        
+        $pickUpAddress = $orderObj->getOrderAddresses($orderDetail['order_id'], $opId);
+        $orderDetail['pickupAddress'] = (!empty($pickUpAddress[Orders::PICKUP_ADDRESS_TYPE])) ? $pickUpAddress[Orders::PICKUP_ADDRESS_TYPE] : array();
+        
+        if ($opId > 0) {
+            $orderDetail['comments'] = $orderObj->getOrderComments($this->siteLangId, array("op_id" => $childOrderDetail['op_id']));
+        } else {
+            $orderDetail['comments'] = $orderObj->getOrderComments($this->siteLangId, array("order_id" => $orderDetail['order_id']));
+        }
+
+        $childOrderProducts = $orderObj->getChildOrders(['order_id' => $orderDetail['order_id']]);
+        $childOrderProdCount = count($childOrderProducts);
+        if (1 > $opId || 1 == $childOrderProdCount) {
+            $payments = $orderObj->getOrderPayments(array("order_id" => $orderDetail['order_id']));
+            if (true === MOBILE_APP_API_CALL) {
+                $payments = array_values($payments);
+            }
+            $orderDetail['payments'] = $payments;
+        }
+
+        $digitalDownloads = array();
+        if ($opId > 0 && $childOrderDetail['op_product_type'] == Product::PRODUCT_TYPE_DIGITAL) {
+            $digitalDownloads = Orders::getOrderProductDigitalDownloads($childOrderDetail['op_id']);
+        }
+
+        $digitalDownloadLinks = array();
+        if ($opId > 0 && $childOrderDetail['op_product_type'] == Product::PRODUCT_TYPE_DIGITAL) {
+            $digitalDownloadLinks = Orders::getOrderProductDigitalDownloadLinks($childOrderDetail['op_id']);
+        }
+        $productType = !empty($childOrderDetail['selprod_product_id']) ? Product::getAttributesById($childOrderDetail['selprod_product_id'], 'product_type') : 0;
+        
+        $frm = $this->getTransferBankForm($this->siteLangId, $orderId);
+        $this->set('frm', $frm);
+        $this->set('orderDetail', $orderDetail);
+        $this->set('childOrderDetail', $childOrderDetail);
+        $this->set('orderStatuses', $orderStatuses);
+        $this->set('primaryOrder', $primaryOrderDisplay);
+        $this->set('childOrderProdCount', $childOrderProdCount);
+        $this->set('digitalDownloads', $digitalDownloads);
+        $this->set('digitalDownloadLinks', $digitalDownloadLinks);
+        $this->set('productType', $productType);
+        $this->set('languages', Language::getAllNames());
+        $this->set('yesNoArr', applicationConstants::getYesNoArr($this->siteLangId));
+
+
+        $urlParts = array($orderId, $opId);
+        $this->set('urlParts', $urlParts);
+        if ($print !== false) {
+            $print = true;
+        }
+        $this->set('print', $print);
+
+        $this->set('opId', $opId);
+
+        $this->_template->render(false, false);
+    }
 
     public function downloadDigitalFile($aFileId, $recordId = 0)
     {
