@@ -293,22 +293,24 @@
 							<ul class="list list--vertical theme--txtcolor theme--hovercolor topProducts">
 								<?php
 									$count = 1;
-									if(count($dashboardInfo['topProducts'])>0){
+									if(count($dashboardInfo['topProducts']) > 0){
 										foreach($dashboardInfo['topProducts'] as $row){
 											if($count>11){
 												break;
 											}?>
-								<li>
-									<?php echo $row['product_name'];?> <span>
-										<?php echo $row['sold'];?>
-										<?php echo Labels::getLabel('LBL_Sold',$adminLangId); ?></span></li>
-								<?php $count++;
+								            <li>
+                                                <?php echo $row['product_name'];?>
+                                                <span>
+                                                    <?php echo $row['sold'];?>
+                                                    <?php echo Labels::getLabel('LBL_Sold',$adminLangId); ?>
+                                                </span>
+                                            </li>
+								            <?php $count++;
 										}
 									}
-									else{
-										echo Labels::getLabel("LBL_No_Record_Found",$adminLangId);
-									}
-									?>
+									else{ ?>
+										<li><?php echo Labels::getLabel("LBL_No_Record_Found",$adminLangId); ?></li>
+									<?php } ?>
 							</ul>
 						</div>
 					</div>
@@ -342,13 +344,23 @@
 						<div class="scrollbar scrollbar-js">
 							<ul class="list list--vertical theme--txtcolor theme--hovercolor topSearchKeyword">
 								<?php
-											 $count=1;
-											if(count($dashboardInfo['topSearchKeyword'])>0){
-											foreach($dashboardInfo['topSearchKeyword'] as $row){ if($count>11){ break;}?>
-								<li>
-									<?php echo ($row['search_item']=='')?Labels::getLabel('LBL_Blank_Search',$adminLangId):$row['search_item'];?> <span>
-										<?php echo $row['search_count'];?></span></li>
-								<?php $count++;}}else{ echo Labels::getLabel('LBL_No_Record_Found',$adminLangId);}  ?>
+                                $count = 1;
+                                if(count($dashboardInfo['topSearchKeyword']) > 0){
+                                    foreach($dashboardInfo['topSearchKeyword'] as $row) {
+                                        if ($count > 11) {
+                                            break;
+                                        } ?>
+                                        <li>
+                                            <?php echo ($row['search_item']=='') ? Labels::getLabel('LBL_Blank_Search',$adminLangId) : $row['search_item'];?>
+                                            <span>
+                                                <?php echo $row['search_count'];?>
+                                            </span>
+                                        </li>
+                                        <?php $count++;
+                                    }
+                                } else { 
+                                    echo Labels::getLabel('LBL_No_Record_Found',$adminLangId);
+                                } ?>
 							</ul>
 						</div>
 					</div>
