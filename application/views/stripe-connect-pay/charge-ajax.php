@@ -90,14 +90,14 @@ echo $frm->getFormTag(); ?>
     
     <?php } ?>
 </form>
-
+<?php echo $frm->getExternalJs(); ?>
 <?php if (empty($paymentIntendId)) { ?>
     <script type="text/javascript">
         (function() {
             var controller = 'StripeConnectPay';
             var paymentForm = '#tabs-container';
             doPayment = function(frm, orderId) {
-                if (!$(frm).validate()) return;
+                if (!$(frm).validate()) return false;
                 var data = fcom.frmData(frm);
                 fcom.updateWithAjax(fcom.makeUrl(controller, 'charge', [orderId]), data, function(t) {
                     if ('undefined' != typeof t.redirectUrl) {
