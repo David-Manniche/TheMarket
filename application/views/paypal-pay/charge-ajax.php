@@ -36,6 +36,7 @@
             },
             //=== Call your server to save the transaction
             onApprove: function(data, actions) {
+                $.mbsmessage(langLbl.requestProcessing,true,'alert--process');
                 return fetch(fcom.makeUrl('PaypalPay', 'captureOrder', [data.orderID]), {
                     method: "POST",
                 }).then(function(res) {
@@ -48,7 +49,6 @@
                         data: data,
                         dataType: 'json',
                         success: function(resp) {
-                            console.log(resp);
                             if (1 > resp.status) {
                                 $.mbsmessage(resp.msg, true, 'alert--danger');
                             } else {
