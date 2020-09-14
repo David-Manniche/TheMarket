@@ -22,7 +22,8 @@
                 <?php if (!empty($rulesData)) { ?>
                     <div class="yk-stats">
                         <ul>
-                            <?php foreach($rulesData as $rule) {
+                            <?php
+                            foreach($rulesData as $rule) {
                                 $combinedData = [];
                                 if (!empty($combinedRulesDetails) && isset($combinedRulesDetails[$rule['taxrule_id']])) {
                                     $combinedData = $combinedRulesDetails[$rule['taxrule_id']];
@@ -47,11 +48,11 @@
                                 <ul>
                                     <li>
                                         <div class="stats">
-                                            <p><span class="lable"><?php echo Labels::getLabel('LBL_Rax_Rate', $siteLangId); ?>:
+                                            <p><span class="lable"><?php echo Labels::getLabel('LBL_Tax_Rate', $siteLangId); ?>:
                                                 </span><?php echo $rule['taxrule_rate'];?></p>
                                         </div>
                                     </li>
-                                    <?php if (!empty($combinedData) && $rule['taxrule_is_combined'] > 0) { ?>
+                                    <?php if (!empty($combinedData) && $rule['taxstr_is_combined'] > 0) { ?>
                                     <li>
                                         <div class="stats">
                                            <h6 class="title-sub"> <?php echo Labels::getLabel('LBL_Combined_Taxes', $siteLangId); ?></h6>
@@ -60,11 +61,18 @@
                                     <?php foreach ($combinedData as $comData) { ?>
                                     <li>
                                         <div class="stats">
-                                            <p><span class="lable"><?php echo $comData['taxruledet_name'][$siteLangId];?>:
+                                            <p><span class="lable"><?php echo $comData['taxstr_name'];?>:
                                                 </span><?php echo $comData['taxruledet_rate'];?></p>
                                             <?php } ?>
                                         </div>
                                     </li>
+                                    <?php } else { ?>
+                                        <li>
+                                            <div class="stats">
+                                                <p><span class="lable"><?php echo Labels::getLabel('LBL_Tax_Name', $siteLangId); ?>:
+                                                    </span><?php echo $rule['taxstr_name'];?></p>
+                                            </div>
+                                        </li>
                                     <?php } ?>
                                     <li>
                                         <div class="stats">

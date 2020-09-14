@@ -707,3 +707,35 @@ DELETE FROM `tbl_language_labels` WHERE `label_key` LIKE 'LBL_MOVE_TO_CUSTOMER_C
 -- -----------------TV-9.2.1.20200905------------------
 ALTER TABLE `tbl_seller_products` CHANGE `selprod_fulfillment_type` `selprod_fulfillment_type` TINYINT(4) NOT NULL DEFAULT '-1';
 ALTER TABLE `tbl_languages` CHANGE `language_flag` `language_country_code` VARCHAR(5) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL;
+
+
+CREATE TABLE `tbl_tax_structure` (
+  `taxstr_id` int(11) NOT NULL,
+  `taxstr_identifier` varchar(255) NOT NULL,
+  `taxstr_parent` int(11) NOT NULL,
+  `taxstr_is_combined` tinyint(4) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+ALTER TABLE `tbl_tax_structure`
+  ADD PRIMARY KEY (`taxstr_id`);
+  
+ALTER TABLE `tbl_tax_structure`
+  MODIFY `taxstr_id` int(11) NOT NULL AUTO_INCREMENT;
+  
+CREATE TABLE `tbl_tax_structure_lang` (
+  `taxstrlang_taxstr_id` int(11) NOT NULL,
+  `taxstrlang_lang_id` int(11) NOT NULL,
+  `taxstr_name` varchar(255) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+ALTER TABLE `tbl_tax_structure_lang`
+  ADD PRIMARY KEY (`taxstrlang_taxstr_id`,`taxstrlang_lang_id`);
+  
+DELETE FROM `tbl_language_labels` WHERE `label_key` LIKE 'LBL_Sales_Tax';
+
+
+ALTER TABLE `tbl_tax_rules` ADD `taxrule_taxstr_id` INT NOT NULL AFTER `taxrule_taxcat_id`;
+ALTER TABLE `tbl_tax_rule_details` ADD `taxruledet_taxstr_id` INT NOT NULL AFTER `taxruledet_taxrule_id`;
+ALTER TABLE `tbl_tax_rule_details` DROP `taxruledet_identifier`;
+DROP TABLE `tbl_tax_rule_details_lang`;
+ALTER TABLE `tbl_tax_rules` DROP `taxrule_is_combined`;

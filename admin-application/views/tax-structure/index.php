@@ -10,11 +10,29 @@
                             <h5><?php echo Labels::getLabel('LBL_MANAGE_TAX_STRUCTURE', $adminLangId); ?> </h5> <?php $this->includeTemplate('_partial/header/header-breadcrumb.php'); ?>
                         </div>
                     </div>
-                </div>               
-                <section class="section">                    
+                </div>
+                <section class="section">
+                    <div class="sectionhead">
+                        <h4><?php echo Labels::getLabel('LBL_Tax_Structure', $adminLangId); ?> </h4>                               
+                        <?php
+                        if ($canEdit) {
+                            $otherButtons = [
+                                [
+                                    'attr' => [
+                                        'href' => 'javascript:void(0)',
+                                        'onclick' => 'addStructureForm(0)',
+                                        'title' => Labels::getLabel('LBL_Add_New_Product', $adminLangId)
+                                    ],
+                                    'label' => '<i class="fas fa-plus"></i>'
+                                ]
+                            ];
+                            $this->includeTemplate('_partial/action-buttons.php', ['otherButtons' => $otherButtons, 'adminLangId' => $adminLangId], false);
+                        }
+                        ?>
+                    </div>
                     <div class="sectionbody">
-                        <div class="tablewrap">
-                            <div id="taxStrListing"> <?php echo Labels::getLabel('LBL_Processing...', $adminLangId); ?> </div>
+                        <div class="tablewrap" >
+                            <div id="taxStrListing"> <?php echo Labels::getLabel('LBL_Processing...', $adminLangId); ?></div>
                         </div>
                     </div>
                 </section>
