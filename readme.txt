@@ -27,6 +27,7 @@ Bugs:
     => 042989 - Accept cookies functionality enhancement
     => 042991 - Edit status functionalities are different on "category request " and "brand request " listing page at admin end.
     => 042986 - Seller >> request >> when user on that request listing page and he create another request then new request should reflect before we refresh the page
+    => 042985 - Seller >> brand request listing >> Language data gets display instead of identifier name
     
 Enhancements:
     => Tax module upgrade
