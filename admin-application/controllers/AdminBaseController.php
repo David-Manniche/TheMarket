@@ -15,6 +15,7 @@ class AdminBaseController extends FatController
     protected $str_invalid_Action;
     protected $str_setup_successful;
     protected $adminLangId;
+    protected $nodes = [];
 
     public function __construct($action)
     {
@@ -203,21 +204,20 @@ class AdminBaseController extends FatController
 
     public function getBreadcrumbNodes($action)
     {
-        $nodes = array();
         $className = get_class($this);
         $arr = explode('-', FatUtility::camel2dashed($className));
         array_pop($arr);
         $urlController = implode('-', $arr);
         $className = ucwords(implode(' ', $arr));
         if ($action == 'index') {
-            $nodes[] = array('title' => $className);
+            $this->nodes[] = array('title' => $className);
         } else {
             $arr = explode('-', FatUtility::camel2dashed($action));
             $action = ucwords(implode(' ', $arr));
-            $nodes[] = array('title' => $className, 'href' => UrlHelper::generateUrl($urlController));
-            $nodes[] = array('title' => $action);
+            $this->nodes[] = array('title' => $className, 'href' => UrlHelper::generateUrl($urlController));
+            $this->nodes[] = array('title' => $action);
         }
-        return $nodes;
+        return $this->nodes;
     }
     
     public function getStates($countryId, $stateId = 0, $langId = 0, $idCol = 'state_id')

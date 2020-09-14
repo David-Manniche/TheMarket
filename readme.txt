@@ -25,6 +25,7 @@ Bugs:
     => 036754 - Seller/ Admin marks an order as delivered. But Seller has an option to "cancel" after delivery
     => task-66150- Export content encoding issue with Excel.
     => 042989 - Accept cookies functionality enhancement
+    => 042991 - Edit status functionalities are different on "category request " and "brand request " listing page at admin end.
     
 Enhancements:
     => Tax module upgrade

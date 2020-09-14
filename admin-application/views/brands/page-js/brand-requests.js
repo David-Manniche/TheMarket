@@ -156,11 +156,11 @@ $(document).on('change','.prefDimensions-js',function(){
 	};
 
 	addBrandRequestForm= function(id){
-
-		$.facebox(function() {brandRequestForm(id)
-
+		$.facebox(function() {
+            brandRequestForm(id);
 		});
-	}
+    }
+    
 	brandRequestForm = function(id) {
 		fcom.displayProcessing();
 		var frm = document.frmBrandSearchPaging;
