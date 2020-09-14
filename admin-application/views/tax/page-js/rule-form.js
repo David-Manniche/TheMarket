@@ -57,7 +57,9 @@ $("document").ready(function() {
 					var taxruledet_id = $(detailData).find(' input[name="taxruledet_id[]"]').val();
 					var taxruledet_taxstr_id = $(detailData).find(' input[name="taxstr_id[]"]').val();
 					var taxruledet_rate = $(detailData).find(' input[name="taxruledet_rate[]"]').val();
-
+					if( !taxruledet_rate ) {
+						return;
+					}
 					var details = {"taxruledet_id" : taxruledet_id, "taxruledet_taxstr_id" : taxruledet_taxstr_id, "taxruledet_rate" : taxruledet_rate};
 
 					combinedTax.push(details);
@@ -67,7 +69,6 @@ $("document").ready(function() {
 				var details = {"taxruledet_id" : taxruledet_id, "taxruledet_taxstr_id" : taxrule_taxstr_id, "taxruledet_rate" : taxrule_rate};
 				combinedTax.push(details);
 			}
-
 			var currentData = {"taxrule_id" : taxrule_id, "taxrule_name" : taxrule_name, "taxrule_taxstr_id" : taxrule_taxstr_id, "taxrule_rate" : taxrule_rate, "country_id" : country_id, "type" : type, "states" : states, "taxrule_is_combined" : taxrule_is_combined, "combinedTaxDetails" : combinedTax};
 			dataToSave.push(currentData);
 		});
