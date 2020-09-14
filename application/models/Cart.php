@@ -202,7 +202,7 @@ class Cart extends FatModel
 
     public function hasPhysicalProduct()
     {   
-        $isPhysical = false;    
+        $isPhysical = false;   
         foreach ($this->getBasketProducts($this->cart_lang_id) as $product) {
             if ($product['is_batch'] && !empty($product['products'])) {
                 foreach ($product['products'] as $pgproduct) {
@@ -212,7 +212,7 @@ class Cart extends FatModel
                     }
                 }
             } else {
-                if (!empty($product['is_physical_product'])) {                    
+                if (!empty($product['is_physical_product'])) {          
                     $isPhysical = true;
                     break;
                 }
@@ -248,7 +248,7 @@ class Cart extends FatModel
                     $this->removeCartKey($key, $selprod_id, $quantity);
                     continue;
                 }
-                
+
                 if (isset($this->SYSTEM_ARR['shopping_cart']['checkout_type']) && $sellerProductRow['selprod_fulfillment_type'] != Shipping::FULFILMENT_ALL && $sellerProductRow['selprod_fulfillment_type'] != $this->SYSTEM_ARR['shopping_cart']['checkout_type']) {
                     unset($this->products[$key]);
                     continue;

@@ -11,7 +11,7 @@ class MyAppController extends FatController
         parent::__construct($action);
         $this->action = $action;
 
-        if (FatApp::getConfig("CONF_MAINTENANCE", FatUtility::VAR_INT, 0) && (get_class($this) != "MaintenanceController") && (get_class($this) != ' Home' && $action != 'setLanguage')) {
+        if ('updateUserCookies' != $action && FatApp::getConfig("CONF_MAINTENANCE", FatUtility::VAR_INT, 0) && (get_class($this) != "MaintenanceController") && (get_class($this) != ' Home' && $action != 'setLanguage')) {
             if (true === MOBILE_APP_API_CALL) {
                 FatUtility::dieJsonError(Labels::getLabel('MSG_Site_under_maintenance', CommonHelper::getLangId()));
             }

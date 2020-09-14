@@ -11,6 +11,7 @@ class Shipping
 
     public const TYPE_MANUAL = -1;
     private const RATE_CACHE_KEY_NAME = "shipRateCache_";
+    private const CARRIER_CACHE_KEY_NAME = "shipCarrierCache_"; 
 
     private $langId;
     private $pluginKey = '';
@@ -213,16 +214,27 @@ class Shipping
      */
     private function fetchShippingRatesFromApi(array $shippingAddressDetail, array $productInfo, array &$physicalSelProdIdArr): bool
     {
-        if (1 > $this->getPluginId()) {
+        $pluginId = $this->getPluginId();
+        if (1 > $pluginId) {
             return false;
+        }   
+        
+        $cacheKey = self::CARRIER_CACHE_KEY_NAME.$this->langId.$pluginId; 
+        $carriers = FatCache::get($cacheKey, CONF_API_REQ_CACHE_TIME, '.txt');
+        if ($carriers) {
+            $carriers = unserialize($carriers);
+        } else {
+            $carriers = $this->shippingApiObj->getCarriers();;
+            if (!empty($carriers)) {
+                FatCache::set($cacheKey, serialize($carriers), '.txt');
+            }
         }
-
-        $carriers = $this->shippingApiObj->getCarriers();
+        //$carriers = $this->shippingApiObj->getCarriers();
         $this->shippingApiObj->setAddress($shippingAddressDetail['addr_name'], $shippingAddressDetail['addr_address1'], $shippingAddressDetail['addr_address2'], $shippingAddressDetail['addr_city'], $shippingAddressDetail['state_name'], $shippingAddressDetail['addr_zip'], $shippingAddressDetail['country_code'], $shippingAddressDetail['addr_phone']);
 
         $weightUnitsArr = applicationConstants::getWeightUnitsArr($this->langId);
         $dimensionUnits = ShippingPackage::getUnitTypes($this->langId);
-
+  
         foreach ($this->selProdShipRates as $rateId => $rates) {
             $product = $productInfo[$rates['selprod_id']];
             $shippingLevel = self::LEVEL_PRODUCT;
@@ -380,7 +392,7 @@ class Shipping
         $shipToStateId = isset($shippingAddressDetail['addr_state_id']) ? $shippingAddressDetail['addr_state_id'] : 0;
 
         $this->selProdShipRates = $this->getSellerProductShippingRates($physicalSelProdIdArr, $shipToCountryId, $shipToStateId);
-
+ 
         if (false === $this->fetchShippingRatesFromApi($shippingAddressDetail, $productInfo, $physicalSelProdIdArr)) {
             $this->fetchShippingRatesFromSystem($productInfo, $physicalSelProdIdArr);
         }

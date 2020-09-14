@@ -439,9 +439,6 @@ $("document").ready(function () {
         fcom.ajax(fcom.makeUrl('Checkout', 'PaymentSummary'), '', function (ans) {
             $(pageContent).html(ans);
             $(paymentDiv).addClass('is-current');
-            setTimeout(function () {
-                $("#payment_methods_tab li:first a").trigger('click').addClass('active');
-            }, 500);
         });
     };
 

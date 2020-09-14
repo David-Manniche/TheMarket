@@ -381,6 +381,8 @@ class SubscriptionCheckoutController extends LoggedUserController
         $excludePaymentGatewaysArr = applicationConstants::getExcludePaymentGatewayArr();
 
         $redeemRewardFrm = $this->getRewardsForm($this->siteLangId);
+        
+        $this->set('canUseWalletForPayment', PaymentMethods::canUseWalletForPayment());
         $this->set('subscriptionType', $subscriptionType);
         $this->set('redeemRewardFrm', $redeemRewardFrm);
         $this->set('paymentMethods', $paymentMethods);

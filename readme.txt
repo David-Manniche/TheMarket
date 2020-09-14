@@ -28,6 +28,7 @@ Bugs:
     => 042511 - Shipping rates are not getting display properly at front end.
     => 042954 - "Add zone" should be the tool tip for "add " button
     => 042521 - Shipping profile >> add zone >> add zone name field should not accept only spaces
+    => 042989 - Accept cookies functionality enhancement
     
 Enhancements:
     => Tax module upgrade
