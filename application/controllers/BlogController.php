@@ -77,7 +77,7 @@ class BlogController extends MyAppController
     private function getBlogSearchObject()
     {
         $srch = BlogPost::getSearchObject($this->siteLangId, true, false, true);
-        $srch->addMultipleFields(array('bp.*', 'IFNULL(bp_l.post_title,post_identifier) as post_title', 'bp_l.post_author_name', 'bp_l.post_short_description', 'group_concat(bpcategory_id) categoryIds', 'group_concat(IFNULL(bpcategory_name, bpcategory_identifier) SEPARATOR "~") categoryNames', 'group_concat(GETBLOGCATCODE(bpcategory_id)) AS categoryCodes', 'post_description'));
+        $srch->addMultipleFields(array('bp.*', 'IFNULL(bp_l.post_title,post_identifier) as post_title', 'bp_l.post_author_name', 'group_concat(bpcategory_id) categoryIds', 'group_concat(IFNULL(bpcategory_name, bpcategory_identifier) SEPARATOR "~") categoryNames', 'group_concat(GETBLOGCATCODE(bpcategory_id)) AS categoryCodes', 'post_description'));
         $srch->addCondition('postlang_post_id', 'is not', 'mysql_func_null', 'and', true);
         $srch->addCondition('post_published', '=', applicationConstants::YES);
         $srch->addGroupby('post_id');
@@ -93,7 +93,7 @@ class BlogController extends MyAppController
         }
 
         $srch = BlogPost::getSearchObject($this->siteLangId, true, false, true);
-        $srch->addMultipleFields(array('bp.*', 'IFNULL(bp_l.post_title,post_identifier) as post_title', 'bp_l.post_author_name', 'bp_l.post_short_description', 'group_concat(bpcategory_id) categoryIds', 'group_concat(IFNULL(bpcategory_name, bpcategory_identifier) SEPARATOR "~") categoryNames', 'group_concat(GETBLOGCATCODE(bpcategory_id)) AS categoryCodes'));
+        $srch->addMultipleFields(array('bp.*', 'IFNULL(bp_l.post_title,post_identifier) as post_title', 'bp_l.post_author_name', 'group_concat(bpcategory_id) categoryIds', 'group_concat(IFNULL(bpcategory_name, bpcategory_identifier) SEPARATOR "~") categoryNames', 'group_concat(GETBLOGCATCODE(bpcategory_id)) AS categoryCodes'));
         $srch->addCondition('postlang_post_id', 'is not', 'mysql_func_null', 'and', true);
         $srch->addCondition('ptc_bpcategory_id', '=', $categoryId);
         $srch->addCondition('post_published', '=', applicationConstants::YES);
@@ -147,7 +147,7 @@ class BlogController extends MyAppController
         $page = (empty($post['page']) || $post['page'] <= 0) ? 1 : FatUtility::int($post['page']);
         $pageSize = FatApp::getConfig('conf_page_size', FatUtility::VAR_INT, 10);
         $srch = BlogPost::getSearchObject($this->siteLangId, true, false, true);
-        $srch->addMultipleFields(array('bp.*', 'IFNULL(bp_l.post_title,post_identifier) as post_title', 'bp_l.post_author_name', 'bp_l.post_short_description', 'group_concat(bpcategory_id) categoryIds', 'group_concat(IFNULL(bpcategory_name, bpcategory_identifier) SEPARATOR "~") categoryNames', 'group_concat(GETBLOGCATCODE(bpcategory_id)) AS categoryCodes', 'post_description'));
+        $srch->addMultipleFields(array('bp.*', 'IFNULL(bp_l.post_title,post_identifier) as post_title', 'bp_l.post_author_name', 'group_concat(bpcategory_id) categoryIds', 'group_concat(IFNULL(bpcategory_name, bpcategory_identifier) SEPARATOR "~") categoryNames', 'group_concat(GETBLOGCATCODE(bpcategory_id)) AS categoryCodes', 'post_description'));
         $srch->addCondition('postlang_post_id', 'is not', 'mysql_func_null', 'and', true);
 
         if ($categoryId = FatApp::getPostedData('categoryId', FatUtility::VAR_INT, 0)) {
@@ -155,7 +155,6 @@ class BlogController extends MyAppController
             $this->set('bpCategoryId', $categoryId);
         } elseif ($keyword = FatApp::getPostedData('keyword', FatUtility::VAR_STRING, '')) {
             $keywordCond = $srch->addCondition('post_title', 'like', "%$keyword%");
-            $keywordCond->attachCondition('post_short_description', 'like', "%$keyword%");
             $keywordCond->attachCondition('post_description', 'like', "%$keyword%");
             $this->set('keyword', $keyword);
         }

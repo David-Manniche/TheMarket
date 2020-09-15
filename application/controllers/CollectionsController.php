@@ -309,7 +309,6 @@ class CollectionsController extends MyAppController
                     'post_updated_on',
                     'post_updated_on',
                     'IFNULL(bpcategory_name, bpcategory_identifier) as bpcategory_name',
-                    'post_short_description',
                     'post_description'
                 ];
                 $blogSearchObj = BlogPost::getSearchObject($this->siteLangId, true, true);
