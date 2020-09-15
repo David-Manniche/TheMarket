@@ -15,39 +15,34 @@ if (isset($stripe)) {
 }
 if (isset($client_secret)) { ?>
     <script type="text/javascript">
-        function loadCardConfirmation() {
-            var stripe = Stripe(publishable_key);
-            var clientSecret = '<?php echo $client_secret; ?>';
-            stripe.confirmCardPayment(clientSecret, {
-                payment_method: '<?php echo $payment_method_id; ?>'
-            }).then(function(result) {
-                // console.log(result);
-                if (result.error) {
-                    // PaymentIntent client secret was invalid
-                    location.href = '<?php echo $cancelBtnUrl; ?>';
-                } else {
-                    if (result.paymentIntent.status === 'succeeded') {
+        var stripe = Stripe(publishable_key);
+        var clientSecret = '<?php echo $client_secret; ?>';
+        stripe.confirmCardPayment(clientSecret, {
+            payment_method: '<?php echo $payment_method_id; ?>'
+        }).then(function(result) {
+            // console.log(result);
+            if (result.error) {
+                // PaymentIntent client secret was invalid
+                location.href = '<?php echo $cancelBtnUrl; ?>';
+            } else {
+                if (result.paymentIntent.status === 'succeeded') {
 
-                        var data = 'order_id=<?php echo $order_id ?>&payment_intent_id=<?php echo $payment_intent_id ?>&is_ajax_request=yes';
+                    var data = 'order_id=<?php echo $order_id ?>&payment_intent_id=<?php echo $payment_intent_id ?>&is_ajax_request=yes';
 
-                        $.ajax({
-                            type: "POST",
-                            url: '<?php echo UrlHelper::generateUrl('StripePay', 'StripeSuccess') ?>',
-                            data: data,
-                            success: function(data) {
-                                location.href = '<?php echo UrlHelper::generateUrl('custom', 'paymentSuccess', array($order_id), CONF_WEBROOT_URL); ?>';
-                            }
-                        });
+                    $.ajax({
+                        type: "POST",
+                        url: '<?php echo UrlHelper::generateUrl('StripePay', 'StripeSuccess') ?>',
+                        data: data,
+                        success: function(data) {
+                            location.href = '<?php echo UrlHelper::generateUrl('custom', 'paymentSuccess', array($order_id), CONF_WEBROOT_URL); ?>';
+                        }
+                    });
 
-                    } else if (result.paymentIntent.status === 'requires_payment_method') {
-                        // Authentication failed, prompt the customer to enter another payment method
-                        location.href = '<?php echo UrlHelper::generateUrl('custom', 'paymentFailed'); ?>';
-                    }
+                } else if (result.paymentIntent.status === 'requires_payment_method') {
+                    // Authentication failed, prompt the customer to enter another payment method
+                    location.href = '<?php echo UrlHelper::generateUrl('custom', 'paymentFailed'); ?>';
                 }
-            });
-        }
-        $(document).ready(function() {
-            loadCardConfirmation();
+            }
         });
     </script>
 <?php exit;
@@ -80,7 +75,7 @@ if (isset($client_secret)) { ?>
                                 var token = response['id'];
                                 // insert the token into the form so it gets submitted to the server
                                 form.append("<input type='hidden' name='stripeToken' value='" + token + "' />");
-                                form.attr('onsubmit', 'sendPayment(this, ".payment-from"); return(false);');
+                                form.attr('onsubmit', 'sendPayment(this, "#tabs-container"); return(false);');
                                 form.submit();
                             }
 
@@ -93,6 +88,7 @@ if (isset($client_secret)) { ?>
                                 return;
                             }
 
+                            $.mbsmessage(langLbl.processing, false, 'alert--process');
                             // prop('disabled', true);
                             $('.alert--danger').remove();
 

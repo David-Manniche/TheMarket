@@ -29,7 +29,14 @@ Bugs:
     => 042954 - "Add zone" should be the tool tip for "add " button
     => 042521 - Shipping profile >> add zone >> add zone name field should not accept only spaces
     => 042989 - Accept cookies functionality enhancement
-    
+    => 042991 - Edit status functionalities are different on "category request " and "brand request " listing page at admin end.
+    => 042986 - Seller >> request >> when user on that request listing page and he create another request then new request should reflect before we refresh the page.
+    => 042985 - Seller >> brand request listing >> Language data gets display instead of identifier name.
+    => 042765 - Admin dashboard >> top product >> height of "no record found " section should be same as others.
+    => 039093 - login popup having issue in maintenance mode
+    => 040647 - admin> seo> image attributes> tags added are not removing 
+    => 040907 - Payment is not getting added to wallet
+
 Enhancements:
     => Tax module upgrade
     => Test cases classes enhancements.

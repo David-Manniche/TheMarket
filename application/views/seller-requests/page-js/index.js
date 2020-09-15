@@ -91,7 +91,7 @@
         var data = fcom.frmData(frm);
         fcom.updateWithAjax(fcom.makeUrl('sellerRequests', 'setupBrandReq'), data, function (t) {
             $.mbsmessage.close();
-
+            searchBrandRequests(frm);
             if (t.langId > 0) {
                 addBrandReqLangForm(t.brandReqId, t.langId);
                 return;
@@ -241,7 +241,8 @@
             return;
         var data = fcom.frmData(frm);
         fcom.updateWithAjax(fcom.makeUrl('sellerRequests', 'setupCategoryReq'), data, function (t) {
-			$(document).trigger('close.facebox');
+            $(document).trigger('close.facebox');
+            searchProdCategoryRequests(frm);
         });
     };
 

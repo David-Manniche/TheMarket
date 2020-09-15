@@ -57,27 +57,35 @@ $(document).ready(function(){
 		searchProductCategories(document.frmSearch);
 	};
     
-    toggleStatus = function(obj){
-		if( !confirm(langLbl.confirmUpdateStatus) ){ return; }
-		var prodCatId = parseInt(obj.value);
-		if( prodCatId < 1 ){
-			fcom.displayErrorMessage(langLbl.invalidRequest);
-			return false;
-		}
-        
-		data='prodCatId='+prodCatId;
-		fcom.displayProcessing();
-		fcom.ajax(fcom.makeUrl('productCategories','changeRequestStatus'),data,function(res){
-		var ans = $.parseJSON(res);
-			if( ans.status == 1 ){
-				$(obj).toggleClass("active");
-				fcom.displaySuccessMessage(ans.msg);
-                searchProductCategories();
-			} else {
-                fcom.displayErrorMessage(ans.msg);
-			}
-		});
-		$.systemMessage.close();
+    setupCategory = function() {
+        var frm = $('#frmProdCategory');
+        var validator = $(frm).validation({errordisplay: 3});
+        if (validator.validate() == false) {
+            return false;
+        }
+        if (!$(frm).validate()) {
+            return false;
+        }
+        var data = fcom.frmData(frm);
+        fcom.updateWithAjax(fcom.makeUrl('ProductCategories', 'setup', [1]), data, function(t) {
+            if(t.status == 1){
+                $(document).trigger('close.facebox');
+                reloadList();
+            }
+        });
 	};
+    
+    editProdCatRequestForm = function(id){
+		$.facebox(function() {
+            prodCatRequestForm(id);
+		});
+    }
 
+    prodCatRequestForm = function(id) {
+		fcom.displayProcessing();
+		var frm = document.frmBrandSearchPaging;
+		fcom.ajax(fcom.makeUrl('ProductCategories', 'form', [id, 1]), '', function(t) {
+			fcom.updateFaceboxContent(t);
+		});
+	};
 })();

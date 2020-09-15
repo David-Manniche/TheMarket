@@ -12,8 +12,8 @@ class MyAppController extends FatController
         $this->action = $action;
 
         if ('updateUserCookies' != $action && FatApp::getConfig("CONF_MAINTENANCE", FatUtility::VAR_INT, 0) && (get_class($this) != "MaintenanceController") && (get_class($this) != ' Home' && $action != 'setLanguage')) {
-            if (true === MOBILE_APP_API_CALL) {
-                FatUtility::dieJsonError(Labels::getLabel('MSG_Site_under_maintenance', CommonHelper::getLangId()));
+            if (true === MOBILE_APP_API_CALL || FatUtility::isAjaxCall()) {
+                FatUtility::dieJsonError(Labels::getLabel('MSG_SITE_UNDER_MAINTENANCE', CommonHelper::getLangId()));
             }
             FatApp::redirectUser(UrlHelper::generateUrl('maintenance'));
         }

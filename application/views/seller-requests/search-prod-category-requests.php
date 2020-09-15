@@ -32,7 +32,7 @@ foreach ($arr_listing as $sn => $row) {
                 break;
             case 'prodcat_name':
                 $td->appendElement('plaintext', array(), (!empty($row['prodcat_name']) ? $row['prodcat_name'] : $row['prodcat_identifier']) . '<br>', true);
-                $td->appendElement('plaintext', array(), '('.$row[$key].')', true);
+                $td->appendElement('plaintext', array(), '('.$row['prodcat_identifier'].')', true);
                 break;
 			case 'prodcat_parent':
                 $prodCat = new productCategory();
