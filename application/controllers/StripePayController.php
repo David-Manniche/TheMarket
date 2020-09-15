@@ -107,12 +107,14 @@ class StripePayController extends PaymentController
         if ($orderInfo['order_type'] == Orders::ORDER_WALLET_RECHARGE) {
             $cancelBtnUrl = CommonHelper::getPaymentFailurePageUrl();
         }
+        
         $this->set('cancelBtnUrl', $cancelBtnUrl);
         $this->set('exculdeMainHeaderDiv', true);
         if (FatUtility::isAjaxCall()) {
             $json['html'] = $this->_template->render(false, false, 'stripe-pay/charge-ajax.php', true, false);
             FatUtility::dieJsonSuccess($json);
         }
+        die('hjhjh');
         $this->_template->render(true, false);
     }
 
