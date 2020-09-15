@@ -38,7 +38,8 @@ Bugs:
     => 040907 - Payment is not getting added to wallet
 	=> 043056 - If admin make some changes in email footer then those changes are not reflecting in emails 
 	=> 042763 - Tax category >> view rates >> currency symbol is missing.
-	=> 036806 - Same label is calling for expiry date in stripe checkout
+	=> 036806 - Same label is calling for expiry date in stripe checkout.
+	=> 036867 - Place an COD order >> when admin try to complete that order then some json error gets display and it gets completed when we try second time.
 
 Enhancements:
     => Tax module upgrade
