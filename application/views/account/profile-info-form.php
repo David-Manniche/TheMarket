@@ -4,12 +4,6 @@ $frm->setFormTagAttribute('class', 'form');
 $frm->developerTags['colClassPrefix'] = 'col-md-';
 $frm->developerTags['fld_default_col'] = 6;
 
-$fld = $frm->getField('user_profile_info');
-$fld->developerTags['col'] = 6;
-
-$fld = $frm->getField('user_products_services');
-$fld->developerTags['col'] = 6;
-
 $submitFld = $frm->getField('btn_submit');
 $submitFld->developerTags['col'] = 12;
 $submitFld->developerTags['noCaptionTag'] = true;
@@ -42,10 +36,19 @@ $countryFld->setFieldTagAttribute('onChange', 'getCountryStates(this.value,' . $
 $stateFld = $frm->getField('user_state_id');
 $stateFld->setFieldTagAttribute('id', 'user_state_id');
 
-$userCompFld = $frm->getField('user_company');
-$userCompFld->developerTags['col'] = 12;
 
 
+$parent = User::getAttributesById(UserAuthentication::getLoggedUserId(true), 'user_parent');
+if (User::isAdvertiser() && $parent == 0) {
+	$fld = $frm->getField('user_profile_info');
+	$fld->developerTags['col'] = 6;
+	
+	$fld = $frm->getField('user_products_services');
+	$fld->developerTags['col'] = 6;
+	
+	$userCompFld = $frm->getField('user_company');
+	$userCompFld->developerTags['col'] = 12;
+}
 $imgFrm->setFormTagAttribute('action', UrlHelper::generateUrl('Account', 'uploadProfileImage'));
 /* $imgFrm->setFormTagAttribute('id', 'imageFrm');
 $fld = $imgFrm->getField('user_profile_image');

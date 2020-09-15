@@ -40,6 +40,8 @@ Bugs:
 	=> 042763 - Tax category >> view rates >> currency symbol is missing.
 	=> 036806 - Same label is calling for expiry date in stripe checkout.
 	=> 036867 - Place an COD order >> when admin try to complete that order then some json error gets display and it gets completed when we try second time.
+	=> 040000 - seller> google feeds> categories don't have scroll bar.
+	=> 041950 - user account (post sign up)> my profile> getting warning
 
 Enhancements:
     => Tax module upgrade
