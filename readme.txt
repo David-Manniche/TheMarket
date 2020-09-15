@@ -24,6 +24,10 @@ Bugs:
     => 042361 - Product temp images are not getting imported.
     => 036754 - Seller/ Admin marks an order as delivered. But Seller has an option to "cancel" after delivery
     => task-66150- Export content encoding issue with Excel.
+    => 042958 - Seller >> shipping profile >> shipping to >> if there is no zone then some default image or some default text should be there.
+    => 042511 - Shipping rates are not getting display properly at front end.
+    => 042954 - "Add zone" should be the tool tip for "add " button
+    => 042521 - Shipping profile >> add zone >> add zone name field should not accept only spaces
     => 042989 - Accept cookies functionality enhancement
     => 042991 - Edit status functionalities are different on "category request " and "brand request " listing page at admin end.
     => 042986 - Seller >> request >> when user on that request listing page and he create another request then new request should reflect before we refresh the page.
