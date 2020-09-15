@@ -36,6 +36,7 @@ Bugs:
     => 039093 - login popup having issue in maintenance mode
     => 040647 - admin> seo> image attributes> tags added are not removing 
     => 040907 - Payment is not getting added to wallet
+    => 043043 - Root category should be clickable .
 
 Enhancements:
     => Tax module upgrade
