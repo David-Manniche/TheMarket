@@ -39,6 +39,7 @@ Bugs:
     => 043043 - Root category should be clickable.
     => 038238 - DEMO> on product detail page> on closing time bar and scrolling there is issue
     => 038252 - remove blog short description from admin as it's not listing anywhere
+    => 039092 - seller> sales report> same sheet is exporting in normal and date wise
 
 Enhancements:
     => Tax module upgrade
