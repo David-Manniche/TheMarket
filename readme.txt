@@ -36,6 +36,9 @@ Bugs:
     => 039093 - login popup having issue in maintenance mode
     => 040647 - admin> seo> image attributes> tags added are not removing 
     => 040907 - Payment is not getting added to wallet
+	=> 043056 - If admin make some changes in email footer then those changes are not reflecting in emails 
+	=> 042763 - Tax category >> view rates >> currency symbol is missing.
+	=> 036806 - Same label is calling for expiry date in stripe checkout
 
 Enhancements:
     => Tax module upgrade

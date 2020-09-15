@@ -48,14 +48,14 @@
                                 <ul>
                                     <li>
                                         <div class="stats">
-                                            <p><span class="lable"><?php echo Labels::getLabel('LBL_Tax_Rate', $siteLangId); ?>:
+                                            <p><span class="lable"><?php echo Labels::getLabel('LBL_Tax_Rate(%)', $siteLangId); ?>:
                                                 </span><?php echo $rule['taxrule_rate'];?></p>
                                         </div>
                                     </li>
                                     <?php if (!empty($combinedData) && $rule['taxstr_is_combined'] > 0) { ?>
                                     <li>
                                         <div class="stats">
-                                           <h6 class="title-sub"> <?php echo Labels::getLabel('LBL_Combined_Taxes', $siteLangId); ?></h6>
+                                           <h6 class="title-sub"> <?php echo Labels::getLabel('LBL_Combined_Taxes(%)', $siteLangId); ?></h6>
                                         </div>
                                     </li>
                                     <?php foreach ($combinedData as $comData) { ?>
