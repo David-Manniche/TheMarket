@@ -41,6 +41,7 @@ Bugs:
     => 038252 - remove blog short description from admin as it's not listing anywhere
     => 039092 - seller> sales report> same sheet is exporting in normal and date wise
     => 039645 - when admin set some FAQ category as default then on front end active class is not there on that category while questions of that category are listing there
+    => 040000 - seller> google feeds> categories don't have scroll bar
 
 Enhancements:
     => Tax module upgrade
