@@ -36,7 +36,8 @@ Bugs:
     => 039093 - login popup having issue in maintenance mode
     => 040647 - admin> seo> image attributes> tags added are not removing 
     => 040907 - Payment is not getting added to wallet
-    => 043043 - Root category should be clickable .
+    => 043043 - Root category should be clickable.
+    => 038238 - DEMO> on product detail page> on closing time bar and scrolling there is issue
 
 Enhancements:
     => Tax module upgrade
