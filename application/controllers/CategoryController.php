@@ -269,7 +269,7 @@ class CategoryController extends MyAppController
                         $category_structure = array_reverse($category_structure);
                         foreach ($category_structure as $catKey => $catVal) {
                             if ($cntInc < count($category_structure)) {
-                                $nodes[] = array('title' => $catVal["prodcat_name"], 'href' => Commonhelper::generateUrl('category', 'view', array($catVal['prodcat_id'])));
+                                $nodes[] = array('title' => $catVal["prodcat_name"], 'href' => Urlhelper::generateUrl('category', 'view', array($catVal['prodcat_id'])));
                             } else {
                                 $nodes[] = array('title' => $catVal["prodcat_name"]);
                             }

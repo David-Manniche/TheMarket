@@ -709,15 +709,9 @@ class ProductSearch extends SearchBase
         }
 
         $keywordLength = mb_strlen($keyword);
-        //$keyword = urldecode($keyword);
+        /* $cnd = $obj->addCondition('mysql_func_concat(product_isbn, " ", product_upc)', 'LIKE', '%' . $keyword . '%', 'AND', true); */
         $cnd = $obj->addCondition('product_isbn', 'LIKE', '%' . $keyword . '%');
         $cnd->attachCondition('product_upc', 'LIKE', '%' . $keyword . '%');
-        /*$cnd->attachCondition('selprod_title', 'LIKE', '%' . $keyword . '%');
-        $cnd->attachCondition('product_name', 'LIKE', '%' . $keyword . '%');
-        $cnd->attachCondition('brand_name', 'LIKE', '%' . $keyword . '%');
-        $cnd->attachCondition('prodcat_name', 'LIKE', '%' . $keyword . '%');
-        $cnd->attachCondition('product_short_description', 'LIKE', '%' . $keyword . '%');*/
-        /*$cnd->attachCondition('product_description', 'LIKE', '%' . $keyword . '%');*/
 
         $arr = explode(' ', $keyword);
         $arr_keywords = array();
@@ -732,6 +726,8 @@ class ProductSearch extends SearchBase
         if (count($arr_keywords) > 0) {
             if ($keywordLength <= 80) {
                 foreach ($arr_keywords as $value) {
+                    /* $cnd->attachCondition('mysql_func_concat(product_tags_string, " ", product_name, " ", brand_name, " ", prodcat_name)', 'LIKE', '%' . $value . '%', 'OR', true);
+                    $cnd->attachCondition('selprod_title', 'LIKE', '%' . $value . '%'); */
                     $cnd->attachCondition('product_tags_string', 'LIKE', '%' . $value . '%');
                     $cnd->attachCondition('selprod_title', 'LIKE', '%' . $value . '%');
                     $cnd->attachCondition('product_name', 'LIKE', '%' . $value . '%');

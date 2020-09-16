@@ -208,8 +208,8 @@ class SellerProductsController extends AdminBaseController
         $languages = Language::getAllNames();
         foreach ($languages as $langId => $langName) {
             $langData = SellerProduct::getAttributesByLangId($langId, $selprod_id);
-            $sellerProductRow['selprod_title' . $langId] = $langData['selprod_title'];
-            $sellerProductRow['selprod_comments' . $langId] = $langData['selprod_comments'];
+            $sellerProductRow['selprod_title' . $langId] = isset($langData['selprod_title']) ? $langData['selprod_title'] : '';
+            $sellerProductRow['selprod_comments' . $langId] = isset($langData['selprod_comments']) ? $langData['selprod_comments'] : '';
         }
         $frmSellerProduct->fill($sellerProductRow);
 

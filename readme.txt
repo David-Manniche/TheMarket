@@ -29,6 +29,7 @@ Bugs:
     => 042954 - "Add zone" should be the tool tip for "add " button
     => 042521 - Shipping profile >> add zone >> add zone name field should not accept only spaces
     => 042989 - Accept cookies functionality enhancement
+    => 043085- If special character present in category page url and then on other page by using pagination - records not found.
     => 042991 - Edit status functionalities are different on "category request " and "brand request " listing page at admin end.
     => 042986 - Seller >> request >> when user on that request listing page and he create another request then new request should reflect before we refresh the page.
     => 042985 - Seller >> brand request listing >> Language data gets display instead of identifier name.
@@ -57,13 +58,15 @@ Bugs:
     => 041966 - seller> dashboard> there are errors
     => 041967 - seller > manage shop> error is there
     => 041969 - error while product setup
----------------------------------------------------------------TV-9.2.1.20200916------------------------------------------------------------------------
+    ----------TV-9.2.1.20200916----------------
+    => 042441 - php 7.4 Compatiblility issues.
     => 042450 - Seller >> shop details >> when we select india then states are not getting display in drop down even if there are states in cms section.
     => 042508 - When we signup as buyer then "invalid request parameters" gets display in error message
     => 042573 - On Checkout >> when we click on "available balance" checkbox in order to pay using wallet then request takes forever to process.
     => 042644 - Admin >> manage seller orders >> Some errors are there in search section.
     => 042645 - Admin >> Custom products >> there are some errors on add and edit .
     => 042646 - Admin >> options >> Add >> There is some error
+    => 041432 - Social media icons in footer 
 
 Enhancements:
     => Tax module upgrade

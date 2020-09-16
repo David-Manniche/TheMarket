@@ -1660,7 +1660,7 @@ class ProductsController extends MyAppController
             if ($pageSize) {
                 $srch->setPageSize($pageSize);
             }
-            // echo $srch->getQuery();exit;
+            //echo $srch->getQuery();exit;
             $rs = $srch->getResultSet();
             $db = FatApp::getDb();
             $products = $db->fetchAll($rs);
