@@ -5,7 +5,10 @@
 	$frm->developerTags['fld_default_col'] = 12;
 	$frm->setFormTagAttribute('onSubmit', 'setUpSendMessage(this); return false;');
 	$fromFld = $frm->getField('send_message_from');
-	$toFld = $frm->getField('send_message_to');
+    $toFld = $frm->getField('send_message_to');
+    
+	$btnFld = $frm->getField('btn_submit');
+	$btnFld->addFieldTagAttribute('class', 'btn btn-primary btn-wide');
 
 	$fromFldHtml = new HtmlElement( 'div', array( 'class'=>'field-set' ));
 	$fromFldCaptionWrapper = $fromFldHtml->appendElement('div', array('class' => 'caption-wraper'));

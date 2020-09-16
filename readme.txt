@@ -72,6 +72,7 @@ Bugs:
     => 043102 - after adding money to wallet using stripe there is no transaction id in transaction list
     => 043110 - admin> shipping mgmt> order level> on searching product there is no scroll
     => 043113 - when seller tries to add shipping for admin catalog then there is error
+    => 042445 - On Shipping profile and some other pages >> back button should be proper.
 
 Enhancements:
     => Tax module upgrade
