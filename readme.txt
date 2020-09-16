@@ -63,7 +63,7 @@ Bugs:
     => 041432 - Social media icons in footer 
     => 042737 - when buyer places order then on order detail page> country name is not listing on buyer and seller end
     => 042736 - after placing order> on success screen> country code is listing instead of country name
-
+    => 042647 - On cart >> if we click on save for later " on last product in cart then instead of showing empty cart user should be able to see save for later section.
 
 Enhancements:
     => Tax module upgrade

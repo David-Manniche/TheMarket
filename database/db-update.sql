@@ -732,6 +732,9 @@ CREATE TABLE `tbl_tax_structure_lang` (
 
 ALTER TABLE `tbl_tax_structure_lang`
   ADD PRIMARY KEY (`taxstrlang_taxstr_id`,`taxstrlang_lang_id`);
+
+ DROP TABLE `tbl_tax_structure_options`;
+ DROP TABLE `tbl_tax_structure_options_lang`;
   
 DELETE FROM `tbl_language_labels` WHERE `label_key` LIKE 'LBL_Sales_Tax';
 
