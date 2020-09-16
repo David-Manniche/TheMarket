@@ -17,7 +17,7 @@
                 <div class="col-xl-3 col-lg-6 col-sm-6 column">
                     <div class="top-categories">
                         <?php $fileRow = CommonHelper::getImageAttributes(AttachedFile::FILETYPE_CATEGORY_BANNER, $category['prodcat_id']);?>
-                        <div class="cat-img"><img data-ratio="4:1"
+                        <div class="cat-img"><img loading='lazy' data-ratio="4:1"
                                 src="<?php echo UrlHelper::getCachedUrl(UrlHelper::generateFileUrl('Category', 'banner', array($category['prodcat_id'] , $siteLangId, 'MEDIUM', applicationConstants::SCREEN_DESKTOP)), CONF_IMG_CACHE_TIME, '.jpg'); ?>"
                                 alt="<?php echo (!empty($fileRow['afile_attribute_alt'])) ? $fileRow['afile_attribute_alt'] : $category['prodcat_name']; ?>"
                                 title="<?php echo (!empty($fileRow['afile_attribute_title'])) ? $fileRow['afile_attribute_title'] : $category['prodcat_name']; ?>">
