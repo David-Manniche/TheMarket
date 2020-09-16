@@ -619,7 +619,7 @@ function loadGeoLocation() {
     }
 
     if (typeof navigator.geolocation == 'undefined') {
-        console.log(langLbl.geoLocationNotSupported);
+        $.mbsmessage(langLbl.geoLocationNotSupported, true, 'alert--danger');
         return false;
     }
 
@@ -627,6 +627,10 @@ function loadGeoLocation() {
         var lat = position.coords.latitude;
         var lng = position.coords.longitude;
         getGeoAddress(lat, lng);
+    }, function (error) {
+        if (1 == error.code) {
+            $.mbsmessage(error.message, true, 'alert--danger');
+        }
     });
 }
 

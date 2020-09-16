@@ -1,5 +1,5 @@
 <?php 
-if (isset($defaultContent) && $defaultContent == true){
+if (!isset($defaultContent) || $defaultContent === false){
     echo FatApp::getConfig('CONF_EMAIL_TEMPLATE_FOOTER_HTML' . $langId, FatUtility::VAR_STRING, '');
 } else {
     /* Html content used to reset footer content*/

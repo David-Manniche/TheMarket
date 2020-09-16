@@ -1,7 +1,7 @@
 <?php
 
-require_once CONF_INSTALLATION_PATH . 'library/Twilio/vendor/autoload.php';
 use Twilio\Rest\Client;
+use Twilio\Exceptions\RestException;
 
 class TwilioSms extends SmsNotificationBase
 {
@@ -49,6 +49,11 @@ class TwilioSms extends SmsNotificationBase
                     "statusCallback" => UrlHelper::generateFullUrl('SmsNotification', 'callback', [static::KEY_NAME], '', false)
                 ]
             );
+        } catch ( RestException $e ) {
+            return [
+                'status' => false,
+                'msg' => $e->getMessage()
+            ];
         } catch (Exception $e) {
             return [
                 'status' => false,

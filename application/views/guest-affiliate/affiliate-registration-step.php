@@ -6,7 +6,7 @@ $registerForm->developerTags['fld_default_col'] = 12;
 
 if( !$affiliate_register_step_number ){
 	$btnSubmitFld = $registerForm->getField('btn_submit');
-	$btnSubmitFld->addFieldTagAttribute( 'class', 'btn-block');
+	$btnSubmitFld->addFieldTagAttribute( 'class', 'btn btn-primary');
 	$btnSubmitFld->developerTags['noCaptionTag'] = true;
 }
 
@@ -15,25 +15,32 @@ switch( $affiliate_register_step_number ){
 		$registerForm->developerTags['colClassPrefix'] = 'col-lg-6 col-md-6 col-sm-';
 		$registerForm->developerTags['fld_default_col'] = 6;
 		
-		$termsFld = $registerForm->getField('agree_fld_html_div');
-		$termsFld->setWrapperAttribute('class','col-lg-12 col-md-12 col-sm-');
-		$termsFld->developerTags['col'] = 12;
+        $termsFld = $registerForm->getField('agree_fld_html_div');
+        if (null != $termsFld) {
+            $termsFld->setWrapperAttribute('class','col-lg-12 col-md-12 col-sm-');
+            $termsFld->developerTags['col'] = 12;
+        }
 		
 		/* script to make terms&condition checkbox wrap in a particular html, so that upon validation, error must display after caption not after checkbox itself[ */
 		$termsAndConditionsLink = sprintf(Labels::getLabel('LBL_I_agree_to_the_terms_conditions',$siteLangId),"<a target='_blank' href='$termsAndConditionsLinkHref'>".Labels::getLabel('LBL_Terms_Conditions',$siteLangId).'</a>');
 		
-		$termsFld = $registerForm->getFieldHtml('agree');
+        $termsFld = $registerForm->getFieldHtml('agree');
+        
 		$termsFld = str_replace("<label >","",$termsFld);
 		$termsFld = str_replace("</label>","",$termsFld);
-		
-		$registerForm->removeField( $registerForm->getField('agree') );
+        
+        if (null != $registerForm->getField('agree')) {
+            $registerForm->removeField( $registerForm->getField('agree') );
+        }
 		
 		$termsFldHtml = '<div class="field-set"><div class="field-wraper"><div class="field_cover"><label><span class="checkbox">'.$termsFld;
 		
 		$termsFldHtml .= '<i class="input-helper"></i>' . $termsAndConditionsLink . '</span></label></div></div></div>';
 		
-		$agree_fld_html_div = $registerForm->getField('agree_fld_html_div');
-		$agree_fld_html_div->value = $termsFldHtml;
+        $agree_fld_html_div = $registerForm->getField('agree_fld_html_div');
+        if (null != $agree_fld_html_div) {
+            $agree_fld_html_div->value = $termsFldHtml;
+        }
 		
 		/* ] */
 		
@@ -164,6 +171,9 @@ switch( $affiliate_register_step_number ){
 	</ul>
 </div>
 <?php
-	$btnSubmitFld = $registerForm->getField('btn_submit');
-	$btnSubmitFld->developerTags['noCaptionTag'] = true;
+    $btnSubmitFld = $registerForm->getField('btn_submit');
+    if (null != $btnSubmitFld) {
+        $btnSubmitFld->developerTags['noCaptionTag'] = true;
+        $btnSubmitFld->addFieldTagAttribute( 'class', 'btn btn-primary');
+    }
 	echo $registerForm->getFormHtml(); ?>

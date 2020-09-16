@@ -2,7 +2,9 @@
 
 class GoogleShoppingFeed extends AdvertisementFeedBase
 {
-    public const KEY_NAME = 'GoogleShoppingFeed';
+    public const KEY_NAME = __CLASS__;
+    public const PAGE_SIZE = 10;
+
     private $merchantId;
 
     public $requiredKeys = [
@@ -117,33 +119,29 @@ class GoogleShoppingFeed extends AdvertisementFeedBase
      * @param  bool $returnFullArray
      * @return array
      */
-    public function getProductCategory(string $keyword = '1', bool $returnFullArray = false): array
+    public function getProductCategory(string $keyword = '', bool $returnFullArray = false): array
     {
         $arr = [];
         if ($fh = fopen(__DIR__ . '/googleProductCategory.txt', 'r')) {
             $rowIndex = 1;
             while (!feof($fh)) {
-                if (empty($keyword) && false === $returnFullArray) {
-                    if ($rowIndex == applicationConstants::PAGE_SIZE) {
-                        break;
-                    }
-                }
                 $line = fgets($fh);
-                $lineContentArr = explode('-', $line, 2);
-                if (!empty($lineContentArr) && 1 < count($lineContentArr)) {
-                    $arr[trim($lineContentArr[0])] = trim($lineContentArr[1]);
+                if ($returnFullArray || false != stripos($line, $keyword)) {
+                    $lineContentArr = explode('-', $line, 2);
+                    if (!empty($lineContentArr) && 1 < count($lineContentArr)) {
+                        $arr[trim($lineContentArr[0])] = trim($lineContentArr[1]);
+                    }
+                    $rowIndex++;
                 }
-                $rowIndex++;
+
+                if (false === $returnFullArray && $rowIndex == self::PAGE_SIZE) {
+                    break;
+                }
             }
             fclose($fh);
         }
         ksort($arr);
-        
-        if (true === $returnFullArray) {
-            return $arr;
-        }
-
-        return empty($keyword) ? $arr : preg_grep("/" . preg_quote($keyword) . "/i", $arr);
+        return $arr;
     }
     
     /**

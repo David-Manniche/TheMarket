@@ -36,7 +36,7 @@ if(count($headerNavigation)) {
             <ul class="navigations <?php echo ($navLinkCount > 4) ? 'justify-content-between' : '' ; ?>">
                 <?php if(count($headerCategories)) { ?>
                     <li class="navchild categories ">
-                        <a href="javascript:void()">
+                        <a href="javascript:void(0)">
                             <?php echo Labels::getLabel('LBL_Categories', $siteLangId);?> <i class="c-hamburger js-hamburger"> <span
                                     class="c-hamburger__line c-hamburger__line--top"></span>
                                 <span class="c-hamburger__line c-hamburger__line--middle"></span>
@@ -57,7 +57,7 @@ if(count($headerNavigation)) {
                                 $navchild = '';
                                 $class = '';
                                 if (0 < count($link['children'])) {
-                                    $href = 'javascript:void(0)';
+                                    // $href = 'javascript:void(0)';
                                     $navchild = 'navchild';
                                     $class = 'has-child';
                                 } ?> 

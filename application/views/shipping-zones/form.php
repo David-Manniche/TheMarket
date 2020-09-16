@@ -85,9 +85,11 @@ if (!empty($excludeLocations)) {
                                                         </div>
                                                     </div>
                                                 </div>
-                                                <div class="col-auto">
-                                                    <a class="btn btn-sm" data-toggle="collapse" href="#countries_list_<?php echo $zone['zone_id']; ?>" role="button" aria-expanded="false" aria-controls="countries_list_<?php echo $zone['zone_id']; ?>"><span class="fa fa-angle-down" aria-hidden="true"></span> </a>
-                                                </div>
+                                                <?php if (!empty($countries)) { ?>
+                                                    <div class="col-auto">
+                                                        <a class="btn btn-sm" data-toggle="collapse" href="#countries_list_<?php echo $zone['zone_id']; ?>" role="button" aria-expanded="false" aria-controls="countries_list_<?php echo $zone['zone_id']; ?>"><span class="fa fa-angle-down" aria-hidden="true"></span> </a>
+                                                    </div>
+                                                <?php } ?>
                                             </div>
                                             <?php if (!empty($countries)) { ?>
                                                 <ul class="child-checkbox-ul zone_<?php echo $zone['zone_id']; ?>">

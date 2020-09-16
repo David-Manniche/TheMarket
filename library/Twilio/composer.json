@@ -1,6 +1,0 @@
-{
-    "require": {
-        "nexmo/client": "^2.0",
-        "twilio/sdk": "5.*"
-    }
-}

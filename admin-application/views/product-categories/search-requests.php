@@ -54,12 +54,7 @@ foreach ($arr_listing as $sn => $row) {
                 break;
             case 'action':
                 if ($canEdit) {
-                    $statucAct = ($canEdit === true) ? 'toggleStatus(this)' : '';
-                    $str='<label class="statustab -txt-uppercase" title="'.Labels::getLabel('LBL_Approve_Request', $adminLangId).'">
-                          <input type="checkbox" id="switch'.$row['prodcat_id'].'" value="'.$row['prodcat_id'].'" onclick="'.$statucAct.'" class="switch-labels"/>
-                          <i class="switch-handles"></i>
-                        </label>';
-                    $td->appendElement('plaintext', array(), $str, true);
+                    $td->appendElement('a', array('href'=>'javascript:void(0)', 'class'=>'btn btn-clean btn-sm btn-icon', 'title'=>Labels::getLabel('LBL_Edit', $adminLangId),"onclick"=>"editProdCatRequestForm(".$row['prodcat_id'].")"), "<i class='far fa-edit icon'></i>", true);
                 }
             break;
             default:

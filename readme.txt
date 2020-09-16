@@ -30,6 +30,29 @@ Bugs:
     => 042521 - Shipping profile >> add zone >> add zone name field should not accept only spaces
     => 042989 - Accept cookies functionality enhancement
     => 043085- If special character present in category page url and then on other page by using pagination - records not found.
+    => 042991 - Edit status functionalities are different on "category request " and "brand request " listing page at admin end.
+    => 042986 - Seller >> request >> when user on that request listing page and he create another request then new request should reflect before we refresh the page.
+    => 042985 - Seller >> brand request listing >> Language data gets display instead of identifier name.
+    => 042765 - Admin dashboard >> top product >> height of "no record found " section should be same as others.
+    => 039093 - login popup having issue in maintenance mode
+    => 040647 - admin> seo> image attributes> tags added are not removing 
+    => 040907 - Payment is not getting added to wallet
+	=> 043056 - If admin make some changes in email footer then those changes are not reflecting in emails 
+	=> 042763 - Tax category >> view rates >> currency symbol is missing.
+	=> 036806 - Same label is calling for expiry date in stripe checkout.
+	=> 036867 - Place an COD order >> when admin try to complete that order then some json error gets display and it gets completed when we try second time.
+	=> 040000 - seller> google feeds> categories don't have scroll bar.
+	=> 041950 - user account (post sign up)> my profile> getting warning
+    => 043043 - Root category should be clickable.
+    => 038238 - DEMO> on product detail page> on closing time bar and scrolling there is issue
+    => 038252 - remove blog short description from admin as it's not listing anywhere
+    => 039092 - seller> sales report> same sheet is exporting in normal and date wise
+    => 039645 - when admin set some FAQ category as default then on front end active class is not there on that category while questions of that category are listing there
+    => 040000 - seller> google feeds> categories don't have scroll bar
+    => 040060 - seller> catalog list> on searching item with special character> getting error
+    => 041951 - on buyer dashboard> there is some error
+    => 041954 - contact us page is flooded with notice
+
     
 Enhancements:
     => Tax module upgrade

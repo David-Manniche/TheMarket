@@ -193,53 +193,53 @@ if (isset($client_secret)) { ?>
                         </div>
                     </div>
                 </div>
-                <div class="row">
-                    <div class="col-md-6">
-                        <div class="caption-wraper">
-                            <label class="field_label"> <?php echo Labels::getLabel('LBL_ENTER_CREDIT_CARD_NUMBER', $siteLangId); ?> </label>
-                        </div>
-                        <div class="row">
-                            <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
-                                <div class="field-set">
-                                    <div class="field-wraper">
-                                        <div class="field_cover">
-                                            <?php
-                                            $fld = $frm->getField('cc_expire_date_month');
-                                            $fld->addFieldTagAttribute('id', 'cc_expire_date_month');
-                                            $fld->addFieldTagAttribute('class', 'ccExpMonth  combobox required');
-                                            echo $fld->getHtml(); ?>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
-                                <div class="field-set">
-                                    <div class="field-wraper">
-                                        <div class="field_cover">
-                                            <?php
-                                            $fld = $frm->getField('cc_expire_date_year');
-                                            $fld->addFieldTagAttribute('id', 'cc_expire_date_year');
-                                            $fld->addFieldTagAttribute('class', 'ccExpYear combobox required');
-                                            echo $fld->getHtml(); ?>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="field-set">
-                            <div class="caption-wraper">
-                                <label class="field_label"><?php echo Labels::getLabel('LBL_CVV_SECURITY_CODE', $siteLangId); ?></label>
-                            </div>
-                            <div class="field-wraper">
-                                <div class="field_cover">
+				<div class="row">
+					<div class="col-md-4">
+						<div class="field-set">
+							<div class="caption-wraper">
+								<label class="field_label"><?php echo Labels::getLabel('LBL_Expiry_Month', $siteLangId); ?></label>
+							</div>
+							<div class="field-wraper">
+								<div class="field_cover">
+									<?php
+									$fld = $frm->getField('cc_expire_date_month');
+									$fld->addFieldTagAttribute('id', 'cc_expire_date_month');
+									$fld->addFieldTagAttribute('class', 'ccExpMonth  combobox required');
+									echo $fld->getHtml(); ?>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="col-md-4">
+						<div class="field-set">
+							<div class="caption-wraper">
+								<label class="field_label"><?php echo Labels::getLabel('LBL_Expiry_year', $siteLangId); ?></label>
+							</div>
+							<div class="field-wraper">
+								<div class="field_cover">
+									<?php
+									$fld = $frm->getField('cc_expire_date_year');
+									$fld->addFieldTagAttribute('id', 'cc_expire_date_year');
+									$fld->addFieldTagAttribute('class', 'ccExpYear combobox required');
+									echo $fld->getHtml(); ?>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="col-md-4">
+						<div class="field-set">
+							<div class="caption-wraper">
+								<label class="field_label"><?php echo Labels::getLabel('LBL_CVV_SECURITY_CODE', $siteLangId); ?></label>
+							</div>
+							<div class="field-wraper">
+								<div class="field_cover">
                                     <?php echo $frm->getFieldHtml('cc_cvv'); ?>
                                 </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+							</div>
+						</div>
+					</div>
+				</div>
+				
                 <?php /* 
                     <div class="row">
                         <div class="col-md-12">

@@ -9,6 +9,11 @@
     $(document).on("click", "#demoBoxClose", function(e) {
         $('.demo-header').hide();
         $('html').removeClass('sticky-demo-header');
+		
+		if (0 < $(".nav-detail-js").length) {
+			var headerHeight = $("#header").height();
+			$(".nav-detail-js").css('top', headerHeight);
+		}
     });
     <?php
         $dateTime = date('Y-m-d H:i:s', strtotime(date('Y-m-d H:i:s') . ' +4 hours'));
