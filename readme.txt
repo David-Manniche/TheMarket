@@ -29,6 +29,7 @@ Bugs:
     => 042954 - "Add zone" should be the tool tip for "add " button
     => 042521 - Shipping profile >> add zone >> add zone name field should not accept only spaces
     => 042989 - Accept cookies functionality enhancement
+    => 043085- If special character present in category page url and then on other page by using pagination - records not found.
     
 Enhancements:
     => Tax module upgrade
