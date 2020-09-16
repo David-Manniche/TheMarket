@@ -898,7 +898,8 @@ class CustomProductsController extends AdminBaseController
                     $selProdLangData = array(
                     'selprodlang_selprod_id' => $selprod_id,
                     'selprodlang_lang_id' => $lang_id,
-                    'selprod_title' => isset($reqLangData['selprod_title']) ? $reqLangData['selprod_title'] : isset($reqLangData['product_name']) ? $reqLangData['product_name'] : '', 'selprod_comments' => isset($reqLangData['selprod_comments']) ? $reqLangData['selprod_comments'] : '',
+                    'selprod_title' => isset($reqLangData['selprod_title']) ? $reqLangData['selprod_title'] : (isset($reqLangData['product_name']) ? $reqLangData['product_name'] : ''), 
+                    'selprod_comments' => isset($reqLangData['selprod_comments']) ? $reqLangData['selprod_comments'] : '',
                     );
 
                     if (!$sellerProdObj->updateLangData($lang_id, $selProdLangData)) {
