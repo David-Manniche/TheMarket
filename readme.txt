@@ -59,6 +59,8 @@ Bugs:
     => 041967 - seller > manage shop> error is there
     => 041969 - error while product setup
     
+    => 042441 - php 7.4 Compatiblility issues.
+    
 Enhancements:
     => Tax module upgrade
     => Test cases classes enhancements.
