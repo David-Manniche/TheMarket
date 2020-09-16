@@ -235,7 +235,6 @@ class BlogPostsController extends AdminBaseController
         'postlang_post_id' => $post_id,
         'post_title' => $post['post_title'],
         'post_author_name' => $post['post_author_name'],
-        'post_short_description' => $post['post_short_description'],
         'post_description' => $post['post_description'],
         );
 
@@ -542,7 +541,7 @@ class BlogPostsController extends AdminBaseController
         $frm->addSelectBox(Labels::getLabel('LBL_LANGUAGE', $this->adminLangId), 'lang_id', Language::getAllNames(), $lang_id, array(), '');
         $frm->addRequiredField(Labels::getLabel('LBL_Title', $this->adminLangId), 'post_title');
         $frm->addRequiredField(Labels::getLabel('LBL_Post_Author_Name', $this->adminLangId), 'post_author_name');
-        $fld = $frm->addTextarea(Labels::getLabel('LBL_Short_Description', $this->adminLangId), 'post_short_description');
+        /* $fld = $frm->addTextarea(Labels::getLabel('LBL_Short_Description', $this->adminLangId), 'post_short_description'); */
         $fld->requirements()->setRequired(true);
         $fld->htmlAfterField = '<small>' . Labels::getLabel("LBL_only_250_characters_will_be_shown_on_frontend", $this->adminLangId) . '</small>';
         $frm->addHtmlEditor(Labels::getLabel('LBL_Description', $this->adminLangId), 'post_description')->requirements()->setRequired(true);

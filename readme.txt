@@ -42,7 +42,11 @@ Bugs:
 	=> 036867 - Place an COD order >> when admin try to complete that order then some json error gets display and it gets completed when we try second time.
 	=> 040000 - seller> google feeds> categories don't have scroll bar.
 	=> 041950 - user account (post sign up)> my profile> getting warning
-
+    => 043043 - Root category should be clickable.
+    => 038238 - DEMO> on product detail page> on closing time bar and scrolling there is issue
+    => 038252 - remove blog short description from admin as it's not listing anywhere
+    => 039092 - seller> sales report> same sheet is exporting in normal and date wise
+    
 Enhancements:
     => Tax module upgrade
     => Test cases classes enhancements.

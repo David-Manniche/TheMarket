@@ -803,7 +803,6 @@ class HomeController extends MyAppController
                         'post_updated_on',
                         'post_updated_on',
                         'group_concat(IFNULL(bpcategory_name, bpcategory_identifier) SEPARATOR "~") categoryNames',
-                        'post_short_description',
                         'post_description'
                     ];
                     $blogSearchObj = BlogPost::getSearchObject($langId, true, true);

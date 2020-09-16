@@ -258,7 +258,7 @@ $buyQuantity->addFieldTagAttribute('data-page', 'product-view');
                                                 <?php $count++;
                                         } ?>
                                                 <?php if (count($productSpecifications)>5) { ?>
-                                                <li class="link_li"><a href="javascript:void()"><?php echo Labels::getLabel('LBL_View_All_Details', $siteLangId); ?></a></li>
+                                                <li class="link_li"><a href="javascript::void(0)"><?php echo Labels::getLabel('LBL_View_All_Details', $siteLangId); ?></a></li>
                                                 <?php } ?>
                                             </ul>
                                         </div>
