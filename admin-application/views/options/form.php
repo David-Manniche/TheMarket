@@ -1,7 +1,4 @@
-<?php defined('SYSTEM_INIT') or die('Invalid Usage.');
-$frm->developerTags['colClassPrefix'] = 'col-md-';
-$frm->developerTags['fld_default_col'] = 6;
-?>
+<?php defined('SYSTEM_INIT') or die('Invalid Usage.'); ?>
 <section class="section">
     <div class="sectionhead">
         <h4><?php echo Labels::getLabel('LBL_Option_Setup', $adminLangId); ?></h4>

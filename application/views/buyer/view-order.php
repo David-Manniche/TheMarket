@@ -5,11 +5,11 @@ $canReviewOrders = false;
 $canSubmitFeedback = false;
 if (true == $primaryOrder) {
     if ($childOrderDetail['op_product_type'] == Product::PRODUCT_TYPE_DIGITAL) {
-        $canCancelOrder = (in_array($childOrderDetail["op_status_id"], (array)Orders::getBuyerAllowedOrderCancellationStatuses(true)));
-        $canReturnRefund = (in_array($childOrderDetail["op_status_id"], (array)Orders::getBuyerAllowedOrderReturnStatuses(true)));
+        $canCancelOrder = (in_array($childOrderDetail["op_status_id"], (array) Orders::getBuyerAllowedOrderCancellationStatuses(true)));
+        $canReturnRefund = (in_array($childOrderDetail["op_status_id"], (array) Orders::getBuyerAllowedOrderReturnStatuses(true)));
     } else {
-        $canCancelOrder = (in_array($childOrderDetail["op_status_id"], (array)Orders::getBuyerAllowedOrderCancellationStatuses()));
-        $canReturnRefund = (in_array($childOrderDetail["op_status_id"], (array)Orders::getBuyerAllowedOrderReturnStatuses()));
+        $canCancelOrder = (in_array($childOrderDetail["op_status_id"], (array) Orders::getBuyerAllowedOrderCancellationStatuses()));
+        $canReturnRefund = (in_array($childOrderDetail["op_status_id"], (array) Orders::getBuyerAllowedOrderReturnStatuses()));
     }
 
     if (in_array($childOrderDetail["op_status_id"], SelProdReview::getBuyerAllowedOrderReviewStatuses())) {
@@ -42,10 +42,7 @@ if (!$print) { ?>
                                 <ul class="actions no-print">
                                     <?php if ($canCancelOrder) { ?>
                                         <li>
-                                            <a 
-                                                href="<?php echo UrlHelper::generateUrl('Buyer', 'orderCancellationRequest', array($childOrderDetail['op_id'])); ?>" 
-                                                class="icn-highlighted" 
-                                                title="<?php echo Labels::getLabel('LBL_Cancel_Order', $siteLangId); ?>">
+                                            <a href="<?php echo UrlHelper::generateUrl('Buyer', 'orderCancellationRequest', array($childOrderDetail['op_id'])); ?>" class="icn-highlighted" title="<?php echo Labels::getLabel('LBL_Cancel_Order', $siteLangId); ?>">
                                                 <i class="fas fa-times"></i>
                                             </a>
                                         </li>
@@ -53,10 +50,7 @@ if (!$print) { ?>
                                     if (FatApp::getConfig("CONF_ALLOW_REVIEWS", FatUtility::VAR_INT, 0) && $canReviewOrders && $canSubmitFeedback) {
                                     ?>
                                         <li>
-                                            <a 
-                                                href="<?php echo UrlHelper::generateUrl('Buyer', 'orderFeedback', array($childOrderDetail['op_id'])); ?>" 
-                                                class="icn-highlighted" 
-                                                title="<?php echo Labels::getLabel('LBL_Feedback', $siteLangId); ?>">
+                                            <a href="<?php echo UrlHelper::generateUrl('Buyer', 'orderFeedback', array($childOrderDetail['op_id'])); ?>" class="icn-highlighted" title="<?php echo Labels::getLabel('LBL_Feedback', $siteLangId); ?>">
                                                 <i class="fa fa-star"></i>
                                             </a>
                                         </li>
@@ -64,10 +58,7 @@ if (!$print) { ?>
                                     }
                                     if ($canReturnRefund) { ?>
                                         <li>
-                                            <a 
-                                                href="<?php echo UrlHelper::generateUrl('Buyer', 'orderReturnRequest', array($childOrderDetail['op_id'])); ?>" 
-                                                class="icn-highlighted" 
-                                                title="<?php echo Labels::getLabel('LBL_Refund', $siteLangId); ?>">
+                                            <a href="<?php echo UrlHelper::generateUrl('Buyer', 'orderReturnRequest', array($childOrderDetail['op_id'])); ?>" class="icn-highlighted" title="<?php echo Labels::getLabel('LBL_Refund', $siteLangId); ?>">
                                                 <i class="fas fa-dollar-sign"></i>
                                             </a>
                                         </li>
@@ -99,10 +90,7 @@ if (!$print) { ?>
                                     <i class="fas fa-print"></i>
                                 </a>
                                 <?php if (0 < $opId && !$orderDetail['order_deleted'] && !$orderDetail["order_payment_status"] && 'TransferBank' == $orderDetail['plugin_code']) { ?>
-                                    <a 
-                                        href="<?php echo UrlHelper::generateUrl('Buyer', 'viewOrder', [$orderDetail['order_id']]); ?>" 
-                                        class="btn btn-outline-primary btn-sm no-print" 
-                                        title="<?php echo Labels::getLabel('LBL_ADD_PAYMENT_DETAIL', $siteLangId); ?>">
+                                    <a href="<?php echo UrlHelper::generateUrl('Buyer', 'viewOrder', [$orderDetail['order_id']]); ?>" class="btn btn-outline-primary btn-sm no-print" title="<?php echo Labels::getLabel('LBL_ADD_PAYMENT_DETAIL', $siteLangId); ?>">
                                         <i class="fas fa-box-open"></i>
                                     </a>
                                 <?php } ?>
@@ -267,7 +255,7 @@ if (!$print) { ?>
                     } ?>
                     <table class="table  table--orders">
                         <thead>
-                      
+
                             <tr class="">
                                 <th>
                                     <?php echo Labels::getLabel('LBL_Order_Particulars', $siteLangId); ?>
@@ -299,8 +287,8 @@ if (!$print) { ?>
                                     <?php echo Labels::getLabel('LBL_Total', $siteLangId); ?>
                                 </th>
                             </tr>
-                            </thead>
-                            <tbody>
+                        </thead>
+                        <tbody>
                             <?php
                             $cartTotal = 0;
                             $shippingCharges = 0;
@@ -333,9 +321,7 @@ if (!$print) { ?>
                                                 } ?>
                                                 <figure class="item__pic">
                                                     <a href="<?php echo $prodOrBatchUrl; ?>">
-                                                        <img src="<?php echo $prodOrBatchImgUrl; ?>" 
-                                                            title="<?php echo $childOrder['op_product_name']; ?>" 
-                                                            alt="<?php echo $childOrder['op_product_name']; ?>">
+                                                        <img src="<?php echo $prodOrBatchImgUrl; ?>" title="<?php echo $childOrder['op_product_name']; ?>" alt="<?php echo $childOrder['op_product_name']; ?>">
                                                     </a>
                                                 </figure>
                                             </div>
@@ -345,9 +331,7 @@ if (!$print) { ?>
                                         <div class="item__description">
                                             <?php if ($childOrder['op_selprod_title'] != '') { ?>
                                                 <div class="item__title">
-                                                    <a 
-                                                        title="<?php echo $childOrder['op_selprod_title']; ?>" 
-                                                        href="<?php echo $prodOrBatchUrl; ?>">
+                                                    <a title="<?php echo $childOrder['op_selprod_title']; ?>" href="<?php echo $prodOrBatchUrl; ?>">
                                                         <?php echo $childOrder['op_selprod_title'] . '<br>'; ?>
                                                     </a>
                                                 </div>
@@ -356,9 +340,7 @@ if (!$print) { ?>
                                                 </div>
                                             <?php } else { ?>
                                                 <div class="item__category">
-                                                    <a 
-                                                        title="<?php echo $childOrder['op_product_name']; ?>" 
-                                                        href="<?php echo UrlHelper::generateUrl('Products', 'view', array($childOrder['op_selprod_id'])); ?>">
+                                                    <a title="<?php echo $childOrder['op_product_name']; ?>" href="<?php echo UrlHelper::generateUrl('Products', 'view', array($childOrder['op_selprod_id'])); ?>">
                                                         <?php echo $childOrder['op_product_name']; ?>
                                                     </a>
                                                 </div>
@@ -667,9 +649,7 @@ if (!$print) { ?>
                                                     $trackingNumber = $row['oshistory_tracking_number'];
                                                     $carrier = $row['oshistory_courier'];
                                                 ?>
-                                                    <a href="javascript:void(0)" 
-                                                    title="<?php echo Labels::getLabel('LBL_TRACK', $siteLangId); ?>" 
-                                                    onClick="trackOrder('<?php echo trim($trackingNumber); ?>', '<?php echo trim($carrier); ?>', '<?php echo $childOrderDetail['op_invoice_number']; ?>')">
+                                                    <a href="javascript:void(0)" title="<?php echo Labels::getLabel('LBL_TRACK', $siteLangId); ?>" onClick="trackOrder('<?php echo trim($trackingNumber); ?>', '<?php echo trim($carrier); ?>', '<?php echo $childOrderDetail['op_invoice_number']; ?>')">
                                                         <?php echo $trackingNumber; ?>
                                                     </a>
                                                     <?php echo Labels::getLabel('LBL_VIA', $siteLangId); ?>
@@ -735,22 +715,22 @@ if (!$print) { ?>
                                                 <?php echo nl2br($row['opayment_comments']); ?>
                                             </td>
                                             <td>
-                                                <?php 
-                                                    $class = '';
-                                                    if (Orders::ORDER_PAYMENT_CANCELLED == $row['opayment_txn_status']) {
-                                                        $class = "label-danger";
-                                                    } elseif (Orders::ORDER_PAYMENT_PENDING == $row['opayment_txn_status']) {
-                                                        $class = "label-info";
-                                                    } elseif (Orders::ORDER_PAYMENT_PAID == $row['opayment_txn_status']) {
-                                                        $class = "label-success";
-                                                    }
+                                                <?php
+                                                $class = '';
+                                                if (Orders::ORDER_PAYMENT_CANCELLED == $row['opayment_txn_status']) {
+                                                    $class = "label-danger";
+                                                } elseif (Orders::ORDER_PAYMENT_PENDING == $row['opayment_txn_status']) {
+                                                    $class = "label-info";
+                                                } elseif (Orders::ORDER_PAYMENT_PAID == $row['opayment_txn_status']) {
+                                                    $class = "label-success";
+                                                }
                                                 ?>
                                                 <span class="label label-inline <?php echo $class; ?>">
-                                                    <?php 
-                                                        $orderStatusArr = Orders::getOrderPaymentStatusArr($siteLangId);
-                                                        echo $orderStatusArr[$row['opayment_txn_status']];
+                                                    <?php
+                                                    $orderStatusArr = Orders::getOrderPaymentStatusArr($siteLangId);
+                                                    echo $orderStatusArr[$row['opayment_txn_status']];
                                                     ?>
-                                                </span>                                                
+                                                </span>
                                             </td>
                                         </tr>
                                     <?php
@@ -896,11 +876,7 @@ if (!$print) { ?>
                                                 <?php echo $sr_no; ?>
                                             </td>
                                             <td>
-                                                <a target="_blank" 
-                                                    onClick="<?php echo $linkOnClick; ?> " 
-                                                    href="<?php echo $linkUrl; ?>" 
-                                                    data-link="<?php echo $linkUrl; ?>" 
-                                                    title="<?php echo $linkTitle; ?>">
+                                                <a target="_blank" onClick="<?php echo $linkOnClick; ?> " href="<?php echo $linkUrl; ?>" data-link="<?php echo $linkUrl; ?>" title="<?php echo $linkTitle; ?>">
                                                     <?php echo $link; ?>
                                                 </a>
                                             </td>
@@ -922,36 +898,36 @@ if (!$print) { ?>
                     <?php } ?>
                     <?php
                     if (!$orderDetail['order_deleted'] && !$primaryOrder && !$orderDetail["order_payment_status"] && 'TransferBank' == $orderDetail['plugin_code']) { ?>
-                            <div class="divider"></div>
-                            <span class="gap"></span>
-                            <div class="section--repeated">
-                                <h5>
-                                    <?php echo Labels::getLabel('LBL_ORDER_PAYMENTS', $siteLangId); ?>
-                                </h5>
-                                <div class="info--order">
-                                    <?php
-                                    $frm->setFormTagAttribute('onsubmit', 'updatePayment(this); return(false);');
-                                    $frm->setFormTagAttribute('class', 'form');
-                                    $frm->developerTags['colClassPrefix'] = 'col-md-';
-                                    $frm->developerTags['fld_default_col'] = 12;
+                        <div class="divider"></div>
+                        <span class="gap"></span>
+                        <div class="section--repeated">
+                            <h5>
+                                <?php echo Labels::getLabel('LBL_ORDER_PAYMENTS', $siteLangId); ?>
+                            </h5>
+                            <div class="info--order">
+                                <?php
+                                $frm->setFormTagAttribute('onsubmit', 'updatePayment(this); return(false);');
+                                $frm->setFormTagAttribute('class', 'form');
+                                $frm->developerTags['colClassPrefix'] = 'col-md-';
+                                $frm->developerTags['fld_default_col'] = 12;
 
 
-                                    $paymentFld = $frm->getField('opayment_method');
-                                    $paymentFld->developerTags['col'] = 4;
+                                $paymentFld = $frm->getField('opayment_method');
+                                $paymentFld->developerTags['col'] = 4;
 
-                                    $gatewayFld = $frm->getField('opayment_gateway_txn_id');
-                                    $gatewayFld->developerTags['col'] = 4;
+                                $gatewayFld = $frm->getField('opayment_gateway_txn_id');
+                                $gatewayFld->developerTags['col'] = 4;
 
-                                    $amountFld = $frm->getField('opayment_amount');
-                                    $amountFld->developerTags['col'] = 4;
+                                $amountFld = $frm->getField('opayment_amount');
+                                $amountFld->developerTags['col'] = 4;
 
-                                    $submitFld = $frm->getField('btn_submit');
-                                    $submitFld->developerTags['col'] = 4;
-                                    $submitFld->addFieldTagAttribute('class', 'btn btn-primary');
-                                    $submitFld->value = Labels::getLabel("LBL_SUBMIT_REQUEST", $siteLangId);
-                                    echo $frm->getFormHtml(); ?>
-                                </div>
+                                $submitFld = $frm->getField('btn_submit');
+                                $submitFld->developerTags['col'] = 4;
+                                $submitFld->addFieldTagAttribute('class', 'btn btn-primary');
+                                $submitFld->value = Labels::getLabel("LBL_SUBMIT_REQUEST", $siteLangId);
+                                echo $frm->getFormHtml(); ?>
                             </div>
+                        </div>
                     <?php } ?>
                 </div>
             </div>

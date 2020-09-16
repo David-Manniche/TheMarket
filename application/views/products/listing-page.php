@@ -141,7 +141,7 @@ if (array_key_exists('brand_id', $postedData) && $postedData['brand_id'] > 0) {
 <div class="gap"></div>
 <script type="text/javascript">
     $(document).ready(function() {
-        $currentPageUrl = '<?php echo $canonicalUrl; ?>';
+        $currentPageUrl = '<?php echo html_entity_decode($canonicalUrl, ENT_QUOTES, 'utf-8'); ?>';
         $productSearchPageType = '<?php echo $productSearchPageType; ?>';
         $recordId = <?php echo $recordId; ?>;
         /* bannerAdds('<?php echo $bannerListigUrl;?>'); */
