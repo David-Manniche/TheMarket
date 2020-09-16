@@ -60,6 +60,7 @@ Bugs:
 ---------------------------------------------------------------TV-9.2.1.20200916------------------------------------------------------------------------
     => 042450 - Seller >> shop details >> when we select india then states are not getting display in drop down even if there are states in cms section.
     => 042508 - When we signup as buyer then "invalid request parameters" gets display in error message
+    => 041432 - Social media icons in footer 
 
 Enhancements:
     => Tax module upgrade
