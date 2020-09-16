@@ -69,6 +69,7 @@ Bugs:
     => 041432 - Social media icons in footer 
     => 043107 - Registration shows an error message but proceeds with the new registration
     => 042732 - seller> on accessing tax categories> tab is not highlighting in side bar
+    => 043102 - after adding money to wallet using stripe there is no transaction id in transaction list
 
 Enhancements:
     => Tax module upgrade
