@@ -54,6 +54,7 @@ Bugs:
     => 041964 - seller sign up form> getting error
     => 041966 - seller> dashboard> there are errors
     => 041967 - seller > manage shop> error is there
+    => 041969 - error while product setup
     
 Enhancements:
     => Tax module upgrade
