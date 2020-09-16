@@ -71,6 +71,7 @@ Bugs:
     => 042736 - after placing order> on success screen> country code is listing instead of country name
     => 042647 - On cart >> if we click on save for later " on last product in cart then instead of showing empty cart user should be able to see save for later section.
     => 043107 - Registration shows an error message but proceeds with the new registration
+    => 042638 - Affiliate dashboard >> Some errors are there.
 
 Enhancements:
     => Tax module upgrade
