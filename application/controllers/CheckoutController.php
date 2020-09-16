@@ -1239,8 +1239,8 @@ class CheckoutController extends MyAppController
                         $op_product_tax_options[$label]['percentageValue'] = $taxStroName['percentageValue'];
                         $op_product_tax_options[$label]['inPercentage'] = $taxStroName['inPercentage'];
 
-                        $langData =  TaxRuleCombined::getAttributesByLangId($lang_id, $taxStroId, array(), 1);
-                        $langLabel = (isset($langData['taxruledet_name']) && $langData['taxruledet_name'] != '') ? $langData['taxruledet_name'] : $label;
+                        $langData =  TaxStructure::getAttributesByLangId($lang_id, $taxStroName['taxstr_id'], array(), 1);
+                        $langLabel = (isset($langData['taxstr_name']) && $langData['taxstr_name'] != '') ? $langData['taxstr_name'] : $label;
 
                         $productTaxChargesData[$taxStroId]['langData'][$lang_id] = array(
                         'opchargeloglang_lang_id' => $lang_id,

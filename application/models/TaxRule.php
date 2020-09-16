@@ -48,7 +48,7 @@ class TaxRule extends MyAppModel
     */
     public function deleteRules(int $taxCatId): bool
     {
-        if(!FatApp::getDb()->query('DELETE rules, ruleDetails, ruleDetailsLang FROM '. self::DB_TBL .' rules LEFT JOIN '. TaxRuleCombined::DB_TBL .' ruleDetails ON ruleDetails.taxruledet_taxrule_id  = rules.taxrule_id LEFT JOIN '. TaxRuleCombined::DB_TBL_LANG . ' ruleDetailsLang ON ruleDetails.taxruledet_id  = ruleDetailsLang.taxruledetlang_taxruledet_id WHERE rules.taxrule_taxcat_id = '. $taxCatId)) {
+        if(!FatApp::getDb()->query('DELETE rules, ruleDetails FROM '. self::DB_TBL .' rules LEFT JOIN '. TaxRuleCombined::DB_TBL .' ruleDetails ON ruleDetails.taxruledet_taxrule_id  = rules.taxrule_id WHERE rules.taxrule_taxcat_id = '. $taxCatId)) {
             $this->error = FatApp::getDb()->getError();
             return false;
         }
@@ -74,7 +74,10 @@ class TaxRule extends MyAppModel
         $fld = $frm->addFloatField(Labels::getLabel('LBL_Tax_Rate(%)', $langId), 'taxrule_rate[]', '');
         $fld->requirements()->setPositive();
 
-        $fld = $frm->addCheckBox(Labels::getLabel('LBL_Combined_Tax', $langId), 'taxrule_is_combined[]', 1);
+        // $fld = $frm->addCheckBox(Labels::getLabel('LBL_Combined_Tax', $langId), 'taxrule_is_combined[]', 1);
+		
+		$taxStructures = TaxStructure::getAllAssoc($langId);
+        $frm->addSelectBox(Labels::getLabel('LBL_Select_Tax', $langId), 'taxrule_taxstr_id[]', $taxStructures, '', array(), Labels::getLabel('LBL_Select_Tax', $langId));
         /* ] */
 
         /* [ TAX CATEGORY RULE LOCATIONS FORM */
@@ -133,10 +136,13 @@ class TaxRule extends MyAppModel
     * @param  int $langId
     * @return array
     */
-    public function getRules(int $taxCatId): array
+    public function getRules(int $taxCatId, int $langId): array
     {
         $srch = TaxRule::getSearchObject();
+        $srch->joinTable(TaxStructure::DB_TBL, 'LEFT JOIN', 'taxstr_id = taxrule_taxstr_id');
+        $srch->joinTable(TaxStructure::DB_TBL_LANG, 'LEFT JOIN', 'taxrule_taxstr_id = taxstrlang_taxstr_id and taxstrlang_lang_id = '.$langId);
         $srch->addCondition('taxrule_taxcat_id', '=', $taxCatId);
+        $srch->addMultipleFields(array('taxrule_id', 'taxrule_name', 'taxrule_taxcat_id', 'taxrule_taxstr_id', 'taxrule_rate', 'taxstr_id', 'IFNULL(taxstr_name, taxstr_identifier) as taxstr_name', 'taxstr_parent', 'taxstr_is_combined'));
         $res = $srch->getResultSet();
         $rulesData = FatApp::getDb()->fetchAll($res);
         return $rulesData;
@@ -146,30 +152,22 @@ class TaxRule extends MyAppModel
     * getCombinedRuleDetails
     *
     * @param  array $rulesIds
+    * @param int $langId
     * @return array
     */
-    public function getCombinedRuleDetails(array $rulesIds): array
+    public function getCombinedRuleDetails(array $rulesIds, int $langId): array
     {
         if (empty($rulesIds)) {
             return [];
         }
         $srch = TaxRuleCombined::getSearchObject();
+        $srch->joinTable(TaxStructure::DB_TBL, 'LEFT JOIN', 'taxruledet_taxstr_id = taxstr_id');
+        $srch->joinTable(TaxStructure::DB_TBL_LANG, 'LEFT JOIN', 'taxruledet_taxstr_id = taxstrlang_taxstr_id and taxstrlang_lang_id = '.$langId);
         $srch->addCondition('taxruledet_taxrule_id', 'IN', $rulesIds);
-
+        $srch->addMultipleFields(array('taxstr_id', 'taxruledet_taxrule_id', 'taxruledet_rate', 'IFNULL(taxstr_name, taxstr_identifier) as taxstr_name', 'taxstr_parent'));
+        $srch->doNotCalculateRecords();
         $rs = $srch->getResultSet();
         $combinedData = FatApp::getDb()->fetchAll($rs);
-
-        $taxRuleCom = new TaxRuleCombined();
-        $languages = Language::getAllNames();
-        foreach ($combinedData as $key => $val) {
-            foreach ($languages as $langId => $lang) {
-                $rulesLangData = $taxRuleCom->getAttributesByLangId($langId, $val['taxruledet_id']);
-                if (!empty($rulesLangData)) {
-                    $combinedData[$key]['taxruledet_name'][$langId] = $rulesLangData['taxruledet_name'];
-                }
-            }
-        }
-
         return self::groupDataByKey($combinedData, 'taxruledet_taxrule_id');
     }
 

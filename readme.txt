@@ -36,6 +36,12 @@ Bugs:
     => 039093 - login popup having issue in maintenance mode
     => 040647 - admin> seo> image attributes> tags added are not removing 
     => 040907 - Payment is not getting added to wallet
+	=> 043056 - If admin make some changes in email footer then those changes are not reflecting in emails 
+	=> 042763 - Tax category >> view rates >> currency symbol is missing.
+	=> 036806 - Same label is calling for expiry date in stripe checkout.
+	=> 036867 - Place an COD order >> when admin try to complete that order then some json error gets display and it gets completed when we try second time.
+	=> 040000 - seller> google feeds> categories don't have scroll bar.
+	=> 041950 - user account (post sign up)> my profile> getting warning
     => 043043 - Root category should be clickable.
     => 038238 - DEMO> on product detail page> on closing time bar and scrolling there is issue
     => 038252 - remove blog short description from admin as it's not listing anywhere
@@ -46,6 +52,7 @@ Bugs:
     => 041951 - on buyer dashboard> there is some error
     => 041954 - contact us page is flooded with notice
 
+    
 Enhancements:
     => Tax module upgrade
     => Test cases classes enhancements.
