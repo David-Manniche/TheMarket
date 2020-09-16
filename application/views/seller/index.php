@@ -48,11 +48,21 @@ $this->includeTemplate('_partial/seller/sellerDashboardNavigation.php'); ?>
                                         <ul>
                                             <li>
                                                 <span class="total"><?php echo Labels::getLabel('LBL_Completed_Sales', $siteLangId);?></span>
-                                                <span class="total-numbers"><?php echo CommonHelper::displayMoneyFormat($ordersStats['totalSoldSales']);?></span>
+                                                <span class="total-numbers">
+                                                    <?php 
+                                                        $totalSoldSales = isset($ordersStats['totalSoldSales']) ? $ordersStats['totalSoldSales'] : 0;
+                                                        echo CommonHelper::displayMoneyFormat($totalSoldSales);
+                                                    ?>
+                                                </span>
                                             </li>
                                             <li>
                                                 <span class="total"><?php echo Labels::getLabel('LBL_Inprocess_Sales', $siteLangId);?></span>
-                                                <span class="total-numbers"><?php echo CommonHelper::displayMoneyFormat($ordersStats['totalInprocessSales']);?></span>
+                                                <span class="total-numbers">
+                                                    <?php 
+                                                        $totalInprocessSales = isset($ordersStats['totalInprocessSales']) ? $ordersStats['totalInprocessSales'] : 0;
+                                                        echo CommonHelper::displayMoneyFormat($totalInprocessSales);
+                                                    ?>
+                                                </span>
                                             </li>
                                         </ul>
                                     </div>
@@ -110,12 +120,17 @@ $this->includeTemplate('_partial/seller/sellerDashboardNavigation.php'); ?>
                                         <ul>
                                             <li>
                                                 <span class="total"><?php echo Labels::getLabel('LBL_Completed_Orders', $siteLangId);?></span>
-                                                <span class="total-numbers"><?php echo FatUtility::int($ordersStats['totalSoldCount']);?></span>
+                                                <span class="total-numbers">
+                                                    <?php 
+                                                        $totalSoldCount = isset($ordersStats['totalSoldCount']) ? $ordersStats['totalSoldCount'] : 0;
+                                                        echo FatUtility::int($totalSoldCount);
+                                                    ?>
+                                                </span>
                                             </li>
                                             <li>
                                                 <span class="total"><?php echo Labels::getLabel('LBL_Pending_Orders', $siteLangId);?></span>
                                                 <span class="total-numbers">
-                                                    <?php $pendingOrders = $ordersCount - $ordersStats['totalSoldCount'];
+                                                    <?php $pendingOrders = $ordersCount - $totalSoldCount;
                                                     echo $pendingOrders;?>
                                                 </span>
                                             </li>
