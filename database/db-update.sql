@@ -741,3 +741,5 @@ ALTER TABLE `tbl_tax_rule_details` ADD `taxruledet_taxstr_id` INT NOT NULL AFTER
 ALTER TABLE `tbl_tax_rule_details` DROP `taxruledet_identifier`;
 DROP TABLE `tbl_tax_rule_details_lang`;
 ALTER TABLE `tbl_tax_rules` DROP `taxrule_is_combined`;
+
+UPDATE `tbl_cron_schedules` SET `cron_command` = 'AbandonedCart/sendReminderAbandonedCart' WHERE `cron_id` = 17;

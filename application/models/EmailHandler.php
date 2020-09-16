@@ -2719,6 +2719,7 @@ class EmailHandler extends FatModel
         $cartData = Cart::getCartData($d['user_id']);
         $cartInfo = unserialize($cartData);
         $selProdIds = array();
+        unset($cartInfo['shopping_cart']);
         foreach ($cartInfo as $key => $quantity) {
             $keyDecoded = unserialize(base64_decode($key));
 
@@ -2727,7 +2728,9 @@ class EmailHandler extends FatModel
             }
             $selProdIds[] = FatUtility::int(str_replace(Cart::CART_KEY_PREFIX_PRODUCT, '', $keyDecoded));
         }
-
+        if (empty($selProdIds)) {
+            return false; 
+        }
         $prodSrch = new ProductSearch($langId);
         $prodSrch->setDefinedCriteria(0, 0, array(), false);
         $prodSrch->joinProductToCategory();
