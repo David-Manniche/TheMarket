@@ -58,9 +58,12 @@ Bugs:
     => 041966 - seller> dashboard> there are errors
     => 041967 - seller > manage shop> error is there
     => 041969 - error while product setup
-    
+    ----------TV-9.2.1.20200916----------------
     => 042441 - php 7.4 Compatiblility issues.
-    
+    => 042450 - Seller >> shop details >> when we select india then states are not getting display in drop down even if there are states in cms section.
+    => 042508 - When we signup as buyer then "invalid request parameters" gets display in error message
+    => 041432 - Social media icons in footer 
+
 Enhancements:
     => Tax module upgrade
     => Test cases classes enhancements.

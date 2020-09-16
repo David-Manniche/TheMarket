@@ -382,7 +382,7 @@ class GuestUserController extends MyAppController
             FatApp::redirectUser(UrlHelper::generateUrl('GuestUser', 'loginForm', array(applicationConstants::YES)));
         }
 
-        if (false === $userObj->updateUserMeta('user_country_iso', $countryIso)) {
+        if (!empty($countryIso) && false === $userObj->updateUserMeta('user_country_iso', $countryIso)) {
             LibHelper::exitWithError($userObj->getError(), false, true);
             FatApp::redirectUser(UrlHelper::generateUrl('GuestUser', 'loginForm'));
         }
