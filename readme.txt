@@ -61,6 +61,7 @@ Bugs:
     => 042450 - Seller >> shop details >> when we select india then states are not getting display in drop down even if there are states in cms section.
     => 042508 - When we signup as buyer then "invalid request parameters" gets display in error message
     => 041432 - Social media icons in footer 
+    => 042737 - when buyer places order then on order detail page> country name is not listing on buyer and seller end
 
 Enhancements:
     => Tax module upgrade
