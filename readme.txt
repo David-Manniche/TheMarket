@@ -51,6 +51,7 @@ Bugs:
     => 040060 - seller> catalog list> on searching item with special character> getting error
     => 041951 - on buyer dashboard> there is some error
     => 041954 - contact us page is flooded with notice
+    => 041964 - seller sign up form> getting error
 
     
 Enhancements:
