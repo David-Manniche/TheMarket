@@ -63,6 +63,7 @@ Bugs:
     => 042573 - On Checkout >> when we click on "available balance" checkbox in order to pay using wallet then request takes forever to process.
     => 042644 - Admin >> manage seller orders >> Some errors are there in search section.
     => 042645 - Admin >> Custom products >> there are some errors on add and edit .
+    => 042646 - Admin >> options >> Add >> There is some error
 
 Enhancements:
     => Tax module upgrade
