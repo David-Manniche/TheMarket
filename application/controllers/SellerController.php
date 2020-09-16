@@ -1751,7 +1751,7 @@ class SellerController extends SellerBaseController
         $countryId = (isset($shopDetails['shop_country_id'])) ? $shopDetails['shop_country_id'] : FatApp::getConfig('CONF_COUNTRY', FatUtility::VAR_INT, 223);
         if (!false == $shopDetails) {
             $shop_id = $shopDetails['shop_id'];
-            $stateId = $shopDetails['shop_state_id'];
+            $stateId = isset($shopDetails['shop_state_id']) ? $shopDetails['shop_state_id'] : 0;
         }
         $shopDetails['shop_country_code'] = Countries::getCountryById($countryId, $this->siteLangId, 'country_code');
         $shopLayoutTemplateId = isset($shopDetails['shop_ltemplate_id']) ? $shopDetails['shop_ltemplate_id'] : 0;
@@ -1778,7 +1778,7 @@ class SellerController extends SellerBaseController
         }
         /* ] */
         if ($shopDetails) {
-            $stateCode = States::getAttributesById($shopDetails['shop_state_id'], 'state_code');
+            $stateCode = States::getAttributesById($stateId, 'state_code');
             $shopDetails['shop_state'] = $stateCode;
         }
         

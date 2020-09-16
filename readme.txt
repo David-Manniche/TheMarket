@@ -53,6 +53,7 @@ Bugs:
     => 041954 - contact us page is flooded with notice
     => 041964 - seller sign up form> getting error
     => 041966 - seller> dashboard> there are errors
+    => 041967 - seller > manage shop> error is there
     
 Enhancements:
     => Tax module upgrade
