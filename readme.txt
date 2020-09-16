@@ -67,6 +67,7 @@ Bugs:
     => 042645 - Admin >> Custom products >> there are some errors on add and edit .
     => 042646 - Admin >> options >> Add >> There is some error
     => 041432 - Social media icons in footer 
+    => 043107 - Registration shows an error message but proceeds with the new registration
 
 Enhancements:
     => Tax module upgrade
