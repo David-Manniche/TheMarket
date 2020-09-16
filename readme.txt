@@ -68,6 +68,7 @@ Bugs:
     => 042646 - Admin >> options >> Add >> There is some error
     => 041432 - Social media icons in footer 
     => 043107 - Registration shows an error message but proceeds with the new registration
+    => 042732 - seller> on accessing tax categories> tab is not highlighting in side bar
 
 Enhancements:
     => Tax module upgrade
