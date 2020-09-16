@@ -55,7 +55,9 @@ Bugs:
     => 041966 - seller> dashboard> there are errors
     => 041967 - seller > manage shop> error is there
     => 041969 - error while product setup
+---------------------------------------------------------------TV-9.2.1.20200916------------------------------------------------------------------------
     => 042450 - Seller >> shop details >> when we select india then states are not getting display in drop down even if there are states in cms section.
+    => 042508 - When we signup as buyer then "invalid request parameters" gets display in error message
 
 Enhancements:
     => Tax module upgrade
