@@ -44,6 +44,7 @@ Bugs:
     => 040000 - seller> google feeds> categories don't have scroll bar
     => 040060 - seller> catalog list> on searching item with special character> getting error
     => 041951 - on buyer dashboard> there is some error
+    => 041954 - contact us page is flooded with notice
 
 Enhancements:
     => Tax module upgrade
