@@ -47,7 +47,17 @@ Bugs:
     => 038252 - remove blog short description from admin as it's not listing anywhere
     => 039092 - seller> sales report> same sheet is exporting in normal and date wise.
     => 043041 - Fatal error is there when we hit cron url.
-
+    => 039092 - seller> sales report> same sheet is exporting in normal and date wise
+    => 039645 - when admin set some FAQ category as default then on front end active class is not there on that category while questions of that category are listing there
+    => 040000 - seller> google feeds> categories don't have scroll bar
+    => 040060 - seller> catalog list> on searching item with special character> getting error
+    => 041951 - on buyer dashboard> there is some error
+    => 041954 - contact us page is flooded with notice
+    => 041964 - seller sign up form> getting error
+    => 041966 - seller> dashboard> there are errors
+    => 041967 - seller > manage shop> error is there
+    => 041969 - error while product setup
+    
 Enhancements:
     => Tax module upgrade
     => Test cases classes enhancements.

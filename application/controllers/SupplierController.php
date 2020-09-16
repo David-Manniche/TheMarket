@@ -298,7 +298,7 @@ class SupplierController extends MyAppController
             FatUtility::dieWithError(Message::getHtml());
         }
 
-        $data = array('id' => $supplierRequest['usuprequest_id']);
+        $data = array('id' => isset($supplierRequest['usuprequest_id']) ? $supplierRequest['usuprequest_id'] : 0);
         $approvalFrm = $this->getSupplierForm();
         $approvalFrm->fill($data);
 

@@ -145,7 +145,6 @@ class UserGdprRequestsController extends AdminBaseController
         $srch->joinUser();
         $srch->addMultipleFields(array('user_name', 'user_phone', 'credential_email', 'credential_username', 'ureq_date', 'ureq_purpose'));
         $srch->addCondition('ureq_id', '=', $userReqId);
-        $srch->addCondition('ureq_type', '=', UserGdprRequest::TYPE_DATA_REQUEST);
         $srch->addCondition('ureq_deleted', '=', applicationConstants::NO);
         $rs = $srch->getResultSet();
         $userRequest = FatApp::getDb()->fetch($rs);

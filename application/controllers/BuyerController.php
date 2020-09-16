@@ -119,7 +119,7 @@ class BuyerController extends BuyerBaseController
         $this->set('OrderCancelRequestStatusArr', OrderCancelRequest::getRequestStatusArr($this->siteLangId));
         $this->set('cancelReqStatusClassArr', OrderCancelRequest::getStatusClassArr());
         $this->set('ordersCount', $srch->recordCount());
-        $this->set('pendingOrderCount', FatUtility::int($ordersStats['pendingOrderCount']));
+        $this->set('pendingOrderCount', isset($ordersStats['pendingOrderCount']) ? FatUtility::int($ordersStats['pendingOrderCount']) : 0);
         $this->set('userBalance', User::getUserBalance($userId));
         $this->set('totalRewardPoints', UserRewardBreakup::rewardPointBalance($userId));
         $this->set('txnsSummary', $txnsSummary);

@@ -5,10 +5,6 @@ class CustomController extends MyAppController
     public function contactUs()
     {
         $contactFrm = $this->contactUsForm();
-        $post = $contactFrm->getFormDataFromArray(FatApp::getPostedData());
-        if (false != $post) {
-            $contactFrm->fill($post);
-        }
         $this->set('contactFrm', $contactFrm);
         $this->set('siteLangId', $this->siteLangId);
         $this->_template->render(true, true, 'custom/contact-us.php');
