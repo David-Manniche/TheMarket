@@ -743,3 +743,4 @@ DROP TABLE `tbl_tax_rule_details_lang`;
 ALTER TABLE `tbl_tax_rules` DROP `taxrule_is_combined`;
 
 UPDATE `tbl_cron_schedules` SET `cron_command` = 'AbandonedCart/sendReminderAbandonedCart' WHERE `cron_id` = 17;
+-- ------------- TV-9.2.1.20200916-----------
