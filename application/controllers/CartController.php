@@ -31,8 +31,40 @@ class CartController extends MyAppController
            Shipping::FULFILMENT_SHIP => [],
            Shipping::FULFILMENT_PICKUP => [],
        ];
+		
+		/* Save For Later Products Listing [ */
+		$srch = new UserWishListProductSearch($this->siteLangId);
+		$srch->joinWishLists();
+		$srch->joinSellerProducts();
+		$srch->joinProducts();
+		$srch->joinBrands();
+		$srch->joinSellers();
+		$srch->joinShops();
+		$srch->joinProductToCategory();
+		$srch->joinSellerSubscription($this->siteLangId, true);
+		$srch->addSubscriptionValidCondition();
+		$srch->joinSellerProductSpecialPrice();
+		$srch->addCondition('uwlist_user_id', '=', $loggedUserId);
+		$srch->addCondition('uwlist_type', '=', UserWishList::TYPE_SAVE_FOR_LATER);
+		$srch->addCondition('selprod_deleted', '=', applicationConstants::NO);
+		$srch->addCondition('selprod_active', '=', applicationConstants::YES);
 
-        if (0 < count($productsArr) || true === MOBILE_APP_API_CALL) {
+		/* groupby added, beacause if same product is linked with multiple categories, then showing in repeat for each category[ */
+		$srch->addGroupBy('selprod_id');
+		/* ] */
+
+		$srch->addMultipleFields(array('uwlp_uwlist_id', 'selprod_id', 'IFNULL(selprod_title  ,IFNULL(product_name, product_identifier)) as selprod_title', 'product_id', 'IFNULL(product_name, product_identifier) as product_name', 'IF(selprod_stock > 0, 1, 0) AS in_stock', 'IFNULL(splprice_price, selprod_price) AS theprice'));
+		$srch->addOrder('uwlp_added_on', 'DESC');
+		$rs = $srch->getResultSet();
+		$saveForLaterProducts = FatApp::getDb()->fetchAll($rs);
+		if (count($saveForLaterProducts)) {
+			foreach ($saveForLaterProducts as &$arr) {
+				$arr['options'] = SellerProduct::getSellerProductOptions($arr['selprod_id'], true, $this->siteLangId);
+			}
+		}
+		/* ] */
+		
+        if (0 < count($productsArr) || true === MOBILE_APP_API_CALL || 0 < count($saveForLaterProducts)) {
             foreach ($productsArr as $product) {
                 switch ($product['fulfillment_type']) {
                     case Shipping::FULFILMENT_SHIP:
@@ -73,38 +105,6 @@ class CartController extends MyAppController
                 $this->set('selectedBillingAddressId', $billingAddressId);
                 $this->set('selectedShippingAddressId', $shippingAddressId);
             }
-
-            /* Save For Later Products Listing [ */
-            $srch = new UserWishListProductSearch($this->siteLangId);
-            $srch->joinWishLists();
-            $srch->joinSellerProducts();
-            $srch->joinProducts();
-            $srch->joinBrands();
-            $srch->joinSellers();
-            $srch->joinShops();
-            $srch->joinProductToCategory();
-            $srch->joinSellerSubscription($this->siteLangId, true);
-            $srch->addSubscriptionValidCondition();
-            $srch->joinSellerProductSpecialPrice();
-            $srch->addCondition('uwlist_user_id', '=', $loggedUserId);
-            $srch->addCondition('uwlist_type', '=', UserWishList::TYPE_SAVE_FOR_LATER);
-            $srch->addCondition('selprod_deleted', '=', applicationConstants::NO);
-            $srch->addCondition('selprod_active', '=', applicationConstants::YES);
-
-            /* groupby added, beacause if same product is linked with multiple categories, then showing in repeat for each category[ */
-            $srch->addGroupBy('selprod_id');
-            /* ] */
-
-            $srch->addMultipleFields(array('uwlp_uwlist_id', 'selprod_id', 'IFNULL(selprod_title  ,IFNULL(product_name, product_identifier)) as selprod_title', 'product_id', 'IFNULL(product_name, product_identifier) as product_name', 'IF(selprod_stock > 0, 1, 0) AS in_stock', 'IFNULL(splprice_price, selprod_price) AS theprice'));
-            $srch->addOrder('uwlp_added_on', 'DESC');
-            $rs = $srch->getResultSet();
-            $saveForLaterProducts = FatApp::getDb()->fetchAll($rs);
-            if (count($saveForLaterProducts)) {
-                foreach ($saveForLaterProducts as &$arr) {
-                    $arr['options'] = SellerProduct::getSellerProductOptions($arr['selprod_id'], true, $this->siteLangId);
-                }
-            }
-            /* ] */
 
             $fulFillmentArr = Shipping::getFulFillmentArr($this->siteLangId);
             if (!array_key_exists($fulfilmentType, $fulFillmentArr)) {

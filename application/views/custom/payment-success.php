@@ -88,7 +88,7 @@ if (Orders::ORDER_PRODUCT == $orderInfo['order_type']) {
                                             echo ', ' . $shippingAddress['oua_address2'];
                                         }
                                         echo '<br>' . $shippingAddress['oua_city'] . ', ' . $shippingAddress['oua_state_code'] . ' ' . $shippingAddress['oua_zip'];
-                                        echo '<br>' . $shippingAddress['oua_country_code'];
+                                        echo '<br>' . $shippingAddress['oua_country'];
                                         echo '<br>' . $shippingAddress['oua_phone'];
                                         ?>
                                     </p>
@@ -127,7 +127,7 @@ if (Orders::ORDER_PRODUCT == $orderInfo['order_type']) {
                                                 echo ', ' . $billingAddress['oua_address2'];
                                             }
                                             echo '<br>' . $billingAddress['oua_city'] . ', ' . $billingAddress['oua_state_code'] . ' ' . $billingAddress['oua_zip'];
-                                            echo '<br>' . $billingAddress['oua_country_code'];
+                                            echo '<br>' . $billingAddress['oua_country'];
                                             echo '<br>' . $billingAddress['oua_phone'];
                                             ?>
                                         </p>
