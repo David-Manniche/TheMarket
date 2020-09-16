@@ -70,6 +70,7 @@ Bugs:
     => 043107 - Registration shows an error message but proceeds with the new registration
     => 042732 - seller> on accessing tax categories> tab is not highlighting in side bar
     => 043102 - after adding money to wallet using stripe there is no transaction id in transaction list
+    => 043110 - admin> shipping mgmt> order level> on searching product there is no scroll
 
 Enhancements:
     => Tax module upgrade

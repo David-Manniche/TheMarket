@@ -304,7 +304,11 @@ $(document).on('keyup', "input[name='product_name']", function(){
     var parentForm = currObj.closest('form').attr('id');
     if('' != currObj.val()){
         currObj.siblings('ul.dropdown-menu').remove();
-        currObj.autocomplete({'source': function(request, response) {
+        currObj.autocomplete({
+			'classes': {
+				"ui-autocomplete": "custom-ui-autocomplete"
+			},
+			'source': function(request, response) {
         		$.ajax({
         			url: fcom.makeUrl('shippingProfileProducts', 'autoComplete'),
         			data: {fIsAjax:1,keyword:currObj.val()},
