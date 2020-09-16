@@ -62,6 +62,8 @@ Bugs:
     => 042508 - When we signup as buyer then "invalid request parameters" gets display in error message
     => 041432 - Social media icons in footer 
     => 042737 - when buyer places order then on order detail page> country name is not listing on buyer and seller end
+    => 042736 - after placing order> on success screen> country code is listing instead of country name
+
 
 Enhancements:
     => Tax module upgrade
