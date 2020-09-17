@@ -750,6 +750,9 @@
                         font-size: 0.8125rem;
                         line-height: 2rem;
                     }
+                    &.is-active a {
+                        color: $brand-color;
+                    }
                 }
             }
         }
@@ -1928,24 +1931,38 @@ input.sp-input {
     }
 }
 
-.yk-stats {
+.tax-rules {
     >ul {
         font-size: 0.85rem;
         display: grid;
         grid-gap: 1rem;
         grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+        >li {
+            height: 100%;
+            border: $border;
+            border-radius: $radius4;
+            padding: 1rem;
+        }
     }
     .title {
         font-size: 1rem;
         font-weight: 600;
         margin-bottom: 1rem;
+        span {
+            font-size: 0.8rem;
+            font-weight: 500;
+            color: $txt-gray;
+            display: block;
+            margin-top: 0.4rem;
+        }
     }
     .title-sub {
         font-size: 0.85rem;
-        margin-top: 25px;
+        margin-top: 0.8rem;
     }
     p {
         color: $txt-gray;
+        display: flex;
     }
     .stats {
         margin: 5px 0;

@@ -51,7 +51,7 @@ $cancelBtnFld->developerTags['noCaptionTag'] = true;
 					<?php foreach ($languages as $key => $langName) { ?>
 					<li>
 						<a href="javascript:void(0);" <?php if ($rateId > 0) { ?>
-							onclick="editRateLangForm(<?php echo $zoneId ?>, <?php echo $rateId ?>, <?php echo $key;?>);" <?php } ?>><?php echo Labels::getLabel('LBL_'. $langName, $siteLangId);?></a>
+							onclick="editRateLangForm(<?php echo $zoneId ?>, <?php echo $rateId ?>, <?php echo $key;?>);" <?php } ?>><?php echo $langName;?></a>
 					</li>
 					<?php } ?>
 				</ul>

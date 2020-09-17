@@ -1,10 +1,4 @@
 <?php defined('SYSTEM_INIT') or die('Invalid Usage.'); ?>
-<?php
-$frm->setFormTagAttribute('id', 'frmSearchFaqs');
-$frm->setFormTagAttribute('onSubmit', 'searchFaqs(this);return false;');
-$frm->getField('question')->setFieldTagAttribute('placeholder', Labels::getLabel('Lbl_Search', $siteLangId));
-$frm->getField('question')->setFieldTagAttribute('class', "faq-input no-focus");
-?>
 <div id="body" class="body">
     <div class="bg-second pt-5 pb-5">
         <div class="container">
@@ -16,13 +10,9 @@ $frm->getField('question')->setFieldTagAttribute('class', "faq-input no-focus");
                         </div>
                     </div>
                     <div class="faqsearch">
-                        <?php
-                            echo $frm->getFormTag();
-                            echo $frm->getFieldHtml('question');
-                        ?>
+                        <form name="frmSearchFaqs" class="form">
+                            <input placeholder="Search" class="faq-input no-focus" data-field-caption="Enter your question" type="search" name="question" value="">
                         </form>
-                        <?php echo $frm->getExternalJs(); ?>
-                        <!-- <input class="faq-input no-focus" type="text" placeholder="Search" /> -->
                     </div>
                 </div>
             </div>
