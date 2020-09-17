@@ -216,12 +216,6 @@ class ImageAttributesController extends AdminBaseController
         $this->objPrivilege->canEditImageAttributes();
 		
         $post = FatApp::getPostedData();
-		
-        if (false === $post) {
-            Message::addErrorMessage(current($frm->getValidationErrors()));
-            FatUtility::dieJsonError(Message::getHtml());
-        }
-
         $recordId = FatUtility::int($post['record_id']);
         $moduleType = FatUtility::int($post['module_type']);
         $langId = FatUtility::int($post['lang_id']);
@@ -235,24 +229,28 @@ class ImageAttributesController extends AdminBaseController
 		
 		$frm = $this->getImgAttrForm($recordId, $moduleType, $langId, $images);
         $post = $frm->getFormDataFromArray(FatApp::getPostedData());
-		
+        if (false === $post) {
+            Message::addErrorMessage(current($frm->getValidationErrors()));
+            FatUtility::dieJsonError(Message::getHtml());
+        }
+
         $db = FatApp::getDb();
-        $recordSaved = false;
+        // $recordSaved = false;
 		foreach($images as $afileId => $afileData) {
-			if(empty($post['image_title'.$afileId]) && empty($post['image_alt'.$afileId])) {
+			/* if(empty($post['image_title'.$afileId]) && empty($post['image_alt'.$afileId])) {
 				continue;
-			}
+			} */
 			$where = array('smt' => 'afile_record_id = ? and afile_id = ?', 'vals' => array($recordId, $afileId));
             if(!$db->updateFromArray(AttachedFile::DB_TBL, array('afile_attribute_title' => $post['image_title'.$afileId], 'afile_attribute_alt' => $post['image_alt'.$afileId]), $where)){
 				Message::addErrorMessage($db->getError());
                 FatUtility::dieWithError(Message::getHtml());
 			}
-            $recordSaved = true;
+            // $recordSaved = true;
 		}
-        if (!$recordSaved) {
+        /* if (!$recordSaved) {
             Message::addErrorMessage(Labels::getLabel('MSG_Please_fill_any_one', $this->adminLangId));
             FatUtility::dieWithError(Message::getHtml());
-        }
+        } */
         $this->set('msg', $this->str_setup_successful);
         $this->set('recordId', $recordId);
         $this->_template->render(false, false, 'json-success.php');

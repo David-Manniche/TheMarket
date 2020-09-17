@@ -1655,9 +1655,9 @@ trait CustomProducts
         $productFrm = $this->getProductAttributeAndSpecificationsFrm($productId);
         $productData = Product::getAttributesById($productId);
         $prodShippingDetails = Product::getProductShippingDetails($productId, $this->siteLangId, $productData['product_seller_id']);
-        $productData['ps_free'] = $prodShippingDetails['ps_free'];
+        $productData['ps_free'] = isset($prodShippingDetails['ps_free']) ? $prodShippingDetails['ps_free'] : 0;
         $prodSpecificsDetails = Product::getProductSpecificsDetails($productId);
-        $productData['product_warranty'] = $prodSpecificsDetails['product_warranty'];
+        $productData['product_warranty'] = isset($prodSpecificsDetails['product_warranty']) ? $prodSpecificsDetails['product_warranty'] : '';
         $productFrm->fill($productData);
 
         $siteDefaultLangId = FatApp::getConfig('conf_default_site_lang', FatUtility::VAR_INT, 1);
@@ -1948,7 +1948,6 @@ trait CustomProducts
         $productFrm = $this->getProductShippingFrm($productId);
 
         $prodShippingDetails = Product::getProductShippingDetails($productId, $this->siteLangId, $shippedByUserId);
-        $productData['ps_free'] = $prodShippingDetails['ps_free'];
         if (isset($prodShippingDetails['ps_from_country_id'])) {
             $productData['shipping_country'] = Countries::getCountryById($prodShippingDetails['ps_from_country_id'], $this->siteLangId, 'country_name');
             $productData['ps_from_country_id'] = $prodShippingDetails['ps_from_country_id'];

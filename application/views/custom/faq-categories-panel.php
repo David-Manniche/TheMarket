@@ -1,6 +1,7 @@
 <?php defined('SYSTEM_INIT') or die('Invalid Usage.');
+$faqMainCat = FatApp::getConfig("CONF_FAQ_PAGE_MAIN_CATEGORY");
 if(count($listCategories)){
-    $faqMainCat = current($listCategories)['faqcat_id'];
+    $faqMainCat = empty($faqMainCat) ? current($listCategories)['faqcat_id'] : $faqMainCat;
 }
 if (isset($listCategories) && is_array($listCategories)) {
     foreach ($listCategories as $faqCat) { ?>

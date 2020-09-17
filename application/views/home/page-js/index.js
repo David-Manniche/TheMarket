@@ -8,7 +8,6 @@ $(document).ready(function(){
 		
 		reinitSlick = function() {
 			$('.js-hero-slider').slick("slickPause");
-			console.log('added');
 		}
 
         $('.js-collection-corner').slick( getSlickSliderSettings(5, 1, langLbl.layoutDirection) );

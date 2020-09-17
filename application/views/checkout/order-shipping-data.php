@@ -15,8 +15,8 @@ if(!empty($orderShippingData)){
 								<img src="<?php echo UrlHelper::getCachedUrl(UrlHelper::generateFileUrl('image', 'product', array($data['selprod_product_id'], "THUMB", $data['op_selprod_id'], 0, $siteLangId)), CONF_IMG_CACHE_TIME, '.jpg'); ?>" alt="<?php echo $data['op_selprod_title']; ?>">
 							</span>
 						</li>
-						<div class="shipping-data_title"><?php echo $data['opshipping_label']; ?></div>
 						<?php } ?>
+                        <div class="shipping-data_title"><?php echo $data['opshipping_label']; ?></div>
 					</ul>
 				</div>
 			</div>

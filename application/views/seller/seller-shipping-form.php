@@ -17,10 +17,14 @@
     $spProfileFld->developerTags['col'] = 4;
 
     $spPackageFld = $shippingFrm->getField('product_ship_package');
-    $spPackageFld->developerTags['col'] = 4;
+    if (null != $spPackageFld) {
+        $spPackageFld->developerTags['col'] = 4;
+    }
     
     $psFreeFld = $shippingFrm->getField('ps_free');
-    $psFreeFld->developerTags['col'] = 4;
+    if (null != $psFreeFld) {
+        $psFreeFld->developerTags['col'] = 4;
+    }
     
     $submitFld = $shippingFrm->getField('btn_submit');
     $submitFld->developerTags['col'] = 2;

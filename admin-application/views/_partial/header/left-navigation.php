@@ -566,8 +566,8 @@
                             <li><a href="<?php echo UrlHelper::generateUrl('CurrencyManagement'); ?>"><?php echo Labels::getLabel('LBL_Currency_Management', $adminLangId);?></a></li>
                         <?php } ?>
                         <?php if ($objPrivilege->canViewTax(AdminAuthentication::getLoggedAdminId(), true)) { ?>
-                            <?php /* <li><a href="<?php echo UrlHelper::generateUrl('TaxStructure'); ?>"><?php echo Labels::getLabel('LBL_Tax_Structure', $adminLangId);?></a></li> */ ?>
-                            <li><a href="<?php echo UrlHelper::generateUrl('Tax'); ?>"><?php echo Labels::getLabel('LBL_Sales_Tax', $adminLangId);?></a></li>
+                            <li><a href="<?php echo UrlHelper::generateUrl('TaxStructure'); ?>"><?php echo Labels::getLabel('LBL_Tax_Structure', $adminLangId);?></a></li>
+                            <li><a href="<?php echo UrlHelper::generateUrl('Tax'); ?>"><?php echo Labels::getLabel('LBL_Tax_Management', $adminLangId);?></a></li>
                         <?php } ?>
                         <?php if ($objPrivilege->canViewCommissionSettings(AdminAuthentication::getLoggedAdminId(), true)) {?>
                             <li><a href="<?php echo UrlHelper::generateUrl('Commission'); ?>"><?php echo Labels::getLabel('LBL_Commission_Settings', $adminLangId);?></a></li>

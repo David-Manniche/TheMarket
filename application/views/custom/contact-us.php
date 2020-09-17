@@ -9,8 +9,12 @@ $fld = $contactFrm->getField('message');
 $fld->developerTags['col'] = 12;
 
 $fld = $contactFrm->getField('htmlNote');
-$fld->developerTags['col'] = 12;
+if (null != $fld) {
+    $fld->developerTags['col'] = 12;
+}
+
 $fld = $contactFrm->getField('btn_submit');
+$fld->addFieldTagAttribute('class', 'btn btn-primary');
 $fld->developerTags['col'] = 12;
 ?>
 <script>

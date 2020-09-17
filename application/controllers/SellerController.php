@@ -1340,7 +1340,7 @@ class SellerController extends SellerBaseController
 
         $srch->addCondition('product_deleted', '=', applicationConstants::NO);
 
-        $keyword = FatApp::getPostedData('keyword', null, '');
+        $keyword = utf8_encode(FatApp::getPostedData('keyword', FatUtility::VAR_STRING, ''));
         if (!empty($keyword)) {
             $cnd = $srch->addCondition('product_name', 'like', '%' . $keyword . '%');
             $cnd->attachCondition('product_identifier', 'like', '%' . $keyword . '%', 'OR');
@@ -1596,12 +1596,12 @@ class SellerController extends SellerBaseController
             FatUtility::dieWithError(Labels::getLabel('MSG_INVALID_REQUEST', $this->siteLangId));
         }
         $taxObj = new TaxRule();
-        $rulesData = $taxObj->getRules($taxCatId);
+        $rulesData = $taxObj->getRules($taxCatId, $this->siteLangId);
 		$combinedRulesDetails = [];
 		$ruleLocations = [];
         if (!empty($rulesData)) {
             $rulesIds = array_column($rulesData, 'taxrule_id');
-            $combinedRulesDetails = $taxObj->getCombinedRuleDetails($rulesIds);
+            $combinedRulesDetails = $taxObj->getCombinedRuleDetails($rulesIds, $this->siteLangId);
             $ruleLocations = $taxObj->getLocations($taxCatId, true, $this->siteLangId);
         }
         $this->set("combinedRulesDetails", $combinedRulesDetails);
@@ -1751,10 +1751,10 @@ class SellerController extends SellerBaseController
         $countryId = (isset($shopDetails['shop_country_id'])) ? $shopDetails['shop_country_id'] : FatApp::getConfig('CONF_COUNTRY', FatUtility::VAR_INT, 223);
         if (!false == $shopDetails) {
             $shop_id = $shopDetails['shop_id'];
-            $stateId = $shopDetails['shop_state_id'];
+            $stateId = isset($shopDetails['shop_state_id']) ? $shopDetails['shop_state_id'] : 0;
         }
         $shopDetails['shop_country_code'] = Countries::getCountryById($countryId, $this->siteLangId, 'country_code');
-        $shopLayoutTemplateId = $shopDetails['shop_ltemplate_id'];
+        $shopLayoutTemplateId = isset($shopDetails['shop_ltemplate_id']) ? $shopDetails['shop_ltemplate_id'] : 0;
         if ($shopLayoutTemplateId == 0) {
             $shopLayoutTemplateId = 10001;
         }
@@ -1777,10 +1777,11 @@ class SellerController extends SellerBaseController
             $shopDetails['urlrewrite_custom'] = $urlRow['urlrewrite_custom'];
         }
         /* ] */
-
-        $stateCode = States::getAttributesById($shopDetails['shop_state_id'], 'state_code');
-        $shopDetails['shop_state'] = $stateCode;
-
+        if ($shopDetails) {
+            $stateCode = States::getAttributesById($stateId, 'state_code');
+            $shopDetails['shop_state'] = $stateCode;
+        }
+        
         $shopFrm->fill($shopDetails);
         $shopFrm->addSecurityToken();
 

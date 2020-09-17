@@ -25,8 +25,7 @@ $rewardPoints = UserRewardBreakup::rewardPointBalance(UserAuthentication::getLog
 							echo ", ".$address['addr_address2'] ;?> 
 						<?php } ?>
 						</p>   
-						<p><?php echo $address['addr_city'].", ".$address['state_name'] ;?></p>    
-						<p><?php echo $address['country_name'].", ".$address['addr_zip'] ;?></p>    
+						<p><?php echo $address['addr_city'].", ".$address['state_name'].", ".$address['country_name'].", ".$address['addr_zip'] ;?></p>    
 						<?php if(strlen($address['addr_phone']) > 0) { ?>
 						<p class="phone-txt"><i class="fas fa-mobile-alt"></i><?php echo $address['addr_phone'] ;?></p>    
 						<?php } ?>
@@ -58,8 +57,7 @@ $rewardPoints = UserRewardBreakup::rewardPointBalance(UserAuthentication::getLog
 								echo ", ".$address['oua_address2'] ;?> 
 							<?php } ?>
 							</p>   
-							<p><?php echo $address['oua_city'].", ".$address['oua_state'] ;?></p>    
-							<p><?php echo $address['oua_country'].", ".$address['oua_zip'] ;?></p>    
+							<p><?php echo $address['oua_city'].", ".$address['oua_state'].", ".$address['oua_country'].", ".$address['oua_zip'] ;?></p>     
 							<?php if(strlen($address['oua_phone']) > 0) { ?>
 							<p class="phone-txt"><i class="fas fa-mobile-alt"></i><?php echo $address['oua_phone'] ;?></p>    
 							<?php } ?>
@@ -324,39 +322,40 @@ $rewardPoints = UserRewardBreakup::rewardPointBalance(UserAuthentication::getLog
             </div>
             <?php
             if ($cartSummary['orderPaymentGatewayCharges']) { ?>
-                
-                        <div class="payment-area" <?php echo ($cartSummary['orderPaymentGatewayCharges'] <= 0) ? 'is--disabled' : ''; ?>>
-                            <?php if ($cartSummary['orderPaymentGatewayCharges'] && 0 < count($paymentMethods)) { ?>
-                                <ul class="nav nav-payments <?php echo 1 == count($paymentMethods) ? 'd-none' : ''; ?>" role="tablist" id="payment_methods_tab">
-                                    <?php foreach ($paymentMethods as $key => $val) {
-                                        $pmethodCode = $val['plugin_code'];
-                                        $pmethodId = $val['plugin_id'];
-                                        $pmethodName = $val['plugin_name'];
+                <div class="payment-area" <?php echo ($cartSummary['orderPaymentGatewayCharges'] <= 0) ? 'is--disabled' : ''; ?>>
+                    <?php if ($cartSummary['orderPaymentGatewayCharges'] && 0 < count($paymentMethods)) { ?>
+                        <ul class="nav nav-payments <?php echo 1 == count($paymentMethods) ? 'd-none' : ''; ?>" role="tablist" id="payment_methods_tab">
+                            <?php foreach ($paymentMethods as $key => $val) {
+                                $pmethodCode = $val['plugin_code'];
+                                $pmethodId = $val['plugin_id'];
+                                $pmethodName = $val['plugin_name'];
+                                if(strtolower($val['plugin_code']) == 'cashondelivery' && $fulfillmentType == Shipping::FULFILMENT_PICKUP){
+                                    $pmethodName = Labels::getLabel('LBL_Pay_on_pickup', $siteLangId);
+                                }
 
-                                        if (in_array($pmethodCode, $excludePaymentGatewaysArr[applicationConstants::CHECKOUT_PRODUCT])) {
-                                            continue;
-                                        }?>
-                                        <li class="nav-item">
-                                            <a class="nav-link" aria-selected="true" href="<?php echo UrlHelper::generateUrl('Checkout', 'PaymentTab', array($orderInfo['order_id'], $pmethodId)); ?>" data-paymentmethod="<?php echo $pmethodCode; ?>">
-                                                <div class="payment-box">
-                                                    <span><?php echo $pmethodName; ?></span>
-                                                </div>
-                                            </a>
-                                        </li>
-                                    <?php
-                                    } ?>
-                                </ul>
-                                <div class="tab-content">
-                                    <div class="tab-pane fade show active" role="tabpanel" >
-                                        <div class="tabs-container" id="tabs-container"></div>
-                                    </div>
-                                </div>
-                            <?php } else {
-                                echo $cartSummary['orderPaymentGatewayCharges']  . ' < ' . count($paymentMethods);
-                                echo Labels::getLabel("LBL_PAYMENT_METHOD_IS_NOT_AVAILABLE._PLEASE_CONTACT_YOUR_ADMINISTRATOR.", $siteLangId);
+                                if (in_array($pmethodCode, $excludePaymentGatewaysArr[applicationConstants::CHECKOUT_PRODUCT])) {
+                                    continue;
+                                }?>
+                                <li class="nav-item">
+                                    <a class="nav-link" aria-selected="true" href="<?php echo UrlHelper::generateUrl('Checkout', 'PaymentTab', array($orderInfo['order_id'], $pmethodId)); ?>" data-paymentmethod="<?php echo $pmethodCode; ?>">
+                                        <div class="payment-box">
+                                            <span><?php echo $pmethodName; ?></span>
+                                        </div>
+                                    </a>
+                                </li>
+                            <?php
                             } ?>
+                        </ul>
+                        <div class="tab-content">
+                            <div class="tab-pane fade show active" role="tabpanel" >
+                                <div class="tabs-container" id="tabs-container"></div>
+                            </div>
                         </div>
-                
+                    <?php } else {
+                        echo $cartSummary['orderPaymentGatewayCharges']  . ' < ' . count($paymentMethods);
+                        echo Labels::getLabel("LBL_PAYMENT_METHOD_IS_NOT_AVAILABLE._PLEASE_CONTACT_YOUR_ADMINISTRATOR.", $siteLangId);
+                    } ?>
+                </div>
             <?php } ?>
         </section>
     
@@ -378,8 +377,9 @@ if (!empty($siteKey) && !empty($secretKey) && true === $paymentMethods->cashOnDe
     <script type="text/javascript">
         var tabsId = '#payment_methods_tab';
         $(document).ready(function() {
-            if ($(tabsId + ' li a.is-active').length > 0) {
-                loadTab($(tabsId + ' li a.is-active'));
+            $(tabsId + " li:first a").addClass('active');
+            if ($(tabsId + ' li a.active').length > 0) {
+                loadTab($(tabsId + ' li a.active'));
             }
             $(tabsId + ' a').click(function() {
                 if ($(this).hasClass('active')) {

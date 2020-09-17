@@ -201,8 +201,8 @@ class Cart extends FatModel
     }
 
     public function hasPhysicalProduct()
-    {
-        $isPhysical = false;
+    {   
+        $isPhysical = false;   
         foreach ($this->getBasketProducts($this->cart_lang_id) as $product) {
             if ($product['is_batch'] && !empty($product['products'])) {
                 foreach ($product['products'] as $pgproduct) {
@@ -212,7 +212,7 @@ class Cart extends FatModel
                     }
                 }
             } else {
-                if (!empty($product['is_physical_product'])) {
+                if (!empty($product['is_physical_product'])) {          
                     $isPhysical = true;
                     break;
                 }
@@ -248,7 +248,12 @@ class Cart extends FatModel
                     $this->removeCartKey($key, $selprod_id, $quantity);
                     continue;
                 }
-                
+
+                if (isset($this->SYSTEM_ARR['shopping_cart']['checkout_type']) && $sellerProductRow['selprod_fulfillment_type'] != Shipping::FULFILMENT_ALL && $sellerProductRow['selprod_fulfillment_type'] != $this->SYSTEM_ARR['shopping_cart']['checkout_type']) {
+                    unset($this->products[$key]);
+                    continue;
+                }
+                    
                 $this->products[$key] = [
                     'shipping_cost' => 0,
                     'opshipping_rate_id' => 0,
@@ -1697,7 +1702,7 @@ class Cart extends FatModel
             if (count($levelItems['rates']) > 0 && $level != Shipping::LEVEL_PRODUCT) {
                 $name = current($levelItems['rates'])['code'];
                 $shippingRates[$name] =  $levelItems['rates'];
-            } else {
+            } else if(isset($levelItems['products'])){
                 foreach ($levelItems['products'] as $product) {
                     if (count($levelItems['rates'][$product['selprod_id']]) <= 0) {
                         continue;
@@ -1790,7 +1795,7 @@ class Cart extends FatModel
         /*Include digital products */
         if (!empty($digitalSelProdIdArr)) {
             foreach ($digitalSelProdIdArr as $selProdId) {
-                $shippedByArr[Shipping::LEVEL_PRODUCT]['products'][$selProdId] = $productInfo[$selProdId];
+                $shippedByArr[Shipping::LEVEL_PRODUCT]['digital_products'][$selProdId] = $productInfo[$selProdId];
                 $shippedByArr[Shipping::LEVEL_PRODUCT]['shipping_options'][$selProdId] = [];
                 $shippedByArr[Shipping::LEVEL_PRODUCT]['rates'][$selProdId] = [];
             }
@@ -1942,4 +1947,5 @@ class Cart extends FatModel
         }
         return true;
     }
+
 }

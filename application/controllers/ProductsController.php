@@ -1140,7 +1140,7 @@ class ProductsController extends MyAppController
         // $frm->addSubmitButton(null, 'btnProductBuy', Labels::getLabel('LBL_Buy_Now', $formLangId ), array( 'id' => 'btnProductBuy' ) );
         //$frm->addSubmitButton(null, 'btnAddToCart', Labels::getLabel('LBL_Add_to_Cart', $formLangId), array( 'id' => 'btnAddToCart' ));
         // $frm->addHTML(null, 'btnProductBuy', '<button name="btnProductBuy" type="submit" id="btnProductBuy" class="btn btn-primary block-on-mobile add-to-cart--js btnBuyNow"> ' . Labels::getLabel('LBL_Buy_Now', $formLangId) . '</button>');
-        $frm->addHTML(null, 'btnAddToCart', '<button name="btnAddToCart" type="submit" id="btnAddToCart" class="btn btn-primary btn-block add-to-cart--js "> ' . Labels::getLabel('LBL_Add_to_Cart', $formLangId) . '</button>');
+        $frm->addHTML(null, 'btnAddToCart', '<button name="btnAddToCart" type="submit" id="btnAddToCart" class="btn btn-primary btn-block quickView add-to-cart--js "> ' . Labels::getLabel('LBL_Add_to_Cart', $formLangId) . '</button>');
         $frm->addHiddenField('', 'selprod_id');
         return $frm;
     }
@@ -1660,7 +1660,7 @@ class ProductsController extends MyAppController
             if ($pageSize) {
                 $srch->setPageSize($pageSize);
             }
-            // echo $srch->getQuery();exit;
+            //echo $srch->getQuery();exit;
             $rs = $srch->getResultSet();
             $db = FatApp::getDb();
             $products = $db->fetchAll($rs);

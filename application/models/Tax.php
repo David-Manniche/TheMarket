@@ -569,14 +569,19 @@ class Tax extends MyAppModel
         $data['tax'] = $tax;
         $data['taxCode'] = $taxCategoryRow['taxcat_code'];
 
-        $srch = TaxRuleCombined::getSearchObject($langId);
+        $srch = TaxRuleCombined::getSearchObject();
+        $srch->joinTable(TaxStructure::DB_TBL, 'LEFT JOIN', 'taxruledet_taxstr_id = taxstr_id');
+        $srch->joinTable(TaxStructure::DB_TBL_LANG, 'LEFT JOIN', 'taxruledet_taxstr_id = taxstrlang_taxstr_id and taxstrlang_lang_id = '.$langId);
         $srch->addCondition('taxruledet_taxrule_id', '=', $taxCategoryRow['taxrule_id']);
+        $srch->addMultipleFields(array('taxstr_id', 'taxruledet_id', 'taxruledet_rate', 'IFNULL(taxstr_name, taxstr_identifier) as taxstr_name'));
         $srch->doNotCalculateRecords();
         $srch->doNotLimitRecords();
         $combinedData = FatApp::getDb()->fetchAll($srch->getResultSet());
+
         if (!empty($combinedData)) {
             foreach ($combinedData as $comData) {
-                $data['options'][$comData['taxruledet_id']]['name'] = $comData['taxruledet_name'];
+                $data['options'][$comData['taxruledet_id']]['taxstr_id'] = $comData['taxstr_id'];
+                $data['options'][$comData['taxruledet_id']]['name'] = $comData['taxstr_name'];
                 $data['options'][$comData['taxruledet_id']]['percentageValue'] = $comData['taxruledet_rate'];
                 $data['options'][$comData['taxruledet_id']]['inPercentage'] = 1;
                 $data['options'][$comData['taxruledet_id']]['value'] = round((($prodPrice * $qty) * $comData['taxruledet_rate']) / 100, 2);

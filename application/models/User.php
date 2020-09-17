@@ -2413,14 +2413,6 @@ class User extends MyAppModel
             }
         }
 
-        if (FatApp::getConfig('CONF_NOTIFY_ADMIN_REGISTRATION', FatUtility::VAR_INT, 1)) {
-            if (!$this->notifyAdminRegistration($postedData, $this->commonLangId)) {
-                $db->rollbackTransaction();
-                $this->error = Labels::getLabel("ERR_ERROR_IN_SENDING_NOTIFICATION_EMAIL_TO_ADMIN", $this->commonLangId);
-                return false;
-            }
-        }
-
         if ($socialUser == false) {
             if (!$this->saveUserNotifications()) {
                 $db->rollbackTransaction();
@@ -2450,6 +2442,14 @@ class User extends MyAppModel
                     $message = Labels::getLabel("ERR_ERROR_IN_SENDING_WELCOME_EMAIL", $this->siteLangId);
                     return false;
                 }
+            }
+        }        
+        
+        if (FatApp::getConfig('CONF_NOTIFY_ADMIN_REGISTRATION', FatUtility::VAR_INT, 1)) {
+            if (!$this->notifyAdminRegistration($postedData, $this->commonLangId)) {
+                $db->rollbackTransaction();
+                $this->error = Labels::getLabel("ERR_ERROR_IN_SENDING_NOTIFICATION_EMAIL_TO_ADMIN", $this->commonLangId);
+                return false;
             }
         }
 

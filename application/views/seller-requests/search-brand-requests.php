@@ -31,7 +31,7 @@ foreach ($arr_listing as $sn => $row) {
                 break;
             case 'brand_name':
                 $td->appendElement('plaintext', array(), (!empty($row['brand_name']) ? $row['brand_name'] : $row['brand_identifier']) . '<br>', true);
-                $td->appendElement('plaintext', array(), '('.$row[$key].')', true);
+                $td->appendElement('plaintext', array(), '('.$row['brand_identifier'].')', true);
                 break;
             case 'brand_status':
                 $td->appendElement('span', array('class' => 'label label-inline '. $statusClassArr[$row[$key]]), $statusArr[$row[$key]] . '<br>', true);

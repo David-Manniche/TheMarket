@@ -4,6 +4,7 @@ class PaypalPayController extends PaymentController
 {
     public const KEY_NAME = "Paypal";
     private $externalLibUrl = '';
+    private $userId = 0;
     
     /**
      * __construct
@@ -36,8 +37,7 @@ class PaypalPayController extends PaymentController
      */
     private function init(): void
     {
-        $this->userId = UserAuthentication::getLoggedUserId();
-        if (false === $this->plugin->init($this->userId)) {
+        if (false === $this->plugin->init()) {
             $this->setErrorAndRedirect($this->plugin->getError(), FatUtility::isAjaxCall());
         }
 
@@ -132,7 +132,7 @@ class PaypalPayController extends PaymentController
         $paidAmount = isset($capturePayment['amount']['value']) ? $capturePayment['amount']['value'] : [];
 
         if (empty($purchaseUnit) || $purchaseUnit['reference_id'] != $orderId || empty($capturePayment) || $paidAmountCurrency != $this->systemCurrencyCode || $paidAmount != $paymentAmount) {
-            $msg = Labels::getLabel("MSG_INVALID_PAYMENT", $this->sitelangId);
+            $msg = Labels::getLabel("MSG_INVALID_PAYMENT", $this->siteLangId);
             $this->setErrorAndRedirect($msg, true);
         }
         

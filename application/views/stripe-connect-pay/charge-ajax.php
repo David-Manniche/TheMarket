@@ -6,7 +6,7 @@ $frm->setFormTagAttribute('onsubmit', 'doPayment(this, "' . $orderInfo["id"] . '
 $frm->setFormTagAttribute('class', 'form form--normal');
 
 echo $frm->getFormTag(); ?>
-  <div class="m-3 text-right">
+<div class="m-3 text-right">
         <a class="link-text" href="javascript:void(0);" onclick="addNewCard('<?php echo $orderInfo['id']; ?>')">
             <i class="icn"> 
                 <svg class="svg">
@@ -70,44 +70,89 @@ echo $frm->getFormTag(); ?>
             </li>
         <?php } ?>
     </ul>
-  
+
     <?php if (!empty($savedCards)) { ?>
         <div class="payment-action">
-                        
-                        <?php if (FatUtility::isAjaxCall()) { ?>
-                                            <a href="javascript:void(0);" onclick="loadPaymentSummary()" class="btn btn-outline-primary btn-wide">
-                                                <?php echo Labels::getLabel('LBL_Cancel', $siteLangId); ?>
-                                            </a>
-                                        <?php } else { ?>
-                                            <a href="<?php echo $cancelBtnUrl; ?>" class="btn btn-outline-primary btn-wide"><?php echo Labels::getLabel('LBL_Cancel', $siteLangId); ?></a>
-                                        <?php } ?>
-
-                       
-
-                    
-                        <?php
-                                        $btn = $frm->getField('btn_submit');
-                                        $btn->addFieldTagAttribute('class', 'btn btn-primary btn-wide');
-                                        $btn->addFieldTagAttribute('data-processing-text', Labels::getLabel('LBL_PLEASE_WAIT..', $siteLangId));
-                                        echo $frm->getFieldHtml('btn_submit');
-                                        ?>
-                     
-
-                    </div>
-     
+            <?php if (FatUtility::isAjaxCall()) { ?>
+                <a href="javascript:void(0);" onclick="loadPaymentSummary()" class="btn btn-outline-primary btn-wide">
+                    <?php echo Labels::getLabel('LBL_Cancel', $siteLangId); ?>
+                </a>
+            <?php } else { ?>
+                <a href="<?php echo $cancelBtnUrl; ?>" class="btn btn-outline-primary btn-wide"><?php echo Labels::getLabel('LBL_Cancel', $siteLangId); ?></a>
+            <?php } ?>
+            <?php
+                $btn = $frm->getField('btn_submit');
+                $btn->addFieldTagAttribute('class', 'btn btn-primary btn-wide');
+                $btn->addFieldTagAttribute('data-processing-text', Labels::getLabel('LBL_PLEASE_WAIT..', $siteLangId));
+                echo $frm->getFieldHtml('btn_submit');
+                ?>
+        </div>
+    
     <?php } ?>
 </form>
 <?php echo $frm->getExternalJs(); ?>
-<script src="https://js.stripe.com/v3/"></script>
-<?php if (!empty($paymentIntendId)) { ?>
+<?php if (empty($paymentIntendId)) { ?>
+    <script type="text/javascript">
+        (function() {
+            var controller = 'StripeConnectPay';
+            var paymentForm = '#tabs-container';
+            doPayment = function(frm, orderId) {
+                if (!$(frm).validate()) return false;
+                var data = fcom.frmData(frm);
+                fcom.updateWithAjax(fcom.makeUrl(controller, 'charge', [orderId]), data, function(t) {
+                    if ('undefined' != typeof t.redirectUrl) {
+                        window.location = t.redirectUrl;
+                    } else if (1 > t.status) { 
+                        $.systemMessage(t.msg, 'alert--danger', false);
+                        return;
+                    } else {
+                        $(paymentForm).html(t.html);
+                        $(".btnFields-js").html(fcom.getLoader());
+                        $.mbsmessage(langLbl.processing, false, 'alert--process alert');
+                    }
+                });
+            };
+
+            addNewCard = function(orderId) {
+                $(paymentForm).html(fcom.getLoader());
+                fcom.ajax(fcom.makeUrl(controller, 'addCardForm', [orderId]), '', function(t) {
+                    $(paymentForm).html(t).removeClass('p-0');
+                });
+            };
+
+            removeCard = function(cardId) {
+                if (!confirm(langLbl.confirmDelete)) {
+                    return false;
+                };
+                var data = 'cardId=' + cardId;
+                fcom.ajax(fcom.makeUrl(controller, 'removeCard', []), data, function(t) {
+                    t = $.parseJSON(t);
+                    if (1 > t.status) {
+                        $.mbsmessage(t.msg, false, 'alert--danger');
+                        return false;
+                    }
+                    $.mbsmessage(t.msg, false, 'alert--success');
+                    loadPaymentSummary();
+                });
+            };
+        })();
+        $(document).ready(function() {
+            <?php if (empty($savedCards)) { ?>
+                addNewCard('<?php echo $orderInfo["id"]; ?>');
+            <?php } ?>
+            $(document).on("click", ".cancelCardForm-js", function(e){
+                e.preventDefault();
+                loadPaymentSummary();
+            });
+        });
+    </script>
+<?php } else { ?>
     <script type="text/javascript">
         var publishable_key = '<?php echo $settings['publishable_key']; ?>';
         var stripe = Stripe(publishable_key);
-
         var clientSecret = '<?php echo $clientSecret; ?>';
-
         stripe.confirmCardPayment(clientSecret, {
-            payment_method: $("input[name='card_id']").val()
+            payment_method: "<?php echo $sourceId; ?>"
         }).then(function(result) {
             if (result.error) {
                 // PaymentIntent client secret was invalid
@@ -126,55 +171,3 @@ echo $frm->getFormTag(); ?>
         });
     </script>
 <?php } ?>
-
-<script type="text/javascript">
-    (function() {
-        var controller = 'StripeConnectPay';
-        var paymentForm = '#tabs-container';
-        doPayment = function(frm, orderId) {
-            if (!$(frm).validate()) return;
-            var data = fcom.frmData(frm);
-            fcom.updateWithAjax(fcom.makeUrl(controller, 'charge', [orderId]), data, function(t) {
-                if ('undefined' != typeof t.redirectUrl) {
-                    window.location = t.redirectUrl;
-                } else {
-                    $(paymentForm).html(t.html);
-                    $(".btnFields-js").html(fcom.getLoader());
-                    $.mbsmessage(langLbl.processing, false, 'alert--process alert');
-                }
-            });
-        };
-
-        addNewCard = function(orderId) {
-            $(paymentForm).html(fcom.getLoader());
-            fcom.ajax(fcom.makeUrl(controller, 'addCardForm', [orderId]), '', function(t) {
-                $(paymentForm).html(t).removeClass('p-0');
-            });
-        };
-
-        removeCard = function(cardId) {
-            if (!confirm(langLbl.confirmDelete)) {
-                return false;
-            };
-            var data = 'cardId=' + cardId;
-            fcom.ajax(fcom.makeUrl(controller, 'removeCard', []), data, function(t) {
-                t = $.parseJSON(t);
-                if (1 > t.status) {
-                    $.mbsmessage(t.msg, false, 'alert--danger');
-                    return false;
-                }
-                $.mbsmessage(t.msg, false, 'alert--success');
-                loadPaymentSummary();
-            });
-        };
-    })();
-    $(document).ready(function() {
-        <?php if (empty($savedCards)) { ?>
-            addNewCard('<?php echo $orderInfo["id"]; ?>');
-        <?php } ?>
-        $(document).on("click", ".cancelCardForm-js", function(e){
-            e.preventDefault();
-            loadPaymentSummary();
-        });
-    });
-</script>

@@ -2,11 +2,44 @@ $(document).ready(function(){
 	listCartProducts(2);
 });
 (function() {
-	listCartProducts = function(fulfilmentType = 2){
+	listCartProducts = function(fulfilmentType = 2){  
+        if(fulfilmentType == 2){
+            $( "#shipping" ).prop( "checked", true );
+            $( "#pickup" ).prop( "checked", false );
+        }
+        if(fulfilmentType == 1){
+            $( "#pickup" ).prop( "checked", true );
+            $( "#shipping" ).prop( "checked", false );
+        }
 		$('#cartList').html( fcom.getLoader() );
 		fcom.ajax(fcom.makeUrl('Cart','listing', [fulfilmentType]),'',function(res){
-			$("#cartList").html(res);
-		});
+			var json = $.parseJSON(res);  
+            if(json.hasPhysicalProduct == false){
+                $("#js-shiporpickup").remove();
+            }
+            
+            if(json.cartProductsCount == 0){
+                $("#js-cart-listing").html(json.html);
+            }else{
+                $("#cartList").html(json.html);
+                getCartFinancialSummary();
+            }
+            
+            if(json.shipProductsCount == 0){
+                $("#pickup").prop("checked", true);
+                $("#shipping").prop("checked", false).prop("disabled", true).next('label').addClass("disabled").parent().attr("onclick", null);
+            }else{
+                $("#shipping").prop("disabled", false).next('label').removeClass("disabled").parent().attr("onclick", "listCartProducts(2)");
+            }
+            
+            if(json.pickUpProductsCount == 0){
+                $("#shipping").prop("checked", true);
+                $("#pickup").prop("checked", false).prop("disabled", true).next('label').addClass("disabled").parent().attr("onclick", null);
+            }else{
+                $("#pickup").prop("disabled", false).next('label').removeClass("disabled").parent().attr("onclick", "listCartProducts(1)");
+            }
+
+		}); 
 	};
 
 	getPromoCode = function(){
@@ -153,6 +186,12 @@ $(document).ready(function(){
             }
             document.location.href = fcom.makeUrl('Checkout');
         });
+    }
+    
+    getCartFinancialSummary = function(){
+        fcom.ajax(fcom.makeUrl('Cart','getCartFinancialSummary'),'',function(res){
+			$("#js-cartFinancialSummary").html(res);
+		});
     }
 
 })();

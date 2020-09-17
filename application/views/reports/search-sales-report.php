@@ -75,7 +75,7 @@ if( count($arrListing) == 0 ){
     echo $tbl->getHtml();
 }
 $postedData['page'] = $page;
-echo FatUtility::createHiddenFormFromData ( $postedData, array ('name' => 'frmSalesReportSrchPaging') );
+echo FatUtility::createHiddenFormFromData ( $postedData, array ('name' => 'frmSalesReportSrchPaging', 'method' => 'post') );
 $pagingArr=array('pageCount'=>$pageCount,'page'=>$page,'recordCount'=>$recordCount, 'callBackJsFunc' => 'goToSalesReportSearchPage');
 $this->includeTemplate('_partial/pagination.php', $pagingArr,false);
 ?>

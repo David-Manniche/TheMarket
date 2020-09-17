@@ -12,8 +12,7 @@
 						echo ", ".$addresses['addr_address2'] ;?> 
 					<?php } ?>
 					</p>   
-					<p><?php echo $addresses['addr_city'].", ".$addresses['state_name'] ;?></p>    
-					<p><?php echo $addresses['country_name'].", ".$addresses['addr_zip'] ;?></p>    
+					<p><?php echo $addresses['addr_city'].", ".$addresses['state_name'].", ".$addresses['country_name'].", ".$addresses['addr_zip'] ;?></p>    
 					<?php if(strlen($addresses['addr_phone']) > 0) { ?>
 					<p class="phone-txt"><i class="fas fa-mobile-alt"></i><?php echo $addresses['addr_phone'] ;?></p>    
 					<?php } ?>
@@ -35,7 +34,7 @@
             foreach ($shippingRates as $level => $levelItems) { ?>
             <ul class="list-group list-cart list-shippings">
             <?php //if (count($levelItems['products']) > 0 && $level == 0) {
-            if (count($levelItems['products']) > 0 && count($levelItems['pickup_options']) > 0 && $level == 0) {
+            if (isset($levelItems['products']) && count($levelItems['products']) > 0 && count($levelItems['pickup_options']) > 0 && $level == 0) {
                 $productData = current($levelItems['products']); 
                 ?>
                 <li class="list-group-item shipping-select">
@@ -73,7 +72,8 @@
                     </div>
                 </li> 
             <?php } ?>    
-            <?php foreach ($levelItems['products'] as $product) {   
+            <?php   if(isset($levelItems['products'])){ 
+                foreach ($levelItems['products'] as $product) {   
                     $productUrl = !$isAppUser ? UrlHelper::generateUrl('Products', 'View', array($product['selprod_id'])) : 'javascript:void(0)';
                     $shopUrl = !$isAppUser ? UrlHelper::generateUrl('Shops', 'View', array($product['shop_id'])) : 'javascript:void(0)';
                     $imageUrl = UrlHelper::getCachedUrl(UrlHelper::generateFileUrl('image', 'product', array($product['product_id'], "THUMB", $product['selprod_id'], 0, $siteLangId)), CONF_IMG_CACHE_TIME, '.jpg'); ?>
@@ -161,10 +161,11 @@
                         </ul>
                     </div>
                 </li>
-                <?php if (count($levelItems['products']) == 1) { ?> </ul> <?php }?> 
-                <?php }?> 
+                <?php if (isset($levelItems['products']) && count($levelItems['products']) == 1) { ?> </ul> <?php }?> 
+                <?php }
+                }?> 
 
-                <?php if (count($levelItems['products']) > 1) { ?>
+                <?php if (isset($levelItems['products']) && count($levelItems['products']) > 1) { ?>
                     </ul>
                 <?php }                                                            
                 
@@ -231,10 +232,12 @@
             ?>            
         </div>
         <div class="step__footer">
-            <a class="btn btn-outline-primary btn-wide" href="javascript:void(0)" onclick="showAddressList();">
-            
-            <?php echo Labels::getLabel('LBL_Back', $siteLangId); ?></a>
+            <a class="btn btn-outline-primary btn-wide" href="javascript:void(0)" onclick="showAddressList();"><?php echo Labels::getLabel('LBL_Back', $siteLangId); ?></a>
+            <?php if($hasPhysicalProd){ ?>
             <a class="btn btn-primary btn-wide " onClick="setUpPickup();" href="javascript:void(0)"><?php echo Labels::getLabel('LBL_Continue', $siteLangId); ?></a>            
+            <?php }else{ ?>
+            <a class="btn btn-primary btn-wide " onClick="loadPaymentSummary();" href="javascript:void(0)"><?php echo Labels::getLabel('LBL_Continue', $siteLangId); ?></a>
+            <?php } ?>            
         </div>
     </div>
 </main>

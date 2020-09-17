@@ -275,6 +275,7 @@ class OrderPayment extends Orders
                 $txnDataArr = array(
                 'utxn_user_id' => $orderDetails["order_user_id"],
                 'utxn_credit' => $amount,
+                'utxn_gateway_txn_id' => $txnId,
                 'utxn_status' => Transactions::STATUS_COMPLETED,
                 'utxn_order_id' => $orderDetails["order_id"],
                 'utxn_comments' => sprintf(Labels::getLabel('LBL_Loaded_Money_to_Wallet', $defaultSiteLangId), $formattedOrderValue),

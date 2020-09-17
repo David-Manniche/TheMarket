@@ -437,11 +437,9 @@ $("document").ready(function () {
 
         $.mbsmessage(langLbl.requestProcessing, false, 'alert--process');
         fcom.ajax(fcom.makeUrl('Checkout', 'PaymentSummary'), '', function (ans) {
+			$.mbsmessage.close();
             $(pageContent).html(ans);
             $(paymentDiv).addClass('is-current');
-            setTimeout(function () {
-                $("#payment_methods_tab li:first a").trigger('click').addClass('active');
-            }, 500);
         });
     };
 

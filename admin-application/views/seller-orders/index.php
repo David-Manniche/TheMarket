@@ -40,9 +40,11 @@
 								$shopFld->developerTags['col'] = 6;
 								$shopFld->htmlAfterField = '<small>'.Labels::getLabel('LBL_Search_in_Shop_Name,_Seller_Name,_Seller_UserName_and_Seller_EmailId,_Seller_Phone',$adminLangId).'</small>';
 								
-								$customerFld = $frmSearch->getField('customer_name');
-								$customerFld->developerTags['col'] = 6;
-								$customerFld->htmlAfterField = '<small>'.Labels::getLabel('LBL_Search_in_Customer_Name,_Customer_User_Name,_Customer_Email_Id,_Customer_Phone',$adminLangId).'</small>';
+                                $customerFld = $frmSearch->getField('customer_name');
+                                if (null != $customerFld) {
+                                    $customerFld->developerTags['col'] = 6;
+                                    $customerFld->htmlAfterField = '<small>'.Labels::getLabel('LBL_Search_in_Customer_Name,_Customer_User_Name,_Customer_Email_Id,_Customer_Phone',$adminLangId).'</small>';
+                                }
 								
 								$dateFromFld = $frmSearch->getField('date_from');
 								$dateFromFld->setFieldTagAttribute('class','field--calender');

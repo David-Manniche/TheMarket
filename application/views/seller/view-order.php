@@ -245,13 +245,17 @@ if (!empty($orderDetail["thirdPartyorderInfo"]) && isset($orderDetail["thirdPart
                             }
 
                             if ($orderDetail['billingAddress']['oua_city'] != '') {
-                                $billingAddress .= $orderDetail['billingAddress']['oua_city'] . ',';
+                                $billingAddress .= $orderDetail['billingAddress']['oua_city'] . ', ';
                             }
 
-                            if ($orderDetail['billingAddress']['oua_zip'] != '') {
-                                $billingAddress .= $orderDetail['billingAddress']['oua_state'];
+                            if ($orderDetail['billingAddress']['oua_state'] != '') {
+                                $billingAddress .= $orderDetail['billingAddress']['oua_state']. ', ';
                             }
-
+							
+							if ($orderDetail['billingAddress']['oua_country'] != '') {
+                                $billingAddress .= $orderDetail['billingAddress']['oua_country'];
+                            }
+							
                             if ($orderDetail['billingAddress']['oua_zip'] != '') {
                                 $billingAddress .= '-' . $orderDetail['billingAddress']['oua_zip'];
                             }
@@ -277,11 +281,15 @@ if (!empty($orderDetail["thirdPartyorderInfo"]) && isset($orderDetail["thirdPart
                                 }
 
                                 if ($orderDetail['shippingAddress']['oua_city'] != '') {
-                                    $shippingAddress .= $orderDetail['shippingAddress']['oua_city'] . ',';
+                                    $shippingAddress .= $orderDetail['shippingAddress']['oua_city'] . ', ';
                                 }
 
-                                if ($orderDetail['shippingAddress']['oua_zip'] != '') {
-                                    $shippingAddress .= $orderDetail['shippingAddress']['oua_state'];
+                                if ($orderDetail['shippingAddress']['oua_state'] != '') {
+                                    $shippingAddress .= $orderDetail['shippingAddress']['oua_state'] . ', ';
+                                }
+								
+								if ($orderDetail['shippingAddress']['oua_country'] != '') {
+                                    $shippingAddress .= $orderDetail['shippingAddress']['oua_country'];
                                 }
 
                                 if ($orderDetail['shippingAddress']['oua_zip'] != '') {

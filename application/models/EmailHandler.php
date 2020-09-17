@@ -990,7 +990,7 @@ class EmailHandler extends FatModel
         $srch->joinTable(Shop::DB_TBL, 'LEFT OUTER JOIN', Shop::DB_TBL_PREFIX . 'user_id = u.user_id', 'shop');
         $srch->joinTable(Shop::DB_TBL_LANG, 'LEFT OUTER JOIN', 'shop.shop_id = s_l.shoplang_shop_id AND shoplang_lang_id = ' . $langId, 's_l');
 
-        $srch->addMultipleFields(array('selprod_title', 'selprod_product_id', 'user_id', 'user_name', 'user_dial_code', 'user_phone', 'credential_email'));
+        $srch->addMultipleFields(array('selprod_title', 'selprod_product_id', 'user_id', 'user_name', 'user_dial_code', 'user_phone', 'credential_email', 'ifnull(shop_name, shop_identifier) as shop_name'));
         $srch->doNotCalculateRecords();
         $srch->doNotLimitRecords();
         $rs = $srch->getResultSet();
@@ -2719,6 +2719,7 @@ class EmailHandler extends FatModel
         $cartData = Cart::getCartData($d['user_id']);
         $cartInfo = unserialize($cartData);
         $selProdIds = array();
+        unset($cartInfo['shopping_cart']);
         foreach ($cartInfo as $key => $quantity) {
             $keyDecoded = unserialize(base64_decode($key));
 
@@ -2727,7 +2728,9 @@ class EmailHandler extends FatModel
             }
             $selProdIds[] = FatUtility::int(str_replace(Cart::CART_KEY_PREFIX_PRODUCT, '', $keyDecoded));
         }
-
+        if (empty($selProdIds)) {
+            return false; 
+        }
         $prodSrch = new ProductSearch($langId);
         $prodSrch->setDefinedCriteria(0, 0, array(), false);
         $prodSrch->joinProductToCategory();

@@ -107,12 +107,14 @@ class StripePayController extends PaymentController
         if ($orderInfo['order_type'] == Orders::ORDER_WALLET_RECHARGE) {
             $cancelBtnUrl = CommonHelper::getPaymentFailurePageUrl();
         }
+        
         $this->set('cancelBtnUrl', $cancelBtnUrl);
         $this->set('exculdeMainHeaderDiv', true);
         if (FatUtility::isAjaxCall()) {
             $json['html'] = $this->_template->render(false, false, 'stripe-pay/charge-ajax.php', true, false);
             FatUtility::dieJsonSuccess($json);
         }
+        die('hjhjh');
         $this->_template->render(true, false);
     }
 
@@ -230,8 +232,9 @@ class StripePayController extends PaymentController
        
         $orderPaymentObj = new OrderPayment($_POST['order_id']);
        
+        $message = Labels::getLabel("MSG_PAYMENT_FAILED", $this->siteLangId);
         if (strtolower($charge['status']) == 'succeeded') {
-            $message .= 'Id: ' . (string) $charge['charges']['data'][0]['id'] . "&";
+            $message = 'Id: ' . (string) $charge['charges']['data'][0]['id'] . "&";
             $message .= 'Object: ' . (string) $charge['charges']['data'][0]['object'] . "&";
             $message .= 'Amount: ' . (string) $charge['charges']['data'][0]['amount'] . "&";
             $message .= 'Amount Refunded: ' . (string) $charge['charges']['data'][0]['amount_refunded'] . "&";

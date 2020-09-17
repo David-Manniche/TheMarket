@@ -5,10 +5,6 @@ class CustomController extends MyAppController
     public function contactUs()
     {
         $contactFrm = $this->contactUsForm();
-        $post = $contactFrm->getFormDataFromArray(FatApp::getPostedData());
-        if (false != $post) {
-            $contactFrm->fill($post);
-        }
         $this->set('contactFrm', $contactFrm);
         $this->set('siteLangId', $this->siteLangId);
         $this->_template->render(true, true, 'custom/contact-us.php');
@@ -476,43 +472,40 @@ class CustomController extends MyAppController
             FatUtility::exitWithErrorCode(404);
         }
 
-        $userId = UserAuthentication::getLoggedUserId();
-        $userObj = new User($userId);
-        $srch = $userObj->getUserSearchObj(['credential_email']);
-        $rs = $srch->getResultSet();
-        if (!$rs) {
-            FatUtility::exitWithErrorCode(404);
-        }
-        $user = FatApp::getDb()->fetch($rs);
-
         $orderObj = new Orders();
         $orderInfo = $orderObj->getOrderById($orderId, $this->siteLangId);
 
+        $user = [];
         if ($orderInfo['order_user_id'] > 0) {
             $orderProdData = OrderProduct::getOpArrByOrderId($orderId);
             foreach ($orderProdData as $data) {
                 $amount = $data['op_unit_price'] * $data['op_qty'];
                 AbandonedCart::saveAbandonedCart($orderInfo['order_user_id'], $data['op_selprod_id'], $data['op_qty'], AbandonedCart::ACTION_PURCHASED, $amount);
             }
+
+            $userObj = new User($orderInfo['order_user_id']);
+            $srch = $userObj->getUserSearchObj(['credential_email']);
+            $rs = $srch->getResultSet();
+            if (!$rs) {
+                FatUtility::exitWithErrorCode(404);
+            }
+            $user = FatApp::getDb()->fetch($rs);
+
+            $cartObj = new Cart($orderInfo['order_user_id'], $this->siteLangId, $this->app_user['temp_user_id']);
+            $cartObj->clear();
+            $cartObj->updateUserCart();
         }
 
-        $cartObj = new Cart($userId, $this->siteLangId, $this->app_user['temp_user_id']);
-        $cartObj->clear();
-        $cartObj->updateUserCart();
-
         if ($orderInfo['order_type'] == Orders::ORDER_PRODUCT) {
-            /* $searchReplaceArray = array(
-                '{account}' => '<a href="' . UrlHelper::generateUrl('buyer') . '">' . Labels::getLabel('MSG_My_Account', $this->siteLangId) . '</a>',
-                '{history}' => '<a href="' . UrlHelper::generateUrl('buyer', 'orders') . '">' . Labels::getLabel('MSG_History', $this->siteLangId) . '</a>',
-                '{contactus}' => '<a href="' . UrlHelper::generateUrl('custom', 'contactUs') . '">' . Labels::getLabel('MSG_Store_Owner', $this->siteLangId) . '</a>',
-                '{buyer-email}' => '<strong>' . $user['credential_email'] . '</strong>',
-            );
-            $textMessage = Labels::getLabel('MSG_customer_success_order_{account}_{history}_{contactus}', $this->siteLangId); */
-            $searchReplaceArray = array(
-                '{BUYER-EMAIL}' => '<strong>' . $user['credential_email'] . '</strong>',
-            );
-            $textMessage = Labels::getLabel('MSG_CUSTOMER_SUCCESS_ORDER_{BUYER-EMAIL}', $this->siteLangId);
-            $textMessage = CommonHelper::replaceStringData($textMessage, $searchReplaceArray);
+            if (!empty($user)) {
+                $searchReplaceArray = array(
+                    '{BUYER-EMAIL}' => '<strong>' . $user['credential_email'] . '</strong>',
+                );
+                $textMessage = Labels::getLabel('MSG_CUSTOMER_SUCCESS_ORDER_{BUYER-EMAIL}', $this->siteLangId);
+                $textMessage = CommonHelper::replaceStringData($textMessage, $searchReplaceArray);
+            } else {
+                $textMessage = Labels::getLabel('MSG_CUSTOMER_SUCCESS_ORDER', $this->siteLangId);   
+            }
         } elseif ($orderInfo['order_type'] == Orders::ORDER_SUBSCRIPTION) {
             $searchReplaceArray = array(
                 '{account}' => '<a href="' . UrlHelper::generateUrl('seller') . '">' . Labels::getLabel('MSG_My_Account', $this->siteLangId) . '</a>',
@@ -535,32 +528,24 @@ class CustomController extends MyAppController
             $textMessage = str_replace('{contactus}', '<a href="' . UrlHelper::generateUrl('custom', 'contactUs') . '">' . Labels::getLabel('MSG_Store_Owner', $this->siteLangId) . '</a>', Labels::getLabel('MSG_guest_success_order_{contactus}', $this->siteLangId));
         }
 
-        /* Clear cart upon successfull redirection from Payment gateway[ */
-        /* if( $_SESSION['cart_user_id'] ){
-        $userId = (UserAuthentication::isUserLogged()) ? UserAuthentication::getLoggedUserId() : 0;
-        $cartObj = new Cart($userId);
-        $cartObj->clear();
-        $cartObj->updateUserCart();
-        unset($_SESSION['cart_user_id']);
-        } */
-        /* ] */
-
         if (UserAuthentication::isGuestUserLogged()) {
             unset($_SESSION[UserAuthentication::SESSION_ELEMENT_NAME]);
         }
 
         $address = $orderObj->getOrderAddresses($orderInfo['order_id']);
-        $orderInfo['billingAddress'] = $address[Orders::BILLING_ADDRESS_TYPE];
-        $orderInfo['shippingAddress'] = (!empty($address[Orders::SHIPPING_ADDRESS_TYPE]) ? $address[Orders::SHIPPING_ADDRESS_TYPE] : []);
+        if (!empty($address)) {
+            $orderInfo['billingAddress'] = $address[Orders::BILLING_ADDRESS_TYPE];
+            $orderInfo['shippingAddress'] = (!empty($address[Orders::SHIPPING_ADDRESS_TYPE]) ? $address[Orders::SHIPPING_ADDRESS_TYPE] : []);
+        }
         
         $orderInfo['orderProducts'] = $orderObj->getChildOrders(['order_id' => $orderInfo['order_id']], $orderInfo['order_type'], $orderInfo['order_language_id'], true);
-
+        
         $this->set('textMessage', $textMessage);
         $this->set('orderInfo', $orderInfo);
         
         $print = ('print' == $print);
         $this->set('print', $print);
-        // CommonHelper::printArray($orderInfo, true);
+        
         if (CommonHelper::isAppUser()) {
             $this->set('exculdeMainHeaderDiv', true);
             $this->_template->render(false, false);

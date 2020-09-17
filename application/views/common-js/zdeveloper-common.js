@@ -1013,7 +1013,22 @@ $(document).ready(function() {
         }
         data = 'includeGuestLogin=' + includeGuestLogin;
         fcom.ajax(fcom.makeUrl('GuestUser', 'LogInFormPopUp'), data, function(t) {
-            fcom.updateFaceboxContent(t, 'faceboxWidth loginpopup');
+			try
+			{
+				var ans = JSON.parse(t);
+				if (ans.status == 1) {
+					$.mbsmessage(ans.msg, true, 'alert--success');
+					if ('undefined' != typeof ans.redirectUrl) {
+						location.href = ans.redirectUrl;
+					}
+					return;
+				}
+				$.mbsmessage(ans.msg, true, 'alert--danger');
+			}
+			catch(err)
+			{
+				fcom.updateFaceboxContent(t, 'faceboxWidth loginpopup');
+			}
         });
     };
 
@@ -1517,6 +1532,7 @@ $("document").ready(function() {
             }
             if ($btn.hasClass("quickView") == true) {
                 $(document).trigger('close.facebox');
+                $('body').addClass('side-cart--on');
             }
             if (9 < ans.total) {
                 ans.total = '9+';

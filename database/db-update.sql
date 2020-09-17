@@ -704,6 +704,48 @@ INSERT INTO `tbl_email_templates` (`etpl_code`, `etpl_lang_id`, `etpl_name`, `et
 DELETE FROM `tbl_language_labels` WHERE `label_key` LIKE 'LBL_MOVE_TO_ADMIN_WALLET';
 DELETE FROM `tbl_language_labels` WHERE `label_key` LIKE 'LBL_MOVE_TO_CUSTOMER_WALLET';
 DELETE FROM `tbl_language_labels` WHERE `label_key` LIKE 'LBL_MOVE_TO_CUSTOMER_CARD';
-
+-- -----------------TV-9.2.1.20200905------------------
 ALTER TABLE `tbl_seller_products` CHANGE `selprod_fulfillment_type` `selprod_fulfillment_type` TINYINT(4) NOT NULL DEFAULT '-1';
 ALTER TABLE `tbl_languages` CHANGE `language_flag` `language_country_code` VARCHAR(5) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL;
+
+UPDATE `tbl_languages` SET `language_country_code` = 'US' WHERE `tbl_languages`.`language_code` = 'EN';
+UPDATE `tbl_languages` SET `language_country_code` = 'AE' WHERE `tbl_languages`.`language_code` = 'AR';
+
+CREATE TABLE `tbl_tax_structure` (
+  `taxstr_id` int(11) NOT NULL,
+  `taxstr_identifier` varchar(255) NOT NULL,
+  `taxstr_parent` int(11) NOT NULL,
+  `taxstr_is_combined` tinyint(4) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+ALTER TABLE `tbl_tax_structure`
+  ADD PRIMARY KEY (`taxstr_id`);
+  
+ALTER TABLE `tbl_tax_structure`
+  MODIFY `taxstr_id` int(11) NOT NULL AUTO_INCREMENT;
+  
+CREATE TABLE `tbl_tax_structure_lang` (
+  `taxstrlang_taxstr_id` int(11) NOT NULL,
+  `taxstrlang_lang_id` int(11) NOT NULL,
+  `taxstr_name` varchar(255) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+ALTER TABLE `tbl_tax_structure_lang`
+  ADD PRIMARY KEY (`taxstrlang_taxstr_id`,`taxstrlang_lang_id`);
+
+ DROP TABLE `tbl_tax_structure_options`;
+ DROP TABLE `tbl_tax_structure_options_lang`;
+  
+DELETE FROM `tbl_language_labels` WHERE `label_key` LIKE 'LBL_Sales_Tax';
+
+
+ALTER TABLE `tbl_tax_rules` ADD `taxrule_taxstr_id` INT NOT NULL AFTER `taxrule_taxcat_id`;
+ALTER TABLE `tbl_tax_rule_details` ADD `taxruledet_taxstr_id` INT NOT NULL AFTER `taxruledet_taxrule_id`;
+ALTER TABLE `tbl_tax_rule_details` DROP `taxruledet_identifier`;
+DROP TABLE `tbl_tax_rule_details_lang`;
+ALTER TABLE `tbl_tax_rules` DROP `taxrule_is_combined`;
+
+UPDATE `tbl_cron_schedules` SET `cron_command` = 'AbandonedCart/sendReminderAbandonedCart' WHERE `cron_id` = 17;
+-- ------------- TV-9.2.1.20200916-----------
+
+UPDATE `tbl_email_templates` SET `etpl_body` = '<table width=\"100%\" align=\"center\" cellpadding=\"0\" cellspacing=\"0\">    \r\n	<tbody>\r\n		<tr>        \r\n			<td style=\"background:#ff3a59;\">            \r\n				<!--\r\n				page title start here\r\n				-->\r\n				            \r\n				<table width=\"600\" border=\"0\" align=\"center\" cellpadding=\"0\" cellspacing=\"0\">                \r\n					<tbody>                    \r\n						<tr>                        \r\n							<td style=\"background:#fff;padding:20px 0 10px; text-align:center;\">                            \r\n								<h4 style=\"font-weight:normal; text-transform:uppercase; color:#999;margin:0; padding:10px 0; font-size:18px;\"></h4>                            \r\n								<h2 style=\"margin:0; font-size:34px; padding:0;\">New Account Created!</h2></td>                    \r\n						</tr>                \r\n					</tbody>            \r\n				</table>            \r\n				<!--\r\n				page title end here\r\n				-->\r\n				               </td>    \r\n		</tr>    \r\n		<tr>        \r\n			<td>            \r\n				<!--\r\n				page body start here\r\n				-->\r\n				            \r\n				<table width=\"600\" border=\"0\" align=\"center\" cellpadding=\"0\" cellspacing=\"0\">                \r\n					<tbody>                    \r\n						<tr>                        \r\n							<td style=\"background:#fff;padding:0 30px; text-align:center; color:#999;vertical-align:top;\">                            \r\n								<table width=\"100%\" border=\"0\" align=\"center\" cellpadding=\"0\" cellspacing=\"0\">                                \r\n									<tbody>                                    \r\n										<tr>                                        \r\n											<td style=\"padding:20px 0 30px;\"><strong style=\"font-size:18px;color:#333;\">Dear Admin </strong><br />\r\n												                                            We have received a new registration on <a href=\"{website_url}\">{website_name}</a>. Please find the details below:</td>                                    \r\n										</tr>                                    \r\n										<tr>                                        \r\n											<td style=\"padding:20px 0 30px;\">                                            \r\n												<table style=\"border:1px solid #ddd; border-collapse:collapse;\" cellspacing=\"0\" cellpadding=\"0\" border=\"0\">                                                \r\n													<tbody>                                                    \r\n														<tr>                                                        \r\n															<td style=\"padding:10px;font-size:13px;border:1px solid #ddd; color:#333; font-weight:bold;\" width=\"153\">Username</td>                                                        \r\n															<td style=\"padding:10px;font-size:13px; color:#333;border:1px solid #ddd;\" width=\"620\">{username}</td>                                                    \r\n														</tr>                                                    \r\n														<tr>                                                        \r\n															<td style=\"padding:10px;font-size:13px;border:1px solid #ddd; color:#333; font-weight:bold;\" width=\"153\">Email<span class=\"Apple-tab-span\" style=\"white-space:pre\"></span></td>                                                        \r\n															<td style=\"padding:10px;font-size:13px; color:#333;border:1px solid #ddd;\" width=\"620\">{email}</td>                                                    \r\n														</tr>                                                    \r\n														<tr>                                                        \r\n															<td style=\"padding:10px;font-size:13px;border:1px solid #ddd; color:#333; font-weight:bold;\" width=\"153\">Phone<span class=\"Apple-tab-span\" style=\"white-space:pre\"></span></td>                                                        \r\n															<td style=\"padding:10px;font-size:13px; color:#333;border:1px solid #ddd;\" width=\"620\">{phone}</td>                                                    \r\n														</tr>                                                    \r\n														<tr>                                                        \r\n															<td style=\"padding:10px;font-size:13px;border:1px solid #ddd; color:#333; font-weight:bold;\" width=\"153\">Name</td>                                                        \r\n															<td style=\"padding:10px;font-size:13px; color:#333;border:1px solid #ddd;\" width=\"620\">{name}</td>                                                    \r\n														</tr>                                                    \r\n														<tr>                                                        \r\n															<td style=\"padding:10px;font-size:13px;border:1px solid #ddd; color:#333; font-weight:bold;\" width=\"153\">Type</td>                                                        \r\n															<td style=\"padding:10px;font-size:13px; color:#333;border:1px solid #ddd;\" width=\"620\">{user_type}</td>                                                    \r\n														</tr>                                                \r\n													</tbody>                                            \r\n												</table></td>                                    \r\n										</tr>                                \r\n									</tbody>                            \r\n								</table></td>                    \r\n						</tr>                \r\n					</tbody>            \r\n				</table>            \r\n				<!--\r\n				page body end here\r\n				-->\r\n				               </td>    \r\n		</tr>\r\n	</tbody>\r\n</table>' WHERE `tbl_email_templates`.`etpl_code` = 'new_registration_admin' AND `tbl_email_templates`.`etpl_lang_id` = 1;

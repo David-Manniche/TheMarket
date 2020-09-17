@@ -20,6 +20,7 @@ class StripeConnect extends PaymentMethodBase
     private $loginUrl = '';
     private $connectedAccounts = [];
     private $customerInfo = [];
+    public $userId = 0;
 
     public $requiredKeys = [
         'env',
