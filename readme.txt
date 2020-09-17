@@ -87,6 +87,7 @@ Bugs:
     => 042567 - Name and label of pickup address are not getting display on buyer end while selecting pickup address.
     => 042588 - Seller > marketplace product > view any product >> only one image gets display there even if there are more .
     => 042596 - Button is in white color on some pages 
+    => 042643 - Admin >> manage order returns >> Some warning gets display in search section.
 
 Enhancements:
     => Tax module upgrade
