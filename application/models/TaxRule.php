@@ -122,8 +122,6 @@ class TaxRule extends MyAppModel
         }
 
         $fld_submit = $frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_Save', $langId));
-        $fld_cancel = $frm->addButton("", "btn_clear", Labels::getLabel('LBL_Cancel', $langId));
-        $fld_submit->attachField($fld_cancel);
         return $frm;
     }
 

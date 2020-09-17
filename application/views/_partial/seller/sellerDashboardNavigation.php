@@ -88,7 +88,7 @@ $action = strtolower($action);
                     </li>
                 <?php } ?>
                 <?php if ($userPrivilege->canViewTaxCategory(UserAuthentication::getLoggedUserId(), true)) { ?>
-                    <li class="menu__item <?php echo ($controller == 'seller' && $action == 'taxcategories') ? 'is-active' : ''; ?>">
+                    <li class="menu__item <?php echo ($controller == 'seller' && ($action == 'taxcategories' || $action == 'taxrules')) ? 'is-active' : ''; ?>">
                         <div class="menu__item__inner"><a title="<?php echo Labels::getLabel('LBL_Tax_Categories', $siteLangId);?>" href="<?php echo UrlHelper::generateUrl('Seller', 'taxCategories'); ?>">
                                 <i class="icn shop"><svg class="svg">
                                         <use xlink:href="<?php echo CONF_WEBROOT_URL; ?>images/retina/sprite.svg#dash-tax-category" href="<?php echo CONF_WEBROOT_URL; ?>images/retina/sprite.svg#dash-tax-category"></use>

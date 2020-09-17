@@ -232,8 +232,9 @@ class StripePayController extends PaymentController
        
         $orderPaymentObj = new OrderPayment($_POST['order_id']);
        
+        $message = Labels::getLabel("MSG_PAYMENT_FAILED", $this->siteLangId);
         if (strtolower($charge['status']) == 'succeeded') {
-            $message .= 'Id: ' . (string) $charge['charges']['data'][0]['id'] . "&";
+            $message = 'Id: ' . (string) $charge['charges']['data'][0]['id'] . "&";
             $message .= 'Object: ' . (string) $charge['charges']['data'][0]['object'] . "&";
             $message .= 'Amount: ' . (string) $charge['charges']['data'][0]['amount'] . "&";
             $message .= 'Amount Refunded: ' . (string) $charge['charges']['data'][0]['amount_refunded'] . "&";

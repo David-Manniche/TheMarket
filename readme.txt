@@ -71,8 +71,19 @@ Bugs:
     => 042736 - after placing order> on success screen> country code is listing instead of country name
     => 042647 - On cart >> if we click on save for later " on last product in cart then instead of showing empty cart user should be able to see save for later section.
     => 043107 - Registration shows an error message but proceeds with the new registration
+    => 042732 - seller> on accessing tax categories> tab is not highlighting in side bar
+    => 043102 - after adding money to wallet using stripe there is no transaction id in transaction list
+    => 043110 - admin> shipping mgmt> order level> on searching product there is no scroll
+    => 043113 - when seller tries to add shipping for admin catalog then there is error
+    => 042445 - On Shipping profile and some other pages >> back button should be proper.
     => 042638 - Affiliate dashboard >> Some errors are there.
     => 042591 - On shipping profile >> there should be some character limit for product name.
+    => 042451 - View shop >> logo of shop is not getting display there.
+    => 042456 - Admin >> add tax rude >> "cancel " button is not working.
+    => 042490 - On Shipping profile >> when we delete any product then that product is not getting disappear from shipping profile product section.
+    => 042509 - On Special price, volume discount, related products and buy together products page >> when we enter product name then product's variants should also get display there with product name.
+    => 043142 - "Buy together" products under promotions, items do not appear on the list after creating them if no brand
+    => 042514 - Admin >> zone > admin is unable to save zone name in English or "Arabic " language.
 
 Enhancements:
     => Tax module upgrade
