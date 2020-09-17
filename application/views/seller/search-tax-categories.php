@@ -7,10 +7,6 @@ $arr_flds = array(
 if ($activatedTaxServiceId) {
     $arr_flds['taxcat_code'] = Labels::getLabel('LBL_Tax_Code', $siteLangId);
 } else {
-    /* $arr_flds['taxrule_rate'] = Labels::getLabel('LBL_Value', $siteLangId);
-    if (FatApp::getConfig('CONF_TAX_COLLECTED_BY_SELLER', FatUtility::VAR_INT, 0)) {
-        //$arr_flds['action'] = Labels::getLabel('LBL_Action', $siteLangId);
-    } */
     $arr_flds['tax_rates'] = Labels::getLabel('LBL_Tax_Rates', $siteLangId);
 }
 
@@ -33,21 +29,6 @@ foreach ($arr_listing as $sn => $row) {
                 break;
             case 'taxcat_name':
                 $td->appendElement('plaintext', array(), $row[$key] . '<br>', true);
-                break;
-            case 'taxrule_rate':
-                /* Error Handling[ */
-                if (!isset($row['taxrule_rate'])) {
-                    $row['taxrule_rate'] = 0;
-                }
-				
-                if (!isset($row['taxval_is_percent'])) {
-                    $row['taxval_is_percent'] = 1;
-                }
-                /* ] */
-
-                $str = '';
-                $str = '<span class="item__price--old">'.CommonHelper::displayTaxFormat($row['taxval_is_percent'], $row['taxrule_rate']).'</span> ';
-                $td->appendElement('plaintext', array(), $str, true);
                 break;
             case 'tax_rates':
                 $ul = $td->appendElement("ul", array("class"=>"actions"), '', true);

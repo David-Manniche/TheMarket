@@ -77,6 +77,7 @@ Bugs:
     => 043113 - when seller tries to add shipping for admin catalog then there is error
     => 042445 - On Shipping profile and some other pages >> back button should be proper.
     => 042638 - Affiliate dashboard >> Some errors are there.
+    => 042591 - On shipping profile >> there should be some character limit for product name.
     => 042451 - View shop >> logo of shop is not getting display there.
     => 042456 - Admin >> add tax rude >> "cancel " button is not working.
     => 042490 - On Shipping profile >> when we delete any product then that product is not getting disappear from shipping profile product section.
@@ -90,6 +91,7 @@ Bugs:
     => 042643 - Admin >> manage order returns >> Some warning gets display in search section.
     => 042761 - Admin >> order cancellation request >> when admin approve any cancellation request then some confirmation message should get display.
     => 043173 - Options appear on the drop down when adding speical price, volume discount, buy together products, related products.
+    => 042514 - Admin >> zone > admin is unable to save zone name in English or "Arabic " language.
 
 Enhancements:
     => Tax module upgrade

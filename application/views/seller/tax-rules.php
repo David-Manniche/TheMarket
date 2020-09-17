@@ -20,7 +20,7 @@
             <div class="cards">
                 <div class="cards-content">
                 <?php if (!empty($rulesData)) { ?>
-                    <div class="yk-stats">
+                    <div class="tax-rules">
                         <ul>
                             <?php
                             foreach($rulesData as $rule) {
@@ -44,12 +44,13 @@
                             ?>
                             <li>
                                 <h5 class="title"><?php echo Labels::getLabel('LBL_Rule', $siteLangId); ?>:
-                                    <?php echo $rule['taxrule_name'];?></h5>
-                                <ul>
+                                    <?php echo $rule['taxrule_name'];?>
+                                    <span class=""><?php echo Labels::getLabel('LBL_Tax_Rate(%)', $siteLangId); ?>: <?php echo $rule['taxrule_rate'];?>
+                                                </span></h5>
+                                <ul class="tax-rules__states">
                                     <li>
                                         <div class="stats">
-                                            <p><span class="lable"><?php echo Labels::getLabel('LBL_Tax_Rate(%)', $siteLangId); ?>:
-                                                </span><?php echo $rule['taxrule_rate'];?></p>
+                                            <p></p>
                                         </div>
                                     </li>
                                     <?php if (!empty($combinedData) && $rule['taxstr_is_combined'] > 0) { ?>

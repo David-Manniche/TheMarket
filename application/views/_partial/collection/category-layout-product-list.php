@@ -22,7 +22,10 @@
 
                         <div class="products__body">
                             <?php if (true == $displayProductNotAvailableLable && null == $product['availableInLocation']) { ?>
-                                <div class="not-available"><?php echo Labels::getLabel('LBL_NOT_AVAILABLE_FOR_YOUR_LOCATION', $siteLangId); ?></div>
+                                <div class="not-available"><svg class="svg">
+            <use xlink:href="<?php echo CONF_WEBROOT_URL; ?>images/retina/sprite.svg#info" href="<?php echo CONF_WEBROOT_URL; ?>images/retina/sprite.svg#info">
+                    </use>
+                </svg> <?php echo Labels::getLabel('LBL_NOT_AVAILABLE', $siteLangId); ?></div>
                             <?php } ?>
                             <?php include(CONF_THEME_PATH . '_partial/collection-ui.php'); ?>
                             <?php $uploadedTime = AttachedFile::setTimeParam($product['product_updated_on']); ?>

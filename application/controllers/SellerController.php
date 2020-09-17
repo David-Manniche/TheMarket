@@ -1558,23 +1558,6 @@ class SellerController extends SellerBaseController
         $rs = $srch->getResultSet();
         $taxCatData = FatApp::getDb()->fetchAll($rs, 'taxcat_id');
 
-        /* $records = array();
-        if (!empty($taxCatData)) {
-            $taxObj = new Tax();
-            foreach ($taxCatData as $tcatId => $val) {
-                $defaultTaxValues = $taxObj->getTaxValuesByCatId($tcatId, $userId, true);
-                $taxValues = $taxObj->getTaxValuesByCatId($tcatId, $userId);
-
-                $records[$tcatId] = $taxValues;
-                $records[$tcatId]['default'] = $defaultTaxValues;
-                $records[$tcatId]['taxcat_name'] = $val['taxcat_name'];
-                $records[$tcatId]['taxcat_id'] = $val['taxcat_id'];
-                $records[$tcatId]['taxcat_code'] = $val['taxcat_code'];
-                $records[$tcatId]['taxval_value'] = $val['taxrule_rate'];
-                //$records[$tcatId]['taxval_seller_user_id'] = $userId;
-            }
-        } */
-
         $this->set('canEdit', $this->userPrivilege->canEditTaxCategory(UserAuthentication::getLoggedUserId(), true));
         $this->set("arr_listing", $taxCatData);
         $this->set('pageCount', $srch->pages());
@@ -1609,105 +1592,6 @@ class SellerController extends SellerBaseController
         $this->set("rulesData", $rulesData);
         $this->set('ruleLocations', $ruleLocations);
         $this->_template->render(true, true);
-    }
-
-    public function changeTaxRates($taxcat_id)
-    {
-        $activatedTaxServiceId = Tax::getActivatedServiceId();
-
-        if ($activatedTaxServiceId) {
-            FatUtility::dieWithError($this->str_invalid_request);
-        }
-
-        $taxcat_id = FatUtility::int($taxcat_id);
-
-        $frm = $this->getchangeTaxRatesForm($this->siteLangId);
-
-        $taxObj = new Tax($taxcat_id);
-        $srch = $taxObj->getSearchObject($this->siteLangId, false);
-
-        $srch->joinTable(
-            Tax::DB_TBL_VALUES,
-            'LEFT OUTER JOIN',
-            'tv.taxval_taxcat_id = t.taxcat_id AND taxval_seller_user_id = ' . $this->userParentId,
-            'tv'
-        );
-        $srch->addCondition('taxcat_id', '=', $taxcat_id);
-        $srch->addMultipleFields(array("t.*", "t_l.taxcat_name", "tv.taxval_is_percent,tv.taxval_value,tv.taxval_options"));
-
-        $rs = $srch->getResultSet();
-        $data = FatApp::getDb()->fetch($rs);
-
-        if ($data === false) {
-            FatUtility::dieWithError($this->str_invalid_request);
-        }
-
-        $taxOptions = json_decode($data['taxval_options'], true);
-        $taxStructure = new TaxStructure(FatApp::getConfig('CONF_TAX_STRUCTURE', FatUtility::VAR_FLOAT, 0));
-        $options = $taxStructure->getOptions($this->siteLangId);
-        foreach ($options as $optionVal) {
-            $data[$optionVal['taxstro_id']] = isset($taxOptions[$optionVal['taxstro_id']]) ? $taxOptions[$optionVal['taxstro_id']] : '';
-        }
-        $frm->fill($data);
-        // $frm->fill($taxValues+array('taxcat_id'=>$taxcat_id));
-
-        $this->set('frm', $frm);
-        $this->set('userId', $this->userParentId);
-        $this->_template->render(false, false);
-    }
-
-    public function setUpTaxRates()
-    {
-        $this->userPrivilege->canEditTaxCategory(UserAuthentication::getLoggedUserId());
-        $activatedTaxServiceId = Tax::getActivatedServiceId();
-
-        if ($activatedTaxServiceId) {
-            FatUtility::dieWithError($this->str_invalid_request);
-        }
-
-        $frm = $this->getchangeTaxRatesForm($this->siteLangId);
-        $post = $frm->getFormDataFromArray(FatApp::getPostedData());
-
-        if (false === $post) {
-            Message::addErrorMessage(current($frm->getValidationErrors()));
-            FatUtility::dieJsonError(Message::getHtml());
-        }
-
-        if (Tax::validatePostOptions($this->siteLangId) == false) {
-            Message::addErrorMessage(Labels::getLabel('LBL_Invalid_Tax_Option_Rate', $this->siteLangId));
-            FatUtility::dieJsonError(Message::getHtml());
-        }
-
-        $taxcat_id = $post['taxcat_id'];
-        if (1 > $taxcat_id) {
-            Message::addErrorMessage(Labels::getLabel('MSG_Invalid_Access'));
-            FatUtility::dieJsonError(Message::getHtml());
-        }
-
-        $taxvalOptions = array();
-        $taxStructure = new TaxStructure(FatApp::getConfig('CONF_TAX_STRUCTURE', FatUtility::VAR_FLOAT, 0));
-        $options = $taxStructure->getOptions($this->siteLangId);
-        foreach ($options as $optionVal) {
-            $taxvalOptions[$optionVal['taxstro_id']] = $post[$optionVal['taxstro_id']];
-        }
-
-        $data = array(
-            'taxval_taxcat_id' => $taxcat_id,
-            'taxval_seller_user_id' => $this->userParentId,
-            'taxval_is_percent' => $post['taxval_is_percent'],
-            'taxval_value' => $post['taxval_value'],
-            'taxval_options' => FatUtility::convertToJson($taxvalOptions),
-        );
-
-        /* $taxObj = new Tax();
-        if (!$taxObj->addUpdateTaxValues($data, $data)) {
-            Message::addErrorMessage($taxObj->getError());
-            FatUtility::dieJsonError(Message::getHtml());
-        } */
-
-        $this->set('taxcatId', $taxcat_id);
-        $this->set('msg', Labels::getLabel('MSG_Setup_Successfull', $this->siteLangId));
-        $this->_template->render(false, false, 'json-success.php');
     }
 
     public function shop($tab = '', $subTab = '')
@@ -3378,26 +3262,6 @@ class SellerController extends SellerBaseController
         $frm->addHiddenField('', 'requestId', $requestId);
         $frm->addTextArea(Labels::getLabel('LBL_Message', $this->siteLangId), 'message');
         $frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_Send', $this->siteLangId));
-        return $frm;
-    }
-
-    private function getchangeTaxRatesForm($langId)
-    {
-        $frm = new Form('frmChangeTaxRates');
-        $frm->addHiddenField('', 'taxcat_id');
-        $typeArr = applicationConstants::getYesNoArr($langId);
-        $frm->addSelectBox(Labels::getLabel('LBL_Tax_in_percent', $langId), 'taxval_is_percent', $typeArr, '', array(), '');
-        $fld = $frm->addFloatField(Labels::getLabel('LBL_Value', $langId), 'taxval_value');
-        if (FatApp::getConfig('CONF_TAX_STRUCTURE', FatUtility::VAR_FLOAT, 0) == TaxStructure::TYPE_COMBINED) {
-            $taxStructure = new TaxStructure(FatApp::getConfig('CONF_TAX_STRUCTURE', FatUtility::VAR_FLOAT, 0));
-            $options = $taxStructure->getOptions($this->siteLangId);
-            foreach ($options as $optionVal) {
-                $frm->addRequiredField($optionVal['taxstro_name'], $optionVal['taxstro_id'], '', array('data-type' => $optionVal['taxstro_interstate']));
-            }
-        }
-        $fld->requirements()->setFloatPositive(true);
-        $fld->requirements()->setRange('0', '100');
-        $frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_Save_Changes', $langId));
         return $frm;
     }
 

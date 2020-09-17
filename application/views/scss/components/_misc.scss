@@ -251,16 +251,20 @@ a:hover {
 
 .custom-ui-autocomplete {
     max-height: 200px;
+    max-width: 500px;
     overflow: hidden;
     overflow-y: auto;
     box-shadow: 0 0 35px 10px rgba(0, 0, 0, 0.1);
     border-radius: $radius4;
+    font-family: $family-primary !important;
+    font-weight: 400;
     font-size: 0.8rem !important;
     border: $border;
+    animation: dropdown-menu-fade-in 0.3s ease 1, dropdown-menu-move-up 0.3s ease-out 1;
     .ui-menu-item {
         border-bottom: $border;
         .ui-menu-item-wrapper {
-            padding: 0.5rem;
+            padding: 0.8rem;
             border-color: transparent !important;
         }
         &:last-child {
