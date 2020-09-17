@@ -93,6 +93,7 @@ Bugs:
     => 043173 - Options appear on the drop down when adding speical price, volume discount, buy together products, related products.
     => 042514 - Admin >> zone > admin is unable to save zone name in English or "Arabic " language.
     => 042768 - Seller >> shop inventory >>there should be some space between all three buttons and title bar
+    => 043100 - buyer> add money to wallet> on blank submitting form there is processing which shouldn't be
 
 Enhancements:
     => Tax module upgrade

@@ -83,6 +83,7 @@ if (isset($client_secret)) { ?>
                         $submit = true;
                         $(document).on("submit", "#stripeCharge", function(event) {
                             event.preventDefault();
+                            if (!$(this).validate()) return;
                             var stripeToken = $("input[name='stripeToken']").val();
                             if ('' != stripeToken && 'undefined' != typeof stripeToken) {
                                 return;
