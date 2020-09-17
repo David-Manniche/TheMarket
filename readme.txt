@@ -79,6 +79,7 @@ Bugs:
     => 042638 - Affiliate dashboard >> Some errors are there.
     => 042451 - View shop >> logo of shop is not getting display there.
     => 042456 - Admin >> add tax rude >> "cancel " button is not working.
+    => #042490 - On Shipping profile >> when we delete any product then that product is not getting disappear from shipping profile product section.
 
 Enhancements:
     => Tax module upgrade
