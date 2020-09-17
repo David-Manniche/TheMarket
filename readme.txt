@@ -92,6 +92,7 @@ Bugs:
     => 042761 - Admin >> order cancellation request >> when admin approve any cancellation request then some confirmation message should get display.
     => 043173 - Options appear on the drop down when adding speical price, volume discount, buy together products, related products.
     => 042514 - Admin >> zone > admin is unable to save zone name in English or "Arabic " language.
+    => 042768 - Seller >> shop inventory >>there should be some space between all three buttons and title bar
 
 Enhancements:
     => Tax module upgrade

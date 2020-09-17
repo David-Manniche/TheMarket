@@ -33,15 +33,13 @@ $this->includeTemplate('_partial/dashboardNavigation.php');?>
             <div class="row">
                 <div class="col-lg-12">
                     <div class="cards">
+						<div class="cards-header">
+                            <div class="cards-title"></div>
+							<div class="btn-group">
+								<a class="btn btn-outline-primary btn-sm formActionBtn-js formActions-css" title="<?php echo Labels::getLabel('LBL_UNLINK', $siteLangId); ?>" onclick="unlinkproducts(<?php echo $adsBatchId; ?>)" href="javascript:void(0)"><?php echo Labels::getLabel('LBL_UNLINK', $siteLangId); ?></a>
+							</div>
+						</div>
                         <div class="cards-content">
-                            <div class="row justify-content-between">
-                                <div class="col-auto"></div>
-                                 <div class="col-auto">
-                                    <div class="action">
-                                        <a class="btn btn-outline-primary btn-sm formActionBtn-js formActions-css" title="<?php echo Labels::getLabel('LBL_UNLINK', $siteLangId); ?>" onclick="unlinkproducts(<?php echo $adsBatchId; ?>)" href="javascript:void(0)"><?php echo Labels::getLabel('LBL_UNLINK', $siteLangId); ?></a>
-                                    </div>
-                                </div>
-                            </div>
                             <div id="listing">
                                 <?php echo Labels::getLabel('LBL_Loading..', $siteLangId); ?>
                             </div>

@@ -63,15 +63,13 @@ if (0 < $selProd_id) {
 							}
 						}
                         ?>
+						<div class="cards-header">
+                            <div class="cards-title"></div>
+							<div class="btn-group">
+								<a class="btn btn-outline-primary btn-sm formActionBtn-js formActions-css" title="<?php echo Labels::getLabel('LBL_Remove_Volume_Discount', $siteLangId); ?>" onclick="deleteVolumeDiscountRows()" href="javascript:void(0)"><?php echo Labels::getLabel('LBL_REMOVE', $siteLangId); ?></a>
+							</div>
+						</div>
                         <div class="cards-content">
-                            <div class="row justify-content-between">
-                                <div class="col-auto"></div>
-                                 <div class="col-auto">
-                                    <div class="action">
-                                        <a class="btn btn-outline-primary btn-sm formActionBtn-js formActions-css" title="<?php echo Labels::getLabel('LBL_Remove_Volume_Discount', $siteLangId); ?>" onclick="deleteVolumeDiscountRows()" href="javascript:void(0)"><?php echo Labels::getLabel('LBL_Remove_Volume_Discount', $siteLangId); ?></a>
-                                    </div>
-                                </div>
-                            </div>
                             <div id="listing">
                                 <?php echo Labels::getLabel('LBL_Loading..', $siteLangId); ?>
                             </div>

@@ -2,7 +2,7 @@
 <div class="cards">
     <div class="cards-header">
         <h5 class="cards-title"><?php echo Labels::getLabel('LBL_Shop_Collections', $siteLangId); ?></h5>
-        <div class="">
+        <div class="btn-group">
             <?php if ($canEdit) { ?>
                 <a href="javascript:void(0)" onClick="toggleBulkCollectionStatues(1)" class="btn btn-outline-primary btn-sm formActionBtn-js formActions-css"><?php echo Labels::getLabel('LBL_Activate', $siteLangId);?></a>
                 <a href="javascript:void(0)" onClick="toggleBulkCollectionStatues(0)" class="btn btn-outline-primary btn-sm  formActionBtn-js formActions-css"><?php echo Labels::getLabel('LBL_Deactivate', $siteLangId);?></a>

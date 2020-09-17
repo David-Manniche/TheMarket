@@ -58,18 +58,15 @@
             <div class="row">
                 <div class="col-lg-12">
                     <div class="cards">
+						<div class="cards-header">
+                            <div class="cards-title"></div>
+							<div class="btn-group hideDiv-js">
+								<a class="btn btn-outline-primary btn-sm formActionBtn-js formActions-css" title="<?php echo Labels::getLabel('LBL_Activate', $siteLangId); ?>" onclick="toggleBulkStatues(1)" href="javascript:void(0)"><?php echo Labels::getLabel('LBL_Activate', $siteLangId); ?></a>
+								<a class="btn btn-outline-primary btn-sm formActionBtn-js formActions-css" title="<?php echo Labels::getLabel('LBL_Deactivate', $siteLangId); ?>" onclick="toggleBulkStatues(0)" href="javascript:void(0)"><?php echo Labels::getLabel('LBL_Deactivate', $siteLangId); ?></a>
+								<a class="btn btn-outline-primary btn-sm" title="<?php echo Labels::getLabel('LBL_Add_User', $siteLangId); ?>" onclick="addUserForm(0)" href="javascript:void(0)"><?php echo Labels::getLabel('LBL_Add_User', $siteLangId); ?></a>
+							</div>
+						</div>
                         <div class="cards-content">
-                            <div class="row justify-content-between align-items-center hideDiv-js">
-                                <div class="col-auto">
-                                </div>
-                                <div class="col-auto">
-                                    <div class="btn-group">
-                                        <a class="btn btn-outline-primary btn-sm formActionBtn-js formActions-css" title="<?php echo Labels::getLabel('LBL_Activate', $siteLangId); ?>" onclick="toggleBulkStatues(1)" href="javascript:void(0)"><?php echo Labels::getLabel('LBL_Activate', $siteLangId); ?></a>
-                                        <a class="btn btn-outline-primary btn-sm formActionBtn-js formActions-css" title="<?php echo Labels::getLabel('LBL_Deactivate', $siteLangId); ?>" onclick="toggleBulkStatues(0)" href="javascript:void(0)"><?php echo Labels::getLabel('LBL_Deactivate', $siteLangId); ?></a>
-                                        <a class="btn btn-outline-primary btn-sm" title="<?php echo Labels::getLabel('LBL_Add_User', $siteLangId); ?>" onclick="addUserForm(0)" href="javascript:void(0)"><?php echo Labels::getLabel('LBL_Add_User', $siteLangId); ?></a>
-                                    </div>
-                                </div>
-                            </div>
                             <div id="listing">
                                 <?php echo Labels::getLabel('LBL_Loading..', $siteLangId); ?>
                             </div>
