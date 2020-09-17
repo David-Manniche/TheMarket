@@ -95,6 +95,7 @@ Bugs:
     => 042768 - Seller >> shop inventory >>there should be some space between all three buttons and title bar
     => 043100 - buyer> add money to wallet> on blank submitting form there is processing which shouldn't be
     => 043101 - After amount has been added to wallet then on success page there is message order has been placed instead of transaction
+    => 042455 - Seller >> add shipping profile >> place holder is missing.
 
 Enhancements:
     => Tax module upgrade
