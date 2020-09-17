@@ -34987,12 +34987,6 @@ transform: rotate(-135deg);*/ }
   padding: 1.5rem 0;
   padding-left: 25px;
   position: relative;
-  display: -webkit-box;
-  display: -ms-flexbox;
-  display: flex;
-  -webkit-box-align: center;
-  -ms-flex-align: center;
-  align-items: center;
   border-top: solid 1px #dee2e6;
   border-bottom: solid 1px #dee2e6;
   position: relative;
@@ -35000,12 +34994,12 @@ transform: rotate(-135deg);*/ }
   .filterDiv:after {
     position: absolute;
     left: 0;
+    top: 32px;
     transform: rotate(-90deg); }
   .filterDiv:hover {
     color: var(--brand-color); }
-
-.filterDiv.faqclose:after {
-  transform: rotate(0deg); }
+  .filterDiv.faqclose:after {
+    transform: rotate(0deg); }
 
 div.faqanswer {
   margin: 0;
