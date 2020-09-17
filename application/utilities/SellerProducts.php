@@ -2003,13 +2003,21 @@ trait SellerProducts
         $db = FatApp::getDb();
         $rs = $srch->getResultSet();
         $products = $db->fetchAll($rs, 'id');
+        $arrListing = $db->fetchAll($rs);
+
         $json = array();
         foreach ($products as $key => $option) {
+            $options = SellerProduct::getSellerProductOptions($key, true, $this->siteLangId);
+            $variantsStr = '';
+            array_walk($options, function ($item, $key) use(&$variantsStr) {
+                $variantsStr .= ' | ' . $item['option_name'] . ' : ' . $item['optionvalue_name'];
+            });
+
             $json[] = array(
-            'id' => $key,
-            'name' => strip_tags(html_entity_decode($option['product_name'], ENT_QUOTES, 'UTF-8')),
-            'product_identifier' => strip_tags(html_entity_decode($option['product_identifier'], ENT_QUOTES, 'UTF-8')),
-            'price' => $option['selprod_price']
+                'id' => $key,
+                'name' => strip_tags(html_entity_decode($option['product_name'], ENT_QUOTES, 'UTF-8')) . ' ' . $variantsStr,
+                'product_identifier' => strip_tags(html_entity_decode($option['product_identifier'], ENT_QUOTES, 'UTF-8')),
+                'price' => $option['selprod_price']
             );
         }
         die(json_encode($json));
