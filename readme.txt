@@ -81,6 +81,7 @@ Bugs:
     => 042456 - Admin >> add tax rude >> "cancel " button is not working.
     => 042490 - On Shipping profile >> when we delete any product then that product is not getting disappear from shipping profile product section.
     => 042509 - On Special price, volume discount, related products and buy together products page >> when we enter product name then product's variants should also get display there with product name.
+    => 043142 - "Buy together" products under promotions, items do not appear on the list after creating them if no brand
 
 Enhancements:
     => Tax module upgrade
