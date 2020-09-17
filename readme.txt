@@ -83,6 +83,14 @@ Bugs:
     => 042490 - On Shipping profile >> when we delete any product then that product is not getting disappear from shipping profile product section.
     => 042509 - On Special price, volume discount, related products and buy together products page >> when we enter product name then product's variants should also get display there with product name.
     => 043142 - "Buy together" products under promotions, items do not appear on the list after creating them if no brand
+    => 042514 - Admin >> zone > admin is unable to save zone name in English or "Arabic " language. 
+    => 042522 - Shipping profile >> add product >> product identifier gets display instead of product name in selected product listing. 
+    => 042567 - Name and label of pickup address are not getting display on buyer end while selecting pickup address.
+    => 042588 - Seller > marketplace product > view any product >> only one image gets display there even if there are more .
+    => 042596 - Button is in white color on some pages 
+    => 042643 - Admin >> manage order returns >> Some warning gets display in search section.
+    => 042761 - Admin >> order cancellation request >> when admin approve any cancellation request then some confirmation message should get display.
+    => 043173 - Options appear on the drop down when adding speical price, volume discount, buy together products, related products.
     => 042514 - Admin >> zone > admin is unable to save zone name in English or "Arabic " language.
 
 Enhancements:

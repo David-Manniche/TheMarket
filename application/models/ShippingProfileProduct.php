@@ -12,7 +12,8 @@ class ShippingProfileProduct extends MyAppModel
     {
         $srch = new SearchBase(static::DB_TBL, 'sppro');
         $srch->joinTable(Product::DB_TBL, 'LEFT OUTER JOIN', 'pro.product_id = sppro.shippro_product_id', 'pro');
-        $srch->addMultipleFields(array('product_id', 'product_identifier as product_name', 'shippro_shipprofile_id as profile_id'));
+        $srch->joinTable(Product::DB_TBL_LANG, 'LEFT OUTER JOIN', 'pro.product_id = p_l.productlang_product_id AND p_l.productlang_lang_id = ' . CommonHelper::getLangId(), 'p_l');
+        $srch->addMultipleFields(array('product_id', 'IFNULL(product_name, product_identifier) as product_name', 'shippro_shipprofile_id as profile_id'));
         return $srch;
     }
     

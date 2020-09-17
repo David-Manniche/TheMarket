@@ -152,6 +152,7 @@ class AdminBaseController extends FatController
         'shippingUser' => Labels::getLabel('MSG_Please_assign_shipping_user', $this->adminLangId),
         'saveProfileFirst' => Labels::getLabel('LBL_Save_Profile_First', $this->adminLangId),
         'minimumOneLocationRequired' => Labels::getLabel('LBL_Minimum_one_location_is_required', $this->adminLangId),
+        'confirmTransfer' => Labels::getLabel('LBL_CONFIRM_TRANSFER_?', $this->adminLangId),
         );
 
         $languages = Language::getAllNames(false);

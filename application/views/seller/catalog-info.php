@@ -1,9 +1,24 @@
 <div class="white--bg padding20">
     <div class="row">
         <div class="col-lg-6 col-md-6 col-sm-12 col-xm-12 clearfix">
-            <div id="img-static" class="product-detail-gallery">
-                <img src="<?php echo UrlHelper::generateUrl('Image', 'product', array($product['product_id'], 'MEDIUM', 0, 0, $siteLangId )) ?>">
-            </div>
+            <?php if ($productImagesArr) { ?>
+                <div class="js-product-gallery product-gallery" dir="<?php echo CommonHelper::getLayoutDirection(); ?>">
+                    <?php foreach ($productImagesArr as $afile_id => $image) {
+                        $mainImgUrl = UrlHelper::getCachedUrl(UrlHelper::generateFileUrl('Image', 'product', array($product['product_id'], 'MEDIUM', 0, $image['afile_id'])), CONF_IMG_CACHE_TIME, '.jpg');
+                        $thumbImgUrl = UrlHelper::getCachedUrl(UrlHelper::generateFileUrl('Image', 'product', array($product['product_id'], 'THUMB', 0, $image['afile_id'])), CONF_IMG_CACHE_TIME, '.jpg'); ?>
+                        <?php if (isset($imageGallery) && $imageGallery) { ?>
+                            <a href="<?php echo $mainImgUrl; ?>" class="gallery" rel="gallery">
+                        <?php } ?>
+                            <img src="<?php echo $mainImgUrl; ?>">
+                        <?php if (isset($imageGallery) && $imageGallery) { ?>
+                            </a>
+                        <?php } ?>
+                    <?php } ?>
+                </div>
+            <?php } else {
+                $mainImgUrl = UrlHelper::getCachedUrl(UrlHelper::generateFileUrl('Image', 'product', array(0, 'MEDIUM', 0)), CONF_IMG_CACHE_TIME, '.jpg'); ?>
+                <div class="item__main"><img src="<?php echo $mainImgUrl; ?>"></div>
+            <?php } ?>
         </div>
         <div class="col-lg-6 col-md-6 col-sm-12 col-xm-12">
             <div class="product-description">
@@ -65,3 +80,26 @@
         </div>
     </div>
 </div>
+<script>
+    var layoutDirection = '<?php echo CommonHelper::getLayoutDirection(); ?>';
+        if (layoutDirection == 'rtl') {
+            $('.js-product-gallery').slick({
+                dots: true,
+                arrows: false,
+                autoplay: false,
+                pauseOnHover: false,
+                slidesToShow: 1,
+                draggable: true,
+                rtl: true,
+            });
+        } else {
+            $('.js-product-gallery').slick({
+                dots: true,
+                arrows: false,
+                autoplay: false,
+                pauseOnHover: false,
+                slidesToShow: 1,
+                draggable: true,
+            });
+        }
+</script>
