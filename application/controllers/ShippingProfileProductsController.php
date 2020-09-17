@@ -74,10 +74,11 @@ class ShippingProfileProductsController extends SellerBaseController
         $defaultProfileId = ShippingProfile::getDefaultProfileId($userId);
         /* [ REMOVE PRODUCT FROM CURRENT PROFILE AND ADD TO DEFAULT PROFILE */
         $data = array(
+            'shippro_user_id' => $this->userParentId,
             'shippro_shipprofile_id' => $defaultProfileId,
             'shippro_product_id' => $productId
         );
-        
+
         $spObj = new ShippingProfileProduct();
         if (!$spObj->addProduct($data)) {
             Message::addErrorMessage($spObj->getError());

@@ -2,8 +2,7 @@
 defined('SYSTEM_INIT') or die('Invalid Usage.');
 $arr_flds = array(
 	'listserial'=>Labels::getLabel('LBL_Sr._No', $adminLangId),
-	'taxcat_name' => Labels::getLabel('LBL_Tax_Category', $adminLangId),
-	'taxval_value' => Labels::getLabel('LBL_Value', $adminLangId),	 
+	'taxcat_name' => Labels::getLabel('LBL_Tax_Category', $adminLangId), 
 	'action' => Labels::getLabel('LBL_Action', $adminLangId)
 );
 $tbl = new HtmlElement('table', array('width'=>'100%', 'class'=>'table'));
@@ -25,16 +24,6 @@ foreach ($arr_listing as $sn => $row){
 			break;
 			case 'taxcat_name':
 				$td->appendElement('plaintext', array(), '<span class="caption--td">'.$val.'</span>'.$row[$key] . '<br>', true);			
-			break;
-			case 'taxval_value':
-				$str = '';
-				if($row['default']['taxval_value'] != $row['taxval_value']){
-					$str = '<span class="item__price--old">'.CommonHelper::displayTaxFormat($row['default']['taxval_is_percent'],$row['default']['taxval_value']).'</span> ';					
-				}
-				
-				$str.= CommonHelper::displayTaxFormat($row['taxval_is_percent'],$row['taxval_value']);
-				
-				$td->appendElement('plaintext', array(), '<span class="caption--td">'.$val.'</span>'.$str,true);
 			break; 
 			case 'action': 				
 				$ul = $td->appendElement("ul",array("class"=>"actions"),'<span class="caption--td">'.$val.'</span>',true);
@@ -42,13 +31,6 @@ foreach ($arr_listing as $sn => $row){
 				$li->appendElement('a', array('href'=>'javascript:void(0)', 'class'=>'',
 				'title'=>Labels::getLabel('LBL_Edit',$adminLangId),"onclick"=>"changeTaxRates(".$row['taxcat_id'].")"),
 				'<i class="icon far fa-edit"></i>', true);
-				
-				if($row['taxval_seller_user_id'] == $userId){	
-					$li = $ul->appendElement("li");
-					$li->appendElement('a', array('href'=>'javascript:void(0)', 'class'=>'',
-					'title'=>Labels::getLabel('LBL_Reset_to_Default',$adminLangId),"onclick"=>"resetCatTaxRates(".$row['taxcat_id'].")"),
-					'<i class="fa fa-undo"></i>', true);
-				}
 			break;
 			default:
 				$td->appendElement('plaintext', array(), '<span class="caption--td">'.$val.'</span>'.$row[$key],true);

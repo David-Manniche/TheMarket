@@ -793,14 +793,13 @@ trait SellerProducts
 
         $taxRates = array();
         $taxObj = Tax::getTaxCatObjByProductId($productId, $this->siteLangId);
-        $taxObj->addMultipleFields(array('IFNULL(taxcat_name,taxcat_identifier) as taxcat_name', 'ptt_seller_user_id', 'ptt_taxcat_id', 'ptt_product_id', 'taxval_is_percent', 'taxval_value'));
+        $taxObj->addMultipleFields(array('IFNULL(taxcat_name,taxcat_identifier) as taxcat_name', 'ptt_seller_user_id', 'ptt_taxcat_id', 'ptt_product_id'));
         $taxObj->doNotCalculateRecords();
 
         $cnd = $taxObj->addCondition('ptt_seller_user_id', '=', 0);
         $cnd->attachCondition('ptt_seller_user_id', '=', $userId, 'OR');
 
         $taxObj->setPageSize(1);
-        $taxObj->addOrder('taxval_seller_user_id', 'DESC');
         $taxObj->addOrder('ptt_seller_user_id', 'DESC');
 
         $rs = $taxObj->getResultSet();
@@ -896,27 +895,6 @@ trait SellerProducts
         }
 
         $this->set('selprod_id', $selprod_id);
-        $this->set('msg', Labels::getLabel('MSG_Reset_Successfull', $this->siteLangId));
-        $this->_template->render(false, false, 'json-success.php');
-    }
-
-    public function resetCatTaxRates($taxcat_id)
-    {
-        $this->userPrivilege->canEditTaxCategory(UserAuthentication::getLoggedUserId());
-        $taxcat_id = FatUtility::int($taxcat_id);
-        $userId = $this->userParentId;
-
-        if ($taxcat_id == 0 || $userId == 0) {
-            Message::addErrorMessage(Labels::getLabel('MSG_Invalid_Access', $this->siteLangId));
-            FatUtility::dieJsonError(Message::getHtml());
-        }
-
-        if (!FatApp::getDb()->deleteRecords(Tax::DB_TBL_VALUES, array('smt' => 'taxval_taxcat_id = ? and taxval_seller_user_id = ?', 'vals' => array( $taxcat_id, $this->userParentId ) ))) {
-            Message::addErrorMessage(FatApp::getDb()->getError());
-            FatUtility::dieJsonError(Message::getHtml());
-        }
-
-        $this->set('taxcatId', $taxcat_id);
         $this->set('msg', Labels::getLabel('MSG_Reset_Successfull', $this->siteLangId));
         $this->_template->render(false, false, 'json-success.php');
     }
@@ -2003,13 +1981,21 @@ trait SellerProducts
         $db = FatApp::getDb();
         $rs = $srch->getResultSet();
         $products = $db->fetchAll($rs, 'id');
+        $arrListing = $db->fetchAll($rs);
+
         $json = array();
         foreach ($products as $key => $option) {
+            $options = SellerProduct::getSellerProductOptions($key, true, $this->siteLangId);
+            $variantsStr = '';
+            array_walk($options, function ($item, $key) use(&$variantsStr) {
+                $variantsStr .= ' | ' . $item['option_name'] . ' : ' . $item['optionvalue_name'];
+            });
+
             $json[] = array(
-            'id' => $key,
-            'name' => strip_tags(html_entity_decode($option['product_name'], ENT_QUOTES, 'UTF-8')),
-            'product_identifier' => strip_tags(html_entity_decode($option['product_identifier'], ENT_QUOTES, 'UTF-8')),
-            'price' => $option['selprod_price']
+                'id' => $key,
+                'name' => strip_tags(html_entity_decode($option['product_name'], ENT_QUOTES, 'UTF-8')) . ' ' . $variantsStr,
+                'product_identifier' => strip_tags(html_entity_decode($option['product_identifier'], ENT_QUOTES, 'UTF-8')),
+                'price' => $option['selprod_price']
             );
         }
         die(json_encode($json));
