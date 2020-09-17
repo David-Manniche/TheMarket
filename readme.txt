@@ -84,6 +84,7 @@ Bugs:
     => 043142 - "Buy together" products under promotions, items do not appear on the list after creating them if no brand
     => 042514 - Admin >> zone > admin is unable to save zone name in English or "Arabic " language. 
     => 042522 - Shipping profile >> add product >> product identifier gets display instead of product name in selected product listing. 
+    => 042567 - Name and label of pickup address are not getting display on buyer end while selecting pickup address.
 
 Enhancements:
     => Tax module upgrade
