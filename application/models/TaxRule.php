@@ -59,14 +59,12 @@ class TaxRule extends MyAppModel
     * getRuleForm
     *
     * @param  int $langId
-    * @param  int $userId
     * @return object
     */
-    public static function getRuleForm(int $langId, int $userId): object
+    public static function getRuleForm(int $langId): object
     {
         $frm = new Form('frmTaxRule');
         $frm->addHiddenField('', 'taxcat_id', 0);
-        $frm->addHiddenField('', 'taxval_seller_user_id', $userId);
 
         /* [ TAX CATEGORY RULE FORM */
         $frm->addHiddenField('', 'taxrule_id[]', 0);

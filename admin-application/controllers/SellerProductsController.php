@@ -1431,7 +1431,7 @@ class SellerProductsController extends AdminBaseController
 
         $taxRates = array();
         $taxObj = Tax::getTaxCatObjByProductId($productId, $this->adminLangId);
-        $taxObj->addMultipleFields(array('IFNULL(taxcat_name,taxcat_identifier) as taxcat_name', 'ptt_seller_user_id', 'ptt_taxcat_id', 'ptt_product_id', 'taxval_is_percent', 'taxval_value'));
+        $taxObj->addMultipleFields(array('IFNULL(taxcat_name,taxcat_identifier) as taxcat_name', 'ptt_seller_user_id', 'ptt_taxcat_id', 'ptt_product_id'));
         $taxObj->doNotCalculateRecords();
 
         $cnd = $taxObj->addCondition('ptt_seller_user_id', '=', 0);
@@ -1439,7 +1439,6 @@ class SellerProductsController extends AdminBaseController
             $cnd->attachCondition('ptt_seller_user_id', '=', $userId, 'OR');
         }
         $taxObj->setPageSize(1);
-        $taxObj->addOrder('taxval_seller_user_id', 'DESC');
         $taxObj->addOrder('ptt_seller_user_id', 'DESC');
 
         $rs = $taxObj->getResultSet();
@@ -1524,25 +1523,6 @@ class SellerProductsController extends AdminBaseController
         }
 
         $this->set('selprod_id', $selprod_id);
-        $this->set('msg', Labels::getLabel('MSG_Reset_Successfull', $this->adminLangId));
-        $this->_template->render(false, false, 'json-success.php');
-    }
-
-    public function resetCatTaxRates($taxcat_id)
-    {
-        $this->objPrivilege->canEditSellerProducts();
-        $taxcat_id = FatUtility::int($taxcat_id);
-        if ($taxcat_id == 0) {
-            Message::addErrorMessage(Labels::getLabel('MSG_Invalid_Access', $this->adminLangId));
-            FatUtility::dieJsonError(Message::getHtml());
-        }
-
-        if (!FatApp::getDb()->deleteRecords(Tax::DB_TBL_VALUES, array('smt' => 'taxval_taxcat_id = ? and taxval_seller_user_id = ?', 'vals' => array( $taxcat_id, UserAuthentication::getLoggedUserId() ) ))) {
-            Message::addErrorMessage(FatApp::getDb()->getError());
-            FatUtility::dieJsonError(Message::getHtml());
-        }
-
-        $this->set('taxcatId', $taxcat_id);
         $this->set('msg', Labels::getLabel('MSG_Reset_Successfull', $this->adminLangId));
         $this->_template->render(false, false, 'json-success.php');
     }

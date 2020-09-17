@@ -67,13 +67,7 @@ class TaxController extends AdminBaseController
         $srch->setPageNumber($page);
         $srch->setPageSize($pagesize);
 
-        $srch->joinTable(
-            Tax::DB_TBL_VALUES,
-            'LEFT OUTER JOIN',
-            'tv.taxval_taxcat_id = t.taxcat_id AND taxval_seller_user_id = 0',
-            'tv'
-        );
-        $srch->addMultipleFields(array("t_l.taxcat_name", "tv.taxval_is_percent"));
+        $srch->addMultipleFields(array("t_l.taxcat_name"));
         $srch->addOrder('taxcat_active', 'DESC');
         $rs = $srch->getResultSet();
         $records = array();
@@ -115,7 +109,7 @@ class TaxController extends AdminBaseController
 
         $taxcat_id = $post['taxcat_id'];
         unset($post['taxcat_id']);
-        $post['taxval_is_percent'] = Tax::TYPE_PERCENTAGE;
+		
         $record = new Tax($taxcat_id);
         if (!$record->addUpdateData($post)) {
             Message::addErrorMessage($record->getError());
@@ -132,18 +126,6 @@ class TaxController extends AdminBaseController
             $options = $taxStructure->getOptions($this->adminLangId);
             foreach ($options as $optionVal) {
                 $taxvalOptions[$optionVal['taxstro_id']] = $post[$optionVal['taxstro_id']];
-            }
-
-            $data = array(
-            'taxval_taxcat_id' => $taxcat_id,
-            'taxval_seller_user_id' => 0,
-            'taxval_options' => FatUtility::convertToJson($taxvalOptions),
-            );
-
-            $obj = new Tax();
-            if (!$obj->addUpdateTaxValues($data, $data)) {
-                Message::addErrorMessage($obj->getError());
-                FatUtility::dieWithError(Message::getHtml());
             }
         }*/
 
@@ -232,14 +214,8 @@ class TaxController extends AdminBaseController
             $taxObj = new Tax($taxcat_id);
             $srch = $taxObj->getSearchObject($this->adminLangId, false);
 
-            $srch->joinTable(
-                Tax::DB_TBL_VALUES,
-                'LEFT OUTER JOIN',
-                'tv.taxval_taxcat_id = t.taxcat_id AND taxval_seller_user_id = 0',
-                'tv'
-            );
             $srch->addCondition('taxcat_id', '=', $taxcat_id);
-            $srch->addMultipleFields(array("t.*", "t_l.taxcat_name", "tv.taxval_is_percent,tv.taxval_value,tv.taxval_options"));
+            $srch->addMultipleFields(array('t.*', 't_l.taxcat_name'));
 
             $rs = $srch->getResultSet();
             $data = FatApp::getDb()->fetch($rs);
@@ -501,7 +477,7 @@ class TaxController extends AdminBaseController
         $taxCatId = FatUtility::int($taxCatId);
         $siteDefaultLangId = FatApp::getConfig('conf_default_site_lang', FatUtility::VAR_INT, 1);
         $languages = Language::getAllNames();
-        $frm = TaxRule::getRuleForm($this->adminLangId, 0);
+        $frm = TaxRule::getRuleForm($this->adminLangId);
         $data = [];
         $rulesData = [];
         $ruleLocations = [];
@@ -534,7 +510,7 @@ class TaxController extends AdminBaseController
     {
         $this->objPrivilege->canEditTax();
         $index = FatUtility::int($index);
-        $frm = TaxRule::getRuleForm($this->adminLangId, 0);
+        $frm = TaxRule::getRuleForm($this->adminLangId);
         $languages = Language::getAllNames();
         $siteDefaultLangId = FatApp::getConfig('conf_default_site_lang', FatUtility::VAR_INT, 1);
         unset($languages[$siteDefaultLangId]);
