@@ -8,9 +8,6 @@ class Tax extends MyAppModel
     public const DB_TBL_LANG = 'tbl_tax_categories_lang';
     public const DB_TBL_LANG_PREFIX = 'taxcatlang_';
 
-    public const DB_TBL_VALUES = 'tbl_tax_values';
-    public const DB_TBL_VALUES_PREFIX = 'taxval_';
-
     public const DB_TBL_PRODUCT_TO_TAX = 'tbl_product_to_tax';
     public const DB_TBL_PRODUCT_TO_TAX_PREFIX = 'ptt_';
 
@@ -138,12 +135,6 @@ class Tax extends MyAppModel
     {
         $srch = static::getSearchObject($langId);
         $srch->joinTable(
-            static::DB_TBL_VALUES,
-            'LEFT OUTER JOIN',
-            'tv.taxval_taxcat_id = t.taxcat_id',
-            'tv'
-        );
-        $srch->joinTable(
             static::DB_TBL_PRODUCT_TO_TAX,
             'LEFT OUTER JOIN',
             'ptt.ptt_taxcat_id = t.taxcat_id',
@@ -153,46 +144,6 @@ class Tax extends MyAppModel
         $srch->addCondition('taxcat_deleted', '=', 0);
         $srch->addCondition('ptt_product_id', '=', FatUtility::int($productId));
         return $srch;
-    }
-
-    /**
-    * getTaxValuesByCatId
-    *
-    * @param  int $taxcatId
-    * @param  int $userId
-    * @param  bool $defaultValue
-    * @return array
-    */
-    public function getTaxValuesByCatId(int $taxcatId, int $userId = 0, bool $defaultValue = false): array
-    {
-        $taxcatId = FatUtility::int($taxcatId);
-        $userId = FatUtility::int($userId);
-
-        $srch = new SearchBase(static::DB_TBL_VALUES);
-        $srch->addCondition('taxval_taxcat_id', '=', $taxcatId);
-
-        if ($defaultValue) {
-            $srch->addOrder('taxval_seller_user_id', 'ASC');
-        } else {
-            $srch->addOrder('taxval_seller_user_id', 'DESC');
-        }
-
-        if ($userId > 0) {
-            $cnd = $srch->addCondition('taxval_seller_user_id', '=', $userId);
-            $cnd->attachCondition('taxval_seller_user_id', '=', 0, 'OR');
-        }
-
-        $srch->setPageSize(1);
-        $srch->doNotCalculateRecords();
-
-        $rs = $srch->getResultSet();
-        $row = array();
-
-        $row = FatApp::getDb()->fetch($rs);
-        if (!empty($row)) {
-            return $row;
-        }
-        return array();
     }
 
     /**
@@ -545,26 +496,7 @@ class Tax extends MyAppModel
                 'options' => []
             ];
         }
-        if ($taxCategoryRow['taxval_is_percent'] == static::TYPE_PERCENTAGE) {
-            $tax = round((($prodPrice * $qty) * $taxCategoryRow['taxrule_rate']) / 100, 2);
-        } else {
-            $tax = $taxCategoryRow['taxrule_rate'] * $qty;
-        }
-        /* if (0 < $activatedTaxServiceId) {
-            return $data = [
-                'status' => true,
-                'tax' => $tax,
-                'taxCode' => $taxCategoryRow['taxcat_code'],
-                'options' => [
-                    $defaultTaxName => [
-                        'name' => Labels::getLabel('LBL_Tax', $langId),
-                        'inPercentage' => $taxCategoryRow['taxval_is_percent'],
-                        'percentageValue' => $taxCategoryRow['taxrule_rate'],
-                        'value' => $tax
-                    ]
-                ]
-            ];
-        } */
+        $tax = round((($prodPrice * $qty) * $taxCategoryRow['taxrule_rate']) / 100, 2);
 
         $data['tax'] = $tax;
         $data['taxCode'] = $taxCategoryRow['taxcat_code'];

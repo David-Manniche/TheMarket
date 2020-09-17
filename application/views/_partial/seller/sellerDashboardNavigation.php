@@ -108,6 +108,26 @@ $action = strtolower($action);
                     <?php } ?>
                     <li class="divider"></li>
                 <?php } ?>
+                <?php if ($userPrivilege->canViewTaxCategory(UserAuthentication::getLoggedUserId(), true)) { ?>
+                    <li class="menu__item <?php echo ($controller == 'seller' && ($action == 'taxcategories' || $action == 'taxrules')) ? 'is-active' : ''; ?>">
+                        <div class="menu__item__inner"><a title="<?php echo Labels::getLabel('LBL_Tax_Categories', $siteLangId);?>" href="<?php echo UrlHelper::generateUrl('Seller', 'taxCategories'); ?>">
+                                <i class="icn shop"><svg class="svg">
+                                        <use xlink:href="<?php echo CONF_WEBROOT_URL; ?>images/retina/sprite.svg#dash-tax-category" href="<?php echo CONF_WEBROOT_URL; ?>images/retina/sprite.svg#dash-tax-category"></use>
+                                    </svg>
+                                </i><span class="menu-item__title"><?php echo Labels::getLabel('LBL_Tax_Categories', $siteLangId);?></span></a></div>
+                    </li>
+                <?php }?>
+				<?php if ($userPrivilege->canViewSellerRequests(UserAuthentication::getLoggedUserId(), true)) { ?>
+                    <li class="menu__item <?php echo ($controller == 'sellerrequests' && $action == 'index') ? 'is-active' : ''; ?>">
+                        <div class="menu__item__inner"><a title="<?php echo Labels::getLabel('LBL_Requests', $siteLangId);?>" href="<?php echo UrlHelper::generateUrl('SellerRequests'); ?>">
+                                <i class="icn shop"><svg class="svg">
+                                        <use xlink:href="<?php echo CONF_WEBROOT_URL; ?>images/retina/sprite.svg#requests" href="<?php echo CONF_WEBROOT_URL; ?>images/retina/sprite.svg#requests"></use>
+                                    </svg>
+                                </i><span class="menu-item__title"><?php echo Labels::getLabel('LBL_Requests', $siteLangId);?></span></a></div>
+                    </li>
+                <?php }?>
+                <li class="divider"></li>
+                <?php }?>
 
                 <?php if (
                     $userPrivilege->canViewShippingProfiles(UserAuthentication::getLoggedUserId(), true) ||

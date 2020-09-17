@@ -15,8 +15,12 @@ trait SellerUsers
     public function users()
     {
         if ($this->userParentId != UserAuthentication::getLoggedUserId()) {
-            Message::addErrorMessage(Labels::getLabel('LBL_Unauthorized_Access!', $this->siteLangId));
-            FatUtility::dieWithError(Message::getHtml());
+            $msg = Labels::getLabel('LBL_Unauthorized_Access!', $this->siteLangId);
+            if (FatUtility::isAjaxCall()) {
+                FatUtility::dieWithError($msg);
+            }
+            Message::addErrorMessage($msg);
+            FatApp::redirectUser(UrlHelper::generateUrl('seller'));
         }
         $this->set('frmSearch', $this->getUserSearchForm());
         $this->_template->render(true, true);

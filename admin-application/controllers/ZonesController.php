@@ -164,7 +164,7 @@ class ZonesController extends AdminBaseController
             'zone_name'=>$post['zone_name']
         );
 
-        $zoneObj = new zone($zoneId);
+        $zoneObj = new Zone($zoneId);
 
         if (!$zoneObj->updateLangData($lang_id, $data)) {
             Message::addErrorMessage($zoneObj->getError());

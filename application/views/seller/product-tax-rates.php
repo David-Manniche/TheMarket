@@ -15,7 +15,6 @@
 				$arr_flds = array(
 					'listserial'=> Labels::getLabel( 'LBL_Sr.', $siteLangId ),
 					'taxcat_name' => Labels::getLabel( 'LBL_Tax_Category', $siteLangId ),
-					'taxval_value' => Labels::getLabel( 'LBL_Value', $siteLangId ),
 					'action'	=>	'',
 				);
 				$tbl = new HtmlElement('table', array('width'=>'100%', 'class'=>'table'));
@@ -36,10 +35,6 @@
                             switch ($key){
                                 case 'listserial':
                                     $td->appendElement('plaintext', array(), $sr_no,true);
-                                break;
-                                case 'taxval_value';
-                                    $str = CommonHelper::displayTaxFormat($row['taxval_is_percent'],$row['taxval_value']);
-                                    $td->appendElement( 'plaintext', array(), $str,true );
                                 break;
                                 case 'action':
                                         $ul = $td->appendElement("ul",array("class"=>"actions"),'',true);
