@@ -14645,20 +14645,28 @@ img.mfp-img, .post .post_media iframe.mfp-img, .post .post_media .posted-content
   .products__body {
     position: relative; }
     .products__body .not-available {
-      background-color: #888888bf;
-      color: var(--secondary-color-inverse);
-      border-radius: 4px;
+      background-color: rgba(255, 255, 255, 0.9);
+      color: #fd397a;
+      border-radius: 3px;
       padding: 0.5rem;
       position: absolute;
-      top: 50%;
-      left: 5%;
-      z-index: 1;
+      top: 0;
+      bottom: 0;
+      left: 0;
+      z-index: 3;
       font-size: 0.8rem;
       font-weight: 600;
-      right: 5%;
-      transform: translateY(-50%);
+      right: 0;
       margin: auto;
-      max-width: 200px; }
+      white-space: nowrap;
+      display: flex;
+      align-items: center;
+      justify-content: center; }
+      .products__body .not-available .svg {
+        width: 16px;
+        height: 16px;
+        fill: currentColor;
+        margin-right: 8px; }
     .products__body .products__img {
       display: block;
       margin: 0 0 15px;
