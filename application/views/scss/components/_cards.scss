@@ -33,6 +33,7 @@
         }
         &~.cards-content {
             padding-top: 0;
+            overflow-x: auto;
         }
     }
     &-content {
