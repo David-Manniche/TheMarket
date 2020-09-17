@@ -85,6 +85,7 @@ Bugs:
     => 042514 - Admin >> zone > admin is unable to save zone name in English or "Arabic " language. 
     => 042522 - Shipping profile >> add product >> product identifier gets display instead of product name in selected product listing. 
     => 042567 - Name and label of pickup address are not getting display on buyer end while selecting pickup address.
+    => 042588 - Seller > marketplace product > view any product >> only one image gets display there even if there are more .
 
 Enhancements:
     => Tax module upgrade
