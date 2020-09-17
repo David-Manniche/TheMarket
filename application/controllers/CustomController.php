@@ -161,10 +161,16 @@ class CustomController extends MyAppController
         FatUtility::dieJsonSuccess($json);
     }
 
-    public function searchFaqs($catId = '')
+    public function searchFaqs($page = 'faq', $catId = 0)
     {
-        $searchFrm = $this->getSearchFaqForm();
-        $faqMainCat = FatApp::getConfig("CONF_FAQ_PAGE_MAIN_CATEGORY", null, '');
+        if ($page == 'faq') {
+            $faqPage = FaqCategory::FAQ_PAGE;
+            $faqMainCat = FatApp::getConfig("CONF_FAQ_PAGE_MAIN_CATEGORY", null, '');
+        } else {
+            $faqPage = FaqCategory::SELLER_PAGE;
+            $faqMainCat = FatApp::getConfig("CONF_SELLER_PAGE_MAIN_CATEGORY", null, '');
+        }
+                
         if (!empty($catId) && $catId > 0) {
             $faqCatId = array($catId);
         } elseif ($faqMainCat) {
@@ -174,25 +180,27 @@ class CustomController extends MyAppController
             $srchFAQCat->setPageSize(1);
             $srchFAQCat->addFld('faqcat_id');
             $srchFAQCat->addCondition('faqcat_active', '=', applicationConstants::ACTIVE);
-            $srchFAQCat->addCondition('faqcat_type', '=', FaqCategory::FAQ_PAGE);
+            $srchFAQCat->addCondition('faqcat_type', '=', $faqPage);
             $rs = $srchFAQCat->getResultSet();
             $faqCatId = FatApp::getDb()->fetch($rs, 'faqcat_id');
         }
-        $post = $searchFrm->getFormDataFromArray(FatApp::getPostedData());
+        
         $srch = FaqCategory::getSearchObject($this->siteLangId);
         $srch->joinTable('tbl_faqs', 'LEFT OUTER JOIN', 'faq_faqcat_id = faqcat_id and faq_active = ' . applicationConstants::ACTIVE . '  and faq_deleted = ' . applicationConstants::NO);
         $srch->joinTable('tbl_faqs_lang', 'LEFT OUTER JOIN', 'faqlang_faq_id = faq_id');
         $srch->addCondition('faqlang_lang_id', '=', $this->siteLangId);
         $srch->addCondition('faqcat_active', '=', applicationConstants::ACTIVE);
-        $srch->addCondition('faqcat_type', '=', FaqCategory::FAQ_PAGE);
+        $srch->addCondition('faqcat_type', '=', $faqPage);
         if ($faqCatId) {
             $srch->addCondition('faqcat_id', 'IN', $faqCatId);
         }
+
         $question = FatApp::getPostedData('question', FatUtility::VAR_STRING, '');
         if (!empty($question)) {
             $srchCondition = $srch->addCondition('faq_title', 'like', "%$question%");
             $srch->doNotLimitRecords();
         }
+
         $srch->addOrder('faqcat_display_order', 'asc');
         $srch->addOrder('faq_faqcat_id', 'asc');
         $srch->addOrder('faq_display_order', 'asc');
@@ -259,6 +267,7 @@ class CustomController extends MyAppController
         // commonHelper::printArray($recordsCategories); die;
         $this->set('listCategories', $recordsCategories);
         $this->set('faqMainCat', $faqMainCat);
+		$this->set('page', 'faq');
         $json['html'] = $this->_template->render(false, false, '_partial/no-record-found.php', true, false);
         if (!empty($records)) {
             $json['html'] = $this->_template->render(false, false, 'custom/search-faqs.php', true, false);
