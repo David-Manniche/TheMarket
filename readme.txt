@@ -78,6 +78,7 @@ Bugs:
     => 042445 - On Shipping profile and some other pages >> back button should be proper.
     => 042638 - Affiliate dashboard >> Some errors are there.
     => 042451 - View shop >> logo of shop is not getting display there.
+    => 042456 - Admin >> add tax rude >> "cancel " button is not working.
 
 Enhancements:
     => Tax module upgrade
