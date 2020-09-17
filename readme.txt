@@ -77,6 +77,7 @@ Bugs:
     => 043113 - when seller tries to add shipping for admin catalog then there is error
     => 042445 - On Shipping profile and some other pages >> back button should be proper.
     => 042638 - Affiliate dashboard >> Some errors are there.
+    => 042451 - View shop >> logo of shop is not getting display there.
 
 Enhancements:
     => Tax module upgrade
