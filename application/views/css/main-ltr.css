@@ -12604,8 +12604,8 @@ form.custom-form {
 
 .label, .product-line-info .value {
   color: #fff;
-  font-size: 0.8rem;
-  font-weight: 500;
+  font-size: 0.75rem;
+  font-weight: 400;
   padding: 4px 8px;
   text-align: center;
   white-space: nowrap;
@@ -14954,7 +14954,8 @@ img.mfp-img, .post .post_media iframe.mfp-img, .post .post_media .posted-content
   align-items: center; }
 
 .item__description {
-  font-size: 0.9em; }
+  font-size: 0.9em;
+  min-width: 200px; }
   .item__description .item__title {
     color: #2e384d;
     margin: 0 0 4px 0;
@@ -16150,7 +16151,7 @@ img.mfp-img, .post .post_media iframe.mfp-img, .post .post_media .posted-content
     padding: 0.5rem 1rem;
     border-bottom: none;
     background: rgba(0, 0, 0, 0.05);
-    font-weight: 500;
+    font-weight: 400;
     vertical-align: top; }
     .table thead th:first-child {
       border-top-left-radius: 4px;
@@ -16175,7 +16176,7 @@ img.mfp-img, .post .post_media iframe.mfp-img, .post .post_media .posted-content
     padding: 1rem;
     border: none;
     color: inherit;
-    font-size: 0.875em;
+    font-size: 0.8rem;
     border-bottom: solid 1px #dee2e6;
     vertical-align: top; }
   .table a {
@@ -17209,7 +17210,8 @@ a:hover {
       .cards-header .cards-title a {
         color: #2e384d; }
     .cards-header ~ .cards-content {
-      padding-top: 0; }
+      padding-top: 0;
+      overflow-x: auto; }
   .cards-content {
     padding: 1rem;
     /*height: inherit;*/ }
@@ -33056,7 +33058,7 @@ a.ui-button:active,
       fill: var(--brand-color) !important; }
     .widget-scroll .widget-stats .cards,
     .widget-scroll .widget-stats .box--share {
-      min-height: 188px; }
+      /* min-height: 188px;*/ }
 
 .share-earn {
   display: flex;
@@ -33956,7 +33958,7 @@ input.sp-input,
         flex-direction: column; } }
     .product-description .products__title a {
       color: inherit; }
-    .product-description .products__title h2 {
+    .product-description .products__title h1 {
       font-size: 1.75rem;
       line-height: 1.3;
       font-weight: 300;
