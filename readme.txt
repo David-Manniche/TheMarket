@@ -84,6 +84,7 @@ Bugs:
     => 042509 - On Special price, volume discount, related products and buy together products page >> when we enter product name then product's variants should also get display there with product name.
     => 043142 - "Buy together" products under promotions, items do not appear on the list after creating them if no brand
     => 042514 - Admin >> zone > admin is unable to save zone name in English or "Arabic " language.
+	=> 043126 - On language data tab of blog post>>Fatal error is there.
 
 Enhancements:
     => Tax module upgrade
