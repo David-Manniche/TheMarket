@@ -88,6 +88,7 @@ Bugs:
     => 042588 - Seller > marketplace product > view any product >> only one image gets display there even if there are more .
     => 042596 - Button is in white color on some pages 
     => 042643 - Admin >> manage order returns >> Some warning gets display in search section.
+    => 042761 - Admin >> order cancellation request >> when admin approve any cancellation request then some confirmation message should get display.
 
 Enhancements:
     => Tax module upgrade
