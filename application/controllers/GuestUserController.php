@@ -968,7 +968,7 @@ class GuestUserController extends MyAppController
     public function configureEmail()
     {
         $phoneNumber = User::getAttributesById(UserAuthentication::getLoggedUserId(), 'user_phone');
-        $canSendSms = (!empty($phoneNumber) && SmsArchive::canSendSms(SmsTemplate::LOGIN));
+        $canSendSms = (empty($phoneNumber) && SmsArchive::canSendSms(SmsTemplate::LOGIN));
         $this->set('canSendSms', $canSendSms);
         $this->_template->render();
     }

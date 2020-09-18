@@ -42,8 +42,9 @@ class FacebookLoginController extends SocialMediaAuthController
             $resp = $this->fb->getResponse();
             $fbId = $resp->getId();
             $fbEmail = $resp->getEmail();
+            $username = $fbEmail ?? $fbId;
 
-            $userInfo = $this->doLogin($fbEmail, $fbEmail, $fbId, $userType);
+            $userInfo = $this->doLogin($fbEmail, $username, $fbId, $userType);
             $this->redirectToDashboard($userInfo['user_preferred_dashboard']);
         }
         FatApp::redirectUser($this->fb->getRequestUri());
