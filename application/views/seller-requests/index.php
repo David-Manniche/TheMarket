@@ -65,6 +65,7 @@ $this->includeTemplate('_partial/seller/sellerDashboardNavigation.php');
                                             </div>
                                         </div>
                                     <?php } ?>
+									<?php if (FatApp::getConfig('CONF_BRAND_REQUEST_APPROVAL', FatUtility::VAR_INT, 0)) { ?>
                                     <div class="col-md-4">
                                         <div class="no-data-found">
                                             <div class="img">
@@ -80,6 +81,8 @@ $this->includeTemplate('_partial/seller/sellerDashboardNavigation.php');
                                             </div>
                                         </div>
                                     </div>
+									<?php } ?>
+									<?php if (FatApp::getConfig('CONF_PRODUCT_CATEGORY_REQUEST_APPROVAL', FatUtility::VAR_INT, 0)) { ?>
                                     <div class="col-md-4">
                                         <div class="no-data-found">
                                             <div class="img">
@@ -95,6 +98,7 @@ $this->includeTemplate('_partial/seller/sellerDashboardNavigation.php');
                                             </div>
                                         </div>
                                     </div>
+									<?php } ?>
                                 </div>
                             <?php } else { ?>
                                 <div id="listing"> <?php echo Labels::getLabel('LBL_Processing...', $siteLangId); ?></div>
