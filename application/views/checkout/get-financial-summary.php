@@ -29,7 +29,7 @@
                             class="ml-auto"><?php echo CommonHelper::displayMoneyFormat($cartSummary['cartDiscounts']['coupon_discount_total']); ?></span>
                     </li>
                     <?php } ?>
-                    <?php if ($cartSummary['taxOptions']){
+                    <?php if (isset($cartSummary['taxOptions'])) {
                         foreach($cartSummary['taxOptions'] as $taxName => $taxVal){ ?>
                        <li class="list-group-item ">
                           <span class="label"><?php echo $taxVal['title']; ?></span>

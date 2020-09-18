@@ -97,6 +97,7 @@ Bugs:
     => 043101 - After amount has been added to wallet then on success page there is message order has been placed instead of transaction
     => 042455 - Seller >> add shipping profile >> place holder is missing.
     => 042520 - Shipping profile >> manage rates >> cancel button is not working. 
+    => 042576 - Shipping summary >> Rates should be in max 2 decimals.
 
 Enhancements:
     => Tax module upgrade
