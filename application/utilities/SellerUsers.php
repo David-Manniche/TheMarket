@@ -423,7 +423,7 @@ trait SellerUsers
             $permissionModules = UserPrivilege::getSellerPermissionModulesArr($this->siteLangId);
             $permissionArr = UserPrivilege::getPermissionArr($this->siteLangId);
             if (!array_key_exists($moduleId, $permissionModules) || !array_key_exists($permission, $permissionArr)) {
-                Message::addErrorMessage(Labels::getLabel('MSG_Invalid_Request1', $this->siteLangId));
+                Message::addErrorMessage(Labels::getLabel('MSG_Invalid_Request', $this->siteLangId));
                 FatUtility::dieJsonError(Message::getHtml());
             }
             if (!$userPermission->updatePermissions($this->siteLangId, $data)) {

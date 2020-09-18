@@ -9,6 +9,9 @@ $arr_flds = [
     'adsbatch_status' => Labels::getLabel('LBL_STATUS', $siteLangId),
     'action' => '',
 ];
+if (!$canEdit) {
+	unset($arr_flds['action']);
+}
 if (1 > count($arrListing)) {
     unset($arr_flds['select_all']);
 }
