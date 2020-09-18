@@ -33548,13 +33548,13 @@ a.ui-button:active,
 .switch-group {
   width: 100%; }
 
-.items {
+.wishlists {
   width: 100%;
   border-radius: 4px;
   border: solid 1px #dee2e6;
   margin: 0 0 20px;
   position: relative;
-  padding: 1rem;
+  padding: 0;
   height: 100%;
   display: -webkit-box;
   display: -ms-flexbox;
@@ -33563,52 +33563,35 @@ a.ui-button:active,
   -webkit-box-direction: normal;
   -ms-flex-direction: column;
   flex-direction: column; }
-  .items .item {
-    max-width: 50%;
-    -webkit-box-flex: 0;
-    -ms-flex: 0 0 50%;
-    flex: 0 0 50%;
-    padding: 5px;
-    background: #fff;
-    position: relative; }
-  .items .items__body {
-    -webkit-box-flex: 1;
-    -ms-flex: 1;
-    flex: 1; }
-  .items .items__group {
-    margin: 0px;
-    display: block;
-    position: relative;
-    padding: 0; }
-  .items .items__row {
-    display: -webkit-box;
-    display: -ms-flexbox;
-    display: flex;
-    -ms-flex-wrap: wrap;
-    flex-wrap: wrap;
-    margin-bottom: 5px; }
-  .items .item__head {
+  .wishlists__head {
     text-align: center;
     display: -webkit-box;
     display: -ms-flexbox;
     display: flex;
     -webkit-box-pack: justify;
     -ms-flex-pack: justify;
-    justify-content: space-between; }
-  .items .item__pic {
-    overflow: hidden;
-    background: #fff;
-    width: auto;
-    border: solid 1px #dee2e6;
-    border-radius: 4px;
-    padding: 0;
-    margin: 0; }
-    .items .item__pic img, .items .item__pic .post .post_media iframe, .post .post_media .items .item__pic iframe, .items .item__pic .post .post_media .posted-content .posted-media .post__pic .media-wrapper img, .post .post_media .posted-content .posted-media .post__pic .media-wrapper .items .item__pic img, .items .item__pic .posted-content .posted-media .post__pic .media-wrapper .post .post_media img, .posted-content .posted-media .post__pic .media-wrapper .post .post_media .items .item__pic img {
-      max-width: 80%;
-      margin: 0 auto; }
-  .items .item__title {
-    color: #2e384d; }
-  .items .form--creatlist {
+    justify-content: space-between;
+    border-bottom: solid 1px #dee2e6;
+    padding: 10px 1rem; }
+  .wishlists__body {
+    -webkit-box-flex: 1;
+    -ms-flex: 1;
+    flex: 1;
+    padding: 1rem; }
+    .wishlists__body .media-wishlist {
+      align-items: center;
+      flex-wrap: wrap;
+      display: grid;
+      grid-gap: 1rem;
+      grid-template-columns: repeat(auto-fill, minmax(80px, 1fr)); }
+      .wishlists__body .media-wishlist li {
+        border: solid 1px #dee2e6;
+        border-radius: 4px;
+        padding: 0.5rem; }
+        .wishlists__body .media-wishlist li img, .wishlists__body .media-wishlist li .post .post_media iframe, .post .post_media .wishlists__body .media-wishlist li iframe, .wishlists__body .media-wishlist li .post .post_media .posted-content .posted-media .post__pic .media-wrapper img, .post .post_media .posted-content .posted-media .post__pic .media-wrapper .wishlists__body .media-wishlist li img, .wishlists__body .media-wishlist li .posted-content .posted-media .post__pic .media-wrapper .post .post_media img, .posted-content .posted-media .post__pic .media-wrapper .post .post_media .wishlists__body .media-wishlist li img {
+          margin: auto;
+          display: block; }
+  .wishlists .form--creatlist {
     position: absolute;
     left: 50%;
     top: 50%;
@@ -33617,10 +33600,10 @@ a.ui-button:active,
     -ms-transform: translate(-50%, -50%);
     -webkit-transform: translate(-50%, -50%);
     padding: 20px; }
-  .items .form--creatlist h5 {
-    text-align: center; }
-  .items .form--creatlist .field-set {
-    margin: 5px 0 0; }
+    .wishlists .form--creatlist h5 {
+      text-align: center; }
+    .wishlists .form--creatlist .field-set {
+      margin: 5px 0 0; }
 
 .icons-wrapper {
   width: 28px;
