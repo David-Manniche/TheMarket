@@ -30,7 +30,7 @@ $submitBtnFld->developerTags['col'] = 5;
 $submitBtnFld->developerTags['noCaptionTag'] = true;
 
 $cancelBtnFld = $frm->getField('btn_cancel');
-$cancelBtnFld->setFieldTagAttribute('onClick', 'searchProductsSection($(\'input[name="profile_id"]\').val()); return false;');
+$cancelBtnFld->setFieldTagAttribute('onClick', 'clearForm(); return false;');
 $cancelBtnFld->setFieldTagAttribute('class', 'btn btn-outline-primary btn-block');
 $cancelBtnFld->setWrapperAttribute('class', 'col-lg-5');
 $cancelBtnFld->developerTags['col'] = 5;
