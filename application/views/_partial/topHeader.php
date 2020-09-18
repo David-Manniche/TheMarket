@@ -45,10 +45,10 @@
 		} ?>
         <div class="top-bar no-print">
             <div class="container">
-                <div class="row align-items-center">
-                    <div class="col">
+                <div class="top-bar__inner">
+                    <div class="top-bar__left">
                     <?php if (FatApp::getConfig('CONF_ENABLE_GEO_LOCATION', FatUtility::VAR_INT, 0)) {?>                        
-                            <a href="javascript:void(0)" onClick="accessLocation(true)" class="" title="<?php echo Labels::getLabel("LBL_Location", $siteLangId); ?>">
+                            <a href="javascript:void(0)" onClick="accessLocation(true)" class="location" title="<?php echo Labels::getLabel("LBL_Location", $siteLangId); ?>">
                             <i class="icn">
                                 <svg class="svg" width="15px" height="15px">
                                     <use xlink:href="<?php echo CONF_WEBROOT_URL; ?>images/retina/sprite.svg#gps" href="<?php echo CONF_WEBROOT_URL; ?>images/retina/sprite.svg#gps">
@@ -64,7 +64,7 @@
                         
                         <?php }?>
                     </div>
-                    <div class="col-auto">
+                    <div class="top-bar__right">
                         <div class="short-links">
                             <ul>
                                 <?php $this->includeTemplate('_partial/headerTopNavigation.php'); ?>

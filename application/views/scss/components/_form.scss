@@ -8,7 +8,7 @@
          border-radius: $radius4;
      }
      .field_label {
-         font-size: 0.9em;
+         font-size: 0.8rem;
          color: $txt-gray;
          margin: 0;
          margin-bottom: 5px;
@@ -115,6 +115,7 @@
          resize: vertical;
          height: 120px;
          line-height: 1.5;
+         padding-top: 10px;
          &.txtarea-height {
              height: 85px;
          }

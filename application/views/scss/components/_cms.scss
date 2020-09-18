@@ -102,11 +102,13 @@
         display: inline-block;
         font-family: $family-primary;
         font-weight: 300;
+        h1,
         h2,
         h3,
         h4 {
             font-weight: inherit;
         }
+        h1,
         h2 {
             >span {
                 display: block;

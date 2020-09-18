@@ -1567,7 +1567,7 @@
             flex-wrap: wrap;
             display: grid;
             grid-gap: 1rem;
-            grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+            grid-template-columns: repeat(auto-fill, minmax(55px, 1fr));
             li {
                 border: $border;
                 border-radius: $radius4;
@@ -1578,6 +1578,9 @@
                 }
             }
         }
+    }
+    &__foot {
+        padding: 1rem;
     }
     .form--creatlist {
         position: absolute;

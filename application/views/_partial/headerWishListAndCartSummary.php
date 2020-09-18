@@ -100,7 +100,7 @@ if ($user_is_buyer > 0 || (!UserAuthentication::isUserLogged())) { ?>
                     <td class="">
                         <?php /* <a href="<?php echo UrlHelper::generateUrl('cart'); ?>" class="btn btn-primary ripplelink"><?php echo Labels::getLabel('LBL_View_Bag', $siteLangId); ?> </a> */ ?>
                     </td>
-                    <td class=""><a class="btn btn-outline-primary ripplelink" href="<?php echo UrlHelper::generateUrl('cart'); ?>"><?php echo Labels::getLabel('LBL_Proceed_To_Pay', $siteLangId); ?></a></td>
+                    <td class=""><a class="btn btn-primary ripplelink" href="<?php echo UrlHelper::generateUrl('cart'); ?>"><?php echo Labels::getLabel('LBL_Proceed_To_Pay', $siteLangId); ?></a></td>
                 </tr>
             </table>
         </div>

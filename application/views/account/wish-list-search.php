@@ -64,12 +64,14 @@
                     if ($wishlist['totalProducts']>0) {
                         ?>
 
-            <div class="align--center ">
+            <div class="wishlists__foot">
+                <div class="text-center">
                 <a onClick="<?php echo $functionName; ?>(<?php echo $wishlist['uwlist_id']; ?>);"
                     href="javascript:void(0)" class="btn btn-outline-primary btn-sm">
                     <?php echo str_replace('{n}', $wishlist['totalProducts'], Labels::getLabel('LBL_View_{n}_items', $siteLangId)); ?>
                     <i class="fa fa-eye"></i>
                 </a>
+                </div>
             </div> <?php
                     } ?>
         </div>
@@ -83,11 +85,11 @@
     if (FatApp::getConfig('CONF_ADD_FAVORITES_TO_WISHLIST', FatUtility::VAR_INT, 1) == applicationConstants::YES) {
         ?>
     <div class="col-lg-4 col-md-6 mb-3">
-        <div class="items p-4">
-            <div class="items__body text-center">
+        <div class="wishlists">
+            <div class="wishlists__body">
                 <div class="form">
-                    <h5><?php echo Labels::getLabel('LBL_Create_new_list', $siteLangId); ?>
-                    </h5> <?php
+                    <h6><?php echo Labels::getLabel('LBL_Create_new_list', $siteLangId); ?>
+                    </h6> <?php
                         $frm->setFormTagAttribute('onsubmit', 'setupWishList2(this,event); return(false);');
                         $frm->developerTags['colClassPrefix'] = 'col-lg-12 col-md-12 col-sm-';
                         $frm->developerTags['fld_default_col'] = 12;
