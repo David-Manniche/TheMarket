@@ -92,6 +92,10 @@ Bugs:
     => 042761 - Admin >> order cancellation request >> when admin approve any cancellation request then some confirmation message should get display.
     => 043173 - Options appear on the drop down when adding speical price, volume discount, buy together products, related products.
     => 042514 - Admin >> zone > admin is unable to save zone name in English or "Arabic " language.
+	=> 043126 - On language data tab of blog post>>Fatal error is there.
+    => 043186 - Admin >> Add rules >> Blank fields should not get display if admin save some blank entries for "tax component"
+    => 043182 - Seller >> on view tax category >> "tax category" identifier gets display instead of tax category name in english language .
+    => 043180 - Admin >>Tax structure >> add >> Error is there.
     => 042768 - Seller >> shop inventory >>there should be some space between all three buttons and title bar
     => 043100 - buyer> add money to wallet> on blank submitting form there is processing which shouldn't be
     => 043101 - After amount has been added to wallet then on success page there is message order has been placed instead of transaction
