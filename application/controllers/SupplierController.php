@@ -576,6 +576,7 @@ class SupplierController extends MyAppController
         $this->set('list', $records);
         $this->set('listCategories', $recordsCategories);
         $this->set('faqMainCat', $faqMainCat);
+		$this->set('page', 'seller');
         $json['html'] = $this->_template->render(false, false, '_partial/no-record-found.php', true, false);
         if (!empty($records)) {
             $json['html'] = $this->_template->render(false, false, 'supplier/search-faqs.php', true, false);

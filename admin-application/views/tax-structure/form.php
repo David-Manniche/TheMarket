@@ -4,10 +4,6 @@ $frm->setFormTagAttribute('onsubmit', 'setupTaxStructure(this); return(false);')
 $frm->developerTags['colClassPrefix'] = 'col-md-';
 $frm->developerTags['fld_default_col'] = 12;
 
-$fld = $frm->getField('auto_update_other_langs_data');
-$fld->developerTags['cbLabelAttributes'] = array('class' => 'checkbox');
-$fld->developerTags['cbHtmlAfterCheckbox'] = '<i class="input-helper"></i>';
-
 $fld = $frm->getField('taxstr_is_combined');
 $fld->setOptionListTagAttribute('class', 'list-inline-checkboxes'); 
 $fld->developerTags['cbLabelAttributes'] = array('class' => 'checkbox');

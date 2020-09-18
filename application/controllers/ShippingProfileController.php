@@ -219,7 +219,7 @@ class ShippingProfileController extends SellerBaseController
         $frm = new Form('frmShippingProfile');
         $frm->addHiddenField('', 'shipprofile_id', $profileId);
         $frm->addHiddenField('', 'shipprofile_user_id', $userId);
-        $fld = $frm->addRequiredField(Labels::getLabel('LBL_Profile_Name', $this->siteLangId), 'shipprofile_name');
+        $fld = $frm->addRequiredField(Labels::getLabel('LBL_Profile_Name', $this->siteLangId), 'shipprofile_name', '', ['placeholder' => Labels::getLabel('LBL_Profile_Name', $this->siteLangId)]);
         $frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_Save_Changes', $this->siteLangId));
         return $frm;
     }

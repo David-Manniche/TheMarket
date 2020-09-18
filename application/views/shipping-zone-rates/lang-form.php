@@ -5,7 +5,7 @@ $langFrm->developerTags['colClassPrefix'] = 'col-sm-4 col-md-';
 $langFrm->developerTags['fld_default_col'] = 12;
 
 $cancelFld = $langFrm->getField('btn_cancel');
-$cancelFld->setFieldTagAttribute('onClick', 'searchProductsSection($(\'input[name="profile_id"]\').val()); return false;');
+$cancelFld->setFieldTagAttribute('onClick', 'clearForm(); return false;');
 $cancelFld->developerTags['col'] = 3;
 $cancelFld->setFieldTagAttribute('class', 'btn btn-outline-primary btn-block');
 $cancelFld->developerTags['noCaptionTag'] = true;

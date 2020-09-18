@@ -63,7 +63,7 @@
                                             }
                                         }
                                     }
-                                    echo '<option '.$selected.' value="' . $key . '">' . $shippingRate['title'] .' ( ' . $shippingRate['cost'] . ' ) </option>';
+                                    echo '<option '.$selected.' value="' . $key . '">' . $shippingRate['title'] .' ( ' . CommonHelper::displayMoneyFormat($shippingRate['cost']) . ' ) </option>';
                                 }
                                 echo '</select>';
                             } else {
@@ -96,7 +96,7 @@
                                             }
                                         }
                                     }
-                                    echo '<option '.$selected.' value="' . $key . '">' . $shippingRate['title'] .' ( ' . $shippingRate['cost'] . ' ) </option>';
+                                    echo '<option '.$selected.' value="' . $key . '">' . $shippingRate['title'] .' ( ' . CommonHelper::displayMoneyFormat($shippingRate['cost']) . ' ) </option>';
                                 }
                                 echo '</select>';
                             } elseif ($product['product_type'] == Product::PRODUCT_TYPE_PHYSICAL) {
@@ -125,7 +125,7 @@
                                                 }
                                             }
                                         }
-                                        echo '<option '.$selected.' value="' . $key . '">' . $shippingRate['title'] .' ( ' . $shippingRate['cost'] . ' ) </option>';
+                                        echo '<option '.$selected.' value="' . $key . '">' . $shippingRate['title'] .' ( ' . CommonHelper::displayMoneyFormat($shippingRate['cost']) . ' ) </option>';
                                     }
                                     echo '</select>';
                             } elseif ($product['product_type'] == Product::PRODUCT_TYPE_PHYSICAL) {

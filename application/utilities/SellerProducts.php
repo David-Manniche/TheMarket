@@ -375,6 +375,9 @@ trait SellerProducts
         if ($selprod_id > 0) {
             unset($post['selprod_code']);
         }
+        $post['selprod_subtract_stock'] = FatApp::getPostedData('selprod_subtract_stock', FatUtility::VAR_INT, 0);
+        $post['selprod_track_inventory'] = FatApp::getPostedData('selprod_track_inventory', FatUtility::VAR_INT, 0);
+        // CommonHelper::printArray($post, true);
         $data_to_be_save = $post;
         $sellerProdObj = new SellerProduct($selprod_id);
         $sellerProdObj->assignValues($data_to_be_save);

@@ -358,7 +358,6 @@ function removePageSideFromLink() {
 }
 
 function showSelectedFilters() {
-    console.log($("#filters a").length);
     if (($("#filters a").length) > 1) {
         $('#resetAll').css('display', 'block');
     } else {

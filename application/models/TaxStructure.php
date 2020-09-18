@@ -233,6 +233,9 @@ class TaxStructure extends MyAppModel
         }
 		
         foreach ($post['taxstr_component_name'] as $taxStrValues) {
+            if (empty($taxStrValues[$siteDefaultLangId])) {
+                continue;
+            }
             $this->mainTableRecordId = 0;
             $data = array(
                 'taxstr_identifier' => $taxStrValues[$siteDefaultLangId],

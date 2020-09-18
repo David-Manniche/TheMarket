@@ -1,10 +1,5 @@
 <?php defined('SYSTEM_INIT') or die('Invalid Usage.'); ?>
 <?php
-$faqSearchFrm->setFormTagAttribute('id', 'frmSearchFaqs');
-$faqSearchFrm->setFormTagAttribute('onSubmit', 'searchFaqs(this);return false;');
-$faqSearchFrm->getField('question')->setFieldTagAttribute('placeholder', Labels::getLabel('Lbl_Search', $siteLangId));
-$faqSearchFrm->getField('question')->setFieldTagAttribute('class', "faq-input no-focus");
-
 $btn = $sellerFrm->getField('btn_submit');
 $btn->setFieldTagAttribute('class', "btn btn-primary btn-wide");
 ?>
@@ -22,15 +17,15 @@ $btn->setFieldTagAttribute('class', "btn btn-primary btn-wide");
                 </div>
                 <div class="col-xl-5 col-lg-6">
                     <div class="seller-register-form">
-					<div class="section-head">
-			<div class="section__heading">
-				<h2><?php echo Labels::getLabel('L_Register_Today', $siteLangId); ?></h2>
-			</div>
-					</div>
-                                                <div class="gap"></div>
+						<div class="section-head">
+							<div class="section__heading">
+								<h2><?php echo Labels::getLabel('L_Register_Today', $siteLangId); ?></h2>
+							</div>
+						</div>
+						<div class="gap"></div>
                         <?php $sellerFrm->developerTags['colClassPrefix'] = 'col-lg-12 col-md-12 col-sm-';
-                            $sellerFrm->developerTags['fld_default_col'] = 12;
-                            echo $sellerFrm->getFormHtml(); ?>
+						$sellerFrm->developerTags['fld_default_col'] = 12;
+						echo $sellerFrm->getFormHtml(); ?>
                         <div class="row">
                             <div class="col-md-12">
                                 <div class=""><?php echo FatUtility::decodeHtmlEntities($formText['epage_content']);?></div>
@@ -55,39 +50,30 @@ $btn->setFieldTagAttribute('class', "btn btn-primary btn-wide");
         <div class="section simple-price">
             <div class="container"> <?php echo FatUtility::decodeHtmlEntities($block3['epage_content']); ?> </div>
         </div>
-    <?php }
-    if ($faqCount > 0) { ?>
-        <div class="section questions-section">
+    <?php } ?>
+	
+    <?php if ($faqCount > 0) { ?>
+        <div class="section bg-gray">
             <div class="container">
-                <div class="row justify-content-center">
-                    <!-- <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
-                        <div id="listing"></div>
-                        <div class="gap"> </div>
-                    </div>
-                    <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
-                        <div class="heading3"><?php echo Labels::getLabel('LBL_Browse_By_Category', $siteLangId)?></div>
-                        <div class="row">
-                            <div id="categoryPanel"></div>
-                        </div>
-                    </div> -->
-                    <div class="col-md-6 mb-5">
-                    <div class="section-head section--head--center">
-                        <div class="section__heading">
-                            <h2><?php echo Labels::getLabel('LBL_Frequently_Asked_Questions', $siteLangId);?></h2>
-                        </div>
-                    </div>
-                    <div class="">
-                        <?php
-                            echo $faqSearchFrm->getFormTag();
-                            echo $faqSearchFrm->getFieldHtml('question');
-                        ?>
-                        </form>
-                        <!-- <input class="faq-input no-focus" type="text" placeholder="Search" /> -->
-                    </div>
-                </div>
-
-                </div>
-                <div class="row justify-content-center">
+                <div class="row align-items-center justify-content-center">
+					<div class="col-md-6">
+						<div class="section-head section--white--head section--head--center mb-0">
+							<div class="section__heading">
+								<h2><?php echo Labels::getLabel('LBL_Frequently_Asked_Questions', $siteLangId);?></h2>
+							</div>
+						</div>
+						<div class="faqsearch">
+							<form name="frmSearchFaqs" class="form" action="javascript:void(0);">
+								<input placeholder="Search" class="faq-input no-focus" data-field-caption="Enter your question" type="search" name="question" value="">
+							</form>
+						</div>
+					</div>
+				</div>
+            </div>
+        </div>
+		<div class="section">
+			<div class="container">
+				<div class="row justify-content-center">
                     <div class="col-md-8">
                         <?php if ($faqCount > 0) { ?>
                         <div class="faq-filters mb-4" id="categoryPanel"></div>
@@ -95,11 +81,11 @@ $btn->setFieldTagAttribute('class', "btn btn-primary btn-wide");
                         <ul class="faqlist" id="listing"></ul>
                     </div>
                 </div>
-            </div>
-        </div>
-
+			</div>
+		</div>
         <div class="divider"></div>
     <?php } ?>
+
     <div class="gap"></div>
     <div class="container">
         <div class="align--center">
@@ -112,3 +98,59 @@ $btn->setFieldTagAttribute('class', "btn btn-primary btn-wide");
 </div>
 <!-- End Document
 ================================================== -->
+<script>
+    var clics = 0;
+    $(document).ready(function() {
+        $('.faqanswer').hide();
+        $('#faqcloseall').hide();
+        $(document).on("click", 'h3', function() {
+            $(this).next('.faqanswer').toggle(function() {
+                $(this).next('.faqanswer');
+            }, function() {
+                $(this).next('.faqanswer').fadeIn('fast');
+            });
+            if ($(this).hasClass('faqclose')) {
+                $(this).removeClass('faqclose');
+            } else {
+                $(this).addClass('faqclose');
+            };
+            if ($('.faqclose').length >= 3) {
+                $('#faqcloseall').fadeIn('fast');
+            } else {
+                $('#faqcloseall').hide();
+                var yolo = $('.faqclose').length
+                console.log(yolo);
+            }
+        }); //Close Function Click
+    }); //Close Function Ready
+    $(document).on("click", '#faqcloseall', function() {
+        $('.faqanswer').fadeOut(200);
+        $('h3').removeClass('faqclose');
+        $('#faqcloseall').fadeOut('fast');
+    });
+    //search box
+    $(function() {
+        $(document).on("keyup", '.faq-input', function() {
+            // Get user input from search box
+            var filter_text = $(this).val();
+            var replaceWith = "<span class='js--highlightText'>"+filter_text+"</span>";
+            var re = new RegExp(filter_text, 'g');
+
+            $('.faqlist h3').each(function() {
+                if ('' !== filter_text) {
+                    if ($(this).text().toLowerCase().indexOf(filter_text) >= 0) {
+                        var content = $(this).text();
+                        $(this).siblings( ".faqanswer" ).slideDown();
+                        $(this).html(content.replace(re, replaceWith));
+                    } else {
+                        $(this).text($(this).text());
+                        $(this).siblings( ".faqanswer" ).slideUp();
+                    }
+                } else {
+                    $(this).text($(this).text());
+                    $('.faqlist h3').siblings( ".faqanswer" ).slideUp();
+                }
+            })
+        });
+    });
+</script>
