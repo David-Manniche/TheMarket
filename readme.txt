@@ -107,6 +107,7 @@ Bugs:
     => 037364 - when seller adds inventory data - selects stock maintain level, track inventory to YES and set alert quantity then data is not getting uploaded in bulk import/export
     => 040190 - when user signup through email id (verification pending) and then uses the same email id from social login then account gets login and email id should get verified autimatically
     => 037325 - when buyer registers through phone number and then requests to become seller then on seller request from there should be email field to complete the process
+    => 040623 - when user sign up through social (phone number) then it lands on configure email page and from there existing email is allowing
 
 Enhancements:
     => Tax module upgrade

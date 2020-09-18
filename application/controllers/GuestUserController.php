@@ -967,6 +967,11 @@ class GuestUserController extends MyAppController
 
     public function configureEmail()
     {
+        if (!UserAuthentication::isUserLogged()) {
+            Message::addErrorMessage(Labels::getLabel('MSG_PLEASE_LOGIN_TO_CONFIGURE_EMAIL/_PHONE',$this->siteLangId));
+            FatApp::redirectUser(UrlHelper::generateUrl('GuestUser', 'loginForm'));
+        }
+
         $phoneNumber = User::getAttributesById(UserAuthentication::getLoggedUserId(), 'user_phone');
         $canSendSms = (empty($phoneNumber) && SmsArchive::canSendSms(SmsTemplate::LOGIN));
         $this->set('canSendSms', $canSendSms);
@@ -1008,6 +1013,19 @@ class GuestUserController extends MyAppController
 
         if ($post['new_email'] != $post['conf_new_email']) {
             $message = Labels::getLabel('MSG_New_email_confirm_email_does_not_match', $this->siteLangId);
+            LibHelper::dieJsonError($message);
+        }
+
+        $usr = new User();
+        $srch = $usr->getUserSearchObj(array('uc.credential_email'));
+        $srch->addCondition('uc.credential_email', '=', $post['new_email']);
+        $srch->doNotCalculateRecords();
+        $srch->setPageSize(1);
+
+        $rs = $srch->getResultSet();
+        $record = FatApp::getDb()->fetch($rs);
+        if ($record) {
+            $message = Labels::getLabel("ERR_DUPLICATE_EMAIL", $this->siteLangId);
             LibHelper::dieJsonError($message);
         }
 
