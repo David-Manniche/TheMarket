@@ -47,9 +47,9 @@ class ImportexportCommon extends FatModel
             }
             $file = self::IMPORT_ERROR_LOG_PATH . $this->CSVfileName;
             $headingsArr = array(
-            Labels::getLabel('LBL_Row', $langId),
-            Labels::getLabel('LBL_Column', $langId),
-            Labels::getLabel('LBL_Description', $langId)
+                Labels::getLabel('LBL_Row', $langId),
+                Labels::getLabel('LBL_Column', $langId),
+                Labels::getLabel('LBL_Description', $langId)
             );
             $handle = fopen($file, "w");
         }
@@ -63,7 +63,7 @@ class ImportexportCommon extends FatModel
             $langId = CommonHelper::getLangId();
         }
 
-        CommonHelper::writeToCSVFile($handle, $headingsArr);
+        CommonHelper::writeToCSVFile($handle, $headingsArr, false, true);
         return $handle;
     }
 

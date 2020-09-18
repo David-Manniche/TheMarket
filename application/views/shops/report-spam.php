@@ -7,7 +7,12 @@
 	$frm->setFormTagAttribute('class','form form--horizontal');
 	$frm->developerTags['colClassPrefix'] = 'col-lg-12 col-md-12 col-sm-';
 	$frm->developerTags['fld_default_col'] = 12;
-	$frm->setFormTagAttribute('onSubmit', 'setUpShopSpam(this); return false;');
+    $frm->setFormTagAttribute('onSubmit', 'setUpShopSpam(this); return false;');
+    
+    $btnFld = $frm->getField('btn_submit');
+    if (null != $btnFld) {
+        $btnFld->addFieldTagAttribute('class', 'btn btn-primary');
+    }
 ?>
 
 <div id="body" class="body">
