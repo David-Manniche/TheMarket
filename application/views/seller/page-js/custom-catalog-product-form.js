@@ -1068,7 +1068,7 @@ $(document).on('change', '.language-js', function () {
     };
 
     goToCatalogRequest = function(){
-        window.location.href = fcom.makeUrl('seller', 'customCatalogProducts');
+        window.location.href = fcom.makeUrl('SellerRequests');
     }
 	
 	shippingPackages = function (form) {

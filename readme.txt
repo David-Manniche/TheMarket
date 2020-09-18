@@ -107,6 +107,7 @@ Bugs:
     => 037364 - when seller adds inventory data - selects stock maintain level, track inventory to YES and set alert quantity then data is not getting uploaded in bulk import/expor
     => 042960 - Admin >> brands >> if we delete any brand and then recreate that same brand again then duplicate entry error is there.
     => 042517 - Seller >> manage permissions for subsellers >> permission for "manage shipping " and " google shopping feed" are missing.
+    => 043202 - when seller submits catalog request then there is 404 error 
 
 Enhancements:
     => Tax module upgrade
