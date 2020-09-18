@@ -105,7 +105,15 @@ Bugs:
     => 042597 - On order details page >> when we use wallet then "+" sign gets display in payment method. 
     => 042637 - Add rules >> if admin select country then by default "all states" should be selected.
     => 037364 - when seller adds inventory data - selects stock maintain level, track inventory to YES and set alert quantity then data is not getting uploaded in bulk import/expor
-
+    => 042960 - Admin >> brands >> if we delete any brand and then recreate that same brand again then duplicate entry error is there.
+    => 042517 - Seller >> manage permissions for subsellers >> permission for "manage shipping " and " google shopping feed" are missing.
+    => 043202 - when seller submits catalog request then there is 404 error 
+    => 037364 - when seller adds inventory data - selects stock maintain level, track inventory to YES and set alert quantity then data is not getting uploaded in bulk import/export
+    => 040190 - when user signup through email id (verification pending) and then uses the same email id from social login then account gets login and email id should get verified autimatically
+    => 037325 - when buyer registers through phone number and then requests to become seller then on seller request from there should be email field to complete the process
+    => 040623 - when user sign up through social (phone number) then it lands on configure email page and from there existing email is allowing
+    => 042341 - admin> import /export> option> getting option value in drop down
+    
 Enhancements:
     => Tax module upgrade
     => Test cases classes enhancements.

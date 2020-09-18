@@ -108,6 +108,7 @@ class User extends MyAppModel
         'credential_active as user_active',
         'credential_username',
         'credential_password',
+        'credential_verified',
     ];
 
     public const DEVICE_OS_BOTH = 0;
@@ -2597,7 +2598,7 @@ class User extends MyAppModel
         $rs = $srch->getResultSet();
 
         $row = $db->fetch($rs);
-
+        
         if (isset($row['user_active']) && $row['user_active'] != applicationConstants::ACTIVE) {
             $this->error = Labels::getLabel('ERR_YOUR_ACCOUNT_HAS_BEEN_DEACTIVATED', $this->commonLangId);
             return false;
@@ -2635,11 +2636,15 @@ class User extends MyAppModel
                 return false;
             }
 
-            if (empty($row['credential_email'])) {
+            if (empty($row['credential_email']) || applicationConstants::YES > $row['credential_email']) {
                 $assignValues = [
                     static::DB_TBL_CRED_PREFIX . 'user_id' => $row['user_id'],
                     static::DB_TBL_CRED_PREFIX . 'email' => $email,
                 ];
+                if (!empty($socialAccountId)) {
+                    $assignValues[static::DB_TBL_CRED_PREFIX . 'verified'] = applicationConstants::YES;
+                }
+                
                 if (!FatApp::getDb()->insertFromArray(static::DB_TBL_CRED, $assignValues, false, array(), $assignValues)) {
                     $this->error = FatApp::getDb()->getError();
                     return false;

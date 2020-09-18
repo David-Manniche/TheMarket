@@ -31,6 +31,8 @@ class UserPrivilege
     public const SECTION_SHIPPING_PROFILE = 28;
     public const SECTION_SHIPPING_PACKAGES = 29;
 	public const SECTION_SELLER_REQUESTS = 30;
+	public const SECTION_ADVERTISEMENT_FEED = 31;
+
 
 
     public const MODULE_SHOP = 1;
@@ -41,6 +43,7 @@ class UserPrivilege
     public const MODULE_ACCOUNT = 6;
     public const MODULE_ADVERTISEMENT = 7;
     public const MODULE_IMPORT_EXPORT = 8;
+    public const MODULE_SHIPPING = 9;
 
     public const PRIVILEGE_NONE = 0;
     public const PRIVILEGE_READ = 1;
@@ -81,6 +84,7 @@ class UserPrivilege
         static::MODULE_ACCOUNT => Labels::getLabel('LBL_Account', $langId),
         static::MODULE_ADVERTISEMENT => Labels::getLabel('LBL_Advertisement', $langId),
         static::MODULE_IMPORT_EXPORT => Labels::getLabel('LBL_Import_Export', $langId),
+        static::MODULE_SHIPPING => Labels::getLabel('LBL_Shipping', $langId),
         );
         return $arr;
     }
@@ -121,7 +125,10 @@ class UserPrivilege
             static::SECTION_INVENTORY_REPORT => Labels::getLabel('LBL_Inventory_Report', $langId),
             static::SECTION_UPLOAD_BULK_IMAGES => Labels::getLabel('LBL_Upload_Bulk_Images', $langId),
             static:: SECTION_PROMOTIONS => Labels::getLabel('LBL_Promotions', $langId),
-            static:: SECTION_SUBSCRIPTION => Labels::getLabel('LBL_Subscription', $langId)
+            static:: SECTION_SUBSCRIPTION => Labels::getLabel('LBL_Subscription', $langId),
+            static::SECTION_SHIPPING_PROFILE => Labels::getLabel('LBL_Shipping_Profiles', $langId),
+            static::SECTION_SHIPPING_PACKAGES => Labels::getLabel('LBL_Shipping_Packages', $langId),
+            static::SECTION_ADVERTISEMENT_FEED => Labels::getLabel('LBL_Advertisement_Feed', $langId),
         );
         return $arr;
     }
@@ -150,6 +157,11 @@ class UserPrivilege
                     static::SECTION_CANCELLATION_REQUESTS => Labels::getLabel('LBL_Cancellation_Requests', $langId),
                     static::SECTION_RETURN_REQUESTS => Labels::getLabel('LBL_Return_Requests', $langId),
                 ),
+            static::MODULE_SHIPPING =>
+                array(
+                    static::SECTION_SHIPPING_PROFILE => Labels::getLabel('LBL_Shipping_Profiles', $langId),
+                    static::SECTION_SHIPPING_PACKAGES => Labels::getLabel('LBL_Shipping_Packages', $langId),
+                ),
             static::MODULE_SEO =>
                 array(
                     static::SECTION_META_TAGS => Labels::getLabel('LBL_Meta_Tags', $langId),
@@ -163,7 +175,8 @@ class UserPrivilege
                 ),
             static::MODULE_ADVERTISEMENT =>
                 array(
-                    static::SECTION_PROMOTIONS => Labels::getLabel('LBL_Promotions', $langId)
+                    static::SECTION_PROMOTIONS => Labels::getLabel('LBL_Promotions', $langId),
+                    static::SECTION_ADVERTISEMENT_FEED => Labels::getLabel('LBL_Advertisement_Feed', $langId),
                 ),
             static::MODULE_ACCOUNT =>
                 array(
@@ -865,5 +878,15 @@ class UserPrivilege
             return $this->returnFalseOrDie($returnResult);
         }
         return $this->checkPermission($sellerId, static::SECTION_SELLER_REQUESTS, static::PRIVILEGE_WRITE, $returnResult);
+    }
+
+    public function canViewAdvertisementFeed($sellerId = 0, $returnResult = false)
+    {
+        return $this->checkPermission($sellerId, static::SECTION_ADVERTISEMENT_FEED, static::PRIVILEGE_READ, $returnResult);
+    }
+
+    public function canEditAdvertisementFeed($sellerId = 0, $returnResult = false)
+    {
+        return $this->checkPermission($sellerId, static::SECTION_ADVERTISEMENT_FEED, static::PRIVILEGE_WRITE, $returnResult);
     }
 }

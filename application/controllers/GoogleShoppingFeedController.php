@@ -22,6 +22,7 @@ class GoogleShoppingFeedController extends AdvertisementFeedBaseController
     {
         parent::__construct($action);
         $this->init();
+		$this->userPrivilege->canViewAdvertisementFeed(UserAuthentication::getLoggedUserId());
     }
     
     /**
@@ -121,6 +122,7 @@ class GoogleShoppingFeedController extends AdvertisementFeedBaseController
      */
     private function setupMerchantDetail()
     {
+		$this->userPrivilege->canEditAdvertisementFeed();
         $this->client->setAccessToken($this->accessToken);
         $service = new Google_Service_ShoppingContent($this->client);
         $authDetail = $service->accounts->authinfo();
@@ -155,6 +157,7 @@ class GoogleShoppingFeedController extends AdvertisementFeedBaseController
      */
     public function serviceAccountForm()
     {
+		$this->userPrivilege->canEditAdvertisementFeed();
         $data = $this->getUserMeta();
         $frm = $this->getServiceAccountForm();
         if (!empty($data) && 0 < count($data)) {
@@ -172,6 +175,7 @@ class GoogleShoppingFeedController extends AdvertisementFeedBaseController
      */
     public function setupServiceAccountForm()
     {
+		$this->userPrivilege->canEditAdvertisementFeed();
         $frm = $this->getServiceAccountForm();
         $post = $frm->getFormDataFromArray(FatApp::getPostedData());
         unset($post['btn_submit']);
@@ -251,6 +255,7 @@ class GoogleShoppingFeedController extends AdvertisementFeedBaseController
      */
     public function batchForm(int $adsBatchId = 0)
     {
+		$this->userPrivilege->canEditAdvertisementFeed();
         $prodBatchAdsFrm = $this->getBatchForm($adsBatchId);
 
         if (0 < $adsBatchId) {
@@ -273,6 +278,7 @@ class GoogleShoppingFeedController extends AdvertisementFeedBaseController
      */
     public function bindProducts(int $adsBatchId)
     {
+		$this->userPrivilege->canEditAdvertisementFeed();
         $adsBatchId = FatUtility::int($adsBatchId);
         $this->set('adsBatchId', $adsBatchId);
         $this->_template->render();
@@ -287,6 +293,7 @@ class GoogleShoppingFeedController extends AdvertisementFeedBaseController
      */
     public function bindProductForm(int $adsBatchId, int $selProdId = 0)
     {
+		$this->userPrivilege->canEditAdvertisementFeed();
         $this->adsBatchId = $adsBatchId;
         if (false === $this->validateBatchRequest()) {
             $this->setError($this->error, 'Seller');
@@ -313,6 +320,7 @@ class GoogleShoppingFeedController extends AdvertisementFeedBaseController
      */
     public function setupBatch()
     {
+		$this->userPrivilege->canEditAdvertisementFeed();
         $frm = $this->getBatchForm();
         $post = $frm->getFormDataFromArray(FatApp::getPostedData());
 
@@ -345,6 +353,7 @@ class GoogleShoppingFeedController extends AdvertisementFeedBaseController
      */
     public function setupProductsToBatch()
     {
+		$this->userPrivilege->canEditAdvertisementFeed();
         $frm = $this->getBindProductForm();
         $post = $frm->getFormDataFromArray(FatApp::getPostedData());
 
@@ -401,6 +410,7 @@ class GoogleShoppingFeedController extends AdvertisementFeedBaseController
         $this->set('postedData', FatApp::getPostedData());
         $this->set('recordCount', $srch->recordCount());
         $this->set('pageSize', FatApp::getConfig('CONF_PAGE_SIZE', FatUtility::VAR_INT, 10));
+		$this->set('canEdit', $this->userPrivilege->canEditAdvertisementFeed(0, true));
         $this->_template->render(false, false);
     }
     
@@ -412,6 +422,7 @@ class GoogleShoppingFeedController extends AdvertisementFeedBaseController
      */
     public function deleteBatch(int $adsBatchId)
     {
+		$this->userPrivilege->canEditAdvertisementFeed();
         $this->adsBatchId = $adsBatchId;
         if (false === $this->validateBatchRequest()) {
             LibHelper::dieJsonError($this->error);
@@ -499,6 +510,7 @@ class GoogleShoppingFeedController extends AdvertisementFeedBaseController
      */
     public function unlinkProduct(int $adsBatchId, int $selProdId, bool $return = false)
     {
+		$this->userPrivilege->canEditAdvertisementFeed();
         $this->adsBatchId = $adsBatchId;
         if (false === $this->validateBatchRequest()) {
             LibHelper::dieJsonError($this->error);
@@ -523,6 +535,7 @@ class GoogleShoppingFeedController extends AdvertisementFeedBaseController
      */
     public function unlinkProducts(int $adsBatchId)
     {
+		$this->userPrivilege->canEditAdvertisementFeed();
         $adsBatchId = FatUtility::int($adsBatchId);
         $sellerProducts = FatApp::getPostedData('selprod_ids');
         if (1 > $adsBatchId || !is_array($sellerProducts) || 1 > count($sellerProducts)) {
@@ -596,6 +609,7 @@ class GoogleShoppingFeedController extends AdvertisementFeedBaseController
      */
     public function publishBatch(int $adsBatchId)
     {
+		$this->userPrivilege->canEditAdvertisementFeed();
         $this->adsBatchId = $adsBatchId;
         if (false === $this->validateBatchRequest()) {
             LibHelper::dieJsonError($this->error);

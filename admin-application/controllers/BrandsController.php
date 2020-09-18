@@ -109,10 +109,17 @@ class BrandsController extends AdminBaseController
         }
 
         $brand_id = $post['brand_id'];
-
-
         unset($post['brand_id']);
         $data = $post;
+
+        if ($brand_id == 0) {
+            $record = Brand::getAttributesByIdentifier($post['brand_identifier']);
+            if ($record['brand_deleted'] == applicationConstants::YES) {
+                $brand_id = $record['brand_id'];
+                $data['brand_deleted'] = applicationConstants::NO;
+            }
+        }
+        
         $data['brand_status'] = Brand::BRAND_REQUEST_APPROVED;
 
         //FatApp::getDb()->startTransaction();
@@ -141,7 +148,7 @@ class BrandsController extends AdminBaseController
             $brandId = $brand_id;
             $languages = Language::getAllNames();
             foreach ($languages as $langId => $langName) {
-                if (!$row = Brand::getAttributesByLangId($langId, $brand_id)) {
+                if (!Brand::getAttributesByLangId($langId, $brand_id)) {
                     $newTabLangId = $langId;
                     break;
                 }
