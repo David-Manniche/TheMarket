@@ -240,70 +240,12 @@ $rewardPoints = UserRewardBreakup::rewardPointBalance(UserAuthentication::getLog
                 }
             </script>            
         <?php } else {?>
-        <div class="wallet-balance_info">Lorem, ipsum dolor sit amet consectetur adipisicing elit.</div>
-        <?php }?>
-
-        <!-- <button class="btn btn-primary btn-wide" type="button">Pay $ 587.00</button> -->
+            <div class="wallet-balance_info">Lorem, ipsum dolor sit amet consectetur adipisicing elit.</div>
+        <?php } ?>
     </div> 
-<?php }?>
+<?php } ?>
         <section id="payment" class="section-checkout">
             <div class="align-items-center mb-4">
-                <?php /* if ($userWalletBalance > 0 && $cartSummary['orderNetAmount'] > 0) { ?>
-                    <div>
-                        <div id="wallet" class="wallet">
-                            <?php if ($cartSummary["cartWalletSelected"]) { ?>
-                                <div class="listing--grids">
-                                    <ul>
-                                        <li>
-                                            <div class="boxwhite">
-                                                <p><?php echo Labels::getLabel('LBL_Payment_to_be_made', $siteLangId); ?>
-                                                </p>
-                                                <h5><?php echo CommonHelper::displayMoneyFormat($cartSummary['orderNetAmount'], true, false, true, false, true); ?>
-                                                </h5>
-                                            </div>
-                                        </li>
-                                        <li>
-                                            <div class="boxwhite">
-                                                <p><?php echo Labels::getLabel('LBL_Amount_in_your_wallet', $siteLangId); ?>
-                                                </p>
-                                                <h5><?php echo CommonHelper::displayMoneyFormat($userWalletBalance, true, false, true, false, true); ?>
-                                                </h5>
-                                            </div>
-                                            <p class="note">
-                                                <i>
-                                                    <?php
-                                                    $remainingWalletBalance = ($userWalletBalance - $cartSummary['orderNetAmount']);
-                                                    $remainingWalletBalance = ($remainingWalletBalance < 0) ? 0 : $remainingWalletBalance;
-                                                    echo Labels::getLabel('LBL_Remaining_wallet_balance', $siteLangId) . ' ' . CommonHelper::displayMoneyFormat($remainingWalletBalance, true, false, true, false, true); ?>
-                                                </i>
-                                            </p>
-                                        </li>
-                                       
-                                        <?php if ($userWalletBalance >= $cartSummary['orderNetAmount']) { ?>
-                                            <li>
-                                                <?php $btnSubmitFld = $WalletPaymentForm->getField('btn_submit');
-                                                $btnSubmitFld->addFieldTagAttribute('class', 'btn btn-outline-primary');
-
-                                                $WalletPaymentForm->developerTags['colClassPrefix'] = 'col-md-';
-                                                $WalletPaymentForm->developerTags['fld_default_col'] = 12;
-                                                echo $WalletPaymentForm->getFormHtml(); ?>
-                                            </li>
-                                            <script type="text/javascript">
-                                                function confirmOrder(frm) {
-                                                    var data = fcom.frmData(frm);
-                                                    var action = $(frm).attr('action');
-                                                    fcom.updateWithAjax(fcom.makeUrl('Checkout', 'ConfirmOrder'), data, function(ans) {
-                                                        $(location).attr("href", action);
-                                                    });
-                                                }
-                                            </script>
-                                        <?php } ?>
-                                    </ul>
-                                </div>
-                            <?php } ?>
-                        </div>
-                    </div>
-                <?php } */ ?>
                 <?php if ($cartSummary['orderNetAmount'] <= 0) { ?>
                     <div class="gap"></div>
                     <div id="wallet">

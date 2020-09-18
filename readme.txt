@@ -98,6 +98,7 @@ Bugs:
     => 042455 - Seller >> add shipping profile >> place holder is missing.
     => 042520 - Shipping profile >> manage rates >> cancel button is not working. 
     => 042576 - Shipping summary >> Rates should be in max 2 decimals.
+    => 042597 - On order details page >> when we use wallet then "+" sign gets display in payment method. 
 
 Enhancements:
     => Tax module upgrade

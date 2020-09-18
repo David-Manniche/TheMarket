@@ -1430,6 +1430,9 @@ class CheckoutController extends MyAppController
             }   
         }
        
+        if ($userWalletBalance >= $cartSummary['orderNetAmount'] && $cartSummary['cartWalletSelected']) {
+            $orderObj->updateOrderInfo($order_id, array('order_pmethod_id' => 0));
+        }
 
         $this->set('paymentMethods', $paymentMethods);
         $this->set('userWalletBalance', $userWalletBalance);
