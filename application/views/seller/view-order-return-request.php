@@ -1,6 +1,12 @@
 <?php  defined('SYSTEM_INIT') or die('Invalid Usage.'); ?>
 <?php $this->includeTemplate('_partial/seller/sellerDashboardNavigation.php'); ?>
-<?php $returnRequestMsgsForm->addHiddenField('', 'isSeller', 1); ?>
+<?php 
+$returnRequestMsgsForm->addHiddenField('', 'isSeller', 1); 
+$btn = $frmMsg->getField('btn_submit');
+if (null != $btn) {
+    $btn->addFieldTagAttribute('class', 'btn btn-primary');
+}
+?>
 <main id="main-area" class="main" role="main">
     <div class="content-wrapper content-space">
         <div class="content-header row">

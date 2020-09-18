@@ -12,6 +12,7 @@ if(!empty($addresses)){
                             <input name="pickup_address" <?php echo (($key == 0 && $addrId == 0) || $addrId == $address['addr_id']) ? 'checked=checked': ''; ?> onclick="displayCalendar();" type="radio" value="<?php echo $address['addr_id']; ?>"> 
                             <i class="input-helper"></i> 
                             <span class="lb-txt js-addr"> 
+								<p><?php echo $address['addr_name'] ;?> 
 								<p><?php echo $address['addr_address1'] ;?> 
 								<?php if(strlen($address['addr_address2']) > 0) { 
 									echo ", ".$address['addr_address2'] ;?> 

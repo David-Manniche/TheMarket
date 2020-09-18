@@ -3368,6 +3368,9 @@ class Importexport extends ImportexportCommon
                             if ('' != $colValue) {
                                 $selProdSepc[$columnKey] = $colValue;
                             }
+                        } elseif (in_array($columnKey, array('selprod_subtract_stock', 'selprod_track_inventory', 'selprod_active', 'selprod_cod_enabled', 'selprod_deleted')) && !$this->settings['CONF_USE_O_OR_1']) {
+                            $colValue = ('YES' == $colValue) ? 1 : 0;
+                            $selProdGenArr[$columnKey] = $colValue;
                         } else {
                             $selProdGenArr[$columnKey] = $colValue;
                         }
@@ -3377,7 +3380,6 @@ class Importexport extends ImportexportCommon
 
             $userId = (!$sellerId) ? $userId : $sellerId;
             $selProdGenArr['selprod_user_id'] = $userId;
-
             if (false === $errorInRow && count($selProdGenArr)) {
                 $prodData = Product::getAttributesById($productId, array('product_min_selling_price'));
 
@@ -3401,7 +3403,6 @@ class Importexport extends ImportexportCommon
                         CommonHelper::writeToCSVFile($this->CSVfileObj, array($rowIndex, ($colIndex + 1), $errMsg));
                         continue;
                     }
-
                     $this->db->updateFromArray(SellerProduct::DB_TBL, $selProdGenArr, $where);
 
                     if ($sellerId && $this->isDefaultSheetData($langId)) {
@@ -3477,7 +3478,6 @@ class Importexport extends ImportexportCommon
         }
         // Close File
         CommonHelper::writeToCSVFile($this->CSVfileObj, array(), true);
-
 
         if (CommonHelper::checkCSVFile($this->CSVfileName)) {
             $success['CSVfileUrl'] = FatUtility::generateFullUrl('custom', 'downloadLogFile', array($this->CSVfileName), CONF_WEBROOT_FRONTEND);

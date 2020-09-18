@@ -375,6 +375,9 @@ trait SellerProducts
         if ($selprod_id > 0) {
             unset($post['selprod_code']);
         }
+        $post['selprod_subtract_stock'] = FatApp::getPostedData('selprod_subtract_stock', FatUtility::VAR_INT, 0);
+        $post['selprod_track_inventory'] = FatApp::getPostedData('selprod_track_inventory', FatUtility::VAR_INT, 0);
+        // CommonHelper::printArray($post, true);
         $data_to_be_save = $post;
         $sellerProdObj = new SellerProduct($selprod_id);
         $sellerProdObj->assignValues($data_to_be_save);
@@ -1957,6 +1960,7 @@ trait SellerProducts
         $srch = SellerProduct::getSearchObject($this->siteLangId);
         $srch->joinTable(Product::DB_TBL, 'INNER JOIN', 'p.product_id = sp.selprod_product_id', 'p');
         $srch->joinTable(Product::DB_TBL_LANG, 'LEFT OUTER JOIN', 'p.product_id = p_l.productlang_product_id AND p_l.productlang_lang_id = ' . $this->siteLangId, 'p_l');
+        $srch->joinTable(Brand::DB_TBL, 'INNER JOIN', 'product_brand_id = brand.brand_id', 'brand');
         $srch->addOrder('product_name');
         if (!empty($post['keyword'])) {
             $cnd = $srch->addCondition('product_name', 'LIKE', '%' . $post['keyword'] . '%');
@@ -1993,7 +1997,7 @@ trait SellerProducts
 
             $json[] = array(
                 'id' => $key,
-                'name' => strip_tags(html_entity_decode($option['product_name'], ENT_QUOTES, 'UTF-8')) . ' ' . $variantsStr,
+                'name' => strip_tags(html_entity_decode($option['product_name'], ENT_QUOTES, 'UTF-8')) . $variantsStr,
                 'product_identifier' => strip_tags(html_entity_decode($option['product_identifier'], ENT_QUOTES, 'UTF-8')),
                 'price' => $option['selprod_price']
             );

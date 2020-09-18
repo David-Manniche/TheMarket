@@ -111,8 +111,8 @@ if (!$print) { ?>
                                         <?php echo $childOrderDetail['user_name']; ?>
                                     </p>
                                     <?php
-                                    $paymentMethodName = !empty($childOrderDetail['plugin_name']) ? $childOrderDetail['plugin_identifier'] : '';
-                                    if ($childOrderDetail['order_pmethod_id'] > 0 && $childOrderDetail['order_is_wallet_selected'] > 0) {
+                                    $paymentMethodName = empty($childOrderDetail['plugin_name']) ? $childOrderDetail['plugin_identifier'] : $childOrderDetail['plugin_name'];
+                                    if (!empty($paymentMethodName) && $childOrderDetail['order_pmethod_id'] > 0 && $childOrderDetail['order_is_wallet_selected'] > 0) {
                                         $paymentMethodName  .= ' + ';
                                     }
                                     if ($childOrderDetail['order_is_wallet_selected'] > 0) {

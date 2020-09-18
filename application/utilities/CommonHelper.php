@@ -723,12 +723,16 @@ class CommonHelper extends FatUtility
         fpassthru($temp_memory);
     }
 
-    public static function addToCSV($handle, $fileContent = array())
+    public static function addToCSV($handle, $fileContent = array(), $headerRow = false)
     {
         if (!$handle) {
             return false;
         }
-        fputs($handle, chr(0xEF) . chr(0xBB) . chr(0xBF));
+
+        if (true === $headerRow) {
+            fputs($handle, chr(0xEF) . chr(0xBB) . chr(0xBF));
+        }
+
         if (is_array($fileContent) && 0 < count($fileContent)) {
             fputcsv($handle, $fileContent);
         }
@@ -757,9 +761,9 @@ class CommonHelper extends FatUtility
     }
 
     /* To retain file on server. */
-    public static function writeToCSVFile($handle, $fileContent = array(), $fileClose = false)
+    public static function writeToCSVFile($handle, $fileContent = array(), $fileClose = false, $headerRow = false)
     {
-        self::addToCSV($handle, $fileContent);
+        self::addToCSV($handle, $fileContent, $headerRow);
 
         if ($fileClose) {
             fclose($handle);

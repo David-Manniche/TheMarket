@@ -32,7 +32,11 @@ if (Orders::ORDER_PRODUCT == $orderInfo['order_type']) {
                             <h2><?php echo Labels::getLabel('LBL_THANK_YOU!', $siteLangId); ?></h2>
                             <h3>
                                 <?php
-                                $msg = Labels::getLabel('LBL_YOUR_ORDER_#{ORDER-ID}_HAS_BEEN_PLACED!', $siteLangId);
+                                if (Orders::ORDER_PRODUCT == $orderInfo['order_type']) {
+                                    $msg = Labels::getLabel('LBL_YOUR_ORDER_#{ORDER-ID}_HAS_BEEN_PLACED!', $siteLangId);
+                                } else {
+                                    $msg = Labels::getLabel('LBL_ORDER_#{ORDER-ID}_TRANSACTION_COMPLETED!', $siteLangId);
+                                }
                                 $msg = CommonHelper::replaceStringData($msg, ['{ORDER-ID}' => $orderInfo['order_id']]);
                                 echo $msg;
                                 ?>

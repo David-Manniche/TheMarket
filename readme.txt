@@ -83,12 +83,29 @@ Bugs:
     => 042490 - On Shipping profile >> when we delete any product then that product is not getting disappear from shipping profile product section.
     => 042509 - On Special price, volume discount, related products and buy together products page >> when we enter product name then product's variants should also get display there with product name.
     => 043142 - "Buy together" products under promotions, items do not appear on the list after creating them if no brand
+    => 042514 - Admin >> zone > admin is unable to save zone name in English or "Arabic " language. 
+    => 042522 - Shipping profile >> add product >> product identifier gets display instead of product name in selected product listing. 
+    => 042567 - Name and label of pickup address are not getting display on buyer end while selecting pickup address.
+    => 042588 - Seller > marketplace product > view any product >> only one image gets display there even if there are more .
+    => 042596 - Button is in white color on some pages 
+    => 042643 - Admin >> manage order returns >> Some warning gets display in search section.
+    => 042761 - Admin >> order cancellation request >> when admin approve any cancellation request then some confirmation message should get display.
+    => 043173 - Options appear on the drop down when adding speical price, volume discount, buy together products, related products.
     => 042514 - Admin >> zone > admin is unable to save zone name in English or "Arabic " language.
 	=> 043126 - On language data tab of blog post>>Fatal error is there.
     => 043186 - Admin >> Add rules >> Blank fields should not get display if admin save some blank entries for "tax component"
     => 043182 - Seller >> on view tax category >> "tax category" identifier gets display instead of tax category name in english language .
     => 043180 - Admin >>Tax structure >> add >> Error is there.
-    
+    => 042768 - Seller >> shop inventory >>there should be some space between all three buttons and title bar
+    => 043100 - buyer> add money to wallet> on blank submitting form there is processing which shouldn't be
+    => 043101 - After amount has been added to wallet then on success page there is message order has been placed instead of transaction
+    => 042455 - Seller >> add shipping profile >> place holder is missing.
+    => 042520 - Shipping profile >> manage rates >> cancel button is not working. 
+    => 042576 - Shipping summary >> Rates should be in max 2 decimals.
+    => 042597 - On order details page >> when we use wallet then "+" sign gets display in payment method. 
+    => 042637 - Add rules >> if admin select country then by default "all states" should be selected.
+    => 037364 - when seller adds inventory data - selects stock maintain level, track inventory to YES and set alert quantity then data is not getting uploaded in bulk import/expor
+
 Enhancements:
     => Tax module upgrade
     => Test cases classes enhancements.
