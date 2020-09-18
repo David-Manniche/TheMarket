@@ -109,20 +109,29 @@
     &__body {
         position: relative;
         .not-available {
-            background-color: #888888bf;
-            color: $secondary-color-inverse;
-            border-radius: $radius4;
+            background-color: rgba(#ffffff, 0.9);
+            color: $danger-color;
+            border-radius: $radius3;
             padding: 0.5rem;
             position: absolute;
-            top: 50%;
-            left: 5%;
-            z-index: 1;
+            top: 0;
+            bottom: 0;
+            left: 0;
+            z-index: 3;
             font-size: 0.8rem;
             font-weight: 600;
-            right: 5%;
-            transform: translateY(-50%);
+            right: 0;
             margin: auto;
-            max-width: 200px;
+            white-space: nowrap;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            .svg {
+                width: 16px;
+                height: 16px;
+                fill: currentColor;
+                margin-#{$end-direction}: 8px;
+            }
         }
         .products__img {
             display: block;
@@ -461,6 +470,7 @@
 
 .item__description {
     font-size: 0.9em;
+    min-width: 200px;
     .item__title {
         color: $body-color;
         margin: 0 0 4px 0;

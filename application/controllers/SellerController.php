@@ -915,7 +915,7 @@ class SellerController extends SellerBaseController
         $this->set('canAddCustomProduct', User::canAddCustomProduct());
         $this->set('canAddCustomProductAvailableToAllSellers', User::canAddCustomProductAvailableToAllSellers());
         $this->set('type', $type);
-        $this->_template->addJs(array('js/cropper.js', 'js/cropper-main.js'));
+        $this->_template->addJs(array('js/cropper.js', 'js/cropper-main.js', 'js/slick.min.js'));
         $this->_template->render(true, true);
     }
 
@@ -4303,7 +4303,11 @@ class SellerController extends SellerBaseController
         $specSrchObj->addCondition('prodspec_product_id', '=', $product['product_id']);
         $specSrchObjRs = $specSrchObj->getResultSet();
         $productSpecifications = FatApp::getDb()->fetchAll($specSrchObjRs);
+
+        $productImagesArr = AttachedFile::getMultipleAttachments(AttachedFile::FILETYPE_PRODUCT_IMAGE, $product_id, 0, $this->siteLangId);
+
         /* ] */
+        $this->set('productImagesArr', $productImagesArr);
         $this->set('product', $product);
         $this->set('productSpecifications', $productSpecifications);
         $this->_template->render(false, false);

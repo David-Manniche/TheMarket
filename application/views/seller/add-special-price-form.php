@@ -92,4 +92,4 @@ if (!empty($data) && 0 < count($data)) {
         <?php echo $frm->getExternalJs(); ?>
     </div>
 </div>
-<div class="divider"></div>
+<div class="divider m-0"></div>

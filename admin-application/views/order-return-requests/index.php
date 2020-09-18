@@ -44,8 +44,10 @@
 								$statusFld = $frmSearch->getField('orrequest_status');
 								$statusFld->developerTags['col'] = 4;
 								
-								$typeFld = $frmSearch->getField('orrequest_type');
-								$typeFld->developerTags['col'] = 4;
+                                $typeFld = $frmSearch->getField('orrequest_type');
+                                if (null != $typeFld) {
+                                    $typeFld->developerTags['col'] = 4;
+                                }
 								
 								$dateFromFld = $frmSearch->getField('date_from');
 								$dateFromFld->setFieldTagAttribute('class','field--calender');

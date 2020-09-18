@@ -10985,7 +10985,7 @@ span.subheading {
 .form button:active :before {
   opacity: 0.32; }
 .form button:disabled :before {
-  opacity: 0; }
+  /*opacity: 0;*/ }
 .form button:after {
   pointer-events: none;
   content: "";
@@ -12604,8 +12604,8 @@ form.custom-form {
 
 .label, .product-line-info .value {
   color: #fff;
-  font-size: 0.8rem;
-  font-weight: 500;
+  font-size: 0.75rem;
+  font-weight: 400;
   padding: 4px 8px;
   text-align: center;
   white-space: nowrap;
@@ -14645,20 +14645,28 @@ img.mfp-img, .post .post_media iframe.mfp-img, .post .post_media .posted-content
   .products__body {
     position: relative; }
     .products__body .not-available {
-      background-color: #888888bf;
-      color: var(--secondary-color-inverse);
-      border-radius: 4px;
+      background-color: rgba(255, 255, 255, 0.9);
+      color: #fd397a;
+      border-radius: 3px;
       padding: 0.5rem;
       position: absolute;
-      top: 50%;
-      left: 5%;
-      z-index: 1;
+      top: 0;
+      bottom: 0;
+      left: 0;
+      z-index: 3;
       font-size: 0.8rem;
       font-weight: 600;
-      right: 5%;
-      transform: translateY(-50%);
+      right: 0;
       margin: auto;
-      max-width: 200px; }
+      white-space: nowrap;
+      display: flex;
+      align-items: center;
+      justify-content: center; }
+      .products__body .not-available .svg {
+        width: 16px;
+        height: 16px;
+        fill: currentColor;
+        margin-left: 8px; }
     .products__body .products__img {
       display: block;
       margin: 0 0 15px;
@@ -14946,7 +14954,8 @@ img.mfp-img, .post .post_media iframe.mfp-img, .post .post_media .posted-content
   align-items: center; }
 
 .item__description {
-  font-size: 0.9em; }
+  font-size: 0.9em;
+  min-width: 200px; }
   .item__description .item__title {
     color: #2e384d;
     margin: 0 0 4px 0;
@@ -16142,7 +16151,7 @@ img.mfp-img, .post .post_media iframe.mfp-img, .post .post_media .posted-content
     padding: 0.5rem 1rem;
     border-bottom: none;
     background: rgba(0, 0, 0, 0.05);
-    font-weight: 500;
+    font-weight: 400;
     vertical-align: top; }
     .table thead th:first-child {
       border-top-right-radius: 4px;
@@ -16167,7 +16176,7 @@ img.mfp-img, .post .post_media iframe.mfp-img, .post .post_media .posted-content
     padding: 1rem;
     border: none;
     color: inherit;
-    font-size: 0.875em;
+    font-size: 0.8rem;
     border-bottom: solid 1px #dee2e6;
     vertical-align: top; }
   .table a {
@@ -17104,16 +17113,20 @@ a:hover {
 
 .custom-ui-autocomplete {
   max-height: 200px;
+  max-width: 500px;
   overflow: hidden;
   overflow-y: auto;
   box-shadow: 0 0 35px 10px rgba(0, 0, 0, 0.1);
   border-radius: 4px;
+  font-family: "Poppins", sans-serif !important;
+  font-weight: 400;
   font-size: 0.8rem !important;
-  border: solid 1px #dee2e6; }
+  border: solid 1px #dee2e6;
+  animation: dropdown-menu-fade-in 0.3s ease 1, dropdown-menu-move-up 0.3s ease-out 1; }
   .custom-ui-autocomplete .ui-menu-item {
     border-bottom: solid 1px #dee2e6; }
     .custom-ui-autocomplete .ui-menu-item .ui-menu-item-wrapper {
-      padding: 0.5rem;
+      padding: 0.8rem;
       border-color: transparent !important; }
     .custom-ui-autocomplete .ui-menu-item:last-child {
       border-bottom: none; }
@@ -17197,7 +17210,8 @@ a:hover {
       .cards-header .cards-title a {
         color: #2e384d; }
     .cards-header ~ .cards-content {
-      padding-top: 0; }
+      padding-top: 0;
+      overflow-x: auto; }
   .cards-content {
     padding: 1rem;
     /*height: inherit;*/ }
@@ -32919,6 +32933,8 @@ a.ui-button:active,
         color: #2e384d;
         font-size: 0.8125rem;
         line-height: 2rem; }
+      .my-dashboard .sidebar .dashboard-menu .accordianbody li.is-active a {
+        color: var(--brand-color); }
 .my-dashboard .main {
   background: #f3f4f5;
   width: 100%;
@@ -33042,7 +33058,7 @@ a.ui-button:active,
       fill: var(--brand-color) !important; }
     .widget-scroll .widget-stats .cards,
     .widget-scroll .widget-stats .box--share {
-      min-height: 188px; }
+      /* min-height: 188px;*/ }
 
 .share-earn {
   display: flex;
@@ -33870,23 +33886,35 @@ input.sp-input,
     .list-features li .detail p {
       margin: 0; }
 
-.yk-stats > ul {
+.tax-rules > ul {
   font-size: 0.85rem;
   display: grid;
   grid-gap: 1rem;
   grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); }
-.yk-stats .title {
+  .tax-rules > ul > li {
+    height: 100%;
+    border: solid 1px #dee2e6;
+    border-radius: 4px;
+    padding: 1rem; }
+.tax-rules .title {
   font-size: 1rem;
   font-weight: 600;
   margin-bottom: 1rem; }
-.yk-stats .title-sub {
+  .tax-rules .title span {
+    font-size: 0.8rem;
+    font-weight: 500;
+    color: #8798ad;
+    display: block;
+    margin-top: 0.4rem; }
+.tax-rules .title-sub {
   font-size: 0.85rem;
-  margin-top: 25px; }
-.yk-stats p {
-  color: #8798ad; }
-.yk-stats .stats {
+  margin-top: 0.8rem; }
+.tax-rules p {
+  color: #8798ad;
+  display: flex; }
+.tax-rules .stats {
   margin: 5px 0; }
-.yk-stats .lable {
+.tax-rules .lable {
   margin-left: 0.5rem;
   font-weight: 500;
   color: #2e384d;
@@ -33930,7 +33958,7 @@ input.sp-input,
         flex-direction: column; } }
     .product-description .products__title a {
       color: inherit; }
-    .product-description .products__title h2 {
+    .product-description .products__title h1 {
       font-size: 1.75rem;
       line-height: 1.3;
       font-weight: 300;
@@ -34961,12 +34989,6 @@ transform: rotate(-135deg);*/ }
   padding: 1.5rem 0;
   padding-left: 25px;
   position: relative;
-  display: -webkit-box;
-  display: -ms-flexbox;
-  display: flex;
-  -webkit-box-align: center;
-  -ms-flex-align: center;
-  align-items: center;
   border-top: solid 1px #dee2e6;
   border-bottom: solid 1px #dee2e6;
   position: relative;
@@ -34974,12 +34996,12 @@ transform: rotate(-135deg);*/ }
   .filterDiv:after {
     position: absolute;
     left: 0;
+    top: 32px;
     transform: rotate(-90deg); }
   .filterDiv:hover {
     color: var(--brand-color); }
-
-.filterDiv.faqclose:after {
-  transform: rotate(0deg); }
+  .filterDiv.faqclose:after {
+    transform: rotate(0deg); }
 
 div.faqanswer {
   margin: 0;

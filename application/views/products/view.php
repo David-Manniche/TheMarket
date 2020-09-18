@@ -54,7 +54,7 @@ $buyQuantity->addFieldTagAttribute('data-page', 'product-view');
                                     <div class="">
                                         <div class="products__title">
                                             <div>
-                                                <h2><?php echo $product['selprod_title']; ?></h2>
+                                                <h1><?php echo $product['selprod_title']; ?></h1>
                                                 <div class="favourite-wrapper favourite-wrapper-detail ">
                                                     <?php include(CONF_THEME_PATH . '_partial/collection-ui.php'); ?>
                                                     <div class="dropdown">

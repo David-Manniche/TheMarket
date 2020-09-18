@@ -52,6 +52,8 @@ $(document).ready(function(){
 	setupStatus = function(frm){
 		if (!$(frm).validate()) return;
 		var data = fcom.frmData(frm);
+		var transferLocation = $("input[name='orrequest_refund_in_wallet']:checked").val();
+		if(0 != transferLocation && !confirm(langLbl.confirmTransfer) ){ return; }
 		fcom.updateWithAjax(fcom.makeUrl('OrderReturnRequests', 'setupUpdateStatus'), data, function(t) {
 			window.location.reload();
 		});

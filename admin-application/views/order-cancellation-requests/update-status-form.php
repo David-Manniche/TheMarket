@@ -5,7 +5,6 @@ $frm->developerTags['colClassPrefix']='col-md-';
 $frm->developerTags['fld_default_col'] = 8;
 
 $frm->getField('ocrequest_status')->setFieldTagAttribute('id','ocrequest_status');
-$frm->getField('ocrequest_refund_in_wallet')->setFieldTagAttribute('id','ocrequest_refund_in_wallet');
 
 $frm->getField('ocrequest_refund_in_wallet')->setWrapperAttribute('class','wrapper-ocrequest_refund_in_wallet hide');
 $frm->getField('ocrequest_admin_comment')->setWrapperAttribute('class','wrapper-ocrequest_admin_comment hide');

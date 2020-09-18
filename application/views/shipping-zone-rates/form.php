@@ -30,7 +30,7 @@ $submitBtnFld->developerTags['col'] = 5;
 $submitBtnFld->developerTags['noCaptionTag'] = true;
 
 $cancelBtnFld = $frm->getField('btn_cancel');
-$cancelBtnFld->setFieldTagAttribute('onClick', 'searchProductsSection($(\'input[name="profile_id"]\').val()); return false;');
+$cancelBtnFld->setFieldTagAttribute('onClick', 'clearForm(); return false;');
 $cancelBtnFld->setFieldTagAttribute('class', 'btn btn-outline-primary btn-block');
 $cancelBtnFld->setWrapperAttribute('class', 'col-lg-5');
 $cancelBtnFld->developerTags['col'] = 5;
@@ -51,7 +51,7 @@ $cancelBtnFld->developerTags['noCaptionTag'] = true;
 					<?php foreach ($languages as $key => $langName) { ?>
 					<li>
 						<a href="javascript:void(0);" <?php if ($rateId > 0) { ?>
-							onclick="editRateLangForm(<?php echo $zoneId ?>, <?php echo $rateId ?>, <?php echo $key;?>);" <?php } ?>><?php echo Labels::getLabel('LBL_'. $langName, $siteLangId);?></a>
+							onclick="editRateLangForm(<?php echo $zoneId ?>, <?php echo $rateId ?>, <?php echo $key;?>);" <?php } ?>><?php echo $langName;?></a>
 					</li>
 					<?php } ?>
 				</ul>
