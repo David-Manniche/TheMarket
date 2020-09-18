@@ -99,6 +99,7 @@ Bugs:
     => 042520 - Shipping profile >> manage rates >> cancel button is not working. 
     => 042576 - Shipping summary >> Rates should be in max 2 decimals.
     => 042597 - On order details page >> when we use wallet then "+" sign gets display in payment method. 
+    => 042637 - Add rules >> if admin select country then by default "all states" should be selected.
 
 Enhancements:
     => Tax module upgrade
