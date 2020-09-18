@@ -1531,13 +1531,13 @@
     width: 100%;
 }
 
-.items {
+.wishlists {
     width: 100%;
     border-radius: $radius4;
     border: $border;
     margin: 0 0 20px;
     position: relative;
-    padding: 1rem;
+    padding: 0;
     height: 100%;
     display: -webkit-box;
     display: -ms-flexbox;
@@ -1546,35 +1546,7 @@
     -webkit-box-direction: normal;
     -ms-flex-direction: column;
     flex-direction: column;
-    .item {
-        max-width: 50%;
-        -webkit-box-flex: 0;
-        -ms-flex: 0 0 50%;
-        flex: 0 0 50%;
-        padding: 5px;
-        background: #fff;
-        position: relative;
-    }
-    .items__body {
-        -webkit-box-flex: 1;
-        -ms-flex: 1;
-        flex: 1;
-    }
-    .items__group {
-        margin: 0px;
-        display: block;
-        position: relative;
-        padding: 0;
-    }
-    .items__row {
-        display: -webkit-box;
-        display: -ms-flexbox;
-        display: flex;
-        -ms-flex-wrap: wrap;
-        flex-wrap: wrap;
-        margin-bottom: 5px;
-    }
-    .item__head {
+    &__head {
         text-align: center;
         display: -webkit-box;
         display: -ms-flexbox;
@@ -1582,22 +1554,30 @@
         -webkit-box-pack: justify;
         -ms-flex-pack: justify;
         justify-content: space-between;
+        border-bottom: $border;
+        padding: 10px 1rem;
     }
-    .item__pic {
-        overflow: hidden;
-        background: #fff;
-        width: auto;
-        border: $border;
-        border-radius: $radius4;
-        padding: 0;
-        margin: 0;
-        img {
-            max-width: 80%;
-            margin: 0 auto;
+    &__body {
+        -webkit-box-flex: 1;
+        -ms-flex: 1;
+        flex: 1;
+        padding: 1rem;
+        .media-wishlist {
+            align-items: center;
+            flex-wrap: wrap;
+            display: grid;
+            grid-gap: 1rem;
+            grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+            li {
+                border: $border;
+                border-radius: $radius4;
+                padding: 0.5rem;
+                img {
+                    margin: auto;
+                    display: block;
+                }
+            }
         }
-    }
-    .item__title {
-        color: $body-color;
     }
     .form--creatlist {
         position: absolute;
@@ -1608,12 +1588,12 @@
         -ms-transform: translate(-50%, -50%);
         -webkit-transform: translate(-50%, -50%);
         padding: 20px;
-    }
-    .form--creatlist h5 {
-        text-align: center;
-    }
-    .form--creatlist .field-set {
-        margin: 5px 0 0;
+        h5 {
+            text-align: center;
+        }
+        .field-set {
+            margin: 5px 0 0;
+        }
     }
 }
 

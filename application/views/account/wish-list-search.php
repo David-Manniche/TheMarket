@@ -3,9 +3,9 @@
     <?php if ($wishLists) {
     foreach ($wishLists as $wishlist) {
         if (count($wishlist['products']) > 0 || FatApp::getConfig('CONF_ADD_FAVORITES_TO_WISHLIST', FatUtility::VAR_INT, 1) == applicationConstants::YES) { ?>
-    <div class="col-xl-3 col-lg-4 col-md-6 mb-3">
-        <div class="items">
-            <div class="item__head mb-2">
+    <div class="col-lg-4 col-md-6 mb-3">
+        <div class="wishlists">
+            <div class="wishlists__head">
                 <span class="item__title">
                     <?php echo (isset($wishlist['uwlist_type']) && $wishlist['uwlist_type'] == UserWishList::TYPE_DEFAULT_WISHLIST) ? Labels::getLabel('LBL_Default_list', $siteLangId) : $wishlist['uwlist_title']; ?></span>
                 <?php if ((!isset($wishlist['uwlist_type']) || (isset($wishlist['uwlist_type']) && $wishlist['uwlist_type'] != UserWishList::TYPE_FAVOURITE)) && $wishlist['uwlist_type'] != UserWishList::TYPE_DEFAULT_WISHLIST) { ?>
@@ -21,34 +21,34 @@
                 <?php
             } ?>
             </div>
-            <div class="items__body">
+            <div class="wishlists__body">
                 <?php if ($wishlist['products']) {
                 ?>
-                <div class="items__group clearfix">
-                    <div class="items__row">
+                <ul class="media-wishlist">
+                    
                         <?php foreach ($wishlist['products'] as $product) {
                     $productUrl = UrlHelper::generateUrl('Products', 'View', array($product['selprod_id'])); ?>
-                        <div
+                        <li
                             class="item <?php echo (!$product['in_stock']) ? 'item--sold' : ''; ?>">
-                            <span class="overlay--collection"></span>
-                            <div class="item__head">
+                           
+                          
                                 <?php if (!$product['in_stock']) {
                         ?>
                                 <span class="tag--soldout tag--soldout-small"><?php echo Labels::getLabel('LBL_Sold_Out', $siteLangId); ?></span>
                                 <?php
                     } ?>
                                 <a href="<?php echo $productUrl; ?>"
-                                    class="item__pic">
+                                    >
                                     <img src="<?php echo UrlHelper::getCachedUrl(UrlHelper::generateFileUrl('image', 'product', array($product['product_id'], "THUMB", $product['selprod_id'], 0, $siteLangId ), CONF_WEBROOT_URL), CONF_IMG_CACHE_TIME, '.jpg'); ?>"
                                         title="<?php echo $product['product_name']; ?>"
                                         alt="<?php echo $product['product_name']; ?>">
                                 </a>
-                            </div>
-                        </div>
+                             
+                        </li>
                         <?php
                 } ?>
-                    </div>
-                </div>
+                   
+                </ul>
                 <?php
             } else {
                 $this->includeTemplate('_partial/no-record-found.php', array('siteLangId'=>$siteLangId,'message'=>Labels::getLabel('LBL_No_items_added_to_this_wishlist.', $siteLangId)));
@@ -82,7 +82,7 @@
 }
     if (FatApp::getConfig('CONF_ADD_FAVORITES_TO_WISHLIST', FatUtility::VAR_INT, 1) == applicationConstants::YES) {
         ?>
-    <div class="col-xl-3 col-lg-4 col-md-6 mb-3">
+    <div class="col-lg-4 col-md-6 mb-3">
         <div class="items p-4">
             <div class="items__body text-center">
                 <div class="form">

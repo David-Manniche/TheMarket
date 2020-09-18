@@ -13,8 +13,15 @@ class SellerBaseController extends LoggedUserController
         }
         
         if (!User::canAccessSupplierDashboard() || !User::isSellerVerified($this->userParentId)) {
-            $msg = Labels::getLabel('MSG_INVALID_ACCESS', $this->siteLangId);
-            LibHelper::exitWithError($msg, false, true);
+            $userObj = new User(UserAuthentication::getLoggedUserId());
+            $userEmail = current($userObj->getUserInfo('credential_email'));
+            if (empty($userEmail)) {
+                FatApp::redirectUser(UrlHelper::generateUrl('GuestUser', 'configureEmail'));
+            }
+            if (true === MOBILE_APP_API_CALL) {
+                $msg = Labels::getLabel('MSG_INVALID_ACCESS', $this->siteLangId);
+                FatUtility::dieJsonError($msg);
+            }
             FatApp::redirectUser(UrlHelper::generateUrl('Account', 'supplierApprovalForm'));
         }
         $_SESSION[UserAuthentication::SESSION_ELEMENT_NAME]['activeTab'] = 'S';

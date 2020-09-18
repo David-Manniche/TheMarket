@@ -549,9 +549,6 @@ class ImportExportController extends AdminBaseController
                     case Importexport::TYPE_USERS:
                         $displayRangeFields = true;
                         break;
-                    case Importexport::TYPE_OPTIONS:
-                        $frm->addSelectBox(Labels::getLabel('LBL_Select_Data', $langId), 'sheet_type', Importexport::getOptionContentTypeArr($langId), '', array(), '')->requirements()->setRequired();
-                        break;
                 }
                 break;
             case 'EXPORT_MEDIA':

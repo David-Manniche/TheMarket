@@ -361,10 +361,9 @@
         margin-#{$end-direction}: 5px;
     }
     .rate {
-        line-height: 1.5;
-        font-size: 0.8em;
+        line-height: 1;
+        font-size: 0.8rem;
         display: inline-block;
-        vertical-align: top;
         span {
             font-size: 0.875em;
             color: lighten($body-color, 50%);

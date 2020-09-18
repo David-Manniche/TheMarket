@@ -64,7 +64,7 @@ if (!empty($postList)) {
     $pagingArr=array('pageCount'=>$pageCount,'page'=>$page,'recordCount'=>$recordCount, 'callBackJsFunc' => 'goToSearchPage');
     $this->includeTemplate('_partial/pagination.php', $pagingArr, false); ?>
 <?php } else { ?>
-    <div class="post box box--white">
+    <div class="post bg-white rounded-2">
         <?php $this->includeTemplate('_partial/no-record-found.php', array('siteLangId'=>$siteLangId), false); ?>
     </div>
 <?php } ?>
