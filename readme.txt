@@ -86,7 +86,9 @@ Bugs:
     => 042514 - Admin >> zone > admin is unable to save zone name in English or "Arabic " language.
 	=> 043126 - On language data tab of blog post>>Fatal error is there.
     => 043186 - Admin >> Add rules >> Blank fields should not get display if admin save some blank entries for "tax component"
-
+    => 043182 - Seller >> on view tax category >> "tax category" identifier gets display instead of tax category name in english language .
+    => 043180 - Admin >>Tax structure >> add >> Error is there.
+    
 Enhancements:
     => Tax module upgrade
     => Test cases classes enhancements.

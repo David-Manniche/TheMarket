@@ -1574,7 +1574,15 @@ class SellerController extends SellerBaseController
     {
         $this->userPrivilege->canViewTaxCategory(UserAuthentication::getLoggedUserId());
         $taxCatId = FatUtility::int($taxCatId);
-        $data = Tax::getAttributesById($taxCatId);
+       
+        $srch = Tax::getSearchObject($this->siteLangId);
+        $srch->addCondition('taxcat_id', '=', $taxCatId);
+        $srch->setPageSize(1);
+        $srch->doNotCalculateRecords();
+        $srch->addMultipleFields(array('ifnull(taxcat_name, taxcat_identifier) as taxcat_name', 'taxcat_id'));
+        $rs = $srch->getResultSet();
+        $data = FatApp::getDb()->fetch($rs);
+
         if (empty($data)) {
             FatUtility::dieWithError(Labels::getLabel('MSG_INVALID_REQUEST', $this->siteLangId));
         }
@@ -1588,7 +1596,7 @@ class SellerController extends SellerBaseController
             $ruleLocations = $taxObj->getLocations($taxCatId, true, $this->siteLangId);
         }
         $this->set("combinedRulesDetails", $combinedRulesDetails);
-        $this->set('taxCategory', $data['taxcat_identifier']);
+        $this->set('taxCategory', $data['taxcat_name']);
         $this->set("rulesData", $rulesData);
         $this->set('ruleLocations', $ruleLocations);
         $this->_template->render(true, true);
