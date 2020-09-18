@@ -23,22 +23,19 @@ if (FatApp::getConfig('CONF_ADD_FAVORITES_TO_WISHLIST', FatUtility::VAR_INT, 1) 
         <div class="content-body">
             <div class="cards">
                 <div class="cards-content">
-                    <div class="box__body">
-                        <div class="tabs ">
-                            <ul>
-                                <li class="is-active" id="tab-wishlist">
-                                    <a onClick="<?php echo $function; ?>" href="javascript:void(0);">
-                                        <?php echo $label; ?>
-                                    </a>
-                                </li>
-                                <li id="tab-fav-shop"><a onClick="searchFavoriteShop();"
-                                        href="javascript:void(0);"><?php echo Labels::getLabel('LBL_Shops', $siteLangId); ?></a>
-                                </li>
-                            </ul>
-                        </div>
-                        <div id="listingDiv" class="account-fav-listing"></div>
+                    <div class="tabs">
+                        <ul>
+                            <li class="is-active" id="tab-wishlist">
+                                <a onClick="<?php echo $function; ?>" href="javascript:void(0);">
+                                    <?php echo $label; ?>
+                                </a>
+                            </li>
+                            <li id="tab-fav-shop"><a onClick="searchFavoriteShop();"
+                                    href="javascript:void(0);"><?php echo Labels::getLabel('LBL_Shops', $siteLangId); ?></a>
+                            </li>
+                        </ul>
                     </div>
-                    <div class="gap"></div>
+                    <div id="listingDiv" class="account-fav-listing"></div>
                     <div id="loadMoreBtnDiv"></div>
                 </div>
             </div>
@@ -46,5 +43,5 @@ if (FatApp::getConfig('CONF_ADD_FAVORITES_TO_WISHLIST', FatUtility::VAR_INT, 1) 
     </div>
 </main>
 <script>
-    <?php echo $function; ?>;
+< ? php echo $function; ? > ;
 </script>

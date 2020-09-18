@@ -867,13 +867,13 @@ $(document).ready(function() {
                     type: 'post',
                     success: function(json) {
                         response($.map(json, function(item) {
-                            return { label: item['value'], value: item['value'] };
+                            return { label: item['label'], value: item['value'] };
                         }));
                     },
                 });
             },
             select: function(event, ui) {
-                $(document.frmSiteSearch.keyword).val(ui.item.label);
+                $(document.frmSiteSearch.keyword).val(ui.item.value);
                 submitSiteSearch(document.frmSiteSearch);
             }
         }),

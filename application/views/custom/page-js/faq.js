@@ -1,50 +1,6 @@
 window.recordCount = 0;
 $(document).ready(function(){
-   /* $(document).on('click','.acc_ctrl',function(e){
-
-
-    e.preventDefault();
-    if ($(this).hasClass('active')) {
-      $(this).removeClass('active');
-      $(this).next()
-      .stop()
-      .slideUp(300);
-    } else {
-      $(this).addClass('active');
-      $(this).next()
-      .stop()
-      .slideDown(300);
-    }
-  }); */
-
-
-/* for sticky left panel
-  if($(window).width()>1050){
-    function sticky_relocate() {
-        var window_top = $(window).scrollTop();
-        var div_top = $('.fixed__panel').offset().top -30;
-        var sticky_left = $('#fixed__panel');
-        if((window_top + sticky_left.height()) >= ($('footer').offset().top - 60)){
-            var to_reduce = ((window_top + sticky_left.height()) - ($('footer').offset().top - 60));
-            var set_stick_top = -60 - to_reduce;
-            sticky_left.css('top', set_stick_top+'px');
-        }else{
-            sticky_left.css('top', '30px');
-            if (window_top > div_top) {
-                $('#fixed__panel').addClass('stick');
-            } else {
-                $('#fixed__panel').removeClass('stick');
-            }
-        }
-    }
-
-    $(function () {
-        $(window).scroll(sticky_relocate);
-        sticky_relocate();
-    });
-}   */
-
-	searchFaqs(0);
+	searchFaqs('faq', 0);
 	faqRightPanel();
 });
 
@@ -52,10 +8,10 @@ $(document).ready(function(){
 	var dv = '#listing';
 	var dvCategoryPanel = '#categoryPanel';
 	var currPage = 1;
-	var faqCatId=1;
+	var faqCatId = 1;
+	
 	reloadListing = function(){
-		// searchFaqs(document.frmSearchFaqs);
-		searchFaqs(0);
+		searchFaqs('faq', 0);
 	};
 
 	$(document).on('click','a.selectedCat',function(){
@@ -63,15 +19,14 @@ $(document).ready(function(){
 		var faqId=0;
 		window.location.href = fcom.makeUrl('Custom','faqDetail', [catId,faqId]);
 	});
+	
 	$(document).on('click','a.selectedFaq',function(){
 		var faqId=$(this).attr('data-id');
 		var faqcatId=$(this).attr('data-cat-id');
-
 		window.location.href = fcom.makeUrl('Custom','faqDetail', [faqcatId,faqId]);
 	});
 
-	searchFaqs = function(catId){
-
+	searchFaqs = function(page, catId){
 		if (catId < 0) {
 			catId = 0;
 		}
@@ -80,7 +35,7 @@ $(document).ready(function(){
 			$('.is--active').removeClass('is--active');
 			$('#'+catId).addClass('is--active');
 		}
-		fcom.updateWithAjax(fcom.makeUrl('Custom','SearchFaqs', [catId]), '', function(ans){
+		fcom.updateWithAjax(fcom.makeUrl('Custom','SearchFaqs', [page, catId]), '', function(ans){
 			$.mbsmessage.close();
 
 				$(dv).find('.loader-yk').remove();
@@ -89,8 +44,6 @@ $(document).ready(function(){
 			window.recordCount = ans.recordCount;
 
 		});
-
-
 	};
 
 	faqRightPanel = function(){
@@ -105,6 +58,7 @@ $(document).ready(function(){
 
 		},'',false);
 	}
+	
 	goToLoadMore = function(page){
 		if(typeof page == undefined || page == null){
 			page = 1;
@@ -113,7 +67,7 @@ $(document).ready(function(){
 
 		var frm = document.frmSearchFaqsPaging;
 		$(frm.page).val(page);
-		searchFaqs(frm,1);
+		searchFaqs('faq', 1);
 	};
 
 })();

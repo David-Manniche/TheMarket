@@ -10,7 +10,7 @@
                         </div>
                     </div>
                     <div class="faqsearch">
-                        <form name="frmSearchFaqs" class="form">
+                        <form name="frmSearchFaqs" class="form" action="javascript:void(0);">
                             <input placeholder="Search" class="faq-input no-focus" data-field-caption="Enter your question" type="search" name="question" value="">
                         </form>
                     </div>

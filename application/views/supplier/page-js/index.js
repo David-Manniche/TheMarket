@@ -15,7 +15,7 @@ $(document).ready(function(){
 			.slideDown(300);
 		}
 	});
-	searchFaqs(document.frmSearchFaqs);
+	searchFaqs('seller', 0);
 	faqRightPanel();
 });
 
@@ -25,16 +25,16 @@ $(document).ready(function(){
 	var currPage = 1;
 	var faqCatId=1;
 	reloadListing = function(){
-		searchFaqs(document.frmSearchFaqs);
+		searchFaqs('seller', 0);
 	};
 
 	$(document).on('click','a.selectedCat',function(){
 		var catId=$(this).attr('id');
-		searchFaqs(catId);
+		searchFaqs('seller', catId);
 	});
 
-	searchFaqs = function(catId){
-		if( catId < 0 ){
+	searchFaqs = function(page, catId){
+		if (catId < 0) {
 			catId = 0;
 		}
 		$(dv).html(fcom.getLoader());
@@ -42,7 +42,8 @@ $(document).ready(function(){
 			$('.is--active').removeClass('is--active');
 			$('#'+catId).addClass('is--active');
 		}
-		fcom.updateWithAjax(fcom.makeUrl('supplier','SearchFaqs', [catId]), '', function(ans){
+		fcom.updateWithAjax(fcom.makeUrl('Custom','SearchFaqs', [page, catId]), '', function(ans){
+			$.mbsmessage.close();
 			$(dv).find('.loader-yk').remove();
 			$(dv).html(ans.html);
 			window.recordCount = ans.recordCount;
@@ -61,14 +62,15 @@ $(document).ready(function(){
 		});
 	}
 
-	goToLoadMore = function( page ){
-		if( typeof page == undefined || page == null){
+	goToLoadMore = function(page){
+		if(typeof page == undefined || page == null){
 			page = 1;
 		}
 		currPage = page;
+
 		var frm = document.frmSearchFaqsPaging;
 		$(frm.page).val(page);
-		searchFaqs(frm,1);
+		searchFaqs('seller',1);
 	};
 })();
 

@@ -1046,10 +1046,11 @@ class ProductsController extends MyAppController
     public function searchProducttagsAutocomplete()
     {
         $keyword = FatApp::getPostedData("keyword");
-        $srch = Tag::getSearchObject();
+        $srch = Tag::getSearchObject($this->siteLangId);
         $srch->doNotCalculateRecords();
-        $srch->doNotLimitRecords();
-        $srch->addMultipleFields(array('COALESCE(tag_identifier) as value'));
+        $srch->setPageSize(20);
+        //$srch->doNotLimitRecords();
+        $srch->addMultipleFields(array('tag_id', 'COALESCE(tag_name, tag_identifier) as value'));
         $srch->addOrder("LOCATE('" . urldecode($keyword) . "',value)");
         $srch->addGroupby('value');
         $srch->addHaving('value', 'LIKE', '%' . urldecode($keyword) . '%');
@@ -1061,8 +1062,9 @@ class ProductsController extends MyAppController
             $this->_template->render();
         }
         $json = array();
-        foreach ($tags as $key => $tag) {
+        foreach ($tags as $tag) {
             $json[] = array(
+                'label' => $tag['tag_id'],
                 'value' => strip_tags(html_entity_decode($tag['value'], ENT_QUOTES, 'UTF-8'))
             );
         }
