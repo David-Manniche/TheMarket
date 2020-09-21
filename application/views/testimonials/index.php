@@ -7,7 +7,7 @@
           <div class="col-md-12">               
                <div class="section-head section--white--head section--head--center mb-0">
             <div class="section__heading">
-                  <h2><?php echo Labels::getLabel('Lbl_Testimonials',$siteLangId); ?></h2>
+                  <h1><?php echo Labels::getLabel('Lbl_Testimonials',$siteLangId); ?></h1>
                 <div class="breadcrumbs breadcrumbs--white breadcrumbs--center"> 
 				   <?php $this->includeTemplate('_partial/custom/header-breadcrumb.php'); ?>
 				</div>
