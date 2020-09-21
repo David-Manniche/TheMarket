@@ -151,6 +151,7 @@ $(document).ready(function () {
             var profileId = $('input[name="profile_id"]').val();
             searchZone(profileId);
             $(document).trigger('close.facebox');
+            clearForm();
         });
     };
 
