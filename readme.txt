@@ -117,7 +117,8 @@ Bugs:
     => 043183 - Seller >> marketplace products >> there is some error on add seller shipping page .
     => 043127 - Seller should not be able to import special price file with price less then minimum selling price .
     => 043050 - On Shipping profile >> manage rates section still gets display there even if we delete "zone " 
-    
+    => 043245 - Admin >> Add first rule >> All tax structures gets display under "rule name " box even if admin didn't selected any tax.
+
 Enhancements:
     => Tax module upgrade
     => Test cases classes enhancements.

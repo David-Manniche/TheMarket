@@ -138,6 +138,9 @@ function getCombinedTaxes(currentSel, taxStrId) {
 	var parentIndex = $(currentSel).parents('.tax-rule-form--js').data('index');
 	var className = '.tax-rule-form-'+ parentIndex;
 	var taxruleId = $(className + ' input[name="taxrule_id[]"]').val();
+	if (taxruleId == 0) {
+		return;
+	}
 	fcom.ajax(fcom.makeUrl('Tax','getCombinedTaxes', [taxStrId, taxruleId]), '', function(t) {
 		$('.tax-rule-form-'+ parentIndex +' .combined-tax-details--js').html(t);
 	});
