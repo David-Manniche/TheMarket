@@ -113,6 +113,7 @@ Bugs:
     => 037325 - when buyer registers through phone number and then requests to become seller then on seller request from there should be email field to complete the process
     => 040623 - when user sign up through social (phone number) then it lands on configure email page and from there existing email is allowing
     => 042341 - admin> import /export> option> getting option value in drop down
+    => 043114 - when product is not available for shipping then there is blank warning.
     => 043183 - Seller >> marketplace products >> there is some error on add seller shipping page .
     => 043127 - Seller should not be able to import special price file with price less then minimum selling price .
     => 043050 - On Shipping profile >> manage rates section still gets display there even if we delete "zone " 
