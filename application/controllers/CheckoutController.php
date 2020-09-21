@@ -589,7 +589,8 @@ class CheckoutController extends MyAppController
         $cartProducts = $this->cartObj->getProducts($this->siteLangId);    
         $shippingRates = $this->cartObj->getShippingRates();    
         if (false == $shippingRates) {
-            LibHelper::exitWithError($this->cartObj->getError(), true);
+            $message = Labels::getLabel('MSG_Shipping_rates_are_not_available', $this->siteLangId);
+            LibHelper::exitWithError($message, true);
         }
    
         $selectedShippingMethods = [];
