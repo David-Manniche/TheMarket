@@ -2120,7 +2120,7 @@ class CheckoutController extends MyAppController
 //        $basketProducts = $this->cartObj->getBasketProducts($this->siteLangId);
         $basketProducts = [];
         $pickupOptions = $this->cartObj->getPickupOptions($basketProducts);
-
+        
         foreach ($post['slot_id'] as $level => $slotId) {
             if (empty($slotId) || empty($post['slot_date'][$level])) {
                 $message = Labels::getLabel('MSG_Pickup_Method_is_not_selected_on_products_in_cart', $this->siteLangId);
