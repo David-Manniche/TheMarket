@@ -65,6 +65,13 @@ class ProductCategorySearch extends SearchBase
         return $this;
     }
 
+    public function joinProductCategoryRelations()
+    {
+        $this->joinTable(ProductCategory::DB_TBL_PROD_CAT_RELATIONS, 'LEFT JOIN', ' tpcr.pcr_parent_id = c.prodcat_id', 'tpcr');
+        $this->joinTable(Product::DB_TBL_PRODUCT_TO_CATEGORY, 'LEFT JOIN', ' ptc.ptc_prodcat_id = tpcr.pcr_prodcat_id', 'ptc');
+        $this->addGroupBy('c.prodcat_id');
+    }
+
     /* public function getSearchObject($includeChildCount = false) {
     $srch = new SearchBase(static::DB_TBL, 'm');
     $srch->addOrder('m.prodcat_active', 'DESC');

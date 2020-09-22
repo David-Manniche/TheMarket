@@ -116,7 +116,8 @@ Bugs:
     => 043114 - when product is not available for shipping then there is blank warning.
     => 043183 - Seller >> marketplace products >> there is some error on add seller shipping page .
     => 043127 - Seller should not be able to import special price file with price less then minimum selling price .
-    => 043050 - On Shipping profile >> manage rates section still gets display there even if we delete "zone " 
+    => 043050 - On Shipping profile >> manage rates section still gets display there even if we delete "zone "
+    => 043266 - Display parent category if products bound to any of child category 
     
 Enhancements:
     => Tax module upgrade
