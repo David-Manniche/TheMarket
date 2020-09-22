@@ -15,7 +15,7 @@ class ProductsController extends MyAppController
 
     public function search()
     {
-        $this->productsData(__FUNCTION__);
+        $this->productsData(__FUNCTION__, true);
     }
 
     public function featured()
@@ -23,7 +23,7 @@ class ProductsController extends MyAppController
         $this->productsData(__FUNCTION__);
     }
 
-    private function productsData($method)
+    private function productsData($method, $validateBrand = false)
     {
         $get = Product::convertArrToSrchFiltersAssocArr(FatApp::getParameters());
         $includeKeywordRelevancy = false;
@@ -31,6 +31,29 @@ class ProductsController extends MyAppController
         if (array_key_exists('keyword', $get)) {
             $includeKeywordRelevancy = true;
             $keyword = $get['keyword'];
+        }
+
+        if ($validateBrand && array_key_exists('keyword', $get)) {
+            $prodSrchObj = new ProductSearch(0);
+            $prodSrchObj->joinSellerProducts(0, '', ['doNotJoinSpecialPrice' => true], true);
+            $prodSrchObj->joinSellers();
+            $prodSrchObj->setGeoAddress();
+            $prodSrchObj->joinShops();
+            $prodSrchObj->validateAndJoinDeliveryLocation();
+            $prodSrchObj->joinBrands($this->siteLangId);
+            $prodSrchObj->joinProductToCategory();
+            $prodSrchObj->joinSellerSubscription(0, false, true);
+            $prodSrchObj->addSubscriptionValidCondition();
+            $prodSrchObj->doNotCalculateRecords();
+            $prodSrchObj->setPageSize(1);
+            $prodSrchObj->addMultipleFields(array('brand_id', 'COALESCE(tb_l.brand_name, brand.brand_identifier) as brand_name'));
+            $prodSrchObj->doNotCalculateRecords();
+            $prodSrchObj->addHaving('brand_name', 'like', $get['keyword']);
+            $brandRs = $prodSrchObj->getResultSet();
+            $brandArr = FatApp::getDb()->fetchAllAssoc($brandRs);
+            if (!empty($brandArr)) {
+                $get['brand'] = array_keys($brandArr);
+            }
         }
 
         $frm = $this->getProductSearchForm($includeKeywordRelevancy);
@@ -1046,30 +1069,76 @@ class ProductsController extends MyAppController
     public function searchProducttagsAutocomplete()
     {
         $keyword = FatApp::getPostedData("keyword");
+
+        $criteria = [
+            'keyword' => $keyword,
+            'doNotJoinSpecialPrice' => true
+        ];
+        $prodSrchObj = new ProductSearch($this->siteLangId);
+        $prodSrchObj->joinSellerProducts(0, '', $criteria, true);
+        $prodSrchObj->unsetDefaultLangForJoins();
+        $prodSrchObj->joinSellers();
+        $prodSrchObj->setGeoAddress();
+        $prodSrchObj->joinShops();
+        $prodSrchObj->validateAndJoinDeliveryLocation();
+        $prodSrchObj->joinBrands($this->siteLangId);
+        $prodSrchObj->joinProductToCategory($this->siteLangId);
+        $prodSrchObj->joinSellerSubscription(0, false, true);
+        $prodSrchObj->addSubscriptionValidCondition();
+        $prodSrchObj->doNotCalculateRecords();
+        $prodSrchObj->setPageSize(5);
+
+        $brandSrch = clone $prodSrchObj;
+        $brandSrch->addMultipleFields(array('brand_id', 'COALESCE(tb_l.brand_name, brand.brand_identifier) as brand_name', 'if(LOCATE("' . $keyword . '", COALESCE(tb_l.brand_name, brand.brand_identifier)) > 0, LOCATE("' . $keyword . '", COALESCE(tb_l.brand_name, brand.brand_identifier)), 99) as level'));
+        $brandSrch->addKeywordSearch($keyword, false, false);
+        $brandSrch->addOrder('level');
+        $brandSrch->addGroupBy('brand_name');
+        $brandRs = $brandSrch->getResultSet();
+        $brandArr = FatApp::getDb()->fetchAllAssoc($brandRs);
+
+        $catSrch = clone $prodSrchObj;
+        $catSrch->setPageSize(5);
+        $catSrch->addMultipleFields(array('prodcat_id', 'COALESCE(c_l.prodcat_name, c.prodcat_identifier) as prodcat_name', 'if(LOCATE("' . $keyword . '", COALESCE(c_l.prodcat_name, c.prodcat_identifier)) > 0, LOCATE("' . $keyword . '", COALESCE(c_l.prodcat_name, c.prodcat_identifier)), 99) as level'));
+        $catSrch->addKeywordSearch($keyword, false, false);
+        $catSrch->addOrder('level');
+        $catRs = $catSrch->getResultSet();
+        $catArr = FatApp::getDb()->fetchAllAssoc($catRs);
+
         $srch = Tag::getSearchObject($this->siteLangId);
         $srch->doNotCalculateRecords();
-        $srch->setPageSize(20);
-        //$srch->doNotLimitRecords();
-        $srch->addMultipleFields(array('tag_id', 'COALESCE(tag_name, tag_identifier) as value'));
-        $srch->addOrder("LOCATE('" . urldecode($keyword) . "',value)");
-        $srch->addGroupby('value');
-        $srch->addHaving('value', 'LIKE', '%' . urldecode($keyword) . '%');
+        $srch->setPageSize(10);
+        $srch->addMultipleFields(array('tag_id', 'COALESCE(tag_name, tag_identifier) as tag_name', 'if(LOCATE("' . $keyword . '", COALESCE(tag_name, tag_identifier)) > 0 , LOCATE("' . $keyword . '", COALESCE(tag_name, tag_identifier)), 99) as level'));
+        $srch->addOrder('level');
+        $srch->addGroupby('tag_name');
+        $srch->addHaving('tag_name', 'LIKE', '%' . urldecode($keyword) . '%');
         $rs = $srch->getResultSet();
         $tags = FatApp::getDb()->fetchAll($rs);
+        $prodArr = [];
+        if (empty($tags)) {
+            $prodSrchObj->setPageSize(10);
+            $prodSrchObj->addMultipleFields(array('selprod_id', 'COALESCE(selprod_title, product_name, product_identifier) as selprod_title', 'COALESCE(c_l.prodcat_name, c.prodcat_identifier) as prodcat_name', 'if(LOCATE("' . $keyword . '", COALESCE(selprod_title, product_name, product_identifier)) > 0, LOCATE("' . $keyword . '", COALESCE(selprod_title, product_name, product_identifier)), 99) as level'));
+            $prodSrchObj->addKeywordSearch($keyword, false, false);
+            $prodSrchObj->addOrder('level');
+            $prodSrchObj->addGroupBy('selprod_title');
+            $prodRs = $prodSrchObj->getResultSet();
+            $prodArr = FatApp::getDb()->fetchAll($prodRs);
+        }
 
+        $suggestions = [
+            'tags' => $tags,
+            'brands' => $brandArr,
+            'categories' => $catArr,
+            'products' => $prodArr
+        ];
+
+        $this->set('suggestions', $suggestions);
+        $this->set('keyword', $keyword);
         if (true === MOBILE_APP_API_CALL) {
-            $this->set('suggestions', $tags);
             $this->_template->render();
         }
-        $json = array();
-        foreach ($tags as $tag) {
-            $json[] = array(
-                'label' => $tag['tag_id'],
-                'value' => strip_tags(html_entity_decode($tag['value'], ENT_QUOTES, 'UTF-8'))
-            );
-        }
-        die(json_encode($json));
-        /* die(json_encode(array('suggestions' => $tags))); */
+
+        echo $this->_template->render(false, false, 'products/search-producttags-autocomplete.php', true);
+        exit;
     }
 
     public function getBreadcrumbNodes($action)
