@@ -34,7 +34,7 @@
             foreach ($shippingRates as $level => $levelItems) { ?>
             <ul class="list-group list-cart list-shippings">
             <?php //if (count($levelItems['products']) > 0 && $level == 0) {
-            if (isset($levelItems['products']) && count($levelItems['products']) > 0 && count($levelItems['pickup_options']) > 0 && $level == 0) {
+            if (isset($levelItems['products']) && count($levelItems['products']) > 0 && $level == 0) {
                 $productData = current($levelItems['products']); 
                 ?>
                 <li class="list-group-item shipping-select">
@@ -68,7 +68,11 @@
                     <div class="shipping-method js-slot-addr-<?php echo $level; ?>" data-addr-id="<?php echo $seletedAddrId; ?>">
                         <input type="hidden" name="slot_id[<?php echo $level; ?>]" class="js-slot-id" data-level="<?php echo $level; ?>" value="<?php echo $seletedSlotId; ?>">
                         <input type="hidden" name="slot_date[<?php echo $level; ?>]" class="js-slot-date" data-level="<?php echo $level; ?>" value="<?php echo $seletedSlotDate; ?>">
+                        <?php if(count($levelItems['pickup_options']) > 0) { ?>
                         <a class="btn btn-secondary btn-sm" href="javascript:void(0)" onclick="displayPickupAddress(<?php echo $level;?>, 0)"><?php echo Labels::getLabel('LBL_SELECT_PICKUP', $siteLangId);?></a>
+                        <?php }else{
+                            echo Labels::getLabel('MSG_Please_add_pickup_addresses', $siteLangId);
+                        } ?>
                     </div>
                 </li> 
             <?php } ?>    
@@ -78,7 +82,7 @@
                     $shopUrl = !$isAppUser ? UrlHelper::generateUrl('Shops', 'View', array($product['shop_id'])) : 'javascript:void(0)';
                     $imageUrl = UrlHelper::getCachedUrl(UrlHelper::generateFileUrl('image', 'product', array($product['product_id'], "THUMB", $product['selprod_id'], 0, $siteLangId)), CONF_IMG_CACHE_TIME, '.jpg'); ?>
                 <?php if ($levelNo != $level) { 
-                    if (count($levelItems['products']) > 0 && count($levelItems['pickup_options']) > 0 && $level != 0) { 
+                    if (count($levelItems['products']) > 0  && $level != 0) { 
                     //if (count($levelItems['products']) > 0 && $level != 0) {
                 ?>
                     <li class="list-group-item shipping-select">
@@ -112,7 +116,11 @@
                         <div class="shipping-method js-slot-addr-<?php echo $level; ?>" data-addr-id="<?php echo $seletedAddrId; ?>">
                         <input type="hidden" name="slot_id[<?php echo $level; ?>]" class="js-slot-id" data-level="<?php echo $level; ?>" value="<?php echo $seletedSlotId; ?>">
                         <input type="hidden" name="slot_date[<?php echo $level; ?>]" class="js-slot-date" data-level="<?php echo $level; ?>" value="<?php echo $seletedSlotDate;?>">
+                        <?php if(count($levelItems['pickup_options']) > 0) { ?>
                         <a class="btn btn-secondary btn-sm" href="javascript:void(0)" onclick="displayPickupAddress(<?php echo $level;?>, <?php echo $product['shop_id']; ?>)"><?php echo Labels::getLabel('LBL_SELECT_PICKUP', $siteLangId);?></a>
+                        <?php }else{ 
+                            echo Labels::getLabel('MSG_Please_add_pickup_addresses', $siteLangId);
+                        } ?>
                         </div>
                     </li> 
                 <?php } ?>   
