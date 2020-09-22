@@ -3305,6 +3305,7 @@ class Importexport extends ImportexportCommon
                                     $prodIndetifierArr = $prodIndetifierArr + $res;
                                 }
                             }
+							
                             $productId = $colValue = array_key_exists($colValue, $prodIndetifierArr) ? $prodIndetifierArr[$colValue] : 0;
                             break;
                         case 'selprod_user_id':
@@ -3375,7 +3376,7 @@ class Importexport extends ImportexportCommon
                             if ('' != $colValue) {
                                 $selProdSepc[$columnKey] = $colValue;
                             }
-                        } elseif (in_array($columnKey, array('selprod_subtract_stock', 'selprod_track_inventory', 'selprod_active', 'selprod_cod_enabled', 'selprod_deleted')) && !$this->settings['CONF_USE_O_OR_1']) {
+                        } elseif (in_array($columnKey, array('selprod_subtract_stock', 'selprod_track_inventory')) && !$this->settings['CONF_USE_O_OR_1']) {
                             $colValue = ('YES' == $colValue) ? 1 : 0;
                             $selProdGenArr[$columnKey] = $colValue;
                         } else {
