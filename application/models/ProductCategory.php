@@ -6,6 +6,10 @@ class ProductCategory extends MyAppModel
     public const DB_TBL_PREFIX = 'prodcat_';
     public const DB_TBL_LANG = 'tbl_product_categories_lang';
     public const DB_TBL_LANG_PREFIX = 'prodcatlang_';
+
+    public const DB_TBL_PROD_CAT_RELATIONS = 'tbl_product_category_relations';
+    public const DB_TBL_PROD_CAT_REL_PREFIX = 'pcr_';
+
     public const REWRITE_URL_PREFIX = 'category/view/';
     public const REMOVED_OLD_IMAGE_TIME = 4;
     private $categoryTreeArr = array();
@@ -149,6 +153,10 @@ class ProductCategory extends MyAppModel
                     Message::addErrorMessage($record->getError());
                     return false;
                 }
+
+                /* Updating Category Relations */
+                self::updateCategoryRelations($row['prodcat_id'], $row['prodcat_code']);
+                /* Updating Category Relations */
             }
         }
         return true;
@@ -707,7 +715,7 @@ class ProductCategory extends MyAppModel
     }
 
 
-    public static function getProdCatParentChildWiseArr($langId = 0, $parentId = 0, $includeChildCat = true, $forSelectBox = false, $sortByName = false, $prodCatSrchObj = false, $excludeCategoriesHavingNoProducts = false)
+    /* public static function getProdCatParentChildWiseArr($langId = 0, $parentId = 0, $includeChildCat = true, $forSelectBox = false, $sortByName = false, $prodCatSrchObj = false, $excludeCategoriesHavingNoProducts = false)
     {
         $parentId = FatUtility::int($parentId);
         $langId = FatUtility::int($langId);
@@ -753,6 +761,63 @@ class ProductCategory extends MyAppModel
 
         $rs = $prodCatSrch->getResultSet();
 
+        if ($forSelectBox) {
+            $categoriesArr = FatApp::getDb()->fetchAllAssoc($rs);
+        } else {
+            $categoriesArr = FatApp::getDb()->fetchAll($rs);
+        }
+
+        if (true === $includeChildCat && $categoriesArr) {
+            foreach ($categoriesArr as $key => $cat) {
+                $categoriesArr[$key]['icon'] = UrlHelper::generateFullUrl('Category', 'icon', array($cat['prodcat_id'], $langId, 'COLLECTION_PAGE'));
+                $categoriesArr[$key]['children'] = self::getProdCatParentChildWiseArr($langId, $cat['prodcat_id']);
+            }
+        }
+        return $categoriesArr;
+    } */
+
+    public static function getProdCatParentChildWiseArr(int $langId = 0, int $parentId = 0, bool $includeChildCat = true, bool $forSelectBox = false, bool $sortByName = false, $prodCatSrchObj = false, bool $excludeCategoriesHavingNoProducts = false)
+    {
+        if (!$langId) {
+            trigger_error("Language not specified", E_USER_ERROR);
+        }
+        
+        if (is_object($prodCatSrchObj)) {
+            $prodCatSrch = clone $prodCatSrchObj;
+        } else {
+            $prodCatSrch = new ProductCategorySearch($langId);
+            $prodCatSrch->setParent($parentId);
+        }
+        $prodCatSrch->doNotCalculateRecords();
+        $prodCatSrch->doNotLimitRecords();
+
+        $prodCatSrch->addMultipleFields(array('prodcat_id', 'COALESCE(prodcat_name,prodcat_identifier ) as prodcat_name', 'substr(prodcat_code,1,6) AS prodrootcat_code', 'prodcat_content_block', 'prodcat_active', 'prodcat_parent', 'prodcat_code as prodcat_code', 'COALESCE(COUNT(ptc.ptc_product_id), 0) as productCounts'));
+
+        $prodCatSrch->joinProductCategoryRelations();
+        if ($excludeCategoriesHavingNoProducts) {
+            $prodSrchObj = new ProductSearch();
+            $prodSrchObj->setDefinedCriteria();
+            $prodSrchObj->doNotCalculateRecords();
+            $prodSrchObj->doNotLimitRecords();
+            $prodSrchObj->joinSellerSubscription(0, true);
+            $prodSrchObj->addSubscriptionValidCondition();
+            $prodSrchObj->addMultipleFields(array('product_id'));
+            $prodSrchObj->addCondition('selprod_deleted', '=', applicationConstants::NO);
+            $prodSrchObj->addGroupBy('product_id');
+
+            $prodCatSrch->joinTable('(' . $prodSrchObj->getQuery() . ')', 'LEFT OUTER JOIN', 'qryProducts.product_id = ptc.ptc_product_id', 'qryProducts');
+
+            $prodCatSrch->addHaving('productCounts', '>', 0);
+        }
+
+        if ($sortByName) {
+            $prodCatSrch->addOrder('prodcat_name');
+            $prodCatSrch->addOrder('prodcat_identifier');
+        } else {
+            $prodCatSrch->addOrder('prodcat_ordercode');
+        }
+
+        $rs = $prodCatSrch->getResultSet();
         if ($forSelectBox) {
             $categoriesArr = FatApp::getDb()->fetchAllAssoc($rs);
         } else {
@@ -1248,6 +1313,54 @@ class ProductCategory extends MyAppModel
         }
         $parentCatId = FatUtility::int($parentCatId);
         FatApp::getDb()->updateFromArray(static::DB_TBL, array(static::DB_TBL_PREFIX . 'parent' => $parentCatId), array('smt' => static::DB_TBL_PREFIX . 'id = ?', 'vals' => array($this->mainTableRecordId)));
+        return true;
+    }
+    
+    /**
+     * updateCategoryRelations
+     *
+     * @param  int $recordId
+     * @param  string $prodcatCode
+     * @return bool
+     */
+    public static function updateCategoryRelations(int $recordId = 0, string $prodcatCode = ''): bool
+    {
+        $db = FatApp::getDb();
+        if (!empty($prodcatCode)) {
+            $prodCatCodeArr = [$recordId => $prodcatCode];
+        } else {
+            $prodCatSrch = new ProductCategorySearch();
+            if (0 < $recordId) {
+                $prodCatSrch->addCondition('prodcat_id', '=',  $recordId);
+            }
+            $prodCatSrch->addMultipleFields(['prodcat_id', 'prodcat_code']);
+            $rs = $prodCatSrch->getResultSet();
+            $prodCatCodeArr = $db->fetchAllAssoc($rs);
+        }
+
+        if (!empty($prodCatCodeArr)) {
+            foreach ($prodCatCodeArr as $prodCatId => $prodCatCode) {
+                $catCodeArr = explode('_', rtrim($prodCatCode, '_'));
+                $deleted = false;
+                foreach (array_reverse($catCodeArr) as $level => $code) {
+                    $catId = ltrim($code, 0);
+                    
+                    if (!$catId) { continue; }
+
+                    if (false === $deleted) {
+                        $db->deleteRecords(self::DB_TBL_PROD_CAT_RELATIONS, ['smt' => self::DB_TBL_PROD_CAT_REL_PREFIX . 'prodcat_id = ?', 'vals' => [$prodCatId]]);
+                        $deleted = true;
+                    }
+
+                    $dataToSave = [
+                        'pcr_prodcat_id' => $prodCatId,
+                        'pcr_parent_id' => $catId,
+                        'pcr_level' => ($catId == $prodCatId) ? 0 : ($level + 1),
+                    ];
+                    $db->insertFromArray(self::DB_TBL_PROD_CAT_RELATIONS, $dataToSave, false, array(), $dataToSave);
+                }
+            }
+        }
         return true;
     }
 }
