@@ -729,9 +729,8 @@ class ProductCategory extends MyAppModel
         $prodCatSrch->doNotCalculateRecords();
         $prodCatSrch->doNotLimitRecords();
 
-        $prodCatSrch->addMultipleFields(array('prodcat_id', 'COALESCE(prodcat_name,prodcat_identifier ) as prodcat_name', 'substr(prodcat_code,1,6) AS prodrootcat_code', 'prodcat_content_block', 'prodcat_active', 'prodcat_parent', 'prodcat_code as prodcat_code', 'COALESCE(COUNT(ptc.ptc_product_id), 0) as productCounts'));
+        $prodCatSrch->addMultipleFields(array('prodcat_id', 'COALESCE(prodcat_name,prodcat_identifier ) as prodcat_name', 'substr(prodcat_code,1,6) AS prodrootcat_code', 'prodcat_content_block', 'prodcat_active', 'prodcat_parent', 'prodcat_code as prodcat_code'));
 
-        $prodCatSrch->joinProductCategoryRelations();
         if ($excludeCategoriesHavingNoProducts) {
             $prodSrchObj = new ProductSearch();
             $prodSrchObj->setDefinedCriteria();
@@ -743,6 +742,8 @@ class ProductCategory extends MyAppModel
             $prodSrchObj->addCondition('selprod_deleted', '=', applicationConstants::NO);
             $prodSrchObj->addGroupBy('product_id');
 
+            $prodCatSrch->joinProductCategoryRelations();
+            $prodCatSrch->addFld('COALESCE(COUNT(ptc.ptc_product_id), 0) as productCounts');
             $prodCatSrch->joinTable('(' . $prodSrchObj->getQuery() . ')', 'LEFT OUTER JOIN', 'qryProducts.product_id = ptc.ptc_product_id', 'qryProducts');
 
             $prodCatSrch->addHaving('productCounts', '>', 0);
