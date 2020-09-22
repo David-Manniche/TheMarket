@@ -831,31 +831,60 @@ function defaultSetUpLogin(frm, v) {
 })(jQuery);
 
 
-$(document).ready(function() {
-    /* $('#header_search_keyword').autocomplete({
-        'classes': {
-            "ui-autocomplete": "custom-ui-autocomplete"
-        },
-		'source': function(request, response) {
-			$.ajax({
-				url: fcom.makeUrl('Products', 'searchProductTagsAutocomplete'),
-				data: {keyword: encodeURIComponent(request['term']), fIsAjax:1},
-				dataType: 'json',
-				type: 'post',
-				success: function(json) {
-					response($.map(json, function(item) {
-						return { label: item['value'], value: item['value'], name: item['value'] };
-					}));
-				},
-			});
-		},
-		select: function (event, ui) {
-			submitSiteSearch(document.frmSiteSearch);
-		}
-	}); */
+$(function(){ // this will be called when the DOM is ready
+    //setup before functions
+    var typingTimer;                //timer identifier
+    var doneTypingInterval = 800;  //time in ms, 5 second for example
+    var $input = $('#header_search_keyword');
 
+    $input.keyup(function() {        
+      clearTimeout(typingTimer);     
+      typingTimer = setTimeout(doneTyping, doneTypingInterval);      
+    });
 
-    var $elem = $('#header_search_keyword').autocomplete({
+    $input.keydown(function() {      
+      clearTimeout(typingTimer);
+    });
+
+    doneTyping = function(){
+        searchProductTagsAuto($input.val());
+    };
+
+    let $formfloating = $('.form-floating');
+    $formfloating.on('keyup', 'input, textarea', function(event) {
+        if ($(this).val().length > 0) {
+            $(this).addClass('filled')
+        } else {
+            $(this).removeClass('filled')
+        }
+    });
+  });
+
+$(document).ready(function() {      
+    removeAutoSuggest = function(){
+        $('#search-suggestions-js').html('');
+    };
+    searchTags = function(obj){               
+        var frmSiteSearch = document.frmSiteSearch;        
+        $(frmSiteSearch.keyword).val($(obj).data('txt'));                
+        $(frmSiteSearch).trigger("submit");       
+    };
+    searchProductTagsAuto = function(keyword){            
+        if (keyword.trim().length < 3){           
+            removeAutoSuggest();
+            return;
+        }
+        console.log(keyword);
+        if (!$('#search-suggestions-js').find('div').hasClass('search-suggestions')){
+            $('#search-suggestions-js').html('<a href="javascript:void(0)" onClick="removeAutoSuggest()" class="close-layer"></a><div class="search-suggestions" id="tagsSuggetionList"></div>');   
+        }
+        
+        var data = 'keyword='+keyword;
+        fcom.ajax(fcom.makeUrl('Products', 'searchProductTagsAutocomplete'), data, function(t) {
+            $('#tagsSuggetionList').html(t);
+        });
+    };
+    /* var $elem = $('#header_search_keyword').autocomplete({
             'classes': {
                 "ui-autocomplete": "custom-ui-autocomplete"
             },
@@ -889,69 +918,7 @@ $(document).ready(function() {
                 .append("<div>" + newText + "</div>")
                 .appendTo(ul);
         };
-    }
-
-
-    /* $('#header_search_keyword').autocomplete({
-        'classes': {
-            "ui-autocomplete": "custom-ui-autocomplete"
-        },
-		'source': function(request, response) {
-			$.ajax({
-				url: fcom.makeUrl('Products', 'searchProductTagsAutocomplete'),
-				data: {keyword: encodeURIComponent(request['term']), fIsAjax:1},
-				dataType: 'json',
-				type: 'post',
-				success: function(json) {
-					response($.map(json, function(item) {
-						return { label: item['value'], value: item['value'], name: item['value'] };
-					}));
-				},
-			});
-		},
-		select: function (event, ui) {
-			submitSiteSearch(document.frmSiteSearch);
-		}
-	})
-    .data("autocomplete")._renderItem = function (ul, item) {
-        var newText = String(item.value).replace(
-                new RegExp(this.term, "gi"),
-                "<span class='ui-state-highlight'>$&</span>");
-
-        return $("<li></li>")
-            .data("item.autocomplete", item)
-            .append("<div>" + newText + "</div>")
-            .appendTo(ul);
-    }; */
-
-
-    /* if (typeof $.fn.autocomplete_advanced !== typeof undefined) {
-		$('#header_search_keyword').autocomplete_advanced({
-			appendTo: ".main-search__field",
-			minChars: 2,
-			autoSelectFirst: false,
-			lookup: function (query, done) {
-				$.ajax({
-					url: fcom.makeUrl('Products', 'searchProductTagsAutocomplete'),
-					data: {
-						keyword: encodeURIComponent(query)
-					},
-					dataType: 'json',
-					type: 'post',
-					success: function (json) {
-						done(json);
-						// $('.autocomplete-suggestions').appendTo('.form__cover');
-						// $('.autocomplete-suggestions').insertAfter( "#header_search_keyword" );
-					}
-				});
-			},
-			triggerSelectOnValidInput: false,
-			onSelect: function (suggestion) {
-				submitSiteSearch(document.frmSiteSearch);
-				//alert('You selected: ' + suggestion.value + ', ' + suggestion.data);
-			}
-		});
-	} */
+    } */
 
     if ($('.system_message').find('.div_error').length > 0 || $('.system_message').find('.div_msg').length > 0 || $('.system_message').find('.div_info').length > 0 || $('.system_message').find('.div_msg_dialog').length > 0) {
         $('.system_message').show();
@@ -1657,18 +1624,6 @@ function bytesToSize(bytes) {
     var i = parseInt(Math.floor(Math.log(bytes) / Math.log(1024)));
     return Math.round(bytes / Math.pow(1024, i), 2) + ' ' + sizes[i];
 }
-
-
-$(function() {
-    let $formfloating = $('.form-floating');
-    $formfloating.on('keyup', 'input, textarea', function(event) {
-        if ($(this).val().length > 0) {
-            $(this).addClass('filled')
-        } else {
-            $(this).removeClass('filled')
-        }
-    });
-});
 
 $('.form-floating').find('input, textarea, select').each(function() {
     if ($(this).val() != "") {
