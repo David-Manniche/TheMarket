@@ -713,7 +713,7 @@ class ProductCategory extends MyAppModel
         }
         return $return;
     }
-
+    
     public static function getProdCatParentChildWiseArr(int $langId = 0, int $parentId = 0, bool $includeChildCat = true, bool $forSelectBox = false, bool $sortByName = false, $prodCatSrchObj = false, bool $excludeCategoriesHavingNoProducts = false)
     {
         if (!$langId) {
