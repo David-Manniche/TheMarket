@@ -4,14 +4,9 @@ $submitFld = $headerSrchFrm->getField('btnSiteSrchSubmit');
 $submitFld->setFieldTagAttribute('class', 'search--btn submit--js');
 $keywordFld->setFieldTagAttribute('class', 'search--keyword search--keyword--js no--focus');
 $keywordFld->setFieldTagAttribute('placeholder', Labels::getLabel('LBL_I_am_looking_for...', $siteLangId));
-/* $keywordFld->setFieldTagAttribute('autofocus','autofocus'); */
 $keywordFld->setFieldTagAttribute('id', 'header_search_keyword');
-$keywordFld->setFieldTagAttribute('onkeyup', 'searchProductTagsAuto(this.value)');
 $selectFld = $headerSrchFrm->getField('category');
 $selectFld->setFieldTagAttribute('id', 'searched_category');
-/* CommonHelper::printArray($categoriesArr); die; */
-/*
-	$selectFld->setFieldTagAttribute('onChange','setSelectedCatValue()'); */
 ?>
 
 <div class="main-search">

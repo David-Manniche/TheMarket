@@ -8,7 +8,7 @@ New Features:
     => CDN handling based on configuration. 
     => Url Rewritting based on language. 
     => Security Headers for clickjacking, XSS and MIME types. 
-    => After Ship API.    
+    => After Ship API.        
 Bugs:
     => 036750 - Seller Shop - Custom URL for shop collections
     => 036504 - wrong stats are displaying on buyer dashboard - pending and total orders
@@ -113,6 +113,7 @@ Enhancements:
     => User Addresses DB changes.  
     => Displayed "product not available " on home page collections based on location. 
     => Performance updates.
+    => Advanced search UI and Auto Suggestions.
 Notes:
    ==========Stripe Connect Installation Notes[:=========
    Composer should be installed on server to run the stripe connect module: composer.json on root of the project has details to download the required libraries in root's vendor folder.

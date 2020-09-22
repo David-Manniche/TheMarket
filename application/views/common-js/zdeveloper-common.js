@@ -831,22 +831,50 @@ function defaultSetUpLogin(frm, v) {
 })(jQuery);
 
 
-$(document).ready(function() {  
+$(function(){ // this will be called when the DOM is ready
+    //setup before functions
+    var typingTimer;                //timer identifier
+    var doneTypingInterval = 800;  //time in ms, 5 second for example
+    var $input = $('#header_search_keyword');
+
+    $input.keyup(function() {        
+      clearTimeout(typingTimer);     
+      typingTimer = setTimeout(doneTyping, doneTypingInterval);      
+    });
+
+    $input.keydown(function() {      
+      clearTimeout(typingTimer);
+    });
+
+    doneTyping = function(){
+        searchProductTagsAuto($input.val());
+    };
+
+    let $formfloating = $('.form-floating');
+    $formfloating.on('keyup', 'input, textarea', function(event) {
+        if ($(this).val().length > 0) {
+            $(this).addClass('filled')
+        } else {
+            $(this).removeClass('filled')
+        }
+    });
+  });
+
+$(document).ready(function() {      
     removeAutoSuggest = function(){
         $('#search-suggestions-js').html('');
     };
-    searchTags = function(obj){       
-        $("input[id=header_search_keyword]").val($(obj).data('txt'));
-        var frmSiteSearch = document.frmSiteSearch;
-        $(frmSiteSearch.keyword).val($(obj).data('txt'));         
-        frmSiteSearch.submit();
+    searchTags = function(obj){               
+        var frmSiteSearch = document.frmSiteSearch;        
+        $(frmSiteSearch.keyword).val($(obj).data('txt'));                
+        $(frmSiteSearch).trigger("submit");       
     };
     searchProductTagsAuto = function(keyword){            
-        if (keyword.trim().length == 0){           
+        if (keyword.trim().length < 3){           
             removeAutoSuggest();
             return;
         }
-
+        console.log(keyword);
         if (!$('#search-suggestions-js').find('div').hasClass('search-suggestions')){
             $('#search-suggestions-js').html('<a href="javascript:void(0)" onClick="removeAutoSuggest()" class="close-layer"></a><div class="search-suggestions" id="tagsSuggetionList"></div>');   
         }
@@ -1596,18 +1624,6 @@ function bytesToSize(bytes) {
     var i = parseInt(Math.floor(Math.log(bytes) / Math.log(1024)));
     return Math.round(bytes / Math.pow(1024, i), 2) + ' ' + sizes[i];
 }
-
-
-$(function() {
-    let $formfloating = $('.form-floating');
-    $formfloating.on('keyup', 'input, textarea', function(event) {
-        if ($(this).val().length > 0) {
-            $(this).addClass('filled')
-        } else {
-            $(this).removeClass('filled')
-        }
-    });
-});
 
 $('.form-floating').find('input, textarea, select').each(function() {
     if ($(this).val() != "") {
