@@ -753,3 +753,5 @@ UPDATE `tbl_email_templates` SET `etpl_body` = '<table width=\"100%\" align=\"ce
 DROP TABLE `tbl_tax_values`;
 
 DELETE FROM `tbl_language_labels` WHERE `label_key` LIKE 'LBL_This_is_the_application_ID_used_in_login_and_post';
+
+ALTER TABLE `tbl_shops` ADD `shop_invoice_prefix` VARCHAR(20) NOT NULL AFTER `shop_phone`, ADD `shop_invoice_suffix` BIGINT(15) NOT NULL AFTER `shop_invoice_prefix`;

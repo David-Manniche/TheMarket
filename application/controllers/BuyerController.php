@@ -420,7 +420,6 @@ class BuyerController extends BuyerBaseController
                 $digitalDownloadLinks = Orders::getOrderProductDigitalDownloadLinks($childOrder['op_id']);
             }
         }
-        CommonHelper::printArray($orderDetail, true);
         $frm = $this->getTransferBankForm($this->siteLangId, $orderId);
         $this->set('frm', $frm);
         $this->set('orderDetail', $orderDetail);

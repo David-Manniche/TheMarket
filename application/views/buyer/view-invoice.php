@@ -157,93 +157,54 @@
 												<td style="padding:15px;">
 												<p><strong><?php echo Labels::getLabel('LBL_Order', $siteLangId);?>:</strong>  <?php echo $childOrder['op_order_id']; ?> </p>
 												<p><strong><?php echo Labels::getLabel('LBL_Invoice_Number', $siteLangId);?>:</strong>  <?php echo $childOrder['op_invoice_number']; ?></p>
-												<p><strong><?php echo Labels::getLabel('LBL_Payment_Method', $siteLangId);?>:</strong> POSTPAID </p>
-												<p><strong><?php echo Labels::getLabel('LBL_Total_Items', $siteLangId);?>: 5 </strong></p><strong>
+												<p><strong><?php echo Labels::getLabel('LBL_Payment_Method', $siteLangId);?>:</strong> <?php
+													$paymentMethodName = empty($childOrder['plugin_name']) ? $childOrder['plugin_identifier'] : $childOrder['plugin_name'];
+													if (!empty($paymentMethodName) && $childOrder['order_pmethod_id'] > 0 && $childOrder['order_is_wallet_selected'] > 0) {
+														$paymentMethodName  .= ' + ';
+													}
+													if ($childOrder['order_is_wallet_selected'] > 0) {
+														$paymentMethodName .= Labels::getLabel("LBL_Wallet", $siteLangId);
+													} 
+													echo $paymentMethodName;
+													?>
+												</p>
+												<?php /* <p><strong><?php echo Labels::getLabel('LBL_Total_Items', $siteLangId);?>: 5 </strong></p><strong> */?>
 												</strong></td>
 												<td style="padding:15px;">
-													<p><strong><?php echo Labels::getLabel('LBL_Order_Date', $siteLangId);?>:</strong>   07-02-2020</p>
-													<p><strong><?php echo Labels::getLabel('LBL_Invoice_Date', $siteLangId);?>:</strong>  09-02-2020</p>
-													<p><strong><?php echo Labels::getLabel('LBL_Tracking_ID', $siteLangId);?>:</strong>  GROC0008702522 </p>
-													<p><strong><?php echo Labels::getLabel('LBL_Tote-Id', $siteLangId);?>: </strong>  071-19078 </p>
+													<p><strong><?php echo Labels::getLabel('LBL_Order_Date', $siteLangId);?>:</strong>  <?php echo FatDate::format($childOrder['order_date_added']);?> </p>
+													<p><strong><?php echo Labels::getLabel('LBL_Invoice_Date', $siteLangId);?>:</strong> <?php echo (!empty($childOrder['opshipping_date'])) ? FatDate::format($childOrder['opshipping_date']) : 'NA'; ?></p>
+													<p><strong><?php echo Labels::getLabel('LBL_Tracking_ID', $siteLangId);?>:</strong>  <?php echo (!empty($childOrder['opship_tracking_number'])) ? $childOrder['opship_tracking_number'] : 'NA'; ?> </p>
+													<?php /* <p><strong><?php echo Labels::getLabel('LBL_Tote-Id', $siteLangId);?>: </strong>  LOREM </p> */ ?>
 												</td>
 											</tr>
 										</tbody></table>                                        
 									</td>
 								</tr>
 							</tbody>
-						</table> 
-					<?php } ?>
-
-
-						<table width="100%" border="0" cellpadding="0" cellspacing="0">                                                             
+						</table>
+						<table width="100%" border="0" cellpadding="0" cellspacing="0">
 							<tbody><tr>
 								<td style="border-bottom: 1px solid #ddd;">                                       
 									<table width="100%" border="0" cellpadding="0" cellspacing="0">                                                             
-										<tbody><tr>
-											<th style="padding:10px 15px;text-align: left;">S.No.</th>                                                
-											<th style="padding:10px 15px;text-align: left;">Item</th>                                                
+										<tbody><tr>                                                
+											<th style="padding:10px 15px;text-align: left;"><?php echo Labels::getLabel('LBL_Item', $siteLangId);?></th>                                                
 											<th style="padding:10px 15px;text-align: center;">HSN (Tax%)</th>                                                
-											<th style="padding:10px 15px;text-align: center;">Qty</th>                                                
-											<th style="padding:10px 15px;text-align: center;">MRP (Rs)</th>                                                
-											<th style="padding:10px 15px;text-align: center;">Savings (Rs)</th>                                                
-											<th style="padding:10px 15px;text-align: center;">Total Amt (Rs)</th>                                                
+											<th style="padding:10px 15px;text-align: center;"><?php echo Labels::getLabel('LBL_Qty', $siteLangId);?></th>                                                
+											<th style="padding:10px 15px;text-align: center;"><?php echo Labels::getLabel('LBL_Price', $siteLangId);?></th>                                                
+											<th style="padding:10px 15px;text-align: center;"><?php echo Labels::getLabel('LBL_Savings', $siteLangId);?></th>                                                
+											<th style="padding:10px 15px;text-align: center;"><?php echo Labels::getLabel('LBL_Total_Amount', $siteLangId);?></th>
 										</tr>
-										<tr>
-											<th colspan="7" style="padding:10px 15px;text-align: left;background-color: #f0f0f0;font-size: 18px;">FOOD ITEMS</th>                                             
-										</tr>
-										<tr>
-											<td style="padding:10px 15px;text-align: left;">1</td>                                             
-											<td style="padding:10px 15px;text-align: left;">Budweiser Non-Alcoholic Can, 330 ml </td>                                             
+										<tr> 
+											<?php $volumeDiscount = CommonHelper::orderProductAmount($childOrder, 'VOLUME_DISCOUNT'); ?>
+											<td style="padding:10px 15px;text-align: left;">
+											<?php echo ($childOrder['op_selprod_title'] != '') ? $childOrder['op_selprod_title'] : $childOrder['op_product_name']; ?></td>
 											<td style="padding:10px 15px;text-align: center;">22029090 (18.0)</td>                                             
-											<td style="padding:10px 15px;text-align: center;">1</td>                                             
-											<td style="padding:10px 15px;text-align: center;">80.00</td>                                             
-											<td style="padding:10px 15px;text-align: center;">79.00</td>                                             
-											<td style="padding:10px 15px;text-align: center;">1.00</td>                                             
+											<td style="padding:10px 15px;text-align: center;"><?php echo $childOrder['op_qty']; ?></td>                                             
+											<td style="padding:10px 15px;text-align: center;"><?php echo CommonHelper::displayMoneyFormat($childOrder['op_unit_price'], true, false, true, false, true); ?></td>                                           
+											<td style="padding:10px 15px;text-align: center;"><?php if ($volumeDiscount) { echo CommonHelper::displayMoneyFormat($volumeDiscount, true, false, true, false, true); } ?></td>
+											<td style="padding:10px 15px;text-align: center;"><?php echo CommonHelper::displayMoneyFormat(CommonHelper::orderProductAmount($childOrder), true, false, true, false, true); ?></td>                                             
 										</tr>
 										<tr>
-											<td style="padding:10px 15px;text-align: left;">2</td>                                             
-											<td style="padding:10px 15px;text-align: left;">Toor Dal, 500 g </td>                                             
-											<td style="padding:10px 15px;text-align: center;">22029090 (18.0)</td>                                             
-											<td style="padding:10px 15px;text-align: center;">1</td>                                             
-											<td style="padding:10px 15px;text-align: center;">80.00</td>                                             
-											<td style="padding:10px 15px;text-align: center;">79.00</td>                                             
-											<td style="padding:10px 15px;text-align: center;">1.00</td>                                             
-										</tr>
-										<tr>
-											<td style="padding:10px 15px;text-align: left;">3</td>                                             
-											<td style="padding:10px 15px;text-align: left;">aavin Ghee 1 L Carton </td>                                             
-											<td style="padding:10px 15px;text-align: center;">22029090 (18.0)</td>                                             
-											<td style="padding:10px 15px;text-align: center;">1</td>                                             
-											<td style="padding:10px 15px;text-align: center;">80.00</td>                                             
-											<td style="padding:10px 15px;text-align: center;">79.00</td>                                             
-											<td style="padding:10px 15px;text-align: center;">1.00</td>                                             
-										</tr>
-										<tr>
-											<td style="padding:10px 15px;text-align: left;">4</td>                                             
-											<td style="padding:10px 15px;text-align: left;">Sunland Refined Sunflower Oil Pouch, 500 ml  </td>                                             
-											<td style="padding:10px 15px;text-align: center;">22029090 (18.0)</td>                                             
-											<td style="padding:10px 15px;text-align: center;">1</td>                                             
-											<td style="padding:10px 15px;text-align: center;">80.00</td>                                             
-											<td style="padding:10px 15px;text-align: center;">79.00</td>                                             
-											<td style="padding:10px 15px;text-align: center;">1.00</td>                                             
-										</tr>
-										<tr>
-											<td style="padding:10px 15px;text-align: left;">5</td>                                             
-											<td style="padding:10px 15px;text-align: left;">BRU Green Label Roast &amp; Ground Coffee, 500 g  </td>                                             
-											<td style="padding:10px 15px;text-align: center;">22029090 (18.0)</td>                                             
-											<td style="padding:10px 15px;text-align: center;">1</td>                                             
-											<td style="padding:10px 15px;text-align: center;">80.00</td>                                             
-											<td style="padding:10px 15px;text-align: center;">79.00</td>                                             
-											<td style="padding:10px 15px;text-align: center;">1.00</td>                                             
-										</tr>
-										<tr>                                           
-											<td style="padding:10px 15px;font-size:18px;text-align: left;font-weight:700;background-color: #f0f0f0;" colspan="3">Summary </td>                                     
-											<td style="padding:10px 15px;text-align: center;background-color: #f0f0f0;font-size: 16px;"><strong>5</strong></td>                                             
-											<td style="padding:10px 15px;text-align: center;background-color: #f0f0f0;font-size: 16px;"><strong>876.00</strong></td>                                             
-											<td style="padding:10px 15px;text-align: center;background-color: #f0f0f0;font-size: 16px;"><strong>243.00</strong></td> 
-											<td style="padding:10px 15px;text-align: center;background-color: #f0f0f0;font-size: 16px;"><strong>633.00</strong></td>                                             
-										</tr>
-										<tr>                                          
 											<td style="padding:15px 15px;font-size:20px;text-align: left;font-weight:700; vertical-align: top;" colspan="4" rowspan="4">You have SAVED Rs. 243.00 on this order. </td>                                     
 											<td style="padding:10px 15px;text-align: center;border:1px solid #ddd;border-right:0;border-bottom:0;" colspan="2">Total Amount (Food)</td>                    
 											<td style="padding:10px 15px;text-align: center;border:1px solid #ddd;border-right:0;border-bottom:0;" colspan="1">633.00</td>                                           
@@ -264,9 +225,7 @@
 								</td>
 							</tr>
 						</tbody></table>
-
-
-
+						<?php } ?>
 						<table width="100%" border="0" cellpadding="0" cellspacing="0">                                                             
 							<tbody><tr>
 								<td style="padding:15px;vertical-align: top;">
