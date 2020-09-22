@@ -741,3 +741,20 @@ ALTER TABLE `tbl_tax_rule_details` ADD `taxruledet_taxstr_id` INT NOT NULL AFTER
 ALTER TABLE `tbl_tax_rule_details` DROP `taxruledet_identifier`;
 DROP TABLE `tbl_tax_rule_details_lang`;
 ALTER TABLE `tbl_tax_rules` DROP `taxrule_is_combined`;
+
+ALTER TABLE `tbl_shops` ADD `shop_invoice_prefix` VARCHAR(20) NOT NULL AFTER `shop_phone`, ADD `shop_invoice_suffix` BIGINT(15) NOT NULL AFTER `shop_invoice_prefix`;
+
+CREATE TABLE `tbl_order_shops` (
+  `os_id` int(11) NOT NULL,
+  `os_order_id` varchar(15) NOT NULL,
+  `os_invoice_number` varchar(50) NOT NULL,
+  `os_shop_id` int(11) NOT NULL,
+  `os_status` int(11) NOT NULL COMMENT 'Pending/ Completed / Partial Refund / Full Refund / Cancelled'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+ALTER TABLE `tbl_order_shops`
+  ADD PRIMARY KEY (`os_id`),
+  ADD UNIQUE KEY `os_invoice_number` (`os_invoice_number`);
+  
+  ALTER TABLE `tbl_order_shops`
+  MODIFY `os_id` int(11) NOT NULL AUTO_INCREMENT; 

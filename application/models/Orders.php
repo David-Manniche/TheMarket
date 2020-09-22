@@ -379,6 +379,8 @@ class Orders extends MyAppModel
         $db->deleteRecords(static::DB_TBL_ORDER_PRODUCTS, array('smt' => 'op_order_id = ?', 'vals' => array($this->getOrderId())));
         $db->deleteRecords(static::DB_TBL_ORDER_PRODUCTS_LANG, array('smt' => 'oplang_order_id = ?', 'vals' => array($this->getOrderId())));
 
+        $db->deleteRecords(OrderShop::DB_TBL, array('smt' => 'os_order_id = ?', 'vals' => array($this->getOrderId())));
+
         if (!empty($products)) {
             $opRecordObj = new TableRecord(static::DB_TBL_ORDER_PRODUCTS);
             $opLangRecordObj = new TableRecord(static::DB_TBL_ORDER_PRODUCTS_LANG);
@@ -599,6 +601,31 @@ class Orders extends MyAppModel
                 }
 
                 $counter++;
+            }
+
+            $counter = 1;
+            usort($products, function ($a, $b) {
+                return $a['op_shop_id'] - $b['op_shop_id'];
+            });
+            $prevShopId = 0;
+            foreach ($products as $product) {
+                if ($product['op_shop_id'] != $prevShopId) {
+                    $op_invoice_number = $this->getOrderId() . '-OS' . str_pad($counter, 4, '0', STR_PAD_LEFT);
+                    $assignValues = array(
+                        OrderShop::DB_TBL_PREFIX . 'order_id' => $this->getOrderId(),
+                        OrderShop::DB_TBL_PREFIX . 'invoice_number' => $op_invoice_number,
+                        OrderShop::DB_TBL_PREFIX . 'shop_id' => $product['op_shop_id']
+                    );
+                    $orderShop = new OrderShop();
+                    $orderShop->assignValues($assignValues);
+                    if (!$orderShop->addNew()) {
+                        $db->rollbackTransaction();
+                        $this->error = $orderShop->getError();
+                        return false;
+                    }
+                    $counter++;
+                }
+                $prevShopId = $product['op_shop_id'];
             }
         }
         /* CommonHelper::printArray($addresses);die; */
