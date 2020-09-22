@@ -118,6 +118,8 @@ Bugs:
     => 043127 - Seller should not be able to import special price file with price less then minimum selling price .
     => 043050 - On Shipping profile >> manage rates section still gets display there even if we delete "zone "
     => 043266 - Display parent category if products bound to any of child category 
+    => 043050 - On Shipping profile >> manage rates section still gets display there even if we delete "zone " 
+    => 042767 - Import / export >> settings >> Some settings needs to be removed . 
     
 Enhancements:
     => Tax module upgrade
