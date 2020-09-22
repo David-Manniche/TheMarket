@@ -1069,67 +1069,74 @@ class ProductsController extends MyAppController
     public function searchProducttagsAutocomplete()
     {
         $keyword = FatApp::getPostedData("keyword");
+        $cacheKey = $this->siteLangId . '-' .  urlencode($keyword);
 
-        $criteria = [
-            'keyword' => $keyword,
-            'doNotJoinSpecialPrice' => true
-        ];
-        $prodSrchObj = new ProductSearch($this->siteLangId);
-        $prodSrchObj->joinSellerProducts(0, '', $criteria, true);
-        $prodSrchObj->unsetDefaultLangForJoins();
-        $prodSrchObj->joinSellers();
-        $prodSrchObj->setGeoAddress();
-        $prodSrchObj->joinShops();
-        $prodSrchObj->validateAndJoinDeliveryLocation();
-        $prodSrchObj->joinBrands($this->siteLangId);
-        $prodSrchObj->joinProductToCategory($this->siteLangId);
-        $prodSrchObj->joinSellerSubscription(0, false, true);
-        $prodSrchObj->addSubscriptionValidCondition();
-        $prodSrchObj->doNotCalculateRecords();
-        $prodSrchObj->setPageSize(5);
+        $autoSuggetionsCache = FatCache::get('autoSuggetionsCache' . $cacheKey, CONF_FILTER_CACHE_TIME, '.txt');
+        if (!$autoSuggetionsCache) {
+            $criteria = [
+                'keyword' => $keyword,
+                'doNotJoinSpecialPrice' => true
+            ];
+            $prodSrchObj = new ProductSearch($this->siteLangId);
+            $prodSrchObj->joinSellerProducts(0, '', $criteria, true);
+            $prodSrchObj->unsetDefaultLangForJoins();
+            $prodSrchObj->joinSellers();
+            $prodSrchObj->setGeoAddress();
+            $prodSrchObj->joinShops();
+            $prodSrchObj->validateAndJoinDeliveryLocation();
+            $prodSrchObj->joinBrands($this->siteLangId);
+            $prodSrchObj->joinProductToCategory($this->siteLangId);
+            $prodSrchObj->joinSellerSubscription(0, false, true);
+            $prodSrchObj->addSubscriptionValidCondition();
+            $prodSrchObj->doNotCalculateRecords();
+            $prodSrchObj->setPageSize(5);
 
-        $brandSrch = clone $prodSrchObj;
-        $brandSrch->addMultipleFields(array('brand_id', 'COALESCE(tb_l.brand_name, brand.brand_identifier) as brand_name', 'if(LOCATE("' . $keyword . '", COALESCE(tb_l.brand_name, brand.brand_identifier)) > 0, LOCATE("' . $keyword . '", COALESCE(tb_l.brand_name, brand.brand_identifier)), 99) as level'));
-        $brandSrch->addKeywordSearch($keyword, false, false);
-        $brandSrch->addOrder('level');
-        $brandSrch->addGroupBy('brand_name');
-        $brandRs = $brandSrch->getResultSet();
-        $brandArr = FatApp::getDb()->fetchAllAssoc($brandRs);
+            $brandSrch = clone $prodSrchObj;
+            $brandSrch->addMultipleFields(array('brand_id', 'COALESCE(tb_l.brand_name, brand.brand_identifier) as brand_name', 'if(LOCATE("' . $keyword . '", COALESCE(tb_l.brand_name, brand.brand_identifier)) > 0, LOCATE("' . $keyword . '", COALESCE(tb_l.brand_name, brand.brand_identifier)), 99) as level'));
+            $brandSrch->addKeywordSearch($keyword, false, false);
+            $brandSrch->addOrder('level');
+            $brandSrch->addGroupBy('brand_name');
+            $brandRs = $brandSrch->getResultSet();
+            $brandArr = FatApp::getDb()->fetchAllAssoc($brandRs);
 
-        $catSrch = clone $prodSrchObj;
-        $catSrch->setPageSize(5);
-        $catSrch->addMultipleFields(array('prodcat_id', 'COALESCE(c_l.prodcat_name, c.prodcat_identifier) as prodcat_name', 'if(LOCATE("' . $keyword . '", COALESCE(c_l.prodcat_name, c.prodcat_identifier)) > 0, LOCATE("' . $keyword . '", COALESCE(c_l.prodcat_name, c.prodcat_identifier)), 99) as level'));
-        $catSrch->addKeywordSearch($keyword, false, false);
-        $catSrch->addOrder('level');
-        $catRs = $catSrch->getResultSet();
-        $catArr = FatApp::getDb()->fetchAllAssoc($catRs);
+            $catSrch = clone $prodSrchObj;
+            $catSrch->setPageSize(5);
+            $catSrch->addMultipleFields(array('prodcat_id', 'COALESCE(c_l.prodcat_name, c.prodcat_identifier) as prodcat_name', 'if(LOCATE("' . $keyword . '", COALESCE(c_l.prodcat_name, c.prodcat_identifier)) > 0, LOCATE("' . $keyword . '", COALESCE(c_l.prodcat_name, c.prodcat_identifier)), 99) as level'));
+            $catSrch->addKeywordSearch($keyword, false, false);
+            $catSrch->addOrder('level');
+            $catRs = $catSrch->getResultSet();
+            $catArr = FatApp::getDb()->fetchAllAssoc($catRs);
 
-        $srch = Tag::getSearchObject($this->siteLangId);
-        $srch->doNotCalculateRecords();
-        $srch->setPageSize(10);
-        $srch->addMultipleFields(array('tag_id', 'COALESCE(tag_name, tag_identifier) as tag_name', 'if(LOCATE("' . $keyword . '", COALESCE(tag_name, tag_identifier)) > 0 , LOCATE("' . $keyword . '", COALESCE(tag_name, tag_identifier)), 99) as level'));
-        $srch->addOrder('level');
-        $srch->addGroupby('tag_name');
-        $srch->addHaving('tag_name', 'LIKE', '%' . urldecode($keyword) . '%');
-        $rs = $srch->getResultSet();
-        $tags = FatApp::getDb()->fetchAll($rs);
-        $prodArr = [];
-        if (empty($tags)) {
-            $prodSrchObj->setPageSize(10);
-            $prodSrchObj->addMultipleFields(array('selprod_id', 'COALESCE(selprod_title, product_name, product_identifier) as selprod_title', 'COALESCE(c_l.prodcat_name, c.prodcat_identifier) as prodcat_name', 'if(LOCATE("' . $keyword . '", COALESCE(selprod_title, product_name, product_identifier)) > 0, LOCATE("' . $keyword . '", COALESCE(selprod_title, product_name, product_identifier)), 99) as level'));
-            $prodSrchObj->addKeywordSearch($keyword, false, false);
-            $prodSrchObj->addOrder('level');
-            $prodSrchObj->addGroupBy('selprod_title');
-            $prodRs = $prodSrchObj->getResultSet();
-            $prodArr = FatApp::getDb()->fetchAll($prodRs);
+            $srch = Tag::getSearchObject($this->siteLangId);
+            $srch->doNotCalculateRecords();
+            $srch->setPageSize(10);
+            $srch->addMultipleFields(array('tag_id', 'COALESCE(tag_name, tag_identifier) as tag_name', 'if(LOCATE("' . $keyword . '", COALESCE(tag_name, tag_identifier)) > 0 , LOCATE("' . $keyword . '", COALESCE(tag_name, tag_identifier)), 99) as level'));
+            $srch->addOrder('level');
+            $srch->addGroupby('tag_name');
+            $srch->addHaving('tag_name', 'LIKE', '%' . urldecode($keyword) . '%');
+            $rs = $srch->getResultSet();
+            $tags = FatApp::getDb()->fetchAll($rs);
+            $prodArr = [];
+            if (empty($tags)) {
+                $prodSrchObj->setPageSize(10);
+                $prodSrchObj->addMultipleFields(array('selprod_id', 'COALESCE(selprod_title, product_name, product_identifier) as selprod_title', 'COALESCE(c_l.prodcat_name, c.prodcat_identifier) as prodcat_name', 'if(LOCATE("' . $keyword . '", COALESCE(selprod_title, product_name, product_identifier)) > 0, LOCATE("' . $keyword . '", COALESCE(selprod_title, product_name, product_identifier)), 99) as level'));
+                $prodSrchObj->addKeywordSearch($keyword, false, false);
+                $prodSrchObj->addOrder('level');
+                $prodSrchObj->addGroupBy('selprod_title');
+                $prodRs = $prodSrchObj->getResultSet();
+                $prodArr = FatApp::getDb()->fetchAll($prodRs);
+            }
+
+            $suggestions = [
+                'tags' => $tags,
+                'brands' => $brandArr,
+                'categories' => $catArr,
+                'products' => $prodArr
+            ];
+            FatCache::set('autoSuggetionsCache' . $cacheKey, serialize($suggestions), '.txt');
+        } else {
+            $suggestions = unserialize($autoSuggetionsCache);
         }
-
-        $suggestions = [
-            'tags' => $tags,
-            'brands' => $brandArr,
-            'categories' => $catArr,
-            'products' => $prodArr
-        ];
 
         $this->set('suggestions', $suggestions);
         $this->set('keyword', $keyword);
