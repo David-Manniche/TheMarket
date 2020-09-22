@@ -752,3 +752,13 @@ UPDATE `tbl_email_templates` SET `etpl_body` = '<table width=\"100%\" align=\"ce
 
 
  DROP TABLE `tbl_tax_values`;
+
+-- Category Relation Management --
+CREATE TABLE `tbl_product_category_relations` (
+  `pcr_prodcat_id` int(11) NOT NULL,
+  `pcr_parent_id` int(11) NOT NULL,
+  `pcr_level` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+ALTER TABLE `tbl_product_category_relations` ADD PRIMARY KEY( `pcr_prodcat_id`, `pcr_parent_id`);
+-- Category Relation Management --
