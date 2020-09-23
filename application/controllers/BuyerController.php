@@ -338,6 +338,7 @@ class BuyerController extends BuyerBaseController
         $srch->joinPaymentMethod();
         $srch->joinSellerProducts();
         $srch->joinShop();
+        $srch->joinShopSpecifics();
         $srch->joinShopCountry();
         $srch->joinShopState();
         $srch->joinOrderUser();

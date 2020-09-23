@@ -17,13 +17,23 @@
 									<tr>
 										<td style="padding:15px;border-bottom: 1px solid #ddd;">
 											<h4 style="margin:0;font-size:18px;font-weight:bold;padding-bottom: 5px;"><?php echo Labels::getLabel('LBL_Sold_By', $siteLangId); ?>: <?php echo $childOrder['op_shop_name']; ?> ,</h4>
-											<p style="margin:0;padding-bottom: 15px;"><?php echo Labels::getLabel('LBL_Shop_Address', $siteLangId); ?>: <?php echo $childOrder['shop_city'] .' ,'. $childOrder['shop_state_name'] .' ,'.$childOrder['shop_country_name'] .' - '.$childOrder['shop_postalcode']; ?></p>
-											<table width="100%" border="0" cellpadding="0" cellspacing="0">                                                             
-												<tbody><tr>
-													<td style="font-weight: 700;">GSTIN - 33AAXCS0655F1Z5</td>
-													<td style="text-align: right;font-weight: 700;">CIN - U52399DL2016PTC299716</td>
-												</tr>
-											</tbody></table>                                        
+											<p style="margin:0;padding-bottom: 15px;"><?php echo Labels::getLabel('LBL_Shop_Address', $siteLangId); ?>: <?php echo $childOrder['shop_city'] .', '. $childOrder['shop_state_name'] .', '.$childOrder['shop_country_name'] .' - '.$childOrder['shop_postalcode']; ?></p>
+											<table width="100%" border="0" cellpadding="0" cellspacing="0">                           <?php $shopCodes = $childOrder['shop_invoice_codes'];
+												$codesArr = explode("\n", $shopCodes); ?>
+												<tbody>
+													<?php $count = 1; ?>
+													<tr>
+														<?php foreach ($codesArr as $code) { ?>
+														<td style="<?php echo ($count%2 == 0) ? 'text-align: right;' : ''; ?> font-weight: 700;"><?php echo $code; ?></td>
+														<?php 
+														if($count%3 == 0) {
+															echo '</tr><tr>';
+														}
+														$count++; } ?>
+														
+													</tr>
+												</tbody>
+											</table>                                        
 										</td>
 									</tr>
 								</tbody>
@@ -36,7 +46,7 @@
 											<table width="100%" border="0" cellpadding="0" cellspacing="0">                           
 												<tbody>
 													<tr>
-													<td style="padding:15px;">
+														<td style="padding:15px;border-right: 1px solid #ddd;">
 															<h4 style="margin:0;font-size:18px;font-weight:bold;padding-bottom: 5px;"><?php echo Labels::getLabel('LBL_Bill_to', $siteLangId); ?></h4>
 															<p style="margin:0;padding-bottom: 15px;">
 																<?php $billingAddress = $orderDetail['billingAddress']['oua_name'] . '<br>';
@@ -72,7 +82,7 @@
 															</p>                                                  
 														</td>
 														<?php if (!empty($orderDetail['shippingAddress'])) {  ?>
-														<td style="padding:15px;border-right: 1px solid #ddd;">
+														<td style="padding:15px;">
 															<h4 style="margin:0;font-size:18px;font-weight:bold;padding-bottom: 5px;"><?php echo Labels::getLabel('LBL_Ship_to', $siteLangId); ?></h4>
 															<p style="margin:0;padding-bottom: 15px;">
 																<?php $shippingAddress = $orderDetail['shippingAddress']['oua_name'] . '<br>';
@@ -187,8 +197,19 @@
 								<td style="border-bottom: 1px solid #ddd;">                                       
 									<table width="100%" border="0" cellpadding="0" cellspacing="0">                                                             
 										<tbody><tr>                                                
-											<th style="padding:10px 15px;text-align: left;"><?php echo Labels::getLabel('LBL_Item', $siteLangId);?></th>                                                
-											<th style="padding:10px 15px;text-align: center;">HSN (Tax%)</th>                                                
+											<th style="padding:10px 15px;text-align: left;"><?php echo Labels::getLabel('LBL_Item', $siteLangId);?></th>
+											<?php if (empty($childOrder['taxOptions'])) { ?>
+												<th style="padding:10px 15px;text-align: center;">
+													<?php echo Labels::getLabel('LBL_Tax', $siteLangId); ?>
+												</th>
+											<?php } else {
+												foreach ($childOrder['taxOptions'] as $key => $val) { ?>
+													<th style="padding:10px 15px;text-align: center;">
+														<?php echo CommonHelper::displayTaxPercantage($val, true) ?>
+													</th>
+													<?php 
+												}
+											} ?>
 											<th style="padding:10px 15px;text-align: center;"><?php echo Labels::getLabel('LBL_Qty', $siteLangId);?></th>                                                
 											<th style="padding:10px 15px;text-align: center;"><?php echo Labels::getLabel('LBL_Price', $siteLangId);?></th>                                                
 											<th style="padding:10px 15px;text-align: center;"><?php echo Labels::getLabel('LBL_Savings', $siteLangId);?></th>                                                
@@ -198,74 +219,75 @@
 											<?php $volumeDiscount = CommonHelper::orderProductAmount($childOrder, 'VOLUME_DISCOUNT'); ?>
 											<td style="padding:10px 15px;text-align: left;">
 											<?php echo ($childOrder['op_selprod_title'] != '') ? $childOrder['op_selprod_title'] : $childOrder['op_product_name']; ?></td>
-											<td style="padding:10px 15px;text-align: center;">22029090 (18.0)</td>                                             
+											<?php if (empty($childOrder['taxOptions'])) { ?>
+												<td style="padding:10px 15px;text-align: center;">
+													<?php echo CommonHelper::displayMoneyFormat(CommonHelper::orderProductAmount($childOrder, 'TAX'), true, false, true, false, true); ?>
+												</td>
+											<?php } else {
+												foreach ($childOrder['taxOptions'] as $key => $val) { ?>
+													<td style="padding:10px 15px;text-align: center;">
+														<?php echo CommonHelper::displayMoneyFormat($val['value'], true, false, true, false, true); ?>
+													</td>
+												<?php }
+											} ?>
+											</td>                                             
 											<td style="padding:10px 15px;text-align: center;"><?php echo $childOrder['op_qty']; ?></td>                                             
 											<td style="padding:10px 15px;text-align: center;"><?php echo CommonHelper::displayMoneyFormat($childOrder['op_unit_price'], true, false, true, false, true); ?></td>                                           
 											<td style="padding:10px 15px;text-align: center;"><?php if ($volumeDiscount) { echo CommonHelper::displayMoneyFormat($volumeDiscount, true, false, true, false, true); } ?></td>
 											<td style="padding:10px 15px;text-align: center;"><?php echo CommonHelper::displayMoneyFormat(CommonHelper::orderProductAmount($childOrder), true, false, true, false, true); ?></td>                                             
 										</tr>
-										<tr>
-											<td style="padding:15px 15px;font-size:20px;text-align: left;font-weight:700; vertical-align: top;" colspan="4" rowspan="4">You have SAVED Rs. 243.00 on this order. </td>                                     
-											<td style="padding:10px 15px;text-align: center;border:1px solid #ddd;border-right:0;border-bottom:0;" colspan="2">Total Amount (Food)</td>                    
-											<td style="padding:10px 15px;text-align: center;border:1px solid #ddd;border-right:0;border-bottom:0;" colspan="1">633.00</td>                                           
+										<tr>                                           
+											<td style="padding:10px 15px;font-size:18px;text-align: left;font-weight:700;background-color: #f0f0f0;" colspan="3"><?php echo Labels::getLabel('Lbl_Summary', $siteLangId) ?> </td>                                     
+											<td style="padding:10px 15px;text-align: center;background-color: #f0f0f0;font-size: 16px;"><strong>5</strong></td>                                             
+											<td style="padding:10px 15px;text-align: center;background-color: #f0f0f0;font-size: 16px;"><strong>876.00</strong></td>                                             
+											<td style="padding:10px 15px;text-align: center;background-color: #f0f0f0;font-size: 16px;"><strong>243.00</strong></td> 
+											<td style="padding:10px 15px;text-align: center;background-color: #f0f0f0;font-size: 16px;"><strong>633.00</strong></td>                                             
 										</tr>
-										<tr>                                                                            
-											<td style="padding:10px 15px;text-align: center;border:1px solid #ddd;border-right:0;border-bottom:0;" colspan="2">Total Amount(NonFood)</td>                    
-											<td style="padding:10px 15px;text-align: center;border:1px solid #ddd;border-right:0;border-bottom:0;" colspan="1">0.00</td>                                           
+										<tr>                                          
+											<td style="padding:15px 15px;font-size:20px;text-align: left;font-weight:700; vertical-align: top;" colspan="4" rowspan="4">
+											<?php 
+											$totalSavings = $orderDetail['order_discount_total'] + $orderDetail['order_volume_discount_total'];
+											$str = Labels::getLabel("LBL_You_have_saved_{totalsaving}_on_this_order", $siteLangId);
+											$str = str_replace("{totalsaving}", CommonHelper::displayMoneyFormat($totalSavings, true, false, true, false, true), $str);
+											echo $str; ?> 
+											</td>                                     
+											<td style="padding:10px 15px;text-align: center;border:1px solid #ddd;border-right:0;border-bottom:0;" colspan="2"><?php echo Labels::getLabel('Lbl_Cart_Total', $siteLangId) ?></td>                    
+											<td style="padding:10px 15px;text-align: center;border:1px solid #ddd;border-right:0;border-bottom:0;" colspan="1"><?php echo CommonHelper::displayMoneyFormat(CommonHelper::orderProductAmount($childOrder, 'cart_total'), true, false, true, false, true); ?></td>                                           
 										</tr>
 										<tr>                                                                              
-											<td style="padding:10px 15px;text-align: center;border:1px solid #ddd;border-right:0;border-bottom:0;" colspan="2">Delivery Charges</td>                    
-											<td style="padding:10px 15px;text-align: center;border:1px solid #ddd;border-right:0;border-bottom:0;" colspan="1">50.00</td>                                           
+											<td style="padding:10px 15px;text-align: center;border:1px solid #ddd;border-right:0;border-bottom:0;" colspan="2"><?php echo Labels::getLabel('LBL_Delivery_Chargess', $siteLangId) ?></td>                    
+											<td style="padding:10px 15px;text-align: center;border:1px solid #ddd;border-right:0;border-bottom:0;" colspan="1"><?php echo CommonHelper::displayMoneyFormat(CommonHelper::orderProductAmount($childOrder, 'shipping'), true, false, true, false, true); ?></td>                                           
 										</tr>
 										<tr>                                                                         
-											<td style="padding:10px 15px;text-align: center;font-weight:700;font-size: 18px;border:1px solid #ddd;border-right:0;border-bottom:0;" colspan="2"><strong>GRAND TOTAL</strong> </td>                    
-											<td style="padding:10px 15px;text-align: center;font-weight:700;font-size: 18px;border:1px solid #ddd;border-right:0;border-bottom:0;" colspan="1"><strong>683.00</strong></td>                                           
+											<td style="padding:10px 15px;text-align: center;font-weight:700;font-size: 18px;border:1px solid #ddd;border-right:0;border-bottom:0;" colspan="2"><strong><?php echo Labels::getLabel('LBL_Grand_Total', $siteLangId) ?></strong> </td>                    
+											<td style="padding:10px 15px;text-align: center;font-weight:700;font-size: 18px;border:1px solid #ddd;border-right:0;border-bottom:0;" colspan="1"><strong><?php echo CommonHelper::displayMoneyFormat($orderDetail['order_net_amount'], true, false, true, false, true); ?></strong></td>                                           
 										</tr>
 									</tbody></table>                                        
 								</td>
 							</tr>
 						</tbody></table>
-						<?php } ?>
-						<table width="100%" border="0" cellpadding="0" cellspacing="0">                                                             
+						<table width="100%" border="0" cellpadding="0" cellspacing="0">
 							<tbody><tr>
 								<td style="padding:15px;vertical-align: top;">
-									<h2 style="font-size: 20px;text-align: center;">Shreyash Retail Private Limited</h2>
-									<span style="padding-top: 150px;display: block;text-align: center;">Authorized Signatory </span>
+									<h2 style="font-size: 20px;text-align: center;"><?php echo $childOrder['op_shop_name']; ?></h2>
+									<span style="padding-top: 150px;display: block;text-align: center;"><?php echo Labels::getLabel('LBL_Authorized_Signatory', $siteLangId); ?> </span>
 								</td>
 								<td style="text-align: center;">                                       
 									<table width="100%" border="0" cellpadding="0" cellspacing="0" style="border-collapse: collapse;">                                                             
 										<tbody><tr>
-											<th style="padding:15px;background-color: #f0f0f0;border:1px solid #ddd;border-right:none;border-top: 0;" colspan="4">Tax break-up</th>                                                
+											<th style="padding:15px;background-color: #f0f0f0;border:1px solid #ddd;border-right:none;border-top: 0;" colspan="4"><?php echo Labels::getLabel('LBL_Tax_break-up', $siteLangId); ?></th>
 										</tr>
 										<tr>
 											<th style="padding:10px 15px;border:1px solid #ddd;">GST%</th>                                                
 											<th style="padding:10px 15px;border:1px solid #ddd;">Taxable Amount</th>                                                
 											<th style="padding:10px 15px;border:1px solid #ddd;">SGST</th>                                                
-											<th style="padding:10px 15px;border:1px solid #ddd;border-right:none;">CGST</th>                                                
+											<th style="padding:10px 15px;border:1px solid #ddd;border-right:none;">CGST</th>                                 
 										</tr>
 										<tr>
 											<td style="padding:10px 15px;border:1px solid #ddd;">0.00 </td>                                            
 											<td style="padding:10px 15px;border:1px solid #ddd;">1.00 </td>                                            
 											<td style="padding:10px 15px;border:1px solid #ddd;">0.00 </td>                                            
 											<td style="padding:10px 15px;border:1px solid #ddd;border-right:none;">0.00 </td>                                            
-										</tr>
-										<tr>
-											<td style="padding:10px 15px;border:1px solid #ddd;">12.00  </td>                                            
-											<td style="padding:10px 15px;border:1px solid #ddd;">416.08 </td>                                            
-											<td style="padding:10px 15px;border:1px solid #ddd;">24.96 </td>                                            
-											<td style="padding:10px 15px;border:1px solid #ddd;border-right:none;">24.96 </td>                                            
-										</tr>
-										<tr>
-											<td style="padding:10px 15px;border:1px solid #ddd;">12.00  </td>                                            
-											<td style="padding:10px 15px;border:1px solid #ddd;">416.08 </td>                                            
-											<td style="padding:10px 15px;border:1px solid #ddd;">24.96 </td>                                            
-											<td style="padding:10px 15px;border:1px solid #ddd;border-right:none;">24.96 </td>                                            
-										</tr>
-										<tr>
-											<td style="padding:10px 15px;border:1px solid #ddd;">5.00  </td>                                            
-											<td style="padding:10px 15px;border:1px solid #ddd;">157.16 </td>                                            
-											<td style="padding:10px 15px;border:1px solid #ddd;">3.92 </td>                                            
-											<td style="padding:10px 15px;border:1px solid #ddd;border-right:none;">3.92 </td>                                            
 										</tr>
 										<tr>
 											<td style="padding:10px 15px;font-size: 12px;border:1px solid #ddd;">Delivery Charges* </td>                                            
@@ -286,56 +308,27 @@
 								</td>
 							</tr>
 						</tbody></table> 
-
-						<table width="100%" border="0" cellpadding="0" cellspacing="0">                                                             
+						<br/><br/><br/>
+						<?php } ?>
+						<table width="100%" border="0" cellpadding="0" cellspacing="0"> 
 							<tbody><tr>
-								<td style="padding:20px 15px;border-top:1px solid #ddd">                                       
-									<p><strong>Return Policy:</strong> If the item is defective or not as described, you may return it during delivery directly or you may request for return within 10 days of delivery
-										for items that are defective or are different from what you ordered. Items must be complete (including freebies), free from damages and for items returned
-										for being different from what you ordered, they must be unopened as well.
-										</p><p>The goods sold as are intended for end user consumption and not for re-sale.</p>  
-										<p><strong>Regd. office:</strong> Shreyash Retail Private Limited , A-285, Main Bhisham Pitamaha Marg, Defence Colony, New Delh, New Delh - 110024</p>  
-										<p><strong>Contact Flipkart:</strong> 1800 208 9898 || www.flipkart.com/helpcentre</p>                                    
+								<td style="padding:20px 15px;border-top:1px solid #ddd">
+									<p><strong><?php echo Labels::getLabel('LBL_Regd._office', $siteLangId);?>:</strong><?php echo nl2br(FatApp::getConfig('CONF_ADDRESS_' . $siteLangId, FatUtility::VAR_STRING, ''));?></p>
+									<?php $site_conatct = FatApp::getConfig('CONF_SITE_PHONE', FatUtility::VAR_STRING, '');
+									$email_id = FatApp::getConfig('CONF_CONTACT_EMAIL', FatUtility::VAR_STRING, '');
+									if ($site_conatct || $email_id) { ?>
+										<p><strong><?php echo Labels::getLabel('LBL_Contact', $siteLangId)?>:</strong>
+											<?php if ($site_conatct) { echo $site_conatct; } ?>
+											<?php if ($email_id) { echo '|| '.$email_id; } ?> 
+										</p>
+									<?php } ?>                  
 								</td>
 							</tr>
-						</tbody></table> 
-
+						</tbody></table>
 						<!--main End-->                                                         
 					</td>
 				</tr>                     
 			</tbody></table>
 		</td>
 	</tr>       
-</tbody></table> 
-<?php if ($print) { ?>
-    <script>
-        $(".sidebar-is-expanded").addClass('sidebar-is-reduced').removeClass('sidebar-is-expanded');
-        /*window.print();
-        window.onafterprint = function() {
-        location.href = history.back();
-        }*/
-    </script>
-<?php } ?>
-<script>
-    function increaseDownloadedCount(linkId, opId) {
-        fcom.ajax(fcom.makeUrl('buyer', 'downloadDigitalProductFromLink', [linkId, opId]), '', function(t) {
-            var ans = $.parseJSON(t);
-            if (ans.status == 0) {
-                $.systemMessage(ans.msg, 'alert--danger');
-                return false;
-            }
-            /* var dataLink = $(this).attr('data-link');
-            window.location.href= dataLink; */
-            location.reload();
-            return true;
-        });
-    }
-
-    trackOrder = function(trackingNumber, courier, orderNumber) {
-        $.facebox(function() {
-            fcom.ajax(fcom.makeUrl('Buyer', 'orderTrackingInfo', [trackingNumber, courier, orderNumber]), '', function(res) {
-                $.facebox(res, 'medium-fb-width');
-            });
-        });
-    };
-</script>
+</tbody></table>

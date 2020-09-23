@@ -88,7 +88,7 @@ class TaxRule extends MyAppModel
         $locattionTypeOtions = static::getTypeOptions($langId);
 
         $frm->addSelectBox(Labels::getLabel('LBL_Country', $langId), 'taxruleloc_country_id[]', $countriesOptions, '', array(), Labels::getLabel('LBL_Select_Country', $langId));
-        $frm->addSelectBox(Labels::getLabel('LBL_States', $langId), 'taxruleloc_type[]', $locattionTypeOtions, '', array(), Labels::getLabel('LBL_Select', $langId));
+        $frm->addSelectBox(Labels::getLabel('LBL_States_Type', $langId), 'taxruleloc_type[]', $locattionTypeOtions, '', array(), Labels::getLabel('LBL_Select', $langId));
         $frm->addSelectBox(Labels::getLabel('LBL_States', $langId), 'taxruleloc_state_id[]', array(), '', array(), '');
 
         /* ] */

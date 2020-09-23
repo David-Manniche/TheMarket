@@ -269,6 +269,9 @@ if (!$print) { ?>
                                 <th>
                                     <?php echo Labels::getLabel('LBL_Price', $siteLangId); ?>
                                 </th>
+                                <th>
+                                    <?php echo Labels::getLabel('LBL_Shipping', $siteLangId); ?>
+                                </th>
                                 <?php if ($primaryOrder && CommonHelper::orderProductAmount($childOrderDetail, 'SHIPPING') > 0) { ?>
                                     <th>
                                         <?php echo Labels::getLabel('LBL_Shipping_Charges', $siteLangId); ?>
@@ -394,7 +397,7 @@ if (!$print) { ?>
                                                     </strong>
                                                     <?php echo CommonHelper::displayMoneyFormat($val['value'], true, false, true, false, true); ?>
                                                 </p>
-                                        <?php if (!isset($taxOptionsTotal[$key]['value'])) {
+                                                <?php if (!isset($taxOptionsTotal[$key]['value'])) {
                                                     $taxOptionsTotal[$key]['value'] = 0;
                                                 }
                                                 $taxOptionsTotal[$key]['value'] += $val['value'];

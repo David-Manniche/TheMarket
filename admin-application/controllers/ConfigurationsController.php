@@ -717,9 +717,6 @@ class ConfigurationsController extends AdminBaseController
                 );
                 $fld4->htmlAfterField = '<br><small>' . Labels::getLabel("LBL_On_enabling_this_feature,_Seller_can_request_to_add_products_available_for_all_sellers", $this->adminLangId) . '</small>';
 
-                $fld1 = $frm->addCheckBox(Labels::getLabel("LBL_Product_Inclusive_Tax", $this->adminLangId), 'CONF_PRODUCT_INCLUSIVE_TAX', 1, array(), false, 0);
-                $fld1->htmlAfterField = "<br><small>" . Labels::getLabel("LBL_This_will_make_Products_inclusive_tax", $this->adminLangId) . "</small>";
-
                 $fld1 = $frm->addCheckBox(Labels::getLabel("LBL_Product's_Model_Mandatory", $this->adminLangId), 'CONF_PRODUCT_MODEL_MANDATORY', 1, array(), false, 0);
                 $fld1->htmlAfterField = "<br><small>" . Labels::getLabel("LBL_This_will_make_Product's_model_mandatory", $this->adminLangId) . "</small>";
 
@@ -735,15 +732,18 @@ class ConfigurationsController extends AdminBaseController
                 $fld = $frm->addCheckBox(Labels::getLabel("LBL_Product_Category_Request_Approval", $this->adminLangId), 'CONF_PRODUCT_CATEGORY_REQUEST_APPROVAL', 1, array(), false, 0);
                 $fld->htmlAfterField = "<br><small>" . Labels::getLabel("LBL_On_Enabling_This_Feature,_Admin_Need_To_Approve_the_Product_category_requests_(User_Cannot_link_the_requested_category_with_any_product_until_it_gets_approved_by_Admin)", $this->adminLangId) . "</small>";
 
-
                 $brandFld = $frm->addCheckBox(Labels::getLabel("LBL_Product's_Brand_Mandatory", $this->adminLangId), 'CONF_PRODUCT_BRAND_MANDATORY', 1, array(), false, 0);
                 $brandFld->htmlAfterField = "<br><small>" . Labels::getLabel("LBL_This_will_make_Product's_brand_mandatory", $this->adminLangId) . "</small>";
+				
+				$fld1 = $frm->addCheckBox(Labels::getLabel("LBL_Product_Inclusive_Tax", $this->adminLangId), 'CONF_PRODUCT_INCLUSIVE_TAX', 1, array(), false, 0);
+                $fld1->htmlAfterField = "<br><small>" . Labels::getLabel("LBL_This_will_make_Products_inclusive_tax", $this->adminLangId) . "</small>";
 
+				$fld = $frm->addCheckBox(Labels::getLabel("LBL_Tax_code_for_categories", $this->adminLangId), 'CONF_TAX_CATEGORIES_CODE', 1, array(), false, 0);
+                $fld->htmlAfterField = "<br><small>" . Labels::getLabel("LBL_This_will_enable_tax_categories_code", $this->adminLangId) . "</small>";
+				
                 $fulFillmentArr = Shipping::getFulFillmentArr($this->adminLangId);
                 $frm->addSelectBox(Labels::getLabel('LBL_FULFILLMENT_METHOD', $this->adminLangId), 'CONF_FULFILLMENT_TYPE', $fulFillmentArr, applicationConstants::NO, array(), '');
                 
-                $brandFld->htmlAfterField = "<br><small>" . Labels::getLabel("LBL_This_will_make_Product's_brand_mandatory", $this->adminLangId) . "</small>";
-
                 $fld3 = $frm->addTextBox(Labels::getLabel("LBL_Default_Items_Per_Page_(Catalog)", $this->adminLangId), "CONF_ITEMS_PER_PAGE_CATALOG");
                 $fld3->requirements()->setInt();
                 $fld3->requirements()->setRange('1', '2000');
@@ -1063,19 +1063,6 @@ class ConfigurationsController extends AdminBaseController
 
                 break;
             
-            case Configurations::FORM_INVOICE:
-                $frm->addHtml('', 'Invoice', '<h3>' . Labels::getLabel('LBL_Invoice', $this->adminLangId) . '</h3>');
-                $fld = $frm->addTextarea(Labels::getLabel("LBL_Government_Information_on_invoices", $this->adminLangId), 'CONF_DEFAULT_INVOICE_INFORMATION');
-                $fld->htmlAfterField = "<small>" . Labels::getLabel("LBL_Information_mandated_by_the_Government_on_invoices.", $this->adminLangId) . "</small>";
-                /* $alphanumericFld = $frm->addTextBox(Labels::getLabel('LBL_Invoice_number_starts_from', $this->adminLangId), 'CONF_INVOICE_START_FROM_ALPHANUMERIC', '', array('placeholder' => Labels::getLabel('LBL_Alphanumeric_value', $this->adminLangId)));
-                $numericFld = $frm->addTextBox(Labels::getLabel('LBL_Invoice_number_starts_from', $this->adminLangId), 'CONF_INVOICE_START_FROM_NUMERIC', '', array('placeholder' => Labels::getLabel('LBL_Integer_value', $this->adminLangId)));
-                $alphanumericFld->attachField($numericFld); */
-                $frm->addRadioButtons(Labels::getLabel("LBL_Tax_code_for_categories", $this->adminLangId), 'CONF_TAX_CATEGORIES_CODE', applicationConstants::getYesNoArr($this->adminLangId), applicationConstants::YES, array('class' => 'list-inline'));
-                
-                $frm->addHtml('', 'Invoice', '<h3>' . Labels::getLabel('LBL_Invoice_Additional_Information', $this->adminLangId) . '</h3>');
-                $frm->addTextBox(Labels::getLabel('LBL_Title', $this->adminLangId), 'CONF_INVOICE_ADDITIONAL_INFORMATION_TITLE');
-                $frm->addTextarea(Labels::getLabel("LBL_Description", $this->adminLangId), 'CONF_INVOICE_ADDITIONAL_INFORMATION_DESCRIPTION');
-                break;
             case Configurations::FORM_CART_WISHLIST:
                 $fld = $frm->addRadioButtons(Labels::getLabel("LBL_ADD_PRODUCTS_TO_WISHLIST_OR_FAVORITE?", $this->adminLangId), 'CONF_ADD_FAVORITES_TO_WISHLIST', UserWishList::wishlistOrFavtArr($this->adminLangId), applicationConstants::YES, array('class' => 'list-inline'));
 
