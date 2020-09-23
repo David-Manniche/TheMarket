@@ -3375,8 +3375,8 @@ class Importexport extends ImportexportCommon
                             if ('' != $colValue) {
                                 $selProdSepc[$columnKey] = $colValue;
                             }
-                        } elseif (in_array($columnKey, array('selprod_subtract_stock', 'selprod_track_inventory', 'selprod_active', 'selprod_cod_enabled', 'selprod_deleted')) && !$this->settings['CONF_USE_O_OR_1']) {
-                            $colValue = ('YES' == $colValue) ? 1 : 0;
+                        } elseif (in_array($columnKey, array('selprod_subtract_stock', 'selprod_track_inventory', )) && !$this->settings['CONF_USE_O_OR_1']) {
+                            $colValue = ('yes' == strtolower($colValue)) ? 1 : 0;
                             $selProdGenArr[$columnKey] = $colValue;
                         } else {
                             $selProdGenArr[$columnKey] = $colValue;
@@ -3427,7 +3427,6 @@ class Importexport extends ImportexportCommon
                         unset($selProdGenArr['selprod_id']);
                         unset($selProdGenArr['selprod_sold_count']);
                     }
-
                     if ($this->isDefaultSheetData($langId)) {
                         if (FatApp::getConfig('CONF_ENABLE_SELLER_SUBSCRIPTION_MODULE', FatUtility::VAR_INT, 0) && 0 < $userId && SellerProduct::getActiveCount($userId) >= $userProdUploadLimit[$userId]) {
                             $errMsg = Labels::getLabel("MSG_You_have_crossed_your_package_limit.", $langId);
