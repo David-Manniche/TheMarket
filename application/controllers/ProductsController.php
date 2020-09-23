@@ -1089,21 +1089,25 @@ class ProductsController extends MyAppController
             $prodSrchObj->joinSellerSubscription(0, false, true);
             $prodSrchObj->addSubscriptionValidCondition();
             $prodSrchObj->doNotCalculateRecords();
-            $prodSrchObj->setPageSize(5);
 
             $brandSrch = clone $prodSrchObj;
             $brandSrch->addMultipleFields(array('brand_id', 'COALESCE(tb_l.brand_name, brand.brand_identifier) as brand_name', 'if(LOCATE("' . $keyword . '", COALESCE(tb_l.brand_name, brand.brand_identifier)) > 0, LOCATE("' . $keyword . '", COALESCE(tb_l.brand_name, brand.brand_identifier)), 99) as level'));
-            $brandSrch->addKeywordSearch($keyword, false, false);
+            //$brandSrch->addKeywordSearch($keyword, false, false);
+            $brandSrch->addCondition('brand_name', 'LIKE', '%' . $keyword . '%');
             $brandSrch->addOrder('level');
-            $brandSrch->addGroupBy('brand_name');
+            $brandSrch->addGroupBy('brand_id');
+            $brandSrch->setPageSize(5);
             $brandRs = $brandSrch->getResultSet();
             $brandArr = FatApp::getDb()->fetchAllAssoc($brandRs);
 
+            $catListingCount = 10 - count($brandArr);
             $catSrch = clone $prodSrchObj;
-            $catSrch->setPageSize(5);
+            $catSrch->setPageSize($catListingCount);
             $catSrch->addMultipleFields(array('prodcat_id', 'COALESCE(c_l.prodcat_name, c.prodcat_identifier) as prodcat_name', 'if(LOCATE("' . $keyword . '", COALESCE(c_l.prodcat_name, c.prodcat_identifier)) > 0, LOCATE("' . $keyword . '", COALESCE(c_l.prodcat_name, c.prodcat_identifier)), 99) as level'));
-            $catSrch->addKeywordSearch($keyword, false, false);
+            //$catSrch->addKeywordSearch($keyword, false, false);
+            $catSrch->addCondition('prodcat_name', 'LIKE', '%' . $keyword . '%');
             $catSrch->addOrder('level');
+            $catSrch->addGroupBy('prodcat_id');
             $catRs = $catSrch->getResultSet();
             $catArr = FatApp::getDb()->fetchAllAssoc($catRs);
 
@@ -1112,7 +1116,7 @@ class ProductsController extends MyAppController
             $srch->setPageSize(10);
             $srch->addMultipleFields(array('tag_id', 'COALESCE(tag_name, tag_identifier) as tag_name', 'if(LOCATE("' . $keyword . '", COALESCE(tag_name, tag_identifier)) > 0 , LOCATE("' . $keyword . '", COALESCE(tag_name, tag_identifier)), 99) as level'));
             $srch->addOrder('level');
-            $srch->addGroupby('tag_name');
+            $srch->addGroupby('tag_id');
             $srch->addHaving('tag_name', 'LIKE', '%' . urldecode($keyword) . '%');
             $rs = $srch->getResultSet();
             $tags = FatApp::getDb()->fetchAll($rs);

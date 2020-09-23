@@ -15,8 +15,7 @@ $selectFld->setFieldTagAttribute('id', 'searched_category');
             </svg></span></a>
     <div class="form--search form--search-popup" id="form--search-popup" data-close-on-click-outside="form--search-popup">
         <?php echo $headerSrchFrm->getFormTag(); ?>
-        <div class="dropdown dropdown-select">
-
+        <?php /*?><div class="dropdown dropdown-select">
             <span class="select__value dropdown-toggle " id="selected__value-js" data-display="static" data-toggle="dropdown"> <?php echo Labels::getLabel('LBL_All', $siteLangId); ?></span>
             <div class="dropdown-menu dropdown-menu-fit dropdown-menu-anim">
                 <div class="scroll-y" data-simplebar>
@@ -33,17 +32,14 @@ $selectFld->setFieldTagAttribute('id', 'searched_category');
                     </ul>
                 </div>
             </div>
+        </div> <?php */?>
+        <div class="main-search__field"><?php echo $headerSrchFrm->getFieldHTML('keyword'); ?>
+            <div id="search-suggestions-js"></div>
         </div>
-        <div class="main-search__field ui-front"><?php echo $headerSrchFrm->getFieldHTML('keyword'); ?>
-            <div id="search-suggestions-js">
-                
-            </div>
-        </div>
-    </div>
 
-    <?php echo $headerSrchFrm->getFieldHTML('category'); ?>
-    <?php echo $headerSrchFrm->getFieldHTML('btnSiteSrchSubmit'); ?>
-    </form>
-    <?php echo $headerSrchFrm->getExternalJS(); ?>
-</div>
+        <?php echo $headerSrchFrm->getFieldHTML('category'); ?>
+        <?php echo $headerSrchFrm->getFieldHTML('btnSiteSrchSubmit'); ?>
+        </form>
+        <?php echo $headerSrchFrm->getExternalJS(); ?>
+    </div>
 </div>
