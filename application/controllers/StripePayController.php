@@ -114,7 +114,6 @@ class StripePayController extends PaymentController
             $json['html'] = $this->_template->render(false, false, 'stripe-pay/charge-ajax.php', true, false);
             FatUtility::dieJsonSuccess($json);
         }
-        die('hjhjh');
         $this->_template->render(true, false);
     }
 
