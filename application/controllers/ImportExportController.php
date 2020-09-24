@@ -433,8 +433,8 @@ class ImportExportController extends SellerBaseController
         $fld = $frm->addCheckBox(Labels::getLabel("LBL_Use_product_type_id_instead_of_product_type_identifier", $langId), 'CONF_USE_PRODUCT_TYPE_ID', 1, array(), false, 0);
         $fld->htmlAfterField = '<br><small>' . Labels::getLabel("MSG_Use_product_type_id_instead_of_product_type_identifier_in_worksheets", $langId) . '</small>';
 
-        $fld = $frm->addCheckBox(Labels::getLabel("LBL_Use_dimension_unit_id_instead_of_dimension_unit_identifier", $langId), 'CONF_USE_DIMENSION_UNIT_ID', 1, array(), false, 0);
-        $fld->htmlAfterField = '<br><small>' . Labels::getLabel("MSG_Use_dimension_unit_id_instead_of_dimension_unit_identifier_in_worksheets", $langId) . '</small>';
+        /* $fld = $frm->addCheckBox(Labels::getLabel("LBL_Use_dimension_unit_id_instead_of_dimension_unit_identifier", $langId), 'CONF_USE_DIMENSION_UNIT_ID', 1, array(), false, 0);
+        $fld->htmlAfterField = '<br><small>' . Labels::getLabel("MSG_Use_dimension_unit_id_instead_of_dimension_unit_identifier_in_worksheets", $langId) . '</small>'; */
 
         $fld = $frm->addCheckBox(Labels::getLabel("LBL_Use_weight_unit_id_instead_of_weight_unit_identifier", $langId), 'CONF_USE_WEIGHT_UNIT_ID', 1, array(), false, 0);
         $fld->htmlAfterField = '<br><small>' . Labels::getLabel("MSG_Use_weight_unit_id_instead_of_weight_unit_identifier_in_worksheets", $langId) . '</small>';
@@ -460,8 +460,8 @@ class ImportExportController extends SellerBaseController
         $fld = $frm->addCheckBox(Labels::getLabel("LBL_Use_policy_point_id_instead_of_policy_point_identifier", $langId), 'CONF_USE_POLICY_POINT_ID', 1, array(), false, 0);
         $fld->htmlAfterField = '<br><small>' . Labels::getLabel("MSG_Use_policy_point_id_instead_of_policy_point_identifier_in_worksheets", $langId) . '</small>';
 
-        $fld = $frm->addCheckBox(Labels::getLabel("LBL_Use_shipping_company_id_instead_of_shipping_company_identifier", $langId), 'CONF_USE_SHIPPING_COMPANY_ID', 1, array(), false, 0);
-        $fld->htmlAfterField = '<br><small>' . Labels::getLabel("MSG_Use_shipping_company_id_instead_of_shipping_company_identifier_in_worksheets", $langId) . '</small>';
+        /* $fld = $frm->addCheckBox(Labels::getLabel("LBL_Use_shipping_company_id_instead_of_shipping_company_identifier", $langId), 'CONF_USE_SHIPPING_COMPANY_ID', 1, array(), false, 0);
+        $fld->htmlAfterField = '<br><small>' . Labels::getLabel("MSG_Use_shipping_company_id_instead_of_shipping_company_identifier_in_worksheets", $langId) . '</small>'; */
 
         $fld = $frm->addCheckBox(Labels::getLabel("LBL_Use_policy_point_type_id_instead_of_policy_point_type_identifier", $langId), 'CONF_USE_POLICY_POINT_TYPE_ID', 1, array(), false, 0);
         $fld->htmlAfterField = '<br><small>' . Labels::getLabel("MSG_Use_policy_point_type_id_instead_of_policy_point_type_identifier_in_worksheets", $langId) . '</small>';
@@ -469,8 +469,8 @@ class ImportExportController extends SellerBaseController
         /* $fld = $frm->addCheckBox(Labels::getLabel("LBL_Use_shipping_method_id_instead_of_shipping_method_identifier",$langId),'CONF_USE_SHIPPING_METHOD_ID',1,array(),false,0);
         $fld->htmlAfterField = '<br><small>'.Labels::getLabel("MSG_Use_shipping_method_id_instead_of_shipping_method_identifier_in_worksheets",$langId).'</small>'; */
 
-        $fld = $frm->addCheckBox(Labels::getLabel("LBL_Use_shipping_duration_id_instead_of_shipping_duration_identifier", $langId), 'CONF_USE_SHIPPING_DURATION_ID', 1, array(), false, 0);
-        $fld->htmlAfterField = '<br><small>' . Labels::getLabel("MSG_Use_shipping_duration_id_instead_of_shipping_duration_identifier_in_worksheets", $langId) . '</small>';
+        /* $fld = $frm->addCheckBox(Labels::getLabel("LBL_Use_shipping_duration_id_instead_of_shipping_duration_identifier", $langId), 'CONF_USE_SHIPPING_DURATION_ID', 1, array(), false, 0);
+        $fld->htmlAfterField = '<br><small>' . Labels::getLabel("MSG_Use_shipping_duration_id_instead_of_shipping_duration_identifier_in_worksheets", $langId) . '</small>'; */
 
         $fld = $frm->addCheckBox(Labels::getLabel("LBL_Use_shipping_profile_id_instead_of_shipping_profile_identifier", $langId), 'CONF_USE_SHIPPING_PROFILE_ID', 1, array(), false, 0);
         $fld->htmlAfterField = '<br><small>' . Labels::getLabel("MSG_Use_shipping_profile_id_instead_of_shipping_profile_identifier_in_worksheets", $langId) . '</small>';

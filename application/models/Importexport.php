@@ -181,6 +181,13 @@ class Importexport extends ImportexportCommon
     private function validateCSVHeaders($csvFilePointer, $coloumArr, $langId)
     {
         $headingRow = $this->getFileRow($csvFilePointer);
+        array_walk(
+            $headingRow,
+            function (&$string) {
+                // 7 bit ASCII
+                $string = str_replace('"', '', preg_replace('/[\x00-\x1F\x7F-\xFF]/', '', $string));
+            }
+        );
         if (!$this->isValidColumns($headingRow, $coloumArr)) {
             Message::addErrorMessage(Labels::getLabel("MSG_Invalid_Coloum_CSV_File", $langId));
             FatUtility::dieJsonError(Message::getHtml());
@@ -3368,8 +3375,8 @@ class Importexport extends ImportexportCommon
                             if ('' != $colValue) {
                                 $selProdSepc[$columnKey] = $colValue;
                             }
-                        } elseif (in_array($columnKey, array('selprod_subtract_stock', 'selprod_track_inventory', 'selprod_active', 'selprod_cod_enabled', 'selprod_deleted')) && !$this->settings['CONF_USE_O_OR_1']) {
-                            $colValue = ('YES' == $colValue) ? 1 : 0;
+                        } elseif (in_array($columnKey, array('selprod_subtract_stock', 'selprod_track_inventory', )) && !$this->settings['CONF_USE_O_OR_1']) {
+                            $colValue = ('yes' == strtolower($colValue)) ? 1 : 0;
                             $selProdGenArr[$columnKey] = $colValue;
                         } else {
                             $selProdGenArr[$columnKey] = $colValue;
@@ -3420,7 +3427,6 @@ class Importexport extends ImportexportCommon
                         unset($selProdGenArr['selprod_id']);
                         unset($selProdGenArr['selprod_sold_count']);
                     }
-
                     if ($this->isDefaultSheetData($langId)) {
                         if (FatApp::getConfig('CONF_ENABLE_SELLER_SUBSCRIPTION_MODULE', FatUtility::VAR_INT, 0) && 0 < $userId && SellerProduct::getActiveCount($userId) >= $userProdUploadLimit[$userId]) {
                             $errMsg = Labels::getLabel("MSG_You_have_crossed_your_package_limit.", $langId);
@@ -3907,9 +3913,11 @@ class Importexport extends ImportexportCommon
 
         $coloumArr = $this->getSelProdSpecialPriceColoumArr($langId);
         $this->validateCSVHeaders($csvFilePointer, $coloumArr, $langId);
-
+        
         $errInSheet = false;
+        $productArr = [];
         while (($row = $this->getFileRow($csvFilePointer)) !== false) {
+            $selProdId = 0;
             $rowIndex++;
 
             $sellerProdSplPriceArr = array();
@@ -3921,7 +3929,6 @@ class Importexport extends ImportexportCommon
                 $invalid = $errMsg = false;
 
                 $errMsg = SellerProduct::validateSplPriceFields($columnKey, $columnTitle, $colValue, $langId);
-
                 if (false !== $errMsg) {
                     $errorInRow = true;
                     $err = array($rowIndex, ($colIndex + 1), $errMsg);
@@ -3935,12 +3942,38 @@ class Importexport extends ImportexportCommon
                         if (!$selProdId) {
                             $invalid = true;
                         }
+                        
+                        if (0 < $selProdId && !array_key_exists($selProdId, $productArr)) {
+                            $prodSrch = new ProductSearch($langId);
+                            $prodSrch->joinSellerProducts($userId, '', array(), false);
+                            $prodSrch->addCondition('selprod_id', '=', $selProdId);
+                            $prodSrch->addMultipleFields(array('product_min_selling_price', 'selprod_price', 'selprod_available_from'));
+                            $prodSrch->setPageSize(1);
+                            $rs = $prodSrch->getResultSet();
+                            $productArr[$selProdId] = FatApp::getDb()->fetch($rs);
+                        }
+                    } else if ('splprice_price' == $columnKey) {
+                        if ($colValue < $productArr[$selProdId]['product_min_selling_price'] || $colValue >= $productArr[$selProdId]['selprod_price']) {
+                            $str = Labels::getLabel('MSG_Price_must_between_min_selling_price_{minsellingprice}_and_selling_price_{sellingprice}', $langId);
+                            $minSellingPrice = CommonHelper::displayMoneyFormat($productArr[$selProdId]['product_min_selling_price'], false, true, true);
+                            $sellingPrice = CommonHelper::displayMoneyFormat($productArr[$selProdId]['selprod_price'], false, true, true);
+                
+                            $errMsg = CommonHelper::replaceStringData($str, array('{minsellingprice}' => $minSellingPrice, '{sellingprice}' => $sellingPrice));
+                            $invalid = true;
+                        }
+                    } else if ('splprice_start_date' == $columnKey) {
+                        if (strtotime($colValue) < strtotime($productArr[$selProdId]['selprod_available_from'])) {
+                            $str = Labels::getLabel('MSG_Special_Price_Date_Must_Be_Greater_Or_Than_Equal_To_{availablefrom}', $langId);
+                            $errMsg = CommonHelper::replaceStringData($str, array('{availablefrom}' => date('Y-m-d', strtotime($productArr[$selProdId]['selprod_available_from']))));
+                            $invalid = true;
+                        }
                     }
+                    
                     if (in_array($columnKey, array('splprice_start_date', 'splprice_end_date'))) {
                         $colValue = $this->getDateTime($colValue, false);
                     }
                     if (true === $invalid) {
-                        $errMsg = str_replace('{column-name}', $columnTitle, Labels::getLabel("MSG_Invalid_{column-name}.", $langId));
+                        $errMsg = !empty($errMsg) ? $errMsg : str_replace('{column-name}', $columnTitle, Labels::getLabel("MSG_Invalid_{column-name}.", $langId));
                         CommonHelper::writeToCSVFile($this->CSVfileObj, array($rowIndex, ($colIndex + 1), $errMsg));
                     } else {
                         $sellerProdSplPriceArr[$columnKey] = $colValue;

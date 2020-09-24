@@ -320,17 +320,7 @@ class CategoryController extends MyAppController
         }
 
         $categoriesArr = ProductCategory::getProdCatParentChildWiseArr($this->siteLangId, $parentId, $includeChild, false, false, $prodSrchObj, true);
-
-        /*  if (true ===  MOBILE_APP_API_CALL && 0 == $parentId) {
-             foreach ($categoriesDataArr as $key => $value) {
-                 $categoriesDataArr[$key]['icon'] = UrlHelper::generateFullUrl('Category', 'icon', array($value['prodcat_id'], $this->siteLangId, 'COLLECTION_PAGE'));
-                 $categoriesDataArr[$key]['image'] = UrlHelper::generateFullUrl('Category', 'banner', array($value['prodcat_id'] , $this->siteLangId, 'MOBILE', applicationConstants::SCREEN_MOBILE));
-             }
-         } else {
-             if (false ===  MOBILE_APP_API_CALL) {
-                 $categoriesDataArr = $productCategory->getCategoryTreeArr($this->siteLangId, $categoriesArr, array( 'prodcat_id', 'IFNULL(prodcat_name,prodcat_identifier ) as prodcat_name','substr(GETCATCODE(prodcat_id),1,6) AS prodrootcat_code', 'prodcat_content_block','prodcat_active','prodcat_parent','GETCATCODE(prodcat_id) as prodcat_code'));
-             }
-         } */
+        
         if (false === MOBILE_APP_API_CALL) {
             $categoriesArr = $productCategory->getCategoryTreeArr($this->siteLangId, $categoriesArr, array('prodcat_id', 'IFNULL(prodcat_name,prodcat_identifier ) as prodcat_name', 'substr(GETCATCODE(prodcat_id),1,6) AS prodrootcat_code', 'prodcat_content_block', 'prodcat_active', 'prodcat_parent', 'GETCATCODE(prodcat_id) as prodcat_code'));
         }

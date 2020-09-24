@@ -5,6 +5,7 @@ class SellerOrdersController extends AdminBaseController
     private $shippingService;
     private $trackingService;
     private $paymentPlugin;
+    private $method = '';
 
     public function __construct($action)
     {
@@ -12,6 +13,7 @@ class SellerOrdersController extends AdminBaseController
         if (!FatUtility::isAjaxCall() && in_array($action, $ajaxCallArray)) {
             die($this->str_invalid_Action);
         }
+        $this->method = $action;
         parent::__construct($action);
         $this->admin_id = AdminAuthentication::getLoggedAdminId();
         $this->canView = $this->objPrivilege->canViewSellerOrders($this->admin_id, true);
@@ -37,14 +39,24 @@ class SellerOrdersController extends AdminBaseController
         if (false === $keyName) { return; }
 
         $this->shippingService = PluginHelper::callPlugin($keyName, [$this->adminLangId], $error, $this->adminLangId, false);
+
         if (false === $this->shippingService) {
-            Message::addErrorMessage($error);
-            FatApp::redirectUser(UrlHelper::generateUrl("SellerOrders"));
+            if ('search' == strtolower($this->method)){
+                Message::addErrorMessage($error);
+                FatUtility::dieWithError(Message::getHtml());
+            } else {
+                FatApp::redirectUser(UrlHelper::generateUrl("SellerOrders"));
+            }
         }
 
         if (false === $this->shippingService->init()) {
-            Message::addErrorMessage($this->shippingService->getError());
-            FatApp::redirectUser(UrlHelper::generateUrl("SellerOrders"));
+            if ('search' == strtolower($this->method)){
+                Message::addErrorMessage($this->shippingService->getError());
+                FatUtility::dieWithError(Message::getHtml());
+            } else {
+                FatApp::redirectUser(UrlHelper::generateUrl("SellerOrders"));
+                
+            }
         }
     }
 
@@ -67,12 +79,12 @@ class SellerOrdersController extends AdminBaseController
         $this->trackingService = PluginHelper::callPlugin($keyName, [$this->adminLangId], $error, $this->adminLangId, false);
         if (false === $this->trackingService) {
             Message::addErrorMessage($error);
-            FatApp::redirectUser(UrlHelper::generateUrl("SellerOrders"));
+            FatUtility::dieWithError(Message::getHtml());
         }
 
         if (false === $this->trackingService->init()) {
-            Message::addErrorMessage($this->trackingService->getError());
-            FatApp::redirectUser(UrlHelper::generateUrl("SellerOrders"));
+            Message::addErrorMessage($this->shippingService->getError());
+            FatUtility::dieWithError(Message::getHtml());
         }
     }
 

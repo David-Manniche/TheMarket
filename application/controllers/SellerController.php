@@ -13,9 +13,11 @@ class SellerController extends SellerBaseController
     private $shippingService;
     private $trackingService;
     private $paymentPlugin;
+    private $method = '';
 
     public function __construct($action)
     {
+        $this->method = $action;
         parent::__construct($action);
     }
 
@@ -189,13 +191,20 @@ class SellerController extends SellerBaseController
 
         $this->shippingService = PluginHelper::callPlugin($keyName, [$this->siteLangId], $error, $this->siteLangId, false);
         if (false === $this->shippingService) {
-            Message::addErrorMessage($error);
-            FatApp::redirectUser(UrlHelper::generateUrl("Seller", "Sales"));
-        }
-
+            if ('orderproductsearchlisting' == strtolower($this->method)){
+                Message::addErrorMessage($error);
+                FatUtility::dieWithError(Message::getHtml());
+            } else {
+                FatApp::redirectUser(UrlHelper::generateUrl("Seller", "Sales"));
+            }
+        };
         if (false === $this->shippingService->init()) {
-            Message::addErrorMessage($this->shippingService->getError());
-            FatApp::redirectUser(UrlHelper::generateUrl("Seller", "Sales"));
+            if ('orderproductsearchlisting' == strtolower($this->method)){
+                Message::addErrorMessage($this->shippingService->getError());
+                FatUtility::dieWithError(Message::getHtml());
+            } else {
+                FatApp::redirectUser(UrlHelper::generateUrl("Seller", "Sales"));
+            }
         }
     }
     

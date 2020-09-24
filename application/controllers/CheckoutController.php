@@ -589,7 +589,8 @@ class CheckoutController extends MyAppController
         $cartProducts = $this->cartObj->getProducts($this->siteLangId);    
         $shippingRates = $this->cartObj->getShippingRates();    
         if (false == $shippingRates) {
-            LibHelper::exitWithError($this->cartObj->getError(), true);
+            $message = Labels::getLabel('MSG_Shipping_rates_are_not_available', $this->siteLangId);
+            LibHelper::exitWithError($message, true);
         }
    
         $selectedShippingMethods = [];
@@ -2119,7 +2120,7 @@ class CheckoutController extends MyAppController
 //        $basketProducts = $this->cartObj->getBasketProducts($this->siteLangId);
         $basketProducts = [];
         $pickupOptions = $this->cartObj->getPickupOptions($basketProducts);
-
+        
         foreach ($post['slot_id'] as $level => $slotId) {
             if (empty($slotId) || empty($post['slot_date'][$level])) {
                 $message = Labels::getLabel('MSG_Pickup_Method_is_not_selected_on_products_in_cart', $this->siteLangId);

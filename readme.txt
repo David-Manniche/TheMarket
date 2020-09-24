@@ -8,7 +8,7 @@ New Features:
     => CDN handling based on configuration. 
     => Url Rewritting based on language. 
     => Security Headers for clickjacking, XSS and MIME types. 
-    => After Ship API.    
+    => After Ship API.        
 Bugs:
     => 036750 - Seller Shop - Custom URL for shop collections
     => 036504 - wrong stats are displaying on buyer dashboard - pending and total orders
@@ -113,6 +113,13 @@ Bugs:
     => 037325 - when buyer registers through phone number and then requests to become seller then on seller request from there should be email field to complete the process
     => 040623 - when user sign up through social (phone number) then it lands on configure email page and from there existing email is allowing
     => 042341 - admin> import /export> option> getting option value in drop down
+    => 043114 - when product is not available for shipping then there is blank warning.
+    => 043183 - Seller >> marketplace products >> there is some error on add seller shipping page .
+    => 043127 - Seller should not be able to import special price file with price less then minimum selling price .
+    => 043050 - On Shipping profile >> manage rates section still gets display there even if we delete "zone "
+    => 043266 - Display parent category if products bound to any of child category 
+    => 043050 - On Shipping profile >> manage rates section still gets display there even if we delete "zone " 
+    => 042767 - Import / export >> settings >> Some settings needs to be removed . 
     
 Enhancements:
     => Tax module upgrade
@@ -121,6 +128,7 @@ Enhancements:
     => User Addresses DB changes.  
     => Displayed "product not available " on home page collections based on location. 
     => Performance updates.
+    => Advanced search UI and Auto Suggestions.
 Notes:
    ==========Stripe Connect Installation Notes[:=========
    Composer should be installed on server to run the stripe connect module: composer.json on root of the project has details to download the required libraries in root's vendor folder.
