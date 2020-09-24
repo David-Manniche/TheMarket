@@ -15316,7 +15316,7 @@ img.mfp-img, .post .post_media iframe.mfp-img, .post .post_media .posted-content
     height: 3px;
     border-radius: 1px;
     cursor: pointer;
-    background: #d2d2d2;
+    background: rgba(255, 255, 255, 0.5);
     -webkit-transition: all 0.5s ease-in-out;
     transition: all 0.5s ease-in-out; }
     .slick-dots li button {
@@ -17780,7 +17780,7 @@ html.quick-view--open {
       border-radius: 50%;
       border: solid 2px #d1d1d1;
       cursor: pointer;
-      background: #fff; }
+      background: rgba(255, 255, 255, 0.5); }
       .product-gallery .slick-dots li button {
         background: none;
         border: none;
@@ -35198,7 +35198,7 @@ div.faqanswer {
       height: 3px;
       border-radius: 1px;
       cursor: pointer;
-      background: #d2d2d2;
+      background: rgba(255, 255, 255, 0.5);
       -webkit-transition: all 0.5s ease-in-out;
       transition: all 0.5s ease-in-out; }
       .hero-slider .slick-dots li button {
@@ -35237,6 +35237,116 @@ div.faqanswer {
 .collection-corner .products {
   border-color: #fff;
   margin: 0 1rem 1.5rem; }
+
+.slider-testimonials {
+  text-align: center;
+  margin: 4rem auto;
+  padding: 0 5rem 1.5rem 5rem;
+  max-width: 1000px;
+  position: relative; }
+  @media (max-width: 991.98px) {
+    .slider-testimonials {
+      padding: 0; } }
+  .slider-testimonials .slick-arrow {
+    width: 48px;
+    height: 48px;
+    background-color: rgba(255, 255, 255, 0.5);
+    border: none;
+    opacity: 0;
+    transition: all 0.2s ease-in-out;
+    -webkit-transform: scale(0.7);
+    transform: scale(0.7); }
+  .slider-testimonials:hover .slick-arrow {
+    -webkit-transform: scale(1);
+    transform: scale(1);
+    opacity: 1; }
+    .slider-testimonials:hover .slick-arrow:hover {
+      background-color: rgba(255, 255, 255, 0.9); }
+  .slider-testimonials p {
+    line-height: 1.8; }
+  .slider-testimonials .from {
+    margin: 0 auto;
+    margin-top: 2rem;
+    display: flex;
+    justify-content: center;
+    align-items: center; }
+    .slider-testimonials .from .user-pic {
+      max-width: 50px;
+      border-radius: 50%;
+      box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1), 0px 0px 1px rgba(0, 0, 0, 0.1);
+      overflow: hidden;
+      margin: 1rem; }
+    .slider-testimonials .from p {
+      font-size: 0.89rem;
+      font-weight: 600;
+      margin: 0;
+      text-align: left; }
+      .slider-testimonials .from p span {
+        display: block;
+        font-size: 0.8rem;
+        font-weight: 300; }
+
+.how-works {
+  display: grid;
+  grid-gap: 1rem;
+  grid-template-columns: repeat(auto-fill, minmax(325px, 1fr)); }
+  .how-works .how-work {
+    text-align: center;
+    padding: 0 3rem; }
+    .how-works .how-work__icon {
+      margin: 1.5rem 0; }
+      .how-works .how-work__icon img, .how-works .how-work__icon .post .post_media iframe, .post .post_media .how-works .how-work__icon iframe, .how-works .how-work__icon .post .post_media .posted-content .posted-media .post__pic .media-wrapper img, .post .post_media .posted-content .posted-media .post__pic .media-wrapper .how-works .how-work__icon img, .how-works .how-work__icon .posted-content .posted-media .post__pic .media-wrapper .post .post_media img, .posted-content .posted-media .post__pic .media-wrapper .post .post_media .how-works .how-work__icon img {
+        max-width: 50px; }
+    .how-works .how-work__data {
+      position: relative; }
+      .how-works .how-work__data:before {
+        content: attr(data-count);
+        opacity: 0.1;
+        font-family: "Poppins", sans-serif;
+        color: #000;
+        font-size: 4rem;
+        font-weight: 300; }
+      .how-works .how-work__data h4 {
+        font-size: 1.1rem;
+        margin-bottom: 1rem; }
+      .how-works .how-work__data p {
+        line-height: 1.6;
+        font-size: 0.9rem;
+        margin-bottom: 0.5rem;
+        color: #8798ad; }
+
+.list-faqs {
+  max-width: 80%;
+  margin: 0 auto;
+  margin-top: 2rem; }
+  @media (max-width: 1199.98px) {
+    .list-faqs {
+      max-width: none; } }
+  .list-faqs ul {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between; }
+    @media (max-width: 991.98px) {
+      .list-faqs ul {
+        flex-direction: column; } }
+    .list-faqs ul li {
+      flex: 0 0 42%;
+      max-width: 42%;
+      padding: 1rem;
+      margin-bottom: 1rem; }
+      @media (max-width: 991.98px) {
+        .list-faqs ul li {
+          flex: 1;
+          max-width: none;
+          padding: 0; } }
+      .list-faqs ul li h5 {
+        font-size: 1.1rem;
+        margin: 0; }
+      .list-faqs ul li p {
+        line-height: 1.7;
+        font-size: 0.9rem;
+        color: #8798ad;
+        margin: 1.2rem 0; }
 
 .collection-sidebar {
   flex-grow: 0;
