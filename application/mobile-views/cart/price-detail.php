@@ -94,7 +94,7 @@ if (0 < $shippingTotal) {
     );
 }
 
-$priceDetail['netPayable'] = array(
+$priceDetail['priceDetail'][] = array(
     'key' => Labels::getLabel('LBL_Net_Payable', $siteLangId),
     'value' => CommonHelper::displayMoneyFormat($cartSummary['orderNetAmount'])
 );

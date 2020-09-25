@@ -99,6 +99,9 @@ class CartController extends MyAppController
                     $shippingddressDetail = $address->getData(Address::TYPE_USER, $loggedUserId);
                 }
                 
+                $cartSummary = $cartObj->getCartFinancialSummary($this->siteLangId);
+                $this->set('cartSummary', $cartSummary);
+                
                 $this->set('cartSelectedBillingAddress', $billingAddressDetail);
                 $this->set('cartSelectedShippingAddress', $shippingddressDetail);
                 $this->set('isShippingSameAsBilling', $cartObj->getShippingAddressSameAsBilling());
@@ -116,6 +119,7 @@ class CartController extends MyAppController
             $this->set('prodGroupIds', $prodGroupIds);
             $this->set('fulfilmentType', $fulfilmentType);
             $this->set('fulfillmentProdArr', $fulfillmentProdArr);
+            $this->set('hasPhysicalProduct', $cartObj->hasPhysicalProduct());
 
             $templateName = 'cart/ship-listing.php';
             if ($fulfilmentType == Shipping::FULFILMENT_PICKUP || count($fulfillmentProdArr[Shipping::FULFILMENT_SHIP]) == 0) {
@@ -130,6 +134,7 @@ class CartController extends MyAppController
             $this->set('EmptyCartItems', $EmptyCartItems);
             $templateName = 'cart/empty-cart.php';
         }
+        
         if (true === MOBILE_APP_API_CALL) {
             $this->_template->render(true, true, $templateName);
         }
