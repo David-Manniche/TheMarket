@@ -3268,7 +3268,9 @@ class Importexport extends ImportexportCommon
 
             //if(array_key_exists($row['selprod_product_id'], $prodTypeArr))
             $selProdSepc = [];
+            $productId = 0;
             foreach ($coloumArr as $columnKey => $columnTitle) {
+                $checkOption = false;
                 $colIndex = $this->headingIndexArr[$columnTitle];
                 $colValue = $this->getCell($row, $colIndex, '');
                 $invalid = false;
@@ -3293,9 +3295,11 @@ class Importexport extends ImportexportCommon
                             break;
                         case 'selprod_product_id':
                             $productId = $colValue;
+                            $checkOption = true;
                             break;
                         case 'product_identifier':
                             $columnKey = 'selprod_product_id';
+                            
                             $colValue = mb_strtolower($colValue);
                             if (!array_key_exists($colValue, $prodIndetifierArr)) {
                                 $res = $this->array_change_key_case_unicode($this->getAllProductsIdentifiers(false, $colValue), CASE_LOWER);
@@ -3306,6 +3310,7 @@ class Importexport extends ImportexportCommon
                                 }
                             }
                             $productId = $colValue = array_key_exists($colValue, $prodIndetifierArr) ? $prodIndetifierArr[$colValue] : 0;
+                            $checkOption = true;
                             break;
                         case 'selprod_user_id':
                             $userId = $colValue;
@@ -3356,6 +3361,23 @@ class Importexport extends ImportexportCommon
                             }
                             break;
                     }
+                    /* Check if inventory already added for the product without option [ */
+                    if (0 < $productId && true === $checkOption) {
+                        $srch = Product::getSearchObject();
+                        $srch->joinTable(Product::DB_PRODUCT_TO_OPTION, 'LEFT JOIN', 'product_id = prodoption_product_id', 'tpo');
+                        $srch->joinTable(SellerProduct::DB_TBL, 'LEFT JOIN', 'product_id = selprod_product_id', 'sp');
+                        $srch->addCondition('selprod_product_id', '=', $productId);
+                        $srch->addCondition('selprod_deleted', '=', applicationConstants::NO);
+                        $srch->addMultipleFields(array('selprod_product_id', 'selprod_id', 'prodoption_option_id'));
+                        $rs = $srch->getResultSet();
+                        $sellerProduct = FatApp::getDb()->fetch($rs);
+
+                        if (!empty($sellerProduct['selprod_id']) && $sellerProduct['selprod_id'] != $selprodId && empty($sellerProduct['prodoption_option_id'])) {
+                            $errMsg = Labels::getLabel("LBL_INVENTORY_ALREADY_ADDED", $langId);
+                            $invalid = true;
+                        }
+                    }
+                    /* ] */
 
                     if (FatApp::getConfig('CONF_ENABLE_SELLER_SUBSCRIPTION_MODULE', FatUtility::VAR_INT, 0) && 0 < $userId) {
                         if (!array_key_exists($userId, $userProdUploadLimit)) {
@@ -3365,7 +3387,7 @@ class Importexport extends ImportexportCommon
 
                     if (true === $invalid) {
                         $errorInRow = true;
-                        $errMsg = str_replace('{column-name}', $columnTitle, Labels::getLabel("MSG_Invalid_{column-name}.", $langId));
+                        $errMsg = !empty($errMsg) ? $errMsg : str_replace('{column-name}', $columnTitle, Labels::getLabel("MSG_Invalid_{column-name}.", $langId));
                         $err = array($rowIndex, ($colIndex + 1), $errMsg);
                         CommonHelper::writeToCSVFile($this->CSVfileObj, $err);
                     } else {
