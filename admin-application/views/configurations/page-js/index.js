@@ -26,7 +26,7 @@ $(document).ready(function() {
     var currentPage = 1;
     var runningAjaxReq = false;
     var dv = '#frmBlock';
-    getForm = function(frmType) {
+    getForm = function(frmType) {        
         fcom.resetEditorInstance();
         $(dv).html(fcom.getLoader());
         fcom.ajax(fcom.makeUrl('Configurations', 'form', [frmType]), '', function(t) {

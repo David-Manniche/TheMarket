@@ -61,9 +61,7 @@ class Product extends MyAppModel
     public const PRODUCT_VIEW_ORGINAL_URL = 'products/view/';
     public const PRODUCT_REVIEWS_ORGINAL_URL = 'reviews/product/';
     public const PRODUCT_MORE_SELLERS_ORGINAL_URL = 'products/sellers/';
-
-    public const DISTANCE_IN_MILES = 10;
-
+    
     public function __construct($id = 0)
     {
         parent::__construct(static::DB_TBL, static::DB_TBL_PREFIX . 'id', $id);
