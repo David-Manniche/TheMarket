@@ -762,3 +762,4 @@ CREATE TABLE `tbl_product_category_relations` (
 
 ALTER TABLE `tbl_product_category_relations` ADD PRIMARY KEY( `pcr_prodcat_id`, `pcr_parent_id`);
 -- Category Relation Management --
+-- ---------------TV-9.2.1.20200925------------------------
