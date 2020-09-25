@@ -125,6 +125,7 @@ Bugs:
     ------------TV-9.2.1.20200925------------------------
 
     => 043493 - Meta title is not working
+    => 043497 - Colour of Subscribe section on blog page doesn't update
 
 Enhancements:
     => Tax module upgrade
