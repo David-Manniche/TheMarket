@@ -1206,6 +1206,7 @@ class HomeController extends MyAppController
             $rs = $srch->getResultSet();
             $metas = FatApp::getDb()->fetch($rs);
             $arr = array(
+                "display" => "standalone",
                 "name" => $websiteName,
                 "short_name" => $websiteName,
                 "description" => isset($metas['meta_description']) ? $metas['meta_description'] : $websiteName,

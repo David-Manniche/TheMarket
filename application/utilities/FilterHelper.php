@@ -217,9 +217,12 @@ class FilterHelper extends FatUtility
             $prodGeoCondition = FatApp::getConfig('CONF_PRODUCT_GEO_LOCATION', FatUtility::VAR_INT, 0);
             switch ($prodGeoCondition) {
                 case applicationConstants::BASED_ON_DELIVERY_LOCATION:
-                    $priceSrch->addMultipleFields(array('theprice'));
-                    $rs = FatApp::getDb()->query('select MIN(theprice) as minPrice, MAX(theprice) as maxPrice from ( ' . $priceSrch->getQuery() . ') as pricetbl');
-                    $useSubQuery = true;
+                    $shippingServiceActive = Plugin::isActiveByType(Plugin::TYPE_SHIPPING_SERVICES);
+                    if (!$shippingServiceActive) {
+                        $priceSrch->addMultipleFields(array('theprice'));
+                        $rs = FatApp::getDb()->query('select MIN(theprice) as minPrice, MAX(theprice) as maxPrice from ( ' . $priceSrch->getQuery() . ') as pricetbl');
+                        $useSubQuery = true;
+                    }
                     break;
             }
         }

@@ -4,6 +4,10 @@ $(document).ready(function() {
 	searchProductsSection(profileId);
 });
 (function() {
+	var prodListing = '#product-listing--js';
+	var shipListing = '#shipping--js';
+	var zoneListing = '#listing-zones';
+
 	setupProfile = function(frm) {
         if (!$(frm).validate()) return;
         var data = fcom.frmData(frm);
@@ -32,26 +36,26 @@ $(document).ready(function() {
         searchProducts(profileId, frm);
     };
 	
-	searchProducts = function(profileId, form) {
-		var dv = '#product-listing--js';
+	searchProducts = function(profileId, form) {		
 		var data = '';
         if (form) {
             data = fcom.frmData(form);
         }
 		
-        $(dv).html(fcom.getLoader());
+        $(prodListing).html(fcom.getLoader());
         fcom.ajax(fcom.makeUrl('shippingProfileProducts', 'search', [profileId]), data, function(res) {
-            $(dv).html(res);
-        });
+            $(prodListing).html(res);
+		});
+		$(shipListing).html('');
     };
 	
-	searchProductsSection = function(profileId) {
+	searchProductsSection = function(profileId) {		
 		var dv = '#product-section--js';
         $(dv).html(fcom.getLoader());
         fcom.ajax(fcom.makeUrl('shippingProfileProducts', 'index', [profileId]), '', function(res) {
             $(dv).html(res);
 			searchProducts(profileId);
-        });
+		});				
 	};
 	
 	setupProfileProduct = function(frm) {
@@ -79,11 +83,10 @@ $(document).ready(function() {
         });
 	}
 	
-	searchZone = function(profileId) {
-		var dv = '#listing-zones';
-        $(dv).html(fcom.getLoader());
+	searchZone = function(profileId) {		
+        $(zoneListing).html(fcom.getLoader());
         fcom.ajax(fcom.makeUrl('ShippingZones', 'search', [profileId]), '', function(res) {
-            $(dv).html(res);
+            $(zoneListing).html(res);
 		});
 		//searchProductsSection(profileId);
     };
@@ -94,9 +97,9 @@ $(document).ready(function() {
 			return;
 		}
 			
-        $('#product-section--js').html(fcom.getLoader());
+        $(shipListing).html(fcom.getLoader());
         fcom.ajax(fcom.makeUrl('ShippingZones', 'form', [profileId, zoneId]), '', function(t) {
-			$('#product-section--js').html(t);
+			$(shipListing).html(t);
         });
     };
 	
@@ -162,7 +165,7 @@ $(document).ready(function() {
 	addEditShipRates = function(zoneId, rateId) {
 		fcom.displayProcessing();
         fcom.ajax(fcom.makeUrl('shippingZoneRates', 'form', [zoneId, rateId]), '', function(t) {
-			$('#product-section--js').html(t);            
+			$(shipListing).html(t); 						
         });
 	};
 	
@@ -183,7 +186,7 @@ $(document).ready(function() {
 	editRateLangForm = function(zoneId, rateId, langId) {
         fcom.displayProcessing();
         fcom.ajax(fcom.makeUrl('shippingZoneRates', 'langForm', [zoneId, rateId, langId]), '', function(t) {
-            $('#product-section--js').html(t); 
+			$(shipListing).html(t); 
         });
     };
 	
