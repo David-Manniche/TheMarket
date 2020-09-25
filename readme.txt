@@ -120,6 +120,7 @@ Bugs:
     => 043266 - Display parent category if products bound to any of child category 
     => 043050 - On Shipping profile >> manage rates section still gets display there even if we delete "zone " 
     => 042767 - Import / export >> settings >> Some settings needs to be removed . 
+    => 043134 - Seller can add one extra inventory using import even if all inventories are already existed.
     
 Enhancements:
     => Tax module upgrade
