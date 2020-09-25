@@ -1,6 +1,6 @@
 <?php defined('SYSTEM_INIT') or die('Invalid Usage.'); ?>
 <?php if (count($arr_listing) > 0): ?>
-<table class="table table-responsive" id="dtTable">
+<table class="table table-justified table-responsive" id="dtTable">
 	<thead>
 		<tr>
 			<th><?php echo Labels::getLabel('LBL_Backup_File_Name',$adminLangId); ?></th>

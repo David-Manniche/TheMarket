@@ -113,7 +113,7 @@
                             <?php } ?>
                         </div>
                         <div class="cards-content ">
-                            <table class="table">                                
+                            <table class="table table-justified">                                
                             <thead>
                                     <tr class="">
                                         <th colspan="2"><?php echo Labels::getLabel('LBL_Promotions', $siteLangId);?></th>

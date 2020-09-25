@@ -268,10 +268,14 @@ $buyQuantity->addFieldTagAttribute('data-page', 'product-view');
                                     <!-- Add To Cart [ -->
                                     <?php if ($product['in_stock']) {
                                         if (true == $displayProductNotAvailableLable && null == $product['availableInLocation']) {  ?>
-                                            <div class="sold">
-                                                <h3 class="text--normal-secondary"><?php echo Labels::getLabel('LBL_NOT_AVAILABLE_FOR_YOUR_LOCATION', $siteLangId); ?></h3>
+                                            <div class="not-available">                                                 
+                                                <svg class="svg">
+                                                    <use xlink:href="<?php echo CONF_WEBROOT_URL; ?>images/retina/sprite.svg#info" href="<?php echo CONF_WEBROOT_URL; ?>images/retina/sprite.svg#info">
+                                                    </use>
+                                                </svg>
+                                                <?php echo Labels::getLabel('LBL_NOT_AVAILABLE_FOR_YOUR_LOCATION', $siteLangId); ?> 
                                             </div>
-                                            <div class="not-available"></div>
+                                            
                                             <?php } else {
                                             echo $frmBuyProduct->getFormTag();
                                             $qtyField =  $frmBuyProduct->getField('quantity');
@@ -374,16 +378,21 @@ $buyQuantity->addFieldTagAttribute('data-page', 'product-view');
                                                             $uncheckBoxClass = 'remove-add-on';
                                                         } ?>
                                                         <tr>
+                                                             
                                                             <td class="<?php echo $cancelClass; ?>">
-                                                                <figure class="item__pic"><a title="<?php echo $usproduct['selprod_title']; ?>" href="<?php echo UrlHelper::generateUrl('products', 'view', array($usproduct['selprod_id'])) ?>"><img src="<?php echo UrlHelper::getCachedUrl(UrlHelper::generateFileUrl('Image', 'product', array($usproduct['product_id'], 'MINI', $usproduct['selprod_id'])), CONF_IMG_CACHE_TIME, '.jpg'); ?>" alt="<?php echo $usproduct['product_identifier']; ?>"> </a></figure>
-                                                            </td>
-                                                            <td class="<?php echo $cancelClass; ?>">
+                                                            <div class="item">
+                                                            <figure class="item__pic"><a title="<?php echo $usproduct['selprod_title']; ?>" href="<?php echo UrlHelper::generateUrl('products', 'view', array($usproduct['selprod_id'])) ?>"><img src="<?php echo UrlHelper::getCachedUrl(UrlHelper::generateFileUrl('Image', 'product', array($usproduct['product_id'], 'MINI', $usproduct['selprod_id'])), CONF_IMG_CACHE_TIME, '.jpg'); ?>" alt="<?php echo $usproduct['product_identifier']; ?>"> </a></figure>
                                                                 <div class="item__description">
                                                                     <div class="item__title"><a href="<?php echo UrlHelper::generateUrl('products', 'view', array($usproduct['selprod_id'])) ?>"><?php echo $usproduct['selprod_title'] ?></a></div>
+                                                                    <div class="item__price"><?php echo CommonHelper::displayMoneyFormat($usproduct['theprice']); ?></div>
                                                                 </div>
                                                                 <?php if ($usproduct['selprod_stock'] <= 0) { ?>
                                                                     <div class="addon--tag--soldout"><?php echo Labels::getLabel('LBL_SOLD_OUT', $siteLangId); ?></div>
-                                                                <?php  } ?><div class="item__price"><?php echo CommonHelper::displayMoneyFormat($usproduct['theprice']); ?></div>
+
+                                                                <?php  } ?>
+                                                                
+
+                                                                </div>
                                                             </td>
 
                                                             <td class="<?php echo $cancelClass; ?>">

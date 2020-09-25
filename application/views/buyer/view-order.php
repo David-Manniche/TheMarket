@@ -745,7 +745,7 @@ if (!$print) { ?>
                             <h5>
                                 <?php echo Labels::getLabel('LBL_Downloads', $siteLangId); ?>
                             </h5>
-                            <table class="table  table--orders">
+                            <table class="table table-justified table--orders">
                                 <tbody>
                                     <tr class="">
                                         <th>
