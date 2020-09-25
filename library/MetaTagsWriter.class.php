@@ -36,10 +36,12 @@ class MetaTagsWriter
                     if (isset($arrParameters[0]) && FatUtility::int($arrParameters[0]) > 0) {
                         $cond = $srch->addCondition('meta_record_id', '=', FatUtility::int($arrParameters[0]));
                         $cond->attachCondition('meta_record_id', '=', 0, 'OR');
+                        $srch->addOrder('meta_record_id', 'DESC');
                     }
                     if (isset($arrParameters[1]) && FatUtility::int($arrParameters[1]) > 0) {
                         $cond = $srch->addCondition('meta_subrecord_id', '=', FatUtility::int($arrParameters[1]));
                         $cond->attachCondition('meta_subrecord_id', '=', 0, 'OR');
+                        $srch->addOrder('meta_subrecord_id', 'DESC');
                     }
                 break;
             }
