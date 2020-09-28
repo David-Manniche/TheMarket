@@ -164,7 +164,7 @@ class ProductSearch extends SearchBase
             $srch = new SearchBase(Product::DB_PRODUCT_MIN_PRICE);
             $srch->doNotLimitRecords();
             $srch->doNotCalculateRecords();
-            $srch->addMultipleFields(array('pmp_product_id', 'pmp_selprod_id', 'pmp_min_price as theprice', 'pmp_splprice_id', 'if(pmp_splprice_id,1,0) as special_price_found'));
+            $srch->addMultipleFields(array('pmp_product_id', 'pmp_selprod_id', 'pmp_min_price as theprice','pmp_max_price as maxprice', 'pmp_splprice_id', 'if(pmp_splprice_id,1,0) as special_price_found'));
             $tmpQry = $srch->getQuery();
             $this->joinTable('(' . $tmpQry . ')', 'INNER JOIN', 'pricetbl.pmp_product_id = msellprod.selprod_product_id and msellprod.selprod_id = pricetbl.pmp_selprod_id', 'pricetbl');
             $this->joinTable(SellerProduct::DB_TBL_SELLER_PROD_SPCL_PRICE, 'LEFT OUTER JOIN', 'msplpric.splprice_selprod_id = pricetbl.pmp_selprod_id and pricetbl.pmp_splprice_id = msplpric.splprice_id', 'msplpric');
@@ -221,8 +221,14 @@ class ProductSearch extends SearchBase
 
         if (!empty($criteria['keyword'])) {
             $srch->addFld('if(sp_l.selprod_title LIKE ' . FatApp::getDb()->quoteVariable('%' . $criteria['keyword'] . '%') . ',  COALESCE(splprice_price, sprods.selprod_price), MIN(COALESCE(tsp.splprice_price, sprods.selprod_price)) ) as theprice');
+            /* if (isset($criteria['max_price']) && true == $criteria['max_price']) {
+                $srch->addFld('MAX(COALESCE(tsp.splprice_price, sprods.selprod_price)) ) as maxprice');
+            } */
         } else {
             $srch->addFld('MIN(COALESCE(tsp.splprice_price, sprods.selprod_price)) AS theprice');
+            /* if (isset($criteria['max_price']) && true == $criteria['max_price']) {
+                $srch->addFld('MAX(COALESCE(tsp.splprice_price, sprods.selprod_price)) AS maxprice');
+            } */
         }
 
         $srch->joinTable(
