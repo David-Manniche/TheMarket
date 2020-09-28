@@ -139,7 +139,8 @@ $(document).ready(function(){
 		$.mbsmessage.close();
 		fcom.updateWithAjax(fcom.makeUrl('Account', 'moveToSaveForLater', [selProdId]), '', function(ans) {
 			if( ans.status ){
-				removeFromCart( key );
+				listCartProducts();
+				$.mbsmessage(langLbl.MovedSuccessfully, true, 'alert--success');
 			}
 		});
 	};

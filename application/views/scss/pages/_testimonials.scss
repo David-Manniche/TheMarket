@@ -1,4 +1,3 @@
-
 .testimonials-item {
     display: block;
     position: relative;
@@ -63,7 +62,8 @@
     width: 100%;
     height: 100%;
     z-index: 1;
-    background: $secondary-color; color:$secondary-color-inverse;
+    background: $secondary-color;
+    color: $secondary-color-inverse;
     opacity: 0;
     -webkit-transition: all 0.3s ease 0s;
     transition: all 0.3s ease 0s;

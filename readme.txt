@@ -8,7 +8,8 @@ New Features:
     => CDN handling based on configuration. 
     => Url Rewritting based on language. 
     => Security Headers for clickjacking, XSS and MIME types. 
-    => After Ship API.    
+    => After Ship API.   
+    ------------TV-9.2.1.20200925------------------------     
 Bugs:
     => 036750 - Seller Shop - Custom URL for shop collections
     => 036504 - wrong stats are displaying on buyer dashboard - pending and total orders
@@ -116,8 +117,16 @@ Bugs:
     => 043114 - when product is not available for shipping then there is blank warning.
     => 043183 - Seller >> marketplace products >> there is some error on add seller shipping page .
     => 043127 - Seller should not be able to import special price file with price less then minimum selling price .
+    => 043050 - On Shipping profile >> manage rates section still gets display there even if we delete "zone "
+    => 043266 - Display parent category if products bound to any of child category 
     => 043050 - On Shipping profile >> manage rates section still gets display there even if we delete "zone " 
+    => 042767 - Import / export >> settings >> Some settings needs to be removed . 
+    => 043134 - Seller can add one extra inventory using import even if all inventories are already existed.
     => 043245 - Admin >> Add first rule >> All tax structures gets display under "rule name " box even if admin didn't selected any tax.
+    ------------TV-9.2.1.20200925------------------------
+
+    => 043493 - Meta title is not working
+    => 043497 - Colour of Subscribe section on blog page doesn't update
 
 Enhancements:
     => Tax module upgrade
@@ -126,6 +135,8 @@ Enhancements:
     => User Addresses DB changes.  
     => Displayed "product not available " on home page collections based on location. 
     => Performance updates.
+    => Advanced search UI and Auto Suggestions.
+    ------------TV-9.2.1.20200925------------------------
 Notes:
    ==========Stripe Connect Installation Notes[:=========
    Composer should be installed on server to run the stripe connect module: composer.json on root of the project has details to download the required libraries in root's vendor folder.

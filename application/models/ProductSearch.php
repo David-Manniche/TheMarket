@@ -446,7 +446,7 @@ class ProductSearch extends SearchBase
                         $shopSearch->addCondition(Shop::tblFld('active'), '=', applicationConstants::ACTIVE);
                         $shopSearch->addFld('*');
                         $shopSearch->addFld('( 6371 * acos( cos( radians(' . $this->geoAddress['ykGeoLat'] . ') ) * cos( radians( shop.`shop_lat` ) ) * cos( radians( shop.`shop_lng` ) - radians(' . $this->geoAddress['ykGeoLng'] . ') ) + sin( radians(' . $this->geoAddress['ykGeoLat'] . ') ) * sin( radians( shop.`shop_lat` ) ) ) ) AS distance');
-                        $shopSearch->addHaving('distance', '<=', Product::DISTANCE_IN_MILES);
+                        $shopSearch->addHaving('distance', '<=', FatApp::getConfig('CONF_RADIUS_DISTANCE_IN_MILES', FatUtility::VAR_INT, 10));
                         if (false == $this->locationBasedInnerJoin) {
                             $shopSubQuery = $shopSearch->getQuery();
                             $shopSearch = new SearchBase(Shop::DB_TBL, 'sshop');
@@ -460,7 +460,7 @@ class ProductSearch extends SearchBase
                         $joinShopWithSubQuery = true;
                     }
                     break;
-                case applicationConstants::BASED_ON_BUYER_LOCATION:
+                case applicationConstants::BASED_ON_CURRENT_LOCATION:
                     $level = FatApp::getConfig('CONF_LOCATION_LEVEL', FatUtility::VAR_INT, 0);
                     $countryBased = $stateBased = $zipBased = false;
                     if (applicationConstants::LOCATION_COUNTRY == $level) {
@@ -709,7 +709,6 @@ class ProductSearch extends SearchBase
         }
 
         $keywordLength = mb_strlen($keyword);
-        /* $cnd = $obj->addCondition('mysql_func_concat(product_isbn, " ", product_upc)', 'LIKE', '%' . $keyword . '%', 'AND', true); */
         $cnd = $obj->addCondition('product_isbn', 'LIKE', '%' . $keyword . '%');
         $cnd->attachCondition('product_upc', 'LIKE', '%' . $keyword . '%');
 
@@ -726,8 +725,6 @@ class ProductSearch extends SearchBase
         if (count($arr_keywords) > 0) {
             if ($keywordLength <= 80) {
                 foreach ($arr_keywords as $value) {
-                    /* $cnd->attachCondition('mysql_func_concat(product_tags_string, " ", product_name, " ", brand_name, " ", prodcat_name)', 'LIKE', '%' . $value . '%', 'OR', true);
-                    $cnd->attachCondition('selprod_title', 'LIKE', '%' . $value . '%'); */
                     $cnd->attachCondition('product_tags_string', 'LIKE', '%' . $value . '%');
                     $cnd->attachCondition('selprod_title', 'LIKE', '%' . $value . '%');
                     $cnd->attachCondition('product_name', 'LIKE', '%' . $value . '%');
@@ -1123,12 +1120,16 @@ class ProductSearch extends SearchBase
             $prodGeoCondition = FatApp::getConfig('CONF_PRODUCT_GEO_LOCATION', FatUtility::VAR_INT, 0);
             switch ($prodGeoCondition) {
                 case applicationConstants::BASED_ON_DELIVERY_LOCATION:
-                    $this->joinDeliveryLocations();
-                    if (true == $includeShipingProfileCheck) {
-                        $this->addHaving('shippingProfile', 'IS NOT', 'mysql_func_null', 'and', true);
-                    } else {
-                        $this->addFld('if(p.product_type = ' . Product::PRODUCT_TYPE_PHYSICAL . ', shipprofile.shippro_product_id, -1) as availableInLocation');
+                    $shippingServiceActive = Plugin::isActiveByType(Plugin::TYPE_SHIPPING_SERVICES);
+                    if (!$shippingServiceActive) {
+                        $this->joinDeliveryLocations();
+                        if (true == $includeShipingProfileCheck) {
+                            $this->addHaving('shippingProfile', 'IS NOT', 'mysql_func_null', 'and', true);
+                        } else {
+                            $this->addFld('if(p.product_type = ' . Product::PRODUCT_TYPE_PHYSICAL . ', shipprofile.shippro_product_id, -1) as availableInLocation');
+                        }
                     }
+
                     break;
                 case applicationConstants::BASED_ON_RADIUS:
                     $this->addFld('shop.distance as availableInLocation');

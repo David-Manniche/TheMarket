@@ -44,7 +44,7 @@ class Plugin extends MyAppModel
         self::TYPE_PUSH_NOTIFICATION,
         self::TYPE_ADVERTISEMENT_FEED,
         self::TYPE_SMS_NOTIFICATION,
-        self::TYPE_TAX_SERVICES ,
+        self::TYPE_TAX_SERVICES,
         self::TYPE_FULL_TEXT_SEARCH,
         self::TYPE_SPLIT_PAYMENT_METHOD,
         self::TYPE_SHIPPING_SERVICES,
@@ -66,7 +66,7 @@ class Plugin extends MyAppModel
             array('plugin_code')
         );
     }
-    
+
     /**
      * getTypeArr - Used to get plugin type
      *
@@ -90,7 +90,7 @@ class Plugin extends MyAppModel
             self::TYPE_SHIPMENT_TRACKING => Labels::getLabel('LBL_SHIPMENT_TRACKING', $langId),
         ];
     }
-    
+
     /**
      * getDirectory - Used to get plugin directory
      *
@@ -118,7 +118,7 @@ class Plugin extends MyAppModel
         }
         return false;
     }
-    
+
     /**
      * getActivatationLimit
      *
@@ -136,7 +136,7 @@ class Plugin extends MyAppModel
         ];
         return array_key_exists($typeId, $pluginTypeArr) ? $pluginTypeArr[$typeId] : 0;
     }
-    
+
     /**
      * getGroupType
      *
@@ -159,7 +159,7 @@ class Plugin extends MyAppModel
         }
         return $groupArr;
     }
-    
+
     /**
      * getEnvArr
      *
@@ -178,7 +178,7 @@ class Plugin extends MyAppModel
             self::ENV_PRODUCTION => Labels::getLabel('LBL_PRODUCTION', $langId),
         ];
     }
-        
+
     /**
      * getSearchObject
      *
@@ -212,7 +212,7 @@ class Plugin extends MyAppModel
         }
         return $srch;
     }
-    
+
     /**
      * isActive
      *
@@ -223,7 +223,26 @@ class Plugin extends MyAppModel
     {
         return (0 < static::getAttributesByCode($code, self::DB_TBL_PREFIX . 'active') ? true : false);
     }
-    
+
+    /**
+     * isActive
+     *
+     * @param  string $code - Keyname
+     * @return bool
+     */
+    public static function isActiveByType(string $type): bool
+    {
+        $srch = new SearchBase(static::DB_TBL, 'plg');
+        $srch->addCondition('plg.' . static::DB_TBL_PREFIX . 'type', '=', $type);
+        $srch->addCondition('plg.' . static::DB_TBL_PREFIX . 'active', '=', applicationConstants::YES);
+        $rs = $srch->getResultSet();
+        $row = FatApp::getDb()->fetch($rs);
+        if (!empty($row)) {
+            return true;
+        }
+        return false;
+    }
+
     /**
      * getAttributesByCode
      *
@@ -254,13 +273,13 @@ class Plugin extends MyAppModel
         if (empty($row) || !is_array($row)) {
             return false;
         }
-        
+
         if (!empty($attr) && is_string($attr)) {
             return $row[$attr];
         }
         return $row;
     }
-    
+
     /**
      * pluginTypeSrchObj
      *
@@ -280,7 +299,7 @@ class Plugin extends MyAppModel
         $srch->addCondition('plg.' . static::DB_TBL_PREFIX . 'type', '=', $typeId);
         return $srch;
     }
-    
+
     /**
      * getDataByType
      *
@@ -318,10 +337,10 @@ class Plugin extends MyAppModel
         if (true == $assoc) {
             return $db->fetchAllAssoc($rs);
         }
-        
+
         return $db->fetchAll($rs, static::DB_TBL_PREFIX . 'id');
     }
-    
+
     /**
      * getNamesByType
      *
@@ -338,7 +357,7 @@ class Plugin extends MyAppModel
         }
         return $pluginsTypeArr = static::getDataByType($typeId, $langId, true);
     }
-    
+
     /**
      * getNamesWithCode
      *
@@ -360,7 +379,7 @@ class Plugin extends MyAppModel
         });
         return $arr;
     }
-    
+
     /**
      * getSocialLoginPluginsStatus
      *
@@ -380,7 +399,7 @@ class Plugin extends MyAppModel
 
         return FatApp::getDb()->fetchAllAssoc($rs);
     }
-    
+
     /**
      * getDefaultPluginKeyName - Used for Kingpin plugins only
      *
@@ -391,7 +410,7 @@ class Plugin extends MyAppModel
     {
         return $this->getDefaultPluginData($typeId, 'plugin_code');
     }
-    
+
     /**
      * getDefaultPluginData - Used for Kingpin plugins only
      *
@@ -424,7 +443,7 @@ class Plugin extends MyAppModel
                         }
                         $srch->addFld($attr);
                         break;
-                    
+
                     default:
                         $srch->addMultipleFields($attr);
                         break;
@@ -440,7 +459,7 @@ class Plugin extends MyAppModel
         }
         return Plugin::getAttributesById($kingPin, $attr);
     }
-    
+
     /**
      * canSendSms
      *
@@ -453,7 +472,7 @@ class Plugin extends MyAppModel
         $status = empty($tpl) ? 1 : SmsTemplate::getTpl($tpl, 0, 'stpl_status');
         return (false != $active && !empty($active) && 0 < $status);
     }
-    
+
     /**
      * updateStatus
      *
@@ -475,7 +494,7 @@ class Plugin extends MyAppModel
             $error = CommonHelper::replaceStringData($msg, ['{LIMIT}' => $activationLimit, '{PLUGIN-TYPE}' => $pluginTypesArr[$typeId]]);
             return false;
         }
-        
+
         $max = in_array($typeId, self::HAVING_KINGPIN) && applicationConstants::ACTIVE == $status ? 2 : 1;
 
         for ($i = 0; $i < $max; $i++) {

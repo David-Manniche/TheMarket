@@ -77,6 +77,7 @@
             flex: 1;
             .close-layer {
                 top: 2px;
+                display: flex;
             }
         }
         .search--keyword {
@@ -228,6 +229,7 @@
 }
 
 .search-suggestions {
+    font-size: 0.8rem;
     background-color: #fff;
     position: absolute;
     overflow: visible;
@@ -236,7 +238,7 @@
     left: 0;
     bottom: auto;
     z-index: 10;
-    padding: 10px 5px;
+    padding: 1rem;
     display: -webkit-box;
     display: -webkit-flex;
     display: -ms-flexbox;
@@ -250,25 +252,12 @@
             flex-direction: column;
         }
     }
-    &:after,
-    &:before {
-        bottom: 100%;
-        left: 20px;
-        border: solid transparent;
-        content: ' ';
-        height: 0;
-        width: 0;
-        position: absolute;
-        pointer-events: none;
-        top: -14px;
-    }
     .suggestions-title {
-        padding: 0 10px;
         text-transform: uppercase;
         color: $txt-gray;
         font-size: 0.8rem;
-        margin-top: 1rem;
-        margin-bottom: 5px;
+        margin: 0;
+        padding: 0;
     }
     .text-suggestions {
         -webkit-flex: 1;
@@ -283,7 +272,7 @@
         flex-direction: column;
         font-size: 0.75rem;
         li {
-            padding: 4px 10px;
+            padding-bottom: 8px;
             transition: all 0.2s ease-in-out;
             -moz-transition: all 0.2s ease-in-out;
             -webkit-transition: all 0.2s ease-in-out;
@@ -329,7 +318,53 @@
             }
         }
     }
+    .history-suggestions {
+        width: 100%;
+        li {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .clear-all {
+            font-size: inherit;
+        }
+        .recent-search {
+            margin: 8px 0;
+            &:last-child {
+                margin: 0;
+            }
+            &__cross {
+                position: relative;
+                flex: 0 0 20px;
+                max-width: 20px;
+                height: 20px;
+                margin-#{$end-direction}: 10px;
+                .close-layer {
+                    top: 0;
+                    #{$start-direction}: 0;
+                    #{$end-direction}: auto;
+                }
+            }
+            &__link {
+                flex: 1;
+            }
+            &__arrow {
+                -webkit-transform: rotate(-45deg);
+                -ms-transform: rotate(-45deg);
+                transform: rotate(-45deg);
+                cursor: pointer;
+                .svg {
+                    width: 16px;
+                    height: 16px;
+                    fill: currentColor;
+                }
+            }
+        }
+    }
     .matched {
         display: block;
+        .matched-brands {
+            margin-bottom: 1rem;
+        }
     }
 }

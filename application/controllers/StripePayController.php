@@ -114,7 +114,6 @@ class StripePayController extends PaymentController
             $json['html'] = $this->_template->render(false, false, 'stripe-pay/charge-ajax.php', true, false);
             FatUtility::dieJsonSuccess($json);
         }
-        die('hjhjh');
         $this->_template->render(true, false);
     }
 
@@ -229,7 +228,7 @@ class StripePayController extends PaymentController
         );
         
         $charge = $charge->__toArray();
-       
+        
         $orderPaymentObj = new OrderPayment($_POST['order_id']);
        
         $message = Labels::getLabel("MSG_PAYMENT_FAILED", $this->siteLangId);
@@ -239,7 +238,7 @@ class StripePayController extends PaymentController
             $message .= 'Amount: ' . (string) $charge['charges']['data'][0]['amount'] . "&";
             $message .= 'Amount Refunded: ' . (string) $charge['charges']['data'][0]['amount_refunded'] . "&";
             $message .= 'Application Fee: ' . (string) $charge['charges']['data'][0]['application_fee_amount'] . "&";
-            $message .= 'Balance Transaction: ' . (string) $charge['balance_transaction'] . "&";
+            $message .= 'Balance Transaction: ' . (string) $charge['charges']['data'][0]['balance_transaction'] . "&";
             $message .= 'Captured: ' . (string) $charge['charges']['data'][0]['captured'] . "&";
             $message .= 'Created: ' . (string) $charge['charges']['data'][0]['created'] . "&";
             $message .= 'Currency: ' . (string) $charge['charges']['data'][0]['currency'] . "&";
@@ -251,7 +250,7 @@ class StripePayController extends PaymentController
             $message .= 'Failure Message: ' . (string) $charge['charges']['data'][0]['failure_message'] . "&";
             $message .= 'Invoice: ' . (string) $charge['charges']['data'][0]['invoice'] . "&";
             $message .= 'Livemode: ' . (string) $charge['charges']['data'][0]['livemode'] . "&";
-            $message .= 'Paid: ' . (string) $charge['paid'] . "&";
+            $message .= 'Paid: ' . (string) $charge['charges']['data'][0]['paid'] . "&";
             $message .= 'Receipt Email: ' . (string) $charge['charges']['data'][0]['receipt_email'] . "&";
             $message .= 'Receipt Number: ' . (string) $charge['charges']['data'][0]['receipt_number'] . "&";
             $message .= 'Refunded: ' . (string) $charge['charges']['data'][0]['refunded'] . "&";

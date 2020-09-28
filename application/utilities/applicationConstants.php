@@ -94,7 +94,7 @@ class applicationConstants
 
     public const BASED_ON_DELIVERY_LOCATION = 1;
     public const BASED_ON_RADIUS = 2;
-    public const BASED_ON_BUYER_LOCATION = 3;
+    public const BASED_ON_CURRENT_LOCATION = 3;
 
     public const LOCATION_COUNTRY = 0;
     public const LOCATION_STATE = 1;
@@ -436,7 +436,7 @@ class applicationConstants
         return array(
             static::BASED_ON_DELIVERY_LOCATION => Labels::getLabel('LBL_BASED_ON_DELIVERY_LOCATION', $langId),
             static::BASED_ON_RADIUS => Labels::getLabel('LBL_BASED_ON_RADIUS', $langId),
-            static::BASED_ON_BUYER_LOCATION => Labels::getLabel('LBL_BASED_ON_BUYER_LOCATION', $langId),
+            static::BASED_ON_CURRENT_LOCATION => Labels::getLabel('LBL_BASED_ON_CURRENT_LOCATION', $langId),
         );
     }
 

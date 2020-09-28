@@ -109,15 +109,16 @@ $this->includeTemplate('_partial/buyerDashboardNavigation.php'); ?>
                             <?php } ?> </div>
                         </div>
                         <div class="cards-content ">
-                            <table class="table ">
+                            <table class="table table-justified">
                               <thead>
                                     <tr class="">
-                                        <th colspan="2" width="70%"><?php echo Labels::getLabel('LBL_Order_Particulars', $siteLangId);?></th>
+                                        <th width="70%"><?php echo Labels::getLabel('LBL_Order_Particulars', $siteLangId);?></th>
                                         <th width="20%"><?php echo Labels::getLabel('LBL_Payment_Info', $siteLangId);?></th>
                                         <th width="10%"></th>
                                     </tr>
                                 </thead>
                                     <tbody>
+
                                          <?php if (count($orders)>0) {
                                         $canCancelOrder = true;
                                         $canReturnRefund = true;
@@ -136,7 +137,11 @@ $this->includeTemplate('_partial/buyerDashboardNavigation.php'); ?>
                                             }
                                             $canSubmitFeedback = Orders::canSubmitFeedback($row['order_user_id'], $row['order_id'], $row['op_selprod_id']); ?>
                                     <tr>
-                                        <td> <?php
+                                         
+                                        <td>
+
+                                        <div class="item">
+                                        <?php
                                                 $prodOrBatchUrl = 'javascript:void(0)';
                                             if ($row['op_is_batch']) {
                                                 $prodOrBatchUrl = UrlHelper::generateUrl('Products', 'batch', array($row['op_selprod_id']));
@@ -148,8 +153,7 @@ $this->includeTemplate('_partial/buyerDashboardNavigation.php'); ?>
                                                 $prodOrBatchImgUrl = UrlHelper::getCachedUrl(UrlHelper::generateUrl('image', 'product', array($row['selprod_product_id'], "SMALL", $row['op_selprod_id'], 0, $siteLangId), CONF_WEBROOT_URL), CONF_IMG_CACHE_TIME, '.jpg');
                                             } ?> <figure class="item__pic"><a href="<?php echo $prodOrBatchUrl; ?>"><img src="<?php echo $prodOrBatchImgUrl; ?>" title="<?php echo $row['op_product_name']; ?>"
                                                         alt="<?php echo $row['op_product_name']; ?>"></a></figure>
-                                        </td>
-                                        <td>
+
                                             <div class="item__description">
                                                 <div class="item__date"><?php echo FatDate::format($row['order_date_added']); ?></div>
                                                 <div class="item__title"> <?php $prodName ='';
@@ -163,6 +167,9 @@ $this->includeTemplate('_partial/buyerDashboardNavigation.php'); ?>
                                                     echo Labels::getLabel('LBL_Part_combined_order', $siteLangId).' <a title="'.Labels::getLabel('LBL_View_Order_Detail', $siteLangId).'" href="'.UrlHelper::generateUrl('Buyer', 'viewOrder', array($row['order_id'])).'">'.$row['order_id'].'</a>';
                                                 } ?>
                                             </div>
+                                            </div>
+
+
                                         </td>
                                         <td>
                                             <div class="item__specification">
@@ -244,7 +251,7 @@ $this->includeTemplate('_partial/buyerDashboardNavigation.php'); ?>
                             </div> <?php } ?>
                         </div>
                         <div class="cards-content ">
-                            <table class="table ">
+                            <table class="table table-justified">
                                 <thead>
                                
                                     <tr class="">
