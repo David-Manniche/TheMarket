@@ -293,7 +293,7 @@ class BuyerController extends BuyerBaseController
         $this->_template->render();
     }
 
-    public function viewInvoice($orderId, $opId = 0, $print = false)
+    public function viewInvoice($orderId, $opId = 0)
     {
         if (!$orderId) {
             $message = Labels::getLabel('MSG_Invalid_Access', $this->siteLangId);
@@ -316,7 +316,6 @@ class BuyerController extends BuyerBaseController
                 CommonHelper::redirectUserReferer();
             }
         }
-        $primaryOrderDisplay = false;
 
         $orderObj = new Orders();
         $orderStatuses = Orders::getOrderProductStatusArr($this->siteLangId);
@@ -356,7 +355,6 @@ class BuyerController extends BuyerBaseController
             }
             $srch->addCondition('op_id', '=', $opId);
             $srch->addStatusCondition(unserialize(FatApp::getConfig("CONF_BUYER_ORDER_STATUS")));
-            $primaryOrderDisplay = true;
         }
         $srch->addMultipleFields(array('*', 'shop_country_l.country_name as shop_country_name', 'shop_state_l.state_name as shop_state_name', 'shop_city'));
         if (true === MOBILE_APP_API_CALL) {
@@ -428,23 +426,14 @@ class BuyerController extends BuyerBaseController
         $this->set('orderDetail', $orderDetail);
         $this->set('childOrderDetail', $childOrderDetail);
         $this->set('orderStatuses', $orderStatuses);
-        $this->set('primaryOrder', $primaryOrderDisplay);
         $this->set('childOrderProdCount', $childOrderProdCount);
         $this->set('digitalDownloads', $digitalDownloads);
         $this->set('digitalDownloadLinks', $digitalDownloadLinks);
         $this->set('languages', Language::getAllNames());
         $this->set('yesNoArr', applicationConstants::getYesNoArr($this->siteLangId));
-
-
         $urlParts = array($orderId, $opId);
         $this->set('urlParts', $urlParts);
-        if ($print !== false) {
-            $print = true;
-        }
-        $this->set('print', $print);
-
         $this->set('opId', $opId);
-
         $this->_template->render(false, false); */
 
         $template = new FatTemplate('', '');
@@ -458,24 +447,13 @@ class BuyerController extends BuyerBaseController
         $template->set('languages', Language::getAllNames());
         $template->set('yesNoArr', applicationConstants::getYesNoArr($this->siteLangId));
         $template->set('opId', $opId);
-        // $template->set('logo', CONF_INSTALLATION_PATH . 'public/images/memo_logo.png');
 
         require_once(CONF_INSTALLATION_PATH . 'library/tcpdf/tcpdf.php');
         $pdf = new TCPDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
         $pdf->SetCreator(PDF_CREATOR);
         $pdf->SetAuthor(FatApp::getConfig("CONF_WEBSITE_NAME_" . $this->siteLangId));
-        $pdf->SetKeywords(FatApp::getConfig("CONF_WEBSITE_NAME_" . $this->siteLangId)); // set header and footer fonts
-        // $pdf->setHeaderFont(array(PDF_FONT_NAME_MAIN, '', PDF_FONT_SIZE_MAIN));
-        // $pdf->setFooterFont(array(PDF_FONT_NAME_DATA, '', PDF_FONT_SIZE_DATA)); // set default monospaced font
-        // $pdf->SetDefaultMonospacedFont(PDF_FONT_MONOSPACED); // set margins
-        // $pdf->SetMargins(PDF_MARGIN_LEFT, PDF_MARGIN_TOP, PDF_MARGIN_RIGHT);
-        // $pdf->SetHeaderMargin(10);
-        // $pdf->SetFooterMargin(PDF_MARGIN_FOOTER); // set auto page breaks
-        // $pdf->SetAutoPageBreak(TRUE, PDF_MARGIN_BOTTOM);
-        $pdf->setImageScale(PDF_IMAGE_SCALE_RATIO); // set image scale factor
-        // $pdf->SetFont('dejavusans', '', 10);
+        $pdf->SetKeywords(FatApp::getConfig("CONF_WEBSITE_NAME_" . $this->siteLangId));
         $pdf->AddPage();
-        // $pdf->SetFillColor(255, 255, 255);
 
         $pdf->SetTitle(Labels::getLabel('LBL_Tax_Invoice', $this->siteLangId));
         $pdf->SetSubject(Labels::getLabel('LBL_Tax_Invoice', $this->siteLangId));
@@ -484,8 +462,9 @@ class BuyerController extends BuyerBaseController
         $html = $template->render(false, false, $templatePath, true, true);
         $pdf->writeHTML($html, true, false, true, false, '');
         $pdf->lastPage();
-        $saveFile = CONF_UPLOADS_PATH . 'demo-pdf.pdf';
+        
         ob_end_clean();
+        // $saveFile = CONF_UPLOADS_PATH . 'demo-pdf.pdf';
         //$pdf->Output($saveFile, 'F');
         $pdf->Output('example_020.pdf', 'I');
         return true;
