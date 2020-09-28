@@ -123,6 +123,10 @@ Bugs:
     => 042767 - Import / export >> settings >> Some settings needs to be removed . 
     => 043134 - Seller can add one extra inventory using import even if all inventories are already existed.
     ------------TV-9.2.1.20200925------------------------
+
+    => 043493 - Meta title is not working
+    => 043497 - Colour of Subscribe section on blog page doesn't update
+
 Enhancements:
     => Tax module upgrade
     => Test cases classes enhancements.

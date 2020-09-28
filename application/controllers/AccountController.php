@@ -1313,19 +1313,30 @@ class AccountController extends LoggedUserController
     public function moveToWishList($selProdId)
     {
         $wishList = new UserWishList();
+        $loggedUserId = UserAuthentication::getLoggedUserId();
         $defaultWishListId = $wishList->getWishListId($loggedUserId, UserWishList::TYPE_DEFAULT_WISHLIST);
         $this->addRemoveWishListProduct($selProdId, $defaultWishListId);
     }
     
     public function moveToSaveForLater($selProdId)
     {
-        $loggedUserId = UserAuthentication::getLoggedUserId();
+        $loggedUserId = UserAuthentication::getLoggedUserId(MOBILE_APP_API_CALL);
         $wishList = new UserWishList();
         $wishListId = $wishList->getWishListId($loggedUserId, UserWishList::TYPE_SAVE_FOR_LATER);
         if (!$wishList->addUpdateListProducts($wishListId, $selProdId)) {
-            Message::addErrorMessage(Labels::getLabel("LBL_Invalid_Request", $this->siteLangId));
-            FatUtility::dieWithError(Message::getHtml());
+            FatUtility::dieJsonError(Labels::getLabel("LBL_Invalid_Request", $this->siteLangId));
         }
+        
+        $cartObj = new Cart($loggedUserId, $this->siteLangId, $this->app_user['temp_user_id']);
+        $key = md5(base64_encode(serialize(Cart::CART_KEY_PREFIX_PRODUCT . $selProdId)));
+        if (!$cartObj->remove($key)) {
+            LibHelper::dieJsonError($cartObj->getError());
+        }
+
+        if (true === MOBILE_APP_API_CALL) {
+            $this->_template->render();
+        }
+
         $this->_template->render(false, false, 'json-success.php');
     }
 

@@ -30,10 +30,10 @@ if ($user_is_buyer > 0 || (!UserAuthentication::isUserLogged())) { ?>
                                 $shopUrl = UrlHelper::generateUrl('Shops', 'View', array($product['shop_id']));
                                 $imageUrl =  UrlHelper::getCachedUrl(UrlHelper::generateFileUrl('image', 'product', array($product['product_id'], "EXTRA-SMALL", $product['selprod_id'], 0, $siteLangId)), CONF_IMG_CACHE_TIME, '.jpg'); ?> <tr class="<?php echo (!$product['in_stock']) ? 'disabled' : '';
                                 echo ($product['is_digital_product'])?'digital_product_tab-js':'physical_product_tab-js'; ?>">
+                            
                             <td>
-                                <div class="item__pic"><a href="<?php echo $productUrl; ?>"><img src="<?php echo $imageUrl; ?>" alt="<?php echo $product['product_name']; ?>" title="<?php echo $product['product_name']; ?>"></a></div>
-                            </td>
-                            <td>
+                                <div class="item">
+                            <div class="item__pic"><a href="<?php echo $productUrl; ?>"><img src="<?php echo $imageUrl; ?>" alt="<?php echo $product['product_name']; ?>" title="<?php echo $product['product_name']; ?>"></a></div>
                                 <div class="item__description">
                                     <div class="item__category"><a href="<?php echo $shopUrl; ?>"><?php echo $product['shop_name']; ?> </a></div>
                                     <div class="item__title"><a title="<?php echo $product['product_name']; ?>" href="<?php echo $productUrl; ?>"><?php echo ($product['selprod_title']) ? $product['selprod_title'] : $product['product_name']; ?></a></div>
@@ -45,6 +45,7 @@ if ($user_is_buyer > 0 || (!UserAuthentication::isUserLogged())) { ?>
                                             echo $option['option_name'].':'; ?> <?php echo $option['optionvalue_name']; ?> <?php $count++;
                                         }
                                     } ?> | <?php echo Labels::getLabel('LBL_Quantity:', $siteLangId) ?> <?php echo $product['quantity']; ?> </div>
+                                </div>
                                 </div>
                             </td>
                             <td>
@@ -72,7 +73,7 @@ if ($user_is_buyer > 0 || (!UserAuthentication::isUserLogged())) { ?>
             </div>
         </div>
         <div class="cartdetail__footer">
-            <table class="table--justify">
+            <table class="">
                 <tr>
                     <td class=""><?php echo Labels::getLabel('LBL_Sub_Total', $siteLangId); ?></td>
                     <td class=""><?php echo CommonHelper::displayMoneyFormat($cartSummary['cartTotal']); ?></td>

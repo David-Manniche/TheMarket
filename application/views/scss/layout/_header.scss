@@ -312,10 +312,20 @@
         -webkit-transform: rotate(-45deg);
         transform: rotate(-45deg);
     }
-    &.close-layer--white {
+    &--white {
         &:before,
         &:after {
             background-color: #fff;
+        }
+    }
+    &--sm {
+        width: 20px;
+        height: 20px;
+        &:before,
+        &:after {
+            #{$start-direction}: 10px;
+            height: 12px;
+            width: 1px;
         }
     }
 }

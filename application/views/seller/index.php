@@ -271,10 +271,10 @@ $this->includeTemplate('_partial/seller/sellerDashboardNavigation.php'); ?>
                             <?php } ?>
                         </div>
                         <div class="cards-content ">
-                            <table class="table   table-justified">
+                            <table class="table table-justified">
                                 <thead>                               
                                     <tr class="">
-                                        <th colspan="2" width="60%"><?php echo Labels::getLabel('LBL_Order_Particulars', $siteLangId);?></th>
+                                        <th width="60%"><?php echo Labels::getLabel('LBL_Order_Particulars', $siteLangId);?></th>
                                         <th width="20%"><?php echo Labels::getLabel('LBL_Amount', $siteLangId);?></th>
                                         <th width="20%"></th>
                                     </tr>
@@ -298,12 +298,12 @@ $this->includeTemplate('_partial/seller/sellerDashboardNavigation.php'); ?>
             $prodName.= $row['op_selprod_title'].'<br/>';
                                                }
                                                $prodName.= $row['op_product_name']; */ ?> <tr>
+                                        
                                         <td>
-                                            <figure class="item__pic"><a href="<?php echo $prodOrBatchUrl; ?>"><img src="<?php echo $prodOrBatchImgUrl; ?>" title="<?php echo $row['op_product_name']; ?>"
+                                            <div class="item">
+                                        <figure class="item__pic"><a href="<?php echo $prodOrBatchUrl; ?>"><img src="<?php echo $prodOrBatchImgUrl; ?>" title="<?php echo $row['op_product_name']; ?>"
                                                         alt="<?php echo $row['op_product_name']; ?>"></a>
                                             </figure>
-                                        </td>
-                                        <td>
                                             <div class="item__description">
                                                 <div class="item__date"><?php echo FatDate::format($row['order_date_added']); ?></div>
                                                 <?php if ($row['op_selprod_title'] != '') { ?>
@@ -323,6 +323,7 @@ $this->includeTemplate('_partial/seller/sellerDashboardNavigation.php'); ?>
                                                     <div class="item__specification"><?php echo $row['op_selprod_options']; ?></div>
                                                 <?php } ?>
                                                 <div class="item__specification"> <span class="label label-inline <?php echo $classArr[$row['orderstatus_color_class']]; ?>"><?php echo $row['orderstatus_name']; ?></span></div>
+                                            </div>
                                             </div>
                                         </td>
                                         <td>
@@ -427,7 +428,7 @@ $this->includeTemplate('_partial/seller/sellerDashboardNavigation.php'); ?>
                             <?php } ?>
                         </div>
                         <div class="cards-content ">
-                            <table class="table   table-justified">
+                            <table class="table table-justified">
                             
                             <thead>
                                 
