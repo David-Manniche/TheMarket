@@ -8,7 +8,9 @@ New Features:
     => CDN handling based on configuration. 
     => Url Rewritting based on language. 
     => Security Headers for clickjacking, XSS and MIME types. 
-    => After Ship API.   
+    => After Ship API.
+    => Design Manageability on homepage   
+    
     ------------TV-9.2.1.20200925------------------------     
 Bugs:
     => 036750 - Seller Shop - Custom URL for shop collections

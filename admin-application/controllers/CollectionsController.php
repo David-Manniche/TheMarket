@@ -455,6 +455,12 @@ class CollectionsController extends AdminBaseController
             case Collections::COLLECTION_TYPE_BLOG:
                 $records = Collections::getBlogs($collectionId, $this->adminLangId);
                 break;
+            case Collections::COLLECTION_TYPE_FAQ:
+                $records = Collections::getFaqs($collectionId, $this->adminLangId);
+                break;
+            case Collections::COLLECTION_TYPE_TESTIMONIAL:
+                $records = Collections::getTestimonials($collectionId, $this->adminLangId);
+                break;
         }
 
 
@@ -859,6 +865,12 @@ class CollectionsController extends AdminBaseController
                 break;
             case Collections::COLLECTION_TYPE_BLOG:
                 $frm->addTextbox(Labels::getLabel('LBL_Blogs', $this->adminLangId), 'collection_records');
+                break;
+            case Collections::COLLECTION_TYPE_FAQ:
+                $frm->addTextbox(Labels::getLabel('LBL_Faqs', $this->adminLangId), 'collection_records');
+                break;
+            case Collections::COLLECTION_TYPE_TESTIMONIAL:
+                $frm->addTextbox(Labels::getLabel('LBL_Testimonials', $this->adminLangId), 'collection_records');
                 break;
         }
         return $frm;

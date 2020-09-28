@@ -831,6 +831,42 @@ class HomeController extends MyAppController
                     unset($blogSearchTempObj);
                     unset($tempObj);
                     break;
+                case Collections::COLLECTION_TYPE_FAQ:
+                    $tempObj = clone $collectionObj;
+                    $tempObj->addCondition('collection_id', '=', $collection_id);
+                    $rs = $tempObj->getResultSet();
+                    $faqIds = $db->fetchAll($rs, 'ctr_record_id');
+                    if (empty($faqIds)) {
+                        continue 2;
+                    }
+
+                    /* fetch Blog data[ */
+                    $attr = [
+                        'faq_id',
+                        'IFNULL(faq_title, faq_identifier) as faq_title',
+                        'faq_content'
+                    ];
+                    $faqSearchObj = Faq::getSearchObject($langId);
+                    $faqSearchTempObj = clone $faqSearchObj;
+                    $faqSearchTempObj->addMultipleFields($attr);
+                    $faqSearchTempObj->addCondition('faq_id', 'IN', array_keys($faqIds));
+                    $faqSearchTempObj->addGroupBy('faq_id');
+                    $rs = $faqSearchTempObj->getResultSet();
+                    $faqsDetail = $db->fetchAll($rs);
+                    /* ] */
+                    if (true === MOBILE_APP_API_CALL) {
+                        $collections[$i] = $collection;
+                        $collections[$i]['totFaqs'] = $faqSearchTempObj->recordCount();
+                        $collections[$i]['blogs'] = $faqsDetail;
+                    } else {
+                        $collections[$collection['collection_id']] = $collection;
+                        $collections[$collection['collection_id']]['totBlogs'] = $faqSearchTempObj->recordCount();
+                        $collections[$collection['collection_id']]['blogs'] = $faqsDetail;
+                    }
+
+                    unset($faqSearchTempObj);
+                    unset($tempObj);
+                    break;
             }
             $i++;
         }
