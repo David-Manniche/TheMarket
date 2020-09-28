@@ -27,6 +27,7 @@
             } ?>
         </ul>
     <?php } ?>
+     
     <?php if (!empty($suggestions['categories'])) {
         $recordFound = true; ?>
         <h6 class="suggestions-title"><?php echo Labels::getLabel('LBL_Matching_Categories', $siteLangId); ?></h6>

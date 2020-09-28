@@ -431,7 +431,7 @@ if (!empty($orderDetail["thirdPartyorderInfo"]) && isset($orderDetail["thirdPart
                     <?php if (!empty($digitalDownloads)) { ?>
                         <div class="section--repeated">
                             <h5><?php echo Labels::getLabel('LBL_Downloads', $siteLangId); ?></h5>
-                            <table class="table  table--orders">
+                            <table class="table table-justified table--orders">
                                 <tbody>
                                     <tr class="">
                                         <th><?php echo Labels::getLabel('LBL_Sr_No', $siteLangId); ?></th>

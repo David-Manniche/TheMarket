@@ -20,7 +20,7 @@
         color: $secondary-color-inverse;
     }
     &.label-success {
-        background: lighten($success-color, 40);
+        background: lighten($success-color, 50);
         color: $success-color;
     }
     &.label-info {
