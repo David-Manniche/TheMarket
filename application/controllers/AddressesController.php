@@ -193,7 +193,11 @@ class AddressesController extends LoggedUserController
         $slotId = FatApp::getPostedData('slotId', FatUtility::VAR_INT, 0);
         $slotDate = FatApp::getPostedData('slotDate', FatUtility::VAR_STRING, '');
         if($level < 0 || $recordId < 0){
-            Message::addErrorMessage(Labels::getLabel('LBL_Invalid_request', $this->siteLangId));
+            $msg = Labels::getLabel('LBL_Invalid_request', $this->siteLangId);
+            if (true === MOBILE_APP_API_CALL) {
+                FatUtility::dieJsonError($msg);
+            }
+            Message::addErrorMessage($msg);
             FatUtility::dieWithError(Message::getHtml());
         }
         
@@ -205,15 +209,18 @@ class AddressesController extends LoggedUserController
         $this->set('addrId', $addrId);
         $this->set('slotId', $slotId);
         $this->set('slotDate', $slotDate);
+        if (true === MOBILE_APP_API_CALL) {
+            $this->_template->render();
+        }
         $this->_template->addJs(array('js/jquery.datetimepicker.js'));      
         $this->_template->render(false, false);
     }
     
-    public function getTimeSlotsByAddressAndDate()
+    public function getTimeSlotsByAddressAndDate(int $addressId = 0, string $selectedDate = '', int $level = -1, bool $return = false)
     {
-        $addressId = FatApp::getPostedData('addressId', FatUtility::VAR_INT, 0);
-        $selectedDate = FatApp::getPostedData('selectedDate', FatUtility::VAR_STRING, '');
-        $level = FatApp::getPostedData('level', FatUtility::VAR_INT, -1);
+        $addressId = FatApp::getPostedData('addressId', FatUtility::VAR_INT, $addressId);
+        $selectedDate = FatApp::getPostedData('selectedDate', FatUtility::VAR_STRING, $selectedDate);
+        $level = FatApp::getPostedData('level', FatUtility::VAR_INT, $level);
         $selectedSlot = FatApp::getPostedData('selectedSlot', FatUtility::VAR_INT, 0);
         if($addressId < 1 || empty($selectedDate)){
             Message::addErrorMessage(Labels::getLabel('LBL_Invalid_request', $this->siteLangId));
@@ -227,12 +234,13 @@ class AddressesController extends LoggedUserController
         $this->set('selectedDate', $selectedDate);
         $this->set('level', $level);
         $this->set('selectedSlot', $selectedSlot);
-        $this->_template->render(false, false, 'addresses/time-slots.php');
+        if (false === $return) {
+            $this->_template->render(false, false, 'addresses/time-slots.php');
+        }
     }
     
-    public function slotDaysByAddr($addrId)
+    public function slotDaysByAddr(int $addrId, int $level = -1)
     {
-        $addrId = FatUtility::int($addrId);
         if (1 > $addrId) {
             $message = Labels::getLabel('MSG_Invalid_Access', $this->siteLangId);
             if (true === MOBILE_APP_API_CALL) {
@@ -291,6 +299,10 @@ class AddressesController extends LoggedUserController
         }
         $this->set('slotDays', $slotDays);
         $this->set('activeDate', $activeDate);
+        if (true === MOBILE_APP_API_CALL) {
+            $this->getTimeSlotsByAddressAndDate($addrId, $activeDate, $level, true);
+            $this->_template->render();
+        }
         $this->_template->render(false, false, 'json-success.php');
     }
     
