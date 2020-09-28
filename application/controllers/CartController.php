@@ -766,4 +766,14 @@ class CartController extends MyAppController
         $this->set('cartSummary', $cartSummary);
         $this->_template->render(false, false, 'cart/_partial/cartSummary.php');
     }
+    
+    public function clear(int $type = CART::TYPE_PRODUCT)
+    {
+        $loggedUserId = UserAuthentication::getLoggedUserId(true);
+        if (1 > $loggedUserId) {
+            FatUtility::dieWithError(Labels::getLabel('LBL_UNAUTHORIZED_REQUEST', $this->siteLangId));
+        }
+        FatApp::getDb()->deleteRecords('tbl_user_cart', array('smt' => '`usercart_user_id`=? and usercart_type=?', 'vals' => array($loggedUserId, $type)));
+        FatUtility::dieJsonSuccess(Labels::getLabel('LBL_SUCCESS', $this->siteLangId));
+    }
 }

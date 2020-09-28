@@ -15,7 +15,7 @@
                     </svg>
                 </span>
                 <span class="order-summary-toggle__text">
-                    <span>Order Summary <i class="arrow">
+                    <span><?php echo Labels::getLabel('LBL_ORDER_SUMMARY', $siteLangId); ?><i class="arrow">
                             <svg class="svg">
                                 <use xlink:href="<?php echo CONF_WEBROOT_URL; ?>images/retina/sprite.svg#arrow-right"
                                     href="<?php echo CONF_WEBROOT_URL; ?>images/retina/sprite.svg#arrow-right"></use> 

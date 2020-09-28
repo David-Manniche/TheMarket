@@ -7,10 +7,14 @@ class Cart extends FatModel
     private $shippingService;
     private $cartCache;
 
+    public const DB_TBL = 'tbl_user_cart';
+    public const DB_TBL_PREFIX = 'usercart_';
+
     public const CART_KEY_PREFIX_PRODUCT = 'SP_'; /* SP stands for Seller Product */
     public const CART_KEY_PREFIX_BATCH = 'SB_'; /* SB stands for Seller Batch/Combo Product */
     public const TYPE_PRODUCT = 1;
     public const TYPE_SUBSCRIPTION = 2;
+    
 
     public const CART_MAX_DISPLAY_QTY = 9;
 
