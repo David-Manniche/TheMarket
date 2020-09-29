@@ -407,7 +407,7 @@ class CustomController extends MyAppController
             $orderObj = new Orders();
             $orderDetail = $orderObj->getOrderById($cartOrderId);
 
-            $cartInfo = unserialize($orderDetail['order_cart_data']);
+            $cartInfo = json_decode($orderDetail['order_cart_data'], true);
             unset($cartInfo['shopping_cart']);
 
             $db = FatApp::getDb();
@@ -417,7 +417,7 @@ class CustomController extends MyAppController
             }
             /* $cartObj = new Cart();
             foreach ($cartInfo as $key => $quantity) {
-                $keyDecoded = unserialize(base64_decode($key));
+                $keyDecoded = json_decode(base64_decode($key), true);
 
                 $selprod_id = 0;
 
@@ -446,7 +446,7 @@ class CustomController extends MyAppController
             $orderObj = new Orders();
             $orderDetail = $orderObj->getOrderById($cartOrderId);
 
-            $cartInfo = unserialize($orderDetail['order_cart_data']);
+            $cartInfo = json_decode($orderDetail['order_cart_data'], true);
             unset($cartInfo['shopping_cart']);
             $db = FatApp::getDb();
             if (!$db->deleteRecords('tbl_user_cart', array('smt' => '`usercart_user_id`=? and `usercart_type`=?', 'vals' => array(UserAuthentication::getLoggedUserId(), CART::TYPE_PRODUCT)))) {
@@ -456,7 +456,7 @@ class CustomController extends MyAppController
 
             /* $cartObj = new Cart();
             foreach ($cartInfo as $key => $quantity) {
-                $keyDecoded = unserialize(base64_decode($key));
+                $keyDecoded = json_decode(base64_decode($key), true);
 
                 $selprod_id = 0;
 
