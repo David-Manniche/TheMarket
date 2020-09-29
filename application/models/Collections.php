@@ -22,6 +22,7 @@ class Collections extends MyAppModel
     public const COLLECTION_TYPE_BANNER = 8;
     public const COLLECTION_TYPE_FAQ = 9;
     public const COLLECTION_TYPE_TESTIMONIAL = 10;
+    public const COLLECTION_TYPE_CONTENT_BLOCK = 11;
 
     //public const SUBTYPE_PRODUCT_LAYOUT1 = 1;
     public const TYPE_PRODUCT_LAYOUT1 = 1;
@@ -39,6 +40,7 @@ class Collections extends MyAppModel
     public const TYPE_BANNER_LAYOUT3 = 13;
     public const TYPE_FAQ_LAYOUT1 = 14;
     public const TYPE_TESTIMONIAL_LAYOUT1 = 15;
+    public const TYPE_CONTENT_BLOCK_LAYOUT1 = 16;
 
     public const LIMIT_PRODUCT_LAYOUT1 = 12;
     public const LIMIT_PRODUCT_LAYOUT2 = 6;
@@ -48,8 +50,9 @@ class Collections extends MyAppModel
     public const LIMIT_SHOP_LAYOUT1 = 4;
     public const LIMIT_BRAND_LAYOUT1 = 5;
     public const LIMIT_BLOG_LAYOUT1 = 3;
-    public const LIMIT_FAQ_LAYOUT1 = 3;
-    public const LIMIT_TESTIMONIAL_LAYOUT1 = 3;
+    public const LIMIT_FAQ_LAYOUT1 = 4;
+    public const LIMIT_TESTIMONIAL_LAYOUT1 = 10;
+    public const LIMIT_CONTENT_BLOCK_LAYOUT1 = 1;
 
     public const COLLECTION_CRITERIA_PRICE_LOW_TO_HIGH = 1;
     public const COLLECTION_CRITERIA_PRICE_HIGH_TO_LOW = 2;
@@ -63,12 +66,14 @@ class Collections extends MyAppModel
         self::COLLECTION_TYPE_BANNER,
         self::COLLECTION_TYPE_FAQ,
         self::COLLECTION_TYPE_TESTIMONIAL,
+        self::COLLECTION_TYPE_CONTENT_BLOCK,
     ];
     
     public const COLLECTION_WITHOUT_RECORDS = [
         self::COLLECTION_TYPE_SPONSORED_PRODUCTS,
         self::COLLECTION_TYPE_SPONSORED_SHOPS,
-        self::COLLECTION_TYPE_BANNER
+        self::COLLECTION_TYPE_BANNER,
+        self::COLLECTION_TYPE_CONTENT_BLOCK
     ];
     
     /**
@@ -133,6 +138,7 @@ class Collections extends MyAppModel
             self::COLLECTION_TYPE_BANNER => Labels::getLabel('LBL_Banner', $langId),
             self::COLLECTION_TYPE_FAQ => Labels::getLabel('LBL_FAQ', $langId),
             self::COLLECTION_TYPE_TESTIMONIAL => Labels::getLabel('LBL_Testimonial', $langId),
+            self::COLLECTION_TYPE_CONTENT_BLOCK => Labels::getLabel('LBL_Content_Blocks', $langId),
         ];
     }
     
@@ -162,8 +168,9 @@ class Collections extends MyAppModel
             self::TYPE_BANNER_LAYOUT1 => Labels::getLabel('LBL_Banner_Layout1', $langId),
             self::TYPE_BANNER_LAYOUT2 => Labels::getLabel('LBL_Banner_Layout2', $langId),
             self::TYPE_BANNER_LAYOUT3 => Labels::getLabel('LBL_Mobile_Banner_Layout', $langId),
-            self::TYPE_FAQ_LAYOUT1 => Labels::getLabel('LBL_Mobile_Banner_Layout', $langId),
-            self::TYPE_TESTIMONIAL_LAYOUT1 => Labels::getLabel('LBL_Mobile_Banner_Layout', $langId),
+            self::TYPE_FAQ_LAYOUT1 => Labels::getLabel('LBL_Faq_Layout1', $langId),
+            self::TYPE_TESTIMONIAL_LAYOUT1 => Labels::getLabel('LBL_Testimonial_Layout1', $langId),
+            self::TYPE_CONTENT_BLOCK_LAYOUT1 => Labels::getLabel('LBL_Content_block_Layout1', $langId),
         ];
     }
     
@@ -210,6 +217,9 @@ class Collections extends MyAppModel
             ],
             self::COLLECTION_TYPE_TESTIMONIAL => [
                 self::TYPE_TESTIMONIAL_LAYOUT1 => Labels::getLabel('LBL_Testimonial', $langId),
+            ],
+            self::COLLECTION_TYPE_CONTENT_BLOCK => [
+                self::TYPE_CONTENT_BLOCK_LAYOUT1 => Labels::getLabel('LBL_Content_Block', $langId),
             ]
         ];
     }

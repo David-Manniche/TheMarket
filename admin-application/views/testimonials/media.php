@@ -11,7 +11,7 @@ $htmlAfterField = $preferredDimensionsStr;
 if (!empty($testimonialImages)) {
     $htmlAfterField .= '<ul class="image-listing grids--onethird">';
     foreach ($testimonialImages as $testimonialImg) {
-        $htmlAfterField .= '<li><div class="uploaded--image"><img src="'.UrlHelper::generateFullUrl('Image', 'testimonial', array($testimonialImg['afile_record_id'],$testimonialImg['afile_lang_id'],'THUMB'), CONF_WEBROOT_FRONT_URL).'"> <a href="javascript:void(0);" onClick="removeTestimonialImage('.$testimonialImg['afile_record_id'].','.$testimonialImg['afile_lang_id'].')" class="remove--img"><i class="ion-close-round"></i></a></div>';
+        $htmlAfterField .= '<li><div class="uploaded--image"><img src="'.UrlHelper::generateFullUrl('Image', 'testimonial', array($testimonialImg['afile_record_id'],$testimonialImg['afile_lang_id'],'THUMB'), CONF_WEBROOT_FRONT_URL).'?t='.time().'"> <a href="javascript:void(0);" onClick="removeTestimonialImage('.$testimonialImg['afile_record_id'].','.$testimonialImg['afile_lang_id'].')" class="remove--img"><i class="ion-close-round"></i></a></div>';
     }
     $htmlAfterField.='</li></ul>';
 }

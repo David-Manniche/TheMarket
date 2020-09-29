@@ -80,6 +80,25 @@ $siteDefaultLangId = FatApp::getConfig('conf_default_site_lang', FatUtility::VAR
                                         </div>
                                     </div>
                                 </div>
+                                <?php if ($collection_type == Collections::COLLECTION_TYPE_CONTENT_BLOCK) { ?>
+                                <div class="col-md-12">
+                                    <div class="field-set">
+                                        <div class="caption-wraper">
+                                            <label class="field_label">
+                                            <?php
+                                                $fld = $frm->getField('epage_content['.$siteDefaultLangId.']');
+                                                echo $fld->getCaption();
+                                            ?>
+                                            <span class="spn_must_field">*</span></label>
+                                        </div>
+                                        <div class="field-wraper">
+                                            <div class="field_cover">
+                                            <?php echo $frm->getFieldHtml('epage_content['.$siteDefaultLangId.']'); ?>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <?php } ?>
                                 <?php if ($collection_type == Collections::COLLECTION_TYPE_BANNER) { ?>
 								<div class="col-md-4">
                                     <div class="field-set">
@@ -163,6 +182,25 @@ $siteDefaultLangId = FatApp::getConfig('conf_default_site_lang', FatUtility::VAR
                                                 </div>
                                             </div>
                                         </div>
+                                        <?php if ($collection_type == Collections::COLLECTION_TYPE_CONTENT_BLOCK) { ?>
+                                            <div class="row">
+                                                <div class="col-md-12">
+                                                    <div class="field-set">
+                                                        <div class="caption-wraper">
+                                                            <label class="field_label">
+                                                            <?php  $fld = $frm->getField('epage_content['.$langId.']');
+                                                                echo $fld->getCaption(); ?>
+                                                            </label>
+                                                        </div>
+                                                        <div class="field-wraper">
+                                                            <div class="field_cover">
+                                                            <?php echo $frm->getFieldHtml('epage_content['.$langId.']'); ?>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        <?php }?>
                                      </div>
                                  </div>
                              </div>

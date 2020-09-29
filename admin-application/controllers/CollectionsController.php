@@ -47,8 +47,6 @@ class CollectionsController extends AdminBaseController
     public function search()
     {
         $this->objPrivilege->canViewCollections();
-
-        //$pagesize = FatApp::getConfig('CONF_ADMIN_PAGESIZE', FatUtility::VAR_INT, 10);
         $searchForm = $this->getSearchForm();
         $data = FatApp::getPostedData();
 
@@ -79,20 +77,11 @@ class CollectionsController extends AdminBaseController
         $srch->addOrder('collection_display_order', 'ASC');
         $srch->addMultipleFields(array('c.*', 'c_l.collection_name'));
 
-
-
-        /* $srch->setPageNumber($page);
-        $srch->setPageSize($pagesize); */
-
         $rs = $srch->getResultSet();
         $records = FatApp::getDb()->fetchAll($rs);
 
         $this->set('activeInactiveArr', applicationConstants::getActiveInactiveArr($this->adminLangId));
         $this->set("arr_listing", $records);
-        /* $this->set('pageCount',$srch->pages());
-        $this->set('recordCount',$srch->recordCount());
-        $this->set('pageSize', $pagesize);
-        $this->set('postedData', $post); */
         $this->set('page', $page);
         $this->set('collection_layout_type', $collection_layout_type);
         $this->_template->render(false, false);
@@ -127,7 +116,9 @@ class CollectionsController extends AdminBaseController
             
             $frm->fill($data);
         }
-
+        if ($type == Collections::COLLECTION_TYPE_CONTENT_BLOCK) {
+            $this->set('includeEditor', true);
+        }
         $langData = Language::getAllNames();
         unset($langData[$siteDefaultLangId]);
         $this->set('otherLangData', $langData);
@@ -196,6 +187,10 @@ class CollectionsController extends AdminBaseController
             } elseif (!empty($catName)) {
                 $collection->saveLangData($langId, $catName);
             }
+        }
+
+        if ($data['collection_type'] == Collections::COLLECTION_TYPE_CONTENT_BLOCK) {
+            
         }
         
         $post['collection_id'] = $collectionId;
@@ -279,6 +274,9 @@ class CollectionsController extends AdminBaseController
         $siteDefaultLangId = FatApp::getConfig('conf_default_site_lang', FatUtility::VAR_INT, 1);
         $frm = new Form('frmCollection');
         $frm->addRequiredField(Labels::getLabel('LBL_Collection_Name', $this->adminLangId), 'collection_name[' . $siteDefaultLangId . ']');
+        if ($type == Collections::COLLECTION_TYPE_CONTENT_BLOCK) {
+            $frm->addHtmlEditor(Labels::getLabel('LBL_Block_Content', $this->adminLangId), 'epage_content[' . $siteDefaultLangId . ']')->requirements()->setRequired(true);
+        }
 		if ($type == Collections::COLLECTION_TYPE_BANNER) {
 			$frm->addTextBox(Labels::getLabel('LBL_Promotion_Cost', $this->adminLangId), 'blocation_promotion_cost');
 		}
@@ -295,6 +293,9 @@ class CollectionsController extends AdminBaseController
         }
         foreach ($langData as $langId => $data) {
             $frm->addTextBox(Labels::getLabel('LBL_Collection_Name', $this->adminLangId), 'collection_name[' . $langId . ']');
+            if ($type == Collections::COLLECTION_TYPE_CONTENT_BLOCK) {
+                $frm->addHtmlEditor(Labels::getLabel('LBL_Block_Content', $this->adminLangId), 'epage_content[' . $langId . ']')->requirements()->setRequired(true);
+            }
         }
         
         $frm->addHiddenField('', 'collection_id', $collectionId);
@@ -373,7 +374,7 @@ class CollectionsController extends AdminBaseController
         $this->objPrivilege->canEditCollections();
         $post = FatApp::getPostedData();
         if (false === $post) {
-            Message::addErrorMessage(current($frm->getValidationErrors()));
+            Message::addErrorMessage(Labels::getLabel('MSG_Invalid_Request', $this->siteLangId));
             FatUtility::dieWithError(Message::getHtml());
         }
 

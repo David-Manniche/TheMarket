@@ -1,5 +1,7 @@
 <?php
 
+use Braintree\Collection;
+
 class HomeController extends MyAppController
 {
     public function index()
@@ -229,6 +231,28 @@ class HomeController extends MyAppController
                         }
                         FatCache::set('homePageBlogLayout1' . $collection['collection_id'] . $cacheKey, $homePageBlogLayout1, '.txt');
                         $collectionTemplates[$collection['collection_id']]['html'] = $homePageBlogLayout1;
+                        break;
+                    case Collections::TYPE_FAQ_LAYOUT1:
+                        $homePageFaqLayout1 = FatCache::get('homePageFaqLayout1' . $collection['collection_id'] . $cacheKey, CONF_HOME_PAGE_CACHE_TIME, '.txt');
+                        if (!$homePageFaqLayout1) {
+                            $tpl = new FatTemplate('', '');
+                            $tpl->set('siteLangId', $this->siteLangId);
+                            $tpl->set('collection', $collection);
+                            $homePageFaqLayout1 = $tpl->render(false, false, '_partial/collection/faq-layout-1.php', true, true);
+                        }
+                        FatCache::set('homePageFaqLayout1' . $collection['collection_id'] . $cacheKey, $homePageFaqLayout1, '.txt');
+                        $collectionTemplates[$collection['collection_id']]['html'] = $homePageFaqLayout1;
+                        break;
+                    case Collections::TYPE_TESTIMONIAL_LAYOUT1:
+                        $homePageTestimonialLayout1 = FatCache::get('homePageTestimonialLayout1' . $collection['collection_id'] . $cacheKey, CONF_HOME_PAGE_CACHE_TIME, '.txt');
+                        if (!$homePageTestimonialLayout1) {
+                            $tpl = new FatTemplate('', '');
+                            $tpl->set('siteLangId', $this->siteLangId);
+                            $tpl->set('collection', $collection);
+                            $homePageTestimonialLayout1 = $tpl->render(false, false, '_partial/collection/testimonial-layout-1.php', true, true);
+                        }
+                        FatCache::set('homePageTestimonialLayout1' . $collection['collection_id'] . $cacheKey, $homePageTestimonialLayout1, '.txt');
+                        $collectionTemplates[$collection['collection_id']]['html'] = $homePageTestimonialLayout1;
                         break;
                 }
             }
@@ -834,8 +858,8 @@ class HomeController extends MyAppController
                 case Collections::COLLECTION_TYPE_FAQ:
                     $tempObj = clone $collectionObj;
                     $tempObj->addCondition('collection_id', '=', $collection_id);
-                    $rs = $tempObj->getResultSet();
-                    $faqIds = $db->fetchAll($rs, 'ctr_record_id');
+                    $res = $tempObj->getResultSet();
+                    $faqIds = $db->fetchAll($res, 'ctr_record_id');
                     if (empty($faqIds)) {
                         continue 2;
                     }
@@ -851,20 +875,56 @@ class HomeController extends MyAppController
                     $faqSearchTempObj->addMultipleFields($attr);
                     $faqSearchTempObj->addCondition('faq_id', 'IN', array_keys($faqIds));
                     $faqSearchTempObj->addGroupBy('faq_id');
-                    $rs = $faqSearchTempObj->getResultSet();
-                    $faqsDetail = $db->fetchAll($rs);
+                    $res = $faqSearchTempObj->getResultSet();
+                    $faqsDetail = $db->fetchAll($res);
                     /* ] */
                     if (true === MOBILE_APP_API_CALL) {
                         $collections[$i] = $collection;
                         $collections[$i]['totFaqs'] = $faqSearchTempObj->recordCount();
-                        $collections[$i]['blogs'] = $faqsDetail;
+                        $collections[$i]['faqs'] = $faqsDetail;
                     } else {
                         $collections[$collection['collection_id']] = $collection;
-                        $collections[$collection['collection_id']]['totBlogs'] = $faqSearchTempObj->recordCount();
-                        $collections[$collection['collection_id']]['blogs'] = $faqsDetail;
+                        $collections[$collection['collection_id']]['totFaqs'] = $faqSearchTempObj->recordCount();
+                        $collections[$collection['collection_id']]['faqs'] = $faqsDetail;
                     }
 
                     unset($faqSearchTempObj);
+                    unset($tempObj);
+                    break;
+
+                case Collections::COLLECTION_TYPE_TESTIMONIAL:
+                    $tempObj = clone $collectionObj;
+                    $tempObj->addCondition('collection_id', '=', $collection_id);
+                    $res = $tempObj->getResultSet();
+                    $testimonialIds = $db->fetchAll($res, 'ctr_record_id');
+                    if (empty($testimonialIds)) {
+                        continue 2;
+                    }
+
+                    /* fetch Blog data[ */
+                    $attr = [
+                        'testimonial_id', 'testimonial_user_name', 'IFNULL(testimonial_title, testimonial_identifier) as testimonial_title', 'testimonial_text'
+                    ];
+                    $testimonialSrchObj = Testimonial::getSearchObject($langId, true);
+                    $testimonialSrchObj = clone $testimonialSrchObj;
+                    $testimonialSrchObj->addMultipleFields($attr);
+                    $testimonialSrchObj->addCondition('testimonial_id', 'IN', array_keys($testimonialIds));
+                    $testimonialSrchObj->addGroupBy('testimonial_id');
+                    $testimonialSrchObj->setPageSize(Collections::LIMIT_TESTIMONIAL_LAYOUT1);
+                    $res = $testimonialSrchObj->getResultSet();
+                    $testimonialsDetail = $db->fetchAll($res);
+                    /* ] */
+                    if (true === MOBILE_APP_API_CALL) {
+                        $collections[$i] = $collection;
+                        $collections[$i]['totTestimonials'] = $testimonialSrchObj->recordCount();
+                        $collections[$i]['testimonials'] = $testimonialsDetail;
+                    } else {
+                        $collections[$collection['collection_id']] = $collection;
+                        $collections[$collection['collection_id']]['totTestimonials'] = $testimonialSrchObj->recordCount();
+                        $collections[$collection['collection_id']]['testimonials'] = $testimonialsDetail;
+                    }
+
+                    unset($testimonialSrchObj);
                     unset($tempObj);
                     break;
             }
