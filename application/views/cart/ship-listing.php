@@ -65,7 +65,7 @@
                             <p class="txt-brand pt-2"><?php echo Labels::getLabel('LBL_NOT_AVAILABLE_FOR_SHIPPING', $siteLangId); ?></p>
                         </div>
                     </div>                           
-                    <button class="btn btn-outline-primary btn-sm" type="button" onClick="moveToSaveForLater( '<?php echo md5($product['key']); ?>',<?php echo $product['selprod_id']; ?> );"> <?php echo Labels::getLabel('LBL_Save_For_later', $siteLangId); ?></button>
+                    <button class="btn btn-outline-primary btn-sm" type="button" onClick="moveToSaveForLater( '<?php echo md5($product['key']); ?>',<?php echo $product['selprod_id']; ?>, <?php echo Shipping::FULFILMENT_SHIP; ?> );"> <?php echo Labels::getLabel('LBL_Save_For_later', $siteLangId); ?></button>
                 </li>
         <?php }?> 
         </ul>
@@ -126,7 +126,7 @@
                                     }
                                 }
                             } ?>
-                        / <a href="javascript:void(0)" class="" onClick="moveToSaveForLater( '<?php echo md5($product['key']); ?>',<?php echo $product['selprod_id']; ?> );" title="<?php echo Labels::getLabel('LBL_Move_to_wishlist', $siteLangId); ?>"><?php echo Labels::getLabel('LBL_Save_For_later', $siteLangId); ?></a>                                                                                           
+                        / <a href="javascript:void(0)" class="" onClick="moveToSaveForLater( '<?php echo md5($product['key']); ?>',<?php echo $product['selprod_id']; ?>, <?php echo Shipping::FULFILMENT_SHIP; ?> );" title="<?php echo Labels::getLabel('LBL_Move_to_wishlist', $siteLangId); ?>"><?php echo Labels::getLabel('LBL_Save_For_later', $siteLangId); ?></a>                                                                                           
                     </p>
                 </div>
             </div>
@@ -164,7 +164,7 @@
             $imageUrl = UrlHelper::getCachedUrl(UrlHelper::generateFileUrl('image', 'product', array($product['product_id'], "THUMB",$product['selprod_id'], 0, $siteLangId)), CONF_IMG_CACHE_TIME, '.jpg');
             $productTitle =  ($product['selprod_title']) ? $product['selprod_title'] : $product['product_name'];
         ?>
-        <li class="list-group-item <?php echo md5($product['key']); ?> <?php echo (!$product['in_stock']) ? 'disabled' : ''; ?>">
+        <li class="list-group-item <?php echo isset($product['key']) ? md5($product['key']) : ''; ?> <?php echo (!$product['in_stock']) ? 'disabled' : ''; ?>">
             <div class="product-profile">
                 <div class="product-profile__thumbnail">
                     <a href="<?php echo $productUrl; ?>">
@@ -183,7 +183,7 @@
                                 <?php }
                         } ?></p>
                     </div>
-                    <button class="btn btn-outline-primary btn-sm product-profile__btn" type="button" onclick="moveToCart(<?php echo $product['selprod_id']; ?>, <?php echo $product['uwlp_uwlist_id']; ?>, event)"><?php echo Labels::getLabel('LBL_Move_To_Bag', $siteLangId);?></button>
+                    <button class="btn btn-outline-primary btn-sm product-profile__btn" type="button" onclick="moveToCart(<?php echo $product['selprod_id']; ?>, <?php echo $product['uwlp_uwlist_id']; ?>, event, <?php echo Shipping::FULFILMENT_SHIP; ?>)"><?php echo Labels::getLabel('LBL_Move_To_Bag', $siteLangId);?></button>
                 </div>
             </div>
             <div class="product-price"><?php echo CommonHelper::displayMoneyFormat($product['theprice']); ?></div>

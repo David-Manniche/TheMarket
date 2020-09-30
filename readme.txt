@@ -127,6 +127,7 @@ Bugs:
     => 043493 - Meta title is not working
     => 043497 - Colour of Subscribe section on blog page doesn't update
     => 043109 - while adding pickup details> slots> there is some issue with time
+    => 042650 - On cart >> when there are products in shipped and pickup both then amount should be of those products only which are selected under " ship my order " or " pickup in store"
 
 Enhancements:
     => Tax module upgrade

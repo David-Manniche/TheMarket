@@ -290,7 +290,7 @@ class Cart extends FatModel
         return $this->products;
     }
 
-    public function getProducts($siteLangId = 0)
+    public function getProducts($siteLangId = 0, $fulfillmentType = 0)
     {
         if (!$this->products) {
             //$this->getBasketProducts($siteLangId);
@@ -318,6 +318,7 @@ class Cart extends FatModel
             if (FatApp::getConfig('CONF_TAX_AFTER_DISOCUNT', FatUtility::VAR_INT, 0)) {
                 $cartDiscounts = static::getCouponDiscounts();
             }
+            
             foreach ($this->SYSTEM_ARR['cart'] as $key => $quantity) {
                 $selprod_id = 0;
                 $prodgroup_id = 0;
@@ -359,9 +360,13 @@ class Cart extends FatModel
                 if ($selprod_id > 0) {
                     $sellerProductRow = $this->getSellerProductData($selprod_id, $quantity, $siteLangId, $loggedUserId);
 
-                    /* echo "<pre>"; var_dump($sellerProductRow); */
                     if (!$sellerProductRow) {
                         $this->removeCartKey($key, $selprod_id, $quantity);
+                        continue;
+                    }
+
+                    if (0 != $fulfillmentType && isset($sellerProductRow['selprod_fulfillment_type']) && $fulfillmentType != $sellerProductRow['selprod_fulfillment_type'] && Shipping::FULFILMENT_ALL != $sellerProductRow['selprod_fulfillment_type']) {
+                        unset($this->products[$key]);
                         continue;
                     }
 
@@ -1002,9 +1007,9 @@ class Cart extends FatModel
         return $cartTotal;
     }
 
-    public function getCartFinancialSummary($langId)
+    public function getCartFinancialSummary($langId, $fulfillmentType = 0)
     {
-        $products = $this->getProducts($langId);
+        $products = $this->getProducts($langId, $fulfillmentType);
 
         $cartTotal = 0;
         $cartTotalNonBatch = 0;
@@ -1025,9 +1030,12 @@ class Cart extends FatModel
         $taxOptions = [];
         $prodTaxOptions = [];
         $productSelectedShippingMethodsArr = $this->getProductShippingMethod();
-
         if (is_array($products) && count($products)) {
             foreach ($products as $product) {
+                if (0 != $fulfillmentType && isset($product['selprod_fulfillment_type']) && $fulfillmentType != $product['selprod_fulfillment_type'] && Shipping::FULFILMENT_ALL != $product['selprod_fulfillment_type']) {
+                    continue;
+                }
+
                 $codEnabled = false;
                 if ($isCodEnabled && $product['is_cod_enabled']) {
                     $codEnabled = true;
