@@ -8,10 +8,14 @@ class Cart extends FatModel
     private $cartCache;
     private $valdateCheckoutType;
 
+    public const DB_TBL = 'tbl_user_cart';
+    public const DB_TBL_PREFIX = 'usercart_';
+
     public const CART_KEY_PREFIX_PRODUCT = 'SP_'; /* SP stands for Seller Product */
     public const CART_KEY_PREFIX_BATCH = 'SB_'; /* SB stands for Seller Batch/Combo Product */
     public const TYPE_PRODUCT = 1;
     public const TYPE_SUBSCRIPTION = 2;
+    
 
     public const CART_MAX_DISPLAY_QTY = 9;
 
@@ -54,7 +58,7 @@ class Cart extends FatModel
                 $this->cartSameSessionUser = false;
             }
 
-            $this->SYSTEM_ARR['cart'] = unserialize($row["usercart_details"]);
+            $this->SYSTEM_ARR['cart'] = json_decode($row["usercart_details"], true);
             // CommonHelper::printArray($this->SYSTEM_ARR['cart'], true);
             if (isset($this->SYSTEM_ARR['cart']['shopping_cart'])) {
                 $this->SYSTEM_ARR['shopping_cart'] = $this->SYSTEM_ARR['cart']['shopping_cart'];
@@ -123,7 +127,7 @@ class Cart extends FatModel
                 $key = static::CART_KEY_PREFIX_BATCH . $prodgroup_id;
             }
 
-            $key = base64_encode(serialize($key));
+            $key = base64_encode(json_encode($key));
             if (!isset($this->SYSTEM_ARR['cart'][$key])) {
                 $this->SYSTEM_ARR['cart'][$key] = FatUtility::int($qty);
             } else {
@@ -234,7 +238,7 @@ class Cart extends FatModel
             foreach ($this->SYSTEM_ARR['cart'] as $key => $quantity) {
                 $selprod_id = 0;
 
-                $keyDecoded = unserialize(base64_decode($key));
+                $keyDecoded = json_decode(base64_decode($key), true);
                 if (strpos($keyDecoded, static::CART_KEY_PREFIX_PRODUCT) !== false) {
                     $selprod_id = FatUtility::int(str_replace(static::CART_KEY_PREFIX_PRODUCT, '', $keyDecoded));
                 }
@@ -323,7 +327,7 @@ class Cart extends FatModel
                 $affiliateCommissionPercentage = '';
                 $affiliateCommission = 0;
 
-                $keyDecoded = unserialize(base64_decode($key));
+                $keyDecoded = json_decode(base64_decode($key), true);
                 if (strpos($keyDecoded, static::CART_KEY_PREFIX_PRODUCT) !== false) {
                     $selprod_id = FatUtility::int(str_replace(static::CART_KEY_PREFIX_PRODUCT, '', $keyDecoded));
                 }
@@ -1429,9 +1433,9 @@ class Cart extends FatModel
             if (isset($this->SYSTEM_ARR['shopping_cart']) && is_array($this->SYSTEM_ARR['shopping_cart']) && (!empty($this->SYSTEM_ARR['shopping_cart']))) {
                 $cart_arr["shopping_cart"] = $this->SYSTEM_ARR['shopping_cart'];
             }
-            $cart_arr = serialize($cart_arr);
-            $record->assignValues(array("usercart_user_id" => $this->cart_user_id, "usercart_type" => CART::TYPE_PRODUCT, "usercart_details" => $cart_arr, "usercart_added_date" => date('Y-m-d H:i:s'), "usercart_last_used_date" => date('Y-m-d H:i:s'), "usercart_last_session_id" => $this->cart_id));
-            if (!$record->addNew(array(), array('usercart_details' => $cart_arr, "usercart_added_date" => date('Y-m-d H:i:s'), "usercart_last_used_date" => date('Y-m-d H:i:s'), "usercart_last_session_id" => $this->cart_id, "usercart_sent_reminder" => 0))) {
+            $cart_arr = json_encode($cart_arr);
+            $record->assignValues(array("usercart_user_id" => $this->cart_user_id, "usercart_type" => CART::TYPE_PRODUCT, "usercart_details" => $cart_arr, "usercart_added_date" => date('Y-m-d H:i:s'), "usercart_last_used_date" => date('Y-m-d H:i:s'), "usercart_last_session_id" => $this->cart_id ));
+            if (!$record->addNew(array(), array( 'usercart_details' => $cart_arr, "usercart_added_date" => date('Y-m-d H:i:s'), "usercart_last_used_date" => date('Y-m-d H:i:s'), "usercart_last_session_id" => $this->cart_id, "usercart_sent_reminder" => 0 ))) {
                 Message::addErrorMessage($record->getError());
                 throw new Exception('');
             }
@@ -1520,22 +1524,25 @@ class Cart extends FatModel
             return false;
         }
 
-        $cartInfo = unserialize($row["usercart_details"]);
+        $cartInfo = json_decode($row["usercart_details"], true);
 
         $cartObj = new Cart($userId, 0, $tempUserId);
 
         foreach ($cartInfo as $key => $quantity) {
-            $keyDecoded = unserialize(base64_decode($key));
+            if (false === $keyDecoded = base64_decode($key, true)) {
+                continue;
+            }
+            $keyDecoded = json_decode($keyDecoded, true);
 
             $selprod_id = 0;
             $prodgroup_id = 0;
-
             if (strpos($keyDecoded, static::CART_KEY_PREFIX_PRODUCT) !== false) {
-                $selprod_id = FatUtility::int(str_replace(static::CART_KEY_PREFIX_PRODUCT, '', $keyDecoded));
+                $str = filter_var(str_replace(static::CART_KEY_PREFIX_PRODUCT, '', $keyDecoded), FILTER_SANITIZE_NUMBER_INT);
+                $selprod_id = FatUtility::int($str);
             }
-
             if (strpos($keyDecoded, static::CART_KEY_PREFIX_BATCH) !== false) {
-                $prodgroup_id = FatUtility::int(str_replace(static::CART_KEY_PREFIX_BATCH, '', $keyDecoded));
+                $str = filter_var(str_replace(static::CART_KEY_PREFIX_BATCH, '', $keyDecoded), FILTER_SANITIZE_NUMBER_INT);
+                $prodgroup_id = FatUtility::int($str);
             }
 
             $cartObj->add($selprod_id, $quantity, $prodgroup_id);
@@ -1832,7 +1839,7 @@ class Cart extends FatModel
 
     public function getSelprodIdByKey($key)
     {
-        $keyDecoded = unserialize(base64_decode($key));
+        $keyDecoded = json_decode(base64_decode($key), true);
         if (strpos($keyDecoded, static::CART_KEY_PREFIX_PRODUCT) !== false) {
             $selprod_id = FatUtility::int(str_replace(static::CART_KEY_PREFIX_PRODUCT, '', $keyDecoded));
             return $selprod_id;
