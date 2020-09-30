@@ -131,6 +131,8 @@ Bugs:
     => 042602 -  If we come back on home page from checkout and there are only shipped and only pickup products then products on checkout are the only products which gets display on cart popup
     => 042595 - On Thankyou >> if we choose pickup then shipping method section shows a blank bar
 
+    ----------------- TV-9.2.1.20200930------------------------
+
 Enhancements:
     => Tax module upgrade
     => Test cases classes enhancements.

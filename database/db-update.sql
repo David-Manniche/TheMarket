@@ -764,3 +764,4 @@ ALTER TABLE `tbl_product_category_relations` ADD PRIMARY KEY( `pcr_prodcat_id`, 
 -- Category Relation Management --
 -- ---------------TV-9.2.1.20200925------------------------
 ALTER TABLE `tbl_products_min_price` ADD `pmp_max_price` DECIMAL(10,2) NOT NULL AFTER `pmp_min_price`;
+-- -----------TV-9.2.1.20200930------------------------
