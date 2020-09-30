@@ -513,6 +513,7 @@ $(document).on("change", ".state", function() {
         $(dv).html(fcom.getLoader());
         fcom.ajax(fcom.makeUrl('Seller', 'pickupAddressForm', [id]), '', function(t) {
             $(dv).html(t);
+            setTimeout(function(){$('.fromTime-js').change();}, 500);
         });
     };
 
