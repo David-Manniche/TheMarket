@@ -26,7 +26,7 @@
                                     [
                                         'attr' => [
                                             'href' => 'javascript:void(0)',
-                                            'onclick' => 'addAddressForm(0)',
+                                            'onclick' => 'addAddressForm(0,' . $adminLangId . ')',
                                             'class' => 'js-add-pickup-addr',
                                             'title' => Labels::getLabel('LBL_Add_Pickup_Address', $adminLangId)
                                         ],

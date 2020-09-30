@@ -21,6 +21,7 @@ $(document).ready(function() {
             $(dv).html(res);
             $(".js-add-pickup-addr").addClass('d-none');
             $(".js-pickup-addr").removeClass('d-none');
+			setTimeout(function(){$('.fromTime-js').change();}, 500);
         });
 
     };
@@ -74,12 +75,21 @@ $(document).ready(function() {
     displayAddRowField = function(day){
         var from_time = $(".js-slot-from-"+day).children("option:selected").val();
         var to_time = $(".js-slot-to-"+day).children("option:selected").val();
+		
         if(to_time != '' && to_time <= from_time){
             $(".js-slot-to-"+day).val('').addClass('error');
             var to_time = $(".js-slot-to-"+day).children("option:selected").val();
         }else{
             $(".js-slot-to-"+day).removeClass('error');
         }
+		
+		$(".js-slot-to-"+day+" option").removeClass('d-none');
+		$(".js-slot-to-"+day+" option").each(function(){
+			var toVal = $(this).val();
+			if(toVal != '' && toVal <= from_time){
+				$(this).addClass('d-none');
+			}
+		});
         
         if(from_time != ''  && to_time != ''){
             $(".js-slot-add-"+day).removeClass('d-none');
@@ -103,6 +113,15 @@ $(document).ready(function() {
     validateTimeFields = function(){
         var from_time = $("[name='tslot_from_all']").children("option:selected").val();
         var to_time = $("[name='tslot_to_all']").children("option:selected").val();
+		
+		$("[name='tslot_to_all'] option").removeClass('d-none');
+		$("[name='tslot_to_all'] option").each(function(){
+			var toVal = $(this).val();
+			if(toVal != '' && toVal <= from_time){
+				$(this).addClass('d-none');
+			}
+		});
+		
         if(to_time != '' && to_time <= from_time){
             $("[name='tslot_to_all']").val('').addClass('error');
         }else{
