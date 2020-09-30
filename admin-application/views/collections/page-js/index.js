@@ -53,6 +53,7 @@ $(document).ready(function() {
 
     collectionForm = function(type, layoutType, id) {
         fcom.displayProcessing();
+        fcom.resetEditorInstance();
         fcom.ajax(fcom.makeUrl('Collections', 'form', [type, layoutType, id]), '', function(t) {
             fcom.updateFaceboxContent(t);
         });
@@ -348,16 +349,27 @@ $(document).ready(function() {
     translateData = function(item){
         var autoTranslate = $("input[name='auto_update_other_langs_data']:checked").length;
         var defaultLang = $(item).attr('defaultLang');
-        var catName = $("input[name='collection_name["+defaultLang+"]']").val();
+        var collectionName = $("input[name='collection_name["+defaultLang+"]']").val();
         var toLangId = $(item).attr('language');
         var alreadyOpen = $('#collapse_'+toLangId).hasClass('active');
-        if(autoTranslate == 0 || catName == "" || alreadyOpen == true){
+
+        if(autoTranslate == 0 || collectionName == "" || alreadyOpen == true){
             return false;
         }
-        var data = "collectionName="+catName+"&toLangId="+toLangId ;
+        
+        if ($("textarea[name='epage_content["+defaultLang+"]']").length > 0) {
+            var epageContent = $("textarea[name='epage_content["+defaultLang+"]']").val();
+            var data = "collectionName="+collectionName+"&epageContent="+epageContent+"&toLangId="+toLangId ;
+        } else {
+            var data = "collectionName="+collectionName+"&toLangId="+toLangId;
+        }
+        
         fcom.updateWithAjax(fcom.makeUrl('Collections', 'translatedData'), data, function(t) {
             if(t.status == 1){
                 $("input[name='collection_name["+toLangId+"]']").val(t.collectionName);
+                if ($("textarea[name='epage_content["+toLangId+"]']").length > 0) {
+                    $("textarea[name='epage_content["+toLangId+"]']").val(t.epageContent);
+                }
             }
         });
     }

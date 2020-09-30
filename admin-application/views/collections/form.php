@@ -1,5 +1,5 @@
 <?php defined('SYSTEM_INIT') or die('Invalid Usage.');
-$frm->setFormTagAttribute('class', 'web_form');
+$frm->setFormTagAttribute('class', 'web_form layout--' . $formLayout);
 $frm->setFormTagAttribute('onsubmit', 'setupCollection(this); return(false);');
 
 if ($collection_layout_type != Collections::TYPE_BANNER_LAYOUT3) {
@@ -98,7 +98,8 @@ $siteDefaultLangId = FatApp::getConfig('conf_default_site_lang', FatUtility::VAR
                                         </div>
                                     </div>
                                 </div>
-                                <?php } ?>
+                                <?php echo $frm->getFieldHtml('epage_id');
+                                } ?>
                                 <?php if ($collection_type == Collections::COLLECTION_TYPE_BANNER) { ?>
 								<div class="col-md-4">
                                     <div class="field-set">

@@ -254,6 +254,17 @@ class HomeController extends MyAppController
                         FatCache::set('homePageTestimonialLayout1' . $collection['collection_id'] . $cacheKey, $homePageTestimonialLayout1, '.txt');
                         $collectionTemplates[$collection['collection_id']]['html'] = $homePageTestimonialLayout1;
                         break;
+                    case Collections::TYPE_CONTENT_BLOCK_LAYOUT1:
+                        $homePageContentBlockLayout1 = FatCache::get('homePageContentBlockLayout1' . $collection['collection_id'] . $cacheKey, CONF_HOME_PAGE_CACHE_TIME, '.txt');
+                        if (!$homePageContentBlockLayout1) {
+                            $tpl = new FatTemplate('', '');
+                            $tpl->set('siteLangId', $this->siteLangId);
+                            $tpl->set('collection', $collection);
+                            $homePageContentBlockLayout1 = $tpl->render(false, false, '_partial/collection/content-block-layout-1.php', true, true);
+                        }
+                        FatCache::set('homePageContentBlockLayout1' . $collection['collection_id'] . $cacheKey, $homePageContentBlockLayout1, '.txt');
+                        $collectionTemplates[$collection['collection_id']]['html'] = $homePageContentBlockLayout1;
+                        break;
                 }
             }
             $this->set('collectionTemplates', $collectionTemplates);
@@ -864,14 +875,17 @@ class HomeController extends MyAppController
                         continue 2;
                     }
 
-                    /* fetch Blog data[ */
+                    /* fetch FAQ data[ */
                     $attr = [
-                        'faq_id',
-                        'IFNULL(faq_title, faq_identifier) as faq_title',
-                        'faq_content'
+                        'faq_id', 'faqcat_id', 'IFNULL(faq_title, faq_identifier) as faq_title', 'faq_content', 'IFNULL(faqcat_name, faqcat_identifier) as faqcat_name'
                     ];
                     $faqSearchObj = Faq::getSearchObject($langId);
                     $faqSearchTempObj = clone $faqSearchObj;
+                    $faqSearchTempObj->joinTable(
+                        FaqCategory::DB_TBL, 'INNER JOIN', 'faq_faqcat_id = faqcat_id', 'fc'
+                    );
+                    $faqSearchTempObj->joinTable(FaqCategory::DB_TBL_LANG, 'LEFT OUTER JOIN', 'fc_l.' . FaqCategory::DB_TBL_LANG_PREFIX . 'faqcat_id = fc.' . FaqCategory::tblFld('id') . ' and fc_l.' . FaqCategory::DB_TBL_LANG_PREFIX . 'lang_id = ' . $langId, 'fc_l'
+                    );
                     $faqSearchTempObj->addMultipleFields($attr);
                     $faqSearchTempObj->addCondition('faq_id', 'IN', array_keys($faqIds));
                     $faqSearchTempObj->addGroupBy('faq_id');
@@ -901,7 +915,7 @@ class HomeController extends MyAppController
                         continue 2;
                     }
 
-                    /* fetch Blog data[ */
+                    /* fetch Testimonial data[ */
                     $attr = [
                         'testimonial_id', 'testimonial_user_name', 'IFNULL(testimonial_title, testimonial_identifier) as testimonial_title', 'testimonial_text'
                     ];
@@ -925,6 +939,28 @@ class HomeController extends MyAppController
                     }
 
                     unset($testimonialSrchObj);
+                    unset($tempObj);
+                    break;
+
+                case Collections::COLLECTION_TYPE_CONTENT_BLOCK:
+                    
+                    $srch = ExtraPage::getSearchObject($langId, true);
+                    $srch->joinTable(
+                        Collections::DB_TBL_COLLECTION_TO_RECORDS, 'INNER JOIN', 'epage_id = ctr_record_id', 'ctr'
+                    );
+                    $srch->addCondition(Collections::DB_TBL_COLLECTION_TO_RECORDS_PREFIX . 'collection_id', '=', $collection_id);
+                    $srch->addMultipleFields(array('epage_id', 'IFNULL(epage_label, epage_identifier) as epage_label', 'epage_content'));
+                    $res = $srch->getResultSet();
+                    $epageData = $db->fetch($res);
+                    if (true === MOBILE_APP_API_CALL) {
+                        $collections[$i] = $collection;
+                        $collections[$i]['epageContent'] = $epageData;
+                    } else {
+                        $collections[$collection['collection_id']] = $collection;
+                        $collections[$collection['collection_id']]['epageContent'] = $epageData;
+                    }
+
+                    unset($epageData);
                     unset($tempObj);
                     break;
             }
