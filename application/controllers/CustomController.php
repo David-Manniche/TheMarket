@@ -505,6 +505,7 @@ class CustomController extends MyAppController
             $cartObj->updateUserCart();
         }
 
+        $orderFulFillmentTypeArr = [];
         if ($orderInfo['order_type'] == Orders::ORDER_PRODUCT) {
             if (!empty($user)) {
                 $searchReplaceArray = array(
@@ -515,6 +516,20 @@ class CustomController extends MyAppController
             } else {
                 $textMessage = Labels::getLabel('MSG_CUSTOMER_SUCCESS_ORDER', $this->siteLangId);   
             }
+
+            $srch = new OrderProductSearch($this->siteLangId);
+            $srch->joinShippingCharges();
+            $srch->joinAddress();
+            $srch->addCondition('op_order_id', '=', $orderId);
+            $srch->doNotCalculateRecords();
+            $srch->doNotLimitRecords();
+
+            $srch->addMultipleFields(
+                array('ops.*', 'op_invoice_number', 'addr.*', 'ts.*', 'tc.*')
+            );
+            $rs = $srch->getResultSet();
+            $orderFulFillmentTypeArr = FatApp::getDb()->fetchAll($rs);
+            // CommonHelper::printArray($orderFulFillmentTypeArr, true);
         } elseif ($orderInfo['order_type'] == Orders::ORDER_SUBSCRIPTION) {
             $searchReplaceArray = array(
                 '{account}' => '<a href="' . UrlHelper::generateUrl('seller') . '">' . Labels::getLabel('MSG_My_Account', $this->siteLangId) . '</a>',
@@ -555,6 +570,7 @@ class CustomController extends MyAppController
         $print = ('print' == $print);
         $this->set('print', $print);
         
+        $this->set('orderFulFillmentTypeArr', $orderFulFillmentTypeArr);
         if (CommonHelper::isAppUser()) {
             $this->set('exculdeMainHeaderDiv', true);
             $this->_template->render(false, false);

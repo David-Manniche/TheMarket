@@ -533,6 +533,14 @@ $this->includeTemplate('seller/_partial/shop-navigation.php', $variables, false)
         validateTimeFields = function(){
             var from_time = $("[name='tslot_from_all']").children("option:selected").val();
             var to_time = $("[name='tslot_to_all']").children("option:selected").val();
+			
+			$("[name='tslot_to_all'] option").removeClass('d-none');
+			$("[name='tslot_to_all'] option").each(function(){
+				var toVal = $(this).val();
+				if(toVal != '' && toVal <= from_time){
+					$(this).addClass('d-none');
+				}
+			});
             if(to_time != '' && to_time <= from_time){
                 $("[name='tslot_to_all']").val('').addClass('error');
             }else{

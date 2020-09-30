@@ -15,6 +15,7 @@ class OrderProductSearch extends SearchBase
         $this->isOrdersTableJoined = false;
         $this->isOrderUserTableJoined = false;
         $this->isOrderProductStatusJoined = false;
+        $this->isShippingChargesTblJoined = false;
         $this->commonLangId = CommonHelper::getLangId();
         if ($this->langId > 0) {
             $this->joinTable(
@@ -138,7 +139,18 @@ class OrderProductSearch extends SearchBase
 
     public function joinShippingCharges()
     {
+        $this->isShippingChargesTblJoined = true;
         $this->joinTable(Orders::DB_TBL_ORDER_PRODUCTS_SHIPPING, 'LEFT OUTER JOIN', 'ops.opshipping_op_id = op.op_id', 'ops');
+    }
+
+    public function joinAddress()
+    {
+        if (false === $this->isShippingChargesTblJoined) {
+            trigger_error(Labels::getLabel('MSG_PLEASE_USE_JOINSHIPPINGCHARGES()_FIRST,_THEN_TRY_TO_JOIN_JOINADDRESS()', $this->commonLangId), E_USER_ERROR);
+        }
+        $this->joinTable(Address::DB_TBL, 'LEFT OUTER JOIN', 'addr.addr_id = ops.opshipping_pickup_addr_id', 'addr');
+        $this->joinTable('tbl_states', 'LEFT JOIN', 'addr.addr_state_id=ts.state_id', 'ts');
+        $this->joinTable('tbl_countries', 'LEFT JOIN','addr.addr_country_id=tc.country_id', 'tc');
     }
 
     public function joinOrderCancellationRequest()
