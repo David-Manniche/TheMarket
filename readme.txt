@@ -133,6 +133,8 @@ Bugs:
 
     ----------------- TV-9.2.1.20200930------------------------
 
+    => 043678 - Home page >> brand collection >> default image should be there if there is no media file selected for brand instead of some text 
+
 Enhancements:
     => Tax module upgrade
     => Test cases classes enhancements.
