@@ -79,7 +79,7 @@ class CategoryController extends MyAppController
         if ($pageSize) {
             $srch->setPageSize($pageSize);
         }
-
+        
         $rs = $srch->getResultSet();
         $db = FatApp::getDb();
         $products = $db->fetchAll($rs);

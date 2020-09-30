@@ -61,7 +61,7 @@ class Product extends MyAppModel
     public const PRODUCT_VIEW_ORGINAL_URL = 'products/view/';
     public const PRODUCT_REVIEWS_ORGINAL_URL = 'reviews/product/';
     public const PRODUCT_MORE_SELLERS_ORGINAL_URL = 'products/sellers/';
-    
+
     public function __construct($id = 0)
     {
         parent::__construct(static::DB_TBL, static::DB_TBL_PREFIX . 'id', $id);
@@ -1307,7 +1307,7 @@ class Product extends MyAppModel
         if (array_key_exists('shop_id', $criteria)) {
             $shop_id = FatUtility::int($criteria['shop_id']);
         }
-
+        $criteria['max_price'] = true;
         //$srch->setDefinedCriteria($join_price, 0, $criteria, true);
         $srch->joinForPrice('', $criteria, true);
         $srch->unsetDefaultLangForJoins();
@@ -1337,7 +1337,7 @@ class Product extends MyAppModel
                 'selprod_id', 'selprod_user_id',  'selprod_code', 'selprod_stock', 'selprod_condition', 'selprod_price', 'COALESCE(selprod_title  ,COALESCE(product_name, product_identifier)) as selprod_title',
                 'splprice_display_list_price', 'splprice_display_dis_val', 'splprice_display_dis_type', 'splprice_start_date', 'splprice_end_date',
                 'brand_id', 'COALESCE(brand_name, brand_identifier) as brand_name', 'user_name', 'IF(selprod_stock > 0, 1, 0) AS in_stock',
-                'selprod_sold_count', 'selprod_return_policy', /* 'ifnull(sq_sprating.totReviews,0) totReviews','IF(ufp_id > 0, 1, 0) as isfavorite', */ 'selprod_min_order_qty'
+                'selprod_sold_count', 'selprod_return_policy', /*'maxprice', 'ifnull(sq_sprating.totReviews,0) totReviews','IF(ufp_id > 0, 1, 0) as isfavorite', */ 'selprod_min_order_qty'
             )
         );
 
@@ -1605,13 +1605,15 @@ END,   special_price_found ) as special_price_found'
             $criteria = array('brand_id' => $brandId);
         }
 
+        $criteria = array('max_price' => true);
+
         $srch = new ProductSearch();
         $srch->setDefinedCriteria(1, 0, $criteria, true, false);
         $srch->joinProductToCategory();
         $srch->joinSellerSubscription(0, false, true);
         $srch->addSubscriptionValidCondition();
         $srch->addCondition('selprod_deleted', '=', applicationConstants::NO);
-        $srch->addMultipleFields(array('product_id', 'selprod_id', 'theprice', 'IFNULL(splprice_id, 0) as splprice_id'));
+        $srch->addMultipleFields(array('product_id', 'selprod_id', 'theprice', 'maxprice', 'IFNULL(splprice_id, 0) as splprice_id'));
         $srch->doNotLimitRecords();
         $srch->doNotCalculateRecords();
         $srch->addGroupBy('product_id');
@@ -1625,7 +1627,7 @@ END,   special_price_found ) as special_price_found'
 
         $tmpQry = $srch->getQuery();
 
-        $qry = "INSERT INTO " . static::DB_PRODUCT_MIN_PRICE . " (pmp_product_id, pmp_selprod_id, pmp_min_price, pmp_splprice_id) SELECT * FROM (" . $tmpQry . ") AS t ON DUPLICATE KEY UPDATE pmp_selprod_id = t.selprod_id, pmp_min_price = t.theprice, pmp_splprice_id = t.splprice_id";
+        $qry = "INSERT INTO " . static::DB_PRODUCT_MIN_PRICE . " (pmp_product_id, pmp_selprod_id, pmp_min_price, pmp_max_price, pmp_splprice_id) SELECT * FROM (" . $tmpQry . ") AS t ON DUPLICATE KEY UPDATE pmp_selprod_id = t.selprod_id, pmp_min_price = t.theprice, pmp_max_price = t.maxprice, pmp_splprice_id = t.splprice_id";
 
         FatApp::getDb()->query($qry);
         $query = "DELETE m FROM " . static::DB_PRODUCT_MIN_PRICE . " m LEFT OUTER JOIN (" . $tmpQry . ") ON pmp_product_id = selprod_product_id WHERE m.pmp_product_id IS NULL";

@@ -5,6 +5,7 @@ class Common
     public static function headerWishListAndCartSummary($template)
     {
         $cartObj = new Cart();
+        $cartObj->invalidateCheckoutType();
         $siteLangId = CommonHelper::getLangId();
         $loggedUserId = 0;
         if (UserAuthentication::isUserLogged()) {
@@ -193,7 +194,7 @@ class Common
         $brandSrch->joinTable(Product::DB_TBL, 'INNER JOIN', 'brand_id = p.product_brand_id', 'p');
         $brandSrch->joinTable(SellerProduct::DB_TBL, 'INNER JOIN', 'sp.selprod_product_id = p.product_id', 'sp');
         $brandSrch->doNotCalculateRecords();
-        $brandSrch->addMultipleFields(array( 'brand_id', 'IFNULL(brand_name, brand_identifier) as brand_name', 'SUM(IFNULL(selprod_sold_count, 0)) as totSoldQty'));
+        $brandSrch->addMultipleFields(array('brand_id', 'IFNULL(brand_name, brand_identifier) as brand_name', 'SUM(IFNULL(selprod_sold_count, 0)) as totSoldQty'));
         $brandSrch->addCondition('brand_status', '=', Brand::BRAND_REQUEST_APPROVED);
         $brandSrch->addCondition('brand_active', '=', applicationConstants::YES);
         $brandSrch->addGroupBy('brand_id');
@@ -216,7 +217,7 @@ class Common
         $catSrch->joinTable(Product::DB_TBL_PRODUCT_TO_CATEGORY, 'LEFT OUTER JOIN', 'c.prodcat_id = ptc.ptc_prodcat_id', 'ptc');
         $catSrch->joinTable(SellerProduct::DB_TBL, 'LEFT OUTER JOIN', 'sp.selprod_product_id = ptc.ptc_product_id', 'sp');
         $catSrch->doNotCalculateRecords();
-        $catSrch->addMultipleFields(array( 'c.prodcat_id', 'IFNULL(c_l.prodcat_name, c.prodcat_identifier) as prodcat_name', 'SUM(IFNULL(selprod_sold_count, 0)) as totSoldQty'));
+        $catSrch->addMultipleFields(array('c.prodcat_id', 'IFNULL(c_l.prodcat_name, c.prodcat_identifier) as prodcat_name', 'SUM(IFNULL(selprod_sold_count, 0)) as totSoldQty'));
         $catSrch->addCondition('prodcat_active', '=', applicationConstants::YES);
         $catSrch->addCondition('prodcat_deleted', '=', applicationConstants::NO);
         $catSrch->addGroupBy('prodcat_id');
@@ -256,7 +257,7 @@ class Common
         $brandSrch = clone $prodSrchObj;
         $brandSrch->addGroupBy('brand_id');
         $brandSrch->addOrder('brand_name');
-        $brandSrch->addMultipleFields(array( 'brand_id', 'IFNULL(brand_name, brand_identifier) as brand_name'));
+        $brandSrch->addMultipleFields(array('brand_id', 'IFNULL(brand_name, brand_identifier) as brand_name'));
         /* if needs to show product counts under brands[ */
         //$brandSrch->addFld('count(selprod_id) as totalProducts');
         /* ] */

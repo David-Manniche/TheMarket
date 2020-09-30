@@ -759,10 +759,10 @@ class CartController extends MyAppController
         $this->_template->render(false, false, 'json-success.php');
     }
     
-    public function getCartFinancialSummary($fulfillmentType = 0)
+    public function getCartFinancialSummary()
     {
         $cart = new Cart();
-        $cartSummary = $cart->getCartFinancialSummary($this->siteLangId, $fulfillmentType);
+        $cartSummary = $cart->getCartFinancialSummary($this->siteLangId);
         $this->set('cartSummary', $cartSummary);
         $this->_template->render(false, false, 'cart/_partial/cartSummary.php');
     }
