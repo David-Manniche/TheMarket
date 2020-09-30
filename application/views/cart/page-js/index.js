@@ -21,8 +21,8 @@ $(document).ready(function(){
             if(json.cartProductsCount == 0){
                 $("#js-cart-listing").html(json.html);
             }else{
-                $("#cartList").html(json.html);
-                getCartFinancialSummary();
+				$("#cartList").html(json.html);				
+                getCartFinancialSummary(fulfilmentType);
             }
             
             if(json.shipProductsCount == 0){
@@ -189,8 +189,8 @@ $(document).ready(function(){
         });
     }
     
-    getCartFinancialSummary = function(){
-        fcom.ajax(fcom.makeUrl('Cart','getCartFinancialSummary'),'',function(res){
+    getCartFinancialSummary = function(type){
+        fcom.ajax(fcom.makeUrl('Cart','getCartFinancialSummary', [type]),'',function(res){
 			$("#js-cartFinancialSummary").html(res);
 		});
     }

@@ -127,6 +127,7 @@ Bugs:
     => 043493 - Meta title is not working
     => 043497 - Colour of Subscribe section on blog page doesn't update
     => 042602 -  If we come back on home page from checkout and there are only shipped and only pickup products then products on checkout are the only products which gets display on cart popup
+    => 042650 - On cart >> when there are products in shipped and pickup both then amount should be of those products only which are selected under " ship my order " or " pickup in store
 
 Enhancements:
     => Tax module upgrade

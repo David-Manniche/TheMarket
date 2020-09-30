@@ -116,7 +116,7 @@ var cart = {
 		}
     },
     
-	clear: function(prodgroup_id){
+	clear: function(){
 		if(confirm( langLbl.confirmRemove )){
 			fcom.updateWithAjax(fcom.makeUrl('Cart','clear'), '' ,function(ans){
 				if( ans.status ){
@@ -124,7 +124,7 @@ var cart = {
                         listCartProducts();
                     }
                     $('span.cartQuantity').html(ans.total);
-                    $('#cartSummary').load(fcom.makeUrl('cart', 'getCartSummary'));
+                    $('#cartSummary').load(fcom.makeUrl('cart', 'getCartSummary' ));
                     $('body').removeClass('side-cart--on');
 				}
 				$.mbsmessage.close();

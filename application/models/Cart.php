@@ -7,6 +7,7 @@ class Cart extends FatModel
     private $shippingService;
     private $cartCache;
     private $valdateCheckoutType;
+    private $fulfilmentType;
 
     public const DB_TBL = 'tbl_user_cart';
     public const DB_TBL_PREFIX = 'usercart_';
@@ -15,7 +16,7 @@ class Cart extends FatModel
     public const CART_KEY_PREFIX_BATCH = 'SB_'; /* SB stands for Seller Batch/Combo Product */
     public const TYPE_PRODUCT = 1;
     public const TYPE_SUBSCRIPTION = 2;
-    
+
 
     public const CART_MAX_DISPLAY_QTY = 9;
 
@@ -254,7 +255,12 @@ class Cart extends FatModel
                     continue;
                 }
 
-                if ($this->valdateCheckoutType && isset($this->SYSTEM_ARR['shopping_cart']['checkout_type']) && $sellerProductRow['selprod_fulfillment_type'] != Shipping::FULFILMENT_ALL && $sellerProductRow['selprod_fulfillment_type'] != $this->SYSTEM_ARR['shopping_cart']['checkout_type']) {
+                $fulfilmentType = $this->fulfilmentType;
+                if (isset($this->SYSTEM_ARR['shopping_cart']['checkout_type'])) {
+                    $fulfilmentType =  $this->SYSTEM_ARR['shopping_cart']['checkout_type'];
+                }
+
+                if ($this->valdateCheckoutType && isset($fulfilmentType) && $sellerProductRow['selprod_fulfillment_type'] != Shipping::FULFILMENT_ALL && $sellerProductRow['selprod_fulfillment_type'] != $fulfilmentType) {
                     unset($this->products[$key]);
                     continue;
                 }
@@ -292,7 +298,7 @@ class Cart extends FatModel
     }
 
     public function getProducts($siteLangId = 0)
-    { 
+    {
         if (!$this->products) {
             //$this->getBasketProducts($siteLangId);
 
@@ -366,7 +372,12 @@ class Cart extends FatModel
                         continue;
                     }
 
-                    if ($this->valdateCheckoutType && isset($this->SYSTEM_ARR['shopping_cart']['checkout_type']) && $sellerProductRow['selprod_fulfillment_type'] != Shipping::FULFILMENT_ALL && $sellerProductRow['selprod_fulfillment_type'] != $this->SYSTEM_ARR['shopping_cart']['checkout_type']) {
+                    $fulfilmentType = $this->fulfilmentType;
+                    if (isset($this->SYSTEM_ARR['shopping_cart']['checkout_type'])) {
+                        $fulfilmentType =  $this->SYSTEM_ARR['shopping_cart']['checkout_type'];
+                    }
+                    
+                    if ($this->valdateCheckoutType && isset($fulfilmentType) && $sellerProductRow['selprod_fulfillment_type'] != Shipping::FULFILMENT_ALL && $sellerProductRow['selprod_fulfillment_type'] != $fulfilmentType) {
                         unset($this->products[$key]);
                         continue;
                     }
@@ -1434,8 +1445,8 @@ class Cart extends FatModel
                 $cart_arr["shopping_cart"] = $this->SYSTEM_ARR['shopping_cart'];
             }
             $cart_arr = json_encode($cart_arr);
-            $record->assignValues(array("usercart_user_id" => $this->cart_user_id, "usercart_type" => CART::TYPE_PRODUCT, "usercart_details" => $cart_arr, "usercart_added_date" => date('Y-m-d H:i:s'), "usercart_last_used_date" => date('Y-m-d H:i:s'), "usercart_last_session_id" => $this->cart_id ));
-            if (!$record->addNew(array(), array( 'usercart_details' => $cart_arr, "usercart_added_date" => date('Y-m-d H:i:s'), "usercart_last_used_date" => date('Y-m-d H:i:s'), "usercart_last_session_id" => $this->cart_id, "usercart_sent_reminder" => 0 ))) {
+            $record->assignValues(array("usercart_user_id" => $this->cart_user_id, "usercart_type" => CART::TYPE_PRODUCT, "usercart_details" => $cart_arr, "usercart_added_date" => date('Y-m-d H:i:s'), "usercart_last_used_date" => date('Y-m-d H:i:s'), "usercart_last_session_id" => $this->cart_id));
+            if (!$record->addNew(array(), array('usercart_details' => $cart_arr, "usercart_added_date" => date('Y-m-d H:i:s'), "usercart_last_used_date" => date('Y-m-d H:i:s'), "usercart_last_session_id" => $this->cart_id, "usercart_sent_reminder" => 0))) {
                 Message::addErrorMessage($record->getError());
                 throw new Exception('');
             }
@@ -1911,6 +1922,12 @@ class Cart extends FatModel
         $this->SYSTEM_ARR['shopping_cart']['checkout_type'] = $type;
         $this->updateUserCart();
         return true;
+    }
+
+    public function setFulfilmentType($type)
+    {
+        $type = FatUtility::int($type);
+        $this->fulfilmentType = $type;
     }
 
     public function getCartCheckoutType()
