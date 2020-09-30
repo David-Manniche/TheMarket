@@ -50,8 +50,8 @@ $displayDateformat = FatDate::convertDateFormatFromPhp(
 
 <script>
 var needToSeeDaysOfWeek = new Array();
+var calendarSelectedDate = '';
 $(document).ready(function(){  
-    
     $('.js-datepicker').datepicker({
         minDate: new Date(),
         dateFormat: 'yy-mm-dd',
