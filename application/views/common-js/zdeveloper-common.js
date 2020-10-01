@@ -837,6 +837,10 @@ $(function(){ // this will be called when the DOM is ready
     var doneTypingInterval = 800;  //time in ms, 5 second for example
     var $input = $('#header_search_keyword');
 
+    $input.focus(function(){
+        searchProductTagsAuto($input.val());
+    });
+
     $input.keyup(function() {        
       clearTimeout(typingTimer);     
       typingTimer = setTimeout(doneTyping, doneTypingInterval);      
@@ -858,6 +862,16 @@ $(function(){ // this will be called when the DOM is ready
             $(this).removeClass('filled')
         }
     });
+
+    $(document).on('click', '.recentSearch-js', function() {        
+        $input.val($(this).parent('li').attr('data-keyword'));
+        searchProductTagsAuto($(this).parent('li').attr('data-keyword'));
+    });
+
+    $(document).on('click', '.clearSearch-js', function() {        
+        clearSearchKeyword();
+    });
+    
   });
 
 $(document).ready(function() {      
@@ -870,20 +884,35 @@ $(document).ready(function() {
         $(frmSiteSearch).trigger("submit");       
     };
     searchProductTagsAuto = function(keyword){            
-        if (keyword.trim().length < 3){           
+        /* if (keyword.trim().length < 3){           
             removeAutoSuggest();
             return;
-        }
-        console.log(keyword);
+        }   */      
         if (!$('#search-suggestions-js').find('div').hasClass('search-suggestions')){
             $('#search-suggestions-js').html('<a href="javascript:void(0)" onClick="removeAutoSuggest()" class="close-layer"></a><div class="search-suggestions" id="tagsSuggetionList"></div>');   
         }
         
         var data = 'keyword='+keyword;
-        fcom.ajax(fcom.makeUrl('Products', 'searchProductTagsAutocomplete'), data, function(t) {
-            $('#tagsSuggetionList').html(t);
+        fcom.updateWithAjax(fcom.makeUrl('Products', 'searchProductTagsAutocomplete'), data, function(t) {     
+            if(t.html.length > 0){
+                $('#tagsSuggetionList').html(t.html);                
+            }else{
+                $('#search-suggestions-js').html('');
+            }           
+        }, '', false);
+    };
+
+    clearSearchKeyword = function(obj){
+        var data = '';
+        var keyword = $(obj).attr('data-keyword');        
+        if(typeof keyword != 'undefined') {
+            data = 'keyword='+keyword;
+        }        
+        fcom.ajax(fcom.makeUrl('Products', 'clearSearchKeywords'), data, function(t) {
+            $('#search-suggestions-js').html('');
         });
     };
+
     /* var $elem = $('#header_search_keyword').autocomplete({
             'classes': {
                 "ui-autocomplete": "custom-ui-autocomplete"
