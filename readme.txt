@@ -140,6 +140,7 @@ Bugs:
     => 043594 - Order details page >> invalid access gets display if admin or seller try to change order status .
     => 041966 - seller> dashboard> there are errors
     => 043517 - when language other than EN, AR is selected then getting error on header
+    => 043521 - on login to buyer account> getting error on logo
 
 Enhancements:
     => Tax module upgrade
