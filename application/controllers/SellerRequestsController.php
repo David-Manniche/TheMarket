@@ -240,8 +240,9 @@ class SellerRequestsController extends SellerBaseController
             Message::addErrorMessage(Labels::getLabel('MSG_Invalid_Access', $this->siteLangId));
             FatUtility::dieJsonError(Message::getHtml());
         }
-
-        if (!FatApp::getConfig('CONF_PRODUCT_CATEGORY_REQUEST_APPROVAL', FatUtility::VAR_INT, 0)) {
+	
+		$approvalRequired = FatApp::getConfig('CONF_PRODUCT_CATEGORY_REQUEST_APPROVAL', FatUtility::VAR_INT, 0);
+        if (!$approvalRequired) {
             $post['prodcat_active'] = applicationConstants::ACTIVE;
             $post['prodcat_status'] = ProductCategory::REQUEST_APPROVED;
             $post['prodcat_status_updated_on'] = date('Y-m-d H:i:s');
@@ -277,8 +278,12 @@ class SellerRequestsController extends SellerBaseController
             Message::addErrorMessage(Labels::getLabel("MSG_NOTIFICATION_COULD_NOT_BE_SENT", $this->siteLangId));
             FatUtility::dieJsonError(Message::getHtml());
         }
-
-        $this->set('msg', Labels::getLabel("MSG_Category_Setup_Successful", $this->siteLangId));
+		
+		$msg = Labels::getLabel("MSG_Category_Setup_Successful", $this->siteLangId);
+		if ($approvalRequired) {
+			$msg = Labels::getLabel("MSG_CATEGORY_REQUEST_SUBMITTED_SUCCESSFULLY", $this->siteLangId);
+		}
+        $this->set('msg', $msg);
         $this->set('categoryReqId', $categoryReqId);
         $this->_template->render(false, false, 'json-success.php');
     }

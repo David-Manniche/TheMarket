@@ -141,6 +141,7 @@ Bugs:
     => 041966 - seller> dashboard> there are errors
     => 043517 - when language other than EN, AR is selected then getting error on header
     => 043521 - on login to buyer account> getting error on logo
+    => 043585 - when category is requested then message needs to be different
 
 Enhancements:
     => Tax module upgrade
