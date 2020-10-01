@@ -107,6 +107,10 @@ class CartController extends MyAppController
                 $this->set('isShippingSameAsBilling', $cartObj->getShippingAddressSameAsBilling());
                 $this->set('selectedBillingAddressId', $billingAddressId);
                 $this->set('selectedShippingAddressId', $shippingAddressId);
+
+                $this->set('cartProductsCount', count($productsArr));
+                $this->set('shipProductsCount',  count($fulfillmentProdArr[Shipping::FULFILMENT_SHIP]));
+                $this->set('pickUpProductsCount', count($fulfillmentProdArr[Shipping::FULFILMENT_PICKUP]));
             }
 
             $fulFillmentArr = Shipping::getFulFillmentArr($this->siteLangId);
