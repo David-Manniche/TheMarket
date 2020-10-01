@@ -454,10 +454,11 @@ class BuyerController extends BuyerBaseController
         $pdf->SetAuthor(FatApp::getConfig("CONF_WEBSITE_NAME_" . $this->siteLangId));
         $pdf->SetKeywords(FatApp::getConfig("CONF_WEBSITE_NAME_" . $this->siteLangId));
         $pdf->setHeaderFont(Array(PDF_FONT_NAME_MAIN, '', PDF_FONT_SIZE_MAIN));
-        $pdf->setFooterFont(Array(PDF_FONT_NAME_DATA, '', PDF_FONT_SIZE_DATA));
         $pdf->SetHeaderMargin(0);
-        $pdf->SetFooterMargin(PDF_MARGIN_FOOTER);
         $pdf->SetHeaderData('', 0, '', '', array(255,255,255), array(255,255,255));
+        $pdf->setFooterData(array(0,0,0), array(200,200,200));
+        $pdf->SetFooterMargin(PDF_MARGIN_FOOTER);
+        $pdf->setFooterFont(Array(PDF_FONT_NAME_DATA, '', PDF_FONT_SIZE_DATA));
         $pdf->SetMargins(10, 10, 10);
         $pdf->setImageScale(PDF_IMAGE_SCALE_RATIO);
         $pdf->AddPage();
