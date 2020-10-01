@@ -11,7 +11,7 @@
                     <h2><?php echo Labels::getLabel('LBL_Frequently_Asked_Questions', $siteLangId); ?></h2>
                 </div>
             </div>
-            <div id="" class="tabs tabs--flat-js tabs-faqs justify-content-md-center">
+            <div id="" class="tabs faqTabs--flat-js tabs-faqs justify-content-md-center">
                 <ul>
                     <?php $count = 0;
                     foreach ($faqCategories as $faqCatId => $faqCat) { ?>
@@ -25,23 +25,28 @@
                     <?php } ?>
                 </ul>
             </div>
-            <?php foreach ($faqCategories as $faqCat) { ?>
-            <div class="tabs-content tabs-content-home--js">
+            <?php foreach ($faqCategories as $faqCatId => $faqCat) { ?>
+            <div id="tb-<?php echo $faqCatId; ?>" class="tabs-content tabs-content-home--js">
                 <div class="list-faqs" data-contentloaded="0">
                     <ul>
                         <?php foreach ($faqCat['faqs'] as $faqId => $faq) { ?>
                         <li>
                             <h5><?php echo $faq['faq_title']; ?></h5>
-                            <p><?php echo FatUtility::decodeHtmlEntities($faq['faq_content']);; ?></p>
+                            <p><span class="lessText"><?php echo CommonHelper::truncateCharacters($faq['faq_content'], 85, '', '', true); ?></span> <?php if (strlen($faq['faq_content']) > 85) {
+                            ?> <span class="moreText hidden"><?php echo FatUtility::decodeHtmlEntities($faq['faq_content']); ?></span> 
+                            <a class="readMore link--arrow" href="javascript:void(0);"> <?php echo Labels::getLabel('Lbl_SHOW_MORE', $siteLangId) ; ?> </a></p> <?php
+                            } ?>
+                            <p></p>
                         </li>
                         <?php } ?>
                     </ul>
                 </div>
             </div>
             <?php } ?>
-            <div class="tabs-content" style="display:none;">
-                <div class="list-faqs" data-contentloaded="0"></div>
-            </div>
         </div>
     </section>
 <?php } ?>
+<script>
+    var $linkMoreText = '<?php echo Labels::getLabel('Lbl_SHOW_MORE', $siteLangId); ?>';
+    var $linkLessText = '<?php echo Labels::getLabel('Lbl_SHOW_LESS', $siteLangId); ?>';
+</script>
