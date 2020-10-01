@@ -47,7 +47,7 @@
             <div class="container">
                 <div class="top-bar__inner">
                     <div class="top-bar__left">
-                    <?php if (FatApp::getConfig('CONF_ENABLE_GEO_LOCATION', FatUtility::VAR_INT, 0)) {?>                        
+                    <?php if (FatApp::getConfig('CONF_ENABLE_GEO_LOCATION', FatUtility::VAR_INT, 0)) { ?>                        
                             <a href="javascript:void(0)" onClick="accessLocation(true)" class="location" title="<?php echo Labels::getLabel("LBL_Location", $siteLangId); ?>">
                             <i class="icn">
                                 <svg class="svg" width="15px" height="15px">
@@ -93,15 +93,10 @@
                             $fileData = AttachedFile::getAttachment(AttachedFile::FILETYPE_FRONT_LOGO, 0, 0, $siteLangId, false);
                             $aspectRatioArr = AttachedFile::getRatioTypeArray($siteLangId);
                             $uploadedTime = AttachedFile::setTimeParam($fileData['afile_updated_at']);
-                            
                             $siteLogo = UrlHelper::getCachedUrl(UrlHelper::generateFullFileUrl('Image', 'siteLogo', array($siteLangId), CONF_WEBROOT_FRONT_URL) . $uploadedTime, CONF_IMG_CACHE_TIME, '.jpg');
-                            $ratio = '';
-                            if ($fileData['afile_aspect_ratio'] > 0) {
-                                $ratio = $fileData['afile_aspect_ratio'];
-                            }
                             ?>
-                            <img <?php if (!empty($ratio)) { ?>
-                            data-ratio= "<?php echo $aspectRatioArr[$ratio]; ?>"
+                            <img <?php if ($fileData['afile_aspect_ratio'] > 0) { ?>
+                            data-ratio= "<?php echo $aspectRatioArr[$fileData['afile_aspect_ratio']]; ?>"
                             <?php } ?> src="<?php echo $siteLogo; ?>"
                             alt="<?php echo FatApp::getConfig('CONF_WEBSITE_NAME_' . $siteLangId, FatUtility::VAR_STRING, '') ?>"
                             title="<?php echo FatApp::getConfig('CONF_WEBSITE_NAME_' . $siteLangId, FatUtility::VAR_STRING, '') ?>">

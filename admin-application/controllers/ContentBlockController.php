@@ -161,7 +161,7 @@ class ContentBlockController extends AdminBaseController
         $newTabLangId = 0;
         $languages = Language::getAllNames();
         foreach ($languages as $langId => $langName) {
-            if (!$row = Extrapage::getAttributesByLangId($langId, $epage_id)) {
+            if (!Extrapage::getAttributesByLangId($langId, $epage_id)) {
                 $newTabLangId = $langId;
                 break;
             }
