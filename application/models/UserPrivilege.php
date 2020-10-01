@@ -539,7 +539,7 @@ class UserPrivilege
             return false;
         }
         $currentPlanData = OrderSubscription:: getUserCurrentActivePlanDetails($langId, $userId, array(OrderSubscription::DB_TBL_PREFIX . 'id'));
-        $currentActivePlanId = $currentPlanData[OrderSubscription::DB_TBL_PREFIX . 'id'];
+        $currentActivePlanId = is_array($currentPlanData) && isset($currentPlanData[OrderSubscription::DB_TBL_PREFIX . 'id']) ? $currentPlanData[OrderSubscription::DB_TBL_PREFIX . 'id'] : 0;
 
         if (!$currentActivePlanId) {
             return true;
