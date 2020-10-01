@@ -139,6 +139,7 @@ Bugs:
     => 043596 - When we place any order with pickup then there are some errors on checkout page .
     => 043594 - Order details page >> invalid access gets display if admin or seller try to change order status .
     => 041966 - seller> dashboard> there are errors
+    => 043517 - when language other than EN, AR is selected then getting error on header
 
 Enhancements:
     => Tax module upgrade

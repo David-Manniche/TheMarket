@@ -92,11 +92,11 @@
                             <?php
                             $fileData = AttachedFile::getAttachment(AttachedFile::FILETYPE_FRONT_LOGO, 0, 0, $siteLangId, false);
                             $aspectRatioArr = AttachedFile::getRatioTypeArray($siteLangId);
-                            $uploadedTime = AttachedFile::setTimeParam($fileData['afile_updated_at']);
+                            $uploadedTime = isset($fileData['afile_updated_at']) ? AttachedFile::setTimeParam($fileData['afile_updated_at']) : '';
                             
                             $siteLogo = UrlHelper::getCachedUrl(UrlHelper::generateFullFileUrl('Image', 'siteLogo', array($siteLangId), CONF_WEBROOT_FRONT_URL) . $uploadedTime, CONF_IMG_CACHE_TIME, '.jpg');
                             $ratio = '';
-                            if ($fileData['afile_aspect_ratio'] > 0) {
+                            if (isset($fileData['afile_aspect_ratio']) && $fileData['afile_aspect_ratio'] > 0) {
                                 $ratio = $fileData['afile_aspect_ratio'];
                             }
                             ?>
