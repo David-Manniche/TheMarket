@@ -2480,11 +2480,11 @@ class BuyerController extends BuyerBaseController
         }
 
         $cartObj = new Cart();
-        $cartInfo = unserialize($orderDetail['order_cart_data']);
+        $cartInfo = json_decode($orderDetail['order_cart_data'], true);
         unset($cartInfo['shopping_cart']);
         $outOfStock = false;
         foreach ($cartInfo as $key => $quantity) {
-            $keyDecoded = unserialize(base64_decode($key));
+            $keyDecoded = json_decode(base64_decode($key), true);
 
             $selprod_id = 0;
 

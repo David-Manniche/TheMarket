@@ -1,6 +1,8 @@
 <?php defined('SYSTEM_INIT') or die('Invalid Usage'); ?>
-<?php $gatewayCount=0; foreach ($paymentMethods as $key => $val) {
+<?php $gatewayCount=0; 
+foreach ($paymentMethods as $key => $val) {
     if (in_array($val['plugin_code'], $excludePaymentGatewaysArr[applicationConstants::CHECKOUT_ADD_MONEY_TO_WALLET])) {
+        unset($paymentMethods[$key]);
         continue;
     }
     $gatewayCount++;

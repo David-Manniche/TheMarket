@@ -253,7 +253,7 @@ $toAllFld->setFieldTagAttribute('onChange', 'validateTimeFields()');
                                     $toTime = date('H:i', strtotime($slotData['tslot_to_time'][$i][$key]));
                                     
                                     $fromFld = $frm->getField('tslot_from_time['.$i.'][]');
-                                    $fromFld->setFieldTagAttribute('class', 'js-slot-from-'.$i);
+                                    $fromFld->setFieldTagAttribute('class', 'js-slot-from-'.$i.' fromTime-js');
                                     $fromFld->setFieldTagAttribute('onChange', 'displayAddRowField('.$i.')');
                                     $fromFld->value = $fromTime;
 
@@ -336,7 +336,7 @@ $toAllFld->setFieldTagAttribute('onChange', 'validateTimeFields()');
                                 
                                 $fromFld = $frm->getField('tslot_from_time['.$i.'][]');
                                 $fromFld->setFieldTagAttribute('disabled', 'true');
-                                $fromFld->setFieldTagAttribute('class', 'js-slot-from-'.$i);
+                                $fromFld->setFieldTagAttribute('class', 'js-slot-from-'.$i.' fromTime-js');
                                 $fromFld->setFieldTagAttribute('onChange', 'displayAddRowField('.$i.')');
 
                                 $toFld = $frm->getField('tslot_to_time['.$i.'][]');

@@ -129,6 +129,20 @@ Bugs:
 
     => 043493 - Meta title is not working
     => 043497 - Colour of Subscribe section on blog page doesn't update
+    => 043109 - while adding pickup details> slots> there is some issue with time
+    => 042650 - On cart >> when there are products in shipped and pickup both then amount should be of those products only which are selected under " ship my order " or " pickup in store"
+    => 042602 -  If we come back on home page from checkout and there are only shipped and only pickup products then products on checkout are the only products which gets display on cart popup
+    => 042595 - On Thankyou >> if we choose pickup then shipping method section shows a blank bar
+
+    ----------------- TV-9.2.1.20200930------------------------
+
+    => 043678 - Home page >> brand collection >> default image should be there if there is no media file selected for brand instead of some text 
+    => 043530 - add money to wallet> listing cod option
+    => 043531 - while purchasing subscription there is error
+    => 043596 - When we place any order with pickup then there are some errors on checkout page .
+    => 043594 - Order details page >> invalid access gets display if admin or seller try to change order status .
+    => 041966 - seller> dashboard> there are errors
+    => 043517 - when language other than EN, AR is selected then getting error on header
 
 Enhancements:
     => Tax module upgrade

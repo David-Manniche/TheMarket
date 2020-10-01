@@ -99,18 +99,43 @@ if (Orders::ORDER_PRODUCT == $orderInfo['order_type']) {
                                 </li>
                                 <?php }
                             if (Orders::ORDER_PRODUCT == $orderInfo['order_type']) {
-                                if (!empty($shippingMethod)) { ?>
+                                if (!empty($orderFulFillmentTypeArr) && OrderProduct::TYPE_PICKUP == current($orderFulFillmentTypeArr)['opshipping_type']) { ?>
+                                    <li>
+                                        <h4>
+                                            <svg class="svg" width="22px" height="22px">
+                                                <use xlink:href="<?php echo CONF_WEBROOT_URL; ?>images/retina/sprite.svg#shipping" href="<?php echo CONF_WEBROOT_URL; ?>images/retina/sprite.svg#shipping">
+                                                </use>
+                                            </svg> <?php echo Labels::getLabel('LBL_ORDER_PICKUP', $siteLangId); ?>
+                                        </h4>
+                                        
+                                        <?php foreach ($orderFulFillmentTypeArr as $orderAddDet) { ?>
+                                            <p>
+                                                <strong>
+                                                    <?php echo '#' . $orderAddDet['op_invoice_number'] . ' : ' . $orderAddDet['opshipping_date'] . ' ' . $orderAddDet['opshipping_time_slot_from'] . ' - ' . $orderAddDet['opshipping_time_slot_to']; ?>
+                                                </strong><br>
+                                                <?php echo $orderAddDet['addr_name']; ?>,
+                                                <?php
+                                                echo $orderAddDet['addr_address1'];
+                                                if (!empty($orderAddDet['addr_address2'])) {
+                                                    echo ', ' . $orderAddDet['addr_address2'];
+                                                }
+                                                echo '<br>' . $orderAddDet['addr_city'] . ', ' . $orderAddDet['state_code'] . ' ' . $orderAddDet['country_code'] . '(' . $orderAddDet['addr_zip'] . ')';
+                                                ?>
+                                            </p>
+                                        <?php } ?>
+                                    </li>
+                                <?php } else if (!empty($shippingMethod)) { ?>
                                     <li>
                                         <h4>
                                             <svg class="svg" width="22px" height="22px">
                                                 <use xlink:href="<?php echo CONF_WEBROOT_URL; ?>images/retina/sprite.svg#shipping-method" href="<?php echo CONF_WEBROOT_URL; ?>images/retina/sprite.svg#shipping-method">
                                                 </use>
-                                            </svg> Shipping Method </h4>
-                                        <p>Preferred Method: <br>
-                                            <ol class="preferred-shipping-list">
-                                                <?php echo $shippingMethod; ?>
-                                            </ol>
-                                        </p>
+                                            </svg> <?php echo Labels::getLabel('LBL_SHIPPING_METHOD', $siteLangId); ?> </h4>
+                                            <p><?php echo Labels::getLabel('LBL_PREFERRED_METHOD', $siteLangId); ?>: <br>
+                                                <ol class="preferred-shipping-list">
+                                                    <?php echo $shippingMethod; ?>
+                                                </ol>
+                                            </p>
                                     </li>
                                 <?php }
                                 if (!empty($orderInfo['billingAddress'])) { ?>

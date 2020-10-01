@@ -730,7 +730,7 @@ class SellerController extends SellerBaseController
             }
 
             if (!$orderObj->addChildProductOrderHistory($op_id, $orderDetail["order_language_id"], $post["op_status_id"], $post["comments"], $post["customer_notified"], $post["tracking_number"], 0, true, $trackingCourierCode)) {
-                Message::addErrorMessage(Labels::getLabel('M_ERROR_INVALID_REQUEST', $this->siteLangId));
+                Message::addErrorMessage($orderObj->getError());
                 FatUtility::dieJsonError(Message::getHtml());
             }
         } else {
@@ -3639,9 +3639,8 @@ class SellerController extends SellerBaseController
         $includeFreeSubscription = OrderSubscription::canUserBuyFreeSubscription($this->siteLangId, $this->userParentId);
         $packagesArr = SellerPackages::getSellerVisiblePackages($this->siteLangId, $includeFreeSubscription);
 
-        $currentActivePlanId = 0;
         $currentPlanData = OrderSubscription::getUserCurrentActivePlanDetails($this->siteLangId, $this->userParentId, array(OrderSubscription::DB_TBL_PREFIX . 'plan_id'));
-        $currentActivePlanId = $currentPlanData[OrderSubscription::DB_TBL_PREFIX . 'plan_id'];
+        $currentActivePlanId = is_array($currentPlanData) && isset($currentPlanData[OrderSubscription::DB_TBL_PREFIX . 'plan_id']) ? $currentPlanData[OrderSubscription::DB_TBL_PREFIX . 'plan_id'] : 0;
 
         foreach ($packagesArr as $key => $package) {
             $packagesArr[$key]['plans'] = SellerPackagePlans::getSellerVisiblePackagePlans($package[SellerPackages::DB_TBL_PREFIX . 'id']);

@@ -1328,7 +1328,7 @@ class AccountController extends LoggedUserController
         }
         
         $cartObj = new Cart($loggedUserId, $this->siteLangId, $this->app_user['temp_user_id']);
-        $key = md5(base64_encode(serialize(Cart::CART_KEY_PREFIX_PRODUCT . $selProdId)));
+        $key = md5(base64_encode(json_encode(Cart::CART_KEY_PREFIX_PRODUCT . $selProdId)));
         if (!$cartObj->remove($key)) {
             LibHelper::dieJsonError($cartObj->getError());
         }

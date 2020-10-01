@@ -114,5 +114,21 @@ var cart = {
 				$.mbsmessage.close();
 			});
 		}
+    },
+    
+	clear: function(){
+		if(confirm( langLbl.confirmRemove )){
+			fcom.updateWithAjax(fcom.makeUrl('Cart','clear'), '' ,function(ans){
+				if( ans.status ){
+                    if (typeof listCartProducts === "function") {
+                        listCartProducts();
+                    }
+                    $('span.cartQuantity').html(ans.total);
+                    $('#cartSummary').load(fcom.makeUrl('cart', 'getCartSummary' ));
+                    $('body').removeClass('side-cart--on');
+				}
+				$.mbsmessage.close();
+			});
+		}
 	},
 };

@@ -30,9 +30,9 @@ require_once $_SESSION['WYSIWYGFileManagerRequirements'];
 
 if (!empty($_FILES)) {
     $tempFile = $_FILES['Filedata']['tmp_name'];
-    $targetPath = WEBSITEROOT_LOCALPATH .$path_for_images . '/';
-    
-    $targetFile =  str_replace('//', '/', $targetPath) . $_FILES['Filedata']['name'];
+    $targetPath = WEBSITEROOT_LOCALPATH . $path_for_images . '/';
+
+    $targetFile =  rtrim($targetPath, '/') . '/' . $_FILES['Filedata']['name'];
 
     $allowedExt = UPLOAD_FILE_TYPES;
 

@@ -35,7 +35,7 @@ class SubscriptionCart extends FatModel
         $srch->addCondition('usercart_type', '=', Cart::TYPE_SUBSCRIPTION);
         $rs = $srch->getResultSet();
         if ($row = FatApp::getDb()->fetch($rs)) {
-            $this->SYSTEM_ARR['subscription_cart'] = unserialize($row["usercart_details"]);
+            $this->SYSTEM_ARR['subscription_cart'] = json_decode($row["usercart_details"], true);
             if (isset($this->SYSTEM_ARR['subscription_cart']['subscription_shopping_cart'])) {
                 $this->SYSTEM_ARR['subscription_shopping_cart'] = $this->SYSTEM_ARR['subscription_cart']['subscription_shopping_cart'];
                 unset($this->SYSTEM_ARR['subscription_cart']['subscription_shopping_cart']);
@@ -430,7 +430,7 @@ class SubscriptionCart extends FatModel
             if (isset($this->SYSTEM_ARR['subscription_shopping_cart']) && is_array($this->SYSTEM_ARR['subscription_shopping_cart']) && (!empty($this->SYSTEM_ARR['subscription_shopping_cart']))) {
                 $cart_arr["subscription_shopping_cart"] = $this->SYSTEM_ARR['subscription_shopping_cart'];
             }
-            $cart_arr = serialize($cart_arr);
+            $cart_arr = json_encode($cart_arr);
             $record->assignValues(array("usercart_user_id" => $this->scart_user_id, 'usercart_type' => Cart::TYPE_SUBSCRIPTION, "usercart_details" => $cart_arr, "usercart_added_date" => date('Y-m-d H:i:s') ));
             if (!$record->addNew(array(), array( 'usercart_details' => $cart_arr ))) {
                 Message::addErrorMessage($record->getError());
@@ -466,12 +466,12 @@ class SubscriptionCart extends FatModel
             return false;
         }
 
-        $cartInfo = unserialize($row["usercart_details"]);
+        $cartInfo = json_decode($row["usercart_details"], true);
 
         $cartObj = new SubscriptionCart($userId);
 
         foreach ($cartInfo as $key => $quantity) {
-            $keyDecoded = unserialize(base64_decode($key));
+            $keyDecoded = json_decode(base64_decode($key), true);
 
             $spplan_id = 0;
             $prodgroup_id = 0;
@@ -498,7 +498,7 @@ class SubscriptionCart extends FatModel
             foreach ($this->SYSTEM_ARR['subscription_cart'] as $key => $quantity) {
                 $spplan_id = 0;
                 $sellerPlanRow = array();
-                $keyDecoded = unserialize(base64_decode($key));
+                $keyDecoded = json_decode(base64_decode($key), true);
                 if (strpos($keyDecoded, static::SUBSCRIPTION_CART_KEY_PREFIX_PRODUCT) !== false) {
                     $spplan_id = str_replace(static::SUBSCRIPTION_CART_KEY_PREFIX_PRODUCT, '', $keyDecoded);
                 }

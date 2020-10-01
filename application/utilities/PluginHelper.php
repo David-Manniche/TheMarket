@@ -49,7 +49,7 @@ trait PluginHelper
     }
     
     /**
-     * getKey
+     * getKey - Get Single Plugin Setting Value
      *
      * @param  string $column
      * @return string
@@ -61,11 +61,11 @@ trait PluginHelper
         }
 
         $this->loadPluginSettingsObj();         
-        if (false === $this->settings = $this->pluginSetting->get($this->langId, $column)) {
+        if (false === $value = $this->pluginSetting->get($this->langId, $column)) {
             $this->error = $this->pluginSetting->getError();
             return '';
         }
-        return $this->settings;
+        return $value;
     }
     
     /**
@@ -82,7 +82,7 @@ trait PluginHelper
             $this->error = static::KEY_NAME . ' : ' . Labels::getLabel('MSG_PLUGIN_NOT_ACTIVE', $langId);
             return false;
         }
-
+        
         if (isset($this->requiredKeys) && !empty($this->requiredKeys) && is_array($this->requiredKeys)) {
             foreach ($this->requiredKeys as $key) {
                 if (!array_key_exists($key, $this->settings) || '' == $this->settings[$key]) {

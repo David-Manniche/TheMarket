@@ -71,7 +71,7 @@
                         <?php if(count($levelItems['pickup_options']) > 0) { ?>
                         <a class="btn btn-secondary btn-sm" href="javascript:void(0)" onclick="displayPickupAddress(<?php echo $level;?>, 0)"><?php echo Labels::getLabel('LBL_SELECT_PICKUP', $siteLangId);?></a>
                         <?php }else{
-                            echo Labels::getLabel('MSG_Please_add_pickup_addresses', $siteLangId);
+                            echo Labels::getLabel('MSG_NO_PICKUP_ADDRESS_CONFIGURED', $siteLangId);
                         } ?>
                     </div>
                 </li> 
@@ -119,7 +119,7 @@
                         <?php if(count($levelItems['pickup_options']) > 0) { ?>
                         <a class="btn btn-secondary btn-sm" href="javascript:void(0)" onclick="displayPickupAddress(<?php echo $level;?>, <?php echo $product['shop_id']; ?>)"><?php echo Labels::getLabel('LBL_SELECT_PICKUP', $siteLangId);?></a>
                         <?php }else{ 
-                            echo Labels::getLabel('MSG_Please_add_pickup_addresses', $siteLangId);
+                            echo Labels::getLabel('MSG_NO_PICKUP_ADDRESS_CONFIGURED', $siteLangId);
                         } ?>
                         </div>
                     </li> 

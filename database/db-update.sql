@@ -765,3 +765,13 @@ CREATE TABLE `tbl_product_category_relations` (
 ALTER TABLE `tbl_product_category_relations` ADD PRIMARY KEY( `pcr_prodcat_id`, `pcr_parent_id`);
 -- Category Relation Management --
 -- ---------------TV-9.2.1.20200925------------------------
+ALTER TABLE `tbl_products_min_price` ADD `pmp_max_price` DECIMAL(10,2) NOT NULL AFTER `pmp_min_price`;
+-- -----------TV-9.2.1.20200930------------------------
+
+
+SET @paypalStandardId := (SELECT plugin_id FROM tbl_plugins WHERE plugin_identifier = 'PaypalStandard');
+SET @paypalId := (SELECT plugin_id FROM tbl_plugins WHERE plugin_identifier = 'Paypal');
+DELETE FROM `tbl_plugins` WHERE `plugin_id` = @paypalStandardId;
+UPDATE `tbl_plugins` SET `plugin_id`= @paypalStandardId WHERE `plugin_id` = @paypalId;
+DELETE FROM `tbl_plugin_settings` WHERE `pluginsetting_plugin_id` = @paypalStandardId;
+UPDATE `tbl_plugin_settings` SET `pluginsetting_plugin_id`= @paypalStandardId WHERE `pluginsetting_plugin_id` = @paypalId;

@@ -2717,11 +2717,11 @@ class EmailHandler extends FatModel
         $tpl = 'reminder_for_items_in_cart';
 
         $cartData = Cart::getCartData($d['user_id']);
-        $cartInfo = unserialize($cartData);
+        $cartInfo = json_decode($cartData, true);
         $selProdIds = array();
         unset($cartInfo['shopping_cart']);
         foreach ($cartInfo as $key => $quantity) {
-            $keyDecoded = unserialize(base64_decode($key));
+            $keyDecoded = json_decode(base64_decode($key), true);
 
             if (strpos($keyDecoded, Cart::CART_KEY_PREFIX_PRODUCT) === false) {
                 continue;

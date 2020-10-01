@@ -771,7 +771,7 @@ class Cronjob extends FatModel
         }
 
         foreach ($row as $val) {
-            $cartDetails = unserialize($val["usercart_details"]);
+            $cartDetails = json_decode($val["usercart_details"], true);
             if (count($cartDetails) == 0) {
                 continue;
             }
