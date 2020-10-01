@@ -311,7 +311,7 @@
 											/* if (FatApp::getConfig('CONF_TAX_AFTER_DISOCUNT', FatUtility::VAR_INT, 0)) {
 												$taxableProdPrice = $taxableProdPrice - CommonHelper::orderProductAmount($childOrder, 'DISCOUNT');
 											} */
-											echo $taxableProdPrice;
+											echo CommonHelper::displayMoneyFormat($taxableProdPrice, true, false, true, false, true);
 											?>
 											</td>                                            
 											<?php if (!empty($childOrder['taxOptions'])) {
@@ -321,12 +321,6 @@
 													</td>
 												<?php }
 											} ?>                                                 
-										</tr>
-										<tr>
-											<td style="padding:10px 15px;font-size: 12px;border:1px solid #ddd;"><?php echo Labels::getLabel('LBL_Delivery_Charges', $siteLangId); ?>* </td>                                            
-											<td style="padding:10px 15px;border:1px solid #ddd;">157.16 </td>                                            
-											<td style="padding:10px 15px;border:1px solid #ddd;">3.92 </td>                                            
-											<td style="padding:10px 15px;border:1px solid #ddd;border-right:none;">3.92 </td>                                            
 										</tr>
 										<tr>
 											<td style="padding:10px 15px;border:1px solid #ddd;font-size:16px;"><strong>Grand Total</strong> </td>                                            
