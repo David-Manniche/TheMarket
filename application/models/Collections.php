@@ -20,6 +20,9 @@ class Collections extends MyAppModel
     public const COLLECTION_TYPE_SPONSORED_PRODUCTS = 6;
     public const COLLECTION_TYPE_SPONSORED_SHOPS = 7;
     public const COLLECTION_TYPE_BANNER = 8;
+    public const COLLECTION_TYPE_FAQ = 9;
+    public const COLLECTION_TYPE_TESTIMONIAL = 10;
+    public const COLLECTION_TYPE_CONTENT_BLOCK = 11;
 
     //public const SUBTYPE_PRODUCT_LAYOUT1 = 1;
     public const TYPE_PRODUCT_LAYOUT1 = 1;
@@ -35,6 +38,9 @@ class Collections extends MyAppModel
     public const TYPE_BANNER_LAYOUT1 = 11;
     public const TYPE_BANNER_LAYOUT2 = 12;
     public const TYPE_BANNER_LAYOUT3 = 13;
+    public const TYPE_FAQ_LAYOUT1 = 14;
+    public const TYPE_TESTIMONIAL_LAYOUT1 = 15;
+    public const TYPE_CONTENT_BLOCK_LAYOUT1 = 16;
 
     public const LIMIT_PRODUCT_LAYOUT1 = 12;
     public const LIMIT_PRODUCT_LAYOUT2 = 6;
@@ -44,6 +50,9 @@ class Collections extends MyAppModel
     public const LIMIT_SHOP_LAYOUT1 = 4;
     public const LIMIT_BRAND_LAYOUT1 = 5;
     public const LIMIT_BLOG_LAYOUT1 = 3;
+    public const LIMIT_FAQ_LAYOUT1 = 6;
+    public const LIMIT_TESTIMONIAL_LAYOUT1 = 10;
+    public const LIMIT_CONTENT_BLOCK_LAYOUT1 = 1;
 
     public const COLLECTION_CRITERIA_PRICE_LOW_TO_HIGH = 1;
     public const COLLECTION_CRITERIA_PRICE_HIGH_TO_LOW = 2;
@@ -55,12 +64,16 @@ class Collections extends MyAppModel
         self::COLLECTION_TYPE_SPONSORED_PRODUCTS,
         self::COLLECTION_TYPE_SPONSORED_SHOPS,
         self::COLLECTION_TYPE_BANNER,
+        self::COLLECTION_TYPE_FAQ,
+        self::COLLECTION_TYPE_TESTIMONIAL,
+        self::COLLECTION_TYPE_CONTENT_BLOCK,
     ];
     
     public const COLLECTION_WITHOUT_RECORDS = [
         self::COLLECTION_TYPE_SPONSORED_PRODUCTS,
         self::COLLECTION_TYPE_SPONSORED_SHOPS,
-        self::COLLECTION_TYPE_BANNER
+        self::COLLECTION_TYPE_BANNER,
+        self::COLLECTION_TYPE_CONTENT_BLOCK
     ];
     
     /**
@@ -123,6 +136,9 @@ class Collections extends MyAppModel
             self::COLLECTION_TYPE_SPONSORED_PRODUCTS => Labels::getLabel('LBL_Sponsored_Products', $langId),
             self::COLLECTION_TYPE_SPONSORED_SHOPS => Labels::getLabel('LBL_Sponsored_Shops', $langId),
             self::COLLECTION_TYPE_BANNER => Labels::getLabel('LBL_Banner', $langId),
+            self::COLLECTION_TYPE_FAQ => Labels::getLabel('LBL_FAQ', $langId),
+            self::COLLECTION_TYPE_TESTIMONIAL => Labels::getLabel('LBL_Testimonial', $langId),
+            self::COLLECTION_TYPE_CONTENT_BLOCK => Labels::getLabel('LBL_Content_Blocks', $langId),
         ];
     }
     
@@ -152,6 +168,9 @@ class Collections extends MyAppModel
             self::TYPE_BANNER_LAYOUT1 => Labels::getLabel('LBL_Banner_Layout1', $langId),
             self::TYPE_BANNER_LAYOUT2 => Labels::getLabel('LBL_Banner_Layout2', $langId),
             self::TYPE_BANNER_LAYOUT3 => Labels::getLabel('LBL_Mobile_Banner_Layout', $langId),
+            self::TYPE_FAQ_LAYOUT1 => Labels::getLabel('LBL_Faq_Layout1', $langId),
+            self::TYPE_TESTIMONIAL_LAYOUT1 => Labels::getLabel('LBL_Testimonial_Layout1', $langId),
+            self::TYPE_CONTENT_BLOCK_LAYOUT1 => Labels::getLabel('LBL_Content_block_Layout1', $langId),
         ];
     }
     
@@ -192,6 +211,15 @@ class Collections extends MyAppModel
             ],
             self::COLLECTION_TYPE_SPONSORED_SHOPS => [
                 self::TYPE_SPONSORED_SHOP_LAYOUT => Labels::getLabel('LBL_Sponsored_Shops', $langId),
+            ],
+            self::COLLECTION_TYPE_FAQ => [
+                self::TYPE_FAQ_LAYOUT1 => Labels::getLabel('LBL_FAQ', $langId),
+            ],
+            self::COLLECTION_TYPE_TESTIMONIAL => [
+                self::TYPE_TESTIMONIAL_LAYOUT1 => Labels::getLabel('LBL_Testimonial', $langId),
+            ],
+            self::COLLECTION_TYPE_CONTENT_BLOCK => [
+                self::TYPE_CONTENT_BLOCK_LAYOUT1 => Labels::getLabel('LBL_Content_Block', $langId),
             ]
         ];
     }
@@ -284,6 +312,9 @@ class Collections extends MyAppModel
             self::TYPE_BANNER_LAYOUT1 => 'banner-layout-1.jpg',
             self::TYPE_BANNER_LAYOUT2 => 'banner-layout-2.jpg',
             self::TYPE_BANNER_LAYOUT3 => 'banner-layout-3.jpg',
+            self::TYPE_FAQ_LAYOUT1 => 'faq-layout-1.jpg',
+            self::TYPE_TESTIMONIAL_LAYOUT1 => 'testimonial-layout-1.jpg',
+            self::TYPE_CONTENT_BLOCK_LAYOUT1 => 'content-block-layout-1.jpg',
         ];
     }
     
@@ -563,6 +594,66 @@ class Collections extends MyAppModel
 
         $srch->joinTable(BlogPost::DB_TBL_LANG, 'LEFT JOIN', 'lang.postlang_post_id = ' . BlogPost::DB_TBL_PREFIX . 'id AND postlang_lang_id = ' . $langId, 'lang');
         $srch->addMultipleFields(array('post_id as record_id', 'IFNULL(post_title, post_identifier) as record_title'));
+        $rs = $srch->getResultSet();
+        $db = FatApp::getDb();
+        return $db->fetchAll($rs);
+    }
+
+    /**
+     * getFaqs
+     *
+     * @param  int $collectionId
+     * @param  int $langId
+     * @return array
+     */
+    public static function getFaqs(int $collectionId, int $langId): array
+    {
+        if (!$collectionId || !$langId) {
+            trigger_error(Labels::getLabel("ERR_Arguments_not_specified.", $langId), E_USER_ERROR);
+            return false;
+        }
+
+        $srch = new SearchBase(static::DB_TBL_COLLECTION_TO_RECORDS);
+        $srch->doNotLimitRecords();
+        $srch->doNotCalculateRecords();
+        $srch->addCondition(static::DB_TBL_COLLECTION_TO_RECORDS_PREFIX . 'collection_id', '=', $collectionId);
+
+        $srch->joinTable(Faq::DB_TBL, 'INNER JOIN', Faq::DB_TBL_PREFIX . 'id = ' . static::DB_TBL_COLLECTION_TO_RECORDS_PREFIX . 'record_id');
+        $srch->joinTable(Faq::DB_TBL_LANG, 'LEFT JOIN', 'lang.faqlang_faq_id = ' . Faq::DB_TBL_PREFIX . 'id AND faqlang_lang_id = ' . $langId, 'lang');
+        $srch->joinTable(
+            FaqCategory::DB_TBL, 'INNER JOIN', 'faq_faqcat_id = faqcat_id', 'fc'
+        );
+        $srch->joinTable(FaqCategory::DB_TBL_LANG, 'LEFT OUTER JOIN', 'fc_l.' . FaqCategory::DB_TBL_LANG_PREFIX . 'faqcat_id = fc.' . FaqCategory::tblFld('id') . ' and fc_l.' . FaqCategory::DB_TBL_LANG_PREFIX . 'lang_id = ' . $langId, 'fc_l'
+        );
+        $srch->addMultipleFields(array('faq_id as record_id', 'CONCAT(IFNULL(faq_title, faq_identifier), " | ", IFNULL (faqcat_name, faqcat_identifier)) as record_title'));
+        $rs = $srch->getResultSet();
+        $db = FatApp::getDb();
+        return $db->fetchAll($rs);
+    }
+
+    /**
+     * getTestimonials
+     *
+     * @param  int $collectionId
+     * @param  int $langId
+     * @return array
+     */
+    public static function getTestimonials(int $collectionId, int $langId): array
+    {
+        if (!$collectionId || !$langId) {
+            trigger_error(Labels::getLabel("ERR_Arguments_not_specified.", $langId), E_USER_ERROR);
+            return false;
+        }
+
+        $srch = new SearchBase(static::DB_TBL_COLLECTION_TO_RECORDS);
+        $srch->doNotLimitRecords();
+        $srch->doNotCalculateRecords();
+        $srch->addCondition(static::DB_TBL_COLLECTION_TO_RECORDS_PREFIX . 'collection_id', '=', $collectionId);
+
+        $srch->joinTable(Testimonial::DB_TBL, 'INNER JOIN', Testimonial::DB_TBL_PREFIX . 'id = ' . static::DB_TBL_COLLECTION_TO_RECORDS_PREFIX . 'record_id');
+
+        $srch->joinTable(Testimonial::DB_TBL_LANG, 'LEFT JOIN', 'lang.testimoniallang_testimonial_id = ' . Testimonial::DB_TBL_PREFIX . 'id AND testimoniallang_lang_id = ' . $langId, 'lang');
+        $srch->addMultipleFields(array('testimonial_id as record_id', 'IFNULL(testimonial_title, testimonial_identifier) as record_title'));
         $rs = $srch->getResultSet();
         $db = FatApp::getDb();
         return $db->fetchAll($rs);

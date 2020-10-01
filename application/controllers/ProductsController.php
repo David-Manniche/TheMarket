@@ -1066,10 +1066,46 @@ class ProductsController extends MyAppController
         }
     }
 
+    public function clearSearchKeywords()
+    {
+        $keyword = FatApp::getPostedData("keyword");
+        if (!empty($keyword)) {
+            $recentSearchArr = [];
+            if (isset($_COOKIE['recentSearchKeywords_' . $this->siteLangId])) {
+                $recentSearchArr = unserialize($_COOKIE['recentSearchKeywords_' . $this->siteLangId]);
+            }
+
+            if (($key = array_search($keyword, $recentSearchArr)) !== false) {
+                unset($recentSearchArr[$key]);
+                var_dump($recentSearchArr);
+                setcookie('recentSearchKeywords_' . $this->siteLangId, serialize($recentSearchArr), time() + 60 * 60 * 72, CONF_WEBROOT_URL);
+            }
+        } else {
+            setcookie('recentSearchKeywords_' . $this->siteLangId, '', time() + 60 * 60 * 72, CONF_WEBROOT_URL);
+        }
+    }
+
     public function searchProducttagsAutocomplete()
     {
         $keyword = FatApp::getPostedData("keyword");
+
+        $recentSearchArr = [];
+        if (isset($_COOKIE['recentSearchKeywords_' . $this->siteLangId])) {
+            $recentSearchArr = unserialize($_COOKIE['recentSearchKeywords_' . $this->siteLangId]);
+        }
+
+        if (empty($keyword) || mb_strlen($keyword) < 3) {
+            $this->set('keyword', $keyword);
+            $this->set('recentSearchArr', $recentSearchArr);
+            $html = '';
+            if (!empty($recentSearchArr)) {
+                $html = $this->_template->render(false, false, 'products/search-producttags-autocomplete.php', true, false);
+            }
+            $this->set('html', $html);
+            $this->_template->render(false, false, 'json-success.php', false, false);
+        }
         $cacheKey = $this->siteLangId . '-' .  urlencode($keyword);
+
 
         $autoSuggetionsCache = FatCache::get('autoSuggetionsCache' . $cacheKey, CONF_FILTER_CACHE_TIME, '.txt');
         if (!$autoSuggetionsCache) {
@@ -1137,19 +1173,27 @@ class ProductsController extends MyAppController
                 'categories' => $catArr,
                 'products' => $prodArr
             ];
+            if (!empty($tags) || !empty($brandArr) || !empty($catArr) || !empty($prodArr)) {
+                array_unshift($recentSearchArr, $keyword);
+            }
+            $recentSearchArr = array_unique($recentSearchArr);
+            $recentSearchArr = array_slice($recentSearchArr, 0, 5);
+            setcookie('recentSearchKeywords_' . $this->siteLangId, serialize($recentSearchArr), time() + 60 * 60 * 72, CONF_WEBROOT_URL);
             FatCache::set('autoSuggetionsCache' . $cacheKey, serialize($suggestions), '.txt');
         } else {
             $suggestions = unserialize($autoSuggetionsCache);
         }
 
         $this->set('suggestions', $suggestions);
+        $this->set('recentSearchArr', $recentSearchArr);
         $this->set('keyword', $keyword);
         if (true === MOBILE_APP_API_CALL) {
             $this->_template->render();
         }
 
-        echo $this->_template->render(false, false, 'products/search-producttags-autocomplete.php', true);
-        exit;
+        $html = $this->_template->render(false, false, 'products/search-producttags-autocomplete.php', true, false);
+        $this->set('html', $html);
+        $this->_template->render(false, false, 'json-success.php', false, false);
     }
 
     public function getBreadcrumbNodes($action)

@@ -30,6 +30,14 @@ switch($collection_type) {
         $controllerName = 'BlogPosts';
 		$hideSelectField = '';
     break;
+    case Collections::COLLECTION_TYPE_FAQ:
+        $controllerName = 'Faq';
+		$hideSelectField = '';
+    break;
+    case Collections::COLLECTION_TYPE_TESTIMONIAL:
+        $controllerName = 'Testimonials';
+		$hideSelectField = '';
+    break;
 	default :
 		$controllerName = '';
 		$actionName = '';

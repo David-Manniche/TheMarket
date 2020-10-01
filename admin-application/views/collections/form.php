@@ -1,6 +1,6 @@
 <?php defined('SYSTEM_INIT') or die('Invalid Usage.');
-$frm->setFormTagAttribute('class', 'web_form');
-$frm->setFormTagAttribute('onsubmit', 'setupCollection(this); return(false);');
+$frm->setFormTagAttribute('class', 'web_form layout--' . $formLayout);
+$frm->setFormTagAttribute('onsubmit', 'setupCollection(); return(false);');
 
 if ($collection_layout_type != Collections::TYPE_BANNER_LAYOUT3) {
 	$fld = $frm->getField('collection_for_web');
@@ -60,8 +60,9 @@ $siteDefaultLangId = FatApp::getConfig('conf_default_site_lang', FatUtility::VAR
                         <?php } ?>
                     </ul>
                     <div class="tabs_panel_wrap">
-                        <div class="tabs_panel">
-                            <?php echo $frm->getFormTag(); ?>
+                        <div class="tabs_panel" id="tabs_form">
+                            <?php /* echo $frm->getFormHtml(); */
+                            echo $frm->getFormTag(); ?>
                             <div class="row">
                                 <div class="col-md-4">
                                     <div class="field-set">
@@ -80,6 +81,26 @@ $siteDefaultLangId = FatApp::getConfig('conf_default_site_lang', FatUtility::VAR
                                         </div>
                                     </div>
                                 </div>
+                                <?php if ($collection_type == Collections::COLLECTION_TYPE_CONTENT_BLOCK) { ?>
+                                <div class="col-md-12">
+                                    <div class="field-set">
+                                        <div class="caption-wraper">
+                                            <label class="field_label">
+                                            <?php
+                                                $fld = $frm->getField('epage_content_'.$siteDefaultLangId);
+                                                echo $fld->getCaption();
+                                            ?>
+                                            <span class="spn_must_field">*</span></label>
+                                        </div>
+                                        <div class="field-wraper">
+                                            <div class="field_cover">
+                                            <?php echo $frm->getFieldHtml('epage_content_'.$siteDefaultLangId); ?>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <?php echo $frm->getFieldHtml('epage_id');
+                                } ?>
                                 <?php if ($collection_type == Collections::COLLECTION_TYPE_BANNER) { ?>
 								<div class="col-md-4">
                                     <div class="field-set">
@@ -163,6 +184,25 @@ $siteDefaultLangId = FatApp::getConfig('conf_default_site_lang', FatUtility::VAR
                                                 </div>
                                             </div>
                                         </div>
+                                        <?php if ($collection_type == Collections::COLLECTION_TYPE_CONTENT_BLOCK) { ?>
+                                            <div class="row">
+                                                <div class="col-md-12">
+                                                    <div class="field-set">
+                                                        <div class="caption-wraper">
+                                                            <label class="field_label">
+                                                            <?php  $fld = $frm->getField('epage_content_'.$langId);
+                                                                echo $fld->getCaption(); ?>
+                                                            </label>
+                                                        </div>
+                                                        <div class="field-wraper">
+                                                            <div class="field_cover">
+                                                            <?php echo $frm->getFieldHtml('epage_content_'.$langId); ?>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        <?php } ?>
                                      </div>
                                  </div>
                              </div>

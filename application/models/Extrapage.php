@@ -24,7 +24,7 @@ class Extrapage extends MyAppModel
     public const SELLER_PAGE_FORM_TEXT = 24;
     public const FOOTER_TRUST_BANNERS = 26;
     public const CHECKOUT_PAGE_HEADER_BLOCK = 27;
-
+    
     public const ADMIN_PRODUCTS_CATEGORIES_INSTRUCTIONS = 28;
     public const GENERAL_SETTINGS_INSTRUCTIONS = 29;
     public const ADMIN_BRANDS_INSTRUCTIONS = 30;
@@ -45,6 +45,7 @@ class Extrapage extends MyAppModel
 
     public const CONTENT_PAGES = 0;
     public const CONTENT_IMPORT_INSTRUCTION = 1;
+    public const CONTENT_HOMEPAGE_COLLECTION = 2;
 
     public const REWRITE_URL_PREFIX = 'custom/view/';
 
@@ -173,5 +174,80 @@ class Extrapage extends MyAppModel
         $customUrl = UrlRewrite::getValidSeoUrl($seoUrl, $originalUrl, $this->mainTableRecordId);
 
         return UrlRewrite::update($originalUrl, $customUrl);
+    }
+
+    /**
+     * saveLangData
+     *
+     * @param  int $langId
+     * @param  string $collectionName
+     * @return bool
+     */
+    public function saveLangData(int $langId, array $data): bool
+    {
+        $langId = FatUtility::int($langId);
+        if ($this->mainTableRecordId < 1 || $langId < 1) {
+            $this->error = Labels::getLabel('ERR_Invalid_Request', $this->commonLangId);
+            return false;
+        }
+
+        $data = array(
+            'epagelang_epage_id' => $this->mainTableRecordId,
+            'epagelang_lang_id' => $langId,
+            'epage_label' => $data['epage_label'],
+            'epage_content' => $data['epage_content'],
+        );
+
+        if (!$this->updateLangData($langId, $data)) {
+            $this->error = $this->getError();
+            return false;
+        }
+        return true;
+    }
+
+    /**
+     * saveTranslatedLangData
+     *
+     * @param  int $langId
+     * @return bool
+     */
+    public function saveTranslatedLangData(int $langId): bool
+    {
+        $langId = FatUtility::int($langId);
+        if ($this->mainTableRecordId < 1 || $langId < 1) {
+            $this->error = Labels::getLabel('ERR_Invalid_Request', $this->commonLangId);
+            return false;
+        }
+
+        $translateLangobj = new TranslateLangData(static::DB_TBL_LANG);
+        if (false === $translateLangobj->updateTranslatedData($this->mainTableRecordId, 0, $langId)) {
+            $this->error = $translateLangobj->getError();
+            return false;
+        }
+        return true;
+    }
+
+    /**
+     * getTranslatedData
+     *
+     * @param  array $data
+     * @param  int $toLangId
+     * @return bool
+     */
+    public function getTranslatedData(array $data, int $toLangId)
+    {
+        $toLangId = FatUtility::int($toLangId);
+        if (empty($data) || $toLangId < 1) {
+            $this->error = Labels::getLabel('ERR_Invalid_Request', $this->commonLangId);
+            return false;
+        }
+
+        $translateLangobj = new TranslateLangData(static::DB_TBL_LANG);
+        $translatedData = $translateLangobj->directTranslate($data, $toLangId);
+        if (false === $translatedData) {
+            $this->error = $translateLangobj->getError();
+            return false;
+        }
+        return $translatedData;
     }
 }

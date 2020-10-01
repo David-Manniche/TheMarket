@@ -8,7 +8,9 @@ New Features:
     => CDN handling based on configuration. 
     => Url Rewritting based on language. 
     => Security Headers for clickjacking, XSS and MIME types. 
-    => After Ship API.   
+    => After Ship API.
+    => Design Manageability on homepage   
+    
     ------------TV-9.2.1.20200925------------------------     
 Bugs:
     => 036750 - Seller Shop - Custom URL for shop collections
@@ -122,6 +124,7 @@ Bugs:
     => 043050 - On Shipping profile >> manage rates section still gets display there even if we delete "zone " 
     => 042767 - Import / export >> settings >> Some settings needs to be removed . 
     => 043134 - Seller can add one extra inventory using import even if all inventories are already existed.
+    => 043245 - Admin >> Add first rule >> All tax structures gets display under "rule name " box even if admin didn't selected any tax.
     ------------TV-9.2.1.20200925------------------------
 
     => 043493 - Meta title is not working

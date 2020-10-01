@@ -53,6 +53,7 @@ $(document).ready(function() {
 
     collectionForm = function(type, layoutType, id) {
         fcom.displayProcessing();
+        fcom.resetEditorInstance();
         fcom.ajax(fcom.makeUrl('Collections', 'form', [type, layoutType, id]), '', function(t) {
             fcom.updateFaceboxContent(t);
         });
@@ -64,9 +65,13 @@ $(document).ready(function() {
         });
     };
 
-    setupCollection = function(frm) {
-        if (!$(frm).validate()) return;
-        var data = fcom.frmData(frm);
+    setupCollection = function() {
+        // if (!$(frm).validate()) return;
+        var getFrm = $('#tabs_form form')[0];
+        var validator = $(getFrm).validation({errordisplay: 3});
+        validator.validate();
+        if (!validator.isValid()) return;
+        var data = fcom.frmData(getFrm);
         fcom.updateWithAjax(fcom.makeUrl('Collections', 'setup'), data, function(t) {
             reloadList();
 			if(t.openBannersForm) {
@@ -348,16 +353,33 @@ $(document).ready(function() {
     translateData = function(item){
         var autoTranslate = $("input[name='auto_update_other_langs_data']:checked").length;
         var defaultLang = $(item).attr('defaultLang');
-        var catName = $("input[name='collection_name["+defaultLang+"]']").val();
+        var collectionName = $("input[name='collection_name["+defaultLang+"]']").val();
         var toLangId = $(item).attr('language');
         var alreadyOpen = $('#collapse_'+toLangId).hasClass('active');
-        if(autoTranslate == 0 || catName == "" || alreadyOpen == true){
+
+        if(autoTranslate == 0 || collectionName == "" || alreadyOpen == true){
             return false;
         }
-        var data = "collectionName="+catName+"&toLangId="+toLangId ;
+        
+        if ($("textarea[name='epage_content_"+defaultLang+"']").length > 0) {
+            // var epageContent = $("textarea[name='epage_content_"+defaultLang+"']").val();
+            var oEdit = eval(oUtil.arrEditor[0]);
+            var epageContent = oEdit.getTextBody();
+            var data = "collectionName="+collectionName+"&epageContent="+epageContent+"&toLangId="+toLangId ;
+        } else {
+            var data = "collectionName="+collectionName+"&toLangId="+toLangId;
+        }
+        
         fcom.updateWithAjax(fcom.makeUrl('Collections', 'translatedData'), data, function(t) {
             if(t.status == 1){
                 $("input[name='collection_name["+toLangId+"]']").val(t.collectionName);
+                if ($("textarea[name='epage_content_"+toLangId+"']").length > 0) {
+                    var oEdit1 = eval(oUtil.arrEditor[toLangId - 1]);
+                    oEdit1.putHTML(t.epageContent);
+                    var layout = langLbl['language' + toLangId];
+                    $('#idContent' + oUtil.arrEditor[toLangId - 1]).contents().find("body").css('direction', layout);
+                    $('#idArea' + oUtil.arrEditor[toLangId - 1] + ' td[dir="ltr"]').attr('dir', layout);
+                }
             }
         });
     }
