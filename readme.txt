@@ -142,6 +142,7 @@ Bugs:
     => 043517 - when language other than EN, AR is selected then getting error on header
     => 043521 - on login to buyer account> getting error on logo
     => 043585 - when category is requested then message needs to be different
+    => 043602 - Blank print preview is there for order on detail page
 
 Enhancements:
     => Tax module upgrade

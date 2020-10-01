@@ -77,16 +77,15 @@ if (!$print) { ?>
                         <?php echo Labels::getLabel('LBL_Order_Details', $siteLangId); ?>
                     </h5>
                     <?php if (!$print) { ?>
-                        <div class="action">
+                        <div>
                             <div class="">
-                                <iframe src="<?php echo Fatutility::generateUrl('buyer', 'viewOrder', $urlParts) . '/print'; ?>" name="frame" style="display:none">
-                                </iframe>
+                                <iframe src="<?php echo Fatutility::generateUrl('buyer', 'viewOrder', $urlParts) . '/print'; ?>" name="frame" class="printFrame-js" style="display:none" width="1" height="1"></iframe>
                                 <a href="<?php echo UrlHelper::generateUrl('Buyer', 'orders'); ?>" class="btn btn-outline-primary btn-sm no-print" title="
                                     <?php echo Labels::getLabel('LBL_Back_to_order', $siteLangId); ?>">
                                     <i class="fas fa-arrow-left"></i>
                                 </a>
-                                <a href="javascript:void(0)" onclick="frames['frame'].print()" class="btn btn-outline-primary btn-sm no-print" title="
-                                    <?php echo Labels::getLabel('LBL_Print', $siteLangId); ?>">
+                                <a href="javascript:void(0)" class="btn btn-outline-primary btn-sm no-print printBtn-js" title="
+                                    <?php echo Labels::getLabel('LBL_Print', $siteLangId); ?>" style="display:none">
                                     <i class="fas fa-print"></i>
                                 </a>
                                 <?php if (0 < $opId && !$orderDetail['order_deleted'] && !$orderDetail["order_payment_status"] && 'TransferBank' == $orderDetail['plugin_code']) { ?>
@@ -944,6 +943,14 @@ if (!$print) { ?>
     </script>
 <?php } ?>
 <script>
+    $(document).ready(function(){
+        setTimeout(function(){$('.printBtn-js').fadeIn();}, 500);
+        $(document).on('click', '.printBtn-js', function(){
+            $('.printFrame-js').show();
+            setTimeout(function(){ frames['frame'].print(); $('.printFrame-js').hide();}, 500);
+        });
+    });
+    
     function increaseDownloadedCount(linkId, opId) {
         fcom.ajax(fcom.makeUrl('buyer', 'downloadDigitalProductFromLink', [linkId, opId]), '', function(t) {
             var ans = $.parseJSON(t);
