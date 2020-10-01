@@ -129,7 +129,7 @@ class CollectionsController extends AdminBaseController
                 $langData = Extrapage::getLangDataArr($epageData['epage_id']);
                 $epageArr = array();
                 foreach ($langData as $value) {
-                    $epageArr[Extrapage::DB_TBL_PREFIX . 'content'][$value[Extrapage::DB_TBL_LANG_PREFIX . 'lang_id']] = $value[Extrapage::DB_TBL_PREFIX . 'content'];
+                    $epageArr['epage_content_'.$value['epagelang_lang_id']] = $value['epage_content'];
                 }
 
                 $data = array_merge($data, $epageArr);
@@ -183,7 +183,6 @@ class CollectionsController extends AdminBaseController
         $siteDefaultLangId = FatApp::getConfig('conf_default_site_lang', FatUtility::VAR_INT, 1);
         
         $data = FatApp::getPostedData();
-        
         $frm = $this->getForm($data['collection_type'], $data['collection_layout_type']);
         $post = $frm->getFormDataFromArray(FatApp::getPostedData());
 
@@ -235,14 +234,14 @@ class CollectionsController extends AdminBaseController
             $epageId = $extrapage->getMainTableRecordId();
             $data = [];
             $data['epage_label'] = $post['collection_name'][$siteDefaultLangId];
-            $data['epage_content'] = $post['epage_content'][$siteDefaultLangId];
+            $data['epage_content'] = $post['epage_content_'.$siteDefaultLangId];
             $extrapage = new Extrapage($epageId);
             $extrapage->saveLangData($siteDefaultLangId, $data); // For site default language
             $nameArr = $post['collection_name'];
             unset($nameArr[$siteDefaultLangId]);
             foreach ($nameArr as $langId => $label) {
                 $data['epage_label'] = $label;
-                $data['epage_content'] = $post['epage_content'][$langId];
+                $data['epage_content'] = $post['epage_content_'.$langId];
                 if (empty($label) && $autoUpdateOtherLangsData > 0) {
                     $extrapage->saveTranslatedLangData($langId);
                 } elseif (!empty($label)) {
@@ -338,7 +337,7 @@ class CollectionsController extends AdminBaseController
         $frm = new Form('frmCollection');
         $frm->addRequiredField(Labels::getLabel('LBL_Collection_Name', $this->adminLangId), 'collection_name[' . $siteDefaultLangId . ']');
         if ($type == Collections::COLLECTION_TYPE_CONTENT_BLOCK) {
-            $frm->addHtmlEditor(Labels::getLabel('LBL_Block_Content', $this->adminLangId), 'epage_content[' . $siteDefaultLangId . ']')->requirements()->setRequired(true);
+            $frm->addHtmlEditor(Labels::getLabel('LBL_Block_Content', $this->adminLangId), 'epage_content_'.$siteDefaultLangId)->requirements()->setRequired(true);
             $frm->addHiddenField('', 'epage_id');
         }
 		if ($type == Collections::COLLECTION_TYPE_BANNER) {
@@ -358,7 +357,7 @@ class CollectionsController extends AdminBaseController
         foreach ($langData as $langId => $data) {
             $frm->addTextBox(Labels::getLabel('LBL_Collection_Name', $this->adminLangId), 'collection_name[' . $langId . ']');
             if ($type == Collections::COLLECTION_TYPE_CONTENT_BLOCK) {
-                $frm->addHtmlEditor(Labels::getLabel('LBL_Block_Content', $this->adminLangId), 'epage_content[' . $langId . ']');
+                $frm->addHtmlEditor(Labels::getLabel('LBL_Block_Content', $this->adminLangId), 'epage_content_'.$langId);
             }
         }
         

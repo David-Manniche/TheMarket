@@ -65,9 +65,13 @@ $(document).ready(function() {
         });
     };
 
-    setupCollection = function(frm) {
-        if (!$(frm).validate()) return;
-        var data = fcom.frmData(frm);
+    setupCollection = function() {
+        // if (!$(frm).validate()) return;
+        var getFrm = $('#tabs_form form')[0];
+        var validator = $(getFrm).validation({errordisplay: 3});
+        validator.validate();
+        if (!validator.isValid()) return;
+        var data = fcom.frmData(getFrm);
         fcom.updateWithAjax(fcom.makeUrl('Collections', 'setup'), data, function(t) {
             reloadList();
 			if(t.openBannersForm) {
@@ -357,8 +361,10 @@ $(document).ready(function() {
             return false;
         }
         
-        if ($("textarea[name='epage_content["+defaultLang+"]']").length > 0) {
-            var epageContent = $("textarea[name='epage_content["+defaultLang+"]']").val();
+        if ($("textarea[name='epage_content_"+defaultLang+"']").length > 0) {
+            // var epageContent = $("textarea[name='epage_content_"+defaultLang+"']").val();
+            var oEdit = eval(oUtil.arrEditor[0]);
+            var epageContent = oEdit.getTextBody();
             var data = "collectionName="+collectionName+"&epageContent="+epageContent+"&toLangId="+toLangId ;
         } else {
             var data = "collectionName="+collectionName+"&toLangId="+toLangId;
@@ -367,8 +373,12 @@ $(document).ready(function() {
         fcom.updateWithAjax(fcom.makeUrl('Collections', 'translatedData'), data, function(t) {
             if(t.status == 1){
                 $("input[name='collection_name["+toLangId+"]']").val(t.collectionName);
-                if ($("textarea[name='epage_content["+toLangId+"]']").length > 0) {
-                    $("textarea[name='epage_content["+toLangId+"]']").val(t.epageContent);
+                if ($("textarea[name='epage_content_"+toLangId+"']").length > 0) {
+                    var oEdit1 = eval(oUtil.arrEditor[toLangId - 1]);
+                    oEdit1.putHTML(t.epageContent);
+                    var layout = langLbl['language' + toLangId];
+                    $('#idContent' + oUtil.arrEditor[toLangId - 1]).contents().find("body").css('direction', layout);
+                    $('#idArea' + oUtil.arrEditor[toLangId - 1] + ' td[dir="ltr"]').attr('dir', layout);
                 }
             }
         });

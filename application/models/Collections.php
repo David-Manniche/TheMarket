@@ -312,6 +312,9 @@ class Collections extends MyAppModel
             self::TYPE_BANNER_LAYOUT1 => 'banner-layout-1.jpg',
             self::TYPE_BANNER_LAYOUT2 => 'banner-layout-2.jpg',
             self::TYPE_BANNER_LAYOUT3 => 'banner-layout-3.jpg',
+            self::TYPE_FAQ_LAYOUT1 => 'faq-layout-1.jpg',
+            self::TYPE_TESTIMONIAL_LAYOUT1 => 'testimonial-layout-1.jpg',
+            self::TYPE_CONTENT_BLOCK_LAYOUT1 => 'content-block-layout-1.jpg',
         ];
     }
     
@@ -616,9 +619,13 @@ class Collections extends MyAppModel
         $srch->addCondition(static::DB_TBL_COLLECTION_TO_RECORDS_PREFIX . 'collection_id', '=', $collectionId);
 
         $srch->joinTable(Faq::DB_TBL, 'INNER JOIN', Faq::DB_TBL_PREFIX . 'id = ' . static::DB_TBL_COLLECTION_TO_RECORDS_PREFIX . 'record_id');
-
         $srch->joinTable(Faq::DB_TBL_LANG, 'LEFT JOIN', 'lang.faqlang_faq_id = ' . Faq::DB_TBL_PREFIX . 'id AND faqlang_lang_id = ' . $langId, 'lang');
-        $srch->addMultipleFields(array('faq_id as record_id', 'IFNULL(faq_title, faq_identifier) as record_title'));
+        $srch->joinTable(
+            FaqCategory::DB_TBL, 'INNER JOIN', 'faq_faqcat_id = faqcat_id', 'fc'
+        );
+        $srch->joinTable(FaqCategory::DB_TBL_LANG, 'LEFT OUTER JOIN', 'fc_l.' . FaqCategory::DB_TBL_LANG_PREFIX . 'faqcat_id = fc.' . FaqCategory::tblFld('id') . ' and fc_l.' . FaqCategory::DB_TBL_LANG_PREFIX . 'lang_id = ' . $langId, 'fc_l'
+        );
+        $srch->addMultipleFields(array('faq_id as record_id', 'CONCAT(IFNULL(faq_title, faq_identifier), " | ", IFNULL (faqcat_name, faqcat_identifier)) as record_title'));
         $rs = $srch->getResultSet();
         $db = FatApp::getDb();
         return $db->fetchAll($rs);

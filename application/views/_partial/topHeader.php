@@ -47,7 +47,7 @@
             <div class="container">
                 <div class="top-bar__inner">
                     <div class="top-bar__left">
-                    <?php if (FatApp::getConfig('CONF_ENABLE_GEO_LOCATION', FatUtility::VAR_INT, 0)) {?>                        
+                    <?php if (FatApp::getConfig('CONF_ENABLE_GEO_LOCATION', FatUtility::VAR_INT, 0)) { ?>                        
                             <a href="javascript:void(0)" onClick="accessLocation(true)" class="location" title="<?php echo Labels::getLabel("LBL_Location", $siteLangId); ?>">
                             <i class="icn">
                                 <svg class="svg" width="15px" height="15px">
