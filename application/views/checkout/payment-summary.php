@@ -63,8 +63,8 @@ $rewardPoints = UserRewardBreakup::rewardPointBalance(UserAuthentication::getLog
 							<?php } ?>
 							
                             <?php 
-                            $fromTime = date('H:i', strtotime($address["opshipping_time_slot_from"]));
-                            $toTime = date('H:i', strtotime($address["opshipping_time_slot_to"]));
+                            $fromTime = isset($address["opshipping_time_slot_from"]) && !empty($address["opshipping_time_slot_from"]) ? date('H:i', strtotime($address["opshipping_time_slot_from"])) : '';
+                            $toTime = isset($address["opshipping_time_slot_to"]) && !empty($address["opshipping_time_slot_to"]) ? date('H:i', strtotime($address["opshipping_time_slot_to"])) : '';
                             ?>
                             <p class="time-txt"><i class="fas fa-calendar-day"></i><?php echo FatDate::format($address["opshipping_date"]).' '.$fromTime.' - '.$toTime; ?></p>
                             <?php if (count($orderPickUpData) > 1) { ?>

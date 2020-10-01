@@ -136,6 +136,7 @@ Bugs:
     => 043678 - Home page >> brand collection >> default image should be there if there is no media file selected for brand instead of some text 
     => 043530 - add money to wallet> listing cod option
     => 043531 - while purchasing subscription there is error
+    => 043596 - When we place any order with pickup then there are some errors on checkout page .
 
 Enhancements:
     => Tax module upgrade
