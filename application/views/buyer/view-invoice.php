@@ -234,7 +234,7 @@
 											<td style="padding:10px 15px;text-align: center;background-color: #f0f0f0;font-size: 16px;"><strong><?php echo CommonHelper::displayMoneyFormat(CommonHelper::orderProductAmount($childOrder, 'CART_TOTAL'), true, false, true, false, true); ?></strong></td>                                             
 										</tr>
 										<tr>                                          
-											<td style="padding:15px 15px;font-size:20px;text-align: left;font-weight:700; vertical-align: top;" colspan="3" rowspan="5">
+											<td style="padding:15px 15px;font-size:20px;text-align: left;font-weight:700; vertical-align: top;" colspan="3" rowspan="6">
 											<?php
 											if ($totalSavings != 0) {
 												$str = Labels::getLabel("LBL_You_have_saved_{totalsaving}_on_this_order", $siteLangId);
@@ -254,6 +254,13 @@
 										<tr>                                                                              
 											<td style="padding:10px 15px;text-align: center;border-top:1px solid #ddd;border-left:1px solid #ddd;" colspan="2"><?php echo Labels::getLabel('LBL_Reward_Point_Discount', $siteLangId) ?></td>                    
 											<td style="padding:10px 15px;text-align: center;border-top:1px solid #ddd;border-left:1px solid #ddd;" colspan="1"><?php echo CommonHelper::displayMoneyFormat($rewardPointDiscount, true, false, true, false, true); ?></td>                                           
+										</tr>
+										<?php } */ ?>
+										<?php
+										/* if (CommonHelper::orderProductAmount($childOrder, 'TAX') > 0) { ?>
+										<tr>                                                                              
+											<td style="padding:10px 15px;text-align: center;border-top:1px solid #ddd;border-left:1px solid #ddd;" colspan="2"><?php echo Labels::getLabel('LBL_Tax_Charges', $siteLangId) ?></td>                    
+											<td style="padding:10px 15px;text-align: center;border-top:1px solid #ddd;border-left:1px solid #ddd;" colspan="1"><?php echo CommonHelper::displayMoneyFormat(CommonHelper::orderProductAmount($childOrder, 'TAX'), true, false, true, false, true); ?></td>      
 										</tr>
 										<?php } */ ?>
 										<?php
@@ -322,12 +329,12 @@
 												<?php }
 											} ?>                                                 
 										</tr>
-										<tr>
+										<!--<tr>
 											<td style="padding:10px 15px;border:1px solid #ddd;font-size:16px;"><strong>Grand Total</strong> </td>                                            
 											<td style="padding:10px 15px;border:1px solid #ddd;font-size:16px;"><strong>157.16 </strong></td>                                            
 											<td style="padding:10px 15px;border:1px solid #ddd;font-size:16px;"><strong>3.92</strong> </td>                                            
 											<td style="padding:10px 15px;border:1px solid #ddd;border-right:none;font-size:16px;"><strong>3.92</strong> </td>                                            
-										</tr>
+										</tr>-->
 										<tr>
 											<td style="padding:10px 15px;text-align: left;border:1px solid #ddd;border-bottom:none;border-right:none;font-size: 12px;background-color: #f0f0f0;" colspan="4">*<?php echo Labels::getLabel('LBL_Appropriated_product-wise_and_Rate_applicable_thereunder', $siteLangId);?></td>                                            
 										</tr>
@@ -336,7 +343,7 @@
 							</tr>
 						</tbody></table>
 						<?php } ?>
-						<table width="100%" border="0" cellpadding="0" cellspacing="0"> 
+						<table width="100%" border="0" cellpadding="10px" cellspacing="0"> 
 							<tbody><tr>
 								<td style="padding:20px 15px;border-top:1px solid #ddd">
 									<p><strong><?php echo Labels::getLabel('LBL_Regd._office', $siteLangId);?>:</strong><?php echo nl2br(FatApp::getConfig('CONF_ADDRESS_' . $siteLangId, FatUtility::VAR_STRING, ''));?></p>
