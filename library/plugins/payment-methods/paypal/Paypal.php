@@ -14,10 +14,10 @@ class Paypal extends PaymentMethodBase
         'client_id',
         'secret_key',
     ];
-
     private $clientId = '';
     private $secretKey = '';
     private $resp;
+
     /**
      * __construct
      *
@@ -27,8 +27,24 @@ class Paypal extends PaymentMethodBase
     public function __construct(int $langId)
     {
         $this->langId = 0 < $langId ? $langId : CommonHelper::getLangId();
+        $this->requiredKeys();
     }
 
+    /**
+     * requiredKeys
+     *
+     * @return void
+     */
+    public function requiredKeys()
+    {
+        $envoirment = FatUtility::int($this->getKey('env'));
+        if (0 < $envoirment) {
+            $this->requiredKeys = [
+                'live_client_id',
+                'live_secret_key',
+            ];
+        }
+    }
 
     /**
      * init
