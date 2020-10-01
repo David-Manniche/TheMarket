@@ -144,6 +144,7 @@ Bugs:
     => 043585 - when category is requested then message needs to be different
     => 043602 - Blank print preview is there for order on detail page
     => 043603 - seller invoice print> only logo is listing
+    => 043610 - Buyer >> when we try to become a seller then some error is there.
 
 Enhancements:
     => Tax module upgrade
