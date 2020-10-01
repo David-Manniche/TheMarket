@@ -137,6 +137,7 @@ Bugs:
     => 043530 - add money to wallet> listing cod option
     => 043531 - while purchasing subscription there is error
     => 043596 - When we place any order with pickup then there are some errors on checkout page .
+    => 043594 - Order details page >> invalid access gets display if admin or seller try to change order status .
 
 Enhancements:
     => Tax module upgrade
