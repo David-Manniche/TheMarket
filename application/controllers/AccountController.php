@@ -123,7 +123,7 @@ class AccountController extends LoggedUserController
             FatApp::redirectUser(UrlHelper::generateUrl('account', 'viewSupplierRequest', array($supplierRequest["usuprequest_id"])));
         }
 
-        $data = array('id' => $supplierRequest['usuprequest_id']);
+        $data = array('id' => isset($supplierRequest['usuprequest_id']) ? $supplierRequest['usuprequest_id'] : 0);
         $approvalFrm = $this->getSupplierForm();
         $approvalFrm->fill($data);
         $approvalFrm->addSecurityToken();

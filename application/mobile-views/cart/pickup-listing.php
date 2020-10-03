@@ -41,10 +41,13 @@ $data = array(
     'isShippingSameAsBilling' => $isShippingSameAsBilling,
     'selectedBillingAddressId' => $selectedBillingAddressId,
     'selectedShippingAddressId' => $selectedShippingAddressId,
+    'cartProductsCount' => $cartProductsCount,
+    'shipProductsCount' => $shipProductsCount,
+    'pickUpProductsCount' => $pickUpProductsCount,
 );
 
 require_once(CONF_THEME_PATH.'cart/price-detail.php');
 
-if (empty($products)) {
+if (empty($productsArr)) {
     $status = applicationConstants::OFF;
 }

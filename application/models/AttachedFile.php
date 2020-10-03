@@ -249,7 +249,23 @@ class AttachedFile extends MyAppModel
             reset($data);
             return current($data);
         }
-        return null;
+        
+        return [
+            'afile_id' => 0,
+            'afile_type' => 0,
+            'afile_record_id' => 0,
+            'afile_record_subid' => 0,
+            'afile_lang_id' => 0,
+            'afile_screen' => 0,
+            'afile_physical_path' => '',
+            'afile_name' => '',
+            'afile_attribute_title' => '',
+            'afile_attribute_alt' => '',
+            'afile_aspect_ratio' => 0,
+            'afile_display_order' => 0,
+            'afile_downloaded_times' => 0,
+            'afile_updated_at' => '',
+        ];
     }
 
     public function validateFile($file, $name, $defaultLangIdForErrors)

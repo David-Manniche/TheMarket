@@ -27,7 +27,7 @@
             } ?>
         </ul>
     <?php } ?>
-     
+
     <?php if (!empty($suggestions['categories'])) {
         $recordFound = true; ?>
         <h6 class="suggestions-title"><?php echo Labels::getLabel('LBL_Matching_Categories', $siteLangId); ?></h6>
@@ -38,7 +38,31 @@
         </ul>
     <?php } ?>
 </div>
-<?php if (false == $recordFound) {
-    $message = Labels::getLabel('LBL_No_Records_Found', $siteLangId);
-    $this->includeTemplate('_partial/no-record-found.php', array('siteLangId' => $siteLangId, 'message' => $message));
+<?php
+if (false == $recordFound) {
+    if (!empty($recentSearchArr)) { ?>
+        <ul class="history-suggestions">
+            <li>
+                <h6 class="suggestions-title"><?php echo Labels::getLabel('LBL_Recent_Searches', $siteLangId) ?></h6>
+                <button class="btn btn-link clear-all clearSearch-js" type="button"><?php echo Labels::getLabel('LBL_Clear_ALL', $siteLangId) ?></button>
+            </li>
+            <?php foreach ($recentSearchArr as $keyword) { ?>
+                <li class="recent-search" data-keyword="<?php echo $keyword;?>">
+                    <div class="recent-search__cross">
+                        <a href="javascript:void(0)" onclick="clearSearchKeyword(this)" class="close-layer close-layer--sm" data-keyword="<?php echo $keyword;?>"></a>
+                    </div>
+
+                    <a class="recent-search__link recentSearch-js" href="javascript:void(0)"><span class=""><?php echo $keyword;?></span></a>
+                    <div class="recent-search__arrow recentSearch-js" >
+                        <svg class="svg">
+                            <use xlink:href="<?php echo CONF_WEBROOT_URL; ?>images/retina/sprite.svg#arrow-top" href="<?php echo CONF_WEBROOT_URL; ?>images/retina/sprite.svg#arrow-top"></use>
+                        </svg>
+                    </div>
+                </li>
+            <?php } ?>
+        </ul>
+<?php } else {
+        $message = Labels::getLabel('LBL_No_Records_Found', $siteLangId);
+        $this->includeTemplate('_partial/no-record-found.php', array('siteLangId' => $siteLangId, 'message' => $message));
+    }
 } ?>

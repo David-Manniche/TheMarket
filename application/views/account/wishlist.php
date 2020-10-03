@@ -43,5 +43,5 @@ if (FatApp::getConfig('CONF_ADD_FAVORITES_TO_WISHLIST', FatUtility::VAR_INT, 1) 
     </div>
 </main>
 <script>
-< ? php echo $function; ? > ;
+<?php echo $function; ?> ;
 </script>

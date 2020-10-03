@@ -53,7 +53,7 @@ class CartController extends MyAppController
         $srch->addGroupBy('selprod_id');
         /* ] */
 
-        $srch->addMultipleFields(array('uwlp_uwlist_id', 'selprod_id', 'IFNULL(selprod_title  ,IFNULL(product_name, product_identifier)) as selprod_title', 'product_id', 'IFNULL(product_name, product_identifier) as product_name', 'IF(selprod_stock > 0, 1, 0) AS in_stock', 'IFNULL(splprice_price, selprod_price) AS theprice'));
+        $srch->addMultipleFields(array('uwlp_uwlist_id', 'selprod_id', 'IFNULL(selprod_title  ,IFNULL(product_name, product_identifier)) as selprod_title', 'product_id', 'IFNULL(product_name, product_identifier) as product_name', 'IF(selprod_stock > 0, 1, 0) AS in_stock', 'IFNULL(splprice_price, selprod_price) AS theprice', 'IFNULL(shop_name, shop_identifier) as shop_name'));
         $srch->addOrder('uwlp_added_on', 'DESC');
         $rs = $srch->getResultSet();
         $saveForLaterProducts = FatApp::getDb()->fetchAll($rs);
@@ -107,6 +107,10 @@ class CartController extends MyAppController
                 $this->set('isShippingSameAsBilling', $cartObj->getShippingAddressSameAsBilling());
                 $this->set('selectedBillingAddressId', $billingAddressId);
                 $this->set('selectedShippingAddressId', $shippingAddressId);
+
+                $this->set('cartProductsCount', count($productsArr));
+                $this->set('shipProductsCount',  count($fulfillmentProdArr[Shipping::FULFILMENT_SHIP]));
+                $this->set('pickUpProductsCount', count($fulfillmentProdArr[Shipping::FULFILMENT_PICKUP]));
             }
 
             $fulFillmentArr = Shipping::getFulFillmentArr($this->siteLangId);
