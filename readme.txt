@@ -155,6 +155,7 @@ Bugs:
     => 043597 - On product >> If we inactive any product then that product should not get display in "add-ons ".
     => 043599 - Seller >> shipping profile >> images should be in the center of box. 
     => 043643 - getting error while adding brand
+    => 043651 - while adding digital item> downloads> save button is not proper
 
 Enhancements:
     => Tax module upgrade
