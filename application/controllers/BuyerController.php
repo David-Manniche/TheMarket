@@ -318,7 +318,6 @@ class BuyerController extends BuyerBaseController
         }
 
         $orderObj = new Orders();
-        $orderStatuses = Orders::getOrderProductStatusArr($this->siteLangId);
         $userId = UserAuthentication::getLoggedUserId();
 
         $orderDetail = $orderObj->getOrderById($orderId, $this->siteLangId);
@@ -334,45 +333,20 @@ class BuyerController extends BuyerBaseController
         $orderDetail['charges'] = $orderObj->getOrderProductChargesByOrderId($orderDetail['order_id']);
 
         $srch = new OrderProductSearch($this->siteLangId, true, true);
-        $srch->joinOrderProductShipment();
         $srch->joinPaymentMethod();
         $srch->joinSellerProducts();
         $srch->joinShop();
         $srch->joinShopSpecifics();
         $srch->joinShopCountry();
         $srch->joinShopState();
-        $srch->joinOrderUser();
         $srch->addOrderProductCharges();
-        $srch->joinShippingCharges();
         $srch->addCondition('order_user_id', '=', $userId);
         $srch->addCondition('order_id', '=', $orderId);
-
         if (0 < $opId) {
-            if (true === MOBILE_APP_API_CALL) {
-                $srch->joinTable(SelProdReview::DB_TBL, 'LEFT OUTER JOIN', 'o.order_id = spr.spreview_order_id and op.op_selprod_id = spr.spreview_selprod_id', 'spr');
-                $srch->joinTable(SelProdRating::DB_TBL, 'LEFT OUTER JOIN', 'sprating.sprating_spreview_id = spr.spreview_id', 'sprating');
-                $srch->addFld(array('*', 'IFNULL(ROUND(AVG(sprating_rating),2),0) as prod_rating'));
-            }
             $srch->addCondition('op_id', '=', $opId);
             $srch->addStatusCondition(unserialize(FatApp::getConfig("CONF_BUYER_ORDER_STATUS")));
         }
         $srch->addMultipleFields(array('*', 'shop_country_l.country_name as shop_country_name', 'shop_state_l.state_name as shop_state_name', 'shop_city'));
-        if (true === MOBILE_APP_API_CALL) {
-            $srch->joinTable(
-                OrderReturnRequest::DB_TBL,
-                'LEFT OUTER JOIN',
-                'orr.orrequest_op_id = op.op_id',
-                'orr'
-            );
-            $srch->joinTable(
-                OrderCancelRequest::DB_TBL,
-                'LEFT OUTER JOIN',
-                'ocr.ocrequest_op_id = op.op_id',
-                'ocr'
-            );
-            $srch->addFld(array('*', 'IFNULL(orrequest_id, 0) as return_request', 'IFNULL(ocrequest_id, 0) as cancel_request'));
-        }
-
         $rs = $srch->getResultSet();
 
         $childOrderDetail = FatApp::getDb()->fetchAll($rs, 'op_id');
@@ -400,39 +374,8 @@ class BuyerController extends BuyerBaseController
         $pickUpAddress = $orderObj->getOrderAddresses($orderDetail['order_id'], $opId);
         $orderDetail['pickupAddress'] = (!empty($pickUpAddress[Orders::PICKUP_ADDRESS_TYPE])) ? $pickUpAddress[Orders::PICKUP_ADDRESS_TYPE] : array();
 
-        $childOrderProducts = $orderObj->getChildOrders(['order_id' => $orderDetail['order_id']]);
-        $childOrderProdCount = count($childOrderProducts);
-        if (1 > $opId || 1 == $childOrderProdCount) {
-            $payments = $orderObj->getOrderPayments(array("order_id" => $orderDetail['order_id']));
-            if (true === MOBILE_APP_API_CALL) {
-                $payments = array_values($payments);
-            }
-            $orderDetail['payments'] = $payments;
-        }
-        foreach ($childOrderDetail as $childOrder) {
-            $digitalDownloads = array();
-            if ($opId > 0 && $childOrder['op_product_type'] == Product::PRODUCT_TYPE_DIGITAL) {
-                $digitalDownloads = Orders::getOrderProductDigitalDownloads($childOrder['op_id']);
-            }
-
-            $digitalDownloadLinks = array();
-            if ($opId > 0 && $childOrder['op_product_type'] == Product::PRODUCT_TYPE_DIGITAL) {
-                $digitalDownloadLinks = Orders::getOrderProductDigitalDownloadLinks($childOrder['op_id']);
-            }
-        }
-
-        /* $frm = $this->getTransferBankForm($this->siteLangId, $orderId);
-        $this->set('frm', $frm);
-        $this->set('orderDetail', $orderDetail);
+        /* $this->set('orderDetail', $orderDetail);
         $this->set('childOrderDetail', $childOrderDetail);
-        $this->set('orderStatuses', $orderStatuses);
-        $this->set('childOrderProdCount', $childOrderProdCount);
-        $this->set('digitalDownloads', $digitalDownloads);
-        $this->set('digitalDownloadLinks', $digitalDownloadLinks);
-        $this->set('languages', Language::getAllNames());
-        $this->set('yesNoArr', applicationConstants::getYesNoArr($this->siteLangId));
-        $urlParts = array($orderId, $opId);
-        $this->set('urlParts', $urlParts);
         $this->set('opId', $opId);
         $this->_template->render(false, false); */
 
@@ -440,12 +383,6 @@ class BuyerController extends BuyerBaseController
         $template->set('siteLangId', $this->siteLangId);
         $template->set('orderDetail', $orderDetail);
         $template->set('childOrderDetail', $childOrderDetail);
-        $template->set('orderStatuses', $orderStatuses);
-        $template->set('childOrderProdCount', $childOrderProdCount);
-        $template->set('digitalDownloads', $digitalDownloads);
-        $template->set('digitalDownloadLinks', $digitalDownloadLinks);
-        $template->set('languages', Language::getAllNames());
-        $template->set('yesNoArr', applicationConstants::getYesNoArr($this->siteLangId));
         $template->set('opId', $opId);
 
         require_once(CONF_INSTALLATION_PATH . 'library/tcpdf/tcpdf.php');
@@ -473,7 +410,7 @@ class BuyerController extends BuyerBaseController
         ob_end_clean();
         // $saveFile = CONF_UPLOADS_PATH . 'demo-pdf.pdf';
         //$pdf->Output($saveFile, 'F');
-        $pdf->Output('example_020.pdf', 'I');
+        $pdf->Output('tax-invoice.pdf', 'I');
         return true;
     }
 

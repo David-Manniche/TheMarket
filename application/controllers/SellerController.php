@@ -581,6 +581,96 @@ class SellerController extends SellerBaseController
         $this->_template->render(true, true);
     }
 
+    public function viewInvoice($op_id)
+    {
+        $this->userPrivilege->canViewSales(UserAuthentication::getLoggedUserId());
+        $op_id = FatUtility::int($op_id);
+        if (1 > $op_id) {
+            Message::addErrorMessage(Labels::getLabel('MSG_Invalid_Access', $this->siteLangId));
+            CommonHelper::redirectUserReferer();
+        }
+
+        $orderObj = new Orders();
+        $userId = $this->userParentId;
+
+        $srch = new OrderProductSearch($this->siteLangId, true, true);
+        $srch->joinPaymentMethod();
+        $srch->joinSellerProducts();
+        $srch->joinShop();
+        $srch->joinShopSpecifics();
+        $srch->joinShopCountry();
+        $srch->joinShopState();
+        $srch->addOrderProductCharges();
+        $srch->addCondition('op_selprod_user_id', '=', $userId);
+        $srch->addCondition('op_id', '=', $op_id);
+        $srch->addStatusCondition(unserialize(FatApp::getConfig("CONF_VENDOR_ORDER_STATUS")));
+        $srch->addMultipleFields(array('*', 'shop_country_l.country_name as shop_country_name', 'shop_state_l.state_name as shop_state_name', 'shop_city'));
+        $rs = $srch->getResultSet();
+        $orderDetail = FatApp::getDb()->fetch($rs);
+
+        if (!$orderDetail) {
+            Message::addErrorMessage(Labels::getLabel('MSG_Invalid_Access', $this->siteLangId));
+            CommonHelper::redirectUserReferer();
+        }
+
+        if (!empty($orderDetail["opship_orderid"])) {
+            if (null != $this->shippingService && false === $this->shippingService->loadOrder($orderDetail["opship_orderid"])) {
+                Message::addErrorMessage($this->shippingService->getError());
+                FatApp::redirectUser(UrlHelper::generateUrl("SellerOrders"));
+            }
+            $orderDetail['thirdPartyorderInfo'] = (null != $this->shippingService ? $this->shippingService->getResponse() : []);
+        }
+      
+        $address = $orderObj->getOrderAddresses($orderDetail['op_order_id']);
+        $orderDetail['billingAddress'] = (isset($address[Orders::BILLING_ADDRESS_TYPE])) ? $address[Orders::BILLING_ADDRESS_TYPE] : array();
+        $orderDetail['shippingAddress'] = (isset($address[Orders::SHIPPING_ADDRESS_TYPE])) ? $address[Orders::SHIPPING_ADDRESS_TYPE] : array();
+
+        $pickUpAddress = $orderObj->getOrderAddresses($orderDetail['op_order_id'], $orderDetail['op_id']);
+        $orderDetail['pickupAddress'] = (isset($pickUpAddress[Orders::PICKUP_ADDRESS_TYPE])) ? $pickUpAddress[Orders::PICKUP_ADDRESS_TYPE] : array();
+
+        $opChargesLog = new OrderProductChargeLog($op_id);
+        $taxOptions = $opChargesLog->getData($this->siteLangId);
+        $orderDetail['taxOptions'] = $taxOptions;
+
+        /* $this->set('orderDetail', $orderDetail);
+        $this->set('languages', Language::getAllNames());
+        $this->set('yesNoArr', applicationConstants::getYesNoArr($this->siteLangId));
+        $this->set('canEdit', $this->userPrivilege->canEditSales(UserAuthentication::getLoggedUserId(), true));
+        $this->_template->render(true, true); */
+
+        $template = new FatTemplate('', '');
+        $template->set('siteLangId', $this->siteLangId);
+        $template->set('orderDetail', $orderDetail);
+
+        require_once(CONF_INSTALLATION_PATH . 'library/tcpdf/tcpdf.php');
+        $pdf = new TCPDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
+        $pdf->SetCreator(PDF_CREATOR);
+        $pdf->SetAuthor(FatApp::getConfig("CONF_WEBSITE_NAME_" . $this->siteLangId));
+        $pdf->SetKeywords(FatApp::getConfig("CONF_WEBSITE_NAME_" . $this->siteLangId));
+        $pdf->setHeaderFont(Array(PDF_FONT_NAME_MAIN, '', PDF_FONT_SIZE_MAIN));
+        $pdf->SetHeaderMargin(0);
+        $pdf->SetHeaderData('', 0, '', '', array(255,255,255), array(255,255,255));
+        $pdf->setFooterData(array(0,0,0), array(200,200,200));
+        $pdf->SetFooterMargin(PDF_MARGIN_FOOTER);
+        $pdf->setFooterFont(Array(PDF_FONT_NAME_DATA, '', PDF_FONT_SIZE_DATA));
+        $pdf->SetMargins(10, 10, 10);
+        $pdf->setImageScale(PDF_IMAGE_SCALE_RATIO);
+        $pdf->AddPage();
+        $pdf->SetTitle(Labels::getLabel('LBL_Tax_Invoice', $this->siteLangId));
+        $pdf->SetSubject(Labels::getLabel('LBL_Tax_Invoice', $this->siteLangId));
+
+        $templatePath = "seller/view-invoice.php";
+        $html = $template->render(false, false, $templatePath, true, true);
+        $pdf->writeHTML($html, true, false, true, false, '');
+        $pdf->lastPage();
+        
+        ob_end_clean();
+        // $saveFile = CONF_UPLOADS_PATH . 'demo-pdf.pdf';
+        //$pdf->Output($saveFile, 'F');
+        $pdf->Output('tax-invoice.pdf', 'I');
+        return true;
+    }
+
     public function viewSubscriptionOrder($ossubs_id)
     {
         $op_id = FatUtility::int($ossubs_id);
