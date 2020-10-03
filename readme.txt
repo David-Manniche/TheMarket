@@ -143,18 +143,16 @@ Bugs:
     => 043594 - Order details page >> invalid access gets display if admin or seller try to change order status .
     => 041966 - seller> dashboard> there are errors
     => 043517 - when language other than EN, AR is selected then getting error on header
-<<<<<<< HEAD
     => 043662 - tax category added by admin is listing twice on seller end
     => 043528 - seller> sales report> detail page> back button alignment is not proper
     => 043582 - Seller >> meta tags >>> seller is unable to add data in "other meta tags " field.
     => 043595 - Seller >> manage permission for sub seller >> "request " tab should be there under "shop" on permission page .
-=======
     => 043521 - on login to buyer account> getting error on logo
     => 043585 - when category is requested then message needs to be different
     => 043602 - Blank print preview is there for order on detail page
     => 043603 - seller invoice print> only logo is listing
     => 043610 - Buyer >> when we try to become a seller then some error is there.
->>>>>>> 40d9e45b00e49ee6e7e253843af01eafeb2c7e4c
+    => 043597 - On product >> If we inactive any product then that product should not get display in "add-ons ".
 
 Enhancements:
     => Tax module upgrade

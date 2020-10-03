@@ -339,9 +339,10 @@ class SellerProduct extends MyAppModel
             ));
         }
         $srch->addCondition(Product::DB_TBL_PREFIX . 'active', '=', applicationConstants::YES);
+        $srch->addCondition('selprod_active', '=', applicationConstants::ACTIVE);
         $srch->addCondition('selprod_deleted', '=', applicationConstants::NO);
+        $srch->addCondition('product_active', '=', applicationConstants::ACTIVE);
         $srch->addCondition('product_deleted', '=', applicationConstants::NO);
-        $srch->addOrder('selprod_active', 'DESC');
         $srch->addOrder('selprod_id', 'DESC');
         return $srch;
     }
