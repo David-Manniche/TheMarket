@@ -154,6 +154,7 @@ Bugs:
     => 043610 - Buyer >> when we try to become a seller then some error is there.
     => 043597 - On product >> If we inactive any product then that product should not get display in "add-ons ".
     => 043599 - Seller >> shipping profile >> images should be in the center of box. 
+    => 043643 - getting error while adding brand
 
 Enhancements:
     => Tax module upgrade
