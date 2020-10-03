@@ -156,6 +156,7 @@ Bugs:
     => 043599 - Seller >> shipping profile >> images should be in the center of box. 
     => 043643 - getting error while adding brand
     => 043651 - while adding digital item> downloads> save button is not proper
+    => 043672 - seller registration >> login button is not proper. 
 
 Enhancements:
     => Tax module upgrade
