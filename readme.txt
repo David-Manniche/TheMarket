@@ -145,6 +145,8 @@ Bugs:
     => 043517 - when language other than EN, AR is selected then getting error on header
     => 043662 - tax category added by admin is listing twice on seller end
     => 043528 - seller> sales report> detail page> back button alignment is not proper
+    => 043582 - Seller >> meta tags >>> seller is unable to add data in "other meta tags " field.
+    => 043595 - Seller >> manage permission for sub seller >> "request " tab should be there under "shop" on permission page .
 
 Enhancements:
     => Tax module upgrade

@@ -117,6 +117,7 @@ class UserPrivilege
             static::SECTION_CANCELLATION_REQUESTS => Labels::getLabel('LBL_Cancellation_Requests', $langId),
             static::SECTION_RETURN_REQUESTS => Labels::getLabel('LBL_Return_Requests', $langId),
             static::SECTION_TAX_CATEGORY => Labels::getLabel('LBL_Tax_Category', $langId),
+            static::SECTION_SELLER_REQUESTS => Labels::getLabel('LBL_Tax_Category', $langId),
             static::SECTION_PRODUCT_OPTIONS => Labels::getLabel('LBL_Product_Options', $langId),
             static::SECTION_SOCIAL_PLATFORMS => Labels::getLabel('LBL_Manage_Social_Platforms', $langId),
             static::SECTION_MESSAGES => Labels::getLabel('LBL_Messages', $langId),
@@ -143,6 +144,7 @@ class UserPrivilege
                     static::SECTION_PRODUCT_TAGS => Labels::getLabel('LBL_Product_Tags', $langId),
                     static::SECTION_PRODUCT_OPTIONS => Labels::getLabel('LBL_Product_Options', $langId),
                     static::SECTION_TAX_CATEGORY => Labels::getLabel('LBL_Tax_Categories', $langId),
+                    static::SECTION_SELLER_REQUESTS => Labels::getLabel('LBL_Seller_Requests', $langId),
                 ),
             static::MODULE_PROMOTIONS =>
                 array(
