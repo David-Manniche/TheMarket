@@ -144,6 +144,7 @@ Bugs:
     => 041966 - seller> dashboard> there are errors
     => 043517 - when language other than EN, AR is selected then getting error on header
     => 043662 - tax category added by admin is listing twice on seller end
+    => 043528 - seller> sales report> detail page> back button alignment is not proper
 
 Enhancements:
     => Tax module upgrade
