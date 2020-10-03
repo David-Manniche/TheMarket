@@ -153,6 +153,7 @@ Bugs:
     => 043603 - seller invoice print> only logo is listing
     => 043610 - Buyer >> when we try to become a seller then some error is there.
     => 043597 - On product >> If we inactive any product then that product should not get display in "add-ons ".
+    => 043599 - Seller >> shipping profile >> images should be in the center of box. 
 
 Enhancements:
     => Tax module upgrade
