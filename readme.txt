@@ -148,6 +148,7 @@ Bugs:
     => 043602 - Blank print preview is there for order on detail page
     => 043603 - seller invoice print> only logo is listing
     => 043610 - Buyer >> when we try to become a seller then some error is there.
+    => 043586 - when same shipping package is added again then message needs to be corrected
 
 Enhancements:
     => Tax module upgrade
