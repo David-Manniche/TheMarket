@@ -151,6 +151,7 @@ Bugs:
     => 043586 - when same shipping package is added again then message needs to be corrected
     => 043640 - wrong time slots are getting created in admin
     => 043638 - admin> pickup address> slots> when time is selected for all days then on editing it's displays the same time for individual days selected
+    => 043702 - when product is not available for selected location then from all seller screen it's available for user and getting added to cart
 
 Enhancements:
     => Tax module upgrade
