@@ -13,7 +13,7 @@ $countryFld->setFieldTagAttribute('onChange', 'getCountryStates(this.value,'.$st
 $stateFld = $frm->getField('addr_state_id');
 $stateFld->setFieldTagAttribute('id', 'addr_state_id');
 
-$slotTypeFld = $frm->getField('slot_type');
+$slotTypeFld = $frm->getField('tslot_availability');
 $slotTypeFld->setOptionListTagAttribute('class','list-inline');
 $slotTypeFld->developerTags['rdLabelAttributes'] = array('class' => 'radio');
 $slotTypeFld->developerTags['rdHtmlAfterRadio'] = '<i class="input-helper"></i>';
@@ -211,210 +211,210 @@ $this->includeTemplate('seller/_partial/shop-navigation.php', $variables, false)
                             <div class="field-set">
                                 <div class="caption-wraper">
                                    <label class="field_label">
-                                       <?php $fld = $frm->getField('slot_type');
+                                       <?php $fld = $frm->getField('tslot_availability');
                                          echo $fld->getCaption();
                                        ?>
                                    </label>
                                 </div>
                                 <div class="field-wraper">
                                     <div class="field_cover">
-                                    <?php echo $frm->getFieldHtml('slot_type'); ?>
+                                    <?php echo $frm->getFieldHtml('tslot_availability'); ?>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
 
-                    <div class="js-slot-individual">
-                    <?php 
-                    $daysArr = TimeSlot::getDaysArr($siteLangId);
-                    $row = 0;
-                    for($i = 0; $i< count($daysArr); $i++){
-                        $dayFld = $frm->getField('tslot_day['.$i.']');
-                        $dayFld->developerTags['cbLabelAttributes'] = array('class' => 'checkbox');
-                        $dayFld->developerTags['cbHtmlAfterCheckbox'] = '<i class="input-helper"></i>';
-                        $dayFld->setFieldTagAttribute('onChange', 'displayFields('.$i.', this)');
+                    <div class="js-slot-individual <?php echo $availability == TimeSlot::DAY_ALL_DAYS ? 'd-none' : ''; ?>">
+                        <?php 
+                        $daysArr = TimeSlot::getDaysArr($siteLangId);
+                        $row = 0;
+                        for($i = 0; $i< count($daysArr); $i++){
+                            $dayFld = $frm->getField('tslot_day['.$i.']');
+                            $dayFld->developerTags['cbLabelAttributes'] = array('class' => 'checkbox');
+                            $dayFld->developerTags['cbHtmlAfterCheckbox'] = '<i class="input-helper"></i>';
+                            $dayFld->setFieldTagAttribute('onChange', 'displayFields('.$i.', this)');
 
-                        if(!empty($slotData) && isset($slotData['tslot_day'][$i])){   
-                            $dayFld->setFieldTagAttribute('checked', 'true');
-                            foreach($slotData['tslot_from_time'][$i] as $key=>$time){   
-                                $fromTime = date('H:i', strtotime($time));
-                                $toTime = date('H:i', strtotime($slotData['tslot_to_time'][$i][$key]));
+                            if(!empty($slotData) && isset($slotData['tslot_day'][$i])){   
+                                $dayFld->setFieldTagAttribute('checked', 'true');
+                                foreach($slotData['tslot_from_time'][$i] as $key=>$time){   
+                                    $fromTime = date('H:i', strtotime($time));
+                                    $toTime = date('H:i', strtotime($slotData['tslot_to_time'][$i][$key]));
 
+                                    $fromFld = $frm->getField('tslot_from_time['.$i.'][]');
+                                    $fromFld->setFieldTagAttribute('class', 'js-slot-from-'.$i.' fromTime-js');                                
+                                    $fromFld->setFieldTagAttribute('data-row', $row);
+                                    $fromFld->setFieldTagAttribute('onChange', 'displayAddRowField(' . $i . ', this)');
+                                    $fromFld->value = $fromTime;
+
+                                    $toFld = $frm->getField('tslot_to_time['.$i.'][]');
+                                    $toFld->setFieldTagAttribute('class', 'js-slot-to-'.$i);
+                                    $toFld->setFieldTagAttribute('data-row', $row);
+                                    $toFld->setFieldTagAttribute('onChange', 'displayAddRowField(' . $i . ', this)');
+                                    $toFld->value = $toTime;     
+                                    ?>
+                                    <div class="row row-<?php echo $row; echo ($key > 0) ? ' js-added-rows-'.$i : ''?>">
+                                        <div class="col-md-2">
+                                            <div class="field-set">
+                                                <div class="caption-wraper">
+                                                <label class="field_label">
+                                                </label>
+                                                </div>
+                                                <div class="field-wraper">
+                                                    <div class="field_cover">
+                                                    <?php 
+                                                    if($key == 0){
+                                                        echo $frm->getFieldHtml('tslot_day['.$i.']'); 
+                                                    }
+                                                    ?>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4 js-from_time_<?php echo $i;?>">
+                                            <div class="field-set">
+                                                <div class="caption-wraper">
+                                                <label class="field_label">
+                                                    <?php $fld = $frm->getField('tslot_from_time['.$i.'][]');
+                                                    echo $fld->getCaption();
+                                                    ?>
+                                                </label>
+                                                </div>
+                                                <div class="field-wraper">
+                                                    <div class="field_cover">
+                                                    <?php echo $frm->getFieldHtml('tslot_from_time['.$i.'][]'); ?>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4 js-to_time_<?php echo $i;?>">
+                                            <div class="field-set">
+                                                <div class="caption-wraper">
+                                                <label class="field_label">
+                                                    <?php $fld = $frm->getField('tslot_to_time['.$i.'][]');
+                                                        echo $fld->getCaption();
+                                                    ?>
+                                                </label>
+                                                </div>
+                                                <div class="field-wraper">
+                                                    <div class="field_cover">
+                                                    <?php echo $frm->getFieldHtml('tslot_to_time['.$i.'][]'); ?>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-2">
+                                            <?php if($key == 0){ ?>
+                                            <div class="field-set">
+                                                <div class="caption-wraper">
+                                                <label class="field_label">
+                                                </label>
+                                                </div>
+                                                <div class="field-wraper">
+                                                    <div class="field_cover">
+                                                    <?php //echo $frm->getFieldHtml('btn_add_row['.$i.']');  ?>
+                                                        <button type="button" name="btn_add_row[<?php echo $i; ?>]" onClick= "addTimeSlotRow(<?php echo $i; ?>)" class="btn btn-primary js-slot-add-<?php echo $i; ?>"><i class="fas fa-plus"></i></button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <?php }else{ ?>
+                                            <div class="field-set">
+                                                <div class="caption-wraper">
+                                                <label class="field_label"></label>
+                                                </div>
+                                                <div class="field-wraper">
+                                                    <div class="field_cover">
+                                                    <button class="btn btn-outline-primary" type="button" name="btn_remove_row"><i class="fas fa-minus"></i></button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <?php } ?>
+                                        </div>
+                                    </div>
+                                <?php  
+                                $row++;
+                                }
+                            }else{
                                 $fromFld = $frm->getField('tslot_from_time['.$i.'][]');
-                                $fromFld->setFieldTagAttribute('class', 'js-slot-from-'.$i.' fromTime-js');                                
+                                $fromFld->setFieldTagAttribute('disabled', 'true');
                                 $fromFld->setFieldTagAttribute('data-row', $row);
+                                $fromFld->setFieldTagAttribute('class', 'js-slot-from-'.$i.' fromTime-js');
                                 $fromFld->setFieldTagAttribute('onChange', 'displayAddRowField(' . $i . ', this)');
-                                $fromFld->value = $fromTime;
 
                                 $toFld = $frm->getField('tslot_to_time['.$i.'][]');
-                                $toFld->setFieldTagAttribute('class', 'js-slot-to-'.$i);
+                                $toFld->setFieldTagAttribute('disabled', 'true');
                                 $toFld->setFieldTagAttribute('data-row', $row);
+                                $toFld->setFieldTagAttribute('class', 'js-slot-to-'.$i);
                                 $toFld->setFieldTagAttribute('onChange', 'displayAddRowField(' . $i . ', this)');
-                                $toFld->value = $toTime;     
-								?>
-								<div class="row row-<?php echo $row; echo ($key > 0) ? ' js-added-rows-'.$i : ''?>">
-									<div class="col-md-2">
-										<div class="field-set">
-											<div class="caption-wraper">
-											   <label class="field_label">
-											   </label>
-											</div>
-											<div class="field-wraper">
-												<div class="field_cover">
-												<?php 
-												if($key == 0){
-													echo $frm->getFieldHtml('tslot_day['.$i.']'); 
-												}
-												?>
-												</div>
-											</div>
-										</div>
-									</div>
-									<div class="col-md-4 js-from_time_<?php echo $i;?>">
-										<div class="field-set">
-											<div class="caption-wraper">
-											   <label class="field_label">
-												<?php $fld = $frm->getField('tslot_from_time['.$i.'][]');
-												  echo $fld->getCaption();
-												?>
-											   </label>
-											</div>
-											<div class="field-wraper">
-												<div class="field_cover">
-												<?php echo $frm->getFieldHtml('tslot_from_time['.$i.'][]'); ?>
-												</div>
-											</div>
-										</div>
-									</div>
-									<div class="col-md-4 js-to_time_<?php echo $i;?>">
-										<div class="field-set">
-											<div class="caption-wraper">
-											   <label class="field_label">
+                                ?>
+                                <div class="row row-<?php echo $row;?>">
+                                    <div class="col-md-2">
+                                        <div class="field-set">
+                                            <div class="caption-wraper">
+                                            <label class="field_label">
+                                            </label>
+                                            </div>
+                                            <div class="field-wraper">
+                                                <div class="field_cover">
+                                                <?php echo $frm->getFieldHtml('tslot_day['.$i.']'); ?>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4 js-from_time_<?php echo $i;?>">
+                                        <div class="field-set">
+                                            <div class="caption-wraper">
+                                            <label class="field_label">
+                                                <?php $fld = $frm->getField('tslot_from_time['.$i.'][]');
+                                                echo $fld->getCaption();
+                                                ?>
+                                            </label>
+                                            </div>
+                                            <div class="field-wraper">
+                                                <div class="field_cover">
+                                                <?php echo $frm->getFieldHtml('tslot_from_time['.$i.'][]'); ?>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4 js-to_time_<?php echo $i;?>">
+                                        <div class="field-set">
+                                            <div class="caption-wraper">
+                                            <label class="field_label">
                                                 <?php $fld = $frm->getField('tslot_to_time['.$i.'][]');
-												    echo $fld->getCaption();
-												?>
-											   </label>
-											</div>
-											<div class="field-wraper">
-												<div class="field_cover">
-												<?php echo $frm->getFieldHtml('tslot_to_time['.$i.'][]'); ?>
-												</div>
-											</div>
-										</div>
-									</div>
-									<div class="col-md-2">
-										<?php if($key == 0){ ?>
-										<div class="field-set">
-											<div class="caption-wraper">
-											   <label class="field_label">
-											   </label>
-											</div>
-											<div class="field-wraper">
-												<div class="field_cover">
-												<?php //echo $frm->getFieldHtml('btn_add_row['.$i.']');  ?>
-													<button type="button" name="btn_add_row[<?php echo $i; ?>]" onClick= "addTimeSlotRow(<?php echo $i; ?>)" class="btn btn-primary js-slot-add-<?php echo $i; ?>"><i class="fas fa-plus"></i></button>
-												</div>
-											</div>
-										</div>
-										<?php }else{ ?>
-										<div class="field-set">
-											<div class="caption-wraper">
-											   <label class="field_label"></label>
-											</div>
-											<div class="field-wraper">
-												<div class="field_cover">
-												<button class="btn btn-outline-primary" type="button" name="btn_remove_row"><i class="fas fa-minus"></i></button>
-												</div>
-											</div>
-										</div>
-										<?php } ?>
-									</div>
-								</div>
-                            <?php  
+                                                echo $fld->getCaption();
+                                                ?>
+                                            </label>
+                                            </div>
+                                            <div class="field-wraper">
+                                                <div class="field_cover">
+                                                <?php echo $frm->getFieldHtml('tslot_to_time['.$i.'][]'); ?>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-2">
+                                        <div class="field-set">
+                                            <div class="caption-wraper">
+                                            <label class="field_label">
+                                            </label>
+                                            </div>
+                                            <div class="field-wraper">
+                                                <div class="field_cover">
+                                                <?php //echo $frm->getFieldHtml('btn_add_row['.$i.']'); ?>
+                                                <button type="button" name="btn_add_row[<?php echo $i; ?>]" onClick= "addTimeSlotRow(<?php echo $i; ?>)" class="d-none btn btn-primary js-slot-add-<?php echo $i; ?>"><i class="fas fa-plus"></i></button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            <?php   
                             $row++;
                             }
-                        }else{
-                            $fromFld = $frm->getField('tslot_from_time['.$i.'][]');
-                            $fromFld->setFieldTagAttribute('disabled', 'true');
-                            $fromFld->setFieldTagAttribute('data-row', $row);
-                            $fromFld->setFieldTagAttribute('class', 'js-slot-from-'.$i.' fromTime-js');
-                            $fromFld->setFieldTagAttribute('onChange', 'displayAddRowField(' . $i . ', this)');
-
-                            $toFld = $frm->getField('tslot_to_time['.$i.'][]');
-                            $toFld->setFieldTagAttribute('disabled', 'true');
-                            $toFld->setFieldTagAttribute('data-row', $row);
-                            $toFld->setFieldTagAttribute('class', 'js-slot-to-'.$i);
-                            $toFld->setFieldTagAttribute('onChange', 'displayAddRowField(' . $i . ', this)');
-							?>
-							<div class="row row-<?php echo $row;?>">
-								<div class="col-md-2">
-									<div class="field-set">
-										<div class="caption-wraper">
-										   <label class="field_label">
-										   </label>
-										</div>
-										<div class="field-wraper">
-											<div class="field_cover">
-											<?php echo $frm->getFieldHtml('tslot_day['.$i.']'); ?>
-											</div>
-										</div>
-									</div>
-								</div>
-								<div class="col-md-4 js-from_time_<?php echo $i;?>">
-									<div class="field-set">
-										<div class="caption-wraper">
-										   <label class="field_label">
-											<?php $fld = $frm->getField('tslot_from_time['.$i.'][]');
-											  echo $fld->getCaption();
-											?>
-										   </label>
-										</div>
-										<div class="field-wraper">
-											<div class="field_cover">
-											<?php echo $frm->getFieldHtml('tslot_from_time['.$i.'][]'); ?>
-											</div>
-										</div>
-									</div>
-								</div>
-								<div class="col-md-4 js-to_time_<?php echo $i;?>">
-									<div class="field-set">
-										<div class="caption-wraper">
-										   <label class="field_label">
-											<?php $fld = $frm->getField('tslot_to_time['.$i.'][]');
-											  echo $fld->getCaption();
-											?>
-										   </label>
-										</div>
-										<div class="field-wraper">
-											<div class="field_cover">
-											<?php echo $frm->getFieldHtml('tslot_to_time['.$i.'][]'); ?>
-											</div>
-										</div>
-									</div>
-								</div>
-								<div class="col-md-2">
-									<div class="field-set">
-										<div class="caption-wraper">
-										   <label class="field_label">
-										   </label>
-										</div>
-										<div class="field-wraper">
-											<div class="field_cover">
-											<?php //echo $frm->getFieldHtml('btn_add_row['.$i.']'); ?>
-											<button type="button" name="btn_add_row[<?php echo $i; ?>]" onClick= "addTimeSlotRow(<?php echo $i; ?>)" class="d-none btn btn-primary js-slot-add-<?php echo $i; ?>"><i class="fas fa-plus"></i></button>
-											</div>
-										</div>
-									</div>
-								</div>
-							</div>
-                        <?php   
-                        $row++;
                         }
-                    }
-                    ?>
+                        ?>
                     </div>
-                    <div class="row d-none js-slot-all">
+                    <div class="row js-slot-all  <?php echo $availability == TimeSlot::DAY_INDIVIDUAL_DAYS ? 'd-none' : ''; ?>">
                         <div class="col-md-6">
                             <div class="field-set">
                                 <div class="caption-wraper">

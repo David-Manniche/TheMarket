@@ -779,3 +779,6 @@ DELETE FROM `tbl_plugins` WHERE `plugin_id` = @paypalStandardId;
 UPDATE `tbl_plugins` SET `plugin_id`= @paypalStandardId WHERE `plugin_id` = @paypalId;
 DELETE FROM `tbl_plugin_settings` WHERE `pluginsetting_plugin_id` = @paypalStandardId;
 UPDATE `tbl_plugin_settings` SET `pluginsetting_plugin_id`= @paypalStandardId WHERE `pluginsetting_plugin_id` = @paypalId;
+
+ALTER TABLE `tbl_time_slots` ADD `tslot_availability` TINYINT(1) NOT NULL AFTER `tslot_id`;
+UPDATE `tbl_time_slots` SET `tslot_availability` = '1' WHERE `tslot_availability` = 0;

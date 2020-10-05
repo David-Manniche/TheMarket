@@ -150,6 +150,7 @@ Bugs:
     => 043610 - Buyer >> when we try to become a seller then some error is there.
     => 043586 - when same shipping package is added again then message needs to be corrected
     => 043640 - wrong time slots are getting created in admin
+    => 043638 - admin> pickup address> slots> when time is selected for all days then on editing it's displays the same time for individual days selected
 
 Enhancements:
     => Tax module upgrade

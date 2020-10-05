@@ -17,7 +17,7 @@ $countryFld->setFieldTagAttribute('onChange', 'getCountryStates(this.value,' . $
 $stateFld = $frm->getField('addr_state_id');
 $stateFld->setFieldTagAttribute('id', 'shop_state');
 
-$slotTypeFld = $frm->getField('slot_type');
+$slotTypeFld = $frm->getField('tslot_availability');
 $slotTypeFld->setOptionListTagAttribute('class', 'list-inline');
 $slotTypeFld->developerTags['cbLabelAttributes'] = array('class' => 'radio');
 $slotTypeFld->developerTags['rdHtmlAfterRadio'] = '<i class="input-helper"></i>';
@@ -219,21 +219,21 @@ $toAllFld->setFieldTagAttribute('onChange', 'validateTimeFields()');
                                 <div class="field-set">
                                     <div class="caption-wraper">
                                         <label class="field_label">
-                                            <?php $fld = $frm->getField('slot_type');
+                                            <?php $fld = $frm->getField('tslot_availability');
                                             echo $fld->getCaption();
                                             ?>
                                         </label>
                                     </div>
                                     <div class="field-wraper">
                                         <div class="field_cover">
-                                            <?php echo $frm->getFieldHtml('slot_type'); ?>
+                                            <?php echo $frm->getFieldHtml('tslot_availability'); ?>
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
 
-                        <div class="js-slot-individual">
+                        <div class="js-slot-individual <?php echo $availability == TimeSlot::DAY_ALL_DAYS ? 'd-none' : ''; ?>">
                             <?php
                             $daysArr = TimeSlot::getDaysArr($langId);
                             $row = 0;
@@ -415,7 +415,7 @@ $toAllFld->setFieldTagAttribute('onChange', 'validateTimeFields()');
                             }
                             ?>
                         </div>
-                        <div class="row d-none js-slot-all">
+                        <div class="row js-slot-all <?php echo $availability == TimeSlot::DAY_INDIVIDUAL_DAYS ? 'd-none' : ''; ?>">
                             <div class="col-md-6">
                                 <div class="field-set">
                                     <div class="caption-wraper">
