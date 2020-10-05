@@ -1625,7 +1625,9 @@ class CheckoutController extends MyAppController
 
         $cartSummary = $cartObj->getCartFinancialSummary($this->siteLangId);
 
-        $cartTotalWithoutDiscount = $cartSummary['cartTotal'] - $cartSummary["cartDiscounts"]["coupon_discount_total"];
+        $cartTotal = isset($cartSummary['cartTotal']) ? $cartSummary['cartTotal'] : 0;
+        $cartDiscounts = isset($cartSummary['cartDiscounts']["coupon_discount_total"]) ? $cartSummary['cartDiscounts']["coupon_discount_total"] : 0;
+        $cartTotalWithoutDiscount = $cartTotal - $cartDiscounts;
 
         $rewardPointValues = min(CommonHelper::convertRewardPointToCurrency($rewardPoints), $cartTotalWithoutDiscount);
         $rewardPoints = CommonHelper::convertCurrencyToRewardPoint($rewardPointValues);
