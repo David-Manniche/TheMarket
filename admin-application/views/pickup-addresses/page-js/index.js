@@ -53,17 +53,29 @@ $(document).ready(function() {
     addTimeSlotRow = function(day){
         var fromTimeHtml = $(".js-from_time_"+day).html();
         var toTimeHtml = $(".js-to_time_"+day).html();
-        var html = "<div class='row js-added-rows-"+day+"'><div class='col-md-2'></div><div class='col-md-4 js-from_time_"+day+"'>"+fromTimeHtml+"</div><div class='col-md-4 js-to_time_"+day+"'>"+toTimeHtml+"</div><div class='col-md-2'><input class='mt-4' type='button' name='btn_remove_row' value='x'></div></div>";
+        var count = $('.js-slot-individual .row').length;
+        var toTime = $(".js-slot-to-" + day + ":last").val();
+        var rowElement = ".js-slot-individual .row-" + count;
+		
+        var html = "<div class='row row-"+count+" js-added-rows-"+day+"'><div class='col-md-2'></div><div class='col-md-4 js-from_time_"+day+"'>"+fromTimeHtml+"</div><div class='col-md-4 js-to_time_"+day+"'>"+toTimeHtml+"</div><div class='col-md-2'><input class='mt-4' type='button' name='btn_remove_row' value='x'></div></div>";
         $(".js-from_time_"+day).last().parent().after(html);
-        $('.js-slot-from-'+day).last().val('');
-        $('.js-slot-to-'+day).last().val('');
+        $(rowElement + " select").val('').attr('data-row', (count));
+        var frmElement = rowElement + " .js-slot-from-" + day;
+
+        $(frmElement + " option").removeClass('d-none');
+		$(frmElement + " option").each(function(){
+			var toVal = $(this).val();
+			if(toVal != '' && toVal <= toTime){
+				$(this).addClass('d-none');
+			}
+        });
     }  
     
     displayFields = function(day, ele){
        if($(ele).prop("checked") == true){
             $(".js-slot-from-"+day).removeAttr('disabled');
             $(".js-slot-to-"+day).removeAttr('disabled');        
-            displayAddRowField(day);
+            displayAddRowField(day, ele);
        }else{
             $(".js-slot-from-"+day).attr('disabled', 'true');
             $(".js-slot-to-"+day).attr('disabled', 'true');
@@ -72,29 +84,70 @@ $(document).ready(function() {
        }  
     }
     
-    displayAddRowField = function(day){
-        var from_time = $(".js-slot-from-"+day).children("option:selected").val();
-        var to_time = $(".js-slot-to-"+day).children("option:selected").val();
-		
-        if(to_time != '' && to_time <= from_time){
-            $(".js-slot-to-"+day).val('').addClass('error');
-            var to_time = $(".js-slot-to-"+day).children("option:selected").val();
+    displayAddRowField = function(day, ele){
+        var index = $(ele).data('row');
+        var rowElement = ".js-slot-individual .row-" + index;
+        var frmElement = rowElement + " .js-slot-from-" + day;
+        var toElement = rowElement + " .js-slot-to-" + day;
+
+        var fromTime = $(frmElement + " option:selected").val();
+        var toTime = $(toElement + " option:selected").val();
+        
+        var toElementIndex = $(rowElement).index();
+        var nextRowElement = ".js-slot-individual .row:eq(" + (toElementIndex + 1) + ")"; 
+        var nextFrmElement = nextRowElement + " .js-slot-from-" + day;
+
+        if (0 < $(nextFrmElement).length) {
+            $(nextFrmElement + " option").removeClass('d-none');
+            var nxtFrmSelectedVal = $(nextFrmElement + ' option:selected').val();
+            if (nxtFrmSelectedVal <= toTime) {
+                $(".js-slot-from-" + day).each(function(){
+                    if (index < $(this).data('row') && $(this).val() <= toTime) {
+                        var nxtRow = $(this).data('row');
+                        $(this).val("");
+                        $(".js-slot-individual .row-" + nxtRow + " .js-slot-to-" + day).val("");
+                        $("option", this).each(function(){
+                            var optVal = $(this).val();
+                            if(optVal != '' && optVal <= toTime){
+                                $(this).addClass('d-none');
+                            }
+                        });
+                    }
+                });
+            }
+            $(nextFrmElement + " option").each(function(){
+                var nxtFrmVal = $(this).val();
+                if(nxtFrmVal != '' && nxtFrmVal <= toTime){
+                    $(this).addClass('d-none');
+                }
+            });
+        }
+
+        if(fromTime == '' && toTime != '') {
+            $(toElement).val("");
+            $.mbsmessage(langLbl.invalidFromTime, true, 'alert--danger');
+            return false;
+        }
+
+        if(toTime != '' && toTime <= fromTime){
+            $(toElement).val('').addClass('error');
+            var toTime = $(toElement).children("option:selected").val();
         }else{
-            $(".js-slot-to-"+day).removeClass('error');
+            $(toElement).removeClass('error');
         }
 		
-		$(".js-slot-to-"+day+" option").removeClass('d-none');
-		$(".js-slot-to-"+day+" option").each(function(){
+		$(toElement + " option").removeClass('d-none');
+		$(toElement + " option").each(function(){
 			var toVal = $(this).val();
-			if(toVal != '' && toVal <= from_time){
+			if(toVal != '' && toVal <= fromTime){
 				$(this).addClass('d-none');
 			}
 		});
         
-        if(from_time != ''  && to_time != ''){
-            $(".js-slot-add-"+day).removeClass('d-none');
+        if(fromTime != ''  && toTime != ''){
+            $(rowElement + " .js-slot-add-"+day).removeClass('d-none');
         }else{
-            $(".js-slot-add-"+day).addClass('d-none');
+            $(rowElement + " .js-slot-add-"+day).addClass('d-none');
         }        
 
     }

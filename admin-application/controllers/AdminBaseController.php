@@ -153,6 +153,7 @@ class AdminBaseController extends FatController
             'saveProfileFirst' => Labels::getLabel('LBL_Save_Profile_First', $this->adminLangId),
             'minimumOneLocationRequired' => Labels::getLabel('LBL_Minimum_one_location_is_required', $this->adminLangId),
             'confirmTransfer' => Labels::getLabel('LBL_CONFIRM_TRANSFER_?', $this->adminLangId),
+            'invalidFromTime' => Labels::getLabel('LBL_PLEASE_SELECT_VALID_FROM_TIME', $this->adminLangId),
         );
 
         $languages = Language::getAllNames(false);

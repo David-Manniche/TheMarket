@@ -149,6 +149,7 @@ Bugs:
     => 043603 - seller invoice print> only logo is listing
     => 043610 - Buyer >> when we try to become a seller then some error is there.
     => 043586 - when same shipping package is added again then message needs to be corrected
+    => 043640 - wrong time slots are getting created in admin
 
 Enhancements:
     => Tax module upgrade
