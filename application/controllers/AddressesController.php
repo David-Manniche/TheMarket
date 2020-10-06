@@ -187,12 +187,12 @@ class AddressesController extends LoggedUserController
 
     public function getPickupAddresses()
     {   
-        $level = FatApp::getPostedData('level', FatUtility::VAR_INT, -1);
+        $pickUpBy = FatApp::getPostedData('pickUpBy', FatUtility::VAR_INT, -1);
         $recordId = FatApp::getPostedData('recordId', FatUtility::VAR_INT, -1);
         $addrId = FatApp::getPostedData('addrId', FatUtility::VAR_INT, 0);
         $slotId = FatApp::getPostedData('slotId', FatUtility::VAR_INT, 0);
         $slotDate = FatApp::getPostedData('slotDate', FatUtility::VAR_STRING, '');
-        if($level < 0 || $recordId < 0){
+        if($pickUpBy < 0 || $recordId < 0){
             $msg = Labels::getLabel('LBL_Invalid_request', $this->siteLangId);
             if (true === MOBILE_APP_API_CALL) {
                 FatUtility::dieJsonError($msg);
@@ -201,11 +201,11 @@ class AddressesController extends LoggedUserController
             FatUtility::dieWithError(Message::getHtml());
         }
         
-        $type = ($level == 0) ? Address::TYPE_ADMIN_PICKUP : Address::TYPE_SHOP_PICKUP;
+        $type = ($pickUpBy == 0) ? Address::TYPE_ADMIN_PICKUP : Address::TYPE_SHOP_PICKUP;
         $address = new Address();
         $addresses = $address->getData($type, $recordId, 0, true);
         $this->set('addresses', $addresses);
-        $this->set('level', $level);
+        $this->set('pickUpBy', $pickUpBy);
         $this->set('addrId', $addrId);
         $this->set('slotId', $slotId);
         $this->set('slotDate', $slotDate);
@@ -216,11 +216,11 @@ class AddressesController extends LoggedUserController
         $this->_template->render(false, false);
     }
     
-    public function getTimeSlotsByAddressAndDate(int $addressId = 0, string $selectedDate = '', int $level = -1, bool $return = false)
+    public function getTimeSlotsByAddressAndDate(int $addressId = 0, string $selectedDate = '', int $pickUpBy = -1, bool $return = false)
     {
         $addressId = FatApp::getPostedData('addressId', FatUtility::VAR_INT, $addressId);
         $selectedDate = FatApp::getPostedData('selectedDate', FatUtility::VAR_STRING, $selectedDate);
-        $level = FatApp::getPostedData('level', FatUtility::VAR_INT, $level);
+        $pickUpBy = FatApp::getPostedData('pickUpBy', FatUtility::VAR_INT, $pickUpBy);
         $selectedSlot = FatApp::getPostedData('selectedSlot', FatUtility::VAR_INT, 0);
         if($addressId < 1 || empty($selectedDate)){
             Message::addErrorMessage(Labels::getLabel('LBL_Invalid_request', $this->siteLangId));
@@ -232,14 +232,14 @@ class AddressesController extends LoggedUserController
         $timeSlots = $timeSlot->timeSlotsByAddrIdAndDay($addressId, $day);        
         $this->set('timeSlots', $timeSlots);
         $this->set('selectedDate', $selectedDate);
-        $this->set('level', $level);
+        $this->set('pickUpBy', $pickUpBy);
         $this->set('selectedSlot', $selectedSlot);
         if (false === $return) {
             $this->_template->render(false, false, 'addresses/time-slots.php');
         }
     }
     
-    public function slotDaysByAddr(int $addrId, int $level = -1)
+    public function slotDaysByAddr(int $addrId, int $pickUpBy = -1)
     {
         if (1 > $addrId) {
             $message = Labels::getLabel('MSG_Invalid_Access', $this->siteLangId);
@@ -300,7 +300,7 @@ class AddressesController extends LoggedUserController
         $this->set('slotDays', $slotDays);
         $this->set('activeDate', $activeDate);
         if (true === MOBILE_APP_API_CALL) {
-            $this->getTimeSlotsByAddressAndDate($addrId, $activeDate, $level, true);
+            $this->getTimeSlotsByAddressAndDate($addrId, $activeDate, $pickUpBy, true);
             $this->_template->render();
         }
         $this->_template->render(false, false, 'json-success.php');

@@ -31,15 +31,15 @@
             <?php
             ksort($shippingRates);  
             $levelNo = 0;
-            foreach ($shippingRates as $level => $levelItems) { ?>
+            foreach ($shippingRates as $pickUpBy => $levelItems) { ?>
             <ul class="list-group list-cart list-shippings">
-            <?php //if (count($levelItems['products']) > 0 && $level == 0) {
-            if (isset($levelItems['products']) && count($levelItems['products']) > 0 && $level == 0) {
+            <?php //if (count($levelItems['products']) > 0 && $pickUpBy == 0) {
+            if (isset($levelItems['products']) && count($levelItems['products']) > 0 && $pickUpBy == 0) {
                 $productData = current($levelItems['products']); 
                 ?>
                 <li class="list-group-item shipping-select">
-                    <div class="shop-name"><?php echo ($level == Shipping::LEVEL_SHOP) ? $productData['shop_name'] : FatApp::getConfig('CONF_WEBSITE_NAME_' . $siteLangId, null, ''); ?></div>
-                    <div class="shop-address js-slot-addr_<?php echo $level; ?>">
+                    <div class="shop-name"><?php echo ($pickUpBy == Shipping::LEVEL_SHOP) ? $productData['shop_name'] : FatApp::getConfig('CONF_WEBSITE_NAME_' . $siteLangId, null, ''); ?></div>
+                    <div class="shop-address js-slot-addr_<?php echo $pickUpBy; ?>">
                     <?php $seletedSlotId = '';
                         $seletedSlotDate = '';  
                         $seletedAddrId = '';  
@@ -65,11 +65,11 @@
 					<?php } ?>
 					
                     </div>
-                    <div class="shipping-method js-slot-addr-<?php echo $level; ?>" data-addr-id="<?php echo $seletedAddrId; ?>">
-                        <input type="hidden" name="slot_id[<?php echo $level; ?>]" class="js-slot-id" data-level="<?php echo $level; ?>" value="<?php echo $seletedSlotId; ?>">
-                        <input type="hidden" name="slot_date[<?php echo $level; ?>]" class="js-slot-date" data-level="<?php echo $level; ?>" value="<?php echo $seletedSlotDate; ?>">
+                    <div class="shipping-method js-slot-addr-<?php echo $pickUpBy; ?>" data-addr-id="<?php echo $seletedAddrId; ?>">
+                        <input type="hidden" name="slot_id[<?php echo $pickUpBy; ?>]" class="js-slot-id" data-level="<?php echo $pickUpBy; ?>" value="<?php echo $seletedSlotId; ?>">
+                        <input type="hidden" name="slot_date[<?php echo $pickUpBy; ?>]" class="js-slot-date" data-level="<?php echo $pickUpBy; ?>" value="<?php echo $seletedSlotDate; ?>">
                         <?php if(count($levelItems['pickup_options']) > 0) { ?>
-                        <a class="btn btn-secondary btn-sm" href="javascript:void(0)" onclick="displayPickupAddress(<?php echo $level;?>, 0)"><?php echo Labels::getLabel('LBL_SELECT_PICKUP', $siteLangId);?></a>
+                        <a class="btn btn-secondary btn-sm" href="javascript:void(0)" onclick="displayPickupAddress(<?php echo $pickUpBy;?>, 0)"><?php echo Labels::getLabel('LBL_SELECT_PICKUP', $siteLangId);?></a>
                         <?php }else{
                             echo Labels::getLabel('MSG_NO_PICKUP_ADDRESS_CONFIGURED', $siteLangId);
                         } ?>
@@ -81,13 +81,13 @@
                     $productUrl = !$isAppUser ? UrlHelper::generateUrl('Products', 'View', array($product['selprod_id'])) : 'javascript:void(0)';
                     $shopUrl = !$isAppUser ? UrlHelper::generateUrl('Shops', 'View', array($product['shop_id'])) : 'javascript:void(0)';
                     $imageUrl = UrlHelper::getCachedUrl(UrlHelper::generateFileUrl('image', 'product', array($product['product_id'], "THUMB", $product['selprod_id'], 0, $siteLangId)), CONF_IMG_CACHE_TIME, '.jpg'); ?>
-                <?php if ($levelNo != $level) { 
-                    if (count($levelItems['products']) > 0  && $level != 0) { 
-                    //if (count($levelItems['products']) > 0 && $level != 0) {
+                <?php if ($levelNo != $pickUpBy) { 
+                    if (count($levelItems['products']) > 0  && $pickUpBy != 0) { 
+                    //if (count($levelItems['products']) > 0 && $pickUpBy != 0) {
                 ?>
                     <li class="list-group-item shipping-select">
                         <div class="shop-name"><?php echo $product['shop_name']; ?></div>
-                        <div class="shop-address js-slot-addr_<?php echo $level; ?>">
+                        <div class="shop-address js-slot-addr_<?php echo $pickUpBy; ?>">
                         <?php $seletedSlotId = '';
                         $seletedSlotDate = '';
                         $seletedAddrId = '';  
@@ -113,11 +113,11 @@
 						<?php } ?>
 							
                         </div>
-                        <div class="shipping-method js-slot-addr-<?php echo $level; ?>" data-addr-id="<?php echo $seletedAddrId; ?>">
-                        <input type="hidden" name="slot_id[<?php echo $level; ?>]" class="js-slot-id" data-level="<?php echo $level; ?>" value="<?php echo $seletedSlotId; ?>">
-                        <input type="hidden" name="slot_date[<?php echo $level; ?>]" class="js-slot-date" data-level="<?php echo $level; ?>" value="<?php echo $seletedSlotDate;?>">
+                        <div class="shipping-method js-slot-addr-<?php echo $pickUpBy; ?>" data-addr-id="<?php echo $seletedAddrId; ?>">
+                        <input type="hidden" name="slot_id[<?php echo $pickUpBy; ?>]" class="js-slot-id" data-level="<?php echo $pickUpBy; ?>" value="<?php echo $seletedSlotId; ?>">
+                        <input type="hidden" name="slot_date[<?php echo $pickUpBy; ?>]" class="js-slot-date" data-level="<?php echo $pickUpBy; ?>" value="<?php echo $seletedSlotDate;?>">
                         <?php if(count($levelItems['pickup_options']) > 0) { ?>
-                        <a class="btn btn-secondary btn-sm" href="javascript:void(0)" onclick="displayPickupAddress(<?php echo $level;?>, <?php echo $product['shop_id']; ?>)"><?php echo Labels::getLabel('LBL_SELECT_PICKUP', $siteLangId);?></a>
+                        <a class="btn btn-secondary btn-sm" href="javascript:void(0)" onclick="displayPickupAddress(<?php echo $pickUpBy;?>, <?php echo $product['shop_id']; ?>)"><?php echo Labels::getLabel('LBL_SELECT_PICKUP', $siteLangId);?></a>
                         <?php }else{ 
                             echo Labels::getLabel('MSG_NO_PICKUP_ADDRESS_CONFIGURED', $siteLangId);
                         } ?>
@@ -125,7 +125,7 @@
                     </li> 
                 <?php } ?>   
             <?php 
-                } $levelNo = $level;?>                    
+                } $levelNo = $pickUpBy;?>                    
                 <li class="list-group-item">
                     <div class="product-profile">
                         <div class="product-profile__thumbnail">

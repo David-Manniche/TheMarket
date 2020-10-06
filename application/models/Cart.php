@@ -1749,35 +1749,35 @@ class Cart extends FatModel
 
         foreach ($cartProducts as $product) {
             $selProdId = $product['selprod_id'];
-            $shippedById = 0;
-            $shipType = Address::TYPE_ADMIN_PICKUP;
+            $pickUpBy = 0;
+            $pickUpType = Address::TYPE_ADMIN_PICKUP;
 
             if ($product['isProductShippedBySeller']) {
-                $shippedById = $product['shop_id'];
-                $shipType = Address::TYPE_SHOP_PICKUP;
+                $pickUpBy = $product['shop_id'];
+                $pickUpType = Address::TYPE_SHOP_PICKUP;
             }
 
             if ($product['is_physical_product']) {
-                $shippedByArr[$shippedById]['products'][$selProdId] = $product;
+                $shippedByArr[$pickUpBy]['products'][$selProdId] = $product;
 
-                if (!in_array($shippedById, $pickupAddress)) {
-                    $addresses = $address->getData($shipType, $shippedById);
-                    $shippedByArr[$shippedById]['pickup_options'] = $addresses;
+                if (!in_array($pickUpBy, $pickupAddress)) {
+                    $addresses = $address->getData($pickUpType, $pickUpBy);
+                    $shippedByArr[$pickUpBy]['pickup_options'] = $addresses;
                 }
-                $pickupAddress[] = $shippedById;
+                $pickupAddress[] = $pickUpBy;
 
-                if (!in_array($shippedById, $selectedPickUpAddresses) && !empty($pickUpData[$product['selprod_id']])) {
+                if (!in_array($pickUpBy, $selectedPickUpAddresses) && !empty($pickUpData[$product['selprod_id']])) {
                     $addressObj = new Address($pickUpData[$selProdId]['time_slot_addr_id']);
-                    $pickUpAddr = $addressObj->getData($shipType, $shippedById);
-                    $shippedByArr[$shippedById]['pickup_address'] = $pickUpAddr;
-                    $shippedByArr[$shippedById]['pickup_address']['time_slot_id'] = $pickUpData[$selProdId]['time_slot_id'];
-                    $shippedByArr[$shippedById]['pickup_address']['time_slot_date'] = $pickUpData[$selProdId]['time_slot_date'];
-                    $shippedByArr[$shippedById]['pickup_address']['time_slot_from'] = $pickUpData[$selProdId]['time_slot_from_time'];
-                    $shippedByArr[$shippedById]['pickup_address']['time_slot_to'] = $pickUpData[$selProdId]['time_slot_to_time'];
+                    $pickUpAddr = $addressObj->getData($pickUpType, $pickUpBy);
+                    $shippedByArr[$pickUpBy]['pickup_address'] = $pickUpAddr;
+                    $shippedByArr[$pickUpBy]['pickup_address']['time_slot_id'] = $pickUpData[$selProdId]['time_slot_id'];
+                    $shippedByArr[$pickUpBy]['pickup_address']['time_slot_date'] = $pickUpData[$selProdId]['time_slot_date'];
+                    $shippedByArr[$pickUpBy]['pickup_address']['time_slot_from'] = $pickUpData[$selProdId]['time_slot_from_time'];
+                    $shippedByArr[$pickUpBy]['pickup_address']['time_slot_to'] = $pickUpData[$selProdId]['time_slot_to_time'];
                 }
-                $selectedPickUpAddresses[] = $shippedById;
+                $selectedPickUpAddresses[] = $pickUpBy;
             } else {
-                $shippedByArr[$shippedById]['digital_products'][$selProdId] = $product;
+                $shippedByArr[$pickUpBy]['digital_products'][$selProdId] = $product;
             }
         }
         return $shippedByArr;

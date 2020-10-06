@@ -4,7 +4,7 @@ $data = array(
     'activeDate' => $activeDate,
     'timeSlots' => $timeSlots,
     'selectedDate' => $selectedDate,
-    'level' => $level,
+    'pickUpBy' => $pickUpBy,
     'selectedSlot' => $selectedSlot,
 );
 
