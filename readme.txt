@@ -169,6 +169,7 @@ Bugs:
     => 043606 - While checkout if we select "pay on pickup then status should be "pay on pickup " instead of " cash on delivery .
     => 043777 - Admin >> if we delete any collection and then recreate the collection with same name then duplicate entry gets display . 
     => 043776 - Collection >> banner >> when we save banner collection then "successful message should be there.
+    => 043775 - Admin >> promotions>> discount coupons>> links >> "Product Not Found? Click Here To Add New Product" should be in the same row.
 
 Enhancements:
     => Tax module upgrade
