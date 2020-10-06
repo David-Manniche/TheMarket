@@ -49,9 +49,10 @@ if (!empty($orderDetail["thirdPartyorderInfo"]) && isset($orderDetail["thirdPart
                             <a href="<?php echo UrlHelper::generateUrl('Seller', 'sales'); ?>" class="btn btn-outline-primary  btn-sm no-print" title="<?php echo Labels::getLabel('LBL_Back_to_order', $siteLangId); ?>">
                                 <i class="fas fa-arrow-left"></i>
                             </a>
-                            <a href="javascript:void(0)" class="btn btn-outline-primary btn-sm no-print printBtn-js" title="<?php echo Labels::getLabel('LBL_Print', $siteLangId); ?>" style="display:none">
-                                <i class="fas fa-print"></i>
-                            </a>
+                            <a target = "_blank" href="<?php echo UrlHelper::generateUrl('Seller', 'viewInvoice', [$orderDetail['op_id']]); ?>" class="btn btn-outline-primary btn-sm no-print" title="
+								<?php echo Labels::getLabel('LBL_Print', $siteLangId); ?>">
+								<i class="fas fa-print"></i>
+							</a>
                             <?php if ($shippedBySeller && true === $canShipByPlugin && ('CashOnDelivery' == $orderDetail['plugin_code'] || Orders::ORDER_PAYMENT_PAID == $orderDetail['order_payment_status'])) {
                                 $opId = $orderDetail['op_id'];
                                 if (empty($orderDetail['opship_response']) && empty($orderDetail['opship_tracking_number'])) {

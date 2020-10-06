@@ -581,6 +581,107 @@ class SellerController extends SellerBaseController
         $this->_template->render(true, true);
     }
 
+    public function viewInvoice($op_id)
+    {
+        $this->userPrivilege->canViewSales(UserAuthentication::getLoggedUserId());
+        $op_id = FatUtility::int($op_id);
+        if (1 > $op_id) {
+            Message::addErrorMessage(Labels::getLabel('MSG_Invalid_Access', $this->siteLangId));
+            CommonHelper::redirectUserReferer();
+        }
+
+        $orderObj = new Orders();
+        $userId = $this->userParentId;
+
+        $srch = new OrderProductSearch($this->siteLangId, true, true);
+        $srch->joinPaymentMethod();
+        $srch->joinSellerProducts();
+        $srch->joinShop();
+        $srch->joinShopSpecifics();
+        $srch->joinShopCountry();
+        $srch->joinShopState();
+        $srch->joinShippingUsers();
+        $srch->joinShippingCharges();
+        $srch->addOrderProductCharges();
+        $srch->addCondition('op_selprod_user_id', '=', $userId);
+        $srch->addCondition('op_id', '=', $op_id);
+        $srch->addStatusCondition(unserialize(FatApp::getConfig("CONF_VENDOR_ORDER_STATUS")));
+        $srch->addMultipleFields(array('*', 'shop_country_l.country_name as shop_country_name', 'shop_state_l.state_name as shop_state_name', 'shop_city'));
+        $rs = $srch->getResultSet();
+        $orderDetail = FatApp::getDb()->fetch($rs);
+
+        if (!$orderDetail) {
+            Message::addErrorMessage(Labels::getLabel('MSG_Invalid_Access', $this->siteLangId));
+            CommonHelper::redirectUserReferer();
+        }
+
+        $charges = $orderObj->getOrderProductChargesArr($op_id);
+        $orderDetail['charges'] = $charges;
+
+        $shippedBySeller = applicationConstants::NO;
+        if (CommonHelper::canAvailShippingChargesBySeller($orderDetail['op_selprod_user_id'], $orderDetail['opshipping_by_seller_user_id'])) {
+            $shippedBySeller = applicationConstants::YES;
+        }
+
+        if (!empty($orderDetail["opship_orderid"])) {
+            if (null != $this->shippingService && false === $this->shippingService->loadOrder($orderDetail["opship_orderid"])) {
+                Message::addErrorMessage($this->shippingService->getError());
+                FatApp::redirectUser(UrlHelper::generateUrl("SellerOrders"));
+            }
+            $orderDetail['thirdPartyorderInfo'] = (null != $this->shippingService ? $this->shippingService->getResponse() : []);
+        }
+      
+        $address = $orderObj->getOrderAddresses($orderDetail['op_order_id']);
+        $orderDetail['billingAddress'] = (isset($address[Orders::BILLING_ADDRESS_TYPE])) ? $address[Orders::BILLING_ADDRESS_TYPE] : array();
+        $orderDetail['shippingAddress'] = (isset($address[Orders::SHIPPING_ADDRESS_TYPE])) ? $address[Orders::SHIPPING_ADDRESS_TYPE] : array();
+
+        $pickUpAddress = $orderObj->getOrderAddresses($orderDetail['op_order_id'], $orderDetail['op_id']);
+        $orderDetail['pickupAddress'] = (isset($pickUpAddress[Orders::PICKUP_ADDRESS_TYPE])) ? $pickUpAddress[Orders::PICKUP_ADDRESS_TYPE] : array();
+
+        $opChargesLog = new OrderProductChargeLog($op_id);
+        $taxOptions = $opChargesLog->getData($this->siteLangId);
+        $orderDetail['taxOptions'] = $taxOptions;
+
+        /* $this->set('orderDetail', $orderDetail);
+        $this->set('languages', Language::getAllNames());
+        $this->set('yesNoArr', applicationConstants::getYesNoArr($this->siteLangId));
+        $this->set('canEdit', $this->userPrivilege->canEditSales(UserAuthentication::getLoggedUserId(), true));
+        $this->_template->render(true, true); */
+
+        $template = new FatTemplate('', '');
+        $template->set('siteLangId', $this->siteLangId);
+        $template->set('orderDetail', $orderDetail);
+        $template->set('shippedBySeller', $shippedBySeller);
+
+        require_once(CONF_INSTALLATION_PATH . 'library/tcpdf/tcpdf.php');
+        $pdf = new TCPDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
+        $pdf->SetCreator(PDF_CREATOR);
+        $pdf->SetAuthor(FatApp::getConfig("CONF_WEBSITE_NAME_" . $this->siteLangId));
+        $pdf->SetKeywords(FatApp::getConfig("CONF_WEBSITE_NAME_" . $this->siteLangId));
+        $pdf->setHeaderFont(Array(PDF_FONT_NAME_MAIN, '', PDF_FONT_SIZE_MAIN));
+        $pdf->SetHeaderMargin(0);
+        $pdf->SetHeaderData('', 0, '', '', array(255,255,255), array(255,255,255));
+        $pdf->setFooterData(array(0,0,0), array(200,200,200));
+        $pdf->SetFooterMargin(PDF_MARGIN_FOOTER);
+        $pdf->setFooterFont(Array(PDF_FONT_NAME_DATA, '', PDF_FONT_SIZE_DATA));
+        $pdf->SetMargins(10, 10, 10);
+        $pdf->setImageScale(PDF_IMAGE_SCALE_RATIO);
+        $pdf->AddPage();
+        $pdf->SetTitle(Labels::getLabel('LBL_Tax_Invoice', $this->siteLangId));
+        $pdf->SetSubject(Labels::getLabel('LBL_Tax_Invoice', $this->siteLangId));
+
+        $templatePath = "seller/view-invoice.php";
+        $html = $template->render(false, false, $templatePath, true, true);
+        $pdf->writeHTML($html, true, false, true, false, '');
+        $pdf->lastPage();
+        
+        ob_end_clean();
+        // $saveFile = CONF_UPLOADS_PATH . 'demo-pdf.pdf';
+        //$pdf->Output($saveFile, 'F');
+        $pdf->Output('tax-invoice.pdf', 'I');
+        return true;
+    }
+
     public function viewSubscriptionOrder($ossubs_id)
     {
         $op_id = FatUtility::int($ossubs_id);
@@ -2066,7 +2167,7 @@ class SellerController extends SellerBaseController
             Message::addErrorMessage($shopObj->getError());
             FatUtility::dieJsonError(Message::getHtml());
         }
-
+		
         $post['ss_shop_id'] = $shop_id;
         $shopSpecificsObj = new ShopSpecifics($shop_id);
         $shopSpecificsObj->assignValues($post);
@@ -3399,6 +3500,17 @@ class SellerController extends SellerBaseController
           <div><img src="'.UrlHelper::generateUrl('Image','shopBanner',array($shop_id, $this->siteLangId, 'THUMB')).'"></div>';
           } */
         // $frm->addHtml('', '', '<div id="map" style="width:1500px; height:500px"></div>');
+        
+		$alphanumericFld = $frm->addRequiredField(Labels::getLabel('LBL_Invoice_number_starts_from', $this->siteLangId), 'shop_invoice_prefix', '', array('placeholder' => Labels::getLabel('LBL_Alphanumeric_value', $this->siteLangId)));
+        $alphanumericFld->requirements()->setRegularExpressionToValidate(ValidateElement::ZIP_REGEX);
+        $alphanumericFld->requirements()->setCustomErrorMessage(Labels::getLabel('LBL_Only_alphanumeric_value_is_allowed.', $this->siteLangId));
+        $numericFld = $frm->addIntegerField(Labels::getLabel('LBL_Invoice_number_starts_from', $this->siteLangId), 'shop_invoice_suffix', '', array('placeholder' => Labels::getLabel('LBL_Integer_value', $this->siteLangId)));
+        $numericFld->requirements()->setCustomErrorMessage(Labels::getLabel('LBL_Only_numeric_value_is_allowed.', $this->siteLangId));
+        $alphanumericFld->attachField($numericFld);
+		
+		$fld = $frm->addTextarea(Labels::getLabel("LBL_Government_Information_on_invoices", $this->siteLangId), 'shop_invoice_codes');
+		$fld->htmlAfterField = "<small>" . Labels::getLabel("LBL_Information_mandated_by_the_Government_on_invoices.", $this->siteLangId) . "</small>";
+		
         $frm->addHiddenField('', 'shop_lat');
         $frm->addHiddenField('', 'shop_lng');
         $frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_Save_Changes', $this->siteLangId));

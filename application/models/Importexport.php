@@ -3309,6 +3309,7 @@ class Importexport extends ImportexportCommon
                                     $prodIndetifierArr = $prodIndetifierArr + $res;
                                 }
                             }
+							
                             $productId = $colValue = array_key_exists($colValue, $prodIndetifierArr) ? $prodIndetifierArr[$colValue] : 0;
                             $checkOption = true;
                             break;
