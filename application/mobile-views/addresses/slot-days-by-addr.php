@@ -1,10 +1,10 @@
 <?php defined('SYSTEM_INIT') or die('Invalid Usage.');
 $data = array(
     'slotDays' => $slotDays,
-    'activeDate' => $activeDate,
+    'activeDate' => strtotime($activeDate),
     'timeSlots' => $timeSlots,
     'selectedDate' => $selectedDate,
-    'level' => $level,
+    'pickUpBy' => $pickUpBy,
     'selectedSlot' => $selectedSlot,
 );
 

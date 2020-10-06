@@ -1139,7 +1139,7 @@ class CheckoutController extends MyAppController
                 if ($productInfo['product_type'] == Product::PRODUCT_TYPE_PHYSICAL && !empty($productSelectedPickUpAddresses) && isset($productSelectedPickUpAddresses[$productInfo['selprod_id']])) {
                     $pickUpDataRow = $productSelectedPickUpAddresses[$productInfo['selprod_id']];
                     $productPickUpData = array(
-                        'opshipping_fulfillment_type' => OrderProduct::TYPE_PICKUP,
+                        'opshipping_fulfillment_type' => Shipping::FULFILMENT_PICKUP,
                         'opshipping_by_seller_user_id' => $pickUpDataRow['shipped_by_seller'],
                         'opshipping_pickup_addr_id' => $pickUpDataRow['time_slot_addr_id'],
                         'opshipping_date' => $pickUpDataRow['time_slot_date'],
@@ -2124,8 +2124,8 @@ class CheckoutController extends MyAppController
         $basketProducts = [];
         $pickupOptions = $this->cartObj->getPickupOptions($basketProducts);
 
-        foreach ($post['slot_id'] as $level => $slotId) {
-            if (empty($slotId) || empty($post['slot_date'][$level])) {
+        foreach ($post['slot_id'] as $pickUpBy => $slotId) {
+            if (empty($slotId) || empty($post['slot_date'][$pickUpBy])) {
                 $message = Labels::getLabel('MSG_Pickup_Method_is_not_selected_on_products_in_cart', $this->siteLangId);
                 LibHelper::exitWithError($message, true);
             }
@@ -2136,14 +2136,14 @@ class CheckoutController extends MyAppController
                 LibHelper::exitWithError($message, true);
             }
 
-            $selectedDate = $post['slot_date'][$level];
+            $selectedDate = $post['slot_date'][$pickUpBy];
             $selectedDay = date('w', strtotime($selectedDate));
             if ($selectedDay != $slotData['tslot_day']) {
                 $message = Labels::getLabel('MSG_Something_went_wrong,_please_try_after_some_time.', $this->siteLangId);
                 LibHelper::exitWithError($message, true);
             }
 
-            if (array_search($slotData['tslot_record_id'], array_column($pickupOptions[$level]['pickup_options'], 'addr_id')) === false) {
+            if (array_search($slotData['tslot_record_id'], array_column($pickupOptions[$pickUpBy]['pickup_options'], 'addr_id')) === false) {
                 $message = Labels::getLabel('MSG_Something_went_wrong,_please_try_after_some_time.', $this->siteLangId);
                 LibHelper::exitWithError($message, true);
             }
@@ -2154,7 +2154,7 @@ class CheckoutController extends MyAppController
                 LibHelper::exitWithError($message, true);
             }
 
-            foreach ($pickupOptions[$level]['products'] as $pickupProduct) {
+            foreach ($pickupOptions[$pickUpBy]['products'] as $pickupProduct) {
                 foreach ($cartProducts as $cartKey => $cartval) {
                     if ($cartval['selprod_id'] != $pickupProduct['selprod_id'] || $cartval['product_type'] == Product::PRODUCT_TYPE_DIGITAL) {
                         continue;

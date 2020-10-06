@@ -99,9 +99,9 @@ displayDateSlots = function(displaySlotSelected){
     $('input[name="timeSlot"]').prop("checked", displaySlotSelected);
     var selectedDate = $('.js-datepicker').val();  
     var addressId = $('input[name="pickup_address"]:checked').val();
-    var level = <?php echo $level; ?>;
+    var pickUpBy = <?php echo $pickUpBy; ?>;
     if(addressId != 'undefined' && selectedDate != ''){ 
-        var data = 'addressId='+addressId+'&selectedDate='+selectedDate+'&level='+level;
+        var data = 'addressId='+addressId+'&selectedDate='+selectedDate+'&pickUpBy='+pickUpBy;
         if(displaySlotSelected == true){
             data = data +'&selectedSlot=<?php echo $slotId;?>';
         }
@@ -121,19 +121,19 @@ availableDates = function(date){
     return [false];
 }
 
-selectTimeSlot = function (ele, level) {
+selectTimeSlot = function (ele, pickUpBy) {
     var slot_id = $(ele).attr('id');
     var slot_date = $('.js-datepicker').val();
     var addr_id = $("input[name='pickup_address']:checked").val();
-    $("input[name='slot_id[" + level + "]']").val(slot_id);
-    $("input[name='slot_date[" + level + "]']").val(slot_date);
-    $(".js-slot-addr-"+level).attr('data-addr-id', addr_id);
+    $("input[name='slot_id[" + pickUpBy + "]']").val(slot_id);
+    $("input[name='slot_date[" + pickUpBy + "]']").val(slot_date);
+    $(".js-slot-addr-"+pickUpBy).attr('data-addr-id', addr_id);
 
     var slot_time = $(ele).next().children('.time').html();
     var addrHtml = $("input[name='pickup_address']:checked").next().next('.js-addr').html();
     var html = addrHtml + '<p class="time-txt"><i class="fas fa-calendar-day"></i>'+calendarSelectedDate+' '+slot_time+'</p>';
     
-    $(".js-slot-addr_" + level).html(html);
+    $(".js-slot-addr_" + pickUpBy).html(html);
     $("#facebox .close").trigger('click');
 }
 

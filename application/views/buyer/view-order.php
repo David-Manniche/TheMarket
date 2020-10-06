@@ -116,7 +116,11 @@ if (!$print) { ?>
                                     }
                                     if ($childOrderDetail['order_is_wallet_selected'] > 0) {
                                         $paymentMethodName .= Labels::getLabel("LBL_Wallet", $siteLangId);
-                                    } ?>
+                                    }
+                                    
+                                    if (strtolower($childOrderDetail['plugin_code']) == 'cashondelivery' && $childOrderDetail['opshipping_fulfillment_type'] == Shipping::FULFILMENT_PICKUP) {
+                                        $paymentMethodName = Labels::getLabel('LBL_PAY_ON_PICKUP', $siteLangId);
+                                    }?>
                                     <p>
                                         <strong>
                                             <?php echo Labels::getLabel('LBL_Payment_Method', $siteLangId); ?>:
@@ -212,7 +216,7 @@ if (!$print) { ?>
                                         </strong>
                                         <?php echo FatDate::format($childOrderDetail['order_date_added']); ?>
                                     </p>
-                                    <?php if ($childOrderDetail["opshipping_fulfillment_type"] == OrderProduct::TYPE_PICKUP) { ?>
+                                    <?php if ($childOrderDetail["opshipping_fulfillment_type"] == Shipping::FULFILMENT_PICKUP) { ?>
                                         <p>
                                             <strong>
                                                 <?php echo Labels::getLabel('LBL_Pickup_Date', $siteLangId); ?>:

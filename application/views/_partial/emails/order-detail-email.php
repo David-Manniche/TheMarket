@@ -74,7 +74,7 @@ $str ='<table width="100%" cellspacing="0" cellpadding="20" border="0" style="fo
                                             $fromTime = '';
                                             $toTime = '';
                                             $pickupDate = '';
-                                            if($val["opshipping_fulfillment_type"] == OrderProduct::TYPE_PICKUP){
+                                            if($val["opshipping_fulfillment_type"] == Shipping::FULFILMENT_PICKUP){
                                                 $fromTime = date('H:i', strtotime($val["opshipping_time_slot_from"]));
                                                 $toTime = date('H:i', strtotime($val["opshipping_time_slot_to"]));
                                                 $pickupDate =  FatDate::format($val["opshipping_date"]);

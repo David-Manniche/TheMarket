@@ -7,7 +7,7 @@ if(!empty($timeSlots)){
         }
 ?>
     <li> 
-        <input <?php echo ($selectedSlot == $slot['tslot_id']) ? 'checked=checked': ''; ?> type="radio" class="control-input" name="timeSlot" id="<?php echo $slot['tslot_id'] ?>" onclick="selectTimeSlot(this, <?php echo $level;?>);">
+        <input <?php echo ($selectedSlot == $slot['tslot_id']) ? 'checked=checked': ''; ?> type="radio" class="control-input" name="timeSlot" id="<?php echo $slot['tslot_id'] ?>" onclick="selectTimeSlot(this, <?php echo $pickUpBy;?>);">
         <label class="control-label" for="<?php echo $slot['tslot_id'] ?>">
             <span class="time"><?php echo date('H:i', strtotime($slot['tslot_from_time'])); ?> - <?php echo date('H:i', strtotime($slot['tslot_to_time'])); ?> </span>
         </label>
