@@ -12,7 +12,7 @@ if (count($productSpecifications) > 0){ ?>
                 'action' => ''
             );
            
-            $tbl = new HtmlElement('table', array('width'=>'100%', 'class'=>'table'));
+            $tbl = new HtmlElement('table', array('width'=>'100%', 'class'=>'table table-justified'));
             $th = $tbl->appendElement('thead')->appendElement('tr');
             foreach ($arr_flds as $key=>$val) {
                 if($key == 'prodspec_name' || $key == 'prodspec_value' || $key == 'prodspec_group'){
