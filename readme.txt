@@ -171,6 +171,7 @@ Bugs:
     => 043776 - Collection >> banner >> when we save banner collection then "successful message should be there.
     => 043775 - Admin >> promotions>> discount coupons>> links >> "Product Not Found? Click Here To Add New Product" should be in the same row.
     => 043845 - seller> product setup> on refreshing page> there is error on top and page is not scrolling
+    => 043848 - seller> products> edit> on manipulating product id from url there is error 
 
 Enhancements:
     => Tax module upgrade
