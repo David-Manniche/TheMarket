@@ -788,3 +788,6 @@ DELETE FROM `tbl_language_labels` WHERE `label_key` LIKE 'LBL_Cancellation_Reque
 DELETE FROM `tbl_language_labels` WHERE `label_key` LIKE 'LBL_Cancellation_Request_Status_Declined';
 
 ALTER TABLE `tbl_order_product_shipping` CHANGE `opshipping_type` `opshipping_fulfillment_type` TINYINT(4) NOT NULL DEFAULT '1' COMMENT 'Defined in model';
+ALTER TABLE `tbl_order_product_shipping` CHANGE `opshipping_fulfillment_type` `opshipping_fulfillment_type` TINYINT(4) NOT NULL DEFAULT '2' COMMENT 'Defined in model';
+UPDATE tbl_order_product_shipping SET opshipping_fulfillment_type = (CASE opshipping_fulfillment_type WHEN '1' THEN '2' WHEN '2' THEN '1' ELSE opshipping_fulfillment_type END);
+

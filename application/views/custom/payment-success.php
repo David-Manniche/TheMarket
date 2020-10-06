@@ -97,7 +97,7 @@ if (Orders::ORDER_PRODUCT == $orderInfo['order_type']) {
                                 </li>
                                 <?php }
                             if (Orders::ORDER_PRODUCT == $orderInfo['order_type']) {
-                                if (!empty($orderFulFillmentTypeArr) && OrderProduct::TYPE_PICKUP == current($orderFulFillmentTypeArr)['opshipping_fulfillment_type']) { ?>
+                                if (!empty($orderFulFillmentTypeArr) && Shipping::FULFILMENT_PICKUP == current($orderFulFillmentTypeArr)['opshipping_fulfillment_type']) { ?>
                                     <li>
                                         <h4>
                                             <svg class="svg" width="22px" height="22px">

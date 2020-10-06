@@ -212,7 +212,7 @@ if (!$print) { ?>
                                         </strong>
                                         <?php echo FatDate::format($childOrderDetail['order_date_added']); ?>
                                     </p>
-                                    <?php if ($childOrderDetail["opshipping_fulfillment_type"] == OrderProduct::TYPE_PICKUP) { ?>
+                                    <?php if ($childOrderDetail["opshipping_fulfillment_type"] == Shipping::FULFILMENT_PICKUP) { ?>
                                         <p>
                                             <strong>
                                                 <?php echo Labels::getLabel('LBL_Pickup_Date', $siteLangId); ?>:
