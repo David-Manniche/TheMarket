@@ -197,7 +197,8 @@ class CollectionsController extends MyAppController
                             $uploadedTime = AttachedFile::setTimeParam($imgUpdatedOn);
                             $cat['image'] = UrlHelper::getCachedUrl(UrlHelper::generateFullFileUrl('Category', 'banner', array($cat['prodcat_id'], $this->siteLangId, 'MOBILE', applicationConstants::SCREEN_MOBILE)) . $uploadedTime, CONF_IMG_CACHE_TIME, '.jpg');
                         } else {
-                            $cat['children'] = ProductCategory::getProdCatParentChildWiseArr($this->siteLangId, $cat['prodcat_id']);
+                            $parentId = FatUtility::int($cat['prodcat_id']);
+                            $cat['children'] = ProductCategory::getProdCatParentChildWiseArr($this->siteLangId, $parentId);
                         }
                     }
                 }
