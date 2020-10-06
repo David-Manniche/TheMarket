@@ -1139,7 +1139,7 @@ class CheckoutController extends MyAppController
                 if ($productInfo['product_type'] == Product::PRODUCT_TYPE_PHYSICAL && !empty($productSelectedPickUpAddresses) && isset($productSelectedPickUpAddresses[$productInfo['selprod_id']])) {
                     $pickUpDataRow = $productSelectedPickUpAddresses[$productInfo['selprod_id']];
                     $productPickUpData = array(
-                        'opshipping_fulfillment_type' => OrderProduct::TYPE_PICKUP,
+                        'opshipping_fulfillment_type' => Shipping::FULFILMENT_PICKUP,
                         'opshipping_by_seller_user_id' => $pickUpDataRow['shipped_by_seller'],
                         'opshipping_pickup_addr_id' => $pickUpDataRow['time_slot_addr_id'],
                         'opshipping_date' => $pickUpDataRow['time_slot_date'],

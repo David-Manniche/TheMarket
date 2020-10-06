@@ -103,7 +103,7 @@ class AddressesController extends LoggedUserController
 
         $address = new Address($addr_id);
         $addressDetail = $address->getData(Address::TYPE_USER, UserAuthentication::getLoggedUserId());
-       
+
         if (empty($addressDetail)) {
             $message = Labels::getLabel('MSG_Invalid_request', $this->siteLangId);
             if (true === MOBILE_APP_API_CALL) {
@@ -126,12 +126,12 @@ class AddressesController extends LoggedUserController
         }
 
         $addressObj = new Address($addr_id);
-        $data = array( 
-        'addr_is_default' => 1,
-        'addr_type' => Address::TYPE_USER,
-        'addr_record_id' => UserAuthentication::getLoggedUserId(),
+        $data = array(
+            'addr_is_default' => 1,
+            'addr_type' => Address::TYPE_USER,
+            'addr_record_id' => UserAuthentication::getLoggedUserId(),
         );
-        
+
         $addressObj->assignValues($data, true);
         if (!$addressObj->save()) {
             if (true === MOBILE_APP_API_CALL) {
@@ -154,8 +154,8 @@ class AddressesController extends LoggedUserController
             Message::addErrorMessage($message);
             FatUtility::dieWithError(Message::getHtml());
         }
-        
-        if($type == Address::TYPE_SHOP_PICKUP) {
+
+        if ($type == Address::TYPE_SHOP_PICKUP) {
             $userId = $this->userParentId;
             $shopDetails = Shop::getAttributesByUserId($userId, null, false);
             if (!false == $shopDetails && $shopDetails['shop_active'] != applicationConstants::ACTIVE) {
@@ -200,7 +200,7 @@ class AddressesController extends LoggedUserController
             Message::addErrorMessage($msg);
             FatUtility::dieWithError(Message::getHtml());
         }
-        
+
         $type = ($pickUpBy == 0) ? Address::TYPE_ADMIN_PICKUP : Address::TYPE_SHOP_PICKUP;
         $address = new Address();
         $addresses = $address->getData($type, $recordId, 0, true);
@@ -212,7 +212,7 @@ class AddressesController extends LoggedUserController
         if (true === MOBILE_APP_API_CALL) {
             $this->_template->render();
         }
-        $this->_template->addJs(array('js/jquery.datetimepicker.js'));      
+        $this->_template->addJs(array('js/jquery.datetimepicker.js'));
         $this->_template->render(false, false);
     }
     
@@ -222,14 +222,24 @@ class AddressesController extends LoggedUserController
         $selectedDate = FatApp::getPostedData('selectedDate', FatUtility::VAR_STRING, $selectedDate);
         $pickUpBy = FatApp::getPostedData('pickUpBy', FatUtility::VAR_INT, $pickUpBy);
         $selectedSlot = FatApp::getPostedData('selectedSlot', FatUtility::VAR_INT, 0);
-        if($addressId < 1 || empty($selectedDate)){
+        if ($addressId < 1 || empty($selectedDate)) {
             Message::addErrorMessage(Labels::getLabel('LBL_Invalid_request', $this->siteLangId));
             FatUtility::dieWithError(Message::getHtml());
         }
-        
-        $day = date('w', strtotime($selectedDate));  
+
+        $day = date('w', strtotime($selectedDate));
         $timeSlot = new TimeSlot();
-        $timeSlots = $timeSlot->timeSlotsByAddrIdAndDay($addressId, $day);        
+        $timeSlots = $timeSlot->timeSlotsByAddrIdAndDay($addressId, $day);
+
+        array_walk($timeSlots, function (&$value, $key) {
+            if (isset($value['tslot_from_time'])) {
+                $value['tslot_from_time'] = date("H:i", strtotime($value['tslot_from_time']));
+            }
+            if (isset($value['tslot_to_time'])) {
+                $value['tslot_to_time'] = date("H:i", strtotime($value['tslot_to_time']));
+            }
+        });
+        
         $this->set('timeSlots', $timeSlots);
         $this->set('selectedDate', $selectedDate);
         $this->set('pickUpBy', $pickUpBy);
@@ -249,53 +259,53 @@ class AddressesController extends LoggedUserController
             Message::addErrorMessage($message);
             LibHelper::dieJsonError(Message::getHtml());
         }
-        
+
         $timeSlot = new TimeSlot();
         $slotData = $timeSlot->timeSlotsByAddrId($addrId);
-        $slotDays = [];        
-        foreach($slotData as $data){
+        $slotDays = [];
+        foreach ($slotData as $data) {
             if (!in_array($data['tslot_day'], $slotDays)) {
                 $slotDays[] = $data['tslot_day'];
             }
         }
-        
+
         $activeDate = '';
-        if(!empty($slotDays)){ 
-            $daysArr = TimeSlot::getDaysArr($this->siteLangId); 
+        if (!empty($slotDays)) {
+            $daysArr = TimeSlot::getDaysArr($this->siteLangId);
             $currentDay = date('w', strtotime(date('Y-m-d')));
-            
-            if(in_array($currentDay, $slotDays)){   
-                $displayTime = date("H:i:s", strtotime('+'.FatApp::getConfig('CONF_TIME_SLOT_ADDITION', FatUtility::VAR_INT, 2).' hour'));
+
+            if (in_array($currentDay, $slotDays)) {
+                $displayTime = date("H:i:s", strtotime('+' . FatApp::getConfig('CONF_TIME_SLOT_ADDITION', FatUtility::VAR_INT, 2) . ' hour'));
                 $currentDateSlots = $timeSlot->timeSlotsByAddrIdAndDay($addrId, $currentDay);
-                foreach($currentDateSlots as $data){
-                    if(strtotime($data['tslot_from_time']) > strtotime($displayTime)){
+                foreach ($currentDateSlots as $data) {
+                    if (strtotime($data['tslot_from_time']) > strtotime($displayTime)) {
                         $activeDate = date('Y-m-d');
                         break;
                     }
-                } 
-                if(empty($activeDate)){
-                    $index = array_search($currentDay, $slotDays);  
-                    if($index < count($slotDays)-1) {
-                        $next = $slotDays[$index+1];    
-                        $activeDate = date('Y-m-d', strtotime('+'.($next - $currentDay).' days'));
-                    }else{
-                        $activeDate = date('Y-m-d', strtotime('+'.(count($daysArr) - $currentDay).' days'));
+                }
+                if (empty($activeDate)) {
+                    $index = array_search($currentDay, $slotDays);
+                    if ($index < count($slotDays) - 1) {
+                        $next = $slotDays[$index + 1];
+                        $activeDate = date('Y-m-d', strtotime('+' . ($next - $currentDay) . ' days'));
+                    } else {
+                        $activeDate = date('Y-m-d', strtotime('+' . (count($daysArr) - $currentDay) . ' days'));
                     }
                 }
             }
-            
-            if(!in_array($currentDay, $slotDays)){
-                foreach($slotDays as $slotDay){
-                    if($slotDay > $currentDay){
-                        $activeDate = date('Y-m-d', strtotime('+'.($slotDay - $currentDay).' days'));
+
+            if (!in_array($currentDay, $slotDays)) {
+                foreach ($slotDays as $slotDay) {
+                    if ($slotDay > $currentDay) {
+                        $activeDate = date('Y-m-d', strtotime('+' . ($slotDay - $currentDay) . ' days'));
                         break;
                     }
                 }
-                if(empty($activeDate)){
+                if (empty($activeDate)) {
                     $needToAddDays = count($daysArr) - $currentDay + min($slotDays);
-                    $activeDate = date('Y-m-d', strtotime('+'.$needToAddDays.' days'));
+                    $activeDate = date('Y-m-d', strtotime('+' . $needToAddDays . ' days'));
                 }
-            }            
+            }
         }
         $this->set('slotDays', $slotDays);
         $this->set('activeDate', $activeDate);
@@ -305,5 +315,4 @@ class AddressesController extends LoggedUserController
         }
         $this->_template->render(false, false, 'json-success.php');
     }
-    
 }

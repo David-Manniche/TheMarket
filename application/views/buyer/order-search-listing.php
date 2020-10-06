@@ -84,13 +84,13 @@ foreach ($orders as $sn => $order) {
                 $pMethod = '';
                 $paymentMethodCode = Plugin::getAttributesById($order['order_pmethod_id'], 'plugin_code');
                 
+                $orderStatus = "";
                 if (strtolower($paymentMethodCode) == 'cashondelivery' && $order['opshipping_fulfillment_type'] == Shipping::FULFILMENT_PICKUP) {
-                    $pMethod = " - " . Labels::getLabel('LBL_PAY_ON_PICKUP', $siteLangId);
+                    $orderStatus = Labels::getLabel('LBL_PAY_ON_PICKUP', $siteLangId);
                 } else if (strtolower($paymentMethodCode) == 'cashondelivery' && $order['order_status'] == FatApp::getConfig('CONF_DEFAULT_ORDER_STATUS')) {
                     $pMethod = " - " . $order['plugin_name'];
                 }
-
-                $orderStatus = ucwords($order['orderstatus_name'] . $pMethod);
+                $orderStatus = !empty($orderStatus) ? $orderStatus : ucwords($order['orderstatus_name'] . $pMethod);
 
                 $td->appendElement('span', array('class' => 'label label-inline ' . $classArr[$order['orderstatus_color_class']]), $orderStatus . '<br>', true);
                 break;

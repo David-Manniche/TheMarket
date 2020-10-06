@@ -10,6 +10,7 @@ if (!empty($orderDetail["thirdPartyorderInfo"]) && isset($orderDetail["thirdPart
     $orderStatus = $orderDetail["thirdPartyorderInfo"]['orderStatus'];
     $orderStatusLbl = strpos($orderStatus, "_") ? str_replace('_', ' ', $orderStatus) : $orderStatus;
 }
+
 ?>
 <main id="main-area" class="main" role="main">
     <div class="content-wrapper content-space">
@@ -82,7 +83,12 @@ if (!empty($orderDetail["thirdPartyorderInfo"]) && isset($orderDetail["thirdPart
                                 }
                                 if ($orderDetail['order_reward_point_used'] > 0) {
                                     $selected_method .= ($selected_method != '') ? ' + ' . Labels::getLabel("LBL_Rewards", $siteLangId) : Labels::getLabel("LBL_Rewards", $siteLangId);
-                                } ?>
+                                }
+                                
+                                if (strtolower($orderDetail['plugin_code']) == 'cashondelivery' && $orderDetail['opshipping_fulfillment_type'] == Shipping::FULFILMENT_PICKUP) {
+                                    $selected_method = Labels::getLabel('LBL_PAY_ON_PICKUP', $siteLangId);
+                                }
+                                ?>
                                 <p><strong><?php echo Labels::getLabel('LBL_Payment_Method', $siteLangId); ?>: </strong><?php echo $selected_method; ?></p>
                                 <p><strong><?php echo Labels::getLabel('LBL_Status', $siteLangId); ?>: </strong>
                                     <?php echo Orders::getOrderPaymentStatusArr($siteLangId)[$orderDetail['order_payment_status']];
@@ -125,7 +131,7 @@ if (!empty($orderDetail["thirdPartyorderInfo"]) && isset($orderDetail["thirdPart
                             <div class="info--order">
                                 <p><strong><?php echo Labels::getLabel('LBL_Invoice', $siteLangId); ?> #: </strong><?php echo $orderDetail['op_invoice_number']; ?></p>
                                 <p><strong><?php echo Labels::getLabel('LBL_Date', $siteLangId); ?>: </strong><?php echo FatDate::format($orderDetail['order_date_added']); ?></p>
-                                <?php if ($orderDetail["opshipping_fulfillment_type"] == OrderProduct::TYPE_PICKUP) { ?>
+                                <?php if ($orderDetail["opshipping_fulfillment_type"] == Shipping::FULFILMENT_PICKUP) { ?>
                                     <p><strong><?php echo Labels::getLabel('LBL_Pickup_Date', $siteLangId); ?>: </strong>
                                         <?php
                                         $fromTime = date('H:i', strtotime($orderDetail["opshipping_time_slot_from"]));

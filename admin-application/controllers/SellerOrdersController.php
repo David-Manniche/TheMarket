@@ -248,7 +248,7 @@ class SellerOrdersController extends AdminBaseController
             CommonHelper::redirectUserReferer();
         }
         
-        if($opRow['opshipping_fulfillment_type'] == OrderProduct::TYPE_SHIP){
+        if($opRow['opshipping_fulfillment_type'] == Shipping::FULFILMENT_SHIP){
             /* ShipStation */
             $this->loadShippingService();
             $this->set('canShipByPlugin', (NULL !== $this->shippingService));
@@ -309,7 +309,7 @@ class SellerOrdersController extends AdminBaseController
             'tracking_number' => $opRow['opship_tracking_number']
         ];
         
-        if($opRow["opshipping_fulfillment_type"] == OrderProduct::TYPE_PICKUP){
+        if($opRow["opshipping_fulfillment_type"] == Shipping::FULFILMENT_PICKUP){
             $processingStatuses = array_diff($processingStatuses, (array) FatApp::getConfig("CONF_DEFAULT_SHIPPING_ORDER_STATUS"));
             $processingStatuses = array_diff($processingStatuses, (array) FatApp::getConfig("CONF_DEFAULT_DEIVERED_ORDER_STATUS"));
         }   
@@ -325,7 +325,7 @@ class SellerOrdersController extends AdminBaseController
 
         if (((strtolower($opRow['plugin_code']) == 'cashondelivery') || (in_array($opRow['op_status_id'], $allowedShippingUserStatuses))) && $this->canEdit && !$shippingHanldedBySeller && ($opRow['op_product_type'] == Product::PRODUCT_TYPE_PHYSICAL && $opRow['order_payment_status'] != Orders::ORDER_PAYMENT_CANCELLED)) {
             $displayShippingUserForm = true;
-            if($opRow["opshipping_fulfillment_type"] == OrderProduct::TYPE_PICKUP){
+            if($opRow["opshipping_fulfillment_type"] == Shipping::FULFILMENT_PICKUP){
                 $displayShippingUserForm = false;
             }
             $shippingUserFrm = $this->getShippingCompanyUserForm($displayShippingUserForm);
