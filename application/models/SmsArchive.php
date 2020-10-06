@@ -4,7 +4,8 @@ class SmsArchive extends MyAppModel
 {
     public const DB_TBL = 'tbl_sms_archives';
     public const DB_TBL_PREFIX = 'smsarchive_';
-    
+    public $body = '';
+
     public function __construct($id = 0)
     {
         parent::__construct(static::DB_TBL, static::DB_TBL_PREFIX . 'id', $id);
@@ -29,6 +30,11 @@ class SmsArchive extends MyAppModel
         }
 
         $tplData = SmsTemplate::getTpl($this->tpl, $this->langId);
+        if (!$tplData) {
+            $this->error = Labels::getLabel("MSG_TEMPLATE_NOT_FOUND", $this->langId);
+            return false;
+        }
+
         if (1 > $tplData['stpl_status']) {
             $this->error = Labels::getLabel("MSG_TEMPLATE_NOT_ACTIVE", $this->langId);
             return false;
@@ -37,7 +43,7 @@ class SmsArchive extends MyAppModel
         $replacements = array_merge($replacements, LibHelper::getCommonReplacementVarsArr($langId));
         $this->body = CommonHelper::replaceStringData($tplData['stpl_body'], $replacements);
     }
-    
+
 
     public function send()
     {
@@ -48,21 +54,21 @@ class SmsArchive extends MyAppModel
         }
 
         $pluginKey = Plugin::getAttributesById($smsGateway, 'plugin_code');
-        
-		$error = '';
-		if (false === PluginHelper::includePlugin($pluginKey, 'sms-notification', $error, $this->langId)) {
-			$this->error = $error;
-			return false;
-		}
+
+        $error = '';
+        if (false === PluginHelper::includePlugin($pluginKey, 'sms-notification', $error, $this->langId)) {
+            $this->error = $error;
+            return false;
+        }
 
         $smsGateway = new $pluginKey($this->langId);
         $response = $smsGateway->send($this->toNumber, $this->body);
-        
+
         if (false == $response || false == $response['status']) {
             $this->error = isset($response['msg']) ? $response['msg'] : $smsGateway->getError();
             return false;
         }
-       
+
         $dataToSave = [
             'smsarchive_to' => $this->toNumber,
             'smsarchive_tpl_name' => $this->tpl,

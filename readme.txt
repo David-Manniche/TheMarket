@@ -157,6 +157,7 @@ Bugs:
     => 043593 - When we add amount in wallet then some changes needs to be done on "thank you" screen 
     => 043523 - buyer> orders> cancellation requests> filters> dates> date is not visible on 1366x768 resolution
     => 043600 - Admin >> add brand >> when we add brand then admin is unable to access "language data " and " media " tabs 
+    => 043606 - While checkout if we select "pay on pickup then status should be "pay on pickup " instead of " cash on delivery .
 
 Enhancements:
     => Tax module upgrade

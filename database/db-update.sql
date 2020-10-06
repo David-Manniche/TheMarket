@@ -786,3 +786,5 @@ UPDATE `tbl_time_slots` SET `tslot_availability` = '1' WHERE `tslot_availability
 DELETE FROM `tbl_language_labels` WHERE `label_key` LIKE 'LBL_Cancellation_Request_Status_Pending';
 DELETE FROM `tbl_language_labels` WHERE `label_key` LIKE 'LBL_Cancellation_Request_Status_Approved';
 DELETE FROM `tbl_language_labels` WHERE `label_key` LIKE 'LBL_Cancellation_Request_Status_Declined';
+
+ALTER TABLE `tbl_order_product_shipping` CHANGE `opshipping_type` `opshipping_fulfillment_type` TINYINT(4) NOT NULL DEFAULT '1' COMMENT 'Defined in model';

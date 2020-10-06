@@ -97,7 +97,7 @@ if (Orders::ORDER_PRODUCT == $orderInfo['order_type']) {
                                 </li>
                                 <?php }
                             if (Orders::ORDER_PRODUCT == $orderInfo['order_type']) {
-                                if (!empty($orderFulFillmentTypeArr) && OrderProduct::TYPE_PICKUP == current($orderFulFillmentTypeArr)['opshipping_type']) { ?>
+                                if (!empty($orderFulFillmentTypeArr) && OrderProduct::TYPE_PICKUP == current($orderFulFillmentTypeArr)['opshipping_fulfillment_type']) { ?>
                                     <li>
                                         <h4>
                                             <svg class="svg" width="22px" height="22px">
@@ -109,7 +109,10 @@ if (Orders::ORDER_PRODUCT == $orderInfo['order_type']) {
                                         <?php foreach ($orderFulFillmentTypeArr as $orderAddDet) { ?>
                                             <p>
                                                 <strong>
-                                                    <?php echo '#' . $orderAddDet['op_invoice_number'] . ' : ' . $orderAddDet['opshipping_date'] . ' ' . $orderAddDet['opshipping_time_slot_from'] . ' - ' . $orderAddDet['opshipping_time_slot_to']; ?>
+                                                    <?php 
+                                                    $opshippingDate = isset($orderAddDet['opshipping_date']) ? $orderAddDet['opshipping_date'] : '';
+                                                    echo '#' . $orderAddDet['op_invoice_number'] . ' : ' . $opshippingDate . ' ' . $orderAddDet['opshipping_time_slot_from'] . ' - ' . $orderAddDet['opshipping_time_slot_to']; 
+                                                    ?>
                                                 </strong><br>
                                                 <?php echo $orderAddDet['addr_name']; ?>,
                                                 <?php

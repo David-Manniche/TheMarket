@@ -31,7 +31,7 @@ $str ='<table width="100%" cellspacing="0" cellpadding="20" border="0" style="fo
                                     $productHtml = '';
                                     $pickupHtml = '';
                                     foreach ($orderProducts as $prodkey=>$val) {    
-                                        if(isset($val["opshipping_type"])){
+                                        if(isset($val["opshipping_fulfillment_type"])){
                                             $opCustomerBuyingPrice = CommonHelper::orderProductAmount($val, 'CART_TOTAL');
                                             $shippingPrice = CommonHelper::orderProductAmount($val, 'SHIPPING');
                                             $discountedPrice = CommonHelper::orderProductAmount($val, 'DISCOUNT');
@@ -74,7 +74,7 @@ $str ='<table width="100%" cellspacing="0" cellpadding="20" border="0" style="fo
                                             $fromTime = '';
                                             $toTime = '';
                                             $pickupDate = '';
-                                            if($val["opshipping_type"] == OrderProduct::TYPE_PICKUP){
+                                            if($val["opshipping_fulfillment_type"] == OrderProduct::TYPE_PICKUP){
                                                 $fromTime = date('H:i', strtotime($val["opshipping_time_slot_from"]));
                                                 $toTime = date('H:i', strtotime($val["opshipping_time_slot_to"]));
                                                 $pickupDate =  FatDate::format($val["opshipping_date"]);
