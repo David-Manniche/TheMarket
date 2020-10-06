@@ -62,7 +62,7 @@ foreach ($orders as $sn => $order) {
             case 'status':
                 $txt = $order['orderstatus_name'];
                 if (strtolower($order['plugin_code']) == 'cashondelivery' && $order['opshipping_fulfillment_type'] == Shipping::FULFILMENT_PICKUP) {
-                    $txt .= ' - ' . Labels::getLabel('LBL_PAY_ON_PICKUP', $siteLangId);
+                    $txt = Labels::getLabel('LBL_PAY_ON_PICKUP', $siteLangId);
                 }
                 $td->appendElement('span', array('class' => 'label label-inline ' . $classArr[$order['orderstatus_color_class']]), $txt . '<br>', true);
                 break;
