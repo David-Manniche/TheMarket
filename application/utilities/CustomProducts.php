@@ -1440,7 +1440,7 @@ trait CustomProducts
         array_shift($arr);
         array_shift($arr);
         
-        $this->set('previousAction', $arr[1]);
+        $this->set('previousAction', (isset($arr[1])) ? $arr[1] : 'index');
         $this->set('productId', $prodId);
         $this->set('productType', $productType);
         $this->_template->addJs(array('js/tagify.min.js', 'js/tagify.polyfills.min.js', 'js/cropper.js', 'js/cropper-main.js'));
