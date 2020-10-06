@@ -153,6 +153,7 @@ class MyAppController extends FatController
             'paymentSucceeded' => Labels::getLabel('LBL_PAYMENT_SUCCEEDED._WAITING_FOR_CONFIRMATION', $this->siteLangId),
             'otpSent' => Labels::getLabel('MSG_OTP_SENT!', $this->siteLangId),
             'proceed' => Labels::getLabel('MSG_PROCEED', $this->siteLangId),
+            'invalidFromTime' => Labels::getLabel('LBL_PLEASE_SELECT_VALID_FROM_TIME', $this->siteLangId),
             );
 
             $languages = Language::getAllNames(false);

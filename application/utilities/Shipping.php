@@ -11,7 +11,7 @@ class Shipping
 
     public const TYPE_MANUAL = -1;
     private const RATE_CACHE_KEY_NAME = "shipRateCache_";
-    private const CARRIER_CACHE_KEY_NAME = "shipCarrierCache_"; 
+    private const CARRIER_CACHE_KEY_NAME = "shipCarrierCache_";
 
     private $langId;
     private $pluginKey = '';
@@ -217,9 +217,9 @@ class Shipping
         $pluginId = $this->getPluginId();
         if (1 > $pluginId) {
             return false;
-        }   
-        
-        $cacheKey = self::CARRIER_CACHE_KEY_NAME.$this->langId.$pluginId; 
+        }
+
+        $cacheKey = self::CARRIER_CACHE_KEY_NAME . $this->langId . $pluginId;
         $carriers = FatCache::get($cacheKey, CONF_API_REQ_CACHE_TIME, '.txt');
         if ($carriers) {
             $carriers = unserialize($carriers);
@@ -234,7 +234,7 @@ class Shipping
 
         $weightUnitsArr = applicationConstants::getWeightUnitsArr($this->langId);
         $dimensionUnits = ShippingPackage::getUnitTypes($this->langId);
-  
+
         foreach ($this->selProdShipRates as $rateId => $rates) {
             $product = $productInfo[$rates['selprod_id']];
             $shippingLevel = self::LEVEL_PRODUCT;
@@ -392,7 +392,7 @@ class Shipping
         $shipToStateId = isset($shippingAddressDetail['addr_state_id']) ? $shippingAddressDetail['addr_state_id'] : 0;
 
         $this->selProdShipRates = $this->getSellerProductShippingRates($physicalSelProdIdArr, $shipToCountryId, $shipToStateId);
- 
+
         if (false === $this->fetchShippingRatesFromApi($shippingAddressDetail, $productInfo, $physicalSelProdIdArr)) {
             $this->fetchShippingRatesFromSystem($productInfo, $physicalSelProdIdArr);
         }
@@ -515,7 +515,7 @@ class Shipping
                     $defaultShippingRates[] = $rate['id'];
                     break;
             }
-            
+
             if (in_array($rate['shiprate_condition_type'], [ShippingRate::CONDITION_TYPE_PRICE, ShippingRate::CONDITION_TYPE_WEIGHT])) {
                 if ($priceOrWeightCost != '' && $priceOrWeightCost < $rate['cost']) {
                     unset($rates[$priceOrWeightCostId]);

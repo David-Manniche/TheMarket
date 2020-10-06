@@ -50,7 +50,7 @@ class SellerController extends SellerBaseController
         $srch->setPageSize(2);
 
         $srch->addMultipleFields(
-            array('order_id', 'order_user_id', 'op_selprod_id', 'op_is_batch', 'selprod_product_id', 'order_date_added', 'order_net_amount', 'op_invoice_number', 'totCombinedOrders as totOrders', 'op_selprod_title', 'op_product_name', 'op_id', 'op_qty', 'op_selprod_options', 'op_status_id', 'op_brand_name', 'op_shop_name', 'op_other_charges', 'op_unit_price', 'IFNULL(orderstatus_name, orderstatus_identifier) as orderstatus_name', 'op_tax_collected_by_seller', 'op_selprod_user_id', 'opshipping_by_seller_user_id', 'orderstatus_color_class')
+            array('order_id', 'order_user_id', 'op_selprod_id', 'op_is_batch', 'selprod_product_id', 'order_date_added', 'order_net_amount', 'op_invoice_number', 'totCombinedOrders as totOrders', 'op_selprod_title', 'op_product_name', 'op_id', 'op_qty', 'op_selprod_options', 'op_status_id', 'op_brand_name', 'op_shop_name', 'op_other_charges', 'op_unit_price', 'IFNULL(orderstatus_name, orderstatus_identifier) as orderstatus_name', 'op_tax_collected_by_seller', 'op_selprod_user_id', 'opshipping_by_seller_user_id', 'orderstatus_color_class', 'order_pmethod_id', 'opshipping_fulfillment_type')
         );
 
         $rs = $srch->getResultSet();
@@ -278,7 +278,7 @@ class SellerController extends SellerBaseController
         $srch->setPageSize($pagesize);
 
         $srch->addMultipleFields(
-            array('order_id', 'order_status', 'order_payment_status', 'order_user_id', 'op_selprod_id', 'op_is_batch', 'selprod_product_id', 'order_date_added', 'order_net_amount', 'op_invoice_number', 'totCombinedOrders as totOrders', 'op_selprod_title', 'op_product_name', 'op_id', 'op_qty', 'op_selprod_options', 'op_brand_name', 'op_shop_name', 'op_other_charges', 'op_unit_price', 'op_tax_collected_by_seller', 'op_selprod_user_id', 'opshipping_by_seller_user_id', 'orderstatus_id', 'IFNULL(orderstatus_name, orderstatus_identifier) as orderstatus_name', 'orderstatus_color_class', 'plugin_code', 'IFNULL(plugin_name, IFNULL(plugin_identifier, "Wallet")) as plugin_name', 'opship.*')
+            array('order_id', 'order_status', 'order_payment_status', 'order_user_id', 'op_selprod_id', 'op_is_batch', 'selprod_product_id', 'order_date_added', 'order_net_amount', 'op_invoice_number', 'totCombinedOrders as totOrders', 'op_selprod_title', 'op_product_name', 'op_id', 'op_qty', 'op_selprod_options', 'op_brand_name', 'op_shop_name', 'op_other_charges', 'op_unit_price', 'op_tax_collected_by_seller', 'op_selprod_user_id', 'opshipping_by_seller_user_id', 'orderstatus_id', 'IFNULL(orderstatus_name, orderstatus_identifier) as orderstatus_name', 'orderstatus_color_class', 'plugin_code', 'IFNULL(plugin_name, IFNULL(plugin_identifier, "Wallet")) as plugin_name', 'opship.*', 'opshipping_fulfillment_type')
         );
 
         $keyword = FatApp::getPostedData('keyword', null, '');
@@ -5166,15 +5166,24 @@ class SellerController extends SellerBaseController
             $shopId = $shopDetails['shop_id'];
         }
         $frm = $this->getPickUpAddressForm($addrId);
+        $availability = TimeSlot::DAY_INDIVIDUAL_DAYS;
         if ($addrId > 0) {
             $address = new Address($addrId, $this->siteLangId);
             $data = $address->getData(Address::TYPE_SHOP_PICKUP, $shopId);
             if (!empty($data)) {
                 $stateId = $data['addr_state_id'];
-                $frm->fill($data);
                 
                 $timeSlot = new TimeSlot();
                 $timeSlots = $timeSlot->timeSlotsByAddrId($addrId);
+                
+                $timeSlotsRow = current($timeSlots);
+                $availability = $timeSlotsRow['tslot_availability'];
+                if ($availability == TimeSlot::DAY_ALL_DAYS) {
+                    $data['tslot_from_all'] = date('H:i', strtotime($timeSlotsRow['tslot_from_time']));
+                    $data['tslot_to_all'] = date('H:i', strtotime($timeSlotsRow['tslot_to_time']));
+                }
+                $data['tslot_availability'] = $availability;
+                $frm->fill($data);
                 if(!empty($timeSlots)){     
                     foreach($timeSlots as $key=>$slot){
                         $slotData['tslot_day'][$slot['tslot_day']] = $slot['tslot_day'];
@@ -5185,6 +5194,7 @@ class SellerController extends SellerBaseController
             }
         }
 
+        $this->set('availability', $availability);
         $this->set('shop_id', $shopId);
         $this->set('language', Language::getAllNames());
         $this->set('siteLangId', $this->siteLangId);
@@ -5256,7 +5266,7 @@ class SellerController extends SellerBaseController
         $phnFld->requirements()->setCustomErrorMessage(Labels::getLabel('LBL_Please_enter_valid_phone_number_format.', $this->siteLangId));
         
         $slotTimingsTypeArr = TimeSlot::getSlotTypeArr($this->siteLangId);
-        $frm->addRadioButtons(Labels::getLabel('LBL_Slot_Timings', $this->siteLangId), 'slot_type', $slotTimingsTypeArr, TimeSlot::DAY_INDIVIDUAL_DAYS);        
+        $frm->addRadioButtons(Labels::getLabel('LBL_Slot_Timings', $this->siteLangId), 'tslot_availability', $slotTimingsTypeArr, TimeSlot::DAY_INDIVIDUAL_DAYS);        
 
         $daysArr = TimeSlot::getDaysArr($this->siteLangId);        
         for($i = 0; $i< count($daysArr); $i++){  
@@ -5281,14 +5291,14 @@ class SellerController extends SellerBaseController
         $shopId = Shop::getAttributesByUserId($userId, 'shop_id');
 
         $post = FatApp::getPostedData();    
+        $availability = FatApp::getPostedData('tslot_availability', FatUtility::VAR_INT, 1);    
         $post['addr_phone'] = !empty($post['addr_phone']) ? ValidateElement::convertPhone($post['addr_phone']) : '';
         $addrStateId = FatUtility::int($post['addr_state_id']);
 
         $slotFromAll = '';
         $slotToAll = '';
         $slotDays = [];
-        $slotType = FatUtility::int($post['slot_type']);
-        if($slotType == TimeSlot::DAY_ALL_DAYS){
+        if($availability == TimeSlot::DAY_ALL_DAYS){
             $slotFromAll = $post['tslot_from_all'];
             $slotToAll = $post['tslot_to_all'];
         }else{
@@ -5331,11 +5341,12 @@ class SellerController extends SellerBaseController
             FatUtility::dieJsonError(Message::getHtml());
         }
             
-        if(!empty($slotDays) && $slotType == TimeSlot::DAY_INDIVIDUAL_DAYS){
+        if(!empty($slotDays) && $availability == TimeSlot::DAY_INDIVIDUAL_DAYS){
             foreach($slotDays as $day){   
                 foreach($slotFromTime[$day] as $key=>$fromTime){
                     if(!empty($fromTime) && !empty($slotToTime[$day][$key])){
                         $slotData['tslot_type'] = Address::TYPE_SHOP_PICKUP;
+                        $slotData['tslot_availability'] = $availability;
                         $slotData['tslot_record_id'] = $addrId;
                         $slotData['tslot_day'] = $day;
                         $slotData['tslot_from_time'] = $fromTime;
@@ -5354,10 +5365,11 @@ class SellerController extends SellerBaseController
             }
         }
         
-        if($slotType == TimeSlot::DAY_ALL_DAYS && !empty($slotFromAll) && !empty($slotToAll)){
+        if($availability == TimeSlot::DAY_ALL_DAYS && !empty($slotFromAll) && !empty($slotToAll)){
             $daysArr = TimeSlot::getDaysArr($this->siteLangId);        
             for($i = 0; $i< count($daysArr); $i++){ 
                 $slotData['tslot_type'] = Address::TYPE_SHOP_PICKUP;
+                $slotData['tslot_availability'] = $availability;
                 $slotData['tslot_record_id'] = $addrId;
                 $slotData['tslot_day'] = $i;
                 $slotData['tslot_from_time'] = $slotFromAll;

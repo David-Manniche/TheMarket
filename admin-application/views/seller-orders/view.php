@@ -141,7 +141,7 @@ if (!empty($order["thirdPartyorderInfo"]) && isset($order["thirdPartyorderInfo"]
                                 <td><strong><?php echo Labels::getLabel('LBL_Total_Paid', $adminLangId); ?> : </strong><?php echo CommonHelper::displayMoneyFormat(CommonHelper::orderProductAmount($order, 'netamount', false, User::USER_TYPE_SELLER), true, true);?>
                                 </td>
                             </tr>
-                            <?php if($order["opshipping_type"] == OrderProduct::TYPE_PICKUP){ ?>
+                            <?php if($order["opshipping_fulfillment_type"] == OrderProduct::TYPE_PICKUP){ ?>
                             <tr>
                                 <td>
                                     <strong><?php echo Labels::getLabel('LBL_Pickup_Date', $adminLangId); ?> : </strong>

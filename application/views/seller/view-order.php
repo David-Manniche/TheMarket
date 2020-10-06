@@ -125,7 +125,7 @@ if (!empty($orderDetail["thirdPartyorderInfo"]) && isset($orderDetail["thirdPart
                             <div class="info--order">
                                 <p><strong><?php echo Labels::getLabel('LBL_Invoice', $siteLangId); ?> #: </strong><?php echo $orderDetail['op_invoice_number']; ?></p>
                                 <p><strong><?php echo Labels::getLabel('LBL_Date', $siteLangId); ?>: </strong><?php echo FatDate::format($orderDetail['order_date_added']); ?></p>
-                                <?php if ($orderDetail["opshipping_type"] == OrderProduct::TYPE_PICKUP) { ?>
+                                <?php if ($orderDetail["opshipping_fulfillment_type"] == OrderProduct::TYPE_PICKUP) { ?>
                                     <p><strong><?php echo Labels::getLabel('LBL_Pickup_Date', $siteLangId); ?>: </strong>
                                         <?php
                                         $fromTime = date('H:i', strtotime($orderDetail["opshipping_time_slot_from"]));

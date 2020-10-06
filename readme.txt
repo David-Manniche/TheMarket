@@ -157,6 +157,16 @@ Bugs:
     => 043643 - getting error while adding brand
     => 043651 - while adding digital item> downloads> save button is not proper
     => 043672 - seller registration >> login button is not proper. 
+    => 043586 - when same shipping package is added again then message needs to be corrected
+    => 043640 - wrong time slots are getting created in admin
+    => 043638 - admin> pickup address> slots> when time is selected for all days then on editing it's displays the same time for individual days selected
+    => 043702 - when product is not available for selected location then from all seller screen it's available for user and getting added to cart
+    => 043710 - during checkout> getting error in rewards
+    => 043711 - when admin approves cancellation request then there is error
+    => 043593 - When we add amount in wallet then some changes needs to be done on "thank you" screen 
+    => 043523 - buyer> orders> cancellation requests> filters> dates> date is not visible on 1366x768 resolution
+    => 043600 - Admin >> add brand >> when we add brand then admin is unable to access "language data " and " media " tabs 
+    => 043606 - While checkout if we select "pay on pickup then status should be "pay on pickup " instead of " cash on delivery .
 
 Enhancements:
     => Tax module upgrade

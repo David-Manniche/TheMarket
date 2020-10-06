@@ -1778,8 +1778,12 @@ class User extends MyAppModel
         ];
         $smsArchive = new SmsArchive();
         $smsArchive->toPhone($phone);
-        $smsArchive->setTemplate($langId, $tpl, $replacements);
-        if (!$smsArchive->send()) {
+        if (false === $smsArchive->setTemplate($langId, $tpl, $replacements)) {
+            $this->error = $smsArchive->getError();
+            return false;
+        }
+
+        if (false === $smsArchive->send()) {
             $this->error = $smsArchive->getError();
             return false;
         }

@@ -689,6 +689,7 @@ class ProductsController extends MyAppController
         if (FatApp::getConfig('CONF_ENABLE_GEO_LOCATION', FatUtility::VAR_INT, 0)) {
             $displayProductNotAvailableLable = true;
         }
+
         $this->set('displayProductNotAvailableLable', $displayProductNotAvailableLable);
         $this->set('canSubmitFeedback', $canSubmitFeedback);
         $this->set('upsellProducts', !empty($upsellProducts) ? $upsellProducts : array());
@@ -1430,10 +1431,13 @@ class ProductsController extends MyAppController
 
         /* fetch requested product[ */
         $prodSrch = clone $prodSrchObj;
+        $prodSrch->setLocationBasedInnerJoin(false);
+        $prodSrch->setGeoAddress();
         $prodSrch->setDefinedCriteria(0, 0, array(), false);
         $prodSrch->joinProductToCategory();
         $prodSrch->joinSellerSubscription();
         $prodSrch->addSubscriptionValidCondition();
+        $prodSrch->validateAndJoinDeliveryLocation(false);
         $prodSrch->doNotCalculateRecords();
         $prodSrch->addCondition('selprod_id', '=', $selprod_id);
         $prodSrch->doNotLimitRecords();
@@ -1493,6 +1497,12 @@ class ProductsController extends MyAppController
             /*]*/
         }
         /* ] */
+
+        $displayProductNotAvailableLable = false;
+        if (FatApp::getConfig('CONF_ENABLE_GEO_LOCATION', FatUtility::VAR_INT, 0)) {
+            $displayProductNotAvailableLable = true;
+        }
+        $this->set('displayProductNotAvailableLable', $displayProductNotAvailableLable);
         $this->set('product', $product);
         $this->_template->render();
     }

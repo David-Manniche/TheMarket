@@ -779,3 +779,12 @@ DELETE FROM `tbl_plugins` WHERE `plugin_id` = @paypalStandardId;
 UPDATE `tbl_plugins` SET `plugin_id`= @paypalStandardId WHERE `plugin_id` = @paypalId;
 DELETE FROM `tbl_plugin_settings` WHERE `pluginsetting_plugin_id` = @paypalStandardId;
 UPDATE `tbl_plugin_settings` SET `pluginsetting_plugin_id`= @paypalStandardId WHERE `pluginsetting_plugin_id` = @paypalId;
+
+ALTER TABLE `tbl_time_slots` ADD `tslot_availability` TINYINT(1) NOT NULL AFTER `tslot_id`;
+UPDATE `tbl_time_slots` SET `tslot_availability` = '1' WHERE `tslot_availability` = 0;
+
+DELETE FROM `tbl_language_labels` WHERE `label_key` LIKE 'LBL_Cancellation_Request_Status_Pending';
+DELETE FROM `tbl_language_labels` WHERE `label_key` LIKE 'LBL_Cancellation_Request_Status_Approved';
+DELETE FROM `tbl_language_labels` WHERE `label_key` LIKE 'LBL_Cancellation_Request_Status_Declined';
+
+ALTER TABLE `tbl_order_product_shipping` CHANGE `opshipping_type` `opshipping_fulfillment_type` TINYINT(4) NOT NULL DEFAULT '1' COMMENT 'Defined in model';
