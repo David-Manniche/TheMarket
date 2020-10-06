@@ -261,6 +261,13 @@
 											<td style="padding:10px 15px;text-align: center;border-top:1px solid #ddd;border-left:1px solid #ddd;" colspan="1"><?php echo CommonHelper::displayMoneyFormat(CommonHelper::orderProductAmount($orderDetail, 'TAX'), true, false, true, false, true); ?></td>                  
 										</tr>
 										<?php } ?>
+										<?php $volumeDiscount = CommonHelper::orderProductAmount($orderDetail, 'VOLUME_DISCOUNT');
+										if ($volumeDiscount != 0) { ?>
+										<tr>                                                                              
+											<td style="padding:10px 15px;text-align: center;border-top:1px solid #ddd;border-left:1px solid #ddd;" colspan="2"><?php echo Labels::getLabel('LBL_Volume_Discount', $adminLangId) ?></td>                    
+											<td style="padding:10px 15px;text-align: center;border-top:1px solid #ddd;border-left:1px solid #ddd;" colspan="1"><?php echo CommonHelper::displayMoneyFormat($volumeDiscount, true, false, true, false, true); ?></td>                                           
+										</tr>
+										<?php } ?>
 										<?php /* $rewardPointDiscount = CommonHelper::orderProductAmount($orderDetail, 'REWARDPOINT');
 										if ($rewardPointDiscount != 0) { ?>
 										<tr>                                                                              

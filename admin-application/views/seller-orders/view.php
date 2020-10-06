@@ -53,7 +53,8 @@ if (!empty($order["thirdPartyorderInfo"]) && isset($order["thirdPartyorderInfo"]
                             
                             $data['otherButtons'][] = [
                                 'attr' => [
-                                    'href' => Fatutility::generateUrl('sellerOrders', 'view', $urlParts) . '/print',
+                                    'href' => Fatutility::generateUrl('sellerOrders', 'viewInvoice', [$order['op_id']]),
+									'target' => '_blank',
                                     'title' => Labels::getLabel('LBL_Print', $adminLangId)
                                 ],
                                 'label' => '<i class="fas fa-print"></i>'
