@@ -600,6 +600,8 @@ class SellerController extends SellerBaseController
         $srch->joinShopSpecifics();
         $srch->joinShopCountry();
         $srch->joinShopState();
+        $srch->joinShippingUsers();
+        $srch->joinShippingCharges();
         $srch->addOrderProductCharges();
         $srch->addCondition('op_selprod_user_id', '=', $userId);
         $srch->addCondition('op_id', '=', $op_id);
@@ -611,6 +613,14 @@ class SellerController extends SellerBaseController
         if (!$orderDetail) {
             Message::addErrorMessage(Labels::getLabel('MSG_Invalid_Access', $this->siteLangId));
             CommonHelper::redirectUserReferer();
+        }
+
+        $charges = $orderObj->getOrderProductChargesArr($op_id);
+        $orderDetail['charges'] = $charges;
+
+        $shippedBySeller = applicationConstants::NO;
+        if (CommonHelper::canAvailShippingChargesBySeller($orderDetail['op_selprod_user_id'], $orderDetail['opshipping_by_seller_user_id'])) {
+            $shippedBySeller = applicationConstants::YES;
         }
 
         if (!empty($orderDetail["opship_orderid"])) {
@@ -641,6 +651,7 @@ class SellerController extends SellerBaseController
         $template = new FatTemplate('', '');
         $template->set('siteLangId', $this->siteLangId);
         $template->set('orderDetail', $orderDetail);
+        $template->set('shippedBySeller', $shippedBySeller);
 
         require_once(CONF_INSTALLATION_PATH . 'library/tcpdf/tcpdf.php');
         $pdf = new TCPDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
