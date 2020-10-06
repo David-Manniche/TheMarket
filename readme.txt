@@ -168,6 +168,7 @@ Bugs:
     => 043600 - Admin >> add brand >> when we add brand then admin is unable to access "language data " and " media " tabs 
     => 043606 - While checkout if we select "pay on pickup then status should be "pay on pickup " instead of " cash on delivery .
     => 043777 - Admin >> if we delete any collection and then recreate the collection with same name then duplicate entry gets display . 
+    => 043776 - Collection >> banner >> when we save banner collection then "successful message should be there.
 
 Enhancements:
     => Tax module upgrade
