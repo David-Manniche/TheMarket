@@ -1560,13 +1560,12 @@ class SellerController extends SellerBaseController
 
         $srch->addMultipleFields(array('taxcat_id', 'IFNULL(taxcat_name, taxcat_identifier) as taxcat_name', 'taxcat_code', 'taxrule_rate'));
         $srch->addCondition('taxcat_deleted', '=', 0);
+        $srch->addGroupBy('taxcat_id');
         $srch->setPageNumber($page);
         $srch->setPageSize($pagesize);
         $srch->addOrder('taxcat_name', 'ASC');
-
         $rs = $srch->getResultSet();
         $taxCatData = FatApp::getDb()->fetchAll($rs, 'taxcat_id');
-
         $this->set('canEdit', $this->userPrivilege->canEditTaxCategory(UserAuthentication::getLoggedUserId(), true));
         $this->set("arr_listing", $taxCatData);
         $this->set('pageCount', $srch->pages());
