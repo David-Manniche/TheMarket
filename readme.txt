@@ -153,7 +153,8 @@ Bugs:
     => 043638 - admin> pickup address> slots> when time is selected for all days then on editing it's displays the same time for individual days selected
     => 043702 - when product is not available for selected location then from all seller screen it's available for user and getting added to cart
     => 043710 - during checkout> getting error in rewards
-    => 043711 - when admin approves cancellation request then there is error 
+    => 043711 - when admin approves cancellation request then there is error
+    => 043593 - When we add amount in wallet then some changes needs to be done on "thank you" screen 
 
 Enhancements:
     => Tax module upgrade
