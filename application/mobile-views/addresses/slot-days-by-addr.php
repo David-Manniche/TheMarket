@@ -3,7 +3,7 @@ $data = array(
     'slotDays' => $slotDays,
     'activeDate' => $activeDate,
     'timeSlots' => $timeSlots,
-    'selectedDate' => $selectedDate,
+    'selectedDate' => strtotime($selectedDate),
     'level' => $level,
     'selectedSlot' => $selectedSlot,
 );
