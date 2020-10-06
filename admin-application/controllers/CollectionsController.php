@@ -198,6 +198,14 @@ class CollectionsController extends AdminBaseController
         $post['collection_identifier'] = $post['collection_name'][$siteDefaultLangId];
         $post['collection_primary_records'] = $this->getLayoutLimit($post['collection_layout_type']);
 
+        if ($collectionId == 0) {
+            $record = Collections::getAttributesByIdentifier($post['collection_identifier']);
+            if (!empty($record) && $record['collection_deleted'] == applicationConstants::YES) {
+                $collectionId = $record['collection_id'];
+                $post['collection_deleted'] = applicationConstants::NO;
+            }
+        }
+
         $collection = new Collections($collectionId);
         $collection->assignValues($post);
         if (!$collection->save()) {
