@@ -175,6 +175,7 @@ Bugs:
     => 043822 - shipping profile> saving without name getting incomplete warning
     => 043870 - Admin >> manage volume discount >> if we enter qty more then stock value then that value should get display in error message .
     => 043869 - Admin >> manage volume discount >> if there is no entry then "no record found " should get display just like others.
+    => 043867 - Admin >> special price >> when we edit special price then discount percentage should get display under special price field.
 
 Enhancements:
     => Tax module upgrade
