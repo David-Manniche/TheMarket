@@ -474,7 +474,12 @@ class CheckoutController extends MyAppController
             FatUtility::dieWithError($this->errMessage);
         }
 
-        $fulfillmentType = $this->cartObj->getCartCheckoutType();
+        if (true === MOBILE_APP_API_CALL) {
+            $fulfillmentType = FatApp::getPostedData('fulfillmentType', FatUtility::VAR_INT, Shipping::FULFILMENT_SHIP);
+        } else {
+            $fulfillmentType = $this->cartObj->getCartCheckoutType();
+        }
+
         $this->cartObj->setCartCheckoutType($fulfillmentType);
 
         $cartProducts = $this->cartObj->getProducts($this->siteLangId);
@@ -511,15 +516,12 @@ class CheckoutController extends MyAppController
                 }
         }
 
-        if (true === MOBILE_APP_API_CALL) {
-            $this->_template->render();
-        }
-
         if (!$hasPhysicalProd) {
             $selected_shipping_address_id = $this->cartObj->getCartBillingAddress();
         } else {
             $selected_shipping_address_id = $this->cartObj->getCartShippingAddress();
         }
+
         $address = new Address($selected_shipping_address_id, $this->siteLangId);
         $addresses = $address->getData(Address::TYPE_USER, UserAuthentication::getLoggedUserId());
 
@@ -530,6 +532,11 @@ class CheckoutController extends MyAppController
         $this->set('shippingRates', $shippingRates);
         $this->set('hasPhysicalProd', $hasPhysicalProd);
         $this->set('orderShippingData', $orderShippingData);
+
+        if (true === MOBILE_APP_API_CALL) {
+            $this->_template->render();
+        }
+
         $this->_template->render(false, false, $template);
     }
 
