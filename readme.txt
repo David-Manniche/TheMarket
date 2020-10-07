@@ -173,6 +173,7 @@ Bugs:
     => 043845 - seller> product setup> on refreshing page> there is error on top and page is not scrolling
     => 043848 - seller> products> edit> on manipulating product id from url there is error 
     => 043822 - shipping profile> saving without name getting incomplete warning
+    => 043870 - Admin >> manage volume discount >> if we enter qty more then stock value then that value should get display in error message .
 
 Enhancements:
     => Tax module upgrade

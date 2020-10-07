@@ -19,19 +19,6 @@
         <input type="text" data-id="<?php echo $volDiscountId; ?>" value="<?php echo $data['voldiscount_percentage']; ?>" data-selprodid="<?php echo $data['voldiscount_selprod_id']; ?>" name="voldiscount_percentage" class="js--volDiscountCol hide vd-input" data-oldval="<?php echo $data['voldiscount_percentage']; ?>"/>
     </td>
     <td>
-        <ul class="actions actions--centered">
-            <li class="droplink">
-                <a href="javascript:void(0)" class="button small green" title="Edit">
-                    <i class="ion-android-more-horizontal icon"></i>
-                </a>
-                <div class="dropwrap">
-                    <ul class="linksvertical">
-                        <li>
-                            <a href="javascript:void(0)" title="<?php echo Labels::getLabel('LBL_Delete', $adminLangId); ?>" onclick="deleteSellerProductVolumeDiscount(<?php echo $volDiscountId; ?>)"><?php echo Labels::getLabel('LBL_Delete', $adminLangId); ?></a>
-                        </li>
-                    </ul>
-                </div>
-            </li>
-        </ul>
+		<a href="javascript:void(0)" class="btn btn-clean btn-sm btn-icon" title="<?php echo Labels::getLabel('LBL_Delete', $adminLangId); ?>" onclick="deleteSellerProductVolumeDiscount(<?php echo $volDiscountId; ?>)"><i class="fa fa-trash  icon"></i></a>
     </td>
 </tr>
