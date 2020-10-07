@@ -198,6 +198,8 @@ blogPostForm = function(id) {
                     minCropBoxWidth: minWidth,
                     minCropBoxHeight: minHeight,
                     toggleDragModeOnDblclick: false,
+                    imageSmoothingQuality: 'high',
+					imageSmoothingEnabled: true,
     	        };
                 $(inputBtn).val('');
                 return cropImage(file, options, 'uploadImages', inputBtn);

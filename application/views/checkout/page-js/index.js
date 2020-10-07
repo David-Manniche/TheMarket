@@ -579,12 +579,12 @@ $("document").ready(function () {
         });
     };
 
-    displayPickupAddress = function (level, recordId) {
+    displayPickupAddress = function (pickUpBy, recordId) {
         $.facebox(function () {
-            var addrId = $(".js-slot-addr-"+level).attr('data-addr-id');
-            var slotId = $("input[name='slot_id[" + level + "]']").val();
-            var slotDate = $("input[name='slot_date[" + level + "]']").val(); 
-            var data = 'level=' + level + '&recordId=' + recordId +'&addrId=' + addrId + '&slotId=' + slotId + '&slotDate=' + slotDate;
+            var addrId = $(".js-slot-addr-"+pickUpBy).attr('data-addr-id');
+            var slotId = $("input[name='slot_id[" + pickUpBy + "]']").val();
+            var slotDate = $("input[name='slot_date[" + pickUpBy + "]']").val(); 
+            var data = 'pickUpBy=' + pickUpBy + '&recordId=' + recordId +'&addrId=' + addrId + '&slotId=' + slotId + '&slotDate=' + slotDate;
             fcom.ajax(fcom.makeUrl('Addresses', 'getPickupAddresses'), data, function (rsp) {
                 $.facebox(rsp, 'faceboxWidth medium-fb-width');
                 $("input[name='coupon_code']").focus();

@@ -56,6 +56,7 @@ foreach ($arrListing as $sn => $row) {
                     'data-selprodid' => $selProdId,
                     'data-id' => $splPriceId,
                     'data-oldval' => $date,
+                    'data-price' => $row['selprod_price'],
                     'id' => $column.'-'.$splPriceId,
                     'class' => 'date_js js--splPriceCol hide sp-input',
                 );
@@ -65,14 +66,14 @@ foreach ($arrListing as $sn => $row) {
                 $td->appendElement('plaintext', array(), $editListingFrm->getFieldHtml($column), true);
                 break;
             case 'splprice_price':
-                $input = '<input type="text" data-id="'.$splPriceId.'" value="'.$row[$column].'" data-selprodid="'.$selProdId.'" name="'.$column.'" data-oldval="'.$row[$column].'" data-displayoldval="'.CommonHelper::displayMoneyFormat($row[$column], true, true).'" class="js--splPriceCol hide sp-input"/>';
+                $input = '<input type="text" data-price="'.$row['selprod_price'].'" data-id="'.$splPriceId.'" value="'.$row[$column].'" data-selprodid="'.$selProdId.'" name="'.$column.'" data-oldval="'.$row[$column].'" data-displayoldval="'.CommonHelper::displayMoneyFormat($row[$column], true, true).'" class="js--splPriceCol hide sp-input"/>';
                 $td->appendElement('div', array("class" => 'js--editCol edit-hover', "title" => Labels::getLabel('LBL_Click_To_Edit', $adminLangId)), CommonHelper::displayMoneyFormat($row[$column], true, true), true);
                 $td->appendElement('plaintext', array(), $input, true);
                 
                 $discountPrice = $row['selprod_price'] - $row[$column];
                 $discountPercentage = round(($discountPrice/$row['selprod_price'])*100, 2);
                 $discountPercentage = $discountPercentage."% ".Labels::getLabel('LBL_off', $adminLangId);
-                $td->appendElement('div', array("class" => 'ml-3'), $discountPercentage, true);
+                $td->appendElement('div', array("class" => 'ml-3 js--percentVal'), $discountPercentage, true);
                 
                 break;
             case 'action':

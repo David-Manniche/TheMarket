@@ -84,8 +84,8 @@ if (!$print) { ?>
                                     <?php echo Labels::getLabel('LBL_Back_to_order', $siteLangId); ?>">
                                     <i class="fas fa-arrow-left"></i>
                                 </a>
-                                <a href="javascript:void(0)" class="btn btn-outline-primary btn-sm no-print printBtn-js" title="
-                                    <?php echo Labels::getLabel('LBL_Print', $siteLangId); ?>" style="display:none">
+                                <a target = "_blank" href="<?php echo (0 < $opId) ? UrlHelper::generateUrl('Buyer', 'viewInvoice', [$orderDetail['order_id'], $opId]) : UrlHelper::generateUrl('Buyer', 'viewInvoice', [$orderDetail['order_id']]); ?>" class="btn btn-outline-primary btn-sm no-print" title="
+                                    <?php echo Labels::getLabel('LBL_Print', $siteLangId); ?>">
                                     <i class="fas fa-print"></i>
                                 </a>
                                 <?php if (0 < $opId && !$orderDetail['order_deleted'] && !$orderDetail["order_payment_status"] && 'TransferBank' == $orderDetail['plugin_code']) { ?>
@@ -111,6 +111,7 @@ if (!$print) { ?>
                                     </p>
                                     <?php
                                     $paymentMethodName = empty($childOrderDetail['plugin_name']) ? $childOrderDetail['plugin_identifier'] : $childOrderDetail['plugin_name'];
+                                    // CommonHelper::printArray($childOrderDetail, true);
                                     if (!empty($paymentMethodName) && $childOrderDetail['order_pmethod_id'] > 0 && $childOrderDetail['order_is_wallet_selected'] > 0) {
                                         $paymentMethodName  .= ' + ';
                                     }
@@ -397,7 +398,7 @@ if (!$print) { ?>
                                                     </strong>
                                                     <?php echo CommonHelper::displayMoneyFormat($val['value'], true, false, true, false, true); ?>
                                                 </p>
-                                        <?php if (!isset($taxOptionsTotal[$key]['value'])) {
+                                                <?php if (!isset($taxOptionsTotal[$key]['value'])) {
                                                     $taxOptionsTotal[$key]['value'] = 0;
                                                 }
                                                 $taxOptionsTotal[$key]['value'] += $val['value'];

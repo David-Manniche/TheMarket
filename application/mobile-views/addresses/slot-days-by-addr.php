@@ -3,8 +3,8 @@ $data = array(
     'slotDays' => $slotDays,
     'activeDate' => strtotime($activeDate),
     'timeSlots' => $timeSlots,
-    'selectedDate' => strtotime($selectedDate),
-    'level' => $level,
+    'selectedDate' => $selectedDate,
+    'pickUpBy' => $pickUpBy,
     'selectedSlot' => $selectedSlot,
 );
 

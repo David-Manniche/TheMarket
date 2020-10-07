@@ -193,7 +193,9 @@ $(document).on('change','.prefDimensions-js',function(){
 	                },
 	                minCropBoxWidth: minWidth,
 	                minCropBoxHeight: minHeight,
-	                toggleDragModeOnDblclick: false,
+					toggleDragModeOnDblclick: false,
+					imageSmoothingQuality: 'high',
+					imageSmoothingEnabled: true,
 		        };
 				$(inputBtn).val('');
     	  		return cropImage(file, options, 'uploadBrandImages', inputBtn);
@@ -222,7 +224,9 @@ $(document).on('change','.prefDimensions-js',function(){
 	                },
 	                minCropBoxWidth: minWidth,
 	                minCropBoxHeight: minHeight,
-	                toggleDragModeOnDblclick: false,
+					toggleDragModeOnDblclick: false,
+					imageSmoothingQuality: 'high',
+					imageSmoothingEnabled: true,
 		        };
 				$(inputBtn).val('');
     	  		return cropImage(file, options, 'uploadBrandImages', inputBtn);

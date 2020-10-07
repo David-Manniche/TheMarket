@@ -201,8 +201,7 @@ class Orders extends MyAppModel
         $srchOrderStatus->doNotLimitRecords();
         $srchOrderStatus->addMultipleFields(array('orderstatus_priority'));
         $record = FatApp::getDb()->fetch($srchOrderStatus->getResultSet());
-        $orderStatusPriority = $record['orderstatus_priority'] ?? 0;
-        $orderStatusPriority = FatUtility::int($orderStatusPriority);
+        $orderStatusPriority = FatUtility::int($record['orderstatus_priority']);
 
         if ($langId > 0) {
             $srch->joinTable(
@@ -374,7 +373,7 @@ class Orders extends MyAppModel
                 $db->deleteRecords(OrderProductChargeLog::DB_TBL, array('smt' => 'opchargelog_op_id = ?', 'vals' => array($opId)));
                 $db->deleteRecords(OrderProductChargeLog::DB_TBL_LANG, array('smt' => 'opchargeloglang_op_id = ?', 'vals' => array($opId)));
                 $db->deleteRecords(OrderProductSpecifics::DB_TBL, array('smt' => 'ops_op_id = ?', 'vals' => array($opId)));
-                $db->deleteRecords(static::DB_TBL_ORDER_USER_ADDRESS, array('smt' => 'oua_op_id = ?', 'vals' => array($opId)));
+                $db->deleteRecords(static::DB_TBL_ORDER_USER_ADDRESS, array('smt' => 'oua_op_id = ?', 'vals' => array($opId )));
             }
         }
         $db->deleteRecords(static::DB_TBL_ORDER_PRODUCTS, array('smt' => 'op_order_id = ?', 'vals' => array($this->getOrderId())));
@@ -471,7 +470,7 @@ class Orders extends MyAppModel
 
                 /* saving of products Shipping data[ */
                 $productsShippingData = $product['productShippingData'];
-                if (!empty($productsShippingData)) {
+                if (!empty($productsShippingData)) {    
                     $productsShippingData['opshipping_op_id'] = $op_id;
 
                     $opShippingRecordObj->assignValues($productsShippingData);
@@ -484,25 +483,25 @@ class Orders extends MyAppModel
                 /*]*/
 
                 /* saving of products Pickup data[ */
-                $productPickUpData = $product['productPickUpData'];
-                if (!empty($productPickUpData)) {
+                $productPickUpData = $product['productPickUpData']; 
+                if (!empty($productPickUpData)) { 
                     $productPickUpData['opshipping_op_id'] = $op_id;
                     $productPickUpData['opshipping_by_seller_user_id'] = !empty($productPickUpData['opshipping_by_seller_user_id']) ? $productPickUpData['opshipping_by_seller_user_id'] : 0;
                     $opShippingRecordObj->assignValues($productPickUpData);
-                    if (!$opShippingRecordObj->addNew()) {
+                    if (!$opShippingRecordObj->addNew()) {  
                         $db->rollbackTransaction();
                         $this->error = $opShippingRecordObj->getError();
                         return false;
                     }
                 }
                 /*]*/
-
+                
                 /* saving of products Pickup address[ */
                 $productPickupAddress = $product['productPickupAddress'];
                 if (!empty($productPickupAddress)) {
                     $productPickupAddress['oua_order_id'] = $this->getOrderId();
                     $productPickupAddress['oua_op_id'] = $op_id;
-
+                    
                     $ouaRecordObj = new TableRecord(static::DB_TBL_ORDER_USER_ADDRESS);
                     $ouaRecordObj->assignValues($productPickupAddress);
                     if (!$ouaRecordObj->addNew()) {
@@ -603,8 +602,8 @@ class Orders extends MyAppModel
             }
         }
         /* CommonHelper::printArray($addresses);die; */
-        // $db->deleteRecords(static::DB_TBL_ORDER_USER_ADDRESS, array('smt' => 'oua_order_id = ?', 'vals' => array($this->getOrderId())));
-        $db->deleteRecords(static::DB_TBL_ORDER_USER_ADDRESS, array('smt' => 'oua_order_id = ? and oua_op_id = ?', 'vals' => array($this->getOrderId(), 0)));
+       // $db->deleteRecords(static::DB_TBL_ORDER_USER_ADDRESS, array('smt' => 'oua_order_id = ?', 'vals' => array($this->getOrderId())));
+        $db->deleteRecords(static::DB_TBL_ORDER_USER_ADDRESS, array('smt' => 'oua_order_id = ? and oua_op_id = ?', 'vals' => array($this->getOrderId(), 0 )));
         if (!empty($addresses)) {
             $ouaRecordObj = new TableRecord(static::DB_TBL_ORDER_USER_ADDRESS);
             foreach ($addresses as $address) {
@@ -876,7 +875,7 @@ class Orders extends MyAppModel
         $opId = FatUtility::int($opId);
         $srch = new SearchBase(static::DB_TBL_ORDER_USER_ADDRESS);
         $srch->addCondition('oua_order_id', '=', $order_id);
-        if ($opId > 0) {
+        if($opId > 0){
             $srch->addCondition('oua_op_id', '=', $opId);
         }
         $srch->doNotCalculateRecords();
@@ -952,7 +951,7 @@ class Orders extends MyAppModel
 
         $ocSrch->addGroupBy('opc.' . OrderProduct::DB_TBL_CHARGES_PREFIX . 'op_id');
         $qryOtherCharges = $ocSrch->getQuery();
-
+        
         $childOrders = array();
         if ($orderType == Orders::ORDER_PRODUCT) {
             $srch = self::searchOrderProducts($criterias, $langId);
@@ -2531,29 +2530,29 @@ class Orders extends MyAppModel
         $order['payments'] = $orderObj->getOrderPayments(array("order_id" => $order['order_id']));
         return $order;
     }
-
+    
     public function getOrderPickUpData($orderId, $langId)
     {
         $srch = new OrderProductSearch($langId, true);
         $srch->joinShippingCharges();
         $srch->joinTable(Orders::DB_TBL_ORDER_USER_ADDRESS, 'LEFT OUTER JOIN', 'oua.oua_op_id = op.op_id', 'oua');
-        $srch->addCondition('order_id', '=', $orderId);
+        $srch->addCondition('order_id', '=', $orderId); 
         $srch->addCondition('oua_type', '=', Orders::PICKUP_ADDRESS_TYPE);
-        $srch->addCondition('op_product_type', '=', product::PRODUCT_TYPE_PHYSICAL);
-        $srch->addGroupBy('opshipping_pickup_addr_id');
+        $srch->addCondition('op_product_type', '=', product::PRODUCT_TYPE_PHYSICAL);  
+        $srch->addGroupBy('opshipping_pickup_addr_id');       
         $rs = $srch->getResultSet();
         $records = FatApp::getDb()->fetchAll($rs);
         return $records;
     }
-
+    
     public function getOrderShippingData($orderId, $langId)
     {
         $srch = new OrderProductSearch($langId, true);
         $srch->joinSellerProducts($langId);
         $srch->joinShippingCharges();
-        $srch->addCondition('order_id', '=', $orderId);
-        $srch->addCondition('op_product_type', '=', product::PRODUCT_TYPE_PHYSICAL);
-        $srch->addOrder('opshipping_op_id');
+        $srch->addCondition('order_id', '=', $orderId);  
+        $srch->addCondition('op_product_type', '=', product::PRODUCT_TYPE_PHYSICAL);  
+        $srch->addOrder('opshipping_op_id'); 
         $rs = $srch->getResultSet();
         $records = FatApp::getDb()->fetchAll($rs);
         return $records;

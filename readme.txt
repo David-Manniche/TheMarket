@@ -176,7 +176,16 @@ Bugs:
     => 043687 - Shipping profile >> if we click on "save " button multiple times then multiple entries gets generated.
     => 043692 - Admin/seller>> shipping profile >> rates should get display in 2 decimal values even if we edit them .
     => 043864 - Buyer << order details >> when we use wallet as payment method then "paypal wallet " gets display on order details page.
-    
+    => 043777 - Admin >> if we delete any collection and then recreate the collection with same name then duplicate entry gets display . 
+    => 043776 - Collection >> banner >> when we save banner collection then "successful message should be there.
+    => 043775 - Admin >> promotions>> discount coupons>> links >> "Product Not Found? Click Here To Add New Product" should be in the same row.
+    => 043845 - seller> product setup> on refreshing page> there is error on top and page is not scrolling
+    => 043848 - seller> products> edit> on manipulating product id from url there is error 
+    => 043822 - shipping profile> saving without name getting incomplete warning
+    => 043870 - Admin >> manage volume discount >> if we enter qty more then stock value then that value should get display in error message .
+    => 043869 - Admin >> manage volume discount >> if there is no entry then "no record found " should get display just like others.
+    => 043867 - Admin >> special price >> when we edit special price then discount percentage should get display under special price field.
+
 Enhancements:
     => Tax module upgrade
     => Test cases classes enhancements.
@@ -184,8 +193,8 @@ Enhancements:
     => User Addresses DB changes.  
     => Displayed "product not available " on home page collections based on location. 
     => Performance updates.
-    => Advanced search UI and Auto Suggestions.
-    ------------TV-9.2.1.20200925------------------------
+    => Advanced search UI and Auto Suggestions.    
+    ------------TV-9.2.1.20200925------------------------     
 Notes:
    ==========Stripe Connect Installation Notes[:=========
    Composer should be installed on server to run the stripe connect module: composer.json on root of the project has details to download the required libraries in root's vendor folder.

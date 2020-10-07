@@ -5,7 +5,7 @@ class OrderProductSearch extends SearchBase
     private $langId;
     private $isOrdersTableJoined;
     private $isOrderUserTableJoined;
-    private $isOrderProductStatusJoined;
+    private $isShopJoined;
     private $commonLangId;
 
     public function __construct($langId = 0, $joinOrders = false, $joinOrderProductStatus = false, $deletedOrders = false)
@@ -16,6 +16,7 @@ class OrderProductSearch extends SearchBase
         $this->isOrderUserTableJoined = false;
         $this->isOrderProductStatusJoined = false;
         $this->isShippingChargesTblJoined = false;
+        $this->isShopJoined = false;
         $this->commonLangId = CommonHelper::getLangId();
         if ($this->langId > 0) {
             $this->joinTable(
@@ -108,6 +109,57 @@ class OrderProductSearch extends SearchBase
         $this->joinTable(ProductGroup::DB_TBL, 'LEFT OUTER JOIN', 'pg.prodgroup_id = op.op_selprod_id and op.op_is_batch = 1', 'pg');
         if ($langId) {
             $this->joinTable(ProductGroup::DB_TBL_LANG, 'LEFT OUTER JOIN', 'pg_l.prodgrouplang_prodgroup_id = pg.prodgroup_id AND pg_l.prodgrouplang_lang_id = ' . $langId, 'pg_l');
+        }
+    }
+
+    public function joinShop($langId = 0)
+    {
+        $langId = FatUtility::int($langId);
+        if ($this->langId) {
+            $langId = $this->langId;
+        }
+        $this->joinTable(Shop::DB_TBL, 'LEFT OUTER JOIN', 'sh.shop_user_id = op.op_selprod_user_id', 'sh');
+        if ($langId) {
+            $this->joinTable(Shop::DB_TBL_LANG, 'LEFT OUTER JOIN', 'sh_l.shoplang_shop_id = sh.shop_id AND sh_l.shoplang_lang_id = ' . $langId, 'sh_l');
+        }
+        $this->isShopJoined = true;
+    }
+
+    public function joinShopCountry($langId = 0, $isActive = true)
+    {
+        $langId = FatUtility::int($langId);
+        if ($this->langId) {
+            $langId = $this->langId;
+        }
+        if (!$this->isShopJoined) {
+            trigger_error("Please use joinShop first, then try to join joinShopCountry");
+        }
+        $this->joinTable(Countries::DB_TBL, 'LEFT OUTER JOIN', 'sh.shop_country_id = shop_country.country_id', 'shop_country');
+
+        if ($langId) {
+            $this->joinTable(Countries::DB_TBL_LANG, 'LEFT OUTER JOIN', 'shop_country.country_id = shop_country_l.countrylang_country_id AND shop_country_l.countrylang_lang_id = ' . $langId, 'shop_country_l');
+        }
+        if ($isActive) {
+            $this->addCondition('shop_country.country_active', '=', applicationConstants::ACTIVE);
+        }
+    }
+
+    public function joinShopState($langId = 0, $isActive = true)
+    {
+        $langId = FatUtility::int($langId);
+        if ($this->langId) {
+            $langId = $this->langId;
+        }
+        if (!$this->isShopJoined) {
+            trigger_error("Please use joinShop first, then try to join joinShopState");
+        }
+        $this->joinTable(States::DB_TBL, 'LEFT OUTER JOIN', 'sh.shop_state_id = shop_state.state_id', 'shop_state');
+
+        if ($langId) {
+            $this->joinTable(States::DB_TBL_LANG, 'LEFT OUTER JOIN', 'shop_state.state_id = shop_state_l.statelang_state_id AND shop_state_l.statelang_lang_id = ' . $langId, 'shop_state_l');
+        }
+        if ($isActive) {
+            $this->addCondition('shop_state.state_active', '=', applicationConstants::ACTIVE);
         }
     }
 

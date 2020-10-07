@@ -95,7 +95,7 @@ class ShippingProfileProductsController extends SellerBaseController
         $profileId = FatUtility::int($profileId);
         $frm = new Form('frmProfileProducts');
         $frm->addHiddenField('', 'shippro_shipprofile_id', $profileId);
-        $frm->addHiddenField('', 'shippro_product_id', '')->requirements()->setRequired(true);
+        $frm->addHiddenField('', 'shippro_product_id', '');
         $fld = $frm->addTextBox(Labels::getLabel('', $this->siteLangId), 'product_name');
         $frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_Save_Changes', $this->siteLangId));
         return $frm;

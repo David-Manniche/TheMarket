@@ -10,6 +10,8 @@ systemImgCropper = function(url, aspectRatio, callback, inputBtn){
 			var options = {
 			aspectRatio: aspectRatio,
 			preview: '.img-preview',
+			imageSmoothingQuality: 'high',
+			imageSmoothingEnabled: true,
 			crop: function (e) {
 			  var data = e.detail;
 			}

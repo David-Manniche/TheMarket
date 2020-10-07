@@ -193,7 +193,9 @@ $(document).on("click", "ul#selectedUsersList-js .ion-close-round", function(){
 						},
 						minCropBoxWidth: 1000,
 						minCropBoxHeight: 250,
-						toggleDragModeOnDblclick: false,
+                        toggleDragModeOnDblclick: false,
+                        imageSmoothingQuality: 'high',
+					    imageSmoothingEnabled: true,
 					};
 					$(inputBtn).val('');
 					return cropImage(file, options, 'uploadImage', inputBtn);
