@@ -792,3 +792,7 @@ ALTER TABLE `tbl_order_product_shipping` CHANGE `opshipping_fulfillment_type` `o
 UPDATE tbl_order_product_shipping SET opshipping_fulfillment_type = (CASE opshipping_fulfillment_type WHEN '1' THEN '2' WHEN '2' THEN '1' ELSE opshipping_fulfillment_type END);
 
 ALTER TABLE `tbl_countries` CHANGE `country_region_id` `country_zone_id` INT(11) NOT NULL;
+
+
+ALTER TABLE `tbl_shipping_rates` CHANGE `shiprate_cost` `shiprate_cost` DECIMAL(10,2) NOT NULL;
+ALTER TABLE `tbl_shipping_rates` CHANGE `shiprate_min_val` `shiprate_min_val` DECIMAL(10,2) NOT NULL DEFAULT '0.0000', CHANGE `shiprate_max_val` `shiprate_max_val` DECIMAL(10,2) NOT NULL DEFAULT '0.0000';

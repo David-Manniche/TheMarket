@@ -174,6 +174,7 @@ Bugs:
     => 043673 - Seller shipping profile >> if we expand any country then there should be some scroll bar .
     => 043674 - Seller >> shipping profile >>if there are multiple zones and when we click on "add rate icon then page should get scrolled to "add rate " box. 
     => 043687 - Shipping profile >> if we click on "save " button multiple times then multiple entries gets generated.
+    => 043692 - Admin/seller>> shipping profile >> rates should get display in 2 decimal values even if we edit them .
 
 Enhancements:
     => Tax module upgrade
