@@ -172,6 +172,7 @@ Bugs:
     => 043865 - Buyer >> order details page >. when order status is "shipped" then "track button should get display with " shipped " status only.
     => 043601 - seller >> on shop inventory >> when we click on "inventory data for any language then all drop down gets expand.
     => 043673 - Seller shipping profile >> if we expand any country then there should be some scroll bar .
+    => 043674 - Seller >> shipping profile >>if there are multiple zones and when we click on "add rate icon then page should get scrolled to "add rate " box. 
 
 Enhancements:
     => Tax module upgrade

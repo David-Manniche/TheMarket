@@ -12,8 +12,8 @@
             }
             $shipProZoneId = $zone['shipprozone_id'];
             $shipRates = (isset($shipRatesData[$shipProZoneId])) ? $shipRatesData[$shipProZoneId] : array(); ?>
-            <li class="list-group-item ">
-                <div class="row justify-content-between" id="">
+            <li class="list-group-item zoneRates-js">
+                <div class="row justify-content-between">
                     <div class="col">
                         <div class="shipping-states">
                             <span class="box-icon"><i class="fa fa-globe"> </i></span>
@@ -21,15 +21,8 @@
                                 <h6><?php echo $zone['shipzone_name'] ?></h6>
                                 <p><span><?php echo implode(', ', $countryNames); ?></span></p>
                             </div>
-
                         </div>
-
-                        <div class="row no-gutters">
-
-                            <div class="col">
-
-                            </div>
-                        </div>
+                        <div class="row no-gutters"><div class="col"></div></div>
                     </div>
                     <div class="col-auto">
                         <?php if ($canEdit) { ?>
