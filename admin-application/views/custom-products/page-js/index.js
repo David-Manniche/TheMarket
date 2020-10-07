@@ -252,7 +252,9 @@ $(document).on('change', '.language-js',function(){
 	                },
 	                minCropBoxWidth: minWidth,
 	                minCropBoxHeight: minHeight,
-	                toggleDragModeOnDblclick: false,
+					toggleDragModeOnDblclick: false,
+					imageSmoothingQuality: 'high',
+					imageSmoothingEnabled: true,
 		        };
 				$(inputBtn).val('');
 		    	return cropImage(file, options, 'uploadImages', inputBtn);

@@ -57,6 +57,8 @@ $(document).ready(function(){
 					var options = {
 					aspectRatio: 1 / 1,
 					preview: '.img-preview',
+					imageSmoothingQuality: 'high',
+					imageSmoothingEnabled: true,
 					crop: function (e) {
 					  var data = e.detail;
 					}
@@ -73,6 +75,8 @@ $(document).ready(function(){
 				var options = {
 				aspectRatio: 1 / 1,
 				preview: '.img-preview',
+				imageSmoothingQuality: 'high',
+				imageSmoothingEnabled: true,
 				crop: function (e) {
 				  var data = e.detail;
 				}
