@@ -772,13 +772,14 @@ ALTER TABLE tbl_email_templates ENGINE=InnoDB;
 ALTER TABLE tbl_order_product_settings ENGINE=InnoDB;
 ALTER TABLE tbl_sms_templates ENGINE=InnoDB;
 
-
-SET @paypalStandardId := (SELECT plugin_id FROM tbl_plugins WHERE plugin_identifier = 'PaypalStandard');
-SET @paypalId := (SELECT plugin_id FROM tbl_plugins WHERE plugin_identifier = 'Paypal');
+-- Replace PayPal Standard --
+SET @paypalStandardId := (SELECT plugin_id FROM tbl_plugins WHERE plugin_code = 'PaypalStandard');
+SET @paypalId := (SELECT plugin_id FROM tbl_plugins WHERE plugin_code = 'Paypal');
 DELETE FROM `tbl_plugins` WHERE `plugin_id` = @paypalStandardId;
 UPDATE `tbl_plugins` SET `plugin_id`= @paypalStandardId WHERE `plugin_id` = @paypalId;
 DELETE FROM `tbl_plugin_settings` WHERE `pluginsetting_plugin_id` = @paypalStandardId;
 UPDATE `tbl_plugin_settings` SET `pluginsetting_plugin_id`= @paypalStandardId WHERE `pluginsetting_plugin_id` = @paypalId;
+-- Replace PayPal Standard --
 
 ALTER TABLE `tbl_time_slots` ADD `tslot_availability` TINYINT(1) NOT NULL AFTER `tslot_id`;
 UPDATE `tbl_time_slots` SET `tslot_availability` = '1' WHERE `tslot_availability` = 0;

@@ -111,6 +111,7 @@ if (!$print) { ?>
                                     </p>
                                     <?php
                                     $paymentMethodName = empty($childOrderDetail['plugin_name']) ? $childOrderDetail['plugin_identifier'] : $childOrderDetail['plugin_name'];
+                                    // CommonHelper::printArray($childOrderDetail, true);
                                     if (!empty($paymentMethodName) && $childOrderDetail['order_pmethod_id'] > 0 && $childOrderDetail['order_is_wallet_selected'] > 0) {
                                         $paymentMethodName  .= ' + ';
                                     }
