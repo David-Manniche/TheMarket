@@ -174,6 +174,7 @@ Bugs:
     => 043848 - seller> products> edit> on manipulating product id from url there is error 
     => 043822 - shipping profile> saving without name getting incomplete warning
     => 043870 - Admin >> manage volume discount >> if we enter qty more then stock value then that value should get display in error message .
+    => 043869 - Admin >> manage volume discount >> if there is no entry then "no record found " should get display just like others.
 
 Enhancements:
     => Tax module upgrade
