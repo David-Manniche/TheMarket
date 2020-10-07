@@ -170,6 +170,7 @@ Bugs:
     => 043859 - admin>navigation> pages> edit> getting error
     => 043671 - Admin >> shipping profile >> if the selected location is under any drop down and admin update the profile then "minimum one location required" gets display .
     => 043865 - Buyer >> order details page >. when order status is "shipped" then "track button should get display with " shipped " status only.
+    => 043601 - seller >> on shop inventory >> when we click on "inventory data for any language then all drop down gets expand.
 
 Enhancements:
     => Tax module upgrade
