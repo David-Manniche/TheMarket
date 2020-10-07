@@ -175,7 +175,8 @@ Bugs:
     => 043674 - Seller >> shipping profile >>if there are multiple zones and when we click on "add rate icon then page should get scrolled to "add rate " box. 
     => 043687 - Shipping profile >> if we click on "save " button multiple times then multiple entries gets generated.
     => 043692 - Admin/seller>> shipping profile >> rates should get display in 2 decimal values even if we edit them .
-
+    => 043864 - Buyer << order details >> when we use wallet as payment method then "paypal wallet " gets display on order details page.
+    
 Enhancements:
     => Tax module upgrade
     => Test cases classes enhancements.
