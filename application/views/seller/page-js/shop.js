@@ -613,6 +613,8 @@ $(document).on("change", ".state", function() {
                     minCropBoxWidth: minWidth,
                     minCropBoxHeight: minHeight,
                     toggleDragModeOnDblclick: false,
+                    imageSmoothingQuality: 'high',
+					imageSmoothingEnabled: true,
                 };
                 $(inputBtn).val('');
                 return cropImage(file, options, 'uploadShopImages', inputBtn);
@@ -641,6 +643,8 @@ $(document).on("change", ".state", function() {
                     minCropBoxWidth: minWidth,
                     minCropBoxHeight: minHeight,
                     toggleDragModeOnDblclick: false,
+                    imageSmoothingQuality: 'high',
+					imageSmoothingEnabled: true,
                 };
                 $(inputBtn).val('');
                 return cropImage(file, options, 'uploadShopImages', inputBtn);
@@ -719,6 +723,8 @@ $(document).on("change", ".state", function() {
                     minCropBoxWidth: collectionMediaWidth,
                     minCropBoxHeight: collectionMediaHeight,
                     toggleDragModeOnDblclick: false,
+                    imageSmoothingQuality: 'high',
+					imageSmoothingEnabled: true,
                 };
                 $(inputBtn).val('');
                 return cropImage(file, options, 'uploadCollectionImage', inputBtn);

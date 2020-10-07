@@ -192,6 +192,8 @@ $(document).ready(function() {
                     minCropBoxWidth: 80,
                     minCropBoxHeight: 80,
                     toggleDragModeOnDblclick: false,
+                    imageSmoothingQuality: 'high',
+					imageSmoothingEnabled: true,
     	        };
                 $(inputBtn).val('');
                 return cropImage(file, options, 'uploadTestimonialImage', inputBtn);

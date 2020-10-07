@@ -170,7 +170,9 @@ $(document).on('change',"select[name='banner_blocation_id']",function(){
 	                },
 	                minCropBoxWidth: minWidth,
 	                minCropBoxHeight: minHeight,
-	                toggleDragModeOnDblclick: false,
+					toggleDragModeOnDblclick: false,
+					imageSmoothingQuality: 'high',
+					imageSmoothingEnabled: true,
 		        };
 				$(inputBtn).val('');
 	    		return cropImage(file, options, 'promotionUpload');

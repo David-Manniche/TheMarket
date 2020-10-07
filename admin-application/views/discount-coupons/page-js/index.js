@@ -360,7 +360,9 @@ $(document).on('change','.language-js',function(){
 	                },
 	                minCropBoxWidth: 60,
 	                minCropBoxHeight: 60,
-	                toggleDragModeOnDblclick: false,
+					toggleDragModeOnDblclick: false,
+					imageSmoothingQuality: 'high',
+					imageSmoothingEnabled: true,
 		        };
 				$(inputBtn).val('');
 				return cropImage(file, options, 'uploadImage', inputBtn);
