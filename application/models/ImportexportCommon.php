@@ -39,7 +39,7 @@ class ImportexportCommon extends FatModel
         if (empty($fileName)) {
             return false;
         }
-        $this->CSVfileName = $this->CSVFileName($fileName);
+        $this->CSVfileName = $this->CSVFileName($fileName, $langId);
 
         if (true === $errorLog) {
             if (!file_exists(self::IMPORT_ERROR_LOG_PATH)) {
