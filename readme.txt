@@ -169,6 +169,7 @@ Bugs:
     => 043606 - While checkout if we select "pay on pickup then status should be "pay on pickup " instead of " cash on delivery .
     => 043859 - admin>navigation> pages> edit> getting error
     => 043671 - Admin >> shipping profile >> if the selected location is under any drop down and admin update the profile then "minimum one location required" gets display .
+    => 043865 - Buyer >> order details page >. when order status is "shipped" then "track button should get display with " shipped " status only.
 
 Enhancements:
     => Tax module upgrade

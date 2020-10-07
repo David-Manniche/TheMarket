@@ -84,7 +84,7 @@ if (!empty($orderDetail["thirdPartyorderInfo"]) && isset($orderDetail["thirdPart
                                 if ($orderDetail['order_reward_point_used'] > 0) {
                                     $selected_method .= ($selected_method != '') ? ' + ' . Labels::getLabel("LBL_Rewards", $siteLangId) : Labels::getLabel("LBL_Rewards", $siteLangId);
                                 }
-                                
+
                                 if (strtolower($orderDetail['plugin_code']) == 'cashondelivery' && $orderDetail['opshipping_fulfillment_type'] == Shipping::FULFILMENT_PICKUP) {
                                     $selected_method = Labels::getLabel('LBL_PAY_ON_PICKUP', $siteLangId);
                                 }
@@ -147,7 +147,7 @@ if (!empty($orderDetail["thirdPartyorderInfo"]) && isset($orderDetail["thirdPart
 
                     <table class="table">
                         <thead>
-                       
+
                             <tr class="">
                                 <th><?php echo Labels::getLabel('LBL_Order_Particulars', $siteLangId); ?></th>
                                 <?php if (!$print) { ?>
@@ -166,8 +166,8 @@ if (!empty($orderDetail["thirdPartyorderInfo"]) && isset($orderDetail["thirdPart
                                 <?php } ?>
                                 <th><?php echo Labels::getLabel('LBL_Total', $siteLangId); ?></th>
                             </tr>
-                            </thead>
-                            <tbody>
+                        </thead>
+                        <tbody>
                             <tr>
                                 <?php if (!$print) { ?>
                                     <td>
@@ -255,13 +255,13 @@ if (!empty($orderDetail["thirdPartyorderInfo"]) && isset($orderDetail["thirdPart
                             }
 
                             if ($orderDetail['billingAddress']['oua_state'] != '') {
-                                $billingAddress .= $orderDetail['billingAddress']['oua_state']. ', ';
+                                $billingAddress .= $orderDetail['billingAddress']['oua_state'] . ', ';
                             }
-							
-							if ($orderDetail['billingAddress']['oua_country'] != '') {
+
+                            if ($orderDetail['billingAddress']['oua_country'] != '') {
                                 $billingAddress .= $orderDetail['billingAddress']['oua_country'];
                             }
-							
+
                             if ($orderDetail['billingAddress']['oua_zip'] != '') {
                                 $billingAddress .= '-' . $orderDetail['billingAddress']['oua_zip'];
                             }
@@ -293,8 +293,8 @@ if (!empty($orderDetail["thirdPartyorderInfo"]) && isset($orderDetail["thirdPart
                                 if ($orderDetail['shippingAddress']['oua_state'] != '') {
                                     $shippingAddress .= $orderDetail['shippingAddress']['oua_state'] . ', ';
                                 }
-								
-								if ($orderDetail['shippingAddress']['oua_country'] != '') {
+
+                                if ($orderDetail['shippingAddress']['oua_country'] != '') {
                                     $shippingAddress .= $orderDetail['shippingAddress']['oua_country'];
                                 }
 
@@ -357,7 +357,7 @@ if (!empty($orderDetail["thirdPartyorderInfo"]) && isset($orderDetail["thirdPart
 
                             $fld = $frm->getField('op_status_id');
                             $fld->developerTags['col'] = (null != $manualFld) ? 4 : 6;
-                            
+
                             $statusFld = $frm->getField('op_status_id');
                             $statusFld->setFieldTagAttribute('class', 'status-js fieldsVisibility-js');
 
@@ -388,23 +388,23 @@ if (!empty($orderDetail["thirdPartyorderInfo"]) && isset($orderDetail["thirdPart
                             <h5><?php echo Labels::getLabel('LBL_Posted_Comments', $siteLangId); ?></h5>
                             <table class="table  table--orders">
                                 <thead>
-                               
+
                                     <tr class="">
                                         <th><?php echo Labels::getLabel('LBL_Date_Added', $siteLangId); ?></th>
                                         <th><?php echo Labels::getLabel('LBL_Customer_Notified', $siteLangId); ?></th>
                                         <th><?php echo Labels::getLabel('LBL_Status', $siteLangId); ?></th>
                                         <th><?php echo Labels::getLabel('LBL_Comments', $siteLangId); ?></th>
                                     </tr>
-                                    </thead>
-                                    <tbody>
-                                    <?php 
+                                </thead>
+                                <tbody>
+                                    <?php
                                     foreach ($orderDetail['comments'] as $row) { ?>
                                         <tr>
                                             <td><?php echo FatDate::format($row['oshistory_date_added'], true); ?></td>
                                             <td><?php echo $yesNoArr[$row['oshistory_customer_notified']]; ?></td>
-                                            <td><?php
+                                            <td>
+                                                <?php
                                                 echo ($row['oshistory_orderstatus_id'] > 0) ? $orderStatuses[$row['oshistory_orderstatus_id']] : CommonHelper::displayNotApplicable($siteLangId, '');
-
                                                 if ($row['oshistory_orderstatus_id'] ==  OrderStatus::ORDER_SHIPPED) {
                                                     if (empty($row['oshistory_courier'])) {
                                                         $str = !empty($row['oshistory_tracking_number']) ? ': ' . Labels::getLabel('LBL_Tracking_Number', $siteLangId) . ' ' . $row['oshistory_tracking_number'] : '';
@@ -417,13 +417,12 @@ if (!empty($orderDetail["thirdPartyorderInfo"]) && isset($orderDetail["thirdPart
                                                     } else {
                                                         echo ($row['oshistory_tracking_number']) ? ': ' . Labels::getLabel('LBL_Tracking_Number', $siteLangId) : '';
                                                         $trackingNumber = $row['oshistory_tracking_number'];
-                                                        $carrier = $row['oshistory_courier'];
-                                                    ?>
+                                                        $carrier = $row['oshistory_courier']; ?>
                                                         <a href="javascript:void(0)" title="<?php echo Labels::getLabel('LBL_TRACK', $siteLangId); ?>" onClick="trackOrder('<?php echo trim($trackingNumber); ?>', '<?php echo trim($carrier); ?>', '<?php echo $orderDetail['op_invoice_number']; ?>')">
                                                             <?php echo $trackingNumber; ?>
                                                         </a>
                                                         <?php echo Labels::getLabel('LBL_VIA', $siteLangId); ?> <em><?php echo CommonHelper::displayNotApplicable($siteLangId, $orderDetail["opshipping_label"]); ?></em>
-                                                    <?php } 
+                                                <?php }
                                                 } ?>
                                             </td>
                                             <td><?php echo !empty($row['oshistory_comments']) ? nl2br($row['oshistory_comments']) : Labels::getLabel('LBL_N/A', $siteLangId); ?></td>
@@ -543,11 +542,16 @@ if (!empty($orderDetail["thirdPartyorderInfo"]) && isset($orderDetail["thirdPart
 <?php } ?>
 
 <script>
-    $(document).ready(function(){
-        setTimeout(function(){$('.printBtn-js').fadeIn();}, 500);
-        $(document).on('click', '.printBtn-js', function(){
+    $(document).ready(function() {
+        setTimeout(function() {
+            $('.printBtn-js').fadeIn();
+        }, 500);
+        $(document).on('click', '.printBtn-js', function() {
             $('.printFrame-js').show();
-            setTimeout(function(){ frames['frame'].print(); $('.printFrame-js').hide();}, 500);
+            setTimeout(function() {
+                frames['frame'].print();
+                $('.printFrame-js').hide();
+            }, 500);
         });
     });
     var canShipByPlugin = <?php echo (true === $canShipByPlugin ? 1 : 0); ?>;
