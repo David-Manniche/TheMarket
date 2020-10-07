@@ -176,6 +176,7 @@ Bugs:
     => 043870 - Admin >> manage volume discount >> if we enter qty more then stock value then that value should get display in error message .
     => 043869 - Admin >> manage volume discount >> if there is no entry then "no record found " should get display just like others.
     => 043867 - Admin >> special price >> when we edit special price then discount percentage should get display under special price field.
+    => 043584 - admin> categories> right side> product count in bubble is not listing properly 
 
 Enhancements:
     => Tax module upgrade
