@@ -168,6 +168,7 @@ Bugs:
     => 043600 - Admin >> add brand >> when we add brand then admin is unable to access "language data " and " media " tabs 
     => 043606 - While checkout if we select "pay on pickup then status should be "pay on pickup " instead of " cash on delivery .
     => 043859 - admin>navigation> pages> edit> getting error
+    => 043671 - Admin >> shipping profile >> if the selected location is under any drop down and admin update the profile then "minimum one location required" gets display .
 
 Enhancements:
     => Tax module upgrade

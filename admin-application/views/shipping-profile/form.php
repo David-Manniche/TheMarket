@@ -72,7 +72,7 @@ $frm->setFormTagAttribute('onsubmit', 'setupProfile(this); return(false);');
                         </div>
                     </div>
                     <div class="col-md-12">
-                        <?php if (empty($profileData) || ((isset($profileData['shipprofile_default']) && $profileData['shipprofile_default'] == 1))) { ?>
+                        <?php if (empty($profileData) || ((isset($profileData['shipprofile_default'])))) { ?>
                             <div class="portlet" id="product-section--js">
                                 <div class="portlet__head">
                                     <div class="portlet__head-label">
@@ -87,7 +87,6 @@ $frm->setFormTagAttribute('onsubmit', 'setupProfile(this); return(false);');
                                 </div>
                             </div>
                         <?php } ?>
-
                     </div>
                     <div class="col-md-12">
                         <div class="row">

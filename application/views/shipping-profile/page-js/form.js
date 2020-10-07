@@ -124,6 +124,9 @@ $(document).ready(function () {
         fcom.ajax(fcom.makeUrl('ShippingZones', 'searchStates', [countryId, zoneId, shipZoneId, profileId, preSelectedCheckbox]), '', function (res) {
             $(dv).html(res);
             $('.link_' + countryId).data('loadedstates', 1);
+            if ($(dv + " .state--js:checked").length) {
+				$(dv + " .state--js:checked").prop('checked', false).click();
+			}
         });
     }
 
@@ -138,7 +141,7 @@ $(document).ready(function () {
         fcom.updateWithAjax(fcom.makeUrl('shippingZones', 'setup'), data, function (t) {
             var profileId = $('input[name="profile_id"]').val();
             searchZone(profileId);
-            $(document).trigger('close.facebox');
+            clearForm();
         });
     };
 
@@ -150,7 +153,6 @@ $(document).ready(function () {
         fcom.updateWithAjax(fcom.makeUrl('shippingZones', 'deleteZone', [zoneId]), '', function (t) {
             var profileId = $('input[name="profile_id"]').val();
             searchZone(profileId);
-            $(document).trigger('close.facebox');
             clearForm();
         });
     };

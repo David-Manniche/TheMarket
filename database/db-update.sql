@@ -791,3 +791,4 @@ ALTER TABLE `tbl_order_product_shipping` CHANGE `opshipping_type` `opshipping_fu
 ALTER TABLE `tbl_order_product_shipping` CHANGE `opshipping_fulfillment_type` `opshipping_fulfillment_type` TINYINT(4) NOT NULL DEFAULT '2' COMMENT 'Defined in model';
 UPDATE tbl_order_product_shipping SET opshipping_fulfillment_type = (CASE opshipping_fulfillment_type WHEN '1' THEN '2' WHEN '2' THEN '1' ELSE opshipping_fulfillment_type END);
 
+ALTER TABLE `tbl_countries` CHANGE `country_region_id` `country_zone_id` INT(11) NOT NULL;
