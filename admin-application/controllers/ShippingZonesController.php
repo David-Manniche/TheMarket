@@ -80,6 +80,7 @@ class ShippingZonesController extends AdminBaseController
             $zoneLocations = $this->getLocations($zoneId);
         }
         $zones = Zone::getZoneWithCountries($this->adminLangId);
+
         $excludeLocations = $this->getExcludeLocations($profileId, $zoneId);
 
         $this->set('profile_id', $profileId);
@@ -224,7 +225,6 @@ class ShippingZonesController extends AdminBaseController
         if (empty($zoneIds)) {
             return [];
         }
-
         $locSrch = ShippingZone::getZoneLocationSearchObject($this->adminLangId);
         if (is_array($zoneIds)) {
             $locSrch->addCondition('shiploc_shipzone_id', 'IN', $zoneIds);
@@ -235,7 +235,6 @@ class ShippingZonesController extends AdminBaseController
         $locSrch->doNotLimitRecords();
         $locRs = $locSrch->getResultSet();
         $zoneLocations = FatApp::getDb()->fetchAll($locRs);
-
         if ($isAjax) {
             die(json_encode($zoneLocations));
         }
@@ -248,7 +247,7 @@ class ShippingZonesController extends AdminBaseController
             }
         }
 
-        return $zoneLocationData;
+        return !empty($zoneLocationData) ? $zoneLocationData : $zoneLocations;
     }
 
     private function checkForLocations($profileId, $shipZoneId, $data)
@@ -427,6 +426,7 @@ class ShippingZonesController extends AdminBaseController
                 return false;
             }
         } elseif (isset($data['shiploc_country_ids'])) {
+            // CommonHelper::printArray($data['shiploc_country_ids'], true);
             foreach ($data['shiploc_country_ids'] as $countryData) {
                 $arr = explode('-', $countryData);
                 $zoneId = $arr[0];
@@ -438,7 +438,6 @@ class ShippingZonesController extends AdminBaseController
                     'shiploc_state_id' => -1,
                     'shiploc_shipzone_id' => $shipZoneId
                 );
-
                 if (!$sZoneObj->updateLocations($dataToAdd)) {
                     //Message::addErrorMessage($sZoneObj->getError());
                     //FatUtility::dieJsonError(Message::getHtml());

@@ -519,7 +519,7 @@
                     <?php } ?>
 
                     <?php if ($objPrivilege->canViewShippingManagement(AdminAuthentication::getLoggedAdminId(), true)) { ?>
-                        <li><a href="<?php echo UrlHelper::generateUrl('shippingProfile'); ?>"><?php echo Labels::getLabel('LBL_Shipping_Management', $adminLangId);?></a></li>
+                        <li><a href="<?php echo UrlHelper::generateUrl('shippingProfile'); ?>"><?php echo Labels::getLabel('LBL_Shipping_Profile', $adminLangId);?></a></li>
                     <?php }?>
 
                     <?php /* if($objPrivilege->canViewManualShippingApi(AdminAuthentication::getLoggedAdminId(), true)){?>

@@ -104,7 +104,10 @@ if (!empty($excludeLocations)) {
                                                         <div class="field-wraper">
                                                             <div class="field_cover">
                                                                 <label>
-                                                                    <span class="checkbox country--js " data-countryid="<?php echo $countryId; ?>" data-statecount="<?php echo $statesCount; ?>"><input type="checkbox" name="shiploc_country_ids[]" value="<?php echo $zone['zone_id']; ?>-<?php echo $countryId; ?>" class="checkbox_country_<?php echo $countryId; ?>" <?php echo $checked; ?> <?php echo $disabled; ?>><i class="input-helper"></i></span><?php echo $country['country_identifier']; ?>
+                                                                    <span class="checkbox country--js " data-countryid="<?php echo $countryId; ?>" data-statecount="<?php echo $statesCount; ?>">
+                                                                        <input type="checkbox" name="shiploc_country_ids[]" value="<?php echo $zone['zone_id']; ?>-<?php echo $countryId; ?>" class="checkbox_country_<?php echo $countryId; ?>" <?php echo $checked; ?> <?php echo $disabled; ?>><i class="input-helper"></i>
+                                                                    </span>
+                                                                    <?php echo $country['country_identifier']; ?>
                                                                 </label>
                                                             </div>
                                                         </div>

@@ -12,7 +12,7 @@ $frm->setFormTagAttribute('onsubmit', 'setupProfile(this); return(false);');
                     <div class="row">
                         <div class="col--first col-lg-6">
                             <span class="page__icon"><i class="ion-android-star"></i></span>
-                            <h5><?php echo Labels::getLabel('LBL_Shipping_Management', $adminLangId); ?>
+                            <h5><?php echo Labels::getLabel('LBL_Shipping_Profile', $adminLangId); ?>
                             </h5> <?php $this->includeTemplate('_partial/header/header-breadcrumb.php'); ?>
                         </div>
                     </div>

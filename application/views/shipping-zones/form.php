@@ -132,7 +132,7 @@ if (!empty($excludeLocations)) {
                                                                     <?php } ?>
                                                                 </div>
                                                             </div>
-                                                            <div class="collapse" id="state_list_<?php echo $countryId; ?>">
+                                                            <div class="collapse box--scroller" id="state_list_<?php echo $countryId; ?>">
                                                             </div>
                                                         </li>
                                                     <?php } ?>
