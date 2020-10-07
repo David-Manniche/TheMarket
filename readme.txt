@@ -143,11 +143,20 @@ Bugs:
     => 043594 - Order details page >> invalid access gets display if admin or seller try to change order status .
     => 041966 - seller> dashboard> there are errors
     => 043517 - when language other than EN, AR is selected then getting error on header
+    => 043662 - tax category added by admin is listing twice on seller end
+    => 043528 - seller> sales report> detail page> back button alignment is not proper
+    => 043582 - Seller >> meta tags >>> seller is unable to add data in "other meta tags " field.
+    => 043595 - Seller >> manage permission for sub seller >> "request " tab should be there under "shop" on permission page .
     => 043521 - on login to buyer account> getting error on logo
     => 043585 - when category is requested then message needs to be different
     => 043602 - Blank print preview is there for order on detail page
     => 043603 - seller invoice print> only logo is listing
     => 043610 - Buyer >> when we try to become a seller then some error is there.
+    => 043597 - On product >> If we inactive any product then that product should not get display in "add-ons ".
+    => 043599 - Seller >> shipping profile >> images should be in the center of box. 
+    => 043643 - getting error while adding brand
+    => 043651 - while adding digital item> downloads> save button is not proper
+    => 043672 - seller registration >> login button is not proper. 
     => 043586 - when same shipping package is added again then message needs to be corrected
     => 043640 - wrong time slots are getting created in admin
     => 043638 - admin> pickup address> slots> when time is selected for all days then on editing it's displays the same time for individual days selected
@@ -155,6 +164,14 @@ Bugs:
     => 043710 - during checkout> getting error in rewards
     => 043711 - when admin approves cancellation request then there is error
     => 043593 - When we add amount in wallet then some changes needs to be done on "thank you" screen 
+    => 043523 - buyer> orders> cancellation requests> filters> dates> date is not visible on 1366x768 resolution
+    => 043600 - Admin >> add brand >> when we add brand then admin is unable to access "language data " and " media " tabs 
+    => 043606 - While checkout if we select "pay on pickup then status should be "pay on pickup " instead of " cash on delivery .
+    => 043777 - Admin >> if we delete any collection and then recreate the collection with same name then duplicate entry gets display . 
+    => 043776 - Collection >> banner >> when we save banner collection then "successful message should be there.
+    => 043775 - Admin >> promotions>> discount coupons>> links >> "Product Not Found? Click Here To Add New Product" should be in the same row.
+    => 043845 - seller> product setup> on refreshing page> there is error on top and page is not scrolling
+    => 043848 - seller> products> edit> on manipulating product id from url there is error 
 
 Enhancements:
     => Tax module upgrade

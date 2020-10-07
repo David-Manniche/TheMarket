@@ -1,4 +1,4 @@
-<?php  defined('SYSTEM_INIT') or die('Invalid Usage.');
+<?php defined('SYSTEM_INIT') or die('Invalid Usage.');
 $arr_flds = array(
     'order_id'  =>    Labels::getLabel('LBL_Order_Id_Date', $siteLangId),
     'product'   =>    Labels::getLabel('LBL_Ordered_Product', $siteLangId),
@@ -8,7 +8,7 @@ $arr_flds = array(
     'action'    =>    '',
 );
 
-$tbl = new HtmlElement('table', array('class'=>'table'));
+$tbl = new HtmlElement('table', array('class' => 'table'));
 $th = $tbl->appendElement('thead')->appendElement('tr', array('class' => ''));
 foreach ($arr_flds as $val) {
     $e = $th->appendElement('th', array(), $val);
@@ -20,37 +20,37 @@ $processingStatuses = array_diff($processingStatuses, [OrderStatus::ORDER_DELIVE
 
 foreach ($orders as $sn => $order) {
     $sr_no++;
-    $tr = $tbl->appendElement('tr', array('class' =>'' ));
+    $tr = $tbl->appendElement('tr', array('class' => ''));
     $orderDetailUrl = UrlHelper::generateUrl('seller', 'viewOrder', array($order['op_id']));
 
     foreach ($arr_flds as $key => $val) {
         $td = $tr->appendElement('td');
         switch ($key) {
             case 'order_id':
-                $txt = '<a title="'.Labels::getLabel('LBL_View_Order_Detail', $siteLangId).'" href="'.$orderDetailUrl.'">';
+                $txt = '<a title="' . Labels::getLabel('LBL_View_Order_Detail', $siteLangId) . '" href="' . $orderDetailUrl . '">';
                 $txt .= $order['op_invoice_number'];
-                $txt .= '</a><br/>'. FatDate::format($order['order_date_added']);
+                $txt .= '</a><br/>' . FatDate::format($order['order_date_added']);
                 $td->appendElement('plaintext', array(), $txt, true);
                 break;
             case 'product':
                 $txt = '<div class="item__description">';
                 if ($order['op_selprod_title'] != '') {
-                    $txt .= '<div class="item__title">'.$order['op_selprod_title'].'</div>';
+                    $txt .= '<div class="item__title">' . $order['op_selprod_title'] . '</div>';
                 }
-                $txt .= '<div class="item__sub_title">'.$order['op_product_name'].'</div>';
+                $txt .= '<div class="item__sub_title">' . $order['op_product_name'] . '</div>';
 
                 $txt .= '<div class="item__brand">';
                 if (!empty($order['op_brand_name'])) {
-                    $txt .=  Labels::getLabel('LBL_Brand', $siteLangId).': '.$order['op_brand_name'];
+                    $txt .=  Labels::getLabel('LBL_Brand', $siteLangId) . ': ' . $order['op_brand_name'];
                 }
                 if (!empty($order['op_brand_name']) && !empty($order['op_selprod_options'])) {
-                    $txt .= ' | ' ;
+                    $txt .= ' | ';
                 }
                 if ($order['op_selprod_options'] != '') {
                     $txt .= $order['op_selprod_options'];
                 }
                 $txt .= '</div>';
-                 $txt .= '</div>';
+                $txt .= '</div>';
                 $td->appendElement('plaintext', array(), $txt, true);
                 break;
             case 'total':
@@ -61,16 +61,21 @@ foreach ($orders as $sn => $order) {
                 break;
             case 'status':
                 $txt = $order['orderstatus_name'];
-                $td->appendElement('span', array('class' => 'label label-inline '. $classArr[$order['orderstatus_color_class']]), $txt . '<br>', true);
+                if (strtolower($order['plugin_code']) == 'cashondelivery' && $order['opshipping_fulfillment_type'] == Shipping::FULFILMENT_PICKUP) {
+                    $txt = Labels::getLabel('LBL_PAY_ON_PICKUP', $siteLangId);
+                }
+                $td->appendElement('span', array('class' => 'label label-inline ' . $classArr[$order['orderstatus_color_class']]), $txt . '<br>', true);
                 break;
             case 'action':
-                $ul = $td->appendElement("ul", array("class"=>"actions"), '', true);
+                $ul = $td->appendElement("ul", array("class" => "actions"), '', true);
 
                 $li = $ul->appendElement("li");
                 $li->appendElement(
                     'a',
-                    array('href'=> $orderDetailUrl, 'class'=>'',
-                    'title'=>Labels::getLabel('LBL_View_Order', $siteLangId)),
+                    array(
+                        'href' => $orderDetailUrl, 'class' => '',
+                        'title' => Labels::getLabel('LBL_View_Order', $siteLangId)
+                    ),
                     '<i class="fa fa-eye"></i>',
                     true
                 );
@@ -79,26 +84,28 @@ foreach ($orders as $sn => $order) {
                     $li = $ul->appendElement("li");
                     $li->appendElement(
                         'a',
-                        array('href'=> UrlHelper::generateUrl('seller', 'cancelOrder', array($order['op_id'])), 'class'=>'',
-                        'title'=>Labels::getLabel('LBL_Cancel_Order', $siteLangId)),
+                        array(
+                            'href' => UrlHelper::generateUrl('seller', 'cancelOrder', array($order['op_id'])), 'class' => '',
+                            'title' => Labels::getLabel('LBL_Cancel_Order', $siteLangId)
+                        ),
                         '<i class="fas fa-times"></i>',
                         true
                     );
                 }
-                
+
                 $shipBySeller = CommonHelper::canAvailShippingChargesBySeller($order['op_selprod_user_id'], $order['opshipping_by_seller_user_id']);
                 if ($shipBySeller && true === $canShipByPlugin && ('CashOnDelivery' == $order['plugin_code'] || Orders::ORDER_PAYMENT_PAID == $order['order_payment_status'])) {
                     $li = $ul->appendElement("li");
                     if (empty($order['opship_response']) && empty($order['opship_tracking_number'])) {
-                        $li->appendElement('a', array('href'=>'javascript:void(0)', 'onclick' => 'generateLabel("' . $order['order_id'] . '", ' . $order['op_id'] . ')', 'title'=>Labels::getLabel('LBL_GENERATE_LABEL',$siteLangId)),'<i class="fas fa-file-download"></i>', true);
+                        $li->appendElement('a', array('href' => 'javascript:void(0)', 'onclick' => 'generateLabel("' . $order['order_id'] . '", ' . $order['op_id'] . ')', 'title' => Labels::getLabel('LBL_GENERATE_LABEL', $siteLangId)), '<i class="fas fa-file-download"></i>', true);
                     } elseif (!empty($order['opship_response'])) {
-                        $li->appendElement('a', array('href'=>UrlHelper::generateUrl("ShippingServices", 'previewLabel', [$order['op_id']]), 'target' => '_blank','title'=>Labels::getLabel('LBL_PREVIEW_LABEL',$siteLangId)),'<i class="fas fa-file-export"></i>', true);
+                        $li->appendElement('a', array('href' => UrlHelper::generateUrl("ShippingServices", 'previewLabel', [$order['op_id']]), 'target' => '_blank', 'title' => Labels::getLabel('LBL_PREVIEW_LABEL', $siteLangId)), '<i class="fas fa-file-export"></i>', true);
                     }
                 }
 
                 break;
             default:
-                $td->appendElement('plaintext', array(), ''.$order[$key], true);
+                $td->appendElement('plaintext', array(), '' . $order[$key], true);
                 break;
         }
     }
@@ -106,9 +113,9 @@ foreach ($orders as $sn => $order) {
 echo $tbl->getHtml();
 if (count($orders) == 0) {
     $message = Labels::getLabel('LBL_No_Records_Found', $siteLangId);
-    $this->includeTemplate('_partial/no-record-found.php', array('siteLangId'=>$siteLangId,'message'=>$message));
+    $this->includeTemplate('_partial/no-record-found.php', array('siteLangId' => $siteLangId, 'message' => $message));
 }
 $postedData['page'] = $page;
 echo FatUtility::createHiddenFormFromData($postedData, array('name' => 'frmOrderSrchPaging'));
-$pagingArr=array('pageCount'=>$pageCount,'page'=>$page,'recordCount'=>$recordCount, 'callBackJsFunc' => 'goToOrderSearchPage');
+$pagingArr = array('pageCount' => $pageCount, 'page' => $page, 'recordCount' => $recordCount, 'callBackJsFunc' => 'goToOrderSearchPage');
 $this->includeTemplate('_partial/pagination.php', $pagingArr, false);

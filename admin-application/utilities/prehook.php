@@ -8,7 +8,7 @@ FatApplication::getInstance()->setControllersForStaticFileServer(array('images',
 $innova_settings  =  array('width'=>'650', 'height'=>'400','arrStyle'=>'[["body",false,"","min-height:250px;"]]',  'groups'=>' [
     ["group1", "", ["Bold", "Italic", "Underline", "FontName", "ForeColor", "TextDialog", "RemoveFormat"]],
     ["group2", "", ["Bullets", "Numbering", "JustifyLeft", "JustifyCenter", "JustifyRight"]],
-    ["group3", "", ["LinkDialog", "ImageDialog", "Table", "TableDialog"]],
+    ["group3", "", ["LinkDialog", "ImageDialog", "YoutubeDialog", "Table", "TableDialog"]],
     ["group5", "", ["Undo", "Redo", "FullScreen", "SourceDialog"]]]',
     'fileBrowser'=> '"'.CONF_WEBROOT_URL.'innova/assetmanager/asset.php"',
     'css'=> '"'.CONF_WEBROOT_URL.'innovas/styles/default.css"',

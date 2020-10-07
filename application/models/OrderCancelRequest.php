@@ -36,9 +36,9 @@ class OrderCancelRequest extends MyAppModel
             $langId = FatApp::getConfig('CONF_ADMIN_DEFAULT_LANG');
         }
         return array(
-            static::CANCELLATION_REQUEST_STATUS_PENDING => Labels::getLabel('LBL_Cancellation_Request_Status_Pending', $langId),
-            static::CANCELLATION_REQUEST_STATUS_APPROVED => Labels::getLabel('LBL_Cancellation_Request_Status_Approved', $langId),
-            static::CANCELLATION_REQUEST_STATUS_DECLINED => Labels::getLabel('LBL_Cancellation_Request_Status_Declined', $langId),
+            static::CANCELLATION_REQUEST_STATUS_PENDING => Labels::getLabel('LBL_PENDING', $langId),
+            static::CANCELLATION_REQUEST_STATUS_APPROVED => Labels::getLabel('LBL_APPROVED', $langId),
+            static::CANCELLATION_REQUEST_STATUS_DECLINED => Labels::getLabel('LBL_DECLINED', $langId),
         );
     }
 

@@ -114,7 +114,7 @@ class BrandsController extends AdminBaseController
 
         if ($brand_id == 0) {
             $record = Brand::getAttributesByIdentifier($post['brand_identifier']);
-            if ($record['brand_deleted'] == applicationConstants::YES) {
+            if (!empty($record) && $record['brand_deleted'] == applicationConstants::YES) {
                 $brand_id = $record['brand_id'];
                 $data['brand_deleted'] = applicationConstants::NO;
             }

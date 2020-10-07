@@ -236,7 +236,7 @@ class SellerOrdersController extends AdminBaseController
             array(
                 'ops.*', 'order_id', 'order_payment_status', 'order_pmethod_id', 'order_tax_charged', 'order_date_added', 'op_id', 'op_qty', 'op_unit_price', 'op_selprod_user_id', 'op_invoice_number', 'IFNULL(orderstatus_name, orderstatus_identifier) as orderstatus_name', 'ou.user_name as buyer_user_name', 'ouc.credential_username as buyer_username', 'plugin_code', 'IFNULL(plugin_name, IFNULL(plugin_identifier, "Wallet")) as plugin_name', 'op_commission_charged', 'op_qty', 'op_commission_percentage', 'ou.user_name as buyer_name', 'ouc.credential_username as buyer_username', 'ouc.credential_email as buyer_email', 'ou.user_phone as buyer_phone', 'op.op_shop_owner_name', 'op.op_shop_owner_username', 'op_l.op_shop_name', 'op.op_shop_owner_email', 'op.op_shop_owner_phone',
                 'op_selprod_title', 'op_product_name', 'op_brand_name', 'op_selprod_options', 'op_selprod_sku', 'op_product_model', 'op_product_type',
-                'op_shipping_duration_name', 'op_shipping_durations', 'op_status_id', 'op_refund_qty', 'op_refund_amount', 'op_refund_commission', 'op_other_charges', 'optosu.optsu_user_id', 'ops.opshipping_by_seller_user_id', 'op_tax_collected_by_seller', 'order_is_wallet_selected', 'order_reward_point_used', 'op_product_tax_options', 'ops.opshipping_type', 'opship.*'
+                'op_shipping_duration_name', 'op_shipping_durations', 'op_status_id', 'op_refund_qty', 'op_refund_amount', 'op_refund_commission', 'op_other_charges', 'optosu.optsu_user_id', 'ops.opshipping_by_seller_user_id', 'op_tax_collected_by_seller', 'order_is_wallet_selected', 'order_reward_point_used', 'op_product_tax_options', 'ops.opshipping_fulfillment_type', 'opship.*'
             )
         );
         $srch->addCondition('op_id', '=', $op_id);
@@ -248,7 +248,7 @@ class SellerOrdersController extends AdminBaseController
             CommonHelper::redirectUserReferer();
         }
         
-        if($opRow['opshipping_type'] == OrderProduct::TYPE_SHIP){
+        if($opRow['opshipping_fulfillment_type'] == Shipping::FULFILMENT_SHIP){
             /* ShipStation */
             $this->loadShippingService();
             $this->set('canShipByPlugin', (NULL !== $this->shippingService));
@@ -309,7 +309,7 @@ class SellerOrdersController extends AdminBaseController
             'tracking_number' => $opRow['opship_tracking_number']
         ];
         
-        if($opRow["opshipping_type"] == OrderProduct::TYPE_PICKUP){
+        if($opRow["opshipping_fulfillment_type"] == Shipping::FULFILMENT_PICKUP){
             $processingStatuses = array_diff($processingStatuses, (array) FatApp::getConfig("CONF_DEFAULT_SHIPPING_ORDER_STATUS"));
             $processingStatuses = array_diff($processingStatuses, (array) FatApp::getConfig("CONF_DEFAULT_DEIVERED_ORDER_STATUS"));
         }   
@@ -325,7 +325,7 @@ class SellerOrdersController extends AdminBaseController
 
         if (((strtolower($opRow['plugin_code']) == 'cashondelivery') || (in_array($opRow['op_status_id'], $allowedShippingUserStatuses))) && $this->canEdit && !$shippingHanldedBySeller && ($opRow['op_product_type'] == Product::PRODUCT_TYPE_PHYSICAL && $opRow['order_payment_status'] != Orders::ORDER_PAYMENT_CANCELLED)) {
             $displayShippingUserForm = true;
-            if($opRow["opshipping_type"] == OrderProduct::TYPE_PICKUP){
+            if($opRow["opshipping_fulfillment_type"] == Shipping::FULFILMENT_PICKUP){
                 $displayShippingUserForm = false;
             }
             $shippingUserFrm = $this->getShippingCompanyUserForm($displayShippingUserForm);

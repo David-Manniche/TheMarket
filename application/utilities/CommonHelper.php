@@ -907,7 +907,7 @@ class CommonHelper extends FatUtility
     public static function redirectUserReferer($returnUrl = false)
     {
         if (!defined('REFERER')) {
-            if (UrlHelper::getCurrUrl() == $_SERVER['HTTP_REFERER'] || empty($_SERVER['HTTP_REFERER'])) {
+            if (!isset($_SERVER['HTTP_REFERER']) || UrlHelper::getCurrUrl() == $_SERVER['HTTP_REFERER'] || empty($_SERVER['HTTP_REFERER'])) {
                 define('REFERER', UrlHelper::generateUrl('/'));
             } else {
                 define('REFERER', $_SERVER['HTTP_REFERER']);
