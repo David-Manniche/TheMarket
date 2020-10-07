@@ -188,8 +188,10 @@ $(document).ready(function () {
 
     setupRate = function (frm) {
         if (!$(frm).validate()) return;
+        $("input[name='btn_submit']").attr('disabled', 'disabled');
         var data = fcom.frmData(frm);
         fcom.updateWithAjax(fcom.makeUrl('shippingZoneRates', 'setup'), data, function (t) {
+            $("input[name='btn_submit']").removeAttr('disabled');
             var profileId = $('input[name="profile_id"]').val();
             searchZone(profileId);
             if (t.langId > 0) {
@@ -210,8 +212,10 @@ $(document).ready(function () {
 
     setupLangRate = function (frm) {
         if (!$(frm).validate()) return;
+        $("input[name='btn_submit']").attr('disabled', 'disabled');
         var data = fcom.frmData(frm);
         fcom.updateWithAjax(fcom.makeUrl('shippingZoneRates', 'langSetup'), data, function (t) {
+            $("input[name='btn_submit']").removeAttr('disabled');
             var profileId = $('input[name="profile_id"]').val();
             searchZone(profileId);
             if (t.langId > 0) {
