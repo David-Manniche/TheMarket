@@ -1230,10 +1230,10 @@ class ConfigurationsController extends AdminBaseController
                 $fld->htmlAfterField = "<small>Set the order status the customer's order considered completed to earn rewards points.</small>"; */
 
                 $fld = $frm->addTextBox(Labels::getLabel("LBL_Minimum_buying_value", $this->adminLangId), 'CONF_BUYING_IN_AN_YEAR_MIN_VALUE');
-                $fld->htmlAfterField = "<small>" . Labels::getLabel("LBL_User_get_this_reward_points_on_min_buying_value_in_an_year.", $this->adminLangId) . "</small>";
+                $fld->htmlAfterField = "<small>" . Labels::getLabel("LBL_Min_buying_value_in_an_year_to_get_reward_points", $this->adminLangId) . "</small>";
 
                 $fld = $frm->addTextBox(Labels::getLabel("LBL_Reward_Points", $this->adminLangId), 'CONF_BUYING_IN_AN_YEAR_REWARD_POINTS');
-                $fld->htmlAfterField = "<small>" . Labels::getLabel("LBL_User_get_this_reward_points_on_his_birthday.", $this->adminLangId) . "</small>";
+                $fld->htmlAfterField = "<small>" . Labels::getLabel("LBL_User_get_this_reward_points_on_min_buying_value_in_an_year", $this->adminLangId) . "</small>";
 
                 $fld = $frm->addTextBox(Labels::getLabel("LBL_Reward_Points_Validity", $this->adminLangId), 'CONF_BUYING_IN_AN_YEAR_REWARD_POINTS_VALIDITY');
                 $fld->htmlAfterField = "<small>" . Labels::getLabel("LBL_Reward_Points_validity_in_days_from_the_date_of_credit", $this->adminLangId) . "</small>";

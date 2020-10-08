@@ -177,6 +177,7 @@ Bugs:
     => 043869 - Admin >> manage volume discount >> if there is no entry then "no record found " should get display just like others.
     => 043867 - Admin >> special price >> when we edit special price then discount percentage should get display under special price field.
     => 043584 - admin> categories> right side> product count in bubble is not listing properly 
+    => 043943 - Admin >> settings >> Reward point setting>> single label being used for two different reward point fields.
 
 Enhancements:
     => Tax module upgrade
