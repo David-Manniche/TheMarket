@@ -3471,7 +3471,7 @@ class SellerController extends SellerBaseController
 
         $onOffArr = applicationConstants::getOnOffArr($this->siteLangId);
 
-        $frm->addSelectBox(Labels::getLabel('Lbl_Display_Status', $this->siteLangId), 'shop_supplier_display_status', $onOffArr, '', array(), '');
+        $frm->addSelectBox(Labels::getLabel('Lbl_Display_Status', $this->siteLangId), 'shop_supplier_display_status', $onOffArr);
 
         /* $fld = $frm->addTextBox(Labels::getLabel('LBL_Free_Shipping_On', $this->siteLangId), 'shop_free_ship_upto');
         $fld->requirements()->setInt();
@@ -3486,7 +3486,7 @@ class SellerController extends SellerBaseController
         $fld->requirements()->setPositive();
 
         $fulFillmentArr = Shipping::getFulFillmentArr($this->siteLangId);
-        $frm->addSelectBox(Labels::getLabel('LBL_FULFILLMENT_METHOD', $this->siteLangId), 'shop_fulfillment_type', $fulFillmentArr, applicationConstants::NO, array(), '');
+        $frm->addSelectBox(Labels::getLabel('LBL_FULFILLMENT_METHOD', $this->siteLangId), 'shop_fulfillment_type', $fulFillmentArr, applicationConstants::NO);
 
         /* if($shop_id > 0){
           $fld = $frm->addButton(Labels::getLabel('Lbl_Logo',$this->siteLangId),'shop_logo',Labels::getLabel('LBL_Upload_File',$this->siteLangId),

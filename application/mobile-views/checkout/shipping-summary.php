@@ -4,23 +4,22 @@ $productItems = [];
 $count = 0;
 if (Shipping::FULFILMENT_PICKUP == $fulfillmentType) {
     ksort($shippingRates);
-    $items = [];
+    $productItems[$count] = [];
     $levelNo = 0;
     foreach ($shippingRates as $pickUpBy => $levelItems) {
-        $items = &$productItems[$count];
 
         if (isset($levelItems['products']) && count($levelItems['products']) > 0 && $pickUpBy == 0) {
             $productData = current($levelItems['products']);
-            $items['title'] =  ($pickUpBy == Shipping::LEVEL_SHOP) ? $productData['shop_name'] : FatApp::getConfig('CONF_WEBSITE_NAME_' . $siteLangId, null, '');
-            $items['pickup_by'] = $pickUpBy;
+            $productItems[$count]['title'] =  ($pickUpBy == Shipping::LEVEL_SHOP) ? $productData['shop_name'] : FatApp::getConfig('CONF_WEBSITE_NAME_' . $siteLangId, null, '');
+            $productItems[$count]['pickup_by'] = $pickUpBy;
             if (!empty($levelItems['pickup_address'])) {
-                $items['pickup_address'] = $levelItems['pickup_address'];
+                $productItems[$count]['pickup_address'] = $levelItems['pickup_address'];
             }
 
             if (count($levelItems['pickup_options']) > 0) {
-                $items['pickup_options'] = $levelItems['pickup_options'];
+                $productItems[$count]['pickup_addresses'] = $levelItems['pickup_options'];
             } else {
-                $items['pickup_options'] = [];
+                $productItems[$count]['pickup_addresses'] = [];
             }
         }
 
@@ -28,21 +27,21 @@ if (Shipping::FULFILMENT_PICKUP == $fulfillmentType) {
             foreach ($levelItems['products'] as $product) {
                 if ($levelNo != $pickUpBy) {
                     if (count($levelItems['products']) > 0  && $pickUpBy != 0) {
-                        $items['title'] = $product['shop_name'];
-                        $items['pickup_by'] = $pickUpBy;
+                        $productItems[$count]['title'] = $product['shop_name'];
+                        $productItems[$count]['pickup_by'] = $pickUpBy;
                         if (!empty($levelItems['pickup_address'])) {
-                            $items['pickup_address'] = $levelItems['pickup_address'];
+                            $productItems[$count]['pickup_address'] = $levelItems['pickup_address'];
                         }
 
                         if (count($levelItems['pickup_options']) > 0) {
-                            $items['pickup_options'] = $levelItems['pickup_options'];
+                            $productItems[$count]['pickup_addresses'] = $levelItems['pickup_options'];
                         } else {
-                            $items['pickup_options'] = [];
+                            $productItems[$count]['pickup_addresses'] = [];
                         }
                     }
                 }
                 $levelNo = $pickUpBy;
-                $items['products'][] = $product;
+                $productItems[$count]['products'][] = $product;
 
                 if (isset($levelItems['products']) && count($levelItems['products']) == 1) {
                     $count++;
@@ -54,10 +53,10 @@ if (Shipping::FULFILMENT_PICKUP == $fulfillmentType) {
 
             if (isset($levelItems['digital_products']) && count($levelItems['digital_products']) > 0) {
                 foreach ($levelItems['digital_products'] as $product) {
-                    $items['title'] = $product['shop_name'];
-                    $items['pickup_address'] = [];
-                    $items['pickup_options'] = [];
-                    $items['products'][] = $product;
+                    $productItems[$count]['title'] = $product['shop_name'];
+                    $productItems[$count]['pickup_address'] = [];
+                    $productItems[$count]['pickup_addresses'] = [];
+                    $productItems[$count]['products'][] = $product;
                 }
                 $count++;
             }
@@ -70,33 +69,33 @@ if (Shipping::FULFILMENT_SHIP == $fulfillmentType) {
     if (array_key_exists(Shipping::BY_ADMIN, $shippingRates)) {
         ksort($shippingRates);
     }
-
+    $productItems[$count] = [];
     foreach ($shippingRates as $level => $levelItems) {
-        $items = &$productItems[$count];
+
 
         if (isset($levelItems['products']) && count($levelItems['products']) > 1 && $level != Shipping::LEVEL_PRODUCT) {
             $productData = current($levelItems['products']);
-            $items['title'] = ($level == Shipping::LEVEL_SHOP) ? $productData['shop_name'] : FatApp::getConfig('CONF_WEBSITE_NAME_' . $siteLangId, null, '');
+            $productItems[$count]['title'] = ($level == Shipping::LEVEL_SHOP) ? $productData['shop_name'] : FatApp::getConfig('CONF_WEBSITE_NAME_' . $siteLangId, null, '');
 
             if ($level != Shipping::LEVEL_PRODUCT) {
                 if (count($levelItems['rates']) > 0) {
-                    $items['rates']['code'] = current($levelItems['rates'])['code'];
+                    $productItems[$count]['rates']['code'] = current($levelItems['rates'])['code'];
                     foreach ($levelItems['rates'] as $key => $shippingRate) {
                         if (!empty($orderShippingData)) {
                             foreach ($orderShippingData as $shipdata) {
                                 if ($shipdata['opshipping_code'] == $name && ($key == $shipdata['opshipping_carrier_code'] . "|" . $shipdata['opshipping_label'] || $key == $shipdata['opshipping_rate_id'])) {
-                                    $items['rates']['selected'] = $key;
+                                    $productItems[$count]['rates']['selected'] = $key;
                                     break;
                                 }
                             }
                         }
-                        $items['rates']['data'][] = [
+                        $productItems[$count]['rates']['data'][] = [
                             'title' => $shippingRate['title'],
                             'cost' => $shippingRate['cost'],
                         ];
                     }
                 } else {
-                    $items['rates']['data'] = [];
+                    $productItems[$count]['rates']['data'] = [];
                 }
             }
         }
@@ -104,59 +103,62 @@ if (Shipping::FULFILMENT_SHIP == $fulfillmentType) {
         if (isset($levelItems['products'])) {
             foreach ($levelItems['products'] as $product) {
                 if (count($levelItems['products']) == 1 && count($levelItems['rates']) > 0 && $level != Shipping::LEVEL_PRODUCT) {
-                    $items['title'] = $product['shop_name'];
+                    $productItems[$count]['title'] = $product['shop_name'];
                     if (count($levelItems['rates']) > 0) {
-                        $items['rates']['code'] =  current($levelItems['rates'])['code'];
+                        $productItems[$count]['rates']['code'] =  current($levelItems['rates'])['code'];
 
                         foreach ($levelItems['rates'] as $key => $shippingRate) {
                             if (!empty($orderShippingData)) {
                                 foreach ($orderShippingData as $shipdata) {
                                     if ($shipdata['opshipping_code'] == $name && ($key == $shipdata['opshipping_carrier_code'] . "|" . $shipdata['opshipping_label'] || $key == $shipdata['opshipping_rate_id'])) {
-                                        $items['rates']['selected'] = $key;
+                                        $productItems[$count]['rates']['selected'] = $key;
                                         break;
                                     }
                                 }
                             }
 
-                            $items['rates']['data'][] = [
+                            $productItems[$count]['rates']['data'][] = [
                                 'title' => $shippingRate['title'],
                                 'cost' => $shippingRate['cost'],
                             ];
                         }
                     } elseif ($product['product_type'] == Product::PRODUCT_TYPE_PHYSICAL) {
-                        $items['rates']['data'] = [];
+                        $productItems[$count]['rates']['data'] = [];
                     }
                 }
 
                 if ($level == Shipping::LEVEL_PRODUCT && isset($levelItems['rates'][$product['selprod_id']])) {
-                    $count++;
-                    $items['title'] = $product['shop_name'];
+                    if (!empty($productItems[$count])) {
+                        $count++;
+                    }
+
+                    $productItems[$count]['title'] = $product['shop_name'];
 
                     $priceListCount = count($levelItems['rates'][$product['selprod_id']]);
                     if ($priceListCount > 0) {
-                        $items['rates']['code'] =  current($levelItems['rates'][$product['selprod_id']])['code'];
+                        $productItems[$count]['rates']['code'] =  current($levelItems['rates'][$product['selprod_id']])['code'];
 
                         foreach ($levelItems['rates'][$product['selprod_id']] as $key => $shippingRate) {
                             if (!empty($orderShippingData)) {
                                 foreach ($orderShippingData as $shipdata) {
                                     if ($shipdata['opshipping_code'] == $name && ($key == $shipdata['opshipping_carrier_code'] . "|" . $shipdata['opshipping_label'] || $key == $shipdata['opshipping_rate_id'])) {
-                                        $items['rates']['selected'] = $key;
+                                        $productItems[$count]['rates']['selected'] = $key;
                                         break;
                                     }
                                 }
                             }
 
-                            $items['rates']['data'][] = [
+                            $productItems[$count]['rates']['data'][] = [
                                 'title' => $shippingRate['title'],
                                 'cost' => $shippingRate['cost'],
                             ];
                         }
                     } elseif ($product['product_type'] == Product::PRODUCT_TYPE_PHYSICAL) {
-                        $items['rates']['data'] = [];
+                        $productItems[$count]['rates']['data'] = [];
                     }
                 }
 
-                $items['products'][] = $product;
+                $productItems[$count]['products'][] = $product;
 
                 if (isset($levelItems['products']) && count($levelItems['products']) == 1) {
                     $count++;
@@ -170,17 +172,13 @@ if (Shipping::FULFILMENT_SHIP == $fulfillmentType) {
 
         if (isset($levelItems['digital_products']) && count($levelItems['digital_products']) > 0) {
             foreach ($levelItems['digital_products'] as $product) {
-                $items['title'] = $product['shop_name'];
-                $items['rates']['code'] = '';
-                $items['products'][] = $product;
+                $productItems[$count]['title'] = $product['shop_name'];
+                $productItems[$count]['rates']['code'] = '';
+                $productItems[$count]['products'][] = $product;
             }
             $count++;
         }
     }
-}
-
-if (!empty($cartSummary) && array_key_exists('cartDiscounts', $cartSummary)) {
-    $cartSummary['cartDiscounts'] = !empty($cartSummary['cartDiscounts']) ? $cartSummary['cartDiscounts'] : (object) array();
 }
 
 $data = [
@@ -191,6 +189,7 @@ $data = [
     'productItems' => $productItems,
 ];
 
+require_once(CONF_THEME_PATH . 'cart/price-detail.php');
 
 /* if (!empty($cartSummary) && array_key_exists('cartDiscounts', $cartSummary)) {
     $cartSummary['cartDiscounts'] = !empty($cartSummary['cartDiscounts']) ? $cartSummary['cartDiscounts'] : (object)array();
