@@ -801,3 +801,5 @@ DELETE FROM `tbl_language_labels` WHERE `label_key` LIKE 'LBL_This_is_the_applic
 
 ALTER TABLE `tbl_shops` ADD `shop_invoice_prefix` VARCHAR(20) NOT NULL AFTER `shop_phone`, ADD `shop_invoice_suffix` BIGINT(15) NOT NULL AFTER `shop_invoice_prefix`;
 ALTER TABLE `tbl_shop_specifics` ADD `shop_invoice_codes` VARCHAR(255) NOT NULL AFTER `shop_cancellation_age`;
+
+-- -------------TV-9.2.1.20201008-------------------
