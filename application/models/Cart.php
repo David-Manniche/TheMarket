@@ -260,7 +260,7 @@ class Cart extends FatModel
                     $fulfilmentType =  $this->SYSTEM_ARR['shopping_cart']['checkout_type'];
                 }
 
-                if ($this->valdateCheckoutType && isset($fulfilmentType) && $sellerProductRow['selprod_fulfillment_type'] != Shipping::FULFILMENT_ALL && $sellerProductRow['selprod_fulfillment_type'] != $fulfilmentType) {
+                if ($this->valdateCheckoutType && isset($fulfilmentType) && $fulfilmentType > 0 && $sellerProductRow['selprod_fulfillment_type'] != Shipping::FULFILMENT_ALL && $sellerProductRow['selprod_fulfillment_type'] != $fulfilmentType) {
                     unset($this->products[$key]);
                     continue;
                 }
@@ -377,7 +377,7 @@ class Cart extends FatModel
                         $fulfilmentType =  $this->SYSTEM_ARR['shopping_cart']['checkout_type'];
                     }
 
-                    if ($this->valdateCheckoutType && isset($fulfilmentType) && $sellerProductRow['selprod_fulfillment_type'] != Shipping::FULFILMENT_ALL && $sellerProductRow['selprod_fulfillment_type'] != $fulfilmentType) {
+                    if ($this->valdateCheckoutType && isset($fulfilmentType) && $fulfilmentType > 0 && $sellerProductRow['selprod_fulfillment_type'] != Shipping::FULFILMENT_ALL && $sellerProductRow['selprod_fulfillment_type'] != $fulfilmentType) {
                         unset($this->products[$key]);
                         continue;
                     }
@@ -1151,7 +1151,7 @@ class Cart extends FatModel
             'taxOptions' => $taxOptions,
             'prodTaxOptions' => $prodTaxOptions,
         );
-        
+
         return $cartSummary;
     }
 
