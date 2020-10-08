@@ -186,6 +186,7 @@ Bugs:
     => 043869 - Admin >> manage volume discount >> if there is no entry then "no record found " should get display just like others.
     => 043867 - Admin >> special price >> when we edit special price then discount percentage should get display under special price field.
     => 043566 - when new language is added and any page from footer or header (cms) is accessed then language changes itself
+    => 043946 - Seller >> special price >> select all entries >> search something random >> if there is no data then remove button should get disappear. 2. if we clear the search then "remove " button should not be there because all entries are not selected now.
 
 Enhancements:
     => Tax module upgrade
