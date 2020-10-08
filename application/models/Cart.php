@@ -7,7 +7,7 @@ class Cart extends FatModel
     private $shippingService;
     private $cartCache;
     private $valdateCheckoutType;
-    private $fulfilmentType;
+    private $fulfilmentType = 0;
 
     public const DB_TBL = 'tbl_user_cart';
     public const DB_TBL_PREFIX = 'usercart_';
@@ -323,9 +323,9 @@ class Cart extends FatModel
 
             $is_cod_enabled = true;
             if (FatApp::getConfig('CONF_TAX_AFTER_DISOCUNT', FatUtility::VAR_INT, 0)) {
-                $cartDiscounts = static::getCouponDiscounts();
+                $cartDiscounts = $this->getCouponDiscounts();
             }
-            
+
             foreach ($this->SYSTEM_ARR['cart'] as $key => $quantity) {
                 $selprod_id = 0;
                 $prodgroup_id = 0;
@@ -376,7 +376,7 @@ class Cart extends FatModel
                     if (isset($this->SYSTEM_ARR['shopping_cart']['checkout_type'])) {
                         $fulfilmentType =  $this->SYSTEM_ARR['shopping_cart']['checkout_type'];
                     }
-                    
+
                     if ($this->valdateCheckoutType && isset($fulfilmentType) && $sellerProductRow['selprod_fulfillment_type'] != Shipping::FULFILMENT_ALL && $sellerProductRow['selprod_fulfillment_type'] != $fulfilmentType) {
                         unset($this->products[$key]);
                         continue;
@@ -1029,11 +1029,11 @@ class Cart extends FatModel
         $cartTotalAfterBatch = 0;
         $orderPaymentGatewayCharges = 0;
         $cartTaxTotal = 0;
-        $cartDiscounts = self::getCouponDiscounts();
+        $cartDiscounts = $this->getCouponDiscounts();
 
         $totalSiteCommission = 0;
         $orderNetAmount = 0;
-        $cartRewardPoints = self::getCartRewardPoint();
+        $cartRewardPoints = $this->getCartRewardPoint();
         $cartVolumeDiscount = 0;
 
         $isCodEnabled = true;
@@ -1151,20 +1151,20 @@ class Cart extends FatModel
             'taxOptions' => $taxOptions,
             'prodTaxOptions' => $prodTaxOptions,
         );
-
+        
         return $cartSummary;
     }
 
     public function getCouponDiscounts()
     {
         $couponObj = new DiscountCoupons();
-        if (!self::getCartDiscountCoupon()) {
+        if (!$this->getCartDiscountCoupon()) {
             return false;
         }
 
         $orderId = isset($_SESSION['order_id']) ? $_SESSION['order_id'] : '';
-        $couponInfo = $couponObj->getValidCoupons($this->cart_user_id, $this->cart_lang_id, self::getCartDiscountCoupon(), $orderId);
-        $cartSubTotal = self::getSubTotal();
+        $couponInfo = $couponObj->getValidCoupons($this->cart_user_id, $this->cart_lang_id, $this->getCartDiscountCoupon(), $orderId);
+        $cartSubTotal = $this->getSubTotal();
 
         $couponData = array();
 
@@ -1923,9 +1923,8 @@ class Cart extends FatModel
         return true;
     }
 
-    public function setFulfilmentType($type)
+    public function setFulfilmentType(int $type)
     {
-        $type = FatUtility::int($type);
         $this->fulfilmentType = $type;
     }
 

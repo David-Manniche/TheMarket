@@ -186,13 +186,13 @@ class AddressesController extends LoggedUserController
     }
 
     public function getPickupAddresses()
-    {   
+    {
         $pickUpBy = FatApp::getPostedData('pickUpBy', FatUtility::VAR_INT, -1);
         $recordId = FatApp::getPostedData('recordId', FatUtility::VAR_INT, -1);
         $addrId = FatApp::getPostedData('addrId', FatUtility::VAR_INT, 0);
         $slotId = FatApp::getPostedData('slotId', FatUtility::VAR_INT, 0);
         $slotDate = FatApp::getPostedData('slotDate', FatUtility::VAR_STRING, '');
-        if($pickUpBy < 0 || $recordId < 0){
+        if ($pickUpBy < 0 || $recordId < 0) {
             $msg = Labels::getLabel('LBL_Invalid_request', $this->siteLangId);
             if (true === MOBILE_APP_API_CALL) {
                 FatUtility::dieJsonError($msg);
@@ -215,7 +215,7 @@ class AddressesController extends LoggedUserController
         $this->_template->addJs(array('js/jquery.datetimepicker.js'));
         $this->_template->render(false, false);
     }
-    
+
     public function getTimeSlotsByAddressAndDate(int $addressId = 0, string $selectedDate = '', int $pickUpBy = -1, bool $return = false)
     {
         $addressId = FatApp::getPostedData('addressId', FatUtility::VAR_INT, $addressId);
@@ -239,7 +239,7 @@ class AddressesController extends LoggedUserController
                 $value['tslot_to_time'] = date("H:i", strtotime($value['tslot_to_time']));
             }
         });
-        
+
         $this->set('timeSlots', $timeSlots);
         $this->set('selectedDate', $selectedDate);
         $this->set('pickUpBy', $pickUpBy);
@@ -248,7 +248,7 @@ class AddressesController extends LoggedUserController
             $this->_template->render(false, false, 'addresses/time-slots.php');
         }
     }
-    
+
     public function slotDaysByAddr(int $addrId, int $pickUpBy = -1)
     {
         if (1 > $addrId) {
