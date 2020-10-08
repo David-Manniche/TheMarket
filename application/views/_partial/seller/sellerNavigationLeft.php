@@ -10,7 +10,7 @@
 					<?php endif; ?>
 
 					<?php if( $link['nlink_type'] == NavigationLinks::NAVLINK_TYPE_EXTERNAL_PAGE ):
-					$url = str_replace('{SITEROOT}', CONF_WEBROOT_URL, $link['nlink_url']) ;
+					$url = str_replace('{SITEROOT}', UrlHelper::generateUrl(), $link['nlink_url']) ;
 					$url = CommonHelper::processURLString( $url );
 					?>
 					<li><a target="<?php echo $link['nlink_target']; ?>" href="<?php echo $url; ?>"><?php echo $link['nlink_caption']; ?></a></li>
