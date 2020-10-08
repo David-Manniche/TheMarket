@@ -4,13 +4,13 @@ $data = empty($data) ? array() : $data;
 $data = array_merge($commonData, $data);
 
 if (applicationConstants::ON != $status) {
-    $msg = Labels::getLabel('MSG_No_record_found', $siteLangId);
+    $msg = Labels::getLabel('MSG_NO_RECORD_FOUND', $siteLangId);
     $status = applicationConstants::OFF;
 }
 
 $response = array(
     'status' => $status,
-    'msg' => !empty($msg) ? $msg : Labels::getLabel('MSG_Success', $siteLangId),
+    'msg' => !empty($msg) ? $msg : Labels::getLabel('MSG_SUCCESS', $siteLangId),
     'data' => $data
 );
 
