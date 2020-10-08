@@ -501,7 +501,12 @@ class CartController extends MyAppController
             $this->set('msg', Labels::getLabel("MSG_cart_updated_successfully", $this->siteLangId));
         }
         if (true === MOBILE_APP_API_CALL) {
-            $this->set('data', array('cartItemsCount' => $cartObj->countProducts()));
+            $fulfilmentType = FatApp::getPostedData('fulfilmentType', FatUtility::VAR_INT, Shipping::FULFILMENT_SHIP);
+            $productsArr = $cartObj->getProducts($this->siteLangId);
+            $cartObj->setFulfilmentType($fulfilmentType);
+            $cartSummary = $cartObj->getCartFinancialSummary($this->siteLangId);
+            $this->set('products', $productsArr);
+            $this->set('cartSummary', $cartSummary);
             $this->_template->render();
         }
         $this->_template->render(false, false, 'json-success.php');

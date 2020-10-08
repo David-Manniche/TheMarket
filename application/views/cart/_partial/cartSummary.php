@@ -34,7 +34,8 @@
             <span class="label"><?php echo Labels::getLabel('LBL_Discount', $siteLangId); ?></span> <span class="ml-auto"><?php echo CommonHelper::displayMoneyFormat($cartSummary['cartDiscounts']['coupon_discount_total']); ?></span>
         </li>
     <?php } ?>
-    <?php $netChargeAmt = $cartSummary['cartTotal'] + $cartSummary['cartTaxTotal'] - ((0 < $cartSummary['cartVolumeDiscount']) ? $cartSummary['cartVolumeDiscount'] : 0);
+    <?php 
+    $netChargeAmt = $cartSummary['cartTotal'] + $cartSummary['cartTaxTotal'] - ((0 < $cartSummary['cartVolumeDiscount']) ? $cartSummary['cartVolumeDiscount'] : 0);
     $netChargeAmt = $netChargeAmt - ((isset($cartSummary['cartDiscounts']['coupon_discount_total']) && 0 < $cartSummary['cartDiscounts']['coupon_discount_total']) ? $cartSummary['cartDiscounts']['coupon_discount_total'] : 0);
     if (isset($cartSummary['taxOptions']) && !empty($cartSummary['taxOptions'])) {
         foreach ($cartSummary['taxOptions'] as $taxName => $taxVal) {

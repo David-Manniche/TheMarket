@@ -72,8 +72,8 @@ if (0 < $coupon_discount_total) {
 }
 
 if (0 < $cartTaxTotal) {
-    if (isset($cartSummary['taxOptions']) && !empty($cartSummary['taxOptions'])) { 
-        foreach($cartSummary['taxOptions'] as $taxName => $taxVal){
+    if (isset($cartSummary['taxOptions']) && !empty($cartSummary['taxOptions'])) {
+        foreach ($cartSummary['taxOptions'] as $taxName => $taxVal) {
             $priceDetail['priceDetail'][] = array(
                 'key' => $taxVal['title'],
                 'value' => CommonHelper::displayMoneyFormat($taxVal['value'])

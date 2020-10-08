@@ -17,14 +17,6 @@ switch ($fulfillmentType) {
         break;
 }
 
-if (Shipping::FULFILMENT_PICKUP == $fulfillmentType) {
-    require_once(CONF_THEME_PATH . 'checkout/fulfillment-pickup-summary.php');
-}
-
-if (Shipping::FULFILMENT_SHIP == $fulfillmentType) {
-    require_once(CONF_THEME_PATH . 'checkout/fulfillment-ship-summary.php');
-}
-
 $data = [
     'fulfillmentType' => $fulfillmentType,
     'hasPhysicalProd' => $hasPhysicalProd,
