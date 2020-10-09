@@ -170,7 +170,7 @@ class SubscriptionCart extends FatModel
         $susbscriptions = $this->getSubscription($this->scart_lang_id);
 
         foreach ($susbscriptions as $subscription) {
-            $cartTotal = $subscription[SellerPackagePlans::DB_TBL_PREFIX . 'price'];
+            $cartTotal = isset($subscription[SellerPackagePlans::DB_TBL_PREFIX . 'price']) ? $subscription[SellerPackagePlans::DB_TBL_PREFIX . 'price'] : 0;
         }
 
 
@@ -196,7 +196,7 @@ class SubscriptionCart extends FatModel
         $orderNetAmount = 0;
         if (is_array($susbscriptions) && count($susbscriptions)) {
             foreach ($susbscriptions as $susbscription) {
-                $cartTotal += $susbscription[SellerPackagePlans::DB_TBL_PREFIX . 'price'];
+                $cartTotal += isset($susbscription[SellerPackagePlans::DB_TBL_PREFIX . 'price']) ? $susbscription[SellerPackagePlans::DB_TBL_PREFIX . 'price'] : 0;
             }
         }
 
