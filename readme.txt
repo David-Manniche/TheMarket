@@ -192,6 +192,7 @@ Bugs:
     => 043946 - Seller >> special price >> select all entries >> search something random >> if there is no data then remove button should get disappear. 2. if we clear the search then "remove " button should not be there because all entries are not selected now.
     => 043947 - Manage coupon >> if coupon is of percentage type then admin should not be able to enter more then 100 % in discount value 
     => 043991 - On thankyou page >> when we choose "pay at pickup " as payment gateway then error gets display on thankyou, order details page .
+    => 043994 - Seller >> my subscription >> some error is there. 
 
 Enhancements:
     => Tax module upgrade
