@@ -201,6 +201,7 @@ Bugs:
     => 043996 - Seller/ admin >> some error should get display if we didn't select any slot.
     => 043995 - Seller >> pickup address >> If there is no slot selected then some error is there on edit address.
     => 043992 - On Checkout >> when we select pickup address then label should not be "select address".
+    => 043988 - Seller >> on shipping profile >> products >> if we click on "save changes " without entered product then blank entry gets display there 
 
 Enhancements:
     => Tax module upgrade
