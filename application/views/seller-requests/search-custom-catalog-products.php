@@ -4,7 +4,7 @@ $this->includeTemplate('seller-requests/_partial/requests-navigation.php', $vari
 <?php
 defined('SYSTEM_INIT') or die('Invalid Usage.');
 $arr_flds = array(
-    'listserial'=>'Sr.',
+    'listserial'=>'#',
     'product_identifier' => Labels::getLabel('LBL_Product', $siteLangId),
     'preq_added_on' => Labels::getLabel('LBL_Added_on', $siteLangId),
     'preq_requested_on' => Labels::getLabel('LBL_Requested_on', $siteLangId),

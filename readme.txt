@@ -185,6 +185,9 @@ Bugs:
     => 043870 - Admin >> manage volume discount >> if we enter qty more then stock value then that value should get display in error message .
     => 043869 - Admin >> manage volume discount >> if there is no entry then "no record found " should get display just like others.
     => 043867 - Admin >> special price >> when we edit special price then discount percentage should get display under special price field.
+    => 043584 - admin> categories> right side> product count in bubble is not listing properly 
+    => 043943 - Admin >> settings >> Reward point setting>> single label being used for two different reward point fields.
+    -- -------------TV-9.2.1.20201008-------------------
     => 043566 - when new language is added and any page from footer or header (cms) is accessed then language changes itself
     => 043946 - Seller >> special price >> select all entries >> search something random >> if there is no data then remove button should get disappear. 2. if we clear the search then "remove " button should not be there because all entries are not selected now.
     => 043947 - Manage coupon >> if coupon is of percentage type then admin should not be able to enter more then 100 % in discount value 
