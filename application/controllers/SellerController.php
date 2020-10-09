@@ -3670,7 +3670,7 @@ class SellerController extends SellerBaseController
             $manualShipUnReqObj->setRequired(false);
             $manualShipReqObj = new FormFieldRequirement('manual_shipping', Labels::getLabel('LBL_SELF_SHIPPING', $this->siteLangId));
             $manualShipReqObj->setRequired(true);
-            
+
             $fld->requirements()->addOnChangerequirementUpdate(FatApp::getConfig("CONF_DEFAULT_SHIPPING_ORDER_STATUS"), 'eq', 'manual_shipping', $manualShipReqObj);
             $fld->requirements()->addOnChangerequirementUpdate(FatApp::getConfig("CONF_DEFAULT_SHIPPING_ORDER_STATUS"), 'ne', 'manual_shipping', $manualShipUnReqObj);
 
@@ -5285,7 +5285,7 @@ class SellerController extends SellerBaseController
                 $timeSlots = $timeSlot->timeSlotsByAddrId($addrId);
 
                 $timeSlotsRow = current($timeSlots);
-                $availability = $timeSlotsRow['tslot_availability'];
+                $availability = isset($timeSlotsRow['tslot_availability']) ? $timeSlotsRow['tslot_availability'] : $availability;
                 if ($availability == TimeSlot::DAY_ALL_DAYS) {
                     $data['tslot_from_all'] = date('H:i', strtotime($timeSlotsRow['tslot_from_time']));
                     $data['tslot_to_all'] = date('H:i', strtotime($timeSlotsRow['tslot_to_time']));

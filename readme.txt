@@ -194,6 +194,7 @@ Bugs:
     => 043991 - On thankyou page >> when we choose "pay at pickup " as payment gateway then error gets display on thankyou, order details page .
     => 043994 - Seller >> my subscription >> some error is there. 
     => 043996 - Seller/ admin >> some error should get display if we didn't select any slot.
+    => 043995 - Seller >> pickup address >> If there is no slot selected then some error is there on edit address.
 
 Enhancements:
     => Tax module upgrade
