@@ -26,6 +26,21 @@ class SellerBaseController extends LoggedUserController
         }
         $_SESSION[UserAuthentication::SESSION_ELEMENT_NAME]['activeTab'] = 'S';
 
+        $plugin = new Plugin();
+        $keyName = $plugin->getDefaultPluginKeyName(Plugin::TYPE_SPLIT_PAYMENT_METHOD);
+        if (!empty($keyName) && 'StripeConnect' == $keyName && !in_array(strtolower($action), ['shopform', 'shop']) && !FatUtility::isAjaxCall()) {
+            $resp = User::getUserMeta(UserAuthentication::getLoggedUserId(), 'stripe_account_id');
+            if (empty($resp)) {
+                if (true === MOBILE_APP_API_CALL) {
+                    $msg = Labels::getLabel('MSG_PLEASE_CONFIGURE_STRIPE_ACCOUNT', $this->siteLangId);
+                    FatUtility::dieJsonError($msg);
+                } else {
+                    Message::addErrorMessage(Labels::getLabel('MSG_PLEASE_CONFIGURE_STRIPE_ACCOUNT', $this->siteLangId));
+                }
+                FatApp::redirectUser(UrlHelper::generateUrl('Seller', 'shop', [$keyName]));
+            }
+        }
+
         $this->set('bodyClass', 'is--dashboard');
     }
     
