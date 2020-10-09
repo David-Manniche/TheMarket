@@ -89,7 +89,7 @@ class SubscriptionCart extends FatModel
         $this->SYSTEM_ARR['subscription_cart'] = array();
         $this->SYSTEM_ARR['subscription_shopping_cart'] = array();
         $key = static::SUBSCRIPTION_CART_KEY_PREFIX_PRODUCT . $spplan_id;
-        $key = base64_encode(serialize($key));
+        $key = base64_encode(json_encode($key));
         $this->SYSTEM_ARR['subscription_cart'][$key] = 1;
         $this->updateUserSubscriptionCart();
 
@@ -189,10 +189,10 @@ class SubscriptionCart extends FatModel
         //$netTotalAfterDiscount = 0;
         $orderPaymentGatewayCharges = 0;
 
-        $cartDiscounts = self::getCouponDiscounts();
+        $cartDiscounts = $this->getCouponDiscounts();
 
-        $cartRewardPoints = self::getCartRewardPoint();
-        $cartAdjustableAmount = self::getAdjustableAmount();
+        $cartRewardPoints = $this->getCartRewardPoint();
+        $cartAdjustableAmount = $this->getAdjustableAmount();
         $orderNetAmount = 0;
         if (is_array($susbscriptions) && count($susbscriptions)) {
             foreach ($susbscriptions as $susbscription) {
@@ -232,8 +232,8 @@ class SubscriptionCart extends FatModel
     public function getCouponDiscounts()
     {
         $couponObj = new DiscountCoupons();
-        $couponInfo = $couponObj->getSubscriptionCoupon(self::getSubscriptionCartDiscountCoupon(), $this->scart_lang_id);
-        $cartSubTotal = self::getSubTotal();
+        $couponInfo = $couponObj->getSubscriptionCoupon($this->getSubscriptionCartDiscountCoupon(), $this->scart_lang_id);
+        $cartSubTotal = $this->getSubTotal();
 
         if (!empty($couponInfo)) {
             $discountTotal = 0;
@@ -498,6 +498,7 @@ class SubscriptionCart extends FatModel
             foreach ($this->SYSTEM_ARR['subscription_cart'] as $key => $quantity) {
                 $spplan_id = 0;
                 $sellerPlanRow = array();
+                // echo $key;die;
                 $keyDecoded = json_decode(base64_decode($key), true);
                 if (strpos($keyDecoded, static::SUBSCRIPTION_CART_KEY_PREFIX_PRODUCT) !== false) {
                     $spplan_id = str_replace(static::SUBSCRIPTION_CART_KEY_PREFIX_PRODUCT, '', $keyDecoded);

@@ -63,7 +63,8 @@ class SubscriptionCheckoutController extends LoggedUserController
         }
         $obj = new Extrapage();
         $headerData = $obj->getContentByPageType(Extrapage::CHECKOUT_PAGE_HEADER_BLOCK, $this->siteLangId);
-        $this->set('sCartSummary', $this->scartObj->getSubscriptionCartFinancialSummary($this->siteLangId));
+        $sCartSummary = $this->scartObj->getSubscriptionCartFinancialSummary($this->siteLangId);
+        $this->set('sCartSummary', $sCartSummary);
         $obj = new Extrapage();
         $pageData = $obj->getContentByPageType(Extrapage::CHECKOUT_PAGE_RIGHT_BLOCK, $this->siteLangId);
         $this->set('pageData', $pageData);
