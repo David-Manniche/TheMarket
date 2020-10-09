@@ -243,6 +243,7 @@ $toAllFld->setFieldTagAttribute('onChange', 'validateTimeFields()');
                                 $dayFld->developerTags['cbLabelAttributes'] = array('class' => 'checkbox');
                                 $dayFld->developerTags['cbHtmlAfterCheckbox'] = '<i class="input-helper"></i>';
                                 $dayFld->setFieldTagAttribute('onChange', 'displayFields(' . $i . ', this)');
+                                $dayFld->setFieldTagAttribute('class', 'slotDays-js');
 
                                 $addRowFld = $frm->getField('btn_add_row[' . $i . ']');
                                 $addRowFld->setFieldTagAttribute('onClick', 'addTimeSlotRow(' . $i . ')');

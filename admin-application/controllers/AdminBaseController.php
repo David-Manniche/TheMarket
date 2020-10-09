@@ -155,6 +155,7 @@ class AdminBaseController extends FatController
             'minimumOneLocationRequired' => Labels::getLabel('LBL_Minimum_one_location_is_required', $this->adminLangId),
             'confirmTransfer' => Labels::getLabel('LBL_CONFIRM_TRANSFER_?', $this->adminLangId),
             'invalidFromTime' => Labels::getLabel('LBL_PLEASE_SELECT_VALID_FROM_TIME', $this->adminLangId),
+            'selectTimeslotDay' => Labels::getLabel('LBL_ATLEAST_ONE_DAY_AND_TIMESLOT_NEEDS_TO_BE_CONFIGURED', $this->adminLangId),
         );
 
         $languages = Language::getAllNames(false);

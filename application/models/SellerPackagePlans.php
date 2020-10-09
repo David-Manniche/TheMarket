@@ -73,35 +73,47 @@ class SellerPackagePlans extends MyAppModel
     public static function getPlanPeriod($plan)
     {
         $subcriptionPeriodArr = self::getSubscriptionPeriods(CommonHelper::getLangId());
-        return ($plan[SellerPackagePlans::DB_TBL_PREFIX . 'interval'] > 1) ? $plan[SellerPackagePlans::DB_TBL_PREFIX . 'interval'] : '' . " " . Labels::getLabel("LBL_Per", CommonHelper::getLangId()) . " "
-        . $subcriptionPeriodArr[$plan[SellerPackagePlans::DB_TBL_PREFIX . 'frequency']];
+        $interval = isset($plan[SellerPackagePlans::DB_TBL_PREFIX . 'interval']) ? $plan[SellerPackagePlans::DB_TBL_PREFIX . 'interval'] : 0;
+        $frequency = isset($plan[SellerPackagePlans::DB_TBL_PREFIX . 'frequency']) ? $plan[SellerPackagePlans::DB_TBL_PREFIX . 'frequency'] : '';
+        $period = isset($subcriptionPeriodArr[$frequency]) ? $subcriptionPeriodArr[$frequency] : '';
+        return ($interval > 1) ? $interval : '' . " " . Labels::getLabel("LBL_Per", CommonHelper::getLangId()) . " " . $period;
     }
     public static function getPlanTrialPeriod($plan)
     {
         $subcriptionPeriodArr = self::getSubscriptionPeriods(CommonHelper::getLangId());
-        if ($plan[SellerPackagePlans::DB_TBL_PREFIX . 'trial_interval'] < 1) {
+        $interval = isset($plan[SellerPackagePlans::DB_TBL_PREFIX . 'trial_interval']) ? $plan[SellerPackagePlans::DB_TBL_PREFIX . 'trial_interval'] : 0;
+        if ($interval < 1) {
             return Labels::getLabel("LBL_N/A", CommonHelper::getLangId());
         }
-        return (($plan[SellerPackagePlans::DB_TBL_PREFIX . 'trial_interval'] > 0) ? $plan[SellerPackagePlans::DB_TBL_PREFIX . 'trial_interval'] : '') . " "
-        . $subcriptionPeriodArr[$plan[SellerPackagePlans::DB_TBL_PREFIX . 'trial_frequency']];
+        $frequency = isset($plan[SellerPackagePlans::DB_TBL_PREFIX . 'trial_frequency']) ? $plan[SellerPackagePlans::DB_TBL_PREFIX . 'trial_frequency'] : '';
+        $period = isset($subcriptionPeriodArr[$frequency]) ? $subcriptionPeriodArr[$frequency] : '';
+        return (($interval > 0) ? $interval : '') . " " . $period;
     }
     public static function getPlanPriceWithPeriod($plan, $price)
     {
         $subcriptionPeriodArr = self::getSubscriptionPeriods(CommonHelper::getLangId());
-        if ($plan[SellerPackagePlans::DB_TBL_PREFIX . 'frequency'] == SellerPackagePlans::SUBSCRIPTION_PERIOD_UNLIMITED) {
-            return CommonHelper::displayMoneyFormat($price) . " /  " . $subcriptionPeriodArr[$plan[SellerPackagePlans::DB_TBL_PREFIX . 'frequency']];
+        $frequency = isset($plan[SellerPackagePlans::DB_TBL_PREFIX . 'frequency']) ? $plan[SellerPackagePlans::DB_TBL_PREFIX . 'frequency'] : '';
+        if ($frequency == SellerPackagePlans::SUBSCRIPTION_PERIOD_UNLIMITED) {
+            $period = isset($subcriptionPeriodArr[$frequency]) ? $subcriptionPeriodArr[$frequency] : '';
+            return CommonHelper::displayMoneyFormat($price) . " /  " . $period;
         }
+        $type = isset($plan[SellerPackages::DB_TBL_PREFIX . 'type']) ? $plan[SellerPackages::DB_TBL_PREFIX . 'type'] : '';
+        $interval = isset($plan[SellerPackagePlans::DB_TBL_PREFIX . 'interval']) ? $plan[SellerPackagePlans::DB_TBL_PREFIX . 'interval'] : 0;
+        $frequency = isset($plan[SellerPackagePlans::DB_TBL_PREFIX . 'frequency']) ? $plan[SellerPackagePlans::DB_TBL_PREFIX . 'frequency'] : '';
+        $period = isset($subcriptionPeriodArr[$frequency]) ? $subcriptionPeriodArr[$frequency] : '';
 
-        $planText = ($plan[SellerPackages::DB_TBL_PREFIX . 'type'] == SellerPackages::PAID_TYPE) ? " /" . " " . Labels::getLabel("LBL_Per", CommonHelper::getLangId()) : Labels::getLabel("LBL_For", CommonHelper::getLangId());
-        return CommonHelper::displayMoneyFormat($price) . $planText . " " . (($plan[SellerPackagePlans::DB_TBL_PREFIX . 'interval'] > 0) ? $plan[SellerPackagePlans::DB_TBL_PREFIX . 'interval'] : '')
-        . "  " . $subcriptionPeriodArr[$plan[SellerPackagePlans::DB_TBL_PREFIX . 'frequency']];
+        $planText = ($type == SellerPackages::PAID_TYPE) ? " /" . " " . Labels::getLabel("LBL_Per", CommonHelper::getLangId()) : Labels::getLabel("LBL_For", CommonHelper::getLangId());
+        return CommonHelper::displayMoneyFormat($price) . $planText . " " . (($interval > 0) ? $interval : '') . "  " . $period;
     }
 
     public static function getCheapPlanPriceWithPeriod($plan, $price)
     {
         $subcriptionPeriodArr = self::getSubscriptionPeriods(CommonHelper::getLangId());
-        return CommonHelper::displayMoneyFormat($price) . " <br/>" . " " . Labels::getLabel("LBL_Per", CommonHelper::getLangId()) . " " . (($plan[SellerPackagePlans::DB_TBL_PREFIX . 'interval'] > 1) ? $plan[SellerPackagePlans::DB_TBL_PREFIX . 'interval'] : '')
-        . "  " . $subcriptionPeriodArr[$plan[SellerPackagePlans::DB_TBL_PREFIX . 'frequency']];
+        $interval = isset($plan[SellerPackagePlans::DB_TBL_PREFIX . 'interval']) ? $plan[SellerPackagePlans::DB_TBL_PREFIX . 'interval'] : 0;
+        $frequency = isset($plan[SellerPackagePlans::DB_TBL_PREFIX . 'frequency']) ? $plan[SellerPackagePlans::DB_TBL_PREFIX . 'frequency'] : '';
+        $period = isset($subcriptionPeriodArr[$frequency]) ? $subcriptionPeriodArr[$frequency] : '';
+        
+        return CommonHelper::displayMoneyFormat($price) . " <br/>" . " " . Labels::getLabel("LBL_Per", CommonHelper::getLangId()) . " " . (($interval > 1) ? $interval : '') . "  " . $period;
     }
     public static function getPlanByPackageId($spackageId = 0)
     {

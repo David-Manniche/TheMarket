@@ -519,6 +519,10 @@ $(document).on("change", ".state", function() {
 
     setPickupAddress = function(frm) {
         if (!$(frm).validate()) return;
+        if (1 > $(".slotDays-js:checked").length) {
+            $.mbsmessage(langLbl.selectTimeslotDay, true, 'alert--danger');
+            return false;
+        }
         var data = fcom.frmData(frm);
         fcom.updateWithAjax(fcom.makeUrl('Seller', 'setPickupAddress'), data, function(t) {
             pickupAddress();
