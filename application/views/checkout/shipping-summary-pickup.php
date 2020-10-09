@@ -63,13 +63,20 @@
                                     <?php } ?>
                                     <p class="time-txt"><i class="fas fa-calendar-day"></i><?php echo FatDate::format($address["time_slot_date"]) . ' ' . $fromTime . ' - ' . $toTime; ?></p>
                                 <?php } ?>
-
                             </div>
                             <div class="shipping-method js-slot-addr-<?php echo $pickUpBy; ?>" data-addr-id="<?php echo $seletedAddrId; ?>">
                                 <input type="hidden" name="slot_id[<?php echo $pickUpBy; ?>]" class="js-slot-id" data-level="<?php echo $pickUpBy; ?>" value="<?php echo $seletedSlotId; ?>">
                                 <input type="hidden" name="slot_date[<?php echo $pickUpBy; ?>]" class="js-slot-date" data-level="<?php echo $pickUpBy; ?>" value="<?php echo $seletedSlotDate; ?>">
                                 <?php if (count($levelItems['pickup_options']) > 0) { ?>
-                                    <a class="btn btn-secondary btn-sm pickupAddressBtn-js" href="javascript:void(0)" onclick="displayPickupAddress(<?php echo $pickUpBy; ?>, 0)"><?php echo Labels::getLabel('LBL_SELECT_PICKUP', $siteLangId); ?></a>
+                                    <a class="btn btn-secondary btn-sm pickupAddressBtn-js" href="javascript:void(0)" onclick="displayPickupAddress(<?php echo $pickUpBy; ?>, 0)">
+                                        <?php
+                                        if (!empty($levelItems['pickup_address'])) {
+                                            echo Labels::getLabel('LBL_CHANGE_PICKUP', $siteLangId);
+                                        } else {
+                                            echo Labels::getLabel('LBL_SELECT_PICKUP', $siteLangId);
+                                        }
+                                        ?>
+                                    </a>
                                 <?php } else {
                                     echo Labels::getLabel('MSG_NO_PICKUP_ADDRESS_CONFIGURED', $siteLangId);
                                 } ?>
@@ -117,7 +124,15 @@
                                             <input type="hidden" name="slot_id[<?php echo $pickUpBy; ?>]" class="js-slot-id" data-level="<?php echo $pickUpBy; ?>" value="<?php echo $seletedSlotId; ?>">
                                             <input type="hidden" name="slot_date[<?php echo $pickUpBy; ?>]" class="js-slot-date" data-level="<?php echo $pickUpBy; ?>" value="<?php echo $seletedSlotDate; ?>">
                                             <?php if (count($levelItems['pickup_options']) > 0) { ?>
-                                                <a class="btn btn-secondary btn-sm pickupAddressBtn-js" href="javascript:void(0)" onclick="displayPickupAddress(<?php echo $pickUpBy; ?>, <?php echo $product['shop_id']; ?>)"><?php echo Labels::getLabel('LBL_SELECT_PICKUP', $siteLangId); ?></a>
+                                                <a class="btn btn-secondary btn-sm pickupAddressBtn-js" href="javascript:void(0)" onclick="displayPickupAddress(<?php echo $pickUpBy; ?>, <?php echo $product['shop_id']; ?>)">
+                                                <?php
+                                                    if (!empty($levelItems['pickup_address'])) {
+                                                        echo Labels::getLabel('LBL_CHANGE_PICKUP', $siteLangId);
+                                                    } else {
+                                                        echo Labels::getLabel('LBL_SELECT_PICKUP', $siteLangId);
+                                                    }
+                                                ?>
+                                                </a>
                                             <?php } else {
                                                 echo Labels::getLabel('MSG_NO_PICKUP_ADDRESS_CONFIGURED', $siteLangId);
                                             } ?>
