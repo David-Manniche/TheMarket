@@ -1320,7 +1320,7 @@ class AccountController extends LoggedUserController
     
     public function moveToSaveForLater($selProdId)
     {
-        $loggedUserId = UserAuthentication::getLoggedUserId(MOBILE_APP_API_CALL);
+        $loggedUserId = UserAuthentication::getLoggedUserId();
         $wishList = new UserWishList();
         $wishListId = $wishList->getWishListId($loggedUserId, UserWishList::TYPE_SAVE_FOR_LATER);
         if (!$wishList->addUpdateListProducts($wishListId, $selProdId)) {

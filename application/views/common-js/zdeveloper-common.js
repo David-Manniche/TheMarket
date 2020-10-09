@@ -186,6 +186,17 @@ function showFormActionsBtns() {
     } else {
         $(".formActionBtn-js").removeClass('formActions-css');
     }
+	
+	var validateActionButtons = setInterval(function(){
+		if (1 > $(".selectItem--js:checked").length){
+			$(".formActionBtn-js").addClass('formActions-css');
+			clearInterval(validateActionButtons);
+		}
+		
+		if ($(".formActionBtn-js").hasClass('formActions-css')){
+			clearInterval(validateActionButtons);
+		}
+	}, 1000);
 }
 
 function selectAll(obj) {
