@@ -195,6 +195,7 @@ Bugs:
     => 044020 - Seller approval form fields are not editable. Neither can be deleted. 
     => 044021 - Validation error message incorrect on forget password page 
     => 044023 - Session issue with seller signup form.
+    => 043990 - Admin >> banner collection >> 1. alignment of image file and "translate to other lang" checkbox is not right . 2. text gets display outside of button
 
 Enhancements:
     => Tax module upgrade

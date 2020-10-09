@@ -1,5 +1,5 @@
 <?php defined('SYSTEM_INIT') or die('Invalid Usage.');
-$frm->setFormTagAttribute('class', 'web_form form_horizontal');
+$frm->setFormTagAttribute('class', 'web_form');
 $frm->setFormTagAttribute('onsubmit', 'setupBanners(this); return(false);');
 $frm->developerTags['colClassPrefix'] = 'col-md-';
 $frm->developerTags['fld_default_col'] = 12;
@@ -96,7 +96,11 @@ $siteDefaultLangId = FatApp::getConfig('conf_default_site_lang', FatUtility::VAR
 				if(!empty($translatorSubscriptionKey) && count($otherLangData) > 0){
 			?>
 			<div class="col-md-6">
-				<div class="field-set d-flex align-items-center">
+				<div class="field-set">
+					<div class="caption-wraper">
+						<label class="field_label">
+						</label>
+					</div>
 					<div class="field-wraper w-auto">
 						<div class="field_cover">
 							<?php echo $frm->getFieldHtml('auto_update_other_langs_data'); ?>
@@ -155,7 +159,9 @@ $siteDefaultLangId = FatApp::getConfig('conf_default_site_lang', FatUtility::VAR
 						</div>
 					</div>
 				</div>
-				<div class="col-md-6" id="banner-image-listing"></div>
+				<div class="col-md-6" id="banner-image-listing">
+					
+				</div>
 			</div>
 		</div>
 		<?php if(!empty($otherLangData)){
