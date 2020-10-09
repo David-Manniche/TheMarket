@@ -604,7 +604,8 @@ class CheckoutController extends MyAppController
         $shipProducts = [];
 
         $basketProducts = $this->cartObj->getBasketProducts($this->siteLangId);
-        foreach ($post['shipping_services'] as $prodIdCobination => $rateId) {
+        $shippingServices = isset($post['shipping_services']) ? $post['shipping_services'] : [];
+        foreach ($shippingServices as $prodIdCobination => $rateId) {
             if (empty($rateId)) {
                 $message = Labels::getLabel('MSG_Shipping_Method_is_not_selected_on_products_in_cart', $this->siteLangId);
                 LibHelper::exitWithError($message, true);
@@ -636,7 +637,7 @@ class CheckoutController extends MyAppController
         }
 
         /*break down shipping amount in proportional to each product price */
-        foreach ($post['shipping_services'] as $prodIdCobination => $rateId) {
+        foreach ($shippingServices as $prodIdCobination => $rateId) {
             $shippingAmount[$prodIdCobination] = 0;
             $totalAmount = $selectedShippingMethods[$prodIdCobination]['totalAmount'];
 
