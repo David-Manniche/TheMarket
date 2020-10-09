@@ -156,6 +156,7 @@ class MyAppController extends FatController
                 'proceed' => Labels::getLabel('MSG_PROCEED', $this->siteLangId),
                 'invalidFromTime' => Labels::getLabel('LBL_PLEASE_SELECT_VALID_FROM_TIME', $this->siteLangId),
                 'selectTimeslotDay' => Labels::getLabel('LBL_ATLEAST_ONE_DAY_AND_TIMESLOT_NEEDS_TO_BE_CONFIGURED', $this->siteLangId),
+                'invalidTimeSlot' => Labels::getLabel('LBL_PLEASE_CONFIGURE_FROM_AND_TO_TIME', $this->siteLangId),
             );
 
             $languages = Language::getAllNames(false);

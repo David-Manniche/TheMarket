@@ -22,12 +22,15 @@ $slotTypeFld->setOptionListTagAttribute('class', 'list-inline');
 $slotTypeFld->developerTags['cbLabelAttributes'] = array('class' => 'radio');
 $slotTypeFld->developerTags['rdHtmlAfterRadio'] = '<i class="input-helper"></i>';
 $slotTypeFld->setFieldTagAttribute('onClick', 'displaySlotTimings(this);');
+$slotTypeFld->setFieldTagAttribute('class', 'availabilityType-js');
 
 $fromAllFld = $frm->getField('tslot_from_all');
 $fromAllFld->setFieldTagAttribute('onChange', 'validateTimeFields()');
+$fromAllFld->setFieldTagAttribute('class', 'selectAllFromTime-js');
 
 $toAllFld = $frm->getField('tslot_to_all');
 $toAllFld->setFieldTagAttribute('onChange', 'validateTimeFields()');
+$toAllFld->setFieldTagAttribute('class', 'selectAllToTime-js');
 ?>
 
 <div class="sectionbody space">
