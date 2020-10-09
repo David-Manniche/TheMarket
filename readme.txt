@@ -193,6 +193,7 @@ Bugs:
     => 043947 - Manage coupon >> if coupon is of percentage type then admin should not be able to enter more then 100 % in discount value 
     => 043938 - on product when wrong youtube link is added then getting corrupted video on front end 
     => 044020 - Seller approval form fields are not editable. Neither can be deleted. 
+    => 044021 - Validation error message incorrect on forget password page 
 
 Enhancements:
     => Tax module upgrade
