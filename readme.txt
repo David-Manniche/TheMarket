@@ -193,6 +193,7 @@ Bugs:
     => 043947 - Manage coupon >> if coupon is of percentage type then admin should not be able to enter more then 100 % in discount value 
     => 043991 - On thankyou page >> when we choose "pay at pickup " as payment gateway then error gets display on thankyou, order details page .
     => 043994 - Seller >> my subscription >> some error is there. 
+    => 043996 - Seller/ admin >> some error should get display if we didn't select any slot.
 
 Enhancements:
     => Tax module upgrade
