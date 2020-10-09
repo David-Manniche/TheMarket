@@ -386,7 +386,7 @@ class SubscriptionCart extends FatModel
     {
         $subTotal = 0;
         foreach ($this->getSubscription($this->scart_lang_id) as $product) {
-            $subTotal += $product['spplan_price'];
+            $subTotal += isset($product['spplan_price']) ? $product['spplan_price'] : 0;
         }
         $maxAdjustableAmount = $subTotal;
         if ($maxAdjustableAmount < $adjustableAmount) {
