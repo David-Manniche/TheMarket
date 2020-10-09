@@ -192,6 +192,7 @@ Bugs:
     => 043946 - Seller >> special price >> select all entries >> search something random >> if there is no data then remove button should get disappear. 2. if we clear the search then "remove " button should not be there because all entries are not selected now.
     => 043947 - Manage coupon >> if coupon is of percentage type then admin should not be able to enter more then 100 % in discount value 
     => 043938 - on product when wrong youtube link is added then getting corrupted video on front end 
+    => 044020 - Seller approval form fields are not editable. Neither can be deleted. 
 
 Enhancements:
     => Tax module upgrade
