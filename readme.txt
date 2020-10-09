@@ -167,6 +167,15 @@ Bugs:
     => 043523 - buyer> orders> cancellation requests> filters> dates> date is not visible on 1366x768 resolution
     => 043600 - Admin >> add brand >> when we add brand then admin is unable to access "language data " and " media " tabs 
     => 043606 - While checkout if we select "pay on pickup then status should be "pay on pickup " instead of " cash on delivery .
+    => 043859 - admin>navigation> pages> edit> getting error
+    => 043671 - Admin >> shipping profile >> if the selected location is under any drop down and admin update the profile then "minimum one location required" gets display .
+    => 043865 - Buyer >> order details page >. when order status is "shipped" then "track button should get display with " shipped " status only.
+    => 043601 - seller >> on shop inventory >> when we click on "inventory data for any language then all drop down gets expand.
+    => 043673 - Seller shipping profile >> if we expand any country then there should be some scroll bar .
+    => 043674 - Seller >> shipping profile >>if there are multiple zones and when we click on "add rate icon then page should get scrolled to "add rate " box. 
+    => 043687 - Shipping profile >> if we click on "save " button multiple times then multiple entries gets generated.
+    => 043692 - Admin/seller>> shipping profile >> rates should get display in 2 decimal values even if we edit them .
+    => 043864 - Buyer << order details >> when we use wallet as payment method then "paypal wallet " gets display on order details page.
     => 043777 - Admin >> if we delete any collection and then recreate the collection with same name then duplicate entry gets display . 
     => 043776 - Collection >> banner >> when we save banner collection then "successful message should be there.
     => 043775 - Admin >> promotions>> discount coupons>> links >> "Product Not Found? Click Here To Add New Product" should be in the same row.
@@ -178,6 +187,7 @@ Bugs:
     => 043867 - Admin >> special price >> when we edit special price then discount percentage should get display under special price field.
     => 043584 - admin> categories> right side> product count in bubble is not listing properly 
     => 043943 - Admin >> settings >> Reward point setting>> single label being used for two different reward point fields.
+    => 043566 - when new language is added and any page from footer or header (cms) is accessed then language changes itself
 
 Enhancements:
     => Tax module upgrade

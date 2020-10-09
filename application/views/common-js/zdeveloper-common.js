@@ -1165,7 +1165,8 @@ $(document).ready(function() {
         if (page == 'product-view') {
             return false;
         }
-        cart.update(key, page);
+		var fulfillmentType = $("input[name='fulfillment_type']:checked").val();
+        cart.update(key, page, fulfillmentType);
     });
 
     $(document).on("click", '.decrease-js', function() {

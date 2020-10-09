@@ -139,14 +139,13 @@ class Paypal extends PaymentMethodBase
         $orderPaymentObj = new OrderPayment($orderId, $this->langId);
         $paymentAmount = $orderPaymentObj->getOrderPaymentGatewayAmount();
         $orderInfo = $orderPaymentObj->getOrderPrimaryinfo();
-        
         if ($orderInfo['order_type'] == Orders::ORDER_WALLET_RECHARGE) {
             $cancelBtnUrl = CommonHelper::getPaymentFailurePageUrl();
         } else {
             $orderObj = new Orders();
             $orderAddresses = $orderObj->getOrderAddresses($orderId);
-            $shippingAddress = $orderAddresses[Orders::SHIPPING_ADDRESS_TYPE];
-            $billingAddress = $orderAddresses[Orders::BILLING_ADDRESS_TYPE];
+            $shippingAddress = isset($orderAddresses[Orders::SHIPPING_ADDRESS_TYPE]) ? $orderAddresses[Orders::SHIPPING_ADDRESS_TYPE] : [];
+            $billingAddress = isset($orderAddresses[Orders::BILLING_ADDRESS_TYPE]) ? $orderAddresses[Orders::BILLING_ADDRESS_TYPE] : [];
 
             $cancelBtnUrl = CommonHelper::getPaymentCancelPageUrl();
         }
@@ -159,7 +158,7 @@ class Paypal extends PaymentMethodBase
         $purchase_units["reference_id"] = $orderId;
         $purchase_units["amount"] = $pu_amount;
      
-        if ($orderInfo['order_type'] == Orders::ORDER_PRODUCT) {
+        if ($orderInfo['order_type'] == Orders::ORDER_PRODUCT && !empty($shippingAddress)) {
             $purchase_units["shipping"] = [
                 "address_line_1" => $shippingAddress['oua_address1'],
                 "address_line_2" => $shippingAddress['oua_address2'],
@@ -184,7 +183,7 @@ class Paypal extends PaymentMethodBase
             ]
         ];
 
-        if ($orderInfo['order_type'] == Orders::ORDER_PRODUCT) {
+        if ($orderInfo['order_type'] == Orders::ORDER_PRODUCT && !empty($billingAddress)) {
             $request_body["payer"]['address'] = [
                 "address_line_1" => $billingAddress['oua_address1'],
                 "address_line_2" => $billingAddress['oua_address2'],

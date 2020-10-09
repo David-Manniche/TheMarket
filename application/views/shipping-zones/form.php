@@ -57,7 +57,9 @@ if (!empty($excludeLocations)) {
                                             <div class="field-wraper">
                                                 <div class="field_cover">
                                                     <label>
-                                                        <span class="checkbox" data-zoneid="-1"><input type="checkbox" name="rest_of_the_world" value="-1" class="checkbox_zone_-1" <?php echo (in_array(-1, $zoneIds)) ? 'checked' : ''; ?> <?php echo (in_array(-1, $exZoneIds)) ? 'disabled' : ''; ?>><i class="input-helper"></i><?php echo Labels::getLabel("LBL_REST_OF_THE_WORLD", $siteLangId); ?></span>
+                                                        <span class="checkbox" data-zoneid="-1">
+                                                            <input type="checkbox" name="rest_of_the_world" value="-1" class="checkbox_zone_-1" <?php echo (in_array(-1, $zoneIds)) ? 'checked' : ''; ?> <?php echo (in_array(-1, $exZoneIds)) ? 'disabled' : ''; ?>><i class="input-helper"></i><?php echo Labels::getLabel("LBL_REST_OF_THE_WORLD", $siteLangId); ?>
+                                                        </span>
                                                     </label>
                                                 </div>
                                             </div>
@@ -87,7 +89,7 @@ if (!empty($excludeLocations)) {
                                                 </div>
                                                 <?php if (!empty($countries)) { ?>
                                                     <div class="col-auto">
-                                                        <a class="btn btn-sm" data-toggle="collapse" href="#countries_list_<?php echo $zone['zone_id']; ?>" role="button" aria-expanded="false" aria-controls="countries_list_<?php echo $zone['zone_id']; ?>"><span class="fa fa-angle-down" aria-hidden="true"></span> </a>
+                                                        <a class="btn btn-sm containCountries-js-<?php echo $zone['zone_id']; ?>" data-toggle="collapse" href="#countries_list_<?php echo $zone['zone_id']; ?>" role="button" aria-expanded="false" aria-controls="countries_list_<?php echo $zone['zone_id']; ?>"><span class="fa fa-angle-down" aria-hidden="true"></span> </a>
                                                     </div>
                                                 <?php } ?>
                                             </div>
@@ -122,7 +124,7 @@ if (!empty($excludeLocations)) {
 
                                                                 <div class="col-auto">
                                                                     <?php if ($statesCount > 0) { ?>
-                                                                        <a class="btn  btn-sm link_<?php echo $countryId; ?>" data-toggle="collapse" href="#state_list_<?php echo $countryId; ?>" role="button" aria-expanded="false" aria-controls="state_list_<?php echo $countryId; ?>" data-countryid="<?php echo $countryId; ?>" data-loadedstates="0" onclick="getStates(<?php echo $countryId . ',' . $zone['zone_id'] . ',' . $profile_id; ?>);"><span class="statecount--js selectedStateCount--js_<?php echo $countryId; ?> " data-totalcount="<?php echo $statesCount; ?>">0</span>
+                                                                        <a class="btn  btn-sm link_<?php echo $countryId; ?> containChild-js" data-toggle="collapse" href="#state_list_<?php echo $countryId; ?>" role="button" aria-expanded="false" aria-controls="state_list_<?php echo $countryId; ?>" data-zone="<?php echo $zone['zone_id']; ?>" data-countryid="<?php echo $countryId; ?>" data-loadedstates="0" onclick="getStates(<?php echo $countryId . ',' . $zone['zone_id'] . ',' . $profile_id; ?>);"><span class="statecount--js selectedStateCount--js_<?php echo $countryId; ?> " data-totalcount="<?php echo $statesCount; ?>">0</span>
                                                                             <?php echo Labels::getLabel("LBL_of", $siteLangId); ?>
                                                                             <span class="totalStates "><?php echo $statesCount; ?></span>
                                                                             <span class="fa fa-angle-down" aria-hidden="true"></span>
@@ -130,7 +132,7 @@ if (!empty($excludeLocations)) {
                                                                     <?php } ?>
                                                                 </div>
                                                             </div>
-                                                            <div class="collapse" id="state_list_<?php echo $countryId; ?>">
+                                                            <div class="collapse box--scroller" id="state_list_<?php echo $countryId; ?>">
                                                             </div>
                                                         </li>
                                                     <?php } ?>
@@ -145,7 +147,10 @@ if (!empty($excludeLocations)) {
                 </div>
                 <div class="row my-3">
                     <div class="col-lg-5">
-                        <input class="btn btn-primary btn-block" type="submit" name="btn_submit" value="<?php echo Labels::getLabel("LBL_Add_Zone", $siteLangId); ?>">
+                        <?php 
+                            $lbl = (0 < $zone_id ? Labels::getLabel("LBL_UPDATE_ZONE", $siteLangId) : Labels::getLabel("LBL_ADD_ZONE", $siteLangId));
+                        ?>
+                        <input class="btn btn-primary btn-block" type="submit" name="btn_submit" value="<?php echo $lbl; ?>">
                     </div>
 
                     <div class="col-lg-5">
@@ -158,6 +163,25 @@ if (!empty($excludeLocations)) {
         </div>
     </div>
 </div>
+<?php if (0 < $zone_id) { ?>
+    <script>
+        $(".containChild-js").each(function(){
+            var dropStateElement = $(this);
+            dropStateElement.click();
+            var countryId = $(this).data("countryid");
+            var zoneId = $(this).data("zone");
+            $("#state_list_" + countryId).addClass('d-none');
+            setTimeout(function(){
+                if (0 < $("#state_list_" + countryId + " .state--js:checked").length) {
+                    $("#state_list_" + countryId).removeClass('d-none');
+                    $(".containCountries-js-" + zoneId).click();
+                } else {
+                    $("#state_list_" + countryId).removeClass('d-none show');
+                }
+            }, 500);
+        });
+    </script>
+<?php } ?>
 <script>
     /*  $(document).on('keyup', "input[name='shipzone_name']", function() {
         var currObj = $(this);

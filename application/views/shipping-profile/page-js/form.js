@@ -81,11 +81,18 @@ $(document).ready(function () {
         });
     }
 
-    searchZone = function (profileId) {
+    searchZone = function (profileId, scrollToNew = false) {
         var dv = '#listing-zones';
         $(dv).html(fcom.getLoader());
         fcom.ajax(fcom.makeUrl('ShippingZones', 'search', [profileId]), '', function (res) {
             $(dv).html(res);
+            if (true == scrollToNew) {
+                setTimeout(function () {
+                    $('html, body').animate({
+                        scrollTop: $(".zoneRates-js:last").offset().top
+                    }, 1000);
+                }, 500);
+            }
         });
     };
 
@@ -96,6 +103,9 @@ $(document).ready(function () {
         }
         fcom.ajax(fcom.makeUrl('ShippingZones', 'form', [profileId, zoneId]), '', function (t) {
             $('#ship-section--js').html(t);
+            $('html, body').animate({
+                scrollTop: $("#ship-section--js").offset().top
+            }, 1000);
         });
         /* $.facebox(function() {
         	fcom.ajax(fcom.makeUrl('ShippingZones', 'form', [profileId, zoneId]), '', function(t) {
@@ -124,6 +134,9 @@ $(document).ready(function () {
         fcom.ajax(fcom.makeUrl('ShippingZones', 'searchStates', [countryId, zoneId, shipZoneId, profileId, preSelectedCheckbox]), '', function (res) {
             $(dv).html(res);
             $('.link_' + countryId).data('loadedstates', 1);
+            if ($(dv + " .state--js:checked").length) {
+                $(dv + " .state--js:checked").prop('checked', false).click();
+            }
         });
     }
 
@@ -137,8 +150,8 @@ $(document).ready(function () {
         var data = fcom.frmData(frm);
         fcom.updateWithAjax(fcom.makeUrl('shippingZones', 'setup'), data, function (t) {
             var profileId = $('input[name="profile_id"]').val();
-            searchZone(profileId);
-            $(document).trigger('close.facebox');
+            searchZone(profileId, true);
+            clearForm();
         });
     };
 
@@ -150,7 +163,6 @@ $(document).ready(function () {
         fcom.updateWithAjax(fcom.makeUrl('shippingZones', 'deleteZone', [zoneId]), '', function (t) {
             var profileId = $('input[name="profile_id"]').val();
             searchZone(profileId);
-            $(document).trigger('close.facebox');
             clearForm();
         });
     };
@@ -173,6 +185,9 @@ $(document).ready(function () {
     addEditShipRates = function (zoneId, rateId) {
         fcom.ajax(fcom.makeUrl('shippingZoneRates', 'form', [zoneId, rateId]), '', function (t) {
             $('#ship-section--js').html(t);
+            $('html, body').animate({
+                scrollTop: $("#ship-section--js").offset().top
+            }, 1000);
         });
 
         /* $.facebox(function() {
@@ -185,8 +200,10 @@ $(document).ready(function () {
 
     setupRate = function (frm) {
         if (!$(frm).validate()) return;
+        $("input[name='btn_submit']").attr('disabled', 'disabled');
         var data = fcom.frmData(frm);
         fcom.updateWithAjax(fcom.makeUrl('shippingZoneRates', 'setup'), data, function (t) {
+            $("input[name='btn_submit']").removeAttr('disabled');
             var profileId = $('input[name="profile_id"]').val();
             searchZone(profileId);
             if (t.langId > 0) {
@@ -205,8 +222,10 @@ $(document).ready(function () {
 
     setupLangRate = function (frm) {
         if (!$(frm).validate()) return;
+        $("input[name='btn_submit']").attr('disabled', 'disabled');
         var data = fcom.frmData(frm);
         fcom.updateWithAjax(fcom.makeUrl('shippingZoneRates', 'langSetup'), data, function (t) {
+            $("input[name='btn_submit']").removeAttr('disabled');
             var profileId = $('input[name="profile_id"]').val();
             searchZone(profileId);
             if (t.langId > 0) {

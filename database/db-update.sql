@@ -792,7 +792,14 @@ ALTER TABLE `tbl_order_product_shipping` CHANGE `opshipping_type` `opshipping_fu
 ALTER TABLE `tbl_order_product_shipping` CHANGE `opshipping_fulfillment_type` `opshipping_fulfillment_type` TINYINT(4) NOT NULL DEFAULT '2' COMMENT 'Defined in model';
 UPDATE tbl_order_product_shipping SET opshipping_fulfillment_type = (CASE opshipping_fulfillment_type WHEN '1' THEN '2' WHEN '2' THEN '1' ELSE opshipping_fulfillment_type END);
 
+ALTER TABLE `tbl_countries` CHANGE `country_region_id` `country_zone_id` INT(11) NOT NULL;
+
+
+ALTER TABLE `tbl_shipping_rates` CHANGE `shiprate_cost` `shiprate_cost` DECIMAL(10,2) NOT NULL;
+ALTER TABLE `tbl_shipping_rates` CHANGE `shiprate_min_val` `shiprate_min_val` DECIMAL(10,2) NOT NULL DEFAULT '0.0000', CHANGE `shiprate_max_val` `shiprate_max_val` DECIMAL(10,2) NOT NULL DEFAULT '0.0000';
 DELETE FROM `tbl_language_labels` WHERE `label_key` LIKE 'LBL_This_is_the_application_ID_used_in_login_and_post';
 
 ALTER TABLE `tbl_shops` ADD `shop_invoice_prefix` VARCHAR(20) NOT NULL AFTER `shop_phone`, ADD `shop_invoice_suffix` BIGINT(15) NOT NULL AFTER `shop_invoice_prefix`;
 ALTER TABLE `tbl_shop_specifics` ADD `shop_invoice_codes` VARCHAR(255) NOT NULL AFTER `shop_cancellation_age`;
+
+-- -------------TV-9.2.1.20201008-------------------

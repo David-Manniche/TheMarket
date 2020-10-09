@@ -890,8 +890,8 @@ class CommonHelper extends FatUtility
         if ($type == NavigationLinks::NAVLINK_TYPE_CMS) {
             $url = UrlHelper::generateUrl('cms', 'view', array($nav_cpage_id), '', null, false, $getOriginalUrl);
         } elseif ($type == NavigationLinks::NAVLINK_TYPE_EXTERNAL_PAGE) {
-            $url = str_replace('{SITEROOT}', CONF_WEBROOT_URL, $nav_url);
-            $url = str_replace('{siteroot}', CONF_WEBROOT_URL, $url);
+            $url = str_replace('{SITEROOT}', UrlHelper::generateUrl(), $nav_url);
+            $url = str_replace('{siteroot}', UrlHelper::generateUrl(), $url);
             $url = CommonHelper::processURLString($url);
         } elseif ($type == NavigationLinks::NAVLINK_TYPE_CATEGORY_PAGE) {
             $url = UrlHelper::generateUrl('category', 'view', array($nav_category_id), '', null, false, $getOriginalUrl);

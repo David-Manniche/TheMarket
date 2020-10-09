@@ -18,13 +18,16 @@ class Zone extends MyAppModel
         $srch = new SearchBase(static::DB_TBL, 'zone');
 
         if ($isActive == true) {
-            $srch->addCondition('zone.'. static::DB_TBL_PREFIX .'active', '=', applicationConstants::ACTIVE);
+            $srch->addCondition('zone.' . static::DB_TBL_PREFIX . 'active', '=', applicationConstants::ACTIVE);
         }
 
         if ($langId > 0) {
-            $srch->joinTable(static::DB_TBL_LANG,
+            $srch->joinTable(
+                static::DB_TBL_LANG,
                 'LEFT OUTER JOIN',
-                'z_l.'.static::DB_TBL_LANG_PREFIX .'zone_id = zone.'.static::tblFld('id').' and z_l.'.static::DB_TBL_LANG_PREFIX .'lang_id = '.$langId, 'z_l');
+                'z_l.' . static::DB_TBL_LANG_PREFIX . 'zone_id = zone.' . static::tblFld('id') . ' and z_l.' . static::DB_TBL_LANG_PREFIX . 'lang_id = ' . $langId,
+                'z_l'
+            );
         }
         return $srch;
     }
@@ -49,41 +52,41 @@ class Zone extends MyAppModel
         }
         return $row;
     }
-	
-	public static function getZoneWithCountries($langId, $isActive = true)
-	{
-		$srch = static::getSearchObject($isActive, $langId);
-		$srch->joinTable(Countries::DB_TBL, 'LEFT OUTER JOIN', 'c.country_region_id = zone.zone_id', 'c');
-		
-		$srch->joinTable(Countries::DB_TBL_LANG, 'LEFT OUTER JOIN', 'c_l.'.Countries::DB_TBL_LANG_PREFIX.'country_id = c.'.Countries::tblFld('id').' and c_l.'.Countries::DB_TBL_LANG_PREFIX.'lang_id = '.$langId, 'c_l' );
-		
-		$srch->addMultipleFields(
+
+    public static function getZoneWithCountries($langId, $isActive = true)
+    {
+        $srch = static::getSearchObject($isActive, $langId);
+        $srch->joinTable(Countries::DB_TBL, 'LEFT OUTER JOIN', 'c.country_zone_id = zone.zone_id', 'c');
+
+        $srch->joinTable(Countries::DB_TBL_LANG, 'INNER JOIN', 'c_l.' . Countries::DB_TBL_LANG_PREFIX . 'country_id = c.' . Countries::tblFld('id') . ' and c_l.' . Countries::DB_TBL_LANG_PREFIX . 'lang_id = ' . $langId, 'c_l');
+
+        $srch->addMultipleFields(
             array(
                 'zone_id',
-                'if(zone_name is null, zone_identifier, zone_name) as zone_name', 'country_id', 'if(country_name is null, country_code, country_name) as  country_identifier', '(select count(*) from '. States::DB_TBL .' where state_country_id = c.country_id) as state_count'
+                'if(zone_name is null, zone_identifier, zone_name) as zone_name', 'country_id', 'if(country_name is null, country_code, country_name) as  country_identifier', '(select count(*) from ' . States::DB_TBL . ' where state_country_id = c.country_id) as state_count'
             )
         );
-		
-		$srch->doNotCalculateRecords();
+
+        $srch->doNotCalculateRecords();
         $srch->doNotLimitRecords();
-		$srch->addOrder('zone_name', 'ASC');
-		$rs = $srch->getResultSet();
-		$records = FatApp::getDb()->fetchAll($rs);
-		$zoneContryArray = [];
-		$zoneCountryStateList = array();
-		if (!empty($records)) {
-			foreach ($records as $record) {
-				$key = $record['zone_id'];
-				$zoneContryArray[$key]['zone_name'] = $record['zone_name'];
-				$zoneContryArray[$key]['zone_id'] = $record['zone_id'];
-				$country_key = $record['country_id'];
-				unset($record['zone_name']);
-				unset($record['zone_id']);
-				if ($country_key!='') {
-					$zoneContryArray[$key]['countries'][] = $record;
-				}
-			}
-		}
-		return $zoneContryArray;
-	}
+        $srch->addOrder('zone_name', 'ASC');
+        $rs = $srch->getResultSet();
+        $records = FatApp::getDb()->fetchAll($rs);
+        $zoneContryArray = [];
+        $zoneCountryStateList = array();
+        if (!empty($records)) {
+            foreach ($records as $record) {
+                $key = $record['zone_id'];
+                $zoneContryArray[$key]['zone_name'] = $record['zone_name'];
+                $zoneContryArray[$key]['zone_id'] = $record['zone_id'];
+                $country_key = $record['country_id'];
+                unset($record['zone_name']);
+                unset($record['zone_id']);
+                if ($country_key != '') {
+                    $zoneContryArray[$key]['countries'][] = $record;
+                }
+            }
+        }
+        return $zoneContryArray;
+    }
 }

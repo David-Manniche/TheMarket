@@ -12,7 +12,7 @@ $frm->setFormTagAttribute('onsubmit', 'setupProfile(this); return(false);');
                     <div class="row">
                         <div class="col--first col-lg-6">
                             <span class="page__icon"><i class="ion-android-star"></i></span>
-                            <h5><?php echo Labels::getLabel('LBL_Shipping_Management', $adminLangId); ?>
+                            <h5><?php echo Labels::getLabel('LBL_Shipping_Profile', $adminLangId); ?>
                             </h5> <?php $this->includeTemplate('_partial/header/header-breadcrumb.php'); ?>
                         </div>
                     </div>
@@ -72,7 +72,7 @@ $frm->setFormTagAttribute('onsubmit', 'setupProfile(this); return(false);');
                         </div>
                     </div>
                     <div class="col-md-12">
-                        <?php if (empty($profileData) || ((isset($profileData['shipprofile_default']) && $profileData['shipprofile_default'] == 1))) { ?>
+                        <?php if (empty($profileData) || ((isset($profileData['shipprofile_default'])))) { ?>
                             <div class="portlet" id="product-section--js">
                                 <div class="portlet__head">
                                     <div class="portlet__head-label">
@@ -87,7 +87,6 @@ $frm->setFormTagAttribute('onsubmit', 'setupProfile(this); return(false);');
                                 </div>
                             </div>
                         <?php } ?>
-
                     </div>
                     <div class="col-md-12">
                         <div class="row">

@@ -241,7 +241,7 @@ class CountriesController extends AdminBaseController
         $frm->addRequiredField(Labels::getLabel('LBL_Country_code', $this->adminLangId), 'country_code');
 
 		$zoneArr = Zone::getAllZones($this->adminLangId, true);
-        $frm->addSelectBox(Labels::getLabel('LBL_Zone', $this->adminLangId), 'country_region_id', $zoneArr);
+        $frm->addSelectBox(Labels::getLabel('LBL_Zone', $this->adminLangId), 'country_zone_id', $zoneArr);
 		
         $currencyArr = Currency::getCurrencyNameWithCode($this->adminLangId);
         $frm->addSelectBox(Labels::getLabel('LBL_Currency', $this->adminLangId), 'country_currency_id', $currencyArr);

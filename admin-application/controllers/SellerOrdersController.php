@@ -30,18 +30,22 @@ class SellerOrdersController extends AdminBaseController
     private function loadShippingService()
     {
         /* Return if already loaded. */
-        if (!empty($this->shippingService)) { return; }
+        if (!empty($this->shippingService)) {
+            return;
+        }
 
         $plugin = new Plugin();
         $keyName = $plugin->getDefaultPluginKeyName(Plugin::TYPE_SHIPPING_SERVICES);
 
         /* Carry on with default functionality if plugin not active. */
-        if (false === $keyName) { return; }
+        if (false === $keyName) {
+            return;
+        }
 
         $this->shippingService = PluginHelper::callPlugin($keyName, [$this->adminLangId], $error, $this->adminLangId, false);
 
         if (false === $this->shippingService) {
-            if ('search' == strtolower($this->method)){
+            if ('search' == strtolower($this->method)) {
                 Message::addErrorMessage($error);
                 FatUtility::dieWithError(Message::getHtml());
             } else {
@@ -50,12 +54,11 @@ class SellerOrdersController extends AdminBaseController
         }
 
         if (false === $this->shippingService->init()) {
-            if ('search' == strtolower($this->method)){
+            if ('search' == strtolower($this->method)) {
                 Message::addErrorMessage($this->shippingService->getError());
                 FatUtility::dieWithError(Message::getHtml());
             } else {
                 FatApp::redirectUser(UrlHelper::generateUrl("SellerOrders"));
-                
             }
         }
     }
@@ -68,13 +71,17 @@ class SellerOrdersController extends AdminBaseController
     private function loadTrackingService()
     {
         /* Return if already loaded. */
-        if (!empty($this->trackingService)) { return; }
+        if (!empty($this->trackingService)) {
+            return;
+        }
 
         $plugin = new Plugin();
         $keyName = $plugin->getDefaultPluginKeyName(Plugin::TYPE_SHIPMENT_TRACKING);
 
         /* Carry on with default functionality if plugin not active. */
-        if (false === $keyName) { return; }
+        if (false === $keyName) {
+            return;
+        }
 
         $this->trackingService = PluginHelper::callPlugin($keyName, [$this->adminLangId], $error, $this->adminLangId, false);
         if (false === $this->trackingService) {
@@ -127,7 +134,7 @@ class SellerOrdersController extends AdminBaseController
         $srch->setPageSize($pageSize);
         $srch->addOrder('op_id', 'DESC');
 
-        $srch->addMultipleFields(array('op_id', 'order_id', 'order_payment_status', 'op_order_id', 'op_invoice_number', 'order_net_amount', 'order_date_added', 'ou.user_id', 'ou.user_name as buyer_name', 'ouc.credential_username as buyer_username', 'ouc.credential_email as buyer_email', 'ou.user_phone as buyer_phone', 'op.op_shop_owner_name', 'op.op_shop_owner_username', 'op.op_shop_owner_email', 'op.op_shop_owner_phone', 'op_shop_name', 'op_other_charges', 'op.op_qty', 'op.op_unit_price', 'IFNULL(orderstatus_name, orderstatus_identifier) as orderstatus_name', 'op_status_id', 'op_tax_collected_by_seller', 'op_selprod_user_id', 'opshipping_by_seller_user_id', 'plugin_code', 'IFNULL(plugin_name, IFNULL(plugin_identifier, "Wallet")) as plugin_name', 'opship.*'));
+        $srch->addMultipleFields(array('op_id', 'order_id', 'order_payment_status', 'op_order_id', 'op_invoice_number', 'order_net_amount', 'order_date_added', 'ou.user_id', 'ou.user_name as buyer_name', 'ouc.credential_username as buyer_username', 'ouc.credential_email as buyer_email', 'ou.user_phone as buyer_phone', 'op.op_shop_owner_name', 'op.op_shop_owner_username', 'op.op_shop_owner_email', 'op.op_shop_owner_phone', 'op_shop_name', 'op_other_charges', 'op.op_qty', 'op.op_unit_price', 'IFNULL(orderstatus_name, orderstatus_identifier) as orderstatus_name', 'op_status_id', 'op_tax_collected_by_seller', 'op_selprod_user_id', 'opshipping_by_seller_user_id', 'plugin_code', 'IFNULL(plugin_name, IFNULL(plugin_identifier, "Wallet")) as plugin_name', 'opship.*', 'opshipping_fulfillment_type'));
         if (isset($post['order_id']) && $post['order_id'] != '') {
             $srch->addCondition('op_order_id', '=', $post['order_id']);
         }
@@ -247,8 +254,8 @@ class SellerOrdersController extends AdminBaseController
             Message::addErrorMessage($this->str_invalid_request);
             CommonHelper::redirectUserReferer();
         }
-        
-        if($opRow['opshipping_fulfillment_type'] == Shipping::FULFILMENT_SHIP){
+
+        if ($opRow['opshipping_fulfillment_type'] == Shipping::FULFILMENT_SHIP) {
             /* ShipStation */
             $this->loadShippingService();
             $this->set('canShipByPlugin', (NULL !== $this->shippingService));
@@ -279,7 +286,7 @@ class SellerOrdersController extends AdminBaseController
                     FatApp::redirectUser(UrlHelper::generateUrl("TrackingCodeRelation"));
                 }
             }
-        }else{
+        } else {
             $this->set('canShipByPlugin', '');
         }
 
@@ -291,10 +298,10 @@ class SellerOrdersController extends AdminBaseController
         $addresses = $orderObj->getOrderAddresses($opRow['order_id']);
         $opRow['billingAddress'] = $addresses[Orders::BILLING_ADDRESS_TYPE];
         $opRow['shippingAddress'] = (!empty($addresses[Orders::SHIPPING_ADDRESS_TYPE])) ? $addresses[Orders::SHIPPING_ADDRESS_TYPE] : array();
-        
+
         $pickUpAddress = $orderObj->getOrderAddresses($opRow['order_id'], $op_id);
         $opRow['pickupAddress'] = (!empty($pickUpAddress[Orders::PICKUP_ADDRESS_TYPE])) ? $pickUpAddress[Orders::PICKUP_ADDRESS_TYPE] : array();
-        
+
         $opRow['comments'] = $orderObj->getOrderComments($this->adminLangId, array("op_id" => $op_id));
 
         if ($opRow['plugin_code'] == 'CashOnDelivery') {
@@ -308,12 +315,12 @@ class SellerOrdersController extends AdminBaseController
             'op_status_id' => $opRow['op_status_id'],
             'tracking_number' => $opRow['opship_tracking_number']
         ];
-        
-        if($opRow["opshipping_fulfillment_type"] == Shipping::FULFILMENT_PICKUP){
+
+        if ($opRow["opshipping_fulfillment_type"] == Shipping::FULFILMENT_PICKUP) {
             $processingStatuses = array_diff($processingStatuses, (array) FatApp::getConfig("CONF_DEFAULT_SHIPPING_ORDER_STATUS"));
             $processingStatuses = array_diff($processingStatuses, (array) FatApp::getConfig("CONF_DEFAULT_DEIVERED_ORDER_STATUS"));
-        }   
-        $frm = $this->getOrderCommentsForm($opRow, $processingStatuses);    
+        }
+        $frm = $this->getOrderCommentsForm($opRow, $processingStatuses);
         $frm->fill($data);
 
         $orderStatuses = Orders::getOrderProductStatusArr($this->adminLangId);
@@ -325,7 +332,7 @@ class SellerOrdersController extends AdminBaseController
 
         if (((strtolower($opRow['plugin_code']) == 'cashondelivery') || (in_array($opRow['op_status_id'], $allowedShippingUserStatuses))) && $this->canEdit && !$shippingHanldedBySeller && ($opRow['op_product_type'] == Product::PRODUCT_TYPE_PHYSICAL && $opRow['order_payment_status'] != Orders::ORDER_PAYMENT_CANCELLED)) {
             $displayShippingUserForm = true;
-            if($opRow["opshipping_fulfillment_type"] == Shipping::FULFILMENT_PICKUP){
+            if ($opRow["opshipping_fulfillment_type"] == Shipping::FULFILMENT_PICKUP) {
                 $displayShippingUserForm = false;
             }
             $shippingUserFrm = $this->getShippingCompanyUserForm($displayShippingUserForm);
@@ -582,7 +589,7 @@ class SellerOrdersController extends AdminBaseController
         $this->objPrivilege->canEditSellerOrders();
         $db = FatApp::getDb();
         $db->startTransaction();
-        
+
         $post = FatApp::getPostedData();
         if (!isset($post['op_id'])) {
             Message::addErrorMessage($this->str_invalid_request);
@@ -659,7 +666,7 @@ class SellerOrdersController extends AdminBaseController
                         "opship_tracking_number" => $post['tracking_number'],
                         "opship_tracking_url" => $post['opship_tracking_url'],
                     ];
-                
+
                     if (!FatApp::getDb()->insertFromArray(OrderProductShipment::DB_TBL, $updateData, false, array(), $updateData)) {
                         LibHelper::dieJsonError(FatApp::getDb()->getError());
                     }
@@ -927,7 +934,7 @@ class SellerOrdersController extends AdminBaseController
             $manualShipUnReqObj->setRequired(false);
             $manualShipReqObj = new FormFieldRequirement('manual_shipping', Labels::getLabel('LBL_SELF_SHIPPING', $this->adminLangId));
             $manualShipReqObj->setRequired(true);
-            
+
             $fld->requirements()->addOnChangerequirementUpdate(FatApp::getConfig("CONF_DEFAULT_SHIPPING_ORDER_STATUS"), 'eq', 'manual_shipping', $manualShipReqObj);
             $fld->requirements()->addOnChangerequirementUpdate(FatApp::getConfig("CONF_DEFAULT_SHIPPING_ORDER_STATUS"), 'ne', 'manual_shipping', $manualShipUnReqObj);
 
@@ -1001,29 +1008,29 @@ class SellerOrdersController extends AdminBaseController
         $fld_submit->attachField($fld_cancel);
         return $frm;
     }
-    
+
     public function orderTrackingInfo($trackingNumber, $courier, $orderNumber)
-	{
-		if (empty($trackingNumber) || empty($courier)) {
-			Message::addErrorMessage(Labels::getLabel('MSG_Invalid_request',$this->adminLangId));
-			FatUtility::dieWithError( Message::getHtml() );
+    {
+        if (empty($trackingNumber) || empty($courier)) {
+            Message::addErrorMessage(Labels::getLabel('MSG_Invalid_request', $this->adminLangId));
+            FatUtility::dieWithError(Message::getHtml());
         }
 
-		$shipmentTracking = new ShipmentTracking();
-		if (false === $shipmentTracking->init($this->adminLangId)) {
-			Message::addErrorMessage($shipmentTracking->getError());
+        $shipmentTracking = new ShipmentTracking();
+        if (false === $shipmentTracking->init($this->adminLangId)) {
+            Message::addErrorMessage($shipmentTracking->getError());
             FatUtility::dieWithError(Message::getHtml());
-		}
-        
+        }
+
         $shipmentTracking->createTracking($trackingNumber, $courier, $orderNumber);
 
-		if (false === $shipmentTracking->getTrackingInfo($trackingNumber, $courier)) {
-			Message::addErrorMessage($shipmentTracking->getError());
+        if (false === $shipmentTracking->getTrackingInfo($trackingNumber, $courier)) {
+            Message::addErrorMessage($shipmentTracking->getError());
             FatUtility::dieWithError(Message::getHtml());
-		}
-		$trackingInfo = $shipmentTracking->getResponse();
-		
-		$this->set('trackingInfo', $trackingInfo);
-		$this->_template->render(false, false);
-	}
+        }
+        $trackingInfo = $shipmentTracking->getResponse();
+
+        $this->set('trackingInfo', $trackingInfo);
+        $this->_template->render(false, false);
+    }
 }

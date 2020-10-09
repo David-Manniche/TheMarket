@@ -630,8 +630,9 @@ class ConfigurationsController extends AdminBaseController
                 break;
 
             case Configurations::FORM_SEO:
-                $fld = $frm->addCheckBox(Labels::getLabel('LBL_Add_LANGUAGE_CODE_IN_URLS', $this->adminLangId), 'CONF_LANG_SPECIFIC_URL', 1, array(), false, 0);
-
+                $fld = $frm->addCheckBox(Labels::getLabel('LBL_ENABLE_LANGUAGE_CODE_TO_SITE_URLS_&_LANGUAGE_SPECIFIC_URL_REWRITING', $this->adminLangId), 'CONF_LANG_SPECIFIC_URL', 1, array(), false, 0);
+				$fld->htmlAfterField = '<small>' . Labels::getLabel("LBL_LANGUAGE_CODE_TO_SITE_URLS_EXAMPLES", $this->adminLangId) . '</small>';
+				
                 $fld = $frm->addTextBox(Labels::getLabel('LBL_Twitter_Username', $this->adminLangId), 'CONF_TWITTER_USERNAME');
                 $fld->htmlAfterField = '<small>' . Labels::getLabel("LBL_This_is_required_for_Twitter_Card_code_SEO_Update", $this->adminLangId) . '</small>';
 
@@ -682,25 +683,23 @@ class ConfigurationsController extends AdminBaseController
             case Configurations::FORM_PRODUCT:
                 $frm->addHtml('', 'Product', '<h3>' . Labels::getLabel('LBL_Product', $this->adminLangId) . '</h3>');
 
-                $fld4 = $frm->addCheckBox(
-                    Labels::getLabel("LBL_Allow_Seller_to_add_products", $this->adminLangId),
+                $frm->addCheckBox(
+                    Labels::getLabel("LBL_Allow_Sellers_to_add_products", $this->adminLangId),
                     'CONF_ENABLED_SELLER_CUSTOM_PRODUCT',
                     1,
                     array(),
                     false,
                     0
                 );
-                $fld4->htmlAfterField = '<br><small>' . Labels::getLabel("LBL_On_enabling_this_feature,_Products_option_will_enabled_for_seller_dashboard", $this->adminLangId) . '</small>';
 
-                $fld3 = $frm->addCheckBox(
-                    Labels::getLabel("LBL_Activate_Administrator_Approval_on_Products", $this->adminLangId),
+                $frm->addCheckBox(
+                    Labels::getLabel("LBL_Enable_Admin_Approval_on_Products_added_by_sellers", $this->adminLangId),
                     'CONF_CUSTOM_PRODUCT_REQUIRE_ADMIN_APPROVAL',
                     1,
                     array(),
                     false,
                     0
                 );
-                $fld3->htmlAfterField = '<br><small>' . Labels::getLabel("LBL_On_enabling_this_feature,_Products_required_admin_approval_to_display", $this->adminLangId) . '</small>';
 
 
                 /* $fld4 = $frm->addCheckBox(Labels::getLabel("LBL_Allow_Sellers_to_request_adding_new_products_to_the_Catalog",$this->adminLangId),'CONF_SELLER_CAN_REQUEST_PRODUCT',1,
@@ -708,37 +707,33 @@ class ConfigurationsController extends AdminBaseController
                 $fld4->htmlAfterField = '<br><small>' . Labels::getLabel("LBL_On_enabling_this_feature,_Seller_can_request_to_add_product_on_catalog",$this->adminLangId) . '</small>'; */
 
                 $fld4 = $frm->addCheckBox(
-                    Labels::getLabel("LBL_ALLOW_SELLERS_TO_REQUEST_PRODUCTS_WHICH_IS_AVAILABLE_TO_ALL_SELLERS", $this->adminLangId),
+                    Labels::getLabel("LBL_ALLOW_SELLERS_TO_REQUEST_PRODUCTS_WHICH_ARE_AVAILABLE_TO_ALL_SELLERS", $this->adminLangId),
                     'CONF_SELLER_CAN_REQUEST_CUSTOM_PRODUCT',
                     1,
                     array(),
                     false,
                     0
                 );
-                $fld4->htmlAfterField = '<br><small>' . Labels::getLabel("LBL_On_enabling_this_feature,_Seller_can_request_to_add_products_available_for_all_sellers", $this->adminLangId) . '</small>';
+                // $fld4->htmlAfterField = '<br><small>' . Labels::getLabel("LBL_On_enabling_this_feature,_Seller_can_request_to_add_products_available_for_all_sellers", $this->adminLangId) . '</small>';
 
-                $fld1 = $frm->addCheckBox(Labels::getLabel("LBL_Product's_Model_Mandatory", $this->adminLangId), 'CONF_PRODUCT_MODEL_MANDATORY', 1, array(), false, 0);
-                $fld1->htmlAfterField = "<br><small>" . Labels::getLabel("LBL_This_will_make_Product's_model_mandatory", $this->adminLangId) . "</small>";
+                $fld1 = $frm->addCheckBox(Labels::getLabel("LBL_Adding_Model_#_for_products_will_be_mandatory", $this->adminLangId), 'CONF_PRODUCT_MODEL_MANDATORY', 1, array(), false, 0);
 
-                $fld2 = $frm->addCheckBox(Labels::getLabel("LBL_Product's_SKU_Mandatory", $this->adminLangId), 'CONF_PRODUCT_SKU_MANDATORY', 1, array(), false, 0);
-                $fld2->htmlAfterField = "<br><small>" . Labels::getLabel("LBL_This_will_make_Product's_SKU_mandatory", $this->adminLangId) . "</small>";
+                $frm->addCheckBox(Labels::getLabel("LBL_Adding_SKU_for_products_will_be_mandatory", $this->adminLangId), 'CONF_PRODUCT_SKU_MANDATORY', 1, array(), false, 0);
 
-                $fld = $frm->addCheckBox(Labels::getLabel("LBL_Product's_Dimensions", $this->adminLangId), 'CONF_PRODUCT_DIMENSIONS_ENABLE', 1, array(), false, 0);
-                $fld->htmlAfterField = "<br><small>" . Labels::getLabel("LBL_On_enabling_this_feature,_dimensions_of_the_product_will_be_required_to_be_filled._Dimensions_are_required_in_case_of_Shipstation_API_(If_Enabled)_for_Live_Shipping_Charges", $this->adminLangId) . "</small>";
+                $fld = $frm->addCheckBox(Labels::getLabel("LBL_Enable_linking_shipping_packages_to_products", $this->adminLangId), 'CONF_PRODUCT_DIMENSIONS_ENABLE', 1, array(), false, 0);
+                $fld->htmlAfterField = "<br><small>" . Labels::getLabel("LBL_Shipping_packages_are_required_in_case_Shipping_API_is_enabled", $this->adminLangId) . "</small>";
 
-                $fld = $frm->addCheckBox(Labels::getLabel("LBL_Brand_Request_Approval", $this->adminLangId), 'CONF_BRAND_REQUEST_APPROVAL', 1, array(), false, 0);
+                $fld = $frm->addCheckBox(Labels::getLabel("LBL_Brands_requested_by_sellers_will_require_approval", $this->adminLangId), 'CONF_BRAND_REQUEST_APPROVAL', 1, array(), false, 0);
                 $fld->htmlAfterField = "<br><small>" . Labels::getLabel("LBL_On_Enabling_This_Feature,_Admin_Need_To_Approve_the_brand_requests_(User_Cannot_link_the_requested_brand_with_any_product_until_it_gets_approved_by_Admin)", $this->adminLangId) . "</small>";
 
-                $fld = $frm->addCheckBox(Labels::getLabel("LBL_Product_Category_Request_Approval", $this->adminLangId), 'CONF_PRODUCT_CATEGORY_REQUEST_APPROVAL', 1, array(), false, 0);
+                $fld = $frm->addCheckBox(Labels::getLabel("LBL_Categories_requested_by_sellers_will_require_approval", $this->adminLangId), 'CONF_PRODUCT_CATEGORY_REQUEST_APPROVAL', 1, array(), false, 0);
                 $fld->htmlAfterField = "<br><small>" . Labels::getLabel("LBL_On_Enabling_This_Feature,_Admin_Need_To_Approve_the_Product_category_requests_(User_Cannot_link_the_requested_category_with_any_product_until_it_gets_approved_by_Admin)", $this->adminLangId) . "</small>";
 
-                $brandFld = $frm->addCheckBox(Labels::getLabel("LBL_Product's_Brand_Mandatory", $this->adminLangId), 'CONF_PRODUCT_BRAND_MANDATORY', 1, array(), false, 0);
-                $brandFld->htmlAfterField = "<br><small>" . Labels::getLabel("LBL_This_will_make_Product's_brand_mandatory", $this->adminLangId) . "</small>";
+                $brandFld = $frm->addCheckBox(Labels::getLabel("LBL_Brand_will_be_mandatory_for_products", $this->adminLangId), 'CONF_PRODUCT_BRAND_MANDATORY', 1, array(), false, 0);
 				
-				$fld1 = $frm->addCheckBox(Labels::getLabel("LBL_Product_Inclusive_Tax", $this->adminLangId), 'CONF_PRODUCT_INCLUSIVE_TAX', 1, array(), false, 0);
-                $fld1->htmlAfterField = "<br><small>" . Labels::getLabel("LBL_This_will_make_Products_inclusive_tax", $this->adminLangId) . "</small>";
+				$fld1 = $frm->addCheckBox(Labels::getLabel("LBL_Product_prices_will_be_inclusive_of_tax", $this->adminLangId), 'CONF_PRODUCT_INCLUSIVE_TAX', 1, array(), false, 0);
 
-				$fld = $frm->addCheckBox(Labels::getLabel("LBL_Tax_code_for_categories", $this->adminLangId), 'CONF_TAX_CATEGORIES_CODE', 1, array(), false, 0);
+				$fld = $frm->addCheckBox(Labels::getLabel("LBL_Enable_tax_code_for_categories", $this->adminLangId), 'CONF_TAX_CATEGORIES_CODE', 1, array(), false, 0);
                 $fld->htmlAfterField = "<br><small>" . Labels::getLabel("LBL_This_will_enable_tax_categories_code", $this->adminLangId) . "</small>";
 				
                 $fulFillmentArr = Shipping::getFulFillmentArr($this->adminLangId);
