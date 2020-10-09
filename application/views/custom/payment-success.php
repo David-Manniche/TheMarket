@@ -109,9 +109,11 @@ if (Orders::ORDER_PRODUCT == $orderInfo['order_type']) {
                                         <?php foreach ($orderFulFillmentTypeArr as $orderAddDet) { ?>
                                             <p>
                                                 <strong>
-                                                    <?php 
-                                                    $opshippingDate = isset($orderAddDet['opshipping_date']) ? $orderAddDet['opshipping_date'] : '';
-                                                    echo '#' . $orderAddDet['op_invoice_number'] . ' : ' . $opshippingDate . ' ' . $orderAddDet['opshipping_time_slot_from'] . ' - ' . $orderAddDet['opshipping_time_slot_to']; 
+                                                    <?php
+                                                    $opshippingDate = isset($orderAddDet['opshipping_date']) ? $orderAddDet['opshipping_date'] . ' ' : '';
+                                                    $timeSlotFrom = isset($orderAddDet['opshipping_time_slot_from']) ? $orderAddDet['opshipping_time_slot_from'] . ' - ' : '';
+                                                    $timeSlotTo = isset($orderAddDet['opshipping_time_slot_to']) ? $orderAddDet['opshipping_time_slot_to'] : '';
+                                                    echo '#' . $orderAddDet['op_invoice_number'] . ' : ' . $opshippingDate . $timeSlotFrom . $timeSlotTo; 
                                                     ?>
                                                 </strong><br>
                                                 <?php echo $orderAddDet['addr_name']; ?>,
