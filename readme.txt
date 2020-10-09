@@ -191,10 +191,18 @@ Bugs:
     => 043566 - when new language is added and any page from footer or header (cms) is accessed then language changes itself
     => 043946 - Seller >> special price >> select all entries >> search something random >> if there is no data then remove button should get disappear. 2. if we clear the search then "remove " button should not be there because all entries are not selected now.
     => 043947 - Manage coupon >> if coupon is of percentage type then admin should not be able to enter more then 100 % in discount value 
+<<<<<<< HEAD
+    => 043938 - on product when wrong youtube link is added then getting corrupted video on front end 
+    => 044020 - Seller approval form fields are not editable. Neither can be deleted. 
+    => 044021 - Validation error message incorrect on forget password page 
+    => 044023 - Session issue with seller signup form.
+    => 043990 - Admin >> banner collection >> 1. alignment of image file and "translate to other lang" checkbox is not right . 2. text gets display outside of button
+=======
     => 043991 - On thankyou page >> when we choose "pay at pickup " as payment gateway then error gets display on thankyou, order details page .
     => 043994 - Seller >> my subscription >> some error is there. 
     => 043996 - Seller/ admin >> some error should get display if we didn't select any slot.
     => 043995 - Seller >> pickup address >> If there is no slot selected then some error is there on edit address.
+>>>>>>> 7518e92a2d8473eb46b8ac13898d645d49a8d171
 
 Enhancements:
     => Tax module upgrade

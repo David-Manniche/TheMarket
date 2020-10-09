@@ -1174,6 +1174,9 @@ class UsersController extends AdminBaseController
 
         $srch = SupplierFormFields::getSearchObject();
         $srch->addCondition('sf.sformfield_identifier', '=', $post['sformfield_identifier']);
+        if (0 < $post['sformfield_id']) {
+            $srch->addCondition('sf.sformfield_id', '!=', $post['sformfield_id']);
+        }
         $rs = $srch->getResultSet();
         $row = FatApp::getDb()->fetch($rs);
         if (!empty($row)) {
