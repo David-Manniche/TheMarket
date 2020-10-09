@@ -515,7 +515,7 @@ class Tax extends MyAppModel
         if (!empty($combinedData)) {
             foreach ($combinedData as $comData) {
                 $data['options'][$comData['taxruledet_id']]['taxstr_id'] = $comData['taxstr_id'];
-                $data['options'][$comData['taxruledet_id']]['name'] = $comData['taxstr_name'];
+                $data['options'][$comData['taxruledet_id']]['name'] = isset($comData['taxstr_name']) ? $comData['taxstr_name'] : $defaultTaxName;
                 $data['options'][$comData['taxruledet_id']]['percentageValue'] = $comData['taxruledet_rate'];
                 $data['options'][$comData['taxruledet_id']]['inPercentage'] = 1;
                 $data['options'][$comData['taxruledet_id']]['value'] = round((($prodPrice * $qty) * $comData['taxruledet_rate']) / 100, 2);
