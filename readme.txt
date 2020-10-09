@@ -194,6 +194,7 @@ Bugs:
     => 043938 - on product when wrong youtube link is added then getting corrupted video on front end 
     => 044020 - Seller approval form fields are not editable. Neither can be deleted. 
     => 044021 - Validation error message incorrect on forget password page 
+    => 044023 - Session issue with seller signup form.
 
 Enhancements:
     => Tax module upgrade
