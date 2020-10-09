@@ -1,4 +1,9 @@
-<?php defined('SYSTEM_INIT') or die('Invalid Usage.'); ?>
+<?php defined('SYSTEM_INIT') or die('Invalid Usage.');
+
+$cartTotal = isset($scartSummary['cartTotal']) ? $scartSummary['cartTotal'] : 0;
+$cartAdjustableAmount = isset($scartSummary['cartAdjustableAmount']) ? $scartSummary['cartAdjustableAmount'] : 0;
+$discountTotal = isset($scartSummary['cartDiscounts']) && isset($scartSummary['cartDiscounts']['coupon_discount_total']) ? $scartSummary['cartDiscounts']['coupon_discount_total'] : 0;
+?>
 <div class="section-head">
     <div class="section__heading">
         <h2><?php echo Labels::getLabel('LBL_Review_Order', $siteLangId); ?></h2>
@@ -45,24 +50,25 @@
             <table class="table--justify">
                 <tr>
                     <td><?php echo Labels::getLabel('LBL_Sub_Total', $siteLangId); ?></td>
-                    <td><?php echo CommonHelper::displayMoneyFormat($scartSummary['cartTotal'], true, false, true, false, true); ?></td>
+                    <td><?php echo CommonHelper::displayMoneyFormat($cartTotal, true, false, true, false, true); ?></td>
                 </tr>
-                <?php if (!empty($scartSummary['cartAdjustableAmount'])) { ?>
+                <?php if ($cartAdjustableAmount > 0) { ?>
                     <tr>
                         <td><?php echo Labels::getLabel('LBL_Adjusted_Amount', $siteLangId); ?> </td>
-                        <td><?php echo CommonHelper::displayMoneyFormat($scartSummary['cartAdjustableAmount'], true, false, true, false, true); ?></td>
+                        <td><?php echo CommonHelper::displayMoneyFormat($cartAdjustableAmount, true, false, true, false, true); ?></td>
                     </tr>
                 <?php } ?>
-                <?php if (!empty($scartSummary['cartDiscounts'])) { ?>
+                <?php if ($discountTotal > 0) { ?>
                     <tr>
                         <td><?php echo Labels::getLabel('LBL_Discount', $siteLangId); ?></td>
-                        <td><?php echo CommonHelper::displayMoneyFormat($scartSummary['cartDiscounts']['coupon_discount_total'], true, false, true, false, true); ?></td>
+                        <td><?php echo CommonHelper::displayMoneyFormat($discountTotal, true, false, true, false, true); ?></td>
                     </tr>
                 <?php } ?>
                 <tr>
                     <td class="hightlighted"><?php echo Labels::getLabel('LBL_You_Pay', $siteLangId); ?></td>
                     <td class="hightlighted">
-                        <?php echo $amount = CommonHelper::displayMoneyFormat($scartSummary['cartTotal'] - $scartSummary['cartAdjustableAmount'] - $scartSummary['cartDiscounts']['coupon_discount_total'], true, false, true, false, true); ?></td>
+                        <?php 
+                        echo $amount = CommonHelper::displayMoneyFormat($cartTotal - $cartAdjustableAmount - $discountTotal, true, false, true, false, true); ?></td>
 
 
                 </tr>
