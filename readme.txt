@@ -203,8 +203,9 @@ Bugs:
     => 043995 - Seller >> pickup address >> If there is no slot selected then some error is there on edit address.
     => 043992 - On Checkout >> when we select pickup address then label should not be "select address".
     => 043988 - Seller >> on shipping profile >> products >> if we click on "save changes " without entered product then blank entry gets display there 
+    => 043993 - search >> when we click on search field then blank bar gets display.
     => 043810 - Admin should not be able to delete tax category if any product is linked with that category . 
-
+-------------------TV-9.2.1.20201012-----------------------
 Enhancements:
     => Tax module upgrade
     => Test cases classes enhancements.

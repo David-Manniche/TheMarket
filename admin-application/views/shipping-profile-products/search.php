@@ -9,7 +9,7 @@
 			</div>
 			<?php if (isset($profileData['shipprofile_default']) && $profileData['shipprofile_default'] != 1) { ?>
 				<div class="col-auto">
-					<a href="javascript:0;" class="btn-clean btn-sm btn-icon btn-secondary" title="<?php echo Labels::getLabel('LBL_Remove_Product_from_profile', $adminLangId); ?>" onclick="removeProductFromProfile('<?php echo $product['product_id']; ?>')"><i class="fas fa-trash"></i></a>
+					<a href="javascript:void(0);" class="btn-clean btn-sm btn-icon btn-secondary" title="<?php echo Labels::getLabel('LBL_Remove_Product_from_profile', $adminLangId); ?>" onclick="removeProductFromProfile('<?php echo $product['product_id']; ?>')"><i class="fas fa-trash"></i></a>
 				</div>
 			<?php } ?>
 		</li>

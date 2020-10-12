@@ -898,14 +898,13 @@ $(document).ready(function() {
         /* if (keyword.trim().length < 3){           
             removeAutoSuggest();
             return;
-        }   */      
-        if (!$('#search-suggestions-js').find('div').hasClass('search-suggestions')){
-            $('#search-suggestions-js').html('<a href="javascript:void(0)" onClick="removeAutoSuggest()" class="close-layer"></a><div class="search-suggestions" id="tagsSuggetionList"></div>');   
-        }
-        
+        }   */              
         var data = 'keyword='+keyword;
         fcom.updateWithAjax(fcom.makeUrl('Products', 'searchProductTagsAutocomplete'), data, function(t) {     
             if(t.html.length > 0){
+                if (!$('#search-suggestions-js').find('div').hasClass('search-suggestions')){
+                    $('#search-suggestions-js').html('<a href="javascript:void(0)" onClick="removeAutoSuggest()" class="close-layer"></a><div class="search-suggestions" id="tagsSuggetionList"></div>');   
+                }
                 $('#tagsSuggetionList').html(t.html);                
             }else{
                 $('#search-suggestions-js').html('');
