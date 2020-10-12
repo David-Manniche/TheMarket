@@ -9,6 +9,10 @@ class ShippingProfileController extends SellerBaseController
 
     public function index()
     {
+        /* Add Default Shipping If Not Created */
+        ShippingProfile::getDefaultProfileId(UserAuthentication::getLoggedUserId());
+        /* Add Default Shipping If Not Created */
+        
         $searchFrm = $this->getSearchForm();
         $this->set("searchFrm", $searchFrm);
         $this->_template->render();

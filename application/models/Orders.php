@@ -201,7 +201,7 @@ class Orders extends MyAppModel
         $srchOrderStatus->doNotLimitRecords();
         $srchOrderStatus->addMultipleFields(array('orderstatus_priority'));
         $record = FatApp::getDb()->fetch($srchOrderStatus->getResultSet());
-        $orderStatusPriority = FatUtility::int($record['orderstatus_priority']);
+        $orderStatusPriority = !$record ? 0 : FatUtility::int($record['orderstatus_priority']);
 
         if ($langId > 0) {
             $srch->joinTable(

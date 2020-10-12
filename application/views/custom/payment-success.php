@@ -109,18 +109,23 @@ if (Orders::ORDER_PRODUCT == $orderInfo['order_type']) {
                                         <?php foreach ($orderFulFillmentTypeArr as $orderAddDet) { ?>
                                             <p>
                                                 <strong>
-                                                    <?php 
-                                                    $opshippingDate = isset($orderAddDet['opshipping_date']) ? $orderAddDet['opshipping_date'] : '';
-                                                    echo '#' . $orderAddDet['op_invoice_number'] . ' : ' . $opshippingDate . ' ' . $orderAddDet['opshipping_time_slot_from'] . ' - ' . $orderAddDet['opshipping_time_slot_to']; 
+                                                    <?php
+                                                    $opshippingDate = isset($orderAddDet['opshipping_date']) ? $orderAddDet['opshipping_date'] . ' ' : '';
+                                                    $timeSlotFrom = isset($orderAddDet['opshipping_time_slot_from']) ? $orderAddDet['opshipping_time_slot_from'] . ' - ' : '';
+                                                    $timeSlotTo = isset($orderAddDet['opshipping_time_slot_to']) ? $orderAddDet['opshipping_time_slot_to'] : '';
+                                                    echo '#' . $orderAddDet['op_invoice_number'] . ' : ' . $opshippingDate . $timeSlotFrom . $timeSlotTo; 
                                                     ?>
                                                 </strong><br>
                                                 <?php echo $orderAddDet['addr_name']; ?>,
                                                 <?php
-                                                echo $orderAddDet['addr_address1'];
-                                                if (!empty($orderAddDet['addr_address2'])) {
-                                                    echo ', ' . $orderAddDet['addr_address2'];
-                                                }
-                                                echo '<br>' . $orderAddDet['addr_city'] . ', ' . $orderAddDet['state_code'] . ' ' . $orderAddDet['country_code'] . '(' . $orderAddDet['addr_zip'] . ')';
+                                                $address1 = !empty($orderAddDet['addr_address1']) ? $orderAddDet['addr_address1'] : '';
+                                                $address2 = !empty($orderAddDet['addr_address2']) ? ', ' . $orderAddDet['addr_address2'] : '';
+                                                $city = !empty($orderAddDet['addr_city']) ? '<br>' . $orderAddDet['addr_city'] : '';
+                                                $state = !empty($orderAddDet['state_code']) ? ', ' . $orderAddDet['state_code'] : '';
+                                                $country = !empty($orderAddDet['country_code']) ? ' ' . $orderAddDet['country_code'] : '';
+                                                $zip = !empty($orderAddDet['addr_zip']) ? '(' . $orderAddDet['addr_zip'] . ')' : '';
+
+                                                echo $address1 . $address2 . $city . $state . $country . $zip;
                                                 ?>
                                             </p>
                                         <?php } ?>

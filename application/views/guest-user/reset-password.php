@@ -18,7 +18,7 @@
                     $frm->developerTags['fld_default_col'] = 12;
                     $frm->setFormTagAttribute('action', '');
                     $btnFld = $frm->getField('btn_submit');
-                    $btnFld->setFieldTagAttribute('class', 'btn-block');
+                    $btnFld->setFieldTagAttribute('class', 'btn btn-primary btn-block');
                     $frm->setFormTagAttribute('onSubmit', 'resetpwd(this, resetValObj); return(false);');
                     $passFld = $frm->getField('new_pwd');
                     $passFld->setFieldTagAttribute('placeholder', Labels::getLabel('LBL_NEW_PASSWORD', $siteLangId));

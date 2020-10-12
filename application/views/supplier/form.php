@@ -116,6 +116,7 @@ $frm->developerTags['fld_default_col'] = 12; */
                     <?php 
                     $btn = $frm->getField('btn_submit');
                     $btn->setFieldTagAttribute('class', 'btn btn-primary btn-wide');
+					$btn->developerTags['noCaptionTag'] = true;
                     echo $frm->getFieldHTML('btn_submit'); 
                     ?> 
             </div>

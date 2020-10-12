@@ -12,6 +12,9 @@ class SupplierController extends MyAppController
         if (UserAuthentication::isUserLogged() && (User::isSeller() || User::isSigningUpForSeller())) {
             FatApp::redirectUser(UrlHelper::generateUrl('seller'));
         }
+		if (isset($_SESSION['registered_supplier']['id'])) {
+            FatApp::redirectUser(UrlHelper::generateUrl('supplier', 'account'));
+        }
         if (UserAuthentication::isUserLogged()) {
             if (User::canViewSupplierTab()) {
                 FatApp::redirectUser(UrlHelper::generateUrl('account', 'supplierApprovalForm'));
@@ -729,4 +732,10 @@ class SupplierController extends MyAppController
         $frm->addHtml('', 'htmlNote','<a href="" class="">'.Labels::getLabel('Lbl_Click_Here',$this->siteLangId).'</a> '.Labels::getLabel('Lbl_to_contact_our_partners_near_your_location',$this->siteLangId));     */
         return $frm;
     }
+	
+	public function registerNewAccount()
+	{
+		unset($_SESSION['registered_supplier']['id']);
+		FatApp::redirectUser(UrlHelper::generateUrl('supplier'));
+	}
 }

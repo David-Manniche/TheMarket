@@ -59,7 +59,10 @@ $(document).ready(function () {
         if (!$(frm).validate()) return;
         if ($('input[name="shipprofile_id"]').val() <= 0) {
             $.mbsmessage(langLbl.saveProfileFirst, true, 'alert--danger');
-            /*fcom.displayErrorMessage(langLbl.saveProfileFirst);*/
+            return;
+        }
+		if ('' == $('input[name="shippro_product_id"]').val()) {
+            $.mbsmessage(langLbl.selectProduct, true, 'alert--danger');
             return;
         }
         var data = fcom.frmData(frm);

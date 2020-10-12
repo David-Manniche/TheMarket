@@ -7,13 +7,13 @@ class PickupAddressesController extends AdminBaseController
         parent::__construct($action);
         $this->objPrivilege->canViewPickupAddresses();
     }
-    
+
     public function index()
     {
         $this->set('canEdit', $this->objPrivilege->canEditPickupAddresses($this->admin_id, true));
         $this->_template->render();
     }
-    
+
     public function search()
     {
         $address = new Address(0, $this->adminLangId);
@@ -22,22 +22,22 @@ class PickupAddressesController extends AdminBaseController
         $this->set('canEdit', $this->objPrivilege->canEditPickupAddresses($this->admin_id, true));
         $this->_template->render(false, false);
     }
-    
+
     public function form($addressId = 0, $langId = 0)
     {
         $this->objPrivilege->canEditPickupAddresses();
         $stateId = 0;
         $slotData = [];
         $langId = FatUtility::int($langId);
-        if($langId == 0){
+        if ($langId == 0) {
             $langId = FatApp::getConfig('CONF_ADMIN_DEFAULT_LANG', FatUtility::VAR_INT, 1);
-        }        
+        }
         $addressId = FatUtility::int($addressId);
-        
+
         $frm = $this->getForm($addressId, $langId);
         $availability = TimeSlot::DAY_INDIVIDUAL_DAYS;
         if (0 < $addressId) {
-            $address = new Address($addressId, $langId);  
+            $address = new Address($addressId, $langId);
             $data = $address->getData(Address::TYPE_ADMIN_PICKUP, 0);
             if ($data === false) {
                 FatUtility::dieWithError($this->str_invalid_request);
@@ -47,7 +47,7 @@ class PickupAddressesController extends AdminBaseController
             $timeSlot = new TimeSlot();
             $timeSlots = $timeSlot->timeSlotsByAddrId($addressId);
             $timeSlotsRow = current($timeSlots);
-            $availability = $timeSlotsRow['tslot_availability'];
+            $availability = isset($timeSlotsRow['tslot_availability']) ? $timeSlotsRow['tslot_availability'] : 0;
 
             if ($availability == TimeSlot::DAY_ALL_DAYS) {
                 $data['tslot_from_all'] = date('H:i', strtotime($timeSlotsRow['tslot_from_time']));
@@ -57,12 +57,12 @@ class PickupAddressesController extends AdminBaseController
             $data['tslot_availability'] = $availability;
             $frm->fill($data);
 
-            if(!empty($timeSlots)){     
-                foreach($timeSlots as $key=>$slot){
+            if (!empty($timeSlots)) {
+                foreach ($timeSlots as $key => $slot) {
                     $slotData['tslot_day'][$slot['tslot_day']] = $slot['tslot_day'];
                     $slotData['tslot_from_time'][$slot['tslot_day']][] = $slot['tslot_from_time'];
                     $slotData['tslot_to_time'][$slot['tslot_day']][] = $slot['tslot_to_time'];
-                } 
+                }
             }
         }
 
@@ -75,7 +75,7 @@ class PickupAddressesController extends AdminBaseController
         $this->set('slotData', $slotData);
         $this->_template->render(false, false);
     }
-    
+
     private function getForm($addressId = 0, $langId)
     {
         $addressId = FatUtility::int($addressId);
@@ -99,58 +99,58 @@ class PickupAddressesController extends AdminBaseController
         $zipFld->requirements()->setCustomErrorMessage(Labels::getLabel('LBL_Only_alphanumeric_value_is_allowed.', $langId)); */
 
         $phnFld = $frm->addRequiredField(Labels::getLabel('LBL_Phone', $langId), 'addr_phone', '', array('class' => 'phone-js ltr-right', 'placeholder' => ValidateElement::PHONE_NO_FORMAT, 'maxlength' => ValidateElement::PHONE_NO_LENGTH));
-        $phnFld->requirements()->setRegularExpressionToValidate(ValidateElement::PHONE_REGEX);        
+        $phnFld->requirements()->setRegularExpressionToValidate(ValidateElement::PHONE_REGEX);
         $phnFld->requirements()->setCustomErrorMessage(Labels::getLabel('LBL_Please_enter_valid_phone_number_format.', $langId));
-        
-        $slotTimingsTypeArr = TimeSlot::getSlotTypeArr($this->adminLangId);
-        $frm->addRadioButtons(Labels::getLabel('LBL_Slot_Timings', $this->adminLangId), 'tslot_availability', $slotTimingsTypeArr, TimeSlot::DAY_INDIVIDUAL_DAYS);        
 
-        $daysArr = TimeSlot::getDaysArr($this->adminLangId);        
-        for($i = 0; $i< count($daysArr); $i++){  
-            $frm->addCheckBox($daysArr[$i], 'tslot_day['.$i.']', $i, array(), false);
-            $frm->addSelectBox(Labels::getLabel('LBL_From', $this->adminLangId), 'tslot_from_time['.$i.'][]', TimeSlot::getTimeSlotsArr(), '', array(), Labels::getLabel('LBL_Select', $this->adminLangId));
-            $frm->addSelectBox(Labels::getLabel('LBL_To', $this->adminLangId), 'tslot_to_time['.$i.'][]', TimeSlot::getTimeSlotsArr(), '', array(), Labels::getLabel('LBL_Select', $this->adminLangId));       
-            $frm->addButton('', 'btn_add_row['.$i.']', '+');           
+        $slotTimingsTypeArr = TimeSlot::getSlotTypeArr($this->adminLangId);
+        $frm->addRadioButtons(Labels::getLabel('LBL_Slot_Timings', $this->adminLangId), 'tslot_availability', $slotTimingsTypeArr, TimeSlot::DAY_INDIVIDUAL_DAYS);
+
+        $daysArr = TimeSlot::getDaysArr($this->adminLangId);
+        for ($i = 0; $i < count($daysArr); $i++) {
+            $frm->addCheckBox($daysArr[$i], 'tslot_day[' . $i . ']', $i, array(), false);
+            $frm->addSelectBox(Labels::getLabel('LBL_From', $this->adminLangId), 'tslot_from_time[' . $i . '][]', TimeSlot::getTimeSlotsArr(), '', array(), Labels::getLabel('LBL_Select', $this->adminLangId));
+            $frm->addSelectBox(Labels::getLabel('LBL_To', $this->adminLangId), 'tslot_to_time[' . $i . '][]', TimeSlot::getTimeSlotsArr(), '', array(), Labels::getLabel('LBL_Select', $this->adminLangId));
+            $frm->addButton('', 'btn_add_row[' . $i . ']', '+');
         }
-        
+
         $frm->addSelectBox(Labels::getLabel('LBL_From', $this->adminLangId), 'tslot_from_all', TimeSlot::getTimeSlotsArr(), '', array(), Labels::getLabel('LBL_Select', $this->adminLangId));
-        $frm->addSelectBox(Labels::getLabel('LBL_To', $this->adminLangId), 'tslot_to_all', TimeSlot::getTimeSlotsArr(), '', array(), Labels::getLabel('LBL_Select', $this->adminLangId));       
-            
+        $frm->addSelectBox(Labels::getLabel('LBL_To', $this->adminLangId), 'tslot_to_all', TimeSlot::getTimeSlotsArr(), '', array(), Labels::getLabel('LBL_Select', $this->adminLangId));
+
         $frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_Save_Changes', $langId));
         return $frm;
     }
-    
+
     public function setup()
-    {   
+    {
         $this->objPrivilege->canEditPickupAddresses();
-        $post = FatApp::getPostedData();    
-        $availability = FatApp::getPostedData('tslot_availability', FatUtility::VAR_INT, 1);    
+        $post = FatApp::getPostedData();
+        $availability = FatApp::getPostedData('tslot_availability', FatUtility::VAR_INT, 1);
         $post['addr_phone'] = !empty($post['addr_phone']) ? ValidateElement::convertPhone($post['addr_phone']) : '';
         $addrStateId = FatUtility::int($post['addr_state_id']);
 
         $slotFromAll = '';
         $slotToAll = '';
         $slotDays = [];
-        if($availability == TimeSlot::DAY_ALL_DAYS){
+        if ($availability == TimeSlot::DAY_ALL_DAYS) {
             $slotFromAll = $post['tslot_from_all'];
             $slotToAll = $post['tslot_to_all'];
-        }else{
+        } else {
             $slotDays = isset($post['tslot_day']) ? $post['tslot_day'] : array();
             $slotFromTime = $post['tslot_from_time'];
             $slotToTime = $post['tslot_to_time'];
         }
-        
-        $frm = $this->getForm($post['addr_id'], $post['lang_id']); 
-        $postedData = $frm->getFormDataFromArray($post);      
+
+        $frm = $this->getForm($post['addr_id'], $post['lang_id']);
+        $postedData = $frm->getFormDataFromArray($post);
         if (false === $postedData) {
             Message::addErrorMessage(current($frm->getValidationErrors()));
             FatUtility::dieJsonError(Message::getHtml());
-        }   
-        
+        }
+
         $addressId = $post['addr_id'];
         unset($post['addr_id']);
-        
-		$address = new Address($addressId);
+
+        $address = new Address($addressId);
         $data = $post;
         $data['addr_state_id'] = $addrStateId;
         $data['addr_lang_id'] = $post['lang_id'];
@@ -160,17 +160,17 @@ class PickupAddressesController extends AdminBaseController
             Message::addErrorMessage($address->getError());
             FatUtility::dieJsonError(Message::getHtml());
         }
-        
+
         $updatedAddressId = $address->getMainTableRecordId();
-        if(!FatApp::getDb()->deleteRecords(TimeSlot::DB_TBL, array('smt'=>'tslot_type = ? and tslot_record_id = ?', 'vals' => array(Address::TYPE_ADMIN_PICKUP, $updatedAddressId)))){
+        if (!FatApp::getDb()->deleteRecords(TimeSlot::DB_TBL, array('smt' => 'tslot_type = ? and tslot_record_id = ?', 'vals' => array(Address::TYPE_ADMIN_PICKUP, $updatedAddressId)))) {
             Message::addErrorMessage(FatApp::getDb()->getError());
             FatUtility::dieWithError(Message::getHtml());
         }
-            
-        if(!empty($slotDays) && $availability == TimeSlot::DAY_INDIVIDUAL_DAYS){
-            foreach($slotDays as $day){   
-                foreach($slotFromTime[$day] as $key=>$fromTime){
-                    if(!empty($fromTime) && !empty($slotToTime[$day][$key])){
+
+        if (!empty($slotDays) && $availability == TimeSlot::DAY_INDIVIDUAL_DAYS) {
+            foreach ($slotDays as $day) {
+                foreach ($slotFromTime[$day] as $key => $fromTime) {
+                    if (!empty($fromTime) && !empty($slotToTime[$day][$key])) {
                         $slotData['tslot_type'] = Address::TYPE_ADMIN_PICKUP;
                         $slotData['tslot_availability'] = $availability;
                         $slotData['tslot_record_id'] = $updatedAddressId;
@@ -187,10 +187,10 @@ class PickupAddressesController extends AdminBaseController
                 }
             }
         }
-        
-        if($availability == TimeSlot::DAY_ALL_DAYS && !empty($slotFromAll) && !empty($slotToAll)){
-            $daysArr = TimeSlot::getDaysArr($this->adminLangId);        
-            for($i = 0; $i< count($daysArr); $i++){ 
+
+        if ($availability == TimeSlot::DAY_ALL_DAYS && !empty($slotFromAll) && !empty($slotToAll)) {
+            $daysArr = TimeSlot::getDaysArr($this->adminLangId);
+            for ($i = 0; $i < count($daysArr); $i++) {
                 $slotData['tslot_type'] = Address::TYPE_ADMIN_PICKUP;
                 $slotData['tslot_availability'] = $availability;
                 $slotData['tslot_record_id'] = $updatedAddressId;
@@ -205,11 +205,11 @@ class PickupAddressesController extends AdminBaseController
                 }
             }
         }
-        
+
         $this->set('msg', Labels::getLabel('LBL_Updated_Successfully', $this->adminLangId));
         $this->_template->render(false, false, 'json-success.php');
     }
-    
+
     public function deleteRecord()
     {
         $this->objPrivilege->canEditPickupAddresses();
@@ -224,6 +224,4 @@ class PickupAddressesController extends AdminBaseController
         $this->set('msg', $this->str_delete_record);
         $this->_template->render(false, false, 'json-success.php');
     }
-
-    
 }
