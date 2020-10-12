@@ -589,9 +589,6 @@ class CheckoutController extends MyAppController
     {
         $this->cartObj->removeProductPickUpAddresses();
         $post = FatApp::getPostedData();
-        if (true === MOBILE_APP_API_CALL) {
-            $post['data'] = (!empty($post['data']) ? json_decode($post['data'], true) : array());
-        }
 
         $cartProducts = $this->cartObj->getProducts($this->siteLangId);
         $shippingRates = $this->cartObj->getShippingRates();
@@ -664,8 +661,6 @@ class CheckoutController extends MyAppController
             }
         }
 
-        $userId = UserAuthentication::getLoggedUserId();
-        //  $cartProducts = $this->cartObj->getProducts($this->siteLangId);    
         if (empty($cartProducts)) {
             $message = Labels::getLabel('MSG_Something_went_wrong,_please_try_after_some_time.', $this->siteLangId);
             LibHelper::exitWithError($message, true);
@@ -733,12 +728,15 @@ class CheckoutController extends MyAppController
 
             $this->set('msg', Labels::getLabel('MSG_Shipping_Method_selected_successfully.', $this->siteLangId));
             if (true === MOBILE_APP_API_CALL) {
-                $userWalletBalance = User::getUserBalance($user_id, true);
+                $fulfilmentType = FatApp::getPostedData('fulfilmentType', FatUtility::VAR_INT, Shipping::FULFILMENT_SHIP);
                 $cartObj = new Cart();
+                $cartObj->setFulfilmentType($fulfilmentType);
+                $cartObj->setCartCheckoutType($fulfilmentType);
+                $productsArr = $cartObj->getProducts($this->siteLangId);
                 $cartSummary = $cartObj->getCartFinancialSummary($this->siteLangId);
+                $this->set('products', $productsArr);
                 $this->set('cartSummary', $cartSummary);
                 $this->set('recordCount', !empty($cartProducts) ? count($cartProducts) : 0);
-                $this->set('userWalletBalance', $userWalletBalance);
                 $this->_template->render();
             }
             $this->_template->render(false, false, 'json-success.php');
@@ -2123,9 +2121,6 @@ class CheckoutController extends MyAppController
     {
         $this->cartObj->removeProductShippingMethod();
         $post = FatApp::getPostedData();
-        if (true === MOBILE_APP_API_CALL) {
-            $post['data'] = (!empty($post['data']) ? json_decode($post['data'], true) : array());
-        }
 
         $pickupAddressArr = array();
         //        $basketProducts = $this->cartObj->getBasketProducts($this->siteLangId);

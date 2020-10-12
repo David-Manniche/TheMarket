@@ -45,7 +45,7 @@ $priceDetail['priceDetail'] = array(
         'value' => count($products)
     ),
     array(
-        'key' => Labels::getLabel('LBL_Total', $siteLangId),
+        'key' => Labels::getLabel('LBL_SUB_TOTAL', $siteLangId),
         'value' => CommonHelper::displayMoneyFormat($cartTotal)
     )
 );

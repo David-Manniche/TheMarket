@@ -24,6 +24,7 @@ foreach ($shippingRates as $level => $levelItems) {
                     $productItems[$count]['rates']['data'][] = [
                         'title' => $shippingRate['title'],
                         'cost' => $shippingRate['cost'],
+                        'id' => $shippingRate['id'],
                     ];
                 }
             } else {
@@ -52,6 +53,7 @@ foreach ($shippingRates as $level => $levelItems) {
                         $productItems[$count]['rates']['data'][] = [
                             'title' => $shippingRate['title'],
                             'cost' => $shippingRate['cost'],
+                            'id' => $shippingRate['id'],
                         ];
                     }
                 } elseif ($product['product_type'] == Product::PRODUCT_TYPE_PHYSICAL) {
@@ -83,6 +85,7 @@ foreach ($shippingRates as $level => $levelItems) {
                         $productItems[$count]['rates']['data'][] = [
                             'title' => $shippingRate['title'],
                             'cost' => $shippingRate['cost'],
+                            'id' => $shippingRate['id'],
                         ];
                     }
                 } elseif ($product['product_type'] == Product::PRODUCT_TYPE_PHYSICAL) {
