@@ -29,8 +29,8 @@
                 </div>
                 <div class="col-auto">
                     <div class="dropdown">
-                        <a class="btn btn-clean btn-sm btn-icon" href="javascript:0;" onClick="zoneForm(<?php echo $profile_id; ?>, <?php echo $zone['shipzone_id'] ?>)" title="<?php echo Labels::getLabel("LBL_Edit", $adminLangId); ?>"><i class="fa fa-edit icon"></i></a>
-                        <a class="btn btn-clean btn-sm btn-icon" href="javascript:0;" onClick="deleteZone(<?php echo $shipProZoneId ?>)" title="<?php echo Labels::getLabel("LBL_Delete", $adminLangId); ?>"><i class="fa fa-trash  icon"></i></a>
+                        <a class="btn btn-clean btn-sm btn-icon" href="javascript:void(0);" onClick="zoneForm(<?php echo $profile_id; ?>, <?php echo $zone['shipzone_id'] ?>)" title="<?php echo Labels::getLabel("LBL_Edit", $adminLangId); ?>"><i class="fa fa-edit icon"></i></a>
+                        <a class="btn btn-clean btn-sm btn-icon" href="javascript:void(0);" onClick="deleteZone(<?php echo $shipProZoneId ?>)" title="<?php echo Labels::getLabel("LBL_Delete", $adminLangId); ?>"><i class="fa fa-trash  icon"></i></a>
 
                     </div>
                 </div>
@@ -69,8 +69,8 @@
                                 </td>
                                 <td>
                                     <div class="dropdown">
-                                        <a class="btn btn-clean btn-sm btn-icon" href="javascript:0;" onclick="addEditShipRates(<?php echo $rate['shiprate_shipprozone_id'] ?>, <?php echo $rate['shiprate_id'] ?>);" title="<?php echo Labels::getLabel("LBL_Edit", $adminLangId); ?>"><i class="fa fa-edit icon"></i></a>
-                                        <a class="btn btn-clean btn-sm btn-icon" href="javascript:0;" onClick="deleteRate(<?php echo $rate['shiprate_id'] ?>)" title="<?php echo Labels::getLabel("LBL_Delete", $adminLangId); ?>"><i class="fa fa-trash  icon"></i></a>
+                                        <a class="btn btn-clean btn-sm btn-icon" href="javascript:void(0);" onclick="addEditShipRates(<?php echo $rate['shiprate_shipprozone_id'] ?>, <?php echo $rate['shiprate_id'] ?>);" title="<?php echo Labels::getLabel("LBL_Edit", $adminLangId); ?>"><i class="fa fa-edit icon"></i></a>
+                                        <a class="btn btn-clean btn-sm btn-icon" href="javascript:void(0);" onClick="deleteRate(<?php echo $rate['shiprate_id'] ?>)" title="<?php echo Labels::getLabel("LBL_Delete", $adminLangId); ?>"><i class="fa fa-trash  icon"></i></a>
                                     </div>
                                 </td>
                             </tr>

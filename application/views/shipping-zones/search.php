@@ -28,10 +28,10 @@
                         <?php if ($canEdit) { ?>
                             <ul class="actions">
                                 <li>
-                                    <a href="javascript:0;" onClick="zoneForm(<?php echo $profile_id; ?>, <?php echo $zone['shipzone_id'] ?>)" title="<?php echo Labels::getLabel("LBL_Edit_Zone", $siteLangId); ?>"><i class="fa fa-edit"></i></a>
+                                    <a href="javascript:void(0);" onClick="zoneForm(<?php echo $profile_id; ?>, <?php echo $zone['shipzone_id'] ?>)" title="<?php echo Labels::getLabel("LBL_Edit_Zone", $siteLangId); ?>"><i class="fa fa-edit"></i></a>
                                 </li>
                                 <li>
-                                    <a href="javascript:0;" onClick="deleteZone(<?php echo $shipProZoneId ?>)" title="<?php echo Labels::getLabel("LBL_Delete_Zone", $siteLangId); ?>"><i class="fa fa-trash"></i></a>
+                                    <a href="javascript:void(0);" onClick="deleteZone(<?php echo $shipProZoneId ?>)" title="<?php echo Labels::getLabel("LBL_Delete_Zone", $siteLangId); ?>"><i class="fa fa-trash"></i></a>
                                 </li>
                                 <li>
                                     <a href="javascript:void(0)" title="<?php echo Labels::getLabel("LBL_Add_Rates", $siteLangId); ?>" onclick="addEditShipRates(<?php echo $shipProZoneId; ?>, 0);"><i class="fa fa-plus-square"></i></a>
@@ -76,10 +76,10 @@
                                         <?php if ($canEdit) { ?>
                                             <ul class="actions">
                                                 <li>
-                                                    <a href="javascript:0;" onclick="addEditShipRates(<?php echo $rate['shiprate_shipprozone_id'] ?>, <?php echo $rate['shiprate_id'] ?>);" title="<?php echo Labels::getLabel("LBL_Edit", $siteLangId); ?>"><i class="fa fa-edit"></i></a>
+                                                    <a href="javascript:void(0);" onclick="addEditShipRates(<?php echo $rate['shiprate_shipprozone_id'] ?>, <?php echo $rate['shiprate_id'] ?>);" title="<?php echo Labels::getLabel("LBL_Edit", $siteLangId); ?>"><i class="fa fa-edit"></i></a>
                                                 </li>
                                                 <li>
-                                                    <a href="javascript:0;" onClick="deleteRate(<?php echo $rate['shiprate_id'] ?>)" title="<?php echo Labels::getLabel("LBL_Delete", $siteLangId); ?>"><i class="fa fa-trash"></i></a>
+                                                    <a href="javascript:void(0);" onClick="deleteRate(<?php echo $rate['shiprate_id'] ?>)" title="<?php echo Labels::getLabel("LBL_Delete", $siteLangId); ?>"><i class="fa fa-trash"></i></a>
                                                 </li>
                                             </ul>
                                         <?php } ?>

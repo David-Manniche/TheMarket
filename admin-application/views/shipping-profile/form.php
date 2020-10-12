@@ -100,7 +100,7 @@ $frm->setFormTagAttribute('onsubmit', 'setupProfile(this); return(false);');
                                         </div>
                                         <div class="portlet__head-toolbar">
                                             <div class="portlet__head-actions">
-                                                <a href="javascript:0;" onClick="zoneForm(<?php echo $profile_id; ?>, 0)" class="link font-bolder"><i class="fa fa-plus icon"></i>
+                                                <a href="javascript:void(0);" onClick="zoneForm(<?php echo $profile_id; ?>, 0)" class="link font-bolder"><i class="fa fa-plus icon"></i>
                                                 </a>
                                             </div>
                                         </div>

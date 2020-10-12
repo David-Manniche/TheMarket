@@ -278,7 +278,7 @@ class MyAppController extends FatController
 
         $stateObj = new States();
         $statesArr = $stateObj->getStatesByCountryId($countryId, $this->siteLangId, true, $idCol);
-
+var_dump($statesArr);
         if (true === $return) {
             return $statesArr;
         }
@@ -289,7 +289,7 @@ class MyAppController extends FatController
     }
 
     public function getStatesByCountryCode($countryCode, $stateCode = '', $idCol = 'state_id')
-    {
+    { 
         $countryId = Countries::getCountryByCode($countryCode, 'country_id');
         $this->getStates($countryId, $stateCode, false, $idCol);
     }
