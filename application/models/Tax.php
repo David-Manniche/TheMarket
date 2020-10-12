@@ -46,26 +46,6 @@ class Tax extends MyAppModel
     }
 
     /**
-     * getStructureArr
-     *
-     * @param  int $langId
-     * @return array
-     */
-    public static function getStructureArr(int $langId): array
-    {
-        $langId = FatUtility::int($langId);
-        if ($langId == 0) {
-            trigger_error(Labels::getLabel('MSG_Language_Id_not_specified.', $langId), E_USER_ERROR);
-        }
-        $arr = array(
-            static::STRUCTURE_VAT => Labels::getLabel('LBL_VAT/SINGLE_TAX_SYSTEM', $langId),
-            static::STRUCTURE_GST => Labels::getLabel('LBL_GST', $langId),
-            static::STRUCTURE_COMBINED => Labels::getLabel('LBL_COMBINED', $langId),
-        );
-        return $arr;
-    }
-
-    /**
      * getSearchObject
      *
      * @return object
@@ -208,13 +188,11 @@ class Tax extends MyAppModel
     {
         $srch = $this->getSearchObject(0, false);
         $srch->addCondition('t.' . static::DB_TBL_PREFIX . 'id', '=', $id);
+        $srch->joinTable(static::DB_TBL_PRODUCT_TO_TAX, 'INNER JOIN', 'tpt.ptt_taxcat_id = t.taxcat_id', 'tpt');
         $srch->addFld('t.' . static::DB_TBL_PREFIX . 'id');
         $rs = $srch->getResultSet();
         $row = FatApp::getDb()->fetch($rs);
-        if (!empty($row) && $row[static::DB_TBL_PREFIX . 'id'] == $id) {
-            return true;
-        }
-        return false;
+        return empty($row);
     }
 
     /**

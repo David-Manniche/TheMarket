@@ -314,7 +314,8 @@ class TaxController extends AdminBaseController
         }
         $taxtObj = new Tax($taxcat_id);
         if (!$taxtObj->canRecordMarkDelete($taxcat_id)) {
-            Message::addErrorMessage($this->str_invalid_request_id);
+            $msg = Labels::getLabel('MSG_PLEASE_UNLINK_ALL_THE_PRODUCTS_FIRST', $this->adminLangId);
+            Message::addErrorMessage($msg);
             FatUtility::dieJsonError(Message::getHtml());
         }
 
