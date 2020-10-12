@@ -485,7 +485,9 @@ class Shipping
         $defaultShippingRates = [];
         $priceOrWeightCost = '';
         $priceOrWeightCostId = 0;
-
+        uasort($rates, function ($a, $b) {
+            return  $b['shiprate_condition_type'] - $a['shiprate_condition_type'];
+        });
         foreach ($rates as $key => $rate) {
             switch ($rate['shiprate_condition_type']) {
 
@@ -510,14 +512,15 @@ class Shipping
                         unset($rates[$rate['id']]);
                         continue 2;
                     }
-                    $priceOrWeightCost = $rate['cost'];
-                    $priceOrWeightCostId = $rate['id'];
                     $defaultShippingRates[] = $rate['id'];
                     break;
             }
 
             if (in_array($rate['shiprate_condition_type'], [ShippingRate::CONDITION_TYPE_PRICE, ShippingRate::CONDITION_TYPE_WEIGHT])) {
-                if ($priceOrWeightCost != '' && $priceOrWeightCost < $rate['cost']) {
+                if ($priceOrWeightCost == '' && true == $priceOrWeighCondMatched) {
+                    $priceOrWeightCost = $rate['cost'];
+                    $priceOrWeightCostId = $rate['id'];
+                } elseif ($priceOrWeightCost != '' && $priceOrWeightCost < $rate['cost']) {
                     unset($rates[$priceOrWeightCostId]);
                     $priceOrWeightCost = $rate['cost'];
                     $priceOrWeightCostId = $rate['id'];
