@@ -801,3 +801,5 @@ ALTER TABLE `tbl_shops` ADD `shop_invoice_prefix` VARCHAR(20) NOT NULL AFTER `sh
 ALTER TABLE `tbl_shop_specifics` ADD `shop_invoice_codes` VARCHAR(255) NOT NULL AFTER `shop_cancellation_age`;
 
 -- -------------TV-9.2.1.20201008-------------------
+
+UPDATE `tbl_shops` SET `shop_fulfillment_type`=2 WHERE `shop_fulfillment_type` = 0;
