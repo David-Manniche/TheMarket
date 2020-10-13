@@ -206,7 +206,9 @@ Bugs:
     => 043993 - search >> when we click on search field then blank bar gets display.
     => 043810 - Admin should not be able to delete tax category if any product is linked with that category . 
 -------------------TV-9.2.1.20201012-----------------------
-    #043719 - Seller shipping profile >> If we have condition for price then max value has to be multiple of product    price then only this shipping will get display at checkout.
+    => 043719 - Seller shipping profile >> If we have condition for price then max value has to be multiple of product price then only this shipping will get display at checkout.
+    => 043783 - if "Product Inclusive Tax" setting is on then tax should not get display on cart and it should get display only after selecting billing address. 
+
 Enhancements:
     => Tax module upgrade
     => Test cases classes enhancements.

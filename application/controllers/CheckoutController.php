@@ -2085,7 +2085,8 @@ class CheckoutController extends MyAppController
         $this->cartObj->disableCache();
         $cartSummary = $this->cartObj->getCartFinancialSummary($this->siteLangId);
         $products = $this->cartObj->getProducts($this->siteLangId);
-
+        $shippingAddress = $this->cartObj->getCartShippingAddress();
+		$this->set('shippingAddress', $shippingAddress);
         $this->set('products', $products);
         $this->set('cartSummary', $cartSummary);
         $this->_template->render(false, false);
