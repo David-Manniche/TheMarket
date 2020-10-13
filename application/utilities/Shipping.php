@@ -322,11 +322,11 @@ class Shipping
     {
         foreach ($this->selProdShipRates as $rateId => $rates) {
             $product = $productInfo[$rates['selprod_id']];
-            $shippedBy = self::BY_ADMIN;
+            $shippedBy = -1; /*Shipped by admin */
             $shippingLevel = self::LEVEL_PRODUCT;
 
             if ($rates['shiippingBySeller']) {
-                $shippedBy = self::BY_SHOP;
+                $shippedBy = $product['shop_id'];
             }
 
             if ($rates['shipprofile_default']) {
@@ -351,27 +351,27 @@ class Shipping
             ];
             unset($physicalSelProdIdArr[$rates['selprod_id']]);
 
-            $this->shippedByArr[$shippingLevel]['products'][$rates['selprod_id']] = $product;
-
             switch ($shippingLevel) {
                 case self::LEVEL_PRODUCT:
-                    $this->shippedByArr[$shippingLevel]['shipping_options'][$rates['selprod_id']][] = $rates;
+                    $this->shippedByArr[$shippedBy][$shippingLevel]['products'][$rates['selprod_id']] = $product;
+                    $this->shippedByArr[$shippedBy][$shippingLevel]['shipping_options'][$rates['selprod_id']][] = $rates;
 
-                    if (isset($this->shippedByArr[$shippingLevel]['rates'][$rates['selprod_id']][$rates['shiprate_id']]) && $this->shippedByArr[$shippingLevel]['rates'][$rates['selprod_id']][$rates['shiprate_id']] != null) {
-                        $this->setCost($this->shippedByArr[$shippingLevel]['rates'][$rates['selprod_id']][$rates['shiprate_id']], $shippingCost);
+                    if (isset($this->shippedByArr[$shippedBy][$shippingLevel]['rates'][$rates['selprod_id']][$rates['shiprate_id']]) && $this->shippedByArr[$shippedBy][$shippingLevel]['rates'][$rates['selprod_id']][$rates['shiprate_id']] != null) {
+                        $this->setCost($this->shippedByArr[$shippedBy][$shippingLevel]['rates'][$rates['selprod_id']][$rates['shiprate_id']], $shippingCost);
                     }
-                    $this->shippedByArr[$shippingLevel]['rates'][$rates['selprod_id']][$rates['shiprate_id']] = $shippingCost;
+                    $this->shippedByArr[$shippedBy][$shippingLevel]['rates'][$rates['selprod_id']][$rates['shiprate_id']] = $shippingCost;
                     break;
                 case self::LEVEL_ORDER:
                 case self::LEVEL_SHOP:
-                    $this->shippedByArr[$shippingLevel]['shipping_options'][$rates['shiprate_id']] = $rates;
-                    if (isset($this->shippedByArr[$shippingLevel]['rates'][$rates['shiprate_id']]) && $this->shippedByArr[$shippingLevel]['rates'][$rates['shiprate_id']] != null) {
-                        $this->setCost($this->shippedByArr[$shippingLevel]['rates'][$rates['shiprate_id']], $shippingCost);
+                    $this->shippedByArr[$shippedBy][$shippingLevel]['products'][$rates['selprod_id']] = $product;
+                    $this->shippedByArr[$shippedBy][$shippingLevel]['shipping_options'][$rates['shiprate_id']] = $rates;
+                    if (isset($this->shippedByArr[$shippedBy][$shippingLevel]['rates'][$rates['shiprate_id']]) && $this->shippedByArr[$shippedBy][$shippingLevel]['rates'][$rates['shiprate_id']] != null) {
+                        $this->setCost($this->shippedByArr[$shippedBy][$shippingLevel]['rates'][$rates['shiprate_id']], $shippingCost);
                     }
-                    $this->shippedByArr[$shippingLevel]['rates'][$rates['shiprate_id']] = $shippingCost;
+                    $this->shippedByArr[$shippedBy][$shippingLevel]['rates'][$rates['shiprate_id']] = $shippingCost;
                     break;
             }
-            $this->shippedByArr[$shippingLevel]['pickup_options'] = [];
+            $this->shippedByArr[$shippedBy][$shippingLevel]['pickup_options'] = [];
         }
         $this->setCombinedCharges();
         return true;
@@ -436,38 +436,97 @@ class Shipping
      */
     private function setCombinedCharges(): bool
     {
-        $levels = array_keys($this->shippedByArr);
+        $shipppedByArr = array_keys($this->shippedByArr);
+        sort($shipppedByArr);
+        $weightUnitsArr = applicationConstants::getWeightUnitsArr($this->langId);
+        foreach ($shipppedByArr as $shipppedBy) {
+            $levels = array_keys($this->shippedByArr[$shipppedBy]);
+            foreach ($levels as $level) {
+                switch ($level) {
+                    case self::LEVEL_PRODUCT:
+                        foreach ($this->shippedByArr[$shipppedBy][$level]['products'] as $selProdId => $product) {
+                            $prodCombinedWeight = 0;
+                            $prodCombinedPrice = 0;
+
+                            $prodWeight = $product['product_weight'] * $product['quantity'];
+                            $productWeightClass = isset($weightUnitsArr[$product['product_weight_unit']]) ? $weightUnitsArr[$product['product_weight_unit']] : '';
+                            $productWeightInOunce = static::convertWeightInOunce($prodWeight, $productWeightClass);
+                            $prodCombinedWeight = $prodCombinedWeight + $productWeightInOunce;
+
+                            $prodCombinedPrice = $prodCombinedPrice + ($product['theprice'] * $product['quantity']);
+                            $this->filterShippingRates($this->shippedByArr[$shipppedBy][$level]['rates'][$selProdId], $prodCombinedWeight, $prodCombinedPrice);
+                        }
+                        break;
+                    case self::LEVEL_ORDER:
+                    case self::LEVEL_SHOP:
+                        $prodCombinedWeight = 0;
+                        $prodCombinedPrice = 0;
+                        foreach ($this->shippedByArr[$shipppedBy][$level]['products'] as $selProdId => $product) {
+                            $prodWeight = $product['product_weight'] * $product['quantity'];
+                            $productWeightClass = isset($weightUnitsArr[$product['product_weight_unit']]) ? $weightUnitsArr[$product['product_weight_unit']] : '';
+                            $productWeightInOunce = static::convertWeightInOunce($prodWeight, $productWeightClass);
+                            $prodCombinedWeight = $prodCombinedWeight + $productWeightInOunce;
+
+                            $prodCombinedPrice = $prodCombinedPrice + ($product['theprice'] * $product['quantity']);
+                        }
+                        $this->filterShippingRates($this->shippedByArr[$shipppedBy][$level]['rates'], $prodCombinedWeight, $prodCombinedPrice);
+
+                        /* foreach ($this->shippedByArr[$shipppedBy][$level]['products'] as $selProdId => $productData) {
+                            $prodCombinedWeight = 0;
+                            $prodCombinedPrice = 0;
+                            foreach ($productData as $product) {
+                                $prodWeight = $product['product_weight'] * $product['quantity'];
+                                $productWeightClass = isset($weightUnitsArr[$product['product_weight_unit']]) ? $weightUnitsArr[$product['product_weight_unit']] : '';
+                                $productWeightInOunce = static::convertWeightInOunce($prodWeight, $productWeightClass);
+                                $prodCombinedWeight = $prodCombinedWeight + $productWeightInOunce;
+
+                                $prodCombinedPrice = $prodCombinedPrice + ($product['theprice'] * $product['quantity']);
+                            }
+                            $this->filterShippingRates($this->shippedByArr[$shipppedBy][$level]['rates'][$selProdId], $prodCombinedWeight, $prodCombinedPrice);
+                        } */
+                        break;
+                }
+            }
+        }
+
+
+        /* $levels = array_keys($this->shippedByArr);
         $weightUnitsArr = applicationConstants::getWeightUnitsArr($this->langId);
 
         foreach ($levels as $level) {
-            if ($level == self::LEVEL_PRODUCT) {
-                foreach ($this->shippedByArr[$level]['products'] as $selProdId => $product) {
-                    $prodCombinedWeight = 0;
-                    $prodCombinedPrice = 0;
+            switch ($level) {
+                case self::LEVEL_PRODUCT:
+                    foreach ($this->shippedByArr[$level]['products'] as $selProdId => $product) {
+                        $prodCombinedWeight = 0;
+                        $prodCombinedPrice = 0;
 
-                    $prodWeight = $product['product_weight'] * $product['quantity'];
-                    $productWeightClass = isset($weightUnitsArr[$product['product_weight_unit']]) ? $weightUnitsArr[$product['product_weight_unit']] : '';
-                    $productWeightInOunce = static::convertWeightInOunce($prodWeight, $productWeightClass);
-                    $prodCombinedWeight = $prodCombinedWeight + $productWeightInOunce;
+                        $prodWeight = $product['product_weight'] * $product['quantity'];
+                        $productWeightClass = isset($weightUnitsArr[$product['product_weight_unit']]) ? $weightUnitsArr[$product['product_weight_unit']] : '';
+                        $productWeightInOunce = static::convertWeightInOunce($prodWeight, $productWeightClass);
+                        $prodCombinedWeight = $prodCombinedWeight + $productWeightInOunce;
 
-                    $prodCombinedPrice = $prodCombinedPrice + ($product['theprice'] * $product['quantity']);
-                    $this->filterShippingRates($this->shippedByArr[$level]['rates'][$selProdId], $prodCombinedWeight, $prodCombinedPrice);
-                }
-            } else {
-                $prodCombinedWeight = 0;
-                $prodCombinedPrice = 0;
-                foreach ($this->shippedByArr[$level]['products'] as $product) {
-                    $prodWeight = $product['product_weight'] * $product['quantity'];
-                    $productWeightClass = isset($weightUnitsArr[$product['product_weight_unit']]) ? $weightUnitsArr[$product['product_weight_unit']] : '';
-                    $productWeightInOunce = static::convertWeightInOunce($prodWeight, $productWeightClass);
-                    $prodCombinedWeight = $prodCombinedWeight + $productWeightInOunce;
+                        $prodCombinedPrice = $prodCombinedPrice + ($product['theprice'] * $product['quantity']);
+                        $this->filterShippingRates($this->shippedByArr[$level]['rates'][$selProdId], $prodCombinedWeight, $prodCombinedPrice);
+                    }
+                    break;
+                case self::LEVEL_ORDER:
+                case self::LEVEL_SHOP:
+                    foreach ($this->shippedByArr[$level]['products'] as $adminOrshopId => $productData) {
+                        $prodCombinedWeight = 0;
+                        $prodCombinedPrice = 0;
+                        foreach ($productData as $product) {
+                            $prodWeight = $product['product_weight'] * $product['quantity'];
+                            $productWeightClass = isset($weightUnitsArr[$product['product_weight_unit']]) ? $weightUnitsArr[$product['product_weight_unit']] : '';
+                            $productWeightInOunce = static::convertWeightInOunce($prodWeight, $productWeightClass);
+                            $prodCombinedWeight = $prodCombinedWeight + $productWeightInOunce;
 
-                    $prodCombinedPrice = $prodCombinedPrice + ($product['theprice'] * $product['quantity']);
-                }
-
-                $this->filterShippingRates($this->shippedByArr[$level]['rates'], $prodCombinedWeight, $prodCombinedPrice);
+                            $prodCombinedPrice = $prodCombinedPrice + ($product['theprice'] * $product['quantity']);
+                        }
+                        $this->filterShippingRates($this->shippedByArr[$level]['rates'][$adminOrshopId], $prodCombinedWeight, $prodCombinedPrice);
+                    }
+                    break;
             }
-        }
+        } */
         return true;
     }
 

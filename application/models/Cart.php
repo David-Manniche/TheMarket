@@ -1047,7 +1047,6 @@ class Cart extends FatModel
                     $codEnabled = true;
                 }
                 $isCodEnabled = $codEnabled;
-
                 if ($product['is_batch']) {
                     //$cartTotalBatch += $product['prodgroup_total'];
                     $cartTotal += $product['prodgroup_total'];
@@ -1151,7 +1150,6 @@ class Cart extends FatModel
             'taxOptions' => $taxOptions,
             'prodTaxOptions' => $prodTaxOptions,
         );
-
         return $cartSummary;
     }
 
@@ -1715,24 +1713,28 @@ class Cart extends FatModel
             return false;
         }
 
+        $shippedByArr = array_keys($shippingOptions);
         $shippingRates = [];
-        foreach ($shippingOptions as $level => $levelItems) {
-            if (count($levelItems['rates']) <= 0) {
-                continue;
-            }
-            if (count($levelItems['rates']) > 0 && $level != Shipping::LEVEL_PRODUCT) {
-                $name = current($levelItems['rates'])['code'];
-                $shippingRates[$name] =  $levelItems['rates'];
-            } else if (isset($levelItems['products'])) {
-                foreach ($levelItems['products'] as $product) {
-                    if (count($levelItems['rates'][$product['selprod_id']]) <= 0) {
-                        continue;
+        foreach ($shippedByArr as $hippedBy) {
+            foreach ($shippingOptions[$hippedBy] as $level => $levelItems) {
+                if (count($levelItems['rates']) <= 0) {
+                    continue;
+                }
+                if (count($levelItems['rates']) > 0 && $level != Shipping::LEVEL_PRODUCT) {
+                    $name = current($levelItems['rates'])['code'];
+                    $shippingRates[$name] =  $levelItems['rates'];
+                } else if (isset($levelItems['products'])) {
+                    foreach ($levelItems['products'] as $product) {
+                        if (count($levelItems['rates'][$product['selprod_id']]) <= 0) {
+                            continue;
+                        }
+                        $name = current($levelItems['rates'][$product['selprod_id']])['code'];
+                        $shippingRates[$name] =  $levelItems['rates'][$product['selprod_id']];
                     }
-                    $name = current($levelItems['rates'][$product['selprod_id']])['code'];
-                    $shippingRates[$name] =  $levelItems['rates'][$product['selprod_id']];
                 }
             }
         }
+
         return $shippingRates;
     }
 
@@ -1816,9 +1818,9 @@ class Cart extends FatModel
         /*Include digital products */
         if (!empty($digitalSelProdIdArr)) {
             foreach ($digitalSelProdIdArr as $selProdId) {
-                $shippedByArr[Shipping::LEVEL_PRODUCT]['digital_products'][$selProdId] = $productInfo[$selProdId];
-                $shippedByArr[Shipping::LEVEL_PRODUCT]['shipping_options'][$selProdId] = [];
-                $shippedByArr[Shipping::LEVEL_PRODUCT]['rates'][$selProdId] = [];
+                $shippedByArr[$productInfo[$selProdId]['shop_id']][Shipping::LEVEL_PRODUCT]['digital_products'][$selProdId] = $productInfo[$selProdId];
+                $shippedByArr[$productInfo[$selProdId]['shop_id']][Shipping::LEVEL_PRODUCT]['shipping_options'][$selProdId] = [];
+                $shippedByArr[$productInfo[$selProdId]['shop_id']][Shipping::LEVEL_PRODUCT]['rates'][$selProdId] = [];
             }
         }
 
