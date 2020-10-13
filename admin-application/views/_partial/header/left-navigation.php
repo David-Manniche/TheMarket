@@ -514,7 +514,7 @@
                     <li><a href="<?php echo UrlHelper::generateUrl('ShippingCompanyUsers');?>"><?php echo Labels::getLabel('LBL_Shipping_Company_Users', $adminLangId);?></a></li>
                     <?php } ?>
 
-                    <?php if ($objPrivilege->canViewShippingPackages(AdminAuthentication::getLoggedAdminId(), true)) { ?>
+                    <?php if ($objPrivilege->canViewShippingPackages(AdminAuthentication::getLoggedAdminId(), true) && FatApp::getConfig("CONF_PRODUCT_DIMENSIONS_ENABLE", FatUtility::VAR_INT, 1)) { ?>
                         <li><a href="<?php echo UrlHelper::generateUrl('shippingPackages'); ?>"><?php echo Labels::getLabel('LBL_Shipping_Packages', $adminLangId);?></a></li>
                     <?php } ?>
 

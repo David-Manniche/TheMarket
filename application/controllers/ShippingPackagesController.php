@@ -4,6 +4,12 @@ class ShippingPackagesController extends SellerBaseController
     public function __construct($action)
     {
         parent::__construct($action);
+        if (1 > FatApp::getConfig("CONF_PRODUCT_DIMENSIONS_ENABLE", FatUtility::VAR_INT, 1)) {
+            $msg = Labels::getLabel('LBL_PRODUCT_DIMENSION_SETTING_NOT_ENABLED', $this->siteLangId);
+            Message::addErrorMessage($msg);
+            CommonHelper::redirectUserReferer();
+        }
+
         $this->userPrivilege->canViewShippingPackages(UserAuthentication::getLoggedUserId());
     }
     

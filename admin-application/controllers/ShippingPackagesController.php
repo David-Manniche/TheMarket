@@ -4,6 +4,11 @@ class ShippingPackagesController extends AdminBaseController
     public function __construct($action)
     {
         parent::__construct($action);
+        if (1 > FatApp::getConfig("CONF_PRODUCT_DIMENSIONS_ENABLE", FatUtility::VAR_INT, 1)) {
+            $msg = Labels::getLabel('LBL_PLEASE_TURN_ON_PRODUCT_DIMENSION_SETTING_FIRST_GENERAL_SETTINGS_>_PRODUCT', $this->adminLangId);
+            Message::addErrorMessage($msg);
+            FatApp::redirectUser(UrlHelper::generateUrl('configurations'));
+        }
         $this->objPrivilege->canViewShippingPackages();
     }
     

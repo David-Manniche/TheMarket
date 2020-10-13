@@ -133,7 +133,7 @@ $action = strtolower($action);
                             </div>
                         </li>
                     <?php } ?>
-                    <?php if ($userPrivilege->canViewShippingPackages(UserAuthentication::getLoggedUserId(), true)) { ?>
+                    <?php if ($userPrivilege->canViewShippingPackages(UserAuthentication::getLoggedUserId(), true) && FatApp::getConfig("CONF_PRODUCT_DIMENSIONS_ENABLE", FatUtility::VAR_INT, 1)) { ?>
                         <li class="menu__item <?php echo ($controller == 'shippingpackages') ? 'is-active' : ''; ?>">
                             <div class="menu__item__inner">
                                 <a title="<?php echo Labels::getLabel('LBL_Shipping_Packages', $siteLangId); ?>" href="<?php echo UrlHelper::generateUrl('shippingPackages'); ?>">
