@@ -38,7 +38,7 @@
     <div class="tablewrap">
         <?php
         $arr_flds = array(
-            'listserial' => Labels::getLabel('LBL_Sr_no.', $adminLangId),
+            'listserial' => Labels::getLabel('LBL_#', $adminLangId),
             SellerPackagePlans::DB_TBL_PREFIX . 'price' => Labels::getLabel('LBL_Plan_Price', $adminLangId),
             'action' => '',
         );

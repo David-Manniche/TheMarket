@@ -754,7 +754,7 @@ if (!$print) { ?>
                                 <tbody>
                                     <tr class="">
                                         <th>
-                                            <?php echo Labels::getLabel('LBL_Sr_No', $siteLangId); ?>
+                                            <?php echo Labels::getLabel('LBL_#', $siteLangId); ?>
                                         </th>
                                         <th>
                                             <?php echo Labels::getLabel('LBL_File', $siteLangId); ?>
@@ -845,7 +845,7 @@ if (!$print) { ?>
                                 <tbody>
                                     <tr class="">
                                         <th>
-                                            <?php echo Labels::getLabel('LBL_Sr_No', $siteLangId); ?>
+                                            <?php echo Labels::getLabel('LBL_#', $siteLangId); ?>
                                         </th>
                                         <th>
                                             <?php echo Labels::getLabel('LBL_Link', $siteLangId); ?>

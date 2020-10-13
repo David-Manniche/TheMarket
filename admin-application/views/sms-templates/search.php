@@ -1,11 +1,11 @@
 <?php defined('SYSTEM_INIT') or die('Invalid Usage.');
 $arr_flds = array(
-        'select_all' => Labels::getLabel('LBL_Select_all', $adminLangId),
-        'listserial' => Labels::getLabel('LBL_Sr_no.', $adminLangId),
-        'stpl_name' => Labels::getLabel('LBL_name', $adminLangId),
-        'stpl_status' => Labels::getLabel('LBL_Status', $adminLangId),
-        // 'action' => Labels::getLabel('LBL_Action', $adminLangId),
-    );
+    'select_all' => Labels::getLabel('LBL_Select_all', $adminLangId),
+    'listserial' => Labels::getLabel('LBL_#', $adminLangId),
+    'stpl_name' => Labels::getLabel('LBL_name', $adminLangId),
+    'stpl_status' => Labels::getLabel('LBL_Status', $adminLangId),
+    // 'action' => Labels::getLabel('LBL_Action', $adminLangId),
+);
 if (!$canEdit) {
     unset($arr_flds['select_all']);
 }
@@ -41,7 +41,7 @@ foreach ($arr_listing as $sn => $row) {
                     $active = '';
                     $statucAct = 'makeActive(this)';
                 }
-                
+
                 $statucAct = ($canEdit === true) ? $statucAct : '';
 
                 $str = '<label id="' . $row['stpl_code'] . '" class="statustab ' . $active . '" onclick="' . $statucAct . '">
@@ -91,7 +91,7 @@ echo $tbl->getHtml(); ?>
 </form>
 <?php $postedData['page'] = $page;
 echo FatUtility::createHiddenFormFromData($postedData, array(
-        'name' => 'frmStplsSrchPaging'
+    'name' => 'frmStplsSrchPaging'
 ));
 $pagingArr = array('pageCount' => $pageCount, 'page' => $page, 'recordCount' => $recordCount, 'adminLangId' => $adminLangId);
 $this->includeTemplate('_partial/pagination.php', $pagingArr, false);

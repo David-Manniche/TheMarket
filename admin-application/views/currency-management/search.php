@@ -3,7 +3,7 @@
 $arr_flds = array(
         'dragdrop' => '',
         'select_all' => Labels::getLabel('LBL_Select_all', $adminLangId),
-        'listserial' =>  Labels::getLabel('LBL_Sr._No', $adminLangId) ,
+        'listserial' =>  Labels::getLabel('LBL_#', $adminLangId) ,
         'currency_code' =>  Labels::getLabel('LBL_Currency', $adminLangId) ,
         'currency_symbol_left' =>  Labels::getLabel('LBL_Symbol_Left', $adminLangId),
         'currency_symbol_right' =>  Labels::getLabel('LBL_Symbol_Right', $adminLangId),

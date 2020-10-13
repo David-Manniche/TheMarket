@@ -1,18 +1,18 @@
-<?php defined('SYSTEM_INIT') or die('Invalid Usage.'); ?> <?php
+<?php defined('SYSTEM_INIT') or die('Invalid Usage.');
 $arr_flds = array(
-        'dragdrop'=>'',
-        'listserial'=>Labels::getLabel('LBL_Sr._No', $adminLangId),
-        'sformfield_identifier'=>Labels::getLabel('LBL_Caption', $adminLangId),
-        'sformfield_type'=>Labels::getLabel('LBL_Type', $adminLangId),
-        'sformfield_required'=>Labels::getLabel('LBL_Required', $adminLangId),
-        'action' => '',
-    );
+    'dragdrop' => '',
+    'listserial' => Labels::getLabel('LBL_#', $adminLangId),
+    'sformfield_identifier' => Labels::getLabel('LBL_Caption', $adminLangId),
+    'sformfield_type' => Labels::getLabel('LBL_Type', $adminLangId),
+    'sformfield_required' => Labels::getLabel('LBL_Required', $adminLangId),
+    'action' => '',
+);
 if (!$canEdit) {
     unset($arr_flds['dragdrop'], $arr_flds['action']);
 }
 $tbl = new HtmlElement(
     'table',
-    array('width'=>'100%', 'class'=>'table table-responsive','id'=>'formFields')
+    array('width' => '100%', 'class' => 'table table-responsive', 'id' => 'formFields')
 );
 
 $th = $tbl->appendElement('thead')->appendElement('tr');
@@ -30,7 +30,7 @@ foreach ($arr_listing as $sn => $row) {
         $td = $tr->appendElement('td');
         switch ($key) {
             case 'dragdrop':
-                $td->appendElement('i', array('class'=>'ion-arrow-move icon'));
+                $td->appendElement('i', array('class' => 'ion-arrow-move icon'));
                 $td->setAttribute("class", 'dragHandle');
                 break;
             case 'listserial':
@@ -43,19 +43,19 @@ foreach ($arr_listing as $sn => $row) {
                 $td->appendElement('plaintext', array(), $fieldTypeArr[$row[$key]], true);
                 break;
             case 'sformfield_identifier':
-                if (isset($row['sformfield_caption']) && $row['sformfield_caption']!='') {
+                if (isset($row['sformfield_caption']) && $row['sformfield_caption'] != '') {
                     $td->appendElement('plaintext', array(), $row['sformfield_caption'], true);
                     $td->appendElement('br', array());
-                    $td->appendElement('plaintext', array(), '('.$row[$key].')', true);
+                    $td->appendElement('plaintext', array(), '(' . $row[$key] . ')', true);
                 } else {
                     $td->appendElement('plaintext', array(), $row[$key], true);
                 }
                 break;
             case 'action':
                 if ($canEdit) {
-                    $td->appendElement('a', array('href'=>'javascript:void(0)','class'=>'btn btn-clean btn-sm btn-icon','title'=>Labels::getLabel('LBL_Edit', $adminLangId),"onclick"=>"addFormFields(".$row['sformfield_id'].")"), "<i class='far fa-edit icon'></i>", true);
+                    $td->appendElement('a', array('href' => 'javascript:void(0)', 'class' => 'btn btn-clean btn-sm btn-icon', 'title' => Labels::getLabel('LBL_Edit', $adminLangId), "onclick" => "addFormFields(" . $row['sformfield_id'] . ")"), "<i class='far fa-edit icon'></i>", true);
                     if ($row['sformfield_mandatory'] == 0) {
-                        $td->appendElement('a', array('href'=>'javascript:void(0)','class'=>'btn btn-clean btn-sm btn-icon','title'=>Labels::getLabel('LBL_Delete', $adminLangId),"onclick"=>"deleteFieldsRecord(".$row['sformfield_id'].")"), "<i class='fa fa-trash  icon'></i>", true);
+                        $td->appendElement('a', array('href' => 'javascript:void(0)', 'class' => 'btn btn-clean btn-sm btn-icon', 'title' => Labels::getLabel('LBL_Delete', $adminLangId), "onclick" => "deleteFieldsRecord(" . $row['sformfield_id'] . ")"), "<i class='fa fa-trash  icon'></i>", true);
                     }
                 }
                 break;
@@ -69,7 +69,8 @@ if (count($arr_listing) == 0) {
     $tbl->appendElement('tr')->appendElement(
         'td',
         array(
-            'colspan'=>count($arr_flds)),
+            'colspan' => count($arr_flds)
+        ),
         Labels::getLabel('LBL_No_Records_Found', $adminLangId)
     );
 }
