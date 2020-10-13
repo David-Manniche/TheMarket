@@ -390,7 +390,7 @@ if (!empty($order["thirdPartyorderInfo"]) && isset($order["thirdPartyorderInfo"]
                         <div class="sectionbody">
                             <table class="table">
                                 <tr>
-                                    <th><?php echo Labels::getLabel('LBL_Sr_No', $adminLangId); ?></th>
+                                    <th><?php echo Labels::getLabel('LBL_#', $adminLangId); ?></th>
                                     <th><?php echo Labels::getLabel('LBL_File', $adminLangId); ?></th>
                                     <th><?php echo Labels::getLabel('LBL_Language', $adminLangId); ?></th>
                                     <th><?php echo Labels::getLabel('LBL_Downloaded_count', $adminLangId); ?></th>
@@ -435,7 +435,7 @@ if (!empty($order["thirdPartyorderInfo"]) && isset($order["thirdPartyorderInfo"]
                         <div class="sectionbody">
                             <table class="table">
                                 <tr>
-                                    <th><?php echo Labels::getLabel('LBL_Sr_No', $adminLangId); ?></th>
+                                    <th><?php echo Labels::getLabel('LBL_#', $adminLangId); ?></th>
                                     <th><?php echo Labels::getLabel('LBL_Link', $adminLangId); ?></th>
                                     <th><?php echo Labels::getLabel('LBL_Download_times', $adminLangId); ?></th>
                                     <th><?php echo Labels::getLabel('LBL_Downloaded_count', $adminLangId); ?></th>

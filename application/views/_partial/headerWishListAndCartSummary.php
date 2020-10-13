@@ -84,14 +84,14 @@ if ($user_is_buyer > 0 || (!UserAuthentication::isUserLogged())) { ?>
                         <td><?php echo CommonHelper::displayMoneyFormat($cartSummary['cartVolumeDiscount']); ?></td>
                     </tr>
                 <?php } ?>
-                <?php if (isset($cartSummary['taxOptions'])){ 
+                <?php /* if (isset($cartSummary['taxOptions'])){ 
                         foreach($cartSummary['taxOptions'] as $taxName => $taxVal){ ?>
                         <tr>
                             <td><?php echo $taxVal['title']; ?></td>
                             <td><?php echo CommonHelper::displayMoneyFormat($taxVal['value']); ?></td>
                         </tr>
                       <?php   }
-                     }?> 
+                     } */ ?> 
                 <?php $netChargeAmt = $cartSummary['cartTotal']+$cartSummary['cartTaxTotal'] - ((0 < $cartSummary['cartVolumeDiscount'])?$cartSummary['cartVolumeDiscount']:0); ?>
                 <tr>
                     <td class="hightlighted"><?php echo Labels::getLabel('LBL_Net_Payable', $siteLangId); ?></td>

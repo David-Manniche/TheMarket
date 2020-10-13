@@ -308,7 +308,7 @@ $this->includeTemplate('seller/_partial/shop-navigation.php', $variables, false)
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="col-md-2">
+                                    <div class="col-md-2 addRowBtnBlock<?php echo $i; ?>-js">
                                         <?php if ($key == 0) { ?>
                                             <div class="field-set">
                                                 <div class="caption-wraper">
@@ -330,7 +330,7 @@ $this->includeTemplate('seller/_partial/shop-navigation.php', $variables, false)
                                                 </div>
                                                 <div class="field-wraper">
                                                     <div class="field_cover">
-                                                        <button class="btn btn-outline-primary" type="button" name="btn_remove_row"><i class="fas fa-minus"></i></button>
+                                                        <button class="btn btn-outline-primary" type="button" name="btn_remove_row" data-day="<?php echo $i; ?>"><i class="fas fa-minus"></i></button>
                                                     </div>
                                                 </div>
                                             </div>
@@ -399,7 +399,7 @@ $this->includeTemplate('seller/_partial/shop-navigation.php', $variables, false)
                                         </div>
                                     </div>
                                 </div>
-                                <div class="col-md-2">
+                                <div class="col-md-2 addRowBtnBlock<?php echo $i; ?>-js">
                                     <div class="field-set">
                                         <div class="caption-wraper">
                                             <label class="field_label">
@@ -491,7 +491,19 @@ $this->includeTemplate('seller/_partial/shop-navigation.php', $variables, false)
             var toTime = $(".js-slot-to-" + day + ":last").val();
             var rowElement = ".js-slot-individual .row-" + count;
 
-            var html = "<div class='row row-" + count + " js-added-rows-" + day + "'><div class='col-md-2'></div><div class='col-md-4 js-from_time_" + day + "'>" + fromTimeHtml + "</div><div class='col-md-4 js-to_time_" + day + "'>" + toTimeHtml + "</div><div class='col-md-2'><div class='field-set'><div class='caption-wraper'><label class='field_label'></label></div><div class='field-wraper'><div class='field_cover'><button class='btn btn-outline-primary' type='button' name='btn_remove_row'><i class='fas fa-minus'></i></button></div> </div></div></div></div>";
+            var addRowBtn = $('.js-slot-add-' + day);
+            if (0 < addRowBtn.closest('.field-set').length) {
+                addRowBtn.remove();
+                addRowBtn.closest('.field-set').remove();
+            }
+
+            if (0 < $('.addRowBtn' + day + '-js').length) {
+                $('.addRowBtn' + day + '-js').remove();
+            }
+
+            var addRowBtnHtml = '<button type="button" name="btn_add_row[' + day + ']" onclick="addTimeSlotRow(' + day + ')" class="btn btn-primary js-slot-add-' + day + ' addRowBtn' + day + '-js"><i class="fas fa-plus"></i></button>';
+
+            var html = "<div class='row row-" + count + " js-added-rows-" + day + "'><div class='col-md-2'></div><div class='col-md-4 js-from_time_" + day + "'>" + fromTimeHtml + "</div><div class='col-md-4 js-to_time_" + day + "'>" + toTimeHtml + "</div><div class='col-md-2'><div class='field-set'><div class='caption-wraper'><label class='field_label'></label></div><div class='field-wraper'><div class='field_cover'><button class='btn btn-outline-primary' type='button' name='btn_remove_row' data-day='" + day + "'><i class='fas fa-minus'></i></button>" + addRowBtnHtml + "</div></div></div></div></div>";
 
             $(".js-from_time_" + day).last().parent().after(html);
             $(rowElement + " select").val('').attr('data-row', (count));
@@ -617,6 +629,19 @@ $this->includeTemplate('seller/_partial/shop-navigation.php', $variables, false)
     });
 
     $(document).on("click", "[name='btn_remove_row']", function() {
+        var day = $(this).data('day');
         $(this).parentsUntil('.row').parent().remove();
+
+        if (0 < $('.js-added-rows-' + day + ':last [name="btn_remove_row"]').length) {
+            var addRowBtnHtml = '<button type="button" name="btn_add_row[' + day + ']" onclick="addTimeSlotRow(' + day + ')" class="btn btn-primary js-slot-add-' + day + ' addRowBtn' + day + '-js"><i class="fas fa-plus"></i></button>';
+
+            if (1 > $('.js-added-rows-' + day + ':last .addRowBtn' + day + '-js').length) {
+                $('.js-added-rows-' + day + ':last [name="btn_remove_row"]').after(addRowBtnHtml);
+            }
+
+        } else if (0 < $('.addRowBtnBlock' + day + '-js').length) {
+            var addRowBtnHtml = '<button type="button" name="btn_add_row[' + day + ']" onclick="addTimeSlotRow(' + day + ')" class="btn btn-primary js-slot-add-' + day + ' addRowBtn' + day + '-js mt-4"><i class="fas fa-plus"></i></button>';
+            $('.addRowBtnBlock' + day + '-js').html(addRowBtnHtml);
+        }
     })
 </script>

@@ -1,22 +1,22 @@
-<?php defined('SYSTEM_INIT') or die('Invalid Usage.'); ?> <?php
+<?php defined('SYSTEM_INIT') or die('Invalid Usage.');
 $arr_flds = array(
-        'dragdrop'=>'',
-        'select_all'=>Labels::getLabel('LBL_Select_all', $adminLangId),
-        'listserial'=>Labels::getLabel('LBL_Sr._NO', $adminLangId),
-        'shippingapi_identifier'=>Labels::getLabel('LBL_Shipping_Method', $adminLangId),
-        'shippingapi_active'=>Labels::getLabel('LBL_Status', $adminLangId),
-        'action' => '',
-    );
+    'dragdrop' => '',
+    'select_all' => Labels::getLabel('LBL_Select_all', $adminLangId),
+    'listserial' => Labels::getLabel('LBL_#', $adminLangId),
+    'shippingapi_identifier' => Labels::getLabel('LBL_Shipping_Method', $adminLangId),
+    'shippingapi_active' => Labels::getLabel('LBL_Status', $adminLangId),
+    'action' => '',
+);
 if (!$canEdit) {
     unset($arr_flds['dragdrop']);
     unset($arr_flds['select_all']);
     unset($arr_flds['action']);
 }
-$tbl = new HtmlElement('table', array('width'=>'100%', 'class'=>'table table--hovered table-responsive ','id'=>'shippingMethod'));
+$tbl = new HtmlElement('table', array('width' => '100%', 'class' => 'table table--hovered table-responsive ', 'id' => 'shippingMethod'));
 $th = $tbl->appendElement('thead')->appendElement('tr');
 foreach ($arr_flds as $key => $val) {
     if ('select_all' == $key) {
-        $th->appendElement('th')->appendElement('plaintext', array(), '<label class="checkbox"><input title="'.$val.'" type="checkbox" onclick="selectAll( $(this) )" class="selectAll-js"><i class="input-helper"></i></label>', true);
+        $th->appendElement('th')->appendElement('plaintext', array(), '<label class="checkbox"><input title="' . $val . '" type="checkbox" onclick="selectAll( $(this) )" class="selectAll-js"><i class="input-helper"></i></label>', true);
     } else {
         $e = $th->appendElement('th', array(), $val);
     }
@@ -33,12 +33,12 @@ foreach ($arr_listing as $sn => $row) {
         switch ($key) {
             case 'dragdrop':
                 if ($row['shippingapi_active'] == applicationConstants::ACTIVE) {
-                    $td->appendElement('i', array('class'=>'ion-arrow-move icon'));
+                    $td->appendElement('i', array('class' => 'ion-arrow-move icon'));
                     $td->setAttribute("class", 'dragHandle');
                 }
                 break;
             case 'select_all':
-                $td->appendElement('plaintext', array(), '<label class="checkbox"><input class="selectItem--js" type="checkbox" name="shippingapi_ids[]" value='.$row['shippingapi_id'].'><i class="input-helper"></i></label>', true);
+                $td->appendElement('plaintext', array(), '<label class="checkbox"><input class="selectItem--js" type="checkbox" name="shippingapi_ids[]" value=' . $row['shippingapi_id'] . '><i class="input-helper"></i></label>', true);
                 break;
             case 'listserial':
                 $td->appendElement('plaintext', array(), $sr_no);
@@ -49,26 +49,26 @@ foreach ($arr_listing as $sn => $row) {
                     $active = '';
                 }
                 $statucAct = ($canEdit === true) ? 'toggleStatus(this)' : '';
-                $str = '<label id="'.$row['shippingapi_id'].'" class="statustab '.$active.'" onclick="'.$statucAct.'">
-                <span data-off="'. Labels::getLabel('LBL_Active', $adminLangId) .'" data-on="'. Labels::getLabel('LBL_Inactive', $adminLangId) .'" class="switch-labels"></span>
+                $str = '<label id="' . $row['shippingapi_id'] . '" class="statustab ' . $active . '" onclick="' . $statucAct . '">
+                <span data-off="' . Labels::getLabel('LBL_Active', $adminLangId) . '" data-on="' . Labels::getLabel('LBL_Inactive', $adminLangId) . '" class="switch-labels"></span>
                 <span class="switch-handles"></span>
                 </label>';
                 $td->appendElement('plaintext', array(), $str, true);
                 break;
             case 'shippingapi_identifier':
-                if ($row['shippingapi_name']!='') {
+                if ($row['shippingapi_name'] != '') {
                     $td->appendElement('plaintext', array(), $row['shippingapi_name'], true);
                     $td->appendElement('br', array());
-                    $td->appendElement('plaintext', array(), '('.$row[$key].')', true);
+                    $td->appendElement('plaintext', array(), '(' . $row[$key] . ')', true);
                 } else {
                     $td->appendElement('plaintext', array(), $row[$key], true);
                 }
                 break;
             case 'action':
                 if ($canEdit) {
-                    $td->appendElement('a', array('href'=>'javascript:void(0)','class'=>'btn btn-clean btn-sm btn-icon','title'=>Labels::getLabel('LBL_Edit', $adminLangId),"onclick"=>"editForm(".$row['shippingapi_id'].")"), "<i class='far fa-edit icon'></i>", true);
+                    $td->appendElement('a', array('href' => 'javascript:void(0)', 'class' => 'btn btn-clean btn-sm btn-icon', 'title' => Labels::getLabel('LBL_Edit', $adminLangId), "onclick" => "editForm(" . $row['shippingapi_id'] . ")"), "<i class='far fa-edit icon'></i>", true);
                     if ($row['shippingapi_id'] > 1) {
-                        $td->appendElement('a', array('href'=>'javascript:void(0)','class'=>'btn btn-clean btn-sm btn-icon','title'=>Labels::getLabel('LBL_Settings', $adminLangId),"onclick"=>"settingsForm(".$row['shippingapi_id'].")"), "<i class='ion-settings icon'></i>", true);
+                        $td->appendElement('a', array('href' => 'javascript:void(0)', 'class' => 'btn btn-clean btn-sm btn-icon', 'title' => Labels::getLabel('LBL_Settings', $adminLangId), "onclick" => "settingsForm(" . $row['shippingapi_id'] . ")"), "<i class='ion-settings icon'></i>", true);
                     }
                 }
                 break;
@@ -79,10 +79,10 @@ foreach ($arr_listing as $sn => $row) {
     }
 }
 if (count($arr_listing) == 0) {
-    $tbl->appendElement('tr')->appendElement('td', array('colspan'=>count($arr_flds)), Labels::getLabel('LBL_No_Records_Found', $adminLangId));
+    $tbl->appendElement('tr')->appendElement('td', array('colspan' => count($arr_flds)), Labels::getLabel('LBL_No_Records_Found', $adminLangId));
 }
 
-$frm = new Form('frmShpApiListing', array('id'=>'frmShpApiListing'));
+$frm = new Form('frmShpApiListing', array('id' => 'frmShpApiListing'));
 $frm->setFormTagAttribute('class', 'web_form last_td_nowrap actionButtons-js');
 $frm->setFormTagAttribute('onsubmit', 'formAction(this, reloadList ); return(false);');
 $frm->setFormTagAttribute('action', UrlHelper::generateUrl('ShippingMethods', 'toggleBulkStatuses'));

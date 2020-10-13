@@ -269,8 +269,9 @@ $toAllFld->setFieldTagAttribute('class', 'selectAllToTime-js');
                                         $toFld->setFieldTagAttribute('data-row', $row);
                                         $toFld->setFieldTagAttribute('onChange', 'displayAddRowField(' . $i . ', this)');
                                         $toFld->value = $toTime;
-                                        ?>
-                                        <div class="row row-<?php echo $row; echo ($key > 0) ? ' js-added-rows-' . $i : '' ?>">
+                                ?>
+                                        <div class="row row-<?php echo $row;
+                                                            echo ($key > 0) ? ' js-added-rows-' . $i : '' ?>">
                                             <div class="col-md-2">
                                                 <div class="field-set">
                                                     <div class="caption-wraper">
@@ -317,7 +318,7 @@ $toAllFld->setFieldTagAttribute('class', 'selectAllToTime-js');
                                                     </div>
                                                 </div>
                                             </div>
-                                            <div class="col-md-2">
+                                            <div class="col-md-2 addRowBtnBlock<?php echo $i; ?>-js">
                                                 <?php if ($key == 0) { ?>
                                                     <div class="field-set">
                                                         <div class="caption-wraper">
@@ -331,12 +332,12 @@ $toAllFld->setFieldTagAttribute('class', 'selectAllToTime-js');
                                                         </div>
                                                     </div>
                                                 <?php } else { ?>
-                                                    <input class='mt-4' type='button' name='btn_remove_row' value='x'>
+                                                    <input class='mt-4' type='button' name='btn_remove_row' value='x' data-day="<?php echo $i; ?>">
                                                 <?php } ?>
                                             </div>
                                         </div>
-                                    <?php 
-                                    $row++;
+                                    <?php
+                                        $row++;
                                     }
                                 } else {
                                     $addRowFld->setFieldTagAttribute('class', 'd-none js-slot-add-' . $i);
@@ -353,7 +354,7 @@ $toAllFld->setFieldTagAttribute('class', 'selectAllToTime-js');
                                     $toFld->setFieldTagAttribute('class', 'js-slot-to-' . $i);
                                     $toFld->setFieldTagAttribute('onChange', 'displayAddRowField(' . $i . ', this)');
                                     ?>
-                                    <div class="row row-<?php echo $row;?>">
+                                    <div class="row row-<?php echo $row; ?>">
                                         <div class="col-md-2">
                                             <div class="field-set">
                                                 <div class="caption-wraper">
@@ -399,7 +400,7 @@ $toAllFld->setFieldTagAttribute('class', 'selectAllToTime-js');
                                                 </div>
                                             </div>
                                         </div>
-                                        <div class="col-md-2">
+                                        <div class="col-md-2 addRowBtnBlock<?php echo $i; ?>-js">
                                             <div class="field-set">
                                                 <div class="caption-wraper">
                                                     <label class="field_label">
@@ -414,7 +415,7 @@ $toAllFld->setFieldTagAttribute('class', 'selectAllToTime-js');
                                         </div>
                                     </div>
                             <?php
-                                $row++;
+                                    $row++;
                                 }
                             }
                             ?>
