@@ -83,9 +83,8 @@ $action = strtolower($action);
                                     </i><span class="menu-item__title"><?php echo Labels::getLabel('LBL_Product_Tags', $siteLangId); ?></span></a></div>
                         </li>
                     <?php } ?>
-                    <?php $canRequest = FatApp::getConfig('CONF_SELLER_CAN_REQUEST_CUSTOM_PRODUCT', FatUtility::VAR_INT, 0);
-                    $canRequestCustomProd = FatApp::getConfig('CONF_ENABLED_SELLER_CUSTOM_PRODUCT', FatUtility::VAR_INT, 0);
-                    if (0 < $canRequest && 0 < $canRequestCustomProd && $userPrivilege->canViewProductOptions(UserAuthentication::getLoggedUserId(), true)) { ?>
+                    <?php $canAddCustomProd = FatApp::getConfig('CONF_ENABLED_SELLER_CUSTOM_PRODUCT', FatUtility::VAR_INT, 0);
+                    if (0 < $canAddCustomProd && $userPrivilege->canViewProductOptions(UserAuthentication::getLoggedUserId(), true)) { ?>
                         <li class="menu__item <?php echo ($controller == 'seller' && $action == 'options') ? 'is-active' : ''; ?>">
                             <div class="menu__item__inner"><a title="<?php echo Labels::getLabel('LBL_Product_Options', $siteLangId); ?>" href="<?php echo UrlHelper::generateUrl('Seller', 'options'); ?>">
                                     <i class="icn shop"><svg class="svg">
