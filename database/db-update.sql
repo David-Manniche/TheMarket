@@ -803,3 +803,4 @@ ALTER TABLE `tbl_shop_specifics` ADD `shop_invoice_codes` VARCHAR(255) NOT NULL 
 -- -------------TV-9.2.1.20201008-------------------
 
 UPDATE `tbl_shops` SET `shop_fulfillment_type`=2 WHERE `shop_fulfillment_type` = 0;
+-- ---------------TV-9.2.1.20201013-----------------

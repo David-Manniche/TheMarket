@@ -209,7 +209,7 @@ Bugs:
     => 043719 - Seller shipping profile >> If we have condition for price then max value has to be multiple of product price then only this shipping will get display at checkout.
     => 043783 - if "Product Inclusive Tax" setting is on then tax should not get display on cart and it should get display only after selecting billing address. 
     => 044047 - option setting getting hide on seller end
-    
+---------------------TV-9.2.1.20201013------------------------    
 Enhancements:
     => Tax module upgrade
     => Test cases classes enhancements.
