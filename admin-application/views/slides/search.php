@@ -1,14 +1,14 @@
 <?php defined('SYSTEM_INIT') or die('Invalid Usage.');
 $arr_flds = array(
-    'dragdrop'=>'',
-    'select_all'=>Labels::getLabel('LBL_Select_all', $adminLangId),
-    'listserial'    =>    Labels::getLabel('LBL_Sr._No', $adminLangId),
-    'slide_identifier'    =>    Labels::getLabel('LBL_Title', $adminLangId),
-    /* 'slide_image'    => Labels::getLabel('LBL_Image',$adminLangId), */
-    'slide_url'    =>    Labels::getLabel('LBL_URL', $adminLangId),
-    'slide_active'    => Labels::getLabel('LBL_Status', $adminLangId),
-    'action'    =>    '',
-    );
+    'dragdrop' => '',
+    'select_all' => Labels::getLabel('LBL_Select_all', $adminLangId),
+    'listserial' => Labels::getLabel('LBL_#', $adminLangId),
+    'slide_identifier' => Labels::getLabel('LBL_Title', $adminLangId),
+    /* 'slide_image' => Labels::getLabel('LBL_Image',$adminLangId), */
+    'slide_url' => Labels::getLabel('LBL_URL', $adminLangId),
+    'slide_active' => Labels::getLabel('LBL_Status', $adminLangId),
+    'action' => '',
+);
 
 if (!$canEdit || empty($arrListing)) {
     unset($arr_flds['dragdrop']);
@@ -18,11 +18,11 @@ if (!$canEdit) {
     unset($arr_flds['action']);
 }
 
-$tbl = new HtmlElement('table', array('width'=>'100%', 'class'=>'table table-responsive table--hovered','id'=>'slideList'));
+$tbl = new HtmlElement('table', array('width' => '100%', 'class' => 'table table-responsive table--hovered', 'id' => 'slideList'));
 $th = $tbl->appendElement('thead')->appendElement('tr');
 foreach ($arr_flds as $key => $val) {
     if ('select_all' == $key) {
-        $th->appendElement('th')->appendElement('plaintext', array(), '<label class="checkbox"><input title="'.$val.'" type="checkbox" onclick="selectAll( $(this) )" class="selectAll-js"><i class="input-helper"></i></label>', true);
+        $th->appendElement('th')->appendElement('plaintext', array(), '<label class="checkbox"><input title="' . $val . '" type="checkbox" onclick="selectAll( $(this) )" class="selectAll-js"><i class="input-helper"></i></label>', true);
     } else {
         $e = $th->appendElement('th', array(), $val);
     }
@@ -39,26 +39,26 @@ foreach ($arrListing as $sn => $row) {
         switch ($key) {
             case 'dragdrop':
                 if ($row['slide_active'] == applicationConstants::ACTIVE) {
-                    $td->appendElement('i', array('class'=>'ion-arrow-move icon'));
+                    $td->appendElement('i', array('class' => 'ion-arrow-move icon'));
                     $td->setAttribute("class", 'dragHandle');
                 }
                 break;
             case 'select_all':
-                $td->appendElement('plaintext', array(), '<label class="checkbox"><input class="selectItem--js" type="checkbox" name="slide_ids[]" value='.$row['slide_id'].'><i class="input-helper"></i></label>', true);
+                $td->appendElement('plaintext', array(), '<label class="checkbox"><input class="selectItem--js" type="checkbox" name="slide_ids[]" value=' . $row['slide_id'] . '><i class="input-helper"></i></label>', true);
                 break;
             case 'listserial':
                 $td->appendElement('plaintext', array(), $sr_no);
                 break;
             case 'slide_identifier':
-                if ($row['slide_title']!='') {
+                if ($row['slide_title'] != '') {
                     $td->appendElement('plaintext', array(), $row['slide_title'], true);
                     $td->appendElement('br', array());
-                    $td->appendElement('plaintext', array(), '('.$row['slide_identifier'].')', true);
+                    $td->appendElement('plaintext', array(), '(' . $row['slide_identifier'] . ')', true);
                 } else {
                     $td->appendElement('plaintext', array(), $row['slide_identifier'], true);
                 }
                 break;
-            /* case 'slide_image':
+                /* case 'slide_image':
                 if( $languages ){
                     foreach($languages as $lang_id=>$lang_name){
                         $img = "<strong>".$lang_name.'</strong><br/><img src="'.UrlHelper::generateFullUrl('Image','slide',array($row['slide_id'],$lang_id,'THUMB'),CONF_WEBROOT_FRONT_URL).'" /><br/>';
@@ -76,17 +76,17 @@ foreach ($arrListing as $sn => $row) {
                 if ($row['slide_active']) {
                     $active = 'checked';
                 }
-                $statusAct = ($canEdit === true) ? 'toggleStatus(event,this,' .applicationConstants::YES. ')' : 'toggleStatus(event,this,' .applicationConstants::NO. ')';
+                $statusAct = ($canEdit === true) ? 'toggleStatus(event,this,' . applicationConstants::YES . ')' : 'toggleStatus(event,this,' . applicationConstants::NO . ')';
                 $statusClass = ($canEdit === false) ? 'disabled' : '';
-                $str='<label class="statustab -txt-uppercase">
-                     <input '.$active.' type="checkbox" id="switch'.$row['slide_id'].'" value="'.$row['slide_id'].'" onclick="'.$statusAct.'" class="switch-labels"/>
-                    <i class="switch-handles '.$statusClass.'"></label>';
-                    $td->appendElement('plaintext', array(), $str, true);
+                $str = '<label class="statustab -txt-uppercase">
+                     <input ' . $active . ' type="checkbox" id="switch' . $row['slide_id'] . '" value="' . $row['slide_id'] . '" onclick="' . $statusAct . '" class="switch-labels"/>
+                    <i class="switch-handles ' . $statusClass . '"></label>';
+                $td->appendElement('plaintext', array(), $str, true);
                 break;
             case 'action':
-                if ($canEdit) {   
-                    $td->appendElement('a', array('href'=>'javascript:void(0)', 'class'=>'btn btn-clean btn-sm btn-icon', 'title'=>Labels::getLabel('LBL_Edit', $adminLangId),"onclick"=>"addSlideForm(".$row['slide_id'].")"), "<i class='far fa-edit icon'></i>", true);
-                    $td->appendElement('a', array('href'=>"javascript:void(0)", 'class'=>'btn btn-clean btn-sm btn-icon', 'title'=>Labels::getLabel('LBL_Delete', $adminLangId),"onclick"=>"deleteRecord(".$row['slide_id'].")"), "<i class='fa fa-trash  icon'></i>", true);
+                if ($canEdit) {
+                    $td->appendElement('a', array('href' => 'javascript:void(0)', 'class' => 'btn btn-clean btn-sm btn-icon', 'title' => Labels::getLabel('LBL_Edit', $adminLangId), "onclick" => "addSlideForm(" . $row['slide_id'] . ")"), "<i class='far fa-edit icon'></i>", true);
+                    $td->appendElement('a', array('href' => "javascript:void(0)", 'class' => 'btn btn-clean btn-sm btn-icon', 'title' => Labels::getLabel('LBL_Delete', $adminLangId), "onclick" => "deleteRecord(" . $row['slide_id'] . ")"), "<i class='fa fa-trash  icon'></i>", true);
                 }
                 break;
             default:
@@ -96,10 +96,10 @@ foreach ($arrListing as $sn => $row) {
     }
 }
 if (count($arrListing) == 0) {
-    $tbl->appendElement('tr')->appendElement('td', array('colspan'=>count($arr_flds)), Labels::getLabel('LBL_No_Records_Found', $adminLangId));
+    $tbl->appendElement('tr')->appendElement('td', array('colspan' => count($arr_flds)), Labels::getLabel('LBL_No_Records_Found', $adminLangId));
 }
 
-$frm = new Form('frmSlidesListing', array('id'=>'frmSlidesListing'));
+$frm = new Form('frmSlidesListing', array('id' => 'frmSlidesListing'));
 $frm->setFormTagAttribute('class', 'web_form last_td_nowrap actionButtons-js');
 $frm->setFormTagAttribute('onsubmit', 'formAction(this, reloadList ); return(false);');
 $frm->setFormTagAttribute('action', UrlHelper::generateUrl('Slides', 'toggleBulkStatuses'));

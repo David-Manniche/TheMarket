@@ -3,7 +3,7 @@ $arr_flds = array();
 if (count($arrListing) > 0 && $canEdit) {
     $arr_flds['select_all'] = '';
 }
-$arr_flds['listserial'] = Labels::getLabel('LBL_Sr', $siteLangId);
+$arr_flds['listserial'] = Labels::getLabel('LBL_#', $siteLangId);
 /* if( count($arrListing) && is_array($arrListing) && is_array($arrListing[0]['options']) && count($arrListing[0]['options']) ){ */
 $arr_flds['name'] = Labels::getLabel('LBL_Name', $siteLangId);
 /* } */
@@ -26,15 +26,15 @@ foreach ($arr_flds as $key => $val) {
         $e = $th->appendElement('th', array(), $val);
     }
 }
-$sr_no = 0;
+
+$sr_no = $recordCount;
 if (!$product_id) {
     if ($page > 1) {
-        $sr_no = ($page - 1) * $pageSize;
+        $sr_no = $sr_no - (($page - 1) * $pageSize);
     }
 }
 foreach ($arrListing as $sn => $row) {
-    $sr_no++;
-    $tr = $tbl->appendElement('tr', array('class' => ($row['selprod_active'] != applicationConstants::ACTIVE) ? '' : '' ));
+    $tr = $tbl->appendElement('tr', array('class' => ($row['selprod_active'] != applicationConstants::ACTIVE) ? '' : ''));
 
     foreach ($arr_flds as $key => $val) {
         $td = $tr->appendElement('td');
@@ -82,7 +82,7 @@ foreach ($arrListing as $sn => $row) {
                 $li = $ul->appendElement("li");
                 $li->appendElement(
                     'a',
-                    array('href' => UrlHelper::generateUrl('seller', 'sellerProductForm', array($row['selprod_product_id'],$row['selprod_id'])), 'title' => Labels::getLabel('LBL_Edit', $siteLangId)),
+                    array('href' => UrlHelper::generateUrl('seller', 'sellerProductForm', array($row['selprod_product_id'], $row['selprod_id'])), 'title' => Labels::getLabel('LBL_Edit', $siteLangId)),
                     '<i class="fa fa-edit"></i>',
                     true
                 );
@@ -111,11 +111,13 @@ foreach ($arrListing as $sn => $row) {
                 break;
         }
     }
+
+    $sr_no--;
 }
 if (count($arrListing) == 0) {
     echo $tbl->getHtml();
     $message = Labels::getLabel('LBL_No_Records_Found', $siteLangId);
-    $this->includeTemplate('_partial/no-record-found.php', array('siteLangId' => $siteLangId,'message' => $message));
+    $this->includeTemplate('_partial/no-record-found.php', array('siteLangId' => $siteLangId, 'message' => $message));
     // $tbl->appendElement('tr')->appendElement('td', array('colspan'=>count($arr_flds)), Labels::getLabel('LBL_No_products_found_under_your_publication', $siteLangId));
     //$this->includeTemplate('_partial/no-record-found.php' , array('siteLangId'=>$siteLangId));
 } else {
@@ -128,12 +130,14 @@ if (count($arrListing) == 0) {
 
     echo $frm->getFormTag();
     echo $frm->getFieldHtml('status');
-    echo $tbl->getHtml(); ?> </form> <?php
+    echo $tbl->getHtml(); ?>
+    </form>
+<?php
 }
 
 if (!$product_id) {
     $postedData['page'] = $page;
     echo FatUtility::createHiddenFormFromData($postedData, array('name' => 'frmSellerProductSearchPaging'));
-    $pagingArr = array('pageCount' => $pageCount, 'page' => $page,'recordCount' => $recordCount, 'callBackJsFunc' => 'goToSellerProductSearchPage');
+    $pagingArr = array('pageCount' => $pageCount, 'page' => $page, 'recordCount' => $recordCount, 'callBackJsFunc' => 'goToSellerProductSearchPage');
     $this->includeTemplate('_partial/pagination.php', $pagingArr, false);
 }

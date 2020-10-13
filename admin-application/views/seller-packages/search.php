@@ -1,7 +1,7 @@
 <?php defined('SYSTEM_INIT') or die('Invalid Usage.');
 $arr_flds = array(
         'select_all' => Labels::getLabel('LBL_Select_all', $adminLangId),
-        'listserial' => Labels::getLabel('LBL_Sr_no.', $adminLangId),
+        'listserial' => Labels::getLabel('LBL_#', $adminLangId),
         'spackage_identifier' => Labels::getLabel('LBL_Package_Name', $adminLangId),
         'spackage_active' => Labels::getLabel('LBL_Status', $adminLangId),
         'action' => '',

@@ -3,7 +3,7 @@ if (count($arr_listing) == 0) {
     $this->includeTemplate('_partial/no-record-found.php', array('adminLangId' => $adminLangId));
 } else {
     $arr_flds = array(
-        'listserial' => Labels::getLabel('LBL_Sr.', $adminLangId),
+        'listserial' => Labels::getLabel('LBL_#', $adminLangId),
         'shippack_name' => Labels::getLabel('LBL_Name', $adminLangId),
         'shippack_units' => Labels::getLabel('LBL_Dimensions', $adminLangId),
         'action' => Labels::getLabel('', $adminLangId)
@@ -15,7 +15,7 @@ if (count($arr_listing) == 0) {
         $th->appendElement('th', array(), $val);
     }
 
-    $sr_no = ($page == 1) ? 0 : ($pageSize*($page-1));
+    $sr_no = ($page == 1) ? 0 : ($pageSize * ($page - 1));
     foreach ($arr_listing as $sn => $row) {
         $sr_no++;
         $tr = $tbl->appendElement('tr', array());
@@ -27,16 +27,16 @@ if (count($arr_listing) == 0) {
                     $td->appendElement('plaintext', array(), $sr_no);
                     break;
                 case 'shippack_units':
-                    $unitType = (isset($unitTypeArray[$row['shippack_units']])) ? $unitTypeArray[$row['shippack_units']] : '' ;
+                    $unitType = (isset($unitTypeArray[$row['shippack_units']])) ? $unitTypeArray[$row['shippack_units']] : '';
 
                     $dimension = $row['shippack_length'] . ' x ' . $row['shippack_width'] . ' x ' . $row['shippack_height'] . ' ' . $unitType;
 
                     $td->appendElement('plaintext', array(), $dimension, true);
                     break;
                 case 'action':
-                        if ($canEdit) {
-                            $td->appendElement('a', array('href'=> 'javascript:void(0)', 'onClick' => 'addPackageForm(' . $row['shippack_id'] . ')', 'class'=>'btn btn-clean btn-sm btn-icon', 'title'=> Labels::getLabel('LBL_Edit', $adminLangId)), '<i class="far fa-edit icon"></i>', true);
-                        }
+                    if ($canEdit) {
+                        $td->appendElement('a', array('href' => 'javascript:void(0)', 'onClick' => 'addPackageForm(' . $row['shippack_id'] . ')', 'class' => 'btn btn-clean btn-sm btn-icon', 'title' => Labels::getLabel('LBL_Edit', $adminLangId)), '<i class="far fa-edit icon"></i>', true);
+                    }
                     break;
                 default:
                     $td->appendElement('plaintext', array(), $row[$key], true);
@@ -51,7 +51,7 @@ if (count($arr_listing) == 0) {
     $frm->setFormTagAttribute('onsubmit', 'formAction(this, reloadList ); return(false);');
     echo $frm->getFormTag();
     echo $tbl->getHtml(); ?>
-</form>
+    </form>
 <?php $postedData['page'] = $page;
     echo FatUtility::createHiddenFormFromData($postedData, array('name' => 'frmPackageSearchPaging'));
     $pagingArr = array('pageCount' => $pageCount, 'page' => $page, 'recordCount' => $recordCount, 'adminLangId' => $adminLangId);

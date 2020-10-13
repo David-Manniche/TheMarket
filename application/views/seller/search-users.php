@@ -3,7 +3,7 @@ $arr_flds = array();
 if (count($arrListing) > 0) {
     $arr_flds['select_all'] = '';
 }
-$arr_flds['listserial'] = Labels::getLabel('LBL_Sr', $siteLangId);
+$arr_flds['listserial'] = Labels::getLabel('LBL_#', $siteLangId);
 $arr_flds['credential_username'] = Labels::getLabel('LBL_Username', $siteLangId);
 $arr_flds['credential_email'] = Labels::getLabel('LBL_Email', $siteLangId);
 $arr_flds['credential_active'] = Labels::getLabel('LBL_Status', $siteLangId);

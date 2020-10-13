@@ -3811,7 +3811,7 @@ class SellerController extends SellerBaseController
             Message::addErrorMessage(
                 Labels::getLabel('MSG_INVALID_REQUEST', $this->siteLangId)
             );
-            FatApp::dieJsonError(Message::getHtml());
+            FatUtility::dieJsonError(Message::getHtml());
         }
         $shipping_rates = array();
         $post = FatApp::getPostedData();
@@ -3857,7 +3857,7 @@ class SellerController extends SellerBaseController
         $fld = $frm->addTextBox(Labels::getLabel('LBL_Shipping_country', $this->siteLangId), 'shipping_country');
 
         $shipProfileArr = ShippingProfile::getProfileArr($this->userParentId, true, true);
-        $frm->addSelectBox(Labels::getLabel('LBL_Shipping_Profile', $this->siteLangId), 'shipping_profile', $shipProfileArr)->requirements()->setRequired();
+        $frm->addSelectBox(Labels::getLabel('LBL_Shipping_Profile', $this->siteLangId), 'shipping_profile', $shipProfileArr, '', [])->requirements()->setRequired();
 
         /* if (FatApp::getConfig("CONF_PRODUCT_DIMENSIONS_ENABLE", FatUtility::VAR_INT, 1)) {
             $shipPackArr = ShippingPackage::getAllNames();

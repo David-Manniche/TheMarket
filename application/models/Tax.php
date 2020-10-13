@@ -334,16 +334,20 @@ class Tax extends MyAppModel
         }
 
         if (array_key_exists('shippingAddress', $extraInfo)) {
-            $shopInfo = Shop::getAttributesByUserId($sellerId, array('shop_state_id', 'shop_id'));
+            $shopInfo = Shop::getAttributesByUserId($sellerId, array('shop_state_id', 'shop_id', 'shop_identifier'));
             $shipFromStateId = $shopInfo['shop_state_id'];
         }
 
         $taxCategoryRow = $this->getTaxRates($productId, $sellerId, $langId, $shipToCountryId, $shipToStateId);
 
         if (empty($taxCategoryRow)) {
+            $message = Labels::getLabel('MSG_INVALID_TAX_CATEGORY', $langId);
+            if (isset($shopInfo['shop_identifier'])) {
+                $message .= '(' . $shopInfo['shop_identifier'] . ')';
+            }
             return $data = [
                 'status' => false,
-                'msg' => Labels::getLabel('MSG_INVALID_TAX_CATEGORY', $langId),
+                'msg' => $message,
                 'tax' => $tax,
                 'taxCode' => '',
                 'options' => []
