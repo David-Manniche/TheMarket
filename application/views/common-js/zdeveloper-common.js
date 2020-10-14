@@ -1103,6 +1103,11 @@ $(document).ready(function () {
         $(obj).attr('onclick', 'signInWithPhone(this, ' + (!flag) + ')').text(objLbl)
         stylePhoneNumberFld(formElement + " input[name='username']", (!flag));
     };
+	
+	redirectfunc = function(url, orderStatus) {
+		var input = '<input type="hidden" name="status" value="' + orderStatus + '">';
+		$('<form action="' + url + '" method="POST">' + input + '</form>').appendTo($(document.body)).submit();
+    };
 
     $(".sign-in-popup-js").click(function () {
         openSignInForm();

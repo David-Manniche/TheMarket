@@ -411,7 +411,10 @@ class SocialPlatformController extends AdminBaseController
         $fld = $frm->addRequiredField(Labels::getLabel('LBL_Identifier', $this->adminLangId), 'splatform_identifier');
         $fld->setUnique(SocialPlatform::DB_TBL, 'splatform_identifier', 'splatform_id', 'splatform_id', 'splatform_id');
 
-        $frm->addRequiredField(Labels::getLabel('LBL_URL', $this->adminLangId), 'splatform_url');
+        $urlFld = $frm->addTextBox(Labels::getLabel('LBL_URL', $this->adminLangId), 'splatform_url');
+		$urlFld->requirements()->setRegularExpressionToValidate(ValidateElement::URL_REGEX);
+        $urlFld->requirements()->setCustomErrorMessage(Labels::getLabel('LBL_This_must_be_an_absolute_URL', $this->adminLangId));
+		$urlFld->requirements()->setRequired();
         $fld = $frm->addSelectBox(Labels::getLabel('LBL_Icon_Type_From_CSS', $this->adminLangId), 'splatform_icon_class', SocialPlatform::getIconArr($this->adminLangId));
         $fld->htmlAfterField = '<small>' . Labels::getLabel('LBL_If_you_have_to_add_a_platform_icon_except_this_select_list', $this->adminLangId) . '</small>';
 

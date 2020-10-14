@@ -805,6 +805,8 @@ ALTER TABLE `tbl_shop_specifics` ADD `shop_invoice_codes` VARCHAR(255) NOT NULL 
 UPDATE `tbl_shops` SET `shop_fulfillment_type`=2 WHERE `shop_fulfillment_type` = 0;
 -- ---------------TV-9.2.1.20201013-----------------
 
+DELETE FROM `tbl_language_labels` WHERE `label_key` LIKE 'LBL_Based_on_item_weight';
+DELETE FROM `tbl_language_labels` WHERE `label_key` LIKE 'LBL_Based_on_item_price';
 DELETE FROM `tbl_language_labels` WHERE `label_key` LIKE 'LBL_Sr._No';
 DELETE FROM `tbl_language_labels` WHERE `label_key` LIKE 'LBL_Sr_no.';
 DELETE FROM `tbl_language_labels` WHERE `label_key` LIKE 'LBL_Sr.';
@@ -813,4 +815,5 @@ DELETE FROM `tbl_language_labels` WHERE `label_key` LIKE 'LBL_Sr._no.';
 DELETE FROM `tbl_language_labels` WHERE `label_key` LIKE 'LBL_SrNo.';
 DELETE FROM `tbl_language_labels` WHERE `label_key` LIKE 'LBL_Sr._no.';
 DELETE FROM `tbl_language_labels` WHERE `label_key` LIKE 'LBL_Sr';
+-- -----------------TV-9.2.1.20201014------------------
 DELETE FROM `tbl_language_labels` WHERE `label_key` LIKE 'LBL_S.No.';

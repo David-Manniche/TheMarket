@@ -232,13 +232,13 @@ class Shipping
         //$carriers = $this->shippingApiObj->getCarriers();
         $this->shippingApiObj->setAddress($shippingAddressDetail['addr_name'], $shippingAddressDetail['addr_address1'], $shippingAddressDetail['addr_address2'], $shippingAddressDetail['addr_city'], $shippingAddressDetail['state_name'], $shippingAddressDetail['addr_zip'], $shippingAddressDetail['country_code'], $shippingAddressDetail['addr_phone']);
 
-        $weightUnitsArr = applicationConstants::getWeightUnitsArr($this->langId);
+        $weightUnitsArr = applicationConstants::getWeightUnitsArr($this->langId, true);
         $dimensionUnits = ShippingPackage::getUnitTypes($this->langId);
 
         foreach ($this->selProdShipRates as $rateId => $rates) {
             $product = $productInfo[$rates['selprod_id']];
             $shippingLevel = self::LEVEL_PRODUCT;
-            
+
 
             $shippedBy = -1; /*admin shipping */
             $fromZipCode = FatApp::getConfig('CONF_ZIP_CODE', FatUtility::VAR_STRING, '');
@@ -440,7 +440,7 @@ class Shipping
     {
         $shipppedByArr = array_keys($this->shippedByArr);
         sort($shipppedByArr);
-        $weightUnitsArr = applicationConstants::getWeightUnitsArr($this->langId);
+        $weightUnitsArr = applicationConstants::getWeightUnitsArr($this->langId, true);
         foreach ($shipppedByArr as $shipppedBy) {
             $levels = array_keys($this->shippedByArr[$shipppedBy]);
             foreach ($levels as $level) {
@@ -561,7 +561,9 @@ class Shipping
                     break;
 
                 case ShippingRate::CONDITION_TYPE_WEIGHT:
-                    if ($weight < $rate['shiprate_min_val'] || $weight > $rate['shiprate_max_val']) {
+                    $minVal = static::convertWeightInOunce($rate['shiprate_min_val'], 'KG');
+                    $maxVal = static::convertWeightInOunce($rate['shiprate_max_val'], 'KG');
+                    if ($weight < $minVal || $weight > $maxVal) {
                         unset($rates[$rate['id']]);
                         continue 2;
                     }
@@ -649,6 +651,9 @@ class Shipping
                 break;
             case "MM":
                 $coversionRate = "0.1";
+                break;
+            case "M":
+                $coversionRate = "100";
                 break;
             case "CM":
                 $coversionRate = "1";

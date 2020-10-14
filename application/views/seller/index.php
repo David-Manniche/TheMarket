@@ -105,7 +105,7 @@ $this->includeTemplate('_partial/seller/sellerDashboardNavigation.php'); ?>
                     <?php } ?>
                     <?php if ($userPrivilege->canViewSales(UserAuthentication::getLoggedUserId(), true)) { ?>
                         <div class="widget widget-stats">
-                            <a href="<?php echo UrlHelper::generateUrl('Seller', 'sales'); ?>">
+                            <a onClick="redirectfunc('<?php echo UrlHelper::generateUrl('Seller', 'Sales'); ?>', <?php echo FatApp::getConfig("CONF_DEFAULT_COMPLETED_ORDER_STATUS", null, ''); ?>)" href="javaScript:void(0)">
                                 <div class="cards">
                                     <div class="cards-header">
                                         <h5 class="cards-title"><?php echo Labels::getLabel('LBL_Order', $siteLangId); ?></h5>
@@ -224,7 +224,7 @@ $this->includeTemplate('_partial/seller/sellerDashboardNavigation.php'); ?>
                     <?php } ?>
                     <?php if ($userPrivilege->canViewCancellationRequests(UserAuthentication::getLoggedUserId(), true)) { ?>
                         <div class="widget widget-stats">
-                            <a href="<?php echo UrlHelper::generateUrl('Seller', 'orderCancellationRequests'); ?>">
+                            <a onClick="redirectfunc('<?php echo UrlHelper::generateUrl('Seller', 'Sales'); ?>', <?php echo FatApp::getConfig("CONF_DEFAULT_CANCEL_ORDER_STATUS", null, ''); ?>)" href="javaScript:void(0)">
                                 <div class="cards">
                                     <div class="cards-header">
                                         <h5 class="cards-title"><?php echo Labels::getLabel('LBL_Cancellation', $siteLangId); ?></h5>
