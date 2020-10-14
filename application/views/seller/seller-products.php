@@ -27,12 +27,8 @@ foreach ($arr_flds as $key => $val) {
     }
 }
 
-$sr_no = $recordCount;
-if (!$product_id) {
-    if ($page > 1) {
-        $sr_no = $sr_no - (($page - 1) * $pageSize);
-    }
-}
+$sr_no = ($page > 1 && !$product_id) ? $recordCount - (($page - 1) * $pageSize) : $recordCount;
+
 foreach ($arrListing as $sn => $row) {
     $tr = $tbl->appendElement('tr', array('class' => ($row['selprod_active'] != applicationConstants::ACTIVE) ? '' : ''));
 

@@ -195,9 +195,9 @@ class CountriesController extends AdminBaseController
         unset($post['lang_id']);
 
         $data = array(
-        'countrylang_lang_id' => $lang_id,
-        'countrylang_country_id' => $countryId,
-        'country_name' => $post['country_name']
+            'countrylang_lang_id' => $lang_id,
+            'countrylang_country_id' => $countryId,
+            'country_name' => $post['country_name']
         );
 
         $countryObj = new Countries($countryId);
@@ -206,7 +206,7 @@ class CountriesController extends AdminBaseController
             Message::addErrorMessage($countryObj->getError());
             FatUtility::dieJsonError(Message::getHtml());
         }
-        
+
         $autoUpdateOtherLangsData = FatApp::getPostedData('auto_update_other_langs_data', FatUtility::VAR_INT, 0);
         if (0 < $autoUpdateOtherLangsData) {
             $updateLangDataobj = new TranslateLangData(Countries::DB_TBL_LANG);
@@ -240,9 +240,9 @@ class CountriesController extends AdminBaseController
         $frm->addHiddenField('', 'country_id', $countryId);
         $frm->addRequiredField(Labels::getLabel('LBL_Country_code', $this->adminLangId), 'country_code');
 
-		$zoneArr = Zone::getAllZones($this->adminLangId, true);
+        $zoneArr = Zone::getAllZones($this->adminLangId, true);
         $frm->addSelectBox(Labels::getLabel('LBL_Zone', $this->adminLangId), 'country_zone_id', $zoneArr);
-		
+
         $currencyArr = Currency::getCurrencyNameWithCode($this->adminLangId);
         $frm->addSelectBox(Labels::getLabel('LBL_Currency', $this->adminLangId), 'country_currency_id', $currencyArr);
 
@@ -263,7 +263,7 @@ class CountriesController extends AdminBaseController
         $frm->addHiddenField('', 'country_id', $countryId);
         $frm->addSelectBox(Labels::getLabel('LBL_LANGUAGE', $this->adminLangId), 'lang_id', Language::getAllNames(), $lang_id, array(), '');
         $frm->addRequiredField(Labels::getLabel('LBL_Country_Name', $this->adminLangId), 'country_name');
-        
+
         $siteLangId = FatApp::getConfig('conf_default_site_lang', FatUtility::VAR_INT, 1);
         $translatorSubscriptionKey = FatApp::getConfig('CONF_TRANSLATOR_SUBSCRIPTION_KEY', FatUtility::VAR_STRING, '');
 

@@ -34,9 +34,8 @@ foreach ($arr_flds as $key => $val) {
     }
 }
 
-$sr_no = ($page == 1) ? 0 : ($pageSize * ($page - 1));
+$sr_no = ($page > 1) ? $recordCount - (($page - 1) * $pageSize) : $recordCount;
 foreach ($arrListing as $sn => $row) {
-    $sr_no++;
     $tr = $tbl->appendElement('tr', array());
 
     foreach ($arr_flds as $key => $val) {
@@ -108,6 +107,7 @@ foreach ($arrListing as $sn => $row) {
                 break;
         }
     }
+    $sr_no--;
 }
 if (count($arrListing) == 0) {
     $tbl->appendElement('tr')->appendElement(

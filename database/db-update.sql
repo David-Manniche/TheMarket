@@ -813,3 +813,4 @@ DELETE FROM `tbl_language_labels` WHERE `label_key` LIKE 'LBL_Sr._no.';
 DELETE FROM `tbl_language_labels` WHERE `label_key` LIKE 'LBL_SrNo.';
 DELETE FROM `tbl_language_labels` WHERE `label_key` LIKE 'LBL_Sr._no.';
 DELETE FROM `tbl_language_labels` WHERE `label_key` LIKE 'LBL_Sr';
+DELETE FROM `tbl_language_labels` WHERE `label_key` LIKE 'LBL_S.No.';

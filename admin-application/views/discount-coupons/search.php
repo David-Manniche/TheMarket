@@ -44,7 +44,6 @@ foreach ($arr_listing as $sn => $row) {
                 }
                 break;
             case 'coupon_type':
-
                 $td->appendElement('plaintext', array(), $discountTypeArr[$row[$key]], true);
                 break;
             case 'coupon_discount_value':

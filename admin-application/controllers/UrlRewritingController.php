@@ -126,7 +126,7 @@ class UrlRewritingController extends AdminBaseController
         $row = FatApp::getDb()->fetchAll($rs, 'urlrewrite_lang_id');
         $langArr = Language::getAllNames();
 
-        $originalUrl = current($row)['urlrewrite_original'];
+        $originalUrl = $row ? current($row)['urlrewrite_original'] : '';
         foreach ($langArr as $langId => $langName) {
             if (!FatApp::getConfig('CONF_LANG_SPECIFIC_URL', FatUtility::VAR_INT, 0) && $langId != FatApp::getConfig('CONF_DEFAULT_SITE_LANG', FatUtility::VAR_INT, 1)) {
                 continue;

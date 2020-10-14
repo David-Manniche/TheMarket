@@ -19,9 +19,8 @@ foreach ($arr_flds as $key => $val) {
     $e = $th->appendElement('th', array(), $val);
 }
 
-$sr_no = $page == 1 ? 0 : $pageSize * ($page - 1);
+$sr_no = ($page > 1) ? $recordCount - (($page - 1) * $pageSize) : $recordCount;
 foreach ($arr_listing as $sn => $row) {
-    $sr_no++;
     $tr = $tbl->appendElement('tr');
     $tr->setAttribute("id", $row['prodcat_id']);
 
@@ -62,6 +61,7 @@ foreach ($arr_listing as $sn => $row) {
                 break;
         }
     }
+    $sr_no--;
 }
 if (count($arr_listing) == 0) {
     $tbl->appendElement('tr')->appendElement('td', array('colspan' => count($arr_flds)), Labels::getLabel('LBL_No_Records_Found', $adminLangId));
