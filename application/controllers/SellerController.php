@@ -3422,7 +3422,10 @@ class SellerController extends SellerBaseController
         $frm = new Form('frmSocialPlatform');
         $frm->addHiddenField('', 'splatform_id', $splatform_id);
         $frm->addRequiredField(Labels::getLabel('Lbl_Identifier', $this->siteLangId), 'splatform_identifier');
-        $frm->addRequiredField(Labels::getLabel('Lbl_URL', $this->siteLangId), 'splatform_url');
+        $urlFld = $frm->addTextBox(Labels::getLabel('LBL_URL', $this->siteLangId), 'splatform_url');
+		$urlFld->requirements()->setRegularExpressionToValidate(ValidateElement::URL_REGEX);
+        $urlFld->requirements()->setCustomErrorMessage(Labels::getLabel('LBL_This_must_be_an_absolute_URL', $this->siteLangId));
+		$urlFld->requirements()->setRequired();
         $fld = $frm->addSelectBox(Labels::getLabel('Lbl_Icon_Type_from_CSS', $this->siteLangId), 'splatform_icon_class', $iconsArr, '', array(), Labels::getLabel('Lbl_Select', $this->siteLangId));
         if ($splatform_id > 0) {
             $fld->setFieldTagAttribute('disabled', 'disabled');

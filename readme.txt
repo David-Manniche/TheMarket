@@ -210,6 +210,8 @@ Bugs:
     => 043783 - if "Product Inclusive Tax" setting is on then tax should not get display on cart and it should get display only after selecting billing address. 
     => 044047 - option setting getting hide on seller end
     => 044048 - seller dashboard> there is order cancellation tab which containing count of order cancel by buyer and seller but displaying request of buyer only
+    => 044060 - If social media links are added by admin/seller without http / https platform doesnot redirect user to social media page instead redirects user to domainname.com/socialmediaurl.com
+
 Enhancements:
     => Tax module upgrade
     => Test cases classes enhancements.
