@@ -31,7 +31,7 @@ $cancelFld->developerTags['col'] = 2;
 $cancelFld->developerTags['noCaptionTag'] = true;
 
 $btnSubmit = $frm->getField('btn_submit');
-$btnSubmit->setFieldTagAttribute('class', "btn btn-primary");
+$btnSubmit->setFieldTagAttribute('class', "btn btn-brand");
 $btnSubmit->developerTags['col'] = 2;
 $btnSubmit->developerTags['noCaptionTag'] = true;
 
@@ -310,7 +310,7 @@ $this->includeTemplate('seller/_partial/shop-navigation.php', $variables, false)
 											<div class="field-wraper">
 												<div class="field_cover">
 												<?php //echo $frm->getFieldHtml('btn_add_row['.$i.']');  ?>
-													<button type="button" name="btn_add_row[<?php echo $i; ?>]" onClick= "addTimeSlotRow(<?php echo $i; ?>)" class="btn btn-primary js-slot-add-<?php echo $i; ?>"><i class="fas fa-plus"></i></button>
+													<button type="button" name="btn_add_row[<?php echo $i; ?>]" onClick= "addTimeSlotRow(<?php echo $i; ?>)" class="btn btn-brand js-slot-add-<?php echo $i; ?>"><i class="fas fa-plus"></i></button>
 												</div>
 											</div>
 										</div>
@@ -395,7 +395,7 @@ $this->includeTemplate('seller/_partial/shop-navigation.php', $variables, false)
 										<div class="field-wraper">
 											<div class="field_cover">
 											<?php //echo $frm->getFieldHtml('btn_add_row['.$i.']'); ?>
-											<button type="button" name="btn_add_row[<?php echo $i; ?>]" onClick= "addTimeSlotRow(<?php echo $i; ?>)" class="d-none btn btn-primary js-slot-add-<?php echo $i; ?>"><i class="fas fa-plus"></i></button>
+											<button type="button" name="btn_add_row[<?php echo $i; ?>]" onClick= "addTimeSlotRow(<?php echo $i; ?>)" class="d-none btn btn-brand js-slot-add-<?php echo $i; ?>"><i class="fas fa-plus"></i></button>
 											</div>
 										</div>
 									</div>

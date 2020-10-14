@@ -34,7 +34,7 @@
                                 $urlFld->htmlAfterField = '<span class="form-text text-muted">'.Labels::getLabel('LBL_Example_Url', $siteLangId).'</span>';
 
                                 $submitFld = $frm->getField('btn_submit');
-                                $submitFld->setFieldTagAttribute('class', "btn btn-primary btn-wide");
+                                $submitFld->setFieldTagAttribute('class', "btn btn-brand btn-wide");
                                 echo $frm->getFormHtml();
                                 ?>
                             </div>

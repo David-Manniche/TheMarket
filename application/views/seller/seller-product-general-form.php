@@ -38,7 +38,7 @@ $fld->developerTags['cbLabelAttributes'] = array('class' => 'checkbox');
 $fld->developerTags['cbHtmlAfterCheckbox'] = '<i class="input-helper"></i>';
 
 $submitBtnFld = $frmSellerProduct->getField('btn_submit');
-$submitBtnFld->setFieldTagAttribute('class', 'btn btn-primary');
+$submitBtnFld->setFieldTagAttribute('class', 'btn btn-brand');
 $submitBtnFld->developerTags['col'] = 12;
 
 $cancelBtnFld = $frmSellerProduct->getField('btn_cancel');

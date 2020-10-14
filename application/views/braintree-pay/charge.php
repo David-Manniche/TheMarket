@@ -32,7 +32,7 @@
                                     <div class="field_cover">
                                         <?php 
                                             $btn = $frm->getField('btn_submit'); 
-                                            $btn->addFieldTagAttribute('class', 'btn btn-primary');
+                                            $btn->addFieldTagAttribute('class', 'btn btn-brand');
                                             $btn->addFieldTagAttribute('data-processing-text', Labels::getLabel('LBL_PLEASE_WAIT..', $siteLangId));
                                         echo $frm->getFieldHtml('btn_submit'); ?>
                                         <?php if (FatUtility::isAjaxCall()) { ?>

@@ -38,7 +38,7 @@
                     </div>
                     <?php } ?>
                     <a href="<?php echo UrlHelper::generateUrl('shops','view', array($shop['shop_id'])); ?>"
-                        class="btn btn-primary btn-sm"><?php echo Labels::getLabel('LBL_Shop_Now',$siteLangId);?></a>
+                        class="btn btn-brand btn-sm"><?php echo Labels::getLabel('LBL_Shop_Now',$siteLangId);?></a>
                 </div>
             </div>
 

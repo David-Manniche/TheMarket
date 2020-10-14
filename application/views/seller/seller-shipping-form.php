@@ -30,7 +30,7 @@
     if (null != $submitFld) {
         $submitFld->developerTags['col'] = 2;
         $submitFld->setWrapperAttribute('class', 'col-6');
-        $submitFld->setFieldTagAttribute('class', 'btn btn-primary btn-block');
+        $submitFld->setFieldTagAttribute('class', 'btn btn-brand btn-block');
     }
     
     $cancelFld = $shippingFrm->getField('btn_cancel');

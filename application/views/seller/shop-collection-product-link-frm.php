@@ -36,7 +36,7 @@
                     $collectionLinkFrm->developerTags['fld_default_col'] = 12;
 
                     $submitFld = $collectionLinkFrm->getField('btn_submit');
-                    $submitFld->setFieldTagAttribute('class', "btn btn-primary btn-wide");
+                    $submitFld->setFieldTagAttribute('class', "btn btn-brand btn-wide");
                     echo $collectionLinkFrm->getFormHtml(); ?>
                 </div>
             </div>

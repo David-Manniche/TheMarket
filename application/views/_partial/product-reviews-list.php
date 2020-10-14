@@ -88,7 +88,7 @@ if ($totReviews) {
                 <div class="box box--white rounded p-3 have-you">
                     <h5><?php echo Labels::getLabel('Lbl_Share_your_thoughts', $siteLangId); ?></h5>
                     <p><?php echo Labels::getLabel('Lbl_With_other_customers', $siteLangId); ?></p>
-                    <a class="btn btn-primary btn-sm" href="<?php echo UrlHelper::generateUrl('Reviews', 'write', array($product_id)); ?>"><?php echo Labels::getLabel('Lbl_Write_a_Review', $siteLangId); ?></a>
+                    <a class="btn btn-brand btn-sm" href="<?php echo UrlHelper::generateUrl('Reviews', 'write', array($product_id)); ?>"><?php echo Labels::getLabel('Lbl_Write_a_Review', $siteLangId); ?></a>
                 </div>
             </div>
             <?php }?>
@@ -101,7 +101,7 @@ if ($totReviews) {
         </div>
         <div class="row mt-5 mt-sm-0">
             <div class="col-auto">
-                <a href="javascript:void(0);" class="btn btn-primary " data-sort='most_recent' onclick="getSortedReviews(this);return false;"><?php echo Labels::getLabel('Lbl_Most_Recent', $siteLangId); ?></a>
+                <a href="javascript:void(0);" class="btn btn-brand " data-sort='most_recent' onclick="getSortedReviews(this);return false;"><?php echo Labels::getLabel('Lbl_Most_Recent', $siteLangId); ?></a>
             </div>
             <div class="col">
                 <a href="javascript:void(0);" class="btn btn-outline-primary" data-sort='most_helpful' onclick="getSortedReviews(this);return false;"><?php echo Labels::getLabel('Lbl_Most_Helpful', $siteLangId); ?> </a>

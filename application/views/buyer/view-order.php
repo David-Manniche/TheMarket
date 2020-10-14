@@ -922,7 +922,7 @@ if (!$print) { ?>
 
                                 $submitFld = $frm->getField('btn_submit');
                                 $submitFld->developerTags['col'] = 4;
-                                $submitFld->addFieldTagAttribute('class', 'btn btn-primary');
+                                $submitFld->addFieldTagAttribute('class', 'btn btn-brand');
                                 $submitFld->value = Labels::getLabel("LBL_SUBMIT_REQUEST", $siteLangId);
                                 echo $frm->getFormHtml(); ?>
                             </div>

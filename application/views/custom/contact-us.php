@@ -14,7 +14,7 @@ if (null != $fld) {
 }
 
 $fld = $contactFrm->getField('btn_submit');
-$fld->addFieldTagAttribute('class', 'btn btn-primary');
+$fld->addFieldTagAttribute('class', 'btn btn-brand');
 $fld->developerTags['col'] = 12;
 ?>
 <script>

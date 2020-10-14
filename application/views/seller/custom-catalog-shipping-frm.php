@@ -34,7 +34,7 @@ $btnSubmitFld = $productFrm->getField('btn_submit');
 $btnSubmitFld->developerTags['col'] = 6;
 $btnSubmitFld->setWrapperAttribute('class','text-right');
 
-$btnSubmitFld->setFieldTagAttribute('class', "btn btn-primary");
+$btnSubmitFld->setFieldTagAttribute('class', "btn btn-brand");
 ?>
 <div class="row justify-content-center">
      <div class="col-md-12">

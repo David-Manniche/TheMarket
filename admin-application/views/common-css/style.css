@@ -548,7 +548,7 @@ STANDARD BUTTONS
     box-shadow: none;
 }
 
-.btn-primary,
+.btn-brand,
 .btn-info {
     /* Permalink - use to edit and share this gradient: http://colorzilla.com/gradient-editor/#32c9ef+43,57def9+100 */
     background: rgb(50, 201, 239);
@@ -565,7 +565,7 @@ STANDARD BUTTONS
     border-color: transparent;
 }
 
-.themebtn.btn-primary:hover,
+.themebtn.btn-brand:hover,
 .btn-info:hover,
 .btn-info:focus,
 .btn-info:active {
@@ -663,22 +663,22 @@ OUTLINE BUTTONS
     /*	padding: 10px 22px;*/
 }
 
-.btn-primary.outline {
+.btn-brand.outline {
     border: 2px solid #0099cc;
     color: #0099cc;
 }
 
-.btn-primary.outline:hover,
-.btn-primary.outline:focus,
-.btn-primary.outline:active,
-.btn-primary.outline.active,
-.open>.dropdown-toggle.btn-primary {
+.btn-brand.outline:hover,
+.btn-brand.outline:focus,
+.btn-brand.outline:active,
+.btn-brand.outline.active,
+.open>.dropdown-toggle.btn-brand {
     color: #33a6cc;
     border-color: #33a6cc;
 }
 
-.btn-primary.outline:active,
-.btn-primary.outline.active {
+.btn-brand.outline:active,
+.btn-brand.outline.active {
     border-color: #007299;
     color: #007299;
     -webkit-box-shadow: none;
@@ -799,13 +799,13 @@ ROUNDED BUTTONS
 RAISED BUTTONS
 ******************************************************/
 
-.btn-primary.raised {
+.btn-brand.raised {
     -webkit-box-shadow: 0 3px 0 0 #007299;
     box-shadow: 0 3px 0 0 #007299;
 }
 
-.btn-primary.raised:active,
-.btn-primary.raised.active {
+.btn-brand.raised:active,
+.btn-brand.raised.active {
     background: #33a6cc;
     -webkit-box-shadow: none;
     box-shadow: none;
@@ -8793,7 +8793,7 @@ body.switchtoggled .color_pallete .pallete_control {
 
 .table td {
     vertical-align: top;
-    padding: 20px;
+    padding: 10px;
     border-bottom: 1px solid #eee;
 }
 
@@ -11945,8 +11945,14 @@ form[name="frmShippingProfile"] {
 
 /*shipping end*/
 .vertical-actions li{
+    display: -webkit-box !important;
+    display: -ms-flexbox !important;
     display: flex !important;
+    -webkit-box-pack: justify;
+    -ms-flex-pack: justify;
     justify-content: space-between;
+    -webkit-box-align: center;
+    -ms-flex-align: center;
     align-items: center;
     padding: 12px 0 !important;}
     
@@ -12006,6 +12012,7 @@ form[name="frmShippingProfile"] {
          display: block;
          text-align: left; } }
    .timeline .event:after {
+     -webkit-box-shadow: 0 0 0 2px rgb(45, 200, 239);
      box-shadow: 0 0 0 2px rgb(45, 200, 239);
      left: -57px;
      background: #fff;

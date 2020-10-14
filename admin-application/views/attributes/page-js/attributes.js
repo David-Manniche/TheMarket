@@ -1,6 +1,6 @@
-var showNumericAttributeBtnString = '<div class="row" style="text-align:right;"><a href="javascript:void(0)" onclick="showNumericAttribute(this)" class="themebtn btn-primary">Show Next Row</a></div>';
+var showNumericAttributeBtnString = '<div class="row" style="text-align:right;"><a href="javascript:void(0)" onclick="showNumericAttribute(this)" class="themebtn btn-brand">Show Next Row</a></div>';
 
-var showTextAttributeBtnString = '<div class="row" style="text-align:right;"><a href="javascript:void(0)" onclick="showTextAttribute(this)" class="themebtn btn-primary">Show Next Row</a></div>';
+var showTextAttributeBtnString = '<div class="row" style="text-align:right;"><a href="javascript:void(0)" onclick="showTextAttribute(this)" class="themebtn btn-brand">Show Next Row</a></div>';
 
 var numericAttrHideCounterVal = 2;
 var TextAttrHideCounterVal = 2;

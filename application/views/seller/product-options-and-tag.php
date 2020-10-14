@@ -69,7 +69,7 @@
                  <div class="field-wraper">
                      <div class="field_cover">
                         <input type="hidden" name="product_id" value="<?php echo $productId; ?>">
-                        <input type="button" class="btn btn-primary" onClick= <?php if($productType == Product::PRODUCT_TYPE_DIGITAL) { ?> "productMedia(<?php echo $productId; ?>)" <?php }else{ ?> "productShipping(<?php echo $productId; ?>)" <?php  } ?> value="<?php echo Labels::getLabel('LBL_Save_And_Next', $siteLangId); ?>">
+                        <input type="button" class="btn btn-brand" onClick= <?php if($productType == Product::PRODUCT_TYPE_DIGITAL) { ?> "productMedia(<?php echo $productId; ?>)" <?php }else{ ?> "productShipping(<?php echo $productId; ?>)" <?php  } ?> value="<?php echo Labels::getLabel('LBL_Save_And_Next', $siteLangId); ?>">
                      </div>
                  </div>
              </div>

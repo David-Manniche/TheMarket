@@ -167,7 +167,7 @@ class PushNotificationsController extends AdminBaseController
         }
 
         if (0 == $status) {
-            $ul->htmlAfterField .= ' </div></div><input accept="image/*" data-frm="frmPushNotificationMedia" class="btn btn-primary btn-sm" onchange="popupImage(this)" title="Upload" type="file" name="app_push_notification_image" value="'. Labels::getLabel('LBL_Upload_File', $this->adminLangId).'"><small>' . Labels::getLabel('LBL_SIZE_MUST_BE_LESS_THAN_300KB', $this->adminLangId) . '</small></li>';
+            $ul->htmlAfterField .= ' </div></div><input accept="image/*" data-frm="frmPushNotificationMedia" class="btn btn-brand btn-sm" onchange="popupImage(this)" title="Upload" type="file" name="app_push_notification_image" value="'. Labels::getLabel('LBL_Upload_File', $this->adminLangId).'"><small>' . Labels::getLabel('LBL_SIZE_MUST_BE_LESS_THAN_300KB', $this->adminLangId) . '</small></li>';
         }
         return $frm;
     }

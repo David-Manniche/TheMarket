@@ -50,6 +50,10 @@
  }
  
  .btn {
+     &.btn-brand {
+         background-color: var(--brand-color);
+         color: var(--brand-color-inverse);
+     }
      &.btn--white {
          background: #fff;
          color: #000;

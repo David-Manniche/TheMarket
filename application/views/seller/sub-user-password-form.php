@@ -15,7 +15,7 @@
         $frm->developerTags['colClassPrefix'] = 'col-lg-4 col-md-4 col-sm-';
         $frm->developerTags['fld_default_col'] = 4;
         $submitFld = $frm->getField('btn_submit');
-        $submitFld->setFieldTagAttribute('class', "btn btn-primary");
+        $submitFld->setFieldTagAttribute('class', "btn btn-brand");
         $newPwd = $frm->getField('new_password');
         $newPwd->htmlAfterField = '<span class="text--small">' . sprintf(Labels::getLabel('LBL_Example_password', $siteLangId), 'User@123') . '</span>';
         echo $frm->getFormHtml();

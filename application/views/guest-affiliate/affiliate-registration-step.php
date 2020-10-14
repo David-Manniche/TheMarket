@@ -6,7 +6,7 @@ $registerForm->developerTags['fld_default_col'] = 12;
 
 if( !$affiliate_register_step_number ){
 	$btnSubmitFld = $registerForm->getField('btn_submit');
-	$btnSubmitFld->addFieldTagAttribute( 'class', 'btn btn-primary');
+	$btnSubmitFld->addFieldTagAttribute( 'class', 'btn btn-brand');
 	$btnSubmitFld->developerTags['noCaptionTag'] = true;
 }
 
@@ -174,6 +174,6 @@ switch( $affiliate_register_step_number ){
     $btnSubmitFld = $registerForm->getField('btn_submit');
     if (null != $btnSubmitFld) {
         $btnSubmitFld->developerTags['noCaptionTag'] = true;
-        $btnSubmitFld->addFieldTagAttribute( 'class', 'btn btn-primary');
+        $btnSubmitFld->addFieldTagAttribute( 'class', 'btn btn-brand');
     }
 	echo $registerForm->getFormHtml(); ?>

@@ -64,7 +64,7 @@
                                     $dateToFld->developerTags['noCaptionTag'] = true;
 
                                     $submitBtnFld = $frmSearchPromotions->getField('btn_submit');
-                                    $submitBtnFld->setFieldTagAttribute('class', 'btn btn-primary btn-block ');
+                                    $submitBtnFld->setFieldTagAttribute('class', 'btn btn-brand btn-block ');
                                     $submitBtnFld->setWrapperAttribute('class', 'col-lg-2');
                                     $submitBtnFld->developerTags['col'] = 2;
                                     $submitBtnFld->developerTags['noCaptionTag'] = true;

@@ -9,7 +9,7 @@
           <p><?php echo Labels::getLabel('LBL_Create_new_product',$siteLangId);?> </p>
           <span><?php echo Labels::getLabel('LBL_Create_your_Product',$siteLangId);?></span> </a> </li>
         <?php } else if((isset($canAddCustomProduct) && $canAddCustomProduct==false) && (isset($canRequestProduct) && $canRequestProduct === true )){ ?>
-        <li  data-heading="OR"><a href="<?php echo UrlHelper::generateUrl('Seller','requestedCatalog');?>" class="btn btn-primary btn-sm"><i class="icn fa fa-file-text "></i>
+        <li  data-heading="OR"><a href="<?php echo UrlHelper::generateUrl('Seller','requestedCatalog');?>" class="btn btn-brand btn-sm"><i class="icn fa fa-file-text "></i>
           <p><?php echo Labels::getLabel('LBL_Request_A_Product',$siteLangId);?></p>
           <span><?php echo Labels::getLabel('LBL_Request_to_add_a_new_product_in_catalog',$siteLangId);?></span></a></li>
         <?php } ?>

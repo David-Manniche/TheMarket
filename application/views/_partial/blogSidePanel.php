@@ -65,7 +65,7 @@
     <?php }?>
 </div>
 <div class="gap"></div>
-<a href="<?php echo UrlHelper::generateUrl('Blog', 'contributionForm'); ?>" class="btn btn-primary btn--lg btn-block ripplelink btn--contribute"> <?php echo Labels::getLabel('Lbl_Contribute', $siteLangId); ?> </a>
+<a href="<?php echo UrlHelper::generateUrl('Blog', 'contributionForm'); ?>" class="btn btn-brand btn--lg btn-block ripplelink btn--contribute"> <?php echo Labels::getLabel('Lbl_Contribute', $siteLangId); ?> </a>
 <div class="gap"></div>
 <?php /*if (!empty($categoriesArr)) { ?>
 <h3 class="widget__title -style-uppercase"><?php echo Labels::getLabel('Lbl_categories', $siteLangId); ?></h3>

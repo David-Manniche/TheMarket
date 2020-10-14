@@ -9,7 +9,7 @@ if (null != $fld) {
 }
 
 $btnSubmit = $productFrm->getField('btn_submit');
-$btnSubmit->setFieldTagAttribute('class', "btn btn-primary");
+$btnSubmit->setFieldTagAttribute('class', "btn btn-brand");
 
 $btnDiscardFld = $productFrm->getField('btn_discard');
 $btnDiscardFld->setFieldTagAttribute('onClick', 'goToCatalog()');

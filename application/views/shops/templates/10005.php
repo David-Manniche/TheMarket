@@ -47,7 +47,7 @@
                     <div class="shop-btn-group">
                         <?php $showAddToFavorite = true; if(UserAuthentication::isUserLogged() && (!User::isBuyer()) ) $showAddToFavorite = false; ?>
                         <?php if($showAddToFavorite) { ?>
-                            <a href="javascript:void(0)" onclick="toggleShopFavorite(<?php echo $shop['shop_id']; ?>);" class="btn btn-primary btn-sm <?php echo ($shop['is_favorite']) ? 'is-active' : ''; ?>" id="shop_<?php echo $shop['shop_id']; ?>"><i class="icn"><svg class="svg">
+                            <a href="javascript:void(0)" onclick="toggleShopFavorite(<?php echo $shop['shop_id']; ?>);" class="btn btn-brand btn-sm <?php echo ($shop['is_favorite']) ? 'is-active' : ''; ?>" id="shop_<?php echo $shop['shop_id']; ?>"><i class="icn"><svg class="svg">
                                     <use xlink:href="<?php echo CONF_WEBROOT_URL; ?>images/retina/sprite.svg#heart" href="<?php echo CONF_WEBROOT_URL; ?>images/retina/sprite.svg#heart"></use>
                                 </svg></i><?php echo Labels::getLabel('LBL_Love', $siteLangId);  echo " ".$shop['shop_name']; ?> !</a>
                         <?php }?>
@@ -55,11 +55,11 @@
                         <?php if($showMoreButtons){ 
 								$shopRepData = ShopReport::getReportDetail($shop['shop_id'], UserAuthentication::getLoggedUserId(true), 'sreport_id');
 							if (false === UserAuthentication::isUserLogged() || empty($shopRepData)) { ?>
-                            <a href="<?php echo UrlHelper::generateUrl('Shops','ReportSpam', array($shop['shop_id'])); ?>" class="btn btn-primary btn-sm"><i class="icn"><svg class="svg">
+                            <a href="<?php echo UrlHelper::generateUrl('Shops','ReportSpam', array($shop['shop_id'])); ?>" class="btn btn-brand btn-sm"><i class="icn"><svg class="svg">
                                         <use xlink:href="<?php echo CONF_WEBROOT_URL; ?>images/retina/sprite.svg#report" href="<?php echo CONF_WEBROOT_URL; ?>images/retina/sprite.svg#report"></use>
                                     </svg></i><?php echo Labels::getLabel('LBL_Report_Spam',$siteLangId); ?></a>
 							<?php } ?>
-                            <a href="<?php echo UrlHelper::generateUrl('shops','sendMessage',array($shop['shop_id'])); ?>" class="btn btn-primary btn-sm"><i class="icn"><svg class="svg">
+                            <a href="<?php echo UrlHelper::generateUrl('shops','sendMessage',array($shop['shop_id'])); ?>" class="btn btn-brand btn-sm"><i class="icn"><svg class="svg">
                                         <use xlink:href="<?php echo CONF_WEBROOT_URL; ?>images/retina/sprite.svg#send-msg" href="<?php echo CONF_WEBROOT_URL; ?>images/retina/sprite.svg#send-msg"></use>
                                     </svg></i><?php echo Labels::getLabel('LBL_Send_Message', $siteLangId); ?></a>
                         <?php }?>

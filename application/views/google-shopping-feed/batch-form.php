@@ -10,7 +10,7 @@ $adsbatch_name = $frm->getField('adsbatch_name');
 $adsbatch_name->developerTags['col'] = 2;
 
 $btnFld = $frm->getField('btn_submit');
-$btnFld->addFieldTagAttribute('class', 'btn btn-block btn-primary');
+$btnFld->addFieldTagAttribute('class', 'btn btn-block btn-brand');
 
 $btnFld = $frm->getField('btn_clear');
 $btnFld->addFieldTagAttribute('class', 'btn btn-block btn-outline-primary');

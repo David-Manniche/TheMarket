@@ -23,9 +23,9 @@
             <div class="btngroup--fix">
                 <?php echo $imgFrm->getFormTag();    ?>
                 <?php if ($mode == 'Edit') { ?>
-                    <a class="themebtn btn-primary btn-sm" href="javascript:void(0)" onClick="popupImage()"><?php echo Labels::getLabel('LBL_Change', $adminLangId);?></a>
+                    <a class="themebtn btn-brand btn-sm" href="javascript:void(0)" onClick="popupImage()"><?php echo Labels::getLabel('LBL_Change', $adminLangId);?></a>
                 <?php } else { ?>
-                    <span class="btn btn-primary btn-sm btn--fileupload">
+                    <span class="btn btn-brand btn-sm btn--fileupload">
                         <?php echo $imgFrm->getFieldHtml('user_profile_image'); ?>
                     </span>
                 <?php } ?>

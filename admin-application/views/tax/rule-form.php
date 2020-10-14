@@ -66,7 +66,7 @@ $combTaxCount = 0;
                                                             <div class="row mb-4">
                                                                 <div class="col-sm-12">
                                                                     <?php if ($index > 1) { ?>
-                                                                    <a href="javascript:void(0);" class="themebtn btn-primary remove-tax-rule--js"> <?php echo Labels::getLabel("LBL_Delete_Tax_Rule", $adminLangId);?></a>
+                                                                    <a href="javascript:void(0);" class="themebtn btn-brand remove-tax-rule--js"> <?php echo Labels::getLabel("LBL_Delete_Tax_Rule", $adminLangId);?></a>
                                                                     <?php } ?>
                                                                 </div>
                                                             </div>
@@ -281,7 +281,7 @@ $combTaxCount = 0;
                                         <div class="p-4">
                                             <div class="row">
                                                 <div class="col-xl-12">
-                                                    <a href="javascript:0;" class="themebtn btn-primary add-rule-form--js"><i class="ion-plus">
+                                                    <a href="javascript:0;" class="themebtn btn-brand add-rule-form--js"><i class="ion-plus">
                                                         </i> <?php echo Labels::getLabel('LBL_Add_More', $adminLangId);?></a>
                                                 </div>
                                             </div>

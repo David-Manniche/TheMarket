@@ -4,7 +4,7 @@ $slideMediaFrm->developerTags['colClassPrefix'] = 'col-md-';
 $slideMediaFrm->developerTags['fld_default_col'] = 12;
 
 $fld1 = $slideMediaFrm->getField('slide_image');
-$fld1->addFieldTagAttribute('class', 'btn btn-primary btn-sm');
+$fld1->addFieldTagAttribute('class', 'btn btn-brand btn-sm');
 $fld1->addFieldTagAttribute('onChange', 'popupImage(this)');
 $screenFld = $slideMediaFrm->getField('slide_screen');
 $screenFld->addFieldTagAttribute('class', 'prefDimensions-js');

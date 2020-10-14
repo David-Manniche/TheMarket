@@ -39,7 +39,7 @@ if (true === $displayActions) {
                 <i class="fa fa-trash"></i>&nbsp;&nbsp;<?php echo Labels::getLabel('LBL_Delete', $siteLangId); ?>
             </a>
             <?php if (true == $isWishList) { ?>
-                <a class="btn btn-primary btn-sm" onClick="searchWishList();" href="javascript:void(0)">
+                <a class="btn btn-brand btn-sm" onClick="searchWishList();" href="javascript:void(0)">
                 <i class="fa fa-backward"></i>&nbsp;&nbsp;<?php echo Labels::getLabel('LBL_Back', $siteLangId); ?>
                 </a>
             <?php } ?>

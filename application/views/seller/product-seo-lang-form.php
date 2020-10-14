@@ -7,7 +7,7 @@
     if (!empty($translatorSubscriptionKey) && $selprod_lang_id != $siteDefaultLangId) { ?>
         <div class="row justify-content-end">
             <div class="col-auto mb-4">
-                <input class="btn btn-primary"
+                <input class="btn btn-brand"
                     type="button"
                     value="<?php echo Labels::getLabel('LBL_AUTOFILL_LANGUAGE_DATA', $siteLangId); ?>"
                     onClick="editProductMetaTagLangForm(<?php echo $selprodId; ?>, <?php echo $selprod_lang_id; ?>)">
@@ -30,7 +30,7 @@
 
     $nextBtn = $productSeoLangForm->getField('btn_next');
     $nextBtn->developerTags['col'] = 4;
-    $nextBtn->setfieldTagAttribute('class', "btn btn-primary btn-block");
+    $nextBtn->setfieldTagAttribute('class', "btn btn-brand btn-block");
     $nextBtn->setfieldTagAttribute('onClick', "setupProductLangMetaTag(this.closest('form'), 0)");
     $nextBtn->setWrapperAttribute('class', "col-6");
     $nextBtn->developerTags['noCaptionTag'] = true;
@@ -46,7 +46,7 @@
     if (key($languages) == $selprod_lang_id) {
         $nextBtn->value = Labels::getLabel("LBL_Save", $siteLangId);
         $nextBtn->setfieldTagAttribute('class', "btn btn-outline-primary btn-block");
-        $exitBtn->setfieldTagAttribute('class', "btn btn-primary btn-block");
+        $exitBtn->setfieldTagAttribute('class', "btn btn-brand btn-block");
     }
     echo $productSeoLangForm->getFormHtml(); ?>
 </div>

@@ -3,13 +3,13 @@
 	$shopLogoFrm->developerTags['colClassPrefix'] = 'col-md-';
 	$shopLogoFrm->developerTags['fld_default_col'] = 12;
 	$fld = $shopLogoFrm->getField('shop_logo');
-	$fld->addFieldTagAttribute('class','btn btn-primary btn-sm');
+	$fld->addFieldTagAttribute('class','btn btn-brand btn-sm');
 
 	$shopBannerFrm->setFormTagAttribute('onsubmit', 'setupShopMedia(this); return(false);');
 	$shopBannerFrm->developerTags['colClassPrefix'] = 'col-md-';
 	$shopBannerFrm->developerTags['fld_default_col'] = 12;
 	$fld = $shopBannerFrm->getField('shop_banner');
-	$fld->addFieldTagAttribute('class','btn btn-primary btn-sm');
+	$fld->addFieldTagAttribute('class','btn btn-brand btn-sm');
 
 ?>
 

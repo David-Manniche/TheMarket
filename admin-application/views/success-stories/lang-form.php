@@ -24,7 +24,7 @@ $langFld->setfieldTagAttribute('onChange', "storiesLangForm(" . $sstory_id . ", 
                         if (!empty($translatorSubscriptionKey) && $sstory_lang_id != $siteDefaultLangId) { ?> 
                             <div class="row justify-content-end"> 
                                 <div class="col-auto mb-4">
-                                    <input class="btn btn-primary" 
+                                    <input class="btn btn-brand" 
                                         type="button" 
                                         value="<?php echo Labels::getLabel('LBL_AUTOFILL_LANGUAGE_DATA', $adminLangId); ?>" 
                                         onClick="storiesLangForm(<?php echo $sstory_id; ?>, <?php echo $sstory_lang_id; ?>, 1)">

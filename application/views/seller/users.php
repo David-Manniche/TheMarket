@@ -42,7 +42,7 @@
                                     <div class="col-lg-8">
                                         <?php
                                         $submitFld = $frmSearch->getField('btn_submit');
-                                        $submitFld->setFieldTagAttribute('class', 'btn btn-primary btn-block ');
+                                        $submitFld->setFieldTagAttribute('class', 'btn btn-brand btn-block ');
 
                                         $fldClear= $frmSearch->getField('btn_clear');
                                         $fldClear->setFieldTagAttribute('class', 'btn btn-outline-primary btn-block');

@@ -27,7 +27,7 @@
             $usernameFld->setFieldTagAttribute('disabled', 'disabled');
         }
         $submitFld = $frm->getField('btn_submit');
-        $submitFld->setFieldTagAttribute('class', "btn btn-primary");
+        $submitFld->setFieldTagAttribute('class', "btn btn-brand");
         echo $frm->getFormHtml();
         ?>
  

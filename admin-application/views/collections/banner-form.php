@@ -12,7 +12,7 @@ $fld->developerTags['cbLabelAttributes'] = array('class' => 'checkbox');
 $fld->developerTags['cbHtmlAfterCheckbox'] = '<i class="input-helper"></i>';
 
 $bannerFld = $frm->getField('banner');
-$bannerFld->addFieldTagAttribute('class', 'btn btn-primary btn-sm');
+$bannerFld->addFieldTagAttribute('class', 'btn btn-brand btn-sm');
 $bannerFld->addFieldTagAttribute('onChange', 'bannerPopupImage(this)');
 $bannerFld->htmlAfterField = '<small class="text--small preferredDimensions-js">'.sprintf(Labels::getLabel('LBL_Preferred_Dimensions_%s', $adminLangId), '1350 x 405').'</small>';
 

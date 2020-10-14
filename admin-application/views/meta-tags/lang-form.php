@@ -33,7 +33,7 @@ $langFld->setfieldTagAttribute('onChange', "editMetaTagLangForm(" . $metaId . ",
                         if (!empty($translatorSubscriptionKey) && $lang_id != $siteDefaultLangId) { ?> 
                             <div class="row justify-content-end"> 
                                 <div class="col-auto mb-4">
-                                    <input class="btn btn-primary" 
+                                    <input class="btn btn-brand" 
                                         type="button" 
                                         value="<?php echo Labels::getLabel('LBL_AUTOFILL_LANGUAGE_DATA', $adminLangId); ?>" 
                                         onClick="editMetaTagLangForm(<?php echo $metaId; ?>, <?php echo $lang_id; ?>, '<?php echo $metaType; ?>', 1)">

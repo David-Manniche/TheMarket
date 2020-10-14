@@ -8,7 +8,7 @@ $autoUpdateFld->developerTags['cbLabelAttributes'] = array('class' => 'checkbox'
 $autoUpdateFld->developerTags['cbHtmlAfterCheckbox'] = '<i class="input-helper"></i>';
 
 $btnSubmit = $productFrm->getField('btn_submit');
-$btnSubmit->setFieldTagAttribute('class', "btn btn-primary");
+$btnSubmit->setFieldTagAttribute('class', "btn btn-brand");
 
 $btnDiscardFld = $productFrm->getField('btn_discard');
 $btnDiscardFld->addFieldTagAttribute('onClick', 'goToCatalogRequest();');

@@ -6,7 +6,7 @@ $fldSubmit = $frm->getField('btn_submit');
 $fldSubmit->developerTags['noCaptionTag'] = true;
 $frm->setFormTagAttribute('onSubmit', 'importFile("importMedia",'.$actionType.'); return false;');
 $submitFld = $frm->getField('btn_submit');
-$submitFld->setFieldTagAttribute('class', "btn btn-primary");
+$submitFld->setFieldTagAttribute('class', "btn btn-brand");
 ?>
 <div class="tabs tabs-sm tabs--scroll clearfix">
     <ul>

@@ -43,7 +43,7 @@
                                     <div class="col-lg-6">
                                         <?php
                                         $submitFld = $frmSearchCustomCatalogProducts->getField('btn_submit');
-                                        $submitFld->setFieldTagAttribute('class', 'btn btn-primary btn-block ');
+                                        $submitFld->setFieldTagAttribute('class', 'btn btn-brand btn-block ');
 
                                         $fldClear= $frmSearchCustomCatalogProducts->getField('btn_clear');
                                         $fldClear->setFieldTagAttribute('class', 'btn btn-outline-primary btn-block');

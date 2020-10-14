@@ -90,7 +90,7 @@
                                        $frm->developerTags['colClassPrefix'] = 'col-lg-12 col-md-12 col-sm-';
                                        $frm->developerTags['fld_default_col'] = 12;
                                        $submitFld = $frm->getField('btn_submit');
-                                       $submitFld->setFieldTagAttribute('class', "btn btn-primary");
+                                       $submitFld->setFieldTagAttribute('class', "btn btn-brand");
                                        echo $frm->getFormHtml(); ?> </div>
                                 </li>
                             </ul>

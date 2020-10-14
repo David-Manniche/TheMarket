@@ -99,9 +99,9 @@
                 </a>
             <?php } ?>
             <?php if ($addressType == Address::ADDRESS_TYPE_BILLING) { ?>
-                <a href="javascript:void(0)" id="btn-continue-js" onClick="setUpBillingAddressSelection(this);" class="btn btn-primary btn-wide"><?php echo Labels::getLabel('LBL_Continue', $siteLangId); ?></a>
+                <a href="javascript:void(0)" id="btn-continue-js" onClick="setUpBillingAddressSelection(this);" class="btn btn-brand btn-wide"><?php echo Labels::getLabel('LBL_Continue', $siteLangId); ?></a>
             <?php } else { ?>
-                <a href="javascript:void(0)" id="btn-continue-js" onClick="setUpAddressSelection();" class="btn btn-primary btn-wide"><?php echo Labels::getLabel('LBL_Continue', $siteLangId); ?></a>
+                <a href="javascript:void(0)" id="btn-continue-js" onClick="setUpAddressSelection();" class="btn btn-brand btn-wide"><?php echo Labels::getLabel('LBL_Continue', $siteLangId); ?></a>
             <?php } ?>
         </div>
     </form>

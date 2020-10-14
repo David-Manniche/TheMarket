@@ -1,6 +1,6 @@
 <?php defined('SYSTEM_INIT') or die('Invalid Usage.'); 
 $btn = $frm->getField('btn_submit');
-$btn->addFieldTagAttribute('class', 'btn btn-primary');
+$btn->addFieldTagAttribute('class', 'btn btn-brand');
 $btn->addFieldTagAttribute('data-processing-text', Labels::getLabel('LBL_PLEASE_WAIT..', $siteLangId));
 $cancelBtn = $frm->getField('btn_cancel');
 $cancelBtn->addFieldTagAttribute('class', 'btn btn-outline-primary');

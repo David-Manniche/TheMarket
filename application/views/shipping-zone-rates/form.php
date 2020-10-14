@@ -24,7 +24,7 @@ $maxFld = $frm->getField('shiprate_max_val');
 $maxFld->setWrapperAttribute('class', 'condition-field--js '. $extraClass);
 
 $submitBtnFld = $frm->getField('btn_submit');
-$submitBtnFld->setFieldTagAttribute('class', 'btn btn-primary btn-block ');
+$submitBtnFld->setFieldTagAttribute('class', 'btn btn-brand btn-block ');
 $submitBtnFld->setWrapperAttribute('class', 'col-lg-5');
 $submitBtnFld->developerTags['col'] = 5;
 $submitBtnFld->developerTags['noCaptionTag'] = true;

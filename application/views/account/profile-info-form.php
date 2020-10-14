@@ -7,7 +7,7 @@ $frm->developerTags['fld_default_col'] = 6;
 $submitFld = $frm->getField('btn_submit');
 $submitFld->developerTags['col'] = 12;
 $submitFld->developerTags['noCaptionTag'] = true;
-$submitFld->setFieldTagAttribute('class', "btn btn-primary");
+$submitFld->setFieldTagAttribute('class', "btn btn-brand");
 
 $frm->setFormTagAttribute('onsubmit', 'updateProfileInfo(this); return(false);');
 
@@ -52,7 +52,7 @@ if (User::isAdvertiser() && $parent == 0) {
 $imgFrm->setFormTagAttribute('action', UrlHelper::generateUrl('Account', 'uploadProfileImage'));
 /* $imgFrm->setFormTagAttribute('id', 'imageFrm');
 $fld = $imgFrm->getField('user_profile_image');
-$fld->addFieldTagAttribute('class','btn btn-primary btn-sm'); */
+$fld->addFieldTagAttribute('class','btn btn-brand btn-sm'); */
 ?>
 <div class="row">
     <div class="col-xl-4">
@@ -75,9 +75,9 @@ $fld->addFieldTagAttribute('class','btn btn-primary btn-sm'); */
 						  <div class="btn-group">
                             <?php echo $imgFrm->getFormTag(); ?>
                             <?php if ($mode == 'Edit') { ?>
-                                <a class="btn btn-primary btn-sm" href="javascript:void(0)" onClick="popupImage()"><?php echo Labels::getLabel('LBL_Change', $siteLangId);?></a>
+                                <a class="btn btn-brand btn-sm" href="javascript:void(0)" onClick="popupImage()"><?php echo Labels::getLabel('LBL_Change', $siteLangId);?></a>
                             <?php } else { ?>
-                                <label class="btn btn-primary btn-sm" title="Upload image file">
+                                <label class="btn btn-brand btn-sm" title="Upload image file">
                                   <input type="file" class="sr-only" id="profileInputImage" name="file" accept="image/*" onChange="popupImage(this)">
                                   <?php echo Labels::getLabel('LBL_Upload', $siteLangId); ?>
                                 </label>

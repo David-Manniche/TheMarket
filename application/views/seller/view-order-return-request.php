@@ -4,7 +4,7 @@
 $returnRequestMsgsForm->addHiddenField('', 'isSeller', 1); 
 $btn = $frmMsg->getField('btn_submit');
 if (null != $btn) {
-    $btn->addFieldTagAttribute('class', 'btn btn-primary');
+    $btn->addFieldTagAttribute('class', 'btn btn-brand');
 }
 ?>
 <main id="main-area" class="main" role="main">

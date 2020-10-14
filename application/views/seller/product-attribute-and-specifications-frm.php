@@ -11,7 +11,7 @@ $btnBackFld->setFieldTagAttribute('class', "btn btn-outline-primary");
 $btnBackFld->setFieldTagAttribute('onClick', 'customProductForm('.$productId.');');
 
 $btnSubmit = $productFrm->getField('btn_submit');
-$btnSubmit->setFieldTagAttribute('class', "btn btn-primary");
+$btnSubmit->setFieldTagAttribute('class', "btn btn-brand");
 ?>
 <div class="row justify-content-center">
      <div class="col-md-12">

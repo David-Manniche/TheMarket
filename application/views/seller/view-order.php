@@ -371,7 +371,7 @@ if (!empty($orderDetail["thirdPartyorderInfo"]) && isset($orderDetail["thirdPart
                             }
 
                             $fldBtn = $frm->getField('btn_submit');
-                            $fldBtn->setFieldTagAttribute('class', 'btn btn-primary');
+                            $fldBtn->setFieldTagAttribute('class', 'btn btn-brand');
                             $fldBtn->developerTags['col'] = 6;
                             echo $frm->getFormHtml(); ?>
                         </div>

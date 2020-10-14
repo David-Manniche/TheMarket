@@ -119,7 +119,7 @@ echo $frm->getFormTag(); ?>
                         <?php 
                             $btn = $frm->getField('btn_submit');
                             $btn->addFieldTagAttribute('data-processing-text', Labels::getLabel('L_Please_Wait..', $siteLangId));
-                            $btn->addFieldTagAttribute('class', "btn btn-primary");
+                            $btn->addFieldTagAttribute('class', "btn btn-brand");
                             echo $frm->getFieldHtml('btn_submit');
                         ?>
                         <a href="javascript:void(0);" class="btn btn-outline-primary cancelCardForm-js"><?php echo Labels::getLabel('LBL_Cancel', $siteLangId); ?></a>

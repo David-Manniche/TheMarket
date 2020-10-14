@@ -4,7 +4,7 @@ $translatorSubscriptionKey = FatApp::getConfig('CONF_TRANSLATOR_SUBSCRIPTION_KEY
 if (!empty($translatorSubscriptionKey)) { ?> 
     <div class="row justify-content-end"> 
         <div class="col-auto mb-4">
-            <input class="btn btn-primary" 
+            <input class="btn btn-brand" 
                 type="button" 
                 value="<?php echo Labels::getLabel('LBL_AUTOFILL_LANGUAGE_DATA', $siteLangId); ?>" 
                 onClick="autofillLangData($(this), $('form#frmOptions'))"
@@ -18,7 +18,7 @@ $frmOptions->developerTags['fld_default_col'] = 6;
 $frmOptions->setFormTagAttribute('onsubmit', 'submitOptionForm(this); return(false);');
 
 $btnSubmit = $frmOptions->getField('btn_submit');
-$btnSubmit->setFieldTagAttribute('class', "btn btn-primary");
+$btnSubmit->setFieldTagAttribute('class', "btn btn-brand");
 echo $frmOptions->getFormHtml();
 ?>
 <script type="text/javascript">

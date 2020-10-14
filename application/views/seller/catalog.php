@@ -48,7 +48,7 @@ $this->includeTemplate('_partial/seller/sellerDashboardNavigation.php'); ?>
                                 $typeFld->developerTags['col'] = 2;
 
                                 $submitFld = $frmSearchCatalogProduct->getField('btn_submit');
-                                $submitFld->setFieldTagAttribute('class', 'btn btn-primary btn-block ');
+                                $submitFld->setFieldTagAttribute('class', 'btn btn-brand btn-block ');
                                 $submitFld->setWrapperAttribute('class', 'col-lg-2');
                                 $submitFld->developerTags['col'] = 2;
 

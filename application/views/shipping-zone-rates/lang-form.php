@@ -12,7 +12,7 @@ $cancelFld->developerTags['noCaptionTag'] = true;
 
 $btnSubmit = $langFrm->getField('btn_submit');
 $btnSubmit->developerTags['col'] = 3;
-$btnSubmit->setFieldTagAttribute('class', "btn btn-primary btn-block");
+$btnSubmit->setFieldTagAttribute('class', "btn btn-brand btn-block");
 $btnSubmit->developerTags['noCaptionTag'] = true;
 
 ?>

@@ -4,9 +4,9 @@
 <?php /*  if (!empty($cartSummary['cartDiscounts']['coupon_code'])) { ?>
 <div class="applied-coupon">
     <span><?php echo Labels::getLabel("LBL_Coupon", $siteLangId); ?> "<strong><?php echo $cartSummary['cartDiscounts']['coupon_code']; ?></strong>" <?php echo Labels::getLabel("LBL_Applied", $siteLangId); ?></span> <a
-        href="javascript:void(0)" onClick="removePromoCode()" class="btn btn-primary btn-sm"><?php echo Labels::getLabel("LBL_Remove", $siteLangId); ?></a></div>
+        href="javascript:void(0)" onClick="removePromoCode()" class="btn btn-brand btn-sm"><?php echo Labels::getLabel("LBL_Remove", $siteLangId); ?></a></div>
 <?php } else { ?>
-<div class="coupon"> <a class="coupon-input btn btn-primary btn-block" href="javascript:void(0)" onclick="getPromoCode()"><?php echo Labels::getLabel('LBL_I_have_a_coupon', $siteLangId); ?></a> </div>
+<div class="coupon"> <a class="coupon-input btn btn-brand btn-block" href="javascript:void(0)" onclick="getPromoCode()"><?php echo Labels::getLabel('LBL_I_have_a_coupon', $siteLangId); ?></a> </div>
 
 <?php } */ ?>
 <div class="order-summary__sections">
@@ -111,6 +111,6 @@
     <?php /*?><div class="place-order">
         <p>By placing an order, you agree to Yokart.com's <a href=""> Terms & Conditions</a> and
             <a href=""> Privacy Policy </a></p>
-        <button class="btn btn-primary btn-lg btn-block"></span>Place Order</button>
+        <button class="btn btn-brand btn-lg btn-block"></span>Place Order</button>
     </div> <?php */ ?>
 </div>

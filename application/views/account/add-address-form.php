@@ -18,7 +18,7 @@ $cancelFld->developerTags['col'] = 2;
 $cancelFld->developerTags['noCaptionTag'] = true;
 
 $submitFld = $addressFrm->getField('btn_submit');
-$submitFld->setFieldTagAttribute('class', 'btn btn-primary btn-block');
+$submitFld->setFieldTagAttribute('class', 'btn btn-brand btn-block');
 $submitFld->developerTags['col'] = 2;
 $submitFld->developerTags['noCaptionTag'] = true;
 ?>

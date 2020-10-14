@@ -145,7 +145,7 @@ if (!empty($excludeLocations)) {
                 </div>
                 <div class="row my-3">
                     <div class="col-lg-5">
-                        <input class="btn btn-primary btn-block" type="submit" name="btn_submit" value="<?php echo Labels::getLabel("LBL_Add_Zone", $siteLangId); ?>">
+                        <input class="btn btn-brand btn-block" type="submit" name="btn_submit" value="<?php echo Labels::getLabel("LBL_Add_Zone", $siteLangId); ?>">
                     </div>
 
                     <div class="col-lg-5">

@@ -5,7 +5,7 @@ $blockLangFrm->developerTags['fld_default_col'] = 12;
 
 if ($cpage_layout == ContentPage::CONTENT_PAGE_LAYOUT1_TYPE) {
     $fld = $blockLangFrm->getField('cpage_bg_image');
-    $fld->addFieldTagAttribute('class', 'btn btn-primary btn-sm');
+    $fld->addFieldTagAttribute('class', 'btn btn-brand btn-sm');
     $fld->addFieldTagAttribute('onChange', 'popupImage(this)');
     $preferredDimensionsStr = '<small class="text--small"> ' . Labels::getLabel('LBL_This_will_be_displayed_on_your_cms_Page.', $adminLangId) . ' ' . sprintf(Labels::getLabel('LBL_Preferred_Dimensions', $adminLangId), '1300*400') . '</small>';
 
@@ -54,7 +54,7 @@ $langFld->setfieldTagAttribute('onChange', "addLangForm(" . $cpage_id . ", this.
                         if (!empty($translatorSubscriptionKey) && $cpage_lang_id != $siteDefaultLangId) { ?>
                             <div class="row justify-content-end">
                                 <div class="col-auto mb-4">
-                                    <input class="btn btn-primary"
+                                    <input class="btn btn-brand"
                                         type="button"
                                         value="<?php echo Labels::getLabel('LBL_AUTOFILL_LANGUAGE_DATA', $adminLangId); ?>"
                                         onClick="addLangForm(<?php echo $cpage_id; ?>, <?php echo $cpage_lang_id; ?>, <?php echo $cpage_layout?>, 1)">

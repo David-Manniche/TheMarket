@@ -14,7 +14,7 @@ if (0 < $selProd_id) {
     $keywordFld->developerTags['noCaptionTag'] = true;
 
     $submitBtnFld = $frmSearch->getField('btn_submit');
-    $submitBtnFld->setFieldTagAttribute('class', 'btn btn-primary btn-block');
+    $submitBtnFld->setFieldTagAttribute('class', 'btn btn-brand btn-block');
     $submitBtnFld->setWrapperAttribute('class', (0 < $selProd_id ? 'd-none' : ''));
     $submitBtnFld->setWrapperAttribute('class', 'col-6');
     $submitBtnFld->developerTags['col'] = 2;

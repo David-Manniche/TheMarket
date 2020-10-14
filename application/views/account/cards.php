@@ -40,7 +40,7 @@ $this->includeTemplate('_partial/dashboardNavigation.php');
                                         <p><?php echo Labels::getLabel("LBL_ADD_CARDS_TO_CHECKOUT_FASTER", $siteLangId); ?>
                                         </p>
                                         <div class="action">
-                                            <a class="btn btn-primary btn-wide" href="javascript:void(0);"
+                                            <a class="btn btn-brand btn-wide" href="javascript:void(0);"
                                                 onclick="addNewCardForm()">
                                                 <?php echo Labels::getLabel("LBL_ADD_NEW_CARD", $siteLangId); ?>
                                             </a>
