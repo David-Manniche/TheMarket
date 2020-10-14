@@ -427,7 +427,7 @@ class CartController extends MyAppController
             $fulfilmentType = FatApp::getPostedData('fulfilmentType', FatUtility::VAR_INT, Shipping::FULFILMENT_SHIP);
             $cartObj->setFulfilmentType($fulfilmentType);
             $cartObj->setCartCheckoutType($fulfilmentType);
-            $productsArr = $cartObj->getProducts($this->siteLangId);            
+            $productsArr = $cartObj->getProducts($this->siteLangId);
             $cartSummary = $cartObj->getCartFinancialSummary($this->siteLangId);
             $this->set('products', $productsArr);
             $this->set('cartSummary', $cartSummary);
@@ -462,7 +462,7 @@ class CartController extends MyAppController
     }
 
     public function update()
-    { 
+    {
         $post = FatApp::getPostedData();
         if (empty($post)) {
             $message = Labels::getLabel('LBL_Invalid_Request', $this->siteLangId);
@@ -506,7 +506,7 @@ class CartController extends MyAppController
         } else {
             $this->set('msg', Labels::getLabel("MSG_cart_updated_successfully", $this->siteLangId));
         }
-        if (true === MOBILE_APP_API_CALL) { 
+        if (true === MOBILE_APP_API_CALL) {
             $fulfilmentType = FatApp::getPostedData('fulfilmentType', FatUtility::VAR_INT, Shipping::FULFILMENT_SHIP);
             $cartObj->setFulfilmentType($fulfilmentType);
             $cartObj->setCartCheckoutType($fulfilmentType);

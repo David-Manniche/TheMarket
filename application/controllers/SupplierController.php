@@ -12,7 +12,7 @@ class SupplierController extends MyAppController
         if (UserAuthentication::isUserLogged() && (User::isSeller() || User::isSigningUpForSeller())) {
             FatApp::redirectUser(UrlHelper::generateUrl('seller'));
         }
-		if (isset($_SESSION['registered_supplier']['id'])) {
+        if (isset($_SESSION['registered_supplier']['id'])) {
             FatApp::redirectUser(UrlHelper::generateUrl('supplier', 'account'));
         }
         if (UserAuthentication::isUserLogged()) {
@@ -176,7 +176,7 @@ class SupplierController extends MyAppController
             $db->rollbackTransaction();
             FatUtility::dieJsonError(Message::getHtml());
         }
-        
+
         $referrerCodeSignup = '';
         if (isset($_COOKIE['referrer_code_signup']) && $_COOKIE['referrer_code_signup'] != '') {
             $referrerCodeSignup = $_COOKIE['referrer_code_signup'];
@@ -185,7 +185,7 @@ class SupplierController extends MyAppController
         if (isset($_COOKIE['affiliate_referrer_code_signup']) && $_COOKIE['affiliate_referrer_code_signup'] != '') {
             $affiliateReferrerCodeSignup = $_COOKIE['affiliate_referrer_code_signup'];
         }
-        
+
         $userObj->setUpRewardEntry($userObj->getMainTableRecordId(), $this->siteLangId, $referrerCodeSignup, $affiliateReferrerCodeSignup);
 
         if (FatApp::getPostedData('user_newsletter_signup')) {
@@ -200,7 +200,7 @@ class SupplierController extends MyAppController
             $MailchimpObj = new Mailchimp($api_key);
             $Mailchimp_ListsObj = new Mailchimp_Lists($MailchimpObj);
             try {
-                $subscriber = $Mailchimp_ListsObj->subscribe($list_id, array( 'email' => htmlentities($post['user_email'])));
+                $subscriber = $Mailchimp_ListsObj->subscribe($list_id, array('email' => htmlentities($post['user_email'])));
                 /* if ( empty( $subscriber['leid'] ) ) {
                 Message::addErrorMessage( Labels::getLabel('MSG_Newsletter_subscription_valid_email', $siteLangId) );
                 FatUtility::dieWithError( Message::getHtml() );
@@ -221,11 +221,11 @@ class SupplierController extends MyAppController
 
         //send notification to admin
         $notificationData = array(
-        'notification_record_type' => Notification::TYPE_USER,
-        'notification_record_id' => $userObj->getMainTableRecordId(),
-        'notification_user_id' => $userObj->getMainTableRecordId(),
-        'notification_label_key' => Notification::NEW_SUPPLIER_REGISTERATION_NOTIFICATION,
-        'notification_added_on' => date('Y-m-d H:i:s'),
+            'notification_record_type' => Notification::TYPE_USER,
+            'notification_record_id' => $userObj->getMainTableRecordId(),
+            'notification_user_id' => $userObj->getMainTableRecordId(),
+            'notification_label_key' => Notification::NEW_SUPPLIER_REGISTERATION_NOTIFICATION,
+            'notification_added_on' => date('Y-m-d H:i:s'),
         );
 
         if (!Notification::saveNotifications($notificationData)) {
@@ -351,9 +351,9 @@ class SupplierController extends MyAppController
         $data = array_merge(
             $post,
             array(
-            "user_id" => $userId,
-            "reference" => $reference_number,
-            'fieldIdsArr' => $fieldIdsArr
+                "user_id" => $userId,
+                "reference" => $reference_number,
+                'fieldIdsArr' => $fieldIdsArr
             )
         );
 
@@ -382,11 +382,11 @@ class SupplierController extends MyAppController
 
         //send notification to admin
         $notificationData = array(
-        'notification_record_type' => Notification::TYPE_USER,
-        'notification_record_id' => $userObj->getMainTableRecordId(),
-        'notification_user_id' => $userId,
-        'notification_label_key' => ($approval_request) ? Notification::NEW_SUPPLIER_APPROVAL_NOTIFICATION : Notification::NEW_SELLER_APPROVED_NOTIFICATION,
-        'notification_added_on' => date('Y-m-d H:i:s'),
+            'notification_record_type' => Notification::TYPE_USER,
+            'notification_record_id' => $userObj->getMainTableRecordId(),
+            'notification_user_id' => $userId,
+            'notification_label_key' => ($approval_request) ? Notification::NEW_SUPPLIER_APPROVAL_NOTIFICATION : Notification::NEW_SELLER_APPROVED_NOTIFICATION,
+            'notification_added_on' => date('Y-m-d H:i:s'),
         );
 
         if (!Notification::saveNotifications($notificationData)) {
@@ -465,14 +465,13 @@ class SupplierController extends MyAppController
         $fileHandlerObj = new AttachedFile();
         $fileHandlerObj->deleteFile($fileHandlerObj::FILETYPE_SELLER_APPROVAL_FILE, $userId, 0, $field_id);
 
-        if (!$res = $fileHandlerObj->saveAttachment($_FILES['file']['tmp_name'], $fileHandlerObj::FILETYPE_SELLER_APPROVAL_FILE, $userId, $field_id, $_FILES['file']['name'], -1, false)
-        ) {
+        if (!$res = $fileHandlerObj->saveAttachment($_FILES['file']['tmp_name'], $fileHandlerObj::FILETYPE_SELLER_APPROVAL_FILE, $userId, $field_id, $_FILES['file']['name'], -1, false)) {
             /* Message::addErrorMessage($fileHandlerObj->getError()); */
             FatUtility::dieJsonError($fileHandlerObj->getError());
         }
 
         $this->set('file', $_FILES['file']['name']);
-        $this->set('msg', /* $_FILES['file']['name'].' '. */Labels::getLabel('MSG_File_uploaded_successfully', $this->siteLangId));
+        $this->set('msg', /* $_FILES['file']['name'].' '. */ Labels::getLabel('MSG_File_uploaded_successfully', $this->siteLangId));
         $this->_template->render(false, false, 'json-success.php');
     }
 
@@ -495,7 +494,7 @@ class SupplierController extends MyAppController
     {
         $faqMainCat = FatApp::getConfig("CONF_SELLER_PAGE_MAIN_CATEGORY", FatUtility::VAR_STRING, '');
         if (!empty($catId) && $catId > 0) {
-            $faqCatId = array( $catId );
+            $faqCatId = array($catId);
         } elseif ($faqMainCat) {
             $faqCatId = array($faqMainCat);
         } else {
@@ -537,7 +536,7 @@ class SupplierController extends MyAppController
         $this->set('siteLangId', $this->siteLangId);
         $this->set('faqCatIdArr', $faqCatId);
         $this->set('list', $records);
-        $json['html'] = '';//$this->_template->render( false, false,'_partial/no-record-found.php', true );
+        $json['html'] = ''; //$this->_template->render( false, false,'_partial/no-record-found.php', true );
         if (!empty($records)) {
             $json['html'] = $this->_template->render(false, false, 'supplier/search-faqs.php', true, false);
         }
@@ -579,7 +578,7 @@ class SupplierController extends MyAppController
         $this->set('list', $records);
         $this->set('listCategories', $recordsCategories);
         $this->set('faqMainCat', $faqMainCat);
-		$this->set('page', 'seller');
+        $this->set('page', 'seller');
         $json['html'] = $this->_template->render(false, false, '_partial/no-record-found.php', true, false);
         if (!empty($records)) {
             $json['html'] = $this->_template->render(false, false, 'supplier/search-faqs.php', true, false);
@@ -732,10 +731,10 @@ class SupplierController extends MyAppController
         $frm->addHtml('', 'htmlNote','<a href="" class="">'.Labels::getLabel('Lbl_Click_Here',$this->siteLangId).'</a> '.Labels::getLabel('Lbl_to_contact_our_partners_near_your_location',$this->siteLangId));     */
         return $frm;
     }
-	
-	public function registerNewAccount()
-	{
-		unset($_SESSION['registered_supplier']['id']);
-		FatApp::redirectUser(UrlHelper::generateUrl('supplier'));
-	}
+
+    public function registerNewAccount()
+    {
+        unset($_SESSION['registered_supplier']['id']);
+        FatApp::redirectUser(UrlHelper::generateUrl('supplier'));
+    }
 }
