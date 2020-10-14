@@ -1381,13 +1381,12 @@ class CommonHelper extends FatUtility
 
     public static function seoUrl($string)
     {
-
         //Lower case everything
         $string = ltrim(strtolower($string), '/');
         //Make alphanumeric (removes all other characters)
         //$string = preg_replace("/[^a-z0-9,&_\s-\/]/", "", $string);
         //covert / to -
-        $string = preg_replace("/[\s,&]/", "-", $string);
+        $string = preg_replace("/[\s,&#%]/", "-", $string);
         //Clean up multiple dashes or whitespaces
         $string = preg_replace("/[\s-]+/", " ", $string);
         //Convert whitespaces and underscore to dash
