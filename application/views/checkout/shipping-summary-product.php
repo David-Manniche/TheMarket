@@ -5,7 +5,7 @@ $imageUrl = UrlHelper::getCachedUrl(UrlHelper::generateFileUrl('image', 'product
 ?>
 <ul class="list-group list-cart list-shippings">
     <li class="list-group-item shipping-select">
-        <div class="shop-name"><?php echo $productInfo['shop_name']; ?></div>
+        <div class="shop-name"><?php echo $product['shop_name']; ?></div>
         <div class="shipping-method">
             <?php
             $priceListCount = count($shippedByItemArr[$shipLevel]['rates'][$product['selprod_id']]);

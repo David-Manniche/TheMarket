@@ -227,7 +227,8 @@ class Tax extends MyAppModel
             }
             $srch->addOrder('taxrule_id', 'ASC');
         }
-        $res = $srch->getResultSet();
+        $srch->setPageSize(1);
+        $res = $srch->getResultSet();        
         $row = FatApp::getDb()->fetch($res);
         if (!is_array($row)) {
             return array();

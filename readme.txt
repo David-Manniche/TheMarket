@@ -209,9 +209,13 @@ Bugs:
     => 043719 - Seller shipping profile >> If we have condition for price then max value has to be multiple of product price then only this shipping will get display at checkout.
     => 043783 - if "Product Inclusive Tax" setting is on then tax should not get display on cart and it should get display only after selecting billing address. 
     => 044047 - option setting getting hide on seller end
+    
+---------------------TV-9.2.1.20201013------------------------    
+    => 043717 - If Weight condition match in shipping then "no shipping charges" gets display there.
     => 044048 - seller dashboard> there is order cancellation tab which containing count of order cancel by buyer and seller but displaying request of buyer only
     => 044060 - If social media links are added by admin/seller without http / https platform doesnot redirect user to social media page instead redirects user to domainname.com/socialmediaurl.com
 
+------------------TV-9.2.1.20201014-----------------------
 Enhancements:
     => Tax module upgrade
     => Test cases classes enhancements.

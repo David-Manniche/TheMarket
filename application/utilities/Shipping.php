@@ -232,20 +232,22 @@ class Shipping
         //$carriers = $this->shippingApiObj->getCarriers();
         $this->shippingApiObj->setAddress($shippingAddressDetail['addr_name'], $shippingAddressDetail['addr_address1'], $shippingAddressDetail['addr_address2'], $shippingAddressDetail['addr_city'], $shippingAddressDetail['state_name'], $shippingAddressDetail['addr_zip'], $shippingAddressDetail['country_code'], $shippingAddressDetail['addr_phone']);
 
-        $weightUnitsArr = applicationConstants::getWeightUnitsArr($this->langId);
+        $weightUnitsArr = applicationConstants::getWeightUnitsArr($this->langId, true);
         $dimensionUnits = ShippingPackage::getUnitTypes($this->langId);
 
         foreach ($this->selProdShipRates as $rateId => $rates) {
             $product = $productInfo[$rates['selprod_id']];
             $shippingLevel = self::LEVEL_PRODUCT;
-            $this->shippedByArr[$shippingLevel]['products'][$rates['selprod_id']] = $product;
 
-            $shippedBy = self::BY_ADMIN;
+
+            $shippedBy = -1; /*admin shipping */
             $fromZipCode = FatApp::getConfig('CONF_ZIP_CODE', FatUtility::VAR_STRING, '');
             if (0 < $rates['shiippingBySeller']) {
-                $shippedBy = self::BY_SHOP;
+                $shippedBy = $product['shop_id'];
                 $fromZipCode = $rates['shop_postalcode'];
             }
+
+            $this->shippedByArr[$shippedBy][$shippingLevel]['products'][$rates['selprod_id']] = $product;
 
             if (empty($fromZipCode)) {
                 /*  $user = self::BY_ADMIN == $shippedBy ? Labels::getLabel('MSG_ADMIN', $this->langId) : Labels::getLabel('MSG_SHOP', $this->langId);
@@ -300,10 +302,10 @@ class Shipping
                         'shipping_type' => $this->getPluginId(),
                         'carrier_code' => $carrier['code'],
                     ];
-                    $this->shippedByArr[$shippingLevel]['rates'][$rates['selprod_id']][$carrier['code'] . '|' . $value['serviceName']] = $shippingCost;
+                    $this->shippedByArr[$shippedBy][$shippingLevel]['rates'][$rates['selprod_id']][$carrier['code'] . '|' . $value['serviceName']] = $shippingCost;
                 }
                 /*If rates fetched from one shipment carriers then ignore for others */
-                if (!empty($this->shippedByArr[$shippingLevel]['rates'][$rates['selprod_id']])) {
+                if (!empty($this->shippedByArr[$shippedBy][$shippingLevel]['rates'][$rates['selprod_id']])) {
                     continue 2;
                 }
             }
@@ -399,9 +401,9 @@ class Shipping
 
         /*Include Physical products whose shipping rates not defined */
         foreach ($physicalSelProdIdArr as $selProdId) {
-            $this->shippedByArr[self::LEVEL_PRODUCT]['products'][$selProdId] = $productInfo[$selProdId];
-            $this->shippedByArr[self::LEVEL_PRODUCT]['shipping_options'][$selProdId] = [];
-            $this->shippedByArr[self::LEVEL_PRODUCT]['rates'][$selProdId] = [];
+            $this->shippedByArr[$productInfo[$selProdId]['shop_id']][self::LEVEL_PRODUCT]['products'][$selProdId] = $productInfo[$selProdId];
+            $this->shippedByArr[$productInfo[$selProdId]['shop_id']][self::LEVEL_PRODUCT]['shipping_options'][$selProdId] = [];
+            $this->shippedByArr[$productInfo[$selProdId]['shop_id']][self::LEVEL_PRODUCT]['rates'][$selProdId] = [];
         }
 
         return $this->formatOutput(applicationConstants::SUCCESS, $this->shippedByArr);
@@ -438,7 +440,7 @@ class Shipping
     {
         $shipppedByArr = array_keys($this->shippedByArr);
         sort($shipppedByArr);
-        $weightUnitsArr = applicationConstants::getWeightUnitsArr($this->langId);
+        $weightUnitsArr = applicationConstants::getWeightUnitsArr($this->langId, true);
         foreach ($shipppedByArr as $shipppedBy) {
             $levels = array_keys($this->shippedByArr[$shipppedBy]);
             foreach ($levels as $level) {
@@ -559,7 +561,9 @@ class Shipping
                     break;
 
                 case ShippingRate::CONDITION_TYPE_WEIGHT:
-                    if ($weight < $rate['shiprate_min_val'] || $weight > $rate['shiprate_max_val']) {
+                    $minVal = static::convertWeightInOunce($rate['shiprate_min_val'], 'KG');
+                    $maxVal = static::convertWeightInOunce($rate['shiprate_max_val'], 'KG');
+                    if ($weight < $minVal || $weight > $maxVal) {
                         unset($rates[$rate['id']]);
                         continue 2;
                     }
@@ -647,6 +651,9 @@ class Shipping
                 break;
             case "MM":
                 $coversionRate = "0.1";
+                break;
+            case "M":
+                $coversionRate = "100";
                 break;
             case "CM":
                 $coversionRate = "1";

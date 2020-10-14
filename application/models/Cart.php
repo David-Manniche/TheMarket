@@ -1653,8 +1653,8 @@ class Cart extends FatModel
         }
 
         $products = $this->getProducts($this->cart_lang_id);
-        $weightUnitsArr = applicationConstants::getWeightUnitsArr($lang_id);
-        $lengthUnitsArr = applicationConstants::getLengthUnitsArr($lang_id);
+        $weightUnitsArr = applicationConstants::getWeightUnitsArr($lang_id, true);
+        $lengthUnitsArr = applicationConstants::getLengthUnitsArr($lang_id, true);
 
         $product = $products[$key];
         $productShippingAddress = $product['shipping_address'];
@@ -1663,12 +1663,12 @@ class Cart extends FatModel
         $sellerPinCode = $productShopAddress['shop_postalcode'];
         $quantity = $product['quantity'];
         $productWeight = $product['product_weight'] / $quantity;
-        $productWeightClass = ($product['product_dimension_unit']) ? $lengthUnitsArr[$product['product_dimension_unit']] : '';
+        $productWeightClass = ($product['product_dimension_unit']) ? $weightUnitsArr[$product['product_dimension_unit']] : '';
         $productLength = $product['product_length'];
         $productWidth = $product['product_width'];
         $productHeight = $product['product_height'];
 
-        $productLengthUnit = ($product['product_weight_unit']) ? $weightUnitsArr[$product['product_weight_unit']] : '';
+        $productLengthUnit = ($product['product_weight_unit']) ? $lengthUnitsArr[$product['product_weight_unit']] : '';
 
         $productWeightInOunce = Shipping::convertWeightInOunce($productWeight, $productWeightClass);
         $productLengthInCenti = Shipping::convertLengthInCenti($productLength, $productLengthUnit);
@@ -1805,7 +1805,7 @@ class Cart extends FatModel
                 $digitalSelProdIdArr[$val['selprod_id']] = $val['selprod_id'];
             }
         }
-
+        
         if (!empty($physicalSelProdIdArr)) {
             $address = new Address($this->getCartShippingAddress(), $this->cart_lang_id);
             $shippingAddressDetail =  $address->getData(Address::TYPE_USER, $this->cart_user_id);
