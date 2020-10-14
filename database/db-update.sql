@@ -815,3 +815,4 @@ DELETE FROM `tbl_language_labels` WHERE `label_key` LIKE 'LBL_Sr._no.';
 DELETE FROM `tbl_language_labels` WHERE `label_key` LIKE 'LBL_SrNo.';
 DELETE FROM `tbl_language_labels` WHERE `label_key` LIKE 'LBL_Sr._no.';
 DELETE FROM `tbl_language_labels` WHERE `label_key` LIKE 'LBL_Sr';
+-- -----------------TV-9.2.1.20201014------------------

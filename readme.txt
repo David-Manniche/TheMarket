@@ -211,6 +211,7 @@ Bugs:
     => 044047 - option setting getting hide on seller end
 ---------------------TV-9.2.1.20201013------------------------    
     =>043717 - If Weight condition match in shipping then "no shipping charges" gets display there.
+------------------TV-9.2.1.20201014-----------------------
 Enhancements:
     => Tax module upgrade
     => Test cases classes enhancements.
