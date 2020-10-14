@@ -45,7 +45,7 @@
             <span class="label"><?php echo Labels::getLabel('LBL_Discount', $siteLangId); ?></span> <span class="ml-auto txt-success"><?php echo CommonHelper::displayMoneyFormat($cartSummary['cartDiscounts']['coupon_discount_total']); ?></span>
         </li>
     <?php } ?>
-	<?php $netChargeAmt = $cartSummary['cartTotal'] + $cartSummary['cartTaxTotal'] - ((0 < $cartSummary['cartVolumeDiscount']) ? $cartSummary['cartVolumeDiscount'] : 0);
+	<?php $netChargeAmt = $cartSummary['cartTotal'] - ((0 < $cartSummary['cartVolumeDiscount']) ? $cartSummary['cartVolumeDiscount'] : 0);
     $netChargeAmt = $netChargeAmt - ((isset($cartSummary['cartDiscounts']['coupon_discount_total']) && 0 < $cartSummary['cartDiscounts']['coupon_discount_total']) ? $cartSummary['cartDiscounts']['coupon_discount_total'] : 0); ?>
     <li class="list-group-item hightlighted">
         <span class="label"><?php echo Labels::getLabel('LBL_Net_Payable', $siteLangId); ?></span> <span class="ml-auto"><?php echo CommonHelper::displayMoneyFormat($netChargeAmt); ?></span>
