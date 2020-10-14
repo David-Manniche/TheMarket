@@ -30,9 +30,8 @@ if (count($arr_listing) == 0) {
         }
     }
 
-    $sr_no = ($page == 1) ? 0 : ($pageSize * ($page - 1));
+    $sr_no = ($page > 1) ? $recordCount - (($page - 1) * $pageSize) : $recordCount;
     foreach ($arr_listing as $sn => $row) {
-        $sr_no++;
         $tr = $tbl->appendElement('tr', array());
 
         foreach ($arr_flds as $key => $val) {
@@ -92,6 +91,7 @@ if (count($arr_listing) == 0) {
                     break;
             }
         }
+        $sr_no--;
     }
 
 
@@ -105,7 +105,8 @@ if (count($arr_listing) == 0) {
     echo $frm->getFieldHtml('status');
     echo $tbl->getHtml(); ?>
     </form>
-<?php $postedData['page'] = $page;
+<?php 
+    $postedData['page'] = $page;
     echo FatUtility::createHiddenFormFromData($postedData, array('name' => 'frmProductSearchPaging'));
     $pagingArr = array('pageCount' => $pageCount, 'page' => $page, 'recordCount' => $recordCount, 'adminLangId' => $adminLangId);
     $this->includeTemplate('_partial/pagination.php', $pagingArr, false);

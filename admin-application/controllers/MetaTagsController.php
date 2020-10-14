@@ -36,7 +36,7 @@ class MetaTagsController extends AdminBaseController
             $toShowForm = false;
         }
 
-        if (in_array($metaType, array( MetaTag::META_GROUP_ADVANCED))) {
+        if (in_array($metaType, array(MetaTag::META_GROUP_ADVANCED))) {
             $canAddNew = true;
         }
         $this->set('metaTypeDefault', MetaTag::META_GROUP_DEFAULT);
@@ -54,36 +54,36 @@ class MetaTagsController extends AdminBaseController
         $metaType = FatApp::getPostedData('metaType', FatUtility::VAR_STRING);
         $this->set('metaType', $metaType);
         switch ($metaType) {
-        case MetaTag::META_GROUP_DEFAULT :
-            $this->renderTemplateForDefaultMetaTag();
-            break;
-        case MetaTag::META_GROUP_PRODUCT_DETAIL:
-            $this->renderTemplateForProductDetail();
-            break;
-        case MetaTag::META_GROUP_SHOP_DETAIL:
-            $this->renderTemplateForShopDetail();
-            break;
-        case MetaTag::META_GROUP_ADVANCED:
-            $this->renderTemplateForAdvanced();
-            break;
-        case MetaTag::META_GROUP_CMS_PAGE:
-            $this->renderTemplateForCMSPage();
-            break;
-        case MetaTag::META_GROUP_BRAND_DETAIL:
-            $this->renderTemplateForBrandDetail();
-            break;
-        case MetaTag::META_GROUP_CATEGORY_DETAIL:
-            $this->renderTemplateForCategoryDetail();
-            break;
-        case MetaTag::META_GROUP_BLOG_CATEGORY:
-            $this->renderTemplateForBlogCategory();
-            break;
-        case MetaTag::META_GROUP_BLOG_POST:
-            $this->renderTemplateForBlogPost();
-            break;
-        default:
-            $this->renderTemplateForMetaType();
-            break;
+            case MetaTag::META_GROUP_DEFAULT:
+                $this->renderTemplateForDefaultMetaTag();
+                break;
+            case MetaTag::META_GROUP_PRODUCT_DETAIL:
+                $this->renderTemplateForProductDetail();
+                break;
+            case MetaTag::META_GROUP_SHOP_DETAIL:
+                $this->renderTemplateForShopDetail();
+                break;
+            case MetaTag::META_GROUP_ADVANCED:
+                $this->renderTemplateForAdvanced();
+                break;
+            case MetaTag::META_GROUP_CMS_PAGE:
+                $this->renderTemplateForCMSPage();
+                break;
+            case MetaTag::META_GROUP_BRAND_DETAIL:
+                $this->renderTemplateForBrandDetail();
+                break;
+            case MetaTag::META_GROUP_CATEGORY_DETAIL:
+                $this->renderTemplateForCategoryDetail();
+                break;
+            case MetaTag::META_GROUP_BLOG_CATEGORY:
+                $this->renderTemplateForBlogCategory();
+                break;
+            case MetaTag::META_GROUP_BLOG_POST:
+                $this->renderTemplateForBlogPost();
+                break;
+            default:
+                $this->renderTemplateForMetaType();
+                break;
         }
     }
 
@@ -158,7 +158,7 @@ class MetaTagsController extends AdminBaseController
         $this->set('formLayout', Language::getLayoutDirection($langId));
         $this->_template->render(false, false);
     }
-    
+
     public function setup()
     {
         $this->objPrivilege->canEditMetaTags();
@@ -264,12 +264,12 @@ class MetaTagsController extends AdminBaseController
             }
             $metaId = $record->getMainTableRecordId();
         }
-        
+
         if ($metaId == 0) {
             Message::addErrorMessage($this->str_invalid_request_id);
             FatUtility::dieWithError(Message::getHtml());
         }
-        
+
         if (!$post['meta_other_meta_tags'] == '' && $post['meta_other_meta_tags'] == strip_tags($post['meta_other_meta_tags'])) {
             Message::addErrorMessage(Labels::getLabel('MSG_Invalid_Other_Meta_Tag', $this->adminLangId));
             FatUtility::dieWithError(Message::getHtml());
@@ -279,21 +279,21 @@ class MetaTagsController extends AdminBaseController
         $post = $frm->getFormDataFromArray(FatApp::getPostedData());
 
         $data = array(
-        'metalang_lang_id' => $langId,
-        'metalang_meta_id' => $metaId,
-        'meta_title' => $post['meta_title'],
-        'meta_keywords' => $post['meta_keywords'],
-        'meta_description' => $post['meta_description'],
-        'meta_other_meta_tags' => $post['meta_other_meta_tags'],
+            'metalang_lang_id' => $langId,
+            'metalang_meta_id' => $metaId,
+            'meta_title' => $post['meta_title'],
+            'meta_keywords' => $post['meta_keywords'],
+            'meta_description' => $post['meta_description'],
+            'meta_other_meta_tags' => $post['meta_other_meta_tags'],
         );
-        
+
         $metaObj = new MetaTag($metaId);
 
         if (!$metaObj->updateLangData($langId, $data)) {
             Message::addErrorMessage($metaObj->getError());
             FatUtility::dieJsonError(Message::getHtml());
         }
-        
+
         $autoUpdateOtherLangsData = FatApp::getPostedData('auto_update_other_langs_data', FatUtility::VAR_INT, 0);
         if (0 < $autoUpdateOtherLangsData) {
             $updateLangDataobj = new TranslateLangData(MetaTag::DB_TBL_LANG);
@@ -370,21 +370,21 @@ class MetaTagsController extends AdminBaseController
     private function getSearchForm($metaType)
     {
         switch ($metaType) {
-        case MetaTag::META_GROUP_PRODUCT_DETAIL:
-        case MetaTag::META_GROUP_SHOP_DETAIL:
-        case MetaTag::META_GROUP_CMS_PAGE:
-        case MetaTag::META_GROUP_BRAND_DETAIL:
-        case MetaTag::META_GROUP_CATEGORY_DETAIL:
-        case MetaTag::META_GROUP_BLOG_POST:
-        case MetaTag::META_GROUP_BLOG_CATEGORY:
-            return $this->getListingSearchForm($metaType);
-         break;
-        case MetaTag::META_GROUP_ADVANCED:
-            return $this->getAdvancedSearchForm($metaType);
-         break;
-        default:
-            return $this->getSearchFormForMetaType($metaType);
-         break;
+            case MetaTag::META_GROUP_PRODUCT_DETAIL:
+            case MetaTag::META_GROUP_SHOP_DETAIL:
+            case MetaTag::META_GROUP_CMS_PAGE:
+            case MetaTag::META_GROUP_BRAND_DETAIL:
+            case MetaTag::META_GROUP_CATEGORY_DETAIL:
+            case MetaTag::META_GROUP_BLOG_POST:
+            case MetaTag::META_GROUP_BLOG_CATEGORY:
+                return $this->getListingSearchForm($metaType);
+                break;
+            case MetaTag::META_GROUP_ADVANCED:
+                return $this->getAdvancedSearchForm($metaType);
+                break;
+            default:
+                return $this->getSearchFormForMetaType($metaType);
+                break;
         }
 
         return false;
@@ -424,7 +424,7 @@ class MetaTagsController extends AdminBaseController
         $this->objPrivilege->canViewMetaTags();
         $frm = new Form('frmMetaTagLang');
         $frm->addHiddenField('', 'meta_id', $metaId);
-        
+
         if ($metaType != MetaTag::META_GROUP_ADVANCED) {
             $tabsArr = MetaTag::getTabsArr();
             $frm->addHiddenField('', 'meta_type', $metaType);
@@ -434,21 +434,21 @@ class MetaTagsController extends AdminBaseController
                 FatUtility::dieJsonError(Message::getHtml());
             }
         }
-        
+
         $frm->addSelectBox(Labels::getLabel('LBL_LANGUAGE', $this->adminLangId), 'lang_id', Language::getAllNames(), $langId, array(), '');
         $frm->addRequiredField(Labels::getLabel('LBL_Meta_Title', $this->adminLangId), 'meta_title');
         $frm->addTextarea(Labels::getLabel('LBL_Meta_Keywords', $this->adminLangId), 'meta_keywords');
         $frm->addTextarea(Labels::getLabel('LBL_Meta_Description', $this->adminLangId), 'meta_description');
         $fld = $frm->addTextarea(Labels::getLabel('LBL_Other_Meta_Tags', $this->adminLangId), 'meta_other_meta_tags');
         $fld->htmlAfterField = '<small>' . Labels::getLabel('LBL_For_Example:', $this->adminLangId) . ' ' . htmlspecialchars('<meta name="copyright" content="text">') . '</small>';
-        
+
         $siteLangId = FatApp::getConfig('conf_default_site_lang', FatUtility::VAR_INT, 1);
         $translatorSubscriptionKey = FatApp::getConfig('CONF_TRANSLATOR_SUBSCRIPTION_KEY', FatUtility::VAR_STRING, '');
 
         if (!empty($translatorSubscriptionKey) && $langId == $siteLangId) {
             $frm->addCheckBox(Labels::getLabel('LBL_UPDATE_OTHER_LANGUAGES_DATA', $this->adminLangId), 'auto_update_other_langs_data', 1, array(), false, 0);
         }
-        
+
         $frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_Save_Changes', $this->adminLangId));
         return $frm;
     }

@@ -809,7 +809,7 @@ class SellerController extends SellerBaseController
 
         $frm = $this->getOrderCommentsForm($orderDetail, $processingStatuses);
         $post = $frm->getFormDataFromArray($post);
-        
+
         if (false == $post) {
             Message::addErrorMessage(current($frm->getValidationErrors()));
             FatUtility::dieJsonError(Message::getHtml());
@@ -1508,6 +1508,7 @@ class SellerController extends SellerBaseController
 
         $this->set("arr_listing", $arr_listing);
         $this->set('pageCount', $srch->pages());
+        $this->set('recordCount', $srch->recordCount());
         $this->set('page', $page);
         $this->set('pageSize', $pagesize);
         $this->set('postedData', $post);
@@ -3678,7 +3679,7 @@ class SellerController extends SellerBaseController
             $manualShipUnReqObj->setRequired(false);
             $manualShipReqObj = new FormFieldRequirement('manual_shipping', Labels::getLabel('LBL_SELF_SHIPPING', $this->siteLangId));
             $manualShipReqObj->setRequired(true);
-			
+
             $fld->requirements()->addOnChangerequirementUpdate(FatApp::getConfig("CONF_DEFAULT_SHIPPING_ORDER_STATUS"), 'eq', 'manual_shipping', $manualShipReqObj);
             $fld->requirements()->addOnChangerequirementUpdate(FatApp::getConfig("CONF_DEFAULT_SHIPPING_ORDER_STATUS"), 'ne', 'manual_shipping', $manualShipUnReqObj);
         }
