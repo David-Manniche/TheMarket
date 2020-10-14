@@ -242,8 +242,12 @@ class SellerController extends SellerBaseController
 
     public function sales()
     {
-        $this->userPrivilege->canViewSales(UserAuthentication::getLoggedUserId());
+		$data = FatApp::getPostedData();
         $frmOrderSrch = $this->getOrderSearchForm($this->siteLangId);
+        if (!empty($data)) {
+            $frmOrderSrch->fill($data);
+        }
+        $this->userPrivilege->canViewSales(UserAuthentication::getLoggedUserId());
         $this->set('frmOrderSrch', $frmOrderSrch);
         $this->_template->render(true, true);
     }
