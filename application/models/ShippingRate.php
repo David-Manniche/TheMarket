@@ -34,8 +34,8 @@ class ShippingRate extends MyAppModel
     public static function getConditionTypes($langId)
     {
         return array(
-            self::CONDITION_TYPE_WEIGHT => Labels::getLabel('LBL_Based_on_item_weight', $langId),
-            self::CONDITION_TYPE_PRICE => Labels::getLabel('LBL_Based_on_item_price', $langId),
+            self::CONDITION_TYPE_WEIGHT => Labels::getLabel('LBL_Item_weight_(KG)', $langId),
+            self::CONDITION_TYPE_PRICE => Labels::getLabel('LBL_Item_price', $langId),
         );
     }
 }

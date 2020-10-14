@@ -172,7 +172,7 @@ class ShippingZoneRatesController extends AdminBaseController
         
         $fld = $frm->addFloatField(Labels::getLabel('LBL_Cost', $this->adminLangId), 'shiprate_cost');
         
-        $frm->addRadioButtons('', 'shiprate_condition_type', $conditionTypes, '', array('class' => 'list-inline'));
+        $fld = $frm->addRadioButtons('', 'shiprate_condition_type', $conditionTypes, '', array('class' => 'list-inline'));        
         
         $fldCndTypeUnReq = new FormFieldRequirement('shiprate_condition_type', Labels::getLabel('LBL_Condition_type', $this->adminLangId));
         $fldCndTypeUnReq->setRequired(false);

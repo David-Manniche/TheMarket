@@ -210,6 +210,7 @@ Bugs:
     => 043783 - if "Product Inclusive Tax" setting is on then tax should not get display on cart and it should get display only after selecting billing address. 
     => 044047 - option setting getting hide on seller end
 ---------------------TV-9.2.1.20201013------------------------    
+    =>043717 - If Weight condition match in shipping then "no shipping charges" gets display there.
 Enhancements:
     => Tax module upgrade
     => Test cases classes enhancements.

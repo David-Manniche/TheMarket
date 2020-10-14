@@ -157,14 +157,14 @@ class ShipStationShipping extends ShippingServicesBase
         $this->setAddress($shippingAddress['oua_name'], $shippingAddress['oua_address1'], $shippingAddress['oua_address2'], $shippingAddress['oua_city'], $shippingAddress['oua_state'], $shippingAddress['oua_zip'], $shippingAddress['oua_country_code'], $shippingAddress['oua_phone']);
         $this->order['shipTo'] = $this->getAddress();
 
-        $weightUnitsArr = applicationConstants::getWeightUnitsArr($this->langId);
+        $weightUnitsArr = applicationConstants::getWeightUnitsArr($this->langId, true);
         $weightUnitName = ($orderDetail['op_product_weight_unit']) ? $weightUnitsArr[$orderDetail['op_product_weight_unit']] : '';
         $productWeightInOunce = Shipping::convertWeightInOunce($orderDetail['op_product_weight'], $weightUnitName);
 
         $this->setWeight($productWeightInOunce);
         $this->order['weight'] = $this->getWeight();
 
-        $lengthUnitsArr = applicationConstants::getLengthUnitsArr($this->langId);
+        $lengthUnitsArr = applicationConstants::getLengthUnitsArr($this->langId, true);
         $dimUnitName = ($orderDetail['op_product_dimension_unit']) ? $lengthUnitsArr[$orderDetail['op_product_dimension_unit']] : '';
 
         $lengthInCenti = Shipping::convertLengthInCenti($orderDetail['op_product_length'], $dimUnitName);
