@@ -273,11 +273,9 @@ if (!$print) { ?>
                                 <th>
                                     <?php echo Labels::getLabel('LBL_Price', $siteLangId); ?>
                                 </th>
-                                <?php if ($primaryOrder && CommonHelper::orderProductAmount($childOrderDetail, 'SHIPPING') > 0) { ?>
-                                    <th>
-                                        <?php echo Labels::getLabel('LBL_Shipping_Charges', $siteLangId); ?>
-                                    </th>
-                                <?php } ?>
+                                <th>
+									<?php echo Labels::getLabel('LBL_Shipping_Charges', $siteLangId); ?>
+								</th>
                                 <th>
                                     <?php echo Labels::getLabel('LBL_Volume/Loyalty_Discount', $siteLangId); ?>
                                 </th>
@@ -378,11 +376,9 @@ if (!$print) { ?>
                                     <td>
                                         <?php echo CommonHelper::displayMoneyFormat($childOrder['op_unit_price'], true, false, true, false, true); ?>
                                     </td>
-                                    <?php if (CommonHelper::orderProductAmount($childOrder, 'shipping') > 0) { ?>
-                                        <td>
-                                            <?php echo CommonHelper::displayMoneyFormat(CommonHelper::orderProductAmount($childOrder, 'shipping'), true, false, true, false, true); ?>
-                                        </td>
-                                    <?php } ?>
+                                    <td>
+										<?php echo CommonHelper::displayMoneyFormat(CommonHelper::orderProductAmount($childOrder, 'shipping'), true, false, true, false, true); ?>
+									</td>
                                     <td>
                                         <?php echo CommonHelper::displayMoneyFormat($volumeDiscount, true, false, true, false, true); ?>
                                     </td>
