@@ -252,16 +252,14 @@ if (!$print) { ?>
                         </div>
                     <?php
                     } ?>
-                    <table class="table  table--orders">
+                    <table class="table">
                         <thead>
 
                             <tr class="">
                                 <th>
                                     <?php echo Labels::getLabel('LBL_Order_Particulars', $siteLangId); ?>
                                 </th>
-                                <?php if (!$print) { ?>
-                                    <th class="no-print"></th>
-                                <?php } ?>
+                             
                                 <th>
                                     <?php echo Labels::getLabel('LBL_Qty', $siteLangId); ?>
                                 </th>
@@ -303,10 +301,9 @@ if (!$print) { ?>
                                 $shippingCharges = $shippingCharges + CommonHelper::orderProductAmount($childOrder, 'shipping');
                                 $volumeDiscount = CommonHelper::orderProductAmount($childOrder, 'VOLUME_DISCOUNT');
                                 $rewardPointDiscount = CommonHelper::orderProductAmount($childOrder, 'REWARDPOINT'); ?>
-                                <tr>
-                                    <?php if (!$print) { ?>
-                                        <td class="no-print">
-                                            <div class="pic--cell-left">
+                                <tr>                                   
+                                    <td>                                    
+                                        <div class="item">
                                                 <?php
                                                 $prodOrBatchUrl = 'javascript:void(0)';
                                                 if ($childOrder['op_is_batch']) {
@@ -323,10 +320,8 @@ if (!$print) { ?>
                                                         <img src="<?php echo $prodOrBatchImgUrl; ?>" title="<?php echo $childOrder['op_product_name']; ?>" alt="<?php echo $childOrder['op_product_name']; ?>">
                                                     </a>
                                                 </figure>
-                                            </div>
-                                        </td>
-                                    <?php } ?>
-                                    <td>
+                                         
+
                                         <div class="item__description">
                                             <?php if ($childOrder['op_selprod_title'] != '') { ?>
                                                 <div class="item__title">
@@ -362,6 +357,7 @@ if (!$print) { ?>
                                                     <?php echo $childOrder['op_shipping_durations'] . '-' . $childOrder['op_shipping_duration_name']; ?>
                                                 </div>
                                             <?php } ?>
+                                        </div>
                                         </div>
                                     </td>
                                     <?php /* <td style="width:20%;" >
@@ -481,15 +477,12 @@ if (!$print) { ?>
                                 </tr>
                             <?php } ?>
                         </tbody>
-                    </table>
-                    <div class="divider"></div>
-                    <div class="gap"></div>
-                    <div class="gap"></div>
-                    <div class="row">
+                    </table>                    
+                    <div class="row mt-4">
                         <div class="col-lg-6 col-md-6 mb-4">
-                            <h5>
+                            <h6>
                                 <?php echo Labels::getLabel('LBL_Billing_Details', $siteLangId); ?>
-                            </h5>
+                            </h6>
                             <?php $billingAddress = $orderDetail['billingAddress']['oua_name'] . '<br>';
                             if ($orderDetail['billingAddress']['oua_address1'] != '') {
                                 $billingAddress .= $orderDetail['billingAddress']['oua_address1'] . '<br>';
@@ -527,9 +520,9 @@ if (!$print) { ?>
                         </div>
                         <?php if (!empty($orderDetail['shippingAddress']) && $productType != Product::PRODUCT_TYPE_DIGITAL) { ?>
                             <div class="col-lg-6 col-md-6 mb-4">
-                                <h5>
+                                <h6>
                                     <?php echo Labels::getLabel('LBL_Shipping_Details', $siteLangId); ?>
-                                </h5>
+                                </h6>
                                 <?php $shippingAddress = $orderDetail['shippingAddress']['oua_name'] . '<br>';
                                 if ($orderDetail['shippingAddress']['oua_address1'] != '') {
                                     $shippingAddress .= $orderDetail['shippingAddress']['oua_address1'] . '<br>';
@@ -567,9 +560,9 @@ if (!$print) { ?>
                         <?php } ?>
                         <?php if (!empty($orderDetail['pickupAddress'])) { ?>
                             <div class="col-lg-6 col-md-6 mb-4">
-                                <h5>
+                                <h6>
                                     <?php echo Labels::getLabel('LBL_Pickup_Details', $siteLangId); ?>
-                                </h5>
+                                </h6>
                                 <?php $pickUpAddress = $orderDetail['pickupAddress']['oua_name'] . '<br>';
                                 if ($orderDetail['pickupAddress']['oua_address1'] != '') {
                                     $pickUpAddress .= $orderDetail['pickupAddress']['oua_address1'] . '<br>';
@@ -603,14 +596,14 @@ if (!$print) { ?>
                         <?php } ?>
                     </div>
                     <?php if (!empty($orderDetail['comments'])) { ?>
-                        <span class="gap"></span>
-                        <div class="section--repeated">
-                            <h5>
+                       
+                        <div class="section--repeated mb-3">
+                            <h6>
                                 <?php echo Labels::getLabel('LBL_Posted_Comments', $siteLangId); ?>
-                            </h5>
-                            <table class="table  table--orders">
-                                <tbody>
-                                    <tr class="">
+                            </h6>
+                            <table class="table">
+                                <thead>
+                                <tr class="">
                                         <th>
                                             <?php echo Labels::getLabel('LBL_Date_Added', $siteLangId); ?>
                                         </th>
@@ -624,6 +617,8 @@ if (!$print) { ?>
                                             <?php echo Labels::getLabel('LBL_Comments', $siteLangId); ?>
                                         </th>
                                     </tr>
+                                </thead>
+                                <tbody>                                    
                                     <?php foreach ($orderDetail['comments'] as $row) {
                                     ?>
                                         <tr>
@@ -668,14 +663,14 @@ if (!$print) { ?>
                         </div>
                     <?php } ?>
                     <?php if (!empty($orderDetail['payments'])) { ?>
-                        <span class="gap"></span>
-                        <div class="section--repeated">
-                            <h5>
+                    
+                        <div class="section--repeated mb-3">
+                            <h6>
                                 <?php echo Labels::getLabel('LBL_Payment_History', $siteLangId); ?>
-                            </h5>
+                            </h6>
                             <table class="table">
-                                <tbody>
-                                    <tr class="">
+                                <thead>
+                                <tr class="">
                                         <th>
                                             <?php echo Labels::getLabel('LBL_Date_Added', $siteLangId); ?>
                                         </th>
@@ -695,6 +690,9 @@ if (!$print) { ?>
                                             <?php echo Labels::getLabel('LBL_STATUS', $siteLangId); ?>
                                         </th>
                                     </tr>
+                                </thead>
+                                <tbody>
+                                   
                                     <?php foreach ($orderDetail['payments'] as $row) {
                                     ?>
                                         <tr>
@@ -739,14 +737,14 @@ if (!$print) { ?>
                         </div>
                     <?php } ?>
                     <?php if (!empty($digitalDownloads)) { ?>
-                        <span class="gap"></span>
-                        <div class="section--repeated">
-                            <h5>
+                       
+                        <div class="section--repeated mb-3">
+                            <h6>
                                 <?php echo Labels::getLabel('LBL_Downloads', $siteLangId); ?>
-                            </h5>
-                            <table class="table table-justified table--orders">
-                                <tbody>
-                                    <tr class="">
+                            </h6>
+                            <table class="table">
+                                <thead>
+                                <tr class="">
                                         <th>
                                             <?php echo Labels::getLabel('LBL_Sr_No', $siteLangId); ?>
                                         </th>
@@ -767,6 +765,9 @@ if (!$print) { ?>
                                         </th>
                                         <th></th>
                                     </tr>
+                                </thead>
+                                <tbody>
+                                   
                                     <?php $sr_no = 1;
                                     foreach ($digitalDownloads as $key => $row) {
                                         $lang_name = Labels::getLabel('LBL_All', $siteLangId);
@@ -830,14 +831,14 @@ if (!$print) { ?>
                         </div>
                     <?php } ?>
                     <?php if (!empty($digitalDownloadLinks)) { ?>
-                        <span class="gap"></span>
-                        <div class="section--repeated">
-                            <h5>
+                      
+                        <div class="section--repeated mb-3">
+                            <h6>
                                 <?php echo Labels::getLabel('LBL_Download_Links', $siteLangId); ?>
-                            </h5>
-                            <table class="table  table--orders">
-                                <tbody>
-                                    <tr class="">
+                            </h6>
+                            <table class="table">
+                                <thead>
+                                <tr class="">
                                         <th>
                                             <?php echo Labels::getLabel('LBL_Sr_No', $siteLangId); ?>
                                         </th>
@@ -854,6 +855,9 @@ if (!$print) { ?>
                                             <?php echo Labels::getLabel('LBL_Expired_on', $siteLangId); ?>
                                         </th>
                                     </tr>
+                                </thead>
+                                <tbody>
+                                   
                                     <?php $sr_no = 1;
                                     foreach ($digitalDownloadLinks as $key => $row) {
                                         $expiry = Labels::getLabel('LBL_N/A', $siteLangId);
@@ -897,12 +901,12 @@ if (!$print) { ?>
                     <?php } ?>
                     <?php
                     if (!$orderDetail['order_deleted'] && !$primaryOrder && !$orderDetail["order_payment_status"] && 'TransferBank' == $orderDetail['plugin_code']) { ?>
-                        <div class="divider"></div>
-                        <span class="gap"></span>
-                        <div class="section--repeated">
-                            <h5>
+                        
+                       
+                        <div class="section--repeated mb-3">
+                            <h6>
                                 <?php echo Labels::getLabel('LBL_ORDER_PAYMENTS', $siteLangId); ?>
-                            </h5>
+                            </h6>
                             <div class="info--order">
                                 <?php
                                 $frm->setFormTagAttribute('onsubmit', 'updatePayment(this); return(false);');

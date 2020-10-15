@@ -1273,9 +1273,15 @@
                 font-weight: 300;
             }
         }
-        &.cancel {
-            opacity: 0.5;
-            filter: grayscale(100);
-        }
+        &.cancel {}
+    }
+    .tag--soldout {
+        border-radius: $radius3;
+        width: auto;
+        height: auto;
+        opacity: 0.2;
+        top: 0;
+        transform: none;
+        cursor: not-allowed;
     }
 }

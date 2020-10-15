@@ -15094,7 +15094,7 @@ img.mfp-img, .post .post_media iframe.mfp-img, .post .post_media .posted-content
   position: absolute;
   text-transform: uppercase;
   top: 50%;
-  z-index: 1;
+  z-index: 2;
   font-weight: 600;
   text-align: center;
   transform: translateY(-50%); }
@@ -33619,7 +33619,7 @@ a.ui-button:active,
       font-size: 0.9em; }
 
 .info--order p {
-  font-size: 0.875em;
+  font-size: 0.8rem;
   margin: 5px 0; }
 
 .note {
@@ -35133,9 +35133,14 @@ transform: rotate(-135deg);*/ }
     .list-addons li .item .item__price {
       color: #8798ad;
       font-weight: 300; }
-  .list-addons li.cancel {
-    opacity: 0.5;
-    filter: grayscale(100); }
+.list-addons .tag--soldout {
+  border-radius: 3px;
+  width: auto;
+  height: auto;
+  opacity: 0.2;
+  top: 0;
+  transform: none;
+  cursor: not-allowed; }
 
 #faqquestions {
   margin: 40px auto 0;
