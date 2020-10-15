@@ -199,10 +199,10 @@ class CartController extends MyAppController
             $srch->addMultipleFields(array('uwlist_id'));
             $srch->doNotCalculateRecords();
             $srch->setPageSize(1);
-            $srch->addCondition('uwlp_uwlist_id', '=', $wishlistId);
+            $srch->addCondition('uwlist_id', '=', $wishlistId);
             $rs = $srch->getResultSet();
             $row = $db->fetch($rs);
-            if (is_array($row) && !empty($row)) {
+            if (!is_array($row) || empty($row)) {
                 $msg = Labels::getLabel('LBL_INVALID_WISHLIST_ID', $this->siteLangId);
                 if (true === MOBILE_APP_API_CALL) {
                     LibHelper::dieJsonError($msg);

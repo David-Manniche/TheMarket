@@ -6,7 +6,7 @@ trait PluginHelper
     public $settings = [];
     public $langId = 0;
     public $keyName;
-    
+
     /**
      * getError
      *
@@ -16,7 +16,7 @@ trait PluginHelper
     {
         return $this->error;
     }
-        
+
     /**
      * getPluginSettingsObj
      *
@@ -26,7 +26,7 @@ trait PluginHelper
     {
         $this->keyName = !empty($this->keyName) ? $this->keyName : static::KEY_NAME;
         $this->langId = 0 < $this->langId ? $this->langId : CommonHelper::getLangId();
-        $this->pluginSetting = new PluginSetting(0, $this->keyName);   
+        $this->pluginSetting = new PluginSetting(0, $this->keyName);
     }
 
     /**
@@ -47,7 +47,7 @@ trait PluginHelper
         }
         return $this->settings;
     }
-    
+
     /**
      * getKey - Get Single Plugin Setting Value
      *
@@ -60,14 +60,14 @@ trait PluginHelper
             return isset($this->settings[$column]) ? $this->settings[$column] : '';
         }
 
-        $this->loadPluginSettingsObj();         
+        $this->loadPluginSettingsObj();
         if (false === $value = $this->pluginSetting->get($this->langId, $column)) {
             $this->error = $this->pluginSetting->getError();
             return '';
         }
         return $value;
     }
-    
+
     /**
      * validateSettings - To validate plugin required keys are updated in db or not.
      *
@@ -82,7 +82,7 @@ trait PluginHelper
             $this->error = static::KEY_NAME . ' : ' . Labels::getLabel('MSG_PLUGIN_NOT_ACTIVE', $langId);
             return false;
         }
-        
+
         if (isset($this->requiredKeys) && !empty($this->requiredKeys) && is_array($this->requiredKeys)) {
             foreach ($this->requiredKeys as $key) {
                 if (!array_key_exists($key, $this->settings) || '' == $this->settings[$key]) {
@@ -93,7 +93,7 @@ trait PluginHelper
         }
         return true;
     }
-    
+
     /**
      * includePlugin
      *
@@ -119,14 +119,14 @@ trait PluginHelper
             $error =  Labels::getLabel('MSG_PLUGIN_IS_NOT_ACTIVE', $langId);
             return false;
         }
-        
+
         $file = CONF_PLUGIN_DIR . $directory . '/' . strtolower($keyName) . '/' . $keyName . '.php';
-        
+
         if (!file_exists($file)) {
             $error =  Labels::getLabel('MSG_UNABLE_TO_LOCATE_REQUIRED_FILE', $langId) . '-' . $keyName;
             return false;
         }
-        
+
         try {
             require_once $file;
         } catch (\Error $e) {
@@ -150,7 +150,7 @@ trait PluginHelper
         if (1 > $langId) {
             $langId = CommonHelper::getLangId();
         }
-        
+
         if (empty($keyName)) {
             $error =  Labels::getLabel('MSG_INVALID_KEY_NAME', $langId);
             return false;
@@ -164,7 +164,7 @@ trait PluginHelper
             $error =  Labels::getLabel('MSG_INVALID_PLUGIN_TYPE', $langId);
             return false;
         }
-        
+
         $error = '';
         if (false === PluginHelper::includePlugin($keyName, $directory, $error, $langId, $checkActive)) {
             return false;

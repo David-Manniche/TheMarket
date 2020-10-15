@@ -7,17 +7,17 @@ class UserWishList extends MyAppModel
 
     public const DB_TBL_LIST_PRODUCTS = 'tbl_user_wish_list_products';
     public const DB_TBL_LIST_PRODUCTS_PREFFIX = 'uwlp_';
-    
+
     public const TYPE_WISHLIST = 0;
     public const TYPE_FAVOURITE = 1;
-	public const TYPE_SAVE_FOR_LATER = 2;
+    public const TYPE_SAVE_FOR_LATER = 2;
     public const TYPE_DEFAULT_WISHLIST = 3;
     public function __construct($uwlistId = 0)
     {
         parent::__construct(static::DB_TBL, static::DB_TBL_PREFIX . 'id', $uwlistId);
         $this->objMainTableRecord->setSensitiveFields(array());
     }
-    
+
     public static function getTypeArr(int $langId): array
     {
         return [
@@ -62,8 +62,8 @@ class UserWishList extends MyAppModel
     {
         $uwlp_uwlist_id = FatUtility::int($uwlp_uwlist_id);
         $selprod_id = FatUtility::int($selprod_id);
-        $data_to_save = array( 'uwlp_uwlist_id' => $uwlp_uwlist_id, 'uwlp_selprod_id' => $selprod_id, 'uwlp_added_on' => date('Y-m-d H:i:s') );
-        $data_to_save_on_duplicate = array( 'uwlp_selprod_id' => $selprod_id );
+        $data_to_save = array('uwlp_uwlist_id' => $uwlp_uwlist_id, 'uwlp_selprod_id' => $selprod_id, 'uwlp_added_on' => date('Y-m-d H:i:s'));
+        $data_to_save_on_duplicate = array('uwlp_selprod_id' => $selprod_id);
         if (!FatApp::getDb()->insertFromArray(UserWishListProducts::DB_TBL, $data_to_save, false, array(), $data_to_save_on_duplicate)) {
             $this->error = FatApp::getDb()->getError();
             return false;
@@ -75,8 +75,8 @@ class UserWishList extends MyAppModel
     {
         $uwlist_id = FatUtility::int($uwlist_id);
         $db = FatApp::getDb();
-        $db->deleteRecords(UserWishListProducts::DB_TBL, array('smt' => 'uwlp_uwlist_id = ?', 'vals' => array($uwlist_id) ));
-        $db->deleteRecords(static::DB_TBL, array( 'smt' => 'uwlist_id = ?', 'vals' => array( $uwlist_id ) ));
+        $db->deleteRecords(UserWishListProducts::DB_TBL, array('smt' => 'uwlp_uwlist_id = ?', 'vals' => array($uwlist_id)));
+        $db->deleteRecords(static::DB_TBL, array('smt' => 'uwlist_id = ?', 'vals' => array($uwlist_id)));
     }
 
     public static function getUserWishLists($userId = 0, $fetchProducts = false, $excludeWishList = 0, $type = -1)
@@ -108,9 +108,9 @@ class UserWishList extends MyAppModel
         if (0 < $excludeWishList) {
             $srch->addCondition('uwlist_id', '!=', $excludeWishList);
         }
-		if($type == self::TYPE_SAVE_FOR_LATER) {
-			$srch->addCondition('uwlist_type', '=', self::TYPE_SAVE_FOR_LATER);
-		}else{
+        if ($type == self::TYPE_SAVE_FOR_LATER) {
+            $srch->addCondition('uwlist_type', '=', self::TYPE_SAVE_FOR_LATER);
+        } else {
             $srch->addCondition('uwlist_type', '!=', self::TYPE_SAVE_FOR_LATER);
         }
         $srch->doNotCalculateRecords();
@@ -118,11 +118,11 @@ class UserWishList extends MyAppModel
         $srch->addOrder('uwlist_title');
 
         $rs = $srch->getResultSet();
-		
+
         $wishLists = array();
         if ($fetchProducts) {
             while ($row = FatApp::getDb()->fetch($rs)) {
-                $wishLists[ $row['uwlist_id'] ] = $row;
+                $wishLists[$row['uwlist_id']] = $row;
                 $wishLists[$row['uwlist_id']]['products'] = static::getListProductsByListId($row['uwlist_id']);
             }
             return $wishLists;
@@ -130,11 +130,11 @@ class UserWishList extends MyAppModel
         return FatApp::getDb()->fetchAll($rs);
     }
 
-	public function getWishListId(int $userId, int $type): int
-	{
-		$srch = static::getSearchObject($userId, true);
+    public function getWishListId(int $userId, int $type): int
+    {
+        $srch = static::getSearchObject($userId, true);
         $srch->addCondition('uwlist_type', '=', $type);
-        $srch->addMultipleFields(array( 'uwlist_id'));
+        $srch->addMultipleFields(array('uwlist_id'));
         $srch->setPageSize(1);
         $rs = $srch->getResultSet();
         $row = FatApp::getDb()->fetch($rs);
@@ -142,7 +142,7 @@ class UserWishList extends MyAppModel
         if (!empty($row)) {
             return $row['uwlist_id'];
         }
-        
+
         $typeArr = static::getTypeArr(CommonHelper::getLangId());
         switch ($type) {
             case self::TYPE_DEFAULT_WISHLIST:
@@ -152,19 +152,19 @@ class UserWishList extends MyAppModel
                 $title = $typeArr[self::TYPE_SAVE_FOR_LATER];
                 break;
         }
-		$data = [
-			'uwlist_type' => $type,
-			'uwlist_user_id' => $userId,
-			'uwlist_title' => $title,
+        $data = [
+            'uwlist_type' => $type,
+            'uwlist_user_id' => $userId,
+            'uwlist_title' => $title,
             'uwlist_added_on' => date('Y-m-d H:i:s')
-		];
+        ];
         $this->assignValues($data);
         if (!$this->save()) {
             return 0;
         }
-		return $this->getMainTableRecordId();
-	}
-	
+        return $this->getMainTableRecordId();
+    }
+
     public static function getListProductsByListId($uwlp_uwlist_id = 0, $selprod_id = 0)
     {
         $uwlp_uwlist_id = FatUtility::int($uwlp_uwlist_id);
