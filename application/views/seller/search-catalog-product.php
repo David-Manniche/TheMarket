@@ -2,7 +2,7 @@
 
 defined('SYSTEM_INIT') or die('Invalid Usage.');
 $arr_flds = array(
-    'listserial' => 'Sr.',
+    'listserial' => Labels::getLabel('LBL_#', $siteLangId),
     'product_identifier' => Labels::getLabel('LBL_Product', $siteLangId),
     //'attrgrp_name' => Labels::getLabel('LBL_Attribute_Group', $siteLangId),
     'product_model' => Labels::getLabel('LBL_Model', $siteLangId),
@@ -19,9 +19,9 @@ foreach ($arr_flds as $val) {
     $e = $th->appendElement('th', array(), $val);
 }
 
-$sr_no = ($page == 1) ? 0 : ($pageSize * ($page - 1));
+$sr_no = ($page > 1) ? $recordCount - (($page - 1) * $pageSize) : $recordCount;
+
 foreach ($arr_listing as $sn => $row) {
-    $sr_no++;
     $tr = $tbl->appendElement('tr', array('class' => ''));
 
     foreach ($arr_flds as $key => $val) {
@@ -79,7 +79,7 @@ foreach ($arr_listing as $sn => $row) {
 
                     if (0 != $row['product_seller_id']) {
                         $li = $ul->appendElement("li");
-                        $li->appendElement('a', array( 'class' => '', 'title' => Labels::getLabel('LBL_Edit', $siteLangId), "href" => UrlHelper::generateUrl('seller', 'customProductForm', array($row['product_id']))), '<i class="fa fa-edit"></i>', true);
+                        $li->appendElement('a', array('class' => '', 'title' => Labels::getLabel('LBL_Edit', $siteLangId), "href" => UrlHelper::generateUrl('seller', 'customProductForm', array($row['product_id']))), '<i class="fa fa-edit"></i>', true);
 
                         $li = $ul->appendElement("li");
                         $li->appendElement("a", array('title' => Labels::getLabel('LBL_Product_Images', $siteLangId), 'onclick' => 'customProductImages(' . $row['product_id'] . ')', 'href' => 'javascript:void(0)'), '<i class="fas fa-images"></i>', true);
@@ -116,6 +116,8 @@ foreach ($arr_listing as $sn => $row) {
                 break;
         }
     }
+
+    $sr_no--;
 }
 echo $tbl->getHtml();
 if (count($arr_listing) == 0) {
@@ -123,9 +125,9 @@ if (count($arr_listing) == 0) {
     $linkArr = array();
     if (User::canAddCustomProductAvailableToAllSellers()) {
         $linkArr = array(
-        0 => array(
-            'href' => UrlHelper::generateUrl('Seller', 'CustomCatalogProductForm'),
-            'label' => Labels::getLabel('LBL_Request_New_Product', $siteLangId),
+            0 => array(
+                'href' => UrlHelper::generateUrl('Seller', 'CustomCatalogProductForm'),
+                'label' => Labels::getLabel('LBL_Request_New_Product', $siteLangId),
             )
         );
     }

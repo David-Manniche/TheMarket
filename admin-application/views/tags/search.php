@@ -1,6 +1,6 @@
 <?php defined('SYSTEM_INIT') or die('Invalid Usage.');
 $arr_flds = array(
-    'listserial' => '#',
+    'listserial' => Labels::getLabel('LBL_#', $adminLangId),
     'product_identifier' => Labels::getLabel('LBL_Product', $adminLangId),
     'tags' => Labels::getLabel('LBL_Tags', $adminLangId)
 );
@@ -17,10 +17,9 @@ foreach ($arr_flds as $key => $val) {
     }
 }
 $productsArr = array();
-$sr_no = ($page == 1) ? 0 : ($pageSize * ($page - 1));
+$sr_no = ($page > 1) ? $recordCount - (($page - 1) * $pageSize) : $recordCount;
 foreach ($arr_listing as $sn => $row) {
     $productsArr[] = $row['product_id'];
-    $sr_no++;
     $tr = $tbl->appendElement('tr', array('class' => ''));
 
     foreach ($arr_flds as $key => $val) {
@@ -52,6 +51,7 @@ foreach ($arr_listing as $sn => $row) {
                 break;
         }
     }
+    $sr_no--;
 }
 if (count($arr_listing) == 0) {
     $tbl->appendElement('tr')->appendElement('td', array('colspan' => count($arr_flds)), Labels::getLabel('LBL_No_Records_Found', $adminLangId));

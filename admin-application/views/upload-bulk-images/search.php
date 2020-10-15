@@ -1,9 +1,9 @@
-<?php defined('SYSTEM_INIT') or die('Invalid Usage.'); ?> <?php
+<?php defined('SYSTEM_INIT') or die('Invalid Usage.');
 $arr_flds = array(
-    'select_all'=>Labels::getLabel('LBL_Select_all', $adminLangId),
-    'listserial'=> Labels::getLabel('LBL_S.No.', $adminLangId),
-    'user'=>Labels::getLabel('LBL_User', $adminLangId),
-    'afile_physical_path'=>Labels::getLabel('LBL_Location', $adminLangId),
+    'select_all' => Labels::getLabel('LBL_Select_all', $adminLangId),
+    'listserial' => Labels::getLabel('LBL_#', $adminLangId),
+    'user' => Labels::getLabel('LBL_User', $adminLangId),
+    'afile_physical_path' => Labels::getLabel('LBL_Location', $adminLangId),
     // 'afile_name'    => Labels::getLabel( 'LBL_File_Name', $adminLangId ),
     'files'    => Labels::getLabel('LBL_Files_Inside', $adminLangId),
     'action'    => Labels::getLabel('LBL_Action', $adminLangId),
@@ -11,35 +11,35 @@ $arr_flds = array(
 if (!$canEdit) {
     unset($arr_flds['select_all']);
 }
-$tbl = new HtmlElement('table', array('width'=>'100%', 'class'=>'table table-responsive'));
+$tbl = new HtmlElement('table', array('width' => '100%', 'class' => 'table table-responsive'));
 $th = $tbl->appendElement('thead')->appendElement('tr');
 foreach ($arr_flds as $key => $val) {
     if ('select_all' == $key) {
-        $th->appendElement('th')->appendElement('plaintext', array(), '<label class="checkbox"><input title="'.$val.'" type="checkbox" onclick="selectAll( $(this) )" class="selectAll-js"><i class="input-helper"></i></label>', true);
+        $th->appendElement('th')->appendElement('plaintext', array(), '<label class="checkbox"><input title="' . $val . '" type="checkbox" onclick="selectAll( $(this) )" class="selectAll-js"><i class="input-helper"></i></label>', true);
     } else {
         $e = $th->appendElement('th', array(), $val);
     }
 }
 
-$sr_no = $page==1 ? 0: $pageSize*($page-1);
+$sr_no = $page == 1 ? 0 : $pageSize * ($page - 1);
 foreach ($arr_listing as $sn => $row) {
     $sr_no++;
-    $tr = $tbl->appendElement('tr', array( ));
+    $tr = $tbl->appendElement('tr', array());
 
     foreach ($arr_flds as $key => $val) {
         $td = $tr->appendElement('td');
         switch ($key) {
             case 'select_all':
-                $td->appendElement('plaintext', array(), '<label class="checkbox"><input class="selectItem--js" type="checkbox" name="uploadDirs[]" value='.base64_encode(AttachedFile::FILETYPE_BULK_IMAGES_PATH . $row['afile_physical_path']).'><i class="input-helper"></i></label>', true);
+                $td->appendElement('plaintext', array(), '<label class="checkbox"><input class="selectItem--js" type="checkbox" name="uploadDirs[]" value=' . base64_encode(AttachedFile::FILETYPE_BULK_IMAGES_PATH . $row['afile_physical_path']) . '><i class="input-helper"></i></label>', true);
                 break;
             case 'listserial':
                 $td->appendElement('plaintext', array(), $sr_no);
                 break;
             case 'user':
                 if ($canViewUsers) {
-                    !empty($row['credential_username']) ? $td->appendElement('a', array('href' => 'javascript:void(0)', 'onClick' => 'redirectfunc("'.UrlHelper::generateUrl('Users').'",'.$row['afile_record_id'].')'), $row['credential_username'].'( '.$row['credential_email'].' )') : $td->appendElement('plaintext', array(), 'Admin', true);
+                    !empty($row['credential_username']) ? $td->appendElement('a', array('href' => 'javascript:void(0)', 'onClick' => 'redirectfunc("' . UrlHelper::generateUrl('Users') . '",' . $row['afile_record_id'] . ')'), $row['credential_username'] . '( ' . $row['credential_email'] . ' )') : $td->appendElement('plaintext', array(), 'Admin', true);
                 } else {
-                    $userDetail = !empty($row['credential_username']) ? $row['credential_username'].'('.$row['credential_email'].')' : 'Admin';
+                    $userDetail = !empty($row['credential_username']) ? $row['credential_username'] . '(' . $row['credential_email'] . ')' : 'Admin';
                     $td->appendElement('plaintext', array(), $userDetail, true);
                 }
                 break;
@@ -52,23 +52,23 @@ foreach ($arr_listing as $sn => $row) {
                 $count = Labels::getLabel('LBL_NA', $adminLangId);
                 if (file_exists($fullPath)) {
                     $allFiles = scandir($fullPath);
-                    $files_count = array_diff($allFiles, array( '..', '.' ));
+                    $files_count = array_diff($allFiles, array('..', '.'));
                     $count = count($files_count);
                 }
                 $td->appendElement('plaintext', array(), $count, true);
                 break;
             case 'action':
-                $ul = $td->appendElement("ul", array("class"=>"actions actions--centered"));
+                $ul = $td->appendElement("ul", array("class" => "actions actions--centered"));
 
-                $li = $ul->appendElement("li", array('class'=>'droplink'));
-                $li->appendElement('a', array('href'=>'javascript:void(0)', 'class'=>'button small green','title'=>Labels::getLabel('LBL_Delete', $adminLangId)), '<i class="ion-android-more-horizontal icon"></i>', true);
-                $innerDiv=$li->appendElement('div', array('class'=>'dropwrap'));
-                $innerUl=$innerDiv->appendElement('ul', array('class'=>'linksvertical'));
+                $li = $ul->appendElement("li", array('class' => 'droplink'));
+                $li->appendElement('a', array('href' => 'javascript:void(0)', 'class' => 'button small green', 'title' => Labels::getLabel('LBL_Delete', $adminLangId)), '<i class="ion-android-more-horizontal icon"></i>', true);
+                $innerDiv = $li->appendElement('div', array('class' => 'dropwrap'));
+                $innerUl = $innerDiv->appendElement('ul', array('class' => 'linksvertical'));
 
                 $li = $innerUl->appendElement("li");
-                $li->appendElement('a', array('href'=>'javascript:void(0)', 'class'=>'button small green', 'title'=>Labels::getLabel('LBL_Delete', $adminLangId),"onclick"=>"removeDir('".base64_encode(AttachedFile::FILETYPE_BULK_IMAGES_PATH . $row['afile_physical_path'])."')"), Labels::getLabel('LBL_Delete', $adminLangId), true);
+                $li->appendElement('a', array('href' => 'javascript:void(0)', 'class' => 'button small green', 'title' => Labels::getLabel('LBL_Delete', $adminLangId), "onclick" => "removeDir('" . base64_encode(AttachedFile::FILETYPE_BULK_IMAGES_PATH . $row['afile_physical_path']) . "')"), Labels::getLabel('LBL_Delete', $adminLangId), true);
                 $li = $innerUl->appendElement("li");
-                $li->appendElement('a', array('href'=>'javascript:void(0)', 'class'=>'button small green', 'title'=>Labels::getLabel('LBL_Download', $adminLangId),"onclick"=>"downloadPathsFile('".base64_encode($fullPath)."')"), Labels::getLabel('LBL_Download', $adminLangId), true);
+                $li->appendElement('a', array('href' => 'javascript:void(0)', 'class' => 'button small green', 'title' => Labels::getLabel('LBL_Download', $adminLangId), "onclick" => "downloadPathsFile('" . base64_encode($fullPath) . "')"), Labels::getLabel('LBL_Download', $adminLangId), true);
                 break;
             default:
                 $td->appendElement('plaintext', array(), $row[$key], true);
@@ -77,10 +77,10 @@ foreach ($arr_listing as $sn => $row) {
     }
 }
 if (count($arr_listing) == 0) {
-    $tbl->appendElement('tr')->appendElement('td', array('colspan'=>count($arr_flds)), Labels::getLabel('LBL_No_Records_Found', $adminLangId));
+    $tbl->appendElement('tr')->appendElement('td', array('colspan' => count($arr_flds)), Labels::getLabel('LBL_No_Records_Found', $adminLangId));
 }
 
-$frm = new Form('frmBlkUpImgListing', array('id'=>'frmBlkUpImgListing'));
+$frm = new Form('frmBlkUpImgListing', array('id' => 'frmBlkUpImgListing'));
 $frm->setFormTagAttribute('class', 'web_form last_td_nowrap actionButtons-js');
 $frm->setFormTagAttribute('onsubmit', 'formAction(this, reloadList ); return(false);');
 $frm->addHiddenField('', 'status');
@@ -89,9 +89,9 @@ echo $frm->getFormTag();
 echo $frm->getFieldHtml('status');
 echo $tbl->getHtml(); ?>
 </form>
-<?php $postedData['page']=$page;
+<?php $postedData['page'] = $page;
 echo FatUtility::createHiddenFormFromData($postedData, array(
-        'name' => 'frmSearchPaging'
+    'name' => 'frmSearchPaging'
 ));
-$pagingArr=array('pageCount'=>$pageCount,'page'=>$page,'pageSize'=>$pageSize,'recordCount'=>$recordCount,'adminLangId'=>$adminLangId);
+$pagingArr = array('pageCount' => $pageCount, 'page' => $page, 'pageSize' => $pageSize, 'recordCount' => $recordCount, 'adminLangId' => $adminLangId);
 $this->includeTemplate('_partial/pagination.php', $pagingArr, false);

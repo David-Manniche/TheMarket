@@ -56,10 +56,12 @@
                           <span class="label"><?php echo Labels::getLabel('LBL_Reward_point_discount', $siteLangId); ?></span>
                           <span class="ml-auto"><?php echo CommonHelper::displayMoneyFormat($appliedRewardPointsDiscount); ?></span>
                         </li>
-                    <?php }?>  
+                    <?php }?>
+					<?php $orderNetAmt = $cartSummary['orderNetAmount']; 
+						if (0 == $shippingAddress) $orderNetAmt = $orderNetAmt - $cartSummary['cartTaxTotal']; ?>					
                     <li class="list-group-item hightlighted">
                         <span class="label"><?php echo Labels::getLabel('LBL_Net_Payable', $siteLangId); ?></span> 
-                        <span class="ml-auto"><?php echo CommonHelper::displayMoneyFormat($cartSummary['orderNetAmount']); ?></span>
+                        <span class="ml-auto"><?php echo CommonHelper::displayMoneyFormat($orderNetAmt); ?></span>
                     </li>
                 </ul>
                 <?php /*  ?><p class="earn-points"><svg class="svg" width="20px" height="20px">

@@ -34,7 +34,7 @@
         ?>
         <div class="js-hamburger hamburger-toggle <?php echo $isOpened; ?>"><span class="bar-top"></span><span class="bar-mid"></span><span class="bar-bot"></span></div>
     </div>
-    <div class="sidebar__content custom-scrollbar" data-simplebar>
+    <div class="sidebar__content custom-scrollbar" id="scrollElement-js" data-simplebar>
         <nav class="dashboard-menu">
             <ul>
                 <li class="menu__item">
