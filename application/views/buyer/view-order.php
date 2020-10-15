@@ -259,7 +259,20 @@ if (!$print) { ?>
                     } ?>
                     <table class="table  table--orders">
                         <thead>
-
+							<?php
+								$cartTotal = 0;
+								$shippingCharges = 0;
+								$total = 0;
+								if ($primaryOrder) {
+									$arr[] = $childOrderDetail;
+								} else {
+									$arr = $childOrderDetail;
+								}
+								$taxOptionsTotal = array();
+								foreach ($arr as $childOrder) {
+									$shippingCharges = $shippingCharges + CommonHelper::orderProductAmount($childOrder, 'shipping');
+								}
+							?>
                             <tr class="">
                                 <th>
                                     <?php echo Labels::getLabel('LBL_Order_Particulars', $siteLangId); ?>
@@ -273,9 +286,11 @@ if (!$print) { ?>
                                 <th>
                                     <?php echo Labels::getLabel('LBL_Price', $siteLangId); ?>
                                 </th>
-                                <th>
-									<?php echo Labels::getLabel('LBL_Shipping_Charges', $siteLangId); ?>
-								</th>
+                                <?php if ($shippingCharges > 0) { ?>
+                                    <th>
+                                        <?php echo Labels::getLabel('LBL_Shipping_Charges', $siteLangId); ?>
+                                    </th>
+                                <?php } ?>
                                 <th>
                                     <?php echo Labels::getLabel('LBL_Volume/Loyalty_Discount', $siteLangId); ?>
                                 </th>
@@ -292,18 +307,8 @@ if (!$print) { ?>
                         </thead>
                         <tbody>
                             <?php
-                            $cartTotal = 0;
-                            $shippingCharges = 0;
-                            $total = 0;
-                            if ($primaryOrder) {
-                                $arr[] = $childOrderDetail;
-                            } else {
-                                $arr = $childOrderDetail;
-                            }
-                            $taxOptionsTotal = array();
                             foreach ($arr as $childOrder) {
                                 $cartTotal = $cartTotal + CommonHelper::orderProductAmount($childOrder, 'cart_total');
-                                $shippingCharges = $shippingCharges + CommonHelper::orderProductAmount($childOrder, 'shipping');
                                 $volumeDiscount = CommonHelper::orderProductAmount($childOrder, 'VOLUME_DISCOUNT');
                                 $rewardPointDiscount = CommonHelper::orderProductAmount($childOrder, 'REWARDPOINT'); ?>
                                 <tr>
@@ -376,9 +381,11 @@ if (!$print) { ?>
                                     <td>
                                         <?php echo CommonHelper::displayMoneyFormat($childOrder['op_unit_price'], true, false, true, false, true); ?>
                                     </td>
-                                    <td>
-										<?php echo CommonHelper::displayMoneyFormat(CommonHelper::orderProductAmount($childOrder, 'shipping'), true, false, true, false, true); ?>
-									</td>
+                                    <?php if ($shippingCharges > 0) { ?>
+                                        <td>
+                                            <?php echo CommonHelper::displayMoneyFormat(CommonHelper::orderProductAmount($childOrder, 'shipping'), true, false, true, false, true); ?>
+                                        </td>
+                                    <?php } ?>
                                     <td>
                                         <?php echo CommonHelper::displayMoneyFormat($volumeDiscount, true, false, true, false, true); ?>
                                     </td>
