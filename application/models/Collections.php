@@ -299,22 +299,22 @@ class Collections extends MyAppModel
     public static function getLayoutImagesArr(): array
     {
         return [
-            self::TYPE_PRODUCT_LAYOUT1 => 'product-layout-1.jpg',
-            self::TYPE_PRODUCT_LAYOUT2 => 'product-layout-2.jpg',
-            self::TYPE_PRODUCT_LAYOUT3 => 'product-layout-3.jpg',
-            self::TYPE_CATEGORY_LAYOUT1 => 'category-layout-1.jpg',
-            self::TYPE_CATEGORY_LAYOUT2 => 'category-layout-2.jpg',
-            self::TYPE_SHOP_LAYOUT1 => 'shop-layout-1.jpg',
-            self::TYPE_BRAND_LAYOUT1 => 'brand-layout-1.jpg',
-            self::TYPE_BLOG_LAYOUT1 => 'blog-layout-1.jpg',
-            self::TYPE_SPONSORED_PRODUCT_LAYOUT => 'product-layout-1.jpg',
-            self::TYPE_SPONSORED_SHOP_LAYOUT => 'shop-layout-1.jpg',
-            self::TYPE_BANNER_LAYOUT1 => 'banner-layout-1.jpg',
-            self::TYPE_BANNER_LAYOUT2 => 'banner-layout-2.jpg',
-            self::TYPE_BANNER_LAYOUT3 => 'banner-layout-3.jpg',
-            self::TYPE_FAQ_LAYOUT1 => 'faq-layout-1.jpg',
-            self::TYPE_TESTIMONIAL_LAYOUT1 => 'testimonial-layout-1.jpg',
-            self::TYPE_CONTENT_BLOCK_LAYOUT1 => 'content-block-layout-1.jpg',
+            self::TYPE_PRODUCT_LAYOUT1 => 'Product-Layout-1.png',
+            self::TYPE_PRODUCT_LAYOUT2 => 'Product-Layout-2.png',
+            self::TYPE_PRODUCT_LAYOUT3 => 'Product-Layout-3.png',
+            self::TYPE_CATEGORY_LAYOUT1 => 'Category-Layout-1.png',
+            self::TYPE_CATEGORY_LAYOUT2 => 'Category-Layout-2.png',
+            self::TYPE_SHOP_LAYOUT1 => 'Shop-Layout-1.png',
+            self::TYPE_BRAND_LAYOUT1 => 'Brand-Layout-1.png',
+            self::TYPE_BLOG_LAYOUT1 => 'Blog-Layout-1.png',
+            self::TYPE_SPONSORED_PRODUCT_LAYOUT => 'Sponsored-Products.png',
+            self::TYPE_SPONSORED_SHOP_LAYOUT => 'Sponsored-Shops.png',
+            self::TYPE_BANNER_LAYOUT1 => 'Banner-Layout-1.png',
+            self::TYPE_BANNER_LAYOUT2 => 'Banner-Layout-2.png',
+            self::TYPE_BANNER_LAYOUT3 => 'Banner-Layout-2.png',
+            self::TYPE_FAQ_LAYOUT1 => 'Faq-Layout-1.png',
+            self::TYPE_TESTIMONIAL_LAYOUT1 => 'Testimonial-layout-1.png',
+            self::TYPE_CONTENT_BLOCK_LAYOUT1 => 'Content-Block-layout-1.png',
         ];
     }
     
