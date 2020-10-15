@@ -5,7 +5,7 @@ $approvalFrm->developerTags['colClassPrefix'] = 'col-md-';
 $approvalFrm->developerTags['fld_default_col'] = '4';
 
 $btn = $approvalFrm->getField('btn_submit');
-$btn->setFieldTagAttribute('class', "btn btn-primary btn-wide");
+$btn->setFieldTagAttribute('class', "btn btn-brand btn-wide");
 
 $this->includeTemplate('_partial/dashboardNavigation.php'); ?>
 

@@ -7,7 +7,7 @@ $frm->developerTags['colClassPrefix'] = 'col-md-';
 $frm->developerTags['fld_default_col'] = 6;
 
 $submitBtnFld = $frm->getField('btn_submit');
-$submitBtnFld->setFieldTagAttribute('class', 'btn btn-primary');
+$submitBtnFld->setFieldTagAttribute('class', 'btn btn-brand');
 $submitBtnFld->setWrapperAttribute('class', 'col-lg-2');
 $submitBtnFld->developerTags['col'] = 2;
 $submitBtnFld->developerTags['noCaptionTag'] = true;
@@ -21,7 +21,7 @@ $submitBtnFld->developerTags['noCaptionTag'] = true;
             </div>
             <div class="col-auto">
                 <div class="content-header-right">
-                    <a href="<?php echo UrlHelper::generateUrl('shippingProfile'); ?>" class="btn btn-outline-primary btn-sm"><?php echo Labels::getLabel('LBL_back', $siteLangId); ?></a>
+                    <a href="<?php echo UrlHelper::generateUrl('shippingProfile'); ?>" class="btn btn-outline-brand btn-sm"><?php echo Labels::getLabel('LBL_back', $siteLangId); ?></a>
                 </div>
             </div>
         </div>
@@ -81,7 +81,7 @@ $submitBtnFld->developerTags['noCaptionTag'] = true;
                                 </h5>
                                 <div class="action">
                                     <?php if ($canEdit) { ?>
-                                        <a class="btn btn-outline-primary btn-sm" href="javascript:void(0);" onClick="zoneForm(<?php echo $profile_id; ?>, 0)" title="<?php echo Labels::getLabel('LBL_ADD_ZONE', $siteLangId);?>"><i class="fa fa-plus"></i> <?php echo Labels::getLabel('LBL_ADD', $siteLangId);?>
+                                        <a class="btn btn-outline-brand btn-sm" href="javascript:void(0);" onClick="zoneForm(<?php echo $profile_id; ?>, 0)" title="<?php echo Labels::getLabel('LBL_ADD_ZONE', $siteLangId);?>"><i class="fa fa-plus"></i> <?php echo Labels::getLabel('LBL_ADD', $siteLangId);?>
                                         </a>
                                     <?php } ?>
                                 </div>

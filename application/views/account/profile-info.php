@@ -10,11 +10,11 @@ $this->includeTemplate('_partial/dashboardNavigation.php'); ?>
             <?php if (0 == $userParentId) { ?>
             <div class="col-auto">
                 <div class="btn-group">
-                    <a class="btn btn-outline-primary btn-sm" href="javascript:void(0)" onclick="truncateDataRequestPopup()"><?php echo Labels::getLabel('LBL_Request_to_remove_my_data', $siteLangId); ?></a>
-                    <a class="btn btn-outline-primary btn-sm" href="javascript:void(0)" onclick="requestData()"><?php echo Labels::getLabel('LBL_Request_My_Data', $siteLangId); ?></a>
+                    <a class="btn btn-outline-brand btn-sm" href="javascript:void(0)" onclick="truncateDataRequestPopup()"><?php echo Labels::getLabel('LBL_Request_to_remove_my_data', $siteLangId); ?></a>
+                    <a class="btn btn-outline-brand btn-sm" href="javascript:void(0)" onclick="requestData()"><?php echo Labels::getLabel('LBL_Request_My_Data', $siteLangId); ?></a>
                     <?php if ($showSellerActivateButton) { ?>
                     <a href="<?php echo UrlHelper::generateUrl('Seller'); ?>"
-                            class="btn btn-outline-primary btn-sm panel__head_action"
+                            class="btn btn-outline-brand btn-sm panel__head_action"
                             title="<?php echo Labels::getLabel('LBL_Activate_Seller_Account', $siteLangId); ?>">
                             <strong> <?php echo Labels::getLabel('LBL_Activate_Seller_Account', $siteLangId); ?></strong>
                     </a>

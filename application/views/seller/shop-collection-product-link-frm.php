@@ -3,7 +3,7 @@
     <div class="cards-header">
         <h5 class="cards-title"><?php echo Labels::getLabel('LBL_Shop_Collections', $siteLangId); ?></h5>
         <div class="">
-            <a href="javascript:void(0)" onClick="shopCollections(this)" class="btn btn-outline-primary btn-sm"><?php echo Labels::getLabel('LBL_Back_to_Collections', $siteLangId);?></a>
+            <a href="javascript:void(0)" onClick="shopCollections(this)" class="btn btn-outline-brand btn-sm"><?php echo Labels::getLabel('LBL_Back_to_Collections', $siteLangId);?></a>
         </div>
     </div>
     <div class="cards-content">
@@ -36,7 +36,7 @@
                     $collectionLinkFrm->developerTags['fld_default_col'] = 12;
 
                     $submitFld = $collectionLinkFrm->getField('btn_submit');
-                    $submitFld->setFieldTagAttribute('class', "btn btn-primary btn-wide");
+                    $submitFld->setFieldTagAttribute('class', "btn btn-brand btn-wide");
                     echo $collectionLinkFrm->getFormHtml(); ?>
                 </div>
             </div>

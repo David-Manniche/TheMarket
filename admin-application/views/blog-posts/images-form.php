@@ -4,7 +4,7 @@ $imagesFrm->developerTags['colClassPrefix'] = 'col-md-';
 $imagesFrm->developerTags['fld_default_col'] = 12;
 
 $img_fld = $imagesFrm->getField('post_image');
-$img_fld->addFieldTagAttribute('class', 'btn btn-primary btn-sm');
+$img_fld->addFieldTagAttribute('class', 'btn btn-brand btn-sm');
 $img_fld->addFieldTagAttribute('onChange', 'popupImage(this)');
 
 $langFld = $imagesFrm->getField('lang_id');

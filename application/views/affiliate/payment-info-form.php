@@ -32,7 +32,7 @@ $PayPalEmailIdFld->setWrapperAttribute('class', 'paypal_payment_method_fld');
 
 $submitFld = $frm->getField('btn_submit');
 $submitFld->developerTags['noCaptionTag'] = true; 
-$submitFld->setFieldTagAttribute('class', 'btn btn-primary btn-wide');
+$submitFld->setFieldTagAttribute('class', 'btn btn-brand btn-wide');
 ?>
 
 <div class="row">

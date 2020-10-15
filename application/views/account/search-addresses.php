@@ -31,8 +31,8 @@
                         <?php echo (strlen($address['country_name'])>0)?$address['country_name'].'<br>':''; ?> <?php echo (strlen($address['addr_zip'])>0) ? Labels::getLabel('LBL_Zip:', $siteLangId).$address['addr_zip'].'<br>':''; ?>
                         <?php echo (strlen($address['addr_phone'])>0) ? Labels::getLabel('LBL_Phone:', $siteLangId).$address['addr_phone'].'<br>':''; ?> </p>
                 </address>
-                <div class="btn-group"><a href="javascript:void(0)" onClick="addAddressForm(<?php echo $address['addr_id']; ?>)" class="btn btn-outline-primary btn-sm"><?php echo Labels::getLabel('LBL_Edit', $siteLangId); ?></a>
-                <a href="javascript:void(0)" onClick="removeAddress(<?php echo $address['addr_id']; ?>)" class="btn btn-outline-primary btn-sm"><?php echo Labels::getLabel('LBL_Delete', $siteLangId); ?></a></div>
+                <div class="btn-group"><a href="javascript:void(0)" onClick="addAddressForm(<?php echo $address['addr_id']; ?>)" class="btn btn-outline-brand btn-sm"><?php echo Labels::getLabel('LBL_Edit', $siteLangId); ?></a>
+                <a href="javascript:void(0)" onClick="removeAddress(<?php echo $address['addr_id']; ?>)" class="btn btn-outline-brand btn-sm"><?php echo Labels::getLabel('LBL_Delete', $siteLangId); ?></a></div>
             </label>
         </div> <?php
     }

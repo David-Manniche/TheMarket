@@ -650,7 +650,7 @@
             <?php if (CommonHelper::demoUrl()) { ?>
                 <li>
                     <div class="m-4 text-center">
-                        <a class="themebtn btn-primary outline block" href="https://www.yo-kart.com/suggest-feature.html" target="_blank">
+                        <a class="themebtn btn-brand outline block" href="https://www.yo-kart.com/suggest-feature.html" target="_blank">
                             <?php echo Labels::getLabel('LBL_SUGGEST_A_FEATURE', $adminLangId);?>
                         </a>
                     </div>

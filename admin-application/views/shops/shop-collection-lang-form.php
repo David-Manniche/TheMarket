@@ -34,7 +34,7 @@ $langFld->setfieldTagAttribute('onChange', "editShopCollectionLangForm(" . $shop
     if (!empty($translatorSubscriptionKey) && $langId != $siteDefaultLangId) { ?> 
         <div class="row justify-content-end"> 
             <div class="col-auto mb-4">
-                <input class="btn btn-primary" 
+                <input class="btn btn-brand" 
                     type="button" 
                     value="<?php echo Labels::getLabel('LBL_AUTOFILL_LANGUAGE_DATA', $adminLangId); ?>" 
                     onClick="editShopCollectionLangForm(<?php echo $shop_id; ?>, <?php echo $scollection_id; ?>, <?php echo $langId; ?>, 1)">

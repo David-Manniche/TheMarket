@@ -4,7 +4,7 @@ $frmOrderCancel->setFormTagAttribute('onsubmit', 'setupOrderCancelRequest(this);
 $frmOrderCancel->developerTags['colClassPrefix'] = 'col-md-';
 $frmOrderCancel->developerTags['fld_default_col'] = 12;
 $btnSubmit = $frmOrderCancel->getField('btn_submit');
-$btnSubmit->setFieldTagAttribute('class', "btn btn-primary");
+$btnSubmit->setFieldTagAttribute('class', "btn btn-brand");
 ?>
 <?php $this->includeTemplate('_partial/dashboardNavigation.php'); ?>
 <main id="main-area" class="main" role="main">

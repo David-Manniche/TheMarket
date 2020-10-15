@@ -3,7 +3,7 @@ $couponMediaFrm->setFormTagAttribute('class', 'web_form form_horizontal');
 $couponMediaFrm->developerTags['colClassPrefix'] = 'col-md-';
 $couponMediaFrm->developerTags['fld_default_col'] = 12;
 $fld = $couponMediaFrm->getField('coupon_image');
-$fld->addFieldTagAttribute('class', 'btn btn-primary btn-sm');
+$fld->addFieldTagAttribute('class', 'btn btn-brand btn-sm');
 $fld->addFieldTagAttribute('onChange', 'popupImage(this)');
 $langFld = $couponMediaFrm->getField('lang_id');
 $langFld->addFieldTagAttribute('class', 'language-js');

@@ -4,7 +4,7 @@ $mediaFrm->developerTags['colClassPrefix'] = 'col-md-';
 $mediaFrm->developerTags['fld_default_col'] = 12;
 
 $fld1 = $mediaFrm->getField('banner_image');
-$fld1->addFieldTagAttribute('class', 'btn btn-primary btn-sm');
+$fld1->addFieldTagAttribute('class', 'btn btn-brand btn-sm');
 $fld1->addFieldTagAttribute('onChange', 'popupImage(this)');
 $langFld = $mediaFrm->getField('lang_id');
 $langFld->addFieldTagAttribute('class', 'language-js');

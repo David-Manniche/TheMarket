@@ -24,7 +24,6 @@ $(document).ready(function(){
 	}
 
 	addTagForm = function(id) {
-
 			fcom.displayProcessing();
 			fcom.ajax(fcom.makeUrl('tags', 'form', [id]), '', function(t) {
 			fcom.updateFaceboxContent(t);

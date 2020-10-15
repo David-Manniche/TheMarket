@@ -98,7 +98,7 @@
 <?php if (!isset($error)) :
     $frm->setFormTagAttribute('onsubmit', 'confirmPayment(this); return(false);');
     $btn = $frm->getField('btn_submit'); 
-    $btn->addFieldTagAttribute('class', 'btn btn-primary');
+    $btn->addFieldTagAttribute('class', 'btn btn-brand');
     $btn->addFieldTagAttribute('data-processing-text', Labels::getLabel('LBL_PLEASE_WAIT..', $siteLangId));
     $btn->developerTags['noCaptionTag'] = true;
     echo $frm->getFormHtml();

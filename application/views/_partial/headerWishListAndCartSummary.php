@@ -92,17 +92,17 @@ if ($user_is_buyer > 0 || (!UserAuthentication::isUserLogged())) { ?>
                         </tr>
                       <?php   }
                      } */ ?> 
-                <?php $netChargeAmt = $cartSummary['cartTotal']+$cartSummary['cartTaxTotal'] - ((0 < $cartSummary['cartVolumeDiscount'])?$cartSummary['cartVolumeDiscount']:0); ?>
+                <?php $netChargeAmt = $cartSummary['cartTotal'] - ((0 < $cartSummary['cartVolumeDiscount'])?$cartSummary['cartVolumeDiscount']:0); ?>
                 <tr>
                     <td class="hightlighted"><?php echo Labels::getLabel('LBL_Net_Payable', $siteLangId); ?></td>
                     <td class="hightlighted"><?php echo CommonHelper::displayMoneyFormat($netChargeAmt); ?></td>
                 </tr>
                 <tr>
                     <td class="">
-                        <?php /* <a href="<?php echo UrlHelper::generateUrl('cart'); ?>" class="btn btn-primary ripplelink"><?php echo Labels::getLabel('LBL_View_Bag', $siteLangId); ?> </a> */ ?>
-                        <a href="javascript:void(0);" onclick="cart.clear();" class="btn btn-outline-primary ripplelink"><?php echo Labels::getLabel('LBL_CLEAR_CART', $siteLangId); ?> </a>
+                        <?php /* <a href="<?php echo UrlHelper::generateUrl('cart'); ?>" class="btn btn-brand ripplelink"><?php echo Labels::getLabel('LBL_View_Bag', $siteLangId); ?> </a> */ ?>
+                        <a href="javascript:void(0);" onclick="cart.clear();" class="btn btn-outline-brand ripplelink"><?php echo Labels::getLabel('LBL_CLEAR_CART', $siteLangId); ?> </a>
                     </td>
-                    <td class=""><a class="btn btn-primary ripplelink" href="<?php echo UrlHelper::generateUrl('cart'); ?>"><?php echo Labels::getLabel('LBL_Proceed_To_Pay', $siteLangId); ?></a></td>
+                    <td class=""><a class="btn btn-brand ripplelink" href="<?php echo UrlHelper::generateUrl('cart'); ?>"><?php echo Labels::getLabel('LBL_Proceed_To_Pay', $siteLangId); ?></a></td>
                 </tr>
             </table>
         </div>

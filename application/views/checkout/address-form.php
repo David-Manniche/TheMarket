@@ -28,11 +28,11 @@
 
     $submitFld = $addressFrm->getField('btn_submit');
     $submitFld->developerTags['col'] = 2;
-    $submitFld->addFieldTagAttribute('class', 'btn btn-primary');
+    $submitFld->addFieldTagAttribute('class', 'btn btn-brand');
 
     $cancelFld = $addressFrm->getField('btn_cancel');  
     $cancelFld->developerTags['col'] = 2;  
-    $cancelFld->setFieldTagAttribute('class','btn btn-outline-primary');
+    $cancelFld->setFieldTagAttribute('class','btn btn-outline-brand');
     $cancelFld->setFieldTagAttribute('onclick','resetAddress('.$addressType.')');
 ?>
 <div class="step active" role="step:2">

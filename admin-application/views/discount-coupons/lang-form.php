@@ -37,7 +37,7 @@ $langFld->setfieldTagAttribute('onChange', "addCouponLangForm(" . $coupon_id . "
                         if (!empty($translatorSubscriptionKey) && $coupon_lang_id != $siteDefaultLangId) { ?> 
                             <div class="row justify-content-end"> 
                                 <div class="col-auto mb-4">
-                                    <input class="btn btn-primary" 
+                                    <input class="btn btn-brand" 
                                         type="button" 
                                         value="<?php echo Labels::getLabel('LBL_AUTOFILL_LANGUAGE_DATA', $adminLangId); ?>" 
                                         onClick="addCouponLangForm(<?php echo $coupon_id; ?>, <?php echo $coupon_lang_id; ?>, 1)">

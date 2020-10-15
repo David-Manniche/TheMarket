@@ -12,7 +12,7 @@ $address2 = $frm->getField('ura_address_line_2');
 $address2->developerTags['col'] = 6;
 
 $submitFld = $frm->getField('btn_submit');
-$submitFld->setFieldTagAttribute('class', "btn btn-primary btn-wide");
+$submitFld->setFieldTagAttribute('class', "btn btn-brand btn-wide");
 
 $langFld = $frm->getField('lang_id');
 $langFld->setfieldTagAttribute('onChange', "returnAddressLangForm(this.value);");
@@ -45,7 +45,7 @@ $this->includeTemplate('seller/_partial/shop-navigation.php', $variables, false)
                     if (!empty($translatorSubscriptionKey) && $formLangId != $siteDefaultLangId) { ?>
                         <div class="row justify-content-end">
                             <div class="col-auto mb-4">
-                                <input class="btn btn-primary"
+                                <input class="btn btn-brand"
                                     type="button"
                                     value="<?php echo Labels::getLabel('LBL_AUTOFILL_LANGUAGE_DATA', $siteLangId); ?>"
                                     onClick="returnAddressLangForm(<?php echo $formLangId; ?>, 1)">

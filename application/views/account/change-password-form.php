@@ -7,5 +7,5 @@ $frm->setFormTagAttribute('autocomplete', 'off');
 $frm->setFormTagAttribute('onsubmit', 'updatePassword(this); return(false);');
 $fldSubmit = $frm->getField('btn_submit');
 $fldSubmit->developerTags['noCaptionTag'] = true;
-$fldSubmit->setFieldTagAttribute('class', "btn btn-primary btn-wide");
+$fldSubmit->setFieldTagAttribute('class', "btn btn-brand btn-wide");
 echo $frm->getFormHtml();

@@ -65,15 +65,15 @@
                 }
             } ?>
             <div class="step__footer">
-                <a class="btn btn-outline-primary btn-wide" href="javascript:void(0)" onclick="showAddressList();">
+                <a class="btn btn-outline-brand btn-wide" href="javascript:void(0)" onclick="showAddressList();">
                     <?php echo Labels::getLabel('LBL_Back', $siteLangId); ?>
                 </a>
                 <?php if ($hasPhysicalProd) { ?>
-                    <a class="btn btn-primary btn-wide " onClick="setUpShippingMethod();" href="javascript:void(0)">
+                    <a class="btn btn-brand btn-wide " onClick="setUpShippingMethod();" href="javascript:void(0)">
                         <?php echo Labels::getLabel('LBL_Continue', $siteLangId); ?>
                     </a>
                 <?php } else { ?>
-                    <a class="btn btn-primary btn-wide " onClick="loadPaymentSummary();" href="javascript:void(0)">
+                    <a class="btn btn-brand btn-wide " onClick="loadPaymentSummary();" href="javascript:void(0)">
                         <?php echo Labels::getLabel('LBL_Continue', $siteLangId); ?>
                     </a>
                 <?php } ?>

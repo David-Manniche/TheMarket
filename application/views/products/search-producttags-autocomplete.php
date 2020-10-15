@@ -10,7 +10,7 @@
     $recordFound = true; ?>
     <ul class="text-suggestions">
         <?php foreach ($suggestions['products'] as $product) { ?>
-            <li class=""><a class="" href="<?php echo UrlHelper::generateUrl('Products', 'view', [$product['selprod_id']]); ?>"><span class=""><?php echo str_ireplace($keyword, "<b>$keyword</b>", $product['selprod_title']); ?></span></a></li>
+            <li class=""><a class="" href="javascript:void(0)" onclick="searchTags(this)" data-txt="<?php echo $product['selprod_title']; ?>"><span class=""><?php echo str_ireplace($keyword, "<b>$keyword</b>", $product['selprod_title']); ?></span></a></li>
         <?php } ?>
     </ul>
 <?php } ?>

@@ -14,9 +14,9 @@
             </div>    
 			<div class="col-auto">
 				<div class="btn-group">
-					<?php echo '<a href="javascript:void(0)" onClick="exportSalesReport()" class="btn btn-outline-primary btn-sm">'.Labels::getLabel('LBL_Export', $siteLangId).'</a>';
+					<?php echo '<a href="javascript:void(0)" onClick="exportSalesReport()" class="btn btn-outline-brand btn-sm">'.Labels::getLabel('LBL_Export', $siteLangId).'</a>';
 					if(!empty($orderDate)){
-						echo '<a href="'.UrlHelper::generateUrl('Reports', 'SalesReport').'" class="btn btn-outline-primary btn-sm">'.Labels::getLabel('LBL_Back',$siteLangId).'</a>';
+						echo '<a href="'.UrlHelper::generateUrl('Reports', 'SalesReport').'" class="btn btn-outline-brand btn-sm">'.Labels::getLabel('LBL_Back',$siteLangId).'</a>';
 					} ?>
 				</div>
 			</div>
@@ -39,16 +39,19 @@
 									$dateTo = $frmSrch->getField('date_to');
 									$dateTo->developerTags['noCaptionTag'] = true;
 
-									$submitFld = $frmSrch->getField('btn_submit');
-									$submitFld->developerTags['noCaptionTag'] = true;
-									$submitFld->setFieldTagAttribute('class', 'btn btn-primary btn-block ');
+                                        $submitFld = $frmSrch->getField('btn_submit');
+                                        $submitFld->developerTags['noCaptionTag'] = true;
+                                        $submitFld->setFieldTagAttribute('class', 'btn btn-brand btn-block ');
 
-									$fldClear = $frmSrch->getField('btn_clear');
-									$fldClear->setFieldTagAttribute('class', 'btn btn-outline-primary btn-block');
-									$fldClear->developerTags['noCaptionTag'] = true;
-									echo $frmSrch->getFormHtml();
-								?>
-							</div>
+                                        $fldClear = $frmSrch->getField('btn_clear');
+                                        $fldClear->setFieldTagAttribute('class', 'btn btn-outline-brand btn-block');
+                                        $fldClear->developerTags['noCaptionTag'] = true;
+                                        echo $frmSrch->getFormHtml();
+                                    ?>
+                                </div>
+                            <?php  } else {
+                                echo  $frmSrch->getFormHtml();
+                            } ?>
                         </div>
                     </div>
                 </div>

@@ -9,7 +9,7 @@ $uwlist_title_fld = $frm->getField('uwlist_title');
 $uwlist_title_fld->addFieldTagAttribute('placeholder',Labels::getLabel('LBL_New_List', $siteLangId));
 
 $btn = $frm->getField('btn_submit');
-$btn->setFieldTagAttribute('class', 'btn btn-primary');
+$btn->setFieldTagAttribute('class', 'btn btn-brand');
 ?>
 <div class="pop-up-title"><?php echo Labels::getLabel('LBL_Your_List', $siteLangId); ?></div>
 <?php if( $wishLists ){ ?>

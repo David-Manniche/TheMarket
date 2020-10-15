@@ -47,7 +47,7 @@
                                     <?php if ($userWalletBalance >= $cartSummary['orderNetAmount']) { ?>
                                         <li>
                                             <?php $btnSubmitFld = $WalletPaymentForm->getField('btn_submit');
-                                            $btnSubmitFld->addFieldTagAttribute('class', 'btn btn-outline-primary');
+                                            $btnSubmitFld->addFieldTagAttribute('class', 'btn btn-outline-brand');
 
                                             $WalletPaymentForm->developerTags['colClassPrefix'] = 'col-md-';
                                             $WalletPaymentForm->developerTags['fld_default_col'] = 12;
@@ -81,7 +81,7 @@
                     <h6><?php echo Labels::getLabel('LBL_Payment_to_be_made', $siteLangId); ?> <strong>
                         <?php
                         $btnSubmitFld = $confirmPaymentFrm->getField('btn_submit');
-                        $btnSubmitFld->addFieldTagAttribute('class', 'btn btn-primary');
+                        $btnSubmitFld->addFieldTagAttribute('class', 'btn btn-brand');
 
                         $confirmPaymentFrm->developerTags['colClassPrefix'] = 'col-md-';
                         $confirmPaymentFrm->developerTags['fld_default_col'] = 12;

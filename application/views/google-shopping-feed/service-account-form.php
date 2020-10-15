@@ -8,7 +8,7 @@ $frm->developerTags['colClassPrefix'] = 'col-md-';
 $frm->developerTags['fld_default_col'] = 12; 
 
 $btnSubmit = $frm->getField('btn_submit');
-$btnSubmit->setFieldTagAttribute('class', "btn btn-primary");
+$btnSubmit->setFieldTagAttribute('class', "btn btn-brand");
 
 $serviceAccount = $frm->getField('service_account');
 ?>

@@ -33,7 +33,7 @@
                         <h5 class="toggle__trigger toggle__trigger-js"><?php echo Labels::getLabel('LBL_Sell_With', $siteLangId)." ".FatApp::getConfig('CONF_WEBSITE_NAME_'.$siteLangId, FatUtility::VAR_STRING, ''); ?></h5>
                         <div class="toggle__target toggle__target-js">
                             <div class="store-button">
-                                <a href="<?php echo UrlHelper::generateUrl('supplier');?>" class="btn btn-primary storeBtn-js"><i class="icn icn-1"><img src="<?php echo CONF_WEBROOT_URL; ?>images/store-icn.png" alt=""></i>
+                                <a href="<?php echo UrlHelper::generateUrl('supplier');?>" class="btn btn-brand storeBtn-js"><i class="icn icn-1"><img src="<?php echo CONF_WEBROOT_URL; ?>images/store-icn.png" alt=""></i>
                                     <?php echo Labels::getLabel('LBL_Open_a_store', $siteLangId); ?> </a>
                             </div>
                             <?php /* <div class="gap"></div>

@@ -25,7 +25,7 @@ $langFld->setfieldTagAttribute('onChange', "shopLangForm(" . $shop_id . ", this.
 
 $btnSubmit = $shopLangFrm->getField('btn_submit');
 $btnSubmit->developerTags['noCaptionTag'] = true;
-$btnSubmit->setFieldTagAttribute('class', "btn btn-primary btn-wide");
+$btnSubmit->setFieldTagAttribute('class', "btn btn-brand btn-wide");
 ?>
 
 <?php     $variables= array('formLangId'=>$formLangId, 'language'=>$language,'siteLangId'=>$siteLangId,'shop_id'=>$shop_id,'action'=>$action);
@@ -41,7 +41,7 @@ $this->includeTemplate('seller/_partial/shop-navigation.php', $variables, false)
                     if (!empty($translatorSubscriptionKey) && $formLangId != $siteDefaultLangId) { ?>
                         <div class="row justify-content-end">
                             <div class="col-auto mb-4">
-                                <input class="btn btn-primary"
+                                <input class="btn btn-brand"
                                     type="button"
                                     value="<?php echo Labels::getLabel('LBL_AUTOFILL_LANGUAGE_DATA', $siteLangId); ?>"
                                     onClick="shopLangForm( <?php echo $shop_id; ?>, <?php echo $formLangId; ?>, 1)">

@@ -59,7 +59,7 @@ if (isset($isUserDashboard) && $isUserDashboard) {
 }
 
 if (!isset($exculdeMainHeaderDiv)) {
-    $this->includeTemplate('_partial/topHeader.php', array('siteLangId'=>$siteLangId), false);
+    $this->includeTemplate('_partial/topHeader.php', array('siteLangId'=>$siteLangId, 'controllerName'=>$controllerName), false);
 }
 
 if (!$isAppUser) {

@@ -67,7 +67,7 @@
             <div class="wishlists__foot">
                 <div class="text-center">
                 <a onClick="<?php echo $functionName; ?>(<?php echo $wishlist['uwlist_id']; ?>);"
-                    href="javascript:void(0)" class="btn btn-outline-primary btn-sm">
+                    href="javascript:void(0)" class="btn btn-outline-brand btn-sm">
                     <?php echo str_replace('{n}', $wishlist['totalProducts'], Labels::getLabel('LBL_View_{n}_items', $siteLangId)); ?>
                     <i class="fa fa-eye"></i>
                 </a>
@@ -98,7 +98,7 @@
                         $titleFld->setFieldTagAttribute('title', Labels::getLabel('LBL_List_Name', $siteLangId));
 
                         $btnSubmitFld = $frm->getField('btn_submit');
-                        $btnSubmitFld->setFieldTagAttribute('class', 'btn btn-primary btn-block');
+                        $btnSubmitFld->setFieldTagAttribute('class', 'btn btn-brand btn-block');
                         $btnSubmitFld->value = Labels::getLabel('LBL_Create', $siteLangId);
                         $btnSubmitFld->developerTags['noCaptionTag'] = true;
 

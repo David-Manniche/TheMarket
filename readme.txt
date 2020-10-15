@@ -214,10 +214,12 @@ Bugs:
     => 043717 - If Weight condition match in shipping then "no shipping charges" gets display there.
     => 044048 - seller dashboard> there is order cancellation tab which containing count of order cancel by buyer and seller but displaying request of buyer only
     => 044060 - If social media links are added by admin/seller without http / https platform doesnot redirect user to social media page instead redirects user to domainname.com/socialmediaurl.com
-
+    => 044153 - when user is on cart/checkout page then mini cart shouldn't open 
 ------------------TV-9.2.1.20201014-----------------------
     => 044117 - Checkout >> bank transfer is not working.
-    
+    => 043676 - Admin >> manage collection >> layout images are not there for "blog layout " and " mobile banner layout ".
+    => 044185 - when buyer places order (multi item) with reward then on parent order detail page> there is some issue
+
 Enhancements:
     => Tax module upgrade
     => Test cases classes enhancements.

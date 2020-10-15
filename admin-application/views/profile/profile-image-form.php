@@ -8,7 +8,7 @@
 	<span class="-gap"></span><span class="-gap"></span>
 	<div class="btngroup--fix">
 		<?php echo $imgFrm->getFormTag();	?>
-		<span class="btn btn-primary btn-sm btn--fileupload">
+		<span class="btn btn-brand btn-sm btn--fileupload">
 		<?php echo $imgFrm->getFieldHtml('user_profile_image'); ?>
 		</span>
 		<?php echo $imgFrm->getFieldHtml('update_profile_img');
