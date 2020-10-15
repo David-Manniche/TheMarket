@@ -8,7 +8,7 @@ $this->includeTemplate('seller/_partial/shop-navigation.php', $variables, false)
         <h5 class="cards-title"><?php echo Labels::getLabel('LBL_Shop_Pickup_Addresses', $siteLangId); ?></h5>
         <?php if ($canEdit) { ?>
         <div class="btn-group">
-            <a href="javascript:void(0)" onClick="pickupAddressForm(0)" class="btn btn-outline-brand btn-sm  btn-sm"><?php echo Labels::getLabel('LBL_Add_Address', $siteLangId); ?></a>
+            <a href="javascript:void(0)" onClick="pickupAddressForm(0)" class="btn btn-outline-brand btn-sm"><?php echo Labels::getLabel('LBL_Add_Address', $siteLangId); ?></a>
         </div>
         <?php } ?>
     </div>

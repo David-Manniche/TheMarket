@@ -14,9 +14,9 @@
             </div>    
 			<div class="col-auto">
 				<div class="btn-group">
-					<?php echo '<a href="javascript:void(0)" onClick="exportSalesReport()" class="btn btn-outline-primary btn-sm">'.Labels::getLabel('LBL_Export', $siteLangId).'</a>';
+					<?php echo '<a href="javascript:void(0)" onClick="exportSalesReport()" class="btn btn-outline-brand btn-sm">'.Labels::getLabel('LBL_Export', $siteLangId).'</a>';
 					if(!empty($orderDate)){
-						echo '<a href="'.UrlHelper::generateUrl('Reports', 'SalesReport').'" class="btn btn-outline-primary btn-sm">'.Labels::getLabel('LBL_Back',$siteLangId).'</a>';
+						echo '<a href="'.UrlHelper::generateUrl('Reports', 'SalesReport').'" class="btn btn-outline-brand btn-sm">'.Labels::getLabel('LBL_Back',$siteLangId).'</a>';
 					} ?>
 				</div>
 			</div>
