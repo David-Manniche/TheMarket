@@ -217,6 +217,7 @@ Bugs:
     => 044153 - when user is on cart/checkout page then mini cart shouldn't open 
 ------------------TV-9.2.1.20201014-----------------------
     => 043676 - Admin >> manage collection >> layout images are not there for "blog layout " and " mobile banner layout ".
+    => 043778  if we add same state in two different rules then some error should get display at admin end 
     
 Enhancements:
     => Tax module upgrade
