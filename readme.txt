@@ -217,7 +217,8 @@ Bugs:
     => 044153 - when user is on cart/checkout page then mini cart shouldn't open 
 ------------------TV-9.2.1.20201014-----------------------
     => 043676 - Admin >> manage collection >> layout images are not there for "blog layout " and " mobile banner layout ".
-    
+    => 044185 - when buyer places order (multi item) with reward then on parent order detail page> there is some issue
+
 Enhancements:
     => Tax module upgrade
     => Test cases classes enhancements.
