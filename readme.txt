@@ -219,6 +219,8 @@ Bugs:
     => 043676 - Admin >> manage collection >> layout images are not there for "blog layout " and " mobile banner layout ".
     => 043778  if we add same state in two different rules then some error should get display at admin end 
     
+    => 044185 - when buyer places order (multi item) with reward then on parent order detail page> there is some issue
+
 Enhancements:
     => Tax module upgrade
     => Test cases classes enhancements.

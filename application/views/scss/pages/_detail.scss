@@ -1253,7 +1253,35 @@
     }
 }
 
-.cart-tbl-addons {
-    border-radius: $radius2;
-    border: $border;
+.addons-scrollbar {
+    max-height: 250px;
+}
+
+.list-addons {
+    li {
+        display: flex;
+        justify-content: space-between;
+        position: relative;
+        .item {
+            flex: 0 0 70%;
+            max-width: 70%;
+            .item__title {
+                font-size: 0.8rem;
+            }
+            .item__price {
+                color: $txt-gray;
+                font-weight: 300;
+            }
+        }
+        &.cancel {}
+    }
+    .tag--soldout {
+        border-radius: $radius3;
+        width: auto;
+        height: auto;
+        opacity: 0.2;
+        top: 0;
+        transform: none;
+        cursor: not-allowed;
+    }
 }

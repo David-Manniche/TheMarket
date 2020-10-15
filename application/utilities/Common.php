@@ -357,7 +357,7 @@ class Common
         $frm = new Form('frmPoll');
         $frm->addHiddenField('', 'pollfeedback_polling_id', $pollId);
         $frm->addRadioButtons('', 'pollfeedback_response_type', Polling::getPollingResponseTypeArr($langId), '1', array('class' => 'listing--vertical listing--vertical-chcek'), array());
-        $submitBtn = $frm->addSubmitButton('', 'btn_submit', Labels::getLabel('Lbl_Vote', $langId), array('class' => 'btn btn-primary poll--link-js'));
+        $submitBtn = $frm->addSubmitButton('', 'btn_submit', Labels::getLabel('Lbl_Vote', $langId), array('class' => 'btn btn-brand poll--link-js'));
         /* $viewResultsFld = $frm->addHTML('View Results', 'btn_view_results','<a href="javascript:void(0)" class="link--underline view--link-js" >'.Labels::getLabel('Lbl_View_Results',$langId).'</a>');
         $submitBtn->attachField($viewResultsFld); */
         return $frm;

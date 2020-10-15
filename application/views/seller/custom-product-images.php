@@ -32,7 +32,7 @@ $img_fld->addFieldTagAttribute('onChange', 'popupImage(this)');
                             productShipping(<?php echo $product_id; ?>);
                         <?php } else { ?>
                             productOptionsAndTag(<?php echo $product_id; ?>);
-                        <?php }?>" class="btn btn-outline-primary" type="button" name="btn_back" value="<?php echo Labels::getLabel('LBL_Back', $siteLangId); ?>">
+                        <?php }?>" class="btn btn-outline-brand" type="button" name="btn_back" value="<?php echo Labels::getLabel('LBL_Back', $siteLangId); ?>">
                     </div>
                 </div>
             </div>
@@ -42,8 +42,8 @@ $img_fld->addFieldTagAttribute('onChange', 'popupImage(this)');
                 <div class="caption-wraper"><label class="field_label"></label></div>
                 <div class="field-wraper">
                     <div class="field_cover">
-                        <?php /* <input onclick="goToCatalog();" type="button" class="btn btn-primary" name="btn_Finish" value="<?php echo Labels::getLabel('LBL_Finish', $siteLangId); ?>"> */ ?>
-                        <input onclick="goToCatalog();" type="button" class="btn btn-primary" name="btn_Finish"  data-text="<?php echo Labels::getLabel('LBL_Save_And_Next', $siteLangId); ?>" value="<?php echo Labels::getLabel('LBL_Finish', $siteLangId); ?>">
+                        <?php /* <input onclick="goToCatalog();" type="button" class="btn btn-brand" name="btn_Finish" value="<?php echo Labels::getLabel('LBL_Finish', $siteLangId); ?>"> */ ?>
+                        <input onclick="goToCatalog();" type="button" class="btn btn-brand" name="btn_Finish"  data-text="<?php echo Labels::getLabel('LBL_Save_And_Next', $siteLangId); ?>" value="<?php echo Labels::getLabel('LBL_Finish', $siteLangId); ?>">
                     </div>
                 </div>
             </div>

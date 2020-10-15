@@ -23,7 +23,7 @@ if(!empty($orderShippingData)){
 		</li>
 		<?php } ?>
 	</ul>
-    <div class="d-flex"><button class="btn btn-outline-primary ml-auto" type="button" onClick="ShippingSummaryData();"><?php echo Labels::getLabel('LBL_Edit', $siteLangId); ?></button></div>
+    <div class="d-flex"><button class="btn btn-outline-brand ml-auto" type="button" onClick="ShippingSummaryData();"><?php echo Labels::getLabel('LBL_Edit', $siteLangId); ?></button></div>
 <?php }else{ ?>
 <div class="pop-up-title"><?php echo Labels::getLabel('LBL_No_Pick_Up_address_added', $siteLangId); ?></div>
 <?php } ?>

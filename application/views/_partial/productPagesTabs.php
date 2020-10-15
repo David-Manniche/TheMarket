@@ -30,30 +30,30 @@
     <div class="col-auto">
         <div class="btn-group">
             <?php if (User::canAddCustomProduct() && $action == 'products') { ?>
-                <a href="<?php echo UrlHelper::generateUrl('seller', 'customProductForm');?>" class="btn btn-outline-primary btn-sm">
+                <a href="<?php echo UrlHelper::generateUrl('seller', 'customProductForm');?>" class="btn btn-outline-brand btn-sm">
                     <?php echo Labels::getLabel('LBL_Add_New_Product', $siteLangId);?>
                 </a>
-                <a href="<?php echo UrlHelper::generateUrl('seller', 'catalog');?>" class="btn btn-outline-primary btn-sm">
+                <a href="<?php echo UrlHelper::generateUrl('seller', 'catalog');?>" class="btn btn-outline-brand btn-sm">
                     <?php echo Labels::getLabel('LBL_Seller_Products', $siteLangId); ?>
                 </a>           
             <?php } ?>
             <?php if(isset($adminCatalogs) && $adminCatalogs > 0){ ?>
-				<a href="<?php echo UrlHelper::generateUrl('seller', 'catalog', [0]);?>" class="btn btn-outline-primary btn-sm">
+				<a href="<?php echo UrlHelper::generateUrl('seller', 'catalog', [0]);?>" class="btn btn-outline-brand btn-sm">
 					<?php echo Labels::getLabel('LBL_Marketplace_Products', $siteLangId); ?>
 				</a>
 			<?php } ?>
             <?php if (User::canAddCustomProduct() && $action == 'catalog' && $type == 1) { ?>
-                <a href="<?php echo UrlHelper::generateUrl('seller', 'customProductForm');?>" class="btn btn-outline-primary btn-sm">
+                <a href="<?php echo UrlHelper::generateUrl('seller', 'customProductForm');?>" class="btn btn-outline-brand btn-sm">
                     <?php echo Labels::getLabel('LBL_Add_New_Product', $siteLangId);?>
                 </a>                
             <?php } ?>
                 
             <?php if ((isset($canAddCustomProduct) && $canAddCustomProduct==false) && (isset($canRequestProduct) && $canRequestProduct === true)) {?>
-                <a href="<?php echo UrlHelper::generateUrl('Seller', 'requestedCatalog');?>" class="btn btn-outline-primary btn-sm"><?php echo Labels::getLabel('LBL_Request_A_Product', $siteLangId);?></a>
+                <a href="<?php echo UrlHelper::generateUrl('Seller', 'requestedCatalog');?>" class="btn btn-outline-brand btn-sm"><?php echo Labels::getLabel('LBL_Request_A_Product', $siteLangId);?></a>
             <?php } ?>
            
             <?php if (User::canAddCustomProduct() && ($action == 'catalog')) { ?>
-                <a href="<?php echo UrlHelper::generateUrl('seller', 'products');?>" class="btn btn-outline-primary btn-sm">
+                <a href="<?php echo UrlHelper::generateUrl('seller', 'products');?>" class="btn btn-outline-brand btn-sm">
                     <?php echo Labels::getLabel('LBL_Back_To_Inventory', $siteLangId); ?>
                 </a>
             <?php } ?>

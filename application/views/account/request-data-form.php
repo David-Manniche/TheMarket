@@ -5,7 +5,7 @@
     $frm->setFormTagAttribute('onsubmit', 'setupRequestData(this); return(false);');
     
     $submitFld = $frm->getField('btn_submit');
-    $submitFld->setFieldTagAttribute('class', 'btn btn-primary btn-wide');
+    $submitFld->setFieldTagAttribute('class', 'btn btn-brand btn-wide');
 ?>
 <div class="cols--group">
     <div class="box__head">

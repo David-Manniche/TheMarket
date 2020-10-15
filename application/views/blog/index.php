@@ -141,7 +141,7 @@
 <?php } ?>
 
 <?php if (FatApp::getConfig('CONF_ENABLE_NEWSLETTER_SUBSCRIPTION', FatUtility::VAR_INT, 0)) { ?>
-<section class="section bg-primary">
+<section class="section bg-brand">
     <div class="container">
         <div class="row justify-content-center">
             <div class="col-xl-6">

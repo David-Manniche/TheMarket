@@ -568,3 +568,30 @@
 .txt-success {
     color: $success-color;
 }
+
+.coupon-offers {
+    border: $border;
+    border-radius: $radius4;
+    li {
+        border-bottom: solid 1px lighten($border-color, 05);
+        display: flex;
+        align-items: flex-start;
+        padding: 1rem;
+        font-size: 0.8rem;
+        color: $txt-gray;
+    }
+    .coupon-code {
+        padding: 0.3rem 1.2rem;
+        border-radius: 2rem;
+        color: lighten($body-color, 50%);
+        border: dashed 1px $border-color;
+        display: inline-block;
+        font-weight: 500;
+        margin-#{$end-direction}: 1rem;
+        cursor: pointer;
+        &:hover {
+            border-color: $brand-color;
+            color: $brand-color;
+        }
+    }
+}

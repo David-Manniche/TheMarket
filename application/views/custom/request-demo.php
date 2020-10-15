@@ -51,16 +51,16 @@
 		<div class="col-md-6 text-center cms">
 			<div class="illus mb-2"><img src="<?php echo CONF_WEBROOT_URL; ?>images/get-started.png" alt=""></div>
 			<p>I Really Liked The Features Of Yo!Kart And Want To Discuss My Project</p>
-			<a href="https://www.yo-kart.com/contact-us.html" target="_blank" class="btn btn-outline-primary btn-sm">Get Started</a>
+			<a href="https://www.yo-kart.com/contact-us.html" target="_blank" class="btn btn-outline-brand btn-sm">Get Started</a>
 		</div>
 		<div class="col-md-6 text-center cms">
 			<div class="illus mb-2"><img src="<?php echo CONF_WEBROOT_URL; ?>images/free-demo.png" alt=""></div>
 			<p>I Want To Learn More About The Product And Need A Personalized Live Demo</p>
-			<a href="https://www.yo-kart.com/request-demo.html" target="_blank" class="btn btn-outline-primary btn-sm">Book A Free Demo</a>
+			<a href="https://www.yo-kart.com/request-demo.html" target="_blank" class="btn btn-outline-brand btn-sm">Book A Free Demo</a>
 		</div>
 	</div>
 
 	<div class="text-center mt-4">
-		<a href="https://www.yo-kart.com/multivendor-marketplace-packages.html" target="_blank" class="btn btn-primary">View Packages</a></div>
+		<a href="https://www.yo-kart.com/multivendor-marketplace-packages.html" target="_blank" class="btn btn-brand">View Packages</a></div>
 
 </div>

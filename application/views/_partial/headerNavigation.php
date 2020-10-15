@@ -35,13 +35,17 @@ if(count($headerNavigation)) {
         <div class="navigation-wrapper">
             <ul class="navigations <?php echo ($navLinkCount > 4) ? 'justify-content-between' : '' ; ?>">
                 <?php if(count($headerCategories)) { ?>
-                    <li class="navchild categories ">
-                        <a href="javascript:void(0)">
-                            <?php echo Labels::getLabel('LBL_Categories', $siteLangId);?> <i class="c-hamburger js-hamburger"> <span
+                    <li class="navchild categories">
+                        <a class="categories-link" href="javascript:void(0)">
+                        <i class="c-hamburger js-hamburger">
+                                 <span
                                     class="c-hamburger__line c-hamburger__line--top"></span>
                                 <span class="c-hamburger__line c-hamburger__line--middle"></span>
                                 <span class="c-hamburger__line c-hamburger__line--bottom"></span>
                             </i>
+                            
+                            <?php echo Labels::getLabel('LBL_Shop_by_Categories', $siteLangId);?> 
+                            
                         </a>
                         <div class="vertical-menu">
                             <ul class="menu">

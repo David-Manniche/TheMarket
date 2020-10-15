@@ -83,7 +83,7 @@ $discountTotal = isset($scartSummary['cartDiscounts']) && isset($scartSummary['c
             } else {
                 $paymentText = Labels::getLabel('LBL_Proceed_To_Confirm', $siteLangId);
             } ?>
-            <a href="javascript:void(0)" class="btn btn-primary ripplelink block-on-mobile confirmReview"><?php echo $paymentText; ?></a>
+            <a href="javascript:void(0)" class="btn btn-brand ripplelink block-on-mobile confirmReview"><?php echo $paymentText ;?></a>
         </div>
     </div>
 </div>

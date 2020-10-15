@@ -28,7 +28,7 @@ $langFld->setfieldTagAttribute('onChange', "editGatewayLangForm(" . $pMethodId .
                         if (!empty($translatorSubscriptionKey) && $lang_id != $siteDefaultLangId) { ?> 
                             <div class="row justify-content-end"> 
                                 <div class="col-auto mb-4">
-                                    <input class="btn btn-primary" 
+                                    <input class="btn btn-brand" 
                                         type="button" 
                                         value="<?php echo Labels::getLabel('LBL_AUTOFILL_LANGUAGE_DATA', $adminLangId); ?>" 
                                         onClick="editGatewayLangForm(<?php echo $pMethodId; ?>, <?php echo $lang_id; ?>, 1)">

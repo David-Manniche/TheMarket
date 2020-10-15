@@ -13,7 +13,7 @@
 		$PromoCouponsFrm->setFormTagAttribute('class','form apply--coupon--form custom-form');
 		$PromoCouponsFrm->setFormTagAttribute('onsubmit','applyPromoCode(this); return false;');
 		$fld = $PromoCouponsFrm->getField('btn_submit');		
-		$fld->setFieldTagAttribute('class','btn btn-primary');
+		$fld->setFieldTagAttribute('class','btn btn-brand');
 		$PromoCouponsFrm->setJsErrorDisplay('afterfield');
 		echo $PromoCouponsFrm->getFormTag(); 
 		echo $PromoCouponsFrm->getFieldHtml('coupon_code'); 

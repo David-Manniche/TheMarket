@@ -14,6 +14,6 @@
     $approvalFrm->developerTags['fld_default_col'] = 12;	
     
     $btn = $approvalFrm->getField('btn_submit');
-    $btn->addFieldTagAttribute("class", "btn btn-primary");
+    $btn->addFieldTagAttribute("class", "btn btn-brand");
 	echo $approvalFrm->getFormHtml();
 ?>

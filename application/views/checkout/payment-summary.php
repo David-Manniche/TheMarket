@@ -235,7 +235,7 @@ $rewardPoints = UserRewardBreakup::rewardPointBalance(UserAuthentication::getLog
         </label>
         <?php if ($cartSummary["cartWalletSelected"] && $userWalletBalance >= $cartSummary['orderNetAmount']) {
             $btnSubmitFld = $WalletPaymentForm->getField('btn_submit');
-            $btnSubmitFld->addFieldTagAttribute('class', 'btn btn-primary btn-wide');
+            $btnSubmitFld->addFieldTagAttribute('class', 'btn btn-brand btn-wide');
             $btnSubmitFld->value = Labels::getLabel('LBL_PAY', $siteLangId) . ' ' . CommonHelper::displayMoneyFormat($cartSummary['orderNetAmount'], true, false, true, false, false);
             $WalletPaymentForm->developerTags['colClassPrefix'] = 'col-md-';
             $WalletPaymentForm->developerTags['fld_default_col'] = 12;
@@ -254,16 +254,16 @@ $rewardPoints = UserRewardBreakup::rewardPointBalance(UserAuthentication::getLog
         <?php } ?>
     </div>
 <?php } ?>
-<section id="payment" class="section-checkout">
-    <div class="align-items-center mb-4">
-        <?php if ($cartSummary['orderNetAmount'] <= 0) { ?>
-            <div class="gap"></div>
-            <div id="wallet">
-                <h6><?php echo Labels::getLabel('LBL_Payment_to_be_made', $siteLangId); ?>
-                    <strong><?php echo CommonHelper::displayMoneyFormat($cartSummary['orderNetAmount'], true, false, true, false, true); ?></strong>
-                </h6> <?php
-                        $btnSubmitFld = $confirmForm->getField('btn_submit');
-                        $btnSubmitFld->addFieldTagAttribute('class', 'btn btn-primary btn-sm');
+        <section id="payment" class="section-checkout">
+            <div class="align-items-center mb-4">
+                <?php if ($cartSummary['orderNetAmount'] <= 0) { ?>
+                    <div class="gap"></div>
+                    <div id="wallet">
+                        <h6><?php echo Labels::getLabel('LBL_Payment_to_be_made', $siteLangId); ?>
+                            <strong><?php echo CommonHelper::displayMoneyFormat($cartSummary['orderNetAmount'], true, false, true, false, true); ?></strong>
+                        </h6> <?php
+                                $btnSubmitFld = $confirmForm->getField('btn_submit');
+                                $btnSubmitFld->addFieldTagAttribute('class', 'btn btn-brand btn-sm');
 
                         $confirmForm->developerTags['colClassPrefix'] = 'col-md-';
                         $confirmForm->developerTags['fld_default_col'] = 12;

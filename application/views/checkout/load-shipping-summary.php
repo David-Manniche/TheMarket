@@ -14,6 +14,6 @@
 			<?php /* }  */
 			} ?>
 		</div>
-		<div class="selected-panel-action"><a href="javascript:void(0);" onclick="changeShipping()"; class="btn btn-primary btn-sm ripplelink"><?php echo Labels::getLabel('LBL_Change_Shipping',$siteLangId); ?></a></div>
+		<div class="selected-panel-action"><a href="javascript:void(0);" onclick="changeShipping()"; class="btn btn-brand btn-sm ripplelink"><?php echo Labels::getLabel('LBL_Change_Shipping',$siteLangId); ?></a></div>
 	</div>
 </section>

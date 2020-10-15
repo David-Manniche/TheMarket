@@ -20,7 +20,7 @@ $fld->setFieldTagAttribute('disabled','disabled');
                         if (!empty($translatorSubscriptionKey)) { ?> 
                             <div class="row"> 
                                 <div class="col-auto mb-4">
-                                    <input class="btn btn-primary" 
+                                    <input class="btn btn-brand" 
                                         type="button" 
                                         value="<?php echo Labels::getLabel('LBL_AUTOFILL_LANGUAGE_DATA', $adminLangId); ?>" 
                                         onClick="labelsForm(<?php echo $label_id; ?>, <?php echo $labelType; ?>, 1)">
