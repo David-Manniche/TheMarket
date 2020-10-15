@@ -149,6 +149,8 @@ $(document).ready(function() {
                     minCropBoxWidth: 30,
                     minCropBoxHeight: 30,
                     toggleDragModeOnDblclick: false,
+                    imageSmoothingQuality: 'high',
+					imageSmoothingEnabled: true,
     	        };
                 $(inputBtn).val('');
     	        return cropImage(file, options, 'uploadImage', inputBtn);

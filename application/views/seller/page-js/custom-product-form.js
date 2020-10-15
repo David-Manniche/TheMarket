@@ -922,7 +922,9 @@
 	                },
 	                minCropBoxWidth: minWidth,
 	                minCropBoxHeight: minHeight,
-	                toggleDragModeOnDblclick: false,
+					toggleDragModeOnDblclick: false,
+					imageSmoothingQuality: 'high',
+					imageSmoothingEnabled: true,
 		        };
 				$(inputBtn).val('');
 		    	return cropImage(file, options, 'uploadImages', inputBtn);
@@ -1048,6 +1050,8 @@
 				var options = {
 					aspectRatio: aspectRatio,
 					preview: '.img-preview',
+					imageSmoothingQuality: 'high',
+					imageSmoothingEnabled: true,
 					crop: function (e) {
 					  var data = e.detail;
 					}

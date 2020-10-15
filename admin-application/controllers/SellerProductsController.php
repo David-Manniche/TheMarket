@@ -926,7 +926,7 @@ class SellerProductsController extends AdminBaseController
         $srch->addCondition(Product::DB_TBL_PREFIX . 'deleted', '=', applicationConstants::NO);
         $srch->addCondition('selprod_deleted', '=', applicationConstants::NO);
         $srch->addCondition('selprod_active', '=', applicationConstants::ACTIVE);
-        $srch->addMultipleFields(array('selprod_id as id', 'IFNULL(selprod_title ,product_name) as product_name', 'product_identifier', 'credential_username', 'selprod_price'));
+        $srch->addMultipleFields(array('selprod_id as id', 'IFNULL(selprod_title ,product_name) as product_name', 'product_identifier', 'credential_username', 'selprod_price', 'selprod_stock'));
 
         $srch->addOrder('selprod_active', 'DESC');
         $db = FatApp::getDb();
@@ -947,7 +947,8 @@ class SellerProductsController extends AdminBaseController
                 'id' => $key,
                 'name' => strip_tags(html_entity_decode($option['product_name'], ENT_QUOTES, 'UTF-8')) . $variantsStr . $userName,
                 'product_identifier' => strip_tags(html_entity_decode($option['product_identifier'], ENT_QUOTES, 'UTF-8')),
-                'price' => $option['selprod_price']
+                'price' => $option['selprod_price'],
+                'stock' => $option['selprod_stock']
             );
         }
         die(json_encode($json));

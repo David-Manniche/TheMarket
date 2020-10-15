@@ -4,8 +4,10 @@ $productFrm->setFormTagAttribute('class', 'form form--horizontal');
 $productFrm->setFormTagAttribute('onsubmit', 'setupcustomCatalogProduct(this); return(false);');
 
 $autoUpdateFld = $productFrm->getField('auto_update_other_langs_data');
-$autoUpdateFld->developerTags['cbLabelAttributes'] = array('class' => 'checkbox');
-$autoUpdateFld->developerTags['cbHtmlAfterCheckbox'] = '<i class="input-helper"></i>';
+if (null != $autoUpdateFld) {
+    $autoUpdateFld->developerTags['cbLabelAttributes'] = array('class' => 'checkbox');
+    $autoUpdateFld->developerTags['cbHtmlAfterCheckbox'] = '<i class="input-helper"></i>';
+}
 
 $btnSubmit = $productFrm->getField('btn_submit');
 $btnSubmit->setFieldTagAttribute('class', "btn btn-brand");

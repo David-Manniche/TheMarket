@@ -2,7 +2,7 @@
 
 $arr_flds = [
     'listserial' => [
-        'title' => Labels::getLabel('LBL_S.No.', $adminLangId),
+        'title' => Labels::getLabel('LBL_#', $adminLangId),
         'attributes' => [
             'width' => '7%'
         ],

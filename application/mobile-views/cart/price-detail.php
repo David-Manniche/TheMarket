@@ -45,7 +45,7 @@ $priceDetail['priceDetail'] = array(
         'value' => count($products)
     ),
     array(
-        'key' => Labels::getLabel('LBL_Total', $siteLangId),
+        'key' => Labels::getLabel('LBL_SUB_TOTAL', $siteLangId),
         'value' => CommonHelper::displayMoneyFormat($cartTotal)
     )
 );
@@ -72,8 +72,8 @@ if (0 < $coupon_discount_total) {
 }
 
 if (0 < $cartTaxTotal) {
-    if (isset($cartSummary['taxOptions']) && !empty($cartSummary['taxOptions'])) { 
-        foreach($cartSummary['taxOptions'] as $taxName => $taxVal){
+    if (isset($cartSummary['taxOptions']) && !empty($cartSummary['taxOptions'])) {
+        foreach ($cartSummary['taxOptions'] as $taxName => $taxVal) {
             $priceDetail['priceDetail'][] = array(
                 'key' => $taxVal['title'],
                 'value' => CommonHelper::displayMoneyFormat($taxVal['value'])
@@ -94,7 +94,7 @@ if (0 < $shippingTotal) {
     );
 }
 
-$priceDetail['priceDetail'][] = array(
+$priceDetail['netPayable'] = array(
     'key' => Labels::getLabel('LBL_Net_Payable', $siteLangId),
     'value' => CommonHelper::displayMoneyFormat($cartSummary['orderNetAmount'])
 );

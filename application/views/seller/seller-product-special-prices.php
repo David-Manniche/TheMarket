@@ -1,6 +1,6 @@
-<?php defined('SYSTEM_INIT') or die('Invalid Usage.');?>
+<?php defined('SYSTEM_INIT') or die('Invalid Usage.'); ?>
 <div class="tabs tabs--small   tabs--scroll clearfix">
-    <?php require_once('sellerCatalogProductTop.php');?>
+    <?php require_once('sellerCatalogProductTop.php'); ?>
 </div>
 <div class="cards">
     <?php if (count($arrListing) > 0) { ?>
@@ -19,18 +19,17 @@
     <?php } ?>
     <div class="cards-content ">
         <div class="row">
-            <div
-                class="<?php echo (count($arrListing) > 0) ? 'col-md-8' : 'col-md-12' ;?>">
+            <div class="<?php echo (count($arrListing) > 0) ? 'col-md-8' : 'col-md-12'; ?>">
                 <div class="form__subcontent">
                     <?php
                     $arr_flds = array(
-                    'listserial'=> Labels::getLabel('LBL_Sr.', $siteLangId),
-                    'splprice_price' => Labels::getLabel('LBL_Special_Price', $siteLangId),
-                    'splprice_start_date' => Labels::getLabel('LBL_Start_Date', $siteLangId),
-                    'splprice_end_date' => Labels::getLabel('LBL_End_Date', $siteLangId),
-                    'action' => '',
+                        'listserial' => Labels::getLabel('LBL_#', $siteLangId),
+                        'splprice_price' => Labels::getLabel('LBL_Special_Price', $siteLangId),
+                        'splprice_start_date' => Labels::getLabel('LBL_Start_Date', $siteLangId),
+                        'splprice_end_date' => Labels::getLabel('LBL_End_Date', $siteLangId),
+                        'action' => '',
                     );
-                    $tbl = new HtmlElement('table', array('width'=>'100%', 'class'=>'table'));
+                    $tbl = new HtmlElement('table', array('width' => '100%', 'class' => 'table'));
                     $th = $tbl->appendElement('thead')->appendElement('tr', array('class' => ''));
                     foreach ($arr_flds as $val) {
                         $e = $th->appendElement('th', array(), $val);
@@ -56,11 +55,11 @@
                                     $td->appendElement('plaintext', array(), FatDate::format($row[$key]), true);
                                     break;
                                 case 'action':
-                                    $ul = $td->appendElement("ul", array("class"=>"actions"), '', true);
+                                    $ul = $td->appendElement("ul", array("class" => "actions"), '', true);
                                     $li = $ul->appendElement("li");
-                                    $li->appendElement('a', array('href'=>'javascript:void(0)', 'class'=>'', 'title'=>Labels::getLabel('LBL_Edit', $siteLangId), "onclick"=>"sellerProductSpecialPriceForm(".$selprod_id.", ".$row['splprice_id'].")"), '<i class="fa fa-edit"></i>', true);
+                                    $li->appendElement('a', array('href' => 'javascript:void(0)', 'class' => '', 'title' => Labels::getLabel('LBL_Edit', $siteLangId), "onclick" => "sellerProductSpecialPriceForm(" . $selprod_id . ", " . $row['splprice_id'] . ")"), '<i class="fa fa-edit"></i>', true);
                                     $li = $ul->appendElement("li");
-                                    $li->appendElement('a', array('href'=>'javascript:void(0)', 'class'=>'', 'title'=>Labels::getLabel('LBL_Delete', $siteLangId), "onclick"=>"deleteSellerProductSpecialPrice(".$row['splprice_id'].")"), '<i class="fa fa-trash"></i>', true);
+                                    $li->appendElement('a', array('href' => 'javascript:void(0)', 'class' => '', 'title' => Labels::getLabel('LBL_Delete', $siteLangId), "onclick" => "deleteSellerProductSpecialPrice(" . $row['splprice_id'] . ")"), '<i class="fa fa-trash"></i>', true);
                                     break;
                                 default:
                                     $td->appendElement('plaintext', array(), $row[$key], true);
@@ -72,13 +71,13 @@
                     if (count($arrListing) == 0) {
                         $message = Labels::getLabel('LBL_No_any_special_prices_on_this_product', $siteLangId);
                         $linkArr = [
-                                [
-                                'href'=>'javascript:void(0);',
-                                'label'=>Labels::getLabel('LBL_Add_New_Special_Price', $siteLangId),
-                                'onClick'=>'sellerProductSpecialPriceForm('.$selprod_id.', 0);',
-                                ]
-                            ];
-                        $this->includeTemplate('_partial/no-record-found.php', array('siteLangId'=>$siteLangId,'linkArr'=>$linkArr,'message'=>$message));
+                            [
+                                'href' => 'javascript:void(0);',
+                                'label' => Labels::getLabel('LBL_Add_New_Special_Price', $siteLangId),
+                                'onClick' => 'sellerProductSpecialPriceForm(' . $selprod_id . ', 0);',
+                            ]
+                        ];
+                        $this->includeTemplate('_partial/no-record-found.php', array('siteLangId' => $siteLangId, 'linkArr' => $linkArr, 'message' => $message));
                     } else {
                         echo $tbl->getHtml();
                     } ?>

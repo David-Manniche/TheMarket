@@ -392,7 +392,9 @@ $(document).on('change','.collection-language-js',function(){
 	                },
 	                minCropBoxWidth: minWidth,
 	                minCropBoxHeight: minHeight,
-	                toggleDragModeOnDblclick: false,
+					toggleDragModeOnDblclick: false,
+					imageSmoothingQuality: 'high',
+					imageSmoothingEnabled: true,
 		        };
 				$(inputBtn).val('');
 	    		return cropImage(file, options, 'uploadShopImages', inputBtn);
@@ -421,7 +423,9 @@ $(document).on('change','.collection-language-js',function(){
 	                },
 	                minCropBoxWidth: minWidth,
 	                minCropBoxHeight: minHeight,
-	                toggleDragModeOnDblclick: false,
+					toggleDragModeOnDblclick: false,
+					imageSmoothingQuality: 'high',
+					imageSmoothingEnabled: true,
 		        };
 				$(inputBtn).val('');
     	  		return cropImage(file, options, 'uploadShopImages', inputBtn);
@@ -501,7 +505,9 @@ $(document).on('change','.collection-language-js',function(){
 	                },
 	                minCropBoxWidth: collectionMediaWidth,
 	                minCropBoxHeight: collectionMediaHeight,
-	                toggleDragModeOnDblclick: false,
+					toggleDragModeOnDblclick: false,
+					imageSmoothingQuality: 'high',
+					imageSmoothingEnabled: true,
 		        };
 				$(inputBtn).val('');
     	  		return cropImage(file, options, 'uploadCollectionImage', inputBtn);

@@ -751,8 +751,6 @@ UPDATE `tbl_cron_schedules` SET `cron_command` = 'AbandonedCart/sendReminderAban
 UPDATE `tbl_email_templates` SET `etpl_body` = '<table width=\"100%\" align=\"center\" cellpadding=\"0\" cellspacing=\"0\">    \r\n	<tbody>\r\n		<tr>        \r\n			<td style=\"background:#ff3a59;\">            \r\n				<!--\r\n				page title start here\r\n				-->\r\n				            \r\n				<table width=\"600\" border=\"0\" align=\"center\" cellpadding=\"0\" cellspacing=\"0\">                \r\n					<tbody>                    \r\n						<tr>                        \r\n							<td style=\"background:#fff;padding:20px 0 10px; text-align:center;\">                            \r\n								<h4 style=\"font-weight:normal; text-transform:uppercase; color:#999;margin:0; padding:10px 0; font-size:18px;\"></h4>                            \r\n								<h2 style=\"margin:0; font-size:34px; padding:0;\">New Account Created!</h2></td>                    \r\n						</tr>                \r\n					</tbody>            \r\n				</table>            \r\n				<!--\r\n				page title end here\r\n				-->\r\n				               </td>    \r\n		</tr>    \r\n		<tr>        \r\n			<td>            \r\n				<!--\r\n				page body start here\r\n				-->\r\n				            \r\n				<table width=\"600\" border=\"0\" align=\"center\" cellpadding=\"0\" cellspacing=\"0\">                \r\n					<tbody>                    \r\n						<tr>                        \r\n							<td style=\"background:#fff;padding:0 30px; text-align:center; color:#999;vertical-align:top;\">                            \r\n								<table width=\"100%\" border=\"0\" align=\"center\" cellpadding=\"0\" cellspacing=\"0\">                                \r\n									<tbody>                                    \r\n										<tr>                                        \r\n											<td style=\"padding:20px 0 30px;\"><strong style=\"font-size:18px;color:#333;\">Dear Admin </strong><br />\r\n												                                            We have received a new registration on <a href=\"{website_url}\">{website_name}</a>. Please find the details below:</td>                                    \r\n										</tr>                                    \r\n										<tr>                                        \r\n											<td style=\"padding:20px 0 30px;\">                                            \r\n												<table style=\"border:1px solid #ddd; border-collapse:collapse;\" cellspacing=\"0\" cellpadding=\"0\" border=\"0\">                                                \r\n													<tbody>                                                    \r\n														<tr>                                                        \r\n															<td style=\"padding:10px;font-size:13px;border:1px solid #ddd; color:#333; font-weight:bold;\" width=\"153\">Username</td>                                                        \r\n															<td style=\"padding:10px;font-size:13px; color:#333;border:1px solid #ddd;\" width=\"620\">{username}</td>                                                    \r\n														</tr>                                                    \r\n														<tr>                                                        \r\n															<td style=\"padding:10px;font-size:13px;border:1px solid #ddd; color:#333; font-weight:bold;\" width=\"153\">Email<span class=\"Apple-tab-span\" style=\"white-space:pre\"></span></td>                                                        \r\n															<td style=\"padding:10px;font-size:13px; color:#333;border:1px solid #ddd;\" width=\"620\">{email}</td>                                                    \r\n														</tr>                                                    \r\n														<tr>                                                        \r\n															<td style=\"padding:10px;font-size:13px;border:1px solid #ddd; color:#333; font-weight:bold;\" width=\"153\">Phone<span class=\"Apple-tab-span\" style=\"white-space:pre\"></span></td>                                                        \r\n															<td style=\"padding:10px;font-size:13px; color:#333;border:1px solid #ddd;\" width=\"620\">{phone}</td>                                                    \r\n														</tr>                                                    \r\n														<tr>                                                        \r\n															<td style=\"padding:10px;font-size:13px;border:1px solid #ddd; color:#333; font-weight:bold;\" width=\"153\">Name</td>                                                        \r\n															<td style=\"padding:10px;font-size:13px; color:#333;border:1px solid #ddd;\" width=\"620\">{name}</td>                                                    \r\n														</tr>                                                    \r\n														<tr>                                                        \r\n															<td style=\"padding:10px;font-size:13px;border:1px solid #ddd; color:#333; font-weight:bold;\" width=\"153\">Type</td>                                                        \r\n															<td style=\"padding:10px;font-size:13px; color:#333;border:1px solid #ddd;\" width=\"620\">{user_type}</td>                                                    \r\n														</tr>                                                \r\n													</tbody>                                            \r\n												</table></td>                                    \r\n										</tr>                                \r\n									</tbody>                            \r\n								</table></td>                    \r\n						</tr>                \r\n					</tbody>            \r\n				</table>            \r\n				<!--\r\n				page body end here\r\n				-->\r\n				               </td>    \r\n		</tr>\r\n	</tbody>\r\n</table>' WHERE `tbl_email_templates`.`etpl_code` = 'new_registration_admin' AND `tbl_email_templates`.`etpl_lang_id` = 1;
 
 DROP TABLE `tbl_tax_values`;
-
- DROP TABLE `tbl_tax_values`;
  
 DELETE FROM `tbl_language_labels` WHERE `label_key` LIKE 'LBL_This_is_the_application_ID_used_in_login_and_post';
 -- Category Relation Management --
@@ -772,10 +770,50 @@ ALTER TABLE tbl_email_templates ENGINE=InnoDB;
 ALTER TABLE tbl_order_product_settings ENGINE=InnoDB;
 ALTER TABLE tbl_sms_templates ENGINE=InnoDB;
 
-
-SET @paypalStandardId := (SELECT plugin_id FROM tbl_plugins WHERE plugin_identifier = 'PaypalStandard');
-SET @paypalId := (SELECT plugin_id FROM tbl_plugins WHERE plugin_identifier = 'Paypal');
+-- Replace PayPal Standard --
+SET @paypalStandardId := (SELECT plugin_id FROM tbl_plugins WHERE plugin_code = 'PaypalStandard');
+SET @paypalId := (SELECT plugin_id FROM tbl_plugins WHERE plugin_code = 'Paypal');
 DELETE FROM `tbl_plugins` WHERE `plugin_id` = @paypalStandardId;
 UPDATE `tbl_plugins` SET `plugin_id`= @paypalStandardId WHERE `plugin_id` = @paypalId;
 DELETE FROM `tbl_plugin_settings` WHERE `pluginsetting_plugin_id` = @paypalStandardId;
 UPDATE `tbl_plugin_settings` SET `pluginsetting_plugin_id`= @paypalStandardId WHERE `pluginsetting_plugin_id` = @paypalId;
+-- Replace PayPal Standard --
+
+ALTER TABLE `tbl_time_slots` ADD `tslot_availability` TINYINT(1) NOT NULL AFTER `tslot_id`;
+UPDATE `tbl_time_slots` SET `tslot_availability` = '1' WHERE `tslot_availability` = 0;
+
+DELETE FROM `tbl_language_labels` WHERE `label_key` LIKE 'LBL_Cancellation_Request_Status_Pending';
+DELETE FROM `tbl_language_labels` WHERE `label_key` LIKE 'LBL_Cancellation_Request_Status_Approved';
+DELETE FROM `tbl_language_labels` WHERE `label_key` LIKE 'LBL_Cancellation_Request_Status_Declined';
+
+ALTER TABLE `tbl_order_product_shipping` CHANGE `opshipping_type` `opshipping_fulfillment_type` TINYINT(4) NOT NULL DEFAULT '1' COMMENT 'Defined in model';
+ALTER TABLE `tbl_order_product_shipping` CHANGE `opshipping_fulfillment_type` `opshipping_fulfillment_type` TINYINT(4) NOT NULL DEFAULT '2' COMMENT 'Defined in model';
+UPDATE tbl_order_product_shipping SET opshipping_fulfillment_type = (CASE opshipping_fulfillment_type WHEN '1' THEN '2' WHEN '2' THEN '1' ELSE opshipping_fulfillment_type END);
+
+ALTER TABLE `tbl_countries` CHANGE `country_region_id` `country_zone_id` INT(11) NOT NULL;
+
+
+ALTER TABLE `tbl_shipping_rates` CHANGE `shiprate_cost` `shiprate_cost` DECIMAL(10,2) NOT NULL;
+ALTER TABLE `tbl_shipping_rates` CHANGE `shiprate_min_val` `shiprate_min_val` DECIMAL(10,2) NOT NULL DEFAULT '0.0000', CHANGE `shiprate_max_val` `shiprate_max_val` DECIMAL(10,2) NOT NULL DEFAULT '0.0000';
+DELETE FROM `tbl_language_labels` WHERE `label_key` LIKE 'LBL_This_is_the_application_ID_used_in_login_and_post';
+
+ALTER TABLE `tbl_shops` ADD `shop_invoice_prefix` VARCHAR(20) NOT NULL AFTER `shop_phone`, ADD `shop_invoice_suffix` BIGINT(15) NOT NULL AFTER `shop_invoice_prefix`;
+ALTER TABLE `tbl_shop_specifics` ADD `shop_invoice_codes` VARCHAR(255) NOT NULL AFTER `shop_cancellation_age`;
+
+-- -------------TV-9.2.1.20201008-------------------
+
+UPDATE `tbl_shops` SET `shop_fulfillment_type`=2 WHERE `shop_fulfillment_type` = 0;
+-- ---------------TV-9.2.1.20201013-----------------
+
+DELETE FROM `tbl_language_labels` WHERE `label_key` LIKE 'LBL_Based_on_item_weight';
+DELETE FROM `tbl_language_labels` WHERE `label_key` LIKE 'LBL_Based_on_item_price';
+DELETE FROM `tbl_language_labels` WHERE `label_key` LIKE 'LBL_Sr._No';
+DELETE FROM `tbl_language_labels` WHERE `label_key` LIKE 'LBL_Sr_no.';
+DELETE FROM `tbl_language_labels` WHERE `label_key` LIKE 'LBL_Sr.';
+DELETE FROM `tbl_language_labels` WHERE `label_key` LIKE 'LBL_Sr_No';
+DELETE FROM `tbl_language_labels` WHERE `label_key` LIKE 'LBL_Sr._no.';
+DELETE FROM `tbl_language_labels` WHERE `label_key` LIKE 'LBL_SrNo.';
+DELETE FROM `tbl_language_labels` WHERE `label_key` LIKE 'LBL_Sr._no.';
+DELETE FROM `tbl_language_labels` WHERE `label_key` LIKE 'LBL_Sr';
+-- -----------------TV-9.2.1.20201014------------------
+DELETE FROM `tbl_language_labels` WHERE `label_key` LIKE 'LBL_S.No.';

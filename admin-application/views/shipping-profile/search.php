@@ -3,7 +3,7 @@ if (count($arr_listing) == 0) {
     $this->includeTemplate('_partial/no-record-found.php', array('adminLangId' => $adminLangId));
 } else {
     $arr_flds = array(
-        'listserial' => Labels::getLabel('LBL_Sr.', $adminLangId),
+        'listserial' => Labels::getLabel('LBL_#', $adminLangId),
         'shipprofile_name' => Labels::getLabel('LBL_Name', $adminLangId),
         'totalProducts' => Labels::getLabel('LBL_Products', $adminLangId),
         'rates' => Labels::getLabel('LBL_Rates_for', $adminLangId),
@@ -49,12 +49,12 @@ if (count($arr_listing) == 0) {
                     $td->appendElement('plaintext', array(), $str, true);
                     break;
                 case 'action':
-                        if ($canEdit) {
-                            $td->appendElement('a', array('href' => UrlHelper::generateUrl('shippingProfile', 'form', array($row['shipprofile_id'])),  'class' => 'btn btn-clean btn-sm btn-icon', 'title' => Labels::getLabel('LBL_Edit', $adminLangId)), '<i class="fa fa-edit icon"></i>', true);
-                            if ($row['shipprofile_default'] != applicationConstants::YES) {
-                                $td->appendElement('a', array('href' => 'javascript:void(0)',  'class' => 'btn btn-clean btn-sm btn-icon', 'title' => Labels::getLabel('LBL_Edit', $adminLangId), "onclick"=>"deleteRecord(".$row['shipprofile_id'].")"), '<i class="fa fa-trash icon"></i>', true);
-                            }
+                    if ($canEdit) {
+                        $td->appendElement('a', array('href' => UrlHelper::generateUrl('shippingProfile', 'form', array($row['shipprofile_id'])),  'class' => 'btn btn-clean btn-sm btn-icon', 'title' => Labels::getLabel('LBL_Edit', $adminLangId)), '<i class="fa fa-edit icon"></i>', true);
+                        if ($row['shipprofile_default'] != applicationConstants::YES) {
+                            $td->appendElement('a', array('href' => 'javascript:void(0)',  'class' => 'btn btn-clean btn-sm btn-icon', 'title' => Labels::getLabel('LBL_Edit', $adminLangId), "onclick" => "deleteRecord(" . $row['shipprofile_id'] . ")"), '<i class="fa fa-trash icon"></i>', true);
                         }
+                    }
                     break;
                 default:
                     $td->appendElement('plaintext', array(), $row[$key], true);
@@ -69,7 +69,7 @@ if (count($arr_listing) == 0) {
     $frm->setFormTagAttribute('onsubmit', 'formAction(this, reloadList ); return(false);');
     echo $frm->getFormTag();
     echo $tbl->getHtml(); ?>
-</form>
+    </form>
 <?php $postedData['page'] = $page;
     echo FatUtility::createHiddenFormFromData($postedData, array('name' => 'frmProfileSearchPaging'));
     $pagingArr = array('pageCount' => $pageCount, 'page' => $page, 'recordCount' => $recordCount, 'adminLangId' => $adminLangId);

@@ -29,7 +29,7 @@
             <?php //$this->includeTemplate('_partial/dashboardTop.php'); ?>            
             <div class="col-md-auto">
                 <h2 class="content-header-title"><?php echo Labels::getLabel('LBL_My_Inventory', $siteLangId); ?><i class="fa fa-question-circle" onClick="productInstructions(<?php echo Extrapage::SELLER_INVENTORY_INSTRUCTIONS; ?>)"></i></h2>                
-            </div>    
+            </div>
             <?php $this->includeTemplate('_partial/productPagesTabs.php', array('siteLangId'=>$siteLangId, 'controllerName'=>$controllerName, 'action'=>$action, 'canEdit'=>$canEdit, 'adminCatalogs'=>$adminCatalogs), false); ?>
         </div>
         <div class="content-body">

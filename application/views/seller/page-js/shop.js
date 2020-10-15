@@ -34,6 +34,7 @@ $(document).on("change", ".country", function() {
     if ('' == $(this).val()) {
         return;
     }
+    alert($(this).val());
     $state = $(this).data("statefield");
     $("." + $state).removeAttr("disabled");
     getStatesByCountryCode($(this).val(), 0, "." + $state, 'state_code');
@@ -519,6 +520,17 @@ $(document).on("change", ".state", function() {
 
     setPickupAddress = function(frm) {
         if (!$(frm).validate()) return;
+        if (1 == $(".availabilityType-js:checked").val()) {
+            if (1 > $(".slotDays-js:checked").length) {
+                $.mbsmessage(langLbl.selectTimeslotDay, true, 'alert--danger');
+                return false;
+            }
+        } else {
+            if ('' == $(".selectAllFromTime-js option:selected").val() || '' == $(".selectAllToTime-js option:selected").val()) {
+                $.mbsmessage(langLbl.invalidTimeSlot, true, 'alert--danger');
+                return false;
+            }
+        }
         var data = fcom.frmData(frm);
         fcom.updateWithAjax(fcom.makeUrl('Seller', 'setPickupAddress'), data, function(t) {
             pickupAddress();
@@ -613,6 +625,8 @@ $(document).on("change", ".state", function() {
                     minCropBoxWidth: minWidth,
                     minCropBoxHeight: minHeight,
                     toggleDragModeOnDblclick: false,
+                    imageSmoothingQuality: 'high',
+					imageSmoothingEnabled: true,
                 };
                 $(inputBtn).val('');
                 return cropImage(file, options, 'uploadShopImages', inputBtn);
@@ -641,6 +655,8 @@ $(document).on("change", ".state", function() {
                     minCropBoxWidth: minWidth,
                     minCropBoxHeight: minHeight,
                     toggleDragModeOnDblclick: false,
+                    imageSmoothingQuality: 'high',
+					imageSmoothingEnabled: true,
                 };
                 $(inputBtn).val('');
                 return cropImage(file, options, 'uploadShopImages', inputBtn);
@@ -719,6 +735,8 @@ $(document).on("change", ".state", function() {
                     minCropBoxWidth: collectionMediaWidth,
                     minCropBoxHeight: collectionMediaHeight,
                     toggleDragModeOnDblclick: false,
+                    imageSmoothingQuality: 'high',
+					imageSmoothingEnabled: true,
                 };
                 $(inputBtn).val('');
                 return cropImage(file, options, 'uploadCollectionImage', inputBtn);

@@ -16,19 +16,19 @@ $submitBtnFld->setWrapperAttribute('class', 'col-lg-2');
 $submitBtnFld->developerTags['col'] = 4;
 $submitBtnFld->developerTags['noCaptionTag'] = true;
 
-$proFld->htmlAfterField = "<span class='form-text text-muted text-danger'>".Labels::getLabel("LBL_Product_will_automatically_remove_from_other_profile", $siteLangId)."</span>";
+$proFld->htmlAfterField = "<span class='form-text text-muted text-danger'>" . Labels::getLabel("LBL_Product_will_automatically_remove_from_other_profile", $siteLangId) . "</span>";
 $proFld->addFieldTagAttribute('placeholder', Labels::getLabel('LBL_Search_Product...', $siteLangId));
 
 ?>
 <div class="cards-header">
-	<h5 class="cards-title"><?php echo Labels::getLabel('LBL_Products', $siteLangId); ?></h5>
+    <h5 class="cards-title"><?php echo Labels::getLabel('LBL_Products', $siteLangId); ?></h5>
 </div>
 <div class="cards-content">
-	<div class="row">
-		<div class="col-md-12">
-			<?php echo $frm->getFormHtml(); ?>
-			</form>
-		</div>
-	</div>
-	<div id="product-listing--js"></div>
+    <div class="row">
+        <div class="col-md-12">
+            <?php echo $frm->getFormHtml(); ?>
+            </form>
+        </div>
+    </div>
+    <div id="product-listing--js"></div>
 </div>

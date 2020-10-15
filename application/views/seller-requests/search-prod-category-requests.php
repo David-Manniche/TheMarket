@@ -4,8 +4,8 @@ $this->includeTemplate('seller-requests/_partial/requests-navigation.php', $vari
 <?php
 defined('SYSTEM_INIT') or die('Invalid Usage.');
 $arr_flds = array(
-    'listserial'=>'Sr.',
-    'prodcat_name' => Labels::getLabel('LBL_Product_Category_Name', $siteLangId),
+    'listserial'=>'#',
+    'prodcat_name' => Labels::getLabel('LBL_Category_Name', $siteLangId),
 	'prodcat_parent'=>Labels::getLabel('LBL_Parent_category', $siteLangId),
     'prodcat_requested_on' => Labels::getLabel('LBL_Requested_on', $siteLangId),
     'prodcat_status' => Labels::getLabel('LBL_Status', $siteLangId),
@@ -13,7 +13,7 @@ $arr_flds = array(
 if ($canEdit) {
     $arr_flds['action'] = '';
 }
-$tbl = new HtmlElement('table', array('width'=>'100%', 'class'=>'table'));
+$tbl = new HtmlElement('table', array('width'=>'100%', 'class'=>'table table-justified'));
 $th = $tbl->appendElement('thead')->appendElement('tr', array('class' => ''));
 foreach ($arr_flds as $val) {
     $e = $th->appendElement('th', array(), $val);

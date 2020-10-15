@@ -213,9 +213,9 @@ class StatesController extends AdminBaseController
         unset($post['lang_id']);
 
         $data = array(
-        'statelang_lang_id' => $lang_id,
-        'statelang_state_id' => $stateId,
-        'state_name' => $post['state_name']
+            'statelang_lang_id' => $lang_id,
+            'statelang_state_id' => $stateId,
+            'state_name' => $post['state_name']
         );
 
         $stateObj = new States($stateId);
@@ -224,7 +224,7 @@ class StatesController extends AdminBaseController
             Message::addErrorMessage($stateObj->getError());
             FatUtility::dieJsonError(Message::getHtml());
         }
-        
+
         $autoUpdateOtherLangsData = FatApp::getPostedData('auto_update_other_langs_data', FatUtility::VAR_INT, 0);
         if (0 < $autoUpdateOtherLangsData) {
             $updateLangDataobj = new TranslateLangData(States::DB_TBL_LANG);
@@ -283,7 +283,7 @@ class StatesController extends AdminBaseController
         if (!empty($translatorSubscriptionKey) && $lang_id == $siteLangId) {
             $frm->addCheckBox(Labels::getLabel('LBL_UPDATE_OTHER_LANGUAGES_DATA', $this->adminLangId), 'auto_update_other_langs_data', 1, array(), false, 0);
         }
-        
+
         $frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_Save_Changes', $this->adminLangId));
         return $frm;
     }

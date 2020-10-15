@@ -8,29 +8,36 @@
 <?php $this->includeTemplate('_partial/seller/sellerDashboardNavigation.php'); ?>
 <main id="main-area" class="main" role="main">
     <div class="content-wrapper content-space">
-        <div class="content-header row">
-            <div class="col">
-                <?php $this->includeTemplate('_partial/dashboardTop.php'); ?>
-                <h2 class="content-header-title"><?php echo Labels::getLabel('LBL_Sales_Report', $siteLangId);?></h2>
-            </div>
+		<div class="content-header row justify-content-between mb-3">
+            <div class="col-md-auto">
+                <h2 class="content-header-title"><?php echo Labels::getLabel('LBL_Sales_Report', $siteLangId);?></h2>                
+            </div>    
+			<div class="col-auto">
+				<div class="btn-group">
+					<?php echo '<a href="javascript:void(0)" onClick="exportSalesReport()" class="btn btn-outline-primary btn-sm">'.Labels::getLabel('LBL_Export', $siteLangId).'</a>';
+					if(!empty($orderDate)){
+						echo '<a href="'.UrlHelper::generateUrl('Reports', 'SalesReport').'" class="btn btn-outline-primary btn-sm">'.Labels::getLabel('LBL_Back',$siteLangId).'</a>';
+					} ?>
+				</div>
+			</div>
         </div>
         <div class="content-body">
+		<?php if (empty($orderDate)) { ?>
             <div class="row mb-4">
                 <div class="col-lg-12">
+					
                     <div class="cards">
                         <div class="cards-header">
                             <h5 class="cards-title"><?php echo Labels::getLabel('LBL_Sales_Report', $siteLangId);?></h5>
-                            <div class="action"><?php echo '<a href="javascript:void(0)" onClick="exportSalesReport()" class="btn btn-secondary btn-block btn-sm">'.Labels::getLabel('LBL_Export', $siteLangId).'</a>'; ?></div>
                         </div>
                         <div class="cards-content">
-                            <?php if (empty($orderDate)) { ?>
-                                <div class="replaced">
-                                    <?php
-                                        $dateFrm = $frmSrch->getField('date_from');
-                                        $dateFrm->developerTags['noCaptionTag'] = true;
-                                    
-                                        $dateTo = $frmSrch->getField('date_to');
-                                        $dateTo->developerTags['noCaptionTag'] = true;
+							<div class="replaced">
+								<?php
+									$dateFrm = $frmSrch->getField('date_from');
+									$dateFrm->developerTags['noCaptionTag'] = true;
+								
+									$dateTo = $frmSrch->getField('date_to');
+									$dateTo->developerTags['noCaptionTag'] = true;
 
                                         $submitFld = $frmSrch->getField('btn_submit');
                                         $submitFld->developerTags['noCaptionTag'] = true;
@@ -49,6 +56,9 @@
                     </div>
                 </div>
             </div>
+			<?php  } else {
+				echo  $frmSrch->getFormHtml();
+			} ?>
             <div class="row">
                 <div class="col-lg-12">
                     <div class="cards">

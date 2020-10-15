@@ -10,7 +10,7 @@ class SiteMapController extends MyAppController
         $brandSrch->addOrder('brand_name', 'asc');
         $brandRs = $brandSrch->getResultSet();
         $brandsArr = FatApp::getDb()->fetchAll($brandRs);
-        $categoriesArr = ProductCategory::getProdCatParentChildWiseArr($this->siteLangId, '', true, false, true);
+        $categoriesArr = ProductCategory::getProdCatParentChildWiseArr($this->siteLangId, 0, true, false, true);
         $contentPages = ContentPage:: getPagesForSelectBox($this->siteLangId);
         $this->set('contentPages', $contentPages);
         $this->set('categoriesArr', $categoriesArr);

@@ -174,7 +174,9 @@
 				}
 				var options = {
 					aspectRatio: aspectRatio,
-					preview: '.img-preview',
+                    preview: '.img-preview',
+                    imageSmoothingQuality: 'high',
+					imageSmoothingEnabled: true,
 					crop: function (e) {
 					  var data = e.detail;
 					}

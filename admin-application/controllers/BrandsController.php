@@ -114,12 +114,12 @@ class BrandsController extends AdminBaseController
 
         if ($brand_id == 0) {
             $record = Brand::getAttributesByIdentifier($post['brand_identifier']);
-            if ($record['brand_deleted'] == applicationConstants::YES) {
+            if (!empty($record) && $record['brand_deleted'] == applicationConstants::YES) {
                 $brand_id = $record['brand_id'];
                 $data['brand_deleted'] = applicationConstants::NO;
             }
         }
-        
+
         $data['brand_status'] = Brand::BRAND_REQUEST_APPROVED;
 
         //FatApp::getDb()->startTransaction();
@@ -185,11 +185,11 @@ class BrandsController extends AdminBaseController
         if ($post['brand_status'] == applicationConstants::YES) {
             $post['brand_active'] = applicationConstants::ACTIVE;
         }
-		
-		if ($post['brand_status'] != Brand::BRAND_REQUEST_PENDING) {
+
+        if ($post['brand_status'] != Brand::BRAND_REQUEST_PENDING) {
             $post['brand_status_updated_on'] = date('Y-m-d H:i:s');
         }
-		
+
         unset($post['brand_id']);
 
         $record = new Brand($brand_id);
@@ -206,7 +206,7 @@ class BrandsController extends AdminBaseController
         $shopOriginalUrl = $this->rewriteUrl . $brand_id;
         $shopCustomUrl = CommonHelper::seoUrl($post['urlrewrite_custom']);
         if ($post['urlrewrite_custom'] == '') {
-            FatApp::getDb()->deleteRecords(UrlRewrite::DB_TBL, array( 'smt' => 'urlrewrite_original = ?', 'vals' => array($shopOriginalUrl)));
+            FatApp::getDb()->deleteRecords(UrlRewrite::DB_TBL, array('smt' => 'urlrewrite_original = ?', 'vals' => array($shopOriginalUrl)));
         } else {
             $urlSrch = UrlRewrite::getSearchObject();
             $urlSrch->doNotCalculateRecords();
@@ -217,14 +217,14 @@ class BrandsController extends AdminBaseController
             $urlRow = FatApp::getDb()->fetch($rs);
             $recordObj = new TableRecord(UrlRewrite::DB_TBL);
             if ($urlRow) {
-                $recordObj->assignValues(array('urlrewrite_custom' => $shopCustomUrl ));
-                if (!$recordObj->update(array( 'smt' => 'urlrewrite_original = ?', 'vals' => array($shopOriginalUrl)))) {
+                $recordObj->assignValues(array('urlrewrite_custom' => $shopCustomUrl));
+                if (!$recordObj->update(array('smt' => 'urlrewrite_original = ?', 'vals' => array($shopOriginalUrl)))) {
                     Message::addErrorMessage(Labels::getLabel("Please_try_different_url,_URL_already_used_for_another_record.", $this->adminLangId));
                     FatUtility::dieJsonError(Message::getHtml());
                 }
                 //$shopDetails['urlrewrite_custom'] = $urlRow['urlrewrite_custom'];
             } else {
-                $recordObj->assignValues(array('urlrewrite_original' => $shopOriginalUrl, 'urlrewrite_custom' => $shopCustomUrl ));
+                $recordObj->assignValues(array('urlrewrite_original' => $shopOriginalUrl, 'urlrewrite_custom' => $shopCustomUrl));
                 if (!$recordObj->addNew()) {
                     Message::addErrorMessage(Labels::getLabel("Please_try_different_url,_URL_already_used_for_another_record.", $this->adminLangId));
                     FatUtility::dieJsonError(Message::getHtml());
@@ -493,8 +493,7 @@ class BrandsController extends AdminBaseController
             $lang_id,
             $slide_screen,
             $aspectRatio
-        )
-        ) {
+        )) {
             Message::addErrorMessage($fileHandlerObj->getError());
             FatUtility::dieJsonError(Message::getHtml());
         }
@@ -520,7 +519,7 @@ class BrandsController extends AdminBaseController
         $languagesAssocArr = Language::getAllNames();
         $frm->addHTML('', 'brand_logo_heading', '');
         $frm->addHiddenField('', 'brand_id', $brand_id);
-        $frm->addSelectBox(Labels::getLabel('LBL_Language', $this->adminLangId), 'lang_id', array( 0 => Labels::getLabel('LBL_Universal', $this->adminLangId) ) + $languagesAssocArr, '', array(), '');
+        $frm->addSelectBox(Labels::getLabel('LBL_Language', $this->adminLangId), 'lang_id', array(0 => Labels::getLabel('LBL_Universal', $this->adminLangId)) + $languagesAssocArr, '', array(), '');
         $ratioArr = AttachedFile::getRatioTypeArray($this->adminLangId);
         $frm->addRadioButtons(Labels::getLabel('LBL_Ratio', $this->adminLangId), 'ratio_type', $ratioArr, AttachedFile::RATIO_TYPE_SQUARE);
         $frm->addHiddenField('', 'file_type', AttachedFile::FILETYPE_BRAND_LOGO);
@@ -539,7 +538,7 @@ class BrandsController extends AdminBaseController
         $languagesAssocArr = Language::getAllNames();
         $frm->addHTML('', 'brand_logo_heading', '');
         $frm->addHiddenField('', 'brand_id', $brand_id);
-        $frm->addSelectBox(Labels::getLabel('LBL_Language', $this->adminLangId), 'lang_id', array( 0 => Labels::getLabel('LBL_Universal', $this->adminLangId) ) + $languagesAssocArr, '', array(), '');
+        $frm->addSelectBox(Labels::getLabel('LBL_Language', $this->adminLangId), 'lang_id', array(0 => Labels::getLabel('LBL_Universal', $this->adminLangId)) + $languagesAssocArr, '', array(), '');
         $screenArr = applicationConstants::getDisplaysArr($this->adminLangId);
         $frm->addSelectBox(Labels::getLabel("LBL_Display_For", $this->adminLangId), 'slide_screen', $screenArr, '', array(), '');
         $frm->addHiddenField('', 'file_type', AttachedFile::FILETYPE_BRAND_IMAGE);
@@ -804,15 +803,15 @@ class BrandsController extends AdminBaseController
 
         if (!empty($post['keyword'])) {
             $srch->addCondition('brand_name', 'LIKE', '%' . $post['keyword'] . '%')
-            ->attachCondition('brand_identifier', 'LIKE', '%' . $post['keyword'] . '%');
+                ->attachCondition('brand_identifier', 'LIKE', '%' . $post['keyword'] . '%');
         }
         $srch->addCondition('brand_active', '=', applicationConstants::YES);
         $srch->addCondition('brand_deleted', '=', applicationConstants::NO);
         //$srch->setPageSize($pagesize);
-        if($fetchAllRecords == 1){
+        if ($fetchAllRecords == 1) {
             $srch->doNotCalculateRecords();
             $srch->doNotLimitRecords();
-        }else{
+        } else {
             $srch->setPageSize($pagesize);
         }
         $rs = $srch->getResultSet();
@@ -856,14 +855,14 @@ class BrandsController extends AdminBaseController
         $data = FatApp::getPostedData();
         $page = (empty($data['page']) || $data['page'] <= 0) ? 1 : $data['page'];
         $post = $searchForm->getFormDataFromArray($data);
-        
+
         $prodBrandObj = new Brand();
-        
+
         $srch = $prodBrandObj->getSearchObject();
         $srch->joinTable(User::DB_TBL, 'LEFT OUTER JOIN', 'u.user_id = brand_seller_id', 'u');
         $srch->joinTable(Shop::DB_TBL, 'LEFT OUTER JOIN', 'shop_user_id = if(u.user_parent > 0, user_parent, u.user_id)', 'shop');
         $srch->joinTable(Shop::DB_TBL_LANG, 'LEFT OUTER JOIN', 'shop.shop_id = s_l.shoplang_shop_id AND shoplang_lang_id = ' . $this->adminLangId, 's_l');
-        $srch->addMultipleFields(array('b.*','u.user_name', 'ifnull(shop_name, shop_identifier) as shop_name'));
+        $srch->addMultipleFields(array('b.*', 'u.user_name', 'ifnull(shop_name, shop_identifier) as shop_name'));
         $srch->addCondition('brand_status', '=', applicationConstants::NO);
         $srch->addCondition('brand_seller_id', '>', 0);
         $srch->addOrder('b.brand_id', 'desc');
@@ -1173,9 +1172,9 @@ class BrandsController extends AdminBaseController
                     $brandId = $brandData['brand_id'];
 
                     if (FatApp::getConfig('CONF_USE_BRAND_ID', FatUtility::VAR_INT, 0)) {
-                        $where = array('smt' => 'brand_id = ?', 'vals' => array( $brandId ) );
+                        $where = array('smt' => 'brand_id = ?', 'vals' => array($brandId));
                     } else {
-                        $where = array('smt' => 'brand_id = ? AND brand_identifier = ?', 'vals' => array( $brandId, $identifier ) );
+                        $where = array('smt' => 'brand_id = ? AND brand_identifier = ?', 'vals' => array($brandId, $identifier));
                     }
 
                     $db->updateFromArray(Brand::DB_TBL, $dataToSaveArr, $where);
@@ -1189,7 +1188,7 @@ class BrandsController extends AdminBaseController
                         'brandlang_brand_id' => $brandId,
                         'brandlang_lang_id' => $langId,
                         'brand_name' => $name,
-                       // 'brand_short_description' => $description,
+                        // 'brand_short_description' => $description,
                     );
                     $db->insertFromArray(Brand::DB_TBL_LANG, $langData, false, array(), $langData);
                     /* ]*/
@@ -1319,14 +1318,14 @@ class BrandsController extends AdminBaseController
                     $dataToSaveArr['afile_downloaded'] = applicationConstants::NO;
                     $dataToSaveArr['afile_unique'] = applicationConstants::YES;
                     $db->deleteRecords(AttachedFile::DB_TBL_TEMP, array(
-                            'smt' => 'afile_type = ? AND afile_record_id = ? AND afile_record_subid = ? AND afile_lang_id = ?',
-                            'vals' => array($fileType, $recordId, $recordSubid, $fileLangId)
+                        'smt' => 'afile_type = ? AND afile_record_id = ? AND afile_record_subid = ? AND afile_lang_id = ?',
+                        'vals' => array($fileType, $recordId, $recordSubid, $fileLangId)
                     ));
                     $db->insertFromArray(AttachedFile::DB_TBL_TEMP, $dataToSaveArr, false, array(), $dataToSaveArr);
                 } else {
                     $db->deleteRecords(AttachedFile::DB_TBL, array(
-                            'smt' => 'afile_type = ? AND afile_record_id = ? AND afile_record_subid = ? AND afile_lang_id = ?',
-                            'vals' => array($fileType, $recordId, $recordSubid, $fileLangId)
+                        'smt' => 'afile_type = ? AND afile_record_id = ? AND afile_record_subid = ? AND afile_lang_id = ?',
+                        'vals' => array($fileType, $recordId, $recordSubid, $fileLangId)
                     ));
                     $db->insertFromArray(AttachedFile::DB_TBL, $dataToSaveArr, false, array(), $dataToSaveArr);
                 }

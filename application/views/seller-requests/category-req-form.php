@@ -64,14 +64,14 @@ $submitFld->developerTags['noCaptionTag'] = true;
                         <?php foreach ($languages as $langId => $langName) {
                         $layout = Language::getLayoutDirection($langId); ?>
                         <div class="accordion mt-4" id="specification-accordion">
-                            <h6 class="dropdown-toggle" data-toggle="collapse" data-target="#collapseOne"
-                                aria-expanded="true" aria-controls="collapseOne"><span
+                            <h6 class="dropdown-toggle" data-toggle="collapse" data-target="#collapseOne<?php echo $langId; ?>"
+                                aria-expanded="true" aria-controls="collapseOne<?php echo $langId; ?>"><span
                                     onclick="translateData(this, '<?php echo $siteDefaultLangId; ?>', '<?php echo $langId; ?>')">
                                     <?php echo Labels::getLabel('LBL_Category_Name_for', $siteLangId) ?>
                                     <?php echo $langName; ?>
                                 </span>
                             </h6>
-                            <div id="collapseOne"
+                            <div id="collapseOne<?php echo $langId; ?>"
                                 class="collapse collapse-js-<?php echo $langId; ?>"
                                 aria-labelledby="headingOne" data-parent="#specification-accordion">
                                 <div class="p-4 mb-4 bg-gray rounded" dir="<?php echo $layout; ?>">

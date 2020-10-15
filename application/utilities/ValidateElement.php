@@ -17,6 +17,7 @@ class ValidateElement extends FatUtility
     public const DISCOVER_REGEX = '^6(?:011|5)';
     public const JCB_REGEX = '^(?:2131|1800|35\d{3})';
     public const TIME_REGEX = '^([0-9]|0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]$';
+	public const URL_REGEX = '^(http:\/\/www\.|https:\/\/www\.|http:\/\/|https:\/\/)[a-z0-9]+([\-\.]{1}[a-z0-9]+)*\.[a-z]{2,5}(:[0-9]{1,5})?(\/.*)?$';
     /*public const PHONE_FORMATS = [
         '123-456-7890',
         '(123) 456-7890',

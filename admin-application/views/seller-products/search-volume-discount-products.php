@@ -64,15 +64,6 @@ foreach ($arrListing as $sn => $row) {
         }
     }
 }
-
-$frm = new Form('frmVolDiscountListing', array('id' => 'frmVolDiscountListing'));
-$frm->setFormTagAttribute('class', 'form');
-
-echo $frm->getFormTag();
-echo $tbl->getHtml(); ?>
-</form>
-<?php
-
 if (count($arrListing) == 0) {
     $tbl->appendElement('tr', array('class' => 'noResult--js'))->appendElement(
         'td',
@@ -81,6 +72,14 @@ if (count($arrListing) == 0) {
     );
 }
 
+$frm = new Form('frmVolDiscountListing', array('id' => 'frmVolDiscountListing'));
+$frm->setFormTagAttribute('class', 'form');
+
+echo $frm->getFormTag();
+echo $tbl->getHtml(); ?>
+</form>
+
+<?php
 $postedData['page'] = $page;
 echo FatUtility::createHiddenFormFromData($postedData, array('name' => 'frmSearchVolumeDiscountPaging'));
 

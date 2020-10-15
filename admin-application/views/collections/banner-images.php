@@ -1,6 +1,6 @@
 <?php defined('SYSTEM_INIT') or die('Invalid Usage.'); ?>
 <?php if (!empty($images)) { $uploadedTime = AttachedFile::setTimeParam($images['afile_updated_at']); ?>
-<ul class="grids--onethird" id="<?php if ($canEdit) { ?>sortable<?php } ?>">
+<ul class="grids--onethird mt-0" id="<?php if ($canEdit) { ?>sortable<?php } ?>">
 	<li id="<?php echo $images['afile_id']; ?>">
         <div class="logoWrap">
             <div class="logothumb"> <img src="<?php echo UrlHelper::generateFullUrl('Banner', 'Thumb', array($images['afile_record_id'],$images['afile_lang_id'],$images['afile_screen']), CONF_WEBROOT_FRONT_URL).$uploadedTime; ?>"

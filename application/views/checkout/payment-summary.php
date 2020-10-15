@@ -4,147 +4,154 @@ $rewardPoints = UserRewardBreakup::rewardPointBalance(UserAuthentication::getLog
 ?>
 <main class="main__content">
     <div class="step active" role="step:4">
-        
+
         <ul class="list-group review-block">
             <li class="list-group-item">
                 <div class="review-block__label">
-                    <?php 
-                    if ($fulfillmentType == Shipping::FULFILMENT_PICKUP || $cartHasPhysicalProduct == false) { 
+                    <?php
+                    if ($fulfillmentType == Shipping::FULFILMENT_PICKUP || $cartHasPhysicalProduct == false) {
                         echo Labels::getLabel('LBL_Billing_to:', $siteLangId);
                         $address = $billingAddressArr;
-                    }else{
+                    } else {
                         echo Labels::getLabel('LBL_Shipping_to:', $siteLangId);
                         $address = $shippingAddressArr;
                     }
                     ?>
                 </div>
-                <div class="review-block__content" role="cell">  
-                    <div class="delivery-address">             
-						<p><?php echo $address['addr_address1'] ;?> 
-						<?php if(strlen($address['addr_address2']) > 0) { 
-							echo ", ".$address['addr_address2'] ;?> 
-						<?php } ?>
-						</p>   
-						<p><?php echo $address['addr_city'].", ".$address['state_name'].", ".$address['country_name'].", ".$address['addr_zip'] ;?></p>    
-						<?php if(strlen($address['addr_phone']) > 0) { ?>
-						<p class="phone-txt"><i class="fas fa-mobile-alt"></i><?php echo $address['addr_phone'] ;?></p>    
-						<?php } ?>
-                    </div>
-                </div>
-                <div class="review-block__link" role="cell">
-                    <?php 
-                    if ($fulfillmentType == Shipping::FULFILMENT_PICKUP || $cartHasPhysicalProduct == false) {
-                        $onclick = 'loadAddressDiv('.Address::ADDRESS_TYPE_BILLING.');';
-                    }else{ 
-                        $onclick = 'loadAddressDiv();';
-                    } 
-                    ?>
-                    <a class="link" href="javascript:void(0);" onClick="<?php echo $onclick; ?>"><span><?php echo Labels::getLabel('LBL_Edit', $siteLangId); ?></span></a>
-                </div>
-            </li>
-            
-            <?php if ($fulfillmentType == Shipping::FULFILMENT_PICKUP && !empty($orderPickUpData)) { ?>
-            <li class="list-group-item">
-                <div class="review-block__label">
-                <?php echo Labels::getLabel('LBL_Pickup_Address:', $siteLangId); ?>
-                </div>
-                <div class="review-block__content" role="cell">  
-                    <div class="delivery-address"> 
-                        <?php foreach($orderPickUpData as $address) { ?>
-                            <p><strong><?php echo ($address['opshipping_by_seller_user_id'] > 0) ? $address['op_shop_name'] : FatApp::getConfig('CONF_WEBSITE_NAME_' . $siteLangId, null, ''); ?></strong></p>
-							<p><?php echo $address['oua_address1'] ;?> 
-							<?php if(strlen($address['oua_address2']) > 0) { 
-								echo ", ".$address['oua_address2'] ;?> 
-							<?php } ?>
-							</p>   
-							<p><?php echo $address['oua_city'].", ".$address['oua_state'].", ".$address['oua_country'].", ".$address['oua_zip'] ;?></p>     
-							<?php if(strlen($address['oua_phone']) > 0) { ?>
-							<p class="phone-txt"><i class="fas fa-mobile-alt"></i><?php echo $address['oua_phone'] ;?></p>    
-							<?php } ?>
-							
-                            <?php 
-                            $fromTime = isset($address["opshipping_time_slot_from"]) && !empty($address["opshipping_time_slot_from"]) ? date('H:i', strtotime($address["opshipping_time_slot_from"])) : '';
-                            $toTime = isset($address["opshipping_time_slot_to"]) && !empty($address["opshipping_time_slot_to"]) ? date('H:i', strtotime($address["opshipping_time_slot_to"])) : '';
-                            ?>
-                            <p class="time-txt"><i class="fas fa-calendar-day"></i><?php echo FatDate::format($address["opshipping_date"]).' '.$fromTime.' - '.$toTime; ?></p>
-                            <?php if (count($orderPickUpData) > 1) { ?>
-                            <a class="link plus-more" href="javascript:void(0);" onClick="orderPickUpData('<?php echo $orderId; ?>')"><?php echo '+ '.(count($orderPickUpData) - 1).' '.Labels::getLabel('LBL_More', $siteLangId); ?></a>
-                            <?php break; } ?>
+                <div class="review-block__content" role="cell">
+                    <div class="delivery-address">
+                        <p><?php echo $address['addr_address1']; ?>
+                            <?php if (strlen($address['addr_address2']) > 0) {
+                                echo ", " . $address['addr_address2']; ?>
+                            <?php } ?>
+                        </p>
+                        <p><?php echo $address['addr_city'] . ", " . $address['state_name'] . ", " . $address['country_name'] . ", " . $address['addr_zip']; ?></p>
+                        <?php if (strlen($address['addr_phone']) > 0) { ?>
+                            <p class="phone-txt"><i class="fas fa-mobile-alt"></i><?php echo $address['addr_phone']; ?></p>
                         <?php } ?>
                     </div>
                 </div>
                 <div class="review-block__link" role="cell">
-                    <a class="link" href="javascript:void(0);" onClick="loadShippingSummaryDiv();"><span><?php echo Labels::getLabel('LBL_Edit', $siteLangId); ?></span></a>
+                    <?php
+                    if ($fulfillmentType == Shipping::FULFILMENT_PICKUP || $cartHasPhysicalProduct == false) {
+                        $onclick = 'loadAddressDiv(' . Address::ADDRESS_TYPE_BILLING . ');';
+                    } else {
+                        $onclick = 'loadAddressDiv();';
+                    }
+                    ?>
+                    <a class="link" href="javascript:void(0);" onClick="<?php echo $onclick; ?>"><span><?php echo Labels::getLabel('LBL_Edit', $siteLangId); ?></span></a>
                 </div>
             </li>
+
+            <?php if ($fulfillmentType == Shipping::FULFILMENT_PICKUP && !empty($orderPickUpData)) { ?>
+                <li class="list-group-item">
+                    <div class="review-block__label">
+                        <?php echo Labels::getLabel('LBL_Pickup_Address:', $siteLangId); ?>
+                    </div>
+                    <div class="review-block__content" role="cell">
+                        <div class="delivery-address">
+                            <?php foreach ($orderPickUpData as $address) { ?>
+                                <p><strong><?php echo ($address['opshipping_by_seller_user_id'] > 0) ? $address['op_shop_name'] : FatApp::getConfig('CONF_WEBSITE_NAME_' . $siteLangId, null, ''); ?></strong></p>
+                                <p><?php echo $address['oua_address1']; ?>
+                                    <?php if (strlen($address['oua_address2']) > 0) {
+                                        echo ", " . $address['oua_address2']; ?>
+                                    <?php } ?>
+                                </p>
+                                <p><?php echo $address['oua_city'] . ", " . $address['oua_state'] . ", " . $address['oua_country'] . ", " . $address['oua_zip']; ?></p>
+                                <?php if (strlen($address['oua_phone']) > 0) { ?>
+                                    <p class="phone-txt"><i class="fas fa-mobile-alt"></i><?php echo $address['oua_phone']; ?></p>
+                                <?php } ?>
+
+                                <?php
+                                $fromTime = isset($address["opshipping_time_slot_from"]) && !empty($address["opshipping_time_slot_from"]) ? date('H:i', strtotime($address["opshipping_time_slot_from"])) : '';
+                                $toTime = isset($address["opshipping_time_slot_to"]) && !empty($address["opshipping_time_slot_to"]) ? date('H:i', strtotime($address["opshipping_time_slot_to"])) : '';
+                                ?>
+                                <p class="time-txt">
+                                    <i class="fas fa-calendar-day"></i>
+                                    <?php 
+                                        $opshippingDate = isset($address["opshipping_date"]) ? FatDate::format($address["opshipping_date"]) : '';
+                                        echo $opshippingDate . ' ' . $fromTime . ' - ' . $toTime; 
+                                    ?>
+                                </p>
+                                <?php if (count($orderPickUpData) > 1) { ?>
+                                    <a class="link plus-more" href="javascript:void(0);" onClick="orderPickUpData('<?php echo $orderId; ?>')"><?php echo '+ ' . (count($orderPickUpData) - 1) . ' ' . Labels::getLabel('LBL_More', $siteLangId); ?></a>
+                                <?php break;
+                                } ?>
+                            <?php } ?>
+                        </div>
+                    </div>
+                    <div class="review-block__link" role="cell">
+                        <a class="link" href="javascript:void(0);" onClick="loadShippingSummaryDiv();"><span><?php echo Labels::getLabel('LBL_Edit', $siteLangId); ?></span></a>
+                    </div>
+                </li>
             <?php } ?>
-            
+
             <?php if ($cartHasPhysicalProduct && $fulfillmentType == Shipping::FULFILMENT_SHIP && !empty($orderShippingData)) { ?>
-            <li class="list-group-item">
-                <div class="review-block__label">
-                    <?php echo Labels::getLabel('LBL_Shipping:', $siteLangId); ?>
-                </div>
-                <div class="review-block__content" role="cell">  
-					<div class="shipping-data">
-					<ul class="media-more media-more-sm show">
-					<?php foreach($orderShippingData as $shipData) { ?>
-						<?php foreach($shipData as $data) { ?>
-						<li>
-							<span class="circle" data-toggle="tooltip" data-placement="top" title="<?php echo $data['op_selprod_title']; ?>" data-original-title="<?php echo $data['op_selprod_title']; ?>">
-								<img src="<?php echo UrlHelper::getCachedUrl(UrlHelper::generateFileUrl('image', 'product', array($data['selprod_product_id'], "THUMB", $data['op_selprod_id'], 0, $siteLangId)), CONF_IMG_CACHE_TIME, '.jpg'); ?>" alt="<?php echo $data['op_selprod_title']; ?>">
-							</span>
-						</li>
-						<?php } ?>
-					<?php if (count($orderShippingData) > 1) { ?>
-						<li> <span class="circle plus-more" onClick="orderShippingData('<?php echo $orderId; ?>')"><?php echo '+ '.(count($orderShippingData) - 1); ?></span></li>
-					<?php }  ?>						
-					<?php break; 
-					} 
-					?>
-					</ul>
-                     
-						<div class="shipping-data_title"><?php echo $data['opshipping_label']; ?></div>
-					 
-					</div>
-                </div>
-                <div class="review-block__link" role="cell">
-                    <a class="link" href="javascript:void(0);" onClick="loadShippingSummaryDiv();"><span><?php echo Labels::getLabel('LBL_Edit', $siteLangId); ?></span></a>
-                </div>
-            </li>
+                <li class="list-group-item">
+                    <div class="review-block__label">
+                        <?php echo Labels::getLabel('LBL_Shipping:', $siteLangId); ?>
+                    </div>
+                    <div class="review-block__content" role="cell">
+                        <div class="shipping-data">
+                            <ul class="media-more media-more-sm show">
+                                <?php foreach ($orderShippingData as $shipData) { ?>
+                                    <?php foreach ($shipData as $data) { ?>
+                                        <li>
+                                            <span class="circle" data-toggle="tooltip" data-placement="top" title="<?php echo $data['op_selprod_title']; ?>" data-original-title="<?php echo $data['op_selprod_title']; ?>">
+                                                <img src="<?php echo UrlHelper::getCachedUrl(UrlHelper::generateFileUrl('image', 'product', array($data['selprod_product_id'], "THUMB", $data['op_selprod_id'], 0, $siteLangId)), CONF_IMG_CACHE_TIME, '.jpg'); ?>" alt="<?php echo $data['op_selprod_title']; ?>">
+                                            </span>
+                                        </li>
+                                    <?php } ?>
+                                    <?php if (count($orderShippingData) > 1) { ?>
+                                        <li> <span class="circle plus-more" onClick="orderShippingData('<?php echo $orderId; ?>')"><?php echo '+ ' . (count($orderShippingData) - 1); ?></span></li>
+                                    <?php }  ?>
+                                <?php break;
+                                }
+                                ?>
+                            </ul>
+
+                            <div class="shipping-data_title"><?php echo $data['opshipping_label']; ?></div>
+
+                        </div>
+                    </div>
+                    <div class="review-block__link" role="cell">
+                        <a class="link" href="javascript:void(0);" onClick="loadShippingSummaryDiv();"><span><?php echo Labels::getLabel('LBL_Edit', $siteLangId); ?></span></a>
+                    </div>
+                </li>
             <?php } ?>
-			
-			<?php if ($cartHasPhysicalProduct && $fulfillmentType == Shipping::FULFILMENT_SHIP && $shippingAddressId != $billingAddressId) { ?>
-				<li class="list-group-item">
-					<div class="review-block__label">
-						<?php echo Labels::getLabel('LBL_Billing_to:', $siteLangId); ?>
-					</div>
-					<div class="review-block__content" role="cell">
-						<p><?php echo $billingAddressArr['addr_address1'] ;?> 
-						<?php if(strlen($billingAddressArr['addr_address2']) > 0) { 
-							echo ", ".$billingAddressArr['addr_address2'] ;?> 
-						<?php } ?>
-						</p>   
-						<p><?php echo $billingAddressArr['addr_city'].", ".$billingAddressArr['state_name'] ;?></p>    
-						<p><?php echo $billingAddressArr['country_name'].", ".$billingAddressArr['addr_zip'] ;?></p>    
-						<?php if(strlen($billingAddressArr['addr_phone']) > 0) { ?>
-						<p class="phone-txt"><i class="fas fa-mobile-alt"></i><?php echo $billingAddressArr['addr_phone'] ;?></p>    
-						<?php } ?>
-					</div>
-					<div class="review-block__link" role="cell">
-						<a class="link" href="javascript:void(0);" onClick="loadAddressDiv(<?php echo Address::ADDRESS_TYPE_BILLING; ?>)"><span><?php echo Labels::getLabel('LBL_Edit', $siteLangId); ?></span></a>
-					</div>
-				</li>
+
+            <?php if ($cartHasPhysicalProduct && $fulfillmentType == Shipping::FULFILMENT_SHIP && $shippingAddressId != $billingAddressId) { ?>
+                <li class="list-group-item">
+                    <div class="review-block__label">
+                        <?php echo Labels::getLabel('LBL_Billing_to:', $siteLangId); ?>
+                    </div>
+                    <div class="review-block__content" role="cell">
+                        <p><?php echo $billingAddressArr['addr_address1']; ?>
+                            <?php if (strlen($billingAddressArr['addr_address2']) > 0) {
+                                echo ", " . $billingAddressArr['addr_address2']; ?>
+                            <?php } ?>
+                        </p>
+                        <p><?php echo $billingAddressArr['addr_city'] . ", " . $billingAddressArr['state_name']; ?></p>
+                        <p><?php echo $billingAddressArr['country_name'] . ", " . $billingAddressArr['addr_zip']; ?></p>
+                        <?php if (strlen($billingAddressArr['addr_phone']) > 0) { ?>
+                            <p class="phone-txt"><i class="fas fa-mobile-alt"></i><?php echo $billingAddressArr['addr_phone']; ?></p>
+                        <?php } ?>
+                    </div>
+                    <div class="review-block__link" role="cell">
+                        <a class="link" href="javascript:void(0);" onClick="loadAddressDiv(<?php echo Address::ADDRESS_TYPE_BILLING; ?>)"><span><?php echo Labels::getLabel('LBL_Edit', $siteLangId); ?></span></a>
+                    </div>
+                </li>
             <?php  } ?>
-        </ul> 
-        
+        </ul>
+
         <div class="step__section">
-			<div class="step__section__head">
+            <div class="step__section__head">
                 <h5 class="step__section__head__title"><?php echo Labels::getLabel('LBL_Payment_Summary', $siteLangId); ?></h5>
             </div>
-			<?php if ($fulfillmentType == Shipping::FULFILMENT_SHIP && $shippingAddressId == $billingAddressId) { ?>
-			 <label class="checkbox"><input onClick="billingAddress(this);" type="checkbox" checked='checked' name="isShippingSameAsBilling" value="1"><?php echo Labels::getLabel('LBL_MY_BILLING_IS_SAME_AS_SHIPPING_ADDRESS', $siteLangId); ?> <i class="input-helper"></i>
+            <?php if ($fulfillmentType == Shipping::FULFILMENT_SHIP && $shippingAddressId == $billingAddressId) { ?>
+                <label class="checkbox"><input onClick="billingAddress(this);" type="checkbox" checked='checked' name="isShippingSameAsBilling" value="1"><?php echo Labels::getLabel('LBL_MY_BILLING_IS_SAME_AS_SHIPPING_ADDRESS', $siteLangId); ?> <i class="input-helper"></i>
                 </label>
-			<?php } ?>
+            <?php } ?>
             <?php if (empty($cartSummary['cartRewardPoints'])) { ?>
                 <?php if ($rewardPoints > 0) { ?>
                     <div class="rewards">
@@ -165,8 +172,11 @@ $rewardPoints = UserRewardBreakup::rewardPointBalance(UserAuthentication::getLog
                                 <svg class="svg">
                                     <use xlink:href="<?php echo CONF_WEBROOT_URL; ?>images/retina/sprite.svg#info" href="<?php echo CONF_WEBROOT_URL; ?>images/retina/sprite.svg#info"></use>
                                 </svg>
-                                <?php $canBeUsed = min(min($rewardPoints, CommonHelper::convertCurrencyToRewardPoint($cartSummary['cartTotal'] - $cartSummary["cartDiscounts"]["coupon_discount_total"])), FatApp::getConfig('CONF_MAX_REWARD_POINT', FatUtility::VAR_INT, 0)); ?>
-                                <?php $str = Labels::getLabel('LBL_MAXIMUM_{REWARDS}_REWARDS_POINT_REDEEM_FOR_THIS_ORDER', $siteLangId);
+                                <?php
+                                $cartTotal = isset($cartSummary['cartTotal']) ? $cartSummary['cartTotal'] : 0;
+                                $cartDiscounts = isset($cartSummary['cartDiscounts']["coupon_discount_total"]) ? $cartSummary['cartDiscounts']["coupon_discount_total"] : 0;
+                                $canBeUsed = min(min($rewardPoints, CommonHelper::convertCurrencyToRewardPoint($cartTotal - $cartDiscounts)), FatApp::getConfig('CONF_MAX_REWARD_POINT', FatUtility::VAR_INT, 0));
+                                $str = Labels::getLabel('LBL_MAXIMUM_{REWARDS}_REWARDS_POINT_REDEEM_FOR_THIS_ORDER', $siteLangId);
                                 echo CommonHelper::replaceStringData($str, ['{REWARDS}' => $canBeUsed]); ?>
                             </span>
                         </div>
@@ -180,8 +190,8 @@ $rewardPoints = UserRewardBreakup::rewardPointBalance(UserAuthentication::getLog
                         $fld = $redeemRewardFrm->getField('btn_submit');
                         $fld->setFieldTagAttribute('class', 'btn btn-submit');
                         echo $redeemRewardFrm->getFormTag();  ?>
-                            <?php echo $redeemRewardFrm->getFieldHtml('redeem_rewards'); ?>
-                            <?php echo $redeemRewardFrm->getFieldHtml('btn_submit'); ?>
+                        <?php echo $redeemRewardFrm->getFieldHtml('redeem_rewards'); ?>
+                        <?php echo $redeemRewardFrm->getFieldHtml('btn_submit'); ?>
                         </form>
                         <?php echo  $redeemRewardFrm->getExternalJs(); ?>
                     </div>
@@ -205,14 +215,14 @@ $rewardPoints = UserRewardBreakup::rewardPointBalance(UserAuthentication::getLog
                 </div>
             <?php } ?>
         </div>
-    </div> 
+    </div>
 </main>
 <?php if ($userWalletBalance > 0 && $cartSummary['orderNetAmount'] > 0 && $canUseWalletForPayment) { ?>
     <div class="wallet-balance">
-         <label class="checkbox wallet">
+        <label class="checkbox wallet">
             <input onChange="walletSelection(this)" type="checkbox" <?php echo ($cartSummary["cartWalletSelected"]) ? 'checked="checked"' : ''; ?> name="pay_from_wallet" id="pay_from_wallet" value="1">
             <i class="input-helper"></i>
-            <span class="wallet__txt">           
+            <span class="wallet__txt">
                 <svg class="svg">
                     <use xlink:href="<?php echo CONF_WEBROOT_URL; ?>images/retina/sprite.svg#wallet" href="<?php echo CONF_WEBROOT_URL; ?>images/retina/sprite.svg#wallet">
                     </use>
@@ -223,7 +233,7 @@ $rewardPoints = UserRewardBreakup::rewardPointBalance(UserAuthentication::getLog
                 </div>
             </span>
         </label>
-        <?php if ($cartSummary["cartWalletSelected"] && $userWalletBalance >= $cartSummary['orderNetAmount']) { 
+        <?php if ($cartSummary["cartWalletSelected"] && $userWalletBalance >= $cartSummary['orderNetAmount']) {
             $btnSubmitFld = $WalletPaymentForm->getField('btn_submit');
             $btnSubmitFld->addFieldTagAttribute('class', 'btn btn-brand btn-wide');
             $btnSubmitFld->value = Labels::getLabel('LBL_PAY', $siteLangId) . ' ' . CommonHelper::displayMoneyFormat($cartSummary['orderNetAmount'], true, false, true, false, false);
@@ -238,11 +248,11 @@ $rewardPoints = UserRewardBreakup::rewardPointBalance(UserAuthentication::getLog
                         $(location).attr("href", action);
                     });
                 }
-            </script>            
-        <?php } else {?>
+            </script>
+        <?php } else { ?>
             <div class="wallet-balance_info">Lorem, ipsum dolor sit amet consectetur adipisicing elit.</div>
         <?php } ?>
-    </div> 
+    </div>
 <?php } ?>
         <section id="payment" class="section-checkout">
             <div class="align-items-center mb-4">
@@ -255,52 +265,52 @@ $rewardPoints = UserRewardBreakup::rewardPointBalance(UserAuthentication::getLog
                                 $btnSubmitFld = $confirmForm->getField('btn_submit');
                                 $btnSubmitFld->addFieldTagAttribute('class', 'btn btn-brand btn-sm');
 
-                                $confirmForm->developerTags['colClassPrefix'] = 'col-md-';
-                                $confirmForm->developerTags['fld_default_col'] = 12;
-                                echo $confirmForm->getFormHtml(); ?>
-                        <div class="gap"></div>
-                    </div>
-                <?php } ?>
+                        $confirmForm->developerTags['colClassPrefix'] = 'col-md-';
+                        $confirmForm->developerTags['fld_default_col'] = 12;
+                        echo $confirmForm->getFormHtml(); ?>
+                <div class="gap"></div>
             </div>
-            <?php
-            if ($cartSummary['orderPaymentGatewayCharges']) { ?>
-                <div class="payment-area" <?php echo ($cartSummary['orderPaymentGatewayCharges'] <= 0) ? 'is--disabled' : ''; ?>>
-                    <?php if ($cartSummary['orderPaymentGatewayCharges'] && 0 < count($paymentMethods)) { ?>
-                        <ul class="nav nav-payments <?php echo 1 == count($paymentMethods) ? 'd-none' : ''; ?>" role="tablist" id="payment_methods_tab">
-                            <?php foreach ($paymentMethods as $key => $val) {
-                                $pmethodCode = $val['plugin_code'];
-                                $pmethodId = $val['plugin_id'];
-                                $pmethodName = $val['plugin_name'];
-                                if(strtolower($val['plugin_code']) == 'cashondelivery' && $fulfillmentType == Shipping::FULFILMENT_PICKUP){
-                                    $pmethodName = Labels::getLabel('LBL_Pay_on_pickup', $siteLangId);
-                                }
+        <?php } ?>
+    </div>
+    <?php
+    if ($cartSummary['orderPaymentGatewayCharges']) { ?>
+        <div class="payment-area" <?php echo ($cartSummary['orderPaymentGatewayCharges'] <= 0) ? 'is--disabled' : ''; ?>>
+            <?php if ($cartSummary['orderPaymentGatewayCharges'] && 0 < count($paymentMethods)) { ?>
+                <ul class="nav nav-payments <?php echo 1 == count($paymentMethods) ? 'd-none' : ''; ?>" role="tablist" id="payment_methods_tab">
+                    <?php foreach ($paymentMethods as $key => $val) {
+                        $pmethodCode = $val['plugin_code'];
+                        $pmethodId = $val['plugin_id'];
+                        $pmethodName = $val['plugin_name'];
+                        if (strtolower($val['plugin_code']) == 'cashondelivery' && $fulfillmentType == Shipping::FULFILMENT_PICKUP) {
+                            $pmethodName = Labels::getLabel('LBL_PAY_ON_PICKUP', $siteLangId);
+                        }
 
-                                if (in_array($pmethodCode, $excludePaymentGatewaysArr[applicationConstants::CHECKOUT_PRODUCT])) {
-                                    continue;
-                                }?>
-                                <li class="nav-item">
-                                    <a class="nav-link" aria-selected="true" href="<?php echo UrlHelper::generateUrl('Checkout', 'PaymentTab', array($orderInfo['order_id'], $pmethodId)); ?>" data-paymentmethod="<?php echo $pmethodCode; ?>">
-                                        <div class="payment-box">
-                                            <span><?php echo $pmethodName; ?></span>
-                                        </div>
-                                    </a>
-                                </li>
-                            <?php
-                            } ?>
-                        </ul>
-                        <div class="tab-content">
-                            <div class="tab-pane fade show active" role="tabpanel" >
-                                <div class="tabs-container" id="tabs-container"></div>
-                            </div>
-                        </div>
-                    <?php } else {
-                        echo $cartSummary['orderPaymentGatewayCharges']  . ' < ' . count($paymentMethods);
-                        echo Labels::getLabel("LBL_PAYMENT_METHOD_IS_NOT_AVAILABLE._PLEASE_CONTACT_YOUR_ADMINISTRATOR.", $siteLangId);
+                        if (in_array($pmethodCode, $excludePaymentGatewaysArr[applicationConstants::CHECKOUT_PRODUCT])) {
+                            continue;
+                        } ?>
+                        <li class="nav-item">
+                            <a class="nav-link" aria-selected="true" href="<?php echo UrlHelper::generateUrl('Checkout', 'PaymentTab', array($orderInfo['order_id'], $pmethodId)); ?>" data-paymentmethod="<?php echo $pmethodCode; ?>">
+                                <div class="payment-box">
+                                    <span><?php echo $pmethodName; ?></span>
+                                </div>
+                            </a>
+                        </li>
+                    <?php
                     } ?>
+                </ul>
+                <div class="tab-content">
+                    <div class="tab-pane fade show active" role="tabpanel">
+                        <div class="tabs-container" id="tabs-container"></div>
+                    </div>
                 </div>
-            <?php } ?>
-        </section>
-    
+            <?php } else {
+                echo $cartSummary['orderPaymentGatewayCharges']  . ' < ' . count($paymentMethods);
+                echo Labels::getLabel("LBL_PAYMENT_METHOD_IS_NOT_AVAILABLE._PLEASE_CONTACT_YOUR_ADMINISTRATOR.", $siteLangId);
+            } ?>
+        </div>
+    <?php } ?>
+</section>
+
 <script>
     var enableGcaptcha = false;
 </script>

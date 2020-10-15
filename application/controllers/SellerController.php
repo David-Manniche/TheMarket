@@ -50,7 +50,7 @@ class SellerController extends SellerBaseController
         $srch->setPageSize(2);
 
         $srch->addMultipleFields(
-            array('order_id', 'order_user_id', 'op_selprod_id', 'op_is_batch', 'selprod_product_id', 'order_date_added', 'order_net_amount', 'op_invoice_number', 'totCombinedOrders as totOrders', 'op_selprod_title', 'op_product_name', 'op_id', 'op_qty', 'op_selprod_options', 'op_status_id', 'op_brand_name', 'op_shop_name', 'op_other_charges', 'op_unit_price', 'IFNULL(orderstatus_name, orderstatus_identifier) as orderstatus_name', 'op_tax_collected_by_seller', 'op_selprod_user_id', 'opshipping_by_seller_user_id', 'orderstatus_color_class')
+            array('order_id', 'order_user_id', 'op_selprod_id', 'op_is_batch', 'selprod_product_id', 'order_date_added', 'order_net_amount', 'op_invoice_number', 'totCombinedOrders as totOrders', 'op_selprod_title', 'op_product_name', 'op_id', 'op_qty', 'op_selprod_options', 'op_status_id', 'op_brand_name', 'op_shop_name', 'op_other_charges', 'op_unit_price', 'IFNULL(orderstatus_name, orderstatus_identifier) as orderstatus_name', 'op_tax_collected_by_seller', 'op_selprod_user_id', 'opshipping_by_seller_user_id', 'orderstatus_color_class', 'order_pmethod_id', 'opshipping_fulfillment_type')
         );
 
         $rs = $srch->getResultSet();
@@ -191,7 +191,7 @@ class SellerController extends SellerBaseController
 
         $this->shippingService = PluginHelper::callPlugin($keyName, [$this->siteLangId], $error, $this->siteLangId, false);
         if (false === $this->shippingService) {
-            if ('orderproductsearchlisting' == strtolower($this->method)){
+            if ('orderproductsearchlisting' == strtolower($this->method)) {
                 Message::addErrorMessage($error);
                 FatUtility::dieWithError(Message::getHtml());
             } else {
@@ -199,7 +199,7 @@ class SellerController extends SellerBaseController
             }
         };
         if (false === $this->shippingService->init()) {
-            if ('orderproductsearchlisting' == strtolower($this->method)){
+            if ('orderproductsearchlisting' == strtolower($this->method)) {
                 Message::addErrorMessage($this->shippingService->getError());
                 FatUtility::dieWithError(Message::getHtml());
             } else {
@@ -207,7 +207,7 @@ class SellerController extends SellerBaseController
             }
         }
     }
-    
+
     /**
      * loadTrackingService
      *
@@ -242,8 +242,12 @@ class SellerController extends SellerBaseController
 
     public function sales()
     {
-        $this->userPrivilege->canViewSales(UserAuthentication::getLoggedUserId());
+		$data = FatApp::getPostedData();
         $frmOrderSrch = $this->getOrderSearchForm($this->siteLangId);
+        if (!empty($data)) {
+            $frmOrderSrch->fill($data);
+        }
+        $this->userPrivilege->canViewSales(UserAuthentication::getLoggedUserId());
         $this->set('frmOrderSrch', $frmOrderSrch);
         $this->_template->render(true, true);
     }
@@ -278,7 +282,7 @@ class SellerController extends SellerBaseController
         $srch->setPageSize($pagesize);
 
         $srch->addMultipleFields(
-            array('order_id', 'order_status', 'order_payment_status', 'order_user_id', 'op_selprod_id', 'op_is_batch', 'selprod_product_id', 'order_date_added', 'order_net_amount', 'op_invoice_number', 'totCombinedOrders as totOrders', 'op_selprod_title', 'op_product_name', 'op_id', 'op_qty', 'op_selprod_options', 'op_brand_name', 'op_shop_name', 'op_other_charges', 'op_unit_price', 'op_tax_collected_by_seller', 'op_selprod_user_id', 'opshipping_by_seller_user_id', 'orderstatus_id', 'IFNULL(orderstatus_name, orderstatus_identifier) as orderstatus_name', 'orderstatus_color_class', 'plugin_code', 'IFNULL(plugin_name, IFNULL(plugin_identifier, "Wallet")) as plugin_name', 'opship.*')
+            array('order_id', 'order_status', 'order_payment_status', 'order_user_id', 'op_selprod_id', 'op_is_batch', 'selprod_product_id', 'order_date_added', 'order_net_amount', 'op_invoice_number', 'totCombinedOrders as totOrders', 'op_selprod_title', 'op_product_name', 'op_id', 'op_qty', 'op_selprod_options', 'op_brand_name', 'op_shop_name', 'op_other_charges', 'op_unit_price', 'op_tax_collected_by_seller', 'op_selprod_user_id', 'opshipping_by_seller_user_id', 'orderstatus_id', 'IFNULL(orderstatus_name, orderstatus_identifier) as orderstatus_name', 'orderstatus_color_class', 'plugin_code', 'IFNULL(plugin_name, IFNULL(plugin_identifier, "Wallet")) as plugin_name', 'opship.*', 'opshipping_fulfillment_type')
         );
 
         $keyword = FatApp::getPostedData('keyword', null, '');
@@ -558,7 +562,7 @@ class SellerController extends SellerBaseController
         if ($orderDetail['op_product_type'] == Product::PRODUCT_TYPE_DIGITAL) {
             $digitalDownloadLinks = Orders::getOrderProductDigitalDownloadLinks($op_id);
         }
-        
+
         $this->set('orderDetail', $orderDetail);
         $this->set('orderStatuses', $orderStatuses);
         $this->set('shippedBySeller', $shippedBySeller);
@@ -579,6 +583,107 @@ class SellerController extends SellerBaseController
         $this->set('urlParts', $urlParts);
 
         $this->_template->render(true, true);
+    }
+
+    public function viewInvoice($op_id)
+    {
+        $this->userPrivilege->canViewSales(UserAuthentication::getLoggedUserId());
+        $op_id = FatUtility::int($op_id);
+        if (1 > $op_id) {
+            Message::addErrorMessage(Labels::getLabel('MSG_Invalid_Access', $this->siteLangId));
+            CommonHelper::redirectUserReferer();
+        }
+
+        $orderObj = new Orders();
+        $userId = $this->userParentId;
+
+        $srch = new OrderProductSearch($this->siteLangId, true, true);
+        $srch->joinPaymentMethod();
+        $srch->joinSellerProducts();
+        $srch->joinShop();
+        $srch->joinShopSpecifics();
+        $srch->joinShopCountry();
+        $srch->joinShopState();
+        $srch->joinShippingUsers();
+        $srch->joinShippingCharges();
+        $srch->addOrderProductCharges();
+        $srch->addCondition('op_selprod_user_id', '=', $userId);
+        $srch->addCondition('op_id', '=', $op_id);
+        $srch->addStatusCondition(unserialize(FatApp::getConfig("CONF_VENDOR_ORDER_STATUS")));
+        $srch->addMultipleFields(array('*', 'shop_country_l.country_name as shop_country_name', 'shop_state_l.state_name as shop_state_name', 'shop_city'));
+        $rs = $srch->getResultSet();
+        $orderDetail = FatApp::getDb()->fetch($rs);
+
+        if (!$orderDetail) {
+            Message::addErrorMessage(Labels::getLabel('MSG_Invalid_Access', $this->siteLangId));
+            CommonHelper::redirectUserReferer();
+        }
+
+        $charges = $orderObj->getOrderProductChargesArr($op_id);
+        $orderDetail['charges'] = $charges;
+
+        $shippedBySeller = applicationConstants::NO;
+        if (CommonHelper::canAvailShippingChargesBySeller($orderDetail['op_selprod_user_id'], $orderDetail['opshipping_by_seller_user_id'])) {
+            $shippedBySeller = applicationConstants::YES;
+        }
+
+        if (!empty($orderDetail["opship_orderid"])) {
+            if (null != $this->shippingService && false === $this->shippingService->loadOrder($orderDetail["opship_orderid"])) {
+                Message::addErrorMessage($this->shippingService->getError());
+                FatApp::redirectUser(UrlHelper::generateUrl("SellerOrders"));
+            }
+            $orderDetail['thirdPartyorderInfo'] = (null != $this->shippingService ? $this->shippingService->getResponse() : []);
+        }
+
+        $address = $orderObj->getOrderAddresses($orderDetail['op_order_id']);
+        $orderDetail['billingAddress'] = (isset($address[Orders::BILLING_ADDRESS_TYPE])) ? $address[Orders::BILLING_ADDRESS_TYPE] : array();
+        $orderDetail['shippingAddress'] = (isset($address[Orders::SHIPPING_ADDRESS_TYPE])) ? $address[Orders::SHIPPING_ADDRESS_TYPE] : array();
+
+        $pickUpAddress = $orderObj->getOrderAddresses($orderDetail['op_order_id'], $orderDetail['op_id']);
+        $orderDetail['pickupAddress'] = (isset($pickUpAddress[Orders::PICKUP_ADDRESS_TYPE])) ? $pickUpAddress[Orders::PICKUP_ADDRESS_TYPE] : array();
+
+        $opChargesLog = new OrderProductChargeLog($op_id);
+        $taxOptions = $opChargesLog->getData($this->siteLangId);
+        $orderDetail['taxOptions'] = $taxOptions;
+
+        /* $this->set('orderDetail', $orderDetail);
+        $this->set('languages', Language::getAllNames());
+        $this->set('yesNoArr', applicationConstants::getYesNoArr($this->siteLangId));
+        $this->set('canEdit', $this->userPrivilege->canEditSales(UserAuthentication::getLoggedUserId(), true));
+        $this->_template->render(true, true); */
+
+        $template = new FatTemplate('', '');
+        $template->set('siteLangId', $this->siteLangId);
+        $template->set('orderDetail', $orderDetail);
+        $template->set('shippedBySeller', $shippedBySeller);
+
+        require_once(CONF_INSTALLATION_PATH . 'library/tcpdf/tcpdf.php');
+        $pdf = new TCPDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
+        $pdf->SetCreator(PDF_CREATOR);
+        $pdf->SetAuthor(FatApp::getConfig("CONF_WEBSITE_NAME_" . $this->siteLangId));
+        $pdf->SetKeywords(FatApp::getConfig("CONF_WEBSITE_NAME_" . $this->siteLangId));
+        $pdf->setHeaderFont(array(PDF_FONT_NAME_MAIN, '', PDF_FONT_SIZE_MAIN));
+        $pdf->SetHeaderMargin(0);
+        $pdf->SetHeaderData('', 0, '', '', array(255, 255, 255), array(255, 255, 255));
+        $pdf->setFooterData(array(0, 0, 0), array(200, 200, 200));
+        $pdf->SetFooterMargin(PDF_MARGIN_FOOTER);
+        $pdf->setFooterFont(array(PDF_FONT_NAME_DATA, '', PDF_FONT_SIZE_DATA));
+        $pdf->SetMargins(10, 10, 10);
+        $pdf->setImageScale(PDF_IMAGE_SCALE_RATIO);
+        $pdf->AddPage();
+        $pdf->SetTitle(Labels::getLabel('LBL_Tax_Invoice', $this->siteLangId));
+        $pdf->SetSubject(Labels::getLabel('LBL_Tax_Invoice', $this->siteLangId));
+
+        $templatePath = "seller/view-invoice.php";
+        $html = $template->render(false, false, $templatePath, true, true);
+        $pdf->writeHTML($html, true, false, true, false, '');
+        $pdf->lastPage();
+
+        ob_end_clean();
+        // $saveFile = CONF_UPLOADS_PATH . 'demo-pdf.pdf';
+        //$pdf->Output($saveFile, 'F');
+        $pdf->Output('tax-invoice.pdf', 'I');
+        return true;
     }
 
     public function viewSubscriptionOrder($ossubs_id)
@@ -669,7 +774,7 @@ class SellerController extends SellerBaseController
         $rs = $srch->getResultSet();
 
         $orderDetail = FatApp::getDb()->fetch($rs);
-        
+
         if (empty($orderDetail)) {
             Message::addErrorMessage(Labels::getLabel('MSG_Invalid_Access', $this->siteLangId));
             FatUtility::dieJsonError(Message::getHtml());
@@ -1403,6 +1508,7 @@ class SellerController extends SellerBaseController
 
         $this->set("arr_listing", $arr_listing);
         $this->set('pageCount', $srch->pages());
+        $this->set('recordCount', $srch->recordCount());
         $this->set('page', $page);
         $this->set('pageSize', $pagesize);
         $this->set('postedData', $post);
@@ -1560,13 +1666,12 @@ class SellerController extends SellerBaseController
 
         $srch->addMultipleFields(array('taxcat_id', 'IFNULL(taxcat_name, taxcat_identifier) as taxcat_name', 'taxcat_code', 'taxrule_rate'));
         $srch->addCondition('taxcat_deleted', '=', 0);
+        $srch->addGroupBy('taxcat_id');
         $srch->setPageNumber($page);
         $srch->setPageSize($pagesize);
         $srch->addOrder('taxcat_name', 'ASC');
-
         $rs = $srch->getResultSet();
         $taxCatData = FatApp::getDb()->fetchAll($rs, 'taxcat_id');
-
         $this->set('canEdit', $this->userPrivilege->canEditTaxCategory(UserAuthentication::getLoggedUserId(), true));
         $this->set("arr_listing", $taxCatData);
         $this->set('pageCount', $srch->pages());
@@ -1583,7 +1688,7 @@ class SellerController extends SellerBaseController
     {
         $this->userPrivilege->canViewTaxCategory(UserAuthentication::getLoggedUserId());
         $taxCatId = FatUtility::int($taxCatId);
-       
+
         $srch = Tax::getSearchObject($this->siteLangId);
         $srch->addCondition('taxcat_id', '=', $taxCatId);
         $srch->setPageSize(1);
@@ -1597,8 +1702,8 @@ class SellerController extends SellerBaseController
         }
         $taxObj = new TaxRule();
         $rulesData = $taxObj->getRules($taxCatId, $this->siteLangId);
-		$combinedRulesDetails = [];
-		$ruleLocations = [];
+        $combinedRulesDetails = [];
+        $ruleLocations = [];
         if (!empty($rulesData)) {
             $rulesIds = array_column($rulesData, 'taxrule_id');
             $combinedRulesDetails = $taxObj->getCombinedRuleDetails($rulesIds, $this->siteLangId);
@@ -1637,7 +1742,7 @@ class SellerController extends SellerBaseController
         $this->set('siteLangId', $this->siteLangId);
         $this->_template->render(true, true);
     }
-	
+
     public function shopForm($callbackKeyName = '')
     {
         $userId = $this->userParentId;
@@ -1682,7 +1787,7 @@ class SellerController extends SellerBaseController
             $stateCode = States::getAttributesById($stateId, 'state_code');
             $shopDetails['shop_state'] = $stateCode;
         }
-        
+
         $shopFrm->fill($shopDetails);
         $shopFrm->addSecurityToken();
 
@@ -3318,7 +3423,10 @@ class SellerController extends SellerBaseController
         $frm = new Form('frmSocialPlatform');
         $frm->addHiddenField('', 'splatform_id', $splatform_id);
         $frm->addRequiredField(Labels::getLabel('Lbl_Identifier', $this->siteLangId), 'splatform_identifier');
-        $frm->addRequiredField(Labels::getLabel('Lbl_URL', $this->siteLangId), 'splatform_url');
+        $urlFld = $frm->addTextBox(Labels::getLabel('LBL_URL', $this->siteLangId), 'splatform_url');
+		$urlFld->requirements()->setRegularExpressionToValidate(ValidateElement::URL_REGEX);
+        $urlFld->requirements()->setCustomErrorMessage(Labels::getLabel('LBL_This_must_be_an_absolute_URL', $this->siteLangId));
+		$urlFld->requirements()->setRequired();
         $fld = $frm->addSelectBox(Labels::getLabel('Lbl_Icon_Type_from_CSS', $this->siteLangId), 'splatform_icon_class', $iconsArr, '', array(), Labels::getLabel('Lbl_Select', $this->siteLangId));
         if ($splatform_id > 0) {
             $fld->setFieldTagAttribute('disabled', 'disabled');
@@ -3371,7 +3479,7 @@ class SellerController extends SellerBaseController
 
         $onOffArr = applicationConstants::getOnOffArr($this->siteLangId);
 
-        $frm->addSelectBox(Labels::getLabel('Lbl_Display_Status', $this->siteLangId), 'shop_supplier_display_status', $onOffArr, '', array(), '');
+        $frm->addSelectBox(Labels::getLabel('Lbl_Display_Status', $this->siteLangId), 'shop_supplier_display_status', $onOffArr);
 
         /* $fld = $frm->addTextBox(Labels::getLabel('LBL_Free_Shipping_On', $this->siteLangId), 'shop_free_ship_upto');
         $fld->requirements()->setInt();
@@ -3386,7 +3494,7 @@ class SellerController extends SellerBaseController
         $fld->requirements()->setPositive();
 
         $fulFillmentArr = Shipping::getFulFillmentArr($this->siteLangId);
-        $frm->addSelectBox(Labels::getLabel('LBL_FULFILLMENT_METHOD', $this->siteLangId), 'shop_fulfillment_type', $fulFillmentArr, applicationConstants::NO, array(), '');
+        $frm->addSelectBox(Labels::getLabel('LBL_FULFILLMENT_METHOD', $this->siteLangId), 'shop_fulfillment_type', $fulFillmentArr, applicationConstants::NO);
 
         /* if($shop_id > 0){
           $fld = $frm->addButton(Labels::getLabel('Lbl_Logo',$this->siteLangId),'shop_logo',Labels::getLabel('LBL_Upload_File',$this->siteLangId),
@@ -3400,6 +3508,17 @@ class SellerController extends SellerBaseController
           <div><img src="'.UrlHelper::generateUrl('Image','shopBanner',array($shop_id, $this->siteLangId, 'THUMB')).'"></div>';
           } */
         // $frm->addHtml('', '', '<div id="map" style="width:1500px; height:500px"></div>');
+
+        /* $alphanumericFld = $frm->addRequiredField(Labels::getLabel('LBL_Invoice_number_starts_from', $this->siteLangId), 'shop_invoice_prefix', '', array('placeholder' => Labels::getLabel('LBL_Alphanumeric_value', $this->siteLangId)));
+        $alphanumericFld->requirements()->setRegularExpressionToValidate(ValidateElement::ZIP_REGEX);
+        $alphanumericFld->requirements()->setCustomErrorMessage(Labels::getLabel('LBL_Only_alphanumeric_value_is_allowed.', $this->siteLangId));
+        $numericFld = $frm->addIntegerField(Labels::getLabel('LBL_Invoice_number_starts_from', $this->siteLangId), 'shop_invoice_suffix', '', array('placeholder' => Labels::getLabel('LBL_Integer_value', $this->siteLangId)));
+        $numericFld->requirements()->setCustomErrorMessage(Labels::getLabel('LBL_Only_numeric_value_is_allowed.', $this->siteLangId));
+        $alphanumericFld->attachField($numericFld); */
+
+        $fld = $frm->addTextarea(Labels::getLabel("LBL_Government_Information_on_invoices", $this->siteLangId), 'shop_invoice_codes');
+        $fld->htmlAfterField = "<small>" . Labels::getLabel("LBL_Information_mandated_by_the_Government_on_invoices.", $this->siteLangId) . "</small>";
+
         $frm->addHiddenField('', 'shop_lat');
         $frm->addHiddenField('', 'shop_lng');
         $frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_Save_Changes', $this->siteLangId));
@@ -3535,7 +3654,7 @@ class SellerController extends SellerBaseController
         return $frm;
     }
 
-    private function getOrderCommentsForm($orderData = array(), $processingOrderStatus)
+    private function getOrderCommentsForm($orderData = array(), $processingOrderStatus = [])
     {
         $frm = new Form('frmOrderComments');
         $frm->addTextArea(Labels::getLabel('LBL_Your_Comments', $this->siteLangId), 'comments');
@@ -3544,7 +3663,7 @@ class SellerController extends SellerBaseController
         $fld = $frm->addSelectBox(Labels::getLabel('LBL_Status', $this->siteLangId), 'op_status_id', $orderStatusArr, '', [], Labels::getLabel('Lbl_Select', $this->siteLangId));
         $fld->requirements()->setRequired();
 
-        $frm->addSelectBox(Labels::getLabel('LBL_Notify_Customer', $this->siteLangId), 'customer_notified', applicationConstants::getYesNoArr($this->siteLangId), '', array(), Labels::getLabel('Lbl_Select', $this->siteLangId))->requirements()->setRequired();
+        $ntf = $frm->addSelectBox(Labels::getLabel('LBL_Notify_Customer', $this->siteLangId), 'customer_notified', applicationConstants::getYesNoArr($this->siteLangId), '', array(), Labels::getLabel('Lbl_Select', $this->siteLangId))->requirements()->setRequired();
 
         $attr = [];
         $labelGenerated = false;
@@ -3555,40 +3674,37 @@ class SellerController extends SellerBaseController
             $labelGenerated = true;
         } else {
             $manualFld = $frm->addCheckBox(Labels::getLabel('LBL_SELF_SHIPPING', $this->siteLangId), 'manual_shipping', 1, array(), false, 0);
+
             $manualShipUnReqObj = new FormFieldRequirement('manual_shipping', Labels::getLabel('LBL_SELF_SHIPPING', $this->siteLangId));
             $manualShipUnReqObj->setRequired(false);
             $manualShipReqObj = new FormFieldRequirement('manual_shipping', Labels::getLabel('LBL_SELF_SHIPPING', $this->siteLangId));
             $manualShipReqObj->setRequired(true);
-            
+
             $fld->requirements()->addOnChangerequirementUpdate(FatApp::getConfig("CONF_DEFAULT_SHIPPING_ORDER_STATUS"), 'eq', 'manual_shipping', $manualShipReqObj);
             $fld->requirements()->addOnChangerequirementUpdate(FatApp::getConfig("CONF_DEFAULT_SHIPPING_ORDER_STATUS"), 'ne', 'manual_shipping', $manualShipUnReqObj);
-
-            $fld = $manualFld;
         }
 
         $frm->addTextBox(Labels::getLabel('LBL_Tracking_Number', $this->siteLangId), 'tracking_number', '', $attr);
 
-        $trackingUnReqObj = new FormFieldRequirement('tracking_number', Labels::getLabel('LBL_Tracking_Number', $this->siteLangId));
-        $trackingUnReqObj->setRequired(false);
-
-        $trackingReqObj = new FormFieldRequirement('tracking_number', Labels::getLabel('LBL_Tracking_Number', $this->siteLangId));
-        $trackingReqObj->setRequired(true);
-
-        $fld->requirements()->addOnChangerequirementUpdate(applicationConstants::YES, 'eq', 'tracking_number', $trackingReqObj);
-        $fld->requirements()->addOnChangerequirementUpdate(applicationConstants::NO, 'eq', 'tracking_number', $trackingUnReqObj);
-
         if (false === $labelGenerated) {
+            $trackingUnReqObj = new FormFieldRequirement('tracking_number', Labels::getLabel('LBL_Tracking_Number', $this->siteLangId));
+            $trackingUnReqObj->setRequired(false);
+            $trackingReqObj = new FormFieldRequirement('tracking_number', Labels::getLabel('LBL_Tracking_Number', $this->siteLangId));
+            $trackingReqObj->setRequired(true);
+
+            $manualFld->requirements()->addOnChangerequirementUpdate(applicationConstants::YES, 'eq', 'tracking_number', $trackingReqObj);
+            $manualFld->requirements()->addOnChangerequirementUpdate(applicationConstants::NO, 'eq', 'tracking_number', $trackingUnReqObj);
+
             $trackUrlFld = $frm->addTextBox(Labels::getLabel('LBL_TRACK_THROUGH', $this->siteLangId), 'opship_tracking_url', '', $attr);
             $trackUrlFld->htmlAfterField = '<small class="text--small">' . Labels::getLabel('LBL_ENTER_THE_URL_TO_TRACK_THE_SHIPMENT.', $this->siteLangId) . '</small>';
 
             $trackingUrlUnReqObj = new FormFieldRequirement('opship_tracking_url', Labels::getLabel('LBL_TRACK_THROUGH', $this->siteLangId));
             $trackingUrlUnReqObj->setRequired(false);
-
             $trackingurlReqObj = new FormFieldRequirement('opship_tracking_url', Labels::getLabel('LBL_TRACK_THROUGH', $this->siteLangId));
             $trackingurlReqObj->setRequired(true);
 
-            $fld->requirements()->addOnChangerequirementUpdate(applicationConstants::YES, 'eq', 'opship_tracking_url', $trackingurlReqObj);
-            $fld->requirements()->addOnChangerequirementUpdate(applicationConstants::NO, 'eq', 'opship_tracking_url', $trackingUrlUnReqObj);
+            $manualFld->requirements()->addOnChangerequirementUpdate(applicationConstants::YES, 'eq', 'opship_tracking_url', $trackingurlReqObj);
+            $manualFld->requirements()->addOnChangerequirementUpdate(applicationConstants::NO, 'eq', 'opship_tracking_url', $trackingUrlUnReqObj);
         }
 
         $frm->addHiddenField('', 'op_id', 0);
@@ -3703,7 +3819,7 @@ class SellerController extends SellerBaseController
             Message::addErrorMessage(
                 Labels::getLabel('MSG_INVALID_REQUEST', $this->siteLangId)
             );
-            FatApp::dieJsonError(Message::getHtml());
+            FatUtility::dieJsonError(Message::getHtml());
         }
         $shipping_rates = array();
         $post = FatApp::getPostedData();
@@ -3749,7 +3865,7 @@ class SellerController extends SellerBaseController
         $fld = $frm->addTextBox(Labels::getLabel('LBL_Shipping_country', $this->siteLangId), 'shipping_country');
 
         $shipProfileArr = ShippingProfile::getProfileArr($this->userParentId, true, true);
-        $frm->addSelectBox(Labels::getLabel('LBL_Shipping_Profile', $this->siteLangId), 'shipping_profile', $shipProfileArr)->requirements()->setRequired();
+        $frm->addSelectBox(Labels::getLabel('LBL_Shipping_Profile', $this->siteLangId), 'shipping_profile', $shipProfileArr, '', [])->requirements()->setRequired();
 
         /* if (FatApp::getConfig("CONF_PRODUCT_DIMENSIONS_ENABLE", FatUtility::VAR_INT, 1)) {
             $shipPackArr = ShippingPackage::getAllNames();
@@ -3989,8 +4105,7 @@ class SellerController extends SellerBaseController
 
             /* weight unit[ */
             $weightUnitsArr = applicationConstants::getWeightUnitsArr($langId);
-            $pWeightUnitsFld = $frm->addSelectBox(Labels::getLabel('LBL_Weight_Unit', $langId), 'product_weight_unit', $weightUnitsArr, '', array(), Labels::getLabel('LBL_Select', $langId))->requirements()->setRequired();
-            ;
+            $pWeightUnitsFld = $frm->addSelectBox(Labels::getLabel('LBL_Weight_Unit', $langId), 'product_weight_unit', $weightUnitsArr, '', array(), Labels::getLabel('LBL_Select', $langId))->requirements()->setRequired();;
 
             $pWeightUnitUnReqObj = new FormFieldRequirement('product_weight_unit', Labels::getLabel('LBL_Weight_Unit', $langId));
             $pWeightUnitUnReqObj->setRequired(false);
@@ -4191,7 +4306,7 @@ class SellerController extends SellerBaseController
 
             $fulFillmentArr = Shipping::getFulFillmentArr($this->siteLangId, $fulfillmentType);
             if ($productData['product_type'] == Product::PRODUCT_TYPE_PHYSICAL) {
-                $frm->addSelectBox(Labels::getLabel('LBL_FULFILLMENT_METHOD', $this->siteLangId), 'selprod_fulfillment_type', $fulFillmentArr, applicationConstants::NO, [], '');
+                $frm->addSelectBox(Labels::getLabel('LBL_FULFILLMENT_METHOD', $this->siteLangId), 'selprod_fulfillment_type', $fulFillmentArr, applicationConstants::NO, []);
             }
             $frm->addRequiredField(Labels::getLabel('LBL_Url_Keyword', $this->siteLangId), 'selprod_url_keyword');
             $productOptions = Product::getProductOptions($product_id, $this->siteLangId, true);
@@ -4549,12 +4664,9 @@ class SellerController extends SellerBaseController
 
         $frm = new Form('frmReturnAddressLang');
         $frm->addSelectBox(Labels::getLabel('LBL_LANGUAGE', $this->siteLangId), 'lang_id', Language::getAllNames(), $formLangId, array(), '');
-        $frm->addTextBox(Labels::getLabel('LBL_Name', $formLangId), 'ura_name')->requirement->setRequired(true);
-        ;
-        $frm->addTextBox(Labels::getLabel('LBL_City', $formLangId), 'ura_city')->requirement->setRequired(true);
-        ;
-        $frm->addTextarea(Labels::getLabel('LBL_Address1', $formLangId), 'ura_address_line_1')->requirement->setRequired(true);
-        ;
+        $frm->addTextBox(Labels::getLabel('LBL_Name', $formLangId), 'ura_name')->requirement->setRequired(true);;
+        $frm->addTextBox(Labels::getLabel('LBL_City', $formLangId), 'ura_city')->requirement->setRequired(true);;
+        $frm->addTextarea(Labels::getLabel('LBL_Address1', $formLangId), 'ura_address_line_1')->requirement->setRequired(true);;
         $frm->addTextarea(Labels::getLabel('LBL_Address2', $formLangId), 'ura_address_line_2');
 
         $siteLangId = FatApp::getConfig('conf_default_site_lang', FatUtility::VAR_INT, 1);
@@ -5167,25 +5279,35 @@ class SellerController extends SellerBaseController
             $shopId = $shopDetails['shop_id'];
         }
         $frm = $this->getPickUpAddressForm($addrId);
+        $availability = TimeSlot::DAY_INDIVIDUAL_DAYS;
         if ($addrId > 0) {
             $address = new Address($addrId, $this->siteLangId);
             $data = $address->getData(Address::TYPE_SHOP_PICKUP, $shopId);
             if (!empty($data)) {
                 $stateId = $data['addr_state_id'];
-                $frm->fill($data);
-                
+
                 $timeSlot = new TimeSlot();
                 $timeSlots = $timeSlot->timeSlotsByAddrId($addrId);
-                if(!empty($timeSlots)){     
-                    foreach($timeSlots as $key=>$slot){
+
+                $timeSlotsRow = current($timeSlots);
+                $availability = isset($timeSlotsRow['tslot_availability']) ? $timeSlotsRow['tslot_availability'] : $availability;
+                if ($availability == TimeSlot::DAY_ALL_DAYS) {
+                    $data['tslot_from_all'] = date('H:i', strtotime($timeSlotsRow['tslot_from_time']));
+                    $data['tslot_to_all'] = date('H:i', strtotime($timeSlotsRow['tslot_to_time']));
+                }
+                $data['tslot_availability'] = $availability;
+                $frm->fill($data);
+                if (!empty($timeSlots)) {
+                    foreach ($timeSlots as $key => $slot) {
                         $slotData['tslot_day'][$slot['tslot_day']] = $slot['tslot_day'];
                         $slotData['tslot_from_time'][$slot['tslot_day']][] = $slot['tslot_from_time'];
                         $slotData['tslot_to_time'][$slot['tslot_day']][] = $slot['tslot_to_time'];
-                    } 
+                    }
                 }
             }
         }
 
+        $this->set('availability', $availability);
         $this->set('shop_id', $shopId);
         $this->set('language', Language::getAllNames());
         $this->set('siteLangId', $this->siteLangId);
@@ -5221,9 +5343,9 @@ class SellerController extends SellerBaseController
             Message::addErrorMessage($shipmentTracking->getError());
             FatUtility::dieWithError(Message::getHtml());
         }
-        
+
         $shipmentTracking->createTracking($trackingNumber, $courier, $orderNumber);
-        
+
         if (false === $shipmentTracking->getTrackingInfo($trackingNumber, $courier)) {
             Message::addErrorMessage($shipmentTracking->getError());
             FatUtility::dieWithError(Message::getHtml());
@@ -5233,7 +5355,7 @@ class SellerController extends SellerBaseController
         $this->set('trackingInfo', $trackingInfo);
         $this->_template->render(false, false);
     }
-    
+
     private function getPickUpAddressForm($addressId = 0)
     {
         $addressId = FatUtility::int($addressId);
@@ -5253,62 +5375,62 @@ class SellerController extends SellerBaseController
 
         $zipFld = $frm->addRequiredField(Labels::getLabel('LBL_Postalcode', $this->siteLangId), 'addr_zip');
         $phnFld = $frm->addRequiredField(Labels::getLabel('LBL_Phone', $this->siteLangId), 'addr_phone', '', array('class' => 'phone-js ltr-right', 'placeholder' => ValidateElement::PHONE_NO_FORMAT, 'maxlength' => ValidateElement::PHONE_NO_LENGTH));
-        $phnFld->requirements()->setRegularExpressionToValidate(ValidateElement::PHONE_REGEX);        
+        $phnFld->requirements()->setRegularExpressionToValidate(ValidateElement::PHONE_REGEX);
         $phnFld->requirements()->setCustomErrorMessage(Labels::getLabel('LBL_Please_enter_valid_phone_number_format.', $this->siteLangId));
-        
-        $slotTimingsTypeArr = TimeSlot::getSlotTypeArr($this->siteLangId);
-        $frm->addRadioButtons(Labels::getLabel('LBL_Slot_Timings', $this->siteLangId), 'slot_type', $slotTimingsTypeArr, TimeSlot::DAY_INDIVIDUAL_DAYS);        
 
-        $daysArr = TimeSlot::getDaysArr($this->siteLangId);        
-        for($i = 0; $i< count($daysArr); $i++){  
-            $frm->addCheckBox($daysArr[$i], 'tslot_day['.$i.']', $i, array(), false);
-            $frm->addSelectBox(Labels::getLabel('LBL_From', $this->siteLangId), 'tslot_from_time['.$i.'][]', TimeSlot::getTimeSlotsArr(), '', array(), Labels::getLabel('LBL_Select', $this->siteLangId));
-            $frm->addSelectBox(Labels::getLabel('LBL_To', $this->siteLangId), 'tslot_to_time['.$i.'][]', TimeSlot::getTimeSlotsArr(), '', array(), Labels::getLabel('LBL_Select', $this->siteLangId));       
+        $slotTimingsTypeArr = TimeSlot::getSlotTypeArr($this->siteLangId);
+        $frm->addRadioButtons(Labels::getLabel('LBL_Slot_Timings', $this->siteLangId), 'tslot_availability', $slotTimingsTypeArr, TimeSlot::DAY_INDIVIDUAL_DAYS);
+
+        $daysArr = TimeSlot::getDaysArr($this->siteLangId);
+        for ($i = 0; $i < count($daysArr); $i++) {
+            $frm->addCheckBox($daysArr[$i], 'tslot_day[' . $i . ']', $i, array(), false);
+            $frm->addSelectBox(Labels::getLabel('LBL_From', $this->siteLangId), 'tslot_from_time[' . $i . '][]', TimeSlot::getTimeSlotsArr(), '', array(), Labels::getLabel('LBL_Select', $this->siteLangId));
+            $frm->addSelectBox(Labels::getLabel('LBL_To', $this->siteLangId), 'tslot_to_time[' . $i . '][]', TimeSlot::getTimeSlotsArr(), '', array(), Labels::getLabel('LBL_Select', $this->siteLangId));
             //$frm->addButton('', 'btn_add_row['.$i.']', '+');                      
         }
-        
+
         $frm->addSelectBox(Labels::getLabel('LBL_From', $this->siteLangId), 'tslot_from_all', TimeSlot::getTimeSlotsArr(), '', array(), Labels::getLabel('LBL_Select', $this->siteLangId));
-        $frm->addSelectBox(Labels::getLabel('LBL_To', $this->siteLangId), 'tslot_to_all', TimeSlot::getTimeSlotsArr(), '', array(), Labels::getLabel('LBL_Select', $this->siteLangId));       
-            
+        $frm->addSelectBox(Labels::getLabel('LBL_To', $this->siteLangId), 'tslot_to_all', TimeSlot::getTimeSlotsArr(), '', array(), Labels::getLabel('LBL_Select', $this->siteLangId));
+
         $frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_Save_Changes', $this->siteLangId));
         $fldCancel = $frm->addButton('', 'btn_cancel', Labels::getLabel('LBL_Cancel', $this->siteLangId));
         return $frm;
     }
-    
+
     public function setPickupAddress()
     {
         $this->userPrivilege->canEditShop(UserAuthentication::getLoggedUserId());
         $userId = $this->userParentId;
         $shopId = Shop::getAttributesByUserId($userId, 'shop_id');
 
-        $post = FatApp::getPostedData();    
+        $post = FatApp::getPostedData();
+        $availability = FatApp::getPostedData('tslot_availability', FatUtility::VAR_INT, 1);
         $post['addr_phone'] = !empty($post['addr_phone']) ? ValidateElement::convertPhone($post['addr_phone']) : '';
         $addrStateId = FatUtility::int($post['addr_state_id']);
 
         $slotFromAll = '';
         $slotToAll = '';
         $slotDays = [];
-        $slotType = FatUtility::int($post['slot_type']);
-        if($slotType == TimeSlot::DAY_ALL_DAYS){
+        if ($availability == TimeSlot::DAY_ALL_DAYS) {
             $slotFromAll = $post['tslot_from_all'];
             $slotToAll = $post['tslot_to_all'];
-        }else{
+        } else {
             $slotDays = isset($post['tslot_day']) ? $post['tslot_day'] : array();
             $slotFromTime = $post['tslot_from_time'];
             $slotToTime = $post['tslot_to_time'];
         }
-        
-        $frm = $this->getPickUpAddressForm($post['addr_id']); 
-        $postedData = $frm->getFormDataFromArray($post);      
+
+        $frm = $this->getPickUpAddressForm($post['addr_id']);
+        $postedData = $frm->getFormDataFromArray($post);
         if (false === $postedData) {
             Message::addErrorMessage(current($frm->getValidationErrors()));
             FatUtility::dieJsonError(Message::getHtml());
-        }   
-        
+        }
+
         $addressId = $post['addr_id'];
         unset($post['addr_id']);
-        
-		$address = new Address($addressId);
+
+        $address = new Address($addressId);
         $data = $post;
         $data['addr_state_id'] = $addrStateId;
         $data['addr_record_id'] = $shopId;
@@ -5322,21 +5444,22 @@ class SellerController extends SellerBaseController
             Message::addErrorMessage($address->getError());
             FatUtility::dieJsonError(Message::getHtml());
         }
-        
+
         $addrId = $address->getMainTableRecordId();
-        if(!FatApp::getDb()->deleteRecords(TimeSlot::DB_TBL, array('smt'=>'tslot_type = ? and tslot_record_id = ?', 'vals' => array(Address::TYPE_SHOP_PICKUP, $addrId)))){
+        if (!FatApp::getDb()->deleteRecords(TimeSlot::DB_TBL, array('smt' => 'tslot_type = ? and tslot_record_id = ?', 'vals' => array(Address::TYPE_SHOP_PICKUP, $addrId)))) {
             if (true === MOBILE_APP_API_CALL) {
                 LibHelper::dieJsonError(FatApp::getDb()->getError());
             }
             Message::addErrorMessage(FatApp::getDb()->getError());
             FatUtility::dieJsonError(Message::getHtml());
         }
-            
-        if(!empty($slotDays) && $slotType == TimeSlot::DAY_INDIVIDUAL_DAYS){
-            foreach($slotDays as $day){   
-                foreach($slotFromTime[$day] as $key=>$fromTime){
-                    if(!empty($fromTime) && !empty($slotToTime[$day][$key])){
+
+        if (!empty($slotDays) && $availability == TimeSlot::DAY_INDIVIDUAL_DAYS) {
+            foreach ($slotDays as $day) {
+                foreach ($slotFromTime[$day] as $key => $fromTime) {
+                    if (!empty($fromTime) && !empty($slotToTime[$day][$key])) {
                         $slotData['tslot_type'] = Address::TYPE_SHOP_PICKUP;
+                        $slotData['tslot_availability'] = $availability;
                         $slotData['tslot_record_id'] = $addrId;
                         $slotData['tslot_day'] = $day;
                         $slotData['tslot_from_time'] = $fromTime;
@@ -5354,11 +5477,12 @@ class SellerController extends SellerBaseController
                 }
             }
         }
-        
-        if($slotType == TimeSlot::DAY_ALL_DAYS && !empty($slotFromAll) && !empty($slotToAll)){
-            $daysArr = TimeSlot::getDaysArr($this->siteLangId);        
-            for($i = 0; $i< count($daysArr); $i++){ 
+
+        if ($availability == TimeSlot::DAY_ALL_DAYS && !empty($slotFromAll) && !empty($slotToAll)) {
+            $daysArr = TimeSlot::getDaysArr($this->siteLangId);
+            for ($i = 0; $i < count($daysArr); $i++) {
                 $slotData['tslot_type'] = Address::TYPE_SHOP_PICKUP;
+                $slotData['tslot_availability'] = $availability;
                 $slotData['tslot_record_id'] = $addrId;
                 $slotData['tslot_day'] = $i;
                 $slotData['tslot_from_time'] = $slotFromAll;
@@ -5374,7 +5498,7 @@ class SellerController extends SellerBaseController
                 }
             }
         }
-        
+
         $this->set('msg', Labels::getLabel('MSG_Setup_successful', $this->siteLangId));
         $this->_template->render(false, false, 'json-success.php');
     }

@@ -8,7 +8,7 @@ $nameFld = $frm->getField('shiprate_identifier');
 $nameFld->htmlAfterField = "<span class='form-text text-muted'>".Labels::getLabel("LBL_Customers_will_see_this_at_checkout.", $siteLangId)."</span>";
 
 $costFld = $frm->getField('shiprate_cost');
-$costFld->htmlAfterField = "<div class='gap'></div><p class='add-condition--js'><a class='link' href='javascript:0;' onclick='modifyRateFields(1);'>".Labels::getLabel("LBL_Add_Condition", $siteLangId)."</a></p> <p class='remove-condition--js' style='display : none;'><a class='link' href='javascript:0;' onclick='modifyRateFields(0);'>".Labels::getLabel("LBL_Remove_Condition", $siteLangId)."</a></p>";
+$costFld->htmlAfterField = "<div class='gap'></div><p class='add-condition--js'><a class='link' href='javascript:void(0);' onclick='modifyRateFields(1);'>".Labels::getLabel("LBL_Add_Condition", $siteLangId)."</a></p> <p class='remove-condition--js' style='display : none;'><a class='link' href='javascript:void(0);' onclick='modifyRateFields(0);'>".Labels::getLabel("LBL_Remove_Condition", $siteLangId)."</a></p>";
 $extraClass = 'd-none';
 if (!empty($rateData) && $rateData['shiprate_condition_type'] > 0) {
     $extraClass = '';

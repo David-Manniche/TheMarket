@@ -41,36 +41,34 @@ if (Orders::ORDER_PRODUCT == $orderInfo['order_type']) {
                                 echo $msg;
                                 ?>
                             </h3>
+                            <?php if (!CommonHelper::isAppUser()) { ?>
+                                <p><?php echo CommonHelper::renderHtml($textMessage); ?></p>
+                            <?php } ?>
+                            <?php if ($orderInfo['order_type'] != Orders::ORDER_WALLET_RECHARGE) { ?>
+                                <p>
+                                    <svg class="svg" width="22px" height="22px">
+                                        <use xlink:href="<?php echo CONF_WEBROOT_URL; ?>images/retina/sprite.svg#TimePlaced" href="<?php echo CONF_WEBROOT_URL; ?>images/retina/sprite.svg#TimePlaced">
+                                        </use>
+                                    </svg>
+                                    <?php
+                                    $replace = [
+                                        '{TIME-PLACED}' => '<strong>' . Labels::getLabel('LBL_TIME_PLACED', $siteLangId) . '</strong>',
+                                        '{DATE-TIME}' => $orderInfo['order_date_added'],
+                                    ];
+                                    $msg = Labels::getLabel('LBL_{TIME-PLACED}:_{DATE-TIME}', $siteLangId);
+                                    $msg = CommonHelper::replaceStringData($msg, $replace);
+                                    echo $msg;
+                                    ?>
+                                    &nbsp;&nbsp;&nbsp;
+                                    <span class="no-print">
 
-                            <p>
-                                <?php if (!CommonHelper::isAppUser()) { ?>
-                                    <p><?php echo CommonHelper::renderHtml($textMessage); ?>
-                                    </p>
-                                <?php } ?>
-                            </p>
-                            <p>
-                                <svg class="svg" width="22px" height="22px">
-                                    <use xlink:href="<?php echo CONF_WEBROOT_URL; ?>images/retina/sprite.svg#TimePlaced" href="<?php echo CONF_WEBROOT_URL; ?>images/retina/sprite.svg#TimePlaced">
-                                    </use>
-                                </svg>
-                                <?php
-                                $replace = [
-                                    '{TIME-PLACED}' => '<strong>' . Labels::getLabel('LBL_TIME_PLACED', $siteLangId) . '</strong>',
-                                    '{DATE-TIME}' => $orderInfo['order_date_added'],
-                                ];
-                                $msg = Labels::getLabel('LBL_{TIME-PLACED}:_{DATE-TIME}', $siteLangId);
-                                $msg = CommonHelper::replaceStringData($msg, $replace);
-                                echo $msg;
-                                ?>
-                                &nbsp;&nbsp;&nbsp;
-                                <span class="no-print">
-
-                                    <a class="btn btn-link" href="<?php echo UrlHelper::generateUrl('Custom', 'PaymentSuccess', [$orderInfo['order_id'], 'print']); ?>"> <svg class="svg" width="22px" height="22px">
-                                            <use xlink:href="<?php echo CONF_WEBROOT_URL; ?>images/retina/sprite.svg#print" href="<?php echo CONF_WEBROOT_URL; ?>images/retina/sprite.svg#print">
-                                            </use>
-                                        </svg> <?php echo Labels::getLabel("LBL_PRINT", $siteLangId); ?></a>
-                                </span>
-                            </p>
+                                        <a class="btn btn-link" href="<?php echo UrlHelper::generateUrl('Custom', 'PaymentSuccess', [$orderInfo['order_id'], 'print']); ?>"> <svg class="svg" width="22px" height="22px">
+                                                <use xlink:href="<?php echo CONF_WEBROOT_URL; ?>images/retina/sprite.svg#print" href="<?php echo CONF_WEBROOT_URL; ?>images/retina/sprite.svg#print">
+                                                </use>
+                                            </svg> <?php echo Labels::getLabel("LBL_PRINT", $siteLangId); ?></a>
+                                    </span>
+                                </p>
+                            <?php } ?>
                         </div>
 
                         <ul class="completed-detail">
@@ -99,7 +97,7 @@ if (Orders::ORDER_PRODUCT == $orderInfo['order_type']) {
                                 </li>
                                 <?php }
                             if (Orders::ORDER_PRODUCT == $orderInfo['order_type']) {
-                                if (!empty($orderFulFillmentTypeArr) && OrderProduct::TYPE_PICKUP == current($orderFulFillmentTypeArr)['opshipping_type']) { ?>
+                                if (!empty($orderFulFillmentTypeArr) && Shipping::FULFILMENT_PICKUP == current($orderFulFillmentTypeArr)['opshipping_fulfillment_type']) { ?>
                                     <li>
                                         <h4>
                                             <svg class="svg" width="22px" height="22px">
@@ -111,15 +109,23 @@ if (Orders::ORDER_PRODUCT == $orderInfo['order_type']) {
                                         <?php foreach ($orderFulFillmentTypeArr as $orderAddDet) { ?>
                                             <p>
                                                 <strong>
-                                                    <?php echo '#' . $orderAddDet['op_invoice_number'] . ' : ' . $orderAddDet['opshipping_date'] . ' ' . $orderAddDet['opshipping_time_slot_from'] . ' - ' . $orderAddDet['opshipping_time_slot_to']; ?>
+                                                    <?php
+                                                    $opshippingDate = isset($orderAddDet['opshipping_date']) ? $orderAddDet['opshipping_date'] . ' ' : '';
+                                                    $timeSlotFrom = isset($orderAddDet['opshipping_time_slot_from']) ? $orderAddDet['opshipping_time_slot_from'] . ' - ' : '';
+                                                    $timeSlotTo = isset($orderAddDet['opshipping_time_slot_to']) ? $orderAddDet['opshipping_time_slot_to'] : '';
+                                                    echo '#' . $orderAddDet['op_invoice_number'] . ' : ' . $opshippingDate . $timeSlotFrom . $timeSlotTo; 
+                                                    ?>
                                                 </strong><br>
                                                 <?php echo $orderAddDet['addr_name']; ?>,
                                                 <?php
-                                                echo $orderAddDet['addr_address1'];
-                                                if (!empty($orderAddDet['addr_address2'])) {
-                                                    echo ', ' . $orderAddDet['addr_address2'];
-                                                }
-                                                echo '<br>' . $orderAddDet['addr_city'] . ', ' . $orderAddDet['state_code'] . ' ' . $orderAddDet['country_code'] . '(' . $orderAddDet['addr_zip'] . ')';
+                                                $address1 = !empty($orderAddDet['addr_address1']) ? $orderAddDet['addr_address1'] : '';
+                                                $address2 = !empty($orderAddDet['addr_address2']) ? ', ' . $orderAddDet['addr_address2'] : '';
+                                                $city = !empty($orderAddDet['addr_city']) ? '<br>' . $orderAddDet['addr_city'] : '';
+                                                $state = !empty($orderAddDet['state_code']) ? ', ' . $orderAddDet['state_code'] : '';
+                                                $country = !empty($orderAddDet['country_code']) ? ' ' . $orderAddDet['country_code'] : '';
+                                                $zip = !empty($orderAddDet['addr_zip']) ? '(' . $orderAddDet['addr_zip'] . ')' : '';
+
+                                                echo $address1 . $address2 . $city . $state . $country . $zip;
                                                 ?>
                                             </p>
                                         <?php } ?>
@@ -164,7 +170,7 @@ if (Orders::ORDER_PRODUCT == $orderInfo['order_type']) {
                             <?php }
                             } ?>
                         </ul>
-
+                        <?php if ($orderInfo['order_type'] != Orders::ORDER_WALLET_RECHARGE) { ?>
                         <div class="row justify-content-center">
                             <div class="col-md-12">
                                 <div class="completed-cart">
@@ -269,6 +275,7 @@ if (Orders::ORDER_PRODUCT == $orderInfo['order_type']) {
                                 </div>
                             </div>
                         </div>
+                        <?php } ?>
                     </div>
                 </div>
             </div>

@@ -14,7 +14,7 @@ $(document).on('keyup', "input[name='product_name']", function(){
         			type: 'post',
         			success: function(json) {
         				response($.map(json, function(item) {
-        					return { label: item['name'], value: item['name'], id: item['id']	};
+        					return { label: item['name'], value: item['name'], id: item['id'], stock: item['stock']	};
         				}));
         			},
         		});
@@ -24,6 +24,9 @@ $(document).on('keyup', "input[name='product_name']", function(){
                 currObj.val((ui.item.label).replace(/<[^>]+>/g, ''));
                 $("input[name='voldiscount_min_qty']").removeAttr('disabled');
                 $("input[name='voldiscount_percentage']").removeAttr('disabled');
+				var stock = langLbl.currentStock+': '+ui.item.stock;
+				$(".js-prod-stock").html(stock);
+                $(".js-prod-stock").attr('data-stock', ui.item.stock);
                 return false;
         	}
         });

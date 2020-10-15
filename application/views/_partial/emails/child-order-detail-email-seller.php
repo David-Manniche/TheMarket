@@ -81,7 +81,7 @@ $str='<table cellspacing="0" cellpadding="0" border="0" width="100%" style="bord
 
 /*     $str .= '<tr><td colspan="4" style="padding:10px;font-size:13px; color:#333;border:1px solid #ddd;" align="right">'.Labels::getLabel('L_TOTAL', $siteLangId).'</td><td style="padding:10px;font-size:13px; color:#333;border:1px solid #ddd;" align="right">'.CommonHelper::displayMoneyFormat($total).'</td></tr>'; */
     
-        if($orderProducts["opshipping_type"] == OrderProduct::TYPE_PICKUP){
+        if($orderProducts["opshipping_fulfillment_type"] == Shipping::FULFILMENT_PICKUP){
         $fromTime = date('H:i', strtotime($orderProducts["opshipping_time_slot_from"]));
         $toTime = date('H:i', strtotime($orderProducts["opshipping_time_slot_to"]));
         $pickupDateAndTime =  FatDate::format($orderProducts["opshipping_date"]).' '.$fromTime.' - '.$toTime;         

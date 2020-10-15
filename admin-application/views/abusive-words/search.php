@@ -1,7 +1,7 @@
 <?php defined('SYSTEM_INIT') or die('Invalid Usage.');
 $arr_flds = array(
     'select_all' => Labels::getLabel('LBL_Select_all', $adminLangId),
-    'listserial' => Labels::getLabel('LBL_Sr_no.', $adminLangId),
+    'listserial' => Labels::getLabel('LBL_#', $adminLangId),
     'abusive_keyword' => Labels::getLabel('LBL_Keyword', $adminLangId),
     'language_name' => Labels::getLabel('LBL_Language', $adminLangId),
     'action' => '',
@@ -22,9 +22,8 @@ foreach ($arr_flds as $key => $val) {
     }
 }
 
-$sr_no = $page == 1 ? 0 : $pageSize * ($page - 1);
+$sr_no = ($page > 1) ? $recordCount - (($page - 1) * $pageSize) : $recordCount;
 foreach ($arr_listing as $sn => $row) {
-    $sr_no++;
     $tr = $tbl->appendElement('tr');
 
     foreach ($arr_flds as $key => $val) {
@@ -47,6 +46,7 @@ foreach ($arr_listing as $sn => $row) {
                 break;
         }
     }
+    $sr_no--;
 }
 if (count($arr_listing) == 0) {
     $tbl->appendElement('tr')->appendElement('td', array('colspan' => count($arr_flds)), 'No records found');

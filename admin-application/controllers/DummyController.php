@@ -68,9 +68,4 @@ die('dsdsdsdsdsd');
     {
         $this->_template->render(true, true);
     }
-
-    public function updateCategoryRelations(int $prodCatId = 0)
-    {
-        ProductCategory::updateCategoryRelations($prodCatId);
-    }
 }

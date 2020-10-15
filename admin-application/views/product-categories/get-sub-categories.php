@@ -6,7 +6,7 @@ if (count($childCategories) > 0) {
     <li id="<?php echo $row['prodcat_id'];?>" class="sortableListsClosed child-category <?php if($row['subcategory_count'] == 0 ) { ?>no-children<?php } ?>">
         <div>
             <div class="sorting-bar">
-                <div class="sorting-title"><span class="clickable" onClick="displaySubCategories(this);"><?php echo $row['prodcat_identifier']; ?></span> <a href="<?php echo commonHelper::generateUrl('Products', 'index', array($row['prodcat_id'])); ?>" class="badge badge-secondary badge-pill clickable" title="<?php echo  Labels::getLabel('LBL_Category_Products', $adminLangId); ?>"><?php echo $row['category_products']; ?></a></div>
+                <div class="sorting-title"><span class="clickable" onClick="displaySubCategories(this);"><?php echo $row['prodcat_identifier']; ?></span> <a href="<?php echo commonHelper::generateUrl('Products', 'index', array($row['prodcat_id'])); ?>" class="badge badge-secondary badge-pill clickable" title="<?php echo  Labels::getLabel('LBL_Category_Products', $adminLangId); ?>"><?php echo CommonHelper::displayBadgeCount($row['category_products']); ?></a></div>
                 <div class="sorting-actions">
                     <?php
                     $active = "";

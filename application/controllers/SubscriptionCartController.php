@@ -47,7 +47,6 @@ class SubscriptionCartController extends MyAppController
             Message::addErrorMessage(Labels::getLabel('LBL_Invalid_Request', $this->siteLangId));
             FatApp::redirectUser(UrlHelper::generateUrl());
         }
-        $json = array();
         $spplan_id = FatApp::getPostedData('spplan_id', FatUtility::VAR_INT, 0);
 
         if ($spplan_id <= 0) {
@@ -60,7 +59,8 @@ class SubscriptionCartController extends MyAppController
         $srch->addCondition(SellerPackagePlans::DB_TBL_PREFIX . 'id', '=', $spplan_id);
         $srch->addMultipleFields(
             array(
-            'spplan_id' )
+                'spplan_id'
+            )
         );
         $rs = $srch->getResultSet();
         $db = FatApp::getDb();
@@ -71,27 +71,21 @@ class SubscriptionCartController extends MyAppController
         }
         $spplan_id = FatUtility::int($sellerPlanRow['spplan_id']);
         /* Subscription Downgrade And Upgrade Check check[ */
-        if (!UserPrivilege ::canSellerUpgradeOrDowngradePlan(UserAuthentication::getLoggedUserId(), $spplan_id, $this->siteLangId)) {
+        if (!UserPrivilege::canSellerUpgradeOrDowngradePlan(UserAuthentication::getLoggedUserId(), $spplan_id, $this->siteLangId)) {
             FatUtility::dieWithError(Message::getHtml());
         }
         /* ] */
-
-
-
-
 
         $subsObj = new SubscriptionCart();
 
         $subsObj->add($spplan_id);
         $subsObj->adjustPreviousPlan($this->siteLangId);
 
-
         Message::addMessage(Labels::getLabel('MSG_Success_Subscription_cart_add', $this->siteLangId));
 
         $this->set('msg', Labels::getLabel("MSG_Subscription_Package_Selected", $this->siteLangId));
 
         $this->set('success_msg', CommonHelper::renderHtml(Message::getHtml()));
-
 
         $this->_template->render(false, false, 'json-success.php', false, false);
     }

@@ -7,7 +7,7 @@ $arr_flds = array(
     'action'    =>    '',
 );
 
-$tbl = new HtmlElement('table', array('class'=>'table'));
+$tbl = new HtmlElement('table', array('class' => 'table'));
 $th = $tbl->appendElement('thead')->appendElement('tr', array('class' => ''));
 foreach ($arr_flds as $val) {
     $e = $th->appendElement('th', array(), $val);
@@ -18,8 +18,8 @@ $canCancelOrder = true;
 $canReturnRefund = true;
 foreach ($orders as $sn => $order) {
     $sr_no++;
-    $tr = $tbl->appendElement('tr', array( 'class' => '' ));
-    $orderDetailUrl = UrlHelper::generateUrl('Buyer', 'viewOrder', array($order['order_id'],$order['op_id']));
+    $tr = $tbl->appendElement('tr', array('class' => ''));
+    $orderDetailUrl = UrlHelper::generateUrl('Buyer', 'viewOrder', array($order['order_id'], $order['op_id']));
 
     if ($order['op_product_type'] == Product::PRODUCT_TYPE_DIGITAL) {
         $canCancelOrder = (in_array($order["op_status_id"], (array)Orders::getBuyerAllowedOrderCancellationStatuses(true)));
@@ -36,13 +36,13 @@ foreach ($orders as $sn => $order) {
         $td = $tr->appendElement('td');
         switch ($key) {
             case 'order_id':
-                $txt = '<a title="'.Labels::getLabel('LBL_View_Order_Detail', $siteLangId).'" href="'.$orderDetailUrl.'">';
+                $txt = '<a title="' . Labels::getLabel('LBL_View_Order_Detail', $siteLangId) . '" href="' . $orderDetailUrl . '">';
                 if ($order['totOrders'] > 1) {
                     $txt .= $order['op_invoice_number'];
                 } else {
                     $txt .= $order['order_id'];
                 }
-                $txt .= '</a><br/>'. FatDate::format($order['order_date_added']);
+                $txt .= '</a><br/>' . FatDate::format($order['order_date_added']);
                 $td->appendElement('plaintext', array(), $txt, true);
                 break;
             case 'product':
@@ -51,17 +51,17 @@ foreach ($orders as $sn => $order) {
                     $txt .= '<div class="item__title">' . $order['op_selprod_title'] . '</div>';
                 }
                 $txt .= '<div class="item__sub_title">' . $order['op_product_name'] . ' (' . Labels::getLabel('LBL_Qty', $siteLangId) . ': ' . $order['op_qty'] . ')</div>';
-                $txt .= '<div class="item__brand">' ;
-                if( !empty($order['op_brand_name']) ){
-                   $txt .=  Labels::getLabel('LBL_Brand', $siteLangId).': '.$order['op_brand_name'];
+                $txt .= '<div class="item__brand">';
+                if (!empty($order['op_brand_name'])) {
+                    $txt .=  Labels::getLabel('LBL_Brand', $siteLangId) . ': ' . $order['op_brand_name'];
                 }
-                if( !empty($order['op_brand_name']) && !empty($order['op_selprod_options']) ){
-                    $txt .= ' | ' ;
+                if (!empty($order['op_brand_name']) && !empty($order['op_selprod_options'])) {
+                    $txt .= ' | ';
                 }
                 if ($order['op_selprod_options'] != '') {
                     $txt .= $order['op_selprod_options'];
                 }
-                $txt .='</div>';
+                $txt .= '</div>';
                 if ($order['totOrders'] > 1) {
                     $txt .= '<div class="item__specification">' . Labels::getLabel('LBL_Part_combined_order', $siteLangId) . ' <a title="' . Labels::getLabel('LBL_View_Order_Detail', $siteLangId) . '" href="' . UrlHelper::generateUrl('Buyer', 'viewOrder', array($order['order_id'])) . '">' . $order['order_id'] . '</div>';
                 }
@@ -81,16 +81,21 @@ foreach ($orders as $sn => $order) {
                 $td->appendElement('plaintext', array(), $txt, true);
                 break;
             case 'status':
-                $pMethod ='';
+                $pMethod = '';
                 $paymentMethodCode = Plugin::getAttributesById($order['order_pmethod_id'], 'plugin_code');
-                if (strtolower($paymentMethodCode) == 'cashondelivery' && $order['order_status'] == FatApp::getConfig('CONF_DEFAULT_ORDER_STATUS')) {
-                    $pMethod = " - " . $order['plugin_name'] ;
+                
+                $orderStatus = "";
+                if (strtolower($paymentMethodCode) == 'cashondelivery' && $order['opshipping_fulfillment_type'] == Shipping::FULFILMENT_PICKUP) {
+                    $orderStatus = Labels::getLabel('LBL_PAY_ON_PICKUP', $siteLangId);
+                } else if (strtolower($paymentMethodCode) == 'cashondelivery' && $order['order_status'] == FatApp::getConfig('CONF_DEFAULT_ORDER_STATUS')) {
+                    $pMethod = " - " . $order['plugin_name'];
                 }
-                $txt = ucwords($order['orderstatus_name'] . $pMethod);
-                $td->appendElement('span', array('class' => 'label label-inline '. $classArr[$order['orderstatus_color_class']]), $txt . '<br>', true);
+                $orderStatus = !empty($orderStatus) ? $orderStatus : ucwords($order['orderstatus_name'] . $pMethod);
+
+                $td->appendElement('span', array('class' => 'label label-inline ' . $classArr[$order['orderstatus_color_class']]), $orderStatus . '<br>', true);
                 break;
             case 'action':
-                $ul = $td->appendElement("ul", array("class"=>"actions"), '', true);
+                $ul = $td->appendElement("ul", array("class" => "actions"), '', true);
 
                 $opCancelUrl = UrlHelper::generateUrl('Buyer', 'orderCancellationRequest', array($order['op_id']));
                 $now = time(); // or your date as well
@@ -102,8 +107,10 @@ foreach ($orders as $sn => $order) {
                 $li = $ul->appendElement("li");
                 $li->appendElement(
                     'a',
-                    array('href'=> $orderDetailUrl, 'class'=>'',
-                    'title'=>Labels::getLabel('LBL_View_Order', $siteLangId)),
+                    array(
+                        'href' => $orderDetailUrl, 'class' => '',
+                        'title' => Labels::getLabel('LBL_View_Order', $siteLangId)
+                    ),
                     '<i class="fa fa-eye"></i>',
                     true
                 );
@@ -112,8 +119,10 @@ foreach ($orders as $sn => $order) {
                     $li = $ul->appendElement("li");
                     $li->appendElement(
                         'a',
-                        array('href'=> $opCancelUrl, 'class'=>'',
-                        'title'=>Labels::getLabel('LBL_Cancel_Order', $siteLangId)),
+                        array(
+                            'href' => $opCancelUrl, 'class' => '',
+                            'title' => Labels::getLabel('LBL_Cancel_Order', $siteLangId)
+                        ),
                         '<i class="fas fa-times"></i>',
                         true
                     );
@@ -124,8 +133,10 @@ foreach ($orders as $sn => $order) {
                     $li = $ul->appendElement("li");
                     $li->appendElement(
                         'a',
-                        array('href'=> $opFeedBackUrl, 'class'=>'',
-                        'title'=>Labels::getLabel('LBL_Feedback', $siteLangId)),
+                        array(
+                            'href' => $opFeedBackUrl, 'class' => '',
+                            'title' => Labels::getLabel('LBL_Feedback', $siteLangId)
+                        ),
                         '<i class="fa fa-star"></i>',
                         true
                     );
@@ -136,8 +147,10 @@ foreach ($orders as $sn => $order) {
                     $li = $ul->appendElement("li");
                     $li->appendElement(
                         'a',
-                        array('href'=> $opRefundRequestUrl, 'class'=>'',
-                        'title'=>Labels::getLabel('LBL_Refund', $siteLangId)),
+                        array(
+                            'href' => $opRefundRequestUrl, 'class' => '',
+                            'title' => Labels::getLabel('LBL_Refund', $siteLangId)
+                        ),
                         '<i class="fas fa-dollar-sign"></i>',
                         true
                     );
@@ -147,8 +160,10 @@ foreach ($orders as $sn => $order) {
                 $li = $ul->appendElement("li");
                 $li->appendElement(
                     'a',
-                    array('href'=>'javascript:void(0)' , 'onClick'=>'return addItemsToCart("'.$order['order_id'].'");',
-                    'title'=>Labels::getLabel('LBL_Re-Order', $siteLangId)),
+                    array(
+                        'href' => 'javascript:void(0)', 'onClick' => 'return addItemsToCart("' . $order['order_id'] . '");',
+                        'title' => Labels::getLabel('LBL_Re-Order', $siteLangId)
+                    ),
                     '<i class="fa fa-cart-plus"></i>',
                     true
                 );
@@ -175,9 +190,9 @@ foreach ($orders as $sn => $order) {
 echo $tbl->getHtml();
 if (count($orders) == 0) {
     $message = Labels::getLabel('LBL_No_Records_Found', $siteLangId);
-    $this->includeTemplate('_partial/no-record-found.php', array('siteLangId'=>$siteLangId,'message'=>$message));
+    $this->includeTemplate('_partial/no-record-found.php', array('siteLangId' => $siteLangId, 'message' => $message));
 }
 $postedData['page'] = $page;
 echo FatUtility::createHiddenFormFromData($postedData, array('name' => 'frmOrderSrchPaging'));
-$pagingArr=array('pageCount'=>$pageCount,'page'=>$page,'recordCount'=>$recordCount, 'callBackJsFunc' => 'goToOrderSearchPage');
+$pagingArr = array('pageCount' => $pageCount, 'page' => $page, 'recordCount' => $recordCount, 'callBackJsFunc' => 'goToOrderSearchPage');
 $this->includeTemplate('_partial/pagination.php', $pagingArr, false);

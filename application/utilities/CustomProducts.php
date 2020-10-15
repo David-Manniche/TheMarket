@@ -1439,8 +1439,8 @@ trait CustomProducts
         $arr = array_values(array_filter(explode('/', $refererUrl)));
         array_shift($arr);
         array_shift($arr);
-        
-        $this->set('previousAction', $arr[1]);
+
+        $this->set('previousAction', (isset($arr[1])) ? $arr[1] : 'index');
         $this->set('productId', $prodId);
         $this->set('productType', $productType);
         $this->_template->addJs(array('js/tagify.min.js', 'js/tagify.polyfills.min.js', 'js/cropper.js', 'js/cropper-main.js'));
@@ -1455,7 +1455,7 @@ trait CustomProducts
         $userId = $this->userParentId;
         if ($productId > 0) {
             $productRow = Product::getAttributesById($productId, ['product_seller_id']);
-            if ($productRow['product_seller_id'] != $userId) {
+            if ($productRow && $productRow['product_seller_id'] != $userId) {
                 FatUtility::dieWithError(Labels::getLabel('MSG_Invalid_Access', $this->siteLangId));
             }
         }
@@ -1479,7 +1479,7 @@ trait CustomProducts
 
             $taxData = array();
             $tax = Tax::getTaxCatObjByProductId($productId, $this->siteLangId);
-            if ($prodData['product_seller_id'] > 0) {
+            if ($prodData && $prodData['product_seller_id'] > 0) {
                 $tax->addCondition('ptt_seller_user_id', '=', $prodData['product_seller_id']);
             } else {
                 $tax->addCondition('ptt_seller_user_id', '=', 0);

@@ -1,6 +1,7 @@
 <?php
 
 require_once CONF_INSTALLATION_PATH . 'library/APIs/twitteroauth-master/autoload.php';
+
 use Abraham\TwitterOAuth\TwitterOAuth;
 
 class BuyerController extends BuyerBaseController
@@ -25,6 +26,7 @@ class BuyerController extends BuyerBaseController
 
         $srch = new OrderProductSearch($this->siteLangId, true, true);
         $srch->joinSellerProducts();
+        $srch->joinShippingCharges();
         $srch->joinSellerProductGroup();
         $srch->addCountsOfOrderedProducts();
         $srch->joinTable('(' . $qryOtherCharges . ')', 'LEFT OUTER JOIN', 'op.op_id = opcc.opcharge_op_id', 'opcc');
@@ -36,7 +38,7 @@ class BuyerController extends BuyerBaseController
         $srch->setPageSize(applicationConstants::DASHBOARD_PAGE_SIZE);
 
         $srch->addMultipleFields(
-            array('order_id', 'order_user_id', 'op_selprod_id', 'op_is_batch', 'selprod_product_id', 'order_date_added', 'order_net_amount', 'op_invoice_number', 'totCombinedOrders as totOrders', 'op_selprod_title', 'op_product_name', 'op_product_type', 'op_status_id', 'op_id', 'op_qty', 'op_selprod_options', 'op_brand_name', 'op_shop_name', 'op_other_charges', 'op_unit_price', 'IFNULL(orderstatus_name, orderstatus_identifier) as orderstatus_name', 'orderstatus_color_class')
+            array('order_id', 'order_user_id', 'op_selprod_id', 'op_is_batch', 'selprod_product_id', 'order_date_added', 'order_net_amount', 'op_invoice_number', 'totCombinedOrders as totOrders', 'op_selprod_title', 'op_product_name', 'op_product_type', 'op_status_id', 'op_id', 'op_qty', 'op_selprod_options', 'op_brand_name', 'op_shop_name', 'op_other_charges', 'op_unit_price', 'IFNULL(orderstatus_name, orderstatus_identifier) as orderstatus_name', 'orderstatus_color_class', 'order_pmethod_id', 'opshipping_fulfillment_type')
         );
         $rs = $srch->getResultSet();
         $orders = FatApp::getDb()->fetchAll($rs);
@@ -207,7 +209,7 @@ class BuyerController extends BuyerBaseController
             );
             $srch->addFld(array('*', 'IFNULL(orrequest_id, 0) as return_request', 'IFNULL(ocrequest_id, 0) as cancel_request'));
         }
-        
+
         $rs = $srch->getResultSet();
 
         $childOrderDetail = FatApp::getDb()->fetchAll($rs, 'op_id');
@@ -235,10 +237,10 @@ class BuyerController extends BuyerBaseController
         $address = $orderObj->getOrderAddresses($orderDetail['order_id']);
         $orderDetail['billingAddress'] = $address[Orders::BILLING_ADDRESS_TYPE];
         $orderDetail['shippingAddress'] = (!empty($address[Orders::SHIPPING_ADDRESS_TYPE])) ? $address[Orders::SHIPPING_ADDRESS_TYPE] : array();
-        
+
         $pickUpAddress = $orderObj->getOrderAddresses($orderDetail['order_id'], $opId);
         $orderDetail['pickupAddress'] = (!empty($pickUpAddress[Orders::PICKUP_ADDRESS_TYPE])) ? $pickUpAddress[Orders::PICKUP_ADDRESS_TYPE] : array();
-        
+
         if ($opId > 0) {
             $orderDetail['comments'] = $orderObj->getOrderComments($this->siteLangId, array("op_id" => $childOrderDetail['op_id']));
         } else {
@@ -265,7 +267,7 @@ class BuyerController extends BuyerBaseController
             $digitalDownloadLinks = Orders::getOrderProductDigitalDownloadLinks($childOrderDetail['op_id']);
         }
         $productType = !empty($childOrderDetail['selprod_product_id']) ? Product::getAttributesById($childOrderDetail['selprod_product_id'], 'product_type') : 0;
-        
+
         $frm = $this->getTransferBankForm($this->siteLangId, $orderId);
         $this->set('frm', $frm);
         $this->set('orderDetail', $orderDetail);
@@ -290,6 +292,127 @@ class BuyerController extends BuyerBaseController
         $this->set('opId', $opId);
 
         $this->_template->render();
+    }
+
+    public function viewInvoice($orderId, $opId = 0)
+    {
+        if (!$orderId) {
+            $message = Labels::getLabel('MSG_Invalid_Access', $this->siteLangId);
+            if (true === MOBILE_APP_API_CALL) {
+                LibHelper::dieJsonError($message);
+            }
+            Message::addErrorMessage($message);
+            CommonHelper::redirectUserReferer();
+        }
+
+        $opId = FatUtility::int($opId);
+        if (0 < $opId) {
+            $opOrderId = OrderProduct::getAttributesById($opId, 'op_order_id');
+            if ($orderId != $opOrderId) {
+                $message = Labels::getLabel('MSG_Invalid_Order', $this->siteLangId);
+                if (true === MOBILE_APP_API_CALL) {
+                    LibHelper::dieJsonError($message);
+                }
+                Message::addErrorMessage($message);
+                CommonHelper::redirectUserReferer();
+            }
+        }
+
+        $orderObj = new Orders();
+        $userId = UserAuthentication::getLoggedUserId();
+
+        $orderDetail = $orderObj->getOrderById($orderId, $this->siteLangId);
+        if (!$orderDetail || ($orderDetail && $orderDetail['order_user_id'] != $userId)) {
+            $message = Labels::getLabel('MSG_Invalid_Access', $this->siteLangId);
+            if (true === MOBILE_APP_API_CALL) {
+                LibHelper::dieJsonError($message);
+            }
+            Message::addErrorMessage($message);
+            CommonHelper::redirectUserReferer();
+        }
+
+        $orderDetail['charges'] = $orderObj->getOrderProductChargesByOrderId($orderDetail['order_id']);
+
+        $srch = new OrderProductSearch($this->siteLangId, true, true);
+        $srch->joinPaymentMethod();
+        $srch->joinSellerProducts();
+        $srch->joinShop();
+        $srch->joinShopSpecifics();
+        $srch->joinShopCountry();
+        $srch->joinShopState();
+        $srch->addOrderProductCharges();
+        $srch->addCondition('order_user_id', '=', $userId);
+        $srch->addCondition('order_id', '=', $orderId);
+        if (0 < $opId) {
+            $srch->addCondition('op_id', '=', $opId);
+            $srch->addStatusCondition(unserialize(FatApp::getConfig("CONF_BUYER_ORDER_STATUS")));
+        }
+        $srch->addMultipleFields(array('*', 'shop_country_l.country_name as shop_country_name', 'shop_state_l.state_name as shop_state_name', 'shop_city'));
+        $rs = $srch->getResultSet();
+
+        $childOrderDetail = FatApp::getDb()->fetchAll($rs, 'op_id');
+        foreach ($childOrderDetail as $op_id => $val) {
+            $childOrderDetail[$op_id]['charges'] = $orderDetail['charges'][$op_id];
+
+            $opChargesLog = new OrderProductChargeLog($op_id);
+            $taxOptions = $opChargesLog->getData($this->siteLangId);
+            $childOrderDetail[$op_id]['taxOptions'] = $taxOptions;
+        }
+
+        if (empty($childOrderDetail) || 1 > count($childOrderDetail)) {
+            $message = Labels::getLabel('MSG_Invalid_Access', $this->siteLangId);
+            if (true === MOBILE_APP_API_CALL) {
+                LibHelper::dieJsonError($message);
+            }
+            Message::addErrorMessage($message);
+            CommonHelper::redirectUserReferer();
+        }
+
+        $address = $orderObj->getOrderAddresses($orderDetail['order_id']);
+        $orderDetail['billingAddress'] = $address[Orders::BILLING_ADDRESS_TYPE];
+        $orderDetail['shippingAddress'] = (!empty($address[Orders::SHIPPING_ADDRESS_TYPE])) ? $address[Orders::SHIPPING_ADDRESS_TYPE] : array();
+
+        $pickUpAddress = $orderObj->getOrderAddresses($orderDetail['order_id'], $opId);
+        $orderDetail['pickupAddress'] = (!empty($pickUpAddress[Orders::PICKUP_ADDRESS_TYPE])) ? $pickUpAddress[Orders::PICKUP_ADDRESS_TYPE] : array();
+
+        /* $this->set('orderDetail', $orderDetail);
+        $this->set('childOrderDetail', $childOrderDetail);
+        $this->set('opId', $opId);
+        $this->_template->render(false, false); */
+
+        $template = new FatTemplate('', '');
+        $template->set('siteLangId', $this->siteLangId);
+        $template->set('orderDetail', $orderDetail);
+        $template->set('childOrderDetail', $childOrderDetail);
+        $template->set('opId', $opId);
+
+        require_once(CONF_INSTALLATION_PATH . 'library/tcpdf/tcpdf.php');
+        $pdf = new TCPDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
+        $pdf->SetCreator(PDF_CREATOR);
+        $pdf->SetAuthor(FatApp::getConfig("CONF_WEBSITE_NAME_" . $this->siteLangId));
+        $pdf->SetKeywords(FatApp::getConfig("CONF_WEBSITE_NAME_" . $this->siteLangId));
+        $pdf->setHeaderFont(Array(PDF_FONT_NAME_MAIN, '', PDF_FONT_SIZE_MAIN));
+        $pdf->SetHeaderMargin(0);
+        $pdf->SetHeaderData('', 0, '', '', array(255,255,255), array(255,255,255));
+        $pdf->setFooterData(array(0,0,0), array(200,200,200));
+        $pdf->SetFooterMargin(PDF_MARGIN_FOOTER);
+        $pdf->setFooterFont(Array(PDF_FONT_NAME_DATA, '', PDF_FONT_SIZE_DATA));
+        $pdf->SetMargins(10, 10, 10);
+        $pdf->setImageScale(PDF_IMAGE_SCALE_RATIO);
+        $pdf->AddPage();
+        $pdf->SetTitle(Labels::getLabel('LBL_Tax_Invoice', $this->siteLangId));
+        $pdf->SetSubject(Labels::getLabel('LBL_Tax_Invoice', $this->siteLangId));
+
+        $templatePath = "buyer/view-invoice.php";
+        $html = $template->render(false, false, $templatePath, true, true);
+        $pdf->writeHTML($html, true, false, true, false, '');
+        $pdf->lastPage();
+        
+        ob_end_clean();
+        // $saveFile = CONF_UPLOADS_PATH . 'demo-pdf.pdf';
+        //$pdf->Output($saveFile, 'F');
+        $pdf->Output('tax-invoice.pdf', 'I');
+        return true;
     }
 
     public function downloadDigitalFile($aFileId, $recordId = 0)
@@ -382,6 +505,7 @@ class BuyerController extends BuyerBaseController
 
         $srch = new OrderProductSearch($this->siteLangId, true, true);
         $srch->addCountsOfOrderedProducts();
+        $srch->joinShippingCharges();
         $srch->joinShopSpecifics();
         $srch->joinSellerProductSpecifics();
         $srch->joinOrderProductSpecifics();
@@ -412,7 +536,7 @@ class BuyerController extends BuyerBaseController
         $srch->addMultipleFields(
             array('order_id', 'order_user_id', 'order_date_added', 'order_net_amount', 'op_invoice_number',
             'totCombinedOrders as totOrders', 'op_selprod_id', 'op_selprod_title', 'op_product_name', 'op_id', 'op_other_charges', 'op_unit_price',
-            'op_qty', 'op_selprod_options', 'op_brand_name', 'op_shop_name', 'op_status_id', 'op_product_type', 'IFNULL(orderstatus_name, orderstatus_identifier) as orderstatus_name', 'orderstatus_color_class', 'order_pmethod_id', 'order_status', 'plugin_name', 'IFNULL(orrequest_id, 0) as return_request', 'IFNULL(ocrequest_id, 0) as cancel_request', 'COALESCE(sps.selprod_return_age, ss.shop_return_age) as return_age', 'COALESCE(sps.selprod_cancellation_age, ss.shop_cancellation_age) as cancellation_age', 'order_payment_status', 'order_deleted', 'plugin_code')
+            'op_qty', 'op_selprod_options', 'op_brand_name', 'op_shop_name', 'op_status_id', 'op_product_type', 'IFNULL(orderstatus_name, orderstatus_identifier) as orderstatus_name', 'orderstatus_color_class', 'order_pmethod_id', 'order_status', 'plugin_name', 'IFNULL(orrequest_id, 0) as return_request', 'IFNULL(ocrequest_id, 0) as cancel_request', 'COALESCE(sps.selprod_return_age, ss.shop_return_age) as return_age', 'COALESCE(sps.selprod_cancellation_age, ss.shop_cancellation_age) as cancellation_age', 'order_payment_status', 'order_deleted', 'plugin_code', 'opshipping_fulfillment_type')
         );
 
         $keyword = FatApp::getPostedData('keyword', null, '');
@@ -452,7 +576,6 @@ class BuyerController extends BuyerBaseController
 
         $rs = $srch->getResultSet();
         $orders = FatApp::getDb()->fetchAll($rs);
-
         $oObj = new Orders();
         foreach ($orders as &$order) {
             $charges = $oObj->getOrderProductChargesArr($order['op_id'], MOBILE_APP_API_CALL);
@@ -503,7 +626,7 @@ class BuyerController extends BuyerBaseController
         $keyword = FatApp::getPostedData('keyword', null, '');
         if (!empty($keyword)) {
             $srch->addKeywordSearch($keyword);
-            $frm->fill(array('keyword' => $keyword ));
+            $frm->fill(array('keyword' => $keyword));
         }
 
         $rs = $srch->getResultSet();
@@ -540,7 +663,7 @@ class BuyerController extends BuyerBaseController
         $srch->addDigitalDownloadCondition();
         $srch->joinSellerProducts();
         $srch->joinTable(Product::DB_TBL, 'INNER JOIN', 'sp.selprod_product_id = p.product_id', 'p');
-        $srch->addMultipleFields(array('op_id','op_invoice_number','order_user_id','op_product_type','order_date_added','op_qty','op_status_id','op_selprod_max_download_times', 'op_selprod_id','op_selprod_id', 'product_updated_on', 'selprod_product_id','op_selprod_download_validity_in_days','opd.*'));
+        $srch->addMultipleFields(array('op_id', 'op_invoice_number', 'order_user_id', 'op_product_type', 'order_date_added', 'op_qty', 'op_status_id', 'op_selprod_max_download_times', 'op_selprod_id', 'op_selprod_id', 'product_updated_on', 'selprod_product_id', 'op_selprod_download_validity_in_days', 'opd.*'));
         $srch->setPageNumber($page);
         $srch->addCondition('order_user_id', '=', $user_id);
         $srch->addOrder('order_date_added', 'desc');
@@ -549,7 +672,7 @@ class BuyerController extends BuyerBaseController
         $keyword = FatApp::getPostedData('keyword', null, '');
         if (!empty($keyword)) {
             $srch->addKeywordSearch($keyword);
-            $frm->fill(array('keyword' => $keyword ));
+            $frm->fill(array('keyword' => $keyword));
         }
 
         $rs = $srch->getResultSet();
@@ -605,13 +728,13 @@ class BuyerController extends BuyerBaseController
         }
 
         if ($opDetail["op_product_type"] == Product::PRODUCT_TYPE_DIGITAL) {
-            if (!in_array($opDetail["op_status_id"], (array)Orders::getBuyerAllowedOrderCancellationStatuses(true))) {
+            if (!in_array($opDetail["op_status_id"], (array) Orders::getBuyerAllowedOrderCancellationStatuses(true))) {
                 Message::addErrorMessage(Labels::getLabel('MSG_Order_Cancellation_cannot_placed', $this->siteLangId));
                 // CommonHelper::redirectUserReferer();
                 FatApp::redirectUser(UrlHelper::generateUrl('Buyer', 'orderCancellationRequests'));
             }
         } else {
-            if (!in_array($opDetail["op_status_id"], (array)Orders::getBuyerAllowedOrderCancellationStatuses())) {
+            if (!in_array($opDetail["op_status_id"], (array) Orders::getBuyerAllowedOrderCancellationStatuses())) {
                 Message::addErrorMessage(Labels::getLabel('MSG_Order_Cancellation_cannot_placed', $this->siteLangId));
                 // CommonHelper::redirectUserReferer();
                 FatApp::redirectUser(UrlHelper::generateUrl('Buyer', 'orderCancellationRequests'));
@@ -625,7 +748,7 @@ class BuyerController extends BuyerBaseController
         }
 
         $frm = $this->getOrderCancelRequestForm($this->siteLangId);
-        $frm->fill(array('op_id' => $opDetail['op_id'] ));
+        $frm->fill(array('op_id' => $opDetail['op_id']));
         $this->set('frmOrderCancel', $frm);
         $this->_template->render(true, true);
     }
@@ -703,7 +826,7 @@ class BuyerController extends BuyerBaseController
         }
 
         if ($opDetail["op_product_type"] == Product::PRODUCT_TYPE_DIGITAL) {
-            if (!in_array($opDetail["op_status_id"], (array)Orders::getBuyerAllowedOrderCancellationStatuses(true))) {
+            if (!in_array($opDetail["op_status_id"], (array) Orders::getBuyerAllowedOrderCancellationStatuses(true))) {
                 $message = Labels::getLabel('MSG_Order_Cancellation_cannot_placed', $this->siteLangId);
                 if (true === MOBILE_APP_API_CALL) {
                     LibHelper::dieJsonError($message);
@@ -712,7 +835,7 @@ class BuyerController extends BuyerBaseController
                 FatUtility::dieWithError(Message::getHtml());
             }
         } else {
-            if (!in_array($opDetail["op_status_id"], (array)Orders::getBuyerAllowedOrderCancellationStatuses())) {
+            if (!in_array($opDetail["op_status_id"], (array) Orders::getBuyerAllowedOrderCancellationStatuses())) {
                 $message = Labels::getLabel('MSG_Order_Cancellation_cannot_placed', $this->siteLangId);
                 if (true === MOBILE_APP_API_CALL) {
                     LibHelper::dieJsonError($message);
@@ -722,7 +845,7 @@ class BuyerController extends BuyerBaseController
             }
         }
 
-        if (!in_array($opDetail["op_status_id"], (array)Orders::getBuyerAllowedOrderCancellationStatuses())) {
+        if (!in_array($opDetail["op_status_id"], (array) Orders::getBuyerAllowedOrderCancellationStatuses())) {
             $message = Labels::getLabel('MSG_Order_Cancellation_cannot_placed', $this->siteLangId);
             if (true === MOBILE_APP_API_CALL) {
                 LibHelper::dieJsonError($message);
@@ -746,12 +869,12 @@ class BuyerController extends BuyerBaseController
         }
 
         $dataToSave = array(
-        'ocrequest_user_id' => $user_id,
-        'ocrequest_op_id' => $opDetail['op_id'],
-        'ocrequest_ocreason_id' => FatUtility::int($post['ocrequest_ocreason_id']),
-        'ocrequest_message' => $post['ocrequest_message'],
-        'ocrequest_date' => date('Y-m-d H:i:s'),
-        'ocrequest_status' => OrderCancelRequest::CANCELLATION_REQUEST_STATUS_PENDING
+            'ocrequest_user_id' => $user_id,
+            'ocrequest_op_id' => $opDetail['op_id'],
+            'ocrequest_ocreason_id' => FatUtility::int($post['ocrequest_ocreason_id']),
+            'ocrequest_message' => $post['ocrequest_message'],
+            'ocrequest_date' => date('Y-m-d H:i:s'),
+            'ocrequest_status' => OrderCancelRequest::CANCELLATION_REQUEST_STATUS_PENDING
         );
 
         $oCRequestObj = new OrderCancelRequest();
@@ -783,11 +906,11 @@ class BuyerController extends BuyerBaseController
 
         /* send notification to admin */
         $notificationData = array(
-        'notification_record_type' => Notification::TYPE_ORDER_CANCELATION,
-        'notification_record_id' => $oCRequestObj->getMainTableRecordId(),
-        'notification_user_id' => $user_id,
-        'notification_label_key' => Notification::ORDER_CANCELLATION_NOTIFICATION,
-        'notification_added_on' => date('Y-m-d H:i:s'),
+            'notification_record_type' => Notification::TYPE_ORDER_CANCELATION,
+            'notification_record_id' => $oCRequestObj->getMainTableRecordId(),
+            'notification_user_id' => $user_id,
+            'notification_label_key' => Notification::ORDER_CANCELLATION_NOTIFICATION,
+            'notification_added_on' => date('Y-m-d H:i:s'),
         );
 
         if (!Notification::saveNotifications($notificationData)) {
@@ -881,7 +1004,7 @@ class BuyerController extends BuyerBaseController
         $srch->joinOrderCancelReasons();
         $srch->joinOrders();
         $srch->addCondition('ocrequest_user_id', '=', UserAuthentication::getLoggedUserId());
-        $srch->addMultipleFields(array( 'ocrequest_id', 'ocrequest_date', 'ocrequest_status', 'order_id', 'op_invoice_number', 'IFNULL(ocreason_title, ocreason_identifier) as ocreason_title', 'ocrequest_message', 'op_id', 'op_is_batch', 'op_selprod_id', 'order_id', 'op_selprod_title'));
+        $srch->addMultipleFields(array('ocrequest_id', 'ocrequest_date', 'ocrequest_status', 'order_id', 'op_invoice_number', 'IFNULL(ocreason_title, ocreason_identifier) as ocreason_title', 'ocrequest_message', 'op_id', 'op_is_batch', 'op_selprod_id', 'order_id', 'op_selprod_title'));
         $srch->addOrder('ocrequest_date', 'DESC');
         return $srch;
     }
@@ -904,8 +1027,10 @@ class BuyerController extends BuyerBaseController
         $srch->setPageSize($pagesize);
 
         $srch->addMultipleFields(
-            array( 'orrequest_id', 'orrequest_user_id', 'orrequest_qty', 'orrequest_type', 'orrequest_reference', 'orrequest_date', 'orrequest_status',
-            'op_invoice_number', 'op_selprod_title', 'op_product_name', 'op_brand_name', 'op_selprod_options', 'op_selprod_sku', 'op_product_model')
+            array(
+                'orrequest_id', 'orrequest_user_id', 'orrequest_qty', 'orrequest_type', 'orrequest_reference', 'orrequest_date', 'orrequest_status',
+                'op_invoice_number', 'op_selprod_title', 'op_product_name', 'op_brand_name', 'op_selprod_options', 'op_selprod_sku', 'op_product_model'
+            )
         );
 
         if (true === MOBILE_APP_API_CALL) {
@@ -973,8 +1098,10 @@ class BuyerController extends BuyerBaseController
         $srch->joinOrders();
         $srch->addCondition('orrequest_user_id', '=', UserAuthentication::getLoggedUserId());
         $srch->addMultipleFields(
-            array( 'orrequest_id', 'orrequest_user_id', 'orrequest_qty', 'orrequest_type', 'orrequest_reference', 'orrequest_date', 'orrequest_status',
-            'op_invoice_number', 'op_selprod_title', 'op_product_name', 'op_brand_name', 'op_selprod_options', 'op_selprod_sku', 'op_product_model', 'op_id', 'op_is_batch', 'op_selprod_id', 'order_id')
+            array(
+                'orrequest_id', 'orrequest_user_id', 'orrequest_qty', 'orrequest_type', 'orrequest_reference', 'orrequest_date', 'orrequest_status',
+                'op_invoice_number', 'op_selprod_title', 'op_product_name', 'op_brand_name', 'op_selprod_options', 'op_selprod_sku', 'op_product_model', 'op_id', 'op_is_batch', 'op_selprod_id', 'order_id'
+            )
         );
         $srch->addOrder('orrequest_date', 'DESC');
         return $srch;
@@ -997,11 +1124,13 @@ class BuyerController extends BuyerBaseController
         $srch->doNotCalculateRecords();
         $srch->doNotLimitRecords();
         $srch->addMultipleFields(
-            array( 'orrequest_id', 'orrequest_op_id', 'orrequest_user_id', 'orrequest_qty', 'orrequest_type',
-            'orrequest_date', 'orrequest_status', 'orrequest_reference', 'op_invoice_number', 'op_selprod_title', 'op_product_name',
-            'op_brand_name', 'op_selprod_options', 'op_selprod_sku', 'op_product_model', 'op_qty',
-            'op_unit_price', 'op_selprod_user_id', 'IFNULL(orreason_title, orreason_identifier) as orreason_title',
-            'op_shop_id', 'op_shop_name', 'op_shop_owner_name', 'order_tax_charged', 'op_other_charges', 'op_refund_amount', 'op_commission_percentage', 'op_affiliate_commission_percentage', 'op_commission_include_tax', 'op_commission_include_shipping', 'op_free_ship_upto', 'op_actual_shipping_charges')
+            array(
+                'orrequest_id', 'orrequest_op_id', 'orrequest_user_id', 'orrequest_qty', 'orrequest_type',
+                'orrequest_date', 'orrequest_status', 'orrequest_reference', 'op_invoice_number', 'op_selprod_title', 'op_product_name',
+                'op_brand_name', 'op_selprod_options', 'op_selprod_sku', 'op_product_model', 'op_qty',
+                'op_unit_price', 'op_selprod_user_id', 'IFNULL(orreason_title, orreason_identifier) as orreason_title',
+                'op_shop_id', 'op_shop_name', 'op_shop_owner_name', 'order_tax_charged', 'op_other_charges', 'op_refund_amount', 'op_commission_percentage', 'op_affiliate_commission_percentage', 'op_commission_include_tax', 'op_commission_include_shipping', 'op_free_ship_upto', 'op_actual_shipping_charges'
+            )
         );
         $rs = $srch->getResultSet();
         $request = FatApp::getDb()->fetch($rs);
@@ -1022,10 +1151,10 @@ class BuyerController extends BuyerBaseController
         $vendorReturnAddress = $sellerUserObj->getUserReturnAddress($this->siteLangId);
 
         $returnRequestMsgsSrchForm = $this->getOrderReturnRequestMessageSearchForm($this->siteLangId);
-        $returnRequestMsgsSrchForm->fill(array( 'orrequest_id' => $request['orrequest_id'] ));
+        $returnRequestMsgsSrchForm->fill(array('orrequest_id' => $request['orrequest_id']));
 
         $frm = $this->getOrderReturnRequestMessageForm($this->siteLangId);
-        $frm->fill(array( 'orrmsg_orrequest_id' => $request['orrequest_id'] ));
+        $frm->fill(array('orrmsg_orrequest_id' => $request['orrequest_id']));
         $this->set('frmMsg', $frm);
 
         $canEscalateRequest = false;
@@ -1133,11 +1262,11 @@ class BuyerController extends BuyerBaseController
 
         //send notification to admin
         $notificationData = array(
-        'notification_record_type' => Notification::TYPE_ORDER_RETURN_REQUEST,
-        'notification_record_id' => $request['orrequest_id'],
-        'notification_user_id' => UserAuthentication::getLoggedUserId(),
-        'notification_label_key' => Notification::RETURN_REQUEST_STATUS_CHANGE_NOTIFICATION,
-        'notification_added_on' => date('Y-m-d H:i:s'),
+            'notification_record_type' => Notification::TYPE_ORDER_RETURN_REQUEST,
+            'notification_record_id' => $request['orrequest_id'],
+            'notification_user_id' => UserAuthentication::getLoggedUserId(),
+            'notification_label_key' => Notification::RETURN_REQUEST_STATUS_CHANGE_NOTIFICATION,
+            'notification_added_on' => date('Y-m-d H:i:s'),
         );
 
         if (!Notification::saveNotifications($notificationData)) {
@@ -1217,7 +1346,7 @@ class BuyerController extends BuyerBaseController
         $srch->joinOrderReturnReasons();
         $srch->doNotCalculateRecords();
         $srch->doNotLimitRecords();
-        $srch->addMultipleFields(array('orrequest_id', 'orrequest_status', ));
+        $srch->addMultipleFields(array('orrequest_id', 'orrequest_status',));
         $rs = $srch->getResultSet();
         $requestRow = FatApp::getDb()->fetch($rs);
         if (!$requestRow) {
@@ -1240,10 +1369,10 @@ class BuyerController extends BuyerBaseController
 
         /* save return request message[ */
         $returnRequestMsgDataToSave = array(
-        'orrmsg_orrequest_id' => $requestRow['orrequest_id'],
-        'orrmsg_from_user_id' => $user_id,
-        'orrmsg_msg' => $post['orrmsg_msg'],
-        'orrmsg_date' => date('Y-m-d H:i:s'),
+            'orrmsg_orrequest_id' => $requestRow['orrequest_id'],
+            'orrmsg_from_user_id' => $user_id,
+            'orrmsg_msg' => $post['orrmsg_msg'],
+            'orrmsg_date' => date('Y-m-d H:i:s'),
         );
         $oReturnRequestMsgObj = new OrderReturnRequestMessage();
         $oReturnRequestMsgObj->assignValues($returnRequestMsgDataToSave);
@@ -1280,11 +1409,11 @@ class BuyerController extends BuyerBaseController
 
         //send notification to admin
         $notificationData = array(
-        'notification_record_type' => Notification::TYPE_ORDER_RETURN_REQUEST,
-        'notification_record_id' => $requestRow['orrequest_id'],
-        'notification_user_id' => UserAuthentication::getLoggedUserId(),
-        'notification_label_key' => Notification::ORDER_RETURNED_REQUEST_MESSAGE_NOTIFICATION,
-        'notification_added_on' => date('Y-m-d H:i:s'),
+            'notification_record_type' => Notification::TYPE_ORDER_RETURN_REQUEST,
+            'notification_record_id' => $requestRow['orrequest_id'],
+            'notification_user_id' => UserAuthentication::getLoggedUserId(),
+            'notification_label_key' => Notification::ORDER_RETURNED_REQUEST_MESSAGE_NOTIFICATION,
+            'notification_added_on' => date('Y-m-d H:i:s'),
         );
 
         if (!Notification::saveNotifications($notificationData)) {
@@ -1555,11 +1684,11 @@ class BuyerController extends BuyerBaseController
 
             //send notification to admin
             $notificationData = array(
-            'notification_record_type' => Notification::TYPE_PRODUCT_REVIEW,
-            'notification_record_id' => $spreviewId,
-            'notification_user_id' => UserAuthentication::getLoggedUserId(),
-            'notification_label_key' => Notification::ABUSIVE_REVIEW_POSTED_NOTIFICATION,
-            'notification_added_on' => date('Y-m-d H:i:s'),
+                'notification_record_type' => Notification::TYPE_PRODUCT_REVIEW,
+                'notification_record_id' => $spreviewId,
+                'notification_user_id' => UserAuthentication::getLoggedUserId(),
+                'notification_label_key' => Notification::ABUSIVE_REVIEW_POSTED_NOTIFICATION,
+                'notification_added_on' => date('Y-m-d H:i:s'),
             );
 
             if (!Notification::saveNotifications($notificationData)) {
@@ -1573,11 +1702,11 @@ class BuyerController extends BuyerBaseController
             }
         } else {
             $notificationData = array(
-            'notification_record_type' => Notification::TYPE_PRODUCT_REVIEW,
-            'notification_record_id' => $spreviewId,
-            'notification_user_id' => UserAuthentication::getLoggedUserId(),
-            'notification_label_key' => Notification::PRODUCT_REVIEW_NOTIFICATION,
-            'notification_added_on' => date('Y-m-d H:i:s'),
+                'notification_record_type' => Notification::TYPE_PRODUCT_REVIEW,
+                'notification_record_id' => $spreviewId,
+                'notification_user_id' => UserAuthentication::getLoggedUserId(),
+                'notification_label_key' => Notification::PRODUCT_REVIEW_NOTIFICATION,
+                'notification_added_on' => date('Y-m-d H:i:s'),
             );
 
             if (!Notification::saveNotifications($notificationData)) {
@@ -1647,9 +1776,9 @@ class BuyerController extends BuyerBaseController
         } */
 
         if ($opDetail["op_product_type"] == Product::PRODUCT_TYPE_DIGITAL) {
-            $getBuyerAllowedOrderReturnStatuses = (array)Orders::getBuyerAllowedOrderReturnStatuses(true);
+            $getBuyerAllowedOrderReturnStatuses = (array) Orders::getBuyerAllowedOrderReturnStatuses(true);
         } else {
-            $getBuyerAllowedOrderReturnStatuses = (array)Orders::getBuyerAllowedOrderReturnStatuses();
+            $getBuyerAllowedOrderReturnStatuses = (array) Orders::getBuyerAllowedOrderReturnStatuses();
         }
 
         if (!in_array($opDetail["op_status_id"], $getBuyerAllowedOrderReturnStatuses)) {
@@ -1679,7 +1808,7 @@ class BuyerController extends BuyerBaseController
         $frm = $this->getOrderReturnRequestForm($this->siteLangId, $opDetail);
         $fld = $frm->getField('orrequest_qty');
 
-        $frm->fill(array('op_id' => $opDetail['op_id'] ));
+        $frm->fill(array('op_id' => $opDetail['op_id']));
         $this->set('frmOrderReturnRequest', $frm);
         $this->_template->render(true, true);
     }
@@ -1728,9 +1857,9 @@ class BuyerController extends BuyerBaseController
         }
 
         if ($opDetail["op_product_type"] == Product::PRODUCT_TYPE_DIGITAL) {
-            $getBuyerAllowedOrderReturnStatuses = (array)Orders::getBuyerAllowedOrderReturnStatuses(true);
+            $getBuyerAllowedOrderReturnStatuses = (array) Orders::getBuyerAllowedOrderReturnStatuses(true);
         } else {
-            $getBuyerAllowedOrderReturnStatuses = (array)Orders::getBuyerAllowedOrderReturnStatuses();
+            $getBuyerAllowedOrderReturnStatuses = (array) Orders::getBuyerAllowedOrderReturnStatuses();
         }
 
         if (!in_array($opDetail["op_status_id"], $getBuyerAllowedOrderReturnStatuses)) {
@@ -1758,14 +1887,14 @@ class BuyerController extends BuyerBaseController
 
         $reference_number = $user_id . '-' . time();
         $returnRequestDataToSave = array(
-        'orrequest_user_id' => $user_id,
-        'orrequest_reference' => $reference_number,
-        'orrequest_op_id' => $opDetail['op_id'],
-        'orrequest_qty' => FatUtility::int($post['orrequest_qty']),
-        'orrequest_returnreason_id' => FatUtility::int($post['orrequest_returnreason_id']),
-        'orrequest_type' => FatUtility::int($post['orrequest_type']),
-        'orrequest_date' => date('Y-m-d H:i:s'),
-        'orrequest_status' => OrderReturnRequest::RETURN_REQUEST_STATUS_PENDING
+            'orrequest_user_id' => $user_id,
+            'orrequest_reference' => $reference_number,
+            'orrequest_op_id' => $opDetail['op_id'],
+            'orrequest_qty' => FatUtility::int($post['orrequest_qty']),
+            'orrequest_returnreason_id' => FatUtility::int($post['orrequest_returnreason_id']),
+            'orrequest_type' => FatUtility::int($post['orrequest_type']),
+            'orrequest_date' => date('Y-m-d H:i:s'),
+            'orrequest_status' => OrderReturnRequest::RETURN_REQUEST_STATUS_PENDING
         );
         $oReturnRequestObj = new OrderReturnRequest();
         $oReturnRequestObj->assignValues($returnRequestDataToSave);
@@ -1817,10 +1946,10 @@ class BuyerController extends BuyerBaseController
 
         /* save return request message[ */
         $returnRequestMsgDataToSave = array(
-        'orrmsg_orrequest_id' => $orrequest_id,
-        'orrmsg_from_user_id' => $user_id,
-        'orrmsg_msg' => $post['orrmsg_msg'],
-        'orrmsg_date' => date('Y-m-d H:i:s'),
+            'orrmsg_orrequest_id' => $orrequest_id,
+            'orrmsg_from_user_id' => $user_id,
+            'orrmsg_msg' => $post['orrmsg_msg'],
+            'orrmsg_date' => date('Y-m-d H:i:s'),
         );
 
         $oReturnRequestMsgObj = new OrderReturnRequestMessage();
@@ -1860,11 +1989,11 @@ class BuyerController extends BuyerBaseController
 
         //send notification to admin
         $notificationData = array(
-        'notification_record_type' => Notification::TYPE_ORDER_RETURN_REQUEST,
-        'notification_record_id' => $orrequest_id,
-        'notification_user_id' => UserAuthentication::getLoggedUserId(),
-        'notification_label_key' => Notification::ORDER_RETURNED_REQUEST_NOTIFICATION,
-        'notification_added_on' => date('Y-m-d H:i:s'),
+            'notification_record_type' => Notification::TYPE_ORDER_RETURN_REQUEST,
+            'notification_record_id' => $orrequest_id,
+            'notification_user_id' => UserAuthentication::getLoggedUserId(),
+            'notification_label_key' => Notification::ORDER_RETURNED_REQUEST_NOTIFICATION,
+            'notification_added_on' => date('Y-m-d H:i:s'),
         );
 
         if (!Notification::saveNotifications($notificationData)) {
@@ -1997,18 +2126,18 @@ class BuyerController extends BuyerBaseController
         $db->startTransaction();
 
         $couponData = array(
-        'coupon_type' => DiscountCoupons::TYPE_DISCOUNT,
-        'coupon_identifier' => Labels::getLabel('LBL_Generated_From_Reward_Point', $this->siteLangId),
-        'coupon_code' => uniqid(),
-        'coupon_min_order_value' => 1,
-        'coupon_discount_in_percent' => applicationConstants::PERCENTAGE,
-        'coupon_discount_value' => CommonHelper::convertRewardPointToCurrency($records['totalRewardPoints']),
-        'coupon_max_discount_value' => CommonHelper::convertRewardPointToCurrency($records['totalRewardPoints']),
-        'coupon_start_date' => date('Y-m-d'),
-        'coupon_end_date' => $records['expiredOn'],
-        'coupon_uses_count' => 1,
-        'coupon_uses_coustomer' => 1,
-        'coupon_active' => applicationConstants::ACTIVE,
+            'coupon_type' => DiscountCoupons::TYPE_DISCOUNT,
+            'coupon_identifier' => Labels::getLabel('LBL_Generated_From_Reward_Point', $this->siteLangId),
+            'coupon_code' => uniqid(),
+            'coupon_min_order_value' => 1,
+            'coupon_discount_in_percent' => applicationConstants::PERCENTAGE,
+            'coupon_discount_value' => CommonHelper::convertRewardPointToCurrency($records['totalRewardPoints']),
+            'coupon_max_discount_value' => CommonHelper::convertRewardPointToCurrency($records['totalRewardPoints']),
+            'coupon_start_date' => date('Y-m-d'),
+            'coupon_end_date' => $records['expiredOn'],
+            'coupon_uses_count' => 1,
+            'coupon_uses_coustomer' => 1,
+            'coupon_active' => applicationConstants::ACTIVE,
         );
         $couponObj = new DiscountCoupons();
         $couponObj->assignValues($couponData);
@@ -2037,7 +2166,7 @@ class BuyerController extends BuyerBaseController
             $rewardsRecord = new UserRewards($urp_id);
             $rewardsRecord->assignValues(
                 array(
-                'urp_used' => 1,
+                    'urp_used' => 1,
                 )
             );
             if (!$rewardsRecord->save()) {
@@ -2129,8 +2258,7 @@ class BuyerController extends BuyerBaseController
                                 $error = $e->getMessage();
                             }
                         }
-                    } catch (exception $e) {
-                        ;
+                    } catch (exception $e) {;
                         $error = $e->getMessage();
                     }
                 }
@@ -2168,8 +2296,8 @@ class BuyerController extends BuyerBaseController
             $anchor_tag = CommonHelper::referralTrackingUrl(UserAuthentication::getLoggedUserAttribute('user_referral_code'));
             $urlapi = "http://tinyurl.com/api-create.php?url=" . $anchor_tag;
             /***
- * activate cURL for URL shortening
-***/
+             * activate cURL for URL shortening
+             ***/
 
             $ch = curl_init();
             curl_setopt($ch, CURLOPT_URL, $urlapi);
@@ -2299,12 +2427,12 @@ class BuyerController extends BuyerBaseController
         $currencySymbol = ($currencyData['currency_symbol_left'] != '') ? $currencyData['currency_symbol_left'] : $currencyData['currency_symbol_right'];
 
         $frm = new Form('frmOrderSrch');
-        $frm->addTextBox('', 'keyword', '', array('placeholder' => Labels::getLabel('LBL_Keyword', $langId) ));
+        $frm->addTextBox('', 'keyword', '', array('placeholder' => Labels::getLabel('LBL_Keyword', $langId)));
         $frm->addSelectBox('', 'status', Orders::getOrderProductStatusArr($langId, unserialize(FatApp::getConfig("CONF_BUYER_ORDER_STATUS"))), '', array(), Labels::getLabel('LBL_Status', $langId));
-        $frm->addDateField('', 'date_from', '', array('placeholder' => Labels::getLabel('LBL_Date_From', $langId), 'readonly' => 'readonly' ));
-        $frm->addDateField('', 'date_to', '', array('placeholder' => Labels::getLabel('LBL_Date_To', $langId), 'readonly' => 'readonly' ));
-        $frm->addTextBox('', 'price_from', '', array('placeholder' => Labels::getLabel('LBL_Price_Min', $langId) . ' [' . $currencySymbol . ']' ));
-        $frm->addTextBox('', 'price_to', '', array('placeholder' => Labels::getLabel('LBL_Price_Max', $langId) . ' [' . $currencySymbol . ']' ));
+        $frm->addDateField('', 'date_from', '', array('placeholder' => Labels::getLabel('LBL_Date_From', $langId), 'readonly' => 'readonly'));
+        $frm->addDateField('', 'date_to', '', array('placeholder' => Labels::getLabel('LBL_Date_To', $langId), 'readonly' => 'readonly'));
+        $frm->addTextBox('', 'price_from', '', array('placeholder' => Labels::getLabel('LBL_Price_Min', $langId) . ' [' . $currencySymbol . ']'));
+        $frm->addTextBox('', 'price_to', '', array('placeholder' => Labels::getLabel('LBL_Price_Max', $langId) . ' [' . $currencySymbol . ']'));
         $fldSubmit = $frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_Search', $langId));
         $fldCancel = $frm->addButton("", "btn_clear", Labels::getLabel("LBL_Clear", $langId), array('onclick' => 'clearSearch();'));
         $frm->addHiddenField('', 'page');
@@ -2315,7 +2443,7 @@ class BuyerController extends BuyerBaseController
     private function getOrderProductDownloadSearchForm($langId)
     {
         $frm = new Form('frmSrch');
-        $frm->addTextBox('', 'keyword', '', array('placeholder' => Labels::getLabel('LBL_Keyword', $langId) ));
+        $frm->addTextBox('', 'keyword', '', array('placeholder' => Labels::getLabel('LBL_Keyword', $langId)));
         $fldSubmit = $frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_Search', $langId));
         $fldCancel = $frm->addButton("", "btn_clear", Labels::getLabel("LBL_Clear", $langId), array('onclick' => 'clearSearch();'));
         $frm->addHiddenField('', 'page');
@@ -2401,8 +2529,8 @@ class BuyerController extends BuyerBaseController
         include_once CONF_INSTALLATION_PATH . 'library/Fbapi.php';
 
         $config = array(
-        'app_id' => FatApp::getConfig('CONF_FACEBOOK_APP_ID', FatUtility::VAR_STRING, ''),
-        'app_secret' => FatApp::getConfig('CONF_FACEBOOK_APP_SECRET', FatUtility::VAR_STRING, ''),
+            'app_id' => FatApp::getConfig('CONF_FACEBOOK_APP_ID', FatUtility::VAR_STRING, ''),
+            'app_secret' => FatApp::getConfig('CONF_FACEBOOK_APP_SECRET', FatUtility::VAR_STRING, ''),
         );
         $fb = new Fbapi($config);
         $fbObj = $fb->getInstance();
@@ -2422,7 +2550,7 @@ class BuyerController extends BuyerBaseController
         if (!isset($accessToken)) {
             if ($helper->getError()) {
                 Message::addErrorMessage($helper->getErrorDescription());
-            //Message::addErrorMessage($helper->getErrorReason());
+                //Message::addErrorMessage($helper->getErrorReason());
             } else {
                 Message::addErrorMessage(Labels::getLabel('Msg_Bad_Request', $this->siteLangId));
             }
@@ -2554,32 +2682,32 @@ class BuyerController extends BuyerBaseController
         $this->set('msg', Labels::getLabel('MSG_Email_Sent', $this->siteLangId));
         $this->_template->render();
     }
-    
+
     public function orderTrackingInfo($trackingNumber, $courier, $orderNumber)
-	{
-		if (empty($trackingNumber) || empty($courier)) {
-			Message::addErrorMessage(Labels::getLabel('MSG_Invalid_request',$this->siteLangId));
-			FatUtility::dieWithError( Message::getHtml() );
+    {
+        if (empty($trackingNumber) || empty($courier)) {
+            Message::addErrorMessage(Labels::getLabel('MSG_Invalid_request', $this->siteLangId));
+            FatUtility::dieWithError(Message::getHtml());
         }
 
-		$shipmentTracking = new ShipmentTracking();
-		if (false === $shipmentTracking->init($this->siteLangId)) {
-			Message::addErrorMessage($shipmentTracking->getError());
+        $shipmentTracking = new ShipmentTracking();
+        if (false === $shipmentTracking->init($this->siteLangId)) {
+            Message::addErrorMessage($shipmentTracking->getError());
             FatUtility::dieWithError(Message::getHtml());
-		}
-		
+        }
+
         $shipmentTracking->createTracking($trackingNumber, $courier, $orderNumber);
-        
-		if (false === $shipmentTracking->getTrackingInfo($trackingNumber, $courier)) {
-			Message::addErrorMessage($shipmentTracking->getError());
+
+        if (false === $shipmentTracking->getTrackingInfo($trackingNumber, $courier)) {
+            Message::addErrorMessage($shipmentTracking->getError());
             FatUtility::dieWithError(Message::getHtml());
-		}
-		$trackingInfo = $shipmentTracking->getResponse();
-		
-		$this->set('trackingInfo', $trackingInfo);
-		$this->_template->render(false, false);
+        }
+        $trackingInfo = $shipmentTracking->getResponse();
+
+        $this->set('trackingInfo', $trackingInfo);
+        $this->_template->render(false, false);
     }
-    
+
     public function updatePayment()
     {
         $frm = $this->getTransferBankForm($this->siteLangId);

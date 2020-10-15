@@ -143,12 +143,81 @@ Bugs:
     => 043594 - Order details page >> invalid access gets display if admin or seller try to change order status .
     => 041966 - seller> dashboard> there are errors
     => 043517 - when language other than EN, AR is selected then getting error on header
+    => 043662 - tax category added by admin is listing twice on seller end
+    => 043528 - seller> sales report> detail page> back button alignment is not proper
+    => 043582 - Seller >> meta tags >>> seller is unable to add data in "other meta tags " field.
+    => 043595 - Seller >> manage permission for sub seller >> "request " tab should be there under "shop" on permission page .
     => 043521 - on login to buyer account> getting error on logo
     => 043585 - when category is requested then message needs to be different
     => 043602 - Blank print preview is there for order on detail page
     => 043603 - seller invoice print> only logo is listing
     => 043610 - Buyer >> when we try to become a seller then some error is there.
-
+    => 043597 - On product >> If we inactive any product then that product should not get display in "add-ons ".
+    => 043599 - Seller >> shipping profile >> images should be in the center of box. 
+    => 043643 - getting error while adding brand
+    => 043651 - while adding digital item> downloads> save button is not proper
+    => 043672 - seller registration >> login button is not proper. 
+    => 043586 - when same shipping package is added again then message needs to be corrected
+    => 043640 - wrong time slots are getting created in admin
+    => 043638 - admin> pickup address> slots> when time is selected for all days then on editing it's displays the same time for individual days selected
+    => 043702 - when product is not available for selected location then from all seller screen it's available for user and getting added to cart
+    => 043710 - during checkout> getting error in rewards
+    => 043711 - when admin approves cancellation request then there is error
+    => 043593 - When we add amount in wallet then some changes needs to be done on "thank you" screen 
+    => 043523 - buyer> orders> cancellation requests> filters> dates> date is not visible on 1366x768 resolution
+    => 043600 - Admin >> add brand >> when we add brand then admin is unable to access "language data " and " media " tabs 
+    => 043606 - While checkout if we select "pay on pickup then status should be "pay on pickup " instead of " cash on delivery .
+    => 043859 - admin>navigation> pages> edit> getting error
+    => 043671 - Admin >> shipping profile >> if the selected location is under any drop down and admin update the profile then "minimum one location required" gets display .
+    => 043865 - Buyer >> order details page >. when order status is "shipped" then "track button should get display with " shipped " status only.
+    => 043601 - seller >> on shop inventory >> when we click on "inventory data for any language then all drop down gets expand.
+    => 043673 - Seller shipping profile >> if we expand any country then there should be some scroll bar .
+    => 043674 - Seller >> shipping profile >>if there are multiple zones and when we click on "add rate icon then page should get scrolled to "add rate " box. 
+    => 043687 - Shipping profile >> if we click on "save " button multiple times then multiple entries gets generated.
+    => 043692 - Admin/seller>> shipping profile >> rates should get display in 2 decimal values even if we edit them .
+    => 043864 - Buyer << order details >> when we use wallet as payment method then "paypal wallet " gets display on order details page.
+    => 043777 - Admin >> if we delete any collection and then recreate the collection with same name then duplicate entry gets display . 
+    => 043776 - Collection >> banner >> when we save banner collection then "successful message should be there.
+    => 043775 - Admin >> promotions>> discount coupons>> links >> "Product Not Found? Click Here To Add New Product" should be in the same row.
+    => 043845 - seller> product setup> on refreshing page> there is error on top and page is not scrolling
+    => 043848 - seller> products> edit> on manipulating product id from url there is error 
+    => 043822 - shipping profile> saving without name getting incomplete warning
+    => 043870 - Admin >> manage volume discount >> if we enter qty more then stock value then that value should get display in error message .
+    => 043869 - Admin >> manage volume discount >> if there is no entry then "no record found " should get display just like others.
+    => 043867 - Admin >> special price >> when we edit special price then discount percentage should get display under special price field.
+    => 043584 - admin> categories> right side> product count in bubble is not listing properly 
+    => 043943 - Admin >> settings >> Reward point setting>> single label being used for two different reward point fields.
+    -- -------------TV-9.2.1.20201008-------------------
+    => 043566 - when new language is added and any page from footer or header (cms) is accessed then language changes itself
+    => 043946 - Seller >> special price >> select all entries >> search something random >> if there is no data then remove button should get disappear. 2. if we clear the search then "remove " button should not be there because all entries are not selected now.
+    => 043947 - Manage coupon >> if coupon is of percentage type then admin should not be able to enter more then 100 % in discount value 
+---------------TV-9.2.1.20201009----------------------
+    => 043938 - on product when wrong youtube link is added then getting corrupted video on front end 
+    => 044020 - Seller approval form fields are not editable. Neither can be deleted. 
+    => 044021 - Validation error message incorrect on forget password page 
+    => 044023 - Session issue with seller signup form.
+    => 043990 - Admin >> banner collection >> 1. alignment of image file and "translate to other lang" checkbox is not right . 2. text gets display outside of button
+    => 043991 - On thankyou page >> when we choose "pay at pickup " as payment gateway then error gets display on thankyou, order details page .
+    => 043994 - Seller >> my subscription >> some error is there. 
+    => 043996 - Seller/ admin >> some error should get display if we didn't select any slot.
+    => 043995 - Seller >> pickup address >> If there is no slot selected then some error is there on edit address.
+    => 043992 - On Checkout >> when we select pickup address then label should not be "select address".
+    => 043988 - Seller >> on shipping profile >> products >> if we click on "save changes " without entered product then blank entry gets display there 
+    => 043993 - search >> when we click on search field then blank bar gets display.
+    => 043810 - Admin should not be able to delete tax category if any product is linked with that category . 
+-------------------TV-9.2.1.20201012-----------------------
+    => 043719 - Seller shipping profile >> If we have condition for price then max value has to be multiple of product price then only this shipping will get display at checkout.
+    => 043783 - if "Product Inclusive Tax" setting is on then tax should not get display on cart and it should get display only after selecting billing address. 
+    => 044047 - option setting getting hide on seller end
+    
+---------------------TV-9.2.1.20201013------------------------    
+    => 043717 - If Weight condition match in shipping then "no shipping charges" gets display there.
+    => 044048 - seller dashboard> there is order cancellation tab which containing count of order cancel by buyer and seller but displaying request of buyer only
+    => 044060 - If social media links are added by admin/seller without http / https platform doesnot redirect user to social media page instead redirects user to domainname.com/socialmediaurl.com
+    => 044153 - when user is on cart/checkout page then mini cart shouldn't open 
+------------------TV-9.2.1.20201014-----------------------
+    => 043676 - Admin >> manage collection >> layout images are not there for "blog layout " and " mobile banner layout ".
+    
 Enhancements:
     => Tax module upgrade
     => Test cases classes enhancements.
@@ -156,8 +225,8 @@ Enhancements:
     => User Addresses DB changes.  
     => Displayed "product not available " on home page collections based on location. 
     => Performance updates.
-    => Advanced search UI and Auto Suggestions.
-    ------------TV-9.2.1.20200925------------------------
+    => Advanced search UI and Auto Suggestions.    
+    ------------TV-9.2.1.20200925------------------------     
 Notes:
    ==========Stripe Connect Installation Notes[:=========
    Composer should be installed on server to run the stripe connect module: composer.json on root of the project has details to download the required libraries in root's vendor folder.

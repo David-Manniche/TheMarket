@@ -890,8 +890,8 @@ class CommonHelper extends FatUtility
         if ($type == NavigationLinks::NAVLINK_TYPE_CMS) {
             $url = UrlHelper::generateUrl('cms', 'view', array($nav_cpage_id), '', null, false, $getOriginalUrl);
         } elseif ($type == NavigationLinks::NAVLINK_TYPE_EXTERNAL_PAGE) {
-            $url = str_replace('{SITEROOT}', CONF_WEBROOT_URL, $nav_url);
-            $url = str_replace('{siteroot}', CONF_WEBROOT_URL, $url);
+            $url = str_replace('{SITEROOT}', UrlHelper::generateUrl(), $nav_url);
+            $url = str_replace('{siteroot}', UrlHelper::generateUrl(), $url);
             $url = CommonHelper::processURLString($url);
         } elseif ($type == NavigationLinks::NAVLINK_TYPE_CATEGORY_PAGE) {
             $url = UrlHelper::generateUrl('category', 'view', array($nav_category_id), '', null, false, $getOriginalUrl);
@@ -907,7 +907,7 @@ class CommonHelper extends FatUtility
     public static function redirectUserReferer($returnUrl = false)
     {
         if (!defined('REFERER')) {
-            if (UrlHelper::getCurrUrl() == $_SERVER['HTTP_REFERER'] || empty($_SERVER['HTTP_REFERER'])) {
+            if (!isset($_SERVER['HTTP_REFERER']) || UrlHelper::getCurrUrl() == $_SERVER['HTTP_REFERER'] || empty($_SERVER['HTTP_REFERER'])) {
                 define('REFERER', UrlHelper::generateUrl('/'));
             } else {
                 define('REFERER', $_SERVER['HTTP_REFERER']);
@@ -1381,13 +1381,12 @@ class CommonHelper extends FatUtility
 
     public static function seoUrl($string)
     {
-
         //Lower case everything
         $string = ltrim(strtolower($string), '/');
         //Make alphanumeric (removes all other characters)
         //$string = preg_replace("/[^a-z0-9,&_\s-\/]/", "", $string);
         //covert / to -
-        $string = preg_replace("/[\s,&]/", "-", $string);
+        $string = preg_replace("/[\s,&#%]/", "-", $string);
         //Clean up multiple dashes or whitespaces
         $string = preg_replace("/[\s-]+/", " ", $string);
         //Convert whitespaces and underscore to dash

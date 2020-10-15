@@ -314,7 +314,8 @@ class TaxController extends AdminBaseController
         }
         $taxtObj = new Tax($taxcat_id);
         if (!$taxtObj->canRecordMarkDelete($taxcat_id)) {
-            Message::addErrorMessage($this->str_invalid_request_id);
+            $msg = Labels::getLabel('MSG_PLEASE_UNLINK_ALL_THE_PRODUCTS_FIRST', $this->adminLangId);
+            Message::addErrorMessage($msg);
             FatUtility::dieJsonError(Message::getHtml());
         }
 
@@ -426,8 +427,10 @@ class TaxController extends AdminBaseController
         if ($activatedTaxServiceId) {
             $frm->addHiddenField('', 'taxcat_plugin_id', $activatedTaxServiceId)->requirements()->setRequired();
         }
-       
-        $frm->addRequiredField(Labels::getLabel('LBL_Tax_Code', $this->adminLangId), 'taxcat_code');
+		
+		if ($activatedTaxServiceId || FatApp::getConfig('CONF_TAX_CATEGORIES_CODE', FatUtility::VAR_INT, 1)) {
+			$frm->addRequiredField(Labels::getLabel('LBL_Tax_Code', $this->adminLangId), 'taxcat_code');
+		}
         
         $activeInactiveArr = applicationConstants::getActiveInactiveArr($this->adminLangId);
         $frm->addSelectBox(Labels::getLabel('LBL_Status', $this->adminLangId), 'taxcat_active', $activeInactiveArr, '', array(), '');
@@ -575,14 +578,15 @@ class TaxController extends AdminBaseController
                 /* ] */
 
                 /* [ UPDATE COMBINED TAX DETAILS */
-                $combinedTaxes = $rule['combinedTaxDetails'];
-                /* CommonHelper::printArray($combinedTaxes); die; */
-                if (!empty($combinedTaxes)) {
-                    if (!$this->updateCombinedData($combinedTaxes, $ruleId, $this->adminLangId)) {
-                        Message::addErrorMessage(Labels::getLabel('LBL_Unable_to_Update_Combined_Tax_Data', $this->adminLangId));
-                        FatUtility::dieJsonError(Message::getHtml());
-                    }
-                }
+				if (isset($rule['combinedTaxDetails'])) {
+					$combinedTaxes = $rule['combinedTaxDetails'];
+					if (!empty($combinedTaxes)) {
+						if (!$this->updateCombinedData($combinedTaxes, $ruleId, $this->adminLangId)) {
+							Message::addErrorMessage(Labels::getLabel('LBL_Unable_to_Update_Combined_Tax_Data', $this->adminLangId));
+							FatUtility::dieJsonError(Message::getHtml());
+						}
+					}
+				}
                 /* ] */
             }
         }

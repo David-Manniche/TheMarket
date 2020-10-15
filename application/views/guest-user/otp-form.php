@@ -12,7 +12,7 @@ $frm->setFormTagAttribute('id', 'frmGuestLoginOtp');
 $frm->setFormTagAttribute('onsubmit', 'return validateOtp(this);');
 
 $btnFld = $frm->getField('btn_submit');
-$btnFld->setFieldTagAttribute('class', 'btn-block');
+$btnFld->setFieldTagAttribute('class', 'btn btn-primary btn-block');
 ?>
 
 <div class="login-wrapper otpForm-js">

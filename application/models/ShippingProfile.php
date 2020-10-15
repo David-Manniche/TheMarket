@@ -14,11 +14,11 @@ class ShippingProfile extends MyAppModel
     {
         $srch = new SearchBase(static::DB_TBL, 'sprofile');
         if ($isActive == true) {
-            $srch->addCondition('sprofile.'. static::DB_TBL_PREFIX .'active', '=', applicationConstants::ACTIVE);
+            $srch->addCondition('sprofile.' . static::DB_TBL_PREFIX . 'active', '=', applicationConstants::ACTIVE);
         }
         return $srch;
     }
-    
+
     public static function getProfileArr($userId, $assoc = true, $isActive = false, $default = false)
     {
         $srch = self::getSearchObject($isActive);
@@ -43,7 +43,7 @@ class ShippingProfile extends MyAppModel
             return FatApp::getDb()->fetchAll($srch->getResultSet(), static::tblFld('id'));
         }
     }
-    
+
     public static function getShipProfileIdByName($profileName, $userId = 0)
     {
         $srch = self::getSearchObject();
@@ -57,7 +57,7 @@ class ShippingProfile extends MyAppModel
         }
         return 0;
     }
-    
+
     public static function getDefaultProfileId($userId)
     {
         $srch = self::getSearchObject();
@@ -70,12 +70,12 @@ class ShippingProfile extends MyAppModel
             //return $row['shipprofile_id'];
             /* [ CREATE DEFAULT SHIPPING PROFILE */
             $dataToInsert = array(
-                    'shipprofile_user_id' => $userId,
-                    'shipprofile_name' => Labels::getLabel('LBL_ORDER_LEVEL_SHIPPING', CommonHelper::getLangId()),
-                    'shipprofile_active' => 1,
-                    'shipprofile_default' => 1
-                );
-                
+                'shipprofile_user_id' => $userId,
+                'shipprofile_name' => Labels::getLabel('LBL_ORDER_LEVEL_SHIPPING', CommonHelper::getLangId()),
+                'shipprofile_active' => 1,
+                'shipprofile_default' => 1
+            );
+
             $spObj = new ShippingProfile();
             $spObj->assignValues($dataToInsert);
 

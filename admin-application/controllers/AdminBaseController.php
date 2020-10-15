@@ -148,11 +148,15 @@ class AdminBaseController extends FatController
             'allowedFileSize' => LibHelper::getMaximumFileUploadSize(),
             'fileSizeExceeded' => Labels::getLabel("MSG_FILE_SIZE_SHOULD_BE_LESSER_THAN_{SIZE-LIMIT}", $this->adminLangId),
             'currentPrice' => Labels::getLabel('LBL_Current_Price', $this->adminLangId),
+            'currentStock' => Labels::getLabel('LBL_Current_Stock', $this->adminLangId),
             'discountPercentage' => Labels::getLabel('LBL_Discount_Percentage', $this->adminLangId),
             'shippingUser' => Labels::getLabel('MSG_Please_assign_shipping_user', $this->adminLangId),
             'saveProfileFirst' => Labels::getLabel('LBL_Save_Profile_First', $this->adminLangId),
             'minimumOneLocationRequired' => Labels::getLabel('LBL_Minimum_one_location_is_required', $this->adminLangId),
             'confirmTransfer' => Labels::getLabel('LBL_CONFIRM_TRANSFER_?', $this->adminLangId),
+            'invalidFromTime' => Labels::getLabel('LBL_PLEASE_SELECT_VALID_FROM_TIME', $this->adminLangId),
+            'selectTimeslotDay' => Labels::getLabel('LBL_ATLEAST_ONE_DAY_AND_TIMESLOT_NEEDS_TO_BE_CONFIGURED', $this->adminLangId),
+            'invalidTimeSlot' => Labels::getLabel('LBL_PLEASE_CONFIGURE_FROM_AND_TO_TIME', $this->adminLangId),
         );
 
         $languages = Language::getAllNames(false);

@@ -243,9 +243,16 @@ $(document).on('blur', ".js--splPriceCol:not(.date_js)", function(){
         }
     };
     showElement = function(currObj, value){
-        var sibling = currObj.siblings('div');
+        var sibling = currObj.siblings('div.js--editCol');
+        var percentDiv = currObj.siblings('div.js--percentVal');
         if ('' != value){
             sibling.text(value);
+            var price = currObj.attr('data-price');
+            var value = currObj.attr('value');
+            var discountPrice = price - value;
+            var discountPercentage = ((discountPrice/price)*100).toFixed(2);
+            discountPercentage = discountPercentage+"% off";
+            percentDiv.text(discountPercentage);
         }
         sibling.fadeIn();
         currObj.addClass('hide');

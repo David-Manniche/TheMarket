@@ -6,11 +6,11 @@ class SellerRequestsController extends SellerBaseController
         parent::__construct($action);
         $this->userPrivilege->canViewSellerRequests(UserAuthentication::getLoggedUserId());
     }
-    
+
     public function index()
     {
         $this->set('canEdit', $this->userPrivilege->canEditSellerRequests(0, true));
-        
+
         $srch = $this->getRequestedbrandObj();
         $rs = $srch->getResultSet();
         $reqBrands = FatApp::getDb()->fetchAll($rs);
@@ -28,15 +28,15 @@ class SellerRequestsController extends SellerBaseController
             $noRecordFound = true;
         }
 
-        $this->set('noRecordFound', $noRecordFound); 
+        $this->set('noRecordFound', $noRecordFound);
         $this->_template->addJs(array('js/cropper.js', 'js/cropper-main.js'));
         $this->_template->render();
     }
-    
+
     public function searchBrandRequests()
     {
         $userId = UserAuthentication::getLoggedUserId();
-        
+
         $post = FatApp::getPostedData();
         $page = (empty($post['page']) || $post['page'] <= 0) ? 1 : intval($post['page']);
         $pagesize = FatApp::getConfig('CONF_PAGE_SIZE', FatUtility::VAR_INT, 10);
@@ -50,6 +50,7 @@ class SellerRequestsController extends SellerBaseController
         $this->set('canEdit', $this->userPrivilege->canEditSellerRequests(UserAuthentication::getLoggedUserId(), true));
         $this->set("arr_listing", $requestedBrands);
         $this->set('pageCount', $srch->pages());
+        $this->set('recordCount', $srch->recordCount());
         $this->set('page', $page);
         $this->set('pageSize', $pagesize);
         $this->set('postedData', $post);
@@ -109,8 +110,8 @@ class SellerRequestsController extends SellerBaseController
                 'preq_id' => $row['preq_id'],
                 'preq_user_id' => $row['preq_user_id'],
                 'preq_added_on' => $row['preq_added_on'],
-				'preq_requested_on' => $row['preq_requested_on'],
-				'preq_status_updated_on' => $row['preq_status_updated_on'],
+                'preq_requested_on' => $row['preq_requested_on'],
+                'preq_status_updated_on' => $row['preq_status_updated_on'],
                 'preq_status' => $row['preq_status'],
                 'product_identifier' => $row['product_identifier'],
                 'product_name' => (!empty($row['product_name'])) ? $row['product_name'] : '',
@@ -119,6 +120,7 @@ class SellerRequestsController extends SellerBaseController
         }
         $this->set('canEdit', $this->userPrivilege->canEditSellerRequests(UserAuthentication::getLoggedUserId(), true));
         $this->set("arr_listing", $arr_listing);
+        $this->set('recordCount', $srch->recordCount());
         $this->set('pageCount', $srch->pages());
         $this->set('page', $page);
         $this->set('pageSize', $pagesize);
@@ -130,41 +132,42 @@ class SellerRequestsController extends SellerBaseController
         $this->_template->render(false, false);
     }
 
-    private function getRequestedbrandObj ()
+    private function getRequestedbrandObj()
     {
         $srch = Brand::getSearchObject($this->siteLangId);
-        
+
         $userArr = User::getAuthenticUserIds(UserAuthentication::getLoggedUserId(), $this->userParentId);
         $srch->addCondition('brand_seller_id', 'in', $userArr);
         $srch->addCondition('brand_deleted', '=', applicationConstants::NO);
 
         $srch->addOrder('brand_updated_on', 'DESC');
-        
+
         return $srch;
     }
 
-    private function getRequestedCatObj ()
+    private function getRequestedCatObj()
     {
         $srch = ProductCategory::getSearchObject(false, $this->siteLangId, false, -1);
-        
+
         $userArr = User::getAuthenticUserIds(UserAuthentication::getLoggedUserId(), $this->userParentId);
         $srch->addCondition('prodcat_seller_id', 'in', $userArr);
         $srch->addCondition('prodcat_deleted', '=', applicationConstants::NO);
 
         $srch->addOrder('prodcat_updated_on', 'DESC');
-        
+
         return $srch;
     }
-    
-    private function getRequestedProdObj () {
+
+    private function getRequestedProdObj()
+    {
         $srch = ProductRequest::getSearchObject($this->siteLangId);
-        
+
         $userArr = User::getAuthenticUserIds(UserAuthentication::getLoggedUserId(), $this->userParentId);
         $srch->addCondition('preq_user_id', 'in', $userArr);
         $srch->addCondition('preq_deleted', '=', applicationConstants::NO);
 
         $srch->addOrder('preq_added_on', 'DESC');
-        return $srch;        
+        return $srch;
     }
 
     /* ------Product Category Request [------*/
@@ -240,8 +243,8 @@ class SellerRequestsController extends SellerBaseController
             Message::addErrorMessage(Labels::getLabel('MSG_Invalid_Access', $this->siteLangId));
             FatUtility::dieJsonError(Message::getHtml());
         }
-	
-		$approvalRequired = FatApp::getConfig('CONF_PRODUCT_CATEGORY_REQUEST_APPROVAL', FatUtility::VAR_INT, 0);
+
+        $approvalRequired = FatApp::getConfig('CONF_PRODUCT_CATEGORY_REQUEST_APPROVAL', FatUtility::VAR_INT, 0);
         if (!$approvalRequired) {
             $post['prodcat_active'] = applicationConstants::ACTIVE;
             $post['prodcat_status'] = ProductCategory::REQUEST_APPROVED;
@@ -260,11 +263,11 @@ class SellerRequestsController extends SellerBaseController
         $categoryReqId = $productCategory->getMainTableRecordId();
 
         $notificationData = array(
-        'notification_record_type' => Notification::TYPE_PRODUCT_CATEGORY,
-        'notification_record_id' => $categoryReqId,
-        'notification_user_id' => UserAuthentication::getLoggedUserId(true),
-        'notification_label_key' => Notification::PRODUCT_CATEGORY_REQUEST_NOTIFICATION,
-        'notification_added_on' => date('Y-m-d H:i:s'),
+            'notification_record_type' => Notification::TYPE_PRODUCT_CATEGORY,
+            'notification_record_id' => $categoryReqId,
+            'notification_user_id' => UserAuthentication::getLoggedUserId(true),
+            'notification_label_key' => Notification::PRODUCT_CATEGORY_REQUEST_NOTIFICATION,
+            'notification_added_on' => date('Y-m-d H:i:s'),
         );
 
         if (!Notification::saveNotifications($notificationData)) {
@@ -278,11 +281,11 @@ class SellerRequestsController extends SellerBaseController
             Message::addErrorMessage(Labels::getLabel("MSG_NOTIFICATION_COULD_NOT_BE_SENT", $this->siteLangId));
             FatUtility::dieJsonError(Message::getHtml());
         }
-		
-		$msg = Labels::getLabel("MSG_Category_Setup_Successful", $this->siteLangId);
-		if ($approvalRequired) {
-			$msg = Labels::getLabel("MSG_CATEGORY_REQUEST_SUBMITTED_SUCCESSFULLY", $this->siteLangId);
-		}
+
+        $msg = Labels::getLabel("MSG_Category_Setup_Successful", $this->siteLangId);
+        if ($approvalRequired) {
+            $msg = Labels::getLabel("MSG_CATEGORY_REQUEST_SUBMITTED_SUCCESSFULLY", $this->siteLangId);
+        }
         $this->set('msg', $msg);
         $this->set('categoryReqId', $categoryReqId);
         $this->_template->render(false, false, 'json-success.php');
@@ -349,11 +352,11 @@ class SellerRequestsController extends SellerBaseController
         $brandReqId = $record->getMainTableRecordId();
 
         $notificationData = array(
-        'notification_record_type' => Notification::TYPE_BRAND,
-        'notification_record_id' => $brandReqId,
-        'notification_user_id' => UserAuthentication::getLoggedUserId(true),
-        'notification_label_key' => Notification::BRAND_REQUEST_NOTIFICATION,
-        'notification_added_on' => date('Y-m-d H:i:s'),
+            'notification_record_type' => Notification::TYPE_BRAND,
+            'notification_record_id' => $brandReqId,
+            'notification_user_id' => UserAuthentication::getLoggedUserId(true),
+            'notification_label_key' => Notification::BRAND_REQUEST_NOTIFICATION,
+            'notification_added_on' => date('Y-m-d H:i:s'),
         );
 
         if (!Notification::saveNotifications($notificationData)) {
@@ -414,9 +417,9 @@ class SellerRequestsController extends SellerBaseController
         unset($post['brand_id']);
         unset($post['lang_id']);
         $data = array(
-        'brandlang_lang_id' => $lang_id,
-        'brandlang_brand_id' => $brandReqId,
-        'brand_name' => $post['brand_name'],
+            'brandlang_lang_id' => $lang_id,
+            'brandlang_brand_id' => $brandReqId,
+            'brand_name' => $post['brand_name'],
         );
 
         $brandObj = new Brand($brandReqId);
@@ -547,8 +550,7 @@ class SellerRequestsController extends SellerBaseController
             $lang_id,
             0,
             $aspectRatio
-        )
-        ) {
+        )) {
             Message::addErrorMessage($fileHandlerObj->getError());
             FatUtility::dieJsonError(Message::getHtml());
         }
@@ -565,7 +567,7 @@ class SellerRequestsController extends SellerBaseController
         $languagesAssocArr = Language::getAllNames();
         $frm->addHiddenField('', 'brand_id', $brand_id);
         $frm->addHTML('', 'brand_logo_heading', '');
-        $frm->addSelectBox(Labels::getLabel('LBL_Language', $this->siteLangId), 'brand_lang_id', array( 0 => Labels::getLabel('LBL_Universal', $this->siteLangId) ) + $languagesAssocArr, '', array(), '');
+        $frm->addSelectBox(Labels::getLabel('LBL_Language', $this->siteLangId), 'brand_lang_id', array(0 => Labels::getLabel('LBL_Universal', $this->siteLangId)) + $languagesAssocArr, '', array(), '');
         $ratioArr = AttachedFile::getRatioTypeArray($this->siteLangId);
         $frm->addRadioButtons(Labels::getLabel('LBL_Ratio', $this->siteLangId), 'ratio_type', $ratioArr, AttachedFile::RATIO_TYPE_SQUARE);
         $frm->addFileUpload(Labels::getLabel('Lbl_Logo', $this->siteLangId), 'logo', array('accept' => 'image/*', 'data-frm' => 'frmBrandMedia'));
@@ -638,16 +640,16 @@ class SellerRequestsController extends SellerBaseController
     {
         $prodReqId = FatUtility::int($prodReqId);
         $srch = $this->getRequestedProdObj();
-		$srch->joinTable(Brand::DB_TBL, 'LEFT OUTER JOIN', 'tb.brand_id = preq_brand_id', 'tb');
-		$srch->joinTable(Brand::DB_TBL_LANG, 'LEFT OUTER JOIN', 'brandlang_brand_id = tb.brand_id	AND brandlang_lang_id = ' . $this->siteLangId, 'tb_l');
-		$srch->joinTable(ProductCategory::DB_TBL, 'INNER JOIN', 'tc.prodcat_id = preq_prodcat_id', 'tc');
-		$srch->joinTable(ProductCategory::DB_TBL_LANG, 'LEFT OUTER JOIN', 'prodcatlang_prodcat_id = tc.prodcat_id AND prodcatlang_lang_id = ' . $this->siteLangId, 'tc_l');
-		$srch->addMultipleFields(array('preq.*', 'IFNULL(brand_name, brand_identifier) as brand_name', 'IFNULL(prodcat_name, prodcat_identifier) as prodcat_name'));
-		$srch->addCondition('preq_id', '=', $prodReqId);
+        $srch->joinTable(Brand::DB_TBL, 'LEFT OUTER JOIN', 'tb.brand_id = preq_brand_id', 'tb');
+        $srch->joinTable(Brand::DB_TBL_LANG, 'LEFT OUTER JOIN', 'brandlang_brand_id = tb.brand_id	AND brandlang_lang_id = ' . $this->siteLangId, 'tb_l');
+        $srch->joinTable(ProductCategory::DB_TBL, 'INNER JOIN', 'tc.prodcat_id = preq_prodcat_id', 'tc');
+        $srch->joinTable(ProductCategory::DB_TBL_LANG, 'LEFT OUTER JOIN', 'prodcatlang_prodcat_id = tc.prodcat_id AND prodcatlang_lang_id = ' . $this->siteLangId, 'tc_l');
+        $srch->addMultipleFields(array('preq.*', 'IFNULL(brand_name, brand_identifier) as brand_name', 'IFNULL(prodcat_name, prodcat_identifier) as prodcat_name'));
+        $srch->addCondition('preq_id', '=', $prodReqId);
         $rs = $srch->getResultSet();
         $product = FatApp::getDb()->fetchAll($rs);
-		
-		$productSpecData = [];
+
+        $productSpecData = [];
         foreach ($product as $key => $row) {
             $content = (!empty($row['preq_content'])) ? json_decode($row['preq_content'], true) : array();
             $langContent = (!empty($row['preq_lang_data'])) ? json_decode($row['preq_lang_data'], true) : array();
@@ -668,7 +670,7 @@ class SellerRequestsController extends SellerBaseController
             $productInfo = $arr;
         }
         /* ] */
-		
+
         $this->set('product', $productInfo);
         $this->_template->render(false, false);
     }

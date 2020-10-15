@@ -103,9 +103,11 @@
                         </a>
                     </div>
                     <?php $this->includeTemplate('_partial/headerSearchFormArea.php'); ?>
+					<?php if ($controllerName != 'Cart') { ?>
                     <div class="cart dropdown" id="cartSummary">
                         <?php $this->includeTemplate('_partial/headerWishListAndCartSummary.php'); ?>
                     </div>
+					<?php } ?>
                 </div>
             </div>
         </div> <?php $this->includeTemplate('_partial/headerNavigation.php'); ?>
