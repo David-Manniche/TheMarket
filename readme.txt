@@ -221,7 +221,7 @@ Bugs:
     => 043778  if we add same state in two different rules then some error should get display at admin end 
     
     => 044185 - when buyer places order (multi item) with reward then on parent order detail page> there is some issue
-
+---------------------TV-9.2.1.20201015----------------------
 Enhancements:
     => Tax module upgrade
     => Test cases classes enhancements.
