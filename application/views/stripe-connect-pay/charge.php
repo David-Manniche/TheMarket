@@ -18,7 +18,7 @@ $paymentIntendId = isset($paymentIntendId) ? $paymentIntendId : '';
                 </p>
             </div>
         </div>
-        <div class="payment-from paymentFrom-js">
+        <div class="payment-from paymentFrom-js container">
             <?php
             $frm->setFormTagAttribute('onsubmit', 'doPayment(this, "' . $orderInfo["id"] . '"); return(false);');
             $frm->setFormTagAttribute('class', 'form form--normal');

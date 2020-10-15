@@ -216,6 +216,8 @@ Bugs:
     => 044060 - If social media links are added by admin/seller without http / https platform doesnot redirect user to social media page instead redirects user to domainname.com/socialmediaurl.com
 
 ------------------TV-9.2.1.20201014-----------------------
+    => 044117 - Checkout >> bank transfer is not working.
+    
 Enhancements:
     => Tax module upgrade
     => Test cases classes enhancements.

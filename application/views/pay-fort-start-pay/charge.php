@@ -10,7 +10,7 @@
 			<p class=""><?php echo Labels::getLabel('LBL_Order_Invoice',$siteLangId);?>: <strong><?php echo $orderInfo["invoice"] ; ?></strong></p>
 		  </div>
 		</div>
-		<div class="payment-from"> 
+		<div class="payment-from container"> 
 			<?php  if (!isset($error)){ ?>
 				<p><?php echo Labels::getLabel('MSG_We_are_redirecting_to_payment_page',$siteLangId);?></p>
 			<?php } else{ ?> 

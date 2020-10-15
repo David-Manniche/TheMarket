@@ -1,6 +1,6 @@
 <?php defined('SYSTEM_INIT') or die('Invalid Usage'); ?>
 <?php 
-    $frm->setFormTagAttribute('action', UrlHelper::generateUrl('TransferbankPay', 'send', array($orderInfo['id'])));
+    $frm->setFormTagAttribute('action', UrlHelper::generateUrl('TransferBankPay', 'send', array($orderInfo['id'])));
     $frm->setFormTagAttribute('class', 'form');
     $frm->developerTags['colClassPrefix'] = 'col-lg-12 col-md-12 col-sm-12 col-xs-';
     $frm->developerTags['fld_default_col'] = 12;
@@ -16,8 +16,8 @@
                 <p class=""><?php echo Labels::getLabel('LBL_Order_Invoice', $siteLangId); ?>: <strong><?php echo $orderInfo["invoice"]; ?></strong></p>
             </div>
         </div>
-        <div class="payment-from">
-            <ul class="transfer-payment-detail">
+        <div class="payment-from container">
+            <ul class="transfer-payment-detail mt-4">
                 <li>
                     <i class="icn">
                         <svg class="svg">

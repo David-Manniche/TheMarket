@@ -10,7 +10,7 @@
                 <p class=""><?php echo Labels::getLabel('LBL_Order_Invoice', $siteLangId); ?>: <strong><?php echo $orderInfo["invoice"]; ?></strong></p>
             </div>
         </div>
-        <div class="payment-from">
+        <div class="payment-from container">
             <?php $button_confirm = Labels::getLabel('LBL_CONFIRM', $siteLangId); ?>
             <?php if (!isset($error)) : ?>
                 <p><?php echo Labels::getLabel('MSG_CONFIRM_TO_PROCEED_FOR_PAYMENT_?', $siteLangId); ?></p>

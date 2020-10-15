@@ -14,7 +14,7 @@
 
         <?php if ($paymentType == 'HOSTED') {  /* Hosted Checkout */ ?>
 
-            <div class="payment-from">
+            <div class="payment-from container">
                 <?php if (!isset($error)) : ?>
                     <p><?php echo Labels::getLabel('LBL_We_are_redirecting_payment_page', $siteLangId) ?>:</p>
                     <?php echo  $frm->getFormHtml(); ?>
@@ -32,7 +32,7 @@
 
         <?php } else { /* API Checkout */ ?>
 
-            <div class="payment-from">
+            <div class="payment-from container">
                 <?php if (!isset($error)) :
                     // $frm->setFormTagAttribute('onsubmit', 'sendPayment(this);return false;');
                     $frm->setFormTagAttribute('id', 'twocheckout');

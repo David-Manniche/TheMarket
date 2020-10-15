@@ -14,7 +14,7 @@
                 </p>
             </div>
         </div>
-        <div class="payment-from">
+        <div class="payment-from container">
             <p class='loading-js'><?php echo Labels::getLabel('MSG_LOADING_PAYMENT_OPTIONS...', $siteLangId); ?></p>
             <div id="paypal-buttons"></div>
         </div>
