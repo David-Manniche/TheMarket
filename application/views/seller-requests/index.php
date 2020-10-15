@@ -11,7 +11,7 @@ $this->includeTemplate('_partial/seller/sellerDashboardNavigation.php');
             <?php if ($canEdit && !$noRecordFound) { ?>
             <div class="col-auto">
                 <div class="dropdown dashboard-user">
-                    <button class="btn btn-outline-primary dropdown-toggle" type="button" id="dashboardDropdown"
+                    <button class="btn btn-outline-brand dropdown-toggle" type="button" id="dashboardDropdown"
                         data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                         <?php echo Labels::getLabel('LBL_New_Request', $siteLangId); ?>
                     </button>
@@ -59,7 +59,7 @@ $this->includeTemplate('_partial/seller/sellerDashboardNavigation.php');
                                                     <p>Lorem ipsum dolor sit, amet consectetur adipisicing elit. Placeat eos
                                                         quis amet. </p>
                                                     <div class="action">
-                                                        <a class="btn btn-outline-primary btn-wide" href="<?php echo UrlHelper::generateUrl('Seller', 'customCatalogProductForm'); ?>"><?php echo Labels::getLabel('LBL_New_Product_Request', $siteLangId);?></a>
+                                                        <a class="btn btn-outline-brand btn-wide" href="<?php echo UrlHelper::generateUrl('Seller', 'customCatalogProductForm'); ?>"><?php echo Labels::getLabel('LBL_New_Product_Request', $siteLangId);?></a>
                                                     </div>
                                                 </div>
                                             </div>
@@ -76,7 +76,7 @@ $this->includeTemplate('_partial/seller/sellerDashboardNavigation.php');
                                                 <p>Lorem ipsum dolor sit, amet consectetur adipisicing elit. Placeat eos
                                                     quis amet. </p>
                                                 <div class="action">
-                                                    <a class="btn btn-outline-primary btn-wide" href="javascript:void(0);" onClick="addBrandReqForm(0)"><?php echo Labels::getLabel('LBL_New_Brand_Request', $siteLangId);?></a>
+                                                    <a class="btn btn-outline-brand btn-wide" href="javascript:void(0);" onClick="addBrandReqForm(0)"><?php echo Labels::getLabel('LBL_New_Brand_Request', $siteLangId);?></a>
                                                 </div>
                                             </div>
                                         </div>
@@ -93,7 +93,7 @@ $this->includeTemplate('_partial/seller/sellerDashboardNavigation.php');
                                                 <p>Lorem ipsum dolor sit, amet consectetur adipisicing elit. Placeat eos
                                                     quis amet. </p>
                                                 <div class="action">
-                                                    <a class="btn btn-outline-primary btn-wide" href="javascript:void(0);" onClick="addCategoryReqForm(0)"><?php echo Labels::getLabel('LBL_New_Category_Request', $siteLangId);?></a>
+                                                    <a class="btn btn-outline-brand btn-wide" href="javascript:void(0);" onClick="addCategoryReqForm(0)"><?php echo Labels::getLabel('LBL_New_Category_Request', $siteLangId);?></a>
                                                 </div>
                                             </div>
                                         </div>

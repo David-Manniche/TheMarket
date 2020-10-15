@@ -13,7 +13,7 @@ $btnFld = $frm->getField('btn_submit');
 $btnFld->addFieldTagAttribute('class', 'btn btn-block btn-brand');
 
 $btnFld = $frm->getField('btn_clear');
-$btnFld->addFieldTagAttribute('class', 'btn btn-block btn-outline-primary');
+$btnFld->addFieldTagAttribute('class', 'btn btn-block btn-outline-brand');
 
 $fld = $frm->getField('adsbatch_expired_on');
 $fld->addFieldTagAttribute('class', 'date_js');

@@ -461,8 +461,16 @@
     text-transform: uppercase;
     top: 50%;
     z-index: 1;
-    font-weight: 700;
+    font-weight: 600;
+    text-align: center;
     transform: translateY(-50%);
+    &-full {
+        position: static;
+        width: 100%;
+        border-radius: $radius4;
+        height: auto;
+        transform: none;
+    }
     &.tag--soldout-small {
         padding: 9px 7px;
         width: 40px;
@@ -509,6 +517,9 @@
             -ms-hyphens: auto;
             -webkit-hyphens: auto;
             hyphens: auto;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
             a {
                 opacity: 1;
                 color: inherit;

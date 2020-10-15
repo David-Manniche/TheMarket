@@ -144,7 +144,7 @@ $cancelBtnFld->developerTags['noCaptionTag'] = true;
                                         $submitFld->setFieldTagAttribute('class', 'btn btn-brand btn-block ');
 
                                         $fldClear= $frmSrch->getField('btn_clear');
-                                        $fldClear->setFieldTagAttribute('class', 'btn btn-outline-primary btn-block');
+                                        $fldClear->setFieldTagAttribute('class', 'btn btn-outline-brand btn-block');
                                         echo $frmSrch->getFormHtml();
                                         ?>
                                     </div>

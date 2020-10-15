@@ -12,7 +12,7 @@ $btnFld->developerTags['noCaptionTag'] = true;
 
 $btnFld = $frm->getField('btn_clear');
 if (null != $btnFld) {
-    $btnFld->addFieldTagAttribute('class', 'btn btn-outline-primary btn-block');
+    $btnFld->addFieldTagAttribute('class', 'btn btn-outline-brand btn-block');
     $btnFld->addFieldTagAttribute('onClick', 'clearForm();');
     $btnFld->developerTags['col'] = 2;
     $btnFld->setWrapperAttribute('class', 'col-6 col-lg-2');

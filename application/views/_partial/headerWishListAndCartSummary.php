@@ -100,7 +100,7 @@ if ($user_is_buyer > 0 || (!UserAuthentication::isUserLogged())) { ?>
                 <tr>
                     <td class="">
                         <?php /* <a href="<?php echo UrlHelper::generateUrl('cart'); ?>" class="btn btn-brand ripplelink"><?php echo Labels::getLabel('LBL_View_Bag', $siteLangId); ?> </a> */ ?>
-                        <a href="javascript:void(0);" onclick="cart.clear();" class="btn btn-outline-primary ripplelink"><?php echo Labels::getLabel('LBL_CLEAR_CART', $siteLangId); ?> </a>
+                        <a href="javascript:void(0);" onclick="cart.clear();" class="btn btn-outline-brand ripplelink"><?php echo Labels::getLabel('LBL_CLEAR_CART', $siteLangId); ?> </a>
                     </td>
                     <td class=""><a class="btn btn-brand ripplelink" href="<?php echo UrlHelper::generateUrl('cart'); ?>"><?php echo Labels::getLabel('LBL_Proceed_To_Pay', $siteLangId); ?></a></td>
                 </tr>

@@ -25,7 +25,7 @@ $btnSubmit->setFieldTagAttribute('class', 'btn btn-block btn-brand');
 $btnClear = $optionValueFrm->getField('btn_clear');
 $btnClear->developerTags['col'] = '3';
 $btnClear->addWrapperAttribute('class', 'col-6');
-$btnClear->setFieldTagAttribute('class', 'btn btn-block btn-outline-primary');
+$btnClear->setFieldTagAttribute('class', 'btn btn-block btn-outline-brand');
 ?><div class="box__head">
 <h4><?php echo isset($optionName) ? Labels::getLabel('LBL_CONFIGURE_OPTION_VALUES_FOR', $langId).' '.$optionName : Labels::getLabel('LBL_CONFIGURE_OPTION_VALUES', $langId); ?></h4>
 </div>

@@ -26,7 +26,7 @@ $toAllFld = $frm->getField('tslot_to_all');
 $toAllFld->setFieldTagAttribute('onChange', 'validateTimeFields()');
 
 $cancelFld = $frm->getField('btn_cancel');
-$cancelFld->setFieldTagAttribute('class', 'btn btn-outline-primary');
+$cancelFld->setFieldTagAttribute('class', 'btn btn-outline-brand');
 $cancelFld->developerTags['col'] = 2;
 $cancelFld->developerTags['noCaptionTag'] = true;
 
@@ -41,7 +41,7 @@ $this->includeTemplate('seller/_partial/shop-navigation.php', $variables, false)
      <div class="cards-header">
         <h5 class="cards-title"><?php echo Labels::getLabel('LBL_Shop_Pickup_Addresses', $siteLangId); ?></h5>
         <div class="btn-group">
-            <a href="javascript:void(0)" onClick="pickupAddress()" class="btn btn-outline-primary btn-sm  btn-sm"><?php echo Labels::getLabel('LBL_Back', $siteLangId);?></a>
+            <a href="javascript:void(0)" onClick="pickupAddress()" class="btn btn-outline-brand btn-sm  btn-sm"><?php echo Labels::getLabel('LBL_Back', $siteLangId);?></a>
         </div>
     </div>
     
@@ -321,7 +321,7 @@ $this->includeTemplate('seller/_partial/shop-navigation.php', $variables, false)
 											</div>
 											<div class="field-wraper">
 												<div class="field_cover">
-												<button class="btn btn-outline-primary" type="button" name="btn_remove_row"><i class="fas fa-minus"></i></button>
+												<button class="btn btn-outline-brand" type="button" name="btn_remove_row"><i class="fas fa-minus"></i></button>
 												</div>
 											</div>
 										</div>
@@ -472,7 +472,7 @@ $this->includeTemplate('seller/_partial/shop-navigation.php', $variables, false)
         addTimeSlotRow = function(day){
             var fromTimeHtml = $(".js-from_time_"+day).html();
             var toTimeHtml = $(".js-to_time_"+day).html();
-            var html = "<div class='row js-added-rows-"+day+"'><div class='col-md-2'></div><div class='col-md-4 js-from_time_"+day+"'>"+fromTimeHtml+"</div><div class='col-md-4 js-to_time_"+day+"'>"+toTimeHtml+"</div><div class='col-md-2'><div class='field-set'><div class='caption-wraper'><label class='field_label'></label></div><div class='field-wraper'><div class='field_cover'><button class='btn btn-outline-primary' type='button' name='btn_remove_row'><i class='fas fa-minus'></i></button></div> </div></div></div></div>";
+            var html = "<div class='row js-added-rows-"+day+"'><div class='col-md-2'></div><div class='col-md-4 js-from_time_"+day+"'>"+fromTimeHtml+"</div><div class='col-md-4 js-to_time_"+day+"'>"+toTimeHtml+"</div><div class='col-md-2'><div class='field-set'><div class='caption-wraper'><label class='field_label'></label></div><div class='field-wraper'><div class='field_cover'><button class='btn btn-outline-brand' type='button' name='btn_remove_row'><i class='fas fa-minus'></i></button></div> </div></div></div></div>";
 			
             $(".js-from_time_"+day).last().parent().after(html);
             $('.js-slot-from-'+day).last().val('');

@@ -11,7 +11,7 @@
             <div class="cards">
                 <div class="cards-header">
                     <h5 class="cards-title "><?php echo Labels::getLabel('LBL_Order_Details', $siteLangId);?></h5>
-                    <div class="btn-group"><a href="<?php echo UrlHelper::generateUrl('Seller', 'sales');?>" class="btn btn-outline-primary btn-sm"><?php echo Labels::getLabel('LBL_Back_to_order', $siteLangId);?></a></div>
+                    <div class="btn-group"><a href="<?php echo UrlHelper::generateUrl('Seller', 'sales');?>" class="btn btn-outline-brand btn-sm"><?php echo Labels::getLabel('LBL_Back_to_order', $siteLangId);?></a></div>
                 </div>
                 <div class="cards-content ">
                     <div class="box__body">

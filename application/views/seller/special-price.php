@@ -20,7 +20,7 @@
 
     $cancelBtnFld = $frmSearch->getField('btn_clear');
     $cancelBtnFld->setFieldTagAttribute('onclick', 'clearSearch(' . $selProd_id . ');');
-    $cancelBtnFld->setFieldTagAttribute('class', 'btn btn-outline-primary btn-block');
+    $cancelBtnFld->setFieldTagAttribute('class', 'btn btn-outline-brand btn-block');
     $cancelBtnFld->setWrapperAttribute('class', 'col-6');
     $cancelBtnFld->developerTags['col'] = 2;
     $cancelBtnFld->developerTags['noCaptionTag'] = true;
@@ -63,7 +63,7 @@
 						<div class="cards-header">
                             <div class="cards-title"></div>
 							<div class="btn-group">
-								<a class="btn btn-outline-primary btn-sm formActionBtn-js formActions-css" title="<?php echo Labels::getLabel('LBL_Delete_Special_Price', $siteLangId); ?>" onclick="deleteSpecialPriceRows()" href="javascript:void(0)">							
+								<a class="btn btn-outline-brand btn-sm formActionBtn-js formActions-css" title="<?php echo Labels::getLabel('LBL_Delete_Special_Price', $siteLangId); ?>" onclick="deleteSpecialPriceRows()" href="javascript:void(0)">							
 									<?php echo Labels::getLabel('LBL_REMOVE', $siteLangId); ?>
 								</a>
 							</div>

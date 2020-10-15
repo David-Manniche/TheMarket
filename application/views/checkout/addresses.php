@@ -89,11 +89,11 @@
         </div>
         <div class="checkout-actions">
             <?php if ($addressType == Address::ADDRESS_TYPE_BILLING) { ?>
-                <a class="btn btn-outline-primary btn-wide" href="javascript:void(0);" onclick="loadPaymentSummary();">
+                <a class="btn btn-outline-brand btn-wide" href="javascript:void(0);" onclick="loadPaymentSummary();">
                     <?php echo Labels::getLabel('LBL_Back', $siteLangId); ?>
                 </a>
             <?php } else { ?>
-                <a class="btn btn-outline-primary btn-wide" href="javascript:void(0);" onclick="goToBack();">
+                <a class="btn btn-outline-brand btn-wide" href="javascript:void(0);" onclick="goToBack();">
                     
                     <?php echo Labels::getLabel('LBL_Back', $siteLangId); ?> 
                 </a>

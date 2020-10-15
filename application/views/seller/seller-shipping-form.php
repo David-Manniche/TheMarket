@@ -37,7 +37,7 @@
     $cancelFld->setFieldTagAttribute('onClick', 'searchCatalogProducts()');
     $cancelFld->developerTags['col'] = 2;
     $cancelFld->setWrapperAttribute('class', 'col-6');
-    $cancelFld->setFieldTagAttribute('class', 'btn btn-outline-primary btn-block');
+    $cancelFld->setFieldTagAttribute('class', 'btn btn-outline-brand btn-block');
     //$submitFld->attachField($cancelFld);
     
     echo $shippingFrm->getFormHTML();

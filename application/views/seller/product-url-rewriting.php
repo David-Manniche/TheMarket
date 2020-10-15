@@ -15,7 +15,7 @@ $submitFld->setFieldTagAttribute('class', 'btn btn-brand btn-block');
 
 $clearFld = $frmSearch->getField('btn_clear');
 $clearFld->setFieldTagAttribute('onclick', 'clearSearch()');
-$clearFld->setFieldTagAttribute('class', 'btn btn-outline-primary btn-block');
+$clearFld->setFieldTagAttribute('class', 'btn btn-outline-brand btn-block');
 ?>
 <?php $this->includeTemplate('_partial/seller/sellerDashboardNavigation.php'); ?>
 <main id="main-area" class="main" role="main">

@@ -22,7 +22,7 @@ $submitBtnFld->setWrapperAttribute('class', 'col-lg-2');
 $submitBtnFld->developerTags['col'] = 2;
 
 $cancelBtnFld = $frmSearch->getField('btn_clear');
-$cancelBtnFld->setFieldTagAttribute('class', 'btn-block btn-outline-primary');
+$cancelBtnFld->setFieldTagAttribute('class', 'btn-block btn-outline-brand');
 $cancelBtnFld->setWrapperAttribute('class', 'col-lg-2');
 $cancelBtnFld->developerTags['col'] = 2;
 ?>

@@ -250,7 +250,7 @@
             <?php }?>            
         </div>
         <div class="step__footer">
-            <a class="btn btn-outline-primary btn-wide" href="javascript:void(0)" onclick="showAddressList();">
+            <a class="btn btn-outline-brand btn-wide" href="javascript:void(0)" onclick="showAddressList();">
                 <?php echo Labels::getLabel('LBL_Back', $siteLangId); ?>
             </a>
             <?php if($hasPhysicalProd){ ?>

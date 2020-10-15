@@ -9,16 +9,16 @@ $this->includeTemplate('_partial/seller/sellerDashboardNavigation.php'); ?>
             <div class="col-auto">
                 <div class="btn-group">
                     <?php if (!$isShopActive) { ?>
-                        <a href="<?php echo  UrlHelper::generateUrl('Seller', 'shop'); ?>" class="btn btn-outline-primary btn-sm">
+                        <a href="<?php echo  UrlHelper::generateUrl('Seller', 'shop'); ?>" class="btn btn-outline-brand btn-sm">
                             <?php echo Labels::getLabel('LBL_Create_Shop', $siteLangId); ?>
                         </a>
                     <?php } ?>
                     <?php if ($userPrivilege->canViewProducts(UserAuthentication::getLoggedUserId(), true)) { ?>
                         <?php if (User::canAddCustomProduct() && $userPrivilege->canEditProducts(UserAuthentication::getLoggedUserId(), true)) { ?>
-                        <a href="<?php echo UrlHelper::generateUrl('seller', 'customProductForm');?>" class="btn btn-outline-primary btn-sm"><?php echo Labels::getLabel('LBL_Add_new_catalog', $siteLangId);?></a>
+                        <a href="<?php echo UrlHelper::generateUrl('seller', 'customProductForm');?>" class="btn btn-outline-brand btn-sm"><?php echo Labels::getLabel('LBL_Add_new_catalog', $siteLangId);?></a>
                         <?php } ?>
-                        <a href="<?php echo UrlHelper::generateUrl('seller', 'catalog');?>" class="btn btn-outline-primary btn-sm"><?php echo Labels::getLabel('LBL_My_products', $siteLangId);?></a>
-                        <a href="<?php echo UrlHelper::generateUrl('seller', 'products');?>" class="btn btn-outline-primary btn-sm"><?php echo Labels::getLabel('LBL_My_store_inventory', $siteLangId);?></a>
+                        <a href="<?php echo UrlHelper::generateUrl('seller', 'catalog');?>" class="btn btn-outline-brand btn-sm"><?php echo Labels::getLabel('LBL_My_products', $siteLangId);?></a>
+                        <a href="<?php echo UrlHelper::generateUrl('seller', 'products');?>" class="btn btn-outline-brand btn-sm"><?php echo Labels::getLabel('LBL_My_store_inventory', $siteLangId);?></a>
                     <?php } ?>
                 </div>
             </div>

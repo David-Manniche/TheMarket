@@ -98,11 +98,11 @@ $paymentIntendId = isset($paymentIntendId) ? $paymentIntendId : '';
                     <div class="payment-action">
                         
                         <?php if (FatUtility::isAjaxCall()) { ?>
-                                            <a href="javascript:void(0);" onclick="loadPaymentSummary()" class="btn btn-outline-primary btn-wide">
+                                            <a href="javascript:void(0);" onclick="loadPaymentSummary()" class="btn btn-outline-brand btn-wide">
                                                 <?php echo Labels::getLabel('LBL_Cancel', $siteLangId); ?>
                                             </a>
                                         <?php } else { ?>
-                                            <a href="<?php echo $cancelBtnUrl; ?>" class="btn btn-outline-primary btn-wide"><?php echo Labels::getLabel('LBL_Cancel', $siteLangId); ?></a>
+                                            <a href="<?php echo $cancelBtnUrl; ?>" class="btn btn-outline-brand btn-wide"><?php echo Labels::getLabel('LBL_Cancel', $siteLangId); ?></a>
                                         <?php } ?>
 
                        

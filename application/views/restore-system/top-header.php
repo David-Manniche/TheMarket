@@ -87,7 +87,7 @@
     <div class="demo-cta">
         <a target="_blank" href="https://www.yo-kart.com/multivendor-ecommerce-marketplace-platform.html"
             class=" btn btn-brand btn-sm ripplelink" rel="noopener">Start Your Marketplace</a> &nbsp;
-        <a href="https://www.yo-kart.com/request-demo.html" class="request-demo btn btn-outline-primary btn-sm  ripplelink" rel="noopener">
+        <a href="https://www.yo-kart.com/request-demo.html" class="request-demo btn btn-outline-brand btn-sm  ripplelink" rel="noopener">
             Request a Demo
         </a>
         <a href="javascript:void(0)" class="close-layer" id="demoBoxClose"></a>

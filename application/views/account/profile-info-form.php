@@ -83,7 +83,7 @@ $fld->addFieldTagAttribute('class','btn btn-brand btn-sm'); */
                                 </label>
                             <?php } ?>
                             <?php if ($mode == 'Edit') { ?>
-                            <a class="btn btn-outline-primary btn-sm" href="javascript:void(0)" onClick="removeProfileImage()"><?php echo Labels::getLabel('LBL_Remove', $siteLangId);?></a>
+                            <a class="btn btn-outline-brand btn-sm" href="javascript:void(0)" onClick="removeProfileImage()"><?php echo Labels::getLabel('LBL_Remove', $siteLangId);?></a>
                             <?php }?>
                             </form>
                             <?php echo $imgFrm->getExternalJS();?>

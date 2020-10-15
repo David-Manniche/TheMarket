@@ -65,7 +65,7 @@
                             <p class="txt-brand pt-2"><?php echo Labels::getLabel('LBL_NOT_AVAILABLE_FOR_PICKUP', $siteLangId); ?></p>
                         </div>
                     </div>                           
-                    <button class="btn btn-outline-primary btn-sm" type="button" onClick="moveToSaveForLater( '<?php echo md5($product['key']); ?>',<?php echo $product['selprod_id']; ?>, <?php echo Shipping::FULFILMENT_PICKUP; ?> );"> <?php echo Labels::getLabel('LBL_Save_For_later', $siteLangId); ?></button>
+                    <button class="btn btn-outline-brand btn-sm" type="button" onClick="moveToSaveForLater( '<?php echo md5($product['key']); ?>',<?php echo $product['selprod_id']; ?>, <?php echo Shipping::FULFILMENT_PICKUP; ?> );"> <?php echo Labels::getLabel('LBL_Save_For_later', $siteLangId); ?></button>
                 </li>
         <?php }?> 
         </ul>
@@ -185,7 +185,7 @@
                                 <?php }
                         } ?></p>
                     </div>
-                    <button class="btn btn-outline-primary btn-sm product-profile__btn" type="button" onclick="moveToCart(<?php echo $product['selprod_id']; ?>, <?php echo $product['uwlp_uwlist_id']; ?>, event, <?php echo Shipping::FULFILMENT_PICKUP; ?>)"><?php echo Labels::getLabel('LBL_Move_To_Bag', $siteLangId);?></button>
+                    <button class="btn btn-outline-brand btn-sm product-profile__btn" type="button" onclick="moveToCart(<?php echo $product['selprod_id']; ?>, <?php echo $product['uwlp_uwlist_id']; ?>, event, <?php echo Shipping::FULFILMENT_PICKUP; ?>)"><?php echo Labels::getLabel('LBL_Move_To_Bag', $siteLangId);?></button>
                 </div>
             </div>
             <div class="product-price"><?php echo CommonHelper::displayMoneyFormat($product['theprice']); ?></div>

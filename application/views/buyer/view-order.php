@@ -80,16 +80,16 @@ if (!$print) { ?>
                         <div>
                             <div class="">
                                 <iframe src="<?php echo Fatutility::generateUrl('buyer', 'viewOrder', $urlParts) . '/print'; ?>" name="frame" class="printFrame-js" style="display:none" width="1" height="1"></iframe>
-                                <a href="<?php echo UrlHelper::generateUrl('Buyer', 'orders'); ?>" class="btn btn-outline-primary btn-sm no-print" title="
+                                <a href="<?php echo UrlHelper::generateUrl('Buyer', 'orders'); ?>" class="btn btn-outline-brand btn-sm no-print" title="
                                     <?php echo Labels::getLabel('LBL_Back_to_order', $siteLangId); ?>">
                                     <i class="fas fa-arrow-left"></i>
                                 </a>
-                                <a href="javascript:void(0)" class="btn btn-outline-primary btn-sm no-print printBtn-js" title="
+                                <a href="javascript:void(0)" class="btn btn-outline-brand btn-sm no-print printBtn-js" title="
                                     <?php echo Labels::getLabel('LBL_Print', $siteLangId); ?>" style="display:none">
                                     <i class="fas fa-print"></i>
                                 </a>
                                 <?php if (0 < $opId && !$orderDetail['order_deleted'] && !$orderDetail["order_payment_status"] && 'TransferBank' == $orderDetail['plugin_code']) { ?>
-                                    <a href="<?php echo UrlHelper::generateUrl('Buyer', 'viewOrder', [$orderDetail['order_id']]); ?>" class="btn btn-outline-primary btn-sm no-print" title="<?php echo Labels::getLabel('LBL_ADD_PAYMENT_DETAIL', $siteLangId); ?>">
+                                    <a href="<?php echo UrlHelper::generateUrl('Buyer', 'viewOrder', [$orderDetail['order_id']]); ?>" class="btn btn-outline-brand btn-sm no-print" title="<?php echo Labels::getLabel('LBL_ADD_PAYMENT_DETAIL', $siteLangId); ?>">
                                         <i class="fas fa-box-open"></i>
                                     </a>
                                 <?php } ?>

@@ -28,7 +28,7 @@
                                     care of the rest through its mobile friendly and conversion-optimized UI </p>
                             </li>
                         </ul>
-                        <div class="text-center"> <a class="btn btn-outline-primary btn-sm mr-2" onClick="register(this)"
+                        <div class="text-center"> <a class="btn btn-outline-brand btn-sm mr-2" onClick="register(this)"
                                 href="javascript:void(0)"
                                 data-href="<?php echo UrlHelper::generateUrl($keyName, 'register'); ?>">
                                 <?php echo Labels::getLabel('LBL_REGISTER', $siteLangId); ?>

@@ -8,7 +8,7 @@ $this->includeTemplate('seller/_partial/shop-navigation.php', $variables, false)
         <h5 class="cards-title"><?php echo Labels::getLabel('LBL_Shop_Pickup_Addresses', $siteLangId); ?></h5>
         <?php if ($canEdit) { ?>
         <div class="btn-group">
-            <a href="javascript:void(0)" onClick="pickupAddressForm(0)" class="btn btn-outline-primary btn-sm  btn-sm"><?php echo Labels::getLabel('LBL_Add_Address', $siteLangId); ?></a>
+            <a href="javascript:void(0)" onClick="pickupAddressForm(0)" class="btn btn-outline-brand btn-sm  btn-sm"><?php echo Labels::getLabel('LBL_Add_Address', $siteLangId); ?></a>
         </div>
         <?php } ?>
     </div>
@@ -35,8 +35,8 @@ $this->includeTemplate('seller/_partial/shop-navigation.php', $variables, false)
                                 </p>
                             </address>
                             <div class="btn-group">
-                                <a href="javascript:void(0)" onClick="pickupAddressForm(<?php echo $address['addr_id']; ?>)" class="btn btn-outline-primary btn-sm"><?php echo Labels::getLabel('LBL_Edit', $siteLangId); ?></a>
-                                <a href="javascript:void(0)" onClick="removeAddress(<?php echo $address['addr_id']; ?>, <?php echo Address::TYPE_SHOP_PICKUP; ?>)" class="btn btn-outline-primary btn-sm"><?php echo Labels::getLabel('LBL_Delete', $siteLangId); ?></a>
+                                <a href="javascript:void(0)" onClick="pickupAddressForm(<?php echo $address['addr_id']; ?>)" class="btn btn-outline-brand btn-sm"><?php echo Labels::getLabel('LBL_Edit', $siteLangId); ?></a>
+                                <a href="javascript:void(0)" onClick="removeAddress(<?php echo $address['addr_id']; ?>, <?php echo Address::TYPE_SHOP_PICKUP; ?>)" class="btn btn-outline-brand btn-sm"><?php echo Labels::getLabel('LBL_Delete', $siteLangId); ?></a>
                             </div>
                         </label>
                     </div> 

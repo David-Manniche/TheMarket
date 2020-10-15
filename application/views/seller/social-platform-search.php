@@ -4,7 +4,7 @@
         <h5 class="cards-title"><?php echo Labels::getLabel('LBL_Social_Platforms', $siteLangId); ?></h5>
         <div class="">
             <?php if ($canEdit) { ?>
-                <a href="javascript:void(0)" class="btn btn-outline-primary btn-sm" onclick="addForm(0)"><?php echo Labels::getLabel('LBL_Add_Social_Platform', $siteLangId);?></a>
+                <a href="javascript:void(0)" class="btn btn-outline-brand btn-sm" onclick="addForm(0)"><?php echo Labels::getLabel('LBL_Add_Social_Platform', $siteLangId);?></a>
             <?php }?>
         </div>
     </div>

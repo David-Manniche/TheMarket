@@ -30,7 +30,7 @@ if (isset($collections) && count($collections)) {
                                         <div class="article-des">
                                             <?php echo FatUtility::decodeHtmlEntities($blog['post_description']); ?>
                                         </div>
-                                        <a class="readmore-button btn btn-outline-primary btn-sm" href="<?php echo UrlHelper::generateUrl('Blog', 'postDetail', array($blog['post_id'])); ?>"><?php echo Labels::getLabel('LBL_READ_MORE', $siteLangId); ?></a>
+                                        <a class="readmore-button btn btn-outline-brand btn-sm" href="<?php echo UrlHelper::generateUrl('Blog', 'postDetail', array($blog['post_id'])); ?>"><?php echo Labels::getLabel('LBL_READ_MORE', $siteLangId); ?></a>
                                     </div>
                                 </div>
                             </div>

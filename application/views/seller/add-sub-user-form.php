@@ -3,7 +3,7 @@
     <div class="col-auto"><?php echo Labels::getLabel('LBL_New_Sub_User', $siteLangId); ?></div>
     <div class="col-auto">
         <div class="btn-group">
-            <a class="btn btn-outline-primary btn-sm" title="<?php echo Labels::getLabel('LBL_Back', $siteLangId); ?>" onclick="searchUsers()" href="javascript:void(0)"><?php echo Labels::getLabel('LBL_Back', $siteLangId); ?></a>
+            <a class="btn btn-outline-brand btn-sm" title="<?php echo Labels::getLabel('LBL_Back', $siteLangId); ?>" onclick="searchUsers()" href="javascript:void(0)"><?php echo Labels::getLabel('LBL_Back', $siteLangId); ?></a>
         </div>
     </div>
 </div>

@@ -17,7 +17,7 @@ $submitBtnFld->developerTags['col'] = 2;
 $submitBtnFld->developerTags['noCaptionTag'] = true;
 
 $cancelBtnFld = $searchFrm->getField('btn_clear');
-$cancelBtnFld->setFieldTagAttribute('class', 'btn btn-outline-primary btn-block');
+$cancelBtnFld->setFieldTagAttribute('class', 'btn btn-outline-brand btn-block');
 $cancelBtnFld->setWrapperAttribute('class', 'col-lg-2');
 $cancelBtnFld->developerTags['col'] = 2;
 $cancelBtnFld->developerTags['noCaptionTag'] = true;
@@ -32,7 +32,7 @@ $cancelBtnFld->developerTags['noCaptionTag'] = true;
             <div class="col-auto">
                 <div class="content-header-right">
                     <a href="<?php echo UrlHelper::generateUrl('shippingProfile', 'form',[0]);?>"
-                        class="btn btn-outline-primary btn-sm"><?php echo Labels::getLabel('LBL_Create_Profile', $siteLangId);?></a>
+                        class="btn btn-outline-brand btn-sm"><?php echo Labels::getLabel('LBL_Create_Profile', $siteLangId);?></a>
                 </div>
             </div>
         </div>

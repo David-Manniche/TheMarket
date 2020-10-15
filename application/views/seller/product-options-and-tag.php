@@ -58,7 +58,7 @@
                  <div class="caption-wraper"><label class="field_label"></label></div>
                  <div class="field-wraper">
                      <div class="field_cover">
-                        <input type="button" class="btn btn-outline-primary" onClick="productAttributeAndSpecificationsFrm(<?php echo $productId; ?>)" value="<?php echo Labels::getLabel('LBL_Back', $siteLangId); ?>">
+                        <input type="button" class="btn btn-outline-brand" onClick="productAttributeAndSpecificationsFrm(<?php echo $productId; ?>)" value="<?php echo Labels::getLabel('LBL_Back', $siteLangId); ?>">
                      </div>
                  </div>
              </div>

@@ -122,7 +122,7 @@ echo $frm->getFormTag(); ?>
                             $btn->addFieldTagAttribute('class', "btn btn-brand");
                             echo $frm->getFieldHtml('btn_submit');
                         ?>
-                        <a href="javascript:void(0);" class="btn btn-outline-primary cancelCardForm-js"><?php echo Labels::getLabel('LBL_Cancel', $siteLangId); ?></a>
+                        <a href="javascript:void(0);" class="btn btn-outline-brand cancelCardForm-js"><?php echo Labels::getLabel('LBL_Cancel', $siteLangId); ?></a>
                     </div>
                 </div>
             </div>

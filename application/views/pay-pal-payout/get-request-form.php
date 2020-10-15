@@ -16,7 +16,7 @@ $submitBtnFld->setFieldTagAttribute('class', 'btn btn-brand btn-block');
 $frm->addButton("", "btn_cancel", Labels::getLabel("LBL_Cancel", $siteLangId));
 $cancelBtnFld = $frm->getField('btn_cancel');
 $cancelBtnFld->setFieldTagAttribute('onClick', 'closeForm()');
-$cancelBtnFld->setFieldTagAttribute('class', 'btn btn-outline-primary btn-block');
+$cancelBtnFld->setFieldTagAttribute('class', 'btn btn-outline-brand btn-block');
 $cancelBtnFld->developerTags['col'] = 2;
 //$submitBtnFld->attachField($cancelBtnFld);
 ?>

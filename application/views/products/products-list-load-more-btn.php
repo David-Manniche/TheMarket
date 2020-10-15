@@ -6,7 +6,7 @@ if(isset($pagingFunc)){
 	$searchFunction =  $pagingFunc;
 }
 ?>
-<!--<a id="loadMoreBtn" href="javascript:void(0)" onClick="<?php echo $searchFunction.'('. $nextPage.')';?>" class="btn btn-outline-primary loadmore"><?php echo Labels::getLabel('LBL_Load_More', $siteLangId); ?></a>-->
+<!--<a id="loadMoreBtn" href="javascript:void(0)" onClick="<?php echo $searchFunction.'('. $nextPage.')';?>" class="btn btn-outline-brand loadmore"><?php echo Labels::getLabel('LBL_Load_More', $siteLangId); ?></a>-->
 <?php
 }
 ?>

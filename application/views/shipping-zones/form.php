@@ -149,7 +149,7 @@ if (!empty($excludeLocations)) {
                     </div>
 
                     <div class="col-lg-5">
-                        <input class="btn btn-outline-primary btn-block" type="button" name="cancel" onClick="clearForm();" value="<?php echo Labels::getLabel("LBL_Cancel", $siteLangId); ?>">
+                        <input class="btn btn-outline-brand btn-block" type="button" name="cancel" onClick="clearForm();" value="<?php echo Labels::getLabel("LBL_Cancel", $siteLangId); ?>">
                     </div>
 
 

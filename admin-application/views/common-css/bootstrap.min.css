@@ -2940,41 +2940,41 @@ fieldset:disabled a.btn {
     box-shadow: 0 0 0 .2rem rgba(52, 58, 64, .5)
 }
 
-.btn-outline-primary {
+.btn-outline-brand {
     color: #007bff;
     background-color: transparent;
     background-image: none;
     border-color: #007bff
 }
 
-.btn-outline-primary:hover {
+.btn-outline-brand:hover {
     color: #fff;
     background-color: #007bff;
     border-color: #007bff
 }
 
-.btn-outline-primary.focus,
-.btn-outline-primary:focus {
+.btn-outline-brand.focus,
+.btn-outline-brand:focus {
     box-shadow: 0 0 0 .2rem rgba(0, 123, 255, .5)
 }
 
-.btn-outline-primary.disabled,
-.btn-outline-primary:disabled {
+.btn-outline-brand.disabled,
+.btn-outline-brand:disabled {
     color: #007bff;
     background-color: transparent
 }
 
-.btn-outline-primary:not(:disabled):not(.disabled).active,
-.btn-outline-primary:not(:disabled):not(.disabled):active,
-.show>.btn-outline-primary.dropdown-toggle {
+.btn-outline-brand:not(:disabled):not(.disabled).active,
+.btn-outline-brand:not(:disabled):not(.disabled):active,
+.show>.btn-outline-brand.dropdown-toggle {
     color: #fff;
     background-color: #007bff;
     border-color: #007bff
 }
 
-.btn-outline-primary:not(:disabled):not(.disabled).active:focus,
-.btn-outline-primary:not(:disabled):not(.disabled):active:focus,
-.show>.btn-outline-primary.dropdown-toggle:focus {
+.btn-outline-brand:not(:disabled):not(.disabled).active:focus,
+.btn-outline-brand:not(:disabled):not(.disabled):active:focus,
+.show>.btn-outline-brand.dropdown-toggle:focus {
     box-shadow: 0 0 0 .2rem rgba(0, 123, 255, .5)
 }
 
@@ -6354,14 +6354,14 @@ button.close {
     vertical-align: text-top!important
 }
 
-.bg-primary {
+.bg-brand {
     background-color: #007bff!important
 }
 
-a.bg-primary:focus,
-a.bg-primary:hover,
-button.bg-primary:focus,
-button.bg-primary:hover {
+a.bg-brand:focus,
+a.bg-brand:hover,
+button.bg-brand:focus,
+button.bg-brand:hover {
     background-color: #0062cc!important
 }
 
@@ -9206,8 +9206,8 @@ a.text-dark:hover {
 
 @media print {
     *,
-    ::after,
-    ::before {
+     ::after,
+     ::before {
         text-shadow: none!important;
         box-shadow: none!important
     }

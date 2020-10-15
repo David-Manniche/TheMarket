@@ -9669,10 +9669,13 @@ a.text-dark:hover, a.text-dark:focus {
 .btn.btn-brand {
   background-color: var(--brand-color);
   color: var(--brand-color-inverse); }
+.btn.btn-outline-brand {
+  border-color: var(--brand-color);
+  color: var(--brand-color-inverse); }
 .btn.btn--white {
   background: #fff;
   color: #000; }
-.btn.btn-outline-primary {
+.btn.btn-outline-brand {
   background: none;
   border-color: var(--brand-color);
   color: var(--brand-color); }
@@ -11164,7 +11167,7 @@ span.subheading {
 .form .btn-brand {
   background-color: var(--brand-color);
   color: var(--brand-color-inverse); }
-.form .btn-outline-primary {
+.form .btn-outline-brand {
   border-color: var(--brand-color); }
 .form .no--focus:focus {
   outline: none !important;
@@ -15092,8 +15095,15 @@ img.mfp-img, .post .post_media iframe.mfp-img, .post .post_media .posted-content
   text-transform: uppercase;
   top: 50%;
   z-index: 1;
-  font-weight: 700;
+  font-weight: 600;
+  text-align: center;
   transform: translateY(-50%); }
+  .tag--soldout-full {
+    position: static;
+    width: 100%;
+    border-radius: 4px;
+    height: auto;
+    transform: none; }
   .tag--soldout.tag--soldout-small {
     padding: 9px 7px;
     width: 40px;
@@ -15135,7 +15145,10 @@ img.mfp-img, .post .post_media iframe.mfp-img, .post .post_media .posted-content
       word-break: break-word;
       -ms-hyphens: auto;
       -webkit-hyphens: auto;
-      hyphens: auto; }
+      hyphens: auto;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis; }
       .item__description .item__title a {
         opacity: 1;
         color: inherit;
@@ -16330,7 +16343,7 @@ img.mfp-img, .post .post_media iframe.mfp-img, .post .post_media .posted-content
   .table tr.selected-row {
     background: #fdfdfd; }
   .table tr:last-child td {
-    border-bottom: none; }
+    /* border-bottom: none;*/ }
   .table tr td {
     position: relative;
     /* word-break:break-word;*/ }
@@ -17250,14 +17263,6 @@ a:hover {
     -ms-flex-item-align: center;
     align-self: center; }
 
-.coupon-code {
-  padding: 0.3rem 1.2rem;
-  border-radius: 2rem;
-  color: #acb7ce;
-  border: dashed 1px #dee2e6;
-  display: inline-block;
-  font-weight: 600; }
-
 .profile-image .avtar {
   margin: 0 auto; }
 
@@ -17658,7 +17663,7 @@ a:hover {
 
 /*Bg*/
 .bg--primary-color,
-.bg-primary {
+.bg-brand {
   background: var(--brand-color);
   color: var(--brand-color-inverse); }
 
@@ -31526,6 +31531,29 @@ a.ui-button:active,
 .txt-success {
   color: #1dc9b7; }
 
+.coupon-offers {
+  border: solid 1px #dee2e6;
+  border-radius: 4px; }
+  .coupon-offers li {
+    border-bottom: solid 1px #edeff1;
+    display: flex;
+    align-items: flex-start;
+    padding: 1rem;
+    font-size: 0.8rem;
+    color: #8798ad; }
+  .coupon-offers .coupon-code {
+    padding: 0.3rem 1.2rem;
+    border-radius: 2rem;
+    color: #acb7ce;
+    border: dashed 1px #dee2e6;
+    display: inline-block;
+    font-weight: 500;
+    margin-right: 1rem;
+    cursor: pointer; }
+    .coupon-offers .coupon-code:hover {
+      border-color: var(--brand-color);
+      color: var(--brand-color); }
+
 .top-categories {
   overflow: hidden;
   background: #fff;
@@ -31657,7 +31685,8 @@ a.ui-button:active,
   .cg-main .item {
     margin-bottom: 1.5rem;
     padding-bottom: 1.5rem;
-    border-bottom: solid 1px #dee2e6; }
+    border-bottom: solid 1px #dee2e6;
+    display: block; }
     .cg-main .item:last-child {
       margin: 0;
       border-bottom: none; }
@@ -35089,9 +35118,24 @@ transform: rotate(-135deg);*/ }
       .certified-bar .certified-box p a {
         color: #575757; }
 
-.cart-tbl-addons {
-  border-radius: 2px;
-  border: solid 1px #dee2e6; }
+.addons-scrollbar {
+  max-height: 250px; }
+
+.list-addons li {
+  display: flex;
+  justify-content: space-between;
+  position: relative; }
+  .list-addons li .item {
+    flex: 0 0 70%;
+    max-width: 70%; }
+    .list-addons li .item .item__title {
+      font-size: 0.8rem; }
+    .list-addons li .item .item__price {
+      color: #8798ad;
+      font-weight: 300; }
+  .list-addons li.cancel {
+    opacity: 0.5;
+    filter: grayscale(100); }
 
 #faqquestions {
   margin: 40px auto 0;

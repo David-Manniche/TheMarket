@@ -4,7 +4,7 @@
     $btn->addFieldTagAttribute('class', 'btn btn-brand');
     $btn->addFieldTagAttribute('data-processing-text', Labels::getLabel('LBL_PLEASE_WAIT..', $siteLangId));
     $cancelBtn = $frm->getField('btn_cancel'); 
-    $cancelBtn->addFieldTagAttribute('class', 'btn btn-outline-primary');
+    $cancelBtn->addFieldTagAttribute('class', 'btn btn-outline-brand');
     $cancelBtn->addFieldTagAttribute('onclick', 'cancel();');
 ?>
 <div class="payment-page">

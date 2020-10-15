@@ -10,7 +10,7 @@ $submitBtnFld = $frm->getField('btn_submit');
 $frm->addButton("", "btn_cancel", Labels::getLabel("LBL_Cancel", $siteLangId));
 $cancelBtnFld = $frm->getField('btn_cancel');
 $cancelBtnFld->setFieldTagAttribute('onClick', 'closeForm()');
-$cancelBtnFld->setFieldTagAttribute('class', 'btn-outline-primary');
+$cancelBtnFld->setFieldTagAttribute('class', 'btn-outline-brand');
 $submitBtnFld->attachField($cancelBtnFld);
 ?>
 <div class="cards-header">

@@ -37,7 +37,7 @@ $cancelBtnFld->developerTags['col'] = 2;
 					<div class="action">
 						<div class="">
 							<a href="javascript:void(0)" onclick="addCatalogPopup()" class = "btn btn-brand btn-sm"><?php echo Labels::getLabel( 'LBL_Add_New_Product', $siteLangId);?></a>
-                            <a href="<?php echo UrlHelper::generateUrl('seller','catalog' );?>" class="btn btn-outline-primary btn-sm"><?php echo Labels::getLabel('LBL_Products_List', $siteLangId);?></a>
+                            <a href="<?php echo UrlHelper::generateUrl('seller','catalog' );?>" class="btn btn-outline-brand btn-sm"><?php echo Labels::getLabel('LBL_Products_List', $siteLangId);?></a>
 						</div>
 					</div>
 				</div>

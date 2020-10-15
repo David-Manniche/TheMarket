@@ -31,7 +31,7 @@ $weightFld->developerTags['col'] = 6;
 $btnBackFld = $productFrm->getField('btn_back');
 $btnBackFld->developerTags['col'] = 6;
 $btnBackFld->setFieldTagAttribute('onClick', 'productOptionsAndTag('.$productId.')');
-$btnBackFld->setFieldTagAttribute('class', "btn btn-outline-primary");
+$btnBackFld->setFieldTagAttribute('class', "btn btn-outline-brand");
 
 $btnSubmitFld = $productFrm->getField('btn_submit');
 $btnSubmitFld->developerTags['col'] = 6;

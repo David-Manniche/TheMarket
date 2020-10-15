@@ -11,7 +11,7 @@ $this->includeTemplate('_partial/dashboardNavigation.php');
             </div>
             <?php if (!empty($savedCards)) { ?>
                 <div class="col-auto">
-                    <a class="btn btn-outline-primary btn-sm" href="javascript:void(0);" onclick="addNewCardForm()">
+                    <a class="btn btn-outline-brand btn-sm" href="javascript:void(0);" onclick="addNewCardForm()">
                         <i class="icn">
                             <svg class="svg">
                                 <use xlink:href="<?php echo CONF_WEBROOT_URL; ?>images/retina/sprite.svg#add"

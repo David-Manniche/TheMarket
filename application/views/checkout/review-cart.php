@@ -111,7 +111,7 @@
                 </tr>
                 <tr>
                     <td></td>
-                    <td><a href="javascript:void(0)" onClick="loadPaymentSummary();" class="btn btn-outline-primary ripplelink block-on-mobile"><?php echo Labels::getLabel('LBL_Proceed_To_Pay', $siteLangId); ?> </a></td>
+                    <td><a href="javascript:void(0)" onClick="loadPaymentSummary();" class="btn btn-outline-brand ripplelink block-on-mobile"><?php echo Labels::getLabel('LBL_Proceed_To_Pay', $siteLangId); ?> </a></td>
                 </tr>
             </table>
         </div>

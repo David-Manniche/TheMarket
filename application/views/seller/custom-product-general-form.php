@@ -13,7 +13,7 @@ $btnSubmit->setFieldTagAttribute('class', "btn btn-brand");
 
 $btnDiscardFld = $productFrm->getField('btn_discard');
 $btnDiscardFld->setFieldTagAttribute('onClick', 'goToCatalog()');
-$btnDiscardFld->setFieldTagAttribute('class', "btn btn-outline-primary");
+$btnDiscardFld->setFieldTagAttribute('class', "btn btn-outline-brand");
 ?>
 <div class="row justify-content-center">
     <div class="col-md-12">
