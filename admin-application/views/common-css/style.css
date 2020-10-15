@@ -8745,9 +8745,10 @@ body.switchtoggled .color_pallete .pallete_control {
 /* scrollbar css ---------------------- */
 
 .scrollbar {
-    overflow: auto;
-    width: 100% !important;
-    max-height: 400px;
+    overflow: hidden;
+    overflow-y: auto;
+    /*width: 100% !important;*/
+    max-height: 383px;
 }
 
 .scroll__track {
