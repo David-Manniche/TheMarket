@@ -60,136 +60,23 @@
                                     require('shipping-summary-product.php');
                                 }
                             }
-                       
-                    ?> 
-                    </div>
-                </li> 
-            <?php }?>                    
-                <li class="list-group-item">
-                    <div class="product-profile">
-                        <div class="product-profile__thumbnail">
-                            <a href="<?php echo $productUrl; ?>">
-                                <img class="img-fluid" data-ratio="3:4" src="<?php echo $imageUrl; ?>"
-                                    alt="<?php echo $product['product_name']; ?>" title="<?php echo $product['product_name']; ?>">
-                            </a></div>                                
-                        <div class="product-profile__data">
-                            <div class="title"><a class="" href="<?php echo $productUrl; ?>"><?php echo ($product['selprod_title']) ? $product['selprod_title'] : $product['product_name']; ?></a></div>
-                            <div class="options">
-                                <p class=""> <?php if (isset($product['options']) && count($product['options'])) {
-                                    $optionStr = '';
-                                    foreach ($product['options'] as $option) {
-                                        $optionStr .= $option['optionvalue_name'] . '|';
-                                    }
-                                    echo rtrim($optionStr, '|');
-                                } ?></p>
-                            </div>
-                            <div class="quantity quantity-2">
-                                <span class="decrease decrease-js"><i class="fas fa-minus"></i></span>
-                                <input class="qty-input no-focus cartQtyTextBox productQty-js" title="<?php echo Labels::getLabel('LBL_Quantity', $siteLangId) ?>" data-page="checkout"  type="text" name="qty_<?php echo md5($product['key']); ?>" data-key="<?php echo md5($product['key']); ?>" value="<?php echo $product['quantity']; ?>">
-                                <span class="increase increase-js"><i class="fas fa-plus"></i></span>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="product-price"><?php echo CommonHelper::displayMoneyFormat($product['theprice'] * $product['quantity']); ?> 
-                    <?php if ($product['special_price_found']) { ?>
-                        <del><?php echo CommonHelper::showProductDiscountedText($product, $siteLangId); ?></del>
-                    <?php }?>
-                    </div>
-                    <div class="product-action">
-                        <ul class="list-actions">
-                            <li>
-                                <a href="#" onclick="cart.remove('<?php echo md5($product['key']); ?>','checkout')">
-                                <svg class="svg" width="24px" height="24px"><use xlink:href="<?php echo CONF_WEBROOT_URL;?>images/retina/sprite.svg#remove"
-                                            href="<?php echo CONF_WEBROOT_URL;?>images/retina/sprite.svg#remove">
-                                        </use>
-                                    </svg>
-                                </a>
-                            </li>
-                        </ul>
-                    </div>
-                </li>
-                <?php if (isset($levelItems['products']) && count($levelItems['products']) == 1) { ?> </ul> <?php }?> 
-                <?php }
-                } ?> 
-
-                <?php if (isset($levelItems['products']) && count($levelItems['products']) > 1) { ?>
-                    </ul>
-                <?php }?>                                                             
-                
-                <?php if (isset($levelItems['digital_products']) && count($levelItems['digital_products']) > 0) { ?>
-                <ul class="list-group list-cart list-shippings">
-                <?php   $count = 0; 
-                foreach ($levelItems['digital_products'] as $product) { 
-                    $productUrl = !$isAppUser ? UrlHelper::generateUrl('Products', 'View', array($product['selprod_id'])) : 'javascript:void(0)';
-                    $shopUrl = !$isAppUser ? UrlHelper::generateUrl('Shops', 'View', array($product['shop_id'])) : 'javascript:void(0)';
-                    $imageUrl = UrlHelper::getCachedUrl(UrlHelper::generateFileUrl('image', 'product', array($product['product_id'], "THUMB", $product['selprod_id'], 0, $siteLangId)), CONF_IMG_CACHE_TIME, '.jpg'); 
-                    if($count == 0) {
-                ?>  
-                    <li class="list-group-item shipping-select">
-                        <div class="shop-name"><?php echo $product['shop_name']; ?></div>
-                    </li>
-                    <?php } ?>
-                    <li class="list-group-item">
-                        <div class="product-profile">
-                            <div class="product-profile__thumbnail">
-                                <a href="<?php echo $productUrl; ?>">
-                                    <img class="img-fluid" data-ratio="3:4" src="<?php echo $imageUrl; ?>"
-                                        alt="<?php echo $product['product_name']; ?>" title="<?php echo $product['product_name']; ?>">
-                                </a></div>                                
-                            <div class="product-profile__data">
-                                <div class="title"><a class="" href="<?php echo $productUrl; ?>"><?php echo ($product['selprod_title']) ? $product['selprod_title'] : $product['product_name']; ?></a></div>
-                                <div class="options">
-                                    <p class=""> <?php if (isset($product['options']) && count($product['options'])) {
-                                        $optionStr = '';
-                                        foreach ($product['options'] as $option) {
-                                            $optionStr .= $option['optionvalue_name'] . '|';
-                                        }
-                                        echo rtrim($optionStr, '|');
-                                    } ?></p>
-                                </div>
-                                <div class="quantity quantity-2">
-                                    <span class="decrease decrease-js"><i class="fas fa-minus"></i></span>
-                                    <input class="qty-input no-focus cartQtyTextBox productQty-js" title="<?php echo Labels::getLabel('LBL_Quantity', $siteLangId) ?>" data-page="checkout"  type="text" name="qty_<?php echo md5($product['key']); ?>" data-key="<?php echo md5($product['key']); ?>" value="<?php echo $product['quantity']; ?>">
-                                    <span class="increase increase-js"><i class="fas fa-plus"></i></span>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="product-price"><?php echo CommonHelper::displayMoneyFormat($product['theprice'] * $product['quantity']); ?> 
-                        <?php if ($product['special_price_found']) { ?>
-                            <del><?php echo CommonHelper::showProductDiscountedText($product, $siteLangId); ?></del>
-                        <?php }?>
-                        </div>
-                        <div class="product-action">
-                            <ul class="list-actions">
-                                <li>
-                                    <a href="javascript:void(0);" onclick="cart.remove('<?php echo md5($product['key']); ?>','checkout')">
-                                    <svg class="svg" width="24px" height="24px"><use xlink:href="<?php echo CONF_WEBROOT_URL;?>images/retina/sprite.svg#remove"
-                                                href="<?php echo CONF_WEBROOT_URL;?>images/retina/sprite.svg#remove">
-                                            </use>
-                                        </svg>
-                                    </a>
-                                </li>
-                            </ul>
-                        </div>
-                    </li>
-                <?php $count++;  } ?>
-                </ul>
-                <?php   } ?>
-            
-            <?php }?>            
-        </div>
-        <div class="step__footer">
-            <a class="btn btn-outline-brand btn-wide" href="javascript:void(0)" onclick="showAddressList();">
-                <?php echo Labels::getLabel('LBL_Back', $siteLangId); ?>
-            </a>
-            <?php if($hasPhysicalProd){ ?>
-            <a class="btn btn-brand btn-wide " onClick="setUpShippingMethod();" href="javascript:void(0)">
-                <?php echo Labels::getLabel('LBL_Continue', $siteLangId); ?>
-            </a>
-            <?php }else{ ?>
-            <a class="btn btn-brand btn-wide " onClick="loadPaymentSummary();" href="javascript:void(0)">
-                <?php echo Labels::getLabel('LBL_Continue', $siteLangId); ?>
-            </a>
-            <?php } ?>
+                            break;
+                    }
+                }
+            } ?>
+            <div class="step__footer">
+                <a class="btn btn-outline-brand btn-wide" href="javascript:void(0)" onclick="showAddressList();">
+                    <?php echo Labels::getLabel('LBL_Back', $siteLangId); ?>
+                </a>
+                <?php if ($hasPhysicalProd) { ?>
+                    <a class="btn btn-brand btn-wide " onClick="setUpShippingMethod();" href="javascript:void(0)">
+                        <?php echo Labels::getLabel('LBL_Continue', $siteLangId); ?>
+                    </a>
+                <?php } else { ?>
+                    <a class="btn btn-brand btn-wide " onClick="loadPaymentSummary();" href="javascript:void(0)">
+                        <?php echo Labels::getLabel('LBL_Continue', $siteLangId); ?>
+                    </a>
+                <?php } ?>
+            </div>
         </div>
 </main>

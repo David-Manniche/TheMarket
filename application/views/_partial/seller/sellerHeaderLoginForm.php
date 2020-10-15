@@ -10,7 +10,7 @@
 	$loginFrm->removeField($loginFrm->getField('remember_me'));
 	$loginFrm->addHtml('','forgotPassword','<a class="link forgot" href="'.UrlHelper::generateUrl('GuestUser', 'forgotPasswordForm').'">'.Labels::getLabel('LBL_Forgot_Password?',$siteLangId).'</a>');
 	$fldSubmit = $loginFrm->getField('btn_submit');
-	$fldSubmit->setFieldTagAttribute('class', 'btn btn-primary btn-wide');
+	$fldSubmit->setFieldTagAttribute('class', 'btn btn-brand btn-wide');
 	echo $loginFrm->getFormTag();
 ?>
 <?php 

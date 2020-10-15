@@ -48,6 +48,20 @@
             max-width: 100px;
         }
     }
+    @include media-breakpoint-down(lg) {
+        & {
+            margin: 0 auto;
+            max-width: 100px;
+        }
+    }
+    img {
+        &[data-ratio="16:9"] {
+            max-width: 120px;
+        }
+        &[data-ratio="1:1"] {
+            max-width: 60px;
+        }
+    }
 }
 
 .order-summary-toggle {
