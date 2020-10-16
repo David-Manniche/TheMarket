@@ -5,9 +5,8 @@ trait Options
     public function options()
     {
         $this->userPrivilege->canViewProductOptions(UserAuthentication::getLoggedUserId());
-        $canRequest = FatApp::getConfig('CONF_SELLER_CAN_REQUEST_CUSTOM_PRODUCT', FatUtility::VAR_INT, 0);
-        $canRequestCustomProd = FatApp::getConfig('CONF_ENABLED_SELLER_CUSTOM_PRODUCT', FatUtility::VAR_INT, 0);
-        if (1 > $canRequest || 1 > $canRequestCustomProd) {
+        $canAddCustomProd = FatApp::getConfig('CONF_ENABLED_SELLER_CUSTOM_PRODUCT', FatUtility::VAR_INT, 0);
+        if (1 > $canAddCustomProd) {
             FatApp::redirectUser(UrlHelper::generateUrl('Seller'));
         }
         $this->set('canEdit', $this->userPrivilege->canEditProductOptions(UserAuthentication::getLoggedUserId(), true));
