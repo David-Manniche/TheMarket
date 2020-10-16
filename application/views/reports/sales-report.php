@@ -25,11 +25,7 @@
 		<?php if (empty($orderDate)) { ?>
             <div class="row mb-4">
                 <div class="col-lg-12">
-					
                     <div class="cards">
-                        <div class="cards-header">
-                            <h5 class="cards-title"><?php echo Labels::getLabel('LBL_Sales_Report', $siteLangId);?></h5>
-                        </div>
                         <div class="cards-content">
 							<div class="replaced">
 								<?php
@@ -49,9 +45,6 @@
                                         echo $frmSrch->getFormHtml();
                                     ?>
                                 </div>
-                            <?php  } else {
-                                echo  $frmSrch->getFormHtml();
-                            } ?>
                         </div>
                     </div>
                 </div>

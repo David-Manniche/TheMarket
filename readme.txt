@@ -224,6 +224,9 @@ Bugs:
 ---------------------TV-9.2.1.20201015----------------------
     => 043787 - If there is some special price and "price include tax " setting is on then product price is less then entered special price
 ---------------------TV-9.2.1.20201016----------------------
+    => 043675 - Admin >> pickup address >> Add >> slot timings >> there should be some space between radio button and text. 
+    => 044231 - Seller >> sales report page is not opening.
+
 Enhancements:
     => Tax module upgrade
     => Test cases classes enhancements.
