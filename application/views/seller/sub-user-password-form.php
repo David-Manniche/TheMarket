@@ -7,7 +7,7 @@
         </div>
     </div>
 </div>
-<div class="cards-content">
+<div class="card-body">
     <div class="form__subcontent">
         <?php
         $frm->setFormTagAttribute('onsubmit', 'updateUserPassword(this); return(false);');

@@ -27,8 +27,8 @@ $this->includeTemplate('_partial/dashboardNavigation.php');
         <div class="content-body">
             <div class="row mb-4">
                 <div class="col-lg-12">
-                    <div class="cards">
-                        <div class="cards-content">
+                    <div class="card">
+                        <div class="card-body">
                             <?php if (empty($savedCards)) { ?>
                                 <div class="no-data-found">
                                     <div class="img">

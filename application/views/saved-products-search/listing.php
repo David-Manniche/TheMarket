@@ -6,8 +6,8 @@
             </div>
         </div>
         <div class="content-body">
-            <div class="cards">                
-                <div class="cards-content">
+            <div class="card">                
+                <div class="card-body">
                     <div class="" id="SearchesListingDiv"></div>                    
                     <div id="loadMoreBtnDiv"></div>
                 </div>

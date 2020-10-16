@@ -1,5 +1,5 @@
 <?php defined('SYSTEM_INIT') or die('Invalid Usage.'); ?>
-<div class="cards-body">
+<div class="card-body">
 	<?php $arr_flds = array(
 		'listserial' => '#',
 		'product_name' => Labels::getLabel('LBL_Product', $siteLangId),
@@ -69,7 +69,7 @@
 	echo $frm->getFormTag(); ?>
 	</form>
 </div>
-<div class="cards-footer">
+<div class="card-footer">
 	<?php
 	$postedData['page'] = $page;
 	echo FatUtility::createHiddenFormFromData($postedData, array('name' => 'frmSearchSeoProductsPaging'));

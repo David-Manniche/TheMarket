@@ -50,9 +50,9 @@ $cancelBtnFld->developerTags['noCaptionTag'] = true;
         <div class="content-body">
             <div class="row mb-4">
                 <div class="col-lg-12">
-                    <div class="cards">
-                        <div class="cards-header">
-                            <h5 class="cards-title"><?php echo Labels::getLabel('LBL_Search_Subscriptions', $siteLangId);?></h5>
+                    <div class="card">
+                        <div class="card-header">
+                            <h5 class="card-title"><?php echo Labels::getLabel('LBL_Search_Subscriptions', $siteLangId);?></h5>
                             <?php if ($currentActivePlan) {
                                 if (strtotime(date("Y-m-d"))>=strtotime('-3 day', strtotime($currentActivePlan[OrderSubscription::DB_TBL_PREFIX.'till_date']))) {
                                     if ($currentActivePlan[OrderSubscription::DB_TBL_PREFIX.'type']==SellerPackages::PAID_TYPE && FatDate::diff(date("Y-m-d"), $currentActivePlan[OrderSubscription::DB_TBL_PREFIX.'till_date'])>0) {
@@ -91,7 +91,7 @@ $cancelBtnFld->developerTags['noCaptionTag'] = true;
                         <?php if (isset($message)) { ?>
                             <p class="highlighted-note"> <?php  echo $message;?> </p>
                         <?php }?>
-                        <div class="cards-content ">
+                        <div class="card-body ">
                             <?php echo $frmOrderSrch->getFormHtml(); ?>
                         </div>
                     </div>
@@ -99,10 +99,10 @@ $cancelBtnFld->developerTags['noCaptionTag'] = true;
             </div>
             <div class="row">
                 <div class="col-lg-12">
-                    <div class="cards">
-                        <div class="cards-header">
+                    <div class="card">
+                        <div class="card-header">
                         </div>
-                        <div class="cards-content ">
+                        <div class="card-body ">
                             <div id="ordersListing"><?php echo Labels::getLabel('LBL_Loading..', $siteLangId); ?></div>
                             <span class="gap"></span>
                         </div>

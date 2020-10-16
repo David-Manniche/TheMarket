@@ -1,7 +1,7 @@
 <?php  defined('SYSTEM_INIT') or die('Invalid Usage.'); ?>
 <div class="row justify-content-between align-items-center mb-4">
     <div class="col mb-3 mb-md-0">
-        <h6 class="cards-title m-0">
+        <h6 class="card-title m-0">
             <?php echo (isset($wishListRow['uwlist_type']) && $wishListRow['uwlist_type'] == UserWishList::TYPE_DEFAULT_WISHLIST) ? Labels::getLabel('LBL_Default_list', $siteLangId) : $wishListRow['uwlist_title']; ?>
             <input type="hidden" name="uwlist_id" value="<?php echo $wishListRow['uwlist_id']; ?>" />
         </h6>

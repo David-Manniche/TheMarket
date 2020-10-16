@@ -40,9 +40,9 @@ if (!empty($orderDetail["thirdPartyorderInfo"]) && isset($orderDetail["thirdPart
             </div>
         <?php } ?>
         <div class="content-body">
-            <div class="cards">
-                <div class="cards-header">
-                    <h5 class="cards-title"><?php echo Labels::getLabel('LBL_Order_Details', $siteLangId); ?></h5>
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="card-title"><?php echo Labels::getLabel('LBL_Order_Details', $siteLangId); ?></h5>
                     <?php if (!$print) { ?>
                         <div class="">
                             <iframe src="<?php echo Fatutility::generateUrl('seller', 'viewOrder', $urlParts) . '/print'; ?>" name="frame" class="printFrame-js" style="display:none" width="1" height="1"></iframe>
@@ -69,7 +69,7 @@ if (!empty($orderDetail["thirdPartyorderInfo"]) && isset($orderDetail["thirdPart
                         </div>
                     <?php } ?>
                 </div>
-                <div class="cards-content ">
+                <div class="card-body ">
                     <div class="row">
                         <div class="col-lg-6 col-md-6 mb-4">
                             <div class="info--order">

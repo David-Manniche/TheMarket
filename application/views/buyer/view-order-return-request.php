@@ -13,9 +13,9 @@
     </div>
     <?php } ?>
     <div class="content-body">
-        <div class="cards">
-            <div class="cards-header">
-                <h5 class="cards-title"><?php echo Labels::getLabel('LBL_Request_Details', $siteLangId); ?></h5>
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title"><?php echo Labels::getLabel('LBL_Request_Details', $siteLangId); ?></h5>
                 <?php if (!$print) { ?>
                     <div class="">
                         <iframe src="<?php echo Fatutility::generateUrl('buyer', 'viewOrderReturnRequest', $urlParts) . '/print'; ?>" name="frame" style="display:none"></iframe>
@@ -24,7 +24,7 @@
                     </div>
                 <?php } ?>
             </div>
-            <div class="cards-content ">
+            <div class="card-body ">
 
                      <div class="row">
                             <div class="col-lg-6 col-md-6 col-sm-6  mb-4">

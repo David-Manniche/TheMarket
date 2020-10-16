@@ -29,8 +29,8 @@ $clearFld->setFieldTagAttribute('class', 'btn btn-outline-brand btn-block');
         <div class="content-body">
 		<div class="row mb-4">
 		
-		<div class="col-lg-12"><div class="cards">
-			<div class="cards-content">
+		<div class="col-lg-12"><div class="card">
+			<div class="card-body">
 				<div>
 					<?php echo $frmSearch->getFormTag(); ?>
 						<div class="row">
@@ -57,13 +57,13 @@ $clearFld->setFieldTagAttribute('class', 'btn btn-outline-brand btn-block');
 			
             <div class="row">
                 <div class="col-md-6 mb-3 mb-md-0">
-                    <div class="cards" id="listing">
+                    <div class="card" id="listing">
 						<?php echo Labels::getLabel('LBL_Loading..', $siteLangId); ?>
                     </div>
                 </div>
                 <div class="col-md-6">
-                    <div class="cards">
-                        <div class="cards-content h-100">
+                    <div class="card">
+                        <div class="card-body h-100">
                             <div id="dvForm"></div>
                             <div class="alert-aligned" id="dvAlert">
                                 <div class="cards-message" role="alert">

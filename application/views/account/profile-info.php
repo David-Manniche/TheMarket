@@ -26,8 +26,8 @@ $this->includeTemplate('_partial/dashboardNavigation.php'); ?>
         <div class="content-body">
             <div class="row">
                 <div class="col-lg-12">
-                    <div class="cards">
-                        <div class="cards-content ">
+                    <div class="card">
+                        <div class="card-body ">
                             <?php if ($userParentId == 0) { ?>
                             <div class="tabs ">
                                 <ul class="tabs-js">

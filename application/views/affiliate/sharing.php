@@ -17,9 +17,9 @@ $this->includeTemplate('_partial/affiliate/affiliateDashboardNavigation.php'); ?
         <div class="content-body">
             <div class="row">
                 <div class="col-md-12">
-                    <div class="cards">
-                        <div class="cards-header">
-                            <h5 class="cards-title "><?php echo Labels::getLabel('LBL_Sharing_Information',$siteLangId);?></h5>
+                    <div class="card">
+                        <div class="card-header">
+                            <h5 class="card-title "><?php echo Labels::getLabel('LBL_Sharing_Information',$siteLangId);?></h5>
                         </div>
 
                         <div class="row">
@@ -29,7 +29,7 @@ $this->includeTemplate('_partial/affiliate/affiliateDashboardNavigation.php'); ?
                             </div>
                         </div>
 
-                        <div class="cards-content ">
+                        <div class="card-body ">
                             <ul class="grid--onethird grid--onethird-large">
                                 <?php if (!empty(FatApp::getConfig("CONF_FACEBOOK_APP_ID")) && !empty(FatApp::getConfig("CONF_FACEBOOK_APP_SECRET"))){ ?>
                                 <li>
