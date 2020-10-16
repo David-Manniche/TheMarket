@@ -1,7 +1,6 @@
-<div class="row">
-    <?php $i = 0;
-    foreach ($collection['shops'] as $shop) { ?>
-    <div class="col-xl-3 col-lg-4 col-md-6 mb-3">
+<div class="featured">
+    <?php $i = 0; 
+    foreach ($collection['shops'] as $shop) { ?>    
         <div class="featured-item">
             <div class="featured-item__body">
                 <div class="featured_logo">
@@ -28,12 +27,10 @@
                     <?php } ?>
                     <a href="<?php echo (!isset($shop['shopData']['promotion_id']) ? UrlHelper::generateUrl('shops', 'view', array($shop['shopData']['shop_id'])) : UrlHelper::generateUrl('shops', 'track', array($shop['shopData']['promotion_record_id'], Promotion::REDIRECT_SHOP, $shop['shopData']['promotion_record_id']))); ?>"
                         class="btn btn-brand btn-sm"><?php echo Labels::getLabel('LBL_Shop_Now', $siteLangId); ?></a>
-                
-
             </div>
 
         </div>
-    </div>
+    
     <?php $i++;
         isset($shop['shopData']['promotion_id']) ? Promotion::updateImpressionData($shop['shopData']['promotion_id']) : '';
         if ($i == Collections::LIMIT_SHOP_LAYOUT1) break;
