@@ -434,7 +434,7 @@ class Cart extends FatModel
                         'shippingCost' => $shippingCost,
                         'buyerId' => $this->cart_user_id
                     );
-                    if (FatApp::getConfig("CONF_PRODUCT_INCLUSIVE_TAX", FatUtility::VAR_INT, 0) && 0 == Tax::getActivatedServiceId()) {
+                    /* if (FatApp::getConfig("CONF_PRODUCT_INCLUSIVE_TAX", FatUtility::VAR_INT, 0) && 0 == Tax::getActivatedServiceId()) {
                         $shipToStateId = 0;
                         $shipToCountryId = 0;
 
@@ -445,12 +445,13 @@ class Cart extends FatModel
                         if (isset($extraData['shippingAddress']['addr_state_id'])) {
                             $shipToStateId = FatUtility::int($extraData['shippingAddress']['addr_state_id']);
                         }
+                        
                         $tax = new Tax();
                         $taxCategoryRow = $tax->getTaxRates($sellerProductRow['product_id'], $sellerProductRow['selprod_user_id'], $siteLangId, $shipToCountryId, $shipToStateId);
                         if (array_key_exists('taxrule_rate', $taxCategoryRow)) {
                             $sellerProductRow['theprice'] = round($sellerProductRow['theprice'] / (1 + ($taxCategoryRow['taxrule_rate'] / 100)), 2);
                         }
-                    }
+                    } */
                     /*[ Product Tax */
                     $taxableProdPrice = $sellerProductRow['theprice'] - $sellerProductRow['volume_discount'];
                     if (isset($cartDiscounts['discountedSelProdIds']) && array_key_exists($sellerProductRow['selprod_id'], $cartDiscounts['discountedSelProdIds'])) {
@@ -471,7 +472,8 @@ class Cart extends FatModel
                             }
                         }
                     }
-
+                    /*  echo $sellerProductRow['theprice']* $quantity;*/
+                    /* CommonHelper::printArray($taxData); */
                     $tax = $taxData['tax'];
 
                     $this->products[$key]['tax'] = $tax;
