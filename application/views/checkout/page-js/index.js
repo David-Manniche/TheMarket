@@ -105,9 +105,10 @@ $("document").ready(function () {
 
     loadFinancialSummary = function () {
         $(financialSummary).html(fcom.getLoader());
-        fcom.ajax(fcom.makeUrl('Checkout', 'getFinancialSummary'), '', function (ans) {
-            $(financialSummary).html(ans);
-        });
+        fcom.updateWithAjax(fcom.makeUrl('Checkout', 'getFinancialSummary'), '', function (ans) {          
+            $(financialSummary).html(ans.data);
+            $('#netAmountSummary').html(ans.netAmount);
+        }, [], false);
     };
 
     setUpRegisteration = function (frm, v) {
