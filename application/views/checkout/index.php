@@ -60,6 +60,7 @@
             showAddressFormDiv();
         <?php } else {?>
             loadShippingSummaryDiv();
-        <?php } ?>
+            loadFinancialSummary();
+        <?php } ?>        
     });
 </script>

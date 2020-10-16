@@ -221,6 +221,7 @@ Bugs:
     => 043778  if we add same state in two different rules then some error should get display at admin end 
     
     => 044185 - when buyer places order (multi item) with reward then on parent order detail page> there is some issue
+    => 043787 - If there is some special price and "price include tax " setting is on then product price is less then entered special price
 ---------------------TV-9.2.1.20201015----------------------
 Enhancements:
     => Tax module upgrade
