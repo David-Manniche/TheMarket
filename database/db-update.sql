@@ -836,6 +836,7 @@ DELETE FROM `tbl_language_labels` WHERE `label_key` LIKE "LBL_On_enabling_this_f
 DELETE FROM `tbl_language_labels` WHERE `label_key` LIKE "LBL_Add_LANGUAGE_CODE_IN_URLS";
 DELETE FROM `tbl_language_labels` WHERE `label_key` LIKE "LBL_Product_Category_Name";
 DELETE FROM `tbl_language_labels` WHERE `label_key` LIKE "LBL_ADD_LANGUAGE_CODE_TO_SITE_URLS";
+DELETE FROM `tbl_language_labels` WHERE `label_key` LIKE "MSG_Your_Cancellation_Request_Approved";
 
 INSERT INTO `tbl_language_labels` (`label_key`, `label_lang_id`, `label_caption`, `label_type`) 
 VALUES ('LBL_LANGUAGE_CODE_TO_SITE_URLS_EXAMPLES', 1, 'For example www.domain.com/en for English and www.domain.com/ar for Arabic. Language code will not show for default site language', 1) 
