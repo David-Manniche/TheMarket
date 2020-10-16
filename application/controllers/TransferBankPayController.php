@@ -55,7 +55,7 @@ class TransferBankPayController extends PaymentController
         if (false === $post) {
             FatUtility::dieJsonError(current($frm->getValidationErrors()));
         }
-        
+
         $orderPaymentObj = new OrderPayment($orderId, $this->siteLangId);
         $orderInfo = $orderPaymentObj->getOrderPrimaryinfo();
         if ($orderInfo) {
@@ -66,7 +66,7 @@ class TransferBankPayController extends PaymentController
                 if (!$orderPaymentObj->addOrderPayment($post["opayment_method"], $post['opayment_gateway_txn_id'], $post["opayment_amount"], $post["opayment_comments"], '', false, 0, Orders::ORDER_PAYMENT_PENDING)) {
                     FatUtility::dieJsonError($orderPaymentObj->getError());
                 }
-            } else {   
+            } else {
                 $comment = Labels::getLabel('MSG_PAYMENT_INSTRUCTIONS', $this->siteLangId) . "\n\n";
                 $comment .= $this->settings["business_name"] . "\n\n";
                 $comment .= Labels::getLabel('MSG_PAYMENT_NOTE', $this->siteLangId);

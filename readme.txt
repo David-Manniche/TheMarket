@@ -216,9 +216,14 @@ Bugs:
     => 044060 - If social media links are added by admin/seller without http / https platform doesnot redirect user to social media page instead redirects user to domainname.com/socialmediaurl.com
     => 044153 - when user is on cart/checkout page then mini cart shouldn't open 
 ------------------TV-9.2.1.20201014-----------------------
+    => 044117 - Checkout >> bank transfer is not working.
     => 043676 - Admin >> manage collection >> layout images are not there for "blog layout " and " mobile banner layout ".
+    => 043778  if we add same state in two different rules then some error should get display at admin end 
+    
     => 044185 - when buyer places order (multi item) with reward then on parent order detail page> there is some issue
-
+---------------------TV-9.2.1.20201015----------------------
+    => 043787 - If there is some special price and "price include tax " setting is on then product price is less then entered special price
+---------------------TV-9.2.1.20201016----------------------
 Enhancements:
     => Tax module upgrade
     => Test cases classes enhancements.

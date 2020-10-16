@@ -13,6 +13,10 @@ $(document).ready(function(){
         }
 		$('#cartList').html( fcom.getLoader() );
 		fcom.ajax(fcom.makeUrl('Cart','listing', [fulfilmentType]),'',function(res){
+			if (1 > $("#cartList").length) {
+				location.reload();
+			}
+			
 			var json = $.parseJSON(res);  
             if(json.hasPhysicalProduct == false){
                 $("#js-shiporpickup").remove();
