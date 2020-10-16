@@ -621,7 +621,7 @@
                         transition: all 0.5s ease-in-out;
                     }
                     .menu-head {
-                        font-weight: 600;
+                        font-weight: 500;
                         color: $body-color;
                         font-size: 0.875rem;
                         padding-#{$start-direction}: 24px;
@@ -715,7 +715,7 @@
             }
             .is-active {
                 .menu-item__title {
-                    font-weight: 600;
+                    font-weight: 500;
                 }
             }
             .icn {
@@ -874,7 +874,7 @@
                 display: block;
                 padding: 10px 30px;
                 line-height: 1;
-                font-weight: 600;
+                font-weight: 500;
                 border-radius: 2.5rem;
                 background: #fff;
                 border: $border;
@@ -1093,7 +1093,7 @@
     }
     .msg__title {
         color: #000;
-        font-weight: 600;
+        font-weight: 500;
         display: block;
         margin-bottom: 5px;
     }
@@ -1665,7 +1665,7 @@
         font-size: 2.5rem;
         line-height: 1;
         display: block;
-        font-weight: 600;
+        font-weight: 500;
     }
     strong {
         display: block;
@@ -1856,7 +1856,7 @@ input.sp-input {
             strong {
                 color: $body-color;
                 font-size: 0.85rem;
-                font-weight: 600;
+                font-weight: 500;
                 margin-bottom: 0.5rem;
             }
         }
@@ -1878,7 +1878,7 @@ input.sp-input {
         .title {
             text-transform: uppercase;
             color: $body-color;
-            font-weight: 600;
+            font-weight: 500;
             display: block;
             margin-bottom: 0.3rem;
         }
@@ -1929,7 +1929,7 @@ input.sp-input {
     }
     .title {
         font-size: 1rem;
-        font-weight: 600;
+        font-weight: 500;
         margin-bottom: 1rem;
         span {
             font-size: 0.8rem;

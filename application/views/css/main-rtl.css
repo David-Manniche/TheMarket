@@ -17397,7 +17397,9 @@ a:hover {
   /*margin-bottom: 1rem;*/
   height: 100%;
   -webkit-animation: dropdown-menu-fade-in .3s ease 1, dropdown-menu-move-up .3s ease-out 1;
-  animation: dropdown-menu-fade-in 0.3s ease 1, dropdown-menu-move-up 0.3s ease-out 1; }
+  animation: dropdown-menu-fade-in 0.3s ease 1, dropdown-menu-move-up 0.3s ease-out 1;
+  display: flex;
+  flex-direction: column; }
   @media (max-width: 991.98px) {
     .cards {
       word-break: normal; } }
@@ -17420,6 +17422,11 @@ a:hover {
     .cards-header ~ .cards-content {
       padding-top: 0;
       overflow-x: auto; }
+  .cards-body {
+    flex: 1 1 0;
+    padding: 1rem; }
+  .cards-footer {
+    padding: 1rem; }
   .cards-content {
     padding: 1rem;
     /*height: inherit;*/ }
@@ -33082,7 +33089,7 @@ a.ui-button:active,
           -webkit-transition: all 0.5s ease-in-out;
           transition: all 0.5s ease-in-out; }
         .my-dashboard .sidebar .dashboard-menu .menu__item .menu__item__inner .menu-head {
-          font-weight: 600;
+          font-weight: 500;
           color: #2e384d;
           font-size: 0.875rem;
           padding-right: 24px;
@@ -33158,7 +33165,7 @@ a.ui-button:active,
       align-items: center;
       white-space: nowrap; }
     .my-dashboard .sidebar .dashboard-menu .is-active .menu-item__title {
-      font-weight: 600; }
+      font-weight: 500; }
     .my-dashboard .sidebar .dashboard-menu .icn {
       display: -webkit-box;
       display: -ms-flexbox;
@@ -33278,7 +33285,7 @@ a.ui-button:active,
       display: block;
       padding: 10px 30px;
       line-height: 1;
-      font-weight: 600;
+      font-weight: 500;
       border-radius: 2.5rem;
       background: #fff;
       border: solid 1px #dee2e6; }
@@ -33443,7 +33450,7 @@ a.ui-button:active,
   color: #333; }
 .messages-list .msg__title {
   color: #000;
-  font-weight: 600;
+  font-weight: 500;
   display: block;
   margin-bottom: 5px; }
 .messages-list .msg__detail {
@@ -33914,7 +33921,7 @@ a.ui-button:active,
     font-size: 2.5rem;
     line-height: 1;
     display: block;
-    font-weight: 600; }
+    font-weight: 500; }
   .results-side strong {
     display: block; }
 
@@ -34082,7 +34089,7 @@ input.sp-input,
       .features-block_list li strong {
         color: #2e384d;
         font-size: 0.85rem;
-        font-weight: 600;
+        font-weight: 500;
         margin-bottom: 0.5rem; }
 
 .stripe-stats {
@@ -34100,7 +34107,7 @@ input.sp-input,
     .stripe-stats .stats .title {
       text-transform: uppercase;
       color: #2e384d;
-      font-weight: 600;
+      font-weight: 500;
       display: block;
       margin-bottom: 0.3rem; }
 
@@ -34136,7 +34143,7 @@ input.sp-input,
     padding: 1rem; }
 .tax-rules .title {
   font-size: 1rem;
-  font-weight: 600;
+  font-weight: 500;
   margin-bottom: 1rem; }
   .tax-rules .title span {
     font-size: 0.8rem;
