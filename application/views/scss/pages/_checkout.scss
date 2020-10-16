@@ -11,7 +11,7 @@
         }
     }
     .content {
-        height: calc(100% - 80px);
+        height: calc(100% - 95px);
     }
 }
 
@@ -530,7 +530,7 @@
     border-radius: $radius4;
     border: $border;
     padding: 1.5rem;
-    margin: 1rem 0 0 0;
+    margin: 0;
     &__points {
         margin-bottom: 1.5rem;
         ul {
@@ -711,7 +711,8 @@
     margin-bottom: 1.5rem;
     font-size: 0.8rem;
     .shipping-select {
-        padding: 1rem;
+        padding: 6px 1rem;
+        align-items: center;
         flex-direction: initial;
         /*background-color: $bg-gray;*/
         .shop-name {
@@ -732,6 +733,11 @@
             }
             .form-control {
                 font-size: inherit;
+                border: none;
+                border-radius: 0px;
+                padding: 0;
+                padding-#{$end-direction}: 2rem;
+                height: auto;
             }
         }
     }

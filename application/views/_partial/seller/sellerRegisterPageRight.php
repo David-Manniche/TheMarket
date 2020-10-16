@@ -10,7 +10,7 @@
 			   <p><strong>OPEN YOUR SHOP</strong> Reserve your online shop location</p>
 		   </li>
 		   <li>
-			   <i class="fa fa-thumbs-o-up"></i>
+			   <i class="fa fa-thumbs-up"></i>
 			   <p><strong>START SELLING.</strong> Grow your sales</p>
 		   </li>
 	   </ul>

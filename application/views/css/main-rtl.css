@@ -9843,10 +9843,10 @@ a.link-arrow {
       .side-cart--on .side-cart {
         width: 100%; } }
   .side-cart .cartdetail__body {
-    /*max-height: 400px;*/
+    /*max-height: 400px;
+    max-height: calc(100vh - 300px);*/
     background: #fff;
-    flex: 1;
-    max-height: calc(100vh - 300px); }
+    flex: 1; }
 
 .cart-summary {
   width: 100%; }
@@ -17145,6 +17145,7 @@ a {
   color: inherit; }
 
 a:hover {
+  color: var(--brand-color);
   text-decoration: none; }
 
 .text-left {
@@ -17459,7 +17460,7 @@ a:hover {
   .checkout-progress .progress-track {
     position: absolute;
     top: 7px;
-    width: 76%;
+    width: 67%;
     height: 2px;
     background-color: #dfe3e4;
     z-index: -1;
@@ -17905,7 +17906,7 @@ html.quick-view--open {
     width: 100%;
     height: 100%;
     font-size: 0.85rem;
-    min-width: 0px; }
+    min-width: 30px; }
   .quantity-2 {
     max-width: 90px;
     height: 24px;
@@ -31241,6 +31242,8 @@ a.ui-button:active,
     border: none;
     padding: 1rem 0;
     flex-direction: row; }
+    .list-cart-checkout .list-group-item .img-fluid {
+      max-width: 48px; }
     .list-cart-checkout .list-group-item .product-price {
       margin-left: 0;
       padding-top: 0;
@@ -31710,7 +31713,7 @@ a.ui-button:active,
       max-width: 1000px;
       padding: inherit; } }
   .checkout .content {
-    height: calc(100% - 80px); }
+    height: calc(100% - 95px); }
 
 .header-checkout {
   background: #fff;
@@ -32102,7 +32105,7 @@ a.ui-button:active,
   border-radius: 4px;
   border: solid 1px #dee2e6;
   padding: 1.5rem;
-  margin: 1rem 0 0 0; }
+  margin: 0; }
   .rewards__points {
     margin-bottom: 1.5rem; }
     .rewards__points ul {
@@ -32240,7 +32243,8 @@ a.ui-button:active,
   margin-bottom: 1.5rem;
   font-size: 0.8rem; }
   .list-shippings .shipping-select {
-    padding: 1rem;
+    padding: 6px 1rem;
+    align-items: center;
     flex-direction: initial;
     /*background-color: $bg-gray;*/ }
     .list-shippings .shipping-select .shop-name {
@@ -32257,7 +32261,12 @@ a.ui-button:active,
       .list-shippings .shipping-select .shipping-method_messages {
         font-size: inherit; }
       .list-shippings .shipping-select .shipping-method .form-control {
-        font-size: inherit; }
+        font-size: inherit;
+        border: none;
+        border-radius: 0px;
+        padding: 0;
+        padding-left: 2rem;
+        height: auto; }
   .list-shippings .quantity {
     margin-top: 0.5rem; }
 
@@ -33257,7 +33266,7 @@ a.ui-button:active,
       fill: var(--brand-color) !important; }
     .widget-scroll .widget-stats .cards,
     .widget-scroll .widget-stats .box--share {
-      /* min-height: 188px;*/ }
+      min-height: 188px; }
 
 .share-earn {
   display: flex;
@@ -35154,6 +35163,20 @@ transform: rotate(-135deg);*/ }
   transform: none;
   cursor: not-allowed; }
 
+.video-wrapper {
+  position: relative;
+  overflow: hidden;
+  width: 100%;
+  padding-top: 56.25%; }
+  .video-wrapper iframe, .video-wrapper .posted-content .posted-media .post__pic .media-wrapper img, .posted-content .posted-media .post__pic .media-wrapper .video-wrapper img, .video-wrapper .posted-content .posted-media .post__pic .media-wrapper .post .post_media iframe, .posted-content .posted-media .post__pic .media-wrapper .post .post_media .video-wrapper iframe, .video-wrapper .post .post_media .posted-content .posted-media .post__pic .media-wrapper iframe, .post .post_media .posted-content .posted-media .post__pic .media-wrapper .video-wrapper iframe {
+    position: absolute;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    width: 100%;
+    height: 100%; }
+
 #faqquestions {
   margin: 40px auto 0;
   padding: 0 5%; }
@@ -36804,7 +36827,7 @@ body {
         text-transform: uppercase; }
   .header-supplier .seller-login .forgot, .header-advertiser .seller-login .forgot, .header-affiliate .seller-login .forgot {
     display: inline-block;
-    margin-top: 14px;
+    margin-top: 5px;
     margin-right: 10px; }
 .header-supplier .seller_login_toggle, .header-advertiser .seller_login_toggle, .header-affiliate .seller_login_toggle, .header-supplier .seller_nav_toggle, .header-advertiser .seller_nav_toggle, .header-affiliate .seller_nav_toggle {
   display: none;
@@ -36862,11 +36885,11 @@ body {
   background: rgba(0, 0, 0, 0.1); }
 
 .banner {
-  background-repeat: repeat;
+  background-repeat: no-repeat;
   background-position: center;
   position: relative;
   background-attachment: fixed;
-  background-size: 25%;
+  background-size: cover;
   background-color: var(--brand-color);
   color: var(--brand-color-inverse); }
   .banner:after {
