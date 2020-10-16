@@ -68,7 +68,7 @@
                                 <input type="hidden" name="slot_id[<?php echo $pickUpBy; ?>]" class="js-slot-id" data-level="<?php echo $pickUpBy; ?>" value="<?php echo $seletedSlotId; ?>">
                                 <input type="hidden" name="slot_date[<?php echo $pickUpBy; ?>]" class="js-slot-date" data-level="<?php echo $pickUpBy; ?>" value="<?php echo $seletedSlotDate; ?>">
                                 <?php if (count($levelItems['pickup_options']) > 0) { ?>
-                                    <a class="btn btn-secondary btn-sm pickupAddressBtn-js" href="javascript:void(0)" onclick="displayPickupAddress(<?php echo $pickUpBy; ?>, 0)">
+                                    <a class="btn btn-secondary btn-sm pickupAddressBtn-<?php echo $pickUpBy; ?>-js" href="javascript:void(0)" onclick="displayPickupAddress(<?php echo $pickUpBy; ?>, 0)">
                                         <?php
                                         if (!empty($levelItems['pickup_address'])) {
                                             echo Labels::getLabel('LBL_CHANGE_PICKUP', $siteLangId);
@@ -124,7 +124,7 @@
                                             <input type="hidden" name="slot_id[<?php echo $pickUpBy; ?>]" class="js-slot-id" data-level="<?php echo $pickUpBy; ?>" value="<?php echo $seletedSlotId; ?>">
                                             <input type="hidden" name="slot_date[<?php echo $pickUpBy; ?>]" class="js-slot-date" data-level="<?php echo $pickUpBy; ?>" value="<?php echo $seletedSlotDate; ?>">
                                             <?php if (count($levelItems['pickup_options']) > 0) { ?>
-                                                <a class="btn btn-secondary btn-sm pickupAddressBtn-js" href="javascript:void(0)" onclick="displayPickupAddress(<?php echo $pickUpBy; ?>, <?php echo $product['shop_id']; ?>)">
+                                                <a class="btn btn-secondary btn-sm pickupAddressBtn-<?php echo $pickUpBy; ?>-js" href="javascript:void(0)" onclick="displayPickupAddress(<?php echo $pickUpBy; ?>, <?php echo $product['shop_id']; ?>)">
                                                 <?php
                                                     if (!empty($levelItems['pickup_address'])) {
                                                         echo Labels::getLabel('LBL_CHANGE_PICKUP', $siteLangId);
