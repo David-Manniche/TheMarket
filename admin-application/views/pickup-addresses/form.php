@@ -18,8 +18,8 @@ $stateFld = $frm->getField('addr_state_id');
 $stateFld->setFieldTagAttribute('id', 'shop_state');
 
 $slotTypeFld = $frm->getField('tslot_availability');
-$slotTypeFld->setOptionListTagAttribute('class', 'list-inline');
-$slotTypeFld->developerTags['cbLabelAttributes'] = array('class' => 'radio');
+$slotTypeFld->setOptionListTagAttribute('class', 'list-inline-checkboxes');
+$slotTypeFld->developerTags['rdLabelAttributes'] = array('class'=>'radio');
 $slotTypeFld->developerTags['rdHtmlAfterRadio'] = '<i class="input-helper"></i>';
 $slotTypeFld->setFieldTagAttribute('onClick', 'displaySlotTimings(this);');
 $slotTypeFld->setFieldTagAttribute('class', 'availabilityType-js');
