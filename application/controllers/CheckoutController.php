@@ -1370,8 +1370,7 @@ class CheckoutController extends MyAppController
 
                 );
             }
-        }
-
+        }       
         $orderData['order_affiliate_user_id'] = $order_affiliate_user_id;
         $orderData['order_affiliate_total_commission'] = $order_affiliate_total_commission;
         /* ] */

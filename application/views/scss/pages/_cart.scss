@@ -186,6 +186,9 @@
             border: none;
             padding: 1rem 0;
             flex-direction: row;
+            .img-fluid {
+                max-width: 48px;
+            }
             .product-price {
                 margin-#{$end-direction}: 0;
                 padding-top: 0;
