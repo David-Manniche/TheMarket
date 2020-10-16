@@ -24,7 +24,7 @@
                         </i></span>
                 </span>
                 <span class="order-summary-toggle__total-recap total-recap">
-                    <span class="total-recap__final-price">$226.15</span>
+                    <span class="total-recap__final-price" id="netAmountSummary"></span>
                 </span>
             </span>
         </div>

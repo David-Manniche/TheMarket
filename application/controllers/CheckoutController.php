@@ -481,7 +481,7 @@ class CheckoutController extends MyAppController
         }
 
         $this->cartObj->setCartCheckoutType($fulfillmentType);
-        
+
         $cartProducts = $this->cartObj->getProducts($this->siteLangId);
         if (count($cartProducts) == 0) {
             $this->errMessage = Labels::getLabel('MSG_Your_Cart_is_empty', $this->siteLangId);
@@ -2082,14 +2082,23 @@ class CheckoutController extends MyAppController
 
     public function getFinancialSummary()
     {
-        $this->cartObj->disableCache();        
+        $this->cartObj->disableCache();
         $cartSummary = $this->cartObj->getCartFinancialSummary($this->siteLangId);
         $products = $this->cartObj->getProducts($this->siteLangId);
         $shippingAddress = $this->cartObj->getCartShippingAddress();
-		$this->set('shippingAddress', $shippingAddress);
+        $this->set('shippingAddress', $shippingAddress);
         $this->set('products', $products);
         $this->set('cartSummary', $cartSummary);
-        $this->_template->render(false, false);
+        $data = $this->_template->render(false, false, 'checkout/get-financial-summary.php', true, false);
+
+        $orderNetAmt = $cartSummary['orderNetAmount'];
+        if (0 == $shippingAddress) {
+            $orderNetAmt = $orderNetAmt - $cartSummary['cartTaxTotal'];
+        }
+        $netAmount = CommonHelper::displayMoneyFormat($orderNetAmt);
+        $this->set('netAmount', $netAmount);
+        $this->set('data', $data);
+        $this->_template->render(false, false, 'json-success.php', false, false);
     }
 
     public function getCouponForm()
