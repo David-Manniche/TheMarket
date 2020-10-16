@@ -818,3 +818,21 @@ DELETE FROM `tbl_language_labels` WHERE `label_key` LIKE 'LBL_Sr';
 -- -----------------TV-9.2.1.20201014------------------
 DELETE FROM `tbl_language_labels` WHERE `label_key` LIKE 'LBL_S.No.';
 -- --------------TV-9.2.1.20201015---------------------
+DELETE FROM `tbl_language_labels` WHERE `label_key` LIKE "LBL_Product's_Dimensions";
+DELETE FROM `tbl_language_labels` WHERE `label_key` LIKE "LBL_Product_Inclusive_Tax";
+DELETE FROM `tbl_language_labels` WHERE `label_key` LIKE "LBL_Tax_code_for_categories";
+DELETE FROM `tbl_language_labels` WHERE `label_key` LIKE "LBL_Product_Category_Request_Approval";
+DELETE FROM `tbl_language_labels` WHERE `label_key` LIKE "LBL_Product's_Brand_Mandatory";
+DELETE FROM `tbl_language_labels` WHERE `label_key` LIKE "LBL_Brand_Request_Approval";
+DELETE FROM `tbl_language_labels` WHERE `label_key` LIKE "LBL_On_enabling_this_feature,_dimensions_of_the_product_will_be_required_to_be_filled._Dimensions_are_required_in_case_of_Shipstation_API_(If_Enabled)_for_Live_Shipping_Charges";
+DELETE FROM `tbl_language_labels` WHERE `label_key` LIKE "LBL_Product's_SKU_Mandatory";
+DELETE FROM `tbl_language_labels` WHERE `label_key` LIKE "LBL_Product's_Model_Mandatory";
+DELETE FROM `tbl_language_labels` WHERE `label_key` LIKE "LBL_This_will_make_Product's_model_mandatory";
+DELETE FROM `tbl_language_labels` WHERE `label_key` LIKE "LBL_ALLOW_SELLERS_TO_REQUEST_PRODUCTS_WHICH_IS_AVAILABLE_TO_ALL_SELLERS";
+DELETE FROM `tbl_language_labels` WHERE `label_key` LIKE "LBL_Activate_Administrator_Approval_on_Products";
+DELETE FROM `tbl_language_labels` WHERE `label_key` LIKE "LBL_On_enabling_this_feature,_Products_required_admin_approval_to_display";
+DELETE FROM `tbl_language_labels` WHERE `label_key` LIKE "LBL_Allow_Seller_to_add_products";
+DELETE FROM `tbl_language_labels` WHERE `label_key` LIKE "LBL_On_enabling_this_feature,_Products_option_will_enabled_for_seller_dashboard";
+DELETE FROM `tbl_language_labels` WHERE `label_key` LIKE "LBL_Add_LANGUAGE_CODE_IN_URLS";
+DELETE FROM `tbl_language_labels` WHERE `label_key` LIKE "LBL_Product_Category_Name";
+DELETE FROM `tbl_language_labels` WHERE `label_key` LIKE "LBL_ADD_LANGUAGE_CODE_TO_SITE_URLS";
