@@ -65,8 +65,6 @@ function showCartReviewDiv() {
     return loadCartReviewDiv();
 }
 $("document").ready(function () {
-    loadFinancialSummary();
-
     $(document).on("keydown", "#cc_number", function () {
         var obj = $(this);
         var cc = obj.val();
@@ -361,7 +359,6 @@ $("document").ready(function () {
         fcom.ajax(fcom.makeUrl('Checkout', 'loadShippingSummary'), '', function (ans) {
             $(shippingSummaryDiv).html(ans);
             /* fcom.scrollToTop("#shipping-summary"); */
-
         });
     };
 

@@ -481,7 +481,7 @@ class CheckoutController extends MyAppController
         }
 
         $this->cartObj->setCartCheckoutType($fulfillmentType);
-
+        
         $cartProducts = $this->cartObj->getProducts($this->siteLangId);
         if (count($cartProducts) == 0) {
             $this->errMessage = Labels::getLabel('MSG_Your_Cart_is_empty', $this->siteLangId);
@@ -2082,7 +2082,7 @@ class CheckoutController extends MyAppController
 
     public function getFinancialSummary()
     {
-        $this->cartObj->disableCache();
+        $this->cartObj->disableCache();        
         $cartSummary = $this->cartObj->getCartFinancialSummary($this->siteLangId);
         $products = $this->cartObj->getProducts($this->siteLangId);
         $shippingAddress = $this->cartObj->getCartShippingAddress();
