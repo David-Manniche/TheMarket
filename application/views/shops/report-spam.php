@@ -11,7 +11,7 @@
     
     $btnFld = $frm->getField('btn_submit');
     if (null != $btnFld) {
-        $btnFld->addFieldTagAttribute('class', 'btn btn-primary');
+        $btnFld->addFieldTagAttribute('class', 'btn btn-brand');
     }
 ?>
 

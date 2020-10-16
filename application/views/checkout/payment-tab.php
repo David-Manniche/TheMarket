@@ -18,7 +18,7 @@ if ('cashondelivery' == strtolower($pmethodCode) && true === $otpVerification) {
 }
 
 $submitFld = $frm->getField('btn_submit');
-$submitFld->setFieldTagAttribute('class', "btn btn-primary btn-wide");
+$submitFld->setFieldTagAttribute('class', "btn btn-brand btn-wide");
 
 if ('cashondelivery' == strtolower($pmethodCode) && true === $otpVerification) { ?>
     <div class="otp-block otpBlock-js">

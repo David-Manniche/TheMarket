@@ -111,13 +111,13 @@
                 </tr>
                 <tr>
                     <td></td>
-                    <td><a href="javascript:void(0)" onClick="loadPaymentSummary();" class="btn btn-outline-primary ripplelink block-on-mobile"><?php echo Labels::getLabel('LBL_Proceed_To_Pay', $siteLangId); ?> </a></td>
+                    <td><a href="javascript:void(0)" onClick="loadPaymentSummary();" class="btn btn-outline-brand ripplelink block-on-mobile"><?php echo Labels::getLabel('LBL_Proceed_To_Pay', $siteLangId); ?> </a></td>
                 </tr>
             </table>
         </div>
     </div>
 </div>
-<!-- <a class="btn btn-primary btn--h-large" onClick="loadPaymentSummary();" href="javascript:void(0)"><?php echo Labels::getLabel('LBL_Continue', $siteLangId); ?></a> -->
+<!-- <a class="btn btn-brand btn--h-large" onClick="loadPaymentSummary();" href="javascript:void(0)"><?php echo Labels::getLabel('LBL_Continue', $siteLangId); ?></a> -->
 <script type="text/javascript">
     $("document").ready(function() {
         <?php if ($cartHasPhysicalProduct) { ?>

@@ -4,7 +4,7 @@ $frm->developerTags['colClassPrefix'] = 'col-lg-8 col-md-8 col-sm-';
 $frm->developerTags['fld_default_col'] = 8;
 $fld = $frm->getField('csvfile');
 $fld->developerTags['noCaptionTag'] = true;
-$fld->addFieldTagAttribute('class', 'btn btn-primary btn-sm');
+$fld->addFieldTagAttribute('class', 'btn btn-brand btn-sm');
 
 
 echo $frm->getFormHtml(); ?>

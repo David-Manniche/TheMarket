@@ -7,12 +7,12 @@ $langFrm->developerTags['fld_default_col'] = 12;
 $cancelFld = $langFrm->getField('btn_cancel');
 $cancelFld->setFieldTagAttribute('onClick', 'clearForm(); return false;');
 $cancelFld->developerTags['col'] = 3;
-$cancelFld->setFieldTagAttribute('class', 'btn btn-outline-primary btn-block');
+$cancelFld->setFieldTagAttribute('class', 'btn btn-outline-brand btn-block');
 $cancelFld->developerTags['noCaptionTag'] = true;
 
 $btnSubmit = $langFrm->getField('btn_submit');
 $btnSubmit->developerTags['col'] = 3;
-$btnSubmit->setFieldTagAttribute('class', "btn btn-primary btn-block");
+$btnSubmit->setFieldTagAttribute('class', "btn btn-brand btn-block");
 $btnSubmit->developerTags['noCaptionTag'] = true;
 
 ?>

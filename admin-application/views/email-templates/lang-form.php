@@ -34,7 +34,7 @@ $langFld->setfieldTagAttribute('onChange', "editLangForm('" . $etplCode . "', th
                             ?>
                 <div class="row justify-content-end">
                     <div class="col-auto mb-4">
-                        <input class="btn btn-primary" type="button"
+                        <input class="btn btn-brand" type="button"
                             value="<?php echo Labels::getLabel('LBL_AUTOFILL_LANGUAGE_DATA', $adminLangId); ?>"
                             onClick="editLangForm('<?php echo $etplCode; ?>', <?php echo $lang_id; ?>, 1)">
                     </div>

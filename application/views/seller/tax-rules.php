@@ -10,7 +10,7 @@
             <div class="col-auto">
                 <div class="btn-group">
                     <a href="<?php echo UrlHelper::generateUrl('seller', 'taxCategories');?>"
-                        class="btn btn-outline-primary btn-sm">
+                        class="btn btn-outline-brand btn-sm">
                         <?php echo Labels::getLabel('LBL_Back_To_Tax_Categories', $siteLangId)?>
                     </a>
                 </div>

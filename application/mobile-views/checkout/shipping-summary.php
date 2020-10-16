@@ -1,8 +1,5 @@
 <?php defined('SYSTEM_INIT') or die('Invalid Usage.');
 
-$productItems = [];
-$count = 0;
-
 switch ($fulfillmentType) {
     case Shipping::FULFILMENT_PICKUP:
         require_once(CONF_THEME_PATH . 'checkout/fulfillment-pickup-summary.php');
@@ -10,13 +7,14 @@ switch ($fulfillmentType) {
     case Shipping::FULFILMENT_SHIP:
         require_once(CONF_THEME_PATH . 'checkout/fulfillment-ship-summary.php');
         break;
-    
+
     default:
         $msg = Labels::getLabel("MSG_INVALID_FULFILLMENT_TYPE", $siteLangId);
         FatUtility::dieJsonError($msg);
         break;
 }
 
+$productItems = array_values($productItems);
 $data = [
     'fulfillmentType' => $fulfillmentType,
     'hasPhysicalProd' => $hasPhysicalProd,

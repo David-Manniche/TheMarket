@@ -18,7 +18,7 @@ $paymentIntendId = isset($paymentIntendId) ? $paymentIntendId : '';
                 </p>
             </div>
         </div>
-        <div class="payment-from paymentFrom-js">
+        <div class="payment-from paymentFrom-js container">
             <?php
             $frm->setFormTagAttribute('onsubmit', 'doPayment(this, "' . $orderInfo["id"] . '"); return(false);');
             $frm->setFormTagAttribute('class', 'form form--normal');
@@ -98,11 +98,11 @@ $paymentIntendId = isset($paymentIntendId) ? $paymentIntendId : '';
                     <div class="payment-action">
                         
                         <?php if (FatUtility::isAjaxCall()) { ?>
-                                            <a href="javascript:void(0);" onclick="loadPaymentSummary()" class="btn btn-outline-primary btn-wide">
+                                            <a href="javascript:void(0);" onclick="loadPaymentSummary()" class="btn btn-outline-brand btn-wide">
                                                 <?php echo Labels::getLabel('LBL_Cancel', $siteLangId); ?>
                                             </a>
                                         <?php } else { ?>
-                                            <a href="<?php echo $cancelBtnUrl; ?>" class="btn btn-outline-primary btn-wide"><?php echo Labels::getLabel('LBL_Cancel', $siteLangId); ?></a>
+                                            <a href="<?php echo $cancelBtnUrl; ?>" class="btn btn-outline-brand btn-wide"><?php echo Labels::getLabel('LBL_Cancel', $siteLangId); ?></a>
                                         <?php } ?>
 
                        
@@ -110,7 +110,7 @@ $paymentIntendId = isset($paymentIntendId) ? $paymentIntendId : '';
                     
                         <?php
                                         $btn = $frm->getField('btn_submit');
-                                        $btn->addFieldTagAttribute('class', 'btn btn-primary btn-wide');
+                                        $btn->addFieldTagAttribute('class', 'btn btn-brand btn-wide');
                                         $btn->addFieldTagAttribute('data-processing-text', Labels::getLabel('LBL_PLEASE_WAIT..', $siteLangId));
                                         echo $frm->getFieldHtml('btn_submit');
                                         ?>

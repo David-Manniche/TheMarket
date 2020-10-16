@@ -14,9 +14,9 @@ var  productCatId  =  <?php echo $prodCatId ;?>; */
             <div class="col-auto">
                 <div class="btn-group">
                     <?php if(strtolower($previousAction) == 'catalog'){ ?>
-                        <a href="<?php echo UrlHelper::generateUrl('seller', 'catalog'); ?>" class="btn btn-outline-primary btn-sm"><?php echo Labels::getLabel('LBL_Back_To_My_Products', $siteLangId); ?></a>
+                        <a href="<?php echo UrlHelper::generateUrl('seller', 'catalog'); ?>" class="btn btn-outline-brand btn-sm"><?php echo Labels::getLabel('LBL_Back_To_My_Products', $siteLangId); ?></a>
                     <?php }else{ ?>
-                        <a href="<?php echo UrlHelper::generateUrl('seller', 'products'); ?>" class="btn btn-outline-primary btn-sm"><?php echo Labels::getLabel('LBL_Back_To_Inventory', $siteLangId); ?></a>
+                        <a href="<?php echo UrlHelper::generateUrl('seller', 'products'); ?>" class="btn btn-outline-brand btn-sm"><?php echo Labels::getLabel('LBL_Back_To_Inventory', $siteLangId); ?></a>
                     <?php } ?>
                     </a>
                 </div>

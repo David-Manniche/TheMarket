@@ -41,8 +41,8 @@
                                         <div class="cart-total">  
                                             <div id="js-cartFinancialSummary"></div>
                                             <div class="buttons-group">
-                                                <a class="btn btn-primary" href="javascript:void(0)" onclick="goToCheckout()"><?php echo Labels::getLabel('LBL_Checkout', $siteLangId); ?></a>
-                                                <a class="btn btn-outline-primary" href="<?php echo UrlHelper::generateUrl(); ?>"><?php echo Labels::getLabel('LBL_Shop_More', $siteLangId); ?></a>
+                                                <a class="btn btn-brand" href="javascript:void(0)" onclick="goToCheckout()"><?php echo Labels::getLabel('LBL_Checkout', $siteLangId); ?></a>
+                                                <a class="btn btn-outline-brand" href="<?php echo UrlHelper::generateUrl(); ?>"><?php echo Labels::getLabel('LBL_Shop_More', $siteLangId); ?></a>
                                             </div>
                                         </div>
                                     </div>

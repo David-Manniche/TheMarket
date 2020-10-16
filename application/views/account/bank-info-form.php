@@ -8,7 +8,7 @@ $fld->developerTags['col'] = 12;
 $frm->setFormTagAttribute('onsubmit', 'setBankInfo(this); return(false);');
 $fld = $frm->getField('btn_submit');
 $fld->developerTags['col'] = 12;
-$fld->setFieldTagAttribute('class', "btn btn-primary");
+$fld->setFieldTagAttribute('class', "btn btn-brand");
 ?>
 <div class="row">
     <div class="col-md-8">

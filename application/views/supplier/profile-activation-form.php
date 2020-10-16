@@ -12,7 +12,7 @@
     $approvalFrm->developerTags['fld_default_col'] = 12;
     
     $btn = $approvalFrm->getField('btn_submit');
-    $btn->setFieldTagAttribute('class', 'btn btn-primary btn-wide');
+    $btn->setFieldTagAttribute('class', 'btn btn-brand btn-wide');
     echo $approvalFrm->getFormHtml();
 
 if (isset($_SESSION['registered_supplier']['id'])) { ?>

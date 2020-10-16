@@ -8,7 +8,7 @@
     $toFld = $frm->getField('send_message_to');
     
 	$btnFld = $frm->getField('btn_submit');
-	$btnFld->addFieldTagAttribute('class', 'btn btn-primary btn-wide');
+	$btnFld->addFieldTagAttribute('class', 'btn btn-brand btn-wide');
 
 	$fromFldHtml = new HtmlElement( 'div', array( 'class'=>'field-set' ));
 	$fromFldCaptionWrapper = $fromFldHtml->appendElement('div', array('class' => 'caption-wraper'));

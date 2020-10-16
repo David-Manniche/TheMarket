@@ -1,6 +1,6 @@
 <?php defined('SYSTEM_INIT') or die('Invalid Usage'); ?>
 <?php 
-    $frm->setFormTagAttribute('action', UrlHelper::generateUrl('TransferbankPay', 'send', array($orderInfo['id'])));
+    $frm->setFormTagAttribute('action', UrlHelper::generateUrl('TransferBankPay', 'send', array($orderInfo['id'])));
     $frm->setFormTagAttribute('class', 'form');
     $frm->developerTags['colClassPrefix'] = 'col-lg-12 col-md-12 col-sm-12 col-xs-';
     $frm->developerTags['fld_default_col'] = 12;
@@ -98,7 +98,7 @@
 <?php if (!isset($error)) :
     $frm->setFormTagAttribute('onsubmit', 'confirmPayment(this); return(false);');
     $btn = $frm->getField('btn_submit'); 
-    $btn->addFieldTagAttribute('class', 'btn btn-primary');
+    $btn->addFieldTagAttribute('class', 'btn btn-brand');
     $btn->addFieldTagAttribute('data-processing-text', Labels::getLabel('LBL_PLEASE_WAIT..', $siteLangId));
     $btn->developerTags['noCaptionTag'] = true;
     echo $frm->getFormHtml();

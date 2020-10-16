@@ -5,7 +5,7 @@ $frm->developerTags['colClassPrefix'] = 'col-lg-12 col-md-12 col-sm-';
 $frm->developerTags['fld_default_col'] = 12;
 
 $btn = $frm->getField('btn_submit');
-$btn->addFieldTagAttribute("class", "btn btn-primary");
+$btn->addFieldTagAttribute("class", "btn btn-brand");
 ?>
 
 <div class="section-head">

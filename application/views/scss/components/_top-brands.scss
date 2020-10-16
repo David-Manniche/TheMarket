@@ -51,6 +51,12 @@
         border-radius: $radius2;
         img {
             margin: auto;
+            &[data-ratio="16:9"] {
+                max-width: 120px;
+            }
+            &[data-ratio="1:1"] {
+                max-width: 60px;
+            }
         }
     }
 }

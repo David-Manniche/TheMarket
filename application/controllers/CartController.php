@@ -109,7 +109,7 @@ class CartController extends MyAppController
                 $this->set('selectedShippingAddressId', $shippingAddressId);
 
                 $this->set('cartProductsCount', count($productsArr));
-                $this->set('shipProductsCount',  count($fulfillmentProdArr[Shipping::FULFILMENT_SHIP]));
+                $this->set('shipProductsCount', count($fulfillmentProdArr[Shipping::FULFILMENT_SHIP]));
                 $this->set('pickUpProductsCount', count($fulfillmentProdArr[Shipping::FULFILMENT_PICKUP]));
             }
 
@@ -175,10 +175,8 @@ class CartController extends MyAppController
                 }
                 FatApp::redirectUser(UrlHelper::generateUrl());
             }
-            $user_id = UserAuthentication::getLoggedUserId();
         }
 
-        $json = array();
         $selprod_id = FatApp::getPostedData('selprod_id', FatUtility::VAR_INT, 0);
         $quantity = FatApp::getPostedData('quantity', FatUtility::VAR_INT, 1);
 
@@ -190,6 +188,48 @@ class CartController extends MyAppController
         $productsToAdd[$selprod_id] = $quantity;
 
         $this->addProductToCart($productsToAdd, $selprod_id);
+
+        $wishlistId = FatApp::getPostedData('uwlist_id', FatUtility::VAR_INT, 0);
+        $rowAction = FatApp::getPostedData('rowAction', FatUtility::VAR_INT, 0); // 1 = Remove From Wishlist / 0 = Add To Wishlist
+        if (0 < $wishlistId) {
+            $db = FatApp::getDb();
+            $wListObj = new UserWishList();
+            
+            $srch = UserWishList::getSearchObject(UserAuthentication::getLoggedUserId());
+            $srch->addMultipleFields(array('uwlist_id'));
+            $srch->doNotCalculateRecords();
+            $srch->setPageSize(1);
+            $srch->addCondition('uwlist_id', '=', $wishlistId);
+            $rs = $srch->getResultSet();
+            $row = $db->fetch($rs);
+            if (!is_array($row) || empty($row)) {
+                $msg = Labels::getLabel('LBL_INVALID_WISHLIST_ID', $this->siteLangId);
+                if (true === MOBILE_APP_API_CALL) {
+                    LibHelper::dieJsonError($msg);
+                }
+                Message::addErrorMessage($msg);
+                FatApp::redirectUser(UrlHelper::generateUrl());
+            }
+
+            if (0 < $rowAction) {
+                if (!$db->deleteRecords(UserWishList::DB_TBL_LIST_PRODUCTS, array('smt' => 'uwlp_uwlist_id = ? AND uwlp_selprod_id = ?', 'vals' => array($wishlistId, $selprod_id)))) {
+                    if (true === MOBILE_APP_API_CALL) {
+                        LibHelper::dieJsonError($db->getError());
+                    }
+                    Message::addErrorMessage($db->getError());
+                    FatApp::redirectUser(UrlHelper::generateUrl());
+                }
+            } else {
+                if (!$wListObj->addUpdateListProducts($wishlistId, $selprod_id)) {
+                    if (true === MOBILE_APP_API_CALL) {
+                        FatUtility::dieJsonError($wListObj->getError);
+                    }
+                    Message::addErrorMessage($wListObj->getError);
+                    FatUtility::dieWithError(Message::getHtml());
+                    FatApp::redirectUser(UrlHelper::generateUrl());
+                }
+            }
+        }
 
         if (true === MOBILE_APP_API_CALL) {
             $cartObj = new Cart();

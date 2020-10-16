@@ -9,8 +9,8 @@
                 <div class="gap"></div>
                 <div class="field-wraper">
                     <div class="field_cover">
-                        <input class="btn btn-primary" type="button" name="btn_submit" onclick="sendTruncateRequest()" value="<?php echo Labels::getLabel('LBL_Yes', $siteLangId); ?>">
-                        <input class="btn btn-outline-primary" onclick="cancelTruncateRequest()" type="button" name="btn_cancel" value="<?php echo Labels::getLabel('LBL_Cancel', $siteLangId); ?>">
+                        <input class="btn btn-brand" type="button" name="btn_submit" onclick="sendTruncateRequest()" value="<?php echo Labels::getLabel('LBL_Yes', $siteLangId); ?>">
+                        <input class="btn btn-outline-brand" onclick="cancelTruncateRequest()" type="button" name="btn_cancel" value="<?php echo Labels::getLabel('LBL_Cancel', $siteLangId); ?>">
                         </div>
                 </div>
             </form>

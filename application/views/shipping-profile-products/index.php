@@ -11,7 +11,7 @@ $proFld->developerTags['col'] = 8;
 $proFld->developerTags['noCaptionTag'] = true;
 
 $submitBtnFld = $frm->getField('btn_submit');
-$submitBtnFld->setFieldTagAttribute('class', 'btn btn-primary');
+$submitBtnFld->setFieldTagAttribute('class', 'btn btn-brand');
 $submitBtnFld->setWrapperAttribute('class', 'col-lg-2');
 $submitBtnFld->developerTags['col'] = 4;
 $submitBtnFld->developerTags['noCaptionTag'] = true;

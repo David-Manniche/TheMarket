@@ -42,10 +42,10 @@
                                     <div class="col-lg-8">
                                         <?php
                                         $submitFld = $frmSearch->getField('btn_submit');
-                                        $submitFld->setFieldTagAttribute('class', 'btn btn-primary btn-block ');
+                                        $submitFld->setFieldTagAttribute('class', 'btn btn-brand btn-block ');
 
                                         $fldClear= $frmSearch->getField('btn_clear');
-                                        $fldClear->setFieldTagAttribute('class', 'btn btn-outline-primary btn-block');
+                                        $fldClear->setFieldTagAttribute('class', 'btn btn-outline-brand btn-block');
                                         echo $frmSearch->getFormHtml();
                                         ?>
                                     </div>
@@ -61,9 +61,9 @@
 						<div class="cards-header">
                             <div class="cards-title"></div>
 							<div class="btn-group hideDiv-js">
-								<a class="btn btn-outline-primary btn-sm formActionBtn-js formActions-css" title="<?php echo Labels::getLabel('LBL_Activate', $siteLangId); ?>" onclick="toggleBulkStatues(1)" href="javascript:void(0)"><?php echo Labels::getLabel('LBL_Activate', $siteLangId); ?></a>
-								<a class="btn btn-outline-primary btn-sm formActionBtn-js formActions-css" title="<?php echo Labels::getLabel('LBL_Deactivate', $siteLangId); ?>" onclick="toggleBulkStatues(0)" href="javascript:void(0)"><?php echo Labels::getLabel('LBL_Deactivate', $siteLangId); ?></a>
-								<a class="btn btn-outline-primary btn-sm" title="<?php echo Labels::getLabel('LBL_Add_User', $siteLangId); ?>" onclick="addUserForm(0)" href="javascript:void(0)"><?php echo Labels::getLabel('LBL_Add_User', $siteLangId); ?></a>
+								<a class="btn btn-outline-brand btn-sm formActionBtn-js formActions-css" title="<?php echo Labels::getLabel('LBL_Activate', $siteLangId); ?>" onclick="toggleBulkStatues(1)" href="javascript:void(0)"><?php echo Labels::getLabel('LBL_Activate', $siteLangId); ?></a>
+								<a class="btn btn-outline-brand btn-sm formActionBtn-js formActions-css" title="<?php echo Labels::getLabel('LBL_Deactivate', $siteLangId); ?>" onclick="toggleBulkStatues(0)" href="javascript:void(0)"><?php echo Labels::getLabel('LBL_Deactivate', $siteLangId); ?></a>
+								<a class="btn btn-outline-brand btn-sm" title="<?php echo Labels::getLabel('LBL_Add_User', $siteLangId); ?>" onclick="addUserForm(0)" href="javascript:void(0)"><?php echo Labels::getLabel('LBL_Add_User', $siteLangId); ?></a>
 							</div>
 						</div>
                         <div class="cards-content">

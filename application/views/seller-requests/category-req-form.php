@@ -7,7 +7,7 @@ $autoUpdateFld->developerTags['cbLabelAttributes'] = array('class' => 'checkbox'
 $autoUpdateFld->developerTags['cbHtmlAfterCheckbox'] = '<i class="input-helper"></i>';
 
 $submitFld = $frm->getField('btn_submit');
-$submitFld->setFieldTagAttribute('class', 'btn btn-primary');
+$submitFld->setFieldTagAttribute('class', 'btn btn-brand');
 $submitFld->developerTags['noCaptionTag'] = true;
 ?>
 <div class="box__head">

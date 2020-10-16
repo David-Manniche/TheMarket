@@ -33,7 +33,7 @@
                     if (!empty($translatorSubscriptionKey) && $formLangId != $siteDefaultLangId) { ?> 
                         <div class="row justify-content-end"> 
                             <div class="col-auto mb-4">
-                                <input class="btn btn-primary" 
+                                <input class="btn btn-brand" 
                                     type="button" 
                                     value="<?php echo Labels::getLabel('LBL_AUTOFILL_LANGUAGE_DATA', $siteLangId); ?>" 
                                     onClick="sellerProductLangForm(<?php echo $formLangId; ?>, <?php echo $selprod_id; ?>, 1)">

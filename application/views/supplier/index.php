@@ -1,7 +1,7 @@
 <?php defined('SYSTEM_INIT') or die('Invalid Usage.'); ?>
 <?php
 $btn = $sellerFrm->getField('btn_submit');
-$btn->setFieldTagAttribute('class', "btn btn-primary btn-wide");
+$btn->setFieldTagAttribute('class', "btn btn-brand btn-wide");
 ?>
 <div class="after-header"></div>
 <div id="body" class="body">

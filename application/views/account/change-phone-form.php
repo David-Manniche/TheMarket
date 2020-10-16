@@ -11,7 +11,7 @@ $label = (0 < $updatePhnFrm ? Labels::getLabel('LBL_NEW_PHONE_NUMBER', $siteLang
 $phnFld->changeCaption($label);
 
 $fldSubmit = $frm->getField('btn_submit');
-$fldSubmit->setFieldTagAttribute('class', "btn btn-primary btn-wide");
+$fldSubmit->setFieldTagAttribute('class', "btn btn-brand btn-wide");
 $fldSubmit->developerTags['noCaptionTag'] = true;
 $fldSubmit->htmlAfterField = '<br/><small>' . Labels::getLabel('MSG_YOUR_PHONE_NUMBER_WILL_NOT_CHANGE_UNTIL_YOU_VERIFY_YOUR_NEW_NUMBER', $siteLangId) . '</small>';
 

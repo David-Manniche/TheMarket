@@ -3,7 +3,7 @@
     <div class="cards-header">
         <h5 class="cards-title"><?php echo Labels::getLabel('LBL_Social_Platforms', $siteLangId); ?></h5>
         <div class="">
-            <a href="javascript:void(0)" onClick="searchSocialPlatforms(this)" class="btn btn-outline-primary btn-sm"><?php echo Labels::getLabel('LBL_Back_to_Social_Platforms', $siteLangId);?></a>
+            <a href="javascript:void(0)" onClick="searchSocialPlatforms(this)" class="btn btn-outline-brand btn-sm"><?php echo Labels::getLabel('LBL_Back_to_Social_Platforms', $siteLangId);?></a>
         </div>
     </div>
     <div class="cards-content">
@@ -34,7 +34,7 @@
                                 $urlFld->htmlAfterField = '<span class="form-text text-muted">'.Labels::getLabel('LBL_Example_Url', $siteLangId).'</span>';
 
                                 $submitFld = $frm->getField('btn_submit');
-                                $submitFld->setFieldTagAttribute('class', "btn btn-primary btn-wide");
+                                $submitFld->setFieldTagAttribute('class', "btn btn-brand btn-wide");
                                 echo $frm->getFormHtml();
                                 ?>
                             </div>

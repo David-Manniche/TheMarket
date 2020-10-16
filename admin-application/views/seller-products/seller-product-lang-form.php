@@ -39,7 +39,7 @@ $langFld->setfieldTagAttribute('onChange', "sellerProductLangForm(" . $selprod_i
                             if (!empty($translatorSubscriptionKey) && $formLangId != $siteDefaultLangId) { ?> 
                                 <div class="row justify-content-end"> 
                                     <div class="col-auto mb-4">
-                                        <input class="btn btn-primary" 
+                                        <input class="btn btn-brand" 
                                             type="button" 
                                             value="<?php echo Labels::getLabel('LBL_AUTOFILL_LANGUAGE_DATA', $adminLangId); ?>" 
                                             onClick="sellerProductLangForm(<?php echo $selprod_id; ?>, <?php echo $formLangId; ?>, 1)">

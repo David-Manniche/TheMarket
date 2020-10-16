@@ -28,7 +28,9 @@ class SellerBaseController extends LoggedUserController
 
         $plugin = new Plugin();
         $keyName = $plugin->getDefaultPluginKeyName(Plugin::TYPE_SPLIT_PAYMENT_METHOD);
-        if (!empty($keyName) && 'StripeConnect' == $keyName && !in_array(strtolower($action), ['shopform', 'shop']) && !FatUtility::isAjaxCall()) {
+        $isStripeConnectLogin = (get_called_class() == 'StripeConnectController' && $action == 'login');
+
+        if (!empty($keyName) && 'StripeConnect' == $keyName && !in_array(strtolower($action), ['shopform', 'shop']) && !$isStripeConnectLogin && !FatUtility::isAjaxCall()) {
             $resp = User::getUserMeta(UserAuthentication::getLoggedUserId(), 'stripe_account_id');
             if (empty($resp)) {
                 if (true === MOBILE_APP_API_CALL) {

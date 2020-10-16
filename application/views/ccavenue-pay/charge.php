@@ -19,7 +19,7 @@
             </div>
         </div>
 
-        <div class="payment-from">
+        <div class="payment-from container">
             <?php if (!isset($error)) : ?>
                 <p><?php echo Labels::getLabel('LBL_WE_ARE_REDIRECTING_PAYMENT_PAGE', $siteLangId) ?>:</p>
                 <?php echo $frm->getFormHtml() ?>

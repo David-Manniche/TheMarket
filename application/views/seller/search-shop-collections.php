@@ -4,11 +4,11 @@
         <h5 class="cards-title"><?php echo Labels::getLabel('LBL_Shop_Collections', $siteLangId); ?></h5>
         <div class="btn-group">
             <?php if ($canEdit) { ?>
-                <a href="javascript:void(0)" onClick="toggleBulkCollectionStatues(1)" class="btn btn-outline-primary btn-sm formActionBtn-js formActions-css"><?php echo Labels::getLabel('LBL_Activate', $siteLangId);?></a>
-                <a href="javascript:void(0)" onClick="toggleBulkCollectionStatues(0)" class="btn btn-outline-primary btn-sm  formActionBtn-js formActions-css"><?php echo Labels::getLabel('LBL_Deactivate', $siteLangId);?></a>
-                <a href="javascript:void(0)" onClick="deleteSelectedCollection()" class="btn btn-outline-primary btn-sm formActionBtn-js formActions-css"><?php echo Labels::getLabel('LBL_Delete', $siteLangId);?></a>
+                <a href="javascript:void(0)" onClick="toggleBulkCollectionStatues(1)" class="btn btn-outline-brand btn-sm formActionBtn-js formActions-css"><?php echo Labels::getLabel('LBL_Activate', $siteLangId);?></a>
+                <a href="javascript:void(0)" onClick="toggleBulkCollectionStatues(0)" class="btn btn-outline-brand btn-sm  formActionBtn-js formActions-css"><?php echo Labels::getLabel('LBL_Deactivate', $siteLangId);?></a>
+                <a href="javascript:void(0)" onClick="deleteSelectedCollection()" class="btn btn-outline-brand btn-sm formActionBtn-js formActions-css"><?php echo Labels::getLabel('LBL_Delete', $siteLangId);?></a>
                 <?php if (count($arr_listing) > 0) { ?>
-                <a href="javascript:void(0)" onClick="getShopCollectionGeneralForm(0)" class="btn btn-outline-primary btn-sm  btn-sm"><?php echo Labels::getLabel('LBL_Add_Collection', $siteLangId);?></a>
+                <a href="javascript:void(0)" onClick="getShopCollectionGeneralForm(0)" class="btn btn-outline-brand btn-sm  btn-sm"><?php echo Labels::getLabel('LBL_Add_Collection', $siteLangId);?></a>
                 <?php }?>
             <?php }?>
         </div>

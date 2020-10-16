@@ -10,12 +10,12 @@ if (null != $autoUpdateFld) {
 }
 
 $btnSubmit = $productFrm->getField('btn_submit');
-$btnSubmit->setFieldTagAttribute('class', "btn btn-primary");
+$btnSubmit->setFieldTagAttribute('class', "btn btn-brand");
 
 $btnDiscardFld = $productFrm->getField('btn_discard');
 $btnDiscardFld->addFieldTagAttribute('onClick', 'goToCatalogRequest();');
 $btnDiscardFld->value = Labels::getLabel('LBL_Discard', $siteLangId);
-$btnDiscardFld->setFieldTagAttribute('class', "btn btn-outline-primary");
+$btnDiscardFld->setFieldTagAttribute('class', "btn btn-outline-brand");
 ?>
 <div class="row justify-content-center">
     <div class="col-md-12">

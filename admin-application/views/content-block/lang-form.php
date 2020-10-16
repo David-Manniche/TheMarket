@@ -13,11 +13,11 @@ if ($epageData['epage_content_for'] == Extrapage::CONTENT_IMPORT_INSTRUCTION) {
     $epage_label->changeCaption(Labels::getLabel('LBL_Section_Title', $adminLangId));
     $epage_content->changeCaption(Labels::getLabel('LBL_Section_Content', $adminLangId));
 }
-$edFld->htmlBeforeField = '<br/><a class="themebtn btn-primary" onClick="resetToDefaultContent();" href="javascript:void(0)">Reset Editor Content to default</a>';
+$edFld->htmlBeforeField = '<br/><a class="themebtn btn-brand" onClick="resetToDefaultContent();" href="javascript:void(0)">Reset Editor Content to default</a>';
 
 if (array_key_exists($epageData['epage_id'], $contentBlockArrWithBg)) {
     $fld = $blockLangFrm->getField('cblock_bg_image');
-    $fld->addFieldTagAttribute('class', 'btn btn-primary btn-sm');
+    $fld->addFieldTagAttribute('class', 'btn btn-brand btn-sm');
 
     $preferredDimensionsStr = '<small class="text--small"> ' . Labels::getLabel('LBL_This_will_be_displayed_on_Registration_Page', $adminLangId) . '</small>';
 
@@ -79,7 +79,7 @@ $langFld->setfieldTagAttribute('onChange', "addBlockLangForm(" . $epage_id . ", 
                         if (!empty($translatorSubscriptionKey) && $epage_lang_id != $siteDefaultLangId) { ?> 
                             <div class="row justify-content-end"> 
                                 <div class="col-auto mb-4">
-                                    <input class="btn btn-primary" 
+                                    <input class="btn btn-brand" 
                                         type="button" 
                                         value="<?php echo Labels::getLabel('LBL_AUTOFILL_LANGUAGE_DATA', $adminLangId); ?>" 
                                         onClick="addBlockLangForm(<?php echo $epage_id; ?>, <?php echo $epage_lang_id; ?>, 1)">

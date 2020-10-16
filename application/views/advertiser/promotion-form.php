@@ -53,7 +53,7 @@ if (User::isSeller()) {
     $bannerTargetUrlFld->setWrapperAttribute( 'class' , 'banner_url_fld'); */
 
     $btnSubmitFld = $frm->getField('btn_submit');
-    $btnSubmitFld->setFieldTagAttribute('class', 'btn btn-primary btn-wide');
+    $btnSubmitFld->setFieldTagAttribute('class', 'btn btn-brand btn-wide');
 ?>
 <div class="tabs">
     <ul>

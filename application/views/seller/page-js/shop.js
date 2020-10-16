@@ -34,7 +34,6 @@ $(document).on("change", ".country", function() {
     if ('' == $(this).val()) {
         return;
     }
-    alert($(this).val());
     $state = $(this).data("statefield");
     $("." + $state).removeAttr("disabled");
     getStatesByCountryCode($(this).val(), 0, "." + $state, 'state_code');

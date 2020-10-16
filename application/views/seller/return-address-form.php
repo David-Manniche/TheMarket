@@ -13,7 +13,7 @@ $stateFld = $frm->getField('ura_state_id');
 $stateFld->setFieldTagAttribute('id', 'ura_state_id');
 
 $btnSubmit = $frm->getField('btn_submit');
-$btnSubmit->setFieldTagAttribute('class', "btn btn-primary btn-wide");
+$btnSubmit->setFieldTagAttribute('class', "btn btn-brand btn-wide");
 
 $variables= array('language'=>$language,'siteLangId'=>$siteLangId,'shop_id'=>$shop_id,'action'=>$action);
 $this->includeTemplate('seller/_partial/shop-navigation.php', $variables, false); ?>

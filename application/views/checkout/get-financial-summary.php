@@ -1,12 +1,12 @@
 <?php defined('SYSTEM_INIT') or die('Invalid Usage.');?>
 <h5 class="mb-2"><?php echo Labels::getLabel('LBL_Order_Summary', $siteLangId); ?> - <?php echo count($products); ?> <?php echo Labels::getLabel('LBL_item(s)', $siteLangId); ?></h5>
-<?php /* ?>  <div class="section__action js-editCart" style="display:block;"><a href="javascript:void(0);" onClick="editCart()" class="btn btn-outline-primary btn-sm"><?php echo Labels::getLabel('LBL_Edit_Cart', $siteLangId);?></a> </div> <?php */ ?>
+<?php /* ?>  <div class="section__action js-editCart" style="display:block;"><a href="javascript:void(0);" onClick="editCart()" class="btn btn-outline-brand btn-sm"><?php echo Labels::getLabel('LBL_Edit_Cart', $siteLangId);?></a> </div> <?php */ ?>
 <?php /*  if (!empty($cartSummary['cartDiscounts']['coupon_code'])) { ?>
 <div class="applied-coupon">
     <span><?php echo Labels::getLabel("LBL_Coupon", $siteLangId); ?> "<strong><?php echo $cartSummary['cartDiscounts']['coupon_code']; ?></strong>" <?php echo Labels::getLabel("LBL_Applied", $siteLangId); ?></span> <a
-        href="javascript:void(0)" onClick="removePromoCode()" class="btn btn-primary btn-sm"><?php echo Labels::getLabel("LBL_Remove", $siteLangId); ?></a></div>
+        href="javascript:void(0)" onClick="removePromoCode()" class="btn btn-brand btn-sm"><?php echo Labels::getLabel("LBL_Remove", $siteLangId); ?></a></div>
 <?php } else { ?>
-<div class="coupon"> <a class="coupon-input btn btn-primary btn-block" href="javascript:void(0)" onclick="getPromoCode()"><?php echo Labels::getLabel('LBL_I_have_a_coupon', $siteLangId); ?></a> </div>
+<div class="coupon"> <a class="coupon-input btn btn-brand btn-block" href="javascript:void(0)" onclick="getPromoCode()"><?php echo Labels::getLabel('LBL_I_have_a_coupon', $siteLangId); ?></a> </div>
 
 <?php } */ ?>
 <div class="order-summary__sections">
@@ -113,6 +113,6 @@
     <?php /*?><div class="place-order">
         <p>By placing an order, you agree to Yokart.com's <a href=""> Terms & Conditions</a> and
             <a href=""> Privacy Policy </a></p>
-        <button class="btn btn-primary btn-lg btn-block"></span>Place Order</button>
+        <button class="btn btn-brand btn-lg btn-block"></span>Place Order</button>
     </div> <?php */ ?>
 </div>

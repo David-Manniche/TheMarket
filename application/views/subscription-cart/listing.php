@@ -52,7 +52,7 @@
           <td class="hightlighted"><?php echo CommonHelper::displayMoneyFormat($cartSummary['cartTotal'], true, false, true, false, true); ?></td>
         </tr>
         <tr>
-          <td colspan="2"><a href="<?php echo UrlHelper::generateUrl('SubscriptionCheckout'); ?>" class="btn btn-outline-primary ripplelink"><?php echo Labels::getLabel('LBL_Proceed_to_Pay', $siteLangId); ?> </a></td>
+          <td colspan="2"><a href="<?php echo UrlHelper::generateUrl('SubscriptionCheckout'); ?>" class="btn btn-outline-brand ripplelink"><?php echo Labels::getLabel('LBL_Proceed_to_Pay', $siteLangId); ?> </a></td>
         </tr>
       </tbody>
     </table>

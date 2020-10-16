@@ -2,7 +2,7 @@
 $returnAgeFld = $frm->getField('selprod_return_age');
 $cancellationAgeFld = $frm->getField('selprod_cancellation_age');
 $btnFld = $frm->getField('btn_submit');
-$btnFld->addFieldTagAttribute('class', 'btn btn-primary');
+$btnFld->addFieldTagAttribute('class', 'btn btn-brand');
 $returnAge = FatUtility::int($returnAgeFld->value);
 $hidden = '';
 if ('' === $returnAgeFld->value || '' === $cancellationAgeFld->value) {

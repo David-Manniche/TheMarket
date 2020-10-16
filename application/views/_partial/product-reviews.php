@@ -42,7 +42,7 @@ if (!empty($reviews)) {
 <div class="row mt-5">
     <?php if ($canSubmitFeedback) { ?>
     <div class="col-auto <?php echo ($totReviews > 0) ? 'col-auto' : ''; ?>">
-        <a onClick="rateAndReviewProduct(<?php echo $product_id; ?>)" href="javascript:void(0)" class="btn btn-primary <?php echo ($totReviews > 0) ? 'btn-block' : '' ; ?>"><?php echo Labels::getLabel('Lbl_Add_Review', $siteLangId); ?></a>
+        <a onClick="rateAndReviewProduct(<?php echo $product_id; ?>)" href="javascript:void(0)" class="btn btn-brand <?php echo ($totReviews > 0) ? 'btn-block' : '' ; ?>"><?php echo Labels::getLabel('Lbl_Add_Review', $siteLangId); ?></a>
     </div>
     <?php } ?>
     <?php if ($totReviews > 0) { ?>

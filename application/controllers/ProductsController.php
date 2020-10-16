@@ -1266,8 +1266,8 @@ class ProductsController extends MyAppController
         $fld->requirements()->setIntPositive();
         // $frm->addSubmitButton(null, 'btnProductBuy', Labels::getLabel('LBL_Buy_Now', $formLangId ), array( 'id' => 'btnProductBuy' ) );
         //$frm->addSubmitButton(null, 'btnAddToCart', Labels::getLabel('LBL_Add_to_Cart', $formLangId), array( 'id' => 'btnAddToCart' ));
-        // $frm->addHTML(null, 'btnProductBuy', '<button name="btnProductBuy" type="submit" id="btnProductBuy" class="btn btn-primary block-on-mobile add-to-cart--js btnBuyNow"> ' . Labels::getLabel('LBL_Buy_Now', $formLangId) . '</button>');
-        $frm->addHTML(null, 'btnAddToCart', '<button name="btnAddToCart" type="submit" id="btnAddToCart" class="btn btn-primary btn-block quickView add-to-cart--js "> ' . Labels::getLabel('LBL_Add_to_Cart', $formLangId) . '</button>');
+        // $frm->addHTML(null, 'btnProductBuy', '<button name="btnProductBuy" type="submit" id="btnProductBuy" class="btn btn-brand block-on-mobile add-to-cart--js btnBuyNow"> ' . Labels::getLabel('LBL_Buy_Now', $formLangId) . '</button>');
+        $frm->addHTML(null, 'btnAddToCart', '<button name="btnAddToCart" type="submit" id="btnAddToCart" class="btn btn-brand btn-block quickView add-to-cart--js "> ' . Labels::getLabel('LBL_Add_to_Cart', $formLangId) . '</button>');
         $frm->addHiddenField('', 'selprod_id');
         return $frm;
     }
@@ -1296,7 +1296,7 @@ class ProductsController extends MyAppController
         $frm = new Form('frmPoll');
         $frm->addHiddenField('', 'polling_id', $pollId);
         $frm->addRadioButtons('', 'polling_feedback', Polling::getPollingResponseTypeArr($langId), '', array('class' => 'listing--vertical listing--vertical-chcek'), array());
-        $frm->addSubmitButton('', 'btn_submit', Labels::getLabel('Lbl_Vote', $this->siteLangId), array('class' => 'btn btn-primary poll--link-js'));
+        $frm->addSubmitButton('', 'btn_submit', Labels::getLabel('Lbl_Vote', $this->siteLangId), array('class' => 'btn btn-brand poll--link-js'));
         return $frm;
     }
 

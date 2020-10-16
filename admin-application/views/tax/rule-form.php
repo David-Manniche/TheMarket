@@ -66,7 +66,7 @@ $combTaxCount = 0;
                                                             <div class="row mb-4">
                                                                 <div class="col-sm-12">
                                                                     <?php if ($index > 1) { ?>
-                                                                    <a href="javascript:void(0);" class="themebtn btn-primary remove-tax-rule--js"> <?php echo Labels::getLabel("LBL_Delete_Tax_Rule", $adminLangId);?></a>
+                                                                    <a href="javascript:void(0);" class="themebtn btn-brand remove-tax-rule--js"> <?php echo Labels::getLabel("LBL_Delete_Tax_Rule", $adminLangId);?></a>
                                                                     <?php } ?>
                                                                 </div>
                                                             </div>

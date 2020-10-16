@@ -3,7 +3,7 @@ $allAccessfrm->setFormTagAttribute('class', 'form');
 $allAccessfrm->developerTags['colClassPrefix'] = 'col-md-';
 $allAccessfrm->developerTags['fld_default_col'] = 4;
 $submitFld = $allAccessfrm->getField('btn_submit');
-$submitFld->setFieldTagAttribute('class', "btn btn-primary btn-wide");
+$submitFld->setFieldTagAttribute('class', "btn btn-brand btn-wide");
 ?>
 <main id="main-area" class="main" role="main">
     <div class="content-wrapper content-space">

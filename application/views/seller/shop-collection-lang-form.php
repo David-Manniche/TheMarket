@@ -3,7 +3,7 @@
     <div class="cards-header">
         <h5 class="cards-title"><?php echo Labels::getLabel('LBL_Shop_Collections', $siteLangId); ?></h5>
         <div class="">
-            <a href="javascript:void(0)" onClick="shopCollections(this)" class="btn btn-outline-primary btn-sm"><?php echo Labels::getLabel('LBL_Back_to_Collections', $siteLangId);?></a>
+            <a href="javascript:void(0)" onClick="shopCollections(this)" class="btn btn-outline-brand btn-sm"><?php echo Labels::getLabel('LBL_Back_to_Collections', $siteLangId);?></a>
         </div>
     </div>
     <div class="cards-content">
@@ -44,7 +44,7 @@
                         $siteDefaultLangId = FatApp::getConfig('conf_default_site_lang', FatUtility::VAR_INT, 1);
                         if (!empty($translatorSubscriptionKey) && $langId != $siteDefaultLangId) { ?>
                             <div class="mb-4">
-                                <input class="btn btn-primary"
+                                <input class="btn btn-brand"
                                     type="button"
                                     value="<?php echo Labels::getLabel('LBL_AUTOFILL_LANGUAGE_DATA', $siteLangId); ?>"
                                     onClick="editShopCollectionLangForm( <?php echo $scollection_id; ?>, <?php echo $langId; ?>, 1)">
@@ -59,7 +59,7 @@
                             $langFld->setfieldTagAttribute('onChange', "editShopCollectionLangForm(" . $scollection_id . ", this.value);");
 
                             $submitFld = $shopColLangFrm->getField('btn_submit');
-                            $submitFld->setFieldTagAttribute('class', "btn btn-primary btn-wide");
+                            $submitFld->setFieldTagAttribute('class', "btn btn-brand btn-wide");
                             echo $shopColLangFrm->getFormHtml();
                         ?>
                     </div>

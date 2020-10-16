@@ -4,7 +4,7 @@ $testimonialMediaFrm->setFormTagAttribute('class', 'web_form form_horizontal');
 $testimonialMediaFrm->developerTags['colClassPrefix'] = 'col-md-';
 $testimonialMediaFrm->developerTags['fld_default_col'] = 12;
 $fld2 = $testimonialMediaFrm->getField('testimonial_image');
-$fld2->addFieldTagAttribute('class', 'btn btn-primary btn-sm');
+$fld2->addFieldTagAttribute('class', 'btn btn-brand btn-sm');
 $fld2->addFieldTagAttribute('onChange', 'popupImage(this)');
 $preferredDimensionsStr = '<small class="text--small">'.sprintf(Labels::getLabel('LBL_Preferred_Dimensions', $adminLangId), '80*80').'</small>';
 $htmlAfterField = $preferredDimensionsStr;
