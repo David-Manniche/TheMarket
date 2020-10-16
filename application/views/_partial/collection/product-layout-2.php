@@ -1,6 +1,6 @@
 <?php defined('SYSTEM_INIT') or die('Invalid Usage.');
 if (isset($collection['products']) && count($collection['products']) > 0) { ?>
-    <section class="section">
+    <section class="section" role="products">
         <div class="container">
             <div class="section-head">
                 <div class="section__heading">
@@ -11,15 +11,16 @@ if (isset($collection['products']) && count($collection['products']) > 0) { ?>
                 <?php } ?>
             </div>
             <div class="ft-products">
-                <div class="row">
+                
                     <?php foreach ($collection['products'] as $product) { ?>
-                    <div class="col-xl-4 col-lg-6 col-md-6 mb-4">
+                    <div class="items">
                         <?php $layoutClass = 'products--layout';
                         include('product-layout-1-list.php'); ?>
                     </div>
                     <?php } ?>
-                </div>
+               
             </div>
         </div>
     </section>
+    <hr class="m-0">
 <?php }
