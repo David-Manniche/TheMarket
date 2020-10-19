@@ -850,3 +850,9 @@ INSERT INTO `tbl_language_labels` (`label_key`, `label_lang_id`, `label_caption`
 VALUES ('LBL_Generate_requests_using_buttons_below', 1, 'Categories, brands and products have to be requested from the site admin. Please generate requests using buttons below.', 1) 
 ON DUPLICATE KEY UPDATE `label_caption` = 'Categories, brands and products have to be requested from the site admin. Please generate requests using buttons below.';
 -- -------------------TV-9.2.2.20201019------------------------
+
+UPDATE tbl_content_pages_block_lang SET cpblocklang_text = REPLACE(cpblocklang_text, 'btn btn--primary btn--custom', 'btn btn-brand') WHERE cpblocklang_text LIKE '%btn btn--primary btn--custom%'
+
+UPDATE tbl_content_pages_block_lang SET cpblocklang_text = REPLACE(cpblocklang_text, 'btn btn--secondary', 'btn btn-brand') WHERE cpblocklang_text LIKE '%btn btn--secondary%'
+
+UPDATE tbl_extra_pages_lang SET epage_content = REPLACE(epage_content, 'fa-thumbs-o-up', 'fa-thumbs-up') WHERE epage_content LIKE '%fa-thumbs-o-up%';

@@ -5,6 +5,8 @@ $frm->developerTags['fld_default_col'] = 12;
 $frm->setFormTagAttribute('onsubmit', 'setupSaveProductSearch(this,event); return(false);');
 $search_title_fld = $frm->getField('pssearch_name');
 $search_title_fld->addFieldTagAttribute('placeholder',Labels::getLabel('LBL_Search_Title', $siteLangId));
+$btn = $frm->getField('btn_submit');
+$btn->addFieldTagAttribute('class', "btn btn-brand");
 ?>
 
 <div class="pop-up-title"><?php echo Labels::getLabel('LBL_Save_Search', $siteLangId); ?></div>
