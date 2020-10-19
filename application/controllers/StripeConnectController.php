@@ -310,12 +310,12 @@ class StripeConnectController extends PaymentMethodBaseController
 
                 $frm->addFormTagAttribute('enctype', 'multipart/form-data');
             } elseif (false !== strpos($field, 'state')) {
+                $country = '';
                 if (empty($stateFldClass)) {
                     if (false === $this->stripeConnect->loadRemoteUserInfo()) {
                         $this->setError();
                     }
                     $stripeUserData = $this->stripeConnect->getResponse()->toArray();
-                    $country = '';
                     for ($i = 0; $i < count($labelParts); $i++) {
                         if ($labelParts[$i] == 'state') {
                             $country = $country['country'];
