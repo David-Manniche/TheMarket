@@ -4,13 +4,17 @@ $arr_flds = array(
     'listserial' => 'Sr.',
     'taxcat_name' => Labels::getLabel('LBL_Tax_Category', $siteLangId)
 );
+$tableClass = '';
 if ($activatedTaxServiceId) {
     $arr_flds['taxcat_code'] = Labels::getLabel('LBL_Tax_Code', $siteLangId);
 } else {
+	if (0 < count($arr_listing)) {
+		$tableClass = "table-justified";
+	}
     $arr_flds['tax_rates'] = Labels::getLabel('LBL_Tax_Rates', $siteLangId);
 }
 
-$tbl = new HtmlElement('table', array('width'=>'100%', 'class'=>'table'));
+$tbl = new HtmlElement('table', array('width'=>'100%', 'class'=>'table '.$tableClass));
 $th = $tbl->appendElement('thead')->appendElement('tr', array('class' => ''));
 foreach ($arr_flds as $val) {
     $e = $th->appendElement('th', array(), $val);
