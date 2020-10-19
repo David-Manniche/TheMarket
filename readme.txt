@@ -230,6 +230,7 @@ Bugs:
     => 044236 - if admin cancel any order from buyer order page then status of that order is "payment confirmed " at buyer, seller and admin (seller order ).
     => 044250 - Admin >> Seller orders >>If we choose pickup then shipping details should not be there.
     => 044233 - when customer places pickup order then in admin> customer order> pickup details are not there
+    => 044237 - when an order having multiple items and both are on pickup then on parent order detail page time slot is not listing
     
 Enhancements:
     => Tax module upgrade
