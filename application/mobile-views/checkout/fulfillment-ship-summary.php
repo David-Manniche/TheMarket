@@ -89,7 +89,7 @@ foreach ($shippingRates as $shippedBy => $shippedByItemArr) {
                         $product['productUrl'] = UrlHelper::generateFullUrl('Products', 'View', array($product['selprod_id']));
                         $product['shopUrl'] = UrlHelper::generateFullUrl('Shops', 'View', array($product['shop_id']));
                         $product['imageUrl'] = UrlHelper::getCachedUrl(UrlHelper::generateFullFileUrl('image', 'product', array($product['product_id'], "THUMB", $product['selprod_id'], 0, $siteLangId)), CONF_IMG_CACHE_TIME, '.jpg');
-                        $data['products'][] = $product;
+                        $data['products'] = [$product];
                         $data['shipLevel'] = $shipLevel;
 
                         $productItems[$shippedBy]['data'][] = $data;
@@ -128,7 +128,7 @@ foreach ($shippingRates as $shippedBy => $shippedByItemArr) {
                         $product['productUrl'] = UrlHelper::generateFullUrl('Products', 'View', array($product['selprod_id']));
                         $product['shopUrl'] = UrlHelper::generateFullUrl('Shops', 'View', array($product['shop_id']));
                         $product['imageUrl'] = UrlHelper::getCachedUrl(UrlHelper::generateFullFileUrl('image', 'product', array($product['product_id'], "THUMB", $product['selprod_id'], 0, $siteLangId)), CONF_IMG_CACHE_TIME, '.jpg');
-                        $data['products'][] = $product;
+                        $data['products'] = [$product];
                         $data['shipLevel'] = $shipLevel;
 
                         $productItems[$shippedBy]['data'][] = $data;

@@ -216,7 +216,7 @@ $cancelBtnFld->setFieldTagAttribute('class', 'btn btn-outline-brand js-cancel-in
                         </div>
                     </div>
                 </div>
-                <?php if ($product_type == Product::PRODUCT_TYPE_PHYSICAL) { ?>
+                <?php if ($product_type == Product::PRODUCT_TYPE_PHYSICAL && !empty($shipBySeller)) { ?>
                 <div class="selprod_fulfillment_type_fld col-md-6">
                     <div class="field-set">
                         <div class="caption-wraper"><label class="field_label"><?php echo $frmSellerProduct->getField('selprod_fulfillment_type')->getCaption(); ?></label>

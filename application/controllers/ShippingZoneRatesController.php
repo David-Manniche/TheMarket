@@ -14,7 +14,7 @@ class ShippingZoneRatesController extends SellerBaseController
         if (0 < $rateId) {
             $data = ShippingRate::getAttributesById($rateId);
             if (empty($data)) {
-                FatUtility::dieWithError($this->str_invalid_request);
+                FatUtility::dieWithError(Labels::getLabel('LBL_Invalid_Request', $this->siteLangId));
             }
             $data['is_condition'] = 0;
             if ($data['shiprate_condition_type'] > 0) {
@@ -84,7 +84,7 @@ class ShippingZoneRatesController extends SellerBaseController
         $langId = FatUtility::int($langId);
 
         if ($rateId == 0 || $langId == 0) {
-            FatUtility::dieWithError($this->str_invalid_request);
+            FatUtility::dieWithError(Labels::getLabel('LBL_Invalid_Request', $this->siteLangId));
         }
 
         $langFrm = $this->getLangForm($zoneId, $rateId, $langId);
@@ -110,7 +110,7 @@ class ShippingZoneRatesController extends SellerBaseController
         $langId = $post['lang_id'];
 
         if ($rateId == 0 || $langId == 0) {
-            Message::addErrorMessage($this->str_invalid_request_id);
+            Message::addErrorMessage(Labels::getLabel('LBL_Invalid_Request', $this->siteLangId));
             FatUtility::dieWithError(Message::getHtml());
         }
 

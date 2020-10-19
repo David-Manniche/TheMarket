@@ -179,6 +179,7 @@ class BuyerController extends BuyerBaseController
         //$srch->joinShippingUsers();
         $srch->addOrderProductCharges();
         $srch->joinShippingCharges();
+        $srch->joinAddress();
         $srch->addCondition('order_user_id', '=', $userId);
         $srch->addCondition('order_id', '=', $orderId);
 

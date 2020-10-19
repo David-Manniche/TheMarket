@@ -607,8 +607,11 @@ function formAction(frm, callback) {
 
 function toggleBulkStatues(status, msg = '') {
     var element = 0 < $("#facebox").length ? "#facebox " : '';
+	if ($(element).is(":hidden")) {
+		element = '';
+	}
     element = element + 'form.actionButtons-js';
-	console.log(element);
+	
     if (1 > $(element).length) {
         $.systemMessage(langLbl.actionButtonsClass, 'alert--danger', true);
         return false;
