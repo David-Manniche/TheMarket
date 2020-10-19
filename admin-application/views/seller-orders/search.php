@@ -55,11 +55,17 @@ foreach ($vendorOrdersList as $sn => $row) {
                 $td->appendElement('plaintext', array(), CommonHelper::displayMoneyFormat($amt, true, true), true);
                 break;
             case 'op_status_id':
-                $status = $row['orderstatus_name'];
-                if (strtolower($row['plugin_code']) == 'cashondelivery' && $row['opshipping_fulfillment_type'] == Shipping::FULFILMENT_PICKUP) {
-                    $status = Labels::getLabel('LBL_PAY_ON_PICKUP', $adminLangId);
+                if (Orders::ORDER_PAYMENT_CANCELLED == $row["order_payment_status"]) {
+                    $status = Orders::getOrderPaymentStatusArr($adminLangId)[$row["order_payment_status"]];
+                    $labelClass = 'label-danger';
+                } else {
+                    $status = $row['orderstatus_name'];
+                    if (strtolower($row['plugin_code']) == 'cashondelivery' && $row['opshipping_fulfillment_type'] == Shipping::FULFILMENT_PICKUP) {
+                        $status = Labels::getLabel('LBL_PAY_ON_PICKUP', $adminLangId);
+                    }
+                    $labelClass = $classArr[$row['orderstatus_color_class']];
                 }
-                $td->appendElement('plaintext', array(), $status, true);
+                $td->appendElement('span', array('class' => 'label label-inline ' . $labelClass), $status, true);
                 break;
             case 'order_date_added':
                 $timeZone = FatApp::getConfig('CONF_TIMEZONE', FatUtility::VAR_STRING, date_default_timezone_get());

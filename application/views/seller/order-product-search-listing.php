@@ -63,11 +63,17 @@ foreach ($orders as $sn => $order) {
                 $td->appendElement('plaintext', array(), $txt, true);
                 break;
             case 'status':
-                $txt = $order['orderstatus_name'];
-                if (strtolower($order['plugin_code']) == 'cashondelivery' && $order['opshipping_fulfillment_type'] == Shipping::FULFILMENT_PICKUP) {
-                    $txt = Labels::getLabel('LBL_PAY_ON_PICKUP', $siteLangId);
+                if (Orders::ORDER_PAYMENT_CANCELLED == $order["order_payment_status"]) {
+                    $txt = Orders::getOrderPaymentStatusArr($siteLangId)[$order["order_payment_status"]];
+                    $labelClass = 'label-danger';
+                } else {
+                    $txt = $order['orderstatus_name'];
+                    if (strtolower($order['plugin_code']) == 'cashondelivery' && $order['opshipping_fulfillment_type'] == Shipping::FULFILMENT_PICKUP) {
+                        $txt = Labels::getLabel('LBL_PAY_ON_PICKUP', $siteLangId);
+                    }
+                    $labelClass = $classArr[$order['orderstatus_color_class']];
                 }
-                $td->appendElement('span', array('class' => 'label label-inline ' . $classArr[$order['orderstatus_color_class']]), $txt . '<br>', true);
+                $td->appendElement('span', array('class' => 'label label-inline ' . $labelClass), $txt . '<br>', true);
                 break;
             case 'action':
                 $ul = $td->appendElement("ul", array("class" => "actions"), '', true);
