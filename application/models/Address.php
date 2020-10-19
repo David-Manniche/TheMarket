@@ -73,7 +73,7 @@ class Address extends MyAppModel
      * @return array
      */
     public function getData(int $type, int $recordId, int $isDefault = 0, $joinTimeSlots = false) : array
-    {
+    { 
         $srch = new AddressSearch($this->langId);
         $srch->joinCountry();
         $srch->joinState();

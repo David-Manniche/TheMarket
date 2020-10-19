@@ -427,9 +427,14 @@ class Cart extends FatModel
                         $this->products[$key]['shipping_address'] = $address->getData(Address::TYPE_USER, UserAuthentication::getLoggedUserId());
                     }
                     /*]*/
+                    if ($this->products[$key]['product_type'] == Product::PRODUCT_TYPE_DIGITAL) {
+                        $shipingAddress = isset($this->products[$key]['billing_address']) ? $this->products[$key]['billing_address'] : '';
+                    } else {
+                        $shipingAddress = isset($this->products[$key]['shipping_address']) ? $this->products[$key]['shipping_address'] : '';
+                    }
                     $extraData = array(
                         'billingAddress' => isset($this->products[$key]['billing_address']) ? $this->products[$key]['billing_address'] : '',
-                        'shippingAddress' => isset($this->products[$key]['shipping_address']) ? $this->products[$key]['shipping_address'] : '',
+                        'shippingAddress' => $shipingAddress,
                         'shippedBySeller' => $isProductShippedBySeller,
                         'shippingCost' => $shippingCost,
                         'buyerId' => $this->cart_user_id
@@ -603,11 +608,16 @@ class Cart extends FatModel
             $quantity = $sellerProductRow['selprod_stock'];
         }
 
+        $sellerProductRow['actualPrice'] =  $sellerProductRow['theprice'];
         if (FatApp::getConfig("CONF_PRODUCT_INCLUSIVE_TAX", FatUtility::VAR_INT, 0) && 0 == Tax::getActivatedServiceId()) {
             $shipToStateId = 0;
             $shipToCountryId = 0;
+            if ($sellerProductRow['product_type'] == Product::PRODUCT_TYPE_DIGITAL) {
+                $shippingAddressId = $this->getCartBillingAddress();
+            } else {
+                $shippingAddressId = $this->getCartShippingAddress();
+            }
 
-            $shippingAddressId = $this->getCartShippingAddress();
             if (0 < $shippingAddressId) {
                 $address = new Address($shippingAddressId, $this->cart_lang_id);
                 $shippingAddressDetail =  $address->getData(Address::TYPE_USER, $this->cart_user_id);
@@ -620,7 +630,6 @@ class Cart extends FatModel
                     $shipToStateId = FatUtility::int($shippingAddressDetail['addr_state_id']);
                 }
             }
-
             $tax = new Tax();
             $taxCategoryRow = $tax->getTaxRates($sellerProductRow['product_id'], $sellerProductRow['selprod_user_id'], $siteLangId, $shipToCountryId, $shipToStateId);
             if (array_key_exists('taxrule_rate', $taxCategoryRow)) {
@@ -677,7 +686,23 @@ class Cart extends FatModel
         if (false == $taxData['status'] && $taxData['msg'] != '') {
             //$this->error = $taxData['msg'];
         }
+
         $tax = $taxData['tax'];
+        /* if (FatApp::getConfig("CONF_PRODUCT_INCLUSIVE_TAX", FatUtility::VAR_INT, 0) && 0 == Tax::getActivatedServiceId()) {
+            $originalTotalPrice = $sellerProductRow['actualPrice'] * $quantity;
+            $thePriceincludingTax = $tax + $totalPrice;
+            if ($originalTotalPrice != $thePriceincludingTax) {
+                if ($originalTotalPrice > $thePriceincludingTax) {
+                    $diff = $originalTotalPrice - $thePriceincludingTax;
+                    $tax = $tax + $diff;
+                } else {
+                    $diff = $thePriceincludingTax - $originalTotalPrice;
+                    $tax = $tax - $diff;
+                }
+            }
+        } */
+
+
         $sellerProductRow['tax'] = $tax;
         $sellerProductRow['taxCode'] = $taxData['taxCode'];
         /* ] */
@@ -1093,14 +1118,23 @@ class Cart extends FatModel
                 }
 
                 $taxObj = new Tax();
+                if ($product['product_type'] == Product::PRODUCT_TYPE_DIGITAL) {
+                    $shippingAddressId = $this->getCartBillingAddress();
+                } else {
+                    $shippingAddressId = $this->getCartShippingAddress();
+                }
+
+                $address = new Address($shippingAddressId, $this->cart_lang_id);
+                $shippingAddressDetail =  $address->getData(Address::TYPE_USER, $this->cart_user_id);
                 $extraData = array(
                     'billingAddress' => isset($product['billing_address']) ? $product['billing_address'] : '',
-                    'shippingAddress' => isset($product['shipping_address']) ? $product['shipping_address'] : '',
+                    'shippingAddress' => $shippingAddressDetail,
                     'shippedBySeller' => $isProductShippedBySeller,
                     'shippingCost' => $shippingCost,
                     'buyerId' => $this->cart_user_id
                 );
                 $taxData = $taxObj->calculateTaxRates($product['product_id'], $taxableProdPrice, $product['selprod_user_id'], $langId, $product['quantity'], $extraData, $this->cartCache);
+
                 if (false == $taxData['status'] && $taxData['msg'] != '') {
                     $this->error = $taxData['msg'];
                 }

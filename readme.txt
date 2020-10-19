@@ -224,6 +224,7 @@ Bugs:
 ---------------------TV-9.2.1.20201015----------------------
     => 043787 - If there is some special price and "price include tax " setting is on then product price is less then entered special price
 ---------------------TV-9.2.1.20201016----------------------
+    => 044240 - on Checkout >> if there is only digital product then tax is not there
 Enhancements:
     => Tax module upgrade
     => Test cases classes enhancements.

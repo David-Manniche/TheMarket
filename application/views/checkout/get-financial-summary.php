@@ -29,7 +29,7 @@
                             class="ml-auto"><?php echo CommonHelper::displayMoneyFormat($cartSummary['cartDiscounts']['coupon_discount_total']); ?></span>
                     </li>
                     <?php } ?>
-                    <?php if (0 < $shippingAddress && isset($cartSummary['taxOptions'])) {
+                    <?php if (/* 0 < $shippingAddress && */ isset($cartSummary['taxOptions'])) {
                         foreach($cartSummary['taxOptions'] as $taxName => $taxVal){ ?>
                        <li class="list-group-item ">
                           <span class="label"><?php echo $taxVal['title']; ?></span>
@@ -58,7 +58,7 @@
                         </li>
                     <?php }?>
 					<?php $orderNetAmt = $cartSummary['orderNetAmount']; 
-						if (0 == $shippingAddress) $orderNetAmt = $orderNetAmt - $cartSummary['cartTaxTotal']; ?>					
+						/* if (0 == $shippingAddress) $orderNetAmt = $orderNetAmt - $cartSummary['cartTaxTotal'];  */?>					
                     <li class="list-group-item hightlighted">
                         <span class="label"><?php echo Labels::getLabel('LBL_Net_Payable', $siteLangId); ?></span> 
                         <span class="ml-auto"><?php echo CommonHelper::displayMoneyFormat($orderNetAmt); ?></span>
