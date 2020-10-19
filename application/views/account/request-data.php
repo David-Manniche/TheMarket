@@ -9,11 +9,11 @@
 		</div>
 	</div>
 	<div class="content-body">
-		<div class="cards">
-			<div class="cards-header">
-				<h5 class="cards-title"><?php echo Labels::getLabel('Lbl_Request_My_Data',$siteLangId);?></h5>
+		<div class="card">
+			<div class="card-header">
+				<h5 class="card-title"><?php echo Labels::getLabel('Lbl_Request_My_Data',$siteLangId);?></h5>
 			</div>
-			<div class="cards-content ">
+			<div class="card-body ">
 				<div class="row">
 					<div class="col-md-8" id="requestDataFrmBlock">
 						<?php echo Labels::getLabel('LBL_Loading..',$siteLangId); ?>

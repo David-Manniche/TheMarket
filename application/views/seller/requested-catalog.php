@@ -9,8 +9,8 @@
 			</div>
 		</div>
 		<div class="content-body">
-			<div class="cards">
-				<div class="cards-content ">
+			<div class="card">
+				<div class="card-body ">
 					<div id="listing">
 						<?php echo Labels::getLabel('LBL_Loading..',$siteLangId); ?>
 					</div>

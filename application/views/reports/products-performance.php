@@ -18,8 +18,8 @@
                                 
             <div class="row">
                 <div class="col-lg-12">
-                    <div class="cards">                      
-                       <div class="cards-content ">
+                    <div class="card">                      
+                       <div class="card-body ">
                        <div id="listingDiv"> <?php echo Labels::getLabel('LBL_Loading..', $siteLangId); ?> </div>
                        </div>
                     </div>

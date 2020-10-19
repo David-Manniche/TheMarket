@@ -12,8 +12,8 @@ $this->includeTemplate('_partial/seller/sellerDashboardNavigation.php'); ?>
 			<?php if($canEdit){ ?>
             <div class="row mb-4">
                 <div class="col-lg-12">
-                    <div class="cards">
-                        <div class="cards-content">
+                    <div class="card">
+                        <div class="card-body">
                             <?php $relProdFrm->setFormTagAttribute('onsubmit', 'setUpSellerProductLinks(this); return(false);');
                             $relProdFrm->setFormTagAttribute('class', 'form form--horizontal');
                             $prodFld = $relProdFrm->getField('product_name');
@@ -66,8 +66,8 @@ $this->includeTemplate('_partial/seller/sellerDashboardNavigation.php'); ?>
 			<?php }?>
             <div class="row">
                 <div class="col-lg-12">
-                    <div class="cards">
-                        <div class="cards-content">
+                    <div class="card">
+                        <div class="card-body">
                             <div id="listing">
                                 <?php echo Labels::getLabel('LBL_Loading..', $siteLangId); ?>
                             </div>

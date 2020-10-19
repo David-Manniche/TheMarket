@@ -17,10 +17,10 @@ $btnSubmit->developerTags['noCaptionTag'] = true;
 
 ?>
 <div >
-	<div class="cards-header">
-		<h5 class="cards-title"><?php echo Labels::getLabel('LBL_Manage_Rates', $siteLangId); ?></h5>
+	<div class="card-header">
+		<h5 class="card-title"><?php echo Labels::getLabel('LBL_Manage_Rates', $siteLangId); ?></h5>
 	</div>
-	<div class="cards-content">
+	<div class="card-body">
 		<div class="row">
 			<div class="col-sm-12">
 				<div class="tabs">

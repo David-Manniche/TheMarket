@@ -1,12 +1,12 @@
 <?php defined('SYSTEM_INIT') or die('Invalid Usage.'); ?>
-<div class="cards">
-    <div class="cards-header">
-        <h5 class="cards-title"><?php echo Labels::getLabel('LBL_Social_Platforms', $siteLangId); ?></h5>
+<div class="card">
+    <div class="card-header">
+        <h5 class="card-title"><?php echo Labels::getLabel('LBL_Social_Platforms', $siteLangId); ?></h5>
         <div class="">
             <a href="javascript:void(0)" onClick="searchSocialPlatforms(this)" class="btn btn-outline-brand btn-sm"><?php echo Labels::getLabel('LBL_Back_to_Social_Platforms', $siteLangId);?></a>
         </div>
     </div>
-    <div class="cards-content">
+    <div class="card-body">
         <div class="col-lg-12 col-md-12">
             <div class="tabs__content">
                 <div class="row ">

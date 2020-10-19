@@ -18,9 +18,9 @@ $this->includeTemplate('_partial/dashboardNavigation.php'); ?> <main id="main-ar
             </div>
         </div>
         <div class="content-body">
-            <div class="cards">
+            <div class="card">
 
-                <div class="cards-content">
+                <div class="card-body">
                     <?php echo $frmOrderReturnRequest->getFormHtml(); ?>
                 </div>
             </div>

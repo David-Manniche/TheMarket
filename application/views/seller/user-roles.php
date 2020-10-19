@@ -3,11 +3,11 @@
     <div class="row">
         <?php foreach ($arrListing as $key => $arrList) { ?>
             <div class="col-xl-6 col-md-12 mb-4">
-                <div class="cards">
-                    <div class="cards-header">
-                        <h5 class="cards-title "><?php echo $modulesArr[$key]; ?></h5>
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="card-title "><?php echo $modulesArr[$key]; ?></h5>
                     </div>
-                    <div class="cards-content ">
+                    <div class="card-body ">
                         <?php 
                         $arr_flds = array(
                             'listserial' => Labels::getLabel('LBL_#', $siteLangId),

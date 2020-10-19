@@ -17,8 +17,8 @@
             </div>
         </div>
         <div class="content-body">
-            <div class="cards">
-                <div class="cards-content">
+            <div class="card">
+                <div class="card-body">
                 <?php if (!empty($rulesData)) { ?>
                     <div class="tax-rules">
                         <ul>

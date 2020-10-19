@@ -11,8 +11,8 @@
     <div class="content-body">
         <div class="row mb-4">
             <div class="col-lg-12">
-                <div class="cards">
-                    <div class="cards-content">
+                <div class="card">
+                    <div class="card-body">
                         <div class="tabs ">
                             <ul>
                                 <li class="is-active"><a href="javascript:void(0);" onclick="searchBuyerDownloads('', this)"><?php echo Labels::getLabel('LBL_Downloadable_Files', $siteLangId); ?></a></li>

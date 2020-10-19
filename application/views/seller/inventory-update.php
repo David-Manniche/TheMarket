@@ -11,8 +11,8 @@ $fld->addFieldTagAttribute('class', 'btn btn-brand btn-sm h-auto');
 $fld->htmlAfterField = ' <a class = "btn btn-outline-brand btn-sm" href="'.UrlHelper::generateUrl('ImportExport', 'exportInventory').'">'.Labels::getLabel('LBL_Export_CSV_File', $siteLangId).'</a>';
 $variables = array('siteLangId'=>$siteLangId,'action'=>$action, 'canEditImportExport'=>$canEditImportExport, 'canUploadBulkImages'=>$canUploadBulkImages);
 $this->includeTemplate('import-export/_partial/top-navigation.php', $variables, false); ?>
-<div class="cards">
-    <div class="cards-content">
+<div class="card">
+    <div class="card-body">
         <div class="cms">
             <div id="productInventory"><?php echo $frm->getFormHtml(); ?></div>
             <div class="mt-4">

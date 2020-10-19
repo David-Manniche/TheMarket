@@ -44,8 +44,8 @@ $this->includeTemplate('_partial/seller/sellerDashboardNavigation.php');
         <div class="content-body">
             <div class="row">
                 <div class="col-lg-12">
-                    <div class="cards">
-                        <div class="cards-content">
+                    <div class="card">
+                        <div class="card-body">
                             <?php if ($noRecordFound) { ?>
 								<div class="row justify-content-center my-5">
 									<div class="col-md-6">

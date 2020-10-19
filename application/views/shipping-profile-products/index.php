@@ -20,10 +20,10 @@ $proFld->htmlAfterField = "<span class='form-text text-muted text-danger'>" . La
 $proFld->addFieldTagAttribute('placeholder', Labels::getLabel('LBL_Search_Product...', $siteLangId));
 
 ?>
-<div class="cards-header">
-    <h5 class="cards-title"><?php echo Labels::getLabel('LBL_Products', $siteLangId); ?></h5>
+<div class="card-header">
+    <h5 class="card-title"><?php echo Labels::getLabel('LBL_Products', $siteLangId); ?></h5>
 </div>
-<div class="cards-content">
+<div class="card-body">
     <div class="row">
         <div class="col-md-12">
             <?php echo $frm->getFormHtml(); ?>

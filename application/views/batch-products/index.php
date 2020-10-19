@@ -8,13 +8,13 @@
 			</div>
 		</div>
 		<div class="content-body">
-			<div class="cards">
-				<div class="cards-header">
-					<h5 class="cards-title"><?php echo Labels::getLabel('LBL_Batch_Listing',$siteLangId); ?></h5>
+			<div class="card">
+				<div class="card-header">
+					<h5 class="card-title"><?php echo Labels::getLabel('LBL_Batch_Listing',$siteLangId); ?></h5>
 					<div class="action">	<a href="javascript:void(0)" class="btn btn-brand btn-sm" title="<?php echo Labels::getLabel('LBL_Add/Create_New_Batch', $siteLangId); ?>" onclick="batchForm(0)"><?php echo Labels::getLabel('LBL_Add/Create_New_Batch', $siteLangId); ?> </a>
 					</div>
 				</div>
-				<div class="cards-content ">
+				<div class="card-body ">
 					<div class="replaced">
 						<div class="search search--sort">
 							<div class="search__field">

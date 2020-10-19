@@ -16,13 +16,13 @@ $btnSubmit->setFieldTagAttribute('class', "btn btn-brand");
             </div>
         </div>
         <div class="content-body">
-            <div class="cards">
-                <div class="cards-header">
-                    <h5 class="cards-title">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="card-title">
                         <?php echo Labels::getLabel('LBL_Product', $siteLangId),' : ',(!empty($opDetail['op_selprod_title']) ? $opDetail['op_selprod_title'] : $opDetail['op_product_name']) ,' | ', Labels::getLabel('LBL_Shop', $siteLangId),' : ', $opDetail['op_shop_name'] ; ?>
                     </h5>
                 </div>
-                <div class="cards-content ">
+                <div class="card-body ">
                     <?php echo $frm->getFormHtml(); ?>
                 </div>
             </div>

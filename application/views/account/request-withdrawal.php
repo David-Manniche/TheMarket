@@ -1,8 +1,8 @@
 <?php defined('SYSTEM_INIT') or die('Invalid Usage.'); ?>
-<div class="cards-header">
-    <h5 class="cards-title"><?php echo Labels::getLabel('LBL_Request_Withdrawal', $siteLangId);?></h5>
+<div class="card-header">
+    <h5 class="card-title"><?php echo Labels::getLabel('LBL_Request_Withdrawal', $siteLangId);?></h5>
 </div>
-<div class="cards-content ">
+<div class="card-body ">
     <?php $frm->setFormTagAttribute('class', 'form');
     $frm->developerTags['colClassPrefix'] = 'col-md-';
     if (User::isAffiliate()) {
