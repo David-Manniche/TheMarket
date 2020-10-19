@@ -18,7 +18,8 @@
 										<td style="padding:15px;border-bottom: 1px solid #ddd;">
 											<h4 style="margin:0;font-size:18px;font-weight:bold;padding-bottom: 5px;"><?php echo Labels::getLabel('LBL_Sold_By', $siteLangId); ?>: <?php echo $childOrder['op_shop_name']; ?></h4>
 											<p style="margin:0;padding-bottom: 15px;"><?php echo Labels::getLabel('LBL_Shop_Address', $siteLangId); ?>: <?php echo $childOrder['shop_city'] .', '. $childOrder['shop_state_name'] .', '.$childOrder['shop_country_name'] .' - '.$childOrder['shop_postalcode']; ?></p>
-											<table width="100%" border="0" cellpadding="0" cellspacing="0">                           <?php $shopCodes = $childOrder['shop_invoice_codes'];
+											<table width="100%" border="0" cellpadding="0" cellspacing="0">
+												<?php $shopCodes = $childOrder['shop_invoice_codes'];
 												$codesArr = explode("\n", $shopCodes); ?>
 												<tbody>
 													<?php $count = 1; ?>
@@ -26,14 +27,14 @@
 														<?php foreach ($codesArr as $code) { ?>
 														<td style="<?php echo ($count%2 == 0) ? 'text-align: right;' : ''; ?> font-weight: 700;"><?php echo $code; ?></td>
 														<?php 
-														if($count%3 == 0) {
+														if($count%2 == 0) {
 															echo '</tr><tr>';
 														}
 														$count++; } ?>
 														
 													</tr>
 												</tbody>
-											</table>                                        
+											</table>
 										</td>
 									</tr>
 								</tbody>

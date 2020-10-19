@@ -226,6 +226,7 @@ Bugs:
 ---------------------TV-9.2.1.20201016----------------------
     => 043675 - Admin >> pickup address >> Add >> slot timings >> there should be some space between radio button and text. 
     => 044231 - Seller >> sales report page is not opening.
+    => 044232 - Seller >> order details page >> comments >> if buyer request for cancellation then message at seller end is not right .
 
 Enhancements:
     => Tax module upgrade
