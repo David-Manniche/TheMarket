@@ -844,7 +844,7 @@ ON DUPLICATE KEY UPDATE `label_caption` = 'For example www.domain.com/en for Eng
 
 INSERT INTO `tbl_language_labels` (`label_key`, `label_lang_id`, `label_caption`, `label_type`) 
 VALUES ('MSG_Your_Account_verification_is_pending_{clickhere}', 1, 'Your account verification is pending. {clickhere} to resend verification link.', 1) 
-ON DUPLICATE KEY UPDATE `label_caption` = 'Your account verification is pending. {clickhere} to resend verification link.'
+ON DUPLICATE KEY UPDATE `label_caption` = 'Your account verification is pending. {clickhere} to resend verification link.';
 
 INSERT INTO `tbl_language_labels` (`label_key`, `label_lang_id`, `label_caption`, `label_type`) 
 VALUES ('LBL_Generate_requests_using_buttons_below', 1, 'Categories, brands and products have to be requested from the site admin. Please generate requests using buttons below.', 1) 
