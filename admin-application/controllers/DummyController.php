@@ -4,9 +4,7 @@ class DummyController extends AdminBaseController
 {
     public function index()
     {
-        $address =  new UserCollection(4, UserCollection::TYPE_SAVED_FOR_LATER);
-        $addresses = $address->deleteRecords(4);
-        var_dump($addresses);
+        
     }
 
     public function test123()
