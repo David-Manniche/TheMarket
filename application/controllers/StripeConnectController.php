@@ -4,7 +4,7 @@ class StripeConnectController extends PaymentMethodBaseController
 {
     public const KEY_NAME = 'StripeConnect';
     private $stripeConnect;
-    
+
     /**
      * __construct
      *
@@ -16,7 +16,7 @@ class StripeConnectController extends PaymentMethodBaseController
         parent::__construct($action);
         $this->init();
     }
-    
+
     /**
      * init
      *
@@ -49,7 +49,7 @@ class StripeConnectController extends PaymentMethodBaseController
             $this->setError();
         }
     }
-    
+
     /**
      * setError
      *
@@ -62,7 +62,7 @@ class StripeConnectController extends PaymentMethodBaseController
         LibHelper::exitWithError($msg, true);
     }
 
-    
+
     /**
      * index
      *
@@ -100,7 +100,7 @@ class StripeConnectController extends PaymentMethodBaseController
         $json['html'] = $this->_template->render(false, false, 'stripe-connect/index.php', true, false);
         FatUtility::dieJsonSuccess($json);
     }
-    
+
     /**
      * register
      *
@@ -114,7 +114,7 @@ class StripeConnectController extends PaymentMethodBaseController
         $msg = Labels::getLabel('MSG_SETUP_SUCCESSFULLY', $this->siteLangId);
         FatUtility::dieJsonSuccess($msg);
     }
-    
+
     /**
      * login
      *
@@ -124,7 +124,7 @@ class StripeConnectController extends PaymentMethodBaseController
     {
         FatApp::redirectUser($this->stripeConnect->getRedirectUri());
     }
-    
+
     /**
      * callback
      *
@@ -135,7 +135,7 @@ class StripeConnectController extends PaymentMethodBaseController
         $error = FatApp::getQueryStringData('error');
         $errorDescription = FatApp::getQueryStringData('error_description');
         if (!empty($error)) {
-            $msg = $error . ' : ' . $errorDescription; 
+            $msg = $error . ' : ' . $errorDescription;
             Message::addErrorMessage($msg);
         } else {
             $code = FatApp::getQueryStringData('code');
@@ -145,7 +145,7 @@ class StripeConnectController extends PaymentMethodBaseController
         }
         FatApp::redirectUser(UrlHelper::generateUrl('seller', 'shop', [self::KEY_NAME]));
     }
-    
+
     /**
      * requiredFieldsForm
      *
@@ -176,7 +176,7 @@ class StripeConnectController extends PaymentMethodBaseController
         $json['html'] = $this->_template->render(false, false, 'stripe-connect/required-fields-form.php', true, false);
         FatUtility::dieJsonSuccess($json);
     }
-    
+
     /**
      * validateResponse
      *
@@ -191,7 +191,7 @@ class StripeConnectController extends PaymentMethodBaseController
         }
         return true;
     }
-    
+
     /**
      * setupRequiredFields
      *
@@ -233,7 +233,7 @@ class StripeConnectController extends PaymentMethodBaseController
 
         FatUtility::dieJsonSuccess($msg);
     }
-    
+
     /**
      * getRequiredFieldsForm
      *
@@ -246,7 +246,7 @@ class StripeConnectController extends PaymentMethodBaseController
             $this->msg = Labels::getLabel('MSG_SUCCESSFULLY_SUBMITTED_TO_REVIEW', $this->siteLangId);
             return false;
         }
-        
+
         $frm = new Form('frm' . self::KEY_NAME);
         $stateFldClass = '';
         foreach ($fieldsData as $field => $labelStr) {
@@ -310,22 +310,37 @@ class StripeConnectController extends PaymentMethodBaseController
 
                 $frm->addFormTagAttribute('enctype', 'multipart/form-data');
             } elseif (false !== strpos($field, 'state')) {
-                $fld = $frm->addSelectBox($labelStr, $name, [], '', ['class' => $stateFldClass, 'disabled' => 'disabled']);
+                if (empty($stateFldClass)) {
+                    if (false === $this->stripeConnect->loadRemoteUserInfo()) {
+                        $this->setError();
+                    }
+                    $stripeUserData = $this->stripeConnect->getResponse()->toArray();
+                    $country = '';
+                    for ($i = 0; $i < count($labelParts); $i++) {
+                        if ($labelParts[$i] == 'state') {
+                            $country = $country['country'];
+                        } else {
+                            $country = empty($country) ? $stripeUserData[$labelParts[$i]] : $country[$labelParts[$i]];
+                        }
+                    }
+                }
+
+                $fld = $frm->addSelectBox($labelStr, $name, [], '', ['class' => (empty($stateFldClass) ? 'state' : $stateFldClass), 'disabled' => 'disabled', 'data-country' => $country]);
             } elseif (false !== strpos($field, 'month')) {
                 $months = [];
-                for ($i = 1; $i <= 12 ; $i++) { 
+                for ($i = 1; $i <= 12; $i++) {
                     $months[$i] = $i;
                 }
                 $fld = $frm->addSelectBox($labelStr, $name, $months);
             } elseif (false !== strpos($field, 'day')) {
                 $days = [];
-                for ($i = 1; $i <= 31 ; $i++) { 
+                for ($i = 1; $i <= 31; $i++) {
                     $days[$i] = $i;
                 }
                 $fld = $frm->addSelectBox($labelStr, $name, $days);
             } elseif (false !== strpos($field, 'year')) {
                 $years = [];
-                for ($i = 1900; $i <= (date('Y') - 13) ; $i++) { 
+                for ($i = 1900; $i <= (date('Y') - 13); $i++) {
                     $years[$i] = $i;
                 }
                 $fld = $frm->addSelectBox($labelStr, $name, $years);
@@ -334,7 +349,7 @@ class StripeConnectController extends PaymentMethodBaseController
                 $countryObj = new Countries();
                 $countriesArr = $countryObj->getCountriesArr($this->siteLangId, true, 'country_code');
                 $fld = $frm->addSelectBox($labelStr, $name, $countriesArr, '', ['class' => 'country', 'data-statefield' => $stateFldClass]);
-            } elseif ('tos_acceptance' == $field){
+            } elseif ('tos_acceptance' == $field) {
                 $fld = $frm->addCheckBox('', 'tos_acceptance', 1);
             } else {
                 $fld = $frm->addTextBox($labelStr, $name);
@@ -345,11 +360,11 @@ class StripeConnectController extends PaymentMethodBaseController
             }
         }
 
-        $submitBtn = $frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_SAVE', $this->siteLangId));
-        $cancelButton = $frm->addButton("", "btn_clear", Labels::getLabel('LBL_Clear', $this->siteLangId), array('onclick' => 'clearForm();'));
+        $frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_SAVE', $this->siteLangId));
+        $frm->addButton("", "btn_clear", Labels::getLabel('LBL_Clear', $this->siteLangId), array('onclick' => 'clearForm();'));
         return $frm;
     }
-    
+
     /**
      * deleteAccount
      *
@@ -363,4 +378,3 @@ class StripeConnectController extends PaymentMethodBaseController
         FatUtility::dieJsonSuccess(Labels::getLabel('MSG_DELETED_SUCCESSFULLY', $this->siteLangId));
     }
 }
- 

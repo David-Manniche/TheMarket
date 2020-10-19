@@ -17,7 +17,7 @@ if (null != $btnFld) {
     $btnFld->developerTags['col'] = 2;
     $btnFld->setWrapperAttribute('class', 'col-6 col-lg-2');
     $btnFld->developerTags['noCaptionTag'] = true;
-} 
+}
 
 $termFld = $frm->getField('tos_acceptance');
 if (null != $termFld) {
@@ -31,9 +31,9 @@ if (null != $termFld) {
 }
 
 $tosFld = $frm->getField('tos_acceptance');
-$tosFld->developerTags['col'] = 12;
-
-?>
+if (null != $tosFld) {
+    $tosFld->developerTags['col'] = 12;
+} ?>
 
 <hr>
 <div class="section__body">
@@ -42,9 +42,14 @@ $tosFld->developerTags['col'] = 12;
 </div>
 <script language="javascript">
     $(document).ready(function() {
-        $(".country").change();
-        // getStatesByCountryCode($(".country").val(), '<?php echo $stateCode ;?>', '.state', 'state_code');
-        
+        if (0 < $(".state").length) {
+            getStatesByCountryCode($(".state").data('country'), '0', '.state', 'state_code');
+        }
+
+        if (0 < $(".country").length) {
+            $(".country").change();
+        }
+
         if (0 < $(".tosLink-js").length && 0 < $(".tosCheckbox-js").length) {
             var parent = $(".tosLink-js").parent();
             var label = parent.children('label');
