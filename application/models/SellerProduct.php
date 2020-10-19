@@ -1185,4 +1185,17 @@ class SellerProduct extends MyAppModel
         }
         return [];
     }
+    
+    public static function prodShipByseller($productId)
+    {
+        $productId = FatUtility::int($productId);
+        $loggedUserId = UserAuthentication::getLoggedUserId();
+        $srch = new ProductSearch();
+        $srch->joinProductShippedBySeller($loggedUserId);
+        $srch->addCondition('psbs_user_id', '=', $loggedUserId);
+        $srch->addCondition('product_id', '=', $productId);
+        $srch->addFld('psbs_user_id');
+        $rs = $srch->getResultSet();
+        return FatApp::getDb()->fetch($rs);
+    }
 }
