@@ -105,7 +105,16 @@ if (!empty($order["thirdPartyorderInfo"]) && isset($order["thirdPartyorderInfo"]
                             <tr>
                                 <td><strong><?php echo Labels::getLabel('LBL_Invoice_Id', $adminLangId); ?> : </strong><?php echo $order["op_invoice_number"] ?></td>
                                 <td><strong><?php echo Labels::getLabel('LBL_Order_Date', $adminLangId); ?> : </strong><?php echo FatDate::format($order["order_date_added"], true) ?></td>
-                                <td><strong><?php echo Labels::getLabel('LBL_Status', $adminLangId); ?> : </strong> <?php echo $order["orderstatus_name"] ?></td>
+                                <td>
+                                    <strong><?php echo Labels::getLabel('LBL_Status', $adminLangId); ?> : </strong> 
+                                    <?php 
+                                        if (Orders::ORDER_PAYMENT_CANCELLED == $order["order_payment_status"]) {
+                                            echo Orders::getOrderPaymentStatusArr($adminLangId)[$order["order_payment_status"]];
+                                        } else {
+                                            echo $order["orderstatus_name"];
+                                        }
+                                    ?>
+                                </td>
                             </tr>
                             <tr>
                                 <td><strong><?php echo Labels::getLabel('LBL_Customer/Guest', $adminLangId); ?> : </strong><?php echo $order["buyer_user_name"] . ' (' . $order['buyer_username'] . ')'; ?></td>

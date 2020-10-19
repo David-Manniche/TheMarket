@@ -81,18 +81,24 @@ foreach ($orders as $sn => $order) {
                 $td->appendElement('plaintext', array(), $txt, true);
                 break;
             case 'status':
-                $pMethod = '';
-                $paymentMethodCode = Plugin::getAttributesById($order['order_pmethod_id'], 'plugin_code');
-                
-                $orderStatus = "";
-                if (strtolower($paymentMethodCode) == 'cashondelivery' && $order['opshipping_fulfillment_type'] == Shipping::FULFILMENT_PICKUP) {
-                    $orderStatus = Labels::getLabel('LBL_PAY_ON_PICKUP', $siteLangId);
-                } else if (strtolower($paymentMethodCode) == 'cashondelivery' && $order['order_status'] == FatApp::getConfig('CONF_DEFAULT_ORDER_STATUS')) {
-                    $pMethod = " - " . $order['plugin_name'];
+                if (Orders::ORDER_PAYMENT_CANCELLED == $order["order_payment_status"]) {
+                    $orderStatus = Orders::getOrderPaymentStatusArr($siteLangId)[$order["order_payment_status"]];
+                    $labelClass = 'label-danger';
+                } else {
+                    $pMethod = '';
+                    $paymentMethodCode = Plugin::getAttributesById($order['order_pmethod_id'], 'plugin_code');
+                    
+                    $orderStatus = "";
+                    if (strtolower($paymentMethodCode) == 'cashondelivery' && $order['opshipping_fulfillment_type'] == Shipping::FULFILMENT_PICKUP) {
+                        $orderStatus = Labels::getLabel('LBL_PAY_ON_PICKUP', $siteLangId);
+                    } else if (strtolower($paymentMethodCode) == 'cashondelivery' && $order['order_status'] == FatApp::getConfig('CONF_DEFAULT_ORDER_STATUS')) {
+                        $pMethod = " - " . $order['plugin_name'];
+                    }
+                    $orderStatus = !empty($orderStatus) ? $orderStatus : ucwords($order['orderstatus_name'] . $pMethod);
+                    $labelClass = $classArr[$order['orderstatus_color_class']];
                 }
-                $orderStatus = !empty($orderStatus) ? $orderStatus : ucwords($order['orderstatus_name'] . $pMethod);
 
-                $td->appendElement('span', array('class' => 'label label-inline ' . $classArr[$order['orderstatus_color_class']]), $orderStatus . '<br>', true);
+                $td->appendElement('span', array('class' => 'label label-inline ' . $labelClass), $orderStatus . '<br>', true);
                 break;
             case 'action':
                 $ul = $td->appendElement("ul", array("class" => "actions"), '', true);
