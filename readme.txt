@@ -226,7 +226,8 @@ Bugs:
 ---------------------TV-9.2.1.20201016----------------------
     => 043675 - Admin >> pickup address >> Add >> slot timings >> there should be some space between radio button and text. 
     => 044231 - Seller >> sales report page is not opening.
-
+    => 044241 - Seller >> shipping profile >> edit any rate >> delete that rate >> that rate should not be opened at right side .
+    
 Enhancements:
     => Tax module upgrade
     => Test cases classes enhancements.
