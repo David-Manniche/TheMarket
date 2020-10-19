@@ -1,8 +1,8 @@
 <?php defined('SYSTEM_INIT') or die('Invalid Usage.');
 if( isset($collection['categories']) && count( $collection['categories'] ) ) { ?>
-    <section class="section bg-gray">
+    <section class="section bg-gray" role="category">
         <div class="container">
-            <div class="section-head  section--head--center">
+            <div class="section-head section--head--center">
                 <?php echo ($collection['collection_name'] != '') ? ' <div class="section__heading"><h2>' . $collection['collection_name'] .'</h2></div>' : ''; ?>
 
                 <?php if( $collection['totCategories'] > Collections::LIMIT_CATEGORY_LAYOUT1 ){ ?>

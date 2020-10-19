@@ -19,12 +19,12 @@
     <div class="content-body">
         <div class="row mb-4">
             <div class="col-md-12">
-                <div class="cards">
-                    <div class="cards-header">
-                        <!-- <h5 class="cards-title "><?php echo Labels::getLabel('LBL_Promotions', $siteLangId);?></h5> -->
+                <div class="card">
+                    <div class="card-header">
+                        <!-- <h5 class="card-title "><?php echo Labels::getLabel('LBL_Promotions', $siteLangId);?></h5> -->
                         <p class="note"><?php echo Labels::getLabel('MSG_Minimum_balance_Required_For_Promotions', $siteLangId).' : '. CommonHelper::displaymoneyformat(FatApp::getConfig('CONF_PPC_MIN_WALLET_BALANCE'));?></p>
                     </div>
-                    <div class="cards-content ">
+                    <div class="card-body ">
                         <div id="promotionForm">
                             <div class="replaced formshowhide-js">
                                 <?php
@@ -84,8 +84,8 @@
         </div>
         <div class="row">
             <div class="col-lg-12">
-                <div class="cards">
-                    <div class="cards-content">
+                <div class="card">
+                    <div class="card-body">
                         <div id="listing">
                             <?php echo Labels::getLabel('LBL_Loading..', $siteLangId); ?>
                         </div>

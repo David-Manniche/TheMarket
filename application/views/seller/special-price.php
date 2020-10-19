@@ -37,8 +37,8 @@
         <div class="content-body">
             <div class="row mb-4">
                 <div class="col-lg-12">
-                    <div class="cards">
-                        <div class="cards-content">
+                    <div class="card">
+                        <div class="card-body">
                             <div class="replaced">
                                 <?php echo $frmSearch->getFormHtml(); ?>
                             </div>
@@ -48,7 +48,7 @@
             </div>
             <div class="row">
                 <div class="col-lg-12">
-                    <div class="cards">
+                    <div class="card">
                         <?php
 						if($canEdit){
 							foreach ($dataToEdit as $data) {
@@ -60,15 +60,15 @@
 							}
 						}                        
                         ?>
-						<div class="cards-header">
-                            <div class="cards-title"></div>
+						<div class="card-header">
+                            <div class="card-title"></div>
 							<div class="btn-group">
 								<a class="btn btn-outline-brand btn-sm formActionBtn-js formActions-css" title="<?php echo Labels::getLabel('LBL_Delete_Special_Price', $siteLangId); ?>" onclick="deleteSpecialPriceRows()" href="javascript:void(0)">							
 									<?php echo Labels::getLabel('LBL_REMOVE', $siteLangId); ?>
 								</a>
 							</div>
 						</div>
-                        <div class="cards-content">
+                        <div class="card-body">
                             <div id="listing">
                                 <?php echo Labels::getLabel('LBL_Loading..', $siteLangId); ?>
                             </div>

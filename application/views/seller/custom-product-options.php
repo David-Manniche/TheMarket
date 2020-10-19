@@ -2,8 +2,8 @@
 <div class="tabs ">
     <?php require_once(CONF_THEME_PATH.'seller/sellerCustomProductTop.php');?>
 </div>
-<div class="cards">
-    <div class="cards-content ">
+<div class="card">
+    <div class="card-body ">
         <div class="tabs__content">
             <div class="row">
                 <div class="col-md-12">

@@ -28,8 +28,8 @@ $submitBtnFld->developerTags['noCaptionTag'] = true;
         <div class="content-body">
             <div class="row mb-4">
                 <div class="col-lg-12">
-                    <div class="cards">
-                        <div class="cards-content pt-4 pl-4 pr-4 pb-4">
+                    <div class="card">
+                        <div class="card-body pt-4 pl-4 pr-4 pb-4">
                             <?php echo $frm->getFormTag();
                             $pNameFld = $frm->getField('shipprofile_name');
                             $pNameFld->htmlAfterField = "<span class='form-text text-muted'>" . Labels::getLabel("LBL_Customers_won't_see_this", $siteLangId) . "</span>";
@@ -69,15 +69,15 @@ $submitBtnFld->developerTags['noCaptionTag'] = true;
             </div>
             <div class="row mb-4">
                 <div class="col-lg-12">
-                    <div class="cards" id="product-section--js"> </div>
+                    <div class="card" id="product-section--js"> </div>
                 </div>
             </div>
             <?php if (empty($profileData) || ((isset($profileData['shipprofile_default'])))) { ?>
                 <div class="row mb-4">
                     <div class="col-lg-7">
-                        <div class="cards">
-                            <div class="cards-header">
-                                <h5 class="cards-title"><?php echo Labels::getLabel('LBL_Shipping_to', $siteLangId); ?>
+                        <div class="card">
+                            <div class="card-header">
+                                <h5 class="card-title"><?php echo Labels::getLabel('LBL_Shipping_to', $siteLangId); ?>
                                 </h5>
                                 <div class="action">
                                     <?php if ($canEdit) { ?>
@@ -86,14 +86,14 @@ $submitBtnFld->developerTags['noCaptionTag'] = true;
                                     <?php } ?>
                                 </div>
                             </div>
-                            <div class="cards-content">
+                            <div class="card-body">
                                 <input type="hidden" name="profile_id" value="<?php echo $profile_id; ?>">
                                 <div id="listing-zones"></div>
                             </div>
                         </div>
                     </div>
                     <div class="col-lg-5">
-                        <div class="cards">
+                        <div class="card">
                             <div id="ship-section--js"></div>
                         </div>
                     </div>

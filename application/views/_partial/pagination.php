@@ -59,5 +59,5 @@ $ul = new HtmlElement(
     $pagination,
     true
 );
-echo '<div class="gap"></div>';
+echo ' ';
 echo $ul->getHtml();

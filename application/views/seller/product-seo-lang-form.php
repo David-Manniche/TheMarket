@@ -1,5 +1,5 @@
 <?php /*require_once('sellerProductSeoTop.php');*/ ?>
-<h5 class="cards-title mb-2"><?php echo SellerProduct::getProductDisplayTitle($selprodId, $siteLangId, false); ?></h5>
+<h5 class="card-title mb-2"><?php echo SellerProduct::getProductDisplayTitle($selprodId, $siteLangId, false); ?></h5>
 <div class="form__subcontent">
     <?php
     $translatorSubscriptionKey = FatApp::getConfig('CONF_TRANSLATOR_SUBSCRIPTION_KEY', FatUtility::VAR_STRING, '');

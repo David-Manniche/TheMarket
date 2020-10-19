@@ -2,16 +2,16 @@
 <div class="tabs ">
     <?php require_once('sellerCatalogProductTop.php'); ?>
 </div>
-<div class="cards">
+<div class="card">
 <?php if (count($arrListing) > 0) { ?>
-    <div class="cards-header">
-        <h5 class="cards-title"><?php echo Labels::getLabel('LBL_Volume_Discount', $siteLangId);?></h5>
+    <div class="card-header">
+        <h5 class="card-title"><?php echo Labels::getLabel('LBL_Volume_Discount', $siteLangId);?></h5>
         <div class="action">
             <a class="btn btn-brand btn-sm" href="javascript:void(0); " onClick="sellerProductVolumeDiscountForm(<?php echo $selprod_id; ?>, 0);"><?php echo Labels::getLabel('LBL_Add_New_Volume_Discount', $siteLangId)?></a>
             <!-- <a class="btn btn-outline-brand btn-sm" href="<?php echo UrlHelper::generateUrl('Seller', 'volumeDiscount', array($selprod_id)); ?>" target="_blank"><?php echo Labels::getLabel('LBL_Manage_Volume_Discount', $siteLangId)?></a> -->
         </div>
     <?php } ?>
-    <div class="cards-content ">
+    <div class="card-body ">
         <div class="row">
             <div class="<?php echo (count($arrListing) > 0) ? 'col-md-8' : 'col-md-12'; ?>">
                 <div class="form__subcontent">

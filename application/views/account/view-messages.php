@@ -5,12 +5,12 @@
             </div>
         </div>
         <div class="content-body">
-            <div class="cards">
-                <div class="cards-header">
-                    <h5 class="cards-title"><?php echo Labels::getLabel('LBL_Messages', $siteLangId);?></h5>
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="card-title"><?php echo Labels::getLabel('LBL_Messages', $siteLangId);?></h5>
                     <div class="btn-group"><a href="<?php echo UrlHelper::generateUrl('Account', 'messages');?>" class="btn btn-outline-brand btn-sm"><?php echo Labels::getLabel('LBL_Back_to_messages', $siteLangId);?></a></div>
                 </div>
-                <div class="cards-content ">
+                <div class="card-body ">
                     <table class="table">
                         <tbody>
                             <tr class="">
@@ -66,8 +66,8 @@
                 </div>
             </div>
             <div class="gap"></div><div class="gap"></div>
-            <div class="cards">
-                <div class="cards-content">
+            <div class="card">
+                <div class="card-body">
                     <?php echo $frmSrch->getFormHtml();?> <div id="loadMoreBtnDiv"></div>
                     <div id="messageListing" class="messages-list">
                         <ul></ul>

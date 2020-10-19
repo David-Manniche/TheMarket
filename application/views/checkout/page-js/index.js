@@ -65,8 +65,6 @@ function showCartReviewDiv() {
     return loadCartReviewDiv();
 }
 $("document").ready(function () {
-    loadFinancialSummary();
-
     $(document).on("keydown", "#cc_number", function () {
         var obj = $(this);
         var cc = obj.val();
@@ -107,9 +105,10 @@ $("document").ready(function () {
 
     loadFinancialSummary = function () {
         $(financialSummary).html(fcom.getLoader());
-        fcom.ajax(fcom.makeUrl('Checkout', 'getFinancialSummary'), '', function (ans) {
-            $(financialSummary).html(ans);
-        });
+        fcom.updateWithAjax(fcom.makeUrl('Checkout', 'getFinancialSummary'), '', function (ans) {          
+            $(financialSummary).html(ans.data);
+            $('#netAmountSummary').html(ans.netAmount);
+        }, [], false);
     };
 
     setUpRegisteration = function (frm, v) {
@@ -361,7 +360,6 @@ $("document").ready(function () {
         fcom.ajax(fcom.makeUrl('Checkout', 'loadShippingSummary'), '', function (ans) {
             $(shippingSummaryDiv).html(ans);
             /* fcom.scrollToTop("#shipping-summary"); */
-
         });
     };
 

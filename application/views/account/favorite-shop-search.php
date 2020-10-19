@@ -1,8 +1,8 @@
 <?php defined('SYSTEM_INIT') or die('Invalid Usage.'); ?>
-<div class="row">
-    <?php if ($shops) { ?>
+<div class="featured">
+    <?php if ($shops) { ?> 
     <?php foreach ($shops as $shop) { ?>
-    <div class="col-lg-4 col-md-6 mb-3">
+    
         <div class="featured-item">
             <div class="featured-item__body">
                 <div class="favourite-wrapper">
@@ -43,7 +43,7 @@
             </div>
 
         </div>
-    </div>
+     
     <?php } ?>
 </div>
 <?php } else {

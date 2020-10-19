@@ -1,6 +1,6 @@
 <?php defined('SYSTEM_INIT') or die('Invalid Usage.'); ?>
 <?php if (isset($collection['products']) && count($collection['products']) > 0) { ?>
-    <section class="section">
+    <section class="section" role="sponsored products">
         <div class="container">
             <div class="section-head">
                 <div class="section__heading">
@@ -10,13 +10,14 @@
                 <div class="section__action"><a href="<?php echo UrlHelper::generateUrl('Collections', 'View', array($collection['collection_id']));?>" class="link"><?php echo Labels::getLabel('LBL_View_More', $siteLangId); ?></a> </div>
                 <?php } */ ?>
             </div>
-            <div class="row trending-corner product-listing" dir="<?php echo CommonHelper::getLayoutDirection(); ?>">
+            <div class="product-items" dir="<?php echo CommonHelper::getLayoutDirection(); ?>">
                 <?php foreach ($collection['products'] as $product) { ?>
-                <div class="col-xl-2 col-lg-4 col-md-4 col-6 column">
+                <div class="items">
                     <?php include('product-layout-1-list.php'); ?>
                 </div>
                 <?php } ?>
             </div>
         </div>
     </section>
+    <hr class="m-0">
 <?php }

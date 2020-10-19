@@ -9,9 +9,9 @@
 		</div>
 	</div>
 	<div class="content-body">
-		<div class="cards">
-			<div class="cards-header">
-				<h5 class="cards-title"><?php echo Labels::getLabel('LBL_Buyer_dashboard_page',$siteLangId); ?></h5>
+		<div class="card">
+			<div class="card-header">
+				<h5 class="card-title"><?php echo Labels::getLabel('LBL_Buyer_dashboard_page',$siteLangId); ?></h5>
 			</div>
 		</div>
 	</div>

@@ -27,7 +27,7 @@
         </div>
         <!-- /Slider -->
         <div class="section-foot text-center">
-            <a class="btn btn-outline-white btn-wide btn-sm" href="#">View all</a>
+            <a class="btn btn-outline-white btn-wide btn-wide" href="#">View all</a>
         </div>
     </div>
 </section>
@@ -37,12 +37,37 @@ $(".js-slider-testimonials").slick({
     centerPadding: '0',
     slidesToShow: 3,
     variableWidth: false,
-    dots: false,
+    dots: true,
     arrows: true,
     swipe: true,
     //  infinite: true,
     swipeToSlide: true,
     //adaptiveHeight: true,
+
+    responsive: [{
+            breakpoint: 1024,
+            settings: {
+                slidesToShow: 3,
+            }
+        },
+        {
+            breakpoint: 600,
+            settings: {
+                slidesToShow: 1,
+                dots: true,
+                arrows: false,
+            }
+        },
+        {
+            breakpoint: 480,
+            settings: {
+                slidesToShow: 1,
+                dots: true,
+                arrows: false,
+            }
+        }
+
+    ]
 });
 </script>
 <?php } ?>

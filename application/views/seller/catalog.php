@@ -21,8 +21,8 @@ $this->includeTemplate('_partial/seller/sellerDashboardNavigation.php'); ?>
         <div class="content-body">
             <div class="row mb-4">
                 <div class="col-lg-12">
-                    <div class="cards">
-                        <div class="cards-content">
+                    <div class="card">
+                        <div class="card-body">
                             <div class="replaced">
                                 <?php
                                 $frmSearchCatalogProduct->setFormTagAttribute('id', 'frmSearchCatalogProduct');
@@ -71,8 +71,8 @@ $this->includeTemplate('_partial/seller/sellerDashboardNavigation.php'); ?>
             </div>
             <div class="row">
                 <div class="col-lg-12">
-                    <div class="cards">
-                        <div class="cards-content">
+                    <div class="card">
+                        <div class="card-body">
                             <div id="listing"> </div>
                         </div>
                     </div>

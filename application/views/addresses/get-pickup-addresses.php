@@ -130,7 +130,7 @@ $displayDateformat = FatDate::convertDateFormatFromPhp(
         var slot_time = $(ele).next().children('.time').html();
         var addrHtml = $("input[name='pickup_address']:checked").next().next('.js-addr').html();
         var html = addrHtml + '<p class="time-txt"><i class="fas fa-calendar-day"></i>' + calendarSelectedDate + ' ' + slot_time + '</p>';
-        $(".pickupAddressBtn-js").text(langLbl.changePickup);
+        $(".pickupAddressBtn-"+pickUpBy+"-js").text(langLbl.changePickup);
         $(".js-slot-addr_" + pickUpBy).html(html);
         $("#facebox .close").trigger('click');
     }

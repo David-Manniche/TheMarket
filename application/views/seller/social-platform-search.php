@@ -1,14 +1,14 @@
 <?php defined('SYSTEM_INIT') or die('Invalid Usage.'); ?>
-<div class="cards cards-js">
-    <div class="cards-header">
-        <h5 class="cards-title"><?php echo Labels::getLabel('LBL_Social_Platforms', $siteLangId); ?></h5>
+<div class="card cards-js">
+    <div class="card-header">
+        <h5 class="card-title"><?php echo Labels::getLabel('LBL_Social_Platforms', $siteLangId); ?></h5>
         <div class="">
             <?php if ($canEdit) { ?>
                 <a href="javascript:void(0)" class="btn btn-outline-brand btn-sm" onclick="addForm(0)"><?php echo Labels::getLabel('LBL_Add_Social_Platform', $siteLangId);?></a>
             <?php }?>
         </div>
     </div>
-    <div class="cards-content">
+    <div class="card-body">
         <div class="">
             <?php $arr_flds = array(
                 'listserial'=>'#',

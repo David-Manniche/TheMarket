@@ -307,7 +307,7 @@ $cancelBtnFld->setFieldTagAttribute('class', 'btn btn-outline-brand js-cancel-in
                     </table>
                 </div>
             </div>
-            <div class="row">
+            <div class="row mt-4">
                 <div class="col-md-12">
                     <div class="field-set">
                         <div class="caption-wraper"><label class="field_label">

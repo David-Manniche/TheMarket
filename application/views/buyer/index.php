@@ -16,16 +16,16 @@ $this->includeTemplate('_partial/buyerDashboardNavigation.php'); ?>
             <div class="js-widget-scroll widget-scroll">
                 <div class="widget widget-stats">
                     <a href="<?php echo UrlHelper::generateUrl('account', 'credits'); ?>">
-                        <div class="cards">
-                            <div class="cards-header">
-                                <h5 class="cards-title"><?php echo Labels::getLabel('LBL_Credits', $siteLangId); ?></h5>
+                        <div class="card">
+                            <div class="card-header">
+                                <h5 class="card-title"><?php echo Labels::getLabel('LBL_Credits', $siteLangId); ?></h5>
                                 <i class="icn">
                                     <svg class="svg">
                                         <use xlink:href="<?php echo CONF_WEBROOT_URL; ?>images/retina/sprite.svg#credits" href="<?php echo CONF_WEBROOT_URL; ?>images/retina/sprite.svg#Credits"></use>
                                     </svg>
                                 </i>
                             </div>
-                            <div class="cards-content ">
+                            <div class="card-body ">
                                 <div class="stats">
                                     <div class="stats-number">
                                         <ul>
@@ -45,16 +45,16 @@ $this->includeTemplate('_partial/buyerDashboardNavigation.php'); ?>
                 </div>
                 <div class="widget widget-stats">
                     <a href="<?php echo UrlHelper::generateUrl('buyer', 'orders'); ?>">
-                        <div class="cards">
-                            <div class="cards-header">
-                                <h5 class="cards-title"><?php echo Labels::getLabel('LBL_Orders', $siteLangId); ?></h5>
+                        <div class="card">
+                            <div class="card-header">
+                                <h5 class="card-title"><?php echo Labels::getLabel('LBL_Orders', $siteLangId); ?></h5>
                                 <i class="icn">
                                     <svg class="svg">
                                         <use xlink:href="<?php echo CONF_WEBROOT_URL; ?>images/retina/sprite.svg#order" href="<?php echo CONF_WEBROOT_URL; ?>images/retina/sprite.svg#order"></use>
                                     </svg>
                                 </i>
                             </div>
-                            <div class="cards-content ">
+                            <div class="card-body ">
                                 <div class="stats">
                                     <div class="stats-number">
                                         <ul>
@@ -71,16 +71,16 @@ $this->includeTemplate('_partial/buyerDashboardNavigation.php'); ?>
                 </div>
                 <div class="widget widget-stats">
                     <a href="<?php echo UrlHelper::generateUrl('buyer', 'rewardPoints'); ?>">
-                        <div class="cards">
-                            <div class="cards-header">
-                                <h5 class="cards-title"><?php echo Labels::getLabel('LBL_Reward_Points', $siteLangId); ?></h5>
+                        <div class="card">
+                            <div class="card-header">
+                                <h5 class="card-title"><?php echo Labels::getLabel('LBL_Reward_Points', $siteLangId); ?></h5>
                                 <i class="icn">
                                     <svg class="svg">
                                         <use xlink:href="<?php echo CONF_WEBROOT_URL; ?>images/retina/sprite.svg#rewards-change" href="<?php echo CONF_WEBROOT_URL; ?>images/retina/sprite.svg#rewards-change"></use>
                                     </svg>
                                 </i>
                             </div>
-                            <div class="cards-content ">
+                            <div class="card-body ">
                                 <div class="stats">
                                     <div class="stats-number">
                                         <ul>
@@ -100,15 +100,15 @@ $this->includeTemplate('_partial/buyerDashboardNavigation.php'); ?>
             </div>
             <div class="row">
                 <div class="col-lg-6 col-md-12 mb-4">
-                    <div class="cards">
-                        <div class="cards-header">
-                            <h5 class="cards-title"><?php echo Labels::getLabel('LBL_Latest_Orders', $siteLangId); ?></h5>
+                    <div class="card">
+                        <div class="card-header">
+                            <h5 class="card-title"><?php echo Labels::getLabel('LBL_Latest_Orders', $siteLangId); ?></h5>
                             <div class="action">
                                 <?php if (count($orders) > 0) { ?>
                                     <a href="<?php echo UrlHelper::generateUrl('buyer', 'orders'); ?>" class="link"><?php echo Labels::getLabel('Lbl_View_All', $siteLangId); ?></a>
                                 <?php } ?> </div>
                         </div>
-                        <div class="cards-content ">
+                        <div class="card-body ">
                             <table class="table table-justified">
                                 <thead>
                                     <tr class="">
@@ -201,12 +201,12 @@ $this->includeTemplate('_partial/buyerDashboardNavigation.php'); ?>
                     </div>
                 </div>
                 <div class="col-lg-6 col-md-12 mb-4">
-                    <div class="cards">
-                        <div class="cards-header">
-                            <h5 class="cards-title "><?php echo Labels::getLabel('LBL_Latest_Offers', $siteLangId); ?></h5>
+                    <div class="card">
+                        <div class="card-header">
+                            <h5 class="card-title "><?php echo Labels::getLabel('LBL_Latest_Offers', $siteLangId); ?></h5>
                             <div class="action"> <?php if (count($offers) > 0) { ?> <a href="<?php echo UrlHelper::generateUrl('buyer', 'offers'); ?>" class="link"><?php echo Labels::getLabel('Lbl_View_All', $siteLangId); ?></a> <?php } ?> </div>
                         </div>
-                        <div class="cards-content ">
+                        <div class="card-body ">
                             <table class="table ">
                                 <thead>
                                     <tr class="">
@@ -246,13 +246,13 @@ $this->includeTemplate('_partial/buyerDashboardNavigation.php'); ?>
             </div>
             <div class="row ">
                 <div class="col-lg-6 col-md-12 mb-4">
-                    <div class="cards">
-                        <div class="cards-header">
-                            <h5 class="cards-title "><?php echo Labels::getLabel('LBL_Return_requests', $siteLangId); ?></h5> <?php if (count($returnRequests) > 0) { ?> <div class="action">
+                    <div class="card">
+                        <div class="card-header">
+                            <h5 class="card-title "><?php echo Labels::getLabel('LBL_Return_requests', $siteLangId); ?></h5> <?php if (count($returnRequests) > 0) { ?> <div class="action">
                                     <a href="<?php echo UrlHelper::generateUrl('buyer', 'orderReturnRequests'); ?>" class="link"><?php echo Labels::getLabel('Lbl_View_All', $siteLangId); ?></a>
                                 </div> <?php } ?>
                         </div>
-                        <div class="cards-content ">
+                        <div class="card-body ">
                             <table class="table table-justified">
                                 <thead>
 
@@ -312,17 +312,17 @@ $this->includeTemplate('_partial/buyerDashboardNavigation.php'); ?>
                     </div>
                 </div>
                 <div class="col-lg-6 col-md-12 mb-4">
-                    <!-- <div class="cards">
+                    <!-- <div class="card">
                         <?php // $this->includeTemplate('_partial/userDashboardMessages.php');
                         ?>
                         </div> -->
-                    <div class="cards">
-                        <div class="cards-header">
-                            <h5 class="cards-title "><?php echo Labels::getLabel('LBL_Cancellation_requests', $siteLangId); ?></h5> <?php if (count($cancellationRequests) > 0) { ?> <div class="action">
+                    <div class="card">
+                        <div class="card-header">
+                            <h5 class="card-title "><?php echo Labels::getLabel('LBL_Cancellation_requests', $siteLangId); ?></h5> <?php if (count($cancellationRequests) > 0) { ?> <div class="action">
                                     <a href="<?php echo UrlHelper::generateUrl('buyer', 'orderCancellationRequests'); ?>" class="link"><?php echo Labels::getLabel('Lbl_View_All', $siteLangId); ?></a>
                                 </div> <?php } ?>
                         </div>
-                        <div class="cards-content ">
+                        <div class="card-body ">
                             <table class="table ">
                                 <thead>
                                     <tr class="">

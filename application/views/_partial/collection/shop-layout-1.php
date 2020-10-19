@@ -1,6 +1,6 @@
 <?php
 if (isset($collection['shops']) && count($collection['shops'])) { ?>
-<section class="section">
+<section class="section" role="shops">
     <div class="container">
         <div class="section-head">
             <div class="section__heading">
@@ -13,5 +13,6 @@ if (isset($collection['shops']) && count($collection['shops'])) { ?>
             <?php include('shop-layout-1-list.php'); ?>
     </div>
 </section>
+<hr class="m-0">
 <?php }
 /* ] */

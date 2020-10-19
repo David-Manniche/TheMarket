@@ -1370,8 +1370,7 @@ class CheckoutController extends MyAppController
 
                 );
             }
-        }
-
+        }       
         $orderData['order_affiliate_user_id'] = $order_affiliate_user_id;
         $orderData['order_affiliate_total_commission'] = $order_affiliate_total_commission;
         /* ] */
@@ -2086,10 +2085,19 @@ class CheckoutController extends MyAppController
         $cartSummary = $this->cartObj->getCartFinancialSummary($this->siteLangId);
         $products = $this->cartObj->getProducts($this->siteLangId);
         $shippingAddress = $this->cartObj->getCartShippingAddress();
-		$this->set('shippingAddress', $shippingAddress);
+        $this->set('shippingAddress', $shippingAddress);
         $this->set('products', $products);
         $this->set('cartSummary', $cartSummary);
-        $this->_template->render(false, false);
+        $data = $this->_template->render(false, false, 'checkout/get-financial-summary.php', true, false);
+
+        $orderNetAmt = $cartSummary['orderNetAmount'];
+        if (0 == $shippingAddress) {
+            $orderNetAmt = $orderNetAmt - $cartSummary['cartTaxTotal'];
+        }
+        $netAmount = CommonHelper::displayMoneyFormat($orderNetAmt);
+        $this->set('netAmount', $netAmount);
+        $this->set('data', $data);
+        $this->_template->render(false, false, 'json-success.php', false, false);
     }
 
     public function getCouponForm()

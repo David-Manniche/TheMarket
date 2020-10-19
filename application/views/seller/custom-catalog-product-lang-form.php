@@ -1,8 +1,8 @@
 <div class="tabs  align-items-center">
     <?php require_once(CONF_THEME_PATH.'_partial/seller/customCatalogProductNavigationLinks.php'); ?>
 </div>
-<div class="cards">
-    <div class="cards-content ">
+<div class="card">
+    <div class="card-body ">
         <div class="row">
             <div class="col-md-12">
                 <div class="">

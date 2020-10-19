@@ -2,8 +2,8 @@
 <div class="tabs ">
     <?php require_once('sellerCatalogProductTop.php');?>
 </div>
-<div class="cards">
-    <div class="cards-content ">
+<div class="card">
+    <div class="card-body ">
     <?php
         $sellerproductLinkFrm->setFormTagAttribute('onsubmit', 'setUpSellerProductLinks(this); return(false);');
         $sellerproductLinkFrm->setFormTagAttribute('class', 'form form--horizontal');

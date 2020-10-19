@@ -142,7 +142,7 @@ $fld->developerTags['cbHtmlAfterCheckbox'] = '<i class="input-helper"></i>';
             <div class="p-4 mb-4 border rounded">
                 <h3 class="mb-4"><?php echo Labels::getLabel('LBL_Icon', $adminLangId); ?></h3>
                 <div class="row">
-                    <div class="col-md-3">
+                    <div class="col-md-6">
                         <div class="field-set">
                             <div class="caption-wraper"><label class="field_label">
                             <?php  $fld = $prodCatFrm->getField('icon_lang_id');
@@ -156,7 +156,7 @@ $fld->developerTags['cbHtmlAfterCheckbox'] = '<i class="input-helper"></i>';
                             </div>
                         </div>
                     </div>
-                    <div class="col-md-7">
+                    <div class="col-md-6">
                         <div class="field-set">
                             <div class="caption-wraper">
                                 <label class="field_label"></label>
@@ -174,7 +174,7 @@ $fld->developerTags['cbHtmlAfterCheckbox'] = '<i class="input-helper"></i>';
                             </div>
                         </div>
                     </div>
-                    <div class="col-md-2" id="icon-image-listing"></div>
+                    <div class="col-md-4" id="icon-image-listing"></div>
                 </div>
                 <div class="divider"></div>
                 <h3 class="mb-4"><?php echo Labels::getLabel('LBL_Banner', $adminLangId); ?></h3>
@@ -193,7 +193,7 @@ $fld->developerTags['cbHtmlAfterCheckbox'] = '<i class="input-helper"></i>';
                             </div>
                         </div>
                     </div>
-                    <div class="col-md-2">
+                    <div class="col-md-3">
                         <div class="field-set">
                             <div class="caption-wraper"><label class="field_label">
                             <?php  $fld = $prodCatFrm->getField('slide_screen');
@@ -207,7 +207,7 @@ $fld->developerTags['cbHtmlAfterCheckbox'] = '<i class="input-helper"></i>';
                             </div>
                         </div>
                     </div>
-                    <div class="col-md-5">
+                    <div class="col-md-6">
                         <div class="field-set">
                             <div class="caption-wraper"><label class="field_label">
                             </label></div>
@@ -226,7 +226,7 @@ $fld->developerTags['cbHtmlAfterCheckbox'] = '<i class="input-helper"></i>';
                             </div>
                         </div>
                     </div>
-                    <div class="col-md-2" id="banner-image-listing"></div>
+                    <div class="col-md-4" id="banner-image-listing"></div>
                 </div>
             </div>
             <?php if(!empty($otherLangData)){

@@ -53,13 +53,13 @@ $cancelBtnFld->developerTags['noCaptionTag'] = true;
         <div class="content-body">
             <div class="row mb-4">
                 <div class="col-lg-12">
-                    <div class="cards">
+                    <div class="card">
                         <?php if ($codMinWalletBalance > -1) { ?>
                         <div class="cards-header pb-0">
                             <p class="note"><?php echo Labels::getLabel('MSG_Minimum_balance_Required_For_COD', $siteLangId).' : '. CommonHelper::displaymoneyformat($codMinWalletBalance);?></p>
                         </div>
                         <?php } ?>
-                        <div class="cards-content">
+                        <div class="card-body">
                             <div id="credits-info"></div>
                             <div class="row">
 								<div class="col-lg-6 mb-3 mb-lg-0">
@@ -94,7 +94,7 @@ $cancelBtnFld->developerTags['noCaptionTag'] = true;
                                 <?php if ($canAddMoneyToWallet) { ?>
                                 <div class="col-lg-6">
                                     <div class="replaced amount-added-box border h-100 rounded text-center p-3">
-                                        <h6 class="cards-title mb-4">
+                                        <h6 class="card-title mb-4">
                                         <?php echo Labels::getLabel('LBL_Add_Wallet_Credits'.'_['.CommonHelper::getDefaultCurrencySymbol().']', $siteLangId); ?></h6>
                                         <div id="rechargeWalletDiv" class="cellright nopadding--bottom">
                                             <?php
@@ -126,7 +126,7 @@ $cancelBtnFld->developerTags['noCaptionTag'] = true;
             </div>
             <div class="row mb-4 d-none withdrawForm">
                 <div class="col-lg-12">
-                    <div class="cards">
+                    <div class="card">
                         <div id="withdrawalReqForm"></div>
                     </div>
                 </div>
@@ -134,9 +134,9 @@ $cancelBtnFld->developerTags['noCaptionTag'] = true;
             
             <div class="row">
                 <div class="col-md-12">
-                                   <div class="cards">
-                                       <div class="cards-header"><h5 class="cards-title"><?php echo Labels::getLabel('LBL_Search_Transactions', $siteLangId);?></h5></div>
-                                       <div class="cards-content">
+                                   <div class="card">
+                                       <div class="card-header"><h5 class="card-title"><?php echo Labels::getLabel('LBL_Search_Transactions', $siteLangId);?></h5></div>
+                                       <div class="card-body">
                                        <div class="replaced">
                                         
                                         <?php
@@ -155,9 +155,9 @@ $cancelBtnFld->developerTags['noCaptionTag'] = true;
             <div class="gap"></div>
             <div class="row">
                 <div class="col-lg-12">
-                    <div class="cards">
+                    <div class="card">
 
-                        <div class="cards-content">
+                        <div class="card-body">
                             <div id="creditListing"><?php echo Labels::getLabel('LBL_Loading..', $siteLangId); ?></div>
                              
                         </div>

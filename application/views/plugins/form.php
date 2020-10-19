@@ -13,9 +13,9 @@ $cancelBtnFld->setFieldTagAttribute('onClick', 'closeForm()');
 $cancelBtnFld->setFieldTagAttribute('class', 'btn-outline-brand');
 $submitBtnFld->attachField($cancelBtnFld);
 ?>
-<div class="cards-header">
-    <h5 class="cards-title"><?php echo $identifier ?> <?php echo Labels::getLabel('LBL_Form', $siteLangId); ?></h5>
+<div class="card-header">
+    <h5 class="card-title"><?php echo $identifier ?> <?php echo Labels::getLabel('LBL_Form', $siteLangId); ?></h5>
 </div>
-<div class="cards-content ">
+<div class="card-body ">
     <?php echo $frm->getFormHtml(); ?>
 </div>

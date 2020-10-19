@@ -24,10 +24,10 @@
         }
     }
     .cartdetail__body {
-        /*max-height: 400px;*/
+        /*max-height: 400px;
+        max-height: calc(100vh - 300px);*/
         background: #fff;
         flex: 1;
-        max-height: calc(100vh - 300px);
     }
     .cartdetail__footer {}
 }

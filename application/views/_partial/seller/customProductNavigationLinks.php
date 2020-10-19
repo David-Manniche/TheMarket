@@ -1,5 +1,5 @@
-<div class="cards-header">
-    <h5 class="cards-title"><?php echo Labels::getLabel('LBL_Add_My_Product', $siteLangId); ?></h5>
+<div class="card-header">
+    <h5 class="card-title"><?php echo Labels::getLabel('LBL_Add_My_Product', $siteLangId); ?></h5>
     <?php if (isset($alertToShow) && $alertToShow) { ?>
     <div class="note-messages"><?php echo Labels::getLabel('LBL_Category_and_brand_fields_are_mandatory', $siteLangId); ?></div>
     <?php }?>

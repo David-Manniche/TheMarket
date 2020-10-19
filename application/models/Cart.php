@@ -434,7 +434,7 @@ class Cart extends FatModel
                         'shippingCost' => $shippingCost,
                         'buyerId' => $this->cart_user_id
                     );
-                    if (FatApp::getConfig("CONF_PRODUCT_INCLUSIVE_TAX", FatUtility::VAR_INT, 0) && 0 == Tax::getActivatedServiceId()) {
+                    /* if (FatApp::getConfig("CONF_PRODUCT_INCLUSIVE_TAX", FatUtility::VAR_INT, 0) && 0 == Tax::getActivatedServiceId()) {
                         $shipToStateId = 0;
                         $shipToCountryId = 0;
 
@@ -445,12 +445,13 @@ class Cart extends FatModel
                         if (isset($extraData['shippingAddress']['addr_state_id'])) {
                             $shipToStateId = FatUtility::int($extraData['shippingAddress']['addr_state_id']);
                         }
+                        
                         $tax = new Tax();
                         $taxCategoryRow = $tax->getTaxRates($sellerProductRow['product_id'], $sellerProductRow['selprod_user_id'], $siteLangId, $shipToCountryId, $shipToStateId);
                         if (array_key_exists('taxrule_rate', $taxCategoryRow)) {
                             $sellerProductRow['theprice'] = round($sellerProductRow['theprice'] / (1 + ($taxCategoryRow['taxrule_rate'] / 100)), 2);
                         }
-                    }
+                    } */
                     /*[ Product Tax */
                     $taxableProdPrice = $sellerProductRow['theprice'] - $sellerProductRow['volume_discount'];
                     if (isset($cartDiscounts['discountedSelProdIds']) && array_key_exists($sellerProductRow['selprod_id'], $cartDiscounts['discountedSelProdIds'])) {
@@ -471,7 +472,8 @@ class Cart extends FatModel
                             }
                         }
                     }
-
+                    /*  echo $sellerProductRow['theprice']* $quantity;*/
+                    /* CommonHelper::printArray($taxData); */
                     $tax = $taxData['tax'];
 
                     $this->products[$key]['tax'] = $tax;
@@ -602,8 +604,25 @@ class Cart extends FatModel
         }
 
         if (FatApp::getConfig("CONF_PRODUCT_INCLUSIVE_TAX", FatUtility::VAR_INT, 0) && 0 == Tax::getActivatedServiceId()) {
+            $shipToStateId = 0;
+            $shipToCountryId = 0;
+
+            $shippingAddressId = $this->getCartShippingAddress();
+            if (0 < $shippingAddressId) {
+                $address = new Address($shippingAddressId, $this->cart_lang_id);
+                $shippingAddressDetail =  $address->getData(Address::TYPE_USER, $this->cart_user_id);
+
+                if (isset($shippingAddressDetail['addr_country_id'])) {
+                    $shipToCountryId = FatUtility::int($shippingAddressDetail['addr_country_id']);
+                }
+
+                if (isset($shippingAddressDetail['addr_state_id'])) {
+                    $shipToStateId = FatUtility::int($shippingAddressDetail['addr_state_id']);
+                }
+            }
+
             $tax = new Tax();
-            $taxCategoryRow = $tax->getTaxRates($sellerProductRow['product_id'], $sellerProductRow['selprod_user_id'], $siteLangId);
+            $taxCategoryRow = $tax->getTaxRates($sellerProductRow['product_id'], $sellerProductRow['selprod_user_id'], $siteLangId, $shipToCountryId, $shipToStateId);
             if (array_key_exists('taxrule_rate', $taxCategoryRow)) {
                 $sellerProductRow['theprice'] = round($sellerProductRow['theprice'] / (1 + ($taxCategoryRow['taxrule_rate'] / 100)), 2);
             }
@@ -1805,7 +1824,7 @@ class Cart extends FatModel
                 $digitalSelProdIdArr[$val['selprod_id']] = $val['selprod_id'];
             }
         }
-        
+
         if (!empty($physicalSelProdIdArr)) {
             $address = new Address($this->getCartShippingAddress(), $this->cart_lang_id);
             $shippingAddressDetail =  $address->getData(Address::TYPE_USER, $this->cart_user_id);

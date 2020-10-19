@@ -48,11 +48,11 @@
     }
     tr {
         &.selected-row {
-            background: #fdfdfd;
+            background: $bg-gray;
         }
         &:last-child {
             td {
-                /* border-bottom: none;*/
+                border-bottom: none;
             }
         }
         td {

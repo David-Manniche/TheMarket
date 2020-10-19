@@ -54,9 +54,9 @@ $cancelBtnFld->developerTags['noCaptionTag'] = true;
     <div class="content-body">
         <div class="row mb-4">
             <div class="col-lg-12">
-                <div class="cards">
+                <div class="card">
 
-                    <div class="cards-content">
+                    <div class="card-body">
                         <div class="replaced">
                             <?php
                             $submitFld = $frmOrderReturnRequestsSrch->getField('btn_submit');
@@ -74,9 +74,9 @@ $cancelBtnFld->developerTags['noCaptionTag'] = true;
         </div>
         <div class="row">
             <div class="col-lg-12">
-                <div class="cards">
+                <div class="card">
 
-                    <div class="cards-content">
+                    <div class="card-body">
                         <div id="returnOrderRequestsListing"></div>
                         <span class="gap"></span>
                     </div>

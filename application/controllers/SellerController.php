@@ -3532,7 +3532,7 @@ class SellerController extends SellerBaseController
         $bannerTypeArr = applicationConstants::bannerTypeArr();
         $frm->addSelectBox(Labels::getLabel('Lbl_Language', $langId), 'lang_id', $bannerTypeArr, '', array('class' => 'logo-language-js'), '');
         $ratioArr = AttachedFile::getRatioTypeArray($this->siteLangId);
-        $frm->addRadioButtons(Labels::getLabel('LBL_Ratio', $this->siteLangId), 'ratio_type', $ratioArr, AttachedFile::RATIO_TYPE_SQUARE);
+        $frm->addRadioButtons(Labels::getLabel('LBL_Ratio', $this->siteLangId), 'ratio_type', $ratioArr, AttachedFile::RATIO_TYPE_SQUARE, array('class' => 'list-inline'));
         $frm->addHiddenField('', 'file_type', AttachedFile::FILETYPE_SHOP_LOGO);
         $frm->addHiddenField('', 'logo_min_width');
         $frm->addHiddenField('', 'logo_min_height');

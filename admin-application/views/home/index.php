@@ -341,7 +341,7 @@
 						</ul>
 					</div>
 					<div class="box__body">
-						<div class="scrollbar scrollbar-js">
+						<div class="scrollbar">
 							<ul class="list list--vertical theme--txtcolor theme--hovercolor topSearchKeyword">
 								<?php
                                 $count = 1;

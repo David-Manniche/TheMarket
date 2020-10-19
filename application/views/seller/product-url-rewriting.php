@@ -29,8 +29,8 @@ $clearFld->setFieldTagAttribute('class', 'btn btn-outline-brand btn-block');
         <div class="content-body">
             <div class="row">
                 <div class="col-md-6 mb-3 mb-md-0">
-                    <div class="cards">
-                        <div class="cards-content">
+                    <div class="card">
+                        <div class="card-body">
                             <div>
                                 <?php echo $frmSearch->getFormTag(); ?>
                                     <div class="row">
@@ -55,8 +55,8 @@ $clearFld->setFieldTagAttribute('class', 'btn btn-outline-brand btn-block');
                     </div>
                 </div>
                 <div class="col-md-6">
-                    <div class="cards">
-                        <div class="cards-content h-100">
+                    <div class="card">
+                        <div class="card-body h-100">
                             <div id="dvForm">
                              <div class="cards-message" role="alert">
                                     <div class="cards-message-icon"><i class="fas fa-exclamation-triangle"></i></div>

@@ -13,15 +13,15 @@
                 <?php if ($userParentId == UserAuthentication::getLoggedUserId()) { ?>
                 <div class="widget widget-stats">
                     <a href="<?php echo UrlHelper::generateUrl('Account', 'credits'); ?>">
-                        <div class="cards">
-                            <div class="cards-header">
-                                <h5 class="cards-title"><?php echo Labels::getLabel('LBL_Credits', $siteLangId);?></h5>
+                        <div class="card">
+                            <div class="card-header">
+                                <h5 class="card-title"><?php echo Labels::getLabel('LBL_Credits', $siteLangId);?></h5>
                                 <i class="icn"><svg class="svg">
                                         <use xlink:href="<?php echo CONF_WEBROOT_URL;?>images/retina/sprite.svg#credits" href="<?php echo CONF_WEBROOT_URL;?>images/retina/sprite.svg#Credits"></use>
                                     </svg>
                                 </i>
                             </div>
-                            <div class="cards-content ">
+                            <div class="card-body ">
                                 <div class="stats">
                                     <div class="stats-number">
                                         <ul>
@@ -43,15 +43,15 @@
                 <?php }?>
                 <div class="widget widget-stats">
                     <a href="javascript:void(0)" onClick="redirectToPromotions('<?php echo UrlHelper::generateUrl('advertiser', 'promotions');?>')">
-                        <div class="cards">
-                            <div class="cards-header">
-                                <h5 class="cards-title"><?php echo Labels::getLabel('LBL_Active_Promotions', $siteLangId);?></h5>
+                        <div class="card">
+                            <div class="card-header">
+                                <h5 class="card-title"><?php echo Labels::getLabel('LBL_Active_Promotions', $siteLangId);?></h5>
                                 <i class="icn"><svg class="svg">
                                         <use xlink:href="<?php echo CONF_WEBROOT_URL;?>images/retina/sprite.svg#speaker" href="<?php echo CONF_WEBROOT_URL;?>images/retina/sprite.svg#speaker"></use>
                                     </svg>
                                 </i>
                             </div>
-                            <div class="cards-content ">
+                            <div class="card-body ">
                                 <div class="stats">
                                     <div class="stats-number">
                                         <ul>
@@ -72,16 +72,16 @@
                 </div>
                 <div class="widget widget-stats">
                     <a href="<?php echo UrlHelper::generateUrl('advertiser', 'promotionCharges');?>">
-                        <div class="cards">
-                            <div class="cards-header">
-                                <h5 class="cards-title"><?php echo Labels::getLabel('LBL_All_Promotions', $siteLangId);?></h5>
+                        <div class="card">
+                            <div class="card-header">
+                                <h5 class="card-title"><?php echo Labels::getLabel('LBL_All_Promotions', $siteLangId);?></h5>
                                 <i class="icn">
                                     <svg class="svg">
                                         <use xlink:href="<?php echo CONF_WEBROOT_URL;?>images/retina/sprite.svg#give-money" href="<?php echo CONF_WEBROOT_URL;?>images/retina/sprite.svg#give-money"></use>
                                     </svg>
                                 </i>
                             </div>
-                            <div class="cards-content ">
+                            <div class="card-body ">
                                 <div class="stats">
                                     <div class="stats-number">
                                         <ul>
@@ -103,16 +103,16 @@
             </div>
             <div class="row">
                 <div class="col-lg-12 col-md-12 mb-4">
-                    <div class="cards">
-                        <div class="cards-header">
-                            <h5 class="cards-title "><?php echo Labels::getLabel('LBL_Active_Promotions', $siteLangId);?></h5>
+                    <div class="card">
+                        <div class="card-header">
+                            <h5 class="card-title "><?php echo Labels::getLabel('LBL_Active_Promotions', $siteLangId);?></h5>
                             <?php if (count($activePromotions)>0) { ?>
                             <div class="action">
                                 <a href="<?php echo UrlHelper::generateUrl('advertiser', 'promotions');?>" class="link"><?php echo Labels::getLabel('Lbl_View_All', $siteLangId);?></a>
                             </div>
                             <?php } ?>
                         </div>
-                        <div class="cards-content ">
+                        <div class="card-body ">
                             <table class="table table-justified">                                
                             <thead>
                                     <tr class="">
@@ -178,16 +178,16 @@
             <?php if ($userParentId == UserAuthentication::getLoggedUserId()) { ?>
             <div class="row">
                 <div class="col-lg-12 col-md-12 mb-4">
-                    <div class="cards">
-                        <div class="cards-header">
-                            <h5 class="cards-title "><?php echo Labels::getLabel('LBL_Transaction_History', $siteLangId);?></h5>
+                    <div class="card">
+                        <div class="card-header">
+                            <h5 class="card-title "><?php echo Labels::getLabel('LBL_Transaction_History', $siteLangId);?></h5>
                             <?php if (count($transactions) > 0) { ?>
                             <div class="action">
                                 <a href="<?php echo UrlHelper::generateUrl('Account', 'credits');?>" class="link"><?php echo Labels::getLabel('Lbl_View_All', $siteLangId);?></a>
                             </div>
                             <?php } ?>
                         </div>
-                        <div class="cards-content ">
+                        <div class="card-body ">
                             <table class="table">
                                 <thead>
                                

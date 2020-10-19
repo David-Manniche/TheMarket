@@ -25,12 +25,8 @@
 		<?php if (empty($orderDate)) { ?>
             <div class="row mb-4">
                 <div class="col-lg-12">
-					
-                    <div class="cards">
-                        <div class="cards-header">
-                            <h5 class="cards-title"><?php echo Labels::getLabel('LBL_Sales_Report', $siteLangId);?></h5>
-                        </div>
-                        <div class="cards-content">
+                    <div class="card">
+                        <div class="card-body">
 							<div class="replaced">
 								<?php
 									$dateFrm = $frmSrch->getField('date_from');
@@ -49,9 +45,6 @@
                                         echo $frmSrch->getFormHtml();
                                     ?>
                                 </div>
-                            <?php  } else {
-                                echo  $frmSrch->getFormHtml();
-                            } ?>
                         </div>
                     </div>
                 </div>
@@ -61,8 +54,8 @@
 			} ?>
             <div class="row">
                 <div class="col-lg-12">
-                    <div class="cards">
-                        <div class="cards-content">
+                    <div class="card">
+                        <div class="card-body">
                             <div class="listing-tbl" id="listingDiv"> <?php echo Labels::getLabel('LBL_Loading..', $siteLangId); ?> </div>
                         </div>
                     </div>

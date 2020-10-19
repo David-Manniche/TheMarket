@@ -8,14 +8,14 @@
             </div>
         </div>
         <div class="content-body">
-            <div class="cards">
-                <div class="cards-header">
-                    <h5 class="cards-title"><?php echo Labels::getLabel('LBL_Order_Details', $siteLangId);?></h5>
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="card-title"><?php echo Labels::getLabel('LBL_Order_Details', $siteLangId);?></h5>
                     <div class="action">
                         <?php /* <a href="javascript:window.print();" class="btn btn-brand btn-sm no-print"><?php echo Labels::getLabel('LBL_Print',$siteLangId);?></a> */?>
                         <a href="<?php echo UrlHelper::generateUrl('Seller', 'subscriptions');?>" class="btn btn-brand btn-sm no-print"><?php echo Labels::getLabel('LBL_Back_to_Subscription', $siteLangId);?></a></div>
                 </div>
-                <div class="cards-content ">
+                <div class="card-body ">
                     <div class="row">
                         <div class="col-lg-6 col-md-6 col-sm-6">
                             <div class="info--order">

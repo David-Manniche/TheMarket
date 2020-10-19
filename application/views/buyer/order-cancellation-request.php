@@ -16,9 +16,9 @@ $btnSubmit->setFieldTagAttribute('class', "btn btn-brand");
             </div>
         </div>
         <div class="content-body">
-            <div class="cards">
+            <div class="card">
                 
-                <div class="cards-content">
+                <div class="card-body">
                     <?php echo $frmOrderCancel->getFormHtml(); ?>
                 </div>
             </div>

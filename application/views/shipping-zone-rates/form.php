@@ -36,10 +36,10 @@ $cancelBtnFld->setWrapperAttribute('class', 'col-lg-5');
 $cancelBtnFld->developerTags['col'] = 5;
 $cancelBtnFld->developerTags['noCaptionTag'] = true;
 ?>
-<div class="cards-header">
-	<h5 class="cards-title"><?php echo Labels::getLabel('LBL_Manage_Rates', $siteLangId); ?></h5>
+<div class="card-header">
+	<h5 class="card-title"><?php echo Labels::getLabel('LBL_Manage_Rates', $siteLangId); ?></h5>
 </div>
-<div class="cards-content">
+<div class="card-body">
 	<div class="row">
 		<div class="col-md-12">
 			<div class="tabs">

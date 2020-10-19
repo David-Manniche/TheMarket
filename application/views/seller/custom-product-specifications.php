@@ -2,12 +2,12 @@
 <div class="tabs ">
     <?php require_once(CONF_THEME_PATH.'seller/sellerCustomProductTop.php');?>
 </div>
-<div class="cards">
-    <div class="cards-content ">
+<div class="card">
+    <div class="card-body ">
         <div class="tabs__content">
             <div class="row justify-content-between">
                 <div class="col-md-auto">
-                    <h5 class="cards-title"><?php echo Labels::getLabel('LBL_Product_Specifications', $siteLangId); ?></h5>
+                    <h5 class="card-title"><?php echo Labels::getLabel('LBL_Product_Specifications', $siteLangId); ?></h5>
                 </div>
                 <div class="col-md-auto">
                     <div class="action">

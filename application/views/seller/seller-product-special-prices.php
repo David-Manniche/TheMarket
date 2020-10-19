@@ -2,10 +2,10 @@
 <div class="tabs tabs--small   tabs--scroll clearfix">
     <?php require_once('sellerCatalogProductTop.php'); ?>
 </div>
-<div class="cards">
+<div class="card">
     <?php if (count($arrListing) > 0) { ?>
-        <div class="cards-header">
-            <h5 class="cards-title"><?php echo Labels::getLabel('LBL_Special_price', $siteLangId); ?>
+        <div class="card-header">
+            <h5 class="card-title"><?php echo Labels::getLabel('LBL_Special_price', $siteLangId); ?>
             </h5>
             <div class="action">
                 <a class="btn btn-brand btn-sm" href="javascript:void(0);" onClick='sellerProductSpecialPriceForm(<?php echo $selprod_id; ?>, 0);'>
@@ -17,7 +17,7 @@
             </div>
         </div>
     <?php } ?>
-    <div class="cards-content ">
+    <div class="card-body ">
         <div class="row">
             <div class="<?php echo (count($arrListing) > 0) ? 'col-md-8' : 'col-md-12'; ?>">
                 <div class="form__subcontent">
