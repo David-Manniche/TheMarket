@@ -230,6 +230,7 @@ Bugs:
     => 044232 - Seller >> order details page >> comments >> if buyer request for cancellation then message at seller end is not right .
 ------------------TV-9.2.2.20201019-------------------------
     => #044213 - when buyer places order and returns the whole order then there is difference of $0.01
+    => #039968 - EAN/UPC code field is not there on catalog level when there is no option, and also search based on this is not working.
 Enhancements:
     => Tax module upgrade
     => Test cases classes enhancements.

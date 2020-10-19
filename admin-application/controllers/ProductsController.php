@@ -180,8 +180,8 @@ class ProductsController extends AdminBaseController
         }
 
         UpcCode::remove($product_id);
-
         Product::updateMinPrices($product_id);
+        Tag::updateProductTagString($product_id);
         $this->set('msg', Labels::getLabel('LBL_Record_Updated_Successfully', $this->adminLangId));
         $this->_template->render(false, false, 'json-success.php');
     }
@@ -222,7 +222,7 @@ class ProductsController extends AdminBaseController
             FatUtility::dieWithError(Message::getHtml());
         }
         UpcCode::remove($product_id);
-
+        Tag::updateProductTagString($product_id);
         $this->set('msg', Labels::getLabel('MSG_Option_Removed_Successfully', $this->adminLangId));
         $this->_template->render(false, false, 'json-success.php');
     }
@@ -710,6 +710,7 @@ class ProductsController extends AdminBaseController
             Message::addErrorMessage($upcObj->getError());
             FatUtility::dieWithError(Message::getHtml());
         }
+        Tag::updateProductTagString($product_id);
 
         $this->set('msg', Labels::getLabel('LBL_Record_Updated_Successfully', $this->adminLangId));
         $this->set('product_id', $product_id);

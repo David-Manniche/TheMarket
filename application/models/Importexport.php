@@ -746,12 +746,16 @@ class Importexport extends ImportexportCommon
                     $err = array($rowIndex, ($colIndex + 1), $errMsg);
                     CommonHelper::writeToCSVFile($this->CSVfileObj, $err);
                 } else {
-                    if (in_array($columnKey, array('prodcat_featured', 'prodcat_active', 'prodcat_deleted', 'prodcat_display_order'))) {
+                    if (in_array($columnKey, array('prodcat_featured', 'prodcat_active', 'prodcat_deleted'))) {
                         if ($this->settings['CONF_USE_O_OR_1']) {
                             $colValue = (FatUtility::int($colValue) == 1) ? applicationConstants::YES : applicationConstants::NO;
                         } else {
                             $colValue = (strtoupper($colValue) == 'YES') ? applicationConstants::YES : applicationConstants::NO;
                         }
+                    }
+
+                    if ('prodcat_display_order' == $columnKey) {
+                        $colValue = FatUtility::int($colValue);
                     }
 
                     if ('prodcat_parent_identifier' == $columnKey) {
@@ -3299,7 +3303,7 @@ class Importexport extends ImportexportCommon
                             break;
                         case 'product_identifier':
                             $columnKey = 'selprod_product_id';
-                            
+
                             $colValue = mb_strtolower($colValue);
                             if (!array_key_exists($colValue, $prodIndetifierArr)) {
                                 $res = $this->array_change_key_case_unicode($this->getAllProductsIdentifiers(false, $colValue), CASE_LOWER);
@@ -3309,7 +3313,7 @@ class Importexport extends ImportexportCommon
                                     $prodIndetifierArr = $prodIndetifierArr + $res;
                                 }
                             }
-							
+
                             $productId = $colValue = array_key_exists($colValue, $prodIndetifierArr) ? $prodIndetifierArr[$colValue] : 0;
                             $checkOption = true;
                             break;
@@ -3398,7 +3402,7 @@ class Importexport extends ImportexportCommon
                             if ('' != $colValue) {
                                 $selProdSepc[$columnKey] = $colValue;
                             }
-                        } elseif (in_array($columnKey, array('selprod_subtract_stock', 'selprod_track_inventory', )) && !$this->settings['CONF_USE_O_OR_1']) {
+                        } elseif (in_array($columnKey, array('selprod_subtract_stock', 'selprod_track_inventory',)) && !$this->settings['CONF_USE_O_OR_1']) {
                             $colValue = ('yes' == strtolower($colValue)) ? 1 : 0;
                             $selProdGenArr[$columnKey] = $colValue;
                         } else {
@@ -3936,7 +3940,7 @@ class Importexport extends ImportexportCommon
 
         $coloumArr = $this->getSelProdSpecialPriceColoumArr($langId);
         $this->validateCSVHeaders($csvFilePointer, $coloumArr, $langId);
-        
+
         $errInSheet = false;
         $productArr = [];
         while (($row = $this->getFileRow($csvFilePointer)) !== false) {
@@ -3965,7 +3969,7 @@ class Importexport extends ImportexportCommon
                         if (!$selProdId) {
                             $invalid = true;
                         }
-                        
+
                         if (0 < $selProdId && !array_key_exists($selProdId, $productArr)) {
                             $prodSrch = new ProductSearch($langId);
                             $prodSrch->joinSellerProducts($userId, '', array(), false);
@@ -3980,7 +3984,7 @@ class Importexport extends ImportexportCommon
                             $str = Labels::getLabel('MSG_Price_must_between_min_selling_price_{minsellingprice}_and_selling_price_{sellingprice}', $langId);
                             $minSellingPrice = CommonHelper::displayMoneyFormat($productArr[$selProdId]['product_min_selling_price'], false, true, true);
                             $sellingPrice = CommonHelper::displayMoneyFormat($productArr[$selProdId]['selprod_price'], false, true, true);
-                
+
                             $errMsg = CommonHelper::replaceStringData($str, array('{minsellingprice}' => $minSellingPrice, '{sellingprice}' => $sellingPrice));
                             $invalid = true;
                         }
@@ -3991,7 +3995,7 @@ class Importexport extends ImportexportCommon
                             $invalid = true;
                         }
                     }
-                    
+
                     if (in_array($columnKey, array('splprice_start_date', 'splprice_end_date'))) {
                         $colValue = $this->getDateTime($colValue, false);
                     }
