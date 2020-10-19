@@ -40,4 +40,12 @@ class UpcCode extends MyAppModel
         }
         return $code['upc_code'];
     }
+
+    public static function remove(int $product_id)
+    {
+        if (!FatApp::getDb()->deleteRecords(self::DB_TBL, array('smt' => self::DB_TBL_PREFIX . 'product_id = ?', 'vals' => array($product_id)))) {
+            return false;
+        }
+        return true;
+    }
 }
