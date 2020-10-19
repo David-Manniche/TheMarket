@@ -170,7 +170,7 @@ class CustomController extends MyAppController
             $faqPage = FaqCategory::SELLER_PAGE;
             $faqMainCat = FatApp::getConfig("CONF_SELLER_PAGE_MAIN_CATEGORY", null, '');
         }
-                
+
         if (!empty($catId) && $catId > 0) {
             $faqCatId = array($catId);
         } elseif ($faqMainCat) {
@@ -184,7 +184,7 @@ class CustomController extends MyAppController
             $rs = $srchFAQCat->getResultSet();
             $faqCatId = FatApp::getDb()->fetch($rs, 'faqcat_id');
         }
-        
+
         $srch = FaqCategory::getSearchObject($this->siteLangId);
         $srch->joinTable('tbl_faqs', 'LEFT OUTER JOIN', 'faq_faqcat_id = faqcat_id and faq_active = ' . applicationConstants::ACTIVE . '  and faq_deleted = ' . applicationConstants::NO);
         $srch->joinTable('tbl_faqs_lang', 'LEFT OUTER JOIN', 'faqlang_faq_id = faq_id');
@@ -267,7 +267,7 @@ class CustomController extends MyAppController
         // commonHelper::printArray($recordsCategories); die;
         $this->set('listCategories', $recordsCategories);
         $this->set('faqMainCat', $faqMainCat);
-		$this->set('page', 'faq');
+        $this->set('page', 'faq');
         $json['html'] = $this->_template->render(false, false, '_partial/no-record-found.php', true, false);
         if (!empty($records)) {
             $json['html'] = $this->_template->render(false, false, 'custom/search-faqs.php', true, false);
@@ -514,7 +514,7 @@ class CustomController extends MyAppController
                 $textMessage = Labels::getLabel('MSG_CUSTOMER_SUCCESS_ORDER_{BUYER-EMAIL}', $this->siteLangId);
                 $textMessage = CommonHelper::replaceStringData($textMessage, $searchReplaceArray);
             } else {
-                $textMessage = Labels::getLabel('MSG_CUSTOMER_SUCCESS_ORDER', $this->siteLangId);   
+                $textMessage = Labels::getLabel('MSG_CUSTOMER_SUCCESS_ORDER', $this->siteLangId);
             }
 
             $srch = new OrderProductSearch($this->siteLangId);
@@ -561,15 +561,15 @@ class CustomController extends MyAppController
             $orderInfo['billingAddress'] = $address[Orders::BILLING_ADDRESS_TYPE];
             $orderInfo['shippingAddress'] = (!empty($address[Orders::SHIPPING_ADDRESS_TYPE]) ? $address[Orders::SHIPPING_ADDRESS_TYPE] : []);
         }
-        
+
         $orderInfo['orderProducts'] = $orderObj->getChildOrders(['order_id' => $orderInfo['order_id']], $orderInfo['order_type'], $orderInfo['order_language_id'], true);
-        
+
         $this->set('textMessage', $textMessage);
         $this->set('orderInfo', $orderInfo);
-        
+
         $print = ('print' == $print);
         $this->set('print', $print);
-        
+
         $this->set('orderFulFillmentTypeArr', $orderFulFillmentTypeArr);
         if (CommonHelper::isAppUser()) {
             $this->set('exculdeMainHeaderDiv', true);

@@ -228,6 +228,8 @@ Bugs:
     => 044231 - Seller >> sales report page is not opening.
     => 044241 - Seller >> shipping profile >> edit any rate >> delete that rate >> that rate should not be opened at right side .
     => 044236 - if admin cancel any order from buyer order page then status of that order is "payment confirmed " at buyer, seller and admin (seller order ).
+    => 044250 - Admin >> Seller orders >>If we choose pickup then shipping details should not be there.
+    => 044233 - when customer places pickup order then in admin> customer order> pickup details are not there
     
 Enhancements:
     => Tax module upgrade

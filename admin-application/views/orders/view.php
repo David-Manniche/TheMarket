@@ -29,22 +29,22 @@ if ($order['order_reward_point_used'] > 0) {
                         <h4><?php echo Labels::getLabel('LBL_Customer_Order_Detail', $adminLangId); ?>
                         </h4>
                         <?php
-                            $data = [
-                                'adminLangId' => $adminLangId,
-                                'statusButtons' => false,
-                                'deleteButton' => false,
-                                'otherButtons' => [
-                                    [
-                                        'attr' => [
-                                            'href' => UrlHelper::generateUrl('Orders'),
-                                            'title' => Labels::getLabel('LBL_BACK', $adminLangId)
-                                        ],
-                                        'label' => '<i class="fas fa-arrow-left"></i>'
-                                    ]
+                        $data = [
+                            'adminLangId' => $adminLangId,
+                            'statusButtons' => false,
+                            'deleteButton' => false,
+                            'otherButtons' => [
+                                [
+                                    'attr' => [
+                                        'href' => UrlHelper::generateUrl('Orders'),
+                                        'title' => Labels::getLabel('LBL_BACK', $adminLangId)
+                                    ],
+                                    'label' => '<i class="fas fa-arrow-left"></i>'
                                 ]
-                            ];
+                            ]
+                        ];
 
-                            $this->includeTemplate('_partial/action-buttons.php', $data, false);
+                        $this->includeTemplate('_partial/action-buttons.php', $data, false);
                         ?>
                     </div>
                     <div class="sectionbody">
@@ -58,15 +58,15 @@ if ($order['order_reward_point_used'] > 0) {
                                 </td>
                                 <td><strong><?php echo Labels::getLabel('LBL_Payment_Status', $adminLangId); ?>:</strong>
                                     <?php echo Orders::getOrderPaymentStatusArr($adminLangId)[$order['order_payment_status']];
-                                if ('' != $order['plugin_name'] && 'CashOnDelivery' == $order['plugin_code']) {
-                                    echo ' ('.$order['plugin_name'].' )';
-                                }
-                                ?>
+                                    if ('' != $order['plugin_name'] && 'CashOnDelivery' == $order['plugin_code']) {
+                                        echo ' (' . $order['plugin_name'] . ' )';
+                                    }
+                                    ?>
                                 </td>
                             </tr>
                             <tr>
                                 <td><strong><?php echo Labels::getLabel('LBL_Customer', $adminLangId); ?>:
-                                    </strong> <?php echo $order["buyer_user_name"]?>
+                                    </strong> <?php echo $order["buyer_user_name"] ?>
                                 </td>
                                 <td><strong><?php echo Labels::getLabel('LBL_Payment_Method', $adminLangId); ?>:</strong>
                                     <?php echo $selected_method; ?>
@@ -82,12 +82,12 @@ if ($order['order_reward_point_used'] > 0) {
                                 <td><strong><?php echo Labels::getLabel('LBL_Discount', $adminLangId); ?>:
                                     </strong>- <?php echo CommonHelper::displayMoneyFormat($order["order_discount_total"], true, true); ?>
                                 </td>
-                                <td><strong><?php echo Labels::getLabel('LBL_Reward_Point_Discount', $adminLangId);?>:
+                                <td><strong><?php echo Labels::getLabel('LBL_Reward_Point_Discount', $adminLangId); ?>:
                                     </strong><?php echo CommonHelper::displayMoneyFormat($order["order_reward_point_value"], true, true); ?>
                                 </td>
                             </tr>
                             <tr>
-                                <td><strong><?php echo Labels::getLabel('LBL_Volume/Loyalty_Discount', $adminLangId);?>:
+                                <td><strong><?php echo Labels::getLabel('LBL_Volume/Loyalty_Discount', $adminLangId); ?>:
                                     </strong>-<?php echo CommonHelper::displayMoneyFormat($order['order_volume_discount_total'], true, true); ?>
                                 </td>
                             </tr>
@@ -103,24 +103,20 @@ if ($order['order_reward_point_used'] > 0) {
                         <table class="table">
                             <tr>
                                 <th>#</td>
-                                <th><?php echo Labels::getLabel('LBL_Child_Order_Invoice_ID', $adminLangId); ?>
-                                </th>
-                                <th><?php echo Labels::getLabel('LBL_Status', $adminLangId); ?>
-                                </th>
-                                <th><?php echo Labels::getLabel('LBL_Product/Shop/Seller_Details', $adminLangId); ?>
-                                </th>
-                                <th><?php echo Labels::getLabel('LBL_Shipping_Detail', $adminLangId); ?>
-                                </th>
-                                <th><?php echo Labels::getLabel('LBL_Unit_Price', $adminLangId); ?>
-                                </th>
-                                <th><?php echo Labels::getLabel('LBL_Qty', $adminLangId); ?>
-                                </th>
-                                <th class="text-right"><?php echo Labels::getLabel('LBL_Shipping', $adminLangId); ?>
-                                </th>
-                                <th><?php echo Labels::getLabel('LBL_Volume/Loyalty_Discount', $adminLangId);?>
-                                </th>
-                                <th class="text-right"><?php echo Labels::getLabel('LBL_Total', $adminLangId); ?>
-                                </th>
+                                <th><?php echo Labels::getLabel('LBL_Child_Order_Invoice_ID', $adminLangId); ?></th>
+                                <th><?php echo Labels::getLabel('LBL_Status', $adminLangId); ?></th>
+                                <th><?php echo Labels::getLabel('LBL_Product/Shop/Seller_Details', $adminLangId); ?></th>
+                                <?php
+                                if (!empty($order['products']) && Shipping::FULFILMENT_PICKUP == current($order['products'])['opshipping_fulfillment_type']) { ?>
+                                    <th><?php echo Labels::getLabel('LBL_PICKUP_DETAIL', $adminLangId); ?></th>
+                                <?php } else { ?>
+                                    <th><?php echo Labels::getLabel('LBL_Shipping_Detail', $adminLangId); ?></th>
+                                <?php  } ?>
+                                <th><?php echo Labels::getLabel('LBL_Unit_Price', $adminLangId); ?></th>
+                                <th><?php echo Labels::getLabel('LBL_Qty', $adminLangId); ?></th>
+                                <th class="text-right"><?php echo Labels::getLabel('LBL_Shipping', $adminLangId); ?></th>
+                                <th><?php echo Labels::getLabel('LBL_Volume/Loyalty_Discount', $adminLangId); ?></th>
+                                <th class="text-right"><?php echo Labels::getLabel('LBL_Total', $adminLangId); ?></th>
                             </tr>
                             <?php
                             $k = 1;
@@ -134,8 +130,8 @@ if ($order['order_reward_point_used'] > 0) {
                                 $cartTotal = $cartTotal + CommonHelper::orderProductAmount($op, 'cart_total');
                                 $shippingTotal = $shippingTotal + CommonHelper::orderProductAmount($op, 'shipping');
                                 $invoiceNumber = $op['op_invoice_number'];
-                                $opId = FatUtility::int($op['op_id']); 
-                                ?>
+                                $opId = FatUtility::int($op['op_id']);
+                            ?>
                                 <tr>
                                     <td><?php echo $k; ?></td>
                                     <td><?php echo $invoiceNumber; ?></td>
@@ -144,59 +140,83 @@ if ($order['order_reward_point_used'] > 0) {
                                         <?php
                                         $txt = '';
                                         if ($op['op_selprod_title'] != '') {
-                                            $txt .= $op['op_selprod_title'].'<br/>';
+                                            $txt .= $op['op_selprod_title'] . '<br/>';
                                         }
                                         $txt .= $op['op_product_name'];
                                         $txt .= '<br/>';
                                         if (!empty($op['op_brand_name'])) {
-                                            $txt .=  Labels::getLabel('LBL_Brand', $adminLangId).': '.$op['op_brand_name'];
+                                            $txt .=  Labels::getLabel('LBL_Brand', $adminLangId) . ': ' . $op['op_brand_name'];
                                         }
                                         if (!empty($op['op_brand_name']) && !empty($op['op_selprod_options'])) {
-                                            $txt .= ' | ' ;
+                                            $txt .= ' | ';
                                         }
                                         if ($op['op_selprod_options'] != '') {
                                             $txt .= $op['op_selprod_options'];
                                         }
                                         if ($op['op_selprod_sku'] != '') {
-                                            $txt .= '<br/>'.Labels::getLabel('LBL_SKU', $adminLangId).': ' . $op['op_selprod_sku'];
+                                            $txt .= '<br/>' . Labels::getLabel('LBL_SKU', $adminLangId) . ': ' . $op['op_selprod_sku'];
                                         }
                                         if ($op['op_product_model'] != '') {
-                                            $txt .= '<br/>'.Labels::getLabel('LBL_Model', $adminLangId).':  ' . $op['op_product_model'];
+                                            $txt .= '<br/>' . Labels::getLabel('LBL_Model', $adminLangId) . ':  ' . $op['op_product_model'];
                                         }
-                                        $txt .= '<br/><strong>'.Labels::getLabel('LBL_Shop_Detail', $adminLangId).':</strong><br/>'.Labels::getLabel('LBL_Shop_Name', $adminLangId).': '.$op['op_shop_name'];
-                                        $txt .= '<br/>'.Labels::getLabel('LBL_Seller_Name', $adminLangId).': '.$op['op_shop_owner_name'].' <br/>'.Labels::getLabel('LBL_Seller_Email_Id', $adminLangId).': '. $op['op_shop_owner_email'];
+                                        $txt .= '<br/><strong>' . Labels::getLabel('LBL_Shop_Detail', $adminLangId) . ':</strong><br/>' . Labels::getLabel('LBL_Shop_Name', $adminLangId) . ': ' . $op['op_shop_name'];
+                                        $txt .= '<br/>' . Labels::getLabel('LBL_Seller_Name', $adminLangId) . ': ' . $op['op_shop_owner_name'] . ' <br/>' . Labels::getLabel('LBL_Seller_Email_Id', $adminLangId) . ': ' . $op['op_shop_owner_email'];
                                         if ($op['op_shop_owner_phone'] != '') {
-                                            $txt .= '<br/>'.Labels::getLabel('LBL_Seller_Phone', $adminLangId).': '.$op['op_shop_owner_phone'];
+                                            $txt .= '<br/>' . Labels::getLabel('LBL_Seller_Phone', $adminLangId) . ': ' . $op['op_shop_owner_phone'];
                                         }
                                         echo $txt; ?>
                                     </td>
                                     <td>
-                                        <strong>
-                                            <?php echo Labels::getLabel('LBL_Shipping_Class', $adminLangId); ?>:
-                                        </strong>
-                                        <?php echo CommonHelper::displayNotApplicable($adminLangId, $op["opshipping_label"]); ?>
-                                        <br>
-                                        <strong>
-                                            <?php echo Labels::getLabel('LBL_SHIPPING_SERVICES:', $adminLangId); ?>
-                                        </strong>
-                                        <?php echo CommonHelper::displayNotApplicable($adminLangId, $op["opshipping_service_code"]); 
+                                        <?php if (Shipping::FULFILMENT_PICKUP == $op['opshipping_fulfillment_type']) { ?>
+                                            <p>
+                                                <strong>
+                                                    <?php
+                                                    $opshippingDate = isset($op['opshipping_date']) ? $op['opshipping_date'] . ' ' : '';
+                                                    $timeSlotFrom = isset($op['opshipping_time_slot_from']) ? date('H:i', strtotime($op['opshipping_time_slot_from'])) . ' - ' : '';
+                                                    $timeSlotTo = isset($op['opshipping_time_slot_to']) ? date('H:i', strtotime($op['opshipping_time_slot_to'])) : '';
+                                                    echo $opshippingDate . ' (' . $timeSlotFrom . $timeSlotTo . ')'; 
+                                                    ?>
+                                                </strong><br>
+                                                <?php echo $op['addr_name']; ?>,
+                                                <?php
+                                                $address1 = !empty($op['addr_address1']) ? $op['addr_address1'] : '';
+                                                $address2 = !empty($op['addr_address2']) ? ', ' . $op['addr_address2'] : '';
+                                                $city = !empty($op['addr_city']) ? '<br>' . $op['addr_city'] : '';
+                                                $state = !empty($op['state_code']) ? ', ' . $op['state_code'] : '';
+                                                $country = !empty($op['country_code']) ? ' ' . $op['country_code'] : '';
+                                                $zip = !empty($op['addr_zip']) ? '(' . $op['addr_zip'] . ')' : '';
+
+                                                echo $address1 . $address2 . $city . $state . $country . $zip;
+                                                ?>
+                                            </p>
+                                        <?php } else { ?>
+                                            <strong>
+                                                <?php echo Labels::getLabel('LBL_Shipping_Class', $adminLangId); ?>:
+                                            </strong>
+                                            <?php echo CommonHelper::displayNotApplicable($adminLangId, $op["opshipping_label"]); ?>
+                                            <br>
+                                            <strong>
+                                                <?php echo Labels::getLabel('LBL_SHIPPING_SERVICES:', $adminLangId); ?>
+                                            </strong>
+                                            <?php echo CommonHelper::displayNotApplicable($adminLangId, $op["opshipping_service_code"]);
                                             $orderStatusLbl = '';
-                                            if (!empty($op["thirdPartyorderInfo"]) && isset($op["thirdPartyorderInfo"]['orderStatus'])) { 
+                                            if (!empty($op["thirdPartyorderInfo"]) && isset($op["thirdPartyorderInfo"]['orderStatus'])) {
                                                 $orderStatus = $op["thirdPartyorderInfo"]['orderStatus'];
-                                                $orderStatusLbl = strpos($orderStatus,"_") ? ucwords(str_replace('_', ' ', $orderStatus)) : $orderStatus;
+                                                $orderStatusLbl = strpos($orderStatus, "_") ? ucwords(str_replace('_', ' ', $orderStatus)) : $orderStatus;
                                             ?>
-                                            <br> 
-                                            <strong>
-                                                <?php echo Labels::getLabel('LBL_ORDER_STATUS', $adminLangId); ?>:
-                                            </strong>
-                                            <?php echo $orderStatusLbl; ?>
-                                        <?php } ?>
-                                        <?php if (!empty($op["opship_tracking_number"])) { ?>
-                                            <br> 
-                                            <strong>
-                                                <?php echo Labels::getLabel('LBL_TRACKING_NUMBER', $adminLangId); ?>:
-                                            </strong>
-                                            <?php echo $op["opship_tracking_number"]; ?>
+                                                <br>
+                                                <strong>
+                                                    <?php echo Labels::getLabel('LBL_ORDER_STATUS', $adminLangId); ?>:
+                                                </strong>
+                                                <?php echo $orderStatusLbl; ?>
+                                            <?php } ?>
+                                            <?php if (!empty($op["opship_tracking_number"])) { ?>
+                                                <br>
+                                                <strong>
+                                                    <?php echo Labels::getLabel('LBL_TRACKING_NUMBER', $adminLangId); ?>:
+                                                </strong>
+                                                <?php echo $op["opship_tracking_number"]; ?>
+                                            <?php } ?>
                                         <?php } ?>
                                     </td>
                                     <td>
@@ -240,46 +260,46 @@ if ($order['order_reward_point_used'] > 0) {
                                 </td>
                             </tr>
                             <?php if (empty($taxOptionsTotal)) { ?>
-                            <tr>
-                                <td colspan="8" class="text-right"><?php echo Labels::getLabel('LBL_Tax', $adminLangId); ?>
-                                </td>
-                                <td class="text-right" colspan="2"><?php echo '+'.CommonHelper::displayMoneyFormat($order['order_tax_charged'], true, true); ?>
-                                </td>
-                            </tr>
-                            <?php } else {
+                                <tr>
+                                    <td colspan="8" class="text-right"><?php echo Labels::getLabel('LBL_Tax', $adminLangId); ?>
+                                    </td>
+                                    <td class="text-right" colspan="2"><?php echo '+' . CommonHelper::displayMoneyFormat($order['order_tax_charged'], true, true); ?>
+                                    </td>
+                                </tr>
+                                <?php } else {
                                 foreach ($taxOptionsTotal as $key => $val) { ?>
-                            <tr>
-                                <td colspan="8" class="text-right"><?php echo $val['title'] ?>
-                                </td>
-                                <td class="text-right" colspan="2"><?php echo CommonHelper::displayMoneyFormat($val['value']); ?>
-                                </td>
-                            </tr>
+                                    <tr>
+                                        <td colspan="8" class="text-right"><?php echo $val['title'] ?>
+                                        </td>
+                                        <td class="text-right" colspan="2"><?php echo CommonHelper::displayMoneyFormat($val['value']); ?>
+                                        </td>
+                                    </tr>
                             <?php }
                             } ?>
-                            <?php if ($order['order_discount_total'] > 0) {?>
-                            <tr>
-                                <td colspan="8" class="text-right"><?php echo Labels::getLabel('LBL_Discount', $adminLangId); ?>
-                                </td>
-                                <td class="text-right" colspan="2">-<?php echo CommonHelper::displayMoneyFormat($order['order_discount_total'], true, true); ?>
-                                </td>
-                            </tr>
-                            <?php }?>
-                            <?php if ($order['order_reward_point_value'] > 0) {?>
-                            <tr>
-                                <td colspan="8" class="text-right"><?php echo Labels::getLabel('LBL_Reward_Point_Discount', $adminLangId);?>
-                                </td>
-                                <td class="text-right" colspan="2">-<?php echo CommonHelper::displayMoneyFormat($order['order_reward_point_value'], true, true); ?>
-                                </td>
-                            </tr>
-                            <?php }?>
-                            <?php if ($order['order_volume_discount_total'] > 0) {?>
-                            <tr>
-                                <td colspan="8" class="text-right"><?php echo Labels::getLabel('LBL_Volume/Loyalty_Discount', $adminLangId);?>
-                                </td>
-                                <td class="text-right" colspan="2">-<?php echo CommonHelper::displayMoneyFormat($order['order_volume_discount_total'], true, true); ?>
-                                </td>
-                            </tr>
-                            <?php }?>
+                            <?php if ($order['order_discount_total'] > 0) { ?>
+                                <tr>
+                                    <td colspan="8" class="text-right"><?php echo Labels::getLabel('LBL_Discount', $adminLangId); ?>
+                                    </td>
+                                    <td class="text-right" colspan="2">-<?php echo CommonHelper::displayMoneyFormat($order['order_discount_total'], true, true); ?>
+                                    </td>
+                                </tr>
+                            <?php } ?>
+                            <?php if ($order['order_reward_point_value'] > 0) { ?>
+                                <tr>
+                                    <td colspan="8" class="text-right"><?php echo Labels::getLabel('LBL_Reward_Point_Discount', $adminLangId); ?>
+                                    </td>
+                                    <td class="text-right" colspan="2">-<?php echo CommonHelper::displayMoneyFormat($order['order_reward_point_value'], true, true); ?>
+                                    </td>
+                                </tr>
+                            <?php } ?>
+                            <?php if ($order['order_volume_discount_total'] > 0) { ?>
+                                <tr>
+                                    <td colspan="8" class="text-right"><?php echo Labels::getLabel('LBL_Volume/Loyalty_Discount', $adminLangId); ?>
+                                    </td>
+                                    <td class="text-right" colspan="2">-<?php echo CommonHelper::displayMoneyFormat($order['order_volume_discount_total'], true, true); ?>
+                                    </td>
+                                </tr>
+                            <?php } ?>
                             <tr>
                                 <td colspan="8" class="text-right"><strong><?php echo Labels::getLabel('LBL_Order_Total', $adminLangId); ?></strong>
                                 </td>
@@ -301,7 +321,7 @@ if ($order['order_reward_point_used'] > 0) {
                                     <h5><?php echo Labels::getLabel('LBL_Customer_Details', $adminLangId); ?>
                                     </h5>
                                     <p><strong><?php echo Labels::getLabel('LBL_Name', $adminLangId); ?>:
-                                        </strong><?php echo $order["buyer_user_name"]?><br><strong><?php echo Labels::getLabel('LBL_Email', $adminLangId); ?>:
+                                        </strong><?php echo $order["buyer_user_name"] ?><br><strong><?php echo Labels::getLabel('LBL_Email', $adminLangId); ?>:
                                         </strong><?php echo $order['buyer_email']; ?><br><strong><?php echo Labels::getLabel('LBL_Phone_Number', $adminLangId); ?>:</strong>
                                         <?php echo CommonHelper::displayNotApplicable($adminLangId, $order['buyer_phone']); ?>
                                     </p>
@@ -321,118 +341,79 @@ if ($order['order_reward_point_used'] > 0) {
                                     </h5>
                                     <p><strong><?php echo $order['billingAddress']['oua_name']; ?></strong><br>
                                         <?php
-                                    $billingAddress = '';
-                                    if ($order['billingAddress']['oua_address1']!='') {
-                                        $billingAddress.=$order['billingAddress']['oua_address1'].'<br>';
-                                    }
+                                        $billingAddress = '';
+                                        if ($order['billingAddress']['oua_address1'] != '') {
+                                            $billingAddress .= $order['billingAddress']['oua_address1'] . '<br>';
+                                        }
 
-                                    if ($order['billingAddress']['oua_address2']!='') {
-                                        $billingAddress.=$order['billingAddress']['oua_address2'].'<br>';
-                                    }
+                                        if ($order['billingAddress']['oua_address2'] != '') {
+                                            $billingAddress .= $order['billingAddress']['oua_address2'] . '<br>';
+                                        }
 
-                                    if ($order['billingAddress']['oua_city']!='') {
-                                        $billingAddress.=$order['billingAddress']['oua_city'].',';
-                                    }
+                                        if ($order['billingAddress']['oua_city'] != '') {
+                                            $billingAddress .= $order['billingAddress']['oua_city'] . ',';
+                                        }
 
-                                    if ($order['billingAddress']['oua_zip']!='') {
-                                        $billingAddress .= ' '.$order['billingAddress']['oua_state'];
-                                    }
+                                        if ($order['billingAddress']['oua_zip'] != '') {
+                                            $billingAddress .= ' ' . $order['billingAddress']['oua_state'];
+                                        }
 
-                                    if ($order['billingAddress']['oua_zip']!='') {
-                                        $billingAddress.= '-'.$order['billingAddress']['oua_zip'];
-                                    }
+                                        if ($order['billingAddress']['oua_zip'] != '') {
+                                            $billingAddress .= '-' . $order['billingAddress']['oua_zip'];
+                                        }
 
-                                    if ($order['billingAddress']['oua_phone']!='') {
-                                        $billingAddress.= '<br>Phone: '.$order['billingAddress']['oua_phone'];
-                                    }
-                                    echo $billingAddress;
-                                    ?>
+                                        if ($order['billingAddress']['oua_phone'] != '') {
+                                            $billingAddress .= '<br>Phone: ' . $order['billingAddress']['oua_phone'];
+                                        }
+                                        echo $billingAddress;
+                                        ?>
                                     </p>
                                 </div>
-                                <?php if (!empty($order['shippingAddress'])) {?>
-                                <div class="col-lg-6 col-md-6 col-sm-12">
-                                    <h5><?php echo Labels::getLabel('LBL_Shipping_Details', $adminLangId); ?>
-                                    </h5>
-                                    <p><strong><?php echo $order['shippingAddress']['oua_name'];?></strong><br>
-                                        <?php
-                                    $shippingAddress = '';
-                                    if ($order['shippingAddress']['oua_address1']!='') {
-                                        $shippingAddress.=$order['shippingAddress']['oua_address1'].'<br>';
-                                    }
+                                <?php if (!empty($order['shippingAddress'])) { ?>
+                                    <div class="col-lg-6 col-md-6 col-sm-12">
+                                        <h5><?php echo Labels::getLabel('LBL_Shipping_Details', $adminLangId); ?>
+                                        </h5>
+                                        <p><strong><?php echo $order['shippingAddress']['oua_name']; ?></strong><br>
+                                            <?php
+                                            $shippingAddress = '';
+                                            if ($order['shippingAddress']['oua_address1'] != '') {
+                                                $shippingAddress .= $order['shippingAddress']['oua_address1'] . '<br>';
+                                            }
 
-                                    if ($order['shippingAddress']['oua_address2']!='') {
-                                        $shippingAddress.=$order['shippingAddress']['oua_address2'].'<br>';
-                                    }
+                                            if ($order['shippingAddress']['oua_address2'] != '') {
+                                                $shippingAddress .= $order['shippingAddress']['oua_address2'] . '<br>';
+                                            }
 
-                                    if ($order['shippingAddress']['oua_city']!='') {
-                                        $shippingAddress.=$order['shippingAddress']['oua_city'].',';
-                                    }
+                                            if ($order['shippingAddress']['oua_city'] != '') {
+                                                $shippingAddress .= $order['shippingAddress']['oua_city'] . ',';
+                                            }
 
-                                    if ($order['shippingAddress']['oua_zip']!='') {
-                                        $shippingAddress .= ' '.$order['shippingAddress']['oua_state'];
-                                    }
+                                            if ($order['shippingAddress']['oua_zip'] != '') {
+                                                $shippingAddress .= ' ' . $order['shippingAddress']['oua_state'];
+                                            }
 
-                                    if ($order['shippingAddress']['oua_zip']!='') {
-                                        $shippingAddress.= '-'.$order['shippingAddress']['oua_zip'];
-                                    }
+                                            if ($order['shippingAddress']['oua_zip'] != '') {
+                                                $shippingAddress .= '-' . $order['shippingAddress']['oua_zip'];
+                                            }
 
-                                    if ($order['shippingAddress']['oua_phone']!='') {
-                                        $shippingAddress.= '<br>Phone: '.$order['shippingAddress']['oua_phone'];
-                                    }
+                                            if ($order['shippingAddress']['oua_phone'] != '') {
+                                                $shippingAddress .= '<br>Phone: ' . $order['shippingAddress']['oua_phone'];
+                                            }
 
-                                    echo $shippingAddress; ?>
+                                            echo $shippingAddress; ?>
 
-                                    </p>
-                                </div>
+                                        </p>
+                                    </div>
                                 <?php } ?>
                             </div>
                         </section>
                     </div>
                 </div>
-                <?php 
+                <?php
                 if (isset($order["comments"]) && is_array($order["comments"]) && count($order["comments"]) > 0) { ?>
-                <section class="section">
-                    <div class="sectionhead">
-                        <h4><?php echo Labels::getLabel('LBL_Order_Status_History', $adminLangId); ?>
-                        </h4>
-                    </div>
-                    <div class="sectionbody">
-                        <table class="table">
-                            <tbody>
-                                <tr>
-                                    <th width="10%"><?php echo Labels::getLabel('LBL_Date_Added', $adminLangId); ?>
-                                    </th>
-                                    <th width="15%"><?php echo Labels::getLabel('LBL_Customer_Notified', $adminLangId); ?>
-                                    </th>
-                                    <th width="15%"><?php echo Labels::getLabel('LBL_Payment_Status', $adminLangId); ?>
-                                    </th>
-                                    <th width="60%"><?php echo Labels::getLabel('LBL_Comments', $adminLangId); ?>
-                                    </th>
-                                </tr>
-                                <?php foreach ($order["comments"] as $key => $row) { ?>
-                                <tr>
-                                    <td><?php echo FatDate::format($row['oshistory_date_added']);?>
-                                    </td>
-                                    <td><?php echo $yesNoArr[$row['oshistory_customer_notified']];?>
-                                    </td>
-                                    <td><?php echo ($row['oshistory_orderstatus_id']>0)?$orderStatuses[$row['oshistory_orderstatus_id']]:CommonHelper::displayNotApplicable($adminLangId, '');?>
-                                    </td>
-                                    <td>
-                                        <div class="break-me"><?php echo nl2br($row['oshistory_comments']);?>
-                                        </div>
-                                    </td>
-                                </tr>
-                                <?php } ?>
-                            </tbody>
-                        </table>
-                    </div>
-                </section>
-                <?php } ?>
-                <?php if (!$order['order_deleted']) {?>
-                    <?php if (!empty($order['payments'])) {?>
                     <section class="section">
                         <div class="sectionhead">
-                            <h4><?php echo Labels::getLabel('LBL_Order_Payment_History', $adminLangId); ?>
+                            <h4><?php echo Labels::getLabel('LBL_Order_Status_History', $adminLangId); ?>
                             </h4>
                         </div>
                         <div class="sectionbody">
@@ -441,60 +422,99 @@ if ($order['order_reward_point_used'] > 0) {
                                     <tr>
                                         <th width="10%"><?php echo Labels::getLabel('LBL_Date_Added', $adminLangId); ?>
                                         </th>
-                                        <th width="10%"><?php echo Labels::getLabel('LBL_Txn_ID', $adminLangId); ?>
+                                        <th width="15%"><?php echo Labels::getLabel('LBL_Customer_Notified', $adminLangId); ?>
                                         </th>
-                                        <th width="15%"><?php echo Labels::getLabel('LBL_Payment_Method', $adminLangId); ?>
+                                        <th width="15%"><?php echo Labels::getLabel('LBL_Payment_Status', $adminLangId); ?>
                                         </th>
-                                        <th width="10%"><?php echo Labels::getLabel('LBL_Amount', $adminLangId); ?>
-                                        </th>
-                                        <th width="15%"><?php echo Labels::getLabel('LBL_Comments', $adminLangId); ?>
-                                        </th>
-                                        <th width="25%"><?php echo Labels::getLabel('LBL_Gateway_Response', $adminLangId); ?>
-                                        </th>
-                                        <th width="15%"><?php echo Labels::getLabel('LBL_ACTION', $adminLangId); ?>
+                                        <th width="60%"><?php echo Labels::getLabel('LBL_Comments', $adminLangId); ?>
                                         </th>
                                     </tr>
-                                    <?php foreach ($order["payments"] as $key => $row) { ?>
-                                    <tr>
-                                        <td><?php echo FatDate::format($row['opayment_date']);?>
-                                        </td>
-                                        <td><?php echo $row['opayment_gateway_txn_id'];?>
-                                        </td>
-                                        <td><?php echo $row['opayment_method'];?>
-                                        </td>
-                                        <td><?php echo CommonHelper::displayMoneyFormat($row['opayment_amount'], true, true);?>
-                                        </td>
-                                        <td>
-                                            <div class="break-me"><?php echo nl2br($row['opayment_comments']);?>
-                                            </div>
-                                        </td>
-                                        <td>
-                                            <div class="break-me"><?php echo nl2br($row['opayment_gateway_response']);?>
-                                            </div>
-                                        </td>
-                                        <td>
-                                            <?php if (0 == FatUtility::int($row['opayment_txn_status'])) { ?>
-                                                <a href="javascript::void(0);" onclick="approve('<?php echo $row['opayment_id']; ?>')" class="btn btn-secondary btn-sm"><?php echo Labels::getLabel("LBL_APPROVE", $adminLangId); ?></a>
-                                                <a href="javascript::void(0);" onclick="reject('<?php echo $row['opayment_id']; ?>')" class="btn btn-outline-secondary btn-sm"><?php echo Labels::getLabel("LBL_REJECT", $adminLangId); ?></a>
-                                            <?php } else {
-                                                echo Labels::getLabel("LBL_N/A", $adminLangId);
-                                            } ?>
-                                        </td>
-                                    </tr>
+                                    <?php foreach ($order["comments"] as $key => $row) { ?>
+                                        <tr>
+                                            <td><?php echo FatDate::format($row['oshistory_date_added']); ?>
+                                            </td>
+                                            <td><?php echo $yesNoArr[$row['oshistory_customer_notified']]; ?>
+                                            </td>
+                                            <td><?php echo ($row['oshistory_orderstatus_id'] > 0) ? $orderStatuses[$row['oshistory_orderstatus_id']] : CommonHelper::displayNotApplicable($adminLangId, ''); ?>
+                                            </td>
+                                            <td>
+                                                <div class="break-me"><?php echo nl2br($row['oshistory_comments']); ?>
+                                                </div>
+                                            </td>
+                                        </tr>
                                     <?php } ?>
                                 </tbody>
                             </table>
                         </div>
                     </section>
-                    <?php }?>
-                    <?php if (!$order["order_payment_status"] && $canEdit && 'CashOnDelivery' != $order['plugin_code']) {?>
-                    <section class="section">
-                        <div class="sectionhead">
-                            <h4><?php echo Labels::getLabel('LBL_Order_Payments', $adminLangId); ?>
-                            </h4>
-                        </div>
-                        <div class="sectionbody space">
-                            <?php
+                <?php } ?>
+                <?php if (!$order['order_deleted']) { ?>
+                    <?php if (!empty($order['payments'])) { ?>
+                        <section class="section">
+                            <div class="sectionhead">
+                                <h4><?php echo Labels::getLabel('LBL_Order_Payment_History', $adminLangId); ?>
+                                </h4>
+                            </div>
+                            <div class="sectionbody">
+                                <table class="table">
+                                    <tbody>
+                                        <tr>
+                                            <th width="10%"><?php echo Labels::getLabel('LBL_Date_Added', $adminLangId); ?>
+                                            </th>
+                                            <th width="10%"><?php echo Labels::getLabel('LBL_Txn_ID', $adminLangId); ?>
+                                            </th>
+                                            <th width="15%"><?php echo Labels::getLabel('LBL_Payment_Method', $adminLangId); ?>
+                                            </th>
+                                            <th width="10%"><?php echo Labels::getLabel('LBL_Amount', $adminLangId); ?>
+                                            </th>
+                                            <th width="15%"><?php echo Labels::getLabel('LBL_Comments', $adminLangId); ?>
+                                            </th>
+                                            <th width="25%"><?php echo Labels::getLabel('LBL_Gateway_Response', $adminLangId); ?>
+                                            </th>
+                                            <th width="15%"><?php echo Labels::getLabel('LBL_ACTION', $adminLangId); ?>
+                                            </th>
+                                        </tr>
+                                        <?php foreach ($order["payments"] as $key => $row) { ?>
+                                            <tr>
+                                                <td><?php echo FatDate::format($row['opayment_date']); ?>
+                                                </td>
+                                                <td><?php echo $row['opayment_gateway_txn_id']; ?>
+                                                </td>
+                                                <td><?php echo $row['opayment_method']; ?>
+                                                </td>
+                                                <td><?php echo CommonHelper::displayMoneyFormat($row['opayment_amount'], true, true); ?>
+                                                </td>
+                                                <td>
+                                                    <div class="break-me"><?php echo nl2br($row['opayment_comments']); ?>
+                                                    </div>
+                                                </td>
+                                                <td>
+                                                    <div class="break-me"><?php echo nl2br($row['opayment_gateway_response']); ?>
+                                                    </div>
+                                                </td>
+                                                <td>
+                                                    <?php if (0 == FatUtility::int($row['opayment_txn_status'])) { ?>
+                                                        <a href="javascript::void(0);" onclick="approve('<?php echo $row['opayment_id']; ?>')" class="btn btn-secondary btn-sm"><?php echo Labels::getLabel("LBL_APPROVE", $adminLangId); ?></a>
+                                                        <a href="javascript::void(0);" onclick="reject('<?php echo $row['opayment_id']; ?>')" class="btn btn-outline-secondary btn-sm"><?php echo Labels::getLabel("LBL_REJECT", $adminLangId); ?></a>
+                                                    <?php } else {
+                                                        echo Labels::getLabel("LBL_N/A", $adminLangId);
+                                                    } ?>
+                                                </td>
+                                            </tr>
+                                        <?php } ?>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </section>
+                    <?php } ?>
+                    <?php if (!$order["order_payment_status"] && $canEdit && 'CashOnDelivery' != $order['plugin_code']) { ?>
+                        <section class="section">
+                            <div class="sectionhead">
+                                <h4><?php echo Labels::getLabel('LBL_Order_Payments', $adminLangId); ?>
+                                </h4>
+                            </div>
+                            <div class="sectionbody space">
+                                <?php
                                 $frm->setFormTagAttribute('onsubmit', 'updatePayment(this); return(false);');
                                 $frm->setFormTagAttribute('class', 'web_form');
                                 $frm->developerTags['colClassPrefix'] = 'col-md-';
@@ -514,10 +534,10 @@ if ($order['order_reward_point_used'] > 0) {
                                 $submitFld->developerTags['col'] = 4;
 
                                 echo $frm->getFormHtml(); ?>
-                        </div>
-                    </section>
-                    <?php }?>
-                <?php }?>
+                            </div>
+                        </section>
+                    <?php } ?>
+                <?php } ?>
             </div>
         </div>
     </div>
