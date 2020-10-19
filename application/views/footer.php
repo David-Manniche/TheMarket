@@ -28,6 +28,7 @@
         <div class="up-footer ">
             <div class="row">
                 <?php $this->includeTemplate('_partial/footerNavigation.php'); ?>
+				<?php if (FatApp::getConfig("CONF_ACTIVATE_SEPARATE_SIGNUP_FORM", FatUtility::VAR_INT, 1)) { ?>
                 <div class="col-lg-2 col-md-4  mb-3 mb-md-0">
                     <div class="toggle-group">
                         <h5 class="toggle__trigger toggle__trigger-js"><?php echo Labels::getLabel('LBL_Sell_With', $siteLangId)." ".FatApp::getConfig('CONF_WEBSITE_NAME_'.$siteLangId, FatUtility::VAR_STRING, ''); ?></h5>
@@ -40,9 +41,10 @@
                             <div class="f-heading"><?php echo Labels::getLabel('LBL_DOWNLOAD_THE_APP',$siteLangId); ?> [Pending]
                         </div>
                         <div class="g-play"><a href="javascript:void(0)"><img src="<?php echo CONF_WEBROOT_URL; ?>images/g-play.png" alt="<?php echo Labels::getLabel('LBL_Download_APP', $siteLangId); ?>"></a></div> */ ?>
-                    </div>
-                </div>
-            </div>
+						</div>
+					</div>
+				</div>
+				<?php } ?>
             <div class="col-lg-4 col-md-8  mb-3 mb-md-0">
                 <div class="toggle-group">
                     <h5 class="toggle__trigger toggle__trigger-js"><?php echo (FatApp::getConfig('CONF_ENABLE_NEWSLETTER_SUBSCRIPTION', FatUtility::VAR_INT, 0)) ? Labels::getLabel('LBL_Sign_Up_To_Our_Newsletter', $siteLangId) : Labels::getLabel('LBL_Contact_us', $siteLangId); ?></h5>
