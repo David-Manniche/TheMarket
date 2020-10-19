@@ -9,8 +9,11 @@ if (count($arr_listing) == 0) {
         'rates' => Labels::getLabel('LBL_Rates_for', $siteLangId),
         'action' => Labels::getLabel('', $siteLangId)
     );
-
-    $tbl = new HtmlElement('table', array('width' => '100%', 'class' => 'table table-justified'));
+	$tableClass = '';
+	if (0 < count($arr_listing)) {
+		$tableClass = "table-justified";
+	}
+    $tbl = new HtmlElement('table', array('width' => '100%', 'class' => 'table '.$tableClass));
     $th = $tbl->appendElement('thead')->appendElement('tr');
     foreach ($arr_flds as $key => $val) {
         $th->appendElement('th', array(), $val);

@@ -13,7 +13,11 @@ if ($canEdit) {
 if (!$canEdit || 1 > count($arrListing)) {
     unset($arr_flds['select_all']);
 }
-$tbl = new HtmlElement('table', array('width' => '100%', 'class' => 'table splPriceList-js'));
+$tableClass = '';
+if (0 < count($arrListing)) {
+	$tableClass = "table-justified";
+}
+$tbl = new HtmlElement('table', array('width' => '100%', 'class' => 'table splPriceList-js '.$tableClass));
 $th = $tbl->appendElement('thead')->appendElement('tr', array('class' => ''));
 foreach ($arr_flds as $column => $lblTitle) {
     if ('select_all' == $column) {

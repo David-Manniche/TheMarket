@@ -6,7 +6,11 @@ $arr_flds = array(
 	'banner' => Labels::getLabel('LBL_Banner', $siteLangId),
 	'action' => ''
 );
-$tbl = new HtmlElement('table', array('width'=>'100%', 'class'=>'table table-justified'));
+$tableClass = '';
+if (0 < count($arr_listing)) {
+	$tableClass = "table-justified";
+}
+$tbl = new HtmlElement('table', array('width'=>'100%', 'class'=>'table '.$tableClass));
 $th = $tbl->appendElement('thead')->appendElement('tr',array('class' => ''));
 foreach ($arr_flds as $val) {
 	$e = $th->appendElement('th', array(), $val);

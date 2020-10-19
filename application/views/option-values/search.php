@@ -4,7 +4,11 @@ $arr_flds = array(
         'optionvalue_identifier' => Labels::getLabel('LBL_OPTION_VALUE_NAME', $langId),
         'action'  =>  '',
     );
-$tbl = new HtmlElement('table', array('width' => '100%', 'class' => 'table sortable--js', 'id' => 'optionvalues'));
+$tableClass = '';
+if (0 < count($arr_listing)) {
+	$tableClass = "table-justified";
+}
+$tbl = new HtmlElement('table', array('width' => '100%', 'class' => 'table sortable--js '.$tableClass, 'id' => 'optionvalues'));
 $th = $tbl->appendElement('thead')->appendElement('tr');
 foreach ($arr_flds as $val) {
     $e = $th->appendElement('th', array(), $val);
@@ -34,14 +38,14 @@ foreach ($arr_listing as $sn => $row) {
             case 'action':
                 $ul = $td->appendElement("ul", array("class" => "actions"));
 
-                    $li = $ul->appendElement("li");
-                    $li->appendElement('a', array('href' => 'javascript:void(0)',
-                    'class' => 'button small green', 'title' => Labels::getLabel('LBL_EDIT', $langId),
-                    "onclick" => "optionValueForm(".$row['optionvalue_option_id'].",".$row['optionvalue_id'].")"), '<i class="fa fa-edit"></i>', true);
+				$li = $ul->appendElement("li");
+				$li->appendElement('a', array('href' => 'javascript:void(0)',
+				'class' => 'button small green', 'title' => Labels::getLabel('LBL_EDIT', $langId),
+				"onclick" => "optionValueForm(".$row['optionvalue_option_id'].",".$row['optionvalue_id'].")"), '<i class="fa fa-edit"></i>', true);
 
-                    $li = $ul->appendElement("li");
-                    $li->appendElement('a', array('href' => "javascript:void(0)",
-                    'class' => 'button small green', 'title' => Labels::getLabel('LBL_DELETE', $langId),"onclick" => "deleteOptionValue(".$row['optionvalue_option_id'].",".$row['optionvalue_id'].")"), '<i class="fa fa-trash"></i>', true);
+				$li = $ul->appendElement("li");
+				$li->appendElement('a', array('href' => "javascript:void(0)",
+				'class' => 'button small green', 'title' => Labels::getLabel('LBL_DELETE', $langId),"onclick" => "deleteOptionValue(".$row['optionvalue_option_id'].",".$row['optionvalue_id'].")"), '<i class="fa fa-trash"></i>', true);
                 break;
             default:
                 $td->appendElement('plaintext', array(), $row[$key], true);
