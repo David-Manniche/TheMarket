@@ -15,7 +15,11 @@ if (!$canEdit) {
 if (1 > count($arrListing)) {
     unset($arr_flds['select_all']);
 }
-$tbl = new HtmlElement('table', array('width' => '100%', 'class' => 'table','id' => 'plugin'));
+$tableClass = '';
+if (0 < count($arrListing)) {
+	$tableClass = "table-justified";
+}
+$tbl = new HtmlElement('table', array('width' => '100%', 'class' => 'table '.$tableClass,'id' => 'plugin'));
 $th = $tbl->appendElement('thead')->appendElement('tr');
 foreach ($arr_flds as $key => $val) {
     if ('select_all' == $key) {
