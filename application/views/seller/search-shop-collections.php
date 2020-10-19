@@ -29,9 +29,13 @@
                         $arr_flds
                     );
                 }
+				$tableClass = '';
+				if (0 < count($arr_listing) && $canEdit) {
+					$tableClass = "table-justified";
+				}
                 $tbl = new HtmlElement(
                     'table',
-                    array('width'=>'100%', 'class'=>'table','id'=>'options')
+                    array('width'=>'100%', 'class'=>'table '.$tableClass, 'id'=>'options')
                 );
 
                 $th = $tbl->appendElement('thead')->appendElement('tr');

@@ -224,8 +224,12 @@ Bugs:
 ---------------------TV-9.2.1.20201015----------------------
     => 043787 - If there is some special price and "price include tax " setting is on then product price is less then entered special price
 ---------------------TV-9.2.1.20201016----------------------
+    => 044240 - on Checkout >> if there is only digital product then tax is not there
     => 043675 - Admin >> pickup address >> Add >> slot timings >> there should be some space between radio button and text. 
     => 044231 - Seller >> sales report page is not opening.
+    => 044232 - Seller >> order details page >> comments >> if buyer request for cancellation then message at seller end is not right .
+------------------TV-9.2.2.20201019-------------------------
+    => #044213 - when buyer places order and returns the whole order then there is difference of $0.01
     => 044241 - Seller >> shipping profile >> edit any rate >> delete that rate >> that rate should not be opened at right side .
     => 044236 - if admin cancel any order from buyer order page then status of that order is "payment confirmed " at buyer, seller and admin (seller order ).
     => 044250 - Admin >> Seller orders >>If we choose pickup then shipping details should not be there.

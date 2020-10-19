@@ -12,9 +12,13 @@ $arr_flds = array(
     'promotion_active' => Labels::getLabel('LBL_Status', $siteLangId),
     'action' => '',
 );
+$tableClass = '';
+if (0 < count($arr_listing)) {
+	$tableClass = "table-justified";
+}
 $tbl = new HtmlElement(
     'table',
-    array('width' => '100%', 'class' => 'table', 'id' => 'promotions')
+    array('width' => '100%', 'class' => 'table '.$tableClass, 'id' => 'promotions')
 );
 
 $th = $tbl->appendElement('thead')->appendElement('tr');

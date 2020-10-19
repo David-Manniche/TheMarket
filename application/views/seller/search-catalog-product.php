@@ -12,8 +12,12 @@ $arr_flds = array(
 if ($canEdit && $canEditShipProfile) {
     $arr_flds['product_shipped_by'] = Labels::getLabel('LBL_Shipped_by_me', $siteLangId);
 }
+$tableClass = '';
+if (0 < count($arr_listing)) {
+	$tableClass = "table-justified";
+}
 $arr_flds['action'] = '';
-$tbl = new HtmlElement('table', array('width' => '100%', 'class' => 'table table-justified'));
+$tbl = new HtmlElement('table', array('width' => '100%', 'class' => 'table '. $tableClass));
 $th = $tbl->appendElement('thead')->appendElement('tr', array('class' => ''));
 foreach ($arr_flds as $val) {
     $e = $th->appendElement('th', array(), $val);

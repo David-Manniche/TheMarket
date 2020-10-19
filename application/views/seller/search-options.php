@@ -10,9 +10,14 @@ if (count($arr_listing) > 0 && $canEdit) {
     $arr_flds = array_merge(array('select_all'=>''), $arr_flds);
 }
 
+$tableClass = '';
+if (0 < count($arr_listing)) {
+	$tableClass = "table-justified";
+}
+
 $tbl = new HtmlElement(
     'table',
-    array('width'=>'100%', 'class'=>'table','id'=>'options')
+    array('width'=>'100%', 'class'=>'table '.$tableClass, 'id'=>'options')
 );
 
 $th = $tbl->appendElement('thead')->appendElement('tr');

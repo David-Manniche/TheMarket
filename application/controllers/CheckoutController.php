@@ -2091,9 +2091,9 @@ class CheckoutController extends MyAppController
         $data = $this->_template->render(false, false, 'checkout/get-financial-summary.php', true, false);
 
         $orderNetAmt = $cartSummary['orderNetAmount'];
-        if (0 == $shippingAddress) {
+        /* if (0 == $shippingAddress) {
             $orderNetAmt = $orderNetAmt - $cartSummary['cartTaxTotal'];
-        }
+        } */
         $netAmount = CommonHelper::displayMoneyFormat($orderNetAmt);
         $this->set('netAmount', $netAmount);
         $this->set('data', $data);

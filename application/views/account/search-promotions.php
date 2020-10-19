@@ -15,8 +15,11 @@
         'promotion_duration' => Labels::getLabel('LBL_Duration', $siteLangId),
         'action' => '',
     );
-
-    $tbl = new HtmlElement('table', array('width'=>'100%', 'class'=>'table'));
+	$tableClass = '';
+	if (0 < count($arr_listing)) {
+		$tableClass = "table-justified";
+	}
+    $tbl = new HtmlElement('table', array('width'=>'100%', 'class'=>'table '.$tableClass));
     $th = $tbl->appendElement('thead')->appendElement('tr');
     foreach ($arr_flds as $val) {
         $e = $th->appendElement('th', array(), $val);

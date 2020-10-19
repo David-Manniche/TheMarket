@@ -8,8 +8,11 @@ $arr_flds['credential_username'] = Labels::getLabel('LBL_Username', $siteLangId)
 $arr_flds['credential_email'] = Labels::getLabel('LBL_Email', $siteLangId);
 $arr_flds['credential_active'] = Labels::getLabel('LBL_Status', $siteLangId);
 $arr_flds['action'] = '';
-
-$tbl = new HtmlElement('table', array('width' => '100%', 'class' => 'table table--orders'));
+$tableClass = '';
+if (0 < count($arrListing)) {
+	$tableClass = "table-justified";
+}
+$tbl = new HtmlElement('table', array('width' => '100%', 'class' => 'table table--orders '.$tableClass));
 $th = $tbl->appendElement('thead')->appendElement('tr', array('class' => ''));
 foreach ($arr_flds as $key => $val) {
     if ('select_all' == $key) {

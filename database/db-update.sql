@@ -836,6 +836,7 @@ DELETE FROM `tbl_language_labels` WHERE `label_key` LIKE "LBL_On_enabling_this_f
 DELETE FROM `tbl_language_labels` WHERE `label_key` LIKE "LBL_Add_LANGUAGE_CODE_IN_URLS";
 DELETE FROM `tbl_language_labels` WHERE `label_key` LIKE "LBL_Product_Category_Name";
 DELETE FROM `tbl_language_labels` WHERE `label_key` LIKE "LBL_ADD_LANGUAGE_CODE_TO_SITE_URLS";
+DELETE FROM `tbl_language_labels` WHERE `label_key` LIKE "MSG_Your_Cancellation_Request_Approved";
 
 INSERT INTO `tbl_language_labels` (`label_key`, `label_lang_id`, `label_caption`, `label_type`) 
 VALUES ('LBL_LANGUAGE_CODE_TO_SITE_URLS_EXAMPLES', 1, 'For example www.domain.com/en for English and www.domain.com/ar for Arabic. Language code will not show for default site language', 1) 
@@ -843,8 +844,9 @@ ON DUPLICATE KEY UPDATE `label_caption` = 'For example www.domain.com/en for Eng
 
 INSERT INTO `tbl_language_labels` (`label_key`, `label_lang_id`, `label_caption`, `label_type`) 
 VALUES ('MSG_Your_Account_verification_is_pending_{clickhere}', 1, 'Your account verification is pending. {clickhere} to resend verification link.', 1) 
-ON DUPLICATE KEY UPDATE `label_caption` = 'Your account verification is pending. {clickhere} to resend verification link.'
+ON DUPLICATE KEY UPDATE `label_caption` = 'Your account verification is pending. {clickhere} to resend verification link.';
 
 INSERT INTO `tbl_language_labels` (`label_key`, `label_lang_id`, `label_caption`, `label_type`) 
 VALUES ('LBL_Generate_requests_using_buttons_below', 1, 'Categories, brands and products have to be requested from the site admin. Please generate requests using buttons below.', 1) 
 ON DUPLICATE KEY UPDATE `label_caption` = 'Categories, brands and products have to be requested from the site admin. Please generate requests using buttons below.';
+-- -------------------TV-9.2.2.20201019------------------------

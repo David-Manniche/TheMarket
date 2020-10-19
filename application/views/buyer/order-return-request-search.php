@@ -9,8 +9,11 @@ $arr_flds = array(
     'orrequest_status'    =>    Labels::getLabel('LBL_Status', $siteLangId),
     'action'            =>    '',
 );
-
-$tbl = new HtmlElement('table', array('class'=>'table'));
+$tableClass = '';
+if (0 < count($requests)) {
+	$tableClass = "table-justified";
+}
+$tbl = new HtmlElement('table', array('class'=>'table '.$tableClass));
 $th = $tbl->appendElement('thead')->appendElement('tr', array('class' => ''));
 foreach ($arr_flds as $val) {
     $e = $th->appendElement('th', array(), $val);

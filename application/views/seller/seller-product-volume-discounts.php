@@ -22,7 +22,11 @@
                         'voldiscount_percentage' => Labels::getLabel('LBL_Discount', $siteLangId) . ' (%)',
                         'action' => '',
                     );
-                    $tbl = new HtmlElement('table', array('width' => '100%', 'class' => 'table'));
+					$tableClass = '';
+					if (0 < count($arrListing)) {
+						$tableClass = "table-justified";
+					}
+                    $tbl = new HtmlElement('table', array('width' => '100%', 'class' => 'table '.$tableClass));
                     $th = $tbl->appendElement('thead')->appendElement('tr', array('class' => ''));
                     foreach ($arr_flds as $val) {
                         $e = $th->appendElement('th', array(), $val);

@@ -391,6 +391,7 @@ class CommonHelper extends FatUtility
         $taxToRefund = 0;
         if ($taxCharges > 0) {
             $taxToRefund = ($taxPerQty * ($requestRow['orrequest_qty']));
+            $taxToRefund = min($taxToRefund, $taxCharges);
         }
 
         $volumeDiscountPerQty = 0;
@@ -437,6 +438,7 @@ class CommonHelper extends FatUtility
             $unitShipCharges = round(($shipCharges / $requestRow['op_qty']), 2);
             if (!$productAvaliedFreeShip) {
                 $op_refund_shipping = round(($unitShipCharges * $requestRow["orrequest_qty"]), 2);
+                $op_refund_shipping = min($op_refund_shipping, $shipCharges);
             }
             $op_refund_amount = $op_refund_amount + $op_refund_shipping;
         }
