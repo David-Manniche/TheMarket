@@ -849,3 +849,4 @@ ON DUPLICATE KEY UPDATE `label_caption` = 'Your account verification is pending.
 INSERT INTO `tbl_language_labels` (`label_key`, `label_lang_id`, `label_caption`, `label_type`) 
 VALUES ('LBL_Generate_requests_using_buttons_below', 1, 'Categories, brands and products have to be requested from the site admin. Please generate requests using buttons below.', 1) 
 ON DUPLICATE KEY UPDATE `label_caption` = 'Categories, brands and products have to be requested from the site admin. Please generate requests using buttons below.';
+-- -------------------TV-9.2.2.20201019------------------------
