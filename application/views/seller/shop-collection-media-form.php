@@ -8,14 +8,14 @@
     $fld->addFieldTagAttribute('class', '');
     $fld->addFieldTagAttribute('onChange', 'collectionPopupImage(this)');
 ?>
-<div class="cards">
-    <div class="cards-header">
-        <h5 class="cards-title"><?php echo Labels::getLabel('LBL_Shop_Collections', $siteLangId); ?></h5>
+<div class="card">
+    <div class="card-header">
+        <h5 class="card-title"><?php echo Labels::getLabel('LBL_Shop_Collections', $siteLangId); ?></h5>
         <div class="">
             <a href="javascript:void(0)" onClick="shopCollections(this)" class="btn btn-outline-brand btn-sm"><?php echo Labels::getLabel('LBL_Back_to_Collections', $siteLangId);?></a>
         </div>
     </div>
-    <div class="cards-content">
+    <div class="card-body">
         <div class="col-md-6">
             <div class="">
                 <div class="tabs tabs-sm tabs--scroll clearfix">

@@ -11,8 +11,8 @@ var  productId  =  <?php echo $productId ;?>
 			</div>
 		</div>
 		<div class="content-body">
-			<div class="cards">
-				<div class="cards-content ">
+			<div class="card">
+				<div class="card-body ">
 					<div id="listing"></div>
 				</div>
 			</div>

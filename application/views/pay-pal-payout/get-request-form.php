@@ -20,9 +20,9 @@ $cancelBtnFld->setFieldTagAttribute('class', 'btn btn-outline-brand btn-block');
 $cancelBtnFld->developerTags['col'] = 2;
 //$submitBtnFld->attachField($cancelBtnFld);
 ?>
-<div class="cards-header">
-    <h5 class="cards-title"><?php echo Labels::getLabel('LBL_PayPal_Payout_Form', $siteLangId); ?></h5>
+<div class="card-header">
+    <h5 class="card-title"><?php echo Labels::getLabel('LBL_PayPal_Payout_Form', $siteLangId); ?></h5>
 </div>
-<div class="cards-content ">
+<div class="card-body ">
     <?php echo $frm->getFormHtml(); ?>
 </div>

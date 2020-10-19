@@ -15,15 +15,15 @@ $sharingFrm->developerTags['fld_default_col'] = 12;
             <div class="js-widget-scroll widget-scroll">
                 <div class="widget widget-stats">
                     <a href="<?php echo UrlHelper::generateUrl('Account', 'credits'); ?>">
-                        <div class="cards">
-                            <div class="cards-header">
-                                <h5 class="cards-title"><?php echo Labels::getLabel('LBL_Credits', $siteLangId);?></h5>
+                        <div class="card">
+                            <div class="card-header">
+                                <h5 class="card-title"><?php echo Labels::getLabel('LBL_Credits', $siteLangId);?></h5>
                                 <i class="icn"><svg class="svg">
                                         <use xlink:href="<?php echo CONF_WEBROOT_URL;?>images/retina/sprite.svg#credits" href="<?php echo CONF_WEBROOT_URL;?>images/retina/sprite.svg#Credits"></use>
                                     </svg>
                                 </i>
                             </div>
-                            <div class="cards-content ">
+                            <div class="card-body ">
                                 <div class="stats">
                                     <div class="stats-number">
                                         <ul>
@@ -44,16 +44,16 @@ $sharingFrm->developerTags['fld_default_col'] = 12;
                 </div>
                 <div class="widget widget-stats">
                     <a href="<?php echo UrlHelper::generateUrl('Account', 'credits'); ?>">
-                        <div class="cards">
-                            <div class="cards-header">
-                                <h5 class="cards-title"><?php echo Labels::getLabel('LBL_Revenue', $siteLangId);?></h5>
+                        <div class="card">
+                            <div class="card-header">
+                                <h5 class="card-title"><?php echo Labels::getLabel('LBL_Revenue', $siteLangId);?></h5>
                                 <i class="icn">
                                     <svg class="svg">
                                         <use xlink:href="<?php echo CONF_WEBROOT_URL;?>images/retina/sprite.svg#revenue" href="<?php echo CONF_WEBROOT_URL;?>images/retina/sprite.svg#revenue"></use>
                                     </svg>
                                 </i>
                             </div>
-                            <div class="cards-content ">
+                            <div class="card-body ">
                                 <div class="stats">
                                     <div class="stats-number">
                                         <ul>
@@ -73,11 +73,11 @@ $sharingFrm->developerTags['fld_default_col'] = 12;
                     </a>
                 </div>
                 <div class="widget widget-stats">
-                    <div class="cards">
-                        <div class="cards-header">
-                            <h5 class="cards-title"><?php echo Labels::getLabel('LBL_Share_and_earn_commission_on_every_purchase', $siteLangId)?></h5>
+                    <div class="card">
+                        <div class="card-header">
+                            <h5 class="card-title"><?php echo Labels::getLabel('LBL_Share_and_earn_commission_on_every_purchase', $siteLangId)?></h5>
                         </div>
-                        <div class="cards-content ">
+                        <div class="card-body ">
                             <div class="stats">
                                 <a href="javascript:void(0)" class="btn btn-outline-brand btn-sm" title="<?php echo $affiliateTrackingUrl; ?>" onclick="copy($(this))"><?php echo Labels::getLabel('LBL_Click_to_copy', $siteLangId)?></a>
                             </div>
@@ -122,14 +122,14 @@ $sharingFrm->developerTags['fld_default_col'] = 12;
             </div>
             <!-- <div class="row">
             <div class="col-lg-6 col-md-12">
-                <div class="cards">
-                    <div class="cards-header">
-                        <h5 class="cards-title "><?php echo Labels::getLabel('LBL_Information', $siteLangId);?></h5>
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="card-title "><?php echo Labels::getLabel('LBL_Information', $siteLangId);?></h5>
                         <div class="action">
                             <a href="<?php echo UrlHelper::generateUrl('account', 'profileInfo');?>" class="link"><?php echo Labels::getLabel('LBL_Edit', $siteLangId);?>  <i class="fa fa-pencil"></i></a>
                         </div>
                     </div>
-                    <div class="cards-content ">
+                    <div class="card-body ">
                         <div class="tabs tabs--small   tabs--scroll clearfix setactive-js">
                             <ul>
                                 <li class="is-active"><a href="javascript:void(0);" onClick="personalInfo(this)"><?php echo Labels::getLabel('LBL_Personal', $siteLangId); ?></a></li>
@@ -143,26 +143,26 @@ $sharingFrm->developerTags['fld_default_col'] = 12;
         </div> -->
             <div class="row mb-3 borderwrap showwrap" style="display:none;">
                 <div class="col-lg-12 col-md-12">
-                    <div class="cards">
-                        <div class="cards-header">
+                    <div class="card">
+                        <div class="card-header">
                             <h4><?php echo Labels::getLabel('L_Invite_friends_through_email', $siteLangId)?></h4>
                         </div>
-                        <div class="cards-content"> <?php echo $sharingFrm->getFormHtml(); ?> <span class="ajax_message" id="custom_ajax"></span></div>
+                        <div class="card-body"> <?php echo $sharingFrm->getFormHtml(); ?> <span class="ajax_message" id="custom_ajax"></span></div>
 
                     </div>
                 </div>
             </div>
             <div class="row ">
                 <div class="col-lg-6 col-md-12 mb-4">
-                    <div class="cards">
-                        <div class="cards-header">
-                            <h5 class="cards-title "><?php echo Labels::getLabel('LBL_Referred_by_me', $siteLangId);?></h5> <?php if (count($user_listing) > 0) {
+                    <div class="card">
+                        <div class="card-header">
+                            <h5 class="card-title "><?php echo Labels::getLabel('LBL_Referred_by_me', $siteLangId);?></h5> <?php if (count($user_listing) > 0) {
         ?> <div class="action">
                                 <a href="<?php echo UrlHelper::generateUrl('affiliate', 'referredByMe'); ?>" class="link"><?php echo Labels::getLabel('Lbl_View_All', $siteLangId); ?></a>
                             </div> <?php
     } ?>
                         </div>
-                        <div class="cards-content ">
+                        <div class="card-body ">
                             <table class="table">
                                 <tbody>
                                     <tr class="">
@@ -208,15 +208,15 @@ $sharingFrm->developerTags['fld_default_col'] = 12;
                     </div>
                 </div>
                 <div class="col-lg-6 col-md-12 mb-4">
-                    <div class="cards">
-                        <div class="cards-header">
-                            <h5 class="cards-title "><?php echo Labels::getLabel('LBL_Transaction_History', $siteLangId);?></h5> <?php if (count($transactions) > 0) {
+                    <div class="card">
+                        <div class="card-header">
+                            <h5 class="card-title "><?php echo Labels::getLabel('LBL_Transaction_History', $siteLangId);?></h5> <?php if (count($transactions) > 0) {
         ?> <div class="action">
                                 <a href="<?php echo UrlHelper::generateUrl('Account', 'credits'); ?>" class="link"><?php echo Labels::getLabel('Lbl_View_All', $siteLangId); ?></a>
                             </div> <?php
     } ?>
                         </div>
-                        <div class="cards-content ">
+                        <div class="card-body ">
                             <table class="table ">
                                 <tbody>
                                     <tr class="">

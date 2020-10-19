@@ -19,9 +19,9 @@ if (null != $btn) {
             </div>
         </div>
         <div class="content-body">
-            <div class="cards">
-                <div class="cards-header">
-                    <h5 class="cards-title"><?php echo Labels::getLabel('LBL_Request_Details', $siteLangId); ?></h5>
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="card-title"><?php echo Labels::getLabel('LBL_Request_Details', $siteLangId); ?></h5>
                     <?php if ($canEdit) { ?>
                         <div class="btn-group">
                             <?php if ($canEscalateRequest) { ?>
@@ -33,7 +33,7 @@ if (null != $btn) {
                         </div>
                     <?php } ?>
                 </div>
-                <div class="cards-content ">
+                <div class="card-body ">
                <div class="row">
                     <div class="col-lg-6 col-md-6 col-sm-6 mb-4">
                      <div class="info--order">

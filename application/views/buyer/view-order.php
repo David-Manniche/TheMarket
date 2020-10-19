@@ -71,9 +71,9 @@ if (!$print) { ?>
             </div>
         <?php } ?>
         <div class="content-body">
-            <div class="cards">
-                <div class="cards-header">
-                    <h5 class="cards-title">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="card-title">
                         <?php echo Labels::getLabel('LBL_Order_Details', $siteLangId); ?>
                     </h5>
                     <?php if (!$print) { ?>
@@ -98,7 +98,7 @@ if (!$print) { ?>
                     <?php
                     } ?>
                 </div>
-                <div class="cards-content ">
+                <div class="card-body ">
                     <?php if ($primaryOrder) { ?>
                         <div class="row">
                             <div class="col-lg-6 col-md-6 mb-4">

@@ -1,6 +1,6 @@
 <?php defined('SYSTEM_INIT') or die('Invalid Usage.'); ?>
 <?php if (isset($collection['categories']) && count($collection['categories'])) { ?>
-<section class="section bg-gray">
+<section class="section bg-gray" role="category">
     <div class="container">
         <div class="section-head">
             <?php echo ($collection['collection_name'] != '') ? ' <div class="section__heading"><h2>' . $collection['collection_name'] .'</h2></div>' : ''; ?>
@@ -12,9 +12,9 @@
             </div>
             <?php }  ?>
         </div>
-        <div class="row">
+        <div class="top-categories-wrapper">
             <?php foreach ($collection['categories'] as $category) { ?>
-                <div class="col-xl-3 col-lg-6 col-sm-6 column">
+                 
                     <div class="top-categories">
                         <?php $fileRow = CommonHelper::getImageAttributes(AttachedFile::FILETYPE_CATEGORY_BANNER, $category['prodcat_id']);?>
                         <div class="cat-img"><img loading='lazy' data-ratio="4:1"
@@ -41,8 +41,7 @@
                                                 <li class="last-link"> <a href="<?php echo UrlHelper::generateUrl('Category'); ?>" class="link"><?php echo Labels::getLabel('LBL_View_More',$siteLangId); ?></a> </li>
                                                 <?php } */ ?>
                         </ul>
-                    </div>
-                </div>
+                    </div>                
             </div>
             <?php }?>
         </div>

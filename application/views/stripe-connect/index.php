@@ -1,6 +1,6 @@
 <?php defined('SYSTEM_INIT') or die('Invalid Usage.'); ?>
-<div class="cards">
-    <div class="cards-content">
+<div class="card">
+    <div class="card-body">
         <div class="row justify-content-center my-5">
             <div class="col-lg-8">
                 <?php if (empty($accountId)) { ?>

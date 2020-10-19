@@ -4,9 +4,9 @@ defined('SYSTEM_INIT') or die('Invalid Usage');
 $bCount = 1;
 
 if (!empty($bannerLayout1['banners']) && $bannerLayout1['blocation_active']) { ?>
- <section class="section">
+ <section class="section" role="banners">
  <div class="container">
-    <div class="row justify-content-center">
+    <div class="banner-wrappers">
 	<?php foreach ($bannerLayout1['banners'] as $val) {
     /* if($bCount%2==0)
     {
@@ -47,7 +47,7 @@ if (!empty($bannerLayout1['banners']) && $bannerLayout1['blocation_active']) { ?
     }/* else{
             Banner::updateImpressionData($val['banner_id']);
         } */ ?>
-	<div class="col-md-6">
+	 
         <div class="banner-ppc">
 			<a  target="<?php echo $val['banner_target']; ?>" href="<?php echo UrlHelper::generateUrl('Banner', 'url', array($val['banner_id'])); ?>" title="<?php echo $val['banner_title']; ?>">
 				<picture>
@@ -58,8 +58,11 @@ if (!empty($bannerLayout1['banners']) && $bannerLayout1['blocation_active']) { ?
 				</picture>
 			</a>
 		</div>
-    </div>
+     
 <?php $bCount++;
 } ?>
-	</div></div></section>
+    </div>
+</div>
+</section>
+<hr class="m-0">
 <?php } 	?>

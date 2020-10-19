@@ -8,8 +8,8 @@
             </div>
         </div>
         <div class="content-body">
-            <div class="cards">
-                <div class="cards-content ">
+            <div class="card">
+                <div class="card-body ">
                     <div class="message message--success align--center cms">
                         <?php if ($supplierRequest["usuprequest_status"] == User::SUPPLIER_REQUEST_PENDING) { ?>
                         <i class="fa fa-hourglass-1"></i>

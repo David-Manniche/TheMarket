@@ -2,10 +2,20 @@
     position: relative;
     padding-top: 20px;
     margin: 0;
+    @include media-breakpoint-down(sm) {
+        & {
+            padding-top: 10px;
+        }
+    }
     .hero-item {
         margin: 0;
         position: relative;
         padding: 0 10px;
+        @include media-breakpoint-down(sm) {
+            & {
+                padding: 0 5px;
+            }
+        }
     }
     .hero-media {
         /*background: #000;*/
@@ -75,16 +85,26 @@
     }
 }
 
-.banner-ppc {
-    border-radius: $radius4;
-    overflow: hidden;
-    .advertise__block {
-        margin-bottom: 2rem;
-        display: block;
+.banner-wrappers {
+    display: grid;
+    grid-gap: 1rem;
+    grid-template-columns: repeat(2, 1fr);
+    @include media-breakpoint-down(sm) {
+        & {
+            grid-template-columns: repeat(1, 1fr);
+        }
     }
-    img {
-        margin: 0 auto;
-        display: inline-block;
+    .banner-ppc {
+        border-radius: $radius4;
+        overflow: hidden;
+        .advertise__block {
+            margin-bottom: 2rem;
+            display: block;
+        }
+        img {
+            margin: 0 auto;
+            display: inline-block;
+        }
     }
 }
 
@@ -106,17 +126,25 @@
     .products {
         border-color: #fff;
         margin: 0 1rem 1.5rem;
+        @include media-breakpoint-down(sm) {
+            & {
+                margin: 0 5px 1.5rem;
+            }
+        }
     }
 }
 
 .slider-testimonials {
     text-align: center;
     margin: 0rem auto;
-    padding: 0 4rem;
+    padding-left: 4rem;
+    padding-right: 4rem;
+    padding-bottom: 2rem;
     position: relative;
     @include media-breakpoint-down(md) {
         & {
-            padding: 0;
+            padding-left: 0;
+            padding-right: 0;
         }
     }
     .slick-arrow {

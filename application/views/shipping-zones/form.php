@@ -26,10 +26,10 @@ if (!empty($excludeLocations)) {
     }
 }
 ?>
-<div class="cards-header">
-    <h5 class="cards-title"><?php echo Labels::getLabel('LBL_Zone_Setup', $siteLangId); ?></h5>
+<div class="card-header">
+    <h5 class="card-title"><?php echo Labels::getLabel('LBL_Zone_Setup', $siteLangId); ?></h5>
 </div>
-<div class="cards-content">
+<div class="card-body">
     <div class="row">
         <div class="col-md-12">
             <form onsubmit="setupZone(this); return(false);" method="post" class="form" id="shippingZoneFrm">

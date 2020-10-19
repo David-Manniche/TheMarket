@@ -11,14 +11,14 @@
 	<div class="content-body">
 		<div class="row">
 			<div class="col-md-12">
-				<div class="cards">
-					<div class="cards-header">
-						<h5 class="cards-title "><?php echo ucfirst($promotionDetails['promotion_name']);?></h5>
+				<div class="card">
+					<div class="card-header">
+						<h5 class="card-title "><?php echo ucfirst($promotionDetails['promotion_name']);?></h5>
 						<div class="btn-group">
 							<a href="<?php echo UrlHelper::generateUrl('advertiser','promotions');?>" class="btn btn-outline-brand btn-sm"><?php echo Labels::getLabel('LBL_My_promotions',$siteLangId);?></a>
 						</div>
 					</div>
-					<div class="cards-content ">
+					<div class="card-body ">
 						<div class="replaced">
 						<?php 
 							$searchForm->setFormTagAttribute('class', 'form');

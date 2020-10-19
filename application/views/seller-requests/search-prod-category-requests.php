@@ -41,8 +41,7 @@ foreach ($arr_listing as $sn => $row) {
             break;
             case 'prodcat_status':
                 $td->appendElement('span', array('class' => 'label label-inline '. $statusClassArr[$row[$key]]), $statusArr[$row[$key]] . '<br>', true);
-                $td->appendElement('br', array());
-                $td->appendElement('plaintext', array(), ($row['prodcat_status_updated_on'] != '0000-00-00 00:00:00') ? FatDate::Format($row['prodcat_status_updated_on']) : '', true);
+                $td->appendElement('small', array('class' => 'ml-1'), ($row['prodcat_status_updated_on'] != '0000-00-00 00:00:00') ? FatDate::Format($row['prodcat_status_updated_on']) : '', true);
                 break;
             case 'prodcat_requested_on':
                 $td->appendElement('plaintext', array(), ($row[$key] != '0000-00-00 00:00:00') ? FatDate::Format($row[$key]) : Labels::getLabel('LBL_NA', $siteLangId), true);

@@ -3,16 +3,16 @@ defined('SYSTEM_INIT') or die('Invalid Usage.');
 $variables = array('language' => $language, 'siteLangId' => $siteLangId, 'shop_id' => $shop_id, 'action' => $action);
 $this->includeTemplate('seller/_partial/shop-navigation.php', $variables, false);
 ?>
-<div class="cards">
-    <div class="cards-header">
-        <h5 class="cards-title"><?php echo Labels::getLabel('LBL_Shop_Pickup_Addresses', $siteLangId); ?></h5>
+<div class="card">
+    <div class="card-header">
+        <h5 class="card-title"><?php echo Labels::getLabel('LBL_Shop_Pickup_Addresses', $siteLangId); ?></h5>
         <?php if ($canEdit) { ?>
         <div class="btn-group">
             <a href="javascript:void(0)" onClick="pickupAddressForm(0)" class="btn btn-outline-brand btn-sm"><?php echo Labels::getLabel('LBL_Add_Address', $siteLangId); ?></a>
         </div>
         <?php } ?>
     </div>
-    <div class="cards-content"> 
+    <div class="card-body"> 
         <div class="container--addresses">
             <div class="row">
             <?php

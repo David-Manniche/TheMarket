@@ -13,32 +13,32 @@ $col = (true === $canSendSms) ? '4' : '6'; ?>
         <div class="content-body">
             <div class="row">
                 <div class="col-lg-<?php echo $col; ?> col-md-<?php echo $col; ?> mb-3">
-                    <div class="cards">
-                        <div class="cards-header">
-                            <h5 class="cards-title "><?php echo Labels::getLabel('Lbl_UPDATE_EMAIL', $siteLangId);?></h5>
+                    <div class="card">
+                        <div class="card-header">
+                            <h5 class="card-title "><?php echo Labels::getLabel('Lbl_UPDATE_EMAIL', $siteLangId);?></h5>
                         </div>
-                        <div class="cards-content ">
+                        <div class="card-body ">
                             <div id="changeEmailFrmBlock"> <?php echo Labels::getLabel('LBL_Loading..', $siteLangId); ?> </div>
                         </div>
                     </div>
                 </div>
                 <div class="col-lg-<?php echo $col; ?> col-md-<?php echo $col; ?> mb-3">
-                    <div class="cards">
-                        <div class="cards-header">
-                            <h5 class="cards-title "><?php echo Labels::getLabel('LBL_UPDATE_PASSWORD', $siteLangId);?></h5>
+                    <div class="card">
+                        <div class="card-header">
+                            <h5 class="card-title "><?php echo Labels::getLabel('LBL_UPDATE_PASSWORD', $siteLangId);?></h5>
                         </div>
-                        <div class="cards-content ">
+                        <div class="card-body ">
                             <div id="changePassFrmBlock"> <?php echo Labels::getLabel('LBL_Loading..', $siteLangId); ?> </div>
                         </div>
                     </div>
                 </div>
                 <?php if (true === $canSendSms) { ?>
                     <div class="col-lg-4 col-md-4 mb-3">
-                        <div class="cards">
-                            <div class="cards-header">
-                                <h5 class="cards-title "><?php echo Labels::getLabel('Lbl_UPDATE_PHONE_NUMBER', $siteLangId);?></h5>
+                        <div class="card">
+                            <div class="card-header">
+                                <h5 class="card-title "><?php echo Labels::getLabel('Lbl_UPDATE_PHONE_NUMBER', $siteLangId);?></h5>
                             </div>
-                            <div class="cards-content">
+                            <div class="card-body">
                                 <div id="changePhoneNumberFrmBlock"> <?php echo Labels::getLabel('LBL_Loading..', $siteLangId); ?> </div>
                             </div>
                         </div>

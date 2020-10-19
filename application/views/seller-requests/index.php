@@ -44,9 +44,19 @@ $this->includeTemplate('_partial/seller/sellerDashboardNavigation.php');
         <div class="content-body">
             <div class="row">
                 <div class="col-lg-12">
-                    <div class="cards">
-                        <div class="cards-content">
+                    <div class="card">
+                        <div class="card-body">
                             <?php if ($noRecordFound) { ?>
+								<div class="row justify-content-center my-5">
+									<div class="col-md-6">
+										<div class="info">
+											<span> <svg class="svg">
+												<use xlink:href="/yokartv8/images/retina/sprite.svg#info" href="/yokartv8/images/retina/sprite.svg#info">
+												</use>
+											</svg><?php echo Labels::getLabel('LBL_Generate_requests_using_buttons_below', $siteLangId); ?></span>
+										</div>							
+									</div>
+								</div>
                                 <div class="row">
                                     <?php if (FatApp::getConfig('CONF_SELLER_CAN_REQUEST_CUSTOM_PRODUCT', FatUtility::VAR_INT, 0)) { ?>
                                         <div class="col-md-4">
@@ -55,11 +65,8 @@ $this->includeTemplate('_partial/seller/sellerDashboardNavigation.php');
                                                     <img src="images/retina/no-product-requests.svg" width="70px" height="70px">
                                                 </div>
                                                 <div class="data">
-                                                    <h5><?php echo Labels::getLabel('LBL_No_Product_Request', $siteLangId);?></h5>
-                                                    <p>Lorem ipsum dolor sit, amet consectetur adipisicing elit. Placeat eos
-                                                        quis amet. </p>
                                                     <div class="action">
-                                                        <a class="btn btn-outline-brand btn-wide" href="<?php echo UrlHelper::generateUrl('Seller', 'customCatalogProductForm'); ?>"><?php echo Labels::getLabel('LBL_New_Product_Request', $siteLangId);?></a>
+                                                        <a class="btn btn-outline-brand btn-sm" href="<?php echo UrlHelper::generateUrl('Seller', 'customCatalogProductForm'); ?>"><?php echo Labels::getLabel('LBL_New_Product_Request', $siteLangId);?></a>
                                                     </div>
                                                 </div>
                                             </div>
@@ -72,11 +79,8 @@ $this->includeTemplate('_partial/seller/sellerDashboardNavigation.php');
                                                 <img src="images/retina/no-brand-requests.svg" width="70px" height="70px">
                                             </div>
                                             <div class="data">
-                                                <h5><?php echo Labels::getLabel('LBL_No_Brand_Request', $siteLangId);?></h5>
-                                                <p>Lorem ipsum dolor sit, amet consectetur adipisicing elit. Placeat eos
-                                                    quis amet. </p>
                                                 <div class="action">
-                                                    <a class="btn btn-outline-brand btn-wide" href="javascript:void(0);" onClick="addBrandReqForm(0)"><?php echo Labels::getLabel('LBL_New_Brand_Request', $siteLangId);?></a>
+                                                    <a class="btn btn-outline-brand btn-sm" href="javascript:void(0);" onClick="addBrandReqForm(0)"><?php echo Labels::getLabel('LBL_New_Brand_Request', $siteLangId);?></a>
                                                 </div>
                                             </div>
                                         </div>
@@ -89,11 +93,8 @@ $this->includeTemplate('_partial/seller/sellerDashboardNavigation.php');
                                                 <img src="images/retina/no-category-requests.svg" width="70px" height="70px">
                                             </div>
                                             <div class="data">
-                                                <h5><?php echo Labels::getLabel('LBL_No_Category_Request', $siteLangId);?></h5>
-                                                <p>Lorem ipsum dolor sit, amet consectetur adipisicing elit. Placeat eos
-                                                    quis amet. </p>
                                                 <div class="action">
-                                                    <a class="btn btn-outline-brand btn-wide" href="javascript:void(0);" onClick="addCategoryReqForm(0)"><?php echo Labels::getLabel('LBL_New_Category_Request', $siteLangId);?></a>
+                                                    <a class="btn btn-outline-brand btn-sm" href="javascript:void(0);" onClick="addCategoryReqForm(0)"><?php echo Labels::getLabel('LBL_New_Category_Request', $siteLangId);?></a>
                                                 </div>
                                             </div>
                                         </div>

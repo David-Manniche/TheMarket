@@ -40,15 +40,15 @@ $btnSubmit->developerTags['noCaptionTag'] = true;
 
 $variables = array('language' => $language, 'siteLangId' => $siteLangId, 'shop_id' => $shop_id, 'action' => $action);
 $this->includeTemplate('seller/_partial/shop-navigation.php', $variables, false); ?>
-<div class="cards">
-    <div class="cards-header">
-        <h5 class="cards-title"><?php echo Labels::getLabel('LBL_Shop_Pickup_Addresses', $siteLangId); ?></h5>
+<div class="card">
+    <div class="card-header">
+        <h5 class="card-title"><?php echo Labels::getLabel('LBL_Shop_Pickup_Addresses', $siteLangId); ?></h5>
         <div class="btn-group">
             <a href="javascript:void(0)" onClick="pickupAddress()" class="btn btn-outline-brand btn-sm"><?php echo Labels::getLabel('LBL_Back', $siteLangId);?></a>
         </div>
     </div>
 
-    <div class="cards-content">
+    <div class="card-body">
         <div class="row">
             <div class="col-md-12">
                 <?php echo $frm->getFormTag(); ?>

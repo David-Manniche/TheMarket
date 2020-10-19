@@ -33,8 +33,8 @@ $cancelBtnFld->developerTags['noCaptionTag'] = true;
         <div class="content-body">
             <div class="row mb-4">
                 <div class="col-lg-12">
-                    <div class="cards">
-                        <div class="cards-content">
+                    <div class="card">
+                        <div class="card-body">
                             <div class="replaced">
                                 <?php
                                 $submitFld = $frmSearch->getField('btn_submit');
@@ -51,8 +51,8 @@ $cancelBtnFld->developerTags['noCaptionTag'] = true;
 
             <div class="row">
                 <div class="col-lg-12">
-                    <div class="cards">
-                        <div class="cards-content">
+                    <div class="card">
+                        <div class="card-body">
                             <div id="listing"> <?php echo Labels::getLabel('LBL_Processing...', $siteLangId); ?></div>
                         </div>
                     </div>

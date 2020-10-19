@@ -17,8 +17,8 @@ $submitFld->setFieldTagAttribute('class', "btn btn-brand btn-wide");
         <div class="content-body">
             <div class="row">
                 <div class="col-lg-12 mb-4">
-                    <div class="cards">
-                        <div class="cards-content">
+                    <div class="card">
+                        <div class="card-body">
                             <?php echo $allAccessfrm->getFormHtml(); ?>
                         </div>
                     </div>

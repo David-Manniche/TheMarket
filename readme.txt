@@ -225,6 +225,10 @@ Bugs:
     => 043787 - If there is some special price and "price include tax " setting is on then product price is less then entered special price
 ---------------------TV-9.2.1.20201016----------------------
     => 044240 - on Checkout >> if there is only digital product then tax is not there
+    => 043675 - Admin >> pickup address >> Add >> slot timings >> there should be some space between radio button and text. 
+    => 044231 - Seller >> sales report page is not opening.
+    => 044232 - Seller >> order details page >> comments >> if buyer request for cancellation then message at seller end is not right .
+
 Enhancements:
     => Tax module upgrade
     => Test cases classes enhancements.

@@ -202,7 +202,7 @@ class OrderCancellationRequestsController extends AdminBaseController
                 $dataToUpdate = array( 'ocrequest_status' => OrderCancelRequest::CANCELLATION_REQUEST_STATUS_APPROVED, 'ocrequest_refund_in_wallet' => $transferTo, 'ocrequest_admin_comment' => $post['ocrequest_admin_comment'] );
                 $successMsgString = str_replace(strToLower('{updatedStatus}'), OrderCancelRequest::getRequestStatusArr($this->adminLangId)[OrderCancelRequest::CANCELLATION_REQUEST_STATUS_APPROVED], $msgString);
                 $oObj = new Orders();
-                if (true == $oObj->addChildProductOrderHistory($row['ocrequest_op_id'], $row['order_language_id'], FatApp::getConfig("CONF_DEFAULT_CANCEL_ORDER_STATUS"), Labels::getLabel('MSG_Your_Cancellation_Request_Approved', $row['order_language_id']), true, '', 0, $transferTo)) {
+                if (true == $oObj->addChildProductOrderHistory($row['ocrequest_op_id'], $row['order_language_id'], FatApp::getConfig("CONF_DEFAULT_CANCEL_ORDER_STATUS"), Labels::getLabel('MSG_Cancellation_Request_Approved', $row['order_language_id']), true, '', 0, $transferTo)) {
                     if ((PaymentMethods::MOVE_TO_CUSTOMER_CARD == $transferTo)) {
 						$pluginKey = Plugin::getAttributesById($row['order_pmethod_id'], 'plugin_code');
 	

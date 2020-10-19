@@ -24,8 +24,9 @@
                 }
                 ?>
             </span>
-            <div class="msg__detail"><?php echo nl2br($row['message_text']); ?> </div>
             <span class="msg__date"><?php echo FatDate::format($row['message_date'], true); ?></span>
+            <div class="msg__detail"><?php echo nl2br($row['message_text']); ?> </div>
+            
         </div>
         </li>
     <?php }

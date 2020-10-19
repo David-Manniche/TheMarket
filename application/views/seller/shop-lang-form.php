@@ -32,8 +32,8 @@ $btnSubmit->setFieldTagAttribute('class', "btn btn-brand btn-wide");
 
 $this->includeTemplate('seller/_partial/shop-navigation.php', $variables, false); ?>
 <div class="tabs__content tabs__content-js">
-    <div class="cards">
-        <div class="cards-content ">
+    <div class="card">
+        <div class="card-body ">
             <div class="row ">
                 <?php
                     $translatorSubscriptionKey = FatApp::getConfig('CONF_TRANSLATOR_SUBSCRIPTION_KEY', FatUtility::VAR_STRING, '');

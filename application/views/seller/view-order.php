@@ -40,18 +40,19 @@ if (!empty($orderDetail["thirdPartyorderInfo"]) && isset($orderDetail["thirdPart
             </div>
         <?php } ?>
         <div class="content-body">
-            <div class="cards">
-                <div class="cards-header">
-                    <h5 class="cards-title"><?php echo Labels::getLabel('LBL_Order_Details', $siteLangId); ?></h5>
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="card-title"><?php echo Labels::getLabel('LBL_Order_Details', $siteLangId); ?></h5>
                     <?php if (!$print) { ?>
                         <div class="">
                             <iframe src="<?php echo Fatutility::generateUrl('seller', 'viewOrder', $urlParts) . '/print'; ?>" name="frame" class="printFrame-js" style="display:none" width="1" height="1"></iframe>
                             <a href="<?php echo UrlHelper::generateUrl('Seller', 'sales'); ?>" class="btn btn-outline-brand  btn-sm no-print" title="<?php echo Labels::getLabel('LBL_Back_to_order', $siteLangId); ?>">
                                 <i class="fas fa-arrow-left"></i>
                             </a>
-                            <a href="javascript:void(0)" class="btn btn-outline-brand btn-sm no-print printBtn-js" title="<?php echo Labels::getLabel('LBL_Print', $siteLangId); ?>" style="display:none">
-                                <i class="fas fa-print"></i>
-                            </a>
+                            <a target = "_blank" href="<?php echo UrlHelper::generateUrl('Seller', 'viewInvoice', [$orderDetail['op_id']]); ?>" class="btn btn-outline-brand btn-sm no-print" title="
+								<?php echo Labels::getLabel('LBL_Print', $siteLangId); ?>">
+								<i class="fas fa-print"></i>
+							</a>
                             <?php if ($shippedBySeller && true === $canShipByPlugin && ('CashOnDelivery' == $orderDetail['plugin_code'] || Orders::ORDER_PAYMENT_PAID == $orderDetail['order_payment_status'])) {
                                 $opId = $orderDetail['op_id'];
                                 if (empty($orderDetail['opship_response']) && empty($orderDetail['opship_tracking_number'])) {
@@ -68,7 +69,7 @@ if (!empty($orderDetail["thirdPartyorderInfo"]) && isset($orderDetail["thirdPart
                         </div>
                     <?php } ?>
                 </div>
-                <div class="cards-content ">
+                <div class="card-body ">
                     <div class="row">
                         <div class="col-lg-6 col-md-6 mb-4">
                             <div class="info--order">
