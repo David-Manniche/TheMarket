@@ -236,24 +236,29 @@ if (Orders::ORDER_PRODUCT == $orderInfo['order_type']) {
                                                             </span>
                                                         </li>
                                                     <?php }
-                                                    if (0 < $orderInfo['order_reward_point_value'] || 0 < $orderInfo['order_discount_total'] || 0 < $orderInfo['order_volume_discount_total']) {
+                                                    if (0 < $orderInfo['order_reward_point_value'] || 0 < $orderInfo['order_discount_total']) {
                                                         $msg = "LBL_REWARD_POINTS";
                                                         $totalDiscount = $orderInfo['order_reward_point_value'];
                                                         if (!empty($orderInfo['order_discount_total']) && 0 < $orderInfo['order_discount_total']) {
                                                             $msg .= "_&_DISCOUNT";
                                                             $totalDiscount += $orderInfo['order_discount_total'];
                                                         }
-                                                        if (!empty($orderInfo['order_volume_discount_total']) && 0 < $orderInfo['order_volume_discount_total']) {
-                                                            $msg = 'LBL_Loyalty/Volume_Discount';
-                                                            $totalDiscount += $orderInfo['order_volume_discount_total'];
-                                                        }
                                                     ?>
                                                         <li class="list-group-item ">
                                                             <span class="label"><?php echo Labels::getLabel($msg, $siteLangId); ?></span>
                                                             <span class="ml-auto"><?php echo CommonHelper::displayMoneyFormat($totalDiscount); ?></span>
                                                         </li>
-                                                    <?php } ?>
-                                                    <?php if (0 < $orderInfo['order_tax_charged']) { ?>
+                                                    <?php } 
+                                                    if (0 < $orderInfo['order_volume_discount_total']) {
+                                                        $msg = 'LBL_Loyalty/Volume_Discount';
+                                                        $totalDiscount = $orderInfo['order_volume_discount_total'];
+                                                    ?>
+                                                        <li class="list-group-item ">
+                                                            <span class="label"><?php echo Labels::getLabel($msg, $siteLangId); ?></span>
+                                                            <span class="ml-auto"><?php echo CommonHelper::displayMoneyFormat($totalDiscount); ?></span>
+                                                        </li>
+                                                    <?php }
+                                                    if (0 < $orderInfo['order_tax_charged']) { ?>
                                                         <li class="list-group-item ">
                                                             <span class="label"><?php echo Labels::getLabel('LBL_TAX', $siteLangId); ?></span>
                                                             <span class="ml-auto"><?php echo CommonHelper::displayMoneyFormat($orderInfo['order_tax_charged']); ?></span>

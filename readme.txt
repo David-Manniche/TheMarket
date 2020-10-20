@@ -242,6 +242,7 @@ Bugs:
     => 044260 - when physical an digital items are ordered together then on success screen> under shipping method there is another field for digital which is blank
     => 044309 - On category page >> broken image gets display if there is no image selected in admin panel.
     => 044307 - Seller >> cancel any order >> shipping method is not getting display on cancellation page .
+    => 044301 - On thankyou page >> volume discount and reward points are combined and "rewards" gets display as label for that.
     
 Enhancements:
     => Tax module upgrade
