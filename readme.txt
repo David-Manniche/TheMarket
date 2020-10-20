@@ -243,6 +243,7 @@ Bugs:
     => 044309 - On category page >> broken image gets display if there is no image selected in admin panel.
     => 044307 - Seller >> cancel any order >> shipping method is not getting display on cancellation page .
     => 044301 - On thankyou page >> volume discount and reward points are combined and "rewards" gets display as label for that.
+    => 044251 - If there are digital and physical both products in one order and we choose pickup then pickup details are not getting display on thank you screen.
     
 Enhancements:
     => Tax module upgrade
