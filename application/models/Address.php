@@ -68,11 +68,11 @@ class Address extends MyAppModel
      * getData
      *
      * @param  int $type
-     * @param  int $recordId
+     * @param  string $recordId
      * @param  int $isDefault
      * @return array
      */
-    public function getData(int $type, int $recordId, int $isDefault = 0, $joinTimeSlots = false) : array
+    public function getData(int $type, string $recordId, int $isDefault = 0, $joinTimeSlots = false) : array
     { 
         $srch = new AddressSearch($this->langId);
         $srch->joinCountry();
