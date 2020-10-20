@@ -21,7 +21,7 @@
                                     'attr' => [
                                         'href' => 'javascript:void(0)',
                                         'onclick' => 'addStructureForm(0)',
-                                        'title' => Labels::getLabel('LBL_Add_New_Product', $adminLangId)
+                                        'title' => Labels::getLabel('LBL_Add_New_Tax', $adminLangId)
                                     ],
                                     'label' => '<i class="fas fa-plus"></i>'
                                 ]

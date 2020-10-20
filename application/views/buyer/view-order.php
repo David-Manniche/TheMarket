@@ -376,7 +376,8 @@ if (!$print) { ?>
                                     <?php /* <td style="width:20%;" >
                                         <?php echo $childOrder['op_shipping_durations'] . '-' . $childOrder['op_shipping_duration_name']; ?>
                                     </td> */ ?>
-                                    <?php if (Shipping::FULFILMENT_PICKUP == $childOrder['opshipping_fulfillment_type']) { ?>
+                                    <?php /* if (Shipping::FULFILMENT_PICKUP == $childOrder['opshipping_fulfillment_type']) { */ ?>
+                                    <?php if (!empty($orderDetail['pickupAddress'])) { ?>
                                         <td>
                                             <p>
                                                 <strong>
@@ -448,7 +449,7 @@ if (!$print) { ?>
                             <?php }
                             if (!$primaryOrder) { ?>
                                 <tr>
-                                    <td colspan="8">
+                                    <td colspan="7">
                                         <?php echo Labels::getLabel('Lbl_Cart_Total', $siteLangId) ?>
                                     </td>
                                     <td>
@@ -456,7 +457,7 @@ if (!$print) { ?>
                                     </td>
                                 </tr>
                                 <tr>
-                                    <td colspan="8">
+                                    <td colspan="7">
                                         <?php echo Labels::getLabel('LBL_Shipping_Charges', $siteLangId) ?>
                                     </td>
                                     <td>
@@ -466,7 +467,7 @@ if (!$print) { ?>
                                 <?php
                                 if (empty($taxOptionsTotal)) { ?>
                                     <tr>
-                                        <td colspan="8">
+                                        <td colspan="7">
                                             <?php echo Labels::getLabel('LBL_Tax_Charges', $siteLangId) ?>
                                         </td>
                                         <td>
@@ -476,7 +477,7 @@ if (!$print) { ?>
                                     <?php } else {
                                     foreach ($taxOptionsTotal as $key => $val) { ?>
                                         <tr>
-                                            <td colspan="8">
+                                            <td colspan="7">
                                                 <?php echo $val['title']; ?>
                                             </td>
                                             <td>
@@ -487,7 +488,7 @@ if (!$print) { ?>
                                 } ?>
                                 <?php if ($orderDetail['order_discount_total']) { ?>
                                     <tr>
-                                        <td colspan="8">
+                                        <td colspan="7">
                                             <?php echo Labels::getLabel('LBL_Discount', $siteLangId) ?>
                                         </td>
                                         <td>-
@@ -497,7 +498,7 @@ if (!$print) { ?>
                                 <?php } ?>
                                 <?php if ($orderDetail['order_volume_discount_total']) { ?>
                                     <tr>
-                                        <td colspan="8">
+                                        <td colspan="7">
                                             <?php echo Labels::getLabel('LBL_Volume/Loyalty_Discount', $siteLangId) ?>
                                         </td>
                                         <td>-
@@ -506,7 +507,7 @@ if (!$print) { ?>
                                     </tr>
                                 <?php } ?>
                                 <tr>
-                                    <td colspan="8">
+                                    <td colspan="7">
                                         <?php echo Labels::getLabel('LBL_Total', $siteLangId) ?>
                                     </td>
                                     <td>
