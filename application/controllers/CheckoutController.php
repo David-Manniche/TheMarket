@@ -2203,6 +2203,9 @@ class CheckoutController extends MyAppController
 
         $this->cartObj->setProductPickUpAddresses($pickupAddressArr);
         $this->set('msg', Labels::getLabel('MSG_Pickup_Method_selected_successfully.', $this->siteLangId));
+        if (true === MOBILE_APP_API_CALL) {
+            $this->_template->render();
+        }
         $this->_template->render(false, false, 'json-success.php');
     }
 
