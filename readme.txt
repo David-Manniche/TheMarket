@@ -241,6 +241,9 @@ Bugs:
     => 044296 - seller> return request> when there is no file attached still then there is attached file option and on clicking there is blank page 
 
 ---------------------TV-9.2.2.20201020----------------------    
+    => 044313 - if admin disable the setting "Enable Linking Shipping Packages To Products" then fatal error is there on "shipping " tab of catalog.
+    => 044316 - If we enabled "Shipped By Admin Only" setting then fatal error is there on shipping tab of catalog.
+
 Enhancements:
     => Tax module upgrade
     => Test cases classes enhancements.
