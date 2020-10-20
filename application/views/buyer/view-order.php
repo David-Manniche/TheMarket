@@ -257,7 +257,7 @@ if (!$print) { ?>
                         </div>
                     <?php
                     } ?>
-                    <table class="table">
+                    <table class="table table-justified">
                         <thead>
                             <?php
                             $cartTotal = 0;

@@ -14754,8 +14754,18 @@ img.mfp-img, .post .post_media iframe.mfp-img, .post .post_media .posted-content
   box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.05) inset;
   padding: 15px; }
 
-.product-listing .products {
-  height: 100%; }
+.product-listing {
+  display: grid;
+  grid-gap: 1rem;
+  grid-template-columns: repeat(4, 1fr); }
+  @media (max-width: 767.98px) {
+    .product-listing {
+      grid-gap: 3px;
+      grid-template-columns: repeat(2, 1fr); }
+      .product-listing .products {
+        border-radius: 0px; } }
+  .product-listing .products {
+    height: 100%; }
 
 .products {
   position: relative;
@@ -15199,10 +15209,11 @@ img.mfp-img, .post .post_media iframe.mfp-img, .post .post_media .posted-content
 .actions {
   display: inline-flex;
   align-items: center;
+  justify-content: flex-end;
   vertical-align: top;
   white-space: nowrap;
   margin: 0; }
-  @media (max-width: 991.98px) {
+  @media (max-width: 767.98px) {
     .actions {
       flex-wrap: wrap; } }
   .actions li {
@@ -17237,9 +17248,6 @@ a:hover {
   font-size: 0.9em;
   color: var(--brand-color) !important; }
 
-.column {
-  margin-bottom: 30px; }
-
 .gap {
   height: 1rem;
   clear: both;
@@ -17946,7 +17954,7 @@ html.quick-view--open {
     width: 100%;
     height: 100%;
     font-size: 0.85rem;
-    min-width: 30px; }
+    min-width: 35px; }
   .quantity-2 {
     max-width: 90px;
     height: 24px;
@@ -31417,21 +31425,6 @@ a.ui-button:active,
   position: sticky;
   top: 100px; }
 
-.card {
-  margin-bottom: 30px;
-  border-radius: 4px;
-  border: solid 1px #dee2e6; }
-  .card__header {
-    display: flex;
-    justify-content: space-between;
-    padding: 30px 30px 0 30px; }
-  .card__title {
-    font-size: calc(112.5% + 0.2vw);
-    line-height: 1.4;
-    margin-bottom: 0; }
-  .card__section {
-    padding: 20px 25px; }
-
 .buttons-group {
   display: flex;
   align-items: center;
@@ -31475,6 +31468,7 @@ a.ui-button:active,
   font-weight: 500; }
 
 .secure {
+  margin-top: 1.5rem;
   text-align: center; }
   .secure p {
     margin: 0.5rem 0;
