@@ -277,11 +277,12 @@ if (!$print) { ?>
                                 <th>
                                     <?php echo Labels::getLabel('LBL_Order_Particulars', $siteLangId); ?>
                                 </th>
-                                <?php if (!empty($orderDetail['pickupAddress'])) { ?>
-                                    <th>
-                                        <?php echo Labels::getLabel('LBL_PICKUP_DETAIL', $siteLangId); ?>
-                                    </th>
-                                <?php } ?>
+                                <th>
+                                    <?php 
+                                    if (!empty($orderDetail['pickupAddress'])) {
+                                        echo Labels::getLabel('LBL_PICKUP_DETAIL', $siteLangId); 
+                                    } ?>
+                                </th>
 
                                 <th>
                                     <?php echo Labels::getLabel('LBL_Qty', $siteLangId); ?>
@@ -376,8 +377,8 @@ if (!$print) { ?>
                                     <?php /* <td style="width:20%;" >
                                         <?php echo $childOrder['op_shipping_durations'] . '-' . $childOrder['op_shipping_duration_name']; ?>
                                     </td> */ ?>
+                                    <td>
                                     <?php if (Shipping::FULFILMENT_PICKUP == $childOrder['opshipping_fulfillment_type']) { ?>
-                                        <td>
                                             <p>
                                                 <strong>
                                                     <?php
@@ -399,8 +400,8 @@ if (!$print) { ?>
                                                 echo $address1 . $address2 . $city . $state . $country . $zip;
                                                 ?>
                                             </p>
-                                        </td>
                                     <?php } ?>
+                                    </td>
                                     <td>
                                         <?php echo $childOrder['op_qty']; ?>
                                     </td>
@@ -592,42 +593,6 @@ if (!$print) { ?>
                                 <div class="info--order">
                                     <p>
                                         <?php echo $shippingAddress; ?>
-                                    </p>
-                                </div>
-                            </div>
-                        <?php } ?>
-                        <?php if (!empty($orderDetail['pickupAddress'])) { ?>
-                            <div class="col-lg-6 col-md-6 mb-4">
-                                <h6>
-                                    <?php echo Labels::getLabel('LBL_Pickup_Details', $siteLangId); ?>
-                                </h6>
-                                <?php $pickUpAddress = $orderDetail['pickupAddress']['oua_name'] . '<br>';
-                                if ($orderDetail['pickupAddress']['oua_address1'] != '') {
-                                    $pickUpAddress .= $orderDetail['pickupAddress']['oua_address1'] . '<br>';
-                                }
-
-                                if ($orderDetail['pickupAddress']['oua_address2'] != '') {
-                                    $pickUpAddress .= $orderDetail['pickupAddress']['oua_address2'] . '<br>';
-                                }
-
-                                if ($orderDetail['pickupAddress']['oua_city'] != '') {
-                                    $pickUpAddress .= $orderDetail['pickupAddress']['oua_city'] . ',';
-                                }
-
-                                if ($orderDetail['pickupAddress']['oua_zip'] != '') {
-                                    $pickUpAddress .= $orderDetail['pickupAddress']['oua_state'];
-                                }
-
-                                if ($orderDetail['pickupAddress']['oua_zip'] != '') {
-                                    $pickUpAddress .= '-' . $orderDetail['pickupAddress']['oua_zip'];
-                                }
-
-                                if ($orderDetail['pickupAddress']['oua_phone'] != '') {
-                                    $pickUpAddress .= '<br>' . $orderDetail['pickupAddress']['oua_phone'];
-                                } ?>
-                                <div class="info--order">
-                                    <p>
-                                        <?php echo $pickUpAddress; ?>
                                     </p>
                                 </div>
                             </div>

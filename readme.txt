@@ -244,6 +244,7 @@ Bugs:
     => 044307 - Seller >> cancel any order >> shipping method is not getting display on cancellation page .
     => 044301 - On thankyou page >> volume discount and reward points are combined and "rewards" gets display as label for that.
     => 044251 - If there are digital and physical both products in one order and we choose pickup then pickup details are not getting display on thank you screen.
+    => 044237 - when an order having multiple items and both are on pickup then on parent order detail page time slot is not listing
     
 Enhancements:
     => Tax module upgrade
