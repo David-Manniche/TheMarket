@@ -11,7 +11,7 @@ $products = $orderInfo['orderProducts'];
 $shippingMethod = '';
 if (Orders::ORDER_PRODUCT == $orderInfo['order_type']) {
     foreach ($products as $op) {
-        $shippingMethod .= '<li>' . $op['opshipping_label'] . '</li>';
+        $shippingMethod .= !empty($op['opshipping_label']) ? '<li>' . $op['opshipping_label'] . '</li>' : '';
     }
 }
 ?>

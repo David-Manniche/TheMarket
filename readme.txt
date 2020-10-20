@@ -239,6 +239,7 @@ Bugs:
     => 044280 - When guest user add product in cart then there is some fatal error. 
     => 044297 - when order is on pickup then on checkout step 2 it's displaying shipping
     => 044261 - when vol. discount is applied on order then on success screen it's displaying it as rewards
+    => 044260 - when physical an digital items are ordered together then on success screen> under shipping method there is another field for digital which is blank
     
 Enhancements:
     => Tax module upgrade
