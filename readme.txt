@@ -238,6 +238,7 @@ Bugs:
     => 044237 - when an order having multiple items and both are on pickup then on parent order detail page time slot is not listing
     => 044280 - When guest user add product in cart then there is some fatal error. 
     => 044283 - buyer> parent order> table alignment issue 
+    => 044296 - seller> return request> when there is no file attached still then there is attached file option and on clicking there is blank page 
 
 Enhancements:
     => Tax module upgrade
