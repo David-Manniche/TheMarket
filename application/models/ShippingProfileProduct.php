@@ -14,9 +14,10 @@ class ShippingProfileProduct extends MyAppModel
         $srch->joinTable(Product::DB_TBL, 'LEFT OUTER JOIN', 'pro.product_id = sppro.shippro_product_id', 'pro');
         $srch->joinTable(Product::DB_TBL_LANG, 'LEFT OUTER JOIN', 'pro.product_id = p_l.productlang_product_id AND p_l.productlang_lang_id = ' . CommonHelper::getLangId(), 'p_l');
         $srch->addMultipleFields(array('product_id', 'IFNULL(product_name, product_identifier) as product_name', 'shippro_shipprofile_id as profile_id'));
+        $srch->addCondition('product_deleted', '=', applicationConstants::NO);
         return $srch;
     }
-    
+
     public function addProduct($data)
     {
         if (!FatApp::getDb()->insertFromArray(self::DB_TBL, $data, true, array(), $data)) {
@@ -42,7 +43,7 @@ class ShippingProfileProduct extends MyAppModel
         }
 
         $join = (true == $userInnerJoin) ? 'INNER JOIN' : 'LEFT OUTER JOIN';
-        
+
         $srch->joinTable(Product::DB_TBL, $join, 'tp.product_id = sppro.shippro_product_id', 'tp');
         $srch->joinTable(static::DB_TBL, 'LEFT OUTER JOIN', 'spprot.shippro_product_id = sppro.shippro_product_id ' . $cond, 'spprot');
         $srch->addMultipleFields($fields);
@@ -56,7 +57,7 @@ class ShippingProfileProduct extends MyAppModel
     {
         $productId = FatUtility::int($productId);
         $userId = FatUtility::int($userId);
-       
+
         $srch = new SearchBase(static::DB_TBL, 'sppro');
         $srch->addCondition('shippro_product_id', '=', $productId);
         $srch->addCondition('shippro_user_id', '=', $userId);

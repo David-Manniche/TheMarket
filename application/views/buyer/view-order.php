@@ -376,7 +376,8 @@ if (!$print) { ?>
                                     <?php /* <td style="width:20%;" >
                                         <?php echo $childOrder['op_shipping_durations'] . '-' . $childOrder['op_shipping_duration_name']; ?>
                                     </td> */ ?>
-                                    <?php if (Shipping::FULFILMENT_PICKUP == $childOrder['opshipping_fulfillment_type']) { ?>
+                                    <?php /* if (Shipping::FULFILMENT_PICKUP == $childOrder['opshipping_fulfillment_type']) { */ ?>
+                                    <?php if (!empty($orderDetail['pickupAddress'])) { ?>
                                         <td>
                                             <p>
                                                 <strong>
