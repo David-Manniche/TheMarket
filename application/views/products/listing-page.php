@@ -20,9 +20,9 @@ $sortByFld->addFieldTagAttribute('class', 'custom-select sorting-select');
 $pageSizeFld = $frmProductSearch->getField('pageSize');
 $pageSizeFld->addFieldTagAttribute('class', 'custom-select sorting-select');
 
-$desktop_url = '';
-$tablet_url = '';
-$mobile_url = '';
+$desktop_url = UrlHelper::generateFileUrl('Category', 'Banner', array($category['prodcat_id'], $siteLangId, 'DESKTOP', applicationConstants::SCREEN_DESKTOP));
+$tablet_url = UrlHelper::generateFileUrl('Category', 'Banner', array($category['prodcat_id'], $siteLangId, 'TABLET', applicationConstants::SCREEN_MOBILE));
+$mobile_url = UrlHelper::generateFileUrl('Category', 'Banner', array($category['prodcat_id'], $siteLangId, 'MOBILE', applicationConstants::SCREEN_IPAD));
 $category['banner'] = isset($category['banner']) ? (array) $category['banner'] : array();
 if (!empty($category['banner'])) { 
     $catBannerArr = AttachedFile::getMultipleAttachments(AttachedFile::FILETYPE_CATEGORY_BANNER, $category['prodcat_id'], 0, $siteLangId);
