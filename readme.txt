@@ -245,6 +245,7 @@ Bugs:
     => 044301 - On thankyou page >> volume discount and reward points are combined and "rewards" gets display as label for that.
     => 044251 - If there are digital and physical both products in one order and we choose pickup then pickup details are not getting display on thank you screen.
     => 044237 - when an order having multiple items and both are on pickup then on parent order detail page time slot is not listing
+    => 044181 - after order is placed then in admin> order detail page> shipping details are not proper
     
 Enhancements:
     => Tax module upgrade

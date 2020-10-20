@@ -377,10 +377,12 @@ if (!empty($order["thirdPartyorderInfo"]) && isset($order["thirdPartyorderInfo"]
                                             <?php echo Labels::getLabel('LBL_Shipping_Class', $adminLangId); ?> :
                                         </strong>
                                         <?php echo CommonHelper::displayNotApplicable($adminLangId, $order["opshipping_label"]); ?><br>
-                                        <strong>
-                                            <?php echo Labels::getLabel('LBL_SHIPPING_SERVICES', $adminLangId); ?> :
-                                        </strong>
-                                        <?php echo $order["opshipping_service_code"]; ?><br>
+                                        <?php if (!empty($order["opshipping_service_code"])) { ?>
+                                            <strong>
+                                                <?php echo Labels::getLabel('LBL_SHIPPING_SERVICES', $adminLangId); ?> :
+                                            </strong>
+                                            <?php echo $order["opshipping_service_code"]; ?><br>
+                                        <?php } ?>
                                         <strong>
                                             <?php echo Labels::getLabel('LBL_ORDER_STATUS', $adminLangId); ?>:
                                         </strong>
