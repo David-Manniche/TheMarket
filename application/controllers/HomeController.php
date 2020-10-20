@@ -944,7 +944,7 @@ class HomeController extends MyAppController
 
                 case Collections::COLLECTION_TYPE_CONTENT_BLOCK:
                     
-                    $srch = ExtraPage::getSearchObject($langId, true);
+                    $srch = Extrapage::getSearchObject($langId, true);
                     $srch->joinTable(
                         Collections::DB_TBL_COLLECTION_TO_RECORDS, 'INNER JOIN', 'epage_id = ctr_record_id', 'ctr'
                     );

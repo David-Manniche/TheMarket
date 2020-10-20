@@ -9,7 +9,12 @@ class CategoryController extends MyAppController
 
     public function index()
     {
-        $categoriesArr = ProductCategory::getTreeArr($this->siteLangId, 0, true, false, true);
+        /* $categoriesArr = ProductCategory::getTreeArr($this->siteLangId, 0, true, false, true); */
+		$productCategory = ProductCategory::getSearchObject(false, $this->siteLangId);
+		$productCategory->addCondition('prodcat_parent', '=', 0);
+		$productCategory->addOrder('prodcat_ordercode');
+		$rs = $productCategory->getResultSet();
+		$categoriesArr = FatApp::getDb()->fetchAll($rs);
         $this->set('categoriesArr', $categoriesArr);
         $this->_template->render();
     }

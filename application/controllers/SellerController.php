@@ -2923,7 +2923,7 @@ class SellerController extends SellerBaseController
         }
 
         if ($attachedFile = AttachedFile::getAttachment(AttachedFile::FILETYPE_BUYER_RETURN_PRODUCT, $orrequest_id)) {
-            if (file_exists(CONF_UPLOADS_PATH . $attachedFile['afile_physical_path'])) {
+            if (!empty($attachedFile['afile_physical_path']) && file_exists(CONF_UPLOADS_PATH . $attachedFile['afile_physical_path'])) {
                 $this->set('attachedFile', $attachedFile);
             }
         }

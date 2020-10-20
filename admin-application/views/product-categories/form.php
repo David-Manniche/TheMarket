@@ -142,7 +142,7 @@ if (null != $fld) {
                 </div>
             <?php } ?>
             <div class="p-4 mb-4 border rounded">
-                <h3 class="mb-4"><?php echo Labels::getLabel('LBL_Icon', $adminLangId); ?></h3>
+                <?php /* <h3 class="mb-4"><?php echo Labels::getLabel('LBL_Icon', $adminLangId); ?></h3>
                 <div class="row">
                     <div class="col-md-6">
                         <div class="field-set">
@@ -178,7 +178,7 @@ if (null != $fld) {
                     </div>
                     <div class="col-md-4" id="icon-image-listing"></div>
                 </div>
-                <div class="divider"></div>
+                <div class="divider"></div>  */?>
                 <h3 class="mb-4"><?php echo Labels::getLabel('LBL_Banner', $adminLangId); ?></h3>
                 <div class="row">
                     <div class="col-md-3">

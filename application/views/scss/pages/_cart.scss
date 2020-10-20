@@ -361,25 +361,6 @@
     top: 100px;
 }
 
-.card {
-    margin-bottom: 30px;
-    border-radius: $radius4;
-    border: $border;
-    &__header {
-        display: flex;
-        justify-content: space-between;
-        padding: 30px 30px 0 30px;
-    }
-    &__title {
-        font-size: calc(112.5% + 0.2vw);
-        line-height: 1.4;
-        margin-bottom: 0;
-    }
-    &__section {
-        padding: 20px 25px;
-    }
-}
-
 .buttons-group {
     display: flex;
     align-items: center;
@@ -438,6 +419,7 @@
 }
 
 .secure {
+    margin-top: 1.5rem;
     text-align: center;
     p {
         margin: 0.5rem 0;

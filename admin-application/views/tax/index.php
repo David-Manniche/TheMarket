@@ -40,7 +40,7 @@
                                         'attr' => [
                                             'href' => 'javascript:void(0)',
                                             'onclick' => 'addTaxForm(0)',
-                                            'title' => Labels::getLabel('LBL_Add_New_Tax', $adminLangId)
+                                            'title' => Labels::getLabel('LBL_Add_New_Tax_Category', $adminLangId)
                                         ],
                                         'label' => '<i class="fas fa-plus"></i>'
                                     ],

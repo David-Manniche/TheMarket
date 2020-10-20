@@ -34,8 +34,8 @@ $this->includeTemplate('_partial/seller/sellerDashboardNavigation.php'); ?>
 
                                 $keywordFld = $frmSearchCatalogProduct->getField('keyword');
                                 $keywordFld->setFieldTagAttribute('id', 'tour-step-3');
-                                $keywordFld->setWrapperAttribute('class', 'col-lg-4');
-                                $keywordFld->developerTags['col'] = 4;
+                                $keywordFld->setWrapperAttribute('class', 'col-lg-6');
+                                $keywordFld->developerTags['col'] = 6;
 
 //                                if (FatApp::getConfig('CONF_ENABLED_SELLER_CUSTOM_PRODUCT')) {
 //                                    $dateFromFld = $frmSearchCatalogProduct->getField('type');
