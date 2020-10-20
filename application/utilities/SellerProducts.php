@@ -301,6 +301,10 @@ trait SellerProducts
                 $optionValues[] = $option['optionvalue_name' . $this->siteLangId];
             }
         }
+        
+        $shipBySeller = SellerProduct::prodShipByseller($product_id);
+        
+        $this->set('shipBySeller', $shipBySeller);
         $this->set('optionValues', $optionValues);
         $this->set('availableOptions', $availableOptions);
         $this->set('productOptions', $productOptions);

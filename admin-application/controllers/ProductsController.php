@@ -113,9 +113,11 @@ class ProductsController extends AdminBaseController
         }
 
         $srch->addMultipleFields(
-            array('product_id', 'product_attrgrp_id',
-            'product_identifier', 'product_approved', 'product_active', 'product_seller_id', 'product_added_on',
-            'product_name', 'attrgrp_name', 'user_name')
+            array(
+                'product_id', 'product_attrgrp_id',
+                'product_identifier', 'product_approved', 'product_active', 'product_seller_id', 'product_added_on',
+                'product_name', 'attrgrp_name', 'user_name'
+            )
         );
 
         $srch->addOrder('product_added_on', 'DESC');
@@ -176,7 +178,10 @@ class ProductsController extends AdminBaseController
         if (!$prodObj->addUpdateProductOption($option_id)) {
             FatUtility::dieJsonError($prodObj->getError());
         }
+
+        UpcCode::remove($product_id);
         Product::updateMinPrices($product_id);
+        Tag::updateProductTagString($product_id);
         $this->set('msg', Labels::getLabel('LBL_Record_Updated_Successfully', $this->adminLangId));
         $this->_template->render(false, false, 'json-success.php');
     }
@@ -216,6 +221,8 @@ class ProductsController extends AdminBaseController
             Message::addErrorMessage(Labels::getLabel($prodObj->getError(), $this->adminLangId));
             FatUtility::dieWithError(Message::getHtml());
         }
+        UpcCode::remove($product_id);
+        Tag::updateProductTagString($product_id);
         $this->set('msg', Labels::getLabel('MSG_Option_Removed_Successfully', $this->adminLangId));
         $this->_template->render(false, false, 'json-success.php');
     }
@@ -271,7 +278,7 @@ class ProductsController extends AdminBaseController
             $srch->addCondition('product_name', 'LIKE', '%' . $post['keyword'] . '%');
         }
         $srch->setPageSize(FatApp::getConfig('CONF_ADMIN_PAGESIZE', FatUtility::VAR_INT, 10));
-        $srch->addMultipleFields(array('product_id', 'product_name', 'product_identifier' ));
+        $srch->addMultipleFields(array('product_id', 'product_name', 'product_identifier'));
         $rs = $srch->getResultSet();
         $db = FatApp::getDb();
         $products = $db->fetchAll($rs, 'product_id');
@@ -279,8 +286,8 @@ class ProductsController extends AdminBaseController
         foreach ($products as $key => $product) {
             $product['product_name'] = empty($product['product_name']) ? $product['product_identifier'] : $product['product_name'];
             $json[] = array(
-            'id' => $key,
-            'name' => strip_tags(html_entity_decode($product['product_name'], ENT_QUOTES, 'UTF-8'))
+                'id' => $key,
+                'name' => strip_tags(html_entity_decode($product['product_name'], ENT_QUOTES, 'UTF-8'))
             );
         }
         die(json_encode($json));
@@ -288,7 +295,7 @@ class ProductsController extends AdminBaseController
 
     private function getSeparateImageOptions($product_id, $lang_id)
     {
-        $imgTypesArr = array( 0 => Labels::getLabel('LBL_For_All_Options', $this->adminLangId) );
+        $imgTypesArr = array(0 => Labels::getLabel('LBL_For_All_Options', $this->adminLangId));
         $productOptions = Product::getProductOptions($product_id, $lang_id, true, 1);
 
         foreach ($productOptions as $val) {
@@ -328,8 +335,8 @@ class ProductsController extends AdminBaseController
         $json = array();
         foreach ($countries as $key => $country) {
             $json[] = array(
-            'id' => $country['country_id'],
-            'name' => strip_tags(html_entity_decode(isset($country['country_name']) ? $country['country_name'] : '', ENT_QUOTES, 'UTF-8')),
+                'id' => $country['country_id'],
+                'name' => strip_tags(html_entity_decode(isset($country['country_name']) ? $country['country_name'] : '', ENT_QUOTES, 'UTF-8')),
 
             );
         }
@@ -380,8 +387,8 @@ class ProductsController extends AdminBaseController
         $json = array();
         foreach ($shippingMethods as $key => $sMethod) {
             $json[] = array(
-            'id' => $key,
-            'name' => strip_tags(html_entity_decode($sMethod['shippingapi_name'], ENT_QUOTES, 'UTF-8')),
+                'id' => $key,
+                'name' => strip_tags(html_entity_decode($sMethod['shippingapi_name'], ENT_QUOTES, 'UTF-8')),
 
             );
         }
@@ -409,9 +416,9 @@ class ProductsController extends AdminBaseController
         $json = array();
         foreach ($shipDurations as $key => $shipDuration) {
             $json[] = array(
-            'id' => $key,
-            'name' => strip_tags(html_entity_decode($shipDuration['sduration_name'], ENT_QUOTES, 'UTF-8')),
-            'duraion' => ShippingDurations::getShippingDurationTitle($shipDuration, $this->adminLangId),
+                'id' => $key,
+                'name' => strip_tags(html_entity_decode($shipDuration['sduration_name'], ENT_QUOTES, 'UTF-8')),
+                'duraion' => ShippingDurations::getShippingDurationTitle($shipDuration, $this->adminLangId),
 
             );
         }
@@ -425,7 +432,7 @@ class ProductsController extends AdminBaseController
         $frm->addTextBox(Labels::getLabel('LBL_Keyword', $this->adminLangId), 'keyword');
 
         if (FatApp::getConfig('CONF_ENABLED_SELLER_CUSTOM_PRODUCT')) {
-            $frm->addSelectBox(Labels::getLabel('LBL_Product', $this->adminLangId), 'is_custom_or_catalog', array( -1 => Labels::getLabel('LBL_All', $this->adminLangId)) + applicationConstants::getCatalogTypeArr($this->adminLangId), -1, array(), '');
+            $frm->addSelectBox(Labels::getLabel('LBL_Product', $this->adminLangId), 'is_custom_or_catalog', array(-1 => Labels::getLabel('LBL_All', $this->adminLangId)) + applicationConstants::getCatalogTypeArr($this->adminLangId), -1, array(), '');
         }
 
         $frm->addTextBox(Labels::getLabel('LBL_User', $this->adminLangId), 'product_seller', '');
@@ -433,16 +440,16 @@ class ProductsController extends AdminBaseController
         $arrCategories = $prodCatObj->getCategoriesForSelectBox($this->adminLangId);
         $categories = $prodCatObj->makeAssociativeArray($arrCategories);
 
-        $frm->addSelectBox(Labels::getLabel('LBL_category', $this->adminLangId), 'prodcat_id', array( -1 => Labels::getLabel('LBL_Does_not_Matter', $this->adminLangId) ) + $categories, '', array(), '');
+        $frm->addSelectBox(Labels::getLabel('LBL_category', $this->adminLangId), 'prodcat_id', array(-1 => Labels::getLabel('LBL_Does_not_Matter', $this->adminLangId)) + $categories, '', array(), '');
         $activeInactiveArr = applicationConstants::getActiveInactiveArr($this->adminLangId);
-        $frm->addSelectBox(Labels::getLabel('LBL_Active', $this->adminLangId), 'active', array( -1 => Labels::getLabel('LBL_Does_not_Matter', $this->adminLangId) ) + $activeInactiveArr, '', array(), '');
+        $frm->addSelectBox(Labels::getLabel('LBL_Active', $this->adminLangId), 'active', array(-1 => Labels::getLabel('LBL_Does_not_Matter', $this->adminLangId)) + $activeInactiveArr, '', array(), '');
 
         $approveUnApproveArr = Product::getApproveUnApproveArr($this->adminLangId);
-        $frm->addSelectBox(Labels::getLabel('LBL_Approval_Status', $this->adminLangId), 'product_approved', array( -1 => Labels::getLabel('LBL_Does_not_Matter', $this->adminLangId) ) + $approveUnApproveArr, '', array(), '');
+        $frm->addSelectBox(Labels::getLabel('LBL_Approval_Status', $this->adminLangId), 'product_approved', array(-1 => Labels::getLabel('LBL_Does_not_Matter', $this->adminLangId)) + $approveUnApproveArr, '', array(), '');
 
         $frm->addSelectBox(Labels::getLabel('LBL_Product_Type', $this->adminLangId), 'product_type', Product::getProductTypes($this->adminLangId), array());
 
-        $frm->addDateField(Labels::getLabel('LBL_Date_From', $this->adminLangId), 'date_from', '', array('readonly' => 'readonly', 'class' => 'small dateTimeFld field--calender' ));
+        $frm->addDateField(Labels::getLabel('LBL_Date_From', $this->adminLangId), 'date_from', '', array('readonly' => 'readonly', 'class' => 'small dateTimeFld field--calender'));
         $frm->addDateField(Labels::getLabel('LBL_Date_To', $this->adminLangId), 'date_to', '', array('readonly' => 'readonly', 'class' => 'small dateTimeFld field--calender'));
         $frm->addHiddenField('', 'page');
         $frm->addHiddenField('', 'product_id');
@@ -494,8 +501,8 @@ class ProductsController extends AdminBaseController
         $json = array();
         foreach ($shippingCompanies as $key => $sCompany) {
             $json[] = array(
-            'id' => $key,
-            'name' => strip_tags(html_entity_decode($sCompany['scompany_name'], ENT_QUOTES, 'UTF-8')),
+                'id' => $key,
+                'name' => strip_tags(html_entity_decode($sCompany['scompany_name'], ENT_QUOTES, 'UTF-8')),
 
             );
         }
@@ -687,9 +694,9 @@ class ProductsController extends AdminBaseController
         $row = FatApp::getDb()->fetch($rs);
 
         $data = array(
-        'upc_code' => $post['code'],
-        'upc_product_id' => $product_id,
-        'upc_options' => $options,
+            'upc_code' => $post['code'],
+            'upc_product_id' => $product_id,
+            'upc_options' => $options,
         );
 
         if ($row && $row['upc_product_id'] == $product_id && $row['upc_options'] == $options) {
@@ -703,6 +710,7 @@ class ProductsController extends AdminBaseController
             Message::addErrorMessage($upcObj->getError());
             FatUtility::dieWithError(Message::getHtml());
         }
+        Tag::updateProductTagString($product_id);
 
         $this->set('msg', Labels::getLabel('LBL_Record_Updated_Successfully', $this->adminLangId));
         $this->set('product_id', $product_id);
@@ -718,7 +726,7 @@ class ProductsController extends AdminBaseController
         $srch->addCondition('user_is_supplier', '=', applicationConstants::YES);
         $srch->addCondition('credential_active', '=', applicationConstants::ACTIVE);
 
-        $srch->addMultipleFields(array('credential_user_id', 'credential_username', 'credential_email' ));
+        $srch->addMultipleFields(array('credential_user_id', 'credential_username', 'credential_email'));
 
         if ('' != $post['keyword']) {
             $srch->addCondition('credential_username', 'like', '%' . $post['keyword'] . '%');
@@ -775,7 +783,7 @@ class ProductsController extends AdminBaseController
         $frm = new Form('imageFrm');
         $frm->addSelectBox(Labels::getLabel('LBL_Image_File_Type', $this->adminLangId), 'option_id', $imgTypesArr, 0, array(), '');
         $languagesAssocArr = Language::getAllNames();
-        $frm->addSelectBox(Labels::getLabel('LBL_Language', $this->adminLangId), 'lang_id', array( 0 => Labels::getLabel('LBL_All_Languages', $this->adminLangId) ) + $languagesAssocArr, '', array(), '');
+        $frm->addSelectBox(Labels::getLabel('LBL_Language', $this->adminLangId), 'lang_id', array(0 => Labels::getLabel('LBL_All_Languages', $this->adminLangId)) + $languagesAssocArr, '', array(), '');
         $frm->addHiddenField('', 'min_width', 500);
         $frm->addHiddenField('', 'min_height', 500);
         $frm->addFileUpload(Labels::getLabel('LBL_Upload', $this->adminLangId), 'prod_image', array('id' => 'prod_image'));
@@ -842,8 +850,7 @@ class ProductsController extends AdminBaseController
         $option_id = FatUtility::int($post['option_id']);
         $lang_id = FatUtility::int($post['lang_id']);
         $fileHandlerObj = new AttachedFile();
-        if (!$res = $fileHandlerObj->saveImage($_FILES['cropped_image']['tmp_name'], AttachedFile::FILETYPE_PRODUCT_IMAGE, $productId, $option_id, $_FILES['cropped_image']['name'], -1, $unique_record = false, $lang_id)
-        ) {
+        if (!$res = $fileHandlerObj->saveImage($_FILES['cropped_image']['tmp_name'], AttachedFile::FILETYPE_PRODUCT_IMAGE, $productId, $option_id, $_FILES['cropped_image']['name'], -1, $unique_record = false, $lang_id)) {
             Message::addErrorMessage($fileHandlerObj->getError());
             FatUtility::dieJsonError(Message::getHtml());
         }
@@ -856,8 +863,8 @@ class ProductsController extends AdminBaseController
     public function deleteImage($productId, $imageId)
     {
         $this->objPrivilege->canEditProducts();
-        $productId = FatUtility :: int($productId);
-        $imageId = FatUtility :: int($imageId);
+        $productId = FatUtility::int($productId);
+        $imageId = FatUtility::int($imageId);
         if ($imageId < 1 || $productId < 1) {
             Message::addErrorMessage($this->str_invalid_request);
             FatUtility::dieJsonError(Message::getHtml());
@@ -915,15 +922,15 @@ class ProductsController extends AdminBaseController
             } else {
                 $tax->addCondition('ptt_seller_user_id', '=', 0);
             }
-            
+
             $tax->addFld('ptt_taxcat_id');
-            
+
             if (Tax::getActivatedServiceId()) {
                 $tax->addFld('concat(IFNULL(taxcat_name,taxcat_identifier), " (",taxcat_code,")")as taxcat_name');
             } else {
                 $tax->addFld('IFNULL(taxcat_name,taxcat_identifier)as taxcat_name');
             }
-       
+
             $tax->doNotCalculateRecords();
             $tax->setPageSize(1);
             $tax->addOrder('ptt_seller_user_id', 'ASC');
@@ -1004,7 +1011,7 @@ class ProductsController extends AdminBaseController
         if (!empty($translatorSubscriptionKey) && count($languages) > 0) {
             $frm->addCheckBox(Labels::getLabel('LBL_Translate_To_Other_Languages', $this->adminLangId), 'auto_update_other_langs_data', 1, array(), false, 0);
         }
-        
+
         $frm->addRequiredField(Labels::getLabel('LBL_Tax_Category', $this->adminLangId), 'taxcat_name');
 
         $fldMinSelPrice = $frm->addFloatField(Labels::getLabel('LBL_Minimum_Selling_Price', $this->adminLangId) . ' [' . CommonHelper::getCurrencySymbol(true) . ']', 'product_min_selling_price', '');
@@ -1123,7 +1130,7 @@ class ProductsController extends AdminBaseController
         $frm->addHiddenField('', 'product_seller_id');
         $frm->addHiddenField('', 'product_id', $productId);
         $frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_Save_And_Next', $this->adminLangId));
-        $frm->addButton("", "btn_back", Labels::getLabel('LBL_Back', $this->adminLangId), array('onclick' => 'productInitialSetUpFrm('.$productId.');'));
+        $frm->addButton("", "btn_back", Labels::getLabel('LBL_Back', $this->adminLangId), array('onclick' => 'productInitialSetUpFrm(' . $productId . ');'));
         return $frm;
     }
 
@@ -1305,7 +1312,7 @@ class ProductsController extends AdminBaseController
         }
 
         $productFrm = $this->getProductShippingFrm($productId, $shippedByUserId);
-        
+
         $prodShippingDetails = Product::getProductShippingDetails($productId, $this->adminLangId, $shippedByUserId);
         if (isset($prodShippingDetails['ps_from_country_id'])) {
             $productData['shipping_country'] = Countries::getCountryById($prodShippingDetails['ps_from_country_id'], $this->adminLangId, 'country_name');
@@ -1323,7 +1330,7 @@ class ProductsController extends AdminBaseController
             $productData['shipping_profile'] = $profileData['profile_id'];
         }
         /* ]*/
-        
+
         $productFrm->fill($productData);
         $this->set('productFrm', $productFrm);
         $this->_template->render(false, false, 'products/product-shipping-frm.php');
@@ -1336,12 +1343,12 @@ class ProductsController extends AdminBaseController
 
         $shipProfileArr = ShippingProfile::getProfileArr($shippedByUserId, true, true);
         $frm->addSelectBox(Labels::getLabel('LBL_Shipping_Profile', $this->adminLangId), 'shipping_profile', $shipProfileArr)->requirements()->setRequired();
-        
+
         if ($productType == Product::PRODUCT_TYPE_PHYSICAL) {
             if (FatApp::getConfig("CONF_PRODUCT_DIMENSIONS_ENABLE", FatUtility::VAR_INT, 1)) {
                 $shipPackArr = ShippingPackage::getAllNames();
                 $frm->addSelectBox(Labels::getLabel('LBL_Shipping_Package', $this->adminLangId), 'product_ship_package', $shipPackArr)->requirements()->setRequired();
-                
+
                 $weightUnitsArr = applicationConstants::getWeightUnitsArr($this->adminLangId);
                 $frm->addSelectBox(Labels::getLabel('LBL_Weight_Unit', $this->adminLangId), 'product_weight_unit', $weightUnitsArr)->requirements()->setRequired();
 
@@ -1359,7 +1366,6 @@ class ProductsController extends AdminBaseController
                 $codFld->htmlAfterField = '<br/><small>' . Labels::getLabel('LBL_COD_option_is_disabled_in_payment_gateway_settings', $this->adminLangId) . '</small>';
             }
             /* ] */
-
         }
 
         $frm->addTextBox(Labels::getLabel('LBL_Country_of_Origin', $this->adminLangId), 'shipping_country');
@@ -1367,7 +1373,7 @@ class ProductsController extends AdminBaseController
 
         $frm->addHiddenField('', 'ps_from_country_id');
         $frm->addHiddenField('', 'product_id', $productId);
-        $frm->addButton("", "btn_back", Labels::getLabel('LBL_Back', $this->adminLangId), array('onclick' => 'productOptionsAndTag('.$productId.');'));
+        $frm->addButton("", "btn_back", Labels::getLabel('LBL_Back', $this->adminLangId), array('onclick' => 'productOptionsAndTag(' . $productId . ');'));
         $frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_Save_And_Next', $this->adminLangId));
         return $frm;
     }
@@ -1378,7 +1384,7 @@ class ProductsController extends AdminBaseController
         $productId = FatApp::getPostedData('product_id', FatUtility::VAR_INT, 0);
         $frm = $this->getProductShippingFrm($productId);
         $post = $frm->getFormDataFromArray(FatApp::getPostedData());
-        
+
         if (false === $post) {
             Message::addErrorMessage(current($frm->getValidationErrors()));
             FatUtility::dieWithError(Message::getHtml());
@@ -1388,10 +1394,10 @@ class ProductsController extends AdminBaseController
             Message::addErrorMessage($prod->getError());
             FatUtility::dieWithError(Message::getHtml());
         }
-        
+
         $prodSellerId = Product::getAttributesById($productId, 'product_seller_id');
         $psFree = isset($post['ps_free']) ? $post['ps_free'] : 0;
-        
+
         if (!$prod->saveProductSellerShipping($prodSellerId, $psFree, $post['ps_from_country_id'])) {
             Message::addErrorMessage($prod->getError());
             FatUtility::dieWithError(Message::getHtml());
@@ -1408,7 +1414,7 @@ class ProductsController extends AdminBaseController
                 FatUtility::dieJsonError(Message::getHtml());
             }
         }
-       
+
         $this->set('msg', Labels::getLabel('LBL_Product_Shipping_Setup_Successful', $this->adminLangId));
         $this->set('productId', $prod->getMainTableRecordId());
         $this->_template->render(false, false, 'json-success.php');
@@ -1449,7 +1455,7 @@ class ProductsController extends AdminBaseController
         $json = array();
         foreach ($prodSpecGroup as $key => $group) {
             $json[] = array(
-            'name' => strip_tags(html_entity_decode($group['prodspec_group'], ENT_QUOTES, 'UTF-8'))
+                'name' => strip_tags(html_entity_decode($group['prodspec_group'], ENT_QUOTES, 'UTF-8'))
             );
         }
         die(json_encode($json));

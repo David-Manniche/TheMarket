@@ -5,8 +5,6 @@ class UpcCode extends MyAppModel
     public const DB_TBL = 'tbl_upc_codes';
     public const DB_TBL_PREFIX = 'upc_';
 
-    private $db;
-
     public function __construct($id = 0)
     {
         parent::__construct(static::DB_TBL, static::DB_TBL_PREFIX . 'code_id', $id);
@@ -39,5 +37,13 @@ class UpcCode extends MyAppModel
             return '';
         }
         return $code['upc_code'];
+    }
+
+    public static function remove(int $product_id)
+    {
+        if (!FatApp::getDb()->deleteRecords(self::DB_TBL, array('smt' => self::DB_TBL_PREFIX . 'product_id = ?', 'vals' => array($product_id)))) {
+            return false;
+        }
+        return true;
     }
 }

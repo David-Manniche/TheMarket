@@ -101,21 +101,20 @@ class Tag extends MyAppModel
     }
 
     /**
-    * tag delete.
-    * get array of all product ids having that tag
-    * delete records from product_to_tag having that tag
-    * updateProductTagString for each product.
-    * Product category association.
-    * When tag is added or removed from product. call updateProductTagString($productId)
-    **/
+     * tag delete.
+     * get array of all product ids having that tag
+     * delete records from product_to_tag having that tag
+     * updateProductTagString for each product.
+     * Product category association.
+     * When tag is added or removed from product. call updateProductTagString($productId)
+     **/
     public static function updateProductTagString($productId = 0)
     {
         $productId = FatUtility::int($productId);
         if (!$productId) {
             return;
         }
-        //$db = FatApp::getDb();
-        //$productSrchObj = Product::getSearchObject();
+
         $languages = Language::getAllNames();
 
         //product_tags_string
@@ -124,40 +123,53 @@ class Tag extends MyAppModel
 
         $prodObj = new Product($productId);
 
+        $upcCode = UpcCode::getSearchObject();
+        $upcCode->addCondition('upc_product_id', '=', $productId);
+        $upcCode->doNotCalculateRecords();
+        $upcCode->doNotLimitRecords();
+        $upcCode->addMultipleFields(array('upc_code_id', 'upc_code'));
+        $rs = $upcCode->getResultSet();
+        $codeArr = FatApp::getDb()->fetchAllAssoc($rs);
+        $code = '';
+        if (!empty($codeArr)) {
+            $code = implode(" | ", $codeArr);
+        }
+
         if ($languages) {
             foreach ($languages as $lang_id => $lang_name) {
                 $productTags = Product::getProductTags($productId, $lang_id);
                 $productName = Product::getAttributesBylangId($lang_id, $productId, 'product_name');
+
                 if (!$productName) {
                     $productData = Product::getProductDataById(FatApp::getConfig('CONF_DEFAULT_SITE_LANG', FatUtility::VAR_INT, 1), $productId, array('ifNull(product_name,product_identifier) as product_name', 'product_identifier'));
                     $productName = $productData['product_name'];
                 }
 
+                $productName = !empty($productName) ? $productName : $productData['product_identifier'];
 
-
+                $productTagsStringArr[$lang_id] = [];
                 if ($productTags) {
                     foreach ($productTags as $tag) {
                         $productTagsStringArr[$lang_id][] = ($tag['tag_name'] == '') ? $tag['tag_identifier'] : $tag['tag_name'];
                     }
-                    $product_tags_string[$lang_id] = implode("| ", $productTagsStringArr[$lang_id]);
+                }
 
-                    if (!empty($productTagsStringArr[$lang_id])) {
-                        $data_to_update = array( 'product_tags_string' => $product_tags_string[$lang_id]);
-                        if ($productName) {
-                            $data_to_update['product_name'] = $productName;
-                        }
-                        if (!$prodObj->updateLangData($lang_id, $data_to_update)) {
-                        }
-                    }/*  else {
-                        $data_to_update = array('product_tags_string' => '');
-                        if( !$prodObj->updateLangData( $lang_id, $data_to_update ) ){}
-                    } */
+                $product_tags_string[$lang_id] = implode(" | ", $productTagsStringArr[$lang_id]);
+                if (empty($product_tags_string[$lang_id])) {
+                    $product_tags_string[$lang_id] = $code;
                 } else {
-                    $productName = !empty($productName) ? $productName : $productData['product_identifier'];
+                    $product_tags_string[$lang_id] =  ' | ' . $code;
+                }
 
-                    $data_to_update = array( 'product_tags_string' => '', 'product_name' => $productName);
-                    if (!$prodObj->updateLangData($lang_id, $data_to_update)) {
+                if (!empty($product_tags_string[$lang_id])) {
+                    $data_to_update = array('product_tags_string' => $product_tags_string[$lang_id]);
+                    if ($productName) {
+                        $data_to_update['product_name'] = $productName;
                     }
+                    $prodObj->updateLangData($lang_id, $data_to_update);
+                } else {
+                    $data_to_update = array('product_tags_string' => '', 'product_name' => $productName);
+                    $prodObj->updateLangData($lang_id, $data_to_update);
                 }
             }
         }
@@ -179,9 +191,9 @@ class Tag extends MyAppModel
         if (!$tagId) {
             return;
         }
-        
+
         $rows = Product::getProductIdsByTagId($tagId);
-        
+
         if (!empty($rows)) {
             foreach ($rows as $row) {
                 static::updateProductTagString($row['ptt_product_id']);

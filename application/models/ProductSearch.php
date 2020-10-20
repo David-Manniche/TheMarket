@@ -720,7 +720,7 @@ class ProductSearch extends SearchBase
 
         $keywordLength = mb_strlen($keyword);
         $cnd = $obj->addCondition('product_isbn', 'LIKE', '%' . $keyword . '%');
-        $cnd->attachCondition('product_upc', 'LIKE', '%' . $keyword . '%');
+        /* $cnd->attachCondition('product_upc', 'LIKE', '%' . $keyword . '%'); */
 
         $arr = explode(' ', $keyword);
         $arr_keywords = array();
@@ -745,7 +745,7 @@ class ProductSearch extends SearchBase
             $strKeyword = FatApp::getDb()->quoteVariable('%' . $keyword . '%');
             if ($useRelevancy === true) {
                 $obj->addFld(
-                    "IF(product_isbn LIKE $strKeyword OR product_upc LIKE $strKeyword, 15, 0)
+                    "IF(product_isbn LIKE $strKeyword, 15, 0)
                 + IF(selprod_title LIKE $strKeyword, 4, 0)
                 + IF(product_name LIKE $strKeyword, 4, 0)
                 + IF(product_tags_string LIKE $strKeyword, 4, 0)
