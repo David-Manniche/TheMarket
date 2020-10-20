@@ -15161,7 +15161,8 @@ img.mfp-img, .post .post_media iframe.mfp-img, .post .post_media .posted-content
     overflow: hidden; }
   .item__description {
     font-size: 0.9em;
-    min-width: 200px; }
+    min-width: 200px;
+    max-width: 400px; }
     .item__description .item__pic {
       margin-left: 10px; }
     .item__description .item__title {
@@ -32311,6 +32312,7 @@ a.ui-button:active,
         border: none;
         border-radius: 0px;
         padding: 0;
+        padding-right: 10px;
         padding-left: 2rem;
         height: auto; }
   .list-shippings .quantity {
@@ -35958,34 +35960,28 @@ div.faqanswer {
 .sort-by select, .sort-by .custom-select {
   height: 30px; }
 
-.listing-products--list [class*="col-md-"] {
-  -ms-flex: 0 0 50%;
-  -webkit-box-flex: 0;
-  flex: 0 0 50%;
-  max-width: 50%; }
-
-.listing-products--list .products {
-  display: -webkit-box;
-  display: -ms-flexbox;
-  display: flex; }
-
-.listing-products--list .products__body {
-  position: static;
-  width: 120px;
-  border-left: solid 1px #dee2e6; }
-
-.listing-products--list .products__body .products__img {
-  margin-bottom: 0; }
-
-.listing-products--list .products__footer {
-  width: calc(100% - 120px);
-  text-align: right;
-  padding: 1rem; }
-
-.listing-products--list .products .products__title {
-  margin: 0;
-  min-height: auto;
-  padding: 5px 0; }
+.listing-products--list {
+  grid-template-columns: repeat(2, 1fr); }
+  .listing-products--list .products {
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex; }
+    .listing-products--list .products .products__title {
+      margin: 0;
+      min-height: auto;
+      padding: 5px 0; }
+    .listing-products--list .products .products__body {
+      position: static;
+      width: 120px;
+      border-left: solid 1px #dee2e6; }
+      .listing-products--list .products .products__body .products__img {
+        margin-bottom: 0; }
+    .listing-products--list .products .products__footer {
+      width: calc(100% - 120px);
+      text-align: right;
+      padding: 1rem; }
+    .listing-products--list .products .products__price {
+      padding: 0; }
 
 /*grid list view*/
 .list-grid-toggle {
