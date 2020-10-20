@@ -248,7 +248,8 @@ Enhancements:
     => User Addresses DB changes.  
     => Displayed "product not available " on home page collections based on location. 
     => Performance updates.
-    => Advanced search UI and Auto Suggestions.    
+    => Advanced search UI and Auto Suggestions.
+    => Category Listing Page UI  
     ------------TV-9.2.1.20200925------------------------     
 Notes:
    ==========Stripe Connect Installation Notes[:=========
