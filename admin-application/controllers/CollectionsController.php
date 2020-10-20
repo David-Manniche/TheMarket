@@ -119,7 +119,7 @@ class CollectionsController extends AdminBaseController
                 $srch = new SearchBase(Collections::DB_TBL_COLLECTION_TO_RECORDS);
                 $srch->addCondition(Collections::DB_TBL_COLLECTION_TO_RECORDS_PREFIX . 'collection_id', '=', $collectionId);
                 $srch->joinTable(
-                    ExtraPage::DB_TBL, 'RIGHT JOIN', 'ep.epage_id = ctr_record_id', 'ep'
+                    Extrapage::DB_TBL, 'RIGHT JOIN', 'ep.epage_id = ctr_record_id', 'ep'
                 );
                 $srch->doNotCalculateRecords();
                 $srch->doNotLimitRecords();
