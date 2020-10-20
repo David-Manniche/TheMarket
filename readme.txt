@@ -238,6 +238,7 @@ Bugs:
     => 044237 - when an order having multiple items and both are on pickup then on parent order detail page time slot is not listing
     => 044280 - When guest user add product in cart then there is some fatal error. 
     => 044297 - when order is on pickup then on checkout step 2 it's displaying shipping
+    => 044261 - when vol. discount is applied on order then on success screen it's displaying it as rewards
     
 Enhancements:
     => Tax module upgrade

@@ -244,6 +244,7 @@ if (Orders::ORDER_PRODUCT == $orderInfo['order_type']) {
                                                             $totalDiscount += $orderInfo['order_discount_total'];
                                                         }
                                                         if (!empty($orderInfo['order_volume_discount_total']) && 0 < $orderInfo['order_volume_discount_total']) {
+                                                            $msg = 'LBL_Loyalty/Volume_Discount';
                                                             $totalDiscount += $orderInfo['order_volume_discount_total'];
                                                         }
                                                     ?>
