@@ -237,7 +237,8 @@ Bugs:
     => 044233 - when customer places pickup order then in admin> customer order> pickup details are not there
     => 044237 - when an order having multiple items and both are on pickup then on parent order detail page time slot is not listing
     => 044280 - When guest user add product in cart then there is some fatal error. 
-    
+    => 044283 - buyer> parent order> table alignment issue 
+
 Enhancements:
     => Tax module upgrade
     => Test cases classes enhancements.
