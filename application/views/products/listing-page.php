@@ -20,11 +20,14 @@ $sortByFld->addFieldTagAttribute('class', 'custom-select sorting-select');
 $pageSizeFld = $frmProductSearch->getField('pageSize');
 $pageSizeFld->addFieldTagAttribute('class', 'custom-select sorting-select');
 
-$desktop_url = UrlHelper::generateFileUrl('Category', 'Banner', array($category['prodcat_id'], $siteLangId, 'DESKTOP', applicationConstants::SCREEN_DESKTOP));
-$tablet_url = UrlHelper::generateFileUrl('Category', 'Banner', array($category['prodcat_id'], $siteLangId, 'TABLET', applicationConstants::SCREEN_MOBILE));
-$mobile_url = UrlHelper::generateFileUrl('Category', 'Banner', array($category['prodcat_id'], $siteLangId, 'MOBILE', applicationConstants::SCREEN_IPAD));
+$desktop_url = '';
+$tablet_url = '';
+$mobile_url = '';
 $category['banner'] = isset($category['banner']) ? (array) $category['banner'] : array();
-if (!empty($category['banner'])) { 
+if (!empty($category['banner'])) {
+    $desktop_url = UrlHelper::generateFileUrl('Category', 'Banner', array($category['prodcat_id'], $siteLangId, 'DESKTOP', applicationConstants::SCREEN_DESKTOP));
+    $tablet_url = UrlHelper::generateFileUrl('Category', 'Banner', array($category['prodcat_id'], $siteLangId, 'TABLET', applicationConstants::SCREEN_MOBILE));
+    $mobile_url = UrlHelper::generateFileUrl('Category', 'Banner', array($category['prodcat_id'], $siteLangId, 'MOBILE', applicationConstants::SCREEN_IPAD));
     $catBannerArr = AttachedFile::getMultipleAttachments(AttachedFile::FILETYPE_CATEGORY_BANNER, $category['prodcat_id'], 0, $siteLangId);
     foreach ($catBannerArr as $slideScreen) {
         $uploadedTime = AttachedFile::setTimeParam($slideScreen['afile_updated_at']);

@@ -241,6 +241,7 @@ Bugs:
     => 044261 - when vol. discount is applied on order then on success screen it's displaying it as rewards
     => 044260 - when physical an digital items are ordered together then on success screen> under shipping method there is another field for digital which is blank
     => 044309 - On category page >> broken image gets display if there is no image selected in admin panel.
+    => 044307 - Seller >> cancel any order >> shipping method is not getting display on cancellation page .
     
 Enhancements:
     => Tax module upgrade
