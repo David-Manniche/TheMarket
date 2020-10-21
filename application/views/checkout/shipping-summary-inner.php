@@ -12,7 +12,7 @@
                 </div>
                 <div class="review-block__content" role="cell">
                     <div class="delivery-address">
-                        <p><?php echo $addresses['addr_address1']; ?>
+                        <p><?php echo $addresses['addr_name'] . ', ' . $addresses['addr_address1']; ?>
                             <?php if (strlen($addresses['addr_address2']) > 0) {
                                 echo ", " . $addresses['addr_address2']; ?>
                             <?php } ?>

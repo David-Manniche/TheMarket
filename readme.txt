@@ -252,7 +252,17 @@ Bugs:
 ---------------------TV-9.2.2.20201020----------------------    
     => 044313 - if admin disable the setting "Enable Linking Shipping Packages To Products" then fatal error is there on "shipping " tab of catalog.
     => 044316 - If we enabled "Shipped By Admin Only" setting then fatal error is there on shipping tab of catalog.
+    => 044338 - Buyer >> view order return request >> submit button should not be in white color
+    => 044349 - when multiple items are there in an order (pickup+digital) then on parent order> table distorts
+    => 044317 - After order is placed on pickup then full pickup address is not there on order in admin and buyer
+    => 044315 - when case is of pickup then on buyer end (on checkout)> name and address label is not listing on address
+    => 044303 - when cart having digital item then on checkout it's displaying COD option which is not applicable
+    => 044362 - user can access another user order details just by changing order id from url
     => 044228 - If we Quit the seller registration process on activation form and then re check the seller registration form then here is some error;
+    => 040055 - wrong commission is getting charged from seller.
+
+    => 044380 - When guest user click on "clear cart" then "Unauthorized Request" gets display
+    
 Enhancements:
     => Tax module upgrade
     => Test cases classes enhancements.

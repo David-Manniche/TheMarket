@@ -486,6 +486,11 @@ class CustomController extends MyAppController
 
         $user = [];
         if ($orderInfo['order_user_id'] > 0) {
+            if (0 < UserAuthentication::getLoggedUserId(true) && $orderInfo['order_user_id'] != UserAuthentication::getLoggedUserId(true)) {
+                Message::addErrorMessage(Labels::getLabel("LBL_INVALID_ORDER", $this->siteLangId));
+                FatApp::redirectUser(UrlHelper::generateUrl());
+            }
+
             $orderProdData = OrderProduct::getOpArrByOrderId($orderId);
             foreach ($orderProdData as $data) {
                 $amount = $data['op_unit_price'] * $data['op_qty'];

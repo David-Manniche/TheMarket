@@ -57,8 +57,8 @@ class AbandonedCart extends MyAppModel
             $rs = $srch->getResultSet();
             $record = FatApp::getDb()->fetch($rs);
             
-            $data[static::DB_TBL_PREFIX . 'email_count'] = $record[static::DB_TBL_PREFIX . 'email_count'];
-            $data[static::DB_TBL_PREFIX . 'discount_notification'] = $record[static::DB_TBL_PREFIX . 'discount_notification'];
+            $data[static::DB_TBL_PREFIX . 'email_count'] = isset($record[static::DB_TBL_PREFIX . 'email_count']) ? $record[static::DB_TBL_PREFIX . 'email_count'] : '';
+            $data[static::DB_TBL_PREFIX . 'discount_notification'] = isset($record[static::DB_TBL_PREFIX . 'discount_notification']) ? $record[static::DB_TBL_PREFIX . 'discount_notification'] : '';
         }
         
         $record = new TableRecord(static::DB_TBL);

@@ -379,15 +379,16 @@ if (!$print) { ?>
                                         <?php echo $childOrder['op_shipping_durations'] . '-' . $childOrder['op_shipping_duration_name']; ?>
                                     </td> */ ?>
                                     <?php /* if (Shipping::FULFILMENT_PICKUP == $childOrder['opshipping_fulfillment_type']) { */ ?>
-                                    <?php if (!empty($orderDetail['pickupAddress'])) { ?>
-                                        <td>
+                                    <td>
+                                        <?php 
+                                        if (Shipping::FULFILMENT_PICKUP == $childOrder['opshipping_fulfillment_type']) { ?>
                                             <p>
                                                 <strong>
                                                     <?php
                                                     $opshippingDate = isset($childOrder['opshipping_date']) ? $childOrder['opshipping_date'] . ' ' : '';
-                                                    $timeSlotFrom = isset($childOrder['opshipping_time_slot_from']) ? date('H:i', strtotime($childOrder['opshipping_time_slot_from'])) . ' - ' : '';
-                                                    $timeSlotTo = isset($childOrder['opshipping_time_slot_to']) ? date('H:i', strtotime($childOrder['opshipping_time_slot_to'])) : '';
-                                                    echo $opshippingDate . ' (' . $timeSlotFrom . $timeSlotTo . ')'; 
+                                                    $timeSlotFrom = isset($childOrder['opshipping_time_slot_from']) ? ' (' . date('H:i', strtotime($childOrder['opshipping_time_slot_from'])) . ' - ' : '';
+                                                    $timeSlotTo = isset($childOrder['opshipping_time_slot_to']) ? date('H:i', strtotime($childOrder['opshipping_time_slot_to'])) . ')' : '';
+                                                    echo $opshippingDate . $timeSlotFrom . $timeSlotTo; 
                                                     ?>
                                                 </strong><br>
                                                 <?php echo $childOrder['addr_name']; ?>,
@@ -402,7 +403,9 @@ if (!$print) { ?>
                                                 echo $address1 . $address2 . $city . $state . $country . $zip;
                                                 ?>
                                             </p>
-                                    <?php } ?>
+                                        <?php } else {
+                                            echo Labels::getLabel('LBL_N/A', $siteLangId);
+                                        } ?>
                                     </td>
                                     <td>
                                         <?php echo $childOrder['op_qty']; ?>

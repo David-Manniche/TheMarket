@@ -7,7 +7,7 @@
                     <?php echo Labels::getLabel('LBL_Billing_to:', $siteLangId); ?>
                 </div>
                 <div class="review-block__content" role="cell">
-                    <p><?php echo $addresses['addr_address1']; ?>
+                    <p><?php echo $addresses['addr_name'] . ', ' . $addresses['addr_address1']; ?>
                         <?php if (strlen($addresses['addr_address2']) > 0) {
                             echo ", " . $addresses['addr_address2']; ?>
                         <?php } ?>
@@ -51,7 +51,7 @@
                                     $fromTime = date('H:i', strtotime($address["time_slot_from"]));
                                     $toTime = date('H:i', strtotime($address["time_slot_to"]));
                                 ?>
-                                    <p><?php echo $address['addr_address1']; ?>
+                                    <p><?php echo $address['addr_name'] . ', ' . $address['addr_address1']; ?>
                                         <?php if (strlen($address['addr_address2']) > 0) {
                                             echo ", " . $address['addr_address2']; ?>
                                         <?php } ?>
@@ -106,7 +106,7 @@
                                                 $fromTime = date('H:i', strtotime($address["time_slot_from"]));
                                                 $toTime = date('H:i', strtotime($address["time_slot_to"]));
                                             ?>
-                                                <p><?php echo $address['addr_address1']; ?>
+                                                <p><?php echo $address['addr_name'] . ', ' . $address['addr_address1']; ?>
                                                     <?php if (strlen($address['addr_address2']) > 0) {
                                                         echo ", " . $address['addr_address2']; ?>
                                                     <?php } ?>

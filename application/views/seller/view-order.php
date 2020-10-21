@@ -145,97 +145,132 @@ if (!empty($orderDetail["thirdPartyorderInfo"]) && isset($orderDetail["thirdPart
                             </div>
                         </div>
                     </div>
-					<div class="js-scrollable table-wrap">
-						<table class="table">
-							<thead>
-								<tr class="">
-									<th><?php echo Labels::getLabel('LBL_Order_Particulars', $siteLangId); ?></th>
-									<?php if (!$print) { ?>
-										<th class="no-print"></th>
-									<?php } ?>
-									<th><?php echo Labels::getLabel('LBL_Qty', $siteLangId); ?></th>
-									<th><?php echo Labels::getLabel('LBL_Price', $siteLangId); ?></th>
-									<?php if ($shippedBySeller) { ?>
-										<th><?php echo Labels::getLabel('LBL_Shipping_Charges', $siteLangId); ?></th>
-									<?php } ?>
-									<?php if ($volumeDiscount) { ?>
-										<th><?php echo Labels::getLabel('LBL_Volume/Loyalty_Discount', $siteLangId); ?></th>
-									<?php } ?>
-									<?php if ($orderDetail['op_tax_collected_by_seller']) { ?>
-										<th><?php echo Labels::getLabel('LBL_Tax_Charges', $siteLangId); ?></th>
-									<?php } ?>
-									<th><?php echo Labels::getLabel('LBL_Total', $siteLangId); ?></th>
-								</tr>
-							</thead>
-							<tbody>
-								<tr>
-									<?php if (!$print) { ?>
-										<td>
-											<div class="pic--cell-left">
-												<?php
-												$prodOrBatchUrl = 'javascript:void(0)';
-												if ($orderDetail['op_is_batch']) {
-													$prodOrBatchUrl = UrlHelper::generateUrl('Products', 'batch', array($orderDetail['op_selprod_id']));
-													$prodOrBatchImgUrl = UrlHelper::getCachedUrl(UrlHelper::generateFileUrl('image', 'BatchProduct', array($orderDetail['op_selprod_id'], $siteLangId, "SMALL"), CONF_WEBROOT_URL), CONF_IMG_CACHE_TIME, '.jpg');
-												} else {
-													if (Product::verifyProductIsValid($orderDetail['op_selprod_id']) == true) {
-														$prodOrBatchUrl = UrlHelper::generateUrl('Products', 'view', array($orderDetail['op_selprod_id']));
-													}
-													$prodOrBatchImgUrl = UrlHelper::getCachedUrl(UrlHelper::generateFileUrl('image', 'product', array($orderDetail['selprod_product_id'], "SMALL", $orderDetail['op_selprod_id'], 0, $siteLangId), CONF_WEBROOT_URL), CONF_IMG_CACHE_TIME, '.jpg');
-												}  ?>
-												<figure class="item__pic"><a href="<?php echo $prodOrBatchUrl; ?>"><img src="<?php echo $prodOrBatchImgUrl; ?>" title="<?php echo $orderDetail['op_product_name']; ?>" alt="<?php echo $orderDetail['op_product_name']; ?>"></a></figure>
-												<!--</td>
-												 <td>-->
-											</div>
-										</td>
-									<?php } ?>
-									<td>
-										<div class="item__description">
-											<?php if ($orderDetail['op_selprod_title'] != '') { ?>
-												<div class="item__title"><a title="<?php echo $orderDetail['op_selprod_title']; ?>" href="<?php echo $prodOrBatchUrl; ?>"><?php echo $orderDetail['op_selprod_title']; ?></a></div>
-												<div class="item__category"><?php echo $orderDetail['op_product_name']; ?></div>
-											<?php } else { ?>
-												<div class="item__brand"><a title="<?php echo $orderDetail['op_product_name']; ?>" href="<?php echo $prodOrBatchUrl; ?>"><?php echo $orderDetail['op_product_name']; ?>
-													</a></div>
-											<?php } ?>
-											<div class="item__brand"><?php echo Labels::getLabel('Lbl_Brand', $siteLangId) ?>: <?php echo CommonHelper::displayNotApplicable($siteLangId, $orderDetail['op_brand_name']); ?></div>
-											<?php if ($orderDetail['op_selprod_options'] != '') { ?>
-												<div class="item__specification"><?php echo $orderDetail['op_selprod_options']; ?></div>
-											<?php } ?>
-											<?php if ($orderDetail['op_shipping_duration_name'] != '') { ?>
-												<div class="item__shipping"><?php echo Labels::getLabel('LBL_Shipping_Method', $siteLangId); ?>: <?php echo $orderDetail['op_shipping_durations'] . '-' . $orderDetail['op_shipping_duration_name']; ?></div>
-										</div>
-									<?php } ?>
-									</td>
-									<td><?php echo $orderDetail['op_qty']; ?></td>
-									<td><?php echo CommonHelper::displayMoneyFormat($orderDetail['op_unit_price'], true, false, true, false, true); ?></td>
+                    <div class="js-scrollable table-wrap">
+                        <table class="table">
+                            <thead>
 
-									<?php if ($shippedBySeller) { ?>
-										<td><?php echo CommonHelper::displayMoneyFormat(CommonHelper::orderProductAmount($orderDetail, 'shipping'), true, false, true, false, true); ?></td>
-									<?php } ?>
+                                <tr class="">
+                                    <th><?php echo Labels::getLabel('LBL_Order_Particulars', $siteLangId); ?></th>
+                                    <?php if (!$print) { ?>
+                                        <th class="no-print"></th>
+                                    <?php } ?>
+                                    <th>
+                                        <?php 
+                                        if (!empty($orderDetail['pickupAddress'])) {
+                                            echo Labels::getLabel('LBL_PICKUP_DETAIL', $siteLangId); 
+                                        } ?>
+                                    </th>
+                                    <th><?php echo Labels::getLabel('LBL_Qty', $siteLangId); ?></th>
+                                    <th><?php echo Labels::getLabel('LBL_Price', $siteLangId); ?></th>
+                                    <?php if ($shippedBySeller) { ?>
+                                        <th><?php echo Labels::getLabel('LBL_Shipping_Charges', $siteLangId); ?></th>
+                                    <?php } ?>
+                                    <?php if ($volumeDiscount) { ?>
+                                        <th><?php echo Labels::getLabel('LBL_Volume/Loyalty_Discount', $siteLangId); ?></th>
+                                    <?php } ?>
+                                    <?php if ($orderDetail['op_tax_collected_by_seller']) { ?>
+                                        <th><?php echo Labels::getLabel('LBL_Tax_Charges', $siteLangId); ?></th>
+                                    <?php } ?>
+                                    <th><?php echo Labels::getLabel('LBL_Total', $siteLangId); ?></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <?php if (!$print) { ?>
+                                        <td>
+                                            <div class="pic--cell-left">
+                                                <?php
+                                                $prodOrBatchUrl = 'javascript:void(0)';
+                                                if ($orderDetail['op_is_batch']) {
+                                                    $prodOrBatchUrl = UrlHelper::generateUrl('Products', 'batch', array($orderDetail['op_selprod_id']));
+                                                    $prodOrBatchImgUrl = UrlHelper::getCachedUrl(UrlHelper::generateFileUrl('image', 'BatchProduct', array($orderDetail['op_selprod_id'], $siteLangId, "SMALL"), CONF_WEBROOT_URL), CONF_IMG_CACHE_TIME, '.jpg');
+                                                } else {
+                                                    if (Product::verifyProductIsValid($orderDetail['op_selprod_id']) == true) {
+                                                        $prodOrBatchUrl = UrlHelper::generateUrl('Products', 'view', array($orderDetail['op_selprod_id']));
+                                                    }
+                                                    $prodOrBatchImgUrl = UrlHelper::getCachedUrl(UrlHelper::generateFileUrl('image', 'product', array($orderDetail['selprod_product_id'], "SMALL", $orderDetail['op_selprod_id'], 0, $siteLangId), CONF_WEBROOT_URL), CONF_IMG_CACHE_TIME, '.jpg');
+                                                }  ?>
+                                                <figure class="item__pic"><a href="<?php echo $prodOrBatchUrl; ?>"><img src="<?php echo $prodOrBatchImgUrl; ?>" title="<?php echo $orderDetail['op_product_name']; ?>" alt="<?php echo $orderDetail['op_product_name']; ?>"></a></figure>
+                                                <!--</td>
+                                                <td>-->
+                                            </div>
+                                        </td>
+                                    <?php } ?>
+                                    <td>
+                                        <div class="item__description">
+                                            <?php if ($orderDetail['op_selprod_title'] != '') { ?>
+                                                <div class="item__title"><a title="<?php echo $orderDetail['op_selprod_title']; ?>" href="<?php echo $prodOrBatchUrl; ?>"><?php echo $orderDetail['op_selprod_title']; ?></a></div>
+                                                <div class="item__category"><?php echo $orderDetail['op_product_name']; ?></div>
+                                            <?php } else { ?>
+                                                <div class="item__brand"><a title="<?php echo $orderDetail['op_product_name']; ?>" href="<?php echo $prodOrBatchUrl; ?>"><?php echo $orderDetail['op_product_name']; ?>
+                                                    </a></div>
+                                            <?php } ?>
+                                            <div class="item__brand"><?php echo Labels::getLabel('Lbl_Brand', $siteLangId) ?>: <?php echo CommonHelper::displayNotApplicable($siteLangId, $orderDetail['op_brand_name']); ?></div>
+                                            <?php if ($orderDetail['op_selprod_options'] != '') { ?>
+                                                <div class="item__specification"><?php echo $orderDetail['op_selprod_options']; ?></div>
+                                            <?php } ?>
+                                            <?php if ($orderDetail['op_shipping_duration_name'] != '') { ?>
+                                                <div class="item__shipping"><?php echo Labels::getLabel('LBL_Shipping_Method', $siteLangId); ?>: <?php echo $orderDetail['op_shipping_durations'] . '-' . $orderDetail['op_shipping_duration_name']; ?></div>
+                                        </div>
+                                    <?php } ?>
+                                    </td>
+                                    <td>
+                                        <?php 
+                                        if (Shipping::FULFILMENT_PICKUP == $orderDetail['opshipping_fulfillment_type']) { ?>
+                                            <p>
+                                                <strong>
+                                                    <?php
+                                                    $opshippingDate = isset($orderDetail['opshipping_date']) ? $orderDetail['opshipping_date'] . ' ' : '';
+                                                    $timeSlotFrom = isset($orderDetail['opshipping_time_slot_from']) ? ' (' . date('H:i', strtotime($orderDetail['opshipping_time_slot_from'])) . ' - ' : '';
+                                                    $timeSlotTo = isset($orderDetail['opshipping_time_slot_to']) ? date('H:i', strtotime($orderDetail['opshipping_time_slot_to'])) . ')' : '';
+                                                    echo $opshippingDate . $timeSlotFrom . $timeSlotTo; 
+                                                    ?>
+                                                </strong><br>
+                                                <?php echo $orderDetail['addr_name']; ?>,
+                                                <?php
+                                                $address1 = !empty($orderDetail['addr_address1']) ? $orderDetail['addr_address1'] : '';
+                                                $address2 = !empty($orderDetail['addr_address2']) ? ', ' . $orderDetail['addr_address2'] : '';
+                                                $city = !empty($orderDetail['addr_city']) ? '<br>' . $orderDetail['addr_city'] : '';
+                                                $state = !empty($orderDetail['state_code']) ? ', ' . $orderDetail['state_code'] : '';
+                                                $country = !empty($orderDetail['country_code']) ? ' ' . $orderDetail['country_code'] : '';
+                                                $zip = !empty($orderDetail['addr_zip']) ? '(' . $orderDetail['addr_zip'] . ')' : '';
 
-									<?php if ($volumeDiscount) { ?>
-										<td><?php echo CommonHelper::displayMoneyFormat($volumeDiscount, true, false, true, false, true); ?></td>
-									<?php } ?>
+                                                echo $address1 . $address2 . $city . $state . $country . $zip;
+                                                ?>
+                                            </p>
+                                        <?php } else {
+                                            echo Labels::getLabel('LBL_N/A', $siteLangId);
+                                        } ?>
+                                    </td>
+                                    <td><?php echo $orderDetail['op_qty']; ?></td>
+                                    <td><?php echo CommonHelper::displayMoneyFormat($orderDetail['op_unit_price'], true, false, true, false, true); ?></td>
 
-									<?php if ($orderDetail['op_tax_collected_by_seller']) { ?>
-										<td>
-											<?php
-											if (empty($orderDetail['taxOptions'])) {
-												echo CommonHelper::displayMoneyFormat(CommonHelper::orderProductAmount($orderDetail, 'TAX'), true, false, true, false, true);
-											} else {
-												foreach ($orderDetail['taxOptions'] as $key => $val) { ?>
-													<p><strong><?php echo CommonHelper::displayTaxPercantage($val, true) ?>:</strong> <?php echo CommonHelper::displayMoneyFormat($val['value'], true, false, true, false, true); ?></p>
-											<?php }
-											} ?>
-										</td>
-									<?php } ?>
+                                    <?php if ($shippedBySeller) { ?>
+                                        <td><?php echo CommonHelper::displayMoneyFormat(CommonHelper::orderProductAmount($orderDetail, 'shipping'), true, false, true, false, true); ?></td>
+                                    <?php } ?>
 
-									<td><?php echo CommonHelper::displayMoneyFormat(CommonHelper::orderProductAmount($orderDetail, 'netamount', false, User::USER_TYPE_SELLER), true, false, true, false, true); ?></td>
-								</tr>
-							</tbody>
-						</table>
-					</div>
+                                    <?php if ($volumeDiscount) { ?>
+                                        <td><?php echo CommonHelper::displayMoneyFormat($volumeDiscount, true, false, true, false, true); ?></td>
+                                    <?php } ?>
+
+                                    <?php if ($orderDetail['op_tax_collected_by_seller']) { ?>
+                                        <td>
+                                            <?php
+                                            if (empty($orderDetail['taxOptions'])) {
+                                                echo CommonHelper::displayMoneyFormat(CommonHelper::orderProductAmount($orderDetail, 'TAX'), true, false, true, false, true);
+                                            } else {
+                                                foreach ($orderDetail['taxOptions'] as $key => $val) { ?>
+                                                    <p><strong><?php echo CommonHelper::displayTaxPercantage($val, true) ?>:</strong> <?php echo CommonHelper::displayMoneyFormat($val['value'], true, false, true, false, true); ?></p>
+                                            <?php }
+                                            } ?>
+                                        </td>
+                                    <?php } ?>
+
+                                    <td><?php echo CommonHelper::displayMoneyFormat(CommonHelper::orderProductAmount($orderDetail, 'netamount', false, User::USER_TYPE_SELLER), true, false, true, false, true); ?></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
                     <div class="divider"></div>
                     <div class="gap"></div>
                     <div class="gap"></div>
@@ -308,38 +343,6 @@ if (!empty($orderDetail["thirdPartyorderInfo"]) && isset($orderDetail["thirdPart
                                 } ?>
                                 <div class="info--order">
                                     <p><?php echo $shippingAddress; ?></p>
-                                </div>
-                            </div>
-                        <?php } ?>
-                        <?php if (!empty($orderDetail['pickupAddress'])) { ?>
-                            <div class="col-lg-6 col-md-6 mb-4">
-                                <h5><?php echo Labels::getLabel('LBL_Pickup_Details', $siteLangId); ?></h5>
-                                <?php $pickupAddress = $orderDetail['pickupAddress']['oua_name'] . '<br>';
-                                if ($orderDetail['pickupAddress']['oua_address1'] != '') {
-                                    $pickupAddress .= $orderDetail['pickupAddress']['oua_address1'] . '<br>';
-                                }
-
-                                if ($orderDetail['pickupAddress']['oua_address2'] != '') {
-                                    $pickupAddress .= $orderDetail['pickupAddress']['oua_address2'] . '<br>';
-                                }
-
-                                if ($orderDetail['pickupAddress']['oua_city'] != '') {
-                                    $pickupAddress .= $orderDetail['pickupAddress']['oua_city'] . ',';
-                                }
-
-                                if ($orderDetail['pickupAddress']['oua_zip'] != '') {
-                                    $pickupAddress .= $orderDetail['pickupAddress']['oua_state'];
-                                }
-
-                                if ($orderDetail['pickupAddress']['oua_zip'] != '') {
-                                    $pickupAddress .= '-' . $orderDetail['pickupAddress']['oua_zip'];
-                                }
-
-                                if ($orderDetail['pickupAddress']['oua_phone'] != '') {
-                                    $pickupAddress .= '<br>' . $orderDetail['pickupAddress']['oua_phone'];
-                                } ?>
-                                <div class="info--order">
-                                    <p><?php echo $pickupAddress; ?></p>
                                 </div>
                             </div>
                         <?php } ?>
