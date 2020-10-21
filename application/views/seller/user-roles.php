@@ -7,7 +7,8 @@
                     <div class="card-header">
                         <h5 class="card-title "><?php echo $modulesArr[$key]; ?></h5>
                     </div>
-                    <div class="card-body ">
+                    <div class="card-body">
+                    <div class="js-scrollable table-wrap">
                         <?php 
                         $arr_flds = array(
                             'listserial' => Labels::getLabel('LBL_#', $siteLangId),
@@ -61,6 +62,7 @@
                         }
                         echo $tbl->getHtml();
                         ?>
+                    </div>
                     </div>
                 </div>
             </div>

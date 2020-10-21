@@ -1,5 +1,8 @@
 <?php defined('SYSTEM_INIT') or die('Invalid Usage.');
-$arr_flds = array(
+if (!empty($productsData)) { ?>
+<div class="js-scrollable table-wrap">
+<?php } ?>
+<?php $arr_flds = array(
     'listserial' => Labels::getLabel('LBL_#', $siteLangId),
     'image' => '',
     'product_name' => Labels::getLabel('LBL_Name', $siteLangId),
@@ -53,8 +56,10 @@ if (empty($productsData)) {
     $frm->setFormTagAttribute('onsubmit', 'formAction(this, reloadListProduct); return(false);');
     echo $frm->getFormTag();
     echo $tbl->getHtml(); ?>
-    </form> <?php $postedData['page'] = $page;
-            echo FatUtility::createHiddenFormFromData($postedData, array('name' => 'frmProductSearchPaging'));
-            $pagingArr = array('pageCount' => $pageCount, 'page' => $page, 'recordCount' => $recordCount, 'siteLangId' => $siteLangId);
-            $this->includeTemplate('_partial/pagination.php', $pagingArr, false);
-        }
+    </form>
+	</div>
+<?php $postedData['page'] = $page;
+	echo FatUtility::createHiddenFormFromData($postedData, array('name' => 'frmProductSearchPaging'));
+	$pagingArr = array('pageCount' => $pageCount, 'page' => $page, 'recordCount' => $recordCount, 'siteLangId' => $siteLangId);
+	$this->includeTemplate('_partial/pagination.php', $pagingArr, false);
+}

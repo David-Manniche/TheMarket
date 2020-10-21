@@ -1,4 +1,5 @@
 <?php defined('SYSTEM_INIT') or die('Invalid Usage.'); ?>
+<div class="js-scrollable table-wrap">
 <?php
 $arr_flds = array(
 	'image' => '',
@@ -56,4 +57,5 @@ if (count($messagesList) == 0) {
 } else {
 	$postedData['page'] = $page;
 	echo FatUtility::createHiddenFormFromData($postedData, array('name' => 'frmCatalogRequestMsgsSrchPaging'));
-}
+} ?>
+</div>

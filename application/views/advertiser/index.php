@@ -113,64 +113,65 @@
                             <?php } ?>
                         </div>
                         <div class="card-body ">
-                            <table class="table table-justified">                                
-                            <thead>
-                                    <tr class="">
-                                        <th colspan="2"><?php echo Labels::getLabel('LBL_Promotions', $siteLangId);?></th>
-                                        <th ><?php echo Labels::getLabel('LBL_Type', $siteLangId);?></th>
-                                        <th ><?php echo Labels::getLabel('LBL_CPC', $siteLangId);?></th>
-                                        <th ><?php echo Labels::getLabel('LBL_Budget', $siteLangId);?></th>
-                                        <th><?php echo Labels::getLabel('LBL_Clicks', $siteLangId);?></th>
-                                        <th><?php echo Labels::getLabel('LBL_Duration', $siteLangId);?></th>
-                                        <th><?php echo Labels::getLabel('LBL_Approved', $siteLangId);?></th>
-                                        <th></th>
-                                    </tr>
-                                    </thead>
-                                    <tbody>
-                                    <?php if (count($activePromotions) > 0) {
-                                        $arrYesNo = applicationConstants::getYesNoArr($siteLangId);
-                                        foreach ($activePromotions as $promotionId => $row) {
-                                            $duraionStr = Labels::getLabel('LBL_Start_Date', $siteLangId).' : '.FatDate::format($row[    'promotion_start_date']).'<br>';
-                                            $duraionStr.= Labels::getLabel('LBL_End_Date', $siteLangId).' : '.FatDate::format($row['promotion_end_date']); ?>
-                                    <tr>
-                                        <td  colspan="2">
-                                            <?php echo $row['promotion_name']; ?>
-                                        </td>
-                                        <td><?php echo $typeArr[$row['promotion_type']]; ?>
-                                        </td>
-                                        <td>
-                                            <?php echo CommonHelper::displayMoneyFormat($row['promotion_cpc']); ?>
-                                        </td>
-                                        <td>
-                                            <?php echo CommonHelper::displayMoneyFormat($row['promotion_budget']) ; ?>
-                                        </td>
-                                        <td>
-                                            <?php echo FatUtility::int($row['clicks']); ?>
-                                        </td>
-                                        <td>
-                                            <?php   echo $duraionStr; ?>
-                                        </td>
-                                        <td>
-                                            <?php echo $arrYesNo[$row['promotion_approved']]; ?>
-                                        </td>
-                                        <td>
-                                            <ul class="actions">
-                                                <li><a  title="<?php echo Labels::getLabel('LBL_Analytics', $siteLangId); ?>"   href="<?php echo UrlHelper::generateUrl('advertiser', 'analytics', array($row['promotion_id'])); ?>"><i class="far fa-file-alt"></i></a></li>
-                                            </ul>
-                                        </td>
-                                    </tr>
-                                            <?php
-                                        }
-                                    } else { ?>
-                                    <tr>
-                                        <td colspan="8">
-                                            <?php $this->includeTemplate('_partial/no-record-found.php', array('siteLangId'=>$siteLangId), false); ?>
-                                        </td>
-                                    </tr>
-                                    <?php } ?>
-                                </tbody>
-                                
-                            </table>
+							<div class="js-scrollable table-wrap">
+								<table class="table table-justified">                                
+								    <thead>
+										<tr class="">
+											<th colspan="2"><?php echo Labels::getLabel('LBL_Promotions', $siteLangId);?></th>
+											<th ><?php echo Labels::getLabel('LBL_Type', $siteLangId);?></th>
+											<th ><?php echo Labels::getLabel('LBL_CPC', $siteLangId);?></th>
+											<th ><?php echo Labels::getLabel('LBL_Budget', $siteLangId);?></th>
+											<th><?php echo Labels::getLabel('LBL_Clicks', $siteLangId);?></th>
+											<th><?php echo Labels::getLabel('LBL_Duration', $siteLangId);?></th>
+											<th><?php echo Labels::getLabel('LBL_Approved', $siteLangId);?></th>
+											<th></th>
+										</tr>
+										</thead>
+										<tbody>
+										<?php if (count($activePromotions) > 0) {
+											$arrYesNo = applicationConstants::getYesNoArr($siteLangId);
+											foreach ($activePromotions as $promotionId => $row) {
+												$duraionStr = Labels::getLabel('LBL_Start_Date', $siteLangId).' : '.FatDate::format($row[    'promotion_start_date']).'<br>';
+												$duraionStr.= Labels::getLabel('LBL_End_Date', $siteLangId).' : '.FatDate::format($row['promotion_end_date']); ?>
+										<tr>
+											<td  colspan="2">
+												<?php echo $row['promotion_name']; ?>
+											</td>
+											<td><?php echo $typeArr[$row['promotion_type']]; ?>
+											</td>
+											<td>
+												<?php echo CommonHelper::displayMoneyFormat($row['promotion_cpc']); ?>
+											</td>
+											<td>
+												<?php echo CommonHelper::displayMoneyFormat($row['promotion_budget']) ; ?>
+											</td>
+											<td>
+												<?php echo FatUtility::int($row['clicks']); ?>
+											</td>
+											<td>
+												<?php   echo $duraionStr; ?>
+											</td>
+											<td>
+												<?php echo $arrYesNo[$row['promotion_approved']]; ?>
+											</td>
+											<td>
+												<ul class="actions">
+													<li><a  title="<?php echo Labels::getLabel('LBL_Analytics', $siteLangId); ?>"   href="<?php echo UrlHelper::generateUrl('advertiser', 'analytics', array($row['promotion_id'])); ?>"><i class="far fa-file-alt"></i></a></li>
+												</ul>
+											</td>
+										</tr>
+												<?php
+											}
+										} else { ?>
+										<tr>
+											<td colspan="8">
+												<?php $this->includeTemplate('_partial/no-record-found.php', array('siteLangId'=>$siteLangId), false); ?>
+											</td>
+										</tr>
+										<?php } ?>
+									</tbody>
+								</table>
+							</div>
                         </div>
                     </div>
                 </div>
@@ -188,68 +189,68 @@
                             <?php } ?>
                         </div>
                         <div class="card-body ">
-                            <table class="table">
-                                <thead>
-                               
-                                    <tr class="">
-                                        <th><?php echo Labels::getLabel('LBL_Txn._Id', $siteLangId);?></th>
-                                        <th><?php echo Labels::getLabel('LBL_Date', $siteLangId);?></th>
-                                        <th><?php echo Labels::getLabel('LBL_Credit', $siteLangId);?></th>
-                                        <th><?php echo Labels::getLabel('LBL_Debit', $siteLangId);?></th>
-                                        <th><?php echo Labels::getLabel('LBL_Balance', $siteLangId);?></th>
-                                        <th><?php echo Labels::getLabel('LBL_Comments', $siteLangId);?></th>
-                                        <th><?php echo Labels::getLabel('LBL_Status', $siteLangId);?></th>
-                                    </tr>
+                            <div class="js-scrollable table-wrap">
+                                <table class="table">
+                                    <thead>
+                                        <tr class="">
+                                            <th><?php echo Labels::getLabel('LBL_Txn._Id', $siteLangId);?></th>
+                                            <th><?php echo Labels::getLabel('LBL_Date', $siteLangId);?></th>
+                                            <th><?php echo Labels::getLabel('LBL_Credit', $siteLangId);?></th>
+                                            <th><?php echo Labels::getLabel('LBL_Debit', $siteLangId);?></th>
+                                            <th><?php echo Labels::getLabel('LBL_Balance', $siteLangId);?></th>
+                                            <th><?php echo Labels::getLabel('LBL_Comments', $siteLangId);?></th>
+                                            <th><?php echo Labels::getLabel('LBL_Status', $siteLangId);?></th>
+                                        </tr>
                                     </thead>
                                     <tbody>
-                                    <?php if (count($transactions) > 0) {
-                                        foreach ($transactions as $row) { ?>
-                                    <tr>
-                                        <td>
-                                            <div class="txn__id">
-                                                <?php echo Labels::getLabel('Lbl_Txn._Id', $siteLangId)?>: <?php echo Transactions::formatTransactionNumber($row['utxn_id']); ?>
-                                            </div>
-                                        </td>
-                                        <td>
-                                            <div class="txn__date">
-                                                <?php echo FatDate::format($row['utxn_date']);?>
-                                            </div>
-                                        </td>
-                                        <td>
-                                            <div class="txn__credit">
-                                                <?php echo CommonHelper::displayMoneyFormat($row['utxn_credit']);?>
-                                            </div>
-                                        </td>
-                                        <td>
-                                            <div class="txn__debit">
-                                                <?php echo CommonHelper::displayMoneyFormat($row['utxn_debit']);?>
-                                            </div>
-                                        </td>
-                                        <td>
-                                            <div class="txn__balance">
-                                                <?php echo CommonHelper::displayMoneyFormat($row['balance']);?>
-                                            </div>
-                                        </td>
-                                        <td>
-                                            <div class="txn__comments">
-                                                <?php echo $row['utxn_comments'];?>
-                                            </div>
-                                        </td>
-                                        <td>
-                                        <span class="label label-inline <?php echo $txnStatusClassArr[$row['utxn_status']];?>"> <?php echo $txnStatusArr[$row['utxn_status']];?> </span>
-                                        </td>
-                                    </tr>
-                                        <?php }
-                                    } else { ?>
-                                    <tr>
-                                        <td colspan="7">
-                                            <?php $this->includeTemplate('_partial/no-record-found.php', array('siteLangId'=>$siteLangId), false); ?>
-                                        </td>
-                                    </tr>
-                                    <?php } ?>
-                                </tbody>
-                                
-                            </table>
+                                        <?php if (count($transactions) > 0) {
+                                            foreach ($transactions as $row) { ?>
+                                        <tr>
+                                            <td>
+                                                <div class="txn__id">
+                                                    <?php echo Labels::getLabel('Lbl_Txn._Id', $siteLangId)?>: <?php echo Transactions::formatTransactionNumber($row['utxn_id']); ?>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <div class="txn__date">
+                                                    <?php echo FatDate::format($row['utxn_date']);?>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <div class="txn__credit">
+                                                    <?php echo CommonHelper::displayMoneyFormat($row['utxn_credit']);?>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <div class="txn__debit">
+                                                    <?php echo CommonHelper::displayMoneyFormat($row['utxn_debit']);?>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <div class="txn__balance">
+                                                    <?php echo CommonHelper::displayMoneyFormat($row['balance']);?>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <div class="txn__comments">
+                                                    <?php echo $row['utxn_comments'];?>
+                                                </div>
+                                            </td>
+                                            <td>
+                                            <span class="label label-inline <?php echo $txnStatusClassArr[$row['utxn_status']];?>"> <?php echo $txnStatusArr[$row['utxn_status']];?> </span>
+                                            </td>
+                                        </tr>
+                                            <?php }
+                                        } else { ?>
+                                        <tr>
+                                            <td colspan="7">
+                                                <?php $this->includeTemplate('_partial/no-record-found.php', array('siteLangId'=>$siteLangId), false); ?>
+                                            </td>
+                                        </tr>
+                                        <?php } ?>
+                                    </tbody>
+                                </table>
+                            </div>
                         </div>
                     </div>
                 </div>

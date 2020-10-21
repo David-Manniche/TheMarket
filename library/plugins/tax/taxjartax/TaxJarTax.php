@@ -150,7 +150,7 @@ class TaxJarTax extends TaxBase
         }
 
         if (isset($taxes->breakdown->shipping)) {
-            $itemId = $taxes->breakdown->line_items{0}->id;
+            $itemId = $taxes->breakdown->line_items[0]->id;
             foreach ($rateTypes as $key=> $name) {
                 if (isset($taxes->breakdown->shipping->$name)) {
                     if (isset($formatedTax[$itemId]['taxDetails'][$types[$key]]['value'])) {

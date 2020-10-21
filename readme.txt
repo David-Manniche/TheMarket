@@ -258,7 +258,9 @@ Bugs:
     => 044315 - when case is of pickup then on buyer end (on checkout)> name and address label is not listing on address
     => 044303 - when cart having digital item then on checkout it's displaying COD option which is not applicable
     => 044362 - user can access another user order details just by changing order id from url
-
+    => 044228 - If we Quit the seller registration process on activation form and then re check the seller registration form then here is some error;
+    => 040055 - wrong commission is getting charged from seller.
+    
 Enhancements:
     => Tax module upgrade
     => Test cases classes enhancements.

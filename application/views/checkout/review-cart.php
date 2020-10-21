@@ -16,7 +16,7 @@
             </div>
         </div>
         <?php }?>
-        <div class="short-detail">
+        <div class="short-detail js-scrollable table-wrap">
             <table class="table cart--full">
                 <tbody>
                     <?php
@@ -75,7 +75,7 @@
                 </tbody>
             </table>
         </div>
-        <div class="cartdetail__footer">
+        <div class="cartdetail__footer js-scrollable table-wrap">
             <table  class="table--justify">
                 <tr>
                     <td><?php echo Labels::getLabel('LBL_Sub_Total', $siteLangId); ?></td>
