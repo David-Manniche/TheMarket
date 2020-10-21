@@ -253,6 +253,7 @@ Bugs:
     => 044313 - if admin disable the setting "Enable Linking Shipping Packages To Products" then fatal error is there on "shipping " tab of catalog.
     => 044316 - If we enabled "Shipped By Admin Only" setting then fatal error is there on shipping tab of catalog.
     => 044228 - If we Quit the seller registration process on activation form and then re check the seller registration form then here is some error;
+    => 040055 - wrong commission is getting charged from seller.
 Enhancements:
     => Tax module upgrade
     => Test cases classes enhancements.
