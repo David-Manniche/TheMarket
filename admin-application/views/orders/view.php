@@ -172,9 +172,9 @@ if ($order['order_reward_point_used'] > 0) {
                                                 <strong>
                                                     <?php
                                                     $opshippingDate = isset($op['opshipping_date']) ? $op['opshipping_date'] . ' ' : '';
-                                                    $timeSlotFrom = isset($op['opshipping_time_slot_from']) ? date('H:i', strtotime($op['opshipping_time_slot_from'])) . ' - ' : '';
-                                                    $timeSlotTo = isset($op['opshipping_time_slot_to']) ? date('H:i', strtotime($op['opshipping_time_slot_to'])) : '';
-                                                    echo $opshippingDate . ' (' . $timeSlotFrom . $timeSlotTo . ')'; 
+                                                    $timeSlotFrom = isset($op['opshipping_time_slot_from']) ? ' (' . date('H:i', strtotime($op['opshipping_time_slot_from'])) . ' - ' : '';
+                                                    $timeSlotTo = isset($op['opshipping_time_slot_to']) ? date('H:i', strtotime($op['opshipping_time_slot_to'])) . ')' : '';
+                                                    echo $opshippingDate . $timeSlotFrom . $timeSlotTo; 
                                                     ?>
                                                 </strong><br>
                                                 <?php echo $op['addr_name']; ?>,
@@ -195,10 +195,12 @@ if ($order['order_reward_point_used'] > 0) {
                                             </strong>
                                             <?php echo CommonHelper::displayNotApplicable($adminLangId, $op["opshipping_label"]); ?>
                                             <br>
-                                            <strong>
-                                                <?php echo Labels::getLabel('LBL_SHIPPING_SERVICES:', $adminLangId); ?>
-                                            </strong>
-                                            <?php echo CommonHelper::displayNotApplicable($adminLangId, $op["opshipping_service_code"]);
+                                            <?php if(!empty($op["opshipping_service_code"])) { ?>
+                                                <strong>
+                                                    <?php echo Labels::getLabel('LBL_SHIPPING_SERVICES:', $adminLangId); ?>
+                                                </strong>
+                                                <?php echo CommonHelper::displayNotApplicable($adminLangId, $op["opshipping_service_code"]);
+                                            }
                                             $orderStatusLbl = '';
                                             if (!empty($op["thirdPartyorderInfo"]) && isset($op["thirdPartyorderInfo"]['orderStatus'])) {
                                                 $orderStatus = $op["thirdPartyorderInfo"]['orderStatus'];

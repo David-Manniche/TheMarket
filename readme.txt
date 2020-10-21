@@ -254,6 +254,7 @@ Bugs:
     => 044316 - If we enabled "Shipped By Admin Only" setting then fatal error is there on shipping tab of catalog.
     => 044338 - Buyer >> view order return request >> submit button should not be in white color
     => 044349 - when multiple items are there in an order (pickup+digital) then on parent order> table distorts
+    => 044317 - After order is placed on pickup then full pickup address is not there on order in admin and buyer
 
 Enhancements:
     => Tax module upgrade
