@@ -1,11 +1,7 @@
 <?php
 
 class GuestUserController extends MyAppController
-{
-    private const FB_LOGIN = 1;
-    private const GOOGLE_LOGIN = 2;
-    private const APPLE_LOGIN = 3;
-    
+{    
     public function loginForm($isRegisterForm = 0)
     {
         /* if(UserAuthentication::doCookieLogin()){
