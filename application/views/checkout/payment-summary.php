@@ -279,7 +279,7 @@ $rewardPoints = UserRewardBreakup::rewardPointBalance(UserAuthentication::getLog
                 <ul class="nav nav-payments <?php echo 1 == count($paymentMethods) ? 'd-none' : ''; ?>" role="tablist" id="payment_methods_tab">
                     <?php foreach ($paymentMethods as $key => $val) {
                         $pmethodCode = $val['plugin_code'];
-                        if ($cartHasPhysicalProduct && strtolower($pmethodCode) == "cashondelivery") {
+                        if ($cartHasDigitalProduct && strtolower($pmethodCode) == "cashondelivery") {
                             continue;
                         }
                         $pmethodId = $val['plugin_id'];
