@@ -252,7 +252,7 @@ Bugs:
 ---------------------TV-9.2.2.20201020----------------------    
     => 044313 - if admin disable the setting "Enable Linking Shipping Packages To Products" then fatal error is there on "shipping " tab of catalog.
     => 044316 - If we enabled "Shipped By Admin Only" setting then fatal error is there on shipping tab of catalog.
-
+    => 044228 - If we Quit the seller registration process on activation form and then re check the seller registration form then here is some error;
 Enhancements:
     => Tax module upgrade
     => Test cases classes enhancements.

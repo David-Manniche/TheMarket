@@ -71,7 +71,13 @@ class SupplierController extends MyAppController
             FatApp::redirectUser(UrlHelper::generateUrl('guest-user', 'registration-form'));
         }
         $frm = $this->getSellerForm();
-        $postedData = $frm->getFormDataFromArray(FatApp::getPostedData());
+
+        $post = FatApp::getPostedData();
+        $postedData = [];
+        if (!empty($post)) {
+            $postedData = $frm->getFormDataFromArray($post);
+        }
+
         $obj = new Extrapage();
         $slogan = $obj->getContentByPageType(Extrapage::SELLER_BANNER_SLOGAN, $this->siteLangId);
         $this->set('slogan', $slogan);
