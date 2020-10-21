@@ -253,6 +253,7 @@ Bugs:
     => 044313 - if admin disable the setting "Enable Linking Shipping Packages To Products" then fatal error is there on "shipping " tab of catalog.
     => 044316 - If we enabled "Shipped By Admin Only" setting then fatal error is there on shipping tab of catalog.
     => 044338 - Buyer >> view order return request >> submit button should not be in white color
+    => 044349 - when multiple items are there in an order (pickup+digital) then on parent order> table distorts
 
 Enhancements:
     => Tax module upgrade
