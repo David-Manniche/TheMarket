@@ -252,6 +252,7 @@ Bugs:
 ---------------------TV-9.2.2.20201020----------------------    
     => 044313 - if admin disable the setting "Enable Linking Shipping Packages To Products" then fatal error is there on "shipping " tab of catalog.
     => 044316 - If we enabled "Shipped By Admin Only" setting then fatal error is there on shipping tab of catalog.
+    => 044338 - Buyer >> view order return request >> submit button should not be in white color
 
 Enhancements:
     => Tax module upgrade
