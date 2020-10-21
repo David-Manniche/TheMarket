@@ -256,6 +256,7 @@ Bugs:
     => 044349 - when multiple items are there in an order (pickup+digital) then on parent order> table distorts
     => 044317 - After order is placed on pickup then full pickup address is not there on order in admin and buyer
     => 044315 - when case is of pickup then on buyer end (on checkout)> name and address label is not listing on address
+    => 044303 - when cart having digital item then on checkout it's displaying COD option which is not applicable
 
 Enhancements:
     => Tax module upgrade
