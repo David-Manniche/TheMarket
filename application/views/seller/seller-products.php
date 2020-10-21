@@ -1,5 +1,6 @@
-<?php defined('SYSTEM_INIT') or die('Invalid Usage.');
-$arr_flds = array();
+<?php defined('SYSTEM_INIT') or die('Invalid Usage.'); ?>
+<div class="js-scrollable table-wrap">
+<?php $arr_flds = array();
 if (count($arrListing) > 0 && $canEdit) {
     $arr_flds['select_all'] = '';
 }
@@ -132,6 +133,7 @@ if (count($arrListing) == 0) {
     echo $frm->getFieldHtml('status');
     echo $tbl->getHtml(); ?>
     </form>
+</div>
 <?php
 }
 

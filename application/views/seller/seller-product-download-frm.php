@@ -64,7 +64,7 @@ $selprodDownloadFrm->developerTags['fld_default_col'] = 4; ?>
                         </div>
                     </div>
                     <div class="row">
-                        <div class="col-md-12 filesList<?php echo $key; ?>">
+                        <div class="col-md-12 filesList<?php echo $key; ?> js-scrollable table-wrap">
                             <?php
                             $arr_flds = array(
                                 'listserial' => Labels::getLabel('LBL_#', $siteLangId),

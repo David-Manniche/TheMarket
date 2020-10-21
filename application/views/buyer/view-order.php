@@ -257,6 +257,7 @@ if (!$print) { ?>
                         </div>
                     <?php
                     } ?>
+					<div class="js-scrollable table-wrap">
                     <table class="table table-justified">
                         <thead>
                             <?php
@@ -518,6 +519,7 @@ if (!$print) { ?>
                             <?php } ?>
                         </tbody>
                     </table>
+					</div>
                     <div class="row mt-4">
                         <div class="col-lg-6 col-md-6 mb-4">
                             <h6>
@@ -605,6 +607,7 @@ if (!$print) { ?>
                             <h6>
                                 <?php echo Labels::getLabel('LBL_Posted_Comments', $siteLangId); ?>
                             </h6>
+							<div class="js-scrollable table-wrap">
                             <table class="table">
                                 <thead>
                                     <tr class="">
@@ -666,6 +669,7 @@ if (!$print) { ?>
                                     } ?>
                                 </tbody>
                             </table>
+							</div>
                         </div>
                     <?php } ?>
                     <?php if (!empty($orderDetail['payments'])) { ?>
@@ -674,6 +678,7 @@ if (!$print) { ?>
                             <h6>
                                 <?php echo Labels::getLabel('LBL_Payment_History', $siteLangId); ?>
                             </h6>
+							<div class="js-scrollable table-wrap">
                             <table class="table">
                                 <thead>
                                     <tr class="">
@@ -740,6 +745,7 @@ if (!$print) { ?>
                                     } ?>
                                 </tbody>
                             </table>
+							</div>
                         </div>
                     <?php } ?>
                     <?php if (!empty($digitalDownloads)) { ?>
@@ -748,6 +754,7 @@ if (!$print) { ?>
                             <h6>
                                 <?php echo Labels::getLabel('LBL_Downloads', $siteLangId); ?>
                             </h6>
+							<div class="js-scrollable table-wrap">
                             <table class="table">
                                 <thead>
                                     <tr class="">
@@ -834,6 +841,7 @@ if (!$print) { ?>
                                     } ?>
                                 </tbody>
                             </table>
+							</div>
                         </div>
                     <?php } ?>
                     <?php if (!empty($digitalDownloadLinks)) { ?>
@@ -842,6 +850,7 @@ if (!$print) { ?>
                             <h6>
                                 <?php echo Labels::getLabel('LBL_Download_Links', $siteLangId); ?>
                             </h6>
+							<div class="js-scrollable table-wrap">
                             <table class="table">
                                 <thead>
                                     <tr class="">
@@ -903,6 +912,7 @@ if (!$print) { ?>
                                     } ?>
                                 </tbody>
                             </table>
+							</div>
                         </div>
                     <?php } ?>
                     <?php

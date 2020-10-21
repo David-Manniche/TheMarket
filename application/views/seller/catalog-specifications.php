@@ -17,7 +17,7 @@ if (count($productSpecifications) > 0) {
     ?>
     <div class="row" dir="<?php echo $layout; ?>">
         <div class="col-md-12">
-            <div class="tablewrap">
+            <div class="tablewrap js-scrollable table-wrap">
                 <?php
                 $arr_flds = array(
                     'prod_spec_name' => Labels::getLabel('LBL_Specification_Name', $siteLangId),

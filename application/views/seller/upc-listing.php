@@ -1,6 +1,6 @@
 <?php defined('SYSTEM_INIT') or die('Invalid Usage.'); ?>
 <?php if (!empty($optionCombinations)) {  ?>
-    <div class="variants-wrap">
+    <div class="variants-wrap js-scrollable table-wrap">
         <table width="100%" class="table-fixed-header">
             <thead>
                 <tr>

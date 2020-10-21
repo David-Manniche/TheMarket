@@ -66,6 +66,7 @@
 
 
                 <?php if (!empty($request)) { ?>
+				<div class="js-scrollable table-wrap">
                 <table class="table">
                     <tbody>
                         <tr class="">
@@ -109,6 +110,8 @@
                         </tr>
                     </tbody>
                 </table>
+				</div>
+				<div class="js-scrollable table-wrap">
                 <table class="table">
                     <tbody>
                         <tr class="">
@@ -152,6 +155,7 @@
                         </tr>
                     </tbody>
                 </table>
+				</div>
                 <?php }    ?>
                 <?php if (!$print) { ?>
                 <div class="no-print">

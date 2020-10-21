@@ -92,40 +92,40 @@
                 <p><?php echo Labels::getLabel('LBL_Shipping_Rates', $siteLangId);?>
                     <a href="#shipRates" rel="facebox"><i class="fa fa-question-circle"></i></a></p>
                 <div id="shipRates" style="display:none">
-                    <div>
+                    <div class="js-scrollable table-wrap">
                         <?php
-                                $arr_flds = array(
-                                    'country_name'=> Labels::getLabel('LBL_Ship_to', $siteLangId),
-                                    'pship_charges'=> Labels::getLabel('LBL_Cost', $siteLangId),
-                                    'pship_additional_charges'=> Labels::getLabel('LBL_With_Another_item', $siteLangId),
-                                );
-                                $tbl = new HtmlElement('table', array('width'=>'100%', 'class'=>'table'));
-                                $th = $tbl->appendElement('thead')->appendElement('tr');
-                                foreach ($arr_flds as $val) {
-                                    $e = $th->appendElement('th', array(), $val);
-                                }
-                                foreach ($shippingRates as $sn => $row) {
-                                    $tr = $tbl->appendElement('tr');
+						$arr_flds = array(
+							'country_name'=> Labels::getLabel('LBL_Ship_to', $siteLangId),
+							'pship_charges'=> Labels::getLabel('LBL_Cost', $siteLangId),
+							'pship_additional_charges'=> Labels::getLabel('LBL_With_Another_item', $siteLangId),
+						);
+						$tbl = new HtmlElement('table', array('width'=>'100%', 'class'=>'table'));
+						$th = $tbl->appendElement('thead')->appendElement('tr');
+						foreach ($arr_flds as $val) {
+							$e = $th->appendElement('th', array(), $val);
+						}
+						foreach ($shippingRates as $sn => $row) {
+							$tr = $tbl->appendElement('tr');
 
-                                    foreach ($arr_flds as $key => $val) {
-                                        $td = $tr->appendElement('td');
-                                        switch ($key) {
-                                            case 'pship_additional_charges':
-                                                $td->appendElement('plaintext', array(), CommonHelper::displayMoneyFormat($row[$key]));
-                                                break;
-                                            case 'pship_charges':
-                                                $td->appendElement('plaintext', array(), CommonHelper::displayMoneyFormat($row[$key]));
-                                                break;
-                                            case 'country_name':
-                                                $td->appendElement('plaintext', array(), Product::getProductShippingTitle($siteLangId, $row), true);
-                                                break;
-                                            default:
-                                                $td->appendElement('plaintext', array(), $row[$key], true);
-                                                break;
-                                        }
-                                    }
-                                }
-                                echo $tbl->getHtml(); ?>
+							foreach ($arr_flds as $key => $val) {
+								$td = $tr->appendElement('td');
+								switch ($key) {
+									case 'pship_additional_charges':
+										$td->appendElement('plaintext', array(), CommonHelper::displayMoneyFormat($row[$key]));
+										break;
+									case 'pship_charges':
+										$td->appendElement('plaintext', array(), CommonHelper::displayMoneyFormat($row[$key]));
+										break;
+									case 'country_name':
+										$td->appendElement('plaintext', array(), Product::getProductShippingTitle($siteLangId, $row), true);
+										break;
+									default:
+										$td->appendElement('plaintext', array(), $row[$key], true);
+										break;
+								}
+							}
+						}
+						echo $tbl->getHtml(); ?>
                     </div>
                 </div>
             </div>

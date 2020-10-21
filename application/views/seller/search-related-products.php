@@ -1,5 +1,6 @@
-<?php defined('SYSTEM_INIT') or die('Invalid Usage.');
-$arr_flds = array(
+<?php defined('SYSTEM_INIT') or die('Invalid Usage.'); ?>
+<div class="js-scrollable table-wrap">
+<?php $arr_flds = array(
     // 'select_all'=>'',
     'product_name' => Labels::getLabel('LBL_Product_Name', $siteLangId),
     'related_products' => Labels::getLabel('LBL_Related_Products', $siteLangId)
@@ -66,9 +67,9 @@ $frm->setFormTagAttribute('class', 'form');
 
 echo $frm->getFormTag(); ?>
 </form>
+</div>
 <?php
 $postedData['page'] = $page;
 echo FatUtility::createHiddenFormFromData($postedData, array ('name' => 'frmSearchVolumeDiscountPaging'));
-
 $pagingArr=array('pageCount'=>$pageCount,'page'=>$page,'recordCount'=>$recordCount,'callBackJsFunc' => 'goToSearchPage','adminLangId'=>$siteLangId);
 $this->includeTemplate('_partial/pagination.php', $pagingArr, false);
