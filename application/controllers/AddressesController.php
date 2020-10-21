@@ -24,7 +24,7 @@ class AddressesController extends LoggedUserController
             FatUtility::dieWithError(Message::getHtml());
         }
 
-        $addr_state_id = FatUtility::int($post['addr_state_id']);
+        $addr_state_id = FatApp::getPostedData('addr_state_id', FatUtility::VAR_INT, 0);
         $post = $frm->getFormDataFromArray($post);
         if (false === $post) {
             if (true === MOBILE_APP_API_CALL) {
@@ -35,7 +35,7 @@ class AddressesController extends LoggedUserController
         }
         $post['addr_state_id'] = $addr_state_id;
 
-        $addr_id = FatUtility::int($post['addr_id']);
+        $addr_id = FatApp::getPostedData('addr_id', FatUtility::VAR_INT, 0);
         unset($post['addr_id']);
 
         $addressObj = new Address($addr_id);
