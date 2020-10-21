@@ -1441,10 +1441,13 @@ class CheckoutController extends MyAppController
             $orderObj->updateOrderInfo($order_id, array('order_pmethod_id' => 0));
         }
 
+        $cartHasDigitalProduct = $this->cartObj->hasDigitalProduct();
+
         $this->set('paymentMethods', $paymentMethods);
         $this->set('userWalletBalance', $userWalletBalance);
         $this->set('cartSummary', $cartSummary);
         $this->set('fulfillmentType', $fulfillmentType);
+        $this->set('cartHasDigitalProduct', $cartHasDigitalProduct);
         if (false === MOBILE_APP_API_CALL) {
             $excludePaymentGatewaysArr = applicationConstants::getExcludePaymentGatewayArr();
             //            $cartHasPhysicalProduct = false;

@@ -261,6 +261,7 @@ Bugs:
     => 044228 - If we Quit the seller registration process on activation form and then re check the seller registration form then here is some error;
     => 040055 - wrong commission is getting charged from seller.
     => 044385 - Collection layout issue on view all page
+    => 044380 - When guest user click on "clear cart" then "Unauthorized Request" gets display
     
 Enhancements:
     => Tax module upgrade
