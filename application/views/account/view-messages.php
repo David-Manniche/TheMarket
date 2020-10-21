@@ -10,59 +10,60 @@
                     <h5 class="card-title"><?php echo Labels::getLabel('LBL_Messages', $siteLangId);?></h5>
                     <div class="btn-group"><a href="<?php echo UrlHelper::generateUrl('Account', 'messages');?>" class="btn btn-outline-brand btn-sm"><?php echo Labels::getLabel('LBL_Back_to_messages', $siteLangId);?></a></div>
                 </div>
-                <div class="card-body js-scrollable table-wrap">
-                    <table class="table">
-                        <tbody>
-                            <tr class="">
-                                <th><?php echo Labels::getLabel('LBL_Date', $siteLangId);?></th>
-                                <th><?php echo $threadTypeArr[$threadDetails['thread_type']];?></th>
-                                <th><?php echo Labels::getLabel('LBL_Subject', $siteLangId);?></th>
-                                <th><?php if ($threadDetails["thread_type"] == THREAD::THREAD_TYPE_ORDER_PRODUCT) {
-                                        echo Labels::getLabel('LBL_Amount', $siteLangId);
-                                    } elseif ($threadDetails["thread_type"] == THREAD::THREAD_TYPE_PRODUCT) {
-                                        echo Labels::getLabel('LBL_Price', $siteLangId);
-                                    }?>
-                                </th>
-                                <th>
-                                    <?php if ($threadDetails["thread_type"] == THREAD::THREAD_TYPE_ORDER_PRODUCT) {
-                                        echo Labels::getLabel('LBL_Status', $siteLangId) ;
-                                    } ?>
-                                </th>
-                            </tr>
-                            <tr>
-                                <td><?php echo FatDate::format($threadDetails["thread_start_date"], false);?> </td>
-                                <td>
-                                    <div class="item__description">
-                                        <?php if ($threadDetails["thread_type"] == THREAD::THREAD_TYPE_ORDER_PRODUCT) { ?>
-                                            <span class="item__title"><?php echo $threadDetails["op_invoice_number"]; ?></span>
-                                        <?php } elseif ($threadDetails["thread_type"] == THREAD::THREAD_TYPE_SHOP) { ?>
-                                            <span class="item__title"><?php echo $threadDetails["shop_name"]; ?></span>
-                                        <?php } elseif ($threadDetails["thread_type"] == THREAD::THREAD_TYPE_PRODUCT) { ?>
-                                            <span class="item__title"><?php echo $threadDetails["selprod_title"]; ?></span>
-                                        <?php }?>
-                                    </div>
-                                </td>
-                                <td><?php echo $threadDetails["thread_subject"];?> </td>
-                                <td>
-                                    <span class="item__price">
-                                        <?php if ($threadDetails["thread_type"] == THREAD::THREAD_TYPE_ORDER_PRODUCT) {
-                                            ?> <?php
-                                        } elseif ($threadDetails["thread_type"] == THREAD::THREAD_TYPE_SHOP) {
-                                                ?> <?php
-                                            } elseif ($threadDetails["thread_type"] == THREAD::THREAD_TYPE_PRODUCT) { ?>
-                                                <p><?php echo CommonHelper::displayMoneyFormat($threadDetails['selprod_price']); ?></p>
-                                            <?php } ?>
-                                    </span>
-                                </td>
-                                <td>
-                                    <?php if ($threadDetails["thread_type"] == THREAD::THREAD_TYPE_ORDER_PRODUCT) {
-                                        echo $threadDetails["orders_status_name"];
-                                    } ?>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-
+                <div class="card-body">
+					<div class="js-scrollable table-wrap">
+						<table class="table">
+							<tbody>
+								<tr class="">
+									<th><?php echo Labels::getLabel('LBL_Date', $siteLangId);?></th>
+									<th><?php echo $threadTypeArr[$threadDetails['thread_type']];?></th>
+									<th><?php echo Labels::getLabel('LBL_Subject', $siteLangId);?></th>
+									<th><?php if ($threadDetails["thread_type"] == THREAD::THREAD_TYPE_ORDER_PRODUCT) {
+											echo Labels::getLabel('LBL_Amount', $siteLangId);
+										} elseif ($threadDetails["thread_type"] == THREAD::THREAD_TYPE_PRODUCT) {
+											echo Labels::getLabel('LBL_Price', $siteLangId);
+										}?>
+									</th>
+									<th>
+										<?php if ($threadDetails["thread_type"] == THREAD::THREAD_TYPE_ORDER_PRODUCT) {
+											echo Labels::getLabel('LBL_Status', $siteLangId) ;
+										} ?>
+									</th>
+								</tr>
+								<tr>
+									<td><?php echo FatDate::format($threadDetails["thread_start_date"], false);?> </td>
+									<td>
+										<div class="item__description">
+											<?php if ($threadDetails["thread_type"] == THREAD::THREAD_TYPE_ORDER_PRODUCT) { ?>
+												<span class="item__title"><?php echo $threadDetails["op_invoice_number"]; ?></span>
+											<?php } elseif ($threadDetails["thread_type"] == THREAD::THREAD_TYPE_SHOP) { ?>
+												<span class="item__title"><?php echo $threadDetails["shop_name"]; ?></span>
+											<?php } elseif ($threadDetails["thread_type"] == THREAD::THREAD_TYPE_PRODUCT) { ?>
+												<span class="item__title"><?php echo $threadDetails["selprod_title"]; ?></span>
+											<?php }?>
+										</div>
+									</td>
+									<td><?php echo $threadDetails["thread_subject"];?> </td>
+									<td>
+										<span class="item__price">
+											<?php if ($threadDetails["thread_type"] == THREAD::THREAD_TYPE_ORDER_PRODUCT) {
+												?> <?php
+											} elseif ($threadDetails["thread_type"] == THREAD::THREAD_TYPE_SHOP) {
+													?> <?php
+												} elseif ($threadDetails["thread_type"] == THREAD::THREAD_TYPE_PRODUCT) { ?>
+													<p><?php echo CommonHelper::displayMoneyFormat($threadDetails['selprod_price']); ?></p>
+												<?php } ?>
+										</span>
+									</td>
+									<td>
+										<?php if ($threadDetails["thread_type"] == THREAD::THREAD_TYPE_ORDER_PRODUCT) {
+											echo $threadDetails["orders_status_name"];
+										} ?>
+									</td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
                 </div>
             </div>
             <div class="gap"></div>

@@ -15,7 +15,7 @@
     </div>
     <div class="card-body">
         <div class="row">
-            <div class="col-lg-12 col-md-12">
+            <div class="col-lg-12 col-md-12 js-scrollable table-wrap">
                 <?php
                 $arr_flds = array(
                     'listserial'=>'#',
