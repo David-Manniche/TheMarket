@@ -1,5 +1,6 @@
-<?php defined('SYSTEM_INIT') or die('Invalid Usage.');
-$arr_flds = array(
+<?php defined('SYSTEM_INIT') or die('Invalid Usage.'); ?>
+<div class="js-scrollable table-wrap">
+<?php $arr_flds = array(
     'select_all' => '',
     'product_name' => Labels::getLabel('LBL_Name', $siteLangId),
     'selprod_price' => Labels::getLabel('LBL_Original_Price', $siteLangId),
@@ -101,14 +102,13 @@ echo $frm->getFormTag();
 echo $tbl->getHtml();
 ?>
 </form>
+</div>
 <?php
-
 if (count($arrListing) == 0) {
     $message = Labels::getLabel('LBL_No_Records_Found', $siteLangId);
     $this->includeTemplate('_partial/no-record-found.php', array('siteLangId' => $siteLangId, 'message' => $message));
-}
-
-$postedData['page'] = $page;
+} ?>
+<?php $postedData['page'] = $page;
 echo FatUtility::createHiddenFormFromData($postedData, array('name' => 'frmSearchSpecialPricePaging'));
 
 $pagingArr = array('pageCount' => $pageCount, 'page' => $page, 'recordCount' => $recordCount, 'callBackJsFunc' => 'goToSearchPage', 'adminLangId' => $siteLangId);

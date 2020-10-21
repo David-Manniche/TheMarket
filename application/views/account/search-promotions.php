@@ -3,8 +3,9 @@
     <div class="alert alert-danger"><i class="fa fa-exclamation-circle"></i> <?php echo CommonHelper::renderHtml($error_warning); ?>
         <button type="button" class="close" data-dismiss="alert">&times;</button>
     </div>
-<?php }
-    $arr_flds = array(
+<?php } ?>
+<div class="js-scrollable table-wrap">
+<?php $arr_flds = array(
         'promotion_image'=>'',
         'promotion_id' => Labels::getLabel('LBL_ID', $siteLangId),
         'promotion_identifier' => Labels::getLabel('LBL_Name', $siteLangId),
@@ -156,9 +157,9 @@
     if (count($promotions) == 0) {
         $message = Labels::getLabel('LBL_No_Records_Found', $siteLangId);
         $this->includeTemplate('_partial/no-record-found.php', array('siteLangId'=>$siteLangId,'message'=>$message));
-    }
-
-    echo FatUtility::createHiddenFormFromData($postedData, array('name' => 'frmPromotionSearchPaging'));
+    } ?>
+</div>
+<?php echo FatUtility::createHiddenFormFromData($postedData, array('name' => 'frmPromotionSearchPaging'));
 
     $pagingArr=array('pageCount'=>$pages,'page'=>$page,'callBackJsFunc' => 'goToPromotionSearchPage');
     $this->includeTemplate('_partial/pagination.php', $pagingArr, false);

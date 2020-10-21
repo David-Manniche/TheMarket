@@ -1,5 +1,6 @@
-<?php  defined('SYSTEM_INIT') or die('Invalid Usage.');
-$arr_flds = array(
+<?php  defined('SYSTEM_INIT') or die('Invalid Usage.'); ?>
+<div class="js-scrollable table-wrap">
+<?php $arr_flds = array(
 'urp_points'    =>    Labels::getLabel('LBL_Points', $siteLangId),
 'urp_comments'    =>    Labels::getLabel('LBL_Description', $siteLangId),
 'urp_date_added' =>    Labels::getLabel('LBL_Added_Date', $siteLangId),
@@ -53,9 +54,9 @@ echo $tbl->getHtml();
 if (count($arr_listing) == 0) {
     $message = Labels::getLabel('LBL_No_Records_Found', $siteLangId);
     $this->includeTemplate('_partial/no-record-found.php', array('siteLangId'=>$siteLangId,'message'=>$message));
-}
-
-$postedData['page'] = $page;
+} ?>
+</div>
+<?php $postedData['page'] = $page;
 echo FatUtility::createHiddenFormFromData($postedData, array('name' => 'frmRewardPointSearchPaging'));
 $pagingArr=array('pageCount'=>$pageCount,'page'=>$page,'recordCount'=>$recordCount);
 $this->includeTemplate('_partial/pagination.php', $pagingArr, false);

@@ -1,5 +1,6 @@
-<?php defined('SYSTEM_INIT') or die('Invalid Usage.');
-$arr_flds = array(
+<?php defined('SYSTEM_INIT') or die('Invalid Usage.'); ?>
+<div class="js-scrollable table-wrap">
+<?php $arr_flds = array(
     'sr'        =>    Labels::getLabel('LBL_#', $siteLangId),
     'name'        =>    Labels::getLabel('LBL_Product', $siteLangId),
     'selprod_stock'    =>    Labels::getLabel('LBL_Stock_Available', $siteLangId),
@@ -76,8 +77,9 @@ echo $tbl->getHtml();
 if (count($arrListing) == 0) {
     $message = Labels::getLabel('LBL_No_Records_Found', $siteLangId);
     $this->includeTemplate('_partial/no-record-found.php', array('siteLangId' => $siteLangId, 'message' => $message));
-}
-$postedData['page'] = $page;
+} ?>
+</div>
+<?php $postedData['page'] = $page;
 echo FatUtility::createHiddenFormFromData($postedData, array('name' => 'frmProductInventoryStockStatusSrchPaging'));
 $pagingArr = array('pageCount' => $pageCount, 'page' => $page, 'recordCount' => $recordCount, 'callBackJsFunc' => 'goToProductsInventoryStockStatusPage');
 $this->includeTemplate('_partial/pagination.php', $pagingArr, false);

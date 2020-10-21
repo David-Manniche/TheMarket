@@ -1,5 +1,6 @@
-<?php defined('SYSTEM_INIT') or die('Invalid Usage.');
-$arr_flds = [
+<?php defined('SYSTEM_INIT') or die('Invalid Usage.'); ?>
+<div class="js-scrollable table-wrap">
+<?php $arr_flds = [
     'listserial' => Labels::getLabel('LBL_#', $siteLangId),
     'adsbatch_name' => Labels::getLabel('LBL_BATCH_NAME', $siteLangId),
     'adsbatch_lang_id' => Labels::getLabel('LBL_CONTENT_LANG', $siteLangId),
@@ -132,11 +133,9 @@ echo $tbl->getHtml();
 if (count($arrListing) == 0) {
     $message = Labels::getLabel('LBL_RECORD_NOT_FOUND', $siteLangId);
     $this->includeTemplate('_partial/no-record-found.php', ['siteLangId' => $siteLangId, 'message' => $message]);
-}
-
-
-$postedData['page'] = $page;
+}?>
+</div>
+<?php $postedData['page'] = $page;
 echo FatUtility::createHiddenFormFromData($postedData, array('name' => 'frmSearchPaging'));
-
 $pagingArr = ['pageCount' => $pageCount, 'page' => $page];
 $this->includeTemplate('_partial/pagination.php', $pagingArr, false);

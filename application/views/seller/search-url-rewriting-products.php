@@ -1,5 +1,5 @@
 <?php defined('SYSTEM_INIT') or die('Invalid Usage.'); ?>
-<div class="card-body">
+<div class="card-body js-scrollable table-wrap">
 	<?php $arr_flds = array(
 		'listserial' => '#',
 		'product_name' => Labels::getLabel('LBL_Product', $siteLangId),

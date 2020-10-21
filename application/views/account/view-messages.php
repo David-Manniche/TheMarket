@@ -10,7 +10,7 @@
                     <h5 class="card-title"><?php echo Labels::getLabel('LBL_Messages', $siteLangId);?></h5>
                     <div class="btn-group"><a href="<?php echo UrlHelper::generateUrl('Account', 'messages');?>" class="btn btn-outline-brand btn-sm"><?php echo Labels::getLabel('LBL_Back_to_messages', $siteLangId);?></a></div>
                 </div>
-                <div class="card-body">
+                <div class="card-body js-scrollable table-wrap">
                     <table class="table">
                         <tbody>
                             <tr class="">

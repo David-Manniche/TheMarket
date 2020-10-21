@@ -1,8 +1,8 @@
 <?php
 $variables = array('siteLangId' => $siteLangId, 'action' => $action);
 $this->includeTemplate('seller-requests/_partial/requests-navigation.php', $variables, false); ?>
-<?php
-defined('SYSTEM_INIT') or die('Invalid Usage.');
+<div class="js-scrollable table-wrap">
+<?php defined('SYSTEM_INIT') or die('Invalid Usage.');
 $arr_flds = array(
     'listserial' => Labels::getLabel('LBL_#', $siteLangId),
     'brand_name' => Labels::getLabel('LBL_Brand_Name', $siteLangId),
@@ -68,9 +68,9 @@ echo $tbl->getHtml();
 if (count($arr_listing) == 0) {
     $message = Labels::getLabel('LBL_No_Records_Found', $siteLangId);
     $this->includeTemplate('_partial/no-record-found.php', array('siteLangId' => $siteLangId, 'message' => $message));
-}
-$postedData['page'] = $page;
+} ?>
+</div>
+<?php $postedData['page'] = $page;
 echo FatUtility::createHiddenFormFromData($postedData, array('name' => 'frmSearchBrandRequest'));
-
 $pagingArr = array('pageCount' => $pageCount, 'page' => $page, 'callBackJsFunc' => 'goToBrandSearchPage');
 $this->includeTemplate('_partial/pagination.php', $pagingArr, false);

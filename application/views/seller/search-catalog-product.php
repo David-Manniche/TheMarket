@@ -1,7 +1,6 @@
-<?php
-
-defined('SYSTEM_INIT') or die('Invalid Usage.');
-$arr_flds = array(
+<?php defined('SYSTEM_INIT') or die('Invalid Usage.'); ?>
+<div class="js-scrollable table-wrap">
+<?php $arr_flds = array(
     'listserial' => Labels::getLabel('LBL_#', $siteLangId),
     'product_identifier' => Labels::getLabel('LBL_Product', $siteLangId),
     //'attrgrp_name' => Labels::getLabel('LBL_Attribute_Group', $siteLangId),
@@ -140,9 +139,9 @@ if (count($arr_listing) == 0) {
 
 if (!isset($postedData['type']) || '' == $postedData['type']) {
     $postedData['type'] = -1;
-}
-
-$postedData['page'] = $page;
+} ?>
+</div>
+<?php $postedData['page'] = $page;
 echo FatUtility::createHiddenFormFromData($postedData, array('name' => 'frmCatalogProductSearchPaging'));
 
 $pagingArr = array('pageCount' => $pageCount, 'page' => $page, 'callBackJsFunc' => 'goToCatalogProductSearchPage');

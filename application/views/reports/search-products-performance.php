@@ -1,5 +1,6 @@
-<?php  defined('SYSTEM_INIT') or die('Invalid Usage.');
-$arr_flds = array(
+<?php  defined('SYSTEM_INIT') or die('Invalid Usage.'); ?>
+<div class="js-scrollable table-wrap">
+<?php $arr_flds = array(
 	'name'	=>	Labels::getLabel('LBL_Product', $siteLangId),
 	'wishlist_user_counts'	=>	Labels::getLabel('LBL_WishList_User_Counts', $siteLangId)
 );
@@ -64,9 +65,9 @@ echo $tbl->getHtml();
 if (count($arrListing) == 0) {
     $message = Labels::getLabel('LBL_No_Records_Found', $siteLangId);
     $this->includeTemplate('_partial/no-record-found.php', array('siteLangId'=>$siteLangId,'message'=>$message));
-}
-
-$postedData['page'] = $page;
+} ?>
+</div>
+<?php $postedData['page'] = $page;
 echo FatUtility::createHiddenFormFromData ( $postedData, array ('name' => 'frmSrchProdPerformancePaging') );
 $pagingArr=array('pageCount'=>$pageCount,'page'=>$page,'recordCount'=>$recordCount, 'callBackJsFunc' => 'goToTopPerformingProductsSearchPage');
 $this->includeTemplate('_partial/pagination.php', $pagingArr,false);

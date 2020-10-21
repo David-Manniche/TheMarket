@@ -20,7 +20,7 @@ if ($user_is_buyer > 0 || (!UserAuthentication::isUserLogged())) { ?>
         <a href="javascript:void(0)" class="close-layer" data-target-close-cart="side-cart"></a>
         <?php if ($totalCartItems>0) { ?>
         <div class="cartdetail__body" data-simplebar>
-            <div class="short-detail">
+            <div class="short-detail js-scrollable table-wrap">
                 <table class="cart-summary">
                     <tbody>
                         <?php

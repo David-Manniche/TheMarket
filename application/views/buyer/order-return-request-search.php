@@ -1,5 +1,6 @@
-<?php  defined('SYSTEM_INIT') or die('Invalid Usage.');
-$arr_flds = array(
+<?php  defined('SYSTEM_INIT') or die('Invalid Usage.'); ?>
+<div class="js-scrollable table-wrap">
+<?php $arr_flds = array(
     'orrequest_id'    =>    Labels::getLabel('LBL_ID', $siteLangId),
     'orrequest_date'    =>    Labels::getLabel('LBL_Date', $siteLangId),
     'op_invoice_number'        =>    Labels::getLabel('LBL_Order_Id/Invoice_Number', $siteLangId),
@@ -93,8 +94,9 @@ echo $tbl->getHtml();
 if (count($requests) == 0) {
     $message = Labels::getLabel('LBL_No_Records_Found', $siteLangId);
     $this->includeTemplate('_partial/no-record-found.php', array('siteLangId'=>$siteLangId,'message'=>$message));
-}
-$postedData['page'] = $page;
+} ?>
+</div>
+<?php $postedData['page'] = $page;
 echo FatUtility::createHiddenFormFromData($postedData, array('name' => 'frmOrderReturnRequestSrchPaging'));
 $pagingArr=array('pageCount'=>$pageCount,'page'=>$page,'recordCount'=>$recordCount, 'callBackJsFunc' => 'goToOrderReturnRequestSearchPage');
 $this->includeTemplate('_partial/pagination.php', $pagingArr, false);

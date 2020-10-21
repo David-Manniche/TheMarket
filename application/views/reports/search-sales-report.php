@@ -1,5 +1,6 @@
-<?php defined('SYSTEM_INIT') or die('Invalid Usage.');
-$arrFlds1 = array(
+<?php defined('SYSTEM_INIT') or die('Invalid Usage.'); ?>
+<div class="js-scrollable table-wrap">
+<?php $arrFlds1 = array(
     'listserial' => Labels::getLabel('LBL_#', $siteLangId),
     'order_date' => Labels::getLabel('LBL_Date', $siteLangId),
     'totOrders' => Labels::getLabel('LBL_No._of_Orders', $siteLangId),
@@ -71,8 +72,9 @@ if (count($arrListing) == 0) {
     
     $message = Labels::getLabel('LBL_No_Records_Found', $siteLangId);
     $this->includeTemplate('_partial/no-record-found.php', array('siteLangId' => $siteLangId, 'message' => $message));
-}
-$postedData['page'] = $page;
+} ?>
+</div>
+<?php $postedData['page'] = $page;
 echo FatUtility::createHiddenFormFromData($postedData, array('name' => 'frmSalesReportSrchPaging', 'method' => 'post'));
 $pagingArr = array('pageCount' => $pageCount, 'page' => $page, 'recordCount' => $recordCount, 'callBackJsFunc' => 'goToSalesReportSearchPage');
 $this->includeTemplate('_partial/pagination.php', $pagingArr, false);

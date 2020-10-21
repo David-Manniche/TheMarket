@@ -1,5 +1,6 @@
-<?php defined('SYSTEM_INIT') or die('Invalid Usage.');
-$arr_flds = array();
+<?php defined('SYSTEM_INIT') or die('Invalid Usage.'); ?>
+<div class="js-scrollable table-wrap">
+<?php $arr_flds = array();
 if (count($arrListing) > 0) {
     $arr_flds['select_all'] = '';
 }
@@ -106,9 +107,9 @@ if (count($arrListing) == 0) {
     echo $frm->getFormTag();
     echo $frm->getFieldHtml('status');
     echo $tbl->getHtml(); ?> </form> <?php
-}
-
-$postedData['page'] = $page;
+} ?>
+</div>
+<?php $postedData['page'] = $page;
 echo FatUtility::createHiddenFormFromData($postedData, array('name' => 'frmUserSearchPaging'));
 $pagingArr = array('pageCount' => $pageCount, 'page' => $page,'recordCount' => $recordCount, 'callBackJsFunc' => 'goToUserSearchPage');
 $this->includeTemplate('_partial/pagination.php', $pagingArr, false);

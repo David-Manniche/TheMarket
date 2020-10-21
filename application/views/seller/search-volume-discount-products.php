@@ -1,5 +1,6 @@
-<?php defined('SYSTEM_INIT') or die('Invalid Usage.');
-$arr_flds = array(
+<?php defined('SYSTEM_INIT') or die('Invalid Usage.'); ?>
+<div class="js-scrollable table-wrap">
+<?php $arr_flds = array(
     'select_all' => '',
     'product_name' => Labels::getLabel('LBL_Name', $siteLangId),
     'voldiscount_min_qty' => Labels::getLabel('LBL_Minimum_Quantity', $siteLangId),
@@ -73,6 +74,7 @@ $frm->setFormTagAttribute('class', 'form');
 echo $frm->getFormTag();
 echo $tbl->getHtml(); ?>
 </form>
+</div>
 <?php
 
 if (count($arrListing) == 0) {

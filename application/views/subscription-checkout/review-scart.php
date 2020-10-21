@@ -11,7 +11,7 @@ $discountTotal = isset($scartSummary['cartDiscounts']) && isset($scartSummary['c
 </div>
 <div class="box box--white box--radius p-4">
     <div class="review-wrapper">
-        <div class="short-detail">
+        <div class="short-detail js-scrollable table-wrap">
             <table class="table cart--full">
                 <tbody>
                     <?php if (count($subscriptions)) {
