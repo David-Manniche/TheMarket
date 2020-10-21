@@ -10,8 +10,7 @@ if (!empty($addresses)) { ?>
                             <input name="pickup_address" <?php echo (($key == 0 && $addrId == 0) || $addrId == $address['addr_id']) ? 'checked=checked' : ''; ?> onclick="displayCalendar();" type="radio" value="<?php echo $address['addr_id']; ?>">
                             <i class="input-helper"></i>
                             <span class="lb-txt js-addr">
-                                <p><?php echo $address['addr_name']; ?>
-                                    <p><?php echo $address['addr_address1']; ?>
+                                    <p><?php echo $address['addr_name'] . ', ' . $address['addr_address1']; ?>
                                         <?php if (strlen($address['addr_address2']) > 0) {
                                             echo ", " . $address['addr_address2']; ?>
                                         <?php } ?>
@@ -130,7 +129,7 @@ $displayDateformat = FatDate::convertDateFormatFromPhp(
         var slot_time = $(ele).next().children('.time').html();
         var addrHtml = $("input[name='pickup_address']:checked").next().next('.js-addr').html();
         var html = addrHtml + '<p class="time-txt"><i class="fas fa-calendar-day"></i>' + calendarSelectedDate + ' ' + slot_time + '</p>';
-        $(".pickupAddressBtn-"+pickUpBy+"-js").text(langLbl.changePickup);
+        $(".pickupAddressBtn-" + pickUpBy + "-js").text(langLbl.changePickup);
         $(".js-slot-addr_" + pickUpBy).html(html);
         $("#facebox .close").trigger('click');
     }
