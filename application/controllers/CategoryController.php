@@ -13,6 +13,7 @@ class CategoryController extends MyAppController
 		$productCategory = ProductCategory::getSearchObject(false, $this->siteLangId);
 		$productCategory->addCondition('prodcat_parent', '=', 0);
 		$productCategory->addOrder('prodcat_ordercode');
+		$productCategory->addMultipleFields(array('prodcat_id', 'IFNULL(prodcat_name, prodcat_identifier) as prodcat_name'));
 		$rs = $productCategory->getResultSet();
 		$categoriesArr = FatApp::getDb()->fetchAll($rs);
         $this->set('categoriesArr', $categoriesArr);
