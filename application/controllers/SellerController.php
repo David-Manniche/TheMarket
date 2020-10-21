@@ -1526,6 +1526,10 @@ class SellerController extends SellerBaseController
         unset($post['page']);
         $frmSearchCatalogProduct->fill($post);
         $this->set("frmSearchCatalogProduct", $frmSearchCatalogProduct);
+		$this->set('activeInactiveArr', applicationConstants::getActiveInactiveArr($this->siteLangId));
+		$this->set('activeInactiveClassArr', applicationConstants::getActiveInactiveClassArr());
+		$this->set('approveUnApproveArr', Product::getApproveUnApproveArr($this->siteLangId));
+		$this->set('approveUnApproveClassArr', product::getStatusClassArr());
         $this->_template->render(false, false);
     }
 

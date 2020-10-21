@@ -66,7 +66,7 @@ class Product extends MyAppModel
     {
         parent::__construct(static::DB_TBL, static::DB_TBL_PREFIX . 'id', $id);
     }
-
+	
     public static function getSearchObject($langId = 0, $isDeleted = true, $joinSpecifics = false)
     {
         $srch = new SearchBase(static::DB_TBL, 'tp');
@@ -212,6 +212,14 @@ class Product extends MyAppModel
         return array(
             static::UNAPPROVED => Labels::getLabel('LBL_Un-Approved', $langId),
             static::APPROVED => Labels::getLabel('LBL_Approved', $langId),
+        );
+    }
+	
+	public static function getStatusClassArr()
+    {
+        return array(
+        static::APPROVED => applicationConstants::CLASS_SUCCESS,
+        static::UNAPPROVED => applicationConstants::CLASS_DANGER
         );
     }
 
