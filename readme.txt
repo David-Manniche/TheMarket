@@ -262,6 +262,7 @@ Bugs:
     => 040055 - wrong commission is getting charged from seller.
     => 044385 - Collection layout issue on view all page
     => 044380 - When guest user click on "clear cart" then "Unauthorized Request" gets display
+    -----------------------TV-9.2.2.20201021-----------------
     
 Enhancements:
     => Tax module upgrade
