@@ -44,7 +44,11 @@
                             <tbody>
                                 <tr class="">
                                     <th colspan="2"><?php echo Labels::getLabel('LBL_Order_Particulars', $siteLangId);?></th>
-                                    <th><?php echo Labels::getLabel('LBL_Shipping_Method', $siteLangId);?></th>
+                                    <?php if (!empty($orderDetail['shippingAddress'])) { ?>
+                                        <th>
+                                            <?php echo Labels::getLabel('LBL_SHIPPING_METHOD', $siteLangId); ?>
+                                        </th>
+                                    <?php } ?>
                                     <th><?php echo Labels::getLabel('LBL_Qty', $siteLangId);?></th>
                                     <th><?php echo Labels::getLabel('LBL_Price', $siteLangId);?></th>
                                     <th><?php echo Labels::getLabel('LBL_Shipping_Charges', $siteLangId);?></th>
@@ -53,36 +57,42 @@
                                 <tr>
                                     <td>
                                         <?php
-                     $prodOrBatchUrl = 'javascript:void(0)';
-                    if ($orderDetail['op_is_batch']) {
-                        $prodOrBatchUrl = UrlHelper::generateUrl('Products', 'batch', array($orderDetail['op_selprod_id']));
-                        $prodOrBatchImgUrl = UrlHelper::getCachedUrl(UrlHelper::generateFileUrl('image', 'BatchProduct', array($orderDetail['op_selprod_id'],$siteLangId, "SMALL"), CONF_WEBROOT_URL), CONF_IMG_CACHE_TIME, '.jpg');
-                    } else {
-                        if (Product::verifyProductIsValid($orderDetail['op_selprod_id']) == true) {
-                            $prodOrBatchUrl = UrlHelper::generateUrl('Products', 'view', array($orderDetail['op_selprod_id']));
-                        }
-                        $prodOrBatchImgUrl = UrlHelper::getCachedUrl(UrlHelper::generateFileUrl('image', 'product', array($orderDetail['selprod_product_id'], "SMALL", $orderDetail['op_selprod_id'], 0, $siteLangId), CONF_WEBROOT_URL), CONF_IMG_CACHE_TIME, '.jpg');
-                    }  ?>
+                                        $prodOrBatchUrl = 'javascript:void(0)';
+                                        if ($orderDetail['op_is_batch']) {
+                                            $prodOrBatchUrl = UrlHelper::generateUrl('Products', 'batch', array($orderDetail['op_selprod_id']));
+                                            $prodOrBatchImgUrl = UrlHelper::getCachedUrl(UrlHelper::generateFileUrl('image', 'BatchProduct', array($orderDetail['op_selprod_id'],$siteLangId, "SMALL"), CONF_WEBROOT_URL), CONF_IMG_CACHE_TIME, '.jpg');
+                                        } else {
+                                            if (Product::verifyProductIsValid($orderDetail['op_selprod_id']) == true) {
+                                                $prodOrBatchUrl = UrlHelper::generateUrl('Products', 'view', array($orderDetail['op_selprod_id']));
+                                            }
+                                            $prodOrBatchImgUrl = UrlHelper::getCachedUrl(UrlHelper::generateFileUrl('image', 'product', array($orderDetail['selprod_product_id'], "SMALL", $orderDetail['op_selprod_id'], 0, $siteLangId), CONF_WEBROOT_URL), CONF_IMG_CACHE_TIME, '.jpg');
+                                        }  ?>
                                         <figure class="item__pic"><a href="<?php echo $prodOrBatchUrl;?>"><img src="<?php echo $prodOrBatchImgUrl; ?>" title="<?php echo $orderDetail['op_product_name'];?>"
                                                     alt="<?php echo $orderDetail['op_product_name']; ?>"></a></figure>
                                     </td>
                                     <td>
                                         <div class="item__description">
-                                            <span class="item__title"><a title="<?php echo $orderDetail['op_product_name'];?>" href="<?php echo $prodOrBatchUrl;?>">
+                                            <span class="item__title">
+                                                <a title="<?php echo $orderDetail['op_product_name'];?>" href="<?php echo $prodOrBatchUrl;?>">
                                                     <?php if ($orderDetail['op_selprod_title']!='') {
-                        echo  $orderDetail['op_selprod_title'].'<br/>';
-                    } else {
-                        echo $orderDetail['op_product_name'];
-                    }
-                        ?>
-                                                </a></span>
+                                                        echo  $orderDetail['op_selprod_title'].'<br/>';
+                                                    } else {
+                                                        echo $orderDetail['op_product_name'];
+                                                    }
+                                                        ?>
+                                                </a>
+                                            </span>
                                             <p><?php echo Labels::getLabel('Lbl_Brand', $siteLangId)?>: <?php echo CommonHelper::displayNotApplicable($siteLangId, $orderDetail['op_brand_name']);?></p>
                                             <?php if ($orderDetail['op_selprod_options'] != '') { ?>
                                             <p><?php echo $orderDetail['op_selprod_options'];?></p>
                                             <?php }?>
                                         </div>
                                     </td>
-                                    <td><?php echo $orderDetail['op_shipping_durations'].'-'. $orderDetail['op_shipping_duration_name'];?></td>
+                                    <?php if (!empty($orderDetail['shippingAddress'])) { ?>
+                                        <td>
+                                            <?php echo $orderDetail['opshipping_label'];?>
+                                        </td>
+                                    <?php } ?>
                                     <td><?php echo $orderDetail['op_qty'];?></td>
                                     <td><?php echo CommonHelper::displayMoneyFormat($orderDetail['op_unit_price']);?></td>
                                     <td><?php echo CommonHelper::displayMoneyFormat(CommonHelper::orderProductAmount($orderDetail, 'shipping'));?></td>
@@ -129,41 +139,84 @@
                                 </div>
                             </div>
                             <?php if (!empty($orderDetail['shippingAddress'])) {?>
-                            <div class="col-lg-6 col-md-6 col-sm-6">
-                                <div class="info--order">
-                                    <h5><?php echo Labels::getLabel('LBL_Shipping_Detail', $siteLangId);?></h5>
-                                    <?php $shippingAddress = $orderDetail['shippingAddress']['oua_name'].'<br>';
-                                        if ($orderDetail['shippingAddress']['oua_address1']!='') {
-                                            $shippingAddress.=$orderDetail['shippingAddress']['oua_address1'].'<br>';
-                                        }
+                                <div class="col-lg-6 col-md-6 col-sm-6">
+                                    <div class="info--order">
+                                        <h5><?php echo Labels::getLabel('LBL_Shipping_Detail', $siteLangId);?></h5>
+                                        <?php $shippingAddress = $orderDetail['shippingAddress']['oua_name'].'<br>';
+                                            if ($orderDetail['shippingAddress']['oua_address1']!='') {
+                                                $shippingAddress.=$orderDetail['shippingAddress']['oua_address1'].'<br>';
+                                            }
 
-                                        if ($orderDetail['shippingAddress']['oua_address2']!='') {
-                                            $shippingAddress.=$orderDetail['shippingAddress']['oua_address2'].'<br>';
-                                        }
+                                            if ($orderDetail['shippingAddress']['oua_address2']!='') {
+                                                $shippingAddress.=$orderDetail['shippingAddress']['oua_address2'].'<br>';
+                                            }
 
-                                        if ($orderDetail['shippingAddress']['oua_city']!='') {
-                                            $shippingAddress.=$orderDetail['shippingAddress']['oua_city'].',';
-                                        }
+                                            if ($orderDetail['shippingAddress']['oua_city']!='') {
+                                                $shippingAddress.=$orderDetail['shippingAddress']['oua_city'].',';
+                                            }
 
-                                        if ($orderDetail['shippingAddress']['oua_state']!='') {
-                                            $shippingAddress.=$orderDetail['shippingAddress']['oua_state'] . ', ';
-                                        }
-										
-										if ($orderDetail['shippingAddress']['oua_country'] != '') {
-											$shippingAddress .= $orderDetail['shippingAddress']['oua_country'];
-										}
-		
-                                        if ($orderDetail['shippingAddress']['oua_zip']!='') {
-                                            $shippingAddress.= '-'.$orderDetail['shippingAddress']['oua_zip'];
-                                        }
+                                            if ($orderDetail['shippingAddress']['oua_state']!='') {
+                                                $shippingAddress.=$orderDetail['shippingAddress']['oua_state'] . ', ';
+                                            }
+                                            
+                                            if ($orderDetail['shippingAddress']['oua_country'] != '') {
+                                                $shippingAddress .= $orderDetail['shippingAddress']['oua_country'];
+                                            }
+            
+                                            if ($orderDetail['shippingAddress']['oua_zip']!='') {
+                                                $shippingAddress.= '-'.$orderDetail['shippingAddress']['oua_zip'];
+                                            }
 
-                                        if ($orderDetail['shippingAddress']['oua_phone']!='') {
-                                            $shippingAddress.= '<br>'.$orderDetail['shippingAddress']['oua_phone'];
-                                        }
-                                    ?>
-                                    <p><?php echo $shippingAddress;?></p>
+                                            if ($orderDetail['shippingAddress']['oua_phone']!='') {
+                                                $shippingAddress.= '<br>'.$orderDetail['shippingAddress']['oua_phone'];
+                                            }
+                                        ?>
+                                        <p><?php echo $shippingAddress;?></p>
+                                    </div>
                                 </div>
-                            </div>
+                            <?php } ?>
+                            <?php if (!empty($orderDetail['pickupAddress'])) {?>
+                                <div class="col-lg-6 col-md-6 col-sm-6">
+                                    <div class="info--order">
+                                        <h5><?php echo Labels::getLabel('LBL_Pickup_Details', $siteLangId); ?></h5>
+                                        <p>
+                                        <strong>
+                                            <?php
+                                            $opshippingDate = isset($orderDetail['opshipping_date']) ? $orderDetail['opshipping_date'] . ' ' : '';
+                                            $timeSlotFrom = isset($orderDetail['opshipping_time_slot_from']) ? date('H:i', strtotime($orderDetail['opshipping_time_slot_from'])) . ' - ' : '';
+                                            $timeSlotTo = isset($orderDetail['opshipping_time_slot_to']) ? date('H:i', strtotime($orderDetail['opshipping_time_slot_to'])) : '';
+                                            echo $opshippingDate . ' (' . $timeSlotFrom . $timeSlotTo . ')'; 
+                                            ?>
+                                        </strong><br>
+                                                <?php echo $orderDetail['pickupAddress']['oua_name']; ?>, 
+                                                <?php
+                                                $pickupAddress = '';
+                                                if ($orderDetail['pickupAddress']['oua_address1'] != '') {
+                                                    $pickupAddress .= $orderDetail['pickupAddress']['oua_address1'] . '<br>';
+                                                }
+
+                                                if ($orderDetail['pickupAddress']['oua_address2'] != '') {
+                                                    $pickupAddress .= $orderDetail['pickupAddress']['oua_address2'] . '<br>';
+                                                }
+
+                                                if ($orderDetail['pickupAddress']['oua_city'] != '') {
+                                                    $pickupAddress .= $orderDetail['pickupAddress']['oua_city'] . ',';
+                                                }
+
+                                                if ($orderDetail['pickupAddress']['oua_zip'] != '') {
+                                                    $pickupAddress .= ' ' . $orderDetail['pickupAddress']['oua_state'];
+                                                }
+
+                                                if ($orderDetail['pickupAddress']['oua_zip'] != '') {
+                                                    $pickupAddress .= '-' . $orderDetail['pickupAddress']['oua_zip'];
+                                                }
+
+                                                if ($orderDetail['pickupAddress']['oua_phone'] != '') {
+                                                    $pickupAddress .= '<br>Phone: ' . $orderDetail['pickupAddress']['oua_phone'];
+                                                }
+                                                echo $pickupAddress; ?>
+                                    </div>
+                                </div>
                             <?php }?>
                         </div>
 

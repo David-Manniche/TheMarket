@@ -237,6 +237,15 @@ Bugs:
     => 044233 - when customer places pickup order then in admin> customer order> pickup details are not there
     => 044237 - when an order having multiple items and both are on pickup then on parent order detail page time slot is not listing
     => 044280 - When guest user add product in cart then there is some fatal error. 
+    => 044297 - when order is on pickup then on checkout step 2 it's displaying shipping
+    => 044261 - when vol. discount is applied on order then on success screen it's displaying it as rewards
+    => 044260 - when physical an digital items are ordered together then on success screen> under shipping method there is another field for digital which is blank
+    => 044309 - On category page >> broken image gets display if there is no image selected in admin panel.
+    => 044307 - Seller >> cancel any order >> shipping method is not getting display on cancellation page .
+    => 044301 - On thankyou page >> volume discount and reward points are combined and "rewards" gets display as label for that.
+    => 044251 - If there are digital and physical both products in one order and we choose pickup then pickup details are not getting display on thank you screen.
+    => 044237 - when an order having multiple items and both are on pickup then on parent order detail page time slot is not listing
+    => 044181 - after order is placed then in admin> order detail page> shipping details are not proper
     => 044283 - buyer> parent order> table alignment issue 
     => 044296 - seller> return request> when there is no file attached still then there is attached file option and on clicking there is blank page 
 
@@ -244,6 +253,7 @@ Bugs:
     => 044313 - if admin disable the setting "Enable Linking Shipping Packages To Products" then fatal error is there on "shipping " tab of catalog.
     => 044316 - If we enabled "Shipped By Admin Only" setting then fatal error is there on shipping tab of catalog.
 
+>>>>>>> 5a60075fde479e1a5287b4e9e7f642a206eaaaf4
 Enhancements:
     => Tax module upgrade
     => Test cases classes enhancements.

@@ -37,7 +37,7 @@
                         <div class="col-xl-4 col-lg-5">
                             <div class="sticky-summary">
                                 <div class="card">
-                                    <div class="card__section">
+                                    <div class="card-body">
                                         <div class="cart-total">  
                                             <div id="js-cartFinancialSummary"></div>
                                             <div class="buttons-group">

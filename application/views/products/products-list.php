@@ -3,7 +3,7 @@ if ($products) {
     $showActionBtns = !empty($showActionBtns) ? $showActionBtns : false;
     $isWishList = isset($isWishList) ? $isWishList : 0;
     foreach ($products as $product) {
-        $productUrl = UrlHelper::generateUrl('Products', 'View', array($product['selprod_id'])); ?> <div class="col-xl-3 col-lg-4 col-md-<?php echo (isset($colMdVal) && $colMdVal > 0)?$colMdVal:4; ?> col-6 column">
+        $productUrl = UrlHelper::generateUrl('Products', 'View', array($product['selprod_id'])); ?> <div class="column">
     <!--product tile-->
     <div class="products">
         <div class="products__quickview">

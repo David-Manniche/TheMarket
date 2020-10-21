@@ -183,7 +183,7 @@
                                         </i></button>
               
                 <div class="listing-products -listing-products ">
-                    <div id="productsList" role="main-listing" class="row product-listing">
+                    <div id="productsList" role="main-listing" class="product-listing">
                         <?php $productsData = array(
                                         'products' => $products,
                                         'page' => $page,

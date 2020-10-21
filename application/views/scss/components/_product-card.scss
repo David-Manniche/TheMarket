@@ -39,6 +39,18 @@
 }
 
 .product-listing {
+    display: grid;
+    grid-gap: 1rem;
+    grid-template-columns: repeat(4, 1fr);
+    @include media-breakpoint-down(sm) {
+        & {
+            grid-gap: 3px;
+            grid-template-columns: repeat(2, 1fr);
+            .products {
+                border-radius: 0px;
+            }
+        }
+    }
     .products {
         height: 100%;
     }
@@ -504,6 +516,7 @@
     &__description {
         font-size: 0.9em;
         min-width: 200px;
+        max-width: 400px;
         .item__pic {
             margin-#{$end-direction}: 10px;
         }
@@ -567,10 +580,11 @@
 .actions {
     display: inline-flex;
     align-items: center;
+    justify-content: flex-end;
     vertical-align: top;
     white-space: nowrap;
     margin: 0;
-    @include media-breakpoint-down(md) {
+    @include media-breakpoint-down(sm) {
         & {
             flex-wrap: wrap;
         }

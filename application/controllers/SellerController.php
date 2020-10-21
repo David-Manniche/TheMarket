@@ -890,6 +890,8 @@ class SellerController extends SellerBaseController
         $srch->joinSellerProducts();
         $srch->joinOrderUser();
         $srch->addOrderProductCharges();
+        $srch->joinShippingCharges();
+        $srch->joinAddress();
         $srch->addCondition('op_selprod_user_id', '=', $userId);
         $srch->addCondition('op_id', '=', $op_id);
         $rs = $srch->getResultSet();
@@ -907,6 +909,10 @@ class SellerController extends SellerBaseController
         $address = $orderObj->getOrderAddresses($orderDetail['op_order_id']);
         $orderDetail['billingAddress'] = (isset($address[Orders::BILLING_ADDRESS_TYPE])) ? $address[Orders::BILLING_ADDRESS_TYPE] : array();
         $orderDetail['shippingAddress'] = (isset($address[Orders::SHIPPING_ADDRESS_TYPE])) ? $address[Orders::SHIPPING_ADDRESS_TYPE] : array();
+        
+        $pickUpAddress = $orderObj->getOrderAddresses($orderDetail['order_id'], $op_id);
+        $orderDetail['pickupAddress'] = (!empty($pickUpAddress[Orders::PICKUP_ADDRESS_TYPE])) ? $pickUpAddress[Orders::PICKUP_ADDRESS_TYPE] : array();
+        
         $orderDetail['comments'] = $orderObj->getOrderComments($this->siteLangId, array("op_id" => $op_id, 'seller_id' => $userId));
 
         $orderStatuses = Orders::getOrderProductStatusArr($this->siteLangId);
@@ -921,7 +927,7 @@ class SellerController extends SellerBaseController
         $opChargesLog = new OrderProductChargeLog($op_id);
         $taxOptions = $opChargesLog->getData($this->siteLangId);
         $orderDetail['taxOptions'] = $taxOptions;
-
+        
         $frm = $this->getOrderCancelForm($this->siteLangId);
         $frm->fill(array('op_id' => $op_id));
 

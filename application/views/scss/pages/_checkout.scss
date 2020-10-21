@@ -736,6 +736,7 @@
                 border: none;
                 border-radius: 0px;
                 padding: 0;
+                padding-#{$start-direction}: 10px;
                 padding-#{$end-direction}: 2rem;
                 height: auto;
             }

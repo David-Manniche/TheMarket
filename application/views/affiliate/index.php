@@ -216,8 +216,8 @@ $sharingFrm->developerTags['fld_default_col'] = 12;
                             </div> <?php
     } ?>
                         </div>
-                        <div class="card-body ">
-                            <table class="table ">
+                        <div class="card-body">
+                            <table class="table">
                                 <tbody>
                                     <tr class="">
                                         <th width="30%"><?php echo Labels::getLabel('LBL_Txn._Detail', $siteLangId);?></th>
