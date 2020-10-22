@@ -265,6 +265,7 @@ Bugs:
     -----------------------TV-9.2.2.20201021-----------------
     => 044325 - if order amount is in fraction then rewards applicable are displaying as fractional 
     => 044414 - admin> orders> withdrawal request> filters> on entering character in amount field and proceeding further getting error
+    => 044234 - delivered status is not there on admin when order is on pickup
 Enhancements:
     => Tax module upgrade
     => Test cases classes enhancements.

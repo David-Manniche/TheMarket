@@ -242,7 +242,7 @@ class SellerController extends SellerBaseController
 
     public function sales()
     {
-		$data = FatApp::getPostedData();
+        $data = FatApp::getPostedData();
         $frmOrderSrch = $this->getOrderSearchForm($this->siteLangId);
         if (!empty($data)) {
             $frmOrderSrch->fill($data);
@@ -525,6 +525,10 @@ class SellerController extends SellerBaseController
             $processingStatuses = array_diff($processingStatuses, (array) FatApp::getConfig("CONF_DEFAULT_DEIVERED_ORDER_STATUS"));
         }
         /* ] */
+
+        if ($orderDetail["opshipping_fulfillment_type"] == Shipping::FULFILMENT_PICKUP) {
+            $processingStatuses = array_diff($processingStatuses, (array) FatApp::getConfig("CONF_DEFAULT_SHIPPING_ORDER_STATUS"));
+        }
 
         $charges = $orderObj->getOrderProductChargesArr($op_id);
         $orderDetail['charges'] = $charges;
@@ -910,10 +914,10 @@ class SellerController extends SellerBaseController
         $address = $orderObj->getOrderAddresses($orderDetail['op_order_id']);
         $orderDetail['billingAddress'] = (isset($address[Orders::BILLING_ADDRESS_TYPE])) ? $address[Orders::BILLING_ADDRESS_TYPE] : array();
         $orderDetail['shippingAddress'] = (isset($address[Orders::SHIPPING_ADDRESS_TYPE])) ? $address[Orders::SHIPPING_ADDRESS_TYPE] : array();
-        
+
         $pickUpAddress = $orderObj->getOrderAddresses($orderDetail['order_id'], $op_id);
         $orderDetail['pickupAddress'] = (!empty($pickUpAddress[Orders::PICKUP_ADDRESS_TYPE])) ? $pickUpAddress[Orders::PICKUP_ADDRESS_TYPE] : array();
-        
+
         $orderDetail['comments'] = $orderObj->getOrderComments($this->siteLangId, array("op_id" => $op_id, 'seller_id' => $userId));
 
         $orderStatuses = Orders::getOrderProductStatusArr($this->siteLangId);
@@ -928,7 +932,7 @@ class SellerController extends SellerBaseController
         $opChargesLog = new OrderProductChargeLog($op_id);
         $taxOptions = $opChargesLog->getData($this->siteLangId);
         $orderDetail['taxOptions'] = $taxOptions;
-        
+
         $frm = $this->getOrderCancelForm($this->siteLangId);
         $frm->fill(array('op_id' => $op_id));
 
@@ -1527,10 +1531,10 @@ class SellerController extends SellerBaseController
         unset($post['page']);
         $frmSearchCatalogProduct->fill($post);
         $this->set("frmSearchCatalogProduct", $frmSearchCatalogProduct);
-		$this->set('activeInactiveArr', applicationConstants::getActiveInactiveArr($this->siteLangId));
-		$this->set('activeInactiveClassArr', applicationConstants::getActiveInactiveClassArr());
-		$this->set('approveUnApproveArr', Product::getApproveUnApproveArr($this->siteLangId));
-		$this->set('approveUnApproveClassArr', product::getStatusClassArr());
+        $this->set('activeInactiveArr', applicationConstants::getActiveInactiveArr($this->siteLangId));
+        $this->set('activeInactiveClassArr', applicationConstants::getActiveInactiveClassArr());
+        $this->set('approveUnApproveArr', Product::getApproveUnApproveArr($this->siteLangId));
+        $this->set('approveUnApproveClassArr', product::getStatusClassArr());
         $this->_template->render(false, false);
     }
 
@@ -3435,9 +3439,9 @@ class SellerController extends SellerBaseController
         $frm->addHiddenField('', 'splatform_id', $splatform_id);
         $frm->addRequiredField(Labels::getLabel('Lbl_Identifier', $this->siteLangId), 'splatform_identifier');
         $urlFld = $frm->addTextBox(Labels::getLabel('LBL_URL', $this->siteLangId), 'splatform_url');
-		$urlFld->requirements()->setRegularExpressionToValidate(ValidateElement::URL_REGEX);
+        $urlFld->requirements()->setRegularExpressionToValidate(ValidateElement::URL_REGEX);
         $urlFld->requirements()->setCustomErrorMessage(Labels::getLabel('LBL_This_must_be_an_absolute_URL', $this->siteLangId));
-		$urlFld->requirements()->setRequired();
+        $urlFld->requirements()->setRequired();
         $fld = $frm->addSelectBox(Labels::getLabel('Lbl_Icon_Type_from_CSS', $this->siteLangId), 'splatform_icon_class', $iconsArr, '', array(), Labels::getLabel('Lbl_Select', $this->siteLangId));
         if ($splatform_id > 0) {
             $fld->setFieldTagAttribute('disabled', 'disabled');
