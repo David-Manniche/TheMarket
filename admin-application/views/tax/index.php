@@ -7,7 +7,7 @@
                         <div class="col--first col-lg-6">
                             <span class="page__icon">
                                 <i class="ion-android-star"></i></span>
-                            <h5><?php echo Labels::getLabel('LBL_Manage_Tax', $adminLangId); ?> </h5> <?php $this->includeTemplate('_partial/header/header-breadcrumb.php'); ?>
+                            <h5><?php echo Labels::getLabel('LBL_Manage_Tax_Categories', $adminLangId); ?> </h5> <?php $this->includeTemplate('_partial/header/header-breadcrumb.php'); ?>
                         </div>
                     </div>
                 </div>
@@ -30,7 +30,7 @@
                 </section>
                 <section class="section">
                     <div class="sectionhead">
-                        <h4><?php echo Labels::getLabel('LBL_Tax_List', $adminLangId); ?> </h4>
+                        <h4><?php echo Labels::getLabel('LBL_Tax_Categories_List', $adminLangId); ?> </h4>
                         <?php
                         if ($canEdit) {
                             $data = [

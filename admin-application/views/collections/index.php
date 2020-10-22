@@ -49,6 +49,37 @@
                     </ul>
                     <div id="frmBlock" class="tabs_panel_wrap">
                         <section>
+							<div class="d-flex justify-content-end">
+								<?php
+								$data = [
+									'statusButtons' => $canEdit,
+									'deleteButton' => $canEdit,
+									'adminLangId' => $adminLangId
+								];
+								
+								/* if ($canEdit) {
+									$data['otherButtons'][] = [
+										'attr' => [
+											'href' => 'javascript:void(0)',
+											'onclick' => 'collectionForm(0)',
+											'title' => Labels::getLabel('Lbl_Add_Collection', $adminLangId)
+										],
+										'label' => '<i class="fas fa-plus"></i>'
+									];
+								} */
+
+								/* $data['otherButtons'][] = [
+									'attr' => [
+										'href' => 'javascript:void(0)',
+										'onclick' => 'collectionLayouts()',
+										'title' => Labels::getLabel('LBL_All_Layouts_Instructions', $adminLangId)
+									],
+									'label' => '<i class="fas fa-file-image"></i>'
+								]; */
+			
+								$this->includeTemplate('_partial/action-buttons.php', $data, false);
+								?>
+							</div>
                             <div class="sectionbody">
                                 <div class="tablewrap">
                                     <div id="listing"> <?php echo Labels::getLabel('Lbl_Processing', $adminLangId);?>....</div>
