@@ -266,6 +266,7 @@ Bugs:
     => 044325 - if order amount is in fraction then rewards applicable are displaying as fractional 
     => 044414 - admin> orders> withdrawal request> filters> on entering character in amount field and proceeding further getting error
     => 044234 - delivered status is not there on admin when order is on pickup
+    => 044435 - when any keyword is searched then on click of cross from search bar it's not washing the keyword entered
 Enhancements:
     => Tax module upgrade
     => Test cases classes enhancements.

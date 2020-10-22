@@ -889,6 +889,7 @@ $(function() { // this will be called when the DOM is ready
 
 $(document).ready(function() {
     removeAutoSuggest = function() {
+        $('#header_search_keyword').val('');
         $('#search-suggestions-js').html('');
     };
     searchTags = function(obj) {
