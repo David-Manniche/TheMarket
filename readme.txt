@@ -276,6 +276,7 @@ Bugs:
     => 044392 - On order details page >> if we choose "pay at pickup " then cod gets display . 
     => 044405 - buyer> wishlist> when there is nothing in shop wishlist then message is not in center 
     => 044395 - On Thankyou screen >> "-" sign should be there with discount amount .
+    => 044424 - when we add seller's shipping on admin's catalog then all products (seller's +admin's ) starts getting display on "marketplace product" section.
 
 Enhancements:
     => Tax module upgrade
