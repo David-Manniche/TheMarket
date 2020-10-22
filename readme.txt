@@ -275,6 +275,7 @@ Bugs:
     => 044378 - When we choose pickup option then some details are missing in pickup address on thankyou screen ;: 1. state and country code gets display instead of name . 2. mobile number is missing .
     => 044392 - On order details page >> if we choose "pay at pickup " then cod gets display . 
     => 044405 - buyer> wishlist> when there is nothing in shop wishlist then message is not in center 
+    => 044395 - On Thankyou screen >> "-" sign should be there with discount amount .
 
 Enhancements:
     => Tax module upgrade

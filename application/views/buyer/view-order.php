@@ -173,7 +173,7 @@ if (!$print) { ?>
                                         <?php echo CommonHelper::displayMoneyFormat(CommonHelper::orderProductAmount($childOrderDetail, 'DISCOUNT'), true, false, true, false, true); ?>
                                     </p>
                                     <?php $volumeDiscount = CommonHelper::orderProductAmount($childOrderDetail, 'VOLUME_DISCOUNT');
-                                    if ($volumeDiscount) {
+                                    if (0 < $volumeDiscount) {
                                     ?>
                                         <p>
                                             <strong>
@@ -498,13 +498,23 @@ if (!$print) { ?>
                                             </td>
                                         </tr>
                                     <?php } ?>
-                                    <?php if ($orderDetail['order_volume_discount_total']) { ?>
+                                    <?php if (0 < $orderDetail['order_volume_discount_total']) { ?>
                                         <tr>
                                             <td colspan="7">
                                                 <?php echo Labels::getLabel('LBL_Volume/Loyalty_Discount', $siteLangId) ?>
                                             </td>
                                             <td>-
                                                 <?php echo CommonHelper::displayMoneyFormat($orderDetail['order_volume_discount_total'], true, false, true, false, true); ?>
+                                            </td>
+                                        </tr>
+                                    <?php } ?>
+                                    <?php if (0 < $orderDetail['order_reward_point_value']) { ?>
+                                        <tr>
+                                            <td colspan="7">
+                                                <?php echo Labels::getLabel('LBL_REWARD_POINTS', $siteLangId) ?>
+                                            </td>
+                                            <td>-
+                                                <?php echo CommonHelper::displayMoneyFormat($orderDetail['order_reward_point_value'], true, false, true, false, true); ?>
                                             </td>
                                         </tr>
                                     <?php } ?>
