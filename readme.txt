@@ -269,6 +269,7 @@ Bugs:
     => 044403 - Cart >> if all products are under "save for later section " and user move them to bag then items should get display in cart and currently they gets display in cart after refreshing the page .
     => 044407 - buyer> profile> request data> gdpr popup> click here lick is not highlighted
     => 044406 - user profile> when there is no image still then remove option is there
+    => 044400 - Admin >> order details page >> order payment history >> in case of bank transfer >> rejected or approved should get display .
 
 Enhancements:
     => Tax module upgrade
