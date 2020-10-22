@@ -12,9 +12,14 @@
             </div>
             <div class="product-items" dir="<?php echo CommonHelper::getLayoutDirection(); ?>">
                 <?php foreach ($collection['products'] as $product) { ?>
-                <div class="items">
-                    <?php include('product-layout-1-list.php'); ?>
-                </div>
+                    <div class="items">
+                        <?php
+                        $displayProductNotAvailableLable = false;
+                        if (FatApp::getConfig('CONF_ENABLE_GEO_LOCATION', FatUtility::VAR_INT, 0)) {
+                            $displayProductNotAvailableLable = true;
+                        }
+                        include('product-layout-1-list.php'); ?>
+                    </div>
                 <?php } ?>
             </div>
         </div>
