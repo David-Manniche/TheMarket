@@ -273,6 +273,7 @@ Bugs:
     => 044402 - Admin >> settings >> checkout >>display time slots after orders >> there is a validation of minimum 2 hours but when we save it blank then it shows 0 hours
     => 044399 - Admin >> manage currency > "default " is not properly getting display in circle
     => 044378 - When we choose pickup option then some details are missing in pickup address on thankyou screen ;: 1. state and country code gets display instead of name . 2. mobile number is missing .
+    => 044392 - On order details page >> if we choose "pay at pickup " then cod gets display . 
 
 Enhancements:
     => Tax module upgrade
