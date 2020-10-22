@@ -89,8 +89,8 @@ if (Orders::ORDER_PRODUCT == $orderInfo['order_type']) {
                                         if (!empty($shippingAddress['oua_address2'])) {
                                             echo ', ' . $shippingAddress['oua_address2'];
                                         }
-                                        echo '<br>' . $shippingAddress['oua_city'] . ', ' . $shippingAddress['oua_state_code'] . ' ' . $shippingAddress['oua_zip'];
-                                        echo '<br>' . $shippingAddress['oua_country'];
+                                        echo '<br>' . $shippingAddress['oua_city'] . ', ' . $shippingAddress['oua_state'];
+                                        echo '<br>' . $shippingAddress['oua_country'] . '(' . $shippingAddress['oua_zip'] .')';
                                         echo '<br>' . $shippingAddress['oua_phone'];
                                         ?>
                                     </p>
@@ -124,11 +124,12 @@ if (Orders::ORDER_PRODUCT == $orderInfo['order_type']) {
                                                 $address1 = !empty($orderAddDet['addr_address1']) ? $orderAddDet['addr_address1'] : '';
                                                 $address2 = !empty($orderAddDet['addr_address2']) ? ', ' . $orderAddDet['addr_address2'] : '';
                                                 $city = !empty($orderAddDet['addr_city']) ? '<br>' . $orderAddDet['addr_city'] : '';
-                                                $state = !empty($orderAddDet['state_code']) ? ', ' . $orderAddDet['state_code'] : '';
-                                                $country = !empty($orderAddDet['country_code']) ? ' ' . $orderAddDet['country_code'] : '';
+                                                $state = !empty($orderAddDet['state_name']) ? ', ' . $orderAddDet['state_name'] : '';
+                                                $country = !empty($orderAddDet['country_name']) ? ', ' . $orderAddDet['country_name'] : '';
                                                 $zip = !empty($orderAddDet['addr_zip']) ? '(' . $orderAddDet['addr_zip'] . ')' : '';
+                                                $phone = !empty($orderAddDet['addr_phone']) ? '<br>' . $orderAddDet['addr_phone'] : '';
 
-                                                echo $address1 . $address2 . $city . $state . $country . $zip;
+                                                echo $address1 . $address2 . $city . $state . $country . $zip . $phone;
                                                 ?>
                                             </p>
                                         <?php } ?>
@@ -164,8 +165,8 @@ if (Orders::ORDER_PRODUCT == $orderInfo['order_type']) {
                                             if (!empty($billingAddress['oua_address2'])) {
                                                 echo ', ' . $billingAddress['oua_address2'];
                                             }
-                                            echo '<br>' . $billingAddress['oua_city'] . ', ' . $billingAddress['oua_state_code'] . ' ' . $billingAddress['oua_zip'];
-                                            echo '<br>' . $billingAddress['oua_country'];
+                                            echo '<br>' . $billingAddress['oua_city'] . ', ' . $billingAddress['oua_state'];
+                                            echo '<br>' . $billingAddress['oua_country'] . '(' . $billingAddress['oua_zip'] .')';
                                             echo '<br>' . $billingAddress['oua_phone'];
                                             ?>
                                         </p>
