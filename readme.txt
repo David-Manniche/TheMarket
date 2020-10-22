@@ -268,6 +268,7 @@ Bugs:
     => 044379 - If order status is "pay on pickup " then it stays the same even if we cancel the order.
     => 044403 - Cart >> if all products are under "save for later section " and user move them to bag then items should get display in cart and currently they gets display in cart after refreshing the page .
     => 044407 - buyer> profile> request data> gdpr popup> click here lick is not highlighted
+    => 044406 - user profile> when there is no image still then remove option is there
 
 Enhancements:
     => Tax module upgrade
