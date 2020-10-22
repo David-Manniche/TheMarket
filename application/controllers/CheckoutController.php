@@ -1601,8 +1601,9 @@ class CheckoutController extends MyAppController
             Message::addErrorMessage($this->errMessage);
             FatUtility::dieWithError(Message::getHtml());
         }
+        $rewardPoints = floor($post['redeem_rewards']);
 
-        if (empty($post['redeem_rewards'])) {
+        if (empty($rewardPoints)) {
             $this->errMessage = Labels::getLabel('LBL_You_cannot_use_0_reward_points._Please_add_reward_points_greater_than_0', $this->siteLangId);
             if (true === MOBILE_APP_API_CALL) {
                 FatUtility::dieJsonError($this->errMessage);
@@ -1619,7 +1620,6 @@ class CheckoutController extends MyAppController
             $orderId = $post['orderId'];
         }
 
-        $rewardPoints = $post['redeem_rewards'];
         $totalBalance = UserRewardBreakup::rewardPointBalance($loggedUserId, $orderId);
 
         /* var_dump($totalBalance);exit; */

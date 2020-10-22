@@ -67,6 +67,6 @@ class UserRewardBreakup extends MyAppModel
         }
 
         $totalBalance = $totalBalance - FatUtility::int($row['usedRewards']);
-        return $totalBalance;
+        return floor($totalBalance);
     }
 }
