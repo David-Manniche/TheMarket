@@ -267,6 +267,7 @@ Bugs:
     => 044414 - admin> orders> withdrawal request> filters> on entering character in amount field and proceeding further getting error
     => 044234 - delivered status is not there on admin when order is on pickup
     => 044435 - when any keyword is searched then on click of cross from search bar it's not washing the keyword entered
+    => 044434 - search> when there is no result found the don't display any suggestion list unless there is history
 Enhancements:
     => Tax module upgrade
     => Test cases classes enhancements.
