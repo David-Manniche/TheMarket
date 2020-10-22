@@ -264,7 +264,7 @@ Bugs:
     => 044380 - When guest user click on "clear cart" then "Unauthorized Request" gets display    
     -----------------------TV-9.2.2.20201021-----------------
     => 044325 - if order amount is in fraction then rewards applicable are displaying as fractional 
-    
+    => 044414 - admin> orders> withdrawal request> filters> on entering character in amount field and proceeding further getting error
 Enhancements:
     => Tax module upgrade
     => Test cases classes enhancements.

@@ -26,6 +26,10 @@ $(document).ready(function(){
 		if (form) {
 			data = fcom.frmData(form);
 		}
+
+		if (!$(form).validate()) {
+			return;
+		}
 		/*]*/
 		
 		$(dv).html(fcom.getLoader());
