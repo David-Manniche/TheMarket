@@ -35,7 +35,7 @@ foreach ($arr_listing as $sn => $row) {
                 break;
 			case 'brand_name':
 				$brandName = (!empty($row['brand_name'])) ? $row['brand_name'] : $row['brand_identifier'];
-				$html = '<div class="item"><figure class="item__pic"><a href="javascript:void(0);"><img src="'.UrlHelper::getCachedUrl(UrlHelper::generateUrl('image', 'brand', array($row['brand_id'], "SMALL", 0, 0, $siteLangId), CONF_WEBROOT_URL), CONF_IMG_CACHE_TIME, '.jpg').'" title="'.$brandName.'" alt="'.$brandName.'"></a></figure>
+				$html = '<div class="item"><figure class="item__pic"><img src="'.UrlHelper::getCachedUrl(UrlHelper::generateUrl('image', 'brand', array($row['brand_id'], "SMALL", 0, 0, $siteLangId), CONF_WEBROOT_URL), CONF_IMG_CACHE_TIME, '.jpg').'" title="'.$brandName.'" alt="'.$brandName.'"></figure>
 				<div class="item__description">
 					<div class="item__title">'.$brandName.'</div>
 					<div class="item__brand"> (' . $row['brand_identifier'] . ') </div>
