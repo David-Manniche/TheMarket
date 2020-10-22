@@ -270,6 +270,7 @@ Bugs:
     => 044407 - buyer> profile> request data> gdpr popup> click here lick is not highlighted
     => 044406 - user profile> when there is no image still then remove option is there
     => 044400 - Admin >> order details page >> order payment history >> in case of bank transfer >> rejected or approved should get display .
+    => 044402 - Admin >> settings >> checkout >>display time slots after orders >> there is a validation of minimum 2 hours but when we save it blank then it shows 0 hours
 
 Enhancements:
     => Tax module upgrade
