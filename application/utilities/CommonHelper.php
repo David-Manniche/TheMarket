@@ -1388,7 +1388,7 @@ class CommonHelper extends FatUtility
         //Make alphanumeric (removes all other characters)
         //$string = preg_replace("/[^a-z0-9,&_\s-\/]/", "", $string);
         //covert / to -
-        $string = preg_replace("/[\s,&#%]/", "-", $string);
+        $string = preg_replace("/[\s,&#%+]/", "-", $string);
         //Clean up multiple dashes or whitespaces
         $string = preg_replace("/[\s-]+/", " ", $string);
         //Convert whitespaces and underscore to dash
