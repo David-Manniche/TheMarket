@@ -33,10 +33,15 @@ foreach ($arr_listing as $sn => $row) {
             case 'listserial':
                 $td->appendElement('plaintext', array(), $sr_no, true);
                 break;
-            case 'brand_name':
-                $td->appendElement('plaintext', array(), (!empty($row['brand_name']) ? $row['brand_name'] : $row['brand_identifier']) . '<br>', true);
-                $td->appendElement('plaintext', array(), '(' . $row['brand_identifier'] . ')', true);
-                break;
+			case 'brand_name':
+				$brandName = (!empty($row['brand_name'])) ? $row['brand_name'] : $row['brand_identifier'];
+				$html = '<div class="item"><figure class="item__pic"><a href="javascript:void(0);"><img src="'.UrlHelper::getCachedUrl(UrlHelper::generateUrl('image', 'brand', array($row['brand_id'], "SMALL", 0, 0, $siteLangId), CONF_WEBROOT_URL), CONF_IMG_CACHE_TIME, '.jpg').'" title="'.$brandName.'" alt="'.$brandName.'"></a></figure>
+				<div class="item__description">
+					<div class="item__title">'.$brandName.'</div>
+					<div class="item__brand"> (' . $row['brand_identifier'] . ') </div>
+				</div></div>';
+				$td->appendElement('plaintext', array(), $html, true);
+				break;
             case 'brand_status':
                 $td->appendElement('span', array('class' => 'label label-inline ' . $statusClassArr[$row[$key]]), $statusArr[$row[$key]] . '<br>', true);
                 $td->appendElement('small', array('class' => 'ml-1'), ($row['brand_status_updated_on'] != '0000-00-00 00:00:00') ? FatDate::Format($row['brand_status_updated_on']) : '', true);

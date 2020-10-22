@@ -80,7 +80,7 @@ class ImageController extends FatController
         if ($file_row == false) {
             $file_row = AttachedFile::getAttachment(AttachedFile::FILETYPE_CUSTOM_PRODUCT_IMAGE, $recordId, 0, $lang_id);
         }
-        $image_name = isset($file_row['afile_physical_path']) ? AttachedFile::FILETYPE_PRODUCT_IMAGE_PATH . $file_row['afile_physical_path'] : '';
+        $image_name = (isset($file_row['afile_physical_path']) && !empty($file_row['afile_physical_path'])) ? AttachedFile::FILETYPE_PRODUCT_IMAGE_PATH . $file_row['afile_physical_path'] : '';
 
         switch (strtoupper($sizeType)) {
             case 'THUMB':
@@ -166,7 +166,7 @@ class ImageController extends FatController
             $file_row = AttachedFile::getAttachment(AttachedFile::FILETYPE_PRODUCT_IMAGE, $recordId, -1, $lang_id);
         }
 
-        $image_name = isset($file_row['afile_physical_path']) ? AttachedFile::FILETYPE_PRODUCT_IMAGE_PATH . $file_row['afile_physical_path'] : '';
+        $image_name = (isset($file_row['afile_physical_path']) && !empty($file_row['afile_physical_path'])) ? AttachedFile::FILETYPE_PRODUCT_IMAGE_PATH . $file_row['afile_physical_path'] : '';
         /* CommonHelper::printArray($image_name); die();  */
 
         switch (strtoupper($sizeType)) {
