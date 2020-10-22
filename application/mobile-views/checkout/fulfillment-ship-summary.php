@@ -63,7 +63,7 @@ foreach ($shippingRates as $shippedBy => $shippedByItemArr) {
                             $productItems[$shippedBy]['title'] = $product['shop_name'];
                         }
 
-                        $priceListCount = count($shippedByItemArr[$shipLevel]['rates'][$product['selprod_id']]);
+                        $priceListCount = isset($shippedByItemArr[$shipLevel]['rates'][$product['selprod_id']]) ? count($shippedByItemArr[$shipLevel]['rates'][$product['selprod_id']]) : 0;
                         $data['rates']['data'] = [];
                         if ($priceListCount > 0) {
                             $name = current($shippedByItemArr[$shipLevel]['rates'][$product['selprod_id']])['code'];
@@ -101,7 +101,7 @@ foreach ($shippingRates as $shippedBy => $shippedByItemArr) {
                             $productItems[$shippedBy]['title'] = $product['shop_name'];
                         }
 
-                        $priceListCount = count($shippedByItemArr[$shipLevel]['rates'][$product['selprod_id']]);
+                        $priceListCount = isset($shippedByItemArr[$shipLevel]['rates'][$product['selprod_id']]) ? count($shippedByItemArr[$shipLevel]['rates'][$product['selprod_id']]) : 0;
                         $data['rates']['data'] = [];
                         if ($priceListCount > 0) {
                             $name = current($shippedByItemArr[$shipLevel]['rates'][$product['selprod_id']])['code'];
