@@ -266,6 +266,13 @@ Bugs:
     
     => 044380 - When guest user click on "clear cart" then "Unauthorized Request" gets display
     => 044379 - If order status is "pay on pickup " then it stays the same even if we cancel the order.
+    => 044403 - Cart >> if all products are under "save for later section " and user move them to bag then items should get display in cart and currently they gets display in cart after refreshing the page .
+    => 044407 - buyer> profile> request data> gdpr popup> click here lick is not highlighted
+    => 044406 - user profile> when there is no image still then remove option is there
+    => 044400 - Admin >> order details page >> order payment history >> in case of bank transfer >> rejected or approved should get display .
+    => 044402 - Admin >> settings >> checkout >>display time slots after orders >> there is a validation of minimum 2 hours but when we save it blank then it shows 0 hours
+    => 044399 - Admin >> manage currency > "default " is not properly getting display in circle
+    => 044378 - When we choose pickup option then some details are missing in pickup address on thankyou screen ;: 1. state and country code gets display instead of name . 2. mobile number is missing .
 
 Enhancements:
     => Tax module upgrade

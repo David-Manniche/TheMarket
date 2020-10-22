@@ -530,7 +530,7 @@ class CustomController extends MyAppController
             $srch->doNotLimitRecords();
 
             $srch->addMultipleFields(
-                array('ops.*', 'op_invoice_number', 'addr.*', 'ts.*', 'tc.*')
+                array('ops.*', 'op_invoice_number', 'addr.*', 'ts.*', 'tc.*', 'COALESCE(state_name, state_identifier) as state_name', 'COALESCE(country_name, country_code) as country_name')
             );
             $rs = $srch->getResultSet();
             $orderFulFillmentTypeArr = FatApp::getDb()->fetchAll($rs);

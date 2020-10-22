@@ -174,7 +174,7 @@ if ($order['order_reward_point_used'] > 0) {
                                                     $opshippingDate = isset($op['opshipping_date']) ? $op['opshipping_date'] . ' ' : '';
                                                     $timeSlotFrom = isset($op['opshipping_time_slot_from']) ? ' (' . date('H:i', strtotime($op['opshipping_time_slot_from'])) . ' - ' : '';
                                                     $timeSlotTo = isset($op['opshipping_time_slot_to']) ? date('H:i', strtotime($op['opshipping_time_slot_to'])) . ')' : '';
-                                                    echo $opshippingDate . $timeSlotFrom . $timeSlotTo; 
+                                                    echo $opshippingDate . $timeSlotFrom . $timeSlotTo;
                                                     ?>
                                                 </strong><br>
                                                 <?php echo $op['addr_name']; ?>,
@@ -195,11 +195,11 @@ if ($order['order_reward_point_used'] > 0) {
                                             </strong>
                                             <?php echo CommonHelper::displayNotApplicable($adminLangId, $op["opshipping_label"]); ?>
                                             <br>
-                                            <?php if(!empty($op["opshipping_service_code"])) { ?>
+                                            <?php if (!empty($op["opshipping_service_code"])) { ?>
                                                 <strong>
                                                     <?php echo Labels::getLabel('LBL_SHIPPING_SERVICES:', $adminLangId); ?>
                                                 </strong>
-                                                <?php echo CommonHelper::displayNotApplicable($adminLangId, $op["opshipping_service_code"]);
+                                            <?php echo CommonHelper::displayNotApplicable($adminLangId, $op["opshipping_service_code"]);
                                             }
                                             $orderStatusLbl = '';
                                             if (!empty($op["thirdPartyorderInfo"]) && isset($op["thirdPartyorderInfo"]['orderStatus'])) {
@@ -473,6 +473,8 @@ if ($order['order_reward_point_used'] > 0) {
                                             </th>
                                             <th width="25%"><?php echo Labels::getLabel('LBL_Gateway_Response', $adminLangId); ?>
                                             </th>
+                                            <th width="15%"><?php echo Labels::getLabel('LBL_STATUS', $adminLangId); ?>
+                                            </th>
                                             <th width="15%"><?php echo Labels::getLabel('LBL_ACTION', $adminLangId); ?>
                                             </th>
                                         </tr>
@@ -492,6 +494,29 @@ if ($order['order_reward_point_used'] > 0) {
                                                 </td>
                                                 <td>
                                                     <div class="break-me"><?php echo nl2br($row['opayment_gateway_response']); ?>
+                                                    </div>
+                                                </td>
+                                                <td>
+                                                    <div class="break-me">
+                                                        <?php
+                                                        $cls = '';
+                                                        $msg = '';
+                                                        switch ($row['opayment_txn_status']) {
+                                                            case Orders::ORDER_PAYMENT_PENDING:
+                                                                $cls = 'label-info';
+                                                                $msg = Labels::getLabel("LBL_PENDING", $adminLangId);
+                                                                break;
+                                                            case Orders::ORDER_PAYMENT_PAID:
+                                                                $cls = 'label-success';
+                                                                $msg = Labels::getLabel("LBL_APPROVED", $adminLangId);
+                                                                break;
+                                                            case Orders::ORDER_PAYMENT_CANCELLED:
+                                                                $cls = 'label-danger';
+                                                                $msg = Labels::getLabel("LBL_REJECTED", $adminLangId);
+                                                                break;
+                                                        }
+                                                        ?>
+                                                        <span class='label <?php echo $cls; ?>'><?php echo $msg; ?></span>
                                                     </div>
                                                 </td>
                                                 <td>

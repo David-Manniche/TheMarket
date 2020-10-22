@@ -147,8 +147,8 @@ class States extends MyAppModel
 
         return $row;
     }
-    
-     public static function getStateByCountryAndCode($countryId, $stateCode)
+
+    public static function getStateByCountryAndCode($countryId, $stateCode)
     {
         $countryId = FatUtility::int($countryId);
         if ($countryId < 1 || !$stateCode) {
