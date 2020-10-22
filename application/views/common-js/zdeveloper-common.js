@@ -903,9 +903,7 @@ $(document).ready(function() {
             return;
         }   */
         var data = 'keyword=' + keyword;
-        fcom.updateWithAjax(fcom.makeUrl('Products', 'searchProductTagsAutocomplete'), data, function(t) {
-            console.log(t.html);
-            if (t.html.length > 0) {
+        fcom.updateWithAjax(fcom.makeUrl('Products', 'searchProductTagsAutocomplete'), data, function(t) {      if (t.html.length > 0) {
                 if (!$('#search-suggestions-js').find('div').hasClass('search-suggestions')) {
                     $('#search-suggestions-js').html('<a href="javascript:void(0)" onClick="removeAutoSuggest()" class="close-layer"></a><div class="search-suggestions" id="tagsSuggetionList"></div>');
                 }
@@ -922,8 +920,8 @@ $(document).ready(function() {
         if (typeof keyword != 'undefined') {
             data = 'keyword=' + keyword;
         }
-        fcom.ajax(fcom.makeUrl('Products', 'clearSearchKeywords'), data, function(t) {
-            $('#search-suggestions-js').html('');
+        fcom.ajax(fcom.makeUrl('Products', 'clearSearchKeywords'), data, function(t) {            
+            $(obj).closest('li').remove();
         });
     };
 
