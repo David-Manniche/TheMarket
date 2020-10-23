@@ -20,7 +20,7 @@
             <?php
             $btnFld = $frm->getField('btn_submit');
             if (!empty($gdprPolicyLinkHref)) {
-                $btnFld->htmlBeforeField = str_replace("{clickhere}", '<a target="_blank" href="' . $gdprPolicyLinkHref . '">' . Labels::getLabel('LBL_Click_Here', $siteLangId) . '</a>', Labels::getLabel('LBL_{CLICKHERE}_TO_READ_THE_POLICIES_OF_GDPR', $siteLangId)) . '<br/><br/>';
+                $btnFld->htmlBeforeField = str_replace("{clickhere}", '<a class="btn-link" target="_blank" href="' . $gdprPolicyLinkHref . '">' . Labels::getLabel('LBL_Click_Here', $siteLangId) . '</a>', Labels::getLabel('LBL_{CLICKHERE}_TO_READ_THE_POLICIES_OF_GDPR', $siteLangId)) . '<br/><br/>';
             }
             echo $frm->getFormHtml();
             ?>

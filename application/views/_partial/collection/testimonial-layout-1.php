@@ -11,14 +11,26 @@
             <?php foreach ($collection['testimonials'] as $testimonial) { ?>
             <div class="slide-item">
                 <div class="slide-item__text">
-                    <p> <?php echo $testimonial['testimonial_text']; ?> </p>
+                    <p>
+						<span class="lessText">
+							<?php echo CommonHelper::truncateCharacters($testimonial['testimonial_text'], 150, '', '', true); ?>
+						</span> 
+						<?php if (strlen($testimonial['testimonial_text']) > 150) { ?> 
+							<span class="moreText hidden">
+								<?php echo FatUtility::decodeHtmlEntities($testimonial['testimonial_text']); ?>
+							</span> 
+							<a class="readMore link--arrow btn-link" href="javascript:void(0);">
+								<?php echo Labels::getLabel('Lbl_SHOW_MORE', $siteLangId) ; ?>
+							</a>
+						<?php } ?>
+					</p>
                 </div>
                 <div class="slide-item__from">
                     <img class="user-pic" alt="<?php echo $testimonial['testimonial_user_name']; ?>"
                         src="<?php echo UrlHelper::generateUrl('Image', 'testimonial', array($testimonial['testimonial_id'], $siteLangId, 'THUMB')).'?t='.time(); ?>">
                     <div class="user-detail">
                         <p><span class="name"><?php echo $testimonial['testimonial_user_name']; ?></span>
-                            <span class="designation">Senior UI/UX Designer</span>
+                            <!--span class="designation">Senior UI/UX Designer</span-->
                         </p>
                     </div>
                 </div>
@@ -27,7 +39,7 @@
         </div>
         <!-- /Slider -->
         <div class="section-foot text-center">
-            <a class="btn btn-outline-white btn-wide btn-wide" href="#">View all</a>
+            <a class="btn btn-outline-white btn-wide btn-wide" href="<?php echo UrlHelper::generateUrl('Testimonials');?>"><?php echo Labels::getLabel('LBL_View_all', $siteLangId); ?></a>
         </div>
     </div>
 </section>

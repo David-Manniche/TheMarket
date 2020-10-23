@@ -195,14 +195,21 @@ class OrderProductSearch extends SearchBase
         $this->joinTable(Orders::DB_TBL_ORDER_PRODUCTS_SHIPPING, 'LEFT OUTER JOIN', 'ops.opshipping_op_id = op.op_id', 'ops');
     }
 
-    public function joinAddress()
+    public function joinAddress(int $langId = 0)
     {
-        if (false === $this->isShippingChargesTblJoined) {
-            trigger_error(Labels::getLabel('MSG_PLEASE_USE_JOINSHIPPINGCHARGES()_FIRST,_THEN_TRY_TO_JOIN_JOINADDRESS()', $this->commonLangId), E_USER_ERROR);
+        if (1 > $langId) {
+            $langId = $this->commonLangId;
         }
+
+        if (false === $this->isShippingChargesTblJoined) {
+            trigger_error(Labels::getLabel('MSG_PLEASE_USE_JOINSHIPPINGCHARGES()_FIRST,_THEN_TRY_TO_JOIN_JOINADDRESS()', $langId), E_USER_ERROR);
+        }
+
         $this->joinTable(Address::DB_TBL, 'LEFT OUTER JOIN', 'addr.addr_id = ops.opshipping_pickup_addr_id', 'addr');
-        $this->joinTable('tbl_states', 'LEFT JOIN', 'addr.addr_state_id=ts.state_id', 'ts');
-        $this->joinTable('tbl_countries', 'LEFT JOIN','addr.addr_country_id=tc.country_id', 'tc');
+        $this->joinTable(States::DB_TBL, 'LEFT JOIN', 'addr.addr_state_id=ts.state_id', 'ts');
+        $this->joinTable(States::DB_TBL_LANG, 'LEFT OUTER JOIN', 'st_l.statelang_state_id = ts.state_id and st_l.statelang_lang_id = ' . $langId, 'st_l');
+        $this->joinTable(Countries::DB_TBL, 'LEFT JOIN', 'addr.addr_country_id=tc.country_id', 'tc');
+        $this->joinTable(Countries::DB_TBL_LANG, 'LEFT OUTER JOIN', 'c_l.countrylang_country_id = tc.country_id and c_l.countrylang_lang_id = ' . $langId, 'c_l');
     }
 
     public function joinOrderCancellationRequest()
@@ -319,20 +326,20 @@ class OrderProductSearch extends SearchBase
         $subSrch = Stats::getSalesStatsObj($startDate, $endDate, $alias . '_t', $type);
 
         $subSrch->joinTable(OrderProduct::DB_TBL_CHARGES, 'LEFT OUTER JOIN', $alias . '_tc.opcharge_op_id = ' . $alias . '_t.op_id', $alias . '_tc');
-		$subSrch->joinTable(OrderProduct::DB_TBL_SETTINGS, 'LEFT OUTER JOIN', $alias . '_ts.opsetting_op_id = ' . $alias . '_t.op_id', $alias . '_ts');
-		$subSrch->joinTable(Orders::DB_TBL_ORDER_PRODUCTS_SHIPPING, 'LEFT OUTER JOIN', $alias . '_tops.opshipping_op_id = ' . $alias . '_t.op_id', $alias . '_tops');
+        $subSrch->joinTable(OrderProduct::DB_TBL_SETTINGS, 'LEFT OUTER JOIN', $alias . '_ts.opsetting_op_id = ' . $alias . '_t.op_id', $alias . '_ts');
+        $subSrch->joinTable(Orders::DB_TBL_ORDER_PRODUCTS_SHIPPING, 'LEFT OUTER JOIN', $alias . '_tops.opshipping_op_id = ' . $alias . '_t.op_id', $alias . '_tops');
         /* $cnd = $subSrch->addCondition($alias.'_tc.opcharge_type','=',OrderProduct::CHARGE_TYPE_SHIPPING);
         $cnd->attachCondition($alias.'_tc.opcharge_type','=',OrderProduct::CHARGE_TYPE_TAX,'OR'); */
         $subSrch->addFld($alias . '_tc.opcharge_op_id,SUM(' . $alias . '_tc.opcharge_amount) as opcharge_amount');
         $subSrch->addGroupBy($alias . '_tc.opcharge_op_id');
-		
-		$cnd = $subSrch->addCondition($alias.'_tc.opcharge_type','=',OrderProduct::CHARGE_TYPE_SHIPPING);
+
+        $cnd = $subSrch->addCondition($alias . '_tc.opcharge_type', '=', OrderProduct::CHARGE_TYPE_SHIPPING);
         $cnd->attachCondition('opshipping_by_seller_user_id', '>', 0, 'AND');
-		$cnd = $subSrch->addCondition($alias.'_tc.opcharge_type','=',OrderProduct::CHARGE_TYPE_TAX, 'OR');
+        $cnd = $subSrch->addCondition($alias . '_tc.opcharge_type', '=', OrderProduct::CHARGE_TYPE_TAX, 'OR');
         $cnd->attachCondition('op_tax_collected_by_seller', '>', 0, 'AND');
-		$subSrch->addCondition($alias.'_tc.opcharge_type','IN',array(OrderProduct::CHARGE_TYPE_VOLUME_DISCOUNT, OrderProduct::CHARGE_TYPE_DISCOUNT, OrderProduct::CHARGE_TYPE_REWARD_POINT_DISCOUNT), 'OR');
-        
-		$srch->joinTable('(' . $subSrch->getQuery() . ')', 'LEFT OUTER JOIN', $alias . 'c.opcharge_op_id = ' . $alias . '.op_id', $alias . 'c');
+        $subSrch->addCondition($alias . '_tc.opcharge_type', 'IN', array(OrderProduct::CHARGE_TYPE_VOLUME_DISCOUNT, OrderProduct::CHARGE_TYPE_DISCOUNT, OrderProduct::CHARGE_TYPE_REWARD_POINT_DISCOUNT), 'OR');
+
+        $srch->joinTable('(' . $subSrch->getQuery() . ')', 'LEFT OUTER JOIN', $alias . 'c.opcharge_op_id = ' . $alias . '.op_id', $alias . 'c');
 
         switch ($type) {
             case Stats::REFUNDED_SALES:

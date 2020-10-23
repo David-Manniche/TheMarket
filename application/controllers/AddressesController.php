@@ -223,7 +223,11 @@ class AddressesController extends LoggedUserController
         $pickUpBy = FatApp::getPostedData('pickUpBy', FatUtility::VAR_INT, $pickUpBy);
         $selectedSlot = FatApp::getPostedData('selectedSlot', FatUtility::VAR_INT, 0);
         if ($addressId < 1 || empty($selectedDate)) {
-            Message::addErrorMessage(Labels::getLabel('LBL_Invalid_request', $this->siteLangId));
+            $message = Labels::getLabel('LBL_Invalid_request', $this->siteLangId);
+            if (true === MOBILE_APP_API_CALL) {
+                LibHelper::dieJsonError($message);
+            }
+            Message::addErrorMessage($message);
             FatUtility::dieWithError(Message::getHtml());
         }
 

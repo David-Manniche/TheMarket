@@ -44,15 +44,15 @@ foreach ($arr_listing as $sn => $row) {
             case 'listserial':
                 $td->appendElement('plaintext', array(), $sr_no);
                 break;
-            case 'option_identifier':
-                if ($row['option_name']!='') {
-                    $td->appendElement('plaintext', array(), $row['option_name'], true);
-                    $td->appendElement('br', array());
-                    $td->appendElement('plaintext', array(), '('.$row[$key].')', true);
-                } else {
-                    $td->appendElement('plaintext', array(), $row[$key], true);
-                }
-                break;
+			case 'option_identifier':
+				$optionName = (!empty($row['option_name'])) ? $row['option_name'] : $row['option_identifier'];
+				$html = '<div class="item">
+				<div class="item__description">
+					<div class="item__title">'.$optionName.'</div>
+					<div class="item__brand"> (' . $row[$key] . ') </div>
+				</div></div>';
+				$td->appendElement('plaintext', array(), $html, true);
+				break;
             case 'action':
                 $ul = $td->appendElement("ul", array("class"=>"actions"));
                 /* if(!in_array($row['option_type'],$ignoreOptionValues)){

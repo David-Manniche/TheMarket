@@ -93,7 +93,7 @@ foreach ($orders as $sn => $order) {
                     $paymentMethodCode = Plugin::getAttributesById($order['order_pmethod_id'], 'plugin_code');
                     
                     $orderStatus = "";
-                    if (strtolower($paymentMethodCode) == 'cashondelivery' && $order['opshipping_fulfillment_type'] == Shipping::FULFILMENT_PICKUP) {
+                    if (strtolower($paymentMethodCode) == 'cashondelivery' && $order['opshipping_fulfillment_type'] == Shipping::FULFILMENT_PICKUP && $order['op_status_id'] != FatApp::getConfig("CONF_DEFAULT_CANCEL_ORDER_STATUS")) {
                         $orderStatus = Labels::getLabel('LBL_PAY_ON_PICKUP', $siteLangId);
                     } else if (strtolower($paymentMethodCode) == 'cashondelivery' && $order['order_status'] == FatApp::getConfig('CONF_DEFAULT_ORDER_STATUS')) {
                         $pMethod = " - " . $order['plugin_name'];

@@ -271,6 +271,24 @@ Bugs:
     => 044433 - only search result should get removed on click
     => 044420 - on search >>search suggestions section should get closed if we click anywhere on screen
     => 044052 - after exporting file in arabic language data is deformed in sheet unless UTF8 is selected
+    
+    => 044380 - When guest user click on "clear cart" then "Unauthorized Request" gets display
+    => 044379 - If order status is "pay on pickup " then it stays the same even if we cancel the order.
+    => 044403 - Cart >> if all products are under "save for later section " and user move them to bag then items should get display in cart and currently they gets display in cart after refreshing the page .
+    => 044407 - buyer> profile> request data> gdpr popup> click here lick is not highlighted
+    => 044406 - user profile> when there is no image still then remove option is there
+    => 044400 - Admin >> order details page >> order payment history >> in case of bank transfer >> rejected or approved should get display .
+    => 044402 - Admin >> settings >> checkout >>display time slots after orders >> there is a validation of minimum 2 hours but when we save it blank then it shows 0 hours
+    => 044399 - Admin >> manage currency > "default " is not properly getting display in circle
+    => 044378 - When we choose pickup option then some details are missing in pickup address on thankyou screen ;: 1. state and country code gets display instead of name . 2. mobile number is missing .
+    => 044392 - On order details page >> if we choose "pay at pickup " then cod gets display . 
+    => 044405 - buyer> wishlist> when there is nothing in shop wishlist then message is not in center 
+    => 044395 - On Thankyou screen >> "-" sign should be there with discount amount .
+    => 044424 - when we add seller's shipping on admin's catalog then all products (seller's +admin's ) starts getting display on "marketplace product" section.
+    => 044451 - Home page >> FAQ collection >> Show more show less should be highlighted or underlined
+    => 044438 - Home page >> Testimonial collection >> "View all " button is not working. 
+    => 044443 - Admin >> add testimonials >> there should be some text limit for "testimonial text " .
+
 Enhancements:
     => Tax module upgrade
     => Test cases classes enhancements.

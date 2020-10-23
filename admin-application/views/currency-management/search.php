@@ -65,7 +65,7 @@ foreach ($arr_listing as $sn => $row) {
                 break;
             case 'currency_code':
                 if ($row['currency_name'] != '') {
-                    $default = ($row['currency_id'] == $defaultCurrencyId) ? '<span class="badge badge-success">Default</span>' : '';
+                    $default = ($row['currency_id'] == $defaultCurrencyId) ? '<span class="badge badge--unified-brand badge--inline badge--pill">' . Labels::getLabel('LBL_DEFAULT', $adminLangId) . '</span>' : '';
                     $td->appendElement('plaintext', array(), $row['currency_name'], true);
                     $td->appendElement('br', array());
                     $td->appendElement('plaintext', array(), '(' . $row[$key] . ') ' . $default, true);
