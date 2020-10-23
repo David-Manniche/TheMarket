@@ -288,6 +288,7 @@ Bugs:
     => 044451 - Home page >> FAQ collection >> Show more show less should be highlighted or underlined
     => 044438 - Home page >> Testimonial collection >> "View all " button is not working. 
     => 044443 - Admin >> add testimonials >> there should be some text limit for "testimonial text " .
+    => 044476 - when bank transfer payment is split in multiple amounts then getting invalid access
 
 Enhancements:
     => Tax module upgrade
