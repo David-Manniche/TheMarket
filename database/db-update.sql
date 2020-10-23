@@ -857,3 +857,10 @@ UPDATE tbl_content_pages_block_lang SET cpblocklang_text = REPLACE(cpblocklang_t
 
 UPDATE tbl_extra_pages_lang SET epage_content = REPLACE(epage_content, 'fa-thumbs-o-up', 'fa-thumbs-up') WHERE epage_content LIKE '%fa-thumbs-o-up%';
 -- --------------------TV-9.2.2.20201020--------------
+
+-- ---Change All Digital Products Fulfillment Type Both---- --
+UPDATE tbl_seller_products tsp
+INNER JOIN tbl_products tp ON tp.product_id = tsp.selprod_product_id
+SET tsp.selprod_fulfillment_type = -1
+WHERE tp.product_type = 2;
+-- ---Change All Digital Products Fulfillment Type Both---- --
