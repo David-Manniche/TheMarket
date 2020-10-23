@@ -8,7 +8,7 @@ $(document).ready(function () {
         if (!$(frm).validate()) return;
         var data = fcom.frmData(frm);
         fcom.updateWithAjax(fcom.makeUrl('Buyer', 'updatePayment'), data, function (t) {
-            window.location.reload();
+            setTimeout(function(){ location.reload(true); }, 2000);
         });
     };
 })();

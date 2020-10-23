@@ -973,7 +973,11 @@ class AccountController extends LoggedUserController
         $userId = UserAuthentication::getLoggedUserId(true);
         $userImgUpdatedOn = User::getAttributesById($userId, 'user_updated_on');
         $uploadedTime = AttachedFile::setTimeParam($userImgUpdatedOn);
-        $userImage = UrlHelper::getCachedUrl(UrlHelper::generateFullFileUrl('image', 'user', array($userId)) . $uploadedTime, CONF_IMG_CACHE_TIME, '.jpg');
+        $fileRow = AttachedFile::getAttachment(AttachedFile::FILETYPE_USER_PROFILE_IMAGE, $userId);
+        $userImage = "";
+        if (0 < $fileRow['afile_id']) {
+            $userImage = UrlHelper::getCachedUrl(UrlHelper::generateFullFileUrl('image', 'user', array($userId)) . $uploadedTime, CONF_IMG_CACHE_TIME, '.jpg');
+        }
 
         $this->set('image', $userImage);
         $this->_template->render(false, false, 'cropper/index.php');

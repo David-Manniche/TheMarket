@@ -292,6 +292,18 @@ Bugs:
     => 044442 - on searching item using tag there is no result found
     => 044418 - Fulfillment method is missing from Inventory setup.
     => 044411 - when seller adds inventory of admin catalog and opts shipping on own end and if admin changes shipping mode then it impacts seller inventory
+--------------TV-9.2.2.20201023-------------------------
+    => 044461 - TAx is not listing on buyer end in invoice
+    => 044370 - on order invoice> product option is not displaying.
+    => 044476 - when bank transfer payment is split in multiple amounts then getting invalid access
+    => 044482 - when order is of pickup then on order detail page it's listing shipping price column and pickup
+    => 044479 - Brand Collections >> view all >> identifier should get display for brand name if there is no language data added in admin panel .
+    => 044481 - when same product is added by multiple sellers then in Seo area listing 3 times same item
+    => 044478 - when there is no image added from user and when user tries to upload image then it's treating dummy image as uploaded
+    => 044502 - when order is on pickup then on order detail page> country and state code is listing instead of name
+    => 044477 - when mini cart having only item remains after deletion then getting scroll with product
+    => 044468 - Seller >> inventory setup of digital products >> there is some warnings on download page . 
+    => 044497 - extra categories are listing on page which are not even added
 
 Enhancements:
     => Tax module upgrade

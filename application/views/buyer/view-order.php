@@ -23,8 +23,7 @@ $orderStatusArr = Orders::getOrderPaymentStatusArr($siteLangId);
 
 if (!$print) { ?>
     <?php $this->includeTemplate('_partial/dashboardNavigation.php'); ?>
-<?php
-} ?>
+<?php } ?>
 <main id="main-area" class="main" role="main">
     <div class="content-wrapper content-space">
         <?php if (!$print) { ?>
@@ -76,7 +75,7 @@ if (!$print) { ?>
                     <h5 class="card-title">
                         <?php echo Labels::getLabel('LBL_Order_Details', $siteLangId); ?>
                     </h5>
-                    <?php if (!$print) { ?>
+                    <?php if ($print) { ?>
                         <div>
                             <div class="">
                                 <iframe src="<?php echo Fatutility::generateUrl('buyer', 'viewOrder', $urlParts) . '/print'; ?>" name="frame" class="printFrame-js" style="display:none" width="1" height="1"></iframe>
@@ -166,23 +165,27 @@ if (!$print) { ?>
                                             </p>
                                     <?php }
                                     } ?>
-                                    <p>
-                                        <strong>
-                                            <?php echo Labels::getLabel('LBL_Discount', $siteLangId); ?>:
-                                        </strong>
-                                        <?php echo CommonHelper::displayMoneyFormat(CommonHelper::orderProductAmount($childOrderDetail, 'DISCOUNT'), true, false, true, false, true); ?>
-                                    </p>
-                                    <?php $volumeDiscount = CommonHelper::orderProductAmount($childOrderDetail, 'VOLUME_DISCOUNT');
-                                    if (0 < $volumeDiscount) {
-                                    ?>
+                                    <?php 
+                                    $disc = CommonHelper::orderProductAmount($childOrderDetail, 'DISCOUNT');
+                                    if (0 < $disc) { ?>
+                                        <p>
+                                            <strong>
+                                                <?php echo Labels::getLabel('LBL_Discount', $siteLangId); ?>:
+                                            </strong>
+                                            <?php echo CommonHelper::displayMoneyFormat($disc, true, false, true, false, true); ?>
+                                        </p>
+                                    <?php 
+                                    }
+
+                                    $volumeDiscount = CommonHelper::orderProductAmount($childOrderDetail, 'VOLUME_DISCOUNT');
+                                    if (0 < $volumeDiscount) { ?>
                                         <p>
                                             <strong>
                                                 <?php echo Labels::getLabel('LBL_Volume/Loyalty_Discount', $siteLangId); ?>:
                                             </strong>
                                             <?php echo CommonHelper::displayMoneyFormat($volumeDiscount, true, false, true, false, true); ?>
                                         </p>
-                                    <?php
-                                    } ?>
+                                    <?php } ?>
                                     <?php $rewardPointDiscount = CommonHelper::orderProductAmount($childOrderDetail, 'REWARDPOINT');
                                     if ($rewardPointDiscount != 0) { ?>
                                         <p>
@@ -393,16 +396,14 @@ if (!$print) { ?>
                                                     $address1 = !empty($childOrder['addr_address1']) ? $childOrder['addr_address1'] : '';
                                                     $address2 = !empty($childOrder['addr_address2']) ? ', ' . $childOrder['addr_address2'] : '';
                                                     $city = !empty($childOrder['addr_city']) ? '<br>' . $childOrder['addr_city'] : '';
-                                                    $state = !empty($childOrder['state_code']) ? ', ' . $childOrder['state_code'] : '';
-                                                    $country = !empty($childOrder['country_code']) ? ' ' . $childOrder['country_code'] : '';
+                                                    $state = !empty($childOrder['state_name']) ? ', ' . $childOrder['state_name'] : ', ' . $childOrder['state_identifier'];
+                                                    $country = !empty($childOrder['country_name']) ? ' ' . $childOrder['country_name'] : ' ' . $childOrder['country_code'];
                                                     $zip = !empty($childOrder['addr_zip']) ? '(' . $childOrder['addr_zip'] . ')' : '';
 
                                                     echo $address1 . $address2 . $city . $state . $country . $zip;
                                                     ?>
                                                 </p>
-                                            <?php } else {
-                                                echo Labels::getLabel('LBL_N/A', $siteLangId);
-                                            } ?>
+                                            <?php } ?>
                                         </td>
                                         <td>
                                             <?php echo $childOrder['op_qty']; ?>
@@ -488,7 +489,7 @@ if (!$print) { ?>
                                             </tr>
                                     <?php }
                                     } ?>
-                                    <?php if ($orderDetail['order_discount_total']) { ?>
+                                    <?php if (0 < $orderDetail['order_discount_total']) { ?>
                                         <tr>
                                             <td colspan="7">
                                                 <?php echo Labels::getLabel('LBL_Discount', $siteLangId) ?>
