@@ -1,7 +1,7 @@
 <?php $recordFound = false; ?>
 <?php if (!empty($suggestions['tags'])) {
     $recordFound = true; ?>
-    <ul class="text-suggestions">
+    <ul class="text-suggestions" >
         <?php foreach ($suggestions['tags'] as $tags) { ?>
             <li class=""><a class="" href="javascript:void(0)" onclick="searchTags(this)" data-txt="<?php echo $tags['tag_name']; ?>"><span class=""><?php echo str_ireplace($keyword, "<b>$keyword</b>", $tags['tag_name']); ?></span></a></li>
         <?php } ?>

@@ -850,20 +850,20 @@ $(function() { // this will be called when the DOM is ready
     var doneTypingInterval = 800; //time in ms, 5 second for example
     var $input = $('#header_search_keyword');
 
-    $input.focus(function() {
+    $input.focus(function(e) {       
         searchProductTagsAuto($input.val());
     });
 
-    $input.keyup(function() {
+    $input.keyup(function(e) {             
         clearTimeout(typingTimer);
         typingTimer = setTimeout(doneTyping, doneTypingInterval);
     });
 
-    $input.keydown(function() {
+    $input.keydown(function(e) {        
         clearTimeout(typingTimer);
     });
 
-    doneTyping = function() {
+    doneTyping = function(e) {        
         searchProductTagsAuto($input.val());
     };
 
@@ -887,10 +887,19 @@ $(function() { // this will be called when the DOM is ready
 
 });
 
-$(document).ready(function() {
+$(document).mouseup(function (e) { 
+    var container = $('#search-suggestions-js'); 
+    var inputFld = $('#header_search_keyword'); 
+    if((!container.is(e.target) && container.has(e.target).length === 0) && (!inputFld.is(e.target) && inputFld.has(e.target).length === 0)) {         
+        $('#search-suggestions-js').html('');
+    } 
+}); 
+  
+$(document).ready(function() {    
+    var searchSuggestionsJs = $('#search-suggestions-js');
     removeAutoSuggest = function() {
         $('#header_search_keyword').val('');
-        $('#search-suggestions-js').html('');
+        searchSuggestionsJs.html('');
     };
     searchTags = function(obj) {
         var frmSiteSearch = document.frmSiteSearch;
@@ -904,13 +913,14 @@ $(document).ready(function() {
         }   */
         var data = 'keyword=' + keyword;
         fcom.updateWithAjax(fcom.makeUrl('Products', 'searchProductTagsAutocomplete'), data, function(t) {      if (t.html.length > 0) {
-                if (!$('#search-suggestions-js').find('div').hasClass('search-suggestions')) {
-                    $('#search-suggestions-js').html('<a href="javascript:void(0)" onClick="removeAutoSuggest()" class="close-layer"></a><div class="search-suggestions" id="tagsSuggetionList"></div>');
+                if (!searchSuggestionsJs.find('div').hasClass('search-suggestions')) {
+                    searchSuggestionsJs.html('<a href="javascript:void(0)" onClick="removeAutoSuggest()" class="close-layer"></a><div class="search-suggestions" id="tagsSuggetionList"></div>');
                 }
-                $('#tagsSuggetionList').html(t.html);
+                $('#tagsSuggetionList').html(t.html);                
             } else {
-                $('#search-suggestions-js').html('<a href="javascript:void(0)" onClick="removeAutoSuggest()" class="close-layer"></a>');
+                searchSuggestionsJs.html('<a href="javascript:void(0)" onClick="removeAutoSuggest()" class="close-layer"></a>');
             }
+            
         }, '', false);
     };
 

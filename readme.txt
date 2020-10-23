@@ -269,6 +269,7 @@ Bugs:
     => 044435 - when any keyword is searched then on click of cross from search bar it's not washing the keyword entered
     => 044434 - search> when there is no result found the don't display any suggestion list unless there is history
     => 044433 - only search result should get removed on click
+    => 044420 - on search >>search suggestions section should get closed if we click anywhere on screen
 Enhancements:
     => Tax module upgrade
     => Test cases classes enhancements.
