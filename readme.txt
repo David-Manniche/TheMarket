@@ -288,8 +288,11 @@ Bugs:
     => 044451 - Home page >> FAQ collection >> Show more show less should be highlighted or underlined
     => 044438 - Home page >> Testimonial collection >> "View all " button is not working. 
     => 044443 - Admin >> add testimonials >> there should be some text limit for "testimonial text " .
+--------------TV-9.2.2.20201023-------------------------
     => 044461 - TAx is not listing on buyer end in invoice
     => 044370 - on order invoice> product option is not displaying.
+    => 044476 - when bank transfer payment is split in multiple amounts then getting invalid access
+
 Enhancements:
     => Tax module upgrade
     => Test cases classes enhancements.
