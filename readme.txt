@@ -294,6 +294,7 @@ Bugs:
     => 044479 - Brand Collections >> view all >> identifier should get display for brand name if there is no language data added in admin panel .
     => 044481 - when same product is added by multiple sellers then in Seo area listing 3 times same item
     => 044478 - when there is no image added from user and when user tries to upload image then it's treating dummy image as uploaded
+    => 044502 - when order is on pickup then on order detail page> country and state code is listing instead of name
 
 Enhancements:
     => Tax module upgrade

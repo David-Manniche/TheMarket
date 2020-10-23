@@ -396,16 +396,14 @@ if (!$print) { ?>
                                                     $address1 = !empty($childOrder['addr_address1']) ? $childOrder['addr_address1'] : '';
                                                     $address2 = !empty($childOrder['addr_address2']) ? ', ' . $childOrder['addr_address2'] : '';
                                                     $city = !empty($childOrder['addr_city']) ? '<br>' . $childOrder['addr_city'] : '';
-                                                    $state = !empty($childOrder['state_code']) ? ', ' . $childOrder['state_code'] : '';
-                                                    $country = !empty($childOrder['country_code']) ? ' ' . $childOrder['country_code'] : '';
+                                                    $state = !empty($childOrder['state_name']) ? ', ' . $childOrder['state_name'] : ', ' . $childOrder['state_identifier'];
+                                                    $country = !empty($childOrder['country_name']) ? ' ' . $childOrder['country_name'] : ' ' . $childOrder['country_code'];
                                                     $zip = !empty($childOrder['addr_zip']) ? '(' . $childOrder['addr_zip'] . ')' : '';
 
                                                     echo $address1 . $address2 . $city . $state . $country . $zip;
                                                     ?>
                                                 </p>
-                                            <?php } else {
-                                                echo Labels::getLabel('LBL_N/A', $siteLangId);
-                                            } ?>
+                                            <?php } ?>
                                         </td>
                                         <td>
                                             <?php echo $childOrder['op_qty']; ?>
