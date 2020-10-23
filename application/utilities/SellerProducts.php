@@ -302,7 +302,8 @@ trait SellerProducts
             }
         }
         
-        $shipBySeller = SellerProduct::prodShipByseller($product_id);
+        //$shipBySeller = SellerProduct::prodShipByseller($product_id);
+        $shipBySeller = Product::isProductShippedBySeller($product_id, $productRow['product_seller_id'], UserAuthentication::getLoggedUserId());
         
         $this->set('shipBySeller', $shipBySeller);
         $this->set('optionValues', $optionValues);

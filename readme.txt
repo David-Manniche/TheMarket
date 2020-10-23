@@ -288,8 +288,10 @@ Bugs:
     => 044451 - Home page >> FAQ collection >> Show more show less should be highlighted or underlined
     => 044438 - Home page >> Testimonial collection >> "View all " button is not working. 
     => 044443 - Admin >> add testimonials >> there should be some text limit for "testimonial text " .
---------------TV-9.2.2.20201023-------------------------
+    --------------TV-9.2.2.20201023-------------------------
     => 044442 - on searching item using tag there is no result found
+    => 044418 - Fulfillment method is missing from Inventory setup.
+
 Enhancements:
     => Tax module upgrade
     => Test cases classes enhancements.

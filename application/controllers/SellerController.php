@@ -4320,8 +4320,9 @@ class SellerController extends SellerBaseController
             }
 
             $fulFillmentArr = Shipping::getFulFillmentArr($this->siteLangId, $fulfillmentType);
-            $shipBySeller = SellerProduct::prodShipByseller($product_id);
-            if ($productData['product_type'] == Product::PRODUCT_TYPE_PHYSICAL && !empty($shipBySeller)) {
+            $shipBySeller = Product::isProductShippedBySeller($product_id, $productData['product_seller_id'], UserAuthentication::getLoggedUserId());
+            // $shipBySeller = SellerProduct::prodShipByseller($product_id);
+            if ($productData['product_type'] == Product::PRODUCT_TYPE_PHYSICAL && true == $shipBySeller ) { 
                 $frm->addSelectBox(Labels::getLabel('LBL_FULFILLMENT_METHOD', $this->siteLangId), 'selprod_fulfillment_type', $fulFillmentArr, applicationConstants::NO, []);
             }
             $frm->addRequiredField(Labels::getLabel('LBL_Url_Keyword', $this->siteLangId), 'selprod_url_keyword');
