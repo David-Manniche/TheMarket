@@ -57,7 +57,7 @@ $this->includeTemplate('_partial/seller/sellerDashboardNavigation.php');
 										</div>							
 									</div>
 								</div>
-                                <div class="row">
+                                <div class="row justify-content-center">
                                     <?php if (FatApp::getConfig('CONF_SELLER_CAN_REQUEST_CUSTOM_PRODUCT', FatUtility::VAR_INT, 0)) { ?>
                                         <div class="col-md-4">
                                             <div class="no-data-found">
