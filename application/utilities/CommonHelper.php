@@ -741,9 +741,9 @@ class CommonHelper extends FatUtility
     }
 
     /* File creation in temporary memory. */
-    public static function writeExportDataToCSV($handle, $fileContent = array(), $download = false, $output_file_name = '')
+    public static function writeExportDataToCSV($handle, $fileContent = array(), $download = false, $output_file_name = '', $headerRow = false)
     {
-        self::addToCSV($handle, $fileContent);
+        self::addToCSV($handle, $fileContent, $headerRow);
 
         if ($download) {
             /** rewrind the "file" with the csv lines **/
