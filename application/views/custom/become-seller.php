@@ -192,7 +192,7 @@
 										<p><span class="lessText"><?php echo CommonHelper::truncateCharacters(CommonHelper::renderHtml($story['sstory_content']),200,'','',true);?></span>
 										<?php /* if(strlen($story['sstory_content']) > 200) { ?>
 										<span class='moreText' hidden><?php echo nl2br($story['sstory_content']);?></span>
-										<a class="readMore link--arrow" href="javascript:void(0);"> <?php echo Labels::getLabel('Lbl_SHOW_MORE',$siteLangId) ; ?> </a>
+										<a class="readMore link--arrow btn-link" href="javascript:void(0);"> <?php echo Labels::getLabel('Lbl_SHOW_MORE',$siteLangId) ; ?> </a>
 										<?php } */ ?>
 										</p>
 										<h6>— <?php echo $story['sstory_name']; echo ($story['sstory_site_domain'] != '') ? ', <span>'. $story['sstory_site_domain'].'</span>' : ''; ?> </h6>

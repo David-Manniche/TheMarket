@@ -277,6 +277,7 @@ Bugs:
     => 044405 - buyer> wishlist> when there is nothing in shop wishlist then message is not in center 
     => 044395 - On Thankyou screen >> "-" sign should be there with discount amount .
     => 044424 - when we add seller's shipping on admin's catalog then all products (seller's +admin's ) starts getting display on "marketplace product" section.
+    => 044451 - Home page >> FAQ collection >> Show more show less should be highlighted or underlined
 
 Enhancements:
     => Tax module upgrade
