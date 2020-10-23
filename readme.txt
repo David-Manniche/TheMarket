@@ -261,8 +261,16 @@ Bugs:
     => 044228 - If we Quit the seller registration process on activation form and then re check the seller registration form then here is some error;
     => 040055 - wrong commission is getting charged from seller.
     => 044385 - Collection layout issue on view all page
-    => 044380 - When guest user click on "clear cart" then "Unauthorized Request" gets display
+    => 044380 - When guest user click on "clear cart" then "Unauthorized Request" gets display    
     -----------------------TV-9.2.2.20201021-----------------
+    => 044325 - if order amount is in fraction then rewards applicable are displaying as fractional 
+    => 044414 - admin> orders> withdrawal request> filters> on entering character in amount field and proceeding further getting error
+    => 044234 - delivered status is not there on admin when order is on pickup
+    => 044435 - when any keyword is searched then on click of cross from search bar it's not washing the keyword entered
+    => 044434 - search> when there is no result found the don't display any suggestion list unless there is history
+    => 044433 - only search result should get removed on click
+    => 044420 - on search >>search suggestions section should get closed if we click anywhere on screen
+    => 044052 - after exporting file in arabic language data is deformed in sheet unless UTF8 is selected
     
     => 044380 - When guest user click on "clear cart" then "Unauthorized Request" gets display
     => 044379 - If order status is "pay on pickup " then it stays the same even if we cancel the order.
