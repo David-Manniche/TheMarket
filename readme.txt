@@ -294,6 +294,7 @@ Bugs:
     => 044476 - when bank transfer payment is split in multiple amounts then getting invalid access
     => 044477 - when mini cart having only item remains after deletion then getting scroll with product
     => 044468 - Seller >> inventory setup of digital products >> there is some warnings on download page . 
+    => 044497 - extra categories are listing on page which are not even added
 
 Enhancements:
     => Tax module upgrade
