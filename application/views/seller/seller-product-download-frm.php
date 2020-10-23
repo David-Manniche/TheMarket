@@ -73,6 +73,7 @@ $selprodDownloadFrm->developerTags['fld_default_col'] = 4; ?>
                                 'action' => Labels::getLabel('LBL_Action', $siteLangId),
                             );
 							$tableClass = '';
+							$attachments = AttachedFile::getMultipleAttachments(AttachedFile::FILETYPE_SELLER_PRODUCT_DIGITAL_DOWNLOAD, $key, 0, -1);
 							if (0 < count($attachments)) {
 								$tableClass = "table-justified";
 							}
@@ -83,7 +84,6 @@ $selprodDownloadFrm->developerTags['fld_default_col'] = 4; ?>
                             }
 
                             $sr_no = 0;
-                            $attachments = AttachedFile::getMultipleAttachments(AttachedFile::FILETYPE_SELLER_PRODUCT_DIGITAL_DOWNLOAD, $key, 0, -1);
                             foreach ($attachments as $sn => $row) {
                                 $sr_no++;
                                 $tr = $tbl->appendElement('tr');

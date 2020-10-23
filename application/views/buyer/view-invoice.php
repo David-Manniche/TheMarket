@@ -216,13 +216,26 @@
 											<th style="padding:10px 15px;text-align: center; border-bottom:1px solid #ddd;"><?php echo Labels::getLabel('LBL_Savings', $siteLangId);?></th>                                           
 											<th style="padding:10px 15px;text-align: center; border-bottom:1px solid #ddd;"><?php echo Labels::getLabel('LBL_Total_Amount', $siteLangId);?></th>
 										</tr>
-										<tr> 
-											<?php $volumeDiscount = CommonHelper::orderProductAmount($childOrder, 'VOLUME_DISCOUNT'); ?>
+										<tr>
 											<td style="padding:10px 15px;text-align: left;">
-											<?php echo ($childOrder['op_selprod_title'] != '') ? $childOrder['op_selprod_title'] : $childOrder['op_product_name']; ?></td>
+											<?php echo ($childOrder['op_selprod_title'] != '') ? $childOrder['op_selprod_title'] : $childOrder['op_product_name']; ?>
+											<?php if (is_array($childOrder['options']) && count($childOrder['options'])) {
+												$variantStr ='<br> (';
+												$count = count($childOrder['options']);
+												foreach ($childOrder['options'] as $op) {
+													$variantStr .= '' . wordwrap($op['optionvalue_name'], 150, "<br>\n");
+													if ($count != 1) {
+														$variantStr .= ' | ';
+													}
+													$count--;
+												}
+												$variantStr .= ')';
+												echo $variantStr;
+											} ?>
+											</td>
 											<td style="padding:10px 15px;text-align: center;">
 												<?php echo CommonHelper::displayMoneyFormat(CommonHelper::orderProductAmount($childOrder, 'TAX'), true, false, true, false, true); ?>
-											</td>                                          
+											</td>											
 											<td style="padding:10px 15px;text-align: center;"><?php echo $childOrder['op_qty']; ?></td>                   
 											<td style="padding:10px 15px;text-align: center;"><?php echo CommonHelper::displayMoneyFormat($childOrder['op_unit_price'], true, false, true, false, true); ?></td>
 											<?php $couponDiscount = CommonHelper::orderProductAmount($childOrder, 'DISCOUNT'); 
@@ -265,13 +278,12 @@
 											<td style="padding:10px 15px;text-align: center;border-top:1px solid #ddd;border-left:1px solid #ddd;" colspan="1"><?php echo CommonHelper::displayMoneyFormat($rewardPointDiscount, true, false, true, false, true); ?></td>                                           
 										</tr>
 										<?php } */ ?>
-										<?php
-										/* if (CommonHelper::orderProductAmount($childOrder, 'TAX') > 0) { ?>
+										<?php if (CommonHelper::orderProductAmount($childOrder, 'TAX') > 0) { ?>
 										<tr>                                                                              
 											<td style="padding:10px 15px;text-align: center;border-top:1px solid #ddd;border-left:1px solid #ddd;" colspan="2"><?php echo Labels::getLabel('LBL_Tax_Charges', $siteLangId) ?></td>                    
 											<td style="padding:10px 15px;text-align: center;border-top:1px solid #ddd;border-left:1px solid #ddd;" colspan="1"><?php echo CommonHelper::displayMoneyFormat(CommonHelper::orderProductAmount($childOrder, 'TAX'), true, false, true, false, true); ?></td>      
 										</tr>
-										<?php } */ ?>
+										<?php } ?>
 										<?php
 										if ($totalSavings != 0) { ?>
 										<tr>                                                                              
