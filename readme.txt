@@ -290,6 +290,7 @@ Bugs:
     => 044443 - Admin >> add testimonials >> there should be some text limit for "testimonial text " .
 --------------TV-9.2.2.20201023-------------------------
     => 044476 - when bank transfer payment is split in multiple amounts then getting invalid access
+    => 044482 - when order is of pickup then on order detail page it's listing shipping price column and pickup
 
 Enhancements:
     => Tax module upgrade

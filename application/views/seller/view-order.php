@@ -3,6 +3,7 @@ if (!$print) {
     $this->includeTemplate('_partial/seller/sellerDashboardNavigation.php'); ?>
 <?php
 }
+$shippingCharges = CommonHelper::orderProductAmount($orderDetail, 'shipping');
 
 $orderStatusLbl = Labels::getLabel('LBL_AWAITING_SHIPMENT', $siteLangId);
 $orderStatus = '';
@@ -49,10 +50,10 @@ if (!empty($orderDetail["thirdPartyorderInfo"]) && isset($orderDetail["thirdPart
                             <a href="<?php echo UrlHelper::generateUrl('Seller', 'sales'); ?>" class="btn btn-outline-brand  btn-sm no-print" title="<?php echo Labels::getLabel('LBL_Back_to_order', $siteLangId); ?>">
                                 <i class="fas fa-arrow-left"></i>
                             </a>
-                            <a target = "_blank" href="<?php echo UrlHelper::generateUrl('Seller', 'viewInvoice', [$orderDetail['op_id']]); ?>" class="btn btn-outline-brand btn-sm no-print" title="
+                            <a target="_blank" href="<?php echo UrlHelper::generateUrl('Seller', 'viewInvoice', [$orderDetail['op_id']]); ?>" class="btn btn-outline-brand btn-sm no-print" title="
 								<?php echo Labels::getLabel('LBL_Print', $siteLangId); ?>">
-								<i class="fas fa-print"></i>
-							</a>
+                                <i class="fas fa-print"></i>
+                            </a>
                             <?php if ($shippedBySeller && true === $canShipByPlugin && ('CashOnDelivery' == $orderDetail['plugin_code'] || Orders::ORDER_PAYMENT_PAID == $orderDetail['order_payment_status'])) {
                                 $opId = $orderDetail['op_id'];
                                 if (empty($orderDetail['opship_response']) && empty($orderDetail['opship_tracking_number'])) {
@@ -99,13 +100,16 @@ if (!empty($orderDetail["thirdPartyorderInfo"]) && isset($orderDetail["thirdPart
                                 </p>
                                 <p><strong><?php echo Labels::getLabel('LBL_Cart_Total', $siteLangId); ?>: </strong><?php echo CommonHelper::displayMoneyFormat(CommonHelper::orderProductAmount($orderDetail, 'CART_TOTAL'), true, false, true, false, true); ?></p>
 
-                                <?php if ($shippedBySeller) { ?>
-                                    <p><strong><?php echo Labels::getLabel('LBL_Delivery', $siteLangId); ?>: </strong><?php echo CommonHelper::displayMoneyFormat(CommonHelper::orderProductAmount($orderDetail, 'SHIPPING'), true, false, true, false, true); ?></p>
+                                <?php if ($shippedBySeller && 0 < $shippingCharges) { ?>
+                                    <p><strong><?php echo Labels::getLabel('LBL_Delivery', $siteLangId); ?>: </strong><?php echo CommonHelper::displayMoneyFormat($shippingCharges, true, false, true, false, true); ?></p>
                                 <?php } ?>
 
                                 <?php if ($orderDetail['op_tax_collected_by_seller']) { ?>
                                     <?php if (empty($orderDetail['taxOptions'])) { ?>
-                                        <p><strong><?php echo Labels::getLabel('LBL_Tax', $siteLangId); ?>:</strong> <?php echo CommonHelper::displayMoneyFormat(CommonHelper::orderProductAmount($orderDetail, 'TAX'), true, false, true, false, true); ?></p>
+                                        <p>
+                                            <strong><?php echo Labels::getLabel('LBL_Tax', $siteLangId); ?>:</strong> 
+                                            <?php echo CommonHelper::displayMoneyFormat(CommonHelper::orderProductAmount($orderDetail, 'TAX'), true, false, true, false, true); ?>
+                                        </p>
                                         <?php } else {
                                         foreach ($orderDetail['taxOptions'] as $key => $val) { ?>
                                             <p><strong><?php echo CommonHelper::displayTaxPercantage($val, true) ?>:</strong> <?php echo CommonHelper::displayMoneyFormat($val['value'], true, false, true, false, true); ?></p>
@@ -115,7 +119,7 @@ if (!empty($orderDetail["thirdPartyorderInfo"]) && isset($orderDetail["thirdPart
                                 <?php /*
                         <p><strong><?php echo Labels::getLabel('LBL_Discount',$siteLangId);?>:</strong> <?php echo CommonHelper::displayMoneyFormat(CommonHelper::orderProductAmount($orderDetail,'DISCOUNT'));?></p> */ ?>
                                 <?php $volumeDiscount = CommonHelper::orderProductAmount($orderDetail, 'VOLUME_DISCOUNT');
-                                if ($volumeDiscount) { ?>
+                                if (0 < $volumeDiscount) { ?>
                                     <p><strong><?php echo Labels::getLabel('LBL_Volume/Loyalty_Discount', $siteLangId); ?>:</strong> <?php echo CommonHelper::displayMoneyFormat($volumeDiscount, true, false, true, false, true); ?></p>
                                 <?php } ?>
                                 <?php
@@ -148,21 +152,20 @@ if (!empty($orderDetail["thirdPartyorderInfo"]) && isset($orderDetail["thirdPart
                     <div class="js-scrollable table-wrap">
                         <table class="table">
                             <thead>
-
                                 <tr class="">
                                     <th><?php echo Labels::getLabel('LBL_Order_Particulars', $siteLangId); ?></th>
                                     <?php if (!$print) { ?>
                                         <th class="no-print"></th>
                                     <?php } ?>
                                     <th>
-                                        <?php 
+                                        <?php
                                         if (!empty($orderDetail['pickupAddress'])) {
-                                            echo Labels::getLabel('LBL_PICKUP_DETAIL', $siteLangId); 
+                                            echo Labels::getLabel('LBL_PICKUP_DETAIL', $siteLangId);
                                         } ?>
                                     </th>
                                     <th><?php echo Labels::getLabel('LBL_Qty', $siteLangId); ?></th>
                                     <th><?php echo Labels::getLabel('LBL_Price', $siteLangId); ?></th>
-                                    <?php if ($shippedBySeller) { ?>
+                                    <?php if ($shippedBySeller && 0 < $shippingCharges) { ?>
                                         <th><?php echo Labels::getLabel('LBL_Shipping_Charges', $siteLangId); ?></th>
                                     <?php } ?>
                                     <?php if ($volumeDiscount) { ?>
@@ -215,7 +218,7 @@ if (!empty($orderDetail["thirdPartyorderInfo"]) && isset($orderDetail["thirdPart
                                     <?php } ?>
                                     </td>
                                     <td>
-                                        <?php 
+                                        <?php
                                         if (Shipping::FULFILMENT_PICKUP == $orderDetail['opshipping_fulfillment_type']) { ?>
                                             <p>
                                                 <strong>
@@ -223,7 +226,7 @@ if (!empty($orderDetail["thirdPartyorderInfo"]) && isset($orderDetail["thirdPart
                                                     $opshippingDate = isset($orderDetail['opshipping_date']) ? $orderDetail['opshipping_date'] . ' ' : '';
                                                     $timeSlotFrom = isset($orderDetail['opshipping_time_slot_from']) ? ' (' . date('H:i', strtotime($orderDetail['opshipping_time_slot_from'])) . ' - ' : '';
                                                     $timeSlotTo = isset($orderDetail['opshipping_time_slot_to']) ? date('H:i', strtotime($orderDetail['opshipping_time_slot_to'])) . ')' : '';
-                                                    echo $opshippingDate . $timeSlotFrom . $timeSlotTo; 
+                                                    echo $opshippingDate . $timeSlotFrom . $timeSlotTo;
                                                     ?>
                                                 </strong><br>
                                                 <?php echo $orderDetail['addr_name']; ?>,
@@ -245,8 +248,8 @@ if (!empty($orderDetail["thirdPartyorderInfo"]) && isset($orderDetail["thirdPart
                                     <td><?php echo $orderDetail['op_qty']; ?></td>
                                     <td><?php echo CommonHelper::displayMoneyFormat($orderDetail['op_unit_price'], true, false, true, false, true); ?></td>
 
-                                    <?php if ($shippedBySeller) { ?>
-                                        <td><?php echo CommonHelper::displayMoneyFormat(CommonHelper::orderProductAmount($orderDetail, 'shipping'), true, false, true, false, true); ?></td>
+                                    <?php if ($shippedBySeller && 0 < $shippingCharges) { ?>
+                                        <td><?php echo CommonHelper::displayMoneyFormat($shippingCharges, true, false, true, false, true); ?></td>
                                     <?php } ?>
 
                                     <?php if ($volumeDiscount) { ?>

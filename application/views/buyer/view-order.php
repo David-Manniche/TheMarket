@@ -165,23 +165,27 @@ if (!$print) { ?>
                                             </p>
                                     <?php }
                                     } ?>
-                                    <p>
-                                        <strong>
-                                            <?php echo Labels::getLabel('LBL_Discount', $siteLangId); ?>:
-                                        </strong>
-                                        <?php echo CommonHelper::displayMoneyFormat(CommonHelper::orderProductAmount($childOrderDetail, 'DISCOUNT'), true, false, true, false, true); ?>
-                                    </p>
-                                    <?php $volumeDiscount = CommonHelper::orderProductAmount($childOrderDetail, 'VOLUME_DISCOUNT');
-                                    if (0 < $volumeDiscount) {
-                                    ?>
+                                    <?php 
+                                    $disc = CommonHelper::orderProductAmount($childOrderDetail, 'DISCOUNT');
+                                    if (0 < $disc) { ?>
+                                        <p>
+                                            <strong>
+                                                <?php echo Labels::getLabel('LBL_Discount', $siteLangId); ?>:
+                                            </strong>
+                                            <?php echo CommonHelper::displayMoneyFormat($disc, true, false, true, false, true); ?>
+                                        </p>
+                                    <?php 
+                                    }
+
+                                    $volumeDiscount = CommonHelper::orderProductAmount($childOrderDetail, 'VOLUME_DISCOUNT');
+                                    if (0 < $volumeDiscount) { ?>
                                         <p>
                                             <strong>
                                                 <?php echo Labels::getLabel('LBL_Volume/Loyalty_Discount', $siteLangId); ?>:
                                             </strong>
                                             <?php echo CommonHelper::displayMoneyFormat($volumeDiscount, true, false, true, false, true); ?>
                                         </p>
-                                    <?php
-                                    } ?>
+                                    <?php } ?>
                                     <?php $rewardPointDiscount = CommonHelper::orderProductAmount($childOrderDetail, 'REWARDPOINT');
                                     if ($rewardPointDiscount != 0) { ?>
                                         <p>
@@ -487,7 +491,7 @@ if (!$print) { ?>
                                             </tr>
                                     <?php }
                                     } ?>
-                                    <?php if ($orderDetail['order_discount_total']) { ?>
+                                    <?php if (0 < $orderDetail['order_discount_total']) { ?>
                                         <tr>
                                             <td colspan="7">
                                                 <?php echo Labels::getLabel('LBL_Discount', $siteLangId) ?>
