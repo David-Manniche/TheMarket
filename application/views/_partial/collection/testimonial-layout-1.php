@@ -11,7 +11,19 @@
             <?php foreach ($collection['testimonials'] as $testimonial) { ?>
             <div class="slide-item">
                 <div class="slide-item__text">
-                    <p> <?php echo $testimonial['testimonial_text']; ?> </p>
+                    <p>
+						<span class="lessText">
+							<?php echo CommonHelper::truncateCharacters($testimonial['testimonial_text'], 150, '', '', true); ?>
+						</span> 
+						<?php if (strlen($testimonial['testimonial_text']) > 150) { ?> 
+							<span class="moreText hidden">
+								<?php echo FatUtility::decodeHtmlEntities($testimonial['testimonial_text']); ?>
+							</span> 
+							<a class="readMore link--arrow btn-link" href="javascript:void(0);">
+								<?php echo Labels::getLabel('Lbl_SHOW_MORE', $siteLangId) ; ?>
+							</a>
+						<?php } ?>
+					</p>
                 </div>
                 <div class="slide-item__from">
                     <img class="user-pic" alt="<?php echo $testimonial['testimonial_user_name']; ?>"

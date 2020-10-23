@@ -32,11 +32,19 @@
                         <?php foreach ($faqCat['faqs'] as $faqId => $faq) { ?>
                         <li>
                             <h5><?php echo $faq['faq_title']; ?></h5>
-                            <p><span class="lessText"><?php echo CommonHelper::truncateCharacters($faq['faq_content'], 85, '', '', true); ?></span> <?php if (strlen($faq['faq_content']) > 85) {
-                            ?> <span class="moreText hidden"><?php echo FatUtility::decodeHtmlEntities($faq['faq_content']); ?></span> 
-                            <a class="readMore link--arrow btn-link" href="javascript:void(0);"> <?php echo Labels::getLabel('Lbl_SHOW_MORE', $siteLangId) ; ?> </a></p> <?php
-                            } ?>
-                            <p></p>
+                            <p>
+								<span class="lessText">
+									<?php echo CommonHelper::truncateCharacters($faq['faq_content'], 85, '', '', true); ?>
+								</span> 
+								<?php if (strlen($faq['faq_content']) > 85) { ?> 
+									<span class="moreText hidden">
+										<?php echo FatUtility::decodeHtmlEntities($faq['faq_content']); ?>
+									</span> 
+									<a class="readMore link--arrow btn-link" href="javascript:void(0);">
+										<?php echo Labels::getLabel('Lbl_SHOW_MORE', $siteLangId) ; ?>
+									</a>
+								<?php } ?>
+							</p>
                         </li>
                         <?php } ?>
                     </ul>
