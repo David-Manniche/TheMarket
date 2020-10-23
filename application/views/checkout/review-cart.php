@@ -16,7 +16,7 @@
             </div>
         </div>
         <?php }?>
-        <div class="short-detail js-scrollable table-wrap">
+        <div class="short-detail">
             <table class="table cart--full">
                 <tbody>
                     <?php
