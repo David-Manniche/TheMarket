@@ -265,13 +265,12 @@
 											<td style="padding:10px 15px;text-align: center;border-top:1px solid #ddd;border-left:1px solid #ddd;" colspan="1"><?php echo CommonHelper::displayMoneyFormat($rewardPointDiscount, true, false, true, false, true); ?></td>                                           
 										</tr>
 										<?php } */ ?>
-										<?php
-										/* if (CommonHelper::orderProductAmount($childOrder, 'TAX') > 0) { ?>
+										<?php if (CommonHelper::orderProductAmount($childOrder, 'TAX') > 0) { ?>
 										<tr>                                                                              
 											<td style="padding:10px 15px;text-align: center;border-top:1px solid #ddd;border-left:1px solid #ddd;" colspan="2"><?php echo Labels::getLabel('LBL_Tax_Charges', $siteLangId) ?></td>                    
 											<td style="padding:10px 15px;text-align: center;border-top:1px solid #ddd;border-left:1px solid #ddd;" colspan="1"><?php echo CommonHelper::displayMoneyFormat(CommonHelper::orderProductAmount($childOrder, 'TAX'), true, false, true, false, true); ?></td>      
 										</tr>
-										<?php } */ ?>
+										<?php } ?>
 										<?php
 										if ($totalSavings != 0) { ?>
 										<tr>                                                                              

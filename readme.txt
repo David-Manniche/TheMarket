@@ -288,7 +288,8 @@ Bugs:
     => 044451 - Home page >> FAQ collection >> Show more show less should be highlighted or underlined
     => 044438 - Home page >> Testimonial collection >> "View all " button is not working. 
     => 044443 - Admin >> add testimonials >> there should be some text limit for "testimonial text " .
-
+    => 044461 - TAx is not listing on buyer end in invoice
+    
 Enhancements:
     => Tax module upgrade
     => Test cases classes enhancements.
