@@ -5,7 +5,7 @@ if (!empty($footer_navigation)) { ?>
              <div class="toggle-group">
                 <h5 class="toggle__trigger toggle__trigger-js"><?php echo $nav['parent']; ?></h5>
                 <div class="toggle__target toggle__target-js">
-                    <ul class="nav-vertical abc">
+                    <ul class="nav-vertical">
                         <?php if ($nav['pages']) {
                             $getOrgUrl = (CONF_DEVELOPMENT_MODE) ? true : false;
                             foreach ($nav['pages'] as $link) {
