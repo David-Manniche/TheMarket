@@ -292,6 +292,7 @@ Bugs:
     => 044476 - when bank transfer payment is split in multiple amounts then getting invalid access
     => 044482 - when order is of pickup then on order detail page it's listing shipping price column and pickup
     => 044479 - Brand Collections >> view all >> identifier should get display for brand name if there is no language data added in admin panel .
+    => 044481 - when same product is added by multiple sellers then in Seo area listing 3 times same item
 
 Enhancements:
     => Tax module upgrade
