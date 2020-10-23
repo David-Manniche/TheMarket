@@ -66,7 +66,7 @@ class Product extends MyAppModel
     {
         parent::__construct(static::DB_TBL, static::DB_TBL_PREFIX . 'id', $id);
     }
-	
+
     public static function getSearchObject($langId = 0, $isDeleted = true, $joinSpecifics = false)
     {
         $srch = new SearchBase(static::DB_TBL, 'tp');
@@ -214,12 +214,12 @@ class Product extends MyAppModel
             static::APPROVED => Labels::getLabel('LBL_Approved', $langId),
         );
     }
-	
-	public static function getStatusClassArr()
+
+    public static function getStatusClassArr()
     {
         return array(
-        static::APPROVED => applicationConstants::CLASS_SUCCESS,
-        static::UNAPPROVED => applicationConstants::CLASS_DANGER
+            static::APPROVED => applicationConstants::CLASS_SUCCESS,
+            static::UNAPPROVED => applicationConstants::CLASS_DANGER
         );
     }
 
@@ -658,7 +658,7 @@ class Product extends MyAppModel
         return $data;
     }
 
-    public static function getProductTags($product_id, $lang_id = 0)
+    public static function getProductTags($product_id, $lang_id = 0, $assoc = false)
     {
         $product_id = FatUtility::convertToType($product_id, FatUtility::VAR_INT);
         $lang_id = FatUtility::convertToType($lang_id, FatUtility::VAR_INT);
@@ -670,15 +670,26 @@ class Product extends MyAppModel
         $srch = new SearchBase(static::DB_PRODUCT_TO_TAG);
         $srch->addCondition(static::DB_PRODUCT_TO_TAG_PREFIX . 'product_id', '=', $product_id);
         $srch->joinTable(Tag::DB_TBL, 'INNER JOIN', Tag::DB_TBL_PREFIX . 'id = ' . static::DB_PRODUCT_TO_TAG_PREFIX . 'tag_id');
-        $srch->addMultipleFields(array('tag_id', 'tag_identifier'));
 
         if ($lang_id) {
             $srch->joinTable(Tag::DB_TBL . '_lang', 'LEFT JOIN', 'lang.taglang_tag_id = ' . Tag::DB_TBL_PREFIX . 'id AND taglang_lang_id = ' . $lang_id, 'lang');
-            $srch->addFld('tag_name');
+
+            if (true == $assoc) {
+                $fields = array('tag_id', 'COALESCE(tag_name, tag_identifier) as tag_name');
+            } else {
+                $fields = array('tag_id', 'tag_identifier', 'COALESCE(tag_name, tag_identifier) as tag_name');
+            }
+            $srch->addMultipleFields($fields);
+        } else {
+            $srch->addMultipleFields(array('tag_id', 'tag_identifier'));
         }
 
         $rs = $srch->getResultSet();
         $db = FatApp::getDb();
+        if (true == $assoc) {
+            return $db->fetchAllAssoc($rs);
+        }
+
         $data = array();
         while ($row = $db->fetch($rs)) {
             $data[] = $row;

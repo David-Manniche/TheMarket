@@ -289,6 +289,7 @@ Bugs:
     => 044438 - Home page >> Testimonial collection >> "View all " button is not working. 
     => 044443 - Admin >> add testimonials >> there should be some text limit for "testimonial text " .
 --------------TV-9.2.2.20201023-------------------------
+    => 044442 - on searching item using tag there is no result found
 Enhancements:
     => Tax module upgrade
     => Test cases classes enhancements.

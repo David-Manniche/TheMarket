@@ -137,7 +137,7 @@ class Tag extends MyAppModel
 
         if ($languages) {
             foreach ($languages as $lang_id => $lang_name) {
-                $productTags = Product::getProductTags($productId, $lang_id);
+                $productTags = Product::getProductTags($productId, $lang_id, true);
                 $productName = Product::getAttributesBylangId($lang_id, $productId, 'product_name');
 
                 if (!$productName) {
@@ -148,17 +148,15 @@ class Tag extends MyAppModel
                 $productName = !empty($productName) ? $productName : $productData['product_identifier'];
 
                 $productTagsStringArr[$lang_id] = [];
-                if ($productTags) {
-                    foreach ($productTags as $tag) {
-                        $productTagsStringArr[$lang_id][] = ($tag['tag_name'] == '') ? $tag['tag_identifier'] : $tag['tag_name'];
-                    }
+
+                if (!empty($productTags)) {
+                    $product_tags_string[$lang_id] = implode(" | ", array_values($productTags));
                 }
 
-                $product_tags_string[$lang_id] = implode(" | ", $productTagsStringArr[$lang_id]);
                 if (empty($product_tags_string[$lang_id])) {
                     $product_tags_string[$lang_id] = $code;
-                } else {
-                    $product_tags_string[$lang_id] =  ' | ' . $code;
+                } else if (!empty($code)) {
+                    $product_tags_string[$lang_id] .=  ' | ' . $code;
                 }
 
                 if (!empty($product_tags_string[$lang_id])) {
