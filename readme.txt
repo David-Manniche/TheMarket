@@ -291,6 +291,7 @@ Bugs:
     --------------TV-9.2.2.20201023-------------------------
     => 044442 - on searching item using tag there is no result found
     => 044418 - Fulfillment method is missing from Inventory setup.
+    => 044411 - when seller adds inventory of admin catalog and opts shipping on own end and if admin changes shipping mode then it impacts seller inventory
 
 Enhancements:
     => Tax module upgrade
