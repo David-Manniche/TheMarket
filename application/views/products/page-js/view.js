@@ -105,7 +105,7 @@ $("document").ready(function(){
 	/* ] */
 
 	$(".cancel").on('click', function(){
-		$(this).parent().parent().siblings().toggleClass('cancelled--js ');
+		$(this).closest('.addon--js').toggleClass('cancelled--js ');
 		$(this).toggleClass('remove-add-on');
 	});
 

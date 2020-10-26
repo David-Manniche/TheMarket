@@ -223,8 +223,8 @@ $buyQuantity->addFieldTagAttribute('data-page', 'product-view');
                                                                 title="<?php echo $opVal['optionvalue_name'];
                                                                                                                                                                                                                             echo (!$isAvailable) ? ' ' . Labels::getLabel('LBL_Not_Available', $siteLangId) : ''; ?>"
                                                                 class="dropdown-item nav__link <?php echo (!$option['option_is_color']) ? 'selector__link' : '';
-                                                                                                                                                                                    echo (in_array($opVal['optionvalue_id'], $product['selectedOptionValues'])) ? ' ' : ' ';
-                                                                                                                                                                                    echo (!$optionUrl) ? ' is-disabled' : ''; ?>"
+                                                                                                                                                                                                                                echo (in_array($opVal['optionvalue_id'], $product['selectedOptionValues'])) ? ' ' : ' ';
+                                                                                                                                                                                                                                echo (!$optionUrl) ? ' is-disabled' : ''; ?>"
                                                                 href="<?php echo ($optionUrl) ? $optionUrl : 'javascript:void(0)'; ?>">
                                                                 <span class="colors"
                                                                     style="background-color:#<?php echo $opVal['optionvalue_color_code']; ?>;"></span><?php echo $opVal['optionvalue_name']; ?></a>
@@ -234,7 +234,7 @@ $buyQuantity->addFieldTagAttribute('data-page', 'product-view');
                                                                 title="<?php echo $opVal['optionvalue_name'];
                                                                                                                                                                                                                             echo (!$isAvailable) ? ' ' . Labels::getLabel('LBL_Not_Available', $siteLangId) : ''; ?>"
                                                                 class="dropdown-item nav__link <?php echo (in_array($opVal['optionvalue_id'], $product['selectedOptionValues'])) ? '' : ' ';
-                                                                                                                                                                                            echo (!$optionUrl) ? ' is-disabled' : ''; ?>"
+                                                                                                                                                                                                                            echo (!$optionUrl) ? ' is-disabled' : ''; ?>"
                                                                 href="<?php echo ($optionUrl) ? $optionUrl : 'javascript:void(0)'; ?>">
                                                                 <?php echo $opVal['optionvalue_name'];  ?> </a>
                                                             <?php } ?>
@@ -344,40 +344,40 @@ $buyQuantity->addFieldTagAttribute('data-page', 'product-view');
                                             $qtyField->addFieldTagAttribute('data-min-qty', $product['selprod_min_order_qty']);
                                             $qtyFieldName =  $qtyField->getCaption();
                                             if (strtotime($product['selprod_available_from']) <= strtotime(FatDate::nowInTimezone(FatApp::getConfig('CONF_TIMEZONE'), 'Y-m-d'))) { ?>
-                                <div class="row align-items-end">
-                                    <div class="col-xl-4 mb-2">
-                                        <div class="form__group form__group-select">
-                                            <label class="h6"><?php echo $qtyFieldName; ?></label>
-                                            <div class="qty-wrapper">
-                                                <div class="quantity"
-                                                    data-stock="<?php echo $product['selprod_stock']; ?>">
-                                                    <span class="decrease decrease-js not-allowed"><i
-                                                            class="fas fa-minus"></i></span>
-                                                    <div class="qty-input-wrapper"
-                                                        data-stock="<?php echo $product['selprod_stock']; ?>">
-                                                        <?php echo $frmBuyProduct->getFieldHtml('quantity'); ?>
+                                                <div class="row align-items-end">
+                                                    <div class="col-xl-4 mb-2">
+                                                        <div class="form__group form__group-select">
+                                                            <label class="h6"><?php echo $qtyFieldName; ?></label>
+                                                            <div class="qty-wrapper">
+                                                                <div class="quantity"
+                                                                    data-stock="<?php echo $product['selprod_stock']; ?>">
+                                                                    <span class="decrease decrease-js not-allowed"><i
+                                                                            class="fas fa-minus"></i></span>
+                                                                    <div class="qty-input-wrapper"
+                                                                        data-stock="<?php echo $product['selprod_stock']; ?>">
+                                                                        <?php echo $frmBuyProduct->getFieldHtml('quantity'); ?>
+                                                                    </div>
+                                                                    <span class="increase increase-js"><i
+                                                                            class="fas fa-plus"></i></span>
+                                                                </div>
+                                                            </div>
+                                                        </div>
                                                     </div>
-                                                    <span class="increase increase-js"><i
-                                                            class="fas fa-plus"></i></span>
+                                                    <div class="col-xl-8 mb-2">
+                                                        <label class="h6">&nbsp;</label>
+                                                        <div class="buy-group">
+                                                            <?php if (strtotime($product['selprod_available_from']) <= strtotime(FatDate::nowInTimezone(FatApp::getConfig('CONF_TIMEZONE'), 'Y-m-d'))) {
+                                                                                //echo $frmBuyProduct->getFieldHtml('btnProductBuy');
+                                                                                echo $frmBuyProduct->getFieldHtml('btnAddToCart');
+                                                                            }
+                                                                            echo $frmBuyProduct->getFieldHtml('selprod_id'); ?>
+                                                        </div>
+                                                    </div>
                                                 </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col-xl-8 mb-2">
-                                        <label class="h6">&nbsp;</label>
-                                        <div class="buy-group">
-                                            <?php if (strtotime($product['selprod_available_from']) <= strtotime(FatDate::nowInTimezone(FatApp::getConfig('CONF_TIMEZONE'), 'Y-m-d'))) {
-                                                                //echo $frmBuyProduct->getFieldHtml('btnProductBuy');
-                                                                echo $frmBuyProduct->getFieldHtml('btnAddToCart');
-                                                            }
-                                                            echo $frmBuyProduct->getFieldHtml('selprod_id'); ?>
-                                        </div>
-                                    </div>
-                                </div>
-                                <?php } ?>
-                                <div class="gap"></div>
-                                </form>
-                                <?php echo $frmBuyProduct->getExternalJs();
+                                                        <?php } ?>
+                                                <div class="gap"></div>
+                                            </form>
+                                            <?php echo $frmBuyProduct->getExternalJs();
                                         }
                                     } else { ?>
                                 <div class="tag--soldout tag--soldout-full">
@@ -447,61 +447,61 @@ $buyQuantity->addFieldTagAttribute('data-page', 'product-view');
                                 <div class="h6"><?php echo Labels::getLabel('LBL_Product_Add-ons', $siteLangId); ?>
                                 </div>
                                 <div class="addons-scrollbar" data-simplebar>
-                                    <ul class="list-addons">
+                                    <ul class="list-addons list-addons--js">
                                         <?php foreach ($upsellProducts as $usproduct) {
-                                                        $cancelClass = '';
-                                                        $uncheckBoxClass = '';
-                                                        if ($usproduct['selprod_stock'] <= 0) {
-                                                            $cancelClass = 'cancel cancelled--js';
-                                                            $uncheckBoxClass = 'remove-add-on';
-                                                        } ?>
-                                        <li class="<?php echo $cancelClass; ?>">
-                                            <div class="item">
-                                                <figure class="item__pic"><a
-                                                        title="<?php echo $usproduct['selprod_title']; ?>"
-                                                        href="<?php echo UrlHelper::generateUrl('products', 'view', array($usproduct['selprod_id'])) ?>"><img
-                                                            src="<?php echo UrlHelper::getCachedUrl(UrlHelper::generateFileUrl('Image', 'product', array($usproduct['product_id'], 'MINI', $usproduct['selprod_id'])), CONF_IMG_CACHE_TIME, '.jpg'); ?>"
-                                                            alt="<?php echo $usproduct['product_identifier']; ?>"> </a>
-                                                </figure>
-                                                <div class="item__description">
-                                                    <div class="item__title"><a
-                                                            href="<?php echo UrlHelper::generateUrl('products', 'view', array($usproduct['selprod_id'])) ?>"><?php echo $usproduct['selprod_title'] ?></a>
+                                                $cancelClass = '';
+                                                $uncheckBoxClass = '';
+                                                if ($usproduct['selprod_stock'] <= 0) {
+                                                    $cancelClass = 'cancel cancelled--js';
+                                                    $uncheckBoxClass = 'remove-add-on';
+                                                } ?>
+                                                <li class="addon--js <?php echo $cancelClass; ?>">
+                                                    <div class="item">
+                                                        <figure class="item__pic"><a
+                                                                title="<?php echo $usproduct['selprod_title']; ?>"
+                                                                href="<?php echo UrlHelper::generateUrl('products', 'view', array($usproduct['selprod_id'])) ?>"><img
+                                                                    src="<?php echo UrlHelper::getCachedUrl(UrlHelper::generateFileUrl('Image', 'product', array($usproduct['product_id'], 'MINI', $usproduct['selprod_id'])), CONF_IMG_CACHE_TIME, '.jpg'); ?>"
+                                                                    alt="<?php echo $usproduct['product_identifier']; ?>"> </a>
+                                                        </figure>
+                                                        <div class="item__description">
+                                                            <div class="item__title"><a
+                                                                    href="<?php echo UrlHelper::generateUrl('products', 'view', array($usproduct['selprod_id'])) ?>"><?php echo $usproduct['selprod_title'] ?></a>
+                                                            </div>
+                                                            <div class="item__price">
+                                                                <?php echo CommonHelper::displayMoneyFormat($usproduct['theprice']); ?>
+                                                            </div>
+                                                        </div>
+                                                        <?php if ($usproduct['selprod_stock'] <= 0) { ?>
+                                                        <div class="tag--soldout"><?php echo Labels::getLabel('LBL_SOLD_OUT', $siteLangId); ?></div>
+                                                        <?php  } ?>
                                                     </div>
-                                                    <div class="item__price">
-                                                        <?php echo CommonHelper::displayMoneyFormat($usproduct['theprice']); ?>
+
+                                                    <div class="qty-wrapper">
+                                                        <div class="quantity quantity-2"
+                                                            data-stock="<?php echo $usproduct['selprod_stock']; ?>"><span
+                                                                class="decrease decrease-js"><i class="fas fa-minus"></i></span>
+                                                            <div class="qty-input-wrapper"
+                                                                data-stock="<?php echo $usproduct['selprod_stock']; ?>">
+                                                                <input type="text" value="1" data-page="product-view"
+                                                                    placeholder="Qty"
+                                                                    class="qty-input cartQtyTextBox productQty-js"
+                                                                    lang="addons[<?php echo $usproduct['selprod_id'] ?>]"
+                                                                    name="addons[<?php echo $usproduct['selprod_id'] ?>]">
+                                                            </div>
+                                                            <span class="increase increase-js"><i
+                                                                    class="fas fa-plus"></i></span>
+                                                        </div>
                                                     </div>
-                                                </div>
-                                                <?php if ($usproduct['selprod_stock'] <= 0) { ?>
-                                                <div class="tag--soldout"><?php echo Labels::getLabel('LBL_SOLD_OUT', $siteLangId); ?></div>
-                                                <?php  } ?>
-                                            </div>
-
-                                            <div class="qty-wrapper">
-                                                <div class="quantity quantity-2"
-                                                    data-stock="<?php echo $usproduct['selprod_stock']; ?>"><span
-                                                        class="decrease decrease-js"><i class="fas fa-minus"></i></span>
-                                                    <div class="qty-input-wrapper"
-                                                        data-stock="<?php echo $usproduct['selprod_stock']; ?>">
-                                                        <input type="text" value="1" data-page="product-view"
-                                                            placeholder="Qty"
-                                                            class="qty-input cartQtyTextBox productQty-js"
-                                                            lang="addons[<?php echo $usproduct['selprod_id'] ?>]"
-                                                            name="addons[<?php echo $usproduct['selprod_id'] ?>]">
-                                                    </div>
-                                                    <span class="increase increase-js"><i
-                                                            class="fas fa-plus"></i></span>
-                                                </div>
-                                            </div>
-                                            <label class="checkbox">
-                                                <input
-                                                    <?php echo ($usproduct['selprod_stock'] > 0) ? 'checked="checked"' : ''; ?>
-                                                    type="checkbox" class="cancel <?php echo $uncheckBoxClass; ?>"
-                                                    id="check_addons" name="check_addons"
-                                                    title="<?php echo Labels::getLabel('LBL_Remove', $siteLangId); ?>">
-                                                <i class="input-helper"></i> </label>
+                                                    <label class="checkbox">
+                                                        <input
+                                                            <?php echo ($usproduct['selprod_stock'] > 0) ? 'checked="checked"' : ''; ?>
+                                                            type="checkbox" class="cancel <?php echo $uncheckBoxClass; ?>"
+                                                            id="check_addons" name="check_addons"
+                                                            title="<?php echo Labels::getLabel('LBL_Remove', $siteLangId); ?>">
+                                                        <i class="input-helper"></i> </label>
 
 
-                                        </li>
+                                                </li>
                                         <?php } ?>
                                     </ul>
 

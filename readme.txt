@@ -305,7 +305,8 @@ Bugs:
     => 044468 - Seller >> inventory setup of digital products >> there is some warnings on download page . 
     => 044497 - extra categories are listing on page which are not even added
     => 044506 - If admin cancel any order from "orders" page then "cancelled " should be the status instead of "order payment status cancelled
-    
+    => 044503 - When we add product in cart which has some addons then those addons should get added with the product.
+
 Enhancements:
     => Tax module upgrade
     => Test cases classes enhancements.

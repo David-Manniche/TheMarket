@@ -1532,8 +1532,8 @@ $("document").ready(function() {
         var yourArray = [];
         var selprodId = $(this).siblings('input[name="selprod_id"]').val();
         if (typeof mainSelprodId != 'undefined' && mainSelprodId == selprodId) {
-            $(".cart-tbl").find("input").each(function(e) {
-                if (($(this).val() > 0) && (!$(this).closest("td").siblings().hasClass("cancelled--js"))) {
+            $(".list-addons--js").find("input").each(function(e) {
+                if (($(this).val() > 0) && (!$(this).closest(".addon--js").hasClass("cancelled--js"))) {
                     data = data + '&' + $(this).attr('lang') + "=" + $(this).val();
                 }
             });
