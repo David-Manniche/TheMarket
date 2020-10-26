@@ -311,6 +311,7 @@ Bugs:
     => 044322 - Bank details are not there after order is placed and user opts payment from order detail page
     => 044562 - after clearing search> suggestion list is not disappearing
     => 043142 - "Buy together" products under promotions, items do not appear on the list after creating them if no brand
+    => 044542 - In case of Stripe connect>>if cancellation or refund request generated then "transfer to wallet " option should not be there at admin end 
 
 Enhancements:
     => Tax module upgrade
