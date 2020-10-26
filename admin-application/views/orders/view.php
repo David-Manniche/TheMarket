@@ -255,12 +255,14 @@ if ($order['order_reward_point_used'] > 0) {
                                 <td class="text-right" colspan="2"><?php echo CommonHelper::displayMoneyFormat($cartTotal, true, true); ?>
                                     </th>
                             </tr>
-                            <tr>
-                                <td colspan="8" class="text-right"><?php echo Labels::getLabel('LBL_Delivery/Shipping', $adminLangId); ?>
-                                </td>
-                                <td class="text-right" colspan="2">+<?php echo CommonHelper::displayMoneyFormat($shippingTotal, true, true); ?>
-                                </td>
-                            </tr>
+                            <?php if (0 < $shippingTotal) { ?>
+                                <tr>
+                                    <td colspan="8" class="text-right"><?php echo Labels::getLabel('LBL_Delivery/Shipping', $adminLangId); ?>
+                                    </td>
+                                    <td class="text-right" colspan="2">+<?php echo CommonHelper::displayMoneyFormat($shippingTotal, true, true); ?>
+                                    </td>
+                                </tr>
+                            <?php } ?>
                             <?php if (empty($taxOptionsTotal)) { ?>
                                 <tr>
                                     <td colspan="8" class="text-right"><?php echo Labels::getLabel('LBL_Tax', $adminLangId); ?>

@@ -28,12 +28,14 @@
                         <div id="step1" class="progress-step checkoutNav-js billing-js"><?php echo Labels::getLabel('LBL_Billing', $siteLangId); ?>
                         </div>
                         <div id="step2" class="progress-step checkoutNav-js shipping-js">
-                            <?php 
-                                if ($fulfillmentType == Shipping::FULFILMENT_SHIP) { 
+                            <?php								
+								if ($fulfillmentType == Shipping::FULFILMENT_SHIP && $cartObj->hasPhysicalProduct()) { 
                                     echo Labels::getLabel('LBL_Shipping', $siteLangId); 
-                                } else {
+                                } else if ($cartObj->hasPhysicalProduct()) {
                                     echo Labels::getLabel('LBL_PICKUP', $siteLangId); 
-                                } ?>
+                                } else {
+									echo Labels::getLabel('LBL_REVIEW', $siteLangId); 
+								} ?>
                         </div>
                         <div id="step3" class="progress-step checkoutNav-js payment-js"><?php echo Labels::getLabel('LBL_Payment', $siteLangId); ?>
                         </div>
