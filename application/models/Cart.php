@@ -345,7 +345,7 @@ class Cart extends FatModel
                     continue;
                 }
 
-                /* CommonHelper::printArray($keyDecoded); die; */
+                /* CommonHelper::printArray($keyDecoded); die ; */
                 // if( strpos($keyDecoded, static::CART_KEY_PREFIX_BATCH ) !== FALSE ){
                 // $prodgroup_id = FatUtility::int(str_replace( static::CART_KEY_PREFIX_BATCH, '', $keyDecoded ));
                 // }
@@ -376,7 +376,7 @@ class Cart extends FatModel
                     if (isset($this->SYSTEM_ARR['shopping_cart']['checkout_type'])) {
                         $fulfilmentType =  $this->SYSTEM_ARR['shopping_cart']['checkout_type'];
                     }
-
+                    
                     if ($this->valdateCheckoutType && isset($fulfilmentType) && $fulfilmentType > 0 && $sellerProductRow['selprod_fulfillment_type'] != Shipping::FULFILMENT_ALL && $sellerProductRow['selprod_fulfillment_type'] != $fulfilmentType) {
                         unset($this->products[$key]);
                         continue;
@@ -725,7 +725,7 @@ class Cart extends FatModel
 
         $fulfillmentType = $sellerProductRow['selprod_fulfillment_type'];
         if (true == $isProductShippedBySeller) {
-            if ($sellerProductRow['shop_fulfillment_type'] != Shipping::FULFILMENT_ALL) {
+            if ($sellerProductRow['product_type'] != Product::PRODUCT_TYPE_DIGITAL && $sellerProductRow['shop_fulfillment_type'] != Shipping::FULFILMENT_ALL) {
                 $fulfillmentType = $sellerProductRow['shop_fulfillment_type'];
                 $sellerProductRow['selprod_fulfillment_type'] = $fulfillmentType;
             }
@@ -733,7 +733,7 @@ class Cart extends FatModel
             $defaultFulfillmentType = $sellerProductRow['product_type'] == Product::PRODUCT_TYPE_DIGITAL ?  Shipping::FULFILMENT_ALL : Shipping::FULFILMENT_SHIP;
             $fulfillmentType = isset($sellerProductRow['product_fulfillment_type']) ? $sellerProductRow['product_fulfillment_type'] : $defaultFulfillmentType;
             $sellerProductRow['selprod_fulfillment_type'] = $fulfillmentType;
-            if (FatApp::getConfig('CONF_FULFILLMENT_TYPE', FatUtility::VAR_INT, -1) != Shipping::FULFILMENT_ALL) {
+            if ($sellerProductRow['product_type'] != Product::PRODUCT_TYPE_DIGITAL && FatApp::getConfig('CONF_FULFILLMENT_TYPE', FatUtility::VAR_INT, -1) != Shipping::FULFILMENT_ALL) {
                 $fulfillmentType = FatApp::getConfig('CONF_FULFILLMENT_TYPE', FatUtility::VAR_INT, -1);
                 $sellerProductRow['selprod_fulfillment_type'] = $fulfillmentType;
             }

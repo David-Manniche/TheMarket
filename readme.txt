@@ -313,6 +313,8 @@ Bugs:
     => 043142 - "Buy together" products under promotions, items do not appear on the list after creating them if no brand
     => 044542 - In case of Stripe connect>>if cancellation or refund request generated then "transfer to wallet " option should not be there at admin end 
     => 044505 - If admin disable " Linking Shipping Packages To Products" then weight fields should not get disappear from shipping tab .
+    => 044499 - when we add only digital product in cart then it shows "empty cart " on checkout page .
+    => 044500 - When we add one digital and one physical product in cart then it shows "no shipping available " for digital product and user is unable to proceed with order
 
 Enhancements:
     => Tax module upgrade
