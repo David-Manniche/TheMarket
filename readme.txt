@@ -315,6 +315,8 @@ Bugs:
     => 044505 - If admin disable " Linking Shipping Packages To Products" then weight fields should not get disappear from shipping tab .
     => 044499 - when we add only digital product in cart then it shows "empty cart " on checkout page .
     => 044500 - When we add one digital and one physical product in cart then it shows "no shipping available " for digital product and user is unable to proceed with order
+    =>044351 - Seller >> orders >> cancel order >> Total amount should get display at seller end and discount should not be deducted from that amou
+    =>044368 - Seller >> pickup address >> edit slots >> when we add multiple slots and save the changes then it shows only last slot on edit settings.
 
 Enhancements:
     => Tax module upgrade
