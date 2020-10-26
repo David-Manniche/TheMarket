@@ -69,6 +69,7 @@ class TimeSlot extends MyAppModel
         $srch = new SearchBase(static::DB_TBL, 'ts');
         $srch->addCondition(self::tblFld('record_id'), '=', $addressId);
         $srch->addOrder(self::tblFld('day'), 'ASC');
+        $srch->addOrder(self::tblFld('from_time'), 'ASC');       
         $rs = $srch->getResultSet();
         return  FatApp::getDb()->fetchAll($rs);
     }
