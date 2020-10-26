@@ -42,7 +42,7 @@
 <?php
 if (empty($keyword)) {
     if (!empty($recentSearchArr)) { ?>
-        <ul class="history-suggestions">
+        <ul class="history-suggestions search-history--js">
             <li>
                 <h6 class="suggestions-title"><?php echo Labels::getLabel('LBL_Recent_Searches', $siteLangId) ?></h6>
                 <button class="btn btn-link clear-all clearSearch-js" type="button"><?php echo Labels::getLabel('LBL_Clear_ALL', $siteLangId) ?></button>

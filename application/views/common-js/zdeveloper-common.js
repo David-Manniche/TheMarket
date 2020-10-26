@@ -882,7 +882,8 @@ $(function() { // this will be called when the DOM is ready
     });
 
     $(document).on('click', '.clearSearch-js', function() {
-        clearSearchKeyword();
+		var obj = $(this).hasClass('clear-all') ? 'all' : '';
+        clearSearchKeyword(obj);
     });
 
 });
@@ -931,7 +932,14 @@ $(document).ready(function() {
             data = 'keyword=' + keyword;
         }
         fcom.ajax(fcom.makeUrl('Products', 'clearSearchKeywords'), data, function(t) {            
-            $(obj).closest('li').remove();
+			if ('all' == obj) {
+				$('#search-suggestions-js').html("");
+			} else {
+				$(obj).closest('li').remove();
+				if (0 < $('#search-suggestions-js').length && 1 > $('.recentSearch-js').length) {
+					$('#search-suggestions-js').html("");
+				}
+			}
         });
     };
 

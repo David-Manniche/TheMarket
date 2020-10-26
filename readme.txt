@@ -309,6 +309,7 @@ Bugs:
     => 044473 - when order having only digital item then on checkout step 2 it's displaying shipping
     => 044470 - when order is of pickup then in admin> customer orders> delivery field is listing which is not required
     => 044322 - Bank details are not there after order is placed and user opts payment from order detail page
+    => 044562 - after clearing search> suggestion list is not disappearing
     => 043142 - "Buy together" products under promotions, items do not appear on the list after creating them if no brand
     =>044351 - Seller >> orders >> cancel order >> Total amount should get display at seller end and discount should not be deducted from that amou
     =>044368 - Seller >> pickup address >> edit slots >> when we add multiple slots and save the changes then it shows only last slot on edit settings.
