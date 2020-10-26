@@ -29,7 +29,7 @@
                                           <p><strong><?php echo CommonHelper::displayTaxPercantage($val, true) ?>:</strong> <?php echo CommonHelper::displayMoneyFormat($val['value']); ?></p>
                                         <?php }
                                     }?>
-                                    <p><strong><?php echo Labels::getLabel('LBL_Order_Total', $siteLangId);?>: </strong><?php echo CommonHelper::displayMoneyFormat(CommonHelper::orderProductAmount($orderDetail));?></p>
+                                    <p><strong><?php echo Labels::getLabel('LBL_Order_Total', $siteLangId);?>: </strong><?php echo CommonHelper::displayMoneyFormat(CommonHelper::orderProductAmount($orderDetail, 'netamount', false, User::USER_TYPE_SELLER));?></p>
                                 </div>
                             </div>
                             <div class="col-lg-6 col-md-6 col-sm-6">
@@ -97,7 +97,7 @@
 										<td><?php echo $orderDetail['op_qty'];?></td>
 										<td><?php echo CommonHelper::displayMoneyFormat($orderDetail['op_unit_price']);?></td>
 										<td><?php echo CommonHelper::displayMoneyFormat(CommonHelper::orderProductAmount($orderDetail, 'shipping'));?></td>
-										<td><?php echo CommonHelper::displayMoneyFormat(CommonHelper::orderProductAmount($orderDetail));?></td>
+										<td><?php echo CommonHelper::displayMoneyFormat(CommonHelper::orderProductAmount($orderDetail, 'netamount', false, User::USER_TYPE_SELLER));?></td>
 									</tr>
 								</tbody>
 							</table>
