@@ -304,6 +304,7 @@ Bugs:
     => 044477 - when mini cart having only item remains after deletion then getting scroll with product
     => 044468 - Seller >> inventory setup of digital products >> there is some warnings on download page . 
     => 044497 - extra categories are listing on page which are not even added
+    => 043142 - "Buy together" products under promotions, items do not appear on the list after creating them if no brand
 
 Enhancements:
     => Tax module upgrade
