@@ -86,7 +86,7 @@ foreach ($orders as $sn => $order) {
                 break;
             case 'status':
                 if (Orders::ORDER_PAYMENT_CANCELLED == $order["order_payment_status"]) {
-                    $orderStatus = Orders::getOrderPaymentStatusArr($siteLangId)[$order["order_payment_status"]];
+                    $orderStatus = Labels::getLabel('LBL_CANCELLED', $siteLangId);
                     $labelClass = 'label-danger';
                 } else {
                     $pMethod = '';
