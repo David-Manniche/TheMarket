@@ -75,7 +75,7 @@ if (!$print) { ?>
                     <h5 class="card-title">
                         <?php echo Labels::getLabel('LBL_Order_Details', $siteLangId); ?>
                     </h5>
-                    <?php if ($print) { ?>
+                    <?php if (!$print) { ?>
                         <div>
                             <div class="">
                                 <iframe src="<?php echo Fatutility::generateUrl('buyer', 'viewOrder', $urlParts) . '/print'; ?>" name="frame" class="printFrame-js" style="display:none" width="1" height="1"></iframe>
