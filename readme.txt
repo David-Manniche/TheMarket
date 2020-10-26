@@ -307,6 +307,7 @@ Bugs:
     => 044506 - If admin cancel any order from "orders" page then "cancelled " should be the status instead of "order payment status cancelled
     => 044503 - When we add product in cart which has some addons then those addons should get added with the product.
     => 044473 - when order having only digital item then on checkout step 2 it's displaying shipping
+    => 044470 - when order is of pickup then in admin> customer orders> delivery field is listing which is not required
 
 Enhancements:
     => Tax module upgrade
