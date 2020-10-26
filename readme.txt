@@ -306,6 +306,7 @@ Bugs:
     => 044497 - extra categories are listing on page which are not even added
     => 044506 - If admin cancel any order from "orders" page then "cancelled " should be the status instead of "order payment status cancelled
     => 044503 - When we add product in cart which has some addons then those addons should get added with the product.
+    => 044473 - when order having only digital item then on checkout step 2 it's displaying shipping
 
 Enhancements:
     => Tax module upgrade
