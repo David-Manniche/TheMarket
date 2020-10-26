@@ -308,6 +308,7 @@ Bugs:
     => 044503 - When we add product in cart which has some addons then those addons should get added with the product.
     => 044473 - when order having only digital item then on checkout step 2 it's displaying shipping
     => 044470 - when order is of pickup then in admin> customer orders> delivery field is listing which is not required
+    => 044322 - Bank details are not there after order is placed and user opts payment from order detail page
 
 Enhancements:
     => Tax module upgrade
