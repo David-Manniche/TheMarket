@@ -4,7 +4,8 @@ class DummyController extends AdminBaseController
 {
     public function index()
     {
-        
+        $productId = 3;
+        Tag::updateProductTagString($productId);
     }
 
     public function test123()

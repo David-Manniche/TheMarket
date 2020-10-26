@@ -4244,13 +4244,6 @@ class SellerController extends SellerBaseController
             }
         }
 
-        $fulfillmentType = -1;
-        if ($productData['sellerProduct'] > 0) {
-            $fulfillmentType = Shop::getAttributesByUserId($productData['product_seller_id'], 'shop_fulfillment_type');
-        } else {
-            $fulfillmentType = FatApp::getConfig('CONF_FULFILLMENT_TYPE', FatUtility::VAR_INT, -1);
-        }
-
         $frm->addRequiredField(Labels::getLabel('LBL_Title', $this->siteLangId), 'selprod_title' . FatApp::getConfig('conf_default_site_lang', FatUtility::VAR_INT, 1));
         $frm->addCheckBox(Labels::getLabel('LBL_System_Should_Maintain_Stock_Levels', $this->siteLangId), 'selprod_subtract_stock', applicationConstants::YES, array(), false, 0);
         $frm->addCheckBox(Labels::getLabel('LBL_System_Should_Track_Product_Inventory', $this->siteLangId), 'selprod_track_inventory', Product::INVENTORY_TRACK, array(), false, 0);
@@ -4319,9 +4312,20 @@ class SellerController extends SellerBaseController
                 }
             }
 
+
+            $shipBySeller = Product::isProductShippedBySeller($product_id, $productData['product_seller_id'], UserAuthentication::getLoggedUserId());
+            // $shipBySeller = SellerProduct::prodShipByseller($product_id);
+
+            $fulfillmentType = -1;
+            if ($productData['sellerProduct'] > 0 || $shipBySeller) {
+                $sellerId = ($shipBySeller > 0) ? UserAuthentication::getLoggedUserId() : $productData['product_seller_id'];
+                $fulfillmentType = Shop::getAttributesByUserId($sellerId, 'shop_fulfillment_type');
+            } else {
+                $fulfillmentType = FatApp::getConfig('CONF_FULFILLMENT_TYPE', FatUtility::VAR_INT, -1);
+            }
             $fulFillmentArr = Shipping::getFulFillmentArr($this->siteLangId, $fulfillmentType);
-            $shipBySeller = SellerProduct::prodShipByseller($product_id);
-            if ($productData['product_type'] == Product::PRODUCT_TYPE_PHYSICAL && !empty($shipBySeller)) {
+
+            if ($productData['product_type'] == Product::PRODUCT_TYPE_PHYSICAL && true == $shipBySeller) {
                 $frm->addSelectBox(Labels::getLabel('LBL_FULFILLMENT_METHOD', $this->siteLangId), 'selprod_fulfillment_type', $fulFillmentArr, applicationConstants::NO, []);
             }
             $frm->addRequiredField(Labels::getLabel('LBL_Url_Keyword', $this->siteLangId), 'selprod_url_keyword');

@@ -730,6 +730,8 @@ class Cart extends FatModel
                 $sellerProductRow['selprod_fulfillment_type'] = $fulfillmentType;
             }
         } else {
+            $fulfillmentType = $sellerProductRow['product_fulfillment_type'];
+            $sellerProductRow['selprod_fulfillment_type'] = $fulfillmentType;
             if (FatApp::getConfig('CONF_FULFILLMENT_TYPE', FatUtility::VAR_INT, -1) != Shipping::FULFILMENT_ALL) {
                 $fulfillmentType = FatApp::getConfig('CONF_FULFILLMENT_TYPE', FatUtility::VAR_INT, -1);
                 $sellerProductRow['selprod_fulfillment_type'] = $fulfillmentType;

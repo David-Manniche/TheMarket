@@ -328,7 +328,7 @@ class ElasticSearch extends FullTextSearchBase
 
     public function recordCount()
     {
-        return $this->results['total']['value'];
+        return isset($this->results['total']['value']) ? $this->results['total']['value'] : 0;
     }
 
     public function pages()
