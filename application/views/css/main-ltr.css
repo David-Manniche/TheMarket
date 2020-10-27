@@ -16746,10 +16746,10 @@ img.mfp-img, .post .post_media iframe.mfp-img, .post .post_media .posted-content
     display: -ms-flexbox;
     display: flex;
     -ms-flex-wrap: nowrap;
-    flex-wrap: nowrap; }
+    flex-wrap: nowrap;
+    overflow-x: auto; }
     @media (max-width: 991.98px) {
       .tabs ul {
-        overflow-x: auto;
         overflow-y: hidden; } }
     .tabs ul li {
       display: inline-block;
