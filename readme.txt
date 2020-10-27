@@ -320,6 +320,7 @@ Bugs:
     => 044368 - Seller >> pickup address >> edit slots >> when we add multiple slots and save the changes then it shows only last slot on edit settings.
     => 044567 - hide the print option on return request on buyer end
     => 044576 - when full text search is enabled then shop is flooded with errors
+    => 035803 - when sub seller have read only permission to buy together and related items then on hover there is anchor tag and tooltip displaying click to edit
 
 Enhancements:
     => Tax module upgrade
