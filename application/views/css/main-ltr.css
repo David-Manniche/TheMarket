@@ -14762,12 +14762,40 @@ img.mfp-img, .post .post_media iframe.mfp-img, .post .post_media .posted-content
 
 .product-listing {
   display: grid;
-  grid-gap: 1rem;
-  grid-template-columns: repeat(4, 1fr); }
+  grid-gap: 1rem; }
+  .product-listing[data-view="2"] {
+    grid-template-columns: repeat(2, 1fr); }
+  .product-listing[data-view="3"] {
+    grid-template-columns: repeat(3, 1fr); }
+  .product-listing[data-view="4"] {
+    grid-template-columns: repeat(4, 1fr); }
+  .product-listing[data-view="5"] {
+    grid-template-columns: repeat(5, 1fr); }
+  .product-listing[data-view="6"] {
+    grid-template-columns: repeat(6, 1fr); }
+  @media (max-width: 991.98px) {
+    .product-listing[data-view="3"] {
+      grid-template-columns: repeat(3, 1fr); }
+    .product-listing[data-view="4"] {
+      grid-template-columns: repeat(3, 1fr); }
+    .product-listing[data-view="5"] {
+      grid-template-columns: repeat(3, 1fr); }
+    .product-listing[data-view="6"] {
+      grid-template-columns: repeat(3, 1fr); } }
   @media (max-width: 767.98px) {
     .product-listing {
-      grid-gap: 3px;
-      grid-template-columns: repeat(2, 1fr); }
+      grid-gap: 1px; }
+      .product-listing[data-view="3"] {
+        grid-template-columns: repeat(2, 1fr); }
+      .product-listing[data-view="4"] {
+        grid-template-columns: repeat(2, 1fr); }
+      .product-listing[data-view="5"] {
+        grid-template-columns: repeat(2, 1fr); }
+      .product-listing[data-view="6"] {
+        grid-template-columns: repeat(2, 1fr); } }
+  @media (max-width: 767.98px) {
+    .product-listing {
+      grid-gap: 1px; }
       .product-listing .products {
         border-radius: 0px; } }
   .product-listing .products {
@@ -30362,7 +30390,7 @@ a.ui-button:active,
   border-radius: 3px; }
 
 .noUi-connect {
-  background: var(--primary-color); }
+  background: var(--brand-color); }
 
 .noUi-draggable {
   cursor: ew-resize; }
@@ -35970,28 +35998,28 @@ div.faqanswer {
 .sort-by select, .sort-by .custom-select {
   height: 30px; }
 
-.listing-products--list {
+.listing-products--list[data-view="4"] {
   grid-template-columns: repeat(2, 1fr); }
-  .listing-products--list .products {
-    display: -webkit-box;
-    display: -ms-flexbox;
-    display: flex; }
-    .listing-products--list .products .products__title {
-      margin: 0;
-      min-height: auto;
-      padding: 5px 0; }
-    .listing-products--list .products .products__body {
-      position: static;
-      width: 120px;
-      border-right: solid 1px #dee2e6; }
-      .listing-products--list .products .products__body .products__img {
-        margin-bottom: 0; }
-    .listing-products--list .products .products__footer {
-      width: calc(100% - 120px);
-      text-align: left;
-      padding: 1rem; }
-    .listing-products--list .products .products__price {
-      padding: 0; }
+.listing-products--list .products {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex; }
+  .listing-products--list .products .products__title {
+    margin: 0;
+    min-height: auto;
+    padding: 5px 0; }
+  .listing-products--list .products .products__body {
+    position: static;
+    width: 120px;
+    border-right: solid 1px #dee2e6; }
+    .listing-products--list .products .products__body .products__img {
+      margin-bottom: 0; }
+  .listing-products--list .products .products__footer {
+    width: calc(100% - 120px);
+    text-align: left;
+    padding: 1rem; }
+  .listing-products--list .products .products__price {
+    padding: 0; }
 
 /*grid list view*/
 .list-grid-toggle {
@@ -36840,13 +36868,13 @@ body {
   .completed-detail h4 {
     font-weight: 500;
     font-size: 1rem;
-    margin-bottom: 1.5rem; }
+    margin-bottom: 1.5rem;
+    color: var(--secondary-color); }
     .completed-detail h4 .svg {
-      display: block;
-      margin-bottom: 4px;
-      fill: var(--secondary-color);
-      width: 32px;
-      height: 32px; }
+      margin-right: 5px;
+      fill: currentColor;
+      width: 1.5rem;
+      height: 1.5rem; }
   .completed-detail p {
     font-size: 0.8rem; }
   .completed-detail .preferred-shipping-list li {

@@ -41,11 +41,53 @@
 .product-listing {
     display: grid;
     grid-gap: 1rem;
-    grid-template-columns: repeat(4, 1fr);
+    &[data-view="2"] {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    &[data-view="3"] {
+        grid-template-columns: repeat(3, 1fr);
+    }
+    &[data-view="4"] {
+        grid-template-columns: repeat(4, 1fr);
+    }
+    &[data-view="5"] {
+        grid-template-columns: repeat(5, 1fr);
+    }
+    &[data-view="6"] {
+        grid-template-columns: repeat(6, 1fr);
+    }
+    @include media-breakpoint-down(md) {
+        &[data-view="3"] {
+            grid-template-columns: repeat(3, 1fr);
+        }
+        &[data-view="4"] {
+            grid-template-columns: repeat(3, 1fr);
+        }
+        &[data-view="5"] {
+            grid-template-columns: repeat(3, 1fr);
+        }
+        &[data-view="6"] {
+            grid-template-columns: repeat(3, 1fr);
+        }
+    }
+    @include media-breakpoint-down(sm) {
+        grid-gap: 1px;
+        &[data-view="3"] {
+            grid-template-columns: repeat(2, 1fr);
+        }
+        &[data-view="4"] {
+            grid-template-columns: repeat(2, 1fr);
+        }
+        &[data-view="5"] {
+            grid-template-columns: repeat(2, 1fr);
+        }
+        &[data-view="6"] {
+            grid-template-columns: repeat(2, 1fr);
+        }
+    }
     @include media-breakpoint-down(sm) {
         & {
-            grid-gap: 3px;
-            grid-template-columns: repeat(2, 1fr);
+            grid-gap: 1px;
             .products {
                 border-radius: 0px;
             }
