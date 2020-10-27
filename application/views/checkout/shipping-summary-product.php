@@ -8,11 +8,12 @@ $imageUrl = UrlHelper::getCachedUrl(UrlHelper::generateFileUrl('image', 'product
         <div class="shop-name"><?php echo $product['shop_name']; ?></div>
         <div class="shipping-method">
             <?php
-            $priceListCount = isset($shippedByItemArr[$shipLevel]['rates'][$product['selprod_id']]) ? count($shippedByItemArr[$shipLevel]['rates'][$product['selprod_id']]) : 0;
+            $rates = isset($shippedByItemArr[$shipLevel]['rates']) ? $shippedByItemArr[$shipLevel]['rates'] : [];
+            $priceListCount = !empty($rates) && isset($rates[$product['selprod_id']]) ? count($rates[$product['selprod_id']]) : 0;
             if ($priceListCount > 0) {
-                $name = current($shippedByItemArr[$shipLevel]['rates'][$product['selprod_id']])['code'];
+                $name = current($rates[$product['selprod_id']])['code'];
                 echo '<select class="form-control custom-select" name="shipping_services[' . $name . ']">';
-                foreach ($shippedByItemArr[$shipLevel]['rates'][$product['selprod_id']] as $key => $shippingcharge) {
+                foreach ($rates[$product['selprod_id']] as $key => $shippingcharge) {
                     $selected = '';
                     if (!empty($orderShippingData)) {
                         foreach ($orderShippingData as $shipdata) {

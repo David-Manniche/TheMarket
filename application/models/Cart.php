@@ -1774,19 +1774,20 @@ class Cart extends FatModel
         $shippingRates = [];
         foreach ($shippedByArr as $hippedBy) {
             foreach ($shippingOptions[$hippedBy] as $level => $levelItems) {
-                if (count($levelItems['rates']) <= 0) {
+                $rates = isset($levelItems['rates']) ? $levelItems['rates'] : [];
+                if (count($rates) <= 0) {
                     continue;
                 }
-                if (count($levelItems['rates']) > 0 && $level != Shipping::LEVEL_PRODUCT) {
-                    $name = current($levelItems['rates'])['code'];
-                    $shippingRates[$name] =  $levelItems['rates'];
+                if ($level != Shipping::LEVEL_PRODUCT) {
+                    $name = current($rates)['code'];
+                    $shippingRates[$name] =  $rates;
                 } else if (isset($levelItems['products'])) {
                     foreach ($levelItems['products'] as $product) {
-                        if (count($levelItems['rates'][$product['selprod_id']]) <= 0) {
+                        if (count($rates[$product['selprod_id']]) <= 0) {
                             continue;
                         }
-                        $name = current($levelItems['rates'][$product['selprod_id']])['code'];
-                        $shippingRates[$name] =  $levelItems['rates'][$product['selprod_id']];
+                        $name = current($rates[$product['selprod_id']])['code'];
+                        $shippingRates[$name] =  $rates[$product['selprod_id']];
                     }
                 }
             }
