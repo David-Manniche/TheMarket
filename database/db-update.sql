@@ -865,3 +865,4 @@ INNER JOIN tbl_products tp ON tp.product_id = tsp.selprod_product_id
 SET tsp.selprod_fulfillment_type = -1
 WHERE tp.product_type = 2;
 -- ---Change All Digital Products Fulfillment Type Both---- --
+-- -------------------TV-9.2.2.20201026---------------------

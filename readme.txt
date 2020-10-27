@@ -311,6 +311,7 @@ Bugs:
     => 044322 - Bank details are not there after order is placed and user opts payment from order detail page
     => 044562 - after clearing search> suggestion list is not disappearing
     => 043142 - "Buy together" products under promotions, items do not appear on the list after creating them if no brand
+-------------------------TV-9.2.2.20201026---------------------------
     => 044542 - In case of Stripe connect>>if cancellation or refund request generated then "transfer to wallet " option should not be there at admin end 
     => 044505 - If admin disable " Linking Shipping Packages To Products" then weight fields should not get disappear from shipping tab .
     => 044499 - when we add only digital product in cart then it shows "empty cart " on checkout page .

@@ -583,6 +583,9 @@ class ShopsController extends AdminBaseController
         $fld->htmlAfterField = "<br><small>" . Labels::getLabel("LBL_Seller_needs_to_maintain_to_accept_COD_orders._Default_is_-1", $this->adminLangId) . "</small>";
         $frm->addCheckBox(Labels::getLabel('LBL_Featured', $this->adminLangId), 'shop_featured', 1, array(), false, 0);
 
+        $fulFillmentArr = Shipping::getFulFillmentArr($this->adminLangId);
+        $frm->addSelectBox(Labels::getLabel('LBL_FULFILLMENT_METHOD', $this->adminLangId), 'shop_fulfillment_type', $fulFillmentArr, applicationConstants::NO);
+
         $fld = $frm->addTextBox(Labels::getLabel('LBL_ORDER_RETURN_AGE', $this->adminLangId), 'shop_return_age');
         $fld->requirements()->setInt();
         $fld->requirements()->setPositive();
