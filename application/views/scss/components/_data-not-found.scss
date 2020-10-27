@@ -35,6 +35,14 @@
         margin: 20px auto 0;
     }
     &-sm {}
+    h3 {
+        font-size: 1.2rem;
+    }
+    h6 {
+        font-size: 0.9rem;
+        font-weight: 400;
+        color: $txt-gray;
+    }
 }
 
 .no-product {

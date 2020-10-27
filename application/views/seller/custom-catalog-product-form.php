@@ -47,7 +47,7 @@
                     </ul>
                     
                     <?php /* if (0 < $preqId && !User::isCatalogRequestSubmittedForApproval($preqId)) {?>
-                        <a href="<?php echo UrlHelper::generateUrl('seller', 'approveCustomCatalogProducts', array($preqId));?>" class="btn btn-outline-brand btn-sm ml-auto"><?php echo Labels::getLabel('LBL_Submit_For_Approval', $siteLangId)?></a>
+                        <a href="<?php echo UrlHelper::generateUrl('seller', 'approveCustomCatalogProducts', array($preqId));?>" class="btn btn-outline-brand btn-sm mleft-auto"><?php echo Labels::getLabel('LBL_Submit_For_Approval', $siteLangId)?></a>
                     <?php } */ ?>
                     
                 </div>   

@@ -231,7 +231,7 @@ if (Orders::ORDER_PRODUCT == $orderInfo['order_type']) {
                                                             <span class="label">
                                                                 <?php echo Labels::getLabel('LBL_Sub_Total', $siteLangId); ?>
                                                             </span>
-                                                            <span class="ml-auto">
+                                                            <span class="mleft-auto">
                                                                 <?php echo CommonHelper::displayMoneyFormat($subTotal); ?>
                                                             </span>
                                                         </li>
@@ -249,24 +249,24 @@ if (Orders::ORDER_PRODUCT == $orderInfo['order_type']) {
                                                     ?>
                                                         <li class="list-group-item ">
                                                             <span class="label"><?php echo Labels::getLabel($msg, $siteLangId); ?></span>
-                                                            <span class="ml-auto"><?php echo CommonHelper::displayMoneyFormat($totalDiscount); ?></span>
+                                                            <span class="mleft-auto"><?php echo CommonHelper::displayMoneyFormat($totalDiscount); ?></span>
                                                         </li>
                                                     <?php } ?>
                                                     <?php if (0 < $orderInfo['order_tax_charged']) { ?>
                                                         <li class="list-group-item ">
                                                             <span class="label"><?php echo Labels::getLabel('LBL_TAX', $siteLangId); ?></span>
-                                                            <span class="ml-auto"><?php echo CommonHelper::displayMoneyFormat($orderInfo['order_tax_charged']); ?></span>
+                                                            <span class="mleft-auto"><?php echo CommonHelper::displayMoneyFormat($orderInfo['order_tax_charged']); ?></span>
                                                         </li>
                                                     <?php } ?>
                                                     <?php if (0 < $shippingCharges) { ?>
                                                         <li class="list-group-item ">
                                                             <span class="label"><?php echo Labels::getLabel('LBL_Delivery_Charges', $siteLangId); ?></span>
-                                                            <span class="ml-auto"><?php echo CommonHelper::displayMoneyFormat($shippingCharges); ?></span>
+                                                            <span class="mleft-auto"><?php echo CommonHelper::displayMoneyFormat($shippingCharges); ?></span>
                                                         </li>
                                                     <?php  } ?>
                                                     <li class="list-group-item hightlighted">
                                                         <span class="label"><?php echo Labels::getLabel('LBL_NET_AMOUNT', $siteLangId); ?></span>
-                                                        <span class="ml-auto"><?php echo CommonHelper::displayMoneyFormat($orderInfo['order_net_amount']); ?></span>
+                                                        <span class="mleft-auto"><?php echo CommonHelper::displayMoneyFormat($orderInfo['order_net_amount']); ?></span>
                                                     </li>
                                                 </ul>
                                             </div>
