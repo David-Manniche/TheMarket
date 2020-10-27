@@ -325,6 +325,7 @@ Bugs:
     => 044474 - When we come back on home page from checkout then it shows "invalid products " on deleting for those products which were not on checkout
 -------------------TV-9.2.2.20201027---------------------
     => 044367 - seller >> pickup address >> "+" icon next to slots is not getting display in first time
+    => 044371 - add money to wallet> stripe form screen> cancel button is not working 
 
 Enhancements:
     => Tax module upgrade
